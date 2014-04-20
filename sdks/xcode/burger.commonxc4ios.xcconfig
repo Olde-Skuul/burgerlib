@@ -1,0 +1,125 @@
+//
+//  Copyright Rebecca Ann Heineman. All rights reserved.
+//
+// http://disanji.net/iOS_Doc/#documentation/DeveloperTools/Conceptual/XcodeBuildSystem/300-Build_Settings/bs_build_settings.html
+//
+
+// Build for stock iOS devices from 3GS and up
+ARCHS = armv7 armv7s
+// armv6
+
+// All build data goes into a folder called temp next to the project
+
+SYMROOT = temp
+
+// Minimum SDK is iOS 4.0
+
+SDKROOT = iphoneos4.0
+
+//
+// Object code suffixes
+//
+
+Release_SUFFIX = rel
+Debug_SUFFIX = dbg
+Internal_SUFFIX = int
+Profile_SUFFIX = pro
+SUFFIX = $($(CONFIGURATION)_SUFFIX)
+
+// Build active architecture
+
+Release_ONLY_ACTIVE_ARCH = NO
+Debug_ONLY_ACTIVE_ARCH = YES
+Internal_ONLY_ACTIVE_ARCH = NO
+Profile_ONLY_ACTIVE_ARCH = YES
+ONLY_ACTIVE_ARCH = $($(CONFIGURATION)_ONLY_ACTIVE_ARCH)
+
+// Compiler defines
+Release_GCC_PREPROCESSOR_DEFINITIONS = NDEBUG
+Debug_GCC_PREPROCESSOR_DEFINITIONS = _DEBUG
+Internal_GCC_PREPROCESSOR_DEFINITIONS = _DEBUG
+Profile_GCC_PREPROCESSOR_DEFINITIONS = NDEBUG
+GCC_PREPROCESSOR_DEFINITIONS = $($(CONFIGURATION)_GCC_PREPROCESSOR_DEFINITIONS)
+
+// Optimization settings
+
+Release_GCC_OPTIMIZATION_LEVEL = s
+Debug_GCC_OPTIMIZATION_LEVEL = 0
+Internal_GCC_OPTIMIZATION_LEVEL = s
+Profile_GCC_OPTIMIZATION_LEVEL = s
+GCC_OPTIMIZATION_LEVEL = $($(CONFIGURATION)_GCC_OPTIMIZATION_LEVEL)
+
+//
+// Proposed output file name
+//
+
+PRODUCT_NAME = $(TARGET_NAME)xc4ios$(SUFFIX)
+
+//
+// Remove all dead code
+//
+
+DEAD_CODE_STRIPPING = YES
+
+//
+// On powerpc, optimize for G4
+//
+
+//GCC_MODEL_TUNING = G4
+
+//
+// Profile settings
+//
+
+Release_GENERATE_PROFILING_CODE = NO
+Debug_GENERATE_PROFILING_CODE = NO
+Internal_GENERATE_PROFILING_CODE = NO
+Profile_GENERATE_PROFILING_CODEL = YES
+GENERATE_PROFILING_CODE = $($(CONFIGURATION)_GENERATE_PROFILING_CODE)
+
+// Location to store the build files
+CONFIGURATION_TEMP_DIR = $(SYMROOT)/$(PROJECT_NAME)xc4ios$(SUFFIX)
+
+// Location to store the executable files
+CONFIGURATION_BUILD_DIR = bin
+
+// Use LLVM GCC 4.2 to build everything (Default is GCC 4.0)
+GCC_VERSION = com.apple.compilers.llvmgcc42
+
+// Dwarf debugging
+DEBUG_INFORMATION_FORMAT = dwarf
+
+// Mach-O executable
+MACH_O_TYPE = mh_execute
+
+
+// Where are my headers?
+HEADER_SEARCH_PATHS = $(SDKS)/iosburger
+
+// Where are my libraries?
+LIBRARY_SEARCH_PATHS = $(SDKS)/iosburger
+
+// Resource file search paths?
+REZ_SEARCH_PATHS = $(SDKS)/iosburger
+
+// Use CodeWarrior inline assembly syntax
+GCC_CW_ASM_SYNTAX = YES
+
+// Disable CPP Exceptions
+GCC_ENABLE_CPP_EXCEPTIONS = NO
+
+// Disable CPP RTTI
+GCC_ENABLE_CPP_RTTI = NO
+
+// Build everything as Objective C++
+GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp
+
+// Use the latest version of the Objective C++ dialect
+GCC_C_LANGUAGE_STANDARD = gnu99
+
+// Don't emit code to make the static constructors thread safe
+GCC_THREADSAFE_STATICS = NO
+
+// Only compatible with stabs, so disable it
+GCC_ENABLE_SYMBOL_SEPARATION = NO
+

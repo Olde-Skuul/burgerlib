@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+	This file defines the common build properties for projects hosted with Visual Studio 2010
+
+	Written by and Copyright Rebecca Ann Heineman
+
+	It assumes Configuration is Debug, Release, Profile or Internal. If
+	is it not one of these settings, set BurgerConfiguration to one of these
+	values to inherit properly. A "None of the above" setting gets
+	Release as the default
+
+	Note: On Xbox 360, Configurations Profile_FastCap, Release_LTCG and CodeAnalysis are also supported
+	
+	ExtraSuffix is defined by projects to support non-standard build targets
+	BurgerConfiguration is defined by non-standard build targets to inherit from a standard target
+	
+-->
+
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="$(MSBuildThisFileDirectory)hlsl.props" />
+
+	<!-- Declare as an application and it's using Unicode -->
+	<PropertyGroup>
+		<!-- Assign defaults to the target (Debug|Win32) -->
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">Win32</Platform>
+		
+		<!-- Assume a native code application that uses Unicode, no MFC or Atl -->
+		<ConfigurationType>Application</ConfigurationType>
+		<UseOfMfc>false</UseOfMfc>
+		<UseOfAtl>false</UseOfAtl>
+		<CLRSupport>false</CLRSupport>
+		<CharacterSet>Unicode</CharacterSet>
+		
+		<!-- All non standard build configurations to inherit standard settings with this override -->
+		<BurgerConfiguration Condition="'$(BurgerConfiguration)'==''">$(Configuration)</BurgerConfiguration>
+		<IncludePerforce Condition="'$(IncludePerforce)'==''">false</IncludePerforce>
+		<RADTools Condition="'$(RADTools)'==''">false</RADTools>
+		<InterplayMovie Condition="'$(InterplayMovie)'==''">false</InterplayMovie>
+		<Steam Condition="'$(Steam)'==''">false</Steam>
+
+	</PropertyGroup>
+	
+	<!-- Declare standard build paths based on project target -->	
+	<PropertyGroup>
+		<!-- Name suffix for specific builds -->
+		<!-- Windows -->
+		<PlatformPrefix Condition="'$(Platform)'=='Win32'">w32</PlatformPrefix>
+		<PlatformPrefix Condition="'$(Platform)'=='x64'">w64</PlatformPrefix>
+		<PlatformPrefix Condition="'$(Platform)'=='ARM'">arm</PlatformPrefix>
+		<!-- Consoles -->
+		<PlatformPrefix Condition="'$(Platform)'=='Xbox'">xbx</PlatformPrefix>
+		<PlatformPrefix Condition="'$(Platform)'=='Xbox 360'">x36</PlatformPrefix>
+		<PlatformPrefix Condition="'$(Platform)'=='Xbox ONE'">one</PlatformPrefix>
+		<PlatformPrefix Condition="'$(Platform)'=='PS2'">ps2</PlatformPrefix>
+		<PlatformPrefix Condition="'$(Platform)'=='PS3'">ps3</PlatformPrefix>
+		<PlatformPrefix Condition="'$(Platform)'=='ORBIS'">ps4</PlatformPrefix>
+		<!-- Hand helds (Tegra is nVidia Shield) -->
+		<PlatformPrefix Condition="'$(Platform)'=='Android'">and</PlatformPrefix>
+		<PlatformPrefix Condition="'$(Platform)'=='Tegra-Android'">shi</PlatformPrefix>
+		<PlatformPrefix Condition="'$(Platform)'=='iOS'">ios</PlatformPrefix>
+		<!-- Mac OS Desktop -->
+		<PlatformPrefix Condition="'$(Platform)'=='Mac'">mac</PlatformPrefix>
+		<PlatformPrefix Condition="'$(Platform)'=='OSX'">osx</PlatformPrefix>
+		<!-- Other targets -->
+		<PlatformPrefix Condition="'$(Platform)'=='WatcomDOS'">dos</PlatformPrefix>
+
+		<ConfigurationSuffix Condition="'$(BurgerConfiguration)'=='Debug'">dbg</ConfigurationSuffix>
+		<ConfigurationSuffix Condition="'$(BurgerConfiguration)'=='Release'">rel</ConfigurationSuffix>
+		<ConfigurationSuffix Condition="'$(BurgerConfiguration)'=='Internal'">int</ConfigurationSuffix>
+		<ConfigurationSuffix Condition="'$(BurgerConfiguration)'=='Profile'">pro</ConfigurationSuffix>
+		<ConfigurationSuffix Condition="'$(BurgerConfiguration)'=='Profile_FastCap'">cap</ConfigurationSuffix>
+		<ConfigurationSuffix Condition="'$(BurgerConfiguration)'=='Release_LTCG'">ltc</ConfigurationSuffix>
+		<ConfigurationSuffix Condition="'$(BurgerConfiguration)'=='CodeAnalysis'">cod</ConfigurationSuffix>
+
+		<!-- Create the application's suffix based on build type -->
+		<TargetSuffix Condition="'$(TargetSuffix)'==''">v10$(PlatformPrefix)$(ExtraSuffix)$(ConfigurationSuffix)</TargetSuffix>
+
+		<!-- Default name of the executable -->
+		<TargetName>$(ProjectName)$(TargetSuffix)</TargetName>
+
+		<!-- Folder to store intermediate data -->
+		<IntDir>$(ProjectDir)temp\$(ProjectName)$(TargetSuffix)\</IntDir>
+
+		<!-- Folder to store final exe -->
+		<OutDir>$(ProjectDir)bin\</OutDir>
+		
+		<!-- Disable incremental linking -->
+		<LinkIncremental>false</LinkIncremental>
+
+		<!-- This only works on Microsoft 32 bit compilers -->
+		<RunCodeAnalysis Condition="'$(Platform)'=='Win32'">false</RunCodeAnalysis>
+		
+		<!-- Use all the rules for code analysis -->
+		<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+
+		<!-- Deploy only on Xbox 360 -->
+		<RemoteRoot Condition="'$(Platform)'=='Xbox 360'">xe:\$(ProjectName)</RemoteRoot>
+	</PropertyGroup>
+
+	<!-- Target specific PropertyGroup settings -->
+	
+	<Choose>
+		<When Condition=" '$(BurgerConfiguration)'=='Debug' ">
+			<PropertyGroup>
+				<WholeProgramOptimization>false</WholeProgramOptimization>
+				<!-- NOTE: This is supposed to be true, but it will force building with Edit and Continue due to a Microsoft scripting issue -->
+				<UseDebugLibraries>false</UseDebugLibraries>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<WholeProgramOptimization>true</WholeProgramOptimization>
+				<UseDebugLibraries>false</UseDebugLibraries>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
+
+	<!-- Global compiler and linker settings for all settings -->
+	
+	<ItemDefinitionGroup>
+		<ClCompile>
+			<PreprocessorDefinitions>_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			<WarningLevel>Level4</WarningLevel>
+			<MinimalRebuild>false</MinimalRebuild>
+			<DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+			<ExceptionHandling>false</ExceptionHandling>
+			<FloatingPointModel>Fast</FloatingPointModel>
+			<RuntimeTypeInfo>false</RuntimeTypeInfo>
+			<StringPooling>true</StringPooling>
+			<EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+			<GenerateDebugInformation>true</GenerateDebugInformation>
+			<FunctionLevelLinking>true</FunctionLevelLinking>
+			<MultiProcessorCompilation>true</MultiProcessorCompilation>
+		</ClCompile>
+		<Link>
+			<OptimizeReferences>true</OptimizeReferences>
+			<GenerateDebugInformation>true</GenerateDebugInformation>
+		</Link>
+	</ItemDefinitionGroup>
+
+	<!-- Configuration specific settings -->
+
+	<ItemDefinitionGroup Condition="'$(BurgerConfiguration)'=='Debug'">
+		<ClCompile>
+			<PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			<Optimization>Disabled</Optimization>
+			<RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+			<OmitFramePointers>false</OmitFramePointers>
+			<BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+			<InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+			
+			<!-- PS4 -->
+			<OptimizationLevel>Level0</OptimizationLevel>
+		</ClCompile>
+	</ItemDefinitionGroup>
+	
+	<ItemDefinitionGroup Condition="'$(BurgerConfiguration)'!='Debug'">
+		<ClCompile>
+			<PreprocessorDefinitions Condition="'$(BurgerConfiguration)'=='Internal'">_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			<PreprocessorDefinitions Condition="'$(BurgerConfiguration)'!='Internal'">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			<Optimization>MinSpace</Optimization>
+			<RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+			<OmitFramePointers>true</OmitFramePointers>
+			<BufferSecurityCheck>false</BufferSecurityCheck>
+			<IntrinsicFunctions>true</IntrinsicFunctions>
+			<InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+			<WholeProgramOptimization>true</WholeProgramOptimization>
+			<InlineAssemblyOptimization>true</InlineAssemblyOptimization>
+			
+			<!-- PS4 -->
+			<OptimizationLevel>Level2</OptimizationLevel>
+		</ClCompile>
+		<Link>
+			<EnableCOMDATFolding>true</EnableCOMDATFolding>
+			<LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+			<Profile Condition="'$(BurgerConfiguration)'=='Profile'">true</Profile>
+		</Link>
+	</ItemDefinitionGroup>
+
+	<!-- Platform specific settings -->
+
+	<ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
+		<ClCompile>
+			<CallingConvention>FastCall</CallingConvention>
+			<AdditionalIncludeDirectories Condition="'$(IncludePerforce)'=='true'">$(SDKS)\windows\perforce;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<AdditionalIncludeDirectories>$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\bink;$(SDKS)\windows\opengl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<PreprocessorDefinitions>_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+		</ClCompile>
+		<Link>
+			<TargetMachine>MachineX86</TargetMachine>
+			<SubSystem>Windows</SubSystem>
+			<AdditionalLibraryDirectories Condition="'$(IncludePerforce)'=='true'">$(SDKS)\windows\perforce;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+			<AdditionalLibraryDirectories>$(SDKS)\windows\burgerbase;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\bink;$(SDKS)\windows\opengl;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+			<AdditionalDependencies>dxguid.lib;dsound.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+			<!-- Perforce includes this by accident -->
+			<IgnoreSpecificDefaultLibraries Condition="'$(Configuration)'=='Internal'">LIBCMTD.lib</IgnoreSpecificDefaultLibraries>
+		</Link>
+	</ItemDefinitionGroup>
+	<ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+		<ClCompile>
+			<CallingConvention>FastCall</CallingConvention>
+			<AdditionalIncludeDirectories Condition="'$(IncludePerforce)'=='true'">$(SDKS)\windows\perforce;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<AdditionalIncludeDirectories>$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\bink;$(SDKS)\windows\opengl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<PreprocessorDefinitions>_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+		</ClCompile>
+		<Link>
+			<TargetMachine>MachineX64</TargetMachine>
+			<SubSystem>Windows</SubSystem>
+			<AdditionalLibraryDirectories Condition="'$(IncludePerforce)'=='true'">$(SDKS)\windows\perforce;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+			<AdditionalLibraryDirectories>$(SDKS)\windows\burgerbase;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\bink;$(SDKS)\windows\opengl;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+			<AdditionalDependencies>dxguid.lib;dsound.lib;opengl64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+			<!-- Perforce includes this by accident -->
+			<IgnoreSpecificDefaultLibraries Condition="'$(Configuration)'=='Internal'">LIBCMTD.lib</IgnoreSpecificDefaultLibraries>
+		</Link>
+	</ItemDefinitionGroup>
+	<ItemDefinitionGroup Condition="'$(Platform)'=='Xbox 360'">
+		<ClCompile>
+			<AdditionalIncludeDirectories>$(SDKS)\xbox360\burgerlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<PreprocessorDefinitions>_XBOX;XBOX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			<OmitFramePointers />
+		</ClCompile>
+		<Link>
+			<AdditionalLibraryDirectories>$(SDKS)\xbox360\burgerbase;$(SDKS)\xbox360\burgerlib;%(AdditionalIncludeDirectories)</AdditionalLibraryDirectories>
+			<AdditionalDependencies Condition="'$(BurgerConfiguration)'=='Debug' OR '$(BurgerConfiguration)'=='CodeAnalysis'">d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+			<AdditionalDependencies Condition="'$(BurgerConfiguration)'=='Profile' OR '$(BurgerConfiguration)'=='Profile_FastCap'">d3d9i.lib;d3dx9i.lib;xgraphics.lib;xapilibi.lib;xaudio2.lib;x3daudioi.lib;xmcorei.lib;xboxkrnl.lib;xbdm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+			<AdditionalDependencies Condition="'$(BurgerConfiguration)'=='Internal'">d3d9.lib;d3dx9.lib;xgraphics.lib;xapilib.lib;xaudio2.lib;x3daudio.lib;xmcore.lib;xboxkrnl.lib;xbdm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+			<AdditionalDependencies Condition="'$(BurgerConfiguration)'=='Release' OR '$(BurgerConfiguration)'=='Release_LTCG'">d3d9ltcg.lib;d3dx9.lib;xgraphics.lib;xapilib.lib;xaudio2.lib;x3daudioltcg.lib;xmcoreltcg.lib;xboxkrnl.lib;xbdm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+		</Link>
+	</ItemDefinitionGroup>
+	<ItemDefinitionGroup Condition="'$(Platform)'=='ORBIS'">
+		<ClCompile>
+			<AdditionalIncludeDirectories>$(SDKS)\ps4\burgerlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<PreprocessorDefinitions>__ORBIS2__;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+		</ClCompile>
+		<Link>
+			<AdditionalLibraryDirectories>$(SDKS)\ps4\burgerbase;$(SDKS)\ps4\burgerlib;%(AdditionalIncludeDirectories)</AdditionalLibraryDirectories>
+		</Link>
+	</ItemDefinitionGroup>
+
+	<!-- Define the default libraries to link in -->
+
+	<ItemDefinitionGroup Condition="'$(BurgerConfiguration)'=='Profile'">
+		<Link>
+			<AdditionalDependencies>burgerbasev10$(PlatformPrefix)rel.lib;burgerv10$(PlatformPrefix)rel.lib;%(AdditionalDependencies)</AdditionalDependencies>
+		</Link>
+	</ItemDefinitionGroup>
+
+	<ItemDefinitionGroup Condition="'$(BurgerConfiguration)'!='Profile'">
+		<Link>
+			<AdditionalDependencies>burgerbasev10$(PlatformPrefix)$(ConfigurationSuffix).lib;burgerv10$(PlatformPrefix)$(ConfigurationSuffix).lib;%(AdditionalDependencies)</AdditionalDependencies>
+		</Link>
+	</ItemDefinitionGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)hlsl.targets" />
+</Project>

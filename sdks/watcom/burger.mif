@@ -1,0 +1,84 @@
+# This makefile init will help in the creation of applications
+# using the watcom compiler for Win32, DOS4GW and DOSX32 targets
+
+# Since the compiler is chosen, select the target OS
+
+!ifeq Platform dosx32
+PShort=x32
+CFlags=$(CFlagsx32)
+AFlags=$(AFlagsx32)
+LFlags=$(LFlagsx32)
+!else ifeq Platform dos4gw
+PShort=4gw
+CFlags=$(CFlags4gw)
+AFlags=$(AFlags4gw)
+LFlags=$(LFlags4gw)
+!else ifeq Platform win32
+PShort=w32
+CFlags=$(CFlagsw32)
+AFlags=$(AFlagsw32)
+LFlags=$(LFlagsw32)
+!else
+!error Unknown target platform. Only dosx32, dos4gw and win32 supported.
+!endif
+
+# To debug, or not to debug, that is the question.
+
+!ifeq Target Debug
+TShort=dbg
+CFlags += $(CFlagsDebug)
+AFlags += $(AFlagsDebug)
+!else ifeq Target Release
+TShort=rel
+CFlags += $(CFlagsRelease)
+AFlags += $(AFlagsRelease)
+!else ifeq Target Internal
+TShort=int
+CFlags += $(CFlagsInternal)
+AFlags += $(AFlagsInternal)
+!else
+!error Target is not Release, Debug or Internal
+!endif
+
+# Now, set the compiler flags
+
+CL=$(ToolCC) -i=$(includedir) $(CFlags)
+CP=$(ToolCP) -i=$(includedir) $(CFlags)
+ASM=$(ToolAsm) $(AFlags)
+Link=$(ToolLink) $(LFlags) PATH $(%Watcom)\binnt;$(%Watcom)\binw;.
+
+# outdir = Name of directory for object files
+outdir = temp\$(CShort)$(PShort)$(TShort)
+
+# Tell WMAKE where to find the files to work with
+
+.c: $(sourcedir)
+.cpp: $(sourcedir)
+.x86: $(sourcedir)
+.obj: $(outdir)
+
+# Create the output directory, or my compiler will barf.
+# I also set DOS4g to quiet in case the linker gets rowdy.
+
+.before
+	@set DOS4g=QUIET
+	@if not exist $(outdir) md $(outdir)
+	@if not exist bin md bin
+
+# Set the default build rules
+# Requires ASM, CP to be set
+
+# $^* = C:\dir\target (No extension)
+# $[* = C:\dir\dep (No extension)
+# $^@ = C:\dir\target.ext
+
+.x86.obj : .AUTODEPEND
+	@$(ASM) $[*.x86 -fo=$^@ -fr=$^*.err
+
+.c.obj : .AUTODEPEND
+	@$(CP) $[*.c -fo=$^@ -fr=$^*.err
+
+.cpp.obj : .AUTODEPEND
+	@$(CP) $[*.cpp -fo=$^@ -fr=$^*.err
+
+

@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+	This file defines the properties required to build libraries compiled with Burgerlib
+
+	Copyright Rebecca Ann Heineman
+	
+	Define FinalFolder if the copying of the output library to a repository that's
+	checked in via Perforce is desired.
+
+-->
+
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	
+	<Import Project="$(sdks)\visualstudio\burger.commonv10.props" />
+
+	<!-- Declare as an library and it's using Unicode -->
+	<PropertyGroup>
+		<ConfigurationType>StaticLibrary</ConfigurationType>
+	</PropertyGroup>
+	
+	<!-- Global compiler and linker settings -->
+	<ItemDefinitionGroup Condition=" '$(FinalFolder)' != '' ">
+		<!-- Create the program database file for the library -->
+		<ClCompile>
+			<ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+		</ClCompile>
+
+		<!--
+			Copy the lib and symbols over to the final folder, also perform a "revert" after
+			the copy so only files that have changed are logged
+		-->
+		
+		<!-- Xbox and windows have a pdb file -->
+		<PostBuildEvent Condition="'$(Platform)'=='Xbox 360' or '$(Platform)'=='x64' or '$(Platform)'=='Win32'">
+			<Message>Copying $(TargetName)$(TargetExt) to $(FinalFolder)</Message>
+			<!-- Create the target folder first, then checkout the file, then copy -->
+			<Command>mkdir "$(FinalFolder)" 2>nul
+"$(perforce)\p4" edit "$(FinalFolder)$(TargetName)$(TargetExt)" "$(FinalFolder)$(TargetName).pdb"
+copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "$(FinalFolder)$(TargetName)$(TargetExt)"
+copy /Y "$(OutDir)$(TargetName).pdb" "$(FinalFolder)$(TargetName).pdb"
+"$(perforce)\p4" revert -a "$(FinalFolder)$(TargetName)$(TargetExt)" "$(FinalFolder)$(TargetName).pdb"</Command>
+		</PostBuildEvent>
+
+		<!-- All others only copy up the library -->
+		<PostBuildEvent Condition="'$(Platform)'!='Xbox 360' and '$(Platform)'!='x64' and '$(Platform)'!='Win32'">
+			<Message>Copying $(TargetName)$(TargetExt) to $(FinalFolder)</Message>
+			<!-- Create the target folder first, then checkout the file, then copy -->
+			<Command>mkdir "$(FinalFolder)" 2>nul
+"$(perforce)\p4" edit "$(FinalFolder)$(TargetName)$(TargetExt)"
+copy /Y "$(OutDir)$(TargetName)$(TargetExt)" "$(FinalFolder)$(TargetName)$(TargetExt)"
+"$(perforce)\p4" revert -a "$(FinalFolder)$(TargetName)$(TargetExt)"</Command>
+		</PostBuildEvent>
+	</ItemDefinitionGroup>
+	
+</Project>

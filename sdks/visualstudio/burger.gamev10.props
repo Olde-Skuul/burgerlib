@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+	This file defines the properties required to build games compiled with Burgerlib
+
+	Copyright Rebecca Ann Heineman
+
+-->
+
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Import Project="$(sdks)\visualstudio\burger.commonv10.props" />
+
+	<!-- Global compiler and linker settings -->
+	<ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
+		<Link>
+			<SubSystem>Windows</SubSystem>
+			<AdditionalDependencies>version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+		</Link>
+	</ItemDefinitionGroup>
+
+	<ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+		<Link>
+			<SubSystem>Windows</SubSystem>
+			<AdditionalDependencies>version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+		</Link>
+	</ItemDefinitionGroup>
+
+	<ItemDefinitionGroup Condition="'$(Platform)'=='Xbox 360'">
+		<Deploy>
+			<DeploymentType>EmulateDvd</DeploymentType>
+			<DvdEmulationType>ZeroSeekTimes</DvdEmulationType>
+			<DeploymentFiles>$(RemoteRoot)=$(ImagePath)</DeploymentFiles>
+		</Deploy>
+	</ItemDefinitionGroup>
+</Project>

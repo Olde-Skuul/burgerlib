@@ -1,0 +1,15 @@
+//
+//  Copyright by Rebecca Ann Heineman
+//  All rights reserved.
+//
+
+// Include all the common settings
+
+#include "burger.commonxcoosx.xcconfig"
+
+// Tool specific data
+
+OTHER_LDFLAGS = -lburgerbase$(IDESUFFIX)osx$(SUFFIX)
+// Final filename
+
+FINAL_OUTPUT = $(PRODUCT_NAME);

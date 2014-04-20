@@ -1,0 +1,23 @@
+//
+//  Copyright by Rebecca Ann Heineman
+//  All rights reserved.
+//
+
+// Include all the common settings
+
+#include "burger.commonxcoosx.xcconfig"
+
+// Library specific data
+
+// Libraries build all versions
+ONLY_ACTIVE_ARCH = NO
+
+// Build a static library
+MACH_O_TYPE = staticlib
+
+// Static libraries don't prebind
+PREBINDING = NO
+
+// Final filename with unique extension
+
+FINAL_OUTPUT = $(EXECUTABLE_PREFIX)$(PRODUCT_NAME)$(SUFFIX).$(EXECUTABLE_EXTENSION);

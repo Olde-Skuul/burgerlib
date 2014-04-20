@@ -1,0 +1,63 @@
+# This makefile init will help in the creation of applications
+# using the watcom compiler for Win32, DOS4GW and DOSX32 targets
+
+# Set the set of known files supported
+# Note: They are in the reverse order of building. .c is built first, then .x86
+# until the .exe or .lib files are built
+
+.extensions:
+.extensions: .exe .exp .lib .obj .h .cpp .x86 .c
+
+# Set the default target
+
+!ifdef Target
+Target=$(Target)
+!else
+Target=Release
+!endif
+
+# Set the default platform
+
+!ifdef Platform
+Platform=$(Platform)
+!else
+Platform=win32
+!endif
+
+# This speeds up the building process for Watcom because it
+# keeps the apps in memory and doesn't have to reload for every source file
+# Note: There is a bug that if the wlib app is loaded, it will not
+# get the proper WOW file if a full build is performed
+
+# The bug is gone from Watcom 1.2
+
+!ifdef __LOADDLL__
+!loaddll wcc386 $(%watcom)/binnt/wccd386
+!loaddll wpp386 $(%watcom)/binnt/wppd386
+!loaddll wlink $(%watcom)/binnt/wlinkd
+!loaddll wlib $(%watcom)/binnt/wlibd
+!endif
+
+CFlagsDebug=-d_DEBUG -d2 -od
+CFlagsInternal=-d_DEBUG -d2 -oaxsh
+CFlagsRelease=-dNDEBUG -d0 -oaxsh
+CFlagsx32=-bt=DOS -d__X32__=1 -i="$(%SDKs)\dos\burgerlib;$(%SDKs)\dos\x32;$(%watcom)\h"
+CFlags4gw=-bt=DOS -d__DOS4G__=1 -i="$(%SDKs)\dos\burgerlib;$(%SDKs)\dos\sosaudio;$(%watcom)\h;$(%watcom)\h\nt"
+CFlagsw32=-bt=NT -dGLUT_DISABLE_ATEXIT_HACK -dGLUT_NO_LIB_PRAGMA -dTARGET_CPU_X86=1 -dTARGET_OS_WIN32=1 -dTYPE_BOOL=1 -dUNICODE -d_UNICODE -dWIN32_LEAN_AND_MEAN -i="$(%SDKs)\windows\burgerlib;$(%SDKs)\windows\opengl;$(%SDKs)\windows\directx9;$(%SDKs)\windows\windows5;$(%SDKs)\windows\quicktime7;$(%watcom)\h;$(%watcom)\h\nt"
+AFlagsDebug=-d_DEBUG
+AFlagsInternal=-d_DEBUG
+AFlagsRelease=-dNDEBUG
+AFlagsx32=-d__X32__=1
+AFlags4gw=-d__DOS4G__=1
+AFlagsw32=-d__WIN32__=1
+LFlagsDebug=
+LFlagsInternal=
+LFlagsRelease=
+LFlagsx32=system x32r libp $(%SDKs)\dos\burgerbase;$(%SDKs)\dos\burgerlib;$(%SDKs)\dos\x32
+LFlags4gw=system dos4g libp $(%SDKs)\dos\burgerbase;$(%SDKs)\dos\burgerlib;$(%SDKs)\dos\sosaudio
+LFlagsw32=system nt libp $(%SDKs)\windows\burgerbase;$(%SDKs)\windows\burgerlib;$(%SDKS)\windows\directx9 LIBRARY VERSION.lib,opengl32.lib,winmm.lib,shell32.lib,shfolder.lib
+CShort=wat
+ToolCC=WCC386 -6r -fp6 -w4 -ei -j -mf -zq -zp=8 -wcd=7
+ToolCP=WPP386 -6r -fp6 -w4 -ei -j -mf -zq -zp=8 -wcd=7
+ToolAsm=$(%WATCOM)\binnt\WASM -5r -fp6 -w4 -zq -d__WATCOM__=1
+ToolLink=*WLINK option caseexact option quiet LIBRARY burgerbase$(CShort)$(PShort)$(TShort).lib LIBRARY burger$(CShort)$(PShort)$(TShort).lib
