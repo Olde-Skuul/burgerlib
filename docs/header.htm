@@ -19,15 +19,25 @@ $mathjax
 $extrastylesheet
 </head>
 <body>
+<!-- <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  
+  ga('create', 'UA-3232391-1', 'burgerbecky.com');
+  ga('send', 'pageview');
+
+</script> -->
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
 
 <!--BEGIN TITLEAREA-->
 <div id="titlearea">
 	<table cellspacing="0" cellpadding="0">
 		<tbody>
-			<tr style="height: 56px; background: url('burgerbackground.png'); background-position:0px -4px">
+			<tr style="height: 56px; background: url('burgerbackground.png'); background-position: left 0px top 60px">
 				<!--BEGIN PROJECT_LOGO-->
-				<td id="projectlogo"><img alt="Logo" src="$relpath^$projectlogo"/></td>
+				<td id="projectlogo"><a href="$relpath^index.htm"><img alt="Logo" width="256" height="55" src="$relpath^$projectlogo"/></a></td>
 				<!--END PROJECT_LOGO-->
 				<!--BEGIN PROJECT_NAME-->
 				<!--
@@ -39,9 +49,11 @@ $extrastylesheet
 				</td>
 				-->
 				<td width="100%" align="center" valign="bottom">
+					<a href="http://oldeskuul.com"><img src="oldeskuul.png" alt="Kicking it Olde Sküül!" border="0" width="32" height="32"/></a>
 					<a href="http://sourceforge.net/projects/burgerlib"><img src="sourceforge.jpg" alt="Burgerlib on SourceForge" border="0" width="32" height="32"/></a>
-					<a href="http://www.twitter.com/oldeskuul"><img src="twitter.jpg" alt="Follow Olde Sküül on Twitter" border="0" width="32" height="32"/></a>
-					<a href="http://www.facebook.com/oldeskuul"><img src="facebook.png" alt="Burgerbecky on LinkedIn" border="0" width="32" height="32"/></a>
+					<a href="http://github.com/Olde-Skuul/burgerlib"><img src="github.png" alt="Burgerlib on Github" border="0" width="32" height="32"/></a>
+					<a href="http://twitter.com/oldeskuul"><img src="twitter.jpg" alt="Follow Olde Sküül on Twitter" border="0" width="32" height="32"/></a>
+					<a href="http://www.facebook.com/OldeSkuul"><img src="facebook.png" alt="Burgerbecky on LinkedIn" border="0" width="32" height="32"/></a>
 					<a href="http://www.linkedin.com/in/burgerbecky"><img src="linkedin.png" alt="Burgerbecky on LinkedIn" border="0" width="32" height="32"/></a>
 				</td>		
 				<!--END PROJECT_NAME-->
@@ -52,11 +64,6 @@ $extrastylesheet
 				</td>
 				<!--END PROJECT_BRIEF-->
 				<!--END !PROJECT_NAME-->
-				<!--BEGIN DISABLE_INDEX-->
-				<!--BEGIN SEARCHENGINE-->
-				<td>$searchbox</td>
-				<!--END SEARCHENGINE-->
-				<!--END DISABLE_INDEX-->
 				<td align="right">
 					<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 						<input type="hidden" name="cmd" value="_donations">
@@ -72,6 +79,11 @@ $extrastylesheet
 						</table>
 					</form>
 				</td>
+				<!--BEGIN DISABLE_INDEX-->
+				<!--BEGIN SEARCHENGINE-->
+				<td>$searchbox</td>
+				<!--END SEARCHENGINE-->
+				<!--END DISABLE_INDEX-->
 			</tr>
 		</tbody>
 	</table>
