@@ -1,6 +1,14 @@
-The MIT License (MIT)
+The gist of the license... Have fun using this code, I won't sue you
+and you can't sue me. However, please be nice about it and give me a
+credit in your software that you used my code.
 
-Copyright (c) Rebecca Ann Heineman
+Please?
+
+--------------------------------------------
+
+Copyright (c) 1995-2014 Rebecca Ann Heineman
+
+--------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -9,8 +17,16 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. The above copyright notice and this permission notice shall be included in all
+   copies or substantial portions of the Software.
+
+2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+
+3. This notice may not be removed or altered from any source distribution.
+
+Rebecca Ann Heineman
+becky@burgerbecky.com
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
