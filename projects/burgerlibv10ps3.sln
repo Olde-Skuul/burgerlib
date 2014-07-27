@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "burgerlib", "burgerlibv10ps3.vcxproj", "{E1D57565-425D-3063-9274-681B701A5C62}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|PS3 = Debug|PS3
+		Internal|PS3 = Internal|PS3
+		Release|PS3 = Release|PS3
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E1D57565-425D-3063-9274-681B701A5C62}.Debug|PS3.ActiveCfg = Debug|PS3
+		{E1D57565-425D-3063-9274-681B701A5C62}.Debug|PS3.Build.0 = Debug|PS3
+		{E1D57565-425D-3063-9274-681B701A5C62}.Internal|PS3.ActiveCfg = Internal|PS3
+		{E1D57565-425D-3063-9274-681B701A5C62}.Internal|PS3.Build.0 = Internal|PS3
+		{E1D57565-425D-3063-9274-681B701A5C62}.Release|PS3.ActiveCfg = Release|PS3
+		{E1D57565-425D-3063-9274-681B701A5C62}.Release|PS3.Build.0 = Release|PS3
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

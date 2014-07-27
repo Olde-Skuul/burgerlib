@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "burgerlib", "burgerlibv10ps4.vcxproj", "{B74FCC99-275F-3717-8476-035FB7491834}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ORBIS = Debug|ORBIS
+		Internal|ORBIS = Internal|ORBIS
+		Release|ORBIS = Release|ORBIS
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B74FCC99-275F-3717-8476-035FB7491834}.Debug|ORBIS.ActiveCfg = Debug|ORBIS
+		{B74FCC99-275F-3717-8476-035FB7491834}.Debug|ORBIS.Build.0 = Debug|ORBIS
+		{B74FCC99-275F-3717-8476-035FB7491834}.Internal|ORBIS.ActiveCfg = Internal|ORBIS
+		{B74FCC99-275F-3717-8476-035FB7491834}.Internal|ORBIS.Build.0 = Internal|ORBIS
+		{B74FCC99-275F-3717-8476-035FB7491834}.Release|ORBIS.ActiveCfg = Release|ORBIS
+		{B74FCC99-275F-3717-8476-035FB7491834}.Release|ORBIS.Build.0 = Release|ORBIS
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

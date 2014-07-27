@@ -1,0 +1,226 @@
+#
+# Build burgerlib for windows
+#
+
+#
+# sourcedir = Set the work directories for the source
+#
+
+sourcedir = ..\source\ansi;..\source\audio;..\source;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows
+
+#
+# Name of the output library
+#
+
+projectname = burgerlib
+
+#
+# includedir = Header includes
+#
+
+includedir = $(sourcedir);$(SDKS)\windows\perforce
+
+#
+# Object files to work with for the library
+#
+
+objs= &
+	$(A)\brfileansihelpers.obj &
+	$(A)\brmemoryansi.obj &
+	$(A)\brstdouthelpers.obj &
+	$(A)\brsound.obj &
+	$(A)\brcommandparameter.obj &
+	$(A)\brcommandparameterbooltrue.obj &
+	$(A)\brcommandparameterstring.obj &
+	$(A)\brcommandparameterwordptr.obj &
+	$(A)\brconsolemanager.obj &
+	$(A)\brgameapp.obj &
+	$(A)\bradler16.obj &
+	$(A)\bradler32.obj &
+	$(A)\brcompress.obj &
+	$(A)\brcompressdeflate.obj &
+	$(A)\brcompresslbmrle.obj &
+	$(A)\brcompresslzss.obj &
+	$(A)\brcrc32.obj &
+	$(A)\brdecompress.obj &
+	$(A)\brdecompressdeflate.obj &
+	$(A)\brdecompresslbmrle.obj &
+	$(A)\brdecompresslzss.obj &
+	$(A)\brdxt1.obj &
+	$(A)\brdxt3.obj &
+	$(A)\brdxt5.obj &
+	$(A)\brmace.obj &
+	$(A)\brmd2.obj &
+	$(A)\brmd4.obj &
+	$(A)\brmd5.obj &
+	$(A)\brpackfloat.obj &
+	$(A)\brsha1.obj &
+	$(A)\brdirectorysearch.obj &
+	$(A)\brfile.obj &
+	$(A)\brfilebmp.obj &
+	$(A)\brfiledds.obj &
+	$(A)\brfilegif.obj &
+	$(A)\brfileini.obj &
+	$(A)\brfilelbm.obj &
+	$(A)\brfilemanager.obj &
+	$(A)\brfilename.obj &
+	$(A)\brfilepcx.obj &
+	$(A)\brfilepng.obj &
+	$(A)\brfiletga.obj &
+	$(A)\brfilexml.obj &
+	$(A)\brinputmemorystream.obj &
+	$(A)\broutputmemorystream.obj &
+	$(A)\brrezfile.obj &
+	$(A)\brdisplay.obj &
+	$(A)\brdisplayopengl.obj &
+	$(A)\brdisplayopenglsoftware8.obj &
+	$(A)\brfont.obj &
+	$(A)\brfont4bit.obj &
+	$(A)\brimage.obj &
+	$(A)\brpalette.obj &
+	$(A)\brpoint2d.obj &
+	$(A)\brrect.obj &
+	$(A)\brrenderer.obj &
+	$(A)\brrenderersoftware16.obj &
+	$(A)\brrenderersoftware8.obj &
+	$(A)\brshape8bit.obj &
+	$(A)\brjoypad.obj &
+	$(A)\brkeyboard.obj &
+	$(A)\brmouse.obj &
+	$(A)\brassert.obj &
+	$(A)\bratomic.obj &
+	$(A)\brautorepeat.obj &
+	$(A)\brbase.obj &
+	$(A)\brcodelibrary.obj &
+	$(A)\brcriticalsection.obj &
+	$(A)\brdebug.obj &
+	$(A)\brdetectmultilaunch.obj &
+	$(A)\brdoublylinkedlist.obj &
+	$(A)\brendian.obj &
+	$(A)\brglobals.obj &
+	$(A)\brguid.obj &
+	$(A)\brlinkedlistobject.obj &
+	$(A)\brlinkedlistpointer.obj &
+	$(A)\broscursor.obj &
+	$(A)\brperforce.obj &
+	$(A)\brrandommanager.obj &
+	$(A)\brrunqueue.obj &
+	$(A)\brtick.obj &
+	$(A)\brtimedate.obj &
+	$(A)\brfixedmatrix3d.obj &
+	$(A)\brfixedmatrix4d.obj &
+	$(A)\brfixedpoint.obj &
+	$(A)\brfixedvector2d.obj &
+	$(A)\brfixedvector3d.obj &
+	$(A)\brfixedvector4d.obj &
+	$(A)\brfloatingpoint.obj &
+	$(A)\brmatrix3d.obj &
+	$(A)\brmatrix4d.obj &
+	$(A)\brvector2d.obj &
+	$(A)\brvector3d.obj &
+	$(A)\brvector4d.obj &
+	$(A)\brglobalmemorymanager.obj &
+	$(A)\brmemoryhandle.obj &
+	$(A)\brmemorymanager.obj &
+	$(A)\brisolatin1.obj &
+	$(A)\brmacromanus.obj &
+	$(A)\brnumberstring.obj &
+	$(A)\brnumberstringhex.obj &
+	$(A)\brsimplestring.obj &
+	$(A)\brstring.obj &
+	$(A)\brstring16.obj &
+	$(A)\brstringfunctions.obj &
+	$(A)\brutf16.obj &
+	$(A)\brutf32.obj &
+	$(A)\brutf8.obj &
+	$(A)\brwin1252.obj &
+	$(A)\brcodelibrarywindows.obj &
+	$(A)\brconsolemanagerwindows.obj &
+	$(A)\brcriticalsectionwindows.obj &
+	$(A)\brdebugwindows.obj &
+	$(A)\brdetectmultilaunchwindows.obj &
+	$(A)\brdirectorysearchwindows.obj &
+	$(A)\brdirectxdata.obj &
+	$(A)\brdisplaybasewindows.obj &
+	$(A)\brdisplaydibsoftware8windows.obj &
+	$(A)\brdisplaydibwindows.obj &
+	$(A)\brdisplaydirectx9software8windows.obj &
+	$(A)\brdisplaydirectx9windows.obj &
+	$(A)\brdisplayopenglwindows.obj &
+	$(A)\brfilemanagerwindows.obj &
+	$(A)\brfilenamewindows.obj &
+	$(A)\brfilewindows.obj &
+	$(A)\brglobalswindows.obj &
+	$(A)\brjoypadwindows.obj &
+	$(A)\brkeyboardwindows.obj &
+	$(A)\brmousewindows.obj &
+	$(A)\broscursorwindows.obj &
+	$(A)\brperforcewindows.obj &
+	$(A)\brpoint2dwindows.obj &
+	$(A)\brrectwindows.obj &
+	$(A)\brsoundwindows.obj &
+	$(A)\brtickwindows.obj &
+	$(A)\brtimedatewindows.obj &
+	$(A)\brwindowsapp.obj
+
+#
+# Final location folder
+#
+
+finalfolder = $(SDKS)\windows\burgerlib
+
+#
+# Create the build environment
+#
+
+!include $(%sdks)\watcom\burger.mif
+
+#
+# List the names of all of the final binaries to build
+#
+
+all : .SYMBOLIC
+	@set config=Debug
+	@set target=w32
+	@%make $(destdir)\$(projectname)watw32dbg.lib
+	@set config=Internal
+	@set target=w32
+	@%make $(destdir)\$(projectname)watw32int.lib
+	@set config=Release
+	@set target=w32
+	@%make $(destdir)\$(projectname)watw32rel.lib
+
+burgerlibwatwin.wmk :
+	@%null
+
+#
+# A = The object file temp folder
+#
+
+A = $(basetempdir)watw32dbg
+$(destdir)\$(projectname)watw32dbg.lib : $+$(OBJS)$- burgerlibwatwin.wmk
+	@if not exist $(destdir) @!mkdir $(destdir)
+	@SET WOW=$+$(OBJS)$-
+	@WLIB -q -b -c -n $^@ @WOW
+	@"$(%perforce)\p4" edit "$(finalfolder)\$^."
+	@copy /y "$^@" "$(finalfolder)\$^."
+	@"$(%perforce)\p4" revert -a "$(finalfolder)\$^."
+
+A = $(basetempdir)watw32int
+$(destdir)\$(projectname)watw32int.lib : $+$(OBJS)$- burgerlibwatwin.wmk
+	@if not exist $(destdir) @!mkdir $(destdir)
+	@SET WOW=$+$(OBJS)$-
+	@WLIB -q -b -c -n $^@ @WOW
+	@"$(%perforce)\p4" edit "$(finalfolder)\$^."
+	@copy /y "$^@" "$(finalfolder)\$^."
+	@"$(%perforce)\p4" revert -a "$(finalfolder)\$^."
+
+A = $(basetempdir)watw32rel
+$(destdir)\$(projectname)watw32rel.lib : $+$(OBJS)$- burgerlibwatwin.wmk
+	@if not exist $(destdir) @!mkdir $(destdir)
+	@SET WOW=$+$(OBJS)$-
+	@WLIB -q -b -c -n $^@ @WOW
+	@"$(%perforce)\p4" edit "$(finalfolder)\$^."
+	@copy /y "$^@" "$(finalfolder)\$^."
+	@"$(%perforce)\p4" revert -a "$(finalfolder)\$^."
+

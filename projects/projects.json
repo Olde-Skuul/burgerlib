@@ -1,0 +1,322 @@
+# Json file to create the burgerlib project files
+
+# Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+
+# It is released under an MIT Open Source license. Please see LICENSE
+# for license details. Yes, you can use it in a
+# commercial title without paying anything, just give me a credit.
+# Please? It's not like I'm asking you for money!
+
+[
+	// Initial settings
+	{
+		// Name of the project (And output filename)
+		"projectname": "burgerlib",
+		// Kind of project (library,game,screensaver,tool)
+		"kind": "library",
+		// Configurations to generate (Debug,Internal,Release,Profile)
+		"configurations": ["Debug","Internal","Release"],
+		// List of filenames to exclude from parsing
+		"exclude": ["brtypes.cpp"],
+		// List of additional defines
+		"defines": [],
+		// Folder to store the final binary that's checked into Perforce
+		"finalfolder": "$(SDKS)/ps3/burgerlib/",
+		// Operating system target to build for (windows,macosx,linux,ps3,ps4,xbox,
+		// xbox360,xboxone,shield,ios,mac,msdos,beos,ouya)
+		"platform" : "ps3",
+		// Folders to scan for source code
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/graphics",
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/text",
+			"../source/ps3"
+		],
+		// Folders to add for include files (No file scanning is performed)
+		"includefolders" : []
+	},
+	// PS3 -> Visual Studio 2010
+	"vs2010",
+	
+	{
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/graphics",
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/text",
+			"../source/ps4"
+		],
+		"finalfolder": "$(SDKS)/ps4/burgerlib/",
+		"platform": "ps4"
+	},
+	"vs2010",
+	{
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/graphics",
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/text",
+			"../source/xbox360"
+		],
+		"finalfolder": "$(SDKS)/xbox360/burgerlib/",
+		"platform": "xbox360"
+	},
+	"vs2010",
+	{
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/graphics",
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/text",
+			"../source/shield"
+		],
+		"finalfolder": "$(SDKS)/shield/burgerlib/",
+		"platform": "shield"
+	},
+	"vs2010",
+	{
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/graphics",
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/text",
+			"../source/macosx"
+		],
+		"finalfolder": "$(SDKS)/macosx/burgerlib/",
+		"platform": "macosx"
+	},
+	"xcode3",
+	"xcode5",
+	{
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/graphics",
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/text",
+			"../source/mac"
+		],
+		"finalfolder": "$(SDKS)/mac/burgerlib/",
+		"platform": "mac"
+	},
+	"codewarrior",
+	{
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/graphics",
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/text",
+			"../source/ios"
+		],
+		"finalfolder": "$(SDKS)/ios/burgerlib/",
+		"platform": "ios"
+	},
+	"xcode5",
+	{
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/graphics",
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/text",
+			"../source/msdos"
+		],
+		"finalfolder": "$(SDKS)/dos/burgerlib/",
+		"platform": "msdos"
+	},
+	"watcom",
+	"codeblocks",
+	{
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/graphics",
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/text",
+			"../source/windows"
+		],
+		"includefolders": ["$(SDKS)/windows/perforce"],
+		"finalfolder": "$(SDKS)/windows/burgerlib/",
+		"defines": ["_CRT_NONSTDC_NO_WARNINGS","_CRT_SECURE_NO_WARNINGS","GLUT_NO_LIB_PRAGMA"],
+		"platform": "windows"
+	},
+	"vs2010",
+	"vs2008",
+	"vs2005",
+	"codewarrior",
+	"watcom",
+	"codeblocks",
+	{
+		"projectname": "unittests",
+		"kind": "tool",
+		"finalfolder": null,
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/graphics",
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/text",
+			"../unittest",
+			"../source/windows"
+		],
+		"includefolders": ["$(SDKS)/windows/perforce"],
+		"defines": ["_CRT_NONSTDC_NO_WARNINGS","_CRT_SECURE_NO_WARNINGS","GLUT_NO_LIB_PRAGMA"],
+		"platform": "windows"
+	},
+	"vs2010",
+	"vs2008",
+	"vs2005",
+	"codewarrior",
+	"watcom",
+	"codeblocks",
+	{
+		"projectname": "unittests",
+		"kind": "tool",
+		"finalfolder": null,
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/graphics",
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/text",
+			"../unittest",
+			"../source/macosx"
+		],
+		"platform": "macosx"
+	},
+	"xcode3",
+	"xcode5",
+	{
+		"projectname": "unittests",
+		"kind": "tool",
+		"finalfolder": null,
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/graphics",
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/text",
+			"../unittest",
+			"../source/maco"
+		],
+		"includefolders": [],
+		"defines": [],
+		"platform": "mac"
+	},
+	"codewarrior",
+	{
+		"projectname": "unittests",
+		"kind": "tool",
+		"finalfolder": null,
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/graphics",
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/text",
+			"../unittest",
+			"../source/xbox360"
+		],
+		"defines": [],
+		"platform": "xbox360"
+	},
+	"vs2010"
+]

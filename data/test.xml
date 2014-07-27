@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Test for comment -->
+
+<!-- Empty line above -->
+<deep><a><a><a><a><a><a></a></a></a></a></a></a></deep>
+<deep>a<a>b<a>c<a>d<a>e<a>f<a>g</a>h</a>i</a>j</a>k</a>l</a>m</deep>
+<deep>a
+	<a>b
+		<a>c
+			<a>d
+				<a>e
+					<a>f
+						<a>g</a>
+						h</a>
+					i</a>
+				j</a>
+			k</a>
+		l</a>
+	m</deep>
+<killwhitespace>   </killwhitespace>
+<Config test="foobar">
+	<SoundVolume attrib='666'>255</SoundVolume>
+	<MusicVolume>236</MusicVolume>
+	<TriggerEvent>257</TriggerEvent>
+	<SwitchAimEvent>57</SwitchAimEvent>
+	<ReloadEvent>258</ReloadEvent>
+	<FireRateEvent>33</FireRateEvent>
+	<BreathEvent>48</BreathEvent>
+	<DropoffMode>0</DropoffMode>
+	<LowResolutionMode>0</LowResolutionMode>
+	<MouseSpeed>1.75</MouseSpeed>
+	<Boolean>TRUE</Boolean>
+</Config>
+
+<_2ndrecord>
+	<SoundVolume>666</SoundVolume>
+	<Another>1.77</Another>
+	<String>&quot;This is a message&quot;</String>
+	<String2>&quot;This &quot;has&quot; a quote&quot;&#xA;&#10;&#32654;&#23569;&#22899;&#25126;&#22763;&#12475;&#12540;&#12521;&#12540;&#12512;&#12540;&#12531;</String2>
+	<CDATA><![CDATA[<encoded>Burgerbecky</encoded>]]></CDATA>
+	<CDATA2>&lt;encoded&gt;Burgerbecky&lt;/encoded&gt;</CDATA2>
+</_2ndrecord>
+
+<![CDATA[
+function matchwo(a,b)
+{
+	if (a < b && a < 0) then {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+]]>

@@ -1,0 +1,905 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemGroup>
+		<ClInclude Include="..\source\ansi\brfileansihelpers.h">
+			<Filter>source\ansi</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\ansi\brmemoryansi.h">
+			<Filter>source\ansi</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\ansi\brstdouthelpers.h">
+			<Filter>source\ansi</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brsound.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\brgl.h">
+			<Filter>source</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\brglut.h">
+			<Filter>source</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\brstartup.h">
+			<Filter>source</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\commandline\brcommandparameter.h">
+			<Filter>source\commandline</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\commandline\brcommandparameterbooltrue.h">
+			<Filter>source\commandline</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\commandline\brcommandparameterstring.h">
+			<Filter>source\commandline</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\commandline\brcommandparameterwordptr.h">
+			<Filter>source\commandline</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\commandline\brconsolemanager.h">
+			<Filter>source\commandline</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\commandline\brgameapp.h">
+			<Filter>source\commandline</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\bradler16.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\bradler32.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brcompress.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brcompressdeflate.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brcompresslbmrle.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brcompresslzss.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brcrc32.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brdecompress.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brdecompressdeflate.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brdecompresslbmrle.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brdecompresslzss.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brdxt1.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brdxt3.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brdxt5.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brmace.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brmd2.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brmd4.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brmd5.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brpackfloat.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brsha1.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brdirectorysearch.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brfile.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brfilebmp.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brfiledds.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brfilegif.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brfileini.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brfilelbm.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brfilemanager.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brfilename.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brfilepcx.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brfilepng.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brfiletga.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brfilexml.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brinputmemorystream.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\broutputmemorystream.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brrezfile.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brdisplay.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brdisplayopengl.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brdisplayopenglsoftware8.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brfont.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brfont4bit.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brimage.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brpalette.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brpoint2d.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brrect.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brrenderer.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brrenderersoftware16.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brrenderersoftware8.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brshape8bit.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\input\brjoypad.h">
+			<Filter>source\input</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\input\brkeyboard.h">
+			<Filter>source\input</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\input\brmouse.h">
+			<Filter>source\input</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brassert.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\bratomic.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brautorepeat.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brbase.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brcodelibrary.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brcriticalsection.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brdebug.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brdetectmultilaunch.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brdoublylinkedlist.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brendian.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brglobals.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brguid.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brlinkedlistobject.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brlinkedlistpointer.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brmetrowerks.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\broscursor.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brperforce.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brrandommanager.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brrunqueue.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brtick.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brtimedate.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brtypes.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brvisualstudio.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brwatcom.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brxcode.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brfixedmatrix3d.h">
+			<Filter>source\math</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brfixedmatrix4d.h">
+			<Filter>source\math</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brfixedpoint.h">
+			<Filter>source\math</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brfixedvector2d.h">
+			<Filter>source\math</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brfixedvector3d.h">
+			<Filter>source\math</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brfixedvector4d.h">
+			<Filter>source\math</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brfloatingpoint.h">
+			<Filter>source\math</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brmatrix3d.h">
+			<Filter>source\math</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brmatrix4d.h">
+			<Filter>source\math</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brvector2d.h">
+			<Filter>source\math</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brvector3d.h">
+			<Filter>source\math</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brvector4d.h">
+			<Filter>source\math</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\memory\brglobalmemorymanager.h">
+			<Filter>source\memory</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\memory\brmemoryhandle.h">
+			<Filter>source\memory</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\memory\brmemorymanager.h">
+			<Filter>source\memory</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\templateburgerbase.h">
+			<Filter>source</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\text\brisolatin1.h">
+			<Filter>source\text</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\text\brmacromanus.h">
+			<Filter>source\text</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\text\brnumberstring.h">
+			<Filter>source\text</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\text\brnumberstringhex.h">
+			<Filter>source\text</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\text\brsimplestring.h">
+			<Filter>source\text</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\text\brstring.h">
+			<Filter>source\text</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\text\brstring16.h">
+			<Filter>source\text</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\text\brstringfunctions.h">
+			<Filter>source\text</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\text\brutf16.h">
+			<Filter>source\text</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\text\brutf32.h">
+			<Filter>source\text</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\text\brutf8.h">
+			<Filter>source\text</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\text\brwin1252.h">
+			<Filter>source\text</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\version.h">
+			<Filter>source</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\windows\brdisplaydib.h">
+			<Filter>source\windows</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\windows\brdisplaydibsoftware8.h">
+			<Filter>source\windows</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\windows\brdisplaydirectx8bit.h">
+			<Filter>source\windows</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\windows\brdisplaydirectx9.h">
+			<Filter>source\windows</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\windows\brdisplaydirectx9software8.h">
+			<Filter>source\windows</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\windows\brwindowsapp.h">
+			<Filter>source\windows</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\windows\brwindowstypes.h">
+			<Filter>source\windows</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\common.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\createtables.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\testbrcompression.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\testbrendian.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\testbrfilemanager.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\testbrfixedpoint.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\testbrfloatingpoint.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\testbrhashes.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\testbrstrings.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\testbrtimedate.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\testbrtypes.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClCompile Include="..\source\ansi\brfileansihelpers.cpp">
+			<Filter>source\ansi</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\ansi\brmemoryansi.cpp">
+			<Filter>source\ansi</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\ansi\brstdouthelpers.cpp">
+			<Filter>source\ansi</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brsound.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\commandline\brcommandparameter.cpp">
+			<Filter>source\commandline</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\commandline\brcommandparameterbooltrue.cpp">
+			<Filter>source\commandline</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\commandline\brcommandparameterstring.cpp">
+			<Filter>source\commandline</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\commandline\brcommandparameterwordptr.cpp">
+			<Filter>source\commandline</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\commandline\brconsolemanager.cpp">
+			<Filter>source\commandline</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\commandline\brgameapp.cpp">
+			<Filter>source\commandline</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\bradler16.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\bradler32.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brcompress.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brcompressdeflate.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brcompresslbmrle.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brcompresslzss.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brcrc32.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brdecompress.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brdecompressdeflate.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brdecompresslbmrle.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brdecompresslzss.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brdxt1.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brdxt3.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brdxt5.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brmace.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brmd2.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brmd4.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brmd5.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brpackfloat.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brsha1.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brdirectorysearch.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brfile.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brfilebmp.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brfiledds.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brfilegif.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brfileini.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brfilelbm.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brfilemanager.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brfilename.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brfilepcx.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brfilepng.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brfiletga.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brfilexml.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brinputmemorystream.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\broutputmemorystream.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brrezfile.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brdisplay.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brdisplayopengl.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brdisplayopenglsoftware8.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brfont.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brfont4bit.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brimage.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brpalette.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brpoint2d.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brrect.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brrenderer.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brrenderersoftware16.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brrenderersoftware8.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brshape8bit.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\input\brjoypad.cpp">
+			<Filter>source\input</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\input\brkeyboard.cpp">
+			<Filter>source\input</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\input\brmouse.cpp">
+			<Filter>source\input</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brassert.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\bratomic.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brautorepeat.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brbase.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brcodelibrary.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brcriticalsection.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brdebug.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brdetectmultilaunch.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brdoublylinkedlist.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brendian.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brglobals.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brguid.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brlinkedlistobject.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brlinkedlistpointer.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\broscursor.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brperforce.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brrandommanager.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brrunqueue.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brtick.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brtimedate.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brfixedmatrix3d.cpp">
+			<Filter>source\math</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brfixedmatrix4d.cpp">
+			<Filter>source\math</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brfixedpoint.cpp">
+			<Filter>source\math</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brfixedvector2d.cpp">
+			<Filter>source\math</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brfixedvector3d.cpp">
+			<Filter>source\math</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brfixedvector4d.cpp">
+			<Filter>source\math</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brfloatingpoint.cpp">
+			<Filter>source\math</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brmatrix3d.cpp">
+			<Filter>source\math</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brmatrix4d.cpp">
+			<Filter>source\math</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brvector2d.cpp">
+			<Filter>source\math</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brvector3d.cpp">
+			<Filter>source\math</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brvector4d.cpp">
+			<Filter>source\math</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\memory\brglobalmemorymanager.cpp">
+			<Filter>source\memory</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\memory\brmemoryhandle.cpp">
+			<Filter>source\memory</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\memory\brmemorymanager.cpp">
+			<Filter>source\memory</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\text\brisolatin1.cpp">
+			<Filter>source\text</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\text\brmacromanus.cpp">
+			<Filter>source\text</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\text\brnumberstring.cpp">
+			<Filter>source\text</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\text\brnumberstringhex.cpp">
+			<Filter>source\text</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\text\brsimplestring.cpp">
+			<Filter>source\text</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\text\brstring.cpp">
+			<Filter>source\text</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\text\brstring16.cpp">
+			<Filter>source\text</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\text\brstringfunctions.cpp">
+			<Filter>source\text</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\text\brutf16.cpp">
+			<Filter>source\text</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\text\brutf32.cpp">
+			<Filter>source\text</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\text\brutf8.cpp">
+			<Filter>source\text</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\text\brwin1252.cpp">
+			<Filter>source\text</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brcodelibrarywindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brconsolemanagerwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brcriticalsectionwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brdebugwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brdetectmultilaunchwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brdirectorysearchwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brdirectxdata.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brdisplaybasewindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brdisplaydibsoftware8windows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brdisplaydibwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brdisplaydirectx9software8windows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brdisplaydirectx9windows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brdisplayopenglwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brfilemanagerwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brfilenamewindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brfilewindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brglobalswindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brjoypadwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brkeyboardwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brmousewindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\broscursorwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brperforcewindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brpoint2dwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brrectwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brsoundwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brtickwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brtimedatewindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brwindowsapp.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\common.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\createtables.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\testbrcompression.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\testbrendian.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\testbrfilemanager.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\testbrfixedpoint.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\testbrfloatingpoint.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\testbrhashes.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\testbrstrings.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\testbrtimedate.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\testbrtypes.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<HLSL Include="..\source\windows\brdisplaydirectx8bit.hlsl">
+			<Filter>source\windows</Filter>
+		</HLSL>
+		<Filter Include="source\math">
+			<UniqueIdentifier>{AF7F60BD-734A-336E-B4E9-B27658EFA21B}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\lowlevel">
+			<UniqueIdentifier>{A2FA541C-0603-384A-9D8F-28D387294F54}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source">
+			<UniqueIdentifier>{93DD0C3B-31DC-3C2F-B6D1-994138EF6559}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="unittest">
+			<UniqueIdentifier>{73B3E15D-496A-3EAD-9120-91DC8D75162C}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\ansi">
+			<UniqueIdentifier>{A9468EDE-BE9B-3244-9A81-316816804F96}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\windows">
+			<UniqueIdentifier>{908017FC-F17E-3004-AE77-99C5545020CD}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\text">
+			<UniqueIdentifier>{42A4D9A8-3E02-37D8-96D3-6EDE45262EEF}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\audio">
+			<UniqueIdentifier>{0DE547E4-4934-3902-82CF-4C461192953C}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\memory">
+			<UniqueIdentifier>{ACD2B258-99C8-3430-98F8-4FC765B1A532}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\commandline">
+			<UniqueIdentifier>{A7640167-9A6E-3127-B10E-364BA7733304}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\graphics">
+			<UniqueIdentifier>{0D3B65E6-AC4D-3D46-AF32-CBB82DF432CE}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\compression">
+			<UniqueIdentifier>{4A57FB7C-27E4-37DA-92A0-6F66B505DE80}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\file">
+			<UniqueIdentifier>{6CBA067E-3CBE-3307-BD98-6EBD698FB3B5}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\input">
+			<UniqueIdentifier>{7DFFC35E-22A1-3FB5-8506-D06BA169CB77}</UniqueIdentifier>
+		</Filter>
+	</ItemGroup>
+</Project>

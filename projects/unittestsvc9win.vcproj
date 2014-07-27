@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9.00"
+	Name="unittests"
+	ProjectGUID="{EF7E438C-866C-3E32-A40D-04479DC29B05}"
+	>
+	<Platforms>
+		<Platform Name="Win32" />
+		<Platform Name="x64" />
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="bin\"
+			IntermediateDirectory="temp\unittestsvc9w32dbg\"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCCLCompilerTool"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA"
+				StringPooling="true"
+				ExceptionHandling="0"
+				StructMemberAlignment="4"
+				EnableFunctionLevelLinking="true"
+				FloatingPointModel="2"
+				RuntimeTypeInfo="false"
+				PrecompiledHeaderFile=""
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+				ProgramDataBaseFileName="$(OutDir)\$(TargetName).pdb"
+				CallingConvention="1"
+				CompileAs="2"
+				FavorSizeOrSpeed="1"
+				DisableSpecificWarnings="4201"
+				Optimization="0"
+				EnableIntrinsicFunctions="true"
+				BufferSecurityCheck="true"
+				RuntimeLibrary="1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="&quot;$(OutDir)unittestsvc9w32dbg.exe&quot;"
+				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\opengl"
+				SubSystem="1"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="bin\"
+			IntermediateDirectory="temp\unittestsvc9w64dbg\"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCCLCompilerTool"
+				PreprocessorDefinitions="_DEBUG;WIN64;_WINDOWS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA"
+				StringPooling="true"
+				ExceptionHandling="0"
+				StructMemberAlignment="4"
+				EnableFunctionLevelLinking="true"
+				FloatingPointModel="2"
+				RuntimeTypeInfo="false"
+				PrecompiledHeaderFile=""
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+				ProgramDataBaseFileName="$(OutDir)\$(TargetName).pdb"
+				CallingConvention="1"
+				CompileAs="2"
+				FavorSizeOrSpeed="1"
+				DisableSpecificWarnings="4201"
+				Optimization="0"
+				EnableIntrinsicFunctions="true"
+				BufferSecurityCheck="true"
+				RuntimeLibrary="1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="&quot;$(OutDir)unittestsvc9w64dbg.exe&quot;"
+				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\opengl"
+				SubSystem="1"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Internal|Win32"
+			OutputDirectory="bin\"
+			IntermediateDirectory="temp\unittestsvc9w32int\"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCCLCompilerTool"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA"
+				StringPooling="true"
+				ExceptionHandling="0"
+				StructMemberAlignment="4"
+				EnableFunctionLevelLinking="true"
+				FloatingPointModel="2"
+				RuntimeTypeInfo="false"
+				PrecompiledHeaderFile=""
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+				ProgramDataBaseFileName="$(OutDir)\$(TargetName).pdb"
+				CallingConvention="1"
+				CompileAs="2"
+				FavorSizeOrSpeed="1"
+				DisableSpecificWarnings="4201"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				OmitFramePointers="true"
+				BufferSecurityCheck="true"
+				RuntimeLibrary="1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="&quot;$(OutDir)unittestsvc9w32int.exe&quot;"
+				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\opengl"
+				SubSystem="1"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Internal|x64"
+			OutputDirectory="bin\"
+			IntermediateDirectory="temp\unittestsvc9w64int\"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCCLCompilerTool"
+				PreprocessorDefinitions="_DEBUG;WIN64;_WINDOWS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA"
+				StringPooling="true"
+				ExceptionHandling="0"
+				StructMemberAlignment="4"
+				EnableFunctionLevelLinking="true"
+				FloatingPointModel="2"
+				RuntimeTypeInfo="false"
+				PrecompiledHeaderFile=""
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+				ProgramDataBaseFileName="$(OutDir)\$(TargetName).pdb"
+				CallingConvention="1"
+				CompileAs="2"
+				FavorSizeOrSpeed="1"
+				DisableSpecificWarnings="4201"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				OmitFramePointers="true"
+				BufferSecurityCheck="true"
+				RuntimeLibrary="1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="&quot;$(OutDir)unittestsvc9w64int.exe&quot;"
+				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\opengl"
+				SubSystem="1"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="bin\"
+			IntermediateDirectory="temp\unittestsvc9w32rel\"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCCLCompilerTool"
+				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA"
+				StringPooling="true"
+				ExceptionHandling="0"
+				StructMemberAlignment="4"
+				EnableFunctionLevelLinking="true"
+				FloatingPointModel="2"
+				RuntimeTypeInfo="false"
+				PrecompiledHeaderFile=""
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="0"
+				CallingConvention="1"
+				CompileAs="2"
+				FavorSizeOrSpeed="1"
+				DisableSpecificWarnings="4201"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				OmitFramePointers="true"
+				BufferSecurityCheck="false"
+				RuntimeLibrary="0"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="&quot;$(OutDir)unittestsvc9w32rel.exe&quot;"
+				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\opengl"
+				SubSystem="1"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="bin\"
+			IntermediateDirectory="temp\unittestsvc9w64rel\"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCCLCompilerTool"
+				PreprocessorDefinitions="NDEBUG;WIN64;_WINDOWS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA"
+				StringPooling="true"
+				ExceptionHandling="0"
+				StructMemberAlignment="4"
+				EnableFunctionLevelLinking="true"
+				FloatingPointModel="2"
+				RuntimeTypeInfo="false"
+				PrecompiledHeaderFile=""
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="0"
+				CallingConvention="1"
+				CompileAs="2"
+				FavorSizeOrSpeed="1"
+				DisableSpecificWarnings="4201"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				OmitFramePointers="true"
+				BufferSecurityCheck="false"
+				RuntimeLibrary="0"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="&quot;$(OutDir)unittestsvc9w64rel.exe&quot;"
+				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\opengl"
+				SubSystem="1"
+			/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter Name="source">
+			<File RelativePath="..\source\brgl.h" />
+			<File RelativePath="..\source\brglut.h" />
+			<File RelativePath="..\source\brstartup.h" />
+			<File RelativePath="..\source\templateburgerbase.h" />
+			<File RelativePath="..\source\version.h" />
+			<Filter Name="compression">
+				<File RelativePath="..\source\compression\bradler16.cpp" />
+				<File RelativePath="..\source\compression\bradler16.h" />
+				<File RelativePath="..\source\compression\bradler32.cpp" />
+				<File RelativePath="..\source\compression\bradler32.h" />
+				<File RelativePath="..\source\compression\brcompress.cpp" />
+				<File RelativePath="..\source\compression\brcompress.h" />
+				<File RelativePath="..\source\compression\brcompressdeflate.cpp" />
+				<File RelativePath="..\source\compression\brcompressdeflate.h" />
+				<File RelativePath="..\source\compression\brcompresslbmrle.cpp" />
+				<File RelativePath="..\source\compression\brcompresslbmrle.h" />
+				<File RelativePath="..\source\compression\brcompresslzss.cpp" />
+				<File RelativePath="..\source\compression\brcompresslzss.h" />
+				<File RelativePath="..\source\compression\brcrc32.cpp" />
+				<File RelativePath="..\source\compression\brcrc32.h" />
+				<File RelativePath="..\source\compression\brdecompress.cpp" />
+				<File RelativePath="..\source\compression\brdecompress.h" />
+				<File RelativePath="..\source\compression\brdecompressdeflate.cpp" />
+				<File RelativePath="..\source\compression\brdecompressdeflate.h" />
+				<File RelativePath="..\source\compression\brdecompresslbmrle.cpp" />
+				<File RelativePath="..\source\compression\brdecompresslbmrle.h" />
+				<File RelativePath="..\source\compression\brdecompresslzss.cpp" />
+				<File RelativePath="..\source\compression\brdecompresslzss.h" />
+				<File RelativePath="..\source\compression\brdxt1.cpp" />
+				<File RelativePath="..\source\compression\brdxt1.h" />
+				<File RelativePath="..\source\compression\brdxt3.cpp" />
+				<File RelativePath="..\source\compression\brdxt3.h" />
+				<File RelativePath="..\source\compression\brdxt5.cpp" />
+				<File RelativePath="..\source\compression\brdxt5.h" />
+				<File RelativePath="..\source\compression\brmace.cpp" />
+				<File RelativePath="..\source\compression\brmace.h" />
+				<File RelativePath="..\source\compression\brmd2.cpp" />
+				<File RelativePath="..\source\compression\brmd2.h" />
+				<File RelativePath="..\source\compression\brmd4.cpp" />
+				<File RelativePath="..\source\compression\brmd4.h" />
+				<File RelativePath="..\source\compression\brmd5.cpp" />
+				<File RelativePath="..\source\compression\brmd5.h" />
+				<File RelativePath="..\source\compression\brpackfloat.cpp" />
+				<File RelativePath="..\source\compression\brpackfloat.h" />
+				<File RelativePath="..\source\compression\brsha1.cpp" />
+				<File RelativePath="..\source\compression\brsha1.h" />
+			</Filter>
+			<Filter Name="windows">
+				<File RelativePath="..\source\windows\brcodelibrarywindows.cpp" />
+				<File RelativePath="..\source\windows\brconsolemanagerwindows.cpp" />
+				<File RelativePath="..\source\windows\brcriticalsectionwindows.cpp" />
+				<File RelativePath="..\source\windows\brdebugwindows.cpp" />
+				<File RelativePath="..\source\windows\brdetectmultilaunchwindows.cpp" />
+				<File RelativePath="..\source\windows\brdirectorysearchwindows.cpp" />
+				<File RelativePath="..\source\windows\brdirectxdata.cpp" />
+				<File RelativePath="..\source\windows\brdisplaybasewindows.cpp" />
+				<File RelativePath="..\source\windows\brdisplaydib.h" />
+				<File RelativePath="..\source\windows\brdisplaydibsoftware8.h" />
+				<File RelativePath="..\source\windows\brdisplaydibsoftware8windows.cpp" />
+				<File RelativePath="..\source\windows\brdisplaydibwindows.cpp" />
+				<File RelativePath="..\source\windows\brdisplaydirectx8bit.h" />
+				<File RelativePath="..\source\windows\brdisplaydirectx9.h" />
+				<File RelativePath="..\source\windows\brdisplaydirectx9software8.h" />
+				<File RelativePath="..\source\windows\brdisplaydirectx9software8windows.cpp" />
+				<File RelativePath="..\source\windows\brdisplaydirectx9windows.cpp" />
+				<File RelativePath="..\source\windows\brdisplayopenglwindows.cpp" />
+				<File RelativePath="..\source\windows\brfilemanagerwindows.cpp" />
+				<File RelativePath="..\source\windows\brfilenamewindows.cpp" />
+				<File RelativePath="..\source\windows\brfilewindows.cpp" />
+				<File RelativePath="..\source\windows\brglobalswindows.cpp" />
+				<File RelativePath="..\source\windows\brjoypadwindows.cpp" />
+				<File RelativePath="..\source\windows\brkeyboardwindows.cpp" />
+				<File RelativePath="..\source\windows\brmousewindows.cpp" />
+				<File RelativePath="..\source\windows\broscursorwindows.cpp" />
+				<File RelativePath="..\source\windows\brperforcewindows.cpp" />
+				<File RelativePath="..\source\windows\brpoint2dwindows.cpp" />
+				<File RelativePath="..\source\windows\brrectwindows.cpp" />
+				<File RelativePath="..\source\windows\brsoundwindows.cpp" />
+				<File RelativePath="..\source\windows\brtickwindows.cpp" />
+				<File RelativePath="..\source\windows\brtimedatewindows.cpp" />
+				<File RelativePath="..\source\windows\brwindowsapp.cpp" />
+				<File RelativePath="..\source\windows\brwindowsapp.h" />
+				<File RelativePath="..\source\windows\brwindowstypes.h" />
+			</Filter>
+			<Filter Name="text">
+				<File RelativePath="..\source\text\brisolatin1.cpp" />
+				<File RelativePath="..\source\text\brisolatin1.h" />
+				<File RelativePath="..\source\text\brmacromanus.cpp" />
+				<File RelativePath="..\source\text\brmacromanus.h" />
+				<File RelativePath="..\source\text\brnumberstring.cpp" />
+				<File RelativePath="..\source\text\brnumberstring.h" />
+				<File RelativePath="..\source\text\brnumberstringhex.cpp" />
+				<File RelativePath="..\source\text\brnumberstringhex.h" />
+				<File RelativePath="..\source\text\brsimplestring.cpp" />
+				<File RelativePath="..\source\text\brsimplestring.h" />
+				<File RelativePath="..\source\text\brstring.cpp" />
+				<File RelativePath="..\source\text\brstring.h" />
+				<File RelativePath="..\source\text\brstring16.cpp" />
+				<File RelativePath="..\source\text\brstring16.h" />
+				<File RelativePath="..\source\text\brstringfunctions.cpp" />
+				<File RelativePath="..\source\text\brstringfunctions.h" />
+				<File RelativePath="..\source\text\brutf16.cpp" />
+				<File RelativePath="..\source\text\brutf16.h" />
+				<File RelativePath="..\source\text\brutf32.cpp" />
+				<File RelativePath="..\source\text\brutf32.h" />
+				<File RelativePath="..\source\text\brutf8.cpp" />
+				<File RelativePath="..\source\text\brutf8.h" />
+				<File RelativePath="..\source\text\brwin1252.cpp" />
+				<File RelativePath="..\source\text\brwin1252.h" />
+			</Filter>
+			<Filter Name="commandline">
+				<File RelativePath="..\source\commandline\brcommandparameter.cpp" />
+				<File RelativePath="..\source\commandline\brcommandparameter.h" />
+				<File RelativePath="..\source\commandline\brcommandparameterbooltrue.cpp" />
+				<File RelativePath="..\source\commandline\brcommandparameterbooltrue.h" />
+				<File RelativePath="..\source\commandline\brcommandparameterstring.cpp" />
+				<File RelativePath="..\source\commandline\brcommandparameterstring.h" />
+				<File RelativePath="..\source\commandline\brcommandparameterwordptr.cpp" />
+				<File RelativePath="..\source\commandline\brcommandparameterwordptr.h" />
+				<File RelativePath="..\source\commandline\brconsolemanager.cpp" />
+				<File RelativePath="..\source\commandline\brconsolemanager.h" />
+				<File RelativePath="..\source\commandline\brgameapp.cpp" />
+				<File RelativePath="..\source\commandline\brgameapp.h" />
+			</Filter>
+			<Filter Name="graphics">
+				<File RelativePath="..\source\graphics\brdisplay.cpp" />
+				<File RelativePath="..\source\graphics\brdisplay.h" />
+				<File RelativePath="..\source\graphics\brdisplayopengl.cpp" />
+				<File RelativePath="..\source\graphics\brdisplayopengl.h" />
+				<File RelativePath="..\source\graphics\brdisplayopenglsoftware8.cpp" />
+				<File RelativePath="..\source\graphics\brdisplayopenglsoftware8.h" />
+				<File RelativePath="..\source\graphics\brfont.cpp" />
+				<File RelativePath="..\source\graphics\brfont.h" />
+				<File RelativePath="..\source\graphics\brfont4bit.cpp" />
+				<File RelativePath="..\source\graphics\brfont4bit.h" />
+				<File RelativePath="..\source\graphics\brimage.cpp" />
+				<File RelativePath="..\source\graphics\brimage.h" />
+				<File RelativePath="..\source\graphics\brpalette.cpp" />
+				<File RelativePath="..\source\graphics\brpalette.h" />
+				<File RelativePath="..\source\graphics\brpoint2d.cpp" />
+				<File RelativePath="..\source\graphics\brpoint2d.h" />
+				<File RelativePath="..\source\graphics\brrect.cpp" />
+				<File RelativePath="..\source\graphics\brrect.h" />
+				<File RelativePath="..\source\graphics\brrenderer.cpp" />
+				<File RelativePath="..\source\graphics\brrenderer.h" />
+				<File RelativePath="..\source\graphics\brrenderersoftware16.cpp" />
+				<File RelativePath="..\source\graphics\brrenderersoftware16.h" />
+				<File RelativePath="..\source\graphics\brrenderersoftware8.cpp" />
+				<File RelativePath="..\source\graphics\brrenderersoftware8.h" />
+				<File RelativePath="..\source\graphics\brshape8bit.cpp" />
+				<File RelativePath="..\source\graphics\brshape8bit.h" />
+			</Filter>
+			<Filter Name="ansi">
+				<File RelativePath="..\source\ansi\brfileansihelpers.cpp" />
+				<File RelativePath="..\source\ansi\brfileansihelpers.h" />
+				<File RelativePath="..\source\ansi\brmemoryansi.cpp" />
+				<File RelativePath="..\source\ansi\brmemoryansi.h" />
+				<File RelativePath="..\source\ansi\brstdouthelpers.cpp" />
+				<File RelativePath="..\source\ansi\brstdouthelpers.h" />
+			</Filter>
+			<Filter Name="file">
+				<File RelativePath="..\source\file\brdirectorysearch.cpp" />
+				<File RelativePath="..\source\file\brdirectorysearch.h" />
+				<File RelativePath="..\source\file\brfile.cpp" />
+				<File RelativePath="..\source\file\brfile.h" />
+				<File RelativePath="..\source\file\brfilebmp.cpp" />
+				<File RelativePath="..\source\file\brfilebmp.h" />
+				<File RelativePath="..\source\file\brfiledds.cpp" />
+				<File RelativePath="..\source\file\brfiledds.h" />
+				<File RelativePath="..\source\file\brfilegif.cpp" />
+				<File RelativePath="..\source\file\brfilegif.h" />
+				<File RelativePath="..\source\file\brfileini.cpp" />
+				<File RelativePath="..\source\file\brfileini.h" />
+				<File RelativePath="..\source\file\brfilelbm.cpp" />
+				<File RelativePath="..\source\file\brfilelbm.h" />
+				<File RelativePath="..\source\file\brfilemanager.cpp" />
+				<File RelativePath="..\source\file\brfilemanager.h" />
+				<File RelativePath="..\source\file\brfilename.cpp" />
+				<File RelativePath="..\source\file\brfilename.h" />
+				<File RelativePath="..\source\file\brfilepcx.cpp" />
+				<File RelativePath="..\source\file\brfilepcx.h" />
+				<File RelativePath="..\source\file\brfilepng.cpp" />
+				<File RelativePath="..\source\file\brfilepng.h" />
+				<File RelativePath="..\source\file\brfiletga.cpp" />
+				<File RelativePath="..\source\file\brfiletga.h" />
+				<File RelativePath="..\source\file\brfilexml.cpp" />
+				<File RelativePath="..\source\file\brfilexml.h" />
+				<File RelativePath="..\source\file\brinputmemorystream.cpp" />
+				<File RelativePath="..\source\file\brinputmemorystream.h" />
+				<File RelativePath="..\source\file\broutputmemorystream.cpp" />
+				<File RelativePath="..\source\file\broutputmemorystream.h" />
+				<File RelativePath="..\source\file\brrezfile.cpp" />
+				<File RelativePath="..\source\file\brrezfile.h" />
+			</Filter>
+			<Filter Name="memory">
+				<File RelativePath="..\source\memory\brglobalmemorymanager.cpp" />
+				<File RelativePath="..\source\memory\brglobalmemorymanager.h" />
+				<File RelativePath="..\source\memory\brmemoryhandle.cpp" />
+				<File RelativePath="..\source\memory\brmemoryhandle.h" />
+				<File RelativePath="..\source\memory\brmemorymanager.cpp" />
+				<File RelativePath="..\source\memory\brmemorymanager.h" />
+			</Filter>
+			<Filter Name="lowlevel">
+				<File RelativePath="..\source\lowlevel\brassert.cpp" />
+				<File RelativePath="..\source\lowlevel\brassert.h" />
+				<File RelativePath="..\source\lowlevel\bratomic.cpp" />
+				<File RelativePath="..\source\lowlevel\bratomic.h" />
+				<File RelativePath="..\source\lowlevel\brautorepeat.cpp" />
+				<File RelativePath="..\source\lowlevel\brautorepeat.h" />
+				<File RelativePath="..\source\lowlevel\brbase.cpp" />
+				<File RelativePath="..\source\lowlevel\brbase.h" />
+				<File RelativePath="..\source\lowlevel\brcodelibrary.cpp" />
+				<File RelativePath="..\source\lowlevel\brcodelibrary.h" />
+				<File RelativePath="..\source\lowlevel\brcriticalsection.cpp" />
+				<File RelativePath="..\source\lowlevel\brcriticalsection.h" />
+				<File RelativePath="..\source\lowlevel\brdebug.cpp" />
+				<File RelativePath="..\source\lowlevel\brdebug.h" />
+				<File RelativePath="..\source\lowlevel\brdetectmultilaunch.cpp" />
+				<File RelativePath="..\source\lowlevel\brdetectmultilaunch.h" />
+				<File RelativePath="..\source\lowlevel\brdoublylinkedlist.cpp" />
+				<File RelativePath="..\source\lowlevel\brdoublylinkedlist.h" />
+				<File RelativePath="..\source\lowlevel\brendian.cpp" />
+				<File RelativePath="..\source\lowlevel\brendian.h" />
+				<File RelativePath="..\source\lowlevel\brglobals.cpp" />
+				<File RelativePath="..\source\lowlevel\brglobals.h" />
+				<File RelativePath="..\source\lowlevel\brguid.cpp" />
+				<File RelativePath="..\source\lowlevel\brguid.h" />
+				<File RelativePath="..\source\lowlevel\brlinkedlistobject.cpp" />
+				<File RelativePath="..\source\lowlevel\brlinkedlistobject.h" />
+				<File RelativePath="..\source\lowlevel\brlinkedlistpointer.cpp" />
+				<File RelativePath="..\source\lowlevel\brlinkedlistpointer.h" />
+				<File RelativePath="..\source\lowlevel\brmetrowerks.h" />
+				<File RelativePath="..\source\lowlevel\broscursor.cpp" />
+				<File RelativePath="..\source\lowlevel\broscursor.h" />
+				<File RelativePath="..\source\lowlevel\brperforce.cpp" />
+				<File RelativePath="..\source\lowlevel\brperforce.h" />
+				<File RelativePath="..\source\lowlevel\brrandommanager.cpp" />
+				<File RelativePath="..\source\lowlevel\brrandommanager.h" />
+				<File RelativePath="..\source\lowlevel\brrunqueue.cpp" />
+				<File RelativePath="..\source\lowlevel\brrunqueue.h" />
+				<File RelativePath="..\source\lowlevel\brtick.cpp" />
+				<File RelativePath="..\source\lowlevel\brtick.h" />
+				<File RelativePath="..\source\lowlevel\brtimedate.cpp" />
+				<File RelativePath="..\source\lowlevel\brtimedate.h" />
+				<File RelativePath="..\source\lowlevel\brtypes.h" />
+				<File RelativePath="..\source\lowlevel\brvisualstudio.h" />
+				<File RelativePath="..\source\lowlevel\brwatcom.h" />
+				<File RelativePath="..\source\lowlevel\brxcode.h" />
+			</Filter>
+			<Filter Name="input">
+				<File RelativePath="..\source\input\brjoypad.cpp" />
+				<File RelativePath="..\source\input\brjoypad.h" />
+				<File RelativePath="..\source\input\brkeyboard.cpp" />
+				<File RelativePath="..\source\input\brkeyboard.h" />
+				<File RelativePath="..\source\input\brmouse.cpp" />
+				<File RelativePath="..\source\input\brmouse.h" />
+			</Filter>
+			<Filter Name="audio">
+				<File RelativePath="..\source\audio\brsound.cpp" />
+				<File RelativePath="..\source\audio\brsound.h" />
+			</Filter>
+			<Filter Name="math">
+				<File RelativePath="..\source\math\brfixedmatrix3d.cpp" />
+				<File RelativePath="..\source\math\brfixedmatrix3d.h" />
+				<File RelativePath="..\source\math\brfixedmatrix4d.cpp" />
+				<File RelativePath="..\source\math\brfixedmatrix4d.h" />
+				<File RelativePath="..\source\math\brfixedpoint.cpp" />
+				<File RelativePath="..\source\math\brfixedpoint.h" />
+				<File RelativePath="..\source\math\brfixedvector2d.cpp" />
+				<File RelativePath="..\source\math\brfixedvector2d.h" />
+				<File RelativePath="..\source\math\brfixedvector3d.cpp" />
+				<File RelativePath="..\source\math\brfixedvector3d.h" />
+				<File RelativePath="..\source\math\brfixedvector4d.cpp" />
+				<File RelativePath="..\source\math\brfixedvector4d.h" />
+				<File RelativePath="..\source\math\brfloatingpoint.cpp" />
+				<File RelativePath="..\source\math\brfloatingpoint.h" />
+				<File RelativePath="..\source\math\brmatrix3d.cpp" />
+				<File RelativePath="..\source\math\brmatrix3d.h" />
+				<File RelativePath="..\source\math\brmatrix4d.cpp" />
+				<File RelativePath="..\source\math\brmatrix4d.h" />
+				<File RelativePath="..\source\math\brvector2d.cpp" />
+				<File RelativePath="..\source\math\brvector2d.h" />
+				<File RelativePath="..\source\math\brvector3d.cpp" />
+				<File RelativePath="..\source\math\brvector3d.h" />
+				<File RelativePath="..\source\math\brvector4d.cpp" />
+				<File RelativePath="..\source\math\brvector4d.h" />
+			</Filter>
+		</Filter>
+		<Filter Name="unittest">
+			<File RelativePath="..\unittest\common.cpp" />
+			<File RelativePath="..\unittest\common.h" />
+			<File RelativePath="..\unittest\createtables.cpp" />
+			<File RelativePath="..\unittest\createtables.h" />
+			<File RelativePath="..\unittest\testbrcompression.cpp" />
+			<File RelativePath="..\unittest\testbrcompression.h" />
+			<File RelativePath="..\unittest\testbrendian.cpp" />
+			<File RelativePath="..\unittest\testbrendian.h" />
+			<File RelativePath="..\unittest\testbrfilemanager.cpp" />
+			<File RelativePath="..\unittest\testbrfilemanager.h" />
+			<File RelativePath="..\unittest\testbrfixedpoint.cpp" />
+			<File RelativePath="..\unittest\testbrfixedpoint.h" />
+			<File RelativePath="..\unittest\testbrfloatingpoint.cpp" />
+			<File RelativePath="..\unittest\testbrfloatingpoint.h" />
+			<File RelativePath="..\unittest\testbrhashes.cpp" />
+			<File RelativePath="..\unittest\testbrhashes.h" />
+			<File RelativePath="..\unittest\testbrstrings.cpp" />
+			<File RelativePath="..\unittest\testbrstrings.h" />
+			<File RelativePath="..\unittest\testbrtimedate.cpp" />
+			<File RelativePath="..\unittest\testbrtimedate.h" />
+			<File RelativePath="..\unittest\testbrtypes.cpp" />
+			<File RelativePath="..\unittest\testbrtypes.h" />
+		</Filter>
+	</Files>
+</VisualStudioProject>

@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="burgerlib" />
+		<Option makefile="makefile" />
+		<Option pch_mode="2" />
+		<Option compiler="ow" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/burgerlibcdbwatw32dbg.lib" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="temp/burgerlibcbpwatw32dbg/" />
+				<Option type="2" />
+				<Option compiler="ow" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-d2" />
+					<Add option="-wx" />
+					<Add option="-fp6" />
+					<Add option="-6r" />
+					<Add option="-fr=$(ERROR_FILE)" />
+					<Add option="-d_DEBUG" />
+				</Compiler>
+			</Target>
+			<Target title="Internal">
+				<Option output="bin/burgerlibcdbwatw32int.lib" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="temp/burgerlibcbpwatw32int/" />
+				<Option type="2" />
+				<Option compiler="ow" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-ox" />
+					<Add option="-ot" />
+					<Add option="-wx" />
+					<Add option="-fr=$(ERROR_FILE)" />
+					<Add option="-fp6" />
+					<Add option="-6r" />
+					<Add option="-d_DEBUG" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/burgerlibcdbwatw32rel.lib" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="temp/burgerlibcbpwatw32rel/" />
+				<Option type="2" />
+				<Option compiler="ow" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-ox" />
+					<Add option="-ot" />
+					<Add option="-wx" />
+					<Add option="-fr=$(ERROR_FILE)" />
+					<Add option="-fp6" />
+					<Add option="-6r" />
+					<Add option="-dNDEBUG" />
+				</Compiler>
+			</Target>
+			<Environment>
+				<Variable name="ERROR_FILE" value="$(TARGET_OBJECT_DIR)foo.err" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="Everything" targets="Debug;Internal;Release;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-dGLUT_DISABLE_ATEXIT_HACK" />
+			<Add option="-dGLUT_NO_LIB_PRAGMA" />
+			<Add option="-dTARGET_CPU_X86=1" />
+			<Add option="-dTARGET_OS_WIN32=1" />
+			<Add option="-dTYPE_BOOL=1" />
+			<Add option="-dUNICODE" />
+			<Add option="-d_UNICODE" />
+			<Add option="-dWIN32_LEAN_AND_MEAN" />
+			<Add directory='&quot;../source&quot;' />
+			<Add directory='&quot;../source/ansi&quot;' />
+			<Add directory='&quot;../source/audio&quot;' />
+			<Add directory='&quot;../source/commandline&quot;' />
+			<Add directory='&quot;../source/compression&quot;' />
+			<Add directory='&quot;../source/file&quot;' />
+			<Add directory='&quot;../source/graphics&quot;' />
+			<Add directory='&quot;../source/input&quot;' />
+			<Add directory='&quot;../source/lowlevel&quot;' />
+			<Add directory='&quot;../source/math&quot;' />
+			<Add directory='&quot;../source/memory&quot;' />
+			<Add directory='&quot;../source/text&quot;' />
+			<Add directory='&quot;../source/msdos&quot;' />
+			<Add directory='&quot;$(SDKS)/windows/perforce&quot;' />
+			<Add directory='&quot;$(SDKS)/windows/opengl&quot;' />
+			<Add directory='&quot;$(SDKS)/windows/directx9&quot;' />
+			<Add directory='&quot;$(SDKS)/windows/windows5&quot;' />
+		</Compiler>
+		<Unit filename="../source/ansi/brfileansihelpers.cpp" />
+		<Unit filename="../source/ansi/brfileansihelpers.h" />
+		<Unit filename="../source/ansi/brmemoryansi.cpp" />
+		<Unit filename="../source/ansi/brmemoryansi.h" />
+		<Unit filename="../source/ansi/brstdouthelpers.cpp" />
+		<Unit filename="../source/ansi/brstdouthelpers.h" />
+		<Unit filename="../source/audio/brsound.cpp" />
+		<Unit filename="../source/audio/brsound.h" />
+		<Unit filename="../source/brgl.h" />
+		<Unit filename="../source/brglut.h" />
+		<Unit filename="../source/brstartup.h" />
+		<Unit filename="../source/commandline/brcommandparameter.cpp" />
+		<Unit filename="../source/commandline/brcommandparameter.h" />
+		<Unit filename="../source/commandline/brcommandparameterbooltrue.cpp" />
+		<Unit filename="../source/commandline/brcommandparameterbooltrue.h" />
+		<Unit filename="../source/commandline/brcommandparameterstring.cpp" />
+		<Unit filename="../source/commandline/brcommandparameterstring.h" />
+		<Unit filename="../source/commandline/brcommandparameterwordptr.cpp" />
+		<Unit filename="../source/commandline/brcommandparameterwordptr.h" />
+		<Unit filename="../source/commandline/brconsolemanager.cpp" />
+		<Unit filename="../source/commandline/brconsolemanager.h" />
+		<Unit filename="../source/commandline/brgameapp.cpp" />
+		<Unit filename="../source/commandline/brgameapp.h" />
+		<Unit filename="../source/compression/bradler16.cpp" />
+		<Unit filename="../source/compression/bradler16.h" />
+		<Unit filename="../source/compression/bradler32.cpp" />
+		<Unit filename="../source/compression/bradler32.h" />
+		<Unit filename="../source/compression/brcompress.cpp" />
+		<Unit filename="../source/compression/brcompress.h" />
+		<Unit filename="../source/compression/brcompressdeflate.cpp" />
+		<Unit filename="../source/compression/brcompressdeflate.h" />
+		<Unit filename="../source/compression/brcompresslbmrle.cpp" />
+		<Unit filename="../source/compression/brcompresslbmrle.h" />
+		<Unit filename="../source/compression/brcompresslzss.cpp" />
+		<Unit filename="../source/compression/brcompresslzss.h" />
+		<Unit filename="../source/compression/brcrc32.cpp" />
+		<Unit filename="../source/compression/brcrc32.h" />
+		<Unit filename="../source/compression/brdecompress.cpp" />
+		<Unit filename="../source/compression/brdecompress.h" />
+		<Unit filename="../source/compression/brdecompressdeflate.cpp" />
+		<Unit filename="../source/compression/brdecompressdeflate.h" />
+		<Unit filename="../source/compression/brdecompresslbmrle.cpp" />
+		<Unit filename="../source/compression/brdecompresslbmrle.h" />
+		<Unit filename="../source/compression/brdecompresslzss.cpp" />
+		<Unit filename="../source/compression/brdecompresslzss.h" />
+		<Unit filename="../source/compression/brdxt1.cpp" />
+		<Unit filename="../source/compression/brdxt1.h" />
+		<Unit filename="../source/compression/brdxt3.cpp" />
+		<Unit filename="../source/compression/brdxt3.h" />
+		<Unit filename="../source/compression/brdxt5.cpp" />
+		<Unit filename="../source/compression/brdxt5.h" />
+		<Unit filename="../source/compression/brmace.cpp" />
+		<Unit filename="../source/compression/brmace.h" />
+		<Unit filename="../source/compression/brmd2.cpp" />
+		<Unit filename="../source/compression/brmd2.h" />
+		<Unit filename="../source/compression/brmd4.cpp" />
+		<Unit filename="../source/compression/brmd4.h" />
+		<Unit filename="../source/compression/brmd5.cpp" />
+		<Unit filename="../source/compression/brmd5.h" />
+		<Unit filename="../source/compression/brpackfloat.cpp" />
+		<Unit filename="../source/compression/brpackfloat.h" />
+		<Unit filename="../source/compression/brsha1.cpp" />
+		<Unit filename="../source/compression/brsha1.h" />
+		<Unit filename="../source/file/brdirectorysearch.cpp" />
+		<Unit filename="../source/file/brdirectorysearch.h" />
+		<Unit filename="../source/file/brfile.cpp" />
+		<Unit filename="../source/file/brfile.h" />
+		<Unit filename="../source/file/brfilebmp.cpp" />
+		<Unit filename="../source/file/brfilebmp.h" />
+		<Unit filename="../source/file/brfiledds.cpp" />
+		<Unit filename="../source/file/brfiledds.h" />
+		<Unit filename="../source/file/brfilegif.cpp" />
+		<Unit filename="../source/file/brfilegif.h" />
+		<Unit filename="../source/file/brfileini.cpp" />
+		<Unit filename="../source/file/brfileini.h" />
+		<Unit filename="../source/file/brfilelbm.cpp" />
+		<Unit filename="../source/file/brfilelbm.h" />
+		<Unit filename="../source/file/brfilemanager.cpp" />
+		<Unit filename="../source/file/brfilemanager.h" />
+		<Unit filename="../source/file/brfilename.cpp" />
+		<Unit filename="../source/file/brfilename.h" />
+		<Unit filename="../source/file/brfilepcx.cpp" />
+		<Unit filename="../source/file/brfilepcx.h" />
+		<Unit filename="../source/file/brfilepng.cpp" />
+		<Unit filename="../source/file/brfilepng.h" />
+		<Unit filename="../source/file/brfiletga.cpp" />
+		<Unit filename="../source/file/brfiletga.h" />
+		<Unit filename="../source/file/brfilexml.cpp" />
+		<Unit filename="../source/file/brfilexml.h" />
+		<Unit filename="../source/file/brinputmemorystream.cpp" />
+		<Unit filename="../source/file/brinputmemorystream.h" />
+		<Unit filename="../source/file/broutputmemorystream.cpp" />
+		<Unit filename="../source/file/broutputmemorystream.h" />
+		<Unit filename="../source/file/brrezfile.cpp" />
+		<Unit filename="../source/file/brrezfile.h" />
+		<Unit filename="../source/graphics/brdisplay.cpp" />
+		<Unit filename="../source/graphics/brdisplay.h" />
+		<Unit filename="../source/graphics/brdisplayopengl.cpp" />
+		<Unit filename="../source/graphics/brdisplayopengl.h" />
+		<Unit filename="../source/graphics/brdisplayopenglsoftware8.cpp" />
+		<Unit filename="../source/graphics/brdisplayopenglsoftware8.h" />
+		<Unit filename="../source/graphics/brfont.cpp" />
+		<Unit filename="../source/graphics/brfont.h" />
+		<Unit filename="../source/graphics/brfont4bit.cpp" />
+		<Unit filename="../source/graphics/brfont4bit.h" />
+		<Unit filename="../source/graphics/brimage.cpp" />
+		<Unit filename="../source/graphics/brimage.h" />
+		<Unit filename="../source/graphics/brpalette.cpp" />
+		<Unit filename="../source/graphics/brpalette.h" />
+		<Unit filename="../source/graphics/brpoint2d.cpp" />
+		<Unit filename="../source/graphics/brpoint2d.h" />
+		<Unit filename="../source/graphics/brrect.cpp" />
+		<Unit filename="../source/graphics/brrect.h" />
+		<Unit filename="../source/graphics/brrenderer.cpp" />
+		<Unit filename="../source/graphics/brrenderer.h" />
+		<Unit filename="../source/graphics/brrenderersoftware16.cpp" />
+		<Unit filename="../source/graphics/brrenderersoftware16.h" />
+		<Unit filename="../source/graphics/brrenderersoftware8.cpp" />
+		<Unit filename="../source/graphics/brrenderersoftware8.h" />
+		<Unit filename="../source/graphics/brshape8bit.cpp" />
+		<Unit filename="../source/graphics/brshape8bit.h" />
+		<Unit filename="../source/input/brjoypad.cpp" />
+		<Unit filename="../source/input/brjoypad.h" />
+		<Unit filename="../source/input/brkeyboard.cpp" />
+		<Unit filename="../source/input/brkeyboard.h" />
+		<Unit filename="../source/input/brmouse.cpp" />
+		<Unit filename="../source/input/brmouse.h" />
+		<Unit filename="../source/lowlevel/brassert.cpp" />
+		<Unit filename="../source/lowlevel/brassert.h" />
+		<Unit filename="../source/lowlevel/bratomic.cpp" />
+		<Unit filename="../source/lowlevel/bratomic.h" />
+		<Unit filename="../source/lowlevel/brautorepeat.cpp" />
+		<Unit filename="../source/lowlevel/brautorepeat.h" />
+		<Unit filename="../source/lowlevel/brbase.cpp" />
+		<Unit filename="../source/lowlevel/brbase.h" />
+		<Unit filename="../source/lowlevel/brcodelibrary.cpp" />
+		<Unit filename="../source/lowlevel/brcodelibrary.h" />
+		<Unit filename="../source/lowlevel/brcriticalsection.cpp" />
+		<Unit filename="../source/lowlevel/brcriticalsection.h" />
+		<Unit filename="../source/lowlevel/brdebug.cpp" />
+		<Unit filename="../source/lowlevel/brdebug.h" />
+		<Unit filename="../source/lowlevel/brdetectmultilaunch.cpp" />
+		<Unit filename="../source/lowlevel/brdetectmultilaunch.h" />
+		<Unit filename="../source/lowlevel/brdoublylinkedlist.cpp" />
+		<Unit filename="../source/lowlevel/brdoublylinkedlist.h" />
+		<Unit filename="../source/lowlevel/brendian.cpp" />
+		<Unit filename="../source/lowlevel/brendian.h" />
+		<Unit filename="../source/lowlevel/brglobals.cpp" />
+		<Unit filename="../source/lowlevel/brglobals.h" />
+		<Unit filename="../source/lowlevel/brguid.cpp" />
+		<Unit filename="../source/lowlevel/brguid.h" />
+		<Unit filename="../source/lowlevel/brlinkedlistobject.cpp" />
+		<Unit filename="../source/lowlevel/brlinkedlistobject.h" />
+		<Unit filename="../source/lowlevel/brlinkedlistpointer.cpp" />
+		<Unit filename="../source/lowlevel/brlinkedlistpointer.h" />
+		<Unit filename="../source/lowlevel/brmetrowerks.h" />
+		<Unit filename="../source/lowlevel/broscursor.cpp" />
+		<Unit filename="../source/lowlevel/broscursor.h" />
+		<Unit filename="../source/lowlevel/brperforce.cpp" />
+		<Unit filename="../source/lowlevel/brperforce.h" />
+		<Unit filename="../source/lowlevel/brrandommanager.cpp" />
+		<Unit filename="../source/lowlevel/brrandommanager.h" />
+		<Unit filename="../source/lowlevel/brrunqueue.cpp" />
+		<Unit filename="../source/lowlevel/brrunqueue.h" />
+		<Unit filename="../source/lowlevel/brtick.cpp" />
+		<Unit filename="../source/lowlevel/brtick.h" />
+		<Unit filename="../source/lowlevel/brtimedate.cpp" />
+		<Unit filename="../source/lowlevel/brtimedate.h" />
+		<Unit filename="../source/lowlevel/brtypes.h" />
+		<Unit filename="../source/lowlevel/brvisualstudio.h" />
+		<Unit filename="../source/lowlevel/brwatcom.h" />
+		<Unit filename="../source/lowlevel/brxcode.h" />
+		<Unit filename="../source/math/brfixedmatrix3d.cpp" />
+		<Unit filename="../source/math/brfixedmatrix3d.h" />
+		<Unit filename="../source/math/brfixedmatrix4d.cpp" />
+		<Unit filename="../source/math/brfixedmatrix4d.h" />
+		<Unit filename="../source/math/brfixedpoint.cpp" />
+		<Unit filename="../source/math/brfixedpoint.h" />
+		<Unit filename="../source/math/brfixedvector2d.cpp" />
+		<Unit filename="../source/math/brfixedvector2d.h" />
+		<Unit filename="../source/math/brfixedvector3d.cpp" />
+		<Unit filename="../source/math/brfixedvector3d.h" />
+		<Unit filename="../source/math/brfixedvector4d.cpp" />
+		<Unit filename="../source/math/brfixedvector4d.h" />
+		<Unit filename="../source/math/brfloatingpoint.cpp" />
+		<Unit filename="../source/math/brfloatingpoint.h" />
+		<Unit filename="../source/math/brmatrix3d.cpp" />
+		<Unit filename="../source/math/brmatrix3d.h" />
+		<Unit filename="../source/math/brmatrix4d.cpp" />
+		<Unit filename="../source/math/brmatrix4d.h" />
+		<Unit filename="../source/math/brvector2d.cpp" />
+		<Unit filename="../source/math/brvector2d.h" />
+		<Unit filename="../source/math/brvector3d.cpp" />
+		<Unit filename="../source/math/brvector3d.h" />
+		<Unit filename="../source/math/brvector4d.cpp" />
+		<Unit filename="../source/math/brvector4d.h" />
+		<Unit filename="../source/memory/brglobalmemorymanager.cpp" />
+		<Unit filename="../source/memory/brglobalmemorymanager.h" />
+		<Unit filename="../source/memory/brmemoryhandle.cpp" />
+		<Unit filename="../source/memory/brmemoryhandle.h" />
+		<Unit filename="../source/memory/brmemorymanager.cpp" />
+		<Unit filename="../source/memory/brmemorymanager.h" />
+		<Unit filename="../source/msdos/brdirectorysearchmsdos.cpp" />
+		<Unit filename="../source/msdos/brdosextender.cpp" />
+		<Unit filename="../source/msdos/brdosextender.h" />
+		<Unit filename="../source/msdos/brfilemanagermsdos.cpp" />
+		<Unit filename="../source/msdos/brfilemsdos.cpp" />
+		<Unit filename="../source/msdos/brfilenamemsdos.cpp" />
+		<Unit filename="../source/msdos/brmsdostypes.h" />
+		<Unit filename="../source/msdos/brtickmsdos.cpp" />
+		<Unit filename="../source/msdos/brtimedatemsdos.cpp" />
+		<Unit filename="../source/templateburgerbase.h" />
+		<Unit filename="../source/text/brisolatin1.cpp" />
+		<Unit filename="../source/text/brisolatin1.h" />
+		<Unit filename="../source/text/brmacromanus.cpp" />
+		<Unit filename="../source/text/brmacromanus.h" />
+		<Unit filename="../source/text/brnumberstring.cpp" />
+		<Unit filename="../source/text/brnumberstring.h" />
+		<Unit filename="../source/text/brnumberstringhex.cpp" />
+		<Unit filename="../source/text/brnumberstringhex.h" />
+		<Unit filename="../source/text/brsimplestring.cpp" />
+		<Unit filename="../source/text/brsimplestring.h" />
+		<Unit filename="../source/text/brstring.cpp" />
+		<Unit filename="../source/text/brstring.h" />
+		<Unit filename="../source/text/brstring16.cpp" />
+		<Unit filename="../source/text/brstring16.h" />
+		<Unit filename="../source/text/brstringfunctions.cpp" />
+		<Unit filename="../source/text/brstringfunctions.h" />
+		<Unit filename="../source/text/brutf16.cpp" />
+		<Unit filename="../source/text/brutf16.h" />
+		<Unit filename="../source/text/brutf32.cpp" />
+		<Unit filename="../source/text/brutf32.h" />
+		<Unit filename="../source/text/brutf8.cpp" />
+		<Unit filename="../source/text/brutf8.h" />
+		<Unit filename="../source/text/brwin1252.cpp" />
+		<Unit filename="../source/text/brwin1252.h" />
+		<Unit filename="../source/version.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
