@@ -756,7 +756,7 @@
 			buildPhases = (
 				3713F2913ADE7EF5E23E3656 /* Sources */,
 				76A085342A38314026199AAD /* Frameworks */,
-				526AF2EFE375E237762A1A6F /* ShellScript */,
+				2078E6427B44F2895DC85A86 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -791,7 +791,7 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		526AF2EFE375E237762A1A6F /* ShellScript */ = {
+		2078E6427B44F2895DC85A86 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (

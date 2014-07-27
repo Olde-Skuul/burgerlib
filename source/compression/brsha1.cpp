@@ -18,6 +18,7 @@
 #include "brsha1.h"
 #include "brendian.h"
 #include "brstringfunctions.h"
+#include "brfixedpoint.h"
 
 /*! ************************************
 
@@ -55,24 +56,6 @@
 	\sa Burger::SHA1_t or Hash(SHA1_t *,const void *,WordPtr)
 
 ***************************************/
-
-// Needed for _rotl()
-#if defined(BURGER_MSVC) || defined(BURGER_WATCOM)
-#include <stdlib.h>
-#endif
-
-// ROTATE_LEFT rotates x left n bits.
-// Use inline assembly for DOS / Intel version
-
-#if !defined(DOXYGEN)
-#if defined(BURGER_MSVC) || defined(BURGER_WATCOM)
-#define ROTATE_LEFT(x,n) _rotl(x,n)
-#elif defined(BURGER_METROWERKS) && (defined(BURGER_X86) || defined(BURGER_68K))
-#define ROTATE_LEFT(x,n) __rol(x,n)
-#else
-#define ROTATE_LEFT(x,n) (((x) << (n)) | ((x) >> (32-(n))))
-#endif
-#endif
 
 /*! ************************************
 
@@ -139,14 +122,14 @@ void Burger::SHA1Hasher_t::Process(const Word8 *pBlock)
 	Word32 e = hashe;
 
 #if !defined(DOXYGEN)
-#define blk(i) (block[i&15] = ROTATE_LEFT(block[(i+13)&15] ^ block[(i+8)&15] ^ block[(i+2)&15] ^ block[i&15],1))
+#define blk(i) (block[i&15] = RotateLeft(block[(i+13)&15] ^ block[(i+8)&15] ^ block[(i+2)&15] ^ block[i&15],1))
 
 	// (R0+R1), R2, R3, R4 are the different operations used in SHA1
-#define R0(v,w,x,y,z,i) z += ((w&(x^y))^y) + block[i] + 0x5a827999 + ROTATE_LEFT(v,5); w=ROTATE_LEFT(w,30);
-#define R1(v,w,x,y,z,i) z += ((w&(x^y))^y) + blk(i) + 0x5a827999 + ROTATE_LEFT(v,5); w=ROTATE_LEFT(w,30);
-#define R2(v,w,x,y,z,i) z += (w^x^y) + blk(i) + 0x6ed9eba1 + ROTATE_LEFT(v,5); w=ROTATE_LEFT(w,30);
-#define R3(v,w,x,y,z,i) z += (((w|x)&y)|(w&x)) + blk(i) + 0x8f1bbcdc + ROTATE_LEFT(v,5); w=ROTATE_LEFT(w,30);
-#define R4(v,w,x,y,z,i) z += (w^x^y) + blk(i) + 0xca62c1d6 + ROTATE_LEFT(v,5); w=ROTATE_LEFT(w,30);
+#define R0(v,w,x,y,z,i) z += ((w&(x^y))^y) + block[i] + 0x5a827999 + RotateLeft(v,5); w=RotateLeft(w,30);
+#define R1(v,w,x,y,z,i) z += ((w&(x^y))^y) + blk(i) + 0x5a827999 + RotateLeft(v,5); w=RotateLeft(w,30);
+#define R2(v,w,x,y,z,i) z += (w^x^y) + blk(i) + 0x6ed9eba1 + RotateLeft(v,5); w=RotateLeft(w,30);
+#define R3(v,w,x,y,z,i) z += (((w|x)&y)|(w&x)) + blk(i) + 0x8f1bbcdc + RotateLeft(v,5); w=RotateLeft(w,30);
+#define R4(v,w,x,y,z,i) z += (w^x^y) + blk(i) + 0xca62c1d6 + RotateLeft(v,5); w=RotateLeft(w,30);
 #endif
 
 	// 4 rounds of 20 operations each. Loop unrolled.

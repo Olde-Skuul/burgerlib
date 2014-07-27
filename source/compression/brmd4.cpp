@@ -18,6 +18,7 @@
 #include "brmd4.h"
 #include "brstringfunctions.h"
 #include "brendian.h"
+#include "brfixedpoint.h"
 
 /*! ************************************
 
@@ -55,24 +56,6 @@
 	\sa Burger::MD4_t or Hash(MD4_t *,const void *,WordPtr)
 
 ***************************************/
-
-// Needed for _rotl()
-#if defined(BURGER_MSVC) || defined(BURGER_WATCOM)
-#include <stdlib.h>
-#endif
-
-// ROTATE_LEFT rotates x left n bits.
-// Use inline assembly for DOS / Intel / Xbox 360 version
-
-#if !defined(DOXYGEN)
-#if defined(BURGER_MSVC) || defined(BURGER_WATCOM)
-#define ROTATE_LEFT(x,n) _rotl(x,n)
-#elif defined(BURGER_METROWERKS) && (defined(BURGER_X86) || defined(BURGER_68K))
-#define ROTATE_LEFT(x,n) __rol(x,n)
-#else
-#define ROTATE_LEFT(x, n) (((x) << (n)) | ((x) >> (32-(n))))
-#endif
-#endif
 
 /*! ************************************
 
@@ -129,17 +112,17 @@ void Burger::MD4Hasher_t::Init(void)
 
 #define FF4(a, b, c, d, x, s) { \
 	(a) += F4((b), (c), (d)) + (x); \
-	(a) = ROTATE_LEFT((a),(s)); \
+	(a) = RotateLeft(a,s); \
 }
 
 #define GG4(a, b, c, d, x, s) { \
 	(a) += G4((b), (c), (d)) + (x) + 0x5a827999; \
-	(a) = ROTATE_LEFT((a),(s)); \
+	(a) = RotateLeft(a,s); \
 }
 
 #define HH4(a, b, c, d, x, s) { \
 	(a) += H4((b), (c), (d)) + (x) + 0x6ed9eba1; \
-	(a) = ROTATE_LEFT((a),(s)); \
+	(a) = RotateLeft(a,s); \
 }
 #endif
 

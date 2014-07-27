@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -875,7 +875,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3F10FFABE35C58C898D1B494 /* Build configuration list for PBXNativeTarget "burgerlibxc5ios" */;
 			buildPhases = (
-				174A5B25364A480F984115C3 /* ShellScript */,
+				9A73DB7943D30FB122C786F2 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -911,6 +911,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 0510;
 			};
 			buildConfigurationList = 25F6D9BD7D2DDF36ECB7AF98 /* Build configuration list for PBXProject "burgerlibxc5ios" */;
 			compatibilityVersion = "Xcode 3.1";
@@ -931,7 +932,7 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		174A5B25364A480F984115C3 /* ShellScript */ = {
+		9A73DB7943D30FB122C786F2 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (

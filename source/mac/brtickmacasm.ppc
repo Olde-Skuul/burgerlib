@@ -1,0 +1,304 @@
+;
+; Assembly for Standard "C" library manager
+; Power PC version
+; Optimized and written by Rebecca Ann Heineman
+; Copyright Rebecca Ann Heineman
+;
+
+		IMPORT	.Microseconds,.BurgerInitTimers,.__cvt_dbl_usll
+		IMPORT	.__ptr_glue,.PollTBR603,.PollRTC601
+		IMPORT PowerPCTimeMethod,PowerPCScale,PowerPCFScale,PowerPCUpTime
+		IMPORT PowerPCBillion,PowerPCFix,PowerPCScale2,PowerPCFScale2
+		IMPORT .__cvt_ull_dbl,PowerPCThousand
+
+
+;
+; Word32 ReadTickMicroseconds(void)
+; Read the current time accurate to a Microsecond
+; This is a bottleneck routine, hence why I wrote it in assembly
+;
+
+		EXPORT	ReadTickMicroseconds[DS],.ReadTickMicroseconds[PR]
+	
+	TOC
+		tc	ReadTickMicroseconds[TC],ReadTickMicroseconds[DS]
+		tc	TimeMethod[TC],PowerPCTimeMethod
+		tc	PowerPCUpTime[TC],PowerPCUpTime
+		tc	PowerPCFScale[TC],PowerPCFScale
+		tc	PowerPCScale[TC],PowerPCScale
+		tc	PowerPCBillion[TC],PowerPCBillion
+		tc	PowerPCFix[TC],PowerPCFix
+	
+	CSECT	ReadTickMicroseconds[DS]
+		dc.l	.ReadTickMicroseconds[PR]
+		dc.l	TOC[tc0]
+
+	CSECT	.ReadTickMicroseconds[PR]
+
+		mflr		r0					;Get the return address
+		lwz			r12,TimeMethod[TC](RTOC)
+		stw			r0,8(SP)			;Save the return address
+		lwz			r0,0(r12)
+		stwu		SP,-96(SP)			;Fix the stack frame
+		cmplwi		r0,0				;Timer set up?
+		bne+		@TimeOk
+		bl			.BurgerInitTimers			;Init the timer routines
+		lwz			r12,TimeMethod[TC](RTOC)	;Reset the timer variable
+		lwz			r0,0(r12)			;Store in r0
+
+;
+; My best timer is the TBU registers in the 603, 604 and 740/750
+; Power PC CPU's. It's fast and reliable
+;
+
+@TimeOk:
+		cmplwi		r0,2
+		bne			@Not603
+		
+		lwz			r8,PowerPCFScale[TC](RTOC)	;Pointer to scale value
+@XLoop603:
+		mftbu		r4				;Upper 32 bits
+		mftb		r5 				;Lower 32 bits
+		mftbu		r6				;Did the upper 32 bits change?
+		lwz			r7,0(r8)		;Fetch the scale value
+		cmpw		r4,r6			;Match?
+		bne			@XLoop603		;Try again
+
+		mullw		r8,r7,r4		;Scale the high 32 bits
+		lwz			r0,104(SP)		;Get the return address
+		mulhwu		r5,r7,r5		;Scale the low 32 bits
+		mtlr		r0
+		addi		SP,SP,96		;Fix the stack
+		add			r3,r8,r5		;Get the result
+		blr
+
+;
+; My next best timer is the RTC registers in the 601
+; Power PC CPU. It is fast and reliable
+; Note : This code is intended to run only on a PowerPC 601
+; hence the 601 style optimizations
+;
+
+@Not603:
+		cmplwi		r0,3
+		bne			@Not601
+		lwz			r12,PowerPCFix[TC](RTOC)	;Convert to double value
+@XLoop601:
+		mfspr		r4,4			;RTCU
+		mfspr		r5,5			;RTCL
+		mfspr		r6,4			;Did the upper 32 bits change?
+		lis			r3,17200		;Get the value to make a double
+		cmpw		r4,r6			;Match?
+		bne			@XLoop601		;Try again
+
+		stw			r3,56(SP)		;Save the upper 32 bits
+		stw			r4,60(SP)
+		lfd			fp1,56(SP)		;Get the float for the upper 32 bits
+		stw			r5,60(SP)
+		lfd			fp0,56(SP)		;Get the float for the lower 32 bits
+		lfd			fp3,0(r12)		;Get the float correction value
+		lwz			r3,PowerPCBillion[TC](RTOC)
+		lwz			r4,PowerPCScale[TC](RTOC)
+		
+		fsub       fp2,fp1,fp3		;Convert to a double
+		lfd        fp1,0(r3)
+		fsub       fp0,fp0,fp3		;Convert to a double
+		lfd        fp3,0(r4)
+		fmadd      fp0,fp2,fp1,fp0	;Mul by a billion and add the low value
+		fmul       fp1,fp3,fp0		;Mul by scale value
+		bl         .__cvt_dbl_usll	;Convert to a long long (fp1)
+		lwz        r0,104(SP)		;Get the return address
+		mr         r3,r4			;Get the result
+		mtlr       r0				;Set the return address
+		addi       SP,SP,96			;Fix the stack
+		blr							;Exit
+
+;
+; Let's call UpTime in the driver services lib
+;
+
+@Not601:
+		cmplwi		r0,1				;UpTime?
+		bne			@NotUpTime
+		lwz			r12,PowerPCUpTime[TC](RTOC)	;Get the pointer to the MacOS tool
+		addi		r3,SP,56			;Pointer to 64 bit integer
+		lwz			r12,0(r12)
+		bl			.__ptr_glue			;Call MacOS UpTime()
+		nop
+		lwz			r4,PowerPCFScale[TC](RTOC)	;Get the fScale pointer
+		
+		lwz			r6,56(SP)			;High 32 bits
+		lwz			r4,0(r4)			;fScale
+		lwz			r5,60(SP)			;Low 32 bits
+		mullw		r8,r4,r6			;Mul the high 32 bits
+		lwz			r0,104(SP)			;Get the return address
+		mulhwu		r5,r4,r5			;Mul the low 32 bits
+		mtlr		r0					;Set the return address
+		addi		SP,SP,96			;Fix the stack
+		add			r3,r8,r5			;Add the result
+		blr
+
+;
+; You are hating life. Let's call Microseconds!
+;
+
+@NotUpTime:
+		addi       r3,SP,56				;Pointer to 64 bit value
+		bl         .Microseconds		;Call MacOS
+		nop
+		lwz        r0,104(SP)			;Get the return address
+		lwz        r3,60(SP)			;Get the result
+		mtlr       r0					;Store the return address in the link register
+		addi       SP,SP,96				;Fix the stack
+		blr								;Exit
+
+;
+; Word32 ReadTickMicroseconds(void)
+; Read the current time accurate to a Microsecond
+; This is a bottleneck routine, hence why I wrote it in assembly
+;
+
+		EXPORT	ReadTickMilliseconds[DS],.ReadTickMilliseconds[PR]
+	
+	TOC
+		tc	ReadTickMilliseconds[TC],ReadTickMilliseconds[DS]
+		tc	TimeMethod[TC],PowerPCTimeMethod
+		tc	PowerPCUpTime[TC],PowerPCUpTime
+		tc	PowerPCFScale2[TC],PowerPCFScale2
+		tc	PowerPCScale2[TC],PowerPCScale2
+		tc	PowerPCBillion[TC],PowerPCBillion
+		tc	PowerPCFix[TC],PowerPCFix
+		tc	PowerPCThousand[TC],PowerPCThousand
+	
+	CSECT	ReadTickMilliseconds[DS]
+		dc.l	.ReadTickMilliseconds[PR]
+		dc.l	TOC[tc0]
+
+	CSECT	.ReadTickMilliseconds[PR]
+
+		mflr		r0					;Get the return address
+		lwz			r12,TimeMethod[TC](RTOC)
+		stw			r0,8(SP)			;Save the return address
+		lwz			r0,0(r12)
+		stwu		SP,-96(SP)			;Fix the stack frame
+		cmplwi		r0,0				;Timer set up?
+		bne+		@TimeOk
+		bl			.BurgerInitTimers			;Init the timer routines
+		lwz			r12,TimeMethod[TC](RTOC)	;Reset the timer variable
+		lwz			r0,0(r12)			;Store in r0
+
+;
+; My best timer is the TBU registers in the 603, 604 and 740/750
+; Power PC CPU's. It is fast and reliable
+;
+
+@TimeOk:
+		cmplwi		r0,2
+		bne			@Not603
+		
+		lwz			r8,PowerPCFScale2[TC](RTOC)	;Pointer to scale value
+@XLoop603:
+		mftbu		r4				;Upper 32 bits
+		mftb		r5 				;Lower 32 bits
+		mftbu		r6				;Did the upper 32 bits change?
+		lwz			r7,0(r8)		;Fetch the scale value
+		cmpw		r4,r6			;Match?
+		bne			@XLoop603		;Try again
+
+		mullw		r8,r7,r4		;Scale the high 32 bits
+		lwz			r0,104(SP)		;Get the return address
+		mulhwu		r5,r7,r5		;Scale the low 32 bits
+		mtlr		r0
+		addi		SP,SP,96		;Fix the stack
+		add			r3,r8,r5		;Get the result
+		blr
+
+;
+; My next best timer is the RTC registers in the 601
+; Power PC CPU. It's fast and reliable
+; Note : This code is intended to run only on a PowerPC 601
+; hence the 601 style optimizations
+;
+
+@Not603:
+		cmplwi		r0,3
+		bne			@Not601
+		lwz			r12,PowerPCFix[TC](RTOC)	;Convert to double value
+@XLoop601:
+		mfspr		r4,4			;RTCU
+		mfspr		r5,5			;RTCL
+		mfspr		r6,4			;Did the upper 32 bits change?
+		lis			r3,17200		;Get the value to make a double
+		cmpw		r4,r6			;Match?
+		bne			@XLoop601		;Try again
+
+		stw			r3,56(SP)		;Save the upper 32 bits
+		stw			r4,60(SP)
+		lfd			fp1,56(SP)		;Get the float for the upper 32 bits
+		stw			r5,60(SP)
+		lfd			fp0,56(SP)		;Get the float for the lower 32 bits
+		lfd			fp3,0(r12)		;Get the float correction value
+		lwz			r3,PowerPCBillion[TC](RTOC)
+		lwz			r4,PowerPCScale2[TC](RTOC)
+		
+		fsub       fp2,fp1,fp3		;Convert to a double
+		lfd        fp1,0(r3)
+		fsub       fp0,fp0,fp3		;Convert to a double
+		lfd        fp3,0(r4)
+		fmadd      fp0,fp2,fp1,fp0	;Mul by a billion and add the low value
+		fmul       fp1,fp3,fp0		;Mul by scale value
+		bl         .__cvt_dbl_usll	;Convert to a long long (fp1)
+		lwz        r0,104(SP)		;Get the return address
+		mr         r3,r4			;Get the result
+		mtlr       r0				;Set the return address
+		addi       SP,SP,96			;Fix the stack
+		blr							;Exit
+
+;
+; Let's call UpTime in the driver services lib
+;
+
+@Not601:
+		cmplwi		r0,1				;UpTime?
+		bne			@NotUpTime
+		lwz			r12,PowerPCUpTime[TC](RTOC)	;Get the pointer to the MacOS tool
+		addi		r3,SP,56			;Pointer to 64 bit integer
+		lwz			r12,0(r12)
+		bl			.__ptr_glue			;Call MacOS UpTime()
+		nop
+		lwz			r4,PowerPCFScale2[TC](RTOC)	;Get the fScale pointer
+		
+		lwz			r6,56(SP)			;High 32 bits
+		lwz			r4,0(r4)			;fScale
+		lwz			r5,60(SP)			;Low 32 bits
+		mullw		r8,r4,r6			;Mul the high 32 bits
+		lwz			r0,104(SP)			;Get the return address
+		mulhwu		r5,r4,r5			;Mul the low 32 bits
+		mtlr		r0					;Set the return address
+		addi		SP,SP,96			;Fix the stack
+		add			r3,r8,r5			;Add the result
+		blr
+
+;
+; You are hating life. Let's call Microseconds!
+;
+
+@NotUpTime:
+		addi       r3,SP,56				;Pointer to 64 bit value
+		bl         .Microseconds		;Call MacOS
+		nop
+		lwz        r3,56(SP)
+		lwz        r4,60(SP)
+		bl         .__cvt_ull_dbl
+		lwz			r12,PowerPCThousand[TC](RTOC)
+		lfd        fp0,0(r12)
+		fdiv       fp1,fp1,fp0
+		bl         .__cvt_dbl_usll
+		lwz        r0,104(SP)
+		mr         r3,r4
+		mtlr       r0
+		addi       SP,SP,96
+		blr
+
+		END
+

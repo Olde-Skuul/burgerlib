@@ -18,6 +18,7 @@
 #include "brmd5.h"
 #include "brendian.h"
 #include "brstringfunctions.h"
+#include "brfixedpoint.h"
 
 /*! ************************************
 
@@ -55,24 +56,6 @@
 	\sa Burger::MD5_t or Hash(MD5_t *,const void *,WordPtr)
 
 ***************************************/
-
-// Needed for _rotl()
-#if defined(BURGER_MSVC) || defined(BURGER_WATCOM)
-#include <stdlib.h>
-#endif
-
-// ROTATE_LEFT rotates x left n bits.
-// Use inline assembly for DOS / Intel version
-
-#if !defined(DOXYGEN)
-#if defined(BURGER_MSVC) || defined(BURGER_WATCOM)
-#define ROTATE_LEFT(x,n) _rotl(x,n)
-#elif defined(BURGER_METROWERKS) && (defined(BURGER_X86) || defined(BURGER_68K))
-#define ROTATE_LEFT(x,n) __rol(x,n)
-#else
-#define ROTATE_LEFT(x,n) (((x) << (n)) | ((x) >> (32-(n))))
-#endif
-#endif
 
 /*! ************************************
 
@@ -133,22 +116,22 @@ void Burger::MD5Hasher_t::Init(void)
 
 #define FF(a, b, c, d, x, s, ac) { \
 	(a) += F ((b), (c), (d)) + (x) + (Word32)(ac); \
-	(a) = ROTATE_LEFT ((a), (s)); \
+	(a) = RotateLeft(a,s); \
 	(a) += (b); \
 }
 #define GG(a, b, c, d, x, s, ac) { \
 	(a) += G ((b), (c), (d)) + (x) + (Word32)(ac); \
-	(a) = ROTATE_LEFT ((a), (s)); \
+	(a) = RotateLeft(a,s); \
 	(a) += (b); \
 }
 #define HH(a, b, c, d, x, s, ac) { \
 	(a) += H ((b), (c), (d)) + (x) + (Word32)(ac); \
-	(a) = ROTATE_LEFT ((a), (s)); \
+	(a) = RotateLeft(a,s); \
 	(a) += (b); \
 }
 #define II(a, b, c, d, x, s, ac) { \
 	(a) += I ((b), (c), (d)) + (x) + (Word32)(ac); \
-	(a) = ROTATE_LEFT ((a), (s)); \
+	(a) = RotateLeft(a,s); \
 	(a) += (b); \
 }
 #endif
