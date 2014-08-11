@@ -50,15 +50,15 @@ public:
 	Word8 m_bHidden;		///< True if this file is hidden
 	Word8 m_bLocked;		///< True if this file is read only
 	char m_Name[256];		///< UTF8 Filename
-#if defined(BURGER_MACOS) || defined(DOXYGEN)
-	Word32 m_uFileType;		///< File's type (MacOS Only)
-	Word32 m_uAuxType;		///< File's creator code (MacOS Only)
+#if (defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
+	Word32 m_uFileType;		///< File's type (MacOS and iOS Only)
+	Word32 m_uAuxType;		///< File's creator code (MacOS and iOS Only)
 #endif
 private:
 #if defined(BURGER_MAC) || defined(DOXYGEN)
 	OpaqueFSIterator* m_pIterator;	///< Directory iterator (MacOS Carbon Only)
 #endif
-#if defined(BURGER_MACOSX) || defined(DOXYGEN)
+#if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 	int m_fp;				///< Open directory file (MacOSX Only)
 #endif
 #if defined(BURGER_MSDOS) || defined(DOXYGEN)

@@ -361,12 +361,6 @@ const Burger::Word32ToFloat Burger::g_fReciprocalPi2 = {{0x3E22F983}};
 const Burger::Word32ToFloat Burger::g_fRadiansToDegrees = {{0x42652EE1}}; 
 const Burger::Word32ToFloat Burger::g_fDegreesToRadians = {{0x3C8EFA35}}; 
 
-#if defined(BURGER_WATCOM)
-#define BRACES4(x,y,z,w) {{x,y,z,w}}
-#else
-#define BRACES4(x,y,z,w) {{{x,y,z,w}}}
-#endif
-
 /*! ************************************
 
 	\enum Burger::e8087Precision
@@ -817,7 +811,165 @@ double BURGER_API Burger::Sqrt(double dInput)
 
 ***************************************/
 
+/*! ************************************
 
+	\fn float Burger::Square(float fInput)
+	\brief Return the square of the input
+	
+	Square the number and return the result.
+		
+	\param fInput Value to square
+	\return The square of the input
+	
+	\sa Square(double)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn double Burger::Square(double dInput)
+	\brief Return the square of the input
+	
+	Square the number and return the result.
+		
+	\param dInput Value to square
+	\return The square of the input
+	
+	\sa Square(float)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn float Burger::Sign(float fInput)
+	\brief Return sign constant
+	
+	If the input is less than zero, return
+	negative one, if the input is greater than zero,
+	return one, otherwise return zero.
+		
+	\param fInput Value to test
+	\return The sign constant of 1, -1 or 0
+	
+	\sa Sign(double)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn double Burger::Sign(double dInput)
+	\brief Return sign constant
+	
+	If the input is less than zero, return
+	negative one, if the input is greater than zero,
+	return one, otherwise return zero.
+		
+	\param dInput Value to test
+	\return The sign constant of 1, -1 or 0
+	
+	\sa Sign(float)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn float Burger::Min(float fA,float fB)
+	\brief Return the lesser of two numbers
+
+	Compare the two input values and return the lesser of the two.
+		
+	\param fA First value to test
+	\param fB Second value to test
+	\return The lesser of the two inputs
+	
+	\sa Min(double,double) or Max(float,float)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn double Burger::Min(double dA,double dB)
+	\brief Return the lesser of two numbers
+
+	Compare the two input values and return the lesser of the two.
+		
+	\param dA First value to test
+	\param dB Second value to test
+	\return The lesser of the two inputs
+	
+	\sa Min(float,float) or Max(double,double)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn float Burger::Max(float fA,float fB)
+	\brief Return the greater of two numbers
+
+	Compare the two input values and return the greater of the two.
+		
+	\param fA First value to test
+	\param fB Second value to test
+	\return The greater of the two inputs
+	
+	\sa Max(double,double), or Min(float,float)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn double Burger::Max(double dA,double dB)
+	\brief Return the greater of two numbers
+
+	Compare the two input values and return the greater of the two.
+		
+	\param dA First value to test
+	\param dB Second value to test
+	\return The greater of the two inputs
+	
+	\sa Max(float,float), or Min(double,double)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn float Burger::Clamp(float fInput,float fMin,float fMax)
+	\brief Clamp the input between a bounds
+
+	If the input value is less than the minimum, return the minimum
+	or if the input value is greater than the maximum, return 
+	the maximum, otherwise return the input value. No
+	checking is performed to determine if the minimum is
+	less than the maximum.
+		
+	\param fInput First value to test
+	\param fMin Minimum allowed value
+	\param fMax Maximum allowed value
+	\return The value clamped between the bounds
+
+	\sa Clamp(double,double,double)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn double Burger::Clamp(double dInput,double dMin,double dMax)
+	\brief Clamp the input between a bounds
+
+	If the input value is less than the minimum, return the minimum
+	or if the input value is greater than the maximum, return 
+	the maximum, otherwise return the input value. No
+	checking is performed to determine if the minimum is
+	less than the maximum.
+		
+	\param dInput First value to test
+	\param dMin Minimum allowed value
+	\param dMax Maximum allowed value
+	\return The value clamped between the bounds
+
+	\sa Clamp(float,float,float)
+	
+***************************************/
 
 /*! ************************************
 
@@ -2596,3 +2748,74 @@ double BURGER_API Burger::Cos(double dInput)
 	return dResult;
 }
 #endif
+
+
+float BURGER_API Burger::Tan(float fInput)
+{
+#if defined(BURGER_WATCOM)
+	return static_cast<float>(tan(fInput));
+#else
+	return tanf(fInput);
+#endif
+}
+
+double BURGER_API Burger::Tan(double dInput)
+{
+	return tan(dInput);
+}
+
+float BURGER_API Burger::ASin(float fInput)
+{
+#if defined(BURGER_WATCOM)
+	return static_cast<float>(asin(fInput));
+#else
+	return asinf(fInput);
+#endif
+}
+
+double BURGER_API Burger::ASin(double dInput)
+{
+	return asin(dInput);
+}
+
+float BURGER_API Burger::ACos(float fInput)
+{
+#if defined(BURGER_WATCOM)
+	return static_cast<float>(acos(fInput));
+#else
+	return acosf(fInput);
+#endif
+}
+
+double BURGER_API Burger::ACos(double dInput)
+{
+	return acos(dInput);
+}
+
+float BURGER_API Burger::ATan(float fInput)
+{
+#if defined(BURGER_WATCOM)
+	return static_cast<float>(atan(fInput));
+#else
+	return atanf(fInput);
+#endif
+}
+
+double BURGER_API Burger::ATan(double dInput)
+{
+	return atan(dInput);
+}
+
+float BURGER_API Burger::ATan2(float fSin,float fCos)
+{
+#if defined(BURGER_WATCOM)
+	return static_cast<float>(atan2(fSin,fCos));
+#else
+	return atan2f(fSin,fCos);
+#endif
+}
+
+double BURGER_API Burger::ATan2(double dSin,double dCos)
+{
+	return atan2(dSin,dCos);
+}

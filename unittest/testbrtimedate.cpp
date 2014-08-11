@@ -64,7 +64,7 @@ int BURGER_API TestDateTime(void)
 		MyDate.TimeToString(Buffer);
 		Message("Military: %s",Buffer);
 		MyDate.TimeToStringPM(Buffer);
-		Message("AM\\PM:   %s",Buffer);
+		Message("AM/PM:   %s",Buffer);
 	}
 	return static_cast<int>(uResult);
 }

@@ -1155,9 +1155,9 @@ void BURGER_API Burger::Vector4D_t::QuaternionMulNormalize(const Vector4D_t *pIn
 
 ***************************************/
 
-const Burger::Vector4D_t Burger::s_Vector4DZero = {0.0f,0.0f,0.0f,0.0f};	///< Constant of 0.0f,0.0f,0.0f,0.0f
-const Burger::Vector4D_t Burger::s_Vector4DOne = {1.0f,1.0f,1.0f,1.0f};	///< Constant of 1.0f,1.0f,1.0f,1.0f
-const Burger::Vector4D_t Burger::s_Vector4DOneX = {1.0f,0.0f,0.0f,0.0f};	///< Constant of 1.0f,0.0f,0.0f,0.0f
-const Burger::Vector4D_t Burger::s_Vector4DOneY = {0.0f,1.0f,0.0f,0.0f};	///< Constant of 0.0f,1.0f,0.0f,0.0f
-const Burger::Vector4D_t Burger::s_Vector4DOneZ = {0.0f,0.0f,1.0f,0.0f};	///< Constant of 0.0f,0.0f,1.0f,0.0f
-const Burger::Vector4D_t Burger::s_Vector4DOneW = {0.0f,0.0f,0.0f,1.0f};	///< Constant of 0.0f,0.0f,0.0f,1.0f
+const Burger::Vector4D_t Burger::g_Vector4DZero = {0.0f,0.0f,0.0f,0.0f};	///< Constant of 0.0f,0.0f,0.0f,0.0f
+const Burger::Vector4D_t Burger::g_Vector4DOne = {1.0f,1.0f,1.0f,1.0f};	///< Constant of 1.0f,1.0f,1.0f,1.0f
+const Burger::Vector4D_t Burger::g_Vector4DOneX = {1.0f,0.0f,0.0f,0.0f};	///< Constant of 1.0f,0.0f,0.0f,0.0f
+const Burger::Vector4D_t Burger::g_Vector4DOneY = {0.0f,1.0f,0.0f,0.0f};	///< Constant of 0.0f,1.0f,0.0f,0.0f
+const Burger::Vector4D_t Burger::g_Vector4DOneZ = {0.0f,0.0f,1.0f,0.0f};	///< Constant of 0.0f,0.0f,1.0f,0.0f
+const Burger::Vector4D_t Burger::g_Vector4DOneW = {0.0f,0.0f,0.0f,1.0f};	///< Constant of 0.0f,0.0f,0.0f,1.0f

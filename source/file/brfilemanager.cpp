@@ -175,7 +175,7 @@ void BURGER_API Burger::FileManager::Shutdown(void)
 	
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MAC) && !defined(BURGER_MACOSX) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
 
 Word BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,Word /* uVolumeNum */)
 {
@@ -251,7 +251,7 @@ Word BURGER_API Burger::FileManager::GetVolumeNumber(const char *pVolumeName)
 	
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MAC) && !defined(BURGER_MACOSX) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
 
 void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 {
@@ -414,7 +414,7 @@ void Burger::FileManager::ReleasePrefixes(void)
 		pTable[0] = NULL;	// Gone
 		++pTable;
 	} while (--i);
-#if defined(BURGER_MACOSX)
+#if defined(BURGER_MACOSX) || defined(BURGER_IOS)
 	Free(m_pBootName);
 	m_pBootName = NULL;
 	m_uBootNameSize = 0;
@@ -457,7 +457,7 @@ Word BURGER_API Burger::FileManager::GetModificationTime(const char *pFileName,T
 	
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MAC) && !defined(BURGER_MACOSX) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
 Word BURGER_API Burger::FileManager::GetModificationTime(Filename * /* pFileName */,TimeDate_t * /* pOutput */)
 {
 	return TRUE;		// Error!
@@ -500,7 +500,7 @@ Word BURGER_API Burger::FileManager::GetCreationTime(const char *pFileName,TimeD
 	
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MAC) && !defined(BURGER_MACOSX) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
 Word BURGER_API Burger::FileManager::GetCreationTime(Filename * /* pFileName */,TimeDate_t * /* pOutput */)
 {
 	return TRUE;		// Error!
@@ -544,7 +544,7 @@ Word BURGER_API Burger::FileManager::DoesFileExist(const char *pFileName)
 	
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MAC) && !defined(BURGER_MACOSX) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
 Word BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
 {
 #if defined(BURGER_DS)
@@ -607,7 +607,7 @@ Word32 BURGER_API Burger::FileManager::GetAuxType(const char *pFileName)
 
 ***************************************/
 
-#if (!defined(BURGER_MAC) && !defined(BURGER_MACOSX)) || defined(DOXYGEN)
+#if (!defined(BURGER_MACOS) && !defined(BURGER_IOS)) || defined(DOXYGEN)
 Word32 BURGER_API Burger::FileManager::GetAuxType(Filename * /*pFileName */)
 {
 	return 0;		// Don't do anything!
@@ -660,7 +660,7 @@ Word32 BURGER_API Burger::FileManager::GetFileType(const char *pFileName)
 	
 ***************************************/
 
-#if (!defined(BURGER_MAC) && !defined(BURGER_MACOSX)) || defined(DOXYGEN)
+#if (!defined(BURGER_MACOS) && !defined(BURGER_IOS)) || defined(DOXYGEN)
 Word32 BURGER_API Burger::FileManager::GetFileType(Filename * /*pFileName*/)
 {
 	return 0;		// Don't do anything!
@@ -719,7 +719,7 @@ Word BURGER_API Burger::FileManager::GetFileAndAuxType(const char *pFileName,Wor
 	
 ***************************************/
 
-#if (!defined(BURGER_MAC) && !defined(BURGER_MACOSX)) || defined(DOXYGEN)
+#if (!defined(BURGER_MACOS) && !defined(BURGER_IOS)) || defined(DOXYGEN)
 Word BURGER_API Burger::FileManager::GetFileAndAuxType(Filename * /* pFileName */,Word32 *pFileType,Word32 *pAuxType)
 {
 	pFileType[0] = 0;
@@ -774,7 +774,7 @@ Word BURGER_API Burger::FileManager::SetAuxType(const char *pFileName,Word32 uAu
 
 ***************************************/
 
-#if (!defined(BURGER_MAC) && !defined(BURGER_MACOSX)) || defined(DOXYGEN)
+#if (!defined(BURGER_MACOS) && !defined(BURGER_IOS)) || defined(DOXYGEN)
 Word BURGER_API Burger::FileManager::SetAuxType(Filename * /*pFileName*/,Word32 /* uAuxType */)
 {
 	return File::NOT_IMPLEMENTED;
@@ -827,7 +827,7 @@ Word BURGER_API Burger::FileManager::SetFileType(const char *pFileName,Word32 uF
 
 ***************************************/
 
-#if (!defined(BURGER_MAC) && !defined(BURGER_MACOSX)) || defined(DOXYGEN)
+#if (!defined(BURGER_MACOS) && !defined(BURGER_IOS)) || defined(DOXYGEN)
 Word BURGER_API Burger::FileManager::SetFileType(Filename * /*pFileName*/,Word32 /*uFileType */)
 {
 	return File::NOT_IMPLEMENTED;
@@ -884,7 +884,7 @@ Word BURGER_API Burger::FileManager::SetFileAndAuxType(const char *pFileName,Wor
 	
 ***************************************/
 
-#if (!defined(BURGER_MAC) && !defined(BURGER_MACOSX)) || defined(DOXYGEN)
+#if (!defined(BURGER_MACOS) && !defined(BURGER_IOS)) || defined(DOXYGEN)
 Word BURGER_API Burger::FileManager::SetFileAndAuxType(Filename * /*pFileName*/,Word32 /* uFileType */,Word32 /* uAuxType */)
 {
 	return File::NOT_IMPLEMENTED;
@@ -934,7 +934,7 @@ Word BURGER_API Burger::FileManager::CreateDirectoryPath(const char *pFileName)
 	
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MAC) && !defined(BURGER_MACOSX) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
 Word BURGER_API Burger::FileManager::CreateDirectoryPath(Filename * /* pFileName */ )
 {
 	return File::NOT_IMPLEMENTED;		// Always error out
@@ -1035,7 +1035,7 @@ Word BURGER_API Burger::FileManager::DeleteFile(const char *pFileName)
 	
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MAC) && !defined(BURGER_MACOSX) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
 Word BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
 {
 #if defined(BURGER_DS)
@@ -1089,7 +1089,7 @@ Word BURGER_API Burger::FileManager::RenameFile(const char *pNewName,const char 
 	
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MAC) && !defined(BURGER_MACOSX) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
 Word BURGER_API Burger::FileManager::RenameFile(Filename *pNewName,Filename *pOldName)
 {
 #if defined(BURGER_DS)
@@ -1149,7 +1149,7 @@ Word BURGER_API Burger::FileManager::ChangeOSDirectory(const char *pDirName)
 	
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MAC) && !defined(BURGER_MACOSX)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS)) || defined(DOXYGEN)
 Word BURGER_API Burger::FileManager::ChangeOSDirectory(Filename * /* pDirName */)
 {
 	return File::NOT_IMPLEMENTED;	// Error!
@@ -1206,7 +1206,7 @@ FILE * BURGER_API Burger::FileManager::OpenFile(const char *pFileName,const char
 	
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MAC) && !defined(BURGER_MACOSX)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS)) || defined(DOXYGEN)
 FILE * BURGER_API Burger::FileManager::OpenFile(Filename *pFileName,const char *pType)
 {
 #if defined(BURGER_DS)
@@ -1252,7 +1252,7 @@ Word BURGER_API Burger::FileManager::CopyFile(const char *pDestName,const char *
 	
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MAC) && !defined(BURGER_MACOSX) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
 Word BURGER_API Burger::FileManager::CopyFile(Filename *pDestName,Filename *pSourceName)
 {
 #if defined(BURGER_DS)

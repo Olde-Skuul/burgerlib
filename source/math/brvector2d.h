@@ -77,7 +77,24 @@ struct Vector2D_t {
 	void BURGER_API NormalizeFast(const Vector2D_t *pInput);
 	BURGER_INLINE float & operator[](Word uInput) { return (&x)[uInput]; }
 	BURGER_INLINE const float & operator[](Word uInput) const { return (&x)[uInput]; }
+	BURGER_INLINE Word operator == (const Vector2D_t& rInput) const { return (x == rInput.x) && (y == rInput.y); }
+	BURGER_INLINE Word operator != (const Vector2D_t& rInput) const { return (x != rInput.x) || (y != rInput.y); }
 };
+
+struct Word32ToVector2D_t {
+	union {
+		Word32 x[2];		///< Value as two 32 bit unsigned integers
+		Vector2D_t v;		///< Value as two 32 bit floats
+	};
+	BURGER_INLINE operator const Vector2D_t &() const { return v; }
+};
+
+extern const Vector2D_t g_Vector2DZero;
+extern const Vector2D_t g_Vector2DOne;
+extern const Vector2D_t g_Vector2DOneX;
+extern const Vector2D_t g_Vector2DOneY;
+extern const Word32ToVector2D_t g_Vector2DMax;
+extern const Word32ToVector2D_t g_Vector2DInfinity;
 }
 /* END */
 

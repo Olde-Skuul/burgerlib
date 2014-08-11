@@ -18,15 +18,22 @@
 #include <burger.h>
 #endif
 
-#if __CF_USE_FRAMEWORK_INCLUDES__
+// MacOSX used an OpenGL Framework
+#if __CF_USE_FRAMEWORK_INCLUDES__ || defined(BURGER_MACOSX)
 #include <OpenGL/glu.h>		// glut.h for MacOS X
-#else
-#if defined(BURGER_WINDOWS)
+
+// Windows requires windows.h before glut.h
+#elif defined(BURGER_WINDOWS)
 #if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>		// Needed before #include <glut.h> in windows
+#include <glut.h>
+#else
+
+// Generic
+#include <gl/glut.h>			// OpenGL for all other platforms
 #endif
-#include <glut.h>			// OpenGL for all other platforms
+
 #endif
-#endif
+

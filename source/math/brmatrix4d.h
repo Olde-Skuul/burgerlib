@@ -26,6 +26,10 @@
 #include "brvector4d.h"
 #endif
 
+#ifndef __BRMATRIX3D_H__
+#include "brmatrix3d.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 struct FixedMatrix4D_t;
@@ -38,6 +42,7 @@ struct Matrix4D_t {
 	void BURGER_API Identity(void);
 	void BURGER_API Set(const Matrix4D_t *pInput);
 	void BURGER_API Set(const FixedMatrix4D_t *pInput);
+	void BURGER_API Set(const Matrix3D_t *pInput);
 	void BURGER_API SetYaw(float fYaw);
 	void BURGER_API SetPitch(float fPitch);
 	void BURGER_API SetRoll(float fRoll);
@@ -65,12 +70,10 @@ struct Matrix4D_t {
 	void BURGER_API TransposeSetFrustum(float fLeft,float fRight,float fBottom,float fTop,float fNear,float fFar);
 	void BURGER_API SetOrtho(float fLeft,float fRight,float fBottom,float fTop,float fNear,float fFar);
 	void BURGER_API TransposeSetOrtho(float fLeft,float fRight,float fBottom,float fTop,float fNear,float fFar);
+	void BURGER_API SetPerspective(float fFieldOfViewY,float fAspect,float fNear,float fFar);
+	void BURGER_API TransposeSetPerspective(float fFieldOfViewY,float fAspect,float fNear,float fFar);
 	void BURGER_API Transpose(void);
 	void BURGER_API Transpose(const Matrix4D_t *pInput);
-	void BURGER_API Multiply(float fInput);
-	void BURGER_API Multiply(const Matrix4D_t *pInput,float fInput);
-	void BURGER_API Multiply3x3(float fInput);
-	void BURGER_API Multiply3x3(const Matrix4D_t *pInput,float fInput);
 	void BURGER_API GetXRow(Vector3D_t *pOutput) const;
 	void BURGER_API GetXRow(Vector4D_t *pOutput) const;
 	void BURGER_API GetYRow(Vector3D_t *pOutput) const;
@@ -103,6 +106,20 @@ struct Matrix4D_t {
 	void BURGER_API SetZColumn(const Vector4D_t *pInput);
 	void BURGER_API SetWColumn(const Vector3D_t *pInput);
 	void BURGER_API SetWColumn(const Vector4D_t *pInput);
+	void BURGER_API Multiply(const Matrix4D_t *pInput);
+	void BURGER_API Multiply(const Matrix4D_t *pInput1,const Matrix4D_t *pInput2);
+	void BURGER_API Multiply(float fScale);
+	void BURGER_API Multiply(const Matrix4D_t *pInput,float fScale);
+	void BURGER_API Multiply(float fScaleX,float fScaleY,float fScaleZ);
+	void BURGER_API Multiply(const Matrix4D_t *pInput,float fScaleX,float fScaleY,float fScaleZ);
+	void BURGER_API Multiply(float fScaleX,float fScaleY,float fScaleZ,float fScaleW);
+	void BURGER_API Multiply(const Matrix4D_t *pInput,float fScaleX,float fScaleY,float fScaleZ,float fScaleW);
+	void BURGER_API Multiply3x3(float fInput);
+	void BURGER_API Multiply3x3(const Matrix4D_t *pInput,float fInput);
+	void BURGER_API TransposeMultiply(float fScaleX,float fScaleY,float fScaleZ);
+	void BURGER_API TransposeMultiply(const Matrix4D_t *pInput,float fScaleX,float fScaleY,float fScaleZ);
+	void BURGER_API TransposeMultiply(float fScaleX,float fScaleY,float fScaleZ,float fScaleW);
+	void BURGER_API TransposeMultiply(const Matrix4D_t *pInput,float fScaleX,float fScaleY,float fScaleZ,float fScaleW);
 	void BURGER_API Transform(Vector3D_t *pInput) const;
 	void BURGER_API Transform(Vector4D_t *pInput) const;
 	void BURGER_API Transform(Vector3D_t *pOutput,const Vector3D_t *pInput) const;
@@ -115,6 +132,12 @@ struct Matrix4D_t {
 	void BURGER_API Transform3x3(Vector3D_t *pOutput,const Vector3D_t *pInput) const;
 	void BURGER_API TransposeTransform3x3(Vector3D_t *pInput) const;
 	void BURGER_API TransposeTransform3x3(Vector3D_t *pOutput,const Vector3D_t *pInput) const;
+	void BURGER_API Yaw(float fYaw);
+	void BURGER_API Pitch(float fPitch);
+	void BURGER_API Roll(float fRoll);
+	void BURGER_API Rotate(float fRadians,float fX,float fY,float fZ);
+	void BURGER_API Translate(float fX,float fY,float fZ);
+	void BURGER_API TransposeTranslate(float fX,float fY,float fZ);
 };
 extern const Matrix4D_t s_Matrix4DIdentity;
 }

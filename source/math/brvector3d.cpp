@@ -1351,9 +1351,60 @@ Word BURGER_API Burger::Vector3D_t::Equal(const Vector3D_t *pInput,float fRange)
 
 ***************************************/
 
-const Burger::Vector3D_t Burger::s_Vector3DZero = {0.0f,0.0f,0.0f};	///< Constant of 0.0f,0.0f,0.0f
-const Burger::Vector3D_t Burger::s_Vector3DOne = {1.0f,1.0f,1.0f};	///< Constant of 1.0f,1.0f,1.0f
-const Burger::Vector3D_t Burger::s_Vector3DOneX = {1.0f,0.0f,0.0f};	///< Constant of 1.0f,0.0f,0.0f
-const Burger::Vector3D_t Burger::s_Vector3DOneY = {0.0f,1.0f,0.0f};	///< Constant of 0.0f,1.0f,0.0f
-const Burger::Vector3D_t Burger::s_Vector3DOneZ = {0.0f,0.0f,1.0f};	///< Constant of 0.0f,0.0f,1.0f
+/*! ************************************
+
+	\fn Word Burger::Vector3D_t::operator == (const Vector3D_t& rInput) const
+	\brief Compare two Vector3D_t's for equality
+	
+	\param rInput Reference to the Vector3D_t to compare against
+	\return \ref TRUE if equal, \ref FALSE if not
+	\sa Vector3D_t::operator != (const Vector3D_t& rInput) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Vector3D_t::operator != (const Vector3D_t& rInput) const
+	\brief Compare two Vector3D_t's for inequality
+	
+	\param rInput Reference to the Vector3D_t to compare against
+	\return \ref TRUE if not equal, \ref FALSE if equal
+	\sa Vector3D_t::operator == (const Vector3D_t& rInput) const
+
+***************************************/
+
+/*! ************************************
+
+	\struct Burger::Word32ToVector3D_t {
+	\brief Structure to create a Vector3D_t with 32 bit unsigned integer constants
+
+	There is no standard for initializing 32 bit floats at compile time
+	without generating startup glue code. This
+	structure fixes the problem by creating a union between the Vector3D_t
+	structure and an array of data that maps directly over it.
+
+	\code
+	// Initialize with 3 32 bit unsigned integers
+	const Burger::Word32ToVector3D_t Burger::g_Vector3DInfinity = {{0x7F800000U,0x7F800000U,0x7F800000U}};
+
+	\endcode
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Word32ToVector3D_t::operator const Vector3D_t & () const
+	\brief Accessor to load the Vector3D_t
+	
+	\sa Burger::Vector2D_t or Burger::Vector4D_t
+
+***************************************/
+
+const Burger::Vector3D_t Burger::g_Vector3DZero = {0.0f,0.0f,0.0f};	///< Constant of 0.0f,0.0f,0.0f
+const Burger::Vector3D_t Burger::g_Vector3DOne = {1.0f,1.0f,1.0f};	///< Constant of 1.0f,1.0f,1.0f
+const Burger::Vector3D_t Burger::g_Vector3DOneX = {1.0f,0.0f,0.0f};	///< Constant of 1.0f,0.0f,0.0f
+const Burger::Vector3D_t Burger::g_Vector3DOneY = {0.0f,1.0f,0.0f};	///< Constant of 0.0f,1.0f,0.0f
+const Burger::Vector3D_t Burger::g_Vector3DOneZ = {0.0f,0.0f,1.0f};	///< Constant of 0.0f,0.0f,1.0f
+const Burger::Word32ToVector3D_t Burger::g_Vector3DMax = { { 0x7F7FFFFFU,0x7F7FFFFFU,0x7F7FFFFFU} };	///< Constant of Burger::g_fMax,Burger::g_fMax,Burger::g_fMax
+const Burger::Word32ToVector3D_t Burger::g_Vector3DInfinity = { {0x7F800000U,0x7F800000U,0x7F800000U} };	///< Constant of Burger::g_fInf,Burger::g_fInf,Burger::g_fInf
 

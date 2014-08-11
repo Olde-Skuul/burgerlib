@@ -100,7 +100,9 @@
 		<Unit filename="../source/audio/brsound.cpp" />
 		<Unit filename="../source/audio/brsound.h" />
 		<Unit filename="../source/brgl.h" />
+		<Unit filename="../source/brglext.h" />
 		<Unit filename="../source/brglut.h" />
+		<Unit filename="../source/brglxext.h" />
 		<Unit filename="../source/brstartup.h" />
 		<Unit filename="../source/commandline/brcommandparameter.cpp" />
 		<Unit filename="../source/commandline/brcommandparameter.h" />
@@ -255,6 +257,8 @@
 		<Unit filename="../source/lowlevel/brrandommanager.h" />
 		<Unit filename="../source/lowlevel/brrunqueue.cpp" />
 		<Unit filename="../source/lowlevel/brrunqueue.h" />
+		<Unit filename="../source/lowlevel/brstaticrtti.cpp" />
+		<Unit filename="../source/lowlevel/brstaticrtti.h" />
 		<Unit filename="../source/lowlevel/brtick.cpp" />
 		<Unit filename="../source/lowlevel/brtick.h" />
 		<Unit filename="../source/lowlevel/brtimedate.cpp" />

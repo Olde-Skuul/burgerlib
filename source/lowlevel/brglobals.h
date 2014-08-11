@@ -64,7 +64,8 @@ private:
 	Word32 m_uDirectXVersion;		///< DirectX version 0x0900 (9.0) format (Windows only)
 	Word8 m_bQuickTimeVersionValid;	///< \ref TRUE if Quicktime's version is valid. (Windows only)
 	Word8 m_bDirectXVersionValid;	///< \ref TRUE if DirectX's version is valid (Windows only)
-	Word8 m_bPadding[2];			///< Pad to 32 bit alignment
+	Word8 m_bWindow95;				///< Non-zero if tested, low bit has \ref TRUE or \ref FALSE for the state
+	Word8 m_bPadding;				///< Pad to 32 bit alignment
 #endif
 	int m_iErrorCode;		///< Global default error code used by \ref Globals::Shutdown().
 	Word m_uTraceFlags;		///< Debug information level
@@ -96,6 +97,7 @@ public:
 	static Word BURGER_API IsDirectDrawPresent(void);
 	static Word BURGER_API IsD3D9Present(void);
 	static Word BURGER_API IsDirectSoundPresent(void);
+	static Word BURGER_API IsWin95orWin98(void);
 	static Word BURGER_API DirectInputCreateW(IDirectInputW **pOutput);
 	static Word BURGER_API DirectInput8Create(IDirectInput8W **pOutput);
 	static Word BURGER_API DirectDrawCreateExW(const GUID *pGuid,IDirectDraw7 **pOutput);

@@ -100,7 +100,9 @@ def main(workingDir):
 		specialheaders = [
 			'brstartup.h',
 			'brgl.h',
-			'brglut.h'
+			'brglext.h',
+			'brglut.h',
+			'brglxext.h'
 			]
 	
 		for item in specialheaders:

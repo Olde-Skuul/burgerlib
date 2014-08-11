@@ -99,7 +99,7 @@ static Word BURGER_API SaveTextFile(const char *pFileName,const void *pData,Word
 static Word BURGER_API SaveTextFile(Filename *pFileName,const void *pData,WordPtr uLength);
 static void * BURGER_API LoadFile(const char *pFileName,WordPtr *pLength);
 static void * BURGER_API LoadFile(Filename *pFileName,WordPtr *pLength);
-#if defined(BURGER_MACOSX) || defined(DOXYGEN)
+#if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 static BURGER_INLINE const char *GetBootName(void) { return g_FileManager.m_pBootName; }
 static BURGER_INLINE Word GetBootNameSize(void) { return g_FileManager.m_uBootNameSize; }
 #endif
@@ -109,9 +109,9 @@ private:
 #if defined(BURGER_MSDOS) || defined(DOXYGEN)
 	Word8 m_bAllowed;					///< True if MSDOS has long filename support (MSDOS Only)
 #endif
-#if defined(BURGER_MACOSX) || defined(DOXYGEN)
-	Word m_uBootNameSize;	///< Length of the boot volume name (MACOSX Only)
-	char *m_pBootName;		///< Boot volume name in the format ":FooBar" (Zero terminated) (MACOSX Only)
+#if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+	Word m_uBootNameSize;	///< Length of the boot volume name (MACOSX or iOS only)
+	char *m_pBootName;		///< Boot volume name in the format ":FooBar" (Zero terminated) (MACOSX or iOS only)
 #endif
 	static FileManager g_FileManager;	///< Global instance of the file manager
 };

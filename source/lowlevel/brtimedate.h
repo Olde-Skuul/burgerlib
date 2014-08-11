@@ -38,6 +38,10 @@
 #include "brmacosxtypes.h"
 #endif
 
+#if defined(BURGER_IOS) && !defined(__BRIOSTYPES_H__)
+#include "briostypes.h"
+#endif
+
 #if defined(BURGER_XBOX360) && !defined(__BRXBOX360TYPES_H__)
 #include "brxbox360types.h"
 #endif
@@ -85,7 +89,7 @@ struct TimeDate_t {
 	Word Load(const UTCDateTime *pUTCDateTime);
 	Word Store(UTCDateTime *pUTCDateTime) const;
 #endif
-#if defined(BURGER_MACOSX) || defined(DOXYGEN)
+#if defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(DOXYGEN)
 	Word Load(double dNSTimeInterval);
 	Word Store(double *pNSTimeInterval) const;
 #endif

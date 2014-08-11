@@ -271,21 +271,20 @@
 
 ***************************************/
 
-#if !defined(__WATCOMC__)		// Inlined
+#if defined(BURGER_WATCOM)		// Inlined
 
-#if !defined(BURGER_X86) || (defined(BURGER_MACOSX) && defined(BURGER_X86)) || defined(DOXYGEN)
-Word16 BURGER_API Burger::NativeEndian::LoadAny(const Word16 *pInput)
-{
-	Word Low = reinterpret_cast<const Word8*>(pInput)[0];		// Grab 16 bits
-	Word High = reinterpret_cast<const Word8*>(pInput)[1];
-#if defined(BURGER_BIGENDIAN)
-	Word16 Result = static_cast<Word16>((Low<<8) | High);	// PPC likes |
-#else
-	Word16 Result = static_cast<Word16>(Low + (High<<8));	// Intel likes +
-#endif
-	return Result;
-}
-#else
+#elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)) && !defined(DOXYGEN)
+// __ZN6Burger12NativeEndian7LoadAnyEPKt = Word16 BURGER_API Burger::NativeEndian::LoadAny(const Word16 * /* pInput */)
+__asm__(
+"	.align	4,0x90\n"
+"	.globl __ZN6Burger12NativeEndian7LoadAnyEPKt\n"
+"__ZN6Burger12NativeEndian7LoadAnyEPKt:\n"
+"	movb	(%eax),%cl\n"
+"	movb	1(%eax),%ch\n"
+"	movzwl	%cx,%eax\n"
+"	ret\n"
+);
+#elif defined(BURGER_X86) && !defined(DOXYGEN)
 BURGER_DECLSPECNAKED Word16 BURGER_API Burger::NativeEndian::LoadAny(const Word16 * /* pInput */)
 {
 	BURGER_ASM {
@@ -297,7 +296,18 @@ BURGER_DECLSPECNAKED Word16 BURGER_API Burger::NativeEndian::LoadAny(const Word1
 		ret
 	}
 }
+#else
+Word16 BURGER_API Burger::NativeEndian::LoadAny(const Word16 *pInput)
+{
+	Word Low = reinterpret_cast<const Word8*>(pInput)[0];		// Grab 16 bits
+	Word High = reinterpret_cast<const Word8*>(pInput)[1];
+#if defined(BURGER_BIGENDIAN)
+	Word16 Result = static_cast<Word16>((Low<<8) | High);	// PPC likes |
+#else
+	Word16 Result = static_cast<Word16>(Low + (High<<8));	// Intel likes +
 #endif
+	return Result;
+}
 #endif
 
 /*! ************************************
@@ -315,25 +325,24 @@ BURGER_DECLSPECNAKED Word16 BURGER_API Burger::NativeEndian::LoadAny(const Word1
 
 ***************************************/
 
-#if !defined(__WATCOMC__)		// Inlined
+#if defined(BURGER_WATCOM)		// Inlined
 
-#if !defined(BURGER_X86) || (defined(BURGER_MACOSX) && defined(BURGER_X86)) || defined(DOXYGEN)
-Word32 BURGER_API Burger::NativeEndian::LoadAny(const Word32 *pInput)
-{
-	Word Low1 = reinterpret_cast<const Word8*>(pInput)[0];		// Grab 32 bits
-	Word Low2 = reinterpret_cast<const Word8*>(pInput)[1];
-	Word Low3 = reinterpret_cast<const Word8*>(pInput)[2];
-	Word Low4 = reinterpret_cast<const Word8*>(pInput)[3];
-#if defined(BURGER_BIGENDIAN)
-	Word32 Result = static_cast<Word32>((Low1<<24) | (Low2<<16) |
-		(Low3<<8) | Low4);	// PPC likes |
-#else
-	Word32 Result = static_cast<Word32>(Low1 + (Low2<<8) +
-		(Low3<<16) + (Low4<<24));	// Intel likes +
-#endif
-	return Result;
-}
-#else
+#elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)) && !defined(DOXYGEN)
+// __ZN6Burger12NativeEndian7LoadAnyEPKm = Word16 BURGER_API Burger::NativeEndian::LoadAny(const Word32 * /* pInput */)
+__asm__(
+"	.align	4,0x90\n"
+"	.globl __ZN6Burger12NativeEndian7LoadAnyEPKm\n"
+"__ZN6Burger12NativeEndian7LoadAnyEPKm:\n"
+"	movb	(%eax),%cl\n"
+"	movb	1(%eax),%ch\n"
+"	bswapl	%ecx\n"
+"	movb	2(%eax),%ch\n"
+"	movb	3(%eax),%cl\n"
+"	bswapl	%ecx\n"
+"	movl	%ecx,%eax\n"
+"	ret\n"
+);
+#elif defined(BURGER_X86) && !defined(DOXYGEN)
 BURGER_DECLSPECNAKED Word32 BURGER_API Burger::NativeEndian::LoadAny(const Word32 * /* pInput */)
 {
 	BURGER_ASM {
@@ -349,7 +358,22 @@ BURGER_DECLSPECNAKED Word32 BURGER_API Burger::NativeEndian::LoadAny(const Word3
 		ret
 	}
 }
+#else
+Word32 BURGER_API Burger::NativeEndian::LoadAny(const Word32 *pInput)
+{
+	Word Low1 = reinterpret_cast<const Word8*>(pInput)[0];		// Grab 32 bits
+	Word Low2 = reinterpret_cast<const Word8*>(pInput)[1];
+	Word Low3 = reinterpret_cast<const Word8*>(pInput)[2];
+	Word Low4 = reinterpret_cast<const Word8*>(pInput)[3];
+#if defined(BURGER_BIGENDIAN)
+	Word32 Result = static_cast<Word32>((Low1<<24) | (Low2<<16) |
+		(Low3<<8) | Low4);	// PPC likes |
+#else
+	Word32 Result = static_cast<Word32>(Low1 + (Low2<<8) +
+		(Low3<<16) + (Low4<<24));	// Intel likes +
 #endif
+	return Result;
+}
 #endif
 
 /*! ************************************
@@ -394,7 +418,7 @@ BURGER_DECLSPECNAKED Word64 BURGER_API Burger::NativeEndian::LoadAny(const Word6
 }
 
 #else
-#if !defined(BURGER_X86) || (defined(BURGER_MACOSX) && defined(BURGER_X86)) || defined(DOXYGEN)
+#if !defined(BURGER_X86) || ((defined(BURGER_MACOSX) || defined(BURGER_IOS)) && defined(BURGER_X86)) || defined(DOXYGEN)
 Word64 BURGER_API Burger::NativeEndian::LoadAny(const Word64 *pInput)
 {
 	Word64 Result;		// Make sure it's aligned
@@ -548,7 +572,7 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	}
 }
 
-#elif !defined(BURGER_X86) || (defined(BURGER_MACOSX) && defined(BURGER_X86)) || defined(DOXYGEN)
+#elif !defined(BURGER_X86) || ((defined(BURGER_MACOSX) || defined(BURGER_IOS)) && defined(BURGER_X86)) || defined(DOXYGEN)
 double BURGER_API Burger::NativeEndian::LoadAny(const double *pInput)
 {
 	double dResult;		// Make sure it's aligned
@@ -1183,14 +1207,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 
 ***************************************/
 
-#if defined(__WATCOMC__) || (defined(__MWERKS__) && defined(BURGER_68K))
+#if defined(BURGER_WATCOM) || (defined(BURGER_METROWERKS) && defined(BURGER_68K))
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
-#elif defined(BURGER_POWERPC) && defined(__MWERKS__)
-#elif defined(BURGER_X86) && defined(__MWERKS__)
+#elif defined(BURGER_POWERPC) && defined(BURGER_METROWERKS)
+#elif defined(BURGER_X86) && defined(BURGER_METROWERKS)
 #elif defined(__ICL)
 #elif (defined(BURGER_X86) || defined(BURGER_AMD64)) && (_MSC_VER)
 
-#elif defined(BURGER_ARM) && defined(__MWERKS__)
+#elif defined(BURGER_ARM) && defined(BURGER_METROWERKS)
 
 asm Word16 BURGER_API Burger::SwapEndian::Load(Word16 /* uInput */)
 {

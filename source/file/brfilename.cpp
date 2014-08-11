@@ -1114,7 +1114,7 @@ void Burger::Filename::Expand(void)
 
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
 const char *Burger::Filename::GetNative(void)
 {
 	return m_pFilename;
@@ -1141,7 +1141,7 @@ const char *Burger::Filename::GetNative(void)
 
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
 void Burger::Filename::SetFromNative(const char *pInput)
 {
 	Set(pInput);

@@ -299,6 +299,19 @@ namespace Burger {
 	BURGER_INLINE Int32 ClampZero(Int32 iInput) { if (iInput<0) { iInput=0; } return iInput; }
 	BURGER_INLINE Int64 ClampZero(Int64 iInput) { if (iInput<0) { iInput=0; } return iInput; }
 #endif
+	BURGER_INLINE Int32 Min(Int32 iA,Int32 iB) { return ((iA < iB) ? iA : iB); }
+	BURGER_INLINE Int64 Min(Int64 iA,Int64 iB) { return ((iA < iB) ? iA : iB); }
+	BURGER_INLINE Word32 Min(Word32 uA,Word32 uB) { return ((uA < uB) ? uA : uB); }
+	BURGER_INLINE Word64 Min(Word64 uA,Word64 uB) { return ((uA < uB) ? uA : uB); }
+	BURGER_INLINE Int32 Max(Int32 iA,Int32 iB) { return ((iA > iB) ? iA : iB); }
+	BURGER_INLINE Int64 Max(Int64 iA,Int64 iB) { return ((iA > iB) ? iA : iB); }
+	BURGER_INLINE Word32 Max(Word32 uA,Word32 uB) { return ((uA > uB) ? uA : uB); }
+	BURGER_INLINE Word64 Max(Word64 uA,Word64 uB) { return ((uA > uB) ? uA : uB); }
+	BURGER_INLINE Int32 Clamp(Int32 iInput,Int32 iMin,Int32 iMax) { iInput = Max(iInput,iMin); return Min(iInput,iMax); }
+	BURGER_INLINE Int64 Clamp(Int64 iInput,Int64 iMin,Int64 iMax) { iInput = Max(iInput,iMin); return Min(iInput,iMax); }
+	BURGER_INLINE Word32 Clamp(Word32 uInput,Word32 uMin,Word32 uMax) { uInput = Max(uInput,uMin); return Min(uInput,uMax); }
+	BURGER_INLINE Word64 Clamp(Word64 uInput,Word64 uMin,Word64 uMax) { uInput = Max(uInput,uMin); return Min(uInput,uMax); }
+
 #if defined(BURGER_WATCOM)
 	BURGER_INLINE Fixed32 FixedMultiply(Fixed32 fInput1,Fixed32 fInput2) { return BurgerFixedMathMultiply(fInput1,fInput2); }
 	BURGER_INLINE Fixed32 FixedDivide(Fixed32 fInputNumerator,Fixed32 fInputDenominator) { return BurgerFixedMathDivide(fInputNumerator,fInputDenominator); }

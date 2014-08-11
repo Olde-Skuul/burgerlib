@@ -39,7 +39,9 @@
 		<ClInclude Include="..\source\ansi\brstdouthelpers.h" />
 		<ClInclude Include="..\source\audio\brsound.h" />
 		<ClInclude Include="..\source\brgl.h" />
+		<ClInclude Include="..\source\brglext.h" />
 		<ClInclude Include="..\source\brglut.h" />
+		<ClInclude Include="..\source\brglxext.h" />
 		<ClInclude Include="..\source\brstartup.h" />
 		<ClInclude Include="..\source\commandline\brcommandparameter.h" />
 		<ClInclude Include="..\source\commandline\brcommandparameterbooltrue.h" />
@@ -118,6 +120,7 @@
 		<ClInclude Include="..\source\lowlevel\brperforce.h" />
 		<ClInclude Include="..\source\lowlevel\brrandommanager.h" />
 		<ClInclude Include="..\source\lowlevel\brrunqueue.h" />
+		<ClInclude Include="..\source\lowlevel\brstaticrtti.h" />
 		<ClInclude Include="..\source\lowlevel\brtick.h" />
 		<ClInclude Include="..\source\lowlevel\brtimedate.h" />
 		<ClInclude Include="..\source\lowlevel\brtypes.h" />
@@ -233,6 +236,7 @@
 		<ClCompile Include="..\source\lowlevel\brperforce.cpp" />
 		<ClCompile Include="..\source\lowlevel\brrandommanager.cpp" />
 		<ClCompile Include="..\source\lowlevel\brrunqueue.cpp" />
+		<ClCompile Include="..\source\lowlevel\brstaticrtti.cpp" />
 		<ClCompile Include="..\source\lowlevel\brtick.cpp" />
 		<ClCompile Include="..\source\lowlevel\brtimedate.cpp" />
 		<ClCompile Include="..\source\math\brfixedmatrix3d.cpp" />

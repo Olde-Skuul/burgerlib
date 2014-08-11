@@ -34,6 +34,9 @@ class ConsoleApp : public Burger::Base {
 	const char **m_ppArgv;	///< Arguments passed to the console
 	int m_iArgc;			///< Number of valid arguments
 	Word m_bLaunchedFromDesktop;	///< \ref TRUE if the application was launched by double clicking from a desktop
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+	const char **m_ppOldArgv;		///< Saved pointer to the global __argv for restoring on exit
+#endif
 public:
 	typedef int (BURGER_API *CallbackProc)(ConsoleApp *pThis,const char *pInputFilename,const char *pOutputFilename);	///< Callback for doing the application's work
 	typedef void (BURGER_API *UsageProc)(ConsoleApp *pThis); ///< Callback for printing instructions

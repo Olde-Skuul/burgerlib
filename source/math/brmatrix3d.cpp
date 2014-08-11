@@ -13,6 +13,7 @@
 
 #include "brmatrix3d.h"
 #include "brfixedmatrix3d.h"
+#include "brmatrix4d.h"
 
 /*! ************************************
 
@@ -141,6 +142,37 @@ void BURGER_API Burger::Matrix3D_t::Set(const FixedMatrix3D_t *pInput)
 	FixedToFloat(&z.x,&pInput->z.x);
 	FixedToFloat(&z.y,&pInput->z.y);
 	FixedToFloat(&z.z,&pInput->z.z);
+}
+
+/*! ************************************
+
+	\brief Copy a Matrix4D_t to a Matrix3D_t
+
+	Copy a 4x4 matrix into this one by truncating all of the w components
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>x</th><td>pInput->x.x</td>	<td>pInput->x.y</td>	<td>pInput->x.z</td></tr>
+	<tr><th>y</th><td>pInput->y.x</td>	<td>pInput->y.y</td>	<td>pInput->y.z</td></tr>
+	<tr><th>z</th><td>pInput->z.x</td>	<td>pInput->z.y</td>	<td>pInput->z.z</td></tr>
+	</table>
+
+	\param pInput Pointer to a valid Matrix4D_t for copying
+	\sa Set(const Matrix3D_t *) or Matrix4D_t::Set(const Matrix3D_t *)
+
+***************************************/
+
+void BURGER_API Burger::Matrix3D_t::Set(const Matrix4D_t *pInput)
+{
+	x.x = pInput->x.x;
+	x.y = pInput->x.y;
+	x.z = pInput->x.z;
+	y.x = pInput->y.x;
+	y.y = pInput->y.y;
+	y.z = pInput->y.z;
+	z.x = pInput->z.x;
+	z.y = pInput->z.y;
+	z.z = pInput->z.z;
 }
 
 /*! ************************************
@@ -1275,6 +1307,40 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetFromQuaternion(const Vector4D_t 
 
 /*! ************************************
 
+	\brief Create a 3D scale matrix
+
+	Sets the x.x, y.y and z.z components to the input values
+	and all others are set to 0.0f
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>x</td>	<td>fX</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>y</td>	<td>0</td>	<td>fY</td>	<td>0</td></tr>
+	<tr><th>z</td>	<td>0</td>	<td>0</td>	<td>fZ</td></tr>
+	</table>
+
+	\param fX new x.x component
+	\param fY new y.y component
+	\param fZ new z.z component
+	\sa Identity(void) and Multiply(float,float,float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix3D_t::SetScale(float fX,float fY,float fZ)
+{
+	x.x = fX;
+	x.y = 0.0f;
+	x.z = 0.0f;
+	y.x = 0.0f;
+	y.y = fY;
+	y.z = 0.0f;
+	z.x = 0.0f;
+	z.y = 0.0f;
+	z.z = fZ;
+}
+
+/*! ************************************
+
 	\brief Perform a matrix transposition.
 	
 	Swap the entries x.y and y.x, x.z and z.x, y,z and z.y 
@@ -1507,6 +1573,7 @@ void BURGER_API Burger::Matrix3D_t::GetZColumn(Vector3D_t *pOutput) const
 
 /*! ************************************
 
+	\fn void Burger::Matrix3D_t::SetXRow(const Vector3D_t *pInput)
 	\brief Set the X row of a matrix
 	
 	Overwrite the X row of the matrix with the input vector
@@ -1514,140 +1581,237 @@ void BURGER_API Burger::Matrix3D_t::GetZColumn(Vector3D_t *pOutput) const
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
 	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
 	<tr><th>x</th><td>pInput->x</td>	<td>pInput->y</td>	<td>pInput->z</td></tr>
-	<tr><th>y</th><td>yx</td>	<td>yy</td>	<td>yz</td></tr>
-	<tr><th>z</th><td>zx</td>	<td>zy</td>	<td>zz</td></tr>
+	<tr><th>y</th><td>y.x</td>	<td>y.y</td>	<td>y.z</td></tr>
+	<tr><th>z</th><td>z.x</td>	<td>z.y</td>	<td>z.z</td></tr>
 	</table>
 
 	\param pInput Pointer to a Vector3D_t structure that has the new X row
+	\sa SetXRow(float,float,float)
 
 ***************************************/
 
-void BURGER_API Burger::Matrix3D_t::SetXRow(const Vector3D_t *pInput)
-{
-	x.x = pInput->x;
-	x.y = pInput->y;
-	x.z = pInput->z;
-}
+/*! ************************************
+
+	\fn void Burger::Matrix3D_t::SetXRow(float fX,float fY,float fZ)
+	\brief Set the X row of a matrix
+	
+	Overwrite the X row of the matrix with the input values
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>x</th><td>fX</td>	<td>fY</td>	<td>fZ</td></tr>
+	<tr><th>y</th><td>y.x</td>	<td>y.y</td>	<td>y.z</td></tr>
+	<tr><th>z</th><td>z.x</td>	<td>z.y</td>	<td>z.z</td></tr>
+	</table>
+
+	\param fX New x.x value
+	\param fY New x.y value
+	\param fZ New x.z value
+	\sa SetXRow(const Vector3D_t *)
+
+***************************************/
+
 
 /*! ************************************
 
+	\fn void Burger::Matrix3D_t::SetYRow(const Vector3D_t *pInput)
 	\brief Set the Y row of a matrix
 	
 	Overwrite the Y row of the matrix with the input vector
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
 	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
-	<tr><th>x</th><td>xx</td>	<td>xy</td>	<td>xz</td></tr>
+	<tr><th>x</th><td>x.x</td>	<td>x.y</td>	<td>x.z</td></tr>
 	<tr><th>y</th><td>pInput->x</td>	<td>pInput->y</td>	<td>pInput->z</td></tr>
-	<tr><th>z</th><td>zx</td>	<td>zy</td>	<td>zz</td></tr>
+	<tr><th>z</th><td>z.x</td>	<td>z.y</td>	<td>z.z</td></tr>
 	</table>
 
 	\param pInput Pointer to a Vector3D_t structure that has the new Y row
+	\sa SetYRow(float,float,float)
 
 ***************************************/
 
-void BURGER_API Burger::Matrix3D_t::SetYRow(const Vector3D_t *pInput)
-{
-	y.x = pInput->x;
-	y.y = pInput->y;
-	y.z = pInput->z;
-}
+/*! ************************************
+
+	\fn void Burger::Matrix3D_t::SetYRow(float fX,float fY,float fZ)
+	\brief Set the Y row of a matrix
+	
+	Overwrite the Y row of the matrix with the input values
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>x</th><td>x.x</td>	<td>x.y</td>	<td>x.z</td></tr>
+	<tr><th>y</th><td>fX</td>	<td>fY</td>	<td>fZ</td></tr>
+	<tr><th>z</th><td>z.x</td>	<td>z.y</td>	<td>z.z</td></tr>
+	</table>
+
+	\param fX New y.x value
+	\param fY New y.y value
+	\param fZ New y.z value
+	\sa SetYRow(const Vector3D_t *)
+
+***************************************/
 
 /*! ************************************
 
+	\fn void Burger::Matrix3D_t::SetZRow(const Vector3D_t *pInput)
 	\brief Set the Z row of a matrix
 
 	Overwrite the Z row of the matrix with the input vector
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
 	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
-	<tr><th>x</th><td>xx</td>	<td>xy</td>	<td>xz</td></tr>
-	<tr><th>y</th><td>yx</td>	<td>yy</td>	<td>yz</td></tr>
+	<tr><th>x</th><td>x.x</td>	<td>x.y</td>	<td>x.z</td></tr>
+	<tr><th>y</th><td>y.x</td>	<td>y.y</td>	<td>y.z</td></tr>
 	<tr><th>z</th><td>pInput->x</td>	<td>pInput->y</td>	<td>pInput->z</td></tr>
 	</table>
 
 	\param pInput Pointer to a Vector3D_t structure that has the new Z row
+	\sa SetZRow(float,float,float)
 
 ***************************************/
 
-void BURGER_API Burger::Matrix3D_t::SetZRow(const Vector3D_t *pInput)
-{
-	z.x = pInput->x;
-	z.y = pInput->y;
-	z.z = pInput->z;
-}
+/*! ************************************
+
+	\fn void Burger::Matrix3D_t::SetZRow(float fX,float fY,float fZ)
+	\brief Set the Z row of a matrix
+	
+	Overwrite the Z row of the matrix with the input values
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>x</th><td>x.x</td>	<td>x.y</td>	<td>x.z</td></tr>
+	<tr><th>y</th><td>y.x</td>	<td>y.y</td>	<td>y.z</td></tr>
+	<tr><th>z</th><td>fX</td>	<td>fY</td>	<td>fZ</td></tr>
+	</table>
+
+	\param fX New z.x value
+	\param fY New z.y value
+	\param fZ New z.z value
+	\sa SetZRow(const Vector3D_t *)
+
+***************************************/
 
 /*! ************************************
 
+	\fn void Burger::Matrix3D_t::SetXColumn(const Vector3D_t *pInput)
 	\brief Set the X column of a matrix
 	
 	Overwrite the X column of the matrix with the input vector
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
 	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
-	<tr><th>x</th><td>pInput->x</td>	<td>xy</td>	<td>xz</td></tr>
-	<tr><th>y</th><td>pInput->y</td>	<td>yy</td>	<td>yz</td></tr>
-	<tr><th>z</th><td>pInput->z</td>	<td>zy</td>	<td>zz</td></tr>
+	<tr><th>x</th><td>pInput->x</td>	<td>x.y</td>	<td>x.z</td></tr>
+	<tr><th>y</th><td>pInput->y</td>	<td>y.y</td>	<td>y.z</td></tr>
+	<tr><th>z</th><td>pInput->z</td>	<td>z.y</td>	<td>z.z</td></tr>
 	</table>
 
 	\param pInput Pointer to a Vector3D_t structure that has the new X column
+	\sa SetXColumn(float,float,float)
 
 ***************************************/
 
-void BURGER_API Burger::Matrix3D_t::SetXColumn(const Vector3D_t *pInput)
-{
-	x.x = pInput->x;
-	y.x = pInput->y;
-	z.x = pInput->z;
-}
+/*! ************************************
+
+	\fn void Burger::Matrix3D_t::SetXColumn(float fX,float fY,float fZ)
+	\brief Set the X column of a matrix
+	
+	Overwrite the X column of the matrix with the input values
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>x</th><td>fX</td>	<td>x.y</td>	<td>x.z</td></tr>
+	<tr><th>y</th><td>fY</td>	<td>y.y</td>	<td>y.z</td></tr>
+	<tr><th>z</th><td>fZ</td>	<td>z.y</td>	<td>z.z</td></tr>
+	</table>
+
+	\param fX New x.x value
+	\param fY New y.x value
+	\param fZ New z.x value
+	\sa SetXColumn(const Vector3D_t *)
+
+***************************************/
 
 /*! ************************************
 
+	\fn void Burger::Matrix3D_t::SetYColumn(const Vector3D_t *pInput)
 	\brief Set the Y column of a matrix
 	
 	Overwrite the Y column of the matrix with the input vector
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
 	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
-	<tr><th>x</th><td>xx</td><td>pInput->x</td>	<td>xz</td></tr>
-	<tr><th>y</th><td>yx</td><td>pInput->y</td>	<td>yz</td></tr>
-	<tr><th>z</th><td>zx</td><td>pInput->z</td>	<td>zz</td></tr>
+	<tr><th>x</th><td>x.x</td><td>pInput->x</td>	<td>x.z</td></tr>
+	<tr><th>y</th><td>y.x</td><td>pInput->y</td>	<td>y.z</td></tr>
+	<tr><th>z</th><td>z.x</td><td>pInput->z</td>	<td>z.z</td></tr>
 	</table>
 
 	\param pInput Pointer to a Vector3D_t structure that has the new Y column
+	\sa SetYColumn(float,float,float)
 
 ***************************************/
 
-void BURGER_API Burger::Matrix3D_t::SetYColumn(const Vector3D_t *pInput)
-{
-	x.y = pInput->x;
-	y.y = pInput->y;
-	z.y = pInput->z;
-}
+/*! ************************************
+
+	\fn void Burger::Matrix3D_t::SetYColumn(float fX,float fY,float fZ)
+	\brief Set the Y column of a matrix
+	
+	Overwrite the Y column of the matrix with the input values
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>x</th><td>x.x</td>	<td>fX</td>	<td>x.z</td></tr>
+	<tr><th>y</th><td>y.x</td>	<td>fY</td>	<td>y.z</td></tr>
+	<tr><th>z</th><td>z.x</td>	<td>fZ</td>	<td>z.z</td></tr>
+	</table>
+
+	\param fX New x.y value
+	\param fY New y.y value
+	\param fZ New z.y value
+	\sa SetYColumn(const Vector3D_t *)
+
+***************************************/
+
 
 /*! ************************************
 
+	\fn void Burger::Matrix3D_t::SetZColumn(const Vector3D_t *pInput)
 	\brief Set the Z column of a matrix
 	
 	Overwrite the Z column of the matrix with the input vector
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
 	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
-	<tr><th>x</th><td>xx</td><td>xy</td><td>pInput->x</td>	</tr>
-	<tr><th>y</th><td>yx</td><td>yy</td><td>pInput->y</td>	</tr>
-	<tr><th>z</th><td>zx</td><td>zy</td><td>pInput->z</td>	</tr>
+	<tr><th>x</th><td>x.x</td><td>x.y</td><td>pInput->x</td>	</tr>
+	<tr><th>y</th><td>y.x</td><td>y.y</td><td>pInput->y</td>	</tr>
+	<tr><th>z</th><td>z.x</td><td>z.y</td><td>pInput->z</td>	</tr>
 	</table>
 
 	\param pInput Pointer to a Vector3D_t structure that has the new Z column
+	\sa SetZColumn(float,float,float)
 
 ***************************************/
 
-void BURGER_API Burger::Matrix3D_t::SetZColumn(const Vector3D_t *pInput)
-{
-	x.z = pInput->x;
-	y.z = pInput->y;
-	z.z = pInput->z;
-}
+/*! ************************************
+
+	\fn void Burger::Matrix3D_t::SetZColumn(float fX,float fY,float fZ)
+	\brief Set the Z column of a matrix
+	
+	Overwrite the Z column of the matrix with the input values
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>x</th><td>x.x</td>	<td>x.y</td>	<td>fX</td></tr>
+	<tr><th>y</th><td>y.x</td>	<td>y.y</td>	<td>fY</td></tr>
+	<tr><th>z</th><td>z.x</td>	<td>z.y</td>	<td>fZ</td></tr>
+	</table>
+
+	\param fX New x.z value
+	\param fY New y.z value
+	\param fZ New z.z value
+	\sa SetZColumn(const Vector3D_t *)
+
+***************************************/
 
 /*! ************************************
 
@@ -1705,38 +1869,6 @@ void BURGER_API Burger::Matrix3D_t::Multiply(const Matrix3D_t *pInput)
 	z.y = fZY;
 	z.z = fZZ;
 }
-#if 0
-BURGER_DECLSPECNAKED Burger::Matrix3D_t::Multiply(const Matrix3D_t *pInput)
-{
-	BURGER_ASM {
-	sub		esp,40
-	mov		eax,[ecx+0]
-	mov		[esp+4],eax
-	mov		eax,[ecx+4]
-	mov		[esp+8],eax
-	mov		eax,[ecx+8]
-	mov		[esp+12],eax
-	mov		eax,[ecx+12]
-	mov		[esp+16],eax
-	mov		eax,[ecx+16]
-	mov		[esp+20],eax
-	mov		eax,[ecx+20]
-	mov		[esp+24],eax
-	mov		eax,[ecx+24]
-	mov		[esp+28],eax
-	mov		eax,[ecx+28]
-	mov		[esp+32],eax
-	mov		eax,[ecx+32]
-	mov		[esp+36],eax
-	mov		[esp+0],edx
-	lea		edx,[esp+4]
-	call	Matrix3D_t::Multiply(const Matrix3D_t *,const Matrix3D_t*)
-	mov		eax,[esp+36]
-	add		esp,40
-	jmp		eax
-	}
-}
-#endif
 
 /*! ************************************
 
@@ -1970,19 +2102,19 @@ BURGER_DECLSPECNAKED void BURGER_API Burger::Matrix3D_t::Multiply(const Matrix3D
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
 	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
 	<tr><th>x</th>
-	<td>(xx*fScale)</td>
-	<td>(xy*fScale)</td>
-	<td>(xz*fScale)</td>
+	<td>(x.x*fScale)</td>
+	<td>(x.y*fScale)</td>
+	<td>(x.z*fScale)</td>
 	</tr>
 	<tr><th>y</th>
-	<td>(yx*fScale)</td>
-	<td>(yy*fScale)</td>
-	<td>(yz*fScale)</td>
+	<td>(y.x*fScale)</td>
+	<td>(y.y*fScale)</td>
+	<td>(y.z*fScale)</td>
 	</tr>
 	<tr><th>z</th>
-	<td>(zx*fScale)</td>
-	<td>(zy*fScale)</td>
-	<td>(zz*fScale)</td>
+	<td>(z.x*fScale)</td>
+	<td>(z.y*fScale)</td>
+	<td>(z.z*fScale)</td>
 	</tr>
 	</table>
 
@@ -2016,19 +2148,19 @@ void BURGER_API Burger::Matrix3D_t::Multiply(float fScale)
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
 	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
 	<tr><th>x</th>
-	<td>(pInput->xx*fScale)</td>
-	<td>(pInput->xy*fScale)</td>
-	<td>(pInput->xz*fScale)</td>
+	<td>(pInput->x.x*fScale)</td>
+	<td>(pInput->x.y*fScale)</td>
+	<td>(pInput->x.z*fScale)</td>
 	</tr>
 	<tr><th>y</th>
-	<td>(pInput->yx*fScale)</td>
-	<td>(pInput->yy*fScale)</td>
-	<td>(pInput->yz*fScale)</td>
+	<td>(pInput->y.x*fScale)</td>
+	<td>(pInput->y.y*fScale)</td>
+	<td>(pInput->y.z*fScale)</td>
 	</tr>
 	<tr><th>z</th>
-	<td>(pInput->zx*fScale)</td>
-	<td>(pInput->zy*fScale)</td>
-	<td>(pInput->zz*fScale)</td>
+	<td>(pInput->z.x*fScale)</td>
+	<td>(pInput->z.y*fScale)</td>
+	<td>(pInput->z.z*fScale)</td>
 	</tr>
 	</table>
 
@@ -2049,6 +2181,206 @@ void BURGER_API Burger::Matrix3D_t::Multiply(const Matrix3D_t *pInput,float fSca
 	z.x = pInput->z.x * fScale;
 	z.y = pInput->z.y * fScale;
 	z.z = pInput->z.z * fScale;
+}
+
+/*! ************************************
+
+	\brief Multiply by an X,Y and Z scale
+
+	Using only the x.x, y.y, and z.z components of a
+	simulated matrix, perform a matrix multiply quickly
+	that would yield a multiplication vs a scale matrix
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>x</th>
+	<td>(x.x*fScaleX)</td>
+	<td>(x.y*fScaleX)</td>
+	<td>(x.z*fScaleX)</td>
+	</tr>
+	<tr><th>y</th>
+	<td>(y.x*fScaleY)</td>
+	<td>(y.y*fScaleY)</td>
+	<td>(y.z*fScaleY)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(z.x*fScaleZ)</td>
+	<td>(z.y*fScaleZ)</td>
+	<td>(z.z*fScaleZ)</td>
+	</tr>
+	</table>
+
+	\param fScaleX X scale value
+	\param fScaleY Y scale value
+	\param fScaleZ Z scale value
+	\sa Multiply(const Matrix3D_t *,float,float,float), TransposeMultiply(float,float,float) or SetScale(float,float,float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix3D_t::Multiply(float fScaleX,float fScaleY,float fScaleZ)
+{
+	x.x = x.x * fScaleX;
+	x.y = x.y * fScaleX;
+	x.z = x.z * fScaleX;
+	y.x = y.x * fScaleY;
+	y.y = y.y * fScaleY;
+	y.z = y.z * fScaleY;
+	z.x = z.x * fScaleZ;
+	z.y = z.y * fScaleZ;
+	z.z = z.z * fScaleZ;
+}
+
+/*! ************************************
+
+	\brief Multiply by an X,Y and Z scale into a copy
+
+	Using only the x.x, y.y, and z.z components of a
+	simulated matrix, perform a matrix multiply quickly
+	that would yield a multiplication vs a scale matrix
+	and store the result in this Matrix3D_t
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>x</th>
+	<td>(pInput->x.x*fScaleX)</td>
+	<td>(pInput->x.y*fScaleX)</td>
+	<td>(pInput->x.z*fScaleX)</td>
+	</tr>
+	<tr><th>y</th>
+	<td>(pInput->y.x*fScaleY)</td>
+	<td>(pInput->y.y*fScaleY)</td>
+	<td>(pInput->y.z*fScaleY)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(pInput->z.x*fScaleZ)</td>
+	<td>(pInput->z.y*fScaleZ)</td>
+	<td>(pInput->z.z*fScaleZ)</td>
+	</tr>
+	</table>
+	
+	\param pInput Pointer to a valid Matrix3D_t to apply the scale to
+	\param fScaleX X scale value
+	\param fScaleY Y scale value
+	\param fScaleZ Z scale value
+	\sa Multiply(float,float,float), TransposeMultiply(const Matrix3D_t*,float,float,float) or SetScale(float,float,float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix3D_t::Multiply(const Matrix3D_t *pInput,float fScaleX,float fScaleY,float fScaleZ)
+{
+	x.x = pInput->x.x * fScaleX;
+	x.y = pInput->x.y * fScaleX;
+	x.z = pInput->x.z * fScaleX;
+	y.x = pInput->y.x * fScaleY;
+	y.y = pInput->y.y * fScaleY;
+	y.z = pInput->y.z * fScaleY;
+	z.x = pInput->z.x * fScaleZ;
+	z.y = pInput->z.y * fScaleZ;
+	z.z = pInput->z.z * fScaleZ;
+}
+
+/*! ************************************
+
+	\brief Multiply by an X,Y and Z scale
+
+	Using only the x.x, y.y, and z.z components of a
+	simulated matrix, perform a transposed matrix multiply quickly
+	that would yield a multiplication vs a scale matrix
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>x</th>
+	<td>(x.x*fScaleX)</td>
+	<td>(x.y*fScaleY)</td>
+	<td>(x.z*fScaleZ)</td>
+	</tr>
+	<tr><th>y</th>
+	<td>(y.x*fScaleX)</td>
+	<td>(y.y*fScaleY)</td>
+	<td>(y.z*fScaleZ)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(z.x*fScaleX)</td>
+	<td>(z.y*fScaleY)</td>
+	<td>(z.z*fScaleZ)</td>
+	</tr>
+	</table>
+
+	\param fScaleX X scale value
+	\param fScaleY Y scale value
+	\param fScaleZ Z scale value
+	\sa TransposeMultiply(const Matrix3D_t *,float,float,float), Multiply(float,float,float) or SetScale(float,float,float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix3D_t::TransposeMultiply(float fScaleX,float fScaleY,float fScaleZ)
+{
+	x.x = x.x * fScaleX;
+	x.y = x.y * fScaleX;
+	x.z = x.z * fScaleX;
+	y.x = y.x * fScaleY;
+	y.y = y.y * fScaleY;
+	y.z = y.z * fScaleY;
+	z.x = z.x * fScaleZ;
+	z.y = z.y * fScaleZ;
+	z.z = z.z * fScaleZ;
+}
+
+/*! ************************************
+
+	\brief Multiply by an X,Y and Z scale into a copy
+
+	Using only the x.x, y.y, and z.z components of a
+	simulated matrix, perform a transposed matrix multiply quickly
+	that would yield a multiplication vs a scale matrix
+	and store the result in this Matrix3D_t
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>x</th>
+	<td>(pInput->x.x*fScaleX)</td>
+	<td>(pInput->x.y*fScaleY)</td>
+	<td>(pInput->x.z*fScaleZ)</td>
+	</tr>
+	<tr><th>y</th>
+	<td>(pInput->y.x*fScaleX)</td>
+	<td>(pInput->y.y*fScaleY)</td>
+	<td>(pInput->y.z*fScaleZ)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(pInput->z.x*fScaleX)</td>
+	<td>(pInput->z.y*fScaleY)</td>
+	<td>(pInput->z.z*fScaleZ)</td>
+	</tr>
+	</table>
+	
+	\param pInput Pointer to a valid Matrix3D_t to apply the scale to
+	\param fScaleX X scale value
+	\param fScaleY Y scale value
+	\param fScaleZ Z scale value
+	\sa TransposeMultiply(const Matrix3D_t *,float,float,float), Multiply(const Matrix3D_t *,float,float,float) or SetScale(float,float,float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix3D_t::TransposeMultiply(const Matrix3D_t *pInput,float fScaleX,float fScaleY,float fScaleZ)
+{
+	x.x = pInput->x.x * fScaleX;
+	x.y = pInput->x.y * fScaleY;
+	x.z = pInput->x.z * fScaleZ;
+	y.x = pInput->y.x * fScaleX;
+	y.y = pInput->y.y * fScaleY;
+	y.z = pInput->y.z * fScaleZ;
+	z.x = pInput->z.x * fScaleX;
+	z.y = pInput->z.y * fScaleY;
+	z.z = pInput->z.z * fScaleZ;
 }
 
 /*! ************************************
@@ -2650,12 +2982,126 @@ BURGER_DECLSPECNAKED void BURGER_API Burger::Matrix3D_t::TransposeTransformAdd(V
 #endif
 
 /*! ************************************
+	
+	\brief Rotate a matrix in the Y axis (Yaw)
+
+	Given a Y angle in radians, rotate the matrix accordingly
+
+	fCos = Cos(fYaw); fSin = Sin(fYaw);
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>x</th><td>(z.x*fSin)+(x.x*fCos)</td><td>(z.y*fSin)+(x.y*fCos)</td><td>(z.z*fSin)+(x.z*fCos)</td></tr>
+	<tr><th>y</th><td>y.x</td><td>y.y</td><td>y.z</td></tr>
+	<tr><th>z</th><td>(z.x*fCos)-(x.x*fSin)</td><td>(z.y*fCos)-(x,y*fSin)</td><td>(z.z*fCos)-(x.z*fSin)</td></tr>
+	</table>
+
+	\param fYaw Angle in radians to yaw the matrix
+	\sa Pitch(float) or Roll(float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix3D_t::Yaw(float fYaw)
+{
+	float fCos = Cos(fYaw);
+	float fSin = Sin(fYaw);
+
+	float fXX = x.x;
+	float fXY = x.y;
+	float fXZ = x.z;
+
+	x.x = (z.x*fSin)+(fXX*fCos);
+	x.y = (z.y*fSin)+(fXY*fCos);
+	x.z = (z.z*fSin)+(fXZ*fCos);
+
+	z.x = (z.x*fCos)-(fXX*fSin);
+	z.y = (z.y*fCos)-(fXY*fSin);
+	z.z = (z.z*fCos)-(fXZ*fSin);
+}
+
+/*! ************************************
+	
+	\brief Rotate a matrix in the X axis (Pitch)
+
+	Given a X angle in radians, rotate the matrix accordingly
+
+	fCos = Cos(fPitch); fSin = Sin(fPitch);
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>x</th><td>x.x</td><td>x.y</td><td>x.z</td></tr>
+	<tr><th>y</th><td>(z.x*fSin)+(y.x*fCos)</td><td>(z.y*fSin)+(y.y*fCos)</td><td>(z.z*fSin)+(y.z*fCos)</td></tr>
+	<tr><th>z</th><td>(z.x*fCos)-(y.x*fSin)</td><td>(z.y*fCos)-(y.y*fSin)</td><td>(z.z*fCos)-(y.z*fSin)</td></tr>
+	</table>
+
+	\param fPitch Angle in radians to pitch the matrix
+	\sa Yaw(float) or Roll(float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix3D_t::Pitch(float fPitch)
+{
+	float fCos = Cos(fPitch);
+	float fSin = Sin(fPitch);
+
+	float fYX = y.x;
+	float fYY = y.y;
+	float fYZ = y.z;
+
+	y.x = (z.x*fSin)+(fYX*fCos);
+	y.y = (z.y*fSin)+(fYY*fCos);
+	y.z = (z.z*fSin)+(fYZ*fCos);
+
+	z.x = (z.x*fCos)-(fYX*fSin);
+	z.y = (z.y*fCos)-(fYY*fSin);
+	z.z = (z.z*fCos)-(fYZ*fSin);
+}
+
+/*! ************************************
+	
+	\brief Rotate a matrix in the Z axis (Roll)
+
+	Given a Z angle in radians, rotate the matrix accordingly
+
+	fCos = Cos(fRoll); fSin = Sin(fRoll);
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>x</th><td>(y.x*fSin)+(x.x*fCos)</td><td>(y.y*fSin)+(x.y*fCos)</td><td>(y.z*fSin)+(x.z*fCos)</td></tr>
+	<tr><th>y</th><td>(y.x*fCos)-(x.x*fSin)</td><td>(y.y*fCos)-(x.y*fSin)</td><td>(y.z*fCos)-(x.z*fSin)</td></tr>
+	<tr><th>z</th><td>z.x</td><td>z.y</td><td>z.z</td></tr>
+	</table>
+
+	\param fRoll Angle in radians to roll the matrix
+	\sa Yaw(float) or Pitch(float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix3D_t::Roll(float fRoll)
+{
+	float fCos = Cos(fRoll);
+	float fSin = Sin(fRoll);
+
+	float fXX = x.x;
+	float fXY = x.y;
+	float fXZ = x.z;
+
+	x.x = (y.x*fSin)+(fXX*fCos);
+	x.y = (y.y*fSin)+(fXY*fCos);
+	x.z = (y.z*fSin)+(fXZ*fCos);
+
+	y.x = (y.x*fCos)-(fXX*fSin);
+	y.y = (y.y*fCos)-(fXY*fSin);
+	y.z = (y.z*fCos)-(fXZ*fSin);
+}
+
+/*! ************************************
 
 	\brief Constant 3x3 identity matrix
 
 ***************************************/
 
-const Burger::Matrix3D_t Burger::s_Matrix3DIdentity = {
+const Burger::Matrix3D_t Burger::g_Matrix3DIdentity = {
 	{1.0f,0.0f,0.0f},
 	{0.0f,1.0f,0.0f},
 	{0.0f,0.0f,1.0f}

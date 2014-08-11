@@ -308,7 +308,9 @@
 	<Files>
 		<Filter Name="source">
 			<File RelativePath="..\source\brgl.h" />
+			<File RelativePath="..\source\brglext.h" />
 			<File RelativePath="..\source\brglut.h" />
+			<File RelativePath="..\source\brglxext.h" />
 			<File RelativePath="..\source\brstartup.h" />
 			<File RelativePath="..\source\templateburgerbase.h" />
 			<File RelativePath="..\source\version.h" />
@@ -547,6 +549,8 @@
 				<File RelativePath="..\source\lowlevel\brrandommanager.h" />
 				<File RelativePath="..\source\lowlevel\brrunqueue.cpp" />
 				<File RelativePath="..\source\lowlevel\brrunqueue.h" />
+				<File RelativePath="..\source\lowlevel\brstaticrtti.cpp" />
+				<File RelativePath="..\source\lowlevel\brstaticrtti.h" />
 				<File RelativePath="..\source\lowlevel\brtick.cpp" />
 				<File RelativePath="..\source\lowlevel\brtick.h" />
 				<File RelativePath="..\source\lowlevel\brtimedate.cpp" />

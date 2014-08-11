@@ -16,7 +16,13 @@
 		<ClInclude Include="..\source\brgl.h">
 			<Filter>source</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\brglext.h">
+			<Filter>source</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\brglut.h">
+			<Filter>source</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\brglxext.h">
 			<Filter>source</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\brstartup.h">
@@ -251,6 +257,9 @@
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brrunqueue.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brstaticrtti.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brtick.h">
@@ -599,6 +608,9 @@
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brrunqueue.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brstaticrtti.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brtick.cpp">

@@ -22,6 +22,14 @@
 #include "brmactypes.h"
 #endif
 
+#if defined(BURGER_MACOSX) && !defined(__BRMACOSXTYPES_H__)
+#include "brmacosxtypes.h"
+#endif
+
+#if defined(BURGER_IOS) && !defined(__BRIOSTYPES_H__)
+#include "briostypes.h"
+#endif
+
 #if defined(BURGER_WINDOWS) && !defined(__BRWINDOWSTYPES_H__)
 #include "brwindowstypes.h"
 #endif
@@ -55,9 +63,17 @@ struct Point2D_t {
 	Word Write(FILE *fp) const;
 	Word Read(Burger::File *fp);
 	Word Write(Burger::File *fp) const;
-#if (defined(BURGER_MAC) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
+#if (defined(BURGER_MACOS)) || defined(DOXYGEN)
 	void Get(Point *pOutput) const;
 	void Set(const Point *pInput);
+#endif
+#if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+	void Get(CGPoint *pOutput) const;
+	void Set(const CGPoint *pInput);
+#if (!defined(BURGER_64BITCPU) && defined(BURGER_MACOSX)) || defined(DOXYGEN)
+	void Get(_NSPoint *pOutput) const;
+	void Set(const _NSPoint *pInput);
+#endif
 #endif
 #if (defined(BURGER_WINDOWS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
 	void Get(tagPOINT *pOutput) const;

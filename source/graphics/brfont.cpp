@@ -1,0 +1,488 @@
+/***************************************
+
+	Font base class
+
+	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+
+	It is released under an MIT Open Source license. Please see LICENSE
+	for license details. Yes, you can use it in a
+	commercial title without paying anything, just give me a credit.
+	Please? It's not like I'm asking you for money!
+
+***************************************/
+
+#include "brfont.h"
+#include "brutf8.h"
+#include "brutf32.h"
+
+/*! ************************************
+
+	\class Burger::Font
+	\brief Base class for font manager
+	
+	This is the base class for rendering with a font
+	onto a video display. 
+
+	When a font is created, it needs to be attached to a Renderer context
+	for actual low level pixel manipulation
+
+***************************************/
+
+/*! ************************************
+
+	\brief Constructor.
+	
+	Initializes all shared variables to defaults.
+	
+	\param pRenderer Pointer to a rendering context to use for
+		low level APIs
+
+***************************************/
+
+Burger::Font::Font(Renderer *pRenderer) :
+	m_pRenderer(pRenderer),
+	m_iX(0),
+	m_iY(0),
+	m_uHeight(0),
+	m_uFirst(0),
+	m_uCount(0)
+{
+}
+
+/*! ************************************
+
+	\brief Destructor.
+	
+	Does absolutely nothing
+	
+***************************************/
+
+Burger::Font::~Font()
+{
+}
+
+/*! ************************************
+
+	\brief Draws a string of UTF8 text onto the
+	screen.
+
+	Render a string of text from the X/Y origin.
+	No attempt is made to perform word wrap. The string will be clipped
+	to the Renderer class's clip boundaries
+
+	\param pInput Pointer to a UTF8 string. If \ref NULL or an empty string, perform nothing
+	\param uLength Length of the string in bytes
+	\sa GetPixelWidth(const char *,WordPtr)
+
+***************************************/
+
+void Burger::Font::Draw(const char *pInput,WordPtr uLength)
+{
+	if (uLength) {
+		const char *pEnd = pInput+uLength;
+		do {
+			Word32 uChar = UTF32::FromUTF8(pInput);
+			// Bad string?
+			if (uChar == static_cast<Word32>(UTF32::BAD)) {
+				break;
+			}
+			DrawChar(uChar);						// Draw the character
+			pInput = UTF8::NextToken(pInput);		// Next
+		} while (pInput<pEnd);
+	}
+}
+
+/*! ************************************
+
+	\brief Determine the number of pixels the string will require to render onto the display
+
+	Given a string of UTF8 text, determine the number of pixels will
+	be needed to render the string. Return the value.
+	Clipping is not considered in the calculation.
+	Any invalid UTF8 characters or characters that are not present in the font
+	are skipped.
+
+	\param pInput Pointer to a UTF8 string. If \ref NULL or an empty string, return zero
+	\param uLength Length of the string in bytes
+	\sa Draw(const char *,WordPtr)
+
+***************************************/
+
+Word Burger::Font::GetPixelWidth(const char * /* pInput */ ,WordPtr /* uLength */)
+{
+	return 0;
+}
+
+/*! ************************************
+
+	\brief Draw a single UTF32 character
+
+	Given a valid UTF32 code, draw the single character
+
+	\param uLetter UTF32 character code to draw
+	\sa Draw(const char *,WordPtr)
+
+***************************************/
+
+void Burger::Font::DrawChar(Word /* uLetter */)
+{
+}
+
+/*! ************************************
+
+	\fn Burger::Font::SetRenderer(Renderer *pRenderer)
+	\brief Set the Renderer to use
+
+	\param pRenderer Pointer to a Renderer
+	\sa GetRenderer(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Font::GetRenderer(void) const
+	\brief Get the Renderer currently in use
+
+	\return Pointer to a Renderer, can be \ref NULL if no Renderer has been set
+	\sa SetRenderer(Renderer *)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Font::SetX(int iX)
+	\brief Set the draw cursor X coordinate
+
+	Sets the x coordinate where the next draw call will operate at
+
+	\param iX New X coordinate to draw at
+	\sa GetX(void) const, SetY(int) or SetXY(int,int)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Font::SetY(int iY)
+	\brief Set the draw cursor Y coordinate
+
+	Sets the y coordinate where the next draw call will operate at
+
+	\param iY New Y coordinate to draw at
+	\sa GetY(void) const, SetX(int) or SetXY(int,int)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Font::SetXY(int iX,int iY)
+	\brief Set the draw cursor X and Y coordinate
+
+	Sets the x and y coordinates where the next draw call will operate at
+
+	\param iX New X coordinate to draw at
+	\param iY New Y coordinate to draw at
+	\sa SetX(int) or SetY(int)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Font::GetX(void) const
+	\brief Get the draw cursor X coordinate
+
+	Returns the x coordinate where the next draw call will operate at
+
+	\return Current X coordinate to draw at
+	\sa GetY(void) const, SetX(int)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Font::GetY(void) const
+	\brief Get the draw cursor Y coordinate
+
+	Returns the y coordinate where the next draw call will operate at
+
+	\return Current Y coordinate to draw at
+	\sa GetX(void) const, SetY(int)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Font::GetHeight(void) const
+	\brief Get the height of the font in pixels
+
+	Returns the height in pixels of the currently installed font typeface.
+
+	\return Height in pixels of the font typeface.
+	\sa GetFirstChar(void) const and GetCount(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Font::GetFirstChar(void) const
+	\brief Get the lowest valid character in UTF32 format that resides in the font.
+
+	Returns the lowest character code in the font. If both the first
+	and last character are zero, then no characters are valid
+
+	\return First valid UTF32 character code in the font typeface
+	\sa GetHeight(void) const and GetCount(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Font::GetCount(void) const
+	\brief Get the highest valid character in UTF32 format that resides in the font.
+
+	Returns the highest character code in the font. If both the first
+	and last character are zero, then no characters are valid
+
+	\return Last valid UTF32 character code in the font typeface
+	\sa GetFirstChar(void) const and GetHeight(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\brief Given a UTF32 character code, return the width in pixels the typeface
+	will render to.
+
+	Invalid UTF32 character codes will return a width of zero
+
+	\param uLetter UTF32 character code
+	\return Number of pixels wide this character strike
+	\sa GetPixelWidth(const char *,WordPtr)
+
+***************************************/
+
+Word Burger::Font::GetPixelWidthChar(Word uLetter)
+{
+	char Ascii[8];
+	WordPtr uLength = UTF8::FromUTF32(Ascii,uLetter);
+	return GetPixelWidth(Ascii,uLength);
+}
+
+/*! ************************************
+
+	\brief Determine the number of pixels needed to draw a numeric string
+
+	Convert the input value into a string and determine the number of pixels
+	needed to render the string
+
+	\param iInput Signed input value to convert into a numeric string
+	\sa GetPixelWidth(const char *,WordPtr)
+
+***************************************/
+
+Word Burger::Font::GetPixelWidthNumber(Int32 iInput)
+{
+	char Ascii[16];
+
+	NumberToAscii(Ascii,iInput);
+	return GetPixelWidth(Ascii,StringLength(Ascii));
+}
+
+/*! ************************************
+
+	\brief Determine the number of pixels needed to draw a numeric string
+
+	Convert the input value into a string and determine the number of pixels
+	needed to render the string
+
+	\param uInput Unsigned input value to convert into a numeric string
+	\sa GetPixelWidth(const char *,WordPtr)
+
+***************************************/
+
+Word Burger::Font::GetPixelWidthNumber(Word32 uInput)
+{
+	char Ascii[16];
+
+	NumberToAscii(Ascii,uInput);
+	return GetPixelWidth(Ascii,StringLength(Ascii));
+}
+
+/*! ************************************
+
+	\brief Determine the number of pixels needed to draw a UTF8 "C" string
+
+	\param pInput Pointer to a UTF8 "C" string or \ref NULL to get zero
+	\return The string's width in pixels
+	\sa GetPixelWidth(const char *,WordPtr)
+
+***************************************/
+
+Word Burger::Font::GetPixelWidthString(const char *pInput)
+{
+	if (pInput) {
+		return GetPixelWidth(pInput,StringLength(pInput));		// Get the text width
+	}
+	return 0;
+}
+
+/*! ************************************
+
+	\brief Draw a signed numeric string
+
+	Convert the input value into a string and draw it at the current
+	x and y coordinates
+
+	\param iInput Signed input value to convert into a numeric string
+	\sa Draw(const char *,WordPtr)
+
+***************************************/
+
+void Burger::Font::DrawNumber(Int32 iInput)
+{
+	char Ascii[16];
+
+	NumberToAscii(Ascii,iInput);
+	Draw(Ascii,StringLength(Ascii));
+}
+
+/*! ************************************
+
+	\brief Draw an unsigned numeric string
+
+	Convert the input value into a string and draw it at the current
+	x and y coordinates
+
+	\param uInput Unsigned input value to convert into a numeric string
+	\sa Draw(const char *,WordPtr)
+
+***************************************/
+
+void Burger::Font::DrawNumber(Word32 uInput)
+{
+	char Ascii[16];
+
+	NumberToAscii(Ascii,uInput);
+	Draw(Ascii,StringLength(Ascii));
+}
+
+/*! ************************************
+
+	\brief Draw a UTF8 "C" string
+
+	Take a valid UTF8 coded "C" string and draw it at the current
+	x and y coordinates
+
+	\param pInput Pointer to a valid UTF8 encoded "C" string. \ref NULL performs no action.
+	\sa Draw(const char *,WordPtr)
+
+***************************************/
+
+void Burger::Font::DrawString(const char *pInput)
+{
+	if (pInput) {
+		Draw(pInput,StringLength(pInput));		// Draw the text
+	}
+}
+
+/*! ************************************
+
+	\brief Draw a centered string
+
+	Given a UTF8 encoded "C" string and an X/Y coordinate, determine
+	the width in pixels the string will occupy and render the string
+	with it centered on the x coordinate.
+
+	\param iX X coordinate to center the string on
+	\param iY Y coordinate to draw the string at
+	\param pInput Pointer to a valid "C" string. \ref NULL performs no action.
+	\sa Draw(const char *,WordPtr)
+
+***************************************/
+
+void Burger::Font::DrawStringCenterX(int iX,int iY,const char *pInput)
+{
+	if (pInput) {				// Failsafe
+		WordPtr uLength = StringLength(pInput);			// Get the string length
+		Word uWidth = GetPixelWidth(pInput,uLength);	// Get the string width
+		m_iX = iX - static_cast<int>(uWidth>>1U);
+		m_iY = iY;
+		Draw(pInput,uLength);
+	}
+}
+
+/*! ************************************
+
+	\brief Draw a string at a specific location
+
+	Draw a UTF8 "C" string at a specific X/Y coordinate.
+
+	\param iX X coordinate to draw at
+	\param iY Y coordinate to draw at
+	\param pInput Pointer to a valid UTF8 encoded "C" string
+	\sa Draw(const char *,WordPtr)
+
+***************************************/
+
+void Burger::Font::DrawStringAtXY(int iX,int iY,const char *pInput)
+{
+	m_iX = iX;		// Set the location
+	m_iY = iY;
+	if (pInput) {	// Failsafe
+		Draw(pInput,StringLength(pInput));
+	}
+}
+
+/*! ************************************
+
+	\brief Return the number of characters in a string that would fit in a pixel width.
+	
+	To perform word wrap, this function will scan each "word" by using
+	spaces as delimiters and CR, LF and zero as an end of string.
+	It will perform a test after each word until the clip width is hit.
+	Zero can be returned if the string cannot fit due to word wrap or if the
+	string is empty.
+
+	\param pInput Pointer to a UTF8 encoded "C" string to parse.
+	\param uWidth Maximum number of pixels allowed to draw
+	\return Number of bytes of the string that can be drawn without clipping
+
+***************************************/
+
+WordPtr Burger::Font::CharsForPixelWidth(const char *pInput,Word uWidth)
+{
+	WordPtr uResult = 0;			// Number of characters that are valid
+	const char *pMark = pInput;		// Save in a temp
+	const char *pWork = pInput;		// Get the current mark
+
+	for (;;) {
+		Word uChar;					// Temp
+			
+		// Scan to the next space, CR/LF or the end of the string
+		
+		do {
+			uChar = reinterpret_cast<const Word8 *>(pWork)[0];		// Get a character
+			++pWork;												// Next char
+		} while (uChar && (uChar!=' ') && (uChar != 13) && (uChar!=10));	// End here?
+		--pWork;
+		WordPtr uTemp = static_cast<WordPtr>(pWork-pMark);			// Number of characters to test for
+
+		Word uPixelWidth = GetPixelWidth(pInput,uResult+uTemp);		// Test the pixel width
+		if (uPixelWidth>uWidth) {			// Is this too long?
+			if (!uResult) {					// Nothing parsed before
+				uResult = uTemp;			// Accept the line as is... (Bad but it will have to do)
+			}
+			break;
+		}
+		uResult+=uTemp;						// Accept this length
+		if (uChar!=' ') {					// End of the line
+			break;							// Return this NOW!!
+		}
+		pMark = pWork;						// My new starting point
+		do {
+			++pWork;						// Skip past the space
+			uChar = reinterpret_cast<const Word8 *>(pWork)[0];
+		} while (uChar==' ');				// Wait until a non-space
+	}
+	return uResult;							// No data to print
+}
+

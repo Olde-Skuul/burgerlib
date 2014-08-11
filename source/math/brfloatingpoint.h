@@ -32,7 +32,7 @@
 
 /* BEGIN */
 namespace Burger {
-#define	BURGER_PI 3.1415926535897932384626		///< Pretty accurate, eh?
+#define	BURGER_PI 3.1415926535897932384626	///< Pretty accurate, eh?
 typedef Word8 Float80Bit[10];				///< 80 bit float (Extended)
 
 struct Word32ToFloat {
@@ -265,6 +265,16 @@ namespace Burger {
 #endif
 	BURGER_INLINE float Interpolate(float fFrom,float fTo,float fFactor) { return ((fTo - fFrom) * fFactor) + fFrom; }
 	BURGER_INLINE double Interpolate(double dFrom,double dTo,double dFactor) { return ((dTo - dFrom) * dFactor) + dFrom; }
+	BURGER_INLINE float Square(float fInput) { return fInput*fInput; }
+	BURGER_INLINE double Square(double dInput) { return dInput*dInput; }
+	BURGER_INLINE float Sign(float fInput) { return ((fInput > 0.0f) ? 1.0f : ((fInput < 0.0f) ? -1.0f : 0.0f)); }
+	BURGER_INLINE double Sign(double dInput) { return ((dInput > 0.0) ? 1.0 : ((dInput < 0.0) ? -1.0 : 0.0)); }
+	BURGER_INLINE float Min(float fA,float fB) { return ((fA < fB) ? fA : fB); }
+	BURGER_INLINE double Min(double dA,double dB) { return ((dA < dB) ? dA : dB); }
+	BURGER_INLINE float Max(float fA,float fB) { return ((fA > fB) ? fA : fB); }
+	BURGER_INLINE double Max(double dA,double dB) { return ((dA > dB) ? dA : dB); }
+	BURGER_INLINE float Clamp(float fIn,float fMin,float fMax) { fIn = Max(fIn,fMin); return Min(fIn,fMax); }
+	BURGER_INLINE double Clamp(double dIn,double dMin,double dMax) { dIn = Max(dIn,dMin); return Min(dIn,dMax); }
 	extern Word BURGER_API IsNan(float fInput);
 	extern Word BURGER_API IsNan(double dInput);
 	extern Word BURGER_API IsInf(float fInput);
@@ -289,6 +299,16 @@ namespace Burger {
 	extern double BURGER_API Sin(double dInput);
 	extern float BURGER_API Cos(float fInput);
 	extern double BURGER_API Cos(double dInput);
+	extern float BURGER_API Tan(float fInput);
+	extern double BURGER_API Tan(double dInput);
+	extern float BURGER_API ASin(float fInput);
+	extern double BURGER_API ASin(double dInput);
+	extern float BURGER_API ACos(float fInput);
+	extern double BURGER_API ACos(double dInput);
+	extern float BURGER_API ATan(float fInput);
+	extern double BURGER_API ATan(double dInput);
+	extern float BURGER_API ATan2(float fSin,float fCos);
+	extern double BURGER_API ATan2(double dSin,double dCos);
 }
 /* END */
 

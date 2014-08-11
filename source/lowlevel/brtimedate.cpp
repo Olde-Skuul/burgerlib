@@ -64,7 +64,7 @@ void Burger::TimeDate_t::Clear(void)
 
 ***************************************/
 
-#if defined(BURGER_DS)
+#if defined(BURGER_DS) || defined(DOXYGEN)
 void Burger::TimeDate_t::GetTime(void)
 {
 	RTCDate MyDate;
@@ -82,7 +82,8 @@ void Burger::TimeDate_t::GetTime(void)
 		m_bSecond = static_cast<Word8>(MyTime.second);
 	}
 }
-#elif !defined(BURGER_WINDOWS) && !defined(BURGER_XBOX360) && !defined(BURGER_MAC)
+#elif !defined(BURGER_WINDOWS) && !defined(BURGER_XBOX360) && \
+	!defined(BURGER_MAC) && !defined(BURGER_MACOSX)&& !defined(BURGER_IOS)
 void Burger::TimeDate_t::GetTime(void)
 {
 	time_t mytime;

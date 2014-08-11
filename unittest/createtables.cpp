@@ -782,6 +782,214 @@ Input.Clear();
 
 #endif
 
+#if 1
+
+//
+// By using primes, it increases the chance of catching
+// a term error in the multiplication
+//
+
+#include "brmatrix3d.h"
+#include "brmatrix4d.h"
+#include "brstringfunctions.h"
+using namespace Burger;
+static void HighMathTests(void)
+{
+	{
+		Matrix3D_t Foo1;
+		Matrix3D_t Foo2;
+		Matrix3D_t Bar1;
+		Matrix3D_t Bar2;
+		Foo1.SetScale(3,5,7);
+		Foo2.SetScale(11,13,17);
+		Bar1.Multiply(&Foo1,11,13,17);
+		Bar2.Multiply(&Foo1,&Foo2);
+		ReportFailure("Fail " BURGER_MACRO_TO_STRING(__LINE__),MemoryCompare(&Bar1,&Bar2,sizeof(Bar1)));
+		Bar1.TransposeMultiply(&Foo1,11,13,17);
+		Bar2.Multiply(&Foo2,&Foo1);
+		ReportFailure("Fail " BURGER_MACRO_TO_STRING(__LINE__),MemoryCompare(&Bar1,&Bar2,sizeof(Bar1)));
+		Foo1.x.x = 3;
+		Foo1.x.y = 5;
+		Foo1.x.z = 7;
+		Foo1.y.x = 11;
+		Foo1.y.y = 13;
+		Foo1.y.z = 17;
+		Foo1.z.x = 19;
+		Foo1.z.y = 23;
+		Foo1.z.z = 29;
+		Bar1.Multiply(&Foo1,11,13,17);
+		Bar2.Multiply(&Foo1,&Foo2);
+		ReportFailure("Fail " BURGER_MACRO_TO_STRING(__LINE__),MemoryCompare(&Bar1,&Bar2,sizeof(Bar1)));
+		Bar1.TransposeMultiply(&Foo1,11,13,17);
+		Bar2.Multiply(&Foo2,&Foo1);
+		ReportFailure("Fail " BURGER_MACRO_TO_STRING(__LINE__),MemoryCompare(&Bar1,&Bar2,sizeof(Bar1)));
+	}
+	{
+		Matrix4D_t Foo1;
+		Matrix4D_t Foo2;
+		Matrix4D_t Bar1;
+		Matrix4D_t Bar2;
+		Foo1.SetScale(3,5,7,53);
+		Foo2.SetScale(11,13,17);
+		Bar1.Multiply(&Foo1,11,13,17);
+		Bar2.Multiply(&Foo1,&Foo2);
+		ReportFailure("Fail " BURGER_MACRO_TO_STRING(__LINE__),MemoryCompare(&Bar1,&Bar2,sizeof(Bar1)));
+		Bar1.TransposeMultiply(&Foo1,11,13,17);
+		Bar2.Multiply(&Foo2,&Foo1);
+		ReportFailure("Fail " BURGER_MACRO_TO_STRING(__LINE__),MemoryCompare(&Bar1,&Bar2,sizeof(Bar1)));
+
+		Foo2.SetScale(11,13,17,31);
+		Bar1.Multiply(&Foo1,11,13,17,31);
+		Bar2.Multiply(&Foo1,&Foo2);
+		ReportFailure("Fail " BURGER_MACRO_TO_STRING(__LINE__),MemoryCompare(&Bar1,&Bar2,sizeof(Bar1)));
+		Bar1.TransposeMultiply(&Foo1,11,13,17,31);
+		Bar2.Multiply(&Foo2,&Foo1);
+		ReportFailure("Fail " BURGER_MACRO_TO_STRING(__LINE__),MemoryCompare(&Bar1,&Bar2,sizeof(Bar1)));
+
+		Foo1.x.x = 3;
+		Foo1.x.y = 5;
+		Foo1.x.z = 7;
+		Foo1.x.w = 31;
+		Foo1.y.x = 11;
+		Foo1.y.y = 13;
+		Foo1.y.z = 17;
+		Foo1.y.w = 5;
+		Foo1.z.x = 19;
+		Foo1.z.y = 23;
+		Foo1.z.z = 29;
+		Foo1.z.w = 7;
+		Foo1.w.x = 19;
+		Foo1.w.y = 23;
+		Foo1.w.z = 29;
+		Foo1.w.w = 7;
+		Bar1.Multiply(&Foo1,11,13,17,31);
+		Bar2.Multiply(&Foo1,&Foo2);
+		ReportFailure("Fail " BURGER_MACRO_TO_STRING(__LINE__),MemoryCompare(&Bar1,&Bar2,sizeof(Bar1)));
+		Bar1.TransposeMultiply(&Foo1,11,13,17,31);
+		Bar2.Multiply(&Foo2,&Foo1);
+		ReportFailure("Fail " BURGER_MACRO_TO_STRING(__LINE__),MemoryCompare(&Bar1,&Bar2,sizeof(Bar1)));
+		Foo2.SetScale(11,13,17);
+		Bar1.Multiply(&Foo1,11,13,17);
+		Bar2.Multiply(&Foo1,&Foo2);
+		ReportFailure("Fail " BURGER_MACRO_TO_STRING(__LINE__),MemoryCompare(&Bar1,&Bar2,sizeof(Bar1)));
+		Bar1.TransposeMultiply(&Foo1,11,13,17);
+		Bar2.Multiply(&Foo2,&Foo1);
+		ReportFailure("Fail " BURGER_MACRO_TO_STRING(__LINE__),MemoryCompare(&Bar1,&Bar2,sizeof(Bar1)));
+	}
+}
+#else
+static void HighMathTests(void)
+{
+}
+#endif
+
+//
+// Test RTTI
+//
+
+#if 0
+
+#include "brstaticrtti.h"
+#include "brdebug.h"
+
+class foo {
+public:
+	foo() {}
+	virtual ~foo() {}
+	BURGER_RTTI_IN_CLASS();
+};
+class foo2 : public foo {
+public:
+	foo2() {}
+	virtual ~foo2() {}
+	BURGER_RTTI_IN_CLASS();
+};
+class foo3 : public foo2 {
+public:
+	foo3() {}
+	virtual ~foo3() {}
+	BURGER_RTTI_IN_CLASS();
+};
+class foo4 : public foo2 {
+public:
+	foo4() {}
+	virtual ~foo4() {}
+	BURGER_RTTI_IN_CLASS();
+};
+class foo5 : public foo {
+public:
+	foo5() {}
+	virtual ~foo5() {}
+	BURGER_RTTI_IN_CLASS();
+};
+BURGER_CREATE_STATICRTTI_BASE(foo);
+BURGER_CREATE_STATICRTTI_PARENT(foo2,foo);
+BURGER_CREATE_STATICRTTI_PARENT(foo3,foo2);
+BURGER_CREATE_STATICRTTI_PARENT(foo4,foo2);
+BURGER_CREATE_STATICRTTI_PARENT(foo5,foo);
+
+static void BURGER_API TestRTTI(void)
+{
+	foo bar;
+	foo2 bar2;
+	foo3 bar3;
+	foo4 bar4;
+	foo5 bar5;
+	foo *pBar = &bar;
+	foo *pBar2 = &bar2;
+	foo *pBar3 = &bar3;
+	foo *pBar4 = &bar4;
+	foo *pBar5 = &bar5;
+	Debug::Message(pBar->GetClassName());
+	Debug::Message(pBar2->GetClassName());
+	Debug::Message(pBar3->GetClassName());
+	Debug::Message(pBar4->GetClassName());
+	Debug::Message(pBar5->GetClassName());
+
+	Debug::Message("foo pBar %u\n",BURGER_STATICRTTI_ISTYPE(foo,pBar));
+	Debug::Message("foo2 pBar %u\n",BURGER_STATICRTTI_ISTYPE(foo2,pBar));
+	Debug::Message("foo3 pBar %u\n",BURGER_STATICRTTI_ISTYPE(foo3,pBar));
+	Debug::Message("foo4 pBar %u\n",BURGER_STATICRTTI_ISTYPE(foo4,pBar));
+	Debug::Message("foo5 pBar %u\n\n",BURGER_STATICRTTI_ISTYPE(foo5,pBar));
+
+	Debug::Message("foo pBar2 %u\n",BURGER_STATICRTTI_ISTYPE(foo,pBar2));
+	Debug::Message("foo2 pBar2 %u\n",BURGER_STATICRTTI_ISTYPE(foo2,pBar2));
+	Debug::Message("foo3 pBar2 %u\n",BURGER_STATICRTTI_ISTYPE(foo3,pBar2));
+	Debug::Message("foo4 pBar2 %u\n",BURGER_STATICRTTI_ISTYPE(foo4,pBar2));
+	Debug::Message("foo5 pBar2 %u\n\n",BURGER_STATICRTTI_ISTYPE(foo5,pBar2));
+
+	Debug::Message("foo pBar3 %u\n",BURGER_STATICRTTI_ISTYPE(foo,pBar3));
+	Debug::Message("foo2 pBar3 %u\n",BURGER_STATICRTTI_ISTYPE(foo2,pBar3));
+	Debug::Message("foo3 pBar3 %u\n",BURGER_STATICRTTI_ISTYPE(foo3,pBar3));
+	Debug::Message("foo4 pBar3 %u\n",BURGER_STATICRTTI_ISTYPE(foo4,pBar3));
+	Debug::Message("foo5 pBar3 %u\n\n",BURGER_STATICRTTI_ISTYPE(foo5,pBar3));
+
+	Debug::Message("foo pBar4 %u\n",BURGER_STATICRTTI_ISTYPE(foo,pBar4));
+	Debug::Message("foo2 pBar4 %u\n",BURGER_STATICRTTI_ISTYPE(foo2,pBar4));
+	Debug::Message("foo3 pBar4 %u\n",BURGER_STATICRTTI_ISTYPE(foo3,pBar4));
+	Debug::Message("foo4 pBar4 %u\n",BURGER_STATICRTTI_ISTYPE(foo4,pBar4));
+	Debug::Message("foo5 pBar4 %u\n\n",BURGER_STATICRTTI_ISTYPE(foo5,pBar4));
+
+	Debug::Message("foo pBar5 %u\n",BURGER_STATICRTTI_ISTYPE(foo,pBar5));
+	Debug::Message("foo2 pBar5 %u\n",BURGER_STATICRTTI_ISTYPE(foo2,pBar5));
+	Debug::Message("foo3 pBar5 %u\n",BURGER_STATICRTTI_ISTYPE(foo3,pBar5));
+	Debug::Message("foo4 pBar5 %u\n",BURGER_STATICRTTI_ISTYPE(foo4,pBar5));
+	Debug::Message("foo5 pBar5 %u\n\n",BURGER_STATICRTTI_ISTYPE(foo5,pBar5));
+
+	// Will properly upcast
+	foo5 *pTemp = BURGER_RTTICAST(foo5,pBar5);
+	const foo5 *pCTemp = BURGER_RTTICONSTCAST(foo5,pBar5);
+
+	// Will return NULL since these classes are not a foo5
+	pTemp = BURGER_RTTICAST(foo5,pBar4);
+	pCTemp = BURGER_RTTICONSTCAST(foo5,pBar3);
+}
+#else
+static void TestRTTI(void)
+{
+}
+#endif
+
 
 //
 // Perform one shot functions
@@ -793,4 +1001,6 @@ void BURGER_API CreateTables(void)
 	CreateSinConstants();
 	CreateCosConstants();
 	CreateEulerRotations();
+	HighMathTests();
+	TestRTTI();
 }

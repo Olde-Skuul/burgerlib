@@ -229,5 +229,55 @@ void BURGER_ANSIAPI main(void)
 	}
 }
 
+#elif defined(BURGER_MACOSX)
+
+/***************************************
+
+	This is the main entry point for a MacOSX version of the game
+
+***************************************/
+
+int BURGER_ANSIAPI main(void);
+
+int BURGER_ANSIAPI main(void)
+{
+	// Create an application instance
+
+	MacOSXApp MyApp(GAMENAME,MEMORYSIZE,HANDLECOUNT,MINIMUMRESERVE);
+
+	// Error on startup?
+	int iResult = Globals::GetErrorCode();
+
+	if (!iResult) {
+		iResult = CodeEntry(&MyApp);
+	}
+	return iResult;
+}
+
+#elif defined(BURGER_IOS)
+
+/***************************************
+
+	This is the main entry point for a iOS version of the game
+
+***************************************/
+
+int BURGER_ANSIAPI main(void);
+
+int BURGER_ANSIAPI main(void)
+{
+	// Create an application instance
+
+	iOSApp MyApp(GAMENAME,MEMORYSIZE,HANDLECOUNT,MINIMUMRESERVE);
+
+	// Error on startup?
+	int iResult = Globals::GetErrorCode();
+
+	if (!iResult) {
+		iResult = CodeEntry(&MyApp);
+	}
+	return iResult;
+}
+
 #endif
 

@@ -175,6 +175,45 @@ void BURGER_API Burger::Matrix4D_t::Set(const FixedMatrix4D_t *pInput)
 
 /*! ************************************
 
+	\brief Copy a Matrix3D_t to a Matrix4D_t
+
+	Copy a 3x3 matrix into this one.
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th><td>pInput->x.x</td>	<td>pInput->x.y</td>	<td>pInput->x.z</td>	<td>0</td></tr>
+	<tr><th>y</th><td>pInput->y.x</td>	<td>pInput->y.y</td>	<td>pInput->y.z</td>	<td>0</td></tr>
+	<tr><th>z</th><td>pInput->z.x</td>	<td>pInput->z.y</td>	<td>pInput->z.z</td>	<td>0</td></tr>
+	<tr><th>w</th><td>0</td>	<td>0</td>	<td>0</td>	<td>1</td></tr>
+	</table>
+
+	\param pInput Pointer to a valid Matrix3D_t for copying
+	\sa Set(const Matrix4D_t *) or Matrix3D_t::Set(const Matrix4D_t *)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Set(const Matrix3D_t *pInput)
+{
+	x.x = pInput->x.x;
+	x.y = pInput->x.y;
+	x.z = pInput->x.z;
+	x.w = 0.0f;
+	y.x = pInput->y.x;
+	y.y = pInput->y.y;
+	y.z = pInput->y.z;
+	y.w = 0.0f;
+	z.x = pInput->z.x;
+	z.y = pInput->z.y;
+	z.z = pInput->z.z;
+	z.w = 0.0f;
+	w.x = 0.0f;
+	w.y = 0.0f;
+	w.z = 0.0f;
+	w.w = 1.0f;
+}
+
+/*! ************************************
+
 	\brief Initialize a rotation matrix with radians for yaw (Y)
 
 	\code
@@ -1462,9 +1501,9 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetFromQuaternion(const Vector4D_t 
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
 	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
-	<tr><th>x</td>	<td>0</td>	<td>0</td>	<td>0</td>	<td>0</td></tr>
-	<tr><th>y</td>	<td>0</td>	<td>0</td>	<td>0</td>	<td>0</td></tr>
-	<tr><th>z</td>	<td>0</td>	<td>0</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>x</td>	<td>1</td>	<td>0</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>y</td>	<td>0</td>	<td>1</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>z</td>	<td>0</td>	<td>0</td>	<td>1</td>	<td>0</td></tr>
 	<tr><th>w</td>	<td>fX</td>	<td>fY</td>	<td>fZ</td>	<td>1</td></tr>
 	</table>
 
@@ -1582,17 +1621,17 @@ void BURGER_API Burger::Matrix4D_t::SetScale(float fX,float fY,float fZ,float fW
 
 /*! ************************************
 
-	\brief Create a 4D projection matrix
+	\brief Create a transposed 4D projection matrix
 
 	Using a frustum, create a projection matrix in a format that
 	OpenGL can use directly. If a DirectX version is desired, call TransposeSetFrustum() instead.
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
 	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
-	<tr><th>x</td>	<td>(fNear * 2.0f) / (fRight - fLeft)</td>	<td>0</td>	<td>(fRight + fLeft) / (fRight - fLeft)</td>	<td>0</td></tr>
-	<tr><th>y</td>	<td>0</td>	<td>(fNear * 2.0f) / (fTop - fBottom)</td>	<td>(fTop + fBottom) / (fTop - fBottom)</td>	<td>0</td></tr>
-	<tr><th>z</td>	<td>0</td>	<td>0</td>	<td>-(fFar+fNear) / (fFar - fNear)</td>	<td>-(2.0f * fFar * fNear) / (fFar - fNear)</td></tr>
-	<tr><th>w</td>	<td>0</td>	<td>0</td>	<td>-1</td>	<td>0</td></tr>
+	<tr><th>x</td>	<td>(fNear * 2.0f) / (fRight - fLeft)</td>	<td>0</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>y</td>	<td>0</td>	<td>(fNear * 2.0f) / (fTop - fBottom)</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>z</td>	<td>(fRight + fLeft) / (fRight - fLeft)</td>	<td>(fTop + fBottom) / (fTop - fBottom)</td>	<td>-(fFar+fNear) / (fFar - fNear)</td>	<td>-1</td></tr>
+	<tr><th>w</td>	<td>0</td>	<td>0</td>	<td>-(2.0f * fFar * fNear) / (fFar - fNear)</td>	<td>0</td></tr>
 	</table>
 
 	\note This is functional duplicate of glFrustum()
@@ -1603,64 +1642,11 @@ void BURGER_API Burger::Matrix4D_t::SetScale(float fX,float fY,float fZ,float fW
 	\param fTop Topmost Y coordinate
 	\param fNear Near clip plane
 	\param fFar Far clip plane
-	\sa SetOrtho() or TransposeSetFrustum()
+	\sa SetOrtho(), SetPerspective() or TransposeSetFrustum()
 
 ***************************************/
 
 void BURGER_API Burger::Matrix4D_t::SetFrustum(float fLeft,float fRight,float fBottom,float fTop,float fNear,float fFar)
-{
-	float fWidth = fRight-fLeft;
-	float fHeight = fTop-fBottom;
-	float fNegativeDepth = -(fFar-fNear);
-	float fNear2 = fNear * 2.0f;
-
-	x.x = fNear2 / fWidth;
-	x.y = 0.0f;
-	x.z = (fRight + fLeft) / fWidth;
-	x.w = 0.0f;
-
-	y.x = 0.0f;
-	y.y = fNear2 / fHeight;
-	y.z = (fTop + fBottom) / fHeight;
-	y.w = 0.0f;
-
-	z.x = 0.0f;
-	z.y = 0.0f;
-	z.z = (fFar+fNear) / fNegativeDepth;
-	z.w = (2.0f * fFar * fNear) / fNegativeDepth;
-
-	w.x = 0.0f;
-	w.y = 0.0f;
-	w.z = -1.0f;
-	w.w = 0.0f;
-}
-
-/*! ************************************
-
-	\brief Create a transposed 4D projection matrix
-
-	Using a frustum, create a projection matrix in a format that
-	DirectX can use directly. If a OpenGL version is desired, call SetFrustum() instead.
-
-	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
-	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
-	<tr><th>x</td>	<td>(fNear * 2.0f) / (fRight - fLeft)</td>	<td>0</td>	<td>0</td>	<td>0</td></tr>
-	<tr><th>y</td>	<td>0</td>	<td>(fNear * 2.0f) / (fTop - fBottom)</td>	<td>0</td>	<td>0</td></tr>
-	<tr><th>z</td>	<td>(fRight + fLeft) / (fRight - fLeft)</td>	<td>(fTop + fBottom) / (fTop - fBottom)</td>	<td>-(fFar+fNear) / (fFar - fNear)</td>	<td>-1</td></tr>
-	<tr><th>w</td>	<td>0</td>	<td>0</td>	<td>-(2.0f * fFar * fNear) / (fFar - fNear)</td>	<td>0</td></tr>
-	</table>
-
-	\param fLeft Leftmost X coordinate
-	\param fRight Rightmost X coordinate
-	\param fBottom Bottommost Y coordinate
-	\param fTop Topmost Y coordinate
-	\param fNear Near clip plane
-	\param fFar Far clip plane
-	\sa TransposeSetOrtho() or SetFrustum()
-
-***************************************/
-
-void BURGER_API Burger::Matrix4D_t::TransposeSetFrustum(float fLeft,float fRight,float fBottom,float fTop,float fNear,float fFar)
 {
 	float fWidth = fRight-fLeft;
 	float fHeight = fTop-fBottom;
@@ -1690,10 +1676,116 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetFrustum(float fLeft,float fRight
 
 /*! ************************************
 
-	\brief Create an orthogonal 4D projection matrix
+	\brief Create a 4D projection matrix
+
+	Using a frustum, create a projection matrix in a format that
+	DirectX can use directly. If a OpenGL version is desired, call SetFrustum() instead.
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</td>	<td>(fNear * 2.0f) / (fRight - fLeft)</td>	<td>0</td>	<td>(fRight + fLeft) / (fRight - fLeft)</td>	<td>0</td></tr>
+	<tr><th>y</td>	<td>0</td>	<td>(fNear * 2.0f) / (fTop - fBottom)</td>	<td>(fTop + fBottom) / (fTop - fBottom)</td>	<td>0</td></tr>
+	<tr><th>z</td>	<td>0</td>	<td>0</td>	<td>-(fFar+fNear) / (fFar - fNear)</td>	<td>-(2.0f * fFar * fNear) / (fFar - fNear)</td></tr>
+	<tr><th>w</td>	<td>0</td>	<td>0</td>	<td>-1</td>	<td>0</td></tr>
+	</table>
+
+	\param fLeft Leftmost X coordinate
+	\param fRight Rightmost X coordinate
+	\param fBottom Bottommost Y coordinate
+	\param fTop Topmost Y coordinate
+	\param fNear Near clip plane
+	\param fFar Far clip plane
+	\sa TransposeSetOrtho(), TransposeSetPerspective() or SetFrustum()
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::TransposeSetFrustum(float fLeft,float fRight,float fBottom,float fTop,float fNear,float fFar)
+{
+	float fWidth = fRight-fLeft;
+	float fHeight = fTop-fBottom;
+	float fNegativeDepth = -(fFar-fNear);
+	float fNear2 = fNear * 2.0f;
+
+	x.x = fNear2 / fWidth;
+	x.y = 0.0f;
+	x.z = (fRight + fLeft) / fWidth;
+	x.w = 0.0f;
+
+	y.x = 0.0f;
+	y.y = fNear2 / fHeight;
+	y.z = (fTop + fBottom) / fHeight;
+	y.w = 0.0f;
+
+	z.x = 0.0f;
+	z.y = 0.0f;
+	z.z = (fFar+fNear) / fNegativeDepth;
+	z.w = (2.0f * fFar * fNear) / fNegativeDepth;
+
+	w.x = 0.0f;
+	w.y = 0.0f;
+	w.z = -1.0f;
+	w.w = 0.0f;
+}
+
+
+/*! ************************************
+
+	\brief Create a transposed orthogonal 4D projection matrix
 
 	Using a frustum, create an orthogonal matrix in a format that
 	OpenGL can use directly. If a DirectX version is desired, call TransposeSetOrtho() instead.
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</td>	<td>2.0f / (fRight - fLeft)</td>	<td>0</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>y</td>	<td>0</td>	<td>2.0f / (fTop - fBottom)</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>z</td>	<td>0</td>	<td>0</td>	<td>-2.0f / (fFar - fNear)</td>	<td></td>0</tr>
+	<tr><th>w</td>	<td>-(fRight + fLeft) / (fRight - fLeft)</td>	<td>-(fTop + fBottom) / (fTop - fBottom)</td>	<td>-(Far + fNear) / (fFar - fNear)</td>	<td>1</td></tr>
+	</table>
+
+	\param fLeft Leftmost X coordinate
+	\param fRight Rightmost X coordinate
+	\param fBottom Bottommost Y coordinate
+	\param fTop Topmost Y coordinate
+	\param fNear Near clip plane
+	\param fFar Far clip plane
+	\sa SetFrustum() or TransposeSetOrtho()
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::SetOrtho(float fLeft,float fRight,float fBottom,float fTop,float fNear,float fFar)
+{
+	float fWidth = fRight-fLeft;
+	float fHeight = fTop-fBottom;
+	float fNegativeDepth = -(fFar-fNear);
+
+	x.x = 2.0f / fWidth;
+	x.y = 0.0f;
+	x.z = 0.0f;
+	x.w = 0.0f;
+
+	y.x = 0.0f;
+	y.y = 2.0f / fHeight;
+	y.z = 0.0f;
+	y.w = 0.0f;
+
+	z.x = 0.0f;
+	z.y = 0.0f;
+	z.z = 2.0f / fNegativeDepth;
+	z.w = 0.0f;
+
+	w.x = -(fRight + fLeft) / fWidth;
+	w.y = -(fTop + fBottom) / fHeight;
+	w.z = (fFar + fNear) / fNegativeDepth;
+	w.w = 1.0f;
+}
+
+/*! ************************************
+
+	\brief Create an orthogonal 4D projection matrix
+
+	Using a frustum, create an orthogonal matrix in a format that
+	DirectX can use directly. If an OpenGL version is desired, call SetOrtho() instead.
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
 	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
@@ -1711,11 +1803,11 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetFrustum(float fLeft,float fRight
 	\param fTop Topmost Y coordinate
 	\param fNear Near clip plane
 	\param fFar Far clip plane
-	\sa SetFrustum() or TransposeSetOrtho()
+	\sa TransposeSetFrustum() or SetOrtho()
 
 ***************************************/
 
-void BURGER_API Burger::Matrix4D_t::SetOrtho(float fLeft,float fRight,float fBottom,float fTop,float fNear,float fFar)
+void BURGER_API Burger::Matrix4D_t::TransposeSetOrtho(float fLeft,float fRight,float fBottom,float fTop,float fNear,float fFar)
 {
 	float fWidth = fRight-fLeft;
 	float fHeight = fTop-fBottom;
@@ -1744,54 +1836,110 @@ void BURGER_API Burger::Matrix4D_t::SetOrtho(float fLeft,float fRight,float fBot
 
 /*! ************************************
 
-	\brief Create a transposed orthogonal 4D projection matrix
+	\brief Create a 4D perspective matrix
 
-	Using a frustum, create an orthogonal matrix in a format that
-	DirectX can use directly. If an OpenGL version is desired, call SetOrtho() instead.
+	Using a field of view and an aspect ratio (x/y), create a projection matrix in a format that
+	OpenGL can use directly. If a DirectX version is desired, call TransposeSetPerspective() instead.
+
+	f = 1.0f / tan((fFieldOfViewY*g_fDegreesToRadians)*0.5f);
 
 	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
 	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
-	<tr><th>x</td>	<td>2.0f / (fRight - fLeft)</td>	<td>0</td>	<td>0</td>	<td>0</td></tr>
-	<tr><th>y</td>	<td>0</td>	<td>2.0f / (fTop - fBottom)</td>	<td>0</td>	<td>0</td></tr>
-	<tr><th>z</td>	<td>0</td>	<td>0</td>	<td>-2.0f / (fFar - fNear)</td>	<td></td>0</tr>
-	<tr><th>w</td>	<td>-(fRight + fLeft) / (fRight - fLeft)</td>	<td>-(fTop + fBottom) / (fTop - fBottom)</td>	<td>-(Far + fNear) / (fFar - fNear)</td>	<td>1</td></tr>
+	<tr><th>x</td>	<td>f/fAspect</td>	<td>0</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>y</td>	<td>0</td>	<td>f</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>z</td>	<td>0</td>	<td>0</td>	<td>(fFar+fNear) / (fNear-fFar)</td>	<td>-1</td></tr>
+	<tr><th>w</td>	<td>0</td>	<td>0</td>	<td>(2.0f * fFar * fNear) / (fNear-fFar)</td>	<td>0</td></tr>
 	</table>
 
-	\param fLeft Leftmost X coordinate
-	\param fRight Rightmost X coordinate
-	\param fBottom Bottommost Y coordinate
-	\param fTop Topmost Y coordinate
+	\note This is functional duplicate of gluPerspective()
+
+	\param fFieldOfViewY Angle of the field of view in degrees
+	\param fAspect Aspect ratio of the screen
 	\param fNear Near clip plane
 	\param fFar Far clip plane
-	\sa TransposeSetFrustum() or SetOrtho()
+	\sa SetOrtho(), SetFrustum() or TransposeSetPerspective()
 
 ***************************************/
 
-void BURGER_API Burger::Matrix4D_t::TransposeSetOrtho(float fLeft,float fRight,float fBottom,float fTop,float fNear,float fFar)
+void BURGER_API Burger::Matrix4D_t::SetPerspective(float fFieldOfViewY,float fAspect,float fNear,float fFar)
 {
-	float fWidth = fRight-fLeft;
-	float fHeight = fTop-fBottom;
-	float fNegativeDepth = -(fFar-fNear);
+	// Calculate the cotangent of Field of View * 2.0f
+	float f = 1.0f / Tan((fFieldOfViewY*g_fDegreesToRadians)*0.5f);
 
-	x.x = 2.0f / fWidth;
+	float fDepth = (fNear-fFar);
+
+	x.x = f / fAspect;
 	x.y = 0.0f;
 	x.z = 0.0f;
 	x.w = 0.0f;
 
 	y.x = 0.0f;
-	y.y = 2.0f / fHeight;
+	y.y = f;
 	y.z = 0.0f;
 	y.w = 0.0f;
 
 	z.x = 0.0f;
 	z.y = 0.0f;
-	z.z = 2.0f / fNegativeDepth;
-	z.w = 0.0f;
+	z.z = (fFar+fNear) / fDepth;
+	z.w = -1.0f;
 
-	w.x = -(fRight + fLeft) / fWidth;
-	w.y = -(fTop + fBottom) / fHeight;
-	w.z = (fFar + fNear) / fNegativeDepth;
-	w.w = 1.0f;
+	w.x = 0.0f;
+	w.y = 0.0f;
+	w.z = (2.0f * fFar * fNear) / fDepth;
+	w.w = 0.0f;
+}
+
+/*! ************************************
+
+	\brief Create a 4D perspective matrix
+
+	Using a field of view and an aspect ratio (x/y), create a projection matrix in a format that
+	DirectX can use directly. If an OpenGL version is desired, call SetPerspective() instead.
+
+	f = 1.0f / tan((fFieldOfViewY*g_fDegreesToRadians)*0.5f);
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</td>	<td>f/fAspect</td>	<td>0</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>y</td>	<td>0</td>	<td>f</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>z</td>	<td>0</td>	<td>0</td>	<td>(fFar+fNear) / (fNear-fFar)</td>	<td>(2.0f * fFar * fNear) / (fNear-fFar)</td></tr>
+	<tr><th>w</td>	<td>0</td>	<td>0</td>	<td>-1</td>	<td>0</td></tr>
+	</table>
+
+	\param fFieldOfViewY Angle of the field of view in degrees
+	\param fAspect Aspect ratio of the screen
+	\param fNear Near clip plane
+	\param fFar Far clip plane
+	\sa TransposeSetOrtho(), TransposeSetFrustum() or SetPerspective()
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::TransposeSetPerspective(float fFieldOfViewY,float fAspect,float fNear,float fFar)
+{
+	// Calculate the cotangent of Field of View * 2.0f
+	float f = 1.0f / Tan((fFieldOfViewY*g_fDegreesToRadians)*0.5f);
+
+	float fDepth = (fNear-fFar);
+
+	x.x = f / fAspect;
+	x.y = 0.0f;
+	x.z = 0.0f;
+	x.w = 0.0f;
+
+	y.x = 0.0f;
+	y.y = f;
+	y.z = 0.0f;
+	y.w = 0.0f;
+
+	z.x = 0.0f;
+	z.y = 0.0f;
+	z.z = (fFar+fNear) / fDepth;
+	z.w = (2.0f * fFar * fNear) / fDepth;
+
+	w.x = 0.0f;
+	w.y = 0.0f;
+	w.z = -1.0f;
+	w.w = 0.0f;
 }
 
 /*! ************************************
@@ -1912,183 +2060,6 @@ void BURGER_API Burger::Matrix4D_t::Transpose(const Matrix4D_t *pInput)
 	fTemp2 = pInput->w.w;
 	w.z = fTemp1;
 	w.w = fTemp2;
-}
-
-/*! ************************************
-
-	\brief Perform a matrix multiply by a scalar.
-	
-	Multiply a scalar value to every element in the matrix.
-
-	Use this formula to create the final matrix
-
-	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
-	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
-	<tr><th>x</td>	<td>xx*fInput</td><td>xy*fInput</td><td>xz*fInput</td><td>xw*fInput</td></tr>
-	<tr><th>y</td>	<td>yx*fInput</td><td>yy*fInput</td><td>yz*fInput</td><td>yw*fInput</td></tr>
-	<tr><th>z</td>	<td>zx*fInput</td><td>zy*fInput</td><td>zz*fInput</td><td>zw*fInput</td></tr>
-	<tr><th>w</td>	<td>wx*fInput</td><td>wy*fInput</td><td>wz*fInput</td><td>ww*fInput</td></tr>
-	</table>
-
-	\param fInput Scalar value to multiply all values by
-	\sa Multiply(const Matrix4D_t *,float) or Multiply3x3(float)
-
-***************************************/
-
-void BURGER_API Burger::Matrix4D_t::Multiply(float fInput)
-{
-	x.x *= fInput;
-	x.y *= fInput;
-	x.z *= fInput;
-	x.w *= fInput;
-
-	y.x *= fInput;
-	y.y *= fInput;
-	y.z *= fInput;
-	y.w *= fInput;
-
-	z.x *= fInput;
-	z.y *= fInput;
-	z.z *= fInput;
-	z.w *= fInput;
-
-	w.x *= fInput;
-	w.y *= fInput;
-	w.z *= fInput;
-	w.w *= fInput;
-}
-
-/*! ************************************
-
-	\brief Initialize with a matrix multiplied by a scalar
-
-	Multiply all values of the matrix by a scalar constant
-	and store the result in this matrix
-
-	Use this formula to create the final matrix
-
-	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
-	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
-	<tr><th>x</td>	<td>pInput->xx*fInput</td><td>pInput->xy*fInput</td><td>pInput->xz*fInput</td><td>pInput->xw*fInput</td></tr>
-	<tr><th>y</td>	<td>pInput->yx*fInput</td><td>pInput->yy*fInput</td><td>pInput->yz*fInput</td><td>pInput->yw*fInput</td></tr>
-	<tr><th>z</td>	<td>pInput->zx*fInput</td><td>pInput->zy*fInput</td><td>pInput->zz*fInput</td><td>pInput->zw*fInput</td></tr>
-	<tr><th>w</td>	<td>pInput->wx*fInput</td><td>pInput->wy*fInput</td><td>pInput->wz*fInput</td><td>pInput->ww*fInput</td></tr>
-	</table>
-
-	\param pInput Pointer to Matrix to multiply
-	\param fInput Scalar value to multiply all values by
-	\sa Multiply(float) or Multiply3x3(float)
-
-***************************************/
-
-void BURGER_API Burger::Matrix4D_t::Multiply(const Matrix4D_t *pInput,float fInput)
-{
-	x.x = pInput->x.x*fInput;
-	x.y = pInput->x.y*fInput;
-	x.z = pInput->x.z*fInput;
-	x.w = pInput->x.w*fInput;
-
-	y.x = pInput->y.x*fInput;
-	y.y = pInput->y.y*fInput;
-	y.z = pInput->y.z*fInput;
-	y.w = pInput->y.w*fInput;
-
-	z.x = pInput->z.x*fInput;
-	z.y = pInput->z.y*fInput;
-	z.z = pInput->z.z*fInput;
-	z.w = pInput->z.w*fInput;
-
-	w.x = pInput->w.x*fInput;
-	w.y = pInput->w.y*fInput;
-	w.z = pInput->w.z*fInput;
-	w.w = pInput->w.w*fInput;
-}
-
-/*! ************************************
-
-	\brief Perform a 3x3 matrix multiply by a scalar.
-	
-	Multiply a scalar value to the 3x3 subset of a matrix (The equivalent of W equaling 1.0f)
-
-	Use this formula to create the final matrix
-
-	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
-	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
-	<tr><th>x</td>	<td>xx*fInput</td><td>xy*fInput</td><td>xz*fInput</td><td>xw*1.0f</td></tr>
-	<tr><th>y</td>	<td>yx*fInput</td><td>yy*fInput</td><td>yz*fInput</td><td>yw*1.0f</td></tr>
-	<tr><th>z</td>	<td>zx*fInput</td><td>zy*fInput</td><td>zz*fInput</td><td>zw*1.0f</td></tr>
-	<tr><th>w</td>	<td>wx*1.0f</td><td>wy*1.0f</td><td>wz*1.0f</td><td>ww*1.0f</td></tr>
-	</table>
-
-	\note The terms where the value is multiplied by 1.0f are actually not performed and
-		are replaced with a value copy since mathematically they perform the same action.
-
-	\param fInput Scalar value to multiply all values by
-	\sa Multiply3x3(const Matrix4D_t *,float) or Multiply(float)
-
-***************************************/
-
-void BURGER_API Burger::Matrix4D_t::Multiply3x3(float fInput)
-{
-	x.x *= fInput;
-	x.y *= fInput;
-	x.z *= fInput;
-
-	y.x *= fInput;
-	y.y *= fInput;
-	y.z *= fInput;
-
-	z.x *= fInput;
-	z.y *= fInput;
-	z.z *= fInput;
-}
-
-/*! ************************************
-
-	\brief Perform a 3x3 matrix multiply by a scalar.
-	
-	Multiply a scalar value to the 3x3 subset of a matrix (The equivalent of W equaling 1.0f)
-
-	Use this formula to create the final matrix
-
-	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
-	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
-	<tr><th>x</td>	<td>pInput->xx*fInput</td><td>pInput->xy*fInput</td><td>pInput->xz*fInput</td><td>pInput->xw*1.0f</td></tr>
-	<tr><th>y</td>	<td>pInput->yx*fInput</td><td>pInput->yy*fInput</td><td>pInput->yz*fInput</td><td>pInput->yw*1.0f</td></tr>
-	<tr><th>z</td>	<td>pInput->zx*fInput</td><td>pInput->zy*fInput</td><td>pInput->zz*fInput</td><td>pInput->zw*1.0f</td></tr>
-	<tr><th>w</td>	<td>pInput->wx*1.0f</td><td>pInput->wy*1.0f</td><td>pInput->wz*1.0f</td><td>pInput->ww*1.0f</td></tr>
-	</table>
-
-	\note The terms where the value is multiplied by 1.0f are actually not performed and
-		are replaced with a value copy since mathematically they perform the same action.
-
-	\param pInput Pointer to Matrix to multiply
-	\param fInput Scalar value to multiply all values by
-	\sa Multiply3x3(float) or Multiply(float)
-
-***************************************/
-
-void BURGER_API Burger::Matrix4D_t::Multiply3x3(const Matrix4D_t *pInput,float fInput)
-{
-	x.x = pInput->x.x*fInput;
-	x.y = pInput->x.y*fInput;
-	x.z = pInput->x.z*fInput;
-	x.w = pInput->x.w;
-
-	y.x = pInput->y.x*fInput;
-	y.y = pInput->y.y*fInput;
-	y.z = pInput->y.z*fInput;
-	y.w = pInput->y.w;
-
-	z.x = pInput->z.x*fInput;
-	z.y = pInput->z.y*fInput;
-	z.z = pInput->z.z*fInput;
-	z.w = pInput->z.w;
-
-	w.x = pInput->w.x;
-	w.y = pInput->w.y;
-	w.z = pInput->w.z;
-	w.w = pInput->w.w;
 }
 
 /*! ************************************
@@ -2899,6 +2870,873 @@ void BURGER_API Burger::Matrix4D_t::SetWColumn(const Vector4D_t *pInput)
 
 /*! ************************************
 
+	\brief Perform a matrix multiply against this matrix
+
+	Multiply this matrix against another one
+
+	Use this formula to create the final matrix, this matrix is
+	matrix #1 and the input matrix is matrix #2
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th>
+	<td>(x.x*pInput->x.x)+(y.x*pInput->x.y)+(z.x*pInput->x.z)+(w.x*pInput->x.w)</td>
+	<td>(x.y*pInput->x.x)+(y.y*pInput->x.y)+(z.y*pInput->x.z)+(w.y*pInput->x.w)</td>
+	<td>(x.z*pInput->x.x)+(y.z*pInput->x.y)+(z.z*pInput->x.z)+(w.z*pInput->x.w)</td>
+	<td>(x.w*pInput->x.x)+(y.w*pInput->x.y)+(z.w*pInput->x.z)+(w.w*pInput->x.w)</td>
+	</tr>
+	<tr><th>y</th>
+	<td>(x.x*pInput->y.x)+(y.x*pInput->y.y)+(z.x*pInput->y.z)+(w.x*pInput->y.w)</td>
+	<td>(x.y*pInput->y.x)+(y.y*pInput->y.y)+(z.y*pInput->y.z)+(w.y*pInput->y.w)</td>
+	<td>(x.z*pInput->y.x)+(y.z*pInput->y.y)+(z.z*pInput->y.z)+(w.z*pInput->y.w)</td>
+	<td>(x.w*pInput->y.x)+(y.w*pInput->y.y)+(z.w*pInput->y.z)+(w.w*pInput->y.w)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(x.x*pInput->z.x)+(y.x*pInput->z.y)+(z.x*pInput->z.z)+(w.x*pInput->z.w)</td>
+	<td>(x.y*pInput->z.x)+(y.y*pInput->z.y)+(z.y*pInput->z.z)+(w.y*pInput->z.w)</td>
+	<td>(x.z*pInput->z.x)+(y.z*pInput->z.y)+(z.z*pInput->z.z)+(w.z*pInput->z.w)</td>
+	<td>(x.w*pInput->z.x)+(y.w*pInput->z.y)+(z.w*pInput->z.z)+(w.w*pInput->z.w)</td>
+	</tr>
+	<tr><th>w</th>
+	<td>(x.x*pInput->w.x)+(y.x*pInput->w.y)+(z.x*pInput->z.z)+(w.x*pInput->w.w)</td>
+	<td>(x.y*pInput->w.x)+(y.y*pInput->w.y)+(z.y*pInput->z.z)+(w.y*pInput->w.w)</td>
+	<td>(x.z*pInput->w.x)+(y.z*pInput->w.y)+(z.z*pInput->z.z)+(w.z*pInput->w.w)</td>
+	<td>(x.w*pInput->w.x)+(y.w*pInput->w.y)+(z.w*pInput->z.z)+(w.w*pInput->w.w)</td>
+	</tr>
+	</table>
+
+	\param pInput Matrix to multiply against
+	\sa Multiply(const Matrix4D_t *,const Matrix4D_t *)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Multiply(const Matrix4D_t *pInput)
+{
+	float fXX=(x.x*pInput->x.x)+(y.x*pInput->x.y)+(z.x*pInput->x.z)+(w.x*pInput->x.w);
+	float fXY=(x.y*pInput->x.x)+(y.y*pInput->x.y)+(z.y*pInput->x.z)+(w.y*pInput->x.w);
+	float fXZ=(x.z*pInput->x.x)+(y.z*pInput->x.y)+(z.z*pInput->x.z)+(w.z*pInput->x.w);
+	float fXW=(x.w*pInput->x.x)+(y.w*pInput->x.y)+(z.w*pInput->x.z)+(w.w*pInput->x.w);
+
+	float fYX=(x.x*pInput->y.x)+(y.x*pInput->y.y)+(z.x*pInput->y.z)+(w.x*pInput->y.w);
+	float fYY=(x.y*pInput->y.x)+(y.y*pInput->y.y)+(z.y*pInput->y.z)+(w.y*pInput->y.w);
+	float fYZ=(x.z*pInput->y.x)+(y.z*pInput->y.y)+(z.z*pInput->y.z)+(w.z*pInput->y.w);
+	float fYW=(x.w*pInput->y.x)+(y.w*pInput->y.y)+(z.w*pInput->y.z)+(w.w*pInput->y.w);
+
+	float fZX=(x.x*pInput->z.x)+(y.x*pInput->z.y)+(z.x*pInput->z.z)+(w.x*pInput->z.w);
+	float fZY=(x.y*pInput->z.x)+(y.y*pInput->z.y)+(z.y*pInput->z.z)+(w.y*pInput->z.w);
+	float fZZ=(x.z*pInput->z.x)+(y.z*pInput->z.y)+(z.z*pInput->z.z)+(w.z*pInput->z.w);
+	float fZW=(x.w*pInput->z.x)+(y.w*pInput->z.y)+(z.w*pInput->z.z)+(w.w*pInput->z.w);
+
+	float fWX=(x.x*pInput->w.x)+(y.x*pInput->w.y)+(z.x*pInput->w.z)+(w.x*pInput->w.w);
+	float fWY=(x.y*pInput->w.x)+(y.y*pInput->w.y)+(z.y*pInput->w.z)+(w.y*pInput->w.w);
+	float fWZ=(x.z*pInput->w.x)+(y.z*pInput->w.y)+(z.z*pInput->w.z)+(w.z*pInput->w.w);
+	float fWW=(x.w*pInput->w.x)+(y.w*pInput->w.y)+(z.w*pInput->w.z)+(w.w*pInput->w.w);
+	x.x = fXX;
+	x.y = fXY;
+	x.z = fXZ;
+	x.w = fXW;
+	y.x = fYX;
+	y.y = fYY;
+	y.z = fYZ;
+	y.w = fYW;
+	z.x = fZX;
+	z.y = fZY;
+	z.z = fZZ;
+	z.w = fZW;
+	w.x = fWX;
+	w.y = fWY;
+	w.z = fWZ;
+	w.w = fWW;
+}
+
+/*! ************************************
+
+	\brief Perform a matrix multiply
+
+	Multiply two matrices together and store the result in this matrix.
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th>
+	<td>(pInput1->x.x*pInput2->x.x)+(pInput1->y.x*pInput2->x.y)+(pInput1->z.x*pInput2->x.z)+(pInput1->w.x*pInput2->x.w)</td>
+	<td>(pInput1->x.y*pInput2->x.x)+(pInput1->y.y*pInput2->x.y)+(pInput1->z.y*pInput2->x.z)+(pInput1->w.y*pInput2->x.w)</td>
+	<td>(pInput1->x.z*pInput2->x.x)+(pInput1->y.z*pInput2->x.y)+(pInput1->z.z*pInput2->x.z)+(pInput1->w.z*pInput2->x.w)</td>
+	<td>(pInput1->x.w*pInput2->x.x)+(pInput1->y.w*pInput2->x.y)+(pInput1->z.w*pInput2->x.z)+(pInput1->w.w*pInput2->x.w)</td>
+	</tr>
+	<tr><th>y</th>
+	<td>(pInput1->x.x*pInput2->y.x)+(pInput1->y.x*pInput2->y.y)+(pInput1->z.x*pInput2->y.z)+(pInput1->w.x*pInput2->y.w)</td>
+	<td>(pInput1->x.y*pInput2->y.x)+(pInput1->y.y*pInput2->y.y)+(pInput1->z.y*pInput2->y.z)+(pInput1->w.y*pInput2->y.w)</td>
+	<td>(pInput1->x.z*pInput2->y.x)+(pInput1->y.z*pInput2->y.y)+(pInput1->z.z*pInput2->y.z)+(pInput1->w.z*pInput2->y.w)</td>
+	<td>(pInput1->x.w*pInput2->y.x)+(pInput1->y.w*pInput2->y.y)+(pInput1->z.w*pInput2->y.z)+(pInput1->w.w*pInput2->y.w)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(pInput1->x.x*pInput2->z.x)+(pInput1->y.x*pInput2->z.y)+(pInput1->z.x*pInput2->z.z)+(pInput1->w.x*pInput2->z.w)</td>
+	<td>(pInput1->x.y*pInput2->z.x)+(pInput1->y.y*pInput2->z.y)+(pInput1->z.y*pInput2->z.z)+(pInput1->w.y*pInput2->z.w)</td>
+	<td>(pInput1->x.z*pInput2->z.x)+(pInput1->y.z*pInput2->z.y)+(pInput1->z.z*pInput2->z.z)+(pInput1->w.z*pInput2->z.w)</td>
+	<td>(pInput1->x.w*pInput2->z.x)+(pInput1->y.w*pInput2->z.y)+(pInput1->z.w*pInput2->z.z)+(pInput1->w.w*pInput2->z.w)</td>
+	</tr>
+	<tr><th>w</th>
+	<td>(pInput1->x.x*pInput2->w.x)+(pInput1->y.x*pInput2->w.y)+(pInput1->z.x*pInput2->z.z)+(pInput1->w.x*pInput2->w.w)</td>
+	<td>(pInput1->x.y*pInput2->w.x)+(pInput1->y.y*pInput2->w.y)+(pInput1->z.y*pInput2->z.z)+(pInput1->w.y*pInput2->w.w)</td>
+	<td>(pInput1->x.z*pInput2->w.x)+(pInput1->y.z*pInput2->w.y)+(pInput1->z.z*pInput2->z.z)+(pInput1->w.z*pInput2->w.w)</td>
+	<td>(pInput1->x.w*pInput2->w.x)+(pInput1->y.w*pInput2->w.y)+(pInput1->z.w*pInput2->z.z)+(pInput1->w.w*pInput2->w.w)</td>
+	</tr>
+	</table>
+
+	\note This function is optimized to reduce variable usage by storing into the output
+		without buffering. Do not use the output matrix as an input matrix.
+
+	\param pInput1 Matrix to multiply from
+	\param pInput2 Matrix to multiply against
+	\sa Multiply(const Matrix4D_t *)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Multiply(const Matrix4D_t *pInput1,const Matrix4D_t *pInput2)
+{
+	x.x=(pInput1->x.x*pInput2->x.x)+(pInput1->y.x*pInput2->x.y)+(pInput1->z.x*pInput2->x.z)+(pInput1->w.x*pInput2->x.w);
+	x.y=(pInput1->x.y*pInput2->x.x)+(pInput1->y.y*pInput2->x.y)+(pInput1->z.y*pInput2->x.z)+(pInput1->w.y*pInput2->x.w);
+	x.z=(pInput1->x.z*pInput2->x.x)+(pInput1->y.z*pInput2->x.y)+(pInput1->z.z*pInput2->x.z)+(pInput1->w.z*pInput2->x.w);
+	x.w=(pInput1->x.w*pInput2->x.x)+(pInput1->y.w*pInput2->x.y)+(pInput1->z.w*pInput2->x.z)+(pInput1->w.w*pInput2->x.w);
+
+	y.x=(pInput1->x.x*pInput2->y.x)+(pInput1->y.x*pInput2->y.y)+(pInput1->z.x*pInput2->y.z)+(pInput1->w.x*pInput2->y.w);
+	y.y=(pInput1->x.y*pInput2->y.x)+(pInput1->y.y*pInput2->y.y)+(pInput1->z.y*pInput2->y.z)+(pInput1->w.y*pInput2->y.w);
+	y.z=(pInput1->x.z*pInput2->y.x)+(pInput1->y.z*pInput2->y.y)+(pInput1->z.z*pInput2->y.z)+(pInput1->w.z*pInput2->y.w);
+	y.w=(pInput1->x.w*pInput2->y.x)+(pInput1->y.w*pInput2->y.y)+(pInput1->z.w*pInput2->y.z)+(pInput1->w.w*pInput2->y.w);
+
+	z.x=(pInput1->x.x*pInput2->z.x)+(pInput1->y.x*pInput2->z.y)+(pInput1->z.x*pInput2->z.z)+(pInput1->w.x*pInput2->z.w);
+	z.y=(pInput1->x.y*pInput2->z.x)+(pInput1->y.y*pInput2->z.y)+(pInput1->z.y*pInput2->z.z)+(pInput1->w.y*pInput2->z.w);
+	z.z=(pInput1->x.z*pInput2->z.x)+(pInput1->y.z*pInput2->z.y)+(pInput1->z.z*pInput2->z.z)+(pInput1->w.z*pInput2->z.w);
+	z.w=(pInput1->x.w*pInput2->z.x)+(pInput1->y.w*pInput2->z.y)+(pInput1->z.w*pInput2->z.z)+(pInput1->w.w*pInput2->z.w);
+
+	w.x=(pInput1->x.x*pInput2->w.x)+(pInput1->y.x*pInput2->w.y)+(pInput1->z.x*pInput2->w.z)+(pInput1->w.x*pInput2->w.w);
+	w.y=(pInput1->x.y*pInput2->w.x)+(pInput1->y.y*pInput2->w.y)+(pInput1->z.y*pInput2->w.z)+(pInput1->w.y*pInput2->w.w);
+	w.z=(pInput1->x.z*pInput2->w.x)+(pInput1->y.z*pInput2->w.y)+(pInput1->z.z*pInput2->w.z)+(pInput1->w.z*pInput2->w.w);
+	w.w=(pInput1->x.w*pInput2->w.x)+(pInput1->y.w*pInput2->w.y)+(pInput1->z.w*pInput2->w.z)+(pInput1->w.w*pInput2->w.w);
+}
+
+
+/*! ************************************
+
+	\brief Perform a matrix multiply by a scalar.
+	
+	Multiply a scalar value to every element in the matrix.
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</td>	<td>xx*fInput</td><td>xy*fInput</td><td>xz*fInput</td><td>xw*fInput</td></tr>
+	<tr><th>y</td>	<td>yx*fInput</td><td>yy*fInput</td><td>yz*fInput</td><td>yw*fInput</td></tr>
+	<tr><th>z</td>	<td>zx*fInput</td><td>zy*fInput</td><td>zz*fInput</td><td>zw*fInput</td></tr>
+	<tr><th>w</td>	<td>wx*fInput</td><td>wy*fInput</td><td>wz*fInput</td><td>ww*fInput</td></tr>
+	</table>
+
+	\param fScale Scalar value to multiply all values by
+	\sa Multiply(const Matrix4D_t *,float) or Multiply3x3(float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Multiply(float fScale)
+{
+	x.x *= fScale;
+	x.y *= fScale;
+	x.z *= fScale;
+	x.w *= fScale;
+
+	y.x *= fScale;
+	y.y *= fScale;
+	y.z *= fScale;
+	y.w *= fScale;
+
+	z.x *= fScale;
+	z.y *= fScale;
+	z.z *= fScale;
+	z.w *= fScale;
+
+	w.x *= fScale;
+	w.y *= fScale;
+	w.z *= fScale;
+	w.w *= fScale;
+}
+
+/*! ************************************
+
+	\brief Initialize with a matrix multiplied by a scalar
+
+	Multiply all values of the matrix by a scalar constant
+	and store the result in this matrix
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</td>	<td>pInput->xx*fInput</td><td>pInput->xy*fInput</td><td>pInput->xz*fInput</td><td>pInput->xw*fInput</td></tr>
+	<tr><th>y</td>	<td>pInput->yx*fInput</td><td>pInput->yy*fInput</td><td>pInput->yz*fInput</td><td>pInput->yw*fInput</td></tr>
+	<tr><th>z</td>	<td>pInput->zx*fInput</td><td>pInput->zy*fInput</td><td>pInput->zz*fInput</td><td>pInput->zw*fInput</td></tr>
+	<tr><th>w</td>	<td>pInput->wx*fInput</td><td>pInput->wy*fInput</td><td>pInput->wz*fInput</td><td>pInput->ww*fInput</td></tr>
+	</table>
+
+	\param pInput Pointer to Matrix to multiply
+	\param fScale Scalar value to multiply all values by
+	\sa Multiply(float) or Multiply3x3(float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Multiply(const Matrix4D_t *pInput,float fScale)
+{
+	x.x = pInput->x.x*fScale;
+	x.y = pInput->x.y*fScale;
+	x.z = pInput->x.z*fScale;
+	x.w = pInput->x.w*fScale;
+
+	y.x = pInput->y.x*fScale;
+	y.y = pInput->y.y*fScale;
+	y.z = pInput->y.z*fScale;
+	y.w = pInput->y.w*fScale;
+
+	z.x = pInput->z.x*fScale;
+	z.y = pInput->z.y*fScale;
+	z.z = pInput->z.z*fScale;
+	z.w = pInput->z.w*fScale;
+
+	w.x = pInput->w.x*fScale;
+	w.y = pInput->w.y*fScale;
+	w.z = pInput->w.z*fScale;
+	w.w = pInput->w.w*fScale;
+}
+
+/*! ************************************
+
+	\brief Multiply by an X,Y and Z scale
+
+	Using only the x.x, y.y, and z.z components of a
+	simulated matrix, perform a matrix multiply quickly
+	that would yield a multiplication vs a scale matrix
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th>
+	<td>(x.x*fScaleX)</td>
+	<td>(x.y*fScaleX)</td>
+	<td>(x.z*fScaleX)</td>
+	<td>(x.w*fScaleX)</td>
+	</tr>
+	<tr><th>y</th>
+	<td>(y.x*fScaleY)</td>
+	<td>(y.y*fScaleY)</td>
+	<td>(y.z*fScaleY)</td>
+	<td>(y.w*fScaleY)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(z.x*fScaleZ)</td>
+	<td>(z.y*fScaleZ)</td>
+	<td>(z.z*fScaleZ)</td>
+	<td>(z.w*fScaleZ)</td>
+	</tr>
+	<tr><th>w</th>
+	<td>(w.x*1.0f)</td>
+	<td>(w.y*1.0f)</td>
+	<td>(w.z*1.0f)</td>
+	<td>(w.w*1.0f)</td>
+	</tr>
+	</table>
+
+	\note Terms with a multiply by 1.0f perform no action in the implementation.
+
+	\param fScaleX X scale value
+	\param fScaleY Y scale value
+	\param fScaleZ Z scale value
+	\sa Multiply(const Matrix4D_t *,float,float,float), TransposeMultiply(float,float,float) or SetScale(float,float,float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Multiply(float fScaleX,float fScaleY,float fScaleZ)
+{
+	x.x = x.x * fScaleX;
+	x.y = x.y * fScaleX;
+	x.z = x.z * fScaleX;
+	x.w = x.w * fScaleX;
+	y.x = y.x * fScaleY;
+	y.y = y.y * fScaleY;
+	y.z = y.z * fScaleY;
+	y.w = y.w * fScaleY;
+	z.x = z.x * fScaleZ;
+	z.y = z.y * fScaleZ;
+	z.z = z.z * fScaleZ;
+	z.w = z.w * fScaleZ;
+//	w.x = w.x * 1.0f;
+//	w.y = w.y * 1.0f;
+//	w.z = w.z * 1.0f;
+//	w.w = w.w * 1.0f;
+}
+
+/*! ************************************
+
+	\brief Multiply by an X,Y and Z scale into a copy
+
+	Using only the x.x, y.y, and z.z components of a
+	simulated matrix, perform a matrix multiply quickly
+	that would yield a multiplication vs a scale matrix
+	and store the result in this Matrix4D_t
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th>
+	<td>(pInput->x.x*fScaleX)</td>
+	<td>(pInput->x.y*fScaleX)</td>
+	<td>(pInput->x.z*fScaleX)</td>
+	<td>(pInput->x.w*fScaleX)</td>
+	</tr>
+	<tr><th>y</th>
+	<td>(pInput->y.x*fScaleY)</td>
+	<td>(pInput->y.y*fScaleY)</td>
+	<td>(pInput->y.z*fScaleY)</td>
+	<td>(pInput->y.w*fScaleY)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(pInput->z.x*fScaleZ)</td>
+	<td>(pInput->z.y*fScaleZ)</td>
+	<td>(pInput->z.z*fScaleZ)</td>
+	<td>(pInput->z.w*fScaleZ)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(pInput->w.x*1.0f)</td>
+	<td>(pInput->w.y*1.0f)</td>
+	<td>(pInput->w.z*1.0f)</td>
+	<td>(pInput->w.w*1.0f)</td>
+	</tr>
+	</table>
+
+	\note Terms with a multiply by 1.0f perform a copy operation instead of a multiply in the implementation.
+
+	\param pInput Pointer to a valid Matrix4D_t to apply the scale to
+	\param fScaleX X scale value
+	\param fScaleY Y scale value
+	\param fScaleZ Z scale value
+	\sa Multiply(float,float,float), TransposeMultiply(const Matrix4D_t*,float,float,float) or SetScale(float,float,float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Multiply(const Matrix4D_t *pInput,float fScaleX,float fScaleY,float fScaleZ)
+{
+	x.x = pInput->x.x * fScaleX;
+	x.y = pInput->x.y * fScaleX;
+	x.z = pInput->x.z * fScaleX;
+	x.w = pInput->x.w * fScaleX;
+	y.x = pInput->y.x * fScaleY;
+	y.y = pInput->y.y * fScaleY;
+	y.z = pInput->y.z * fScaleY;
+	y.w = pInput->y.w * fScaleY;
+	z.x = pInput->z.x * fScaleZ;
+	z.y = pInput->z.y * fScaleZ;
+	z.z = pInput->z.z * fScaleZ;
+	z.w = pInput->z.w * fScaleZ;
+	w.x = pInput->w.x;	// * 1.0f;
+	w.y = pInput->w.y;	// * 1.0f;
+	w.z = pInput->w.z;	// * 1.0f;
+	w.w = pInput->w.w;	// * 1.0f;
+}
+
+/*! ************************************
+
+	\brief Multiply by an X, Y, Z and W scale
+
+	Using only the x.x, y.y, z.z and w.w components of a
+	simulated matrix, perform a matrix multiply quickly
+	that would yield a multiplication vs a scale matrix
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th>
+	<td>(x.x*fScaleX)</td>
+	<td>(x.y*fScaleX)</td>
+	<td>(x.z*fScaleX)</td>
+	<td>(x.w*fScaleX)</td>
+	</tr>
+	<tr><th>y</th>
+	<td>(y.x*fScaleY)</td>
+	<td>(y.y*fScaleY)</td>
+	<td>(y.z*fScaleY)</td>
+	<td>(y.w*fScaleY)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(z.x*fScaleZ)</td>
+	<td>(z.y*fScaleZ)</td>
+	<td>(z.z*fScaleZ)</td>
+	<td>(z.w*fScaleZ)</td>
+	</tr>
+	<tr><th>w</th>
+	<td>(w.x*fScaleW)</td>
+	<td>(w.y*fScaleW)</td>
+	<td>(w.z*fScaleW)</td>
+	<td>(w.w*fScaleW)</td>
+	</tr>
+	</table>
+
+	\param fScaleX X scale value
+	\param fScaleY Y scale value
+	\param fScaleZ Z scale value
+	\param fScaleW W scale value
+	\sa Multiply(const Matrix4D_t *,float,float,float,float), TransposeMultiply(float,float,float,float) or SetScale(float,float,float,float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Multiply(float fScaleX,float fScaleY,float fScaleZ,float fScaleW)
+{
+	x.x = x.x * fScaleX;
+	x.y = x.y * fScaleX;
+	x.z = x.z * fScaleX;
+	x.w = x.w * fScaleX;
+	y.x = y.x * fScaleY;
+	y.y = y.y * fScaleY;
+	y.z = y.z * fScaleY;
+	y.w = y.w * fScaleY;
+	z.x = z.x * fScaleZ;
+	z.y = z.y * fScaleZ;
+	z.z = z.z * fScaleZ;
+	z.w = z.w * fScaleZ;
+	w.x = w.x * fScaleW;
+	w.y = w.y * fScaleW;
+	w.z = w.z * fScaleW;
+	w.w = w.w * fScaleW;
+}
+
+/*! ************************************
+
+	\brief Multiply by an X, Y, Z and W scale
+
+	Using only the x.x, y.y, z.z and w.w components of a
+	simulated matrix, perform a matrix multiply quickly
+	that would yield a multiplication vs a scale matrix
+	and store the result in this Matrix4D_t
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th>
+	<td>(pInput->x.x*fScaleX)</td>
+	<td>(pInput->x.y*fScaleX)</td>
+	<td>(pInput->x.z*fScaleX)</td>
+	<td>(pInput->x.w*fScaleX)</td>
+	</tr>
+	<tr><th>y</th>
+	<td>(pInput->y.x*fScaleY)</td>
+	<td>(pInput->y.y*fScaleY)</td>
+	<td>(pInput->y.z*fScaleY)</td>
+	<td>(pInput->y.w*fScaleY)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(pInput->z.x*fScaleZ)</td>
+	<td>(pInput->z.y*fScaleZ)</td>
+	<td>(pInput->z.z*fScaleZ)</td>
+	<td>(pInput->z.w*fScaleZ)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(pInput->w.x*fScaleW)</td>
+	<td>(pInput->w.y*fScaleW)</td>
+	<td>(pInput->w.z*fScaleW)</td>
+	<td>(pInput->w.w*fScaleW)</td>
+	</tr>
+	</table>
+
+	\param pInput Pointer to a valid Matrix4D_t to apply the scale to
+	\param fScaleX X scale value
+	\param fScaleY Y scale value
+	\param fScaleZ Z scale value
+	\param fScaleW W scale value
+	\sa Multiply(float,float,float,float), TransposeMultiply(const Matrix4D_t*,float,float,float,float) or SetScale(float,float,float,float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Multiply(const Matrix4D_t *pInput,float fScaleX,float fScaleY,float fScaleZ,float fScaleW)
+{
+	x.x = pInput->x.x * fScaleX;
+	x.y = pInput->x.y * fScaleX;
+	x.z = pInput->x.z * fScaleX;
+	x.w = pInput->x.w * fScaleX;
+	y.x = pInput->y.x * fScaleY;
+	y.y = pInput->y.y * fScaleY;
+	y.z = pInput->y.z * fScaleY;
+	y.w = pInput->y.w * fScaleY;
+	z.x = pInput->z.x * fScaleZ;
+	z.y = pInput->z.y * fScaleZ;
+	z.z = pInput->z.z * fScaleZ;
+	z.w = pInput->z.w * fScaleZ;
+	w.x = pInput->w.x * fScaleW;
+	w.y = pInput->w.y * fScaleW;
+	w.z = pInput->w.z * fScaleW;
+	w.w = pInput->w.w * fScaleW;
+}
+
+/*! ************************************
+
+	\brief Perform a 3x3 matrix multiply by a scalar.
+	
+	Multiply a scalar value to the 3x3 subset of a matrix (The equivalent of W equaling 1.0f)
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</td>	<td>xx*fInput</td><td>xy*fInput</td><td>xz*fInput</td><td>xw*1.0f</td></tr>
+	<tr><th>y</td>	<td>yx*fInput</td><td>yy*fInput</td><td>yz*fInput</td><td>yw*1.0f</td></tr>
+	<tr><th>z</td>	<td>zx*fInput</td><td>zy*fInput</td><td>zz*fInput</td><td>zw*1.0f</td></tr>
+	<tr><th>w</td>	<td>wx*1.0f</td><td>wy*1.0f</td><td>wz*1.0f</td><td>ww*1.0f</td></tr>
+	</table>
+
+	\note The terms where the value is multiplied by 1.0f are actually not performed and
+		are replaced with a value copy since mathematically they perform the same action.
+
+	\param fInput Scalar value to multiply all values by
+	\sa Multiply3x3(const Matrix4D_t *,float) or Multiply(float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Multiply3x3(float fInput)
+{
+	x.x *= fInput;
+	x.y *= fInput;
+	x.z *= fInput;
+
+	y.x *= fInput;
+	y.y *= fInput;
+	y.z *= fInput;
+
+	z.x *= fInput;
+	z.y *= fInput;
+	z.z *= fInput;
+}
+
+/*! ************************************
+
+	\brief Perform a 3x3 matrix multiply by a scalar.
+	
+	Multiply a scalar value to the 3x3 subset of a matrix (The equivalent of W equaling 1.0f)
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</td>	<td>pInput->xx*fInput</td><td>pInput->xy*fInput</td><td>pInput->xz*fInput</td><td>pInput->xw*1.0f</td></tr>
+	<tr><th>y</td>	<td>pInput->yx*fInput</td><td>pInput->yy*fInput</td><td>pInput->yz*fInput</td><td>pInput->yw*1.0f</td></tr>
+	<tr><th>z</td>	<td>pInput->zx*fInput</td><td>pInput->zy*fInput</td><td>pInput->zz*fInput</td><td>pInput->zw*1.0f</td></tr>
+	<tr><th>w</td>	<td>pInput->wx*1.0f</td><td>pInput->wy*1.0f</td><td>pInput->wz*1.0f</td><td>pInput->ww*1.0f</td></tr>
+	</table>
+
+	\note The terms where the value is multiplied by 1.0f are actually not performed and
+		are replaced with a value copy since mathematically they perform the same action.
+
+	\param pInput Pointer to Matrix to multiply
+	\param fInput Scalar value to multiply all values by
+	\sa Multiply3x3(float) or Multiply(float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Multiply3x3(const Matrix4D_t *pInput,float fInput)
+{
+	x.x = pInput->x.x*fInput;
+	x.y = pInput->x.y*fInput;
+	x.z = pInput->x.z*fInput;
+	x.w = pInput->x.w;
+
+	y.x = pInput->y.x*fInput;
+	y.y = pInput->y.y*fInput;
+	y.z = pInput->y.z*fInput;
+	y.w = pInput->y.w;
+
+	z.x = pInput->z.x*fInput;
+	z.y = pInput->z.y*fInput;
+	z.z = pInput->z.z*fInput;
+	z.w = pInput->z.w;
+
+	w.x = pInput->w.x;
+	w.y = pInput->w.y;
+	w.z = pInput->w.z;
+	w.w = pInput->w.w;
+}
+
+/*! ************************************
+
+	\brief Multiply by an X,Y and Z scale
+
+	Using only the x.x, y.y, and z.z components of a
+	simulated matrix, perform a matrix multiply quickly
+	that would yield a multiplication vs a scale matrix
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th>
+	<td>(x.x*fScaleX)</td>
+	<td>(x.y*fScaleY)</td>
+	<td>(x.z*fScaleZ)</td>
+	<td>(x.w*1.0f)</td>
+	</tr>
+	<tr><th>y</th>
+	<td>(y.x*fScaleX)</td>
+	<td>(y.y*fScaleY)</td>
+	<td>(y.z*fScaleZ)</td>
+	<td>(y.w*1.0f)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(z.x*fScaleX)</td>
+	<td>(z.y*fScaleY)</td>
+	<td>(z.z*fScaleZ)</td>
+	<td>(z.w*1.0f)</td>
+	</tr>
+	<tr><th>w</th>
+	<td>(w.x*fScaleX)</td>
+	<td>(w.y*fScaleY)</td>
+	<td>(w.z*fScaleZ)</td>
+	<td>(w.w*1.0f)</td>
+	</tr>
+	</table>
+
+	\note Terms with a multiply by 1.0f perform no action in the implementation.
+
+	\param fScaleX X scale value
+	\param fScaleY Y scale value
+	\param fScaleZ Z scale value
+	\sa TransposeMultiply(const Matrix4D_t *,float,float,float), Multiply(float,float,float) or SetScale(float,float,float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::TransposeMultiply(float fScaleX,float fScaleY,float fScaleZ)
+{
+	x.x = x.x * fScaleX;
+	x.y = x.y * fScaleY;
+	x.z = x.z * fScaleZ;
+//	x.w = x.w * 1.0f;
+	y.x = y.x * fScaleX;
+	y.y = y.y * fScaleY;
+	y.z = y.z * fScaleZ;
+//	y.w = y.w * 1.0f;
+	z.x = z.x * fScaleX;
+	z.y = z.y * fScaleY;
+	z.z = z.z * fScaleZ;
+//	z.w = z.w * 1.0f;
+	w.x = w.x * fScaleX;
+	w.y = w.y * fScaleY;
+	w.z = w.z * fScaleZ;
+//	w.w = w.w * 1.0f;
+}
+
+/*! ************************************
+
+	\brief Multiply by an X,Y and Z scale into a copy
+
+	Using only the x.x, y.y, and z.z components of a
+	simulated matrix, perform a matrix multiply quickly
+	that would yield a multiplication vs a scale matrix
+	and store the result in this Matrix4D_t
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th>
+	<td>(pInput->x.x*fScaleX)</td>
+	<td>(pInput->x.y*fScaleY)</td>
+	<td>(pInput->x.z*fScaleZ)</td>
+	<td>(pInput->x.w*1.0f)</td>
+	</tr>
+	<tr><th>y</th>
+	<td>(pInput->y.x*fScaleX)</td>
+	<td>(pInput->y.y*fScaleY)</td>
+	<td>(pInput->y.z*fScaleZ)</td>
+	<td>(pInput->y.w*1.0f)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(pInput->z.x*fScaleX)</td>
+	<td>(pInput->z.y*fScaleY)</td>
+	<td>(pInput->z.z*fScaleZ)</td>
+	<td>(pInput->z.w*1.0f)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(pInput->w.x*fScaleX)</td>
+	<td>(pInput->w.y*fScaleY)</td>
+	<td>(pInput->w.z*fScaleZ)</td>
+	<td>(pInput->w.w*1.0f)</td>
+	</tr>
+	</table>
+
+	\note Terms with a multiply by 1.0f perform a copy operation instead of a multiply in the implementation.
+
+	\param pInput Pointer to a valid Matrix4D_t to apply the scale to
+	\param fScaleX X scale value
+	\param fScaleY Y scale value
+	\param fScaleZ Z scale value
+	\sa TransposeMultiply(float,float,float), Multiply(const Matrix4D_t*,float,float,float) or SetScale(float,float,float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::TransposeMultiply(const Matrix4D_t *pInput,float fScaleX,float fScaleY,float fScaleZ)
+{
+	x.x = pInput->x.x * fScaleX;
+	x.y = pInput->x.y * fScaleY;
+	x.z = pInput->x.z * fScaleZ;
+	x.w = pInput->x.w;	// * 1.0f;
+	y.x = pInput->y.x * fScaleX;
+	y.y = pInput->y.y * fScaleY;
+	y.z = pInput->y.z * fScaleZ;
+	y.w = pInput->y.w;	// * 1.0f;
+	z.x = pInput->z.x * fScaleX;
+	z.y = pInput->z.y * fScaleY;
+	z.z = pInput->z.z * fScaleZ;
+	z.w = pInput->z.w;	// * 1.0f;
+	w.x = pInput->w.x * fScaleX;
+	w.y = pInput->w.y * fScaleY;
+	w.z = pInput->w.z * fScaleZ;
+	w.w = pInput->w.w;	// * 1.0f;
+}
+
+/*! ************************************
+
+	\brief Multiply by an X, Y, Z, and W scale
+
+	Using only the x.x, y.y, z.z and w.w components of a
+	simulated matrix, perform a matrix multiply quickly
+	that would yield a multiplication vs a scale matrix
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th>
+	<td>(x.x*fScaleX)</td>
+	<td>(x.y*fScaleY)</td>
+	<td>(x.z*fScaleZ)</td>
+	<td>(x.w*fScaleW)</td>
+	</tr>
+	<tr><th>y</th>
+	<td>(y.x*fScaleX)</td>
+	<td>(y.y*fScaleY)</td>
+	<td>(y.z*fScaleZ)</td>
+	<td>(y.w*fScaleW)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(z.x*fScaleX)</td>
+	<td>(z.y*fScaleY)</td>
+	<td>(z.z*fScaleZ)</td>
+	<td>(z.w*fScaleW)</td>
+	</tr>
+	<tr><th>w</th>
+	<td>(w.x*fScaleX)</td>
+	<td>(w.y*fScaleY)</td>
+	<td>(w.z*fScaleZ)</td>
+	<td>(w.w*fScaleW)</td>
+	</tr>
+	</table>
+
+	\param fScaleX X scale value
+	\param fScaleY Y scale value
+	\param fScaleZ Z scale value
+	\param fScaleW W scale value
+	\sa TransposeMultiply(const Matrix4D_t *,float,float,float,float), Multiply(float,float,float,float) or SetScale(float,float,float,float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::TransposeMultiply(float fScaleX,float fScaleY,float fScaleZ,float fScaleW)
+{
+	x.x = x.x * fScaleX;
+	x.y = x.y * fScaleY;
+	x.z = x.z * fScaleZ;
+	x.w = x.w * fScaleW;
+	y.x = y.x * fScaleX;
+	y.y = y.y * fScaleY;
+	y.z = y.z * fScaleZ;
+	y.w = y.w * fScaleW;
+	z.x = z.x * fScaleX;
+	z.y = z.y * fScaleY;
+	z.z = z.z * fScaleZ;
+	z.w = z.w * fScaleW;
+	w.x = w.x * fScaleX;
+	w.y = w.y * fScaleY;
+	w.z = w.z * fScaleZ;
+	w.w = w.w * fScaleW;
+}
+
+/*! ************************************
+
+	\brief Multiply by an X, Y, Z, and W scale
+
+	Using only the x.x, y.y, z.z and w.w components of a
+	simulated matrix, perform a matrix multiply quickly
+	that would yield a multiplication vs a scale matrix
+	and store the result in this Matrix4D_t
+
+	Use this formula to create the final matrix
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th>
+	<td>(pInput->x.x*fScaleX)</td>
+	<td>(pInput->x.y*fScaleY)</td>
+	<td>(pInput->x.z*fScaleZ)</td>
+	<td>(pInput->x.w*fScaleW)</td>
+	</tr>
+	<tr><th>y</th>
+	<td>(pInput->y.x*fScaleX)</td>
+	<td>(pInput->y.y*fScaleY)</td>
+	<td>(pInput->y.z*fScaleZ)</td>
+	<td>(pInput->y.w*fScaleW)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(pInput->z.x*fScaleX)</td>
+	<td>(pInput->z.y*fScaleY)</td>
+	<td>(pInput->z.z*fScaleZ)</td>
+	<td>(pInput->z.w*fScaleW)</td>
+	</tr>
+	<tr><th>z</th>
+	<td>(pInput->w.x*fScaleX)</td>
+	<td>(pInput->w.y*fScaleY)</td>
+	<td>(pInput->w.z*fScaleZ)</td>
+	<td>(pInput->w.w*fScaleW)</td>
+	</tr>
+	</table>
+
+	\param pInput Pointer to a valid Matrix4D_t to apply the scale to
+	\param fScaleX X scale value
+	\param fScaleY Y scale value
+	\param fScaleZ Z scale value
+	\param fScaleW W scale value
+	\sa TransposeMultiply(float,float,float,float), Multiply(const Matrix4D_t*,float,float,float,float) or SetScale(float,float,float,float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::TransposeMultiply(const Matrix4D_t *pInput,float fScaleX,float fScaleY,float fScaleZ,float fScaleW)
+{
+	x.x = pInput->x.x * fScaleX;
+	x.y = pInput->x.y * fScaleY;
+	x.z = pInput->x.z * fScaleZ;
+	x.w = pInput->x.w * fScaleW;
+	y.x = pInput->y.x * fScaleX;
+	y.y = pInput->y.y * fScaleY;
+	y.z = pInput->y.z * fScaleZ;
+	y.w = pInput->y.w * fScaleW;
+	z.x = pInput->z.x * fScaleX;
+	z.y = pInput->z.y * fScaleY;
+	z.z = pInput->z.z * fScaleZ;
+	z.w = pInput->z.w * fScaleW;
+	w.x = pInput->w.x * fScaleX;
+	w.y = pInput->w.y * fScaleY;
+	w.z = pInput->w.z * fScaleZ;
+	w.w = pInput->w.w * fScaleW;
+}
+
+/*! ************************************
+
 	\brief Multiply a vector by a matrix
 
 	Transform the point by the matrix
@@ -3246,6 +4084,284 @@ void BURGER_API Burger::Matrix4D_t::TransposeTransform3x3(Vector3D_t *pOutput,co
 	pOutput->x=x.x*fX + y.x*fY + z.x*fZ;
 	pOutput->y=x.y*fX + y.y*fY + z.y*fZ;
 	pOutput->z=x.z*fX + y.z*fY + z.z*fZ;
+}
+
+/*! ************************************
+	
+	\brief Rotate a matrix in the Y axis (Yaw)
+
+	Given a Y angle in radians, rotate the matrix accordingly
+
+	fCos = Cos(fYaw); fSin = Sin(fYaw);
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th><td>(z.x*fSin)+(x.x*fCos)</td><td>(z.y*fSin)+(x.y*fCos)</td><td>(z.z*fSin)+(x.z*fCos)</td><td>(z.w*fSin)+(x.w*fCos)</td></tr>
+	<tr><th>y</th><td>y.x</td><td>y.y</td><td>y.z</td><td>y.w</td></tr>
+	<tr><th>z</th><td>(z.x*fCos)-(x.x*fSin)</td><td>(z.y*fCos)-(x,y*fSin)</td><td>(z.z*fCos)-(x.z*fSin)</td><td>(z.w*fCos)-(x.w*fSin)</td></tr>
+	<tr><th>w</th><td>w.x</td><td>w.y</td><td>w.z</td><td>w.w</td></tr>
+	</table>
+
+	\param fYaw Angle in radians to yaw the matrix
+	\sa Pitch(float) or Roll(float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Yaw(float fYaw)
+{
+	float fCos = Cos(fYaw);
+	float fSin = Sin(fYaw);
+
+	float fXX = x.x;
+	float fXY = x.y;
+	float fXZ = x.z;
+	float fXW = x.w;
+
+	x.x = (z.x*fSin)+(fXX*fCos);
+	x.y = (z.y*fSin)+(fXY*fCos);
+	x.z = (z.z*fSin)+(fXZ*fCos);
+	x.w = (z.w*fSin)+(fXW*fCos);
+
+	z.x = (z.x*fCos)-(fXX*fSin);
+	z.y = (z.y*fCos)-(fXY*fSin);
+	z.z = (z.z*fCos)-(fXZ*fSin);
+	z.w = (z.w*fCos)-(fXW*fSin);
+}
+
+/*! ************************************
+	
+	\brief Rotate a matrix in the X axis (Pitch)
+
+	Given a X angle in radians, rotate the matrix accordingly
+
+	fCos = Cos(fPitch); fSin = Sin(fPitch);
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th><td>x.x</td><td>x.y</td><td>x.z</td><td>x.w</td></tr>
+	<tr><th>y</th><td>(z.x*fSin)+(y.x*fCos)</td><td>(z.y*fSin)+(y.y*fCos)</td><td>(z.z*fSin)+(y.z*fCos)</td><td>(z.w*fSin)+(y.w*fCos)</td></tr>
+	<tr><th>z</th><td>(z.x*fCos)-(y.x*fSin)</td><td>(z.y*fCos)-(y.y*fSin)</td><td>(z.z*fCos)-(y.z*fSin)</td><td>(z.w*fCos)-(y.w*fSin)</td></tr>
+	<tr><th>w</th><td>w.x</td><td>w.y</td><td>w.z</td><td>w.w</td></tr>
+	</table>
+
+	\param fPitch Angle in radians to pitch the matrix
+	\sa Yaw(float) or Roll(float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Pitch(float fPitch)
+{
+	float fCos = Cos(fPitch);
+	float fSin = Sin(fPitch);
+
+	float fYX = y.x;
+	float fYY = y.y;
+	float fYZ = y.z;
+	float fYW = y.w;
+
+	y.x = (z.x*fSin)+(fYX*fCos);
+	y.y = (z.y*fSin)+(fYY*fCos);
+	y.z = (z.z*fSin)+(fYZ*fCos);
+	y.w = (z.w*fSin)+(fYW*fCos);
+
+	z.x = (z.x*fCos)-(fYX*fSin);
+	z.y = (z.y*fCos)-(fYY*fSin);
+	z.z = (z.z*fCos)-(fYZ*fSin);
+	z.w = (z.w*fCos)-(fYW*fSin);
+}
+
+/*! ************************************
+	
+	\brief Rotate a matrix in the Z axis (Roll)
+
+	Given a Z angle in radians, rotate the matrix accordingly
+
+	fCos = Cos(fRoll); fSin = Sin(fRoll);
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th><td>(y.x*fSin)+(x.x*fCos)</td><td>(y.y*fSin)+(x.y*fCos)</td><td>(y.z*fSin)+(x.z*fCos)</td><td>(y.w*fSin)+(x.w*fCos)</td></tr>
+	<tr><th>y</th><td>(y.x*fCos)-(x.x*fSin)</td><td>(y.y*fCos)-(x.y*fSin)</td><td>(y.z*fCos)-(x.z*fSin)</td><td>(y.w*fCos)-(x.w*fSin)</td></tr>
+	<tr><th>z</th><td>z.x</td><td>z.y</td><td>z.z</td><td>z.w</td></tr>
+	<tr><th>w</th><td>w.x</td><td>w.y</td><td>w.z</td><td>w.w</td></tr>
+	</table>
+
+	\param fRoll Angle in radians to roll the matrix
+	\sa Yaw(float) or Pitch(float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Roll(float fRoll)
+{
+	float fCos = Cos(fRoll);
+	float fSin = Sin(fRoll);
+
+	float fXX = x.x;
+	float fXY = x.y;
+	float fXZ = x.z;
+	float fXW = x.w;
+
+	x.x = (y.x*fSin)+(fXX*fCos);
+	x.y = (y.y*fSin)+(fXY*fCos);
+	x.z = (y.z*fSin)+(fXZ*fCos);
+	x.w = (y.w*fSin)+(fXW*fCos);
+
+	y.x = (y.x*fCos)-(fXX*fSin);
+	y.y = (y.y*fCos)-(fXY*fSin);
+	y.z = (y.z*fCos)-(fXZ*fSin);
+	y.w = (y.w*fCos)-(fXW*fSin);
+}
+
+/*! ************************************
+	
+	\brief Rotate a matrix in an arbitrary axis
+
+	Given a vector to determine direction and an angle in radians, rotate the matrix accordingly
+
+	\note This is a replacement for glRotate()
+
+	\param fRadians Angle in radians to roll the matrix
+	\param fX X value of the vector
+	\param fY Y value of the vector
+	\param fZ Z value of the vector
+	\sa Yaw(float), Pitch(float) or Roll(float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Rotate(float fRadians,float fX,float fY,float fZ)
+{
+	if ((fY == 0.0f) && (fZ == 0.0f)) {
+		Pitch(fRadians);
+	} else if ((fX == 0.0f) && (fZ == 0.0f)) {
+		Yaw(fRadians);
+	} else if ((fX == 0.0f) && (fY == 0.0f)) {
+		Roll(fRadians);
+	} else {
+		float fSin = Sin(fRadians);
+		float fCos = Cos(fRadians);
+
+		// Get the length of the vector
+		float fLength = Sqrt((fX * fX) + (fY * fY) + (fZ * fZ));
+
+		float fReciprocalLength = 1.0f / fLength;
+		float fOneLessCosine = 1.0f - fCos;
+
+		float fXNormal = fX * fReciprocalLength;
+		float fYNormal = fY * fReciprocalLength;
+		float fZNormal = fZ * fReciprocalLength;
+
+		float fXNormalSquared = fXNormal * fXNormal;
+		float fYNormalSquared = fYNormal * fYNormal;
+		float fZNormalSquared = fZNormal * fZNormal;
+
+		float fXYNegCosine = fXNormal * fYNormal * fOneLessCosine;
+		float fYZNegCosine = fYNormal * fZNormal * fOneLessCosine;
+		float fZXNegCosine = fZNormal * fXNormal * fOneLessCosine;
+
+		fXNormal *= fSin;
+		fYNormal *= fSin;
+		fZNormal *= fSin;
+
+		// Create the constants
+		float fXXAdj = fXNormalSquared + fCos * (1.0f - fXNormalSquared);
+		float fXYAdj = fXYNegCosine + fZNormal;
+		float fXZAdj = fZXNegCosine - fYNormal;
+		float fYXAdj = fXYNegCosine - fZNormal;
+		float fYYAdj = fYNormalSquared + fCos * (1.0f - fYNormalSquared);
+		float fYZAdj = fYZNegCosine + fXNormal;
+		float fZXAdj = fZXNegCosine + fYNormal;
+		float fZYAdj = fYZNegCosine - fXNormal;
+		float fZZAdj = fZNormalSquared + fCos * (1.0f - fZNormalSquared);
+
+		// Apply rotation 
+		float fTemp1 = x.x;
+		float fTemp2 = y.x;
+		float fTemp3 = z.x;
+		x.x = fTemp1 * fXXAdj + fTemp2 * fXYAdj + fTemp3 * fXZAdj;
+		y.x = fTemp1 * fYXAdj + fTemp2 * fYYAdj + fTemp3 * fYZAdj;
+		z.x = fTemp1 * fZXAdj + fTemp2 * fZYAdj + fTemp3 * fZZAdj;
+
+		fTemp1 = x.y;
+		fTemp2 = y.y;
+		fTemp3 = z.y;
+		x.y = fTemp1 * fXXAdj + fTemp2 * fXYAdj + fTemp3 * fXZAdj;
+		y.y = fTemp1 * fYXAdj + fTemp2 * fYYAdj + fTemp3 * fYZAdj;
+		z.y = fTemp1 * fZXAdj + fTemp2 * fZYAdj + fTemp3 * fZZAdj;
+
+		fTemp1 = x.z;
+		fTemp2 = y.z;
+		fTemp3 = z.z;
+		x.z = fTemp1 * fXXAdj + fTemp2 * fXYAdj + fTemp3 * fXZAdj;
+		y.z = fTemp1 * fYXAdj + fTemp2 * fYYAdj + fTemp3 * fYZAdj;
+		z.z = fTemp1 * fZXAdj + fTemp2 * fZYAdj + fTemp3 * fZZAdj;
+
+		fTemp1 = x.w;
+		fTemp2 = y.w;
+		fTemp3 = z.w;
+		x.w = fTemp1 * fXXAdj + fTemp2 * fXYAdj + fTemp3 * fXZAdj;
+		y.w = fTemp1 * fYXAdj + fTemp2 * fYYAdj + fTemp3 * fYZAdj;
+		z.w = fTemp1 * fZXAdj + fTemp2 * fZYAdj + fTemp3 * fZZAdj;
+	}
+}
+
+/*! ************************************
+	
+	\brief Multiply the matrix by a generated translation matrix
+
+	With an X, Y and Z for translation, apply a matrix multiply if a
+	matrix was generated with SetTranslate(float,float,float).
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th><td>x.x</td><td>x.y</td><td>x.z</td><td>x.w</td></tr>
+	<tr><th>y</th><td>y.x</td><td>y.y</td><td>y.z</td><td>y.w</td></tr>
+	<tr><th>z</th><td>z.x</td><td>z.y</td><td>z.z</td><td>z.w</td></tr>
+	<tr><th>w</th><td>(x.x*fX)+(y.x*fY)+(z.x*fZ)+w.x</td><td>(x.y*fX)+(y.y*fY)+(z.y*fZ)+w.y</td><td>(x.z*fX)+(y.z*fY)+(z.z*fZ)+w.z</td><td>(x.w*fX)+(y.w*fY)+(z.w*fZ)+w.w</td></tr>
+	</table>
+
+	\param fX X value of the temp translation matrix 
+	\param fY Y value of the temp translation matrix 
+	\param fZ Z value of the temp translation matrix 
+	\sa TransposeTranslate(float,float,float) or SetTranslate(float,float,float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::Translate(float fX,float fY,float fZ)
+{
+	w.x += x.x*fX + y.x*fY + z.x*fZ;
+	w.y += x.y*fX + y.y*fY + z.y*fZ;
+	w.z += x.z*fX + y.z*fY + z.z*fZ;
+	w.w += x.w*fX + y.w*fY + z.w*fZ;
+}
+
+/*! ************************************
+	
+	\brief Multiply the matrix by a generated transposed translation matrix
+
+	With an X, Y and Z for translation, apply a matrix multiply if a
+	matrix was generated with SetTranslate(float,float,float) and then Transpose()
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</th><td>x.x</td><td>x.y</td><td>x.z</td><td>(x.x*fX)+(x.y*fY)+(x.z*fZ)+x.w</td></tr>
+	<tr><th>y</th><td>y.x</td><td>y.y</td><td>y.z</td><td>(y.x*fX)+(y.y*fY)+(y.z*fZ)+y.w</td></tr>
+	<tr><th>z</th><td>z.x</td><td>z.y</td><td>z.z</td><td>(z.x*fX)+(z.y*fY)+(z.z*fZ)+z.w</td></tr>
+	<tr><th>w</th><td>w.x</td><td>w.y</td><td>w.z</td><td>(w.x*fX)+(w.y*fY)+(w.z*fZ)+w.w</td></tr>
+	</table>
+
+	\param fX X value of the temp translation matrix 
+	\param fY Y value of the temp translation matrix 
+	\param fZ Z value of the temp translation matrix 
+	\sa Translate(float,float,float) or SetTranslate(float,float,float)
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::TransposeTranslate(float fX,float fY,float fZ)
+{
+	x.w += x.x*fX + x.y*fY + x.z*fZ;
+	y.w += y.x*fX + y.y*fY + y.z*fZ;
+	z.w += z.x*fX + z.y*fY + z.z*fZ;
+	w.w += w.x*fX + w.y*fY + w.z*fZ;
 }
 
 /*! ************************************

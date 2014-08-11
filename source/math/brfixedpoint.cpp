@@ -767,6 +767,207 @@ Int32 BURGER_API Burger::FloatToIntNearest(float fInput)
 
 /*! ************************************
 
+	\fn Int32 Burger::Min(Int32 iA,Int32 iB)
+	\brief Return the lesser of two numbers
+
+	Compare the two input values and return the lesser of the two.
+		
+	\param iA First value to test
+	\param iB Second value to test
+	\return The lesser of the two inputs
+	
+	\sa Max(Int32,Int32), Min(Word32,Word32), or Min(Int64,Int64)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Int64 Burger::Min(Int64 iA,Int64 iB)
+	\brief Return the lesser of two numbers
+
+	Compare the two input values and return the lesser of the two.
+		
+	\param iA First value to test
+	\param iB Second value to test
+	\return The lesser of the two inputs
+	
+	\sa Max(Int64,Int64), Min(Word64,Word64), or Min(Int32,Int32)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word32 Burger::Min(Word32 uA,Word32 uB)
+	\brief Return the lesser of two numbers
+
+	Compare the two input values and return the lesser of the two.
+		
+	\param uA First value to test
+	\param uB Second value to test
+	\return The lesser of the two inputs
+	
+	\sa Max(Word32,Word32), Min(Int32,Int32), or Min(Word64,Word64)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word64 Burger::Min(Word64 uA,Word64 uB)
+	\brief Return the lesser of two numbers
+
+	Compare the two input values and return the lesser of the two.
+		
+	\param uA First value to test
+	\param uB Second value to test
+	\return The lesser of the two inputs
+	
+	\sa Max(Word64,Word64), Min(Int64,Int64), or Min(Word32,Word32)
+	
+***************************************/
+
+
+/*! ************************************
+
+	\fn Int32 Burger::Max(Int32 iA,Int32 iB)
+	\brief Return the greater of two numbers
+
+	Compare the two input values and return the greater of the two.
+		
+	\param iA First value to test
+	\param iB Second value to test
+	\return The greater of the two inputs
+	
+	\sa Min(Int32,Int32), Max(Word32,Word32), or Max(Int64,Int64)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Int64 Burger::Max(Int64 iA,Int64 iB)
+	\brief Return the greater of two numbers
+
+	Compare the two input values and return the greater of the two.
+		
+	\param iA First value to test
+	\param iB Second value to test
+	\return The greater of the two inputs
+	
+	\sa Min(Int64,Int64), Max(Word64,Word64), or Max(Int32,Int32)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word32 Burger::Max(Word32 uA,Word32 uB)
+	\brief Return the greater of two numbers
+
+	Compare the two input values and return the greater of the two.
+		
+	\param uA First value to test
+	\param uB Second value to test
+	\return The greater of the two inputs
+	
+	\sa Min(Word32,Word32), Max(Int32,Int32), or Max(Word64,Word64)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word64 Burger::Max(Word64 uA,Word64 uB)
+	\brief Return the greater of two numbers
+
+	Compare the two input values and return the greater of the two.
+		
+	\param uA First value to test
+	\param uB Second value to test
+	\return The greater of the two inputs
+	
+	\sa Min(Word64,Word64), Max(Int64,Int64), or Max(Word32,Word32)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Int32 Burger::Clamp(Int32 iInput,Int32 iMin,Int32 iMax)
+	\brief Clamp the input between a bounds
+
+	If the input value is less than the minimum, return the minimum
+	or if the input value is greater than the maximum, return 
+	the maximum, otherwise return the input value. No
+	checking is performed to determine if the minimum is
+	less than the maximum.
+		
+	\param iInput First value to test
+	\param iMin Minimum allowed value
+	\param iMax Maximum allowed value
+	\return The value clamped between the bounds
+
+	\sa Clamp(Word64,Word64,Word64), Clamp(Int64,Int64,Int64), or Clamp(Word32,Word32,Word32)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Int64 Burger::Clamp(Int64 iInput,Int64 iMin,Int64 iMax)
+	\brief Clamp the input between a bounds
+
+	If the input value is less than the minimum, return the minimum
+	or if the input value is greater than the maximum, return 
+	the maximum, otherwise return the input value. No
+	checking is performed to determine if the minimum is
+	less than the maximum.
+		
+	\param iInput First value to test
+	\param iMin Minimum allowed value
+	\param iMax Maximum allowed value
+	\return The value clamped between the bounds
+
+	\sa Clamp(Word32,Word32,Word32), Clamp(Int32,Int32,Int32), or Clamp(Word64,Word64,Word64)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word32 Burger::Clamp(Word32 uInput,Word32 uMin,Word32 uMax)
+	\brief Clamp the input between a bounds
+
+	If the input value is less than the minimum, return the minimum
+	or if the input value is greater than the maximum, return 
+	the maximum, otherwise return the input value. No
+	checking is performed to determine if the minimum is
+	less than the maximum.
+		
+	\param uInput First value to test
+	\param uMin Minimum allowed value
+	\param uMax Maximum allowed value
+	\return The value clamped between the bounds
+
+	\sa Clamp(Int64,Int64,Int64), Clamp(Word64,Word64,Word64), or Clamp(Int32,Int32,Int32)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word64 Burger::Clamp(Word64 uInput,Word64 uMin,Word64 uMax)
+	\brief Clamp the input between a bounds
+
+	If the input value is less than the minimum, return the minimum
+	or if the input value is greater than the maximum, return 
+	the maximum, otherwise return the input value. No
+	checking is performed to determine if the minimum is
+	less than the maximum.
+		
+	\param uInput First value to test
+	\param uMin Minimum allowed value
+	\param uMax Maximum allowed value
+	\return The value clamped between the bounds
+
+	\sa Clamp(Int32,Int32,Int32), Clamp(Word32,Word32,Word32), or Clamp(Int64,Int64,Int64)
+	
+***************************************/
+
+/*! ************************************
+
 	\fn Fixed32 Burger::FixedMultiply(Fixed32 fInput1,Fixed32 fInput2)
 	\brief Multiply two 16.16 fixed point numbers.
 

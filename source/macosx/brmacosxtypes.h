@@ -24,6 +24,12 @@ struct Point;
 struct Rect;
 struct FSRef;
 struct UTCDateTime;
+struct _NSPoint;
+struct _NSSize;
+struct _NSRect;
+struct CGPoint;
+struct CGSize;
+struct CGRect;
 #endif
 /* END */
 

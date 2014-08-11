@@ -47,7 +47,7 @@ void Burger::TimeDate_t::GetTime(void)
 
 	\brief Convert a MacOS UTCDateTime into a Burger::TimeDate_t
 	
-	\note This function is only available on iOS, MacOS and MacOSX
+	\note This function is only available on MacOS and MacOSX
 
 	\return \ref FALSE if successful, non-zero if not.
 
@@ -84,7 +84,7 @@ Word Burger::TimeDate_t::Load(const UTCDateTime *pUTCDateTime)
 
 	\brief Convert a Burger::TimeDate_t into a MacOS UTCDateTime 
 	
-	\note This function is only available on iOS, MacOS and MacOSX
+	\note This function is only available on MacOS and MacOSX
 
 	\return \ref FALSE if successful, non-zero if not.
 

@@ -102,12 +102,12 @@ struct Vector4D_t {
 	BURGER_INLINE float & operator[](Word uInput) { return (&x)[uInput]; }
 	BURGER_INLINE const float & operator[](Word uInput) const { return (&x)[uInput]; }
 };
-extern const Vector4D_t s_Vector4DZero;
-extern const Vector4D_t s_Vector4DOne;
-extern const Vector4D_t s_Vector4DOneX;
-extern const Vector4D_t s_Vector4DOneY;
-extern const Vector4D_t s_Vector4DOneZ;
-extern const Vector4D_t s_Vector4DOneW;
+extern const Vector4D_t g_Vector4DZero;
+extern const Vector4D_t g_Vector4DOne;
+extern const Vector4D_t g_Vector4DOneX;
+extern const Vector4D_t g_Vector4DOneY;
+extern const Vector4D_t g_Vector4DOneZ;
+extern const Vector4D_t g_Vector4DOneW;
 }
 /* END */
 

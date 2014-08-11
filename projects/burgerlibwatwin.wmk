@@ -105,6 +105,7 @@ objs= &
 	$(A)\brperforce.obj &
 	$(A)\brrandommanager.obj &
 	$(A)\brrunqueue.obj &
+	$(A)\brstaticrtti.obj &
 	$(A)\brtick.obj &
 	$(A)\brtimedate.obj &
 	$(A)\brfixedmatrix3d.obj &

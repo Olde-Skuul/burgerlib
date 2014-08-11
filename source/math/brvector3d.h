@@ -92,12 +92,25 @@ struct Vector3D_t {
 	Word BURGER_API Equal(const Vector3D_t *pInput,float fRange) const;
 	BURGER_INLINE float & operator[](Word uInput) { return (&x)[uInput]; }
 	BURGER_INLINE const float & operator[](Word uInput) const { return (&x)[uInput]; }
+	BURGER_INLINE Word operator == (const Vector3D_t& rInput) const { return (x == rInput.x) && (y == rInput.y) && (z == rInput.z); }
+	BURGER_INLINE Word operator != (const Vector3D_t& rInput) const { return (x != rInput.x) || (y != rInput.y) || (z != rInput.z); }
 };
-extern const Vector3D_t s_Vector3DZero;
-extern const Vector3D_t s_Vector3DOne;
-extern const Vector3D_t s_Vector3DOneX;
-extern const Vector3D_t s_Vector3DOneY;
-extern const Vector3D_t s_Vector3DOneZ;
+
+struct Word32ToVector3D_t {
+	union {
+		Word32 x[3];		///< Value as three 32 bit unsigned integers
+		Vector3D_t v;		///< Value as three 32 bit floats
+	};
+	BURGER_INLINE operator const Vector3D_t &() const { return v; }
+};
+
+extern const Vector3D_t g_Vector3DZero;
+extern const Vector3D_t g_Vector3DOne;
+extern const Vector3D_t g_Vector3DOneX;
+extern const Vector3D_t g_Vector3DOneY;
+extern const Vector3D_t g_Vector3DOneZ;
+extern const Word32ToVector3D_t g_Vector3DMax;
+extern const Word32ToVector3D_t g_Vector3DInfinity;
 }
 /* END */
 

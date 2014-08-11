@@ -65,7 +65,7 @@ public:
 	Word GetCreationTime(TimeDate_t *pOutput);
 	Word SetModificationTime(const TimeDate_t *pInput);
 	Word SetCreationTime(const TimeDate_t *pInput);
-#if defined(BURGER_MACOS) || defined(DOXYGEN)
+#if (defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
 	Word SetAuxType(Word32 uAuxType);
 	Word SetFileType(Word32 uFileType);
 	Word32 GetAuxType(void);

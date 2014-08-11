@@ -40,7 +40,7 @@
 				Optimization="0"
 				BufferSecurityCheck="true"
 				RuntimeLibrary="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -48,8 +48,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="burgerlibvc8w32dbg.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc8w32dbg.exe&quot;"
-				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\opengl"
+				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\opengl"
 				SubSystem="1"
 			/>
 		</Configuration>
@@ -83,7 +84,7 @@
 				Optimization="0"
 				BufferSecurityCheck="true"
 				RuntimeLibrary="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -91,8 +92,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="burgerlibvc8w64dbg.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc8w64dbg.exe&quot;"
-				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\opengl"
+				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\opengl"
 				SubSystem="1"
 			/>
 		</Configuration>
@@ -129,7 +131,7 @@
 				OmitFramePointers="true"
 				BufferSecurityCheck="true"
 				RuntimeLibrary="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -137,8 +139,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="burgerlibvc8w32int.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc8w32int.exe&quot;"
-				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\opengl"
+				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\opengl"
 				SubSystem="1"
 			/>
 		</Configuration>
@@ -175,7 +178,7 @@
 				OmitFramePointers="true"
 				BufferSecurityCheck="true"
 				RuntimeLibrary="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -183,8 +186,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="burgerlibvc8w64int.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc8w64int.exe&quot;"
-				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\opengl"
+				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\opengl"
 				SubSystem="1"
 			/>
 		</Configuration>
@@ -220,7 +224,7 @@
 				OmitFramePointers="true"
 				BufferSecurityCheck="false"
 				RuntimeLibrary="0"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -228,8 +232,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="burgerlibvc8w32rel.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc8w32rel.exe&quot;"
-				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\opengl"
+				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\opengl"
 				SubSystem="1"
 			/>
 		</Configuration>
@@ -265,7 +270,7 @@
 				OmitFramePointers="true"
 				BufferSecurityCheck="false"
 				RuntimeLibrary="0"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -273,8 +278,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="burgerlibvc8w64rel.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc8w64rel.exe&quot;"
-				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\opengl"
+				AdditionalLibraryDirectories="$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\opengl"
 				SubSystem="1"
 			/>
 		</Configuration>
@@ -282,7 +288,9 @@
 	<Files>
 		<Filter Name="source">
 			<File RelativePath="..\source\brgl.h" />
+			<File RelativePath="..\source\brglext.h" />
 			<File RelativePath="..\source\brglut.h" />
+			<File RelativePath="..\source\brglxext.h" />
 			<File RelativePath="..\source\brstartup.h" />
 			<File RelativePath="..\source\templateburgerbase.h" />
 			<File RelativePath="..\source\version.h" />
@@ -521,6 +529,8 @@
 				<File RelativePath="..\source\lowlevel\brrandommanager.h" />
 				<File RelativePath="..\source\lowlevel\brrunqueue.cpp" />
 				<File RelativePath="..\source\lowlevel\brrunqueue.h" />
+				<File RelativePath="..\source\lowlevel\brstaticrtti.cpp" />
+				<File RelativePath="..\source\lowlevel\brstaticrtti.h" />
 				<File RelativePath="..\source\lowlevel\brtick.cpp" />
 				<File RelativePath="..\source\lowlevel\brtick.h" />
 				<File RelativePath="..\source\lowlevel\brtimedate.cpp" />

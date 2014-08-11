@@ -824,3 +824,58 @@ void BURGER_API Burger::Vector2D_t::NormalizeFast(const Vector2D_t *pInput)
 
 ***************************************/
 
+/*! ************************************
+
+	\fn Word Burger::Vector2D_t::operator == (const Vector2D_t& rInput) const
+	\brief Compare two Vector2D_t's for equality
+	
+	\param rInput Reference to the Vector2D_t to compare against
+	\return \ref TRUE if equal, \ref FALSE if not
+	\sa Vector2D_t::operator != (const Vector2D_t& rInput) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Vector2D_t::operator != (const Vector2D_t& rInput) const
+	\brief Compare two Vector2D_t's for inequality
+	
+	\param rInput Reference to the Vector2D_t to compare against
+	\return \ref TRUE if not equal, \ref FALSE if equal
+	\sa Vector2D_t::operator == (const Vector2D_t& rInput) const
+
+***************************************/
+
+/*! ************************************
+
+	\struct Burger::Word32ToVector2D_t {
+	\brief Structure to create a Vector2D_t with 32 bit unsigned integer constants
+
+	There is no standard for initializing 32 bit floats at compile time
+	without generating startup glue code. This
+	structure fixes the problem by creating a union between the Vector2D_t
+	structure and an array of data that maps directly over it.
+
+	\code
+	// Initialize with 2 32 bit unsigned integers
+	const Burger::Word32ToVector2D_t Burger::g_Vector2DInfinity = {{0x7F800000U,0x7F800000U}};
+
+	\endcode
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Word32ToVector2D_t::operator const Vector2D_t & () const
+	\brief Accessor to load the Vector2D_t
+	
+	\sa Burger::Vector3D_t or Burger::Vector4D_t
+
+***************************************/
+
+const Burger::Vector2D_t Burger::g_Vector2DZero = {0.0f,0.0f};	///< Constant of 0.0f,0.0f
+const Burger::Vector2D_t Burger::g_Vector2DOne = {1.0f,1.0f};	///< Constant of 1.0f,1.0f
+const Burger::Vector2D_t Burger::g_Vector2DOneX = {1.0f,0.0f};	///< Constant of 1.0f,0.0f
+const Burger::Vector2D_t Burger::g_Vector2DOneY = {0.0f,1.0f};	///< Constant of 0.0f,1.0f
+const Burger::Word32ToVector2D_t Burger::g_Vector2DMax = { { 0x7F7FFFFFU,0x7F7FFFFFU} };	///< Constant of Burger::g_fMax,Burger::g_fMax
+const Burger::Word32ToVector2D_t Burger::g_Vector2DInfinity = { {0x7F800000U,0x7F800000U} };	///< Constant of Burger::g_fInf,Burger::g_fInf

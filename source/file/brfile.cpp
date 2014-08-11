@@ -205,7 +205,7 @@ Word Burger::File::Open(const char *pFileName,eFileAccess eAccess)
 
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
 Word Burger::File::Open(Filename *pFileName,eFileAccess eAccess)
 {
 	static const char *g_OpenFlags[4] = {

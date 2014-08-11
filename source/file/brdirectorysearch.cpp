@@ -56,7 +56,7 @@ Burger::DirectorySearch::DirectorySearch()
 {
 #if defined(BURGER_MAC)
 	m_pIterator = NULL;		// I do not own an iterator object, yet
-#elif defined(BURGER_MACOSX)
+#elif defined(BURGER_MACOSX) || defined(BURGER_IOS)
 	m_fp = -1;
 #elif defined(BURGER_MSDOS)
 	m_bHandleOk = 0;		// No file open yet
@@ -104,7 +104,7 @@ Word Burger::DirectorySearch::Open(const char *pDirName)
 			
 ***************************************/
 
-#if (!defined(BURGER_MAC) && !defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOSX) && !defined(BURGER_XBOX360))
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360))
 Word Burger::DirectorySearch::Open(Filename * /* pDirName */)
 {
 	return TRUE;		// Error!
@@ -125,7 +125,7 @@ Word Burger::DirectorySearch::Open(Filename * /* pDirName */)
 			
 ***************************************/
 
-#if (!defined(BURGER_MAC) && !defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOSX) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
 Word Burger::DirectorySearch::GetNextEntry(void)
 {
 	return TRUE;		// Error!
@@ -186,7 +186,7 @@ Word Burger::DirectorySearch::GetNextEntryExtension(const char *pExt)
 			
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MAC) && !defined(BURGER_MACOSX) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
 void Burger::DirectorySearch::Close(void)
 {
 }

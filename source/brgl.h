@@ -18,15 +18,27 @@
 #include <burger.h>
 #endif
 
-#if __CF_USE_FRAMEWORK_INCLUDES__
+// iOS uses OpenGLES
+
+#if defined(BURGER_IOS)
+#include <OpenGLES/ES2/gl.h>
+
+// MacOSX used an OpenGL Framework
+#elif __CF_USE_FRAMEWORK_INCLUDES__ || defined(BURGER_MACOSX)
 #include <OpenGL/gl.h>		// gl.h for MacOS X
-#else
-#if defined(BURGER_WINDOWS)
+
+// Windows requires windows.h before gl.h
+
+#elif defined(BURGER_WINDOWS)
 #if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>		// Needed before #include <gl.h> in windows
-#endif
 #include <gl.h>				// OpenGL for all other platforms
+#else
+
+// Generic
+#include <gl/gl.h>			// OpenGL for all other platforms
 #endif
+
 #endif
