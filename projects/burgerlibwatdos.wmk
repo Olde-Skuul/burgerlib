@@ -128,6 +128,7 @@ objs= &
 	$(A)\brfilemanagermsdos.obj &
 	$(A)\brfilemsdos.obj &
 	$(A)\brfilenamemsdos.obj &
+	$(A)\brglobalsmsdos.obj &
 	$(A)\brtickmsdos.obj &
 	$(A)\brtimedatemsdos.obj &
 	$(A)\brisolatin1.obj &

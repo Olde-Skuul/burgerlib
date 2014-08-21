@@ -1,0 +1,585 @@
+;
+; Assembly code for the Dos Extender.
+; This code is only meant for the DOS4G DOS Extender
+;
+; Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+;
+; It is released under an MIT Open Source license. Please see LICENSE
+; for license details. Yes, you can use it in a
+; commercial title without paying anything, just give me a credit.
+; Please? It's not like I'm asking you for money!
+;
+
+;
+; Set to build 386 code for a flat memory model using the WATCOM WASM
+; assembler
+;
+
+	.386
+	.MODEL FLAT,SYSCALL
+
+;
+; These variables exist in the X32 dos extender, but not in
+; DOS4GW. Declare them here so code can assume they
+; exist when using either extender
+;
+
+	.DATA
+
+	IFDEF __DOS4G__
+
+	PUBLIC	__x32_zero_base_ptr
+	PUBLIC	__x32_zero_base_selector
+__x32_zero_base_ptr DD	0
+__x32_zero_base_selector DW SEG _DATA
+
+	ELSE
+
+;
+; Expose the variable to the assembly code below
+; since this is the X32 dos extender version
+;
+
+	EXTRN	__x32_zero_base_ptr:DWORD
+	EXTRN	__x32_zero_base_selector:WORD
+
+	ENDIF
+
+	.CODE
+
+;
+; This program simply calls INT 10 to invoke
+; the system video bios.
+; extern void BURGER_API CallInt10(Word EAX);
+;
+
+	PUBLIC CallInt10_
+CallInt10_ PROC
+	int		010H			;Perform int 10H
+	ret						;Exit
+CallInt10_ ENDP
+
+;
+; Direct entry to call the serial BIOS
+; Word CallInt14(Word32 EAX,Word32 EDX);
+;
+
+	PUBLIC	CallInt14_
+CallInt14_ PROC
+	int		014H			;Call the serial bios
+	and		eax,0FFFFH		;Force the return value to 16 bit
+	ret
+CallInt14_ ENDP
+
+;
+; Direct entry to call the printer BIOS
+; Word CallInt17(Word32 EAX,Word32 EDX);
+;
+
+	PUBLIC CallInt17_
+CallInt17_ PROC
+	int		017H			;Call printer bios
+	and		eax,0FFFFH		;Force the return value to 16 bit
+	ret
+CallInt17_ ENDP
+
+	IFDEF	__X32__
+;
+; This routine will allow a DOS application to call an INT
+; routine via the current DOS extender.
+;
+
+;
+; This code is for the X32 dos extender ONLY
+;
+
+;
+; This structure is used by X32 to call a real mode interrupt
+;
+
+		.DATA
+
+MYINT	DW	0	;Interrupt # to invoke
+MYDS	DW	0	;Data segment register
+MYES	DW	0	;Extra segment register
+MYFS	DW	0	;FS register
+MYGS	DW	0	;GS register
+MYEAX	DD	0	;EAX register contents
+MYEDX	DD	0	;EDX register contents
+
+	.CODE
+
+;
+; Invoke a REAL mode interrupt.
+; Used to call DOS applications
+;
+; Int32 Int86x(Word uInterrupt,Regs16 *pInput,Regs16 *pOutput);
+;
+;typedef struct {
+;	Short ax;
+;	Short bx;
+;	Short cx;
+;	Short dx;
+;	Short si;
+;	Short di;
+;	Short bp;
+;	Short ds;
+;	Short es;
+;	Short flags;
+;} Regs16;
+
+		PUBLIC	Int86x_
+Int86x_ PROC
+
+		MOV	[MYINT],AX	;Save the interrupt number
+
+		PUSH	EBP		;Save all other registers
+		PUSH	ESI
+		PUSH	EDI
+		PUSH	ECX
+
+		PUSH	EBX		;Save the pointer to the dest array
+
+		MOV		BX,[EDX+2]	;Load all the registers for the call
+		MOV		CX,[EDX+4]	;CX
+		MOV		AX,[EDX+6]	;Save DX in array
+		MOV		[MYEDX],EAX
+		MOV		SI,[EDX+8]	;SI
+		MOV		DI,[EDX+10]	;DI
+		MOV		BP,[EDX+12]	;BP
+		MOV		AX,[EDX+14]	;Save DS in array
+		MOV		[MYDS],AX
+		MOV		AX,[EDX+16]	;Save ES in array
+		MOV		[MYES],AX
+		MOV		AX,[EDX]	;Save AX in array
+		MOV		[MYEAX],EAX
+
+		MOV		EDX,OFFSET MYINT	;Get address to structure
+		MOV		EAX,02511H	;Call X32 to invoke the IRQ
+		STC			;Assume error for non-supported calls
+		INT		021H
+		POP		EDX		;Get the dest structure address
+		MOV		[EDX],AX	;Save AX
+		PUSHFD			;Get returned flags
+		POP		EAX		;Save
+		MOV		[EDX+18],AX
+		MOV		[EDX+2],BX	;Save the result in result array
+		MOV		[EDX+4],CX	;CX
+		MOV		EAX,[MYEDX]	;Get DX from array
+		MOV		[EDX+6],AX
+		MOV		[EDX+8],SI	;SI
+		MOV		[EDX+10],DI	;DI
+		MOV		[EDX+12],BP	;BP
+		MOV		AX,[MYDS]	;Get DS from array
+		MOV		[EDX+14],AX
+		MOV		AX,[MYES]	;Get ES from array
+		MOV		[EDX+16],AX
+
+		MOV		AX,[EDX]	;Get the result
+		AND		EAX,0FFFFH	;Force 16 bit
+
+		POP		ECX		;Restore all the registers
+		POP		EDI
+		POP		ESI
+		POP		EBP
+		RET
+Int86x_ ENDP
+
+		ELSE
+;
+; This routine will allow a DOS application to call an INT
+; routine via the current DOS extender.
+;
+
+;
+; This code is for the DOS4GW dos extender ONLY
+;
+
+;
+; This structure is used by DPMI (0.9) to call a real mode interrupt
+;
+
+		.DATA
+
+MYEDI	DD	0		;EDI register contents
+MYESI	DD	0		;ESI register contents
+MYEBP	DD	0		;EBP register contents
+MYX1	DD	0		;Reserved, must be zero
+MYEBX	DD	0		;EBX register contents
+MYEDX	DD	0		;EDX register contents
+MYECX	DD	0		;ECX register contents
+MYEAX	DD	0		;EAX register contents
+MYFLAGS	DW	0		;Processor flags
+MYES	DW	0		;Extra segment register
+MYDS	DW	0		;Data segment register
+MYFS	DW	0		;FS register
+MYGS	DW	0		;GS register
+MYIP	DW	0		;Instruction pointer (Not used)
+MYCS	DW	0		;Code segment (Not used)
+MYSP	DW	0		;Stack pointer (Must be zero)
+MYSS	DW	0		;Stack segment (Must be zero)
+
+		.CODE
+
+;
+; Invoke a REAL mode interrupt.
+; Used to call DOS applications
+;
+; Int32 Int86x(Word uInterrupt,Regs16 *pInput,Regs16 *pOutput);
+;
+;typedef struct {
+;	Short ax;
+;	Short bx;
+;	Short cx;
+;	Short dx;
+;	Short si;
+;	Short di;
+;	Short bp;
+;	Short ds;
+;	Short es;
+;} Regs16;
+
+		PUBLIC	Int86x_
+Int86x_ PROC
+		PUSH	EDI		;Save all other registers
+		PUSH	ECX
+
+		PUSH	EBX		;Save the pointer to the dest array
+		MOV	EBX,EAX		;BL has the interrupt number
+		XOR	ECX,ECX		;No words to copy from the stack
+		AND	EBX,0FFH	;All other bits cleared
+
+		MOV	EAX,1		;Set the carry flag
+		MOV	[MYFLAGS],AX	;Save the flag
+		MOV	AX,[EDX]	;Save AX in array
+		MOV	[MYEAX],EAX
+		MOV	AX,[EDX+2]	;Load all the registers for the call
+		MOV	[MYEBX],EAX
+		MOV	AX,[EDX+4]	;CX
+		MOV	[MYECX],EAX
+		MOV	AX,[EDX+6]	;Save DX in array
+		MOV	[MYEDX],EAX
+		MOV	AX,[EDX+8]	;SI
+		MOV	[MYESI],EAX
+		MOV	AX,[EDX+10]	;DI
+		MOV	[MYEDI],EAX
+		MOV	AX,[EDX+12]	;BP
+		MOV	[MYEBP],EAX
+		MOV	AX,[EDX+14]	;Save DS in array
+		MOV	[MYDS],AX
+		MOV	AX,[EDX+16]	;Save ES in array
+		MOV	[MYES],AX
+
+		MOV	EDI,OFFSET MYEDI ;Get address to structure
+		MOV	EAX,0300H	;Call DPMI to invoke the IRQ
+		INT	031H
+		POP	EDX		;Get the structure address
+
+		MOV	EAX,[MYEBX]
+		MOV	[EDX+2],AX	;Save the result in result array
+		MOV	EAX,[MYECX]
+		MOV	[EDX+4],AX	;CX
+		MOV	EAX,[MYEDX]	;Get DX from array
+		MOV	[EDX+6],AX
+		MOV	EAX,[MYESI]
+		MOV	[EDX+8],AX	;SI
+		MOV	EAX,[MYEDI]
+		MOV	[EDX+10],AX	;DI
+		MOV	EAX,[MYEBP]
+		MOV	[EDX+12],AX	;BP
+		MOV	AX,[MYDS]	;Get DS from array
+		MOV	[EDX+14],AX
+		MOV	AX,[MYES]	;Get ES from array
+		MOV	[EDX+16],AX
+		MOV	AX,[MYFLAGS]	;Get processor flags
+		MOV	[EDX+18],AX
+
+		MOV	EAX,[MYEAX]	;Get the result
+		MOV	[EDX],AX
+		AND	EAX,0FFFFH	;Force 16 bit
+
+		POP	ECX		;Restore all the registers
+		POP	EDI
+		RET
+Int86x_ ENDP
+
+		ENDIF
+
+		IFDEF	__X32__
+
+;
+; This code is a nightmare, it will allow the main program to
+; read and modify interrupt vectors using the X32 dos extender
+;
+
+;
+; Call the dos extender to intercept both the real and protected IRQ vector
+; and route it through a protected mode IRQ
+; void SetBothInts(Word uInterrupt,void *pCode);
+;
+
+	PUBLIC	SetBothInts_
+SetBothInts_ PROC
+		PUSH	EDX
+		PUSH	DS
+		MOV	DS,CX		;Get the code segment
+		MOV	EDX,EBX		;Pass the code pointer
+		MOV	ECX,EAX		;Set the proper IRQ vector
+		MOV	EAX,02506H	;Intercept both real and protected irq's
+		INT	021H		;Call X32
+		POP	DS
+		POP	EDX
+		RET
+
+SetBothInts_ ENDP
+
+;
+; Call the dos extender to intercept the protected IRQ vector
+; void SetProtInt(Word uInterrupt,void *pCode);
+;
+
+	PUBLIC	SetProtInt_
+SetProtInt_ PROC
+		PUSH	EBX		;Save registers
+		PUSH	ECX
+		PUSH	EDX
+		PUSH	DS
+		MOV	DS,CX		;Get the code segment
+		MOV	EDX,EBX		;Pass the code pointer
+		MOV	ECX,EAX		;Set the proper IRQ vector
+		MOV	EAX,02504H	;Intercept protected irq's
+		INT	021H
+		POP	DS		;Restore registers
+		POP	EDX
+		POP	ECX
+		POP	EBX
+		RET
+
+SetProtInt_ ENDP
+
+;
+; Call the dos extender to intercept the real mode IRQ vector
+; void SetRealInt(Word uInterrupt,Word32 pCode);
+;
+
+		PUBLIC	SetRealInt_
+SetRealInt_ PROC
+		PUSH	EBX		;Save registers
+		PUSH	ECX
+		MOV	ECX,EAX		;Set the proper IRQ vector
+		MOV	EBX,EDX		;Get the real mode code pointer
+		MOV	EAX,02505H	;X32 Set Real Mode Interrupt vector
+		INT	021H
+		POP	ECX		;Restore registers
+		POP	EBX
+		RET
+
+SetRealInt_ ENDP
+
+;
+; Call the dos extender to get the current protected mode IRQ vector
+; void far *GetProtInt(Word uInterrupt);
+;
+
+		PUBLIC	GetProtInt_
+GetProtInt_ PROC
+		PUSH	EBX		;Save registers
+		PUSH	ECX
+		PUSH	ES
+		MOV	ECX,EAX		;Pass the irq number
+		MOV	EAX,02502H	;X32 Get Protected mode interrupt vector
+		INT	021H
+		MOV	EAX,EBX		;Return in EAX/DX
+		MOV	DX,ES		;Place segment in DX
+		POP	ES		;Restore registers
+		POP	ECX
+		POP	EBX
+		RET
+
+GetProtInt_ ENDP
+
+;
+; Call the dos extender to get the current real mode IRQ vector
+; LongWord GetRealInt(Word uInterrupt);
+;
+
+		PUBLIC	GetRealInt_
+GetRealInt_ PROC
+		PUSH	ECX		;Save registers
+		PUSH	EBX
+		MOV	ECX,EAX		;Get the Interrupt number
+		MOV	EAX,02503H	;X32 Get Real Mode Interrupt vector
+		INT	021H
+		MOV	EAX,EBX		;Place value in EAX
+		POP	EBX
+		POP	ECX
+		RET			;Exit
+
+GetRealInt_ ENDP
+
+		ELSE
+
+;
+; This code is a nightmare, it will allow the main program to
+; read and modify interrupt vectors. However, it must be compatible
+; with DMPI 0.9 so that the user can choose DOS4GW
+;
+
+;
+; Call the dos extander to intercept both the real and protected IRQ vector
+; and route it through a protected mode IRQ
+; void SetBothInts(Word uInterrupt,void *pCode);
+;
+
+		PUBLIC	SetBothInts_
+
+;
+; Call the dos extender to intercet the protected IRQ vector
+; void SetProtInt(Word uInterrupt,void *CodePtr);
+;
+
+		PUBLIC	SetProtInt_
+SetProtInt_:
+SetBothInts_:
+		PUSH	EBX
+		MOV	EBX,EAX		;Get the interrupt number
+		MOV	EDX,EBX		;Offset (CX = Selector)
+		MOV	EAX,0205H	;DPMI Set Protected Interrupt vector
+		INT	031H
+		POP	EBX
+		RET
+
+;
+; Call the dos extender to intercept the real mode IRQ vector
+; void SetRealInt(Word uInterrupt,Word32 pCode);
+;
+
+		PUBLIC	SetRealInt_
+SetRealInt_ PROC
+		PUSH	EBX		;Save registers
+		PUSH	ECX
+		MOV	EBX,EAX		;Get the interrupt number
+		MOV	ECX,EDX		;Copy the segment:offset to ECX
+		AND	EDX,0FFFFH
+		SHR	ECX,16		;Isolate the segment
+		MOV	EAX,0201H	;DPMI Set Real Mode Interrupt vector
+		INT	031H
+		POP	ECX		;Restore registers
+		POP	EBX
+		RET
+SetRealInt_ ENDP
+
+;
+; Call the dos extender to get the current protected mode IRQ vector
+; void far *GetProtInt(Word uInterrupt);
+;
+
+		PUBLIC	GetProtInt_
+GetProtInt_ PROC
+		PUSH	EBX		;Save registers
+		PUSH	ECX
+		MOV	EBX,EAX		;Interrupt number
+		MOV	EAX,0204H 	;DPMI Get interrupt vector
+		INT	031H
+		MOV	EAX,EDX		;Return the vector
+		MOV	DX,CX
+		POP	ECX		;Restore the registers
+		POP	EBX
+		RET
+GetProtInt_ ENDP
+
+;
+; Call the dos extender to get the current real mode IRQ vector
+; LongWord GetRealInt(Word uInterrupt);
+;
+
+		PUBLIC	GetRealInt_
+GetRealInt_ PROC
+		PUSH	EBX	;Save registers
+		PUSH	ECX
+		PUSH	EDX
+		MOV	EBX,EAX	;Get the interrupt number
+		MOV	EAX,0200H	;DPMI Get Real Mode Interrupt vector
+		INT	031H
+		SHL	ECX,16		;Shift up the segment
+		MOV	EAX,EDX		;Copy the offset
+		AND	EAX,0FFFFH	;Use only the low 16 bits
+		OR	EAX,ECX		;Make a longword
+		POP	EDX		;Restore registers
+		POP	ECX
+		POP	EBX
+		RET			;Exit
+GetRealInt_ ENDP
+
+		ENDIF
+
+;
+; I am given a physical memory address from
+; a device, this will remap the address into protected
+; mode.
+;
+; void * BURGER_API MapPhysicalAddress(void *pInput,Word32 uLength);
+;
+
+		PUBLIC	MapPhysicalAddress_
+MapPhysicalAddress_ PROC
+
+		CMP	EAX,0100000H
+		JB	SimpleRemap
+		PUSH	EBX
+		PUSH	ECX
+
+		IFDEF	__DOS4G__	;Dos4GW version
+
+		PUSH	ESI
+		PUSH	EDI
+		MOV	ESI,EDX		;Break up the size in two 16 bit chunks
+		MOV	EDI,EDX
+		SHR	ESI,16
+		AND	EDI,0FFFFH
+
+		MOV	EBX,EAX		;Break up the address in two 16 bit chunks
+		MOV	ECX,EAX
+		SHR	EBX,16
+		AND	ECX,0FFFFH
+		MOV	EAX,0800H	;Remap memory
+		INT	031H		;Call DPMI
+		JNC	GotIt
+		XOR	EBX,EBX		;Oh oh...
+		XOR	ECX,ECX
+GotIt:
+		SHL	EBX,16		;Shift up
+		AND	ECX,0FFFFH	;Make sure it's ok
+		LEA	EAX,[EBX+ECX]	;Move result to EAX
+		POP	EDI
+		POP	ESI
+
+		ELSE
+
+		MOV	EBX,EAX		;Address
+		MOV	ECX,EDX		;Memory size
+		MOV	EAX,0350AH	;Remap memory
+		INT	021H		;Call X32
+		MOV	EAX,0
+		JC	OhOh
+		MOV	EAX,EBX
+		ADD	EAX,[__x32_zero_base_ptr]
+OhOh:
+		ENDIF
+
+		POP	ECX
+		POP	EBX
+		RET
+
+SimpleRemap:
+		IFDEF __X32__
+		ADD	EAX,[__x32_zero_base_ptr]
+		ENDIF
+		RET
+MapPhysicalAddress_ ENDP
+
+;
+; All done
+;
+
+	END

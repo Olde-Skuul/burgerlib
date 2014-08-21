@@ -15,86 +15,37 @@
 
 #include "brperforce.h"
 
-#if defined(BURGER_WINDOWS) && defined(BURGER_MSVC)
-
+#if defined(BURGER_WINDOWS) && !defined(DOXYGEN)
 // Include the perforce header
 #include "brglobalmemorymanager.h"
 #include "brfilename.h"
-
-// Some compiler settings are not present for Metrowerks
-#if defined(BURGER_METROWERKS)
-#ifndef bool
-#define bool Word32
-#endif
-
-#ifndef true
-#define true 1
-#endif
-#endif
-
-#include <clientapi.h>
-
-#if defined(NDEBUG)
-#define BLD "rel"
-#else
-#define BLD "dbg"
-#endif
-
-#if defined(BURGER_WIN64)
-#define B64 "w64"
-#else
-#define B64 "w32"
-#endif
+#include "brglobals.h"
+#include "brfilemanager.h"
+#include "brutf8.h"
+#include <windows.h>
+#include <shlwapi.h>
 
 #if defined(BURGER_WATCOM)
-#pragma library ("Ws2_32.lib")
-#pragma library ("libclientv10" B64 BLD ".lib")
-#pragma library ("librpcv10" B64 BLD ".lib")
-#pragma library ("libsuppv10" B64 BLD ".lib")
-#pragma library ("libp4sslstubv10" B64 BLD ".lib")
+#pragma library ("Shlwapi.lib");
 #else
-#pragma comment(lib,"Ws2_32.lib")
-#pragma comment(lib,"libclientv10" B64 BLD ".lib")
-#pragma comment(lib,"librpcv10" B64 BLD ".lib")
-#pragma comment(lib,"libsuppv10" B64 BLD ".lib")
-#pragma comment(lib,"libp4sslstubv10" B64 BLD ".lib")
+#pragma comment (lib,"Shlwapi.lib")
 #endif
 
 /***************************************
 
-	This class is used to intercept error codes from the
-	server so the tool can return warnings and errors properly
+	Initialize the class
 
 ***************************************/
 
-namespace Burger {
-class PerforceClient : public ClientUser {
-public:
-	void Message(Error *pE);
-	int m_iError;				///< Error code received from Perforce
-};
+Burger::Perforce::Perforce() :
+	m_PerforceFilename(),
+	m_bFilenameInitialized(FALSE)
+{
 }
 
 /***************************************
 
-	This function is called the moment the server has
-	completed the action.
-
-***************************************/
-
-void Burger::PerforceClient::Message(Error *pE)
-{
-	// Grab the error code
-	m_iError = pE->GetGeneric();
-	ClientUser::Message(pE);
-}
-
-/*! ************************************
-
-	\fn Burger::Perforce::~Perforce()
-	\brief Release the perforce tool and clean up
-
-	\sa Perforce::Init() and Perforce::Shutdown()
+	Release the perforce tool and clean up
 
 ***************************************/
 
@@ -103,133 +54,134 @@ Burger::Perforce::~Perforce()
 	Shutdown();
 }
 
-/*! ************************************
+/***************************************
 
-	\fn int Burger::Perforce::Init(void)
-	\brief Open a connection to perforce
-
-	Load the Perforce DLL and initialize it. This call is required before
-	calling Perforce::Edit() or Perforce::RevertIfUnchanged()
-
-	\return Zero if no error, non-zero if an perforce error had occurred
-	\sa Perforce::Shutdown()
+	Open a connection to perforce
 	
 ***************************************/
 
-int Burger::Perforce::Init(void)
+Word BURGER_API Burger::Perforce::Init(void)
 {
-	// Already initialized?
-	if (m_pClientApi) {
-		return 0;
-	}
+	Word uResult = 0;
+	if (!m_bFilenameInitialized) {
+		// Let's find the perforce EXE
+		// Check for an environment variable with the directory
+		const char *pAppdirectory =  Globals::GetEnvironmentString("PERFORCE");
+		Word bFilenameInitialized = FALSE;
+		if (pAppdirectory) {
+			m_PerforceFilename.SetFromNative(pAppdirectory);
+			Free(pAppdirectory);
+			m_PerforceFilename.Append("p4.exe");
+			// Is there an exec here?
+			if (FileManager::DoesFileExist(&m_PerforceFilename)) {
+				bFilenameInitialized = TRUE;
+			}
+		}
 
-	// Get memory for the client
-	ClientApi *pClientApi = new (Alloc(sizeof(ClientApi))) ClientApi();
-	if (!pClientApi) {
-		return 20;
-	}
+		// Try finding it in the usual installation folder
 
-	// Connect to Perforce
-	Error PerforceError;
-	pClientApi->Init(&PerforceError);
-	// Was there an error?
-	int iResult = PerforceError.Test();
-	if (iResult) {
-		// Dispose of the class
-		pClientApi->~ClientApi();
-		Free(pClientApi);
-		pClientApi = NULL;
+		if (!bFilenameInitialized) {
+			pAppdirectory = Globals::GetEnvironmentString("ProgramFiles");
+			if (pAppdirectory) {
+				m_PerforceFilename.SetFromNative(pAppdirectory);
+				Free(pAppdirectory);
+				m_PerforceFilename.Append("Perforce:p4.exe");
+				if (FileManager::DoesFileExist(&m_PerforceFilename)) {
+					bFilenameInitialized = TRUE;
+				}
+			}
+		}
+
+		// Fooey. Ask windows if it can find it
+
+		if (!bFilenameInitialized) {
+			Word16 Output[2048];
+			if (PathSearchAndQualifyW(reinterpret_cast<LPCWSTR>(L"p4.exe"),reinterpret_cast<LPWSTR>(Output),sizeof(Output)/sizeof(Output[0]))) {
+				pAppdirectory = UTF8::FromUTF16(Output);
+				m_PerforceFilename.SetFromNative(pAppdirectory);
+				Free(pAppdirectory);
+				if (FileManager::DoesFileExist(&m_PerforceFilename)) {
+					bFilenameInitialized = TRUE;
+				}
+			}
+		}
+		m_bFilenameInitialized = bFilenameInitialized;
+		if (!bFilenameInitialized) {
+			uResult = 10;
+		}
 	}
-	// Store NULL or a valid pointer
-	m_pClientApi = pClientApi;
-	return iResult;
+	return uResult;
 }
 
-/*! ************************************
+/***************************************
 
-	\fn int Burger::Perforce::Shutdown(void)
-	\brief Shut down any pending commands from Perforce and release
-		all resources
-	\return Zero if no error, non-zero if an perforce error had occurred
-	\sa Perforce::Init()
+	Burger::Perforce::Shutdown(void)
 
 ***************************************/
 
-int Burger::Perforce::Shutdown(void)
+Word BURGER_API Burger::Perforce::Shutdown(void)
 {
-	int iResult = 0;
-	ClientApi *pClientApi = m_pClientApi;
-	if (pClientApi) {
-		Error PerforceError;
-		// Get the error code(s) from the manager
-		iResult = pClientApi->Final(&PerforceError);
-		// Release the class
-		pClientApi->~ClientApi();
-		Free(pClientApi);
-		m_pClientApi = NULL;
-	}
-	// Exit with any error code left from any asyn commands
-	return iResult;
+	m_PerforceFilename.Clear();
+	m_bFilenameInitialized = FALSE;
+	return 0;
 }
 
-/*! ************************************
+/***************************************
 
-	\fn int Burger::Perforce::Edit(const char *pFilename)
-	\brief Issue an "edit" command to open a file
-	\param pFilename Pointer to a Burgerlib format filename
-	\return Zero if no error, non-zero if an perforce error had occurred
-	\sa Perforce::RevertIfUnchanged()
+	Issue an "edit" command to open a file
 
 ***************************************/
 
-int Burger::Perforce::Edit(const char *pFilename)
+Word BURGER_API Burger::Perforce::Edit(const char *pFilename)
 {
-	ClientApi *pClientApi = m_pClientApi;
-	int iResult = 20;
-	if (pClientApi) {
-		Filename Native(pFilename);
-		const char *argv = Native.GetNative();
-		// Add the filename of interest
-		pClientApi->SetArgv(1,const_cast<char * const *>(&argv));
-		// Issue the command
-		PerforceClient TheClient;
-		pClientApi->Run("edit",&TheClient);
-		// Was there an error?
-		iResult = TheClient.m_iError;
+	Word uResult = Init();
+	if (!uResult) {
+		Filename Translate(pFilename);
+		String Parameters("-s edit \"",Translate.GetNative(),"\"");
+		OutputMemoryStream Capture;
+		// Issue the command to Perforce
+		uResult = static_cast<Word>(Globals::ExecuteTool(m_PerforceFilename.GetPtr(),Parameters.GetPtr(),&Capture));
+		if (!uResult) {
+			// If the filename was not found (An error)
+			// it only mentions it in the stderr text. Detect it
+			Capture.Save(&Parameters);
+			const char *pHit = StringString(Parameters.GetPtr(),"error:");
+			if (pHit) {
+				// An error had occurred!
+				uResult = 10;
+			}
+		}
 	}
-	return iResult;
+	return uResult;
 }
 
-/*! ************************************
+/***************************************
 
-	\fn int Burger::Perforce::RevertIfUnchanged(const char *pFilename)
-	\brief Issue an "revert" command to revert a file if it hasn't changed
-
-	Given a Burgerlib pathname, perform a "p4 -a revert" command on it to
-	revert the file if it has not changed
-
-	\param pFilename Pointer to a Burgerlib format filename
-	\return Zero if no error, non-zero if an perforce error had occurred
-	\sa Perforce::Edit()
+	Issue an "revert" command to revert a file if it hasn't changed
 
 ***************************************/
 
-int Burger::Perforce::RevertIfUnchanged(const char *pFilename)
+Word BURGER_API Burger::Perforce::RevertIfUnchanged(const char *pFilename)
 {
-	ClientApi *pClientApi = m_pClientApi;
-	int iResult = 20;
-	if (pClientApi) {
-		Filename Native(pFilename);
-		// Issue -a to revert if unchanged
-		const char * argv[2] = { "-a",Native.GetNative() }; 
-		pClientApi->SetArgv(2,const_cast<char **>(argv));
-		// Issue the command
-		PerforceClient TheClient;
-		pClientApi->Run("revert",&TheClient);
-		// Was there an error?
-		iResult = TheClient.m_iError;
+	Word uResult = Init();
+	if (!uResult) {
+		Filename Translate(pFilename);
+		String Parameters("-s revert -a \"",Translate.GetNative(),"\"");
+		OutputMemoryStream Capture;
+		// Issue the command to Perforce
+		uResult = static_cast<Word>(Globals::ExecuteTool(m_PerforceFilename.GetPtr(),Parameters.GetPtr(),&Capture));
+		if (!uResult) {
+			// If the filename was not found (An error)
+			// it only mentions it in the stderr text. Detect it
+			Capture.Save(&Parameters);
+			const char *pHit = StringString(Parameters.GetPtr(),"error:");
+			if (pHit) {
+				// An error had occurred!
+				uResult = 10;
+			}
+		}
 	}
-	return iResult;
+	return uResult;
 }
 
 #endif

@@ -995,8 +995,37 @@ static void TestRTTI(void)
 // Perform one shot functions
 //
 
+#include "brglobals.h"
+#include "brglobalmemorymanager.h"
+#include "brconsolemanager.h"
+#include "brperforce.h"
+#include <stdio.h>
+
 void BURGER_API CreateTables(void)
 {
+#if 0
+	ConsoleApp Ack(0,0);
+	Perforce m_Perforce;
+	const char *pFoo = Globals::GetEnvironmentString("tester");
+	if (pFoo) {
+		printf("tester = %s\n",pFoo);
+		Free(pFoo);
+	}
+	pFoo = Globals::GetEnvironmentString("PERFORCE");
+	if (pFoo) {
+		printf("PERFORCE = %s\n",pFoo);
+		Free(pFoo);
+	}
+	pFoo = Globals::GetEnvironmentString("SDKS");
+	if (pFoo) {
+		printf("sdks = %s\n",pFoo);
+		Free(pFoo);
+	}
+	if (!m_Perforce.Init()) {
+		m_Perforce.Edit(":Sailor MiniMoon:Projects:burger:libs:burgerlib:AUTHORS");
+		m_Perforce.RevertIfUnchanged(":Sailor MiniMoon:Projects:burger:libs:burgerlib:AUTHORS");
+	}
+#endif
 	TextFileXML();
 	CreateSinConstants();
 	CreateCosConstants();

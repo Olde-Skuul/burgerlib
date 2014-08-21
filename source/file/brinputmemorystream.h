@@ -18,9 +18,24 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRVECTOR2D_H__
+#include "brvector2d.h"
+#endif
+
+#ifndef __BRVECTOR3D_H__
+#include "brvector3d.h"
+#endif
+
+#ifndef __BRVECTOR4D_H__
+#include "brvector4d.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 class Filename;
+struct RGBAWord8_t;
+struct RGBWord8_t;
+
 class InputMemoryStream {
 	const Word8 *m_pWork;			///< Pointer to the input
 	const Word8 *m_pEndOfBuffer;	///< Pointer to the end of the buffer
@@ -47,12 +62,22 @@ public:
 	BURGER_INLINE WordPtr BytesRemaining(void) const { return static_cast<WordPtr>(m_pEndOfBuffer-m_pWork); }
 	void BURGER_API GetString(char *pOutput,WordPtr uOutputSize);
 	void BURGER_API GetCString(char *pOutput,WordPtr uOutputSize);
+	void BURGER_API GetPString(char *pOutput,WordPtr uOutputSize);
 	Word8 BURGER_API GetByte(void);
 	Word16 BURGER_API GetShort(void);
 	Word16 BURGER_API GetBigShort(void);
 	Word32 BURGER_API GetWord32(void);
 	Word32 BURGER_API GetBigWord32(void);
+	float BURGER_API GetFloat(void);
+	float BURGER_API GetBigFloat(void);
+	double BURGER_API GetDouble(void);
+	double BURGER_API GetBigDouble(void);
 	WordPtr BURGER_API Get(void *pOutput,WordPtr uOutputSize);
+	Word BURGER_API Get(RGBWord8_t *pOutput);
+	Word BURGER_API Get(RGBAWord8_t *pOutput);
+	Word BURGER_API Get(Vector2D_t *pOutput);
+	Word BURGER_API Get(Vector3D_t *pOutput);
+	Word BURGER_API Get(Vector4D_t *pOutput);
 	void BURGER_API ParseBeyondWhiteSpace(void);
 	Word BURGER_API IsStringMatch(const char *pInput);
 	Word BURGER_API IsStringMatchCase(const char *pInput);

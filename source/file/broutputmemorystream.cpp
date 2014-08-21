@@ -400,6 +400,7 @@ Word BURGER_API Burger::OutputMemoryStream::Append(char iChar)
 	\note The terminating zero is NOT stored in the stream
 	\param pString "C" UTF-8 data string. \ref NULL will perform no action and return no error.
 	\return Error code with zero being no error, non-zero is out of memory
+	\sa AppendPString(const char *)
 
 ***************************************/
 
@@ -422,6 +423,38 @@ Word BURGER_API Burger::OutputMemoryStream::Append(const char *pString)
 				// Continue?
 				iTemp = pString[0];
 			} while (iTemp);
+		}
+	}
+	// Return 0 or error code
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Add a UTF-8 "P" string to the data stream
+
+	The data stream will be first given a byte with the length of
+	the string, followed by the string. If the string is greater than
+	255 bytes in length, it will be truncated in the stream.
+
+	\param pString "C" UTF-8 data string. \ref NULL will perform no action and return no error.
+	\return Error code with zero being no error, non-zero is out of memory
+	\sa Append(const char *)
+
+***************************************/
+
+Word BURGER_API Burger::OutputMemoryStream::AppendPString(const char *pString)
+{
+	// Start with no error
+	Word uResult=0;
+	if (pString) {
+		WordPtr uLength = StringLength(pString);
+		if (uLength>=256) {
+			uLength=255;
+		}
+		uResult = Append(static_cast<Word8>(uLength));
+		if (!uResult) {
+			uResult = Append(pString,uLength);
 		}
 	}
 	// Return 0 or error code

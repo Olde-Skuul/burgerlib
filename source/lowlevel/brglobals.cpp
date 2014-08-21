@@ -12,6 +12,8 @@
 ***************************************/
 
 #include "brglobals.h"
+#include "brstringfunctions.h"
+#include "brstring.h"
 #include "version.h"
 #include <stdarg.h>
 #include <stdio.h>
@@ -314,9 +316,79 @@ Word BURGER_API Burger::Globals::Version(void)
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MAC))
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
 Word BURGER_API Burger::Globals::LaunchURL(const char * /* pURL */)
 {
 	return TRUE;		// Unimplemented
+}
+#endif
+
+/*! ************************************
+
+	\brief Execute a tool and capture the text output
+
+	If another program needs to be executed, call it with a command line
+	and capture the text output into a stream if desired
+ 
+	\param pFilename Pointer to a "C" string of the executable in Burgerlib format
+	\param pParameters Pointer to a "C" string of the command line parameters (No translation is performed)
+	\param pOutput Pointer to a OutputMemoryStream to store the captured output. \ref NULL is acceptable if
+		output capturing is not desired
+	\return Error code on failure, zero if the program was executed and it returned zero on exit
+ 
+***************************************/
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
+int BURGER_API Burger::Globals::ExecuteTool(const char * /* pFilename */,const char * /* pParameters */,OutputMemoryStream * /* pOutput */)
+{
+	return 10;
+}
+#endif
+
+/*! ************************************
+
+	\brief Retrieve an environment string
+
+	On systems that support it, query the system for an environment
+	variable and return a COPY of the string. Once the string
+	is no longer needed, call Burger::Free(const void *) on it
+	to release it.
+
+	Once obtained, the string will not change due to it being a
+	copy of the one that exists in the operating system.
+
+	The string is encoded to UTF8 on all systems
+ 
+	\param pKey Pointer to a "C" string of the environment variable name
+	\return \ref NULL on failure or if the string didn't exist. A valid "C" string pointer otherwise. Release with a call to Burger::Free(const void *)
+ 
+***************************************/
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
+const char *BURGER_API Burger::Globals::GetEnvironmentString(const char * /* pKey */)
+{
+	return NULL;
+}
+#endif
+
+/*! ************************************
+
+	\brief Set an environment string
+
+	On systems that support it, set or create an environment
+	variable.
+
+	The string will be properly converted from UTF8 into the operating system's native character encoding.
+ 
+	\param pKey Pointer to a "C" string of the environment variable name
+	\param pInput Pointer to a "C" string of the environment variable value or \ref NULL to remove the variable
+	\return Zero on success, non-zero on error
+ 
+***************************************/
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
+Word BURGER_API Burger::Globals::SetEnvironmentString(const char * /* pKey */,const char * /* pInput */)
+{
+	return 10;
 }
 #endif

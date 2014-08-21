@@ -26,7 +26,7 @@
 	This class is not intended for shipping code. It's inclusion
 	in a shipping game application is discouraged.
 
-	\note This class is only available on Windows targets.
+	\note This class is only available on Windows and MacOSX targets.
 	On all other targets, it will perform no action and return an error code.
 
 ***************************************/
@@ -37,9 +37,9 @@
 	\brief Initialize the class
 
 	Initialize the class variables, but it won't actually
-	connect to Perforce. Connecting occurs when Perforce::Init() is called.
+	connect to Perforce. Connecting occurs when Init() is called.
 
-	\sa Perforce::Init() and Perforce::Shutdown()
+	\sa Init() and Shutdown()
 
 ***************************************/
 
@@ -48,47 +48,51 @@
 	\fn Burger::Perforce::~Perforce()
 	\brief Release the perforce tool and clean up
 
-	\sa Perforce::Init() and Perforce::Shutdown()
+	\sa Init() and Shutdown()
 
 ***************************************/
 
 /*! ************************************
 
-	\fn int Burger::Perforce::Init(void)
+	\fn Word Burger::Perforce::Init(void)
 	\brief Open a connection to perforce
 
-	Load the Perforce DLL and initialize it. This call is required before
-	calling Perforce::Edit() or Perforce::RevertIfUnchanged()
+	Locate the p4 executable file. This call is required before
+	calling Edit() or RevertIfUnchanged()
 
-	\return Zero if no error, non-zero if an perforce error had occurred
-	\sa Perforce::Shutdown()
+	p4 is located by first looking at the PERFORCE environment variable, scanning
+	the default install folders and finally a search of the PATH environment
+	variable. If it's not found, this call will fail.
+
+	\return Zero if no error, non-zero if a perforce error had occurred or p4 cannot be found
+	\sa Shutdown()
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn int Burger::Perforce::Shutdown(void)
+	\fn Word Burger::Perforce::Shutdown(void)
 	\brief Shut down any pending commands from Perforce and release
 	all resources
 	\return Zero if no error, non-zero if an perforce error had occurred
-	\sa Perforce::Init()
+	\sa Init()
 
 ***************************************/
 
 
 /*! ************************************
 
-	\fn int Burger::Perforce::Edit(const char *pFilename)
+	\fn Word Burger::Perforce::Edit(const char *pFilename)
 	\brief Issue an "edit" command to open a file
 	\param pFilename Pointer to a Burgerlib format filename
 	\return Zero if no error, non-zero if an perforce error had occurred
-	\sa Perforce::RevertIfUnchanged()
+	\sa RevertIfUnchanged()
 
 ***************************************/
 
 /*! ************************************
 
-	\fn int Burger::Perforce::RevertIfUnchanged(const char *pFilename)
+	\fn Word Burger::Perforce::RevertIfUnchanged(const char *pFilename)
 	\brief Issue an "revert" command to revert a file if it hasn't changed
 
 	Given a Burgerlib pathname, perform a "p4 -a revert" command on it to
@@ -96,7 +100,7 @@
 
 	\param pFilename Pointer to a Burgerlib format filename
 	\return Zero if no error, non-zero if an perforce error had occurred
-	\sa Perforce::Edit()
+	\sa Edit()
 
 ***************************************/
 

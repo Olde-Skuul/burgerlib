@@ -55,6 +55,7 @@ public:
 	BURGER_INLINE WordPtr GetLength(void) const { return m_uLength; }
 	BURGER_INLINE Word16 *GetPtr() { return m_pData; }
 	BURGER_INLINE const Word16 *GetPtr() const { return m_pData; }
+	void BURGER_API SetBufferSize(WordPtr uSize);
 	BURGER_INLINE String16 operator () (WordPtr uStart,WordPtr uEnd) const {return String16(*this,uStart,uEnd);}
 	BURGER_INLINE Word16 & operator () (WordPtr uInput) { if (uInput>=m_uLength) { m_Raw[BUFFERSIZE-1] = 0; return m_Raw[BUFFERSIZE-1]; } return m_pData[uInput];}
 	BURGER_INLINE Word16 const & operator ()(WordPtr uInput) const { if (uInput>=m_uLength) { return g_EmptyString16[0]; } return m_pData[uInput];}

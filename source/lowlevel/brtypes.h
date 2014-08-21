@@ -511,6 +511,7 @@ typedef Int32 Fixed32;
 typedef unsigned int Word;
 typedef signed int Int;
 
+#if !defined(BURGER_NONEW)
 #if defined(BURGER_METROWERKS)
 BURGER_INLINE void *operator new(__typeof__(sizeof(0)), void*x) { return x; }
 #elif defined(BURGER_MSVC)
@@ -524,6 +525,7 @@ BURGER_INLINE void* operator new(unsigned long, void*x) {return x;}
 BURGER_INLINE void* operator new(unsigned int, void*x) {return x;}
 #else
 BURGER_INLINE void* operator new(WordPtr, void*x) {return x;}
+#endif
 #endif
 /* END */
 

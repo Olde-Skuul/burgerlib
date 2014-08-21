@@ -315,6 +315,60 @@ Burger::String16::String16(const Word16 *pInput)
 
 /*! ************************************
 
+	\brief Force a buffer size
+
+	Set the buffer to a specific size while retaining the existing string.
+	If the preexisting string is too long for the new buffer, it will be
+	truncated. The buffer size will be padded to reserve two bytes for the terminating
+	zero.
+
+	\note If a buffer of 100 characters is requested, 202 bytes will be allocated to hold
+	a string up to 100 characters in length with the 101st short being the terminating
+	zero. The output of Burger::StringLength(const Word16 *) is acceptable as input for a new string.
+
+	\param uSize Number of characters to set the buffer to
+
+***************************************/
+
+void BURGER_API Burger::String16::SetBufferSize(WordPtr uSize)
+{
+	if (uSize!=m_uLength) {
+		// If no space is requested, clear the buffer
+		if (!uSize) {
+			Clear();
+		} else {
+			// Hold the old buffer
+			Word16 *pWork = m_pData;
+			// Get the new buffer
+			Word16 *pDest = m_Raw;
+			// Allocate a new buffer if needed
+			if (uSize>=BUFFERSIZE) {	// Buffer big enough?
+				pDest = static_cast<Word16 *>(Alloc((uSize+1)*2));
+				if (!pDest) {			// Oh oh...
+					pDest = m_Raw;
+					uSize = 0;			// Don't copy anything
+				}
+			}
+			// Get the size of the string
+			WordPtr uDestSize = m_uLength;
+			if (uDestSize>=uSize) {
+				// Truncate the string
+				uDestSize = uSize;
+			}
+			MemoryCopy(pDest,pWork,uDestSize*2);
+			pDest[uDestSize] = 0;		// Ensure the buffer is zero terminated
+			if (pWork!=m_Raw) {			// Discard previous memory
+				Free(pWork);
+			}
+			m_pData = pDest;			// Set the pointer
+			m_uLength = uSize;			// Save the new length
+			pDest[uSize] = 0;			// Ensure the terminating zero is present
+		}
+	}
+}
+
+/*! ************************************
+
 	\fn Burger::String16::operator () (WordPtr uStart,WordPtr uEnd) const
 	\brief Create a new Burger::String16 from a substring
 

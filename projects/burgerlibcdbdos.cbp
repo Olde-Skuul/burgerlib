@@ -303,6 +303,7 @@
 		<Unit filename="../source/msdos/brfilemanagermsdos.cpp" />
 		<Unit filename="../source/msdos/brfilemsdos.cpp" />
 		<Unit filename="../source/msdos/brfilenamemsdos.cpp" />
+		<Unit filename="../source/msdos/brglobalsmsdos.cpp" />
 		<Unit filename="../source/msdos/brmsdostypes.h" />
 		<Unit filename="../source/msdos/brtickmsdos.cpp" />
 		<Unit filename="../source/msdos/brtimedatemsdos.cpp" />

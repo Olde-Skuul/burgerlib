@@ -37,8 +37,8 @@ extern Word64 __cdecl _rotr64(Word64,int);
 #pragma intrinsic(_rotl,_rotl64,_rotr,_rotr64)
 
 long _InterlockedExchange(long volatile*,long);
-long _InterlockedIncrement(long volatile*);
-long _InterlockedDecrement(long volatile*);
+long __cdecl _InterlockedIncrement(long volatile*);
+long __cdecl _InterlockedDecrement(long volatile*);
 long _InterlockedExchangeAdd(long volatile*,long);
 long _InterlockedCompareExchange(long volatile*,long,long);
 #pragma intrinsic(_InterlockedExchange,_InterlockedIncrement,_InterlockedDecrement,_InterlockedExchangeAdd,_InterlockedCompareExchange)

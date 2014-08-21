@@ -49,6 +49,7 @@ public:
 	void *BURGER_API Flatten(WordPtr *pLength) const;
 	Word BURGER_API Append(char iChar);
 	Word BURGER_API Append(const char *pString);
+	Word BURGER_API AppendPString(const char *pString);
 	Word BURGER_API Append(Word8 uByte);
 	Word BURGER_API Append(Word16 uShort);
 	Word BURGER_API Append(Word32 uWord);

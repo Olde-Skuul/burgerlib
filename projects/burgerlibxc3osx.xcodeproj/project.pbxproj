@@ -76,6 +76,7 @@
 		8D474A7988CA8A8564434E1D /* brrezfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6E9082646C0E7C274D96418 /* brrezfile.cpp */; };
 		927DB477981A1842BB1C6126 /* brrandommanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C11F47A6C6B246A42A80E08A /* brrandommanager.cpp */; };
 		981796A97A3B7DB21237D40B /* brutf8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD131B16DEA23FBD6EC82AA4 /* brutf8.cpp */; };
+		9A41A2F2D3A0D06B49353742 /* brglobalsmacosx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A30A14B46C10338EC48C1B33 /* brglobalsmacosx.cpp */; };
 		9D7955C3EC21B950F8C49FC2 /* brfilegif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753735C0490C3C92B8AF5BE /* brfilegif.cpp */; };
 		9FC9AD9B93144A40CC0B5529 /* brdebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90B9DD7A4014806B74D324CA /* brdebug.cpp */; };
 		A1B2B43C357262F70993FC86 /* brfiledds.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9428DE91B59DC3AEE4A2DA71 /* brfiledds.cpp */; };
@@ -104,6 +105,7 @@
 		CCE7C659D41D7E892183E57A /* brfont4bit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B9BE5D09D8088F443C5642D0 /* brfont4bit.cpp */; };
 		D054FE41AF090E3449BA17D0 /* brdecompressdeflate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F9B14B6A17D8060064B212C7 /* brdecompressdeflate.cpp */; };
 		D056F3FBE1E2DBA54F42BFCE /* brcompress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 983E3E5ACC3B70EE6854865B /* brcompress.cpp */; };
+		D29E6063FE11D41B9F551647 /* brperforcemacosx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 093EE77C6AA288A05D4BF78A /* brperforcemacosx.cpp */; };
 		D4E48F09548D39B6DF876484 /* brdisplayopenglmacosx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FE4B4C2195F3E05FEBCC76E /* brdisplayopenglmacosx.cpp */; };
 		D6015B1BC45BD7715D0805E6 /* brsound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18F3E7BC262D37958BA61A48 /* brsound.cpp */; };
 		D938810A08F1E1E35065F4DA /* brmacosxapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90002D47360159DBE5D4066F /* brmacosxapp.cpp */; };
@@ -136,6 +138,7 @@
 		03A3C3D9C6951838E280F714 /* brfixedvector2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brfixedvector2d.h; path = ../source/math/brfixedvector2d.h; sourceTree = SOURCE_ROOT; };
 		062987267842187EACE988D0 /* brpalette.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = brpalette.cpp; path = ../source/graphics/brpalette.cpp; sourceTree = SOURCE_ROOT; };
 		06BB66F8E21958875BC904B7 /* brdirectorysearchmacosx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = brdirectorysearchmacosx.cpp; path = ../source/macosx/brdirectorysearchmacosx.cpp; sourceTree = SOURCE_ROOT; };
+		093EE77C6AA288A05D4BF78A /* brperforcemacosx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = brperforcemacosx.cpp; path = ../source/macosx/brperforcemacosx.cpp; sourceTree = SOURCE_ROOT; };
 		098C7EEE45FC736A0697E271 /* brutf32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brutf32.h; path = ../source/text/brutf32.h; sourceTree = SOURCE_ROOT; };
 		0A946719741EDEB6E3617CAA /* brvector4d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brvector4d.h; path = ../source/math/brvector4d.h; sourceTree = SOURCE_ROOT; };
 		0B307645F675B034DF5FFCB9 /* brfilepng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brfilepng.h; path = ../source/file/brfilepng.h; sourceTree = SOURCE_ROOT; };
@@ -295,6 +298,7 @@
 		9B718D561CF6048E4501BE95 /* brdxt3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = brdxt3.cpp; path = ../source/compression/brdxt3.cpp; sourceTree = SOURCE_ROOT; };
 		9CF8823226F778F76A5F3EDA /* brglxext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brglxext.h; path = ../source/brglxext.h; sourceTree = SOURCE_ROOT; };
 		9E8F0C71148CA11912153CC0 /* brvector4d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = brvector4d.cpp; path = ../source/math/brvector4d.cpp; sourceTree = SOURCE_ROOT; };
+		A30A14B46C10338EC48C1B33 /* brglobalsmacosx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = brglobalsmacosx.cpp; path = ../source/macosx/brglobalsmacosx.cpp; sourceTree = SOURCE_ROOT; };
 		A39FDE7F94D3DC6F209DD8A0 /* brcodelibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brcodelibrary.h; path = ../source/lowlevel/brcodelibrary.h; sourceTree = SOURCE_ROOT; };
 		A3F8350F0C8E20446F25F4AB /* brdirectorysearch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = brdirectorysearch.cpp; path = ../source/file/brdirectorysearch.cpp; sourceTree = SOURCE_ROOT; };
 		A418B2E0D488F9725789B3AD /* brcommandparameterwordptr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = brcommandparameterwordptr.cpp; path = ../source/commandline/brcommandparameterwordptr.cpp; sourceTree = SOURCE_ROOT; };
@@ -525,9 +529,11 @@
 				21EB475F0BE7F55C87EC9CBC /* brfilemacosx.cpp */,
 				3BD2F83AE9ADC8BED20B1F35 /* brfilemanagermacosx.cpp */,
 				438D6D7C63946FDC627487B1 /* brfilenamemacosx.cpp */,
+				A30A14B46C10338EC48C1B33 /* brglobalsmacosx.cpp */,
 				90002D47360159DBE5D4066F /* brmacosxapp.cpp */,
 				D30891AC3B6ECB7FB1315B03 /* brmacosxapp.h */,
 				72E0A31F9E945FD87528A778 /* brmacosxtypes.h */,
+				093EE77C6AA288A05D4BF78A /* brperforcemacosx.cpp */,
 				D674EA22E7A3D3C0C255C634 /* brpoint2dmacosx.cpp */,
 				0BE76735F75A3DBD3AB85F6A /* brrectmacosx.cpp */,
 				F69251CC585FA99BB38F29DB /* brtimedatemacosx.cpp */,
@@ -894,6 +900,7 @@
 				EEA872F397DE3DF622B8A490 /* brgameapp.cpp in Sources */,
 				089D3F6D95A110EE12AA7CA5 /* brglobalmemorymanager.cpp in Sources */,
 				4D272F531D870307A01BB43C /* brglobals.cpp in Sources */,
+				9A41A2F2D3A0D06B49353742 /* brglobalsmacosx.cpp in Sources */,
 				A82A79A92557F162BB8C5E18 /* brguid.cpp in Sources */,
 				679DC08E6C84792DC25B1402 /* brimage.cpp in Sources */,
 				850B5A30245A4745F37F74FD /* brinputmemorystream.cpp in Sources */,
@@ -921,6 +928,7 @@
 				6DD310D230F5B255DC1DD73C /* brpackfloat.cpp in Sources */,
 				BD0B59839971F2012677B4FB /* brpalette.cpp in Sources */,
 				4065A4E0BC9F5CA0881864B3 /* brperforce.cpp in Sources */,
+				D29E6063FE11D41B9F551647 /* brperforcemacosx.cpp in Sources */,
 				1938015AD8348BF71BE5040D /* brpoint2d.cpp in Sources */,
 				E84E46EAD18CB7647F58B96A /* brpoint2dmacosx.cpp in Sources */,
 				927DB477981A1842BB1C6126 /* brrandommanager.cpp in Sources */,

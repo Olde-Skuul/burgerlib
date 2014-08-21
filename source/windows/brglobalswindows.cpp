@@ -1296,4 +1296,152 @@ Word BURGER_API Burger::Globals::LaunchURL(const char *pURL)
 	return FALSE;		/* I launched */
 }
 
+/***************************************
+
+	Execute a tool and capture the text output
+
+***************************************/
+
+int BURGER_API Burger::Globals::ExecuteTool(const char *pFilename,const char *pParameters,OutputMemoryStream *pOutput)
+{
+	// Get the parameter list
+	Filename AppName(pFilename);
+	String Full("\"",AppName.GetNative(),"\" ",pParameters);
+	// Create the full Unicode command string
+	String16 Unicode(Full);
+
+	// Prepare the process information
+	PROCESS_INFORMATION ProcessInfo;
+	MemoryClear(&ProcessInfo,sizeof(ProcessInfo));
+	STARTUPINFOW StartupInfo;
+	MemoryClear(&StartupInfo,sizeof(StartupInfo));
+	StartupInfo.cb = sizeof(StartupInfo);
+
+	// Assume no text capturing
+
+	HANDLE hCaptureIn = NULL;
+	HANDLE hCaptureOut = NULL;
+
+	// Is capturing requested?
+	if (pOutput) {
+		// Create a pipe for STDOUT
+		SECURITY_ATTRIBUTES SecurityAttributes;
+		MemoryClear(&SecurityAttributes,sizeof(SecurityAttributes));
+		SecurityAttributes.nLength = sizeof(SecurityAttributes);
+		SecurityAttributes.bInheritHandle = TRUE;
+		SecurityAttributes.lpSecurityDescriptor = NULL;
+		// Create them and allow the capture pipe to inherit permissions
+		if (CreatePipe(&hCaptureIn,&hCaptureOut,&SecurityAttributes,0)) {
+			if (SetHandleInformation(hCaptureIn,HANDLE_FLAG_INHERIT,0)) {
+				// It's good, capture the output
+				StartupInfo.hStdError = hCaptureOut;
+				StartupInfo.hStdOutput = hCaptureOut;
+				StartupInfo.dwFlags = STARTF_USESTDHANDLES;
+			}
+		}
+	}
+
+	// Assume failure
+	DWORD nExitCode=10;
+
+	// Call the tool
+	BOOL bResult = CreateProcessW(NULL,reinterpret_cast<LPWSTR>(Unicode.GetPtr()),
+		NULL,NULL,pOutput!=NULL,0,NULL,NULL,&StartupInfo,&ProcessInfo);
+
+	// Did it even launch?
+	if (bResult) {
+		// Wait for the tool to finish executing
+		if (WaitForSingleObject(ProcessInfo.hProcess,INFINITE)==WAIT_OBJECT_0) {
+			// Get the exit code from the tool
+			if (!GetExitCodeProcess(ProcessInfo.hProcess,&nExitCode)) {
+				// Failure! Assume an error code of 10
+				nExitCode = 10;
+			}
+		}
+		// Release the handles (Since launch was successful)
+		CloseHandle(ProcessInfo.hProcess);
+		CloseHandle(ProcessInfo.hThread);
+	}
+
+	// Release the capture pipe (So the input pipe is finite)
+	if (hCaptureOut) {
+		CloseHandle(hCaptureOut);
+	}
+
+	// Only capture if needed
+	if (bResult && pOutput) {
+		DWORD uBytesRead; 
+		Word8 Buffer[1024]; 
+		for (;;) {
+			// Read from the finite pipe
+			BOOL bSuccess = ReadFile(hCaptureIn,Buffer,sizeof(Buffer),&uBytesRead,NULL);
+			// Error or all done?
+			if ((!bSuccess) || (!uBytesRead)) {
+				break; 
+			}
+			pOutput->Append(Buffer,uBytesRead); 
+		} 
+	}
+	// Clean up the last handle
+	if (hCaptureIn) {
+		CloseHandle(hCaptureIn);
+	}
+	// Exit with the tool's error code
+	return static_cast<int>(nExitCode);
+}
+
+/***************************************
+
+	Read an environment variable as UTF8
+
+***************************************/
+
+const char *BURGER_API Burger::Globals::GetEnvironmentString(const char *pKey)
+{
+	// Convert the key to UTF16
+	String16 Key16(pKey);
+	// How long is the key?
+	DWORD uLength = GetEnvironmentVariableW(reinterpret_cast<LPCWSTR>(Key16.GetPtr()),NULL,0);
+	char *pValue = NULL;
+	// Any key?
+	if (uLength) {
+		// Set the buffer to accept the value
+		String16 Output;
+		Output.SetBufferSize(uLength);
+		// Read in the environment variable as UTF16
+		GetEnvironmentVariableW(reinterpret_cast<LPCWSTR>(Key16.GetPtr()),reinterpret_cast<LPWSTR>(Output.GetPtr()),uLength+1);
+		// Convert to UTF8
+		String Final(Output.GetPtr());
+		// Return a copy
+		pValue = StringDuplicate(Final.GetPtr());
+	}
+	return pValue;
+}
+
+/***************************************
+
+	Set an environment variable with a UTF8 string
+
+***************************************/
+
+Word BURGER_API Burger::Globals::SetEnvironmentString(const char *pKey,const char *pInput)
+{
+	// Convert the key to UTF16
+	String16 Key16(pKey);
+	// Convert the input to UTF16
+	String16 Input16(pInput);
+	// If the input is an empty string or null, get rid of the string
+	LPWSTR pInput16 = NULL;
+	if (pInput && pInput[0]) {
+		// Set to the new value
+		pInput16 = reinterpret_cast<LPWSTR>(Input16.GetPtr());
+	}
+	// Set the variable!
+	Word uResult = 0;
+	if (!SetEnvironmentVariableW(reinterpret_cast<LPCWSTR>(Key16.GetPtr()),pInput16)) {
+		uResult = static_cast<Word>(GetLastError());
+	}
+	return uResult;
+}
+
 #endif

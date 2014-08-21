@@ -32,6 +32,7 @@
 
 /* BEGIN */
 namespace Burger {
+class OutputMemoryStream;
 struct Globals {
 private:
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
@@ -130,6 +131,9 @@ public:
 	static void BURGER_API Shutdown(int iError);
 	static Word BURGER_API Version(void);
 	static Word BURGER_API LaunchURL(const char *pURL);
+	static int BURGER_API ExecuteTool(const char *pFilename,const char *pParameters,OutputMemoryStream *pOutput=NULL);
+	static const char * BURGER_API GetEnvironmentString(const char *pKey);
+	static Word BURGER_API SetEnvironmentString(const char *pKey,const char *pInput);
 };
 }
 /* END */

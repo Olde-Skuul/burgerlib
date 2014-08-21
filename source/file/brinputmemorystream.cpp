@@ -16,6 +16,7 @@
 #include "brendian.h"
 #include "brstringfunctions.h"
 #include "brfilemanager.h"
+#include "brpalette.h"
 
 /*! ************************************
 
@@ -374,6 +375,7 @@ void BURGER_API Burger::InputMemoryStream::Open(const void *pBuffer,WordPtr uBuf
 	\param pOutput Buffer to receive the "C" style UTF-8 data string. \ref NULL will disable
 		the string copy, however the string will be "parsed" from the input
 	\param uOutputSize Size of the buffer pOutput
+	\sa GetCString(char *,WordPtr) or GetPString(char *,WordPtr)
 
 ***************************************/
 
@@ -432,9 +434,7 @@ void BURGER_API Burger::InputMemoryStream::GetString(char *pOutput,WordPtr uOutp
 	\brief Parse a UTF-8 "C" string from the data stream
 
 	Parse the input until an end of line is found. End of lines
-	are either a '\\0' or a '\\n'. For compatibility with cross 
-	platform text files, '\\r' and '\\r\\n' are acceptable end of line
-	tokens.
+	are either a '\\0' or end of data.
 
 	The output buffer is guaranteed to have a terminating zero. If
 	the line is too large, it will be truncated.
@@ -442,6 +442,7 @@ void BURGER_API Burger::InputMemoryStream::GetString(char *pOutput,WordPtr uOutp
 	\param pOutput Buffer to receive the "C" style UTF-8 data string. \ref NULL will disable
 		the string copy, however the string will be "parsed" from the input
 	\param uOutputSize Size of the buffer pOutput
+	\sa GetPString(char *,WordPtr)
 
 ***************************************/
 
@@ -467,7 +468,7 @@ void BURGER_API Burger::InputMemoryStream::GetCString(char *pOutput,WordPtr uOut
 				break;
 			}
 
-			// Any room in the dest buffer?
+			// Any room in the destination buffer?
 			if (uOutputSize) {
 				// Remove space
 				--uOutputSize;
@@ -477,6 +478,70 @@ void BURGER_API Burger::InputMemoryStream::GetCString(char *pOutput,WordPtr uOut
 			}
 			// Scan for more data
 		} while (pWork<pEndOfBuffer);
+
+		// Did I underrun?
+		if (uOutputSize) {
+			pOutput[0] = 0;		// Force a "C" string.
+		}
+		m_pWork = pWork;		// Consume the input
+	}
+}
+
+/*! ************************************
+
+	\brief Parse a UTF-8 "P" string from the data stream
+
+	Read a single byte from the stream to get the length of the
+	string and then copy those bytes into the buffer.
+
+	The output buffer is guaranteed to have a terminating zero. If
+	the line is too large, it will be truncated.
+
+	\param pOutput Buffer to receive the "C" style UTF-8 data string. \ref NULL will disable
+		the string copy, however the string will be "parsed" from the input
+	\param uOutputSize Size of the buffer pOutput
+	\sa GetCString(char *,WordPtr)
+
+***************************************/
+
+void BURGER_API Burger::InputMemoryStream::GetPString(char *pOutput,WordPtr uOutputSize)
+{
+	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
+	const Word8 *pWork = m_pWork;
+	// Is there any input?
+	if (pWork<pEndOfBuffer) {
+		// Is there output?
+		if (uOutputSize) {
+			// Reduce the buffer by 1
+			--uOutputSize;
+			pOutput[uOutputSize] = 0;	// Force the last char to be zero
+		}
+
+		// Get the length of the pascal string
+		WordPtr uLength = pWork[0];
+		++pWork;
+		// Any data?
+		if (uLength && (pWork<pEndOfBuffer)) {
+			// Parse out the string
+			do {
+				// Get a char from input
+				Word uTemp = pWork[0];
+				++pWork;
+				// Any room in the destination buffer?
+				if (uOutputSize) {
+					// Remove space
+					--uOutputSize;
+					// Output the character
+					pOutput[0] = static_cast<char>(uTemp);
+					++pOutput;
+				}
+				// Terminate on end of input
+				if (!--uLength) {
+					break;
+				}
+				// Scan for more data
+			} while (pWork<pEndOfBuffer);
+		}
 
 		// Did I underrun?
 		if (uOutputSize) {
@@ -618,6 +683,114 @@ Word32 BURGER_API Burger::InputMemoryStream::GetBigWord32(void)
 
 /*! ************************************
 
+	\brief Return a 32 bit little endian float from the data stream
+
+	\return Next 32 bit value from the stream. Zero if there is no data remaining.
+	\sa GetBigFloat(void) or GetDouble(void)
+
+***************************************/
+
+float BURGER_API Burger::InputMemoryStream::GetFloat(void)
+{
+	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
+	const Word8 *pWork = m_pWork;
+	float fTemp = 0.0f;
+	// Is there any input?
+	if (pWork<pEndOfBuffer) {
+		if ((pWork+3)>=pEndOfBuffer) {
+			pWork = pEndOfBuffer;
+		} else {
+			fTemp = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork));
+			pWork+=4;
+		}
+		m_pWork = pWork;
+	}
+	return fTemp;
+}
+
+/*! ************************************
+
+	\brief Return a 32 bit big endian float from the data stream
+
+	\return Next 32 bit value from the stream. Zero if there is no data remaining.
+	\sa GetFloat(void) or GetBigDouble(void)
+
+***************************************/
+
+float BURGER_API Burger::InputMemoryStream::GetBigFloat(void)
+{
+	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
+	const Word8 *pWork = m_pWork;
+	float fTemp = 0.0f;
+	// Is there any input?
+	if (pWork<pEndOfBuffer) {
+		if ((pWork+3)>=pEndOfBuffer) {
+			pWork = pEndOfBuffer;
+		} else {
+			fTemp = BigEndian::LoadAny(reinterpret_cast<const float *>(pWork));
+			pWork+=4;
+		}
+		m_pWork = pWork;
+	}
+	return fTemp;
+}
+
+/*! ************************************
+
+	\brief Return a 64 bit little endian float from the data stream
+
+	\return Next 64 bit value from the stream. Zero if there is no data remaining.
+	\sa GetBigDouble(void) or GetFloat(void)
+
+***************************************/
+
+double BURGER_API Burger::InputMemoryStream::GetDouble(void)
+{
+	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
+	const Word8 *pWork = m_pWork;
+	double dTemp = 0.0;
+	// Is there any input?
+	if (pWork<pEndOfBuffer) {
+		if ((pWork+7)>=pEndOfBuffer) {
+			pWork = pEndOfBuffer;
+		} else {
+			dTemp = LittleEndian::LoadAny(reinterpret_cast<const double *>(pWork));
+			pWork+=8;
+		}
+		m_pWork = pWork;
+	}
+	return dTemp;
+}
+
+/*! ************************************
+
+	\brief Return a 64 bit big endian float from the data stream
+
+	\return Next 64 bit value from the stream. Zero if there is no data remaining.
+	\sa GetDouble(void) or GetBigFloat(void)
+
+***************************************/
+
+double BURGER_API Burger::InputMemoryStream::GetBigDouble(void)
+{
+	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
+	const Word8 *pWork = m_pWork;
+	double dTemp = 0.0;
+	// Is there any input?
+	if (pWork<pEndOfBuffer) {
+		if ((pWork+7)>=pEndOfBuffer) {
+			pWork = pEndOfBuffer;
+		} else {
+			dTemp = BigEndian::LoadAny(reinterpret_cast<const double *>(pWork));
+			pWork+=8;
+		}
+		m_pWork = pWork;
+	}
+	return dTemp;
+}
+
+/*! ************************************
+
 	\brief Return an unmodified array of bytes from the input stream
 
 	\param pOutput Pointer to buffer to receive data. \ref NULL will perform no data transfer
@@ -639,6 +812,193 @@ WordPtr BURGER_API Burger::InputMemoryStream::Get(void *pOutput,WordPtr uOutputS
 		pWork+=uOutputSize;
 		m_pWork = pWork;
 		uResult = uOutputSize;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Extract an R,G,B color from the input stream
+
+	Use the next three bytes as Red, Green and Blue (In
+	that order) and store it in the output RGBWord8_t
+	structure.
+
+	\param Pointer to a buffer to store the output
+	\return Zero if no error, non zero if there isn't enough data in the stream for the output.
+	\sa Get(RGBAWord8_t *)
+
+***************************************/
+
+Word BURGER_API Burger::InputMemoryStream::Get(RGBWord8_t *pOutput)
+{
+	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
+	const Word8 *pWork = m_pWork;
+	Word uResult = TRUE;		// Error!
+	// Is there any input?
+	if (pWork<pEndOfBuffer) {
+		if ((pWork+2)>=pEndOfBuffer) {
+			pWork = pEndOfBuffer;
+			pOutput->m_uRed = 0;
+			pOutput->m_uGreen = 0;
+			pOutput->m_uBlue = 0;
+		} else {
+			pOutput->m_uRed = pWork[0];
+			pOutput->m_uGreen = pWork[1];
+			pOutput->m_uBlue = pWork[2];
+			pWork+=3;
+			uResult = FALSE;
+		}
+		m_pWork = pWork;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Extract an R,G,B,A color from the input stream
+
+	Use the next four bytes as Red, Green, Blue and Alpha (In
+	that order) and store it in the output RGBAWord8_t
+	structure.
+
+	\param Pointer to a buffer to store the output
+	\return Zero if no error, non zero if there isn't enough data in the stream for the output.
+	\sa Get(RGBWord8_t *)
+
+***************************************/
+
+Word BURGER_API Burger::InputMemoryStream::Get(RGBAWord8_t *pOutput)
+{
+	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
+	const Word8 *pWork = m_pWork;
+	Word uResult = TRUE;		// Error!
+	// Is there any input?
+	if (pWork<pEndOfBuffer) {
+		if ((pWork+3)>=pEndOfBuffer) {
+			pWork = pEndOfBuffer;
+			pOutput->m_uRed = 0;
+			pOutput->m_uGreen = 0;
+			pOutput->m_uBlue = 0;
+			pOutput->m_uAlpha = 255;
+		} else {
+			pOutput->m_uRed = pWork[0];
+			pOutput->m_uGreen = pWork[1];
+			pOutput->m_uBlue = pWork[2];
+			pOutput->m_uAlpha = pWork[3];
+			pWork+=4;
+			uResult = FALSE;
+		}
+		m_pWork = pWork;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Extract a Vector2D_t from the input stream
+
+	Use the next eight bytes as a little endian pair
+	of 32 bit floating point values and store it in
+	the output Vector2D_t structure.
+
+	\param Pointer to a buffer to store the output
+	\return Zero if no error, non zero if there isn't enough data in the stream for the output.
+	\sa Get(Vector3D_t *) or Get(Vector4D_t *)
+
+***************************************/
+
+Word BURGER_API Burger::InputMemoryStream::Get(Vector2D_t *pOutput)
+{
+	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
+	const Word8 *pWork = m_pWork;
+	Word uResult = TRUE;		// Error!
+	// Is there any input?
+	if (pWork<pEndOfBuffer) {
+		if ((pWork+7)>=pEndOfBuffer) {
+			pWork = pEndOfBuffer;
+			pOutput->Zero();
+		} else {
+			pOutput->x = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork));
+			pOutput->y = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork+4));
+			pWork+=8;
+			uResult = FALSE;
+		}
+		m_pWork = pWork;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Extract a Vector3D_t from the input stream
+
+	Use the next twelve bytes as a little endian triplet
+	of 32 bit floating point values and store it in
+	the output Vector3D_t structure.
+
+	\param Pointer to a buffer to store the output
+	\return Zero if no error, non zero if there isn't enough data in the stream for the output.
+	\sa Get(Vector2D_t *) or Get(Vector4D_t *)
+
+***************************************/
+
+Word BURGER_API Burger::InputMemoryStream::Get(Vector3D_t *pOutput)
+{
+	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
+	const Word8 *pWork = m_pWork;
+	Word uResult = TRUE;		// Error!
+	// Is there any input?
+	if (pWork<pEndOfBuffer) {
+		if ((pWork+11)>=pEndOfBuffer) {
+			pWork = pEndOfBuffer;
+			pOutput->Zero();
+		} else {
+			pOutput->x = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork));
+			pOutput->y = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork+4));
+			pOutput->z = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork+8));
+			pWork+=12;
+			uResult = FALSE;
+		}
+		m_pWork = pWork;
+	}
+	return uResult;
+}
+
+
+/*! ************************************
+
+	\brief Extract a Vector4D_t from the input stream
+
+	Use the next sixteen bytes as a little endian quad
+	of 32 bit floating point values and store it in
+	the output Vector4D_t structure.
+
+	\param Pointer to a buffer to store the output
+	\return Zero if no error, non zero if there isn't enough data in the stream for the output.
+	\sa Get(Vector2D_t *) or Get(Vector3D_t *)
+
+***************************************/
+
+Word BURGER_API Burger::InputMemoryStream::Get(Vector4D_t *pOutput)
+{
+	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
+	const Word8 *pWork = m_pWork;
+	Word uResult = TRUE;		// Error!
+	// Is there any input?
+	if (pWork<pEndOfBuffer) {
+		if ((pWork+15)>=pEndOfBuffer) {
+			pWork = pEndOfBuffer;
+			pOutput->Zero();
+		} else {
+			pOutput->x = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork));
+			pOutput->y = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork+4));
+			pOutput->z = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork+8));
+			pOutput->w = LittleEndian::LoadAny(reinterpret_cast<const float *>(pWork+12));
+			pWork+=16;
+			uResult = FALSE;
+		}
+		m_pWork = pWork;
 	}
 	return uResult;
 }

@@ -18,20 +18,24 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRSTRING_H__
+#include "brfilename.h"
+#endif
+
 /* BEGIN */
-#if (defined(BURGER_WINDOWS) && defined(BURGER_MSVC)) || defined(DOXYGEN)
-class ClientApi;
+#if (defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
 namespace Burger {
 class Perforce {
 	BURGER_DISABLECOPYCONSTRUCTORS(Perforce);
-	ClientApi *m_pClientApi;				///< Pointer to the open perforce reference (Windows only)
+	Filename m_PerforceFilename;		///< Filename for p4 executable file
+	Word m_bFilenameInitialized;		///< \ref TRUE if the perforce executable is found
 public:
-	Perforce() : m_pClientApi(NULL) {}
+	Perforce();
 	~Perforce();
-	int Init(void);
-	int Shutdown(void);
-	int Edit(const char *pFilename);
-	int RevertIfUnchanged(const char *pFilename);
+	Word BURGER_API Init(void);
+	Word BURGER_API Shutdown(void);
+	Word BURGER_API Edit(const char *pFilename);
+	Word BURGER_API RevertIfUnchanged(const char *pFilename);
 };
 }
 #else
@@ -39,11 +43,10 @@ namespace Burger {
 class Perforce {
 	BURGER_DISABLECOPYCONSTRUCTORS(Perforce);
 public:
-	Perforce() {}
-	BURGER_INLINE int Init(void) const { return 20; }
-	BURGER_INLINE int Shutdown(void) const { return 20; }
-	BURGER_INLINE int Edit(const char * /* pFilename */) const { return 20; }
-	BURGER_INLINE int RevertIfUnchanged(const char * /* pFilename */) const { return 20; }
+	BURGER_INLINE Word Init(void) const { return 20; }
+	BURGER_INLINE Word Shutdown(void) const { return 20; }
+	BURGER_INLINE Word Edit(const char * /* pFilename */) const { return 20; }
+	BURGER_INLINE Word RevertIfUnchanged(const char * /* pFilename */) const { return 20; }
 };
 }
 #endif
