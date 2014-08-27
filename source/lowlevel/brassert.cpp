@@ -18,6 +18,9 @@
 #include <stdlib.h>
 
 #if defined(BURGER_WINDOWS)
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x0501
+#endif
 #include <windows.h>
 #endif
 
@@ -33,7 +36,7 @@
 #pragma warning(disable:4702)		// Disable unreachable code
 #endif
 
-#if defined(BURGER_IOS)
+#if defined(BURGER_IOS) || defined(BURGER_MACOSX)
 #include <signal.h>
 #endif
 
@@ -67,6 +70,33 @@
 	
 ***************************************/
 
+/*! ************************************
+
+	\def BURGER_COMPILE_TIME_ASSERT(x)
+	
+	\brief Test a compile time condition and if it's false, force a compiler error
+	
+	\param x A boolean that evaluates to \ref FALSE to force a compile time error
+	
+	\note This macro will always invoke the conditional
+	in all builds. The conditional must be one that is resolved at compile time.
+
+	\code
+	// Will succeed
+	BURGER_COMPILE_TIME_ASSERT(sizeof(Word32)==sizeof(Int32));
+	// Will fail
+	BURGER_COMPILE_TIME_ASSERT(sizeof(char)==sizeof(int));
+	// Will fail if sizeof(eType) != sizeof(int)
+	enum eType {
+		TEST
+	};
+	BURGER_COMPILE_TIME_ASSERT(sizeof(eType)==sizeof(int));
+
+	// Use BURGER_ASSERT(x) instead, since this example is resolved at runtime
+	BURGER_COMPILE_TIME_ASSERT(Burger::StringLength("EpicFail")==8);
+	\endcode
+	
+***************************************/
 
 /***************************************
 
@@ -179,29 +209,14 @@ void BURGER_API Burger::AssertRedirect(Burger::ProcAssert pAssert,void *pThis)
 // trap if a debugger is found. Will do nothing if no
 // debugger is attached
 
-static Word8 g_HaltTested;
-static int (WINAPI *g_pDebugTest)(void);
-
 void BURGER_API Burger::Halt(void)
 {
-	// Did I get the reference 
-	if (!g_HaltTested) {
-		// Load in the kernel reference
-		HINSTANCE hKernelRef = Globals::LoadLibraryA("kernel32.dll");
-		if (hKernelRef) {
-			// Get the routine
-			g_pDebugTest = (int (WINAPI *)(void))GetProcAddress(hKernelRef,"IsDebuggerPresent");
-		}
-		g_HaltTested = TRUE;		// I am cool...
-	}
-	if (g_pDebugTest) {			// Is the pointer valid?
-		if (g_pDebugTest()) {	// Is the debugger present?
+	if (IsDebuggerPresent()) {	// Is the debugger present?
 #if defined(BURGER_X86)
-			_asm int 3			// Trap!
+		_asm int 3			// Trap!
 #else
-			__debugbreak();		// ARM and AMD64 version
+		__debugbreak();		// ARM and AMD64 version
 #endif
-		}
 	}
 }
 
@@ -217,7 +232,7 @@ void BURGER_API Burger::Halt(void)
 	__debugbreak();
 #elif defined(BURGER_PS3)
 	__builtin_snpause();
-#elif defined(BURGER_IOS)
+#elif defined(BURGER_IOS) || defined(BURGER_MACOSX)
 	raise(SIGTRAP);
 #elif defined(BURGER_ANDROID) && defined(BURGER_ARM)
 	kill(getpid(),SIGINT);

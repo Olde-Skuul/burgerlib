@@ -180,7 +180,7 @@ static const Word32 IsNanTest[][2] = {
 static Word TestIsNanFloat(void)
 {
 	const Word32 *pWork = IsNanTest[0];
-	WordPtr i = sizeof(IsNanTest)/sizeof(IsNanTest[0]);
+	WordPtr i = BURGER_ARRAYSIZE(IsNanTest);
 	Word uResult = FALSE;
 	do {
 		float fOriginal = reinterpret_cast<const float *>(pWork)[0];
@@ -233,7 +233,7 @@ static const NanTest_t IsNanTestDouble[] = {
 static Word TestIsNanDouble(void)
 {
 	const NanTest_t *pWork = IsNanTestDouble;
-	WordPtr i = sizeof(IsNanTestDouble)/sizeof(IsNanTestDouble[0]);
+	WordPtr i = BURGER_ARRAYSIZE(IsNanTestDouble);
 	Word uResult = FALSE;
 	do {
 		double dOriginal = reinterpret_cast<const double *>(&pWork->uInput)[0];
@@ -254,7 +254,7 @@ static Word TestIsNanDouble(void)
 static Word TestIsInfFloat(void)
 {
 	const Word32 *pWork = IsNanTest[0];
-	WordPtr i = sizeof(IsNanTest)/sizeof(IsNanTest[0]);
+	WordPtr i = BURGER_ARRAYSIZE(IsNanTest);
 	Word uResult = FALSE;
 	do {
 		float fOriginal = reinterpret_cast<const float *>(pWork)[0];
@@ -275,7 +275,7 @@ static Word TestIsInfFloat(void)
 static Word TestIsInfDouble(void)
 {
 	const NanTest_t *pWork = IsNanTestDouble;
-	WordPtr i = sizeof(IsNanTestDouble)/sizeof(IsNanTestDouble[0]);
+	WordPtr i = BURGER_ARRAYSIZE(IsNanTestDouble);
 	Word uResult = FALSE;
 	do {
 		double dOriginal = reinterpret_cast<const double *>(&pWork->uInput)[0];
@@ -296,7 +296,7 @@ static Word TestIsInfDouble(void)
 static Word TestIsFiniteFloat(void)
 {
 	const Word32 *pWork = IsNanTest[0];
-	WordPtr i = sizeof(IsNanTest)/sizeof(IsNanTest[0]);
+	WordPtr i = BURGER_ARRAYSIZE(IsNanTest);
 	Word uResult = FALSE;
 	do {
 		float fOriginal = reinterpret_cast<const float *>(pWork)[0];
@@ -317,7 +317,7 @@ static Word TestIsFiniteFloat(void)
 static Word TestIsFiniteDouble(void)
 {
 	const NanTest_t *pWork = IsNanTestDouble;
-	WordPtr i = sizeof(IsNanTestDouble)/sizeof(IsNanTestDouble[0]);
+	WordPtr i = BURGER_ARRAYSIZE(IsNanTestDouble);
 	Word uResult = FALSE;
 	do {
 		double dOriginal = reinterpret_cast<const double *>(&pWork->uInput)[0];
@@ -338,7 +338,7 @@ static Word TestIsFiniteDouble(void)
 static Word TestIsNormalFloat(void)
 {
 	const Word32 *pWork = IsNanTest[0];
-	WordPtr i = sizeof(IsNanTest)/sizeof(IsNanTest[0]);
+	WordPtr i = BURGER_ARRAYSIZE(IsNanTest);
 	Word uResult = FALSE;
 	do {
 		float fOriginal = reinterpret_cast<const float *>(pWork)[0];
@@ -359,7 +359,7 @@ static Word TestIsNormalFloat(void)
 static Word TestIsNormalDouble(void)
 {
 	const NanTest_t *pWork = IsNanTestDouble;
-	WordPtr i = sizeof(IsNanTestDouble)/sizeof(IsNanTestDouble[0]);
+	WordPtr i = BURGER_ARRAYSIZE(IsNanTestDouble);
 	Word uResult = FALSE;
 	do {
 		double dOriginal = reinterpret_cast<const double *>(&pWork->uInput)[0];
@@ -380,7 +380,7 @@ static Word TestIsNormalDouble(void)
 static Word TestSignBitFloat(void)
 {
 	const Word32 *pWork = IsNanTest[0];
-	WordPtr i = sizeof(IsNanTest)/sizeof(IsNanTest[0]);
+	WordPtr i = BURGER_ARRAYSIZE(IsNanTest);
 	Word uResult = FALSE;
 	do {
 		float fOriginal = reinterpret_cast<const float *>(pWork)[0];
@@ -401,7 +401,7 @@ static Word TestSignBitFloat(void)
 static Word TestSignBitDouble(void)
 {
 	const NanTest_t *pWork = IsNanTestDouble;
-	WordPtr i = sizeof(IsNanTestDouble)/sizeof(IsNanTestDouble[0]);
+	WordPtr i = BURGER_ARRAYSIZE(IsNanTestDouble);
 	Word uResult = FALSE;
 	do {
 		double dOriginal = reinterpret_cast<const double *>(&pWork->uInput)[0];
@@ -441,7 +441,7 @@ static const Burger::Word32ToFloat AbsFloatArray[][2] = {
 static Word TestAbsFloat(void)
 {
 	const Burger::Word32ToFloat *pWork = AbsFloatArray[0];
-	WordPtr i = sizeof(AbsFloatArray)/sizeof(AbsFloatArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(AbsFloatArray);
 	Word uResult = FALSE;
 	do {
 		Burger::Word32ToFloat fTest;
@@ -480,7 +480,7 @@ static const Burger::Word64ToDouble AbsDoubleArray[][2] = {
 static Word TestAbsDouble(void)
 {
 	const Burger::Word64ToDouble *pWork = AbsDoubleArray[0];
-	WordPtr i = sizeof(AbsDoubleArray)/sizeof(AbsDoubleArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(AbsDoubleArray);
 	Word uResult = FALSE;
 	do {
 		double dTest = pWork[0];
@@ -515,7 +515,7 @@ static const Burger::Word32ToFloat SqrtFloatArray[][2] = {
 static Word TestSqrtFloat(void)
 {
 	const Burger::Word32ToFloat *pWork = SqrtFloatArray[0];
-	WordPtr i = sizeof(SqrtFloatArray)/sizeof(SqrtFloatArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(SqrtFloatArray);
 	Word uResult = FALSE;
 	do {
 		float fOriginal = pWork[0];
@@ -557,7 +557,7 @@ static const Burger::Word32ToFloat FloorFloatArray[][2] = {
 static Word TestFloorFloat(void)
 {
 	const Burger::Word32ToFloat *pWork = FloorFloatArray[0];
-	WordPtr i = sizeof(FloorFloatArray)/sizeof(FloorFloatArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(FloorFloatArray);
 	Word uResult = FALSE;
 	do {
 		float fOriginal = pWork[0];
@@ -599,7 +599,7 @@ static const Burger::Word64ToDouble FloorDoubleArray[][2] = {
 static Word TestFloorDouble(void)
 {
 	const Burger::Word64ToDouble *pWork = FloorDoubleArray[0];
-	WordPtr i = sizeof(FloorDoubleArray)/sizeof(FloorDoubleArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(FloorDoubleArray);
 	Word uResult = FALSE;
 	do {
 		double fOriginal = pWork[0];
@@ -640,7 +640,7 @@ static const Burger::Word32ToFloat CeilFloatArray[][2] = {
 static Word TestCeilFloat(void)
 {
 	const Burger::Word32ToFloat *pWork = CeilFloatArray[0];
-	WordPtr i = sizeof(CeilFloatArray)/sizeof(CeilFloatArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(CeilFloatArray);
 	Word uResult = FALSE;
 	do {
 		float fOriginal = pWork[0];
@@ -682,7 +682,7 @@ static const Burger::Word64ToDouble CeilDoubleArray[][2] = {
 static Word TestCeilDouble(void)
 {
 	const Burger::Word64ToDouble *pWork = CeilDoubleArray[0];
-	WordPtr i = sizeof(CeilDoubleArray)/sizeof(CeilDoubleArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(CeilDoubleArray);
 	Word uResult = FALSE;
 	do {
 		double fOriginal = pWork[0];
@@ -723,7 +723,7 @@ static const Burger::Word32ToFloat RoundFloatArray[][2] = {
 static Word TestRoundFloat(void)
 {
 	const Burger::Word32ToFloat *pWork = RoundFloatArray[0];
-	WordPtr i = sizeof(RoundFloatArray)/sizeof(RoundFloatArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(RoundFloatArray);
 	Word uResult = FALSE;
 	do {
 		float fOriginal = pWork[0];
@@ -765,7 +765,7 @@ static const Burger::Word64ToDouble RoundDoubleArray[][2] = {
 static Word TestRoundDouble(void)
 {
 	const Burger::Word64ToDouble *pWork = RoundDoubleArray[0];
-	WordPtr i = sizeof(RoundDoubleArray)/sizeof(RoundDoubleArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(RoundDoubleArray);
 	Word uResult = FALSE;
 	do {
 		// Note: Use volatile to force the compiler to use 32 bit float precision
@@ -810,7 +810,7 @@ static const Burger::Word32ToFloat RoundToZeroFloatArray[][2] = {
 static Word TestRoundToZeroFloat(void)
 {
 	const Burger::Word32ToFloat *pWork = RoundToZeroFloatArray[0];
-	WordPtr i = sizeof(RoundToZeroFloatArray)/sizeof(RoundToZeroFloatArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(RoundToZeroFloatArray);
 	Word uResult = FALSE;
 	do {
 		float fOriginal = pWork[0];
@@ -852,7 +852,7 @@ static const Burger::Word64ToDouble RoundToZeroDoubleArray[][2] = {
 static Word TestRoundToZeroDouble(void)
 {
 	const Burger::Word64ToDouble *pWork = RoundToZeroDoubleArray[0];
-	WordPtr i = sizeof(RoundToZeroDoubleArray)/sizeof(RoundToZeroDoubleArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(RoundToZeroDoubleArray);
 	Word uResult = FALSE;
 	do {
 		// Note: Use volatile to force the compiler to use 32 bit float precision
@@ -898,7 +898,7 @@ static Word TestModuloRadiansFloat(void)
 {
 //	Burger::Set8087Precision(Burger::PRECISION24);
 	const Burger::Word32ToFloat *pWork = ModuloRadiansFloatArray[0];
-	WordPtr i = sizeof(ModuloRadiansFloatArray)/sizeof(ModuloRadiansFloatArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(ModuloRadiansFloatArray);
 	Word uResult = FALSE;
 	do {
 		float fOriginal = pWork[0];
@@ -944,7 +944,7 @@ static const Burger::Word64ToDouble ModuloRadiansDoubleArray[][2] = {
 static Word TestModuloRadiansDouble(void)
 {
 	const Burger::Word64ToDouble *pWork = ModuloRadiansDoubleArray[0];
-	WordPtr i = sizeof(ModuloRadiansDoubleArray)/sizeof(ModuloRadiansDoubleArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(ModuloRadiansDoubleArray);
 	Word uResult = FALSE;
 	do {
 		// Note: Use volatile to force the compiler to use 32 bit float precision
@@ -1018,7 +1018,7 @@ static const Burger::Word32ToFloat SinFloatArray[][2] = {
 static Word TestSinFloat(void)
 {
 	const Burger::Word32ToFloat *pWork = SinFloatArray[0];
-	WordPtr i = sizeof(SinFloatArray)/sizeof(SinFloatArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(SinFloatArray);
 	Word uResult = FALSE;
 	do {
 		Burger::Word32ToFloat fTest;
@@ -1068,7 +1068,7 @@ static const Burger::Word64ToDouble SinDoubleArray[][2] = {
 static Word TestSinDouble(void)
 {
 	const Burger::Word64ToDouble *pWork = SinDoubleArray[0];
-	WordPtr i = sizeof(SinDoubleArray)/sizeof(SinDoubleArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(SinDoubleArray);
 	Word uResult = FALSE;
 	do {
 		Burger::Word64ToDouble fTest;
@@ -1142,7 +1142,7 @@ static const Burger::Word32ToFloat CosFloatArray[][2] = {
 static Word TestCosFloat(void)
 {
 	const Burger::Word32ToFloat *pWork = CosFloatArray[0];
-	WordPtr i = sizeof(CosFloatArray)/sizeof(CosFloatArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(CosFloatArray);
 	Word uResult = FALSE;
 	do {
 		Burger::Word32ToFloat fTest;
@@ -1192,7 +1192,7 @@ static const Burger::Word64ToDouble CosDoubleArray[][2] = {
 static Word TestCosDouble(void)
 {
 	const Burger::Word64ToDouble *pWork = CosDoubleArray[0];
-	WordPtr i = sizeof(CosDoubleArray)/sizeof(CosDoubleArray[0]);
+	WordPtr i = BURGER_ARRAYSIZE(CosDoubleArray);
 	Word uResult = FALSE;
 	do {
 		Burger::Word64ToDouble fTest;
@@ -1210,7 +1210,6 @@ static Word TestCosDouble(void)
 	} while (--i);
 	return uResult;
 }
-
 
 /*
 

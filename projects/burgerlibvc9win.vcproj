@@ -381,6 +381,7 @@
 				<File RelativePath="..\source\windows\brfilenamewindows.cpp" />
 				<File RelativePath="..\source\windows\brfilewindows.cpp" />
 				<File RelativePath="..\source\windows\brglobalswindows.cpp" />
+				<File RelativePath="..\source\windows\brguidwindows.cpp" />
 				<File RelativePath="..\source\windows\brjoypadwindows.cpp" />
 				<File RelativePath="..\source\windows\brkeyboardwindows.cpp" />
 				<File RelativePath="..\source\windows\brmousewindows.cpp" />

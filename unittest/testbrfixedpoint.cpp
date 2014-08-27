@@ -76,7 +76,7 @@ static Word TestPowerOf2_32(void)
 {
 	Word uFailure = FALSE;
 	const WordTest32_t *pWork = PowerOf2_32Table;
-	WordPtr uCount = sizeof(PowerOf2_32Table)/sizeof(PowerOf2_32Table[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(PowerOf2_32Table);
 	do {
 		Word32 uReturn = Burger::PowerOf2(pWork->m_uInput);
 		Word uTest = uReturn!=pWork->m_uOutput;
@@ -121,7 +121,7 @@ static Word TestPowerOf2_64(void)
 {
 	Word uFailure = FALSE;
 	const WordTest64_t *pWork = PowerOf2_64Table;
-	WordPtr uCount = sizeof(PowerOf2_64Table)/sizeof(PowerOf2_64Table[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(PowerOf2_64Table);
 	do {
 		Word64 uReturn = Burger::PowerOf2(pWork->m_uInput);
 		Word uTest = uReturn!=pWork->m_uOutput;
@@ -169,7 +169,7 @@ static Word TestBitReverse_32(void)
 	Word uBitCount = 1;
 	do {
 		const WordTest32_t *pWork = BitReverse_32Table;
-		WordPtr uCount = sizeof(BitReverse_32Table)/sizeof(BitReverse_32Table[0]);
+		WordPtr uCount = BURGER_ARRAYSIZE(BitReverse_32Table);
 		do {
 			Word32 uReturn = Burger::BitReverse(pWork->m_uInput,uBitCount);
 			Word32 uToTest = pWork->m_uOutput>>(32-uBitCount);
@@ -215,7 +215,7 @@ static Word TestBitReverse_64(void)
 	Word uBitCount = 1;
 	do {
 		const WordTest64_t *pWork = BitReverse_64Table;
-		WordPtr uCount = sizeof(BitReverse_64Table)/sizeof(BitReverse_64Table[0]);
+		WordPtr uCount = BURGER_ARRAYSIZE(BitReverse_64Table);
 		do {
 			Word64 uReturn = Burger::BitReverse(pWork->m_uInput,uBitCount);
 			Word64 uToTest = pWork->m_uOutput>>(64-uBitCount);
@@ -262,7 +262,7 @@ static Word TestGetLoWord(void)
 {
 	Word uFailure = FALSE;
 	const WordTest32_t *pWork = GetLoWordTable;
-	WordPtr uCount = sizeof(GetLoWordTable)/sizeof(GetLoWordTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(GetLoWordTable);
 	do {
 		Word32 uReturn = Burger::GetLoWord(pWork->m_uInput);
 		Word uTest = uReturn!=pWork->m_uOutput;
@@ -302,7 +302,7 @@ static Word TestGetHiWord(void)
 {
 	Word uFailure = FALSE;
 	const WordTest32_t *pWork = GetHiWordTable;
-	WordPtr uCount = sizeof(GetHiWordTable)/sizeof(GetHiWordTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(GetHiWordTable);
 	do {
 		Word32 uReturn = Burger::GetHiWord(pWork->m_uInput);
 		Word uTest = uReturn!=pWork->m_uOutput;
@@ -335,7 +335,7 @@ static Word TestIntToFixed(void)
 {
 	Word uFailure = FALSE;
 	const IntTest32_t *pWork = IntToFixedTestTable;
-	WordPtr uCount = sizeof(IntToFixedTestTable)/sizeof(IntToFixedTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(IntToFixedTestTable);
 	do {
 		Int32 iReturn = Burger::IntToFixed(pWork->m_iInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -368,7 +368,7 @@ static Word TestIntToFixedSaturate(void)
 {
 	Word uFailure = FALSE;
 	const IntTest32_t *pWork = IntToFixedSaturateTestTable;
-	WordPtr uCount = sizeof(IntToFixedSaturateTestTable)/sizeof(IntToFixedSaturateTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(IntToFixedSaturateTestTable);
 	do {
 		Int32 iReturn = Burger::IntToFixedSaturate(pWork->m_iInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -398,7 +398,7 @@ static Word TestFixedToIntFloor(void)
 {
 	Word uFailure = FALSE;
 	const IntTest32_t *pWork = FixedToIntFloorTestTable;
-	WordPtr uCount = sizeof(FixedToIntFloorTestTable)/sizeof(FixedToIntFloorTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(FixedToIntFloorTestTable);
 	do {
 		Int32 iReturn = Burger::FixedToIntFloor(pWork->m_iInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -428,7 +428,7 @@ static Word TestFixedToInt(void)
 {
 	Word uFailure = FALSE;
 	const IntTest32_t *pWork = FixedToIntTestTable;
-	WordPtr uCount = sizeof(FixedToIntTestTable)/sizeof(FixedToIntTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(FixedToIntTestTable);
 	do {
 		Int32 iReturn = Burger::FixedToInt(pWork->m_iInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -458,7 +458,7 @@ static Word TestFixedToIntCeil(void)
 {
 	Word uFailure = FALSE;
 	const IntTest32_t *pWork = FixedToIntCeilTestTable;
-	WordPtr uCount = sizeof(FixedToIntCeilTestTable)/sizeof(FixedToIntCeilTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(FixedToIntCeilTestTable);
 	do {
 		Int32 iReturn = Burger::FixedToIntCeil(pWork->m_iInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -488,7 +488,7 @@ static Word TestFixedToIntNearest(void)
 {
 	Word uFailure = FALSE;
 	const IntTest32_t *pWork = FixedToIntNearestTestTable;
-	WordPtr uCount = sizeof(FixedToIntNearestTestTable)/sizeof(FixedToIntNearestTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(FixedToIntNearestTestTable);
 	do {
 		Int32 iReturn = Burger::FixedToIntNearest(pWork->m_iInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -518,7 +518,7 @@ static Word TestFloatToIntFloor(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToIntFloorTestTable;
-	WordPtr uCount = sizeof(FloatToIntFloorTestTable)/sizeof(FloatToIntFloorTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(FloatToIntFloorTestTable);
 	do {
 		Int32 iReturn = Burger::FloatToIntFloor(pWork->m_fInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -555,7 +555,7 @@ static Word TestFloatToInt(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToIntTestTable;
-	WordPtr uCount = sizeof(FloatToIntTestTable)/sizeof(FloatToIntTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(FloatToIntTestTable);
 	do {
 		Int32 iReturn = Burger::FloatToInt(pWork->m_fInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -592,7 +592,7 @@ static Word TestFloatToIntCeil(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToIntCeilTestTable;
-	WordPtr uCount = sizeof(FloatToIntCeilTestTable)/sizeof(FloatToIntCeilTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(FloatToIntCeilTestTable);
 	do {
 		Int32 iReturn = Burger::FloatToIntCeil(pWork->m_fInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -629,7 +629,7 @@ static Word TestFloatToIntNearest(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToIntNearestTestTable;
-	WordPtr uCount = sizeof(FloatToIntNearestTestTable)/sizeof(FloatToIntNearestTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(FloatToIntNearestTestTable);
 	do {
 		Int32 iReturn = Burger::FloatToIntNearest(pWork->m_fInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -666,7 +666,7 @@ static Word TestFloatToFixedFloor(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToFixedFloorTestTable;
-	WordPtr uCount = sizeof(FloatToFixedFloorTestTable)/sizeof(FloatToFixedFloorTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(FloatToFixedFloorTestTable);
 	do {
 		Int32 iReturn = Burger::FloatToFixedFloor(pWork->m_fInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -703,7 +703,7 @@ static Word TestFloatToFixed(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToFixedTestTable;
-	WordPtr uCount = sizeof(FloatToFixedTestTable)/sizeof(FloatToFixedTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(FloatToFixedTestTable);
 	do {
 		Int32 iReturn = Burger::FloatToFixed(pWork->m_fInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -740,7 +740,7 @@ static Word TestFloatToFixedCeil(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToFixedCeilTestTable;
-	WordPtr uCount = sizeof(FloatToFixedCeilTestTable)/sizeof(FloatToFixedCeilTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(FloatToFixedCeilTestTable);
 	do {
 		Int32 iReturn = Burger::FloatToFixedCeil(pWork->m_fInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -777,7 +777,7 @@ static Word TestFloatToFixedNearest(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToFixedNearestTestTable;
-	WordPtr uCount = sizeof(FloatToFixedNearestTestTable)/sizeof(FloatToFixedNearestTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(FloatToFixedNearestTestTable);
 	do {
 		Int32 iReturn = Burger::FloatToFixedNearest(pWork->m_fInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -813,7 +813,7 @@ static Word TestAbs32(void)
 {
 	Word uFailure = FALSE;
 	const IntTest32_t *pWork = AbsTestTable;
-	WordPtr uCount = sizeof(AbsTestTable)/sizeof(AbsTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(AbsTestTable);
 	do {
 		Int32 iReturn = Burger::Abs(pWork->m_iInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -842,7 +842,7 @@ static Word TestAbs64(void)
 {
 	Word uFailure = FALSE;
 	const IntTest64_t *pWork = AbsTestTable64;
-	WordPtr uCount = sizeof(AbsTestTable64)/sizeof(AbsTestTable64[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(AbsTestTable64);
 	do {
 		Int64 iReturn = Burger::Abs(pWork->m_iInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -883,7 +883,7 @@ static Word TestSqrt32(void)
 {
 	Word uFailure = FALSE;
 	const WordTest32_t *pWork = Sqrt32TestTable;
-	WordPtr uCount = sizeof(Sqrt32TestTable)/sizeof(Sqrt32TestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(Sqrt32TestTable);
 	do {
 		Word32 uReturn = Burger::Sqrt(pWork->m_uInput);
 		Word uTest = uReturn!=pWork->m_uOutput;
@@ -919,7 +919,7 @@ static Word TestSqrtFixedToWord32(void)
 {
 	Word uFailure = FALSE;
 	const FixedTest32_t *pWork = SqrtFixedToWord32TestTable;
-	WordPtr uCount = sizeof(SqrtFixedToWord32TestTable)/sizeof(SqrtFixedToWord32TestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(SqrtFixedToWord32TestTable);
 	do {
 		Word32 uReturn = Burger::SqrtFixedToWord32(pWork->m_iInput);
 		Word uTest = uReturn!=static_cast<Word32>(pWork->m_iOutput);
@@ -959,7 +959,7 @@ static Word TestSqrtFixed32(void)
 {
 	Word uFailure = FALSE;
 	const FixedTest32_t *pWork = SqrtFixed32TestTable;
-	WordPtr uCount = sizeof(SqrtFixed32TestTable)/sizeof(SqrtFixed32TestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(SqrtFixed32TestTable);
 	do {
 		Fixed32 iReturn = Burger::Sqrt(pWork->m_iInput);
 		Word uTest = iReturn!=pWork->m_iOutput;

@@ -32,6 +32,8 @@ namespace Burger {
 #define BURGER_ASSERT(conditional) static_cast<void>(NULL)
 #define BURGER_ASSERTTEST(conditional) ((conditional) ? TRUE : FALSE)
 #endif
+#define BURGER_COMPILE_TIME_ASSERT(x) typedef int ThisIsABogusTypeDef ## __LINE__ [(x) * 2 - 1]
+
 /* END */
 
 #endif

@@ -49,11 +49,15 @@ namespace Burger {
     BURGER_INLINE Word32 AtomicAdd(volatile Word64 *pInput,Word64 uValue) { Word64 uTemp; do { uTemp = __builtin_ldarx(pInput,0); } while(__builtin_stdcx(uTemp+uValue,pInput,0)==0); return uTemp; }
     BURGER_INLINE Word32 AtomicSubtract(volatile Word64 *pInput,Word64 uValue) { Word64 uTemp; do { uTemp = __builtin_ldarx(pInput,0); } while(__builtin_stdcx(uTemp-uValue,pInput,0)==0); return uTemp; }
     BURGER_INLINE Word AtomicSetIfMatch(volatile Word64 *pInput,Word64 uBefore,Word64 uAfter) { Word uResult; do { Word64 uTemp = __builtin_ldarx(pInput,0); uResult = (uTemp == uBefore); if (!uResult) break; } while(__builtin_stdcx(uAfter,pInput,0)==0); return uResult; }
-#elif defined(BURGER_ANDROID) || defined(BURGER_PS4) || defined(BURGER_PSP2)
+#elif defined(BURGER_ANDROID) || defined(BURGER_PS4) || defined(BURGER_PSP2) || defined(BURGER_MACOSX) || defined(BURGER_IOS)
     BURGER_INLINE Word32 AtomicSwap(volatile Word32 *pOutput,Word32 uInput) { Word32 uTemp; do { uTemp = pOutput[0]; } while(__sync_val_compare_and_swap(pOutput,uTemp,uInput)!=uTemp); return uTemp;}
     BURGER_INLINE Word32 AtomicPreIncrement(volatile Word32 *pInput) { return __sync_add_and_fetch(pInput,1); }
     BURGER_INLINE Word32 AtomicPostIncrement(volatile Word32 *pInput) { return __sync_fetch_and_add(pInput,1); }
+#if defined(BURGER_POWERPC) && defined(BURGER_MACOSX)	// Hack to get around a compiler crash for Xcode 3.1.4 for PowerPC!!!
+    BURGER_INLINE Word32 AtomicPreDecrement(volatile Word32 *pInput) { return __sync_add_and_fetch(pInput,0xFFFFFFFFU); }
+#else
     BURGER_INLINE Word32 AtomicPreDecrement(volatile Word32 *pInput) { return __sync_sub_and_fetch(pInput,1); }
+#endif
     BURGER_INLINE Word32 AtomicPostDecrement(volatile Word32 *pInput) { return __sync_fetch_and_sub(pInput,1); }
     BURGER_INLINE Word32 AtomicAdd(volatile Word32 *pInput,Word32 uValue) { return __sync_fetch_and_add(pInput,uValue); }
     BURGER_INLINE Word32 AtomicSubtract(volatile Word32 *pInput,Word32 uValue) { return __sync_fetch_and_sub(pInput,uValue); }
@@ -63,7 +67,7 @@ namespace Burger {
     BURGER_INLINE Word64 AtomicPostIncrement(volatile Word64 *pInput) { return __sync_fetch_and_add(pInput,1); }
     BURGER_INLINE Word64 AtomicPreDecrement(volatile Word64 *pInput) { return __sync_sub_and_fetch(pInput,1); }
     BURGER_INLINE Word64 AtomicPostDecrement(volatile Word64 *pInput) { return __sync_fetch_and_sub(pInput,1); }
-    BURGER_INLINE Word64 AtomicAdd(volatile Word32 *pInput,Word64 uValue) { return __sync_fetch_and_add(pInput,uValue); }
+    BURGER_INLINE Word64 AtomicAdd(volatile Word64 *pInput,Word64 uValue) { return __sync_fetch_and_add(pInput,uValue); }
     BURGER_INLINE Word64 AtomicSubtract(volatile Word64 *pInput,Word64 uValue) { return __sync_fetch_and_sub(pInput,uValue); }
     BURGER_INLINE Word AtomicSetIfMatch(volatile Word64 *pInput,Word64 uBefore,Word64 uAfter) { return __sync_bool_compare_and_swap(pInput,uAfter,uBefore); }
 #elif defined(BURGER_XBOX360) || defined(BURGER_WINDOWS) || defined(BURGER_MSDOS)

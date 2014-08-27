@@ -15,6 +15,10 @@
 #include "common.h"
 
 #if 0
+#include "brfilename.h"
+#include "brfilemanager.h"
+#include "brfile.h"
+#include "brdirectorysearch.h"
 #if defined(BURGER_WINDOWS)
 #include <windows.h>
 #undef CopyFile
@@ -31,6 +35,7 @@
 	"\xA6\xE5\xA3\xAB\xE3\x82\xBB\xE3\x83\xBC\xE3\x83\xA9\xE3\x83\xBC" \
 	"\xE3\x83\xA0\xE3\x83\xBC\xE3\x83\xB3"
 #endif
+using namespace Burger;
 
 //
 // This string it longer than 512 bytes. This is IMPORTANT for certain
@@ -249,7 +254,7 @@ static Word TestFilenameIs(void)
 	Word uFailure = FALSE;
 	Filename TestName;
 
-	Word i = sizeof(IsFullTests)/sizeof(IsFullTests[0]);
+	Word i = BURGER_ARRAYSIZE(IsFullTests);
 	const IsTests_t *pIsTests = IsFullTests;
 	do {
 		TestName.Set(pIsTests->m_pTest);
@@ -593,7 +598,7 @@ static Word TestFilenameExpand(void)
 	FileManager::GetPrefix(&Save,FileManager::PREFIXCURRENT);
 	FileManager::SetPrefix(FileManager::PREFIXCURRENT,g_ExpandTextPrefix);
 	const ExpandTest_t *pExpandTests = ExpandTests;
-	Word i = sizeof(ExpandTests)/sizeof(ExpandTests[0]);
+	Word i = BURGER_ARRAYSIZE(ExpandTests);
 	do {
 		uFailure |= TestSingleFileName(pExpandTests);
 		++pExpandTests;
@@ -630,7 +635,7 @@ static Word TestFilenameDirName(void)
 {
 	Word uFailure = 0;
 	const TestDirName_t *pTestDirName = TestDirNames;
-	Word i = sizeof(TestDirNames)/sizeof(TestDirNames[0]);
+	Word i = BURGER_ARRAYSIZE(TestDirNames);
 	do {
 		Filename Test(pTestDirName->m_pOriginal);
 		Test.DirName();
@@ -670,7 +675,7 @@ static Word TestFilenameAppend(void)
 {
 	Word uFailure = 0;
 	const TestAppend_t *pTestAppend = TestAppends;
-	Word i = sizeof(TestAppends)/sizeof(TestAppends[0]);
+	Word i = BURGER_ARRAYSIZE(TestAppends);
 	do {
 		Filename Test(pTestAppend->m_pOriginal);
 		Test.Append(pTestAppend->m_pAppend);
@@ -756,7 +761,7 @@ static Word TestPrefixes(Word uVerbose)
 	// on new platforms.
 
 	if (uVerbose) {
-		Word i = sizeof(PrefixNameTable)/sizeof(PrefixNameTable[0]);
+		Word i = BURGER_ARRAYSIZE(PrefixNameTable);
 		const PrefixName_t *pWork = PrefixNameTable;
 		do {
 			FileManager::GetPrefix(&MyFileName,pWork->m_uPrefix);
@@ -1287,7 +1292,7 @@ static Word TestDirectorySearch(Word uVerbose)
 			FileManager::SaveFile(&TestName,g_SampleData,sizeof(g_SampleData));
 		}
 		++pDirTests;
-	} while (++i<(sizeof(g_DirectoryFiles)/sizeof(g_DirectoryFiles[0])));
+	} while (++i<BURGER_ARRAYSIZE(g_DirectoryFiles));
 
 	// Test directory traversal
 	DirectorySearch MyDir;
@@ -1308,7 +1313,7 @@ static Word TestDirectorySearch(Word uVerbose)
 		
 	Word uEntries = 0;
 	while (!MyDir.GetNextEntry()) {
-		if (uEntries<(sizeof(g_DirectoryFiles)/sizeof(g_DirectoryFiles[0]))) {
+		if (uEntries<BURGER_ARRAYSIZE(g_DirectoryFiles)) {
 			uTest = StringCompare(MyDir.m_Name,g_DirectoryFiles[uEntries].m_pName)!=0;
 			uFailure |= uTest;
 			ReportFailure("MyDir.GetNextEntry() returned %s, was expecting %s",uTest,MyDir.m_Name,g_DirectoryFiles[uEntries],uReturn);
@@ -1347,7 +1352,7 @@ static Word TestDirectorySearch(Word uVerbose)
 		TestName.Append(pDirTests->m_pName);
 		FileManager::DeleteFile(&TestName);
 		++pDirTests;
-	} while (++i<(sizeof(g_DirectoryFiles)/sizeof(g_DirectoryFiles[0])));
+	} while (++i<BURGER_ARRAYSIZE(g_DirectoryFiles));
 	FileManager::DeleteFile(g_DirectoryToTest);
 #endif
 	return uFailure;

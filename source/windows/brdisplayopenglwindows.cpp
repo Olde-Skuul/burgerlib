@@ -1131,7 +1131,7 @@ void BURGER_API Burger::DisplayOpenGL::WindowsLink(void)
 	const char **ppWork = OpenGLNames;
 	void **ppDest = &OpenGLProcPtrs.glBlendEquationSeparate;
 	//WordPtr uTest = sizeof(OpenGLProcPtrs)/sizeof(void*);
-	Word uCount = sizeof(OpenGLNames)/sizeof(OpenGLNames[0]);
+	Word uCount = BURGER_ARRAYSIZE(OpenGLNames);
 	do {
 		ppDest[0] = wglGetProcAddress(ppWork[0]);
 		++ppWork;
@@ -1155,7 +1155,7 @@ void BURGER_API Burger::DisplayOpenGL::WindowsUnlink(void)
 {
 	const char **ppWork = OpenGLNames;
 	void **ppDest = &OpenGLProcPtrs.glBlendEquationSeparate;
-	Word uCount = sizeof(OpenGLNames)/sizeof(OpenGLNames[0]);
+	Word uCount = BURGER_ARRAYSIZE(OpenGLNames);
 	do {
 		ppDest[0] = NULL;
 		++ppWork;

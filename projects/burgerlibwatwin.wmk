@@ -152,6 +152,7 @@ objs= &
 	$(A)\brfilenamewindows.obj &
 	$(A)\brfilewindows.obj &
 	$(A)\brglobalswindows.obj &
+	$(A)\brguidwindows.obj &
 	$(A)\brjoypadwindows.obj &
 	$(A)\brkeyboardwindows.obj &
 	$(A)\brmousewindows.obj &

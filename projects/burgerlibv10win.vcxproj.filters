@@ -769,6 +769,9 @@
 		<ClCompile Include="..\source\windows\brglobalswindows.cpp">
 			<Filter>source\windows</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\windows\brguidwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\windows\brjoypadwindows.cpp">
 			<Filter>source\windows</Filter>
 		</ClCompile>

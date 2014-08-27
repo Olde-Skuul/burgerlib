@@ -152,6 +152,7 @@ objs= &
 	$(A)\brfilenamewindows.obj &
 	$(A)\brfilewindows.obj &
 	$(A)\brglobalswindows.obj &
+	$(A)\brguidwindows.obj &
 	$(A)\brjoypadwindows.obj &
 	$(A)\brkeyboardwindows.obj &
 	$(A)\brmousewindows.obj &
@@ -171,6 +172,9 @@ objs= &
 	$(A)\testbrfixedpoint.obj &
 	$(A)\testbrfloatingpoint.obj &
 	$(A)\testbrhashes.obj &
+	$(A)\testbrmatrix3d.obj &
+	$(A)\testbrmatrix4d.obj &
+	$(A)\testbrstaticrtti.obj &
 	$(A)\testbrstrings.obj &
 	$(A)\testbrtimedate.obj &
 	$(A)\testbrtypes.obj

@@ -30,6 +30,19 @@ struct _NSRect;
 struct CGPoint;
 struct CGSize;
 struct CGRect;
+struct _opaque_pthread_t;
+namespace Burger {
+	typedef int sem_t;
+	typedef unsigned int semaphore_t;
+	typedef unsigned int task_t;
+#if defined(BURGER_64BITCPU)
+	struct pthread_mutex_t { Word64 m_Opaque[8]; };
+	struct pthread_cond_t { Word64 m_Opaque[6]; };
+#else
+	struct pthread_mutex_t { Word32 m_Opaque[11]; };
+	struct pthread_cond_t { Word32 m_Opaque[7]; };
+#endif
+}
 #endif
 /* END */
 

@@ -345,6 +345,7 @@
 		<Unit filename="../source/windows/brfilenamewindows.cpp" />
 		<Unit filename="../source/windows/brfilewindows.cpp" />
 		<Unit filename="../source/windows/brglobalswindows.cpp" />
+		<Unit filename="../source/windows/brguidwindows.cpp" />
 		<Unit filename="../source/windows/brjoypadwindows.cpp" />
 		<Unit filename="../source/windows/brkeyboardwindows.cpp" />
 		<Unit filename="../source/windows/brmousewindows.cpp" />

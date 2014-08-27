@@ -25,12 +25,6 @@
 #include <windows.h>
 #include <shlwapi.h>
 
-#if defined(BURGER_WATCOM)
-#pragma library ("Shlwapi.lib");
-#else
-#pragma comment (lib,"Shlwapi.lib")
-#endif
-
 /***************************************
 
 	Initialize the class
@@ -96,7 +90,7 @@ Word BURGER_API Burger::Perforce::Init(void)
 
 		if (!bFilenameInitialized) {
 			Word16 Output[2048];
-			if (PathSearchAndQualifyW(reinterpret_cast<LPCWSTR>(L"p4.exe"),reinterpret_cast<LPWSTR>(Output),sizeof(Output)/sizeof(Output[0]))) {
+			if (Globals::PathSearchAndQualifyW(reinterpret_cast<const Word16 *>(L"p4.exe"),Output,BURGER_ARRAYSIZE(Output))) {
 				pAppdirectory = UTF8::FromUTF16(Output);
 				m_PerforceFilename.SetFromNative(pAppdirectory);
 				Free(pAppdirectory);

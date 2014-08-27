@@ -53,7 +53,7 @@ static Word TestWildcard(void)
 {
 	Word uFailure = FALSE;
 	const Wildcard_t *pWork = s_Wildcards;
-	WordPtr uCount = sizeof(s_Wildcards)/sizeof(s_Wildcards[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(s_Wildcards);
 	do {
 		Word32 uTester = Burger::Wildcardcmp(pWork->m_pTest,pWork->m_pWild);
 		Word uTest = (uTester != pWork->m_uResult);

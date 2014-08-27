@@ -14,16 +14,11 @@
 #include "brtick.h"
 
 #if defined(BURGER_WINDOWS)
+#include "brglobals.h"
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>
-#include <mmsystem.h>
-#if defined(BURGER_WATCOM)
-#pragma library ("winmm.lib");
-#else
-#pragma comment(lib,"winmm.lib")
-#endif
 
 /***************************************
 
@@ -46,7 +41,7 @@ static Word32 uFraction;
 
 Word32 BURGER_API Burger::Tick::Read(void)
 {
-	Word32 uMark = timeGetTime();
+	Word32 uMark = Globals::timeGetTime();
 	if (!Started) {			/* Already started? */
 		Started = TRUE;
 		uAnchor = uMark;
@@ -117,7 +112,7 @@ Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
 
 Word32 BURGER_API Burger::Tick::ReadMilliseconds(void)
 {
-	return timeGetTime();		/* Call windows 95/NT */
+	return Globals::timeGetTime();		/* Call windows 95/NT */
 }
 
 /***************************************

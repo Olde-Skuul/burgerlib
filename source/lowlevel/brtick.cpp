@@ -269,7 +269,7 @@ Word32 BURGER_API Burger::Tick::ReadMilliseconds(void)
 
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_ANDROID)) || defined(DOXYGEN)
 void BURGER_API Burger::Sleep(Word32 /* uMilliseconds */)
 {
 }

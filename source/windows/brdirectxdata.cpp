@@ -179,7 +179,7 @@ const DIDATAFORMAT c_dfDIJoystick = {
 	sizeof(DIDATAFORMAT),sizeof(DIOBJECTDATAFORMAT),		// Buffer sizes
 	DIDF_ABSAXIS,				// Absolute axis data
 	sizeof(DIJOYSTATE),			// Size of the structure to store into
-	sizeof(c_rgodfDIJoy)/sizeof(c_rgodfDIJoy[0]),		// Size of array
+	BURGER_ARRAYSIZE(c_rgodfDIJoy),		// Size of array
 	c_rgodfDIJoy
 };
 
@@ -367,7 +367,7 @@ const DIDATAFORMAT c_dfDIJoystick2 = {
 	sizeof(DIDATAFORMAT),sizeof(DIOBJECTDATAFORMAT),		// Buffer sizes
 	DIDF_ABSAXIS,				// Absolute axis data
 	sizeof(DIJOYSTATE2),		// Size of the structure to store into
-	sizeof(c_rgodfDIJoy2)/sizeof(c_rgodfDIJoy2[0]),		// Size of array
+	BURGER_ARRAYSIZE(c_rgodfDIJoy2),		// Size of array
 	c_rgodfDIJoy2
 };
 
@@ -640,7 +640,7 @@ const DIDATAFORMAT c_dfDIKeyboard = {
 	sizeof(DIDATAFORMAT),sizeof(DIOBJECTDATAFORMAT),		// Buffer sizes
 	DIDF_RELAXIS,				// Relative axis data
 	256,						// Size of the structure to store into
-	sizeof(c_rgodfDIKeyboard)/sizeof(c_rgodfDIKeyboard[0]),		// Size of array
+	BURGER_ARRAYSIZE(c_rgodfDIKeyboard),		// Size of array
 	c_rgodfDIKeyboard
 };
 
@@ -664,7 +664,7 @@ const DIDATAFORMAT c_dfDIMouse = {
 	sizeof(DIDATAFORMAT),sizeof(DIOBJECTDATAFORMAT),		// Buffer sizes
 	DIDF_RELAXIS,				// Relative axis data
 	sizeof(DIMOUSESTATE),		// Size of the structure to store into
-	sizeof(c_rgodfDIMouse)/sizeof(c_rgodfDIMouse[0]),		// Size of array
+	BURGER_ARRAYSIZE(c_rgodfDIMouse),		// Size of array
 	c_rgodfDIMouse
 };
 
@@ -692,7 +692,7 @@ const DIDATAFORMAT c_dfDIMouse2 = {
 	sizeof(DIDATAFORMAT),sizeof(DIOBJECTDATAFORMAT),		// Buffer sizes
 	DIDF_RELAXIS,				// Relative axis data
 	sizeof(DIMOUSESTATE2),		// Size of the structure to store into
-	sizeof(c_rgodfDIMouse2)/sizeof(c_rgodfDIMouse2[0]),		// Size of array
+	BURGER_ARRAYSIZE(c_rgodfDIMouse2),		// Size of array
 	c_rgodfDIMouse2
 };
 

@@ -484,7 +484,7 @@ Word Burger::Keyboard::Wait(void)
 Word Burger::Keyboard::StringToScanCode(const char *pString)
 {
 	const ScanEntry_t *pEntry = g_ScanCodeNames;		/* Pointer to the array */
-	WordPtr uCount = sizeof(g_ScanCodeNames)/sizeof(g_ScanCodeNames[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(g_ScanCodeNames);
 	do {
 		if (!StringCaseCompare(pString,pEntry->m_pName)) {	/* Match? */
 			return pEntry->m_uScanCode;		/* Return the match */
@@ -515,7 +515,7 @@ void Burger::Keyboard::ScanCodeToString(char *pString,WordPtr uStringSize,Word u
 {
 	if (uStringSize) {
 		const ScanEntry_t *pEntry = g_ScanCodeNames;
-		WordPtr uCount = sizeof(g_ScanCodeNames)/sizeof(g_ScanCodeNames[0]);
+		WordPtr uCount = BURGER_ARRAYSIZE(g_ScanCodeNames);
 		do {
 			if (pEntry->m_uScanCode==uScanCode) {
 				StringCopy(pString,uStringSize,pEntry->m_pName);	/* Length of the string */

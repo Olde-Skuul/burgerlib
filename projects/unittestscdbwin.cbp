@@ -347,6 +347,7 @@
 		<Unit filename="../source/windows/brfilenamewindows.cpp" />
 		<Unit filename="../source/windows/brfilewindows.cpp" />
 		<Unit filename="../source/windows/brglobalswindows.cpp" />
+		<Unit filename="../source/windows/brguidwindows.cpp" />
 		<Unit filename="../source/windows/brjoypadwindows.cpp" />
 		<Unit filename="../source/windows/brkeyboardwindows.cpp" />
 		<Unit filename="../source/windows/brmousewindows.cpp" />
@@ -376,6 +377,12 @@
 		<Unit filename="../unittest/testbrfloatingpoint.h" />
 		<Unit filename="../unittest/testbrhashes.cpp" />
 		<Unit filename="../unittest/testbrhashes.h" />
+		<Unit filename="../unittest/testbrmatrix3d.cpp" />
+		<Unit filename="../unittest/testbrmatrix3d.h" />
+		<Unit filename="../unittest/testbrmatrix4d.cpp" />
+		<Unit filename="../unittest/testbrmatrix4d.h" />
+		<Unit filename="../unittest/testbrstaticrtti.cpp" />
+		<Unit filename="../unittest/testbrstaticrtti.h" />
 		<Unit filename="../unittest/testbrstrings.cpp" />
 		<Unit filename="../unittest/testbrstrings.h" />
 		<Unit filename="../unittest/testbrtimedate.cpp" />

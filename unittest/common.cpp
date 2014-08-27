@@ -20,6 +20,9 @@
 #include "testbrstrings.h"
 #include "testbrcompression.h"
 #include "testbrtimedate.h"
+#include "testbrmatrix3d.h"
+#include "testbrmatrix4d.h"
+#include "testbrstaticrtti.h"
 #include "createtables.h"
 #include <stdarg.h>
 #include <stdlib.h>
@@ -214,7 +217,10 @@ int BURGER_ANSIAPI main(void)
 	iResult |= TestBrendian();
 	iResult |= TestBrfloatingpoint();
 	iResult |= TestBrfixedpoint();
+	iResult |= TestBrmatrix3d();
+	iResult |= TestBrmatrix4d();
 	iResult |= TestBrstrings();
+	iResult |= TestBrstaticrtti();
 	iResult |= TestBrhashes();
 	iResult |= TestBrcompression();
 	iResult |= TestDateTime();

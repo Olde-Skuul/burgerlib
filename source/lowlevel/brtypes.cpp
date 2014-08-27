@@ -283,7 +283,26 @@
 
 	\page pagemacosinstall Installing Burgerlib on a MacOS machine.
 	
-	\section macoscopysdk Step 1: Copying the SDKs onto your host machine.
+	\section macosinstallsoftware Step 1: Installing development software
+	
+	\subsection powermacinstall Using a PowerPC Mac running with MacOSX Leopard (10.5.8)
+	
+	Install these applications
+	\li <a href="http://support.apple.com/downloads/DL761/en_US/QuickTime770_Leopard.dmg">Quicktime 7.7 for Leopard</a>
+	\li <a href="ftp://ftp.perforce.com/perforce/r11.1/bin.macosx105u/P4V.dmg">Perforce Visual Client 11.1 for Power Mac</a>
+	\li <a href="http://adcdownload.apple.com/Developer_Tools/xcode_3.1.4_developer_tools/xcode314_2809_developerdvd.dmg">XCode 3.1.4 for MacOSX Leopard PowerPC</a>, may need to be logged into Apple's Developer Connection to get access
+	\li <a href="https://www.python.org/ftp/python/2.7.8/python-2.7.8-macosx10.5.dmg">Python 2.7.8 for MacOSX Leopard PowerPC</a>
+	\li <a href="http://pine.barebones.com/freeware/TextWrangler_3.5.3.dmg">Text Wrangler for MacOSX Leopard PowerPC</a>
+
+	\subsection intelmacinstall Using an Intel Mac running with MacOSX Mavericks or higher
+	
+	Install these applications
+	\li <a href="ftp://ftp.perforce.com/perforce/r11.1/bin.macosx105u/P4V.dmg">Perforce Visual Client 11.1 for Power Mac</a>
+	\li XCode for MacOSX via the app store
+	\li <a href="https://www.python.org/ftp/python/2.7.8/python-2.7.8-macosx10.5.dmg">Python 2.7.8 for MacOSX Leopard PowerPC</a>
+	\li Text Wrangler for MacOSX Via the app store
+
+	\section macoscopysdk Step 2: Copying the SDKs onto your host machine.
 	
 	Create a folder on your hard drive to copy all of the SDKs
 	that you will be using. The usual place is SDKS off of your boot volume, but you
@@ -300,7 +319,7 @@
 	\li <a href="http://www.burgerbecky.com/burgerlib/macqt6sdk.sitx">Quicktime for MacOS 9</a> into macqt6sdk.
 	\li <a href="http://www.burgerbecky.com/burgerlib/macstdclib.sitx">StdCLib support for Classic and OSX.</a> into macstdclib.
 	
-	\section macosaccesssdk Step 2: Accessing the SDKs from the build environment.
+	\section macosaccesssdk Step 3: Accessing the SDKs from the build environment.
 
 	\subsection macoscw9 Access paths for Codewarrior 8.3 or 10.0.
 	In the menu bar, select Edit : Preferences... : General : Source Trees...<br>
@@ -313,7 +332,7 @@
 	{SDKs}macgamesprockets
 	\endcode
 	
-	\section macosselectlib Step 3: Include the proper library for your target.
+	\section macosselectlib Step 4: Include the proper library for your target.
 	
 	Include only one of these libaries for the build target.
 
@@ -1764,6 +1783,58 @@
 
 /*! ************************************
 
+	\def BURGER_ARRAYSIZE
+	\brief Define to return the number of elements in an array.
+	
+	For arrays where the size is known at compile time, this macro
+	will return the number of elements found in the array
+	
+	\param x Name of the array to determine the size
+	
+	\code
+	int Foo[100];
+
+	// Will equal to 100	
+	int ElementsInFoo = BURGER_ARRAYSIZE(Foo);
+
+	\endcode
+	
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_UNUSED
+	\brief Define to disable the unused variable warning.
+	
+	In cases where a variable is defined, but not used, such
+	as in testing error conditions with asserts, this
+	macro will alert the compiler that the existence
+	of this varible was intentional.
+	
+	\param x Name of the variable to allow to be unused
+	
+	\code
+
+	// Ignore errors on release builds
+	#if defined(NDEBUG)
+	#define I_FEAR_NOTHING(x)
+	#else
+	#define I_FEAR_NOTHING(x) x
+	#endif
+	
+	int iError = FunctionThatCanFail();
+	// Disable unused variable warning
+	BURGER_UNUSED(iError);
+	
+	I_FEAR_NOTHING(printf("Error code %d",iError));
+	
+	\endcode
+	
+***************************************/
+
+
+/*! ************************************
+
 	\def BURGER_HASHMACRO
 	\brief Convert the parameter into a string literal.
 	
@@ -2071,6 +2142,22 @@
 	
 	\sa Word
 	
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::SwapVariables(T *pA,T *pB)
+	\brief Swap two variables of the same kind
+	
+	Given pointers to two like variables, swap the contents with
+	each other.
+	
+	\note This template will fail if the T value is of a class
+	that doesn't allow copying.
+
+	\param pA Pointer to the first variable to swap.
+	\param pB Pointer to the second variable to swap.
+
 ***************************************/
 
 #endif

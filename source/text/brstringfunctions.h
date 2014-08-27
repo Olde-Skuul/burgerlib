@@ -61,6 +61,8 @@ extern Word32 BURGER_API BCDToWord(Word32 uInput);
 extern Word32 BURGER_API WordToBCD(Word32 uInput);
 extern Word32 BURGER_API PowerOf2(Word32 uInput);
 extern Word64 BURGER_API PowerOf2(Word64 uInput);
+BURGER_INLINE Word32 ToLower(Word32 uInput) { if (static_cast<Word32>(uInput-'A')<26U) uInput+=32; return uInput;}
+BURGER_INLINE Word32 ToUpper(Word32 uInput) { if (static_cast<Word32>(uInput-'a')<26U) uInput-=32; return uInput;}
 extern Word32 BURGER_API BitReverse(Word32 uInput,Word uBitLength);
 extern Word64 BURGER_API BitReverse(Word64 uInput,Word uBitLength);
 extern void BURGER_API CStringToPString(Word8 *pOutput,const char *pInput);

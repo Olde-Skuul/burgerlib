@@ -12,6 +12,7 @@
 /* DIR: "lowlevel:" */
 /* DIR: "math:" */
 /* DIR: "memory:" */
+/* DIR: "shield:" */
 /* DIR: "text:" */
 /* DIR: "windows:" */
 /* DIR: "xbox360:" */
@@ -80,6 +81,7 @@
 #include "brmsdostypes.h"
 #include "brps3types.h"
 #include "brps4types.h"
+#include "brshieldtypes.h"
 #include "bratomic.h"
 #include "brguid.h"			// Will fix later
 #include "bradler16.h"

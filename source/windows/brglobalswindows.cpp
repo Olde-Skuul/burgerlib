@@ -18,19 +18,20 @@
 #include "brstringfunctions.h"
 #include "brfilemanager.h"
 
-#if !defined(WIN32_LEAN_AND_MEAN) && !defined(DOXYGEN)
+#if !defined(DOXYGEN)
+#if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
 
-#if !defined(DIRECTINPUT_VERSION) && !defined(DOXYGEN)
+#if !defined(DIRECTINPUT_VERSION)
 #define DIRECTINPUT_VERSION 0x800
 #endif
 
-#if !defined(DIRECT3D_VERSION) && !defined(DOXYGEN)
+#if !defined(DIRECT3D_VERSION)
 #define DIRECT3D_VERSION 0x700
 #endif
 
-#if !defined(DIRECTDRAW_VERSION) && !defined(DOXYGEN)
+#if !defined(DIRECTDRAW_VERSION)
 #define DIRECTDRAW_VERSION 0x700
 #endif
 
@@ -42,18 +43,58 @@
 #include <shellapi.h>
 #include <shlobj.h>
 
-// Used by the Quicktime and DirectX version functions
-#if defined(BURGER_WATCOM)
-#pragma library ("version.lib");
-#pragma library ("shell32.lib");
-#pragma library ("advapi32.lib");
-#else
-#pragma comment(lib,"version.lib")
-#pragma comment(lib,"shell32.lib")
-#pragma comment(lib,"advapi32.lib")
-#endif
-
 static const char g_SoftwareClasses[] = "Software\\Classes\\";
+
+/***************************************
+
+	DLLs that can be dynamically loaded at runtime (So the 
+	application can launch if they are missing or missing functions)
+	
+***************************************/
+
+static const char *s_LibaryNames[Burger::Globals::DLL_COUNT] = {
+	"ddraw.dll",
+	"dinput.dll",
+	"dinput8.dll",
+	"d3d9.dll",
+	"dsound.dll",
+	"rpcrt4.dll",
+	"winmm.dll",
+	"shlwapi.dll",
+	"version.dll"
+};
+
+struct CallNames_t {
+	Burger::Globals::eWindowsDLLIndex eDLL;
+	const char *m_pName;
+};
+
+static const CallNames_t g_CallNames[Burger::Globals::CALL_COUNT] = {
+	{Burger::Globals::DINPUT8_DLL,"DirectInput8Create"},
+	{Burger::Globals::DINPUT_DLL,"DirectInputCreateW"},
+	{Burger::Globals::DDRAW_DLL,"DirectDrawCreate"},
+	{Burger::Globals::DDRAW_DLL,"DirectDrawCreateEx"},
+	{Burger::Globals::DDRAW_DLL,"DirectDrawCreateClipper"},
+	{Burger::Globals::DDRAW_DLL,"DirectDrawEnumerateA"},
+	{Burger::Globals::DDRAW_DLL,"DirectDrawEnumerateW"},
+	{Burger::Globals::DDRAW_DLL,"DirectDrawEnumerateExA"},
+	{Burger::Globals::DDRAW_DLL,"DirectDrawEnumerateExW"},
+	{Burger::Globals::D3D9_DLL,"Direct3DCreate9"},
+	{Burger::Globals::DSOUND_DLL,"DirectSoundCreate"},
+	{Burger::Globals::DSOUND_DLL,"DirectSoundCreate8"},
+	{Burger::Globals::RPCRT4_DLL,"UuidCreateSequential"},
+	{Burger::Globals::WINMM_DLL,"timeGetTime"},
+	{Burger::Globals::SHLWAPI_DLL,"PathSearchAndQualifyA"},
+	{Burger::Globals::SHLWAPI_DLL,"PathSearchAndQualifyW"},
+	{Burger::Globals::VERSION_DLL,"VerQueryValueA"},
+	{Burger::Globals::VERSION_DLL,"VerQueryValueW"},
+	{Burger::Globals::VERSION_DLL,"GetFileVersionInfoA"},
+	{Burger::Globals::VERSION_DLL,"GetFileVersionInfoW"},
+	{Burger::Globals::VERSION_DLL,"GetFileVersionInfoSizeA"},
+	{Burger::Globals::VERSION_DLL,"GetFileVersionInfoSizeW"}
+};
+
+#endif		// Allow doxygen
 
 /***************************************
 
@@ -66,61 +107,30 @@ static const char g_SoftwareClasses[] = "Software\\Classes\\";
 
 Burger::Globals::~Globals()
 {
-	// Was DirectInput8 functions loaded?
+	// Was DirectInput8 instantiated?
 	if (m_pDirectInput8W) {
 		m_pDirectInput8W->Release();
 		m_pDirectInput8W = NULL;
 	}
 	
-	if (m_hDInput8DLL) {
-		FreeLibrary(m_hDInput8DLL);
-		m_hDInput8DLL = NULL;
-		m_pDirectInput8Create = NULL;
-	}
-
-	// Was DirectInput functions loaded?
+	// Was DirectInput instantiated?
 	if (m_pDirectInputW) {
 		m_pDirectInputW->Release();
 		m_pDirectInputW = NULL;
 	}
-	// Release the loaded DirectInput DLL
-	if (m_hDInputDLL) {
-		FreeLibrary(m_hDInputDLL);
-		m_hDInputDLL = NULL;
-		m_pDirectInputCreateW = NULL;
-		m_pDirectInputW = NULL;
-	}
 
-	// Was DirectDraw loaded?
-	if (m_hDDraw) {
-		FreeLibrary(m_hDDraw);
-		m_hDDraw = NULL;
-		m_pDirectDrawCreate = NULL;
-		m_pDirectDrawCreateEx = NULL;
-		m_pDirectDrawCreateClipper = NULL;
-		m_pDirectDrawEnumerateA = NULL;
-		m_pDirectDrawEnumerateW = NULL;
-		m_pDirectDrawEnumerateExA = NULL;
-		m_pDirectDrawEnumerateExW = NULL;
-	}
-	// Was D3D9 loaded?
-	if (m_hD3D9) {
-		FreeLibrary(m_hD3D9);
-		m_hD3D9 = NULL;
-		m_pDirect3DCreate9 = NULL;
-	}
+	// Dispose of all resolved calls to Windows
+	MemoryClear(m_pWindowsCalls,sizeof(m_pWindowsCalls));
 
-	// Was DirectSound loaded?
-	if (m_hDirectSound) {
-		FreeLibrary(m_hDirectSound);
-		m_hDirectSound = NULL;
-		m_pDirectSoundCreate = NULL;
-		m_pDirectSoundCreate8 = NULL;
-		m_pDirectSoundEnumerateA = NULL;
-		m_pDirectSoundEnumerateW = NULL;
-		m_pGetDeviceID = NULL;
-		m_pDirectSoundFullDuplexCreate = NULL;
-	}
+	// Finally, release all of the allocated DLLs
+	WordPtr i = 0;
+	do {
+		if (m_hInstances[i]) {
+			FreeLibrary(m_hInstances[i]);
+			m_hInstances[i] = NULL;
+			m_bInstancesTested[i] = FALSE;
+		}
+	} while (++i<DLL_COUNT);
 }
 
 /*! ************************************
@@ -196,25 +206,8 @@ Burger::Globals::~Globals()
 Word BURGER_API Burger::Globals::IsDirectInputPresent(void)
 {
 	Word uResult = FALSE;
-	if (g_Globals.m_pDirectInputCreateW) {
+	if (Globals::LoadLibraryIndex(DINPUT_DLL)) {
 		uResult = TRUE;
-	} else {
-		// Attempt to load the DLL
-		HINSTANCE hLibrary = Globals::LoadLibraryA("dinput.dll");
-		// Is the DLL present?
-		if (hLibrary) {
-			void *pFunction = GetProcAddress(hLibrary,"DirectInputCreateW");
-			// Is the function present?
-			if (!pFunction) {
-				// Darn, release the DLL
-				FreeLibrary(hLibrary);
-			} else {
-				// Store the function and the DLL handle
-				g_Globals.m_pDirectInputCreateW = pFunction;
-				g_Globals.m_hDInputDLL = hLibrary;
-				uResult = TRUE;
-			}
-		}
 	}
 	return uResult;
 }
@@ -232,22 +225,10 @@ Word BURGER_API Burger::Globals::IsDirectInputPresent(void)
 Word BURGER_API Burger::Globals::IsDirectInput8Present(void)
 {
 	Word uResult = FALSE;
-	if (g_Globals.m_pDirectInput8Create) {
-		uResult = TRUE;
-	} else {
-		HINSTANCE hLibrary = Globals::LoadLibraryA("dinput8.dll");
-		if (hLibrary) {				// Good!
-			void *pFunction = GetProcAddress(hLibrary,"DirectInput8Create");
-			if (!pFunction) {
-				FreeLibrary(hLibrary);
-			} else {
-				g_Globals.m_pDirectInput8Create = pFunction;
-				g_Globals.m_hDInput8DLL = hLibrary;
-				uResult = TRUE;		// The code is good!
-			}
-		}
+	if (Globals::LoadLibraryIndex(DINPUT8_DLL)) {
+		uResult = TRUE;		// The code is good!
 	}
-	return uResult;		// TRUE if ok!
+	return uResult;			// TRUE if ok!
 }
 
 /*! ************************************
@@ -263,28 +244,10 @@ Word BURGER_API Burger::Globals::IsDirectInput8Present(void)
 Word BURGER_API Burger::Globals::IsDirectDrawPresent(void)
 {
 	Word uResult = FALSE;
-	if (g_Globals.m_pDirectDrawCreate) {
-		uResult = TRUE;
-	} else {
-		HINSTANCE hLibrary = Globals::LoadLibraryA("ddraw.dll");
-		if (hLibrary) {				// Good!
-			void *pFunction = GetProcAddress(hLibrary,"DirectDrawCreate");
-			if (!pFunction) {
-				FreeLibrary(hLibrary);
-			} else {
-				g_Globals.m_pDirectDrawCreate = pFunction;
-				g_Globals.m_hDDraw = hLibrary;
-				g_Globals.m_pDirectDrawCreateEx = GetProcAddress(hLibrary,"DirectDrawCreateEx");
-				g_Globals.m_pDirectDrawCreateClipper = GetProcAddress(hLibrary,"DirectDrawCreateClipper");
-				g_Globals.m_pDirectDrawEnumerateA = GetProcAddress(hLibrary,"DirectDrawEnumerateA");
-				g_Globals.m_pDirectDrawEnumerateW = GetProcAddress(hLibrary,"DirectDrawEnumerateW");
-				g_Globals.m_pDirectDrawEnumerateExA = GetProcAddress(hLibrary,"DirectDrawEnumerateExA");
-				g_Globals.m_pDirectDrawEnumerateExW = GetProcAddress(hLibrary,"DirectDrawEnumerateExW");
-				uResult = TRUE;		// The code is good!
-			}
-		}
+	if (Globals::LoadLibraryIndex(DDRAW_DLL)) {
+		uResult = TRUE;		// The code is good!
 	}
-	return uResult;		// TRUE if ok!
+	return uResult;			// TRUE if ok!
 }
 
 /*! ************************************
@@ -300,22 +263,10 @@ Word BURGER_API Burger::Globals::IsDirectDrawPresent(void)
 Word BURGER_API Burger::Globals::IsD3D9Present(void)
 {
 	Word uResult = FALSE;
-	if (g_Globals.m_pDirect3DCreate9) {
-		uResult = TRUE;
-	} else {
-		HINSTANCE hLibrary = Globals::LoadLibraryA("d3d9.dll");
-		if (hLibrary) {				// Good!
-			void *pFunction = GetProcAddress(hLibrary,"Direct3DCreate9");
-			if (!pFunction) {
-				FreeLibrary(hLibrary);
-			} else {
-				g_Globals.m_pDirect3DCreate9 = pFunction;
-				g_Globals.m_hD3D9 = hLibrary;
-				uResult = TRUE;		// The code is good!
-			}
-		}
+	if (Globals::LoadLibraryIndex(D3D9_DLL)) {
+		uResult = TRUE;		// The code is good!
 	}
-	return uResult;		// TRUE if ok!
+	return uResult;			// TRUE if ok!
 }
 
 /*! ************************************
@@ -331,27 +282,10 @@ Word BURGER_API Burger::Globals::IsD3D9Present(void)
 Word BURGER_API Burger::Globals::IsDirectSoundPresent(void)
 {
 	Word uResult = FALSE;
-	if (g_Globals.m_pDirectSoundCreate) {
-		uResult = TRUE;
-	} else {
-		HINSTANCE hLibrary = Globals::LoadLibraryA("dsound.dll");
-		if (hLibrary) {				// Good!
-			void *pFunction = GetProcAddress(hLibrary,"DirectSoundCreate");
-			if (!pFunction) {
-				FreeLibrary(hLibrary);
-			} else {
-				g_Globals.m_pDirectSoundCreate = pFunction;
-				g_Globals.m_hDirectSound = hLibrary;
-				g_Globals.m_pDirectSoundCreate8 = GetProcAddress(hLibrary,"DirectSoundCreate8");
-				g_Globals.m_pDirectSoundEnumerateA = GetProcAddress(hLibrary,"DirectSoundEnumerateA");
-				g_Globals.m_pDirectSoundEnumerateW = GetProcAddress(hLibrary,"DirectSoundEnumerateW");
-				g_Globals.m_pGetDeviceID = GetProcAddress(hLibrary,"GetDeviceID");
-				g_Globals.m_pDirectSoundFullDuplexCreate = GetProcAddress(hLibrary,"DirectSoundFullDuplexCreate");
-				uResult = TRUE;		// The code is good!
-			}
-		}
+	if (Globals::LoadLibraryIndex(DSOUND_DLL)) {
+		uResult = TRUE;		// The code is good!
 	}
-	return uResult;		// TRUE if ok!
+	return uResult;			// TRUE if ok!
 }
 
 /*! ************************************
@@ -404,19 +338,14 @@ Word BURGER_API Burger::Globals::IsWin95orWin98(void)
 
 Word BURGER_API Burger::Globals::DirectInputCreateW(IDirectInputW **pOutput)
 {
-	Word uResult;
 	// Was there already a DirectInput instance?
 	IDirectInputW *pDirectInputW = g_Globals.m_pDirectInputW;
-	if (pDirectInputW) {
-		// Return this instance
-		uResult = 0;
-	} else {
-		if (!IsDirectInputPresent()) {
-			uResult = 10;
-		} else {
-			typedef HRESULT (WINAPI *DirectInputCreateWProc)(HINSTANCE,DWORD,IDirectInputW **,LPUNKNOWN);
-			DirectInputCreateWProc pDirectInputCreateWProc = static_cast<DirectInputCreateWProc>(g_Globals.m_pDirectInputCreateW);
-			HRESULT hResult = pDirectInputCreateWProc(GetModuleHandle(NULL),0x700,&g_Globals.m_pDirectInputW,NULL);
+	Word uResult = 0;
+	if (!pDirectInputW) {
+		void *pDirectInputCreateW = LoadFunctionIndex(CALL_DirectInputCreateW);
+		uResult = static_cast<Word>(DIERR_NOTFOUND);
+		if (pDirectInputCreateW) {
+			HRESULT hResult = static_cast<HRESULT (WINAPI *)(HINSTANCE,DWORD,IDirectInputW **,LPUNKNOWN)>(pDirectInputCreateW)(GetModuleHandle(NULL),0x700,&g_Globals.m_pDirectInputW,NULL);
 			if (hResult<0) {
 				g_Globals.m_pDirectInputW = NULL;
 				uResult = static_cast<Word>(hResult);
@@ -447,19 +376,14 @@ Word BURGER_API Burger::Globals::DirectInputCreateW(IDirectInputW **pOutput)
 
 Word BURGER_API Burger::Globals::DirectInput8Create(IDirectInput8W **pOutput)
 {
-	Word uResult;
 	// Was there already a DirectInput8 instance?
 	IDirectInput8W *pDirectInput8W = g_Globals.m_pDirectInput8W;
-	if (pDirectInput8W) {
-		// Return this instance
-		uResult = 0;
-	} else {
-		if (!IsDirectInput8Present()) {
-			uResult = static_cast<Word>(DIERR_NOTFOUND);
-		} else {
-			typedef HRESULT (WINAPI *DirectInput8CreateProc)(HINSTANCE,DWORD,REFIID,LPVOID *,LPUNKNOWN);
-			DirectInput8CreateProc pDirectInput8CreateProc = static_cast<DirectInput8CreateProc>(g_Globals.m_pDirectInput8Create);
-			HRESULT hResult = pDirectInput8CreateProc(GetModuleHandle(NULL),0x800,IID_IDirectInput8W,reinterpret_cast<void **>(&g_Globals.m_pDirectInput8W),NULL);
+	Word uResult = 0;
+	if (!pDirectInput8W) {
+		void *pDirectInput8Create = LoadFunctionIndex(CALL_DirectInput8Create);
+		uResult = static_cast<Word>(DIERR_NOTFOUND);
+		if (pDirectInput8Create) {
+			HRESULT hResult = static_cast<HRESULT(WINAPI *)(HINSTANCE,DWORD,REFIID,LPVOID *,LPUNKNOWN)>(pDirectInput8Create)(GetModuleHandle(NULL),0x800,IID_IDirectInput8W,reinterpret_cast<void **>(&g_Globals.m_pDirectInput8W),NULL);
 			if (hResult<0) {
 				g_Globals.m_pDirectInput8W = NULL;
 				uResult = static_cast<Word>(hResult);
@@ -475,10 +399,10 @@ Word BURGER_API Burger::Globals::DirectInput8Create(IDirectInput8W **pOutput)
 
 /*! ************************************
 
-	\brief Load in ddraw.dll and call DirectDrawCreateExW
+	\brief Load in ddraw.dll and call DirectDrawCreateEx
 
 	To allow maximum compatibility, this function will manually load
-	ddraw.dll and then invoke DirectDrawCreateExW if present.
+	ddraw.dll and then invoke DirectDrawCreateEx if present.
 
     http://msdn.microsoft.com/en-us/library/windows/desktop/gg426118(v=vs.85).aspx
 
@@ -491,21 +415,17 @@ Word BURGER_API Burger::Globals::DirectInput8Create(IDirectInput8W **pOutput)
 	
 ***************************************/
 
-Word BURGER_API Burger::Globals::DirectDrawCreateExW(const GUID *pGuid,IDirectDraw7 **pOutput)
+Word BURGER_API Burger::Globals::DirectDrawCreateEx(const GUID *pGuid,IDirectDraw7 **pOutput)
 {
-	Word uResult;
 	// Was there already a DirectDraw instance?
 	IDirectDraw7 *pDirectDraw7 = NULL;
-	if (!IsDirectDrawPresent()) {
-		uResult = 10;
-	} else {
-		typedef HRESULT (WINAPI *DirectDrawCreateExProc)( GUID FAR * lpGuid, LPVOID  *lplpDD, REFIID  iid,IUnknown FAR *pUnkOuter );
-		DirectDrawCreateExProc pDirectDrawCreateExProc = static_cast<DirectDrawCreateExProc>(g_Globals.m_pDirectDrawCreateEx);
-		HRESULT hResult = pDirectDrawCreateExProc(const_cast<GUID *>(pGuid),reinterpret_cast<void **>(&pDirectDraw7),IID_IDirectDraw7,NULL);
+	void *pDirectDrawCreateEx = LoadFunctionIndex(CALL_DirectDrawCreateEx);
+	Word uResult = static_cast<Word>(DDERR_NOTFOUND);
+	if (pDirectDrawCreateEx) {
+		HRESULT hResult = static_cast<HRESULT(WINAPI *)(GUID *,LPVOID *,REFIID,IUnknown *)>(pDirectDrawCreateEx)(const_cast<GUID *>(pGuid),reinterpret_cast<void **>(&pDirectDraw7),IID_IDirectDraw7,NULL);
+		uResult = 0;
 		if (hResult<0) {
 			uResult = static_cast<Word>(hResult);
-		} else {
-			uResult = 0;
 		}
 	}
 	pOutput[0] = pDirectDraw7;
@@ -532,23 +452,18 @@ Word BURGER_API Burger::Globals::DirectDrawCreateExW(const GUID *pGuid,IDirectDr
 
 Word BURGER_API Burger::Globals::DirectDrawEnumerateExA(void *lpCallback,void *lpContext,Word32 dwFlags)
 {
-	Word uResult;
 	// Was there already a DirectDraw instance?
-	if (!IsDirectDrawPresent()) {
-		uResult = 10;
-	} else {
-		typedef HRESULT (WINAPI *DirectDrawEnumerateExAProc)(LPDDENUMCALLBACKEXA lpCallback,LPVOID lpContext,DWORD dwFlags);
-		DirectDrawEnumerateExAProc pDirectDrawEnumerateExAProc = static_cast<DirectDrawEnumerateExAProc>(g_Globals.m_pDirectDrawEnumerateExA);
-		HRESULT hResult = pDirectDrawEnumerateExAProc(static_cast<LPDDENUMCALLBACKEXA>(lpCallback),lpContext,dwFlags);
+	void *pDirectDrawEnumerateExA = LoadFunctionIndex(CALL_DirectDrawEnumerateExA);
+	Word uResult = static_cast<Word>(DDERR_NOTFOUND);
+	if (pDirectDrawEnumerateExA) {
+		HRESULT hResult = static_cast<HRESULT(WINAPI *)(LPDDENUMCALLBACKEXA,LPVOID,DWORD)>(pDirectDrawEnumerateExA)(static_cast<LPDDENUMCALLBACKEXA>(lpCallback),lpContext,dwFlags);
+		uResult = 0;
 		if (hResult<0) {
 			uResult = static_cast<Word>(hResult);
-		} else {
-			uResult = 0;
 		}
 	}
 	return uResult;
 }
-
 
 /*! ************************************
 
@@ -572,18 +487,14 @@ Word BURGER_API Burger::Globals::DirectDrawEnumerateExA(void *lpCallback,void *l
 
 Word BURGER_API Burger::Globals::DirectDrawEnumerateExW(void *lpCallback,void *lpContext,Word32 dwFlags)
 {
-	Word uResult;
 	// Was there already a DirectDraw instance?
-	if (!IsDirectDrawPresent()) {
-		uResult = 10;
-	} else {
-		typedef HRESULT (WINAPI *DirectDrawEnumerateExWProc)(LPDDENUMCALLBACKEXW lpCallback, LPVOID lpContext, DWORD dwFlags);
-		DirectDrawEnumerateExWProc pDirectDrawEnumerateExWProc = static_cast<DirectDrawEnumerateExWProc>(g_Globals.m_pDirectDrawEnumerateExW);
-		HRESULT hResult = pDirectDrawEnumerateExWProc(static_cast<LPDDENUMCALLBACKEXW>(lpCallback),lpContext,dwFlags);
+	void *pDirectDrawEnumerateExW = LoadFunctionIndex(CALL_DirectDrawEnumerateExW);
+	Word uResult = static_cast<Word>(DDERR_NOTFOUND);
+	if (pDirectDrawEnumerateExW) {
+		HRESULT hResult = static_cast<HRESULT(WINAPI *)(LPDDENUMCALLBACKEXW,LPVOID,DWORD)>(pDirectDrawEnumerateExW)(static_cast<LPDDENUMCALLBACKEXW>(lpCallback),lpContext,dwFlags);
+		uResult = 0;
 		if (hResult<0) {
 			uResult = static_cast<Word>(hResult);
-		} else {
-			uResult = 0;
 		}
 	}
 	return uResult;
@@ -607,10 +518,9 @@ IDirect3D9 *BURGER_API Burger::Globals::Direct3DCreate9(Word uSDKVersion)
 {
 	// Was there already a DirectDraw instance?
 	IDirect3D9 *pDirect3D9 = NULL;
-	if (IsD3D9Present()) {
-		typedef IDirect3D9 * (WINAPI *Direct3DCreate9Proc)(UINT SDKVersion);
-		Direct3DCreate9Proc pDirect3DCreate9Proc = static_cast<Direct3DCreate9Proc>(g_Globals.m_pDirect3DCreate9);
-		pDirect3D9 = pDirect3DCreate9Proc(uSDKVersion);
+	void *pDirect3DCreate9 = LoadFunctionIndex(CALL_Direct3DCreate9);
+	if (pDirect3DCreate9) {
+		pDirect3D9 = static_cast<IDirect3D9 *(WINAPI *)(UINT)>(pDirect3DCreate9)(uSDKVersion);
 	}
 	return pDirect3D9;
 }
@@ -627,25 +537,21 @@ IDirect3D9 *BURGER_API Burger::Globals::Direct3DCreate9(Word uSDKVersion)
 
 	\param pGuidDevice Requested audio device
 	\param pOutput Pointer to receive the pointer to the new IDirectSound instance
-	\return DD_OK if no error. Any other value means an error occured
+	\return DD_OK if no error. Any other value means an error occurred
 	
 ***************************************/
 
 Word BURGER_API Burger::Globals::DirectSoundCreate(const GUID *pGuidDevice,IDirectSound **pOutput)
 {
-	Word uResult;
 	// Was there already a DirectSound instance?
 	IDirectSound *pDirectSound = NULL;
-	if (!IsDirectSoundPresent()) {
-		uResult = static_cast<Word>(DSERR_INVALIDCALL);
-	} else {
-		typedef HRESULT (WINAPI *DirectSoundCreateProc)(LPCGUID pcGuidDevice, IDirectSound **ppDS, LPUNKNOWN pUnkOuter);
-		DirectSoundCreateProc pDirectSoundCreateProc = static_cast<DirectSoundCreateProc>(g_Globals.m_pDirectSoundCreate);
-		HRESULT hResult = pDirectSoundCreateProc(pGuidDevice,&pDirectSound,NULL);
+	Word uResult = static_cast<Word>(DSERR_INVALIDCALL);
+	void *pDirectSoundCreate = LoadFunctionIndex(CALL_DirectSoundCreate);
+	if (pDirectSoundCreate) {
+		HRESULT hResult = static_cast<HRESULT(WINAPI *)(LPCGUID,IDirectSound **,LPUNKNOWN)>(pDirectSoundCreate)(pGuidDevice,&pDirectSound,NULL);
+		uResult = 0;
 		if (hResult<0) {
 			uResult = static_cast<Word>(hResult);
-		} else {
-			uResult = 0;
 		}
 	}
 	pOutput[0] = pDirectSound;
@@ -663,33 +569,281 @@ Word BURGER_API Burger::Globals::DirectSoundCreate(const GUID *pGuidDevice,IDire
 
 	\param pGuidDevice Requested audio device
 	\param pOutput Pointer to receive the pointer to the new IDirectSound8 instance
-	\return DD_OK if no error. Any other value means an error occured
+	\return DD_OK if no error. Any other value means an error occurred
 	
 ***************************************/
 
 Word BURGER_API Burger::Globals::DirectSoundCreate8(const GUID *pGuidDevice,IDirectSound8 **pOutput)
 {
-	Word uResult;
 	// Was there already a DirectSound8 instance?
 	IDirectSound8 *pDirectSound = NULL;
-	if (!IsDirectSoundPresent()) {
-		uResult = static_cast<Word>(DSERR_INVALIDCALL);
-	} else {
-		typedef HRESULT (WINAPI *DirectSoundCreate8Proc)(LPCGUID pcGuidDevice, IDirectSound8 **ppDS, LPUNKNOWN pUnkOuter);
-		DirectSoundCreate8Proc pDirectSoundCreate8Proc = static_cast<DirectSoundCreate8Proc>(g_Globals.m_pDirectSoundCreate8);
-		// If NULL then DirectSound8 is not in dsound.dll
-		if (!pDirectSoundCreate8Proc) {
-			uResult = static_cast<Word>(DSERR_INVALIDCALL);
-		} else {
-			HRESULT hResult = pDirectSoundCreate8Proc(pGuidDevice,&pDirectSound,NULL);
-			if (hResult<0) {
-				uResult = static_cast<Word>(hResult);
-			} else {
-				uResult = 0;
-			}
+	Word uResult = static_cast<Word>(DSERR_INVALIDCALL);
+	void *pDirectSoundCreate8 = LoadFunctionIndex(CALL_DirectSoundCreate8);
+	if (pDirectSoundCreate8) {
+		HRESULT hResult = static_cast<HRESULT (WINAPI *)(LPCGUID,IDirectSound8 **,LPUNKNOWN)>(pDirectSoundCreate8)(pGuidDevice,&pDirectSound,NULL);
+		uResult = 0;
+		if (hResult<0) {
+			uResult = static_cast<Word>(hResult);
 		}
 	}
 	pOutput[0] = pDirectSound;
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Call timeGetTime(void)
+	
+	Manually load winmm.dll if needed and
+	call the Windows function timeGetTime()
+
+	http://msdn.microsoft.com/en-us/library/dd757629(v=vs.85).aspx
+	
+	\return Time in milliseconds
+		
+***************************************/
+
+Word BURGER_API Burger::Globals::timeGetTime(void)
+{
+	void *timeGetTime = LoadFunctionIndex(Globals::CALL_timeGetTime);
+	Word uResult = 0;
+	if (timeGetTime) {
+		uResult = static_cast<DWORD (WINAPI *)(void)>(timeGetTime)();
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Call PathSearchAndQualifyA(void)
+	
+	Manually load shlwapi.dll if needed and
+	call the Windows function PathSearchAndQualifyA()
+
+	http://msdn.microsoft.com/en-us/library/windows/desktop/bb773751(v=vs.85).aspx
+	
+	\param pszPath A pointer to a null-terminated string of maximum length MAX_PATH that contains the path to search.
+	\param pszBuf A pointer to a null-terminated string of length MAX_PATH that contains the path to be referenced.
+	\param cchBuf The size of the buffer pointed to by pszBuf, in characters.
+	\return Returns \ref TRUE if the path is qualified, or \ref FALSE otherwise.
+		
+***************************************/
+
+Word BURGER_API Burger::Globals::PathSearchAndQualifyA(const char *pszPath,char *pszBuf,WordPtr cchBuf)
+{
+	void *pPathSearchAndQualifyA = LoadFunctionIndex(Globals::CALL_PathSearchAndQualifyA);
+	Word uResult = FALSE;
+	if (pPathSearchAndQualifyA) {
+		uResult = static_cast<Word>(static_cast<BOOL (WINAPI *)(LPCSTR,LPSTR,UINT)>(pPathSearchAndQualifyA)(pszPath,pszBuf,static_cast<UINT>(cchBuf)));
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Call PathSearchAndQualifyW(void)
+	
+	Manually load shlwapi.dll if needed and
+	call the Windows function PathSearchAndQualifyW()
+
+	http://msdn.microsoft.com/en-us/library/windows/desktop/bb773751(v=vs.85).aspx
+	
+	\param pszPath A pointer to a null-terminated string of maximum length MAX_PATH that contains the path to search.
+	\param pszBuf A pointer to a null-terminated string of length MAX_PATH that contains the path to be referenced.
+	\param cchBuf The size of the buffer pointed to by pszBuf, in characters.
+	\return Returns \ref TRUE if the path is qualified, or \ref FALSE otherwise.
+		
+***************************************/
+
+Word BURGER_API Burger::Globals::PathSearchAndQualifyW(const Word16 *pszPath,Word16 *pszBuf,WordPtr cchBuf)
+{
+	void *pPathSearchAndQualifyW = LoadFunctionIndex(Globals::CALL_PathSearchAndQualifyW);
+	Word uResult = FALSE;
+	if (pPathSearchAndQualifyW) {
+		uResult = static_cast<Word>(static_cast<BOOL (WINAPI *)(LPCWSTR,LPWSTR,UINT)>(pPathSearchAndQualifyW)(reinterpret_cast<LPCWSTR>(pszPath),reinterpret_cast<LPWSTR>(pszBuf),static_cast<UINT>(cchBuf)));
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Call UuidCreateSequential()
+	
+	Manually load rpcrt4.dll if needed and
+	call the Windows function UuidCreateSequential()
+
+	http://msdn.microsoft.com/en-us/library/windows/desktop/aa379322(v=vs.85).aspx
+	
+	\param pOutput A pointer to an uninitialized GUID.
+	\return Zero for success or List of error codes http://msdn.microsoft.com/en-us/library/windows/desktop/aa378645(v=vs.85).aspx
+		
+***************************************/
+
+Word BURGER_API Burger::Globals::UuidCreateSequential(GUID *pOutput)
+{
+	void *pUuidCreateSequential = LoadFunctionIndex(Globals::CALL_UuidCreateSequential);
+	Word uResult = RPC_S_CALL_FAILED;
+	if (pUuidCreateSequential) {
+		uResult = static_cast<Word>(static_cast<RPC_STATUS (WINAPI *)(GUID *)>(pUuidCreateSequential)(pOutput));
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Call VerQueryValueA(void)
+	
+	Manually load version.dll if needed and
+	call the Windows function VerQueryValueA()
+
+	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647464(v=vs.85).aspx
+	
+	\param pBlock The version-information resource returned by the GetFileVersionInfo function.
+	\param lpSubBlock A pointer to the version-information value to be retrieved. 
+	\param lplpBuffer A pointer that contains the address of a pointer to the requested version information in the buffer pointed to by pBlock.
+	\param puLen The size of the buffer pointed to by lplpBuffer, in bytes.
+	\return Returns \ref TRUE if successful, or \ref FALSE otherwise.
+		
+***************************************/
+
+Word BURGER_API Burger::Globals::VerQueryValueA(const void *pBlock,const char *lpSubBlock,void **lplpBuffer,Word *puLen)
+{
+	void *pVerQueryValueA = LoadFunctionIndex(Globals::CALL_VerQueryValueA);
+	Word uResult = FALSE;		// Failure
+	if (pVerQueryValueA) {
+		uResult = static_cast<Word>(static_cast<BOOL (WINAPI *)(LPCVOID,LPCSTR,LPVOID *,PUINT)>(pVerQueryValueA)(pBlock,lpSubBlock,lplpBuffer,puLen));
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Call VerQueryValueW(void)
+	
+	Manually load version.dll if needed and
+	call the Windows function VerQueryValueW()
+
+	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647464(v=vs.85).aspx
+	
+	\param pBlock The version-information resource returned by the GetFileVersionInfo function.
+	\param lpSubBlock A pointer to the version-information value to be retrieved. 
+	\param lplpBuffer A pointer that contains the address of a pointer to the requested version information in the buffer pointed to by pBlock.
+	\param puLen The size of the buffer pointed to by lplpBuffer, in bytes.
+	\return Returns \ref TRUE if successful, or \ref FALSE otherwise.
+		
+***************************************/
+
+Word BURGER_API Burger::Globals::VerQueryValueW(const void *pBlock,const Word16 *lpSubBlock,void **lplpBuffer,Word *puLen)
+{
+	void *pVerQueryValueW = LoadFunctionIndex(Globals::CALL_VerQueryValueW);
+	Word uResult = FALSE;		// Failure
+	if (pVerQueryValueW) {
+		uResult = static_cast<Word>(static_cast<BOOL (WINAPI *)(LPCVOID,LPCWSTR,LPVOID *,PUINT)>(pVerQueryValueW)(pBlock,reinterpret_cast<LPCWSTR>(lpSubBlock),lplpBuffer,puLen));
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Call GetFileVersionInfoA(void)
+	
+	Manually load version.dll if needed and
+	call the Windows function GetFileVersionInfoA()
+
+	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647003(v=vs.85).aspx
+	
+	\param lptstrFilename The name of the file
+	\param dwHandle This parameter is ignored.
+	\param dwLen The size, in bytes, of the buffer pointed to by the lpData parameter.
+	\param lpData Pointer to a buffer that receives the file-version information.
+	\return Returns \ref TRUE if successful, or \ref FALSE otherwise.
+		
+***************************************/
+
+Word BURGER_API Burger::Globals::GetFileVersionInfoA(const char *lptstrFilename,Word32 dwHandle,Word32 dwLen,void *lpData)
+{
+	void *pGetFileVersionInfoA = LoadFunctionIndex(Globals::CALL_GetFileVersionInfoA);
+	Word uResult = FALSE;		// Failure
+	if (pGetFileVersionInfoA) {
+		uResult = static_cast<Word>(static_cast<BOOL (WINAPI *)(LPCSTR,DWORD,DWORD,LPVOID)>(pGetFileVersionInfoA)(lptstrFilename,dwHandle,dwLen,lpData));
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Call GetFileVersionInfoW(void)
+	
+	Manually load version.dll if needed and
+	call the Windows function GetFileVersionInfoW()
+
+	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647003(v=vs.85).aspx
+	
+	\param lptstrFilename The name of the file
+	\param dwHandle This parameter is ignored.
+	\param dwLen The size, in bytes, of the buffer pointed to by the lpData parameter.
+	\param lpData Pointer to a buffer that receives the file-version information.
+	\return Returns \ref TRUE if successful, or \ref FALSE otherwise.
+		
+***************************************/
+
+Word BURGER_API Burger::Globals::GetFileVersionInfoW(const Word16 *lptstrFilename,Word32 dwHandle,Word32 dwLen,void *lpData)
+{
+	void *pGetFileVersionInfoW = LoadFunctionIndex(Globals::CALL_GetFileVersionInfoW);
+	Word uResult = FALSE;		// Failure
+	if (pGetFileVersionInfoW) {
+		uResult = static_cast<Word>(static_cast<BOOL (WINAPI *)(LPCWSTR,DWORD,DWORD,LPVOID)>(pGetFileVersionInfoW)(reinterpret_cast<LPCWSTR>(lptstrFilename),dwHandle,dwLen,lpData));
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Call GetFileVersionInfoA(void)
+	
+	Manually load version.dll if needed and
+	call the Windows function GetFileVersionInfoA()
+
+	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647005(v=vs.85).aspx
+	
+	\param lptstrFilename The name of the file of interest.
+	\param lpdwHandle A pointer to a variable that the function sets to zero.
+	\return Returns the number of bytes if successful, or zero otherwise.
+		
+***************************************/
+
+Word32 BURGER_API Burger::Globals::GetFileVersionInfoSizeA(const char *lptstrFilename,unsigned long *lpdwHandle)
+{
+	void *pGetFileVersionInfoSizeA = LoadFunctionIndex(Globals::CALL_GetFileVersionInfoSizeA);
+	Word uResult = 0;		// Failure
+	if (pGetFileVersionInfoSizeA) {
+		uResult = static_cast<Word>(static_cast<BOOL (WINAPI *)(LPCSTR,LPDWORD)>(pGetFileVersionInfoSizeA)(lptstrFilename,lpdwHandle));
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Call GetFileVersionInfoSizeW(void)
+	
+	Manually load version.dll if needed and
+	call the Windows function GetFileVersionInfoSizeW()
+
+	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647005(v=vs.85).aspx
+	
+	\param lptstrFilename The name of the file of interest.
+	\param lpdwHandle A pointer to a variable that the function sets to zero.
+	\return Returns the number of bytes if successful, or zero otherwise.
+		
+***************************************/
+
+Word32 BURGER_API Burger::Globals::GetFileVersionInfoSizeW(const Word16 *lptstrFilename,unsigned long *lpdwHandle)
+{
+	void *pGetFileVersionInfoSizeW = LoadFunctionIndex(Globals::CALL_GetFileVersionInfoSizeW);
+	Word uResult = 0;		// Failure
+	if (pGetFileVersionInfoSizeW) {
+		uResult = static_cast<Word>(static_cast<BOOL (WINAPI *)(LPCWSTR,LPDWORD)>(pGetFileVersionInfoSizeW)(reinterpret_cast<LPCWSTR>(lptstrFilename),lpdwHandle));
+	}
 	return uResult;
 }
 
@@ -707,7 +861,7 @@ Word BURGER_API Burger::Globals::DirectSoundCreate8(const GUID *pGuidDevice,IDir
 	
 	By invoking DEEP magic, I will divine the version
 	of QuickTimeX that is present. It will do a manual
-	check of the system folder for eithr QTIM32.dll (Old)
+	check of the system folder for either QTIM32.dll (Old)
 	or Quicktime.qts (Current) and pull the version resource
 	from the file.
 	
@@ -730,7 +884,7 @@ Word BURGER_API Burger::Globals::GetQuickTimeVersion(void)
 			// Get the Quicktime DLL using the old name for 2.0 or 3.0
 			StringCopy(PathName+uPathLength,sizeof(PathName)-uPathLength,"\\QTIM32.DLL");
 			DWORD uZeroLong = 0;
-			DWORD uFileInfoSize = GetFileVersionInfoSizeA(PathName,&uZeroLong);
+			DWORD uFileInfoSize = Globals::GetFileVersionInfoSizeA(PathName,&uZeroLong);
 			const char *pQuery = "\\StringFileInfo\\040904E4\\ProductVersion";
 			// Any data?
 			if (!uFileInfoSize) {
@@ -738,7 +892,7 @@ Word BURGER_API Burger::Globals::GetQuickTimeVersion(void)
 				// Try Quicktime 4.0
 				uZeroLong = 0;
 				StringCopy(PathName+uPathLength,sizeof(PathName)-uPathLength,"\\QuickTime.qts");
-				uFileInfoSize = GetFileVersionInfoSizeA(PathName,&uZeroLong);
+				uFileInfoSize = Globals::GetFileVersionInfoSizeA(PathName,&uZeroLong);
 				if (!uFileInfoSize) {
 					uPathLength = GetEnvironmentVariableA("ProgramFiles(x86)",PathName,MAX_PATH);
 					if (!uPathLength) {
@@ -746,7 +900,7 @@ Word BURGER_API Burger::Globals::GetQuickTimeVersion(void)
 					}
 					if (uPathLength) {
 						StringCopy(PathName+uPathLength,sizeof(PathName)-uPathLength,"\\QuickTime\\QTSystem\\QuickTime.qts");
-						uFileInfoSize = GetFileVersionInfoSizeA(PathName,&uZeroLong);
+						uFileInfoSize = Globals::GetFileVersionInfoSizeA(PathName,&uZeroLong);
 					}
 				}
 			}
@@ -755,9 +909,9 @@ Word BURGER_API Burger::Globals::GetQuickTimeVersion(void)
 				char *pData = static_cast<char *>(Alloc(uFileInfoSize));
 				if (pData) {
 					void *pVersionData;			// Main data pointer to start parsing from
-					if (GetFileVersionInfoA(PathName,0,uFileInfoSize,pData)) {
+					if (Globals::GetFileVersionInfoA(PathName,0,uFileInfoSize,pData)) {
 						UINT ZeroWord = 0;
-						if (VerQueryValueA(pData,const_cast<char *>(pQuery),&pVersionData,&ZeroWord)) {
+						if (Globals::VerQueryValueA(pData,const_cast<char *>(pQuery),&pVersionData,&ZeroWord)) {
 							// Running ascii pointer
 							const char *pWorkPtr = static_cast<const char *>(pVersionData);
 							uResult = AsciiToInteger(pWorkPtr,&pWorkPtr)<<8;
@@ -799,13 +953,13 @@ static Word64 BURGER_API GetFileVersion(const Word16* pFilename)
 	Word64 uResult = 0;
 	if (pFilename) {
 		DWORD uNotUsed;
-		UINT uBufferSize = GetFileVersionInfoSizeW(reinterpret_cast<LPCWSTR>(pFilename),&uNotUsed);
+		UINT uBufferSize = Burger::Globals::GetFileVersionInfoSizeW(pFilename,&uNotUsed);
 		if (uBufferSize) {
 			BYTE* pFileVersionBuffer = static_cast<BYTE *>(Burger::Alloc(uBufferSize));
 			if (pFileVersionBuffer) {
-				if (GetFileVersionInfoW(reinterpret_cast<LPCWSTR>(pFilename),0,uBufferSize,pFileVersionBuffer)) {
+				if (Burger::Globals::GetFileVersionInfoW(pFilename,0,uBufferSize,pFileVersionBuffer)) {
 					VS_FIXEDFILEINFO* pVersion = NULL;
-					if (VerQueryValueW(pFileVersionBuffer,(LPWSTR)L"\\",(VOID**)&pVersion,&uBufferSize)) {
+					if (Burger::Globals::VerQueryValueW(pFileVersionBuffer,reinterpret_cast<const Word16 *>(L"\\"),(VOID**)&pVersion,&uBufferSize)) {
 						if (pVersion != NULL) {
 							uResult = (static_cast<Word64>(pVersion->dwFileVersionMS)<<32U)+pVersion->dwFileVersionLS;
 						}
@@ -1053,7 +1207,7 @@ static int CALLBACK FindDeviceCallback(GUID *pGUID,LPSTR /* pName */,LPSTR /* pD
 
     \param pOutput Pointer to a buffer to accept the returned GUID. Cannot be \ref NULL
     \param uDevNum 0 for the master global device, 1-??? for the enumerated displays
-    \return Zero if no error, non-zero if an error has occured
+    \return Zero if no error, non-zero if an error has occurred
 
 ***************************************/
 
@@ -1133,6 +1287,48 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryW(const Word16 *pInput)
 	HINSTANCE hResult = ::LoadLibraryW(reinterpret_cast<LPCWSTR>(pInput));
 	SetErrorMode(uOldMode);
 	return hResult;
+}
+
+HINSTANCE BURGER_API Burger::Globals::LoadLibraryIndex(eWindowsDLLIndex eIndex)
+{
+	HINSTANCE hResult = NULL;
+	// Valid index?
+	if (eIndex<DLL_COUNT) {
+		// Has it been loaded?
+		hResult = g_Globals.m_hInstances[eIndex];
+		// If not already tested and not loaded?
+		if (!hResult && !g_Globals.m_bInstancesTested[eIndex]) {
+			// Mark as tested
+			g_Globals.m_bInstancesTested[eIndex] = TRUE;
+			// Load the DLL
+			hResult = Globals::LoadLibraryA(s_LibaryNames[eIndex]);
+			if (hResult) {
+				// If it loaded fine, save the result
+				g_Globals.m_hInstances[eIndex] = hResult;
+			}
+		}
+	}
+	return hResult;
+}
+
+void * BURGER_API Burger::Globals::LoadFunctionIndex(eWindowsCallIndex eIndex)
+{
+	void *pResult = NULL;
+	// Valid index?
+	if (eIndex<CALL_COUNT) {
+		// Has the function been loaded?
+		pResult = g_Globals.m_pWindowsCalls[eIndex];
+		if (!pResult) {
+			// Not found, try to load the DLL (Fast, because it will only test once)
+			HINSTANCE hResult = LoadLibraryIndex(g_CallNames[eIndex].eDLL);
+			if (hResult) {
+				// Get the function from the DLL
+				pResult = GetProcAddress(hResult,g_CallNames[eIndex].m_pName);
+				g_Globals.m_pWindowsCalls[eIndex] = pResult;
+			}
+		}
+	}
+	return pResult;
 }
 
 /*! ************************************

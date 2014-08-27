@@ -325,6 +325,9 @@
 		<ClInclude Include="..\source\memory\brmemorymanager.h">
 			<Filter>source\memory</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\shield\brshieldtypes.h">
+			<Filter>source\shield</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\templateburgerbase.h">
 			<Filter>source</Filter>
 		</ClInclude>
@@ -661,6 +664,15 @@
 		<ClCompile Include="..\source\memory\brmemorymanager.cpp">
 			<Filter>source\memory</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\shield\brcodelibraryshield.cpp">
+			<Filter>source\shield</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\shield\brcriticalsectionshield.cpp">
+			<Filter>source\shield</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\shield\brtickshield.cpp">
+			<Filter>source\shield</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\text\brisolatin1.cpp">
 			<Filter>source\text</Filter>
 		</ClCompile>
@@ -697,6 +709,9 @@
 		<ClCompile Include="..\source\text\brwin1252.cpp">
 			<Filter>source\text</Filter>
 		</ClCompile>
+		<Filter Include="source\shield">
+			<UniqueIdentifier>{5B5D3598-7299-3674-83FB-21C63CD0575B}</UniqueIdentifier>
+		</Filter>
 		<Filter Include="source\math">
 			<UniqueIdentifier>{10848234-1F04-35CE-80E8-4BB2C7C39E25}</UniqueIdentifier>
 		</Filter>

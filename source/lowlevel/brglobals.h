@@ -34,40 +34,59 @@
 namespace Burger {
 class OutputMemoryStream;
 struct Globals {
-private:
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	HINSTANCE__ *m_hInstance;		///< Current instance of the application (Windows only)
-	HWND__ *m_hWindow;				///< Main window for the application (Windows only)
-	HINSTANCE__ *m_hDInput8DLL;		///< Reference to DInput8.dll (Windows only)
-	void *m_pDirectInput8Create;	///< Pointer to DirectInput8CreateW function (Windows only)
-	IDirectInput8W* m_pDirectInput8W;	///< DirectInput8W instance (Windows only)
-	HINSTANCE__ *m_hDInputDLL;		///< Reference to DInput.dll (Windows only)
-	void *m_pDirectInputCreateW;	///< Pointer to DirectInputCreateW function (Windows only)
+	enum eWindowsDLLIndex {
+		DDRAW_DLL,		///< Index for ddraw.dll
+		DINPUT_DLL,		///< Index for dinput.dll
+		DINPUT8_DLL,	///< Index for dinput8.dll
+		D3D9_DLL,		///< Index for d3d9.dll
+		DSOUND_DLL,		///< Index for dsound.dll
+		RPCRT4_DLL,		///< Index for rpcrt4.dll
+		WINMM_DLL,		///< Index for winmm.dll
+		SHLWAPI_DLL,	///< Index for shlwapi.dll
+		VERSION_DLL,	///< Index for version.dll
+		DLL_COUNT		///< Total number of DLLs to be managed
+	};
+	enum eWindowsCallIndex {
+		CALL_DirectInput8Create,
+		CALL_DirectInputCreateW,
+		CALL_DirectDrawCreate,
+		CALL_DirectDrawCreateEx,
+		CALL_DirectDrawCreateClipper,
+		CALL_DirectDrawEnumerateA,
+		CALL_DirectDrawEnumerateW,
+		CALL_DirectDrawEnumerateExA,
+		CALL_DirectDrawEnumerateExW,
+		CALL_Direct3DCreate9,
+		CALL_DirectSoundCreate,
+		CALL_DirectSoundCreate8,
+		CALL_UuidCreateSequential,
+		CALL_timeGetTime,
+		CALL_PathSearchAndQualifyA,
+		CALL_PathSearchAndQualifyW,
+		CALL_VerQueryValueA,
+		CALL_VerQueryValueW,
+		CALL_GetFileVersionInfoA,
+		CALL_GetFileVersionInfoW,
+		CALL_GetFileVersionInfoSizeA,
+		CALL_GetFileVersionInfoSizeW,
+		CALL_COUNT
+	};
+private:
+	HINSTANCE__ *m_hInstance;				///< Current instance of the application (Windows only)
+	HWND__ *m_hWindow;						///< Main window for the application (Windows only)
+	HINSTANCE__ *m_hInstances[DLL_COUNT];	///< Instances of dynamically loaded system DLLs (Windows only)
+	void *m_pWindowsCalls[CALL_COUNT];		///< Pointers to resolved windows function calls (Windows only)
+	IDirectInput8W* m_pDirectInput8W;		///< DirectInput8W instance (Windows only)
 	IDirectInputW* m_pDirectInputW;	///< DirectInputW instance (Windows only)
-	HINSTANCE__ *m_hDDraw;			///< Reference to DDraw.dll (Windows only)
-	void *m_pDirectDrawCreate;		///< Pointer to DirectDrawCreate function (Windows only)
-	void *m_pDirectDrawCreateEx;	///< Pointer to DirectDrawCreateEx function (Windows only)
-	void *m_pDirectDrawCreateClipper;	///< Pointer to DirectDrawCreateClipper function (Windows only)
-	void *m_pDirectDrawEnumerateA;	///< Pointer to DirectDrawEnumerateA function (Windows only)
-	void *m_pDirectDrawEnumerateW;	///< Pointer to DirectDrawEnumerateW function (Windows only)
-	void *m_pDirectDrawEnumerateExA;	///< Pointer to DirectDrawEnumerateExA function (Windows only)
-	void *m_pDirectDrawEnumerateExW;	///< Pointer to DirectDrawEnumerateExW function (Windows only)
-	HINSTANCE__ *m_hD3D9;			///< Reference to D3D9.dll (Windows only)
-	void *m_pDirect3DCreate9;		///< Pointer to Direct3DCreate9 function (Windows only)
-	HINSTANCE__ *m_hDirectSound;	///< Reference to DSOUND.dll (Windows only)
-	void *m_pDirectSoundCreate;		///< Pointer to DirectSoundCreate function (Windows only)
-	void *m_pDirectSoundCreate8;	///< Pointer to DirectSoundCreate8 function (Windows only)
-	void *m_pDirectSoundEnumerateA;	///< Pointer to DirectSoundEnumerateA function (Windows only)
-	void *m_pDirectSoundEnumerateW;	///< Pointer to DirectSoundEnumerateW function (Windows only)
-	void *m_pGetDeviceID;			///< Pointer to GetDeviceID function (Windows only)
-	void *m_pDirectSoundFullDuplexCreate;	///< Pointer to DirectSoundFullDuplexCreate function (Windows only)
 	Word32 m_uQuickTimeVersion;		///< QuickTime's version in 0x0102 (1.2) format. (Windows only)
 	Word32 m_uDirectXVersion;		///< DirectX version 0x0900 (9.0) format (Windows only)
 	Word8 m_bQuickTimeVersionValid;	///< \ref TRUE if Quicktime's version is valid. (Windows only)
 	Word8 m_bDirectXVersionValid;	///< \ref TRUE if DirectX's version is valid (Windows only)
 	Word8 m_bWindow95;				///< Non-zero if tested, low bit has \ref TRUE or \ref FALSE for the state
-	Word8 m_bPadding;				///< Pad to 32 bit alignment
+	Word8 m_bInstancesTested[DLL_COUNT];	///< Flags to determine if a DLL was tested for loading (Windows only)
 #endif
+private:
 	int m_iErrorCode;		///< Global default error code used by \ref Globals::Shutdown().
 	Word m_uTraceFlags;		///< Debug information level
 	char m_ErrorMsg[512];	///< Global Buffer containing the last fatal error or warning
@@ -101,17 +120,29 @@ public:
 	static Word BURGER_API IsWin95orWin98(void);
 	static Word BURGER_API DirectInputCreateW(IDirectInputW **pOutput);
 	static Word BURGER_API DirectInput8Create(IDirectInput8W **pOutput);
-	static Word BURGER_API DirectDrawCreateExW(const GUID *pGuid,IDirectDraw7 **pOutput);
+	static Word BURGER_API DirectDrawCreateEx(const GUID *pGuid,IDirectDraw7 **pOutput);
 	static Word BURGER_API DirectDrawEnumerateExA(void *lpCallback,void *lpContext,Word32 dwFlags);
 	static Word BURGER_API DirectDrawEnumerateExW(void *lpCallback,void *lpContext,Word32 dwFlags);
 	static IDirect3D9 * BURGER_API Direct3DCreate9(Word uSDKVersion);
 	static Word BURGER_API DirectSoundCreate(const GUID *pGuidDevice,IDirectSound **pOutput);
 	static Word BURGER_API DirectSoundCreate8(const GUID *pGuidDevice,IDirectSound8 **pOutput);
+	static Word BURGER_API timeGetTime(void);
+	static Word BURGER_API PathSearchAndQualifyA(const char *pszPath,char *pszBuf,WordPtr cchBuf);
+	static Word BURGER_API PathSearchAndQualifyW(const Word16 *pszPath,Word16 *pszBuf,WordPtr cchBuf);
+	static Word BURGER_API UuidCreateSequential(GUID *pOutput);
+	static Word BURGER_API VerQueryValueA(const void *pBlock,const char *lpSubBlock,void **lplpBuffer,Word *puLen);
+	static Word BURGER_API VerQueryValueW(const void *pBlock,const Word16 *lpSubBlock,void **lplpBuffer,Word *puLen);
+	static Word BURGER_API GetFileVersionInfoA(const char *lptstrFilename,Word32 dwHandle,Word32 dwLen,void *lpData);
+	static Word BURGER_API GetFileVersionInfoW(const Word16 *lptstrFilename,Word32 dwHandle,Word32 dwLen,void *lpData);
+	static Word32 BURGER_API GetFileVersionInfoSizeA(const char *lptstrFilename,unsigned long *lpdwHandle);
+	static Word32 BURGER_API GetFileVersionInfoSizeW(const Word16 *lptstrFilename,unsigned long *lpdwHandle);
 	static Word BURGER_API GetQuickTimeVersion(void);
 	static Word BURGER_API GetDirectXVersion(void);
 	static Word BURGER_API GetVideoGUID(GUID *pOutput,Word uDevNum);
 	static HINSTANCE__ * BURGER_API LoadLibraryA(const char *pInput);
 	static HINSTANCE__ * BURGER_API LoadLibraryW(const Word16 *pInput);
+	static HINSTANCE__ * BURGER_API LoadLibraryIndex(eWindowsDLLIndex eIndex);
+	static void * BURGER_API LoadFunctionIndex(eWindowsCallIndex eIndex);
 	static Word BURGER_API AddGroupToProgramMenu(const char *pGroupName);
 	static int BURGER_API CreateUserRegistryKey(const char *pKey,const char *pSubKey,const char *pData);
 	static void BURGER_API AssociateFileExtensionToExe(const char *pFileExtension,const char *pDescription,const char *pProgramID);

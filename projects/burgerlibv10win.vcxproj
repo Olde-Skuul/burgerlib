@@ -303,6 +303,7 @@
 		<ClCompile Include="..\source\windows\brfilenamewindows.cpp" />
 		<ClCompile Include="..\source\windows\brfilewindows.cpp" />
 		<ClCompile Include="..\source\windows\brglobalswindows.cpp" />
+		<ClCompile Include="..\source\windows\brguidwindows.cpp" />
 		<ClCompile Include="..\source\windows\brjoypadwindows.cpp" />
 		<ClCompile Include="..\source\windows\brkeyboardwindows.cpp" />
 		<ClCompile Include="..\source\windows\brmousewindows.cpp" />

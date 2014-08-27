@@ -79,7 +79,7 @@ static Word TestCRC32B(void)
 {
 	Word uFailure = FALSE;
 	const CRC32Test_t *pWork = CRC32BTestTable;
-	WordPtr uCount = sizeof(CRC32BTestTable)/sizeof(CRC32BTestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(CRC32BTestTable);
 	do {
 		Word32 uTester = Burger::CalcCRC32B(pWork->m_pString,Burger::StringLength(pWork->m_pString));
 		Word uTest = (uTester != pWork->m_Hash);
@@ -148,7 +148,7 @@ static Word TestMD2(void)
 {
 	Word uFailure = FALSE;
 	const MD2Test_t *pWork = MD2TestTable;
-	WordPtr uCount = sizeof(MD2TestTable)/sizeof(MD2TestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(MD2TestTable);
 	do {
 		Burger::MD2_t Tester;
 		Burger::Hash(&Tester,pWork->m_pString,Burger::StringLength(pWork->m_pString));
@@ -218,7 +218,7 @@ static Word TestMD4(void)
 {
 	Word uFailure = FALSE;
 	const MD4Test_t *pWork = MD4TestTable;
-	WordPtr uCount = sizeof(MD4TestTable)/sizeof(MD4TestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(MD4TestTable);
 	do {
 		Burger::MD4_t Tester;
 		Burger::Hash(&Tester,(const Word8 *)pWork->m_pString,Burger::StringLength(pWork->m_pString));
@@ -288,7 +288,7 @@ static Word TestMD5(void)
 {
 	Word uFailure = FALSE;
 	const MD5Test_t *pWork = MD5TestTable;
-	WordPtr uCount = sizeof(MD5TestTable)/sizeof(MD5TestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(MD5TestTable);
 	do {
 		Burger::MD5_t Tester;
 		Burger::Hash(&Tester,(const Word8 *)pWork->m_pString,Burger::StringLength(pWork->m_pString));
@@ -358,7 +358,7 @@ static Word TestSHA1(void)
 {
 	Word uFailure = FALSE;
 	const SHA1Test_t *pWork = SHA1TestTable;
-	WordPtr uCount = sizeof(SHA1TestTable)/sizeof(SHA1TestTable[0]);
+	WordPtr uCount = BURGER_ARRAYSIZE(SHA1TestTable);
 	do {
 		Burger::SHA1_t Tester;
 		Burger::Hash(&Tester,(const Word8 *)pWork->m_pString,Burger::StringLength(pWork->m_pString));

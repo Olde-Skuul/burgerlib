@@ -28,7 +28,7 @@
 
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MAC)) || defined(DOXYGEN)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 
 /*! ************************************
 

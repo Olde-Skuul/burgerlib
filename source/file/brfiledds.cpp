@@ -93,7 +93,7 @@ Burger::FileDDS::FileDDS()
 	WordPtr uIndex = 0;
 	do {
 		m_uReserved[uIndex] = 0;
-	} while (++uIndex<(sizeof(m_uReserved)/sizeof(m_uReserved[0])));
+	} while (++uIndex<BURGER_ARRAYSIZE(m_uReserved));
 }
 
 /*! ************************************
@@ -145,7 +145,7 @@ Burger::Image * Burger::FileDDS::Load(InputMemoryStream *pInput)
 			WordPtr i = 0;
 			do {
 				m_uReserved[i] = pInput->GetWord32();
-			} while (++i<(sizeof(m_uReserved)/sizeof(m_uReserved[0])));
+			} while (++i<BURGER_ARRAYSIZE(m_uReserved));
 			
 			// Read in the Pixel format
 			Word32 uPixelFormatSize = pInput->GetWord32();
@@ -423,7 +423,7 @@ Word Burger::FileDDS::Save(OutputMemoryStream *pOutput,const Image *pImage)
 	WordPtr i = 0;
 	do {
 		pOutput->Append(m_uReserved[i]);
-	} while (++i<(sizeof(m_uReserved)/sizeof(m_uReserved[0])));
+	} while (++i<BURGER_ARRAYSIZE(m_uReserved));
 
 	pOutput->Append(static_cast<Word32>(32));			// Pixel map format
 	pOutput->Append(uPixelFlags);			// Pixel flags

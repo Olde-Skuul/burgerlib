@@ -161,6 +161,9 @@
 		<ClInclude Include="..\unittest\testbrfixedpoint.h" />
 		<ClInclude Include="..\unittest\testbrfloatingpoint.h" />
 		<ClInclude Include="..\unittest\testbrhashes.h" />
+		<ClInclude Include="..\unittest\testbrmatrix3d.h" />
+		<ClInclude Include="..\unittest\testbrmatrix4d.h" />
+		<ClInclude Include="..\unittest\testbrstaticrtti.h" />
 		<ClInclude Include="..\unittest\testbrstrings.h" />
 		<ClInclude Include="..\unittest\testbrtimedate.h" />
 		<ClInclude Include="..\unittest\testbrtypes.h" />
@@ -293,6 +296,9 @@
 		<ClCompile Include="..\unittest\testbrfixedpoint.cpp" />
 		<ClCompile Include="..\unittest\testbrfloatingpoint.cpp" />
 		<ClCompile Include="..\unittest\testbrhashes.cpp" />
+		<ClCompile Include="..\unittest\testbrmatrix3d.cpp" />
+		<ClCompile Include="..\unittest\testbrmatrix4d.cpp" />
+		<ClCompile Include="..\unittest\testbrstaticrtti.cpp" />
 		<ClCompile Include="..\unittest\testbrstrings.cpp" />
 		<ClCompile Include="..\unittest\testbrtimedate.cpp" />
 		<ClCompile Include="..\unittest\testbrtypes.cpp" />

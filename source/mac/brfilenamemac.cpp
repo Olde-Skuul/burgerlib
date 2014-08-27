@@ -61,7 +61,7 @@ Burger::Filename::ExpandCache_t Burger::Filename::m_DirectoryCache[Burger::Filen
 
 void BURGER_API Burger::Filename::InitDirectoryCache(void)
 {
-	Word i = sizeof(m_DirectoryCache)/sizeof(m_DirectoryCache[0]);
+	Word i = BURGER_ARRAYSIZE(m_DirectoryCache);
 	ExpandCache_t *pWork = m_DirectoryCache;
 	do {
 		pWork->m_pName = NULL;
@@ -84,7 +84,7 @@ void BURGER_API Burger::Filename::InitDirectoryCache(void)
 
 void BURGER_API Burger::Filename::PurgeDirectoryCache(void)
 {
-	Word i = sizeof(m_DirectoryCache)/sizeof(m_DirectoryCache[0]);
+	Word i = BURGER_ARRAYSIZE(m_DirectoryCache);
 	ExpandCache_t *pWork = m_DirectoryCache;
 	do {
 		Free(pWork->m_pName);

@@ -412,6 +412,15 @@
 		<ClInclude Include="..\unittest\testbrhashes.h">
 			<Filter>unittest</Filter>
 		</ClInclude>
+		<ClInclude Include="..\unittest\testbrmatrix3d.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\testbrmatrix4d.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\testbrstaticrtti.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
 		<ClInclude Include="..\unittest\testbrstrings.h">
 			<Filter>unittest</Filter>
 		</ClInclude>
@@ -802,6 +811,9 @@
 		<ClCompile Include="..\source\windows\brglobalswindows.cpp">
 			<Filter>source\windows</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\windows\brguidwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\windows\brjoypadwindows.cpp">
 			<Filter>source\windows</Filter>
 		</ClCompile>
@@ -857,6 +869,15 @@
 			<Filter>unittest</Filter>
 		</ClCompile>
 		<ClCompile Include="..\unittest\testbrhashes.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\testbrmatrix3d.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\testbrmatrix4d.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\testbrstaticrtti.cpp">
 			<Filter>unittest</Filter>
 		</ClCompile>
 		<ClCompile Include="..\unittest\testbrstrings.cpp">

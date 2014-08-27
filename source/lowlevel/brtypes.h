@@ -77,7 +77,7 @@
 #define BURGER_STRUCT_PACKPUSH
 #define BURGER_X86
 #define BURGER_WIN32
-@define BURGER_LITTLEENDIAN
+#define BURGER_LITTLEENDIAN
 #define BURGER_ANSIAPI __cdecl
 #define BURGER_API __fastcall
 #define BURGER_FASTCALLENABLED
@@ -430,6 +430,8 @@ extern void* __alloca(unsigned x);
 #endif
 
 #define BURGER_OFFSETOF(type, member) reinterpret_cast<WordPtr>(&(reinterpret_cast<const type *>(0)->member))
+#define BURGER_ARRAYSIZE(x) static_cast<WordPtr>(sizeof(x)/sizeof(x[0]))
+#define BURGER_UNUSED(x) (void)(x)
 #define BURGER_HASHMACRO(x) #x
 #define BURGER_MACRO_TO_STRING(x) BURGER_HASHMACRO(x)
 #if defined(DOXYGEN)
@@ -527,6 +529,15 @@ BURGER_INLINE void* operator new(unsigned int, void*x) {return x;}
 BURGER_INLINE void* operator new(WordPtr, void*x) {return x;}
 #endif
 #endif
+
+namespace Burger {
+template<class T>
+BURGER_INLINE void SwapVariables(T *pA,T *pB) {
+	T tTemp(*pA);
+	*pA = *pB;
+	*pB = tTemp;
+}
+}
 /* END */
 
 #endif

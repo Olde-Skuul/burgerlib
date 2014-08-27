@@ -309,6 +309,18 @@ namespace Burger {
 	extern double BURGER_API ATan(double dInput);
 	extern float BURGER_API ATan2(float fSin,float fCos);
 	extern double BURGER_API ATan2(double dSin,double dCos);
+	extern float BURGER_API Exp(float fInput);
+	extern double BURGER_API Exp(double dInput);
+	extern float BURGER_API Log(float fInput);
+	extern double BURGER_API Log(double dInput);
+	extern float BURGER_API Log2(float fInput);
+	extern double BURGER_API Log2(double dInput);
+	extern float BURGER_API Log10(float fInput);
+	extern double BURGER_API Log10(double dInput);
+	extern float BURGER_API Modf(float fInput,float *pInteger);
+	extern double BURGER_API Modf(double dInput,double *pInteger);
+	extern float BURGER_API Fmod(float fInput,float fDivisor);
+	extern double BURGER_API Fmod(double dInput,double dDivisor);
 }
 /* END */
 

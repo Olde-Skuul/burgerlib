@@ -2752,7 +2752,8 @@ double BURGER_API Burger::Cos(double dInput)
 
 float BURGER_API Burger::Tan(float fInput)
 {
-#if defined(BURGER_WATCOM)
+// Watcom and Mac Class StdC do not have the fast version
+#if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
 	return static_cast<float>(tan(fInput));
 #else
 	return tanf(fInput);
@@ -2766,7 +2767,8 @@ double BURGER_API Burger::Tan(double dInput)
 
 float BURGER_API Burger::ASin(float fInput)
 {
-#if defined(BURGER_WATCOM)
+// Watcom and Mac Class StdC do not have the fast version
+#if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
 	return static_cast<float>(asin(fInput));
 #else
 	return asinf(fInput);
@@ -2780,7 +2782,8 @@ double BURGER_API Burger::ASin(double dInput)
 
 float BURGER_API Burger::ACos(float fInput)
 {
-#if defined(BURGER_WATCOM)
+// Watcom and Mac Class StdC do not have the fast version
+#if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
 	return static_cast<float>(acos(fInput));
 #else
 	return acosf(fInput);
@@ -2794,7 +2797,8 @@ double BURGER_API Burger::ACos(double dInput)
 
 float BURGER_API Burger::ATan(float fInput)
 {
-#if defined(BURGER_WATCOM)
+// Watcom and Mac Class StdC do not have the fast version
+#if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
 	return static_cast<float>(atan(fInput));
 #else
 	return atanf(fInput);
@@ -2808,7 +2812,8 @@ double BURGER_API Burger::ATan(double dInput)
 
 float BURGER_API Burger::ATan2(float fSin,float fCos)
 {
-#if defined(BURGER_WATCOM)
+// Watcom and Mac Class StdC do not have the fast version
+#if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
 	return static_cast<float>(atan2(fSin,fCos));
 #else
 	return atan2f(fSin,fCos);
@@ -2818,4 +2823,96 @@ float BURGER_API Burger::ATan2(float fSin,float fCos)
 double BURGER_API Burger::ATan2(double dSin,double dCos)
 {
 	return atan2(dSin,dCos);
+}
+
+float BURGER_API Burger::Exp(float fInput)
+{
+// Watcom and Mac Class StdC do not have the fast version
+#if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
+	return static_cast<float>(exp(fInput));
+#else
+	return expf(fInput);
+#endif
+}
+
+double BURGER_API Burger::Exp(double dInput)
+{
+	return exp(dInput);
+}
+
+float BURGER_API Burger::Log(float fInput)
+{
+// Watcom and Mac Class StdC do not have the fast version
+#if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
+	return static_cast<float>(log(fInput));
+#else
+	return logf(fInput);
+#endif
+}
+
+double BURGER_API Burger::Log(double dInput)
+{
+	return log(dInput);
+}
+
+static const float LN_2 = 1.44269504088896340736f;
+
+float BURGER_API Burger::Log2(float fInput)
+{
+	return Log(fInput)*LN_2;
+}
+
+double BURGER_API Burger::Log2(double dInput)
+{
+	return Log(dInput)*1.44269504088896340736;
+}
+
+float BURGER_API Burger::Log10(float fInput)
+{
+// Watcom and Mac Class StdC do not have the fast version
+#if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
+	return static_cast<float>(log10(fInput));
+#else
+	return log10f(fInput);
+#endif
+}
+
+double BURGER_API Burger::Log10(double dInput)
+{
+	return log10(dInput);
+}
+
+float BURGER_API Burger::Modf(float fInput,float *pInteger)
+{
+// Watcom and Mac Class StdC do not have the fast version
+#if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
+	double dInteger;
+	float fResult = static_cast<float>(modf(fInput,&dInteger));
+	if (pInteger) {
+		pInteger[0] = static_cast<float>(dInteger);
+	}
+	return fResult;
+#else
+	return modff(fInput,pInteger);
+#endif
+}
+
+double BURGER_API Burger::Modf(double dInput,double *pInteger)
+{
+	return modf(dInput,pInteger);
+}
+
+float BURGER_API Burger::Fmod(float fInput,float fDivisor)
+{
+// Watcom and Mac Class StdC do not have the fast version
+#if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
+	return static_cast<float>(fmod(fInput,fDivisor));
+#else
+	return fmodf(fInput,fDivisor);
+#endif
+}
+
+double BURGER_API Burger::Fmod(double dInput,double dDivisor)
+{
+	return fmod(dInput,dDivisor);
 }

@@ -901,8 +901,37 @@ Word64 BURGER_API Burger::PowerOf2(Word64 uInput)
 	uInput |= uInput>>32;	// Final pass!
 	++uInput;				// Inc and I have the power of 2
 	return uInput;
-
 }
+
+
+/*! ************************************
+
+	\fn Word32 Burger::ToLower(Word32 uInput)
+	\brief Convert a character to lower case
+
+	Using ASCII encoding, check if the value is between 'A' to 'Z' inclusive
+	and if true, convert to 'a' to 'z'.
+	
+	\param uInput ASCII character to convert to lower case
+	\return Character converted to lower case using ASCII encoding
+	\sa ToUpper(Word32)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word32 Burger::ToUpper(Word32 uInput)
+	\brief Convert a character to lower case
+
+	Using ASCII encoding, check if the value is between 'a' to 'z' inclusive
+	and if true, convert to 'A' to 'Z'.
+	
+	\param uInput ASCII character to convert to upper case
+	\return Character converted to upper case using ASCII encoding
+	\sa ToLower(Word32)
+	
+***************************************/
+
 
 /*! ************************************
 
@@ -2086,9 +2115,9 @@ char* BURGER_API Burger::GetFileExtension(const char *pInput)
 	period is discarded and the string pointed by pNewExtension is appended to the Input
 	filename. If no final period is found, then a period is appended and then
 	the new extension is added. If NewExtension has a period as the first character,
-	it will be ignored to prevent a double period from occuring in the final string.
+	it will be ignored to prevent a double period from occurring in the final string.
 
-	You must guarantee that the Input buffer has enough space to accomodate the new
+	You must guarantee that the Input buffer has enough space to accommodate the new
 	extension. This routine will not check for buffer overruns.
 	
 	Examples: "Foo.txt" + "gif" = "Foo.gif", "Foo" + "gif" = "Foo.gif", "Foo.txt" + \ref NULL = "Foo",
@@ -2599,7 +2628,7 @@ WordPtr BURGER_API Burger::StringLength(const char *pInput)
 		uAddTemp = uSample+0xFEFEFEFFU;	// Do the vector addition for 0x01-0x80
 		uAddTemp &= (~uSample);			// Perform the xor test for 0x80-0xFF
 		if (uAddTemp&0x80808080U) {		// All bytes are non-zero, loop
-			goto Skip1;					// If TRUE then a transition occured
+			goto Skip1;					// If TRUE then a transition occurred
 		}
 	}
 
@@ -2947,7 +2976,7 @@ char * BURGER_API Burger::StringDuplicate(const char *pInput)
 
 	\param pInput Pointer to the "C" string to copy. A null pointer will page fault.
 	\param uPadding Number of bytes to extend the buffer.
-	\return A pointer to the copy of the string. Or \ref NULL if a memory error occured.
+	\return A pointer to the copy of the string. Or \ref NULL if a memory error occurred.
 	\sa Burger::StringDuplicate(const char *) or Burger::StringDelete(const char *)
 
 ***************************************/
@@ -3094,7 +3123,7 @@ void BURGER_API Burger::StringConcatenate(Word16 *pOutput,WordPtr uOutputSize,co
 
 	\brief Compare two "C" strings for equality
 	
-	Given pointers to two "C" strings, compare them for equalty by using
+	Given pointers to two "C" strings, compare them for equality by using
 	a subtraction of the first buffer to the second. If the subtraction's
 	result is non-zero, sign extend the result and return it immediately.
 	If both buffers are identical, return zero.
@@ -3128,7 +3157,7 @@ int BURGER_API Burger::StringCompare(const char *pInput1,const char *pInput2)
 
 	\brief Compare two "C" strings for equality, case sensitive, length delimited
 	
-	Given pointers to two "C" strings, compare them for equalty by using
+	Given pointers to two "C" strings, compare them for equality by using
 	a subtraction of the first buffer to the second. If the subtraction's
 	result is non-zero, sign extend the result and return it immediately.
 	If both buffers are identical, return zero.
@@ -3168,7 +3197,7 @@ int BURGER_API Burger::StringCompare(const char *pInput1,const char *pInput2,Wor
 
 	\brief Compare two 16 bit "C" strings for equality
 	
-	Given pointers to two 16 bit "C" strings, compare them for equalty by using
+	Given pointers to two 16 bit "C" strings, compare them for equality by using
 	a subtraction of the first buffer to the second. If the subtraction's
 	result is non-zero, sign extend the result and return it immediately.
 	If both buffers are identical, return zero.
@@ -3202,7 +3231,7 @@ int BURGER_API Burger::StringCompare(const Word16 *pInput1,const Word16 *pInput2
 
 	\brief Compare two 16 bit "C" strings for equality, case sensitive, length delimited
 	
-	Given pointers to two 16 bit "C" strings, compare them for equalty by using
+	Given pointers to two 16 bit "C" strings, compare them for equality by using
 	a subtraction of the first buffer to the second. If the subtraction's
 	result is non-zero, sign extend the result and return it immediately.
 	If both buffers are identical, return zero.
@@ -3243,7 +3272,7 @@ int BURGER_API Burger::StringCompare(const Word16 *pInput1,const Word16 *pInput2
 
 	\brief Compare two "C" strings for equality, case insensitive
 	
-	Given pointers to two "C" strings, compare them for equalty by using
+	Given pointers to two "C" strings, compare them for equality by using
 	a subtraction of the first buffer to the second. If the subtraction's
 	result is non-zero, sign extend the result and return it immediately.
 	If both buffers are identical, return zero. If the characters in the string
@@ -3283,7 +3312,7 @@ int BURGER_API Burger::StringCaseCompare(const char *pInput1,const char *pInput2
 
 	\brief Compare two "C" strings for equality, case insensitive, length delimited
 	
-	Given pointers to two "C" strings, compare them for equalty by using
+	Given pointers to two "C" strings, compare them for equality by using
 	a subtraction of the first buffer to the second. If the subtraction's
 	result is non-zero, sign extend the result and return it immediately.
 	If both buffers are identical, return zero. If the characters in the string
@@ -3364,7 +3393,7 @@ int BURGER_API Burger::MemoryCompare(const void *pInput1,const void *pInput2,Wor
 
 	\brief Compare two byte buffers for equality, case insensitive
 	
-	Given pointers to two unsiged byte arrays, compare them for equalty by using
+	Given pointers to two unsigned byte arrays, compare them for equality by using
 	a subtraction of the first buffer to the second. If the subtraction's
 	result is non-zero, sign extend the result and return it immediately.
 	If both buffers are identical, return zero. If the byte is an upper case ASCII
@@ -3556,7 +3585,7 @@ void BURGER_API Burger::StringUppercase(char *pInput)
 	Copy a string and convert all 'a'-'z' characters to 'A'-'Z'. No localization
 	is performed and no other characters are altered.
 	
-	\param pOutput Pointer to a buffer large enoungh to hold the input "C" string.
+	\param pOutput Pointer to a buffer large enough to hold the input "C" string.
 	\param pInput Pointer to "C" string to modify.
 	\sa Burger::StringUppercase(char *) and Burger::StringLowercase(char *,const char *)
 
@@ -3614,7 +3643,7 @@ void BURGER_API Burger::StringLowercase(char *pInput)
 	Copy a string and convert all 'A'-'Z' characters to 'a'-'z'. No localization
 	is performed and no other characters are altered.
 	
-	\param pOutput Pointer to a buffer large enoungh to hold the input "C" string.
+	\param pOutput Pointer to a buffer large enough to hold the input "C" string.
 	\param pInput Pointer to "C" string to modify.
 	\sa Burger::StringLowercase(char *) and Burger::StringUppercase(char *,const char *)
 
@@ -5332,7 +5361,7 @@ static const BooleanLookup_t g_BooleanLookup[] = {
 Word BURGER_API Burger::AsciiToBoolean(const char *pInput,const char **pDest)
 {
 	const BooleanLookup_t *pBooleanLookup = g_BooleanLookup;
-	WordPtr i = sizeof(g_BooleanLookup)/sizeof(g_BooleanLookup[0]);
+	WordPtr i = BURGER_ARRAYSIZE(g_BooleanLookup);
 	do {
 		if (!MemoryCaseCompare(pBooleanLookup->m_pASCII,pInput,pBooleanLookup->m_uSize)) {
 			if (pDest) {

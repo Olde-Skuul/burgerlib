@@ -202,7 +202,7 @@ static const ScanCodeTranslation_t *ScanCodeTranslate(Word uWindowsCode)
 {
 	// Get the table address
 	const ScanCodeTranslation_t *pTranslationTable = TranslationTable;
-	Word i = sizeof(TranslationTable)/sizeof(TranslationTable[0]);
+	Word i = BURGER_ARRAYSIZE(TranslationTable);
 	const ScanCodeTranslation_t *pResult = NULL;
 	// Iterate over the table
 	do {

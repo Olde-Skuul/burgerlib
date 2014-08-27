@@ -45,7 +45,7 @@ static const char *s_HelpCommands[] = {
 		&Frequency,
 		&Length
 	};
-	argc = CommandParameter::Process(argc,argv,MyParms,sizeof(MyParms)/sizeof(MyParms[0]),
+	argc = CommandParameter::Process(argc,argv,MyParms,BURGER_ARRAYSIZE(MyParms)),
 		"Dump's the contents of a file to stdout.\nCopyright by Rebecca Ann Heineman\n",2);
 	if (argc<0) {
 		Globals::SetErrorCode(10);
@@ -306,7 +306,7 @@ int Burger::CommandParameter::Process(int argc,const char **argv,const CommandPa
 
 				// Test again all of the entries for this object
 				const char **ppParameterNames = s_HelpCommands;
-				WordPtr uListCount = sizeof(s_HelpCommands)/sizeof(s_HelpCommands[0]);
+				WordPtr uListCount = BURGER_ARRAYSIZE(s_HelpCommands);
 				do {
 					const char *pParameterName = ppParameterNames[0];
 					++ppParameterNames;

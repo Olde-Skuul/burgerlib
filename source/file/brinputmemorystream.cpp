@@ -824,7 +824,7 @@ WordPtr BURGER_API Burger::InputMemoryStream::Get(void *pOutput,WordPtr uOutputS
 	that order) and store it in the output RGBWord8_t
 	structure.
 
-	\param Pointer to a buffer to store the output
+	\param pOutput Pointer to a buffer to store the output
 	\return Zero if no error, non zero if there isn't enough data in the stream for the output.
 	\sa Get(RGBAWord8_t *)
 
@@ -862,7 +862,7 @@ Word BURGER_API Burger::InputMemoryStream::Get(RGBWord8_t *pOutput)
 	that order) and store it in the output RGBAWord8_t
 	structure.
 
-	\param Pointer to a buffer to store the output
+	\param pOutput Pointer to a buffer to store the output
 	\return Zero if no error, non zero if there isn't enough data in the stream for the output.
 	\sa Get(RGBWord8_t *)
 
@@ -902,7 +902,7 @@ Word BURGER_API Burger::InputMemoryStream::Get(RGBAWord8_t *pOutput)
 	of 32 bit floating point values and store it in
 	the output Vector2D_t structure.
 
-	\param Pointer to a buffer to store the output
+	\param pOutput Pointer to a buffer to store the output
 	\return Zero if no error, non zero if there isn't enough data in the stream for the output.
 	\sa Get(Vector3D_t *) or Get(Vector4D_t *)
 
@@ -937,7 +937,7 @@ Word BURGER_API Burger::InputMemoryStream::Get(Vector2D_t *pOutput)
 	of 32 bit floating point values and store it in
 	the output Vector3D_t structure.
 
-	\param Pointer to a buffer to store the output
+	\param pOutput Pointer to a buffer to store the output
 	\return Zero if no error, non zero if there isn't enough data in the stream for the output.
 	\sa Get(Vector2D_t *) or Get(Vector4D_t *)
 
@@ -974,7 +974,7 @@ Word BURGER_API Burger::InputMemoryStream::Get(Vector3D_t *pOutput)
 	of 32 bit floating point values and store it in
 	the output Vector4D_t structure.
 
-	\param Pointer to a buffer to store the output
+	\param pOutput Pointer to a buffer to store the output
 	\return Zero if no error, non zero if there isn't enough data in the stream for the output.
 	\sa Get(Vector2D_t *) or Get(Vector3D_t *)
 

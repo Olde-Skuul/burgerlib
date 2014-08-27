@@ -30,7 +30,7 @@
 	<PropertyGroup Label="UserMacros" />
 	<ItemDefinitionGroup>
 		<ClCompile>
-			<AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\text;$(ProjectDir)..\source\shield;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 		</ClCompile>
 	</ItemDefinitionGroup>
 	<ItemGroup>
@@ -142,6 +142,7 @@
 		<ClInclude Include="..\source\memory\brglobalmemorymanager.h" />
 		<ClInclude Include="..\source\memory\brmemoryhandle.h" />
 		<ClInclude Include="..\source\memory\brmemorymanager.h" />
+		<ClInclude Include="..\source\shield\brshieldtypes.h" />
 		<ClInclude Include="..\source\templateburgerbase.h" />
 		<ClInclude Include="..\source\text\brisolatin1.h" />
 		<ClInclude Include="..\source\text\brmacromanus.h" />
@@ -254,6 +255,9 @@
 		<ClCompile Include="..\source\memory\brglobalmemorymanager.cpp" />
 		<ClCompile Include="..\source\memory\brmemoryhandle.cpp" />
 		<ClCompile Include="..\source\memory\brmemorymanager.cpp" />
+		<ClCompile Include="..\source\shield\brcodelibraryshield.cpp" />
+		<ClCompile Include="..\source\shield\brcriticalsectionshield.cpp" />
+		<ClCompile Include="..\source\shield\brtickshield.cpp" />
 		<ClCompile Include="..\source\text\brisolatin1.cpp" />
 		<ClCompile Include="..\source\text\brmacromanus.cpp" />
 		<ClCompile Include="..\source\text\brnumberstring.cpp" />

@@ -36,15 +36,18 @@ class CodeLibrary {
 #if defined(BURGER_MAC) || defined(DOXYGEN)
 	OpaqueCFragConnectionID *m_pLibInstance;	///< Instance of the code fragment library (MacOS only)
 #endif
+#if (defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+	void *m_pLibInstance;			///< Instance of the code library (Android/MacOSX/iOS only)
+#endif
 public:
-#if (defined(BURGER_WINDOWS) || defined(BURGER_MAC)) || defined(DOXYGEN)
+#if (defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 	CodeLibrary() : m_pLibInstance(NULL) {}
 	~CodeLibrary();
 #endif
 	Word Init(const char *pFilename);
 	void Shutdown(void);
 	void *GetFunction(const char *pFunctionName);
-#if defined(BURGER_WINDOWS) || defined(BURGER_MAC)
+#if (defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 	BURGER_INLINE Word IsInitialized(void) const { return m_pLibInstance!=NULL; }
 #else
 	BURGER_INLINE Word IsInitialized(void) const { return FALSE; }

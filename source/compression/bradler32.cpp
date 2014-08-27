@@ -25,8 +25,8 @@
 // will not be the same as found in deflate/inflate gzip
 // archives. This is a bad thing.
 
-#define LARGESTPRIME 65521L // The largest prime smaller than 65536
-#define LARGESTBLOCK 5552	// This is the largest n such that 255n(n+1)/2 + (n+1)(BASE-1) <= 2^32-1
+#define LARGESTPRIME 65521U // The largest prime smaller than 65536
+#define LARGESTBLOCK 5552U	// This is the largest n such that 255n(n+1)/2 + (n+1)(BASE-1) <= 2^32-1
 #endif
 
 /*! ************************************
