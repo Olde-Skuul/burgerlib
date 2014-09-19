@@ -250,6 +250,9 @@
 		"projectname": "unittests",
 		"kind": "tool",
 		"finalfolder": null,
+		"xcode" : {
+			"frameworks": ["OpenGL.framework","IOKit.framework"]
+		},
 		"sourcefolders": [
 			"../source",
 			"../source/ansi",

@@ -53,7 +53,12 @@ Word Burger::DisplayDirectX9::InitContext(void)
 	//
 	// Create my directx9 instance and store it
 	//
-	IDirect3D9 *pDirect3D9 = Globals::Direct3DCreate9(DIRECT3D_VERSION);
+
+	IDirect3D9 *pDirect3D9 = m_pDirect3D9;
+	if (pDirect3D9) {
+		PostShutdown();
+	}
+	pDirect3D9 = Globals::Direct3DCreate9(DIRECT3D_VERSION);
 	if (!pDirect3D9) {
 		return 10;		// Boned?
 	}

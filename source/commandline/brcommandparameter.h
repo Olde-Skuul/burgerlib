@@ -25,6 +25,7 @@
 /* BEGIN */
 namespace Burger {
 class CommandParameter : public Base {
+	BURGER_RTTI_IN_CLASS();
 	const char *m_pHelp;				///< Pointer to the optional help string
 	const char *const *m_ppParameterNames;		///< Array of "C" strings of the -parameter (Minus the -)
 	WordPtr m_uParameterCount;			///< Number of possible strings to check

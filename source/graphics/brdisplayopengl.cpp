@@ -24,6 +24,7 @@
 #include "brgl.h"
 #include "brglext.h"
 #endif
+#include "brdebug.h"
 
 /*! ************************************
 
@@ -128,6 +129,17 @@ Word BURGER_API Burger::DisplayOpenGL::LoadShader(Word GLEnum,const char *pShade
 		// Did it compile okay?
 		glGetShaderiv(uShader,GL_COMPILE_STATUS,&bCompiled);
 		if (bCompiled==GL_FALSE) {
+			// Dump out what happened so a programmer
+			// can debug the faulty shader
+			GLint iLogLength;
+			glGetShaderiv(uShader,GL_INFO_LOG_LENGTH,&iLogLength);
+			if (iLogLength > 1) {
+				// iLogLength includes space for the terminating null at the end of the string
+				GLchar *pLog = static_cast<GLchar*>(Alloc(iLogLength));
+				glGetShaderInfoLog(uShader,iLogLength,&iLogLength,pLog);
+				Debug::Message("Shader compile log:\n%s\n",pLog);
+				Free(pLog);
+			}
 			glDeleteShader(uShader);
 			uShader = 0;
 		}
@@ -276,5 +288,44 @@ WordPtr BURGER_API Burger::DisplayOpenGL::GetGLTypeSize(Word uGLTypeEnum)
 WordPtr BURGER_API Burger::DisplayOpenGL::GetGLTypeSize(Word /* uGLTypeEnum */)
 {
 	return 0;
+}
+#endif
+
+/*! ************************************
+ 
+	\brief Poll OpenGL for errors and print them
+ 
+	Call glGetError(), and if any errors were found, 
+	print them using Debug::Warning().
+ 
+	Used for debugging OpenGL
+ 
+	\param pErrorLocation Pointer to a string that describes where this
+		error condition could be occurring.
+ 
+	\return \ref TRUE if an error was found, \ref FALSE if not
+ 
+***************************************/
+
+#if defined(GL_SUPPORTED) || defined(DOXYGEN)
+
+Word BURGER_API Burger::DisplayOpenGL::PrintGLError(const char *pErrorLocation)
+{
+	Word uResult = FALSE;
+	GLenum eError = glGetError();
+	if (eError != GL_NO_ERROR) {
+		do {
+			Debug::Message("GLError %s set in location %s\n",GetErrorString(static_cast<Word>(eError)),pErrorLocation);
+			eError = glGetError();
+		} while (eError != GL_NO_ERROR);
+		uResult = TRUE;
+	}
+	return uResult;
+}
+#else
+Word BURGER_API Burger::DisplayOpenGL::PrintGLError(const char *pErrorLocation)
+{
+	Debug::Warning("OpenGL is not supported in location %s\n",pErrorLocation);
+	return TRUE;
 }
 #endif

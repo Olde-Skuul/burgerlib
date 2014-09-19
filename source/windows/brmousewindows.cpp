@@ -13,49 +13,192 @@
 
 #include "brmouse.h"
 
-#if defined(BURGER_WINDOWS)
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+
+#if !defined(DOXYGEN)
 #define DIRECTINPUT_VERSION 0x0800
+#if !defined(_WIN32_WINNT)
+#define _WIN32_WINNT 0x0501				// Windows XP
+#endif
 #include "brwindowsapp.h"
 #include "brglobals.h"
+#include "brcriticalsection.h"
+#include "bratomic.h"
 #include <dinput.h>
+#include <stdio.h>
+#include <winreg.h>
+#include <Setupapi.h>
+#include <devguid.h>
 
-// Number of mouse events in the cache
-// Has to be high since the player could be swiping the mouse and if
-// it's a high resolution mouse, the events could stack up quickly
+// Size of the mouse buffer for reading events from DirectInput
+#define DIRECTINPUT_MOUSEBUFFERSIZE 16
 
-#define DIRECTINPUT_MOUSEBUFFERSIZE 128
+#endif
 
-//
-// Initialize the mouse class
-// 
+/*! ************************************
+
+	\brief Windows thread for monitoring mouse events (Windows only)
+
+	Burgerlib reads mouse events using DirectInput and
+	asynchronous thread events.
+
+	This function runs as a separate thread and processes
+	all DirectInput events.
+
+	\note This is used by the mouse manager, it's not intended
+	to be used by applications.
+
+	\param pData Pointer to the Mouse class instance
+	\return Zero when asked to shut down
+
+***************************************/
+
+WordPtr BURGER_API Burger::Mouse::WindowsMouseThread(void *pData)
+{
+	// Get the pointer to the class instance
+	Mouse *pThis = static_cast<Mouse *>(pData);
+	DWORD uEventCode;
+	for (;;) {
+		// Sleep until an event occurred from DirectInput (Or shutdown)
+		uEventCode = WaitForSingleObject(pThis->m_pMouseEvent,INFINITE);
+		// Was the quit flag set for shutdown?
+		if (pThis->m_bQuit) {
+			break;
+		}
+		if (uEventCode==WAIT_OBJECT_0) {
+			
+			// Buffer to receive the mouse events
+			DIDEVICEOBJECTDATA MouseData[DIRECTINPUT_MOUSEBUFFERSIZE];
+			// Number of maximum entries to read!
+			DWORD uCount = DIRECTINPUT_MOUSEBUFFERSIZE;
+			IDirectInputDevice8W *pMouseDevice = pThis->m_pMouseDevice;
+
+			// Let's get the data from the mouse device
+			HRESULT hResult = pMouseDevice->GetDeviceData(sizeof(DIDEVICEOBJECTDATA),MouseData,&uCount,0);
+			if (hResult<0) {
+				// Error? Try getting the mouse again
+				if (hResult == DIERR_INPUTLOST) {
+					hResult = pMouseDevice->Acquire();
+					if (hResult>=0) {
+						// The mouse was reacquired, pull the data
+						uCount = DIRECTINPUT_MOUSEBUFFERSIZE;
+						hResult = pMouseDevice->GetDeviceData(sizeof(DIDEVICEOBJECTDATA),MouseData,&uCount,0);
+					} else {
+						pThis->m_bAcquired = FALSE;
+					}
+				} else {
+					pThis->m_bAcquired = FALSE;
+				}
+			}
+
+			// Was there any data read?
+			if (hResult>=0) {
+				Word i = uCount;
+				if (i) {
+					// Lock the data and update it
+					pThis->m_MouseLock.Lock();
+					const DIDEVICEOBJECTDATA *pObject = MouseData;
+					do {
+						// Offset into the data
+						DWORD uDataOffset = pObject->dwOfs;
+						// Data read in
+						DWORD uData = pObject->dwData;
+
+						// Mouse X motion event
+						if (uDataOffset==DIMOFS_X) {
+							// Update the mouse delta
+							pThis->PostMouseMotion(static_cast<Int32>(uData),0,pObject->dwTimeStamp);
+						// Mouse Y motion event
+						} else if (uDataOffset==DIMOFS_Y) {
+							// Update the mouse delta
+							pThis->PostMouseMotion(0,static_cast<Int32>(uData),pObject->dwTimeStamp);
+						// Handle the mouse Z
+						} else if (uDataOffset==DIMOFS_Z) {
+							pThis->PostMouseWheel(0,static_cast<Int32>(uData)/WHEEL_DELTA,pObject->dwTimeStamp);
+
+						// Handle the button downs
+						} else if ((uDataOffset>=DIMOFS_BUTTON0) && (uDataOffset<=DIMOFS_BUTTON7)) {
+							// Create the bitmask
+							uDataOffset-=DIMOFS_BUTTON0;
+							
+							// If the mouse click is left or right, then switch them if
+							// the user is left handed
+
+							if (uDataOffset<2) {
+								if (pThis->m_bButtonSwap) {
+									uDataOffset^=1;
+								}
+							}
+							Word uMask = 1U<<uDataOffset;
+							// Mouse down?
+							if (uData&0x80) {
+								// Press the button
+								pThis->PostMouseDown(uMask,pObject->dwTimeStamp);
+							} else {
+								// Clear the button
+								pThis->PostMouseUp(uMask,pObject->dwTimeStamp);
+							}
+						}
+						++pObject;
+					} while (--i);
+					pThis->m_MouseLock.Unlock();
+				}
+			}
+		}
+	}
+	// Exit normally
+	return 0;
+}
+
+/***************************************
+
+	Initialize the mouse class
+
+***************************************/
 
 Burger::Mouse::Mouse(GameApp *pAppInstance) :
 	m_pAppInstance(pAppInstance),
+	m_MouseLock(),
+	m_pMouseDevice(NULL),
+	m_pMouseEvent(NULL),
+	m_MouseThread(),
+	m_bAcquired(FALSE),
+	m_bQuit(FALSE),
 	m_uX(0),
 	m_uY(0),
 	m_uBoundsX(640),
 	m_uBoundsY(480),
 	m_iDeltaX(0),
 	m_iDeltaY(0),
-	m_iMouseWheel(0),
+	m_iMouseWheelX(0),
+	m_iMouseWheelY(0),
 	m_uButtons(0),
 	m_uPressedButtons(0),
-	m_pMouseDevice(NULL)
+	m_bButtonSwap(FALSE),
+	m_uArrayStart(0),
+	m_uArrayEnd(0)
 {
+	// Back link to the game app
+
 	pAppInstance->SetMouse(this);
-	IDirectInput8W* pDirectInput8W;
+
+	// Read the left/right state from windows
+	ReadSystemMouseValues();
 
 	// First step, obtain DirectInput
 
-	if (!Burger::Globals::DirectInput8Create(&pDirectInput8W)) {
+	IDirectInput8W* pDirectInput8W;
+	if (!Globals::DirectInput8Create(&pDirectInput8W)) {
 
 		// Create a system mouse device (Merges all mice)
 
 		IDirectInputDevice8W *pMouseDeviceLocal = NULL;
 		HRESULT hResult = pDirectInput8W->CreateDevice(GUID_SysMouse,&pMouseDeviceLocal,NULL);
 		if (hResult>=0) {
-			// Set the default data format of x,y,wheel and 8 buttons
+
+			// Set the default data format of x, y, wheel and 8 buttons
 			IDirectInputDevice8W *pMouseDevice = pMouseDeviceLocal;
+			m_pMouseDevice = pMouseDevice;
 			hResult = pMouseDevice->SetDataFormat(&c_dfDIMouse2);
 			if (hResult>=0) {
 
@@ -73,161 +216,177 @@ Burger::Mouse::Mouse(GameApp *pAppInstance) :
 					MouseProperties.dwData = DIRECTINPUT_MOUSEBUFFERSIZE;
 					hResult = pMouseDevice->SetProperty(DIPROP_BUFFERSIZE,&MouseProperties.diph);
 					if (hResult>=0) {
-						// Obtain the default mouse position
-						Acquire();
-						pAppInstance->AddRoutine(Poll,this);
+						// Create an event for thread callbacks
+						m_pMouseEvent = CreateEventW(NULL,FALSE,FALSE,NULL);
+						hResult = pMouseDevice->SetEventNotification(m_pMouseEvent);
+						m_MouseThread.Start(WindowsMouseThread,this);
+
+						// Acquire Direct Input only if the application is full screen
+						if (pAppInstance->IsAppFullScreen()) {
+							AcquireDirectInput();
+						}
 					}
 				}
 			}
+
+			// If there was an error, shut down
 			if (hResult<0) {
 				// Uh oh...
 				pMouseDevice->Unacquire();
+				m_bAcquired = FALSE;
+				pMouseDevice->SetEventNotification(NULL);
+				if (m_pMouseEvent) {
+					// Send the quit event
+					m_bQuit = TRUE;
+					SetEvent(m_pMouseEvent);
+					// Wait for the thread to shut down
+					m_MouseThread.Wait();
+					CloseHandle(m_pMouseEvent);
+					m_pMouseEvent = NULL;
+				}
+				// Release Direct Input
 				pMouseDevice->Release();
-			} else {
-				m_pMouseDevice = pMouseDevice;
+				m_pMouseDevice = NULL;
 			}
 		}
 	}
 }
 
-//
-// Shut down the mouse class
-//
+/***************************************
+
+	Shut down the mouse class
+
+***************************************/
 
 Burger::Mouse::~Mouse()
 {
 	m_pAppInstance->SetMouse(NULL);
-	m_pAppInstance->RemoveRoutine(Poll,this);
 	// Was a device allocated?
 	IDirectInputDevice8W *pMouseDevice = m_pMouseDevice;
 	if (pMouseDevice) {
 		// Release it!
 		pMouseDevice->Unacquire();
+		m_bAcquired = FALSE;
+		// Turn off asynchronous events
+		pMouseDevice->SetEventNotification(NULL);
+		m_bQuit = TRUE;
+		// Send the quit event
+		SetEvent(m_pMouseEvent);
+		// Wait for the thread to shut down
+		m_MouseThread.Wait();
+		// Release the events
+		CloseHandle(m_pMouseEvent);
+		m_pMouseEvent = NULL;
+		// Release Direct Input
 		pMouseDevice->Release();
 		m_pMouseDevice = NULL;
 	}
 }
 
-//
-// Poll DirectInput for mouse events
-//
+/***************************************
 
-Burger::RunQueue::eReturnCode BURGER_API Burger::Mouse::Poll(void *pData)
+	Return TRUE if a mouse is present in the device list
+
+***************************************/
+
+Word Burger::Mouse::IsPresent(void) const
 {
-	Mouse *pThis = static_cast<Mouse *>(pData);
-	// Poll the mouse device for events
-	IDirectInputDevice8W *pMouseDevice = pThis->m_pMouseDevice;
-	if (pMouseDevice) {
-
-		// Buffer to receive the keyboard events
-		DIDEVICEOBJECTDATA MouseData[DIRECTINPUT_MOUSEBUFFERSIZE];
-		DWORD uCount = DIRECTINPUT_MOUSEBUFFERSIZE;
-
-		// Let's get the data from the keyboard device
-		HRESULT hResult = pMouseDevice->GetDeviceData(sizeof(DIDEVICEOBJECTDATA),MouseData,&uCount,0);
-		if (hResult<0) {
-			// Try getting the keyboard again
-			if ((hResult == DIERR_INPUTLOST) || (hResult == DIERR_NOTACQUIRED)) {
-				hResult = pMouseDevice->Acquire();
-				if (hResult>=0) {
-					// The keyboard was reacquired, pull the data
-					uCount = DIRECTINPUT_MOUSEBUFFERSIZE;
-					hResult = pMouseDevice->GetDeviceData(sizeof(DIDEVICEOBJECTDATA),MouseData,&uCount,0);
-				}
+	GUID HIDGUID;
+	// Get the HID GUID
+	Globals::HidD_GetHidGuid(&HIDGUID);
+	HDEVINFO hDevInfo = Globals::SetupDiGetClassDevsW(&HIDGUID,NULL,NULL,DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+	Word uResult = FALSE;
+	if (hDevInfo!=INVALID_HANDLE_VALUE) {
+		uResult = TRUE;
+		// Start at the first device
+		Word32 uIndex = 0;
+		for (;;) {
+			SP_DEVICE_INTERFACE_DATA DeviceInterface;
+			DeviceInterface.cbSize = sizeof(DeviceInterface);
+			if (!Globals::SetupDiEnumDeviceInterfaces(hDevInfo,NULL,&HIDGUID,uIndex,&DeviceInterface)) {
+				// Likely reached the end of the list
+				break;
 			}
+			// Query the device name
+			Word8 Buffer[4096];
+			SP_DEVICE_INTERFACE_DETAIL_DATA_W *pDeviceInterfaceDetailData = reinterpret_cast<SP_DEVICE_INTERFACE_DETAIL_DATA_W *>(Buffer);
+			pDeviceInterfaceDetailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
+			SP_DEVINFO_DATA DeviceInfoData;
+			DeviceInfoData.cbSize = sizeof(DeviceInfoData);
+			// Get the details about this device
+			if (!Globals::SetupDiGetDeviceInterfaceDetailW(hDevInfo,&DeviceInterface,pDeviceInterfaceDetailData,sizeof(Buffer),NULL,&DeviceInfoData)) {\
+				break;
+			}
+			// Is this a mouse device?
+			if (GUIDIsEqual(&DeviceInfoData.ClassGuid,&GUID_DEVCLASS_MOUSE)) {
+				uResult = TRUE;
+				break;
+			}
+			++uIndex;
 		}
+		// Clean up
+		Globals::SetupDiDestroyDeviceInfoList(hDevInfo);
+	}
+	// Return TRUE or FALSE if there was a mouse in the device list
+	return uResult;
+}
 
-		// Was there any data read?
+/*! ************************************
+
+	\brief Acquire DirectInput (Windows only)
+
+	Call Acquire() on the DirectInput mouse device.
+
+	\sa UnacquireDirectInput(void)
+
+***************************************/
+
+void Burger::Mouse::AcquireDirectInput(void)
+{
+	IDirectInputDevice8W *pMouseDevice = m_pMouseDevice;
+	if (pMouseDevice) {
+		HRESULT hResult = pMouseDevice->Acquire();
 		if (hResult>=0) {
-			Word i = uCount;
-			if (i) {
-				const DIDEVICEOBJECTDATA *pObject = MouseData;
-				do {
-					DWORD uDataType = pObject->dwOfs;
-					DWORD uData = pObject->dwData;
-					if (uDataType==DIMOFS_X) {
-						int iOffsetX = static_cast<int>(uData);
-						pThis->m_iDeltaX += iOffsetX;
-						iOffsetX += pThis->m_uX;
-						if (iOffsetX<0) {
-							iOffsetX = 0;
-						}
-						if (static_cast<Word>(iOffsetX)>=pThis->m_uBoundsX) {
-							iOffsetX = static_cast<int>(pThis->m_uBoundsX)-1;
-						}
-						pThis->m_uX = static_cast<Word>(iOffsetX);
-
-					} else if (uDataType==DIMOFS_Y) {
-						int iOffsetY = static_cast<int>(uData);
-						pThis->m_iDeltaY += iOffsetY;
-						iOffsetY += pThis->m_uY;
-						if (iOffsetY<0) {
-							iOffsetY = 0;
-						}
-						if (static_cast<Word>(iOffsetY)>=pThis->m_uBoundsY) {
-							iOffsetY = static_cast<int>(pThis->m_uBoundsY)-1;
-						}
-						pThis->m_uY = static_cast<Word>(iOffsetY);
-
-					} else if (uDataType==DIMOFS_Z) {
-						pThis->m_iMouseWheel += static_cast<int>(uData);
-					} else if ((uDataType>=DIMOFS_BUTTON0) && (uDataType<=DIMOFS_BUTTON7)) {
-						uDataType-=DIMOFS_BUTTON0;
-						Word uMask = 1U<<uDataType;
-						Word uButtons = pThis->m_uButtons;
-						if (uData&0x80) {
-							uButtons |= uMask;
-							pThis->m_uPressedButtons |= uMask;
-						} else {
-							uButtons &= (~uMask);
-						}
-						pThis->m_uButtons = uButtons;
-					}
-					++pObject;
-				} while (--i);
-			}
+			m_bAcquired = TRUE;
 		}
 	}
-	return RunQueue::OKAY;
 }
 
-Word Burger::Mouse::IsPresent()
-{
-	return TRUE;
-}
+/*! ************************************
 
-Word Burger::Mouse::ReadButtons(void)
-{
-	return m_uButtons;
-}
+	\brief Release DirectInput (Windows only)
 
+	Call Unacquire() on the DirectInput mouse device.
 
-void Burger::Mouse::Acquire(void)
-{
-	// Obtain the default mouse position
-	POINT MousePos;
-	GetCursorPos(&MousePos);
-	ScreenToClient(static_cast<WindowsApp *>(m_pAppInstance)->GetWindow(),&MousePos);
-	m_uX = MousePos.x;
-	m_uY = MousePos.y;
-	IDirectInputDevice8W *pMouseDevice = m_pMouseDevice;
-	if (pMouseDevice) {
-		pMouseDevice->Acquire();
-	}
-}
+	\sa AcquireDirectInput(void)
 
-void Burger::Mouse::Unacquire(void)
+***************************************/
+
+void Burger::Mouse::UnacquireDirectInput(void)
 {
 	IDirectInputDevice8W *pMouseDevice = m_pMouseDevice;
 	if (pMouseDevice) {
+		m_bAcquired = FALSE;
 		pMouseDevice->Unacquire();
-		// Obtain the default mouse position
-		POINT MousePos;
-		MousePos.x = m_uX;
-		MousePos.y = m_uY;
-		ClientToScreen(static_cast<WindowsApp *>(m_pAppInstance)->GetWindow(),&MousePos);
-		SetCursorPos(MousePos.x,MousePos.y);
 	}
+}
+
+/*! ************************************
+
+	\brief Read System mouse constants (Windows only)
+
+	On startup and when a WM_SETTINGCHANGE event is triggered,
+	read the settings for the mouse button swap from
+	Windows and record it so left/right is as the user requested it.
+
+***************************************/
+
+void BURGER_API Burger::Mouse::ReadSystemMouseValues(void)
+{
+	// Get the initial keyboard delay to mimic the user's desired response
+	// This is set in the Keyboard windows control panel
+
+	m_bButtonSwap = GetSystemMetrics(SM_SWAPBUTTON)!=0;
 }
 
 

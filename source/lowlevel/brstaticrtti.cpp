@@ -15,8 +15,8 @@
 
 /*! ************************************
 
-	\class Burger::StaticRTTI
-	\brief Class to handle simple Run Time Type Identification
+	\struct Burger::StaticRTTI
+	\brief Structure to handle simple Run Time Type Identification
 
 	This implements a method for handling run time type identification
 	without any runtime overhead and a tiny amount of memory space
@@ -42,7 +42,7 @@
 	public:
 		foo() {}
 		virtual ~foo() {}
-		BURGER_RTTI_IN_CLASS();		// Insert magic code
+		BURGER_RTTI_IN_BASE_CLASS();	// Insert magic code
 	};
 
 	// Derived classes
@@ -153,26 +153,6 @@
 
 ***************************************/
 
-/*! ************************************
-
-	\brief Constructor of a StaticRTTI class.
-	
-	Initialize a global StaticRTTI class.
-
-	It's discouraged from creating this directly, instead,
-	use the macro \ref BURGER_CREATE_STATICRTTI_BASE
-	or \ref BURGER_CREATE_STATICRTTI_PARENT
-	
-	\param pClassName Pointer to a "C" string with the name of the class
-	\param pParent Pointer to the parent class' StaticRTTI 
-		entry or \ref NULL if this is the base class
-
-***************************************/
-
-Burger::StaticRTTI::StaticRTTI(const char* pClassName,const StaticRTTI *pParent) :
-	m_pClassName(pClassName),
-	m_pParent(pParent)
-{}
 
 /*! ************************************
 
@@ -211,13 +191,28 @@ Word BURGER_API Burger::StaticRTTI::IsInList(const StaticRTTI *pInput) const
 
 /*! ************************************
 
+	\def BURGER_RTTI_IN_BASE_CLASS()
+	\brief Macro for StaticRTTI support in a base class
+
+	If a class needs to support StaticRTTI, insert this
+	macro in the class declaration. Unlike the macro
+	BURGER_RTTI_IN_CLASS(), this one adds the inline
+	function GetClassName() to retrieve the name of the
+	class easily.
+	
+	\sa Burger::StaticRTTI, BURGER_RTTI_IN_CLASS, BURGER_CREATE_STATICRTTI_BASE or BURGER_CREATE_STATICRTTI_PARENT
+	
+***************************************/
+
+/*! ************************************
+
 	\def BURGER_RTTI_IN_CLASS()
 	\brief Macro for StaticRTTI support in a class
 
 	If a class needs to support StaticRTTI, insert this
 	macro in the class declaration.
 	
-	\sa Burger::StaticRTTI, BURGER_CREATE_STATICRTTI_BASE or BURGER_CREATE_STATICRTTI_PARENT
+	\sa Burger::StaticRTTI, BURGER_RTTI_IN_BASE_CLASS, BURGER_CREATE_STATICRTTI_BASE or BURGER_CREATE_STATICRTTI_PARENT
 	
 ***************************************/
 

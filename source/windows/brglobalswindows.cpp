@@ -42,6 +42,7 @@
 #include <dsound.h>
 #include <shellapi.h>
 #include <shlobj.h>
+#include <SetupAPI.h>
 
 static const char g_SoftwareClasses[] = "Software\\Classes\\";
 
@@ -61,7 +62,9 @@ static const char *s_LibaryNames[Burger::Globals::DLL_COUNT] = {
 	"rpcrt4.dll",
 	"winmm.dll",
 	"shlwapi.dll",
-	"version.dll"
+	"version.dll",
+	"hid.dll",
+	"setupapi.dll"
 };
 
 struct CallNames_t {
@@ -91,7 +94,14 @@ static const CallNames_t g_CallNames[Burger::Globals::CALL_COUNT] = {
 	{Burger::Globals::VERSION_DLL,"GetFileVersionInfoA"},
 	{Burger::Globals::VERSION_DLL,"GetFileVersionInfoW"},
 	{Burger::Globals::VERSION_DLL,"GetFileVersionInfoSizeA"},
-	{Burger::Globals::VERSION_DLL,"GetFileVersionInfoSizeW"}
+	{Burger::Globals::VERSION_DLL,"GetFileVersionInfoSizeW"},
+	{Burger::Globals::HID_DLL,"HidD_GetHidGuid"},
+	{Burger::Globals::SETUPAPI_DLL,"SetupDiGetClassDevsA"},
+	{Burger::Globals::SETUPAPI_DLL,"SetupDiGetClassDevsW"},
+	{Burger::Globals::SETUPAPI_DLL,"SetupDiGetDeviceInterfaceDetailA"},
+	{Burger::Globals::SETUPAPI_DLL,"SetupDiGetDeviceInterfaceDetailW"},
+	{Burger::Globals::SETUPAPI_DLL,"SetupDiEnumDeviceInterfaces"},
+	{Burger::Globals::SETUPAPI_DLL,"SetupDiDestroyDeviceInfoList"}
 };
 
 #endif		// Allow doxygen
@@ -404,7 +414,7 @@ Word BURGER_API Burger::Globals::DirectInput8Create(IDirectInput8W **pOutput)
 	To allow maximum compatibility, this function will manually load
 	ddraw.dll and then invoke DirectDrawCreateEx if present.
 
-    http://msdn.microsoft.com/en-us/library/windows/desktop/gg426118(v=vs.85).aspx
+	http://msdn.microsoft.com/en-us/library/windows/desktop/gg426118(v=vs.85).aspx
 
 	\note This function is only available on Windows
 
@@ -439,13 +449,13 @@ Word BURGER_API Burger::Globals::DirectDrawCreateEx(const GUID *pGuid,IDirectDra
 	To allow maximum compatibility, this function will manually load
 	ddraw.dll and then invoke DirectDrawEnumerateExA if present.
 
-    http://msdn.microsoft.com/en-us/library/windows/desktop/gg426120(v=vs.85).aspx
+	http://msdn.microsoft.com/en-us/library/windows/desktop/gg426120(v=vs.85).aspx
 
 	\note This function is only available on Windows
 
 	\param lpCallback Address of a DDENUMCALLBACKEXA function to be called with a description of each enumerated DirectDraw-enabled hardware abstraction layer (HAL).
 	\param lpContext Address of an application-defined value to be passed to the enumeration callback function each time that it is called.
-    \param dwFlags Flags that specify the enumeration scope. This parameter can be 0 or a combination of the following flags. If the value is 0, the function enumerates only the primary display device.
+	\param dwFlags Flags that specify the enumeration scope. This parameter can be 0 or a combination of the following flags. If the value is 0, the function enumerates only the primary display device.
 	\return DD_OK if no error. Any other value means an error occurred
 	
 ***************************************/
@@ -472,17 +482,17 @@ Word BURGER_API Burger::Globals::DirectDrawEnumerateExA(void *lpCallback,void *l
 	To allow maximum compatibility, this function will manually load
 	ddraw.dll and then invoke DirectDrawEnumerateExA if present.
 
-    http://msdn.microsoft.com/en-us/library/windows/desktop/gg426120(v=vs.85).aspx
+	http://msdn.microsoft.com/en-us/library/windows/desktop/gg426120(v=vs.85).aspx
 
-    \note Some video cards do not support this function call. Notably the nVidia GT 545
+	\note Some video cards do not support this function call. Notably the nVidia GT 545
 
 	\note This function is only available on Windows
 
 	\param lpCallback Address of a DDENUMCALLBACKEXW function to be called with a description of each enumerated DirectDraw-enabled hardware abstraction layer (HAL).
 	\param lpContext Address of an application-defined value to be passed to the enumeration callback function each time that it is called.
-    \param dwFlags Flags that specify the enumeration scope. This parameter can be 0 or a combination of the following flags. If the value is 0, the function enumerates only the primary display device.
+	\param dwFlags Flags that specify the enumeration scope. This parameter can be 0 or a combination of the following flags. If the value is 0, the function enumerates only the primary display device.
 	\return DD_OK if no error. Any other value means an error occurred
-	
+
 ***************************************/
 
 Word BURGER_API Burger::Globals::DirectDrawEnumerateExW(void *lpCallback,void *lpContext,Word32 dwFlags)
@@ -622,6 +632,8 @@ Word BURGER_API Burger::Globals::timeGetTime(void)
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/bb773751(v=vs.85).aspx
 	
+	\note This function is only available on Windows
+
 	\param pszPath A pointer to a null-terminated string of maximum length MAX_PATH that contains the path to search.
 	\param pszBuf A pointer to a null-terminated string of length MAX_PATH that contains the path to be referenced.
 	\param cchBuf The size of the buffer pointed to by pszBuf, in characters.
@@ -648,6 +660,8 @@ Word BURGER_API Burger::Globals::PathSearchAndQualifyA(const char *pszPath,char 
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/bb773751(v=vs.85).aspx
 	
+	\note This function is only available on Windows
+
 	\param pszPath A pointer to a null-terminated string of maximum length MAX_PATH that contains the path to search.
 	\param pszBuf A pointer to a null-terminated string of length MAX_PATH that contains the path to be referenced.
 	\param cchBuf The size of the buffer pointed to by pszBuf, in characters.
@@ -674,6 +688,8 @@ Word BURGER_API Burger::Globals::PathSearchAndQualifyW(const Word16 *pszPath,Wor
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/aa379322(v=vs.85).aspx
 	
+	\note This function is only available on Windows
+
 	\param pOutput A pointer to an uninitialized GUID.
 	\return Zero for success or List of error codes http://msdn.microsoft.com/en-us/library/windows/desktop/aa378645(v=vs.85).aspx
 		
@@ -698,6 +714,8 @@ Word BURGER_API Burger::Globals::UuidCreateSequential(GUID *pOutput)
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647464(v=vs.85).aspx
 	
+	\note This function is only available on Windows
+
 	\param pBlock The version-information resource returned by the GetFileVersionInfo function.
 	\param lpSubBlock A pointer to the version-information value to be retrieved. 
 	\param lplpBuffer A pointer that contains the address of a pointer to the requested version information in the buffer pointed to by pBlock.
@@ -725,6 +743,8 @@ Word BURGER_API Burger::Globals::VerQueryValueA(const void *pBlock,const char *l
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647464(v=vs.85).aspx
 	
+	\note This function is only available on Windows
+
 	\param pBlock The version-information resource returned by the GetFileVersionInfo function.
 	\param lpSubBlock A pointer to the version-information value to be retrieved. 
 	\param lplpBuffer A pointer that contains the address of a pointer to the requested version information in the buffer pointed to by pBlock.
@@ -752,6 +772,8 @@ Word BURGER_API Burger::Globals::VerQueryValueW(const void *pBlock,const Word16 
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647003(v=vs.85).aspx
 	
+	\note This function is only available on Windows
+
 	\param lptstrFilename The name of the file
 	\param dwHandle This parameter is ignored.
 	\param dwLen The size, in bytes, of the buffer pointed to by the lpData parameter.
@@ -779,6 +801,8 @@ Word BURGER_API Burger::Globals::GetFileVersionInfoA(const char *lptstrFilename,
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647003(v=vs.85).aspx
 	
+	\note This function is only available on Windows
+
 	\param lptstrFilename The name of the file
 	\param dwHandle This parameter is ignored.
 	\param dwLen The size, in bytes, of the buffer pointed to by the lpData parameter.
@@ -806,6 +830,8 @@ Word BURGER_API Burger::Globals::GetFileVersionInfoW(const Word16 *lptstrFilenam
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647005(v=vs.85).aspx
 	
+	\note This function is only available on Windows
+
 	\param lptstrFilename The name of the file of interest.
 	\param lpdwHandle A pointer to a variable that the function sets to zero.
 	\return Returns the number of bytes if successful, or zero otherwise.
@@ -831,6 +857,8 @@ Word32 BURGER_API Burger::Globals::GetFileVersionInfoSizeA(const char *lptstrFil
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647005(v=vs.85).aspx
 	
+	\note This function is only available on Windows
+
 	\param lptstrFilename The name of the file of interest.
 	\param lpdwHandle A pointer to a variable that the function sets to zero.
 	\return Returns the number of bytes if successful, or zero otherwise.
@@ -843,6 +871,207 @@ Word32 BURGER_API Burger::Globals::GetFileVersionInfoSizeW(const Word16 *lptstrF
 	Word uResult = 0;		// Failure
 	if (pGetFileVersionInfoSizeW) {
 		uResult = static_cast<Word>(static_cast<BOOL (WINAPI *)(LPCWSTR,LPDWORD)>(pGetFileVersionInfoSizeW)(reinterpret_cast<LPCWSTR>(lptstrFilename),lpdwHandle));
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Call HidD_GetHidGuid(GUID *)
+	
+	Manually load hid.dll if needed and
+	call the Windows function HidD_GetHidGuid()
+
+	http://msdn.microsoft.com/en-us/library/windows/hardware/ff538924(v=vs.85).aspx
+	
+	\note This function is only available on Windows
+
+	\param HidGuid Pointer to a caller-allocated GUID buffer that the routine uses to return the device interface GUID for HIDClass devices.
+		
+***************************************/
+
+void BURGER_API Burger::Globals::HidD_GetHidGuid(GUID *HidGuid)
+{
+	void *pHidD_GetHidGuid = LoadFunctionIndex(Globals::CALL_HidD_GetHidGuid);
+	if (!pHidD_GetHidGuid) {
+		MemoryClear(HidGuid,sizeof(GUID));
+	} else {
+		static_cast<void (WINAPI *)(GUID *)>(pHidD_GetHidGuid)(HidGuid);
+	}
+}
+
+/*! ************************************
+
+	\brief Call SetupDiGetClassDevsA(const GUID *ClassGuid,PCSTR Enumerator,HWND hwndParent,DWORD Flags)
+	
+	Manually load Setupapi.dll if needed and
+	call the Windows function SetupDiGetClassDevsA()
+
+	http://msdn.microsoft.com/en-us/library/windows/hardware/ff551069(v=vs.85).aspx
+	
+	\note This function is only available on Windows
+
+	\param ClassGuid A pointer to the GUID for a device setup class or a device interface class. 
+	\param Enumerator A pointer to a NULL-terminated string that specifies a PnP enumerator or instance ID
+	\param hwndParent A handle to the top-level window to be used for a user interface that is associated with installing a device instance in the device information set.
+	\param Flags A variable of type DWORD that specifies control options that filter the device information elements that are added to the device information set.
+	\return If the operation succeeds, SetupDiGetClassDevs returns a handle to a device information set that contains all installed devices that matched the supplied parameters.
+
+***************************************/
+
+void * BURGER_API Burger::Globals::SetupDiGetClassDevsA(const GUID *ClassGuid,const char *Enumerator,HWND__ *hwndParent,Word32 Flags)
+{
+	void *pSetupDiGetClassDevsA = LoadFunctionIndex(Globals::CALL_SetupDiGetClassDevsA);
+	void *pResult = INVALID_HANDLE_VALUE;		// Failure
+	if (pSetupDiGetClassDevsA) {
+		pResult = static_cast<void *(WINAPI *)(const GUID *,PCSTR,HWND,DWORD)>(pSetupDiGetClassDevsA)(ClassGuid,Enumerator,hwndParent,Flags);
+	}
+	return pResult;
+}
+
+/*! ************************************
+
+	\brief Call SetupDiGetClassDevsW(const GUID *ClassGuid,PCWSTR Enumerator,HWND hwndParent,DWORD Flags)
+	
+	Manually load Setupapi.dll if needed and
+	call the Windows function SetupDiGetClassDevsW()
+
+	http://msdn.microsoft.com/en-us/library/windows/hardware/ff551069(v=vs.85).aspx
+	
+	\note This function is only available on Windows
+
+	\param ClassGuid A pointer to the GUID for a device setup class or a device interface class. 
+	\param Enumerator A pointer to a NULL-terminated string that specifies a PnP enumerator or instance ID
+	\param hwndParent A handle to the top-level window to be used for a user interface that is associated with installing a device instance in the device information set.
+	\param Flags A variable of type DWORD that specifies control options that filter the device information elements that are added to the device information set.
+	\return If the operation succeeds, SetupDiGetClassDevs returns a handle to a device information set that contains all installed devices that matched the supplied parameters.
+
+***************************************/
+
+void * BURGER_API Burger::Globals::SetupDiGetClassDevsW(const GUID *ClassGuid,const Word16 *Enumerator,HWND__ *hwndParent,Word32 Flags)
+{
+	void *pSetupDiGetClassDevsW = LoadFunctionIndex(Globals::CALL_SetupDiGetClassDevsW);
+	void *pResult = INVALID_HANDLE_VALUE;		// Failure
+	if (pSetupDiGetClassDevsW) {
+		pResult = static_cast<void *(WINAPI *)(const GUID *,PCWSTR,HWND,DWORD)>(pSetupDiGetClassDevsW)(ClassGuid,reinterpret_cast<PCWSTR>(Enumerator),hwndParent,Flags);
+	}
+	return pResult;
+}
+
+/*! ************************************
+
+	\brief Call SetupDiGetDeviceInterfaceDetailA(HDEVINFO DeviceInfoSet,PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,PSP_DEVICE_INTERFACE_DETAIL_DATA_A DeviceInterfaceDetailData,DWORD DeviceInterfaceDetailDataSize,PDWORD RequiredSize,PSP_DEVINFO_DATA DeviceInfoData)
+	
+	Manually load Setupapi.dll if needed and
+	call the Windows function SetupDiGetDeviceInterfaceDetailA()
+
+	http://msdn.microsoft.com/en-us/library/windows/hardware/ff551120(v=vs.85).aspx
+	
+	\note This function is only available on Windows
+
+	\param DeviceInfoSet A pointer to the device information set that contains the interface for which to retrieve details.
+	\param DeviceInterfaceData A pointer to an SP_DEVICE_INTERFACE_DATA structure that specifies the interface in DeviceInfoSet for which to retrieve details.
+	\param DeviceInterfaceDetailData A pointer to an SP_DEVICE_INTERFACE_DETAIL_DATA structure to receive information about the specified interface. 
+	\param DeviceInterfaceDetailDataSize The size of the DeviceInterfaceDetailData buffer. 
+	\param RequiredSize A pointer to a variable of type Word32 that receives the required size of the DeviceInterfaceDetailData buffer.
+	\param DeviceInfoData A pointer to a buffer that receives information about the device that supports the requested interface. 
+	\return \ref TRUE if the function completed without error.
+
+***************************************/
+
+Word BURGER_API Burger::Globals::SetupDiGetDeviceInterfaceDetailA(void *DeviceInfoSet,_SP_DEVICE_INTERFACE_DATA *DeviceInterfaceData,_SP_DEVICE_INTERFACE_DETAIL_DATA_A *DeviceInterfaceDetailData,Word32 DeviceInterfaceDetailDataSize,Word32 *RequiredSize,_SP_DEVINFO_DATA *DeviceInfoData)
+{
+	void *pSetupDiGetDeviceInterfaceDetailA = LoadFunctionIndex(Globals::CALL_SetupDiGetDeviceInterfaceDetailA);
+	Word uResult = 0;		// Failure
+	if (pSetupDiGetDeviceInterfaceDetailA) {
+		uResult = static_cast<Word>(static_cast<BOOL (WINAPI *)(HDEVINFO,PSP_DEVICE_INTERFACE_DATA,PSP_DEVICE_INTERFACE_DETAIL_DATA_A,DWORD,PDWORD,PSP_DEVINFO_DATA)>(pSetupDiGetDeviceInterfaceDetailA)(DeviceInfoSet,DeviceInterfaceData,DeviceInterfaceDetailData,DeviceInterfaceDetailDataSize,reinterpret_cast<DWORD *>(RequiredSize),DeviceInfoData));
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Call SetupDiGetDeviceInterfaceDetailW(HDEVINFO DeviceInfoSet,PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,PSP_DEVICE_INTERFACE_DETAIL_DATA_W DeviceInterfaceDetailData,DWORD DeviceInterfaceDetailDataSize,PDWORD RequiredSize,PSP_DEVINFO_DATA DeviceInfoData)
+	
+	Manually load Setupapi.dll if needed and
+	call the Windows function SetupDiGetDeviceInterfaceDetailW()
+
+	http://msdn.microsoft.com/en-us/library/windows/hardware/ff551120(v=vs.85).aspx
+	
+	\note This function is only available on Windows
+
+	\param DeviceInfoSet A pointer to the device information set that contains the interface for which to retrieve details.
+	\param DeviceInterfaceData A pointer to an SP_DEVICE_INTERFACE_DATA structure that specifies the interface in DeviceInfoSet for which to retrieve details.
+	\param DeviceInterfaceDetailData A pointer to an SP_DEVICE_INTERFACE_DETAIL_DATA structure to receive information about the specified interface. 
+	\param DeviceInterfaceDetailDataSize The size of the DeviceInterfaceDetailData buffer. 
+	\param RequiredSize A pointer to a variable of type Word32 that receives the required size of the DeviceInterfaceDetailData buffer.
+	\param DeviceInfoData A pointer to a buffer that receives information about the device that supports the requested interface. 
+	\return \ref TRUE if the function completed without error.
+
+***************************************/
+
+Word BURGER_API Burger::Globals::SetupDiGetDeviceInterfaceDetailW(void *DeviceInfoSet,_SP_DEVICE_INTERFACE_DATA *DeviceInterfaceData,_SP_DEVICE_INTERFACE_DETAIL_DATA_W *DeviceInterfaceDetailData,Word32 DeviceInterfaceDetailDataSize,Word32 *RequiredSize,_SP_DEVINFO_DATA *DeviceInfoData)
+{
+	void *pSetupDiGetDeviceInterfaceDetailW = LoadFunctionIndex(Globals::CALL_SetupDiGetDeviceInterfaceDetailW);
+	Word uResult = 0;		// Failure
+	if (pSetupDiGetDeviceInterfaceDetailW) {
+		uResult = static_cast<Word>(static_cast<BOOL (WINAPI *)(HDEVINFO,PSP_DEVICE_INTERFACE_DATA,PSP_DEVICE_INTERFACE_DETAIL_DATA_W,DWORD,PDWORD,PSP_DEVINFO_DATA)>(pSetupDiGetDeviceInterfaceDetailW)(DeviceInfoSet,DeviceInterfaceData,DeviceInterfaceDetailData,DeviceInterfaceDetailDataSize,reinterpret_cast<DWORD *>(RequiredSize),DeviceInfoData));
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Call SetupDiEnumDeviceInterfaces(HDEVINFO DeviceInfoSet,PSP_DEVINFO_DATA DeviceInfoData,const GUID *InterfaceClassGuid,DWORD MemberIndex,PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData)
+
+	Manually load Setupapi.dll if needed and
+	call the Windows function SetupDiEnumDeviceInterfaces()
+
+	http://msdn.microsoft.com/en-us/library/windows/hardware/ff551015(v=vs.85).aspx
+	
+	\note This function is only available on Windows
+
+	\param DeviceInfoSet A pointer to a device information set that contains the device interfaces for which to return information. 
+	\param DeviceInfoData A pointer to an SP_DEVINFO_DATA structure that specifies a device information element in DeviceInfoSet.
+	\param InterfaceClassGuid A pointer to a GUID that specifies the device interface class for the requested interface.
+	\param MemberIndex A zero-based index into the list of interfaces in the device information set. 
+	\param DeviceInterfaceData A pointer to a caller-allocated buffer that contains, on successful return, a completed SP_DEVICE_INTERFACE_DATA structure that identifies an interface that meets the search parameters.
+	\return \ref TRUE if the function completed without error.
+
+***************************************/
+
+Word BURGER_API Burger::Globals::SetupDiEnumDeviceInterfaces(void *DeviceInfoSet,_SP_DEVINFO_DATA *DeviceInfoData,const GUID *InterfaceClassGuid,Word32 MemberIndex,_SP_DEVICE_INTERFACE_DATA *DeviceInterfaceData)
+{
+	void *pSetupDiEnumDeviceInterfaces = LoadFunctionIndex(Globals::CALL_SetupDiEnumDeviceInterfaces);
+	Word uResult = 0;		// Failure
+	if (pSetupDiEnumDeviceInterfaces) {
+		uResult = static_cast<Word>(static_cast<BOOL (WINAPI *)(HDEVINFO,PSP_DEVINFO_DATA,const GUID *,DWORD,PSP_DEVICE_INTERFACE_DATA)>(pSetupDiEnumDeviceInterfaces)(DeviceInfoSet,DeviceInfoData,InterfaceClassGuid,MemberIndex,DeviceInterfaceData));
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Call SetupDiDestroyDeviceInfoList(HDEVINFO DeviceInfoSet)
+
+	Manually load Setupapi.dll if needed and
+	call the Windows function SetupDiDestroyDeviceInfoList()
+
+	http://msdn.microsoft.com/en-us/library/windows/hardware/ff550996(v=vs.85).aspx
+	
+	\note This function is only available on Windows
+
+	\param DeviceInfoSet A handle to the device information set to delete.
+	\return \ref TRUE if the function completed without error.
+
+***************************************/
+
+Word BURGER_API Burger::Globals::SetupDiDestroyDeviceInfoList(void *DeviceInfoSet)
+{
+	void *pSetupDiDestroyDeviceInfoList = LoadFunctionIndex(Globals::CALL_SetupDiDestroyDeviceInfoList);
+	Word uResult = 0;		// Failure
+	if (pSetupDiDestroyDeviceInfoList) {
+		uResult = static_cast<Word>(static_cast<BOOL (WINAPI *)(HDEVINFO)>(pSetupDiDestroyDeviceInfoList)(DeviceInfoSet));
 	}
 	return uResult;
 }
@@ -1008,7 +1237,7 @@ static Word BURGER_API GetDirectXVersionViaFileVersions(void)
 		Burger::StringCopy(pDest,uRemaining,reinterpret_cast<const Word16 *>(L"\\d3drg8x.dll"));
 		Word64 uVersionD3Drg8x = GetFileVersion(szPath);
 		if (uVersionD3Drg8x>=0x0004000400000046ULL) {	// Win9x version
-			// d3drg8x.dll is the DX3.0a version, so we must be DX3.0a or DX3.0b  (no redist change)
+			// d3drg8x.dll is the DX3.0a version, so we must be DX3.0a or DX3.0b (no redist change)
 			uResult = 0x301;
 		}
 
@@ -1179,8 +1408,8 @@ Word BURGER_API Burger::Globals::GetDirectXVersion(void)
 
 #if !defined(DOXYGEN)
 struct DeviceGuid_t {
-	Word m_uDevNum;     // Count down
-	GUID *m_pGUID;      // Buffer to store the located GUID
+	Word m_uDevNum;		// Count down
+	GUID *m_pGUID;		// Buffer to store the located GUID
 };
 #endif
 
@@ -1200,46 +1429,48 @@ static int CALLBACK FindDeviceCallback(GUID *pGUID,LPSTR /* pName */,LPSTR /* pD
 
 /*! ************************************
 
-    \brief Given a specific device number, return the DirectX GUID
+	\brief Given a specific device number, return the DirectX GUID
 
-    Scan the device list for the GUID of the requested device.
+	Scan the device list for the GUID of the requested device.
 	Device #0 returns the global display device (All screens)
 
-    \param pOutput Pointer to a buffer to accept the returned GUID. Cannot be \ref NULL
-    \param uDevNum 0 for the master global device, 1-??? for the enumerated displays
-    \return Zero if no error, non-zero if an error has occurred
+	\note This function is only available on Windows
+
+	\param pOutput Pointer to a buffer to accept the returned GUID. Cannot be \ref NULL
+	\param uDevNum 0 for the master global device, 1-??? for the enumerated displays
+	\return Zero if no error, non-zero if an error has occurred
 
 ***************************************/
 
 Word BURGER_API Burger::Globals::GetVideoGUID(GUID *pOutput,Word uDevNum)
 {
-    Word uError = static_cast<Word>(E_FAIL);
-    if (pOutput) {
-	    DeviceGuid_t Ref;
-	    Ref.m_uDevNum = ++uDevNum;		// Scan for this device
-        Ref.m_pGUID = pOutput;
-	    uError = DirectDrawEnumerateExW(FindDeviceCallback,&Ref,DDENUM_ATTACHEDSECONDARYDEVICES|
-	    	DDENUM_DETACHEDSECONDARYDEVICES|DDENUM_NONDISPLAYDEVICES);
-        // The nVidia GT 545 fails on this call, so call using the 8 Bit Ascii version instead
-        if (uError == E_NOTIMPL) {
-        	Ref.m_uDevNum = uDevNum;	// Scan for this device
-	        uError = DirectDrawEnumerateExA(FindDeviceCallback,&Ref,DDENUM_ATTACHEDSECONDARYDEVICES|
-	    	    DDENUM_DETACHEDSECONDARYDEVICES|DDENUM_NONDISPLAYDEVICES);
-        }
-        if (uError==DD_OK) {
-	    	if (Ref.m_uDevNum) {		// Got it?
-                uError = static_cast<Word>(E_FAIL);
-            }
-	    }
-    }
+	Word uError = static_cast<Word>(E_FAIL);
+	if (pOutput) {
+		DeviceGuid_t Ref;
+		Ref.m_uDevNum = ++uDevNum;		// Scan for this device
+		Ref.m_pGUID = pOutput;
+		uError = DirectDrawEnumerateExW(FindDeviceCallback,&Ref,DDENUM_ATTACHEDSECONDARYDEVICES|
+			DDENUM_DETACHEDSECONDARYDEVICES|DDENUM_NONDISPLAYDEVICES);
+		// The nVidia GT 545 fails on this call, so call using the 8 Bit Ascii version instead
+		if (uError == E_NOTIMPL) {
+			Ref.m_uDevNum = uDevNum;	// Scan for this device
+			uError = DirectDrawEnumerateExA(FindDeviceCallback,&Ref,DDENUM_ATTACHEDSECONDARYDEVICES|
+				DDENUM_DETACHEDSECONDARYDEVICES|DDENUM_NONDISPLAYDEVICES);
+		}
+		if (uError==DD_OK) {
+			if (Ref.m_uDevNum) {		// Got it?
+				uError = static_cast<Word>(E_FAIL);
+			}
+		}
+	}
 	return uError;
 }
 
 /*! ************************************
 
-    \brief Call LoadLibraryA() without file error boxes
+	\brief Call LoadLibraryA() without file error boxes
 
-    When LoadLibraryA() is called in windows, it's possible that
+	When LoadLibraryA() is called in windows, it's possible that
 	if the file is not found, windows will display an error message box
 	mentioning that a DLL is missing. This function will prohibit
 	this behavior by setting the ErrorMode to SEM_NOOPENFILEERRORBOX
@@ -1249,7 +1480,7 @@ Word BURGER_API Burger::Globals::GetVideoGUID(GUID *pOutput,Word uDevNum)
 	\note This function is only available on Windows
 
 	\param pInput ASCII pathname of the DLL file to load.
-    \return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
+	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
 	\sa LoadLibraryW()
 
 ***************************************/
@@ -1264,9 +1495,9 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryA(const char *pInput)
 
 /*! ************************************
 
-    \brief Call LoadLibraryW() without file error boxes
+	\brief Call LoadLibraryW() without file error boxes
 
-    When LoadLibraryW() is called in windows, it's possible that
+	When LoadLibraryW() is called in windows, it's possible that
 	if the file is not found, windows will display an error message box
 	mentioning that a DLL is missing. This function will prohibit
 	this behavior by setting the ErrorMode to SEM_NOOPENFILEERRORBOX
@@ -1276,7 +1507,7 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryA(const char *pInput)
 	\note This function is only available on Windows
 
 	\param pInput UTF16 pathname of the DLL file to load. 
-    \return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
+	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
 	\sa LoadLibraryA()
 
 ***************************************/
@@ -1288,6 +1519,23 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryW(const Word16 *pInput)
 	SetErrorMode(uOldMode);
 	return hResult;
 }
+
+/*! ************************************
+
+	\brief Load a library if needed
+
+	Given a DLL index, detect if the library has already been
+	loaded and if so, return the existing HINSTANCE, otherwise,
+	load the DLL and if successful, return the HINSTANCE. If
+	the load failed, return \ref NULL.
+
+	\note This function is only available on Windows
+
+	\param eIndex \ref eWindowsDLLIndex index to a DLL Burgerlib is tracking.
+	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
+	\sa LoadFunctionIndex()
+	
+***************************************/
 
 HINSTANCE BURGER_API Burger::Globals::LoadLibraryIndex(eWindowsDLLIndex eIndex)
 {
@@ -1310,6 +1558,23 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryIndex(eWindowsDLLIndex eIndex)
 	}
 	return hResult;
 }
+
+/*! ************************************
+
+	\brief Load a function from a DLL library if needed
+
+	Given a function index, detect if the library has already been
+	loaded and if not. load it. If loaded, look up the function
+	and return the pointer to the function or \ref NULL if
+	not found.
+
+	\note This function is only available on Windows
+
+	\param eIndex \ref eWindowsCallIndex index to a Windows function Burgerlib is tracking.
+	\return \ref NULL if the DLL was not loaded or the function didn't exist, a valid function pointer on success
+	\sa LoadLibraryIndex()
+	
+***************************************/
 
 void * BURGER_API Burger::Globals::LoadFunctionIndex(eWindowsCallIndex eIndex)
 {
@@ -1416,8 +1681,8 @@ int BURGER_API Burger::Globals::CreateUserRegistryKey(const char *pKey,const cha
 		}
 		String16 DataUTF16(pData);
 		lStatus = RegSetValueExW(hKey,reinterpret_cast<LPCWSTR>(pSub16),0,REG_SZ,reinterpret_cast<const BYTE *>(DataUTF16.GetPtr()),(static_cast<DWORD>(DataUTF16.GetLength())+1)*2);
-        RegCloseKey(hKey);
-    }
+		RegCloseKey(hKey);
+	}
 	return lStatus;
 }
 

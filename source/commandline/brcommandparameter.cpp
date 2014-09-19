@@ -15,6 +15,10 @@
 #include "brstringfunctions.h"
 #include <stdio.h>
 
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::CommandParameter,Burger::Base);
+#endif
+
 static const char *s_HelpCommands[] = {
 	"?",
 	"h",
@@ -387,3 +391,13 @@ int Burger::CommandParameter::Process(int argc,const char **argv,const CommandPa
 	}
 	return argc;		// Return the NEW count
 }
+
+/*! ************************************
+
+	\var const Burger::StaticRTTI Burger::CommandParameter::g_StaticRTTI
+	\brief The global description of the class
+
+	This record contains the name of this class and a
+	reference to the parent
+
+***************************************/

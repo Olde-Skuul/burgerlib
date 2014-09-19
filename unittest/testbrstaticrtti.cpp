@@ -27,7 +27,7 @@ class foo {
 public:
 	foo() {}
 	virtual ~foo() {}
-	BURGER_RTTI_IN_CLASS();
+	BURGER_RTTI_IN_BASE_CLASS();
 };
 class foo2 : public foo {
 public:

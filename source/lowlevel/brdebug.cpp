@@ -162,10 +162,17 @@ void BURGER_ANSIAPI Burger::Debug::Message(const char *pMessage,...)
 /*! ************************************
 
 	\brief Print a string to a file
+	
+	Given a "C" string, stream the data to a text file,
+	or if a debugger is attached, to the debugger console.
+	
+	No parsing is done on the string, it's written as is.
+	
+	\param pString Pointer to a "C" string to print.
 
 ***************************************/
 
-#if !defined(BURGER_WINDOWS)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
 void BURGER_API Burger::Debug::String(const char *pString)
 {
 	if (pString && Globals::GetExitFlag()) {
@@ -173,7 +180,7 @@ void BURGER_API Burger::Debug::String(const char *pString)
 		if (i) {
 			File MyFile;
 			if (MyFile.Open("9:LogFile.Txt",File::APPEND)==File::OKAY) {
-				MyFile.Write(pString,i);		/* Send the string to the log file */
+				MyFile.Write(pString,i);		// Send the string to the log file
 				MyFile.Close();
 			}
 		}
@@ -209,6 +216,21 @@ void BURGER_API Burger::Debug::String(Word64 uInput)
 
 /*! ************************************
 
+	\brief Detect if a debugger is attached
+
+	Return \ref TRUE if a debugger is attached
+
+***************************************/
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
+Word BURGER_API Burger::Debug::IsDebuggerPresent(void)
+{
+	return FALSE;
+}
+#endif
+
+/*! ************************************
+
 	\brief Display a dialog box
 	
 	On platforms that support pop up dialogs, display a dialog
@@ -222,7 +244,7 @@ void BURGER_API Burger::Debug::String(Word64 uInput)
 
 ***************************************/
 
-#if (!defined(BURGER_MAC) && !defined(BURGER_WINDOWS) && !defined(BURGER_BEOS)) || defined(DOXYGEN)
+#if !(defined(BURGER_MAC) || defined(BURGER_WINDOWS) || defined(BURGER_BEOS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
 
 void BURGER_API Burger::OkAlertMessage(const char *pMessage,const char *pTitle)
 {
@@ -255,7 +277,7 @@ void BURGER_API Burger::OkAlertMessage(const char *pMessage,const char *pTitle)
 
 ***************************************/
 
-#if (!defined(BURGER_MAC) && !defined(BURGER_WINDOWS) && !defined(BURGER_BEOS)) || defined(DOXYGEN)
+#if !(defined(BURGER_MAC) || defined(BURGER_WINDOWS) || defined(BURGER_BEOS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
 
 Word BURGER_API Burger::OkCancelAlertMessage(const char *pMessage,const char *pTitle)
 {
@@ -270,3 +292,5 @@ Word BURGER_API Burger::OkCancelAlertMessage(const char *pMessage,const char *pT
 }
 
 #endif
+
+

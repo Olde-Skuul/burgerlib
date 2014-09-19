@@ -26,9 +26,26 @@
 #include "brwindowstypes.h"
 #endif
 
+#if defined(BURGER_MACOSX) && !defined(__BRMACOSXTYPES_H__)
+#include "brmacosxtypes.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 class DisplayOpenGL : public Display {
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+	HDC__ *m_pOpenGLDeviceContext;	///< Window to attach the GL context to
+	HGLRC__ *m_pOpenGLContext;		///< Current OpenGL context
+	Word m_bResolutionChanged;		///< Set to \ref TRUE if the display needs to be restored
+#endif
+#if defined(BURGER_MACOSX) || defined(DOXYGEN)
+private:
+	NSView *m_pView;
+	NSWindowController *m_pWindowController;
+	NSOpenGLView *m_pOpenGLView;
+	_CGLContextObject *m_pOpenGLContext;
+	NSWindow *m_pFullScreenWindow;
+#endif
 public:
 	DisplayOpenGL(GameApp *pGameApp);
 protected:
@@ -39,13 +56,20 @@ public:
 	static Word BURGER_API LoadShader(Word GLEnum,const char *pShaderCode);
 	static const char * BURGER_API GetErrorString(Word uGLErrorEnum);
 	static WordPtr BURGER_API GetGLTypeSize(Word uGLTypeEnum);
+	static Word BURGER_API PrintGLError(const char *pErrorLocation);
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	static void BURGER_API WindowsLink(void);
 	static void BURGER_API WindowsUnlink(void);
-private:
-	HDC__ *m_pOpenGLDeviceContext;	///< Window to attach the GL context to
-	HGLRC__ *m_pOpenGLContext;		///< Current OpenGL context
-	Word m_bResolutionChanged;		///< Set to \ref TRUE if the display needs to be restored
+#endif
+#if defined(BURGER_MACOSX) || defined(DOXYGEN)
+	BURGER_INLINE NSView *GetView(void) const { return m_pView; }
+	BURGER_INLINE NSWindowController *GetWindowController(void) const { return m_pWindowController; }
+	BURGER_INLINE NSOpenGLView *GetOpenGLView(void) const { return m_pOpenGLView; }
+	BURGER_INLINE _CGLContextObject *GetOpenGLContext(void) const { return m_pOpenGLContext; }
+	BURGER_INLINE NSWindow *GetFullScreenWindow(void) const { return m_pFullScreenWindow; }
+	BURGER_INLINE void SetFullScreenWindow(NSWindow *pFullScreenWindow) { m_pFullScreenWindow = pFullScreenWindow; }
+protected:
+	virtual void PreBeginScene(void);
 #endif
 };
 }

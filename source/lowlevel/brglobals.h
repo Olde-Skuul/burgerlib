@@ -30,9 +30,14 @@
 #include "brwindowstypes.h"
 #endif
 
+#if defined(BURGER_MACOSX) && !defined(__BRMACOSXTYPES_H__)
+#include "brmacosxtypes.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 class OutputMemoryStream;
+class String;
 struct Globals {
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	enum eWindowsDLLIndex {
@@ -45,6 +50,8 @@ struct Globals {
 		WINMM_DLL,		///< Index for winmm.dll
 		SHLWAPI_DLL,	///< Index for shlwapi.dll
 		VERSION_DLL,	///< Index for version.dll
+		HID_DLL,		///< Index for hid.dll
+		SETUPAPI_DLL,	///< Index for setupapi.dll
 		DLL_COUNT		///< Total number of DLLs to be managed
 	};
 	enum eWindowsCallIndex {
@@ -70,6 +77,13 @@ struct Globals {
 		CALL_GetFileVersionInfoW,
 		CALL_GetFileVersionInfoSizeA,
 		CALL_GetFileVersionInfoSizeW,
+		CALL_HidD_GetHidGuid,
+		CALL_SetupDiGetClassDevsA,
+		CALL_SetupDiGetClassDevsW,
+		CALL_SetupDiGetDeviceInterfaceDetailA,
+		CALL_SetupDiGetDeviceInterfaceDetailW,
+		CALL_SetupDiEnumDeviceInterfaces,
+		CALL_SetupDiDestroyDeviceInfoList,
 		CALL_COUNT
 	};
 private:
@@ -136,6 +150,13 @@ public:
 	static Word BURGER_API GetFileVersionInfoW(const Word16 *lptstrFilename,Word32 dwHandle,Word32 dwLen,void *lpData);
 	static Word32 BURGER_API GetFileVersionInfoSizeA(const char *lptstrFilename,unsigned long *lpdwHandle);
 	static Word32 BURGER_API GetFileVersionInfoSizeW(const Word16 *lptstrFilename,unsigned long *lpdwHandle);
+	static void BURGER_API HidD_GetHidGuid(GUID *HidGuid);
+	static void * BURGER_API SetupDiGetClassDevsA(const GUID *ClassGuid,const char *Enumerator,HWND__ *hwndParent,Word32 Flags);
+	static void * BURGER_API SetupDiGetClassDevsW(const GUID *ClassGuid,const Word16 *Enumerator,HWND__ *hwndParent,Word32 Flags);
+	static Word BURGER_API SetupDiGetDeviceInterfaceDetailA(void *DeviceInfoSet,_SP_DEVICE_INTERFACE_DATA *DeviceInterfaceData,_SP_DEVICE_INTERFACE_DETAIL_DATA_A *DeviceInterfaceDetailData,Word32 DeviceInterfaceDetailDataSize,Word32 *RequiredSize,_SP_DEVINFO_DATA *DeviceInfoData);
+	static Word BURGER_API SetupDiGetDeviceInterfaceDetailW(void *DeviceInfoSet,_SP_DEVICE_INTERFACE_DATA *DeviceInterfaceData,_SP_DEVICE_INTERFACE_DETAIL_DATA_W *DeviceInterfaceDetailData,Word32 DeviceInterfaceDetailDataSize,Word32 *RequiredSize,_SP_DEVINFO_DATA *DeviceInfoData);
+	static Word BURGER_API SetupDiEnumDeviceInterfaces(void *DeviceInfoSet,_SP_DEVINFO_DATA *DeviceInfoData,const GUID *InterfaceClassGuid,Word32 MemberIndex,_SP_DEVICE_INTERFACE_DATA *DeviceInterfaceData);
+	static Word BURGER_API SetupDiDestroyDeviceInfoList(void *DeviceInfoSet);
 	static Word BURGER_API GetQuickTimeVersion(void);
 	static Word BURGER_API GetDirectXVersion(void);
 	static Word BURGER_API GetVideoGUID(GUID *pOutput,Word uDevNum);
@@ -146,6 +167,18 @@ public:
 	static Word BURGER_API AddGroupToProgramMenu(const char *pGroupName);
 	static int BURGER_API CreateUserRegistryKey(const char *pKey,const char *pSubKey,const char *pData);
 	static void BURGER_API AssociateFileExtensionToExe(const char *pFileExtension,const char *pDescription,const char *pProgramID);
+#endif
+#if defined(BURGER_MACOSX) || defined(DOXYGEN)
+	static void BURGER_API AddToMenubar(NSMenu *pNSMenu);
+	static NSString *BURGER_API GetApplicationName(void);
+	static void BURGER_API CreateApplicationMenu(void);
+	static void BURGER_API CreateWindowMenu(void);
+	static void BURGER_API CreateViewMenu(void);
+	static void BURGER_API CreateHelpMenu(void);
+	static void BURGER_API CreateDefaultMenus(void);
+	static void BURGER_API StringCopy(String *pOutput,const struct __CFString *pInput);
+	static void BURGER_API GetHIDDeviceName(String *pOutput,__IOHIDDevice *pDevice);
+	static __CFDictionary * BURGER_API CreateHIDDictionary(Word uPage,Word uUsage);
 #endif
 	static BURGER_INLINE int GetErrorCode(void) { return g_Globals.m_iErrorCode; }
 	static BURGER_INLINE void SetErrorCode(int iNewError) { g_Globals.m_iErrorCode = iNewError; }

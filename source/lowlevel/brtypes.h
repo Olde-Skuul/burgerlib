@@ -537,6 +537,13 @@ BURGER_INLINE void SwapVariables(T *pA,T *pB) {
 	*pA = *pB;
 	*pB = tTemp;
 }
+template <class T>
+void BURGER_API Delete(const T*pInput) {
+	if (pInput) {
+		const_cast<T *>(pInput)->~T();
+		Free(pInput);
+	}
+}
 }
 /* END */
 

@@ -55,6 +55,7 @@ protected:
 	Word m_bInBackground;			///< Set to \ref TRUE if the game should be paused due to another window being in front
 	Word m_bMinimized;				///< Set to \ref TRUE if the game is minimized (PC/Mac only, always false on consoles)
 	Word m_bAllowWindowSwitching;	///< Set to \ref TRUE if the game allows switching to windowed mode via Alt-Enter on desktop/laptops
+	Word m_bMouseOnScreen;			///< \ref TRUE if the mouse cursor is on the screen in windows systems
 public:
 	GameApp(WordPtr uDefaultMemorySize=Burger::MemoryManagerHandle::DEFAULTMEMORYCHUNK,Word uDefaultHandleCount=Burger::MemoryManagerHandle::DEFAULTHANDLECOUNT,WordPtr uMinReserveSize=Burger::MemoryManagerHandle::DEFAULTMINIMUMRESERVE);
 	~GameApp();
@@ -86,9 +87,13 @@ public:
 	BURGER_INLINE Renderer *GetRenderer(void) const { return m_pRenderer; }
 	BURGER_INLINE void SetWindowSwitching(Word bAllowWindowSwitching) { m_bAllowWindowSwitching = bAllowWindowSwitching; }
 	BURGER_INLINE Word IsWindowSwitchingAllowed(void) const { return m_bAllowWindowSwitching; }
+	Word BURGER_API SwitchVideo(void);
 	BURGER_INLINE Word IsMinimized(void) const { return m_bMinimized; }
 	BURGER_INLINE void SetMinimized(Word bMinimized) { m_bMinimized = bMinimized; }
-	Word IsAppFullScreen(void) const;
+	Word BURGER_API IsAppFullScreen(void) const;
+	Word BURGER_API IsResizingAllowed(void) const;
+	BURGER_INLINE void SetMouseOnScreen(Word bMouseOnScreen) { m_bMouseOnScreen = bMouseOnScreen; }
+	BURGER_INLINE Word IsMouseOnScreen(void) const { return m_bMouseOnScreen; }
 };
 }
 /* END */

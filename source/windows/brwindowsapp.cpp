@@ -29,7 +29,7 @@
 #endif
 
 #if !defined(_WIN32_WINNT) && !defined(DOXYGEN)
-#define _WIN32_WINNT 0x0600
+#define _WIN32_WINNT 0x0501			// Windows XP
 #endif
 
 #include <windows.h>
@@ -37,25 +37,109 @@
 #include <shellapi.h>
 #include <stdlib.h>
 
-// Needed for code that manually grabs the parm list
 #if !defined(DOXYGEN)
-extern "C" char **__argv;
-#endif
+// Needed for code that manually grabs the parm list
 
-#if !defined(GET_SC_WPARAM) && !defined(DOXYGEN)
+extern "C" char **__argv;
+
+#if !defined(GET_SC_WPARAM)
 #define GET_SC_WPARAM(wParam) ((int)wParam & 0xFFF0)
 #endif
 
-#if !defined(PBT_APMQUERYSUSPEND) && !defined(DOXYGEN)
+#if !defined(PBT_APMQUERYSUSPEND)
 #define PBT_APMQUERYSUSPEND 0x0000
 #endif
 
-#if !defined(PBT_APMRESUMESUSPEND) && !defined(DOXYGEN)
+#if !defined(PBT_APMRESUMESUSPEND)
 #define PBT_APMRESUMESUSPEND 0x0007
 #endif
 
-#if !defined(WM_MOUSEHWHEEL) && !defined(DOXYGEN)
+#if !defined(WM_KEYF1)
+#define WM_KEYF1 0x004D
+#endif
+
+#if !defined(WM_UAHDESTROYWINDOW)
+#define WM_UAHDESTROYWINDOW 0x0090
+#endif
+
+#if !defined(WM_UAHDRAWMENU)
+#define WM_UAHDRAWMENU 0x0091
+#endif
+
+#if !defined(WM_UAHDRAWMENUITEM)
+#define WM_UAHDRAWMENUITEM 0x0092
+#endif
+
+#if !defined(WM_UAHINITMENU)
+#define WM_UAHINITMENU 0x0093
+#endif
+
+#if !defined(WM_UAHMEASUREMENUITEM)
+#define WM_UAHMEASUREMENUITEM 0x0094
+#endif
+
+#if !defined(WM_UAHNCPAINTMENUPOPUP)
+#define WM_UAHNCPAINTMENUPOPUP 0x0095
+#endif
+
+#if !defined(WM_NCUAHDRAWCAPTION)
+#define WM_NCUAHDRAWCAPTION 0x00AE
+#endif
+
+#if !defined(WM_NCUAHDRAWFRAME)
+#define WM_NCUAHDRAWFRAME 0x00AF
+#endif
+
+#if !defined(WM_INPUT_DEVICE_CHANGE)
+#define WM_INPUT_DEVICE_CHANGE 0x00FE
+#endif
+
+#if !defined(WM_INPUT)
+#define WM_INPUT 0x00FF
+#endif
+
+#if !defined(WM_GESTURE)
+#define WM_GESTURE 0x0119
+#endif
+
+#if !defined(WM_GESTURENOTIFY)
+#define WM_GESTURENOTIFY 0x011A
+#endif
+
+#if !defined(WM_MOUSEHWHEEL)
 #define WM_MOUSEHWHEEL 0x020E
+#endif
+
+#if !defined(WM_TOUCH)
+#define WM_TOUCH 0x0240
+#endif
+
+#if !defined(WM_NCMOUSEHOVER)
+#define WM_NCMOUSEHOVER 0x02A0
+#endif
+
+#if !defined(WM_NCMOUSELEAVE)
+#define WM_NCMOUSELEAVE 0x02A2
+#endif
+
+#if !defined(WM_CLIPBOARDUPDATE)
+#define WM_CLIPBOARDUPDATE 0x031D
+#endif
+
+#if !defined(WM_DWMCOMPOSITIONCHANGED)
+#define WM_DWMCOMPOSITIONCHANGED 0x031E
+#endif
+
+#if !defined(WM_DWMNCRENDERINGCHANGED)
+#define WM_DWMNCRENDERINGCHANGED 0x031F
+#endif
+
+#if !defined(WM_DWMCOLORIZATIONCOLORCHANGED)
+#define WM_DWMCOLORIZATIONCOLORCHANGED 0x0320
+#endif
+
+#if !defined(WM_DWMWINDOWMAXIMIZEDCHANGE)
+#define WM_DWMWINDOWMAXIMIZEDCHANGE 0x0321
 #endif
 
 //
@@ -63,76 +147,48 @@ extern "C" char **__argv;
 //
 
 static const wchar_t g_GameClass[] = L"BurgerGameClass";
+#endif
 
-//
-// Code used from time to time to track window events
-//
+/*! ************************************
 
-#if defined(_DEBUG)
+	\class Burger::WindowsApp
+	\brief Base class for window game applications.
+
+	This class contains everything needed to create a
+	cross-platform environment for writing console based
+	applications. Functions are included to allow for
+	the application to gain <i>drag and drop</i> functionality
+	on platforms that support it.
+
+***************************************/
+
+/*! ************************************
+
+	\brief Print windows events to Debug::Message()
+
+	This helper function will take a windows Window Event
+	and print it to the debugging message system to
+	allow a programmer to trace events going through
+	a window procedure. This should not be called in
+	released code.
+
+	\param uMessage Windows message enumeration
+	\param wParam wParam value passed to the windows callback
+	\param lParam lParam value passed to the windows callback
+
+***************************************/
+
+#if !defined(DOXYGEN)
 #define CASE(x) case x: pMessage = #x; break
+#endif
 
-static void OutputWindowsMessage(Word uMessage,WordPtr wParam,WordPtr lParam)
+void BURGER_API Burger::WindowsApp::OutputWindowsMessage(Word uMessage,WordPtr wParam,WordPtr lParam)
 {
-	if (!(Burger::Globals::GetTraceFlag()&Burger::Globals::TRACE_MESSAGES)) {
-		return;
-	}
 	const char *pMessage;
-	char Message[32]; 
-	static Word ID=0;
+	char HexAsASCII[32]; 
+	static Word uMessageCount=0;
 
 	switch (uMessage) {
-#if defined(WM_DWMNCRENDERINGCHANGED)
-	CASE(WM_DWMNCRENDERINGCHANGED);
-#endif
-#if defined(WM_DWMCOLORIZATIONCOLORCHANGED)
-	CASE(WM_DWMCOLORIZATIONCOLORCHANGED);
-#endif
-#if defined(WM_DWMWINDOWMAXIMIZEDCHANGE)
-	CASE(WM_DWMWINDOWMAXIMIZEDCHANGE);
-#endif
-	CASE(WM_DEVMODECHANGE);
-	CASE(WM_ACTIVATEAPP);
-	CASE(WM_FONTCHANGE);
-	CASE(WM_TIMECHANGE);
-	CASE(WM_MENUSELECT);
-	CASE(WM_MENUCHAR);
-	CASE(WM_ENTERIDLE);
-	CASE(WM_CANCELMODE);
-	CASE(WM_NEXTMENU);
-	CASE(WM_SIZING);
-	CASE(WM_CAPTURECHANGED);
-	CASE(WM_MOVING);
-	CASE(WM_SETCURSOR);
-	CASE(WM_MOUSEACTIVATE);
-	CASE(WM_CHILDACTIVATE);
-	CASE(WM_QUEUESYNC);
-	CASE(WM_GETMINMAXINFO);
-	CASE(WM_NCCREATE);
-	CASE(WM_NCDESTROY);
-	CASE(WM_NCCALCSIZE);
-	CASE(WM_PARENTNOTIFY);
-	CASE(WM_ENTERMENULOOP);
-	CASE(WM_EXITMENULOOP);
-	CASE(WM_NCHITTEST);
-	CASE(WM_NCPAINT);
-	CASE(WM_NCACTIVATE);
-	CASE(WM_GETDLGCODE);
-	CASE(WM_SYNCPAINT);
-	CASE(WM_MOUSEMOVE);
-	CASE(WM_LBUTTONDOWN);
-	CASE(WM_LBUTTONUP);
-	CASE(WM_LBUTTONDBLCLK);
-	CASE(WM_RBUTTONDOWN);
-	CASE(WM_RBUTTONUP);
-	CASE(WM_RBUTTONDBLCLK);
-	CASE(WM_MBUTTONDOWN);
-	CASE(WM_MBUTTONUP);
-	CASE(WM_MBUTTONDBLCLK);
-	CASE(WM_MOUSEWHEEL);
-	CASE(WM_XBUTTONDOWN);
-	CASE(WM_XBUTTONUP);
-	CASE(WM_XBUTTONDBLCLK);
-	CASE(WM_MOUSEHWHEEL);
 	CASE(WM_NULL);
 	CASE(WM_CREATE);
 	CASE(WM_DESTROY);
@@ -148,18 +204,74 @@ static void OutputWindowsMessage(Word uMessage,WordPtr wParam,WordPtr lParam)
 	CASE(WM_GETTEXTLENGTH);
 	CASE(WM_PAINT);
 	CASE(WM_CLOSE);
-	CASE(WM_IME_SETCONTEXT);
-	CASE(WM_IME_NOTIFY);
-	CASE(WM_IME_CONTROL);
-	CASE(WM_IME_COMPOSITIONFULL);
-	CASE(WM_IME_SELECT);
-	CASE(WM_IME_CHAR);
+	CASE(WM_QUERYENDSESSION);
+	CASE(WM_QUIT);
+	CASE(WM_QUERYOPEN);
+	CASE(WM_ERASEBKGND);
+	CASE(WM_SYSCOLORCHANGE);
+	CASE(WM_SHOWWINDOW);
+	CASE(WM_SETTINGCHANGE);
+	CASE(WM_DEVMODECHANGE);
+	CASE(WM_ACTIVATEAPP);
+	CASE(WM_FONTCHANGE);
+	CASE(WM_TIMECHANGE);
+	CASE(WM_CANCELMODE);
+	CASE(WM_SETCURSOR);
+	CASE(WM_MOUSEACTIVATE);
+	CASE(WM_CHILDACTIVATE);
+	CASE(WM_QUEUESYNC);
+	CASE(WM_GETMINMAXINFO);
+	CASE(WM_PAINTICON);
+	CASE(WM_ICONERASEBKGND);
+	CASE(WM_NEXTDLGCTL);
+	CASE(WM_SPOOLERSTATUS);
+	CASE(WM_DRAWITEM);
+	CASE(WM_MEASUREITEM);
+	CASE(WM_DELETEITEM);
+	CASE(WM_VKEYTOITEM);
+	CASE(WM_CHARTOITEM);
+	CASE(WM_SETFONT);
+	CASE(WM_GETFONT);
+	CASE(WM_SETHOTKEY);
+	CASE(WM_GETHOTKEY);
+	CASE(WM_QUERYDRAGICON);
+	CASE(WM_COMPAREITEM);
+	CASE(WM_GETOBJECT);
+	CASE(WM_COMPACTING);
+	CASE(WM_COMMNOTIFY);
+	CASE(WM_WINDOWPOSCHANGING);
+	CASE(WM_WINDOWPOSCHANGED);
+	CASE(WM_POWER);
+	CASE(WM_COPYDATA);
+	CASE(WM_CANCELJOURNAL);
+	CASE(WM_KEYF1);
+	CASE(WM_NOTIFY);
+	CASE(WM_INPUTLANGCHANGEREQUEST);
+	CASE(WM_INPUTLANGCHANGE);
+	CASE(WM_TCARD);
+	CASE(WM_HELP);
+	CASE(WM_USERCHANGED);
+	CASE(WM_NOTIFYFORMAT);
 	CASE(WM_CONTEXTMENU);
 	CASE(WM_STYLECHANGING);
 	CASE(WM_STYLECHANGED);
 	CASE(WM_DISPLAYCHANGE);
 	CASE(WM_GETICON);
 	CASE(WM_SETICON);
+	CASE(WM_NCCREATE);
+	CASE(WM_NCDESTROY);
+	CASE(WM_NCCALCSIZE);
+	CASE(WM_NCHITTEST);
+	CASE(WM_NCPAINT);
+	CASE(WM_NCACTIVATE);
+	CASE(WM_GETDLGCODE);
+	CASE(WM_SYNCPAINT);
+	CASE(WM_UAHDESTROYWINDOW);
+	CASE(WM_UAHDRAWMENU);
+	CASE(WM_UAHDRAWMENUITEM);
+	CASE(WM_UAHINITMENU);
+	CASE(WM_UAHMEASUREMENUITEM);
+	CASE(WM_UAHNCPAINTMENUPOPUP);
 	CASE(WM_NCMOUSEMOVE);
 	CASE(WM_NCLBUTTONDOWN);
 	CASE(WM_NCLBUTTONUP);
@@ -170,13 +282,13 @@ static void OutputWindowsMessage(Word uMessage,WordPtr wParam,WordPtr lParam)
 	CASE(WM_NCMBUTTONDOWN);
 	CASE(WM_NCMBUTTONUP);
 	CASE(WM_NCMBUTTONDBLCLK);
-	CASE(WM_COMPACTING);
-	CASE(WM_COMMNOTIFY);
-	CASE(WM_WINDOWPOSCHANGING);
-	CASE(WM_WINDOWPOSCHANGED);
-	CASE(WM_POWER);
-	CASE(WM_COPYDATA);
-	CASE(WM_CANCELJOURNAL);
+	CASE(WM_NCXBUTTONDOWN);
+	CASE(WM_NCXBUTTONUP);
+	CASE(WM_NCXBUTTONDBLCLK);
+	CASE(WM_NCUAHDRAWCAPTION);
+	CASE(WM_NCUAHDRAWFRAME);
+	CASE(WM_INPUT_DEVICE_CHANGE);
+	CASE(WM_INPUT);
 	CASE(WM_KEYDOWN);
 	CASE(WM_KEYUP);
 	CASE(WM_CHAR);
@@ -186,6 +298,9 @@ static void OutputWindowsMessage(Word uMessage,WordPtr wParam,WordPtr lParam)
 	CASE(WM_SYSCHAR);
 	CASE(WM_SYSDEADCHAR);
 	CASE(WM_UNICHAR);
+	CASE(WM_IME_STARTCOMPOSITION);
+	CASE(WM_IME_ENDCOMPOSITION);
+	CASE(WM_IME_COMPOSITION);
 	CASE(WM_INITDIALOG);
 	CASE(WM_COMMAND);
 	CASE(WM_SYSCOMMAND);
@@ -194,33 +309,117 @@ static void OutputWindowsMessage(Word uMessage,WordPtr wParam,WordPtr lParam)
 	CASE(WM_VSCROLL);
 	CASE(WM_INITMENU);
 	CASE(WM_INITMENUPOPUP);
-	CASE(WM_QUERYOPEN);
-	CASE(WM_ERASEBKGND);
+	CASE(WM_GESTURE);
+	CASE(WM_GESTURENOTIFY);
+	CASE(WM_MENUSELECT);
+	CASE(WM_MENUCHAR);
+	CASE(WM_ENTERIDLE);
+	CASE(WM_MENURBUTTONUP);
+	CASE(WM_MENUDRAG);
+	CASE(WM_MENUGETOBJECT);
+	CASE(WM_UNINITMENUPOPUP);
+	CASE(WM_MENUCOMMAND);
+	CASE(WM_CHANGEUISTATE);
+	CASE(WM_UPDATEUISTATE);
+	CASE(WM_QUERYUISTATE);
+	CASE(WM_CTLCOLORMSGBOX);
+	CASE(WM_CTLCOLOREDIT);
+	CASE(WM_CTLCOLORLISTBOX);
+	CASE(WM_CTLCOLORBTN);
+	CASE(WM_CTLCOLORDLG);
+	CASE(WM_CTLCOLORSCROLLBAR);
+	CASE(WM_CTLCOLORSTATIC);
+	CASE(MN_GETHMENU);
+	CASE(WM_MOUSEMOVE);
+	CASE(WM_LBUTTONDOWN);
+	CASE(WM_LBUTTONUP);
+	CASE(WM_LBUTTONDBLCLK);
+	CASE(WM_RBUTTONDOWN);
+	CASE(WM_RBUTTONUP);
+	CASE(WM_RBUTTONDBLCLK);
+	CASE(WM_MBUTTONDOWN);
+	CASE(WM_MBUTTONUP);
+	CASE(WM_MBUTTONDBLCLK);
+	CASE(WM_MOUSEWHEEL);
+	CASE(WM_XBUTTONDOWN);
+	CASE(WM_XBUTTONUP);
+	CASE(WM_XBUTTONDBLCLK);
+	CASE(WM_MOUSEHWHEEL);
+	CASE(WM_PARENTNOTIFY);
+	CASE(WM_ENTERMENULOOP);
+	CASE(WM_EXITMENULOOP);
+	CASE(WM_NEXTMENU);
+	CASE(WM_SIZING);
+	CASE(WM_CAPTURECHANGED);
+	CASE(WM_MOVING);
+	CASE(WM_POWERBROADCAST);
+	CASE(WM_DEVICECHANGE);
+	CASE(WM_MDICREATE);
+	CASE(WM_MDIDESTROY);
+	CASE(WM_MDIACTIVATE);
+	CASE(WM_MDIRESTORE);
+	CASE(WM_MDINEXT);
+	CASE(WM_MDIMAXIMIZE);
+	CASE(WM_MDITILE);
+	CASE(WM_MDICASCADE);
+	CASE(WM_MDIICONARRANGE);
+	CASE(WM_MDIGETACTIVE);
+	CASE(WM_MDISETMENU);
+	CASE(WM_ENTERSIZEMOVE);
+	CASE(WM_EXITSIZEMOVE);
+	CASE(WM_DROPFILES);
+	CASE(WM_MDIREFRESHMENU);
+	CASE(WM_TOUCH);
+	CASE(WM_IME_SETCONTEXT);
+	CASE(WM_IME_NOTIFY);
+	CASE(WM_IME_CONTROL);
+	CASE(WM_IME_COMPOSITIONFULL);
+	CASE(WM_IME_SELECT);
+	CASE(WM_IME_CHAR);
+	CASE(WM_IME_REQUEST);
+	CASE(WM_IME_KEYDOWN);
+	CASE(WM_IME_KEYUP);
+	CASE(WM_NCMOUSEHOVER);
+	CASE(WM_MOUSEHOVER);
+	CASE(WM_NCMOUSELEAVE);
+	CASE(WM_MOUSELEAVE);
+	CASE(WM_WTSSESSION_CHANGE);
+	CASE(WM_CUT);
+	CASE(WM_COPY);
+	CASE(WM_PASTE);
+	CASE(WM_CLEAR);
+	CASE(WM_UNDO);
+	CASE(WM_RENDERFORMAT);
+	CASE(WM_RENDERALLFORMATS);
+	CASE(WM_DESTROYCLIPBOARD);
+	CASE(WM_DRAWCLIPBOARD);
+	CASE(WM_PAINTCLIPBOARD);
+	CASE(WM_VSCROLLCLIPBOARD);
+	CASE(WM_SIZECLIPBOARD);
+	CASE(WM_ASKCBFORMATNAME);
+	CASE(WM_CHANGECBCHAIN);
+	CASE(WM_HSCROLLCLIPBOARD);
+	CASE(WM_QUERYNEWPALETTE);
+	CASE(WM_PALETTEISCHANGING);
+	CASE(WM_PALETTECHANGED);
+	CASE(WM_HOTKEY);
+	CASE(WM_PRINT);
+	CASE(WM_PRINTCLIENT);
+	CASE(WM_APPCOMMAND);
+	CASE(WM_THEMECHANGED);
+	CASE(WM_CLIPBOARDUPDATE);
+	CASE(WM_DWMCOMPOSITIONCHANGED);
+	CASE(WM_DWMNCRENDERINGCHANGED);
+	CASE(WM_DWMCOLORIZATIONCOLORCHANGED);
+	CASE(WM_DWMWINDOWMAXIMIZEDCHANGE);
+
 	default:
-		Burger::NumberToAsciiHex(Message,static_cast<Word32>(uMessage),Burger::LEADINGZEROS|8);
-		pMessage = Message;
+		NumberToAsciiHex(HexAsASCII,static_cast<Word32>(uMessage),LEADINGZEROS|8);
+		pMessage = HexAsASCII;
 	}
-	Burger::Debug::Message("Message %08X is %s with parms %08X, %08X\n",ID,pMessage,wParam,lParam);
-	++ID;
+	Debug::Message("Message %08X is %s with parms %08X, %08X\n",uMessageCount,pMessage,wParam,lParam);
+	++uMessageCount;
 }
-#else
-#if !defined(DOXYGEN)
-#define OutputWindowsMessage(x,y,z) (void)0
-#endif
-#endif
-
-/*! ************************************
-
-	\class Burger::WindowsApp
-	\brief Base class for window game applications.
-
-	This class contains everything needed to create a
-	cross-platform environment for writing console based
-	applications. Functions are included to allow for
-	the application to gain <i>drag and drop</i> functionality
-	on platforms that support it.
-
-***************************************/
 
 /*! ************************************
 
@@ -239,6 +438,7 @@ Burger::WindowsApp::WindowsApp(HINSTANCE__ *hInstance,const char *pGameName,Main
 	GameApp(uDefaultMemorySize,uDefaultHandleCount,uMinReserveSize),
 	m_hInstance(hInstance),
 	m_hWindow(NULL),
+	m_pDefaultCursor(NULL),
 	m_ppOldArgv(NULL),
 	m_pCallBack(pCallBack),
 	m_bPreviousWindowXYValid(FALSE),
@@ -369,6 +569,19 @@ Burger::WindowsApp::~WindowsApp()
 
 ***************************************/
 
+#if !defined(DOXYGEN)
+#if defined(NDEBUG)
+#define TraceMessage(x,y,z) (void)0
+#else
+static BURGER_INLINE void TraceMessage(Word uMessage,WordPtr wParam,WordPtr lParam)
+{
+	if (Burger::Globals::GetTraceFlag()&Burger::Globals::TRACE_MESSAGES) {
+		Burger::WindowsApp::OutputWindowsMessage(uMessage,wParam,lParam);
+	}
+}
+#endif
+#endif
+
 static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wParam,LPARAM lParam)
 {
 	// Firstly, get the "this" pointer
@@ -393,6 +606,9 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 
 	// The pThis class instance is valid!
 
+	// For debugging, if needed
+	TraceMessage(uMessage,static_cast<WordPtr>(wParam),static_cast<WordPtr>(lParam));
+
 	// If there is a user supplied callback, issue it
 
 	Burger::WindowsApp::MainWindowProc pCallBack = pThis->GetCallBack();
@@ -409,8 +625,6 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 	// Handle burgerlib update events
 	//
 
-	OutputWindowsMessage(uMessage,wParam,lParam);
-
 	switch (uMessage) {
 
 	//
@@ -420,25 +634,28 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 		{
 			Burger::Display *pDisplay = pThis->GetDisplay();
 			if (pDisplay) {
-				LONG lScreenHeight = static_cast<LONG>(pDisplay->GetHeight());
-				LONG lScreenWidth = static_cast<LONG>(pDisplay->GetWidth());
-				// Adjust the window size to whatever the video manager says it should be
-				RECT WindowSizeRect;
-				WindowSizeRect.top = 0;
-				WindowSizeRect.left = 0;
-				WindowSizeRect.bottom = lScreenHeight;
-				WindowSizeRect.right = lScreenWidth;
-				AdjustWindowRectEx(&WindowSizeRect,static_cast<DWORD>(GetWindowLongW(pWindow,GWL_STYLE)),GetMenu(pWindow)!=0,static_cast<DWORD>(GetWindowLongW(pWindow,GWL_EXSTYLE)));
+				// If full screen or not allowed, disable
+				if (pThis->IsAppFullScreen() || !(pDisplay->GetFlags()&Burger::Display::ALLOWRESIZING)) {
+					LONG lScreenHeight = static_cast<LONG>(pDisplay->GetHeight());
+					LONG lScreenWidth = static_cast<LONG>(pDisplay->GetWidth());
+					// Adjust the window size to whatever the video manager says it should be
+					RECT WindowSizeRect;
+					WindowSizeRect.top = 0;
+					WindowSizeRect.left = 0;
+					WindowSizeRect.bottom = lScreenHeight;
+					WindowSizeRect.right = lScreenWidth;
+					AdjustWindowRectEx(&WindowSizeRect,static_cast<DWORD>(GetWindowLongW(pWindow,GWL_STYLE)),GetMenu(pWindow)!=0,static_cast<DWORD>(GetWindowLongW(pWindow,GWL_EXSTYLE)));
 
-				// Set the minimum and maximum window sizes to the same value to perform the resize disabling
-				MINMAXINFO *pMinMaxInfo = reinterpret_cast<MINMAXINFO *>(lParam);
-				pMinMaxInfo->ptMaxSize.x = lScreenWidth;
-				pMinMaxInfo->ptMaxSize.y = lScreenHeight;
-				pMinMaxInfo->ptMaxTrackSize.x = WindowSizeRect.right-WindowSizeRect.left;
-				pMinMaxInfo->ptMaxTrackSize.y = WindowSizeRect.bottom-WindowSizeRect.top;
-				pMinMaxInfo->ptMinTrackSize.x = pMinMaxInfo->ptMaxTrackSize.x;
-				pMinMaxInfo->ptMinTrackSize.y = pMinMaxInfo->ptMaxTrackSize.y;
-				return FALSE;
+					// Set the minimum and maximum window sizes to the same value to perform the resize disabling
+					MINMAXINFO *pMinMaxInfo = reinterpret_cast<MINMAXINFO *>(lParam);
+					pMinMaxInfo->ptMaxSize.x = lScreenWidth;
+					pMinMaxInfo->ptMaxSize.y = lScreenHeight;
+					pMinMaxInfo->ptMaxTrackSize.x = WindowSizeRect.right-WindowSizeRect.left;
+					pMinMaxInfo->ptMaxTrackSize.y = WindowSizeRect.bottom-WindowSizeRect.top;
+					pMinMaxInfo->ptMinTrackSize.x = pMinMaxInfo->ptMaxTrackSize.x;
+					pMinMaxInfo->ptMinTrackSize.y = pMinMaxInfo->ptMaxTrackSize.y;
+					return FALSE;
+				}
 			}
 		}
 		break;
@@ -449,30 +666,10 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 	//
 
 	case WM_SETCURSOR:
-		{
-			// Read the current mouse position
-			POINT MousePos;
-			GetCursorPos(&MousePos);
-			// Convert to game coordinates
-			ScreenToClient(pThis->GetWindow(),&MousePos);
-			// If there's a mouse device, set the position
-			Burger::Mouse *pMouse = pThis->GetMouse();
-			if (pMouse) {
-				pMouse->SetPosition(static_cast<Word>(MousePos.x),static_cast<Word>(MousePos.y));
-			}
-			// Assume a hidden cursor
-			Word bVisible = TRUE;
-			// If the cursor in the game area, hide the cursor
-			Burger::Display *pDisplay = pThis->GetDisplay();
-			if (pDisplay) {
-				if ((static_cast<Word>(MousePos.x)<pDisplay->GetWidth()) && (static_cast<Word>(MousePos.y)<pDisplay->GetHeight())) {
-					bVisible = FALSE;
-				}
-			}
-			// Show/hide the operating system cursor
-			Burger::OSCursor::Show(bVisible);
+		if (pThis->HandleCursor(static_cast<Word>(lParam))) {
+			return TRUE;		// Handled
 		}
-		return TRUE;
+		break;
 
 	//
 	// The app is "activated"
@@ -480,7 +677,7 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 	case WM_ACTIVATEAPP:
 		// If quitting, do NOT activate!
 		if (pThis->GetQuitCode()) {
-			return 0;
+			return 0;		// Message is processed
 		}
 		break;
 
@@ -491,32 +688,154 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 
 	case WM_ACTIVATE:
 		{
-			Burger::Mouse *pMouse = pThis->GetMouse();
-			Burger::Keyboard *pKeyboard = pThis->GetKeyboard();
-			Burger::Joypad *pJoypad = pThis->GetJoypad();
 			if ((HIWORD(wParam) == 0) && (LOWORD(wParam) != WA_INACTIVE)) {
-				if (pMouse) {
-					pMouse->Acquire();
-				}
-				if (pKeyboard) {
-					pKeyboard->Acquire();
-				}
-				if (pJoypad) {
-					pJoypad->Acquire();
+				if (pThis->IsAppFullScreen()) {
+					pThis->GetInputFocus();
+				} else {
+					pThis->KillInputFocus();
 				}
 				pThis->SetInBackground(FALSE);
 			} else {
-				if (pMouse) {
-					pMouse->Unacquire();
-				}
-				if (pKeyboard) {
-					pKeyboard->Unacquire();
-				}
-				if (pJoypad) {
-					pJoypad->Unacquire();
-				}
+				pThis->KillInputFocus();
 				pThis->SetInBackground(TRUE);
 			}
+		}
+		return 0;
+
+	//
+	// Pass mouse motion to the mouse driver
+	//
+
+	// Mouse move events only happen when the mouse cursor is on the screen
+	case WM_MOUSEMOVE:
+		pThis->SetMouseOnScreen(TRUE);
+
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_LBUTTONDBLCLK:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+	case WM_MBUTTONDBLCLK:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_RBUTTONDBLCLK:
+	case WM_MOUSEWHEEL:
+	case WM_XBUTTONDOWN:
+	case WM_XBUTTONUP:
+	case WM_XBUTTONDBLCLK:
+	case WM_MOUSEHWHEEL:
+		{
+			// If there's a mouse device, set the position
+			Burger::Mouse *pMouse = pThis->GetMouse();
+			if (pMouse) {
+				Word uMouseX;
+				Word uMouseY;
+
+				// Mouse wheel events give global coordinates. Go figure
+				if ((uMessage == WM_MOUSEWHEEL) || (uMessage == WM_MOUSEHWHEEL)) {
+					// Must use GET_X_LPARAM because the values
+					// are signed shorts on multiple monitors
+					POINT TempPoint;
+					TempPoint.x = static_cast<LONG>(GET_X_LPARAM(lParam));
+					TempPoint.y = static_cast<LONG>(GET_Y_LPARAM(lParam));
+					ScreenToClient(pThis->GetWindow(),&TempPoint);
+					uMouseX = static_cast<Word>(TempPoint.x);
+					uMouseY = static_cast<Word>(TempPoint.y);
+				} else {
+					// They are unsigned values!
+					uMouseX = LOWORD(lParam);
+					uMouseY = HIWORD(lParam);
+				}
+				// Pass the value to the mouse driver
+				pMouse->PostMousePosition(uMouseX,uMouseY);
+
+				// Pass the mouse button events down
+				switch (uMessage) {
+				case WM_MOUSEWHEEL:
+					{
+						int iDelta = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
+						pMouse->PostMouseWheel(0,iDelta);
+					}
+					break;
+				case WM_MOUSEHWHEEL:
+					{
+						int iDelta = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
+						pMouse->PostMouseWheel(iDelta,0);
+					}
+					break;
+				case WM_LBUTTONDOWN:
+				case WM_LBUTTONDBLCLK:
+					pMouse->PostMouseDown(Burger::Mouse::BUTTON_LEFT);
+					break;
+				case WM_RBUTTONDOWN:
+				case WM_RBUTTONDBLCLK:
+					pMouse->PostMouseDown(Burger::Mouse::BUTTON_RIGHT);
+					break;
+				case WM_MBUTTONDOWN:
+				case WM_MBUTTONDBLCLK:
+					pMouse->PostMouseDown(Burger::Mouse::BUTTON_MIDDLE);
+					break;
+				case WM_XBUTTONDOWN:
+				case WM_XBUTTONDBLCLK:
+					{
+						// uBits is 1 or 2, convert to 0x8 or 0x10
+						Word uBits = GET_XBUTTON_WPARAM(wParam);
+						pMouse->PostMouseDown(uBits<<3U);
+					}
+					// XBUTTON events need to return TRUE
+					// http://msdn.microsoft.com/en-us/library/windows/desktop/ms646245(v=vs.85).aspx
+					return TRUE;
+				case WM_LBUTTONUP:
+					pMouse->PostMouseUp(Burger::Mouse::BUTTON_LEFT);
+					break;
+				case WM_RBUTTONUP:
+					pMouse->PostMouseUp(Burger::Mouse::BUTTON_RIGHT);
+					break;
+				case WM_MBUTTONUP:
+					pMouse->PostMouseUp(Burger::Mouse::BUTTON_MIDDLE);
+					break;
+				case WM_XBUTTONUP:
+					{
+						// uBits is 1 or 2, convert to 0x8 or 0x10
+						Word uBits = GET_XBUTTON_WPARAM(wParam);
+						pMouse->PostMouseUp(uBits<<3U);
+					}
+					// XBUTTON events need to return TRUE
+					// http://msdn.microsoft.com/en-us/library/windows/desktop/ms646245(v=vs.85).aspx
+					return TRUE;
+
+				default:
+					break;
+				}
+				return 0;
+			}
+		}
+		// No mouse driver, pass the events down
+		break;
+
+	// Mouse is off the client area. Turn off any software cursor
+	case WM_NCMOUSELEAVE:
+	case WM_NCMOUSEMOVE:
+		pThis->SetMouseOnScreen(FALSE);
+		break;
+
+	// An external program (The Keyboard control panel most likely)
+	// changed the keyboard repeat speed.
+	// Alert the keyboard manager, if one was started, about the
+	// event.
+
+	case WM_SETTINGCHANGE:
+		if ((wParam==SPI_SETKEYBOARDSPEED) || (wParam==SPI_SETKEYBOARDDELAY)) {
+			Burger::Keyboard *pKeyboard = pThis->GetKeyboard();
+			if (pKeyboard) {
+				pKeyboard->ReadSystemKeyboardDelays();
+			}
+		} else if (wParam==SPI_SETMOUSEBUTTONSWAP) {
+			Burger::Mouse *pMouse = pThis->GetMouse();
+			if (pMouse) {
+				pMouse->ReadSystemMouseValues();
+			}
+
 		}
 		break;
 
@@ -526,14 +845,13 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 			RECT WindowSize;
 			GetWindowRect(pWindow,&WindowSize);
 			MoveWindow(pWindow,WindowSize.left,WindowSize.top,WindowSize.right - WindowSize.left,WindowSize.bottom - WindowSize.top,TRUE);
-
+			// Alert the mouse subsystem to the new mouse bounds
 			Burger::Mouse *pMouse = pThis->GetMouse();
 			if (pMouse) {
 				Burger::Display *pDisplay = pThis->GetDisplay();
 				if (pDisplay) {
-					Word uScreenHeight = pDisplay->GetHeight();
-					Word uScreenWidth = pDisplay->GetWidth();
-					pMouse->SetRange(uScreenWidth,uScreenHeight);		// Reset the mouse coords for mouse handler
+					// Reset the mouse coords for mouse handler
+					pMouse->SetRange(pDisplay->GetWidth(),pDisplay->GetHeight());
 				}
 			}
 		}
@@ -565,37 +883,57 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 	case WM_POWERBROADCAST:
 		switch (wParam) {
 		case PBT_APMQUERYSUSPEND:
-			// At this point, the app should save any data for open
-			// network connections, files, etc., and prepare to go into
-			// a suspended mode. The app can use the MsgProc callback
-			// to handle this if desired.
-			return 1;
+		// Do not allow the app to suspend!
+		// Note: Screen savers should quit and apps should send a notification!
+			return BROADCAST_QUERY_DENY;
 
+		// Resume from power saving?
 		case PBT_APMRESUMESUSPEND:
-			// At this point, the app should recover any data, network
-			// connections, files, etc., and resume running from when
-			// the app was suspended. The app can use the MsgProc callback
-			// to handle this if desired.
 			return 1;
 		}
 		break;
 
-	// A menu was active and the user pressed an invalid keep. Disable the beep
+	// A menu was active and the user pressed an invalid key. Disable the beep
 	case WM_MENUCHAR:
 		return MAKELRESULT(0,MNC_CLOSE);
 
-	// Disable menu selection
+	// Disable menu selection by forcing high level code to think
+	// everything is part of the client area.
 	case WM_NCHITTEST:
 		if (pThis->IsAppFullScreen()) {
 			return HTCLIENT;
 		}
+		if (!pThis->IsResizingAllowed()) {
+			// Process the test
+			LRESULT lResult = DefWindowProcW(pWindow,uMessage,wParam,lParam);
+			// Override the borders to the caption to change resizing
+			// to window movement events
+			switch (lResult) {
+			case HTRIGHT:
+			case HTLEFT:
+			case HTTOP:
+			case HTTOPLEFT:
+			case HTTOPRIGHT:
+			case HTBOTTOM:
+			case HTBOTTOMRIGHT:
+			case HTBOTTOMLEFT:
+				lResult = HTCAPTION;
+			default:
+				break;
+			}
+			return lResult;
+		}
+		// Allow the OS handle handle the hot spots
 		break;
 
 	case WM_SYSCOMMAND:
 		// Prevent moving/sizing in full screen mode
 		switch(GET_SC_WPARAM(wParam)) {
-		case SC_MOVE:
 		case SC_SIZE:
+			if (!pThis->IsResizingAllowed()) {
+				return 0;		// Discard resize commands
+			}
+		case SC_MOVE:
 		case SC_MAXIMIZE:
 		case SC_KEYMENU:
 			if (pThis->IsAppFullScreen()) {
@@ -605,22 +943,39 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 		}
 		break;
 
+	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
-		switch (wParam) {
-		case VK_RETURN:
-			if ((pThis->IsWindowSwitchingAllowed()) &&
-				// Is ALT also held down?
-				(HIWORD(lParam) & KF_ALTDOWN)) {
-				Burger::Display *pDisplay = pThis->GetDisplay();
-				if (pThis) {
-					pDisplay->Init(pDisplay->GetWidth(),pDisplay->GetHeight(),pDisplay->GetDepth(),pDisplay->GetFlags()^Burger::Display::FULLSCREEN);
-					return 0;
-				}
+		{
+			// If there's a mouse device, set the position
+			Burger::Keyboard *pKeyboard = pThis->GetKeyboard();
+			if (pKeyboard) {
+				pKeyboard->PostWindowsKeyDown(((lParam>>16)&0x7FU)|((lParam>>17)&0x80));
+				return 0;
 			}
-			break;
+
 		}
 		break;
-		
+
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		{
+			// If there's a mouse device, set the position
+			Burger::Keyboard *pKeyboard = pThis->GetKeyboard();
+			if (pKeyboard) {
+				pKeyboard->PostWindowsKeyUp(((lParam>>16)&0x7FU)|((lParam>>17)&0x80));
+				return 0;
+			}
+		}
+		break;
+
+	case WM_KILLFOCUS:
+		pThis->KillInputFocus();
+		break;
+
+	case WM_SETFOCUS:
+		pThis->GetInputFocus();
+		break;
+
 	case WM_DISPLAYCHANGE:
 		return 0;
 
@@ -651,7 +1006,7 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 
 ***************************************/
 
-int Burger::WindowsApp::InitWindow(const char *pGameName,MainWindowProc pCallBack)
+int BURGER_API Burger::WindowsApp::InitWindow(const char *pGameName,MainWindowProc pCallBack)
 {
 	m_pCallBack = pCallBack;
 	WNDCLASSEXW WindowClass;
@@ -663,7 +1018,8 @@ int Burger::WindowsApp::InitWindow(const char *pGameName,MainWindowProc pCallBac
 	WindowClass.cbWndExtra = sizeof(void *);	// Space for the "this" pointer
 	WindowClass.hInstance = m_hInstance;
 //	WindowClass.hIcon = NULL;
-//	WindowClass.hCursor = NULL;
+	// Keep the cursor NULL to allow updating of the cursor by the app
+//	WindowClass.hCursor = NULL;		//LoadCursorW(NULL,MAKEINTRESOURCEW(IDC_ARROW));
 	WindowClass.hbrBackground = reinterpret_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
 //	WindowClass.lpszMenuName = NULL;
 	WindowClass.lpszClassName = reinterpret_cast<LPCWSTR>(g_GameClass);
@@ -671,6 +1027,9 @@ int Burger::WindowsApp::InitWindow(const char *pGameName,MainWindowProc pCallBac
 
 	// Register my window's class
 	ATOM MyAtom = RegisterClassExW(&WindowClass);
+
+	// Get the default cursor
+	m_pDefaultCursor = LoadCursorW(NULL,reinterpret_cast<LPCWSTR>(IDC_ARROW));
 
 	int iResult;
 	// Success in creating my class?
@@ -730,7 +1089,7 @@ int Burger::WindowsApp::InitWindow(const char *pGameName,MainWindowProc pCallBac
 
 ***************************************/
 
-int Burger::WindowsApp::SetWindowSize(Word uWidth,Word uHeight)
+int BURGER_API Burger::WindowsApp::SetWindowSize(Word uWidth,Word uHeight)
 {
 	// Get the application's window
 
@@ -806,7 +1165,7 @@ int Burger::WindowsApp::SetWindowSize(Word uWidth,Word uHeight)
 
 ***************************************/
 
-void Burger::WindowsApp::RecordWindowLocation(void)
+void BURGER_API Burger::WindowsApp::RecordWindowLocation(void)
 {
 	// Save off the window position only if a context was already successfully created
 	RECT TempRect;
@@ -814,6 +1173,125 @@ void Burger::WindowsApp::RecordWindowLocation(void)
 	m_iPreviousWindowX = TempRect.left;
 	m_iPreviousWindowY = TempRect.top;
 	m_bPreviousWindowXYValid = TRUE;
+}
+
+/*! ************************************
+
+	\brief Handle cursor updates
+
+	When the mouse moves in windowed mode, a WM_CURSOR
+	event is triggered an the window needs to respond
+	by changing the mouse cursor if needed.
+
+	If the game has enabled a hardware cursor, it will
+	be enabled if the cursor is hovering over
+	the client area, otherwise, it will be hidden or
+	enabled to whatever cursor is needed for the borders
+	of the window.
+
+	The application doesn't call this function. The
+	WindowsApp class will handle it in the default
+	window processing function.
+
+	\param uParam The passed "lparam" for a WM_CURSOR event.
+	\return \ref TRUE if handled, \ref FALSE if not
+
+***************************************/
+
+Word BURGER_API Burger::WindowsApp::HandleCursor(Word uParam)
+{
+	// Only process if in the client area. Let the OS handle the cursor
+	// elsewhere
+	Word uResult = FALSE;
+	Word uClient = LOWORD(uParam);
+	switch (uClient) {
+	// In the client area?
+	case HTCLIENT:
+		// Handle the hardware cursor
+		if (OSCursor::IsActive()) {
+			OSCursor::Refresh();
+			OSCursor::Show();
+		} else {
+			OSCursor::Hide();
+		}
+		// The message was processed
+		uResult = TRUE;
+		break;
+	case HTRIGHT:
+	case HTLEFT:
+	case HTTOP:
+	case HTTOPLEFT:
+	case HTTOPRIGHT:
+	case HTBOTTOM:
+	case HTBOTTOMRIGHT:
+	case HTBOTTOMLEFT:
+		// If full screen or not allowed, disable resizing
+		if (!IsResizingAllowed()) {
+			SetCursor(m_pDefaultCursor);
+			uResult = TRUE;
+		}
+	default:
+		OSCursor::Show(TRUE);
+		break;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Obtain DirectInput focus (Windows only)
+
+	When the window is brought forward and focus is desired,
+	this function will first test if the window is part
+	of a desktop or full screen. If full screen,
+	it will call the attached Keyboard, Mouse and Joypad
+	objects to have them Acquire focus with DirectInput.
+
+***************************************/
+
+void BURGER_API Burger::WindowsApp::GetInputFocus(void)
+{
+	if (IsAppFullScreen()) {
+		Mouse *pMouse = GetMouse();
+		if (pMouse) {
+			pMouse->AcquireDirectInput();
+		}
+		Keyboard *pKeyboard = GetKeyboard();
+		if (pKeyboard) {
+			pKeyboard->AcquireDirectInput();
+		}
+		Joypad *pJoypad = GetJoypad();
+		if (pJoypad) {
+			pJoypad->Acquire();
+		}
+	}
+}
+
+/*! ************************************
+
+	\brief Release DirectInput focus (Windows only)
+
+	When the window is moved to the background and focus
+	is no longer desired it will call the attached Keyboard,
+	Mouse and Joypad objects to have them Unacquire focus
+	with DirectInput.
+
+***************************************/
+
+void BURGER_API Burger::WindowsApp::KillInputFocus(void)
+{
+	Mouse *pMouse = GetMouse();
+	if (pMouse) {
+		pMouse->UnacquireDirectInput();
+	}
+	Keyboard *pKeyboard = GetKeyboard();
+	if (pKeyboard) {
+		pKeyboard->UnacquireDirectInput();
+	}
+	Joypad *pJoypad = GetJoypad();
+	if (pJoypad) {
+		pJoypad->Unacquire();
+	}
 }
 
 /*! ************************************

@@ -17,10 +17,62 @@
 
 #if defined(BURGER_WINDOWS)
 #include "brglobals.h"
+#include "brimage.h"
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <Windows.h>
+
+//
+// Lookup table to convert Burgerlib cursors to system default cursors
+//
+
+static const Word g_uSystemCursors[Burger::OSCursor::CURSOR_COUNT-1] = {
+	32512,		// IDC_ARROW
+	32513,		// IDC_IBEAM
+	32514,		// IDC_WAIT
+	32515		// IDC_CROSS
+};
+
+
+Word BURGER_API Burger::OSCursorImage::CreateMonoChromeImage(const Word8 *pXor,const Word8 *pAnd,Word uWidth,Word uHeight,Int iHotX,Int iHotY)
+{
+	Shutdown();
+
+	// Ask windows as to the maximum size allowed for a hardware cursor
+	Word uAllowedX = static_cast<Word>(GetSystemMetrics(SM_CXCURSOR));
+	Word uAllowedY = static_cast<Word>(GetSystemMetrics(SM_CYCURSOR));
+
+	// Round up to the 8s
+	Word uFinalWidth = (uWidth+7)&(~7);
+	Word uFinalHeight = uHeight;
+	Word uResult = 10;
+	if ((uFinalWidth<=uAllowedX) && (uFinalHeight<=uAllowedY)) {
+		m_uWidth = uFinalWidth;
+		m_uHeight = uFinalHeight;
+		m_iHotX = iHotX;
+		m_iHotY = iHotY;
+		HCURSOR hCursor = CreateCursor(Globals::GetInstance(),iHotX,iHotY,static_cast<int>(uFinalWidth),static_cast<int>(uFinalHeight),pAnd,pXor);
+		if (hCursor) {
+			m_pCursorImage = hCursor;
+		}
+	}
+	return uResult;
+}
+
+/***************************************
+
+	Release resources
+
+***************************************/
+
+void BURGER_API Burger::OSCursorImage::Shutdown(void)
+{
+	if (m_pCursorImage) {
+		DestroyCursor(m_pCursorImage);
+		m_pCursorImage = NULL;
+	}
+}
 
 /***************************************
 
@@ -28,33 +80,79 @@
 
 ***************************************/
 
-void BURGER_API Burger::OSCursor::SetImageFromIDNumber(Word uCursorNumber)
+void BURGER_API Burger::OSCursor::SetImageFromIDNumber(eCursor eCursorNumber)
 {
 	// Was there a change?
 
-	if (uCursorNumber!=g_Global.m_uIDNumber) {
-
-		// Reset to the system cursor?
-		if (uCursorNumber) {
-			// Try from the application's resource
-			HCURSOR hCurs = LoadCursorW(Globals::GetInstance(),MAKEINTRESOURCEW(uCursorNumber));
-			// Did it load?
-			if (hCurs==NULL) {
-				// Try the operating system instead
-				hCurs = LoadCursorW(NULL,MAKEINTRESOURCEW(uCursorNumber));
+	if (eCursorNumber!=g_Global.m_eIDNumber) {
+		WordPtr uCursorResource = 0;
+		if (eCursorNumber!=CURSOR_NONE) {
+			HINSTANCE hInstance;
+			// Reset to the system cursor?
+			if (eCursorNumber < CURSOR_COUNT) {
+				uCursorResource = g_uSystemCursors[eCursorNumber-1];
+				hInstance = NULL;
+			} else {
+				uCursorResource = static_cast<WordPtr>(eCursorNumber);
+				hInstance = Globals::GetInstance();
 			}
-			if (hCurs!=NULL) {
-				g_Global.m_uIDNumber = uCursorNumber;
+			// Try from the application's resource
+			HCURSOR hCurs = LoadCursorW(hInstance,MAKEINTRESOURCEW(uCursorResource));
+			// Did it load?
+			if (!hCurs) {
+				// Try the operating system instead
+				hCurs = LoadCursorW(NULL,MAKEINTRESOURCEW(g_uSystemCursors[0]));
+			}
+			if (hCurs) {
+				g_Global.m_eIDNumber = eCursorNumber;
 				g_Global.m_pCursorImage = hCurs;
+				g_Global.m_bActiveFlag = TRUE;
 				// Tell windows to use this cursor
 				SetCursor(hCurs);
+				Show();
 				return;
 			}
 		}
-		SetCursor(LoadCursorW(NULL,MAKEINTRESOURCEW(IDC_ARROW)));
+		// Force to a system cursor
+		Hide();
+		SetCursor(LoadCursorW(NULL,MAKEINTRESOURCEW(g_uSystemCursors[0])));
+		g_Global.m_bActiveFlag = FALSE;
 		g_Global.m_pCursorImage = NULL;
+		g_Global.m_eIDNumber = CURSOR_NONE;
 	}
 }
+
+/*! ************************************
+
+	\brief Set the cursor to a generated cursor
+
+	Given a custom cursor, set the cursor to it.
+	\param pImage \ref NULL to hide the cursor, or a pointer to a generated cursor
+
+***************************************/
+
+void BURGER_API Burger::OSCursor::SetImage(const OSCursorImage *pImage)
+{
+	if (pImage) {
+		HCURSOR hCurs = pImage->m_pCursorImage;
+		if (hCurs) {
+			g_Global.m_eIDNumber = CURSOR_CUSTOM;
+			g_Global.m_pCursorImage = hCurs;
+			g_Global.m_bActiveFlag = TRUE;
+			// Tell windows to use this cursor
+			SetCursor(hCurs);
+			Show();
+			return;
+		}
+	}
+	// Force to a system cursor
+	Hide();
+	SetCursor(LoadCursorW(NULL,MAKEINTRESOURCEW(g_uSystemCursors[0])));
+	g_Global.m_bActiveFlag = FALSE;
+	g_Global.m_pCursorImage = NULL;
+	g_Global.m_eIDNumber = CURSOR_NONE;
+}
+
 
 /***************************************
 
@@ -135,7 +233,7 @@ Word BURGER_API Burger::OSCursor::Hide(void)
 void BURGER_API Burger::OSCursor::Init(void)
 {
 	// Set to the arrow
-	SetImageFromIDNumber(0);
+	SetImageFromIDNumber(CURSOR_ARROW);
 	// Force the cursor to be shown
 	g_Global.m_bVisibleFlag = FALSE;
 	// Make sure it's visible!
@@ -153,6 +251,8 @@ void BURGER_API Burger::OSCursor::Shutdown(void)
 	Init();
 }
 
+#endif
+
 /*! ************************************
 
 	\brief If a custom cursor is defined, refresh the operating system
@@ -165,6 +265,7 @@ void BURGER_API Burger::OSCursor::Shutdown(void)
 
 ***************************************/
 
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 void BURGER_API Burger::OSCursor::Refresh(void)
 {
 	if (g_Global.m_pCursorImage) {

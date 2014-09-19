@@ -56,6 +56,10 @@
 Burger::Display::Display(GameApp *pGameApp,eAPI API) :
 	m_pGameApp(pGameApp),
 	m_pRenderer(NULL),
+	m_pResize(NULL),
+	m_pResizeData(NULL),
+	m_pRender(NULL),
+	m_pRenderData(NULL),
 	m_bPaletteDirty(TRUE),
 	m_uBorderColor(0),
 	m_bPaletteVSync(FALSE),
@@ -125,7 +129,7 @@ Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
 
 	// Set up the hardware
 	Word uResult = InitContext();
-	if (uResult) {
+	if (!uResult) {
 		// If there's a logged renderer, set it up.
 		Renderer *pRenderer = m_pRenderer;
 		if (pRenderer) {
@@ -514,7 +518,7 @@ void Burger::Display::SetBorderColor(Word uColor)
 	
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS)) || defined(DOXYGEN)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
 void Burger::Display::SetWindowTitle(const char * /* pTitle */)
 {
 }

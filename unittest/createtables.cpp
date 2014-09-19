@@ -805,19 +805,19 @@ WordPtr BURGER_API Code(void *pInput)
 void BURGER_API CreateTables(void)
 {
 	ConsoleApp Ack(0,0);
-	printf("Test %u\n",Tick::ReadMilliseconds());
-	printf("Test %u\n",Tick::ReadMilliseconds());
-	printf("Test %u\n",Tick::ReadMilliseconds());
-	printf("Test %u\n",Tick::ReadMilliseconds());
+	printf("Test %u\n",static_cast<Word>(Tick::ReadMilliseconds()));
+	printf("Test %u\n",static_cast<Word>(Tick::ReadMilliseconds()));
+	printf("Test %u\n",static_cast<Word>(Tick::ReadMilliseconds()));
+	printf("Test %u\n",static_cast<Word>(Tick::ReadMilliseconds()));
 	CriticalSection foo;
 	Word uResult=666;
 	Thread bar(Code,&uResult);
 	bar.Wait();
-	printf("Result = %u, %u\n",bar.GetResult(),uResult);
+	printf("Result = %u, %u\n",static_cast<Word>(bar.GetResult()),uResult);
 	Thread bar2;
 	bar2.Start(Code,&uResult);
 	bar.Wait();
-	printf("Result = %u, %u\n",bar.GetResult(),uResult);
+	printf("Result = %u, %u\n",static_cast<Word>(bar.GetResult()),uResult);
 
 	GUID gfoo = {0x3BBA0080,0x2421,0x11CF,{0xA3,0x1A,0x00,0xAA,0x00,0xB9,0x33,0x56 } };
 	char buffer[256];

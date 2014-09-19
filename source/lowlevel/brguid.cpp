@@ -178,7 +178,7 @@ void BURGER_API Burger::GUIDToString(char *pOutput,const GUID *pInput)
 	pOutput[0] = 0;			// End the "C" string
 }
 
-/*! **************************************
+/*! ************************************
 
 	\brief Convert a GUID string into a GUID
 
@@ -210,7 +210,7 @@ Word BURGER_API Burger::GUIDFromString(GUID *pOutput,const char *pInput)
 	return FALSE;			// It's ok!
 }
 
-/*! **************************************
+/*! ************************************
 
 	\brief Return the 16 bit hash of a GUID
 
@@ -247,11 +247,11 @@ Word BURGER_API Burger::GUIDHash(const GUID *pInput)
 	if (iResult2 < 0) {
 		iResult2 += 255;			// Force positive
 	}
-	return ((iResult2&0xFF) << 8) | iResult;		// Return the hash (Only 16 bits)
+	return static_cast<Word>(((iResult2&0xFF) << 8) | iResult);		// Return the hash (Only 16 bits)
 }
 
 
-/*! **************************************
+/*! ************************************
 
 	\brief Compare two GUID structures for equality
 
@@ -269,7 +269,7 @@ Word BURGER_API Burger::GUIDIsEqual(const GUID *pInput1, const GUID *pInput2)
 		(reinterpret_cast<const Word32 *>(pInput1)[3] == reinterpret_cast<const Word32 *>(pInput2)[3]);
 }
 
-/*! **************************************
+/*! ************************************
 
 	\brief Test two GUID for equality
 

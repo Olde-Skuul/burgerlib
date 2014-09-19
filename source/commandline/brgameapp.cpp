@@ -13,6 +13,12 @@
 
 #include "brgameapp.h"
 #include "brdisplay.h"
+#include "brmouse.h"
+#include "brkeyboard.h"
+#include "brjoypad.h"
+#if defined(BURGER_WINDOWS)
+#include "brwindowsapp.h"
+#endif
 
 /*! ************************************
 
@@ -61,7 +67,8 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 	m_bQuit(FALSE),
 	m_bInBackground(FALSE),
 	m_bMinimized(FALSE),
-	m_bAllowWindowSwitching(TRUE)
+	m_bAllowWindowSwitching(TRUE),
+	m_bMouseOnScreen(TRUE)
 {
 }
 
@@ -438,6 +445,27 @@ Burger::GameApp::~GameApp()
 
 ***************************************/
 
+Word BURGER_API Burger::GameApp::SwitchVideo(void)
+{
+	Word uResult = 10;
+	// Is switching allowed?
+	if (m_bAllowWindowSwitching) {
+		// Is there a display class?
+		Display *pDisplay = GetDisplay();
+		if (pDisplay) {
+#if defined(BURGER_WINDOWS)
+			static_cast<WindowsApp *>(this)->KillInputFocus();
+#endif
+			pDisplay->Init(pDisplay->GetWidth(),pDisplay->GetHeight(),pDisplay->GetDepth(),pDisplay->GetFlags()^Display::FULLSCREEN);
+#if defined(BURGER_WINDOWS)
+			static_cast<WindowsApp *>(this)->GetInputFocus();
+#endif
+			uResult = 0;
+		}
+	}
+	return uResult;
+}
+
 /*! ************************************
 
 	\fn Word Burger::GameApp::IsMinimized(void) const
@@ -475,7 +503,7 @@ Burger::GameApp::~GameApp()
 
 ***************************************/
 
-Word Burger::GameApp::IsAppFullScreen(void) const
+Word BURGER_API Burger::GameApp::IsAppFullScreen(void) const
 {
 	Word uResult = FALSE;
 	const Display *pDisplay = m_pDisplay;
@@ -486,3 +514,54 @@ Word Burger::GameApp::IsAppFullScreen(void) const
 	}
 	return uResult;
 }
+
+/*! ************************************
+
+	\brief Return \ref TRUE if the application can be resized at runtime
+
+	\note \ref TRUE does not mean that the screen is currently enabled, it
+	only means the application can accept desktop events that will change
+	the screen size.
+
+	\return \ref TRUE if the screen can change sizes. \ref FALSE if not
+	\sa IsMinimized() or IsAppFullScreen()
+
+***************************************/
+
+Word BURGER_API Burger::GameApp::IsResizingAllowed(void) const
+{
+	Word uResult = FALSE;
+	const Display *pDisplay = m_pDisplay;
+	if (pDisplay) {
+		Word uFlags = pDisplay->GetFlags();
+		if (!(uFlags & Display::FULLSCREEN) && (uFlags & Display::ALLOWRESIZING)) {
+			// Not full screen and it's marked as allowed
+			uResult = TRUE;
+		}
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\fn void Burger::GameApp::SetMouseOnScreen(Word bMouseOnScreen)
+	\brief Sets the application flag if a mouse cursor is on the game screen
+
+	\param bMouseOnScreen \ref TRUE if the if the mouse cursor is on the game screen, \ref FALSE if not
+	\sa IsMouseOnScreen()
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::GameApp::IsMouseOnScreen(void) const
+	\brief Return \ref TRUE if the mouse cursor is on the game screen
+
+	Return if a game drawn mouse cursor should be drawn. Do not draw
+	if this flag is \ref FALSE because it means that the mouse cursor
+	is somewhere else on the desktop.
+
+	\return \ref TRUE if the mouse cursor is on the game screen, \ref FALSE if not
+	\sa SetMouseOnScreen(Word)
+
+***************************************/

@@ -31,9 +31,19 @@
 namespace Burger {
 class MacOSXApp : public GameApp {
 	BURGER_DISABLECOPYCONSTRUCTORS(MacOSXApp);
+	NSApplication *m_pApplication;			///< Pointer to the current application context (Copy of NSApp)
+	NSApplicationDelegate *m_pApplicationDelegate;	///< Pointer to the current application delegate
+	NSWindow *m_pWindow;					///< Game window
+	Word m_bCenterWindow;					///< \ref TRUE if the window needs to be centered
+	static RunQueue::eReturnCode BURGER_API EventPoll(void *pData);
 public:
-	MacOSXApp(const char *pGameName,WordPtr uDefaultMemorySize=Burger::MemoryManagerHandle::DEFAULTMEMORYCHUNK,Word uDefaultHandleCount=Burger::MemoryManagerHandle::DEFAULTHANDLECOUNT,WordPtr uMinReserveSize=Burger::MemoryManagerHandle::DEFAULTMINIMUMRESERVE);
+	MacOSXApp(WordPtr uDefaultMemorySize=Burger::MemoryManagerHandle::DEFAULTMEMORYCHUNK,Word uDefaultHandleCount=Burger::MemoryManagerHandle::DEFAULTHANDLECOUNT,WordPtr uMinReserveSize=Burger::MemoryManagerHandle::DEFAULTMINIMUMRESERVE);
 	~MacOSXApp();
+	void BURGER_API FocusWindow(void);
+	Word BURGER_API SetWindowSize(Word uWidth,Word uHeight);
+	BURGER_INLINE NSApplication *GetApplication(void) const { return m_pApplication; }
+	BURGER_INLINE NSApplicationDelegate *GetDelegate(void) const { return m_pApplicationDelegate; }
+	BURGER_INLINE NSWindow *GetWindow(void) const { return m_pWindow; }
 };
 }
 #endif

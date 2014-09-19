@@ -217,14 +217,3 @@ void *BURGER_API Burger::AllocCopy(const void *pInput,WordPtr uSize)
 	return pOutput;
 }
 
-/*! ************************************
-
-	\fn void Burger::Delete(const T*pInput)
-	\brief Dispose of a generic class instance
-
-	When Burger::New<T> is called, release the memory with this call
-	\param pInput \ref NULL or a valid pointer to a generic class to dispose of.
-
-	\sa Burger::New<T>
-
-***************************************/

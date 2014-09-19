@@ -295,7 +295,7 @@ Word BURGER_API Burger::ConditionVariable::Wait(CriticalSection *pCriticalSectio
 			
 			// Add to the current time
 			uMilliseconds += CurrentTime.tv_usec;
-			uSeconds += CurrentTime.tv_sec;
+			uSeconds += static_cast<Word>(CurrentTime.tv_sec);
 			// Handle wrap around
 			if (uMilliseconds>=1000000000) {
 				uMilliseconds-=1000000000;

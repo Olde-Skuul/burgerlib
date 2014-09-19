@@ -2484,6 +2484,161 @@ void BURGER_API Burger::MemoryFill(void *pOutput,Word8 uFill,WordPtr uCount)
 	}
 }
 
+/*! ************************************
+
+	\brief Exclusive or a buffer with 0xFF
+	
+	Given a pointer to a byte array, toggle all the zeros to ones and
+	vice versa.
+	
+	\param pOutput Pointer to the buffer to toggle.
+	\param uCount Size in bytes of the buffer.
+
+	\sa MemoryNot(void *,const void *,WordPtr) and MemoryXor(void *,Word8,WordPtr)
+	
+***************************************/
+
+void BURGER_API Burger::MemoryNot(void *pOutput,WordPtr uCount)
+{
+	if (uCount) {
+		do {
+			static_cast<Word8 *>(pOutput)[0] = static_cast<Word8>(~static_cast<const Word8 *>(pOutput)[0]);
+			pOutput = static_cast<Word8 *>(pOutput)+1;
+		} while (--uCount);
+	}
+}
+
+/*! ************************************
+
+	\brief Copy a buffer that's been exclusive or'd with 0xFF 
+	
+	Given a pointer to a byte array, toggle all the zeros to ones and
+	vice versa and store the result into another buffer
+	
+	\param pOutput Pointer to the buffer to store the result.
+	\param pInput Pointer to the buffer to toggle.
+	\param uCount Size in bytes of the buffer.
+
+	\sa MemoryNot(void *,WordPtr) and MemoryXor(void *,const void *,Word8,WordPtr)
+	
+***************************************/
+
+void BURGER_API Burger::MemoryNot(void *pOutput,const void *pInput,WordPtr uCount)
+{
+	if (uCount) {
+		do {
+			static_cast<Word8 *>(pOutput)[0] = static_cast<Word8>(~static_cast<const Word8 *>(pInput)[0]);
+			pInput = static_cast<const Word8 *>(pInput)+1;
+			pOutput = static_cast<Word8 *>(pOutput)+1;
+		} while (--uCount);
+	}
+}
+
+/*! ************************************
+
+	\brief Exclusive or a buffer with a value
+	
+	Given a pointer to a byte array, exclusive or all of the values
+	with a given 8 bit value.
+	
+	\param pOutput Pointer to the buffer to toggle.
+	\param uXor Value to exclusive or the buffer with
+	\param uCount Size in bytes of the buffer.
+
+	\sa MemoryXor(void *,const void *,Word8,WordPtr) and MemoryNot(void *,WordPtr)
+	
+***************************************/
+
+void BURGER_API Burger::MemoryXor(void *pOutput,Word8 uXor,WordPtr uCount)
+{
+	if (uCount) {
+		do {
+			static_cast<Word8 *>(pOutput)[0] = static_cast<Word8>(static_cast<const Word8 *>(pOutput)[0]^uXor);
+			pOutput = static_cast<Word8 *>(pOutput)+1;
+		} while (--uCount);
+	}
+}
+
+/*! ************************************
+
+	\brief Exclusive or a buffer with a value and store the result in another buffer
+	
+	Given a pointer to a byte array, exclusive or all of the values
+	with a given 8 bit value and store the result elsewhere
+	
+	\param pOutput Pointer to the buffer to store the result.
+	\param pInput Pointer to the buffer to toggle.
+	\param uXor Value to exclusive or the buffer with
+	\param uCount Size in bytes of the buffer.
+
+	\sa MemoryXor(void *,Word8,WordPtr) and MemoryNot(void *,const void *,WordPtr)
+	
+***************************************/
+
+void BURGER_API Burger::MemoryXor(void *pOutput,const void *pInput,Word8 uXor,WordPtr uCount)
+{
+	if (uCount) {
+		do {
+			static_cast<Word8 *>(pOutput)[0] = static_cast<Word8>(static_cast<const Word8 *>(pInput)[0]^uXor);
+			pInput = static_cast<const Word8 *>(pInput)+1;
+			pOutput = static_cast<Word8 *>(pOutput)+1;
+		} while (--uCount);
+	}
+}
+
+/*! ************************************
+
+	\brief Exclusive or a buffer with another buffer
+	
+	Given pointers to two byte arrays, exclusive or all of the values
+	of each buffer with each other and store the result in the first buffer
+	
+	\param pOutput Pointer to the buffer to exclusive or and store the result.
+	\param pInput Pointer to the buffer to exclusive or with.
+	\param uCount Size in bytes of the buffers. Both buffers must be the same size.
+
+	\sa MemoryXor(void *,const void *,const void *,WordPtr) and MemoryXor(void *,Word8,WordPtr)
+	
+***************************************/
+
+void BURGER_API Burger::MemoryXor(void *pOutput,const void *pInput,WordPtr uCount)
+{
+	if (uCount) {
+		do {
+			static_cast<Word8 *>(pOutput)[0] = static_cast<Word8>(static_cast<Word8 *>(pOutput)[0]^static_cast<const Word8 *>(pInput)[0]);
+			pInput = static_cast<const Word8 *>(pInput)+1;
+			pOutput = static_cast<Word8 *>(pOutput)+1;
+		} while (--uCount);
+	}
+}
+
+/*! ************************************
+
+	\brief Exclusive or a buffer with another buffer and store the result in a third buffer
+	
+	Given pointers to two byte arrays, exclusive or all of the values
+	of each buffer with each other and store the result in a third buffer
+	
+	\param pOutput Pointer to the buffer to store the result.
+	\param pInput1 Pointer to the first buffer to exclusive or with.
+	\param pInput2 Pointer to the second buffer to exclusive or with.
+	\param uCount Size in bytes of the buffers. All three buffers must be the same size.
+
+	\sa MemoryXor(void *,const void *,WordPtr) and MemoryXor(void *,const void *,Word8,WordPtr)
+	
+***************************************/
+
+void BURGER_API Burger::MemoryXor(void *pOutput,const void *pInput1,const void *pInput2,WordPtr uCount)
+{
+	if (uCount) {
+		do {
+			static_cast<Word8 *>(pOutput)[0] = static_cast<Word8>(static_cast<const Word8 *>(pInput1)[0]^static_cast<const Word8 *>(pInput2)[0]);
+			pInput1 = static_cast<const Word8 *>(pInput1)+1;
+			pInput2 = static_cast<const Word8 *>(pInput2)+1;
+			pOutput = static_cast<Word8 *>(pOutput)+1;
+		} while (--uCount);
+	}
+}
 
 /*! ************************************
 

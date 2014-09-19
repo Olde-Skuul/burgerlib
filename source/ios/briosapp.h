@@ -11,8 +11,8 @@
 
 ***************************************/
 
-#ifndef __BRIOSXAPP_H__
-#define __BRIOSXAPP_H__
+#ifndef __BRIOSAPP_H__
+#define __BRIOSAPP_H__
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"

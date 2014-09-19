@@ -53,11 +53,11 @@ static const char g8BitgVertexShader[] =
 
 // Simple 2D vertex shader for position and texture UV coordinates
 
-static const char g8BitFragmentShader[] = 
+static const char g8BitFragmentShader[] =
 	"uniform sampler1D ColorTable;"
 	"uniform sampler2D IndexTexture;"
 	"void main(){"
-	"float myindex=texture2D(IndexTexture,gl_TexCoord[0].xy);"
+	"float myindex=texture2D(IndexTexture,gl_TexCoord[0].xy).x;"
 	"gl_FragColor=texture1D(ColorTable,myindex);"
 	"}";
 #endif

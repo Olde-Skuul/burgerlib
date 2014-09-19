@@ -2,7 +2,7 @@
 
 	Debug manager
 
-	Windows specific version
+	MacOSX specific version
 
 	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
 
@@ -15,43 +15,45 @@
 
 #include "brdebug.h"
 
-#if defined(BURGER_WINDOWS)
-#include "brstring16.h"
-#include "broscursor.h"
+#if defined(BURGER_MACOSX)
+#include "brstringfunctions.h"
 #include "brcriticalsection.h"
 #include "brfile.h"
-
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0501				// Windows XP
-#endif
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#include <Windows.h>
+#include "broscursor.h"
+#include <sys/sysctl.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <Foundation/NSAutoreleasePool.h>
+#include <Foundation/NSString.h>
+#include <AppKit/NSAlert.h>
 
 // Make it thread safe
 
 static Burger::CriticalSectionStatic LockString;
 
+/***************************************
+ 
+	Print to debugger or file
+ 
+***************************************/
+
 void BURGER_API Burger::Debug::String(const char *pString)
 {
 	// Allow multiple threads to call me!
-
+	
 	if (pString) {
 		WordPtr i = StringLength(pString);
 		if (i) {
 			if (!IsDebuggerPresent()) {
 				LockString.Lock();
 				File MyFile;
-				if (MyFile.Open("9:LogFile.Txt",File::APPEND)==File::OKAY) {
+				if (MyFile.Open("9:logfile.txt",File::APPEND)==File::OKAY) {
 					MyFile.Write(pString,i);		// Send the string to the log file
 					MyFile.Close();
 				}
 			} else {
 				LockString.Lock();
-				// Note: Windows only supports ASCII to the Visual Studio debug console.
-				// It does NOT support unicode
-				OutputDebugStringA(pString);		// Send to the developer studio console window
+				fwrite(pString,1,i,stdout);		// Output to the debugger window
 			}
 			LockString.Unlock();
 		}
@@ -59,19 +61,38 @@ void BURGER_API Burger::Debug::String(const char *pString)
 }
 
 /***************************************
-
+ 
 	\brief Detect if a debugger is attached
-
+ 
 	Return \ref TRUE if a debugger is attached
-
+ 
 ***************************************/
 
 Word BURGER_API Burger::Debug::IsDebuggerPresent(void)
 {
-	return static_cast<Word>(::IsDebuggerPresent());
+	// Set up for querying the kernel about this process
+	
+	int ManagementInfobase[4];
+	ManagementInfobase[0] = CTL_KERN;		// Query the kernal
+	ManagementInfobase[1] = KERN_PROC;		// Asking for a kinfo_proc structure
+	ManagementInfobase[2] = KERN_PROC_PID;	// This process ID
+	ManagementInfobase[3] = getpid();		// Here's the application's ID
+	
+	// Prepare the output structure
+	
+	struct kinfo_proc Output;
+	MemoryClear(&Output,sizeof(Output));
+	size_t uOutputSize = sizeof(Output);
+	int iResult = sysctl(ManagementInfobase,static_cast<u_int>(BURGER_ARRAYSIZE(ManagementInfobase)),&Output,&uOutputSize,NULL,0);
+	Word uResult = FALSE;
+	if (!iResult) {
+		// Test for tracing (Debugging)
+		uResult = (Output.kp_proc.p_flag & P_TRACED) != 0;
+	}
+	return uResult;
 }
 
-/*! ************************************
+/***************************************
 
 	\brief Display a dialog box
 	
@@ -91,20 +112,27 @@ void BURGER_API Burger::OkAlertMessage(const char *pMessage,const char *pTitle)
 	// Make sure that the OS cursor is visible otherwise the user will
 	// wonder what's up when the user can't see the cursor to click the button
 	Word bVisible = OSCursor::Show();
-	HWND hFrontWindow = GetForegroundWindow();
-	SetForegroundWindow(GetDesktopWindow());
-	// Convert UTF-8 to UTF-16
-	String16 Message(pMessage);
-	String16 Title(pTitle);
-	MessageBoxW(GetDesktopWindow(),
-		reinterpret_cast<LPCWSTR>(Message.GetPtr()),
-		reinterpret_cast<LPCWSTR>(Title.GetPtr()),MB_OK);
-	// Restore state
-	SetForegroundWindow(hFrontWindow);
+	// Handle all memory allocations
+    NSAutoreleasePool *pMemoryPool = [[NSAutoreleasePool alloc] init];
+	
+	// Create the alert dialog
+	NSAlert* pAlert = [[[NSAlert alloc] init] autorelease];
+	// Information alert
+	[pAlert setAlertStyle:NSInformationalAlertStyle];
+	// Set the text to the dialog (Already UTF-8)
+    [pAlert setMessageText:[NSString stringWithUTF8String:pTitle]];
+    [pAlert setInformativeText:[NSString stringWithUTF8String:pMessage]];
+	// Add the OK button
+	[pAlert addButtonWithTitle:[NSString stringWithUTF8String:"OK"]];
+	// Handle the dialog and wait for a press of "OK"
+	[pAlert runModal];
+	
+	// Release all of the memory
+	[pMemoryPool release];
 	OSCursor::Show(bVisible);
 }
 
-/*! ************************************
+/***************************************
 
 	\brief Display a dialog to alert the user of a possible error condition or message.
 
@@ -127,17 +155,26 @@ Word BURGER_API Burger::OkCancelAlertMessage(const char *pMessage,const char *pT
 	// Make sure that the OS cursor is visible otherwise the user will
 	// wonder what's up when he can't see the cursor to click the button
 	Word bVisible = OSCursor::Show();
-	HWND hFrontWindow = GetForegroundWindow();
-	SetForegroundWindow(GetDesktopWindow());
-	// Convert UTF-8 to UTF-16
-	String16 Message(pMessage);
-	String16 Title(pTitle);
-	Word result = MessageBoxW(GetDesktopWindow(),
-		reinterpret_cast<LPCWSTR>(Message.GetPtr()),
-		reinterpret_cast<LPCWSTR>(Title.GetPtr()),MB_ICONWARNING|MB_OKCANCEL) == IDOK;
-
-	// Restore state
-	SetForegroundWindow(hFrontWindow);
+	// Handle all memory allocations
+    NSAutoreleasePool *pMemoryPool = [[NSAutoreleasePool alloc] init];
+	
+	// Create the alert dialog
+	NSAlert* pAlert = [[[NSAlert alloc] init] autorelease];
+	// Information alert
+	[pAlert setAlertStyle:NSCriticalAlertStyle];
+	// Set the text to the dialog (Already UTF-8)
+    [pAlert setMessageText:[NSString stringWithUTF8String:pTitle]];
+    [pAlert setInformativeText:[NSString stringWithUTF8String:pMessage]];
+	// Add the OK button
+	[pAlert addButtonWithTitle:[NSString stringWithUTF8String:"OK"]];
+	[pAlert addButtonWithTitle:[NSString stringWithUTF8String:"Cancel"]];
+	// Handle the dialog and wait for a press of "OK" or "Cancel"
+	NSInteger iResult = [pAlert runModal];
+	
+	// Release all of the memory
+	[pMemoryPool release];
+	// Return TRUE if pressed okay
+	Word result = (iResult==NSAlertFirstButtonReturn);
 	OSCursor::Show(bVisible);
 	return result;
 }

@@ -15,6 +15,92 @@
 
 /*! ************************************
 
+	\class Burger::OSCursorImage
+	\brief Class to generate an operating system cursor
+
+	For desktop operating systems like MacOS, Windows and Linux,
+	a mouse cursor is drawn and updated by the operating system.
+	This class allows the creation of cursors from monochrome or color
+	bitmaps for run time creation of a hardware cursor.
+
+***************************************/
+
+/*! ************************************
+
+	\brief Default constructor
+
+	Power up defaults. No cursor is generated.
+
+***************************************/
+
+Burger::OSCursorImage::OSCursorImage() :
+#if defined(BURGER_WINDOWS)
+	m_pCursorImage(NULL),
+#endif
+	m_uWidth(0),
+	m_uHeight(0),
+	m_iHotX(0),
+	m_iHotY(0)
+{
+}
+
+/*! ************************************
+
+	\brief Default destructor
+
+	Release all resources allocated
+	\sa Shutdown()
+
+***************************************/
+
+Burger::OSCursorImage::~OSCursorImage()
+{
+	Shutdown();
+}
+
+/*! ************************************
+
+	\brief Generate a monochrome cursor
+
+	Given a black and white image, create a cursor.
+
+	\note MacOS has a 16x16 maximum and Windows has a 32x32 maximum. Care should be used with this function.
+	\param pXor Pointer to the 1 bit per pixel bit map that is exclusive ored with the screen
+	\param pAnd Pointer to the 1 bit per pixel bit map that is and'd with the screen before the exclusive or
+	\param uWidth Width of the cursor image in pixels
+	\param uHeight Height of the cursor image in pixels
+	\param iHotX X coordinate of the hot spot in the cursor
+	\param iHotY Y coordinate of the hot spot in the cursor
+	\return Zero on success, non-zero on failure
+	\sa Shutdown()
+
+***************************************/
+
+#if (!defined(BURGER_MAC) && !defined(BURGER_WINDOWS)) || defined(DOXYGEN)
+Word BURGER_API Burger::OSCursorImage::CreateMonoChromeImage(const Word8 * /*pXor */,const Word8 * /* pAnd */,Word uWidth,Word uHeight,Int iHotX,Int iHotY)
+{
+	m_uWidth = uWidth;
+	m_uHeight = uHeight;
+	m_iHotX = iHotX;
+	m_iHotY = iHotY;
+	return 10;		// Always error out
+}
+
+/*! ************************************
+
+	\brief Release memory
+
+	Release all allocated resources in the class.
+
+***************************************/
+
+void BURGER_API Burger::OSCursorImage::Shutdown(void)
+{
+}
+#endif
+
+/*! ************************************
+
 	\class Burger::OSCursor
 	\brief Class to handle an operating system cursor
 
@@ -53,8 +139,9 @@ Burger::OSCursor::OSCursor() :
 #if defined(BURGER_MAC)
 	m_pCursorImage(NULL),
 #endif
-	m_uIDNumber(0),
-	m_bVisibleFlag(TRUE)
+	m_eIDNumber(CURSOR_NONE),
+	m_bVisibleFlag(TRUE),
+	m_bActiveFlag(FALSE)
 {
 }
 
@@ -77,6 +164,15 @@ Burger::OSCursor::~OSCursor()
 
 	\brief Return the current state of the visible flag
 	\return \ref TRUE if the cursor is currently visible, \ref FALSE if not.
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::OSCursor::IsActive(void);
+
+	\brief Return \ref TRUE if a cursor is visible while the mouse is in the client area
+	\return \ref TRUE if a cursor should be visible in the client area of the window, \ref FALSE if not.
 
 ***************************************/
 
@@ -117,9 +213,25 @@ Burger::OSCursor::~OSCursor()
 
 ***************************************/
 
-void BURGER_API Burger::OSCursor::SetImageFromIDNumber(Word uCursorNumber)
+void BURGER_API Burger::OSCursor::SetImageFromIDNumber(eCursor eCursorNumber)
 {
-	g_Global.m_uIDNumber = uCursorNumber;
+	g_Global.m_eIDNumber = eCursorNumber;
+	g_Global.m_bActiveFlag = eCursorNumber!=CURSOR_NONE;
+}
+
+/*! ************************************
+
+	\brief Set the cursor to a generated cursor
+
+	Given a custom cursor, set the cursor to it.
+	\param pImage \ref NULL to hide the cursor, or a pointer to a generated cursor
+
+***************************************/
+
+void BURGER_API Burger::OSCursor::SetImage(const OSCursorImage *pImage)
+{
+	g_Global.m_eIDNumber = CURSOR_CUSTOM;
+	g_Global.m_bActiveFlag = pImage!=0;
 }
 
 /*! ************************************
@@ -181,7 +293,8 @@ Word BURGER_API Burger::OSCursor::Hide(void)
 void BURGER_API Burger::OSCursor::Init(void)
 {
 	g_Global.m_bVisibleFlag = TRUE;
-	g_Global.m_uIDNumber = 1;
+	g_Global.m_eIDNumber = CURSOR_ARROW;
+	g_Global.m_bActiveFlag = TRUE;
 }
 
 /*! ************************************

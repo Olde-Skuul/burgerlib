@@ -239,115 +239,115 @@ void Burger::Font4Bit::DrawChar(Word uLetter)
 			// There is a ++ to the source pointer for this
 			--uByteWidth;
 		}
-        // Will I have an ending char?
-	    if (uCharacterWidth&1) {
-            // Set a flag
-	    	uSkipFlags|=2;
-            // +1 to the dest screen address
-		    ++uLinePadding;
-    	}
-	    uCharacterWidth>>=1;			// Convert to pairs
-    	uByteWidth-=uCharacterWidth;	// Remove adder
-	    uInvisibleColor = m_uInvisibleColor;		// Get the mask color
-    	do {
-            // Skip first character?
-	    	if (uSkipFlags&1U) {
-                // Get font data
-		    	Word uStrike = pStrike[0]&0x0FU;
-                // Valid?
-			    if (uStrike!=uInvisibleColor) {
-                    // Store to screen
-				    pDest[0] = m_ColorTable.Bytes[uStrike];
-	    		}
-    			++pDest;		// Next screen byte
-		    	++pStrike;		// Next source pixel
-	    	}
+		// Will I have an ending char?
+		if (uCharacterWidth&1) {
+			// Set a flag
+			uSkipFlags|=2;
+			// +1 to the dest screen address
+			++uLinePadding;
+		}
+		uCharacterWidth>>=1;			// Convert to pairs
+		uByteWidth-=uCharacterWidth;	// Remove adder
+		uInvisibleColor = m_uInvisibleColor;		// Get the mask color
+		do {
+			// Skip first character?
+			if (uSkipFlags&1U) {
+				// Get font data
+				Word uStrike = pStrike[0]&0x0FU;
+				// Valid?
+				if (uStrike!=uInvisibleColor) {
+					// Store to screen
+					pDest[0] = m_ColorTable.Bytes[uStrike];
+				}
+				++pDest;		// Next screen byte
+				++pStrike;		// Next source pixel
+			}
 
-            // Any center part?
-    		if (uCharacterWidth) {
-                // Save font width in temp
-    			Word uLoop = uCharacterWidth;
-	    		do {
-		    		Word uStrike2 = pStrike[0];	            // Get font data
-			    	Word uStrike1 = uStrike2>>4U;	        // Split it
-				    uStrike2 = uStrike2&0x0F;
-    				if (uInvisibleColor!=uStrike1) {	    // Valid?
-	    				pDest[0] = m_ColorTable.Bytes[uStrike1];	// Store to screen
-		    		}
-			    	if (uInvisibleColor!=uStrike2) {		// Ok?
-				    	pDest[1] = m_ColorTable.Bytes[uStrike2];	// Store to screen
-    				}
-	    			pDest+=2;		// Add the data
-		    		++pStrike;		// Next source pixel
-			    } while (--uLoop);
-    		}
-            // Is there a trailing pixel?
-	    	if (uSkipFlags&2U) {
-		    	Word uStrike = pStrike[0];	// Get font data
-		    	uStrike >>= 4U;
-			    if (uStrike!=uInvisibleColor) {	// Valid?
-				    pDest[0] = m_ColorTable.Bytes[uStrike];	        // Store to screen
-    			}
-	    	}
-		    pDest+=uLinePadding;		// Adjust the screen pointer
-    		pStrike += uByteWidth;  	// Adjust the font pointer
-	    } while (--uHeight);
+			// Any center part?
+			if (uCharacterWidth) {
+				// Save font width in temp
+				Word uLoop = uCharacterWidth;
+				do {
+					Word uStrike2 = pStrike[0];				// Get font data
+					Word uStrike1 = uStrike2>>4U;			// Split it
+					uStrike2 = uStrike2&0x0F;
+					if (uInvisibleColor!=uStrike1) {		// Valid?
+						pDest[0] = m_ColorTable.Bytes[uStrike1];	// Store to screen
+					}
+					if (uInvisibleColor!=uStrike2) {		// Ok?
+						pDest[1] = m_ColorTable.Bytes[uStrike2];	// Store to screen
+					}
+					pDest+=2;		// Add the data
+					++pStrike;		// Next source pixel
+				} while (--uLoop);
+			}
+			// Is there a trailing pixel?
+			if (uSkipFlags&2U) {
+				Word uStrike = pStrike[0];	// Get font data
+				uStrike >>= 4U;
+				if (uStrike!=uInvisibleColor) {	// Valid?
+					pDest[0] = m_ColorTable.Bytes[uStrike];		// Store to screen
+				}
+			}
+			pDest+=uLinePadding;		// Adjust the screen pointer
+			pStrike += uByteWidth;		// Adjust the font pointer
+		} while (--uHeight);
 	} else {
 
-    	// This routine will draw the font using 16 bit routines
+		// This routine will draw the font using 16 bit routines
 
-        // Make the screen coord
-	    pDest += iTempX<<1U;
-        // Create the dest font skip
-	    uLinePadding = m_pRenderer->GetStride()-(uCharacterWidth<<1);
+		// Make the screen coord
+		pDest += iTempX<<1U;
+		// Create the dest font skip
+		uLinePadding = m_pRenderer->GetStride()-(uCharacterWidth<<1);
 
-	    if (uSkipFlags) {	            // Will I draw a leading char?
-		    --uCharacterWidth;		    // Remove 1 from width pair loop
-		    --uByteWidth;	            // There is a ++ to the source pointer for this
-	    }
-	    if (uCharacterWidth&1) {		// Will I have an ending char?
-		    uSkipFlags|=2;	            // Set a flag
-		    uLinePadding+=2;			// +1 to the dest screen address
-	    }
-    	uCharacterWidth>>=1U;			// Convert to pairs
-	    uByteWidth-=uCharacterWidth;	// Remove adder
-	    uInvisibleColor = m_uInvisibleColor;		// Get the mask color
-    	do {
-	    	if (uSkipFlags&1U) {	                // Skip first character?
-		    	Word uStrike = pStrike[0]&0x0FU;	// Get font data
-			    if (uStrike!=uInvisibleColor) {	    // Valid?
-				    reinterpret_cast<Word16 *>(pDest)[0] = m_ColorTable.Shorts[uStrike];	// Store to screen
-    			}
-	    		pDest+=2;		                        // Next screen byte
-		    	++pStrike;			                    // Next source pixel
-    		}
-	    	if (uCharacterWidth) {		                // Any center part?
-		    	Word uLoop = uCharacterWidth;		    // Save font width in temp
-			    do {
-				    Word uStrike2 = pStrike[0];	        // Get font data
-    				Word uStrike1 = uStrike2>>4U;	    // Split it
-	    			uStrike2 = uStrike2&0x0FU;
-		    		if (uInvisibleColor!=uStrike1) {	// Valid?
-			    		reinterpret_cast<Word16 *>(pDest)[0] = m_ColorTable.Shorts[uStrike1];	// Store to screen
-				    }
-    				if (uInvisibleColor!=uStrike2) {    // Ok?
-	    				reinterpret_cast<Word16 *>(pDest)[1] = m_ColorTable.Shorts[uStrike2];	// Store to screen
-		    		}
-			    	pDest+=4;		    // Add the data
-				    ++pStrike;			// Next source pixel
-    			} while (--uLoop);
-	    	}
-		    if (uSkipFlags&2U) {	                // Is there a trailing pixel?
-			    Word uStrike = pStrike[0];	    	// Get font data
-			    uStrike >>= 4U;
-    			if (uStrike!=uInvisibleColor) {	    // Valid?
-	    			reinterpret_cast<Word16 *>(pDest)[0] = m_ColorTable.Shorts[uStrike];	// Store to screen
-		    	}
-	    	}
-    		pDest+=uLinePadding;		// Adjust the screen pointer
-    		pStrike += uByteWidth;	    // Adjust the font pointer
-	    } while (--uHeight);
-    }
+		if (uSkipFlags) {				// Will I draw a leading char?
+			--uCharacterWidth;			// Remove 1 from width pair loop
+			--uByteWidth;				// There is a ++ to the source pointer for this
+		}
+		if (uCharacterWidth&1) {		// Will I have an ending char?
+			uSkipFlags|=2;				// Set a flag
+			uLinePadding+=2;			// +1 to the dest screen address
+		}
+		uCharacterWidth>>=1U;			// Convert to pairs
+		uByteWidth-=uCharacterWidth;	// Remove adder
+		uInvisibleColor = m_uInvisibleColor;		// Get the mask color
+		do {
+			if (uSkipFlags&1U) {					// Skip first character?
+				Word uStrike = pStrike[0]&0x0FU;	// Get font data
+				if (uStrike!=uInvisibleColor) {		// Valid?
+					reinterpret_cast<Word16 *>(pDest)[0] = m_ColorTable.Shorts[uStrike];	// Store to screen
+				}
+				pDest+=2;								// Next screen byte
+				++pStrike;								// Next source pixel
+			}
+			if (uCharacterWidth) {						// Any center part?
+				Word uLoop = uCharacterWidth;			// Save font width in temp
+				do {
+					Word uStrike2 = pStrike[0];			// Get font data
+					Word uStrike1 = uStrike2>>4U;		// Split it
+					uStrike2 = uStrike2&0x0FU;
+					if (uInvisibleColor!=uStrike1) {	// Valid?
+						reinterpret_cast<Word16 *>(pDest)[0] = m_ColorTable.Shorts[uStrike1];	// Store to screen
+					}
+					if (uInvisibleColor!=uStrike2) {	// Ok?
+						reinterpret_cast<Word16 *>(pDest)[1] = m_ColorTable.Shorts[uStrike2];	// Store to screen
+					}
+					pDest+=4;			// Add the data
+					++pStrike;			// Next source pixel
+				} while (--uLoop);
+			}
+			if (uSkipFlags&2U) {					// Is there a trailing pixel?
+				Word uStrike = pStrike[0];			// Get font data
+				uStrike >>= 4U;
+				if (uStrike!=uInvisibleColor) {		// Valid?
+					reinterpret_cast<Word16 *>(pDest)[0] = m_ColorTable.Shorts[uStrike];	// Store to screen
+				}
+			}
+			pDest+=uLinePadding;		// Adjust the screen pointer
+			pStrike += uByteWidth;		// Adjust the font pointer
+		} while (--uHeight);
+	}
 }
 
 /*! ************************************
@@ -572,7 +572,7 @@ void Burger::Font4Bit::SetToPalette(const Word8 *pPalette)
 {
 	// Is there a handle?
 	if (m_ppData && pPalette) {
-        const Word8 *pFontIndexes = &static_cast<const Font4BitImage_t *>(m_ppData[0])->m_Widths[m_uCount];
+		const Word8 *pFontIndexes = &static_cast<const Font4BitImage_t *>(m_ppData[0])->m_Widths[m_uCount];
 		// After the indexes, is a default color scheme, index to it and
 		// use it to draw
 		Word uRGBListOffset = LittleEndian::LoadAny(&reinterpret_cast<const Word16 *>(pFontIndexes)[m_uCount]);

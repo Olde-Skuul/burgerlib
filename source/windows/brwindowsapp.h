@@ -32,19 +32,24 @@ namespace Burger {
 class WindowsApp : public GameApp {
 	BURGER_DISABLECOPYCONSTRUCTORS(WindowsApp);
 public:
+	static void BURGER_API OutputWindowsMessage(Word uMessage,WordPtr wParam,WordPtr lParam);
 	typedef Word (BURGER_API *MainWindowProc)(WindowsApp *pThis,HWND__ *hWnd,Word uMessage,WordPtr wParam,WordPtr lParam,WordPtr *pOutput);	///< Callback custom window message handler
 	WindowsApp(HINSTANCE__ *hInstance,const char *pGameName,MainWindowProc pCallBack=NULL,WordPtr uDefaultMemorySize=Burger::MemoryManagerHandle::DEFAULTMEMORYCHUNK,Word uDefaultHandleCount=Burger::MemoryManagerHandle::DEFAULTHANDLECOUNT,WordPtr uMinReserveSize=Burger::MemoryManagerHandle::DEFAULTMINIMUMRESERVE);
 	~WindowsApp();
 	BURGER_INLINE HINSTANCE__ *GetInstance(void) const { return m_hInstance; }
 	BURGER_INLINE HWND__ *GetWindow(void) const { return m_hWindow; }
 	BURGER_INLINE MainWindowProc GetCallBack(void) const { return m_pCallBack; }
-	int InitWindow(const char *pGameName,MainWindowProc pCallBack);
-	int SetWindowSize(Word uWidth,Word uHeight);
-	void RecordWindowLocation(void);
+	int BURGER_API InitWindow(const char *pGameName,MainWindowProc pCallBack);
+	int BURGER_API SetWindowSize(Word uWidth,Word uHeight);
+	void BURGER_API RecordWindowLocation(void);
+	Word BURGER_API HandleCursor(Word uParam);
+	void BURGER_API GetInputFocus(void);
+	void BURGER_API KillInputFocus(void);
 	static RunQueue::eReturnCode BURGER_API Poll(void *pSelf);
 private:
 	HINSTANCE__ *m_hInstance;		///< Current instance of the application
 	HWND__ *m_hWindow;				///< Main window for the application
+	HICON__ *m_pDefaultCursor;		///< Default cursor when not in the game area
 	const char **m_ppOldArgv;		///< Saved pointer to the global __argv for restoring on exit
 	MainWindowProc m_pCallBack;		///< Custom application window proc
 	int m_iPreviousWindowX;			///< Previous X coordinate of the window

@@ -28,6 +28,7 @@ public:
 	static void BURGER_API String(const char *pMessage);
 	static void BURGER_API String(Word32 uInput);
 	static void BURGER_API String(Word64 uInput);
+	static Word BURGER_API IsDebuggerPresent(void);
 };
 extern void BURGER_API OkAlertMessage(const char *pMessage,const char *pTitle=NULL);
 extern Word BURGER_API OkCancelAlertMessage(const char *pMessage,const char *pTitle=NULL);

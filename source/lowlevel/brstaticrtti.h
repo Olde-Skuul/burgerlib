@@ -20,33 +20,35 @@
 
 /* BEGIN */
 namespace Burger {
-class StaticRTTI {
-	protected:
-		const char* m_pClassName;		///< Pointer to the name of the class
-		const StaticRTTI* m_pParent;	///< Pointer to the parent in a derived class
-	public:
-		StaticRTTI(const char *pClassName,const StaticRTTI *pParent);
-		BURGER_INLINE const char* GetClassName(void) const { return m_pClassName; }
-		Word BURGER_API IsInList(const StaticRTTI *pInput) const;
-	};
+struct StaticRTTI {
+	const char* m_pClassName;		///< Pointer to the name of the class
+	const StaticRTTI* m_pParent;	///< Pointer to the parent in a derived class
+	BURGER_INLINE const char* GetClassName(void) const { return m_pClassName; }
+	Word BURGER_API IsInList(const StaticRTTI *pInput) const;
+};
 }
+
 #define BURGER_RTTI_IN_CLASS() \
-	public: \
-	BURGER_INLINE const char* GetClassName(void) const { return GetStaticRTTI()->GetClassName(); } \
+public: \
 	virtual const Burger::StaticRTTI* GetStaticRTTI(void) const; \
-	static const Burger::StaticRTTI m_StaticRTTI
+	static const Burger::StaticRTTI g_StaticRTTI
+
+#define BURGER_RTTI_IN_BASE_CLASS() \
+public: \
+	BURGER_INLINE const char* GetClassName(void) const { return GetStaticRTTI()->GetClassName(); } \
+	BURGER_RTTI_IN_CLASS()
 
 #define BURGER_CREATE_STATICRTTI_BASE(__ClassName) \
-	const Burger::StaticRTTI* __ClassName::GetStaticRTTI(void) const { return &m_StaticRTTI; } \
-	const Burger::StaticRTTI __ClassName::m_StaticRTTI(#__ClassName,NULL)
+	const Burger::StaticRTTI* __ClassName::GetStaticRTTI(void) const { return &g_StaticRTTI; } \
+	const Burger::StaticRTTI __ClassName::g_StaticRTTI = {#__ClassName,NULL}
 
 #define BURGER_CREATE_STATICRTTI_PARENT(__ClassName,__ParentClass) \
-	const Burger::StaticRTTI * __ClassName ::GetStaticRTTI(void) const { return &m_StaticRTTI; } \
-	const Burger::StaticRTTI __ClassName::m_StaticRTTI(#__ClassName,&__ParentClass::m_StaticRTTI)
+	const Burger::StaticRTTI * __ClassName ::GetStaticRTTI(void) const { return &g_StaticRTTI; } \
+	const Burger::StaticRTTI __ClassName::g_StaticRTTI = {#__ClassName,&__ParentClass::g_StaticRTTI }
 
-#define BURGER_STATICRTTI_ISTYPE(__ClassName,__Pointer) (__Pointer)->GetStaticRTTI()->IsInList(&__ClassName::m_StaticRTTI)
-#define BURGER_RTTICAST(__ClassName,__Pointer) ((__Pointer)->GetStaticRTTI()->IsInList(&__ClassName::m_StaticRTTI) ? static_cast<__ClassName*>(__Pointer) : NULL)
-#define BURGER_RTTICONSTCAST(__ClassName,__Pointer) ((__Pointer)->GetStaticRTTI()->IsInList(&__ClassName::m_StaticRTTI) ? static_cast<const __ClassName*>(__Pointer) : NULL)
+#define BURGER_STATICRTTI_ISTYPE(__ClassName,__Pointer) (__Pointer)->GetStaticRTTI()->IsInList(&__ClassName::g_StaticRTTI)
+#define BURGER_RTTICAST(__ClassName,__Pointer) ((__Pointer)->GetStaticRTTI()->IsInList(&__ClassName::g_StaticRTTI) ? static_cast<__ClassName*>(__Pointer) : NULL)
+#define BURGER_RTTICONSTCAST(__ClassName,__Pointer) ((__Pointer)->GetStaticRTTI()->IsInList(&__ClassName::g_StaticRTTI) ? static_cast<const __ClassName*>(__Pointer) : NULL)
 
 /* END */
 

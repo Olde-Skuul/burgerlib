@@ -29,6 +29,7 @@
 #include <CoreFoundation/CFString.h>
 #undef Free
 
+#if !defined(DOXYGEN)
 //
 // vnode is missing, so include the values directly
 //
@@ -41,6 +42,7 @@ enum vtype { VNON, VREG, VDIR, VBLK, VCHR, VLNK, VSOCK, VFIFO, VBAD, VSTR, VCPLX
 
 extern "C" char ***_NSGetArgv();
 extern "C" int *_NSGetArgc();
+#endif
 
 /***************************************
 

@@ -51,6 +51,7 @@ public:
 		INWINDOW=0x0,				///< The display is in a desktop window, best for debugging
 		FULLSCREEN=0x1,				///< Set if full screen
 		ALLOWFULLSCREENTOGGLE=0x2,	///< Set if Alt-Enter is allowed to switch from full screen to windowed mode
+		ALLOWRESIZING=0x4,			///< On desktop platforms, allow the window to be resized
 		FULLPALETTEALLOWED=0x40,	///< Set if all 256 colors of the palette can be used
 		STEREO=0x80,				///< Set if 3D Glasses support is enabled
 #if defined(_DEBUG) || defined(DOXYGEN)
@@ -60,6 +61,8 @@ public:
 #endif
 	};
 	typedef Word (BURGER_API *FadeProc)(void *pThis,Word uStep);		///< Callback function prototype for palette fading functions
+	typedef void (BURGER_API *ResizeProc)(void *pThis,Word uWidth,Word uHeight);
+	typedef void (BURGER_API *RenderProc)(void *pThis);
 
 	Display(GameApp *pGameApp,eAPI API=CUSTOM);
 	virtual ~Display();
@@ -90,6 +93,7 @@ public:
 	void FadeToWhite(FadeProc pProc=NULL,void *pData=NULL);
 	void FadeTo(RezFile *pRez,Word uResID,FadeProc pProc=NULL,void *pData=NULL);
 	void FadeTo(void **pHandle,FadeProc pProc=NULL,void *pData=NULL);
+	BURGER_INLINE GameApp *GetGameApp(void) const { return m_pGameApp; }
 	BURGER_INLINE Word GetWidth(void) const { return m_uWidth; }
 	BURGER_INLINE Word GetHeight(void) const { return m_uHeight; }
 	BURGER_INLINE Word GetDepth(void) const { return m_uDepth; }
@@ -101,10 +105,19 @@ public:
 	BURGER_INLINE void SetFadeSpeed(Word uPaletteFadeSpeed) { m_uPaletteFadeSpeed = uPaletteFadeSpeed; }
 	BURGER_INLINE Word GetPaletteVSync(void) const { return m_bPaletteVSync; }
 	BURGER_INLINE void SetPaletteVSync(Word bPaletteVSync) { m_bPaletteVSync=bPaletteVSync; }
-
+	BURGER_INLINE void SetResizeCallback(ResizeProc pResize,void *pResizeData) { m_pResize = pResize; m_pResizeData=pResizeData; }
+	ResizeProc GetResizeCallback(void) const { return m_pResize; }
+	void *GetResizeCallbackData(void) const { return m_pResizeData; }
+	BURGER_INLINE void SetRenderCallback(RenderProc pRender,void *pRenderData) { m_pRender = pRender; m_pRenderData=pRenderData; }
+	RenderProc GetRenderCallback(void) const { return m_pRender; }
+	void *GetRenderCallbackData(void) const { return m_pRenderData; }
 protected:
 	GameApp *m_pGameApp;		///< Pointer to the game application instance
 	Renderer *m_pRenderer;		///< Pointer to a renderer
+	ResizeProc m_pResize;		///< Callback if the screen changed sizes
+	void *m_pResizeData;		///< pThis pointer for m_pResize calls
+	RenderProc m_pRender;	///< Callback if the operating system requests a scene draw
+	void *m_pRenderData;		///< pThis pointer for m_pRender calls
 	Word m_bPaletteDirty;		///< \ref TRUE if the palette buffer was changed
 	Word m_uWidth;				///< Width in pixels of the display buffer
 	Word m_uHeight;				///< Height in pixels of the display buffer

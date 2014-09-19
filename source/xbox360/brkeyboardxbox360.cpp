@@ -28,10 +28,10 @@
 // Private scan code to Burgerlib scan code table
 struct ScanCodeTranslation_t {
 	Word m_uWindowsCode;		// Windows scan code
-	Word8 m_uScanCode;			// Burgerlib scan code
-	Word8 m_uAsciiCode;			// Ascii code
-	Word8 m_uShiftCode;			// Shifted ascii code
-	Word8 m_uControlCode;		// Control ascii code
+	Burger::Keyboard::eScanCode m_uScanCode;			// Burgerlib scan code
+	Word32 m_uAsciiCode;			// Ascii code
+	Word32 m_uShiftCode;			// Shifted ascii code
+	Word32 m_uControlCode;		// Control ascii code
 };
 
 // Table, first entry is the Windows code, the second is the code for Burgerlib
@@ -190,7 +190,7 @@ static const ScanCodeTranslation_t TranslationTable[] = {
 	{VK_LAUNCH_MAIL,Burger::Keyboard::SC_MAIL},
 	{VK_LAUNCH_MEDIA_SELECT,Burger::Keyboard::SC_MEDIASELECT},
 	{VK_GREENMODIFIER,Burger::Keyboard::SC_EXTRA},
-	{VK_ORANGEMODIFIER,Burger::Keyboard::SC_EXTRA+1}
+	{VK_ORANGEMODIFIER,static_cast<Burger::Keyboard::eScanCode>(Burger::Keyboard::SC_EXTRA+1)}
 };
 
 /***************************************
@@ -259,12 +259,12 @@ Burger::Keyboard::~Keyboard()
 
 ***************************************/
 
-Word Burger::Keyboard::PeekKeyEvent(void)
+Word BURGER_API Burger::Keyboard::PeekKeyEvent(KeyEvent_t *pEvent)
 {
 	Word uIndex = m_uArrayStart;		/* Get the starting index */
 	if (uIndex!=m_uArrayEnd) {	/* Anything in the buffer? */
-		const KeyEvent_t *pEvent = &m_KeyEvents[uIndex];
-		return static_cast<Word>(pEvent->m_bAscii|(pEvent->m_bScanCode<<8U)|(pEvent->m_bKeyPressed<<16U));
+		pEvent[0] = m_KeyEvents[uIndex];
+		return 1;
 	}
 	// No event pending
 	return 0;
@@ -279,14 +279,14 @@ Word Burger::Keyboard::PeekKeyEvent(void)
 
 ***************************************/
 
-Word Burger::Keyboard::GetKeyEvent(void)
+Word BURGER_API Burger::Keyboard::GetKeyEvent(KeyEvent_t *pEvent)
 {
 	m_pAppInstance->Poll();
 	Word uResult = 0;
 	Word uIndex = m_uArrayStart;		/* Get the starting index */
 	if (uIndex!=m_uArrayEnd) {	/* Anything in the buffer? */
-		const KeyEvent_t *pEvent = &m_KeyEvents[uIndex];
-		uResult = static_cast<Word>(pEvent->m_bAscii|(pEvent->m_bScanCode<<8U)|(pEvent->m_bKeyPressed<<16U));
+		pEvent[0] = m_KeyEvents[uIndex];
+		uResult = 1;
 		m_uArrayStart = (uIndex+1)&(KEYBUFFSIZE-1);	/* Next key */
 	}
 	// No event pending
@@ -310,8 +310,8 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Keyboard::Poll(void *pData)
 			// Direct Input keyboard scan code
 			Word uScanCode = pTranslation->m_uScanCode;
 			KeyEvent_t *pNewEvent = &pThis->m_KeyEvents[pThis->m_uArrayEnd];
-			pNewEvent->m_bScanCode = static_cast<Word8>(uScanCode);
-			pNewEvent->m_bKeyPressed = static_cast<Word8>(uPressed);
+			pNewEvent->m_uScanCode = static_cast<Word16>(uScanCode);
+			pNewEvent->m_uFlags = static_cast<Word16>(uPressed);
 			if (uPressed) {
 				// Mark as pressed
 				pThis->m_KeyArray[uScanCode] |= (KEYCAPDOWN|KEYCAPPRESSED);
@@ -329,10 +329,10 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Keyboard::Poll(void *pData)
 					}
 				}
 				// Store the Ascii value
-				pNewEvent->m_bAscii = static_cast<Word8>(uAscii);
+				pNewEvent->m_uAscii = static_cast<Word32>(uAscii);
 			} else {
 				// There is no ASCII on key up events
-				pNewEvent->m_bAscii = 0;
+				pNewEvent->m_uAscii = 0;
 				// Mark as released
 				pThis->m_KeyArray[uScanCode] &= (~KEYCAPDOWN);
 			}

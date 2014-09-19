@@ -28,7 +28,36 @@
 
 /* BEGIN */
 namespace Burger {
+class OSCursor;
+class OSCursorImage {
+	friend class OSCursor;
+	BURGER_DISABLECOPYCONSTRUCTORS(OSCursorImage);
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+	HICON__ *m_pCursorImage;	///< Windows only, handle to the cursor image
+#endif
+	Word m_uWidth;			///< Width of the cursor in pixels
+	Word m_uHeight;			///< Height of the cursor in pixels
+	Int m_iHotX;			///< Anchor X coordinate of the cursor
+	Int m_iHotY;			///< Anchor Y coordinate of the cursor
+public:
+	OSCursorImage();
+	~OSCursorImage();
+	Word BURGER_API CreateMonoChromeImage(const Word8 *pXor,const Word8 *pAnd,Word uWidth,Word uHeight,Int iHotX,Int iHotY);
+	void BURGER_API Shutdown(void);
+};
+
 class OSCursor {
+public:
+	enum eCursor {
+		CURSOR_NONE,	///< No cursor at all
+		CURSOR_ARROW,	///< Standard arrow cursor
+		CURSOR_IBEAM,	///< Text edit i-beam cursor
+		CURSOR_WAIT,	///< Beachball cursor
+		CURSOR_CROSS,	///< Crosshairs cursor
+		CURSOR_COUNT,	///< Total number of system cursors
+		CURSOR_CUSTOM	///< Cursor set by a call with SetImage()
+	};
+private:
 	BURGER_DISABLECOPYCONSTRUCTORS(OSCursor);
 #if defined(BURGER_MAC) || defined(DOXYGEN)
 	CCrsr **m_pCursorImage;		///< MacOS only, handle to the cursor image
@@ -36,22 +65,25 @@ class OSCursor {
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	HICON__ *m_pCursorImage;	///< Windows only, handle to the cursor image
 #endif
-	Word m_uIDNumber;			///< ID Number of the currently set cursor
+	eCursor m_eIDNumber;		///< ID Number of the currently set cursor
 	Word m_bVisibleFlag;		///< \ref TRUE if the cursor is visible
+	Word m_bActiveFlag;			///< \ref TRUE if a game cursor is loaded
 	static OSCursor g_Global;
 	OSCursor();
 public:
 	~OSCursor();
 	static BURGER_INLINE Word IsVisible(void) { return g_Global.m_bVisibleFlag; }
-	static BURGER_INLINE Word GetImageIDNumber(void) { return g_Global.m_uIDNumber; }
+	static BURGER_INLINE Word IsActive(void) { return g_Global.m_bActiveFlag; }
+	static BURGER_INLINE Word GetImageIDNumber(void) { return g_Global.m_eIDNumber; }
 	static BURGER_INLINE Word IsThisADesktop(void) {
-#if defined(BURGER_WINDOWS) || defined(BURGER_MAC)
+#if defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || defined(BURGER_LINUX)
 		return TRUE;
 #else
 		return FALSE;
 #endif
 	}
-	static void BURGER_API SetImageFromIDNumber(Word uCursorNumber);
+	static void BURGER_API SetImageFromIDNumber(eCursor eCursorNumber);
+	static void BURGER_API SetImage(const OSCursorImage *pImage);
 	static Word BURGER_API Show(void);
 	static Word BURGER_API Show(Word bVisible);
 	static Word BURGER_API Hide(void);

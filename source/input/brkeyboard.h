@@ -22,8 +22,16 @@
 #include "brgameapp.h"
 #endif
 
+#ifndef __BRCRITICALSECTION_H__
+#include "brcriticalsection.h"
+#endif
+
 #if defined(BURGER_WINDOWS) && !defined(__BRWINDOWSTYPES_H__)
 #include "brwindowstypes.h"
+#endif
+
+#if defined(BURGER_MACOSX) && !defined(__BRMACOSXTYPES_H__)
+#include "brmacosxtypes.h"
 #endif
 
 /* BEGIN */
@@ -31,18 +39,12 @@ namespace Burger {
 class Keyboard {
 public:
 	enum {
-		KEYCAPDOWN=0x01,	///< If true in m_KeyArray, this key is currently held down
-		KEYCAPPRESSED=0x02,	///< If true in m_KeyArray, this key was pressed, but wasn't acknowledged by the application
-		KEYBUFFSIZE=128,	///< Number of keystrokes in keyboard cache
-		KEYUPMASK=0x10000,	///< On GetKeyEvent(), this flag if true mean the event is a key up
-		KEYCODEMASK=0xFF,	///< Mask GetKeyEvent() with this to get the ASCII value
-		KEYSCANCODESHIFT=8	///< Shift the value down to get the scan code
+		KEYCAPDOWN=0x01,	///< If \ref TRUE in m_KeyArray, this key is currently held down
+		KEYCAPPRESSED=0x02,	///< If \ref TRUE in m_KeyArray, this key was pressed, but wasn't acknowledged by the application
+		KEYCAPTOGGLE=0x4,	///< If \ref TRUE in m_KeyArray, this key is toggled "on"
+		KEYBUFFSIZE=128		///< Number of keystrokes in keyboard cache
 	};
 	enum eAsciiCode {
-		ASCII_UPARROW=0x0B,		///< Up arrow key
-		ASCII_LEFTARROW=0x99,	///< Left arrow key
-		ASCII_RIGHTARROW=0x15,	///< Right arrow key
-		ASCII_DOWNARROW=0x0A,	///< Down arrow key
 		ASCII_BACKSPACE=0x08,	///< Backspace key
 		ASCII_TAB=0x09,			///< Tab key
 		ASCII_ENTER=0x0D,		///< Return/enter key
@@ -67,13 +69,17 @@ public:
 		ASCII_F15=0x8E,			///< F12 key
 		ASCII_PAUSE=0x8F,		///< Pause key
 		ASCII_SCROLLLOCK=0x090,	///< Scroll lock key
-		ASCII_PRINTSCREEN=0x91,	///< Printscreen key
-		ASCII_HOME=0x92,		///< Home key
-		ASCII_END=0x93,			///< End key
-		ASCII_PAGEUP=0x94,		///< Page up key
-		ASCII_PAGEDOWN=0x95,	///< Page down key
-		ASCII_INSERT=0x96,		///< Insert key
-		ASCII_DELETE=0x97		///< Delete key
+		ASCII_HOME=0x91,		///< Home key
+		ASCII_END=0x92,			///< End key
+		ASCII_LEFTARROW=0x2190,	///< Left arrow key
+		ASCII_UPARROW=0x2191,	///< Up arrow key
+		ASCII_RIGHTARROW=0x2192,///< Right arrow key
+		ASCII_DOWNARROW=0x2193,	///< Down arrow key
+		ASCII_PAGEUP=0x21DE,	///< Page up key
+		ASCII_PAGEDOWN=0x21DF,	///< Page down key
+		ASCII_DELETE=0x232B,	///< Delete key
+		ASCII_INSERT=0x2380,	///< Insert key
+		ASCII_PRINTSCREEN=0x2399 ///< Printscreen key
 	};
 	enum eScanCode {
 		SC_INVALID,			///< Zero means no key
@@ -206,7 +212,7 @@ public:
 		SC_NOCONVERT,		///< (Japanese keyboard)
 		SC_YEN,				///< (Japanese keyboard)
 		SC_ABNT_C2,			///< Numpad . on Brazilian keyboard
-		SC_PREVTRACK,		///< Previous Track (DIK_CIRCUMFLEX on Japanese keyboard)
+		SC_PREVTRACK,		///< Previous Track (CIRCUMFLEX on Japanese keyboard)
 		SC_AT,				///< (NEC PC98)
 		SC_COLONPC98,		///< (NEC PC98)
 		SC_UNDERLINE,		///< (NEC PC98)
@@ -238,43 +244,80 @@ public:
 		SC_EXTRA,			///< Extra key codes
 		SC_MAXENTRY=255		///< Highest scan code valid value
 	};
+	enum eKeyFlags {
+		FLAG_KEYDOWN=0x01,	///< Key is pressed
+		FLAG_ALT=0x02,		///< Alt/Open Apple key is held down at the same time
+		FLAG_CONTROL=0x04,	///< Control key is held down at the same time
+		FLAG_OPTION=0x08,	///< Option key is held down at the same time
+		FLAG_SHIFT=0x10,	///< Shift key is held down at the same time
+		FLAG_REPEAT=0x20,	///< This is a auto generated repeat key
+		FLAG_CAPSLOCK=0x40,	///< Caps lock is active,
+		FLAG_NUMLOCK=0x80	///< Num lock is active
+	};
 	struct KeyEvent_t {
-		Word8 m_bAscii;
-		Word8 m_bScanCode;
-		Word8 m_bKeyPressed;
+		Word32 m_uAscii;	///< Unicode ASCII value
+		Word16 m_uFlags;	///< Flags for key modifiers
+		Word16 m_uScanCode;	///< Scan code of the key
+		Word32 m_uMSTimeStamp;	///< Timestamp of when this event was recorded
 	};
 private:
-	static RunQueue::eReturnCode BURGER_API Poll(void *pThis);
-	Keyboard(Keyboard const &);			///< Prevent copying
-	Keyboard & operator = (Keyboard const &);		///< Prevent copying
-	Word8 m_KeyArray[SC_MAXENTRY+1];	///< Current key states
-	Word m_uArrayStart;					///< Read index for m_KeyEvents
-	Word m_uArrayEnd;					///< Write index for m_KeyEvents
-	KeyEvent_t m_KeyEvents[KEYBUFFSIZE];			
+	BURGER_DISABLECOPYCONSTRUCTORS(Keyboard);
 	GameApp *m_pAppInstance;			///< Application instances
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+	static WordPtr BURGER_API WindowsKeyboardThread(void *pData);
 	IDirectInputDevice8W* m_pKeyboardDevice;	///< DirectInput Device reference (WINDOWS only)
+	void *m_pKeyboardEvent;			///< Event signal for DirectInput (Windows only)
+	void *m_pKeyboardTimerEvent;	///< Keyboard repeat timer event (Windows only)
+	Thread m_KeyboardThread;		///< Asynchronous thread monitoring DirectInput (Windows only)
+	CriticalSection m_KeyboardLock;	///< Lock for multi-threading (Windows only)
+	Word m_bAcquired;				///< \ref TRUE if DirectInput8 is active (Windows only)
+	Word m_bRepeatActive;			///< \ref TRUE if auto repeat time is active (Windows only)
+	volatile Word32 m_bQuit;		///< \ref TRUE when the thread is shutting down (Windows only)
 #endif
+#if defined(BURGER_XBOX360)
+	static RunQueue::eReturnCode BURGER_API Poll(void *pData);
+#endif
+#if defined(BURGER_MACOSX) || defined(DOXYGEN)
+	CriticalSection m_KeyboardLock;	///< Lock for multi-threading (MacOSX only)
+#endif
+	Word8 m_KeyArray[SC_MAXENTRY+1];	///< Array with the current state of the keyboard
+	Word m_uArrayStart;					///< Read index for m_KeyEvents
+	Word m_uArrayEnd;					///< Write index for m_KeyEvents
+	Word m_uInitialDelay;				///< Initial delay in ms for autorepeat
+	Word m_uRepeatDelay;				///< Delay between repeating keystrokes
+	KeyEvent_t m_KeyEvents[KEYBUFFSIZE];	///< Circular buffer holding keyboard events
+	KeyEvent_t m_RepeatEvent;			///< Event to post on a repeat
 public:
 	Keyboard(GameApp *pAppInstance);
 	~Keyboard();
-	Word GetKeyEvent(void);
-	Word PeekKeyEvent(void);
-	void ClearKey(Word uScanCode);
-	Word AnyPressed(void);
-	Word HasBeenPressed(Word uScanCode);
-	Word HasBeenPressedClear(Word uScanCode);
-	Word IsPressed(Word uScanCode);
-	Word GetKey(void);
-	Word GetKeyLowerCase(void);
-	Word GetKeyUpperCase(void);
-	void Flush(void);
-	Word Wait(void);
-	static Word StringToScanCode(const char *pString);
-	static void ScanCodeToString(char *pString,WordPtr uStringSize,Word uScanCode);
-#if defined(BURGER_WINDOWS)
-	void Acquire(void);
-	void Unacquire(void);
+	Word BURGER_API PeekKeyEvent(KeyEvent_t *pEvent);
+	Word BURGER_API GetKeyEvent(KeyEvent_t *pEvent);
+	void BURGER_API ClearKey(eScanCode uScanCode);
+	eScanCode BURGER_API AnyPressed(void);
+	Word BURGER_API HasBeenPressed(eScanCode uScanCode);
+	Word BURGER_API HasBeenPressedClear(eScanCode uScanCode);
+	Word BURGER_API IsPressed(eScanCode uScanCode);
+	Word BURGER_API GetKey(void);
+	Word BURGER_API GetKeyLowerCase(void);
+	Word BURGER_API GetKeyUpperCase(void);
+	void BURGER_API Flush(void);
+	Word BURGER_API Wait(void);
+	Word BURGER_API PostKeyDown(eScanCode uScanCode);
+	Word BURGER_API PostKeyUp(eScanCode uScanCode);
+	Word BURGER_API PostKeyEvent(const KeyEvent_t *pEvent);
+	Word BURGER_API EncodeScanCode(KeyEvent_t *pEvent,eScanCode uScanCode);
+	static eScanCode BURGER_API StringToScanCode(const char *pString);
+	static void BURGER_API ScanCodeToString(char *pString,WordPtr uStringSize,eScanCode uScanCode);
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+	Word BURGER_API PostWindowsKeyDown(Word32 uScanCode);
+	Word BURGER_API PostWindowsKeyUp(Word32 uScanCode);
+	Word BURGER_API EncodeWindowsScanCode(KeyEvent_t *pEvent,Word uWindowsCode);
+	void BURGER_API AcquireDirectInput(void);
+	void BURGER_API UnacquireDirectInput(void);
+	void BURGER_API ReadSystemKeyboardDelays(void);
+#endif
+#if defined(BURGER_MACOSX) || defined(DOXYGEN)
+	void BURGER_API ProcessEvent(NSEvent *pEvent);
 #endif
 };
 }

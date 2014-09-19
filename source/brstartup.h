@@ -243,12 +243,15 @@ int BURGER_ANSIAPI main(void)
 {
 	// Create an application instance
 
-	MacOSXApp MyApp(GAMENAME,MEMORYSIZE,HANDLECOUNT,MINIMUMRESERVE);
+	MacOSXApp MyApp(MEMORYSIZE,HANDLECOUNT,MINIMUMRESERVE);
 
 	// Error on startup?
 	int iResult = Globals::GetErrorCode();
 
 	if (!iResult) {
+#if !defined(BURGER_NOMENUS)
+		Globals::CreateDefaultMenus();
+#endif
 		iResult = CodeEntry(&MyApp);
 	}
 	return iResult;

@@ -96,6 +96,12 @@ extern void BURGER_API MemoryCopy(void *pOutput,const void *pInput,WordPtr uCoun
 extern void BURGER_API MemoryMove(void *pOutput,const void *pInput,WordPtr uCount);
 extern void BURGER_API MemoryClear(void *pOutput,WordPtr uCount);
 extern void BURGER_API MemoryFill(void *pOutput,Word8 uFill,WordPtr uCount);
+extern void BURGER_API MemoryNot(void *pOutput,WordPtr uCount);
+extern void BURGER_API MemoryNot(void *pOutput,const void *pInput,WordPtr uCount);
+extern void BURGER_API MemoryXor(void *pOutput,Word8 uXor,WordPtr uCount);
+extern void BURGER_API MemoryXor(void *pOutput,const void *pInput,Word8 uXor,WordPtr uCount);
+extern void BURGER_API MemoryXor(void *pOutput,const void *pInput,WordPtr uCount);
+extern void BURGER_API MemoryXor(void *pOutput,const void *pInput1,const void *pInput2,WordPtr uCount);
 extern WordPtr BURGER_API StringLength(const char *pInput);
 extern WordPtr BURGER_API StringLength(const Word16 *pInput);
 extern void BURGER_API StringCopy(char *pOutput,const char *pInput);
