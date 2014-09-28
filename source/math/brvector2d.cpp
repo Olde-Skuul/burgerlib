@@ -806,6 +806,27 @@ void BURGER_API Burger::Vector2D_t::NormalizeFast(const Vector2D_t *pInput)
 
 /*! ************************************
 
+	\brief Compare two Vector2D_t's for bitwise equality
+	
+	Unlike operator==(const Vector2D_t &) const, this function performs
+	a bitwise comparison, which in some cases is faster if pure
+	equality detection is desired.
+
+	\param pInput Pointer to the Vector2D_t to compare against
+	\return \ref TRUE if equal, \ref FALSE if not
+	\sa operator==(const Vector2D_t&) const
+
+***************************************/
+
+Word BURGER_API Burger::Vector2D_t::BitwiseEqual(const Vector2D_t *pInput) const
+{
+	return (
+		(reinterpret_cast<const Word32 *>(&pInput->x)[0] == reinterpret_cast<const Word32 *>(&x)[0]) &&
+		(reinterpret_cast<const Word32 *>(&pInput->y)[0] == reinterpret_cast<const Word32 *>(&y)[0]));
+}
+
+/*! ************************************
+
 	\fn float & Burger::Vector2D_t::operator[](Word uInput)
 	\brief Access the members as an array
 
@@ -831,7 +852,7 @@ void BURGER_API Burger::Vector2D_t::NormalizeFast(const Vector2D_t *pInput)
 	
 	\param rInput Reference to the Vector2D_t to compare against
 	\return \ref TRUE if equal, \ref FALSE if not
-	\sa Vector2D_t::operator != (const Vector2D_t& rInput) const
+	\sa operator!=(const Vector2D_t&) const
 
 ***************************************/
 
@@ -842,7 +863,7 @@ void BURGER_API Burger::Vector2D_t::NormalizeFast(const Vector2D_t *pInput)
 	
 	\param rInput Reference to the Vector2D_t to compare against
 	\return \ref TRUE if not equal, \ref FALSE if equal
-	\sa Vector2D_t::operator == (const Vector2D_t& rInput) const
+	\sa operator==(const Vector2D_t&) const
 
 ***************************************/
 

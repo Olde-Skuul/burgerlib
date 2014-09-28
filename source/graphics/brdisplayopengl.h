@@ -33,6 +33,7 @@
 /* BEGIN */
 namespace Burger {
 class DisplayOpenGL : public Display {
+	Word *m_pCompressedFormats;		///< Pointer to an array of supported OpenGL compressed textures
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	HDC__ *m_pOpenGLDeviceContext;	///< Window to attach the GL context to
 	HGLRC__ *m_pOpenGLContext;		///< Current OpenGL context
@@ -46,6 +47,9 @@ private:
 	_CGLContextObject *m_pOpenGLContext;
 	NSWindow *m_pFullScreenWindow;
 #endif
+	float m_fOpenGLVersion;
+	float m_fShadingLanguageVersion;
+	Word m_uCompressedFormatCount;
 public:
 	DisplayOpenGL(GameApp *pGameApp);
 protected:
@@ -53,6 +57,11 @@ protected:
 	virtual void PostShutdown(void);
 	virtual void PostEndScene(void);
 public:
+	BURGER_INLINE float GetOpenGLVersion(void) const { return m_fOpenGLVersion; }
+	BURGER_INLINE float GetShadingLanguageVersion(void) const { return m_fShadingLanguageVersion; }
+	BURGER_INLINE Word GetCompressedFormatCount(void) const { return m_uCompressedFormatCount; }
+	BURGER_INLINE const Word *GetCompressedFormats(void) const { return m_pCompressedFormats; }
+	void BURGER_API SetupOpenGL(void);
 	static Word BURGER_API LoadShader(Word GLEnum,const char *pShaderCode);
 	static const char * BURGER_API GetErrorString(Word uGLErrorEnum);
 	static WordPtr BURGER_API GetGLTypeSize(Word uGLTypeEnum);

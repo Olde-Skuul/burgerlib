@@ -200,6 +200,8 @@ Word BURGER_API Burger::StaticRTTI::IsInList(const StaticRTTI *pInput) const
 	function GetClassName() to retrieve the name of the
 	class easily.
 	
+	\note This macro will set the class setting to "public"
+
 	\sa Burger::StaticRTTI, BURGER_RTTI_IN_CLASS, BURGER_CREATE_STATICRTTI_BASE or BURGER_CREATE_STATICRTTI_PARENT
 	
 ***************************************/
@@ -212,6 +214,8 @@ Word BURGER_API Burger::StaticRTTI::IsInList(const StaticRTTI *pInput) const
 	If a class needs to support StaticRTTI, insert this
 	macro in the class declaration.
 	
+	\note This macro will set the class setting to "public"
+
 	\sa Burger::StaticRTTI, BURGER_RTTI_IN_BASE_CLASS, BURGER_CREATE_STATICRTTI_BASE or BURGER_CREATE_STATICRTTI_PARENT
 	
 ***************************************/

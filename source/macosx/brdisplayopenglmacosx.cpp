@@ -330,11 +330,15 @@
 
 Burger::DisplayOpenGL::DisplayOpenGL(Burger::GameApp *pGameApp) :
 	Display(pGameApp,OPENGL),
+	m_pCompressedFormats(NULL),
 	m_pView(NULL),
 	m_pWindowController(NULL),
 	m_pOpenGLView(NULL),
 	m_pOpenGLContext(NULL),
-	m_pFullScreenWindow(NULL)
+	m_pFullScreenWindow(NULL),
+	m_fOpenGLVersion(0.0f),
+	m_fShadingLanguageVersion(0.0f),
+	m_uCompressedFormatCount(0)	
 {
 	SetRenderer(NULL);
 }
@@ -497,6 +501,7 @@ Word Burger::DisplayOpenGL::InitContext(void)
 #endif
 //	[pWindow makeKeyAndOrderFront:pWindow];
 	[pPool release];
+	SetupOpenGL();
 	return 0;
 }
 
@@ -525,6 +530,9 @@ void Burger::DisplayOpenGL::PostShutdown(void)
 		[m_pWindowController release];
 		m_pWindowController = NULL;
 	}
+	Free(m_pCompressedFormats);
+	m_pCompressedFormats = NULL;
+	m_uCompressedFormatCount = 0;
 }
 
 void Burger::DisplayOpenGL::PreBeginScene(void)

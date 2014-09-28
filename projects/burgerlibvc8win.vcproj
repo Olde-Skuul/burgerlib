@@ -40,7 +40,7 @@
 				Optimization="0"
 				BufferSecurityCheck="true"
 				RuntimeLibrary="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -87,7 +87,7 @@
 				Optimization="0"
 				BufferSecurityCheck="true"
 				RuntimeLibrary="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -137,7 +137,7 @@
 				OmitFramePointers="true"
 				BufferSecurityCheck="true"
 				RuntimeLibrary="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -187,7 +187,7 @@
 				OmitFramePointers="true"
 				BufferSecurityCheck="true"
 				RuntimeLibrary="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -237,7 +237,7 @@
 				OmitFramePointers="true"
 				BufferSecurityCheck="false"
 				RuntimeLibrary="0"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -287,7 +287,7 @@
 				OmitFramePointers="true"
 				BufferSecurityCheck="false"
 				RuntimeLibrary="0"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -337,12 +337,16 @@
 				<File RelativePath="..\source\compression\brdecompresslbmrle.h" />
 				<File RelativePath="..\source\compression\brdecompresslzss.cpp" />
 				<File RelativePath="..\source\compression\brdecompresslzss.h" />
+				<File RelativePath="..\source\compression\brdjb2hash.cpp" />
+				<File RelativePath="..\source\compression\brdjb2hash.h" />
 				<File RelativePath="..\source\compression\brdxt1.cpp" />
 				<File RelativePath="..\source\compression\brdxt1.h" />
 				<File RelativePath="..\source\compression\brdxt3.cpp" />
 				<File RelativePath="..\source\compression\brdxt3.h" />
 				<File RelativePath="..\source\compression\brdxt5.cpp" />
 				<File RelativePath="..\source\compression\brdxt5.h" />
+				<File RelativePath="..\source\compression\brhashmap.cpp" />
+				<File RelativePath="..\source\compression\brhashmap.h" />
 				<File RelativePath="..\source\compression\brmace.cpp" />
 				<File RelativePath="..\source\compression\brmace.h" />
 				<File RelativePath="..\source\compression\brmd2.cpp" />
@@ -353,6 +357,8 @@
 				<File RelativePath="..\source\compression\brmd5.h" />
 				<File RelativePath="..\source\compression\brpackfloat.cpp" />
 				<File RelativePath="..\source\compression\brpackfloat.h" />
+				<File RelativePath="..\source\compression\brsdbmhash.cpp" />
+				<File RelativePath="..\source\compression\brsdbmhash.h" />
 				<File RelativePath="..\source\compression\brsha1.cpp" />
 				<File RelativePath="..\source\compression\brsha1.h" />
 			</Filter>
@@ -513,6 +519,8 @@
 				<File RelativePath="..\source\memory\brmemorymanager.h" />
 			</Filter>
 			<Filter Name="lowlevel">
+				<File RelativePath="..\source\lowlevel\brarray.cpp" />
+				<File RelativePath="..\source\lowlevel\brarray.h" />
 				<File RelativePath="..\source\lowlevel\brassert.cpp" />
 				<File RelativePath="..\source\lowlevel\brassert.h" />
 				<File RelativePath="..\source\lowlevel\bratomic.cpp" />
@@ -546,16 +554,23 @@
 				<File RelativePath="..\source\lowlevel\broscursor.h" />
 				<File RelativePath="..\source\lowlevel\brperforce.cpp" />
 				<File RelativePath="..\source\lowlevel\brperforce.h" />
+				<File RelativePath="..\source\lowlevel\brqueue.cpp" />
+				<File RelativePath="..\source\lowlevel\brqueue.h" />
 				<File RelativePath="..\source\lowlevel\brrandommanager.cpp" />
 				<File RelativePath="..\source\lowlevel\brrandommanager.h" />
 				<File RelativePath="..\source\lowlevel\brrunqueue.cpp" />
 				<File RelativePath="..\source\lowlevel\brrunqueue.h" />
+				<File RelativePath="..\source\lowlevel\brsimplearray.cpp" />
+				<File RelativePath="..\source\lowlevel\brsimplearray.h" />
+				<File RelativePath="..\source\lowlevel\brsmartpointer.cpp" />
+				<File RelativePath="..\source\lowlevel\brsmartpointer.h" />
 				<File RelativePath="..\source\lowlevel\brstaticrtti.cpp" />
 				<File RelativePath="..\source\lowlevel\brstaticrtti.h" />
 				<File RelativePath="..\source\lowlevel\brtick.cpp" />
 				<File RelativePath="..\source\lowlevel\brtick.h" />
 				<File RelativePath="..\source\lowlevel\brtimedate.cpp" />
 				<File RelativePath="..\source\lowlevel\brtimedate.h" />
+				<File RelativePath="..\source\lowlevel\brtypes.cpp" />
 				<File RelativePath="..\source\lowlevel\brtypes.h" />
 				<File RelativePath="..\source\lowlevel\brvisualstudio.h" />
 				<File RelativePath="..\source\lowlevel\brwatcom.h" />
@@ -568,6 +583,14 @@
 				<File RelativePath="..\source\input\brkeyboard.h" />
 				<File RelativePath="..\source\input\brmouse.cpp" />
 				<File RelativePath="..\source\input\brmouse.h" />
+			</Filter>
+			<Filter Name="flashplayer">
+				<File RelativePath="..\source\flashplayer\brflashaction.cpp" />
+				<File RelativePath="..\source\flashplayer\brflashaction.h" />
+				<File RelativePath="..\source\flashplayer\brflashmanager.cpp" />
+				<File RelativePath="..\source\flashplayer\brflashmanager.h" />
+				<File RelativePath="..\source\flashplayer\brflashutils.cpp" />
+				<File RelativePath="..\source\flashplayer\brflashutils.h" />
 			</Filter>
 			<Filter Name="audio">
 				<File RelativePath="..\source\audio\brsound.cpp" />

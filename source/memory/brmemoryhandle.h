@@ -22,6 +22,10 @@
 #include "brmemorymanager.h"
 #endif
 
+#ifndef __BRCRITICALSECTION_H__
+#include "brcriticalsection.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 class MemoryManagerHandle : public MemoryManager {
@@ -31,7 +35,7 @@ public:
 		FIXED=0x40,			///< Set if memory is fixed (High memory)
 		MALLOC=0x20,		///< Memory was Malloc'd
 		INUSE=0x10,			///< Set if handle is used
-		PURGABLE=0x01,		///< Set if handle is purgable
+		PURGABLE=0x01,		///< Set if handle is purgeable
 		DEFAULTHANDLECOUNT=500,	///< Starting number of handles
 		DEFAULTMEMORYCHUNK=0x1000000,	///< Default memory to allocate
 		DEFAULTMINIMUMRESERVE=0x40000,	///< Default minimum free system memory
@@ -47,7 +51,7 @@ public:
 	};
 	enum eMemoryStage {
 		StageCompact,		///< Garbage collection stage to compact memory
-		StagePurge,			///< Garbage collection stage to purge purgable memory
+		StagePurge,			///< Garbage collection stage to purge purgeable memory
 		StageHailMary,		///< Garbage collection stage to purge and then compact memory
 		StageGiveup			///< Critical memory stage, release all possibly freeable memory
 	};
@@ -79,7 +83,7 @@ private:
 	Handle_t m_FreeMemoryChunks;	///< Free handle list
 	Handle_t m_PurgeHands;			///< Purged handle list
 	Handle_t m_PurgeHandleFiFo;		///< Purged handle linked list
-
+	CriticalSection m_Lock;			///< Lock for multithreading support
 	static void *BURGER_API AllocProc(MemoryManager *pThis,WordPtr uSize);
 	static void BURGER_API FreeProc(MemoryManager *pThis,const void *pInput);
 	static void *BURGER_API ReallocProc(MemoryManager *pThis,const void *pInput,WordPtr uSize);

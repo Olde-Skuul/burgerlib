@@ -12,6 +12,7 @@
 ***************************************/
 
 #include "brutf32.h"
+#include "brutf8.h"
 
 /*! ************************************
 
@@ -161,11 +162,11 @@ Word BURGER_API Burger::UTF32::IsValid(const Word32 *pInput,WordPtr uInputSize)
 	on the incoming stream and will flag any data that's invalid.
 	
 	\note This function will not move the pointer forward, use 
-	Burger::UTF8::NextToken(const char *) instead.
+		UTF8::NextToken(const char *) instead.
 	
 	\param pInput Pointer to a valid UTF8 "C" string. \ref NULL will page fault.
-	\return The UTF32 code or Burger::UTF32::BAD if invalid. 0x00 is not invalid.
-	\sa Burger::UTF8::GetTokenSize(const char *) or Burger::UTF8::NextToken(const char *).
+	\return The UTF32 code or \ref BAD if invalid. 0x00 is not invalid.
+	\sa FromUTF8(const char **), UTF8::GetTokenSize(const char *) or UTF8::NextToken(const char *).
 		
 ***************************************/
 
@@ -215,7 +216,32 @@ Word32 BURGER_API Burger::UTF32::FromUTF8(const char *pInput)
 		}
 	}
 	// If I got here, it's bad
-	return static_cast<Word>(UTF32::BAD);		// This is a bad stream
+	return static_cast<Word>(BAD);		// This is a bad stream
+}
+
+/*! ************************************
+
+	\brief Return a UTF32 code from a UTF8 stream and update the pointer
+	
+	Convert from a UTF8 stream into a 32 bit
+	Unicode value (0x00 to 0x10FFFF). This function will perform validation
+	on the incoming stream and will flag any data that's invalid.
+	
+	\param ppInput Pointer to a valid UTF8 "C" string pointer. \ref NULL will page fault.
+	\return The UTF32 code or \ref BAD if invalid. 0x00 is not invalid.
+	\sa FromUTF8(const char *), UTF8::GetTokenSize(const char *) or UTF8::NextToken(const char *).
+		
+***************************************/
+
+Word32 BURGER_API BURGER_API Burger::UTF32::FromUTF8(const char **ppInput)
+{
+	const char *pInput = ppInput[0];
+	// Decode the data
+	Word32 uResult = FromUTF8(pInput);
+	if (uResult!=static_cast<Word32>(BAD)) {
+		ppInput[0] = UTF8::NextToken(pInput);
+	}
+	return uResult;
 }
 
 /*! ************************************
@@ -349,7 +375,7 @@ WordPtr BURGER_API Burger::UTF32::FromUTF8(Word32 *pOutput,WordPtr uOutputSize,c
 	was parsed. Zeros will be placed in the UTF32 stream as is.
 	
 	\param pOutput Pointer to a byte buffer to receive the UTF32 string. \ref NULL is okay
-		if uOutputSize is zero, outwise a page fault will occur.
+		if uOutputSize is zero, otherwise a page fault will occur.
 	\param uOutputSize Size of the output buffer in bytes.
 	\param pInput UTF8 encoded byte array. \ref NULL is okay if uInputSize is zero.
 	\param uInputSize Size of the input byte array.

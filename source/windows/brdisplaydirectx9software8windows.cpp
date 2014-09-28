@@ -202,7 +202,7 @@ void Burger::DisplayDirectX9Software8::PostEndScene(void)
 		hResult = m_pBitMapTextureSysMem->LockRect(0,&LockedRect,NULL,0);
 		if (hResult == D3D_OK) {
 			m_Renderer.SetFrameBuffer(LockedRect.pBits);
-			m_Renderer.SetStride(LockedRect.Pitch);
+			m_Renderer.SetStride(static_cast<WordPtr>(LockedRect.Pitch));
 			m_pBitMapTextureSysMem->UnlockRect(0);
 		}
 	}
@@ -299,7 +299,7 @@ long Burger::DisplayDirectX9Software8::AllocateResources(void)
 				hResult = m_pBitMapTextureSysMem->LockRect(0,&LockedRect,NULL,0);
 				if (hResult == D3D_OK) {
 					m_Renderer.SetFrameBuffer(LockedRect.pBits);
-					m_Renderer.SetStride(LockedRect.Pitch);
+					m_Renderer.SetStride(static_cast<WordPtr>(LockedRect.Pitch));
 					m_pBitMapTextureSysMem->UnlockRect(0);
 				}
 

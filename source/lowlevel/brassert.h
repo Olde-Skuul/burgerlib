@@ -18,6 +18,10 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRWATCOM_H__
+#include "brwatcom.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 	typedef int (BURGER_API *ProcAssert)(void *pThis,const char *pCondition,const char *pFilename,Word uLineNumber);
@@ -25,7 +29,16 @@ namespace Burger {
 	extern void BURGER_API AssertRedirect(ProcAssert pAssert,void *pThis);
 	extern void BURGER_API Halt(void);
 }
-#if defined(_DEBUG) || defined(DOXYGEN)
+#if defined(BURGER_WATCOM) && !defined(DOXYGEN)
+// Use WatcomAssertNothing() as a null function to shut up Watcom's warnings
+#if defined(_DEBUG)
+#define BURGER_ASSERT(conditional) ((conditional) ? WatcomAssertNothing() : static_cast<void>(::Burger::Assert(#conditional,__FILE__,__LINE__)))
+#define BURGER_ASSERTTEST(conditional) ((conditional) ? TRUE : ::Burger::Assert(#conditional,__FILE__,__LINE__))
+#else
+#define BURGER_ASSERT(conditional) WatcomAssertNothing()
+#define BURGER_ASSERTTEST(conditional) ((conditional) ? TRUE : FALSE)
+#endif
+#elif defined(_DEBUG) || defined(DOXYGEN)
 #define BURGER_ASSERT(conditional) ((conditional) ? static_cast<void>(NULL) : static_cast<void>(::Burger::Assert(#conditional,__FILE__,__LINE__)))
 #define BURGER_ASSERTTEST(conditional) ((conditional) ? TRUE : ::Burger::Assert(#conditional,__FILE__,__LINE__))
 #else

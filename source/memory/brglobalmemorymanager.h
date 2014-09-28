@@ -39,6 +39,18 @@ public:
 private:
 	static MemoryManager *g_pInstance;	///< Pointer to the currently active memory manager
 };
+template <class T>
+T * BURGER_API New(void) {
+	return new (Alloc(sizeof(T))) T();
+}
+
+template <class T>
+void BURGER_API Delete(const T*pInput) {
+	if (pInput) {
+		const_cast<T *>(pInput)->~T();
+		Free(pInput);
+	}
+}
 }
 
 /* END */

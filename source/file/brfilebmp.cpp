@@ -226,7 +226,7 @@ const char * BURGER_API Burger::FileBMP::DecompressRLE8(Word8 *pOutput,WordPtr u
 						break;
 					}
 					if (uToken==1) {
-						pInput-=2;		// Force this token permanently!
+						pInput->SkipBack(2);	// Force this token permanently!
 					}
 					break;				// Exit processing
 				}

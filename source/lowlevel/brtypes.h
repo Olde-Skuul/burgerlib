@@ -435,9 +435,9 @@ extern void* __alloca(unsigned x);
 #define BURGER_HASHMACRO(x) #x
 #define BURGER_MACRO_TO_STRING(x) BURGER_HASHMACRO(x)
 #if defined(DOXYGEN)
-#define BURGER_DISABLECOPYCONSTRUCTORS(x)
+#define BURGER_DISABLECOPYCONSTRUCTORS(x) private:
 #else
-#define BURGER_DISABLECOPYCONSTRUCTORS(x) x(x const &); x &operator = (x const &)
+#define BURGER_DISABLECOPYCONSTRUCTORS(x) private: x(x const &); x &operator = (x const &)
 #endif
 
 typedef signed char Int8;
@@ -536,13 +536,6 @@ BURGER_INLINE void SwapVariables(T *pA,T *pB) {
 	T tTemp(*pA);
 	*pA = *pB;
 	*pB = tTemp;
-}
-template <class T>
-void BURGER_API Delete(const T*pInput) {
-	if (pInput) {
-		const_cast<T *>(pInput)->~T();
-		Free(pInput);
-	}
 }
 }
 /* END */

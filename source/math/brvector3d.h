@@ -90,6 +90,7 @@ struct Vector3D_t {
 	void BURGER_API NormalizeFast(const Vector3D_t *pInput);
 	Word BURGER_API Equal(const Vector3D_t *pInput) const;
 	Word BURGER_API Equal(const Vector3D_t *pInput,float fRange) const;
+	Word BURGER_API BitwiseEqual(const Vector3D_t *pInput) const;
 	BURGER_INLINE float & operator[](Word uInput) { return (&x)[uInput]; }
 	BURGER_INLINE const float & operator[](Word uInput) const { return (&x)[uInput]; }
 	BURGER_INLINE Word operator == (const Vector3D_t& rInput) const { return (x == rInput.x) && (y == rInput.y) && (z == rInput.z); }

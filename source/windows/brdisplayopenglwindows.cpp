@@ -54,9 +54,13 @@
 
 Burger::DisplayOpenGL::DisplayOpenGL(Burger::GameApp *pGameApp) :
 	Display(pGameApp,OPENGL),
+	m_pCompressedFormats(NULL),
 	m_pOpenGLDeviceContext(NULL),
 	m_pOpenGLContext(NULL),
-	m_bResolutionChanged(FALSE)
+	m_bResolutionChanged(FALSE),
+	m_fOpenGLVersion(0.0f),
+	m_fShadingLanguageVersion(0.0f),
+	m_uCompressedFormatCount(0)
 {
 	SetRenderer(NULL);
 }
@@ -85,8 +89,8 @@ Word Burger::DisplayOpenGL::InitContext(void)
 	if (m_uFlags&FULLSCREEN) {
 		// If width / height is zero, use the defaults
 		if (!m_uWidth || !m_uHeight) {
-			m_uWidth = GetSystemMetrics(SM_CXSCREEN);
-			m_uHeight = GetSystemMetrics(SM_CYSCREEN);
+			m_uWidth = static_cast<Word>(GetSystemMetrics(SM_CXSCREEN));
+			m_uHeight = static_cast<Word>(GetSystemMetrics(SM_CYSCREEN));
 		}
 
 		// For full screen mode, scan the device to determine if this monitor
@@ -146,17 +150,17 @@ Word Burger::DisplayOpenGL::InitContext(void)
 		RECT GameWindowRect;
 		GameWindowRect.top = 0;
 		GameWindowRect.left = 0;
-		GameWindowRect.bottom = m_uHeight;
-		GameWindowRect.right = m_uWidth;
+		GameWindowRect.bottom = static_cast<LONG>(m_uHeight);
+		GameWindowRect.right = static_cast<LONG>(m_uWidth);
 		DWORD uStyle = WS_POPUPWINDOW | (WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
 		DWORD uExStyle = WS_EX_DLGMODALFRAME | WS_EX_TOPMOST;		// Window Extended Style
 		AdjustWindowRectEx(&GameWindowRect,uStyle,FALSE,uExStyle);		// Adjust Window To True Requested Size
 
 		// Set the game's window style to the new settings
-		uStyle = GetWindowLong(pWindow,GWL_STYLE);	// Get the style of the window
-		uStyle |= WS_VISIBLE | WS_POPUP;			// Can't be a pop-up window
-		uStyle &= ~(WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX);
-		SetWindowLong(pWindow,GWL_STYLE,uStyle);	// Set the style
+		LONG uLongStyle = GetWindowLongW(pWindow,GWL_STYLE);	// Get the style of the window
+		uLongStyle |= WS_VISIBLE | WS_POPUP;			// Can't be a pop-up window
+		uLongStyle &= ~(WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX);
+		SetWindowLong(pWindow,GWL_STYLE,uLongStyle);	// Set the style
 		SetWindowPos(pWindow,NULL,GameWindowRect.left,GameWindowRect.top,GameWindowRect.right-GameWindowRect.left,GameWindowRect.bottom-GameWindowRect.top,(/*SWP_NOSIZE|*/SWP_NOZORDER));
 		ShowWindow(pWindow,SW_SHOW);				// Show The Window
 		UpdateWindow(pWindow);
@@ -232,6 +236,7 @@ Word Burger::DisplayOpenGL::InitContext(void)
 
 	// Now that a context has been selected, load OpenGL's functions
 	WindowsLink();
+	SetupOpenGL();
 	return 0;
 }
 
@@ -275,6 +280,9 @@ void Burger::DisplayOpenGL::PostShutdown(void)
 		ChangeDisplaySettingsW(NULL,0);		// Switch video mode to default
 		m_bResolutionChanged = FALSE;
 	}
+	Free(m_pCompressedFormats);
+	m_pCompressedFormats = NULL;
+	m_uCompressedFormatCount = 0;
 }
 
 /*! ************************************
@@ -804,17 +812,6 @@ struct {
 } OpenGLProcPtrs;
 
 #if defined(_DEBUG)
-static void DebugGLString(const char *pName,GLenum eIndex)
-{
-	Burger::Debug::Message("%s = ",pName);
-	Burger::Debug::String(reinterpret_cast<const char *>(glGetString(eIndex)));
-	Burger::Debug::String("\n");
-}
-#else
-#define DebugGLString(x,y)
-#endif
-
-#if defined(_DEBUG)
 static void CheckGLError(const char *pFunctionName)
 {
 	GLenum iGLError = glGetError();
@@ -1112,7 +1109,7 @@ PROC1(GLboolean,glIsVertexArray,GLuint,array)
 	when opengl32.lib is linked in. The extensions need to be manually loaded
 	via calls to wglGetProcAddress() after an OpenGL pixelformat is selected.
 
-	Call this function immedately after an OpenGL pixelformat is selected
+	Call this function immediately after an OpenGL pixelformat is selected
 	and then all of the OpenGL extended function will "magically" appear and
 	work as if they were directly linked in.
 
@@ -1122,12 +1119,6 @@ PROC1(GLboolean,glIsVertexArray,GLuint,array)
  
 void BURGER_API Burger::DisplayOpenGL::WindowsLink(void)
 {
-	// For debug builds, dump the GL state
-    DebugGLString("OpenGL version",GL_VERSION);
-    DebugGLString("Vendor",GL_VENDOR);
-    DebugGLString("Renderer",GL_RENDERER);
-    DebugGLString("Extensions",GL_EXTENSIONS);
-
 	const char **ppWork = OpenGLNames;
 	void **ppDest = &OpenGLProcPtrs.glBlendEquationSeparate;
 	//WordPtr uTest = sizeof(OpenGLProcPtrs)/sizeof(void*);

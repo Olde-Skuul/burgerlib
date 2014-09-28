@@ -669,9 +669,9 @@ void Burger::Renderer::DrawShape8BitCentered(RezFile *pRezFile,Word uRezNum)
 	const Shape8Bit_t *pShape = Shape8Bit_t::Load(pRezFile,uRezNum);	
 	if (pShape) {
 		// Center X
-		int iX = (m_uWidth-pShape->GetHeight())/2;
+		int iX = static_cast<int>((m_uWidth-pShape->GetHeight())/2U);
 		// Center Y
-		int iY = (m_uHeight-pShape->GetHeight())/2;
+		int iY = static_cast<int>((m_uHeight-pShape->GetHeight())/2U);
 		pShape->Draw(this,iX,iY);
 		pRezFile->Release(uRezNum);
 	}
@@ -719,9 +719,9 @@ void Burger::Renderer::DrawShape8BitMaskedCentered(RezFile *pRezFile,Word uRezNu
 	const Shape8Bit_t *pShape = Shape8Bit_t::Load(pRezFile,uRezNum);
 	if (pShape) {
 		// Center X
-		int iX = (m_uWidth-pShape->GetHeight())/2;
+		int iX = static_cast<int>((m_uWidth-pShape->GetHeight())/2U);
 		// Center Y
-		int iY = (m_uHeight-pShape->GetHeight())/2;
+		int iY = static_cast<int>((m_uHeight-pShape->GetHeight())/2U);
 		pShape->DrawMasked(this,iX,iY);
 		pRezFile->Release(uRezNum);
 	}

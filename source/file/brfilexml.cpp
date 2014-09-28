@@ -2147,12 +2147,12 @@ Word Burger::FileXML::RawText::Parse(InputMemoryStream *pInput)
 
 Word Burger::FileXML::RawText::Save(OutputMemoryStream *pOutput,Word uDepth) const
 {
-	Word uResult;
+	Word uResult = 0;
 	eType Type = GetPrevious()->GetType();
 	if ((Type!=XML_ROOT) && (Type!=XML_TEXT)) {
 		uResult = pOutput->AppendTabs(uDepth);
 	}
-	uResult = SaveXMLString(pOutput,m_Text.GetPtr());
+	uResult |= SaveXMLString(pOutput,m_Text.GetPtr());
 	Type = GetNext()->GetType();
 	if ((Type!=XML_ROOT) && (Type!=XML_TEXT)) {
 		uResult |= pOutput->Append("\n");

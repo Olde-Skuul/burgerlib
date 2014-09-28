@@ -31,7 +31,7 @@
 
 // Make it thread safe
 
-static Burger::CriticalSectionStatic LockString;
+static Burger::CriticalSectionStatic g_LockString;
 
 void BURGER_API Burger::Debug::String(const char *pString)
 {
@@ -41,19 +41,19 @@ void BURGER_API Burger::Debug::String(const char *pString)
 		WordPtr i = StringLength(pString);
 		if (i) {
 			if (!IsDebuggerPresent()) {
-				LockString.Lock();
+				g_LockString.Lock();
 				File MyFile;
-				if (MyFile.Open("9:LogFile.Txt",File::APPEND)==File::OKAY) {
+				if (MyFile.Open("9:logfile.txt",File::APPEND)==File::OKAY) {
 					MyFile.Write(pString,i);		// Send the string to the log file
 					MyFile.Close();
 				}
 			} else {
-				LockString.Lock();
+				g_LockString.Lock();
 				// Note: Windows only supports ASCII to the Visual Studio debug console.
 				// It does NOT support unicode
 				OutputDebugStringA(pString);		// Send to the developer studio console window
 			}
-			LockString.Unlock();
+			g_LockString.Unlock();
 		}
 	}
 }

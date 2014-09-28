@@ -6,7 +6,7 @@
 # sourcedir = Set the work directories for the source
 #
 
-sourcedir = ..\source\ansi;..\source\audio;..\source;..\source\commandline;..\source\compression;..\source\file;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows
+sourcedir = ..\source\ansi;..\source\audio;..\source;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows
 
 #
 # Name of the output library
@@ -46,14 +46,17 @@ objs= &
 	$(A)\brdecompressdeflate.obj &
 	$(A)\brdecompresslbmrle.obj &
 	$(A)\brdecompresslzss.obj &
+	$(A)\brdjb2hash.obj &
 	$(A)\brdxt1.obj &
 	$(A)\brdxt3.obj &
 	$(A)\brdxt5.obj &
+	$(A)\brhashmap.obj &
 	$(A)\brmace.obj &
 	$(A)\brmd2.obj &
 	$(A)\brmd4.obj &
 	$(A)\brmd5.obj &
 	$(A)\brpackfloat.obj &
+	$(A)\brsdbmhash.obj &
 	$(A)\brsha1.obj &
 	$(A)\brdirectorysearch.obj &
 	$(A)\brfile.obj &
@@ -71,6 +74,9 @@ objs= &
 	$(A)\brinputmemorystream.obj &
 	$(A)\broutputmemorystream.obj &
 	$(A)\brrezfile.obj &
+	$(A)\brflashaction.obj &
+	$(A)\brflashmanager.obj &
+	$(A)\brflashutils.obj &
 	$(A)\brdisplay.obj &
 	$(A)\brdisplayopengl.obj &
 	$(A)\brdisplayopenglsoftware8.obj &
@@ -87,6 +93,7 @@ objs= &
 	$(A)\brjoypad.obj &
 	$(A)\brkeyboard.obj &
 	$(A)\brmouse.obj &
+	$(A)\brarray.obj &
 	$(A)\brassert.obj &
 	$(A)\bratomic.obj &
 	$(A)\brautorepeat.obj &
@@ -103,11 +110,15 @@ objs= &
 	$(A)\brlinkedlistpointer.obj &
 	$(A)\broscursor.obj &
 	$(A)\brperforce.obj &
+	$(A)\brqueue.obj &
 	$(A)\brrandommanager.obj &
 	$(A)\brrunqueue.obj &
+	$(A)\brsimplearray.obj &
+	$(A)\brsmartpointer.obj &
 	$(A)\brstaticrtti.obj &
 	$(A)\brtick.obj &
 	$(A)\brtimedate.obj &
+	$(A)\brtypes.obj &
 	$(A)\brfixedmatrix3d.obj &
 	$(A)\brfixedmatrix4d.obj &
 	$(A)\brfixedpoint.obj &

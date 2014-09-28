@@ -42,7 +42,7 @@ class CodeLibrary {
 public:
 #if (defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 	CodeLibrary() : m_pLibInstance(NULL) {}
-	~CodeLibrary();
+	~CodeLibrary() { Shutdown(); }
 #endif
 	Word Init(const char *pFilename);
 	void Shutdown(void);

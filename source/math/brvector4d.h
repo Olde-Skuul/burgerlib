@@ -99,8 +99,11 @@ struct Vector4D_t {
 	void BURGER_API QuaternionMul(const Vector4D_t *pInput1,const Vector4D_t *pInput2);
 	void BURGER_API QuaternionMulNormalize(const Vector4D_t *pInput);
 	void BURGER_API QuaternionMulNormalize(const Vector4D_t *pInput1,const Vector4D_t *pInput2);
+	Word BURGER_API BitwiseEqual(const Vector4D_t *pInput) const;
 	BURGER_INLINE float & operator[](Word uInput) { return (&x)[uInput]; }
 	BURGER_INLINE const float & operator[](Word uInput) const { return (&x)[uInput]; }
+	BURGER_INLINE Word operator == (const Vector4D_t& rInput) const { return (x == rInput.x) && (y == rInput.y) && (z == rInput.z) && (w == rInput.z); }
+	BURGER_INLINE Word operator != (const Vector4D_t& rInput) const { return (x != rInput.x) || (y != rInput.y) || (z != rInput.z) || (w != rInput.z); }
 };
 extern const Vector4D_t g_Vector4DZero;
 extern const Vector4D_t g_Vector4DOne;

@@ -29,13 +29,11 @@ struct StaticRTTI {
 }
 
 #define BURGER_RTTI_IN_CLASS() \
-public: \
-	virtual const Burger::StaticRTTI* GetStaticRTTI(void) const; \
+public: virtual const Burger::StaticRTTI* GetStaticRTTI(void) const; \
 	static const Burger::StaticRTTI g_StaticRTTI
 
 #define BURGER_RTTI_IN_BASE_CLASS() \
-public: \
-	BURGER_INLINE const char* GetClassName(void) const { return GetStaticRTTI()->GetClassName(); } \
+public: BURGER_INLINE const char* GetClassName(void) const { return GetStaticRTTI()->GetClassName(); } \
 	BURGER_RTTI_IN_CLASS()
 
 #define BURGER_CREATE_STATICRTTI_BASE(__ClassName) \
@@ -47,8 +45,8 @@ public: \
 	const Burger::StaticRTTI __ClassName::g_StaticRTTI = {#__ClassName,&__ParentClass::g_StaticRTTI }
 
 #define BURGER_STATICRTTI_ISTYPE(__ClassName,__Pointer) (__Pointer)->GetStaticRTTI()->IsInList(&__ClassName::g_StaticRTTI)
-#define BURGER_RTTICAST(__ClassName,__Pointer) ((__Pointer)->GetStaticRTTI()->IsInList(&__ClassName::g_StaticRTTI) ? static_cast<__ClassName*>(__Pointer) : NULL)
-#define BURGER_RTTICONSTCAST(__ClassName,__Pointer) ((__Pointer)->GetStaticRTTI()->IsInList(&__ClassName::g_StaticRTTI) ? static_cast<const __ClassName*>(__Pointer) : NULL)
+#define BURGER_RTTICAST(__ClassName,__Pointer) ((__Pointer) && ((__Pointer)->GetStaticRTTI()->IsInList(&__ClassName::g_StaticRTTI)) ? static_cast<__ClassName*>(__Pointer) : NULL)
+#define BURGER_RTTICONSTCAST(__ClassName,__Pointer) ((__Pointer) && ((__Pointer)->GetStaticRTTI()->IsInList(&__ClassName::g_StaticRTTI)) ? static_cast<const __ClassName*>(__Pointer) : NULL)
 
 /* END */
 

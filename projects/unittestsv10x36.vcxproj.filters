@@ -79,6 +79,9 @@
 		<ClInclude Include="..\source\compression\brdecompresslzss.h">
 			<Filter>source\compression</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\compression\brdjb2hash.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\compression\brdxt1.h">
 			<Filter>source\compression</Filter>
 		</ClInclude>
@@ -86,6 +89,9 @@
 			<Filter>source\compression</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\compression\brdxt5.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brhashmap.h">
 			<Filter>source\compression</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\compression\brmace.h">
@@ -101,6 +107,9 @@
 			<Filter>source\compression</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\compression\brpackfloat.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\compression\brsdbmhash.h">
 			<Filter>source\compression</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\compression\brsha1.h">
@@ -154,6 +163,15 @@
 		<ClInclude Include="..\source\file\brrezfile.h">
 			<Filter>source\file</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashaction.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashmanager.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashutils.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\graphics\brdisplay.h">
 			<Filter>source\graphics</Filter>
 		</ClInclude>
@@ -201,6 +219,9 @@
 		</ClInclude>
 		<ClInclude Include="..\source\input\brmouse.h">
 			<Filter>source\input</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brarray.h">
+			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brassert.h">
 			<Filter>source\lowlevel</Filter>
@@ -253,10 +274,19 @@
 		<ClInclude Include="..\source\lowlevel\brperforce.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brqueue.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brrandommanager.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brrunqueue.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brsimplearray.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brsmartpointer.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brstaticrtti.h">
@@ -475,6 +505,9 @@
 		<ClCompile Include="..\source\compression\brdecompresslzss.cpp">
 			<Filter>source\compression</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\compression\brdjb2hash.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\compression\brdxt1.cpp">
 			<Filter>source\compression</Filter>
 		</ClCompile>
@@ -482,6 +515,9 @@
 			<Filter>source\compression</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\compression\brdxt5.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brhashmap.cpp">
 			<Filter>source\compression</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\compression\brmace.cpp">
@@ -497,6 +533,9 @@
 			<Filter>source\compression</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\compression\brpackfloat.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\compression\brsdbmhash.cpp">
 			<Filter>source\compression</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\compression\brsha1.cpp">
@@ -550,6 +589,15 @@
 		<ClCompile Include="..\source\file\brrezfile.cpp">
 			<Filter>source\file</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashaction.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashmanager.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashutils.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\graphics\brdisplay.cpp">
 			<Filter>source\graphics</Filter>
 		</ClCompile>
@@ -597,6 +645,9 @@
 		</ClCompile>
 		<ClCompile Include="..\source\input\brmouse.cpp">
 			<Filter>source\input</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brarray.cpp">
+			<Filter>source\lowlevel</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brassert.cpp">
 			<Filter>source\lowlevel</Filter>
@@ -646,10 +697,19 @@
 		<ClCompile Include="..\source\lowlevel\brperforce.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brqueue.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brrandommanager.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brrunqueue.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brsimplearray.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brsmartpointer.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brstaticrtti.cpp">
@@ -659,6 +719,9 @@
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brtimedate.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brtypes.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\math\brfixedmatrix3d.cpp">
@@ -849,6 +912,9 @@
 		</Filter>
 		<Filter Include="source\graphics">
 			<UniqueIdentifier>{637544FD-A8E1-3E34-9C41-63DB9F00031D}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\flashplayer">
+			<UniqueIdentifier>{DB65DE65-E50F-302A-A783-B4143864E788}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="source\compression">
 			<UniqueIdentifier>{1AF1C014-1CA9-3AA5-B4DF-693EE7BB7FDD}</UniqueIdentifier>

@@ -106,7 +106,7 @@
 
 static int BURGER_API DefaultAssert(void * /* pThis */,const char *pCondition,const char *pFilename,Word uLineNumber)
 {
-	printf("Assertion from \"%s\" in file %s at line %u.\n",pCondition,pFilename,uLineNumber);
+	Burger::Debug::Message("Assertion from \"%s\" in file %s at line %u.\n",pCondition,pFilename,uLineNumber);
 	Burger::Halt();
 	exit(10);
 	return FALSE;

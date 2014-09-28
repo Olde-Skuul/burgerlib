@@ -35,6 +35,9 @@ __declspec(__watcall) extern unsigned int _rotr(unsigned int,unsigned int);
 extern const float g_fBurgerIntMathNearesttable[2];
 extern const float g_fBurgerMath65536;
 
+extern void WatcomAssertNothing(void);
+#pragma aux WatcomAssertNothing = modify exact [];
+
 extern Word16 _bswap16(Word16 uInput);
 #pragma aux _bswap16 = "ror ax,8" parm [ax] value [ax] modify exact [ax];
 

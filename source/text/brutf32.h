@@ -32,6 +32,7 @@ public:
 	static Word BURGER_API IsValid(const Word32 *pInput);
 	static Word BURGER_API IsValid(const Word32 *pInput,WordPtr uInputSize);
 	static Word32 BURGER_API FromUTF8(const char *pInput);
+	static Word32 BURGER_API FromUTF8(const char **ppInput);
 	static WordPtr BURGER_API FromUTF8(Word32 *pOutput,WordPtr uOutputSize,const char *pInput);
 	static WordPtr BURGER_API FromUTF8(Word32 *pOutput,WordPtr uOutputSize,const char *pInput,WordPtr uInputSize);
 };

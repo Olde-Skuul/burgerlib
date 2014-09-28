@@ -75,6 +75,7 @@ struct Vector2D_t {
 	void BURGER_API NormalizeFast(void);
 	void BURGER_API NormalizeFast(float fX,float fY);
 	void BURGER_API NormalizeFast(const Vector2D_t *pInput);
+	Word BURGER_API BitwiseEqual(const Vector2D_t *pInput) const;
 	BURGER_INLINE float & operator[](Word uInput) { return (&x)[uInput]; }
 	BURGER_INLINE const float & operator[](Word uInput) const { return (&x)[uInput]; }
 	BURGER_INLINE Word operator == (const Vector2D_t& rInput) const { return (x == rInput.x) && (y == rInput.y); }

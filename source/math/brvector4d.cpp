@@ -1134,6 +1134,28 @@ void BURGER_API Burger::Vector4D_t::QuaternionMulNormalize(const Vector4D_t *pIn
 	Normalize();
 }
 
+/*! ************************************
+
+	\brief Compare two Vector4D_t's for bitwise equality
+	
+	Unlike operator==(const Vector4D_t &) const, this function performs
+	a bitwise comparison, which in some cases is faster if pure
+	equality detection is desired.
+
+	\param pInput Pointer to the Vector4D_t to compare against
+	\return \ref TRUE if equal, \ref FALSE if not
+	\sa operator==(const Vector4D_t&) const
+
+***************************************/
+
+Word BURGER_API Burger::Vector4D_t::BitwiseEqual(const Vector4D_t *pInput) const
+{
+	return (
+		(reinterpret_cast<const Word32 *>(&pInput->x)[0] == reinterpret_cast<const Word32 *>(&x)[0]) &&
+		(reinterpret_cast<const Word32 *>(&pInput->y)[0] == reinterpret_cast<const Word32 *>(&y)[0]) &&
+		(reinterpret_cast<const Word32 *>(&pInput->z)[0] == reinterpret_cast<const Word32 *>(&z)[0]) &&
+		(reinterpret_cast<const Word32 *>(&pInput->w)[0] == reinterpret_cast<const Word32 *>(&w)[0]));
+}
 
 /*! ************************************
 
@@ -1152,6 +1174,28 @@ void BURGER_API Burger::Vector4D_t::QuaternionMulNormalize(const Vector4D_t *pIn
 
 	\param uInput 0 for x, 1 for y, 2 for z, 3 for w, any other value is an error
 	\sa operator[](Word)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Vector4D_t::operator==(const Vector4D_t& rInput) const
+	\brief Compare two Vector4D_t's for equality
+	
+	\param rInput Reference to the Vector4D_t to compare against
+	\return \ref TRUE if equal, \ref FALSE if not
+	\sa operator!=(const Vector4D_t&) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Vector4D_t::operator != (const Vector4D_t& rInput) const
+	\brief Compare two Vector4D_t's for inequality
+	
+	\param rInput Reference to the Vector4D_t to compare against
+	\return \ref TRUE if not equal, \ref FALSE if equal
+	\sa operator==(const Vector4D_t&) const
 
 ***************************************/
 

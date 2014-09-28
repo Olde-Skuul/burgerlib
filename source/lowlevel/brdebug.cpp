@@ -175,14 +175,18 @@ void BURGER_ANSIAPI Burger::Debug::Message(const char *pMessage,...)
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
 void BURGER_API Burger::Debug::String(const char *pString)
 {
-	if (pString && Globals::GetExitFlag()) {
+	if (pString && !Globals::GetExitFlag()) {
 		WordPtr i = StringLength(pString);
 		if (i) {
+#if defined(BURGER_IOS)
+			fwrite(pString,1,i,stdout);
+#else
 			File MyFile;
 			if (MyFile.Open("9:LogFile.Txt",File::APPEND)==File::OKAY) {
 				MyFile.Write(pString,i);		// Send the string to the log file
 				MyFile.Close();
 			}
+#endif
 		}
 	}
 }

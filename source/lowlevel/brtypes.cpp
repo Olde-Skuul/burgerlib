@@ -142,6 +142,8 @@
 	<li>Gary S. Brown - CRC32B</li>
 	<li>Jean-loup Gailly - Original Zlib compressor</li>
 	<li>Mark Adler - Original Zlib decompressor</li>
+	<li>Thatcher Ulrich - Hash template</li>
+	<li>Daniel Julius Bernstein - djb2 hash algorithm</li>
 	</ul></b>
 	
 ***************************************/
@@ -1894,6 +1896,8 @@
 		void DoStuff(void);
 
 	\endcode
+
+	\note This macro will set the class setting to "private"
 	
 ***************************************/
 
@@ -2157,18 +2161,6 @@
 
 	\param pA Pointer to the first variable to swap.
 	\param pB Pointer to the second variable to swap.
-
-***************************************/
-
-/*! ************************************
-
-	\fn void Burger::Delete(const T*pInput)
-	\brief Dispose of a generic class instance
-
-	When Burger::New<T> is called, release the memory with this call
-	\param pInput \ref NULL or a valid pointer to a generic class to dispose of.
-
-	\sa Burger::New<T>
 
 ***************************************/
 

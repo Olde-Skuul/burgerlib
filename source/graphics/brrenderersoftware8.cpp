@@ -61,7 +61,7 @@ void Burger::RendererSoftware8::Draw8BitPixels(int iX,int iY,Word uWidth,Word uH
 			}
 			// Clip the top
 
-			iDelta = iY-(m_Clip.m_iTop-uHeight);
+			iDelta = iY-static_cast<int>(m_Clip.m_iTop-uHeight);
 			if (iDelta>=1) {
 				if (static_cast<Word>(iDelta)<uHeight) {
 					iY = m_Clip.m_iTop;
@@ -71,7 +71,7 @@ void Burger::RendererSoftware8::Draw8BitPixels(int iX,int iY,Word uWidth,Word uH
 
 				// Clip the left side
 
-				iDelta = iX-(m_Clip.m_iLeft-uWidth);
+				iDelta = iX-static_cast<int>(m_Clip.m_iLeft-uWidth);
 				if (iDelta>=1) {
 					if (static_cast<Word>(iDelta)<uWidth) {
 						iX = m_Clip.m_iLeft;
@@ -200,7 +200,7 @@ void Burger::RendererSoftware8::Draw8BitPixelsMasked(int iX,int iY,Word uWidth,W
 			}
 			// Clip the top
 
-			iDelta = iY-(m_Clip.m_iTop-uHeight);
+			iDelta = iY-static_cast<int>(m_Clip.m_iTop-uHeight);
 			if (iDelta>=1) {
 				if (static_cast<Word>(iDelta)<uHeight) {
 					iY = m_Clip.m_iTop;
@@ -210,7 +210,7 @@ void Burger::RendererSoftware8::Draw8BitPixelsMasked(int iX,int iY,Word uWidth,W
 
 				// Clip the left side
 
-				iDelta = iX-(m_Clip.m_iLeft-uWidth);
+				iDelta = iX-static_cast<int>(m_Clip.m_iLeft-uWidth);
 				if (iDelta>=1) {
 					if (static_cast<Word>(iDelta)<uWidth) {
 						iX = m_Clip.m_iLeft;
@@ -331,7 +331,7 @@ void Burger::RendererSoftware8::DrawRect(int iX,int iY,Word uWidth,Word uHeight,
 			}
 			// Clip the top
 
-			iDelta = iY-(m_Clip.m_iTop-uHeight);
+			iDelta = iY-static_cast<int>(m_Clip.m_iTop-uHeight);
 			if (iDelta>=1) {
 				if (static_cast<Word>(iDelta)<uHeight) {
 					iY = m_Clip.m_iTop;
@@ -340,7 +340,7 @@ void Burger::RendererSoftware8::DrawRect(int iX,int iY,Word uWidth,Word uHeight,
 
 				// Clip the left side
 
-				iDelta = iX-(m_Clip.m_iLeft-uWidth);
+				iDelta = iX-static_cast<int>(m_Clip.m_iLeft-uWidth);
 				if (iDelta>=1) {
 					if (static_cast<Word>(iDelta)<uWidth) {
 						iX = m_Clip.m_iLeft;

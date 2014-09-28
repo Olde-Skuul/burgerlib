@@ -38,7 +38,7 @@
 	<PropertyGroup Label="UserMacros" />
 	<ItemDefinitionGroup>
 		<ClCompile>
-			<AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(ProjectDir)..\source\windows;$(SDKS)\windows\perforce;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(ProjectDir)..\source\windows;$(SDKS)\windows\perforce;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 			<PreprocessorDefinitions>_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 		</ClCompile>
 		<Link>
@@ -72,14 +72,17 @@
 		<ClInclude Include="..\source\compression\brdecompressdeflate.h" />
 		<ClInclude Include="..\source\compression\brdecompresslbmrle.h" />
 		<ClInclude Include="..\source\compression\brdecompresslzss.h" />
+		<ClInclude Include="..\source\compression\brdjb2hash.h" />
 		<ClInclude Include="..\source\compression\brdxt1.h" />
 		<ClInclude Include="..\source\compression\brdxt3.h" />
 		<ClInclude Include="..\source\compression\brdxt5.h" />
+		<ClInclude Include="..\source\compression\brhashmap.h" />
 		<ClInclude Include="..\source\compression\brmace.h" />
 		<ClInclude Include="..\source\compression\brmd2.h" />
 		<ClInclude Include="..\source\compression\brmd4.h" />
 		<ClInclude Include="..\source\compression\brmd5.h" />
 		<ClInclude Include="..\source\compression\brpackfloat.h" />
+		<ClInclude Include="..\source\compression\brsdbmhash.h" />
 		<ClInclude Include="..\source\compression\brsha1.h" />
 		<ClInclude Include="..\source\file\brdirectorysearch.h" />
 		<ClInclude Include="..\source\file\brfile.h" />
@@ -97,6 +100,9 @@
 		<ClInclude Include="..\source\file\brinputmemorystream.h" />
 		<ClInclude Include="..\source\file\broutputmemorystream.h" />
 		<ClInclude Include="..\source\file\brrezfile.h" />
+		<ClInclude Include="..\source\flashplayer\brflashaction.h" />
+		<ClInclude Include="..\source\flashplayer\brflashmanager.h" />
+		<ClInclude Include="..\source\flashplayer\brflashutils.h" />
 		<ClInclude Include="..\source\graphics\brdisplay.h" />
 		<ClInclude Include="..\source\graphics\brdisplayopengl.h" />
 		<ClInclude Include="..\source\graphics\brdisplayopenglsoftware8.h" />
@@ -113,6 +119,7 @@
 		<ClInclude Include="..\source\input\brjoypad.h" />
 		<ClInclude Include="..\source\input\brkeyboard.h" />
 		<ClInclude Include="..\source\input\brmouse.h" />
+		<ClInclude Include="..\source\lowlevel\brarray.h" />
 		<ClInclude Include="..\source\lowlevel\brassert.h" />
 		<ClInclude Include="..\source\lowlevel\bratomic.h" />
 		<ClInclude Include="..\source\lowlevel\brautorepeat.h" />
@@ -130,8 +137,11 @@
 		<ClInclude Include="..\source\lowlevel\brmetrowerks.h" />
 		<ClInclude Include="..\source\lowlevel\broscursor.h" />
 		<ClInclude Include="..\source\lowlevel\brperforce.h" />
+		<ClInclude Include="..\source\lowlevel\brqueue.h" />
 		<ClInclude Include="..\source\lowlevel\brrandommanager.h" />
 		<ClInclude Include="..\source\lowlevel\brrunqueue.h" />
+		<ClInclude Include="..\source\lowlevel\brsimplearray.h" />
+		<ClInclude Include="..\source\lowlevel\brsmartpointer.h" />
 		<ClInclude Include="..\source\lowlevel\brstaticrtti.h" />
 		<ClInclude Include="..\source\lowlevel\brtick.h" />
 		<ClInclude Include="..\source\lowlevel\brtimedate.h" />
@@ -210,14 +220,17 @@
 		<ClCompile Include="..\source\compression\brdecompressdeflate.cpp" />
 		<ClCompile Include="..\source\compression\brdecompresslbmrle.cpp" />
 		<ClCompile Include="..\source\compression\brdecompresslzss.cpp" />
+		<ClCompile Include="..\source\compression\brdjb2hash.cpp" />
 		<ClCompile Include="..\source\compression\brdxt1.cpp" />
 		<ClCompile Include="..\source\compression\brdxt3.cpp" />
 		<ClCompile Include="..\source\compression\brdxt5.cpp" />
+		<ClCompile Include="..\source\compression\brhashmap.cpp" />
 		<ClCompile Include="..\source\compression\brmace.cpp" />
 		<ClCompile Include="..\source\compression\brmd2.cpp" />
 		<ClCompile Include="..\source\compression\brmd4.cpp" />
 		<ClCompile Include="..\source\compression\brmd5.cpp" />
 		<ClCompile Include="..\source\compression\brpackfloat.cpp" />
+		<ClCompile Include="..\source\compression\brsdbmhash.cpp" />
 		<ClCompile Include="..\source\compression\brsha1.cpp" />
 		<ClCompile Include="..\source\file\brdirectorysearch.cpp" />
 		<ClCompile Include="..\source\file\brfile.cpp" />
@@ -235,6 +248,9 @@
 		<ClCompile Include="..\source\file\brinputmemorystream.cpp" />
 		<ClCompile Include="..\source\file\broutputmemorystream.cpp" />
 		<ClCompile Include="..\source\file\brrezfile.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashaction.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashmanager.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashutils.cpp" />
 		<ClCompile Include="..\source\graphics\brdisplay.cpp" />
 		<ClCompile Include="..\source\graphics\brdisplayopengl.cpp" />
 		<ClCompile Include="..\source\graphics\brdisplayopenglsoftware8.cpp" />
@@ -251,6 +267,7 @@
 		<ClCompile Include="..\source\input\brjoypad.cpp" />
 		<ClCompile Include="..\source\input\brkeyboard.cpp" />
 		<ClCompile Include="..\source\input\brmouse.cpp" />
+		<ClCompile Include="..\source\lowlevel\brarray.cpp" />
 		<ClCompile Include="..\source\lowlevel\brassert.cpp" />
 		<ClCompile Include="..\source\lowlevel\bratomic.cpp" />
 		<ClCompile Include="..\source\lowlevel\brautorepeat.cpp" />
@@ -267,11 +284,15 @@
 		<ClCompile Include="..\source\lowlevel\brlinkedlistpointer.cpp" />
 		<ClCompile Include="..\source\lowlevel\broscursor.cpp" />
 		<ClCompile Include="..\source\lowlevel\brperforce.cpp" />
+		<ClCompile Include="..\source\lowlevel\brqueue.cpp" />
 		<ClCompile Include="..\source\lowlevel\brrandommanager.cpp" />
 		<ClCompile Include="..\source\lowlevel\brrunqueue.cpp" />
+		<ClCompile Include="..\source\lowlevel\brsimplearray.cpp" />
+		<ClCompile Include="..\source\lowlevel\brsmartpointer.cpp" />
 		<ClCompile Include="..\source\lowlevel\brstaticrtti.cpp" />
 		<ClCompile Include="..\source\lowlevel\brtick.cpp" />
 		<ClCompile Include="..\source\lowlevel\brtimedate.cpp" />
+		<ClCompile Include="..\source\lowlevel\brtypes.cpp" />
 		<ClCompile Include="..\source\math\brfixedmatrix3d.cpp" />
 		<ClCompile Include="..\source\math\brfixedmatrix4d.cpp" />
 		<ClCompile Include="..\source\math\brfixedpoint.cpp" />

@@ -148,7 +148,7 @@ Word Burger::Joypad::ReadAbsolute(Word uWhich,Word uAxis) const
 int Burger::Joypad::ReadDelta(Word uWhich,Word uAxis) const
 {
 	// Convert absolute value to signed offset
-	return ReadAbsolute(uWhich,uAxis)-128;
+	return static_cast<int>(ReadAbsolute(uWhich,uAxis))-128;
 }
 
 /*! ************************************
