@@ -50,6 +50,10 @@ __int64 _InterlockedDecrement64(__int64 volatile*);
 __int64 _InterlockedExchangeAdd64(__int64 volatile*,__int64);
 __int64 _InterlockedCompareExchange64(__int64 volatile*,__int64,__int64);
 #pragma intrinsic(_InterlockedExchange64,_InterlockedIncrement64,_InterlockedDecrement64,_InterlockedExchangeAdd64,_InterlockedCompareExchange64)
+#if _MSC_VER<1500		// Visual studio 2005 and earlier don't have these SSE type conversions
+BURGER_INLINE float _mm_cvtss_f32(__m128 vInput) { return vInput.m128_f32[0]; }
+BURGER_INLINE double _mm_cvtsd_f64(__m128d vInput) { return vInput.m128d_f64[0]; }
+#endif
 #endif
 }
 #endif

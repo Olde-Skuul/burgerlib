@@ -355,7 +355,7 @@ Fixed32 BURGER_API Burger::IntToFixedSaturate(Int32 iInput)
 
 ***************************************/
 
-#if defined(__WATCOMC__)
+#if defined(BURGER_WATCOM)
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
 #elif defined(BURGER_POWERPC) && defined(BURGER_METROWERKS)
 #elif defined(BURGER_X86) && defined(BURGER_METROWERKS)
@@ -397,7 +397,7 @@ Int32 BURGER_API Burger::FloatToIntFloor(float fInput)
 
 ***************************************/
 
-#if defined(__WATCOMC__)
+#if defined(BURGER_WATCOM)
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
 #elif defined(BURGER_POWERPC) && defined(BURGER_METROWERKS)
 #elif defined(BURGER_X86) && defined(BURGER_METROWERKS)
@@ -436,7 +436,7 @@ Int32 BURGER_API Burger::FloatToInt(float fInput)
 	
 ***************************************/
 
-#if defined(__WATCOMC__)
+#if defined(BURGER_WATCOM)
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
 #elif defined(BURGER_POWERPC) && defined(BURGER_METROWERKS)
 #elif defined(BURGER_X86) && defined(BURGER_METROWERKS)
@@ -478,7 +478,7 @@ Int32 BURGER_API Burger::FloatToIntCeil(float fInput)
 
 ***************************************/
 
-#if defined(__WATCOMC__)
+#if defined(BURGER_WATCOM)
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
 #elif defined(BURGER_POWERPC) && defined(BURGER_METROWERKS)
 #elif defined(BURGER_X86) && defined(BURGER_METROWERKS)

@@ -128,6 +128,7 @@
 #elif defined(ANDROID)
 #define BURGER_GNUC
 #define BURGER_ARM
+#define BURGER_SHIELD
 #define BURGER_ANDROID
 #define BURGER_LITTLEENDIAN
 #define BURGER_INLINE __inline__ __attribute__((always_inline))
@@ -331,6 +332,24 @@ extern void* __alloca(unsigned x);
 #define BURGER_LONGLONG __int64
 #define BURGER_64BITCPU
 
+// Sony Playstation VITA
+#elif defined(__psp2__)
+#if defined(__GNUC__)
+#define BURGER_GNUC
+#endif
+#if defined(__SNC__)
+#define BURGER_SNSYSTEMS
+#endif
+#define BURGER_VITA
+#define BURGER_ANDROID
+#define BURGER_INLINE __inline__ __attribute__((always_inline))
+#define BURGER_ALIGN(x,s) (x) __attribute__((aligned(s)))
+#define BURGER_PREALIGN(s)
+#define BURGER_POSTALIGN(s) __attribute__((aligned(s)))
+#define BURGER_STRUCT_ALIGN
+#define BURGER_ARM
+#define BURGER_NEON
+#define BURGER_LITTLEENDIAN
 #else
 #error Unknown compiler / platform
 #endif
@@ -429,7 +448,15 @@ extern void* __alloca(unsigned x);
 #error NDEBUG nor _DEBUG were defined. Choose one or the other.
 #endif
 
-#define BURGER_OFFSETOF(type, member) reinterpret_cast<WordPtr>(&(reinterpret_cast<const type *>(0)->member))
+#if defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_SHIELD) || defined(BURGER_LINUX) || defined(DOXYGEN)
+#define BURGER_OPENGL_SUPPORTED
+#endif
+
+#if defined(BURGER_IOS) || defined(BURGER_SHIELD) || defined(DOXYGEN)
+#define BURGER_OPENGLES
+#endif
+
+#define BURGER_OFFSETOF(__type,member) (reinterpret_cast<WordPtr>(&(reinterpret_cast<const __type *>(1)->member))-1)
 #define BURGER_ARRAYSIZE(x) static_cast<WordPtr>(sizeof(x)/sizeof(x[0]))
 #define BURGER_UNUSED(x) (void)(x)
 #define BURGER_HASHMACRO(x) #x
@@ -453,6 +480,11 @@ typedef unsigned long Word32;
 #endif
 typedef signed BURGER_LONGLONG Int64;
 typedef unsigned BURGER_LONGLONG Word64;
+typedef Word8 Bool;
+typedef Int32 Frac32;
+typedef Int32 Fixed32;
+typedef unsigned int Word;
+typedef signed int Int;
 
 #if defined(BURGER_PS2) || defined(BURGER_PSP)
 typedef unsigned int Vector_128 __attribute__((mode (TI)));
@@ -507,12 +539,6 @@ typedef Int32 IntPtr;
 #define BURGER_MAXINTPTR 0x7FFFFFFF
 #endif
 
-typedef Word8 Bool;
-typedef Int32 Frac32;
-typedef Int32 Fixed32;
-typedef unsigned int Word;
-typedef signed int Int;
-
 #if !defined(BURGER_NONEW)
 #if defined(BURGER_METROWERKS)
 BURGER_INLINE void *operator new(__typeof__(sizeof(0)), void*x) { return x; }
@@ -523,7 +549,7 @@ BURGER_INLINE void* BURGER_ANSIAPI operator new(size_t, void*x) {return x;}
 BURGER_INLINE void* operator new(unsigned long int,void *x) {return x;}
 #elif defined(BURGER_PS4)
 BURGER_INLINE void* operator new(unsigned long, void*x) {return x;}
-#elif defined(BURGER_ANDROID)
+#elif defined(BURGER_ANDROID) || defined(BURGER_SNSYSTEMS)
 BURGER_INLINE void* operator new(unsigned int, void*x) {return x;}
 #else
 BURGER_INLINE void* operator new(WordPtr, void*x) {return x;}

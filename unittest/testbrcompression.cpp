@@ -715,7 +715,7 @@ static Word TestDeflateCompress(void)
 	Word uFailure = FALSE;
 
 	// Perform a simple Compression test and test for buffer overrun
-	CompressDeflate *pTester = new CompressDeflate;
+	CompressDeflate *pTester = New<CompressDeflate>();
 
 	Compress::eError Error = pTester->Process(RawData,sizeof(RawData));
 	if (Error!=Compress::COMPRESS_OKAY) {
@@ -796,7 +796,7 @@ static Word TestDeflateCompress(void)
 		ReportFailure("CompressDeflate::GetOutput(uSplit %04X) data mismatch",TRUE,static_cast<Word32>(uSplit));
 		uFailure = TRUE;
 	}
-	delete pTester;
+	Delete(pTester);
 	return uFailure;
 }
 
@@ -807,6 +807,7 @@ static Word TestDeflateCompress(void)
 int BURGER_API TestBrcompression(void)
 {
 	MemoryManagerGlobalANSI Memory;
+	Message("Running Compression tests");
 	Word uResult = TestILBMDecompress();
 	uResult |= TestILBMCompress();
 	uResult |= TestLZSSDecompress();

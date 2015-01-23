@@ -18,7 +18,7 @@
 	\class Burger::BigEndian
 	\brief Loads a 16, 32 or 64 bit value with byte swapping if needed.
 	
-	This class will map to either to \ref Burger::NativeEndian or \ref Burger::SwapEndian
+	This class will map to either to \ref NativeEndian or \ref SwapEndian
 	depending on if this is a big endian machine or not. Use of this class will allow the programmer
 	to write code that is endian neutral since the compiler will perform the proper
 	mapping depending on the target's settings..
@@ -37,10 +37,10 @@
 	Word32 foo = Burger::BigEndian::Load(&LoadedInt);
 	\endcode
 	
-	\note The documentation will describe the behavior of \ref Burger::SwapEndian, be
-	warned that it will map to \ref Burger::NativeEndian on a big endian machine.
+	\note The documentation will describe the behavior of \ref SwapEndian, be
+	warned that it will map to \ref NativeEndian on a big endian machine.
 	
-	\sa Burger::NativeEndian, Burger::LittleEndian and Burger::SwapEndian
+	\sa \ref NativeEndian, \ref LittleEndian and \ref SwapEndian
 
 ***************************************/
 
@@ -50,7 +50,7 @@
 	\class Burger::LittleEndian
 	\brief Loads a 16, 32 or 64 bit value with byte swapping if needed.
 	
-	This class will map to either to \ref Burger::NativeEndian or \ref Burger::SwapEndian
+	This class will map to either to \ref NativeEndian or \ref SwapEndian
 	depending on if this is a little endian machine or not. Use of this class will allow the programmer
 	to write code that is endian neutral since the compiler will perform the proper
 	mapping depending on the target's settings..
@@ -69,10 +69,10 @@
 	Word32 foo = Burger::LittleEndian::Load(&LoadedInt);
 	\endcode
 	
-	\note The documentation will describe the behavior of Burger::NativeEndian, be
-	warned that it will map to Burger::SwapEndian on a big endian machine.
+	\note The documentation will describe the behavior of \ref NativeEndian, be
+	warned that it will map to \ref SwapEndian on a big endian machine.
 	
-	\sa Burger::NativeEndian, Burger::BigEndian and Burger::SwapEndian
+	\sa \ref NativeEndian, \ref BigEndian and \ref SwapEndian
 
 ***************************************/
 
@@ -83,7 +83,7 @@
 	\brief Loads a 16, 32 or 64 bit value with no byte swapping.
 	
 	The classes Burger::LittleEndian and Burger::BigEndian either map
-	to \ref Burger::NativeEndian or Burger::SwapEndian. If the machine's
+	to \ref NativeEndian or \ref SwapEndian. If the machine's
 	endian matches the class, then it maps to this class.
 	
 	This class does nothing for most functions by design. It
@@ -91,13 +91,13 @@
 	since the data being read is the same endian as the machine.
 	
 	The only functions that do not disappear are the LoadAny(??? *) group
-	of calls since they have the ability to fetch a 16, 32 or 64 bit value irregardless
+	of calls since they have the ability to fetch a 16, 32 or 64 bit value regardless
 	of the alignment of the data pointer. These are useful in grabbing data
 	from a byte stream and won't trigger an alignment access fault.
 	
 	Under most circumstances, you will not call this class directly.
 	
-	\sa Burger::SwapEndian, Burger::LittleEndian and Burger::BigEndian
+	\sa \ref SwapEndian, \ref LittleEndian and \ref BigEndian
 
 ***************************************/
 
@@ -112,7 +112,7 @@
 	\param uInput Unsigned 16 bit input.
 	\return \a uInput untouched.
 	
-	\sa Burger::SwapEndian::Load(Word16)
+	\sa SwapEndian::Load(Word16)
 
 ***************************************/
 
@@ -127,7 +127,7 @@
 	\param uInput Unsigned 32 bit input.
 	\return \a uInput untouched.
 	
-	\sa Burger::SwapEndian::Load(Word32)
+	\sa SwapEndian::Load(Word32)
 
 ***************************************/
 
@@ -142,7 +142,7 @@
 	\param uInput Unsigned 64 bit input.
 	\return \a uInput untouched.
 	
-	\sa Burger::SwapEndian::Load(Word64)
+	\sa SwapEndian::Load(Word64)
 
 ***************************************/
 
@@ -157,7 +157,7 @@
 	\param fInput A float input.
 	\return \a fInput untouched.
 	
-	\sa Burger::SwapEndian::Load(float)
+	\sa SwapEndian::Load(float)
 
 ***************************************/
 
@@ -172,9 +172,11 @@
 	\param dInput A double input.
 	\return \a dInput untouched.
 	
-	\sa Burger::SwapEndian::Load(double)
+	\sa SwapEndian::Load(double)
 
 ***************************************/
+
+
 
 /*! ************************************
 
@@ -187,8 +189,8 @@
 	\param pInput Pointer to an unsigned 16 bit value.
 	\return The 16 bit unsigned value.
 	
-	\sa Burger::SwapEndian::Load(const Word16*) or
-		Burger::NativeEndian::LoadAny(const Word16 *).
+	\sa SwapEndian::Load(const Word16*) or
+		NativeEndian::LoadAny(const Word16 *).
 
 ***************************************/
 
@@ -203,8 +205,8 @@
 	\param pInput Pointer to an unsigned 32 bit value.
 	\return The 32 bit unsigned value.
 	
-	\sa Burger::SwapEndian::Load(const Word32*) or
-		Burger::NativeEndian::LoadAny(const Word32 *).
+	\sa SwapEndian::Load(const Word32*) or
+		NativeEndian::LoadAny(const Word32 *).
 
 ***************************************/
 
@@ -219,8 +221,8 @@
 	\param pInput Pointer to an unsigned 64 bit value.
 	\return The 64 bit unsigned value.
 	
-	\sa Burger::SwapEndian::Load(const Word64*) or
-		Burger::NativeEndian::LoadAny(const Word64 *).
+	\sa SwapEndian::Load(const Word64*) or
+		NativeEndian::LoadAny(const Word64 *).
 
 ***************************************/
 
@@ -235,8 +237,8 @@
 	\param pInput Pointer to a float value.
 	\return The float value.
 	
-	\sa Burger::SwapEndian::Load(const float*) or
-		Burger::NativeEndian::LoadAny(const float *).
+	\sa SwapEndian::Load(const float*) or
+		NativeEndian::LoadAny(const float *).
 
 ***************************************/
 
@@ -251,10 +253,94 @@
 	\param pInput Pointer to a double value.
 	\return The double value.
 	
-	\sa Burger::SwapEndian::Load(const double*) or
-		Burger::NativeEndian::LoadAny(const double *).
+	\sa SwapEndian::Load(const double*) or
+		NativeEndian::LoadAny(const double *).
 
 ***************************************/
+
+
+
+/*! ************************************
+
+	\fn Burger::NativeEndian::Store(Word16 *pOutput,Word16 uInput);
+	\brief Store a 16 bit value to memory.
+	
+	This function is usually optimized into a simple store operation.
+	It assumes that the data is 16 bit aligned.
+	
+	\param pOutput Pointer to an unsigned 16 bit value.
+	\param uInput The 16 bit unsigned value.
+	
+	\sa SwapEndian::Store(Word16*,Word16) or
+		NativeEndian::StoreAny(Word16 *,Word16).
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::NativeEndian::Store(Word32 *pOutput,Word32 uInput);
+	\brief Store a 32 bit value to memory.
+	
+	This function is usually optimized into a simple store operation.
+	It assumes that the data is 32 bit aligned.
+	
+	\param pOutput Pointer to an unsigned 32 bit value.
+	\param uInput The 32 bit unsigned value.
+	
+	\sa SwapEndian::Store(Word32*,Word32) or
+		NativeEndian::StoreAny(Word32 *,Word32).
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::NativeEndian::Store(Word64 *pOutput,Word64 uInput);
+	\brief Store a 64 bit value to memory.
+	
+	This function is usually optimized into a simple store operation.
+	It assumes that the data is 64 bit aligned.
+	
+	\param pOutput Pointer to an unsigned 64 bit value.
+	\param uInput The 64 bit unsigned value.
+	
+	\sa SwapEndian::Store(Word64*,Word64) or
+		NativeEndian::StoreAny(Word64 *,Word64).
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::NativeEndian::Store(float *pOutput,float fInput);
+	\brief Store a float value to memory.
+	
+	This function is usually optimized into a simple store operation.
+	It assumes that the data is 32 bit aligned.
+	
+	\param pOutput Pointer to a float value.
+	\param fInput The float value.
+	
+	\sa SwapEndian::Store(float*,float) or
+		NativeEndian::StoreAny(float *,float).
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::NativeEndian::Store(double *pOutput,double dInput);
+	\brief Store a double value to memory.
+	
+	This function is usually optimized into a simple store operation.
+	It assumes that the data is 64 bit aligned.
+	
+	\param pOutput Pointer to a double value.
+	\param dInput The double value.
+	
+	\sa SwapEndian::Store(double*,double) or
+		NativeEndian::StoreAny(double *,double).
+
+***************************************/
+
+
 
 /*! ************************************
 
@@ -266,8 +352,8 @@
 	\param pInput Pointer to a 16 bit value.
 	\return The 16 bit unsigned value.
 	
-	\sa Burger::SwapEndian::Load(const Word16*) or
-		Burger::NativeEndian::Load(const Word16 *).
+	\sa SwapEndian::Load(const Word16*) or
+		NativeEndian::Load(const Word16 *).
 
 ***************************************/
 
@@ -320,8 +406,8 @@ Word16 BURGER_API Burger::NativeEndian::LoadAny(const Word16 *pInput)
 	\param pInput Pointer to a 32 bit value.
 	\return The 32 bit unsigned value.
 	
-	\sa Burger::SwapEndian::Load(const Word32*) or
-		Burger::NativeEndian::Load(const Word32 *).
+	\sa SwapEndian::Load(const Word32*) or
+		NativeEndian::Load(const Word32 *).
 
 ***************************************/
 
@@ -386,12 +472,12 @@ Word32 BURGER_API Burger::NativeEndian::LoadAny(const Word32 *pInput)
 	\param pInput Pointer to a 64 bit value.
 	\return The 64 bit unsigned value.
 	
-	\sa Burger::SwapEndian::Load(const Word64*) or
-		Burger::NativeEndian::Load(const Word64 *).
+	\sa SwapEndian::Load(const Word64*) or
+		NativeEndian::Load(const Word64 *).
 
 ***************************************/
 
-#if defined(__WATCOMC__)
+#if defined(BURGER_WATCOM)
 // WatcomC passes the parm in EAX
 
 BURGER_DECLSPECNAKED Word64 BURGER_API Burger::NativeEndian::LoadAny(const Word64 * /* pInput */)
@@ -469,12 +555,12 @@ BURGER_DECLSPECNAKED Word64 BURGER_API Burger::NativeEndian::LoadAny(const Word6
 	\param pInput Pointer to a float value.
 	\return The float value.
 	
-	\sa Burger::SwapEndian::Load(const float*) or
-		Burger::NativeEndian::Load(const float *).
+	\sa SwapEndian::Load(const float*) or
+		NativeEndian::Load(const float *).
 
 ***************************************/
 
-#if defined(__WATCOMC__)
+#if defined(BURGER_WATCOM)
 // WatcomC passes the parm in EAX
 
 BURGER_DECLSPECNAKED float BURGER_API Burger::NativeEndian::LoadAny(const float * /* pInput */)
@@ -535,12 +621,12 @@ float BURGER_API Burger::NativeEndian::LoadAny(const float *pInput)
 	\param pInput Pointer to a double value.
 	\return The double value.
 	
-	\sa Burger::SwapEndian::Load(const double*) or
-		Burger::NativeEndian::Load(const double *).
+	\sa SwapEndian::Load(const double*) or
+		NativeEndian::Load(const double *).
 
 ***************************************/
 
-#if defined(__WATCOMC__)
+#if defined(BURGER_WATCOM)
 // WatcomC passes the parm in EAX
 
 BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const double * /* pInput */)
@@ -616,19 +702,156 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 }
 #endif
 
+
+
+/*! ************************************
+
+	\brief Store a 16 bit unsigned value to memory with byte alignment.
+	
+	Assuming the output pointer is unaligned, it will store data a byte at a time
+	into a 16 bit value in native endian.
+		
+	\param pOutput Pointer to a 16 bit value.
+	\param uInput The 16 bit unsigned value.
+	
+	\sa SwapEndian::Store(Word16*,Word16) or
+		NativeEndian::Store(Word16 *,Word16).
+
+***************************************/
+
+void BURGER_API Burger::NativeEndian::StoreAny(Word16 *pOutput,Word16 uInput)
+{
+#if defined(BURGER_BIGENDIAN)
+	reinterpret_cast<Word8*>(pOutput)[0] = static_cast<Word8>(uInput>>8U);
+	reinterpret_cast<Word8*>(pOutput)[1] = static_cast<Word8>(uInput);
+#else
+	reinterpret_cast<Word8*>(pOutput)[0] = static_cast<Word8>(uInput);
+	reinterpret_cast<Word8*>(pOutput)[1] = static_cast<Word8>(uInput>>8U);
+#endif
+}
+
+/*! ************************************
+
+	\brief Store a 32 bit unsigned value to memory with byte alignment.
+	
+	Assuming the output pointer is unaligned, it will store data a byte at a time
+	into a 32 bit value in native endian.
+		
+	\param pOutput Pointer to a 32 bit value.
+	\param uInput The 32 bit unsigned value.
+	
+	\sa SwapEndian::Store(Word32*,Word32) or
+		NativeEndian::Store(Word32 *,Word32).
+
+***************************************/
+
+void BURGER_API Burger::NativeEndian::StoreAny(Word32 *pOutput,Word32 uInput)
+{
+#if defined(BURGER_BIGENDIAN)
+	reinterpret_cast<Word8*>(pOutput)[0] = static_cast<Word8>(uInput>>24U);
+	reinterpret_cast<Word8*>(pOutput)[1] = static_cast<Word8>(uInput>>16U);
+	reinterpret_cast<Word8*>(pOutput)[2] = static_cast<Word8>(uInput>>8U);
+	reinterpret_cast<Word8*>(pOutput)[3] = static_cast<Word8>(uInput);
+#else
+	reinterpret_cast<Word8*>(pOutput)[0] = static_cast<Word8>(uInput);
+	reinterpret_cast<Word8*>(pOutput)[1] = static_cast<Word8>(uInput>>8U);
+	reinterpret_cast<Word8*>(pOutput)[2] = static_cast<Word8>(uInput>>16U);
+	reinterpret_cast<Word8*>(pOutput)[3] = static_cast<Word8>(uInput>>24U);
+#endif
+}
+
+/*! ************************************
+
+	\brief Store a 64 bit unsigned value to memory with byte alignment.
+	
+	Assuming the output pointer is unaligned, it will store data a byte at a time
+	into a 64 bit value in native endian.
+		
+	\param pOutput Pointer to a 64 bit value.
+	\param uInput The 64 bit unsigned value.
+	
+	\sa SwapEndian::Store(Word64*,Word64) or
+		NativeEndian::Store(Word64 *,Word64).
+
+***************************************/
+
+void BURGER_API Burger::NativeEndian::StoreAny(Word64 *pOutput,Word64 uInput)
+{
+	reinterpret_cast<Word8*>(pOutput)[0] = reinterpret_cast<const Word8*>(&uInput)[0];
+	reinterpret_cast<Word8*>(pOutput)[1] = reinterpret_cast<const Word8*>(&uInput)[1];
+	reinterpret_cast<Word8*>(pOutput)[2] = reinterpret_cast<const Word8*>(&uInput)[2];
+	reinterpret_cast<Word8*>(pOutput)[3] = reinterpret_cast<const Word8*>(&uInput)[3];
+	reinterpret_cast<Word8*>(pOutput)[4] = reinterpret_cast<const Word8*>(&uInput)[4];
+	reinterpret_cast<Word8*>(pOutput)[5] = reinterpret_cast<const Word8*>(&uInput)[5];
+	reinterpret_cast<Word8*>(pOutput)[6] = reinterpret_cast<const Word8*>(&uInput)[6];
+	reinterpret_cast<Word8*>(pOutput)[7] = reinterpret_cast<const Word8*>(&uInput)[7];
+}
+
+/*! ************************************
+
+	\brief Store a float value to memory with byte alignment.
+	
+	Assuming the output pointer is unaligned, it will store data a byte at a time
+	into a 32 bit float value in native endian.
+		
+	\param pOutput Pointer to a float value.
+	\param fInput The float value.
+	
+	\sa SwapEndian::Store(float*,float) or
+		NativeEndian::Store(float *,float).
+
+***************************************/
+ 
+void BURGER_API Burger::NativeEndian::StoreAny(float *pOutput,float fInput)
+{
+	reinterpret_cast<Word8*>(pOutput)[0] = reinterpret_cast<const Word8*>(&fInput)[0];
+	reinterpret_cast<Word8*>(pOutput)[1] = reinterpret_cast<const Word8*>(&fInput)[1];
+	reinterpret_cast<Word8*>(pOutput)[2] = reinterpret_cast<const Word8*>(&fInput)[2];
+	reinterpret_cast<Word8*>(pOutput)[3] = reinterpret_cast<const Word8*>(&fInput)[3];
+}
+
+/*! ************************************
+
+	\brief Store a double value to memory with byte alignment.
+	
+	Assuming the output pointer is unaligned, it will store data a byte at a time
+	into a 64 bit float value in native endian.
+
+	\param pOutput Pointer to a double value.
+	\param dInput The double value.
+	
+	\sa SwapEndian::Store(double*,double) or
+		NativeEndian::Store(double *,double).
+
+***************************************/
+
+void BURGER_API Burger::NativeEndian::StoreAny(double *pOutput,double dInput)
+{
+	reinterpret_cast<Word8*>(pOutput)[0] = reinterpret_cast<const Word8*>(&dInput)[0];
+	reinterpret_cast<Word8*>(pOutput)[1] = reinterpret_cast<const Word8*>(&dInput)[1];
+	reinterpret_cast<Word8*>(pOutput)[2] = reinterpret_cast<const Word8*>(&dInput)[2];
+	reinterpret_cast<Word8*>(pOutput)[3] = reinterpret_cast<const Word8*>(&dInput)[3];
+	reinterpret_cast<Word8*>(pOutput)[4] = reinterpret_cast<const Word8*>(&dInput)[4];
+	reinterpret_cast<Word8*>(pOutput)[5] = reinterpret_cast<const Word8*>(&dInput)[5];
+	reinterpret_cast<Word8*>(pOutput)[6] = reinterpret_cast<const Word8*>(&dInput)[6];
+	reinterpret_cast<Word8*>(pOutput)[7] = reinterpret_cast<const Word8*>(&dInput)[7];
+}
+
+
+
 /*! ************************************
 
 	\fn Burger::NativeEndian::Fixup(Word16 *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a 16 bit value.
 	
-	\sa Burger::SwapEndian::Fixup(Word16*) or
-		Burger::NativeEndian::FixupAny(Word16 *).
+	\sa SwapEndian::Fixup(Word16*) or
+		NativeEndian::FixupAny(Word16 *).
 
 ***************************************/
 
@@ -637,14 +860,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::Fixup(Word32 *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a 32 bit value.
 	
-	\sa Burger::SwapEndian::Fixup(Word32*) or
-		Burger::NativeEndian::FixupAny(Word32 *).
+	\sa SwapEndian::Fixup(Word32*) or
+		NativeEndian::FixupAny(Word32 *).
 
 ***************************************/
 
@@ -653,14 +876,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::Fixup(Word64 *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a 64 bit value.
 	
-	\sa Burger::SwapEndian::Fixup(Word64*) or
-		Burger::NativeEndian::FixupAny(Word64 *).
+	\sa SwapEndian::Fixup(Word64*) or
+		NativeEndian::FixupAny(Word64 *).
 
 ***************************************/
 
@@ -669,14 +892,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::FixupAny(Word16 *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a 16 bit value.
 	
-	\sa Burger::SwapEndian::FixupAny(Word16*) or
-		Burger::NativeEndian::Fixup(Word16 *).
+	\sa SwapEndian::FixupAny(Word16*) or
+		NativeEndian::Fixup(Word16 *).
 
 ***************************************/
 
@@ -685,14 +908,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::FixupAny(Word32 *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a 32 bit value.
 	
-	\sa Burger::SwapEndian::FixupAny(Word32*) or
-		Burger::NativeEndian::Fixup(Word32 *).
+	\sa SwapEndian::FixupAny(Word32*) or
+		NativeEndian::Fixup(Word32 *).
 
 ***************************************/
 
@@ -701,14 +924,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::FixupAny(Word64 *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a 64 bit value.
 	
-	\sa Burger::SwapEndian::FixupAny(Word64*) or
-		Burger::NativeEndian::Fixup(Word64 *).
+	\sa SwapEndian::FixupAny(Word64*) or
+		NativeEndian::Fixup(Word64 *).
 
 ***************************************/
 
@@ -723,7 +946,7 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param iInput Signed 16 bit input.
 	\return \a iInput untouched.
 	
-	\sa Burger::SwapEndian::Load(Int16)
+	\sa SwapEndian::Load(Int16)
 
 ***************************************/
 
@@ -738,7 +961,7 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param iInput Signed 32 bit input.
 	\return \a iInput untouched.
 	
-	\sa Burger::SwapEndian::Load(Int32)
+	\sa SwapEndian::Load(Int32)
 
 ***************************************/
 
@@ -753,7 +976,7 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param iInput Signed 64 bit input.
 	\return \a iInput untouched.
 	
-	\sa Burger::SwapEndian::Load(Int64)
+	\sa SwapEndian::Load(Int64)
 
 ***************************************/
 
@@ -768,7 +991,7 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param uInput Unsigned integer input.
 	\return \a uInput untouched.
 	
-	\sa Burger::SwapEndian::Load(Word)
+	\sa SwapEndian::Load(Word)
 
 ***************************************/
 
@@ -783,7 +1006,7 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param iInput Signed integer input.
 	\return \a iInput untouched.
 	
-	\sa Burger::SwapEndian::Load(Int)
+	\sa SwapEndian::Load(Int)
 
 ***************************************/
 
@@ -798,8 +1021,8 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param pInput Pointer to an signed 16 bit value.
 	\return The 16 bit signed value.
 	
-	\sa Burger::SwapEndian::Load(const Int16*) or
-		Burger::NativeEndian::LoadAny(const Int16 *).
+	\sa SwapEndian::Load(const Int16*) or
+		NativeEndian::LoadAny(const Int16 *).
 
 ***************************************/
 
@@ -814,8 +1037,8 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param pInput Pointer to an signed 32 bit value.
 	\return The 32 bit signed value.
 	
-	\sa Burger::SwapEndian::Load(const Int32*) or
-		Burger::NativeEndian::LoadAny(const Int32 *).
+	\sa SwapEndian::Load(const Int32*) or
+		NativeEndian::LoadAny(const Int32 *).
 
 ***************************************/
 
@@ -830,10 +1053,61 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param pInput Pointer to an signed 64 bit value.
 	\return The 64 bit signed value.
 	
-	\sa Burger::SwapEndian::Load(const Int64*) or
-		Burger::NativeEndian::LoadAny(const Int64 *).
+	\sa SwapEndian::Load(const Int64*) or
+		NativeEndian::LoadAny(const Int64 *).
 
 ***************************************/
+
+
+/*! ************************************
+
+	\fn Burger::NativeEndian::Store(Int16 *pOutput,Int16 iInput);
+	\brief Store a 16 bit value to memory.
+	
+	This function is usually optimized into a simple store operation.
+	It assumes that the data is 16 bit aligned.
+	
+	\param pOutput Pointer to an signed 16 bit value.
+	\param iInput The 16 bit signed value.
+	
+	\sa SwapEndian::Store(Int16*,Int16) or
+		NativeEndian::StoreAny(Int16 *,Int16).
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::NativeEndian::Store(Int32 *pOutput,Int32 iInput);
+	\brief Store a 32 bit value to memory.
+	
+	This function is usually optimized into a simple store operation.
+	It assumes that the data is 32 bit aligned.
+	
+	\param pOutput Pointer to an signed 32 bit value.
+	\param iInput The 32 bit signed value.
+	
+	\sa SwapEndian::Store(Int32*,Int32) or
+		NativeEndian::StoreAny(Int32 *,Int32).
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::NativeEndian::Store(Int64 *pOutput,Int64 iInput);
+	\brief Store a 64 bit value to memory.
+	
+	This function is usually optimized into a simple store operation.
+	It assumes that the data is 64 bit aligned.
+	
+	\param pOutput Pointer to an signed 64 bit value.
+	\param iInput The 64 bit signed value.
+	
+	\sa SwapEndian::Store(Int64*,Int64) or
+		NativeEndian::StoreAny(Int64 *,Int64).
+
+***************************************/
+
+
 
 /*! ************************************
 
@@ -846,8 +1120,8 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param pInput Pointer to an unsigned integer value.
 	\return The unsigned integer value.
 	
-	\sa Burger::SwapEndian::Load(const Word*) or
-		Burger::NativeEndian::LoadAny(const Word *).
+	\sa SwapEndian::Load(const Word*) or
+		NativeEndian::LoadAny(const Word *).
 
 ***************************************/
 
@@ -862,10 +1136,44 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param pInput Pointer to a signed integer value.
 	\return The signed integer value.
 	
-	\sa Burger::SwapEndian::Load(const Int*) or
-		Burger::NativeEndian::LoadAny(const Int *).
+	\sa SwapEndian::Load(const Int*) or
+		NativeEndian::LoadAny(const Int *).
 
 ***************************************/
+
+
+/*! ************************************
+
+	\fn Burger::NativeEndian::Store(Word *pOutput,Word uInput);
+	\brief Store an unsigned integer value to memory.
+	
+	This function is usually optimized into a simple store operation.
+	It assumes that the data is aligned to the size of a native integer (Usually 32 bits).
+	
+	\param pOutput Pointer to an unsigned integer value.
+	\param uInput The unsigned integer value.
+	
+	\sa SwapEndian::Store(Word*,Word) or
+		NativeEndian::StoreAny(Word *,Word).
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::NativeEndian::Store(Int *pOutput,Int iInput);
+	\brief Store a signed integer value to memory.
+	
+	This function is usually optimized into a simple store operation.
+	It assumes that the data is aligned to the size of a native integer (Usually 32 bits).
+	
+	\param pOutput Pointer to a signed integer value.
+	\param iInput The signed integer value.
+	
+	\sa SwapEndian::Store(Int*,Int) or
+		NativeEndian::StoreAny(Int *,Int).
+
+***************************************/
+
 
 /*! ************************************
 
@@ -878,8 +1186,8 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param pInput Pointer to a 16 bit value.
 	\return The 16 bit signed value.
 	
-	\sa Burger::SwapEndian::Load(const Int16*) or
-		Burger::NativeEndian::Load(const Int16 *).
+	\sa SwapEndian::Load(const Int16*) or
+		NativeEndian::Load(const Int16 *).
 
 ***************************************/
 
@@ -894,8 +1202,8 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param pInput Pointer to a 32 bit value.
 	\return The 32 bit signed value.
 	
-	\sa Burger::SwapEndian::Load(const Int32*) or
-		Burger::NativeEndian::Load(const Int32 *).
+	\sa SwapEndian::Load(const Int32*) or
+		NativeEndian::Load(const Int32 *).
 
 ***************************************/
 
@@ -910,10 +1218,58 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param pInput Pointer to a 64 bit value.
 	\return The 64 bit signed value.
 	
-	\sa Burger::SwapEndian::Load(const Int64*) or
-		Burger::NativeEndian::Load(const Int64 *).
+	\sa SwapEndian::Load(const Int64*) or
+		NativeEndian::Load(const Int64 *).
 
 ***************************************/
+
+
+/*! ************************************
+
+	\fn Burger::NativeEndian::StoreAny(Int16 *pOutput,Int16 iInput)
+	\brief Store a 16 bit signed value to memory with byte alignment.
+	
+	It assumes that the output pointer is unaligned.
+		
+	\param pOutput Pointer to a 16 bit value.
+	\param iInput The 16 bit signed value.
+	
+	\sa SwapEndian::Store(Int16*,Int16) or
+		NativeEndian::Store(Int16 *,Int16).
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::NativeEndian::StoreAny(Int32 *pOutput,Int32 iInput)
+	\brief Store a 32 bit signed value to memory with byte alignment.
+	
+	It assumes that the output pointer is unaligned.
+		
+	\param pOutput Pointer to a 32 bit value.
+	\param iInput The 32 bit signed value.
+	
+	\sa SwapEndian::Store(Int32*,Int32) or
+		NativeEndian::Store(Int32 *,Int32).
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::NativeEndian::StoreAny(Int64 *pOutput,Int64 iInput)
+	\brief Store a 64 bit signed value to memory with byte alignment.
+	
+	It assumes that the output pointer is unaligned.
+		
+	\param pOutput Pointer to a 64 bit value.
+	\param iInput The 64 bit signed value.
+	
+	\sa SwapEndian::Store(Int64*,Int64) or
+		NativeEndian::Store(Int64 *,Int64).
+
+***************************************/
+
+
 
 /*! ************************************
 
@@ -926,8 +1282,8 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param pInput Pointer to an integer value.
 	\return The unsigned integer value.
 	
-	\sa Burger::SwapEndian::Load(const Word*) or
-		Burger::NativeEndian::Load(const Word *).
+	\sa SwapEndian::Load(const Word*) or
+		NativeEndian::Load(const Word *).
 
 ***************************************/
 
@@ -942,24 +1298,57 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param pInput Pointer to an integer value.
 	\return The signed integer value.
 	
-	\sa Burger::SwapEndian::Load(const Int*) or
-		Burger::NativeEndian::Load(const Int *).
+	\sa SwapEndian::Load(const Int*) or
+		NativeEndian::Load(const Int *).
 
 ***************************************/
+
+
+/*! ************************************
+
+	\fn Burger::NativeEndian::StoreAny(Word *pOutput,Word uInput);
+	\brief Store an unsigned integer value to unaligned memory.
+	
+	It assumes that the output pointer is unaligned.
+	
+	\param pOutput Pointer to an unsigned integer value.
+	\param uInput The unsigned integer value.
+	
+	\sa SwapEndian::StoreAny(Word*,Word) or
+		NativeEndian::Store(Word *,Word).
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::NativeEndian::StoreAny(Int *pOutput,Int iInput);
+	\brief Store a signed integer value to unaligned memory.
+	
+	It assumes that the output pointer is unaligned.
+	
+	\param pOutput Pointer to a signed integer value.
+	\param iInput The signed integer value.
+	
+	\sa SwapEndian::StoreAny(Int*,Int) or
+		NativeEndian::Store(Int *,Int).
+
+***************************************/
+
+
 
 /*! ************************************
 
 	\fn Burger::NativeEndian::Fixup(Int16 *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a 16 bit value.
 	
-	\sa Burger::SwapEndian::Fixup(Int16*) or
-		Burger::NativeEndian::FixupAny( Int16 *).
+	\sa SwapEndian::Fixup(Int16*) or
+		NativeEndian::FixupAny( Int16 *).
 
 ***************************************/
 
@@ -968,14 +1357,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::Fixup(Int32 *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a 32 bit value.
 	
-	\sa Burger::SwapEndian::Fixup(Int32*) or
-		Burger::NativeEndian::FixupAny( Int32 *).
+	\sa SwapEndian::Fixup(Int32*) or
+		NativeEndian::FixupAny( Int32 *).
 
 ***************************************/
 
@@ -984,14 +1373,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::Fixup(Int64 *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a 64 bit value.
 	
-	\sa Burger::SwapEndian::Fixup(Int64*) or
-		Burger::NativeEndian::FixupAny( Int64 *).
+	\sa SwapEndian::Fixup(Int64*) or
+		NativeEndian::FixupAny( Int64 *).
 
 ***************************************/
 
@@ -1000,14 +1389,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::Fixup(Word *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to an unsigned integer value.
 	
-	\sa Burger::SwapEndian::Fixup(Word*) or
-		Burger::NativeEndian::FixupAny(Word *).
+	\sa SwapEndian::Fixup(Word*) or
+		NativeEndian::FixupAny(Word *).
 
 ***************************************/
 
@@ -1016,14 +1405,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::Fixup(Int *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to an integer value.
 	
-	\sa Burger::SwapEndian::Fixup(Int*) or
-		Burger::NativeEndian::FixupAny(Int *).
+	\sa SwapEndian::Fixup(Int*) or
+		NativeEndian::FixupAny(Int *).
 
 ***************************************/
 
@@ -1032,14 +1421,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::Fixup(float *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a float value.
 	
-	\sa Burger::SwapEndian::Fixup(float*) or
-		Burger::NativeEndian::FixupAny(float *).
+	\sa SwapEndian::Fixup(float*) or
+		NativeEndian::FixupAny(float *).
 
 ***************************************/
 
@@ -1048,14 +1437,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::Fixup(double *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a double value.
 	
-	\sa Burger::SwapEndian::Fixup(double*) or
-		Burger::NativeEndian::FixupAny(double *).
+	\sa SwapEndian::Fixup(double*) or
+		NativeEndian::FixupAny(double *).
 
 ***************************************/
 
@@ -1064,14 +1453,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::FixupAny(Int16 *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a 16 bit value.
 	
-	\sa Burger::SwapEndian::FixupAny(Int16*) or
-		Burger::NativeEndian::Fixup(Int16 *).
+	\sa SwapEndian::FixupAny(Int16*) or
+		NativeEndian::Fixup(Int16 *).
 
 ***************************************/
 
@@ -1080,14 +1469,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::FixupAny(Int32 *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a 32 bit value.
 	
-	\sa Burger::SwapEndian::FixupAny(Int32*) or
-		Burger::NativeEndian::Fixup( Int32 *).
+	\sa SwapEndian::FixupAny(Int32*) or
+		NativeEndian::Fixup( Int32 *).
 
 ***************************************/
 
@@ -1096,14 +1485,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::FixupAny(Int64 *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a 64 bit value.
 	
-	\sa Burger::SwapEndian::FixupAny(Int64*) or
-		Burger::NativeEndian::Fixup( Int64 *).
+	\sa SwapEndian::FixupAny(Int64*) or
+		NativeEndian::Fixup( Int64 *).
 
 ***************************************/
 
@@ -1112,14 +1501,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::FixupAny(Word *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to an unsigned integer value.
 	
-	\sa Burger::SwapEndian::FixupAny(Word*) or
-		Burger::NativeEndian::Fixup(Word *).
+	\sa SwapEndian::FixupAny(Word*) or
+		NativeEndian::Fixup(Word *).
 
 ***************************************/
 
@@ -1128,14 +1517,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::FixupAny(Int *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to an integer value.
 	
-	\sa Burger::SwapEndian::FixupAny(Int*) or
-		Burger::NativeEndian::Fixup(Int *).
+	\sa SwapEndian::FixupAny(Int*) or
+		NativeEndian::Fixup(Int *).
 
 ***************************************/
 
@@ -1144,14 +1533,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::FixupAny(float *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a float value.
 	
-	\sa Burger::SwapEndian::FixupAny(float*) or
-		Burger::NativeEndian::Fixup(float *).
+	\sa SwapEndian::FixupAny(float*) or
+		NativeEndian::Fixup(float *).
 
 ***************************************/
 
@@ -1160,14 +1549,14 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\fn Burger::NativeEndian::FixupAny(double *pInput)
 	\brief Does nothing.
 	
-	The Burger::SwapEndian class would swap the endian of the
+	The \ref SwapEndian class would swap the endian of the
 	variable, but this class performs no operation since the
 	endian is already a match for what the machine expects.
 			
 	\param pInput Pointer to a double value.
 	
-	\sa Burger::SwapEndian::FixupAny(double*) or
-		Burger::NativeEndian::Fixup(double *).
+	\sa SwapEndian::FixupAny(double*) or
+		NativeEndian::Fixup(double *).
 
 ***************************************/
 
@@ -1185,11 +1574,11 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	microprocessors, the byte order could be reversed. These
 	functions will swap the byte order.
 	
-	\note These functions will always swap the bytes, use Burger::LittleEndian
-	or Burger::BigEndian to let the compiler determine whether byte
+	\note These functions will always swap the bytes, \ref LittleEndian
+	or \ref BigEndian to let the compiler determine whether byte
 	swapping is needed.
 	
-	\sa Burger::NativeEndian, Burger::LittleEndian and Burger::BigEndian
+	\sa \ref NativeEndian, \ref LittleEndian and \ref BigEndian
 
 ***************************************/
 
@@ -1203,7 +1592,7 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	\param uInput Value to endian convert
 	\return The input with the bytes swapped, no errors are possible.
 
-	\sa Burger::NativeEndian::Load(Word16), Burger::SwapEndian::Load(Int16) or Burger::SwapEndian::Load(const Word16 *)
+	\sa NativeEndian::Load(Word16), SwapEndian::Load(Int16) or SwapEndian::Load(const Word16 *)
 
 ***************************************/
 
@@ -1228,9 +1617,8 @@ asm Word16 BURGER_API Burger::SwapEndian::Load(Word16 /* uInput */)
 
 Word16 BURGER_API Burger::SwapEndian::Load(Word16 uInput)
 {
-	Word uTemp;
-	uTemp = (uInput>>8)&0xFFU;
-	uTemp |= (uInput<<8)&0xFF00;
+	Word uTemp = (uInput>>8U)&0xFFU;
+	uTemp |= (uInput<<8U)&0xFF00U;
 	return static_cast<Word16>(uTemp);
 }
 
@@ -1246,17 +1634,17 @@ Word16 BURGER_API Burger::SwapEndian::Load(Word16 uInput)
 	\param uInput Value to endian convert
 	\return The input with the bytes swapped, no errors are possible.
 
-	\sa Burger::NativeEndian::Load(Word32), Burger::SwapEndian::Load(Int32) or Burger::SwapEndian::Load(const Word32 *)
+	\sa NativeEndian::Load(Word32), SwapEndian::Load(Int32) or SwapEndian::Load(const Word32 *)
 
 ***************************************/
 
-#if defined(__WATCOMC__) || (defined(__MWERKS__) && defined(BURGER_68K))
+#if defined(BURGER_WATCOM) || (defined(BURGER_METROWERKS) && defined(BURGER_68K))
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
-#elif defined(BURGER_POWERPC) && defined(__MWERKS__)
-#elif defined(BURGER_X86) && defined(__MWERKS__)
+#elif defined(BURGER_POWERPC) && defined(BURGER_METROWERKS)
+#elif defined(BURGER_X86) && defined(BURGER_METROWERKS)
 #elif defined(__ICL)
 #elif (defined(BURGER_X86) || defined(BURGER_AMD64)) && (_MSC_VER)
-#elif defined(BURGER_ARM) && defined(__MWERKS__)
+#elif defined(BURGER_ARM) && defined(BURGER_METROWERKS)
 
 asm Word32 BURGER_API Burger::SwapEndian::Load(Word32 uInput)
 {
@@ -1270,11 +1658,10 @@ asm Word32 BURGER_API Burger::SwapEndian::Load(Word32 uInput)
 
 Word32 BURGER_API Burger::SwapEndian::Load(Word32 uInput)
 {
-	Word32 uTemp;
-	uTemp = (uInput>>24)&0xFF;
-	uTemp |= (uInput>>8)&0xFF00;
-	uTemp |= (uInput<<8)&0xFF0000;
-	uTemp |= uInput<<24;
+	Word32 uTemp = (uInput>>24U)&0xFFU;
+	uTemp |= (uInput>>8U)&0xFF00U;
+	uTemp |= (uInput<<8U)&0xFF0000U;
+	uTemp |= uInput<<24U;
 	return uTemp;
 }
 
@@ -1292,11 +1679,11 @@ Word32 BURGER_API Burger::SwapEndian::Load(Word32 uInput)
 	
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::NativeEndian::Load(Word16), Burger::SwapEndian::Load(Int16) or Burger::SwapEndian::Load(Word16)
+	\sa NativeEndian::Load(Word16), SwapEndian::Load(Int16) or SwapEndian::Load(Word16)
 
 ***************************************/
 
-#if defined(__WATCOMC__) || (defined(__MWERKS__) && defined(BURGER_68K))
+#if defined(BURGER_WATCOM) || (defined(__MWERKS__) && defined(BURGER_68K))
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
 #elif defined(BURGER_POWERPC) && defined(__MWERKS__)
 #elif defined(BURGER_X86) && defined(__MWERKS__)
@@ -1306,11 +1693,9 @@ Word32 BURGER_API Burger::SwapEndian::Load(Word32 uInput)
 
 Word16 BURGER_API Burger::SwapEndian::Load(const Word16 *pInput)
 {
-	Word uTemp;
-	Word uInput;
-	uInput = pInput[0];
-	uTemp = (uInput>>8)&0xFF;
-	uTemp |= (uInput<<8)&0xFF00;
+	Word uInput = pInput[0];
+	Word uTemp = (uInput>>8U)&0xFFU;
+	uTemp |= (uInput<<8U)&0xFF00U;
 	return static_cast<Word16>(uTemp);
 }
 
@@ -1328,11 +1713,11 @@ Word16 BURGER_API Burger::SwapEndian::Load(const Word16 *pInput)
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::NativeEndian::Load(Word32), Burger::SwapEndian::Load(Int32) or Burger::SwapEndian::Load(Word32)
+	\sa NativeEndian::Load(Word32), SwapEndian::Load(Int32) or SwapEndian::Load(Word32)
 
 ***************************************/
 
-#if defined(__WATCOMC__) || (defined(__MWERKS__) && defined(BURGER_68K))
+#if defined(BURGER_WATCOM) || (defined(__MWERKS__) && defined(BURGER_68K))
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
 #elif defined(BURGER_POWERPC) && defined(__MWERKS__)
 #elif defined(BURGER_X86) && defined(__MWERKS__)
@@ -1342,13 +1727,11 @@ Word16 BURGER_API Burger::SwapEndian::Load(const Word16 *pInput)
 
 Word32 BURGER_API Burger::SwapEndian::Load(const Word32 *pInput)
 {
-	Word32 uInput;		
-	Word32 uTemp;
-	uInput = pInput[0];
-	uTemp = (uInput>>24)&0xFF;
-	uTemp |= (uInput>>8)&0xFF00;
-	uTemp |= (uInput<<8)&0xFF0000;
-	uTemp |= uInput<<24;
+	Word32 uInput = pInput[0];
+	Word32 uTemp = (uInput>>24U)&0xFFU;
+	uTemp |= (uInput>>8U)&0xFF00U;
+	uTemp |= (uInput<<8U)&0xFF0000U;
+	uTemp |= uInput<<24U;
 	return uTemp;
 }
 
@@ -1364,7 +1747,7 @@ Word32 BURGER_API Burger::SwapEndian::Load(const Word32 *pInput)
 	\param uInput Value to endian convert
 	\return The value with the bytes swapped, no errors are possible.
 
-	\sa Burger::NativeEndian::Load(Word64), Burger::SwapEndian::Load(Int64) or Burger::SwapEndian::Load(const Word64 *)
+	\sa NativeEndian::Load(Word64), SwapEndian::Load(Int64) or SwapEndian::Load(const Word64 *)
 
 ***************************************/
 
@@ -1435,7 +1818,7 @@ Word64 BURGER_API Burger::SwapEndian::Load(Word64 uInput)
 	\note Use of this form is discouraged since it involves moving a floating point value
 	into an integer register and back again. Use the const float * version instead.
 
-	\sa Burger::NativeEndian::Load(float) or Burger::SwapEndian::Load(const float *)
+	\sa NativeEndian::Load(float) or SwapEndian::Load(const float *)
 
 ***************************************/
 
@@ -1496,7 +1879,7 @@ float BURGER_API Burger::SwapEndian::Load(float fInput)
 	\note Use of this form is discouraged since it involves moving a floating point value
 	into an integer register and back again. Use the const double * version instead.
 
-	\sa Burger::NativeEndian::Load(double) or Burger::SwapEndian::Load(const double *)
+	\sa NativeEndian::Load(double) or SwapEndian::Load(const double *)
 
 ***************************************/
 
@@ -1572,7 +1955,7 @@ double BURGER_API Burger::SwapEndian::Load(double dInput)
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::SwapEndian::Load(Word64) or Burger::NativeEndian::Load(const Word64 *)
+	\sa SwapEndian::Load(Word64) or NativeEndian::Load(const Word64 *)
 
 ***************************************/
 
@@ -1641,7 +2024,7 @@ Word64 BURGER_API Burger::SwapEndian::Load(const Word64 *pInput)
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::SwapEndian::Load(float) or Burger::NativeEndian::Load(const float *)
+	\sa SwapEndian::Load(float) or NativeEndian::Load(const float *)
 
 ***************************************/
 
@@ -1702,7 +2085,7 @@ float BURGER_API Burger::SwapEndian::Load(const float *pInput)
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::SwapEndian::Load(double) or Burger::NativeEndian::Load(const double *)
+	\sa SwapEndian::Load(double) or NativeEndian::Load(const double *)
 
 ***************************************/
 
@@ -1765,6 +2148,188 @@ double BURGER_API Burger::SwapEndian::Load(const double *pInput)
 
 #endif
 
+
+/*! ************************************
+
+	\brief Reverse the endian of a 16 bit integer
+
+	Given a pointer to a 16 bit value, load it and swap the bytes
+	so that 0x1234 becomes 0x3412
+
+	\param pOutput Pointer to a value to endian convert
+	\param uInput The value with the bytes swapped.
+	
+	\note \ref NULL pointers are illegal and will page fault.
+
+	\sa NativeEndian::Load(Word16), SwapEndian::Load(Int16) or SwapEndian::Load(Word16)
+
+***************************************/
+
+#if defined(BURGER_WATCOM) || (defined(__MWERKS__) && defined(BURGER_68K))
+#elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
+#elif defined(BURGER_POWERPC) && defined(__MWERKS__)
+#elif defined(BURGER_X86) && defined(__MWERKS__)
+#elif defined(__ICL)
+#elif (defined(BURGER_X86) || defined(BURGER_AMD64)) && (_MSC_VER)
+#else
+
+void BURGER_API Burger::SwapEndian::Store(Word16 *pOutput,Word16 uInput)
+{
+	Word uTemp = (uInput>>8U)&0xFFU;
+	uTemp |= (uInput<<8U)&0xFF00U;
+	pOutput[0] = static_cast<Word16>(uTemp);
+}
+
+#endif
+
+/*! ************************************
+
+	\brief Reverse the endian of a 32 bit integer
+
+	Given a pointer to a 32 bit value, load it and swap the bytes
+	so that 0x12345678 becomes 0x78563412
+
+	\param pOutput Pointer to value to endian convert
+	\param uInput The value with the bytes swapped.
+
+	\note \ref NULL pointers are illegal and will page fault.
+
+	\sa NativeEndian::Load(Word32), SwapEndian::Load(Int32) or SwapEndian::Load(Word32)
+
+***************************************/
+
+#if defined(BURGER_WATCOM) || (defined(__MWERKS__) && defined(BURGER_68K))
+#elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
+#elif defined(BURGER_POWERPC) && defined(__MWERKS__)
+#elif defined(BURGER_X86) && defined(__MWERKS__)
+#elif defined(__ICL)
+#elif (defined(BURGER_X86) || defined(BURGER_AMD64)) && (_MSC_VER)
+#else
+
+void BURGER_API Burger::SwapEndian::Store(Word32 *pOutput,Word32 uInput)
+{	
+	Word32 uTemp = (uInput>>24U)&0xFFU;
+	uTemp |= (uInput>>8U)&0xFF00U;
+	uTemp |= (uInput<<8U)&0xFF0000U;
+	uTemp |= uInput<<24U;
+	pOutput[0] = uTemp;
+}
+
+#endif
+
+/*! ************************************
+
+	\brief Store a 64-bit integer with endian reversal
+
+	Given a 64-bit value, swap the bytes
+	so that 0x123456789ABCDEF0 becomes 0xF0DEBC9A78563412
+	and store it.
+
+	\param pOutput Pointer to the value to endian convert
+	\param uInput The value to store
+
+	\note \ref NULL pointers are illegal and will page fault.
+
+	\sa SwapEndian::Store(Word64) or NativeEndian::Store(Word64 *,Word64)
+
+***************************************/
+
+#if defined(BURGER_XBOX360) && !defined(DOXYGEN)
+#elif defined(BURGER_AMD64) && defined(_MSC_VER)
+#else 
+void BURGER_API Burger::SwapEndian::Store(Word64 *pOutput,Word64 uInput)
+{
+	Word8 bTemp1;
+	Word8 bTemp2;
+
+	bTemp1 = reinterpret_cast<const Word8 *>(&uInput)[7];
+	bTemp2 = reinterpret_cast<const Word8 *>(&uInput)[6];
+	reinterpret_cast<Word8 *>(pOutput)[0] = bTemp1;	// Perform the swap
+	reinterpret_cast<Word8 *>(pOutput)[1] = bTemp2;
+	bTemp1 = reinterpret_cast<const Word8 *>(&uInput)[5];
+	bTemp2 = reinterpret_cast<const Word8 *>(&uInput)[4];
+	reinterpret_cast<Word8 *>(pOutput)[2] = bTemp1;
+	reinterpret_cast<Word8 *>(pOutput)[3] = bTemp2;
+	bTemp1 = reinterpret_cast<const Word8 *>(&uInput)[3];
+	bTemp2 = reinterpret_cast<const Word8 *>(&uInput)[2];
+	reinterpret_cast<Word8 *>(pOutput)[4] = bTemp1;
+	reinterpret_cast<Word8 *>(pOutput)[5] = bTemp2;
+	bTemp1 = reinterpret_cast<const Word8 *>(&uInput)[1];
+	bTemp2 = reinterpret_cast<const Word8 *>(&uInput)[0];
+	reinterpret_cast<Word8 *>(pOutput)[6] = bTemp1;
+	reinterpret_cast<Word8 *>(pOutput)[7] = bTemp2;
+}
+
+#endif
+
+/*! ************************************
+
+	\brief Store a 32-bit float with endian reversal
+
+	Given a 32-bit float, swap the bytes and store it.
+
+	\param pOutput Pointer to the 32 bit float to endian convert
+	\param fInput The value to store
+
+	\note \ref NULL pointers are illegal and will page fault.
+
+	\sa SwapEndian::Store(float) or NativeEndian::Store(float *,float)
+
+***************************************/
+
+void BURGER_API Burger::SwapEndian::Store(float *pOutput,float fInput)
+{
+	Word8 bTemp1;
+	Word8 bTemp2;
+
+	bTemp1 = reinterpret_cast<const Word8 *>(&fInput)[3];	// Perform the swap
+	bTemp2 = reinterpret_cast<const Word8 *>(&fInput)[2];
+	reinterpret_cast<Word8 *>(pOutput)[0] = bTemp1;
+	reinterpret_cast<Word8 *>(pOutput)[1] = bTemp2;
+	bTemp1 = reinterpret_cast<const Word8 *>(&fInput)[1];
+	bTemp2 = reinterpret_cast<const Word8 *>(&fInput)[0];
+	reinterpret_cast<Word8 *>(pOutput)[2] = bTemp1;
+	reinterpret_cast<Word8 *>(pOutput)[3] = bTemp2;
+}
+
+/*! ************************************
+
+	\brief Store a 64-bit float with endian reversal
+
+	Given a 64-bit float, swap the bytes and store it.
+
+	\param pOutput Pointer to the 64 bit float to endian convert
+	\param dInput The value to store
+
+	\note \ref NULL pointers are illegal and will page fault.
+
+	\sa SwapEndian::Store(double) or NativeEndian::Store(double *,double)
+
+***************************************/
+
+void BURGER_API Burger::SwapEndian::Store(double *pOutput,double dInput)
+{
+	Word8 bTemp1;
+	Word8 bTemp2;
+
+	bTemp1 = reinterpret_cast<const Word8 *>(&dInput)[7];	// Perform the swap
+	bTemp2 = reinterpret_cast<const Word8 *>(&dInput)[6];
+	reinterpret_cast<Word8 *>(pOutput)[0] = bTemp1;
+	reinterpret_cast<Word8 *>(pOutput)[1] = bTemp2;
+	bTemp1 = reinterpret_cast<const Word8 *>(&dInput)[5];
+	bTemp2 = reinterpret_cast<const Word8 *>(&dInput)[4];
+	reinterpret_cast<Word8 *>(pOutput)[2] = bTemp1;
+	reinterpret_cast<Word8 *>(pOutput)[3] = bTemp2;
+	bTemp1 = reinterpret_cast<const Word8 *>(&dInput)[3];
+	bTemp2 = reinterpret_cast<const Word8 *>(&dInput)[2];
+	reinterpret_cast<Word8 *>(pOutput)[4] = bTemp1;
+	reinterpret_cast<Word8 *>(pOutput)[5] = bTemp2;
+	bTemp1 = reinterpret_cast<const Word8 *>(&dInput)[1];
+	bTemp2 = reinterpret_cast<const Word8 *>(&dInput)[0];
+	reinterpret_cast<Word8 *>(pOutput)[6] = bTemp1;
+	reinterpret_cast<Word8 *>(pOutput)[7] = bTemp2;
+}
+
 /*! ************************************
 
 	\brief Fetch a 16 bit unsigned reverse endian integer from memory with byte alignment.
@@ -1778,7 +2343,7 @@ double BURGER_API Burger::SwapEndian::Load(const double *pInput)
 	
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::SwapEndian::Load(const Word16 *) or Burger::NativeEndian::LoadAny(const Word16 *)
+	\sa SwapEndian::Load(const Word16 *) or NativeEndian::LoadAny(const Word16 *)
 
 ***************************************/
 
@@ -1819,7 +2384,7 @@ Word16 BURGER_API Burger::SwapEndian::LoadAny(const Word16 *pInput)
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::SwapEndian::Load(const Word32 *) or Burger::NativeEndian::LoadAny(const Word32 *)
+	\sa SwapEndian::Load(const Word32 *) or NativeEndian::LoadAny(const Word32 *)
 
 ***************************************/
 
@@ -1866,11 +2431,11 @@ Word32 BURGER_API Burger::SwapEndian::LoadAny(const Word32 *pInput)
 	
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::SwapEndian::Load(const Word64 *) or Burger::NativeEndian::LoadAny(const Word64 *)
+	\sa SwapEndian::Load(const Word64 *) or NativeEndian::LoadAny(const Word64 *)
 
 ***************************************/
 
-#if defined(__WATCOMC__)
+#if defined(BURGER_WATCOM)
 // WatcomC passes the parm in EAX
 
 BURGER_DECLSPECNAKED Word64 BURGER_API Burger::SwapEndian::LoadAny(const Word64 * /* pInput */)
@@ -1945,7 +2510,7 @@ Word64 BURGER_API Burger::SwapEndian::LoadAny(const Word64 *pInput)
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::SwapEndian::Load(float) or Burger::NativeEndian::Load(const float *)
+	\sa SwapEndian::Load(float) or NativeEndian::Load(const float *)
 
 ***************************************/
 
@@ -1999,7 +2564,7 @@ float BURGER_API Burger::SwapEndian::LoadAny(const float *pInput)
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::SwapEndian::Load(double) or Burger::NativeEndian::Load(const double *)
+	\sa SwapEndian::Load(double) or NativeEndian::Load(const double *)
 
 ***************************************/
 
@@ -2060,6 +2625,140 @@ double BURGER_API Burger::SwapEndian::LoadAny(const double *pInput)
 
 /*! ************************************
 
+	\brief Store a 16 bit unsigned value with endian swapping to memory with byte alignment.
+	
+	Assuming the output pointer is unaligned, it will store data a byte at a time
+	into a 16 bit value in reversed endian.
+		
+	\param pOutput Pointer to a 16 bit value.
+	\param uInput The 16 bit unsigned value.
+	
+	\sa NativeEndian::Store(Word16*,Word16) or
+		SwapEndian::Store(Word16 *,Word16).
+
+***************************************/
+
+void BURGER_API Burger::SwapEndian::StoreAny(Word16 *pOutput,Word16 uInput)
+{
+#if defined(BURGER_BIGENDIAN)
+	reinterpret_cast<Word8*>(pOutput)[0] = static_cast<Word8>(uInput);
+	reinterpret_cast<Word8*>(pOutput)[1] = static_cast<Word8>(uInput>>8U);
+#else
+	reinterpret_cast<Word8*>(pOutput)[0] = static_cast<Word8>(uInput>>8U);
+	reinterpret_cast<Word8*>(pOutput)[1] = static_cast<Word8>(uInput);
+#endif
+}
+
+/*! ************************************
+
+	\brief Store a 32 bit unsigned value with endian swapping to memory with byte alignment.
+	
+	Assuming the output pointer is unaligned, it will store data a byte at a time
+	into a 32 bit value in reversed endian.
+		
+	\param pOutput Pointer to a 32 bit value.
+	\param uInput The 32 bit unsigned value.
+	
+	\sa NativeEndian::Store(Word32*,Word32) or
+		SwapEndian::Store(Word32 *,Word32).
+
+***************************************/
+
+void BURGER_API Burger::SwapEndian::StoreAny(Word32 *pOutput,Word32 uInput)
+{
+#if defined(BURGER_BIGENDIAN)
+	reinterpret_cast<Word8*>(pOutput)[0] = static_cast<Word8>(uInput);
+	reinterpret_cast<Word8*>(pOutput)[1] = static_cast<Word8>(uInput>>8U);
+	reinterpret_cast<Word8*>(pOutput)[2] = static_cast<Word8>(uInput>>16U);
+	reinterpret_cast<Word8*>(pOutput)[3] = static_cast<Word8>(uInput>>24U);
+#else
+	reinterpret_cast<Word8*>(pOutput)[0] = static_cast<Word8>(uInput>>24U);
+	reinterpret_cast<Word8*>(pOutput)[1] = static_cast<Word8>(uInput>>16U);
+	reinterpret_cast<Word8*>(pOutput)[2] = static_cast<Word8>(uInput>>8U);
+	reinterpret_cast<Word8*>(pOutput)[3] = static_cast<Word8>(uInput);
+#endif
+}
+
+/*! ************************************
+
+	\brief Store a 64 bit unsigned value with endian swapping to memory with byte alignment.
+	
+	Assuming the output pointer is unaligned, it will store data a byte at a time
+	into a 64 bit value in reversed endian.
+		
+	\param pOutput Pointer to a 64 bit value.
+	\param uInput The 64 bit unsigned value.
+	
+	\sa NativeEndian::Store(Word64*,Word64) or
+		SwapEndian::Store(Word64 *,Word64).
+
+***************************************/
+
+void BURGER_API Burger::SwapEndian::StoreAny(Word64 *pOutput,Word64 uInput)
+{
+	reinterpret_cast<Word8*>(pOutput)[0] = reinterpret_cast<const Word8*>(&uInput)[7];
+	reinterpret_cast<Word8*>(pOutput)[1] = reinterpret_cast<const Word8*>(&uInput)[6];
+	reinterpret_cast<Word8*>(pOutput)[2] = reinterpret_cast<const Word8*>(&uInput)[5];
+	reinterpret_cast<Word8*>(pOutput)[3] = reinterpret_cast<const Word8*>(&uInput)[4];
+	reinterpret_cast<Word8*>(pOutput)[4] = reinterpret_cast<const Word8*>(&uInput)[3];
+	reinterpret_cast<Word8*>(pOutput)[5] = reinterpret_cast<const Word8*>(&uInput)[2];
+	reinterpret_cast<Word8*>(pOutput)[6] = reinterpret_cast<const Word8*>(&uInput)[1];
+	reinterpret_cast<Word8*>(pOutput)[7] = reinterpret_cast<const Word8*>(&uInput)[0];
+}
+
+/*! ************************************
+
+	\brief Store a float value to memory with endian swapping with byte alignment.
+	
+	Assuming the output pointer is unaligned, it will store data a byte at a time
+	into a 32 bit float value in reversed endian.
+		
+	\param pOutput Pointer to a float value.
+	\param fInput The float value.
+	
+	\sa NativeEndian::Store(float*,float) or
+		SwapEndian::Store(float *,float).
+
+***************************************/
+ 
+void BURGER_API Burger::SwapEndian::StoreAny(float *pOutput,float fInput)
+{
+	reinterpret_cast<Word8*>(pOutput)[0] = reinterpret_cast<const Word8*>(&fInput)[3];
+	reinterpret_cast<Word8*>(pOutput)[1] = reinterpret_cast<const Word8*>(&fInput)[2];
+	reinterpret_cast<Word8*>(pOutput)[2] = reinterpret_cast<const Word8*>(&fInput)[1];
+	reinterpret_cast<Word8*>(pOutput)[3] = reinterpret_cast<const Word8*>(&fInput)[0];
+}
+
+/*! ************************************
+
+	\brief Store a double value to memory with endian swapping with byte alignment.
+	
+	Assuming the output pointer is unaligned, it will store data a byte at a time
+	into a 64 bit float value in reversed endian.
+
+	\param pOutput Pointer to a double value.
+	\param dInput The double value.
+	
+	\sa NativeEndian::Store(double*,double) or
+		SwapEndian::Store(double *,double).
+
+***************************************/
+
+void BURGER_API Burger::SwapEndian::StoreAny(double *pOutput,double dInput)
+{
+	reinterpret_cast<Word8*>(pOutput)[0] = reinterpret_cast<const Word8*>(&dInput)[7];
+	reinterpret_cast<Word8*>(pOutput)[1] = reinterpret_cast<const Word8*>(&dInput)[6];
+	reinterpret_cast<Word8*>(pOutput)[2] = reinterpret_cast<const Word8*>(&dInput)[5];
+	reinterpret_cast<Word8*>(pOutput)[3] = reinterpret_cast<const Word8*>(&dInput)[4];
+	reinterpret_cast<Word8*>(pOutput)[4] = reinterpret_cast<const Word8*>(&dInput)[3];
+	reinterpret_cast<Word8*>(pOutput)[5] = reinterpret_cast<const Word8*>(&dInput)[2];
+	reinterpret_cast<Word8*>(pOutput)[6] = reinterpret_cast<const Word8*>(&dInput)[1];
+	reinterpret_cast<Word8*>(pOutput)[7] = reinterpret_cast<const Word8*>(&dInput)[0];
+}
+
+
+/*! ************************************
+
 	\fn Burger::SwapEndian::Fixup(Word16 *pInput);
 	\brief Reverse the endian of a 16-bit value
 
@@ -2070,7 +2769,7 @@ double BURGER_API Burger::SwapEndian::LoadAny(const double *pInput)
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::SwapEndian::FixupAny(Word16 *) or Burger::NativeEndian::Fixup(Word16 *)
+	\sa SwapEndian::FixupAny(Word16 *) or NativeEndian::Fixup(Word16 *)
 
 ***************************************/
 
@@ -2086,7 +2785,7 @@ double BURGER_API Burger::SwapEndian::LoadAny(const double *pInput)
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::SwapEndian::FixupAny(Word32 *) or Burger::NativeEndian::Fixup(Word32 *)
+	\sa SwapEndian::FixupAny(Word32 *) or NativeEndian::Fixup(Word32 *)
 
 ***************************************/
 
@@ -2101,7 +2800,7 @@ double BURGER_API Burger::SwapEndian::LoadAny(const double *pInput)
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::SwapEndian::FixupAny(Word64 *) or Burger::NativeEndian::Fixup(Word64 *)
+	\sa SwapEndian::FixupAny(Word64 *) or NativeEndian::Fixup(Word64 *)
 
 ***************************************/
 
@@ -2129,7 +2828,7 @@ void BURGER_API Burger::SwapEndian::Fixup(Word64 *pInput)
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::SwapEndian::Fixup(Word16 *) or Burger::NativeEndian::FixupAny(Word16 *)
+	\sa SwapEndian::Fixup(Word16 *) or NativeEndian::FixupAny(Word16 *)
 
 ***************************************/
 
@@ -2155,7 +2854,7 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word16 *pInput)
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::SwapEndian::Fixup(Word32 *) or Burger::NativeEndian::FixupAny(Word32 *)
+	\sa SwapEndian::Fixup(Word32 *) or NativeEndian::FixupAny(Word32 *)
 
 ***************************************/
 
@@ -2185,7 +2884,7 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word32 *pInput)
 
 	\note \ref NULL pointers are illegal and will page fault.
 
-	\sa Burger::SwapEndian::Fixup(Word64 *) or Burger::NativeEndian::FixupAny(Word64 *)
+	\sa SwapEndian::Fixup(Word64 *) or NativeEndian::FixupAny(Word64 *)
 
 ***************************************/
 
@@ -2223,9 +2922,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 
 	\return The input with the bytes swapped, no errors are possible.
 
-	\note This function is inlined to actually use Burger::SwapEndian::Load(Word16).
+	\note This function is inlined to actually use SwapEndian::Load(Word16).
 	
-	\sa Burger::SwapEndian::Load(Word16)
+	\sa SwapEndian::Load(Word16)
 
 ***************************************/
 
@@ -2241,9 +2940,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 
 	\return The input with the bytes swapped, no errors are possible.
 
-	\note This function is inlined to actually use Burger::SwapEndian::Load(Word32).
+	\note This function is inlined to actually use SwapEndian::Load(Word32).
 	
-	\sa Burger::SwapEndian::Load(Word32)
+	\sa SwapEndian::Load(Word32)
 
 ***************************************/
 
@@ -2259,9 +2958,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 
 	\return The input with the bytes swapped, no errors are possible.
 
-	\note This function is inlined to actually use Burger::SwapEndian::Load(Word64).
+	\note This function is inlined to actually use SwapEndian::Load(Word64).
 	
-	\sa Burger::SwapEndian::Load(Word64)
+	\sa SwapEndian::Load(Word64)
 
 ***************************************/
 
@@ -2277,9 +2976,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 
 	\return The input with the bytes swapped, no errors are possible.
 
-	\note This function is inlined to actually use Burger::SwapEndian::Load(Word32).
+	\note This function is inlined to actually use SwapEndian::Load(Word32).
 	
-	\sa Burger::SwapEndian::Load(Word32)
+	\sa SwapEndian::Load(Word32)
 
 ***************************************/
 
@@ -2295,9 +2994,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 
 	\return The input with the bytes swapped, no errors are possible.
 
-	\note This function is inlined to actually use Burger::SwapEndian::Load(Word32).
+	\note This function is inlined to actually use SwapEndian::Load(Word32).
 	
-	\sa Burger::SwapEndian::Load(Word32)
+	\sa SwapEndian::Load(Word32)
 
 ***************************************/
 
@@ -2313,9 +3012,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\return The value with the bytes swapped.
 	
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::Load(const Word16 *).
+	\note This function is inlined to actually use SwapEndian::Load(const Word16 *).
 
-	\sa Burger::SwapEndian::Load(const Word16*)
+	\sa SwapEndian::Load(const Word16*)
 
 ***************************************/
 
@@ -2331,9 +3030,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\return The value with the bytes swapped.
 	
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::Load(const Word32 *).
+	\note This function is inlined to actually use SwapEndian::Load(const Word32 *).
 
-	\sa Burger::SwapEndian::Load(const Word32*)
+	\sa SwapEndian::Load(const Word32*)
 
 ***************************************/
 
@@ -2349,11 +3048,67 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\return The value with the bytes swapped.
 	
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::Load(const Word64 *).
+	\note This function is inlined to actually use SwapEndian::Load(const Word64 *).
 
-	\sa Burger::SwapEndian::Load(const Word64*)
+	\sa SwapEndian::Load(const Word64*)
 
 ***************************************/
+
+
+/*! ************************************
+
+	\fn Burger::SwapEndian::Store(Int16 *pOutput,Int16 iInput);
+	\brief Reverse the endian of a 16 bit signed integer and store it
+
+	Given a 16 bit value, swap the bytes
+	so that 0x1234 becomes 0x3412 and store it
+
+	\param pOutput Pointer to where to store the data.
+	\param iInput The value to byte swap and store.
+	
+	\note \ref NULL pointers are illegal and will page fault.
+	\note This function is inlined to actually use SwapEndian::Store(Word16 *,Word16).
+
+	\sa SwapEndian::Store(Word16*,Word16)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::SwapEndian::Store(Int32 *pOutput,Int32 iInput);
+	\brief Reverse the endian of a 32 bit signed integer and store it
+
+	Given a 32 bit value, swap the bytes
+	so that 0x12345678 becomes 0x78563412 and store it
+
+	\param pOutput Pointer to where to store the data.
+	\param iInput The value to byte swap and store.
+	
+	\note \ref NULL pointers are illegal and will page fault.
+	\note This function is inlined to actually use SwapEndian::Store(Word32 *,Word32).
+
+	\sa SwapEndian::Store(Word32*,Word32)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::SwapEndian::Store(Int64 *pOutput,Int64 iInput);
+	\brief Reverse the endian of a 64 bit signed integer and store it
+
+	Given a 64 bit value, swap the bytes
+	so that 0x123456789ABCDEF0 becomes 0xF0DEBC9A78563412 and store it
+
+	\param pOutput Pointer to where to store the data.
+	\param iInput The value to byte swap and store.
+	
+	\note \ref NULL pointers are illegal and will page fault.
+	\note This function is inlined to actually use SwapEndian::Store(Word64 *,Word64).
+
+	\sa SwapEndian::Store(Word64*,Word64)
+
+***************************************/
+
 
 /*! ************************************
 
@@ -2367,9 +3122,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\return The value with the bytes swapped.
 	
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::Load(const Word32 *).
+	\note This function is inlined to actually use SwapEndian::Load(const Word32 *).
 
-	\sa Burger::SwapEndian::Load(const Word32*)
+	\sa SwapEndian::Load(const Word32*)
 
 ***************************************/
 
@@ -2385,9 +3140,46 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\return The value with the bytes swapped.
 	
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::Load(const Word32 *).
+	\note This function is inlined to actually use SwapEndian::Load(const Word32 *).
 
-	\sa Burger::SwapEndian::Load(const Word32*)
+	\sa SwapEndian::Load(const Word32*)
+
+***************************************/
+
+
+/*! ************************************
+
+	\fn Burger::SwapEndian::Store(Word *pOutput,Word uInput);
+	\brief Reverse the endian of a 32 bit unsigned integer
+
+	Given a 32 bit value, swap the bytes
+	so that 0x12345678 becomes 0x78563412 and store it
+
+	\param pOutput Pointer to a value to store
+	\param uInput The value to endian convert
+	
+	\note \ref NULL pointers are illegal and will page fault.
+	\note This function is inlined to actually use SwapEndian::Store(Word32 *,Word32).
+
+	\sa SwapEndian::Store(Word32*,Word32)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::SwapEndian::Store(Int *pOutput,Int iInput);
+	\brief Reverse the endian of a 32 bit signed integer
+
+	Given a 32 bit value, swap the bytes
+	so that 0x12345678 becomes 0x78563412 and store it
+
+	\param pOutput Pointer to a value to store
+	\param iInput The value to endian convert
+	
+	\note \ref NULL pointers are illegal and will page fault.
+	\note This function is inlined to actually use SwapEndian::Store(Word32 *,Word32).
+
+	\sa SwapEndian::Store(Word32*,Word32)
 
 ***************************************/
 
@@ -2404,9 +3196,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\return The value with the bytes swapped.
 	
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::LoadAny(const Word16 *).
+	\note This function is inlined to actually use SwapEndian::LoadAny(const Word16 *).
 
-	\sa Burger::SwapEndian::LoadAny(const Word16*)
+	\sa SwapEndian::LoadAny(const Word16*)
 
 ***************************************/
 
@@ -2423,9 +3215,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\return The value with the bytes swapped.
 	
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::LoadAny(const Word32 *).
+	\note This function is inlined to actually use SwapEndian::LoadAny(const Word32 *).
 
-	\sa Burger::SwapEndian::LoadAny(const Word32*)
+	\sa SwapEndian::LoadAny(const Word32*)
 
 ***************************************/
 
@@ -2442,11 +3234,70 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\return The value with the bytes swapped.
 	
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::LoadAny(const Word64 *).
+	\note This function is inlined to actually use SwapEndian::LoadAny(const Word64 *).
 
-	\sa Burger::SwapEndian::LoadAny(const Word64*)
+	\sa SwapEndian::LoadAny(const Word64*)
 
 ***************************************/
+
+
+/*! ************************************
+
+	\fn Burger::SwapEndian::StoreAny(Int16 *pOutput,Int16 iInput);
+	\brief Reverse the endian of a 16 bit signed integer with byte alignment.
+
+	Given a 16 bit value, swap the bytes
+	so that 0x1234 becomes 0x3412 and store it. The pointer does not have
+	to be 16-bit aligned. \ref Word8 alignment is acceptable.
+
+	\param pOutput Pointer to a value to endian convert
+	\param iInput The value with the bytes swapped.
+	
+	\note \ref NULL pointers are illegal and will page fault.
+	\note This function is inlined to actually use SwapEndian::StoreAny(Word16 *,Word16).
+
+	\sa SwapEndian::StoreAny(Word16*,Word16)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::SwapEndian::StoreAny(Int32 *pOutput,Int32 iInput);
+	\brief Reverse the endian of a 32 bit signed integer with byte alignment.
+
+	Given a 32 bit value, swap the bytes
+	so that 0x12345678 becomes 0x78563412 and store it. The pointer does not have
+	to be 32-bit aligned. \ref Word8 alignment is acceptable.
+
+	\param pOutput Pointer to a value to endian convert
+	\param iInput The value with the bytes swapped.
+	
+	\note \ref NULL pointers are illegal and will page fault.
+	\note This function is inlined to actually use SwapEndian::StoreAny(Word32 *,Word32).
+
+	\sa SwapEndian::StoreAny(Word32*,Word32)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::SwapEndian::StoreAny(Int64 *pOutput,Int64 iInput);
+	\brief Reverse the endian of a 64 bit signed integer with byte alignment.
+
+	Given a 64 bit value, swap the bytes
+	so that 0x123456789ABCDEF0 becomes 0xF0DEBC9A78563412 and store it. The pointer does not have
+	to be 64-bit aligned. \ref Word8 alignment is acceptable.
+
+	\param pOutput Pointer to a value to endian convert
+	\param iInput The value with the bytes swapped.
+	
+	\note \ref NULL pointers are illegal and will page fault.
+	\note This function is inlined to actually use SwapEndian::StoreAny(Word64 *,Word64).
+
+	\sa SwapEndian::StoreAny(Word64*,Word64)
+
+***************************************/
+
 
 /*! ************************************
 
@@ -2461,9 +3312,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\return The value with the bytes swapped.
 	
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::LoadAny(const Word32 *).
+	\note This function is inlined to actually use SwapEndian::LoadAny(const Word32 *).
 
-	\sa Burger::SwapEndian::LoadAny(const Word32*)
+	\sa SwapEndian::LoadAny(const Word32*)
 
 ***************************************/
 
@@ -2480,11 +3331,51 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\return The value with the bytes swapped.
 	
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::LoadAny(const Word32 *).
+	\note This function is inlined to actually use SwapEndian::LoadAny(const Word32 *).
 
-	\sa Burger::SwapEndian::LoadAny(const Word32*)
+	\sa SwapEndian::LoadAny(const Word32*)
 
 ***************************************/
+
+
+/*! ************************************
+
+	\fn Burger::SwapEndian::StoreAny(Word *pOutput,Word uInput);
+	\brief Reverse the endian of a 32 bit unsigned integer with byte alignment.
+
+	Given a 32 bit value, swap the bytes
+	so that 0x12345678 becomes 0x78563412 and store it. The pointer does not have
+	to be 32-bit aligned. \ref Word8 alignment is acceptable.
+
+	\param pOutput Pointer to a value to endian convert
+	\param uInput The value with the bytes swapped.
+	
+	\note \ref NULL pointers are illegal and will page fault.
+	\note This function is inlined to actually use SwapEndian::StoreAny(Word32 *,Word32).
+
+	\sa SwapEndian::StoreAny(Word32*,Word32)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::SwapEndian::StoreAny(Int *pOutput,Int iInput);
+	\brief Reverse the endian of a 32 bit signed integer with byte alignment.
+
+	Given a 32 bit value, swap the bytes
+	so that 0x12345678 becomes 0x78563412 and store it. The pointer does not have
+	to be 32-bit aligned. \ref Word8 alignment is acceptable.
+
+	\param pOutput Pointer to a value to endian convert
+	\param iInput The value with the bytes swapped.
+	
+	\note \ref NULL pointers are illegal and will page fault.
+	\note This function is inlined to actually use SwapEndian::StoreAny(Word32 *,Word32).
+
+	\sa SwapEndian::StoreAny(Word32*,Word32)
+
+***************************************/
+
 
 /*! ************************************
 
@@ -2497,9 +3388,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\param pInput Pointer to the value to endian convert
 
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::Fixup(Word16 *).
+	\note This function is inlined to actually use SwapEndian::Fixup(Word16 *).
 
-	\sa Burger::SwapEndian::Fixup(Word16 *)
+	\sa SwapEndian::Fixup(Word16 *)
 
 ***************************************/
 
@@ -2514,9 +3405,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\param pInput Pointer to the value to endian convert
 
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::Fixup(Word32 *).
+	\note This function is inlined to actually use SwapEndian::Fixup(Word32 *).
 
-	\sa Burger::SwapEndian::Fixup(Word32 *)
+	\sa SwapEndian::Fixup(Word32 *)
 
 ***************************************/
 
@@ -2531,9 +3422,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\param pInput Pointer to the value to endian convert
 
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::Fixup(Word64 *).
+	\note This function is inlined to actually use SwapEndian::Fixup(Word64 *).
 
-	\sa Burger::SwapEndian::Fixup(Word64 *)
+	\sa SwapEndian::Fixup(Word64 *)
 
 ***************************************/
 
@@ -2548,9 +3439,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\param pInput Pointer to the value to endian convert
 
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::Fixup(Word32 *).
+	\note This function is inlined to actually use SwapEndian::Fixup(Word32 *).
 
-	\sa Burger::SwapEndian::Fixup(Word32 *)
+	\sa SwapEndian::Fixup(Word32 *)
 
 ***************************************/
 
@@ -2565,9 +3456,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\param pInput Pointer to the value to endian convert
 
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::Fixup(Word32 *).
+	\note This function is inlined to actually use SwapEndian::Fixup(Word32 *).
 
-	\sa Burger::SwapEndian::Fixup(Word32 *)
+	\sa SwapEndian::Fixup(Word32 *)
 
 ***************************************/
 
@@ -2582,9 +3473,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\param pInput Pointer to the value to endian convert
 
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::Fixup(Word32 *).
+	\note This function is inlined to actually use SwapEndian::Fixup(Word32 *).
 
-	\sa Burger::SwapEndian::Fixup(Word32 *)
+	\sa SwapEndian::Fixup(Word32 *)
 
 ***************************************/
 
@@ -2599,9 +3490,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\param pInput Pointer to the value to endian convert
 
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::Fixup(Word64 *).
+	\note This function is inlined to actually use SwapEndian::Fixup(Word64 *).
 
-	\sa Burger::SwapEndian::Fixup(Word64 *)
+	\sa SwapEndian::Fixup(Word64 *)
 
 ***************************************/
 
@@ -2617,9 +3508,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\param pInput Pointer to the value to endian convert
 
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::FixupAny(Word16 *).
+	\note This function is inlined to actually use SwapEndian::FixupAny(Word16 *).
 
-	\sa Burger::SwapEndian::FixupAny(Word16 *)
+	\sa SwapEndian::FixupAny(Word16 *)
 
 ***************************************/
 
@@ -2635,9 +3526,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\param pInput Pointer to the value to endian convert
 
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::FixupAny(Word32 *).
+	\note This function is inlined to actually use SwapEndian::FixupAny(Word32 *).
 
-	\sa Burger::SwapEndian::FixupAny(Word32 *)
+	\sa SwapEndian::FixupAny(Word32 *)
 
 ***************************************/
 
@@ -2653,9 +3544,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\param pInput Pointer to the value to endian convert
 
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::FixupAny(Word64 *).
+	\note This function is inlined to actually use SwapEndian::FixupAny(Word64 *).
 
-	\sa Burger::SwapEndian::FixupAny(Word64 *)
+	\sa SwapEndian::FixupAny(Word64 *)
 
 ***************************************/
 
@@ -2671,9 +3562,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\param pInput Pointer to the value to endian convert
 
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::FixupAny(Word32 *).
+	\note This function is inlined to actually use SwapEndian::FixupAny(Word32 *).
 
-	\sa Burger::SwapEndian::FixupAny(Word32 *)
+	\sa SwapEndian::FixupAny(Word32 *)
 
 ***************************************/
 
@@ -2689,9 +3580,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\param pInput Pointer to the value to endian convert
 
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::FixupAny(Word32 *).
+	\note This function is inlined to actually use SwapEndian::FixupAny(Word32 *).
 
-	\sa Burger::SwapEndian::FixupAny(Word32 *)
+	\sa SwapEndian::FixupAny(Word32 *)
 
 ***************************************/
 
@@ -2707,9 +3598,9 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\param pInput Pointer to the value to endian convert
 
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::FixupAny(Word32 *).
+	\note This function is inlined to actually use SwapEndian::FixupAny(Word32 *).
 
-	\sa Burger::SwapEndian::FixupAny(Word32 *)
+	\sa SwapEndian::FixupAny(Word32 *)
 
 ***************************************/
 
@@ -2725,8 +3616,8 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 	\param pInput Pointer to the value to endian convert
 
 	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use Burger::SwapEndian::FixupAny(Word64 *).
+	\note This function is inlined to actually use SwapEndian::FixupAny(Word64 *).
 
-	\sa Burger::SwapEndian::FixupAny(Word64 *)
+	\sa SwapEndian::FixupAny(Word64 *)
 
 ***************************************/

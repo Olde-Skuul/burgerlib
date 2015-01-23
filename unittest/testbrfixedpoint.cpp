@@ -235,6 +235,94 @@ static Word TestBitReverse_64(void)
 
 /***************************************
  
+	Test Burger::BitSetCount(Word32)
+ 
+***************************************/
+
+static const WordTest32_t BitSetCount_32Table[] = {
+	{0x00000000U,0},
+	{0x00000001U,1},
+	{0x00000002U,1},
+	{0x00000003U,2},
+	{0x00000004U,1},
+	{0x00000005U,2},
+	{0x00002000U,1},
+	{0x00002001U,2},
+	{0x20000001U,2},
+	{0x40000000U,1},
+	{0x40000001U,2},
+	{0x40004020U,3},
+	{0x7FFFFFFFU,31},
+	{0x80000000U,1},
+	{0x80000001U,2},
+	{0xFFFFFFFFU,32},
+	{0x12345678U,13}
+};
+
+static Word TestBitSetCount_32(void)
+{
+	Word uFailure = FALSE;
+	const WordTest32_t *pWork = BitSetCount_32Table;
+	WordPtr uCount = BURGER_ARRAYSIZE(BitSetCount_32Table);
+	do {
+		Word uReturn = Burger::BitSetCount(pWork->m_uInput);
+		Word uToTest = static_cast<Word>(pWork->m_uOutput);
+		Word uTest = uReturn!=uToTest;
+		uFailure |= uTest;
+		ReportFailure("Burger::BitSetCount(0x%08X) = 0x%08X, expected 0x%08X",uTest,pWork->m_uInput,uReturn,uToTest);
+		++pWork;
+	} while (--uCount);
+	return uFailure;
+}
+
+
+/***************************************
+ 
+	Test Burger::BitSetCount(Word64)
+ 
+***************************************/
+
+static const WordTest64_t BitSetCount_64Table[] = {
+	{0x0000000000000000ULL,0},
+	{0x0000000000000001ULL,1},
+	{0x0000000000000002ULL,1},
+	{0x0000000000000003ULL,2},
+	{0x0000000000000004ULL,1},
+	{0x0000000000000005ULL,2},
+	{0x0000000000002000ULL,1},
+	{0x0000000000002001ULL,2},
+	{0x2000000000000001ULL,2},
+	{0x4000000000000000ULL,1},
+	{0x4000000000000001ULL,2},
+	{0x4000000000004020ULL,3},
+	{0x7FFFFFFFFFFFFFFFULL,63},
+	{0x8000000000000000ULL,1},
+	{0x8000000000000001ULL,2},
+	{0xFFFFFFFFFFFFFFFFULL,64},
+	{0x1234567890ABCDEFULL,32}
+};
+
+static Word TestBitSetCount_64(void)
+{
+	Word uFailure = FALSE;
+	const WordTest64_t *pWork = BitSetCount_64Table;
+	WordPtr uCount = BURGER_ARRAYSIZE(BitSetCount_64Table);
+	do {
+		Word uReturn = Burger::BitSetCount(pWork->m_uInput);
+		Word uToTest = static_cast<Word>(pWork->m_uOutput);
+		Word uTest = uReturn!=uToTest;
+		uFailure |= uTest;
+		if (uTest) {
+			Burger::NumberStringHex Input(pWork->m_uInput);
+			ReportFailure("Burger::BitSetCount(0x%s) = 0x%08X, expected 0x%08X",uTest,Input.GetPtr(),uReturn,uToTest);
+		}
+		++pWork;
+	} while (--uCount);
+	return uFailure;
+}
+
+/***************************************
+ 
 	Test Burger::GetLoWord
  
 ***************************************/
@@ -979,6 +1067,8 @@ int BURGER_API TestBrfixedpoint(void)
 	uResult |= TestPowerOf2_64();
 	uResult |= TestBitReverse_32();
 	uResult |= TestBitReverse_64();
+	uResult |= TestBitSetCount_32();
+	uResult |= TestBitSetCount_64();
 	uResult |= TestGetLoWord();
 	uResult |= TestGetHiWord();
 	uResult |= TestIntToFixed();
@@ -1000,24 +1090,5 @@ int BURGER_API TestBrfixedpoint(void)
 	uResult |= TestSqrt32();
 	uResult |= TestSqrtFixedToWord32();
 	uResult |= TestSqrtFixed32();
-
-#if 0
-	char Buffer[256];
-
-	utest = Burger::IntMath::HexIt(utest);
-	Burger::IntMath::HexIt(Buffer,utest);
-	utest32 = Burger::IntMath::UMultiply(utest,utest);
-	itest32 = Burger::IntMath::Multiply(itest,itest);
-	
-	itest = Burger::IntMath::Mul32GetUpper32(itest,itest);
-	itest = Burger::IntMath::Mul32x32To64Div32(itest,itest,3);
-	
-	itest = Burger::FixedMultiply(itest,itest);
-	itest = Burger::FixedDivide(itest,1);
-	itest = Burger::FixedReciprocal(itest);
-	itest = Burger::FixedMath::MultiplySaturate(itest,itest);
-	itest = Burger::FixedMath::DivideSaturate(itest,itest);
-	itest = Burger::FixedMath::CrossProduct2DSign(itest,itest,itest,itest);
-#endif
 	return static_cast<int>(uResult);
 }

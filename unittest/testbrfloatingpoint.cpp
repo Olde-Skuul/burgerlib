@@ -495,6 +495,78 @@ static Word TestAbsDouble(void)
 }
 
 //
+// Test Sign(float)
+//
+
+static const Burger::Word32ToFloat SignFloatArray[][2] = {
+	{{{0x00000000U}},{{0x00000000U}}},	// 0.0f,0.0f
+	{{{0x3F800000U}},{{0x3F800000U}}},	// 1.0f,-1.0f
+	{{{0xBF800000U}},{{0xBF800000U}}},	// -1.0f,-1.0f
+	{{{0x40490CDDU}},{{0x3F800000U}}},	// 3.14141f,-1.0f
+	{{{0xC0490CDDU}},{{0xBF800000U}}},	// -3.14141f,-1.0f
+	{{{0x4640E400U}},{{0x3F800000U}}},	// 12345.0f,-1.0f
+	{{{0xC640E400U}},{{0xBF800000U}}},	// -12345.0f,-1.0f
+	{{{0x7F800000U}},{{0x3F800000U}}},	// Burger::SingleInf,-1.0f
+	{{{0xFF800000U}},{{0xBF800000U}}}	// -Burger::SingleInf,-1.0f,
+};
+
+static Word TestSignFloat(void)
+{
+	const Burger::Word32ToFloat *pWork = SignFloatArray[0];
+	WordPtr i = BURGER_ARRAYSIZE(SignFloatArray);
+	Word uResult = FALSE;
+	do {
+		Burger::Word32ToFloat fTest;
+		fTest.f = Burger::Sign(pWork[0]);
+		Word uFailure = (fTest.w!=pWork[1].w);
+		uResult |= uFailure;
+		if (uFailure) {
+			Burger::NumberStringHex Test(fTest.w);
+			Burger::NumberStringHex Expected(pWork[1].w);
+			ReportFailure("Burger::Sign(float(%g)) = %g 0x%s / Wanted %g 0x%s",uFailure,pWork[0].f,fTest.f,Test.GetPtr(),pWork[1].f,Expected.GetPtr());
+		}
+		pWork+=2;
+	} while (--i);
+	return uResult;
+}
+
+//
+// Test Clamp(float,float,float)
+//
+
+static const Burger::Word32ToFloat ClampFloatArray[][4] = {
+	{{{0x00000000U}},{{0xBF800000U}},{{0x3F800000U}},{{0x00000000U}}},	// 0.0f,-1.0f,1.0f,0.0f
+	{{{0x3F800000U}},{{0xBF800000U}},{{0x3F800000U}},{{0x3F800000U}}},	// 1.0f,-1.0f,1.0f,1.0f
+	{{{0xBF800000U}},{{0xBF800000U}},{{0x3F800000U}},{{0xBF800000U}}},	// -1.0f,-1.0f,1.0f,-1.0f
+	{{{0x40490CDDU}},{{0xBF800000U}},{{0x3F800000U}},{{0x3F800000U}}},	// 3.14141f,-1.0f,1.0f,1.0f
+	{{{0xC0490CDDU}},{{0xBF800000U}},{{0x3F800000U}},{{0xBF800000U}}},	// -3.14141f,-1.0f,1.0f,-1.0f
+	{{{0x4640E400U}},{{0xBF800000U}},{{0x3F800000U}},{{0x3F800000U}}},	// 12345.0f,-1.0f,1.0f,1.0f
+	{{{0xC640E400U}},{{0xBF800000U}},{{0x3F800000U}},{{0xBF800000U}}},	// -12345.0f,-1.0f,1.0f,-1.0f
+	{{{0x7F800000U}},{{0xBF800000U}},{{0x3F800000U}},{{0x3F800000U}}},	// Burger::SingleInf,-1.0f,1.0f,1.0f
+	{{{0xFF800000U}},{{0xBF800000U}},{{0x3F800000U}},{{0xBF800000U}}}	// -Burger::SingleInf,-1.0f,1.0f,-1.0f
+};
+
+static Word TestClampFloat(void)
+{
+	const Burger::Word32ToFloat *pWork = ClampFloatArray[0];
+	WordPtr i = BURGER_ARRAYSIZE(ClampFloatArray);
+	Word uResult = FALSE;
+	do {
+		Burger::Word32ToFloat fTest;
+		fTest.f = Burger::Clamp(pWork[0],pWork[1],pWork[2]);
+		Word uFailure = (fTest.w!=pWork[3].w);
+		uResult |= uFailure;
+		if (uFailure) {
+			Burger::NumberStringHex Test(fTest.w);
+			Burger::NumberStringHex Expected(pWork[3].w);
+			ReportFailure("Burger::Clamp(float(%g),float(%g),float(%g)) = %g 0x%s / Wanted %g 0x%s",uFailure,pWork[0].f,pWork[1].f,pWork[2].f,fTest.f,Test.GetPtr(),pWork[3].f,Expected.GetPtr());
+		}
+		pWork+=4;
+	} while (--i);
+	return uResult;
+}
+
+//
 // Test Sqrt(float)
 //
 
@@ -1249,6 +1321,8 @@ int BURGER_API TestBrfloatingpoint(void)
 	// Test simple floating point operations
 	uTotal |= TestAbsFloat();
 	uTotal |= TestAbsDouble();
+	uTotal |= TestSignFloat();
+	uTotal |= TestClampFloat();
 	uTotal |= TestSqrtFloat();
 	uTotal |= TestFloorFloat();
 	uTotal |= TestFloorDouble();

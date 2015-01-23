@@ -30,6 +30,14 @@
 #include "brmetrowerks.h"
 #endif
 
+#ifndef __BRSNSYSTEMS_H__
+#include "brsnsystems.h"
+#endif
+
+#ifndef __BRXCODE_H__
+#include "brxcode.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 #define	BURGER_PI 3.1415926535897932384626	///< Pretty accurate, eh?
@@ -174,6 +182,8 @@ namespace Burger {
 	extern e8087Rounding BURGER_API Set8087Rounding(e8087Rounding eInput);
 #endif
 
+	float BURGER_INLINE Sqr(float fInput) { return fInput*fInput; }
+	double BURGER_INLINE Sqr(double dInput) { return dInput*dInput; }
 #if defined(BURGER_WATCOM)
 	float BURGER_INLINE Abs(float fInput) { return static_cast<float>(::std::fabs(fInput)); }
 	double BURGER_INLINE Abs(double dInput) { return ::std::fabs(dInput); }
@@ -189,6 +199,11 @@ namespace Burger {
 	double BURGER_INLINE Abs(double dInput) { return fabs(dInput); }
 	float BURGER_INLINE Sqrt(float fInput) { return sqrtf(fInput); }
 	double BURGER_INLINE Sqrt(double dInput) { return sqrt(dInput); }
+#elif defined(BURGER_VITA) && !defined(DOXYGEN)
+	float BURGER_INLINE Abs(float fInput) { return __builtin_fabsf(fInput); }
+	double BURGER_INLINE Abs(double dInput) { return __builtin_fabs(dInput); }
+	float BURGER_INLINE Sqrt(float fInput) { return __builtin_sqrtf(fInput); }
+	double BURGER_INLINE Sqrt(double dInput) { return __builtin_sqrt(dInput); }
 #elif defined(BURGER_METROWERKS) && defined(BURGER_POWERPC)
 	float BURGER_INLINE Abs(float fInput) { return __fabsf(fInput); }
 	double BURGER_INLINE Abs(double dInput) { return __fabs(dInput); }
@@ -267,12 +282,34 @@ namespace Burger {
 	BURGER_INLINE double Interpolate(double dFrom,double dTo,double dFactor) { return ((dTo - dFrom) * dFactor) + dFrom; }
 	BURGER_INLINE float Square(float fInput) { return fInput*fInput; }
 	BURGER_INLINE double Square(double dInput) { return dInput*dInput; }
+#if defined(BURGER_METROWERKS) && defined(BURGER_POWERPC)
+	BURGER_INLINE float Sign(float fInput) { return static_cast<float>(__fsel(fInput,0.5f,-0.5f)+__fsel(-fInput,-0.5f,0.5f)); }
+	BURGER_INLINE double Sign(double dInput) { return __fsel(dInput,0.5f,-0.5f)+__fsel(-dInput,-0.5f,0.5f); }
+#else
 	BURGER_INLINE float Sign(float fInput) { return ((fInput > 0.0f) ? 1.0f : ((fInput < 0.0f) ? -1.0f : 0.0f)); }
 	BURGER_INLINE double Sign(double dInput) { return ((dInput > 0.0) ? 1.0 : ((dInput < 0.0) ? -1.0 : 0.0)); }
+#endif
+#if defined(BURGER_METROWERKS) && defined(BURGER_POWERPC)
+	BURGER_INLINE float Min(float fA,float fB) { return static_cast<float>(__fsel((fA-fB),fB,fA)); }
+	BURGER_INLINE double Min(double dA,double dB) { return __fsel((dA-dB),dB,dA); }
+	BURGER_INLINE float Max(float fA,float fB) { return static_cast<float>(__fsel((fA-fB),fA,fB)); }
+	BURGER_INLINE double Max(double dA,double dB) { return __fsel((dA-dB),dA,dB); }
+#elif defined(BURGER_MACOSX) && defined(BURGER_POWERPC)
+	BURGER_INLINE float Min(float fA,float fB) { float fC=fA-fB; __asm__("fsel %0,%1,%2,%3":"=f" (fA) : "f" (fC),"f"(fB),"f"(fA)); return fA; }
+	BURGER_INLINE double Min(double dA,double dB) { double dC=dA-dB; __asm__("fsel %0,%1,%2,%3":"=f" (dA) : "f" (dC),"f"(dB),"f"(dA)); return dA; }
+	BURGER_INLINE float Max(float fA,float fB) { float fC=fA-fB; __asm__("fsel %0,%1,%2,%3":"=f" (fA) : "f" (fC),"f"(fA),"f"(fB)); return fA; }
+	BURGER_INLINE double Max(double dA,double dB) { double dC=dA-dB; __asm__("fsel %0,%1,%2,%3":"=f" (dA) : "f" (dC),"f"(dA),"f"(dB)); return dA; }
+#elif defined(BURGER_MSVC) && defined(BURGER_AMD64)
+	BURGER_INLINE float Min(float fA,float fB) { return _mm_cvtss_f32(_mm_min_ss(_mm_set_ss(fA),_mm_set_ss(fB))); }
+	BURGER_INLINE double Min(double dA,double dB) { return _mm_cvtsd_f64(_mm_min_sd(_mm_set_sd(dA),_mm_set_sd(dB))); }
+	BURGER_INLINE float Max(float fA,float fB) { return _mm_cvtss_f32(_mm_max_ss(_mm_set_ss(fA),_mm_set_ss(fB))); }
+	BURGER_INLINE double Max(double dA,double dB) { return _mm_cvtsd_f64(_mm_max_sd(_mm_set_sd(dA),_mm_set_sd(dB))); }
+#else
 	BURGER_INLINE float Min(float fA,float fB) { return ((fA < fB) ? fA : fB); }
 	BURGER_INLINE double Min(double dA,double dB) { return ((dA < dB) ? dA : dB); }
 	BURGER_INLINE float Max(float fA,float fB) { return ((fA > fB) ? fA : fB); }
 	BURGER_INLINE double Max(double dA,double dB) { return ((dA > dB) ? dA : dB); }
+#endif
 	BURGER_INLINE float Clamp(float fIn,float fMin,float fMax) { fIn = Max(fIn,fMin); return Min(fIn,fMax); }
 	BURGER_INLINE double Clamp(double dIn,double dMin,double dMax) { dIn = Max(dIn,dMin); return Min(dIn,dMax); }
 	extern Word BURGER_API IsNan(float fInput);

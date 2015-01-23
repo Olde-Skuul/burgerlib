@@ -28,6 +28,13 @@ struct CGPoint;
 struct CGSize;
 struct CGRect;
 struct _opaque_pthread_t;
+@class EAGLContext;
+@class NSObject;
+@class UIView;
+@class UIWindow;
+@class UIImage;
+@class UIImageView;
+@class UIViewController;
 namespace Burger {
 	typedef int sem_t;
 	typedef unsigned int semaphore_t;

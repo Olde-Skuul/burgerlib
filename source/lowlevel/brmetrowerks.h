@@ -18,15 +18,23 @@
 #include "brtypes.h"
 #endif
 
+// Hidden intrinsics 68K and x86
+// C_Compilers_Reference_3.2,pdf page 51
+// __rol(Word16 uInput,Word32 uShift);
+// __rol(Word32 uInput,Word16 uShift);
+// __ror(Word16 uInput,Word16 uShift);
+// __ror(Word32 uInput,Word32 uShift);
+
+
 /* BEGIN */
 #if defined(BURGER_METROWERKS) && !defined(DOXYGEN)
 extern "C" {
 #if defined(BURGER_X86)
-inline long _InterlockedExchange(register long volatile*pOutput,register long lValue) { asm { lock xchg lValue,[pOutput] } return lValue; }
-inline long _InterlockedIncrement(register long volatile*pOutput) { register long lTemp=1; asm { lock xadd [pOutput],lTemp } return lTemp+1; }
-inline long _InterlockedDecrement(register long volatile*pOutput) { register long lTemp=-1; asm { lock xadd [pOutput],lTemp } return lTemp-1; }
-inline long _InterlockedExchangeAdd(register long volatile*pOutput,register long lValue) { asm { lock xadd [pOutput],lValue } return lValue; }
-inline long _InterlockedCompareExchange(register long volatile*pOutput,register long lAfter,register long lBefore) { asm { mov eax,lBefore
+__inline long _InterlockedExchange(register long volatile*pOutput,register long lValue) { asm { lock xchg lValue,[pOutput] } return lValue; }
+__inline long _InterlockedIncrement(register long volatile*pOutput) { register long lTemp=1; asm { lock xadd [pOutput],lTemp } return lTemp+1; }
+__inline long _InterlockedDecrement(register long volatile*pOutput) { register long lTemp=-1; asm { lock xadd [pOutput],lTemp } return lTemp-1; }
+__inline long _InterlockedExchangeAdd(register long volatile*pOutput,register long lValue) { asm { lock xadd [pOutput],lValue } return lValue; }
+__inline long _InterlockedCompareExchange(register long volatile*pOutput,register long lAfter,register long lBefore) { asm { mov eax,lBefore
 	lock xadd [pOutput],lAfter
 	mov lBefore,eax} return lBefore; }
 namespace std {

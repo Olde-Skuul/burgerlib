@@ -553,6 +553,35 @@ __asm__(
 );
 #endif
 
+/*! ************************************
+
+	\fn Burger::Sqr(float fInput);
+	\brief Get the square value of a float
+	
+	Return the squared value of the floating point input. 
+
+	\note -Inf will return +Inf. NaN is undefined
+	
+	\param fInput A valid single precision floating point number.
+	\return The squared value of the input.
+	\sa Sqr(double) 
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Sqr(double dInput);
+	\brief Get the square value of a double
+	
+	Return the squared value of the 64 bit floating point input. 
+
+	\note -Inf will return +Inf. NaN is undefined
+	
+	\param dInput A valid double precision floating point number.
+	\return The squared value of the input.
+	\sa Sqr(float) 
+
+***************************************/
 
 /*! ************************************
 
@@ -575,7 +604,7 @@ __asm__(
 #elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
 #elif (defined(BURGER_X86) || defined(BURGER_AMD64) || (defined(BURGER_MACOSX) && !defined(BURGER_METROWERKS))) && !defined(DOXYGEN)
-#elif defined(BURGER_PS4)
+#elif defined(BURGER_PS4) || defined(BURGER_VITA)
 #else
 float BURGER_API Burger::Abs(float fInput)
 {
@@ -604,7 +633,7 @@ float BURGER_API Burger::Abs(float fInput)
 #elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
 #elif (defined(BURGER_X86) || defined(BURGER_AMD64) || (defined(BURGER_MACOSX) && !defined(BURGER_METROWERKS))) && !defined(DOXYGEN)
-#elif defined(BURGER_PS4)
+#elif defined(BURGER_PS4) || defined(BURGER_VITA)
 #else
 double BURGER_API Burger::Abs(double dInput)
 {
@@ -631,7 +660,7 @@ double BURGER_API Burger::Abs(double dInput)
 #elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
 #elif (defined(BURGER_X86) || defined(BURGER_AMD64) || (defined(BURGER_MACOSX) && !defined(BURGER_METROWERKS))) && !defined(DOXYGEN)
-#elif defined(BURGER_PS4)
+#elif defined(BURGER_PS4) || defined(BURGER_VITA)
 #else
 float BURGER_API Burger::Sqrt(float fInput)
 {
@@ -658,7 +687,7 @@ float BURGER_API Burger::Sqrt(float fInput)
 #elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
 #elif (defined(BURGER_X86) || defined(BURGER_AMD64) || (defined(BURGER_MACOSX) && !defined(BURGER_METROWERKS))) && !defined(DOXYGEN)
-#elif defined(BURGER_PS4)
+#elif defined(BURGER_PS4) || defined(BURGER_VITA)
 #else
 double BURGER_API Burger::Sqrt(double dInput)
 {

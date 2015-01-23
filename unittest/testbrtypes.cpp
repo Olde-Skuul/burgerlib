@@ -14,6 +14,7 @@
 ***************************************/
 
 #include "testbrtypes.h"
+#include "common.h"
 #include <stdio.h>
 
 #if defined(BURGER_WATCOM)
@@ -34,7 +35,7 @@
 // since padding is wasted space
 //
 
-struct aligntest {
+struct Aligntest_t {
 	Int8 m_0;					// Initial value
 	Int8 BURGER_ALIGN(m_16,16);	// Should be at offset 16
 	Int8 m_17;					// Offset 17
@@ -49,10 +50,15 @@ struct aligntest {
 	Int32 m_56;					// Offset 56
 };
 
+union Endiantest_t {
+	Word32 m_uWord;
+	Word8 m_uBytes[4];
+};
 
 int BURGER_API TestBrtypes(void)
 {
-	int iError = 0;
+	Word uFailure = 0;
+	Word uTest;
 
 	printf("Testing macros\n");
 
@@ -60,21 +66,39 @@ int BURGER_API TestBrtypes(void)
 	// Endian macros
 	//
 
-#if defined(BURGER_BIGENDIAN)
-	printf("BURGER_BIGENDIAN is defined\n");
-#endif
-#if defined(BURGER_LITTLEENDIAN)
-	printf("BURGER_LITTLEENDIAN is defined\n");
-#endif
-
 #if defined(BURGER_LITTLEENDIAN) && defined(BURGER_BIGENDIAN)
 	printf("Error: Both BURGER_LITTLEENDIAN and BURGER_BIGENDIAN are defined!\n");
-	iError = 10;
+	uFailure = 10;
 #endif
 
 #if !defined(BURGER_LITTLEENDIAN) && !defined(BURGER_BIGENDIAN)
 	printf("Error: Neither BURGER_LITTLEENDIAN or BURGER_BIGENDIAN are defined!\n");
-	iError = 10;
+	uFailure = 10;
+#endif
+
+	Endiantest_t EndianTest;
+	EndianTest.m_uWord = 0x12345678U;
+
+#if defined(BURGER_BIGENDIAN)
+	uTest = (EndianTest.m_uBytes[0] == 0x78);
+	uFailure |= uTest;
+	ReportFailure("BURGER_BIGENDIAN was defined on a Little endian machine!",uTest);
+#endif
+#if defined(BURGER_LITTLEENDIAN)
+	uTest = (EndianTest.m_uBytes[0] == 0x12);
+	uFailure |= uTest;
+	ReportFailure("BURGER_LITTLEENDIAN was defined on a Big endian machine!",uTest);
+#endif
+
+	// Display the debug/release macro
+
+#if defined(NDEBUG) && defined(_DEBUG)
+	printf("Error: Both NDEBUG and _DEBUG are defined!\n");
+	uFailure = 10;
+#endif
+#if !defined(NDEBUG) && !defined(_DEBUG)
+	printf("Error: Neither NDEBUG or _DEBUG are defined!\n");
+	uFailure = 10;
 #endif
 
 #if defined(NDEBUG)
@@ -83,113 +107,109 @@ int BURGER_API TestBrtypes(void)
 #if defined(_DEBUG)
 	printf("_DEBUG is defined\n");
 #endif
-#if defined(NDEBUG) && defined(_DEBUG)
-	printf("Error: Both NDEBUG and _DEBUG are defined!\n");
-	iError = 10;
-#endif
-#if !defined(NDEBUG) && !defined(_DEBUG)
-	printf("Error: Neither NDEBUG or _DEBUG are defined!\n");
-	iError = 10;
-#endif
 
 	//
 	// Compiler macros
 	//
 
-	int iTest = 0;
+	uTest = 0;
 #if defined(BURGER_WATCOM)
 	printf("BURGER_WATCOM is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_MRC)
-	printf("BURGER_WATCOM is defined\n");
-	++iTest;
+	printf("BURGER_MRC is defined\n");
+	++uTest;
 #endif
 #if defined(BURGER_APPLESC)
-	printf("BURGER_WATCOM is defined\n");
-	++iTest;
+	printf("BURGER_APPLESC is defined\n");
+	++uTest;
 #endif
 #if defined(BURGER_INTELCOMPILER)
 	printf("BURGER_INTELCOMPILER is defined\n");
-	++iTest;	
+	++uTest;	
 #endif
 #if defined(BURGER_SNSYSTEMS)
 	printf("BURGER_SNSYSTEMS is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_METROWERKS)
 	printf("BURGER_METROWERKS is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_MSVC)
 	printf("BURGER_MSVC is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_GNUC)
 	printf("BURGER_GNUC is defined\n");
-	++iTest;
+	++uTest;
 #endif
-	if (iTest!=1) {
+	if (uTest>=2) {
 		printf("Multiple compilers have been defined!\n");
-		iError = 10;
+		uFailure = 10;
 	}
-	if (iTest==0) {
+	if (uTest==0) {
 		printf("Unknown compiler detected!\n");
-		iError = 10;
+		uFailure = 10;
 	}
 	
 	// CPU macros
-	iTest = 0;
+	uTest = 0;
 #if defined(BURGER_68K)
 	printf("BURGER_68K is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_POWERPC)
 	printf("BURGER_POWERPC is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_POWERPC64)
 	printf("BURGER_POWERPC64 is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_ARM)
 	printf("BURGER_ARM is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_X86)
 	printf("BURGER_X86 is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_AMD64)
 	printf("BURGER_AMD64 is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_MIPS)
 	printf("BURGER_MIPS is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_GEKKO)
 	printf("BURGER_GEKKO is defined\n");
-	++iTest;
+	++uTest;
 #endif
+
+// This is an enhancement, not a CPU type, so it's okay to
+// be defined with a CPU type
+
 #if defined(BURGER_64BITCPU)
 	printf("BURGER_64BITCPU is defined\n");
 #endif
-	if (iTest!=1) {
+	if (uTest!=1) {
 		printf("Multiple CPUs have been defined!\n");
-		iError = 10;
+		uFailure = 10;
 	}
-	if (iTest==0) {
+	if (uTest==0) {
 		printf("Unknown CPU detected!\n");
-		iError = 10;
+		uFailure = 10;
 	}
 
-	// Platform macros
+// Platform macros
 	
-	iTest = 0;
+	uTest = 0;
 #if defined(BURGER_MSDOS)
 	printf("BURGER_MSDOS is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(__DOS4G__)
 	printf("__DOS4G__ is defined\n");
@@ -200,11 +220,11 @@ int BURGER_API TestBrtypes(void)
 
 #if defined(BURGER_WIN32)
 	printf("BURGER_WIN32 is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_WIN64)
 	printf("BURGER_WIN64 is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_WINDOWS)
 	printf("BURGER_WINDOWS is defined\n");
@@ -212,16 +232,16 @@ int BURGER_API TestBrtypes(void)
 
 #if defined(BURGER_BEOS)
 	printf("BURGER_BEOS is defined\n");
-	++iTest;
+	++uTest;
 #endif
 
 #if defined(BURGER_MAC)
 	printf("BURGER_MAC is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_MACOSX)
 	printf("BURGER_MACOSX is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_MACOS)
 	printf("BURGER_MACOS is defined\n");
@@ -242,63 +262,78 @@ int BURGER_API TestBrtypes(void)
 
 #if defined(BURGER_IOS)
 	printf("BURGER_IOS is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_ANDROID)
 	printf("BURGER_ANDROID is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_NGAGE)
 	printf("BURGER_NGAGE is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_SYMBIAN)
 	printf("BURGER_SYMBIAN is defined\n");
-	++iTest;
+	++uTest;
 #endif
-
+#if defined(BURGER_OUYA)
+	printf("BURGER_OUYA is defined\n");
+	++uTest;
+#endif
+#if defined(BURGER_SHIELD)
+	printf("BURGER_SHIELD is defined\n");
+	++uTest;
+#endif
 
 #if defined(BURGER_XBOX)
 	printf("BURGER_XBOX is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_XBOX360)
 	printf("BURGER_XBOX360 is defined\n");
-	++iTest;
+	++uTest;
+#endif
+#if defined(BURGER_XBOXONE)
+	printf("BURGER_XBOXONE is defined\n");
+	++uTest;
 #endif
 
 #if defined(BURGER_PS2)
 	printf("BURGER_PS2 is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_PS3)
 	printf("BURGER_PS3 is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_PS4)
 	printf("BURGER_PS4 is defined\n");
-	++iTest;
+	++uTest;
+#endif
+#if defined(BURGER_VITA)
+	printf("BURGER_VITA is defined\n");
+	++uTest;
 #endif
 
 #if defined(BURGER_GAMECUBE)
 	printf("BURGER_GAMECUBE is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_WII)
 	printf("BURGER_WII is defined\n");
-	++iTest;
+	++uTest;
 #endif
 #if defined(BURGER_DS)
 	printf("BURGER_DS is defined\n");
-	++iTest;
+	++uTest;
 #endif
-	if (iTest!=1) {
+	if (uTest>=2) {
 		printf("Multiple Platforms have been defined!\n");
-		iError = 10;
+		uFailure = 10;
 	}
-	if (iTest==0) {
+	if (uTest==0) {
 		printf("Unknown Platform detected!\n");
-		iError = 10;
+		uFailure = 10;
 	}
 
 	// Display standard macros
@@ -342,36 +377,111 @@ int BURGER_API TestBrtypes(void)
 #if defined(BURGER_NO_USING_NAMESPACE)
 	printf("BURGER_NO_USING_NAMESPACE is defined\n");
 #endif
+#if defined(BURGER_OPENGL_SUPPORTED)
+	printf("BURGER_OPENGL_SUPPORTED is defined\n");
+#endif
 
 	// Test structure alignment
 
-	if ((BURGER_OFFSETOF(aligntest,m_0)!=0) ||
-		(BURGER_OFFSETOF(aligntest,m_16)!=16) ||
-		(BURGER_OFFSETOF(aligntest,m_17)!=17) ||
-		(BURGER_OFFSETOF(aligntest,m_20)!=20) ||
-		(BURGER_OFFSETOF(aligntest,m_21)!=21) ||
-		(BURGER_OFFSETOF(aligntest,m_32)!=32) ||
-		(BURGER_OFFSETOF(aligntest,m_33)!=33) ||
-		(BURGER_OFFSETOF(aligntest,m_40)!=40) ||
-		(BURGER_OFFSETOF(aligntest,m_48)!=48) ||
-		(BURGER_OFFSETOF(aligntest,m_50)!=50) ||
-		(BURGER_OFFSETOF(aligntest,m_52)!=52) ||
-		(BURGER_OFFSETOF(aligntest,m_56)!=56)) {
-		printf("Offset m_0 = %u\n",static_cast<Word>(BURGER_OFFSETOF(aligntest,m_0)));
-		printf("Offset m_16 = %u (align 16)\n",static_cast<Word>(BURGER_OFFSETOF(aligntest,m_16)));
-		printf("Offset m_17 = %u\n",static_cast<Word>(BURGER_OFFSETOF(aligntest,m_17)));
-		printf("Offset m_20 = %u (align 4)\n",static_cast<Word>(BURGER_OFFSETOF(aligntest,m_20)));
-		printf("Offset m_21 = %u\n",static_cast<Word>(BURGER_OFFSETOF(aligntest,m_21)));
-		printf("Offset m_32 = %u (align 16)\n",static_cast<Word>(BURGER_OFFSETOF(aligntest,m_32)));
-		printf("Offset m_33 = %u\n",static_cast<Word>(BURGER_OFFSETOF(aligntest,m_33)));
-		printf("Offset m_40 = %u (Int64)\n",static_cast<Word>(BURGER_OFFSETOF(aligntest,m_40)));
-		printf("Offset m_48 = %u\n",static_cast<Word>(BURGER_OFFSETOF(aligntest,m_48)));
-		printf("Offset m_50 = %u (Int16)\n",static_cast<Word>(BURGER_OFFSETOF(aligntest,m_50)));
-		printf("Offset m_52 = %u\n",static_cast<Word>(BURGER_OFFSETOF(aligntest,m_52)));
-		printf("Offset m_56 = %u (Int32)\n",static_cast<Word>(BURGER_OFFSETOF(aligntest,m_56)));
-		iError = 10;
+	if ((BURGER_OFFSETOF(Aligntest_t,m_0)!=0) ||
+		(BURGER_OFFSETOF(Aligntest_t,m_16)!=16) ||
+		(BURGER_OFFSETOF(Aligntest_t,m_17)!=17) ||
+		(BURGER_OFFSETOF(Aligntest_t,m_20)!=20) ||
+		(BURGER_OFFSETOF(Aligntest_t,m_21)!=21) ||
+		(BURGER_OFFSETOF(Aligntest_t,m_32)!=32) ||
+		(BURGER_OFFSETOF(Aligntest_t,m_33)!=33) ||
+		(BURGER_OFFSETOF(Aligntest_t,m_40)!=40) ||
+		(BURGER_OFFSETOF(Aligntest_t,m_48)!=48) ||
+		(BURGER_OFFSETOF(Aligntest_t,m_50)!=50) ||
+		(BURGER_OFFSETOF(Aligntest_t,m_52)!=52) ||
+		(BURGER_OFFSETOF(Aligntest_t,m_56)!=56)) {
+		printf("Offset m_0 = %u\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_0)));
+		printf("Offset m_16 = %u (align 16)\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_16)));
+		printf("Offset m_17 = %u\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_17)));
+		printf("Offset m_20 = %u (align 4)\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_20)));
+		printf("Offset m_21 = %u\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_21)));
+		printf("Offset m_32 = %u (align 16)\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_32)));
+		printf("Offset m_33 = %u\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_33)));
+		printf("Offset m_40 = %u (Int64)\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_40)));
+		printf("Offset m_48 = %u\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_48)));
+		printf("Offset m_50 = %u (Int16)\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_50)));
+		printf("Offset m_52 = %u\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_52)));
+		printf("Offset m_56 = %u (Int32)\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_56)));
+		uFailure = 10;
 	} else {
 		printf("Structure alignment test passed\n");
 	}
-	return iError;
+
+	//
+	// Test default data chunk sizes
+	//
+
+	if (sizeof(Word8)!=1) {
+		ReportFailure("sizeof(Word8) is %u instead of 1.",TRUE,static_cast<Word>(sizeof(Word8)));
+		uFailure = 10;
+	}
+	if (sizeof(Int8)!=1) {
+		ReportFailure("sizeof(Int8) is %u instead of 1.",TRUE,static_cast<Word>(sizeof(Int8)));
+		uFailure = 10;
+	}
+
+	if (sizeof(Word16)!=2) {
+		ReportFailure("sizeof(Word16) is %u instead of 2.",TRUE,static_cast<Word>(sizeof(Word16)));
+		uFailure = 10;
+	}
+	if (sizeof(Int16)!=2) {
+		ReportFailure("sizeof(Int16) is %u instead of 2.",TRUE,static_cast<Word>(sizeof(Int16)));
+		uFailure = 10;
+	}
+
+	if (sizeof(Word32)!=4) {
+		ReportFailure("sizeof(Word32) is %u instead of 4.",TRUE,static_cast<Word>(sizeof(Word32)));
+		uFailure = 10;
+	}
+	if (sizeof(Int32)!=4) {
+		ReportFailure("sizeof(Int32) is %u instead of 4.",TRUE,static_cast<Word>(sizeof(Int32)));
+		uFailure = 10;
+	}
+
+	if (sizeof(Word64)!=8) {
+		ReportFailure("sizeof(Word64) is %u instead of 8.",TRUE,static_cast<Word>(sizeof(Word64)));
+		uFailure = 10;
+	}
+	if (sizeof(Int64)!=8) {
+		ReportFailure("sizeof(Int64) is %u instead of 8.",TRUE,static_cast<Word>(sizeof(Int64)));
+		uFailure = 10;
+	}
+
+	if (sizeof(void *)!=sizeof(WordPtr)) {
+		ReportFailure("sizeof(void *) is %u instead of sizeof(WordPtr).",TRUE,static_cast<Word>(sizeof(void *)));
+		uFailure = 10;
+	}
+
+	if (sizeof(Bool)!=1) {
+		ReportFailure("sizeof(Bool) is %u instead of 1.",TRUE,static_cast<Word>(sizeof(Bool)));
+		uFailure = 10;
+	}
+	if (sizeof(Frac32)!=4) {
+		ReportFailure("sizeof(Frac32) is %u instead of 4.",TRUE,static_cast<Word>(sizeof(Frac32)));
+		uFailure = 10;
+	}
+	if (sizeof(Fixed32)!=4) {
+		ReportFailure("sizeof(Fixed32) is %u instead of 4.",TRUE,static_cast<Word>(sizeof(Fixed32)));
+		uFailure = 10;
+	}
+	if (sizeof(Word)!=4) {
+		ReportFailure("sizeof(Word) is %u instead of 4.",TRUE,static_cast<Word>(sizeof(Word)));
+		uFailure = 10;
+	}
+	if (sizeof(Int)!=4) {
+		ReportFailure("sizeof(Int) is %u instead of 4.",TRUE,static_cast<Word>(sizeof(Int)));
+		uFailure = 10;
+	}
+
+	if (sizeof(Vector_128)!=16) {
+		ReportFailure("sizeof(Vector_128) is %u instead of 16.",TRUE,static_cast<Word>(sizeof(Vector_128)));
+		uFailure = 10;
+	}
+
+	return static_cast<int>(uFailure);
 }

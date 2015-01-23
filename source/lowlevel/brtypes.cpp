@@ -397,7 +397,7 @@
 
 	Debug defines, one is required MUST be present
 	and is supplied by the build project. This is not created
-	by default by burgerlib. If both exist or both are missing, burger.h
+	by default by Burgerlib. If both exist or both are missing, burger.h
 	will force a compile error.
 
 	\li \ref _DEBUG Debugging asserts are enabled.
@@ -411,7 +411,7 @@
 	\li \ref BURGER_ARM CPU is part of the Advanced RISC Machines family.
 	\li \ref BURGER_68K CPU is part of the Motorola 68000 family.
 	\li \ref BURGER_MIPS CPU is part of the SGI MIPS family.
-	\li \ref BURGER_64BITCPU The CPU has native 64 bit registers.
+	\li \ref BURGER_64BITCPU The CPU has native 64 bit registers (AMD64, PPC64, ARM64).
 
 	Endian defines, only one is enabled on each compile. Do not
 	use the CPU to determine the endian, because it may change on
@@ -426,11 +426,11 @@
 	\li \ref BURGER_WIN64 The underlying OS is 64 bit Windows
 	\li \ref BURGER_WINDOWS The underlying OS is any flavor of Microsoft Windows
 	\li \ref BURGER_MSDOS The underlying OS is MSDOS
-	\li \ref BURGER_MAC
-	\li \ref BURGER_MACOSX
-	\li \ref BURGER_MACCLASSIC
+	\li \ref BURGER_MAC The underlying OS is MacOS (Pre-X)
+	\li \ref BURGER_MACOSX The underlying OS is a version of MacOSX
+	\li \ref BURGER_MACCLASSIC 
 	\li \ref BURGER_MACCARBON
-	\li \ref BURGER_MACOS
+	\li \ref BURGER_MACOS The underlying OS is ANY version of MacOS
 	\li \ref BURGER_IOS
 	\li \ref BURGER_NGAGE
 	\li \ref BURGER_SYMBIAN
@@ -443,13 +443,13 @@
 	\li \ref BURGER_GAMECUBE
 	\li \ref BURGER_WII
 	\li \ref BURGER_WIIU
-	\li \ref BURGER_GBA
-	\li \ref BURGER_DS
+	\li \ref BURGER_GBA Gameboy Advanced
+	\li \ref BURGER_DS Nintendo DS and DSi
 	\li \ref BURGER_3DS
-	\li \ref BURGER_XBOX
+	\li \ref BURGER_XBOX Refers to the original XBox
 	\li \ref BURGER_XBOX360
 	\li \ref BURGER_XBOXONE
-	\li \ref BURGER_ANDROID
+	\li \ref BURGER_ANDROID The underlying OS is Android
 	\li \ref BURGER_SHIELD
 	\li \ref BURGER_OUYA
 	\li \ref BURGER_BEOS has been deprecated.
@@ -487,6 +487,19 @@
 	\li \ref BURGER_STRUCT_ALIGN
 	\li \ref BURGER_STRUCT_PACK
 	\li \ref BURGER_STRUCT_PACKPUSH
+
+	Defines to denote if features, compilation switches or high level APIs are present
+
+	\li \ref BURGER_OPENGL_SUPPORTED
+	\li \ref BURGER_OPENGLES
+
+	Handy macros
+
+	\li \ref BURGER_OFFSETOF
+	\li \ref BURGER_ARRAYSIZE
+	\li \ref BURGER_UNUSED
+	\li \ref BURGER_MACRO_TO_STRING
+	\li \ref BURGER_DISABLECOPYCONSTRUCTORS
 	
 ***************************************/
 
@@ -1762,12 +1775,32 @@
 
 /*! ************************************
 
+	\def BURGER_OPENGL_SUPPORTED
+	\brief Define for the presence of OpenGL
+	
+	If this define exists, then OpenGL is supported.
+	\sa BURGER_OPENGLES
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_OPENGLES
+	\brief Define for the presence of OpenGL ES
+	
+	If this define exists, then OpenGL ES is supported.
+	\sa BURGER_OPENGL_SUPPORTED
+
+***************************************/
+
+/*! ************************************
+
 	\def BURGER_OFFSETOF
 	\brief Define to return the offset of a member variable.
 	
 	Return the byte offset of a member variable from a class or struct.
 	
-	\param type Name of the class / struct type
+	\param __type Name of the class / struct type
 	\param member Name of the member in the type to determine the offset of.
 	
 	\code

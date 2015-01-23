@@ -401,6 +401,9 @@ namespace Burger {
 #elif (defined(BURGER_METROWERKS) && defined(BURGER_POWERPC))
 	BURGER_INLINE Word32 RotateLeft(Word32 uInput,Word uShiftCount) { return static_cast<Word32>(__builtin___rotate_left32(uInput,static_cast<int>(uShiftCount))); }
 	BURGER_INLINE Word32 RotateRight(Word32 uInput,Word uShiftCount) { return static_cast<Word32>(__builtin___rotate_right32(uInput,static_cast<int>(uShiftCount))); }
+#elif defined(BURGER_VITA)
+	BURGER_INLINE Word32 RotateLeft(Word32 uInput,Word uShiftCount) { return __builtin_rol(uInput,static_cast<Word32>(uShiftCount)); }
+	BURGER_INLINE Word32 RotateRight(Word32 uInput,Word uShiftCount) { return __builtin_ror(uInput,static_cast<Word32>(uShiftCount)); }
 #else
 	BURGER_INLINE Word32 RotateLeft(Word32 uInput,Word uShiftCount) { return ((uInput<<uShiftCount) | (uInput>>(32-uShiftCount))); }
 	BURGER_INLINE Word32 RotateRight(Word32 uInput,Word uShiftCount) { return ((uInput>>uShiftCount) | (uInput<<(32-uShiftCount))); }

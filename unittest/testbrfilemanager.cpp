@@ -14,11 +14,14 @@
 #include "testbrfilemanager.h"
 #include "common.h"
 
-#if 0
 #include "brfilename.h"
 #include "brfilemanager.h"
 #include "brfile.h"
 #include "brdirectorysearch.h"
+#include "brmemoryansi.h"
+
+#define FULLTESTS
+
 #if defined(BURGER_WINDOWS)
 #include <windows.h>
 #undef CopyFile
@@ -1070,7 +1073,7 @@ static Word TestGetFileType(Word uVerbose)
 	}
 	return uFailure;
 #else
-	uVerbose=0;
+	BURGER_UNUSED(uVerbose);
 	return 0;
 #endif
 }
@@ -1106,7 +1109,7 @@ static Word TestGetAuxType(Word uVerbose)
 	}
 	return uFailure;		
 #else
-	uVerbose=0;
+	BURGER_UNUSED(uVerbose);
 	return 0;
 #endif
 }
@@ -1144,7 +1147,7 @@ static Word TestGetFileAndAuxType(Word uVerbose)
 	}
 	return uFailure;		
 #else
-	uVerbose=0;
+	BURGER_UNUSED(uVerbose);
 	return 0;
 #endif
 }
@@ -1181,7 +1184,7 @@ static Word TestSetFileType(Word uVerbose)
 	}
 	return uFailure;
 #else
-	uVerbose=0;
+	BURGER_UNUSED(uVerbose);
 	return 0;
 #endif
 }
@@ -1218,7 +1221,7 @@ static Word TestSetAuxType(Word uVerbose)
 	}
 	return uFailure;
 #else
-	uVerbose=0;
+	BURGER_UNUSED(uVerbose);
 	return 0;
 #endif
 }
@@ -1257,7 +1260,7 @@ static Word TestSetFileAndAuxType(Word uVerbose)
 	}
 	return uFailure;
 #else
-	uVerbose=0;
+	BURGER_UNUSED(uVerbose);
 	return 0;
 #endif
 }
@@ -1360,15 +1363,17 @@ static Word TestDirectorySearch(Word uVerbose)
 
 /***************************************
 
-	Test if setting the filename explictly works.
+	Test if setting the filename explicitly works.
 
 ***************************************/
 
 Word FileManagerTest(Word uVerbose)
 {	
 	Word uTotal = 0;
+	MemoryManagerGlobalANSI Memory;
 	FileManager::Init();
 
+#if defined(FULLTESTS)
 	// Test Filename
 	Message("Running Filename tests");
 	uTotal |= TestFilenameClass(); 
@@ -1382,10 +1387,13 @@ Word FileManagerTest(Word uVerbose)
 	// Test File
 	Message("Running File tests");
 	uTotal |= TestFile(uVerbose);
+#endif
 
 	// Test File Manager
 	Message("Running File Manager tests");
 	uTotal |= TestPrefixes(uVerbose);
+
+#if defined(FULLTESTS)
 	uTotal |= TestGetVolumeName(uVerbose);
 	TestCreateTempFiles();
 	uTotal |= TestDoesFileExist();
@@ -1406,8 +1414,7 @@ Word FileManagerTest(Word uVerbose)
 
 	Message("Running Directory tests");
 	uTotal |= TestDirectorySearch(uVerbose);
-
+#endif
 	FileManager::Shutdown();
 	return uTotal;
 }
-#endif

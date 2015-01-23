@@ -39,6 +39,7 @@ def main(workingDir):
 		'ps2',
 		'ps3',
 		'ps4',
+		'vita',
 		'gamecube',
 		'wii',
 		'dsi',
@@ -105,13 +106,44 @@ def main(workingDir):
 			'brglxext.h'
 			]
 	
-		for item in specialheaders:
-			brstartuphfile = os.path.join(workingDir,'source',item)
-			testfile = os.path.join(sdks,'windows','burgerlib',item)
-			if os.path.isfile(testfile)!=True or \
-				burger.comparefiles(brstartuphfile,testfile)==False:
-				for dest in destinations:
-					error = burger.copyfileandcheckoutifneeded(brstartuphfile,os.path.join(sdks,dest,'burgerlib',item))
+		for dest in destinations:
+		
+			# Special case, burgerlib has the folder msdos and SDKS
+			# has dos. Perform the override here
+			
+			if dest=='dos':
+				sourcefolder = os.path.join(workingDir,'source','msdos')
+			else:
+				sourcefolder = os.path.join(workingDir,'source',dest)
+			
+			#
+			# Is this platform's source code present?
+			
+			if not os.path.isdir(sourcefolder):
+				sourcefolder=None
+			
+			#
+			# Process the headers
+			#
+			
+			for item in specialheaders:
+			
+				# Assume the generic header
+				headerfile = os.path.join(workingDir,'source',item)
+				if sourcefolder!=None:
+					# Is there an override?
+					headerfiletest = os.path.join(sourcefolder,item)
+					if os.path.isfile(headerfiletest):
+						# Use the override
+						headerfile = headerfiletest
+				
+				destfile = os.path.join(sdks,dest,'burgerlib',item)
+				
+				# Copy if the destination doesn't exist or it's different
+				# from the header
+				if os.path.isfile(destfile)!=True or \
+					burger.comparefiles(headerfile,destfile)==False:
+					error = burger.copyfileandcheckoutifneeded(headerfile,destfile)
 					if error!=0:
 						break
 	

@@ -23,6 +23,8 @@
 #include "testbrmatrix3d.h"
 #include "testbrmatrix4d.h"
 #include "testbrstaticrtti.h"
+#include "testbrdisplay.h"
+#include "testbrfilemanager.h"
 #include "createtables.h"
 #include <stdarg.h>
 #include <stdlib.h>
@@ -39,17 +41,6 @@
 #if defined(BURGER_XBOX) || defined(BURGER_XBOX360) || (defined(BURGER_WINDOWS) && !defined(BURGER_WATCOM) && !defined(BURGER_METROWERKS))
 #define USESECURE
 #endif
-
-extern "C" {
-Word VideoWidth;
-Word ScreenClipBottom;
-Word ScreenClipRight;
-Word ScreenClipTop;
-Word ScreenClipLeft;
-Word ScreenWidth;
-Word ScreenHeight;
-Word8 *VideoPointer;
-}
 
 //
 // Boolean string to display PASSED on "false" and
@@ -223,6 +214,8 @@ int BURGER_ANSIAPI main(void)
 	iResult |= TestBrstaticrtti();
 	iResult |= TestBrhashes();
 	iResult |= TestBrcompression();
+	iResult |= TestBrDisplay();
 	iResult |= TestDateTime();
+	iResult |= FileManagerTest(TRUE);
 	return iResult;
 }
