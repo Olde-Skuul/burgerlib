@@ -34,6 +34,8 @@ Tell me more!
 Full documentation is found both in downloadable form and online at
 http://burgerbecky.com/burgerlib/docs/
 
+Offline documentation for Windows hosts is found here http://burgerbecky.com/burgerlib/docs/burgerlib.chm
+
 To set up on a Windows 32/64 bit machine (Windows XP or higher, 
 Windows 7 recommended)
 http://burgerbecky.com/burgerlib/docs/pagewindowsinstall.htm
