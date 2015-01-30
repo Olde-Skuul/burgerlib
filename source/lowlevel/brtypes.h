@@ -4,7 +4,7 @@
 	create standardized typedefs and macros
 	so generic code can be created cross platform
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -197,8 +197,6 @@
 #define BURGER_MAC
 #if !defined(__POWERPC__)
 #define BURGER_68K
-extern double __fabs(double x);
-extern void* __alloca(unsigned x);
 #if !defined(NDEBUG) && !defined(_DEBUG)
 #if __option(sym)
 #define _DEBUG
@@ -494,10 +492,7 @@ typedef unsigned int Vector_128 __attribute__((mode (TI)));
 #endif
 typedef vec_float4 Vector_128;
 #elif defined(BURGER_PS4)
-#ifndef __XMMINTRIN_H
-#include <xmmintrin.h>
-#endif
-typedef __m128 Vector_128;
+typedef float Vector_128 __attribute__((__vector_size__(16)));
 #elif defined(BURGER_XBOX360)
 #ifndef __PPCINTRINSICS_H__
 #include <ppcintrinsics.h>

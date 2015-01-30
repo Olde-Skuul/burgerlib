@@ -2,7 +2,7 @@
 
 	vector<T> compatible array template
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -30,6 +30,65 @@
 	for performance.
 
 	\sa SimpleArray
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::ClassArray::Destroy(T* pData,WordPtr uCount)
+	\brief Destroy an array of class entries
+	
+	Iterate over an array of class instances and
+	dispose of their contents
+
+	\param pData Pointer to the array of class instances
+	\param uCount Number of entries in the array
+	\sa Init(T*,WordPtr), Init(T*,WordPtr,const T*) or Copy(T*,WordPtr,const T*)
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::ClassArray::Init(T* pData,WordPtr uCount)
+	\brief Initialized an array of class entries
+	
+	Iterate over an array of class instances and
+	initialize them with default constructors
+
+	\param pData Pointer to the array of class instances
+	\param uCount Number of entries in the array
+	\sa Destroy(T*,WordPtr), Init(T*,WordPtr,const T*) or Copy(T*,WordPtr,const T*)
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::ClassArray::Init(T* pData,WordPtr uCount,const T*pSource)
+	\brief Initialized an array of class entries with another array
+	
+	Iterate over an array of class instances and
+	initialize them with copy constructors
+
+	\param pData Pointer to the array of class instances
+	\param uCount Number of entries in the array
+	\param pSource Pointer to the array of class instances to copy from
+	\sa Destroy(T*,WordPtr), Init(T*,WordPtr) or Copy(T*,WordPtr,const T*)
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::ClassArray::Copy(T* pData,WordPtr uCount,const T*pSource)
+	\brief Copy an array of class entries with another array
+	
+	Iterate over an array of class instances and
+	copy them. Will perform a reverse copy in case the arrays
+	overlay each other.
+
+	\param pData Pointer to the array of class instances
+	\param uCount Number of entries in the array
+	\param pSource Pointer to the array of class instances to copy from
+	\sa Destroy(T*,WordPtr), Init(T*,WordPtr) or Init(T*,WordPtr,const T*)
 
 ***************************************/
 
@@ -300,20 +359,20 @@
 
 /*! ************************************
 
-	\fn void Burger::ClassArray::remove(WordPtr uIndex)
+	\fn void Burger::ClassArray::remove_at(WordPtr uIndex)
 	\brief Remove an object from the array.
 
 	Call the destructor on the specific object in the array and
 	then compact the array if needed.
 
 	\param uIndex Index into the array of the object to remove.
-	\sa insert(WordPtr,const T&), resize(WordPtr) or reserve(WordPtr)
+	\sa insert_at(WordPtr,const T&), resize(WordPtr) or reserve(WordPtr)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::ClassArray::insert(WordPtr uIndex,const T& rData)
+	\fn void Burger::ClassArray::insert_at(WordPtr uIndex,const T& rData)
 	\brief Insert an object into the array.
 
 	Expand the buffer if needed and make a copy of the rData
@@ -478,5 +537,18 @@
 
 	\return Constant iterator for ending a traversal of the array.
 	\sa begin(void) const or end(void)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::ClassArray::erase(const_iterator it)
+	\brief Remove an entry from the array using an iterator as the index
+
+	Using an iterator index, delete an entry in the array. Note, this
+	will change the end() value in an index
+
+	\param it Iterator index into an array
+	\sa remove_at(WordPtr)
 
 ***************************************/

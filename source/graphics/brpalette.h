@@ -2,7 +2,7 @@
 
 	Palette manager class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -20,6 +20,14 @@
 
 #ifndef __BRDISPLAY_H__
 #include "brdisplay.h"
+#endif
+
+#ifndef __BRVECTOR3D_H__
+#include "brvector3d.h"
+#endif
+
+#ifndef __BRVECTOR4D_H__
+#include "brvector4d.h"
 #endif
 
 /* BEGIN */
@@ -45,6 +53,7 @@ struct RGBWord8_t {
 	static const RGBWord8_t Teal;
 	static const RGBWord8_t White;
 	static const RGBWord8_t Yellow;
+	void BURGER_API Interpolate(const RGBWord8_t *pFrom,const RGBWord8_t *pTo,float fFactor);
 };
 struct RGBAWord8_t {
 	Word8 m_uRed;	///< 8 bit red value
@@ -68,6 +77,7 @@ struct RGBAWord8_t {
 	static const RGBAWord8_t Teal;
 	static const RGBAWord8_t White;
 	static const RGBAWord8_t Yellow;
+	void BURGER_API Interpolate(const RGBAWord8_t *pFrom,const RGBAWord8_t *pTo,float fFactor);
 };
 struct RGBWord16_t {
 	Word16 m_uRed;		///< 16 bit red value
@@ -101,6 +111,10 @@ struct RGBFloat_t {
 	static const RGBFloat_t Teal;
 	static const RGBFloat_t White;
 	static const RGBFloat_t Yellow;
+	BURGER_INLINE operator Vector3D_t &() { return *reinterpret_cast<Vector3D_t *>(this); }
+	BURGER_INLINE operator const Vector3D_t &() const { return *reinterpret_cast<const Vector3D_t *>(this); }
+	BURGER_INLINE RGBFloat_t &operator = (const Vector3D_t &rInput) { *this = *reinterpret_cast<const RGBFloat_t *>(&rInput); return *this; }
+	void BURGER_API HSLInterpolate(const RGBFloat_t *pInput1,const RGBFloat_t *pInput2,float fFactor,Word bDirection=FALSE);
 };
 struct RGBAFloat_t {
 	float m_fRed;	///< 32 bit float red value
@@ -124,6 +138,15 @@ struct RGBAFloat_t {
 	static const RGBAFloat_t Teal;
 	static const RGBAFloat_t White;
 	static const RGBAFloat_t Yellow;
+	BURGER_INLINE operator Vector4D_t &() { return *reinterpret_cast<Vector4D_t *>(this); }
+	BURGER_INLINE operator const Vector4D_t &() const { return *reinterpret_cast<const Vector4D_t *>(this); }
+	BURGER_INLINE RGBAFloat_t &operator = (const Vector4D_t &rInput) { *this = *reinterpret_cast<const RGBAFloat_t *>(&rInput); return *this; }
+};
+struct HSL_t {
+	float m_fHue;			///< 32 bit float hue 0 to 1.0f
+	float m_fSaturation;	///< 32 bit float saturation 0 to 1.0f
+	float m_fLuminance;		///< 32 bit float luminance 0 to 1.0f
+	void BURGER_API Interpolate(const HSL_t *pInput1,const HSL_t *pInput2,float fFactor,Word bDirection=FALSE);
 };
 class Palette {
 public:
@@ -156,6 +179,8 @@ BURGER_INLINE void CopyPalette(RGBWord8_t *pOutput,const RGBWord8_t *pInput,Word
 extern void BURGER_API CopyPalette(RGBWord8_t *pOutput,const RGBAWord8_t *pInput,Word uEntries=256);
 extern void BURGER_API CopyPalette(RGBAWord8_t *pOutput,const RGBWord8_t *pInput,Word uEntries=256);
 BURGER_INLINE void CopyPalette(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,Word uEntries=256) { MemoryCopy(pOutput,pInput,uEntries*sizeof(RGBAWord8_t)); }
+extern void BURGER_API Convert(RGBFloat_t *pOutput,const HSL_t *pInput);
+extern void BURGER_API Convert(HSL_t *pOutput,const RGBFloat_t *pInput);
 }
 /* END */
 

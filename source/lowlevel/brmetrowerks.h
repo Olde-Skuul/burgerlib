@@ -2,7 +2,7 @@
 
 	Intrinsics and subroutines exclusive to the Freescale and Metrowerks compilers
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -69,6 +69,8 @@ Word32 BURGER_INLINE _bswap(Word32:__D0):__D0 = { 0xE058, 0x4840, 0xE058 };
 Int32 BurgerIntMathMul32GetUpper32(Int32 iInputMulA,Int32 iInputMulB) = {0x4c01,0xc01};	// muls.l d1,d1:d0
 #pragma parameter __D0 BurgerIntMathMul32x32To64Div32(__D0,__D1,__D2)
 Int32 BurgerIntMathMul32x32To64Div32(Int32 iInputMulA,Int32 iInputMulB,Int32 iInputDiv) = {0x4c01,0xc01,0x4c42,0xc01};	// muls.l d1,d1:d0 divs.l ds,d1:d0
+extern double __fabs(double x);
+extern void* __alloca(unsigned x);
 
 #elif defined(BURGER_POWERPC)
 

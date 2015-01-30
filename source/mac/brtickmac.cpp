@@ -4,7 +4,7 @@
 
 	MacOS Carbon specific code
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -319,13 +319,13 @@ Word32 Burger::Tick::ReadMicroseconds(void)
 	}
 	if (Temp==2) {
 		/* On a recent PowerPC, we poll the TBR directly */
-		PollTBR603((LongWord64_t *)&wide);
+		PollTBR603((Word64 *)&wide);
 		Foo = (double) ((unsigned long long *)&wide)[0];
 		return (unsigned long long)(Foo*PowerPCScale);
 	}
 	if (Temp==3) {
 		/* On a 601, we can poll the RTC instead */
-		PollRTC601((LongWord64_t*)&wide);
+		PollRTC601((Word64*)&wide);
 		return (unsigned long long)(RTCToNano(wide) * PowerPCScale);
 	}
 	/* If all else fails, suffer the mixed mode overhead */
@@ -361,13 +361,13 @@ Word32 Burger::Tick::ReadMilliseconds(void)
 	}
 	if (Temp==2) {
 		/* On a recent PowerPC, we poll the TBR directly */
-		PollTBR603((LongWord64_t *)&wide);
+		PollTBR603((Word64 *)&wide);
 		Foo = (double) ((unsigned long long *)&wide)[0];
 		return (unsigned long long)(Foo*PowerPCScale2);
 	}
 	if (Temp==3) {
 		/* On a 601, we can poll the RTC instead */
-		PollRTC601((LongWord64_t*)&wide);
+		PollRTC601((Word64*)&wide);
 		return (unsigned long long)(RTCToNano(wide) * PowerPCScale2);
 	}
 	/* If all else fails, suffer the mixed mode overhead */

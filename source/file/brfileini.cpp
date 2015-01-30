@@ -2,7 +2,7 @@
 
 	Library to handle windows style configuration files (INI)
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -21,9 +21,6 @@
 
 #if defined(BURGER_MSVC)
 #pragma warning(disable:4355)		// "this" pointer used in initializer
-#endif
-#if defined(BURGER_WATCOM)
-#pragma disable_message(549)		// Disable 'sizeof' operand contains compiler generated information
 #endif 
 
 /*! ************************************

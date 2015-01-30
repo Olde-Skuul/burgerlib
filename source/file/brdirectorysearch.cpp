@@ -2,7 +2,7 @@
 
 	Directory search Class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -56,7 +56,7 @@ Burger::DirectorySearch::DirectorySearch()
 {
 #if defined(BURGER_MAC)
 	m_pIterator = NULL;		// I do not own an iterator object, yet
-#elif defined(BURGER_MACOSX) || defined(BURGER_IOS)
+#elif defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_VITA)
 	m_fp = -1;
 #elif defined(BURGER_MSDOS)
 	m_bHandleOk = 0;		// No file open yet
@@ -104,7 +104,7 @@ Word Burger::DirectorySearch::Open(const char *pDirName)
 			
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360))
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
 Word Burger::DirectorySearch::Open(Filename * /* pDirName */)
 {
 	return TRUE;		// Error!
@@ -125,7 +125,7 @@ Word Burger::DirectorySearch::Open(Filename * /* pDirName */)
 			
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
 Word Burger::DirectorySearch::GetNextEntry(void)
 {
 	return TRUE;		// Error!
@@ -186,7 +186,7 @@ Word Burger::DirectorySearch::GetNextEntryExtension(const char *pExt)
 			
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
 void Burger::DirectorySearch::Close(void)
 {
 }

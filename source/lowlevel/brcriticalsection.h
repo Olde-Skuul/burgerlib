@@ -2,7 +2,7 @@
 
 	Class to handle critical sections
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -34,8 +34,12 @@
 #include "brps4types.h"
 #endif
 
-#if defined(BURGER_ANDROID) && !defined(__BRSHIELDTYPES_H__)
+#if defined(BURGER_SHIELD) && !defined(__BRSHIELDTYPES_H__)
 #include "brshieldtypes.h"
+#endif
+
+#if defined(BURGER_VITA) && !defined(__BRVITATYPES_H__)
+#include "brvitatypes.h"
 #endif
 
 #if defined(BURGER_MACOSX) && !defined(__BRMACOSXTYPES_H__)
@@ -59,9 +63,12 @@ class CriticalSection {
 #if defined(BURGER_PS4) || defined(DOXYGEN)
 	pthread_mutex *m_Lock;		///< Critical section for PS4 (PS4 only)
 #endif
-#if (defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+#if (defined(BURGER_SHIELD) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 	friend class ConditionVariable;
 	pthread_mutex_t m_Lock;		///< Critical section for Android/MacOSX/iOS (Android/MacOSX/iOS only)
+#endif
+#if defined(BURGER_VITA) || defined(DOXYGEN)
+	int m_iLock;				///< Critical section ID for VITA
 #endif
 public:
 	CriticalSection();
@@ -94,9 +101,12 @@ class Semaphore {
 #if (defined(BURGER_WINDOWS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
 	void *m_pSemaphore;			///< Semaphore HANDLE (Windows only)
 #endif
-#if (defined(BURGER_ANDROID)) || defined(DOXYGEN)
+#if (defined(BURGER_SHIELD)) || defined(DOXYGEN)
 	sem_t m_Semaphore;			///< Semaphore instance (Android)
 	Word m_bInitialized;		///< \ref TRUE if the semaphore instance successfully initialized
+#endif
+#if defined(BURGER_VITA) || defined(DOXYGEN)
+	int m_iSemaphore;				///< Semaphore ID for VITA
 #endif
 #if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 	semaphore_t m_Semaphore;	///< Semaphore instance (MacOSX/iOS only)
@@ -114,11 +124,15 @@ public:
 };
 
 class ConditionVariable {
-#if (defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+#if (defined(BURGER_SHIELD) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 	pthread_cond_t m_ConditionVariable;	///< Condition variable instance (Android/MacOSX/iOS only)
 	Word m_bInitialized;			///< \ref TRUE if the Condition variable instance successfully initialized (Android/MacOSX/iOS only)
 #endif
-#if !(defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+#if (defined(BURGER_VITA)) || defined(DOXYGEN)
+	int m_iConditionVariable;	///< Condition variable instance (Vita only)
+	int m_iMutex;				///< Mutex for the condition variable (Vita only)
+#endif
+#if !(defined(BURGER_SHIELD) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 	CriticalSection m_CriticalSection;	///< CriticalSection for this class (Non-specialized platforms)
 	Semaphore m_WaitSemaphore;		///< Binary semaphore for forcing thread to wait for a signal (Non-specialized platforms)
 	Semaphore m_SignalsSemaphore;	///< Binary semaphore for the number of pending signals (Non-specialized platforms)
@@ -147,7 +161,10 @@ private:
 #if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 	struct _opaque_pthread_t *m_pThreadHandle;	///< Pointer to the thread data (MacOSX/iOS only)
 #endif
-	WordPtr m_uResult;					///< Result code of the thread on exit
+#if (defined(BURGER_VITA)) || defined(DOXYGEN)
+	int m_iThreadID;				///< System ID of the thread (Vita only)
+#endif
+	WordPtr m_uResult;				///< Result code of the thread on exit
 public:
 	Thread();
 	Thread(FunctionPtr pFunction,void *pData);
@@ -159,7 +176,9 @@ public:
 	BURGER_INLINE WordPtr GetResult(void) const { return m_uResult; }
 #if (defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 	BURGER_INLINE Word IsInitialized(void) const { return m_pThreadHandle!=NULL; }
-#else
+#elif defined(BURGER_VITA)
+	BURGER_INLINE Word IsInitialized(void) const { return m_iThreadID>=0; }
+#else 
 	BURGER_INLINE Word IsInitialized(void) const { return FALSE; }
 #endif
 };

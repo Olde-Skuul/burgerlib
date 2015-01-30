@@ -2,7 +2,7 @@
 
 	8 Bit software renderer on top of OpenGL
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -32,14 +32,12 @@
 
 /* BEGIN */
 namespace Burger {
+#if defined(BURGER_OPENGL_SUPPORTED)
+#if defined(BURGER_WINDOWS)
 class DisplayOpenGLSoftware8 : public DisplayOpenGL {
-public:
-	DisplayOpenGLSoftware8(GameApp *pGameApp);
-protected:
-	virtual Word InitContext(void);
-	virtual void PostShutdown(void);
-	virtual void PostEndScene(void);
-private:
+#else
+class DisplayOpenGLSoftware8 : public Display {
+#endif
 	void *m_pBitMap;				///< Pointer the the HBITMAP's bitmap
 	RendererSoftware8 m_Renderer;	///< Software renderer context
 	Word m_uBitMapTexture;			///< OpenGL Texture for the bitmap
@@ -49,7 +47,16 @@ private:
 	Word m_uFragmentShader;			///< OpenGL fragment shader subroutine
 	Word m_uvPositionHandle;		///< OpenGL shader handle for shader vertexes
 	Word m_uUVHandle;				///< OpenGL shader handle for texture UV coordinates
+	BURGER_RTTI_IN_CLASS();
+public:
+	DisplayOpenGLSoftware8(GameApp *pGameApp);
+	virtual Word Init(Word uWidth,Word uHeight,Word uDepth=8,Word uFlags=DEFAULTFLAGS);
+	virtual void Shutdown(void);
+	virtual void BeginScene(void);
+	virtual void EndScene(void);
+	BURGER_INLINE RendererSoftware8 *GetRenderer(void) { return &m_Renderer; }
 };
+#endif
 }
 /* END */
 

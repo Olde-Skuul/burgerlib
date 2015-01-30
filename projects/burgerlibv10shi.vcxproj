@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup Label="NsightTegraProject">
-		<NsightTegraProjectRevisionNumber>4</NsightTegraProjectRevisionNumber>
+		<NsightTegraProjectRevisionNumber>8</NsightTegraProjectRevisionNumber>
 	</PropertyGroup>
 	<ItemGroup Label="ProjectConfigurations">
 		<ProjectConfiguration Include="Debug|Tegra-Android">
@@ -30,7 +30,7 @@
 	<PropertyGroup Label="UserMacros" />
 	<ItemDefinitionGroup>
 		<ClCompile>
-			<AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\text;$(ProjectDir)..\source\shield;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\text;$(ProjectDir)..\source\shield;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 		</ClCompile>
 	</ItemDefinitionGroup>
 	<ItemGroup>
@@ -42,7 +42,6 @@
 		<ClInclude Include="..\source\brglext.h" />
 		<ClInclude Include="..\source\brglut.h" />
 		<ClInclude Include="..\source\brglxext.h" />
-		<ClInclude Include="..\source\brstartup.h" />
 		<ClInclude Include="..\source\commandline\brcommandparameter.h" />
 		<ClInclude Include="..\source\commandline\brcommandparameterbooltrue.h" />
 		<ClInclude Include="..\source\commandline\brcommandparameterstring.h" />
@@ -89,7 +88,15 @@
 		<ClInclude Include="..\source\file\broutputmemorystream.h" />
 		<ClInclude Include="..\source\file\brrezfile.h" />
 		<ClInclude Include="..\source\flashplayer\brflashaction.h" />
+		<ClInclude Include="..\source\flashplayer\brflashactionvalue.h" />
+		<ClInclude Include="..\source\flashplayer\brflashavm2.h" />
+		<ClInclude Include="..\source\flashplayer\brflashcolortransform.h" />
+		<ClInclude Include="..\source\flashplayer\brflashdisasmactionscript.h" />
 		<ClInclude Include="..\source\flashplayer\brflashmanager.h" />
+		<ClInclude Include="..\source\flashplayer\brflashmatrix23.h" />
+		<ClInclude Include="..\source\flashplayer\brflashrect.h" />
+		<ClInclude Include="..\source\flashplayer\brflashrgba.h" />
+		<ClInclude Include="..\source\flashplayer\brflashstream.h" />
 		<ClInclude Include="..\source\flashplayer\brflashutils.h" />
 		<ClInclude Include="..\source\graphics\brdisplay.h" />
 		<ClInclude Include="..\source\graphics\brdisplayopengl.h" />
@@ -104,6 +111,19 @@
 		<ClInclude Include="..\source\graphics\brrenderersoftware16.h" />
 		<ClInclude Include="..\source\graphics\brrenderersoftware8.h" />
 		<ClInclude Include="..\source\graphics\brshape8bit.h" />
+		<ClInclude Include="..\source\graphics\brtexture.h" />
+		<ClInclude Include="..\source\graphics\brtextureopengl.h" />
+		<ClInclude Include="..\source\graphics\brvertexbuffer.h" />
+		<ClInclude Include="..\source\graphics\brvertexbufferopengl.h" />
+		<ClInclude Include="..\source\graphics\effects\breffect.h" />
+		<ClInclude Include="..\source\graphics\effects\breffect2d.h" />
+		<ClInclude Include="..\source\graphics\effects\breffectpositiontexturecolor.h" />
+		<ClInclude Include="..\source\graphics\effects\breffectstaticpositiontexture.h" />
+		<ClInclude Include="..\source\graphics\effects\brshaders.h" />
+		<ClInclude Include="..\source\graphics\shadersopengl\pstexturecolorgl.h" />
+		<ClInclude Include="..\source\graphics\shadersopengl\pstexturegl.h" />
+		<ClInclude Include="..\source\graphics\shadersopengl\vs20sprite2dgl.h" />
+		<ClInclude Include="..\source\graphics\shadersopengl\vsstaticpositiongl.h" />
 		<ClInclude Include="..\source\input\brjoypad.h" />
 		<ClInclude Include="..\source\input\brkeyboard.h" />
 		<ClInclude Include="..\source\input\brmouse.h" />
@@ -119,17 +139,20 @@
 		<ClInclude Include="..\source\lowlevel\brdoublylinkedlist.h" />
 		<ClInclude Include="..\source\lowlevel\brendian.h" />
 		<ClInclude Include="..\source\lowlevel\brglobals.h" />
+		<ClInclude Include="..\source\lowlevel\brgridindex.h" />
 		<ClInclude Include="..\source\lowlevel\brguid.h" />
 		<ClInclude Include="..\source\lowlevel\brlinkedlistobject.h" />
 		<ClInclude Include="..\source\lowlevel\brlinkedlistpointer.h" />
 		<ClInclude Include="..\source\lowlevel\brmetrowerks.h" />
 		<ClInclude Include="..\source\lowlevel\broscursor.h" />
+		<ClInclude Include="..\source\lowlevel\brpair.h" />
 		<ClInclude Include="..\source\lowlevel\brperforce.h" />
 		<ClInclude Include="..\source\lowlevel\brqueue.h" />
 		<ClInclude Include="..\source\lowlevel\brrandommanager.h" />
 		<ClInclude Include="..\source\lowlevel\brrunqueue.h" />
 		<ClInclude Include="..\source\lowlevel\brsimplearray.h" />
 		<ClInclude Include="..\source\lowlevel\brsmartpointer.h" />
+		<ClInclude Include="..\source\lowlevel\brsnsystems.h" />
 		<ClInclude Include="..\source\lowlevel\brstaticrtti.h" />
 		<ClInclude Include="..\source\lowlevel\brtick.h" />
 		<ClInclude Include="..\source\lowlevel\brtimedate.h" />
@@ -137,6 +160,7 @@
 		<ClInclude Include="..\source\lowlevel\brvisualstudio.h" />
 		<ClInclude Include="..\source\lowlevel\brwatcom.h" />
 		<ClInclude Include="..\source\lowlevel\brxcode.h" />
+		<ClInclude Include="..\source\math\brearcliptriangulate.h" />
 		<ClInclude Include="..\source\math\brfixedmatrix3d.h" />
 		<ClInclude Include="..\source\math\brfixedmatrix4d.h" />
 		<ClInclude Include="..\source\math\brfixedpoint.h" />
@@ -217,7 +241,15 @@
 		<ClCompile Include="..\source\file\broutputmemorystream.cpp" />
 		<ClCompile Include="..\source\file\brrezfile.cpp" />
 		<ClCompile Include="..\source\flashplayer\brflashaction.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashactionvalue.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashavm2.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashcolortransform.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashdisasmactionscript.cpp" />
 		<ClCompile Include="..\source\flashplayer\brflashmanager.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashmatrix23.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashrect.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashrgba.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashstream.cpp" />
 		<ClCompile Include="..\source\flashplayer\brflashutils.cpp" />
 		<ClCompile Include="..\source\graphics\brdisplay.cpp" />
 		<ClCompile Include="..\source\graphics\brdisplayopengl.cpp" />
@@ -232,6 +264,15 @@
 		<ClCompile Include="..\source\graphics\brrenderersoftware16.cpp" />
 		<ClCompile Include="..\source\graphics\brrenderersoftware8.cpp" />
 		<ClCompile Include="..\source\graphics\brshape8bit.cpp" />
+		<ClCompile Include="..\source\graphics\brtexture.cpp" />
+		<ClCompile Include="..\source\graphics\brtextureopengl.cpp" />
+		<ClCompile Include="..\source\graphics\brvertexbuffer.cpp" />
+		<ClCompile Include="..\source\graphics\brvertexbufferopengl.cpp" />
+		<ClCompile Include="..\source\graphics\effects\breffect.cpp" />
+		<ClCompile Include="..\source\graphics\effects\breffect2d.cpp" />
+		<ClCompile Include="..\source\graphics\effects\breffectpositiontexturecolor.cpp" />
+		<ClCompile Include="..\source\graphics\effects\breffectstaticpositiontexture.cpp" />
+		<ClCompile Include="..\source\graphics\effects\brshaders.cpp" />
 		<ClCompile Include="..\source\input\brjoypad.cpp" />
 		<ClCompile Include="..\source\input\brkeyboard.cpp" />
 		<ClCompile Include="..\source\input\brmouse.cpp" />
@@ -247,10 +288,12 @@
 		<ClCompile Include="..\source\lowlevel\brdoublylinkedlist.cpp" />
 		<ClCompile Include="..\source\lowlevel\brendian.cpp" />
 		<ClCompile Include="..\source\lowlevel\brglobals.cpp" />
+		<ClCompile Include="..\source\lowlevel\brgridindex.cpp" />
 		<ClCompile Include="..\source\lowlevel\brguid.cpp" />
 		<ClCompile Include="..\source\lowlevel\brlinkedlistobject.cpp" />
 		<ClCompile Include="..\source\lowlevel\brlinkedlistpointer.cpp" />
 		<ClCompile Include="..\source\lowlevel\broscursor.cpp" />
+		<ClCompile Include="..\source\lowlevel\brpair.cpp" />
 		<ClCompile Include="..\source\lowlevel\brperforce.cpp" />
 		<ClCompile Include="..\source\lowlevel\brqueue.cpp" />
 		<ClCompile Include="..\source\lowlevel\brrandommanager.cpp" />
@@ -261,6 +304,7 @@
 		<ClCompile Include="..\source\lowlevel\brtick.cpp" />
 		<ClCompile Include="..\source\lowlevel\brtimedate.cpp" />
 		<ClCompile Include="..\source\lowlevel\brtypes.cpp" />
+		<ClCompile Include="..\source\math\brearcliptriangulate.cpp" />
 		<ClCompile Include="..\source\math\brfixedmatrix3d.cpp" />
 		<ClCompile Include="..\source\math\brfixedmatrix4d.cpp" />
 		<ClCompile Include="..\source\math\brfixedpoint.cpp" />

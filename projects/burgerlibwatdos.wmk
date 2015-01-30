@@ -6,7 +6,7 @@
 # sourcedir = Set the work directories for the source
 #
 
-sourcedir = ..\source\ansi;..\source\audio;..\source;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\msdos;..\source\text
+sourcedir = ..\source\ansi;..\source\audio;..\source;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\msdos;..\source\text
 
 #
 # Name of the output library
@@ -75,7 +75,15 @@ objs= &
 	$(A)\broutputmemorystream.obj &
 	$(A)\brrezfile.obj &
 	$(A)\brflashaction.obj &
+	$(A)\brflashactionvalue.obj &
+	$(A)\brflashavm2.obj &
+	$(A)\brflashcolortransform.obj &
+	$(A)\brflashdisasmactionscript.obj &
 	$(A)\brflashmanager.obj &
+	$(A)\brflashmatrix23.obj &
+	$(A)\brflashrect.obj &
+	$(A)\brflashrgba.obj &
+	$(A)\brflashstream.obj &
 	$(A)\brflashutils.obj &
 	$(A)\brdisplay.obj &
 	$(A)\brdisplayopengl.obj &
@@ -90,6 +98,15 @@ objs= &
 	$(A)\brrenderersoftware16.obj &
 	$(A)\brrenderersoftware8.obj &
 	$(A)\brshape8bit.obj &
+	$(A)\brtexture.obj &
+	$(A)\brtextureopengl.obj &
+	$(A)\brvertexbuffer.obj &
+	$(A)\brvertexbufferopengl.obj &
+	$(A)\breffect.obj &
+	$(A)\breffect2d.obj &
+	$(A)\breffectpositiontexturecolor.obj &
+	$(A)\breffectstaticpositiontexture.obj &
+	$(A)\brshaders.obj &
 	$(A)\brjoypad.obj &
 	$(A)\brkeyboard.obj &
 	$(A)\brmouse.obj &
@@ -105,10 +122,12 @@ objs= &
 	$(A)\brdoublylinkedlist.obj &
 	$(A)\brendian.obj &
 	$(A)\brglobals.obj &
+	$(A)\brgridindex.obj &
 	$(A)\brguid.obj &
 	$(A)\brlinkedlistobject.obj &
 	$(A)\brlinkedlistpointer.obj &
 	$(A)\broscursor.obj &
+	$(A)\brpair.obj &
 	$(A)\brperforce.obj &
 	$(A)\brqueue.obj &
 	$(A)\brrandommanager.obj &
@@ -119,6 +138,7 @@ objs= &
 	$(A)\brtick.obj &
 	$(A)\brtimedate.obj &
 	$(A)\brtypes.obj &
+	$(A)\brearcliptriangulate.obj &
 	$(A)\brfixedmatrix3d.obj &
 	$(A)\brfixedmatrix4d.obj &
 	$(A)\brfixedpoint.obj &

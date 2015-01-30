@@ -2,7 +2,7 @@
 
 	Global Master Memory Manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -38,14 +38,13 @@
 	friendly.
 
 	\note This class is assumed to have functions that are thread safe.
-	Any custom implentations on target platforms that support multi-threading
+	Any custom implementations on target platforms that support multi-threading
 	must all be multi-core thread safe.
 
-	\note Since this a reference to the controlled class, NEVER manually upcase
+	\note Since this a reference to the controlled class, NEVER manually up cast
 	the global instance of this class. Use the GetInstance(void)
-	function to get the pointer to the real class if upcasting is desired for 
+	function to get the pointer to the real class if up casting is desired for 
 	system specific functionality is desired.
-
 
 ***************************************/
 
@@ -57,18 +56,22 @@ Burger::MemoryManager *Burger::GlobalMemoryManager::g_pInstance;
 
 	This function copies the pointer to the MemoryManager
 	class and will use this instance for all memory operations.
-	\param pInstance Pointer to an initialized MemoryManager.
 	\note The MemoryManager is not copied, so the class should
 	not go out of scope without a call to either Shutdown()
 	or reset to another implementation
 
-	\sa Shutdown(void)
+	\param pInstance Pointer to an initialized MemoryManager.
+	\return Pointer to the previous version of the MemoryManager
+
+	\sa Shutdown(MemoryManager *)
 
 ***************************************/
 
-void BURGER_API Burger::GlobalMemoryManager::Init(MemoryManager *pInstance)
+Burger::MemoryManager * BURGER_API Burger::GlobalMemoryManager::Init(MemoryManager *pInstance)
 {
+	MemoryManager *pOldInstance = g_pInstance;
 	g_pInstance = pInstance;
+	return pOldInstance;
 }
 
 /*! ************************************
@@ -77,6 +80,7 @@ void BURGER_API Burger::GlobalMemoryManager::Init(MemoryManager *pInstance)
 
 	Shut down the memory allocator through the \ref Burger::MemoryManager::m_pShutdown pointer.
 
+	\param pPrevious Pointer to an previous MemoryManager.
 	\note This call will zero out all entries in this class, so all future use
 	of this class except for a call to \ref Init(MemoryManager *)
 	will result in an assert or page fault.
@@ -85,13 +89,13 @@ void BURGER_API Burger::GlobalMemoryManager::Init(MemoryManager *pInstance)
 
 ***************************************/
 
-void BURGER_API Burger::GlobalMemoryManager::Shutdown(void)
+void BURGER_API Burger::GlobalMemoryManager::Shutdown(MemoryManager *pPrevious)
 {
 	MemoryManager *pThis = g_pInstance;
 	if (pThis) {
 		pThis->m_pShutdown(pThis);
-		g_pInstance = NULL;
 	}
+	g_pInstance = pPrevious;
 }
 
 /*! ************************************

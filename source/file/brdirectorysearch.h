@@ -2,7 +2,7 @@
 
 	Directory search Class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -58,8 +58,8 @@ private:
 #if defined(BURGER_MAC) || defined(DOXYGEN)
 	OpaqueFSIterator* m_pIterator;	///< Directory iterator (MacOS Carbon Only)
 #endif
-#if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-	int m_fp;				///< Open directory file (MacOSX Only)
+#if (defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_VITA)) || defined(DOXYGEN)
+	int m_fp;				///< Open directory file (MacOSX/iOS/Vita Only)
 #endif
 #if defined(BURGER_MSDOS) || defined(DOXYGEN)
 	Word m_bHandleOk;		///< Handle is valid (MSDOS Only)

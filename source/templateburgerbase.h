@@ -1,6 +1,10 @@
 /* What follows are commands for the directories */
 /* to find the included headers */
 
+#ifndef __TEMPLATEBURGERBASE_H__
+#define __TEMPLATEBURGERBASE_H__
+#endif
+
 /* DIR: "ansi:" */
 /* DIR: "audio:" */
 /* DIR: "commandline:" */
@@ -8,6 +12,7 @@
 /* DIR: "file:" */
 /* DIR: "flashplayer:" */
 /* DIR: "graphics:" */
+/* DIR: "graphics:effects:" */
 /* DIR: "input:" */
 /* DIR: "ios:" */
 /* DIR: "lowlevel:" */
@@ -22,6 +27,7 @@
 /* DIR: "msdos:" */
 /* DIR: "ps3:" */
 /* DIR: "ps4:" */
+/* DIR: "vita:" */
 /* OUTPUT: "..:bin:burger.h" */
 
 /* BEGIN */
@@ -29,7 +35,7 @@
 
 	Burgerlib base header
 	
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -67,6 +73,7 @@
 #include "brvisualstudio.h"
 #include "brxcode.h"
 #include "brmetrowerks.h"
+#include "brsnsystems.h"
 #include "brassert.h"
 #include "brdebug.h"
 #include "brwindowstypes.h"
@@ -78,6 +85,7 @@
 #include "brps3types.h"
 #include "brps4types.h"
 #include "brshieldtypes.h"
+#include "brvitatypes.h"
 #include "brendian.h"
 #include "brstaticrtti.h"
 #include "brbase.h"
@@ -98,6 +106,7 @@
 #include "brutf32.h"
 #include "brqueue.h"
 #include "brsmartpointer.h"
+#include "brpair.h"
 #include "brsimplearray.h"
 #include "brarray.h"
 #include "bradler16.h"
@@ -165,6 +174,11 @@
 #include "brrenderer.h"
 #include "brrenderersoftware8.h"
 #include "brrenderersoftware16.h"
+#include "brimage.h"
+#include "brtexture.h"
+#include "brvertexbuffer.h"
+#include "brvertexbufferopengl.h"
+#include "brvertexbufferdirectx9.h"
 #include "brdisplay.h"
 #include "brdisplayopengl.h"
 #include "brdisplayopenglsoftware8.h"
@@ -176,11 +190,18 @@
 #include "brwindowsapp.h"
 #include "brmacosxapp.h"
 #include "briosapp.h"
+#include "brxbox360app.h"
 #include "brdxt1.h"
 #include "brdxt3.h"
 #include "brdxt5.h"
 #include "brmace.h"
-#include "brimage.h"
+#include "brtexturedirectx9.h"
+#include "brtextureopengl.h"
+#include "brshaders.h"
+#include "breffect.h"
+#include "breffectstaticpositiontexture.h"
+#include "breffect2d.h"
+#include "breffectpositiontexturecolor.h"
 #include "brfilebmp.h"
 #include "brfiledds.h"
 #include "brfilegif.h"
@@ -201,9 +222,19 @@
 #include "brkeyboard.h"
 #include "brjoypad.h"
 #include "brsound.h"
+#include "brgridindex.h"
+#include "brearcliptriangulate.h"
+#include "brflashstream.h"
+#include "brflashrgba.h"
+#include "brflashmatrix23.h"
 #include "brflashutils.h"
+#include "brflashrect.h"
+#include "brflashcolortransform.h"
+#include "brflashdisasmactionscript.h"
 #include "brflashaction.h"
 #include "brflashmanager.h"
+#include "brflashactionvalue.h"
+#include "brflashavm2.h"
 
 #if defined(__MWERKS__)
 #pragma ANSI_strict reset

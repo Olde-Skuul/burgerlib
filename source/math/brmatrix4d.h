@@ -2,7 +2,7 @@
 
 	4D Floating point matrix manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -138,6 +138,10 @@ struct Matrix4D_t {
 	void BURGER_API Rotate(float fRadians,float fX,float fY,float fZ);
 	void BURGER_API Translate(float fX,float fY,float fZ);
 	void BURGER_API TransposeTranslate(float fX,float fY,float fZ);
+	Word BURGER_API AffineInverse(const Matrix4D_t *pInput);
+	void BURGER_API PerspectiveFovLH(float fFieldOfViewY,float fAspect,float fNear,float fFar);
+	void BURGER_API PerspectiveFovRH(float fFieldOfViewY,float fAspect,float fNear,float fFar);
+	BURGER_INLINE operator const float *() const { return &x.x; }
 };
 extern const Matrix4D_t s_Matrix4DIdentity;
 }

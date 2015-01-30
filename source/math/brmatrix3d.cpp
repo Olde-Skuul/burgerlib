@@ -2,7 +2,7 @@
 
 	3D Floating point matrix manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -2983,6 +2983,97 @@ BURGER_DECLSPECNAKED void BURGER_API Burger::Matrix3D_t::TransposeTransformAdd(V
 
 /*! ************************************
 	
+	\brief Perform an affine inverse
+
+	Given an input matrix, perform an affine inverse and
+	store it in this instance.
+
+	\note Due to buffer use, do NOT perform this operation
+	on the matrix itself!
+
+	\param pInput Pointer to a matrix to obtain an inverse from
+	\return \ref TRUE if the inverse was successful, \ref FALSE if failure
+
+***************************************/
+
+Word BURGER_API Burger::Matrix3D_t::AffineInverse(const Matrix3D_t *pInput)
+{
+	// Calculate the determinant of the input matrix and determine
+	// if the the matrix is singular as limited by the float precision
+	// floating-point data representation.
+
+	float fPositive = 0.0f;
+	float fNegative = 0.0f;
+
+	float fTemp = pInput->x.x * pInput->y.y * pInput->z.z;
+	if (fTemp >= 0.0F) {
+		fPositive += fTemp; 
+	} else {
+		fNegative += fTemp;
+	}
+
+	fTemp = pInput->x.y * pInput->y.z * pInput->z.x;
+	if (fTemp >= 0.0f) {
+		fPositive += fTemp; 
+	} else {
+		fNegative += fTemp; 
+	}
+
+	fTemp = pInput->x.z * pInput->y.x * pInput->z.y;
+	if (fTemp >= 0.0F) { 
+		fPositive += fTemp;
+	} else { 
+		fNegative += fTemp; 
+	}
+
+	fTemp = -pInput->x.z * pInput->y.y * pInput->z.x;
+	if (fTemp >= 0.0F) {
+		fPositive += fTemp;
+	} else {
+		fNegative += fTemp; 
+	}
+
+	fTemp = -pInput->x.y * pInput->y.x * pInput->z.z;
+	if (fTemp >= 0.0F) {
+		fPositive += fTemp;
+	} else { 
+		fNegative += fTemp;
+	}
+
+	fTemp = -pInput->x.x * pInput->y.z * pInput->z.y;
+	if (fTemp >= 0.0F) {
+		fPositive += fTemp;
+	} else {
+		fNegative += fTemp; 
+	}
+
+	float fDeterminate = fPositive + fNegative;
+
+	// Is the matrix singular?
+
+	if((fDeterminate == 0.0f) || (Abs(fDeterminate / (fPositive - fNegative)) < (1.0e-15f))) {
+		// There is no scale, not possible to convert
+		Identity();
+		// Matrix4 M has no inverse
+		return FALSE;
+	}
+	//  Calculate inverse(A) = adj(A) / det(A)
+	fDeterminate = 1.0F / fDeterminate;
+
+	x.x =  (pInput->y.y * pInput->z.z - pInput->y.z * pInput->z.y) * fDeterminate;
+	x.y = -(pInput->x.y * pInput->z.z - pInput->x.z * pInput->z.y) * fDeterminate;
+	x.z =  (pInput->x.y * pInput->y.z - pInput->x.z * pInput->y.y) * fDeterminate;
+	y.x = -(pInput->y.x * pInput->z.z - pInput->y.z * pInput->z.x) * fDeterminate;
+	y.y =  (pInput->x.x * pInput->z.z - pInput->x.z * pInput->z.x) * fDeterminate;
+	y.z = -(pInput->x.x * pInput->y.z - pInput->x.z * pInput->y.x) * fDeterminate;
+	z.x =  (pInput->y.x * pInput->z.y - pInput->y.y * pInput->z.x) * fDeterminate;
+	z.y = -(pInput->x.x * pInput->z.y - pInput->x.y * pInput->z.x) * fDeterminate;
+	z.z =  (pInput->x.x * pInput->y.y - pInput->x.y * pInput->y.x) * fDeterminate;
+	return TRUE;
+}
+
+/*! ************************************
+	
 	\brief Rotate a matrix in the Y axis (Yaw)
 
 	Given a Y angle in radians, rotate the matrix accordingly
@@ -3094,6 +3185,20 @@ void BURGER_API Burger::Matrix3D_t::Roll(float fRoll)
 	y.y = (y.y*fCos)-(fXY*fSin);
 	y.z = (y.z*fCos)-(fXZ*fSin);
 }
+
+/*! ************************************
+
+	\fn Burger::Matrix3D_t::operator const float *() const
+	\brief Convert to a const float pointer
+
+	This convenience operator converts the Matrix3D_t into 
+	a float pointer to pass to other APIs that treat this as
+	an array of 32 bit floats.
+
+	\return The pointer to the object typecast as a (const float *)
+
+***************************************/
+
 
 /*! ************************************
 

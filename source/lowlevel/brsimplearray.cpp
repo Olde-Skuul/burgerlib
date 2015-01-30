@@ -2,7 +2,7 @@
 
 	intrinsic<T> compatible array template
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -12,6 +12,275 @@
 ***************************************/
 
 #include "brsimplearray.h"
+#include "brstringfunctions.h"
+
+/*! ************************************
+
+	\class Burger::SimpleArrayBase
+	\brief Base class for SimpleArray
+
+	This class will perform most work for the
+	SimpleArray template class
+
+	\sa SimpleArray or ClassArray
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::SimpleArrayBase::SimpleArrayBase(WordPtr uChunkSize)
+	\brief Default constructor.
+
+	Initializes the array to contain no data and have no members
+	and set to a specific chunk size.
+
+	\param uChunkSize Size in bytes of each element in the array
+	\sa SimpleArrayBase(WordPtr,WordPtr) or SimpleArrayBase(const SimpleArrayBase&)
+
+***************************************/
+
+/*! ************************************
+
+	\brief Default constructor with a starting array and chunk size
+
+	Initializes the array to contain uDefault number of uninitialized members.
+
+	\param uDefault Number of members to create the array with. Zero
+		will generate an empty array.
+	\param uChunkSize Size of each data chunk
+
+	\sa SimpleArrayBase(WordPtr) or SimpleArrayBase(const SimpleArrayBase&)
+
+***************************************/
+
+Burger::SimpleArrayBase::SimpleArrayBase(WordPtr uDefault,WordPtr uChunkSize) :
+	m_pData(NULL),
+	m_uSize(uDefault),
+	m_uBufferSize(uDefault),
+	m_uChunkSize(uChunkSize) {
+	// Anything?
+	if (uDefault) {
+		// Get the default buffer and die if failed in debug
+		m_pData = Alloc(uChunkSize * uDefault);
+		BURGER_ASSERT(m_pData);
+	}
+}
+
+/*! ************************************
+
+	\brief Default constructor for making a copy of another SimpleArrayBase
+
+	Initializes the array to contain a copy of
+	another SimpleArrayBase.
+
+	\param rData Reference to a matching SimpleArrayBase type
+
+	\sa SimpleArrayBase(WordPtr) or SimpleArrayBase(WordPtr,WordPtr)
+
+***************************************/
+
+Burger::SimpleArrayBase::SimpleArrayBase(const SimpleArrayBase &rData) :
+	m_pData(NULL)
+{
+	WordPtr uCount = rData.m_uSize;
+	m_uSize = uCount;
+	m_uBufferSize = uCount;
+	WordPtr uChunkSize = rData.m_uChunkSize;
+	m_uChunkSize = uChunkSize;
+	if (uCount) {
+		m_pData = AllocCopy(rData.m_pData,uChunkSize * uCount);
+		BURGER_ASSERT(m_pData);
+	}
+}
+
+/*! ************************************
+
+	\fn Burger::SimpleArrayBase::~SimpleArrayBase()
+	\brief Standard destructor
+
+	Releases the memory buffer with a call to Free(const void *)
+
+	\sa SimpleArrayBase(WordPtr), SimpleArrayBase(WordPtr,WordPtr) or SimpleArrayBase(const SimpleArrayBase&)
+
+***************************************/
+
+Burger::SimpleArrayBase::~SimpleArrayBase(void)
+{
+	clear();
+}
+
+/*! ************************************
+
+	\brief Copy an array into this one
+
+	If the copy is not itself, call clear() to erase the
+	contents of this class and make a duplicate
+	of every entry in the rData class into this one.
+
+	\param rData Reference to a matching SimpleArray type
+	\return *this
+	\sa resize(WordPtr) or reserve(WordPtr)
+
+***************************************/
+
+Burger::SimpleArrayBase & Burger::SimpleArrayBase::operator=(const SimpleArrayBase &rData) 
+{
+	// Copying over itself?
+	if (&rData!=this) {
+		// Dispose of the contents
+		clear();
+		// Get the size to copy
+		WordPtr uCount = rData.m_uSize;
+		WordPtr uChunkSize = rData.m_uChunkSize;
+		// Chunksize COULD change, bad idea, however, support
+		// it to prevent subtle bugs
+		m_uChunkSize = uChunkSize;
+		if (uCount) {
+			// Set the new size
+			m_uSize = uCount;
+			m_uBufferSize = uCount;
+			m_pData = AllocCopy(rData.m_pData,uChunkSize * uCount);
+			BURGER_ASSERT(m_pData);
+		}
+	}
+	return *this;
+}
+
+/*! ************************************
+
+	\brief Remove an object from the array.
+
+	Call the destructor on the specific object in the array and
+	then compact the array if needed.
+
+	\param uIndex Index into the array of the object to remove.
+	\sa resize(WordPtr) or reserve(WordPtr)
+
+***************************************/
+
+void BURGER_API Burger::SimpleArrayBase::remove_at(WordPtr uIndex)
+{
+	WordPtr uSize = m_uSize;
+	BURGER_ASSERT(uIndex < uSize);
+	if (uSize == 1) {
+		// Nuke it
+		clear();
+	} else {
+		--uSize;
+		m_uSize = uSize;
+		WordPtr uChunkSize = m_uChunkSize;
+		// Calculate the base pointer to the array
+		Word8 *pMark = static_cast<Word8 *>(m_pData) + (uIndex*uChunkSize);
+		// Copy over the single entry
+		MemoryMove(pMark,pMark+uChunkSize,uChunkSize * (uSize - uIndex));
+	}
+}
+
+/*! ************************************
+
+	\brief Remove all objects from the array.
+
+	Dispose of the array and set the size to zero.
+
+	\sa resize(WordPtr) or reserve(WordPtr)
+
+***************************************/
+
+void BURGER_API Burger::SimpleArrayBase::clear(void) 
+{
+	Free(m_pData);
+	m_pData = NULL;
+	m_uBufferSize = 0;
+	m_uSize = 0;
+}
+
+/*! ************************************
+
+	\brief Resize the valid entry count of the array.
+
+	If uNewSize is zero, erase all data. If uNewSize increases
+	the size of the array, increase the buffer size if necessary. If
+	the size is smaller than the existing array, truncate the array.
+
+	In some cases, the buffer size will be reduced if the new size
+	is substantially smaller.
+
+	\param uNewSize Number of valid objects the new array will contain.
+	\sa clear(void) or reserve(WordPtr)
+
+***************************************/
+
+void BURGER_API Burger::SimpleArrayBase::resize(WordPtr uNewSize) 
+{
+	if (!uNewSize) {
+		clear();
+	} else {
+		reserve(uNewSize);
+		m_uSize = uNewSize;
+	}
+}
+
+/*! ************************************
+
+	\brief Resize the memory used by the array.
+
+	This function sets the size of the master buffer which can exceed
+	the number of valid entries in the array. This is a performance
+	function in that if it's known at runtime what is the maximum
+	memory requirements for this array, it can be pre-allocated
+	and all functions can use this buffer until the class
+	is disposed of without any intermediate memory allocation
+	calls.
+
+	If the reservation size is zero, the array is released.
+
+	The array size will be adjusted to the match the buffer size.
+
+	\param uNewBufferSize Size in elements of the memory buffer.
+	\sa clear(void) or resize(WordPtr)
+
+***************************************/
+
+void BURGER_API Burger::SimpleArrayBase::reserve(WordPtr uNewBufferSize)
+{
+	// Resize the buffer.
+	if (!uNewBufferSize) {
+		clear();
+	} else {
+		// If the reservation size truncates the buffer, update the size
+		if (m_uSize>uNewBufferSize) {
+			m_uSize = uNewBufferSize;
+		}
+		m_uBufferSize = uNewBufferSize;
+		m_pData = Realloc(m_pData,m_uChunkSize * uNewBufferSize);
+		BURGER_ASSERT(m_pData);
+	}
+}
+
+/*! ************************************
+
+	\brief Append an array of object to this array.
+
+	Given a base pointer and an object count, iterate over the objects
+	and copy them to the end of this array. This function
+	will increase the size of the buffer if needed.
+
+	\param pData Pointer to the first element in an array of objects
+	\param uCount Number of elements in the array
+	\sa resize(WordPtr) or reserve(WordPtr)
+
+***************************************/
+
+void BURGER_API Burger::SimpleArrayBase::append(const void *pData,WordPtr uCount)
+{
+	if (uCount) {
+		WordPtr uSize = m_uSize;
+		resize(uSize + uCount);
+		WordPtr uChunkSize = m_uChunkSize;
+		MemoryCopy(static_cast<Word8*>(m_pData)+(uSize*uChunkSize),pData,uCount*uChunkSize);
+	}
+}
+
 
 /*! ************************************
 
@@ -67,31 +336,6 @@
 		will generate an empty array.
 
 	\sa SimpleArray() or SimpleArray(const SimpleArray&)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::SimpleArray::SimpleArray(const SimpleArray& rData)
-	\brief Default constructor for making a copy of another SimpleArray
-
-	Initializes the array to contain a copy of
-	another SimpleArray.
-
-	\param rData Reference to a matching SimpleArray type
-
-	\sa SimpleArray() or SimpleArray(WordPtr)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::SimpleArray::~SimpleArray()
-	\brief Standard destructor
-
-	Releases the memory buffer with a call to Free(const void *)
-
-	\sa SimpleArray(), SimpleArray(WordPtr) or SimpleArray(const SimpleArray&)
 
 ***************************************/
 
@@ -157,7 +401,7 @@
 
 /*! ************************************
 
-	\fn WordPtr Burger::SimpleArray::max_size(void) const
+	\fn WordPtr Burger::SimpleArray::capacity(void) const
 	\brief Return the number of objects the current buffer could hold.
 	 
 	 The buffer size may exceed the number of valid objects, so that if
@@ -168,6 +412,20 @@
 	\sa size(void) const
 
 ***************************************/
+
+/*! ************************************
+
+	\fn WordPtr Burger::SimpleArray::max_size(void)
+	\brief Return the maximum number of objects the buffer could ever hold.
+	 
+	Given the maximum possible size of memory in the machine, return the theoretical
+	maximum number of objects the buffer could hold.
+
+	\return Number of objects the buffer could possibly hold.
+	\sa capacity(void) const
+
+***************************************/
+
 
 /*! ************************************
 
@@ -253,7 +511,7 @@
 	improve performance.
 
 	\param rData An instance of the object to copy at the end of the array
-	\sa pop_back(void), insert(WordPtr,T), resize(WordPtr) or reserve(WordPtr)
+	\sa pop_back(void), insert_at(WordPtr,T), resize(WordPtr) or reserve(WordPtr)
 
 ***************************************/
 
@@ -265,19 +523,7 @@
 	Call the destructor on the last object in the array and
 	reduce the array size by one.
 
-	\sa push_back(T), remove(WordPtr), resize(WordPtr) or reserve(WordPtr)
-
-***************************************/
-
-/*! ************************************
-
-	\fn void Burger::SimpleArray::clear(void)
-	\brief Remove all objects from the array.
-
-	Call the destructor on every object in the array and
-	then release the array memory.
-
-	\sa resize(WordPtr) or reserve(WordPtr)
+	\sa push_back(T), remove_at(WordPtr), resize(WordPtr) or reserve(WordPtr)
 
 ***************************************/
 
@@ -298,20 +544,7 @@
 
 /*! ************************************
 
-	\fn void Burger::SimpleArray::remove(WordPtr uIndex)
-	\brief Remove an object from the array.
-
-	Call the destructor on the specific object in the array and
-	then compact the array if needed.
-
-	\param uIndex Index into the array of the object to remove.
-	\sa insert(WordPtr,T), resize(WordPtr) or reserve(WordPtr)
-
-***************************************/
-
-/*! ************************************
-
-	\fn void Burger::SimpleArray::insert(WordPtr uIndex,T rData)
+	\fn void Burger::SimpleArray::insert_at(WordPtr uIndex,T rData)
 	\brief Insert an object into the array.
 
 	Expand the buffer if needed and make a copy of the rData
@@ -319,7 +552,24 @@
 
 	\param uIndex Index into the array for the location of the object to insert.
 	\param rData Reference to the object to copy into the array
-	\sa remove(WordPtr), resize(WordPtr) or reserve(WordPtr)
+	\sa remove_at(WordPtr), resize(WordPtr) or reserve(WordPtr)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::SimpleArray::remove(T rData)
+	\brief Find an item and remove it from the array.
+
+	Given an item, scan the array for the first element found
+	and then remove the item.
+
+	\note If there are multiple copies of the item in the array,
+	this function only removes the first occurrence, not all copies.
+
+	\param rData Copy of the item to remove
+	\return \ref TRUE if an item was removed, \ref FALSE if not
+	\sa append(const SimpleArray&), insert_at(WordPtr,T), resize(WordPtr) or reserve(WordPtr)
 
 ***************************************/
 
@@ -334,7 +584,7 @@
 
 	\param pSourceData Pointer to the first element in an array of objects
 	\param uCount Number of elements in the array
-	\sa append(const SimpleArray&), insert(WordPtr,T), resize(WordPtr) or reserve(WordPtr)
+	\sa append(const SimpleArray&), insert_at(WordPtr,T), resize(WordPtr) or reserve(WordPtr)
 
 ***************************************/
 
@@ -349,45 +599,6 @@
 
 	\param rData Reference to a like typed SimpleArray to copy from.
 	\sa append(const T *,WordPtr), resize(WordPtr) or reserve(WordPtr)
-
-***************************************/
-
-/*! ************************************
-
-	\fn void Burger::SimpleArray::resize(WordPtr uNewSize)
-	\brief Resize the valid entry count of the array.
-
-	If uNewSize is zero, erase all data. If uNewSize increases
-	the size of the array, increase the buffer size if necessary. If
-	the size is smaller than the existing array, truncate the array.
-
-	In some cases, the buffer size will be reduced if the new size
-	is substantially smaller.
-
-	\param uNewSize Number of valid objects the new array will contain.
-	\sa clear(void) or reserve(WordPtr)
-
-***************************************/
-
-/*! ************************************
-
-	\fn void Burger::SimpleArray::reserve(WordPtr uNewBufferSize)
-	\brief Resize the memory used by the array.
-
-	This function sets the size of the master buffer which can exceed
-	the number of valid entries in the array. This is a performance
-	function in that if it's known at runtime what is the maximum
-	memory requirements for this array, it can be pre-allocated
-	and all functions can use this buffer until the class
-	is disposed of without any intermediate memory allocation
-	calls.
-
-	If the reservation size is zero, the array is released.
-
-	The array size will be adjusted to the match the buffer size.
-
-	\param uNewBufferSize Size in elements of the memory buffer.
-	\sa clear(void) or resize(WordPtr)
 
 ***************************************/
 
@@ -472,5 +683,42 @@
 
 	\return Constant iterator for ending a traversal of the array.
 	\sa begin(void) const or end(void)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::SimpleArray::const_iterator Burger::SimpleArray::cbegin(void) const
+	\brief Constant iterator for the start of the array.
+
+	STL compatible constant iterator for the start of the array.
+
+	\return Constant iterator for starting a traversal of the array.
+	\sa end(void) const or begin(void)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::SimpleArray::const_iterator Burger::SimpleArray::cend(void) const
+	\brief Constant iterator for the end of the array.
+
+	STL compatible constant iterator for the end of the array.
+
+	\return Constant iterator for ending a traversal of the array.
+	\sa begin(void) const or end(void)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::SimpleArray::erase(const_iterator it)
+	\brief Remove an entry from the array using an iterator as the index
+
+	Using an iterator index, delete an entry in the array. Note, this
+	will change the end() value in an index
+
+	\param it Iterator index into an array
+	\sa remove_at(WordPtr)
 
 ***************************************/

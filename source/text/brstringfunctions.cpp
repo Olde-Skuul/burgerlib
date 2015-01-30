@@ -2,7 +2,7 @@
 
 	Stand alone string functions
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -1065,6 +1065,69 @@ Word64 BURGER_API Burger::BitReverse(Word64 uInput,Word uBitLength)
 
 /*! ************************************
 
+	\brief Calculate the number of set bits
+
+	Given a 32 bit integer, count the number
+	of bits set and return the value
+	from zero to thirty two.
+
+	\param uInput Integer to count the bits from
+	\return 0 to 32
+	\sa BitSetCount(Word64)
+
+***************************************/
+
+Word BURGER_API Burger::BitSetCount(Word32 uInput)
+{
+	// Use vector adding to count the bits
+	// Stage 1, add 16 pairs of 1 bit numbers
+	uInput = uInput - ((uInput >> 1) & 0x55555555U);
+	// Stage 2, add 8 pairs of 2 bit numbers
+	uInput = (uInput & 0x33333333U) + ((uInput >> 2U) & 0x33333333U);
+	// Stage 3, add 4 pairs of 4 bit numbers and then sum
+	// them with a vector multiply in which the upper 8 bits is the count
+	// Neat, eh?
+	return (((uInput + (uInput >> 4U)) & 0x0F0F0F0FU) * 0x01010101U) >> 24U;
+}
+
+/*! ************************************
+
+	\brief Calculate the number of set bits
+
+	Given a 64 bit integer, count the number
+	of bits set and return the value
+	from zero to sixty four.
+
+	\param uInput Integer to count the bits from
+	\return 0 to 64
+	\sa BitSetCount(Word32)
+
+***************************************/
+
+Word BURGER_API Burger::BitSetCount(Word64 uInput)
+{
+	// If the CPU is a 64 bit one, do it the fast way
+#if defined(BURGER_64BITCPU) && !defined(BURGER_METROWERKS)
+	// Use vector adding to count the bits
+	// Stage 1, add 16 pairs of 1 bit numbers
+	uInput = uInput - ((uInput >> 1) & 0x5555555555555555UL);
+	// Stage 2, add 8 pairs of 2 bit numbers
+	uInput = (uInput & 0x3333333333333333U) + ((uInput >> 2U) & 0x3333333333333333ULL);
+	// Stage 3, add 4 pairs of 4 bit numbers and then sum
+	// them with a vector multiply in which the upper 8 bits is the count
+	// Neat, eh?
+	uInput = (((uInput + (uInput >> 4U)) & 0x0F0F0F0F0F0F0F0FULL) * 0x0101010101010101ULL) >> 56U;
+	return static_cast<Word>(uInput);
+#else
+	// For 32 bit CPUs, break it into two 32 bit chunks to make the code simpler
+	// (Note, the 64 bit code breaks on CodeWarrior in debugging mode due to a broken 64 bit multiply
+	// call)
+	return BitSetCount(static_cast<Word32>(uInput))+BitSetCount(static_cast<Word32>(uInput>>32U));
+#endif
+}
+
+/*! ************************************
+
 	\brief Convert a "C" string into a Pascal string.
 	
 	Copy a "C" string and convert it into a Pascal style string. A
@@ -1241,6 +1304,51 @@ char * BURGER_API Burger::ParseBeyondEOL(const char *pInput)
 			break;		// Exit now
 		}
 	} while (uTemp!=10);		// Unix EOL?
+	return const_cast<char*>(pInput);		// Return the result pointer
+}
+
+/*! ************************************
+
+	\brief Parse a "C" string until a zero or EOL or out of data.
+	
+	Follow a stream of text input until either a zero is found,
+	an End Of Line is found or data ran out.
+	
+	If a zero is found, return a pointer to the ZERO.
+	
+	If an EOL is found, return a pointer to the text BEYOND
+	the EOL which is a "\n" (10) or a "\r" (13). In the case of a CR/LF
+	combination, found in PC style text files, return the pointer
+	beyond the pair.
+
+	\param pInput Pointer to a string to parse. \ref NULL will page fault.
+	\param uLength Length of the string buffer.
+	\return Pointer to the zero, or EOL character.
+	
+***************************************/
+
+char * BURGER_API Burger::ParseBeyondEOL(const char *pInput,WordPtr uLength)
+{
+	Word uTemp;		// Temp storage
+	if (uLength) {
+		do {
+			uTemp = reinterpret_cast<const Word8 *>(pInput)[0];	// Get a byte of input 
+			if (!uTemp) {		// End now?
+				break;
+			}
+			++pInput;			// Accept the char
+			// Out of data?
+			if (!--uLength) {
+				break;
+			}
+			if (uTemp==13) {	// Mac or PC style EOL?
+				if (reinterpret_cast<const Word8 *>(pInput)[0]==10) {	// Followed by a PC LF?
+					++pInput;		// Accept the LF as well
+				}
+				break;		// Exit now
+			}
+		} while (uTemp!=10);		// Unix EOL?
+	}
 	return const_cast<char*>(pInput);		// Return the result pointer
 }
 
@@ -2055,6 +2163,66 @@ void BURGER_API Burger::SlashesToLinuxSlashes(char *pOutput,const char *pInput)
 		do {
 			if (uTemp=='\\') {	// Change the slash
 				uTemp = '/';
+			}
+			pOutput[0] = static_cast<char>(uTemp);
+			++pOutput;
+			uTemp = reinterpret_cast<const Word8*>(pInput)[1];
+			++pInput;
+		} while (uTemp);		// End of string?
+	}
+	pOutput[0] = static_cast<char>(uTemp);
+}
+
+/*! ************************************
+
+	\brief Convert characters in a string from one to another
+	
+	Convert any character that matches the uFrom value
+	into the uTo value.
+		
+	\param pInput Pointer to the "C" string to perform the fix up on. \ref NULL will page fault.
+	\param uFrom Value to compare with.
+	\param uTo Value to replace matching values with.
+	\sa Replace(char *,const char *,Word,Word)
+
+***************************************/
+
+void BURGER_API Burger::Replace(char *pInput,Word uFrom,Word uTo)
+{
+	Word uTemp = reinterpret_cast<Word8*>(pInput)[0];
+	if (uTemp) {
+		do {
+			if (uTemp==uFrom) {	// Change the slash
+				pInput[0] = static_cast<char>(uTo);
+			}
+			uTemp = reinterpret_cast<Word8*>(pInput)[1];
+			++pInput;
+		} while (uTemp);		// End of string?
+	}
+}
+
+/*! ************************************
+
+	\brief Convert characters in a string from one to another
+	
+	Convert any character that matches the uFrom value
+	into the uTo value.
+		
+	\param pOutput Pointer to a buffer large enough to hold the converted "C" string.
+	\param pInput Pointer to the "C" string to perform the fix up on. \ref NULL will page fault.
+	\param uFrom Value to compare with.
+	\param uTo Value to replace matching values with.
+	\sa Replace(char *,Word,Word)
+
+***************************************/
+
+void BURGER_API Burger::Replace(char *pOutput,const char *pInput,Word uFrom,Word uTo)
+{
+	Word uTemp = reinterpret_cast<const Word8*>(pInput)[0];
+	if (uTemp) {
+		do {
+			if (uTemp==uFrom) {	// Test the value
+				uTemp = uTo;	// Value to change with
 			}
 			pOutput[0] = static_cast<char>(uTemp);
 			++pOutput;
@@ -3216,6 +3384,37 @@ void BURGER_API Burger::StringConcatenate(char *pOutput,WordPtr uOutputSize,cons
 		uOutputSize-=uLength;
 		// Copy the rest with bounds checking
 		StringCopy(pOutput+uLength,uOutputSize,pInput);
+	}
+}
+
+/*! ************************************
+
+	\brief Concatenate a "C" string with a string buffer, bounds checked.
+
+	Given a pointer to a string buffer, append it to
+	a destination buffer that contains a valid "C" string.
+	If the destination buffer isn't
+	big enough for the input string, truncate it.
+	
+	\param pOutput Pointer to the buffer of a valid "C" string to be appended.
+	\param uOutputSize Size in bytes of the output buffer
+	\param pInput Pointer to the buffer with the string to copy from.
+	\param uInputSize Size in bytes of the input buffer
+		
+	\sa Burger::StringConcatenate(char *,const char *) or Burger::StringLength(const char *)
+
+***************************************/
+
+void BURGER_API Burger::StringConcatenate(char *pOutput,WordPtr uOutputSize,const char *pInput,WordPtr uInputSize)
+{
+	// Get the end of the first string
+	WordPtr uLength = StringLength(pOutput);
+	// Already out of bounds?
+	if (uLength<uOutputSize) {
+		// Adjust the output to all the data that won't be touched.
+		uOutputSize-=uLength;
+		// Copy the rest with bounds checking
+		StringCopy(pOutput+uLength,uOutputSize,pInput,uInputSize);
 	}
 }
 
@@ -5618,6 +5817,39 @@ Int BURGER_API Burger::AsciiToInteger(const char *pInput,Int iDefault,Int iMin,I
 
 /*! ************************************
 
+	\brief Convert a 32 bit integer and signal if successful
+
+	Scan the value string as a 32 bit integer or
+	hex value and if successful, return \ref TRUE.
+
+	Hex strings are acceptable input in the form
+	of $1234 and 0x1234. 0xFFFFFFFF will be converted
+	to -1.
+
+	\param pOutput Pointer to the value to return
+	\param pInput Pointer to the string to convert. \ref NULL will force the default
+	\return \ref TRUE if a value was parsed, \ref FALSE if the ASCII string was not a number
+	\sa AsciiToInteger(const char *,const char **) or AsciiToInteger(const char *,Int,Int,Int)
+
+***************************************/
+
+Word BURGER_API Burger::AsciiToInteger(Word32 *pOutput,const char *pInput)
+{
+	const char *pDest;
+	// Convert the text
+	Word32 uOutput = AsciiToInteger(pInput,&pDest);
+	Word uResult = TRUE;
+	// Was anything parsed?
+	if (pDest==pInput) {
+		uResult = FALSE;
+		uOutput = 0;	// Clear the output
+	}
+	pOutput[0] = uOutput;
+	return uResult;		// Return the result
+}
+
+/*! ************************************
+
 	\brief Convert an ASCII string into a boolean.
 	
 	Convert the string to a \ref TRUE or a \ref FALSE. If the input is
@@ -5646,6 +5878,39 @@ Word BURGER_API Burger::AsciiToBoolean(const char *pInput,Word bDefault)
 		}
 	}
 	return bDefault;
+}
+
+/*! ************************************
+
+	\brief Convert an ASCII string into a boolean and signal if successful
+	
+	Convert the string to a \ref TRUE or a \ref FALSE. If the input is
+	\ref NULL or invalid, return \ref FALSE.
+
+	"true" and "yes" are considered \ref TRUE while "false" and "no" are considered
+	\ref FALSE. The comparison is case insensitive.
+	
+	\param pOutput Pointer to the value to return
+	\param pInput Pointer to the string to convert. \ref NULL will force the default
+	\return \ref TRUE if a value was parsed, \ref FALSE if the ASCII string was not a boolean
+	
+	\sa AsciiToBoolean(const char *,const char **) or AsciiToBoolean(const char *,Word)
+
+***************************************/
+
+Word BURGER_API Burger::AsciiToBoolean(Word *pOutput,const char *pInput)
+{
+	const char *pDest;
+	// Convert the text
+	Word uOutput = AsciiToBoolean(pInput,&pDest);
+	Word uResult = TRUE;
+	// Was anything parsed?
+	if (pDest==pInput) {
+		uResult = FALSE;
+		uOutput = 0;	// Clear the output
+	}
+	pOutput[0] = uOutput;
+	return uResult;		// Return the result
 }
 
 /*! ************************************
@@ -5730,6 +5995,36 @@ float BURGER_API Burger::AsciiToFloat(const char *pInput,float fDefault,float fM
 
 /*! ************************************
 
+	\brief Return a floating point value and signal if successful
+
+	Scan the value string as a 32 bit floating point
+	numeric value and if successful, return \ref TRUE.
+	If it's not a number, return \ref FALSE.
+
+	\param pOutput Pointer to the value to return
+	\param pInput Pointer to the string to convert. \ref NULL will force the default
+	\return \ref TRUE if a value was parsed, \ref FALSE if the ASCII string was not a 32 bit float
+	\sa AsciiToFloat(const char *,const char **) or AsciiToDouble(double *,const char *)
+
+***************************************/
+
+Word BURGER_API Burger::AsciiToFloat(float *pOutput,const char *pInput)
+{
+	const char *pDest;
+	// Convert the text
+	float fOutput = AsciiToFloat(pInput,&pDest);
+	Word uResult = TRUE;
+	// Was anything parsed?
+	if (pDest==pInput) {
+		uResult = FALSE;
+		fOutput = 0.0f;	// Clear the output
+	}
+	pOutput[0] = fOutput;
+	return uResult;		// Return the result
+}
+
+/*! ************************************
+
 	\brief Return a 64 bit floating point value
 
 	Scan the value string as a 64 bit floating point
@@ -5804,4 +6099,34 @@ double BURGER_API Burger::AsciiToDouble(const char *pInput,double dDefault,doubl
 		}
 	}
 	return dDefault;
+}
+
+/*! ************************************
+
+	\brief Return a 64 bit floating point value and signal if successful
+
+	Scan the value string as a 64 bit floating point
+	numeric value and if successful, return \ref TRUE.
+	If it's not a number, return \ref FALSE.
+
+	\param pOutput Pointer to the value to return
+	\param pInput Pointer to the string to convert. \ref NULL will force the default
+	\return \ref TRUE if a value was parsed, \ref FALSE if the ASCII string was not a 64 bit float
+	\sa AsciiToDouble(const char *,const char **) or AsciiToFloat(float *,const char *)
+
+***************************************/
+
+Word BURGER_API Burger::AsciiToDouble(double *pOutput,const char *pInput)
+{
+	const char *pDest;
+	// Convert the text
+	double dOutput = AsciiToDouble(pInput,&pDest);
+	Word uResult = TRUE;
+	// Was anything parsed?
+	if (pDest==pInput) {
+		uResult = FALSE;
+		dOutput = 0.0;	// Clear the output
+	}
+	pOutput[0] = dOutput;
+	return uResult;		// Return the result
 }

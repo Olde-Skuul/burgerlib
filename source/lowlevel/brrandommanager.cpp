@@ -2,7 +2,7 @@
 
 	Random number generator
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -59,18 +59,6 @@ static const Word32 DefaultArray[17] = {
 
 /*! ************************************
 
-	\fn Burger::Random::Delete()
-	\brief Delete memory allocated by New().
-	
-	If you create an instance via a call to New(), use
-	this function to dispose of it.
-	
-	\sa Random() and New().
-
-***************************************/
-
-/*! ************************************
-
 	\brief Create a new instance of Random.
 	
 	Create a new random number generator instance
@@ -78,11 +66,11 @@ static const Word32 DefaultArray[17] = {
 	
 	\param uNewSeed A seed value for tighter control. Passed to SetSeed().
 	\return Pointer to instance, or \ref NULL if out of memory.
-	\sa Delete() and SetSeed().
+	\sa SetSeed().
 
 ***************************************/
 
-Burger::Random * Burger::Random::New(Word32 uNewSeed)
+Burger::Random * BURGER_API Burger::Random::New(Word32 uNewSeed)
 {
 	Random *pRandom = reinterpret_cast<Random *>(Alloc(sizeof(Random)));
 	if (pRandom) {
@@ -106,7 +94,7 @@ Burger::Random * Burger::Random::New(Word32 uNewSeed)
 
 ***************************************/
 
-void Burger::Random::Init(void)
+void BURGER_API Burger::Random::Init(void)
 {
 	m_uSeed = 728056387U;		// Set the seed
 	m_uIndex = 0;				// Index
@@ -130,7 +118,7 @@ void Burger::Random::Init(void)
 
 ***************************************/
 
-void Burger::Random::RandomInit(void)
+void BURGER_API Burger::Random::RandomInit(void)
 {
 	Init();								// Init the structure
 	Word32 uTickMark = Tick::Read();		// Get a current tick mark
@@ -152,7 +140,7 @@ void Burger::Random::RandomInit(void)
 
 ***************************************/
 
-Word32 Burger::Random::Get(Word32 uRange)
+Word32 BURGER_API Burger::Random::Get(Word32 uRange)
 {
 	Word32 i = m_uIndex;		/* Cache indexs */
 	Word32 j = i+5;
@@ -192,7 +180,7 @@ Word32 Burger::Random::Get(Word32 uRange)
 
 ***************************************/
 
-void Burger::Random::SetSeed(Word32 uNewSeed)
+void BURGER_API Burger::Random::SetSeed(Word32 uNewSeed)
 {
 	MemoryCopy(m_Array,DefaultArray,sizeof(DefaultArray));
 	m_uSeed = 0-uNewSeed;
@@ -219,7 +207,7 @@ void Burger::Random::SetSeed(Word32 uNewSeed)
 
 ***************************************/
 
-Int32 Burger::Random::GetSigned(Word32 uRange)
+Int32 BURGER_API Burger::Random::GetSigned(Word32 uRange)
 {
 	return static_cast<Int32>(Get(uRange<<1U)-uRange);		/* Get the random number */
 }
@@ -232,14 +220,83 @@ Int32 Burger::Random::GetSigned(Word32 uRange)
 	to 0.999999f. The numbers are spread evenly.
 	
 	\return Random float from 0.0 to 0.9999999999f
-	\sa GetSigned() and Get().
+	\sa GetSigned(), GetSymmetricFloat() and Get().
 
 ***************************************/
 
-float Burger::Random::GetFloat(void)
+float BURGER_API Burger::Random::GetFloat(void)
 {
-	Int32 Value = static_cast<Int32>(Get())&0x7FFFFFFF;		// Max 32 bit int
+	Int32 iValue = static_cast<Int32>(Get())&0x7FFFFFFF;		// Max 32 bit int
 	// Convert to float
-	return static_cast<float>(Value)*
+	return static_cast<float>(iValue)*
 		(1.0f/static_cast<float>(0x80000000U));
+}
+
+/*! ************************************
+
+	\brief Return a float from 0.0f to fRange.
+	
+	Returns a random number in the range of 0.0f
+	to fRange. The numbers are spread evenly.
+	
+	\return Random float from 0.0 to fRange
+	\sa GetFloat(void), GetSigned(Word32), GetSymmetricFloat(float) and Get(Word32).
+
+***************************************/
+
+float BURGER_API Burger::Random::GetFloat(float fRange)
+{
+	Int32 iValue = static_cast<Int32>(Get())&0x7FFFFFFF;		// Max 32 bit int
+	// Convert to float
+	return fRange*static_cast<float>(iValue)*
+		(1.0f/static_cast<float>(0x80000000U));
+}
+
+/*! ************************************
+
+	\brief Return a float from -.0.99999f to 0.99999f.
+	
+	Returns a random number in the range of -.0.99999f
+	to 0.999999f. The numbers are spread evenly.
+	
+	\return Random float from -.0.99999f to 0.9999999999f
+	\sa GetSigned(), GetFloat() and Get().
+
+***************************************/
+
+float BURGER_API Burger::Random::GetSymmetricFloat(void)
+{
+	Int32 iValue = static_cast<Int32>(Get());		// Max 32 bit int
+	// Convert to float
+	float fValue = static_cast<float>(iValue&0x7FFFFFFF)*
+		(1.0f/static_cast<float>(0x80000000U));
+	if (iValue&0x80000000) {
+		fValue *= -1.0f;
+	}
+	return fValue;
+}
+
+/*! ************************************
+
+	\brief Return a float from -fRange to fRange
+	
+	Returns a random number in the range of -fRange
+	to fRange. The numbers are spread evenly.
+
+	\return Random float from -fRange to fRange
+	\sa GetSymmetricFloat(void), GetSigned(void), GetFloat(float) and Get(Word32).
+
+***************************************/
+
+float BURGER_API Burger::Random::GetSymmetricFloat(float fRange)
+{
+	Int32 iValue = static_cast<Int32>(Get());		// Max 32 bit int
+	// Convert to float
+	float fValue = static_cast<float>(iValue&0x7FFFFFFF)*
+		(1.0f/static_cast<float>(0x80000000U));
+	fValue*=fRange;
+	if (iValue&0x80000000) {
+		fValue *= -1.0f;
+	}
+	return fValue;
 }

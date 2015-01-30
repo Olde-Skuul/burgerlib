@@ -81,6 +81,9 @@
 			<Add directory='&quot;../source/file&quot;' />
 			<Add directory='&quot;../source/flashplayer&quot;' />
 			<Add directory='&quot;../source/graphics&quot;' />
+			<Add directory='&quot;../source/graphics/effects&quot;' />
+			<Add directory='&quot;../source/graphics/shadersdx9&quot;' />
+			<Add directory='&quot;../source/graphics/shadersopengl&quot;' />
 			<Add directory='&quot;../source/input&quot;' />
 			<Add directory='&quot;../source/lowlevel&quot;' />
 			<Add directory='&quot;../source/math&quot;' />
@@ -104,7 +107,6 @@
 		<Unit filename="../source/brglext.h" />
 		<Unit filename="../source/brglut.h" />
 		<Unit filename="../source/brglxext.h" />
-		<Unit filename="../source/brstartup.h" />
 		<Unit filename="../source/commandline/brcommandparameter.cpp" />
 		<Unit filename="../source/commandline/brcommandparameter.h" />
 		<Unit filename="../source/commandline/brcommandparameterbooltrue.cpp" />
@@ -197,8 +199,24 @@
 		<Unit filename="../source/file/brrezfile.h" />
 		<Unit filename="../source/flashplayer/brflashaction.cpp" />
 		<Unit filename="../source/flashplayer/brflashaction.h" />
+		<Unit filename="../source/flashplayer/brflashactionvalue.cpp" />
+		<Unit filename="../source/flashplayer/brflashactionvalue.h" />
+		<Unit filename="../source/flashplayer/brflashavm2.cpp" />
+		<Unit filename="../source/flashplayer/brflashavm2.h" />
+		<Unit filename="../source/flashplayer/brflashcolortransform.cpp" />
+		<Unit filename="../source/flashplayer/brflashcolortransform.h" />
+		<Unit filename="../source/flashplayer/brflashdisasmactionscript.cpp" />
+		<Unit filename="../source/flashplayer/brflashdisasmactionscript.h" />
 		<Unit filename="../source/flashplayer/brflashmanager.cpp" />
 		<Unit filename="../source/flashplayer/brflashmanager.h" />
+		<Unit filename="../source/flashplayer/brflashmatrix23.cpp" />
+		<Unit filename="../source/flashplayer/brflashmatrix23.h" />
+		<Unit filename="../source/flashplayer/brflashrect.cpp" />
+		<Unit filename="../source/flashplayer/brflashrect.h" />
+		<Unit filename="../source/flashplayer/brflashrgba.cpp" />
+		<Unit filename="../source/flashplayer/brflashrgba.h" />
+		<Unit filename="../source/flashplayer/brflashstream.cpp" />
+		<Unit filename="../source/flashplayer/brflashstream.h" />
 		<Unit filename="../source/flashplayer/brflashutils.cpp" />
 		<Unit filename="../source/flashplayer/brflashutils.h" />
 		<Unit filename="../source/graphics/brdisplay.cpp" />
@@ -227,6 +245,32 @@
 		<Unit filename="../source/graphics/brrenderersoftware8.h" />
 		<Unit filename="../source/graphics/brshape8bit.cpp" />
 		<Unit filename="../source/graphics/brshape8bit.h" />
+		<Unit filename="../source/graphics/brtexture.cpp" />
+		<Unit filename="../source/graphics/brtexture.h" />
+		<Unit filename="../source/graphics/brtextureopengl.cpp" />
+		<Unit filename="../source/graphics/brtextureopengl.h" />
+		<Unit filename="../source/graphics/brvertexbuffer.cpp" />
+		<Unit filename="../source/graphics/brvertexbuffer.h" />
+		<Unit filename="../source/graphics/brvertexbufferopengl.cpp" />
+		<Unit filename="../source/graphics/brvertexbufferopengl.h" />
+		<Unit filename="../source/graphics/effects/breffect.cpp" />
+		<Unit filename="../source/graphics/effects/breffect.h" />
+		<Unit filename="../source/graphics/effects/breffect2d.cpp" />
+		<Unit filename="../source/graphics/effects/breffect2d.h" />
+		<Unit filename="../source/graphics/effects/breffectpositiontexturecolor.cpp" />
+		<Unit filename="../source/graphics/effects/breffectpositiontexturecolor.h" />
+		<Unit filename="../source/graphics/effects/breffectstaticpositiontexture.cpp" />
+		<Unit filename="../source/graphics/effects/breffectstaticpositiontexture.h" />
+		<Unit filename="../source/graphics/effects/brshaders.cpp" />
+		<Unit filename="../source/graphics/effects/brshaders.h" />
+		<Unit filename="../source/graphics/shadersdx9/pstexturecolordx9.h" />
+		<Unit filename="../source/graphics/shadersdx9/pstexturedx9.h" />
+		<Unit filename="../source/graphics/shadersdx9/vs20sprite2ddx9.h" />
+		<Unit filename="../source/graphics/shadersdx9/vsstaticpositiondx9.h" />
+		<Unit filename="../source/graphics/shadersopengl/pstexturecolorgl.h" />
+		<Unit filename="../source/graphics/shadersopengl/pstexturegl.h" />
+		<Unit filename="../source/graphics/shadersopengl/vs20sprite2dgl.h" />
+		<Unit filename="../source/graphics/shadersopengl/vsstaticpositiongl.h" />
 		<Unit filename="../source/input/brjoypad.cpp" />
 		<Unit filename="../source/input/brjoypad.h" />
 		<Unit filename="../source/input/brkeyboard.cpp" />
@@ -257,6 +301,8 @@
 		<Unit filename="../source/lowlevel/brendian.h" />
 		<Unit filename="../source/lowlevel/brglobals.cpp" />
 		<Unit filename="../source/lowlevel/brglobals.h" />
+		<Unit filename="../source/lowlevel/brgridindex.cpp" />
+		<Unit filename="../source/lowlevel/brgridindex.h" />
 		<Unit filename="../source/lowlevel/brguid.cpp" />
 		<Unit filename="../source/lowlevel/brguid.h" />
 		<Unit filename="../source/lowlevel/brlinkedlistobject.cpp" />
@@ -266,6 +312,8 @@
 		<Unit filename="../source/lowlevel/brmetrowerks.h" />
 		<Unit filename="../source/lowlevel/broscursor.cpp" />
 		<Unit filename="../source/lowlevel/broscursor.h" />
+		<Unit filename="../source/lowlevel/brpair.cpp" />
+		<Unit filename="../source/lowlevel/brpair.h" />
 		<Unit filename="../source/lowlevel/brperforce.cpp" />
 		<Unit filename="../source/lowlevel/brperforce.h" />
 		<Unit filename="../source/lowlevel/brqueue.cpp" />
@@ -278,6 +326,7 @@
 		<Unit filename="../source/lowlevel/brsimplearray.h" />
 		<Unit filename="../source/lowlevel/brsmartpointer.cpp" />
 		<Unit filename="../source/lowlevel/brsmartpointer.h" />
+		<Unit filename="../source/lowlevel/brsnsystems.h" />
 		<Unit filename="../source/lowlevel/brstaticrtti.cpp" />
 		<Unit filename="../source/lowlevel/brstaticrtti.h" />
 		<Unit filename="../source/lowlevel/brtick.cpp" />
@@ -289,6 +338,8 @@
 		<Unit filename="../source/lowlevel/brvisualstudio.h" />
 		<Unit filename="../source/lowlevel/brwatcom.h" />
 		<Unit filename="../source/lowlevel/brxcode.h" />
+		<Unit filename="../source/math/brearcliptriangulate.cpp" />
+		<Unit filename="../source/math/brearcliptriangulate.h" />
 		<Unit filename="../source/math/brfixedmatrix3d.cpp" />
 		<Unit filename="../source/math/brfixedmatrix3d.h" />
 		<Unit filename="../source/math/brfixedmatrix4d.cpp" />
@@ -357,7 +408,6 @@
 		<Unit filename="../source/windows/brdisplaydibsoftware8.h" />
 		<Unit filename="../source/windows/brdisplaydibsoftware8windows.cpp" />
 		<Unit filename="../source/windows/brdisplaydibwindows.cpp" />
-		<Unit filename="../source/windows/brdisplaydirectx8bit.h" />
 		<Unit filename="../source/windows/brdisplaydirectx9.h" />
 		<Unit filename="../source/windows/brdisplaydirectx9software8.h" />
 		<Unit filename="../source/windows/brdisplaydirectx9software8windows.cpp" />
@@ -376,11 +426,17 @@
 		<Unit filename="../source/windows/brpoint2dwindows.cpp" />
 		<Unit filename="../source/windows/brrectwindows.cpp" />
 		<Unit filename="../source/windows/brsoundwindows.cpp" />
+		<Unit filename="../source/windows/brstartup.h" />
+		<Unit filename="../source/windows/brtexturedirectx9.cpp" />
+		<Unit filename="../source/windows/brtexturedirectx9.h" />
 		<Unit filename="../source/windows/brtickwindows.cpp" />
 		<Unit filename="../source/windows/brtimedatewindows.cpp" />
+		<Unit filename="../source/windows/brvertexbufferdirectx9.h" />
+		<Unit filename="../source/windows/brvertexbufferdirextx9.cpp" />
 		<Unit filename="../source/windows/brwindowsapp.cpp" />
 		<Unit filename="../source/windows/brwindowsapp.h" />
 		<Unit filename="../source/windows/brwindowstypes.h" />
+		<Unit filename="../source/windows/ps20display8bitdx9.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -2,7 +2,7 @@
 
 	Debug manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -72,7 +72,7 @@ Word BURGER_ANSIAPI Burger::Debug::Fatal(const char *pMessage,...)
 		va_list Args;
 		if (pMessage) {		// Message to print?
 			va_start(Args,pMessage);
-			vsprintf(Globals::g_Globals.m_ErrorMsg,pMessage,Args);	// Create the message
+			vsprintf(Globals::GetErrorMsg(),pMessage,Args);	// Create the message
 			va_end(Args);
 			String(Globals::GetErrorMsg());		// Print it
 		}
@@ -114,7 +114,7 @@ void BURGER_ANSIAPI Burger::Debug::Warning(const char *pMessage,...)
 	va_list Args;
 	if (pMessage) {						// No message, no error!
 		va_start(Args,pMessage);		// Start parm passing
-		vsprintf(Globals::g_Globals.m_ErrorMsg,pMessage,Args);		// Create the message
+		vsprintf(Globals::GetErrorMsg(),pMessage,Args);		// Create the message
 		va_end(Args);					// End parm passing
 		// Should the warning be printed?
 		if ((Globals::GetTraceFlag()&Globals::TRACE_WARNINGS) ||
@@ -137,7 +137,7 @@ void BURGER_ANSIAPI Burger::Debug::Warning(const char *pMessage,...)
 	the message to the output stream, which is a console or an
 	attached debugger
 
-	\sa Debug::String(const char *), Debug::Message(Word32) and Debug::Message(Word64)
+	\sa Debug::String(const char *), Debug::String(Word32) and Debug::String(Word64)
 
 ***************************************/
 

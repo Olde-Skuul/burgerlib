@@ -3,7 +3,7 @@
 	Time Manager Class
 	MSDOS specific code
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -21,7 +21,7 @@
 	
     http://msdn.microsoft.com/en-us/library/windows/desktop/ms724247(v=vs.85).aspx
 
-	\note This function is only available on MS/DOS
+	\msdosonly
 	
 	\param uMSDOSTime Time/date from an MSDOS file
 
@@ -50,7 +50,7 @@ void Burger::TimeDate_t::LoadMSDOS(Word32 uMSDOSTime)
 	
     http://msdn.microsoft.com/en-us/library/windows/desktop/ms724247(v=vs.85).aspx
 
-	\note This function is only available on MS/DOS
+	\msdosonly
 
 	\return MSDOS FILETIME
 

@@ -2,7 +2,7 @@
 
 	Palette manager class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -13,6 +13,7 @@
 
 #include "brpalette.h"
 #include "brrenderer.h"
+#include "brfixedpoint.h"
 
 /*! ************************************
 
@@ -102,6 +103,28 @@ const Burger::RGBWord8_t Burger::RGBWord8_t::Yellow = {255,255,0};
 
 /*! ************************************
 
+	\brief Interpolates between two colors
+
+	Interpolate with linear scaling between two colors. 0.0f will return the From
+	color and 1.0f will return the To color and all factors in between
+	will yield the proper mix of the two colors.
+
+	\param pFrom Pointer to color convert from
+	\param pTo Pointer to color to convert o
+	\param fFactor Interpolation factor between 0.0f to 1.0f (0.0f = pFrom, 1.0f = pTo)
+
+***************************************/
+
+void BURGER_API Burger::RGBWord8_t::Interpolate(const RGBWord8_t *pFrom,const RGBWord8_t *pTo,float fFactor)
+{
+	Fixed32 lFactor = FLOATTOFIXED(fFactor);
+	m_uRed = static_cast<Word8>(FixedToIntNearest((pFrom->m_uRed-pTo->m_uRed)*lFactor)+pFrom->m_uRed);
+	m_uGreen = static_cast<Word8>(FixedToIntNearest((pFrom->m_uGreen-pTo->m_uGreen)*lFactor)+pFrom->m_uGreen);
+	m_uBlue = static_cast<Word8>(FixedToIntNearest((pFrom->m_uBlue-pTo->m_uBlue)*lFactor)+pFrom->m_uBlue);
+}
+
+/*! ************************************
+
 	\struct Burger::RGBAWord8_t
 	\brief Red, Green,Blue and Alpha 8 bit values
 
@@ -185,6 +208,29 @@ const Burger::RGBAWord8_t Burger::RGBAWord8_t::Silver = {192,192,192,255};
 const Burger::RGBAWord8_t Burger::RGBAWord8_t::Teal = {0,128,128,255};
 const Burger::RGBAWord8_t Burger::RGBAWord8_t::White = {255,255,255,255};
 const Burger::RGBAWord8_t Burger::RGBAWord8_t::Yellow = {255,255,0,255};
+
+/*! ************************************
+
+	\brief Interpolates between two colors
+
+	Interpolate with linear scaling between two colors. 0.0f will return the From
+	color and 1.0f will return the To color and all factors in between
+	will yield the proper mix of the two colors.
+
+	\param pFrom Pointer to color convert from
+	\param pTo Pointer to color to convert o
+	\param fFactor Interpolation factor between 0.0f to 1.0f (0.0f = pFrom, 1.0f = pTo)
+
+***************************************/
+
+void BURGER_API Burger::RGBAWord8_t::Interpolate(const RGBAWord8_t *pFrom,const RGBAWord8_t *pTo,float fFactor)
+{
+	Fixed32 lFactor = FLOATTOFIXED(fFactor);
+	m_uRed = static_cast<Word8>(FixedToIntNearest((pFrom->m_uRed-pTo->m_uRed)*lFactor)+pFrom->m_uRed);
+	m_uGreen = static_cast<Word8>(FixedToIntNearest((pFrom->m_uGreen-pTo->m_uGreen)*lFactor)+pFrom->m_uGreen);
+	m_uBlue = static_cast<Word8>(FixedToIntNearest((pFrom->m_uBlue-pTo->m_uBlue)*lFactor)+pFrom->m_uBlue);
+	m_uAlpha = static_cast<Word8>(FixedToIntNearest((pFrom->m_uAlpha-pTo->m_uAlpha)*lFactor)+pFrom->m_uAlpha);
+}
 
 /*! ************************************
 
@@ -298,6 +344,80 @@ const Burger::RGBFloat_t Burger::RGBFloat_t::Teal = {0,0.5f,0.5f};
 const Burger::RGBFloat_t Burger::RGBFloat_t::White = {1.0f,1.0f,1.0f};
 const Burger::RGBFloat_t Burger::RGBFloat_t::Yellow = {1.0f,1.0f,0};
 
+/*! ************************************
+
+	\fn Burger::RGBFloat_t::operator Vector3D_t &()
+	\brief Convert the color to a Vector3D_t
+
+	Since the RGBFloat_t structure is identical to a 
+	Vector3D_t, this operator will allow the color to
+	be used with the math operators that use a Vector3D_t
+	as input or output.
+	
+	\return A reference to this object cast as a Vector3D_t
+
+	\sa RGBFloat_t::operator const Vector3D_t &() const or RGBFloat_t::operator = (const Vector3D_t &)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::RGBFloat_t::operator const Vector3D_t &() const
+	\brief Convert the color to a const Vector3D_t
+
+	Since the RGBFloat_t structure is identical to a 
+	Vector3D_t, this operator will allow the color to
+	be used with the math operators that use a Vector3D_t
+	as input.
+	
+	\return A reference to this object cast as a const Vector3D_t
+
+	\sa RGBFloat_t::operator Vector3D_t &() or RGBFloat_t::operator = (const Vector3D_t &)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::RGBFloat_t::operator = (const Vector3D_t &)
+	\brief Convert a Vector3D_t into a RGBFloat_t
+
+	Since the RGBFloat_t structure is identical to a 
+	Vector3D_t, this operator will copy a Vector3D_t into
+	this color structure
+	
+	\param rInput Reference to a Vector3D_t to copy into this structure
+	\return A reference to this object
+
+	\sa RGBFloat_t::operator Vector3D_t &() or RGBFloat_t::operator const Vector3D_t &() const
+
+***************************************/
+
+/*! ************************************
+
+	\brief Interpolate between colors using the HSL color wheel
+
+	Interpolate between two colors using the HSL color wheel to make
+	a smoother color shift.
+	
+	\param pInput1 Pointer to the first color
+	\param pInput2 Pointer to the second color
+	\param fFactor Interpolation value between 0.0f and 1.0f
+	\param bDirection \ref FALSE for Red to Green to Blue, \ref TRUE for Red to Blue to Green
+	\sa HSL_t::Interpolate(const HSL_t*,const HSL_t*,float,Word);
+
+***************************************/
+
+void BURGER_API Burger::RGBFloat_t::HSLInterpolate(const RGBFloat_t *pInput1,const RGBFloat_t *pInput2,float fFactor,Word bDirection)
+{
+	HSL_t HSL1;
+	HSL_t HSL2;
+	HSL_t NewHSL;
+
+	Convert(&HSL1,pInput1);		// Convert to HSL
+	Convert(&HSL2,pInput2);
+	NewHSL.Interpolate(&HSL1,&HSL2,fFactor,bDirection);	// Get the interpolated value
+	Convert(this,&NewHSL);		// Return as RGB
+}
 
 /*! ************************************
 
@@ -385,6 +505,123 @@ const Burger::RGBAFloat_t Burger::RGBAFloat_t::Silver = {0.75f,0.75f,0.75f,1.0f}
 const Burger::RGBAFloat_t Burger::RGBAFloat_t::Teal = {0,0.5f,0.5f,1.0f};
 const Burger::RGBAFloat_t Burger::RGBAFloat_t::White = {1.0f,1.0f,1.0f,1.0f};
 const Burger::RGBAFloat_t Burger::RGBAFloat_t::Yellow = {1.0f,1.0f,0,1.0f};
+
+/*! ************************************
+
+	\fn Burger::RGBAFloat_t::operator Vector4D_t &()
+	\brief Convert the color to a Vector4D_t
+
+	Since the RGBAFloat_t structure is identical to a 
+	Vector4D_t, this operator will allow the color to
+	be used with the math operators that use a Vector4D_t
+	as input or output.
+	
+	\return A reference to this object cast as a Vector4D_t
+
+	\sa RGBAFloat_t::operator const Vector4D_t &() const or RGBAFloat_t::operator = (const Vector4D_t &)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::RGBAFloat_t::operator const Vector4D_t &() const
+	\brief Convert the color to a const Vector4D_t
+
+	Since the RGBAFloat_t structure is identical to a 
+	Vector4D_t, this operator will allow the color to
+	be used with the math operators that use a Vector4D_t
+	as input.
+	
+	\return A reference to this object cast as a const Vector4D_t
+
+	\sa RGBAFloat_t::operator Vector4D_t &() or RGBAFloat_t::operator = (const Vector4D_t &)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::RGBAFloat_t::operator = (const Vector4D_t &)
+	\brief Convert a Vector4D_t into a RGBFloat_t
+
+	Since the RGBAFloat_t structure is identical to a 
+	Vector4D_t, this operator will copy a Vector4D_t into
+	this color structure
+	
+	\param rInput Reference to a Vector4D_t to copy into this structure
+	\return A reference to this object
+
+	\sa RGBAFloat_t::operator Vector4D_t &() or RGBAFloat_t::operator const Vector4D_t &() const
+
+***************************************/
+
+
+/*! ************************************
+
+	\struct Burger::HSL_t
+	\brief Hue, Saturation and Intensity 32 bit floating point values
+	
+	Structure that contains the hue, saturation and intensity
+	(in that order) color components where the value of
+	0.0f mean absence of color and 1.0f is the maximum color
+	
+	\sa RGBFloat_t
+
+***************************************/
+
+/*! ************************************
+
+	\brief Interpolate between two HSL colors
+
+	Given two colors, determine the linear interpolation between
+	them. The direction of the color wheel can be switched with
+	bDirection being \ref FALSE for red->green->blue while
+	\ref TRUE goes blue->green->red.
+
+	\param pInput1 Pointer to the first color
+	\param pInput2 Pointer to the second color
+	\param fFactor Interpolation value between 0.0f and 1.0f
+	\param bDirection \ref FALSE for Red to Green to Blue, \ref TRUE for Red to Blue to Green
+		
+***************************************/
+
+void BURGER_API Burger::HSL_t::Interpolate(const HSL_t *pInput1,const HSL_t *pInput2,float fFactor,Word bDirection)
+{
+	// Interpolate the hue
+
+	float fHue1 = pInput1->m_fHue;		// Cache
+	float fHue2 = pInput2->m_fHue;
+
+	if (!bDirection) {				// Red->Green->Blue
+		if (fHue2 >= fHue1) {		// Increase to tween?
+			fHue1 = fHue1 + (fFactor * (fHue2 - fHue1));
+		} else {
+			fHue1 = fHue1 + (fFactor * (1.0f - (fHue1 - fHue2)));
+			// Did it wrap?
+			if (fHue1 > 1.0f) {
+				fHue1 -= 1.0f;
+			}
+		}
+	} else {
+		// Blue->Green->Red
+		if (fHue1 >= fHue2) {
+			fHue1 = fHue1 - (fFactor * (fHue1 - fHue2));
+		} else {
+			fHue1 = fHue1 - (fFactor * (1.0f - (fHue2 - fHue1)));
+			// Did it wrap?
+			if (fHue1 < 0.0f) {
+				fHue1 += 1.0f;
+			}
+		}
+	}
+	m_fHue = fHue1;
+
+	// Interpolate saturation
+	m_fSaturation = Burger::Interpolate(pInput1->m_fSaturation,pInput2->m_fSaturation,fFactor);
+
+	// Interpolate luminosity
+	m_fLuminance = Burger::Interpolate(pInput1->m_fLuminance,pInput2->m_fLuminance,fFactor);
+}
+
 
 /*! ************************************
 
@@ -1087,3 +1324,140 @@ void BURGER_API Burger::CopyPalette(RGBAWord8_t *pOutput,const RGBWord8_t *pInpu
 	\sa Burger::CopyPalette(RGBAWord8_t *,const RGBWord8_t *,Word)
 
 ***************************************/
+
+/*! ************************************
+
+	\brief Convert an RGB color to HSL color
+
+	Perform a conversion of RGB color space to Hue, Saturation and
+	Intensity color space
+
+	\param pOutput Pointer to the structure to get the converted HSL color
+	\param pInput Pointer to an RGB color in the range for 0.0f to 1.0f per element
+	\sa Convert(RGBFloat_t *,const HSL_t*)
+
+***************************************/
+
+void BURGER_API Burger::Convert(HSL_t *pOutput,const RGBFloat_t *pInput)
+{
+
+	float fRed = pInput->m_fRed;			// Load into registers
+	float fGreen = pInput->m_fGreen;
+	float fBlue = pInput->m_fBlue;
+
+	// Which color is the brightest?
+	// It will also pick the luminance
+	// Note the 6 patterns
+	
+	float fHue;
+	float fSaturation;
+	float fLuminance;
+	if (fRed >= fGreen) {
+		fLuminance = fRed;					// Use red
+
+		if (fBlue > fRed) {					// B>R>G
+			fLuminance = fBlue;				// Use blue
+			fSaturation = 1.0f - fGreen;	// Green is saturation
+			fHue = (fRed * (1.0f / 6.0f)) + 0.6666666667f;
+			
+		} else if (fBlue > fGreen) {		// R>B>G
+		
+			fSaturation = 1.0f - fGreen;	// Green is saturation
+			fHue = ((1.0f - fBlue) * (1.0f/ 6.0f)) + 0.8333333333f;
+		
+		} else {							// R>G>B
+			fSaturation = 1.0f - fBlue;		// Blue is saturation
+			fHue = fGreen * (1.0f / 6.0f);
+		}
+	} else {
+		fLuminance = fGreen;				// Use green
+		if (fBlue > fGreen) {				// B>G>R
+			fLuminance = fBlue;				// Use blue
+			fSaturation = 1.0f - fRed;		// Red is saturation
+			fHue = (fBlue * (1.0f / 6.0f)) + 0.3333333333f;
+
+		} else if (fBlue > fRed) {			// G>B>R
+			fSaturation = 1.0f - fRed;		// Red is saturation
+			fHue = ((1.0f - fGreen) * (1.0f / 6.0f)) + 0.5f;
+		} else {							// G>R>B */
+			fSaturation = 1.0f - fBlue;		// Blue is saturation
+			fHue = ((1.0f - fRed) * (1.0f / 6.0f)) + 0.16666667f;
+		}
+	}
+
+	// Save the result
+
+	pOutput->m_fHue = fHue;
+	pOutput->m_fSaturation = fSaturation;
+	pOutput->m_fLuminance = fLuminance;
+}
+
+/*! ************************************
+
+	\brief Convert a HSL color to an RGB color
+
+	Perform a conversion of Hue, Saturation and
+	Intensity color space to Red, Green and
+	Blue color space
+
+	\param pOutput Pointer to the structure to get the converted RGB color
+	\param pInput Pointer to a HSL color in the range for 0.0f to 1.0f per element
+	\sa Convert(HSL_t *,const RGBFloat_t*)
+
+***************************************/
+
+void BURGER_API Burger::Convert(RGBFloat_t *pOutput,const HSL_t *pInput)
+{
+	float fHue = pInput->m_fHue;
+	float fSaturation = pInput->m_fSaturation;
+	float fLuminance = pInput->m_fLuminance;
+
+	// There are 6 hue parts
+	
+	float fRed;
+	float fGreen;
+	float fBlue;
+	if (fHue < 0.5f) {					// First half of the color wheel
+		if (fHue < 0.166667f) { 
+			fRed = 1.0f;				// R = 1, B = 0, G = H
+			fGreen = fHue * 6.0f;		// Green section
+			fBlue = 0.0f;
+		} else {
+			fGreen = 1.0f;
+			if (fHue < 0.33333333f) {	// R = -H, G = 1, B = 0
+				fRed = 1.0f - ((fHue - 0.166667f) * 6.0f);
+				fBlue = 0.0f;
+			} else { 					// R = 0, G = 1, B = H
+				fRed = 0.0f;
+				fBlue = (fHue - 0.3333333f) * 6.0f;
+			}
+		}
+	} else {							// Second half of the color wheel
+		if (fHue >= 0.833333f) {		// R = 1, G = 0, B = -H
+			fRed = 1.0f;
+			fGreen = 0.0f;
+			fBlue = 1.0f - ((fHue - 0.833333f) * 6.0f);
+		} else {
+			fBlue = 1.0f;
+			if (fHue < 0.666667f) {		// R = 0, G = -H, B = 1
+				fRed = 0.0f;
+				fGreen = 1.0f - ((fHue - 0.5f) * 6.0f);
+			} else {					// R = H, G = 0, B = 1
+				fRed = (fHue - 0.666667f) * 6.0f;
+				fGreen = 0.0f;
+			}
+		}
+	}
+
+	// Apply saturation
+	
+	fRed = 1.0f - (fSaturation * (1.0f - fRed));
+	fGreen = 1.0f - (fSaturation * (1.0f - fGreen));
+	fBlue = 1.0f - (fSaturation * (1.0f - fBlue));
+
+	// Apply luminosity and save the result
+
+	pOutput->m_fRed = fRed * fLuminance;
+	pOutput->m_fGreen = fGreen * fLuminance;
+	pOutput->m_fBlue = fBlue * fLuminance;
+}

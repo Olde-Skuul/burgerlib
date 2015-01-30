@@ -2,7 +2,7 @@
 
 	Graphic file format transport class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -276,7 +276,8 @@ void Burger::Image::Init(Word uWidth,Word uHeight,ePixelTypes eType,WordPtr uStr
 Word Burger::Image::Init(Word uWidth,Word uHeight,ePixelTypes eType)
 {
 	Word uResult = 0;
-	if ((m_uWidth!=uWidth) ||
+	if ((!m_pImage) ||
+		(m_uWidth!=uWidth) ||
 		(m_uHeight!=uHeight) ||
 		(m_eType!=eType) ||
 		((m_uFlags&FLAGS_MIPMAPMASK)>=2)) {
@@ -323,7 +324,8 @@ Word Burger::Image::Init(Word uWidth,Word uHeight,ePixelTypes eType)
 Word Burger::Image::Init(Word uWidth,Word uHeight,ePixelTypes eType,Word uMipMaps)
 {
 	Word uResult = 0;
-	if ((m_uWidth!=uWidth) ||
+	if ((!m_pImage) ||
+		(m_uWidth!=uWidth) ||
 		(m_uHeight!=uHeight) ||
 		(m_eType!=eType) ||
 		((m_uFlags&FLAGS_MIPMAPMASK)!=uMipMaps)) {
@@ -449,10 +451,7 @@ void Burger::Image::Shutdown(void)
 	}
 	m_pImage = NULL;
 	m_uStride = 0;
-	m_uWidth = 0;
-	m_uHeight = 0;
-	m_uFlags = 0;
-	m_eType = PIXELTYPE8888;
+	m_uFlags &= (~FLAGS_MIPMAPMASK);
 }
 
 /*! ************************************

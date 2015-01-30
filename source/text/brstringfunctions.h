@@ -2,7 +2,7 @@
 
 	Stand alone string functions
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -65,11 +65,14 @@ BURGER_INLINE Word32 ToLower(Word32 uInput) { if (static_cast<Word32>(uInput-'A'
 BURGER_INLINE Word32 ToUpper(Word32 uInput) { if (static_cast<Word32>(uInput-'a')<26U) uInput-=32; return uInput;}
 extern Word32 BURGER_API BitReverse(Word32 uInput,Word uBitLength);
 extern Word64 BURGER_API BitReverse(Word64 uInput,Word uBitLength);
+extern Word BURGER_API BitSetCount(Word32 uInput);
+extern Word BURGER_API BitSetCount(Word64 uInput);
 extern void BURGER_API CStringToPString(Word8 *pOutput,const char *pInput);
 extern void BURGER_API PStringToCString(char *pOutput,const Word8 *pInput);
 extern char * BURGER_API ParseBeyondWhiteSpace(const char *pInput);
 extern char * BURGER_API ParseToDelimiter(const char *pInput);
 extern char * BURGER_API ParseBeyondEOL(const char *pInput);
+extern char * BURGER_API ParseBeyondEOL(const char *pInput,WordPtr uLength);
 extern char * BURGER_API ParseQuotedString(char *pOutput,WordPtr uOutputSize,const char *pInput);
 extern WordPtr BURGER_API CopyUpToEOL(char *pOutput,WordPtr uOutputSize,const char *pInput,WordPtr uInputSize);
 extern void BURGER_API StripLeadingSpaces(char* pInput);
@@ -90,6 +93,8 @@ extern void BURGER_API SlashesToWindowsSlashes(char *pInput);
 extern void BURGER_API SlashesToWindowsSlashes(char *pOutput,const char *pInput);
 extern void BURGER_API SlashesToLinuxSlashes(char *pInput);
 extern void BURGER_API SlashesToLinuxSlashes(char *pOutput,const char *pInput);
+extern void BURGER_API Replace(char *pInput,Word uFrom,Word uTo);
+extern void BURGER_API Replace(char *pOutput,const char *pInput,Word uFrom,Word uTo);
 extern char* BURGER_API GetFileExtension(const char *pInput);
 extern void BURGER_API SetFileExtension(char* pInput,const char* pNewExtension);
 extern void BURGER_API MemoryCopy(void *pOutput,const void *pInput,WordPtr uCount);
@@ -115,6 +120,7 @@ extern char * BURGER_API StringDuplicate(const char *pInput,WordPtr uPadding);
 extern void BURGER_API StringDelete(const char *pInput);
 extern void BURGER_API StringConcatenate(char *pOutput,const char *pInput);
 extern void BURGER_API StringConcatenate(char *pOutput,WordPtr uOutputSize,const char *pInput);
+extern void BURGER_API StringConcatenate(char *pOutput,WordPtr uOutputSize,const char *pInput,WordPtr uInputSize);
 extern void BURGER_API StringConcatenate(Word16 *pOutput,const Word16 *pInput);
 extern void BURGER_API StringConcatenate(Word16 *pOutput,WordPtr uOutputSize,const Word16 *pInput);
 extern int BURGER_API StringCompare(const char *pInput1,const char *pInput2);
@@ -155,11 +161,15 @@ extern double BURGER_API AsciiToDouble(const char *pInput,const char **pDest=NUL
 extern Word BURGER_API AsciiToBoolean(const char *pInput,const char **pDest=NULL);
 extern Word BURGER_API AsciiToWord(const char *pInput,Word uDefault,Word uMin=0,Word uMax=BURGER_MAXUINT);
 extern Int BURGER_API AsciiToInteger(const char *pInput,Int iDefault,Int iMin=(-BURGER_MAXINT)-1,Int iMax=BURGER_MAXINT);
+extern Word BURGER_API AsciiToInteger(Word32 *pOutput,const char *pInput);
 extern Word BURGER_API AsciiToBoolean(const char *pInput,Word bDefault);
+extern Word BURGER_API AsciiToBoolean(Word *pOutput,const char *pInput);
 extern float BURGER_API AsciiToFloat(const char *pInput,float fDefault);
 extern float BURGER_API AsciiToFloat(const char *pInput,float fDefault,float fMin,float fMax);
+extern Word BURGER_API AsciiToFloat(float *pOutput,const char *pInput);
 extern double BURGER_API AsciiToDouble(const char *pInput,double dDefault);
 extern double BURGER_API AsciiToDouble(const char *pInput,double dDefault,double dMin,double dMax);
+extern Word BURGER_API AsciiToDouble(double *pOutput,const char *pInput);
 }
 /* END */
 

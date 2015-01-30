@@ -2,7 +2,7 @@
 
 	iOS version
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -23,6 +23,7 @@
 #include <sys/stat.h>
 #include <sys/errno.h>
 #include <unistd.h>
+#include <mach-o/dyld.h>
 #include <Foundation/NSString.h>
 #include <Foundation/NSFileManager.h>
 #include <Foundation/NSAutoreleasePool.h>
@@ -217,14 +218,13 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	// and the directory where all the data resides is determined
 	//
 	
-	char ***Argv = _NSGetArgv();
-	int *Argc = _NSGetArgc();
-	if (Argv && Argc) {
-		if (Argc[0]) {
-			MyFilename.SetFromNative(Argv[0][0]);
-			MyFilename.DirName();
-			SetPrefix(PREFIXAPPLICATION,MyFilename.GetPtr());		// Set the standard work prefix
-		}
+	// Get the location of the application binary
+	uint32_t uSize = sizeof(NameBuffer);
+	int iTest = _NSGetExecutablePath(NameBuffer,&uSize);
+	if (!iTest) {
+		MyFilename.SetFromNative(NameBuffer);
+		MyFilename.DirName();
+		SetPrefix(PREFIXAPPLICATION,MyFilename.GetPtr());		// Set the standard work prefix
 	}
 
 	//

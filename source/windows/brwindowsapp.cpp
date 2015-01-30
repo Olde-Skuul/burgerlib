@@ -2,7 +2,7 @@
 
 	Windows application manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -579,6 +579,70 @@ Burger::WindowsApp::~WindowsApp()
 	}
 }
 
+/*! ************************************
+
+	\fn HINSTANCE Burger::WindowsApp::GetInstance(void) const
+	\brief Get the HINSTANCE of the running application
+
+	When started, an HINSTANCE is assigned to an application and
+	this value is used for some Windows specific function.
+
+	\windowsonly
+	\return The application's HINSTANCE
+
+***************************************/
+
+/*! ************************************
+
+	\fn HWND Burger::WindowsApp::GetWindow(void) const
+	\brief Get the HWND of the running application
+
+	When started, a window is created and attached
+	to an application and this is the reference to
+	the global window instance. It is used 
+	extensively by the rendering sub-systems.
+
+	\windowsonly
+
+	\return The application's window reference
+	\sa Display
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::WindowsApp::MainWindowProc Burger::WindowsApp::GetCallBack(void) const
+	\brief Get the pointer to the window callback
+
+	The main application window has a callback function to handle
+	most functions automatically. A user supplied callback
+	is used or augment or override default behavior. This
+	function returns the pointer to the user supplied
+	callback function.
+
+	\windowsonly
+	\return The user supplied callback function pointer
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::WindowsApp::ResetWindowLocation(void)
+	\brief Purge the cached window location
+
+	When calling SetWindowSize(), it will center the window in the
+	middle of the screen on the first call and then
+	use the last known origin location on all subsequent
+	calls so if the user moves the window, the 
+	location of the window won't be lost on
+	toggling from full screen to window mode. If the
+	window needs to be re-centered, call this function to
+	purge the cache.
+
+	\windowsonly
+
+***************************************/
+
 /***************************************
 
 	Internal windows dispatcher
@@ -646,6 +710,7 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 	//
 	// This function will disable the ability to resize the window
 	//
+
 	case WM_GETMINMAXINFO:
 		{
 			Burger::Display *pDisplay = pThis->GetDisplay();
@@ -858,14 +923,19 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 	case WM_SIZE:
 	case WM_MOVE:
 		{
-			RECT WindowSize;
-			GetWindowRect(pWindow,&WindowSize);
-			MoveWindow(pWindow,WindowSize.left,WindowSize.top,WindowSize.right - WindowSize.left,WindowSize.bottom - WindowSize.top,TRUE);
+			Burger::Display *pDisplay = pThis->GetDisplay();
+			if (pDisplay) {
+				if (!(pDisplay->GetFlags()&Burger::Display::FULLSCREEN)) {
+					pThis->RecordWindowLocation();
+				}
+				if (pDisplay->GetResizeCallback()) {
+					RECT TempRect;
+					GetClientRect(pThis->GetWindow(),&TempRect);
+					(pDisplay->GetResizeCallback())(pDisplay->GetResizeCallbackData(),static_cast<Word>(TempRect.right),static_cast<Word>(TempRect.bottom));
+				}
 			// Alert the mouse subsystem to the new mouse bounds
-			Burger::Mouse *pMouse = pThis->GetMouse();
-			if (pMouse) {
-				Burger::Display *pDisplay = pThis->GetDisplay();
-				if (pDisplay) {
+				Burger::Mouse *pMouse = pThis->GetMouse();
+				if (pMouse) {
 					// Reset the mouse coords for mouse handler
 					pMouse->SetRange(pDisplay->GetWidth(),pDisplay->GetHeight());
 				}
@@ -876,6 +946,7 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 	// Windows is asking for the window to be redrawn, possibly
 	// from recovering from minimization?
 
+	case WM_NCPAINT:
 	case WM_PAINT:
 		// Any region to draw?
 		if (GetUpdateRect(pWindow,NULL,FALSE)) {
@@ -884,16 +955,24 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 			HDC PaintDC = BeginPaint(pWindow,&ps);
 			if (PaintDC) {
 				// Get the video context
-//				Burger::DisplayBase *pDisplay = pThis->GetDisplay();
-//				if (pDisplay) {
-//					// Force a front screen update
-//					pDisplay->Update();
-//				}
+				Burger::Display *pDisplay = pThis->GetDisplay();
+				if (pDisplay) {
+					// Force a front screen update
+					if (pDisplay->GetRenderCallback()) {
+						(pDisplay->GetRenderCallback())(pDisplay->GetRenderCallbackData());
+					}
+				}
 				EndPaint(pWindow,&ps);
 			}
+			RECT TempRect;
+			GetClientRect(pThis->GetWindow(),&TempRect);
+			ValidateRect(pWindow,&TempRect);
 		}
-		// Accept this event
-		return 1;
+		if (uMessage==WM_PAINT) {
+			return 1;
+		}
+		break;
+		
 
 	// Power functions
 	case WM_POWERBROADCAST:
@@ -1117,6 +1196,7 @@ int BURGER_API Burger::WindowsApp::SetWindowSize(Word uWidth,Word uHeight)
 	// Enable all the bells and whistles!
 	dwStyle |= WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_SYSMENU;
 	// Set the style (May not be visible if this is the first setting)
+	// Note: Will issue WM_STYLECHANGING, WM_STYLECHANGED and WM_GETICON messages to the window proc
 	SetWindowLongW(pWindow,GWL_STYLE,dwStyle);
 
 	// Init the rect of the window's display area
@@ -1130,15 +1210,15 @@ int BURGER_API Burger::WindowsApp::SetWindowSize(Word uWidth,Word uHeight)
 
 	AdjustWindowRectEx(&NewWindowRect,static_cast<DWORD>(dwStyle),static_cast<BOOL>(GetMenu(pWindow)!= 0),static_cast<DWORD>(GetWindowLongW(pWindow,GWL_EXSTYLE)));
 
+	// Get the rect of the main screen (Note, removes the
+	// windows task bar if one is present)
+	RECT TempRect;		// Temp rect
+	SystemParametersInfoW(SPI_GETWORKAREA,0,&TempRect,0);
+
 	// Resize the window to the new rect
 
 	Word uAdjustedWidth = static_cast<Word>(NewWindowRect.right-NewWindowRect.left);
 	Word uAdjustedHeight = static_cast<Word>(NewWindowRect.bottom-NewWindowRect.top);
-	SetWindowPos(pWindow,HWND_NOTOPMOST,0,0,static_cast<int>(uAdjustedWidth),static_cast<int>(uAdjustedHeight),SWP_NOMOVE | /* SWP_NOZORDER | */ SWP_NOACTIVATE);
-	// Get the rect of the information bar
-
-	RECT TempRect;		// Temp rect
-	SystemParametersInfoW(SPI_GETWORKAREA,0,&TempRect,0);
 
 	// Get the x,y position of the window
 
@@ -1147,8 +1227,8 @@ int BURGER_API Burger::WindowsApp::SetWindowSize(Word uWidth,Word uHeight)
 		NewWindowRect.top = m_iPreviousWindowY;
 	} else {
 		// Get the screen size and center it there
-		NewWindowRect.left = static_cast<LONG>(GetSystemMetrics(SM_CXSCREEN)-uAdjustedWidth)/2;
-		NewWindowRect.top = static_cast<LONG>(GetSystemMetrics(SM_CYSCREEN)-uAdjustedHeight)/2;
+		NewWindowRect.left = static_cast<LONG>((TempRect.right-TempRect.left)-uAdjustedWidth)/2;
+		NewWindowRect.top = static_cast<LONG>((TempRect.bottom-TempRect.top)-uAdjustedHeight)/2;
 	}
 
 	// Make sure the window is on screen
@@ -1160,11 +1240,11 @@ int BURGER_API Burger::WindowsApp::SetWindowSize(Word uWidth,Word uHeight)
 		NewWindowRect.top = TempRect.top;
 	}
 	// Set the style (Makes it visible)
-
 	ShowWindow(pWindow,SW_SHOWNORMAL);
 
-	// Position the window on the screen in the center or where it was located last time
-	SetWindowPos(pWindow,HWND_TOP,NewWindowRect.left,NewWindowRect.top,0,0,SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+	// Position the window on the screen with the new size
+	SetWindowPos(pWindow,HWND_NOTOPMOST,NewWindowRect.left,NewWindowRect.top,static_cast<int>(uAdjustedWidth),static_cast<int>(uAdjustedHeight),SWP_NOACTIVATE);
+
 	return 0;
 }
 

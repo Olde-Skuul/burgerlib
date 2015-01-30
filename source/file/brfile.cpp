@@ -2,7 +2,7 @@
 
 	File Class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -205,7 +205,7 @@ Word Burger::File::Open(const char *pFileName,eFileAccess eAccess)
 
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
 Word Burger::File::Open(Filename *pFileName,eFileAccess eAccess)
 {
 	static const char *g_OpenFlags[4] = {

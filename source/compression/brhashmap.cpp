@@ -4,7 +4,7 @@
 
 	Inspired by an implementation found in gameswf by Thatcher Ulrich <tu@tulrich.com>
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -1381,6 +1381,20 @@ void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
 	\param rValue Reference to the data to copy
 	\return Reference to the data found or created.
 	\sa Set(const T&,const U&)
+
+***************************************/
+
+/*! ************************************
+
+	\fn U* Burger::HashMap::GetData(const T &rKey)
+	\brief Get data by looking it up by a hash key
+
+	Scan the hash for data indexed by the key. If found, return a
+	pointer to the data or \ref NULL if the data wasn't found.
+
+	\param rKey Reference to the key to look up
+	\return \ref NULL if the key wasn't in the hash or a valid pointer to the data if so.
+	\sa GetData(const T &,U *) const
 
 ***************************************/
 

@@ -4,7 +4,7 @@
 	create standardized typedefs and macros
 	so generic code can be created cross platform
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -122,11 +122,14 @@
 	\mainpage Welcome to Burgerlib.
 	<center><h1>The only low level library you'll ever need.</h1></center>
 
-	BurgerLib is copyright 1995-2014 by <a href="mailto:becky@burgerbecky.com">Rebecca Ann Heineman</a>.
+	BurgerLib is copyright 1995-2015 by <a href="mailto:becky@burgerbecky.com">Rebecca Ann Heineman</a>.
 	Email all suggestions, corrections, optimizations and insults to her and she'll be eternally grateful.
 	
-	You can always find the latest version of <a href="http://www.burgerbecky.com/burgerlib.html" target="_blank">Burgerlib</a>
-	at Rebecca's personal website <a href="http://www.burgerbecky.com" target="_blank">http://www.burgerbecky.com</a>.
+	You can always find the latest version of <a href="https://github.com/Olde-Skuul/burgerlib" target="_blank">Burgerlib's source code here</a>
+	or the <a href="https://github.com/Olde-Skuul/KitchenSink" target="_blank">precompiled version here</a>, also check out Rebecca's personal website
+	<a href="http://www.burgerbecky.com" target="_blank">http://www.burgerbecky.com</a>.
+
+	<a href="http://www.burgerbecky.com/burgerlib/docs/burgerlib.chm" target="_blank">Offline documentation for Windows can be downloaded here.</a>
 
 	Sections of interest:
 	\li \subpage pageintroduction

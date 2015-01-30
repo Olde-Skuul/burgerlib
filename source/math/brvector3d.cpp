@@ -2,7 +2,7 @@
 
 	3D Floating point vector manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -1391,6 +1391,19 @@ Word BURGER_API Burger::Vector3D_t::BitwiseEqual(const Vector3D_t *pInput) const
 	\param rInput Reference to the Vector3D_t to compare against
 	\return \ref TRUE if not equal, \ref FALSE if equal
 	\sa operator==(const Vector3D_t&) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Vector3D_t::operator const float *() const
+	\brief Convert to a const float pointer
+
+	This convenience operator converts the Vector3D_t into 
+	a float pointer to pass to other APIs that treat this as
+	an array of 32 bit floats.
+
+	\return The pointer to the object typecast as a (const float *)
 
 ***************************************/
 

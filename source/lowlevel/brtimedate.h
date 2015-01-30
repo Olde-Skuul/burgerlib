@@ -2,7 +2,7 @@
 
 	Time Manager Class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -44,6 +44,10 @@
 
 #if defined(BURGER_XBOX360) && !defined(__BRXBOX360TYPES_H__)
 #include "brxbox360types.h"
+#endif
+
+#if defined(BURGER_VITA) && !defined(__BRVITATYPES_H__)
+#include "brvitatypes.h"
 #endif
 
 /* BEGIN */
@@ -92,6 +96,10 @@ struct TimeDate_t {
 #if defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(DOXYGEN)
 	Word Load(double dNSTimeInterval);
 	Word Store(double *pNSTimeInterval) const;
+#endif
+#if defined(BURGER_VITA) || defined(DOXYGEN)
+	Word Load(const SceDateTime *pSceDateTime);
+	Word Store(SceDateTime *pSceDateTime) const;
 #endif
 };
 }

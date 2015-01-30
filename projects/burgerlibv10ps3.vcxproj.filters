@@ -25,9 +25,6 @@
 		<ClInclude Include="..\source\brglxext.h">
 			<Filter>source</Filter>
 		</ClInclude>
-		<ClInclude Include="..\source\brstartup.h">
-			<Filter>source</Filter>
-		</ClInclude>
 		<ClInclude Include="..\source\commandline\brcommandparameter.h">
 			<Filter>source\commandline</Filter>
 		</ClInclude>
@@ -166,7 +163,31 @@
 		<ClInclude Include="..\source\flashplayer\brflashaction.h">
 			<Filter>source\flashplayer</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashactionvalue.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashavm2.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashcolortransform.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashdisasmactionscript.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\flashplayer\brflashmanager.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashmatrix23.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashrect.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashrgba.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashstream.h">
 			<Filter>source\flashplayer</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\flashplayer\brflashutils.h">
@@ -210,6 +231,33 @@
 		</ClInclude>
 		<ClInclude Include="..\source\graphics\brshape8bit.h">
 			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brtexture.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brtextureopengl.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brvertexbuffer.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brvertexbufferopengl.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffect.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffect2d.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffectpositiontexturecolor.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffectstaticpositiontexture.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\brshaders.h">
+			<Filter>source\graphics\effects</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\input\brjoypad.h">
 			<Filter>source\input</Filter>
@@ -256,6 +304,9 @@
 		<ClInclude Include="..\source\lowlevel\brglobals.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brgridindex.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brguid.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
@@ -269,6 +320,9 @@
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\broscursor.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brpair.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brperforce.h">
@@ -287,6 +341,9 @@
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brsmartpointer.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brsnsystems.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brstaticrtti.h">
@@ -309,6 +366,9 @@
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brxcode.h">
 			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brearcliptriangulate.h">
+			<Filter>source\math</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\math\brfixedmatrix3d.h">
 			<Filter>source\math</Filter>
@@ -550,7 +610,31 @@
 		<ClCompile Include="..\source\flashplayer\brflashaction.cpp">
 			<Filter>source\flashplayer</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashactionvalue.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashavm2.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashcolortransform.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashdisasmactionscript.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\flashplayer\brflashmanager.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashmatrix23.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashrect.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashrgba.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashstream.cpp">
 			<Filter>source\flashplayer</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\flashplayer\brflashutils.cpp">
@@ -594,6 +678,33 @@
 		</ClCompile>
 		<ClCompile Include="..\source\graphics\brshape8bit.cpp">
 			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brtexture.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brtextureopengl.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brvertexbuffer.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brvertexbufferopengl.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffect.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffect2d.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffectpositiontexturecolor.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffectstaticpositiontexture.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\brshaders.cpp">
+			<Filter>source\graphics\effects</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\input\brjoypad.cpp">
 			<Filter>source\input</Filter>
@@ -640,6 +751,9 @@
 		<ClCompile Include="..\source\lowlevel\brglobals.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brgridindex.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brguid.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
@@ -650,6 +764,9 @@
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\broscursor.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brpair.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brperforce.cpp">
@@ -681,6 +798,9 @@
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brtypes.cpp">
 			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brearcliptriangulate.cpp">
+			<Filter>source\math</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\math\brfixedmatrix3d.cpp">
 			<Filter>source\math</Filter>
@@ -778,6 +898,9 @@
 		<Filter Include="source">
 			<UniqueIdentifier>{B20D905A-B985-395F-8153-183BCA1382D8}</UniqueIdentifier>
 		</Filter>
+		<Filter Include="source\input">
+			<UniqueIdentifier>{7403E79E-ADBD-3370-A259-502B7380D344}</UniqueIdentifier>
+		</Filter>
 		<Filter Include="source\ansi">
 			<UniqueIdentifier>{212BCC1D-3122-3ECD-B3CA-BFEC50863A03}</UniqueIdentifier>
 		</Filter>
@@ -805,8 +928,8 @@
 		<Filter Include="source\file">
 			<UniqueIdentifier>{0DBEF223-D01F-3354-834B-3EFF4F687AF4}</UniqueIdentifier>
 		</Filter>
-		<Filter Include="source\input">
-			<UniqueIdentifier>{7403E79E-ADBD-3370-A259-502B7380D344}</UniqueIdentifier>
+		<Filter Include="source\graphics\effects">
+			<UniqueIdentifier>{04832C87-23C8-3E7B-8D36-BFD960C50051}</UniqueIdentifier>
 		</Filter>
 	</ItemGroup>
 </Project>

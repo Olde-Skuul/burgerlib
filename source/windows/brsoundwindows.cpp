@@ -4,7 +4,7 @@
 
 	Windows version
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -89,7 +89,7 @@ static void CopySoundData(Word8 *pOutput,const Word8 *pInput,WordPtr uLength,Bur
 			break;
 		case Burger::Sound::TYPECHAR:
 			do {
-				pOutput[0] = pInput[0]^0x80U;
+				pOutput[0] = static_cast<Word8>(pInput[0]^0x80U);
 				++pInput;
 				++pOutput;
 			} while (--uLength);
@@ -163,7 +163,7 @@ Word Burger::Sound::Init(void)
 		if (i==MAXVOICECOUNT) {
 			// Open the sound device by creating an DirectSound object
 
-			uResult = Globals::DirectSoundCreate8(NULL,&m_pDirectSound8Device);
+			uResult = static_cast<HRESULT>(Globals::DirectSoundCreate8(NULL,&m_pDirectSound8Device));
 			pError = "Direct sound could not be started";
 			if (uResult==DS_OK) {
 
@@ -193,8 +193,8 @@ Word Burger::Sound::Init(void)
 
 						Word uFlags = Caps.dwFlags;
 						m_uDeviceFlags = uFlags;
-						m_bStereoAvailable = (uFlags & DSCAPS_PRIMARYSTEREO)!=0;
-						m_bBufferDepth = (uFlags & DSCAPS_PRIMARY16BIT) ? 16 : 8;
+						m_bStereoAvailable = static_cast<Word>((uFlags & DSCAPS_PRIMARYSTEREO)!=0);
+						m_bBufferDepth = static_cast<Word>((uFlags & DSCAPS_PRIMARY16BIT) ? 16 : 8);
 
 						// 22050 is the base and widely supported sample rate
 						Word uSampleRate = 22050;
@@ -265,7 +265,7 @@ Word Burger::Sound::Init(void)
 
 								BufferFormat.wFormatTag = WAVE_FORMAT_PCM;
 								// Set for stereo if supported
-								BufferFormat.nChannels = m_bStereoAvailable ? 2 : 1;
+								BufferFormat.nChannels = static_cast<Word16>(m_bStereoAvailable ? 2 : 1);
 								BufferFormat.nSamplesPerSec = m_uOutputSamplesPerSecond;
 								BufferFormat.wBitsPerSample = static_cast<Word16>(m_bBufferDepth);
 								BufferFormat.nBlockAlign = static_cast<Word16>((m_bBufferDepth >> 3U) * BufferFormat.nChannels);
@@ -306,7 +306,7 @@ Word Burger::Sound::Init(void)
 	StringConcatenate(OhGreat,", sound is disabled");
 	OkAlertMessage(OhGreat,"Direct sound error");
 	Globals::SetErrorCode(uResult);
-	return uResult;
+	return static_cast<Word>(uResult);
 }
 
 /***************************************
@@ -349,7 +349,7 @@ void Burger::Sound::Shutdown(void)
 	}
 }
 
-Word Burger::Sound::Play(Buffer *pInput,Voice *pOutput)
+Word Burger::Sound::Play(Buffer * /* pInput */,Voice * /* pOutput */)
 {
 	IDirectSoundBuffer *m_pDirectSoundBuffer8;
 	// Create a primary buffer for audio playback (First try one that volume can be changed)
@@ -380,11 +380,11 @@ Word Burger::Sound::Resume(void)
 	return 10;
 }
 
-void Burger::Sound::SetMaxVoices(Word uMax)
+void Burger::Sound::SetMaxVoices(Word /* uMax */)
 {
 }
 
-void Burger::Sound::SetVolume(Word uVolume)
+void Burger::Sound::SetVolume(Word /* uVolume */)
 {
 }
 
@@ -470,7 +470,7 @@ Word Burger::Sound::Voice::SetVolume(Word uVolume)
 //		uVolume *= MasterSoundVolume;
 //		uVolume /= 255;		/* Set the new scaled volume */
 		if (m_pDirectSoundBuffer8) {
-			m_pDirectSoundBuffer8->SetVolume(uVolume);
+			m_pDirectSoundBuffer8->SetVolume(static_cast<LONG>(uVolume));
 		}
 	}
 	return FALSE;

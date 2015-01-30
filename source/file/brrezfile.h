@@ -2,7 +2,7 @@
 
 	Resource manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -116,50 +116,51 @@ private:
 	Word m_bExternalFileEnabled;		///< \ref TRUE if external file access is enabled
 
 	static int BURGER_ANSIAPI QSortNames(const void *pFirst,const void *pSecond);
-	WordPtr GetRezGroupBytes(void) const;
-	void AdjustNamePointers(WordPtr uAdjust);
-	RezEntry_t *Find(Word uRezNum) const;
-	Word FindName(const char *pRezName,FilenameToRezNum_t **ppOutput) const;
+	WordPtr BURGER_API GetRezGroupBytes(void) const;
+	void BURGER_API AdjustNamePointers(WordPtr uAdjust);
+	RezEntry_t * BURGER_API Find(Word uRezNum) const;
+	Word BURGER_API FindName(const char *pRezName,FilenameToRezNum_t **ppOutput) const;
 	static RezGroup_t * BURGER_API ParseRezFileHeader(const Word8 *pData,const RootHeader_t *pHeader,Word uSwapFlag,Word32 uStartOffset);
-	void ProcessRezNames(void);
-	void FixupFilenames(char *pText);
+	void BURGER_API ProcessRezNames(void);
+	void BURGER_API FixupFilenames(char *pText);
 public:
 	RezFile(Burger::MemoryManagerHandle *pMemoryManager);
 	~RezFile();
 	static RezFile * BURGER_API New(Burger::MemoryManagerHandle *pMemoryManager,const char *pFileName,Word32 uStartOffset=0);
-	Word Init(const char *pFileName,Word32 uStartOffset=0);
-	void Shutdown(void);
-	void PurgeCache(void);
-	Word SetExternalFlag(Word bEnable);
+	Word BURGER_API Init(const char *pFileName,Word32 uStartOffset=0);
+	void BURGER_API Shutdown(void);
+	void BURGER_API PurgeCache(void);
+	Word BURGER_API SetExternalFlag(Word bEnable);
 	Word BURGER_INLINE GetExternalFlag(void) const { return m_bExternalFileEnabled; }
-	void LogDecompressor(Word uCompressID,Burger::Decompress *pProc);
-	Word GetRezNum(const char *pRezName) const;
-	Word GetName(Word uRezNum,char *pBuffer,WordPtr uBufferSize) const;
-	Word AddName(const char *pRezName);
-	void Remove(Word uRezNum);
-	void Remove(const char *pRezName);
+	void BURGER_API LogDecompressor(Word uCompressID,Burger::Decompress *pProc);
+	Word BURGER_API GetRezNum(const char *pRezName) const;
+	Word BURGER_API GetName(Word uRezNum,char *pBuffer,WordPtr uBufferSize) const;
+	Word BURGER_API AddName(const char *pRezName);
+	void BURGER_API Remove(Word uRezNum);
+	void BURGER_API Remove(const char *pRezName);
 	BURGER_INLINE const FilenameToRezNum_t * GetNameArray(void) const { return m_pRezNames; }
 	BURGER_INLINE Word GetNameArraySize(void) const { return m_uRezNameCount; }
-	Word GetLowestRezNum(void) const;
-	Word GetHighestRezNum(void) const;
-	Word GetIDFromHandle(const void **ppRez,Word *pRezNum,char *pBuffer,WordPtr uBufferSize) const;
-	Word GetIDFromPointer(const void *pRez,Word *pRezNum,char *pBuffer,WordPtr uBufferSize) const;
-	void **LoadHandle(Word uRezNum,Word *pLoadedFlag=NULL);
-	void **LoadHandle(const char *pRezName,Word *pLoadedFlag=NULL);
-	void *Load(Word uRezNum,Word *pLoadedFlag=NULL);
-	void *Load(const char *pRezName,Word *pLoadedFlag=NULL);
-	Word Read(Word uRezNum,void *pBuffer,WordPtr uBufferSize);
-	Word Read(const char *pRezName,void *pBuffer,WordPtr uBufferSize);
-	void Release(Word uRezNum);
-	void Release(const char *pRezName);
-	void Kill(Word uRezNum);
-	void Kill(const char *pRezName);
-	void Detach(Word uRezNum);
-	void Detach(const char *pRezName);
-	void Preload(Word uRezNum);
-	void Preload(const char *pRezName);
+	Word BURGER_API GetLowestRezNum(void) const;
+	Word BURGER_API GetHighestRezNum(void) const;
+	WordPtr BURGER_API GetSize(Word uRezNum) const;
+	WordPtr BURGER_API GetCompressedSize(Word uRezNum) const;
+	Word BURGER_API GetIDFromHandle(const void **ppRez,Word *pRezNum,char *pBuffer,WordPtr uBufferSize) const;
+	Word BURGER_API GetIDFromPointer(const void *pRez,Word *pRezNum,char *pBuffer,WordPtr uBufferSize) const;
+	void ** BURGER_API LoadHandle(Word uRezNum,Word *pLoadedFlag=NULL);
+	void ** BURGER_API LoadHandle(const char *pRezName,Word *pLoadedFlag=NULL);
+	void * BURGER_API Load(Word uRezNum,Word *pLoadedFlag=NULL);
+	void * BURGER_API Load(const char *pRezName,Word *pLoadedFlag=NULL);
+	Word BURGER_API Read(Word uRezNum,void *pBuffer,WordPtr uBufferSize);
+	Word BURGER_API Read(const char *pRezName,void *pBuffer,WordPtr uBufferSize);
+	void BURGER_API Release(Word uRezNum);
+	void BURGER_API Release(const char *pRezName);
+	void BURGER_API Kill(Word uRezNum);
+	void BURGER_API Kill(const char *pRezName);
+	void BURGER_API Detach(Word uRezNum);
+	void BURGER_API Detach(const char *pRezName);
+	void BURGER_API Preload(Word uRezNum);
+	void BURGER_API Preload(const char *pRezName);
 };
-extern void BURGER_API Delete(const RezFile *pThis);
 }
 /* END */
 

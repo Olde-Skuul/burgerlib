@@ -2,7 +2,7 @@
 
 	MacOS version of Burger::Globals
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -36,7 +36,7 @@ Word BURGER_API Burger::Globals::LaunchURL(const char *pURL)
 #endif
 			{
 				long startSel = 0;
-				long endSel = StringLength(pURL);
+				long endSel = static_cast<long>(StringLength(pURL));
 				err = ICLaunchURL(inst, "\p",const_cast<char *>(pURL),endSel,&startSel,&endSel);
 			}
 			ICStop(inst);

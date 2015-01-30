@@ -2,7 +2,7 @@
 
 	Resource manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -118,7 +118,7 @@ int BURGER_ANSIAPI Burger::RezFile::QSortNames(const void *pFirst,const void *pS
 	
 ***************************************/
 
-WordPtr Burger::RezFile::GetRezGroupBytes(void) const
+WordPtr BURGER_API Burger::RezFile::GetRezGroupBytes(void) const
 {
 	// No data needed, yet
 	WordPtr uTotal = 0;
@@ -174,7 +174,7 @@ WordPtr Burger::RezFile::GetRezGroupBytes(void) const
 	
 ***************************************/
 
-void Burger::RezFile::AdjustNamePointers(WordPtr uAdjust)
+void BURGER_API Burger::RezFile::AdjustNamePointers(WordPtr uAdjust)
 {
 	// Get the number of resource groups
 	Word uGroupCount = m_uGroupCount;
@@ -219,7 +219,7 @@ void Burger::RezFile::AdjustNamePointers(WordPtr uAdjust)
 
 ***************************************/
 
-Burger::RezFile::RezEntry_t * Burger::RezFile::Find(Word uRezNum) const
+Burger::RezFile::RezEntry_t * BURGER_API Burger::RezFile::Find(Word uRezNum) const
 {
 	// Nothing to return
 	RezEntry_t *pResult=NULL;
@@ -265,7 +265,7 @@ Burger::RezFile::RezEntry_t * Burger::RezFile::Find(Word uRezNum) const
 
 ***************************************/
 
-Word Burger::RezFile::FindName(const char *pRezName,Burger::RezFile::FilenameToRezNum_t **ppOutput) const
+Word BURGER_API Burger::RezFile::FindName(const char *pRezName,Burger::RezFile::FilenameToRezNum_t **ppOutput) const
 {	
 	// Work Pointer
 	FilenameToRezNum_t *pFoundRezName = NULL;
@@ -531,7 +531,7 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 
 ***************************************/
 
-void Burger::RezFile::ProcessRezNames(void)
+void BURGER_API Burger::RezFile::ProcessRezNames(void)
 {
 	// Firstly, determine the number of entries that have filenames
 
@@ -632,7 +632,7 @@ void Burger::RezFile::ProcessRezNames(void)
 
 ***************************************/
 
-void Burger::RezFile::FixupFilenames(char *pText)
+void BURGER_API Burger::RezFile::FixupFilenames(char *pText)
 {
 	RezGroup_t *pNewGroup = m_pGroups;
 	Word uGroupCount = m_uGroupCount;
@@ -734,24 +734,6 @@ Burger::RezFile * BURGER_API Burger::RezFile::New(Burger::MemoryManagerHandle *p
 
 /*! ************************************
 
-	\brief Dispose of a new RezFile instance
-
-	When New is called, release the memory with this call
-
-	\sa Burger::RezFile::New(Burger::MemoryManagerHandle *,const char *,Word32)
-
-***************************************/
-
-void BURGER_API Burger::Delete(const RezFile *pThis)
-{
-	if (pThis) {
-		const_cast<RezFile *>(pThis)->~RezFile();
-		Free(pThis);
-	}
-}
-
-/*! ************************************
-
 	\brief Open a resource file for reading
 
 	\param pFileName Pointer to "C" string of the filename to open
@@ -762,7 +744,7 @@ void BURGER_API Burger::Delete(const RezFile *pThis)
 
 ***************************************/
 
-Word Burger::RezFile::Init(const char *pFileName,Word32 uStartOffset)
+Word BURGER_API Burger::RezFile::Init(const char *pFileName,Word32 uStartOffset)
 {
 	// If there was a previous file, release it
 	Shutdown();
@@ -838,7 +820,7 @@ Word Burger::RezFile::Init(const char *pFileName,Word32 uStartOffset)
 
 ***************************************/
 
-void Burger::RezFile::Shutdown(void)
+void BURGER_API Burger::RezFile::Shutdown(void)
 {
 	// Is there an open file?
 	m_File.Close();
@@ -893,7 +875,7 @@ void Burger::RezFile::Shutdown(void)
 	
 ***************************************/
 
-void Burger::RezFile::PurgeCache(void)
+void BURGER_API Burger::RezFile::PurgeCache(void)
 {
 	// Get the entry count
 	Word uGroupCount = m_uGroupCount;
@@ -942,7 +924,7 @@ void Burger::RezFile::PurgeCache(void)
 
 ***************************************/
 
-Word Burger::RezFile::SetExternalFlag(Word bEnable)
+Word BURGER_API Burger::RezFile::SetExternalFlag(Word bEnable)
 {
 	Word uOldFlag = m_bExternalFileEnabled;
 	m_bExternalFileEnabled = bEnable;
@@ -967,7 +949,7 @@ Word Burger::RezFile::SetExternalFlag(Word bEnable)
 
 ***************************************/
 
-void Burger::RezFile::LogDecompressor(Word uCompressID,Burger::Decompress *pProc)
+void BURGER_API Burger::RezFile::LogDecompressor(Word uCompressID,Burger::Decompress *pProc)
 {
 	// Allowable?
 	if (--uCompressID<MAXCODECS) {	
@@ -996,7 +978,7 @@ void Burger::RezFile::LogDecompressor(Word uCompressID,Burger::Decompress *pProc
 
 ***************************************/
 
-Word Burger::RezFile::GetRezNum(const char *pRezName) const
+Word BURGER_API Burger::RezFile::GetRezNum(const char *pRezName) const
 {
 	FilenameToRezNum_t *pRezNameEntry;		// Pointer to the master name list
 	
@@ -1019,7 +1001,7 @@ Word Burger::RezFile::GetRezNum(const char *pRezName) const
 
 ***************************************/
 
-Word Burger::RezFile::GetName(Word uRezNum,char *pBuffer,WordPtr uBufferSize) const
+Word BURGER_API Burger::RezFile::GetName(Word uRezNum,char *pBuffer,WordPtr uBufferSize) const
 {
 	// Valid output buffer?
 	if (pBuffer && uBufferSize) {
@@ -1077,7 +1059,7 @@ Word Burger::RezFile::GetName(Word uRezNum,char *pBuffer,WordPtr uBufferSize) co
 
 ***************************************/
 
-Word Burger::RezFile::AddName(const char *pRezName)
+Word BURGER_API Burger::RezFile::AddName(const char *pRezName)
 {		
 	// Is the resource name present?
 	Word uRezNum = GetRezNum(pRezName);
@@ -1233,7 +1215,7 @@ Word Burger::RezFile::AddName(const char *pRezName)
 
 ***************************************/
 
-void Burger::RezFile::Remove(Word uRezNum)
+void BURGER_API Burger::RezFile::Remove(Word uRezNum)
 {
 	// It there a resource by this number?
 	
@@ -1352,7 +1334,7 @@ void Burger::RezFile::Remove(Word uRezNum)
 
 ***************************************/
 
-void Burger::RezFile::Remove(const char *pRezName)
+void BURGER_API Burger::RezFile::Remove(const char *pRezName)
 {
 	// Can I find this?
 	Word uRezNum = GetRezNum(pRezName);
@@ -1390,7 +1372,7 @@ void Burger::RezFile::Remove(const char *pRezName)
 
 ***************************************/
 
-Word Burger::RezFile::GetLowestRezNum(void) const
+Word BURGER_API Burger::RezFile::GetLowestRezNum(void) const
 {
 	const RezGroup_t *pGroups = m_pGroups;
 	if (pGroups) {
@@ -1403,12 +1385,12 @@ Word Burger::RezFile::GetLowestRezNum(void) const
 
 	\brief Return the highest valid resource number
 
-	\return Highest resource number or RezFile::INVALIDREZNUM on error (Or no resources present)
-	\sa Burger::RezFile::GetLowestRezNum(void) const
+	\return Highest resource number or \ref INVALIDREZNUM on error (Or no resources present)
+	\sa GetLowestRezNum(void) const
 
 ***************************************/
 
-Word Burger::RezFile::GetHighestRezNum(void) const
+Word BURGER_API Burger::RezFile::GetHighestRezNum(void) const
 {
 	// Get the number of resource groups
 	Word uGroupCount = m_uGroupCount;
@@ -1430,6 +1412,46 @@ Word Burger::RezFile::GetHighestRezNum(void) const
 
 /*! ************************************
 
+	\brief Return the size of bytes of the resource 
+
+	\param uRezNum Resource number
+	\return 0 if the resource was not found or the size in bytes of the resource
+	\sa GetCompressedSize(Word) const
+
+***************************************/
+
+WordPtr BURGER_API Burger::RezFile::GetSize(Word uRezNum) const
+{
+	const RezEntry_t *pEntry = Find(uRezNum);		// Find the resource
+	WordPtr uResult = 0;
+	if (pEntry) {					// Find the entry
+		uResult = pEntry->m_uLength;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Return the size of bytes of the resource 
+
+	\param uRezNum Resource number
+	\return 0 if the resource was not found or the size in bytes of the resource
+	\sa GetSize(Word) const
+
+***************************************/
+
+WordPtr BURGER_API Burger::RezFile::GetCompressedSize(Word uRezNum) const
+{
+	const RezEntry_t *pEntry = Find(uRezNum);		// Find the resource
+	WordPtr uResult = 0;
+	if (pEntry) {					// Find the entry
+		uResult = pEntry->m_uCompressedLength;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
 	\brief Find a resource by a data handle
 
 	Given a handle, scan the resource map to see if it is under
@@ -1445,7 +1467,7 @@ Word Burger::RezFile::GetHighestRezNum(void) const
 
 ***************************************/
 
-Word Burger::RezFile::GetIDFromHandle(const void **ppRez,Word *pRezNum,char *pBuffer,WordPtr uBufferSize) const
+Word BURGER_API Burger::RezFile::GetIDFromHandle(const void **ppRez,Word *pRezNum,char *pBuffer,WordPtr uBufferSize) const
 {
 	// Valid handle?
 	if (ppRez) {
@@ -1498,7 +1520,7 @@ Word Burger::RezFile::GetIDFromHandle(const void **ppRez,Word *pRezNum,char *pBu
 
 ***************************************/
 
-Word Burger::RezFile::GetIDFromPointer(const void *pRez,Word *pRezNum,char *pBuffer,WordPtr uBufferSize) const
+Word BURGER_API Burger::RezFile::GetIDFromPointer(const void *pRez,Word *pRezNum,char *pBuffer,WordPtr uBufferSize) const
 {
 	// Valid pointer?
 	if (pRez) {
@@ -1548,7 +1570,7 @@ Word Burger::RezFile::GetIDFromPointer(const void *pRez,Word *pRezNum,char *pBuf
 
 ***************************************/
 
-void ** Burger::RezFile::LoadHandle(Word uRezNum,Word *pLoadedFlag)
+void ** BURGER_API Burger::RezFile::LoadHandle(Word uRezNum,Word *pLoadedFlag)
 {		
 	if (pLoadedFlag) {
 		pLoadedFlag[0] = FALSE;		// Assume cached or failed
@@ -1747,7 +1769,7 @@ void ** Burger::RezFile::LoadHandle(Word uRezNum,Word *pLoadedFlag)
 
 ***************************************/
 
-void ** Burger::RezFile::LoadHandle(const char *pRezName,Word *pLoadedFlag)
+void ** BURGER_API Burger::RezFile::LoadHandle(const char *pRezName,Word *pLoadedFlag)
 {
 	// Get the index number
 	Word uRezNum = GetRezNum(pRezName);
@@ -1771,7 +1793,7 @@ void ** Burger::RezFile::LoadHandle(const char *pRezName,Word *pLoadedFlag)
 
 ***************************************/
 
-void * Burger::RezFile::Load(Word uRezNum,Word *pLoadedFlag)
+void * BURGER_API Burger::RezFile::Load(Word uRezNum,Word *pLoadedFlag)
 {
 	// Load the handle and dereference it
 	return m_pMemoryManager->Lock(LoadHandle(uRezNum,pLoadedFlag));
@@ -1788,7 +1810,7 @@ void * Burger::RezFile::Load(Word uRezNum,Word *pLoadedFlag)
 
 ***************************************/
 
-void * Burger::RezFile::Load(const char *pRezName,Word *pLoadedFlag)
+void * BURGER_API Burger::RezFile::Load(const char *pRezName,Word *pLoadedFlag)
 {
 	// Load the handle and dereference it
 	return m_pMemoryManager->Lock(LoadHandle(pRezName,pLoadedFlag));
@@ -1805,7 +1827,7 @@ void * Burger::RezFile::Load(const char *pRezName,Word *pLoadedFlag)
 
 ***************************************/
 
-Word Burger::RezFile::Read(Word uRezNum,void *pBuffer,WordPtr uBufferSize)
+Word BURGER_API Burger::RezFile::Read(Word uRezNum,void *pBuffer,WordPtr uBufferSize)
 {	
 	// Assume failure
 	Word uResult = TRUE;
@@ -1836,7 +1858,7 @@ Word Burger::RezFile::Read(Word uRezNum,void *pBuffer,WordPtr uBufferSize)
 
 ***************************************/
 
-Word Burger::RezFile::Read(const char *pRezName,void *pBuffer,WordPtr uBufferSize)
+Word BURGER_API Burger::RezFile::Read(const char *pRezName,void *pBuffer,WordPtr uBufferSize)
 {
 	// Get the index number
 	Word uRezNum = GetRezNum(pRezName);
@@ -1860,7 +1882,7 @@ Word Burger::RezFile::Read(const char *pRezName,void *pBuffer,WordPtr uBufferSiz
 
 ***************************************/
 
-void Burger::RezFile::Release(Word uRezNum)
+void BURGER_API Burger::RezFile::Release(Word uRezNum)
 {
 	RezEntry_t *pEntry = Find(uRezNum);	/* Scan for the resource */
 	if (pEntry) {					/* Is it here? */
@@ -1895,7 +1917,7 @@ void Burger::RezFile::Release(Word uRezNum)
 
 ***************************************/
 
-void Burger::RezFile::Release(const char *pRezName)
+void BURGER_API Burger::RezFile::Release(const char *pRezName)
 {
 	Word uRezNum = GetRezNum(pRezName);	/* Scan for the resource */
 	if (uRezNum!=INVALIDREZNUM) {
@@ -1932,7 +1954,7 @@ void Burger::RezFile::Release(const char *pRezName)
 
 ***************************************/
 
-void Burger::RezFile::Kill(Word uRezNum)
+void BURGER_API Burger::RezFile::Kill(Word uRezNum)
 {
 	RezEntry_t *pEntry = Find(uRezNum);	/* Scan for the resource */
 	if (pEntry) {
@@ -1961,7 +1983,7 @@ void Burger::RezFile::Kill(Word uRezNum)
 
 ***************************************/
 
-void Burger::RezFile::Kill(const char *pRezName)
+void BURGER_API Burger::RezFile::Kill(const char *pRezName)
 {
 	Word uRezNum = GetRezNum(pRezName);
 	if (uRezNum!=INVALIDREZNUM) {
@@ -1993,7 +2015,7 @@ void Burger::RezFile::Kill(const char *pRezName)
 
 ***************************************/
 
-void Burger::RezFile::Detach(Word uRezNum)
+void BURGER_API Burger::RezFile::Detach(Word uRezNum)
 {
 	RezEntry_t *pEntry = Find(uRezNum);
 	if (pEntry) {		/* Scan for the resource */
@@ -2018,7 +2040,7 @@ void Burger::RezFile::Detach(Word uRezNum)
 
 ***************************************/
 
-void Burger::RezFile::Detach(const char *pRezName)
+void BURGER_API Burger::RezFile::Detach(const char *pRezName)
 {
 	Word uRezNum = GetRezNum(pRezName);
 	if (uRezNum!=INVALIDREZNUM) {
@@ -2047,7 +2069,7 @@ void Burger::RezFile::Detach(const char *pRezName)
 
 ***************************************/
 
-void Burger::RezFile::Preload(Word uRezNum)
+void BURGER_API Burger::RezFile::Preload(Word uRezNum)
 {
 	if (LoadHandle(uRezNum)) {	// Get the handle
 		Release(uRezNum);		// Release the resource
@@ -2067,7 +2089,7 @@ void Burger::RezFile::Preload(Word uRezNum)
 
 ***************************************/
 
-void Burger::RezFile::Preload(const char *pRezName)
+void BURGER_API Burger::RezFile::Preload(const char *pRezName)
 {
 	Word uRezNum = GetRezNum(pRezName);	// Get the index number
 	if (uRezNum == INVALIDREZNUM) {

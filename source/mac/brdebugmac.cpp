@@ -2,7 +2,7 @@
 
 	Debug manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -61,10 +61,10 @@ void BURGER_API Burger::OkAlertMessage(const char *pMessage,const char *pTitle)
 #else
 	WorkRect = MyPort->portRect;
 #endif
-	DialogRect.top = (((WorkRect.bottom-WorkRect.top)-190)/2)+WorkRect.top;
-	DialogRect.left = (((WorkRect.right-WorkRect.left)-350)/2)+WorkRect.left;
-	DialogRect.bottom = DialogRect.top+190;
-	DialogRect.right = DialogRect.left+350;
+	DialogRect.top = static_cast<short>((((WorkRect.bottom-WorkRect.top)-190)/2)+WorkRect.top);
+	DialogRect.left = static_cast<short>((((WorkRect.right-WorkRect.left)-350)/2)+WorkRect.left);
+	DialogRect.bottom = static_cast<short>(DialogRect.top+190);
+	DialogRect.right = static_cast<short>(DialogRect.left+350);
 
 	TitleLen = 0;			/* Assume no length */
 	if (pTitle) {
@@ -73,12 +73,12 @@ void BURGER_API Burger::OkAlertMessage(const char *pMessage,const char *pTitle)
 	TitleStr = (Word8 *)Burger::Alloc(TitleLen+1);	/* Get memory of pascal string */
 	if (TitleStr) {			/* Did I get the memory? */
 		MemoryCopy(TitleStr+1,pTitle,TitleLen);
-		TitleStr[0] = TitleLen;		/* Set the pascal length */
+		TitleStr[0] = static_cast<Word8>(TitleLen);		/* Set the pascal length */
 		
 		MessLen = Burger::StringLength(pMessage);	/* Size of the message */
-		ItemList = NewHandle(sizeof(Template)+MessLen);
+		ItemList = NewHandle(static_cast<Size>(sizeof(Template)+MessLen));
 		if (ItemList) {				/* Ok? */
-			Template[sizeof(Template)-1]=MessLen;	/* Save the message length */
+			Template[sizeof(Template)-1]=static_cast<Word8>(MessLen);	/* Save the message length */
 			MemoryCopy(ItemList[0],Template,sizeof(Template));	/* Copy the template */
 			MemoryCopy((ItemList[0])+sizeof(Template),pMessage,MessLen);	/* Copy the message */
 			MyDialog = NewDialog(0,&DialogRect,(Word8 *)TitleStr,TRUE,5,(WindowPtr)-1,FALSE,0,ItemList);
@@ -142,10 +142,10 @@ Word BURGER_API Burger::OkCancelAlertMessage(const char *Message,const char *Tit
 #else
 	WorkRect = MyPort->portRect;
 #endif
-	DialogRect.top = (((WorkRect.bottom-WorkRect.top)-190)/2)+WorkRect.top;
-	DialogRect.left = (((WorkRect.right-WorkRect.left)-350)/2)+WorkRect.left;
-	DialogRect.bottom = DialogRect.top+190;
-	DialogRect.right = DialogRect.left+350;
+	DialogRect.top = static_cast<short>((((WorkRect.bottom-WorkRect.top)-190)/2)+WorkRect.top);
+	DialogRect.left = static_cast<short>((((WorkRect.right-WorkRect.left)-350)/2)+WorkRect.left);
+	DialogRect.bottom = static_cast<short>(DialogRect.top+190);
+	DialogRect.right = static_cast<short>(DialogRect.left+350);
 
 	TitleLen = 0;			/* Assume no length */
 	if (Title) {
@@ -154,12 +154,12 @@ Word BURGER_API Burger::OkCancelAlertMessage(const char *Message,const char *Tit
 	TitleStr = (Word8 *)Burger::Alloc(TitleLen+1);	/* Get memory of pascal string */
 	if (TitleStr) {			/* Did I get the memory? */
 		Burger::MemoryCopy(TitleStr+1,Title,TitleLen);
-		TitleStr[0] = TitleLen;		/* Set the pascal length */
+		TitleStr[0] = static_cast<Word8>(TitleLen);		/* Set the pascal length */
 		
 		MessLen = Burger::StringLength(Message);	/* Size of the message */
-		ItemList = NewHandle(sizeof(TemplateX)+MessLen);
+		ItemList = NewHandle(static_cast<Size>(sizeof(TemplateX)+MessLen));
 		if (ItemList) {				/* Ok? */
-			TemplateX[sizeof(TemplateX)-1]=MessLen;	/* Save the message length */
+			TemplateX[sizeof(TemplateX)-1]=static_cast<Word8>(MessLen);	/* Save the message length */
 			Burger::MemoryCopy(ItemList[0],TemplateX,sizeof(TemplateX));	/* Copy the template */
 			Burger::MemoryCopy((ItemList[0])+sizeof(TemplateX),Message,MessLen);	/* Copy the message */
 			MyDialog = NewDialog(0,&DialogRect,(Word8 *)TitleStr,TRUE,5,(WindowPtr)-1,FALSE,0,ItemList);

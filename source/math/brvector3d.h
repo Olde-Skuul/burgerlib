@@ -2,7 +2,7 @@
 
 	3D Floating point vector manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -95,6 +95,7 @@ struct Vector3D_t {
 	BURGER_INLINE const float & operator[](Word uInput) const { return (&x)[uInput]; }
 	BURGER_INLINE Word operator == (const Vector3D_t& rInput) const { return (x == rInput.x) && (y == rInput.y) && (z == rInput.z); }
 	BURGER_INLINE Word operator != (const Vector3D_t& rInput) const { return (x != rInput.x) || (y != rInput.y) || (z != rInput.z); }
+	BURGER_INLINE operator const float *() const { return &x; }
 };
 
 struct Word32ToVector3D_t {

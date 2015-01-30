@@ -2,7 +2,7 @@
 
 	Global Master Memory Manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -33,8 +33,8 @@ extern void *BURGER_API AllocCopy(const void *pInput,WordPtr uSize);
 
 class GlobalMemoryManager {
 public:
-	static void BURGER_API Init(MemoryManager *pInstance);
-	static void BURGER_API Shutdown(void);
+	static MemoryManager * BURGER_API Init(MemoryManager *pInstance);
+	static void BURGER_API Shutdown(MemoryManager *pPrevious=NULL);
 	static BURGER_INLINE MemoryManager *GetInstance(void) { return g_pInstance; }
 private:
 	static MemoryManager *g_pInstance;	///< Pointer to the currently active memory manager

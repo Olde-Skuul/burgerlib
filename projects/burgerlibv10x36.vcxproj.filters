@@ -25,9 +25,6 @@
 		<ClInclude Include="..\source\brglxext.h">
 			<Filter>source</Filter>
 		</ClInclude>
-		<ClInclude Include="..\source\brstartup.h">
-			<Filter>source</Filter>
-		</ClInclude>
 		<ClInclude Include="..\source\commandline\brcommandparameter.h">
 			<Filter>source\commandline</Filter>
 		</ClInclude>
@@ -166,7 +163,31 @@
 		<ClInclude Include="..\source\flashplayer\brflashaction.h">
 			<Filter>source\flashplayer</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashactionvalue.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashavm2.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashcolortransform.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashdisasmactionscript.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\flashplayer\brflashmanager.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashmatrix23.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashrect.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashrgba.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashstream.h">
 			<Filter>source\flashplayer</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\flashplayer\brflashutils.h">
@@ -210,6 +231,45 @@
 		</ClInclude>
 		<ClInclude Include="..\source\graphics\brshape8bit.h">
 			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brtexture.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brtextureopengl.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brvertexbuffer.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brvertexbufferopengl.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffect.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffect2d.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffectpositiontexturecolor.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffectstaticpositiontexture.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\brshaders.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersxbox360\pstexture360.h">
+			<Filter>source\graphics\shadersxbox360</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersxbox360\pstexturecolor360.h">
+			<Filter>source\graphics\shadersxbox360</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersxbox360\vs20sprite2d360.h">
+			<Filter>source\graphics\shadersxbox360</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersxbox360\vsstaticposition360.h">
+			<Filter>source\graphics\shadersxbox360</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\input\brjoypad.h">
 			<Filter>source\input</Filter>
@@ -256,6 +316,9 @@
 		<ClInclude Include="..\source\lowlevel\brglobals.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brgridindex.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brguid.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
@@ -269,6 +332,9 @@
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\broscursor.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brpair.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brperforce.h">
@@ -287,6 +353,9 @@
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brsmartpointer.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brsnsystems.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brstaticrtti.h">
@@ -309,6 +378,9 @@
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brxcode.h">
 			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brearcliptriangulate.h">
+			<Filter>source\math</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\math\brfixedmatrix3d.h">
 			<Filter>source\math</Filter>
@@ -396,6 +468,12 @@
 		</ClInclude>
 		<ClInclude Include="..\source\version.h">
 			<Filter>source</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\xbox360\brstartup.h">
+			<Filter>source\xbox360</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\xbox360\brxbox360app.h">
+			<Filter>source\xbox360</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\xbox360\brxbox360types.h">
 			<Filter>source\xbox360</Filter>
@@ -550,7 +628,31 @@
 		<ClCompile Include="..\source\flashplayer\brflashaction.cpp">
 			<Filter>source\flashplayer</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashactionvalue.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashavm2.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashcolortransform.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashdisasmactionscript.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\flashplayer\brflashmanager.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashmatrix23.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashrect.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashrgba.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashstream.cpp">
 			<Filter>source\flashplayer</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\flashplayer\brflashutils.cpp">
@@ -594,6 +696,33 @@
 		</ClCompile>
 		<ClCompile Include="..\source\graphics\brshape8bit.cpp">
 			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brtexture.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brtextureopengl.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brvertexbuffer.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brvertexbufferopengl.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffect.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffect2d.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffectpositiontexturecolor.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffectstaticpositiontexture.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\brshaders.cpp">
+			<Filter>source\graphics\effects</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\input\brjoypad.cpp">
 			<Filter>source\input</Filter>
@@ -640,6 +769,9 @@
 		<ClCompile Include="..\source\lowlevel\brglobals.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brgridindex.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brguid.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
@@ -650,6 +782,9 @@
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\broscursor.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brpair.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brperforce.cpp">
@@ -681,6 +816,9 @@
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brtypes.cpp">
 			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brearcliptriangulate.cpp">
+			<Filter>source\math</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\math\brfixedmatrix3d.cpp">
 			<Filter>source\math</Filter>
@@ -769,6 +907,12 @@
 		<ClCompile Include="..\source\xbox360\brdirectorysearchxbox360.cpp">
 			<Filter>source\xbox360</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\xbox360\brdisplaybasexbox360.cpp">
+			<Filter>source\xbox360</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\xbox360\brdisplayxbox360.cpp">
+			<Filter>source\xbox360</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\xbox360\brfilemanagerxbox360.cpp">
 			<Filter>source\xbox360</Filter>
 		</ClCompile>
@@ -790,12 +934,33 @@
 		<ClCompile Include="..\source\xbox360\brsoundxbox360.cpp">
 			<Filter>source\xbox360</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\xbox360\brtexturexbox360.cpp">
+			<Filter>source\xbox360</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\xbox360\brtickxbox360.cpp">
 			<Filter>source\xbox360</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\xbox360\brtimedatexbox360.cpp">
 			<Filter>source\xbox360</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\xbox360\brvertexbufferxbox360.cpp">
+			<Filter>source\xbox360</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\xbox360\brxbox360app.cpp">
+			<Filter>source\xbox360</Filter>
+		</ClCompile>
+		<X360SL Include="..\source\graphics\shadersxbox360\pstexture360.x360sl">
+			<Filter>source\graphics\shadersxbox360</Filter>
+		</X360SL>
+		<X360SL Include="..\source\graphics\shadersxbox360\pstexturecolor360.x360sl">
+			<Filter>source\graphics\shadersxbox360</Filter>
+		</X360SL>
+		<X360SL Include="..\source\graphics\shadersxbox360\vs20sprite2d360.x360sl">
+			<Filter>source\graphics\shadersxbox360</Filter>
+		</X360SL>
+		<X360SL Include="..\source\graphics\shadersxbox360\vsstaticposition360.x360sl">
+			<Filter>source\graphics\shadersxbox360</Filter>
+		</X360SL>
 		<Filter Include="source\math">
 			<UniqueIdentifier>{D284295D-8665-331C-935F-BD42B5330BF6}</UniqueIdentifier>
 		</Filter>
@@ -807,6 +972,9 @@
 		</Filter>
 		<Filter Include="source">
 			<UniqueIdentifier>{8CF0CE48-7535-39C6-8802-2842F54D3268}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\input">
+			<UniqueIdentifier>{22DDF72F-A965-37C7-A434-D09AFD545302}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="source\ansi">
 			<UniqueIdentifier>{AB635F94-1FA3-375C-992F-50A26414AF95}</UniqueIdentifier>
@@ -829,14 +997,17 @@
 		<Filter Include="source\flashplayer">
 			<UniqueIdentifier>{C4B100CC-0762-365E-9BD0-3DDA865FC2B6}</UniqueIdentifier>
 		</Filter>
+		<Filter Include="source\graphics\shadersxbox360">
+			<UniqueIdentifier>{AA88D25D-3B9A-3EB8-8591-002B958D297B}</UniqueIdentifier>
+		</Filter>
 		<Filter Include="source\compression">
 			<UniqueIdentifier>{04DC1A8E-DC57-3DF2-A351-1220A2BB1E19}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="source\file">
 			<UniqueIdentifier>{8AE7A5CC-2BE3-369D-BD70-AB4ACFDA0E9B}</UniqueIdentifier>
 		</Filter>
-		<Filter Include="source\input">
-			<UniqueIdentifier>{22DDF72F-A965-37C7-A434-D09AFD545302}</UniqueIdentifier>
+		<Filter Include="source\graphics\effects">
+			<UniqueIdentifier>{7E1DE42A-DDBF-338D-A3F1-4D17E4EBB727}</UniqueIdentifier>
 		</Filter>
 	</ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 
 	Global Windows Specific data
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -14,11 +14,16 @@
 #include "brtypes.h"
 
 #if defined(BURGER_WINDOWS)
+#if !defined(DOXYGEN)
 #define DIRECTINPUT_VERSION 0x800
-#define DIRECT3D_VERSION 0x700
+#define DIRECT3D_VERSION 0x900
 #define DIRECTDRAW_VERSION 0x700
+#if defined(_DEBUG)
+#define D3D_DEBUG_INFO
+#endif
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
 #endif
 
 #include <windows.h>
@@ -26,7 +31,7 @@
 #include <d3d.h>
 
 // Needed for Code Warrior
-#ifndef DIDFT_OPTIONAL
+#if !defined(DIDFT_OPTIONAL) && !defined(DOXYGEN)
 #define DIDFT_OPTIONAL 0x80000000
 #endif
 

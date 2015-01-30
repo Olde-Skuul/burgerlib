@@ -2,7 +2,7 @@
 
 	PNG File handler class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -15,10 +15,6 @@
 #include "brdebug.h"
 #include "brdecompressdeflate.h"
 #include "brfixedpoint.h"
-
-#if defined(BURGER_WATCOM)
-#pragma disable_message(549)		// Disable 'sizeof' operand contains compiler generated information
-#endif 
 
 /*! ************************************
 
@@ -65,13 +61,14 @@ static const Word8 g_Signature[8] = { 0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A };
 	\brief Scan a PNG file in memory and return pointer to a chunk
 	\param pInput Data stream to read compressed data from
 	\param uID PNG token to scan for (Must be upper case)
+	\param uStartOffset Offset into the stream to begin the scan
 	\return \ref NULL if success or a pointer to a string describing the error
 
 ***************************************/
 
-const char * Burger::FilePNG::SeekPNGChunk(InputMemoryStream *pInput,Word32 uID)
+const char * Burger::FilePNG::SeekChunk(InputMemoryStream *pInput,Word32 uID,WordPtr uStartOffset)
 {
-	pInput->SetMark(m_uStartOffset);
+	pInput->SetMark(uStartOffset);
 	// Only run if there's enough data to scan
 	while (pInput->BytesRemaining()>=8) {
 		// Get the chunk length and then the ID
@@ -81,7 +78,7 @@ const char * Burger::FilePNG::SeekPNGChunk(InputMemoryStream *pInput,Word32 uID)
 		Word32 uTest = uPNGID&0xDFDFDFDFU;
 		if (uTest==uID) {
 			// Found the chunk. Save the start offset and relevant info
-			m_uChunkOffset = pInput->GetMark()-8U;
+			m_uNextOffset = pInput->GetMark()+uLength+4;
 			// Store the ID and chunk
 			m_uPNGID = uPNGID;
 			m_uChunkSize = uLength;
@@ -98,6 +95,33 @@ const char * Burger::FilePNG::SeekPNGChunk(InputMemoryStream *pInput,Word32 uID)
 	return "PNG Chunk was not found";
 }
 
+/*! ************************************
+
+	\brief Scan a PNG file in memory and return pointer to a chunk
+	\param pInput Data stream to read compressed data from
+	\param uID PNG token to scan for (Must be upper case)
+	\return \ref NULL if success or a pointer to a string describing the error
+
+***************************************/
+
+const char * Burger::FilePNG::SeekPNGChunk(InputMemoryStream *pInput,Word32 uID)
+{
+	return SeekChunk(pInput,uID,m_uStartOffset);
+}
+
+/*! ************************************
+
+	\brief Scan a PNG file in memory starting AFTER the previously found chunk and return pointer to a chunk
+	\param pInput Data stream to read compressed data from
+	\param uID PNG token to scan for (Must be upper case)
+	\return \ref NULL if success or a pointer to a string describing the error
+
+***************************************/
+
+const char * Burger::FilePNG::SeekNextPNGChunk(InputMemoryStream *pInput,Word32 uID)
+{
+	return SeekChunk(pInput,uID,m_uNextOffset);
+}
 
 /*! ************************************
 
@@ -107,8 +131,13 @@ const char * Burger::FilePNG::SeekPNGChunk(InputMemoryStream *pInput,Word32 uID)
 
 ***************************************/
 
-Burger::FilePNG::FilePNG()
+Burger::FilePNG::FilePNG() :
+	m_uStartOffset(0),
+	m_uNextOffset(0),
+	m_uChunkSize(0),
+	m_uPNGID(0)
 {
+	MemoryClear(m_Palette,sizeof(m_Palette));
 }
 
 /*! ************************************
@@ -128,10 +157,10 @@ Burger::FilePNG::FilePNG()
 
 ***************************************/
 
-Burger::Image * Burger::FilePNG::Load(InputMemoryStream *pInput)
+Word BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput)
 {
 	const char *pBadNews = NULL;
-	Image *pImage = NULL;
+	Word uResult = 10;
 	Word uWidth = 0;
 	Word uHeight = 0;
 	Word uDepth = 0;
@@ -238,31 +267,64 @@ Burger::Image * Burger::FilePNG::Load(InputMemoryStream *pInput)
 	if (!pBadNews) {
 		pBadNews = SeekPNGChunk(pInput,IDATASCII); // Find the image
 		if (!pBadNews) {
-			pImage = Image::New(uWidth,uHeight,eType);
-			if (pImage) {
+			uResult = pOutput->Init(uWidth,uHeight,eType);
+			if (!uResult) {
 
 				// It uses Deflate (ZLIB) compression
 
 				DecompressDeflate *pDecompressor = new (Alloc(sizeof(DecompressDeflate))) DecompressDeflate;
 				const Word8 *pPacked = pInput->GetPtr();
 				WordPtr uPackedSize = m_uChunkSize;
-				Decompress::eError Error;
-				Word8 *pDest = pImage->GetImage();
+				Decompress::eError Error = Decompress::DECOMPRESS_OKAY;
+				Word8 *pDest = pOutput->GetImage();
 				uDepth = (uDepth+7U)>>3U;
 				uWidth = uWidth*uDepth;
 				do {
-					Word8 bType;
-					Error = pDecompressor->Process(&bType,1,pPacked,uPackedSize);
-					WordPtr uStep = pDecompressor->GetProcessedInputSize();
-					pPacked += uStep;
-					uPackedSize -= uStep;
+					Word8 bType = 0;
 
-					Error = pDecompressor->Process(pDest,uWidth,pPacked,uPackedSize);
-					uStep = pDecompressor->GetProcessedInputSize();
-					pPacked += uStep;
-					uPackedSize -= uStep;
+					// The loops are needed because there could be
+					// sequential multiple IDAT chunks so the decompression
+					// needs to be able to span these chunks
+
+					do {
+						if (!uPackedSize) {
+							pBadNews = SeekNextPNGChunk(pInput,IDATASCII);
+							if (pBadNews) {
+								break;
+							}
+							pPacked = pInput->GetPtr();
+							uPackedSize = m_uChunkSize;
+						}
+						Error = pDecompressor->Process(&bType,1,pPacked,uPackedSize);
+						WordPtr uStep = pDecompressor->GetProcessedInputSize();
+						pPacked += uStep;
+						uPackedSize -= uStep;
+					} while (pDecompressor->GetProcessedOutputSize()!=1);
+					if (pBadNews) {
+						break;
+					}
+					WordPtr uRemaining = uWidth;
+					do {
+						if (!uPackedSize) {
+							pBadNews = SeekNextPNGChunk(pInput,IDATASCII);
+							if (pBadNews) {
+								break;
+							}
+							pPacked = pInput->GetPtr();
+							uPackedSize = m_uChunkSize;
+						}
+						Error = pDecompressor->Process(pDest+(uWidth-uRemaining),uRemaining,pPacked,uPackedSize);
+						WordPtr uStep = pDecompressor->GetProcessedInputSize();
+						pPacked += uStep;
+						uPackedSize -= uStep;
+						uRemaining -= pDecompressor->GetProcessedOutputSize();
+					} while (uRemaining);
+					if (pBadNews) {
+						break;
+					}
 
 					switch (bType) {
+					// Add the value from the previous pixel
 					case 1:
 						{
 							Word i = uDepth;
@@ -272,6 +334,7 @@ Burger::Image * Burger::FilePNG::Load(InputMemoryStream *pInput)
 							} while (++i<uWidth);
 						}
 						break;
+					// Add the value from the previous scan line
 					case 2:
 						{
 							Word i = 0;
@@ -331,6 +394,7 @@ Burger::Image * Burger::FilePNG::Load(InputMemoryStream *pInput)
 							} while (++i<uWidth);
 						}
 						break;
+					// Use the data as is
 					default:		// None
 						break;
 					}
@@ -346,10 +410,9 @@ Burger::Image * Burger::FilePNG::Load(InputMemoryStream *pInput)
 	// If there was an error, clean up
 	if (pBadNews) {
 		Debug::Warning(pBadNews);
-		Delete(pImage);
-		pImage = NULL;
+		uResult = 10;
 	}
-	return pImage;
+	return uResult;
 }
 
 /*! ************************************

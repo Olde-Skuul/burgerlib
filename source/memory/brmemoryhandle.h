@@ -2,7 +2,7 @@
 
 	Handle based memory manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -29,6 +29,7 @@
 /* BEGIN */
 namespace Burger {
 class MemoryManagerHandle : public MemoryManager {
+	BURGER_DISABLECOPYCONSTRUCTORS(MemoryManagerHandle);
 public:
 	enum {
 		LOCKED=0x80,		///< Lock flag
@@ -120,6 +121,8 @@ public:
 	void BURGER_API DumpHandles(void);
 };
 class MemoryManagerGlobalHandle : public MemoryManagerHandle {
+	BURGER_DISABLECOPYCONSTRUCTORS(MemoryManagerGlobalHandle);
+	MemoryManager *m_pPrevious;			///< Pointer to the previous memory manager
 public:
 	MemoryManagerGlobalHandle(WordPtr uDefaultMemorySize=DEFAULTMEMORYCHUNK,Word uDefaultHandleCount=DEFAULTHANDLECOUNT,WordPtr uMinReserveSize=DEFAULTMINIMUMRESERVE);
 	~MemoryManagerGlobalHandle();

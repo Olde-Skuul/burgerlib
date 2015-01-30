@@ -2,7 +2,7 @@
 
 	Handle based memory manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -12,6 +12,7 @@
 ***************************************/
 
 #include "brmemoryhandle.h"
+#include "brassert.h"
 #include "brdebug.h"
 #include "brstringfunctions.h"
 #include "brglobalmemorymanager.h"
@@ -57,10 +58,24 @@
 
 ***************************************/
 
+#if !defined(DOXYGEN)
+#if BURGER_MAXWORDPTR==0xFFFFFFFFU
+#define SANITYCHECK 0xDEADBEEF
+#define KILLSANITYCHECK 0xBADBADBA
+#else
+#define SANITYCHECK 0xABCDDEADBEEFDCBAULL
+#define KILLSANITYCHECK 0xBADBADBADBADBADBULL
+#endif
 
-
-
-
+struct PointerPrefix_t {
+	void **m_ppParentHandle;		///< Handle to the parent memory object
+	WordPtr m_uSignature;			///< Signature for debugging
+#if (BURGER_MAXWORDPTR==0xFFFFFFFFU) && !(defined(BURGER_MSDOS) || defined(BURGER_DS) || defined(BURGER_68K))
+	Word m_uPadding1;				///< Pad to alignment
+	Word m_uPadding2;
+#endif
+};
+#endif
 
 /*! ************************************
 
@@ -78,19 +93,22 @@
 
 void *BURGER_API Burger::MemoryManagerHandle::AllocProc(MemoryManager *pThis,WordPtr uSize)
 {
+	BURGER_COMPILE_TIME_ASSERT((sizeof(PointerPrefix_t)&(MemoryManagerHandle::ALIGNMENT-1))==0);
+
 	void *pResult = NULL;
 	if (uSize) {
 		MemoryManagerHandle *pSelf = static_cast<MemoryManagerHandle *>(pThis);
 		// Allocate the memory with memory for a back pointer
-		void **ppData = pSelf->AllocHandle(uSize+ALIGNMENT,FIXED);
+		void **ppData = pSelf->AllocHandle(uSize+sizeof(PointerPrefix_t),FIXED);
 		// Got the memory?
 		if (ppData) {
 			// Dereference the memory!
-			void *pData = reinterpret_cast<Handle_t*>(ppData)->m_pData;
+			PointerPrefix_t *pData = static_cast<PointerPrefix_t *>(reinterpret_cast<Handle_t*>(ppData)->m_pData);
 			// Save the handle in memory
-			static_cast<void ***>(pData)[0] = ppData;
+			pData->m_ppParentHandle = ppData;
+			pData->m_uSignature = SANITYCHECK;
 			// Return the memory pointer at the next alignment value
-	 		pResult = static_cast<Word8 *>(pData)+ALIGNMENT;
+	 		pResult = pData+1;
 		}
 	}
 	// Allocation failure
@@ -117,7 +135,10 @@ void BURGER_API Burger::MemoryManagerHandle::FreeProc(MemoryManager *pThis,const
 	// Do nothing with NULL pointers
 	if (pInput) {
 		MemoryManagerHandle *pSelf = static_cast<MemoryManagerHandle *>(pThis);
-		pSelf->FreeHandle(reinterpret_cast<void ** const *>(static_cast<const Word8 *>(pInput)-ALIGNMENT)[0]);
+		PointerPrefix_t *pData = static_cast<PointerPrefix_t *>(const_cast<void *>(pInput))-1;
+		BURGER_ASSERT(pData->m_uSignature==SANITYCHECK);
+		pData->m_uSignature=KILLSANITYCHECK;
+		pSelf->FreeHandle(pData->m_ppParentHandle);
 	}
 }
 
@@ -162,17 +183,21 @@ void *BURGER_API Burger::MemoryManagerHandle::ReallocProc(Burger::MemoryManager 
 	
 		// Convert the pointer back into a handle and perform the resize operation
 
-		void **ppData = pSelf->ReallocHandle(reinterpret_cast<void ** const *>(static_cast<const Word8 *>(pInput)-ALIGNMENT)[0],uSize+ALIGNMENT);
+		PointerPrefix_t *pData = static_cast<PointerPrefix_t *>(const_cast<void *>(pInput))-1;
+		BURGER_ASSERT(pData->m_uSignature==SANITYCHECK);
+		pData->m_uSignature=KILLSANITYCHECK;
+		void **ppData = pSelf->ReallocHandle(pData->m_ppParentHandle,uSize+sizeof(PointerPrefix_t));
 		// Successful?
 		if (!ppData) {
 			pInput = NULL;
 		} else {
 			// Dereference the memory!
-			void *pData = reinterpret_cast<Handle_t*>(ppData)->m_pData;
+			pData = static_cast<PointerPrefix_t *>(reinterpret_cast<Handle_t*>(ppData)->m_pData);
 			// Save the handle in memory
-			static_cast<void ***>(pData)[0] = ppData;
+			pData->m_ppParentHandle = ppData;
+			pData->m_uSignature = SANITYCHECK;
 			// Return the memory pointer at the next alignment value
- 			pInput = static_cast<Word8 *>(pData)+ALIGNMENT;
+ 			pInput = pData+1;
 		}
 	}
 	// Couldn't get the memory
@@ -1277,7 +1302,9 @@ WordPtr BURGER_API Burger::MemoryManagerHandle::GetSize(void **ppInput)
 WordPtr BURGER_API Burger::MemoryManagerHandle::GetSize(const void *pInput)
 {
 	if (pInput) {			// Null pointer?!?
-		const Handle_t *pHandle = reinterpret_cast<const Handle_t * const *>(static_cast<const Word8 *>(pInput)-ALIGNMENT)[0];
+		PointerPrefix_t *pData = static_cast<PointerPrefix_t *>(const_cast<void *>(pInput))-1;
+		BURGER_ASSERT(pData->m_uSignature==SANITYCHECK);
+		const Handle_t *pHandle = reinterpret_cast<Handle_t *>(pData->m_ppParentHandle);
 		return pHandle->m_uLength;
 	}
 	return 0;
@@ -1703,7 +1730,7 @@ void BURGER_API Burger::MemoryManagerHandle::DumpHandles(void)
 Burger::MemoryManagerGlobalHandle::MemoryManagerGlobalHandle(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,WordPtr uMinReserveSize) :
 	MemoryManagerHandle(uDefaultMemorySize,uDefaultHandleCount,uMinReserveSize)
 {
-	GlobalMemoryManager::Init(this);
+	m_pPrevious = GlobalMemoryManager::Init(this);
 }
 
 /*! ************************************
@@ -1717,5 +1744,5 @@ Burger::MemoryManagerGlobalHandle::MemoryManagerGlobalHandle(WordPtr uDefaultMem
 
 Burger::MemoryManagerGlobalHandle::~MemoryManagerGlobalHandle()
 {
-	GlobalMemoryManager::Shutdown();
+	GlobalMemoryManager::Shutdown(m_pPrevious);
 }

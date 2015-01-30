@@ -2,7 +2,7 @@
 
 	Smart pointer template class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -72,6 +72,11 @@ public:
 public: BURGER_INLINE ProxyReferenceCounter* GetProxyReferenceCounter(void) const { return m_WeakPointerAnchor.GetProxyReferenceCounter(); } \
 private: WeakPointerAnchor m_WeakPointerAnchor
 
+class WeakAndStrongBase : public ReferenceCounter {
+	BURGER_ALLOW_WEAK_POINTERS();
+	BURGER_RTTI_IN_CLASS();
+};
+
 template<class T>
 class SmartPointer {
 	T* m_pData;			///< Private copy of the pointer this class is tracking
@@ -117,6 +122,8 @@ public:
 	BURGER_INLINE void operator=(const SmartPointer<T>& rData) { Replace(rData.m_pData); }
 	BURGER_INLINE void operator=(T* pData) { Replace(pData); }
 	BURGER_INLINE T* operator->() const { return m_pData; }
+	BURGER_INLINE T& operator*() const { return *m_pData; }
+	BURGER_INLINE operator T*() const { return m_pData; }
 	BURGER_INLINE T* GetPtr() const { return m_pData; }
 	BURGER_INLINE Word operator==(const SmartPointer<T>& rData) const { return m_pData == rData.m_pData; }
 	BURGER_INLINE Word operator!=(const SmartPointer<T>& rData) const { return m_pData != rData.m_pData; }

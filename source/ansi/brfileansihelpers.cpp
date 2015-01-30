@@ -2,7 +2,7 @@
 
 	File Manager ANSI helper functions
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -607,7 +607,6 @@ Word BURGER_API Burger::ReadCString(FILE *fp,char *pInput,WordPtr uLength)
 {
 	// Set the maximum buffer size
 	// and remove 1 to make space or the ending zero
-	char *pEnd = (pInput+uLength)-1;
 	int iTemp;
 	for (;;) {		// Stay until either zero or EOF
 		iTemp = fgetc(fp);			// Get the char from the file
@@ -615,12 +614,13 @@ Word BURGER_API Burger::ReadCString(FILE *fp,char *pInput,WordPtr uLength)
 			break;
 		}
 		// Can I store it?
-		if (pInput<pEnd) {
+		if (uLength>=2) {
 			pInput[0] = static_cast<char>(iTemp);
+			--uLength;
 			++pInput;		// Inc the input pointer
 		}
 	}
-	if (uLength) {		// Any space in buffer?
+	if (uLength) {		// Any space in buffer for the terminating zero?
 		pInput[0] = 0;	// Add ending zero
 	}
 	if (iTemp) {		// EOF?

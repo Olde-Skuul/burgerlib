@@ -2,7 +2,7 @@
 
 	Filename Class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -30,7 +30,7 @@
 	to do the proper conversion and generate the extra
 	data. Currently, only the MacOS Carbon and Classic
 	targets require this extra data, however for future
-	compatibilty or performance upgrades, don't assume
+	compatibility or performance upgrades, don't assume
 	that creating a filename by hand will be a cross platform
 	solution.	
 
@@ -189,7 +189,7 @@ Burger::Filename::~Filename()
 /*! ************************************
 
 	\fn Burger::Filename::GetPtr(void) const
-	\brief Retrieve a pointer to the burgerlib filename.
+	\brief Retrieve a pointer to the Burgerlib filename.
 	
 	Return a pointer to a valid const "C" string,
 	
@@ -242,7 +242,7 @@ Burger::Filename::~Filename()
 
 ***************************************/
 
-void Burger::Filename::Set(const char *pInput)
+void BURGER_API Burger::Filename::Set(const char *pInput)
 {
 	Clear();
 
@@ -276,7 +276,7 @@ void Burger::Filename::Set(const char *pInput)
 
 ***************************************/
 
-void Burger::Filename::Clear(void)
+void BURGER_API Burger::Filename::Clear(void)
 {
 	// Anything allocated?
 	if (m_pFilename!=m_Filename) {
@@ -305,7 +305,7 @@ void Burger::Filename::Clear(void)
 
 ***************************************/
 
-void Burger::Filename::Append(const char *pInput)
+void BURGER_API Burger::Filename::Append(const char *pInput)
 {
 	if (pInput) {
 		// Get the length of the string to append
@@ -314,7 +314,7 @@ void Burger::Filename::Append(const char *pInput)
 			// Get the original string
 			const char *pFilename = m_pFilename;
 			WordPtr uFilenameLength = StringLength(pFilename);
-			// Size of the proposed final string (And space for the seperating colon)
+			// Size of the proposed final string (And space for the separating colon)
 			// the '2' is for the possible 2 colons that could be inserted into the pathname
 			WordPtr uTotal = uInputLength + uFilenameLength + 2;
 			// Will it fit in the local buffer?
@@ -363,7 +363,7 @@ void Burger::Filename::Append(const char *pInput)
 
 ***************************************/
 
-void Burger::Filename::GetFileName(char *pOutput,WordPtr uOutputLength) const
+void BURGER_API Burger::Filename::GetFileName(char *pOutput,WordPtr uOutputLength) const
 {
 	// Get the length of the path
 	const char *pInput = m_pFilename;
@@ -410,7 +410,7 @@ void Burger::Filename::GetFileName(char *pOutput,WordPtr uOutputLength) const
 
 ***************************************/
 
-void Burger::Filename::GetFileExtension(char *pOutput,WordPtr uOutputLength) const
+void BURGER_API Burger::Filename::GetFileExtension(char *pOutput,WordPtr uOutputLength) const
 {
 	// Get the length of the path
 	const char *pInput = m_pFilename;
@@ -464,7 +464,7 @@ void Burger::Filename::GetFileExtension(char *pOutput,WordPtr uOutputLength) con
 
 ***************************************/
 
-void Burger::Filename::SetFileExtension(const char *pExtension)
+void BURGER_API Burger::Filename::SetFileExtension(const char *pExtension)
 {
 	// Get the length of the path
 	const char *pInput = m_pFilename;
@@ -509,7 +509,7 @@ void Burger::Filename::SetFileExtension(const char *pExtension)
 	}
 	WordPtr uTotal = uLength+1;		// Add for the ending colon
 	if (uExtensionLength) {
-		uTotal += uExtensionLength+1;	/// Add for the '.' seperator
+		uTotal += uExtensionLength+1;	/// Add for the '.' separator
 	}
 	// Will it fit in the local buffer?
 	char *pOutput = m_Filename;
@@ -543,7 +543,7 @@ void Burger::Filename::SetFileExtension(const char *pExtension)
 
 ***************************************/
 
-void Burger::Filename::DirName(void)
+void BURGER_API Burger::Filename::DirName(void)
 {
 	char *pFilename = m_pFilename;
 	// Get a character from the filename
@@ -590,7 +590,7 @@ void Burger::Filename::DirName(void)
 
 ***************************************/
 
-void Burger::Filename::DirName(String *pOutput) const
+void BURGER_API Burger::Filename::DirName(String *pOutput) const
 {
 	const char *pFilename = m_pFilename;
 	// Get a character from the filename
@@ -642,7 +642,7 @@ void Burger::Filename::DirName(String *pOutput) const
 
 ***************************************/
 
-void Burger::Filename::BaseName(String *pOutput) const
+void BURGER_API Burger::Filename::BaseName(String *pOutput) const
 {
 	const char *pFilename = m_pFilename;
 	// Get a character from the filename
@@ -692,13 +692,13 @@ void Burger::Filename::BaseName(String *pOutput) const
 	
 	Burgerlib pathnames can be prefixed, partially or fully qualified.
 	A fully qualified pathname means that the entire pathname exists
-	and a prefix will not be prepended and there would be no need to
+	and a prefix will not be prefixed and there would be no need to
 	"Expand" the pathname before converting it to a native format.
 
 	There are two ways a pathname is fully qualified, firstly if
 	the pathname starts with a ":", it's assumed that the first
 	name is the name of the volume. If it's ".D2:", then the number between
-	the "D" and the ":" is the volume numbner (Or mapped to a drive letter
+	the "D" and the ":" is the volume number (Or mapped to a drive letter
 	in the case of Windows or MSDOS)
 
 	\return \ref TRUE if the pathname is fully qualified, \ref FALSE if not.
@@ -706,7 +706,7 @@ void Burger::Filename::BaseName(String *pOutput) const
 
 ***************************************/
 
-Word Burger::Filename::IsFullPathname(void) const
+Word BURGER_API Burger::Filename::IsFullPathname(void) const
 {
 	Word uResult = FALSE;
 	const char *pFilename = m_pFilename;
@@ -757,7 +757,7 @@ Word Burger::Filename::IsFullPathname(void) const
 
 ***************************************/
 
-Word Burger::Filename::IsFilenameOnly(void) const
+Word BURGER_API Burger::Filename::IsFilenameOnly(void) const
 {
 	Word uResult = FALSE;
 	if (!IsFullPathname()) {
@@ -774,14 +774,14 @@ Word Burger::Filename::IsFilenameOnly(void) const
 
 	Is the pathname starts with "8:" or "*:" or any other valid prefix
 	values, then it's considered prefixed and it will have that directory
-	prepended when converting it to a fully qualified pathname.
+	prefixed when converting it to a fully qualified pathname.
 
 	\return FileManager::PREFIXINVALID if there is no prefix or the prefix number if it does.
 	\sa IsFilenameOnly()
 
 ***************************************/
 
-Word Burger::Filename::ParsePrefixNumber(void) const
+Word BURGER_API Burger::Filename::ParsePrefixNumber(void) const
 {
 	Word uPrefixNum = FileManager::PREFIXINVALID;
 	const char *pFilename = m_pFilename;
@@ -831,7 +831,7 @@ Word Burger::Filename::ParsePrefixNumber(void) const
 	If the path starts with ".D2:" then it is a full pathname starting with a drive number.
 	If the path starts with a "$:","*:" or "@:" then use special prefix numbers 32-34
 	If the path starts with 0: through 31: then use prefix 0-31.
-	Otherwise prepend the pathname with the contents of prefix 8 ("Default")
+	Otherwise prefix the pathname with the contents of prefix 8 ("Default")
 
 	If the path after the prefix is removed is a period then POP the number of
 	directories from the pathname for each period present after the first.
@@ -843,7 +843,7 @@ Word Burger::Filename::ParsePrefixNumber(void) const
 
 ***************************************/
 
-void Burger::Filename::Expand(const char *pInput)
+void BURGER_API Burger::Filename::Expand(const char *pInput)
 {
 	Clear();
 
@@ -998,7 +998,7 @@ void Burger::Filename::Expand(const char *pInput)
 							} while ((uPrefixLen!=static_cast<WordPtr>(-1)) && (pWork[uPrefixLen]!=':'));
 							++uPrefixLen;			// Grab the final colon 
 						} while (--uPeriodCount);					// Discard the period
-						// Edge case. If all the prefixs were reduced to nothing but
+						// Edge case. If all the prefixes were reduced to nothing but
 						// a single colon, keep the volume name/number
 						if (uPrefixLen<2) {
 							uPrefixLen = 0;			// In case the prefix has no colons
@@ -1067,7 +1067,7 @@ void Burger::Filename::Expand(const char *pInput)
 	If the path starts with ".D2:" then it is a full pathname starting with a drive number.
 	If the path starts with a "$:","*:" or "@:" then use special prefix numbers 32-34
 	If the path starts with 0: through 31: then use prefix 0-31.
-	Otherwise prepend the pathname with the contents of prefix 8 ("Default")
+	Otherwise prefix the pathname with the contents of prefix 8 ("Default")
 
 	If the path after the prefix is removed is a period then POP the number of
 	directories from the pathname for each period present after the first.
@@ -1077,7 +1077,7 @@ void Burger::Filename::Expand(const char *pInput)
 
 ***************************************/
 
-void Burger::Filename::Expand(void)
+void BURGER_API Burger::Filename::Expand(void)
 {
 	// Temp buffer
 	char Buffer[BUFFERSIZE];
@@ -1114,8 +1114,8 @@ void Burger::Filename::Expand(void)
 
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
-const char *Burger::Filename::GetNative(void)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
+const char * BURGER_API Burger::Filename::GetNative(void)
 {
 	return m_pFilename;
 }
@@ -1141,8 +1141,8 @@ const char *Burger::Filename::GetNative(void)
 
 ***************************************/
 
-#if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
-void Burger::Filename::SetFromNative(const char *pInput)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
+void BURGER_API Burger::Filename::SetFromNative(const char *pInput)
 {
 	Set(pInput);
 }

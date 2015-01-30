@@ -3,7 +3,7 @@
 	File Manager Class
 	MSDOS Target version
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -133,7 +133,7 @@ Word BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,Word uVolum
 
 ***************************************/
 
-#if defined(__WATCOMC__)
+#if defined(BURGER_WATCOM)
 #ifdef __cplusplus
 extern "C" {
 #endif

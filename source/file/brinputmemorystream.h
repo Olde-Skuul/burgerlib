@@ -2,7 +2,7 @@
 
 	Simple data stream class for input
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -28,6 +28,10 @@
 
 #ifndef __BRVECTOR4D_H__
 #include "brvector4d.h"
+#endif
+
+#ifndef __BRSTRING_H__
+#include "brstring.h"
 #endif
 
 /* BEGIN */
@@ -61,6 +65,7 @@ public:
 	BURGER_INLINE Word IsEmpty(void) const { return m_pWork>=m_pEndOfBuffer; }
 	BURGER_INLINE WordPtr BytesRemaining(void) const { return static_cast<WordPtr>(m_pEndOfBuffer-m_pWork); }
 	void BURGER_API GetString(char *pOutput,WordPtr uOutputSize);
+	void BURGER_API GetString(String *pOutput);
 	void BURGER_API GetCString(char *pOutput,WordPtr uOutputSize);
 	void BURGER_API GetPString(char *pOutput,WordPtr uOutputSize);
 	Word8 BURGER_API GetByte(void);

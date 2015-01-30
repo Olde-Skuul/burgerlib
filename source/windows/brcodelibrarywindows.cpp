@@ -4,7 +4,7 @@
 
 	Windows version
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -72,7 +72,7 @@ void Burger::CodeLibrary::Shutdown(void)
 {
 	// Release the windows lib
 	if (m_pLibInstance) {
-		FreeLibrary(m_pLibInstance);
+		FreeLibrary(static_cast<HINSTANCE>(m_pLibInstance));
 		m_pLibInstance = NULL;
 	}
 }
@@ -88,7 +88,7 @@ void * Burger::CodeLibrary::GetFunction(const char *pFunctionName)
 {
 	void *pFunction = NULL;
 	if (pFunctionName && m_pLibInstance) {
-		pFunction = GetProcAddress(m_pLibInstance,pFunctionName);
+		pFunction = GetProcAddress(static_cast<HINSTANCE>(m_pLibInstance),pFunctionName);
 	}
 	return pFunction;
 }

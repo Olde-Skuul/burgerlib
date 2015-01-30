@@ -2,7 +2,7 @@
 
 	Random number generator
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -25,20 +25,22 @@
 /* BEGIN */
 namespace Burger {
 class Random {
-public:
-	BURGER_INLINE Random() { Init(); }
-	static Random* New(Word32 uNewSeed=0);
-	BURGER_INLINE void Delete(void) { Burger::Free(this); }
-	void Init(void);
-	void RandomInit(void);
-	Word32 Get(Word32 uRange=0);
-	void SetSeed(Word32 uNewSeed);
-	Int32 GetSigned(Word32 uRange);
-	float GetFloat(void);
-private:
+protected:
 	Word32 m_Array[17];	///< Array of seed values (Polynomial)
 	Word32 m_uSeed;		///< Random number seed
 	Word m_uIndex;		///< First lookup index
+public:
+	BURGER_INLINE Random() { Init(); }
+	static Random* BURGER_API New(Word32 uNewSeed=0);
+	void BURGER_API Init(void);
+	void BURGER_API RandomInit(void);
+	Word32 BURGER_API Get(Word32 uRange=0);
+	void BURGER_API SetSeed(Word32 uNewSeed);
+	Int32 BURGER_API GetSigned(Word32 uRange);
+	float BURGER_API GetFloat(void);
+	float BURGER_API GetFloat(float fRange);
+	float BURGER_API GetSymmetricFloat(void);
+	float BURGER_API GetSymmetricFloat(float fRange);
 };
 }
 

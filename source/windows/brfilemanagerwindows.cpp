@@ -2,7 +2,7 @@
 
 	Win95 version
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -139,22 +139,30 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	if ((uResult==S_OK) || (uResult==E_FAIL)) {
 		// Convert to UTF8
 		String MyName1(reinterpret_cast<const Word16*>(NameBuffer));
-		MyFilename.SetFromNative(MyName1.GetPtr());
+		MyFilename.SetFromNative(MyName1);
 		char *pFilename = MyFilename.GetPtr();
-		SetPrefix(FileManager::PREFIXSYSTEM,pFilename);		// Set the system folder
 		char *pEndColon = StringCharacter(pFilename,':');
 		if (pEndColon) {
-			pEndColon[1] = 0;									// ".D3:xxxx" is now ".D3"
+			pEndColon[1] = 0;								// ".D3:xxxx" is now ".D3"
 		}
 		SetPrefix(FileManager::PREFIXBOOT,pFilename);	// Set the boot volume
+	}
+
+	// Application system data folder (Local for Vista and Win7)
+	uResult = SHGetFolderPathW(NULL,CSIDL_LOCAL_APPDATA,NULL,0,NameBuffer);
+	if ((uResult==S_OK) || (uResult==E_FAIL)) {
+		// Convert to UTF8
+		String MyName2(reinterpret_cast<const Word16*>(NameBuffer));
+		MyFilename.SetFromNative(MyName2);
+		SetPrefix(FileManager::PREFIXSYSTEM,MyFilename.GetPtr());	// Set the system folder
 	}
 
 	// Application data folder (Roaming for Vista and Win7)
 	uResult = SHGetFolderPathW(NULL,CSIDL_APPDATA,NULL,0,NameBuffer);
 	if ((uResult==S_OK) || (uResult==E_FAIL)) {
 		// Convert to UTF8
-		String MyName2(reinterpret_cast<const Word16*>(NameBuffer));
-		MyFilename.SetFromNative(MyName2.GetPtr());
+		String MyName3(reinterpret_cast<const Word16*>(NameBuffer));
+		MyFilename.SetFromNative(MyName3);
 		SetPrefix(FileManager::PREFIXPREFS,MyFilename.GetPtr());	// Set the system folder
 	}
 }
@@ -163,7 +171,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 	This routine will get the time and date
 	from a file.
-	Note, this routine is Operating system specfic!!!
+	Note, this routine is Operating system specific!!!
 
 ***************************************/
 
@@ -218,7 +226,7 @@ Word BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDat
 	is a path to a file that exists, if it doesn't exist
 	or it's a directory, I return FALSE.
 	Note : I do not check if the file has any data in it.
-	Just the existance of the file.
+	Just the existence of the file.
 
 ***************************************/
 

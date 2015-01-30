@@ -2,7 +2,7 @@
 
 	3D Floating point matrix manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -101,9 +101,11 @@ struct Matrix3D_t {
 	void BURGER_API TransposeTransform(Vector3D_t *pOutput,const Vector3D_t *pInput) const;
 	void BURGER_API TransposeTransformAdd(Vector3D_t *pInput,const Vector3D_t *pTranslate) const;
 	void BURGER_API TransposeTransformAdd(Vector3D_t *pOutput,const Vector3D_t *pInput,const Vector3D_t *pTranslate) const;
+	Word BURGER_API AffineInverse(const Matrix3D_t *pInput);
 	void BURGER_API Yaw(float fYaw);
 	void BURGER_API Pitch(float fPitch);
 	void BURGER_API Roll(float fRoll);
+	BURGER_INLINE operator const float *() const { return &x.x; }
 };
 extern const Matrix3D_t g_Matrix3DIdentity;
 }

@@ -2,7 +2,7 @@
 
 	Assert redirection class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -28,7 +28,7 @@
 #include <xtl.h>
 #endif
 
-#if defined(BURGER_ANDROID) && defined(BURGER_ARM)
+#if defined(BURGER_SHIELD)
 #include <unistd.h>
 #endif
 
@@ -38,6 +38,10 @@
 
 #if defined(BURGER_IOS) || defined(BURGER_MACOSX)
 #include <signal.h>
+#endif
+
+#if defined(BURGER_VITA)
+#include <intrinsics.h>
 #endif
 
 /*! ************************************
@@ -227,14 +231,18 @@ void BURGER_API Burger::Halt(void)
 {
 #if defined(BURGER_WATCOM) && defined(BURGER_MSDOS)
 	_asm int 3
-#elif defined(BURGER_XBOX360) || defined(BURGER_PS4)
-// Xbox 360 / PS4 always has a debugger, either from the host or the kernel
+#elif defined(BURGER_XBOX360)
+	// Xbox 360 always has a debugger, either from the host or the kernel
 	__debugbreak();
 #elif defined(BURGER_PS3)
 	__builtin_snpause();
+#elif defined(BURGER_PS4)
+	__asm volatile ("int $0x41");
+#elif defined(BURGER_VITA)
+	__builtin_breakpoint(0);
 #elif defined(BURGER_IOS) || defined(BURGER_MACOSX)
 	raise(SIGTRAP);
-#elif defined(BURGER_ANDROID) && defined(BURGER_ARM)
+#elif defined(BURGER_SHIELD)
 	kill(getpid(),SIGINT);
 #elif defined(BURGER_ANDROID) && (defined(BURGER_X86) || defined(BURGER_AMD64))
 	__asm__( "int $3\n" : : );

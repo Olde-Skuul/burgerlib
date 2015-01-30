@@ -2,7 +2,7 @@
 
 	Generic compression manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -31,7 +31,10 @@ namespace Burger {
 class Compress : public Base {
 protected:
 	OutputMemoryStream m_Output;		///< Main output buffer for compressed data
-	char m_uSignature[4];				///< 4 character code to identify this compressor
+	union {
+		Word32 u;				///< Access as 32 bit value
+		char c[4];				///< Access as a 4 character code
+	} m_uSignature;				///< 4 character code to identify this compressor
 public:
 	enum eError {
 		COMPRESS_OKAY,				///< No errors
@@ -44,7 +47,7 @@ public:
 	virtual eError Finalize(void) = 0;
 	BURGER_INLINE OutputMemoryStream *GetOutput(void) { return &m_Output; }
 	BURGER_INLINE WordPtr GetOutputSize(void) const { return m_Output.GetSize(); }
-	BURGER_INLINE Word32 GetSignature(void) const { return reinterpret_cast<const Word32 *>(m_uSignature)[0]; }
+	BURGER_INLINE Word32 GetSignature(void) const { return m_uSignature.u; }
 };
 }
 /* END */

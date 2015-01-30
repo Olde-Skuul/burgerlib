@@ -2,7 +2,7 @@
 
 	Windows application manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -30,22 +30,8 @@
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 namespace Burger {
 class WindowsApp : public GameApp {
-	BURGER_DISABLECOPYCONSTRUCTORS(WindowsApp);
 public:
-	static void BURGER_API OutputWindowsMessage(Word uMessage,WordPtr wParam,WordPtr lParam);
 	typedef Word (BURGER_API *MainWindowProc)(WindowsApp *pThis,HWND__ *hWnd,Word uMessage,WordPtr wParam,WordPtr lParam,WordPtr *pOutput);	///< Callback custom window message handler
-	WindowsApp(HINSTANCE__ *hInstance,const char *pGameName,MainWindowProc pCallBack=NULL,WordPtr uDefaultMemorySize=Burger::MemoryManagerHandle::DEFAULTMEMORYCHUNK,Word uDefaultHandleCount=Burger::MemoryManagerHandle::DEFAULTHANDLECOUNT,WordPtr uMinReserveSize=Burger::MemoryManagerHandle::DEFAULTMINIMUMRESERVE);
-	~WindowsApp();
-	BURGER_INLINE HINSTANCE__ *GetInstance(void) const { return m_hInstance; }
-	BURGER_INLINE HWND__ *GetWindow(void) const { return m_hWindow; }
-	BURGER_INLINE MainWindowProc GetCallBack(void) const { return m_pCallBack; }
-	int BURGER_API InitWindow(const char *pGameName,MainWindowProc pCallBack);
-	int BURGER_API SetWindowSize(Word uWidth,Word uHeight);
-	void BURGER_API RecordWindowLocation(void);
-	Word BURGER_API HandleCursor(Word uParam);
-	void BURGER_API GetInputFocus(void);
-	void BURGER_API KillInputFocus(void);
-	static RunQueue::eReturnCode BURGER_API Poll(void *pSelf);
 private:
 	HINSTANCE__ *m_hInstance;		///< Current instance of the application
 	HWND__ *m_hWindow;				///< Main window for the application
@@ -56,6 +42,22 @@ private:
 	int m_iPreviousWindowY;			///< Previous Y coordinate of the window
 	Word m_bPreviousWindowXYValid;	///< \ref TRUE if m_iPreviousWindowX was initialized
 	Word16 m_uAtom;					///< Atom assigned to my class
+	BURGER_DISABLECOPYCONSTRUCTORS(WindowsApp);
+public:
+	static void BURGER_API OutputWindowsMessage(Word uMessage,WordPtr wParam,WordPtr lParam);
+	WindowsApp(HINSTANCE__ *hInstance,const char *pGameName,MainWindowProc pCallBack=NULL,WordPtr uDefaultMemorySize=Burger::MemoryManagerHandle::DEFAULTMEMORYCHUNK,Word uDefaultHandleCount=Burger::MemoryManagerHandle::DEFAULTHANDLECOUNT,WordPtr uMinReserveSize=Burger::MemoryManagerHandle::DEFAULTMINIMUMRESERVE);
+	~WindowsApp();
+	BURGER_INLINE HINSTANCE__ *GetInstance(void) const { return m_hInstance; }
+	BURGER_INLINE HWND__ *GetWindow(void) const { return m_hWindow; }
+	BURGER_INLINE MainWindowProc GetCallBack(void) const { return m_pCallBack; }
+	BURGER_INLINE void ResetWindowLocation(void) { m_bPreviousWindowXYValid = FALSE; }
+	int BURGER_API InitWindow(const char *pGameName,MainWindowProc pCallBack);
+	int BURGER_API SetWindowSize(Word uWidth,Word uHeight);
+	void BURGER_API RecordWindowLocation(void);
+	Word BURGER_API HandleCursor(Word uParam);
+	void BURGER_API GetInputFocus(void);
+	void BURGER_API KillInputFocus(void);
+	static RunQueue::eReturnCode BURGER_API Poll(void *pSelf);
 };
 }
 #endif

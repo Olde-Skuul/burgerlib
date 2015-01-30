@@ -25,9 +25,6 @@
 		<ClInclude Include="..\source\brglxext.h">
 			<Filter>source</Filter>
 		</ClInclude>
-		<ClInclude Include="..\source\brstartup.h">
-			<Filter>source</Filter>
-		</ClInclude>
 		<ClInclude Include="..\source\commandline\brcommandparameter.h">
 			<Filter>source\commandline</Filter>
 		</ClInclude>
@@ -166,7 +163,31 @@
 		<ClInclude Include="..\source\flashplayer\brflashaction.h">
 			<Filter>source\flashplayer</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashactionvalue.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashavm2.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashcolortransform.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashdisasmactionscript.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\flashplayer\brflashmanager.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashmatrix23.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashrect.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashrgba.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashstream.h">
 			<Filter>source\flashplayer</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\flashplayer\brflashutils.h">
@@ -210,6 +231,45 @@
 		</ClInclude>
 		<ClInclude Include="..\source\graphics\brshape8bit.h">
 			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brtexture.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brtextureopengl.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brvertexbuffer.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brvertexbufferopengl.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffect.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffect2d.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffectpositiontexturecolor.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffectstaticpositiontexture.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\brshaders.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersxbox360\pstexture360.h">
+			<Filter>source\graphics\shadersxbox360</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersxbox360\pstexturecolor360.h">
+			<Filter>source\graphics\shadersxbox360</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersxbox360\vs20sprite2d360.h">
+			<Filter>source\graphics\shadersxbox360</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersxbox360\vsstaticposition360.h">
+			<Filter>source\graphics\shadersxbox360</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\input\brjoypad.h">
 			<Filter>source\input</Filter>
@@ -256,6 +316,9 @@
 		<ClInclude Include="..\source\lowlevel\brglobals.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brgridindex.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brguid.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
@@ -269,6 +332,9 @@
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\broscursor.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brpair.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brperforce.h">
@@ -287,6 +353,9 @@
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brsmartpointer.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brsnsystems.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brstaticrtti.h">
@@ -309,6 +378,9 @@
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brxcode.h">
 			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brearcliptriangulate.h">
+			<Filter>source\math</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\math\brfixedmatrix3d.h">
 			<Filter>source\math</Filter>
@@ -397,6 +469,12 @@
 		<ClInclude Include="..\source\version.h">
 			<Filter>source</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\xbox360\brstartup.h">
+			<Filter>source\xbox360</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\xbox360\brxbox360app.h">
+			<Filter>source\xbox360</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\xbox360\brxbox360types.h">
 			<Filter>source\xbox360</Filter>
 		</ClInclude>
@@ -407,6 +485,9 @@
 			<Filter>unittest</Filter>
 		</ClInclude>
 		<ClInclude Include="..\unittest\testbrcompression.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\testbrdisplay.h">
 			<Filter>unittest</Filter>
 		</ClInclude>
 		<ClInclude Include="..\unittest\testbrendian.h">
@@ -592,7 +673,31 @@
 		<ClCompile Include="..\source\flashplayer\brflashaction.cpp">
 			<Filter>source\flashplayer</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashactionvalue.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashavm2.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashcolortransform.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashdisasmactionscript.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\flashplayer\brflashmanager.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashmatrix23.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashrect.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashrgba.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashstream.cpp">
 			<Filter>source\flashplayer</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\flashplayer\brflashutils.cpp">
@@ -636,6 +741,33 @@
 		</ClCompile>
 		<ClCompile Include="..\source\graphics\brshape8bit.cpp">
 			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brtexture.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brtextureopengl.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brvertexbuffer.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brvertexbufferopengl.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffect.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffect2d.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffectpositiontexturecolor.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffectstaticpositiontexture.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\brshaders.cpp">
+			<Filter>source\graphics\effects</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\input\brjoypad.cpp">
 			<Filter>source\input</Filter>
@@ -682,6 +814,9 @@
 		<ClCompile Include="..\source\lowlevel\brglobals.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brgridindex.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brguid.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
@@ -692,6 +827,9 @@
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\broscursor.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brpair.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brperforce.cpp">
@@ -723,6 +861,9 @@
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brtypes.cpp">
 			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brearcliptriangulate.cpp">
+			<Filter>source\math</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\math\brfixedmatrix3d.cpp">
 			<Filter>source\math</Filter>
@@ -811,6 +952,12 @@
 		<ClCompile Include="..\source\xbox360\brdirectorysearchxbox360.cpp">
 			<Filter>source\xbox360</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\xbox360\brdisplaybasexbox360.cpp">
+			<Filter>source\xbox360</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\xbox360\brdisplayxbox360.cpp">
+			<Filter>source\xbox360</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\xbox360\brfilemanagerxbox360.cpp">
 			<Filter>source\xbox360</Filter>
 		</ClCompile>
@@ -832,10 +979,19 @@
 		<ClCompile Include="..\source\xbox360\brsoundxbox360.cpp">
 			<Filter>source\xbox360</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\xbox360\brtexturexbox360.cpp">
+			<Filter>source\xbox360</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\xbox360\brtickxbox360.cpp">
 			<Filter>source\xbox360</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\xbox360\brtimedatexbox360.cpp">
+			<Filter>source\xbox360</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\xbox360\brvertexbufferxbox360.cpp">
+			<Filter>source\xbox360</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\xbox360\brxbox360app.cpp">
 			<Filter>source\xbox360</Filter>
 		</ClCompile>
 		<ClCompile Include="..\unittest\common.cpp">
@@ -845,6 +1001,9 @@
 			<Filter>unittest</Filter>
 		</ClCompile>
 		<ClCompile Include="..\unittest\testbrcompression.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\testbrdisplay.cpp">
 			<Filter>unittest</Filter>
 		</ClCompile>
 		<ClCompile Include="..\unittest\testbrendian.cpp">
@@ -880,6 +1039,18 @@
 		<ClCompile Include="..\unittest\testbrtypes.cpp">
 			<Filter>unittest</Filter>
 		</ClCompile>
+		<X360SL Include="..\source\graphics\shadersxbox360\pstexture360.x360sl">
+			<Filter>source\graphics\shadersxbox360</Filter>
+		</X360SL>
+		<X360SL Include="..\source\graphics\shadersxbox360\pstexturecolor360.x360sl">
+			<Filter>source\graphics\shadersxbox360</Filter>
+		</X360SL>
+		<X360SL Include="..\source\graphics\shadersxbox360\vs20sprite2d360.x360sl">
+			<Filter>source\graphics\shadersxbox360</Filter>
+		</X360SL>
+		<X360SL Include="..\source\graphics\shadersxbox360\vsstaticposition360.x360sl">
+			<Filter>source\graphics\shadersxbox360</Filter>
+		</X360SL>
 		<Filter Include="source\math">
 			<UniqueIdentifier>{713FE55E-AB60-3451-92CB-A762AA8D02BC}</UniqueIdentifier>
 		</Filter>
@@ -891,6 +1062,9 @@
 		</Filter>
 		<Filter Include="source">
 			<UniqueIdentifier>{D52F306A-245E-3238-B335-13532C3015BF}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\input">
+			<UniqueIdentifier>{FD34905C-B264-3090-BC84-920D481207F9}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="unittest">
 			<UniqueIdentifier>{B733A91E-8B1F-324D-9058-7EA39E3EFE97}</UniqueIdentifier>
@@ -916,14 +1090,17 @@
 		<Filter Include="source\flashplayer">
 			<UniqueIdentifier>{DB65DE65-E50F-302A-A783-B4143864E788}</UniqueIdentifier>
 		</Filter>
+		<Filter Include="source\graphics\shadersxbox360">
+			<UniqueIdentifier>{39DF3F94-7E19-301D-B0D1-0F22758CDC95}</UniqueIdentifier>
+		</Filter>
 		<Filter Include="source\compression">
 			<UniqueIdentifier>{1AF1C014-1CA9-3AA5-B4DF-693EE7BB7FDD}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="source\file">
 			<UniqueIdentifier>{27A39DFB-795F-30EA-9FA1-E1F04D7285AF}</UniqueIdentifier>
 		</Filter>
-		<Filter Include="source\input">
-			<UniqueIdentifier>{FD34905C-B264-3090-BC84-920D481207F9}</UniqueIdentifier>
+		<Filter Include="source\graphics\effects">
+			<UniqueIdentifier>{1AA86B3D-5F65-3296-B215-5C77EBDBEEFE}</UniqueIdentifier>
 		</Filter>
 	</ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 
 	Class to add perforce integration to Windows tools
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -18,7 +18,7 @@
 #include "brtypes.h"
 #endif
 
-#ifndef __BRSTRING_H__
+#ifndef __BRFILENAME_H__
 #include "brfilename.h"
 #endif
 

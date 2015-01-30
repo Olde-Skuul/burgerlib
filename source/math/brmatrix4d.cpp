@@ -2,7 +2,7 @@
 
 	4D Floating point matrix manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -2031,32 +2031,32 @@ void BURGER_API Burger::Matrix4D_t::Transpose(const Matrix4D_t *pInput)
 	x.z = fTemp1;
 	x.w = fTemp2;
 
-	fTemp1 = pInput->y.x;
+	fTemp1 = pInput->x.y;
 	fTemp2 = pInput->y.y;
 	y.x = fTemp1;
 	y.y = fTemp2;
 
-	fTemp1 = pInput->y.z;
-	fTemp2 = pInput->y.w;
+	fTemp1 = pInput->z.y;
+	fTemp2 = pInput->w.y;
 	y.z = fTemp1;
 	y.w = fTemp2;
 
-	fTemp1 = pInput->z.x;
-	fTemp2 = pInput->z.y;
+	fTemp1 = pInput->x.z;
+	fTemp2 = pInput->y.z;
 	z.x = fTemp1;
 	z.y = fTemp2;
 
 	fTemp1 = pInput->z.z;
-	fTemp2 = pInput->z.w;
+	fTemp2 = pInput->w.z;
 	z.z = fTemp1;
 	z.w = fTemp2;
 
-	fTemp1 = pInput->w.x;
-	fTemp2 = pInput->w.y;
+	fTemp1 = pInput->x.w;
+	fTemp2 = pInput->y.w;
 	w.x = fTemp1;
 	w.y = fTemp2;
 
-	fTemp1 = pInput->w.z;
+	fTemp1 = pInput->z.w;
 	fTemp2 = pInput->w.w;
 	w.z = fTemp1;
 	w.w = fTemp2;
@@ -4363,6 +4363,246 @@ void BURGER_API Burger::Matrix4D_t::TransposeTranslate(float fX,float fY,float f
 	z.w += z.x*fX + z.y*fY + z.z*fZ;
 	w.w += w.x*fX + w.y*fY + w.z*fZ;
 }
+
+/*! ************************************
+	
+	\brief Generate an affine inverse of a matrix
+
+	Using the 3x3 sub-matrix, generate a determinate and
+	use it to calculate the inverse of the 3x3 matrix.
+	Adjust the translate component and then clear out
+	the scale.
+
+	If the matrix cannot be inverted, \ref FALSE is returned and
+	the original matrix is copied as is.
+
+	\param pInput Pointer to a matrix to affine invert.
+	\return \ref TRUE if the inversion was successful, \ref FALSE if not
+
+***************************************/
+
+Word BURGER_API Burger::Matrix4D_t::AffineInverse(const Matrix4D_t *pInput)
+{
+	const float fPrecisionLimit = (1.0e-15f);
+
+	// Calculate the determinant of the 3x3 section of the matrix
+	// while keeping the negative and positive components separate
+	// It's needed to determine floating point error
+	// to see if floating point precision is enough to 
+	// calculate the inverse of the matrix
+
+	float fPositive = 0.0f;
+	float fNegative = 0.0f;
+
+	float fTemp = pInput->x.x * pInput->y.y * pInput->z.z;
+	if (fTemp >= 0.0f) {
+		fPositive += fTemp;
+	} else { 
+		fNegative += fTemp; 
+	}
+
+	fTemp = pInput->x.y * pInput->y.z * pInput->z.x;
+	if (fTemp >= 0.0f) {
+		fPositive += fTemp;
+	} else { 
+		fNegative += fTemp; 
+	}
+
+	fTemp = pInput->x.z * pInput->y.x * pInput->z.y;
+	if (fTemp >= 0.0f) {
+		fPositive += fTemp;
+	} else { 
+		fNegative += fTemp; 
+	}
+
+	fTemp = -pInput->x.z * pInput->y.y * pInput->z.x;
+	if (fTemp >= 0.0f) {
+		fPositive += fTemp;
+	} else { 
+		fNegative += fTemp; 
+	}
+
+	fTemp = -pInput->x.y * pInput->y.x * pInput->z.z;
+	if (fTemp >= 0.0f) {
+		fPositive += fTemp;
+	} else { 
+		fNegative += fTemp; 
+	}
+
+	fTemp = -pInput->x.x * pInput->y.z * pInput->z.y;
+	if (fTemp >= 0.0f) {
+		fPositive += fTemp;
+	} else { 
+		fNegative += fTemp; 
+	}
+
+	// The determinant is the sum
+	float fDeterminant = fPositive + fNegative;
+
+	// Is the 3x3 matrix divisible with floating point precision?
+
+	Word bResult;
+	if( (fDeterminant == 0.0f) || (Abs(fDeterminant / (fPositive - fNegative)) < fPrecisionLimit)) {
+		Set(pInput);
+		bResult = FALSE;
+	} else {
+		//  Calculate inverse(A) = original(A) / determinant(A)
+
+		//Reciprocal multiply for speed
+		fDeterminant = 1.0F / fDeterminant;
+
+		x.x =  (pInput->y.y * pInput->z.z - pInput->y.z * pInput->z.y) * fDeterminant;
+		y.x = -(pInput->y.x * pInput->z.z - pInput->y.z * pInput->z.x) * fDeterminant;
+		z.x =  (pInput->y.x * pInput->z.y - pInput->y.y * pInput->z.x) * fDeterminant;
+		x.y = -(pInput->x.y * pInput->z.z - pInput->x.z * pInput->z.y) * fDeterminant;
+		y.y =  (pInput->x.x * pInput->z.z - pInput->x.z * pInput->z.x) * fDeterminant;
+		z.y = -(pInput->x.x * pInput->z.y - pInput->x.y * pInput->z.x) * fDeterminant;
+		x.z =  (pInput->x.y * pInput->y.z - pInput->x.z * pInput->y.y) * fDeterminant;
+		y.z = -(pInput->x.x * pInput->y.z - pInput->x.z * pInput->y.x) * fDeterminant;
+		z.z =  (pInput->x.x * pInput->y.y - pInput->x.y * pInput->y.x) * fDeterminant;
+
+		// Calculate -C * inverse(A)
+
+		float fX = pInput->w.x;
+		float fY = pInput->w.y;
+		float fZ = pInput->w.z;
+
+		w.x = -(fX * x.x + fY * y.x + fZ * z.x);
+		w.y = -(fX * x.y + fY * y.y + fZ * z.y);
+		w.z = -(fX * x.z + fY * y.z + fZ * z.z);
+
+		// Fill in last column
+
+		x.w = 0.0f;
+		y.w = 0.0f;
+		z.w = 0.0f;
+		w.w = 1.0f;
+		bResult = TRUE;
+	}
+	return bResult;
+}
+
+
+/*! ************************************
+
+	\brief Create a 4D perspective matrix
+
+	Using a field of view, an aspect ratio (width/height) and a near/far range,
+	create a left handed projection matrix.
+
+	fYScale = 1.0f / tan(fFieldOfViewY*0.5f);
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</td>	<td>fYScale/fAspect</td>	<td>0</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>y</td>	<td>0</td>	<td>fYScale</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>z</td>	<td>0</td>	<td>0</td>	<td>fFar/(fFar-fNear)</td>	<td>1</td></tr>
+	<tr><th>w</td>	<td>0</td>	<td>0</td>	<td>(-fNear * fFar) / (fFar-fNear)</td>	<td>0</td></tr>
+	</table>
+
+	\note This is a drop in replacement for the Windows function <a href="http://msdn.microsoft.com/en-us/library/bb205350(VS.85).aspx">D3DXMatrixPerspectiveFovLH()</a>.
+
+	\param fFieldOfViewY Angle of the field of view in radians
+	\param fAspect Aspect ratio of the screen
+	\param fNear Near clip plane
+	\param fFar Far clip plane
+	\sa PerspectiveFovRH()
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::PerspectiveFovLH(float fFieldOfViewY,float fAspect,float fNear,float fFar)
+{
+	// Calculate the cotangent of Field of View * 2.0f
+	float fYScale = 1.0f / Tan(fFieldOfViewY*0.5f);
+	float fDepth = (fFar-fNear);
+
+	x.x = fYScale / fAspect;
+	x.y = 0.0f;
+	x.z = 0.0f;
+	x.w = 0.0f;
+
+	y.x = 0.0f;
+	y.y = fYScale;
+	y.z = 0.0f;
+	y.w = 0.0f;
+
+	z.x = 0.0f;
+	z.y = 0.0f;
+	z.z = fFar / fDepth;
+	z.w = 1.0f;
+
+	w.x = 0.0f;
+	w.y = 0.0f;
+	w.z = (-fNear * fFar) / fDepth;
+	w.w = 0.0f;
+}
+
+/*! ************************************
+
+	\brief Create a 4D perspective matrix
+
+	Using a field of view, an aspect ratio (width/height) and a near/far range,
+	create a right handed projection matrix.
+
+	fYScale = 1.0f / tan(fFieldOfViewY*0.5f);
+
+	<table border="1" style="margin-right:auto;margin-left:auto;text-align:center;width:80%">
+	<tr><th/><th>x</th><th>y</th><th>z</th><th>w</th></tr>
+	<tr><th>x</td>	<td>fYScale/fAspect</td>	<td>0</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>y</td>	<td>0</td>	<td>fYScale</td>	<td>0</td>	<td>0</td></tr>
+	<tr><th>z</td>	<td>0</td>	<td>0</td>	<td>fFar/(fNear-fFar)</td>	<td>-1</td></tr>
+	<tr><th>w</td>	<td>0</td>	<td>0</td>	<td>(fNear * fFar) / (fNear-fFar)</td>	<td>0</td></tr>
+	</table>
+
+	\note This is a drop in replacement for the Windows function <a href="http://msdn.microsoft.com/en-us/library/bb205351(v=vs.85).aspx">D3DXMatrixPerspectiveFovRH()</a>.
+
+	\param fFieldOfViewY Angle of the field of view in radians
+	\param fAspect Aspect ratio of the screen
+	\param fNear Near clip plane
+	\param fFar Far clip plane
+	\sa PerspectiveFovLH()
+
+***************************************/
+
+void BURGER_API Burger::Matrix4D_t::PerspectiveFovRH(float fFieldOfViewY,float fAspect,float fNear,float fFar)
+{
+	// Calculate the cotangent of Field of View * 2.0f
+	float fYScale = 1.0f / Tan(fFieldOfViewY*0.5f);
+	float fDepth = (fNear-fFar);
+
+	x.x = fYScale / fAspect;
+	x.y = 0.0f;
+	x.z = 0.0f;
+	x.w = 0.0f;
+
+	y.x = 0.0f;
+	y.y = fYScale;
+	y.z = 0.0f;
+	y.w = 0.0f;
+
+	z.x = 0.0f;
+	z.y = 0.0f;
+	z.z = fFar / fDepth;
+	z.w = -1.0f;
+
+	w.x = 0.0f;
+	w.y = 0.0f;
+	w.z = (fNear * fFar) / fDepth;
+	w.w = 0.0f;
+}
+
+/*! ************************************
+
+	\fn Burger::Matrix4D_t::operator const float *() const
+	\brief Convert to a const float pointer
+
+	This convenience operator converts the Matrix4D_t into 
+	a float pointer to pass to other APIs that treat this as
+	an array of 32 bit floats.
+
+	\return The pointer to the object typecast as a (const float *)
+
+***************************************/
 
 /*! ************************************
 

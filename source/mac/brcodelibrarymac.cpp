@@ -4,7 +4,7 @@
 
 	MacOS version
 	
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -52,7 +52,7 @@ Word Burger::CodeLibrary::Init(const char *pFilename)
 void Burger::CodeLibrary::Shutdown(void)
 {
 	if (m_pLibInstance) {
-		CloseConnection(&m_pLibInstance);
+		CloseConnection(reinterpret_cast<CFragConnectionID *>(&m_pLibInstance));
 		m_pLibInstance = NULL;
 	}
 }
@@ -73,7 +73,7 @@ void * Burger::CodeLibrary::GetFunction(const char *pFunctionName)
 	// This code only works for CFM functions
 	if (pFunctionName && m_pLibInstance) {
 		Burger::CStringToPString(TempName,pFunctionName);
-		if (!FindSymbol(m_pLibInstance,TempName,&ProcPtr,0)) {
+		if (!FindSymbol(static_cast<OpaqueCFragConnectionID *>(m_pLibInstance),TempName,&ProcPtr,0)) {
 			pFunction = ProcPtr;
 		}
 	}

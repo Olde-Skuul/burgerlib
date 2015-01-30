@@ -2,7 +2,7 @@
 
 	Incremental tick Manager Class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -12,7 +12,7 @@
 ***************************************/
 
 #include "brtick.h"
-#if !defined(BURGER_WINDOWS) && !defined(BURGER_MAC) && !defined(BURGER_DS)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_DS) || defined(BURGER_MACOSX) || defined(BURGER_IOS))
 #include <time.h>
 #endif
 
@@ -50,7 +50,7 @@ Word32 Burger::Tick::s_LastTick;
 
 ***************************************/
 
-#if !defined(BURGER_MSDOS) && !defined(BURGER_WINDOWS) && !defined(BURGER_MAC) && !defined(BURGER_BEOS) && !defined(BURGER_DS)
+#if !(defined(BURGER_MSDOS) || defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_BEOS) || defined(BURGER_DS) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 
 Word32 BURGER_API Burger::Tick::Read(void)
 {
@@ -119,7 +119,7 @@ Word32 BURGER_API Burger::Tick::Read(void)
 
 ***************************************/
 
-#if !defined(BURGER_WINDOWS)
+#if !(defined(BURGER_WINDOWS)) || defined(DOXYGEN)
 void BURGER_API Burger::Tick::Wait(Word uCount)
 {
 	//KeyboardKbhit();			// Handle any pending events
@@ -204,7 +204,7 @@ Word BURGER_API Burger::Tick::WaitEvent(Word uCount)
 
 ***************************************/
 
-#if !defined(BURGER_WINDOWS) && !defined(BURGER_MAC) && !defined(BURGER_DS)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_DS) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 
 Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
 {
@@ -237,7 +237,7 @@ Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
 
 ***************************************/
 
-#if !defined(BURGER_WINDOWS) && !defined(BURGER_MAC) && !defined(BURGER_DS)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_DS) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 
 Word32 BURGER_API Burger::Tick::ReadMilliseconds(void)
 {
@@ -269,7 +269,7 @@ Word32 BURGER_API Burger::Tick::ReadMilliseconds(void)
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_ANDROID)) || defined(DOXYGEN)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_SHIELD) || defined(BURGER_VITA) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 void BURGER_API Burger::Sleep(Word32 /* uMilliseconds */)
 {
 }

@@ -25,9 +25,6 @@
 		<ClInclude Include="..\source\brglxext.h">
 			<Filter>source</Filter>
 		</ClInclude>
-		<ClInclude Include="..\source\brstartup.h">
-			<Filter>source</Filter>
-		</ClInclude>
 		<ClInclude Include="..\source\commandline\brcommandparameter.h">
 			<Filter>source\commandline</Filter>
 		</ClInclude>
@@ -166,7 +163,31 @@
 		<ClInclude Include="..\source\flashplayer\brflashaction.h">
 			<Filter>source\flashplayer</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashactionvalue.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashavm2.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashcolortransform.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashdisasmactionscript.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\flashplayer\brflashmanager.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashmatrix23.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashrect.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashrgba.h">
+			<Filter>source\flashplayer</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\flashplayer\brflashstream.h">
 			<Filter>source\flashplayer</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\flashplayer\brflashutils.h">
@@ -210,6 +231,57 @@
 		</ClInclude>
 		<ClInclude Include="..\source\graphics\brshape8bit.h">
 			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brtexture.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brtextureopengl.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brvertexbuffer.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\brvertexbufferopengl.h">
+			<Filter>source\graphics</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffect.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffect2d.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffectpositiontexturecolor.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\breffectstaticpositiontexture.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\effects\brshaders.h">
+			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersdx9\pstexturecolordx9.h">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersdx9\pstexturedx9.h">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersdx9\vs20sprite2ddx9.h">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersdx9\vsstaticpositiondx9.h">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersopengl\pstexturecolorgl.h">
+			<Filter>source\graphics\shadersopengl</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersopengl\pstexturegl.h">
+			<Filter>source\graphics\shadersopengl</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersopengl\vs20sprite2dgl.h">
+			<Filter>source\graphics\shadersopengl</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersopengl\vsstaticpositiongl.h">
+			<Filter>source\graphics\shadersopengl</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\input\brjoypad.h">
 			<Filter>source\input</Filter>
@@ -256,6 +328,9 @@
 		<ClInclude Include="..\source\lowlevel\brglobals.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brgridindex.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brguid.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
@@ -269,6 +344,9 @@
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\broscursor.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brpair.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brperforce.h">
@@ -287,6 +365,9 @@
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brsmartpointer.h">
+			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\lowlevel\brsnsystems.h">
 			<Filter>source\lowlevel</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brstaticrtti.h">
@@ -309,6 +390,9 @@
 		</ClInclude>
 		<ClInclude Include="..\source\lowlevel\brxcode.h">
 			<Filter>source\lowlevel</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\math\brearcliptriangulate.h">
+			<Filter>source\math</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\math\brfixedmatrix3d.h">
 			<Filter>source\math</Filter>
@@ -403,19 +487,28 @@
 		<ClInclude Include="..\source\windows\brdisplaydibsoftware8.h">
 			<Filter>source\windows</Filter>
 		</ClInclude>
-		<ClInclude Include="..\source\windows\brdisplaydirectx8bit.h">
-			<Filter>source\windows</Filter>
-		</ClInclude>
 		<ClInclude Include="..\source\windows\brdisplaydirectx9.h">
 			<Filter>source\windows</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\windows\brdisplaydirectx9software8.h">
 			<Filter>source\windows</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\windows\brstartup.h">
+			<Filter>source\windows</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\windows\brtexturedirectx9.h">
+			<Filter>source\windows</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\windows\brvertexbufferdirectx9.h">
+			<Filter>source\windows</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\windows\brwindowsapp.h">
 			<Filter>source\windows</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\windows\brwindowstypes.h">
+			<Filter>source\windows</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\windows\ps20display8bitdx9.h">
 			<Filter>source\windows</Filter>
 		</ClInclude>
 		<ClInclude Include="..\unittest\common.h">
@@ -425,6 +518,9 @@
 			<Filter>unittest</Filter>
 		</ClInclude>
 		<ClInclude Include="..\unittest\testbrcompression.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\testbrdisplay.h">
 			<Filter>unittest</Filter>
 		</ClInclude>
 		<ClInclude Include="..\unittest\testbrendian.h">
@@ -610,7 +706,31 @@
 		<ClCompile Include="..\source\flashplayer\brflashaction.cpp">
 			<Filter>source\flashplayer</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashactionvalue.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashavm2.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashcolortransform.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashdisasmactionscript.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\flashplayer\brflashmanager.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashmatrix23.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashrect.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashrgba.cpp">
+			<Filter>source\flashplayer</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\flashplayer\brflashstream.cpp">
 			<Filter>source\flashplayer</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\flashplayer\brflashutils.cpp">
@@ -654,6 +774,33 @@
 		</ClCompile>
 		<ClCompile Include="..\source\graphics\brshape8bit.cpp">
 			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brtexture.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brtextureopengl.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brvertexbuffer.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\brvertexbufferopengl.cpp">
+			<Filter>source\graphics</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffect.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffect2d.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffectpositiontexturecolor.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\breffectstaticpositiontexture.cpp">
+			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\effects\brshaders.cpp">
+			<Filter>source\graphics\effects</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\input\brjoypad.cpp">
 			<Filter>source\input</Filter>
@@ -700,6 +847,9 @@
 		<ClCompile Include="..\source\lowlevel\brglobals.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brgridindex.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brguid.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
@@ -710,6 +860,9 @@
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\broscursor.cpp">
+			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\lowlevel\brpair.cpp">
 			<Filter>source\lowlevel</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brperforce.cpp">
@@ -741,6 +894,9 @@
 		</ClCompile>
 		<ClCompile Include="..\source\lowlevel\brtypes.cpp">
 			<Filter>source\lowlevel</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\math\brearcliptriangulate.cpp">
+			<Filter>source\math</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\math\brfixedmatrix3d.cpp">
 			<Filter>source\math</Filter>
@@ -901,10 +1057,16 @@
 		<ClCompile Include="..\source\windows\brsoundwindows.cpp">
 			<Filter>source\windows</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\windows\brtexturedirectx9.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\windows\brtickwindows.cpp">
 			<Filter>source\windows</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\windows\brtimedatewindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brvertexbufferdirextx9.cpp">
 			<Filter>source\windows</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\windows\brwindowsapp.cpp">
@@ -917,6 +1079,9 @@
 			<Filter>unittest</Filter>
 		</ClCompile>
 		<ClCompile Include="..\unittest\testbrcompression.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
+		<ClCompile Include="..\unittest\testbrdisplay.cpp">
 			<Filter>unittest</Filter>
 		</ClCompile>
 		<ClCompile Include="..\unittest\testbrendian.cpp">
@@ -952,9 +1117,36 @@
 		<ClCompile Include="..\unittest\testbrtypes.cpp">
 			<Filter>unittest</Filter>
 		</ClCompile>
-		<HLSL Include="..\source\windows\brdisplaydirectx8bit.hlsl">
+		<HLSL Include="..\source\graphics\shadersdx9\pstexturecolordx9.hlsl">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</HLSL>
+		<HLSL Include="..\source\graphics\shadersdx9\pstexturedx9.hlsl">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</HLSL>
+		<HLSL Include="..\source\graphics\shadersdx9\vs20sprite2ddx9.hlsl">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</HLSL>
+		<HLSL Include="..\source\graphics\shadersdx9\vsstaticpositiondx9.hlsl">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</HLSL>
+		<HLSL Include="..\source\windows\ps20display8bitdx9.hlsl">
 			<Filter>source\windows</Filter>
 		</HLSL>
+		<GLSL Include="..\source\graphics\shadersopengl\pstexturecolorgl.glsl">
+			<Filter>source\graphics\shadersopengl</Filter>
+		</GLSL>
+		<GLSL Include="..\source\graphics\shadersopengl\pstexturegl.glsl">
+			<Filter>source\graphics\shadersopengl</Filter>
+		</GLSL>
+		<GLSL Include="..\source\graphics\shadersopengl\vs20sprite2dgl.glsl">
+			<Filter>source\graphics\shadersopengl</Filter>
+		</GLSL>
+		<GLSL Include="..\source\graphics\shadersopengl\vsstaticpositiongl.glsl">
+			<Filter>source\graphics\shadersopengl</Filter>
+		</GLSL>
+		<Filter Include="source\graphics\shadersdx9">
+			<UniqueIdentifier>{93EA9D37-C0F1-3695-9283-CCF76C03830B}</UniqueIdentifier>
+		</Filter>
 		<Filter Include="source\math">
 			<UniqueIdentifier>{AF7F60BD-734A-336E-B4E9-B27658EFA21B}</UniqueIdentifier>
 		</Filter>
@@ -963,6 +1155,9 @@
 		</Filter>
 		<Filter Include="source">
 			<UniqueIdentifier>{93DD0C3B-31DC-3C2F-B6D1-994138EF6559}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\input">
+			<UniqueIdentifier>{7DFFC35E-22A1-3FB5-8506-D06BA169CB77}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="unittest">
 			<UniqueIdentifier>{73B3E15D-496A-3EAD-9120-91DC8D75162C}</UniqueIdentifier>
@@ -988,6 +1183,9 @@
 		<Filter Include="source\graphics">
 			<UniqueIdentifier>{0D3B65E6-AC4D-3D46-AF32-CBB82DF432CE}</UniqueIdentifier>
 		</Filter>
+		<Filter Include="source\graphics\shadersopengl">
+			<UniqueIdentifier>{5C27B657-2D96-312C-A76B-0DF943488BF7}</UniqueIdentifier>
+		</Filter>
 		<Filter Include="source\flashplayer">
 			<UniqueIdentifier>{24EB2EF0-44B3-3F3B-9761-793A5B499649}</UniqueIdentifier>
 		</Filter>
@@ -997,8 +1195,8 @@
 		<Filter Include="source\file">
 			<UniqueIdentifier>{6CBA067E-3CBE-3307-BD98-6EBD698FB3B5}</UniqueIdentifier>
 		</Filter>
-		<Filter Include="source\input">
-			<UniqueIdentifier>{7DFFC35E-22A1-3FB5-8506-D06BA169CB77}</UniqueIdentifier>
+		<Filter Include="source\graphics\effects">
+			<UniqueIdentifier>{A80A527D-57B7-3688-9BB7-39397B5200B4}</UniqueIdentifier>
 		</Filter>
 	</ItemGroup>
 </Project>

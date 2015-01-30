@@ -2,7 +2,7 @@
 
 	4D Floating point vector manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -231,6 +231,47 @@ void BURGER_API Burger::Vector4D_t::Set(const FixedVector4D_t *pInput)
 	FixedToFloat(&z,&pInput->z);
 	FixedToFloat(&w,&pInput->w);
 }
+
+/*! ************************************
+
+	\fn void Burger::Vector4D_t::SetRect(float fX,float fY)
+	\brief Set the values to as if it's a rectangle
+
+	Sets the x and z values to fX and y and w to fY. This
+	treats the Vector4D_t as if it's a rectangle that's a single point.
+
+	\param fX New x and z value
+	\param fY New y and w value
+	\sa Zero(void), SetRect(const Vector2D_t *) or SetRect(const Vector2D_t *,const Vector2D_t *)
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::Vector4D_t::SetRect(const Vector2D_t *pMinMax)
+	\brief Set the values to as if it's a rectangle
+
+	Sets the x and z values to pMinMax->x and y and w to pMinMax->y. This
+	treats the Vector4D_t as if it's a rectangle that's a single point.
+
+	\param pMinMax Pointer to a point that will be used as the minimum and maximum size.
+	\sa Zero(void), SetRect(float,float) or SetRect(const Vector2D_t *,const Vector2D_t *)
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::Vector4D_t::SetRect(const Vector2D_t *pMin,const Vector2D_t *pMax)
+	\brief Set the values to as if it's a rectangle
+
+	Sets the x and y values to pMin and z and w to pMax. This
+	treats the Vector4D_t as if it's a rectangle.
+
+	\param pMin Pointer to a point that will be used as the upper left corner.
+	\param pMax Pointer to a point that will be used as the lower right corner.
+	\sa Zero(void), SetRect(float,float) or SetRect(const Vector2D_t *)
+
+***************************************/
 
 /*! ************************************
 
@@ -1190,12 +1231,389 @@ Word BURGER_API Burger::Vector4D_t::BitwiseEqual(const Vector4D_t *pInput) const
 
 /*! ************************************
 
+	\fn const Vector2D_t Burger::Vector4D_t::GetTopLeft(void) const
+	\brief Get the top left corner of the rectangle.
+
+	This function casts a pointer to the x and y elements of the
+	Vector4D_t to a Vector2D_t which represents the top-left
+	corner of a rectangle.
+
+	\return Pointer to the top left corner of the rectangle
+	\sa GetBottomRight(void) const, GetTopLeft(void) or GetWidth(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn const Vector2D_t Burger::Vector4D_t::GetBottomRight(void) const
+	\brief Get the top left corner of the rectangle.
+
+	This function casts a pointer to the z and w elements of the
+	Vector4D_t to a Vector2D_t which represents the bottom-right
+	corner of a rectangle.
+
+	\return Pointer to the bottom right corner of the rectangle
+	\sa GetTopLeft(void) const, GetBottomRight(void) or GetHeight(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn Vector2D_t Burger::Vector4D_t::GetTopLeft(void)
+	\brief Get the top left corner of the rectangle.
+
+	This function casts a pointer to the x and y elements of the
+	Vector4D_t to a Vector2D_t which represents the top-left
+	corner of a rectangle.
+
+	\return Pointer to the top left corner of the rectangle
+	\sa GetBottomRight(void), GetTopLeft(void) const or GetWidth(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn Vector2D_t Burger::Vector4D_t::GetBottomRight(void)
+	\brief Get the top left corner of the rectangle.
+
+	This function casts a pointer to the z and w elements of the
+	Vector4D_t to a Vector2D_t which represents the bottom-right
+	corner of a rectangle.
+
+	\return Pointer to the bottom right corner of the rectangle
+	\sa GetTopLeft(void), GetBottomRight(void) const or GetHeight(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn float Burger::Vector4D_t::GetWidth(void) const
+	\brief Get the width of the rectangle.
+
+	This function subtracts the x component from the z component
+	to create the width of the rectangle.
+
+	\return The width of the rectangle.
+	\sa GetHeight(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn float Burger::Vector4D_t::GetHeight(void) const
+	\brief Get the height of the rectangle.
+
+	This function subtracts the y component from the w component
+	to create the height of the rectangle.
+
+	\return The height of the rectangle.
+	\sa GetWidth(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn float Burger::Vector4D_t::GetLeft(void) const
+	\brief Get the leftmost X coordinate of the rectangle.
+
+	Returns the leftmost X component of the rectangle. The
+	x value shadows the LeftX value.
+
+	\return The leftmost X of the rectangle.
+	\sa GetRight(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn float Burger::Vector4D_t::GetTop(void) const
+	\brief Get the topmost Y coordinate of the rectangle.
+
+	Returns the topmost Y component of the rectangle. The
+	y value shadows the TopY value.
+
+	\return The topmost Y of the rectangle.
+	\sa GetBottom(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn float Burger::Vector4D_t::GetRight(void) const
+	\brief Get the rightmost X coordinate of the rectangle.
+
+	Returns the rightmost X component of the rectangle. The
+	z value shadows the RightX value.
+
+	\return The rightmost X of the rectangle.
+	\sa GetLeft(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn float Burger::Vector4D_t::GetBottom(void) const
+	\brief Get the bottommost Y coordinate of the rectangle.
+
+	Returns the bottommost Y component of the rectangle. The
+	w value shadows the BottomY value.
+
+	\return The bottommost Y of the rectangle.
+	\sa GetTop(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Vector4D_t::SetWidth(float fWidth)
+	\brief Set the width of a rectangle.
+	
+	Set the right most X coordinate so the rectangle will be the
+	requested width. No bounds checking is performed, so unsorted 
+	rectangles are possible on overflow or underflow input.
+	
+	\param fWidth Requested width of the rectangle.
+	
+	\sa GetWidth(void) const or SetHeight(float)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Vector4D_t::SetHeight(float fHeight)
+	\brief Set the height of a rectangle.
+	
+	Set the bottom most Y coordinate so the rectangle will be the
+	requested height. No bounds checking is performed, so unsorted 
+	rectangles are possible on overflow or underflow input.
+	
+	\param fHeight Requested height of the rectangle.
+	
+	\sa GetHeight() const or SetWidth(float)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Vector4D_t::SetSize(float fWidth,float fHeight)
+	\brief Set the size of a rectangle.
+	
+	Set the right most X coordinate and the bottom most Y coordinate so the
+	rectangle will be the requested width and height. No bounds checking is
+	performed, so unsorted rectangles are possible on overflow or underflow input.
+	
+	\param fWidth Requested width of the rectangle.
+	\param fHeight Requested height of the rectangle.
+	
+	\sa GetWidth(void) const, GetHeight(void) const, SetWidth(float) or SetHeight(float)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Vector4D_t::SetLeft(float fLeft)
+	\brief Set the left most X coordinate of a rectangle.
+	
+	Set the left most X coordinate to a specific value. No bounds checking is
+	performed to prevent unsorted rectangles.
+	
+	\param fLeft Requested left most X coordinate of the rectangle.
+	
+	\sa GetLeft(void) const or SetRight(float)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Vector4D_t::SetTop(float fTop)
+	\brief Set the top most Y coordinate of a rectangle.
+	
+	Set the top most X coordinate to a specific value. No bounds checking is
+	performed to prevent unsorted rectangles.
+	
+	\param fTop Requested top most Y coordinate of the rectangle.
+	
+	\sa GetTop(void) const or SetBottom(float)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Vector4D_t::SetRight(float fRight)
+	\brief Set the right most X coordinate of a rectangle.
+	
+	Set the right most X coordinate to a specific value. No bounds checking is
+	performed to prevent unsorted rectangles.
+	
+	\param fRight Requested right most X coordinate of the rectangle.
+	
+	\sa GetRight(void) const or SetLeft(float)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Vector4D_t::SetBottom(float fBottom)
+	\brief Set the bottom most Y coordinate of a rectangle.
+	
+	Set the bottom most Y coordinate to a specific value. No bounds checking is
+	performed to prevent unsorted rectangles.
+	
+	\param fBottom Requested bottom most Y coordinate of the rectangle.
+	
+	\sa GetBottom(void) const or SetTop(float)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Vector4D_t::IsInsideRect(float fX,float fY) const
+	\brief Test if a point is inside a rectangle
+
+	Test the x,y coordinate if it inside the
+	rectangle this Vector4D_t represents.
+
+	\param fX X coordinate to test
+	\param fY Y coordinate to test
+	\return \ref TRUE if the point is inside the rectangle, \ref FALSE if not.
+	\sa IsInsideRect(const Vector2D_t *) const or ExpandRect(float,float)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Vector4D_t::IsInsideRect(const Vector2D_t *pInput) const
+	\brief Test if a point is inside a rectangle
+
+	Test the x,y coordinate in the Vector2D_t if it inside the
+	rectangle this Vector4D_t represents.
+
+	\param pInput Pointer to a two dimensional point
+	\return \ref TRUE if the point is inside the rectangle, \ref FALSE if not.
+	\sa IsInsideRect(float,float) const or ExpandRect(const Vector2D_t *)
+
+***************************************/
+
+/*! ************************************
+
+	\brief Enlarge a rectangle to encompass a point
+
+	If the x,y coordinate is inside the rectangle, no
+	action will be performed. If it's outside, the rectangle
+	will be enlarged just enough to encompass the new point.
+
+	\param fX X coordinate to expand the x and z elements with
+	\param fY Y coordinate to expand the y and w elements width
+	\sa ExpandRect(const Vector2D_t *)
+
+***************************************/
+
+void BURGER_API Burger::Vector4D_t::ExpandRect(float fX, float fY)
+{
+#if defined(BURGER_MSVC) && defined(BURGER_AMD64)
+	__m128 vX = _mm_set_ss(fX);
+	__m128 vY = _mm_set_ss(fY);
+	_mm_store_ss(&x,_mm_min_ss(_mm_load_ss(&x),vX));
+	_mm_store_ss(&y,_mm_min_ss(_mm_load_ss(&y),vY));
+	_mm_store_ss(&z,_mm_max_ss(_mm_load_ss(&z),vX));
+	_mm_store_ss(&w,_mm_max_ss(_mm_load_ss(&w),vY));
+#else
+	x = Min(x,fX);
+	y = Min(y,fY);
+	z = Max(z,fX);
+	w = Max(w,fY);
+#endif
+}
+
+/*! ************************************
+
+	\brief Enlarge a rectangle to encompass a point
+
+	If the x,y coordinate is inside the rectangle, no
+	action will be performed. If it's outside, the rectangle
+	will be enlarged just enough to encompass the new point.
+
+	\param pInput Pointer to an X/Y coordinate to expand the rectangle with.
+	\sa ExpandRect(float,float)
+
+***************************************/
+
+void BURGER_API Burger::Vector4D_t::ExpandRect(const Vector2D_t *pInput)
+{
+#if defined(BURGER_MSVC) && defined(BURGER_AMD64)
+	__m128 vX = _mm_load_ss(&pInput->x);
+	__m128 vY = _mm_load_ss(&pInput->y);
+	_mm_store_ss(&x,_mm_min_ss(_mm_load_ss(&x),vX));
+	_mm_store_ss(&y,_mm_min_ss(_mm_load_ss(&y),vY));
+	_mm_store_ss(&z,_mm_max_ss(_mm_load_ss(&z),vX));
+	_mm_store_ss(&w,_mm_max_ss(_mm_load_ss(&w),vY));
+#else
+	float fX = pInput->x;
+	float fY = pInput->y;
+	x = Min(x,fX);
+	y = Min(y,fY);
+	z = Max(z,fX);
+	w = Max(w,fY);
+#endif
+}
+
+/*! ************************************
+
+	\brief Enlarge a rectangle to encompass a rectangle
+
+	If the left,top and right,bottom coordinates are inside the rectangle, no
+	action will be performed. If it's outside, the rectangle
+	will be enlarged just enough to encompass the new rectangle.
+
+	\param pInput Pointer to an Left/Top/Right/Bottom coordinate to expand the rectangle with.
+	\sa ExpandRect(float,float) or ExpandRect(const Vector2D_t *)
+
+***************************************/
+
+void BURGER_API Burger::Vector4D_t::ExpandRect(const Vector4D_t *pInput)
+{
+#if defined(BURGER_MSVC) && defined(BURGER_AMD64)
+	__m128 vX1 = _mm_load_ss(&pInput->x);
+	__m128 vY1 = _mm_load_ss(&pInput->y);
+	__m128 vX2 = _mm_load_ss(&pInput->z);
+	__m128 vY2 = _mm_load_ss(&pInput->w);
+	_mm_store_ss(&x,_mm_min_ss(_mm_min_ss(_mm_load_ss(&x),vX1),vX2));
+	_mm_store_ss(&y,_mm_min_ss(_mm_min_ss(_mm_load_ss(&y),vY1),vY2));
+	_mm_store_ss(&z,_mm_max_ss(_mm_max_ss(_mm_load_ss(&z),vX1),vX2));
+	_mm_store_ss(&w,_mm_max_ss(_mm_max_ss(_mm_load_ss(&w),vY1),vY2));
+#else
+	float fX1 = pInput->x;
+	float fY1 = pInput->y;
+	float fX2 = pInput->z;
+	float fY2 = pInput->w;
+	x = Min(Min(x,fX1),fX2);
+	y = Min(Min(y,fY1),fY2);
+	z = Max(Max(z,fX1),fX2);
+	w = Max(Max(w,fY1),fY2);
+#endif
+}
+
+/*! ************************************
+
 	\fn Word Burger::Vector4D_t::operator != (const Vector4D_t& rInput) const
 	\brief Compare two Vector4D_t's for inequality
 	
 	\param rInput Reference to the Vector4D_t to compare against
 	\return \ref TRUE if not equal, \ref FALSE if equal
 	\sa operator==(const Vector4D_t&) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::Vector4D_t::operator const float *() const
+	\brief Convert to a const float pointer
+
+	This convenience operator converts the Vector4D_t into 
+	a float pointer to pass to other APIs that treat this as
+	an array of 32 bit floats.
+
+	\return The pointer to the object typecast as a (const float *)
 
 ***************************************/
 

@@ -4,7 +4,7 @@
 
 	MacOSX only
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -91,15 +91,15 @@
 //
 
 @interface BurgerGLView : NSOpenGLView {
-	Burger::DisplayOpenGL *m_pDisplay;
+	Burger::Display *m_pDisplay;
 }
-- (id) initWithDisplay : (Burger::DisplayOpenGL *)pDisplay;
+- (id) initWithDisplay : (Burger::Display *)pDisplay;
 - (void) drawView;
 @end
 
 @implementation BurgerGLView
 
-- (id) initWithDisplay:(Burger::DisplayOpenGL *)pDisplay
+- (id) initWithDisplay:(Burger::Display *)pDisplay
 {
 	self = [super init];
 	if (self) {
@@ -190,13 +190,13 @@
 
 
 @interface BurgerWindowController : NSWindowController {
-	Burger::DisplayOpenGL *m_pDisplay;
+	Burger::Display *m_pDisplay;
 }
 @end
 
 @implementation BurgerWindowController
 
-- (id)initWithWindow:(NSWindow *)window display:(Burger::DisplayOpenGL *)pDisplay
+- (id)initWithWindow:(NSWindow *)window display:(Burger::Display *)pDisplay
 {
 	self = [super initWithWindow:window];
 	if (self) {
@@ -328,8 +328,7 @@
 
 ***************************************/
 
-Burger::DisplayOpenGL::DisplayOpenGL(Burger::GameApp *pGameApp) :
-	Display(pGameApp,OPENGL),
+Burger::Display::Display(Burger::GameApp *pGameApp) :
 	m_pCompressedFormats(NULL),
 	m_pView(NULL),
 	m_pWindowController(NULL),
@@ -338,12 +337,14 @@ Burger::DisplayOpenGL::DisplayOpenGL(Burger::GameApp *pGameApp) :
 	m_pFullScreenWindow(NULL),
 	m_fOpenGLVersion(0.0f),
 	m_fShadingLanguageVersion(0.0f),
-	m_uCompressedFormatCount(0)	
+	m_uCompressedFormatCount(0),
+	m_uMaximumVertexAttributes(0),
+	m_uMaximumColorAttachments(0)
 {
-	SetRenderer(NULL);
+	InitDefaults(pGameApp);
 }
 
-/*! ************************************
+/***************************************
 
 	\brief Start up the OpenGL context
 
@@ -353,11 +354,14 @@ Burger::DisplayOpenGL::DisplayOpenGL(Burger::GameApp *pGameApp) :
 
 ***************************************/
 
-Word Burger::DisplayOpenGL::InitContext(void)
+Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
 {
 	// Set the new size of the screen
-	Word uWidth = m_uWidth;
-	Word uHeight = m_uHeight;
+	m_uWidth = uWidth;
+	m_uHeight = uHeight;
+	m_uDepth = uDepth;
+	m_uFlags = uFlags;
+
 	m_uFlags |= FULLPALETTEALLOWED;
 
 	//
@@ -505,7 +509,7 @@ Word Burger::DisplayOpenGL::InitContext(void)
 	return 0;
 }
 
-/*! ************************************
+/***************************************
 
 	\brief Start up the OpenGL context
 
@@ -515,7 +519,7 @@ Word Burger::DisplayOpenGL::InitContext(void)
 
 ***************************************/
 
-void Burger::DisplayOpenGL::PostShutdown(void)
+void Burger::Display::Shutdown(void)
 {
 	if (m_pFullScreenWindow) {
 		[m_pFullScreenWindow release];
@@ -535,12 +539,7 @@ void Burger::DisplayOpenGL::PostShutdown(void)
 	m_uCompressedFormatCount = 0;
 }
 
-void Burger::DisplayOpenGL::PreBeginScene(void)
-{
-	CGLLockContext(m_pOpenGLContext);
-}
-
-/*! ************************************
+/***************************************
 
 	\brief Update the video display
 
@@ -550,14 +549,102 @@ void Burger::DisplayOpenGL::PreBeginScene(void)
 
 ***************************************/
 
-void Burger::DisplayOpenGL::PostEndScene(void)
+void Burger::Display::BeginScene(void)
+{
+	CGLLockContext(m_pOpenGLContext);
+}
+
+/***************************************
+
+	\brief Update the video display
+
+	Calls SwapBuffers() in OpenGL to draw the rendered scene
+
+	\sa Burger::DisplayOpenGL::PreBeginScene()
+
+***************************************/
+
+void Burger::Display::EndScene(void)
 {
 	// Consider it done!
 	// Force update
 	CGLFlushDrawable(m_pOpenGLContext);
 	// Release OpenGL
 	CGLUnlockContext(m_pOpenGLContext);
-
 }
+
+/*! ************************************
+
+	\fn NSView *Burger::DisplayOpenGL::GetView(void) const
+	\brief Get the window's NSView
+
+	Get the current NSView being used by the primary application window.
+ 
+	\macosxonly
+	\sa GetWindowController(void) const, GetOpenGLView(void) const, GetOpenGLContext(void) const or GetFullScreenWindow(void) const
+ 
+***************************************/
+
+/*! ************************************
+
+	\fn NSWindowController *Burger::DisplayOpenGL::GetWindowController(void) const
+	\brief Get the window's NSWindowController
+
+	Get the current NSWindowController being used by the primary application window.
+ 
+	\macosxonly
+	\sa GetView(void) const, GetOpenGLView(void) const, GetOpenGLContext(void) const or GetFullScreenWindow(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn NSOpenGLView *Burger::DisplayOpenGL::GetOpenGLView(void) const
+	\brief Get the window's NSOpenGLView
+
+	Get the current NSOpenGLView being used by the primary application window.
+
+	\macosxonly
+	\sa GetView(void) const, GetWindowController(void) const, GetOpenGLContext(void) const or GetFullScreenWindow(void) const
+ 
+***************************************/
+
+/*! ************************************
+
+	\fn _CGLContextObject *Burger::DisplayOpenGL::GetOpenGLContext(void) const
+	\brief Get the window's _CGLContextObject
+	
+	Get the current CGLContextObject being used by the primary application window.
+	
+	\macosxonly
+	\sa GetView(void) const, GetWindowController(void) const, GetOpenGLView(void) const or GetFullScreenWindow(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn NSWindow *Burger::DisplayOpenGL::GetFullScreenWindow(void) const
+	\brief Get the window pointer
+
+	Get the secondary full screen application window.
+
+	\macosxonly
+	\sa GetView(void) const, GetWindowController(void) const, GetOpenGLView(void) const or GetOpenGLContext(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::DisplayOpenGL::SetFullScreenWindow(NSWindow *pFullScreenWindow)
+	\brief Enable a full screen window and disable the primary game window
+
+	Hide the game window and attach all the views to the supplied window that's
+	been set to occupy the entire screen.
+	 
+	\macosxonly
+	\param pFullScreenWindow Pointer to the window to use as a full screen window
+	\sa GetFullScreenWindow(void) const
+
+***************************************/
 
 #endif

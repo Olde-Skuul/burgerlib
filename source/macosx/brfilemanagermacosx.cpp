@@ -2,7 +2,7 @@
 
 	MacOS version
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -26,6 +26,8 @@
 #include <unistd.h>
 #include <crt_externs.h>
 #include <string.h>
+#include <mach-o/dyld.h>
+
 #if defined(BURGER_METROWERKS)
 #include <CarbonCore/Files.h>
 #include <CarbonCore/Folders.h>
@@ -192,18 +194,17 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 		free(pTemp);
 	}
 
-	char ***Argv = _NSGetArgv();
-	int *Argc = _NSGetArgc();
-	if (Argv && Argc) {
-		if (Argc[0]) {
-			MyFilename.SetFromNative(Argv[0][0]);
-			MyFilename.DirName();
-			SetPrefix(PREFIXAPPLICATION,MyFilename.GetPtr());		// Set the standard work prefix
-		}
+	// Get the location of the application binary
+	char NameBuffer[2048];
+	uint32_t uSize = sizeof(NameBuffer);
+	int iTest = _NSGetExecutablePath(NameBuffer,&uSize);
+	if (!iTest) {
+		MyFilename.SetFromNative(NameBuffer);
+		MyFilename.DirName();
+		SetPrefix(PREFIXAPPLICATION,MyFilename.GetPtr());		// Set the standard work prefix
 	}
 
 	FSRef MyRef;
-	char NameBuffer[2048];
 	if (!FSFindFolder(kOnSystemDisk,kSystemFolderType,kDontCreateFolder,&MyRef)) {
 		if (!FSRefMakePath(&MyRef,reinterpret_cast<Word8 *>(NameBuffer),static_cast<UInt32>(sizeof(NameBuffer)))) {
 			MyFilename.SetFromNative(NameBuffer);

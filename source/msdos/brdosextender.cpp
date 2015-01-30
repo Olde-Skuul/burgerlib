@@ -2,7 +2,7 @@
 
 	Dos extender functions
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -40,7 +40,7 @@
 
 	\brief Structure to contain all the registers for calling 80x86 assembly
 	
-	\note Only available on MSDOS
+	\msdosonly
 	\sa Int86x() or CallRealProcX32()
 	
 ***************************************/
@@ -52,8 +52,7 @@
 
 	\brief Obtain the base pointer to the real memory
 	
-	\note Only available on MSDOS
-	
+	\msdosonly
 	\return void * where the real memory is mapped to
 	
 	\sa _x32_zero_base_ptr or _x32_zero_base_selector
@@ -70,7 +69,7 @@
 	
 	http://www.delorie.com/djgpp/doc/rbinter/ix/10/
 	
-	\note Only available on MSDOS
+	\msdosonly
 	
 	\sa CallInt14(), CallInt17(), Int86x() and CallRealProcX32()
 	
@@ -86,7 +85,7 @@
 	
 	http://www.delorie.com/djgpp/doc/rbinter/ix/14/
 	
-	\note Only available on MSDOS
+	\msdosonly
 	
 	\param EAX Value to set AL/AH
 	\param EDX Value to set DL/DH
@@ -106,7 +105,7 @@
 	
 	http://www.delorie.com/djgpp/doc/rbinter/ix/17/
 	
-	\note Only available on MSDOS
+	\msdosonly
 	
 	\param EAX Value to set AL/AH
 	\param EDX Value to set DL/DH
@@ -129,7 +128,7 @@
 	
 	http://www.delorie.com/djgpp/doc/rbinter/ix/
 	
-	\note Only available on MSDOS
+	\msdosonly
 	
 	\param uInterrupt Interrupt to call
 	\param pInput Pointer to registers to use when issuing the call
@@ -149,7 +148,7 @@
 	Call the dos extender to intercept both the real and protected IRQ vector
 	and route it through a protected mode IRQ
 	
-	\note Only available on MSDOS
+	\msdosonly
 	
 	\param uInterrupt Interrupt to intercept
 	\param pCode Pointer to the function to call when the interrupt is tripped
@@ -167,7 +166,7 @@
 	Call the dos extender to intercept the protected IRQ vector
 	and route it through a protected mode IRQ
 	
-	\note Only available on MSDOS
+	\msdosonly
 	
 	\param uInterrupt Interrupt to intercept
 	\param pCode Pointer to the function to call when the interrupt is tripped
@@ -185,7 +184,7 @@
 	Call the dos extender to intercept the real mode IRQ vector
 	and route it through a real mode IRQ
 	
-	\note Only available on MSDOS
+	\msdosonly
 	
 	\param uInterrupt Interrupt to intercept
 	\param pCode Pointer to the function to call when the interrupt is tripped
@@ -202,7 +201,7 @@
 	
 	Call the dos extender to retrieve the protected mode IRQ vector
 	
-	\note Only available on MSDOS
+	\msdosonly
 	
 	\param uInterrupt Interrupt to intercept
 	\returns Pointer to the function that is called when the interrupt is tripped
@@ -219,7 +218,7 @@
 	
 	Call the dos extender to retrieve the real mode IRQ vector
 	
-	\note Only available on MSDOS
+	\msdosonly
 	
 	\param uInterrupt Interrupt to intercept
 	\returns Real mode (SEGMENT:OFFSET) pointer to the function that is called when the interrupt is tripped
@@ -236,7 +235,7 @@
 	
 	Call the dos extender to remap extended memory to protected mode
 	
-	\note Only available on MSDOS
+	\msdosonly
 	
 	\param pInput Pointer to extended memory
 	\param uLength Length in bytes of the extended memory chunk
@@ -262,8 +261,7 @@
 	
 	http://www.delorie.com/djgpp/doc/rbinter/id/27/26.html
 	
-	\note This code is for the X32 dos extender ONLY
-	\note This code is NOT reentrant
+	\msdosonly and with the X32 dos extender and it is NOT reentrant
 	
 	\param pAddress Pointer to real memory to call (Segment/Offset)
 	\param pInput Pointer to register set to use as input

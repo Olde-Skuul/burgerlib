@@ -2,7 +2,7 @@
 
 	TGA File handler class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -287,10 +287,10 @@ void BURGER_API Burger::FileTGA::UnpackPixel32(Word8 *pOutput,WordPtr uOutputLen
 
 ***************************************/
 
-Burger::Image * Burger::FileTGA::Load(InputMemoryStream *pInput)
+Word BURGER_API Burger::FileTGA::Load(Image *pOutput,InputMemoryStream *pInput)
 {
 	const char *pBadNews = NULL;
-	Image *pImage = NULL;
+	Word uResult = 10;
 	// Start with processing the 18 byte header of the TGA file
 
 	Word uImageIdent = 0;
@@ -327,7 +327,7 @@ Burger::Image * Burger::FileTGA::Load(InputMemoryStream *pInput)
 		switch (uImageType) {
 		default:
 			Debug::Warning("Can't parse image type %u, must be 1,2,9 or 10",uImageIdent);
-			return NULL;
+			return 10;
 		case TGA_RGBINDEXED:
 		case TGA_RGB:
 		case TGA_RLEINDEXED:
@@ -368,7 +368,7 @@ Burger::Image * Burger::FileTGA::Load(InputMemoryStream *pInput)
 				if ((i+uColorMapLength)>256) {
 					i = (i+uColorMapLength)-1;		// Get the final color index
 					Debug::Warning("Color index %u cannot be > 255\n",i);
-					return NULL;
+					return 10;
 				}
 				RGBAWord8_t *pPalette = m_Palette+i;
 
@@ -400,7 +400,7 @@ Burger::Image * Burger::FileTGA::Load(InputMemoryStream *pInput)
 					} while (--uColorMapLength);
 				} else {
 					Debug::Warning("Palette uses %u bits per color entry, only 16,24 and 32 allowed",uColorMapEntrySize);
-					return NULL;
+					return 10;
 				}
 			}
 		}
@@ -422,15 +422,15 @@ Burger::Image * Burger::FileTGA::Load(InputMemoryStream *pInput)
 				pBadNews = "Image file is missing a palette.";
 			} else if (!uBitDepth || uBitDepth >= 9) {
 				Debug::Warning("The image has a bit depth of %u, only 1-8 bit indexed images can be processed.",uBitDepth);
-				return NULL;
+				return 10;
 			} else {
-				pImage = Image::New(uWidth,uHeight,Image::PIXELTYPE8BIT);
-				if (pImage) {
+				uResult = pOutput->Init(uWidth,uHeight,Image::PIXELTYPE8BIT);
+				if (!uResult) {
 					WordPtr uLength = uWidth*uHeight;
 					if (uImageType == TGA_RGBINDEXED) {		// Unpacked indexed data
-						pInput->Get(pImage->GetImage(),uLength);
+						pInput->Get(pOutput->GetImage(),uLength);
 					} else {								// Compressed
-						UnpackPixel8(pImage->GetImage(),uLength,pInput);	// Decompress it
+						UnpackPixel8(pOutput->GetImage(),uLength,pInput);	// Decompress it
 					}
 				}
 			}
@@ -440,7 +440,7 @@ Burger::Image * Burger::FileTGA::Load(InputMemoryStream *pInput)
 			}
 			if (uBitDepth != 15 && uBitDepth != 24 && uBitDepth!=32) {
 				Debug::Warning("The image has a bit depth of %u, only true color images of 15,16,24 or 32 bits can be processed.",uBitDepth);
-				return NULL;
+				return 10;
 			}
 			Image::ePixelTypes eType;
 			if (uBitDepth==15) {
@@ -450,10 +450,10 @@ Burger::Image * Burger::FileTGA::Load(InputMemoryStream *pInput)
 			} else {
 				eType = Image::PIXELTYPE8888;
 			}
-			pImage = Image::New(uWidth,uHeight,eType);
-			if (pImage) {
+			uResult = pOutput->Init(uWidth,uHeight,eType);
+			if (!uResult) {
 				WordPtr uLength = uWidth*uHeight;
-				Word8 *pDest = pImage->GetImage();
+				Word8 *pDest = pOutput->GetImage();
 
 				if (uBitDepth == 15) {				// 16 bit
 					if (uImageType == TGA_RGB) {	// Unpacked?
@@ -494,14 +494,13 @@ Burger::Image * Burger::FileTGA::Load(InputMemoryStream *pInput)
 	// If there was an error, clean up
 	if (pBadNews) {
 		Debug::Warning(pBadNews);
-		Delete(pImage);
-		pImage = NULL;
-	} else if (pImage) {
+		uResult = 10;
+	} else if (!uResult) {
 		// TGA images are "upside down"
 		// correct for it
-		pImage->VerticleFlip();
+		pOutput->VerticleFlip();
 	}
-	return pImage;
+	return uResult;
 }
 
 /*! ************************************

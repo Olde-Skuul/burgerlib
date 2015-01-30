@@ -4,7 +4,7 @@
 
 	Windows only
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -42,7 +42,49 @@
 #endif
 #endif
 
-/*! ************************************
+/***************************************
+
+	Scan all of the modes and look for a match.
+
+	Return TRUE if a match was found
+
+***************************************/
+
+#if !defined(DOXYGEN)
+static Word ScanVideoModes(DEVMODEW *pOutput,Word uWidth,Word uHeight,Word uDepth)
+{
+	Burger::MemoryClear(pOutput,sizeof(DEVMODEW));
+	DWORD uModeNumber=0;
+	Word bFoundOne = FALSE;
+	for (;;) {
+		DEVMODEW TestMode;
+		Burger::MemoryClear(&TestMode,sizeof(TestMode));	// Clear it out
+		TestMode.dmSize = sizeof(TestMode);			// Prep the data table size
+		// End of the list?
+		if (EnumDisplaySettingsW(NULL,uModeNumber,&TestMode)==FALSE) {
+			break;
+		}
+
+		// See if this is a match
+		if ((TestMode.dmBitsPerPel == uDepth) &&		// Match the size?
+			(TestMode.dmPelsWidth == uWidth) &&		// Look for the highest frequency
+			(TestMode.dmPelsHeight == uHeight) &&
+			(TestMode.dmDisplayFrequency > pOutput->dmDisplayFrequency)) {
+				// Try setting this mode
+				TestMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL | DM_DISPLAYFREQUENCY;
+				if (ChangeDisplaySettingsExW(NULL,&TestMode,NULL,CDS_TEST,NULL) == DISP_CHANGE_SUCCESSFUL) {
+					// this is the best mode so far
+					Burger::MemoryCopy(pOutput,&TestMode,sizeof(DEVMODEW));
+					bFoundOne = TRUE;
+				}
+		}
+		++uModeNumber;
+	}
+	return bFoundOne;
+}
+#endif
+
+/***************************************
 
 	\brief Initialize OpenGL
 
@@ -53,19 +95,20 @@
 ***************************************/
 
 Burger::DisplayOpenGL::DisplayOpenGL(Burger::GameApp *pGameApp) :
-	Display(pGameApp,OPENGL),
+	Display(pGameApp),
 	m_pCompressedFormats(NULL),
 	m_pOpenGLDeviceContext(NULL),
 	m_pOpenGLContext(NULL),
 	m_bResolutionChanged(FALSE),
 	m_fOpenGLVersion(0.0f),
 	m_fShadingLanguageVersion(0.0f),
-	m_uCompressedFormatCount(0)
+	m_uCompressedFormatCount(0),
+	m_uMaximumVertexAttributes(0),
+	m_uMaximumColorAttachments(0)
 {
-	SetRenderer(NULL);
 }
 
-/*! ************************************
+/***************************************
 
 	\brief Start up the OpenGL context
 
@@ -75,68 +118,101 @@ Burger::DisplayOpenGL::DisplayOpenGL(Burger::GameApp *pGameApp) :
 
 ***************************************/
 
-Word Burger::DisplayOpenGL::InitContext(void)
+Word Burger::DisplayOpenGL::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
 {
+	// OpenGL allows all 256 palette colors to work FULLPALETTEALLOWED
+	// Pass the other flags through
+
+	m_uFlags = (m_uFlags&(~(ALLOWFULLSCREENTOGGLE|ALLOWRESIZING|STEREO))) | FULLPALETTEALLOWED | (uFlags&(ALLOWFULLSCREENTOGGLE|ALLOWRESIZING|STEREO));
+
+	// If there's a release function, call it because it's likely that
+	// the reset of OpenGL will cause all resources to be destroyed
+	if (m_pRelease) {
+		m_pRelease(m_pReleaseData);
+	}
+
 	// Release the resources
 
-	PostShutdown();
+	Shutdown();
 
-	// OpenGL allows all 256 palette colors to work
-	m_uFlags |= FULLPALETTEALLOWED;
-	
+	// Initialize the display resolution if
+	// it hasn't been set already
+
+	if (!m_uDisplayWidth) {
+		m_uDisplayWidth = static_cast<Word>(GetSystemMetrics(SM_CXSCREEN));
+		m_uDisplayHeight = static_cast<Word>(GetSystemMetrics(SM_CYSCREEN));
+		HDC hHDC = GetDC(NULL);
+		m_uDisplayDepth = static_cast<Word>(GetDeviceCaps(hHDC,BITSPIXEL));
+		ReleaseDC(NULL,hHDC);
+	}
+
+	// Determine the resolution of the screen on power up
+
+	if (!uWidth || !uHeight) {
+		// If full screen, just use the video mode
+		uWidth = m_uDisplayWidth;
+		uHeight = m_uDisplayHeight;
+	}
+
+	// Determine the desired display depth
+
+	if (!uDepth) {
+		uDepth = m_uDisplayDepth;
+	}
+
+	// In the case where a windowed mode is changed in size, force
+	// the window to be centered instead of retaining the previous
+	// window location
+
+	if (!(uFlags&FULLSCREEN) &&
+		!(m_uFlags&FULLSCREEN) &&
+		((m_uWidth!=uWidth) || (m_uHeight!=uHeight))) {
+		static_cast<WindowsApp *>(m_pGameApp)->ResetWindowLocation();
+	}
+
+	//
+	// This is the resolution that will be attempted to for the display
+	// to be set.
+	//
+
+	m_uWidth = uWidth;
+	m_uHeight = uHeight;
+	m_uDepth = uDepth;
+
 	// Full screen?
 
-	if (m_uFlags&FULLSCREEN) {
-		// If width / height is zero, use the defaults
-		if (!m_uWidth || !m_uHeight) {
-			m_uWidth = static_cast<Word>(GetSystemMetrics(SM_CXSCREEN));
-			m_uHeight = static_cast<Word>(GetSystemMetrics(SM_CYSCREEN));
-		}
+	if (uFlags&FULLSCREEN) {
+		m_uFlags |= FULLSCREEN;
 
 		// For full screen mode, scan the device to determine if this monitor
 		// can play at the requested resolution
 
 		DEVMODEW BestVideoMode;
-		MemoryClear(&BestVideoMode,sizeof(BestVideoMode));
-		DWORD uModeNumber=0;
-		Word bFoundOne = FALSE;
-		for (;;) {
-			DEVMODEW TestMode;
-			MemoryClear(&TestMode,sizeof(TestMode));	// Clear it out
-			TestMode.dmSize = sizeof(TestMode);			// Prep the data table size
-			// End of the list?
-			if (EnumDisplaySettingsW(NULL,uModeNumber,&TestMode)==FALSE) {
-				break;
+		if (!ScanVideoModes(&BestVideoMode,m_uWidth,m_uHeight,m_uDepth)) {
+			// Try the desktop resolution
+			if (!ScanVideoModes(&BestVideoMode,m_uDisplayWidth,m_uDisplayHeight,m_uDisplayDepth)) {
+				return 10;			// Nope, failure
 			}
-
-			// See if this is a match
-			if ((TestMode.dmBitsPerPel == m_uDepth) &&		// Match the size?
-				(TestMode.dmPelsWidth == m_uWidth) &&		// Look for the highest frequency
-				(TestMode.dmPelsHeight == m_uHeight) &&
-				(TestMode.dmDisplayFrequency > BestVideoMode.dmDisplayFrequency)) {
-				// Try setting this mode
-				TestMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL | DM_DISPLAYFREQUENCY;
-				if (ChangeDisplaySettingsExW(NULL,&TestMode,NULL,CDS_TEST,NULL) == DISP_CHANGE_SUCCESSFUL) {
-					// this is the best mode so far
-					MemoryCopy(&BestVideoMode,&TestMode,sizeof(BestVideoMode));
-					bFoundOne = TRUE;
-				}
-			}
-			++uModeNumber;
-		}
-		if (!bFoundOne) {
-			return 10;			// Nope, try again
 		}
 		// Found a valid mode, so try to REALLY set it.
 		if (ChangeDisplaySettingsExW(NULL,&BestVideoMode,NULL,CDS_FULLSCREEN,NULL) != DISP_CHANGE_SUCCESSFUL) {
 			ChangeDisplaySettings(NULL,0);
 			return 10;		// Error!!
 		}
+
+		// The video mode has been changed. Record the new resolution
+		m_uDisplayWidth = BestVideoMode.dmPelsWidth;
+		m_uDisplayHeight = BestVideoMode.dmPelsHeight;
+		m_uDisplayDepth = BestVideoMode.dmBitsPerPel;
+		m_uWidth = m_uDisplayWidth;
+		m_uHeight = m_uDisplayHeight;
+		m_uDepth = m_uDisplayDepth;
 		m_bResolutionChanged = TRUE;
+	} else {
+		m_uFlags &= (~FULLSCREEN);
 	}
 
 	// Resize the display the window to the new resolution
-
 	static_cast<WindowsApp *>(m_pGameApp)->SetWindowSize(m_uWidth,m_uHeight);
 
 	// Get the video contexts so drawing can commence
@@ -163,9 +239,12 @@ Word Burger::DisplayOpenGL::InitContext(void)
 		SetWindowLong(pWindow,GWL_STYLE,uLongStyle);	// Set the style
 		SetWindowPos(pWindow,NULL,GameWindowRect.left,GameWindowRect.top,GameWindowRect.right-GameWindowRect.left,GameWindowRect.bottom-GameWindowRect.top,(/*SWP_NOSIZE|*/SWP_NOZORDER));
 		ShowWindow(pWindow,SW_SHOW);				// Show The Window
-		UpdateWindow(pWindow);
 		SetForegroundWindow(pWindow);				// Slightly Higher Priority
 		SetFocus(pWindow);							// Sets Keyboard Focus To The Window
+	} else {
+		// For windowed mode, record the location of the window so
+		// future openings will open in the previous location
+		static_cast<WindowsApp *>(m_pGameApp)->RecordWindowLocation();
 	}
 
 	m_pOpenGLDeviceContext = GetDC(pWindow);
@@ -224,6 +303,7 @@ Word Burger::DisplayOpenGL::InitContext(void)
 			}
 		}
 	}
+//	m_pGameApp->SetDisplay(this);
 	// Boned?
 	if (!hGLContext) {
 		// Release the device
@@ -240,7 +320,7 @@ Word Burger::DisplayOpenGL::InitContext(void)
 	return 0;
 }
 
-/*! ************************************
+/***************************************
 
 	\brief Start up the OpenGL context
 
@@ -250,7 +330,7 @@ Word Burger::DisplayOpenGL::InitContext(void)
 
 ***************************************/
 
-void Burger::DisplayOpenGL::PostShutdown(void)
+void Burger::DisplayOpenGL::Shutdown(void)
 {
 	// Release everything else
 	WindowsUnlink();
@@ -267,11 +347,6 @@ void Burger::DisplayOpenGL::PostShutdown(void)
 		// Release the device
 		ReleaseDC(static_cast<WindowsApp *>(m_pGameApp)->GetWindow(),m_pOpenGLDeviceContext);
 		m_pOpenGLDeviceContext = NULL;
-		// Because there was a video context, capture the location
-		// of the window, so if the window was re-opened, use it's
-		// old location.
-
-		static_cast<WindowsApp *>(m_pGameApp)->RecordWindowLocation();
 	}
 
 	// If the video display resolution was changed, change it back
@@ -285,7 +360,11 @@ void Burger::DisplayOpenGL::PostShutdown(void)
 	m_uCompressedFormatCount = 0;
 }
 
-/*! ************************************
+void Burger::DisplayOpenGL::BeginScene(void)
+{
+}
+
+/***************************************
 
 	\brief Update the video display
 
@@ -295,7 +374,7 @@ void Burger::DisplayOpenGL::PostShutdown(void)
 
 ***************************************/
 
-void Burger::DisplayOpenGL::PostEndScene(void)
+void Burger::DisplayOpenGL::EndScene(void)
 {
 	// Consider it done!
 	SwapBuffers(m_pOpenGLDeviceContext);
@@ -307,7 +386,7 @@ void Burger::DisplayOpenGL::PostEndScene(void)
 // Names of every extended OpenGL function that are not exposed by including OpenGL32.lib
 //
 
-static const char *OpenGLNames[241] = {
+static const char *OpenGLNames[277] = {
 	// Open GL 2.0
 	"glBlendEquationSeparate",
 	"glDrawBuffers",
@@ -407,6 +486,24 @@ static const char *OpenGLNames[241] = {
 	"glGetColorTableEXT",
 	"glGetColorTableParameterivEXT",
 	"glGetColorTableParameterfvEXT",
+	// GL_EXT_framebuffer_object
+	"glIsRenderbufferEXT",
+	"glBindRenderbufferEXT",
+	"glDeleteRenderbuffersEXT",
+	"glGenRenderbuffersEXT",
+	"glRenderbufferStorageEXT",
+	"glGetRenderbufferParameterivEXT",
+	"glIsFramebufferEXT",
+	"glBindFramebufferEXT",
+	"glDeleteFramebuffersEXT",
+	"glGenFramebuffersEXT",
+	"glCheckFramebufferStatusEXT",
+	"glFramebufferTexture1DEXT",
+	"glFramebufferTexture2DEXT",
+	"glFramebufferTexture3DEXT",
+	"glFramebufferRenderbufferEXT",
+	"glGetFramebufferAttachmentParameterivEXT",
+	"glGenerateMipmapEXT",
 	// GL 1.2 Deprecated
 	"glColorTable",
 	"glColorTableParameterfv",
@@ -554,7 +651,28 @@ static const char *OpenGLNames[241] = {
 	"glBindVertexArray",
 	"glDeleteVertexArrays",
 	"glGenVertexArrays",
-	"glIsVertexArray"
+	"glIsVertexArray",
+
+	// GL 3.2
+	"glDrawElementsBaseVertex",
+	"glDrawRangeElementsBaseVertex",
+	"glDrawElementsInstancedBaseVertex",
+	"glMultiDrawElementsBaseVertex",
+	"glProvokingVertex",
+	"glFenceSync",
+	"glIsSync",
+	"glDeleteSync",
+	"glClientWaitSync",
+	"glWaitSync",
+	"glGetInteger64v",
+	"glGetSynciv",
+	"glGetInteger64i_v",
+	"glGetBufferParameteri64v",
+	"glFramebufferTexture",
+	"glTexImage2DMultisample",
+	"glTexImage3DMultisample",
+	"glGetMultisamplefv",
+	"glSampleMaski"
 };
 
 
@@ -661,6 +779,24 @@ struct {
 	void *glGetColorTableEXT;
 	void *glGetColorTableParameterivEXT;
 	void *glGetColorTableParameterfvEXT;
+	// GL_EXT_framebuffer_object
+	void *glIsRenderbufferEXT;
+	void *glBindRenderbufferEXT;
+	void *glDeleteRenderbuffersEXT;
+	void *glGenRenderbuffersEXT;
+	void *glRenderbufferStorageEXT;
+	void *glGetRenderbufferParameterivEXT;
+	void *glIsFramebufferEXT;
+	void *glBindFramebufferEXT;
+	void *glDeleteFramebuffersEXT;
+	void *glGenFramebuffersEXT;
+	void *glCheckFramebufferStatusEXT;
+	void *glFramebufferTexture1DEXT;
+	void *glFramebufferTexture2DEXT;
+	void *glFramebufferTexture3DEXT;
+	void *glFramebufferRenderbufferEXT;
+	void *glGetFramebufferAttachmentParameterivEXT;
+	void *glGenerateMipmapEXT;
 	// GL 1.2 Deprecated
 	void *glColorTable;
 	void *glColorTableParameterfv;
@@ -809,6 +945,27 @@ struct {
 	void *glDeleteVertexArrays;
 	void *glGenVertexArrays;
 	void *glIsVertexArray;
+
+	// GL 3.2
+	void *glDrawElementsBaseVertex;
+	void *glDrawRangeElementsBaseVertex;
+	void *glDrawElementsInstancedBaseVertex;
+	void *glMultiDrawElementsBaseVertex;
+	void *glProvokingVertex;
+	void *glFenceSync;
+	void *glIsSync;
+	void *glDeleteSync;
+	void *glClientWaitSync;
+	void *glWaitSync;
+	void *glGetInteger64v;
+	void *glGetSynciv;
+	void *glGetInteger64i_v;
+	void *glGetBufferParameteri64v;
+	void *glFramebufferTexture;
+	void *glTexImage2DMultisample;
+	void *glTexImage3DMultisample;
+	void *glGetMultisamplefv;
+	void *glSampleMaski;
 } OpenGLProcPtrs;
 
 #if defined(_DEBUG)
@@ -948,6 +1105,24 @@ VOIDPROC6(glColorTableEXT,GLenum,target,GLenum,internalFormat,GLsizei,width,GLen
 VOIDPROC4(glGetColorTableEXT,GLenum,target,GLenum,format,GLenum,type,GLvoid *,data)
 VOIDPROC3(glGetColorTableParameterivEXT,GLenum,target,GLenum,pname,GLint *,params)
 VOIDPROC3(glGetColorTableParameterfvEXT,GLenum,target,GLenum,pname,GLfloat *,params)
+// GL_EXT_framebuffer_object
+PROC1(GLboolean,glIsRenderbufferEXT,GLuint,renderbuffer)
+VOIDPROC2(glBindRenderbufferEXT,GLenum,target,GLuint,renderbuffer)
+VOIDPROC2(glDeleteRenderbuffersEXT,GLsizei,n,const GLuint *,renderbuffers)
+VOIDPROC2(glGenRenderbuffersEXT,GLsizei,n,GLuint *,renderbuffers)
+VOIDPROC4(glRenderbufferStorageEXT,GLenum,target,GLenum,internalformat,GLsizei,width,GLsizei,height)
+VOIDPROC3(glGetRenderbufferParameterivEXT,GLenum,target,GLenum,pname,GLint *,params)
+PROC1(GLboolean,glIsFramebufferEXT,GLuint,framebuffer)
+VOIDPROC2(glBindFramebufferEXT,GLenum,target,GLuint,framebuffer)
+VOIDPROC2(glDeleteFramebuffersEXT,GLsizei,n,const GLuint *,framebuffers)
+VOIDPROC2(glGenFramebuffersEXT,GLsizei,n,GLuint *,framebuffers)
+PROC1(GLenum,glCheckFramebufferStatusEXT,GLenum,target)
+VOIDPROC5(glFramebufferTexture1DEXT,GLenum,target,GLenum,attachment,GLenum,textarget,GLuint,texture,GLint,level)
+VOIDPROC5(glFramebufferTexture2DEXT,GLenum,target,GLenum,attachment,GLenum,textarget,GLuint,texture,GLint,level)
+VOIDPROC6(glFramebufferTexture3DEXT,GLenum,target,GLenum,attachment,GLenum,textarget,GLuint,texture,GLint,level,GLint,zoffset)
+VOIDPROC4(glFramebufferRenderbufferEXT,GLenum,target,GLenum,attachment,GLenum,renderbuffertarget,GLuint,renderbuffer)
+VOIDPROC4(glGetFramebufferAttachmentParameterivEXT,GLenum,target,GLenum,attachment,GLenum,pname,GLint *,params)
+VOIDPROC1(glGenerateMipmapEXT,GLenum,target)
 // GL 1.2 Deprecated
 VOIDPROC6(glColorTable,GLenum,target,GLenum,internalformat,GLsizei,width,GLenum,format,GLenum,type,const GLvoid *,table)
 VOIDPROC3(glColorTableParameterfv,GLenum,target,GLenum,pname,const GLfloat *,params)
@@ -1099,6 +1274,27 @@ VOIDPROC1(glBindVertexArray,GLuint,array)
 VOIDPROC2(glDeleteVertexArrays,GLsizei,n,const GLuint *,arrays)
 VOIDPROC2(glGenVertexArrays,GLsizei,n,GLuint *,arrays)
 PROC1(GLboolean,glIsVertexArray,GLuint,array)
+
+// GL 3.2
+VOIDPROC5(glDrawElementsBaseVertex,GLenum,mode,GLsizei,count,GLenum,type,const void *,indices,GLint,basevertex)
+VOIDPROC7(glDrawRangeElementsBaseVertex,GLenum,mode,GLuint,start,GLuint,end,GLsizei,count,GLenum,type,const void *,indices,GLint,basevertex)
+VOIDPROC6(glDrawElementsInstancedBaseVertex,GLenum,mode,GLsizei,count,GLenum,type,const void *,indices,GLsizei,instancecount,GLint,basevertex)
+VOIDPROC6(glMultiDrawElementsBaseVertex,GLenum,mode,const GLsizei *,count,GLenum,type,const void *const*,indices,GLsizei,drawcount,const GLint *,basevertex)
+VOIDPROC1(glProvokingVertex,GLenum,mode)
+PROC2(GLsync,glFenceSync,GLenum,condition,GLbitfield,flags)
+PROC1(GLboolean,glIsSync,GLsync,sync)
+VOIDPROC1(glDeleteSync,GLsync,sync)
+PROC3(GLenum,glClientWaitSync,GLsync,sync,GLbitfield,flags,GLuint64,timeout)
+VOIDPROC3(glWaitSync,GLsync,sync,GLbitfield,flags,GLuint64,timeout)
+VOIDPROC2(glGetInteger64v,GLenum,pname,GLint64 *,data)
+VOIDPROC5(glGetSynciv,GLsync,sync,GLenum,pname,GLsizei,bufSize,GLsizei *,length,GLint *,values)
+VOIDPROC3(glGetInteger64i_v,GLenum,target,GLuint,index,GLint64 *,data)
+VOIDPROC3(glGetBufferParameteri64v,GLenum,target,GLenum,pname,GLint64 *,params)
+VOIDPROC4(glFramebufferTexture,GLenum,target,GLenum,attachment,GLuint,texture,GLint,level)
+VOIDPROC6(glTexImage2DMultisample,GLenum,target,GLsizei,samples,GLenum,internalformat,GLsizei,width,GLsizei,height,GLboolean,fixedsamplelocations)
+VOIDPROC7(glTexImage3DMultisample,GLenum,target,GLsizei,samples,GLenum,internalformat,GLsizei,width,GLsizei,height,GLsizei,depth,GLboolean,fixedsamplelocations)
+VOIDPROC3(glGetMultisamplefv,GLenum,pname,GLuint,index,GLfloat *,val)
+VOIDPROC2(glSampleMaski,GLuint,maskNumber,GLbitfield,mask)
 #endif
 
 /*! ************************************
@@ -1113,6 +1309,7 @@ PROC1(GLboolean,glIsVertexArray,GLuint,array)
 	and then all of the OpenGL extended function will "magically" appear and
 	work as if they were directly linked in.
 
+	\windowsonly
 	\sa Burger::DisplayOpenGL::WindowsUnlink()
 	
 ***************************************/
@@ -1138,6 +1335,7 @@ void BURGER_API Burger::DisplayOpenGL::WindowsLink(void)
 	to prevent accidental calling of any OpenGL functions
 	that are connected to a disabled device driver.
 
+	\windowsonly
 	\sa Burger::DisplayOpenGL::WindowsLink()
 	
 ***************************************/

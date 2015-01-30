@@ -2,7 +2,7 @@
 
 	Root base class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -38,8 +38,8 @@
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_PS3) || \
-	defined(BURGER_PS4) || defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || \
-	defined(BURGER_IOS)) || defined(DOXYGEN)
+	defined(BURGER_PS4) || defined(BURGER_SHIELD) || defined(BURGER_VITA) || \
+	defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 Burger::CriticalSection::CriticalSection()
 {
 }
@@ -255,7 +255,7 @@ Burger::CriticalSectionStatic::~CriticalSectionStatic()
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_ANDROID) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_ANDROID) || defined(BURGER_VITA) || \
 	defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 
 /*! ************************************
@@ -384,7 +384,7 @@ Word BURGER_API Burger::Semaphore::Release(void)
 
 ***************************************/
 
-#if !(defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+#if !(defined(BURGER_SHIELD) || defined(BURGER_VITA) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 Burger::ConditionVariable::ConditionVariable() :
 	m_CriticalSection(),
 	m_WaitSemaphore(0),
@@ -560,7 +560,7 @@ Word BURGER_API Burger::ConditionVariable::Wait(CriticalSection *pCriticalSectio
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_VITA) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 Burger::Thread::Thread() :
 	m_pFunction(NULL),
 	m_pData(NULL),

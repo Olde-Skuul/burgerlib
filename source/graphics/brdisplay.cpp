@@ -2,7 +2,7 @@
 
 	Display base class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -16,6 +16,159 @@
 #include "brrenderer.h"
 #include "brpalette.h"
 
+//
+// Global display variables
+//
+
+Burger::Display::Globals_t Burger::Display::g_Globals;
+
+/*! ************************************
+
+	\struct Burger::Display::Globals_t
+
+	\brief Values to describe the default settings of the display
+
+	This is a description of the default values for the
+	settings of the display as set by the user's desktop.
+
+	\sa Display
+
+***************************************/
+
+/*! ************************************
+
+	\enum Burger::Display::eClearBits
+
+	\brief Settings for Clear(Word)
+
+	Bitfield for which buffers to clear upon the
+	start of rendering a frame buffer
+
+	\sa Clear(Word)
+
+***************************************/
+
+/*! ************************************
+
+	\enum Burger::Display::eDepthFunction
+	
+	\brief Settings for SetDepthTest(eDepthFunction)
+
+	Enumeration to set the depth test type.
+
+	\sa SetDepthTest(eDepthFunction)
+
+***************************************/
+
+/*! ************************************
+
+	\enum Burger::Display::eCullMode
+	
+	\brief Settings for SetCullMode(eCullMode)
+
+	Enumeration to set the polygon culling mode.
+
+	\sa SetCullMode(eCullMode)
+
+***************************************/
+
+/*! ************************************
+
+	\enum Burger::Display::eSourceBlendFactor
+	
+	\brief Settings for SetBlendFunction(eSourceBlendFactor)
+
+	Enumeration to set the source pixel blending mode.
+
+	\sa SetBlendFunction(eSourceBlendFactor,eDestinationBlendFactor)
+
+***************************************/
+
+/*! ************************************
+
+	\enum Burger::Display::eDestinationBlendFactor
+	
+	\brief Settings for SetBlendFunction(eDestinationBlendFactor)
+
+	Enumeration to set the destination pixel blending mode.
+
+	\sa SetBlendFunction(eSourceBlendFactor,eDestinationBlendFactor)
+
+***************************************/
+
+/*! ************************************
+
+	\enum Burger::Display::ePrimitiveType
+	
+	\brief Describe how to render a vertex array.
+
+	Enumeration to determine how to render an array of vertices
+
+	\sa DrawElements(ePrimitiveType) or DrawPrimitive(ePrimitiveType)
+
+***************************************/
+
+
+/*! ************************************
+
+	\struct Burger::Display::VideoMode_t
+
+	\brief Description of a video card's video mode
+
+	This is a description of a single video mode available in a video card
+
+	\sa Display or Display::VideoCardDescription
+
+***************************************/
+
+/*! ************************************
+
+	\class Burger::Display::VideoCardDescription
+
+	\brief Description of a video card's available video modes
+
+	This class contains a description of a video card and a list
+	of all the available display modes.
+
+	\sa Display
+
+***************************************/
+
+/*! ************************************
+
+	\brief Standard constructor
+
+	\sa ~VideoCardDescription()
+
+***************************************/
+
+Burger::Display::VideoCardDescription::VideoCardDescription() :
+	m_Array(),
+#if defined(BURGER_MACOSX)
+	m_pNSScreen(NULL),
+#endif
+	m_DeviceName(),
+	m_MonitorName(),
+	m_uDevNumber(0),
+	m_bHardwareAccelerated(FALSE)
+{
+#if defined(BURGER_WINDOWS)
+	GUIDInit(&m_GUID);
+#endif
+}
+
+/*! ************************************
+
+	\brief Standard destructor
+
+	\sa VideoCardDescription or VideoCardDescription()
+
+***************************************/
+
+Burger::Display::VideoCardDescription::~VideoCardDescription()
+{
+}
+
 /*! ************************************
 
 	\class Burger::Display
@@ -26,7 +179,7 @@
 	rendering functions, use the Renderer class for that.
 
 	Since palettes are tied to a video display, this class will manage
-	palettes for paletted display contexts. If the display is in true color,
+	palettes for palette display contexts. If the display is in true color,
 	palette functions will only update internal buffers but will not affect
 	actual rendering.
 
@@ -36,6 +189,87 @@
 		Burger::DisplayDirectX11, Burger::DisplayOpenGLSoftware16 or Burger::DisplayOpenGLSoftware8
 
 ***************************************/
+
+/*! ************************************
+
+	\brief Initialize video globals
+
+	Before an application is allowed to change the display mode, this
+	function will query the system what are the current display mode
+	so these value can be used as defaults for changing a display mode
+	or for the application can be aware of what the user has
+	already set the platform to display with.
+
+	\sa InitDefaults(GameApp *)
+
+***************************************/
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
+void BURGER_API Burger::Display::InitGlobals(void)
+{
+	if (!g_Globals.m_bInitialized) {
+		g_Globals.m_uDefaultWidth = 0;
+		g_Globals.m_uDefaultHeight = 0;
+		g_Globals.m_uDefaultDepth = 0;
+		g_Globals.m_uDefaultHertz = 0;
+		g_Globals.m_uDefaultTotalWidth = 0;
+		g_Globals.m_uDefaultTotalHeight = 0;
+		g_Globals.m_uDefaultMonitorCount = 0;
+		g_Globals.m_bInitialized = TRUE;
+	}
+}
+#endif
+
+/*! ************************************
+
+	\brief Initialize shared variables
+
+	To ease the porting of the Display class to other platforms,
+	the initialization of variables that are common to all platforms
+	is performed in this function and then platform specific
+	variables will be initialized in platform specific code.
+
+	\sa Display(GameApp *) or InitGlobals(void)
+
+***************************************/
+
+void BURGER_API Burger::Display::InitDefaults(GameApp *pGameApp)
+{
+	m_pGameApp = pGameApp;
+	m_pRenderer = NULL;
+
+	m_pResize = NULL;
+	m_pResizeData = NULL;
+	m_pRender = NULL;
+	m_pRenderData = NULL;
+	m_pRelease = NULL;
+	m_pReleaseData = NULL;
+	m_uWidth = 0;
+	m_uHeight = 0;
+	m_uDepth = 0;
+	m_uFlags = 0;
+	m_uDisplayWidth = 0;
+	m_uDisplayHeight = 0;
+	m_uDisplayDepth = 0;
+	m_uBorderColor = 0;
+	m_bPaletteDirty = TRUE;
+	m_bPaletteVSync = FALSE;
+	m_uPaletteFadeSpeed = Tick::TICKSPERSEC/15;
+	MemoryClear(m_pBoundTextures,sizeof(m_pBoundTextures));
+	MemoryClear(m_Palette,sizeof(m_Palette));
+#if defined(BURGER_MACOS)
+	m_Palette[0*3+0] = 255;
+	m_Palette[0*3+1] = 255;
+	m_Palette[0*3+2] = 255;
+#else
+	m_Palette[255*3+0] = 255;
+	m_Palette[255*3+1] = 255;
+	m_Palette[255*3+2] = 255;
+#endif
+	// Set the GameApp to point to the active renderer
+	pGameApp->SetDisplay(this);
+	InitGlobals();
+}
 
 /*! ************************************
 
@@ -53,32 +287,10 @@
 
 ***************************************/
 
-Burger::Display::Display(GameApp *pGameApp,eAPI API) :
-	m_pGameApp(pGameApp),
-	m_pRenderer(NULL),
-	m_pResize(NULL),
-	m_pResizeData(NULL),
-	m_pRender(NULL),
-	m_pRenderData(NULL),
-	m_bPaletteDirty(TRUE),
-	m_uBorderColor(0),
-	m_bPaletteVSync(FALSE),
-	m_uPaletteFadeSpeed(Tick::TICKSPERSEC/15),
-	m_eAPI(API)
+#if defined(BURGER_WINDOWS) || !(defined(BURGER_XBOX360) || defined(BURGER_OPENGL_SUPPORTED)) || defined(DOXYGEN)
+Burger::Display::Display(GameApp *pGameApp)
 {
-	MemoryClear(m_Palette,sizeof(m_Palette));
-#if defined(BURGER_MACOS)
-	m_Palette[0*3+0] = 255;
-	m_Palette[0*3+1] = 255;
-	m_Palette[0*3+2] = 255;
-#else
-	m_Palette[255*3+0] = 255;
-	m_Palette[255*3+1] = 255;
-	m_Palette[255*3+2] = 255;
-#endif
-	// Set the GameApp to point to the active renderer
-	pGameApp->SetDisplay(this);
-	pGameApp->SetRenderer(NULL);
+	InitDefaults(pGameApp);
 }
 
 /*! ************************************
@@ -93,10 +305,9 @@ Burger::Display::Display(GameApp *pGameApp,eAPI API) :
 
 Burger::Display::~Display()
 {
-	// Shut down the attached renderer first!
-	SetRenderer(NULL);
-	// Make sure everything is released
-	Shutdown();
+	if (m_pGameApp) {
+		m_pGameApp->SetDisplay(NULL);
+	}
 }
 
 /*! ************************************
@@ -105,7 +316,7 @@ Burger::Display::~Display()
 	\brief Initialize the display
 
 	Set up the video display hardware to the specified mode and depth.
-	This calls derived functions and it's the responsiblity of the underlying class to
+	This calls derived functions and it's the responsibility of the underlying class to
 	use the appropriate API such as OpenGL, DirectX or something else to perform
 	the display operations and then call the base class to complete the setup
 
@@ -113,57 +324,42 @@ Burger::Display::~Display()
 	\param uHeight Height of the requested display in pixels
 	\param uDepth Bit depth of the requested display in bits
 	\param uFlags Helper flags for hinting at the preferred display
-	\return Zero if no error, non-zero if an error has occured.
+	\return Zero if no error, non-zero if an error has occurred.
 
 	\sa Shutdown() and InitContext()
 	
 ***************************************/
 
-Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
+#if !defined(BURGER_WINDOWS) || defined(DOXYGEN)
+Word Burger::Display::Init(Word /* uWidth */,Word /* uHeight */,Word /* uDepth */,Word /* uFlags */)
 {
-	// Initialize my desired context
-	m_uWidth = uWidth;
-	m_uHeight = uHeight;
-	m_uDepth = uDepth;
-	m_uFlags = uFlags;
-
-	// Set up the hardware
-	Word uResult = InitContext();
-	if (!uResult) {
-		// If there's a logged renderer, set it up.
-		Renderer *pRenderer = m_pRenderer;
-		if (pRenderer) {
-			uResult = pRenderer->Init(m_uWidth,m_uHeight,m_uDepth,m_uFlags);
-		}
-	}
-	return uResult;
+	return 10;
 }
+
 
 /*! ************************************
 
 	\brief Shut down the current video display context
 
-	Shut down any attached renderer and then shut down the video display.
+	Release all resources and restore the video display to the 
+	system defaults. This is an internal function and is meant
+	to be called as part of a call to Display::Shutdown()
+	so the renderer is shut down first before the display
 
-	\sa Init(Word,Word,Word,Word)
+	This code does nothing. It's a placeholder for classes that have no
+	need for a shutdown call
 	
+	\sa Init(Word,Word,Word,Word)
+
 ***************************************/
 
 void Burger::Display::Shutdown(void)
 {
-	// First, release the renderer, since
-	// it may depend on things in the Display
-	// class
-	Renderer *pRenderer = m_pRenderer;
-	if (pRenderer) {
-		pRenderer->Shutdown();
-	}
-	// Clear out the display class
-	PostShutdown();
 }
 
 /*! ************************************
 
+	\fn void Burger::Display::BeginScene(void)
 	\brief Prepare the display for rendering.
 	
 	This function will call the Renderer::BeginScene() function
@@ -175,19 +371,9 @@ void Burger::Display::Shutdown(void)
 	
 ***************************************/
 
-void Burger::Display::BeginScene(void)
-{
-	// Call the derived class for all set up functions
-	PreBeginScene();
-	// Call the renderer to set up rendering
-	Renderer *pRenderer = m_pRenderer;
-	if (pRenderer) {
-		pRenderer->BeginScene();
-	}
-}
-
 /*! ************************************
 
+	\fn void Burger::Display::EndScene(void)
 	\brief Render the scene to the display
 
 	Alert the operating system that all rendering calls are complete
@@ -203,126 +389,144 @@ void Burger::Display::BeginScene(void)
 
 void Burger::Display::EndScene(void)
 {
-	// Wrap up the rendering engine
-	Renderer *pRenderer = m_pRenderer;
-	if (pRenderer) {
-		pRenderer->EndScene();
+}
+
+Burger::Texture *Burger::Display::CreateTextureObject(void)
+{
+	return new (Alloc(sizeof(Texture))) Texture;
+}
+
+Burger::VertexBuffer *Burger::Display::CreateVertexBufferObject(void)
+{
+	return new (Alloc(sizeof(VertexBuffer))) VertexBuffer;
+}
+
+
+void Burger::Display::SetViewport(Word /* uX */,Word /* uY */,Word /* uWidth */,Word /* uHeight */)
+{
+}
+
+void Burger::Display::SetClearColor(float /* fRed */,float /* fGreen */,float /* fBlue */,float /* fAlpha */)
+{
+}
+
+void Burger::Display::SetClearDepth(float /* fDepth */)
+{
+}
+
+void Burger::Display::Clear(Word /* uMask */)
+{
+}
+
+void Burger::Display::Bind(Texture *pTexture,Word uIndex)
+{
+	BURGER_ASSERT(uIndex<BURGER_ARRAYSIZE(m_pBoundTextures));
+	m_pBoundTextures[uIndex] = pTexture;
+}
+
+void Burger::Display::SetBlend(Word /* bEnable */)
+{
+}
+
+void Burger::Display::SetBlendFunction(eSourceBlendFactor /* uSourceFactor */,eDestinationBlendFactor /* uDestFactor */)
+{
+}
+
+void Burger::Display::SetLighting(Word /* bEnable */)
+{
+}
+
+void Burger::Display::SetZWrite(Word /* bEnable */)
+{
+}
+
+void Burger::Display::SetDepthTest(eDepthFunction /* uDepthFunction */)
+{
+}
+
+void Burger::Display::SetCullMode(eCullMode /* uCullMode */)
+{
+}
+
+void Burger::Display::DrawPrimitive(ePrimitiveType /* uPrimitiveType */,VertexBuffer * /* pVertexBuffer */)
+{
+}
+
+void Burger::Display::DrawElements(ePrimitiveType /* uPrimitiveType */,VertexBuffer * /* pVertexBuffer */)
+{
+}
+
+#endif
+#endif
+
+/*! ************************************
+
+	\brief Create a texture object with wrapping and filters preset
+
+	Create a texture object and set the wrapping and
+	filter settings.
+
+	\param uWrapping Texture wrapping constant
+	\param uFilter Texture filter constant
+	\return \ref NULL if the object couldn't be created or a valid texture object.
+	
+	\sa CreateTextureObject()
+	
+***************************************/
+
+Burger::Texture * BURGER_API Burger::Display::CreateTexture(Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+{
+	Texture *pTexture = CreateTextureObject();
+	if (pTexture) {
+		pTexture->SetWrapping(uWrapping);
+		pTexture->SetFilter(uFilter);
 	}
-	// Present the scene to the display
-	PostEndScene();
+	return pTexture;
 }
 
 /*! ************************************
 
-	\brief Initialize the video display hardware
+	\brief Create a vertex buffer object with from a vertex description
 
-	Set up all of the video display hardware since the state has changed
+	Given an Array of Structures description, create a vertex buffer
+	that is initialized with the data
 
-	This function should never be called. It's here to force an error
-	when bringing up a new version of Burgerlib
-
-	\return Zero if no error, non-zero if an error has occured.
-	\sa Burger::Display::Init(Word,Word,Word,Word)
-
-***************************************/
-
-Word Burger::Display::InitContext(void)
-{
-	return 10;
-}
-
-/*! ************************************
-
-	\brief Shut down the current video display context
-
-	Release all resources and restore the video display to the 
-	system defaults. This is an internal function and is meant
-	to be called as part of a call to Display::Shutdown()
-	so the renderer is shut down first before the display
-
-	This code does nothing. It's a placeholder for classes that have no
-	need for a shutdown call
+	\param pDescription Pointer to a description
+	\return \ref NULL if the object couldn't be created or a valid vertex object.
 	
-	\sa Burger::Display::Shutdown()
+	\sa CreateVertexBufferObject()
 
 ***************************************/
 
-void Burger::Display::PostShutdown(void)
+Burger::VertexBuffer * BURGER_API Burger::Display::CreateVertexBuffer(const VertexBuffer::VertexAoS_t *pDescription)
 {
-}
-
-/*! ************************************
-
-	\brief Prepare the display for rendering
-
-	This is called before the renderer is called 
-	to begin a scene so the video display can perform any
-	hardware initialization before rendering is to begin
-	
-	This code does nothing. It's a placeholder for classes that have no
-	need for this part of the rendering pipeline
-
-	\sa Burger::Display::PostEndScene()
-
-***************************************/
-
-void Burger::Display::PreBeginScene(void)
-{
-}
-
-/*! ************************************
-
-	\brief Rendering is completed so update the display to the new scene
-
-	This is called after the renderer is called 
-	to end a scene so the video display can perform any
-	hardware initialization after rendering is completed
-
-	This code does nothing. It's a placeholder for classes that have no
-	need for this part of the rendering pipeline
-
-	\sa Burger::Display::PreBeginScene()
-
-***************************************/
-
-void Burger::Display::PostEndScene(void)
-{
-}
-
-/*! ************************************
-
-	\brief Sets a new rendering context
-
-	Shuts down any previous rendering context and attaches
-	to the new context. If the context is \ref NULL, a
-	null driver is installed that performs no actions.
-	
-	\param pRenderer Pointer to a valid Renderer for enabling the video display
-	
-	\sa Burger::Renderer::Init(Word,Word,Word,Word) or Burger::GameApp::SetRenderer()
-
-***************************************/
-
-void Burger::Display::SetRenderer(Renderer *pRenderer)
-{
-	// Release the old context if there was a difference
-	Renderer *pOldRenderer = m_pRenderer;
-	if (pOldRenderer != pRenderer) {
-		if (pOldRenderer) {
-			pOldRenderer->Shutdown();
-			pOldRenderer->SetDisplay(NULL);
+	VertexBuffer *pVertexBuffer = CreateVertexBufferObject();
+	if (pVertexBuffer) {
+		// Discard on error
+		if (pVertexBuffer->LoadData(this,pDescription)) {
+			Delete(pVertexBuffer);
+			pVertexBuffer = NULL;
 		}
 	}
-	// Set the new context, and if one is present, connect to it.
-	m_pRenderer = pRenderer;
-	m_pGameApp->SetRenderer(pRenderer);
-	if (pRenderer) {
-		pRenderer->SetDisplay(this);
-		pRenderer->Init(m_uWidth,m_uHeight,m_uDepth,m_uFlags);
-	}
-	// Assume the palette is NOT updated
-	m_bPaletteDirty = TRUE;
+	return pVertexBuffer;
 }
+
+/*! ************************************
+
+	\brief Get a list of available video modes
+	
+	\param pOutput Pointer to array of VideoCardDescription entries
+	\return Zero if no error, non-zero on error
+
+***************************************/
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
+Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
+{
+	pOutput->clear();
+	return 10;
+}
+#endif
 
 /*! ************************************
 
@@ -332,7 +536,7 @@ void Burger::Display::SetRenderer(Renderer *pRenderer)
 	hardware or rendering context. On all other rendering modes, it will
 	update the internal color buffer.
 
-	The palette is an array of 3 byte triplettes of Red,Green, and Blue.
+	The palette is an array of 3 byte triplets of Red,Green, and Blue.
 
 	\param uStart First color entry to update (0-255)
 	\param uCount Number of colors to update (256-uStart)
@@ -342,7 +546,7 @@ void Burger::Display::SetRenderer(Renderer *pRenderer)
 
 ***************************************/
 
-void Burger::Display::SetPalette(Word uStart,Word uCount,const Word8 *pPalette)
+void BURGER_API Burger::Display::SetPalette(Word uStart,Word uCount,const Word8 *pPalette)
 {
 	// Bad?
 	if (pPalette && uStart<256) {
@@ -416,7 +620,7 @@ void Burger::Display::SetPalette(Word uStart,Word uCount,const Word8 *pPalette)
 
 ***************************************/
 
-void Burger::Display::SetPalette(Word uStart,Word uCount,const RGBAWord8_t *pPalette)
+void BURGER_API Burger::Display::SetPalette(Word uStart,Word uCount,const RGBAWord8_t *pPalette)
 {
 	// Bad?
 	if (pPalette && uStart<256) {
@@ -498,7 +702,7 @@ void Burger::Display::SetPalette(Word uStart,Word uCount,const RGBAWord8_t *pPal
 ***************************************/
 
 #if (!defined(BURGER_MSDOS)) || defined(DOXYGEN)
-void Burger::Display::SetBorderColor(Word uColor)
+void BURGER_API Burger::Display::SetBorderColor(Word uColor)
 {
 	m_uBorderColor = uColor;
 }
@@ -519,7 +723,7 @@ void Burger::Display::SetBorderColor(Word uColor)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
-void Burger::Display::SetWindowTitle(const char * /* pTitle */)
+void BURGER_API Burger::Display::SetWindowTitle(const char * /* pTitle */)
 {
 }
 #endif
@@ -535,7 +739,7 @@ void Burger::Display::SetWindowTitle(const char * /* pTitle */)
 
 ***************************************/
 
-void Burger::Display::SetPaletteBlack(void)
+void BURGER_API Burger::Display::SetPaletteBlack(void)
 {
 	// Perform a compare to the palette to force an update only when changed
 	Word8 TempPalette[sizeof(m_Palette)];
@@ -553,7 +757,7 @@ void Burger::Display::SetPaletteBlack(void)
 
 ***************************************/
 
-void Burger::Display::SetPaletteWhite(void)
+void BURGER_API Burger::Display::SetPaletteWhite(void)
 {
 	Word8 TempPalette[sizeof(m_Palette)];
 	MemoryFill(TempPalette,255,sizeof(TempPalette));
@@ -568,14 +772,14 @@ void Burger::Display::SetPaletteWhite(void)
 	hardware or rendering context. On all other rendering modes, it will
 	update the internal color buffer.
 
-	The palette is an array of 3 byte triplettes of Red,Green, and Blue.
+	The palette is an array of 3 byte triplets of Red,Green, and Blue.
 
 	\param pPalette Base pointer to the colors to use in the update in the size of 256*3 (768)
 	\sa SetPalette(void **)
 
 ***************************************/
 
-void Burger::Display::SetPalette(const Word8 *pPalette)
+void BURGER_API Burger::Display::SetPalette(const Word8 *pPalette)
 {
 	SetPalette(0,256,pPalette);
 }
@@ -595,7 +799,7 @@ void Burger::Display::SetPalette(const Word8 *pPalette)
 
 ***************************************/
 
-void Burger::Display::SetPalette(const RGBAWord8_t *pPalette)
+void BURGER_API Burger::Display::SetPalette(const RGBAWord8_t *pPalette)
 {
 	SetPalette(0,256,pPalette);
 }
@@ -608,14 +812,14 @@ void Burger::Display::SetPalette(const RGBAWord8_t *pPalette)
 	hardware or rendering context. On all other rendering modes, it will
 	update the internal color buffer.
 
-	The palette is an array of 3 byte triplettes of Red,Green, and Blue.
+	The palette is an array of 3 byte triplets of Red,Green, and Blue.
 
 	\param pHandle Base handle to the colors to use in the update in the size of 256*3 (768)
 	\sa SetPalette(const Word8 *)
 
 ***************************************/
 
-void Burger::Display::SetPalette(void **pHandle)
+void BURGER_API Burger::Display::SetPalette(void **pHandle)
 {
 	const Word8 *pPalette = static_cast<const Word8 *>(MemoryManagerHandle::Lock(pHandle));
 	if (pPalette) {
@@ -632,7 +836,7 @@ void Burger::Display::SetPalette(void **pHandle)
 	hardware or rendering context. On all other rendering modes, it will
 	update the internal color buffer.
 
-	The palette is an array of 3 byte triplettes of Red,Green, and Blue.
+	The palette is an array of 3 byte triplets of Red,Green, and Blue.
 
 	\param pRez Reference to the resource file
 	\param uResID Resource entry the contains the 768 byte palette
@@ -640,7 +844,7 @@ void Burger::Display::SetPalette(void **pHandle)
 
 ***************************************/
 
-void Burger::Display::SetPalette(RezFile *pRez,Word uResID)
+void BURGER_API Burger::Display::SetPalette(RezFile *pRez,Word uResID)
 {
 	const Word8 *pPalette = static_cast<const Word8 *>(pRez->Load(uResID));
 	if (pPalette) {
@@ -657,7 +861,7 @@ void Burger::Display::SetPalette(RezFile *pRez,Word uResID)
 	hardware or rendering context. On all other rendering modes, it will
 	update the internal color buffer.
 
-	The palette is an array of 3 byte triplettes of Red,Green, and Blue.
+	The palette is an array of 3 byte triplets of Red,Green, and Blue.
 
 	\param uStart First color entry to update (0-255)
 	\param uCount Number of colors to update (256-uStart)
@@ -667,7 +871,7 @@ void Burger::Display::SetPalette(RezFile *pRez,Word uResID)
 
 ***************************************/
 
-void Burger::Display::SetPalette(Word uStart,Word uCount,RezFile *pRez,Word uResID)
+void BURGER_API Burger::Display::SetPalette(Word uStart,Word uCount,RezFile *pRez,Word uResID)
 {
 	const Word8 *pPalette = static_cast<const Word8 *>(pRez->Load(uResID));
 	if (pPalette) {
@@ -708,7 +912,7 @@ void Burger::Display::SetPalette(Word uStart,Word uCount,RezFile *pRez,Word uRes
 
 ***************************************/
 
-void Burger::Display::FadeTo(const Word8 *pPalette,FadeProc pProc,void *pData)
+void BURGER_API Burger::Display::FadeTo(const Word8 *pPalette,FadeProc pProc,void *pData)
 {
 	int DeltaPalette[768];		// Must be SIGNED!
 	Word8 WorkPalette[768];		// Temp palette
@@ -778,7 +982,7 @@ void Burger::Display::FadeTo(const Word8 *pPalette,FadeProc pProc,void *pData)
 				pPalette = pPalette-768;
 				// Set the new palette
 				SetPalette(0,256,WorkPalette);
-				PostEndScene();
+				EndScene();
 
 				// Is there a callback?
 				if (pProc) {
@@ -796,7 +1000,7 @@ void Burger::Display::FadeTo(const Word8 *pPalette,FadeProc pProc,void *pData)
 		// Restore the sync value
 		m_bPaletteVSync = OldVSync;
 	} else {
-		// On occassions where there is no palette change, alert any callback that the
+		// On occasions where there is no palette change, alert any callback that the
 		// stepping concluded
 		if (pProc) {
 			pProc(pData,16);
@@ -817,7 +1021,7 @@ void Burger::Display::FadeTo(const Word8 *pPalette,FadeProc pProc,void *pData)
 
 ***************************************/
 
-void Burger::Display::FadeToBlack(FadeProc pProc,void *pData)
+void BURGER_API Burger::Display::FadeToBlack(FadeProc pProc,void *pData)
 {
 	Word8 TempPalette[sizeof(m_Palette)];
 	MemoryClear(TempPalette,sizeof(TempPalette));
@@ -838,7 +1042,7 @@ void Burger::Display::FadeToBlack(FadeProc pProc,void *pData)
 
 ***************************************/
 
-void Burger::Display::FadeToWhite(FadeProc pProc,void *pData)
+void BURGER_API Burger::Display::FadeToWhite(FadeProc pProc,void *pData)
 {
 	Word8 TempPalette[sizeof(m_Palette)];
 	MemoryFill(TempPalette,255,sizeof(TempPalette));
@@ -861,7 +1065,7 @@ void Burger::Display::FadeToWhite(FadeProc pProc,void *pData)
 
 ***************************************/
 
-void Burger::Display::FadeTo(RezFile *pRez,Word uResID,FadeProc pProc,void *pData)
+void BURGER_API Burger::Display::FadeTo(RezFile *pRez,Word uResID,FadeProc pProc,void *pData)
 {
 	// Load in the resource file
 	const Word8 *pPalette = static_cast<const Word8 *>(pRez->Load(uResID));
@@ -890,7 +1094,7 @@ void Burger::Display::FadeTo(RezFile *pRez,Word uResID,FadeProc pProc,void *pDat
 
 ***************************************/
 
-void Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pData)
+void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pData)
 {
 	// Lock it down
 	const Word8 *pPalette = static_cast<const Word8 *>(MemoryManagerHandle::Lock(pHandle));
@@ -901,6 +1105,121 @@ void Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pData)
 		MemoryManagerHandle::Unlock(pHandle);
 	}
 }
+
+/*! ************************************
+
+	\fn Word Burger::Display::GetDefaultWidth(void)
+	\brief Get the width of the default monitor
+
+	This is initialized with the size of the user's
+	desktop width from the primary display.
+	
+	\note This value is only valid after a Display class instance
+		was created.
+	\return Default monitor width in pixels
+	\sa GetDefaultHeight(void), GetDefaultDepth(void) or GetDefaultHertz(void)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Display::GetDefaultHeight(void)
+	\brief Get the height of the default monitor
+
+	This is initialized with the size of the user's
+	desktop height from the primary display.
+	
+	\note This value is only valid after a Display class instance
+		was created.
+	\return Default monitor height in pixels
+	\sa GetDefaultWidth(void), GetDefaultDepth(void) or GetDefaultHertz(void)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Display::GetDefaultDepth(void)
+	\brief Get the pixel depth of the default monitor
+
+	This is initialized with the pixel depth of the user's
+	desktop from the primary display.
+	
+	\note This value is only valid after a Display class instance
+		was created.
+	\return Default pixel depth in bits
+	\sa GetDefaultWidth(void), GetDefaultHeight(void) or GetDefaultHertz(void)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Display::GetDefaultHertz(void)
+	\brief Get the refresh rate of the default monitor
+
+	This is initialized with the refresh rate of the user's
+	desktop from the primary display.
+	
+	\note This value is only valid after a Display class instance
+		was created.
+	\return Default refresh rate in hertz (Can be zero if not applicable)
+	\sa GetDefaultWidth(void), GetDefaultHeight(void) or GetDefaultDepth(void)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Display::GetDefaultMonitorCount(void)
+	\brief Get the number of active monitors
+
+	This is initialized with the number of monitors used for
+	the user's desktop.
+
+	\note This value is only valid after a Display class instance
+		was created.
+	\return Number of active display monitors used for the desktop.
+	\sa GetDefaultWidth(void), GetDefaultHeight(void), GetDefaultDepth(void) or GetDefaultHertz(void)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Display::GetDefaultTotalWidth(void)
+	\brief Get the width of the default monitor
+
+	This is initialized with the size of the user's
+	entire desktop width. It is a union of all active monitors.
+	
+	\note This value is only valid after a Display class instance
+		was created.
+	\return Default total width in pixels
+	\sa GetDefaultTotalHeight(void), GetDefaultWidth(void) or GetDefaultMonitorCount(void)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Display::GetDefaultTotalHeight(void)
+	\brief Get the height of the default monitor
+
+	This is initialized with the size of the user's
+	entire desktop height. It is a union of all active monitors.
+	
+	\note This value is only valid after a Display class instance
+		was created.
+	\return Default total height in pixels
+	\sa GetDefaultTotalWidth(void), GetDefaultHeight(void) or GetDefaultMonitorCount(void)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn GameApp * Burger::Display::GetGameApp(void) const
+	\brief Get the parent application pointer
+	
+	\return Pointer to the parent application
+	\sa GetWidth() const, GetHeight() const or GetDepth() const
+	
+***************************************/
 
 /*! ************************************
 
@@ -927,7 +1246,7 @@ void Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pData)
 	\fn Word Burger::Display::GetDepth(void) const
 	\brief Get the depth in bits of the display buffer
 	
-	The display buffer could be 8 for 8 bit paletted, 15 for 5:5:5 RGB, 16
+	The display buffer could be 8 for 8 bit palette, 15 for 5:5:5 RGB, 16
 	for 5:6:5 RGB or 24 or 32 for hardware rendering
 
 	\return Depth of the display buffer in bits
@@ -942,6 +1261,34 @@ void Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pData)
 	
 	\return Flags containing the current state of the display system
 	\sa GetWidth() const or GetHeight() const
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Display::GetDisplayWidth(void) const
+	\brief Get the width in pixels of the display hardware
+	
+	This differs from GetWidth() in that this is the
+	actual display hardware's resolution, which can differ
+	from the resolution of the draw buffer.
+
+	\return Width of the display hardware in pixels
+	\sa GetDisplayHeight() const or GetWidth() const
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Display::GetDisplayHeight(void) const
+	\brief Get the height in pixels of the display hardware
+	
+	This differs from GetHeight() in that this is the
+	actual display hardware's resolution, which can differ
+	from the resolution of the draw buffer.
+
+	\return Height of the display hardware in pixels
+	\sa GetDisplayWidth() const or GetHeight() const
 	
 ***************************************/
 
@@ -983,17 +1330,7 @@ void Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pData)
 
 /*! ************************************
 
-	\fn Display::GetAPI(void) const
-	\brief Return the underlying API for the Display
-
-	\return Burger::Display::OPENGL, Burger::Display::DIRECTX9, Burger::Display::DIRECTX11 or Burger::Display::CUSTOM
-	\sa Display::GetFlags() const
-
-***************************************/
-
-/*! ************************************
-
-	\fn Display::GetFadeSpeed(void) const
+	\fn Word Burger::Display::GetFadeSpeed(void) const
 	\brief Return the timer constant in Burger::Tick
 
 	When calling the palette fade functions, it will perform the fade evenly until
@@ -1008,7 +1345,7 @@ void Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pData)
 
 /*! ************************************
 
-	\fn Display::SetFadeSpeed(Word uPaletteFadeSpeed) const
+	\fn void Burger::Display::SetFadeSpeed(Word uPaletteFadeSpeed) const
 	\brief Set the timer constant in Burger::Tick
 
 	When calling the palette fade functions, it will perform the fade evenly until
@@ -1024,7 +1361,7 @@ void Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pData)
 
 /*! ************************************
 
-	\fn Display::GetPaletteVSync(void) const
+	\fn Word Burger::Display::GetPaletteVSync(void) const
 	\brief Return non-zero if palette updates are synced to vertical blank.
 
 	\return Return non-zero if palette updates are synced to vertical blank.
@@ -1034,7 +1371,7 @@ void Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pData)
 
 /*! ************************************
 
-	\fn Display::SetPaletteVSync(Word bPaletteVSync)
+	\fn void Burger::Display::SetPaletteVSync(Word bPaletteVSync)
 	\brief Set the flag to enable palette updates 
 
 	\param bPaletteVSync \ref TRUE to enable vertical blank syncing, \ref FALSE to disable it
@@ -1042,4 +1379,107 @@ void Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pData)
 
 ***************************************/
 
+/*! ************************************
 
+	\fn void Burger::Display::SetResizeCallback(ResizeProc pResize,void *pResizeData)
+	\brief Set the function pointer for the callback when the window's size is changed
+
+	\param pResize Pointer to the function or \ref NULL to disable
+	\param pResizeData Pointer that is passed as is to the function if it's called.
+	\sa GetResizeCallback() const or GetResizeCallbackData() const
+
+***************************************/
+
+/*! ************************************
+
+	\fn ResizeProc Burger::Display::GetResizeCallback(void) const
+	\brief Return the function pointer for the callback when the window's size is changed
+
+	\return Pointer to the function or \ref NULL if disabled
+	\sa SetResizeCallback() or GetResizeCallbackData() const
+
+***************************************/
+
+/*! ************************************
+
+	\fn void * Burger::Display::GetResizeCallbackData(void) const
+	\brief Return the pointer that's passed to the callback that's used when the window's size is changed
+
+	\return Pointer that is passed to the callback
+	\sa SetResizeCallback() or GetResizeCallback() const
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::Display::SetRenderCallback(RenderProc pRender,void *pRenderData)
+	\brief Set the function pointer for the callback when the window needs to be redrawn
+
+	\param pRender Pointer to the function or \ref NULL to disable
+	\param pRenderData Pointer that is passed as is to the function if it's called.
+	\sa GetRenderCallback() const or GetRenderCallbackData() const
+
+***************************************/
+
+/*! ************************************
+
+	\fn RenderProc Burger::Display::GetRenderCallback(void) const
+	\brief Return the function pointer for the callback when the window needs to be redrawn
+
+	\return Pointer to the function or \ref NULL if disabled
+	\sa SetRenderCallback() or GetRenderCallbackData() const
+
+***************************************/
+
+/*! ************************************
+
+	\fn void * Burger::Display::GetRenderCallbackData(void) const
+	\brief Return the pointer that's passed to the callback that's used when the window is redrawn
+
+	\return Pointer that is passed to the callback
+	\sa SetRenderCallback() or GetRenderCallback() const
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::Display::SetReleaseCallback(ReleaseProc pRelease,void *pReleaseData)
+	\brief Set the function pointer for the callback when the renderer needs to purge all resources
+
+	\param pRelease Pointer to the function or \ref NULL to disable
+	\param pReleaseData Pointer that is passed as is to the function if it's called.
+	\sa GetReleaseCallback() const or GetReleaseCallbackData() const
+
+***************************************/
+
+/*! ************************************
+
+	\fn ReleaseProc Burger::Display::GetReleaseCallback(void) const
+	\brief Return the function pointer for the callback when the renderer needs to purge all resources
+
+	\return Pointer to the function or \ref NULL if disabled
+	\sa SetReleaseCallback() or GetReleaseCallbackData() const
+
+***************************************/
+
+/*! ************************************
+
+	\fn void * Burger::Display::GetReleaseCallbackData(void) const
+	\brief Return the pointer that's passed to the callback that's used when the renderer n
+
+	\return Pointer that is passed to the callback
+	\sa SetReleaseCallback() or GetReleaseCallback() const
+
+***************************************/
+
+BURGER_CREATE_STATICRTTI_PARENT(Burger::Display,Burger::Base);
+
+/*! ************************************
+
+	\var const Burger::StaticRTTI Burger::Display::g_StaticRTTI
+	\brief The global description of the class
+
+	This record contains the name of this class and a
+	reference to the parent (If any)
+
+***************************************/

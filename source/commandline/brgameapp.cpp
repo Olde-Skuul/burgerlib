@@ -2,7 +2,7 @@
 
 	Game Application startup class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -68,7 +68,8 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 	m_bInBackground(FALSE),
 	m_bMinimized(FALSE),
 	m_bAllowWindowSwitching(TRUE),
-	m_bMouseOnScreen(TRUE)
+	m_bMouseOnScreen(TRUE),
+	m_bWindowSwitchRequested(FALSE)
 {
 }
 
@@ -445,6 +446,20 @@ Burger::GameApp::~GameApp()
 
 ***************************************/
 
+/*! ************************************
+
+	\brief Switch from full screen to windowed mode and back again
+
+	If supported, both by platform and by having the m_bAllowWindowSwitching
+	flag being non-zero, this function will switch to full screen if the
+	game is in a window and vice versa.
+
+	\return Zero if no error occurred and the mode was switched, or non-zero
+		if not supported or there was an error in the mode switch.
+	\sa SetWindowSwitching(Word) or IsWindowSwitchingAllowed(void) const
+
+***************************************/
+
 Word BURGER_API Burger::GameApp::SwitchVideo(void)
 {
 	Word uResult = 10;
@@ -456,13 +471,13 @@ Word BURGER_API Burger::GameApp::SwitchVideo(void)
 #if defined(BURGER_WINDOWS)
 			static_cast<WindowsApp *>(this)->KillInputFocus();
 #endif
-			pDisplay->Init(pDisplay->GetWidth(),pDisplay->GetHeight(),pDisplay->GetDepth(),pDisplay->GetFlags()^Display::FULLSCREEN);
+			uResult = pDisplay->Init(0,0,0,pDisplay->GetFlags()^Display::FULLSCREEN);
 #if defined(BURGER_WINDOWS)
 			static_cast<WindowsApp *>(this)->GetInputFocus();
 #endif
-			uResult = 0;
 		}
 	}
+	m_bWindowSwitchRequested = FALSE;
 	return uResult;
 }
 
@@ -547,7 +562,7 @@ Word BURGER_API Burger::GameApp::IsResizingAllowed(void) const
 	\fn void Burger::GameApp::SetMouseOnScreen(Word bMouseOnScreen)
 	\brief Sets the application flag if a mouse cursor is on the game screen
 
-	\param bMouseOnScreen \ref TRUE if the if the mouse cursor is on the game screen, \ref FALSE if not
+	\param bMouseOnScreen \ref TRUE if the mouse cursor is on the game screen, \ref FALSE if not
 	\sa IsMouseOnScreen()
 
 ***************************************/
@@ -563,5 +578,69 @@ Word BURGER_API Burger::GameApp::IsResizingAllowed(void) const
 
 	\return \ref TRUE if the mouse cursor is on the game screen, \ref FALSE if not
 	\sa SetMouseOnScreen(Word)
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::GameApp::SetWindowSwitchRequested(Word bWindowSwitchRequested)
+	\brief Sets the application flag to toggle between full screen and window mode
+
+	\param bWindowSwitchRequested \ref TRUE if a mode switch is desired, \ref FALSE if not
+	\sa IsWindowSwitchRequested(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::GameApp::IsWindowSwitchRequested(void) const
+	\brief Return \ref TRUE if there is a pending video mode switch
+
+	The key command ALT-Enter can be issued by another thread, so to
+	ensure the mode switch is done properly, this flag is set to alert
+	the main thread that a full screen to window or vice versa mode
+	switch is desired.
+
+	\return \ref TRUE if a mode switch is desired, \ref FALSE if not
+	\sa SetWindowSwitchRequested(Word)
+
+***************************************/
+
+
+/*! ************************************
+
+	\fn int BURGER_API CodeEntry(Burger::GameApp *pGameApp);
+	\brief Main entry of the application code
+
+	Due to the mish mosh of startup code methods across platforms,
+	Burgerlib uses the inclusion of the header <brstartup.h> to create
+	the proper code to initialize an application and then it will
+	call this function to start application execution. This
+	is the prototype of the function that must exist
+	in a Burgerlib application. This function is not supplied by
+	Burgerlib.
+
+	\code
+
+	#include <burger.h>
+
+	// Only include once in the whole project
+	#include <brstartup.h>
+
+	int BURGER_API CodeEntry(Burger::GameApp *pGameApp)
+	{
+		// Initialize the keyboard
+		Burger::Keyboard KeyInstance(pGameApp);
+		// Initialize the mouse
+		Burger::Mouse MouseInstance(pGameApp);
+
+		// Run the game
+		DoAGreatGame(pGameApp);
+		return 0;		// No errors
+	}
+	\endcode
+
+	\return Zero if the application executed without error, non-zero if not.
+	\sa Burger::GameApp, Burger::Keyboard or Burger::Mouse
 
 ***************************************/

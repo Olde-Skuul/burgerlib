@@ -4,7 +4,7 @@
 
 	Inspired by an implementation found in gameswf by Thatcher Ulrich <tu@tulrich.com>
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -45,6 +45,7 @@ protected:
 	static const WordPtr INVALID_INDEX = BURGER_MAXWORDPTR;		///< Error value for invalid indexes
 	static const WordPtr END_OF_CHAIN = BURGER_MAXWORDPTR;		///< Constant to mark the end of a hash chain
 	static const WordPtr EMPTY_RECORD = BURGER_MAXWORDPTR-1;	///< Constant to mark an unused hash record
+public:
 	struct Entry {
 		WordPtr m_uNextInChain;	///< Next item index in the linked list chain or \ref END_OF_CHAIN to mark the end of a linked list
 		WordPtr m_uHashValue;	///< Computed hash value for this object (\ref INVALID_HASH indicates this entry is not initialized)
@@ -52,12 +53,12 @@ protected:
 		BURGER_INLINE Word IsEndOfChain(void) const { return m_uNextInChain == END_OF_CHAIN; }
 		BURGER_INLINE Word IsHashInvalid(void) const { return m_uHashValue == INVALID_HASH; }
 	};
+protected:
 	typedef WordPtr (BURGER_API *HashProc)(const void *pData,WordPtr uDataSize);	///< Function prototype for user supplied hash generator
 	typedef Word (BURGER_API *TestProc)(const void *pA,const void *pB);				///< Function prototype for testing keys
 	typedef void (BURGER_API *EntryConstructProc)(Entry *pEntry);					///< Function prototype for destroying entries
 	typedef void (BURGER_API *EntryCopyProc)(Entry *pEntry,const void *pT,const void *pU);	///< Function prototype for destroying entries
 	typedef void (BURGER_API *EntryInvalidateProc)(Entry *pEntry);					///< Function prototype for destroying entries
-protected:
 	void *m_pEntries;			///< Pointer to the hash table Burger::Alloc(m_uEntrySize*(m_uSizeMask+1))
 	WordPtr m_uEntrySize;		///< Size in bytes of each entry in the table
 	WordPtr m_uFirstSize;		///< Size of the key in bytes
@@ -107,6 +108,7 @@ protected:
 		BURGER_ASSERT(m_pEntries && (uIndex <= m_uSizeMask));
 		return reinterpret_cast<const Entry *>(static_cast<const Word8 *>(m_pEntries) + (uIndex*m_uEntrySize));
 	}
+public:
 	class const_iterator {
 	protected:
 		const HashMapShared* m_pParent;	///< Pointer to the parent class instance
@@ -125,24 +127,13 @@ protected:
 		BURGER_INLINE const Entry &operator*() const { return GetPtr()[0]; }
 		BURGER_INLINE const Entry *operator->() const { return GetPtr(); }
 		void BURGER_API operator++();
-		BURGER_INLINE Word operator==(const const_iterator& it) const
-		{
-			Word uResult = TRUE;
-			if (!IsEnd() || !it.IsEnd()) {
-				uResult = (m_pParent == it.m_pParent) && (m_uIndex == it.m_uIndex);
-			}
-			return uResult;
+		BURGER_INLINE Word operator==(const const_iterator& it) const {
+			return (m_pParent == it.m_pParent) && (m_uIndex == it.m_uIndex);
 		}
-		BURGER_INLINE Word operator!=(const const_iterator& it) const
-		{
-			Word uResult = FALSE;
-			if (!IsEnd() || !it.IsEnd()) {
-				uResult = (m_pParent != it.m_pParent) || (m_uIndex != it.m_uIndex);
-			}
-			return uResult;
+		BURGER_INLINE Word operator!=(const const_iterator& it) const {
+			return (m_pParent != it.m_pParent) || (m_uIndex != it.m_uIndex);
 		}
 	};
-public:
 	void BURGER_API Clear(void);
 	void BURGER_API Resize(WordPtr uNewSize);
 	void BURGER_API SetCapacity(WordPtr uNewSize);
@@ -160,8 +151,8 @@ class HashMap : public HashMapShared {
 	};
 	static void BURGER_API Construct(HashMapShared::Entry *pEntry)
 	{
-		new (&static_cast<Entry *>(pEntry)->first) T();
-		new (&static_cast<Entry *>(pEntry)->second) U();
+		new (&static_cast<Entry *>(pEntry)->first) T;
+		new (&static_cast<Entry *>(pEntry)->second) U;
 	}
 	static void BURGER_API Copy(HashMapShared::Entry *pEntry,const void *pT,const void *pU)
 	{
@@ -188,7 +179,7 @@ public:
 		HashMapShared(rHashMap.m_uEntrySize,rHashMap.m_uFirstSize,rHashMap.m_uSecondOffset,
 		rHashMap.m_pTestFunction,rHashMap.m_pEntryConstructFunction,rHashMap.m_pEntryCopyFunction,
 		rHashMap.m_pEntryInvalidationFunction,rHashMap.m_pHashFunction) {
-		Copy(&rHashMap);
+		HashMapShared::Copy(&rHashMap);
 	}
 	~HashMap() { Clear(); }
 	HashMap<T,U>& operator=(const HashMap<T,U>& rHashMap)
@@ -224,6 +215,7 @@ public:
 		}
 	}
 	BURGER_INLINE void add(const T &rKey,const U &rValue) { Add(&rKey,&rValue); }
+	BURGER_INLINE U *GetData(const T& rKey) { return const_cast<U*>(static_cast<const U*>(HashMapShared::GetData(&rKey))); }
 	BURGER_INLINE const U *GetData(const T& rKey) const { return static_cast<const U*>(HashMapShared::GetData(&rKey)); }
 	Word GetData(const T& rKey,U *pOutput) const
 	{
@@ -236,9 +228,11 @@ public:
 		return uResult;
 	}
 
+	class iterator;
 	class const_iterator : public HashMapShared::const_iterator {
 		const_iterator(const HashMapShared*pParent,WordPtr uIndex) : HashMapShared::const_iterator(pParent,uIndex) {}
 		friend class HashMap<T,U>;
+		friend class iterator;
 	public:
 		BURGER_INLINE const Entry &operator*() const { return static_cast<const Entry *>(GetPtr())[0]; }
 		BURGER_INLINE const Entry *operator->() const { return static_cast<const Entry *>(GetPtr()); }

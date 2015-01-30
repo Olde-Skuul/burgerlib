@@ -3,7 +3,7 @@
 	DIB display context class
 	Windows only
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -33,7 +33,7 @@
 
 	The window will have a Minimize and a Close box.
 
-	\note This class exists only on Microsoft Windows targets
+	\windowsonly
 	
 ***************************************/
 
@@ -51,7 +51,6 @@ Burger::DisplayDIBSoftware8::DisplayDIBSoftware8(Burger::GameApp *pGameApp) :
 	m_pHPalette(NULL),
 	m_pHBitMap(NULL)
 {
-	SetRenderer(&m_Renderer);
 }
 
 

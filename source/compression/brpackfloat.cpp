@@ -2,7 +2,7 @@
 
 	Floating point compression
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -46,9 +46,12 @@ float BURGER_API Burger::Unpack16ToFloat(Int16 iInput)
 		uTemp |= (uInput<<(23-11))+(111<<23);		// In one operation, create the exponent and the
 													// upper 11 bits of the mantissa
 	}
-	float fResult;									// Memory bound variable
-	reinterpret_cast<Word32 *>(&fResult)[0] = uTemp;	// Perform the int to float conversion by writing to memory
-	return fResult;									// Return in a float register
+	union {
+		float f;
+		Word32 u;
+	} Result;
+	Result.u = uTemp;		// Perform the int to float conversion by writing to memory
+	return Result.f;		// Return in a float register
 }
 
 /*! ************************************
@@ -127,9 +130,12 @@ float BURGER_API Burger::Unpack16ToFloat(Int16 iInput,Word32 uBaseExponent)
 		uTemp |= (uInput<<(23-11))+(uBaseExponent<<23);	// In one operation, create the exponent and the
 												// upper 11 bits of the mantissa
 	}
-	float fResult;								// Memory bound variable
-	reinterpret_cast<Word32 *>(&fResult)[0] = uTemp;	// Perform the int to float conversion by writing to memory
-	return fResult;								// Return in a float register
+	union {
+		float f;
+		Word32 u;
+	} Result;				// Memory bound variable
+	Result.u = uTemp;		// Perform the int to float conversion by writing to memory
+	return Result.f;		// Return in a float register
 }
 
 /*! ************************************

@@ -2,7 +2,7 @@
 
 	Global variable manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -104,9 +104,8 @@ private:
 	int m_iErrorCode;		///< Global default error code used by \ref Globals::Shutdown().
 	Word m_uTraceFlags;		///< Debug information level
 	char m_ErrorMsg[512];	///< Global Buffer containing the last fatal error or warning
-	Bool m_bBombFlag;		///< \ref TRUE if non-fatal errors are treated as fatal
-	Bool m_bExitFlag;		///< Global \ref TRUE if the app is in the process of shutting down.
-	friend class Debug;
+	Word m_bBombFlag;		///< \ref TRUE if non-fatal errors are treated as fatal
+	Word m_bExitFlag;		///< Global \ref TRUE if the app is in the process of shutting down.
 	static Globals g_Globals;	///< Singleton instance of the global variables
 public:
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
@@ -176,21 +175,23 @@ public:
 	static void BURGER_API CreateViewMenu(void);
 	static void BURGER_API CreateHelpMenu(void);
 	static void BURGER_API CreateDefaultMenus(void);
-	static void BURGER_API StringCopy(String *pOutput,const struct __CFString *pInput);
+	static void BURGER_API StringCopy(String *pOutput,const __CFString *pInput);
 	static void BURGER_API GetHIDDeviceName(String *pOutput,__IOHIDDevice *pDevice);
 	static __CFDictionary * BURGER_API CreateHIDDictionary(Word uPage,Word uUsage);
+	static void GetDisplayName(String *pOutput,Word uDisplayID);
+	static int NumberFromKey(const __CFDictionary *pDictionary,const char *pKey);
 #endif
 	static BURGER_INLINE int GetErrorCode(void) { return g_Globals.m_iErrorCode; }
 	static BURGER_INLINE void SetErrorCode(int iNewError) { g_Globals.m_iErrorCode = iNewError; }
-	static BURGER_INLINE const char *GetErrorMsg(void) { return g_Globals.m_ErrorMsg; }
+	static BURGER_INLINE char *GetErrorMsg(void) { return g_Globals.m_ErrorMsg; }
 	static void BURGER_ANSIAPI SetErrorMsg(const char *pMessage,...);
 	static BURGER_INLINE Word GetTraceFlag(void) { return g_Globals.m_uTraceFlags; }
 	static BURGER_INLINE void SetTraceFlag(Word uNewFlag) { g_Globals.m_uTraceFlags = uNewFlag; }
 	static BURGER_INLINE Word AreWarningsEnabled(void) { return g_Globals.m_uTraceFlags&TRACE_WARNINGS; }
 	static BURGER_INLINE Word GetErrorBombFlag(void) { return g_Globals.m_bBombFlag; }
-	static BURGER_INLINE Word SetErrorBombFlag(Word uNewFlag) { Word uOld = g_Globals.m_bBombFlag; g_Globals.m_bBombFlag = (uNewFlag!=0); return uOld; }
+	static BURGER_INLINE Word SetErrorBombFlag(Word uNewFlag) { Word uOld = g_Globals.m_bBombFlag; g_Globals.m_bBombFlag = uNewFlag; return uOld; }
 	static BURGER_INLINE Word GetExitFlag(void) { return g_Globals.m_bExitFlag; }
-	static BURGER_INLINE void SetExitFlag(Word uNewFlag) { g_Globals.m_bExitFlag = (uNewFlag!=0); }
+	static BURGER_INLINE void SetExitFlag(Word uNewFlag) { g_Globals.m_bExitFlag = uNewFlag; }
 	static void BURGER_API Shutdown(void);
 	static void BURGER_API Shutdown(int iError);
 	static Word BURGER_API Version(void);

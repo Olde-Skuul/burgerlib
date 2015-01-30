@@ -2,7 +2,7 @@
 
 	BMP File handler class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -283,11 +283,11 @@ Burger::FileBMP::FileBMP() :
 
 ***************************************/
 
-Burger::Image * Burger::FileBMP::Load(InputMemoryStream *pInput)
+Word BURGER_API Burger::FileBMP::Load(Image *pOutput,InputMemoryStream *pInput)
 {
 	Word8 ID[4];
 	const char *pBadNews = NULL;
-	Image *pImage = NULL;
+	Word uResult = 10;
 	Word32 uHeaderSize = 0;
 	Word32 uInfoSize = 0;
 
@@ -346,7 +346,7 @@ Burger::Image * Burger::FileBMP::Load(InputMemoryStream *pInput)
 			(uBitDepth != 24) && 
 			(uBitDepth != 32)) {
 			Debug::Warning("Can't process %u bits per pixel, only 8, 16, 24 or 32.",static_cast<unsigned int>(uBitDepth));
-			return NULL;
+			return 10;
 		}
 		if ((uCompression!=BMP_RGB) && (uCompression!=BMP_RLE8)) {
 			pBadNews = "Compression algorithm is not supported.";
@@ -394,11 +394,11 @@ Burger::Image * Burger::FileBMP::Load(InputMemoryStream *pInput)
 		} else {
 			eType = Image::PIXELTYPE8888;
 		}
-		pImage = Image::New(uWidth,uHeight,eType);
-		if (!pImage) {
+		uResult = pOutput->Init(uWidth,uHeight,eType);
+		if (uResult) {
 			pBadNews = "Out of memory.";
 		} else {
-			pImage->ClearBitmap();
+			pOutput->ClearBitmap();
 		}
 	}
 
@@ -406,10 +406,10 @@ Burger::Image * Burger::FileBMP::Load(InputMemoryStream *pInput)
 	// that an Image was allocated and data is ready to be processed
 
 	if (!pBadNews) {
-		WordPtr uStride = pImage->GetStride();
+		WordPtr uStride = pOutput->GetStride();
 		// Get the pointer to the BOTTOM scan line to flip
 		// the image
-		Word8 *pData = pImage->GetImage()+((uHeight-1)*uStride);
+		Word8 *pData = pOutput->GetImage()+((uHeight-1)*uStride);
 		if (uCompression==BMP_RLE8) {
 			Word i = uHeight;
 			do {
@@ -475,10 +475,9 @@ Burger::Image * Burger::FileBMP::Load(InputMemoryStream *pInput)
 	// If there was an error, clean up
 	if (pBadNews) {
 		Debug::Warning(pBadNews);
-		Delete(pImage);
-		pImage = NULL;
+		uResult = 10;
 	}
-	return pImage;
+	return uResult;
 }
 
 /*! ************************************

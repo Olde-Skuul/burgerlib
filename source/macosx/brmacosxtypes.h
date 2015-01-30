@@ -2,7 +2,7 @@
 
 	Typedefs specific to Mac OSX
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -43,14 +43,15 @@ struct __IOHIDValue;
 struct __IOHIDManager;
 @class NSApplication;
 @class NSApplicationDelegate;
-@class NSWindow;
-@class NSWindowController;
+@class NSEvent;
 @class NSMenu;
 @class NSMenuItem;
+@class NSOpenGLView;
+@class NSScreen;
 @class NSString;
 @class NSView;
-@class NSOpenGLView;
-@class NSEvent;
+@class NSWindow;
+@class NSWindowController;
 namespace Burger {
 	typedef int sem_t;
 	typedef unsigned int semaphore_t;

@@ -4,7 +4,7 @@
 
 	MacOS Carbon specific code
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -24,14 +24,14 @@
 
 ***************************************/
 
-void BURGER_API Burger::OSCursor::SetImageFromIDNumber(Word uCursorNumber)
+void BURGER_API Burger::OSCursor::SetImageFromIDNumber(eCursor eCursorNumber)
 {
-	if (uCursorNumber!=g_Global.m_uIDNumber) {
+	if (eCursorNumber!=g_Global.m_eIDNumber) {
 		// Load the cursor
-		CCrsrHandle hCursor = GetCCursor(uCursorNumber);		
+		CCrsrHandle hCursor = GetCCursor(eCursorNumber);		
 		// Did it load?
 		if (hCursor) {
-			g_Global.m_uIDNumber = uCursorNumber;
+			g_Global.m_eIDNumber = eCursorNumber;
 			// Set the cursor
 			SetCCursor(hCursor);
 			// Was there a cursor before?
@@ -112,7 +112,7 @@ void BURGER_API Burger::OSCursor::Init(void)
 {
 	InitCursor();
 	g_Global.m_bVisibleFlag = TRUE;
-	g_Global.m_uIDNumber = 1;
+	g_Global.m_eIDNumber = CURSOR_ARROW;
 }
 
 

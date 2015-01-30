@@ -4,7 +4,7 @@
 
 	MacOSX version
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -253,7 +253,7 @@ Word BURGER_API Burger::Keyboard::GetKeyEvent(KeyEvent_t *pEvent)
 	if (uResult && m_pAppInstance->IsWindowSwitchingAllowed()) {
 		if ((pEvent->m_uAscii==ASCII_RETURN) &&
 			((pEvent->m_uFlags&(FLAG_OPTION|FLAG_KEYDOWN))==(FLAG_OPTION|FLAG_KEYDOWN))) {
-			m_pAppInstance->SwitchVideo();
+			m_pAppInstance->SetWindowSwitchRequested(TRUE);
 		}
 	}
 	// No event pending

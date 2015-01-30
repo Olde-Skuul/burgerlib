@@ -2,7 +2,7 @@
 
 	Win95 version
 	
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -30,7 +30,7 @@
 // it isn't exposed in a single header. I know, I searched.
 extern "C" FILE * _MSL_CDECL _wfopen(const wchar_t * _MSL_RESTRICT name, const wchar_t * _MSL_RESTRICT mode);
 #endif
-#if defined(__WATCOMC__)
+#if defined(BURGER_WATCOM)
 #define std
 #endif
 

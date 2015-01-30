@@ -40,7 +40,7 @@
 				Optimization="0"
 				BufferSecurityCheck="true"
 				RuntimeLibrary="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\graphics\shadersdx9;..\source\graphics\shadersopengl;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -84,7 +84,7 @@
 				Optimization="0"
 				BufferSecurityCheck="true"
 				RuntimeLibrary="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\graphics\shadersdx9;..\source\graphics\shadersopengl;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -131,7 +131,7 @@
 				OmitFramePointers="true"
 				BufferSecurityCheck="true"
 				RuntimeLibrary="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\graphics\shadersdx9;..\source\graphics\shadersopengl;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -178,7 +178,7 @@
 				OmitFramePointers="true"
 				BufferSecurityCheck="true"
 				RuntimeLibrary="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\graphics\shadersdx9;..\source\graphics\shadersopengl;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -224,7 +224,7 @@
 				OmitFramePointers="true"
 				BufferSecurityCheck="false"
 				RuntimeLibrary="0"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\graphics\shadersdx9;..\source\graphics\shadersopengl;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -270,7 +270,7 @@
 				OmitFramePointers="true"
 				BufferSecurityCheck="false"
 				RuntimeLibrary="0"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\graphics\shadersdx9;..\source\graphics\shadersopengl;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(SDKS)\windows\perforce;$(SDKS)\windows\burgerlib;$(SDKS)\windows\directx9;$(SDKS)\windows\opengl"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -291,7 +291,6 @@
 			<File RelativePath="..\source\brglext.h" />
 			<File RelativePath="..\source\brglut.h" />
 			<File RelativePath="..\source\brglxext.h" />
-			<File RelativePath="..\source\brstartup.h" />
 			<File RelativePath="..\source\templateburgerbase.h" />
 			<File RelativePath="..\source\version.h" />
 			<Filter Name="compression">
@@ -355,7 +354,6 @@
 				<File RelativePath="..\source\windows\brdisplaydibsoftware8.h" />
 				<File RelativePath="..\source\windows\brdisplaydibsoftware8windows.cpp" />
 				<File RelativePath="..\source\windows\brdisplaydibwindows.cpp" />
-				<File RelativePath="..\source\windows\brdisplaydirectx8bit.h" />
 				<File RelativePath="..\source\windows\brdisplaydirectx9.h" />
 				<File RelativePath="..\source\windows\brdisplaydirectx9software8.h" />
 				<File RelativePath="..\source\windows\brdisplaydirectx9software8windows.cpp" />
@@ -374,11 +372,17 @@
 				<File RelativePath="..\source\windows\brpoint2dwindows.cpp" />
 				<File RelativePath="..\source\windows\brrectwindows.cpp" />
 				<File RelativePath="..\source\windows\brsoundwindows.cpp" />
+				<File RelativePath="..\source\windows\brstartup.h" />
+				<File RelativePath="..\source\windows\brtexturedirectx9.cpp" />
+				<File RelativePath="..\source\windows\brtexturedirectx9.h" />
 				<File RelativePath="..\source\windows\brtickwindows.cpp" />
 				<File RelativePath="..\source\windows\brtimedatewindows.cpp" />
+				<File RelativePath="..\source\windows\brvertexbufferdirectx9.h" />
+				<File RelativePath="..\source\windows\brvertexbufferdirextx9.cpp" />
 				<File RelativePath="..\source\windows\brwindowsapp.cpp" />
 				<File RelativePath="..\source\windows\brwindowsapp.h" />
 				<File RelativePath="..\source\windows\brwindowstypes.h" />
+				<File RelativePath="..\source\windows\ps20display8bitdx9.h" />
 			</Filter>
 			<Filter Name="text">
 				<File RelativePath="..\source\text\brisolatin1.cpp" />
@@ -420,33 +424,13 @@
 				<File RelativePath="..\source\commandline\brgameapp.cpp" />
 				<File RelativePath="..\source\commandline\brgameapp.h" />
 			</Filter>
-			<Filter Name="graphics">
-				<File RelativePath="..\source\graphics\brdisplay.cpp" />
-				<File RelativePath="..\source\graphics\brdisplay.h" />
-				<File RelativePath="..\source\graphics\brdisplayopengl.cpp" />
-				<File RelativePath="..\source\graphics\brdisplayopengl.h" />
-				<File RelativePath="..\source\graphics\brdisplayopenglsoftware8.cpp" />
-				<File RelativePath="..\source\graphics\brdisplayopenglsoftware8.h" />
-				<File RelativePath="..\source\graphics\brfont.cpp" />
-				<File RelativePath="..\source\graphics\brfont.h" />
-				<File RelativePath="..\source\graphics\brfont4bit.cpp" />
-				<File RelativePath="..\source\graphics\brfont4bit.h" />
-				<File RelativePath="..\source\graphics\brimage.cpp" />
-				<File RelativePath="..\source\graphics\brimage.h" />
-				<File RelativePath="..\source\graphics\brpalette.cpp" />
-				<File RelativePath="..\source\graphics\brpalette.h" />
-				<File RelativePath="..\source\graphics\brpoint2d.cpp" />
-				<File RelativePath="..\source\graphics\brpoint2d.h" />
-				<File RelativePath="..\source\graphics\brrect.cpp" />
-				<File RelativePath="..\source\graphics\brrect.h" />
-				<File RelativePath="..\source\graphics\brrenderer.cpp" />
-				<File RelativePath="..\source\graphics\brrenderer.h" />
-				<File RelativePath="..\source\graphics\brrenderersoftware16.cpp" />
-				<File RelativePath="..\source\graphics\brrenderersoftware16.h" />
-				<File RelativePath="..\source\graphics\brrenderersoftware8.cpp" />
-				<File RelativePath="..\source\graphics\brrenderersoftware8.h" />
-				<File RelativePath="..\source\graphics\brshape8bit.cpp" />
-				<File RelativePath="..\source\graphics\brshape8bit.h" />
+			<Filter Name="memory">
+				<File RelativePath="..\source\memory\brglobalmemorymanager.cpp" />
+				<File RelativePath="..\source\memory\brglobalmemorymanager.h" />
+				<File RelativePath="..\source\memory\brmemoryhandle.cpp" />
+				<File RelativePath="..\source\memory\brmemoryhandle.h" />
+				<File RelativePath="..\source\memory\brmemorymanager.cpp" />
+				<File RelativePath="..\source\memory\brmemorymanager.h" />
 			</Filter>
 			<Filter Name="ansi">
 				<File RelativePath="..\source\ansi\brfileansihelpers.cpp" />
@@ -490,13 +474,65 @@
 				<File RelativePath="..\source\file\brrezfile.cpp" />
 				<File RelativePath="..\source\file\brrezfile.h" />
 			</Filter>
-			<Filter Name="memory">
-				<File RelativePath="..\source\memory\brglobalmemorymanager.cpp" />
-				<File RelativePath="..\source\memory\brglobalmemorymanager.h" />
-				<File RelativePath="..\source\memory\brmemoryhandle.cpp" />
-				<File RelativePath="..\source\memory\brmemoryhandle.h" />
-				<File RelativePath="..\source\memory\brmemorymanager.cpp" />
-				<File RelativePath="..\source\memory\brmemorymanager.h" />
+			<Filter Name="graphics">
+				<File RelativePath="..\source\graphics\brdisplay.cpp" />
+				<File RelativePath="..\source\graphics\brdisplay.h" />
+				<File RelativePath="..\source\graphics\brdisplayopengl.cpp" />
+				<File RelativePath="..\source\graphics\brdisplayopengl.h" />
+				<File RelativePath="..\source\graphics\brdisplayopenglsoftware8.cpp" />
+				<File RelativePath="..\source\graphics\brdisplayopenglsoftware8.h" />
+				<File RelativePath="..\source\graphics\brfont.cpp" />
+				<File RelativePath="..\source\graphics\brfont.h" />
+				<File RelativePath="..\source\graphics\brfont4bit.cpp" />
+				<File RelativePath="..\source\graphics\brfont4bit.h" />
+				<File RelativePath="..\source\graphics\brimage.cpp" />
+				<File RelativePath="..\source\graphics\brimage.h" />
+				<File RelativePath="..\source\graphics\brpalette.cpp" />
+				<File RelativePath="..\source\graphics\brpalette.h" />
+				<File RelativePath="..\source\graphics\brpoint2d.cpp" />
+				<File RelativePath="..\source\graphics\brpoint2d.h" />
+				<File RelativePath="..\source\graphics\brrect.cpp" />
+				<File RelativePath="..\source\graphics\brrect.h" />
+				<File RelativePath="..\source\graphics\brrenderer.cpp" />
+				<File RelativePath="..\source\graphics\brrenderer.h" />
+				<File RelativePath="..\source\graphics\brrenderersoftware16.cpp" />
+				<File RelativePath="..\source\graphics\brrenderersoftware16.h" />
+				<File RelativePath="..\source\graphics\brrenderersoftware8.cpp" />
+				<File RelativePath="..\source\graphics\brrenderersoftware8.h" />
+				<File RelativePath="..\source\graphics\brshape8bit.cpp" />
+				<File RelativePath="..\source\graphics\brshape8bit.h" />
+				<File RelativePath="..\source\graphics\brtexture.cpp" />
+				<File RelativePath="..\source\graphics\brtexture.h" />
+				<File RelativePath="..\source\graphics\brtextureopengl.cpp" />
+				<File RelativePath="..\source\graphics\brtextureopengl.h" />
+				<File RelativePath="..\source\graphics\brvertexbuffer.cpp" />
+				<File RelativePath="..\source\graphics\brvertexbuffer.h" />
+				<File RelativePath="..\source\graphics\brvertexbufferopengl.cpp" />
+				<File RelativePath="..\source\graphics\brvertexbufferopengl.h" />
+				<Filter Name="shadersdx9">
+					<File RelativePath="..\source\graphics\shadersdx9\pstexturecolordx9.h" />
+					<File RelativePath="..\source\graphics\shadersdx9\pstexturedx9.h" />
+					<File RelativePath="..\source\graphics\shadersdx9\vs20sprite2ddx9.h" />
+					<File RelativePath="..\source\graphics\shadersdx9\vsstaticpositiondx9.h" />
+				</Filter>
+				<Filter Name="shadersopengl">
+					<File RelativePath="..\source\graphics\shadersopengl\pstexturecolorgl.h" />
+					<File RelativePath="..\source\graphics\shadersopengl\pstexturegl.h" />
+					<File RelativePath="..\source\graphics\shadersopengl\vs20sprite2dgl.h" />
+					<File RelativePath="..\source\graphics\shadersopengl\vsstaticpositiongl.h" />
+				</Filter>
+				<Filter Name="effects">
+					<File RelativePath="..\source\graphics\effects\breffect.cpp" />
+					<File RelativePath="..\source\graphics\effects\breffect.h" />
+					<File RelativePath="..\source\graphics\effects\breffect2d.cpp" />
+					<File RelativePath="..\source\graphics\effects\breffect2d.h" />
+					<File RelativePath="..\source\graphics\effects\breffectpositiontexturecolor.cpp" />
+					<File RelativePath="..\source\graphics\effects\breffectpositiontexturecolor.h" />
+					<File RelativePath="..\source\graphics\effects\breffectstaticpositiontexture.cpp" />
+					<File RelativePath="..\source\graphics\effects\breffectstaticpositiontexture.h" />
+					<File RelativePath="..\source\graphics\effects\brshaders.cpp" />
+					<File RelativePath="..\source\graphics\effects\brshaders.h" />
+				</Filter>
 			</Filter>
 			<Filter Name="lowlevel">
 				<File RelativePath="..\source\lowlevel\brarray.cpp" />
@@ -523,6 +559,8 @@
 				<File RelativePath="..\source\lowlevel\brendian.h" />
 				<File RelativePath="..\source\lowlevel\brglobals.cpp" />
 				<File RelativePath="..\source\lowlevel\brglobals.h" />
+				<File RelativePath="..\source\lowlevel\brgridindex.cpp" />
+				<File RelativePath="..\source\lowlevel\brgridindex.h" />
 				<File RelativePath="..\source\lowlevel\brguid.cpp" />
 				<File RelativePath="..\source\lowlevel\brguid.h" />
 				<File RelativePath="..\source\lowlevel\brlinkedlistobject.cpp" />
@@ -532,6 +570,8 @@
 				<File RelativePath="..\source\lowlevel\brmetrowerks.h" />
 				<File RelativePath="..\source\lowlevel\broscursor.cpp" />
 				<File RelativePath="..\source\lowlevel\broscursor.h" />
+				<File RelativePath="..\source\lowlevel\brpair.cpp" />
+				<File RelativePath="..\source\lowlevel\brpair.h" />
 				<File RelativePath="..\source\lowlevel\brperforce.cpp" />
 				<File RelativePath="..\source\lowlevel\brperforce.h" />
 				<File RelativePath="..\source\lowlevel\brqueue.cpp" />
@@ -544,6 +584,7 @@
 				<File RelativePath="..\source\lowlevel\brsimplearray.h" />
 				<File RelativePath="..\source\lowlevel\brsmartpointer.cpp" />
 				<File RelativePath="..\source\lowlevel\brsmartpointer.h" />
+				<File RelativePath="..\source\lowlevel\brsnsystems.h" />
 				<File RelativePath="..\source\lowlevel\brstaticrtti.cpp" />
 				<File RelativePath="..\source\lowlevel\brstaticrtti.h" />
 				<File RelativePath="..\source\lowlevel\brtick.cpp" />
@@ -567,8 +608,24 @@
 			<Filter Name="flashplayer">
 				<File RelativePath="..\source\flashplayer\brflashaction.cpp" />
 				<File RelativePath="..\source\flashplayer\brflashaction.h" />
+				<File RelativePath="..\source\flashplayer\brflashactionvalue.cpp" />
+				<File RelativePath="..\source\flashplayer\brflashactionvalue.h" />
+				<File RelativePath="..\source\flashplayer\brflashavm2.cpp" />
+				<File RelativePath="..\source\flashplayer\brflashavm2.h" />
+				<File RelativePath="..\source\flashplayer\brflashcolortransform.cpp" />
+				<File RelativePath="..\source\flashplayer\brflashcolortransform.h" />
+				<File RelativePath="..\source\flashplayer\brflashdisasmactionscript.cpp" />
+				<File RelativePath="..\source\flashplayer\brflashdisasmactionscript.h" />
 				<File RelativePath="..\source\flashplayer\brflashmanager.cpp" />
 				<File RelativePath="..\source\flashplayer\brflashmanager.h" />
+				<File RelativePath="..\source\flashplayer\brflashmatrix23.cpp" />
+				<File RelativePath="..\source\flashplayer\brflashmatrix23.h" />
+				<File RelativePath="..\source\flashplayer\brflashrect.cpp" />
+				<File RelativePath="..\source\flashplayer\brflashrect.h" />
+				<File RelativePath="..\source\flashplayer\brflashrgba.cpp" />
+				<File RelativePath="..\source\flashplayer\brflashrgba.h" />
+				<File RelativePath="..\source\flashplayer\brflashstream.cpp" />
+				<File RelativePath="..\source\flashplayer\brflashstream.h" />
 				<File RelativePath="..\source\flashplayer\brflashutils.cpp" />
 				<File RelativePath="..\source\flashplayer\brflashutils.h" />
 			</Filter>
@@ -577,6 +634,8 @@
 				<File RelativePath="..\source\audio\brsound.h" />
 			</Filter>
 			<Filter Name="math">
+				<File RelativePath="..\source\math\brearcliptriangulate.cpp" />
+				<File RelativePath="..\source\math\brearcliptriangulate.h" />
 				<File RelativePath="..\source\math\brfixedmatrix3d.cpp" />
 				<File RelativePath="..\source\math\brfixedmatrix3d.h" />
 				<File RelativePath="..\source\math\brfixedmatrix4d.cpp" />
@@ -610,6 +669,8 @@
 			<File RelativePath="..\unittest\createtables.h" />
 			<File RelativePath="..\unittest\testbrcompression.cpp" />
 			<File RelativePath="..\unittest\testbrcompression.h" />
+			<File RelativePath="..\unittest\testbrdisplay.cpp" />
+			<File RelativePath="..\unittest\testbrdisplay.h" />
 			<File RelativePath="..\unittest\testbrendian.cpp" />
 			<File RelativePath="..\unittest\testbrendian.h" />
 			<File RelativePath="..\unittest\testbrfilemanager.cpp" />

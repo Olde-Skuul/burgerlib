@@ -2,7 +2,7 @@
 
 	4D Floating point vector manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -34,10 +34,10 @@
 namespace Burger {
 struct FixedVector4D_t;
 struct Vector4D_t {
-	float x;			///< 32 bit floating point X value for the 4D Vector
-	float y;			///< 32 bit floating point Y value for the 4D Vector
-	float z;			///< 32 bit floating point Z value for the 4D Vector
-	float w;			///< 32 bit floating point W value for the 4D Vector
+	float x;			///< 32 bit floating point X value for the 4D Vector (LeftX)
+	float y;			///< 32 bit floating point Y value for the 4D Vector (TopY)
+	float z;			///< 32 bit floating point Z value for the 4D Vector (RightX)
+	float w;			///< 32 bit floating point W value for the 4D Vector (BottomY)
 	BURGER_INLINE void Zero(void) { x = 0.0f; y = 0.0f; z = 0.0f; w = 0.0f; }
 	BURGER_INLINE void One(void) { x = 1.0f; y = 1.0f; z = 1.0f; w = 1.0f; }
 	BURGER_INLINE void Identity(void) { x = 0.0f; y = 0.0f; z = 0.0f; w = 1.0f; }
@@ -55,6 +55,9 @@ struct Vector4D_t {
 	BURGER_INLINE void Set(float fX,float fY,float fZ,float fW) { x = fX; y = fY; z = fZ; w = fW; };
 	BURGER_INLINE void Set(const Vector4D_t *pInput) { *this = *pInput; }
 	void BURGER_API Set(const FixedVector4D_t *pInput);
+	BURGER_INLINE void SetRect(float fX,float fY) { x = fX; y = fY; z = fX; w = fY; };
+	BURGER_INLINE void SetRect(const Vector2D_t *pMinMax) { x = pMinMax->x; y = pMinMax->y; z = pMinMax->x; w = pMinMax->y; }
+	BURGER_INLINE void SetRect(const Vector2D_t *pMin,const Vector2D_t *pMax) { x = pMin->x; y = pMin->y; z = pMax->x; w = pMax->y; }
 	BURGER_INLINE void Negate(void) { x = -x; y = -y; z = -z; w = -w; }
 	BURGER_INLINE void Negate(float fX,float fY,float fZ,float fW) { x = -fX; y = -fY; z = -fZ; w = -fW; }
 	BURGER_INLINE void Negate(const Vector4D_t *pInput) { x = -pInput->x; y = -pInput->y; z = -pInput->z; w = -pInput->w; }
@@ -104,6 +107,29 @@ struct Vector4D_t {
 	BURGER_INLINE const float & operator[](Word uInput) const { return (&x)[uInput]; }
 	BURGER_INLINE Word operator == (const Vector4D_t& rInput) const { return (x == rInput.x) && (y == rInput.y) && (z == rInput.z) && (w == rInput.z); }
 	BURGER_INLINE Word operator != (const Vector4D_t& rInput) const { return (x != rInput.x) || (y != rInput.y) || (z != rInput.z) || (w != rInput.z); }
+	BURGER_INLINE operator const float *() const { return &x; }
+	BURGER_INLINE const Vector2D_t *GetTopLeft(void) const { return reinterpret_cast<const Vector2D_t *>(&x); }
+	BURGER_INLINE const Vector2D_t *GetBottomRight(void) const { return reinterpret_cast<const Vector2D_t *>(&z); }
+	BURGER_INLINE Vector2D_t *GetTopLeft(void) { return reinterpret_cast<Vector2D_t *>(&x); }
+	BURGER_INLINE Vector2D_t *GetBottomRight(void) { return reinterpret_cast<Vector2D_t *>(&z); }
+	BURGER_INLINE float GetWidth(void) const { return z - x; }
+	BURGER_INLINE float GetHeight(void) const { return w - y; }
+	BURGER_INLINE float GetLeft(void) const { return x; }
+	BURGER_INLINE float GetTop(void) const { return y; }
+	BURGER_INLINE float GetRight(void) const { return z; }
+	BURGER_INLINE float GetBottom(void) const { return w; }
+	BURGER_INLINE void SetWidth(float fWidth) { z = x+fWidth; }
+	BURGER_INLINE void SetHeight(float fHeight) { w = y+fHeight; }
+	BURGER_INLINE void SetSize(float fWidth,float fHeight) { z = x+fWidth; w = y+fHeight; }
+	BURGER_INLINE void SetLeft(float fLeft) { x = fLeft; }
+	BURGER_INLINE void SetTop(float fTop) { y = fTop; }
+	BURGER_INLINE void SetRight(float fRight) { z = fRight; }
+	BURGER_INLINE void SetBottom(float fBottom) { w = fBottom; }
+	BURGER_INLINE Word IsInsideRect(float fX,float fY) const { return ((fX >= x) && (fX <= z) && (fY >= y) && (fY <= w)); }
+	BURGER_INLINE Word IsInsideRect(const Vector2D_t *pInput) const { return ((pInput->x >= x) && (pInput->x <= z) && (pInput->y >= y) && (pInput->y <= w)); }
+	void BURGER_API ExpandRect(float fX, float fY);
+	void BURGER_API ExpandRect(const Vector2D_t *pInput);
+	void BURGER_API ExpandRect(const Vector4D_t *pInput);
 };
 extern const Vector4D_t g_Vector4DZero;
 extern const Vector4D_t g_Vector4DOne;

@@ -2,7 +2,7 @@
 
 	BMP File handler class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -68,7 +68,7 @@ public:
 #endif
 	static const Int32 DEFAULT_PIXELS_PER_METER = 2835;	///< Default pixels per meter value for BMP files (2834.6472f)
 	FileBMP();
-	Image *Load(InputMemoryStream *pInput);
+	Word BURGER_API Load(Image *pOutput,InputMemoryStream *pInput);
 	Word Save(OutputMemoryStream *pOutput,const Image *pImage,Word bCompression=FALSE);
 	BURGER_INLINE Word16 GetReserved1(void) const { return m_uReserved1;}
 	BURGER_INLINE void SetReserved1(Word16 uReserved1) { m_uReserved1 = uReserved1;}

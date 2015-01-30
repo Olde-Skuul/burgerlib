@@ -2,7 +2,7 @@
 
 	Global variable manager
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -28,17 +28,22 @@
 #endif
 
 #if !defined(DIRECT3D_VERSION)
-#define DIRECT3D_VERSION 0x700
+#define DIRECT3D_VERSION 0x900
 #endif
 
 #if !defined(DIRECTDRAW_VERSION)
 #define DIRECTDRAW_VERSION 0x700
 #endif
 
+#if defined(_DEBUG) && !defined(DOXYGEN)
+#define D3D_DEBUG_INFO
+#endif
+
 #include <Windows.h>
 #include <MMReg.h>
 #include <dinput.h>
 #include <d3d.h>
+#include <ddraw.h>
 #include <dsound.h>
 #include <shellapi.h>
 #include <shlobj.h>
@@ -57,7 +62,11 @@ static const char *s_LibaryNames[Burger::Globals::DLL_COUNT] = {
 	"ddraw.dll",
 	"dinput.dll",
 	"dinput8.dll",
+#if defined(_DEBUG)
+	"d3d9d.dll",
+#else
 	"d3d9.dll",
+#endif
 	"dsound.dll",
 	"rpcrt4.dll",
 	"winmm.dll",
@@ -148,7 +157,7 @@ Burger::Globals::~Globals()
 	\fn Burger::Globals::GetInstance()
 	\brief Get the application instance
 
-	\note This function is only available on Windows
+	\windowsonly
 
 	\return Instance set by Globals::SetInstance()
 
@@ -165,7 +174,7 @@ Burger::Globals::~Globals()
 	this function to allow Burgerlib to use this instance in
 	other parts of the library.
 
-	\note This function is only available on Windows
+	\windowsonly
 
 	\param pInput Instance of the application
 
@@ -178,7 +187,7 @@ Burger::Globals::~Globals()
 	\fn Burger::Globals::GetWindow()
 	\brief Get the application window
 	
-	\note This function is only available on Windows
+	\windowsonly
 
 	\return Window set by Globals::SetWindow()
 
@@ -195,8 +204,7 @@ Burger::Globals::~Globals()
 	is stored via this call so other parts of Burgerlib
 	can use this window for other systems.
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param pInput Instance of the application
 
 	\sa Globals::GetWindow()
@@ -207,8 +215,7 @@ Burger::Globals::~Globals()
 
 	\brief Detect and load DirectInput functions
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\return \ref TRUE if DirectInput is present on the system, \ref FALSE if not
 	
 ***************************************/
@@ -226,8 +233,7 @@ Word BURGER_API Burger::Globals::IsDirectInputPresent(void)
 
 	\brief Detect and load DirectInput8 functions
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\return \ref TRUE if DirectInput8 is present on the system, \ref FALSE if not
 	
 ***************************************/
@@ -245,8 +251,7 @@ Word BURGER_API Burger::Globals::IsDirectInput8Present(void)
 
 	\brief Detect and load DirectDraw functions
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\return \ref TRUE if DirectDraw is present on the system, \ref FALSE if not
 	
 ***************************************/
@@ -264,8 +269,7 @@ Word BURGER_API Burger::Globals::IsDirectDrawPresent(void)
 
 	\brief Detect and load D3D9 functions
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\return \ref TRUE if D3D9 is present on the system, \ref FALSE if not
 	
 ***************************************/
@@ -283,8 +287,7 @@ Word BURGER_API Burger::Globals::IsD3D9Present(void)
 
 	\brief Detect and load DirectSound functions
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\return \ref TRUE if DirectSound is present on the system, \ref FALSE if not
 	
 ***************************************/
@@ -305,8 +308,7 @@ Word BURGER_API Burger::Globals::IsDirectSoundPresent(void)
 	Test if the system is a pre-NT Windows operating system.
 	If it returns \ref FALSE, it's an NT kernel (XP, Vista, 7, 8 ...)
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\return Returns \ref TRUE if Windows 3.1, 95, or 98. 
 	
 ***************************************/
@@ -338,8 +340,7 @@ Word BURGER_API Burger::Globals::IsWin95orWin98(void)
 	To allow maximum compatibility, this function will manually load
 	dinput.dll and then invoke DirectInputCreateW if present.
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param pOutput Pointer to the location where the valid IDirectInputW pointer
 		will be stored. If the function fails, this value is guaranteed to be \ref NULL.
 	\return Zero if no error. Any other value means an error occurred
@@ -376,8 +377,7 @@ Word BURGER_API Burger::Globals::DirectInputCreateW(IDirectInputW **pOutput)
 	To allow maximum compatibility, this function will manually load
 	dinput8.dll and then invoke DirectInput8Create if present.
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param pOutput Pointer to the location where the valid IDirectInput8W pointer
 		will be stored. If the function fails, this value is guaranteed to be \ref NULL.
 	\return Zero if no error. Any other value means an error occurred
@@ -416,8 +416,7 @@ Word BURGER_API Burger::Globals::DirectInput8Create(IDirectInput8W **pOutput)
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/gg426118(v=vs.85).aspx
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param pGuid Guid of the version of DirectDraw requested
 	\param pOutput Pointer to the location where the valid IDirectDraw7 pointer
 		will be stored. If the function fails, this value is guaranteed to be \ref NULL.
@@ -451,8 +450,7 @@ Word BURGER_API Burger::Globals::DirectDrawCreateEx(const GUID *pGuid,IDirectDra
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/gg426120(v=vs.85).aspx
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param lpCallback Address of a DDENUMCALLBACKEXA function to be called with a description of each enumerated DirectDraw-enabled hardware abstraction layer (HAL).
 	\param lpContext Address of an application-defined value to be passed to the enumeration callback function each time that it is called.
 	\param dwFlags Flags that specify the enumeration scope. This parameter can be 0 or a combination of the following flags. If the value is 0, the function enumerates only the primary display device.
@@ -486,8 +484,7 @@ Word BURGER_API Burger::Globals::DirectDrawEnumerateExA(void *lpCallback,void *l
 
 	\note Some video cards do not support this function call. Notably the nVidia GT 545
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param lpCallback Address of a DDENUMCALLBACKEXW function to be called with a description of each enumerated DirectDraw-enabled hardware abstraction layer (HAL).
 	\param lpContext Address of an application-defined value to be passed to the enumeration callback function each time that it is called.
 	\param dwFlags Flags that specify the enumeration scope. This parameter can be 0 or a combination of the following flags. If the value is 0, the function enumerates only the primary display device.
@@ -517,8 +514,7 @@ Word BURGER_API Burger::Globals::DirectDrawEnumerateExW(void *lpCallback,void *l
 	To allow maximum compatibility, this function will manually load
 	d3d9.dll and then invoke Direct3DCreate9 if present.
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param uSDKVersion Requested version of Direct3D 9
 	\return \ref NULL if DirectX 9 is not present. A valid Direct3D9 pointer otherwise
 	
@@ -543,8 +539,7 @@ IDirect3D9 *BURGER_API Burger::Globals::Direct3DCreate9(Word uSDKVersion)
 	To allow maximum compatibility, this function will manually load
 	dsound.dll and then invoke DirectSoundCreate if present.
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param pGuidDevice Requested audio device
 	\param pOutput Pointer to receive the pointer to the new IDirectSound instance
 	\return DD_OK if no error. Any other value means an error occurred
@@ -575,8 +570,7 @@ Word BURGER_API Burger::Globals::DirectSoundCreate(const GUID *pGuidDevice,IDire
 	To allow maximum compatibility, this function will manually load
 	dsound.dll and then invoke DirectSoundCreate8 if present.
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param pGuidDevice Requested audio device
 	\param pOutput Pointer to receive the pointer to the new IDirectSound8 instance
 	\return DD_OK if no error. Any other value means an error occurred
@@ -632,8 +626,7 @@ Word BURGER_API Burger::Globals::timeGetTime(void)
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/bb773751(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param pszPath A pointer to a null-terminated string of maximum length MAX_PATH that contains the path to search.
 	\param pszBuf A pointer to a null-terminated string of length MAX_PATH that contains the path to be referenced.
 	\param cchBuf The size of the buffer pointed to by pszBuf, in characters.
@@ -660,8 +653,7 @@ Word BURGER_API Burger::Globals::PathSearchAndQualifyA(const char *pszPath,char 
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/bb773751(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param pszPath A pointer to a null-terminated string of maximum length MAX_PATH that contains the path to search.
 	\param pszBuf A pointer to a null-terminated string of length MAX_PATH that contains the path to be referenced.
 	\param cchBuf The size of the buffer pointed to by pszBuf, in characters.
@@ -688,8 +680,7 @@ Word BURGER_API Burger::Globals::PathSearchAndQualifyW(const Word16 *pszPath,Wor
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/aa379322(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param pOutput A pointer to an uninitialized GUID.
 	\return Zero for success or List of error codes http://msdn.microsoft.com/en-us/library/windows/desktop/aa378645(v=vs.85).aspx
 		
@@ -714,8 +705,7 @@ Word BURGER_API Burger::Globals::UuidCreateSequential(GUID *pOutput)
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647464(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param pBlock The version-information resource returned by the GetFileVersionInfo function.
 	\param lpSubBlock A pointer to the version-information value to be retrieved. 
 	\param lplpBuffer A pointer that contains the address of a pointer to the requested version information in the buffer pointed to by pBlock.
@@ -743,8 +733,7 @@ Word BURGER_API Burger::Globals::VerQueryValueA(const void *pBlock,const char *l
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647464(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param pBlock The version-information resource returned by the GetFileVersionInfo function.
 	\param lpSubBlock A pointer to the version-information value to be retrieved. 
 	\param lplpBuffer A pointer that contains the address of a pointer to the requested version information in the buffer pointed to by pBlock.
@@ -772,8 +761,7 @@ Word BURGER_API Burger::Globals::VerQueryValueW(const void *pBlock,const Word16 
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647003(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param lptstrFilename The name of the file
 	\param dwHandle This parameter is ignored.
 	\param dwLen The size, in bytes, of the buffer pointed to by the lpData parameter.
@@ -801,8 +789,7 @@ Word BURGER_API Burger::Globals::GetFileVersionInfoA(const char *lptstrFilename,
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647003(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param lptstrFilename The name of the file
 	\param dwHandle This parameter is ignored.
 	\param dwLen The size, in bytes, of the buffer pointed to by the lpData parameter.
@@ -830,8 +817,7 @@ Word BURGER_API Burger::Globals::GetFileVersionInfoW(const Word16 *lptstrFilenam
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647005(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param lptstrFilename The name of the file of interest.
 	\param lpdwHandle A pointer to a variable that the function sets to zero.
 	\return Returns the number of bytes if successful, or zero otherwise.
@@ -857,8 +843,7 @@ Word32 BURGER_API Burger::Globals::GetFileVersionInfoSizeA(const char *lptstrFil
 
 	http://msdn.microsoft.com/en-us/library/windows/desktop/ms647005(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param lptstrFilename The name of the file of interest.
 	\param lpdwHandle A pointer to a variable that the function sets to zero.
 	\return Returns the number of bytes if successful, or zero otherwise.
@@ -884,8 +869,7 @@ Word32 BURGER_API Burger::Globals::GetFileVersionInfoSizeW(const Word16 *lptstrF
 
 	http://msdn.microsoft.com/en-us/library/windows/hardware/ff538924(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param HidGuid Pointer to a caller-allocated GUID buffer that the routine uses to return the device interface GUID for HIDClass devices.
 		
 ***************************************/
@@ -909,8 +893,7 @@ void BURGER_API Burger::Globals::HidD_GetHidGuid(GUID *HidGuid)
 
 	http://msdn.microsoft.com/en-us/library/windows/hardware/ff551069(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param ClassGuid A pointer to the GUID for a device setup class or a device interface class. 
 	\param Enumerator A pointer to a NULL-terminated string that specifies a PnP enumerator or instance ID
 	\param hwndParent A handle to the top-level window to be used for a user interface that is associated with installing a device instance in the device information set.
@@ -938,8 +921,7 @@ void * BURGER_API Burger::Globals::SetupDiGetClassDevsA(const GUID *ClassGuid,co
 
 	http://msdn.microsoft.com/en-us/library/windows/hardware/ff551069(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param ClassGuid A pointer to the GUID for a device setup class or a device interface class. 
 	\param Enumerator A pointer to a NULL-terminated string that specifies a PnP enumerator or instance ID
 	\param hwndParent A handle to the top-level window to be used for a user interface that is associated with installing a device instance in the device information set.
@@ -967,8 +949,7 @@ void * BURGER_API Burger::Globals::SetupDiGetClassDevsW(const GUID *ClassGuid,co
 
 	http://msdn.microsoft.com/en-us/library/windows/hardware/ff551120(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param DeviceInfoSet A pointer to the device information set that contains the interface for which to retrieve details.
 	\param DeviceInterfaceData A pointer to an SP_DEVICE_INTERFACE_DATA structure that specifies the interface in DeviceInfoSet for which to retrieve details.
 	\param DeviceInterfaceDetailData A pointer to an SP_DEVICE_INTERFACE_DETAIL_DATA structure to receive information about the specified interface. 
@@ -998,8 +979,7 @@ Word BURGER_API Burger::Globals::SetupDiGetDeviceInterfaceDetailA(void *DeviceIn
 
 	http://msdn.microsoft.com/en-us/library/windows/hardware/ff551120(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param DeviceInfoSet A pointer to the device information set that contains the interface for which to retrieve details.
 	\param DeviceInterfaceData A pointer to an SP_DEVICE_INTERFACE_DATA structure that specifies the interface in DeviceInfoSet for which to retrieve details.
 	\param DeviceInterfaceDetailData A pointer to an SP_DEVICE_INTERFACE_DETAIL_DATA structure to receive information about the specified interface. 
@@ -1029,8 +1009,7 @@ Word BURGER_API Burger::Globals::SetupDiGetDeviceInterfaceDetailW(void *DeviceIn
 
 	http://msdn.microsoft.com/en-us/library/windows/hardware/ff551015(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param DeviceInfoSet A pointer to a device information set that contains the device interfaces for which to return information. 
 	\param DeviceInfoData A pointer to an SP_DEVINFO_DATA structure that specifies a device information element in DeviceInfoSet.
 	\param InterfaceClassGuid A pointer to a GUID that specifies the device interface class for the requested interface.
@@ -1059,8 +1038,7 @@ Word BURGER_API Burger::Globals::SetupDiEnumDeviceInterfaces(void *DeviceInfoSet
 
 	http://msdn.microsoft.com/en-us/library/windows/hardware/ff550996(v=vs.85).aspx
 	
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param DeviceInfoSet A handle to the device information set to delete.
 	\return \ref TRUE if the function completed without error.
 
@@ -1381,8 +1359,7 @@ static Word BURGER_API GetDirectXVersionViaFileVersions(void)
 	and pull the version resource
 	from them.
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\return Version in the format of 0x0902 -> 9.2, 0xB01 = 11.0.1
 
 ***************************************/
@@ -1434,8 +1411,7 @@ static int CALLBACK FindDeviceCallback(GUID *pGUID,LPSTR /* pName */,LPSTR /* pD
 	Scan the device list for the GUID of the requested device.
 	Device #0 returns the global display device (All screens)
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param pOutput Pointer to a buffer to accept the returned GUID. Cannot be \ref NULL
 	\param uDevNum 0 for the master global device, 1-??? for the enumerated displays
 	\return Zero if no error, non-zero if an error has occurred
@@ -1477,8 +1453,7 @@ Word BURGER_API Burger::Globals::GetVideoGUID(GUID *pOutput,Word uDevNum)
 	before the call to LoadLibraryA() and restoring the
 	flag to the previous setting before function exit.
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param pInput ASCII pathname of the DLL file to load.
 	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
 	\sa LoadLibraryW()
@@ -1504,8 +1479,7 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryA(const char *pInput)
 	before the call to LoadLibraryW() and restoring the
 	flag to the previous setting before function exit.
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param pInput UTF16 pathname of the DLL file to load. 
 	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
 	\sa LoadLibraryA()
@@ -1529,8 +1503,7 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryW(const Word16 *pInput)
 	load the DLL and if successful, return the HINSTANCE. If
 	the load failed, return \ref NULL.
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param eIndex \ref eWindowsDLLIndex index to a DLL Burgerlib is tracking.
 	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
 	\sa LoadFunctionIndex()
@@ -1554,6 +1527,21 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryIndex(eWindowsDLLIndex eIndex)
 				// If it loaded fine, save the result
 				g_Globals.m_hInstances[eIndex] = hResult;
 			}
+#if defined(_DEBUG)
+
+			// Direct3D version 9, is a special case, if the debug
+			// dll is not present, load the release version as a failsafe
+			else {
+				if (eIndex==D3D9_DLL) {
+					hResult = Globals::LoadLibraryA("d3d9.dll");
+					if (hResult) {
+						// If it loaded fine, save the result
+						g_Globals.m_hInstances[eIndex] = hResult;
+					}
+
+				}
+			}
+#endif
 		}
 	}
 	return hResult;
@@ -1568,8 +1556,7 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryIndex(eWindowsDLLIndex eIndex)
 	and return the pointer to the function or \ref NULL if
 	not found.
 
-	\note This function is only available on Windows
-
+	\windowsonly
 	\param eIndex \ref eWindowsCallIndex index to a Windows function Burgerlib is tracking.
 	\return \ref NULL if the DLL was not loaded or the function didn't exist, a valid function pointer on success
 	\sa LoadLibraryIndex()
@@ -1608,8 +1595,7 @@ void * BURGER_API Burger::Globals::LoadFunctionIndex(eWindowsCallIndex eIndex)
 
 	\param pGroupName UTF8 "C" string of the folder name for the start menu
 
-	\note This function only exists on the Windows platform
-
+	\windowsonly
 	\return Returns TRUE if an error occurs
 
 ***************************************/
@@ -1654,8 +1640,7 @@ Word BURGER_API Burger::Globals::AddGroupToProgramMenu(const char *pGroupName)
 	Strings are all UTF-8. This function will perform
 	conversion to UTF-16 for Windows
 
-	\note This function only exists on the Windows platform
-
+	\windowsonly
 	\param pKey Key found in HKEY_CURRENT_USER
 	\param pSubKey Name of the sub-key of interest, can be \ref NULL
 	\param pData String to store in the registry
@@ -1693,7 +1678,7 @@ int BURGER_API Burger::Globals::CreateUserRegistryKey(const char *pKey,const cha
 	Set the user registry to associate a data file type with the
 	currently running executable.
 	
-	\note This function only exists on the Windows platform
+	\windowsonly
 
 	\code
 	// Tell Windows Explorer to launch .datafile files with the currently running app by double-clicking

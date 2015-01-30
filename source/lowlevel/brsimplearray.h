@@ -2,7 +2,7 @@
 
 	intrinsic<T> compatible array template
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -26,43 +26,55 @@
 #include "brglobalmemorymanager.h"
 #endif
 
+#ifndef __BRSTRINGFUNCTIONS_H__
+#include "brstringfunctions.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
-template<class T>
-class SimpleArray {
-	T *m_pData;				///< Pointer to the array of class instances
+class SimpleArrayBase {
+protected:
+	void *m_pData;			///< Pointer to the array of class instances
 	WordPtr m_uSize;		///< Number of active elements in the array
 	WordPtr m_uBufferSize;	///< Maximum number of elements in the array
+	WordPtr m_uChunkSize;	///< Size in bytes for each individual element in the array
 public:
-	SimpleArray() : m_pData(NULL), m_uSize(0), m_uBufferSize(0) {}
-	SimpleArray(WordPtr uDefault) : m_pData(NULL),m_uSize(uDefault),m_uBufferSize(uDefault) {
-		// Anything?
-		if (uDefault) {
-			// Get the default buffer and die if failed in debug
-			m_pData = static_cast<T*>(Alloc(sizeof(T) * uDefault));
-			BURGER_ASSERT(m_pData);
-		}
-	}
-	SimpleArray(const SimpleArray<T>& rData) : m_pData(NULL),m_uSize(rData.size()),m_uBufferSize(rData.size())
-	{
-		WordPtr uCount = m_uSize;
-		m_pData = static_cast<T*>(AllocCopy(rData.m_pData,sizeof(T) * uCount));
-	}
-	~SimpleArray() {
-		clear();
-	}
-	BURGER_INLINE T *GetPtr(void) { return m_pData; }
-	BURGER_INLINE const T *GetPtr(void) const { return m_pData; }
-	BURGER_INLINE T& operator[](WordPtr uIndex) { BURGER_ASSERT(uIndex < m_uSize); return m_pData[uIndex]; }
-	BURGER_INLINE const T& operator[](WordPtr uIndex) const { BURGER_ASSERT(uIndex < m_uSize); return m_pData[uIndex]; }
-	BURGER_INLINE WordPtr max_size(void) const { return m_uBufferSize; }
+	SimpleArrayBase(WordPtr uChunkSize) :
+		m_pData(NULL),
+		m_uSize(0),
+		m_uBufferSize(0),
+		m_uChunkSize(uChunkSize)
+	{}
+	SimpleArrayBase(WordPtr uDefault,WordPtr uChunkSize);
+	SimpleArrayBase(const SimpleArrayBase &rData);
+	~SimpleArrayBase();
+	SimpleArrayBase &operator=(const SimpleArrayBase &rData);
+	void BURGER_API clear(void);
+	void BURGER_API remove_at(WordPtr uIndex);
+	void BURGER_API resize(WordPtr uNewSize);
+	void BURGER_API reserve(WordPtr uNewBufferSize);
+protected:
+	void BURGER_API append(const void *pData,WordPtr uCount);
+};
+
+template<class T>
+class SimpleArray : public SimpleArrayBase {
+public:
+	SimpleArray() : SimpleArrayBase(sizeof(T)) {}
+	SimpleArray(WordPtr uDefault) : SimpleArrayBase(uDefault,sizeof(T)) {}
+	BURGER_INLINE T *GetPtr(void) { return static_cast<T *>(m_pData); }
+	BURGER_INLINE const T *GetPtr(void) const { return static_cast<const T *>(m_pData); }
+	BURGER_INLINE T& operator[](WordPtr uIndex) { BURGER_ASSERT(uIndex < m_uSize); return static_cast<T *>(m_pData)[uIndex]; }
+	BURGER_INLINE const T& operator[](WordPtr uIndex) const { BURGER_ASSERT(uIndex < m_uSize); return static_cast<const T *>(m_pData)[uIndex]; }
+	BURGER_INLINE WordPtr capacity(void) const { return m_uBufferSize; }
+	BURGER_INLINE static WordPtr max_size(void) { return (256*1024*1024) / sizeof(T); }
 	BURGER_INLINE WordPtr size(void) const { return m_uSize; }
-	BURGER_INLINE Word empty(void) const { return m_uSize==0; }
-	BURGER_INLINE T& front(void) { return m_pData[0]; }
-	BURGER_INLINE const T& front(void) const { return m_pData[0]; }
-	BURGER_INLINE T& back(void) { return m_pData[m_uSize-1]; }
-	BURGER_INLINE const T& back(void) const { return m_pData[m_uSize-1]; }
-	void push_back(T rData) {
+	BURGER_INLINE Word empty(void) const { return !m_uSize; }
+	BURGER_INLINE T& front(void) { return static_cast<T *>(m_pData)[0]; }
+	BURGER_INLINE const T& front(void) const { return static_cast<const T *>(m_pData)[0]; }
+	BURGER_INLINE T& back(void) { return static_cast<T *>(m_pData)[m_uSize-1]; }
+	BURGER_INLINE const T& back(void) const { return static_cast<const T *>(m_pData)[m_uSize-1]; }
+	BURGER_INLINE void push_back(T rData) {
 		WordPtr uSize = m_uSize;
 		WordPtr uBufferSize = m_uBufferSize;
 		// Outgrew the buffer?
@@ -70,106 +82,65 @@ public:
 			// Increase the buffer size with a bit of slop
 			// to reduce the number of memory reallocations
 			++uBufferSize;
-			uBufferSize = uBufferSize + (uBufferSize>>1U);
-			// Save the new buffer size in objects
-			m_uBufferSize = uBufferSize;
-			m_pData = static_cast<T*>(Realloc(m_pData,sizeof(T) * uBufferSize));
-			// Allocation failure?!
-			BURGER_ASSERT(m_pData);
+			reserve(uBufferSize + (uBufferSize>>1U));
 		}
 		// Copy the new object with a copy operator
-		m_pData[uSize] = rData;
+		static_cast<T *>(m_pData)[uSize] = rData;
 		m_uSize = uSize+1U;
 	}
-	void pop_back(void) {
+	BURGER_INLINE void pop_back(void) {
 		BURGER_ASSERT(m_uSize);
 		--m_uSize;
 	}
-	void clear(void) {
-		Free(m_pData);
-		m_pData = NULL;
-		m_uBufferSize = 0;
-		m_uSize = 0;
+	BURGER_INLINE SimpleArray<T>& operator=(const SimpleArray<T>& rData) {
+		return static_cast<SimpleArray<T>&>(SimpleArrayBase::operator=(rData));
 	}
-	SimpleArray<T>& operator=(const SimpleArray<T>& rData) {
-		if (&rData!=this) {
-			clear();
-			WordPtr uCount = rData.size();
-			if (uCount) {
-				m_uSize = uCount;
-				m_uBufferSize = uCount;
-				m_pData = static_cast<T*>(AllocCopy(rData.m_pData,sizeof(T) * uCount));
-			}
-		}
-		return *this;
-	}
-	void remove(WordPtr uIndex)
-	{
-		WordPtr uSize = m_uSize;
-		BURGER_ASSERT(uIndex < uSize);
-		if (uSize == 1) {
-			// Nuke it
-			clear();
-		} else {
-			--uSize;
-			m_uSize = uSize;
-			MemoryMove(m_pData+uIndex,m_pData+uIndex+1,sizeof(T) * (uSize - uIndex));
-		}
-	}
-	void insert(WordPtr uIndex,T rData = T())
+	BURGER_INLINE void insert_at(WordPtr uIndex,T rData = T())
 	{
 		WordPtr uSize = m_uSize;
 		BURGER_ASSERT(uIndex <= uSize);
 		resize(uSize + 1);		// resize adjusts m_uSize to uSize+1
 		if (uIndex < uSize) {
-			MemoryMove(m_pData+uIndex+1,m_pData+uIndex,sizeof(T) * (uSize - uIndex));
+			MemoryMove(static_cast<T *>(m_pData)+uIndex+1,static_cast<const T *>(m_pData)+uIndex,sizeof(T) * (uSize - uIndex));
 		}
 		// Copy the new entry
-		m_pData[uIndex] = rData;
+		static_cast<T *>(m_pData)[uIndex] = rData;
 	}
-	void append(const T *pSourceData,WordPtr uCount)
-	{
-		if (uCount) {
-			WordPtr uSize = m_uSize;
-			resize(uSize + uCount);
-			MemoryCopy(m_pData+uSize,pSourceData,uCount*sizeof(T));
+	BURGER_INLINE Word remove(T rData) {
+		WordPtr uSize = m_uSize;
+		Word bResult = FALSE;
+		if (uSize) {
+			const T *pWork = static_cast<const T *>(m_pData);
+			do {
+				if (pWork[0] == rData) {
+					remove_at(m_uSize-uSize);
+					bResult = TRUE;
+					break;
+				}
+				++pWork;
+			} while (--uSize);
 		}
+		return bResult;
 	}
-	BURGER_INLINE void append(const SimpleArray<T>& rData) { append(rData.m_pData,rData.size()); }
-	void resize(WordPtr uNewSize) {
-		if (!uNewSize) {
-			clear();
-		} else {
-			if ((uNewSize <= m_uBufferSize) && (uNewSize > (m_uBufferSize >> 1U))) {
-				// don't compact yet.
-				BURGER_ASSERT(m_pData != 0);
-			} else {
-				// Allocate a buffer a bit bigger than needed to
-				// reduce future memory allocation requests
-				reserve(uNewSize + (uNewSize >> 1));
-			}
-			m_uSize = uNewSize;
-		}
+	BURGER_INLINE void append(const T *pSourceData,WordPtr uCount) {
+		SimpleArrayBase::append(pSourceData,uCount);
 	}
-	void reserve(WordPtr uNewBufferSize)
-	{
-		// Resize the buffer.
-		if (!uNewBufferSize) {
-			clear();
-		} else {
-			m_uSize = uNewBufferSize;
-			m_uBufferSize = uNewBufferSize;
-			m_pData = static_cast<T*>(Realloc(m_pData,sizeof(T) * uNewBufferSize));
-			BURGER_ASSERT(m_pData);	// need to throw (or something) on malloc failure!
-		}
+	BURGER_INLINE void append(const SimpleArray<T> &rData) {
+		SimpleArrayBase::append(rData.m_pData,rData.m_uSize); 
 	}
 	typedef T* iterator;
 	typedef const T* const_iterator;
 	typedef T value_type;
-	BURGER_INLINE iterator begin(void) { return m_pData; }
-	BURGER_INLINE iterator end(void) { return m_pData + m_uSize; }
-	BURGER_INLINE const_iterator begin(void) const { return m_pData; }
-	BURGER_INLINE const_iterator end(void) const { return m_pData + m_uSize; }
+	BURGER_INLINE iterator begin(void) { return static_cast<T *>(m_pData); }
+	BURGER_INLINE iterator end(void) { return static_cast<T *>(m_pData) + m_uSize; }
+	BURGER_INLINE const_iterator begin(void) const { return static_cast<const T *>(m_pData); }
+	BURGER_INLINE const_iterator end(void) const { return static_cast<const T *>(m_pData) + m_uSize; }
+	BURGER_INLINE const_iterator cbegin(void) const { return static_cast<const T *>(m_pData); }
+	BURGER_INLINE const_iterator cend(void) const { return static_cast<const T *>(m_pData) + m_uSize; }
+	BURGER_INLINE void erase(const_iterator it) {
+		WordPtr uIndex = it-static_cast<const T *>(m_pData);
+		remove_at(uIndex);
+	}
 };
 }
 /* END */

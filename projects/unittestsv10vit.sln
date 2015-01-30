@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unittests", "unittestsv10vit.vcxproj", "{4849C47B-738B-3FB2-856E-FAEEAA8F0B47}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|PSVita = Debug|PSVita
+		Internal|PSVita = Internal|PSVita
+		Release|PSVita = Release|PSVita
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4849C47B-738B-3FB2-856E-FAEEAA8F0B47}.Debug|PSVita.ActiveCfg = Debug|PSVita
+		{4849C47B-738B-3FB2-856E-FAEEAA8F0B47}.Debug|PSVita.Build.0 = Debug|PSVita
+		{4849C47B-738B-3FB2-856E-FAEEAA8F0B47}.Internal|PSVita.ActiveCfg = Internal|PSVita
+		{4849C47B-738B-3FB2-856E-FAEEAA8F0B47}.Internal|PSVita.Build.0 = Internal|PSVita
+		{4849C47B-738B-3FB2-856E-FAEEAA8F0B47}.Release|PSVita.ActiveCfg = Release|PSVita
+		{4849C47B-738B-3FB2-856E-FAEEAA8F0B47}.Release|PSVita.Build.0 = Release|PSVita
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -2,7 +2,7 @@
 
 	DirectX 9 manager class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -28,6 +28,10 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+#if defined(_DEBUG) && !defined(DOXYGEN)
+#define D3D_DEBUG_INFO
+#endif
+
 #include <Windows.h>
 #include <d3d9.h>
 #include <ddraw.h>
@@ -38,7 +42,7 @@
 #else
 #define BYTE static Word8 __declspec(align(16))
 #endif
-#include "brdisplaydirectx8bit.h"
+#include "ps20display8bitdx9.h"
 #undef BYTE
 #endif
 
@@ -65,12 +69,11 @@ Burger::DisplayDirectX9Software8::DisplayDirectX9Software8(GameApp *pGameApp) :
 	m_pVertexBuffer(NULL),
 	m_bFrontBufferTrueColor(FALSE)
 {
-	SetRenderer(&m_Renderer);
 }
 
-Word Burger::DisplayDirectX9Software8::InitContext(void)
+Word Burger::DisplayDirectX9Software8::Init(Word uWidth,Word uHeight,Word /* uDepth */,Word uFlags)
 {
-	Word uResult = DisplayDirectX9::InitContext();
+	Word uResult = DisplayDirectX9::Init(uWidth,uHeight,32,uFlags);
 	if (!uResult) {
 		m_uDepth = 8;
 
@@ -81,6 +84,8 @@ Word Burger::DisplayDirectX9Software8::InitContext(void)
 		if (AllocateResources()!=D3D_OK) {
 			uResult = 10;
 		} else {
+			m_Renderer.SetClip(0,0,static_cast<int>(uWidth),static_cast<int>(uHeight));
+
 			Word8 TempPalette[768];
 			MemoryClear(TempPalette,sizeof(TempPalette));
 			TempPalette[765]=255;
@@ -93,13 +98,17 @@ Word Burger::DisplayDirectX9Software8::InitContext(void)
 	return uResult;
 }
 
-void Burger::DisplayDirectX9Software8::PostShutdown(void)
+void Burger::DisplayDirectX9Software8::Shutdown(void)
 {
 	ReleaseResources();
-	DisplayDirectX9::PostShutdown();
+	DisplayDirectX9::Shutdown();
 }
 
-void Burger::DisplayDirectX9Software8::PostEndScene(void)
+void Burger::DisplayDirectX9Software8::BeginScene(void)
+{
+}
+
+void Burger::DisplayDirectX9Software8::EndScene(void)
 {
 	if (m_bPaletteDirty) {
 		// Only work if a palette texture has been initialized
@@ -283,7 +292,7 @@ long Burger::DisplayDirectX9Software8::AllocateResources(void)
 {
 	// Create the pixel shader for 8 bit rendering
 
-	HRESULT hResult = m_pDirect3DDevice9->CreatePixelShader((DWORD *)g_DisplayDirectX8BitPS,&m_pPixelShader8Bit);
+	HRESULT hResult = m_pDirect3DDevice9->CreatePixelShader((DWORD *)g_ps20display8bitdx9,&m_pPixelShader8Bit);
 	if (hResult == D3D_OK) {
 		// Create the back buffer for 8 bit graphics
 

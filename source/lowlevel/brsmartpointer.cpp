@@ -2,7 +2,7 @@
 
 	Smart pointer template class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -122,10 +122,8 @@ Burger::ProxyReferenceCounter *Burger::ProxyReferenceCounter::New(void)
 
 
 
-
-#if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::ReferenceCounter,Burger::Base);
-#endif
+
 
 /*! ************************************
 
@@ -322,6 +320,57 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 
 /*! ************************************
 
+	\class Burger::WeakAndStrongBase
+	\brief Base class to support WeakPointer and SmartPointer
+
+	Sometimes it's desired to support both weak and smart pointers
+	at the same time. This base class will offer this support.
+	Derive from this class to obtain the functions to easily
+	allow SmartPointer and WeakPointer support.
+
+	\sa WeakPointer, SmartPointer and ReferenceCounter
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::ProxyReferenceCounter * Burger::WeakAndStrongBase::GetProxyReferenceCounter(void) const
+	\brief Function used by WeakPointer
+
+	This function is inserted by \ref BURGER_ALLOW_WEAK_POINTERS()
+	to give support to WeakPointer
+
+	\sa WeakPointer or ProxyReferenceCounter
+
+***************************************/
+
+/*! ************************************
+
+	\var WeakPointerAnchor Burger::WeakAndStrongBase::m_WeakPointerAnchor
+	\brief Data to track WeakPointer data
+
+	This data is used by the WeakPointer system to notify
+	other objects that this object was deleted.
+
+	\sa WeakPointer, WeakPointerAnchor or GetProxyReferenceCounter(void) const
+
+***************************************/
+
+BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCounter);
+
+/*! ************************************
+
+	\var const Burger::StaticRTTI Burger::WeakAndStrongBase::g_StaticRTTI
+	\brief The global description of the class
+
+	This record contains the name of this class and a
+	reference to the parent
+
+***************************************/
+
+
+/*! ************************************
+
 	\class Burger::SmartPointer
 	\brief Template for auto reference counting a pointer
 
@@ -362,7 +411,7 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 	the pointer to the new data in the class.
 
 	\param pData Pointer to an instance of the class T or \ref NULL
-	\sa SmartPointer::operator=(T*) or SmartPointer::operator= (const SmartPointer &)
+	\sa operator=(T*) or operator= (const SmartPointer &)
 
 ***************************************/
 
@@ -375,7 +424,7 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 	and store the pointer inside the class for tracking.
 
 	\param pData Pointer to an instance of the class T or \ref NULL
-	\sa SmartPointer::SmartPointer() or SmartPointer::SmartPointer(const SmartPointer &)
+	\sa SmartPointer() or SmartPointer(const SmartPointer &)
 
 ***************************************/
 
@@ -386,7 +435,7 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 
 	Initialize to power up default.
 
-	\sa SmartPointer::SmartPointer(T*) or SmartPointer::SmartPointer(const SmartPointer &)
+	\sa SmartPointer(T*) or SmartPointer(const SmartPointer &)
 
 ***************************************/
 
@@ -399,7 +448,7 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 	and store a copy of the pointer inside the class for tracking.
 
 	\param rData Reference to an instance to another SmartPointer
-	\sa SmartPointer::SmartPointer() or SmartPointer::SmartPointer(T*)
+	\sa SmartPointer() or SmartPointer(T*)
 
 ***************************************/
 
@@ -412,7 +461,7 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 	The internal pointer is then set to\ref NULL to ensure 
 	there are no dangling pointers
 
-	\sa SmartPointer::SmartPointer(T*) or SmartPointer::SmartPointer(const SmartPointer &)
+	\sa SmartPointer(T*) or SmartPointer(const SmartPointer &)
 
 ***************************************/
 
@@ -428,7 +477,7 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 	the pointer to the new data in the class.
 
 	\param rData Reference to an instance of another SmartPointer
-	\sa SmartPointer::operator=(T*)
+	\sa operator=(T*)
 
 ***************************************/
 
@@ -444,7 +493,7 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 	the pointer to the new data in the class.
 
 	\param pData Pointer to an instance of the class T or \ref NULL
-	\sa SmartPointer::operator=(const SmartPointer &)
+	\sa operator=(const SmartPointer &)
 
 ***************************************/
 
@@ -458,7 +507,49 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 	being tracked.
 
 	\return \ref NULL or a pointer to an instance of a T class
-	\sa SmartPointer::GetPtr()
+	\sa GetPtr()
+
+***************************************/
+
+/*! ************************************
+
+	\fn T* Burger::SmartPointer::operator T*() const
+	\brief Get the current pointer
+
+	Return an untracked copy of the pointer. The
+	pointer can be \ref NULL if there is no pointer
+	being tracked.
+
+	\return \ref NULL or a pointer to an instance of a T class
+	\sa GetPtr() const or operator->()
+
+***************************************/
+
+/*! ************************************
+
+	\fn T& Burger::SmartPointer::operator *() const
+	\brief Get the current reference
+
+	Return an untracked reference of the object. The
+	reference can be \ref NULL if there is no pointer
+	being tracked.
+
+	\return \ref NULL or a reference to an instance of a T class
+	\sa SmartPointer::operator T*() const, GetPtr() const or operator->()
+
+***************************************/
+
+/*! ************************************
+
+	\fn T* Burger::SmartPointer::operator T*() const
+	\brief Get the current pointer
+
+	Return an untracked copy of the pointer. The
+	pointer can be \ref NULL if there is no pointer
+	being tracked.
+
+	\return \ref NULL or a pointer to an instance of a T class
+	\sa GetPtr() const or operator->()
 
 ***************************************/
 
@@ -472,7 +563,7 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 	being tracked.
 
 	\return \ref NULL or a pointer to an instance of a T class
-	\sa SmartPointer::operator->()
+	\sa operator->() or SmartPointer::operator T*() const
 
 ***************************************/
 
@@ -485,7 +576,7 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 
 	\param rData Reference to an instance of another SmartPointer
 	\return \ref TRUE if equal, \ref FALSE if not
-	\sa SmartPointer::operator!=(const SmartPointer &) const or SmartPointer::operator==(const T*) const
+	\sa operator!=(const SmartPointer &) const or operator==(const T*) const
 
 ***************************************/
 
@@ -498,7 +589,7 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 
 	\param rData Reference to an instance of another SmartPointer
 	\return \ref TRUE if not equal, \ref FALSE if equal
-	\sa SmartPointer::operator==(const SmartPointer &) const or SmartPointer::operator!=(const T*) const
+	\sa operator==(const SmartPointer &) const or operator!=(const T*) const
 
 ***************************************/
 
@@ -511,7 +602,7 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 
 	\param pData Pointer to an instance of the class T or \ref NULL
 	\return \ref TRUE if equal, \ref FALSE if not
-	\sa SmartPointer::operator!=(const T*) const or SmartPointer::operator==(const SmartPointer &) const
+	\sa operator!=(const T*) const or operator==(const SmartPointer &) const
 
 ***************************************/
 
@@ -524,7 +615,7 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 
 	\param pData Pointer to an instance of the class T or \ref NULL
 	\return \ref TRUE if not equal, \ref FALSE if equal
-	\sa SmartPointer::operator==(const T*) const or SmartPointer::operator!=(const SmartPointer&) const
+	\sa operator==(const T*) const or operator!=(const SmartPointer&) const
 
 ***************************************/
 

@@ -2,7 +2,7 @@
 
 	Simple data stream class for input
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -427,6 +427,51 @@ void BURGER_API Burger::InputMemoryStream::GetString(char *pOutput,WordPtr uOutp
 		}
 		m_pWork = pWork;		// Consume the input
 	}
+}
+
+/*! ************************************
+
+	\brief Parse a UTF-8 "C" string from the data stream
+
+	Parse the input until an end of line is found. End of lines
+	are either a '\\0' or end of data.
+
+	The output String will be sized to contain the new string.
+
+	\param pOutput Buffer to receive the "C" style UTF-8 data string.
+	\sa  GetCString(char *,WordPtr),GetPString(char *,WordPtr)
+
+***************************************/
+
+void BURGER_API Burger::InputMemoryStream::GetString(String *pOutput)
+{
+	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
+	const Word8 *pWork = m_pWork;
+
+	// Set the size of the new string
+	WordPtr uOutputSize = 0;
+	if (pWork<pEndOfBuffer) {
+		// Parse out the string
+		do {
+			// Get a char from input
+			Word uTemp = pWork[0];
+			++pWork;
+			// Terminate at a NULL
+			if (!uTemp) {
+				break;
+			}
+			++uOutputSize;
+			// Scan for more data
+		} while (pWork<pEndOfBuffer);
+	}
+	// Set the output string size
+	pOutput->SetBufferSize(uOutputSize);
+	if (uOutputSize) {
+		// Copy the string into the new buffer
+		// SetBufferSize() sets the null terminator
+		MemoryCopy(pOutput->GetPtr(),m_pWork,uOutputSize);
+	}
+	m_pWork = pWork;		// Consume the input
 }
 
 /*! ************************************

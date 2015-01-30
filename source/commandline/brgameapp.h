@@ -2,7 +2,7 @@
 
 	Game Application startup class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -56,6 +56,7 @@ protected:
 	Word m_bMinimized;				///< Set to \ref TRUE if the game is minimized (PC/Mac only, always false on consoles)
 	Word m_bAllowWindowSwitching;	///< Set to \ref TRUE if the game allows switching to windowed mode via Alt-Enter on desktop/laptops
 	Word m_bMouseOnScreen;			///< \ref TRUE if the mouse cursor is on the screen in windows systems
+	Word m_bWindowSwitchRequested;	///< \ref TRUE if the window resolution switch key was pressed
 public:
 	GameApp(WordPtr uDefaultMemorySize=Burger::MemoryManagerHandle::DEFAULTMEMORYCHUNK,Word uDefaultHandleCount=Burger::MemoryManagerHandle::DEFAULTHANDLECOUNT,WordPtr uMinReserveSize=Burger::MemoryManagerHandle::DEFAULTMINIMUMRESERVE);
 	~GameApp();
@@ -94,8 +95,11 @@ public:
 	Word BURGER_API IsResizingAllowed(void) const;
 	BURGER_INLINE void SetMouseOnScreen(Word bMouseOnScreen) { m_bMouseOnScreen = bMouseOnScreen; }
 	BURGER_INLINE Word IsMouseOnScreen(void) const { return m_bMouseOnScreen; }
+	BURGER_INLINE void SetWindowSwitchRequested(Word bWindowSwitchRequested) { m_bWindowSwitchRequested = bWindowSwitchRequested; }
+	BURGER_INLINE Word IsWindowSwitchRequested(void) const { return m_bWindowSwitchRequested; }
 };
 }
+extern int BURGER_API CodeEntry(Burger::GameApp *pGameApp);
 /* END */
 
 #endif

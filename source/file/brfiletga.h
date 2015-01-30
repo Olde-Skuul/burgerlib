@@ -2,7 +2,7 @@
 
 	TGA File handler class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -59,7 +59,7 @@ public:
 	static const Word32 FILETYPE = 0x43495054;		///< 'TPIC'
 	static const Word32 AUXTYPE = 0x4E4F4B47;		///< 'GKON'
 #endif
-	Image *Load(InputMemoryStream *pInput);
+	Word BURGER_API Load(Image *pOutput,InputMemoryStream *pInput);
 	BURGER_INLINE const RGBAWord8_t *GetPalette(void) const { return m_Palette; }
 	BURGER_INLINE RGBAWord8_t *GetPalette(void) { return m_Palette; }
 	void SetPalette(const RGBWord8_t *pPalette,Word uStartIndex=0,Word uPaletteSize=256);

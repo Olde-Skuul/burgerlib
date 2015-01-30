@@ -2,7 +2,7 @@
 
 	Time Manager Class
 
-	Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -18,7 +18,7 @@
 #include <nitro/rtc/ARM9/api.h>
 #endif
 
-#if !defined(BURGER_MACOSX) && !defined(BURGER_IOS) && !defined(BURGER_PS4) && !defined(BURGER_ANDROID) && !defined(DOXYGEN)
+#if !defined(BURGER_MACOSX) && !defined(BURGER_IOS) && !defined(BURGER_PS4) && !defined(BURGER_SHIELD) && !defined(DOXYGEN)
 struct timespec {
 	time_t tv_sec;	// seconds
 	Int32 tv_nsec;	// and nanoseconds
@@ -82,8 +82,8 @@ void Burger::TimeDate_t::GetTime(void)
 		m_bSecond = static_cast<Word8>(MyTime.second);
 	}
 }
-#elif !defined(BURGER_WINDOWS) && !defined(BURGER_XBOX360) && \
-	!defined(BURGER_MAC) && !defined(BURGER_MACOSX)&& !defined(BURGER_IOS)
+#elif !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_VITA) || \
+	defined(BURGER_MAC) || defined(BURGER_MACOSX) || defined(BURGER_IOS))
 void Burger::TimeDate_t::GetTime(void)
 {
 	time_t mytime;
