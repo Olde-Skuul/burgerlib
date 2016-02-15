@@ -28,6 +28,10 @@
 #define GAMENAME "Test Application"
 #endif
 
+#if !defined(WINDOWS_ICONID)
+#define WINDOWS_ICONID 0
+#endif
+
 #if !defined(WINDOWS_CALLBACK)
 #define WINDOWS_CALLBACK NULL
 #endif
@@ -50,9 +54,9 @@
 
 ***************************************/
 
-extern "C" int __stdcall WinMain(HINSTANCE__ *hInstance,HINSTANCE__ * /* hPrevInstance */,char * /* lpCmdLine */,int /* nCmdShow */);
+extern "C" int __stdcall WinMain(HINSTANCE__ *hInstance,HINSTANCE__ *hPrevInstance,char *lpCmdLine,int nCmdShow);
 
-int __stdcall WinMain(HINSTANCE__ *hInstance,HINSTANCE__ * /* hPrevInstance */,char * /* lpCmdLine */,int /* nCmdShow */)
+int __stdcall WinMain(HINSTANCE__ * /* hInstance */,HINSTANCE__ * /* hPrevInstance */,char * /* lpCmdLine */,int /* nCmdShow */)
 {
 	int iResult = 0;	// Exit without error if already running
 
@@ -61,13 +65,17 @@ int __stdcall WinMain(HINSTANCE__ *hInstance,HINSTANCE__ * /* hPrevInstance */,c
 	Burger::DetectMultiLaunch OneShot;
 	if (!OneShot.IsMultiLaunched(GAMELOCK)) {
 #endif
-		// Create the window for the game
-
-		Burger::WindowsApp MyApp(hInstance,GAMENAME,WINDOWS_CALLBACK,MEMORYSIZE,HANDLECOUNT,MINIMUMRESERVE);
+		// Create the game instance
+		Burger::GameApp MyApp(MEMORYSIZE,HANDLECOUNT,MINIMUMRESERVE);
 		iResult = Burger::Globals::GetErrorCode();
 		if (!iResult) {
-			// Run the app
-			iResult = CodeEntry(&MyApp);
+
+			// Create the initial window
+			iResult = MyApp.InitWindow(GAMENAME,WINDOWS_CALLBACK,WINDOWS_ICONID);
+			if (!iResult) {
+				// Run the app
+				iResult = CodeEntry(&MyApp);
+			}
 		}
 	// Needed to properly close for the lock
 #if defined(GAMELOCK)

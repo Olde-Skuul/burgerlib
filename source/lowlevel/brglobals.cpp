@@ -14,10 +14,17 @@
 #include "brglobals.h"
 #include "brstringfunctions.h"
 #include "brstring.h"
+#include "brassert.h"
 #include "version.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#if !defined(DOXYGEN)
+#if defined(BURGER_XBOX) || defined(BURGER_XBOX360) || (defined(BURGER_WINDOWS) && !defined(BURGER_WATCOM) && !defined(BURGER_METROWERKS))
+#define USESECURE
+#endif
+#endif
 
 /*! ************************************
 
@@ -38,6 +45,11 @@
 ***************************************/
 
 Burger::Globals Burger::Globals::g_Globals;
+int Burger::Globals::g_iErrorCode;
+Word Burger::Globals::g_uTraceFlags;
+char Burger::Globals::g_ErrorMsg[512];
+Word Burger::Globals::g_bBombFlag;
+Word Burger::Globals::g_bExitFlag;
 
 
 /*! ************************************
@@ -130,10 +142,15 @@ void BURGER_ANSIAPI Burger::Globals::SetErrorMsg(const char *pMessage,...)
 	va_list Args;
 	if (pMessage) {						// No message, no error!
 		va_start(Args,pMessage);		// Start parm passing
-		vsprintf(g_Globals.m_ErrorMsg,pMessage,Args);		// Create the message
+#if defined(USESECURE)
+		vsprintf_s(g_ErrorMsg,sizeof(g_ErrorMsg),pMessage,Args);	// Create the message
+#else
+		vsprintf(g_ErrorMsg,pMessage,Args);	// Create the message
+		BURGER_ASSERT(StringLength(g_ErrorMsg)<sizeof(g_ErrorMsg));
+#endif
 		va_end(Args);					// End parm passing
 	} else {
-		g_Globals.m_ErrorMsg[0] = 0;		// Kill the string
+		g_ErrorMsg[0] = 0;				// Kill the string
 	}
 }
 
@@ -258,7 +275,7 @@ void BURGER_ANSIAPI Burger::Globals::SetErrorMsg(const char *pMessage,...)
 
 void BURGER_API Burger::Globals::Shutdown(void)
 {
-	Shutdown(g_Globals.m_iErrorCode);
+	Shutdown(g_iErrorCode);
 }
 
 /*! ************************************
@@ -279,10 +296,10 @@ void BURGER_API Burger::Globals::Shutdown(void)
 
 void BURGER_API Burger::Globals::Shutdown(int iError)
 {
-	if (!g_Globals.m_bExitFlag) {
+	if (!g_bExitFlag) {
 		// Ensure all future calls to "Warnings" don't accidentally call Fatal()
-		g_Globals.m_bBombFlag = FALSE;
-		g_Globals.m_bExitFlag = TRUE;
+		g_bExitFlag = TRUE;
+		g_bBombFlag = FALSE;
 		exit(iError);
 	}
 }

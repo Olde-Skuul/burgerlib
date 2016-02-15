@@ -16,8 +16,16 @@
 #include "brstringfunctions.h"
 #include "brnumberstring.h"
 #include "brfile.h"
+#include "brassert.h"
+#include "brnumberstringhex.h"
 #include <stdarg.h>
 #include <stdio.h>
+
+#if !defined(DOXYGEN)
+#if defined(BURGER_XBOX) || defined(BURGER_XBOX360) || (defined(BURGER_WINDOWS) && !defined(BURGER_WATCOM) && !defined(BURGER_METROWERKS))
+#define USESECURE
+#endif
+#endif
 
 /*! ************************************
 
@@ -35,7 +43,7 @@
 
 /*! ************************************
 
-	\brief A fatal error has occured, print message, then exit.
+	\brief A fatal error has occurred, print message, then exit.
 	
 	If the input message pointer is not \ref NULL, then print
 	the message string into the global error string buffer
@@ -114,7 +122,12 @@ void BURGER_ANSIAPI Burger::Debug::Warning(const char *pMessage,...)
 	va_list Args;
 	if (pMessage) {						// No message, no error!
 		va_start(Args,pMessage);		// Start parm passing
+#if defined(USESECURE)
+		vsprintf_s(Globals::GetErrorMsg(),512,pMessage,Args);		// Create the message
+#else
 		vsprintf(Globals::GetErrorMsg(),pMessage,Args);		// Create the message
+		BURGER_ASSERT(StringLength(Globals::GetErrorMsg())<512);
+#endif
 		va_end(Args);					// End parm passing
 		// Should the warning be printed?
 		if ((Globals::GetTraceFlag()&Globals::TRACE_WARNINGS) ||
@@ -151,7 +164,12 @@ void BURGER_ANSIAPI Burger::Debug::Message(const char *pMessage,...)
 		// Start parameter passing
 		va_start(Args,pMessage);
 		// Create the message in a single buffer
+#if defined(USESECURE)
+		vsprintf_s(TempBuffer,sizeof(TempBuffer),pMessage,Args);
+#else
 		vsprintf(TempBuffer,pMessage,Args);
+		BURGER_ASSERT(StringLength(TempBuffer)<sizeof(TempBuffer));
+#endif
 		// End the parameter passing
 		va_end(Args);
 		// Actually print the message to the console
@@ -230,6 +248,31 @@ void BURGER_API Burger::Debug::String(Word64 uInput)
 Word BURGER_API Burger::Debug::IsDebuggerPresent(void)
 {
 	return FALSE;
+}
+#endif
+
+/*! ************************************
+
+	\brief Print the error message for an OS error code
+
+	Given an error code from the native operating system and print
+	it out the \ref Debug messaging system.
+
+	\param uErrorCode Error code from Windows/MacOS/etc...
+
+***************************************/
+
+#if !(defined(BURGER_WINDOWS)) || defined(DOXYGEN)
+void BURGER_API Burger::Debug::PrintErrorMessage(Word uErrorCode)
+{
+	// Print the error string
+	String("Error: 0x");
+
+	// Show the error in hex
+	NumberStringHex TempBuffer(static_cast<Word32>(uErrorCode));
+	String(TempBuffer);
+
+	String("\n");
 }
 #endif
 

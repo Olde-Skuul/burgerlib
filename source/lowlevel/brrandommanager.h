@@ -35,6 +35,7 @@ public:
 	void BURGER_API Init(void);
 	void BURGER_API RandomInit(void);
 	Word32 BURGER_API Get(Word32 uRange=0);
+	Word32 BURGER_API GetDice(Word32 uDiceCount,Word32 uDiceSize);
 	void BURGER_API SetSeed(Word32 uNewSeed);
 	Int32 BURGER_API GetSigned(Word32 uRange);
 	float BURGER_API GetFloat(void);
