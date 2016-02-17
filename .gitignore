@@ -20,6 +20,7 @@
 **/ipch
 **/* Data
 **/*_Data
+**/xcuserdata
 
 # Allow this folder to be saved
 # !/tools/bin
@@ -30,6 +31,11 @@
 *.suo
 *.opensdf
 *.sdf
+*.xcworkspace
 
 # Ignore Mac desktop services store files 
 .DS_Store
+
+# Files not for public consumption
+/upload.py
+/websitepassword.txt

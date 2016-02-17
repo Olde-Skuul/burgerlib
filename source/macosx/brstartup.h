@@ -46,13 +46,13 @@
 
 ***************************************/
 
-int BURGER_ANSIAPI main(void);
+int BURGER_ANSIAPI main(int argc,const char **argv);
 
-int BURGER_ANSIAPI main(void)
+int BURGER_ANSIAPI main(int /* argc */,const char ** /* argv */)
 {
 	// Create an application instance
 
-	Burger::MacOSXApp MyApp(MEMORYSIZE,HANDLECOUNT,MINIMUMRESERVE);
+	Burger::GameApp MyApp(MEMORYSIZE,HANDLECOUNT,MINIMUMRESERVE);
 
 	// Error on startup?
 	int iResult = Burger::Globals::GetErrorCode();

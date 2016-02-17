@@ -61,8 +61,14 @@ extern void WatcomAssertNothing(void);
 extern Word16 _bswap16(Word16 uInput);
 #pragma aux _bswap16 = "ror ax,8" parm [ax] value [ax] modify exact [ax] nomemory;
 
+extern Word16 _byteswap_ushort(Word16 uInput);
+#pragma aux _byteswap_ushort = "ror ax,8" parm [ax] value [ax] modify exact [ax] nomemory;
+	
 extern Word32 _bswap(Word32 uInput);
 #pragma aux _bswap = "bswap eax" parm [eax] value [eax] modify exact [eax] nomemory;
+
+extern Word32 _byteswap_ulong(Word32 uInput);
+#pragma aux _byteswap_ulong = "bswap eax" parm [eax] value [eax] modify exact [eax] nomemory;
 
 extern Word16 BurgerNativeEndianLoadAny16(const Word16 *pInput);
 #pragma aux BurgerNativeEndianLoadAny16 = "mov al,byte ptr[edx]" "mov ah,byte ptr[edx+1]" parm [edx] value [ax] modify exact [eax];
