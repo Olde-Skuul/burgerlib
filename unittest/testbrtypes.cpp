@@ -14,12 +14,15 @@
 ***************************************/
 
 #include "testbrtypes.h"
+#include "bratomic.h"
+#include "brglobals.h"
 #include "common.h"
 #include <stdio.h>
 
 #if defined(BURGER_WATCOM)
 #pragma disable_message(13)		// Disable unreachable code warning
 #pragma disable_message(367)	// Disable conditional expression is constant warning
+#pragma disable_message(368)	// Disable conditional expression in if statement is always false
 #endif
 
 #if defined(BURGER_MSVC)
@@ -55,24 +58,29 @@ union Endiantest_t {
 	Word8 m_uBytes[4];
 };
 
+//
+// Perform the tests for the macros and compiler
+// settings
+//
+
 int BURGER_API TestBrtypes(void)
 {
 	Word uFailure = 0;
 	Word uTest;
 
-	printf("Testing macros\n");
+	Message("Testing macros");
 
 	//
 	// Endian macros
 	//
 
 #if defined(BURGER_LITTLEENDIAN) && defined(BURGER_BIGENDIAN)
-	printf("Error: Both BURGER_LITTLEENDIAN and BURGER_BIGENDIAN are defined!\n");
+	Message("Error: Both BURGER_LITTLEENDIAN and BURGER_BIGENDIAN are defined!");
 	uFailure = 10;
 #endif
 
 #if !defined(BURGER_LITTLEENDIAN) && !defined(BURGER_BIGENDIAN)
-	printf("Error: Neither BURGER_LITTLEENDIAN or BURGER_BIGENDIAN are defined!\n");
+	Message("Error: Neither BURGER_LITTLEENDIAN or BURGER_BIGENDIAN are defined!");
 	uFailure = 10;
 #endif
 
@@ -93,19 +101,19 @@ int BURGER_API TestBrtypes(void)
 	// Display the debug/release macro
 
 #if defined(NDEBUG) && defined(_DEBUG)
-	printf("Error: Both NDEBUG and _DEBUG are defined!\n");
+	Message("Error: Both NDEBUG and _DEBUG are defined!");
 	uFailure = 10;
 #endif
 #if !defined(NDEBUG) && !defined(_DEBUG)
-	printf("Error: Neither NDEBUG or _DEBUG are defined!\n");
+	Message("Error: Neither NDEBUG or _DEBUG are defined!");
 	uFailure = 10;
 #endif
 
 #if defined(NDEBUG)
-	printf("NDEBUG is defined\n");
+	Message("NDEBUG is defined");
 #endif
 #if defined(_DEBUG)
-	printf("_DEBUG is defined\n");
+	Message("_DEBUG is defined");
 #endif
 
 	//
@@ -114,78 +122,78 @@ int BURGER_API TestBrtypes(void)
 
 	uTest = 0;
 #if defined(BURGER_WATCOM)
-	printf("BURGER_WATCOM is defined\n");
+	Message("BURGER_WATCOM is defined");
 	++uTest;
 #endif
 #if defined(BURGER_MRC)
-	printf("BURGER_MRC is defined\n");
+	Message("BURGER_MRC is defined");
 	++uTest;
 #endif
 #if defined(BURGER_APPLESC)
-	printf("BURGER_APPLESC is defined\n");
+	Message("BURGER_APPLESC is defined");
 	++uTest;
 #endif
 #if defined(BURGER_INTELCOMPILER)
-	printf("BURGER_INTELCOMPILER is defined\n");
+	Message("BURGER_INTELCOMPILER is defined");
 	++uTest;	
 #endif
 #if defined(BURGER_SNSYSTEMS)
-	printf("BURGER_SNSYSTEMS is defined\n");
+	Message("BURGER_SNSYSTEMS is defined");
 	++uTest;
 #endif
 #if defined(BURGER_METROWERKS)
-	printf("BURGER_METROWERKS is defined\n");
+	Message("BURGER_METROWERKS is defined");
 	++uTest;
 #endif
 #if defined(BURGER_MSVC)
-	printf("BURGER_MSVC is defined\n");
+	Message("BURGER_MSVC is defined");
 	++uTest;
 #endif
 #if defined(BURGER_GNUC)
-	printf("BURGER_GNUC is defined\n");
+	Message("BURGER_GNUC is defined");
 	++uTest;
 #endif
 	if (uTest>=2) {
-		printf("Multiple compilers have been defined!\n");
+		Message("Multiple compilers have been defined!");
 		uFailure = 10;
 	}
 	if (uTest==0) {
-		printf("Unknown compiler detected!\n");
+		Message("Unknown compiler detected!");
 		uFailure = 10;
 	}
 	
 	// CPU macros
 	uTest = 0;
 #if defined(BURGER_68K)
-	printf("BURGER_68K is defined\n");
+	Message("BURGER_68K is defined");
 	++uTest;
 #endif
 #if defined(BURGER_POWERPC)
-	printf("BURGER_POWERPC is defined\n");
+	Message("BURGER_POWERPC is defined");
 	++uTest;
 #endif
 #if defined(BURGER_POWERPC64)
-	printf("BURGER_POWERPC64 is defined\n");
+	Message("BURGER_POWERPC64 is defined");
 	++uTest;
 #endif
 #if defined(BURGER_ARM)
-	printf("BURGER_ARM is defined\n");
+	Message("BURGER_ARM is defined");
 	++uTest;
 #endif
 #if defined(BURGER_X86)
-	printf("BURGER_X86 is defined\n");
+	Message("BURGER_X86 is defined");
 	++uTest;
 #endif
 #if defined(BURGER_AMD64)
-	printf("BURGER_AMD64 is defined\n");
+	Message("BURGER_AMD64 is defined");
 	++uTest;
 #endif
 #if defined(BURGER_MIPS)
-	printf("BURGER_MIPS is defined\n");
+	Message("BURGER_MIPS is defined");
 	++uTest;
 #endif
 #if defined(BURGER_GEKKO)
-	printf("BURGER_GEKKO is defined\n");
+	Message("BURGER_GEKKO is defined");
 	++uTest;
 #endif
 
@@ -193,14 +201,14 @@ int BURGER_API TestBrtypes(void)
 // be defined with a CPU type
 
 #if defined(BURGER_64BITCPU)
-	printf("BURGER_64BITCPU is defined\n");
+	Message("BURGER_64BITCPU is defined");
 #endif
 	if (uTest!=1) {
-		printf("Multiple CPUs have been defined!\n");
+		Message("Multiple CPUs have been defined!");
 		uFailure = 10;
 	}
 	if (uTest==0) {
-		printf("Unknown CPU detected!\n");
+		Message("Unknown CPU detected!");
 		uFailure = 10;
 	}
 
@@ -208,177 +216,177 @@ int BURGER_API TestBrtypes(void)
 	
 	uTest = 0;
 #if defined(BURGER_MSDOS)
-	printf("BURGER_MSDOS is defined\n");
+	Message("BURGER_MSDOS is defined");
 	++uTest;
 #endif
 #if defined(__DOS4G__)
-	printf("__DOS4G__ is defined\n");
+	Message("__DOS4G__ is defined");
 #endif
 #if defined(__X32__)
-	printf("__X32__ is defined\n");
+	Message("__X32__ is defined");
 #endif
 
 #if defined(BURGER_WIN32)
-	printf("BURGER_WIN32 is defined\n");
+	Message("BURGER_WIN32 is defined");
 	++uTest;
 #endif
 #if defined(BURGER_WIN64)
-	printf("BURGER_WIN64 is defined\n");
+	Message("BURGER_WIN64 is defined");
 	++uTest;
 #endif
 #if defined(BURGER_WINDOWS)
-	printf("BURGER_WINDOWS is defined\n");
+	Message("BURGER_WINDOWS is defined");
 #endif
 
 #if defined(BURGER_BEOS)
-	printf("BURGER_BEOS is defined\n");
+	Message("BURGER_BEOS is defined");
 	++uTest;
 #endif
 
 #if defined(BURGER_MAC)
-	printf("BURGER_MAC is defined\n");
+	Message("BURGER_MAC is defined");
 	++uTest;
 #endif
 #if defined(BURGER_MACOSX)
-	printf("BURGER_MACOSX is defined\n");
+	Message("BURGER_MACOSX is defined");
 	++uTest;
 #endif
 #if defined(BURGER_MACOS)
-	printf("BURGER_MACOS is defined\n");
+	Message("BURGER_MACOS is defined");
 #endif
 #if defined(BURGER_MACCLASSIC)
-	printf("BURGER_MACCLASSIC is defined\n");
+	Message("BURGER_MACCLASSIC is defined");
 #endif
 #if defined(BURGER_MACCARBON)
-	printf("BURGER_MACCARBON is defined\n");
+	Message("BURGER_MACCARBON is defined");
 #endif
 #if defined(TARGET_API_MAC_CARBON)
-	printf("TARGET_API_MAC_CARBON is defined\n");
+	Message("TARGET_API_MAC_CARBON is defined");
 #endif
 #if defined(BURGER_CFM)
-	printf("BURGER_CFM is defined\n");
+	Message("BURGER_CFM is defined");
 #endif
 
 
 #if defined(BURGER_IOS)
-	printf("BURGER_IOS is defined\n");
+	Message("BURGER_IOS is defined");
 	++uTest;
 #endif
 #if defined(BURGER_ANDROID)
-	printf("BURGER_ANDROID is defined\n");
+	Message("BURGER_ANDROID is defined");
 	++uTest;
 #endif
 #if defined(BURGER_NGAGE)
-	printf("BURGER_NGAGE is defined\n");
+	Message("BURGER_NGAGE is defined");
 	++uTest;
 #endif
 #if defined(BURGER_SYMBIAN)
-	printf("BURGER_SYMBIAN is defined\n");
+	Message("BURGER_SYMBIAN is defined");
 	++uTest;
 #endif
 #if defined(BURGER_OUYA)
-	printf("BURGER_OUYA is defined\n");
+	Message("BURGER_OUYA is defined");
 	++uTest;
 #endif
 #if defined(BURGER_SHIELD)
-	printf("BURGER_SHIELD is defined\n");
+	Message("BURGER_SHIELD is defined");
 	++uTest;
 #endif
 
 #if defined(BURGER_XBOX)
-	printf("BURGER_XBOX is defined\n");
+	Message("BURGER_XBOX is defined");
 	++uTest;
 #endif
 #if defined(BURGER_XBOX360)
-	printf("BURGER_XBOX360 is defined\n");
+	Message("BURGER_XBOX360 is defined");
 	++uTest;
 #endif
 #if defined(BURGER_XBOXONE)
-	printf("BURGER_XBOXONE is defined\n");
+	Message("BURGER_XBOXONE is defined");
 	++uTest;
 #endif
 
 #if defined(BURGER_PS2)
-	printf("BURGER_PS2 is defined\n");
+	Message("BURGER_PS2 is defined");
 	++uTest;
 #endif
 #if defined(BURGER_PS3)
-	printf("BURGER_PS3 is defined\n");
+	Message("BURGER_PS3 is defined");
 	++uTest;
 #endif
 #if defined(BURGER_PS4)
-	printf("BURGER_PS4 is defined\n");
+	Message("BURGER_PS4 is defined");
 	++uTest;
 #endif
 #if defined(BURGER_VITA)
-	printf("BURGER_VITA is defined\n");
+	Message("BURGER_VITA is defined");
 	++uTest;
 #endif
 
 #if defined(BURGER_GAMECUBE)
-	printf("BURGER_GAMECUBE is defined\n");
+	Message("BURGER_GAMECUBE is defined");
 	++uTest;
 #endif
 #if defined(BURGER_WII)
-	printf("BURGER_WII is defined\n");
+	Message("BURGER_WII is defined");
 	++uTest;
 #endif
 #if defined(BURGER_DS)
-	printf("BURGER_DS is defined\n");
+	Message("BURGER_DS is defined");
 	++uTest;
 #endif
 	if (uTest>=2) {
-		printf("Multiple Platforms have been defined!\n");
+		Message("Multiple Platforms have been defined!");
 		uFailure = 10;
 	}
 	if (uTest==0) {
-		printf("Unknown Platform detected!\n");
+		Message("Unknown Platform detected!");
 		uFailure = 10;
 	}
 
 	// Display standard macros
 
-	printf("BURGER_ALIGN is defined at \"" BURGER_MACRO_TO_STRING(BURGER_ALIGN(x,s)) "\"\n");
-	printf("BURGER_PREALIGN is defined at \"" BURGER_MACRO_TO_STRING(BURGER_PREALIGN(s)) "\"\n");
-	printf("BURGER_POSTALIGN is defined at \"" BURGER_MACRO_TO_STRING(BURGER_POSTALIGN(s)) "\"\n");
+	Message("BURGER_ALIGN is defined at \"" BURGER_MACRO_TO_STRING(BURGER_ALIGN(x,s)) "\"");
+	Message("BURGER_PREALIGN is defined at \"" BURGER_MACRO_TO_STRING(BURGER_PREALIGN(s)) "\"");
+	Message("BURGER_POSTALIGN is defined at \"" BURGER_MACRO_TO_STRING(BURGER_POSTALIGN(s)) "\"");
 
-	printf("BURGER_API is defined at \"" BURGER_MACRO_TO_STRING(BURGER_API) "\"\n");
-	printf("BURGER_ANSIAPI is defined at \"" BURGER_MACRO_TO_STRING(BURGER_ANSIAPI) "\"\n");
-	printf("BURGER_INLINE is defined at \"" BURGER_MACRO_TO_STRING(BURGER_INLINE) "\"\n");
-	printf("BURGER_DECLSPECNAKED is defined at \"" BURGER_MACRO_TO_STRING(BURGER_DECLSPECNAKED) "\"\n");
-	printf("BURGER_ASM is defined at \"" BURGER_MACRO_TO_STRING(BURGER_ASM) "\"\n");
-	printf("NULL is defined at \"" BURGER_MACRO_TO_STRING(NULL) "\"\n");
-	printf("TRUE is defined at \"" BURGER_MACRO_TO_STRING(TRUE) "\"\n");
-	printf("FALSE is defined at \"" BURGER_MACRO_TO_STRING(FALSE) "\"\n");
-	printf("BURGER_MAXWORDPTR is defined at \"" BURGER_MACRO_TO_STRING(BURGER_MAXWORDPTR) "\"\n");
-	printf("BURGER_MAXINT is defined at \"" BURGER_MACRO_TO_STRING(BURGER_MAXINT) "\"\n");
-	printf("BURGER_MAXUINT is defined at \"" BURGER_MACRO_TO_STRING(BURGER_MAXUINT) "\"\n");
+	Message("BURGER_API is defined at \"" BURGER_MACRO_TO_STRING(BURGER_API) "\"");
+	Message("BURGER_ANSIAPI is defined at \"" BURGER_MACRO_TO_STRING(BURGER_ANSIAPI) "\"");
+	Message("BURGER_INLINE is defined at \"" BURGER_MACRO_TO_STRING(BURGER_INLINE) "\"");
+	Message("BURGER_DECLSPECNAKED is defined at \"" BURGER_MACRO_TO_STRING(BURGER_DECLSPECNAKED) "\"");
+	Message("BURGER_ASM is defined at \"" BURGER_MACRO_TO_STRING(BURGER_ASM) "\"");
+	Message("NULL is defined at \"" BURGER_MACRO_TO_STRING(NULL) "\"");
+	Message("TRUE is defined at \"" BURGER_MACRO_TO_STRING(TRUE) "\"");
+	Message("FALSE is defined at \"" BURGER_MACRO_TO_STRING(FALSE) "\"");
+	Message("BURGER_MAXWORDPTR is defined at \"" BURGER_MACRO_TO_STRING(BURGER_MAXWORDPTR) "\"");
+	Message("BURGER_MAXINT is defined at \"" BURGER_MACRO_TO_STRING(BURGER_MAXINT) "\"");
+	Message("BURGER_MAXUINT is defined at \"" BURGER_MACRO_TO_STRING(BURGER_MAXUINT) "\"");
 
 // 64 bit supported?
 
 #if defined(BURGER_LONGLONG)
-	printf("BURGER_LONGLONG is defined at \"" BURGER_MACRO_TO_STRING(BURGER_LONGLONG) "\"\n");
+	Message("BURGER_LONGLONG is defined at \"" BURGER_MACRO_TO_STRING(BURGER_LONGLONG) "\"");
 #endif
 	
 	// Display optional macros
 
 #if defined(BURGER_STRUCT_PACKPUSH)
-	printf("BURGER_STRUCT_PACKPUSH is defined\n");
+	Message("BURGER_STRUCT_PACKPUSH is defined");
 #endif
 #if defined(BURGER_STRUCT_ALIGN)
-	printf("BURGER_STRUCT_ALIGN is defined\n");
+	Message("BURGER_STRUCT_ALIGN is defined");
 #endif
 #if defined(BURGER_STRUCT_PACK)
-	printf("BURGER_STRUCT_PACK is defined\n");
+	Message("BURGER_STRUCT_PACK is defined");
 #endif
 #if defined(BURGER_FASTCALLENABLED)
-	printf("BURGER_FASTCALLENABLED is defined\n");
+	Message("BURGER_FASTCALLENABLED is defined");
 #endif
 #if defined(BURGER_NO_USING_NAMESPACE)
-	printf("BURGER_NO_USING_NAMESPACE is defined\n");
+	Message("BURGER_NO_USING_NAMESPACE is defined");
 #endif
 #if defined(BURGER_OPENGL_SUPPORTED)
-	printf("BURGER_OPENGL_SUPPORTED is defined\n");
+	Message("BURGER_OPENGL_SUPPORTED is defined");
 #endif
 
 	// Test structure alignment
@@ -395,21 +403,21 @@ int BURGER_API TestBrtypes(void)
 		(BURGER_OFFSETOF(Aligntest_t,m_50)!=50) ||
 		(BURGER_OFFSETOF(Aligntest_t,m_52)!=52) ||
 		(BURGER_OFFSETOF(Aligntest_t,m_56)!=56)) {
-		printf("Offset m_0 = %u\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_0)));
-		printf("Offset m_16 = %u (align 16)\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_16)));
-		printf("Offset m_17 = %u\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_17)));
-		printf("Offset m_20 = %u (align 4)\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_20)));
-		printf("Offset m_21 = %u\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_21)));
-		printf("Offset m_32 = %u (align 16)\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_32)));
-		printf("Offset m_33 = %u\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_33)));
-		printf("Offset m_40 = %u (Int64)\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_40)));
-		printf("Offset m_48 = %u\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_48)));
-		printf("Offset m_50 = %u (Int16)\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_50)));
-		printf("Offset m_52 = %u\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_52)));
-		printf("Offset m_56 = %u (Int32)\n",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_56)));
+		Message("Offset m_0 = %u",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_0)));
+		Message("Offset m_16 = %u (align 16)",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_16)));
+		Message("Offset m_17 = %u",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_17)));
+		Message("Offset m_20 = %u (align 4)",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_20)));
+		Message("Offset m_21 = %u",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_21)));
+		Message("Offset m_32 = %u (align 16)",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_32)));
+		Message("Offset m_33 = %u",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_33)));
+		Message("Offset m_40 = %u (Int64)",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_40)));
+		Message("Offset m_48 = %u",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_48)));
+		Message("Offset m_50 = %u (Int16)",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_50)));
+		Message("Offset m_52 = %u",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_52)));
+		Message("Offset m_56 = %u (Int32)",static_cast<Word>(BURGER_OFFSETOF(Aligntest_t,m_56)));
 		uFailure = 10;
 	} else {
-		printf("Structure alignment test passed\n");
+		Message("Structure alignment test passed");
 	}
 
 	//
@@ -482,6 +490,72 @@ int BURGER_API TestBrtypes(void)
 		ReportFailure("sizeof(Vector_128) is %u instead of 16.",TRUE,static_cast<Word>(sizeof(Vector_128)));
 		uFailure = 10;
 	}
+
+	//
+	// Handle CPUID
+	//
+
+	uTest = Burger::IsCPUIDPresent();
+	Message("Burger::IsCPUIDPresent() = %u",uTest);
+
+	Burger::CPUID_t MyID;
+	Burger::CPUID(&MyID);
+	if (MyID.m_uHighestCPUID) {
+		Message("CPUID_t.m_uHighestCPUID = %08X",MyID.m_uHighestCPUID);
+		Message("CPUID_t.m_uHighestCPUIDExtended = %08X",MyID.m_uHighestCPUIDExtended);
+		Message("CPUID_t.m_uHighestCPUIDHyperVisor = %08X",MyID.m_uHighestCPUIDHyperVisor);
+		Message("CPUID_t.m_uModel = %08X",MyID.m_uModel);
+		Message("CPUID_t.m_uBrand = %08X",MyID.m_uBrand);
+		Message("CPUID_t.m_uFeatureInformation = %08X",MyID.m_uFeatureInformation);
+		Message("CPUID_t.m_uExtendedFeatureInformation = %08X",MyID.m_uExtendedFeatureInformation);
+		Message("CPUID_t.m_uExtendedProcessorInformation = %08X",MyID.m_uExtendedProcessorInformation);
+		Message("CPUID_t.m_uExtendedFeatureBits = %08X",MyID.m_uExtendedFeatureBits);
+		Message("CPUID_t.m_uCPUType = %u",static_cast<Word>(MyID.m_uCPUType));
+		Message("CPUID_t.m_CPUName = %s",MyID.m_CPUName);
+		Message("CPUID_t.m_BrandName = %s",MyID.m_BrandName);
+		Message("CPUID_t.m_HypervisorName = %s",MyID.m_HypervisorName);
+		Message("CPUID_t.m_HypervisorSignature = %s",MyID.m_HypervisorSignature);
+	} else {
+		Message("Burger::CPUID() is not available");
+	}
+
+	//
+	// Handle AltiVec
+	//
+
+	uTest = Burger::HasAltiVec();
+	Message("Burger::HasAltiVec() = %u",uTest);
+
+	//
+	// Handle MacOS Version
+	//
+
+#if defined(BURGER_MACOS)
+	uTest = Burger::Globals::GetMacOSVersion();
+	Message("Burger::Globals::GetMacOSVersion() = %04X",uTest);
+#endif
+
+	//
+	// Mac OS functions
+	
+#if defined(BURGER_MAC)
+	// _MemoryDispatch = 0xA05C
+	uTest = Burger::Globals::IsTrapAvailable(0xA05C);
+	Message("Burger::Globals::IsTrapAvailable(0xA05C) = %u",uTest);
+
+	uTest = Burger::Globals::IsQuickTimePowerPlugAvailable();
+	Message("Burger::Globals::IsQuickTimePowerPlugAvailable() = %u",uTest);
+
+	uTest = Burger::Globals::GetAppleShareVersion();
+	Message("Burger::Globals::GetAppleShareVersion() = %04X",uTest);
+
+	uTest = Burger::Globals::GetInputSprocketVersion();
+	Message("Burger::Globals::GetInputSprocketVersion() = %04X",uTest);
+
+	uTest = Burger::Globals::GetDrawSprocketVersion();
+	Message("Burger::Globals::GetDrawSprocketVersion() = %04X",uTest);
+
+#endif
 
 	return static_cast<int>(uFailure);
 }

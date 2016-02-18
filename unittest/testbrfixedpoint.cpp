@@ -47,6 +47,18 @@ struct FloatToIntTest32_t {
 	Int32 m_iOutput;	// Expected output
 };
 
+struct IntTest32x32_t {
+	Int32 m_iInput1;	// Source value 1
+	Int32 m_iInput2;	// Source value 2
+	Int32 m_iOutput;	// Expected output
+};
+
+struct IntTest64x64_t {
+	Int64 m_iInput1;	// Source value 1
+	Int64 m_iInput2;	// Source value 2
+	Int64 m_iOutput;	// Expected output
+};
+
 /***************************************
  
 	Test Burger::PowerOf2(Word32)
@@ -132,6 +144,46 @@ static Word TestPowerOf2_64(void)
 			Burger::NumberStringHex Output(pWork->m_uOutput);
 			ReportFailure("Burger::PowerOf2(0x%s) = 0x%s, expected 0x%s",uTest,Input.GetPtr(),Return.GetPtr(),Output.GetPtr());
 		}
+		++pWork;
+	} while (--uCount);
+	return uFailure;
+}
+
+/***************************************
+ 
+	Test Burger::PowerOf2(Word32)
+ 
+***************************************/
+
+static const WordTest32_t BCDWordTable[] = {
+	{0x00000000U,0U},
+	{0x00000001U,1U},
+	{0x00000002U,2U},
+	{0x00000003U,3U},
+	{0x00000004U,4U},
+	{0x98765432U,98765432U},
+	{0x00002000U,2000U},
+	{0x00002001U,2001U},
+	{0x20000001U,20000001U},
+	{0x40000000U,40000000U},
+	{0x40000001U,40000001U},
+	{0x40004020U,40004020U},
+	{0x12345678U,12345678U},
+	{0x99999999U,99999999U},
+	{0x8000000FU,80000015U},
+	{0xFFFFFFFFU,166666665}
+};
+
+static Word TestBCDWord(void)
+{
+	Word uFailure = FALSE;
+	const WordTest32_t *pWork = BCDWordTable;
+	WordPtr uCount = BURGER_ARRAYSIZE(BCDWordTable);
+	do {
+		Word32 uReturn = Burger::BCDToWord(pWork->m_uInput);
+		Word uTest = uReturn!=pWork->m_uOutput;
+		uFailure |= uTest;
+		ReportFailure("Burger::BCDToWord(0x%08X) = %u, expected %u",uTest,pWork->m_uInput,uReturn,pWork->m_uOutput);
 		++pWork;
 	} while (--uCount);
 	return uFailure;
@@ -947,6 +999,155 @@ static Word TestAbs64(void)
 }
 
 //
+// Test Min(Int32)
+//
+
+static const IntTest32x32_t MinTestTable[] = {
+	{0x00000000,0x00000001,0x00000000},
+	{0x00000001,0x00000000,0x00000000},
+	{0x00000000,0x80000000,0x80000000},
+	{0x80000000,0x00000000,0x80000000},
+	{0x80000000,0x80000000,0x80000000},
+	{0x00000000,0x7FFFFFFF,0x00000000},
+	{0x7FFFFFFF,0x00000000,0x00000000},
+	{0x7FFFFFFF,0x80000000,0x80000000},
+	{0x40000000,0xC0000000,0xC0000000},
+	{0x80000001,0x7FFFFFFF,0x80000001},
+	{0x3FFFFFFF,0xBF000000,0xBF000000},
+	{0xFFFFFFFF,0x00000001,0xFFFFFFFF}
+};
+
+static Word TestMin32(void)
+{
+	Word uFailure = FALSE;
+	const IntTest32x32_t *pWork = MinTestTable;
+	WordPtr uCount = BURGER_ARRAYSIZE(MinTestTable);
+	do {
+		Int32 iReturn = Burger::Min(pWork->m_iInput1,pWork->m_iInput2);
+		Word uTest = iReturn!=pWork->m_iOutput;
+		uFailure |= uTest;
+		ReportFailure("Burger::Min((Int32)0x%08X,(Int32)0x%08X) = 0x%08X, expected 0x%08X",uTest,pWork->m_iInput1,pWork->m_iInput2,iReturn,pWork->m_iOutput);
+		++pWork;
+	} while (--uCount);
+	return uFailure;
+}
+
+//
+// Test Min(Int64)
+//
+
+static const IntTest64x64_t MinTestTable64[] = {
+	{0x0000000000000000LL,0x0000000000000001LL,0x0000000000000000LL},
+	{0x0000000000000001LL,0x0000000000000000LL,0x0000000000000000LL},
+	{0x0000000000000000LL,0x8000000000000000LL,0x8000000000000000LL},
+	{0x8000000000000000LL,0x0000000000000000LL,0x8000000000000000LL},
+	{0x8000000000000000LL,0x8000000000000000LL,0x8000000000000000LL},
+	{0x0000000000000000LL,0x7FFFFFFFFFFFFFFFLL,0x0000000000000000LL},
+	{0x7FFFFFFFFFFFFFFFLL,0x0000000000000000LL,0x0000000000000000LL},
+	{0x7FFFFFFFFFFFFFFFLL,0x8000000000000000LL,0x8000000000000000LL},
+	{0x4000000000000000LL,0xC000000000000000LL,0xC000000000000000LL},
+	{0x8000000000000001LL,0x7FFFFFFFFFFFFFFFLL,0x8000000000000001LL},
+	{0x3FFFFFFFFFFFFFFFLL,0xBF00000000000000LL,0xBF00000000000000LL},
+	{0xFFFFFFFFFFFFFFFFLL,0x0000000000000001LL,0xFFFFFFFFFFFFFFFFLL}
+};
+
+static Word TestMin64(void)
+{
+	Word uFailure = FALSE;
+	const IntTest64x64_t *pWork = MinTestTable64;
+	WordPtr uCount = BURGER_ARRAYSIZE(MinTestTable64);
+	do {
+		Int64 iReturn = Burger::Min(pWork->m_iInput1,pWork->m_iInput2);
+		Word uTest = iReturn!=pWork->m_iOutput;
+		uFailure |= uTest;
+		if (uTest) {
+			Burger::NumberStringHex Text1(static_cast<Word64>(pWork->m_iInput1));
+			Burger::NumberStringHex Text2(static_cast<Word64>(pWork->m_iInput2));
+			Burger::NumberStringHex Text3(static_cast<Word64>(iReturn));
+			Burger::NumberStringHex Text4(static_cast<Word64>(pWork->m_iOutput));
+			ReportFailure("Burger::Min((Int64)0x%s,(Int64)0x%s) = 0x%s, expected 0x%s",uTest,Text1.GetPtr(),Text2.GetPtr(),Text3.GetPtr(),Text4.GetPtr());
+		}
+		++pWork;
+	} while (--uCount);
+	return uFailure;
+}
+
+
+//
+// Test Max(Int32)
+//
+
+static const IntTest32x32_t MaxTestTable[] = {
+	{0x00000000,0x00000001,0x00000001},
+	{0x00000001,0x00000000,0x00000001},
+	{0x00000000,0x80000000,0x00000000},
+	{0x80000000,0x00000000,0x00000000},
+	{0x80000000,0x80000000,0x80000000},
+	{0x00000000,0x7FFFFFFF,0x7FFFFFFF},
+	{0x7FFFFFFF,0x00000000,0x7FFFFFFF},
+	{0x7FFFFFFF,0x80000000,0x7FFFFFFF},
+	{0x40000000,0xC0000000,0x40000000},
+	{0x80000001,0x7FFFFFFF,0x7FFFFFFF},
+	{0x3FFFFFFF,0xBF000000,0x3FFFFFFF},
+	{0xFFFFFFFF,0x00000001,0x00000001}
+};
+
+static Word TestMax32(void)
+{
+	Word uFailure = FALSE;
+	const IntTest32x32_t *pWork = MaxTestTable;
+	WordPtr uCount = BURGER_ARRAYSIZE(MaxTestTable);
+	do {
+		Int32 iReturn = Burger::Max(pWork->m_iInput1,pWork->m_iInput2);
+		Word uTest = iReturn!=pWork->m_iOutput;
+		uFailure |= uTest;
+		ReportFailure("Burger::Max((Int32)0x%08X,(Int32)0x%08X) = 0x%08X, expected 0x%08X",uTest,pWork->m_iInput1,pWork->m_iInput2,iReturn,pWork->m_iOutput);
+		++pWork;
+	} while (--uCount);
+	return uFailure;
+}
+
+//
+// Test Max(Int64)
+//
+
+static const IntTest64x64_t MaxTestTable64[] = {
+	{0x0000000000000000LL,0x0000000000000001LL,0x0000000000000001LL},
+	{0x0000000000000001LL,0x0000000000000000LL,0x0000000000000001LL},
+	{0x0000000000000000LL,0x8000000000000000LL,0x0000000000000000LL},
+	{0x8000000000000000LL,0x0000000000000000LL,0x0000000000000000LL},
+	{0x8000000000000000LL,0x8000000000000000LL,0x8000000000000000LL},
+	{0x0000000000000000LL,0x7FFFFFFFFFFFFFFFLL,0x7FFFFFFFFFFFFFFFLL},
+	{0x7FFFFFFFFFFFFFFFLL,0x0000000000000000LL,0x7FFFFFFFFFFFFFFFLL},
+	{0x7FFFFFFFFFFFFFFFLL,0x8000000000000000LL,0x7FFFFFFFFFFFFFFFLL},
+	{0x4000000000000000LL,0xC000000000000000LL,0x4000000000000000LL},
+	{0x8000000000000001LL,0x7FFFFFFFFFFFFFFFLL,0x7FFFFFFFFFFFFFFFLL},
+	{0x3FFFFFFFFFFFFFFFLL,0xBF00000000000000LL,0x3FFFFFFFFFFFFFFFLL},
+	{0xFFFFFFFFFFFFFFFFLL,0x0000000000000001LL,0x0000000000000001LL}
+};
+
+static Word TestMax64(void)
+{
+	Word uFailure = FALSE;
+	const IntTest64x64_t *pWork = MaxTestTable64;
+	WordPtr uCount = BURGER_ARRAYSIZE(MaxTestTable64);
+	do {
+		Int64 iReturn = Burger::Max(pWork->m_iInput1,pWork->m_iInput2);
+		Word uTest = iReturn!=pWork->m_iOutput;
+		uFailure |= uTest;
+		if (uTest) {
+			Burger::NumberStringHex Text1(static_cast<Word64>(pWork->m_iInput1));
+			Burger::NumberStringHex Text2(static_cast<Word64>(pWork->m_iInput2));
+			Burger::NumberStringHex Text3(static_cast<Word64>(iReturn));
+			Burger::NumberStringHex Text4(static_cast<Word64>(pWork->m_iOutput));
+			ReportFailure("Burger::Max((Int64)0x%s,(Int64)0x%s) = 0x%s, expected 0x%s",uTest,Text1.GetPtr(),Text2.GetPtr(),Text3.GetPtr(),Text4.GetPtr());
+		}
+		++pWork;
+	} while (--uCount);
+	return uFailure;
+}
+
+//
 // Test Sqrt(Int32)
 //
 
@@ -1065,6 +1266,7 @@ int BURGER_API TestBrfixedpoint(void)
 
 	Word uResult = TestPowerOf2_32();
 	uResult |= TestPowerOf2_64();
+	uResult |= TestBCDWord();
 	uResult |= TestBitReverse_32();
 	uResult |= TestBitReverse_64();
 	uResult |= TestBitSetCount_32();
@@ -1087,6 +1289,10 @@ int BURGER_API TestBrfixedpoint(void)
 	uResult |= TestFloatToFixedNearest();
 	uResult |= TestAbs32();
 	uResult |= TestAbs64();
+	uResult |= TestMin32();
+	uResult |= TestMin64();
+	uResult |= TestMax32();
+	uResult |= TestMax64();
 	uResult |= TestSqrt32();
 	uResult |= TestSqrtFixedToWord32();
 	uResult |= TestSqrtFixed32();

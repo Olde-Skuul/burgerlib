@@ -19,5 +19,5 @@
 #endif
 
 extern int BURGER_API TestDateTime(void);
-
+extern int BURGER_API TestStdoutHelpers(Word uVerbose);
 #endif

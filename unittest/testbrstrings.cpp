@@ -66,16 +66,73 @@ static Word TestWildcard(void)
 	return uFailure;
 }
 
+/***************************************
+
+	Test the parse quoted string function
+
+***************************************/
+
+static const Wildcard_t s_QuotedStrings[] = {
+	{"foo","foo",3},
+	{"\"foo\"","foo",5},
+	{"'foo'","foo",5},
+	{"","",0},
+	{" ","",0},
+	{"\n","",0},
+	{"\t","",0},
+	{" foo","",0},
+	{"\tfoo","",0},
+	{"\"\"\"foo\"\"\"","\"foo\"",9},
+	{"'''foo'''","'foo'",9},
+	{"\"\"\"\"foo\"\"\"\"","\"",4},
+	{"''''foo''''","'",4},
+	{"foo bar","foo",3},
+	{"foo\tbar","foo",3},
+	{"'foo bar'","foo bar",9},
+	{"'foo\tbar'","foo bar",9}
+};
+
+static Word TestParseQuotedString(void)
+{
+	Word uFailure = FALSE;
+	const Wildcard_t *pWork = s_QuotedStrings;
+	WordPtr uCount = BURGER_ARRAYSIZE(s_QuotedStrings);
+	char Buffer[256];
+	do {
+		char *pTester = Burger::ParseQuotedString(Buffer,sizeof(Buffer),pWork->m_pTest);
+		// Check the end mark
+		Word uTest = (pTester != (pWork->m_pTest+pWork->m_uResult));
+		// Check the result string
+		uTest |= Burger::StringCompare(Buffer,pWork->m_pWild);
+		uFailure |= uTest;
+		if (uTest) {
+			ReportFailure("Burger::ParseQuotedString(Buffer,\"%s\") = \"%s\", expected \"%s\"",uTest,pWork->m_pTest,Buffer,pWork->m_pWild);
+		} else {
+			// Test the consumer function
+			pTester = Burger::ParseQuotedString(NULL,0,pWork->m_pTest);
+			uTest = (pTester != (pWork->m_pTest+pWork->m_uResult));
+			uFailure |= uTest;
+			if (uTest) {
+				ReportFailure("Burger::ParseQuotedString(NULL,\"%s\") returned wrong pointer",uTest,pWork->m_pTest);
+			}
+		}
+
+		++pWork;
+	} while (--uCount);
+	return uFailure;
+}
+
 //
 // Perform all the tests for the Burgerlib Endian Manager
 //
 
 int BURGER_API TestBrstrings(void)
 {	
-	Word uTotal;	// Assume no failures
+	Word uResult;	// Assume no failures
 
 	Message("Running String tests");
 	// Test compiler switches
-	uTotal = TestWildcard();
-	return static_cast<int>(uTotal);
+	uResult = TestWildcard();
+	uResult |= TestParseQuotedString();
+	return static_cast<int>(uResult);
 }

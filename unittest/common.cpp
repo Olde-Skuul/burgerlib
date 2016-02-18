@@ -25,6 +25,7 @@
 #include "testbrstaticrtti.h"
 #include "testbrdisplay.h"
 #include "testbrfilemanager.h"
+#include "testbrfileloaders.h"
 #include "createtables.h"
 #include <stdarg.h>
 #include <stdlib.h>
@@ -201,9 +202,10 @@ Word BURGER_API VerifyBuffer(const void *pBuffer,WordPtr uSize,const void *pInpu
 // Test everything
 //
 
-int BURGER_ANSIAPI main(void)
+int BURGER_ANSIAPI main(int /* argc */,const char ** /* argv */)
 {
 	CreateTables();
+	Word uVerbose = TRUE;
 	int iResult = TestBrtypes();
 	iResult |= TestBrendian();
 	iResult |= TestBrfloatingpoint();
@@ -216,6 +218,8 @@ int BURGER_ANSIAPI main(void)
 	iResult |= TestBrcompression();
 	iResult |= TestBrDisplay();
 	iResult |= TestDateTime();
-	iResult |= FileManagerTest(TRUE);
+	iResult |= TestStdoutHelpers(uVerbose);
+	iResult |= FileManagerTest(uVerbose);
+	iResult |= FileLoaderTest(uVerbose);
 	return iResult;
 }

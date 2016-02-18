@@ -23,14 +23,14 @@
 #include "brnumberstringhex.h"
 
 
+//
+// Test Crc32B
+//
+
 struct CRC32Test_t {
 	const char *m_pString;
 	Word32 m_Hash;
 };
-
-//
-// Test Crc32B
-//
 
 const CRC32Test_t CRC32BTestTable[] = {
 	{ 
@@ -92,14 +92,14 @@ static Word TestCRC32B(void)
 	return uFailure;
 }
 
+//
+// Test MD2
+//
+
 struct MD2Test_t {
 	const char *m_pString;
 	Burger::MD2_t m_Hash;
 };
-
-//
-// Test MD2
-//
 
 const MD2Test_t MD2TestTable[] = {
 	{ 
@@ -162,14 +162,14 @@ static Word TestMD2(void)
 	return uFailure;
 }
 
+//
+// Test MD4
+//
+
 struct MD4Test_t {
 	const char *m_pString;
 	Burger::MD4_t m_Hash;
 };
-
-//
-// Test MD4
-//
 
 const MD4Test_t MD4TestTable[] = {
 	{
@@ -232,14 +232,14 @@ static Word TestMD4(void)
 	return uFailure;
 }
 
+//
+// Test MD5
+//
+
 struct MD5Test_t {
 	const char *m_pString;
 	Burger::MD5_t m_Hash;
 };
-
-//
-// Test MD5
-//
 
 const MD5Test_t MD5TestTable[] = {
 	{
@@ -302,14 +302,14 @@ static Word TestMD5(void)
 	return uFailure;
 }
 
+//
+// Test SHA1
+//
+
 struct SHA1Test_t {
 	const char *m_pString;
 	Burger::SHA1_t m_Hash;
 };
-
-//
-// Test MD5
-//
 
 const SHA1Test_t SHA1TestTable[] = {
 	{

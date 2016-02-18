@@ -46,31 +46,31 @@ static Word TestFPConsts(void)
 {
 	// Test all the single values
 	
-	float fExpected = reinterpret_cast<const float *>(&::SingleInf)[0];
+	float fExpected = static_cast<const float *>(static_cast<const void *>(&::SingleInf))[0];
 	float fTest = Burger::g_fInf;
 	Word uFailure = (fTest!=fExpected);
 	Word uResult = uFailure;
 	ReportFailure("Burger::SingleInf = %g / Wanted %g",uFailure,fTest,fExpected);
 
-	fExpected = reinterpret_cast<const float *>(&::SingleMin)[0];
+	fExpected = static_cast<const float *>(static_cast<const void *>(&::SingleMin))[0];
 	fTest = Burger::g_fMin;
 	uFailure = (fTest!=fExpected);
 	uResult |= uFailure;
 	ReportFailure("Burger::SingleMin = %g / Wanted %g",uFailure,fTest,fExpected);
 
-	fExpected = reinterpret_cast<const float *>(&::SingleMax)[0];
+	fExpected = static_cast<const float *>(static_cast<const void *>(&::SingleMax))[0];
 	fTest = Burger::g_fMax;
 	uFailure = (fTest!=fExpected);
 	uResult |= uFailure;
 	ReportFailure("Burger::SingleMax = %g / Wanted %g",uFailure,fTest,fExpected);
 
-	fExpected = reinterpret_cast<const float *>(&::SingleEpsilon)[0];
+	fExpected = static_cast<const float *>(static_cast<const void *>(&::SingleEpsilon))[0];
 	fTest = Burger::g_fEpsilon;
 	uFailure = (fTest!=fExpected);
 	uResult |= uFailure;
 	ReportFailure("Burger::SingleEpsilon = %g / Wanted %g",uFailure,fTest,fExpected);
 
-	fExpected = reinterpret_cast<const float *>(&::SinglePi)[0];
+	fExpected = static_cast<const float *>(static_cast<const void *>(&::SinglePi))[0];
 	fTest = Burger::g_fPi;
 	uFailure = (fTest!=fExpected);
 	uResult |= uFailure;
@@ -79,31 +79,31 @@ static Word TestFPConsts(void)
 
 	// Test all the double precision values
 	
-	double dExpected = reinterpret_cast<const double *>(&::DoubleInf)[0];
+	double dExpected = static_cast<const double *>(static_cast<const void *>(&::DoubleInf))[0];
 	double dTest = Burger::g_dInf;
 	uFailure = (dTest!=dExpected);
 	uResult |= uFailure;
 	ReportFailure("Burger::g_dInf = %g / Wanted %g",uFailure,dTest,dExpected);
 
-	dExpected = reinterpret_cast<const double *>(&::DoubleMin)[0];
+	dExpected = static_cast<const double *>(static_cast<const void *>(&::DoubleMin))[0];
 	dTest = Burger::g_dMin;
 	uFailure = (dTest!=dExpected);
 	uResult |= uFailure;
 	ReportFailure("Burger::g_dMin = %g / Wanted %g",uFailure,dTest,dExpected);
 
-	dExpected = reinterpret_cast<const double *>(&::DoubleMax)[0];
+	dExpected = static_cast<const double *>(static_cast<const void *>(&::DoubleMax))[0];
 	dTest = Burger::g_dMax;
 	uFailure = (dTest!=dExpected);
 	uResult |= uFailure;
 	ReportFailure("Burger::g_dMax = %g / Wanted %g",uFailure,dTest,dExpected);
 
-	dExpected = reinterpret_cast<const double *>(&::DoubleEpsilon)[0];
+	dExpected = static_cast<const double *>(static_cast<const void *>(&::DoubleEpsilon))[0];
 	dTest = Burger::g_dEpsilon;
 	uFailure = (dTest!=dExpected);
 	uResult |= uFailure;
 	ReportFailure("Burger::g_dEpsilon = %g / Wanted %g",uFailure,dTest,dExpected);
 
-	dExpected = reinterpret_cast<const double *>(&::DoublePi)[0];
+	dExpected = static_cast<const double *>(static_cast<const void *>(&::DoublePi))[0];
 	dTest = Burger::g_dPi;
 	uFailure = (dTest!=dExpected);
 	uResult |= uFailure;
@@ -120,22 +120,22 @@ static Word TestFPConsts(void)
 	Word32 wfFloat = Burger::g_fNan.w;
 	uFailure = (wfFloat!=::SingleNan);
 	uResult |= uFailure;
-	ReportFailure("Burger::SingleNan = %g / Wanted %g",uFailure,Burger::g_fNan,reinterpret_cast<const float *>(&::SingleNan)[0]);
+	ReportFailure("Burger::SingleNan = %g / Wanted %g",uFailure,Burger::g_fNan,static_cast<const float *>(static_cast<const void *>(&::SingleNan))[0]);
 
 	wfFloat = Burger::g_fQNan.w;
 	uFailure = (wfFloat!=::SingleQNan);
 	uResult |= uFailure;
-	ReportFailure("Burger::SingleQNan = %g / Wanted %g",uFailure,Burger::g_fQNan,reinterpret_cast<const float *>(&::SingleQNan)[0]);
+	ReportFailure("Burger::SingleQNan = %g / Wanted %g",uFailure,Burger::g_fQNan,static_cast<const float *>(static_cast<const void *>(&::SingleQNan))[0]);
 
 	Word64 wdFloat = Burger::g_dNan.w;
 	uFailure = (wdFloat!=::DoubleNan);
 	uResult |= uFailure;
-	ReportFailure("Burger::g_dNan() = %g / Wanted %g",uFailure,Burger::g_dNan,reinterpret_cast<const double *>(&::DoubleNan)[0]);
+	ReportFailure("Burger::g_dNan() = %g / Wanted %g",uFailure,Burger::g_dNan,static_cast<const double *>(static_cast<const void *>(&::DoubleNan))[0]);
 
 	wdFloat = Burger::g_dQNan.w;
 	uFailure = (wdFloat!=::DoubleQNan);
 	uResult |= uFailure;
-	ReportFailure("Burger::g_dQNan() = %g / Wanted %g",uFailure,Burger::g_dQNan,reinterpret_cast<const double *>(&::DoubleQNan)[0]);
+	ReportFailure("Burger::g_dQNan() = %g / Wanted %g",uFailure,Burger::g_dQNan,static_cast<const double *>(static_cast<const void *>(&::DoubleQNan))[0]);
 
 	return uResult;
 }
@@ -236,7 +236,7 @@ static Word TestIsNanDouble(void)
 	WordPtr i = BURGER_ARRAYSIZE(IsNanTestDouble);
 	Word uResult = FALSE;
 	do {
-		double dOriginal = reinterpret_cast<const double *>(&pWork->uInput)[0];
+		double dOriginal = static_cast<const double *>(static_cast<const void *>(&pWork->uInput))[0];
 		Word uExpected = (pWork->uFlags&NANTEST)!=0;
 		++pWork;
 		Word uTest = Burger::IsNan(dOriginal);
@@ -278,7 +278,7 @@ static Word TestIsInfDouble(void)
 	WordPtr i = BURGER_ARRAYSIZE(IsNanTestDouble);
 	Word uResult = FALSE;
 	do {
-		double dOriginal = reinterpret_cast<const double *>(&pWork->uInput)[0];
+		double dOriginal = static_cast<const double *>(static_cast<const void *>(&pWork->uInput))[0];
 		Word uExpected = (pWork->uFlags&INFTEST)!=0;
 		++pWork;
 		Word uTest = Burger::IsInf(dOriginal);
@@ -320,7 +320,7 @@ static Word TestIsFiniteDouble(void)
 	WordPtr i = BURGER_ARRAYSIZE(IsNanTestDouble);
 	Word uResult = FALSE;
 	do {
-		double dOriginal = reinterpret_cast<const double *>(&pWork->uInput)[0];
+		double dOriginal = static_cast<const double *>(static_cast<const void *>(&pWork->uInput))[0];
 		Word uExpected = (pWork->uFlags&FINITETEST)!=0;
 		++pWork;
 		Word uTest = Burger::IsFinite(dOriginal);
@@ -362,7 +362,7 @@ static Word TestIsNormalDouble(void)
 	WordPtr i = BURGER_ARRAYSIZE(IsNanTestDouble);
 	Word uResult = FALSE;
 	do {
-		double dOriginal = reinterpret_cast<const double *>(&pWork->uInput)[0];
+		double dOriginal = static_cast<const double *>(static_cast<const void *>(&pWork->uInput))[0];
 		Word uExpected = (pWork->uFlags&NORMALTEST)!=0;
 		++pWork;
 		Word uTest = Burger::IsNormal(dOriginal);
@@ -404,7 +404,7 @@ static Word TestSignBitDouble(void)
 	WordPtr i = BURGER_ARRAYSIZE(IsNanTestDouble);
 	Word uResult = FALSE;
 	do {
-		double dOriginal = reinterpret_cast<const double *>(&pWork->uInput)[0];
+		double dOriginal = static_cast<const double *>(static_cast<const void *>(&pWork->uInput))[0];
 		Word uExpected = (pWork->uFlags&SIGNTEST)!=0;
 		++pWork;
 		Word uTest = Burger::SignBit(dOriginal);

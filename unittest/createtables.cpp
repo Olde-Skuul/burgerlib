@@ -627,61 +627,6 @@ static void CreateEulerRotations(void)
 //
 
 #if 0
-#include "brinputmemorystream.h"
-#include "broutputmemorystream.h"
-#include "brfilexml.h"
-#include "brconsolemanager.h"
-#include "brkeyboard.h"
-#include "brfixedpoint.h"
-#include <stdio.h>
-using namespace Burger;
-
-static void TextFileXML(void)
-{
-	ConsoleApp Mine(0,0);
-	InputMemoryStream Input;
-	if (!Input.Open("9:..:..:data:test.xml")) {
-		FileXML LoadFile;
-		Word uResult1 = LoadFile.Init(&Input);
-		if (!uResult1) {
-			FileXML::Element *pElement = LoadFile.FindElement("Config",TRUE);
-			if (pElement) {
-				Word MySound = pElement->ElementGetWord("SoundVolume",255,0,255);
-				Word MyMusic = pElement->ElementGetWord("MusicVolume",255,0,255);
-				Word PlayerEvents0 = pElement->ElementGetWord("TriggerEvent",0x101,0,0xFFFF);
-				Word PlayerEvents1 = pElement->ElementGetWord("SwitchAimEvent",Keyboard::SC_SPACE,0,0xFFFF);
-				Word PlayerEvents2 = pElement->ElementGetWord("ReloadEvent",0x0102,0,0xFFFF);
-				Word PlayerEvents3 = pElement->ElementGetWord("FireRateEvent",Keyboard::SC_F,0,0xFFFF);
-				Word PlayerEvents4 = pElement->ElementGetWord("BreathEvent",Keyboard::SC_B,0,0xFFFF);
-				Word DropoffMode = pElement->ElementGetWord("DropoffMode",FALSE,0,1);
-				Word LowResolutionMode = pElement->ElementGetWord("LowResolutionMode",FALSE,0,1);
-				Fixed32 MouseSpeed = FLOATTOFIXED(pElement->ElementGetFloat("MouseSpeed",1.0f,0.001f,999999.0f));
-				Word BoolVal = pElement->ElementGetBoolean("Boolean",FALSE);
-				pElement->ElementSetWord("FireRateEvent",666);
-				pElement->ElementSetWord("NewRecord",1234);
-				pElement->ElementSetBoolean("Boolean",TRUE);
-			}
-			pElement = LoadFile.FindElement("_2ndrecord");
-			if (pElement) {
-				const char *pQuote = pElement->ElementGetString("String2","Default");
-				pElement->ElementSetString("NewString","This has \"a\" quote in it");
-			}
-			OutputMemoryStream Foo;
-			LoadFile.Save(&Foo);
-			Foo.SaveFile("9:..:..:data:foo.xml");
-		} else {
-			printf("Error\n");
-		}
-	}
-	Input.Clear();
-}
-#else
-static void TextFileXML(void)
-{
-}
-#endif
-
-#if 0
 
 #include "brfilebmp.h"
 #include "brfiletga.h"
@@ -697,43 +642,6 @@ static void TextFileXML(void)
 
 //	FileManagerSimple Foo;
 
-#if 0
-InputMemoryStream Input;
-if (!Input.Open("9:..:..:data:test.ini")) {
-	FileINI LoadFile;
-	Word uResult1 = LoadFile.Init(&Input);
-	if (!uResult1) {
-		FileINI::Section *pSection = LoadFile.FindSection("Config",TRUE);
-		if (pSection) {
-			Word MySound = pSection->GetWord("SoundVolume",255,0,255);
-			Word MyMusic = pSection->GetWord("MusicVolume",255,0,255);
-			Word PlayerEvents0 = pSection->GetWord("TriggerEvent",0x101,0,0xFFFF);
-			Word PlayerEvents1 = pSection->GetWord("SwitchAimEvent",Keyboard::SC_SPACE,0,0xFFFF);
-			Word PlayerEvents2 = pSection->GetWord("ReloadEvent",0x0102,0,0xFFFF);
-			Word PlayerEvents3 = pSection->GetWord("FireRateEvent",Keyboard::SC_F,0,0xFFFF);
-			Word PlayerEvents4 = pSection->GetWord("BreathEvent",Keyboard::SC_B,0,0xFFFF);
-			Word DropoffMode = pSection->GetWord("DropoffMode",FALSE,0,1);
-			Word LowResolutionMode = pSection->GetWord("LowResolutionMode",FALSE,0,1);
-			Fixed32 MouseSpeed = FLOATTOFIXED(pSection->GetFloat("MouseSpeed",1.0f,0.001f,999999.0f));
-			Word BoolVal = pSection->GetBoolean("Boolean",FALSE);
-			pSection->SetWord("FireRateEvent",666);
-			pSection->SetWord("NewRecord",1234);
-		}
-		pSection = LoadFile.FindSection("2nd record");
-		if (pSection) {
-			String Quote;
-			pSection->GetString(&Quote,"String2","Default");
-			pSection->SetString("NewString","This has \"a\" quote in it");
-		}
-		OutputMemoryStream Foo;
-		LoadFile.Save(&Foo);
-		Foo.SaveFile("9:..:..:data:foo.ini");
-	} else {
-		printf("Error\n");
-	}
-}
-Input.Clear();
-#endif
 #if 0
 InputMemoryStream Input;
 if (!Input.Open("9:..:..:data:test32bit.bmp")) {
@@ -793,11 +701,13 @@ Input.Clear();
 #include "brcriticalsection.h"
 #include "brguid.h"
 #include "brtick.h"
+#include "brstdouthelpers.h"
+#include "brfloatingpoint.h"
 #include <stdio.h>
 
 using namespace Burger;
 
-WordPtr BURGER_API Code(void *pInput)
+static WordPtr BURGER_API Code(void *pInput)
 {
 	++static_cast<Word *>(pInput)[0];
 	return 12345;
@@ -805,10 +715,17 @@ WordPtr BURGER_API Code(void *pInput)
 void BURGER_API CreateTables(void)
 {
 	ConsoleApp Ack(0,0);
-	printf("Test %u\n",static_cast<Word>(Tick::ReadMilliseconds()));
-	printf("Test %u\n",static_cast<Word>(Tick::ReadMilliseconds()));
-	printf("Test %u\n",static_cast<Word>(Tick::ReadMilliseconds()));
-	printf("Test %u\n",static_cast<Word>(Tick::ReadMilliseconds()));
+	FloatTimer MyFloatTimer;
+	printf("Test Tick::ReadMilliseconds() %u\n",static_cast<Word>(Tick::ReadMilliseconds()));
+	printf("Test Tick::ReadMilliseconds() %u\n",static_cast<Word>(Tick::ReadMilliseconds()));
+	printf("Test Tick::ReadMilliseconds() %u\n",static_cast<Word>(Tick::ReadMilliseconds()));
+	printf("Test Tick::ReadMilliseconds() %u\n",static_cast<Word>(Tick::ReadMilliseconds()));
+	printf("Test Tick::ReadMicroseconds() %u\n",static_cast<Word>(Tick::ReadMicroseconds()));
+	printf("Test Tick::ReadMicroseconds() %u\n",static_cast<Word>(Tick::ReadMicroseconds()));
+	printf("Test Tick::ReadMicroseconds() %u\n",static_cast<Word>(Tick::ReadMicroseconds()));
+	printf("Test Tick::ReadMicroseconds() %u\n",static_cast<Word>(Tick::ReadMicroseconds()));
+	printf("Test FloatTimer.GetTime() %g\n",MyFloatTimer.GetTime());
+
 	CriticalSection foo;
 	Word uResult=666;
 	Thread bar(Code,&uResult);
@@ -827,7 +744,6 @@ void BURGER_API CreateTables(void)
 	GUIDInit(&hfoo);
 	GUIDToString(buffer,&hfoo);
 
-	TextFileXML();
 	CreateSinConstants();
 	CreateCosConstants();
 	CreateEulerRotations();

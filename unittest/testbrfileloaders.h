@@ -1,6 +1,6 @@
 /***************************************
 
-	Unit tests for burgerlib
+	Unit tests for the File Loaders
 
 	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
@@ -11,17 +11,13 @@
 
 ***************************************/
 
-#ifndef __COMMON_H__
-#define __COMMON_H__
+#ifndef __TESTBRFILELOADERS_H__
+#define __TESTBRFILELOADERS_H__
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
 #endif
 
-extern void BURGER_ANSIAPI ReportFailure(const char *pTemplate,Word uFailure,...);
-extern void BURGER_ANSIAPI Message(const char *pMessage,...);
-extern void BURGER_API BlastBuffer(void *pOutput,WordPtr uSize);
-extern Word BURGER_API VerifyBuffer(const void *pBuffer,WordPtr uSize,const void *pInput,WordPtr uSkip);
-extern int BURGER_ANSIAPI main(int argc,const char **argv);
+extern Word FileLoaderTest(Word uVerbose);
 
 #endif

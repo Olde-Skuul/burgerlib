@@ -14,6 +14,8 @@
 #include "testbrtimedate.h"
 #include "common.h"
 #include "brtimedate.h"
+#include "brstdouthelpers.h"
+#include "brfloatingpoint.h"
 
 /***************************************
 
@@ -42,7 +44,7 @@ static Word TestBurgerTimeDateClear(void)
 }
 
 //
-// Perform all the tests for the Burgerlib Endian Manager
+// Perform all the tests for the Burgerlib Time Manager
 //
 
 int BURGER_API TestDateTime(void)
@@ -65,6 +67,37 @@ int BURGER_API TestDateTime(void)
 		Message("Military: %s",Buffer);
 		MyDate.TimeToStringPM(Buffer);
 		Message("AM/PM:   %s",Buffer);
+	}
+	return static_cast<int>(uResult);
+}
+
+//
+// Perform all the tests for the Burgerlib Stdouthelpers Manager
+//
+
+int BURGER_API TestStdoutHelpers(Word uVerbose)
+{	
+	Word uResult = 0;	// Assume no failures
+	if (uVerbose) {
+		Message("Testing Stdout Helpers");
+		Burger::PrintHexDigit(0x12345678);
+		Message(" ");
+		Burger::PrintHex(static_cast<Word8>(0x12));
+		Message(" ");
+		Burger::PrintHex(static_cast<Word16>(0x1234));
+		Message(" ");
+		Burger::PrintHex(static_cast<Word32>(0x12345678));
+		Message(" ");
+		Burger::PrintHex(static_cast<Word64>(0x123456789ABCDEFULL));
+		Message(" ");
+		Burger::PrintHex(Burger::g_fNan);
+		Message(" ");
+		Burger::PrintHex(Burger::g_dNan);
+		Message(" ");
+		Burger::PrintHex(1.0f);
+		Message(" ");
+		Burger::PrintHex(1.0);
+		Message(" ");
 	}
 	return static_cast<int>(uResult);
 }

@@ -16,10 +16,11 @@
 #include "brdisplay.h"
 #include "brarray.h"
 #include "brmemoryansi.h"
+#include "brsound.h"
 
 /***************************************
 
-	Test the clear function
+	Print the list of video modes
 
 ***************************************/
 
@@ -27,7 +28,7 @@ static Word TestGetVideoModes(void)
 {
 	Burger::ClassArray<Burger::Display::VideoCardDescription> Modes;
 	Word uFailure = Burger::Display::GetVideoModes(&Modes);
-	
+
 	ReportFailure("Burger::Display::GetVideoModes() didn't return zero.",uFailure);
 	WordPtr uCount = Modes.size();
 	if (uCount) {
@@ -51,6 +52,33 @@ static Word TestGetVideoModes(void)
 	return uFailure;
 }
 
+/***************************************
+
+	Print the list of audio modes
+
+***************************************/
+
+static Word TestGetAudioModes(void)
+{
+	Burger::ClassArray<Burger::SoundManager::SoundCardDescription> SoundModes;
+	Word uFailure = Burger::SoundManager::GetAudioModes(&SoundModes);
+
+	ReportFailure("Burger::SoundManager::GetAudioModes() didn't return zero.",uFailure);
+	WordPtr uCount = SoundModes.size();
+	if (uCount) {
+		const Burger::SoundManager::SoundCardDescription *pWork1 = SoundModes.GetPtr();
+		do {
+			Message("Device = %s",pWork1->m_DeviceName.GetPtr());
+			Message("Device number = %u, Hardware = %u, Min Rate %u, Max Rate %u,\n"
+				"8 Bit = %u, 16 bit = %u, Stereo = %u",
+				pWork1->m_uDevNumber,pWork1->m_bHardwareAccelerated,pWork1->m_uMinimumSampleRate,pWork1->m_uMaximumSampleRate,
+				pWork1->m_b8Bit,pWork1->m_b16Bit,pWork1->m_bStereo);
+			++pWork1;
+		} while (--uCount);
+	}
+	return uFailure;
+}
+
 //
 // Perform all the tests for the Burgerlib Endian Manager
 //
@@ -63,5 +91,8 @@ int BURGER_API TestBrDisplay(void)
 	Message("Running Display tests");
 	// Test compiler switches
 	uResult = TestGetVideoModes();
+
+	uResult |= TestGetAudioModes();
+
 	return static_cast<int>(uResult);
 }

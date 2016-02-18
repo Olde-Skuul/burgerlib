@@ -116,7 +116,7 @@ static Word TestFilenameSet(void)
 
 	{
 		Filename TestName;
-		Word i = sizeof(g_LongFileName);
+		Word i = static_cast<Word>(sizeof(g_LongFileName));
 		const char *pWork = g_LongFileName;
 		do {
 			// Set the string
@@ -130,7 +130,7 @@ static Word TestFilenameSet(void)
 	}
 
 	{
-		Word i = sizeof(g_LongFileName);
+		Word i = static_cast<Word>(sizeof(g_LongFileName));
 		const char *pWork = g_LongFileName;
 		do {
 			// Set the string
@@ -145,7 +145,7 @@ static Word TestFilenameSet(void)
 
 	// Do the reverse. Start small, get larger
 	{
-		Word i = sizeof(g_LongFileName);
+		Word i = static_cast<Word>(sizeof(g_LongFileName));
 		const char *pWork = g_LongFileName+(sizeof(g_LongFileName)-1);
 		Filename TestName;
 		do {
@@ -160,7 +160,7 @@ static Word TestFilenameSet(void)
 	}
 
 	{
-		Word i = sizeof(g_LongFileName);
+		Word i = static_cast<Word>(sizeof(g_LongFileName));
 		const char *pWork = g_LongFileName+(sizeof(g_LongFileName)-1);
 		do {
 			// Set the string
@@ -257,7 +257,7 @@ static Word TestFilenameIs(void)
 	Word uFailure = FALSE;
 	Filename TestName;
 
-	Word i = BURGER_ARRAYSIZE(IsFullTests);
+	Word i = static_cast<Word>(BURGER_ARRAYSIZE(IsFullTests));
 	const IsTests_t *pIsTests = IsFullTests;
 	do {
 		TestName.Set(pIsTests->m_pTest);
@@ -601,7 +601,7 @@ static Word TestFilenameExpand(void)
 	FileManager::GetPrefix(&Save,FileManager::PREFIXCURRENT);
 	FileManager::SetPrefix(FileManager::PREFIXCURRENT,g_ExpandTextPrefix);
 	const ExpandTest_t *pExpandTests = ExpandTests;
-	Word i = BURGER_ARRAYSIZE(ExpandTests);
+	Word i = static_cast<Word>(BURGER_ARRAYSIZE(ExpandTests));
 	do {
 		uFailure |= TestSingleFileName(pExpandTests);
 		++pExpandTests;
@@ -638,7 +638,7 @@ static Word TestFilenameDirName(void)
 {
 	Word uFailure = 0;
 	const TestDirName_t *pTestDirName = TestDirNames;
-	Word i = BURGER_ARRAYSIZE(TestDirNames);
+	Word i = static_cast<Word>(BURGER_ARRAYSIZE(TestDirNames));
 	do {
 		Filename Test(pTestDirName->m_pOriginal);
 		Test.DirName();
@@ -678,7 +678,7 @@ static Word TestFilenameAppend(void)
 {
 	Word uFailure = 0;
 	const TestAppend_t *pTestAppend = TestAppends;
-	Word i = BURGER_ARRAYSIZE(TestAppends);
+	Word i = static_cast<Word>(BURGER_ARRAYSIZE(TestAppends));
 	do {
 		Filename Test(pTestAppend->m_pOriginal);
 		Test.Append(pTestAppend->m_pAppend);
@@ -764,7 +764,7 @@ static Word TestPrefixes(Word uVerbose)
 	// on new platforms.
 
 	if (uVerbose) {
-		Word i = BURGER_ARRAYSIZE(PrefixNameTable);
+		Word i = static_cast<Word>(BURGER_ARRAYSIZE(PrefixNameTable));
 		const PrefixName_t *pWork = PrefixNameTable;
 		do {
 			FileManager::GetPrefix(&MyFileName,pWork->m_uPrefix);
