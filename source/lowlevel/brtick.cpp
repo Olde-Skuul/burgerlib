@@ -223,7 +223,7 @@ Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
 	\brief Retrieve the 1Khz timer
 	
 	Upon application start up, a 1Khz hertz timer is created and via
-	a hardward timer, it will increment 1Mhz times a second.
+	a hardware timer, it will increment 1Mhz times a second.
 
 	The value can be zero for 1/1,000th of a second, so do not assume that a zero is an uninitialized
 	state.
@@ -249,6 +249,201 @@ Word32 BURGER_API Burger::Tick::ReadMilliseconds(void)
 }
 
 #endif
+
+
+
+
+
+/*! ************************************
+
+	\class Burger::FloatTimer
+	\brief Floating point timer
+	
+	Upon class start up, a high accuracy timer is read and this moment is
+	considered 0.0f elapsed time. When the timer is queried, it will return 
+	a floating point number in seconds. 0.5f is a half second, etc...
+
+	The value is as high an accuracy as the platform supports.
+
+	\sa GetTime(void) or \ref Tick
+
+***************************************/
+
+
+/*! ************************************
+
+	\brief Constructor for the floating point timer
+	
+	Reads in the default data needed to maintain the timer
+	and sets the elapsed time to 0.0f
+
+	\sa GetTime(void) or Reset(void)
+
+***************************************/
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+Burger::FloatTimer::FloatTimer() :
+	m_bPaused(FALSE)
+{
+	// Initialize the timer
+	Reset();
+}
+#endif
+
+/*! ************************************
+
+	\fn float Burger::FloatTimer::GetLastTime(void) const
+	\brief Get the last read time
+
+	Returns the last time value without actually asking the platform for
+	a time update.
+
+	Call GetTime(void) to read the timer and return a updating timer.
+
+	\return Elapsed time in seconds
+
+	\sa GetTime(void) or Reset(void)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::FloatTimer::IsPaused(void) const
+	\brief Returns \ref TRUE if the timer is paused
+
+	If the timer was paused with a call to Pause(void), the
+	timer will not increment. This function will return \ref TRUE
+	if the timer is in pause mode.
+
+	\return \ref FALSE if the timer is running, \ref TRUE if paused
+
+	\sa Pause(void) or Unpause(void)
+
+***************************************/
+
+
+/*! ************************************
+
+	\brief Reset the timer
+
+	Set m_uBaseTime to the current high precision time, however
+	this function will not reset the elapsed time.
+
+	\sa Reset(void)
+
+***************************************/
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+void BURGER_API Burger::FloatTimer::SetBase(void)
+{
+	// Generic version
+	m_uBaseTime = Tick::ReadMicroseconds();
+}
+#endif
+
+/*! ************************************
+
+	\brief Reset the timer
+
+	Clear the timer to 0.0f. 
+
+	\sa GetTime(void)
+
+***************************************/
+
+void BURGER_API Burger::FloatTimer::Reset(void)
+{
+	SetBase();		// Set the platform specific time values
+	m_fElapsedTime = 0.0f;
+#if defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)
+	m_uElapsedTime = 0;		// Clear the high precision value
+#endif
+#if defined(BURGER_ANDROID)
+	m_uElapsedTimeNano = 0;
+#endif
+}
+
+/*! ************************************
+
+	\brief Read the timer in seconds
+
+	Return the elapsed time in seconds from the last
+	time this timer was reset. If the timer is paused, the
+	value will be at the time mark when the pause was invoked.
+
+	\sa Pause(void) or Reset(void)
+
+***************************************/
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+float BURGER_API Burger::FloatTimer::GetTime(void)
+{
+	float fResult;
+
+	// If paused, just return the frozen elapsed time
+	if (m_bPaused) {
+		fResult = m_fElapsedTime;
+	} else {	
+		// Generic code
+
+		Word32 uTick = Tick::ReadMicroseconds();
+		Word32 uElapsed = uTick-m_uBaseTime;
+		m_uBaseTime = uTick;
+
+		// Convert to seconds
+		fResult = static_cast<float>(uElapsed)*(1.0f/1000000.0f);
+		fResult += m_fElapsedTime;
+		m_fElapsedTime = fResult;
+	}
+	return fResult;
+}
+#endif
+
+/*! ************************************
+
+	\brief Pause the timer
+
+	If the timer was not paused, accumulate the current time
+	into the elapsed time and freeze the timer at that value.
+	
+	If it was already paused, this function will do nothing.
+
+	\sa Unpause(void)
+
+***************************************/
+
+void BURGER_API Burger::FloatTimer::Pause(void)
+{
+	if (!m_bPaused) {
+		// Accumulate the time up to this moment
+		GetTime();
+		// No more time will be acquired
+		m_bPaused = TRUE;
+	}
+}
+
+/*! ************************************
+
+	\brief Unpause the timer
+
+	If the timer was paused, mark the current time as the moment
+	timing will commence.
+
+	If it was not paused, this function will do nothing.
+
+	\sa Pause(void)
+
+***************************************/
+
+void BURGER_API Burger::FloatTimer::Unpause(void)
+{
+	if (m_bPaused) {
+		// Mark as running
+		m_bPaused = FALSE;
+		// Grab the current time mark so time is accumulated properly
+		SetBase();
+	}
+}
 
 /*! ************************************
 

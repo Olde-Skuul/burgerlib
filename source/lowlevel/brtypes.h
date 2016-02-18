@@ -265,12 +265,12 @@
 #define BURGER_LITTLEENDIAN
 #define BURGER_API __attribute__((regparm(3)))
 #define BURGER_ANSIAPI __attribute((cdecl))
-#define BURGER_DECLSPECNAKED __attribute__((naked))
+#define BURGER_DECLSPECNAKED int int not supported
 #elif defined(__x86_64__)
 #define BURGER_AMD64
 #define BURGER_LITTLEENDIAN
 #define BURGER_64BITCPU
-#define BURGER_DECLSPECNAKED __attribute__((naked))
+#define BURGER_DECLSPECNAKED int int not supported
 #elif defined(__ppc64__)
 #define BURGER_POWERPC
 #define BURGER_BIGENDIAN
@@ -295,7 +295,7 @@
 #error Unknown CPU
 #endif
 
-// Visual Studio 2003/2005/2008 for Win32
+// Visual Studio for Win32
 #elif defined(_MSC_VER) && defined(_M_IX86)
 #define BURGER_MSVC
 #define BURGER_ALIGN(x,s) __declspec(align(s)) (x)
@@ -312,7 +312,7 @@
 #define BURGER_ASM _asm
 #define BURGER_LONGLONG __int64
 
-// Visual Studio 2005/2008 for Win64
+// Visual Studio for Win64
 #elif defined(_MSC_VER) && defined(_M_AMD64)
 #define BURGER_MSVC
 #define BURGER_ALIGN(x,s) __declspec(align(s)) (x)
@@ -339,7 +339,6 @@
 #define BURGER_SNSYSTEMS
 #endif
 #define BURGER_VITA
-#define BURGER_ANDROID
 #define BURGER_INLINE __inline__ __attribute__((always_inline))
 #define BURGER_ALIGN(x,s) (x) __attribute__((aligned(s)))
 #define BURGER_PREALIGN(s)
@@ -348,12 +347,33 @@
 #define BURGER_ARM
 #define BURGER_NEON
 #define BURGER_LITTLEENDIAN
+
+// WiiU for Visual studio
+#elif defined(__ghs__) && defined(__ppc__)
+#define BURGER_WIIU
+#define BURGER_GHS
+#define BURGER_INLINE __inline__ __attribute__((always_inline))
+#define BURGER_ALIGN(x,s) (x) __attribute__((aligned(s)))
+#define BURGER_PREALIGN(s)
+#define BURGER_POSTALIGN(s) __attribute__((aligned(s)))
+#define BURGER_STRUCT_ALIGN
+#define BURGER_POWERPC
+#define BURGER_GEKKO
+#define BURGER_BIGENDIAN
+#define NDEBUG
+#define __fsel __FSEL
+
 #else
 #error Unknown compiler / platform
 #endif
 
+
 #if defined(BURGER_WIN32) || defined(BURGER_WIN64)
 #define BURGER_WINDOWS
+#endif
+
+#if defined(BURGER_X86) || defined(BURGER_AMD64)
+#define BURGER_INTELARCHITECTURE
 #endif
 
 #if defined(BURGER_MAC)
@@ -382,6 +402,14 @@
 
 #if !defined(BURGER_MAXUINT)
 #define BURGER_MAXUINT 0xFFFFFFFFU
+#endif
+
+#if !defined(BURGER_MAXINT64)
+#define BURGER_MAXINT64 0x7FFFFFFFFFFFFFFFLL
+#endif
+
+#if !defined(BURGER_MAXUINT64)
+#define BURGER_MAXUINT64 0xFFFFFFFFFFFFFFFFULL
 #endif
 
 #if !defined(BURGER_ASM)
@@ -418,8 +446,8 @@
 #define BURGER_POSTALIGN(s)
 #endif
 
-#if !defined(BURGER_LITTLEENDIAN) && !defined(BURGER_BIGENDIAN)
-#if defined(BURGER_X86) || defined(BURGER_AMD64) || defined(BURGER_PS2) || defined(BURGER_IOS) || defined(BURGER_DS)
+#if !(defined(BURGER_LITTLEENDIAN) || defined(BURGER_BIGENDIAN))
+#if defined(BURGER_INTELARCHITECTURE) || defined(BURGER_PS2) || defined(BURGER_IOS) || defined(BURGER_DS)
 #define BURGER_LITTLEENDIAN
 #else
 #define BURGER_BIGENDIAN
@@ -446,11 +474,12 @@
 #error NDEBUG nor _DEBUG were defined. Choose one or the other.
 #endif
 
-#if defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_SHIELD) || defined(BURGER_LINUX) || defined(DOXYGEN)
+#if (!(defined(BURGER_VITA)) && \
+	(defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_ANDROID) || defined(BURGER_LINUX))) || defined(DOXYGEN)
 #define BURGER_OPENGL_SUPPORTED
 #endif
 
-#if defined(BURGER_IOS) || defined(BURGER_SHIELD) || defined(DOXYGEN)
+#if (!(defined(BURGER_VITA)) && (defined(BURGER_IOS) || defined(BURGER_ANDROID))) || defined(DOXYGEN)
 #define BURGER_OPENGLES
 #endif
 
@@ -459,6 +488,7 @@
 #define BURGER_UNUSED(x) (void)(x)
 #define BURGER_HASHMACRO(x) #x
 #define BURGER_MACRO_TO_STRING(x) BURGER_HASHMACRO(x)
+
 #if defined(DOXYGEN)
 #define BURGER_DISABLECOPYCONSTRUCTORS(x) private:
 #else
@@ -476,6 +506,7 @@ typedef unsigned int Word32;
 typedef signed long Int32;
 typedef unsigned long Word32;
 #endif
+
 typedef signed BURGER_LONGLONG Int64;
 typedef unsigned BURGER_LONGLONG Word64;
 typedef Word8 Bool;
@@ -484,15 +515,20 @@ typedef Int32 Fixed32;
 typedef unsigned int Word;
 typedef signed int Int;
 
+
+
 #if defined(BURGER_PS2) || defined(BURGER_PSP)
 typedef unsigned int Vector_128 __attribute__((mode (TI)));
+
 #elif defined(BURGER_PS3)
 #ifndef __VEC_TYPES_H__
 #include <vec_types.h>
 #endif
 typedef vec_float4 Vector_128;
+
 #elif defined(BURGER_PS4)
 typedef float Vector_128 __attribute__((__vector_size__(16)));
+
 #elif defined(BURGER_XBOX360)
 #ifndef __PPCINTRINSICS_H__
 #include <ppcintrinsics.h>
@@ -501,21 +537,37 @@ typedef float Vector_128 __attribute__((__vector_size__(16)));
 #include <vectorintrinsics.h>
 #endif
 typedef __vector4 Vector_128;
+
 #elif defined(BURGER_MSVC) || defined(BURGER_XBOX)
 #ifndef _INCLUDED_EMM
 #include <emmintrin.h>
 #endif
 typedef __m128 Vector_128;
+
 #elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
 #ifndef _XMMINTRIN_H
 #include <xmmintrin.h>
 #endif
 typedef __m128 Vector_128;
+
+#elif (defined(BURGER_MACOSX) || defined(BURGER_IOS)) && defined(BURGER_INTELARCHITECTURE)
+#ifndef __EMMINTRIN_H
+#include <emmintrin.h>
+#endif
+typedef __m128 Vector_128;
+
 #elif defined(BURGER_ANDROID)
 #ifndef __ARM_NEON_H
 #include <arm_neon.h>
 #endif
 typedef float32x4_t Vector_128;
+
+#elif defined(BURGER_WIIU)
+#include <ppc_ghs.h>
+struct Vector_128 {
+	float BURGER_ALIGN(m128_f32[4],16);			///< Opaque contents to the 128 bit vector register
+};
+
 #else
 struct Vector_128 {
 	float BURGER_ALIGN(m128_f32[4],16);			///< Opaque contents to the 128 bit vector register
@@ -535,17 +587,23 @@ typedef Int32 IntPtr;
 #endif
 
 #if !defined(BURGER_NONEW)
+
 #if defined(BURGER_METROWERKS)
 BURGER_INLINE void *operator new(__typeof__(sizeof(0)), void*x) { return x; }
+
 #elif defined(BURGER_MSVC)
 #define __PLACEMENT_NEW_INLINE
 BURGER_INLINE void* BURGER_ANSIAPI operator new(size_t, void*x) {return x;}
+
 #elif defined(__GNUC__) && defined(__MACH__) && (defined(__APPLE_CPP__) || defined(__APPLE_CC__) || defined(__NEXT_CPP__)) && defined(BURGER_64BITCPU)
 BURGER_INLINE void* operator new(unsigned long int,void *x) {return x;}
+
 #elif defined(BURGER_PS4)
 BURGER_INLINE void* operator new(unsigned long, void*x) {return x;}
-#elif defined(BURGER_ANDROID) || defined(BURGER_SNSYSTEMS)
+
+#elif defined(BURGER_ANDROID) || defined(BURGER_SNSYSTEMS) || defined(BURGER_GHS)
 BURGER_INLINE void* operator new(unsigned int, void*x) {return x;}
+
 #else
 BURGER_INLINE void* operator new(WordPtr, void*x) {return x;}
 #endif

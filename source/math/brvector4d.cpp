@@ -1192,10 +1192,10 @@ void BURGER_API Burger::Vector4D_t::QuaternionMulNormalize(const Vector4D_t *pIn
 Word BURGER_API Burger::Vector4D_t::BitwiseEqual(const Vector4D_t *pInput) const
 {
 	return (
-		(reinterpret_cast<const Word32 *>(&pInput->x)[0] == reinterpret_cast<const Word32 *>(&x)[0]) &&
-		(reinterpret_cast<const Word32 *>(&pInput->y)[0] == reinterpret_cast<const Word32 *>(&y)[0]) &&
-		(reinterpret_cast<const Word32 *>(&pInput->z)[0] == reinterpret_cast<const Word32 *>(&z)[0]) &&
-		(reinterpret_cast<const Word32 *>(&pInput->w)[0] == reinterpret_cast<const Word32 *>(&w)[0]));
+		(static_cast<const Word32 *>(static_cast<const void *>(&pInput->x))[0] == static_cast<const Word32 *>(static_cast<const void *>(&x))[0]) &&
+		(static_cast<const Word32 *>(static_cast<const void *>(&pInput->y))[0] == static_cast<const Word32 *>(static_cast<const void *>(&y))[0]) &&
+		(static_cast<const Word32 *>(static_cast<const void *>(&pInput->z))[0] == static_cast<const Word32 *>(static_cast<const void *>(&z))[0]) &&
+		(static_cast<const Word32 *>(static_cast<const void *>(&pInput->w))[0] == static_cast<const Word32 *>(static_cast<const void *>(&w))[0]));
 }
 
 /*! ************************************

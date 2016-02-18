@@ -18,11 +18,13 @@
 #include <nitro/rtc/ARM9/api.h>
 #endif
 
-#if !defined(BURGER_MACOSX) && !defined(BURGER_IOS) && !defined(BURGER_PS4) && !defined(BURGER_SHIELD) && !defined(DOXYGEN)
+#if !(defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_PS4) || defined(BURGER_SHIELD)) && !defined(DOXYGEN)
+#if !(defined(BURGER_MSVC) && _MSC_VER>=1900)		// Visual studio 2015 or higher has timespec defined
 struct timespec {
 	time_t tv_sec;	// seconds
 	Int32 tv_nsec;	// and nanoseconds
 };
+#endif
 #endif
 
 /*! ************************************
@@ -49,7 +51,7 @@ struct timespec {
 void Burger::TimeDate_t::Clear(void)
 {
 	m_uYear = 0;
-	reinterpret_cast<Word32 *>(&m_usMilliseconds)[0] = 0;
+	reinterpret_cast<Word32 *>(static_cast<void *>(&m_usMilliseconds))[0] = 0;
 	reinterpret_cast<Word32 *>(&m_bDayOfWeek)[0] = 0;
 }
 

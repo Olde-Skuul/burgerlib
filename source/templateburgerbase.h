@@ -13,6 +13,7 @@
 /* DIR: "flashplayer:" */
 /* DIR: "graphics:" */
 /* DIR: "graphics:effects:" */
+/* DIR: "graphics:shaders:" */
 /* DIR: "input:" */
 /* DIR: "ios:" */
 /* DIR: "lowlevel:" */
@@ -119,6 +120,7 @@
 #include "brmd5.h"
 #include "brpackfloat.h"
 #include "brsha1.h"
+#include "brunpackbytes.h"
 #include "brglobals.h"
 #include "brstring.h"
 #include "brstring16.h"
@@ -187,14 +189,9 @@
 #include "brdisplaydib.h"
 #include "brdisplaydibsoftware8.h"
 #include "brpalette.h"
-#include "brwindowsapp.h"
-#include "brmacosxapp.h"
-#include "briosapp.h"
-#include "brxbox360app.h"
 #include "brdxt1.h"
 #include "brdxt3.h"
 #include "brdxt5.h"
-#include "brmace.h"
 #include "brtexturedirectx9.h"
 #include "brtextureopengl.h"
 #include "brshaders.h"
@@ -202,6 +199,9 @@
 #include "breffectstaticpositiontexture.h"
 #include "breffect2d.h"
 #include "breffectpositiontexturecolor.h"
+#include "brshader2dcolorvertex.h"
+#include "brshader2dccolor.h"
+#include "brfileapf.h"
 #include "brfilebmp.h"
 #include "brfiledds.h"
 #include "brfilegif.h"
@@ -222,6 +222,16 @@
 #include "brkeyboard.h"
 #include "brjoypad.h"
 #include "brsound.h"
+#include "brsounddecompress.h"
+#include "brmace.h"
+#include "brulaw.h"
+#include "bralaw.h"
+#include "brmicrosoftadpcm.h"
+#include "brsoundbufferrez.h"
+#include "brsequencer.h"
+#include "brimports3m.h"
+#include "brimportit.h"
+#include "brimportxm.h"
 #include "brgridindex.h"
 #include "brearcliptriangulate.h"
 #include "brflashstream.h"

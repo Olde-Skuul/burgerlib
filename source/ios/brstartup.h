@@ -50,7 +50,7 @@ int BURGER_ANSIAPI main(void)
 {
 	// Create an application instance
 
-	Burger::iOSApp MyApp(MEMORYSIZE,HANDLECOUNT,MINIMUMRESERVE);
+	Burger::GameApp MyApp(MEMORYSIZE,HANDLECOUNT,MINIMUMRESERVE);
 	
 	// Error on startup?
 	int iResult = Burger::Globals::GetErrorCode();

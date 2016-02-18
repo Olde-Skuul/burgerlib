@@ -1297,9 +1297,9 @@ Word BURGER_API Burger::Vector3D_t::Equal(const Vector3D_t *pInput) const
 	// I do this since floating point compares just plain suck 
 	// on intel and PowerPC processors
 
-	Word32 uTemp = ((reinterpret_cast<const Word32 *>(&x)[0]^reinterpret_cast<const Word32 *>(&pInput->x)[0]) |
-		(reinterpret_cast<const Word32 *>(&y)[0]^reinterpret_cast<const Word32 *>(&pInput->y)[0]) |
-		(reinterpret_cast<const Word32 *>(&z)[0]^reinterpret_cast<const Word32 *>(&pInput->z)[0]));
+	Word32 uTemp = ((static_cast<const Word32 *>(static_cast<const void *>(&x))[0]^static_cast<const Word32 *>(static_cast<const void *>(&pInput->x))[0]) |
+		(static_cast<const Word32 *>(static_cast<const void *>(&y))[0]^static_cast<const Word32 *>(static_cast<const void *>(&pInput->y))[0]) |
+		(static_cast<const Word32 *>(static_cast<const void *>(&z))[0]^static_cast<const Word32 *>(static_cast<const void *>(&pInput->z))[0]));
 	return (uTemp==0);
 }
 
@@ -1347,9 +1347,9 @@ Word BURGER_API Burger::Vector3D_t::Equal(const Vector3D_t *pInput,float fRange)
 Word BURGER_API Burger::Vector3D_t::BitwiseEqual(const Vector3D_t *pInput) const
 {
 	return (
-		(reinterpret_cast<const Word32 *>(&pInput->x)[0] == reinterpret_cast<const Word32 *>(&x)[0]) &&
-		(reinterpret_cast<const Word32 *>(&pInput->y)[0] == reinterpret_cast<const Word32 *>(&y)[0]) &&
-		(reinterpret_cast<const Word32 *>(&pInput->z)[0] == reinterpret_cast<const Word32 *>(&z)[0]));
+		(static_cast<const Word32 *>(static_cast<const void *>(&pInput->x))[0] == static_cast<const Word32 *>(static_cast<const void *>(&x))[0]) &&
+		(static_cast<const Word32 *>(static_cast<const void *>(&pInput->y))[0] == static_cast<const Word32 *>(static_cast<const void *>(&y))[0]) &&
+		(static_cast<const Word32 *>(static_cast<const void *>(&pInput->z))[0] == static_cast<const Word32 *>(static_cast<const void *>(&z))[0]));
 }
 
 /*! ************************************

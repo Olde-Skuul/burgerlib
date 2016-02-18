@@ -24,6 +24,7 @@
 #define BURGER_68K
 #define BURGER_ARM
 #define BURGER_64BITCPU
+#define BURGER_INTELARCHITECTURE
 
 //#define BURGER_BIGENDIAN
 #define BURGER_LITTLEENDIAN
@@ -138,6 +139,7 @@
 	\li \subpage pageusingburgerlib
 	\li \subpage pagedefines
 	\li \subpage pagetypes
+	\li \subpage pagewhitepapers
 	
 	<center><h2>Credits</h2></center>
 	<b><ul>
@@ -228,46 +230,46 @@
 	this way it is easier to modify if you decide to move the folder somewhere else.
 	
 	Insert this line into your C:\\AUTOEXEC.BAT file.
-	\code SET SDKs=C:\SDKs
+	\code SET BURGER_SDKS=C:\SDKs
 	\endcode
 	
 	\section win32accesssdk Step 2: Accessing the SDKs from the build environment.
 	
 	For each target in your Win32 project, you need to add these folders into the include
 	and link include directories so the headers and the libraries can be found. Please note the use
-	of quotes, it will allow the variable \$(SDKS) to contain a space.
+	of quotes, it will allow the variable \$(BURGER_SDKS) to contain a space.
 
 	\subsection win32vc71 Include directories for Visual Studio .NET 2003.
 	In Configuration Properties: C/C++ : General : Additional Include Directories...
-	\code "$(SDKS)\w32burger";"$(SDKS)\w32opengl";"$(SDKS)\w32directx9";"$(SDKS)\w32platformsdk"
+	\code "$(BURGER_SDKS)\windows\burger";"$(BURGER_SDKS)\windows\opengl";"$(BURGER_SDKS)\windows\directx9";"$(BURGER_SDKS)\windows\windows5"
 	\endcode
 	In Configuration Properties: Linker : General : Additional Library Directories...
-	\code "$(SDKS)\w32burger";"$(SDKS)\w32opengl";"$(SDKS)\w32directx9"
+	\code "$(BURGER_SDKS)\windows\burger";"$(BURGER_SDKS)\windows\opengl";"$(BURGER_SDKS)\windows\directx9"
 	\endcode
 	
 	\subsection win32cw9 Access paths for Codewarrior 9.4.
 	In the menu bar, select Edit : Preferences... : General : Source Trees...<br>
-	Create the name of "SDKS" and set the path to the folder where the SDKS are.<br>
-	The typical combination is Name = SDKS and the environment variable is SDKS which usually
+	Create the name of "BURGER_SDKS" and set the path to the folder where the SDKS are.<br>
+	The typical combination is Name = BURGER_SDKS and the environment variable is SDKS which usually
 	resolves to C:\\SDKS.<br>
 	For each project, in Settings : Target Settings Panels: Target: Access Paths<br>
 	\code
-	{SDKS}w32burger
-	{SDKS}w32opengl
-	{SDKS}w32directx9
-	{SDKS}w32platformsdk
+	{BURGER_SDKS}windows\burger
+	{BURGER_SDKS}windows\opengl
+	{BURGER_SDKS}windows\directx9
+	{BURGER_SDKS}windows\windows5
 	\endcode
 	
 	\section win32selectlib Step 3: Include the proper library for your target.
 	
 	Include only one of these libraries for the build target.
 
-	\subsection win32selectlibvc71 Libaries for Visual Studio .NET 2003.
+	\subsection win32selectlibvc71 Libraries for Visual Studio .NET 2003.
 	\li burgerv71w32dbg.lib for no optimizations and debug information.
 	\li burgerv71w32dbf.lib for full optimizations and debug information.
 	\li burgerv71w32rel.lib for full optimizations and no debug information.
 	
-	\subsection win32selectlibvc8 Libaries for Visual Studio .NET 2005.
+	\subsection win32selectlibvc8 Libraries for Visual Studio .NET 2005.
 	\li burgervc8w32dbg.lib for no optimizations and debug information.
 	\li burgervc8w32dbf.lib for full optimizations and debug information.
 	\li burgervc8w32rel.lib for full optimizations and no debug information.
@@ -277,7 +279,7 @@
 	\li burgercw9w32dbf.lib for full optimizations and debug information.
 	\li burgercw9w32del.lib for full optimizations and no debug information.
 	
-	\subsection win32selectlibwat Libraries for Open Watcom 1.7.
+	\subsection win32selectlibwat Libraries for Open Watcom 1.9.
 	\li burgerwatw32dbg.lib for no optimizations and debug information.
 	\li burgerwatw32dbf.lib for full optimizations and debug information.
 	\li burgerwatw32rel.lib for full optimizations and no debug information.
@@ -313,7 +315,7 @@
 	that you will be using. The usual place is SDKS off of your boot volume, but you
 	can place them anywhere you wish.
 	
-	Once the folder is created, you need to copy and unstuff these
+	Once the folder is created, you need to copy and uncompress these
 	basic SDKS into their respective folders. The links below will download the
 	current stable versions of the respective folder.
 	
@@ -328,18 +330,18 @@
 
 	\subsection macoscw9 Access paths for Codewarrior 8.3 or 10.0.
 	In the menu bar, select Edit : Preferences... : General : Source Trees...<br>
-	Create the name of "SDKS" and set the path to the folder where the SDKS are.<br>
-	The typical combination is Name = SDKS and the Path = /SDKs.<br>
+	Create the name of "BURGER_SDKS" and set the path to the folder where the SDKS are.<br>
+	The typical combination is Name = BURGER_SDKS and the Path = /SDKs.<br>
 	For each project, in Settings : Target Settings Panels: Target: Access Paths<br>
 	\code
-	{SDKs}macburger
-	{SDKs}macopengl
+	{BURGER_SDKS}macburger
+	{BURGER_SDKSBURGER_SDKSmacopengl
 	{SDKs}macgamesprockets
 	\endcode
 	
 	\section macosselectlib Step 4: Include the proper library for your target.
 	
-	Include only one of these libaries for the build target.
+	Include only one of these libraries for the build target.
 
 	\subsection macosselectlibc10 Libraries for Codewarrior 10.0 / PowerPC.
 	\li burgerc10macppcdbg.lib for no optimizations and debug information (Classic only).
@@ -414,7 +416,12 @@
 	\li \ref BURGER_ARM CPU is part of the Advanced RISC Machines family.
 	\li \ref BURGER_68K CPU is part of the Motorola 68000 family.
 	\li \ref BURGER_MIPS CPU is part of the SGI MIPS family.
+
+	Type of CPU defines, they are defined to help determine the type
+	of CPU is running
+
 	\li \ref BURGER_64BITCPU The CPU has native 64 bit registers (AMD64, PPC64, ARM64).
+	\li \ref BURGER_INTELARCHITECTURE The CPU is either AMD64 or X86
 
 	Endian defines, only one is enabled on each compile. Do not
 	use the CPU to determine the endian, because it may change on
@@ -535,6 +542,23 @@
 
 /*! ************************************
 
+	\page pagewhitepapers White Papers
+	
+	These white papers were used to generate some of the code
+	in Burgerlib
+
+	\li <a href="isolatin1.htm">ISO Latin 1 character set</a>
+	\li <a href="macromanus.htm">MacOS Roman US character set</a>
+	\li <a href="windows1252.htm">Windows 1252 character set</a>
+	\li <a href="spec-gif89a.txt">GIF File format</a>
+	\li <a href="avm2overview.pdf">ActionScript Virtual Machine 2 Overview</a>
+	\li <a href="swf-file-format-spec.pdf">SWF File format specification Version 19</a>
+	
+***************************************/
+
+
+/*! ************************************
+
 	\file burger.h
 	\brief Determines the build environment.
 	
@@ -609,7 +633,7 @@
 	XBox, Mac OSX Intel and Win32 platforms which are running on
 	Pentium, 386, 486, and AMD CPUs will have this define present.
 	
-	\sa BURGER_AMD64, BURGER_WIN32, BURGER_BEOS, BURGER_MSDOS, BURGER_MACOSX or BURGER_XBOX
+	\sa BURGER_INTELARCHITECTURE, BURGER_AMD64, BURGER_WIN32, BURGER_BEOS, BURGER_MSDOS, BURGER_MACOSX or BURGER_XBOX
 	
 ***************************************/
 
@@ -623,7 +647,7 @@
 	and Mac OSX 64 platforms which are running on
 	Pentium and AMD CPUs in 64 bit mode will have this define present.
 	
-	\sa BURGER_WIN64, BURGER_MACOSX, BURGER_XBOXONE, BURGER_PS4 or BURGER_X86
+	\sa BURGER_INTELARCHITECTURE, BURGER_WIN64, BURGER_MACOSX, BURGER_XBOXONE, BURGER_PS4 or BURGER_X86
 	
 ***************************************/
 
@@ -692,6 +716,21 @@
 	\ref Fixed32 and other high precision fixed point calculations.
 	
 	\sa BURGER_XBOXONE, BURGER_PS4, BURGER_PS3, BURGER_XBOX360, or BURGER_AMD64
+	
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_INTELARCHITECTURE
+	\brief Define to determine if the CPU is either X86 or AMD64
+	
+	On \ref BURGER_AMD64 or \ref BURGER_X86 CPUs, this define
+	will also be present to allow Intel Architecture instructions.
+	Some instructions may or may not be present, so call \ref Burger::CPUID(CPUID_t *)
+	to test for all features and determine which functions to use
+	for performance.
+	
+	\sa BURGER_XBOXONE, BURGER_PS4, BURGER_WINDOWS, BURGER_MACOSX, BURGER_X86, or BURGER_AMD64
 	
 ***************************************/
 
@@ -1403,6 +1442,32 @@
 	Normally, this is 0xFFFFFFFFU, but it could be a 64
 	or 128 bit value on future processors.
 	\sa BURGER_MAXWORDPTR, BURGER_MAXINTPTR or BURGER_MAXINT
+	
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MAXINT64
+	\brief Maximum value of a \ref Int64.
+	
+	This is a replacement for the ANSI macro MAX_INT but
+	it's meant for 64 bit values defined as \ref Int64.
+	Normally, this is 0x7FFFFFFFFFFFFFFFLL.
+
+	\sa BURGER_MAXUINT64, or BURGER_MAXINT
+	
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_MAXUINT64
+	\brief Maximum value of a \ref Word64.
+	
+	This is a replacement for the ANSI macro MAX_UINT but
+	it's meant for 64 bit values defined as \ref Word64.
+	Normally, this is 0xFFFFFFFFFFFFFFFFULL.
+
+	\sa BURGER_MAXINT64, or BURGER_MAXUINT
 	
 ***************************************/
 

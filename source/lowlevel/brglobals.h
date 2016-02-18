@@ -136,6 +136,18 @@ private:
 	Word8 m_bFunctionsTested[CALL_COUNT];	///< Flags to determine if a function was tested for loading (Windows only)
 #endif
 
+#if defined(BURGER_MAC) || defined(DOXYGEN)
+	Word m_uAppleShareVersion;				///< Discovered version of AppleShare (Mac only)
+	Word m_uInputSprocketVersion;			///< Discovered version of InputSprocket (Mac only)
+	Word m_uDrawSprocketVersion;			///< Discovered version of DrawSprocket (Mac only)
+	Word m_uMacOSVersion;					///< Discovered version of MacOS (Mac only)
+	Word8 m_bIsQuickTimePlugInTested;		///< Non-zero if tested, low bit has \ref TRUE or \ref FALSE for QuickTime Plugin present (Mac only)
+	Word8 m_bAppleShareVersionTested;		///< AppleShare version was tested (Mac only)
+	Word8 m_bInputSprocketVersionTested;	///< InputSprocket version was tested (Mac only)
+	Word8 m_bDrawSprocketVersionTested;		///< DrawSprocket version was tested (Mac only)
+	Word8 m_bMacOSTested;					///< MacOS version was tested (Mac only)
+#endif
+
 private:
 	static int g_iErrorCode;		///< Global default error code used by \ref Globals::Shutdown().
 	static Word g_uTraceFlags;		///< Debug information level
@@ -211,6 +223,7 @@ public:
 	static Word BURGER_API TrackMouseEvent(::tagTRACKMOUSEEVENT *pEventTrack);
 	static Word BURGER_API GetSystemWow64DirectoryA(char *pBuffer,Word32 uSize);
 	static Word BURGER_API GetSystemWow64DirectoryW(Word16 *pBuffer,Word32 uSize);
+	
 	static Word BURGER_API GetQuickTimeVersion(void);
 	static Word64 BURGER_API GetFileVersion64(const Word16* pWindowsFilename);
 	static Word BURGER_API GetDirectXVersionViaFileVersions(void);
@@ -240,16 +253,16 @@ public:
 	static int NumberFromKey(const __CFDictionary *pDictionary,const char *pKey);
 #endif
 
-#if defined(BURGER_MACOS) || defined(DOXYGEN)
-	static Word BURGER_API GetMacOSVersion(void);
-#endif
-
 #if defined(BURGER_MAC) || defined(DOXYGEN)
 	static Word BURGER_API IsTrapAvailable(Word uTrapNum);
 	static Word BURGER_API IsQuickTimePowerPlugAvailable(void);
 	static Word BURGER_API GetAppleShareVersion(void);
 	static Word BURGER_API GetInputSprocketVersion(void);
 	static Word BURGER_API GetDrawSprocketVersion(void);
+#endif
+
+#if defined(BURGER_MACOS) || defined(DOXYGEN)
+	static Word BURGER_API GetMacOSVersion(void);
 #endif
 
 	static BURGER_INLINE int GetErrorCode(void) { return g_iErrorCode; }

@@ -821,8 +821,8 @@ void BURGER_API Burger::Vector2D_t::NormalizeFast(const Vector2D_t *pInput)
 Word BURGER_API Burger::Vector2D_t::BitwiseEqual(const Vector2D_t *pInput) const
 {
 	return (
-		(reinterpret_cast<const Word32 *>(&pInput->x)[0] == reinterpret_cast<const Word32 *>(&x)[0]) &&
-		(reinterpret_cast<const Word32 *>(&pInput->y)[0] == reinterpret_cast<const Word32 *>(&y)[0]));
+		(static_cast<const Word32 *>(static_cast<const void *>(&pInput->x))[0] == static_cast<const Word32 *>(static_cast<const void *>(&x))[0]) &&
+		(static_cast<const Word32 *>(static_cast<const void *>(&pInput->y))[0] == static_cast<const Word32 *>(static_cast<const void *>(&y))[0]));
 }
 
 /*! ************************************
