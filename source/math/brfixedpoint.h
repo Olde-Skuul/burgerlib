@@ -27,7 +27,7 @@
 #endif
 
 /* BEGIN */
-#if (defined(BURGER_X86) || defined(BURGER_AMD64)) || defined(DOXYGEN)
+#if defined(BURGER_INTELARCHITECTURE) || defined(DOXYGEN)
 extern "C" const float g_fBurgerIntMathNearesttable[2];
 extern "C" const float g_fBurgerMath65536;
 #endif
@@ -288,16 +288,16 @@ namespace Burger {
 	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) { FloatToIntCeil(reinterpret_cast<Int32*>(pOutput),fInput*65536.0f); }
 	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) { FloatToIntNearest(reinterpret_cast<Int32*>(pOutput),fInput*65536.0f); }
 #endif
-#if !defined(BURGER_ARM) || defined(DOXYGEN)
-	BURGER_INLINE Int32 Abs(Int32 iInput) { Int32 iMask = (iInput>>31); return (iInput^iMask)-iMask; }
-	BURGER_INLINE Int64 Abs(Int64 iInput) { Int64 iMask = (iInput>>63); return (iInput^iMask)-iMask; }
-	BURGER_INLINE Int32 ClampZero(Int32 iInput) { return (~(iInput>>31))&iInput; }
-	BURGER_INLINE Int64 ClampZero(Int64 iInput) { return (~(iInput>>63))&iInput; }
-#else
+#if defined(BURGER_ARM) || defined(BURGER_AMD64) || (defined(BURGER_X86) && !defined(BURGER_WINDOWS)) || defined(DOXYGEN)
 	BURGER_INLINE Int32 Abs(Int32 iInput) { if (iInput<0) { iInput=-iInput; } return iInput; }
 	BURGER_INLINE Int64 Abs(Int64 iInput) { if (iInput<0) { iInput=-iInput; } return iInput; }
 	BURGER_INLINE Int32 ClampZero(Int32 iInput) { if (iInput<0) { iInput=0; } return iInput; }
 	BURGER_INLINE Int64 ClampZero(Int64 iInput) { if (iInput<0) { iInput=0; } return iInput; }
+#else
+	BURGER_INLINE Int32 Abs(Int32 iInput) { Int32 iMask = (iInput>>31); return (iInput^iMask)-iMask; }
+	BURGER_INLINE Int64 Abs(Int64 iInput) { Int64 iMask = (iInput>>63); return (iInput^iMask)-iMask; }
+	BURGER_INLINE Int32 ClampZero(Int32 iInput) { return (~(iInput>>31))&iInput; }
+	BURGER_INLINE Int64 ClampZero(Int64 iInput) { return (~(iInput>>63))&iInput; }
 #endif
 	BURGER_INLINE Int32 Min(Int32 iA,Int32 iB) { return ((iA < iB) ? iA : iB); }
 	BURGER_INLINE Int64 Min(Int64 iA,Int64 iB) { return ((iA < iB) ? iA : iB); }

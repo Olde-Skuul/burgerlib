@@ -52,7 +52,7 @@
 /*! ************************************
 
 	\var Burger::NOENDINGNULL
-	\brief Bit flags to suppress the output of a terminating zero.
+	\brief Bit flag to suppress the output of a terminating zero.
 	
 	The functions that convert a float or integer into an ASCII string use
 	this flag to suppress the output of the terminating \ref NULL. The default behavior is
@@ -66,7 +66,7 @@
 /*! ************************************
 
 	\var Burger::ASCII_LOWER 
-	\brief Bit flags to detect a lower case ASCII character
+	\brief Bit flag to detect a lower case ASCII character
 
 	When Burger::g_AsciiTestTable[128] is indexed with an ASCII character, test it with this
 	value to determine if it is a lower case character.
@@ -78,7 +78,7 @@
 /*! ************************************
 
 	\var Burger::ASCII_UPPER
-	\brief Bit flags to detect a upper case ASCII character
+	\brief Bit flag to detect a upper case ASCII character
 
 	When Burger::g_AsciiTestTable[128] is indexed with an ASCII character, test it with this
 	value to determine if it is a upper case character.
@@ -90,7 +90,7 @@
 /*! ************************************
 
 	\var Burger::ASCII_CONTROL 
-	\brief Bit flags to detect an ASCII control character
+	\brief Bit flag to detect an ASCII control character
 
 	When Burger::g_AsciiTestTable[128] is indexed with an ASCII character, test it with this
 	value to determine if it is a control character.
@@ -100,7 +100,7 @@
 /*! ************************************
 
 	\var Burger::ASCII_SPACE
-	\brief Bit flags to detect an ASCII space character
+	\brief Bit flag to detect an ASCII space character
 
 	When Burger::g_AsciiTestTable[128] is indexed with an ASCII character, test it with this
 	value to determine if it is an ASCII space character such as CR, LF, FF, SPACE and TAB
@@ -112,7 +112,7 @@
 /*! ************************************
 
 	\var Burger::ASCII_WHITESPACE
-	\brief Bit flags to detect an ASCII whitespace character
+	\brief Bit flag to detect an ASCII whitespace character
 
 	When Burger::g_AsciiTestTable[128] is indexed with an ASCII character, test it with this
 	value to determine if it is an ASCII whitespace character which is only SPACE or TAB
@@ -124,7 +124,7 @@
 /*! ************************************
 
 	\var Burger::ASCII_PUNCTUATION
-	\brief Bit flags to detect an ASCII punctuation character
+	\brief Bit flag to detect an ASCII punctuation character
 
 	When Burger::g_AsciiTestTable[128] is indexed with an ASCII character, test it with this
 	value to determine if it is an ASCII punctuation character such as [, ], !, ?, etc.
@@ -134,7 +134,7 @@
 /*! ************************************
 
 	\var Burger::ASCII_HEX
-	\brief Bit flags to detect an ASCII hex character
+	\brief Bit flag to detect an ASCII hex character
 
 	When Burger::g_AsciiTestTable[128] is indexed with an ASCII character, test it with this
 	value to determine if it is an ASCII hex character which is A-F, a-f, and 0-9.
@@ -146,7 +146,7 @@
 /*! ************************************
 
 	\var Burger::ASCII_DIGIT
-	\brief Bit flags to detect an ASCII numeric character
+	\brief Bit flag to detect an ASCII numeric character
 
 	When Burger::g_AsciiTestTable[128] is indexed with an ASCII character, test it with this
 	value to determine if it is an ASCII numeric character which is 0-9.
@@ -490,7 +490,7 @@ const Word8 BURGER_ALIGN(Burger::g_AsciiTestTable[128],16) = {
 	Burger::ASCII_LOWER,								// 79 y
 	Burger::ASCII_LOWER,								// 7A z
 	Burger::ASCII_PUNCTUATION,							// 7B {
-	Burger::ASCII_PUNCTUATION,							// 7C|
+	Burger::ASCII_PUNCTUATION,							// 7C |
 	Burger::ASCII_PUNCTUATION,							// 7D }
 	Burger::ASCII_PUNCTUATION,							// 7E ~
 	Burger::ASCII_CONTROL								// 7F (DEL)
@@ -508,7 +508,8 @@ const Word8 BURGER_ALIGN(Burger::g_AsciiTestTable[128],16) = {
 
 ***************************************/
 
-const char BURGER_ALIGN(Burger::g_NibbleToAsciiUppercase[16],16) = {'0','1','2','3','4','5','6','7',
+const char BURGER_ALIGN(Burger::g_NibbleToAsciiUppercase[16],16) = {
+	'0','1','2','3','4','5','6','7',
 	'8','9','A','B','C','D','E','F'};
 
 /*! ************************************
@@ -662,27 +663,14 @@ const Word64 Burger::g_TensTable64[20] = {
 
 Word32 BURGER_API Burger::BCDToWord(Word32 uInput)
 {
-	Word32 uOutput = uInput&0xF;			// Get the first nibble
-	uInput>>=4;
-	uOutput = ((uInput&0xF)*10)+uOutput;
-	uInput>>=4;
-	if (uInput) {		// Bigger than a byte?
-		uOutput = ((uInput&0xF)*100)+uOutput;
-		uInput>>=4;
-		uOutput = ((uInput&0xF)*1000)+uOutput;
-		uInput>>=4;
-		if (uInput) {	// Bigger than a short?
-			uOutput = ((uInput&0xF)*10000)+uOutput;
-			uInput>>=4;
-			uOutput = ((uInput&0xF)*100000)+uOutput;
-			uInput>>=4;
-			if (uInput) {	//3 bytes?
-				uOutput = ((uInput&0xF)*1000000)+uOutput;
-				uInput>>=4;
-				uOutput = (uInput*10000000)+uOutput;
-			}
-		}
-	}
+	Word32 uOutput = 0;		// Assume nothing
+	Word32 uMul = 1;		// Default multiplier
+	do {
+		// Parse the lowest digit
+		uOutput = ((uInput&0xFU)*uMul)+uOutput;
+		uInput>>=4U;		// Shift out the nibble
+		uMul = uMul*10U;	// Adjust the multiplier		
+	} while (uInput);		// Any more?
 	return uOutput;
 }
 
@@ -815,7 +803,7 @@ asm Word32 BURGER_API Burger::PowerOf2(register Word32 uInput)
 }
 
 // GNU version for MacOSX
-#elif (defined(BURGER_X86) || defined(BURGER_AMD64)) && defined(BURGER_GNUC) && !defined(DOXYGEN)
+#elif defined(BURGER_INTELARCHITECTURE) && defined(BURGER_GNUC) && !defined(DOXYGEN)
 Word32 BURGER_API Burger::PowerOf2(Word32 uInput)
 {
 	// Use the Intel instruction Bit Scan Reverse to 
@@ -1239,7 +1227,7 @@ char * BURGER_API Burger::ParseBeyondWhiteSpace(const char *pInput)
 	do {
 		uTemp = reinterpret_cast<const Word8 *>(pInput)[0];	// Get a byte of input
 		++pInput;
-	} while (uTemp==32 || uTemp==9);		// Space or TAB?
+	} while ((uTemp==32) || (uTemp==9));	// Space or TAB?
 	return const_cast<char*>(--pInput);		// Return the result pointer
 }
 
@@ -1265,7 +1253,7 @@ char * BURGER_API Burger::ParseToDelimiter(const char *pInput)
 	do {
 		uTemp = reinterpret_cast<const Word8 *>(pInput)[0];	// Get a byte of input
 		++pInput;
-	} while (uTemp!=32 && uTemp!=9 && uTemp && uTemp!=13 && uTemp!=10);		// Space or TAB?
+	} while (uTemp && (uTemp!=9) && (uTemp!=10) && (uTemp!=13) && (uTemp!=32));		// Space or TAB?
 	return const_cast<char*>(--pInput);		// Return the result pointer
 }
 
@@ -1356,16 +1344,27 @@ char * BURGER_API Burger::ParseBeyondEOL(const char *pInput,WordPtr uLength)
 
 	\brief Parse out a quoted string.
 	
-	If the first character of the string is a quote "\"" (0x22),
+	If the first character of the string is a quote "\"" (0x22) or "'",
 	then parse out a quote delimited string. This function will
-	parse double quotes ("") as a single quote to be inserted into the string.
-	
-	If the first character is not a quote, return pInput to signal an error condition.
+	parse double quotes ("" or '') as a single quote to be inserted into the string.
+	Whichever was the first quote character found, that will be the quote character
+	to be used for the double quote and end quote parser making the alternate
+	quote treated as a normal character.
 
-	All tabs in the string become spaces.
-	
+	If the first character is 0 or whitespace, return pInput to signal an error condition.
+
+	If the first character isn't a quote, 0 or whitespace, parse the string until
+	another whitespace character is found.
+
+	All tabs (\\t) in a quoted string are converted into spaces.
+
+	All strings terminate if a 0 or EOL (\\r, \\r\\n, \\n) sequence is found. If this
+	type of terminator is found, the returned pointer will point to the terminating
+	character (Except in the case of \\r\\n, where it will point at the \\n character).
+
 	If the output buffer isn't large enough to hold the resulting string, truncate
 	the output to fit. The output will always be zero terminated in all cases.
+
 	\code 
 		char output[256];
 		const char *pInput = "Hello";
@@ -1381,7 +1380,7 @@ char * BURGER_API Burger::ParseBeyondEOL(const char *pInput,WordPtr uLength)
 	\param uOutputSize Size of the output string buffer in bytes.
 	\param pInput Pointer to a "C" string that has a '"' as the first character.
 		\ref NULL will page fault.
-	\return Pointer to the character that ended parsing. '"', CR, LF or zero.
+	\return Pointer to the character that ended parsing. +1 beyond '"', or at CR, at LF or at zero.
 
 ***************************************/
 
@@ -1621,13 +1620,13 @@ void BURGER_API Burger::StripTrailingSpaces(char* pInput)
 void BURGER_API Burger::StripLeadingWhiteSpace(char* pInput)
 {
 	Word uTemp = reinterpret_cast<Word8 *>(pInput)[0];
-	if (uTemp==' ' || uTemp=='\t') {			// Is there a leading whitespace?
+	if ((uTemp==' ') || (uTemp=='\t')) {	// Is there a leading whitespace?
 		char *pTemp = pInput;				// Save the starting point of the string
 		++pInput;							// Accept the char
 		do {
 			uTemp = reinterpret_cast<Word8 *>(pInput)[0];		// Fetch the next char
 			++pInput;
-		} while (uTemp==' ' || uTemp=='\t');	// Look for the end of the whitespace
+		} while ((uTemp==' ') || (uTemp=='\t'));	// Look for the end of the whitespace
 
 		if (uTemp) {							// End of the string?
 			do {
@@ -1668,7 +1667,7 @@ void BURGER_API Burger::StripTrailingWhiteSpace(char* pInput)
 		char *pTemp = pInput;					// Init the zap pointer
 		do {
 			++pInput;							// Accept the char
-			if (uTemp!=' ' && uTemp!='\t') {	// Not whitespace?
+			if ((uTemp!=' ') && (uTemp!='\t')) {	// Not whitespace?
 				pTemp=pInput;					// Last VALID char
 			}
 			uTemp = reinterpret_cast<Word8 *>(pInput)[0];
@@ -1759,7 +1758,7 @@ void BURGER_API Burger::StripLeadingAndTrailingWhiteSpace(char* pInput)
 		do {
 			pTemp[0] = static_cast<char>(uTemp);		//Now, copy the string to the beginning of
 			++pTemp;							// the buffer
-			if (uTemp!=' ' && uTemp!='\t') {	// Is this a forbidden last char?
+			if ((uTemp!=' ') && (uTemp!='\t')) {	// Is this a forbidden last char?
 				pEnd = pTemp;
 			}
 			uTemp = reinterpret_cast<Word8 *>(pInput)[0];		// Accept the next char
@@ -1878,26 +1877,32 @@ void BURGER_API Burger::StripAllButList(char* pInput,const char* pList)
 
 void BURGER_API Burger::StripTrailing(char* pInput,const char* pList)
 {
-	Word uTemp = reinterpret_cast<const Word8 *>(pInput)[0];		// Is there a 
-	if (uTemp && reinterpret_cast<const Word8 *>(pList)[0]) {		/* Is there a string? */
-		++pInput;
-		char *pEnd = pInput;	// Init the zap pointer
-		do {
-			Word uTest = reinterpret_cast<const Word8 *>(pList)[0];
-			const Word8 *pListTemp = reinterpret_cast<const Word8 *>(pList);
+	Word uTemp = reinterpret_cast<const Word8 *>(pInput)[0];
+	if (uTemp) {				// Is there a string?
+		Word uTest = reinterpret_cast<const Word8 *>(pList)[0];
+		if (uTest) {
+
+			char *pEnd = pInput;	// Init the end of string pointer
 			do {
-				if (uTemp==uTest) {		// In the list?
-					goto SkipIt;		// Last VALID char
-				}
-				uTest = pListTemp[1];
-				++pListTemp;
-			} while (uTest);
-			pEnd = pInput;		/* Don't zap this char? */
+				++pInput;			// Point to where a zero would be if uTemp is acceptable
+				// Iterate over the test list
+				uTest = reinterpret_cast<const Word8 *>(pList)[0];
+				const Word8 *pListTemp = reinterpret_cast<const Word8 *>(pList);
+				do {
+					if (uTemp==uTest) {		// In the list?
+						goto SkipIt;		// Last VALID char
+					}
+					// Next in the list
+					uTest = pListTemp[1];
+					++pListTemp;
+				} while (uTest);
+				// Not in the list, mark the new location for terminator
+				pEnd = pInput;	// Terminate AFTER this character (++pInput is above)
 SkipIt:
-			uTemp = reinterpret_cast<const Word8 *>(pInput)[0];
-			++pInput;
-		} while (uTemp);		/* All done? */
-		pEnd[1] = 0;	/* Zap the final char */
+				uTemp = reinterpret_cast<const Word8 *>(pInput)[0];
+			} while (uTemp);		// All done?
+			pEnd[0] = 0;			// Zap the final char
+		}
 	}
 }
 
@@ -1944,7 +1949,7 @@ void BURGER_API Burger::StripLeading(char* pInput,const char* pList)
 			}
 			uTest = pListTemp[1];
 			++pListTemp;
-		} while (uTest);	// Any more?
+		} while (uTest);			// Any more?
 		--pInput;
 		if (pInput!=pTemp) {		// Did I remove anything?
 			StringCopy(pTemp,pInput);
@@ -2272,7 +2277,7 @@ char* BURGER_API Burger::GetFileExtension(const char *pInput)
 			pInput = pWork;				// Point to the terminating zero
 		}
 	}
-	return const_cast<char *>(pInput);	// Return end of string (Remove the constness)
+	return const_cast<char *>(pInput);	// Return end of string (Remove the const)
 }
 
 /*! ************************************
@@ -2340,7 +2345,7 @@ void BURGER_API Burger::SetFileExtension(char* pInput,const char* pNewExtension)
 	this function.
 	
 	\note This function uses large chuck data copies, so the input
-	and output pointers must point to seperate buffers. If they
+	and output pointers must point to separate buffers. If they
 	are overlapping buffers, the results are undefined.
 	
 	\sa MemoryMove(), MemoryFill() and MemoryClear()
@@ -4368,7 +4373,7 @@ char *BURGER_API Burger::StringString(const char *pInput,const char *pTest)
 	Word uTemp = reinterpret_cast<const Word8 *>(pInput)[0];
 	if (uTemp) {						// Do I even bother?
 		do {
-			Word i = 0;					// Init the index
+			WordPtr i = 0;					// Init the index
 			Word uTemp2;
 			do {
 				// Get the first char of the test string
@@ -4414,7 +4419,7 @@ char *BURGER_API Burger::StringCaseString(const char *pInput, const char *pTest)
 	Word uTemp = reinterpret_cast<const Word8 *>(pInput)[0];
 	if (uTemp) {						// Do I even bother?
 		do {
-			Word i = 0;					// Init the index
+			WordPtr i = 0;					// Init the index
 			Word uTemp2;
 			do {
 				// Get the first char of the test string
@@ -4440,6 +4445,256 @@ char *BURGER_API Burger::StringCaseString(const char *pInput, const char *pTest)
 	}
 	// No string match
 	return NULL;
+}
+
+/*! ************************************
+
+	\brief Convert an 8 bit value into a hex string
+
+	Store two hex digits in the form of 00 to a string buffer
+	and append a terminating zero. Returns the pointer
+	to the terminating zero so the calling function
+	can continue writing to the output buffer
+	as if it's a stream.
+
+	\param pOutput Pointer to a buffer at least 3 bytes in size.
+	\param uInput 8 bit value to print in HEX to a string.
+	\return Pointer to terminating zero at the end of the string
+
+	\sa NumberToAsciiHex(char *,Word16), NumberToAsciiHex(char *,Word32), NumberToAsciiHex(char *,Word64),
+		NumberToAsciiHex(char *,float), NumberToAsciiHex(char *,double),
+		NumberToAsciiHex(char *,Word32,Word), or NumberToAsciiHex(char *,Word64,Word)
+
+***************************************/
+
+char * BURGER_API Burger::NumberToAsciiHex(char *pOutput,Word8 uInput)
+{
+	// Convert the string and store in the buffer
+	pOutput[0] = g_NibbleToAsciiUppercase[(uInput>>4U)&0xFU];
+	pOutput[1] = g_NibbleToAsciiUppercase[uInput&0xFU];
+	pOutput[2] = 0;
+	// Return the pointer to the terminating zero
+	return pOutput+2;
+}
+
+/*! ************************************
+
+	\brief Convert a 16 bit value into a hex string
+
+	Store four hex digits in the form of 0000 to a string buffer
+	and append a terminating zero. Returns the pointer
+	to the terminating zero so the calling function
+	can continue writing to the output buffer
+	as if it's a stream.
+
+	\param pOutput Pointer to a buffer at least 5 bytes in size.
+	\param uInput 16 bit value to print in HEX to a string.
+	\return Pointer to terminating zero at the end of the string
+
+	\sa NumberToAsciiHex(char *,Word8), NumberToAsciiHex(char *,Word32), NumberToAsciiHex(char *,Word64),
+		NumberToAsciiHex(char *,float), NumberToAsciiHex(char *,double),
+		NumberToAsciiHex(char *,Word32,Word), or NumberToAsciiHex(char *,Word64,Word)
+
+***************************************/
+
+char * BURGER_API Burger::NumberToAsciiHex(char *pOutput,Word16 uInput)
+{
+	const void *pInput = &uInput;
+	// Push the pointer to the highest value byte
+	char *pEnd = &pOutput[sizeof(Word16)*2];
+#if defined(BURGER_LITTLEENDIAN)
+	pInput = (static_cast<const Word8 *>(pInput)+(sizeof(Word16)-1));
+#endif
+	do {
+		Word uTemp = static_cast<const Word8 *>(pInput)[0];
+#if defined(BURGER_LITTLEENDIAN)
+		pInput = (static_cast<const Word8 *>(pInput)-1);
+#else
+		pInput = (static_cast<const Word8 *>(pInput)+1);
+#endif
+		pOutput[0] = g_NibbleToAsciiUppercase[uTemp>>4U];
+		pOutput[1] = g_NibbleToAsciiUppercase[uTemp&0xFU];
+		pOutput+=2;
+	} while (pOutput<pEnd);
+	// Insert the zero terminator
+	pOutput[0] = 0;
+	return pOutput;
+}
+
+/*! ************************************
+
+	\brief Convert a 32 bit value into a hex string
+
+	Store eight hex digits in the form of 00000000 to a string buffer
+	and append a terminating zero. Returns the pointer
+	to the terminating zero so the calling function
+	can continue writing to the output buffer
+	as if it's a stream.
+
+	\param pOutput Pointer to a buffer at least 9 bytes in size.
+	\param uInput 32 bit value to print in HEX to a string.
+	\return Pointer to terminating zero at the end of the string
+
+	\sa NumberToAsciiHex(char *,Word8), NumberToAsciiHex(char *,Word16), NumberToAsciiHex(char *,Word64),
+		NumberToAsciiHex(char *,float), NumberToAsciiHex(char *,double),
+		NumberToAsciiHex(char *,Word32,Word), or NumberToAsciiHex(char *,Word64,Word)
+
+***************************************/
+
+char * BURGER_API Burger::NumberToAsciiHex(char *pOutput,Word32 uInput)
+{
+	const void *pInput = &uInput;
+	// Push the pointer to the highest value byte
+	char *pEnd = &pOutput[sizeof(Word32)*2];
+#if defined(BURGER_LITTLEENDIAN)
+	pInput = (static_cast<const Word8 *>(pInput)+(sizeof(Word32)-1));
+#endif
+	do {
+		Word uTemp = static_cast<const Word8 *>(pInput)[0];
+#if defined(BURGER_LITTLEENDIAN)
+		pInput = (static_cast<const Word8 *>(pInput)-1);
+#else
+		pInput = (static_cast<const Word8 *>(pInput)+1);
+#endif
+		pOutput[0] = g_NibbleToAsciiUppercase[uTemp>>4U];
+		pOutput[1] = g_NibbleToAsciiUppercase[uTemp&0xFU];
+		pOutput+=2;
+	} while (pOutput<pEnd);
+	// Insert the zero terminator
+	pOutput[0] = 0;
+	return pOutput;
+}
+
+/*! ************************************
+
+	\brief Convert a 64 bit value into a hex string
+
+	Store sixteen hex digits in the form of 0000000000000000 to a string buffer
+	and append a terminating zero. Returns the pointer
+	to the terminating zero so the calling function
+	can continue writing to the output buffer
+	as if it's a stream.
+
+	\param pOutput Pointer to a buffer at least 17 bytes in size.
+	\param uInput 64 bit value to print in HEX to a string.
+	\return Pointer to terminating zero at the end of the string
+
+	\sa NumberToAsciiHex(char *,Word8), NumberToAsciiHex(char *,Word16), NumberToAsciiHex(char *,Word32),
+		NumberToAsciiHex(char *,float), NumberToAsciiHex(char *,double),
+		NumberToAsciiHex(char *,Word32,Word), or NumberToAsciiHex(char *,Word64,Word)
+
+***************************************/
+
+char * BURGER_API Burger::NumberToAsciiHex(char *pOutput,Word64 uInput)
+{
+	const void *pInput = &uInput;
+	// Push the pointer to the highest value byte
+	char *pEnd = &pOutput[sizeof(Word64)*2];
+#if defined(BURGER_LITTLEENDIAN)
+	pInput = (static_cast<const Word8 *>(pInput)+(sizeof(Word64)-1));
+#endif
+	do {
+		Word uTemp = static_cast<const Word8 *>(pInput)[0];
+#if defined(BURGER_LITTLEENDIAN)
+		pInput = (static_cast<const Word8 *>(pInput)-1);
+#else
+		pInput = (static_cast<const Word8 *>(pInput)+1);
+#endif
+		pOutput[0] = g_NibbleToAsciiUppercase[uTemp>>4U];
+		pOutput[1] = g_NibbleToAsciiUppercase[uTemp&0xFU];
+		pOutput+=2;
+	} while (pOutput<pEnd);
+	// Insert the zero terminator
+	pOutput[0] = 0;
+	return pOutput;
+}
+
+/*! ************************************
+
+	\brief Convert a 32 bit floating point value into a hex string
+
+	Store eight hex digits in the form of 00000000 to a string buffer
+	and append a terminating zero. Returns the pointer
+	to the terminating zero so the calling function
+	can continue writing to the output buffer
+	as if it's a stream.
+
+	\param pOutput Pointer to a buffer at least 9 bytes in size.
+	\param fInput 32 bit value to print in HEX to a string.
+	\return Pointer to terminating zero at the end of the string
+
+	\sa NumberToAsciiHex(char *,Word8), NumberToAsciiHex(char *,Word16), NumberToAsciiHex(char *,Word32),
+		NumberToAsciiHex(char *,Word64), NumberToAsciiHex(char *,double),
+		NumberToAsciiHex(char *,Word32,Word), or NumberToAsciiHex(char *,Word64,Word)
+
+***************************************/
+
+char * BURGER_API Burger::NumberToAsciiHex(char *pOutput,float fInput)
+{
+	const void *pInput = &fInput;
+	// Push the pointer to the highest value byte
+	char *pEnd = &pOutput[sizeof(float)*2];
+#if defined(BURGER_LITTLEENDIAN)
+	pInput = (static_cast<const Word8 *>(pInput)+(sizeof(float)-1));
+#endif
+	do {
+		Word uTemp = static_cast<const Word8 *>(pInput)[0];
+#if defined(BURGER_LITTLEENDIAN)
+		pInput = (static_cast<const Word8 *>(pInput)-1);
+#else
+		pInput = (static_cast<const Word8 *>(pInput)+1);
+#endif
+		pOutput[0] = g_NibbleToAsciiUppercase[uTemp>>4U];
+		pOutput[1] = g_NibbleToAsciiUppercase[uTemp&0xFU];
+		pOutput+=2;
+	} while (pOutput<pEnd);
+	// Insert the zero terminator
+	pOutput[0] = 0;
+	return pOutput;
+}
+
+/*! ************************************
+
+	\brief Convert a 64 bit floating point value into a hex string
+
+	Store sixteen hex digits in the form of 0000000000000000 to a string buffer
+	and append a terminating zero. Returns the pointer
+	to the terminating zero so the calling function
+	can continue writing to the output buffer
+	as if it's a stream.
+
+	\param pOutput Pointer to a buffer at least 17 bytes in size.
+	\param dInput 64 bit value to print in HEX to a string.
+	\return Pointer to terminating zero at the end of the string
+
+	\sa NumberToAsciiHex(char *,Word8), NumberToAsciiHex(char *,Word16), NumberToAsciiHex(char *,Word32),
+		NumberToAsciiHex(char *,Word64), NumberToAsciiHex(char *,float),
+		NumberToAsciiHex(char *,Word32,Word), or NumberToAsciiHex(char *,Word64,Word)
+
+***************************************/
+
+char * BURGER_API Burger::NumberToAsciiHex(char *pOutput,double dInput)
+{
+	const void *pInput = &dInput;
+	// Push the pointer to the highest value byte
+	char *pEnd = &pOutput[sizeof(double)*2];
+#if defined(BURGER_LITTLEENDIAN)
+	pInput = (static_cast<const Word8 *>(pInput)+(sizeof(double)-1));
+#endif
+	do {
+		Word uTemp = static_cast<const Word8 *>(pInput)[0];
+#if defined(BURGER_LITTLEENDIAN)
+		pInput = (static_cast<const Word8 *>(pInput)-1);
+#else
+		pInput = (static_cast<const Word8 *>(pInput)+1);
+#endif
+		pOutput[0] = g_NibbleToAsciiUppercase[uTemp>>4U];
+		pOutput[1] = g_NibbleToAsciiUppercase[uTemp&0xFU];
+		pOutput+=2;
+	} while (pOutput<pEnd);
+	// Insert the zero terminator
+	pOutput[0] = 0;
+	return pOutput;
 }
 
 /*! ************************************
@@ -4470,8 +4725,8 @@ char *BURGER_API Burger::StringCaseString(const char *pInput, const char *pTest)
 	
 	\return Pointer to the char immediately after the last char output. Most cases,
 		this is a pointer to the terminating zero.
-	\sa Burger::NumberToAsciiHex(char *pOutput,Word64 uInput,Word uDigits), 
-		Burger::NumberToAscii(char *,Word32,Word) or Burger::NumberToAscii(char *,Int32,Word)
+	\sa NumberToAsciiHex(char *pOutput,Word64 uInput,Word uDigits), 
+		NumberToAscii(char *,Word32,Word) or NumberToAscii(char *,Int32,Word)
 
 ***************************************/
 
@@ -4530,8 +4785,8 @@ char *BURGER_API Burger::NumberToAsciiHex(char *pOutput,Word32 uInput,Word uDigi
 	
 	\return Pointer to the char immediately after the last char output. Most cases,
 		this is a pointer to the terminating zero.
-	\sa Burger::NumberToAsciiHex(char *pOutput,Word32 uInput,Word uDigits), 
-		Burger::NumberToAscii(char *,Word32,Word) or Burger::NumberToAscii(char *,Int32,Word)
+	\sa NumberToAsciiHex(char *pOutput,Word32 uInput,Word uDigits), 
+		NumberToAscii(char *,Word32,Word) or NumberToAscii(char *,Int32,Word)
 
 ***************************************/
 
@@ -5023,7 +5278,382 @@ Word32 BURGER_API Burger::AsciiToInteger(const char *pInput,const char **pDest)
 	return 0;				// Bad value
 }
 
+/*! ************************************
 
+	\brief Return a signed integer value
+
+	Scan the value string as a 32 bit signed integer or
+	hex value and if successful, test it against
+	the valid range and return the value clamped
+	to that range. If it's not a number, return the
+	default.
+
+	Hex strings are acceptable input in the form
+	of $1234 and 0x1234. 0xFFFFFFFF will be converted
+	to -1.
+
+	\param pInput Pointer to the string to convert. \ref NULL will force the default
+	\param iDefault Value to return on error
+	\param iMin Minimum acceptable value
+	\param iMax Maximum acceptable value
+	\return Value in between iMin and iMax or iDefault
+	\sa AsciiToInteger(const char *,const char **) or AsciiToWord(const char *,Word,Word,Word)
+
+***************************************/
+
+Int BURGER_API Burger::AsciiToInteger(const char *pInput,Int iDefault,Int iMin,Int iMax)
+{
+	if (pInput) {
+		const char *pDest;
+		// Parse as signed
+		Int iValue = static_cast<Int>(AsciiToInteger(pInput,&pDest));
+		if (pDest!=pInput) {
+			// Do a signed bounds check
+			if (iValue<iMin) {
+				iDefault = iMin;
+			} else if (iValue>iMax) {
+				iDefault = iMax;
+			} else {
+				iDefault = iValue;
+			}
+		}
+	}
+	return iDefault;
+}
+
+/*! ************************************
+
+	\brief Convert a 32 bit integer and signal if successful
+
+	Scan the value string as a 32 bit integer or
+	hex value and if successful, return \ref TRUE.
+
+	Hex strings are acceptable input in the form
+	of $1234 and 0x1234. 0xFFFFFFFF will be converted
+	to -1.
+
+	\param pOutput Pointer to the value to return
+	\param pInput Pointer to the string to convert. \ref NULL will force the default
+	\return \ref TRUE if a value was parsed, \ref FALSE if the ASCII string was not a number
+	\sa AsciiToInteger(const char *,const char **) or AsciiToInteger(const char *,Int,Int,Int)
+
+***************************************/
+
+Word BURGER_API Burger::AsciiToInteger(Word32 *pOutput,const char *pInput)
+{
+	const char *pDest;
+	// Convert the text
+	Word32 uOutput = AsciiToInteger(pInput,&pDest);
+	Word uResult = TRUE;
+	// Was anything parsed?
+	if (pDest==pInput) {
+		uResult = FALSE;
+		uOutput = 0;	// Clear the output
+	}
+	pOutput[0] = uOutput;
+	return uResult;		// Return the result
+}
+
+/*! ************************************
+
+	\brief Return an unsigned integer value
+
+	Scan the value string as a 32 bit unsigned integer or
+	hex value and if successful, test it against
+	the valid range and return the value clamped
+	to that range. If it's not a number, return the
+	default.
+
+	Hex strings are acceptable input in the form
+	of $1234 and 0x1234
+
+	\param pInput Pointer to the string to convert. \ref NULL will force the default
+	\param uDefault Value to return on error
+	\param uMin Minimum acceptable value
+	\param uMax Maximum acceptable value
+	\return Value in between uMin and uMax or uDefault
+	\sa AsciiToInteger(const char *,const char **) or AsciiToInteger(const char *,Int,Int,Int)
+
+***************************************/
+
+Word BURGER_API Burger::AsciiToWord(const char *pInput,Word uDefault,Word uMin,Word uMax)
+{
+	if (pInput) {
+		// Convert from UTF-8
+		const char *pDest;
+		Word32 uValue = AsciiToInteger(pInput,&pDest);
+		// Anything parsed?
+		if (pDest!=pInput) {
+			// Bounds test
+			if (uValue<uMin) {
+				uDefault = uMin;
+			} else if (uValue>uMax) {
+				uDefault = uMax;
+			} else {
+				uDefault = uValue;
+			}
+		}
+	}
+	return uDefault;
+}
+
+/*! ************************************
+
+	\brief Convert an ASCII string into a 64 bit integer.
+	
+	Take a string formatted as a simple integer number, 
+	a hex number of the form $5123 or 0x1234 with or
+	without a preceding '-' sign and convert it into
+	a 64 bit integer value.
+	
+	Overflow is detected and is considered an error condition. 0xFFFFFFFFFFFFFFFFU
+	will be returned in this case.
+	
+	\param pInput Pointer to the string to convert. NULL will page fault.
+	\param pDest Pointer to a const char * that will either be given pInput (Error)
+		of pInput moved ahead until a non-numeric character was found. This can
+		be NULL if the application doesn't require the location of the string after
+		the integer was parsed.
+		
+	\return A 64 bit integer that represents the ASCII string. Will be 0xFFFFFFFF if
+		an overflow occurred and 0 if nothing could be parsed.
+	
+	\sa Burger::AsciiToFloat(const char *,const char **) or Burger::AsciiToDouble(const char *,const char **) 
+
+***************************************/
+
+Word64 BURGER_API Burger::AsciiToInteger64(const char *pInput,const char **pDest)
+{
+	if (pDest) {
+		pDest[0] = pInput;	// Assume I don't accept any input (Error condition)
+	}
+	
+	Word uLetter;			// Temp ASCII char
+
+	// Parse away whitespace and the '-' flag.
+	
+	Word64 uNegate = 0;		// Don't negate the result (Assume positive)
+	do {
+		uLetter = reinterpret_cast<const Word8*>(pInput)[0];			// Get char
+		++pInput;
+		if (uLetter == '-') {	// Negate it?
+			uNegate ^= BURGER_MAXUINT64;	// Toggle it, so - - works. (Foo^-1)-(-1) = -Foo
+			uLetter = ' ';			// Force staying in the loop
+		}
+	} while ((uLetter == ' ') || (uLetter == '\t') || (uLetter == '+'));		// Eat white space
+
+	if (uLetter!='$') {			// Hex input?
+		if ((uLetter=='0') &&
+			!((reinterpret_cast<const Word8 *>(pInput)[0]^'X')&(~0x20U))) {		// 0X or 0x for "C" style input
+			++pInput;	// Skip the x and go to the hex parser
+		} else {
+
+	// Here's the base 10 code. Common case
+	
+			Word64 uValue10 = g_AsciiToWord8Table[uLetter];
+			if (uValue10<10) {		// First char valid?
+				Word uAscii10 = reinterpret_cast<const Word8 *>(pInput)[0];
+				uLetter = g_AsciiToWord8Table[uAscii10];
+				if (uLetter<10) {	// Second char valid?
+					do {
+						++pInput;
+						// Check for overflow
+						if ((uValue10>0x1999999999999999ULL) ||		// 0xFFFFFFFFFFFFFFFFULL/10 = 0x1999999999999999
+							((uValue10==0x1999999999999999ULL) && (uLetter>=6))) {
+							return BURGER_MAXUINT64;			// Tilt!
+						}
+						uValue10 = (uValue10*10)+uLetter;		// Process into the total
+					// Convert char to value
+						uAscii10 = reinterpret_cast<const Word8 *>(pInput)[0];
+						uLetter = g_AsciiToWord8Table[uAscii10];
+					} while (uLetter<10);
+				}
+				
+				// Okay, I've got a valid value
+				
+				uValue10 = (uValue10^uNegate)-uNegate;		// Perform negation?
+
+				// Does the caller want the end address?
+				
+				if (pDest) {
+					// Skip past trailing white space
+					
+					if (uAscii10==' ' || uAscii10=='\t') {
+						do {
+							++pInput;
+							uAscii10 = reinterpret_cast<const Word8 *>(pInput)[0];	// Remove whitespace
+						} while ((uAscii10==' ') || (uAscii10=='\t'));
+					}
+					pDest[0] = pInput;		// Store the ASCII address
+				}
+				return uValue10;			// Return the result
+			}
+			return 0;		// No input, error
+		}
+	}
+
+	// Base 16
+	
+	
+	{
+		Word64 uValue16 = g_AsciiToWord8Table[reinterpret_cast<const Word8 *>(pInput)[0]];
+		if (uValue16<16) {
+			++pInput;
+			Word uAscii16 = reinterpret_cast<const Word8 *>(pInput)[0];
+			uLetter = g_AsciiToWord8Table[uAscii16];
+			if (uLetter<16) {		// Second char valid?
+				do {
+					++pInput;
+					if (uValue16>=0x1000000000000000ULL) {
+						return BURGER_MAXUINT64;		// Tilt
+					}
+					uValue16 = (uValue16<<4U)+uLetter;
+					// Convert char to value
+					uAscii16 = reinterpret_cast<const Word8 *>(pInput)[0];
+					uLetter = g_AsciiToWord8Table[uAscii16];
+				} while (uLetter<16);
+			}
+			
+			// Perform negation?
+			uValue16 = (uValue16^uNegate)-uNegate;
+
+			// Does the caller want the end address?
+				
+			if (pDest) {
+				// Skip past trailing white space
+					
+				if (uAscii16==' ' || uAscii16=='\t') {
+					do {
+						++pInput;
+						uAscii16 = reinterpret_cast<const Word8 *>(pInput)[0];	// Remove whitespace
+					} while ((uAscii16==' ') || (uAscii16=='\t'));
+				}
+				pDest[0] = pInput;		// Store the ASCII address
+			}
+			return uValue16;			// Return the result
+		}
+	}
+	return 0;				// Bad value
+}
+
+/*! ************************************
+
+	\brief Return a signed integer value
+
+	Scan the value string as a 64 bit signed integer or
+	hex value and if successful, test it against
+	the valid range and return the value clamped
+	to that range. If it's not a number, return the
+	default.
+
+	Hex strings are acceptable input in the form
+	of $1234 and 0x1234. 0xFFFFFFFFFFFFFFFF will be converted
+	to -1.
+
+	\param pInput Pointer to the string to convert. \ref NULL will force the default
+	\param iDefault Value to return on error
+	\param iMin Minimum acceptable value
+	\param iMax Maximum acceptable value
+	\return Value in between iMin and iMax or iDefault
+	\sa AsciiToInteger64(const char *,const char **) or AsciiToWord64(const char *,Word64,Word64,Word64)
+
+***************************************/
+
+Int64 BURGER_API Burger::AsciiToInteger64(const char *pInput,Int64 iDefault,Int64 iMin,Int64 iMax)
+{
+	if (pInput) {
+		const char *pDest;
+		// Parse as signed
+		Int64 iValue = static_cast<Int64>(AsciiToInteger64(pInput,&pDest));
+		if (pDest!=pInput) {
+			// Do a signed bounds check
+			if (iValue<iMin) {
+				iDefault = iMin;
+			} else if (iValue>iMax) {
+				iDefault = iMax;
+			} else {
+				iDefault = iValue;
+			}
+		}
+	}
+	return iDefault;
+}
+
+/*! ************************************
+
+	\brief Convert a 64 bit integer and signal if successful
+
+	Scan the value string as a 64 bit integer or
+	hex value and if successful, return \ref TRUE.
+
+	Hex strings are acceptable input in the form
+	of $1234 and 0x1234. 0xFFFFFFFFFFFFFFFF will be converted
+	to -1.
+
+	\param pOutput Pointer to the value to return
+	\param pInput Pointer to the string to convert. \ref NULL will force the default
+	\return \ref TRUE if a value was parsed, \ref FALSE if the ASCII string was not a number
+	\sa AsciiToInteger64(const char *,const char **) or AsciiToInteger64(const char *,Int64,Int64,Int64)
+
+***************************************/
+
+Word BURGER_API Burger::AsciiToInteger64(Word64 *pOutput,const char *pInput)
+{
+	const char *pDest;
+	// Convert the text
+	Word64 uOutput = AsciiToInteger64(pInput,&pDest);
+	Word uResult = TRUE;
+	// Was anything parsed?
+	if (pDest==pInput) {
+		uResult = FALSE;
+		uOutput = 0;	// Clear the output
+	}
+	pOutput[0] = uOutput;
+	return uResult;		// Return the result
+}
+
+/*! ************************************
+
+	\brief Return an unsigned integer value
+
+	Scan the value string as a 64 bit unsigned integer or
+	hex value and if successful, test it against
+	the valid range and return the value clamped
+	to that range. If it's not a number, return the
+	default.
+
+	Hex strings are acceptable input in the form
+	of $1234 and 0x1234
+
+	\param pInput Pointer to the string to convert. \ref NULL will force the default
+	\param uDefault Value to return on error
+	\param uMin Minimum acceptable value
+	\param uMax Maximum acceptable value
+	\return Value in between uMin and uMax or uDefault
+	\sa AsciiToInteger64(const char *,const char **) or AsciiToInteger64(const char *,Int64,Int64,Int64)
+
+***************************************/
+
+Word64 BURGER_API Burger::AsciiToWord64(const char *pInput,Word64 uDefault,Word64 uMin,Word64 uMax)
+{
+	if (pInput) {
+		// Convert from UTF-8
+		const char *pDest;
+		Word64 uValue = AsciiToInteger64(pInput,&pDest);
+		// Anything parsed?
+		if (pDest!=pInput) {
+			// Bounds test
+			if (uValue<uMin) {
+				uDefault = uMin;
+			} else if (uValue>uMax) {
+				uDefault = uMax;
+			} else {
+				uDefault = uValue;
+			}
+		}
+	}
+	return uDefault;
+}
 
 /***************************************
 
@@ -5727,125 +6357,6 @@ Word BURGER_API Burger::AsciiToBoolean(const char *pInput,const char **pDest)
 	} while (--i);
 	// Return 1 if non-zero
 	return AsciiToInteger(pInput,pDest)!=0;
-}
-
-/*! ************************************
-
-	\brief Return an unsigned integer value
-
-	Scan the value string as a 32 bit unsigned integer or
-	hex value and if successful, test it against
-	the valid range and return the value clamped
-	to that range. If it's not a number, return the
-	default.
-
-	Hex strings are acceptable input in the form
-	of $1234 and 0x1234
-
-	\param pInput Pointer to the string to convert. \ref NULL will force the default
-	\param uDefault Value to return on error
-	\param uMin Minimum acceptable value
-	\param uMax Maximum acceptable value
-	\return Value in between uMin and uMax or uDefault
-	\sa AsciiToInteger(const char *,const char **) or AsciiToInteger(const char *,Int,Int,Int)
-
-***************************************/
-
-Word BURGER_API Burger::AsciiToWord(const char *pInput,Word uDefault,Word uMin,Word uMax)
-{
-	if (pInput) {
-		// Convert from UTF-8
-		const char *pDest;
-		Word32 uValue = AsciiToInteger(pInput,&pDest);
-		// Anything parsed?
-		if (pDest!=pInput) {
-			// Bounds test
-			if (uValue<uMin) {
-				uDefault = uMin;
-			} else if (uValue>uMax) {
-				uDefault = uMax;
-			} else {
-				uDefault = uValue;
-			}
-		}
-	}
-	return uDefault;
-}
-
-/*! ************************************
-
-	\brief Return a signed integer value
-
-	Scan the value string as a 32 bit signed integer or
-	hex value and if successful, test it against
-	the valid range and return the value clamped
-	to that range. If it's not a number, return the
-	default.
-
-	Hex strings are acceptable input in the form
-	of $1234 and 0x1234. 0xFFFFFFFF will be converted
-	to -1.
-
-	\param pInput Pointer to the string to convert. \ref NULL will force the default
-	\param iDefault Value to return on error
-	\param iMin Minimum acceptable value
-	\param iMax Maximum acceptable value
-	\return Value in between iMin and iMax or iDefault
-	\sa AsciiToInteger(const char *,const char **) or AsciiToWord(const char *,Word,Word,Word)
-
-***************************************/
-
-Int BURGER_API Burger::AsciiToInteger(const char *pInput,Int iDefault,Int iMin,Int iMax)
-{
-	if (pInput) {
-		const char *pDest;
-		// Parse as signed
-		Int iValue = static_cast<Int>(AsciiToInteger(pInput,&pDest));
-		if (pDest!=pInput) {
-			// Do a signed bounds check
-			if (iValue<iMin) {
-				iDefault = iMin;
-			} else if (iValue>iMax) {
-				iDefault = iMax;
-			} else {
-				iDefault = iValue;
-			}
-		}
-	}
-	return iDefault;
-}
-
-/*! ************************************
-
-	\brief Convert a 32 bit integer and signal if successful
-
-	Scan the value string as a 32 bit integer or
-	hex value and if successful, return \ref TRUE.
-
-	Hex strings are acceptable input in the form
-	of $1234 and 0x1234. 0xFFFFFFFF will be converted
-	to -1.
-
-	\param pOutput Pointer to the value to return
-	\param pInput Pointer to the string to convert. \ref NULL will force the default
-	\return \ref TRUE if a value was parsed, \ref FALSE if the ASCII string was not a number
-	\sa AsciiToInteger(const char *,const char **) or AsciiToInteger(const char *,Int,Int,Int)
-
-***************************************/
-
-Word BURGER_API Burger::AsciiToInteger(Word32 *pOutput,const char *pInput)
-{
-	const char *pDest;
-	// Convert the text
-	Word32 uOutput = AsciiToInteger(pInput,&pDest);
-	Word uResult = TRUE;
-	// Was anything parsed?
-	if (pDest==pInput) {
-		uResult = FALSE;
-		uOutput = 0;	// Clear the output
-	}
-	pOutput[0] = uOutput;
-	return uResult;		// Return the result
 }
 
 /*! ************************************

@@ -685,6 +685,73 @@ void BURGER_API Burger::String::Set(const char *pInput,WordPtr uLength)
 
 /*! ************************************
 
+	\brief Copy a 16 bit "C" string to a Burger::String
+
+	\param pInput Pointer to a UTF16 "C" string. \ref NULL generates an empty string.
+
+***************************************/
+
+void BURGER_API Burger::String::Set(const Word16 *pInput)
+{
+	if (!pInput) {
+		pInput = g_EmptyString16;
+	}
+	char *pDest = m_Raw;
+	WordPtr uInputLength = UTF8::FromUTF16(NULL,0,pInput);		// Length of the new string
+	if (uInputLength>=BUFFERSIZE) {		// Buffer big enough?
+		pDest = static_cast<char *>(Alloc(uInputLength+1));
+		if (!pDest) {					// Oh oh...
+			pDest = m_Raw;
+			uInputLength = 0;			// Don't copy anything
+			pInput = g_EmptyString16;	// Will copy the null character
+		}
+	}
+	char *pOld = m_pData;
+	m_uLength = uInputLength;			// Save the new length
+	m_pData = pDest;					// Set the pointer
+	UTF8::FromUTF16(pDest,uInputLength+1,pInput);		// Copy the string
+	if (pOld!=m_Raw) {					// Discard previous memory
+		Free(pOld);
+	}
+}
+
+/*! ************************************
+
+	\brief Copy a 16 bit "C" string to a Burger::String
+
+	\param pInput Pointer to a UTF16 "C" string. \ref NULL generates an empty string.
+	\param uLength Length of the UTF16 string in characters (sizeof(buffer)/2)
+
+***************************************/
+
+void BURGER_API Burger::String::Set(const Word16 *pInput,WordPtr uLength)
+{
+	if (!pInput) {
+		pInput = g_EmptyString16;
+	}
+	char *pDest = m_Raw;
+	WordPtr uInputLength = UTF8::FromUTF16(NULL,0,pInput,uLength<<1U);		// Length of the new string
+	if (uInputLength>=BUFFERSIZE) {		// Buffer big enough?
+		pDest = static_cast<char *>(Alloc(uInputLength+1));
+		if (!pDest) {					// Oh oh...
+			pDest = m_Raw;
+			uInputLength = 0;			// Don't copy anything
+			pInput = g_EmptyString16;	// Will copy the null character
+		}
+	}
+	char *pOld = m_pData;
+	m_uLength = uInputLength;			// Save the new length
+	m_pData = pDest;					// Set the pointer
+	UTF8::FromUTF16(pDest,uInputLength+1,pInput,uLength<<1U);		// Copy the string
+	if (pOld!=m_Raw) {					// Discard previous memory
+		Free(pOld);
+	}
+}
+
+
+
+/*! ************************************
+
 	\brief Force a buffer size
 
 	Set the buffer to a specific size while retaining the existing string.
@@ -1834,7 +1901,7 @@ void BURGER_API Burger::String::SetWordHex(Word uValue)
 	}
 	m_Raw[0] = '0';
 	m_Raw[1] = 'x';
-	m_uLength = static_cast<WordPtr>(NumberToAsciiHex(m_Raw+2,static_cast<Word32>(uValue))-m_Raw);
+	m_uLength = static_cast<WordPtr>(NumberToAsciiHex(m_Raw+2,static_cast<Word32>(uValue),0)-m_Raw);
 }
 
 /*! ************************************

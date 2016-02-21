@@ -73,7 +73,7 @@ Word BURGER_API Burger::Debug::IsDebuggerPresent(void)
 	// Set up for querying the kernel about this process
 	
 	int ManagementInfobase[4];
-	ManagementInfobase[0] = CTL_KERN;		// Query the kernal
+	ManagementInfobase[0] = CTL_KERN;		// Query the kernel
 	ManagementInfobase[1] = KERN_PROC;		// Asking for a kinfo_proc structure
 	ManagementInfobase[2] = KERN_PROC_PID;	// This process ID
 	ManagementInfobase[3] = getpid();		// Here's the application's ID
@@ -83,6 +83,8 @@ Word BURGER_API Burger::Debug::IsDebuggerPresent(void)
 	struct kinfo_proc Output;
 	MemoryClear(&Output,sizeof(Output));
 	size_t uOutputSize = sizeof(Output);
+
+	// Call BSD for the state of the process
 	int iResult = sysctl(ManagementInfobase,static_cast<u_int>(BURGER_ARRAYSIZE(ManagementInfobase)),&Output,&uOutputSize,NULL,0);
 	Word uResult = FALSE;
 	if (!iResult) {

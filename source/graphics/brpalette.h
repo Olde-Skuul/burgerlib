@@ -53,6 +53,10 @@ struct RGBWord8_t {
 	static const RGBWord8_t Teal;
 	static const RGBWord8_t White;
 	static const RGBWord8_t Yellow;
+	BURGER_INLINE Word32 ToRGB(void) const { return (static_cast<Word32>(m_uRed)<<16U) + (static_cast<Word32>(m_uGreen)<<8U) + m_uBlue; }
+	BURGER_INLINE Word32 ToBGR(void) const { return (static_cast<Word32>(m_uBlue)<<16U) + (static_cast<Word32>(m_uGreen)<<8U) + m_uRed; }
+	BURGER_INLINE void FromRGB(Word32 uColor) { m_uRed = static_cast<Word8>(uColor>>16U); m_uGreen = static_cast<Word8>(uColor>>8U); m_uBlue = static_cast<Word8>(uColor); }
+	BURGER_INLINE void FromBGR(Word32 uColor) { m_uRed = static_cast<Word8>(uColor); m_uGreen = static_cast<Word8>(uColor>>8U); m_uBlue = static_cast<Word8>(uColor>>16U); }
 	void BURGER_API Interpolate(const RGBWord8_t *pFrom,const RGBWord8_t *pTo,float fFactor);
 };
 struct RGBAWord8_t {
@@ -77,6 +81,10 @@ struct RGBAWord8_t {
 	static const RGBAWord8_t Teal;
 	static const RGBAWord8_t White;
 	static const RGBAWord8_t Yellow;
+	BURGER_INLINE Word32 ToARGB(void) const { return (static_cast<Word32>(m_uAlpha)<<24U) + (static_cast<Word32>(m_uRed)<<16U) + (static_cast<Word32>(m_uGreen)<<8U) + m_uBlue; }
+	BURGER_INLINE Word32 ToABGR(void) const { return (static_cast<Word32>(m_uAlpha)<<24U) + (static_cast<Word32>(m_uBlue)<<16U) + (static_cast<Word32>(m_uGreen)<<8U) + m_uRed; }
+	BURGER_INLINE void FromARGB(Word32 uColor) { m_uRed = static_cast<Word8>(uColor>>16U); m_uGreen = static_cast<Word8>(uColor>>8U); m_uBlue = static_cast<Word8>(uColor); m_uAlpha = static_cast<Word8>(uColor>>24U); }
+	BURGER_INLINE void FromABGR(Word32 uColor) { m_uRed = static_cast<Word8>(uColor); m_uGreen = static_cast<Word8>(uColor>>8U); m_uBlue = static_cast<Word8>(uColor>>16U); m_uAlpha = static_cast<Word8>(uColor>>24U); }
 	void BURGER_API Interpolate(const RGBAWord8_t *pFrom,const RGBAWord8_t *pTo,float fFactor);
 };
 struct RGBWord16_t {
@@ -175,12 +183,25 @@ public:
 	static void BURGER_API MakeColorMasks(Word8 *pOutput,Word uMaskIndex);
 	static void BURGER_API MakeFadeLookup(Word8 *pOutput,const Word8 *pInput,Word uRedAdjust,Word uGreenAdjust,Word uBlueAdjust);
 };
-BURGER_INLINE void CopyPalette(RGBWord8_t *pOutput,const RGBWord8_t *pInput,Word uEntries=256) { MemoryCopy(pOutput,pInput,uEntries*sizeof(RGBWord8_t)); }
-extern void BURGER_API CopyPalette(RGBWord8_t *pOutput,const RGBAWord8_t *pInput,Word uEntries=256);
-extern void BURGER_API CopyPalette(RGBAWord8_t *pOutput,const RGBWord8_t *pInput,Word uEntries=256);
-BURGER_INLINE void CopyPalette(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,Word uEntries=256) { MemoryCopy(pOutput,pInput,uEntries*sizeof(RGBAWord8_t)); }
+BURGER_INLINE void CopyPalette(RGBWord8_t *pOutput,const RGBWord8_t *pInput,WordPtr uEntries=256) { MemoryCopy(pOutput,pInput,uEntries*sizeof(RGBWord8_t)); }
+extern void BURGER_API CopyPalette(RGBWord8_t *pOutput,const RGBAWord8_t *pInput,WordPtr uEntries=256);
+extern void BURGER_API CopyPalette(RGBAWord8_t *pOutput,const RGBWord8_t *pInput,WordPtr uEntries=256);
+BURGER_INLINE void CopyPalette(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,WordPtr uEntries=256) { MemoryCopy(pOutput,pInput,uEntries*sizeof(RGBAWord8_t)); }
+extern void BURGER_API CopyPalette444(RGBWord8_t *pOutput,const Word16 *pInput,WordPtr uEntries=256);
+extern void BURGER_API CopyPalette444(RGBAWord8_t *pOutput,const Word16 *pInput,WordPtr uEntries=256);
+extern void BURGER_API CopyPalette4444(RGBWord8_t *pOutput,const Word16 *pInput,WordPtr uEntries=256);
+extern void BURGER_API CopyPalette4444(RGBAWord8_t *pOutput,const Word16 *pInput,WordPtr uEntries=256);
 extern void BURGER_API Convert(RGBFloat_t *pOutput,const HSL_t *pInput);
 extern void BURGER_API Convert(HSL_t *pOutput,const RGBFloat_t *pInput);
+extern void BURGER_API CopyPalette256(RGBWord8_t *pOutput,const RGBWord8_t *pInput,Word uStartIndex=0,Word uPaletteSize=256);
+extern void BURGER_API CopyPalette256(RGBWord8_t *pOutput,const RGBAWord8_t *pInput,Word uStartIndex=0,Word uPaletteSize=256);
+extern void BURGER_API CopyPalette256(RGBAWord8_t *pOutput,const RGBWord8_t *pInput,Word uStartIndex=0,Word uPaletteSize=256);
+extern void BURGER_API CopyPalette256(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,Word uStartIndex=0,Word uPaletteSize=256);
+extern void BURGER_API ClearPalette(RGBWord8_t *pOutput,WordPtr uPaletteSize=256);
+extern void BURGER_API ClearPalette(RGBAWord8_t *pOutput,WordPtr uPaletteSize=256);
+extern void BURGER_API FillPalette(RGBWord8_t *pOutput,const RGBWord8_t *pInput,WordPtr uPaletteSize=256);
+extern void BURGER_API FillPalette(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,WordPtr uPaletteSize=256);
+
 }
 /* END */
 

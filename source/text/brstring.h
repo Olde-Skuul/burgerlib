@@ -63,6 +63,8 @@ public:
 	BURGER_INLINE const char *GetPtr() const { return m_pData; }
 	void BURGER_API Set(const char *pInput);
 	void BURGER_API Set(const char *pInput,WordPtr uLength);
+	void BURGER_API Set(const Word16 *pInput);
+	void BURGER_API Set(const Word16 *pInput,WordPtr uLength);
 	void BURGER_API SetBufferSize(WordPtr uSize);
 	String & operator = (const String &rInput);
 	String & operator = (const char *pInput);

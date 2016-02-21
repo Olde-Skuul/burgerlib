@@ -244,7 +244,7 @@ void BURGER_API Burger::Halt(void)
 	raise(SIGTRAP);
 #elif defined(BURGER_SHIELD)
 	kill(getpid(),SIGINT);
-#elif defined(BURGER_ANDROID) && (defined(BURGER_X86) || defined(BURGER_AMD64))
+#elif defined(BURGER_ANDROID) && defined(BURGER_INTELARCHITECTURE)
 	__asm__( "int $3\n" : : );
 #else
 	// Generic version does nothing

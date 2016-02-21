@@ -103,6 +103,56 @@ const Burger::RGBWord8_t Burger::RGBWord8_t::Yellow = {255,255,0};
 
 /*! ************************************
 
+	\fn Word32 Burger::RGBWord8_t::ToRGB(void) const
+	\brief Convert the color to an RGB 32 bit integer
+
+	Convert the color into a 32 bit integer whereas R<<16+G<<8+B
+	
+	\return A 32 bit integer in native endian with the color in the lower 24 bits
+	\sa FromRGB(Word32) or ToBGR(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word32 Burger::RGBWord8_t::ToBGR(void) const
+	\brief Convert the color to a BGR 32 bit integer
+
+	Convert the color into a 32 bit integer whereas B<<16+G<<8+R
+	
+	\return A 32 bit integer in native endian with the color in the lower 24 bits
+	\sa FromBGR(Word32) or ToRGB(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::RGBWord8_t::FromRGB(Word32 uColor)
+	\brief Initialize the color with a 32 bit integer
+
+	Convert the color from a 32 bit integer whereas R<<16+G<<8+B
+	and store the Red, Green and Blue components
+	
+	\param uColor 32 bit color value that is formatted as R<<16+G<<8+B
+	\sa ToRGB(void) const or FromBGR(Word32)
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::RGBWord8_t::FromBGR(Word32 uColor)
+	\brief Initialize the color with a 32 bit integer
+
+	Convert the color from a 32 bit integer whereas B<<16+G<<8+R
+	and store the Red, Green and Blue components
+	
+	\param uColor 32 bit color value that is formatted as B<<16+G<<8+R
+	\sa ToBGR(void) const or FromRGB(Word32)
+
+***************************************/
+
+/*! ************************************
+
 	\brief Interpolates between two colors
 
 	Interpolate with linear scaling between two colors. 0.0f will return the From
@@ -208,6 +258,56 @@ const Burger::RGBAWord8_t Burger::RGBAWord8_t::Silver = {192,192,192,255};
 const Burger::RGBAWord8_t Burger::RGBAWord8_t::Teal = {0,128,128,255};
 const Burger::RGBAWord8_t Burger::RGBAWord8_t::White = {255,255,255,255};
 const Burger::RGBAWord8_t Burger::RGBAWord8_t::Yellow = {255,255,0,255};
+
+/*! ************************************
+
+	\fn Word32 Burger::RGBAWord8_t::ToARGB(void) const
+	\brief Convert the color to an ARGB 32 bit integer
+
+	Convert the color into a 32 bit integer whereas A<<24+R<<16+G<<8+B
+	
+	\return A 32 bit integer in native endian with the color
+	\sa ToABGR(void) const or FromARGB(Word32)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word32 Burger::RGBAWord8_t::ToABGR(void) const
+	\brief Convert the color to a ABGR 32 bit integer
+
+	Convert the color into a 32 bit integer whereas A<<24+B<<16+G<<8+R
+	
+	\return A 32 bit integer in native endian with the color
+	\sa ToARGB(void) const or FromABGR(Word32)
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::RGBAWord8_t::FromARGB(Word32 uColor)
+	\brief Initialize the color with a 32 bit integer
+
+	Convert the color from a 32 bit integer whereas A<<24+R<<16+G<<8+B
+	and store the Alpha, Red, Green and Blue components
+	
+	\param uColor 32 bit color value that is formatted as A<<24+R<<16+G<<8+B
+	\sa ToARGB(void) const or FromABGR(Word32)
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::RGBAWord8_t::FromABGR(Word32 uColor)
+	\brief Initialize the color with a 32 bit integer
+
+	Convert the color from a 32 bit integer whereas A<<24+B<<16+G<<8+R
+	and store the Alpha, Red, Green and Blue components
+	
+	\param uColor 32 bit color value that is formatted as A<<24+B<<16+G<<8+R
+	\sa ToABGR(void) const or FromARGB(Word32)
+
+***************************************/
 
 /*! ************************************
 
@@ -1242,7 +1342,7 @@ void BURGER_API Burger::Palette::MakeFadeLookup(Word8 *pOutput,const Word8 *pInp
 
 /*! ************************************
 
-	\fn void Burger::CopyPalette(RGBWord8_t *pOutput,const RGBWord8_t *pInput,Word uEntries)
+	\fn void Burger::CopyPalette(RGBWord8_t *pOutput,const RGBWord8_t *pInput,WordPtr uEntries)
 	\brief Copy an array of RGBWord8_t entries
 
 	Given a pointer to an array of RGBWord8_t color entries, copy the colors into
@@ -1251,7 +1351,7 @@ void BURGER_API Burger::Palette::MakeFadeLookup(Word8 *pOutput,const Word8 *pInp
 	\param pOutput Pointer to the palette to copy to
 	\param pInput Pointer to the palette to copy from
 	\param uEntries Number of color entries in the palette
-	\sa Burger::CopyPalette(RGBWord8_t *,const RGBAWord8_t *,Word)
+	\sa CopyPalette(RGBWord8_t *,const RGBAWord8_t *,WordPtr)
 
 ***************************************/
 
@@ -1265,11 +1365,11 @@ void BURGER_API Burger::Palette::MakeFadeLookup(Word8 *pOutput,const Word8 *pInp
 	\param pOutput Pointer to the palette to copy to
 	\param pInput Pointer to the palette to copy from
 	\param uEntries Number of color entries in the palette
-	\sa Burger::CopyPalette(RGBWord8_t *,const RGBWord8_t *,Word)
+	\sa CopyPalette(RGBWord8_t *,const RGBWord8_t *,WordPtr)
 
 ***************************************/
 
-void BURGER_API Burger::CopyPalette(RGBWord8_t *pOutput,const RGBAWord8_t *pInput,Word uEntries)
+void BURGER_API Burger::CopyPalette(RGBWord8_t *pOutput,const RGBAWord8_t *pInput,WordPtr uEntries)
 {
 	if (uEntries) {
 		do {
@@ -1292,11 +1392,11 @@ void BURGER_API Burger::CopyPalette(RGBWord8_t *pOutput,const RGBAWord8_t *pInpu
 	\param pOutput Pointer to the palette to copy to
 	\param pInput Pointer to the palette to copy from
 	\param uEntries Number of color entries in the palette
-	\sa Burger::CopyPalette(RGBAWord8_t *,const RGBAWord8_t *,Word)
+	\sa CopyPalette(RGBAWord8_t *,const RGBAWord8_t *,WordPtr)
 
 ***************************************/
 
-void BURGER_API Burger::CopyPalette(RGBAWord8_t *pOutput,const RGBWord8_t *pInput,Word uEntries)
+void BURGER_API Burger::CopyPalette(RGBAWord8_t *pOutput,const RGBWord8_t *pInput,WordPtr uEntries)
 {
 	if (uEntries) {
 		do {
@@ -1312,7 +1412,7 @@ void BURGER_API Burger::CopyPalette(RGBAWord8_t *pOutput,const RGBWord8_t *pInpu
 
 /*! ************************************
 
-	\fn void Burger::CopyPalette(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,Word uEntries)
+	\fn void Burger::CopyPalette(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,WordPtr uEntries)
 	\brief Copy an array of RGBAWord8_t entries from an array of RGBAWord8_t entries
 
 	Given a pointer to an array of RGBAWord8_t color entries, copy the colors into
@@ -1321,9 +1421,154 @@ void BURGER_API Burger::CopyPalette(RGBAWord8_t *pOutput,const RGBWord8_t *pInpu
 	\param pOutput Pointer to the palette to copy to
 	\param pInput Pointer to the palette to copy from
 	\param uEntries Number of color entries in the palette
-	\sa Burger::CopyPalette(RGBAWord8_t *,const RGBWord8_t *,Word)
+	\sa CopyPalette(RGBAWord8_t *,const RGBWord8_t *,WordPtr)
 
 ***************************************/
+
+/*! ************************************
+
+	\brief Copy an array of RGBWord8_t entries from an array of 16 bit XRGB entries
+
+	Given a pointer to an array of 16 bit XRGB color entries, copy the colors into
+	another array of RGBWord8_t entries.
+
+	Each color is 4 bits, however it's expanded to 8 bits in the output palette
+
+	Red = (Color>>8)&0xF
+	Green = (Color>>4)&0xF
+	Blue = Color&0xF
+
+	\param pOutput Pointer to the palette to copy to
+	\param pInput Pointer to the palette to copy from
+	\param uEntries Number of color entries in the palette
+	\sa CopyPalette444(RGBAWord8_t *,const Word16 *,WordPtr) or Renderer::RGB4ToRGB8Table
+
+***************************************/
+
+void BURGER_API Burger::CopyPalette444(RGBWord8_t *pOutput,const Word16 *pInput,WordPtr uEntries)
+{
+	if (uEntries) {
+		do {
+			Word uColor = pInput[0];
+			pOutput->m_uRed = Renderer::RGB4ToRGB8Table[(uColor>>8U)&0xFU];
+			pOutput->m_uGreen = Renderer::RGB4ToRGB8Table[(uColor>>4U)&0xFU];
+			pOutput->m_uBlue = Renderer::RGB4ToRGB8Table[uColor&0xFU];
+			++pOutput;
+			++pInput;
+		} while (--uEntries);
+	}
+}
+
+/*! ************************************
+
+	\brief Copy an array of RGBAWord8_t entries from an array of 16 bit XRGB entries
+
+	Given a pointer to an array of 16 bit XRGB color entries, copy the colors into
+	another array of RGBAWord8_t entries. Set Alpha to 255
+
+	Each color is 4 bits, however it's expanded to 8 bits in the output palette
+
+	Red = (Color>>8)&0xF
+	Green = (Color>>4)&0xF
+	Blue = Color&0xF
+
+	\param pOutput Pointer to the palette to copy to
+	\param pInput Pointer to the palette to copy from
+	\param uEntries Number of color entries in the palette
+	\sa CopyPalette444(RGBWord8_t *,const Word16 *,WordPtr) or Renderer::RGB4ToRGB8Table
+
+***************************************/
+
+void BURGER_API Burger::CopyPalette444(RGBAWord8_t *pOutput,const Word16 *pInput,WordPtr uEntries)
+{
+	if (uEntries) {
+		do {
+			Word uColor = pInput[0];
+			pOutput->m_uRed = Renderer::RGB4ToRGB8Table[(uColor>>8U)&0xFU];
+			pOutput->m_uGreen = Renderer::RGB4ToRGB8Table[(uColor>>4U)&0xFU];
+			pOutput->m_uBlue = Renderer::RGB4ToRGB8Table[uColor&0xFU];
+			// Force alpha to maximum
+			pOutput->m_uAlpha = 0xFF;
+			++pOutput;
+			++pInput;
+		} while (--uEntries);
+	}
+}
+
+/*! ************************************
+
+	\brief Copy an array of RGBWord8_t entries from an array of 16 bit ARGB entries
+
+	Given a pointer to an array of 16 bit ARGB color entries, copy the colors into
+	another array of RGBWord8_t entries and discard the alpha
+
+	Each color is 4 bits, however it's expanded to 8 bits in the output palette
+
+	Alpha = (Color>>12)&0xF
+	Red = (Color>>8)&0xF
+	Green = (Color>>4)&0xF
+	Blue = Color&0xF
+
+	\note Alpha is discarded in this function
+
+	\param pOutput Pointer to the palette to copy to
+	\param pInput Pointer to the palette to copy from
+	\param uEntries Number of color entries in the palette
+	\sa CopyPalette4444(RGBAWord8_t *,const Word16 *,WordPtr) or Renderer::RGB4ToRGB8Table
+
+***************************************/
+
+void BURGER_API Burger::CopyPalette4444(RGBWord8_t *pOutput,const Word16 *pInput,WordPtr uEntries)
+{
+	if (uEntries) {
+		do {
+			Word uColor = pInput[0];
+			pOutput->m_uRed = Renderer::RGB4ToRGB8Table[(uColor>>8U)&0xFU];
+			pOutput->m_uGreen = Renderer::RGB4ToRGB8Table[(uColor>>4U)&0xFU];
+			pOutput->m_uBlue = Renderer::RGB4ToRGB8Table[uColor&0xFU];
+			++pOutput;
+			++pInput;
+		} while (--uEntries);
+	}
+}
+
+/*! ************************************
+
+	\brief Copy an array of RGBAWord8_t entries from an array of 16 bit ARGB entries
+
+	Given a pointer to an array of 16 bit ARGB color entries, copy the colors into
+	another array of RGBAWord8_t entries.
+
+	Each color is 4 bits, however it's expanded to 8 bits in the output palette
+
+	Alpha = (Color>>12)&0xF
+	Red = (Color>>8)&0xF
+	Green = (Color>>4)&0xF
+	Blue = Color&0xF
+
+	\param pOutput Pointer to the palette to copy to
+	\param pInput Pointer to the palette to copy from
+	\param uEntries Number of color entries in the palette
+	\sa CopyPalette4444(RGBWord8_t *,const Word16 *,WordPtr) or Renderer::RGB4ToRGB8Table
+
+***************************************/
+
+void BURGER_API Burger::CopyPalette4444(RGBAWord8_t *pOutput,const Word16 *pInput,WordPtr uEntries)
+{
+	if (uEntries) {
+		do {
+			Word uColor = pInput[0];
+			pOutput->m_uRed = Renderer::RGB4ToRGB8Table[(uColor>>8U)&0xFU];
+			pOutput->m_uGreen = Renderer::RGB4ToRGB8Table[(uColor>>4U)&0xFU];
+			pOutput->m_uBlue = Renderer::RGB4ToRGB8Table[uColor&0xFU];
+			pOutput->m_uAlpha = Renderer::RGB4ToRGB8Table[(uColor>>12U)&0xFU];
+			++pOutput;
+			++pInput;
+		} while (--uEntries);
+	}
+}
+
+
 
 /*! ************************************
 
@@ -1460,4 +1705,249 @@ void BURGER_API Burger::Convert(RGBFloat_t *pOutput,const HSL_t *pInput)
 	pOutput->m_fRed = fRed * fLuminance;
 	pOutput->m_fGreen = fGreen * fLuminance;
 	pOutput->m_fBlue = fBlue * fLuminance;
+}
+
+/*! ************************************
+
+	\brief Set a range of RGB color entries to a 256 entry palette
+
+	Given a pointer to a 256 color palette, copy the color 
+	entries passed in the input array and store them in the
+	output array. Since the output array is assumed to be 256
+	entries, the starting index must be less than 256 and
+	the number of entries copied will be clamped to
+	prevent a buffer overrun.
+
+	Any entries that would result in a buffer overrun will be ignored and
+	if the starting index is greater than 255, this function will do nothing.
+
+	\param pOutput Pointer to the 256 color palette to store the new colors
+	\param pInput Pointer to the color entries to copy from
+	\param uStartIndex Color index of the 256 color output palette to start modification (Maximum 255)
+	\param uPaletteSize Number of color entries to copy (Maximum 256)
+	\sa CopyPalette256(RGBWord8_t *,const RGBAWord8_t *,Word,Word)
+
+***************************************/
+
+void BURGER_API Burger::CopyPalette256(RGBWord8_t *pOutput,const RGBWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+{
+	// Invalid start index?
+	if (uStartIndex<256) {
+		// Is the size in range?
+		if ((uPaletteSize+uStartIndex)>256U) {
+			// Set the size to the maximum (Clamp)
+			uPaletteSize = 256U-uStartIndex;
+		}
+		CopyPalette(pOutput+uStartIndex,pInput,uPaletteSize);
+	}
+}
+
+/*! ************************************
+
+	\brief Set a range of RGB color entries to a 256 entry palette
+
+	Given a pointer to a 256 color palette, copy the color 
+	entries passed in the input array and store them in the
+	output array. Since the output array is assumed to be 256
+	entries, the starting index must be less than 256 and
+	the number of entries copied will be clamped to
+	prevent a buffer overrun.
+
+	Any entries that would result in a buffer overrun will be ignored and
+	if the starting index is greater than 255, this function will do nothing.
+
+	\note The alpha in the input palette will be ignored.
+
+	\param pOutput Pointer to the 256 color palette to store the new colors
+	\param pInput Pointer to the color entries to copy from
+	\param uStartIndex Color index of the 256 color output palette to start modification (Maximum 255)
+	\param uPaletteSize Number of color entries to copy (Maximum 256)
+	\sa CopyPalette256(RGBWord8_t *,const RGBWord8_t *,Word,Word)
+
+***************************************/
+
+void BURGER_API Burger::CopyPalette256(RGBWord8_t *pOutput,const RGBAWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+{
+	// Invalid start index?
+	if (uStartIndex<256) {
+		// Is the size in range?
+		if ((uPaletteSize+uStartIndex)>256U) {
+			// Set the size to the maximum (Clamp)
+			uPaletteSize = 256U-uStartIndex;
+		}
+		CopyPalette(pOutput+uStartIndex,pInput,uPaletteSize);
+	}
+}
+
+/*! ************************************
+
+	\brief Set a range of RGBA color entries to a 256 entry palette
+
+	Given a pointer to a 256 color palette, copy the color 
+	entries passed in the input array and store them in the
+	output array. Since the output array is assumed to be 256
+	entries, the starting index must be less than 256 and
+	the number of entries copied will be clamped to
+	prevent a buffer overrun.
+
+	Any entries that would result in a buffer overrun will be ignored and
+	if the starting index is greater than 255, this function will do nothing.
+
+	\note The Alpha of each copied entry will be set to a default of 255 (Maximum / opaque)
+
+	\param pOutput Pointer to the 256 color palette to store the new colors
+	\param pInput Pointer to the color entries to copy from
+	\param uStartIndex Color index of the 256 color output palette to start modification (Maximum 255)
+	\param uPaletteSize Number of color entries to copy (Maximum 256)
+	\sa CopyPalette256(RGBAWord8_t *,const RGBAWord8_t *,Word,Word)
+
+***************************************/
+
+void BURGER_API Burger::CopyPalette256(RGBAWord8_t *pOutput,const RGBWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+{
+	// Invalid start index?
+	if (uStartIndex<256) {
+		// Is the size in range?
+		if ((uPaletteSize+uStartIndex)>256U) {
+			// Set the size to the maximum (Clamp)
+			uPaletteSize = 256U-uStartIndex;
+		}
+		CopyPalette(pOutput+uStartIndex,pInput,uPaletteSize);
+	}
+}
+
+/*! ************************************
+
+	\brief Set a range of RGBA color entries to a 256 entry palette
+
+	Given a pointer to a 256 color palette, copy the color 
+	entries passed in the input array and store them in the
+	output array. Since the output array is assumed to be 256
+	entries, the starting index must be less than 256 and
+	the number of entries copied will be clamped to
+	prevent a buffer overrun.
+
+	Any entries that would result in a buffer overrun will be ignored and
+	if the starting index is greater than 255, this function will do nothing.
+
+	\param pOutput Pointer to the 256 color palette to store the new colors
+	\param pInput Pointer to the color entries to copy from
+	\param uStartIndex Color index of the 256 color output palette to start modification (Maximum 255)
+	\param uPaletteSize Number of color entries to copy (Maximum 256)
+	\sa CopyPalette256(RGBAWord8_t *,const RGBWord8_t *,Word,Word)
+
+***************************************/
+
+void BURGER_API Burger::CopyPalette256(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+{
+	// Invalid start index?
+	if (uStartIndex<256) {
+		// Is the size in range?
+		if ((uPaletteSize+uStartIndex)>256U) {
+			// Set the size to the maximum (Clamp)
+			uPaletteSize = 256U-uStartIndex;
+		}
+		CopyPalette(pOutput+uStartIndex,pInput,uPaletteSize);
+	}
+}
+
+/*! ************************************
+
+	\brief Clear an RGB palette
+
+	Set all values to zero
+
+	\param pOutput Pointer to the palette to set to Black
+	\param uPaletteSize Number of color entries to clear
+	\sa ClearPalette(RGBAWord8_t *,WordPtr)
+
+***************************************/
+
+void BURGER_API Burger::ClearPalette(RGBWord8_t *pOutput,WordPtr uPaletteSize)
+{
+	// Just set everything to zero
+	MemoryClear(pOutput,sizeof(pOutput[0])*uPaletteSize);
+}
+
+/*! ************************************
+
+	\brief Clear an RGBA palette
+
+	Set the red, green and blue values to zero and the alpha to 255
+
+	\param pOutput Pointer to the palette to set to Black
+	\param uPaletteSize Number of color entries to clear
+	\sa ClearPalette(RGBWord8_t *,WordPtr)
+
+***************************************/
+
+void BURGER_API Burger::ClearPalette(RGBAWord8_t *pOutput,WordPtr uPaletteSize)
+{
+	if (uPaletteSize) {
+		do {
+			pOutput->m_uRed = 0;		// Clear out the palette
+			pOutput->m_uGreen = 0;
+			pOutput->m_uBlue = 0;
+			pOutput->m_uAlpha = 255;	// Set alpha to opaque
+			++pOutput;
+		} while (--uPaletteSize);
+	}
+}
+
+/*! ************************************
+
+	\brief Fill an RGB palette with a specific color
+
+	Set all values to a specific color
+
+	\param pOutput Pointer to the palette to fill
+	\param pInput Pointer to the color to fill with
+	\param uPaletteSize Number of color entries to set
+	\sa FillPalette(RGBAWord8_t *,const RGBAWord8_t *,WordPtr)
+
+***************************************/
+
+void BURGER_API Burger::FillPalette(RGBWord8_t *pOutput,const RGBWord8_t *pInput,WordPtr uPaletteSize)
+{
+	if (uPaletteSize) {
+		Word8 uRed = pInput->m_uRed;
+		Word8 uGreen = pInput->m_uGreen;
+		Word8 uBlue = pInput->m_uBlue;
+		do {
+			pOutput->m_uRed = uRed;		// Set the color
+			pOutput->m_uGreen = uGreen;
+			pOutput->m_uBlue = uBlue;
+			++pOutput;
+		} while (--uPaletteSize);
+	}
+}
+
+/*! ************************************
+
+	\brief Fill an RGBA palette with a specific color
+
+	Set all values to a specific color
+
+	\param pOutput Pointer to the palette to fill
+	\param pInput Pointer to the color to fill with
+	\param uPaletteSize Number of color entries to set
+	\sa FillPalette(RGBWord8_t *,const RGBWord8_t *,WordPtr)
+
+***************************************/
+
+void BURGER_API Burger::FillPalette(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,WordPtr uPaletteSize)
+{
+	if (uPaletteSize) {
+		Word8 uRed = pInput->m_uRed;
+		Word8 uGreen = pInput->m_uGreen;
+		Word8 uBlue = pInput->m_uBlue;
+		Word8 uAlpha = pInput->m_uAlpha;
+		do {
+			pOutput->m_uRed = uRed;		// Set the color
+			pOutput->m_uGreen = uGreen;
+			pOutput->m_uBlue = uBlue;
+			pOutput->m_uAlpha = uAlpha;
+			++pOutput;
+		} while (--uPaletteSize);
+	}
 }

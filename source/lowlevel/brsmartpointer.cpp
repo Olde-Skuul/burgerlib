@@ -29,7 +29,7 @@
 	will be disposed of.
 
 	This class is not meant to be used as a stand alone
-	class, it's mean to be created by ReferenceCounter objects
+	class, it's meant to be created by ReferenceCounter objects
 	when a WeakPointer object is requesting a connection.
 
 	\sa WeakPointer, ReferenceCounter and SmartPointer

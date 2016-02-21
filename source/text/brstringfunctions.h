@@ -28,7 +28,9 @@ enum {
 	ASCII_WHITESPACE=0x10,
 	ASCII_PUNCTUATION=0x20,
 	ASCII_HEX=0x40,
-	ASCII_DIGIT=0x80,
+	ASCII_DIGIT=0x80
+};
+enum {
 	NOENDINGNULL=0x4000,
 	LEADINGZEROS=0x8000
 };
@@ -147,8 +149,14 @@ extern char * BURGER_API MemoryCharacterReverse(const char *pInput,WordPtr uInpu
 extern Word16 * BURGER_API MemoryCharacterReverse(const Word16 *pInput,WordPtr uInputSize,Word uChar);
 extern char * BURGER_API StringString(const char *pInput,const char *pTest);
 extern char * BURGER_API StringCaseString(const char *pInput,const char *pTest);
-extern char * BURGER_API NumberToAsciiHex(char *pOutput,Word32 uInput,Word uDigits=0);
-extern char * BURGER_API NumberToAsciiHex(char *pOutput,Word64 uInput,Word uDigits=0);
+extern char * BURGER_API NumberToAsciiHex(char *pOutput,Word8 uInput);
+extern char * BURGER_API NumberToAsciiHex(char *pOutput,Word16 uInput);
+extern char * BURGER_API NumberToAsciiHex(char *pOutput,Word32 uInput);
+extern char * BURGER_API NumberToAsciiHex(char *pOutput,Word64 uInput);
+extern char * BURGER_API NumberToAsciiHex(char *pOutput,float fInput);
+extern char * BURGER_API NumberToAsciiHex(char *pOutput,double dInput);
+extern char * BURGER_API NumberToAsciiHex(char *pOutput,Word32 uInput,Word uDigits);
+extern char * BURGER_API NumberToAsciiHex(char *pOutput,Word64 uInput,Word uDigits);
 extern char * BURGER_API NumberToAscii(char *pOutput,Word32 uInput,Word uDigits=0);
 extern char * BURGER_API NumberToAscii(char *pOutput,Int32 iInput,Word uDigits=0);
 extern char * BURGER_API NumberToAscii(char *pOutput,Word64 uInput,Word uDigits=0);
@@ -156,12 +164,16 @@ extern char * BURGER_API NumberToAscii(char *pOutput,Int64 iInput,Word uDigits=0
 extern char * BURGER_API NumberToAscii(char *pOutput,float fInput);
 extern char * BURGER_API NumberToAscii(char *pOutput,double dInput);
 extern Word32 BURGER_API AsciiToInteger(const char *pInput,const char **pDest=NULL);
+extern Int BURGER_API AsciiToInteger(const char *pInput,Int iDefault,Int iMin=(-BURGER_MAXINT)-1,Int iMax=BURGER_MAXINT);
+extern Word BURGER_API AsciiToInteger(Word32 *pOutput,const char *pInput);
+extern Word BURGER_API AsciiToWord(const char *pInput,Word uDefault,Word uMin=0,Word uMax=BURGER_MAXUINT);
+extern Word64 BURGER_API AsciiToInteger64(const char *pInput,const char **pDest=NULL);
+extern Int64 BURGER_API AsciiToInteger64(const char *pInput,Int64 iDefault,Int64 iMin=(-BURGER_MAXINT64)-1,Int64 iMax=BURGER_MAXINT64);
+extern Word BURGER_API AsciiToInteger64(Word64 *pOutput,const char *pInput);
+extern Word64 BURGER_API AsciiToWord64(const char *pInput,Word64 uDefault,Word64 uMin=0,Word64 uMax=BURGER_MAXUINT64);
 extern float BURGER_API AsciiToFloat(const char *pInput,const char **pDest=NULL);
 extern double BURGER_API AsciiToDouble(const char *pInput,const char **pDest=NULL);
 extern Word BURGER_API AsciiToBoolean(const char *pInput,const char **pDest=NULL);
-extern Word BURGER_API AsciiToWord(const char *pInput,Word uDefault,Word uMin=0,Word uMax=BURGER_MAXUINT);
-extern Int BURGER_API AsciiToInteger(const char *pInput,Int iDefault,Int iMin=(-BURGER_MAXINT)-1,Int iMax=BURGER_MAXINT);
-extern Word BURGER_API AsciiToInteger(Word32 *pOutput,const char *pInput);
 extern Word BURGER_API AsciiToBoolean(const char *pInput,Word bDefault);
 extern Word BURGER_API AsciiToBoolean(Word *pOutput,const char *pInput);
 extern float BURGER_API AsciiToFloat(const char *pInput,float fDefault);

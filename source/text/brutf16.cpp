@@ -228,7 +228,7 @@ const Word16 BURGER_ALIGN(Burger::UTF16::FromMacRomanUSTable[128],16) = {
 	codes 0x81, 0x8D, 0x8F, 0x90 and 0x9D.
 
 	The character map for Win1252
-	<a href="Windows1252.htm">looks like this. Click here.</a>
+	<a href="windows1252.htm">looks like this. Click here.</a>
 	
 ***************************************/
 
@@ -374,7 +374,7 @@ const Word16 BURGER_ALIGN(Burger::UTF16::FromWin1252Table[128],16) = {
 	a 1-to-1 mapping to Unicode.
 	
 	The character map for ISOLatin1
-	<a href="ISOLatin1.htm">looks like this. Click here.</a>
+	<a href="isolatin1.htm">looks like this. Click here.</a>
 
 ***************************************/
 

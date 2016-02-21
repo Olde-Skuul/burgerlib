@@ -125,7 +125,7 @@
 
 ***************************************/
 
-#if (defined(BURGER_X86) || defined(BURGER_AMD64)) || defined(DOXYGEN)
+#if defined(BURGER_INTELARCHITECTURE) || defined(DOXYGEN)
 extern "C" const float g_fBurgerIntMathNearesttable[2] = {-0.5f,0.5f-(1.0f/(65536.0f*256.0f))};
 #endif
 
@@ -135,7 +135,7 @@ extern "C" const float g_fBurgerIntMathNearesttable[2] = {-0.5f,0.5f-(1.0f/(6553
 
 ***************************************/
 
-#if (defined(BURGER_X86) || defined(BURGER_AMD64)) || defined(DOXYGEN)
+#if defined(BURGER_INTELARCHITECTURE) || defined(DOXYGEN)
 extern "C" const float g_fBurgerMath65536 = 65536.0f;
 #endif
 

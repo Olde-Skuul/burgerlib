@@ -209,8 +209,8 @@ static VOID CALLBACK TrackMouseTimerProc(HWND pWindow,UINT /* uMsg */,UINT_PTR u
 	RECT TheClientRect;
 	GetClientRect(pWindow,&TheClientRect);
 
-	// Remap it to the desktop (Only 2 points out of four)
-	MapWindowPoints(pWindow,NULL,static_cast<POINT *>(static_cast<void*>(&TheClientRect)),2);
+	// Remap it to the desktop (2 points make a rect)
+	MapWindowPoints(pWindow,HWND_DESKTOP,static_cast<POINT *>(static_cast<void*>(&TheClientRect)),2);
 
 	// Where is the cursor?
 	POINT TheCursorLocation;
