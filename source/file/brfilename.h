@@ -29,29 +29,21 @@
 /* BEGIN */
 namespace Burger {
 class Filename {
-public:
-	enum {
-		MAXBUFFERSIZE = 256,	///< Size of the filename buffer (Maximum)
-#if defined(BURGER_MAC)
-		BUFFERSIZE = MAXBUFFERSIZE-static_cast<int>(sizeof(char *)+sizeof(long)+sizeof(short))	///< Size of the filename buffer (Adjusted to to keep the class size at exactly 512 bytes in length)
-#else
-		BUFFERSIZE = static_cast<int>(MAXBUFFERSIZE-sizeof(char *))		///< Size of the filename buffer (Adjusted to to keep the class size at exactly 512 bytes in length)
-#endif
-	};
-private:
+	static const Word cBufferSize = 256;	///< Size of the filename buffer (Maximum)
+
 	char *m_pFilename;				///< Pointer to the burgerlib filename
 	char *m_pNativeFilename;		///< Pointer to the native filename
-#if defined(BURGER_MAC)
-	Word8 m_FSRef[80];				///< Opaque FSRef used by MacOS
-	long m_lDirID;					///< Directory reference (MacOS Only)
-	short m_sVRefNum;				///< Volume reference used by copy and rename  (MacOS Only)
-#endif
-	char m_Filename[BUFFERSIZE];	///< Local buffer containing the filename (If it can fit in this buffer)
 #if !defined(BURGER_MAC) && !defined(DOXYGEN)
-	char m_NativeFilename[MAXBUFFERSIZE-(sizeof(char *))];	///< Local buffer containing the native filename
+	char m_Filename[cBufferSize-(sizeof(char *))];	///< Local buffer containing the filename (If it can fit in this buffer)
+	char m_NativeFilename[cBufferSize-(sizeof(char *))];	///< Local buffer containing the native filename
 #else
-	char m_NativeFilename[MAXBUFFERSIZE-(sizeof(char *)+80)];	///< Local buffer containing the native filename
-	static const Word DIRCACHESIZE = 8;	///<  Number of cache entries
+	Word8 m_FSRef[80];				///< Opaque FSRef used by (MacOS 9 only)
+	long m_lDirID;					///< Directory reference (MacOS 9 Only)
+	short m_sVRefNum;				///< Volume reference used by copy and rename (MacOS 9 Only)
+	char m_Filename[cBufferSize-(sizeof(char *)+sizeof(long)+sizeof(short))];	///< Local buffer containing the filename (If it can fit in this buffer)
+	char m_NativeFilename[cBufferSize-(sizeof(char *)+80)];	///< Local buffer containing the native filename
+
+	static const Word DIRCACHESIZE = 8;	///<  Number of cache entries (MacOS 9 only)
 	struct ExpandCache_t {
 		const char *m_pName;		///< Pointer to the original directory name
 		Word32 m_uHitTick;			///< Last time hit (For purging)
@@ -68,7 +60,7 @@ public:
 #if defined(BURGER_MAC)
 	,m_lDirID(0),m_sVRefNum(0)
 #endif
-	{ m_Filename[0] = 0; }
+	{ m_Filename[0] = 0; m_NativeFilename[0] = 0; }
 	Filename(const char *pFilename);
 	Filename(Filename const &rInput);
 	Filename & operator = (Filename const &rInput);
@@ -89,6 +81,10 @@ public:
 	Word BURGER_API ParsePrefixNumber(void) const;
 	void BURGER_API Expand(void);
 	void BURGER_API Expand(const char *pInput);
+	void BURGER_API SetSystemWorkingDirectory(void);
+	void BURGER_API SetApplicationDirectory(void);
+	void BURGER_API SetMachinePrefsDirectory(void);
+	void BURGER_API SetUserPrefsDirectory(void);
 	const char * BURGER_API GetNative(void);
 #if !defined(BURGER_MAC) || defined(DOXYGEN)
 	void BURGER_API SetFromNative(const char *pInput);
@@ -102,6 +98,9 @@ public:
 	BURGER_INLINE void SetVRefNum(short sVRefNum) { m_sVRefNum = sVRefNum; }
 	Word BURGER_API SetFromDirectoryID(long lDirID,short sVolRefNum);
 #endif
+	static Filename * BURGER_API New(void);
+	static Filename * BURGER_API New(const char *pFilename);
+	static Filename * BURGER_API New(Filename const &rInput);
 };
 }
 /* END */

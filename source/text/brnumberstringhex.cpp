@@ -158,7 +158,7 @@ Burger::NumberStringHex::NumberStringHex(Word64 uInput,Word uFormat)
 
 Burger::NumberStringHex::NumberStringHex(float fInput)
 {
-	NumberToAsciiHex(m_Data,reinterpret_cast<const Word32 *>(&fInput)[0],Burger::LEADINGZEROS);
+	NumberToAsciiHex(m_Data,static_cast<const Word32 *>(static_cast<const void *>(&fInput))[0],Burger::LEADINGZEROS);
 }
 
 /*! ************************************
@@ -177,7 +177,7 @@ Burger::NumberStringHex::NumberStringHex(float fInput)
 
 Burger::NumberStringHex::NumberStringHex(double dInput)
 {
-	NumberToAsciiHex(m_Data,reinterpret_cast<const Word64 *>(&dInput)[0],Burger::LEADINGZEROS);
+	NumberToAsciiHex(m_Data,static_cast<const Word64 *>(static_cast<const void *>(&dInput))[0],Burger::LEADINGZEROS);
 }
 
 /*! ************************************
@@ -234,7 +234,7 @@ Burger::NumberStringHex & Burger::NumberStringHex::operator = (Word64 uInput)
 
 Burger::NumberStringHex & Burger::NumberStringHex::operator = (float fInput)
 {
-	NumberToAsciiHex(m_Data,reinterpret_cast<const Word32 *>(&fInput)[0],Burger::LEADINGZEROS);
+	NumberToAsciiHex(m_Data,static_cast<const Word32 *>(static_cast<const void *>(&fInput))[0],Burger::LEADINGZEROS);
 	return *this;
 }
 
@@ -254,7 +254,7 @@ Burger::NumberStringHex & Burger::NumberStringHex::operator = (float fInput)
 
 Burger::NumberStringHex & Burger::NumberStringHex::operator = (double dInput)
 {
-	NumberToAsciiHex(m_Data,reinterpret_cast<const Word64 *>(&dInput)[0],Burger::LEADINGZEROS);
+	NumberToAsciiHex(m_Data,static_cast<const Word64 *>(static_cast<const void *>(&dInput))[0],Burger::LEADINGZEROS);
 	return *this;
 }
 

@@ -12,6 +12,8 @@
 ***************************************/
 
 #include "brfloatingpoint.h"
+#include "brfixedpoint.h"
+#include "brendian.h"
 #include <math.h>
 
 //
@@ -603,7 +605,7 @@ __asm__(
 #elif defined(BURGER_METROWERKS) && defined(BURGER_POWERPC)
 #elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
-#elif (defined(BURGER_X86) || defined(BURGER_AMD64) || (defined(BURGER_MACOSX) && !defined(BURGER_METROWERKS))) && !defined(DOXYGEN)
+#elif (defined(BURGER_INTELARCHITECTURE) || (defined(BURGER_MACOSX) && !defined(BURGER_METROWERKS))) && !defined(DOXYGEN)
 #elif defined(BURGER_PS4) || defined(BURGER_VITA)
 #else
 float BURGER_API Burger::Abs(float fInput)
@@ -632,7 +634,7 @@ float BURGER_API Burger::Abs(float fInput)
 #elif defined(BURGER_METROWERKS) && defined(BURGER_POWERPC)
 #elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
-#elif (defined(BURGER_X86) || defined(BURGER_AMD64) || (defined(BURGER_MACOSX) && !defined(BURGER_METROWERKS))) && !defined(DOXYGEN)
+#elif (defined(BURGER_INTELARCHITECTURE) || (defined(BURGER_MACOSX) && !defined(BURGER_METROWERKS))) && !defined(DOXYGEN)
 #elif defined(BURGER_PS4) || defined(BURGER_VITA)
 #else
 double BURGER_API Burger::Abs(double dInput)
@@ -659,7 +661,7 @@ double BURGER_API Burger::Abs(double dInput)
 #elif defined(BURGER_METROWERKS) && defined(BURGER_POWERPC)
 #elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
-#elif (defined(BURGER_X86) || defined(BURGER_AMD64) || (defined(BURGER_MACOSX) && !defined(BURGER_METROWERKS))) && !defined(DOXYGEN)
+#elif (defined(BURGER_INTELARCHITECTURE) || (defined(BURGER_MACOSX) && !defined(BURGER_METROWERKS))) && !defined(DOXYGEN)
 #elif defined(BURGER_PS4) || defined(BURGER_VITA)
 #else
 float BURGER_API Burger::Sqrt(float fInput)
@@ -686,7 +688,7 @@ float BURGER_API Burger::Sqrt(float fInput)
 #elif defined(BURGER_METROWERKS) && defined(BURGER_POWERPC)
 #elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
-#elif (defined(BURGER_X86) || defined(BURGER_AMD64) || (defined(BURGER_MACOSX) && !defined(BURGER_METROWERKS))) && !defined(DOXYGEN)
+#elif (defined(BURGER_INTELARCHITECTURE) || (defined(BURGER_MACOSX) && !defined(BURGER_METROWERKS))) && !defined(DOXYGEN)
 #elif defined(BURGER_PS4) || defined(BURGER_VITA)
 #else
 double BURGER_API Burger::Sqrt(double dInput)
@@ -1023,7 +1025,7 @@ BURGER_ASM Word BURGER_API Burger::IsNan(float fInput)
 #else
 Word BURGER_API Burger::IsNan(float fInput)
 {
-	Word32 uInput = reinterpret_cast<Word32 *>(&fInput)[0];
+	Word32 uInput = static_cast<const Word32 *>(static_cast<const void *>(&fInput))[0];
 	// Kill off the high bit
 	uInput &= 0x7FFFFFFF;
 	// Set the high bit if 0x7F800001-0x7FFFFFFF
@@ -1065,7 +1067,7 @@ Word BURGER_API Burger::IsNan(double dInput)
 	// Return TRUE or FALSE depending on the test
 	return static_cast<Word>(uInput>>63U);
 #else
-	return (reinterpret_cast<const Word64 *>(&dInput)[0] << 1U) > (0x7ff0000000000000ULL<<1U);
+	return (reinterpret_cast<const Word64 *>(static_cast<const void *>(&dInput))[0] << 1U) > (0x7ff0000000000000ULL<<1U);
 #endif
 }
 #endif
@@ -1096,7 +1098,7 @@ BURGER_ASM Word BURGER_API Burger::IsInf(float fInput)
 #else
 Word BURGER_API Burger::IsInf(float fInput)
 {
-	Word32 uInput = reinterpret_cast<Word32 *>(&fInput)[0];
+	Word32 uInput = reinterpret_cast<const Word32 *>(static_cast<const void *>(&fInput))[0];
 	Word32 uTemp = uInput & 0x7FFFFFFF;
 	return uTemp == 0x7F800000;
 }
@@ -1128,7 +1130,7 @@ BURGER_ASM Word BURGER_API Burger::IsInf(double dInput)
 #else
 Word BURGER_API Burger::IsInf(double dInput)
 {
-	return (reinterpret_cast<const Word64 *>(&dInput)[0] << 1U) == (0x7ff0000000000000ULL<<1U);
+	return (reinterpret_cast<const Word64 *>(static_cast<const void *>(&dInput))[0] << 1U) == (0x7ff0000000000000ULL<<1U);
 }
 #endif
 
@@ -1158,7 +1160,7 @@ BURGER_ASM Word BURGER_API Burger::IsFinite(float fInput)
 #else
 Word BURGER_API Burger::IsFinite(float fInput)
 {
-	Word32 uInput = reinterpret_cast<Word32 *>(&fInput)[0];
+	Word32 uInput = reinterpret_cast<const Word32 *>(static_cast<const void *>(&fInput))[0];
 	Word32 uTemp = uInput & 0x7FFFFFFF;
 	uTemp = uTemp-0x7F800000;
 	return (uTemp>>31);
@@ -1193,9 +1195,9 @@ Word BURGER_API Burger::IsFinite(double dInput)
 {
 	Word32 uInput;
 #if defined(BURGER_BIGENDIAN)
-	uInput = reinterpret_cast<const Word32 *>(&dInput)[0];
+	uInput = reinterpret_cast<const Word32 *>(static_cast<const void *>(&dInput))[0];
 #else
-	uInput = reinterpret_cast<const Word32 *>(&dInput)[1];
+	uInput = reinterpret_cast<const Word32 *>(static_cast<const void *>(&dInput))[1];
 #endif
 	Word32 uTemp = uInput & 0x7FFFFFFF;
 	uTemp = uTemp-0x7FF00000;
@@ -1217,7 +1219,7 @@ Word BURGER_API Burger::IsFinite(double dInput)
 
 Word BURGER_API Burger::IsNormal(float fInput)
 {
-	Word32 uInput = reinterpret_cast<Word32 *>(&fInput)[0];
+	Word32 uInput = reinterpret_cast<const Word32 *>(static_cast<const void *>(&fInput))[0];
 	Word32 uTemp = (uInput-0x00800000U) & 0x7FFFFFFF;
 	uTemp = uTemp-(0x7F800000U-0x00800000U);
 	return (uTemp>>31);
@@ -1239,9 +1241,9 @@ Word BURGER_API Burger::IsNormal(double dInput)
 {
 	Word32 uInput;
 #if defined(BURGER_BIGENDIAN)
-	uInput = reinterpret_cast<const Word32 *>(&dInput)[0];
+	uInput = reinterpret_cast<const Word32 *>(static_cast<const void *>(&dInput))[0];
 #else
-	uInput = reinterpret_cast<const Word32 *>(&dInput)[1];
+	uInput = reinterpret_cast<const Word32 *>(static_cast<const void *>(&dInput))[1];
 #endif
 	Word32 uTemp = (uInput-0x00100000U) & 0x7FFFFFFF;
 	uTemp = uTemp-(0x7FF00000-0x00100000U);
@@ -1262,7 +1264,7 @@ Word BURGER_API Burger::IsNormal(double dInput)
 
 Word BURGER_API Burger::SignBit(float fInput)
 {
-	return reinterpret_cast<const Word32 *>(&fInput)[0]>>31;
+	return reinterpret_cast<const Word32 *>(static_cast<const void *>(&fInput))[0]>>31;
 }
 
 /*! ************************************
@@ -1280,9 +1282,9 @@ Word BURGER_API Burger::SignBit(float fInput)
 Word BURGER_API Burger::SignBit(double dInput)
 {
 #if defined(BURGER_BIGENDIAN)
-	return reinterpret_cast<const Word32 *>(&dInput)[0]>>31;
+	return reinterpret_cast<const Word32 *>(static_cast<const void *>(&dInput))[0]>>31;
 #else
-	return reinterpret_cast<const Word32 *>(&dInput)[1]>>31;
+	return reinterpret_cast<const Word32 *>(static_cast<const void *>(&dInput))[1]>>31;
 #endif
 }
 
@@ -2944,4 +2946,342 @@ float BURGER_API Burger::Fmod(float fInput,float fDivisor)
 double BURGER_API Burger::Fmod(double dInput,double dDivisor)
 {
 	return fmod(dInput,dDivisor);
+}
+
+/*! ************************************
+
+	\brief Load a big endian 80 bit float as a double
+
+	Convert an 80 bit float stored in memory in big
+	endian format into a double in native endian
+
+	\param pInput Pointer to the 80 bit floating point number
+	\return Value in the form of a double
+	\sa LittleEndianLoadExtended(const Float80Bit)
+
+***************************************/
+
+double BURGER_API Burger::BigEndianLoadExtended(const Float80Bit pInput)
+{
+	// Union to expose the double
+	union {
+		double m_dDouble;
+		Word8 m_Bytes[8];
+	} Result;
+
+	// Obtain the exponent and sign
+	Word uExponent = BigEndian::Load(reinterpret_cast<const Word16 *>(pInput));
+	// Extract the sign
+	Word uSign = (uExponent>>8U)&0x80U;
+	// Normalize the exponent to the range of a double
+	uExponent = (uExponent-(0x0400C-0x040C))&0x7FFU;
+
+	// Swap endian version
+#if defined(BURGER_LITTLEENDIAN)
+
+	// Set the exponent and sign in the double
+	Result.m_Bytes[7] = static_cast<Word8>((uExponent>>4U)|uSign);
+	Result.m_Bytes[6] = static_cast<Word8>(uExponent<<4U);
+
+	uSign = 2;
+	do {
+		uExponent = reinterpret_cast<const Word8 *>(pInput)[uSign];
+		if (uSign==2) {
+			uExponent &= 0x7FU;
+		}
+		Result.m_Bytes[8-uSign] |= static_cast<Word8>(uExponent>>3U);
+		if (uSign!=8) {
+			Result.m_Bytes[7-uSign] = static_cast<Word8>(uExponent<<5U);
+		}
+	} while (++uSign<9);
+
+#else
+	// Return IEEE double in big endian format
+
+	Result.m_Bytes[0] = static_cast<Word8>((uExponent>>4U)|uSign);
+	Result.m_Bytes[1] = static_cast<Word8>(uExponent<<4U);
+
+	uSign = 2;
+	do {
+		uExponent = reinterpret_cast<const Word8 *>(pInput)[uSign];
+		if (uSign==2) {
+			uExponent &=0x7f;
+		}
+		Result.m_Bytes[uSign-1] |= static_cast<Word8>(uExponent>>3U);
+		if (uSign!=8) {
+			Result.m_Bytes[uSign] = static_cast<Word8>(uExponent<<5U);
+		}
+	} while (++uSign<9);
+#endif
+	return Result.m_dDouble;
+}
+
+/*! ************************************
+
+	\brief Load a little endian 80 bit float as a double
+
+	Convert an 80 bit float stored in memory in little
+	endian format into a double in native endian
+
+	\param pInput Pointer to the 80 bit floating point number
+	\return Value in the form of a double
+	\sa BigEndianLoadExtended(const Float80Bit)
+
+***************************************/
+
+double BURGER_API Burger::LittleEndianLoadExtended(const Float80Bit pInput)
+{
+	// Union to expose the double
+	union {
+		double m_dDouble;
+		Word8 m_Bytes[8];
+	} Result;
+
+	// Obtain the exponent and sign
+	Word uExponent = LittleEndian::Load(&reinterpret_cast<const Word16 *>(pInput)[4]);
+	// Extract the sign
+	Word uSign = (uExponent>>8U)&0x80U;
+	// Normalize the exponent to the range of a double
+	uExponent = (uExponent-(0x0400C-0x040C))&0x7FFU;
+
+	// Swap endian version
+#if defined(BURGER_LITTLEENDIAN)
+
+	// Set the exponent and sign in the double
+	Result.m_Bytes[7] = static_cast<Word8>((uExponent>>4U)|uSign);
+	Result.m_Bytes[6] = static_cast<Word8>(uExponent<<4U);
+
+	uSign = 7;
+	do {
+		uExponent = reinterpret_cast<const Word8 *>(pInput)[uSign];
+		if (uSign==7) {
+			uExponent &= 0x7FU;
+		}
+		Result.m_Bytes[uSign-1] |= static_cast<Word8>(uExponent>>3U);
+		if (uSign!=1) {
+			Result.m_Bytes[uSign-2] = static_cast<Word8>(uExponent<<5U);
+		}
+	} while (--uSign);
+
+#else
+	// Return IEEE double in big endian format
+
+	Result.m_Bytes[0] = static_cast<Word8>((uExponent>>4U)|uSign);
+	Result.m_Bytes[1] = static_cast<Word8>(uExponent<<4U);
+
+	uSign = 7;
+	do {
+		uExponent = reinterpret_cast<const Word8 *>(pInput)[uSign];
+		if (uSign==7) {
+			uExponent &=0x7f;
+		}
+		Result.m_Bytes[8-uSign] |= static_cast<Word8>(uExponent>>3U);
+		if (uSign!=1) {
+			Result.m_Bytes[7-uSign] = static_cast<Word8>(uExponent<<5U);
+		}
+	} while (--uSign);
+#endif
+	return Result.m_dDouble;
+}
+
+/*! ************************************
+
+	\brief Convert a linear volume to decibels
+
+	DirectSound requires volume inputs to be set in decibels
+	from 0 being full volume to -10000 being silent.
+
+	Input values higher than 255 will return 0 (Max volume)
+
+	\param uInput Volume from 0 to 255 as a percentage of volume in 256 steps
+	\return Value in the form of 0 to -10000 in the scale needed for DirectSound
+	\sa ConvertToDirectSoundVolume(float)
+
+***************************************/
+
+long BURGER_API Burger::ConvertToDirectSoundVolume(Word uInput)
+{
+	long lResult;
+	// Anything softer than this is pretty much silence
+	if (!uInput) { 
+		lResult = -10000;
+		// Anything louder than 1.0f is maximum
+	} else if (uInput >= 255) {
+		lResult = 0;
+	} else {
+		// Log(1.0/.0000000001) yields 10, which is the largest number I'm interested in
+		// Normalize 0-255 to 0-1.0f
+		float fInput = static_cast<float>(static_cast<int>(uInput))*(1.0f/255.0f);
+		lResult = static_cast<long>(Log(1.0f/fInput)*-1000.0f);
+	}
+	return lResult;
+}
+
+
+/*! ************************************
+
+	\brief Convert a linear volume to decibels
+
+	DirectSound requires volume inputs to be set in decibels
+	from 0 being full volume to -10000 being silent.
+
+	Input values lower than 0.0f will return -10000 (Silence) 
+	and higher than 1.0f will return 0 (Max volume)
+
+	\param fInput Volume from 0.0f to 1.0f as a percentage of volume
+	\return Value in the form of 0 to -10000 in the scale needed for DirectSound
+	\sa ConvertToDirectSoundVolume(Word)
+
+***************************************/
+
+long BURGER_API Burger::ConvertToDirectSoundVolume(float fInput)
+{
+	long lResult;
+	// Anything softer than this is pretty much silence
+	if (fInput <= 0.0001f) { 
+		lResult = -10000;
+	// Anything louder than 1.0f is maximum
+	} else if (fInput >= 1.0f) {
+		lResult = 0;
+	} else {
+		// Log(1.0/.0000000001) yields 10, which is the largest number I'm interested in
+		lResult = static_cast<long>(Log(1.0f/fInput)*-1000.0f);
+	}
+	return lResult;
+}
+
+/*! ************************************
+
+	\brief Convert a linear pan to decibels
+
+	DirectSound requires pan inputs to be set in decibels
+	from -10000 being full left, 0 being center and
+	10000 being full right.
+
+	Input values lower than 2 will return -10000 (Full left) 
+	and higher than 0xFFFEU will return 10000 (Full right)
+
+	\param uInput Pan from 0x0000 to 0xFFFFU as a pan value
+	\return Value in the form of -10000 to -10000 in the scale needed for DirectSound
+	\sa ConvertToDirectSoundPan(float)
+
+***************************************/
+
+long BURGER_API Burger::ConvertToDirectSoundPan(Word uInput)
+{
+	long lResult;
+	if (uInput==0x8000U) {
+		lResult = 0;
+	} else if (uInput<3) {
+		lResult = -10000;
+	} else if (uInput>=0xFFFEU) {
+		lResult = 10000;
+	} else {
+		// Normalize the pan of 0x0000 (Left) 0x8000 (Center) 0xFFFF (Right)
+		// to -1.0 - 1.0f
+		float fValue = static_cast<float>(static_cast<Int32>(uInput-0x8000U))*(1.0f/32767.0f);
+		lResult = static_cast<long>(Log(1.0f/(1.0f-Abs(fValue)))*-1000.0f);
+		if (uInput>=0x8000U) {
+			lResult = -lResult;
+		}
+	}
+	return lResult;
+}
+
+/*! ************************************
+
+	\brief Convert a linear pan to decibels
+
+	DirectSound requires pan inputs to be set in decibels
+	from -10000 being full left, 0 being center and
+	10000 being full right.
+
+	Input values lower than -1.0f will return -10000 (Full left) 
+	and higher than 1.0f will return 10000 (Full right)
+
+	\param fInput Pan from -1.0f to 1.0f as a pan value
+	\return Value in the form of -10000 to -10000 in the scale needed for DirectSound
+	\sa ConvertToDirectSoundPan(Word)
+
+***************************************/
+
+long BURGER_API Burger::ConvertToDirectSoundPan(float fInput)
+{
+	long lResult;
+
+	// Get the absolute value
+	float fAbs = Abs(fInput);
+
+	// Close to the center?
+	if (fAbs <= 0.0001f) {
+		lResult = 0;		// No panning
+
+	} else {
+
+		// Leftmost or rightmost?
+		if (fAbs>=0.9999f) {
+			// DirectSound left (Will negate if right)
+			lResult = -10000;
+		} else {
+
+			// Calculate the value assuming left
+			// and the input is clamped at 0.0f to 1.0f
+
+			lResult = static_cast<long>(Log(1.0f/(1.0f-fAbs))*-1000.0f);
+		}
+		// If positive then negate (Make positive)
+		if (fInput >= 0.0f) {
+			lResult = -lResult;
+		}
+	}
+	return lResult;
+}
+
+/*! ************************************
+ 
+	\brief Convert a linear volume to 0.0f to 1.0f
+ 
+ 	Clamp the volume to 0-255 and then convert the value
+ 	into floating point.
+ 
+	\param uInput Volume from 0 to 255. Numbers higher than 255 will be clamped.
+	\return Value in the form of 0.0f to 1.0f in the scale needed for Mac OSX / iOS AudioUnit
+	\sa ConvertToAudioUnitPan(Word)
+ 
+ ***************************************/
+
+float BURGER_API Burger::ConvertToAudioUnitVolume(Word uInput)
+{
+	float fResult;
+	if (!uInput) {
+		fResult = 0.0f;
+	} else if (uInput<255U) {
+		fResult = static_cast<float>(static_cast<int>(uInput))*(1.0f/255.0f);
+	} else {
+		fResult = 1.0f;
+	}
+	return fResult;
+}
+
+/*! ************************************
+ 
+	\brief Convert a linear pan to 0.0f to 1.0f
+ 
+	Convert the pan from 0-65535 into 0.0f to 1.0f.
+ 
+	\param uInput Pan from 0 to 65535. Numbers higher than 65535 will be clamped.
+	\return Value in the form of 0.0f to 1.0f in the scale needed for Mac OSX / iOS AudioUnit
+	\sa ConvertToAudioUnitVolume(Word)
+ 
+ ***************************************/
+
+float BURGER_API Burger::ConvertToAudioUnitPan(Word uInput)
+{
+	float fResult;
+	if (uInput>=0xFFFFU) {
+		fResult = 1.0f;
+	} else {
+		fResult = static_cast<float>(static_cast<int>(uInput)-32768)*(1.0f/32768.0f);
+	}
+	return fResult;
 }

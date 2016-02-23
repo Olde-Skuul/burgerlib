@@ -124,6 +124,85 @@ const char *Burger::Filename::GetNative(void)
 
 /***************************************
 
+	\brief Set the filename to the current working directory
+
+	Query the operating system for the current working directory and
+	set the filename to that directory. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void)
+{
+	Set(":D:");
+}
+
+/***************************************
+
+	\brief Set the filename to the application's directory
+
+	Determine the directory where the application resides and set
+	the filename to that directory. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format.
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetApplicationDirectory(void)
+{
+	Set(":D:");
+}
+
+/***************************************
+
+	\brief Set the filename to the local machine preferences directory
+
+	Determine the directory where the user's preferences that are
+	local to the machine is located. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format.
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void)
+{
+	Set(":D:");
+}
+
+
+/***************************************
+
+	\brief Set the filename to the user's preferences directory
+
+	Determine the directory where the user's preferences that
+	could be shared among all machines the user has an account
+	with is located. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format.
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetUserPrefsDirectory(void)
+{
+	Set(":D:");
+}
+
+
+/***************************************
+
 	Convert a Windows path to a Burgerlib path
 	
 	Paths without a leading '\' are prefixed with
@@ -157,7 +236,7 @@ void Burger::Filename::SetFromNative(const char *pInput)
 	WordPtr uExpandedLength = StringLength(pInput);
 	WordPtr uOutputLength = uExpandedLength+6;
 	char *pOutput = m_Filename;
-	if (uOutputLength>=BUFFERSIZE) {
+	if (uOutputLength>=sizeof(m_Filename)) {
 		pOutput = static_cast<char *>(Alloc(uOutputLength));
 		if (!pOutput) {
 			return;

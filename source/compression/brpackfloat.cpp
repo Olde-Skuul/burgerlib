@@ -76,7 +76,7 @@ float BURGER_API Burger::Unpack16ToFloat(Int16 iInput)
 
 Int16 BURGER_API Burger::PackFloatTo16(float fInput)
 {
-	Word32 uInput=reinterpret_cast<Word32 *>(&fInput)[0];			// Get the bit representation
+	Word32 uInput=reinterpret_cast<const Word32 *>(static_cast<const void *>(&fInput))[0];			// Get the bit representation
 
 	Word32 uResult = uInput&0x7FFFFFFFU;	// Get the exponent
 	if (uResult<(127<<23)) {				// Less than 1.0?
@@ -162,7 +162,7 @@ float BURGER_API Burger::Unpack16ToFloat(Int16 iInput,Word32 uBaseExponent)
 Int16 BURGER_API Burger::PackFloatTo16(float fInput,Word32 uBaseExponent)
 {
 	uBaseExponent <<= 23;
-	Word32 uInput=reinterpret_cast<Word32 *>(&fInput)[0];			// Get the bit representation
+	Word32 uInput=reinterpret_cast<const Word32 *>(static_cast<const void *>(&fInput))[0];			// Get the bit representation
 
 	Word32 uResult = uInput&0x7FFFFFFFU;	// Get the exponent
 	if (uResult<(uBaseExponent+(16U<<23))) {				// Less than 1.0?

@@ -83,6 +83,7 @@ Burger::Filename::Filename(const char *pFilename) :
 	,m_lDirID(0),m_sVRefNum(0)
 #endif
 {
+	m_NativeFilename[0] = 0;
 	// Was there an input string?
 	if (!pFilename) {
 		// All initialized in case of an empty input string
@@ -127,41 +128,116 @@ Burger::Filename::Filename(const char *pFilename) :
 
 ***************************************/
 
-Burger::Filename::Filename(Burger::Filename const &rInput)
+Burger::Filename::Filename(Filename const &rInput)
 {
 	const char *pFilename = rInput.m_pFilename;
 	WordPtr uLength = StringLength(pFilename);
-	m_pFilename = m_Filename;
-	// 
+	char *pNew = m_Filename;
+	 
 	// Can the string fit in the local buffer?
 	if (uLength<sizeof(m_Filename)) {
 		// Yep! Copy and get lost
-		MemoryCopy(m_Filename,pFilename,uLength+1);
+		MemoryCopy(pNew,pFilename,uLength+1);
 	} else {
 		// Make a copy into an allocated buffer
-		char *pNew = StringDuplicate(pFilename);
+		pNew = StringDuplicate(pFilename);
 		// Are we boned?
-		if (pNew) {
-			// We're good, otherwise, return an empty class
-			m_pFilename = pNew;
-		} else {
+		if (!pNew) {
+			// We're boned
+			pNew = m_Filename;
 			m_Filename[0] = 0;
 		}
 	}
-	m_pNativeFilename = m_NativeFilename;
+	m_pFilename = pNew;
+
+	// Get the translated pathname
+	pFilename = rInput.m_pNativeFilename;
+	uLength = StringLength(pFilename);
+	pNew = m_NativeFilename;
+
+	// Can the string fit in the local buffer?
+	if (uLength<sizeof(m_NativeFilename)) {
+		// Yep! Copy and get lost
+		MemoryCopy(pNew,pFilename,uLength+1);
+	} else {
+		// Make a copy into an allocated buffer
+		pNew = StringDuplicate(pFilename);
+		// Are we boned?
+		if (!pNew) {
+			// We're boned
+			pNew = m_NativeFilename;
+			m_NativeFilename[0] = 0;
+		}
+	}
+	m_pNativeFilename = pNew;
+
+	// Copy the mac specific data
+
+#if defined(BURGER_MAC)
+	m_lDirID = rInput.m_lDirID;
+	m_sVRefNum = rInput.m_sVRefNum;
+#endif
 }
 
 /*! ************************************
 
 	\brief Copy a Burger::Filename
 	
+	\param rInput Reference to a Filename to copy from
 	\sa Set()
 
 ***************************************/
 
-Burger::Filename & Burger::Filename::operator = (Burger::Filename const &rInput)
+Burger::Filename & Burger::Filename::operator = (Filename const &rInput)
 {
-	Set(rInput.m_pFilename);
+	Clear();
+
+	const char *pFilename = rInput.m_pFilename;
+	WordPtr uLength = StringLength(pFilename);
+	char *pNew = m_Filename;
+
+	// Can the string fit in the local buffer?
+	if (uLength<sizeof(m_Filename)) {
+		// Yep! Copy and get lost
+		MemoryCopy(pNew,pFilename,uLength+1);
+	} else {
+		// Make a copy into an allocated buffer
+		pNew = StringDuplicate(pFilename);
+		// Are we boned?
+		if (!pNew) {
+			// We're boned
+			pNew = m_Filename;
+			m_Filename[0] = 0;
+		}
+	}
+	m_pFilename = pNew;
+
+	// Get the translated pathname
+	pFilename = rInput.m_pNativeFilename;
+	uLength = StringLength(pFilename);
+	pNew = m_NativeFilename;
+
+	// Can the string fit in the local buffer?
+	if (uLength<sizeof(m_NativeFilename)) {
+		// Yep! Copy and get lost
+		MemoryCopy(pNew,pFilename,uLength+1);
+	} else {
+		// Make a copy into an allocated buffer
+		pNew = StringDuplicate(pFilename);
+		// Are we boned?
+		if (!pNew) {
+			// We're boned
+			pNew = m_NativeFilename;
+			m_NativeFilename[0] = 0;
+		}
+	}
+	m_pNativeFilename = pNew;
+
+#if defined(BURGER_MAC)
+	m_lDirID = rInput.m_lDirID;
+	m_sVRefNum = rInput.m_sVRefNum;
+#endif
+
 	return *this;
 }
 
@@ -1025,7 +1101,7 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 
 	char *pOutput = m_Filename;
 	WordPtr uTotal = uPrefixLen+uLength;
-	if (uTotal>=(BUFFERSIZE-2)) {
+	if (uTotal>=(sizeof(m_Filename)-2)) {
 		pOutput = static_cast<char *>(Alloc(uTotal+2));
 		if (!pOutput) {			// No memory? Return nothing
 			uPrefixLen=0;
@@ -1080,7 +1156,7 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 void BURGER_API Burger::Filename::Expand(void)
 {
 	// Temp buffer
-	char Buffer[BUFFERSIZE];
+	char Buffer[sizeof(m_Filename)];
 	// Get the string pointer
 	const char *pInput = m_pFilename;
 	// Was it an allocated buffer?
@@ -1123,6 +1199,92 @@ const char * BURGER_API Burger::Filename::GetNative(void)
 
 /*! ************************************
 
+	\brief Set the filename to the current working directory
+
+	Query the operating system for the current working directory and
+	set the filename to that directory. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
+
+void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void)
+{
+	Clear();
+}
+#endif
+
+/*! ************************************
+
+	\brief Set the filename to the application's directory
+
+	Determine the directory where the application resides and set
+	the filename to that directory. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format.
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
+void BURGER_API Burger::Filename::SetApplicationDirectory(void)
+{
+	Clear();
+}
+#endif
+
+/*! ************************************
+
+	\brief Set the filename to the local machine preferences directory
+
+	Determine the directory where the user's preferences that are
+	local to the machine is located. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format.
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
+void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void)
+{
+	Clear();
+}
+#endif
+
+/*! ************************************
+
+	\brief Set the filename to the user's preferences directory
+
+	Determine the directory where the user's preferences that
+	could be shared among all machines the user has an account
+	with is located. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format.
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
+void BURGER_API Burger::Filename::SetUserPrefsDirectory(void)
+{
+	Clear();
+}
+#endif
+
+/*! ************************************
+
 	\brief Expand a filename from the native format to Burgerlib.
 	
 	For generic code, obtain a filename (Usually from a command line)
@@ -1147,3 +1309,59 @@ void BURGER_API Burger::Filename::SetFromNative(const char *pInput)
 	Set(pInput);
 }
 #endif
+
+/*! ************************************
+
+	\brief Allocate a new Filename
+	
+	Allocate memory using the Burgerlib memory manager and initialize
+	it to a default Filename class instance.
+
+	Delete with a call to Delete()
+
+	\sa Delete(const T *)
+
+***************************************/
+
+Burger::Filename * BURGER_API Burger::Filename::New(void)
+{
+	return new (Alloc(sizeof(Filename))) Filename();
+}
+
+/*! ************************************
+
+	\brief Allocate a new Filename with a Burgerlib "C" string
+	
+	Allocate memory using the Burgerlib memory manager and initialize
+	it to a default Filename class instance.
+
+	Delete with a call to Delete()
+
+	\param pFilename Pointer to a "C" string formatted as a Burgerlib pathname
+	\sa Delete(const T *)
+
+***************************************/
+
+Burger::Filename * BURGER_API Burger::Filename::New(const char *pFilename)
+{
+	return new (Alloc(sizeof(Filename))) Filename(pFilename);
+}
+
+/*! ************************************
+
+	\brief Allocate a copy of a Filename
+	
+	Allocate memory using the Burgerlib memory manager and initialize
+	it as a copy of another Filename class instance.
+
+	Delete with a call to Delete()
+
+	\param rInput Reference to a Filename to copy from
+	\sa Delete(const T *)
+
+***************************************/
+
+Burger::Filename * BURGER_API Burger::Filename::New(Filename const &rInput)
+{
+	return new (Alloc(sizeof(Filename))) Filename(rInput);
+}

@@ -28,6 +28,7 @@
 #include <string.h>
 #include <mach-o/dyld.h>
 
+#include <AvailabilityMacros.h>
 #if defined(BURGER_METROWERKS)
 #include <CarbonCore/Files.h>
 #include <CarbonCore/Folders.h>
@@ -196,7 +197,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 	// Get the location of the application binary
 	char NameBuffer[2048];
-	uint32_t uSize = sizeof(NameBuffer);
+	uint32_t uSize = static_cast<uint32_t>(sizeof(NameBuffer));
 	int iTest = _NSGetExecutablePath(NameBuffer,&uSize);
 	if (!iTest) {
 		MyFilename.SetFromNative(NameBuffer);

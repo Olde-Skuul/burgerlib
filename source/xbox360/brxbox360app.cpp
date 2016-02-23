@@ -11,46 +11,34 @@
 
 ***************************************/
 
-#include "brxbox360app.h"
+#include "brgameapp.h"
 #if defined(BURGER_XBOX360) || defined(DOXYGEN)
 #include "brfilemanager.h"
 #define NOD3D
 #define NONET
 #include <xtl.h>
 
-/*! ************************************
-
-	\class Burger::WindowsApp
-	\brief Base class for window game applications.
-
-	This class contains everything needed to create a
-	cross-platform environment for writing console based
-	applications. Functions are included to allow for
-	the application to gain <i>drag and drop</i> functionality
-	on platforms that support it.
-
-***************************************/
-
-/*! ************************************
+/***************************************
 
 	\brief Base constructor.
 
 	When a Windows app is spawned using WinMain(),
-	it is given the application instance. This parm
+	it is given the application instance. This parameter
 	are cached inside of this base class so the member
 	functions can handle automatic parameter passing
 	and decoding. The return code is initialized to zero.
 
 ***************************************/
 
-Burger::Xbox360App::Xbox360App(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,WordPtr uMinReserveSize) :
-	GameApp(uDefaultMemorySize,uDefaultHandleCount,uMinReserveSize)
+Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,WordPtr uMinReserveSize) :
+	m_MemoryManagerHandle(uDefaultMemorySize,uDefaultHandleCount,uMinReserveSize)
 {
+	InitDefaults();
 	// Init the file system
 	FileManager::Init();
 }
 
-/*! ************************************
+/***************************************
 
 	\brief Dispose of any allocated resources
 
@@ -59,10 +47,11 @@ Burger::Xbox360App::Xbox360App(WordPtr uDefaultMemorySize,Word uDefaultHandleCou
 
 ***************************************/
 
-Burger::Xbox360App::~Xbox360App()
+Burger::GameApp::~GameApp()
 {
 	// Release the file system
 	FileManager::Shutdown();
+	ShutdownDefaults();
 }
 
 

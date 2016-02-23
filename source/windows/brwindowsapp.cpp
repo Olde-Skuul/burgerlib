@@ -11,7 +11,7 @@
 	
 ***************************************/
 
-#include "brwindowsapp.h"
+#include "brgameapp.h"
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 #include "brdebug.h"
 #include "brmouse.h"
@@ -24,23 +24,37 @@
 #include "brutf8.h"
 #include "brfilemanager.h"
 
-#if !defined(WIN32_LEAN_AND_MEAN) && !defined(DOXYGEN)
+#if !defined(DOXYGEN)
+#if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
 
-#if !defined(_WIN32_WINNT) && !defined(DOXYGEN)
+#if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x0501			// Windows XP
+#endif
+
+#if !defined(_CRT_DECLARE_GLOBAL_VARIABLES_DIRECTLY)
+#define _CRT_DECLARE_GLOBAL_VARIABLES_DIRECTLY		// Needed for Visual Studio 2015 or higher
+#endif
 #endif
 
 #include <windows.h>
 #include <WindowsX.h>
 #include <shellapi.h>
 #include <stdlib.h>
+#include <ObjBase.h>
 
 #if !defined(DOXYGEN)
 // Needed for code that manually grabs the parm list
 
-extern "C" char **__argv;
+extern "C" char ** __argv;
+
+//
+// These defines are missing from some versions of windows.h
+// especially when building against older versions of the
+// windows SDK (Necessary, since some obscure compilers
+// don't ship with up to date headers)
+//
 
 #if !defined(GET_SC_WPARAM)
 #define GET_SC_WPARAM(wParam) ((int)wParam & 0xFFF0)
@@ -172,6 +186,7 @@ static const wchar_t g_GameClass[] = L"BurgerGameClass";
 	a window procedure. This should not be called in
 	released code.
 
+	\windowsonly
 	\param uMessage Windows message enumeration
 	\param wParam wParam value passed to the windows callback
 	\param lParam lParam value passed to the windows callback
@@ -182,9 +197,13 @@ static const wchar_t g_GameClass[] = L"BurgerGameClass";
 #define CASE(x) { #x,x }
 
 struct MessageLookup_t {
-	const char *m_pName;
-	Word m_uEnum;
+	const char *m_pName;			// String of the enum
+	Word m_uEnum;					// Enum value that matched the string
 };
+
+//
+// All known event messages for a window are here.
+//
 
 static const MessageLookup_t g_MessageLookup[] = {
 	CASE(WM_NULL),
@@ -413,10 +432,12 @@ static const MessageLookup_t g_MessageLookup[] = {
 };
 #endif
 
-void BURGER_API Burger::WindowsApp::OutputWindowsMessage(Word uMessage,WordPtr wParam,WordPtr lParam)
+void BURGER_API Burger::GameApp::OutputWindowsMessage(Word uMessage,WordPtr wParam,WordPtr lParam)
 {
+	// Static global value containing the number of times this function was called
 	static Word uMessageCount=0;
 
+	// Scan the table for a match
 	WordPtr uCount = BURGER_ARRAYSIZE(g_MessageLookup);
 	const MessageLookup_t *pLookup = g_MessageLookup;
 	const char *pMessage = NULL;
@@ -428,12 +449,19 @@ void BURGER_API Burger::WindowsApp::OutputWindowsMessage(Word uMessage,WordPtr w
 		++pLookup;
 	} while (--uCount);
 
+	// If a message wasn't found, convert the unknown code to an
+	// ASCII message
+
 	char HexAsASCII[32]; 
 	if (!pMessage) {
 		NumberToAsciiHex(HexAsASCII,static_cast<Word32>(uMessage),LEADINGZEROS|8);
 		pMessage = HexAsASCII;
 	}
-	Debug::Message("Message %08X is %s with parms %08X, %08X\n",uMessageCount,pMessage,wParam,lParam);
+	// Output the message and parameter values. It's not 64 bit clean for the
+	// parameters, however, this is only for information to give clues on how
+	// events are sent to a window from the operating system
+
+	Debug::Message("Message %08X is %s with parms %08X, %08X\n",uMessageCount,pMessage,static_cast<Word>(wParam),static_cast<Word>(lParam));
 	++uMessageCount;
 }
 
@@ -449,23 +477,35 @@ void BURGER_API Burger::WindowsApp::OutputWindowsMessage(Word uMessage,WordPtr w
 
 ***************************************/
 
-Burger::WindowsApp::WindowsApp(HINSTANCE__ *hInstance,const char *pGameName,MainWindowProc pCallBack,
-	WordPtr uDefaultMemorySize,Word uDefaultHandleCount,WordPtr uMinReserveSize) :
-	GameApp(uDefaultMemorySize,uDefaultHandleCount,uMinReserveSize),
-	m_hInstance(hInstance),
+Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,WordPtr uMinReserveSize) :
+	m_MemoryManagerHandle(uDefaultMemorySize,uDefaultHandleCount,uMinReserveSize),
+//	m_hInstance(NULL),		// Will initialize below
 	m_hWindow(NULL),
 	m_pDefaultCursor(NULL),
 	m_ppOldArgv(NULL),
-	m_pCallBack(pCallBack),
-	m_bPreviousWindowXYValid(FALSE),
-	m_uAtom(0)
+	m_pCallBack(NULL),
+	m_iWindowCenterX(0),
+	m_iWindowCenterY(0),
+	m_uErrorMode(0),
+	m_uAtom(0),
+	m_bCoCreateInstanceInit(FALSE)
 {
+	HINSTANCE hInstance = GetModuleHandleW(NULL);
+	m_hInstance = hInstance;
 	// Set the global instance
 	Globals::SetInstance(hInstance);
 
+	// Ensure that threading is serialized
+	if (CoInitializeEx(NULL,COINIT_APARTMENTTHREADED) == S_OK) {
+		m_bCoCreateInstanceInit = TRUE;
+	}
+
 	// Make the app handle all of its own errors
-	SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
-	
+	m_uErrorMode = SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
+
+	// Set up the shared values
+	InitDefaults();
+
 	// In order to support unicode command lines under windows,
 	// the command line needs to be re-processed by calling the
 	// shellapi and manually extracting the commands and 
@@ -522,6 +562,7 @@ Burger::WindowsApp::WindowsApp(HINSTANCE__ *hInstance,const char *pGameName,Main
 		} while (--iArgc);
 	}
 	// Release the data Windows gave me for the parsed parameters
+	// See docs for CommandLineToArgvW()
 	LocalFree(pWideArgv);
 
 	// Add the windows callback function
@@ -532,9 +573,6 @@ Burger::WindowsApp::WindowsApp(HINSTANCE__ *hInstance,const char *pGameName,Main
 	
 	// Init the file system
 	FileManager::Init();
-
-	// Init the system window
-	Globals::SetErrorCode(InitWindow(pGameName,pCallBack));
 }
 
 /*! ************************************
@@ -546,8 +584,9 @@ Burger::WindowsApp::WindowsApp(HINSTANCE__ *hInstance,const char *pGameName,Main
 
 ***************************************/
 
-Burger::WindowsApp::~WindowsApp()
+Burger::GameApp::~GameApp()
 {
+	m_pCallBack = NULL;
 	RemoveRoutine(Poll,this);
 	// If there is a window, dispose of it
 	if (m_hWindow) {
@@ -567,21 +606,36 @@ Burger::WindowsApp::~WindowsApp()
 	// Release the cursor
 	OSCursor::Shutdown();
 
+	// Release the command line
 	Free(m_ppArgv);
-	Globals::SetInstance(NULL);
 	m_ppArgv = NULL;
-	m_iArgc = 0;
-	m_hInstance = NULL;
-	m_pCallBack = NULL;
+
+	// Restore the previous command line so crt0.s can clean it up
 	if (m_ppOldArgv) {
 		__argv = const_cast<char **>(m_ppOldArgv);
 		m_ppOldArgv = NULL;
 	}
+
+	// Clear out the default variables
+	ShutdownDefaults();
+
+	// Restore the system error mode
+	SetErrorMode(m_uErrorMode);
+
+	// Restore COM to previous state
+	if (m_bCoCreateInstanceInit) {
+		CoUninitialize();
+		m_bCoCreateInstanceInit = FALSE;
+	}
+
+	// The instance is not tracked anymore
+	m_hInstance = NULL;
+	Globals::SetInstance(NULL);
 }
 
 /*! ************************************
 
-	\fn HINSTANCE Burger::WindowsApp::GetInstance(void) const
+	\fn HINSTANCE Burger::GameApp::GetInstance(void) const
 	\brief Get the HINSTANCE of the running application
 
 	When started, an HINSTANCE is assigned to an application and
@@ -594,7 +648,7 @@ Burger::WindowsApp::~WindowsApp()
 
 /*! ************************************
 
-	\fn HWND Burger::WindowsApp::GetWindow(void) const
+	\fn HWND Burger::GameApp::GetWindow(void) const
 	\brief Get the HWND of the running application
 
 	When started, a window is created and attached
@@ -611,7 +665,7 @@ Burger::WindowsApp::~WindowsApp()
 
 /*! ************************************
 
-	\fn Burger::WindowsApp::MainWindowProc Burger::WindowsApp::GetCallBack(void) const
+	\fn Burger::GameApp::MainWindowProc Burger::GameApp::GetCallBack(void) const
 	\brief Get the pointer to the window callback
 
 	The main application window has a callback function to handle
@@ -625,23 +679,7 @@ Burger::WindowsApp::~WindowsApp()
 
 ***************************************/
 
-/*! ************************************
 
-	\fn void Burger::WindowsApp::ResetWindowLocation(void)
-	\brief Purge the cached window location
-
-	When calling SetWindowSize(), it will center the window in the
-	middle of the screen on the first call and then
-	use the last known origin location on all subsequent
-	calls so if the user moves the window, the 
-	location of the window won't be lost on
-	toggling from full screen to window mode. If the
-	window needs to be re-centered, call this function to
-	purge the cache.
-
-	\windowsonly
-
-***************************************/
 
 /***************************************
 
@@ -649,52 +687,45 @@ Burger::WindowsApp::~WindowsApp()
 
 ***************************************/
 
-#if !defined(DOXYGEN)
-#if defined(NDEBUG)
-#define TraceMessage(x,y,z) (void)0
-#else
-static BURGER_INLINE void TraceMessage(Word uMessage,WordPtr wParam,WordPtr lParam)
-{
-	if (Burger::Globals::GetTraceFlag()&Burger::Globals::TRACE_MESSAGES) {
-		Burger::WindowsApp::OutputWindowsMessage(uMessage,wParam,lParam);
-	}
-}
-#endif
-#endif
-
 static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wParam,LPARAM lParam)
 {
 	// Firstly, get the "this" pointer
 	// Note that this is not automatically set, the pointer is
 	// passed in the WM_NCCREATE command and it's manually set into the 
-	// WindowLongPtr index of 0.
+	// WindowLongPtr index of GWLP_USERDATA.
 
-	Burger::WindowsApp *pThis = reinterpret_cast<Burger::WindowsApp *>(GetWindowLongPtrW(pWindow,0));
+	// Use GetWindowLongPtrW to be 64 bit clean
+	Burger::GameApp *pThis = reinterpret_cast<Burger::GameApp *>(GetWindowLongPtrW(pWindow,GWLP_USERDATA));
 
 	// Never initialized?
 	if (!pThis) {
 		// If this is a WM_NCCREATE event, then get the class instance pointer passed.
-		if (uMessage==WM_NCCREATE) {
-			pThis = static_cast<Burger::WindowsApp *>(reinterpret_cast<CREATESTRUCT *>(lParam)->lpCreateParams);
-			SetWindowLongPtrW(pWindow,0,reinterpret_cast<LONG_PTR>(pThis));
-		}
+//		if (uMessage==WM_NCCREATE) {
+//			// Use SetWindowLongPtrW to be 64 bit clean
+//			pThis = static_cast<Burger::GameApp *>(reinterpret_cast<CREATESTRUCT *>(lParam)->lpCreateParams);
+//			SetWindowLongPtrW(pWindow,GWLP_USERDATA,PtrToLong(pThis));
+//		}
 		// If I didn't get a pThis set, just call the default procedure and exit
-		if (!pThis) {
+//		if (!pThis) {
 			return DefWindowProcW(pWindow,uMessage,wParam,lParam);
-		}
+//		}
 	}
 
 	// The pThis class instance is valid!
 
 	// For debugging, if needed
-	TraceMessage(uMessage,static_cast<WordPtr>(wParam),static_cast<WordPtr>(lParam));
+#if defined(_DEBUG)
+	if (Burger::Globals::GetTraceFlag()&Burger::Globals::TRACE_MESSAGES) {
+		Burger::GameApp::OutputWindowsMessage(uMessage,wParam,static_cast<WordPtr>(lParam));
+	}
+#endif
 
 	// If there is a user supplied callback, issue it
 
-	Burger::WindowsApp::MainWindowProc pCallBack = pThis->GetCallBack();
+	Burger::GameApp::MainWindowProc pCallBack = pThis->GetCallBack();
 	if (pCallBack) {
 		WordPtr uOutput;
-		// Should it shut down?
+		// If the function returns non-zero, assume it should terminate immediately
 		if (pCallBack(pThis,pWindow,static_cast<Word>(uMessage),static_cast<WordPtr>(wParam),static_cast<WordPtr>(lParam),&uOutput)) {
 			// Return the passed result code
 			return static_cast<LRESULT>(uOutput);
@@ -713,10 +744,12 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 
 	case WM_GETMINMAXINFO:
 		{
+			// Only if a video display is present
 			Burger::Display *pDisplay = pThis->GetDisplay();
 			if (pDisplay) {
 				// If full screen or not allowed, disable
-				if (pThis->IsAppFullScreen() || !(pDisplay->GetFlags()&Burger::Display::ALLOWRESIZING)) {
+				Word uFlags = pDisplay->GetFlags();
+				if ((uFlags & Burger::Display::FULLSCREEN) || !(uFlags&Burger::Display::ALLOWRESIZING)) {
 					LONG lScreenHeight = static_cast<LONG>(pDisplay->GetHeight());
 					LONG lScreenWidth = static_cast<LONG>(pDisplay->GetWidth());
 					// Adjust the window size to whatever the video manager says it should be
@@ -725,7 +758,7 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 					WindowSizeRect.left = 0;
 					WindowSizeRect.bottom = lScreenHeight;
 					WindowSizeRect.right = lScreenWidth;
-					AdjustWindowRectEx(&WindowSizeRect,static_cast<DWORD>(GetWindowLongW(pWindow,GWL_STYLE)),GetMenu(pWindow)!=0,static_cast<DWORD>(GetWindowLongW(pWindow,GWL_EXSTYLE)));
+					AdjustWindowRectEx(&WindowSizeRect,static_cast<DWORD>(GetWindowLongPtrW(pWindow,GWL_STYLE)),GetMenu(pWindow)!=0,static_cast<DWORD>(GetWindowLongPtrW(pWindow,GWL_EXSTYLE)));
 
 					// Set the minimum and maximum window sizes to the same value to perform the resize disabling
 					MINMAXINFO *pMinMaxInfo = reinterpret_cast<MINMAXINFO *>(lParam);
@@ -755,32 +788,42 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 	//
 	// The app is "activated"
 	//
+
 	case WM_ACTIVATEAPP:
 		// If quitting, do NOT activate!
 		if (pThis->GetQuitCode()) {
 			return 0;		// Message is processed
 		}
-		break;
 
-	//
-	// If this windows is put in the background, send a pause event
-	// HIWORD(wParam) != 0 means the window is minimized
-	//
+		// Is it active and was in the background?
+		if ((wParam==TRUE) && pThis->IsInBackground()) {
 
-	case WM_ACTIVATE:
-		{
-			if ((HIWORD(wParam) == 0) && (LOWORD(wParam) != WA_INACTIVE)) {
-				if (pThis->IsAppFullScreen()) {
-					pThis->GetInputFocus();
-				} else {
-					pThis->KillInputFocus();
-				}
-				pThis->SetInBackground(FALSE);
+			// Move to the foreground
+			if (pThis->IsAppFullScreen()) {
+
+				// For full screen, disable the short cut keys
+				pThis->GetKeyboard()->DisableAccessibilityShortcutKeys();
+
+				// Reacquire DirectInput
+				pThis->GetInputFocus();
 			} else {
+				// Use the OS for input
 				pThis->KillInputFocus();
-				pThis->SetInBackground(TRUE);
 			}
+			pThis->SetInBackground(FALSE);
+
+		// Is it being deactivated and was in the foreground?
+		} else if ((!wParam) && !pThis->IsInBackground()) {
+
+			// Ensure the OS has input
+			pThis->KillInputFocus();
+
+			// Make sure the short cut keys are available
+			pThis->GetKeyboard()->RestoreAccessibilityShortcutKeys();
+			pThis->SetInBackground(TRUE);
 		}
+
+		// State hasn't changed, leave as is
 		return 0;
 
 	//
@@ -789,7 +832,20 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 
 	// Mouse move events only happen when the mouse cursor is on the screen
 	case WM_MOUSEMOVE:
-		pThis->SetMouseOnScreen(TRUE);
+		// If not previously tracked, ask Windows to send 
+		// me an event if the mouse is OFF this window
+		// so the application is aware that the mouse
+		// is no longer available
+
+		if (!pThis->IsMouseOnScreen()) {
+			TRACKMOUSEEVENT TrackIt;
+			TrackIt.cbSize = sizeof(TrackIt);
+			TrackIt.dwFlags = TME_LEAVE;
+			TrackIt.hwndTrack = pWindow;
+			TrackIt.dwHoverTime = 0;
+			Burger::Globals::TrackMouseEvent(&TrackIt);
+			pThis->SetMouseOnScreen(TRUE);
+		}
 
 	case WM_LBUTTONDOWN:
 	case WM_LBUTTONUP:
@@ -895,6 +951,7 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 		break;
 
 	// Mouse is off the client area. Turn off any software cursor
+	case WM_MOUSELEAVE:
 	case WM_NCMOUSELEAVE:
 	case WM_NCMOUSEMOVE:
 		pThis->SetMouseOnScreen(FALSE);
@@ -928,9 +985,10 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 				if (!(pDisplay->GetFlags()&Burger::Display::FULLSCREEN)) {
 					pThis->RecordWindowLocation();
 				}
+				RECT TempRect;
+				GetClientRect(pThis->GetWindow(),&TempRect);
+				pDisplay->Resize(static_cast<Word>(TempRect.right),static_cast<Word>(TempRect.bottom));
 				if (pDisplay->GetResizeCallback()) {
-					RECT TempRect;
-					GetClientRect(pThis->GetWindow(),&TempRect);
 					(pDisplay->GetResizeCallback())(pDisplay->GetResizeCallbackData(),static_cast<Word>(TempRect.right),static_cast<Word>(TempRect.bottom));
 				}
 			// Alert the mouse subsystem to the new mouse bounds
@@ -939,6 +997,8 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 					// Reset the mouse coords for mouse handler
 					pMouse->SetRange(pDisplay->GetWidth(),pDisplay->GetHeight());
 				}
+			} else {
+				pThis->RecordWindowLocation();
 			}
 		}
 		break;
@@ -1044,10 +1104,9 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 			// If there's a mouse device, set the position
 			Burger::Keyboard *pKeyboard = pThis->GetKeyboard();
 			if (pKeyboard) {
-				pKeyboard->PostWindowsKeyDown(((lParam>>16)&0x7FU)|((lParam>>17)&0x80));
+				pKeyboard->PostWindowsKeyDown(((static_cast<Word32>(lParam)>>16U)&0x7FU)|((static_cast<Word32>(lParam)>>17U)&0x80U));
 				return 0;
 			}
-
 		}
 		break;
 
@@ -1057,7 +1116,7 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 			// If there's a mouse device, set the position
 			Burger::Keyboard *pKeyboard = pThis->GetKeyboard();
 			if (pKeyboard) {
-				pKeyboard->PostWindowsKeyUp(((lParam>>16)&0x7FU)|((lParam>>17)&0x80));
+				pKeyboard->PostWindowsKeyUp(((static_cast<Word32>(lParam)>>16U)&0x7FU)|((static_cast<Word32>(lParam)>>17U)&0x80U));
 				return 0;
 			}
 		}
@@ -1096,36 +1155,43 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 	application to send and receive system events including
 	sound and visual focus. Create this window and set internal
 	variables so the Windows version of Burgerlib can function
-		
+	
+	\param pGameName Pointer to a UTF-8 "C" string of the string to attach to the top of the game window
+	\param pCallBack Pointer to a user supplied callback function for Windows (\ref NULL if no user supplied pointer is present)
+	\param uIconResID Numeric ID of the Windows Icon to attach to the window that's in the EXE files resource data (0 to use the default application icon from Windows)
+
 	\return Zero (\ref FALSE) if the window was successfully created
 
 ***************************************/
 
-int BURGER_API Burger::WindowsApp::InitWindow(const char *pGameName,MainWindowProc pCallBack)
+int BURGER_API Burger::GameApp::InitWindow(const char *pGameName,MainWindowProc pCallBack,Word uIconResID)
 {
+	if (!uIconResID) {
+		uIconResID = 32512;		// Default Windows application ID IDI_APPLICATION
+	}
+
 	m_pCallBack = pCallBack;
 	WNDCLASSEXW WindowClass;
 	MemoryClear(&WindowClass,sizeof(WindowClass));
 	WindowClass.cbSize = sizeof(WindowClass);
 	WindowClass.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;		// Accept double clicks, redraw on resize
 	WindowClass.lpfnWndProc = InternalCallBack;	// My window callback
-//	WindowClass.cbClsExtra = 0;
-	WindowClass.cbWndExtra = sizeof(void *);	// Space for the "this" pointer
+//	WindowClass.cbClsExtra = 0;			// No extra class bytes
+//	WindowClass.cbWndExtra = 0;			// No extra space was needed
 	WindowClass.hInstance = m_hInstance;
-//	WindowClass.hIcon = NULL;
+	WindowClass.hIcon = LoadIcon(m_hInstance,MAKEINTRESOURCE(uIconResID));
 	// Keep the cursor NULL to allow updating of the cursor by the app
 //	WindowClass.hCursor = NULL;		//LoadCursorW(NULL,MAKEINTRESOURCEW(IDC_ARROW));
 	WindowClass.hbrBackground = reinterpret_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
 //	WindowClass.lpszMenuName = NULL;
 	WindowClass.lpszClassName = reinterpret_cast<LPCWSTR>(g_GameClass);
-//	WindowClass.hIconSm = NULL;
-
-	// Register my window's class
-	ATOM MyAtom = RegisterClassExW(&WindowClass);
+//	WindowClass.hIconSm = NULL;		// Assume hIcon has the small icon in the set
 
 	// Get the default cursor
 	m_pDefaultCursor = LoadCursorW(NULL,reinterpret_cast<LPCWSTR>(IDC_ARROW));
 
+	// Register my window's class
+	ATOM MyAtom = RegisterClassExW(&WindowClass);
 	int iResult;
 	// Success in creating my class?
 	if (MyAtom) {
@@ -1133,25 +1199,32 @@ int BURGER_API Burger::WindowsApp::InitWindow(const char *pGameName,MainWindowPr
 		// Convert the game name to unicode
 		String16 TitleUnicode(pGameName);
 
+		ResetWindowLocation();
 		// Create the window and pass it the "this" pointer
 		HWND pWindow = CreateWindowExW(
 			WS_EX_APPWINDOW,	// Force top level to the task bar when minimized
 			reinterpret_cast<LPCWSTR>(g_GameClass),				// Pointer to registered class name
 			reinterpret_cast<LPCWSTR>(TitleUnicode.c_str()),	// Window title string
 			WS_MINIMIZE,	// Make it an INVISIBLE window
-			0,				// X coord
-			0,				// Y coord
-			320,			// Width
-			200,			// Height
+			m_iWindowCenterX-(320/2),	// X coord
+			m_iWindowCenterY-(200/2),	// Y coord
+			320,						// Width
+			200,						// Height
 			NULL,			// Window parent
 			NULL,			// Window menu
 			m_hInstance,	// Task number
 			this);			// Local parameter
+
 		if (pWindow) {
 			// Store the new window handle
 			m_hWindow = pWindow;
 			// Set the system global, obsolete
 			Globals::SetWindow(pWindow);
+
+			// Set the pointer to the "this" pointer so the window
+			// function will activate
+			SetWindowLongPtrW(pWindow,GWLP_USERDATA,PtrToLong(this));
+
 			UpdateWindow(pWindow);		// Blank out the window to black
 			SetFocus(pWindow);			// All input is directed to me
 			iResult = 0;				// I'm OK!
@@ -1175,8 +1248,8 @@ int BURGER_API Burger::WindowsApp::InitWindow(const char *pGameName,MainWindowPr
 
 	If this is the first time executing, the window
 	will be placed in the center of the screen,
-	otherwise it will be place in at the last
-	recorded location.
+	otherwise it will be placed where at the location
+	of the last time the window was opened.
 
 	\param uWidth Width of the display rectangle in pixels
 	\param uHeight Height of the display rectangle in pixels
@@ -1184,20 +1257,20 @@ int BURGER_API Burger::WindowsApp::InitWindow(const char *pGameName,MainWindowPr
 
 ***************************************/
 
-int BURGER_API Burger::WindowsApp::SetWindowSize(Word uWidth,Word uHeight)
+int BURGER_API Burger::GameApp::SetWindowSize(Word uWidth,Word uHeight)
 {
 	// Get the application's window
-
 	HWND pWindow = m_hWindow;
+
 	// Get the style of the window
-	LONG dwStyle = GetWindowLongW(pWindow,GWL_STYLE);
+	LONG_PTR dwStyle = GetWindowLongPtrW(pWindow,GWL_STYLE);
 	// Can't be a pop-up window
 	dwStyle &= ~(WS_POPUP);
 	// Enable all the bells and whistles!
 	dwStyle |= WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_SYSMENU;
 	// Set the style (May not be visible if this is the first setting)
 	// Note: Will issue WM_STYLECHANGING, WM_STYLECHANGED and WM_GETICON messages to the window proc
-	SetWindowLongW(pWindow,GWL_STYLE,dwStyle);
+	SetWindowLongPtrW(pWindow,GWL_STYLE,dwStyle);
 
 	// Init the rect of the window's display area
 	RECT NewWindowRect;
@@ -1208,7 +1281,7 @@ int BURGER_API Burger::WindowsApp::SetWindowSize(Word uWidth,Word uHeight)
 
 	// Calculate the rect of the window after the borders are added...
 
-	AdjustWindowRectEx(&NewWindowRect,static_cast<DWORD>(dwStyle),static_cast<BOOL>(GetMenu(pWindow)!= 0),static_cast<DWORD>(GetWindowLongW(pWindow,GWL_EXSTYLE)));
+	AdjustWindowRectEx(&NewWindowRect,static_cast<DWORD>(dwStyle),static_cast<BOOL>(GetMenu(pWindow)!= 0),static_cast<DWORD>(GetWindowLongPtrW(pWindow,GWL_EXSTYLE)));
 
 	// Get the rect of the main screen (Note, removes the
 	// windows task bar if one is present)
@@ -1220,16 +1293,15 @@ int BURGER_API Burger::WindowsApp::SetWindowSize(Word uWidth,Word uHeight)
 	Word uAdjustedWidth = static_cast<Word>(NewWindowRect.right-NewWindowRect.left);
 	Word uAdjustedHeight = static_cast<Word>(NewWindowRect.bottom-NewWindowRect.top);
 
-	// Get the x,y position of the window
+	// Get the center x,y position of the window
 
-	if (m_bPreviousWindowXYValid) {
-		NewWindowRect.left = m_iPreviousWindowX;		// Restore the window position
-		NewWindowRect.top = m_iPreviousWindowY;
-	} else {
-		// Get the screen size and center it there
-		NewWindowRect.left = static_cast<LONG>((TempRect.right-TempRect.left)-uAdjustedWidth)/2;
-		NewWindowRect.top = static_cast<LONG>((TempRect.bottom-TempRect.top)-uAdjustedHeight)/2;
+	if (!m_iWindowCenterX) {
+		ResetWindowLocation();		// Find the center of the main monitor
 	}
+
+	// Get the screen size and center it there
+	NewWindowRect.left = static_cast<LONG>(m_iWindowCenterX-(uAdjustedWidth/2));
+	NewWindowRect.top = static_cast<LONG>(m_iWindowCenterY-(uAdjustedHeight/2));
 
 	// Make sure the window is on screen
 
@@ -1250,6 +1322,65 @@ int BURGER_API Burger::WindowsApp::SetWindowSize(Word uWidth,Word uHeight)
 
 /*! ************************************
 
+	\brief Prepare an application window for full screen mode
+
+	When initializing a display, the window needs to
+	be adjusted to be size of the display and all borders
+	removed. This function will make the window visible and
+	adjust if for full screen drawing.
+
+	\param uWidth Width of the display rectangle in pixels
+	\param uHeight Height of the display rectangle in pixels
+	\return Zero if no error, non-zero windows error code
+
+***************************************/
+
+int BURGER_API Burger::GameApp::SetWindowFullScreen(Word uWidth,Word uHeight)
+{
+	// Get the application's window
+	HWND pWindow = m_hWindow;
+
+	// Get the style of the window 
+	LONG_PTR dwStyle = GetWindowLongPtrW(pWindow,GWL_STYLE);
+	dwStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX);
+	dwStyle |= WS_POPUP | WS_OVERLAPPED | WS_EX_TOPMOST;		// Can't be a pop-up window
+	SetWindowLongPtrW(pWindow,GWL_STYLE,dwStyle);				// Set the style
+
+	// Set the style (Makes it visible)
+	ShowWindow(pWindow,SW_SHOWNORMAL);
+
+	// Position the window on the screen in the center or where it was located last time
+	SetWindowPos(pWindow,HWND_TOP,0,0,static_cast<int>(uWidth),static_cast<int>(uHeight),SWP_NOZORDER | SWP_NOACTIVATE);
+
+	return 0;
+}
+
+/*! ************************************
+
+	\brief Purge the cached window location
+
+	When calling SetWindowSize(), it will center the window in the
+	middle of the screen on the first call and then
+	use the last known origin location on all subsequent
+	calls so if the user moves the window, the 
+	location of the window won't be lost on
+	toggling from full screen to window mode. If the
+	window needs to be re-centered, call this function to
+	purge the cache.
+
+	\windowsonly
+
+***************************************/
+
+void BURGER_API Burger::GameApp::ResetWindowLocation(void)
+{
+	// Record the center of the main monitor as the center point of the window
+	m_iWindowCenterX = GetSystemMetrics(SM_CXSCREEN)/2;
+	m_iWindowCenterY = GetSystemMetrics(SM_CYSCREEN)/2;
+}
+
+/*! ************************************
+
 	\brief Save the current window location
 
 	When changing video display modes, it's prudent to 
@@ -1261,14 +1392,25 @@ int BURGER_API Burger::WindowsApp::SetWindowSize(Word uWidth,Word uHeight)
 
 ***************************************/
 
-void BURGER_API Burger::WindowsApp::RecordWindowLocation(void)
+void BURGER_API Burger::GameApp::RecordWindowLocation(void)
 {
-	// Save off the window position only if a context was already successfully created
 	RECT TempRect;
-	GetWindowRect(m_hWindow,&TempRect);
-	m_iPreviousWindowX = TempRect.left;
-	m_iPreviousWindowY = TempRect.top;
-	m_bPreviousWindowXYValid = TRUE;
+
+	// Get the current size of the window
+	HWND pWindow = m_hWindow;
+	GetClientRect(pWindow,&TempRect);
+
+	// Calculate the center point
+	POINT TempCenter;
+	TempCenter.x = (TempRect.right-TempRect.left)/2;
+	TempCenter.y = (TempRect.bottom-TempRect.top)/2;
+
+	// Remap the point to the desktop
+	MapWindowPoints(pWindow,HWND_DESKTOP,&TempCenter,1);
+
+	// Store the global center point of the window
+	m_iWindowCenterX = TempCenter.x;
+	m_iWindowCenterY = TempCenter.y;
 }
 
 /*! ************************************
@@ -1294,7 +1436,7 @@ void BURGER_API Burger::WindowsApp::RecordWindowLocation(void)
 
 ***************************************/
 
-Word BURGER_API Burger::WindowsApp::HandleCursor(Word uParam)
+Word BURGER_API Burger::GameApp::HandleCursor(Word uParam)
 {
 	// Only process if in the client area. Let the OS handle the cursor
 	// elsewhere
@@ -1345,7 +1487,7 @@ Word BURGER_API Burger::WindowsApp::HandleCursor(Word uParam)
 
 ***************************************/
 
-void BURGER_API Burger::WindowsApp::GetInputFocus(void)
+void BURGER_API Burger::GameApp::GetInputFocus(void)
 {
 	if (IsAppFullScreen()) {
 		Mouse *pMouse = GetMouse();
@@ -1374,7 +1516,7 @@ void BURGER_API Burger::WindowsApp::GetInputFocus(void)
 
 ***************************************/
 
-void BURGER_API Burger::WindowsApp::KillInputFocus(void)
+void BURGER_API Burger::GameApp::KillInputFocus(void)
 {
 	Mouse *pMouse = GetMouse();
 	if (pMouse) {
@@ -1402,14 +1544,14 @@ void BURGER_API Burger::WindowsApp::KillInputFocus(void)
 
 ***************************************/
 
-Burger::RunQueue::eReturnCode BURGER_API Burger::WindowsApp::Poll(void * /* pSelf */)
+Burger::RunQueue::eReturnCode BURGER_API Burger::GameApp::Poll(void * /* pSelf */)
 {
-	MSG msg;
-	while (PeekMessageW(&msg,NULL,0,0,PM_REMOVE)) {
+	MSG TempMessage;
+	while (PeekMessageW(&TempMessage,NULL,0,0,PM_REMOVE)) {
 		// Translate the keyboard (Localize)
-		TranslateMessage(&msg);
+		TranslateMessage(&TempMessage);
 		// Pass to the window event proc
-		DispatchMessageW(&msg);
+		DispatchMessageW(&TempMessage);
 	}
 	return RunQueue::OKAY;
 }

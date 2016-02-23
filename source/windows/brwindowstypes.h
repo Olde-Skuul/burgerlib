@@ -32,30 +32,36 @@
 
 /* BEGIN */
 #if defined(BURGER_WINDOWS) && !defined(DOXYGEN)
-struct HINSTANCE__;
-struct HWND__;
-struct HPALETTE__;
+struct IUnknown;
 struct HBITMAP__;
 struct HDC__;
 struct HGLRC__;
+struct HHOOK__;
 struct HICON__;
+struct HINSTANCE__;
+struct HPALETTE__;
+struct HWND__;
+struct IDirectInputA;
 struct IDirectInputW;
+struct IDirectInput8A;
 struct IDirectInput8W;
+struct IDirectInputDevice2A;
 struct IDirectInputDevice2W;
+struct IDirectInputDevice8A;
 struct IDirectInputDevice8W;
 struct IDirectDraw;
 struct IDirectDraw2;
 struct IDirectDraw4;
 struct IDirectDraw7;
+struct IDirectDrawClipper;
+struct IDirectDrawColorControl;
+struct IDirectDrawGammaControl;
+struct IDirectDrawPalette;
 struct IDirectDrawSurface;
 struct IDirectDrawSurface2;
 struct IDirectDrawSurface3;
 struct IDirectDrawSurface4;
 struct IDirectDrawSurface7;
-struct IDirectDrawPalette;
-struct IDirectDrawClipper;
-struct IDirectDrawColorControl;
-struct IDirectDrawGammaControl;
 struct IDirect3D9;
 struct IDirect3DDevice9;
 struct IDirect3DStateBlock9;
@@ -97,20 +103,26 @@ struct IDirectSoundCaptureFXNoiseSuppress;
 struct IDirectSoundFullDuplex;
 struct ID3DXEffect;
 struct ID3DXEffectPool;
-struct IUnknown;
-struct _DIDATAFORMAT;
+struct ID3DXMatrixStack;
 struct _D3DPRESENT_PARAMETERS_;
 struct _D3DCAPS9;
 struct _D3DDISPLAYMODE;
+struct _DIDATAFORMAT;
+struct _DSBUFFERDESC;
+struct _DSCBUFFERDESC;
 struct _FILETIME;
 struct _GUID;
-struct tagRECT;
-struct tagPOINT;
 struct _RTL_CRITICAL_SECTION_DEBUG;
 struct _SP_DEVICE_INTERFACE_DATA;
 struct _SP_DEVINFO_DATA;
 struct _SP_DEVICE_INTERFACE_DETAIL_DATA_A;
 struct _SP_DEVICE_INTERFACE_DETAIL_DATA_W;
+struct tagFILTERKEYS;
+struct tagPOINT;
+struct tagRECT;
+struct tagSTICKYKEYS;
+struct tagTOGGLEKEYS;
+struct tagTRACKMOUSEEVENT;
 namespace Burger {
 struct CRITICAL_SECTION {
 	_RTL_CRITICAL_SECTION_DEBUG *DebugInfo;
@@ -119,6 +131,28 @@ struct CRITICAL_SECTION {
 	void *OwningThread;
 	void *LockSemaphore;
 	WordPtr SpinCount;
+};
+struct tagSTICKYKEYS {
+	Word cbSize;
+	Word dwFlags;
+};
+struct tagTOGGLEKEYS {
+	Word cbSize;
+	Word dwFlags;
+};
+struct tagFILTERKEYS {
+	Word cbSize;
+	Word dwFlags;
+	Word iWaitMSec;
+	Word iDelayMSec;
+	Word iRepeatMSec;
+	Word iBounceMSec;
+};
+struct tagTRACKMOUSEEVENT {
+	Word cbSize;
+	Word dwFlags;
+	HWND__ *hwndTrack;
+	Word dwHoverTime;
 };
 }
 #endif

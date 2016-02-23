@@ -111,7 +111,7 @@ void Burger::SHA1Hasher_t::Process(const Word8 *pBlock)
 
 	Word32 i = 0;
 	do {
-		block[i] = Burger::BigEndian::LoadAny(&reinterpret_cast<const Word32 *>(pBlock)[i]);
+		block[i] = BigEndian::LoadAny(&reinterpret_cast<const Word32 *>(pBlock)[i]);
 	} while (++i<16);
 
 	// Make a copy of the hash integers 

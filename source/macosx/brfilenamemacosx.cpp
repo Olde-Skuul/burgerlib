@@ -17,6 +17,12 @@
 #include "brglobalmemorymanager.h"
 #include "brstringfunctions.h"
 #include "brfilemanager.h"
+#include <sys/param.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <mach-o/dyld.h>
+#include <glob.h>
+#include <libgen.h>
 
 /***************************************
 
@@ -113,6 +119,143 @@ const char *Burger::Filename::GetNative(void)
 	}
 	pOutput[0] = 0;			// Terminate the "C" string
 	return m_pNativeFilename;
+}
+
+/***************************************
+
+	\brief Set the filename to the current working directory
+
+	Query the operating system for the current working directory and
+	set the filename to that directory. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void)
+{
+	Clear();
+	char *pTemp = getcwd(NULL,0);					// This covers all versions
+	if (pTemp) {
+		SetFromNative(pTemp);
+		free(pTemp);
+	}
+}
+
+/***************************************
+
+	\brief Set the filename to the application's directory
+
+	Determine the directory where the application resides and set
+	the filename to that directory. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format.
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetApplicationDirectory(void)
+{
+	Clear();
+	// Get the size of the path to the application
+	uint32_t uSize = 0;
+	int iTest = _NSGetExecutablePath(NULL,&uSize);
+	// Got the length?
+	if (iTest==-1) {
+		// Allocate the buffer
+		char *pBuffer = static_cast<char *>(Alloc(uSize+1));
+		if (pBuffer) {
+			// Try again
+			iTest = _NSGetExecutablePath(pBuffer,&uSize);
+			if (!iTest) {
+
+				// Pop the executable name
+				char *pDirBuffer = dirname(pBuffer);
+
+				// realpath() on older versions of OSX before 10.6
+				// cannot have the 2nd parameter set to NULL. This
+				// bites. 
+
+				// Get the maximum length of the path
+				long path_max = pathconf(pDirBuffer,_PC_PATH_MAX);
+				if (path_max<=0) {
+					path_max = 4096;		// Failsafe
+				}
+
+				// Allocate a generous buffer	
+				char *pRealPath = static_cast<char *>(Alloc(path_max*2));
+
+				// Did it parse?
+				if (realpath(pDirBuffer,pRealPath)) {
+					pDirBuffer = pRealPath;
+				}
+				// Convert to burgerlib
+				SetFromNative(pDirBuffer);
+
+				// Release the expanded buffer
+				Free(pRealPath);
+			}
+			// Clean up
+			Free(pBuffer);
+		}
+	}
+}
+
+/***************************************
+
+	\brief Set the filename to the local machine preferences directory
+
+	Determine the directory where the user's preferences that are
+	local to the machine is located. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format.
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void)
+{
+	Clear();
+	glob_t globbuf;
+    if (!glob("~/Library/Application Support",GLOB_TILDE,NULL,&globbuf)) {
+		// Convert the string
+		SetFromNative(globbuf.gl_pathv[0]);
+		globfree(&globbuf);
+    }
+}
+
+
+/***************************************
+
+	\brief Set the filename to the user's preferences directory
+
+	Determine the directory where the user's preferences that
+	could be shared among all machines the user has an account
+	with is located. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format.
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetUserPrefsDirectory(void)
+{
+	Clear();
+	glob_t globbuf;
+    if (!glob("~/Library/Preferences",GLOB_TILDE,NULL,&globbuf)) {
+		// Convert the string
+		SetFromNative(globbuf.gl_pathv[0]);
+		globfree(&globbuf);
+    }
 }
 
 /***************************************

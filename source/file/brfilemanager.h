@@ -103,6 +103,10 @@ static void * BURGER_API LoadFile(Filename *pFileName,WordPtr *pLength);
 static BURGER_INLINE const char *GetBootName(void) { return g_FileManager.m_pBootName; }
 static BURGER_INLINE Word GetBootNameSize(void) { return g_FileManager.m_uBootNameSize; }
 #endif
+#if defined(BURGER_MAC) || defined(DOXYGEN)
+static short BURGER_API OpenResourceFile(const char *pFileName,char uPermission);
+static Word BURGER_API CreateResourceFIle(const char *pFileName);
+#endif
 private:
 	void ReleasePrefixes(void);
 	const char *m_pPrefix[PREFIXMAX];	///< Array of prefix strings

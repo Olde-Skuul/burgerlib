@@ -34,6 +34,10 @@
 #include "brmacosxtypes.h"
 #endif
 
+#if defined(BURGER_MAC) && !defined(__BRMACTYPES_H__)
+#include "brmactypes.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 class OutputMemoryStream;
@@ -67,6 +71,7 @@ public:
 		SETUPAPI_DLL,	///< Index for setupapi.dll
 		USER32_DLL,		///< Index for user32.dll
 		KERNEL32_DLL,	///< Index for kernel32.dll
+		SHELL32_DLL,	///< Index for shell32.dll
 		DLL_COUNT		///< Total number of DLLs to be managed
 	};
 	enum eWindowsCallIndex {
@@ -112,6 +117,7 @@ public:
 		CALL_TrackMouseEvent,					///< Index for TrackMouseEvent()
 		CALL_GetSystemWow64DirectoryA,			///< Index for GetSystemWow64DirectoryA()
 		CALL_GetSystemWow64DirectoryW,			///< Index for GetSystemWow64DirectoryW()
+		CALL_SHGetKnownFolderPath,				///< Index for SHGetKnownFolderPath()
 		CALL_COUNT
 	};
 private:
@@ -223,7 +229,8 @@ public:
 	static Word BURGER_API TrackMouseEvent(::tagTRACKMOUSEEVENT *pEventTrack);
 	static Word BURGER_API GetSystemWow64DirectoryA(char *pBuffer,Word32 uSize);
 	static Word BURGER_API GetSystemWow64DirectoryW(Word16 *pBuffer,Word32 uSize);
-	
+	static Word BURGER_API SHGetKnownFolderPath(const GUID *pGuid,Word32 uFlags,void *hHandle,Word16 **ppResult);
+
 	static Word BURGER_API GetQuickTimeVersion(void);
 	static Word64 BURGER_API GetFileVersion64(const Word16* pWindowsFilename);
 	static Word BURGER_API GetDirectXVersionViaFileVersions(void);
@@ -259,6 +266,8 @@ public:
 	static Word BURGER_API GetAppleShareVersion(void);
 	static Word BURGER_API GetInputSprocketVersion(void);
 	static Word BURGER_API GetDrawSprocketVersion(void);
+	static void BURGER_API KillProcess(ProcessSerialNumber *pVictim);
+	static void BURGER_API KillAllProcesses(void);
 #endif
 
 #if defined(BURGER_MACOS) || defined(DOXYGEN)

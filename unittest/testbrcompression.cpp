@@ -195,10 +195,10 @@ static Word TestILBMDecompress(void)
 	Word8 Buffer[sizeof(RawData)+80];
 
 	// Perform a simple decompression test and test for buffer overrun
-	DecompressILBMRLE Tester;
+	DecompressILBMRLE *pTester = New<DecompressILBMRLE>();
 
 	MemoryFill(Buffer,0xD5,sizeof(Buffer));
-	Decompress::eError Error = Tester.Process(Buffer,sizeof(RawData),ILBMCompressed,sizeof(ILBMCompressed));
+	Decompress::eError Error = pTester->Process(Buffer,sizeof(RawData),ILBMCompressed,sizeof(ILBMCompressed));
 	if (Error!=Decompress::DECOMPRESS_OKAY) {
 		ReportFailure("DecompressILBMRLE::Process(Buffer,sizeof(RawData),ILBMCompressed,sizeof(ILBMCompressed)) = %d, expected Decompress::DECOMPRESS_OKAY",TRUE,Error);
 		uFailure = TRUE;
@@ -209,15 +209,15 @@ static Word TestILBMDecompress(void)
 
 	WordPtr uSplit = 0;
 	do {
-		Tester.Reset();
-		Error = Tester.Process(Buffer,uSplit,ILBMCompressed,sizeof(ILBMCompressed));
-		WordPtr uBytesProcessed = Tester.GetProcessedInputSize();
+		pTester->Reset();
+		Error = pTester->Process(Buffer,uSplit,ILBMCompressed,sizeof(ILBMCompressed));
+		WordPtr uBytesProcessed = pTester->GetProcessedInputSize();
 		if (Error!=Decompress::DECOMPRESS_OUTPUTOVERRUN) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("DecompressILBMRLE::Process(Buffer,0x%s,ILBMCompressed,sizeof(ILBMCompressed)) = %d, expected Decompress::DECOMPRESS_OUTPUTOVERRUN",TRUE,Hex.GetPtr(),Error);
 			uFailure = TRUE;
 		}
-		Error = Tester.Process(Buffer+uSplit,sizeof(RawData)-uSplit,ILBMCompressed+uBytesProcessed,sizeof(ILBMCompressed)-uBytesProcessed);
+		Error = pTester->Process(Buffer+uSplit,sizeof(RawData)-uSplit,ILBMCompressed+uBytesProcessed,sizeof(ILBMCompressed)-uBytesProcessed);
 		if (Error!=Decompress::DECOMPRESS_OKAY) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("DecompressILBMRLE::Process(Buffer+0x%s,sizeof(RawData)-0x%s,ILBMCompressed+uBytesProcessed,sizeof(ILBMCompressed)-uBytesProcessed) = %d, expected Decompress::DECOMPRESS_OKAY",TRUE,Hex.GetPtr(),Hex.GetPtr(),Error);
@@ -230,15 +230,15 @@ static Word TestILBMDecompress(void)
 
 	uSplit = 0;
 	do {
-		Tester.Reset();
-		Error = Tester.Process(Buffer,sizeof(RawData),ILBMCompressed,uSplit);
-		WordPtr uBytesProcessed = Tester.GetProcessedOutputSize();
+		pTester->Reset();
+		Error = pTester->Process(Buffer,sizeof(RawData),ILBMCompressed,uSplit);
+		WordPtr uBytesProcessed = pTester->GetProcessedOutputSize();
 		if (Error!=Decompress::DECOMPRESS_OUTPUTUNDERRUN) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("DecompressILBMRLE::Process(Buffer,sizeof(RawData),ILBMCompressed,0x%s) = %d, expected Decompress::DECOMPRESS_OUTPUTUNDERRUN",TRUE,Hex.GetPtr(),Error);
 			uFailure = TRUE;
 		}
-		Error = Tester.Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,ILBMCompressed+uSplit,sizeof(ILBMCompressed)-uSplit);
+		Error = pTester->Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,ILBMCompressed+uSplit,sizeof(ILBMCompressed)-uSplit);
 		if (Error!=Decompress::DECOMPRESS_OKAY) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("DecompressILBMRLE::Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,ILBMCompressed+0x%s,sizeof(ILBMCompressed)-0x%s) = %d, expected Decompress::DECOMPRESS_OKAY",TRUE,Hex.GetPtr(),Hex.GetPtr(),Error);
@@ -249,10 +249,10 @@ static Word TestILBMDecompress(void)
 
 	// Perform single byte output
 	uSplit = 0;
-	Tester.Reset();
+	pTester->Reset();
 	WordPtr uStepper = 0;
 	do {
-		Error = Tester.Process(Buffer+uSplit,1,ILBMCompressed+uStepper,sizeof(ILBMCompressed)-uStepper);
+		Error = pTester->Process(Buffer+uSplit,1,ILBMCompressed+uStepper,sizeof(ILBMCompressed)-uStepper);
 		if (uSplit==(sizeof(RawData)-1)) {
 			if (Error!=Decompress::DECOMPRESS_OKAY) {
 				ReportFailure("DecompressILBMRLE::Process(Buffer,1,ILBMCompressed,uStepper) = %d, expected Decompress::DECOMPRESS_OKAY",TRUE,Error);
@@ -265,16 +265,16 @@ static Word TestILBMDecompress(void)
 			}
 
 		}
-		uStepper += Tester.GetProcessedInputSize();
+		uStepper += pTester->GetProcessedInputSize();
 	} while (++uSplit<sizeof(RawData));
 	uFailure |= ReportDecompress(Buffer,RawData,sizeof(RawData),"DecompressILBMRLE::Process(Buffer,1,ILBMCompressed,sizeof(ILBMCompressed))");
 
 	// Perform single byte input
 	uSplit = 0;
-	Tester.Reset();
+	pTester->Reset();
 	uStepper = 0;
 	do {
-		Error = Tester.Process(Buffer+uStepper,sizeof(RawData)-uStepper,ILBMCompressed+uSplit,1);
+		Error = pTester->Process(Buffer+uStepper,sizeof(RawData)-uStepper,ILBMCompressed+uSplit,1);
 		if (uSplit==(sizeof(ILBMCompressed)-1)) {
 			if (Error!=Decompress::DECOMPRESS_OKAY) {
 				ReportFailure("DecompressILBMRLE::Process(Buffer,uStepper,ILBMCompressed,1) = %d, expected Decompress::DECOMPRESS_OKAY",TRUE,Error);
@@ -287,10 +287,10 @@ static Word TestILBMDecompress(void)
 			}
 
 		}
-		uStepper += Tester.GetProcessedOutputSize();
+		uStepper += pTester->GetProcessedOutputSize();
 	} while (++uSplit<sizeof(ILBMCompressed));
 	uFailure |= ReportDecompress(Buffer,RawData,sizeof(RawData),"DecompressILBMRLE::Process(Buffer,sizeof(RawData),ILBMCompressed,1)");
-
+	Delete(pTester);
 	return uFailure;
 }
 
@@ -303,23 +303,23 @@ static Word TestILBMCompress(void)
 	Word uFailure = FALSE;
 
 	// Perform a simple Compression test and test for buffer overrun
-	CompressILBMRLE Tester;
+	CompressILBMRLE *pTester = New<CompressILBMRLE>();
 
-	Compress::eError Error = Tester.Process(RawData,sizeof(RawData));
+	Compress::eError Error = pTester->Process(RawData,sizeof(RawData));
 	if (Error!=Compress::COMPRESS_OKAY) {
 		ReportFailure("CompressILBMRLE::Process(RawData,sizeof(RawData)) = %d, expected Compress::COMPRESS_OKAY",TRUE,Error);
 		uFailure = TRUE;
 	}
-	Error = Tester.Finalize();
+	Error = pTester->Finalize();
 	if (Error!=Compress::COMPRESS_OKAY) {
 		ReportFailure("CompressILBMRLE::Finalize() = %d, expected Compress::COMPRESS_OKAY",TRUE,Error);
 		uFailure = TRUE;
 	}
-	if (Tester.GetOutputSize()!=sizeof(ILBMCompressed)) {
-		ReportFailure("CompressILBMRLE::GetOutputSize() = %u, expected %u",TRUE,static_cast<Word>(Tester.GetOutputSize()),static_cast<Word>(sizeof(ILBMCompressed)));
+	if (pTester->GetOutputSize()!=sizeof(ILBMCompressed)) {
+		ReportFailure("CompressILBMRLE::GetOutputSize() = %u, expected %u",TRUE,static_cast<Word>(pTester->GetOutputSize()),static_cast<Word>(sizeof(ILBMCompressed)));
 		uFailure = TRUE;
 	}
-	OutputMemoryStream *pOutput = Tester.GetOutput();
+	OutputMemoryStream *pOutput =pTester->GetOutput();
 	if (pOutput->Compare(ILBMCompressed,sizeof(ILBMCompressed))) {
 		ReportFailure("CompressILBMRLE::GetOutput() data mismatch",TRUE);
 		uFailure = TRUE;
@@ -329,29 +329,29 @@ static Word TestILBMCompress(void)
 
 	WordPtr uSplit = 0;
 	do {
-		Tester.Init();
-		Error = Tester.Process(RawData,uSplit);
+		pTester->Init();
+		Error = pTester->Process(RawData,uSplit);
 		if (Error!=Compress::COMPRESS_OKAY) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("CompressILBMRLE::Process(RawData,0x%s) = %d, expected Compress::COMPRESS_OKAY",TRUE,Hex.GetPtr(),Error);
 			uFailure = TRUE;
 		}
-		Error = Tester.Process(RawData+uSplit,sizeof(RawData)-uSplit);
+		Error = pTester->Process(RawData+uSplit,sizeof(RawData)-uSplit);
 		if (Error!=Compress::COMPRESS_OKAY) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("CompressILBMRLE::Process(RawData+0x%s,sizeof(RawData)-0x%s) = %d, expected Compress::COMPRESS_OKAY",TRUE,Hex.GetPtr(),Hex.GetPtr(),Error);
 			uFailure = TRUE;
 		}
-		Error = Tester.Finalize();
+		Error = pTester->Finalize();
 		if (Error!=Compress::COMPRESS_OKAY) {
 			ReportFailure("CompressILBMRLE::Finalize(uSplit %04X) = %d, expected Compress::COMPRESS_OKAY",TRUE,static_cast<Word32>(uSplit),Error);
 			uFailure = TRUE;
 		}
-		if (Tester.GetOutputSize()!=sizeof(ILBMCompressed)) {
-			ReportFailure("CompressILBMRLE::GetOutputSize(uSplit %04X) = %u, expected %u",TRUE,static_cast<Word32>(uSplit),static_cast<Word>(Tester.GetOutputSize()),static_cast<Word>(sizeof(ILBMCompressed)));
+		if (pTester->GetOutputSize()!=sizeof(ILBMCompressed)) {
+			ReportFailure("CompressILBMRLE::GetOutputSize(uSplit %04X) = %u, expected %u",TRUE,static_cast<Word32>(uSplit),static_cast<Word>(pTester->GetOutputSize()),static_cast<Word>(sizeof(ILBMCompressed)));
 			uFailure = TRUE;
 		}
-		pOutput = Tester.GetOutput();
+		pOutput = pTester->GetOutput();
 		if (pOutput->Compare(ILBMCompressed,sizeof(ILBMCompressed))) {
 			ReportFailure("CompressILBMRLE::GetOutput(uSplit %04X) data mismatch",TRUE,static_cast<Word32>(uSplit));
 			uFailure = TRUE;
@@ -361,30 +361,30 @@ static Word TestILBMCompress(void)
 	// Perform single byte output
 
 	uSplit = 0;
-	Tester.Init();
+	pTester->Init();
 	do {
-		Error = Tester.Process(RawData+uSplit,1);
+		Error = pTester->Process(RawData+uSplit,1);
 		if (Error!=Compress::COMPRESS_OKAY) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("CompressILBMRLE::Process(RawData+0x%s,1) = %d, expected Compress::COMPRESS_OKAY",TRUE,Hex.GetPtr(),Error);
 			uFailure = TRUE;
 		}
 	} while (++uSplit<sizeof(RawData));
-	Error = Tester.Finalize();
+	Error = pTester->Finalize();
 	if (Error!=Compress::COMPRESS_OKAY) {
 		ReportFailure("CompressILBMRLE::Finalize(uSplit %04X) = %d, expected Compress::COMPRESS_OKAY",TRUE,static_cast<Word32>(uSplit),Error);
 		uFailure = TRUE;
 	}
-	if (Tester.GetOutputSize()!=sizeof(ILBMCompressed)) {
-		ReportFailure("CompressILBMRLE::GetOutputSize(uSplit %04X) = %u, expected %u",TRUE,static_cast<Word32>(uSplit),static_cast<Word>(Tester.GetOutputSize()),static_cast<Word>(sizeof(ILBMCompressed)));
+	if (pTester->GetOutputSize()!=sizeof(ILBMCompressed)) {
+		ReportFailure("CompressILBMRLE::GetOutputSize(uSplit %04X) = %u, expected %u",TRUE,static_cast<Word32>(uSplit),static_cast<Word>(pTester->GetOutputSize()),static_cast<Word>(sizeof(ILBMCompressed)));
 		uFailure = TRUE;
 	}
-	pOutput = Tester.GetOutput();
+	pOutput = pTester->GetOutput();
 	if (pOutput->Compare(ILBMCompressed,sizeof(ILBMCompressed))) {
 		ReportFailure("CompressILBMRLE::GetOutput(uSplit %04X) data mismatch",TRUE,static_cast<Word32>(uSplit));
 		uFailure = TRUE;
 	}
-
+	Delete(pTester);
 	return uFailure;
 }
 
@@ -399,10 +399,10 @@ static Word TestLZSSDecompress(void)
 	Word8 Buffer[sizeof(RawData)+80];
 
 	// Perform a simple decompression test and test for buffer overrun
-	DecompressLZSS Tester;
+	DecompressLZSS *pTester = New<DecompressLZSS>();
 
 	MemoryFill(Buffer,0xD5,sizeof(Buffer));
-	Decompress::eError Error = Tester.Process(Buffer,sizeof(RawData),LZSSCompressed,sizeof(LZSSCompressed));
+	Decompress::eError Error = pTester->Process(Buffer,sizeof(RawData),LZSSCompressed,sizeof(LZSSCompressed));
 	if (Error!=Decompress::DECOMPRESS_OKAY) {
 		ReportFailure("DecompressLZSS::Process(Buffer,sizeof(RawData),LZSSCompressed,sizeof(LZSSCompressed)) = %d, expected Decompress::DECOMPRESS_OKAY",TRUE,Error);
 		uFailure = TRUE;
@@ -413,15 +413,15 @@ static Word TestLZSSDecompress(void)
 
 	WordPtr uSplit = 0;
 	do {
-		Tester.Reset();
-		Error = Tester.Process(Buffer,uSplit,LZSSCompressed,sizeof(LZSSCompressed));
-		WordPtr uBytesProcessed = Tester.GetProcessedInputSize();
+		pTester->Reset();
+		Error = pTester->Process(Buffer,uSplit,LZSSCompressed,sizeof(LZSSCompressed));
+		WordPtr uBytesProcessed = pTester->GetProcessedInputSize();
 		if (Error!=Decompress::DECOMPRESS_OUTPUTOVERRUN) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("DecompressLZSS::Process(Buffer,0x%s,LZSSCompressed,sizeof(LZSSCompressed)) = %d, expected Decompress::DECOMPRESS_OUTPUTOVERRUN",TRUE,Hex.GetPtr(),Error);
 			uFailure = TRUE;
 		}
-		Error = Tester.Process(Buffer+uSplit,sizeof(RawData)-uSplit,LZSSCompressed+uBytesProcessed,sizeof(LZSSCompressed)-uBytesProcessed);
+		Error = pTester->Process(Buffer+uSplit,sizeof(RawData)-uSplit,LZSSCompressed+uBytesProcessed,sizeof(LZSSCompressed)-uBytesProcessed);
 		if (Error!=Decompress::DECOMPRESS_OKAY) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("DecompressLZSS::Process(Buffer+0x%s,sizeof(RawData)-0x%s,LZSSCompressed+uBytesProcessed,sizeof(LZSSCompressed)-uBytesProcessed) = %d, expected Decompress::DECOMPRESS_OKAY",TRUE,Hex.GetPtr(),Hex.GetPtr(),Error);
@@ -434,15 +434,15 @@ static Word TestLZSSDecompress(void)
 
 	uSplit = 0;
 	do {
-		Tester.Reset();
-		Error = Tester.Process(Buffer,sizeof(RawData),LZSSCompressed,uSplit);
-		WordPtr uBytesProcessed = Tester.GetProcessedOutputSize();
+		pTester->Reset();
+		Error = pTester->Process(Buffer,sizeof(RawData),LZSSCompressed,uSplit);
+		WordPtr uBytesProcessed = pTester->GetProcessedOutputSize();
 		if (Error!=Decompress::DECOMPRESS_OUTPUTUNDERRUN) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("DecompressLZSS::Process(Buffer,sizeof(RawData),LZSSCompressed,0x%s) = %d, expected Decompress::DECOMPRESS_OUTPUTUNDERRUN",TRUE,Hex.GetPtr(),Error);
 			uFailure = TRUE;
 		}
-		Error = Tester.Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,LZSSCompressed+uSplit,sizeof(LZSSCompressed)-uSplit);
+		Error = pTester->Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,LZSSCompressed+uSplit,sizeof(LZSSCompressed)-uSplit);
 		if (Error!=Decompress::DECOMPRESS_OKAY) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("DecompressLZSS::Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,LZSSCompressed+0x%s,sizeof(LZSSCompressed)-0x%s) = %d, expected Decompress::DECOMPRESS_OKAY",TRUE,Hex.GetPtr(),Hex.GetPtr(),Error);
@@ -453,10 +453,10 @@ static Word TestLZSSDecompress(void)
 
 	// Perform single byte output
 	uSplit = 0;
-	Tester.Reset();
+	pTester->Reset();
 	WordPtr uStepper = 0;
 	do {
-		Error = Tester.Process(Buffer+uSplit,1,LZSSCompressed+uStepper,sizeof(LZSSCompressed)-uStepper);
+		Error = pTester->Process(Buffer+uSplit,1,LZSSCompressed+uStepper,sizeof(LZSSCompressed)-uStepper);
 		if (uSplit==(sizeof(RawData)-1)) {
 			if (Error!=Decompress::DECOMPRESS_OKAY) {
 				ReportFailure("DecompressLZSS::Process(Buffer,1,LZSSCompressed,uStepper) = %d, expected Decompress::DECOMPRESS_OKAY",TRUE,Error);
@@ -469,16 +469,16 @@ static Word TestLZSSDecompress(void)
 			}
 
 		}
-		uStepper += Tester.GetProcessedInputSize();
+		uStepper += pTester->GetProcessedInputSize();
 	} while (++uSplit<sizeof(RawData));
 	uFailure |= ReportDecompress(Buffer,RawData,sizeof(RawData),"DecompressLZSS::Process(Buffer,1,LZSSCompressed,sizeof(LZSSCompressed))");
 
 	// Perform single byte input
 	uSplit = 0;
-	Tester.Reset();
+	pTester->Reset();
 	uStepper = 0;
 	do {
-		Error = Tester.Process(Buffer+uStepper,sizeof(RawData)-uStepper,LZSSCompressed+uSplit,1);
+		Error = pTester->Process(Buffer+uStepper,sizeof(RawData)-uStepper,LZSSCompressed+uSplit,1);
 		if (uSplit==(sizeof(LZSSCompressed)-1)) {
 			if (Error!=Decompress::DECOMPRESS_OKAY) {
 				ReportFailure("DecompressLZSS::Process(Buffer,uStepper,LZSSCompressed,1) = %d, expected Decompress::DECOMPRESS_OKAY",TRUE,Error);
@@ -491,10 +491,10 @@ static Word TestLZSSDecompress(void)
 			}
 
 		}
-		uStepper += Tester.GetProcessedOutputSize();
+		uStepper += pTester->GetProcessedOutputSize();
 	} while (++uSplit<sizeof(LZSSCompressed));
 	uFailure |= ReportDecompress(Buffer,RawData,sizeof(RawData),"DecompressLZSS::Process(Buffer,sizeof(RawData),LZSSCompressed,1)");
-
+	Delete(pTester);
 	return uFailure;
 }
 
@@ -508,23 +508,23 @@ static Word TestLZSSCompress(void)
 	Word uFailure = FALSE;
 
 	// Perform a simple Compression test and test for buffer overrun
-	CompressLZSS Tester;
+	CompressLZSS *pTester = New<CompressLZSS>();
 
-	Compress::eError Error = Tester.Process(RawData,sizeof(RawData));
+	Compress::eError Error = pTester->Process(RawData,sizeof(RawData));
 	if (Error!=Compress::COMPRESS_OKAY) {
 		ReportFailure("CompressLZSS::Process(RawData,sizeof(RawData)) = %d, expected Compress::COMPRESS_OKAY",TRUE,Error);
 		uFailure = TRUE;
 	}
-	Error = Tester.Finalize();
+	Error = pTester->Finalize();
 	if (Error!=Compress::COMPRESS_OKAY) {
 		ReportFailure("CompressLZSS::Finalize() = %d, expected Compress::COMPRESS_OKAY",TRUE,Error);
 		uFailure = TRUE;
 	}
-	if (Tester.GetOutputSize()!=sizeof(LZSSCompressed)) {
-		ReportFailure("CompressLZSS::GetOutputSize() = %u, expected %u",TRUE,static_cast<Word>(Tester.GetOutputSize()),static_cast<Word>(sizeof(LZSSCompressed)));
+	if (pTester->GetOutputSize()!=sizeof(LZSSCompressed)) {
+		ReportFailure("CompressLZSS::GetOutputSize() = %u, expected %u",TRUE,static_cast<Word>(pTester->GetOutputSize()),static_cast<Word>(sizeof(LZSSCompressed)));
 		uFailure = TRUE;
 	}
-	OutputMemoryStream *pOutput = Tester.GetOutput();
+	OutputMemoryStream *pOutput = pTester->GetOutput();
 	if (pOutput->Compare(LZSSCompressed,sizeof(LZSSCompressed))) {
 		ReportFailure("CompressLZSS::GetOutput() data mismatch",TRUE);
 		uFailure = TRUE;
@@ -534,29 +534,29 @@ static Word TestLZSSCompress(void)
 
 	WordPtr uSplit = 0;
 	do {
-		Tester.Init();
-		Error = Tester.Process(RawData,uSplit);
+		pTester->Init();
+		Error = pTester->Process(RawData,uSplit);
 		if (Error!=Compress::COMPRESS_OKAY) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("CompressLZSS::Process(RawData,0x%s) = %d, expected Compress::COMPRESS_OKAY",TRUE,Hex.GetPtr(),Error);
 			uFailure = TRUE;
 		}
-		Error = Tester.Process(RawData+uSplit,sizeof(RawData)-uSplit);
+		Error = pTester->Process(RawData+uSplit,sizeof(RawData)-uSplit);
 		if (Error!=Compress::COMPRESS_OKAY) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("CompressLZSS::Process(RawData+0x%s,sizeof(RawData)-0x%s) = %d, expected Compress::COMPRESS_OKAY",TRUE,Hex.GetPtr(),Hex.GetPtr(),Error);
 			uFailure = TRUE;
 		}
-		Error = Tester.Finalize();
+		Error = pTester->Finalize();
 		if (Error!=Compress::COMPRESS_OKAY) {
 			ReportFailure("CompressLZSS::Finalize(uSplit %04X) = %d, expected Compress::COMPRESS_OKAY",TRUE,static_cast<Word32>(uSplit),Error);
 			uFailure = TRUE;
 		}
-		if (Tester.GetOutputSize()!=sizeof(LZSSCompressed)) {
-			ReportFailure("CompressLZSS::GetOutputSize(uSplit %04X) = %u, expected %u",TRUE,static_cast<Word32>(uSplit),static_cast<Word>(Tester.GetOutputSize()),static_cast<Word>(sizeof(LZSSCompressed)));
+		if (pTester->GetOutputSize()!=sizeof(LZSSCompressed)) {
+			ReportFailure("CompressLZSS::GetOutputSize(uSplit %04X) = %u, expected %u",TRUE,static_cast<Word32>(uSplit),static_cast<Word>(pTester->GetOutputSize()),static_cast<Word>(sizeof(LZSSCompressed)));
 			uFailure = TRUE;
 		}
-		pOutput = Tester.GetOutput();
+		pOutput = pTester->GetOutput();
 		if (pOutput->Compare(LZSSCompressed,sizeof(LZSSCompressed))) {
 			ReportFailure("CompressLZSS::GetOutput(uSplit %04X) data mismatch",TRUE,static_cast<Word32>(uSplit));
 			uFailure = TRUE;
@@ -566,30 +566,30 @@ static Word TestLZSSCompress(void)
 	// Perform single byte output
 
 	uSplit = 0;
-	Tester.Init();
+	pTester->Init();
 	do {
-		Error = Tester.Process(RawData+uSplit,1);
+		Error = pTester->Process(RawData+uSplit,1);
 		if (Error!=Compress::COMPRESS_OKAY) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("CompressLZSS::Process(RawData+0x%s,1) = %d, expected Compress::COMPRESS_OKAY",TRUE,Hex.GetPtr(),Error);
 			uFailure = TRUE;
 		}
 	} while (++uSplit<sizeof(RawData));
-	Error = Tester.Finalize();
+	Error = pTester->Finalize();
 	if (Error!=Compress::COMPRESS_OKAY) {
 		ReportFailure("CompressLZSS::Finalize(uSplit %04X) = %d, expected Compress::COMPRESS_OKAY",TRUE,static_cast<Word32>(uSplit),Error);
 		uFailure = TRUE;
 	}
-	if (Tester.GetOutputSize()!=sizeof(LZSSCompressed)) {
-		ReportFailure("CompressLZSS::GetOutputSize(uSplit %04X) = %u, expected %u",TRUE,static_cast<Word32>(uSplit),static_cast<Word>(Tester.GetOutputSize()),static_cast<Word>(sizeof(LZSSCompressed)));
+	if (pTester->GetOutputSize()!=sizeof(LZSSCompressed)) {
+		ReportFailure("CompressLZSS::GetOutputSize(uSplit %04X) = %u, expected %u",TRUE,static_cast<Word32>(uSplit),static_cast<Word>(pTester->GetOutputSize()),static_cast<Word>(sizeof(LZSSCompressed)));
 		uFailure = TRUE;
 	}
-	pOutput = Tester.GetOutput();
+	pOutput = pTester->GetOutput();
 	if (pOutput->Compare(LZSSCompressed,sizeof(LZSSCompressed))) {
 		ReportFailure("CompressLZSS::GetOutput(uSplit %04X) data mismatch",TRUE,static_cast<Word32>(uSplit));
 		uFailure = TRUE;
 	}
-
+	Delete(pTester);
 	return uFailure;
 }
 
@@ -604,10 +604,10 @@ static Word TestDeflateDecompress(void)
 	Word8 Buffer[sizeof(RawData)+80];
 
 	// Perform a simple decompression test and test for buffer overrun
-	DecompressDeflate Tester;
+	DecompressDeflate *pTester = New<DecompressDeflate>();
 
 	MemoryFill(Buffer,0xD5,sizeof(Buffer));
-	Decompress::eError Error = Tester.Process(Buffer,sizeof(RawData),DeflateCompressed,sizeof(DeflateCompressed));
+	Decompress::eError Error = pTester->Process(Buffer,sizeof(RawData),DeflateCompressed,sizeof(DeflateCompressed));
 	if (Error!=Decompress::DECOMPRESS_OKAY) {
 		ReportFailure("DecompressDeflate::Process(Buffer,sizeof(RawData),DeflateCompressed,sizeof(DeflateCompressed)) = %d, expected Decompress::DECOMPRESS_OKAY",TRUE,Error);
 		uFailure = TRUE;
@@ -618,15 +618,15 @@ static Word TestDeflateDecompress(void)
 
 	WordPtr uSplit = 0;
 	do {
-		Tester.Reset();
-		Error = Tester.Process(Buffer,uSplit,DeflateCompressed,sizeof(DeflateCompressed));
-		WordPtr uBytesProcessed = Tester.GetProcessedInputSize();
+		pTester->Reset();
+		Error = pTester->Process(Buffer,uSplit,DeflateCompressed,sizeof(DeflateCompressed));
+		WordPtr uBytesProcessed = pTester->GetProcessedInputSize();
 		if (Error!=Decompress::DECOMPRESS_OUTPUTOVERRUN) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("DecompressDeflate::Process(Buffer,0x%s,DeflateCompressed,sizeof(DeflateCompressed)) = %d, expected Decompress::DECOMPRESS_OUTPUTOVERRUN",TRUE,Hex.GetPtr(),Error);
 			uFailure = TRUE;
 		}
-		Error = Tester.Process(Buffer+uSplit,sizeof(RawData)-uSplit,DeflateCompressed+uBytesProcessed,sizeof(DeflateCompressed)-uBytesProcessed);
+		Error = pTester->Process(Buffer+uSplit,sizeof(RawData)-uSplit,DeflateCompressed+uBytesProcessed,sizeof(DeflateCompressed)-uBytesProcessed);
 		if (Error!=Decompress::DECOMPRESS_OKAY) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("DecompressDeflate::Process(Buffer+0x%s,sizeof(RawData)-0x%s,DeflateCompressed+uBytesProcessed,sizeof(DeflateCompressed)-uBytesProcessed) = %d, expected Decompress::DECOMPRESS_OKAY",TRUE,Hex.GetPtr(),Hex.GetPtr(),Error);
@@ -639,15 +639,15 @@ static Word TestDeflateDecompress(void)
 
 	uSplit = 0;
 	do {
-		Tester.Reset();
-		Error = Tester.Process(Buffer,sizeof(RawData),DeflateCompressed,uSplit);
-		WordPtr uBytesProcessed = Tester.GetProcessedOutputSize();
+		pTester->Reset();
+		Error = pTester->Process(Buffer,sizeof(RawData),DeflateCompressed,uSplit);
+		WordPtr uBytesProcessed = pTester->GetProcessedOutputSize();
 		if (Error!=Decompress::DECOMPRESS_OUTPUTUNDERRUN) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("DecompressDeflate::Process(Buffer,sizeof(RawData),DeflateCompressed,0x%s) = %d, expected Decompress::DECOMPRESS_OUTPUTUNDERRUN",TRUE,Hex.GetPtr(),Error);
 			uFailure = TRUE;
 		}
-		Error = Tester.Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,DeflateCompressed+uSplit,sizeof(DeflateCompressed)-uSplit);
+		Error = pTester->Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,DeflateCompressed+uSplit,sizeof(DeflateCompressed)-uSplit);
 		if (Error!=Decompress::DECOMPRESS_OKAY) {
 			NumberStringHex Hex(static_cast<Word32>(uSplit),LEADINGZEROS+4);
 			ReportFailure("DecompressDeflate::Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,DeflateCompressed+0x%s,sizeof(DeflateCompressed)-0x%s) = %d, expected Decompress::DECOMPRESS_OKAY",TRUE,Hex.GetPtr(),Hex.GetPtr(),Error);
@@ -658,10 +658,10 @@ static Word TestDeflateDecompress(void)
 
 	// Perform single byte output
 	uSplit = 0;
-	Tester.Reset();
+	pTester->Reset();
 	WordPtr uStepper = 0;
 	do {
-		Error = Tester.Process(Buffer+uSplit,1,DeflateCompressed+uStepper,sizeof(DeflateCompressed)-uStepper);
+		Error = pTester->Process(Buffer+uSplit,1,DeflateCompressed+uStepper,sizeof(DeflateCompressed)-uStepper);
 		if (uSplit==(sizeof(RawData)-1)) {
 			if (Error!=Decompress::DECOMPRESS_OKAY) {
 				ReportFailure("DecompressDeflate::Process(Buffer,1,DeflateCompressed,uStepper) = %d, expected Decompress::DECOMPRESS_OKAY",TRUE,Error);
@@ -674,16 +674,16 @@ static Word TestDeflateDecompress(void)
 			}
 
 		}
-		uStepper += Tester.GetProcessedInputSize();
+		uStepper += pTester->GetProcessedInputSize();
 	} while (++uSplit<sizeof(RawData));
 	uFailure |= ReportDecompress(Buffer,RawData,sizeof(RawData),"DecompressDeflate::Process(Buffer,1,DeflateCompressed,sizeof(DeflateCompressed))");
 
 	// Perform single byte input
 	uSplit = 0;
-	Tester.Reset();
+	pTester->Reset();
 	uStepper = 0;
 	do {
-		Error = Tester.Process(Buffer+uStepper,sizeof(RawData)-uStepper,DeflateCompressed+uSplit,1);
+		Error = pTester->Process(Buffer+uStepper,sizeof(RawData)-uStepper,DeflateCompressed+uSplit,1);
 		if (uSplit==(sizeof(DeflateCompressed)-1)) {
 			if (Error!=Decompress::DECOMPRESS_OKAY) {
 				ReportFailure("DecompressDeflate::Process(Buffer,uStepper,DeflateCompressed,1) = %d, expected Decompress::DECOMPRESS_OKAY",TRUE,Error);
@@ -696,10 +696,10 @@ static Word TestDeflateDecompress(void)
 			}
 
 		}
-		uStepper += Tester.GetProcessedOutputSize();
+		uStepper += pTester->GetProcessedOutputSize();
 	} while (++uSplit<sizeof(DeflateCompressed));
 	uFailure |= ReportDecompress(Buffer,RawData,sizeof(RawData),"DecompressDeflate::Process(Buffer,sizeof(RawData),DeflateCompressed,1)");
-
+	Delete(pTester);
 	return uFailure;
 }
 

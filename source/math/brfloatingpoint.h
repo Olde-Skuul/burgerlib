@@ -38,6 +38,10 @@
 #include "brxcode.h"
 #endif
 
+#if defined(BURGER_PS4) && !defined(__BRPS4TYPES_H__)
+#include "brps4types.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 #define	BURGER_PI 3.1415926535897932384626	///< Pretty accurate, eh?
@@ -115,19 +119,6 @@ struct Vector_128Word16 {
 	BURGER_INLINE operator Vector_128() const { return v; }
 };
 }
-#if defined(BURGER_PS4)
-extern "C" float fabsf(float);
-extern "C" double fabs(double);
-extern "C" float sqrtf(float);
-extern "C" double sqrt(double);
-#elif defined(BURGER_MACOSX) || (defined(BURGER_IOS) && (defined(BURGER_X86) || defined(BURGER_AMD64)))
-extern "C" float sqrtf(float);
-extern "C" double sqrt(double);
-#if !defined(BURGER_METROWERKS)
-extern "C" float fabsf(float);
-extern "C" double fabs(double);
-#endif
-#endif
 namespace Burger {
 	extern const Word64ToDouble g_dOne;			///< Constant for 1.0 in the double format.
 	extern const Word64ToDouble g_dHalf;		///< Constant for 0.5 in the double format.
@@ -182,72 +173,48 @@ namespace Burger {
 	extern e8087Rounding BURGER_API Set8087Rounding(e8087Rounding eInput);
 #endif
 
-	float BURGER_INLINE Sqr(float fInput) { return fInput*fInput; }
-	double BURGER_INLINE Sqr(double dInput) { return dInput*dInput; }
+	BURGER_INLINE float Sqr(float fInput) { return fInput*fInput; }
+	BURGER_INLINE double Sqr(double dInput) { return dInput*dInput; }
+
 #if defined(BURGER_WATCOM)
-	float BURGER_INLINE Abs(float fInput) { return static_cast<float>(::std::fabs(fInput)); }
-	double BURGER_INLINE Abs(double dInput) { return ::std::fabs(dInput); }
-	float BURGER_INLINE Sqrt(float fInput) { return static_cast<float>(::std::sqrt(fInput)); }
-	double BURGER_INLINE Sqrt(double dInput) { return ::std::sqrt(dInput); }
+	BURGER_INLINE float Abs(float fInput) { return static_cast<float>(::std::fabs(fInput)); }
+	BURGER_INLINE double Abs(double dInput) { return ::std::fabs(dInput); }
+	BURGER_INLINE float Sqrt(float fInput) { return static_cast<float>(::std::sqrt(fInput)); }
+	BURGER_INLINE double Sqrt(double dInput) { return ::std::sqrt(dInput); }
+
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
-	float BURGER_INLINE Abs(float fInput) { return static_cast<float>(fabs(fInput)); }
-	double BURGER_INLINE Abs(double dInput) { return fabs(dInput); }
-	float BURGER_INLINE Sqrt(float fInput) { return __fsqrts(fInput); }
-	double BURGER_INLINE Sqrt(double dInput) { return __fsqrt(dInput); }
-#elif defined(BURGER_PS4) && !defined(DOXYGEN)
-	float BURGER_INLINE Abs(float fInput) { return fabsf(fInput); }
-	double BURGER_INLINE Abs(double dInput) { return fabs(dInput); }
-	float BURGER_INLINE Sqrt(float fInput) { return sqrtf(fInput); }
-	double BURGER_INLINE Sqrt(double dInput) { return sqrt(dInput); }
-#elif defined(BURGER_VITA) && !defined(DOXYGEN)
-	float BURGER_INLINE Abs(float fInput) { return __builtin_fabsf(fInput); }
-	double BURGER_INLINE Abs(double dInput) { return __builtin_fabs(dInput); }
-	float BURGER_INLINE Sqrt(float fInput) { return __builtin_sqrtf(fInput); }
-	double BURGER_INLINE Sqrt(double dInput) { return __builtin_sqrt(dInput); }
+	BURGER_INLINE float Abs(float fInput) { return static_cast<float>(fabs(fInput)); }
+	BURGER_INLINE double Abs(double dInput) { return fabs(dInput); }
+	BURGER_INLINE float Sqrt(float fInput) { return __fsqrts(fInput); }
+	BURGER_INLINE double Sqrt(double dInput) { return __fsqrt(dInput); }
+
+#elif (defined(BURGER_PS4) || defined(BURGER_VITA)) && !defined(DOXYGEN)
+	BURGER_INLINE float Abs(float fInput) { return __builtin_fabsf(fInput); }
+	BURGER_INLINE double Abs(double dInput) { return __builtin_fabs(dInput); }
+	BURGER_INLINE float Sqrt(float fInput) { return __builtin_sqrtf(fInput); }
+	BURGER_INLINE double Sqrt(double dInput) { return __builtin_sqrt(dInput); }
+
 #elif defined(BURGER_METROWERKS) && defined(BURGER_POWERPC)
-	float BURGER_INLINE Abs(float fInput) { return __fabsf(fInput); }
-	double BURGER_INLINE Abs(double dInput) { return __fabs(dInput); }
+	BURGER_INLINE float Abs(float fInput) { return __fabsf(fInput); }
+	BURGER_INLINE double Abs(double dInput) { return __fabs(dInput); }
 #if defined(BURGER_MACOSX)
-	float BURGER_INLINE Sqrt(float fInput) { return sqrtf(fInput); }
+	BURGER_INLINE float Sqrt(float fInput) { return sqrtf(fInput); }
 #else
-	float BURGER_INLINE Sqrt(float fInput) { return static_cast<float>(sqrt(fInput)); }
+	BURGER_INLINE float Sqrt(float fInput) { return static_cast<float>(sqrt(fInput)); }
 #endif
-	double BURGER_INLINE Sqrt(double dInput) { return sqrt(dInput); }
+	BURGER_INLINE double Sqrt(double dInput) { return sqrt(dInput); }
+
 #elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
-#if __has_intrinsic(__builtin_fabsf)
-	float BURGER_INLINE Abs(float fInput) { return ::std::__builtin_fabsf(fInput); }
-#else
-	float BURGER_INLINE Abs(float fInput) { asm fld fInput
-		asm fabs
-		asm fstp fInput
-	return fInput; }
-#endif
-#if __has_intrinsic(__builtin_fabs) 
-	double BURGER_INLINE Abs(double dInput) { return ::std::__builtin_fabs(dInput); }
-#else
-	double BURGER_INLINE Abs(double dInput) { asm fld dInput
-		asm fabs
-		asm fstp dInput
-	return dInput; }
-#endif
-#if __has_intrinsic(__builtin_sqrt)
-	float BURGER_INLINE Sqrt(float fInput) { return static_cast<float>(::std::__builtin_sqrt(fInput)); }
-	double BURGER_INLINE Sqrt(double dInput) { return ::std::__builtin_sqrt(dInput); }
-#else
-	float BURGER_INLINE Sqrt(float fInput) { asm fld fInput
-		asm fsqrt
-		asm fstp fInput
-	return fInput; }
-	double BURGER_INLINE Sqrt(double dInput) { asm fld dInput
-		asm fsqrt
-		asm fstp dInput
-	return dInput; }
-#endif
-#elif (defined(BURGER_X86) || defined(BURGER_AMD64) || (defined(BURGER_MACOSX) && !defined(BURGER_METROWERKS))) && !defined(DOXYGEN)
-	float BURGER_INLINE Abs(float fInput) { return static_cast<float>(fabs(fInput)); }
-	double BURGER_INLINE Abs(double dInput) { return fabs(dInput); }
-	float BURGER_INLINE Sqrt(float fInput) { return static_cast<float>(sqrt(static_cast<double>(fInput))); }
-	double BURGER_INLINE Sqrt(double dInput) { return sqrt(dInput); }
+	BURGER_INLINE float Abs(float fInput) { return ::std::__builtin_fabsf(fInput); }
+	BURGER_INLINE double Abs(double dInput) { return ::std::__builtin_fabs(dInput); }
+	BURGER_INLINE float Sqrt(float fInput) { return static_cast<float>(::std::__builtin_sqrt(fInput)); }
+	BURGER_INLINE double Sqrt(double dInput) { return ::std::__builtin_sqrt(dInput); }
+
+#elif (defined(BURGER_INTELARCHITECTURE) || (defined(BURGER_MACOSX) && !defined(BURGER_METROWERKS))) && !defined(DOXYGEN)
+	BURGER_INLINE float Abs(float fInput) { return static_cast<float>(fabs(fInput)); }
+	BURGER_INLINE double Abs(double dInput) { return fabs(dInput); }
+	BURGER_INLINE float Sqrt(float fInput) { return static_cast<float>(sqrt(static_cast<double>(fInput))); }
+	BURGER_INLINE double Sqrt(double dInput) { return sqrt(dInput); }
 #else
 	extern float BURGER_API Abs(float fInput);
 	extern double BURGER_API Abs(double dInput);
@@ -255,61 +222,76 @@ namespace Burger {
 	extern double BURGER_API Sqrt(double dInput);
 #endif
 
-	float BURGER_INLINE IntToFloat(Int32 iInput) { return static_cast<float>(iInput); }
-	float BURGER_INLINE IntToFloat(const Int32 *pInput) { return static_cast<float>(pInput[0]); }
-	void BURGER_INLINE IntToFloat(float *pOutput,Int32 iInput) { pOutput[0] = static_cast<float>(iInput); }
-	float BURGER_INLINE FixedToFloat(Fixed32 fInput) { return static_cast<float>(fInput)*(1.0f/65536.0f); }
-	float BURGER_INLINE FixedToFloat(const Fixed32 *pInput) { return static_cast<float>(pInput[0])*(1.0f/65536.0f); }
-	void BURGER_INLINE FixedToFloat(float *pOutput,Fixed32 fInput) { pOutput[0] = static_cast<float>(fInput)*(1.0f/65536.0f); }
+	BURGER_INLINE float IntToFloat(Int32 iInput) { return static_cast<float>(iInput); }
+	BURGER_INLINE float IntToFloat(const Int32 *pInput) { return static_cast<float>(pInput[0]); }
+	BURGER_INLINE void IntToFloat(float *pOutput,Int32 iInput) { pOutput[0] = static_cast<float>(iInput); }
+	BURGER_INLINE float FixedToFloat(Fixed32 fInput) { return static_cast<float>(fInput)*(1.0f/65536.0f); }
+	BURGER_INLINE float FixedToFloat(const Fixed32 *pInput) { return static_cast<float>(pInput[0])*(1.0f/65536.0f); }
+	BURGER_INLINE void FixedToFloat(float *pOutput,Fixed32 fInput) { pOutput[0] = static_cast<float>(fInput)*(1.0f/65536.0f); }
+
 #if defined(BURGER_XBOX360) && !defined(DOXYGEN)
-	void BURGER_INLINE IntToFloat(float *pOutput,const Int32 *pInput) {
+	BURGER_INLINE void IntToFloat(float *pOutput,const Int32 *pInput) {
 		__vector4 vTemp = __lvlx(pInput,0);	// Load in VMX128
 		vTemp = __vcfsx(vTemp,0);			// Convert
 		vTemp = __vspltw(vTemp,0);			// Splat
 		__stvewx(vTemp,pOutput,0);			// Store 32 bit
 	}		
-	void BURGER_INLINE FixedToFloat(float *pOutput,const Fixed32 *pInput) {
+	BURGER_INLINE void FixedToFloat(float *pOutput,const Fixed32 *pInput) {
 		__vector4 vTemp = __lvlx(pInput,0);	// Load in VMX128
 		vTemp = __vcfsx(vTemp,16);		// Use 16.16 fixed point conversion
 		vTemp = __vspltw(vTemp,0);		// Splat
 		__stvewx(vTemp,pOutput,0);		// Store 32 bit
+	}
+#elif defined(BURGER_PS3) && !defined(DOXYGEN)
+	BURGER_INLINE void IntToFloat(float *pOutput,const Int32 *pInput) {
+		vector int vTemp =  vec_lvlx(0,pInput);	// Load in VMX128
+		vector float vfTemp = vec_vcfsx(vTemp,0);	// Convert to float
+		vfTemp = vec_vspltw(vfTemp,0);			// Splat
+		vec_stvewx(vfTemp,0,pOutput);			// Store 32 bit
 	}		
+	BURGER_INLINE void FixedToFloat(float *pOutput,const Fixed32 *pInput) {
+		vector int vTemp = vec_lvlx(0,pInput);	// Load in VMX128
+		vector float vfTemp = vec_vcfsx(vTemp,16);		// Use 16.16 fixed point conversion
+		vfTemp = vec_vspltw(vfTemp,0);		// Splat
+		vec_stvewx(vfTemp,0,pOutput);		// Store 32 bit
+	}	
 #else
-	void BURGER_INLINE IntToFloat(float *pOutput,const Int32 *pInput) { pOutput[0] = static_cast<float>(pInput[0]); }
-	void BURGER_INLINE FixedToFloat(float *pOutput,const Fixed32 *pInput) { pOutput[0] = static_cast<float>(pInput[0])*(1.0f/65536.0f); }
+	BURGER_INLINE void IntToFloat(float *pOutput,const Int32 *pInput) { pOutput[0] = static_cast<float>(pInput[0]); }
+	BURGER_INLINE void FixedToFloat(float *pOutput,const Fixed32 *pInput) { pOutput[0] = static_cast<float>(pInput[0])*(1.0f/65536.0f); }
 #endif
+
 	BURGER_INLINE float Interpolate(float fFrom,float fTo,float fFactor) { return ((fTo - fFrom) * fFactor) + fFrom; }
 	BURGER_INLINE double Interpolate(double dFrom,double dTo,double dFactor) { return ((dTo - dFrom) * dFactor) + dFrom; }
 	BURGER_INLINE float Square(float fInput) { return fInput*fInput; }
 	BURGER_INLINE double Square(double dInput) { return dInput*dInput; }
-#if defined(BURGER_METROWERKS) && defined(BURGER_POWERPC)
+
+#if defined(BURGER_POWERPC)
 	BURGER_INLINE float Sign(float fInput) { return static_cast<float>(__fsel(fInput,0.5f,-0.5f)+__fsel(-fInput,-0.5f,0.5f)); }
-	BURGER_INLINE double Sign(double dInput) { return __fsel(dInput,0.5f,-0.5f)+__fsel(-dInput,-0.5f,0.5f); }
+	BURGER_INLINE double Sign(double dInput) { return __fsel(dInput,0.5,-0.5)+__fsel(-dInput,-0.5,0.5); }
 #else
 	BURGER_INLINE float Sign(float fInput) { return ((fInput > 0.0f) ? 1.0f : ((fInput < 0.0f) ? -1.0f : 0.0f)); }
 	BURGER_INLINE double Sign(double dInput) { return ((dInput > 0.0) ? 1.0 : ((dInput < 0.0) ? -1.0 : 0.0)); }
 #endif
-#if defined(BURGER_METROWERKS) && defined(BURGER_POWERPC)
+
+#if defined(BURGER_POWERPC)
 	BURGER_INLINE float Min(float fA,float fB) { return static_cast<float>(__fsel((fA-fB),fB,fA)); }
 	BURGER_INLINE double Min(double dA,double dB) { return __fsel((dA-dB),dB,dA); }
 	BURGER_INLINE float Max(float fA,float fB) { return static_cast<float>(__fsel((fA-fB),fA,fB)); }
 	BURGER_INLINE double Max(double dA,double dB) { return __fsel((dA-dB),dA,dB); }
-#elif defined(BURGER_MACOSX) && defined(BURGER_POWERPC)
-	BURGER_INLINE float Min(float fA,float fB) { float fC=fA-fB; __asm__("fsel %0,%1,%2,%3":"=f" (fA) : "f" (fC),"f"(fB),"f"(fA)); return fA; }
-	BURGER_INLINE double Min(double dA,double dB) { double dC=dA-dB; __asm__("fsel %0,%1,%2,%3":"=f" (dA) : "f" (dC),"f"(dB),"f"(dA)); return dA; }
-	BURGER_INLINE float Max(float fA,float fB) { float fC=fA-fB; __asm__("fsel %0,%1,%2,%3":"=f" (fA) : "f" (fC),"f"(fA),"f"(fB)); return fA; }
-	BURGER_INLINE double Max(double dA,double dB) { double dC=dA-dB; __asm__("fsel %0,%1,%2,%3":"=f" (dA) : "f" (dC),"f"(dA),"f"(dB)); return dA; }
-#elif defined(BURGER_MSVC) && defined(BURGER_AMD64)
+
+#elif (defined(BURGER_MSVC) && defined(BURGER_AMD64)) || ((defined(BURGER_MACOSX) || defined(BURGER_IOS)) && defined(BURGER_INTELARCHITECTURE))
 	BURGER_INLINE float Min(float fA,float fB) { return _mm_cvtss_f32(_mm_min_ss(_mm_set_ss(fA),_mm_set_ss(fB))); }
 	BURGER_INLINE double Min(double dA,double dB) { return _mm_cvtsd_f64(_mm_min_sd(_mm_set_sd(dA),_mm_set_sd(dB))); }
 	BURGER_INLINE float Max(float fA,float fB) { return _mm_cvtss_f32(_mm_max_ss(_mm_set_ss(fA),_mm_set_ss(fB))); }
 	BURGER_INLINE double Max(double dA,double dB) { return _mm_cvtsd_f64(_mm_max_sd(_mm_set_sd(dA),_mm_set_sd(dB))); }
+
 #else
 	BURGER_INLINE float Min(float fA,float fB) { return ((fA < fB) ? fA : fB); }
 	BURGER_INLINE double Min(double dA,double dB) { return ((dA < dB) ? dA : dB); }
 	BURGER_INLINE float Max(float fA,float fB) { return ((fA > fB) ? fA : fB); }
 	BURGER_INLINE double Max(double dA,double dB) { return ((dA > dB) ? dA : dB); }
 #endif
+
 	BURGER_INLINE float Clamp(float fIn,float fMin,float fMax) { fIn = Max(fIn,fMin); return Min(fIn,fMax); }
 	BURGER_INLINE double Clamp(double dIn,double dMin,double dMax) { dIn = Max(dIn,dMin); return Min(dIn,dMax); }
 	extern Word BURGER_API IsNan(float fInput);
@@ -358,6 +340,14 @@ namespace Burger {
 	extern double BURGER_API Modf(double dInput,double *pInteger);
 	extern float BURGER_API Fmod(float fInput,float fDivisor);
 	extern double BURGER_API Fmod(double dInput,double dDivisor);
+	extern double BURGER_API LittleEndianLoadExtended(const Float80Bit pInput);
+	extern double BURGER_API BigEndianLoadExtended(const Float80Bit pInput);
+	extern long BURGER_API ConvertToDirectSoundVolume(Word uInput);
+	extern long BURGER_API ConvertToDirectSoundVolume(float fInput);
+	extern long BURGER_API ConvertToDirectSoundPan(Word uInput);
+	extern long BURGER_API ConvertToDirectSoundPan(float fInput);
+	extern float BURGER_API ConvertToAudioUnitVolume(Word uInput);
+	extern float BURGER_API ConvertToAudioUnitPan(Word uInput);
 }
 /* END */
 
