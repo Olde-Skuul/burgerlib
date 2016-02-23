@@ -359,6 +359,120 @@ Word BURGER_API Burger::Globals::GetDrawSprocketVersion(void)
 
 /*! ************************************
 
+	\brief Send a "Quit" event to the requested process
+
+	Send an Apple Event to the process to tell the process
+	to properly quit.
+
+	\param pVictim Pointer to a process serial number of the process to kill
+	
+***************************************/
+
+void BURGER_API Burger::Globals::KillProcess(ProcessSerialNumber *pVictim)
+{
+
+	// Create a "Quit" event
+
+	AEAddressDesc target;
+	if (!AECreateDesc(typeProcessSerialNumber,static_cast<Ptr>(static_cast<void *>(pVictim)),sizeof(ProcessSerialNumber),&target)) {
+		AppleEvent theEvent;
+		OSErr err = AECreateAppleEvent('aevt','quit',&target,kAutoGenerateReturnID,kAnyTransactionID,&theEvent);
+		AEDisposeDesc(&target);
+		if (!err) {
+			// Send the "Quit" event
+			AESend(&theEvent,0,kAENoReply+kAENeverInteract,kAENormalPriority,kAEDefaultTimeout,0,0);
+			AEDisposeDesc(&theEvent);
+		}
+	}
+
+	// Give some CPU time for the event to trigger
+
+	Word waits = 7;
+	do {
+		EventRecord event;
+		if (!WaitNextEvent(everyEvent,&event,180,0)) {
+			break;
+		}
+	} while (--waits);
+}
+
+/*! ************************************
+
+	\brief Send a "Quit" event to every other process
+
+	Send a "Quit" event to every other app
+	however, don't kill myself and kill the finder last
+	
+***************************************/
+
+void BURGER_API Burger::Globals::KillAllProcesses(void)
+{
+	ProcessSerialNumber MyAppNumber;	// My apps own process number
+	GetCurrentProcess(&MyAppNumber);	// Get my current app process number
+
+	ProcessSerialNumber next;			// Next process in chain
+	next.highLongOfPSN = 0;				// Start following the process list
+	next.lowLongOfPSN = kNoProcess;
+	GetNextProcess(&next);				// Get my number
+
+	ProcessSerialNumber finder;			// Finder process ID
+	Word foundFinder = FALSE;			// Found the finder?
+
+	// Found another process?
+	if (next.highLongOfPSN || next.lowLongOfPSN != kNoProcess) {
+		do {
+			ProcessSerialNumber current = next;
+			GetNextProcess(&next);		// Preload the NEXT process since I may kill it now
+
+			Bool IsFlag = FALSE;
+			SameProcess(&current,&MyAppNumber,&IsFlag);		// Don't kill myself
+			if (!IsFlag) {
+
+				// If I have found the finder, the rest are easy.
+				// Otherwise...
+
+				if (!foundFinder) {			// Find it already?
+					Str31 processName;
+					FSSpec procSpec;
+					ProcessInfoRec infoRec;
+
+					infoRec.processInfoLength = sizeof(ProcessInfoRec);
+					infoRec.processName = (StringPtr)&processName;
+					infoRec.processAppSpec = &procSpec;
+					GetProcessInformation(&current,&infoRec);		/* What process is this? */
+					if (infoRec.processSignature == 'MACS' && infoRec.processType == 'FNDR') {
+						finder = current;			/* This is the finder! */
+						foundFinder = TRUE;
+						IsFlag = TRUE;
+					} else {
+						IsFlag = FALSE;
+					}
+				} else {
+				
+					// You may ask yourself, why check for finder when the finder
+					// is already found? The finder has multiple processes!!!
+					
+					SameProcess(&current,&finder,&IsFlag);		// Just do a compare
+				}
+				
+				// Is this app not the finder?
+				
+				if (!IsFlag) {						
+					KillProcess(&current);		// Kill it
+				}
+			}
+		} while (next.highLongOfPSN || (next.lowLongOfPSN != kNoProcess));
+	}
+
+	// Now, did I locate the finder?
+
+	if (foundFinder) {
+		KillProcess(&finder);	// Bye bye
+	}
+}
+
+/*! ************************************
+
 	\brief Return the version of MacOS.
 	
 	Ask MacOS what version it is and return that value.

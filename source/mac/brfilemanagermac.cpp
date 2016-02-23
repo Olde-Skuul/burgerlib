@@ -763,11 +763,61 @@ Word BURGER_API Burger::FileManager::CopyFile(Filename *pDestName,Filename *pSou
 				}
 			}
 		}
-		Burger::Free(pBuffer);		/* Release the copy buffer */
+		Free(pBuffer);		/* Release the copy buffer */
 	}
 	return uResult;			/* Return the end result */
 }
 
+/*! ************************************
+
+	\brief Open a MacOS resource fork
+
+	Using a Burgerlib pathname, open a resource fork of the
+	requested MacOS file using a call to HOpenResFile().
+
+	\note This function is only available for Mac OS Carbon/Classic
+
+	\param pFileName Pointer to a Burgerlib file name
+	\param uPermission Permission value passed to HOpenResFile()
+	\return Error returned by HOpenResFile()
+
+***************************************/
+
+short BURGER_API Burger::FileManager::OpenResourceFile(const char *pFileName,char uPermission)
+{
+	Word8 NameBuffer[256];
+	// Create the directories
+	Filename MyFilename(pFileName);
+	CStringToPString(NameBuffer,MyFilename.GetNative());
+	// Open the file
+	return HOpenResFile(MyFilename.GetVRefNum(),MyFilename.GetDirID(),NameBuffer,uPermission);	
+}
+
+/*! ************************************
+
+	\brief Create a Mac OS resource fork
+
+	This will use a generic pathname and creates a Macintosh
+	resource file with a call to HCreateResFile().
+
+	\note This function is only available for Mac OS Carbon/Classic
+
+	\param pFileName Pointer to a Burgerlib file name
+	\return The value returned by ResError() immediately after the call to HCreateResFile()
+
+***************************************/
+
+Word BURGER_API Burger::FileManager::CreateResourceFIle(const char *pFileName)
+{
+	Word8 NameBuffer[256];
+
+	// Create the directories
+	Filename MyFilename(pFileName);
+	CStringToPString(NameBuffer,MyFilename.GetNative());
+	// Open the file
+	HCreateResFile(MyFilename.GetVRefNum(),MyFilename.GetDirID(),NameBuffer);	
+	return ResError();
+}
 
 /***************************************
 
@@ -788,42 +838,6 @@ void BURGER_API MacOSFileSecondsToTimeDate(Burger::TimeDate_t *pOutput,Word32 Ti
 	pOutput->m_bMonth = (Word8)Temp2.month;		/* Get the month */
 	pOutput->m_uYear = (Word16)Temp2.year;		/* Get the year */
 	pOutput->m_bDayOfWeek = static_cast<Word8>(Temp2.dayOfWeek-1);	/* Day of the week */
-}
-
-/***************************************
-
-	MacOS ONLY!
-
-	This will use a generic pathname and open a Macintosh
-	resource file. It has all the virtues and problems of HOpenResFile();
-
-***************************************/
-
-short BURGER_API OpenAMacResourceFile(const char *PathName,char Permission)
-{
-	Word8 NameBuffer[256];
-	Burger::Filename MyFilename(PathName);		/* Create the directories */
-	Burger::CStringToPString(NameBuffer,MyFilename.GetNative());
-	return HOpenResFile(MyFilename.GetVRefNum(),MyFilename.GetDirID(),NameBuffer,Permission);	/* Open the file */
-}
-
-/***************************************
-
-	MacOS ONLY!
-
-	This will use a generic pathname and open a Macintosh
-	resource file. It has all the virtues and problems of HOpenResFile();
-
-***************************************/
-
-Word BURGER_API CreateAMacResourceFile(const char *PathName)
-{
-	Word8 NameBuffer[256];
-
-	Burger::Filename MyFilename(PathName);		/* Create the directories */
-	Burger::CStringToPString(NameBuffer,MyFilename.GetNative());
-	HCreateResFile(MyFilename.GetVRefNum(),MyFilename.GetDirID(),NameBuffer);		/* Open the file */
-	return ResError();
 }
 
 #endif

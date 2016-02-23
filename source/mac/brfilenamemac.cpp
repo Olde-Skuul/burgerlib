@@ -24,6 +24,8 @@
 #include "brtick.h"
 #include <string.h>
 #include <Files.h>
+#include <Processes.h>
+#include <Folders.h>
 
 Burger::Filename::ExpandCache_t Burger::Filename::m_DirectoryCache[Burger::Filename::DIRCACHESIZE];
 
@@ -388,6 +390,121 @@ const char * Burger::Filename::GetNative(void)
 	return m_pNativeFilename;
 }
 
+
+/***************************************
+
+	\brief Set the filename to the current working directory
+
+	Query the operating system for the current working directory and
+	set the filename to that directory. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void)
+{
+	Clear();
+	long lDirID;
+	short sVRefNum;
+	HGetVol(0,&sVRefNum,&lDirID);	// Call OS
+	// Set lDirID to 0 to hack to simulate GetVol()
+	SetFromDirectoryID(0,sVRefNum);	// Get the directory
+}
+
+/***************************************
+
+	\brief Set the filename to the application's directory
+
+	Determine the directory where the application resides and set
+	the filename to that directory. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format.
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetApplicationDirectory(void)
+{
+	Clear();
+	// Init to my application's serial number
+	ProcessSerialNumber MyNumber;
+	MyNumber.lowLongOfPSN = kCurrentProcess;
+	MyNumber.highLongOfPSN = 0;
+
+	// FSSpec of the current app
+	FSSpec MySpec;
+	MemoryClear(&MySpec,sizeof(MySpec));
+
+	// My input process
+	ProcessInfoRec MyProcess;
+	MemoryClear(&MyProcess,sizeof(MyProcess));
+	MyProcess.processInfoLength = sizeof(MyProcess);
+	//MyProcess.processName = 0;			// I don't want the name
+	MyProcess.processAppSpec = &MySpec;		// Get the FSSpec
+
+	// Locate the application
+	if (!GetProcessInformation(&MyNumber,&MyProcess)) {
+		SetFromDirectoryID(MyProcess.processAppSpec->parID,MyProcess.processAppSpec->vRefNum);
+	}
+}
+
+/***************************************
+
+	\brief Set the filename to the local machine preferences directory
+
+	Determine the directory where the user's preferences that are
+	local to the machine is located. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format.
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void)
+{
+	Clear();
+	short MyVRef;		// Internal volume references 
+	long MyDirID;		// Internal drive ID 
+	// Get the system folder
+	if (!FindFolder(kOnSystemDisk,kSystemPreferencesFolderType,kDontCreateFolder,&MyVRef,&MyDirID)) {
+		SetFromDirectoryID(MyDirID,MyVRef);
+	}
+}
+
+/***************************************
+
+	\brief Set the filename to the user's preferences directory
+
+	Determine the directory where the user's preferences that
+	could be shared among all machines the user has an account
+	with is located. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format.
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetUserPrefsDirectory(void)
+{
+	Clear();
+	short MyVRef;		// Internal volume references 
+	long MyDirID;		// Internal drive ID 
+	// Where are the user preferences stored?
+	if (!FindFolder(kOnSystemDisk,kPreferencesFolderType,kDontCreateFolder,&MyVRef,&MyDirID)) {
+		SetFromDirectoryID(MyDirID,MyVRef);
+	}
+}
+
 /*! ************************************
 
 	\brief Convert a MacOS path to a Burgerlib path
@@ -409,25 +526,25 @@ const char * Burger::Filename::GetNative(void)
 
 void Burger::Filename::SetFromNative(const char *pInput,long lDirID,short sVRefNum)
 {
-	Clear();	// Clear out the previous string
+	Clear();				// Clear out the previous string
 
-	Word Temp;				/* Ascii Temp */
-	char TempPath[8192];	/* Handle to temp buffer */
-	char *Output;			/* Running pointer to temp buffer */
-	Word Length;			/* Length of finished string */
+	Word Temp;				// Ascii Temp
+	char TempPath[8192];	// Handle to temp buffer
+	char *Output;			// Running pointer to temp buffer
+	Word Length;			// Length of finished string
 
-	Output = TempPath;		/* Get running pointer */
+	Output = TempPath;		// Get running pointer
 
-	if (!pInput[0] || pInput[0]==':') {		/* Must I prefix with the current directory? */
-		if (!sVRefNum && !lDirID) {	/* If both are zero then look up default */
-			HGetVol(0,&sVRefNum,&lDirID);		/* Call OS */
-			lDirID = 0;				/* Hack to simulate GetVol() */
+	if (!pInput[0] || pInput[0]==':') {		// Must I prefix with the current directory?
+		if (!sVRefNum && !lDirID) {			// If both are zero then look up default
+			HGetVol(0,&sVRefNum,&lDirID);	// Call OS
+			lDirID = 0;						// Hack to simulate GetVol()
 		}
 		Filename MyFilename;
 		Word uResult = MyFilename.SetFromDirectoryID(lDirID,sVRefNum);	/* Get the directory */
 		if (!uResult) {		/* Did I get a path? */
 			StringCopy(Output,MyFilename.GetPtr());		/* Copy to output */
-			Output = Output+Burger::StringLength(Output);	/* Fix pointer */
+			Output = Output+StringLength(Output);	/* Fix pointer */
 		}
 		if (pInput[0]) {	/* Was there a leading colon? */
 			++pInput;		/* Accept the leading colon */

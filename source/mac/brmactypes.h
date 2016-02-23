@@ -30,6 +30,7 @@ struct OpaqueDialogPtr;
 struct FSSpec;
 struct OpaqueCFragConnectionID;
 struct OpaqueFSIterator;
+struct ProcessSerialNumber;
 #if TARGET_API_MAC_CARBON
 typedef struct OpaqueDialogPtr* DialogRef;	///< Alias for DialogRef for MacOS
 #else
