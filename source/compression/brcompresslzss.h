@@ -33,6 +33,8 @@
 /* BEGIN */
 namespace Burger {
 class CompressLZSS : public Compress {
+	BURGER_RTTI_IN_CLASS();
+protected:
 	static const Word RINGBUFFERSIZE=4096;		///< Size of the LZSS ring buffer
 	static const Word MAXMATCHLENGTH=18;		///< Largest size of a string to match
 	static const Word MINMATCHLENGTH=2;			///< Encode string into position and length
@@ -57,11 +59,7 @@ class CompressLZSS : public Compress {
 	void InsertNode(WordPtr uNodeNumber);
 	void InitTrees(void);
 public:
-#if defined(BURGER_BIGENDIAN)
 	static const Word32 Signature = 0x4C5A5353;		///< 'LZSS'
-#else
-	static const Word32 Signature = 0x53535A4C;		///< 'LZSS'
-#endif
 	CompressLZSS(void);
 	virtual eError Init(void);
 	virtual eError Process(const void *pInput,WordPtr uInputLength);

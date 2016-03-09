@@ -28,8 +28,10 @@
 
 /* BEGIN */
 namespace Burger {
-class ConsoleApp : public Burger::Base {
+class ConsoleApp : public Base {
 	BURGER_DISABLECOPYCONSTRUCTORS(ConsoleApp);
+	BURGER_RTTI_IN_CLASS();
+protected:
 	MemoryManagerGlobalANSI m_ANSIMemoryManager;	///< Use ANSI memory manager for tools
 	const char **m_ppArgv;	///< Arguments passed to the console
 	int m_iArgc;			///< Number of valid arguments

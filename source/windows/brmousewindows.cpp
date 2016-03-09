@@ -20,7 +20,7 @@
 #if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x0501				// Windows XP
 #endif
-#include "brwindowsapp.h"
+#include "brgameapp.h"
 #include "brglobals.h"
 #include "brcriticalsection.h"
 #include "bratomic.h"
@@ -187,8 +187,8 @@ Burger::Mouse::Mouse(GameApp *pAppInstance) :
 
 	// First step, obtain DirectInput
 
-	IDirectInput8W* pDirectInput8W;
-	if (!Globals::DirectInput8Create(&pDirectInput8W)) {
+	IDirectInput8W* pDirectInput8W = Globals::GetDirectInput8Singleton();
+	if (pDirectInput8W) {
 
 		// Create a system mouse device (Merges all mice)
 
@@ -205,7 +205,7 @@ Burger::Mouse::Mouse(GameApp *pAppInstance) :
 				// Play nice with the system and let others use the keyboard
 				// Disable the windows key if the application is running in the foreground
 
-				hResult = pMouseDevice->SetCooperativeLevel(static_cast<WindowsApp *>(pAppInstance)->GetWindow(),DISCL_FOREGROUND | DISCL_EXCLUSIVE);
+				hResult = pMouseDevice->SetCooperativeLevel(pAppInstance->GetWindow(),DISCL_FOREGROUND | DISCL_EXCLUSIVE);
 				if (hResult>=0) {
 					DIPROPDWORD MouseProperties;
 					

@@ -49,11 +49,21 @@ public:
 	void *BURGER_API Flatten(WordPtr *pLength) const;
 	Word BURGER_API Append(char iChar);
 	Word BURGER_API Append(const char *pString);
+	Word BURGER_API AppendCString(const char *pString);
+	BURGER_INLINE Word Append(const String *pString) { return AppendCString(pString->GetPtr()); }
 	Word BURGER_API AppendPString(const char *pString);
 	Word BURGER_API Append(Word8 uByte);
 	Word BURGER_API Append(Word16 uShort);
 	Word BURGER_API Append(Word32 uWord);
 	Word BURGER_API Append(Word64 uWord);
+	Word BURGER_API Append(float fInput);
+	Word BURGER_API Append(double dInput);
+	Word BURGER_API Append(const RGBWord8_t *pInput);
+	Word BURGER_API Append(const RGBAWord8_t *pInput);
+	Word BURGER_API Append(const Vector3D_t *pInput);
+	Word BURGER_API Append(const Vector4D_t *pInput);
+	BURGER_INLINE Word Append(const RGBFloat_t *pInput) { return Append(reinterpret_cast<const Vector3D_t *>(pInput)); }
+	BURGER_INLINE Word Append(const RGBAFloat_t *pInput) { return Append(reinterpret_cast<const Vector4D_t *>(pInput)); }
 	Word BURGER_API Append(const void *pData,WordPtr uSize);
 	Word BURGER_API AppendAscii(Word32 uInput);
 	Word BURGER_API AppendAscii(Word64 uInput);

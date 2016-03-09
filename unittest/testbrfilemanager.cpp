@@ -1376,6 +1376,18 @@ Word FileManagerTest(Word uVerbose)
 #if defined(FULLTESTS)
 	// Test Filename
 	Message("Running Filename tests");
+
+	Filename Test;
+
+	Test.SetSystemWorkingDirectory();
+	printf("Current working directory is %s\n",Test.GetPtr());
+	Test.SetApplicationDirectory();
+	printf("Application directory is %s\n",Test.GetPtr());
+	Test.SetMachinePrefsDirectory();
+	printf("Machine prefs directory is %s\n",Test.GetPtr());
+	Test.SetUserPrefsDirectory();
+	printf("User prefs directory is %s\n",Test.GetPtr());
+
 	uTotal |= TestFilenameClass(); 
 	uTotal |= TestFilenameSet(); 
 	uTotal |= TestFilenameClear();

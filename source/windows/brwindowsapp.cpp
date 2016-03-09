@@ -496,7 +496,7 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 	Globals::SetInstance(hInstance);
 
 	// Ensure that threading is serialized
-	if (CoInitializeEx(NULL,COINIT_APARTMENTTHREADED) == S_OK) {
+	if (CoInitializeEx(NULL,COINIT_APARTMENTTHREADED|COINIT_DISABLE_OLE1DDE) == S_OK) {
 		m_bCoCreateInstanceInit = TRUE;
 	}
 
@@ -566,7 +566,8 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 	LocalFree(pWideArgv);
 
 	// Add the windows callback function
-	m_RunQueue.Add(Poll,this,RunQueue::HIGHESTPRIORITY);
+	// and set it to be the first entry to be called
+	m_RunQueue.Add(Poll,this,RunQueue::PRIORITY_FIRST);
 
 	// Init the global cursor
 	OSCursor::Init();

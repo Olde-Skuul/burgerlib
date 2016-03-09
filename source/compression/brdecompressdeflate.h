@@ -25,6 +25,8 @@
 /* BEGIN */
 namespace Burger {
 class DecompressDeflate : public Decompress {
+	BURGER_RTTI_IN_CLASS();
+protected:
 	enum eState {
 		STATE_METHOD,	///< Waiting for method byte
 		STATE_FLAG,		///< Waiting for flag byte
@@ -133,11 +135,7 @@ class DecompressDeflate : public Decompress {
 	void BlocksReset(void);
 	int ProcessBlocks(int iErrorCode);
 public:
-#if defined(BURGER_BIGENDIAN)
 	static const Word32 Signature = 0x5A4C4942;		///< 'ZLIB'
-#else
-	static const Word32 Signature = 0x42494C5A;		///< 'ZLIB'
-#endif
 	DecompressDeflate();
 	~DecompressDeflate();
 	virtual eError Reset(void);

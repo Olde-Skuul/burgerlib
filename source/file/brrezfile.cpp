@@ -240,7 +240,7 @@ Burger::RezFile::RezEntry_t * BURGER_API Burger::RezFile::Find(Word uRezNum) con
 				break;
 			}
 			// Next group (Each structure is variable sized)
-			pGroups = reinterpret_cast<RezGroup_t *>(&pGroups->m_Array[uCount]);
+			pGroups = static_cast<RezGroup_t *>(static_cast<void *>(&pGroups->m_Array[uCount]));
 		} while (--uGroupCount);
 	}
 	// Return NULL or a pointer
@@ -1033,7 +1033,7 @@ Word BURGER_API Burger::RezFile::GetName(Word uRezNum,char *pBuffer,WordPtr uBuf
 					break;
 				}
 				// Next?
-				pGroups = reinterpret_cast<const RezGroup_t *>(&pGroups->m_Array[pGroups->m_uCount]);
+				pGroups = static_cast<const RezGroup_t *>(static_cast<const void *>(&pGroups->m_Array[pGroups->m_uCount]));
 				// Count down
 			} while (--uGroupCount);
 		}
@@ -1165,7 +1165,7 @@ Word BURGER_API Burger::RezFile::AddName(const char *pRezName)
 		// Where to continue storing data
 		pNewEntry = &pNewGroup->m_Array[uCount+1];
 		// Get the next source record
-		RezGroup_t *pNextGroup = reinterpret_cast<RezGroup_t *>(&pGroup->m_Array[uCount]);
+		RezGroup_t *pNextGroup = static_cast<RezGroup_t *>(static_cast<void *>(&pGroup->m_Array[uCount]));
 
 		// Am I going to merge two groups?
 		if (pNextGroup->m_uBaseRezNum==(uRezNum+1)) {
@@ -1173,7 +1173,7 @@ Word BURGER_API Burger::RezFile::AddName(const char *pRezName)
 			MemoryCopy(pNewEntry,pNextGroup->m_Array,sizeof(RezEntry_t)*uCount);
 			pNewGroup->m_uCount += uCount;		// Adjust the count to do the merge
 			pNewGroup = reinterpret_cast<RezGroup_t *>(pNewEntry+uCount);
-			pGroup = reinterpret_cast<RezGroup_t *>(&pNextGroup->m_Array[uCount]);
+			pGroup = static_cast<RezGroup_t *>(static_cast<void *>(&pNextGroup->m_Array[uCount]));
 			m_uGroupCount = uGroupCount;
 			--uGroupCount;
 		} else {
@@ -1186,8 +1186,8 @@ Word BURGER_API Burger::RezFile::AddName(const char *pRezName)
 			do {
 				uCount = pGroup->m_uCount;
 				MemoryCopy(pNewGroup,pGroup,sizeof(RezGroup_t)+(sizeof(RezEntry_t)*(uCount-1)));
-				pNewGroup = reinterpret_cast<RezGroup_t *>(&pNewGroup->m_Array[uCount]);
-				pGroup = reinterpret_cast<RezGroup_t *>(&pGroup->m_Array[uCount]);
+				pNewGroup = static_cast<RezGroup_t *>(static_cast<void *>(&pNewGroup->m_Array[uCount]));
+				pGroup = static_cast<RezGroup_t *>(static_cast<void *>(&pGroup->m_Array[uCount]));
 			} while (--uGroupCount);
 		}
 		pText = reinterpret_cast<char *>(pNewGroup);
@@ -1401,7 +1401,7 @@ Word BURGER_API Burger::RezFile::GetHighestRezNum(void) const
 		if (--uGroupCount) {
 			do {
 				// Pointer to the next group
-				pGroups = reinterpret_cast<const RezGroup_t *>(&pGroups->m_Array[pGroups->m_uCount]);
+				pGroups = static_cast<const RezGroup_t *>(static_cast<const void *>(&pGroups->m_Array[pGroups->m_uCount]));
 				// Loop for all groups
 			} while (--uGroupCount);
 		}
@@ -2103,3 +2103,169 @@ void BURGER_API Burger::RezFile::Preload(const char *pRezName)
 	}
 }
 
+
+/*! ************************************
+
+	\class Burger::InputRezStream
+	\brief InputMemoryStream for RezFile
+
+	To get the best of both worlds and to simplify the
+	use of InputMemoryStream class instances with the
+	use of RezFile, this class derived from InputMemoryStream
+	will load in a resource, connect the data without
+	any memory copying or transferring into an InputMemoryStream
+	and release the resource when the class goes out of scope
+	or if it's explicity released with a call to InputRezStream::Release(void)
+
+	\sa InputMemoryStream or RezFile
+
+***************************************/
+
+/*! ************************************
+
+	\brief Default constructor for InputRezStream
+
+	All members are initialized to \ref NULL. Use a call to
+	Open(RezFile *,Word) to allow this class to begin streaming
+
+	\sa InputRezStream(RezFile *,Word), Open(RezFile *,Word) or Release(void)
+
+***************************************/
+
+Burger::InputRezStream::InputRezStream() :
+	InputMemoryStream(),
+	m_pRezFile(NULL),
+	m_uRezNum(0)
+{
+}
+
+/*! ************************************
+
+	\brief Loading constructor for InputRezStream
+
+	Load in the resource, set the InputMemoryStream and 
+	exit. On failure, the InputMemoryStream will be empty
+	and can be checked with a call to IsEmpty(void) const
+
+	\param pRezFile Pointer to a valid resource file
+	\param uRezNum Number of the resource to load
+	\sa InputRezStream(), Open(RezFile *,Word) or Release(void)
+
+***************************************/
+
+Burger::InputRezStream::InputRezStream(RezFile *pRezFile,Word uRezNum) :
+	InputMemoryStream(),
+	m_pRezFile(NULL),
+	m_uRezNum(0)
+{
+	// If an error occurred, the stream is empty
+	Open(pRezFile,uRezNum);
+}
+
+/*! ************************************
+
+	\brief Default destructor for InputRezStream
+
+	If a resource is held, release it.
+
+	\sa InputRezStream() or Release(void)
+
+***************************************/
+
+Burger::InputRezStream::~InputRezStream()
+{
+	Release();
+}
+
+/*! ************************************
+
+	\brief Load a resource and set the stream to it.
+
+	Release any previous stream data and then load in the new
+	resource and set the stream to point to it.
+
+	\param pRezFile Pointer to a valid resource file
+	\param uRezNum Number of the resource to load
+	\return Zero on success, non-zero (Error code) on failure
+	\sa InputRezStream(RezFile *,Word) or Release(void)
+
+***************************************/
+
+Word BURGER_API Burger::InputRezStream::Open(RezFile *pRezFile,Word uRezNum)
+{
+	// Release anything already in the class
+	Release();
+
+	// Assume failure
+	Word uResult = 10;
+	// Valid pointer?
+	if (pRezFile) {
+		// Load the data
+		void *pData = pRezFile->Load(uRezNum);
+		// Got it?
+		if (pData) {
+			// Get the length of the data
+			WordPtr uLength = pRezFile->GetSize(uRezNum);
+			if (uLength) {
+				// Set up the stream to this buffer
+				InputMemoryStream::Open(pData,uLength,TRUE);
+				// Set the data so it will release the resource on exit
+				m_uRezNum = uRezNum;
+				m_pRezFile = pRezFile;
+				// Return no error
+				uResult = 0;
+			} else {
+				// Empty data? Release the refcount
+				pRezFile->Release(uRezNum);
+			}
+		}
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Release any held resource
+
+	If a resource is held, release it and shut down
+	the parent InputMemorySteam
+
+	\sa Open(RezFile *,Word) or Release(void)
+
+***************************************/
+
+void BURGER_API Burger::InputRezStream::Release(void)
+{
+	// Valid cached resource file?
+	RezFile *pRezFile = m_pRezFile;
+	if (pRezFile) {
+		// Release it and clear the state
+		pRezFile->Release(m_uRezNum);
+		m_pRezFile = NULL;
+		m_uRezNum = 0;
+	}
+	// Ensure the parent is deactivated
+	Clear();
+}
+
+/*! ************************************
+
+	\fn RezFile * Burger::InputRezStream::GetRezFile(void) const
+	\brief Return the cached RezFile
+
+	\note If this value is \ref NULL, there is no resource file chunk being
+	streamed. Either this class had no data loaded into it or
+	there was an error in loading data.
+
+	\sa GetRezNum(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::InputRezStream::GetRezNum(void) const
+	\brief Return the cache RezFile entry number
+
+	\sa GetRezFile(void) const
+
+***************************************/

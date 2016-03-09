@@ -36,7 +36,7 @@
 	Multibyte data such as \ref Word32 will be assumed to be in Little
 	Endian format.
 
-	\sa Burger::OutputMemoryStream
+	\sa OutputMemoryStream or InputRezStream
 
 ***************************************/
 
@@ -72,6 +72,26 @@ Burger::InputMemoryStream::InputMemoryStream() :
 ***************************************/
 
 Burger::InputMemoryStream::InputMemoryStream(const char *pFilename) :
+	m_pData(NULL)
+{
+	Open(pFilename);
+}
+
+/*! ************************************
+
+	\brief Constructor with a data file
+	
+	Upon construction, open and load in the data file
+	for immediate parsing. Errors can occur and if
+	loading fails or memory isn't allocated, the
+	class will be given an empty buffer and no
+	data will be streamed.
+
+	\param pFilename Pointer to a Burgerlib \ref Filename to a file to load into memory
+	
+***************************************/
+
+Burger::InputMemoryStream::InputMemoryStream(Filename *pFilename) :
 	m_pData(NULL)
 {
 	Open(pFilename);
@@ -720,6 +740,60 @@ Word32 BURGER_API Burger::InputMemoryStream::GetBigWord32(void)
 		} else {
 			uTemp = BigEndian::LoadAny(reinterpret_cast<const Word32 *>(pWork));
 			pWork+=4;
+		}
+		m_pWork = pWork;
+	}
+	return uTemp;
+}
+
+/*! ************************************
+
+	\brief Return a 64 bit little endian value from the data stream
+
+	\return Next 64 bit value from the stream. Zero if there is no data remaining.
+	\sa GetBigWord64(void) or GetWord32(void)
+
+***************************************/
+
+Word64 BURGER_API Burger::InputMemoryStream::GetWord64(void)
+{
+	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
+	const Word8 *pWork = m_pWork;
+	Word64 uTemp = 0;
+	// Is there any input?
+	if (pWork<pEndOfBuffer) {
+		if ((pWork+7)>=pEndOfBuffer) {
+			pWork = pEndOfBuffer;
+		} else {
+			uTemp = LittleEndian::LoadAny(reinterpret_cast<const Word64 *>(pWork));
+			pWork+=8;
+		}
+		m_pWork = pWork;
+	}
+	return uTemp;
+}
+
+/*! ************************************
+
+	\brief Return a 64 bit big endian value from the data stream
+
+	\return Next 64 bit value from the stream. Zero if there is no data remaining.
+	\sa GetWord64(void) or GetBigWord32(void)
+
+***************************************/
+
+Word64 BURGER_API Burger::InputMemoryStream::GetBigWord64(void)
+{
+	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
+	const Word8 *pWork = m_pWork;
+	Word64 uTemp = 0;
+	// Is there any input?
+	if (pWork<pEndOfBuffer) {
+		if ((pWork+7)>=pEndOfBuffer) {
+			pWork = pEndOfBuffer;
+		} else {
+			uTemp = BigEndian::LoadAny(reinterpret_cast<const Word64 *>(pWork));
+			pWork+=8;
 		}
 		m_pWork = pWork;
 	}

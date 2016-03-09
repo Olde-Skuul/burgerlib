@@ -33,16 +33,14 @@
 /* BEGIN */
 namespace Burger {
 class CompressILBMRLE : public Compress {
+	BURGER_RTTI_IN_CLASS();
+protected:
 	WordPtr m_uCacheUsed;		///< Number of bytes in the cache
 	WordPtr m_uRemaining;		///< Number of bytes unprocessed from the last call to Compact()
 	Word8 m_Cache[128+8];		///< Data cache for resuming compression
 	eError Compact(const Word8 *pInput,WordPtr uInputLength);
 public:
-#if defined(BURGER_BIGENDIAN)
 	static const Word32 Signature = 0x524C4420;		///< 'RLE '
-#else
-	static const Word32 Signature = 0x20454C52;		///< 'RLE '
-#endif
 	CompressILBMRLE(void);
 	virtual eError Init(void);
 	virtual eError Process(const void *pInput,WordPtr uInputLength);

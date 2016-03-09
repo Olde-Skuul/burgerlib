@@ -31,14 +31,14 @@ public:
 	BURGER_INLINE void *Alloc(WordPtr uSize) { return Alloc(this,uSize); }
 	BURGER_INLINE void Free(const void *pInput) { return Free(this,pInput); }
 	BURGER_INLINE void *Realloc(const void *pInput,WordPtr uSize)  { return Realloc(this,pInput,uSize); }
-private:
+protected:
 	static void *BURGER_API Alloc(MemoryManager *pThis,WordPtr uSize);
 	static void BURGER_API Free(MemoryManager *pThis,const void *pInput);
 	static void *BURGER_API Realloc(MemoryManager *pThis,const void *pInput,WordPtr uSize);
 };
 class MemoryManagerGlobalANSI : public MemoryManagerANSI {
-	BURGER_DISABLECOPYCONSTRUCTORS(MemoryManagerGlobalANSI);
 	MemoryManager *m_pPrevious;			///< Pointer to the previous memory manager
+	BURGER_DISABLECOPYCONSTRUCTORS(MemoryManagerGlobalANSI);
 public:
 	MemoryManagerGlobalANSI();
 	~MemoryManagerGlobalANSI();

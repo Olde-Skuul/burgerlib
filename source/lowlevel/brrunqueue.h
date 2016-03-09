@@ -25,26 +25,24 @@ class RunQueue {
 public:
 	enum eReturnCode {
 		OKAY,		///< Executed normally
-		ABORT,		///< Error occured that requires an immediate abort
+		ABORT,		///< Error occurred that requires an immediate abort
 		DISPOSE		///< Dispose of this callback
 	};
 	enum {
-		LOWESTPRIORITY=0,		///< Lowest priority for RunQueue tasks, do not go lower than this value
-		LOWPRIORITY=25,			///< Low priority for RunQueue tasks
-		MEDIUMPRIORITY=50,		///< Average priority for RunQueue tasks
-		HIGHPRIORITY=75,		///< High priority for RunQueue tasks
-		HIGHESTPRIORITY=100		///< Highest priority for RunQueue tasks, (Reserved for Burgerlib, do not use or exceed this value)
+		PRIORITY_FIRST=0x7FFFFFF,			///< Highest priority for RunQueue tasks, executed first (Reserved for Burgerlib, do not use or exceed this value)
+		PRIORITY_JOYPAD=0x7000040,			///< Priority for reading joypad (Can generate keystrokes and mouse events)
+		PRIORITY_MOUSE=0x70000030,			///< Priority for reading mouse (Can generate keystrokes)
+		PRIORITY_KEYBOARD=0x70000010,		///< Priority for reading keyboard
+		PRIORITY_INPUTPROCESSING=0x7000000,	///< Priority for processing game input
+		PRIORITY_SEQUENCING=0x68001000,		///< Priority for music processing
+		PRIORITY_SOUNDPROCESSING=0x6800000,	///< Priority for handling sound effects
+		PRIORITY_FILEPROCESSING=0x6400000,	///< Priority for async file I/O processing
+		PRIORITY_HIGH=0x6000000,			///< High priority for RunQueue tasks
+		PRIORITY_MEDIUM=0x4000000,			///< Average priority for RunQueue tasks
+		PRIORITY_LOW=0x2000000,				///< Low priority for RunQueue tasks
+		PRIORITY_LAST=0						///< Lowest priority for RunQueue tasks, executed last, do not go lower than this value
 	};
 	typedef eReturnCode (BURGER_API *CallbackProc)(void *);
-	RunQueue() : m_pFirst(NULL), m_Recurse(FALSE) {}
-	~RunQueue();
-	void Call(void);
-	Word Add(CallbackProc pProc,void *pData=NULL,Word uPriority=MEDIUMPRIORITY);
-	Word Find(CallbackProc pProc) const;
-	Word Find(CallbackProc pProc,void *pData) const;
-	Word RemoveAll(CallbackProc pProc);
-	Word Remove(CallbackProc pProc,void *pData=NULL);
-	void Clear(void);
 private:
 	struct RunQueueEntry_t {
 		RunQueueEntry_t *m_pNext;	///< Handle to the next FunctionEntry_t in chain
@@ -54,6 +52,16 @@ private:
 	};
 	RunQueueEntry_t *m_pFirst;	///< Pointer to the first entry
 	Word m_Recurse;				///< \ref TRUE if this class is the process of executing.
+public:
+	RunQueue() : m_pFirst(NULL), m_Recurse(FALSE) {}
+	~RunQueue();
+	void BURGER_API Call(void);
+	Word BURGER_API Add(CallbackProc pProc,void *pData=NULL,Word uPriority=PRIORITY_MEDIUM);
+	Word BURGER_API Find(CallbackProc pProc) const;
+	Word BURGER_API Find(CallbackProc pProc,void *pData) const;
+	Word BURGER_API RemoveAll(CallbackProc pProc);
+	Word BURGER_API Remove(CallbackProc pProc,void *pData=NULL);
+	void BURGER_API Clear(void);
 };
 }
 /* END */

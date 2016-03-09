@@ -22,6 +22,7 @@
 	Print a single hex digit from the lowest 4 bits of the input
 	value to stdout
 
+	\param uInput Integer value (Only lowest 4 bits used) to print in HEX to stdout
 	\sa PrintHex(Word8), PrintHex(Word16), PrintHex(Word32), or PrintHex(Word64) 
 
 ***************************************/
@@ -37,16 +38,18 @@ void BURGER_API Burger::PrintHexDigit(Word uInput)
 
 	Print two hex digits in the form of 00 to stdout
 
+	\param uInput 8 bit value to print in HEX to stdout
 	\sa PrintHexDigit(Word), PrintHex(Word16), PrintHex(Word32), or PrintHex(Word64) 
 
 ***************************************/
 
 void BURGER_API Burger::PrintHex(Word8 uInput)
 {
-	char TempString[2+1];
-	TempString[0] = g_NibbleToAsciiUppercase[(uInput>>4)&0xF];
-	TempString[1] = g_NibbleToAsciiUppercase[uInput&0xF];
-	TempString[2] = 0;
+	// Convert to a string
+	char TempString[(sizeof(Word8)*2)+1];
+	NumberToAsciiHex(TempString,uInput);
+
+	// Send the string to stdout
 	fputs(TempString,stdout);
 }
 
@@ -56,18 +59,18 @@ void BURGER_API Burger::PrintHex(Word8 uInput)
 
 	Print four hex digits in the form of 0000 to stdout
 
+	\param uInput 16 bit value to print in HEX to stdout
 	\sa PrintHexDigit(Word), PrintHex(Word8), PrintHex(Word32), or PrintHex(Word64) 
 
 ***************************************/
 
 void BURGER_API Burger::PrintHex(Word16 uInput)
 {
-	char TempString[4+1];
-	TempString[0] = g_NibbleToAsciiUppercase[(uInput>>12)&0xF];
-	TempString[1] = g_NibbleToAsciiUppercase[(uInput>>8)&0xF];
-	TempString[2] = g_NibbleToAsciiUppercase[(uInput>>4)&0xF];
-	TempString[3] = g_NibbleToAsciiUppercase[uInput&0xF];
-	TempString[4] = 0;
+	// Convert to a string
+	char TempString[(sizeof(Word16)*2)+1];
+	NumberToAsciiHex(TempString,uInput);
+
+	// Send the string to stdout
 	fputs(TempString,stdout);
 }
 
@@ -77,22 +80,18 @@ void BURGER_API Burger::PrintHex(Word16 uInput)
 
 	Print eight hex digits in the form of 00000000 to stdout
 
+	\param uInput 32 bit value to print in HEX to stdout
 	\sa PrintHexDigit(Word), PrintHex(Word8), PrintHex(Word16), or PrintHex(Word64) 
 
 ***************************************/
 
 void BURGER_API Burger::PrintHex(Word32 uInput)
 {
-	char TempString[8+1];
-	TempString[0] = g_NibbleToAsciiUppercase[(uInput>>28)&0xF];
-	TempString[1] = g_NibbleToAsciiUppercase[(uInput>>24)&0xF];
-	TempString[2] = g_NibbleToAsciiUppercase[(uInput>>20)&0xF];
-	TempString[3] = g_NibbleToAsciiUppercase[(uInput>>16)&0xF];
-	TempString[4] = g_NibbleToAsciiUppercase[(uInput>>12)&0xF];
-	TempString[5] = g_NibbleToAsciiUppercase[(uInput>>8)&0xF];
-	TempString[6] = g_NibbleToAsciiUppercase[(uInput>>4)&0xF];
-	TempString[7] = g_NibbleToAsciiUppercase[uInput&0xF];
-	TempString[8] = 0;
+	// Convert to a string
+	char TempString[(sizeof(Word32)*2)+1];
+	NumberToAsciiHex(TempString,uInput);
+
+	// Send the string to stdout
 	fputs(TempString,stdout);
 }
 
@@ -102,29 +101,82 @@ void BURGER_API Burger::PrintHex(Word32 uInput)
 
 	Print sixteen hex digits in the form of 0000000000000000 to stdout
 
+	\param uInput 64 bit value to print in HEX to stdout
 	\sa PrintHexDigit(Word), PrintHex(Word8), PrintHex(Word16), or PrintHex(Word32) 
 
 ***************************************/
 
 void BURGER_API Burger::PrintHex(Word64 uInput)
 {
-	char TempString[16+1];
-	TempString[0] = g_NibbleToAsciiUppercase[(uInput>>60)&0xF];
-	TempString[1] = g_NibbleToAsciiUppercase[(uInput>>56)&0xF];
-	TempString[2] = g_NibbleToAsciiUppercase[(uInput>>52)&0xF];
-	TempString[3] = g_NibbleToAsciiUppercase[(uInput>>48)&0xF];
-	TempString[4] = g_NibbleToAsciiUppercase[(uInput>>44)&0xF];
-	TempString[5] = g_NibbleToAsciiUppercase[(uInput>>40)&0xF];
-	TempString[6] = g_NibbleToAsciiUppercase[(uInput>>36)&0xF];
-	TempString[7] = g_NibbleToAsciiUppercase[(uInput>>32)&0xF];
-	TempString[8] = g_NibbleToAsciiUppercase[(uInput>>28)&0xF];
-	TempString[9] = g_NibbleToAsciiUppercase[(uInput>>24)&0xF];
-	TempString[10] = g_NibbleToAsciiUppercase[(uInput>>20)&0xF];
-	TempString[11] = g_NibbleToAsciiUppercase[(uInput>>16)&0xF];
-	TempString[12] = g_NibbleToAsciiUppercase[(uInput>>12)&0xF];
-	TempString[13] = g_NibbleToAsciiUppercase[(uInput>>8)&0xF];
-	TempString[14] = g_NibbleToAsciiUppercase[(uInput>>4)&0xF];
-	TempString[15] = g_NibbleToAsciiUppercase[uInput&0xF];
-	TempString[16] = 0;
+	// Convert to a string
+	char TempString[(sizeof(Word64)*2)+1];
+	NumberToAsciiHex(TempString,uInput);
+
+	// Send the string to stdout
 	fputs(TempString,stdout);
 }
+
+/*! ************************************
+
+	\brief Print a 32 bit floating pointer number in hex to standard out
+
+	Print eight hex digits in the form of 00000000 to stdout
+
+	\param fInput Floating point number to print in HEX to stdout
+	\sa PrintHex(Word32), or PrintHex(double) 
+
+***************************************/
+
+void BURGER_API Burger::PrintHex(float fInput)
+{
+	// Convert to a string
+	char TempString[(sizeof(float)*2)+1];
+	NumberToAsciiHex(TempString,fInput);
+
+	// Send the string to stdout
+	fputs(TempString,stdout);
+}
+
+/*! ************************************
+
+	\brief Print a 64 bit floating point number in hex to standard out
+
+	Print sixteen hex digits in the form of 0000000000000000 to stdout
+
+	\param dInput 64 bit floating point number to print in HEX to stdout
+	\sa PrintHex(Word64), or PrintHex(float) 
+
+***************************************/
+
+void BURGER_API Burger::PrintHex(double dInput)
+{
+	// Convert to a string
+	char TempString[(sizeof(double)*2)+1];
+	NumberToAsciiHex(TempString,dInput);
+
+	// Send the string to stdout
+	fputs(TempString,stdout);
+}
+
+/*! ************************************
+
+	\brief Clear the text console
+
+	For platforms that support a text console, clear out
+	the	text console by sending a line feed or system
+	appropriate set of calls to perform the same action
+	the ends up with a clear text screen and the
+	output cursor set to the upper left corner.
+
+	This is an equivalent of the Borland C library
+	function clrscr().
+
+***************************************/
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
+void BURGER_API Burger::ClearConsole(void)
+{
+	// Send a line feed to clear the screen
+	putchar(12);
+}
+#endif

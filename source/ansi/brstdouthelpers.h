@@ -25,6 +25,9 @@ extern void BURGER_API PrintHex(Word8 uInput);
 extern void BURGER_API PrintHex(Word16 uInput);
 extern void BURGER_API PrintHex(Word32 uInput);
 extern void BURGER_API PrintHex(Word64 uInput);
+extern void BURGER_API PrintHex(float fInput);
+extern void BURGER_API PrintHex(double dInput);
+extern void BURGER_API ClearConsole(void);
 }
 /* END */
 

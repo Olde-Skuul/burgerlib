@@ -94,7 +94,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 	This routine will get the time and date
 	from a file.
-	Note, this routine is Operating system specfic!!!
+	Note, this routine is Operating system specific!!!
 
 ***************************************/
 
@@ -116,7 +116,7 @@ Word BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,Tim
 
 	This routine will get the time and date
 	from a file.
-	Note, this routine is Operating system specfic!!!
+	Note, this routine is Operating system specific!!!
 
 ***************************************/
 
@@ -141,7 +141,7 @@ Word BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDat
 	is a path to a file that exists, if it doesn't exist
 	or it's a directory, I return FALSE.
 	Note : I do not check if the file has any data in it.
-	Just the existance of the file.
+	Just the existence of the file.
 
 ***************************************/
 
@@ -197,11 +197,14 @@ Word BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
 			// Skip to the next colon
 			pWork = StringCharacter(pWork,'\\');
 			if (!pWork) {			// No colon found?
-				pWork = StringCharacter(pNewFilename,0);
+				pWork = pNewFilename+StringLength(pNewFilename);
 			}
 			Old = pWork[0];		// Get the previous char
 			pWork[0] = 0;		// End the string
 			Err = DirCreate(pNewFilename);			// Create the directory
+			if (Err) {
+				break;
+			}
 			pWork[0] = static_cast<char>(Old);		// Restore the string
 			++pWork;			// Index past the char
 		} while (Old);			// Still more string?

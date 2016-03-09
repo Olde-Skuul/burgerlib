@@ -24,7 +24,7 @@
 	malloc(), free() and realloc() calls. No support is
 	present to track memory is supplied by burgerlib. If memory
 	tracking is desired either use native memory tracking or
-	use \ref Burger::MemoryManagerHandle instead.
+	use \ref MemoryManagerHandle instead.
 
 ***************************************/
 
@@ -32,7 +32,7 @@
 
 	\brief Constructor for the ANSI memory allocator
 
-	Initializes the jump table in the base class \ref Burger::MemoryManager
+	Initializes the jump table in the base class \ref MemoryManager
 
 ***************************************/
 
@@ -46,7 +46,7 @@ Burger::MemoryManagerANSI::MemoryManagerANSI()
 
 /*! ************************************
 
-	\fn BURGER_INLINE void *Burger::MemoryManagerANSI::Alloc(WordPtr uSize)
+	\fn void *Burger::MemoryManagerANSI::Alloc(WordPtr uSize)
 	\brief Allocates memory.
 
 	Calls malloc() and returns the pointer allocated. If the requested
@@ -54,27 +54,27 @@ Burger::MemoryManagerANSI::MemoryManagerANSI()
 
 	\param uSize Number of byte requested to allocate.
 	\return \ref NULL on failure or zero bytes allocated, or a valid memory pointer.
-	\sa void * BURGER_API Burger::MemoryManagerANSI::Alloc(MemoryManager *,WordPtr)
+	\sa Alloc(MemoryManager *,WordPtr)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE void Burger::MemoryManagerANSI::Free(const void *pInput)
+	\fn void Burger::MemoryManagerANSI::Free(const void *pInput)
 	\brief Frees memory.
 
 	If pInput is \ref NULL, do nothing. If non-zero, then release the memory
 	back into the free memory pool.
 
-	\param pInput \ref NULL to do no operation or a valid pointer to memory allocated by \ref Burger::MemoryManagerANSI::Alloc(WordPtr)
-	or \ref Burger::MemoryManagerANSI::Realloc(const void *,WordPtr).
-	\sa Burger::MemoryManagerANSI::Free(MemoryManager *,const void *)
+	\param pInput \ref NULL to do no operation or a valid pointer to memory allocated by \ref Alloc(WordPtr)
+	or \ref Realloc(const void *,WordPtr).
+	\sa Free(MemoryManager *,const void *)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE void *Burger::MemoryManagerANSI::Realloc(const void *pInput,WordPtr uSize)
+	\fn void *Burger::MemoryManagerANSI::Realloc(const void *pInput,WordPtr uSize)
 	\brief Reallocates memory.
 
 	Calls realloc() and returns the pointer allocated. If the requested
@@ -88,7 +88,7 @@ Burger::MemoryManagerANSI::MemoryManagerANSI()
 	\param pInput Pointer to a valid buffer to resize.
 	\param uSize Number of byte requested to allocate.
 	\return \ref NULL on failure or zero bytes allocated, or a valid memory pointer.
-	\sa void * BURGER_API Burger::MemoryManagerANSI::Realloc(MemoryManager *,const void *,WordPtr)
+	\sa Realloc(MemoryManager *,const void *,WordPtr)
 
 ***************************************/
 
@@ -102,6 +102,7 @@ Burger::MemoryManagerANSI::MemoryManagerANSI()
 	\param pThis Pointer to the current instance.
 	\param uSize Number of byte requested to allocate.
 	\return \ref NULL on failure or zero bytes allocated, or a valid memory pointer.
+	\sa Alloc(WordPtr)
 
 ***************************************/
 
@@ -122,8 +123,9 @@ void * BURGER_API Burger::MemoryManagerANSI::Alloc(MemoryManager * /* pThis */,W
 	back into the free memory pool.
 
 	\param pThis Pointer to the current instance.
-	\param pInput \ref NULL to do no operation or a valid pointer to memory allocated by \ref Burger::MemoryManagerANSI::Alloc(MemoryManager*,WordPtr)
-	or \ref Burger::MemoryManagerANSI::Realloc(MemoryManager *,const void *,WordPtr).
+	\param pInput \ref NULL to do no operation or a valid pointer to memory allocated by \ref Alloc(MemoryManager*,WordPtr)
+	or \ref Realloc(MemoryManager *,const void *,WordPtr).
+	\sa Free(const void *)
 
 ***************************************/
 
@@ -150,6 +152,7 @@ void BURGER_API Burger::MemoryManagerANSI::Free(MemoryManager * /* pThis */,cons
 	\param pInput Pointer to a valid buffer to resize.
 	\param uSize Number of byte requested to allocate.
 	\return \ref NULL on failure or zero bytes allocated, or a valid memory pointer.
+	\sa Realloc(const void *,WordPtr)
 
 ***************************************/
 
@@ -180,20 +183,46 @@ void * BURGER_API Burger::MemoryManagerANSI::Realloc(MemoryManager * /* pThis */
 	\class Burger::MemoryManagerGlobalANSI
 	\brief Global ANSI Memory Manager helper class
 	
-	This class is a helper that attaches a \ref Burger::MemoryManagerANSI
+	This class is a helper that attaches a \ref MemoryManagerANSI
 	class to the global memory manager. When this instance shuts down,
-	it will remove itself from the global memory manager.
+	it will remove itself from the global memory manager and
+	set the global memory manager to the previous one.
 
-	\sa Burger::GlobalMemoryManager
+	\sa \ref GlobalMemoryManager
 
 ***************************************/
 
 /*! ************************************
 
-	\brief Attaches a \ref Burger::MemoryManagerANSI class to the global memory manager.
+	\brief Attaches a \ref MemoryManagerANSI class to the global memory manager.
 
 	When this class is created, it will automatically attach itself
-	to the global memory manager.
+	to the global memory manager and save the pointer
+	to the previous instantiation so when this class goes
+	out of scope, the previous memory manager is reinstated
+
+	Example..
+
+	\code
+
+	void DoSomething()
+	{
+		// Tell Burgerlib to use ANSI memory chunks
+		MemoryManagerGlobalANSI MallocMemory;
+		CallFunctionThatUsesMemory();
+		CallFunctionThatCleansUpMemory();
+		// When going out of scope, HandleBasedMemory is restored
+	}
+
+	int main(int,char **)
+	{
+		// Use handle based memory
+		Burger::MemoryManagerGlobalHandle HandleBasedMemory;
+		DoSomething();
+		return 0;
+	}
+
+	\endcode
 
 ***************************************/
 
@@ -204,10 +233,13 @@ Burger::MemoryManagerGlobalANSI::MemoryManagerGlobalANSI()
 
 /*! ************************************
 
-	\brief Releases a Burger::MemoryManagerANSI class from the global memory manager.
+	\brief Releases a \ref MemoryManagerANSI class from the global memory manager.
 
 	When this class is released, it will automatically remove itself
-	to the global memory manager.
+	to the global memory manager and restore the previous memory
+	manager to the global memory manager.
+
+	\sa MemoryManagerGlobalANSI()
 
 ***************************************/
 

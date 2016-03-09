@@ -13,6 +13,10 @@
 
 #include "brdecompress.h"
 
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::Decompress,Burger::Base);
+#endif
+
 /*! ************************************
 
 	\class Burger::Decompress
@@ -165,5 +169,15 @@ Burger::Decompress::Decompress(void) :
 
 	\return A 32 bit number form of the 4 byte character code. It's an
 		endian neutral text string
+
+***************************************/
+
+/*! ************************************
+
+	\var const Burger::StaticRTTI Burger::Decompress::g_StaticRTTI
+	\brief The global description of the class
+
+	This record contains the name of this class and a
+	reference to the parent
 
 ***************************************/

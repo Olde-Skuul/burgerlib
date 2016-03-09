@@ -16,10 +16,12 @@
 #include "brdebug.h"
 
 #if defined(BURGER_WINDOWS)
+#include "brstring.h"
 #include "brstring16.h"
 #include "broscursor.h"
 #include "brcriticalsection.h"
 #include "brfile.h"
+#include "brnumberstringhex.h"
 
 #if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x0501				// Windows XP
@@ -68,7 +70,40 @@ void BURGER_API Burger::Debug::String(const char *pString)
 
 Word BURGER_API Burger::Debug::IsDebuggerPresent(void)
 {
+	// This function in Windows is just an accessor, so optimizing
+	// it is not necessary
 	return static_cast<Word>(::IsDebuggerPresent());
+}
+
+/***************************************
+
+	\brief Print the error message for an OS error code
+
+	Given an error code from the native operating system and print
+	it out the \ref Debug messaging system.
+
+	\param uErrorCode Error code from Windows/MacOS/etc...
+
+***************************************/
+
+void BURGER_API Burger::Debug::PrintErrorMessage(Word uErrorCode)
+{
+	// Print the error string
+	String("Windows error: 0x");
+
+	// Show the error in hex
+	NumberStringHex TempBuffer(static_cast<Word32>(uErrorCode));
+	String(TempBuffer);
+
+	// Convert to a windows string in the native language
+	char *pBuffer = NULL;
+	if (FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,NULL,uErrorCode,MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),static_cast<LPSTR>(static_cast<void *>(&pBuffer)),0,NULL)) {
+		String(", ");
+		String(pBuffer);
+		LocalFree(pBuffer);
+	} else {
+		String("\n");
+	}
 }
 
 /*! ************************************

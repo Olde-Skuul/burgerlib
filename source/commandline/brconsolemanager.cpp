@@ -15,6 +15,10 @@
 #include "brfilemanager.h"
 #include "brglobals.h"
 
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::ConsoleApp,Burger::Base);
+#endif
+
 /*! ************************************
 
 	\class Burger::ConsoleApp

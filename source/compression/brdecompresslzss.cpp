@@ -13,6 +13,10 @@
 
 #include "brdecompresslzss.h"
 
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::DecompressLZSS,Burger::Decompress);
+#endif
+
 /*! ************************************
 
 	\class Burger::DecompressLZSS
@@ -36,7 +40,7 @@ Burger::DecompressLZSS::DecompressLZSS() :
 	m_uBitBucket(1),
 	m_eState(STATE_INIT)
 {
-	reinterpret_cast<Word32 *>(m_uSignature)[0] = Signature;
+	m_uSignature = Signature;
 }
 
 /*! ************************************
@@ -271,3 +275,13 @@ Burger::Decompress::eError BURGER_API Burger::SimpleDecompressLZSS(void *pOutput
 	Local.DecompressLZSS::Reset();
 	return Local.DecompressLZSS::Process(pOutput,uOutputChunkLength,pInput,uInputChunkLength);
 }
+
+/*! ************************************
+
+	\var const Burger::StaticRTTI Burger::DecompressLZSS::g_StaticRTTI
+	\brief The global description of the class
+
+	This record contains the name of this class and a
+	reference to the parent
+
+***************************************/

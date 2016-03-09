@@ -159,11 +159,23 @@ void Burger::VertexBuffer::ReleaseData(void)
 {
 	D3DVertexBuffer *pVertexBuffer = m_pD3DVertexBuffer;
 	if (pVertexBuffer) {
+		// Make sure there is no connection to a D3D device
+		IDirect3DDevice9 *pDevice;
+		pVertexBuffer->GetDevice(&pDevice);
+		if (pDevice) {
+			pDevice->SetStreamSource(0,0,0,0);
+		}
 		pVertexBuffer->Release();
 		m_pD3DVertexBuffer = NULL;
 	}
 	D3DVertexDeclaration *pDeclaration = m_pD3DVertexDeclaration; 
 	if (pDeclaration) {
+		// Make sure there is no connection to a D3D device
+		IDirect3DDevice9 *pDevice;
+		pDeclaration->GetDevice(&pDevice);
+		if (pDevice) {
+			pDevice->SetVertexDeclaration(0);
+		}
 		pDeclaration->Release();
 		m_pD3DVertexDeclaration = NULL;
 	}

@@ -15,6 +15,7 @@
 #include "brfile.h"
 #include "brendian.h"
 #include "brnumberstring.h"
+#include "brpalette.h"
 
 /*! ************************************
 
@@ -409,25 +410,72 @@ Word BURGER_API Burger::OutputMemoryStream::Append(const char *pString)
 	// Start with no error
 	Word uResult=0;
 	if (pString) {
-		// Get a character
-		char iTemp = pString[0];
-		if (iTemp) {
-			// Let's add the data
+		// Output a character at a time to allow \n
+		// to be converted to \r or \n\r depending
+		// on platform
+		char Temp = pString[0];
+		if (Temp) {
 			do {
 				++pString;
-				uResult = Append(iTemp);
-				// Error?
-				if (uResult) {
-					break;
-				}
-				// Continue?
-				iTemp = pString[0];
-			} while (iTemp);
+				Append(Temp);
+				Temp = pString[0];
+			} while (Temp);
 		}
 	}
 	// Return 0 or error code
 	return uResult;
 }
+
+/*! ************************************
+
+	\brief Add a UTF-8 "C" string to the data stream
+
+	The data stream will have a zero terminated "C" string.
+
+	The terminating zero will be included in the stream, if this is
+	not desired, call \ref Append(const char *) instead
+
+	\param pString "C" UTF-8 data string. \ref NULL will insert a zero length string
+	\return Error code with zero being no error, non-zero is out of memory
+	\sa Append(const char *) or AppendPString(const char *)
+
+***************************************/
+
+Word BURGER_API Burger::OutputMemoryStream::AppendCString(const char *pString)
+{
+	Word uResult;
+
+	// NULL string?
+	if (!pString) {
+		// Insert a zero length string
+		uResult = Append(static_cast<Word8>(0));
+	} else {
+		// Get the length
+		WordPtr uLength = StringLength(pString);
+		// Insert in one go
+		uResult = Append(pString,uLength+1);
+	}
+	// Return 0 or error code
+	return uResult;
+}
+
+/*! ************************************
+
+	\fn Word Burger::OutputMemoryStream::Append(const String *pString)
+	\brief Add a UTF-8 "C" string to the data stream
+
+	The data stream will have a zero terminated "C" string obtained
+	from the \ref String class instance.
+
+	The terminating zero will be included in the stream, if this is
+	not desired, call \ref Append(const char *) instead with the
+	pointer from the String::GetPtr() const function.
+
+	\param pString Pointer to a \ref String class
+	\return Error code with zero being no error, non-zero is out of memory
+	\sa Append(const char *) or AppendCString(const char *)
+
+***************************************/
 
 /*! ************************************
 
@@ -439,7 +487,7 @@ Word BURGER_API Burger::OutputMemoryStream::Append(const char *pString)
 
 	\param pString "C" UTF-8 data string. \ref NULL will perform no action and return no error.
 	\return Error code with zero being no error, non-zero is out of memory
-	\sa Append(const char *)
+	\sa Append(const char *) or AppendCString(const char *)
 
 ***************************************/
 
@@ -573,6 +621,141 @@ Word BURGER_API Burger::OutputMemoryStream::Append(Word64 uWord)
 	uWord = SwapEndian::Load(uWord);
 #endif
 	return Append(&uWord,sizeof(Word64));
+}
+
+/*! ************************************
+
+	\brief Add a 32 bit floating point value to the end of the data stream
+
+	Append four bytes to the end of the data stream in little endian format 
+	and allocate memory if necessary. If the memory allocation fails, a
+	non-zero error code will be returned.
+
+	\param fInput 32 bits of data to append to the stream
+	\return Error code with zero being no error, non-zero is out of memory
+
+***************************************/
+
+Word BURGER_API Burger::OutputMemoryStream::Append(float fInput)
+{
+#if defined(BURGER_BIGENDIAN)
+	SwapEndian::Fixup(&fInput);
+#endif
+	return Append(&fInput,sizeof(float));
+}
+
+/*! ************************************
+
+	\brief Add a 64 bit floating point value to the end of the data stream
+
+	Append eight bytes to the end of the data stream in little endian format 
+	and allocate memory if necessary. If the memory allocation fails, a
+	non-zero error code will be returned.
+
+	\param dInput 64 bits of data to append to the stream
+	\return Error code with zero being no error, non-zero is out of memory
+
+***************************************/
+
+Word BURGER_API Burger::OutputMemoryStream::Append(double dInput)
+{
+#if defined(BURGER_BIGENDIAN)
+	SwapEndian::Fixup(&dInput);
+#endif
+	return Append(&dInput,sizeof(double));
+}
+
+/*! ************************************
+
+	\brief Add an R, G, B color to the end of the data stream
+
+	Append three bytes to the end of the data stream 
+	and allocate memory if necessary. If the memory allocation fails, a
+	non-zero error code will be returned.
+
+	\param pInput Pointer to an R, G and B color value to append to the stream
+	\return Error code with zero being no error, non-zero is out of memory
+
+***************************************/
+
+Word BURGER_API Burger::OutputMemoryStream::Append(const RGBWord8_t *pInput)
+{
+	return Append(pInput,3);
+}
+
+/*! ************************************
+
+	\brief Add an R, G, B, A color to the end of the data stream
+
+	Append four bytes to the end of the data stream 
+	and allocate memory if necessary. If the memory allocation fails, a
+	non-zero error code will be returned.
+
+	\param pInput Pointer to an R, G, B and A color value to append to the stream
+	\return Error code with zero being no error, non-zero is out of memory
+
+***************************************/
+
+Word BURGER_API Burger::OutputMemoryStream::Append(const RGBAWord8_t *pInput)
+{
+	return Append(pInput,4);
+}
+
+/*! ************************************
+
+	\brief Add an X, Y, Z floating point value to the end of the data stream
+
+	Append three 32 bit floats to the end of the data stream 
+	and allocate memory if necessary. If the memory allocation fails, a
+	non-zero error code will be returned.
+
+	Data is stored in little endian format
+
+	\param pInput Pointer to an X, Y, and Z value to append to the stream
+	\return Error code with zero being no error, non-zero is out of memory
+
+***************************************/
+
+Word BURGER_API Burger::OutputMemoryStream::Append(const Vector3D_t *pInput)
+{
+	Word uResult = Append(pInput->x);
+	if (!uResult) {
+		uResult = Append(pInput->y);
+		if (!uResult) {
+			uResult = Append(pInput->z);
+		}
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Add an X, Y, Z, W floating point value to the end of the data stream
+
+	Append four 32 bit floats to the end of the data stream 
+	and allocate memory if necessary. If the memory allocation fails, a
+	non-zero error code will be returned.
+
+	Data is stored in little endian format
+
+	\param pInput Pointer to an X, Y, Z and W value to append to the stream
+	\return Error code with zero being no error, non-zero is out of memory
+
+***************************************/
+
+Word BURGER_API Burger::OutputMemoryStream::Append(const Vector4D_t *pInput)
+{
+	Word uResult = Append(pInput->x);
+	if (!uResult) {
+		uResult = Append(pInput->y);
+		if (!uResult) {
+			uResult = Append(pInput->z);
+			if (!uResult) {
+				uResult = Append(pInput->w);
+			}
+		}
+	}
+	return uResult;
 }
 
 /*! ************************************

@@ -21,7 +21,7 @@
 	For some applications, it's desired that only a single instance
 	is allowed to be running systemwide. This class will create a global
 	object that's visible systemwide and if this object is in
-	existance when this class is queried, then it means that
+	existence when this class is queried, then it means that
 	this class is running multiple times. If the function
 	IsMultiLaunched() returns \ref TRUE, then immediately exit
 	the application since another is running elsewhere

@@ -106,9 +106,9 @@ public:
 		Word m_uRezNum;			///< Resource number associated with this entry
 	};
 private:
-	Burger::Decompress *m_Decompressors[MAXCODECS];	///< Decompressor functions
-	Burger::File m_File;				///< Open file reference
-	Burger::MemoryManagerHandle *m_pMemoryManager;	///< Pointer to the handle based memory manager to use
+	Decompress *m_Decompressors[MAXCODECS];	///< Decompressor functions
+	File m_File;						///< Open file reference
+	MemoryManagerHandle *m_pMemoryManager;	///< Pointer to the handle based memory manager to use
 	Word32 m_uGroupCount;				///< Number of resource groups
 	Word32 m_uRezNameCount;				///< Number of resource names in m_pRezNames
 	RezGroup_t *m_pGroups;				///< Array of resource groups
@@ -124,15 +124,15 @@ private:
 	void BURGER_API ProcessRezNames(void);
 	void BURGER_API FixupFilenames(char *pText);
 public:
-	RezFile(Burger::MemoryManagerHandle *pMemoryManager);
+	RezFile(MemoryManagerHandle *pMemoryManager);
 	~RezFile();
-	static RezFile * BURGER_API New(Burger::MemoryManagerHandle *pMemoryManager,const char *pFileName,Word32 uStartOffset=0);
+	static RezFile * BURGER_API New(MemoryManagerHandle *pMemoryManager,const char *pFileName,Word32 uStartOffset=0);
 	Word BURGER_API Init(const char *pFileName,Word32 uStartOffset=0);
 	void BURGER_API Shutdown(void);
 	void BURGER_API PurgeCache(void);
 	Word BURGER_API SetExternalFlag(Word bEnable);
 	Word BURGER_INLINE GetExternalFlag(void) const { return m_bExternalFileEnabled; }
-	void BURGER_API LogDecompressor(Word uCompressID,Burger::Decompress *pProc);
+	void BURGER_API LogDecompressor(Word uCompressID,Decompress *pProc);
 	Word BURGER_API GetRezNum(const char *pRezName) const;
 	Word BURGER_API GetName(Word uRezNum,char *pBuffer,WordPtr uBufferSize) const;
 	Word BURGER_API AddName(const char *pRezName);
@@ -160,6 +160,19 @@ public:
 	void BURGER_API Detach(const char *pRezName);
 	void BURGER_API Preload(Word uRezNum);
 	void BURGER_API Preload(const char *pRezName);
+};
+class InputRezStream : public InputMemoryStream {
+protected:
+	RezFile *m_pRezFile;		///< Pointer to the resource file this stream came from
+	Word m_uRezNum;				///< Which resource entry is being streamed?
+public:
+	InputRezStream();
+	InputRezStream(RezFile *pRezFile,Word uRezNum);
+	~InputRezStream();
+	Word BURGER_API Open(RezFile *pRezFile,Word uRezNum);
+	void BURGER_API Release(void);
+	BURGER_INLINE RezFile *GetRezFile(void) const { return m_pRezFile; }
+	BURGER_INLINE Word GetRezNum(void) const { return m_uRezNum; }
 };
 }
 /* END */

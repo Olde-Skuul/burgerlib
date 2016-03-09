@@ -17,7 +17,11 @@
 #include "brkeyboard.h"
 #include "brjoypad.h"
 #if defined(BURGER_WINDOWS)
-#include "brwindowsapp.h"
+#include "brgameapp.h"
+#endif
+
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::GameApp,Burger::Base);
 #endif
 
 /*! ************************************
@@ -36,12 +40,44 @@
 
 ***************************************/
 
+void BURGER_API Burger::GameApp::InitDefaults(void)
+{
+	m_pKeyboard = NULL;
+	m_pMouse = NULL;
+	m_pJoypad = NULL;
+	m_pSoundManager = NULL;
+	m_pDisplay = NULL;
+	m_pRenderer = NULL;
+	m_ppArgv = NULL;
+	m_iArgc = 0;
+	m_bQuit = FALSE;
+	m_bInBackground = FALSE;
+	m_bMinimized = FALSE;
+	m_bAllowWindowSwitching = TRUE;
+	m_bMouseOnScreen = FALSE;
+	m_bWindowSwitchRequested = FALSE;
+}
+
+void BURGER_API Burger::GameApp::ShutdownDefaults(void)
+{
+	// Clear out the managers
+	m_pKeyboard = NULL;
+	m_pMouse = NULL;
+	m_pJoypad = NULL;
+	m_pSoundManager = NULL;
+	m_pDisplay = NULL;
+	m_pRenderer = NULL;
+	m_ppArgv = NULL;
+	m_iArgc = 0;
+}
+
+
 /*! ************************************
 
 	\brief Create an instance of a GameApp
 
 	Upon startup, a handle based memory manager is instanciated and used for
-	all future memory allocations. Variables are passed for setting the 
+	all future memory allocations. Variables are passed for setting the
 	amount of memory the application could manage.
 
 	This class is a base class. A system specific class will derive from this one
@@ -53,25 +89,13 @@
 
 ***************************************/
 
+#if !(defined(BURGER_XBOX360) || defined(BURGER_WINDOWS) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,WordPtr uMinReserveSize) :
-	m_pKeyboard(NULL),
-	m_pMouse(NULL),
-	m_pJoypad(NULL),
-	m_pSound(NULL),
-	m_pDisplay(NULL),
-	m_pRenderer(NULL),
-	m_ppArgv(NULL),
-	m_MemoryManagerHandle(uDefaultMemorySize,uDefaultHandleCount,uMinReserveSize),
-	m_RunQueue(),
-	m_iArgc(0),
-	m_bQuit(FALSE),
-	m_bInBackground(FALSE),
-	m_bMinimized(FALSE),
-	m_bAllowWindowSwitching(TRUE),
-	m_bMouseOnScreen(TRUE),
-	m_bWindowSwitchRequested(FALSE)
+	m_MemoryManagerHandle(uDefaultMemorySize,uDefaultHandleCount,uMinReserveSize)
 {
+	InitDefaults();
 }
+#endif
 
 /*! ************************************
 
@@ -81,18 +105,13 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 
 ***************************************/
 
+#if !(defined(BURGER_XBOX360) || defined(BURGER_WINDOWS) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 Burger::GameApp::~GameApp()
 {
 	// Clear out the managers
-	m_pKeyboard = NULL;
-	m_pMouse = NULL;
-	m_pJoypad = NULL;
-	m_pSound = NULL;
-	m_pDisplay = NULL;
-	m_pRenderer = NULL;
-	m_ppArgv = NULL;
-	m_iArgc = 0;
+	ShutdownDefaults();
 }
+#endif
 
 /*! ************************************
 
@@ -113,7 +132,7 @@ Burger::GameApp::~GameApp()
 
 /*! ************************************
 
-	\fn void GameApp::AddRoutine(RunQueue::CallbackProc Proc,void *pData)
+	\fn void GameApp::AddRoutine(RunQueue::CallbackProc Proc,void *pData,Word uPriority)
 	\brief Add a RunQueue polling routine
 
 	Given a proc pointer and a pointer to data to pass to the
@@ -124,6 +143,7 @@ Burger::GameApp::~GameApp()
 
 	\param Proc Pointer to a function of type RunQueue::CallbackProc
 	\param pData Pointer that is passed to the Proc upon calling. Otherwise, it's not used by Burger::GameApp.
+	\param uPriority Priority value to use to determine the location of this new entry in the linked list.
 
 	\sa Poll(), RemoveRoutine()
 
@@ -151,7 +171,7 @@ Burger::GameApp::~GameApp()
 	\brief Get the pointer to the RunQueue
 
 	Accessor to get the RunQueue associatied with the application.
-	
+
 	\return Pointer to the RunQueue.
 	\sa Poll(), AddRoutine(), and RemoveRoutine()
 
@@ -163,7 +183,7 @@ Burger::GameApp::~GameApp()
 	\brief Get the pointer to the MemoryManagerGlobalHandle
 
 	Accessor to get the MemoryManagerGlobalHandle associatied with the application.
-	
+
 	\return Pointer to the MemoryManagerGlobalHandle.
 
 ***************************************/
@@ -174,7 +194,7 @@ Burger::GameApp::~GameApp()
 	\brief Set the current argv parameter.
 
 	Override the argv input value passed to main().
-	
+
 	\param ppArgv \ref NULL or pointer to an array of char pointers of command line parameters.
 	\sa SetArgc(int)
 
@@ -187,7 +207,7 @@ Burger::GameApp::~GameApp()
 
 	Accessor to get the current argv input value passed
 	to main().
-	
+
 	\return \ref NULL or pointer to an array of char pointers of command line parameters.
 	\sa GetArgc() const
 
@@ -199,7 +219,7 @@ Burger::GameApp::~GameApp()
 	\brief Set the current argc parameter.
 
 	Override the argc input value passed to main().
-	
+
 	\param iArgc New number of parameters present (Can be zero)
 	\sa SetArgv(const char **)
 
@@ -212,7 +232,7 @@ Burger::GameApp::~GameApp()
 
 	Accessor to get the current argc input value passed
 	to main().
-	
+
 	\return Integer with the number of valid argv commands. Can be zero.
 	\sa GetArgv() const
 
@@ -225,7 +245,7 @@ Burger::GameApp::~GameApp()
 	\brief Alert the application to shut down
 
 	Set a flag so that at the end of the update/draw loop, the application can
-	exit cleanly. 
+	exit cleanly.
 
 	\sa GetQuitCode() and ClearQuitCode()
 
@@ -252,7 +272,7 @@ Burger::GameApp::~GameApp()
 	Accessor to get the current return code that main()
 	would give back to the operating system if the application
 	exited immediately.
-	
+
 	\return Integer with main() return code.
 
 ***************************************/
@@ -359,23 +379,23 @@ Burger::GameApp::~GameApp()
 
 /*! ************************************
 
-	\fn void Burger::GameApp::SetSound(Sound *pSound)
-	\brief Set the pointer to the current Sound class instance
+	\fn void Burger::GameApp::SetSoundManager(SoundManager *pSound)
+	\brief Set the pointer to the current SoundManager class instance
 
-	Sets the pointer to the active Sound instance
+	Sets the pointer to the active SoundManager instance
 
-	\param pSound Pointer to an active Sound instance or \ref NULL to disable the connection
-	\sa GetSound()
+	\param pSound Pointer to an active SoundManager instance or \ref NULL to disable the connection
+	\sa GetSoundManager()
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Sound *Burger::GameApp::GetSound(void) const
-	\brief Get the current Sound class instance
+	\fn Sound *Burger::GameApp::GetSoundManager(void) const
+	\brief Get the current SoundManager class instance
 
-	\return A pointer to the active Sound class or \ref NULL if no class is active
-	\sa SetSound()
+	\return A pointer to the active SoundManager class or \ref NULL if no class is active
+	\sa SetSoundManager()
 
 ***************************************/
 
@@ -469,11 +489,11 @@ Word BURGER_API Burger::GameApp::SwitchVideo(void)
 		Display *pDisplay = GetDisplay();
 		if (pDisplay) {
 #if defined(BURGER_WINDOWS)
-			static_cast<WindowsApp *>(this)->KillInputFocus();
+			KillInputFocus();
 #endif
 			uResult = pDisplay->Init(0,0,0,pDisplay->GetFlags()^Display::FULLSCREEN);
 #if defined(BURGER_WINDOWS)
-			static_cast<WindowsApp *>(this)->GetInputFocus();
+			GetInputFocus();
 #endif
 		}
 	}

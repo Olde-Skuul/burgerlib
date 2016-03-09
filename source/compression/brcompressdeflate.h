@@ -33,6 +33,8 @@
 /* BEGIN */
 namespace Burger {
 class CompressDeflate : public Compress {
+	BURGER_RTTI_IN_CLASS();
+protected:
 	enum eState {
 		DEFAULT_STATE=0,		///< Dormant state
 		INIT_STATE=42,			///< Initialization state
@@ -316,11 +318,7 @@ class CompressDeflate : public Compress {
 	static const Word8 g_DistanceCodes[DIST_CODE_LEN];
 	static const Word8 g_LengthCodes[MAX_MATCH-MIN_MATCH+1];
 public:
-#if defined(BURGER_BIGENDIAN)
 	static const Word32 Signature = 0x5A4C4942;		///< 'ZLIB'
-#else
-	static const Word32 Signature = 0x42494C5A;		///< 'ZLIB'
-#endif
 	CompressDeflate(void);
 	virtual eError Init(void);
 	virtual eError Process(const void *pInput,WordPtr uInputLength);

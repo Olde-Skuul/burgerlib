@@ -233,7 +233,7 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 	// Clear my variables
 	MemoryClear(const_cast<Word8 *>(m_KeyArray),sizeof(m_KeyArray));
 
-	pAppInstance->AddRoutine(Poll,this);
+	pAppInstance->AddRoutine(Poll,this,RunQueue::PRIORITY_KEYBOARD);
 }
 
 /***************************************
@@ -287,7 +287,7 @@ Word BURGER_API Burger::Keyboard::GetKeyEvent(KeyEvent_t *pEvent)
 	if (uIndex!=m_uArrayEnd) {	/* Anything in the buffer? */
 		pEvent[0] = m_KeyEvents[uIndex];
 		uResult = 1;
-		m_uArrayStart = (uIndex+1)&(KEYBUFFSIZE-1);	/* Next key */
+		m_uArrayStart = (uIndex+1)&(cBufferSize-1);	/* Next key */
 	}
 	// No event pending
 	return uResult;
@@ -337,7 +337,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Keyboard::Poll(void *pData)
 				pThis->m_KeyArray[uScanCode] &= (~KEYCAPDOWN);
 			}
 			// Accept the key in the circular buffer
-			Word uTemp = (pThis->m_uArrayEnd+1)&(KEYBUFFSIZE-1);
+			Word uTemp = (pThis->m_uArrayEnd+1)&(cBufferSize-1);
 			if (uTemp!=pThis->m_uArrayStart) {
 				// Didn't wrap, accept it!
 				pThis->m_uArrayEnd = uTemp;

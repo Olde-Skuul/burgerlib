@@ -16,6 +16,10 @@
 #include "brstringfunctions.h"
 #include "brglobalmemorymanager.h"
 
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::DecompressDeflate,Burger::Decompress);
+#endif
+
 /*! ************************************
 
 	\class Burger::DecompressDeflate
@@ -1786,3 +1790,13 @@ Burger::Decompress::eError BURGER_API Burger::SimpleDecompressDeflate(void *pOut
 	Local.DecompressDeflate::Reset();
 	return Local.DecompressDeflate::Process(pOutput,uOutputChunkLength,pInput,uInputChunkLength);
 }
+
+/*! ************************************
+
+	\var const Burger::StaticRTTI Burger::DecompressDeflate::g_StaticRTTI
+	\brief The global description of the class
+
+	This record contains the name of this class and a
+	reference to the parent
+
+***************************************/

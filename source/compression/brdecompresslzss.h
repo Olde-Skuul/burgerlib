@@ -25,6 +25,8 @@
 /* BEGIN */
 namespace Burger {
 class DecompressLZSS : public Decompress {
+	BURGER_RTTI_IN_CLASS();
+protected:
 	enum eState {
 		STATE_INIT,			///< Start of a compression token	
 		STATE_16BIT2,		///< Grab the 2nd half of a 16 bit run token
@@ -35,11 +37,7 @@ class DecompressLZSS : public Decompress {
 	Word m_uBitBucket;		///< Previous bit bucket
 	eState m_eState;		///< State of the decompression
 public:
-#if defined(BURGER_BIGENDIAN)
 	static const Word32 Signature = 0x4C5A5353;		///< 'LZSS'
-#else
-	static const Word32 Signature = 0x53535A4C;		///< 'LZSS'
-#endif
 	DecompressLZSS();
 	virtual eError Reset(void);
 	virtual eError Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength);

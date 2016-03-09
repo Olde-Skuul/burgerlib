@@ -58,6 +58,7 @@
 #include <shellapi.h>
 #include <shlobj.h>
 #include <SetupAPI.h>
+#include <d3dcommon.h>
 
 #if !defined(STATUS_ENTRYPOINT_NOT_FOUND)
 #define STATUS_ENTRYPOINT_NOT_FOUND ((DWORD)0xC0000139L)
@@ -93,22 +94,16 @@ Word8 Burger::Globals::g_bIsWindows64Bit;
 
 //
 // These filenames MUST match eWindowsDLLIndex
-// Note: d3d9d.dll doesn't load properly in windows 10. Code was added
-// to try to load d3d9.dll instead in the case of load failure of d3d9d.dll
-//
-// <sarcasm> Thank you, Microsoft. </sarcasm>
 //
 
 static const char *s_LibaryNames[Burger::Globals::DLL_COUNT] = {
 	"ddraw.dll",
 	"dinput.dll",
 	"dinput8.dll",
-#if defined(_DEBUG)
-	"d3d9d.dll",
-#else
 	"d3d9.dll",
-#endif
 	"d3dx9_43.dll",
+	"d3d11.dll",
+	"dxgi.dll",
 	"dsound.dll",
 	"rpcrt4.dll",
 	"winmm.dll",
@@ -117,7 +112,8 @@ static const char *s_LibaryNames[Burger::Globals::DLL_COUNT] = {
 	"hid.dll",
 	"setupapi.dll",
 	"user32.dll",
-	"kernel32.dll"
+	"kernel32.dll",
+	"shell32.dll"
 };
 
 //
@@ -144,8 +140,21 @@ static const CallNames_t g_CallNames[Burger::Globals::CALL_COUNT] = {
 	{Burger::Globals::DDRAW_DLL,"DirectDrawEnumerateExW"},
 
 	{Burger::Globals::D3D9_DLL,"Direct3DCreate9"},
-	
+	{Burger::Globals::D3D9_DLL,"D3DPERF_BeginEvent"},
+	{Burger::Globals::D3D9_DLL,"D3DPERF_EndEvent"},
+	{Burger::Globals::D3D9_DLL,"D3DPERF_SetMarker"},
+	{Burger::Globals::D3D9_DLL,"D3DPERF_SetRegion"},
+	{Burger::Globals::D3D9_DLL,"D3DPERF_QueryRepeatFrame"},
+	{Burger::Globals::D3D9_DLL,"D3DPERF_SetOptions"},
+	{Burger::Globals::D3D9_DLL,"D3DPERF_GetStatus"},
+
 	{Burger::Globals::D3DX9_43_DLL,"D3DXCreateMatrixStack"},
+
+	{Burger::Globals::D3D11_DLL,"D3D11CreateDevice"},
+
+	{Burger::Globals::DXGI_DLL,"CreateDXGIFactory"},
+	{Burger::Globals::DXGI_DLL,"CreateDXGIFactory1"},
+	{Burger::Globals::DXGI_DLL,"CreateDXGIFactory2"},
 
 	{Burger::Globals::DSOUND_DLL,"DirectSoundCreate"},
 	{Burger::Globals::DSOUND_DLL,"DirectSoundEnumerateA"},
@@ -184,7 +193,9 @@ static const CallNames_t g_CallNames[Burger::Globals::CALL_COUNT] = {
 	{Burger::Globals::USER32_DLL,"TrackMouseEvent"},
 
 	{Burger::Globals::KERNEL32_DLL,"GetSystemWow64DirectoryA"},
-	{Burger::Globals::KERNEL32_DLL,"GetSystemWow64DirectoryW"}
+	{Burger::Globals::KERNEL32_DLL,"GetSystemWow64DirectoryW"},
+
+	{Burger::Globals::SHELL32_DLL,"SHGetKnownFolderPath"}
 };
 
 #endif
@@ -1005,6 +1016,165 @@ IDirect3D9 *BURGER_API Burger::Globals::Direct3DCreate9(Word uSDKVersion)
 	return pDirect3D9;
 }
 
+/*! ************************************
+
+	\brief Load in d3d9.dll and call D3DPERF_BeginEvent
+
+	To allow maximum compatibility, this function will manually load
+	d3d9.dll and then invoke D3DPERF_BeginEvent if present.
+
+	\windowsonly
+	\param col The color of the event
+	\param wszName Pointer to UTF-16 string of the name of the event
+	\return Is the level starting from 0 in the hierarchy to start this event. If an error occurs, the return value is negative.
+	
+***************************************/
+
+int BURGER_API Burger::Globals::D3DPERF_BeginEvent(Word32 col,const Word16 *wszName)
+{
+	// Get the function pointer
+	void *pD3DPERF_BeginEvent = LoadFunctionIndex(CALL_D3DPERF_BeginEvent);
+	int iResult = -1;
+	if (pD3DPERF_BeginEvent) {
+		iResult = static_cast<int(WINAPI *)(D3DCOLOR,LPCWSTR)>(pD3DPERF_BeginEvent)(col,static_cast<LPCWSTR>(static_cast<const void *>(wszName)));
+	}
+	return iResult;
+}
+
+/*! ************************************
+
+	\brief Load in d3d9.dll and call D3DPERF_EndEvent
+
+	To allow maximum compatibility, this function will manually load
+	d3d9.dll and then invoke D3DPERF_EndEvent if present.
+
+	\windowsonly
+	\return Is the level starting from 0 in the hierarchy to start this event. If an error occurs, the return value is negative.
+	
+***************************************/
+
+int BURGER_API Burger::Globals::D3DPERF_EndEvent(void)
+{
+	// Get the function pointer
+	void *pD3DPERF_EndEvent = LoadFunctionIndex(CALL_D3DPERF_EndEvent);
+	int iResult = -1;
+	if (pD3DPERF_EndEvent) {
+		iResult = static_cast<int(WINAPI *)(void)>(pD3DPERF_EndEvent)();
+	}
+	return iResult;
+}
+
+/*! ************************************
+
+	\brief Load in d3d9.dll and call D3DPERF_SetMarker
+
+	To allow maximum compatibility, this function will manually load
+	d3d9.dll and then invoke D3DPERF_SetMarker if present.
+
+	\windowsonly
+	\param col The color of the event
+	\param wszName Pointer to UTF-16 string of the name of the marker
+	
+***************************************/
+
+void BURGER_API Burger::Globals::D3DPERF_SetMarker(Word32 col,const Word16 *wszName)
+{
+	// Get the function pointer
+	void *pD3DPERF_SetMarker = LoadFunctionIndex(CALL_D3DPERF_SetMarker);
+	if (pD3DPERF_SetMarker) {
+		static_cast<void(WINAPI *)(D3DCOLOR,LPCWSTR)>(pD3DPERF_SetMarker)(col,static_cast<LPCWSTR>(static_cast<const void *>(wszName)));
+	}
+}
+
+/*! ************************************
+
+	\brief Load in d3d9.dll and call D3DPERF_SetRegion
+
+	To allow maximum compatibility, this function will manually load
+	d3d9.dll and then invoke D3DPERF_SetRegion if present.
+
+	\windowsonly
+	\param col The color of the event
+	\param wszName Pointer to UTF-16 string of the name of the region
+	
+***************************************/
+
+void BURGER_API Burger::Globals::D3DPERF_SetRegion(Word32 col,const Word16 *wszName)
+{
+	// Get the function pointer
+	void *pD3DPERF_SetRegion = LoadFunctionIndex(CALL_D3DPERF_SetRegion);
+	if (pD3DPERF_SetRegion) {
+		static_cast<void(WINAPI *)(D3DCOLOR,LPCWSTR)>(pD3DPERF_SetRegion)(col,static_cast<LPCWSTR>(static_cast<const void *>(wszName)));
+	}
+}
+
+/*! ************************************
+
+	\brief Load in d3d9.dll and call D3DPERF_QueryRepeatFrame
+
+	To allow maximum compatibility, this function will manually load
+	d3d9.dll and then invoke D3DPERF_QueryRepeatFrame if present.
+
+	\windowsonly
+	\return When the return value is \ref TRUE, the caller will need to repeat the same sequence of calls. If \ref FALSE, the caller needs to move forward.
+	
+***************************************/
+
+int BURGER_API Burger::Globals::D3DPERF_QueryRepeatFrame(void)
+{
+	// Get the function pointer
+	void *pD3DPERF_QueryRepeatFrame = LoadFunctionIndex(CALL_D3DPERF_QueryRepeatFrame);
+	int iResult = FALSE;
+	if (pD3DPERF_QueryRepeatFrame) {
+		iResult = static_cast<int(WINAPI *)(void)>(pD3DPERF_QueryRepeatFrame)();
+	}
+	return iResult;
+}
+
+/*! ************************************
+
+	\brief Load in d3d9.dll and call D3DPERF_SetOptions
+
+	To allow maximum compatibility, this function will manually load
+	d3d9.dll and then invoke D3DPERF_SetOptions if present.
+
+	\windowsonly
+	\param dwOptions Set to 1 if PIX should be turned off
+	
+***************************************/
+
+void BURGER_API Burger::Globals::D3DPERF_SetOptions(Word32 dwOptions)
+{
+	// Get the function pointer
+	void *pD3DPERF_SetOptions = LoadFunctionIndex(CALL_D3DPERF_SetOptions);
+	if (pD3DPERF_SetOptions) {
+		static_cast<void(WINAPI *)(DWORD)>(pD3DPERF_SetOptions)(dwOptions);
+	}
+}
+
+/*! ************************************
+
+	\brief Load in d3d9.dll and call D3DPERF_GetStatus
+
+	To allow maximum compatibility, this function will manually load
+	d3d9.dll and then invoke D3DPERF_GetStatus if present.
+
+	\windowsonly
+	\return Non-zero if profiled by PIX. 0 if PIX is not present.
+	
+***************************************/
+
+Word BURGER_API Burger::Globals::D3DPERF_GetStatus(void)
+{
+	// Get the function pointer
+	void *pD3DPERF_GetStatus = LoadFunctionIndex(CALL_D3DPERF_GetStatus);
+	Word uResult = 0;
+	if (pD3DPERF_GetStatus) {
+		uResult = static_cast<DWORD (WINAPI *)(void)>(pD3DPERF_GetStatus)();
+	}
+	return uResult;
+}
+
 
 
 
@@ -1039,6 +1209,134 @@ Word BURGER_API Burger::Globals::D3DXCreateMatrixStack(Word uFlags,ID3DXMatrixSt
 
 
 
+
+//
+// d3d11.dll
+//
+
+/*! ************************************
+
+	\brief Load in d3d11.dll and call D3D11CreateDevice
+
+	To allow maximum compatibility, this function will manually load
+	d3d11.dll if needed and then invoke D3D11CreateDevice.
+
+	\windowsonly
+
+	\param pAdapter A pointer to the video adapter to use when creating a device. Pass NULL to use the default adapter
+	\param DriverType The D3D_DRIVER_TYPE, which represents the driver type to create.
+	\param Software A handle to a DLL that implements a software rasterizer
+	\param Flags The runtime layers to enable (see D3D11_CREATE_DEVICE_FLAG); values can be bitwise OR'd together.
+	\param pFeatureLevels A pointer to an array of D3D_FEATURE_LEVELs, which determine the order of feature levels to attempt to create.
+	\param FeatureLevels The number of elements in pFeatureLevels.
+	\param SDKVersion The SDK version; use D3D11_SDK_VERSION.
+	\param ppDevice Returns the address of a pointer to an ID3D11Device object that represents the device created.
+	\param pFeatureLevel If successful, returns the first D3D_FEATURE_LEVEL from the pFeatureLevels array which succeeded
+	\param ppImmediateContext Returns the address of a pointer to an ID3D11DeviceContext object that represents the device context
+	\return S_OK if the call succeeded. Windows error if otherwise
+	
+***************************************/
+
+Word BURGER_API Burger::Globals::D3D11CreateDevice(IDXGIAdapter *pAdapter,Word DriverType,HINSTANCE__ *Software,
+	Word Flags,const Word *pFeatureLevels,Word FeatureLevels,Word SDKVersion,ID3D11Device **ppDevice,
+	Word *pFeatureLevel,ID3D11DeviceContext **ppImmediateContext)
+{
+	// Get the function pointer
+	void *pD3D11CreateDevice = LoadFunctionIndex(CALL_D3D11CreateDevice);
+	HRESULT uResult = DDERR_NOTFOUND;
+	if (pD3D11CreateDevice) {
+		uResult = static_cast<HRESULT(WINAPI *)(IDXGIAdapter *,D3D_DRIVER_TYPE,HMODULE,
+			UINT,const D3D_FEATURE_LEVEL *,UINT,UINT,ID3D11Device **,D3D_FEATURE_LEVEL *,
+			ID3D11DeviceContext **)>
+			(pD3D11CreateDevice)(pAdapter,static_cast<D3D_DRIVER_TYPE>(DriverType),Software,Flags,static_cast<const D3D_FEATURE_LEVEL *>(static_cast<const void *>(pFeatureLevels)),
+				FeatureLevels,SDKVersion,ppDevice,static_cast<D3D_FEATURE_LEVEL *>(static_cast<void *>(pFeatureLevel)),ppImmediateContext);
+	}
+	return static_cast<Word>(uResult);
+}
+
+
+
+
+
+//
+// dxgi.dll
+//
+
+/*! ************************************
+
+	\brief Load in dxgi.dll and call CreateDXGIFactory
+
+	To allow maximum compatibility, this function will manually load
+	dxgi.dll if needed and then invoke CreateDXGIFactory.
+
+	\windowsonly
+	\param pGuidFactory The globally unique identifier (GUID) of the IDXGIFactory object referenced by the ppFactory parameter
+	\param ppFactory Address of a pointer to an IDXGIFactory object.
+	\return S_OK if the call succeeded. Windows error if otherwise
+	
+***************************************/
+
+Word BURGER_API Burger::Globals::CreateDXGIFactory(const GUID *pGuidFactory,void **ppFactory)
+{
+	// Get the function pointer
+	void *pCreateDXGIFactory = LoadFunctionIndex(CALL_CreateDXGIFactory);
+	HRESULT uResult = DDERR_NOTFOUND;
+	if (pCreateDXGIFactory) {
+		uResult = static_cast<HRESULT(WINAPI *)(REFIID,void**)>(pCreateDXGIFactory)(pGuidFactory[0],ppFactory);
+	}
+	return static_cast<Word>(uResult);
+}
+
+/*! ************************************
+
+	\brief Load in dxgi.dll and call CreateDXGIFactory1
+
+	To allow maximum compatibility, this function will manually load
+	dxgi.dll if needed and then invoke CreateDXGIFactory1.
+
+	\windowsonly
+	\param pGuidFactory The globally unique identifier (GUID) of the IDXGIFactory1 object referenced by the ppFactory parameter
+	\param ppFactory Address of a pointer to an IDXGIFactory1 object.
+	\return S_OK if the call succeeded. Windows error if otherwise
+	
+***************************************/
+
+Word BURGER_API Burger::Globals::CreateDXGIFactory1(const GUID *pGuidFactory,void **ppFactory)
+{
+	// Get the function pointer
+	void *pCreateDXGIFactory1 = LoadFunctionIndex(CALL_CreateDXGIFactory1);
+	HRESULT uResult = DDERR_NOTFOUND;
+	if (pCreateDXGIFactory1) {
+		uResult = static_cast<HRESULT(WINAPI *)(REFIID,void**)>(pCreateDXGIFactory1)(pGuidFactory[0],ppFactory);
+	}
+	return static_cast<Word>(uResult);
+}
+
+/*! ************************************
+
+	\brief Load in dxgi.dll and call CreateDXGIFactory2
+
+	To allow maximum compatibility, this function will manually load
+	dxgi.dll if needed and then invoke CreateDXGIFactory2.
+
+	\windowsonly
+	\param uFlags Valid values include the DXGI_CREATE_FACTORY_DEBUG (0x01) flag, and zero.
+	\param pGuidFactory The globally unique identifier (GUID) of the IDXGIFactory2 object referenced by the ppFactory parameter
+	\param ppFactory Address of a pointer to an IDXGIFactory2 object.
+	\return S_OK if the call succeeded. Windows error if otherwise
+	
+***************************************/
+
+Word BURGER_API Burger::Globals::CreateDXGIFactory2(Word uFlags,const GUID *pGuidFactory,void **ppFactory)
+{
+	// Get the function pointer
+	void *pCreateDXGIFactory2 = LoadFunctionIndex(CALL_CreateDXGIFactory2);
+	HRESULT uResult = DDERR_NOTFOUND;
+	if (pCreateDXGIFactory2) {
+		uResult = static_cast<HRESULT(WINAPI *)(UINT,REFIID,void**)>(pCreateDXGIFactory2)(uFlags,pGuidFactory[0],ppFactory);
+	}
+	return static_cast<Word>(uResult);
+}
 
 //
 // dsound.dll
@@ -1951,7 +2249,33 @@ Word BURGER_API Burger::Globals::GetSystemWow64DirectoryW(Word16 *pBuffer,Word32
 }
 
 
+/*! ************************************
 
+	\brief Load in shell32.dll and call SHGetKnownFolderPath
+
+	Manually load shell32.dll if needed and
+	call the Windows function SHGetKnownFolderPath()
+
+	https://msdn.microsoft.com/en-us/library/windows/desktop/bb762188(v=vs.85).aspx
+	
+	\windowsonly
+	\param pGuid A pointer to the KNOWNFOLDERID that identifies the folder.
+	\param uFlags Flags that specify special retrieval options.
+	\param hHandle An access token that represents a particular use
+	\param ppResult When this method returns, contains the address of a pointer to a null-terminated Unicode string that specifies the path of the known folder
+	\return Returns S_OK if successful, or an error value otherwise
+
+***************************************/
+
+Word BURGER_API Burger::Globals::SHGetKnownFolderPath(const GUID *pGuid,Word32 uFlags,void *hHandle,Word16 **ppResult)
+{
+	void *pSHGetKnownFolderPath = LoadFunctionIndex(CALL_SHGetKnownFolderPath);
+	HRESULT uResult = E_FAIL;		// Failure
+	if (pSHGetKnownFolderPath) {
+		uResult = static_cast<HRESULT (WINAPI *)(const GUID *,DWORD,HANDLE,Word16 **)>(pSHGetKnownFolderPath)(pGuid,uFlags,hHandle,ppResult);
+	}
+	return static_cast<Word>(uResult);
+}
 
 /*! ************************************
 
@@ -2295,12 +2619,16 @@ Word BURGER_API Burger::Globals::GetDirectXVersion(void)
 	This callback is used to find a specific GUID for
 	an enumerated device
 
+	Note: Do NOT use the pName or pDeviceName parameters since it's
+	unknown if the ASCII or wchar_t call was issued to call this
+	function
+
 ***************************************/
 
 #if !defined(DOXYGEN)
 struct DeviceGuid_t {
-	Word m_uDevNum;		// Count down
 	GUID *m_pGUID;		// Buffer to store the located GUID
+	Word m_uDevNum;		// Count down
 };
 #endif
 
@@ -2310,8 +2638,10 @@ static int CALLBACK FindDeviceCallback(GUID *pGUID,LPSTR /* pName */,LPSTR /* pD
 	int iResult = DDENUMRET_OK;				// Keep going
 	if (!--pRef->m_uDevNum) {				// Found the device yet?
 		if (pGUID) {						// Specific device?
-			Burger::MemoryCopy(pRef->m_pGUID,pGUID,sizeof(GUID));	// Copy the GUID
+			// Copy the GUID
+			Burger::MemoryCopy(pRef->m_pGUID,pGUID,sizeof(GUID));
 		} else {
+			// Clear the GUID
 			Burger::MemoryClear(pRef->m_pGUID,sizeof(GUID));
 		}
 		iResult = DDENUMRET_CANCEL;		// Stop now
@@ -2337,9 +2667,11 @@ Word BURGER_API Burger::Globals::GetVideoGUID(GUID *pOutput,Word uDevNum)
 {
 	HRESULT uError = E_FAIL;
 	if (pOutput) {
+
 		DeviceGuid_t Ref;
+		Ref.m_pGUID = pOutput;			// Set the pointer to the GUID to store the result
 		Ref.m_uDevNum = ++uDevNum;		// Scan for this device
-		Ref.m_pGUID = pOutput;
+
 		uError = static_cast<HRESULT>(DirectDrawEnumerateExW(FindDeviceCallback,&Ref,DDENUM_ATTACHEDSECONDARYDEVICES|
 			DDENUM_DETACHEDSECONDARYDEVICES|DDENUM_NONDISPLAYDEVICES));
 		// The nVidia GT 545 fails on this call, so call using the 8 Bit Ascii version instead
@@ -2355,6 +2687,68 @@ Word BURGER_API Burger::Globals::GetVideoGUID(GUID *pOutput,Word uDevNum)
 		}
 	}
 	return static_cast<Word>(uError);
+}
+
+/*! ************************************
+
+	\brief Call ShellExecuteW() with a UTF8 string
+
+	Convert the input string from UTF-8 encoding and call ShellExecuteW(NULL,"open",pFileToOpen,NULL,NULL,SW_SHOWNORMAL)
+
+	This function will return the result code without modification, a value of 33 or higher means the
+	function executed successfully.
+
+	\windowsonly
+	\param pFileToOpen UTF-8 encoded string to convert to use as input for ShellExecuteW()
+	\return Returned value from the call to ShellExecuteW(), cast as a \ref WordPtr
+
+***************************************/
+
+WordPtr BURGER_API Burger::Globals::ShellExecuteOpen(const char *pFileToOpen)
+{
+	String16 Data16(pFileToOpen);
+	HINSTANCE uResult = ShellExecuteW(NULL,reinterpret_cast<LPCWSTR>(L"open"),reinterpret_cast<LPCWSTR>(Data16.GetPtr()),NULL,NULL,SW_SHOWNORMAL);
+	return reinterpret_cast<WordPtr>(uResult);
+}
+
+/*! ************************************
+
+	\brief Launch the Media Center
+
+	Locate the exe file ehshell.exe in the windows folder
+	and execute it.
+
+	\note As of Windows 10, this function is obsolete. Please do
+	not expect this function to successfully execute on Windows 10
+	platforms.
+
+	\windowsonly
+	\return Zero if media center was successfully launched, non-zero on error.
+
+***************************************/
+
+Word BURGER_API Burger::Globals::LaunchMediaCenter(void)
+{
+	const char *pString = GetEnvironmentString("SystemRoot");
+	Word uResult = 10;		// Assume error
+	if (pString) {
+		Filename MediaCenterName;
+		MediaCenterName.SetFromNative(pString);
+		// Release the environment string
+		Free(pString);
+
+		// Append the filename of the media center
+		MediaCenterName.Append("ehome:ehshell.exe");
+
+		// See if the file exists
+		if (FileManager::DoesFileExist(&MediaCenterName)) {
+			// If the returned value is higher then 32, it was successful
+			if (ShellExecuteOpen(MediaCenterName.GetNative())>32) {
+				uResult = 0;
+			}
+		}
+	}
+	return uResult;
 }
 
 /*! ************************************
@@ -2444,21 +2838,6 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryIndex(eWindowsDLLIndex eIndex)
 				// If it loaded fine, save the result
 				g_Globals.m_hInstances[eIndex] = hResult;
 			}
-#if defined(_DEBUG)
-
-			// Direct3D version 9, is a special case, if the debug
-			// dll is not present, load the release version as a failsafe
-			else {
-				if (eIndex==D3D9_DLL) {
-					hResult = LoadLibraryA("d3d9.dll");
-					if (hResult) {
-						// If it loaded fine, save the result
-						g_Globals.m_hInstances[eIndex] = hResult;
-					}
-
-				}
-			}
-#endif
 		}
 	}
 	return hResult;
@@ -2656,11 +3035,8 @@ void BURGER_API Burger::Globals::AssociateFileExtensionToExe(const char *pFileEx
 
 Word BURGER_API Burger::Globals::LaunchURL(const char *pURL)
 {
-	String16 URL16(pURL);
-	if (ShellExecuteW(GetDesktopWindow(),reinterpret_cast<LPCWSTR>(L"open"),reinterpret_cast<LPCWSTR>(URL16.GetPtr()),NULL,NULL,SW_SHOW)==0) {
-		return TRUE;	/* I died */
-	}
-	return FALSE;		/* I launched */
+	Word uResult = (ShellExecuteOpen(pURL)>32);		// I launched if greater than 32
+	return uResult;		
 }
 
 /***************************************

@@ -146,7 +146,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 	This routine will get the time and date
 	from a file.
-	Note, this routine is Operating system specfic!!!
+	Note, this routine is Operating system specific!!!
 
 ***************************************/
 
@@ -183,7 +183,7 @@ Word Burger::FileManager::GetModificationTime(Filename *pFileName,TimeDate_t *pO
 
 	This routine will get the time and date
 	from a file.
-	Note, this routine is Operating system specfic!!!
+	Note, this routine is Operating system specific!!!
 
 ***************************************/
 
@@ -223,7 +223,7 @@ Word Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDate_t *pOutpu
 	is a path to a file that exists, if it doesn't exist
 	or it's a directory, I return FALSE.
 	Note : I do not check if the file havs any data in it.
-	Just the existance of the file.
+	Just the existence of the file.
 
 ***************************************/
 

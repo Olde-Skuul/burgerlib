@@ -68,6 +68,12 @@ Burger::Texture::Texture(eWrapping uWrapping,eFilter uFilter) :
 Burger::Texture::~Texture()
 {
 	if (m_pD3DTexture) {
+		// Make sure there is no connection to a D3D device
+		IDirect3DDevice9 *pDevice;
+		m_pD3DTexture->GetDevice(&pDevice);
+		if (pDevice) {
+			pDevice->SetTexture(0,0);
+		}
 		m_pD3DTexture->Release();
 		m_pD3DTexture = NULL;
 	}

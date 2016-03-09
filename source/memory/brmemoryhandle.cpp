@@ -93,7 +93,7 @@ struct PointerPrefix_t {
 
 void *BURGER_API Burger::MemoryManagerHandle::AllocProc(MemoryManager *pThis,WordPtr uSize)
 {
-	BURGER_COMPILE_TIME_ASSERT((sizeof(PointerPrefix_t)&(MemoryManagerHandle::ALIGNMENT-1))==0);
+	BURGER_COMPILE_TIME_ASSERT((static_cast<Word>(sizeof(PointerPrefix_t))&(MemoryManagerHandle::ALIGNMENT-1))==0);
 
 	void *pResult = NULL;
 	if (uSize) {

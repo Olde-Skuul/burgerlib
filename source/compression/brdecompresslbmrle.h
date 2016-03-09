@@ -25,6 +25,8 @@
 /* BEGIN */
 namespace Burger {
 class DecompressILBMRLE : public Decompress {
+	BURGER_RTTI_IN_CLASS();
+protected:
 	enum eState {
 		STATE_INIT,			///< Start of a compression token
 		STATE_FILLTOKEN,	///< Obtained a fill token, awaiting fill byte
@@ -35,11 +37,7 @@ class DecompressILBMRLE : public Decompress {
 	Word m_uFill;		///< Last fill value
 	eState m_eState;	///< State of the decompression
 public:
-#if defined(BURGER_BIGENDIAN)
 	static const Word32 Signature = 0x524C4420;		///< 'RLE '
-#else
-	static const Word32 Signature = 0x20454C52;		///< 'RLE '
-#endif
 	DecompressILBMRLE();
 	virtual eError Reset(void);
 	virtual eError Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength);

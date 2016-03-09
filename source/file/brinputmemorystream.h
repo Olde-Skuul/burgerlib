@@ -37,10 +37,13 @@
 /* BEGIN */
 namespace Burger {
 class Filename;
-struct RGBAWord8_t;
 struct RGBWord8_t;
+struct RGBAWord8_t;
+struct RGBFloat_t;
+struct RGBAFloat_t;
 
 class InputMemoryStream {
+protected:
 	const Word8 *m_pWork;			///< Pointer to the input
 	const Word8 *m_pEndOfBuffer;	///< Pointer to the end of the buffer
 	const Word8 *m_pData;			///< Pointer to the first data buffer
@@ -50,6 +53,7 @@ class InputMemoryStream {
 public:
 	InputMemoryStream();
 	InputMemoryStream(const char *pFilename);
+	InputMemoryStream(Filename *pFilename);
 	InputMemoryStream(const void *pBuffer,WordPtr uBufferSize,Word bDontFree=FALSE);
 	~InputMemoryStream();
 	Word BURGER_API Open(const char *pFilename);
@@ -73,6 +77,8 @@ public:
 	Word16 BURGER_API GetBigShort(void);
 	Word32 BURGER_API GetWord32(void);
 	Word32 BURGER_API GetBigWord32(void);
+	Word64 BURGER_API GetWord64(void);
+	Word64 BURGER_API GetBigWord64(void);
 	float BURGER_API GetFloat(void);
 	float BURGER_API GetBigFloat(void);
 	double BURGER_API GetDouble(void);
@@ -83,6 +89,8 @@ public:
 	Word BURGER_API Get(Vector2D_t *pOutput);
 	Word BURGER_API Get(Vector3D_t *pOutput);
 	Word BURGER_API Get(Vector4D_t *pOutput);
+	BURGER_INLINE Word Get(RGBFloat_t *pOutput) { return Get(reinterpret_cast<Vector3D_t *>(pOutput)); }
+	BURGER_INLINE Word Get(RGBAFloat_t *pOutput) { return Get(reinterpret_cast<Vector4D_t *>(pOutput)); }
 	void BURGER_API ParseBeyondWhiteSpace(void);
 	Word BURGER_API IsStringMatch(const char *pInput);
 	Word BURGER_API IsStringMatchCase(const char *pInput);

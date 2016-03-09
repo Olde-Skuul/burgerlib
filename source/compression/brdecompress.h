@@ -22,19 +22,16 @@
 #include "brbase.h"
 #endif
 
-#ifndef __BROUTPUTMEMORYSTREAM_H__
-#include "broutputmemorystream.h"
-#endif
-
 /* BEGIN */
 namespace Burger {
 class Decompress : public Base {
+	BURGER_RTTI_IN_CLASS();
 protected:
 	WordPtr m_uTotalInput;		///< Total number of bytes processed for input
 	WordPtr m_uTotalOutput;		///< Total number of bytes processed for output
 	WordPtr m_uInputLength;		///< Number of input bytes processed from the last call to Process()
 	WordPtr m_uOutputLength;	///< Number of output bytes processed from the last call to Process()
-	char m_uSignature[4];		///< 4 character code to identify this decompressor
+	Word32 m_uSignature;		///< 4 character code to identify this decompresser
 public:
 	enum eError {
 		DECOMPRESS_OKAY,		///< No errors
@@ -49,7 +46,7 @@ public:
 	BURGER_INLINE WordPtr GetTotalOutputSize(void) const { return m_uTotalOutput; }
 	BURGER_INLINE WordPtr GetProcessedInputSize(void) const { return m_uInputLength; }
 	BURGER_INLINE WordPtr GetProcessedOutputSize(void) const { return m_uOutputLength; }
-	BURGER_INLINE Word32 GetSignature(void) const { return reinterpret_cast<const Word32 *>(m_uSignature)[0]; }
+	BURGER_INLINE Word32 GetSignature(void) const { return m_uSignature; }
 };
 }
 /* END */

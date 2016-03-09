@@ -17,6 +17,7 @@
 #include "brarray.h"
 #include "brmemoryansi.h"
 #include "brsound.h"
+#include "brguid.h"
 
 /***************************************
 
@@ -34,6 +35,12 @@ static Word TestGetVideoModes(void)
 	if (uCount) {
 		const Burger::Display::VideoCardDescription *pWork1 = Modes.GetPtr();
 		do {
+			///< (Windows only) Device GUID
+#if defined(BURGER_WINDOWS)
+			char GUIDString[64];
+			Burger::GUIDToString(GUIDString,&pWork1->m_GUID);
+			Message("GUID = %s",GUIDString);
+#endif
 			Message("Device = %s",pWork1->m_DeviceName.GetPtr());
 			Message("Monitor = %s",pWork1->m_MonitorName.GetPtr());
 			Message("Device number = %u, Hardware = %u",pWork1->m_uDevNumber,pWork1->m_bHardwareAccelerated);

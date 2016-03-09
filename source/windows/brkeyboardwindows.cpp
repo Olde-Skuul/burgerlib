@@ -24,8 +24,12 @@
 #if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x0501		// Windows XP
 #endif
-#include "brwindowsapp.h"
+#if !defined(WIN32_LEAN_AND_MEAN)
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include "brgameapp.h"
 #include "brglobals.h"
+#include "brassert.h"
 #include "brstringfunctions.h"
 #include <dinput.h>
 
@@ -282,6 +286,75 @@ static const Burger::Keyboard::eScanCode g_WindowsToKeyboardeScanCode[0xF0] = {
 
 #endif
 
+/***************************************
+
+	\brief Private function to remove Windows Keystrokes (Windows only)
+	
+	This is a keyboard intercept hook to drop windows key events
+
+	Full docs are at https://msdn.microsoft.com/en-us/library/windows/desktop/ms644985(v=vs.85).aspx
+
+	\note This is used by the keyboard manager, it's not intended
+	to be used by applications.
+
+	\param pData Pointer to the Keyboard class instance
+	\return Zero when asked to shut down
+
+***************************************/
+ 
+//
+// By rights, these should be passed in an allocated class structure, but
+// the callback doesn't have a place for a user data pointer, so
+// globals are necessary for this to work
+//
+// Thank you, Microsoft, for ruining my elegant, non-global requiring code!
+//
+
+static Burger::Keyboard *g_pKeyboard;		// Pointer to the needed data
+
+static LRESULT CALLBACK DisableWindowsKeysCallback(int iCode,WPARAM wParam,LPARAM lParam)
+{
+	// Only handle HC_ACTION events
+	const Burger::Keyboard *pThis = g_pKeyboard;
+
+	//
+	// Better be valid (Likely caused by a race condition, unlikely
+	// but it's better to be safe than sorry)
+	//
+
+	if (!pThis) {
+		return 1;		// WTF?!?! Return as consumed, because the code is boned
+	}
+
+	// Only interested in HC_ACTION events
+
+	if (iCode == HC_ACTION) {
+		KBDLLHOOKSTRUCT *pHookStruct = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
+		
+		switch (wParam) {
+		case WM_KEYDOWN:  
+		case WM_KEYUP:
+			// Only devour if the game app is in the foreground. (Be nice to the system)
+			// and allow these keys if the app doesn't have focus
+			if (!pThis->GetApp()->IsInBackground() && ((pHookStruct->vkCode == VK_LWIN) || (pHookStruct->vkCode == VK_RWIN))) {
+				// Om nom nom the keyboard event
+				return 1;
+			}
+			break;
+		// Remaining events to handle
+		//case WM_SYSKEYDOWN:
+		//case WM_SYSKEYUP:
+		default:
+			break;
+		}
+	}
+	
+	// Pass the event on to the system function or any other hooks
+	// installed by other apps/widgets
+	return CallNextHookEx(pThis->GetWindowsPreviousKeyboardHook(),iCode,wParam,lParam);
+}
+
+
 /*! ************************************
 
 	\brief Windows thread for monitoring keyboard events (Windows only)
@@ -404,6 +477,7 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 	m_pKeyboardDevice(NULL),
 	m_pKeyboardEvent(NULL),
 	m_pKeyboardTimerEvent(NULL),
+	m_pPreviousKeyboardHook(NULL),
 	m_KeyboardThread(),
 	m_KeyboardLock(),
 	m_bAcquired(FALSE),
@@ -414,18 +488,38 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 	m_uInitialDelay(250),
 	m_uRepeatDelay(33)
 {
+	// Connect to the parent application
 	pAppInstance->SetKeyboard(this);
+
 	// Clear my variables
 	MemoryClear(const_cast<Word8 *>(m_KeyArray),sizeof(m_KeyArray));
+
+	// Safety switch to verify the declaration in brwindowstypes.h matches the real thing
+	BURGER_COMPILE_TIME_ASSERT(sizeof(::tagSTICKYKEYS)==sizeof(Burger::tagSTICKYKEYS));
+	BURGER_COMPILE_TIME_ASSERT(sizeof(::tagTOGGLEKEYS)==sizeof(Burger::tagTOGGLEKEYS));
+	BURGER_COMPILE_TIME_ASSERT(sizeof(::tagFILTERKEYS)==sizeof(Burger::tagFILTERKEYS));
+
+	// Save the current sticky/toggle/filter key settings so they can be restored them later
+	m_DefaultStickyKeys.cbSize = sizeof(m_DefaultStickyKeys);
+	m_DefaultToggleKeys.cbSize = sizeof(m_DefaultToggleKeys);
+	m_DefaultFilterKeys.cbSize = sizeof(m_DefaultFilterKeys);
+	SystemParametersInfoW(SPI_GETSTICKYKEYS,sizeof(m_DefaultStickyKeys),&m_DefaultStickyKeys,0);
+	SystemParametersInfoW(SPI_GETTOGGLEKEYS,sizeof(m_DefaultToggleKeys),&m_DefaultToggleKeys,0);
+	SystemParametersInfoW(SPI_GETFILTERKEYS,sizeof(m_DefaultFilterKeys),&m_DefaultFilterKeys,0);
 
 	// Read from windows the current keyboard delays
 	ReadSystemKeyboardDelays();
 
-	IDirectInput8W* pDirectInput8W;
+	// Disable the windows key while the game is running
+	DisableWindowsKey();
 
-	// First step, obtain DirectInput
+	// Disable the windows shortcut keys
+	DisableAccessibilityShortcutKeys();
 
-	if (!Globals::DirectInput8Create(&pDirectInput8W)) {
+	// Next step, obtain DirectInput
+
+	IDirectInput8W* pDirectInput8W = Globals::GetDirectInput8Singleton();
+	if (pDirectInput8W) {
 
 		// Create a system keyboard device (Merges all keyboards)
 
@@ -441,7 +535,7 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 				// Play nice with the system and let others use the keyboard
 				// Disable the windows key if the application is running in the foreground
 
-				hResult = pKeyboardDevice->SetCooperativeLevel(static_cast<WindowsApp *>(pAppInstance)->GetWindow(),DISCL_FOREGROUND | DISCL_EXCLUSIVE | DISCL_NOWINKEY);
+				hResult = pKeyboardDevice->SetCooperativeLevel(pAppInstance->GetWindow(),DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 				if (hResult>=0) {
 					DIPROPDWORD KeyboardProperties;
 					
@@ -522,6 +616,12 @@ Burger::Keyboard::~Keyboard()
 		pKeyboardDevice->Release();
 		m_pKeyboardDevice = NULL;
 	}
+
+	// Remove the keyboard intercept hook
+	EnableWindowsKey();
+
+	// Restore remote accessibility
+	RestoreAccessibilityShortcutKeys();
 }
 
 /***************************************
@@ -540,14 +640,14 @@ Word BURGER_API Burger::Keyboard::PeekKeyEvent(KeyEvent_t *pEvent)
 {
 	m_KeyboardLock.Lock();
 	Word uIndex = m_uArrayStart;		/* Get the starting index */
-	Word uResult = 0;
+	Word bResult = FALSE;
 	if (uIndex!=m_uArrayEnd) {	/* Anything in the buffer? */
 		pEvent[0] = m_KeyEvents[uIndex];
-		uResult = 1;
+		bResult = TRUE;
 	}
 	// No event pending
 	m_KeyboardLock.Unlock();
-	return uResult;
+	return bResult;
 }
 
 
@@ -562,24 +662,24 @@ Word BURGER_API Burger::Keyboard::PeekKeyEvent(KeyEvent_t *pEvent)
 Word BURGER_API Burger::Keyboard::GetKeyEvent(KeyEvent_t *pEvent)
 {
 	m_pAppInstance->Poll();
-	Word uResult = 0;
 	m_KeyboardLock.Lock();
 	Word uIndex = m_uArrayStart;		/* Get the starting index */
+	Word bResult = FALSE;
 	if (uIndex!=m_uArrayEnd) {	/* Anything in the buffer? */
 		pEvent[0] = m_KeyEvents[uIndex];
-		m_uArrayStart = (uIndex+1)&(KEYBUFFSIZE-1);	/* Next key */
-		uResult = 1;
+		m_uArrayStart = (uIndex+1)&(cBufferSize-1);	/* Next key */
+		bResult = TRUE;
 	}
 	m_KeyboardLock.Unlock();
 
-	if (uResult && m_pAppInstance->IsWindowSwitchingAllowed()) {
+	if (bResult && m_pAppInstance->IsWindowSwitchingAllowed()) {
 		if ((pEvent->m_uAscii==ASCII_RETURN) &&
 			((pEvent->m_uFlags&(FLAG_ALT|FLAG_KEYDOWN))==(FLAG_ALT|FLAG_KEYDOWN))) {
 			m_pAppInstance->SetWindowSwitchRequested(TRUE);
 		}
 	}
 	// No event pending
-	return uResult;
+	return bResult;
 }
 
 /***************************************
@@ -594,7 +694,7 @@ Word BURGER_API Burger::Keyboard::PostKeyEvent(const KeyEvent_t *pEvent)
 	Word uResult = 10;
 	Word uEnd = m_uArrayEnd;
 	// See if there's room in the buffer
-	Word uTemp = (uEnd+1)&(KEYBUFFSIZE-1);
+	Word uTemp = (uEnd+1)&(cBufferSize-1);
 	if (uTemp!=m_uArrayStart) {
 		// Didn't wrap, accept it!
 		m_uArrayEnd = uTemp;
@@ -643,11 +743,85 @@ Word BURGER_API Burger::Keyboard::PostKeyEvent(const KeyEvent_t *pEvent)
 
 /*! ************************************
 
+	\brief Install keyboard intercept function disabling Windows Key
+
+	Installs a keyboard hook that disables the windows key.
+
+	\note If \ref Globals::TRACE_ACTIVEDEBUGGING is set, this feature is
+	disabled since it causes Visual Studio 2010's debugger to wait 5
+	seconds per keystroke
+
+	\windowsonly
+	\return Zero if no error, Windows error code on failure
+	\sa EnableWindowsKey(void)
+
+***************************************/
+
+Word BURGER_API Burger::Keyboard::DisableWindowsKey(void)
+{
+	// Assume success
+	Word uResult = 0;
+	// Do nothing if already installed
+	if (!m_pPreviousKeyboardHook) {
+		if (!(Globals::GetTraceFlag()&Globals::TRACE_ACTIVEDEBUGGING)) {
+			// Install the function
+			HHOOK pResult = SetWindowsHookExW(WH_KEYBOARD_LL,DisableWindowsKeysCallback,Globals::GetInstance(),0);
+			if (!pResult) {
+				// Uh, oh. Get the error code
+				uResult = GetLastError();
+			} else {
+				// Store the previous hook
+				m_pPreviousKeyboardHook = pResult;
+				g_pKeyboard = this;
+			}
+		}
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Remove keyboard intercept function disabling Windows Key
+
+	If DisableWindowsKey(void) was called, it installed a keyboard hook
+	that disabled the windows key. This function removes that
+	intercept.
+
+	\windowsonly
+	\sa DisableWindowsKey(void)
+
+***************************************/
+
+void BURGER_API Burger::Keyboard::EnableWindowsKey(void)
+{
+	if (m_pPreviousKeyboardHook) {
+		UnhookWindowsHookEx(m_pPreviousKeyboardHook);
+		m_pPreviousKeyboardHook = NULL;
+	}
+}
+
+/*! ************************************
+
+	\fn HHOOK__ *Burger::Keyboard::GetWindowsPreviousKeyboardHook(void) const
+	\brief Return the Windows default Keyboard Hook function
+
+	If a keyboard hook was installed via a call to DisableWindowsKey(),
+	this pointer is valid and points to the function in Windows to
+	be passed to the function CallNextHookEx()
+
+	\windowsonly
+	\return Pointer to the connected previous Windows Keyboard Hook
+
+***************************************/
+
+/*! ************************************
+
 	\brief Post a windows scan code key down
 
 	Given a Windows keyboard scan code, convert it to a
 	Burgerlib key press and post the event
 
+	\windowsonly
 	\param uScanCode Windows keyboard scan code
 	\return Zero if posted successfully, non-zero if not.
 	\sa PostWindowsKeyUp(Word32)
@@ -657,12 +831,12 @@ Word BURGER_API Burger::Keyboard::PostKeyEvent(const KeyEvent_t *pEvent)
 Word BURGER_API Burger::Keyboard::PostWindowsKeyDown(Word32 uScanCode)
 {
 	KeyEvent_t NewEvent;
-	Word uResult = EncodeWindowsScanCode(&NewEvent,uScanCode);
-	if (!uResult) {
+	Word bResult = EncodeWindowsScanCode(&NewEvent,uScanCode);
+	if (!bResult) {
 		NewEvent.m_uFlags |= FLAG_KEYDOWN;
-		uResult = PostKeyEvent(&NewEvent);
+		bResult = PostKeyEvent(&NewEvent);
 	}
-	return uResult;
+	return bResult;
 }
 
 /*! ************************************
@@ -672,6 +846,7 @@ Word BURGER_API Burger::Keyboard::PostWindowsKeyDown(Word32 uScanCode)
 	Given a Windows keyboard scan code, convert it to a
 	Burgerlib key press and post the event
 
+	\windowsonly
 	\param uScanCode Windows keyboard scan code
 	\return Zero if posted successfully, non-zero if not.
 	\sa PostWindowsKeyDown(Word32)
@@ -681,11 +856,11 @@ Word BURGER_API Burger::Keyboard::PostWindowsKeyDown(Word32 uScanCode)
 Word BURGER_API Burger::Keyboard::PostWindowsKeyUp(Word32 uScanCode)
 {
 	KeyEvent_t NewEvent;
-	Word uResult = EncodeWindowsScanCode(&NewEvent,uScanCode);
-	if (!uResult) {
-		uResult = PostKeyEvent(&NewEvent);
+	Word bResult = EncodeWindowsScanCode(&NewEvent,uScanCode);
+	if (!bResult) {
+		bResult = PostKeyEvent(&NewEvent);
 	}
-	return uResult;
+	return bResult;
 }
 
 /*! ************************************
@@ -694,18 +869,19 @@ Word BURGER_API Burger::Keyboard::PostWindowsKeyUp(Word32 uScanCode)
 
 	Convert a windows scan code to a Keyboard event
 
+	\windowsonly
 	\return Zero if successful, non-zero if a scan code is unknown.
 
 ***************************************/
 
-Word BURGER_API Burger::Keyboard::EncodeWindowsScanCode(KeyEvent_t *pEvent,Word uWindowsCode)
+Word BURGER_API Burger::Keyboard::EncodeWindowsScanCode(KeyEvent_t *pEvent,Word uWindowsCode) const
 {
 	// Look up the scan code
-	Word uResult = 1;		// Assume error
+	Word bResult = 1;		// Assume error
 	if (uWindowsCode<BURGER_ARRAYSIZE(g_WindowsToKeyboardeScanCode)) {
-		uResult = EncodeScanCode(pEvent,g_WindowsToKeyboardeScanCode[uWindowsCode]);
+		bResult = EncodeScanCode(pEvent,g_WindowsToKeyboardeScanCode[uWindowsCode]);
 	}
-	return uResult;
+	return bResult;
 }
 
 /*! ************************************
@@ -714,6 +890,7 @@ Word BURGER_API Burger::Keyboard::EncodeWindowsScanCode(KeyEvent_t *pEvent,Word 
 
 	Call Acquire() on the DirectInput mouse device.
 
+	\windowsonly
 	\sa UnacquireDirectInput(void)
 
 ***************************************/
@@ -735,6 +912,7 @@ void BURGER_API Burger::Keyboard::AcquireDirectInput(void)
 
 	Call Unacquire() on the DirectInput mouse device.
 
+	\windowsonly
 	\sa AcquireDirectInput(void)
 
 ***************************************/
@@ -762,6 +940,8 @@ void BURGER_API Burger::Keyboard::UnacquireDirectInput(void)
 	On startup and when a WM_SETTINGCHANGE event is triggered,
 	read the settings for the keyboard auto-repeat from
 	Windows and record it so auto-repeat is as the user requested it.
+
+	\windowsonly
 
 ***************************************/
 
@@ -808,6 +988,75 @@ void BURGER_API Burger::Keyboard::ReadSystemKeyboardDelays(void)
 		uValue |= KEYCAPTOGGLE;
 	}
 	m_KeyArray[SC_NUMLOCK] = static_cast<Word8>(uValue);
+}
+
+/*! ************************************
+
+	\brief Disable the accessibility shortcut keys (Windows only)
+
+	There are some keyboard modes that are intended for people with
+	typing problems. If any of these features were not enabled
+	when the application started, disable the ability to turn them
+	on by using keyboard shortcuts. It helps prevent a player using
+	the keyboard from accidentally enabling this feature while mashing
+	buttons like crazy.
+
+	\windowsonly
+	\sa RestoreAccessibilityShortcutKeys(void)
+
+***************************************/
+
+void BURGER_API Burger::Keyboard::DisableAccessibilityShortcutKeys(void) const
+{
+	// Disable StickyKeys/etc shortcuts but if the accessibility feature is on, 
+	// then leave the settings alone as its probably being usefully used
+
+	if (!(m_DefaultStickyKeys.dwFlags & SKF_STICKYKEYSON)) {
+		// Disable the hotkey and the confirmation
+		STICKYKEYS TempSticky;
+		TempSticky.cbSize = sizeof(TempSticky);
+		TempSticky.dwFlags = m_DefaultStickyKeys.dwFlags & (~(SKF_HOTKEYACTIVE|SKF_CONFIRMHOTKEY));
+		SystemParametersInfoW(SPI_SETSTICKYKEYS,sizeof(TempSticky),&TempSticky,0);
+	}
+
+	if (!(m_DefaultToggleKeys.dwFlags & TKF_TOGGLEKEYSON)) {
+		// Disable the hotkey and the confirmation
+		TOGGLEKEYS TempToggle;
+		TempToggle.cbSize = sizeof(TempToggle);
+		TempToggle.dwFlags = m_DefaultToggleKeys.dwFlags & (~(TKF_HOTKEYACTIVE|TKF_CONFIRMHOTKEY));
+		SystemParametersInfoW(SPI_SETTOGGLEKEYS,sizeof(TempToggle),&TempToggle,0);
+	}
+
+	if (!(m_DefaultFilterKeys.dwFlags & FKF_FILTERKEYSON)) {
+		// Disable the hotkey and the confirmation
+		FILTERKEYS TempFilter;
+		TempFilter.cbSize = sizeof(TempFilter);
+		TempFilter.dwFlags = m_DefaultFilterKeys.dwFlags & (~(FKF_HOTKEYACTIVE|FKF_CONFIRMHOTKEY));
+		TempFilter.iWaitMSec = m_DefaultFilterKeys.iWaitMSec;
+		TempFilter.iDelayMSec = m_DefaultFilterKeys.iDelayMSec;
+		TempFilter.iRepeatMSec = m_DefaultFilterKeys.iRepeatMSec;
+		TempFilter.iBounceMSec = m_DefaultFilterKeys.iBounceMSec;
+		SystemParametersInfoW(SPI_SETFILTERKEYS,sizeof(TempFilter),&TempFilter,0);
+	}
+}
+
+/*! ************************************
+
+	\brief Restore the accessibility shortcut keys (Windows only)
+
+	Restore the accessibility shortcut keys to the settings
+	that were captured upon instantiation of the Keyboard class
+
+	\windowsonly
+	\sa DisableAccessibilityShortcutKeys(void)
+
+***************************************/
+
+void BURGER_API Burger::Keyboard::RestoreAccessibilityShortcutKeys(void)
+{
+	SystemParametersInfoW(SPI_SETSTICKYKEYS,sizeof(m_DefaultStickyKeys),&m_DefaultStickyKeys,0);
+	SystemParametersInfoW(SPI_SETTOGGLEKEYS,sizeof(m_DefaultToggleKeys),&m_DefaultToggleKeys,0);
+	SystemParametersInfoW(SPI_SETFILTERKEYS,sizeof(m_DefaultFilterKeys),&m_DefaultFilterKeys,0);
 }
 
 #endif

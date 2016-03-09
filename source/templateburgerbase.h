@@ -186,6 +186,7 @@
 #include "brdisplayopenglsoftware8.h"
 #include "brdisplaydirectx9.h"
 #include "brdisplaydirectx9software8.h"
+#include "brdisplaydirectx11.h"
 #include "brdisplaydib.h"
 #include "brdisplaydibsoftware8.h"
 #include "brpalette.h"

@@ -79,16 +79,18 @@ Word Burger::TextureDirectX9::Bind(Display *pDisplay)
 	Word bLoaded = FALSE;
 	IDirect3DTexture9 *pTexture = m_pD3DTexture;
 	IDirect3DDevice9 *pDevice = static_cast<DisplayDirectX9 *>(pDisplay)->GetDirect3DDevice9();
-	if (!pTexture) {
+	if (!pTexture || (m_uDirty&DIRTY_IMAGE)) {
 		if (LoadImageMemory()) {
 			return 10;
 		}
 		bLoaded = TRUE;
-		if (pDevice->CreateTexture(m_Image.GetWidth(),m_Image.GetHeight(),1,0,static_cast<D3DFORMAT>(GetD3DFormat()),D3DPOOL_MANAGED,&m_pD3DTexture,0)<0) {
-			UnloadImageMemory();
-			return 10;
+		if (!pTexture) {
+			if (pDevice->CreateTexture(m_Image.GetWidth(),m_Image.GetHeight(),1,0,static_cast<D3DFORMAT>(GetD3DFormat()),D3DPOOL_MANAGED,&m_pD3DTexture,0)<0) {
+				UnloadImageMemory();
+				return 10;
+			}
+			pTexture = m_pD3DTexture;
 		}
-		pTexture = m_pD3DTexture;
 		// Copy the images into the DirectX surfaces.
 		for (Word i = 0; i < m_Image.GetMipMapCount(); i++) {
 			IDirect3DSurface9 *pD3DSurface;
@@ -142,8 +144,8 @@ Word Burger::TextureDirectX9::Bind(Display *pDisplay)
 	Word uResult = 0;
 	if (pDevice->SetTexture(0,pTexture)<0) {
 		uResult = 10;
-	} else if (m_uDirty) {
-		m_uDirty = 0;
+	} else {
+		m_uDirty = m_uDirty&(~(DIRTY_IMAGE|DIRTY_WRAPPING_S|DIRTY_WRAPPING_T|DIRTY_MIN|DIRTY_MAG));
 	}
 	return uResult;
 }

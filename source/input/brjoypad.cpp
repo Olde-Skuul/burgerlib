@@ -13,6 +13,7 @@
 
 #include "brjoypad.h"
 #include "brtick.h"
+#include "brstringfunctions.h"
 
 /*! ************************************
 
@@ -41,6 +42,7 @@ Burger::Joypad::Joypad(GameApp *pAppInstance)
 {
 	pAppInstance->SetJoypad(this);
 	m_pAppInstance = pAppInstance;
+	MemoryClear(m_Data,sizeof(m_Data));
 }
 #endif
 

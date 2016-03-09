@@ -13,6 +13,10 @@
 
 #include "brcompresslzss.h"
 
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::CompressLZSS,Burger::Compress);
+#endif
+
 /*! ************************************
 
 	\class Burger::CompressLZSS
@@ -263,7 +267,7 @@ void Burger::CompressLZSS::InitTrees(void)
 Burger::CompressLZSS::CompressLZSS() :
 	Compress()
 {
-	m_uSignature.u = Signature;
+	m_uSignature = Signature;
 	InitTrees();
 }
 
@@ -484,3 +488,13 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Finalize(void)
 	}
 	return COMPRESS_OKAY;
 }
+
+/*! ************************************
+
+	\var const Burger::StaticRTTI Burger::CompressLZSS::g_StaticRTTI
+	\brief The global description of the class
+
+	This record contains the name of this class and a
+	reference to the parent
+
+***************************************/

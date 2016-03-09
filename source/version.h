@@ -6,12 +6,12 @@
 
 ***************************************/
 
-#ifndef __VERSION_H__
-#define __VERSION_H__
+#ifndef __P4_VERSION_H__
+#define __P4_VERSION_H__
 
-#define P4_CHANGELIST 6547
-#define P4_CHANGEDATE "2015/01/29"
-#define P4_CHANGETIME "20:15:37"
+#define P4_CHANGELIST 9670
+#define P4_CHANGEDATE "2016/03/08"
+#define P4_CHANGETIME "15:03:02"
 #define P4_CLIENT "burgeroctocore"
 #define P4_USER "burgerbecky"
 

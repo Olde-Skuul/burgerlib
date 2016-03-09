@@ -15,6 +15,10 @@
 #include "bradler32.h"
 #include "brstringfunctions.h"
 
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::CompressDeflate,Burger::Compress);
+#endif
+
 /*
  *  ALGORITHM
  *
@@ -1629,7 +1633,7 @@ Burger::CompressDeflate::CompressDeflate() :
 	Compress(),
 	m_bInitialized(FALSE)
 {
-	m_uSignature.u = Signature;
+	m_uSignature = Signature;
 }
 
 /*! ************************************
@@ -1698,4 +1702,12 @@ Burger::Compress::eError Burger::CompressDeflate::Finalize(void)
 	return COMPRESS_OKAY;
 }
 
+/*! ************************************
 
+	\var const Burger::StaticRTTI Burger::CompressDeflate::g_StaticRTTI
+	\brief The global description of the class
+
+	This record contains the name of this class and a
+	reference to the parent
+
+***************************************/

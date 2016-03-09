@@ -17,7 +17,7 @@
 
 #if defined(BURGER_WINDOWS)
 #define DIRECTINPUT_VERSION 0x0800
-#include "brwindowsapp.h"
+#include "brgameapp.h"
 #include "brglobals.h"
 #include "brstringfunctions.h"
 #include <windows.h>
@@ -166,21 +166,13 @@ Burger::Joypad::Joypad(Burger::GameApp *pAppInstance)
 {
 	pAppInstance->SetJoypad(this);
 	// Initialize everything
-	Word i = 0;
-	JoypadData_t *pJoypadData = m_Data;
-	do {
-		pJoypadData->m_pJoystickDevice = NULL;
-		pJoypadData->m_uButtonCount = 0;
-		pJoypadData->m_uPOVCount = 0;
-		pJoypadData->m_uAxisCount = 0;
-		++pJoypadData;
-	} while (++i<MAXJOYSTICKS);
+	MemoryClear(m_Data,sizeof(m_Data));
 	m_pAppInstance = pAppInstance;
 	m_uDeviceCount = 0;
 
 	// Initialize the main direct input interface.
-	IDirectInput8W* pDirectInput8W;
-	if (!Burger::Globals::DirectInput8Create(&pDirectInput8W)) {
+	IDirectInput8W* pDirectInput8W = Globals::GetDirectInput8Singleton();
+	if (pDirectInput8W) {
 
 		// Enumerate the devices, after this function, the number of gaming devices
 		// and their GUIDs are known
@@ -190,7 +182,7 @@ Burger::Joypad::Joypad(Burger::GameApp *pAppInstance)
 		HRESULT hResult = pDirectInput8W->EnumDevices(DI8DEVCLASS_GAMECTRL,EnumJoysticksCallback,&Joy,DIEDFL_ALLDEVICES);
 		if (hResult>=0 && Joy.m_uCount) {
 			// Initialize the direct input interface for the keyboard.
-			i = 0;
+			Word i = 0;
 			JoypadData_t *pJoypadData = m_Data;
 			do {
 				IDirectInputDevice8W *pJoystickDeviceLocal = NULL;
@@ -198,7 +190,7 @@ Burger::Joypad::Joypad(Burger::GameApp *pAppInstance)
 				if (hResult>=0) {
 					IDirectInputDevice8W *pJoystickDevice = pJoystickDeviceLocal;
 					pJoypadData->m_pJoystickDevice = pJoystickDevice;
-					hResult = pJoystickDevice->SetCooperativeLevel(static_cast<WindowsApp *>(pAppInstance)->GetWindow(),DISCL_FOREGROUND | DISCL_EXCLUSIVE);
+					hResult = pJoystickDevice->SetCooperativeLevel(pAppInstance->GetWindow(),DISCL_FOREGROUND | DISCL_EXCLUSIVE);
 					if (hResult>=0) {
 						//
 						// Begin the scan for the input objects found in this device
@@ -222,7 +214,7 @@ Burger::Joypad::Joypad(Burger::GameApp *pAppInstance)
 								pJoypadData->m_uButtonCount=Object.m_uButtonCount;
 								pJoypadData->m_uPOVCount=Object.m_uPOVCount;
 								pJoypadData->m_uAxisCount=Object.m_uAxisCount;
-								pAppInstance->AddRoutine(Poll,this);
+								pAppInstance->AddRoutine(Poll,this,RunQueue::PRIORITY_JOYPAD);
 							}
 						}
 					}

@@ -62,6 +62,8 @@ public:
 		DINPUT8_DLL,	///< Index for dinput8.dll
 		D3D9_DLL,		///< Index for d3d9.dll
 		D3DX9_43_DLL,	///< Index for d3dx9_43.dll
+		D3D11_DLL,		///< Index for d3d11.dll
+		DXGI_DLL,		///< Index for dxgi.dll
 		DSOUND_DLL,		///< Index for dsound.dll
 		RPCRT4_DLL,		///< Index for rpcrt4.dll
 		WINMM_DLL,		///< Index for winmm.dll
@@ -86,7 +88,18 @@ public:
 		CALL_DirectDrawEnumerateExA,			///< Index for DirectDrawEnumerateExA()
 		CALL_DirectDrawEnumerateExW,			///< Index for DirectDrawEnumerateExW()
 		CALL_Direct3DCreate9,					///< Index for Direct3DCreate9()
+		CALL_D3DPERF_BeginEvent,				///< Index for D3DPERF_BeginEvent()
+		CALL_D3DPERF_EndEvent,					///< Index for D3DPERF_EndEvent()
+		CALL_D3DPERF_SetMarker,					///< Index for D3DPERF_SetMarker()
+		CALL_D3DPERF_SetRegion,					///< Index for D3DPERF_SetRegion()
+		CALL_D3DPERF_QueryRepeatFrame,			///< Index for D3DPERF_QueryRepeatFrame()
+		CALL_D3DPERF_SetOptions,				///< Index for D3DPERF_SetOptions()
+		CALL_D3DPERF_GetStatus,					///< Index for D3DPERF_GetStatus()
 		CALL_D3DXCreateMatrixStack,				///< Index for D3DXCreateMatrixStack()
+		CALL_D3D11CreateDevice,					///< Index for D3D11CreateDevice()
+		CALL_CreateDXGIFactory,					///< Index for CreateDXGIFactory()
+		CALL_CreateDXGIFactory1,				///< Index for CreateDXGIFactory1()
+		CALL_CreateDXGIFactory2,				///< Index for CreateDXGIFactory2()
 		CALL_DirectSoundCreate,					///< Index for DirectSoundCreate()
 		CALL_DirectSoundEnumerateA,				///< Index for DirectSoundEnumerateA()
 		CALL_DirectSoundEnumerateW,				///< Index for DirectSoundEnumerateW()
@@ -196,7 +209,20 @@ public:
 	static Word BURGER_API DirectDrawEnumerateExA(void *pCallback,void *pContext,Word32 uFlags);
 	static Word BURGER_API DirectDrawEnumerateExW(void *pCallback,void *pContext,Word32 uFlags);
 	static IDirect3D9 * BURGER_API Direct3DCreate9(Word uSDKVersion);
+	static int BURGER_API D3DPERF_BeginEvent(Word32 col,const Word16 *wszName);
+	static int BURGER_API D3DPERF_EndEvent(void);
+	static void BURGER_API D3DPERF_SetMarker(Word32 col,const Word16 *wszName);
+	static void BURGER_API D3DPERF_SetRegion(Word32 col,const Word16 *wszName);
+	static int BURGER_API D3DPERF_QueryRepeatFrame(void);
+	static void BURGER_API D3DPERF_SetOptions(Word32 dwOptions);
+	static Word BURGER_API D3DPERF_GetStatus(void);
 	static Word BURGER_API D3DXCreateMatrixStack(Word uFlags,ID3DXMatrixStack **ppStack);
+	static Word BURGER_API D3D11CreateDevice(IDXGIAdapter *pAdapter,Word DriverType,HINSTANCE__ *Software,
+		Word Flags,const Word *pFeatureLevels,Word FeatureLevels,Word SDKVersion,ID3D11Device **ppDevice,
+		Word *pFeatureLevel,ID3D11DeviceContext **ppImmediateContext);
+	static Word BURGER_API CreateDXGIFactory(const GUID *pGuidFactory,void **ppFactory);
+	static Word BURGER_API CreateDXGIFactory1(const GUID *pGuidFactory,void **ppFactory);
+	static Word BURGER_API CreateDXGIFactory2(Word uFlags,const GUID *pGuidFactory,void **ppFactory);
 	static Word BURGER_API DirectSoundCreate(const GUID *pGuidDevice,IDirectSound **ppOutput,IUnknown *pOuter=NULL);
 	static Word BURGER_API DirectSoundEnumerateA(void *pDSEnumCallback,void *pContext);
 	static Word BURGER_API DirectSoundEnumerateW(void *pDSEnumCallback,void *pContext);
@@ -236,6 +262,8 @@ public:
 	static Word BURGER_API GetDirectXVersionViaFileVersions(void);
 	static Word BURGER_API GetDirectXVersion(void);
 	static Word BURGER_API GetVideoGUID(GUID *pOutput,Word uDevNum);
+	static WordPtr BURGER_API ShellExecuteOpen(const char *pFileToOpen);
+	static Word BURGER_API LaunchMediaCenter(void);
 	static HINSTANCE__ * BURGER_API LoadLibraryA(const char *pInput);
 	static HINSTANCE__ * BURGER_API LoadLibraryW(const Word16 *pInput);
 	static HINSTANCE__ * BURGER_API LoadLibraryIndex(eWindowsDLLIndex eIndex);

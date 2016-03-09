@@ -13,6 +13,10 @@
 
 #include "brcompresslbmrle.h"
 
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::CompressILBMRLE,Burger::Compress);
+#endif
+
 /*! ************************************
 
 	\class Burger::CompressILBMRLE
@@ -166,7 +170,7 @@ Burger::CompressILBMRLE::CompressILBMRLE() :
 	m_uCacheUsed(0),
 	m_uRemaining(0)
 {
-	m_uSignature.u = Signature;
+	m_uSignature = Signature;
 }
 
 /*! ************************************
@@ -297,3 +301,13 @@ Burger::Compress::eError Burger::CompressILBMRLE::Finalize(void)
 	}
 	return COMPRESS_OKAY;
 }
+
+/*! ************************************
+
+	\var const Burger::StaticRTTI Burger::CompressILBMRLE::g_StaticRTTI
+	\brief The global description of the class
+
+	This record contains the name of this class and a
+	reference to the parent
+
+***************************************/

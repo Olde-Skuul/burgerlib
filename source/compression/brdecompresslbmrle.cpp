@@ -13,6 +13,10 @@
 
 #include "brdecompresslbmrle.h"
 
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::DecompressILBMRLE,Burger::Decompress);
+#endif
+
 /*! ************************************
 
 	\class Burger::DecompressILBMRLE
@@ -40,7 +44,7 @@ Burger::DecompressILBMRLE::DecompressILBMRLE(void) :
 	m_uFill(0),
 	m_eState(STATE_INIT)
 {
-	reinterpret_cast<Word32 *>(m_uSignature)[0] = Signature;
+	m_uSignature = Signature;
 }
 
 /*! ************************************
@@ -226,3 +230,13 @@ Burger::Decompress::eError BURGER_API Burger::SimpleDecompressILBMRLE(void *pOut
 	Local.DecompressILBMRLE::Reset();
 	return Local.DecompressILBMRLE::Process(pOutput,uOutputChunkLength,pInput,uInputChunkLength);
 }
+
+/*! ************************************
+
+	\var const Burger::StaticRTTI Burger::DecompressILBMRLE::g_StaticRTTI
+	\brief The global description of the class
+
+	This record contains the name of this class and a
+	reference to the parent
+
+***************************************/

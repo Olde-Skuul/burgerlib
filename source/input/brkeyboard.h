@@ -38,11 +38,11 @@
 namespace Burger {
 class Keyboard {
 public:
+	static const Word cBufferSize=128;		///< Number of keystrokes in keyboard cache
 	enum {
 		KEYCAPDOWN=0x01,	///< If \ref TRUE in m_KeyArray, this key is currently held down
 		KEYCAPPRESSED=0x02,	///< If \ref TRUE in m_KeyArray, this key was pressed, but wasn't acknowledged by the application
-		KEYCAPTOGGLE=0x4,	///< If \ref TRUE in m_KeyArray, this key is toggled "on"
-		KEYBUFFSIZE=128		///< Number of keystrokes in keyboard cache
+		KEYCAPTOGGLE=0x4	///< If \ref TRUE in m_KeyArray, this key is toggled "on"
 	};
 	enum eAsciiCode {
 		ASCII_BACKSPACE=0x08,	///< Backspace key
@@ -258,45 +258,50 @@ public:
 		Word32 m_uAscii;	///< Unicode ASCII value
 		Word16 m_uFlags;	///< Flags for key modifiers
 		Word16 m_uScanCode;	///< Scan code of the key
-		Word32 m_uMSTimeStamp;	///< Timestamp of when this event was recorded
+		Word32 m_uMSTimeStamp;	///< Timestamp of when this event was recorded in milliseconds
 	};
 private:
 	BURGER_DISABLECOPYCONSTRUCTORS(Keyboard);
 	GameApp *m_pAppInstance;			///< Application instances
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	static WordPtr BURGER_API WindowsKeyboardThread(void *pData);
-	IDirectInputDevice8W* m_pKeyboardDevice;	///< DirectInput Device reference (WINDOWS only)
+	IDirectInputDevice8W* m_pKeyboardDevice;	///< DirectInput Device reference (Windows only)
 	void *m_pKeyboardEvent;			///< Event signal for DirectInput (Windows only)
 	void *m_pKeyboardTimerEvent;	///< Keyboard repeat timer event (Windows only)
+	HHOOK__ *m_pPreviousKeyboardHook;	///< Previous keyboard low level hook
 	Thread m_KeyboardThread;		///< Asynchronous thread monitoring DirectInput (Windows only)
 	CriticalSection m_KeyboardLock;	///< Lock for multi-threading (Windows only)
 	Word m_bAcquired;				///< \ref TRUE if DirectInput8 is active (Windows only)
 	Word m_bRepeatActive;			///< \ref TRUE if auto repeat time is active (Windows only)
 	volatile Word32 m_bQuit;		///< \ref TRUE when the thread is shutting down (Windows only)
+	tagSTICKYKEYS m_DefaultStickyKeys;	///< Previous settings for Sticky Keys (Windows only)
+	tagTOGGLEKEYS m_DefaultToggleKeys;	///< Previous settings for Toggle Keys (Windows only)
+	tagFILTERKEYS m_DefaultFilterKeys;	///< Previous settings for Filter Keys (Windows only)
 #endif
 #if defined(BURGER_XBOX360)
 	static RunQueue::eReturnCode BURGER_API Poll(void *pData);
 #endif
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
-	CriticalSection m_KeyboardLock;	///< Lock for multi-threading (MacOSX only)
+	CriticalSection m_KeyboardLock;			///< Lock for multi-threading (MacOSX only)
 #endif
-	Word8 m_KeyArray[SC_MAXENTRY+1];	///< Array with the current state of the keyboard
-	Word m_uArrayStart;					///< Read index for m_KeyEvents
-	Word m_uArrayEnd;					///< Write index for m_KeyEvents
-	Word m_uInitialDelay;				///< Initial delay in ms for autorepeat
-	Word m_uRepeatDelay;				///< Delay between repeating keystrokes
-	KeyEvent_t m_KeyEvents[KEYBUFFSIZE];	///< Circular buffer holding keyboard events
-	KeyEvent_t m_RepeatEvent;			///< Event to post on a repeat
+	Word8 m_KeyArray[SC_MAXENTRY+1];		///< Array with the current state of the keyboard
+	Word m_uArrayStart;						///< Read index for m_KeyEvents
+	Word m_uArrayEnd;						///< Write index for m_KeyEvents
+	Word m_uInitialDelay;					///< Initial delay in ms for autorepeat
+	Word m_uRepeatDelay;					///< Delay between repeating keystrokes
+	KeyEvent_t m_KeyEvents[cBufferSize];	///< Circular buffer holding keyboard events
+	KeyEvent_t m_RepeatEvent;				///< Event to post on a repeat
 public:
 	Keyboard(GameApp *pAppInstance);
 	~Keyboard();
+	BURGER_INLINE GameApp *GetApp(void) const { return m_pAppInstance; }
 	Word BURGER_API PeekKeyEvent(KeyEvent_t *pEvent);
 	Word BURGER_API GetKeyEvent(KeyEvent_t *pEvent);
 	void BURGER_API ClearKey(eScanCode uScanCode);
-	eScanCode BURGER_API AnyPressed(void);
-	Word BURGER_API HasBeenPressed(eScanCode uScanCode);
+	eScanCode BURGER_API AnyPressed(void) const;
+	Word BURGER_API HasBeenPressed(eScanCode uScanCode) const;
 	Word BURGER_API HasBeenPressedClear(eScanCode uScanCode);
-	Word BURGER_API IsPressed(eScanCode uScanCode);
+	Word BURGER_API IsPressed(eScanCode uScanCode) const;
 	Word BURGER_API GetKey(void);
 	Word BURGER_API GetKeyLowerCase(void);
 	Word BURGER_API GetKeyUpperCase(void);
@@ -304,17 +309,28 @@ public:
 	Word BURGER_API Wait(void);
 	Word BURGER_API PostKeyDown(eScanCode uScanCode);
 	Word BURGER_API PostKeyUp(eScanCode uScanCode);
+	Word BURGER_API PostKey(eScanCode uScanCode);
+	Word BURGER_API PostUnicodeDown(Word32 uUnicode);
+	Word BURGER_API PostUnicodeUp(Word32 uUnicode);
+	Word BURGER_API PostUnicode(Word32 uUnicode);
 	Word BURGER_API PostKeyEvent(const KeyEvent_t *pEvent);
-	Word BURGER_API EncodeScanCode(KeyEvent_t *pEvent,eScanCode uScanCode);
+	Word BURGER_API EncodeScanCode(KeyEvent_t *pEvent,eScanCode uScanCode) const;
+	Word BURGER_API EncodeUnicode(KeyEvent_t *pEvent,Word32 uUnicode) const;
+	Word BURGER_API GetCurrentFlags(void) const;
 	static eScanCode BURGER_API StringToScanCode(const char *pString);
 	static void BURGER_API ScanCodeToString(char *pString,WordPtr uStringSize,eScanCode uScanCode);
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+	Word BURGER_API DisableWindowsKey(void);
+	void BURGER_API EnableWindowsKey(void);
+	BURGER_INLINE HHOOK__ *GetWindowsPreviousKeyboardHook(void) const { return m_pPreviousKeyboardHook; }
 	Word BURGER_API PostWindowsKeyDown(Word32 uScanCode);
 	Word BURGER_API PostWindowsKeyUp(Word32 uScanCode);
-	Word BURGER_API EncodeWindowsScanCode(KeyEvent_t *pEvent,Word uWindowsCode);
+	Word BURGER_API EncodeWindowsScanCode(KeyEvent_t *pEvent,Word uWindowsCode) const;
 	void BURGER_API AcquireDirectInput(void);
 	void BURGER_API UnacquireDirectInput(void);
 	void BURGER_API ReadSystemKeyboardDelays(void);
+	void BURGER_API DisableAccessibilityShortcutKeys(void) const;
+	void BURGER_API RestoreAccessibilityShortcutKeys(void);
 #endif
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
 	void BURGER_API ProcessEvent(NSEvent *pEvent);
