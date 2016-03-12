@@ -13,7 +13,7 @@
 
 #include "brdisplaydirectx9.h"
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-#include "brwindowsapp.h"
+#include "brgameapp.h"
 #include "brglobals.h"
 #include "brstring16.h"
 #include "brtexturedirectx9.h"
@@ -39,8 +39,13 @@
 #include <Windows.h>
 #include <d3d9.h>
 #include <ddraw.h>
+#include <d3dx9math.h>
 
+#ifdef _DEBUG
 #define PRINTHRESULT(hResult) /* m_pGameApp->Poll(); */ if (hResult!=D3D_OK) Debug::Message("Error at line " BURGER_MACRO_TO_STRING(__LINE__) " with 0x%08X\n",hResult)
+#else
+#define PRINTHRESULT(hResult)
+#endif
 static D3DPRESENT_PARAMETERS g_DisplayPresentParms;
 
 //
@@ -118,6 +123,7 @@ Burger::DisplayDirectX9::DisplayDirectX9(GameApp *pGameApp) :
 	Display(pGameApp),
 	m_pDirect3D9(NULL),
 	m_pDirect3DDevice9(NULL),
+	m_pD3DXMatrixStack(NULL),
 	m_pDefaultRenderTarget(NULL),
 	m_pCurrentRenderTarget(NULL),
 	m_bLostDevice(FALSE),
@@ -126,10 +132,21 @@ Burger::DisplayDirectX9::DisplayDirectX9(GameApp *pGameApp) :
 	m_bMultiRenderTargets(FALSE),
 	m_bSeparateAlphaBlend(FALSE),
 	m_bSceneBegun(FALSE),
+	m_bFullScreenGamma(FALSE),
+	m_bCanCalibrateGamma(FALSE),
+	m_bRasterSlopeScaleDepthBias(FALSE),
+	m_bRasterDepthBias(FALSE),
+	m_bIsnVidia(FALSE),
+	m_bIsATI(FALSE),
+	m_bIsIntel(FALSE),
 	m_uBackBufferFormat(0),
 	m_uMaxTextureWidth(0),
 	m_uMaxTextureHeight(0),
+	m_uMaxTextureStages(0),
+	m_uMaxTextureSamplers(0),
+	m_uMaxPossibleAnisotropy(0),
 	m_uClearColor(0),
+	m_uMatrixStackDepth(0),
 	m_fClearDepth(1.0f)
 {
 }
@@ -174,6 +191,70 @@ Word Burger::DisplayDirectX9::Init(Word uWidth,Word uHeight,Word uDepth,Word uFl
 		m_pDirect3D9 = pDirect3D9;
 	}
 
+	//
+	// Choose which adapter to use
+	//
+
+	Word uAdapterIndex = D3DADAPTER_DEFAULT;
+
+	//
+	// Get adapter manufacturer, so specific code could be easily added
+	//
+	D3DADAPTER_IDENTIFIER9 AdapterIdentifier;
+	HRESULT hResult = pDirect3D9->GetAdapterIdentifier(uAdapterIndex,0,&AdapterIdentifier);
+	PRINTHRESULT(hResult);
+	if (hResult!=D3D_OK) {
+		MemoryClear(&AdapterIdentifier,sizeof(AdapterIdentifier));
+	}
+	// Capture the vendor ID of the card that's being requested
+	m_bIsnVidia = (AdapterIdentifier.VendorId == 0x10DE);
+	m_bIsATI = (AdapterIdentifier.VendorId == 0x1002);
+	m_bIsIntel = (AdapterIdentifier.VendorId == 0x8086);
+	
+	//
+	// Get the device caps
+	//
+
+	D3DCAPS9 CurrentDeviceCaps;
+	hResult = pDirect3D9->GetDeviceCaps(uAdapterIndex,D3DDEVTYPE_HAL,&CurrentDeviceCaps);
+	PRINTHRESULT(hResult);
+
+	// Save the gamma caps
+	m_bFullScreenGamma = (CurrentDeviceCaps.Caps2 & D3DCAPS2_FULLSCREENGAMMA)!=0;
+	m_bCanCalibrateGamma = (CurrentDeviceCaps.Caps2 & D3DCAPS2_CANCALIBRATEGAMMA)!=0;
+
+	// Save the depth bias supported flags
+	m_bRasterSlopeScaleDepthBias = (CurrentDeviceCaps.RasterCaps & D3DPRASTERCAPS_SLOPESCALEDEPTHBIAS)!=0;
+	m_bRasterDepthBias = (CurrentDeviceCaps.RasterCaps & D3DPRASTERCAPS_DEPTHBIAS)!=0;
+
+	// Grab some constants
+	m_uMaxTextureStages = CurrentDeviceCaps.MaxTextureBlendStages;
+	m_uMaxTextureSamplers = CurrentDeviceCaps.MaxSimultaneousTextures;
+	m_uMaxPossibleAnisotropy = CurrentDeviceCaps.MaxAnisotropy;
+	m_uMaxTextureWidth = CurrentDeviceCaps.MaxTextureWidth;
+	m_uMaxTextureHeight = CurrentDeviceCaps.MaxTextureHeight; 
+	m_bMultiRenderTargets = (CurrentDeviceCaps.NumSimultaneousRTs >= 2);
+	m_bSeparateAlphaBlend = (CurrentDeviceCaps.PrimitiveMiscCaps & D3DPMISCCAPS_SEPARATEALPHABLEND)!=0;
+
+	//
+	// Determine if power of 2 textures are required
+	//
+
+	m_bPower2Textures = (CurrentDeviceCaps.TextureCaps & (D3DPTEXTURECAPS_NONPOW2CONDITIONAL|D3DPTEXTURECAPS_POW2))==D3DPTEXTURECAPS_POW2;
+	
+	//
+	// Get the D3D matrix stack
+	//
+
+	if (!m_pD3DXMatrixStack) {
+		if (Globals::D3DXCreateMatrixStack(0,&m_pD3DXMatrixStack)!=D3D_OK) {
+			return 10;		// Boned?
+		}
+	}
+
+
+
+	// Save the states
 	m_uFlags = uFlags;
 	m_uWidth = uWidth;
 	m_uHeight = uHeight;
@@ -183,26 +264,13 @@ Word Burger::DisplayDirectX9::Init(Word uWidth,Word uHeight,Word uDepth,Word uFl
 	// Set up the window
 	//
 
-	HWND pWindow = static_cast<WindowsApp *>(m_pGameApp)->GetWindow();
+	HWND pWindow = m_pGameApp->GetWindow();
 	if (uFlags & FULLSCREEN) {
-		// Get the style of the window 
-		LONG dwStyle = GetWindowLongW(pWindow,GWL_STYLE);
-		dwStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX);
-		dwStyle |= WS_POPUP | WS_OVERLAPPED | WS_EX_TOPMOST;		// Can't be a pop-up window
-		SetWindowLongW(pWindow,GWL_STYLE,dwStyle);					// Set the style
-
-		// Position the window on the screen in the center or where it was located last time
-		SetWindowPos(pWindow,HWND_TOP,0,0,static_cast<int>(uWidth),static_cast<int>(uHeight),SWP_NOZORDER | SWP_NOACTIVATE);
-
-		// Set the style (Makes it visible)
-		ShowWindow(pWindow,SW_SHOWNORMAL);
+		m_pGameApp->SetWindowFullScreen(uWidth,uHeight);
 	} else {
-		static_cast<WindowsApp *>(m_pGameApp)->SetWindowSize(uWidth,uHeight);
+		m_pGameApp->SetWindowSize(uWidth,uHeight);
 	}
 
-	D3DCAPS9 Caps;
-	HRESULT hResult = pDirect3D9->GetDeviceCaps(0,D3DDEVTYPE_HAL,&Caps);
-	PRINTHRESULT(hResult);
 	//
 	// Create my D3D device
 	//
@@ -217,27 +285,27 @@ Word Burger::DisplayDirectX9::Init(Word uWidth,Word uHeight,Word uDepth,Word uFl
 	DisplayPresentParms.MultiSampleType = D3DMULTISAMPLE_NONE;
 	DisplayPresentParms.MultiSampleQuality = 0;
 	DisplayPresentParms.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	DisplayPresentParms.hDeviceWindow = static_cast<WindowsApp *>(m_pGameApp)->GetWindow();
+	DisplayPresentParms.hDeviceWindow = m_pGameApp->GetWindow();
 	DisplayPresentParms.EnableAutoDepthStencil = TRUE;
-	DisplayPresentParms.AutoDepthStencilFormat = D3DFMT_D24X8;
+	DisplayPresentParms.AutoDepthStencilFormat = D3DFMT_D24S8;		// 24 bit depth, 8 bit stencil
 	DisplayPresentParms.Flags = D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
 	DisplayPresentParms.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
 
 	if (m_uFlags & FULLSCREEN) {
 		DisplayPresentParms.Windowed = FALSE;
-		DisplayPresentParms.FullScreen_RefreshRateInHz = 60;	// Insert requested refresh rate
+		DisplayPresentParms.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;	// Insert requested refresh rate
 		DisplayPresentParms.BackBufferFormat = D3DFMT_A8R8G8B8;
 	} else {
 		DisplayPresentParms.Windowed = TRUE;
 		DisplayPresentParms.FullScreen_RefreshRateInHz = 0;
-		DisplayPresentParms.BackBufferFormat = D3DFMT_UNKNOWN;
+		DisplayPresentParms.BackBufferFormat = D3DFMT_UNKNOWN;	// Always set to unknown for windowed mode!!!
 	}
 
 	DWORD uDisplayFlags = D3DCREATE_FPU_PRESERVE;
 	// Does it support hardware transformation?
-	if (Caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) {
+	if (CurrentDeviceCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) {
 		// Check against for version 1.1 or higher
-		if (LOWORD(Caps.VertexShaderVersion) < ((1<<8)+1)) {
+		if (LOWORD(CurrentDeviceCaps.VertexShaderVersion) < ((1<<8)+1)) {
 			// No vertex shader support? Use software and hardware
 			uDisplayFlags |= D3DCREATE_MIXED_VERTEXPROCESSING;
 		} else {
@@ -287,21 +355,9 @@ Word Burger::DisplayDirectX9::Init(Word uWidth,Word uHeight,Word uDepth,Word uFl
 	}
 	MemoryCopy(&g_DisplayPresentParms,&DisplayPresentParms,sizeof(DisplayPresentParms));
 	m_bVSynced = FALSE;
-	m_bMultiRenderTargets = FALSE;
 
 	if (DisplayPresentParms.PresentationInterval == D3DPRESENT_INTERVAL_ONE) {
 		m_bVSynced = TRUE;
-	}
-
-	m_pDirect3DDevice9->GetDeviceCaps(&Caps);
-	m_uMaxTextureWidth = Caps.MaxTextureWidth;
-	m_uMaxTextureHeight = Caps.MaxTextureHeight; 
-	if (Caps.NumSimultaneousRTs >= 2) {
-		m_bMultiRenderTargets = TRUE;
-	}
-
-	if (Caps.PrimitiveMiscCaps & D3DPMISCCAPS_SEPARATEALPHABLEND) {
-		m_bSeparateAlphaBlend = TRUE;
 	}
 
 	// Store the default render target
@@ -311,11 +367,6 @@ Word Burger::DisplayDirectX9::Init(Word uWidth,Word uHeight,Word uDepth,Word uFl
 	InitState();
 	m_bSceneBegun = FALSE;
 
-	//
-	// Determine if power of 2 textures are required
-	//
-
-	m_bPower2Textures = (Caps.TextureCaps & (D3DPTEXTURECAPS_NONPOW2CONDITIONAL|D3DPTEXTURECAPS_POW2))==D3DPTEXTURECAPS_POW2;
 	return 0;
 }
 
@@ -326,6 +377,17 @@ Word Burger::DisplayDirectX9::Init(Word uWidth,Word uHeight,Word uDepth,Word uFl
 void Burger::DisplayDirectX9::Shutdown(void)
 {
 	Texture::ReleaseAll(this);
+
+	// 
+	// Release the allocated data
+	//
+
+	if (m_pD3DXMatrixStack) {
+		m_pD3DXMatrixStack->Release();
+		m_pD3DXMatrixStack = NULL;
+		m_uMatrixStackDepth = 0;
+	}
+
 	if (m_pCurrentRenderTarget) {
 		m_pCurrentRenderTarget->Release();
 		m_pCurrentRenderTarget = NULL;
@@ -336,12 +398,6 @@ void Burger::DisplayDirectX9::Shutdown(void)
 	}
 
 	if (m_pDirect3DDevice9) {
-		// Because there was a video context, capture the location
-		// of the window, so if the window was re-opened, use it's
-		// old location
-		if (!(m_uFlags & Display::FULLSCREEN)) {
-			static_cast<WindowsApp *>(m_pGameApp)->RecordWindowLocation();
-		}
 		m_pDirect3DDevice9->Release();
 		m_pDirect3DDevice9 = NULL;
 	}
@@ -399,7 +455,7 @@ void Burger::DisplayDirectX9::EndScene(void)
 		if (hResult == D3DERR_DEVICENOTRESET) {
 			Reset();
 		}
-		HWND pWindow = static_cast<WindowsApp *>(m_pGameApp)->GetWindow();
+		HWND pWindow = m_pGameApp->GetWindow();
 		hResult = pDirect3DDevice9->Present(NULL,NULL,NULL,NULL);
 		PRINTHRESULT(hResult);
 		if (hResult==D3D_OK) {
@@ -420,15 +476,37 @@ Burger::VertexBuffer *Burger::DisplayDirectX9::CreateVertexBufferObject(void)
 	return new (Alloc(sizeof(VertexBufferDirectX9))) VertexBufferDirectX9;
 }
 
+void Burger::DisplayDirectX9::Resize(Word /* uWidth */,Word /* uHeight */)
+{
+//	if (m_pDirect3DDevice9) {
+//		m_uWidth = uWidth;
+//		m_uHeight = uHeight;
+//		SetViewport(0,0,uWidth,uHeight);
+//	}
+}
+
 void Burger::DisplayDirectX9::SetViewport(Word uX,Word uY,Word uWidth,Word uHeight)
 {
-	D3DVIEWPORT9 Temp;
-	m_pDirect3DDevice9->GetViewport(&Temp);
-	Temp.X = uX;
-	Temp.Y = uY;
-	Temp.Width = uWidth;
-	Temp.Height = uHeight;
-	m_pDirect3DDevice9->SetViewport(&Temp);
+	IDirect3DDevice9 *pDevice = m_pDirect3DDevice9;
+	if (pDevice) {
+		D3DVIEWPORT9 Temp;
+		pDevice->GetViewport(&Temp);
+		Temp.X = uX;
+		Temp.Y = uY;
+		Temp.Width = uWidth;
+		Temp.Height = uHeight;
+		pDevice->SetViewport(&Temp);
+	}
+}
+
+void Burger::DisplayDirectX9::SetScissorRect(Word uX,Word uY,Word uWidth,Word uHeight)
+{
+	RECT Temp;
+	Temp.left = static_cast<LONG>(uX);
+	Temp.top = static_cast<LONG>(uY);
+	Temp.right = static_cast<LONG>(uX+uWidth);
+	Temp.bottom = static_cast<LONG>(uY+uHeight);
+	m_pDirect3DDevice9->SetScissorRect(&Temp);
 }
 
 void Burger::DisplayDirectX9::SetClearColor(float fRed,float fGreen,float fBlue,float fAlpha)
@@ -508,6 +586,11 @@ void Burger::DisplayDirectX9::SetCullMode(eCullMode uCullMode)
 {
 	BURGER_ASSERT(uCullMode<BURGER_ARRAYSIZE(g_CullOperation));
 	m_pDirect3DDevice9->SetRenderState(D3DRS_CULLMODE,g_CullOperation[uCullMode]);
+}
+
+void Burger::DisplayDirectX9::SetScissor(Word bEnable)
+{
+	m_pDirect3DDevice9->SetRenderState(D3DRS_SCISSORTESTENABLE,bEnable!=0);
 }
 
 void Burger::DisplayDirectX9::DrawPrimitive(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer)
@@ -605,7 +688,7 @@ void BURGER_API Burger::DisplayDirectX9::CreatePresentParameters(_D3DPRESENT_PAR
 	pOutput->MultiSampleType = D3DMULTISAMPLE_NONE;
 	pOutput->MultiSampleQuality = 0;
 	pOutput->SwapEffect = D3DSWAPEFFECT_DISCARD;
-	pOutput->hDeviceWindow = static_cast<WindowsApp *>(m_pGameApp)->GetWindow();
+	pOutput->hDeviceWindow = m_pGameApp->GetWindow();
 	pOutput->EnableAutoDepthStencil = TRUE;
 	pOutput->AutoDepthStencilFormat = D3DFMT_D24X8;
 	pOutput->Flags = D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
@@ -693,5 +776,17 @@ Word BURGER_API Burger::DisplayDirectX9::Reset(void)
 	return 0;
 }
 
+
+BURGER_CREATE_STATICRTTI_PARENT(Burger::DisplayDirectX9,Burger::Display);
+
+/*! ************************************
+
+	\var const Burger::StaticRTTI Burger::DisplayDirectX9::g_StaticRTTI
+	\brief The global description of the class
+
+	This record contains the name of this class and a
+	reference to the parent (If any)
+
+***************************************/
 
 #endif

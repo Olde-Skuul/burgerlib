@@ -17,6 +17,7 @@
 #include "brfilemanager.h"
 #include "brdosextender.h"
 #include <dos.h>
+#include <direct.h>
 
 /*! ************************************
 
@@ -131,12 +132,12 @@ const char *Burger::Filename::GetNative(void)
 	// Now that I have the drive number, determine the length
 	// of the output buffer and start the conversion
 
-	WordPtr uPathLength = Burger::StringLength(reinterpret_cast<const char *>(pPath));
+	WordPtr uPathLength = StringLength(reinterpret_cast<const char *>(pPath));
 	// Reserve 6 extra bytes for the prefix and/or the trailing / and null
 	char *pOutput = m_NativeFilename;
 
-	if (uPathLength>=(Burger::Filename::BUFFERSIZE-6)) {
-		pOutput = static_cast<char *>(Burger::Alloc(uPathLength+6));
+	if (uPathLength>=(sizeof(m_NativeFilename)-6)) {
+		pOutput = static_cast<char *>(Alloc(uPathLength+6));
 		if (!pOutput) {
 			pOutput=m_NativeFilename;
 			uPathLength = 0;		// I'm so boned
@@ -179,6 +180,25 @@ const char *Burger::Filename::GetNative(void)
 	}
 	pOutput[0] = 0;			// Terminate the "C" string
 	return m_pNativeFilename;
+}
+
+/***************************************
+
+	\brief Set the filename to the current working directory
+
+	Query the operating system for the current working directory and
+	set the filename to that directory. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void)
+{
+	SetFromNative(getcwd(NULL,0));
 }
 
 /***************************************
@@ -281,8 +301,8 @@ void Burger::Filename::SetFromNative(const char *pInput)
 	
 	WordPtr uOutputLength = uWorkingDirectoryLength+uInputLength+7;
 	char *pWork = m_Filename;
-	if (uOutputLength>=BUFFERSIZE) {
-		pWork = static_cast<char *>(Burger::Alloc(uOutputLength));
+	if (uOutputLength>=sizeof(m_Filename)) {
+		pWork = static_cast<char *>(Alloc(uOutputLength));
 		if (!pWork) {
 			return;
 		}

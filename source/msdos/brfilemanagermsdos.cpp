@@ -28,7 +28,7 @@
 
 Word BURGER_API Burger::FileManager::AreLongFilenamesAllowed(void)
 {
-	Word uResult = g_FileManager.m_bAllowed;
+	Word uResult = g_pFileManager->m_bAllowed;
 	if (!(uResult&0x80U)) {		// Did I check already?
 		uResult = 0x80U;		// Set the "I checked" flag
 		Regs16 Regs;
@@ -49,7 +49,7 @@ Word BURGER_API Burger::FileManager::AreLongFilenamesAllowed(void)
 			}
 		}
 		// Store the result in the global so I don't have to do this again
-		g_FileManager.m_bAllowed = static_cast<Word8>(uResult);
+		g_pFileManager->m_bAllowed = static_cast<Word8>(uResult);
 	}
 	return uResult&1U;		// Return the flag, True or false
 }
@@ -162,7 +162,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 	This routine will get the time and date
 	from a file.
-	Note, this routine is Operating system specfic!!!
+	Note, this routine is Operating system specific!!!
 
 ***************************************/
 
@@ -263,7 +263,7 @@ FooBar:
 
 	This routine will get the time and date
 	from a file.
-	Note, this routine is Operating system specfic!!!
+	Note, this routine is Operating system specific!!!
 
 ***************************************/
 
@@ -299,8 +299,8 @@ Word BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDat
 	I will return TRUE if the specified path
 	is a path to a file that exists, if it doesn't exist
 	or it's a directory, I return FALSE.
-	Note : I do not check if the file havs any data in it.
-	Just the existance of the file.
+	Note : I do not check if the file has any data in it.
+	Just the existence of the file.
 
 ***************************************/
 

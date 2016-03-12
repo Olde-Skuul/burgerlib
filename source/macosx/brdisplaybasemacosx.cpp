@@ -16,10 +16,11 @@
 #include "brdisplay.h"
 
 #if defined(BURGER_MACOSX)
-#include "brmacosxapp.h"
+#include "brgameapp.h"
 #include "brdebug.h"
 #include "brglobals.h"
 #include "brglobalmemorymanager.h"
+#include <AvailabilityMacros.h>
 #import <AppKit/NSWindow.h>
 #import <AppKit/NSScreen.h>
 #import <IOKit/graphics/IOGraphicsLib.h>
@@ -35,13 +36,13 @@
 
 void Burger::Display::SetWindowTitle(const char *pTitle)
 {
-	NSWindow *pWindow = static_cast<MacOSXApp *>(m_pGameApp)->GetWindow();
+	NSWindow *pWindow = m_pGameApp->GetWindow();
 	// Is the window present?
 	if (pWindow) {
 		//
 		// Create an auto-release pool for memory clean up
 		//
-		
+
 		NSAutoreleasePool *pPool = [[NSAutoreleasePool alloc] init];
 		CFStringRef rString = CFStringCreateWithCStringNoCopy(NULL,pTitle,kCFStringEncodingUTF8,kCFAllocatorNull);
 		[pWindow setTitle:(NSString *)rString];
@@ -60,9 +61,9 @@ void BURGER_API Burger::Display::InitGlobals(void)
 		CGDirectDisplayID pMainDisplay = CGMainDisplayID();
 		g_Globals.m_uDefaultWidth = static_cast<Word>(CGDisplayPixelsWide(pMainDisplay));
 		g_Globals.m_uDefaultHeight = static_cast<int>(CGDisplayPixelsHigh(pMainDisplay));
-		
+
 		// Get the pixel depth and refresh rate
-		
+
 #if defined(MAC_OS_X_VERSION_10_6)
 		CGDisplayModeRef pCurrentMode = CGDisplayCopyDisplayMode(pMainDisplay);
 		CFStringRef pPixelEncoding = CGDisplayModeCopyPixelEncoding(pCurrentMode);
@@ -79,32 +80,32 @@ void BURGER_API Burger::Display::InitGlobals(void)
 		g_Globals.m_uDefaultDepth = uDepth;
 		// We're responsible for this
 		CFRelease(pPixelEncoding);
-		
+
 		// Frequency
 		g_Globals.m_uDefaultHertz = static_cast<Word>(CGDisplayModeGetRefreshRate(pCurrentMode));
 		CGDisplayModeRelease(pCurrentMode);
 #else
-		
+
 		// Used for PowerPC version
 		CFDictionaryRef pCurrentMode = CGDisplayCurrentMode(pMainDisplay);
 		CFNumberRef pNumber = (CFNumberRef)CFDictionaryGetValue(pCurrentMode,kCGDisplayBitsPerPixel);
 		int iValue;
 		CFNumberGetValue(pNumber,kCFNumberIntType,&iValue);
 		g_Globals.m_uDefaultDepth = static_cast<Word>(iValue);
-		
+
 		pNumber = (CFNumberRef)CFDictionaryGetValue(pCurrentMode,kCGDisplayRefreshRate);
-		CFNumberGetValue(pNumber,kCFNumberIntType,&iValue);	
+		CFNumberGetValue(pNumber,kCFNumberIntType,&iValue);
 		g_Globals.m_uDefaultHertz = static_cast<Word>(iValue);
 #endif
-		
+
 		g_Globals.m_uDefaultTotalWidth = g_Globals.m_uDefaultWidth;
 		g_Globals.m_uDefaultTotalHeight = g_Globals.m_uDefaultHeight;
-		
+
 		uint32_t uDisplayCount;
 		// Get the number of displays attached to this mac.
 		// It CAN be zero
 		CGGetOnlineDisplayList(0,NULL,&uDisplayCount);
-		
+
 		g_Globals.m_uDefaultMonitorCount = uDisplayCount;
 		g_Globals.m_bInitialized = TRUE;
 	}

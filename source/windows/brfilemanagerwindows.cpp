@@ -92,7 +92,7 @@ Word BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,Word uVolum
 
 /***************************************
 
-	Set the initial default prefixs for a power up state
+	Set the initial default prefixes for a power up state
 	*: = Boot volume
 	$: = System folder
 	@: = Prefs folder
@@ -197,7 +197,7 @@ Word BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,Tim
 
 	This routine will get the time and date
 	from a file.
-	Note, this routine is Operating system specfic!!!
+	Note, this routine is Operating system specific!!!
 
 ***************************************/
 
@@ -388,4 +388,158 @@ Word BURGER_API Burger::FileManager::CopyFile(Filename *pDestName,Filename *pSou
 	return TRUE;
 }
 
+/***************************************
+
+	Worker thread for handling file commands
+
+***************************************/
+
+WordPtr BURGER_API Burger::FileManager::QueueHandler(void *pData)
+{
+	// Read,Write,Append,Read/Write
+	static const DWORD g_Access[4] = { GENERIC_READ,GENERIC_WRITE,GENERIC_WRITE,GENERIC_READ|GENERIC_WRITE };
+	static const DWORD g_Share[4] = { FILE_SHARE_READ,FILE_SHARE_WRITE,FILE_SHARE_WRITE,FILE_SHARE_WRITE };
+	static const DWORD g_Creation[4] = { OPEN_EXISTING,CREATE_ALWAYS,OPEN_ALWAYS, OPEN_ALWAYS };
+
+	char Temp[128];
+	OutputDebugStringA("Start filemanager thread\n");
+
+	// No error at this time
+	Word uError = 0;
+	FileManager *pThis = static_cast<FileManager *>(pData);
+	for (;;) {
+		// Wait until there's a command in the queue
+		pThis->m_PingIOThread.Acquire();
+		// Get the command
+		Queue_t *pQueue = &pThis->m_IOQueue[pThis->m_uQueueStart];
+		File *pFile;
+
+		sprintf(Temp,"Command %u\n",pQueue->m_uIOCommand);
+		OutputDebugStringA(Temp);
+
+		// Dispatch the command
+		switch (pQueue->m_uIOCommand) {
+
+		// Was the thread requested to shut down?
+		case IOCOMMAND_ENDTHREAD:
+			return 0;
+
+		// Issue a callback at this location
+		case IOCOMMAND_CALLBACK:
+			pQueue->m_uLength = uError;
+			static_cast<ProcCallback>(pQueue->m_pBuffer)(pQueue);
+			uError = 0;		// Release error
+			break;
+
+		// Open a file
+		case IOCOMMAND_OPEN:
+			{
+				pFile = pQueue->m_pFile;
+
+				// Convert from UTF 8 to UTF16
+				String16 FinalName(pFile->m_Filename.GetNative());
+
+				// Open the file
+				File::eFileAccess uAccess = static_cast<File::eFileAccess>(pQueue->m_uLength&3);
+				HANDLE hfp = CreateFileW(reinterpret_cast<const WCHAR *>(FinalName.GetPtr()),g_Access[uAccess],g_Share[uAccess],NULL,g_Creation[uAccess],/* FILE_ATTRIBUTE_NORMAL| */ FILE_FLAG_SEQUENTIAL_SCAN,NULL);
+
+				// Success?
+				if (hfp==INVALID_HANDLE_VALUE) {
+					uError = GetLastError();
+				} else {
+
+					// Save the opened file reference
+					pFile->m_pFile = hfp;
+					uError = 0;
+
+					// Was it an append command?
+					if (uAccess==File::APPEND) {
+
+						// Set the file mark to the end of the file
+						LARGE_INTEGER uNewPointer;
+						uNewPointer.QuadPart = 0;
+						if (!SetFilePointerEx(hfp,uNewPointer,NULL,FILE_END)) {
+							uError = GetLastError();
+						}
+					}
+				}
+				break;
+			}
+
+		// Close the file
+		case IOCOMMAND_CLOSE:
+			{
+				pFile = pQueue->m_pFile;
+				// Close the file
+				uError = 0;
+				HANDLE hfp = pFile->m_pFile;
+				// Only call if the handle is valid
+				if (hfp) {
+					if (!CloseHandle(hfp)) {
+						uError = GetLastError();
+					}
+				}
+				// Zap the handle
+				pFile->m_pFile = NULL;
+			}
+			break;
+
+		// Read in data
+		case IOCOMMAND_READ:
+			{
+				DWORD uRead;
+				pFile = pQueue->m_pFile;
+				uError = 0;
+				HANDLE hfp = pFile->m_pFile;
+				if (hfp) {
+					if (ReadFile(hfp,pQueue->m_pBuffer,static_cast<DWORD>(pQueue->m_uLength),&uRead,NULL)) {
+						uError = uRead;
+					}
+				}
+				break;
+			}
+
+		// Write out data
+		case IOCOMMAND_WRITE:
+			{
+				DWORD uWritten;
+				pFile = pQueue->m_pFile;
+				uError = 0;
+				HANDLE hfp = pFile->m_pFile;
+				if (hfp) {
+					if (WriteFile(hfp,pQueue->m_pBuffer,static_cast<DWORD>(pQueue->m_uLength),&uWritten,NULL)) {
+						uError = uWritten;
+					}
+				}
+				break;
+			}
+
+		// Seek the file
+		case IOCOMMAND_SEEK:
+			{
+				pFile = pQueue->m_pFile;
+				uError = 0;
+				HANDLE hfp = pFile->m_pFile;
+				LARGE_INTEGER uNewPointer;
+				uNewPointer.QuadPart = pQueue->m_uLength;
+				if (!SetFilePointerEx(hfp,uNewPointer,NULL,FILE_BEGIN)) {
+					uError = GetLastError();
+				}
+			}
+			break;
+
+		// Issue a sync command to signal that
+		// this command token was reached
+
+		case IOCOMMAND_SYNC:
+			pThis->m_IOThreadSync.Release();
+			break;
+
+		default:;
+		}
+
+		// Acknowledge that the command was consumed
+		pThis->m_uQueueStart = (pThis->m_uQueueStart+1)&(cMaxQueue-1);
+	}
+}
 #endif

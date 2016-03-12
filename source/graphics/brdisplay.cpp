@@ -16,6 +16,27 @@
 #include "brrenderer.h"
 #include "brpalette.h"
 
+/*! ************************************
+
+	\class Burger::Display
+
+	\brief Base class for instantiating a video display and the API to drive it.
+
+	This class manages video displays, resources and APIs to render images.
+
+	Since palettes are tied to a video display, this class will manage
+	palettes for palette display contexts. If the display is in true color,
+	palette functions will only update internal buffers but will not affect
+	actual rendering.
+
+	Classes for specific rendering APIs derive from this base class.
+
+	\sa Burger::Renderer, Burger::Display, Burger::DisplayOpenGL, Burger::DisplayDirectX9,
+		Burger::DisplayDirectX11, Burger::DisplayOpenGLSoftware16 or Burger::DisplayOpenGLSoftware8
+
+***************************************/
+
+
 //
 // Global display variables
 //
@@ -153,7 +174,7 @@ Burger::Display::VideoCardDescription::VideoCardDescription() :
 	m_bHardwareAccelerated(FALSE)
 {
 #if defined(BURGER_WINDOWS)
-	GUIDInit(&m_GUID);
+	MemoryClear(&m_GUID,sizeof(m_GUID));
 #endif
 }
 
@@ -169,26 +190,7 @@ Burger::Display::VideoCardDescription::~VideoCardDescription()
 {
 }
 
-/*! ************************************
 
-	\class Burger::Display
-
-	\brief Base class for instantiating a video display and the API to drive it.
-
-	This class manages video displays and resources. It does not manage
-	rendering functions, use the Renderer class for that.
-
-	Since palettes are tied to a video display, this class will manage
-	palettes for palette display contexts. If the display is in true color,
-	palette functions will only update internal buffers but will not affect
-	actual rendering.
-
-	Classes for specific rendering APIs derive from this base class.
-
-	\sa Burger::Renderer, Burger::Display, Burger::DisplayOpenGL, Burger::DisplayDirectX9,
-		Burger::DisplayDirectX11, Burger::DisplayOpenGLSoftware16 or Burger::DisplayOpenGLSoftware8
-
-***************************************/
 
 /*! ************************************
 
@@ -401,8 +403,17 @@ Burger::VertexBuffer *Burger::Display::CreateVertexBufferObject(void)
 	return new (Alloc(sizeof(VertexBuffer))) VertexBuffer;
 }
 
+void Burger::Display::Resize(Word uWidth,Word uHeight)
+{
+	m_uWidth = uWidth;
+	m_uHeight = uHeight;
+}
 
 void Burger::Display::SetViewport(Word /* uX */,Word /* uY */,Word /* uWidth */,Word /* uHeight */)
+{
+}
+
+void Burger::Display::SetScissorRect(Word /* uX */,Word /* uY */,Word /* uWidth */,Word /* uHeight */)
 {
 }
 
@@ -448,6 +459,10 @@ void Burger::Display::SetCullMode(eCullMode /* uCullMode */)
 {
 }
 
+void Burger::Display::SetScissor(Word /* bEnable */)
+{
+}
+
 void Burger::Display::DrawPrimitive(ePrimitiveType /* uPrimitiveType */,VertexBuffer * /* pVertexBuffer */)
 {
 }
@@ -480,6 +495,367 @@ Burger::Texture * BURGER_API Burger::Display::CreateTexture(Texture::eWrapping u
 	if (pTexture) {
 		pTexture->SetWrapping(uWrapping);
 		pTexture->SetFilter(uFilter);
+	}
+	return pTexture;
+}
+
+/*! ************************************
+
+	\brief Create a texture object with image buffer and wrapping and filters preset
+
+	Create a texture object and set the wrapping and
+	filter settings and create a buffer to hold the pixel map information.
+
+	\param uWidth Width of the texture in pixels
+	\param uHeight Height of the texture in pixels
+	\param uPixelType Type of pixel data contained in the bitmap
+	\param uWrapping Texture wrapping constant
+	\param uFilter Texture filter constant
+	\return \ref NULL if the object couldn't be created or a valid texture object.
+	
+	\sa CreateTextureObject()
+	
+***************************************/
+
+Burger::Texture * BURGER_API Burger::Display::CreateTexture(Word uWidth,Word uHeight,Image::ePixelTypes uPixelType,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+{
+	Texture *pTexture = CreateTextureObject();
+	if (pTexture) {
+		if (pTexture->GetImage()->Init(uWidth,uHeight,uPixelType)) {
+			Delete(pTexture);
+			pTexture = NULL;
+		} else {
+			pTexture->SetWrapping(uWrapping);
+			pTexture->SetFilter(uFilter);
+		}
+	}
+	return pTexture;
+}
+
+/*! ************************************
+
+	\brief Create a texture object with wrapping, filters and a texture source
+
+	Create a texture object and set the wrapping and
+	filter settings and set it up to obtain the bitmap from a PNG file.
+
+	\param pFilename Pointer to a "C" string of a Burgerlib path of the texture file
+	\param uWrapping Texture wrapping constant
+	\param uFilter Texture filter constant
+	\return \ref NULL if the object couldn't be created or a valid texture object.
+	
+	\sa CreateTextureObject()
+	
+***************************************/
+
+Burger::Texture * BURGER_API Burger::Display::CreateTexturePNG(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+{
+	Texture *pTexture = CreateTextureObject();
+	if (pTexture) {
+		pTexture->SetWrapping(uWrapping);
+		pTexture->SetFilter(uFilter);
+		pTexture->LoadPNG(pFilename);
+	}
+	return pTexture;
+}
+
+/*! ************************************
+
+	\brief Create a texture object with wrapping, filters and a texture source
+
+	Create a texture object and set the wrapping and
+	filter settings and set it up to obtain the bitmap from a PNG file.
+
+	\param pFilename Pointer to a Burgerlib \ref Filename object with the filename
+	\param uWrapping Texture wrapping constant
+	\param uFilter Texture filter constant
+	\return \ref NULL if the object couldn't be created or a valid texture object.
+	
+	\sa CreateTextureObject()
+	
+***************************************/
+
+Burger::Texture * BURGER_API Burger::Display::CreateTexturePNG(Filename *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+{
+	Texture *pTexture = CreateTextureObject();
+	if (pTexture) {
+		pTexture->SetWrapping(uWrapping);
+		pTexture->SetFilter(uFilter);
+		pTexture->LoadPNG(pFilename);
+	}
+	return pTexture;
+}
+
+/*! ************************************
+
+	\brief Create a texture object with wrapping, filters and a texture source
+
+	Create a texture object and set the wrapping and
+	filter settings and set it up to obtain the bitmap from a PNG file.
+
+	\param pRezFile Pointer to a Burgerlib RezFile
+	\param uRezNum Chuck ID of the data containing the image file 
+	\param uWrapping Texture wrapping constant
+	\param uFilter Texture filter constant
+	\return \ref NULL if the object couldn't be created or a valid texture object.
+	
+	\sa CreateTextureObject()
+	
+***************************************/
+
+Burger::Texture * BURGER_API Burger::Display::CreateTexturePNG(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+{
+	Texture *pTexture = CreateTextureObject();
+	if (pTexture) {
+		pTexture->SetWrapping(uWrapping);
+		pTexture->SetFilter(uFilter);
+		pTexture->LoadPNG(pRezFile,uRezNum);
+	}
+	return pTexture;
+}
+
+/*! ************************************
+
+	\brief Create a texture object with wrapping, filters and a texture source
+
+	Create a texture object and set the wrapping and
+	filter settings and set it up to obtain the bitmap from a GIF file.
+
+	\param pFilename Pointer to a "C" string of a Burgerlib path of the texture file
+	\param uWrapping Texture wrapping constant
+	\param uFilter Texture filter constant
+	\return \ref NULL if the object couldn't be created or a valid texture object.
+	
+	\sa CreateTextureObject()
+	
+***************************************/
+
+Burger::Texture * BURGER_API Burger::Display::CreateTextureGIF(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+{
+	Texture *pTexture = CreateTextureObject();
+	if (pTexture) {
+		pTexture->SetWrapping(uWrapping);
+		pTexture->SetFilter(uFilter);
+		pTexture->LoadGIF(pFilename);
+	}
+	return pTexture;
+}
+
+/*! ************************************
+
+	\brief Create a texture object with wrapping, filters and a texture source
+
+	Create a texture object and set the wrapping and
+	filter settings and set it up to obtain the bitmap from a GIF file.
+
+	\param pFilename Pointer to a Burgerlib \ref Filename object with the filename
+	\param uWrapping Texture wrapping constant
+	\param uFilter Texture filter constant
+	\return \ref NULL if the object couldn't be created or a valid texture object.
+	
+	\sa CreateTextureObject()
+	
+***************************************/
+
+Burger::Texture * BURGER_API Burger::Display::CreateTextureGIF(Filename *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+{
+	Texture *pTexture = CreateTextureObject();
+	if (pTexture) {
+		pTexture->SetWrapping(uWrapping);
+		pTexture->SetFilter(uFilter);
+		pTexture->LoadGIF(pFilename);
+	}
+	return pTexture;
+}
+
+/*! ************************************
+
+	\brief Create a texture object with wrapping, filters and a texture source
+
+	Create a texture object and set the wrapping and
+	filter settings and set it up to obtain the bitmap from a GIF file.
+
+	\param pRezFile Pointer to a Burgerlib RezFile
+	\param uRezNum Chuck ID of the data containing the image file 
+	\param uWrapping Texture wrapping constant
+	\param uFilter Texture filter constant
+	\return \ref NULL if the object couldn't be created or a valid texture object.
+	
+	\sa CreateTextureObject()
+	
+***************************************/
+
+Burger::Texture * BURGER_API Burger::Display::CreateTextureGIF(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+{
+	Texture *pTexture = CreateTextureObject();
+	if (pTexture) {
+		pTexture->SetWrapping(uWrapping);
+		pTexture->SetFilter(uFilter);
+		pTexture->LoadGIF(pRezFile,uRezNum);
+	}
+	return pTexture;
+}
+
+/*! ************************************
+
+	\brief Create a texture object with wrapping, filters and a texture source
+
+	Create a texture object and set the wrapping and
+	filter settings and set it up to obtain the bitmap from a TGA file.
+
+	\param pFilename Pointer to a "C" string of a Burgerlib path of the texture file
+	\param uWrapping Texture wrapping constant
+	\param uFilter Texture filter constant
+	\return \ref NULL if the object couldn't be created or a valid texture object.
+	
+	\sa CreateTextureObject()
+	
+***************************************/
+
+Burger::Texture * BURGER_API Burger::Display::CreateTextureTGA(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+{
+	Texture *pTexture = CreateTextureObject();
+	if (pTexture) {
+		pTexture->SetWrapping(uWrapping);
+		pTexture->SetFilter(uFilter);
+		pTexture->LoadTGA(pFilename);
+	}
+	return pTexture;
+}
+
+/*! ************************************
+
+	\brief Create a texture object with wrapping, filters and a texture source
+
+	Create a texture object and set the wrapping and
+	filter settings and set it up to obtain the bitmap from a TGA file.
+
+	\param pFilename Pointer to a Burgerlib \ref Filename object with the filename
+	\param uWrapping Texture wrapping constant
+	\param uFilter Texture filter constant
+	\return \ref NULL if the object couldn't be created or a valid texture object.
+	
+	\sa CreateTextureObject()
+
+***************************************/
+
+Burger::Texture * BURGER_API Burger::Display::CreateTextureTGA(Filename *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+{
+	Texture *pTexture = CreateTextureObject();
+	if (pTexture) {
+		pTexture->SetWrapping(uWrapping);
+		pTexture->SetFilter(uFilter);
+		pTexture->LoadTGA(pFilename);
+	}
+	return pTexture;
+}
+
+/*! ************************************
+
+	\brief Create a texture object with wrapping, filters and a texture source
+
+	Create a texture object and set the wrapping and
+	filter settings and set it up to obtain the bitmap from a TGA file.
+
+	\param pRezFile Pointer to a Burgerlib RezFile
+	\param uRezNum Chuck ID of the data containing the image file 
+	\param uWrapping Texture wrapping constant
+	\param uFilter Texture filter constant
+	\return \ref NULL if the object couldn't be created or a valid texture object.
+	
+	\sa CreateTextureObject()
+	
+***************************************/
+
+Burger::Texture * BURGER_API Burger::Display::CreateTextureTGA(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+{
+	Texture *pTexture = CreateTextureObject();
+	if (pTexture) {
+		pTexture->SetWrapping(uWrapping);
+		pTexture->SetFilter(uFilter);
+		pTexture->LoadTGA(pRezFile,uRezNum);
+	}
+	return pTexture;
+}
+
+/*! ************************************
+
+	\brief Create a texture object with wrapping, filters and a texture source
+
+	Create a texture object and set the wrapping and
+	filter settings and set it up to obtain the bitmap from a BMP file.
+
+	\param pFilename Pointer to a "C" string of a Burgerlib path of the texture file
+	\param uWrapping Texture wrapping constant
+	\param uFilter Texture filter constant
+	\return \ref NULL if the object couldn't be created or a valid texture object.
+	
+	\sa CreateTextureObject()
+	
+***************************************/
+
+Burger::Texture * BURGER_API Burger::Display::CreateTextureBMP(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+{
+	Texture *pTexture = CreateTextureObject();
+	if (pTexture) {
+		pTexture->SetWrapping(uWrapping);
+		pTexture->SetFilter(uFilter);
+		pTexture->LoadBMP(pFilename);
+	}
+	return pTexture;
+}
+
+/*! ************************************
+
+	\brief Create a texture object with wrapping, filters and a texture source
+
+	Create a texture object and set the wrapping and
+	filter settings and set it up to obtain the bitmap from a BMP file.
+
+	\param pFilename Pointer to a Burgerlib \ref Filename object with the filename
+	\param uWrapping Texture wrapping constant
+	\param uFilter Texture filter constant
+	\return \ref NULL if the object couldn't be created or a valid texture object.
+	
+	\sa CreateTextureObject()
+	
+***************************************/
+
+Burger::Texture * BURGER_API Burger::Display::CreateTextureBMP(Filename *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+{
+	Texture *pTexture = CreateTextureObject();
+	if (pTexture) {
+		pTexture->SetWrapping(uWrapping);
+		pTexture->SetFilter(uFilter);
+		pTexture->LoadBMP(pFilename);
+	}
+	return pTexture;
+}
+
+/*! ************************************
+
+	\brief Create a texture object with wrapping, filters and a texture source
+
+	Create a texture object and set the wrapping and
+	filter settings and set it up to obtain the bitmap from a BMP file.
+
+	\param pRezFile Pointer to a Burgerlib RezFile
+	\param uRezNum Chuck ID of the data containing the image file 
+	\param uWrapping Texture wrapping constant
+	\param uFilter Texture filter constant
+	\return \ref NULL if the object couldn't be created or a valid texture object.
+	
+	\sa CreateTextureObject()
+	
+***************************************/
+
+Burger::Texture * BURGER_API Burger::Display::CreateTextureBMP(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+{
+	Texture *pTexture = CreateTextureObject();
+	if (pTexture) {
+		pTexture->SetWrapping(uWrapping);
+		pTexture->SetFilter(uFilter);
+		pTexture->LoadBMP(pRezFile,uRezNum);
 	}
 	return pTexture;
 }

@@ -16,12 +16,13 @@
 #include "brdisplayopengl.h"
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
 #include "brdebug.h"
-#include "brmacosxapp.h"
+#include "brgameapp.h"
 
 #if !defined(DOXYGEN)
 #define GL_GLEXT_PROTOTYPES
 #endif
 
+#include <AvailabilityMacros.h>
 #if defined(MAC_OS_X_VERSION_10_6)
 #include <OpenGL/gl3.h>
 #else
@@ -41,6 +42,18 @@
 #if !defined(DOXYGEN)
 
 //
+// Function to fix the origin of an NSRect due to MacOSX inserting
+// space for the doc
+//
+
+void FixNSRectOrigin(NSRect *pInput)
+{
+    pInput->origin.y = (CGDisplayPixelsHigh(kCGDirectMainDisplay) - pInput->origin.y) - pInput->size.height;
+}
+
+
+
+//
 // Special window for full screen rendering
 //
 
@@ -57,21 +70,30 @@
 {
 	// Use the size of the display
 	NSRect ScreenRect = [[NSScreen mainScreen] frame];
-	
+
 	// Create a borderless window to cover the whole screen
 	// (Use deferred rendering to get rid of screen tears)
-	
+
 	self = [super initWithContentRect:ScreenRect styleMask:NSBorderlessWindowMask
 		backing:NSBackingStoreBuffered defer:YES];
 	// Elevate the level to make sure everything else is hidden
 	[self setLevel:NSMainMenuWindowLevel+1];
-	
+
 	// Turn off translucency
 	[self setOpaque:YES];
-	
+
 	// If the app switches, hide this window
 	[self setHidesOnDeactivate:YES];
 	return self;
+}
+
+//
+// Allow this window to be full screen
+//
+
+- (BOOL)canBecomeMainWindow
+{
+	return YES;
 }
 
 //
@@ -116,11 +138,11 @@
 {
 	[super reshape];
 	// Was there a resize function installed?
-	
+
 	if (m_pDisplay->GetResizeCallback()) {
 		// Lock OpenGL
 		CGLLockContext(m_pDisplay->GetOpenGLContext());
-		
+
 #if defined(MAC_OS_X_VERSION_10_6)
 		// Get the view size in Points
 		NSRect viewRectPoints = [self bounds];
@@ -170,7 +192,7 @@
 {
 	if (m_pDisplay->GetRenderCallback()) {
 		[[self openGLContext] makeCurrentContext];
-	
+
 		// We draw on a secondary thread through the display link
 		// When resizing the view, -reshape is called automatically on the main
 		// thread. Add a mutex around to avoid the threads accessing the context
@@ -219,21 +241,21 @@
 	}
 	// Resize the view to screensize
 	NSRect viewRect = [pFullScreenWindow frame];
-	
+
 	// Set the view to the size of the fullscreen window
 	[m_pDisplay->GetOpenGLView() setFrameSize: viewRect.size];
-	
+
 	// Set the view in the fullscreen window
 	[pFullScreenWindow setContentView:m_pDisplay->GetOpenGLView()];
-	
+
 	// Hide non-fullscreen window so it doesn't show up when switching out
 	// of this app (i.e. with CMD-TAB)
-	[static_cast<Burger::MacOSXApp *>(m_pDisplay->GetGameApp())->GetWindow() orderOut:self];
-	
+	[m_pDisplay->GetGameApp()->GetWindow() orderOut:self];
+
 	// Set controller to the fullscreen window so that all input will go to
 	// this controller (self)
 	[self setWindow:pFullScreenWindow];
-	
+
 	// Show the window and make it the key window for input
 	[pFullScreenWindow makeKeyAndOrderFront:self];
 }
@@ -248,23 +270,26 @@
 	// Already a window?
 	//
 
-	NSWindow *pWindow = static_cast<Burger::MacOSXApp *>(m_pDisplay->GetGameApp())->GetWindow();
+	NSWindow *pWindow = m_pDisplay->GetGameApp()->GetWindow();
 	// Get the rectangle of the original window
-	NSRect viewRect = [pWindow frame];
-	
-	// Set the view rect to the new size
-	[m_pDisplay->GetOpenGLView() setFrame:viewRect];
-	
+    NSRect viewRect = [pWindow frame];
+    viewRect.origin.x = 0;
+    viewRect.origin.y = 0;
+    
+    //FixNSRectOrigin(&viewRect);
+    // Set the view rect to the new size
+    [m_pDisplay->GetOpenGLView() setFrame:viewRect];
+
 	// Set controller to the standard window so that all input will go to
 	// this controller (self)
 	[self setWindow:pWindow];
-	
+
 	// Set the content of the orginal window to the view
 	[pWindow setContentView:m_pDisplay->GetOpenGLView()];
-	
+
 	// Show the window and make it the key window for input
 	[pWindow makeKeyAndOrderFront:self];
-	
+
 	NSWindow *pFullScreenWindow = m_pDisplay->GetFullScreenWindow();
 	if (pFullScreenWindow) {
 		// Release the fullscreen window
@@ -308,7 +333,7 @@
 		}
 #endif
 	}
-	
+
 	// Allow other character to be handled (or not and beep)
 	[super keyDown:event];
 }
@@ -337,12 +362,24 @@ Burger::Display::Display(Burger::GameApp *pGameApp) :
 	m_pFullScreenWindow(NULL),
 	m_fOpenGLVersion(0.0f),
 	m_fShadingLanguageVersion(0.0f),
+	m_fAspectRatio(1.0f),
+	m_fWidth(0.0f),
+	m_fHeight(0.0f),
 	m_uCompressedFormatCount(0),
 	m_uMaximumVertexAttributes(0),
-	m_uMaximumColorAttachments(0)
+	m_uMaximumColorAttachments(0),
+	m_uActiveTexture(0)
 {
 	InitDefaults(pGameApp);
 }
+
+Burger::Display::~Display()
+{
+    if (m_pGameApp) {
+        m_pGameApp->SetDisplay(NULL);
+    }
+}
+
 
 /***************************************
 
@@ -356,30 +393,65 @@ Burger::Display::Display(Burger::GameApp *pGameApp) :
 
 Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
 {
-	// Set the new size of the screen
+	// OpenGL allows all 256 palette colors to work FULLPALETTEALLOWED
+	// Pass the other flags through
+    
+	m_uFlags = (m_uFlags&(~(ALLOWFULLSCREENTOGGLE|ALLOWRESIZING|STEREO))) | FULLPALETTEALLOWED | (uFlags&(ALLOWFULLSCREENTOGGLE|ALLOWRESIZING|STEREO));
+	
+	// If there's a release function, call it because it's likely that
+	// the reset of OpenGL will cause all resources to be destroyed
+	if (m_pRelease) {
+		m_pRelease(m_pReleaseData);
+	}
+	
+	// Initialize the display resolution if
+	// it hasn't been set already
+	
+	if (!m_uDisplayWidth) {
+		m_uDisplayWidth = g_Globals.m_uDefaultWidth;
+		m_uDisplayHeight = g_Globals.m_uDefaultHeight;
+		m_uDisplayDepth = g_Globals.m_uDefaultDepth;
+	}
+	
+	// Determine the resolution of the screen on power up
+	
+	if (!uWidth || !uHeight) {
+		// If full screen, just use the video mode
+		uWidth = m_uDisplayWidth;
+		uHeight = m_uDisplayHeight;
+	}
+	
+	// Determine the desired display depth
+	
+	if (!uDepth) {
+		uDepth = m_uDisplayDepth;
+	}
+
+	//
+	// This is the resolution that will be attempted to for the display
+	// to be set.
+	//
+	
 	m_uWidth = uWidth;
 	m_uHeight = uHeight;
 	m_uDepth = uDepth;
-	m_uFlags = uFlags;
-
-	m_uFlags |= FULLPALETTEALLOWED;
 
 	//
 	// Create an auto-release pool for memory clean up
 	//
-	
+
 	NSAutoreleasePool *pPool = [[NSAutoreleasePool alloc] init];
 
 	//
 	// Resize the main window
 	//
-	
-	static_cast<MacOSXApp *>(m_pGameApp)->SetWindowSize(uWidth,uHeight);
+
+	m_pGameApp->SetWindowSize(uWidth,uHeight);
 
 	//
 	// Is the full screen window needed?
 	//
-	
+
 	if (m_uFlags&FULLSCREEN) {
 		if (!m_pFullScreenWindow) {
 			m_pFullScreenWindow = [[BurgerFullScreenWindow alloc] init];
@@ -395,24 +467,24 @@ Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
 	//
 	// Initialize (Or reset) the OpenGL view
 	//
-	
+
 	NSOpenGLView *pView = m_pOpenGLView;
 	if (!m_pOpenGLView) {
 		pView = [[BurgerGLView alloc] initWithDisplay:this];
 		m_pOpenGLView = pView;
 	}
-	
+
 	//
 	// Set OpenGL to the requested screen size
 	//
-	
+
 	NSRect GameScreenSize = NSMakeRect(0,0,uWidth,uHeight);
 	[pView setFrame:GameScreenSize];
-	
+
 	//
 	// Notify the view about resizing
 	//
-	
+
 	NSUInteger uSizeMask;
 	if (m_uFlags&ALLOWRESIZING) {
 		uSizeMask = NSViewHeightSizable | NSViewWidthSizable;
@@ -420,66 +492,70 @@ Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
 		uSizeMask = NSViewNotSizable;
 	}
 	[pView setAutoresizingMask:uSizeMask];
-	
+
 	//
 	// Synchronize buffer swaps with vertical refresh rate
 	//
-	
+
 	GLint swapInt = 1;
 	[[pView openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval];
-	
+
 	//
 	// Get our pixel format
 	//
-	
+
 	NSOpenGLPixelFormatAttribute OpenGLAttributes[] = {
 		NSOpenGLPFADoubleBuffer,
 		NSOpenGLPFADepthSize, 24,
 		0
 	};
-	
+
 	NSOpenGLPixelFormat *pPixelFormat = [[[NSOpenGLPixelFormat alloc] initWithAttributes:OpenGLAttributes] autorelease];
 	NSOpenGLContext* pNSOpenGLContext = [[[NSOpenGLContext alloc] initWithFormat:pPixelFormat shareContext:nil] autorelease];
 	m_pOpenGLContext = static_cast<CGLContextObj>([pNSOpenGLContext CGLContextObj]);
 	[pView setPixelFormat:pPixelFormat];
 	[pView setOpenGLContext:pNSOpenGLContext];
-	
+
 	//
 	// Opt-In to Retina resolution (OSX 10.7 or later)
 	//
-	
+
 	if ([pView respondsToSelector: @selector(setWantsBestResolutionOpenGLSurface:)]) {
 		[pView performSelector: @selector(setWantsBestResolutionOpenGLSurface:) withObject: reinterpret_cast<id>(YES)];
 	}
-	
+
 	//
 	// Enable/disable resizing to the main window
 	//
-	
-	NSWindow *pWindow = static_cast<MacOSXApp *>(m_pGameApp)->GetWindow();
-	
+
+	NSWindow *pWindow = m_pGameApp->GetWindow();
+
 	//
 	// setStyleMask was added in 10.6. Crap, call it manually to work
 	// on 10.5 systems
 	//
-	
+
 	if ([pWindow respondsToSelector: @selector(setStyleMask:)]) {
 		NSUInteger uWindowMask = [pWindow styleMask];
 		NSUInteger uNewMask;
-		if (m_uFlags & ALLOWRESIZING) {
-			uNewMask = NSResizableWindowMask;
+		if (m_uFlags & FULLSCREEN) {
+			uNewMask = NSBorderlessWindowMask;
 		} else {
-			uNewMask = 0;
+			uNewMask = NSTitledWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask;
+			if (m_uFlags & ALLOWRESIZING) {
+				uNewMask |= NSResizableWindowMask;
+			}
 		}
-		if ((uNewMask^uWindowMask)&NSResizableWindowMask) {
-			[pWindow performSelector: @selector(setStyleMask:) withObject: reinterpret_cast<id>((uWindowMask&(~NSResizableWindowMask))|uNewMask)];
-		}
+		// Changed?
+//		if (uNewMask!=uWindowMask) {
+			[pWindow performSelector: @selector(setStyleMask:) withObject: reinterpret_cast<id>(uNewMask)];
+//		}
 	}
-	
+
 	//
 	// Add in a controller to handle flipping between full screen and window mode
 	//
-	
+
 	NSWindowController *pWindowController = m_pWindowController;
 	if (!pWindowController) {
 		pWindowController = [[BurgerWindowController alloc] initWithWindow:pWindow display:this];
@@ -488,11 +564,11 @@ Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
 	//
 	// Attach everything!
 	//
-	
+
 	[pWindowController setWindow:pWindow];
 	[pWindow setContentView:pView];
 	[NSApp setDelegate:static_cast<id>(m_pOpenGLView)];
-	
+
 	//
 	// Make the window visible
 	//
@@ -579,10 +655,10 @@ void Burger::Display::EndScene(void)
 	\brief Get the window's NSView
 
 	Get the current NSView being used by the primary application window.
- 
+
 	\macosxonly
 	\sa GetWindowController(void) const, GetOpenGLView(void) const, GetOpenGLContext(void) const or GetFullScreenWindow(void) const
- 
+
 ***************************************/
 
 /*! ************************************
@@ -591,7 +667,7 @@ void Burger::Display::EndScene(void)
 	\brief Get the window's NSWindowController
 
 	Get the current NSWindowController being used by the primary application window.
- 
+
 	\macosxonly
 	\sa GetView(void) const, GetOpenGLView(void) const, GetOpenGLContext(void) const or GetFullScreenWindow(void) const
 
@@ -606,16 +682,16 @@ void Burger::Display::EndScene(void)
 
 	\macosxonly
 	\sa GetView(void) const, GetWindowController(void) const, GetOpenGLContext(void) const or GetFullScreenWindow(void) const
- 
+
 ***************************************/
 
 /*! ************************************
 
 	\fn _CGLContextObject *Burger::DisplayOpenGL::GetOpenGLContext(void) const
 	\brief Get the window's _CGLContextObject
-	
+
 	Get the current CGLContextObject being used by the primary application window.
-	
+
 	\macosxonly
 	\sa GetView(void) const, GetWindowController(void) const, GetOpenGLView(void) const or GetFullScreenWindow(void) const
 
@@ -640,7 +716,7 @@ void Burger::Display::EndScene(void)
 
 	Hide the game window and attach all the views to the supplied window that's
 	been set to occupy the entire screen.
-	 
+
 	\macosxonly
 	\param pFullScreenWindow Pointer to the window to use as a full screen window
 	\sa GetFullScreenWindow(void) const

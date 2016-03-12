@@ -30,7 +30,7 @@
 
 ***************************************/
 
-Word Burger::File::Open(Filename *pFileName,eFileAccess eAccess)
+Word BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAccess)
 {
 	static const Word16 g_OpenAccess[4] = { 0x00,0x01,0x01,0x02 };
 	static const Word16 g_CreateAction[4] = {1,2+16,1+16,1+16};
@@ -106,7 +106,7 @@ Word Burger::File::Open(Filename *pFileName,eFileAccess eAccess)
 
 ***************************************/
 
-Word Burger::File::Close(void)
+Word BURGER_API Burger::File::Close(void)
 {
 	Word uResult = OKAY;
 	int fp = reinterpret_cast<int>(m_pFile);
@@ -138,7 +138,7 @@ Word Burger::File::Close(void)
 
 ***************************************/
 
-WordPtr Burger::File::GetSize(void)
+WordPtr BURGER_API Burger::File::GetSize(void)
 {
 	Regs16 MyRegs;
 	Regs16 MyRegsStore;
@@ -186,7 +186,7 @@ WordPtr Burger::File::GetSize(void)
 
 ***************************************/
 
-WordPtr Burger::File::Read(void *pOutput,WordPtr uSize)
+WordPtr BURGER_API Burger::File::Read(void *pOutput,WordPtr uSize)
 {
 	WordPtr uResult = 0;
 	if (uSize && pOutput) {
@@ -229,7 +229,7 @@ WordPtr Burger::File::Read(void *pOutput,WordPtr uSize)
 
 ***************************************/
 
-WordPtr Burger::File::Write(const void *pInput,WordPtr uSize)
+WordPtr BURGER_API Burger::File::Write(const void *pInput,WordPtr uSize)
 {
 	WordPtr uResult = 0;
 	if (uSize && pInput) {
@@ -265,12 +265,12 @@ WordPtr Burger::File::Write(const void *pInput,WordPtr uSize)
 	If a file is open, query the operating system for the location
 	of the file mark for future reads or writes.
 
-	\return Current file mark or zero if an error occured
+	\return Current file mark or zero if an error occurred
 	\sa Write(const void *,WordPtr)
 
 ***************************************/
 
-WordPtr Burger::File::GetMark(void)
+WordPtr BURGER_API Burger::File::GetMark(void)
 {
 	Regs16 MyRegs;
 	WordPtr uMark = 0;
@@ -302,7 +302,7 @@ WordPtr Burger::File::GetMark(void)
 
 ***************************************/
 
-Word Burger::File::SetMark(WordPtr uMark)
+Word BURGER_API Burger::File::SetMark(WordPtr uMark)
 {
 	Word uResult = INVALID_MARK;
 	Regs16 MyRegs;
@@ -333,7 +333,7 @@ Word Burger::File::SetMark(WordPtr uMark)
 
 ***************************************/
 
-Word Burger::File::SetMarkAtEOF(void)
+Word BURGER_API Burger::File::SetMarkAtEOF(void)
 {
 	Word uResult = INVALID_MARK;
 	Regs16 MyRegs;
@@ -365,7 +365,7 @@ Word Burger::File::SetMarkAtEOF(void)
 
 ***************************************/
 
-Word Burger::File::GetModificationTime(TimeDate_t *pOutput)
+Word BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 {
 	Word uResult = FILENOTFOUND;
 	Regs16 Regs;
@@ -396,7 +396,7 @@ Word Burger::File::GetModificationTime(TimeDate_t *pOutput)
 
 ***************************************/
 
-Word Burger::File::GetCreationTime(TimeDate_t *pOutput)
+Word BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 {
 	pOutput->Clear();
 	return NOT_IMPLEMENTED;
@@ -415,7 +415,7 @@ Word Burger::File::GetCreationTime(TimeDate_t *pOutput)
 
 ***************************************/
 
-Word Burger::File::SetModificationTime(const TimeDate_t *pInput)
+Word BURGER_API Burger::File::SetModificationTime(const TimeDate_t *pInput)
 {
 	Word uResult = FILENOTFOUND;
 	Regs16 Regs;
@@ -448,7 +448,7 @@ Word Burger::File::SetModificationTime(const TimeDate_t *pInput)
 
 ***************************************/
 
-Word Burger::File::SetCreationTime(const TimeDate_t * /* pInput */)
+Word BURGER_API Burger::File::SetCreationTime(const TimeDate_t * /* pInput */)
 {
 	return NOT_IMPLEMENTED;
 }

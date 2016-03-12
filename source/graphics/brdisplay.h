@@ -78,19 +78,31 @@ class Display : public Base {
 	BURGER_RTTI_IN_CLASS();
 public:
 	enum {
-		VIDEOMODE_HARDWARE=0x01,	///<  VideoMode_t Set if hardware acceleration is available
 		INWINDOW=0x0,				///< The display is in a desktop window, best for debugging
 		FULLSCREEN=0x1,				///< Set if full screen
 		ALLOWFULLSCREENTOGGLE=0x2,	///< Set if Alt-Enter is allowed to switch from full screen to windowed mode
 		ALLOWRESIZING=0x4,			///< On desktop platforms, allow the window to be resized
+		STENCILENABLE=0x20,			///< Enable stencil mode
 		FULLPALETTEALLOWED=0x40,	///< Set if all 256 colors of the palette can be used
 		STEREO=0x80,				///< Set if 3D Glasses support is enabled
 		MULTITHREADED=0x100,		///< Hint that rendering is performed on multiple threads
+		GAMMAENABLE=0x200,			///< Enable gamma support
+		DITHERENABLE=0x400,			///< Enable dithering
+		INTERLACEENABLE=0x800,		///< Enable interlacing
+		LANDSCAPE=0x0000,			///< Landscape mode
+		PORTRAIT=0x1000,			///< Portrait mode
+		INVERTED=0x2000,			///< Inverted
+		LANDSCAPEINVERTED=0x2000,	///< Inverted landscape mode
+		PORTRAITINVERTED=0x3000,	///< Inverted portrait mode
+		PALMODE=0x4000,				///< PAL interlace mode
 #if defined(_DEBUG) || defined(DOXYGEN)
 		DEFAULTFLAGS=INWINDOW		///< Default window flags (Debug is in a window, release is full screen)
 #else
 		DEFAULTFLAGS=FULLSCREEN	///< Default window flags (NDEBUG is full screen)
 #endif
+	};
+	enum eVideoModeFlags {
+		VIDEOMODE_HARDWARE=0x01		///<  VideoMode_t Set if hardware acceleration is available
 	};
 	enum eClearBits {
 		CLEAR_COLOR=0x01,			///< Used by Clear(Word) to clear the color buffer
@@ -193,7 +205,7 @@ protected:
 
 // Platform specific data
 
-#if defined(BURGER_XBOX360)
+#if defined(BURGER_XBOX360) || defined(DOXYGEN)
 	D3DDevice *m_pD3DDevice;	///< (Xbox 360 Only) Direct 3D device
 	Word m_uClearColor;			///< (Xbox 360 Only) 32 bit RGBA color for screen clear
 	float m_fClearDepth;		///< (Xbox 360 Only) ZValue to write for screen clear
@@ -293,7 +305,9 @@ public:
 	BURGER_VIRTUAL(void,EndScene,(void))
 	BURGER_VIRTUAL(Texture *,CreateTextureObject,(void))
 	BURGER_VIRTUAL(VertexBuffer *,CreateVertexBufferObject,(void))
+	BURGER_VIRTUAL(void,Resize,(Word uWidth,Word uHeight))
 	BURGER_VIRTUAL(void,SetViewport,(Word uX,Word uY,Word uWidth,Word uHeight))
+	BURGER_VIRTUAL(void,SetScissorRect,(Word uX,Word uY,Word uWidth,Word uHeight))
 	BURGER_VIRTUAL(void,SetClearColor,(float fRed,float fGreen,float fBlue,float fAlpha))
 	BURGER_VIRTUAL(void,SetClearDepth,(float fDepth))
 	BURGER_VIRTUAL(void,Clear,(Word uMask))
@@ -304,8 +318,10 @@ public:
 	BURGER_VIRTUAL(void,SetZWrite,(Word bEnable))
 	BURGER_VIRTUAL(void,SetDepthTest,(eDepthFunction uDepthFunction))
 	BURGER_VIRTUAL(void,SetCullMode,(eCullMode uCullMode))
+	BURGER_VIRTUAL(void,SetScissor,(Word bEnable))
 	BURGER_VIRTUAL(void,DrawPrimitive,(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer))
 	BURGER_VIRTUAL(void,DrawElements,(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer))
+
 #if defined(BURGER_XBOX360) || defined(DOXYGEN)
 	D3DVertexShader * BURGER_API CreateVertexShader(const void *pVertexShaderBinary) const;
 	D3DPixelShader * BURGER_API CreatePixelShader(const void *pPixelShaderBinary) const;
@@ -315,6 +331,7 @@ public:
 	BURGER_INLINE Word IsHiDef(void) { return g_Globals.m_bIsHiDef; }
 	BURGER_INLINE Word IsInterlaced(void) { return g_Globals.m_bIsInterlaced; }
 #endif
+
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
 	BURGER_INLINE NSView *GetView(void) const { return m_pView; }
 	BURGER_INLINE NSWindowController *GetWindowController(void) const { return m_pWindowController; }
@@ -323,6 +340,7 @@ public:
 	BURGER_INLINE NSWindow *GetFullScreenWindow(void) const { return m_pFullScreenWindow; }
 	BURGER_INLINE void SetFullScreenWindow(NSWindow *pFullScreenWindow) { m_pFullScreenWindow = pFullScreenWindow; }
 #endif
+
 #if defined(BURGER_IOS) || defined(DOXYGEN)
 	BURGER_INLINE EAGLContext *GetGLContext(void) const { return m_pEAGLContext; }
 	BURGER_INLINE Word GetFrontBuffer(void) const { return m_uFrontBuffer; }
@@ -332,6 +350,7 @@ public:
 #else
 	BURGER_INLINE static Word GetFrontBuffer(void) { return 0; }
 #endif
+
 #if defined(BURGER_OPENGL_SUPPORTED) && !defined(BURGER_WINDOWS)
 	BURGER_INLINE float GetOpenGLVersion(void) const { return m_fOpenGLVersion; }
 	BURGER_INLINE float GetShadingLanguageVersion(void) const { return m_fShadingLanguageVersion; }
@@ -352,8 +371,22 @@ public:
 	static WordPtr BURGER_API GetGLTypeSize(Word uGLTypeEnum);
 	static Word BURGER_API PrintGLError(const char *pErrorLocation);
 #endif
+
 	BURGER_INLINE Texture *GetBoundTexture(Word uIndex=0) const { return m_pBoundTextures[uIndex]; }
 	Texture * BURGER_API CreateTexture(Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTexture(Word uWidth,Word uHeight,Image::ePixelTypes uPixelType,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTexturePNG(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTexturePNG(Filename *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTexturePNG(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTextureGIF(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTextureGIF(Filename *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTextureGIF(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTextureTGA(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTextureTGA(Filename *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTextureTGA(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTextureBMP(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTextureBMP(Filename *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTextureBMP(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
 	VertexBuffer * BURGER_API CreateVertexBuffer(const VertexBuffer::VertexAoS_t *pDescription);
 	static Word BURGER_API GetVideoModes(ClassArray<VideoCardDescription> *pOutput);
 	void BURGER_API SetPalette(Word uStart,Word uCount,const Word8 *pPalette);
