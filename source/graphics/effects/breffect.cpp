@@ -215,11 +215,22 @@ Burger::Effect::~Effect()
 {
 	D3DPixelShader *pPixelShader = m_pPixelShader;
 	if (pPixelShader != NULL) {
+		IDirect3DDevice9 *pDevice;
+		pPixelShader->GetDevice(&pDevice);
+		if (pDevice) {
+			pDevice->SetPixelShader(0);
+		}
+
 		pPixelShader->Release(); 
 		m_pPixelShader = NULL;
 	}
 	D3DVertexShader *pVertexShader = m_pVertexShader;
 	if (pVertexShader != NULL) {
+		IDirect3DDevice9 *pDevice;
+		pVertexShader->GetDevice(&pDevice);
+		if (pDevice) {
+			pDevice->SetVertexShader(0);
+		}
 		pVertexShader->Release(); 
 		m_pVertexShader = NULL;
 	}

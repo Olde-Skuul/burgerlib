@@ -213,9 +213,28 @@ Burger::VertexBuffer *Burger::DisplayOpenGL::CreateVertexBufferObject(void)
 	return new (Alloc(sizeof(VertexBufferOpenGL))) VertexBufferOpenGL;
 }
 
+void Burger::DisplayOpenGL::Resize(Word uWidth,Word uHeight)
+{
+	m_uWidth = uWidth;
+	m_uHeight = uHeight;
+	float fWidth = static_cast<float>(static_cast<int>(uWidth));
+	float fHeight = static_cast<float>(static_cast<int>(uHeight));
+	m_fWidth = fWidth;
+	m_fHeight = fHeight;
+	m_fAspectRatio = fWidth/fHeight;
+	SetViewport(0,0,uWidth,uHeight);
+}
+
 void Burger::DisplayOpenGL::SetViewport(Word uX,Word uY,Word uWidth,Word uHeight)
 {
 	glViewport(static_cast<GLint>(uX),static_cast<GLint>(uY),static_cast<GLsizei>(uWidth),static_cast<GLsizei>(uHeight));
+}
+
+void Burger::DisplayOpenGL::SetScissorRect(Word uX,Word uY,Word uWidth,Word uHeight)
+{
+	// Note: Flip the Y for OpenGL
+	// Also, the starting Y is the BOTTOM of the rect, not the top
+	glScissor(static_cast<GLint>(uX),static_cast<GLint>(m_uHeight-(uY+uHeight)),static_cast<GLsizei>(uWidth),static_cast<GLsizei>(uHeight));
 }
 
 void Burger::DisplayOpenGL::SetClearColor(float fRed,float fGreen,float fBlue,float fAlpha)
@@ -316,6 +335,15 @@ void Burger::DisplayOpenGL::SetCullMode(eCullMode uCullMode)
 	} else if (uCullMode==CULL_COUNTERCLOCKWISE) {
 		glEnable(GL_CULL_FACE);
 		glFrontFace(GL_CW);
+	}
+}
+
+void Burger::DisplayOpenGL::SetScissor(Word bEnable)
+{
+	if (bEnable) {
+		glEnable(GL_SCISSOR_TEST);
+	} else {
+		glDisable(GL_SCISSOR_TEST);
 	}
 }
 
@@ -457,7 +485,35 @@ static const GLStringIndex_t g_TextureIndexes[] = {
 	{"GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2",0x9276},
 	{"GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2",0x9277},
 	{"GL_COMPRESSED_RGBA8_ETC2_EAC",0x9278},
-	{"GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC",0x9279}
+	{"GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC",0x9279},
+	{"GL_COMPRESSED_RGBA_ASTC_4x4_KHR",0x93B0},
+	{"GL_COMPRESSED_RGBA_ASTC_5x4_KHR",0x93B1},
+	{"GL_COMPRESSED_RGBA_ASTC_5x5_KHR",0x93B2},
+	{"GL_COMPRESSED_RGBA_ASTC_6x5_KHR",0x93B3},
+	{"GL_COMPRESSED_RGBA_ASTC_6x6_KHR",0x93B4},
+	{"GL_COMPRESSED_RGBA_ASTC_8x5_KHR",0x93B5},
+	{"GL_COMPRESSED_RGBA_ASTC_8x6_KHR",0x93B6},
+	{"GL_COMPRESSED_RGBA_ASTC_8x8_KHR",0x93B7},
+	{"GL_COMPRESSED_RGBA_ASTC_10x5_KHR",0x93B8},
+	{"GL_COMPRESSED_RGBA_ASTC_10x6_KHR",0x93B9},
+	{"GL_COMPRESSED_RGBA_ASTC_10x8_KHR",0x93BA},
+	{"GL_COMPRESSED_RGBA_ASTC_10x10_KHR",0x93BB},
+	{"GL_COMPRESSED_RGBA_ASTC_12x10_KHR",0x93BC},
+	{"GL_COMPRESSED_RGBA_ASTC_12x12_KHR",0x93BD},
+	{"GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR",0x93D0},
+	{"GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR",0x93D1},
+	{"GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR",0x93D2},
+	{"GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR",0x93D3},
+	{"GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR",0x93D4},
+	{"GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR",0x93D5},
+	{"GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR",0x93D6},
+	{"GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR",0x93D7},
+	{"GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR",0x93D8},
+	{"GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR",0x93D9},
+	{"GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR",0x93DA},
+	{"GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR",0x93DB},
+	{"GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR",0x93DC},
+	{"GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR",0x93DD}
 };
 #endif
 
@@ -855,43 +911,44 @@ Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShader,
 				// Link everything together!
 				glLinkProgram(uProgram);
 
-				// Print out the log
-				GLint iLogLength;
-				glGetProgramiv(uProgram,GL_INFO_LOG_LENGTH,&iLogLength);
-				if (iLogLength > 1) {
-					GLchar *pErrorLog = static_cast<GLchar*>(Alloc(static_cast<WordPtr>(iLogLength)));
-					glGetProgramInfoLog(uProgram,iLogLength,&iLogLength,pErrorLog);
-					Debug::String("Program link log:\n");
-					Debug::String(pErrorLog);
-					Debug::String("\n");
-					Free(pErrorLog);
-				}
-
 				// Check for link failure
 				GLint iStatus;
 				glGetProgramiv(uProgram,GL_LINK_STATUS,&iStatus);
-				if (!iStatus) {
+				if (iStatus==GL_FALSE) {
+
 					Debug::String("Failed to link program\n");
-				} else {
-
-					// Verify if it's REALLY okay
-					glValidateProgram(uProgram);
-
-					// Dump the log for post link validation failures
+					// Print out the log
+					GLint iLogLength;
 					glGetProgramiv(uProgram,GL_INFO_LOG_LENGTH,&iLogLength);
 					if (iLogLength > 1) {
 						GLchar *pErrorLog = static_cast<GLchar*>(Alloc(static_cast<WordPtr>(iLogLength)));
-						glGetProgramInfoLog(uProgram, iLogLength, &iLogLength,pErrorLog);
-						Debug::String("Program validate log:\n");
+						glGetProgramInfoLog(uProgram,iLogLength,&iLogLength,pErrorLog);
+						Debug::String("Program link log:\n");
 						Debug::String(pErrorLog);
 						Debug::String("\n");
 						Free(pErrorLog);
 					}
 
+				} else {
+
+					// Verify if it's REALLY okay
+					glValidateProgram(uProgram);
+
 					// Is the all clear signaled?
 					glGetProgramiv(uProgram,GL_VALIDATE_STATUS,&iStatus);
-					if (!iStatus) {
+					if (iStatus==GL_FALSE) {
+						// Dump the log for post link validation failures
+						GLint iLogLength;
+						glGetProgramiv(uProgram,GL_INFO_LOG_LENGTH,&iLogLength);
 						Debug::String("Failed to validate program\n");
+						if (iLogLength > 1) {
+							GLchar *pErrorLog = static_cast<GLchar*>(Alloc(static_cast<WordPtr>(iLogLength)));
+							glGetProgramInfoLog(uProgram, iLogLength, &iLogLength,pErrorLog);
+							Debug::String("Program validate log:\n");
+							Debug::String(pErrorLog);
+							Debug::String("\n");
+							Free(pErrorLog);
+						}
 					} else {
 						// All good!!!
 						bSuccess = TRUE;

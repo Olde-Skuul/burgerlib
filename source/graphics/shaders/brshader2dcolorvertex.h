@@ -1,6 +1,6 @@
 /***************************************
 
-	Simple 2D texturing shader
+	Simple 2D texturing shader with color per vertex
 
 	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
@@ -11,8 +11,8 @@
 	
 ***************************************/
 
-#ifndef __BREFFECT2D_H__
-#define __BREFFECT2D_H__
+#ifndef __BRSHADER2DCOLORVERTEX_H__
+#define __BRSHADER2DCOLORVERTEX_H__
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
@@ -50,41 +50,42 @@ public: \
 	struct Vertex { \
 		float m_fX,m_fY; \
 		float m_fU,m_fV; \
+		Vector4D_t m_fColor; \
 	}; \
 	void BURGER_API SetPosition(float fX,float fY,float fWidth,float fHeight); \
 	void BURGER_API SetPosition(const Vector4D_t *pPosition)
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-class Effect2DDX9 : public EffectDX9 {
+class Shader2DColorVertexDX9 : public EffectDX9 {
 public:
-	Effect2DDX9(DisplayDirectX9 *pDisplay,const Word *pVertexMembers);
+	Shader2DColorVertexDX9(DisplayDirectX9 *pDisplay,const Word *pVertexMembers);
 	BURGER_CLASSBODY();
 };
 #endif
 #if defined(BURGER_OPENGL_SUPPORTED)
-class Effect2DOpenGL : public EffectOpenGL {
+class Shader2DColorVertexOpenGL : public EffectOpenGL {
 protected:
 	Int m_iEffect2DPosition;	///< Index for the position
 public:
-	Effect2DOpenGL(Display *pDisplay,const Word *pVertexMembers);
+	Shader2DColorVertexOpenGL(Display *pDisplay,const Word *pVertexMembers);
 	BURGER_CLASSBODY();
 };
 #endif
 #if defined(BURGER_XBOX360) || defined(DOXYGEN)
-class Effect2D : public Effect {
+class Shader2DColorVertex : public Effect {
 public:
-	Effect2D(Display *pDisplay,const Word *pVertexMembers);
+	Shader2DColorVertex(Display *pDisplay,const Word *pVertexMembers);
 	BURGER_CLASSBODY();
 };
 #endif
 #undef BURGER_CLASSBODY
-extern const Word g_Effect2DMemberDescription[];
-extern const VertexBuffer::VertexAoS_t g_Effect2DDefaultVertexBufferDescription;
+extern const Word g_Shader2DColorVertexMemberDescription[];
+extern const VertexBuffer::VertexAoS_t g_Shader2DColorVertexDefaultVertexBufferDescription;
 
 #if defined(BURGER_WINDOWS)
-typedef Effect2DDX9 Effect2D;
+typedef Shader2DColorVertexDX9 Shader2DColorVertex;
 #elif defined(BURGER_OPENGL_SUPPORTED)
-typedef Effect2DOpenGL Effect2D;
+typedef Shader2DColorVertexOpenGL Shader2DColorVertex;
 #endif
 }
 /* END */

@@ -16,6 +16,7 @@
 #include "brfiletga.h"
 #include "brfilepng.h"
 #include "brfilebmp.h"
+#include "brfilegif.h"
 #include "brfilemanager.h"
 
 BURGER_CREATE_STATICRTTI_PARENT(Burger::Texture,Burger::ReferenceCounter);
@@ -429,6 +430,19 @@ void BURGER_API Burger::Texture::ShutdownImageMemory(void)
 
 /*! ************************************
 
+	\fn void Burger::Texture::SetImageDirty(void)
+	\brief Set the image updated flag
+
+	If the texture is modified by the application, call this
+	function to alert the texture manager to upload
+	the new bitmap into the hardware on the next rendering
+	pass.
+
+***************************************/
+
+
+/*! ************************************
+
 	\fn eWrapping Burger::Texture::GetWrappingS(void) const
 	\brief Get the wrapping setting for the S (U) coordinate
 
@@ -639,20 +653,8 @@ Word BURGER_API Burger::Texture::CallbackRezFileTGA(Texture *pTexture,eLoader uL
 		{
 			// Get the record
 			const RezFileLoad_t *pRezFileLoad = static_cast<const RezFileLoad_t *>(pTexture->m_pUserData);
-			RezFile *pRezFile = pRezFileLoad->m_pRezFile;
-			Word uRezNum = pRezFileLoad->m_uRezNum;
 			// Load the resource file
-			void *pData = pRezFile->Load(uRezNum);
-			// Assume error
-			uResult = 10;
-			if (pData) {
-				// Convert into a stream (TRUE to not auto delete the buffer)
-				InputMemoryStream RawStream(pData,pRezFile->GetSize(uRezNum),TRUE);
-				FileTGA RawTGA;
-				// Convert TGA to Image
-				uResult = RawTGA.Load(&pTexture->m_Image,&RawStream);
-				pRezFile->Release(uRezNum);
-			}
+			uResult = pTexture->m_Image.InitTGA(pRezFileLoad->m_pRezFile,pRezFileLoad->m_uRezNum);
 		}
 		break;
 
@@ -682,7 +684,7 @@ Word BURGER_API Burger::Texture::CallbackRezFileTGA(Texture *pTexture,eLoader uL
 	\note The file is not loaded immediately. It will be loaded
 	after a call to LoadImage(void)
 
-	\sa LoadPNG(RezFile *,Word)
+	\sa LoadPNG(RezFile *,Word), LoadBMP(RezFile *,Word) or LoadGIF(RezFile *,Word), 
 
 ***************************************/
 
@@ -717,20 +719,8 @@ Word BURGER_API Burger::Texture::CallbackFileTGA(Texture *pTexture,eLoader uLoad
 	switch (uLoader) {
 	default:
 	case LOADER_LOAD:
-		{
-			// Get the file
-			WordPtr uDataSize;
-			void *pData = FileManager::LoadFile(static_cast<const char *>(pTexture->m_pUserData),&uDataSize);
-			// Assume error
-			uResult = 10;
-			if (pData) {
-				// Convert into a stream (TRUE to not auto delete the buffer)
-				InputMemoryStream RawStream(pData,uDataSize);
-				FileTGA RawTGA;
-				// Convert TGA to Image
-				uResult = RawTGA.Load(&pTexture->m_Image,&RawStream);
-			}
-		}
+		// Convert TGA to Image
+		uResult = pTexture->m_Image.InitTGA(static_cast<const char *>(pTexture->m_pUserData));
 		break;
 
 	// Release the image itself
@@ -759,7 +749,7 @@ Word BURGER_API Burger::Texture::CallbackFileTGA(Texture *pTexture,eLoader uLoad
 	\note The file is not loaded immediately. It will be loaded
 	after a call to LoadImage(void)
 
-	\sa LoadPNG(RezFile *,Word)
+	\sa LoadPNG(const char *pFilename), LoadBMP(const char *pFilename), LoadGIF(const char *pFilename), 
 
 ***************************************/
 
@@ -770,6 +760,68 @@ void BURGER_API Burger::Texture::LoadTGA(const char *pFilename)
 	if (pFilename) {
 		m_pUserData = StringDuplicate(pFilename);
 		m_pLoader = CallbackFileTGA;
+		m_uDirty |= DIRTY_IMAGE;
+	}
+}
+
+/*! ************************************
+
+	\brief Private callback to load TGA files from a file
+
+	Function to handle the loading and conversion to an Image
+	of a TGA file found in a file
+
+	\sa LoadTGA(Filename *)
+
+***************************************/
+
+Word BURGER_API Burger::Texture::CallbackFilenameTGA(Texture *pTexture,eLoader uLoader)
+{
+	Word uResult;
+	switch (uLoader) {
+	default:
+	case LOADER_LOAD:
+		// Convert TGA to Image
+		uResult = pTexture->m_Image.InitTGA(static_cast<Filename *>(pTexture->m_pUserData));
+		break;
+
+	// Release the image itself
+	case LOADER_UNLOAD:
+		pTexture->m_Image.Shutdown();
+		uResult = 0;
+		break;
+
+	// Release the user data
+	case LOADER_SHUTDOWN:
+		Delete(static_cast<Filename *>(pTexture->m_pUserData));
+		pTexture->m_pUserData = NULL;
+		uResult = 0;
+		break;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Set the texture to load the image from a TGA file
+
+	Set up for loading a hardware texture from a TGA file
+	stored in a file
+
+	\note The file is not loaded immediately. It will be loaded
+	after a call to LoadImage(void)
+
+	\sa LoadTGA(const char *), LoadTGA(RezFile *,Word)
+
+***************************************/
+
+void BURGER_API Burger::Texture::LoadTGA(Filename *pFilename)
+{
+	// Get rid of any previous loader
+	ShutdownImageMemory();
+	if (pFilename) {
+		m_pUserData = Filename::New(pFilename[0]);
+		m_pLoader = CallbackFilenameTGA;
 		m_uDirty |= DIRTY_IMAGE;
 	}
 }
@@ -794,20 +846,8 @@ Word BURGER_API Burger::Texture::CallbackRezFilePNG(Texture *pTexture,eLoader uL
 		{
 			// Get the record
 			const RezFileLoad_t *pRezFileLoad = static_cast<const RezFileLoad_t *>(pTexture->m_pUserData);
-			RezFile *pRezFile = pRezFileLoad->m_pRezFile;
-			Word uRezNum = pRezFileLoad->m_uRezNum;
 			// Load the resource file
-			void *pData = pRezFile->Load(uRezNum);
-			// Assume error
-			uResult = 10;
-			if (pData) {
-				// Convert into a stream (TRUE to not auto delete the buffer)
-				InputMemoryStream RawStream(pData,pRezFile->GetSize(uRezNum),TRUE);
-				FilePNG RawPNG;
-				// Convert PNG to Image
-				uResult = RawPNG.Load(&pTexture->m_Image,&RawStream);
-				pRezFile->Release(uRezNum);
-			}
+			uResult = pTexture->m_Image.InitPNG(pRezFileLoad->m_pRezFile,pRezFileLoad->m_uRezNum);
 		}
 		break;
 
@@ -837,7 +877,7 @@ Word BURGER_API Burger::Texture::CallbackRezFilePNG(Texture *pTexture,eLoader uL
 	\note The file is not loaded immediately. It will be loaded
 	after a call to LoadImage(void)
 
-	\sa LoadTGA(RezFile *,Word)
+	\sa LoadTGA(RezFile *,Word), LoadBMP(RezFile *,Word) or LoadGIF(RezFile *,Word)
 
 ***************************************/
 
@@ -872,20 +912,7 @@ Word BURGER_API Burger::Texture::CallbackFilePNG(Texture *pTexture,eLoader uLoad
 	switch (uLoader) {
 	default:
 	case LOADER_LOAD:
-		{
-			// Get the file
-			WordPtr uDataSize;
-			void *pData = FileManager::LoadFile(static_cast<const char *>(pTexture->m_pUserData),&uDataSize);
-			// Assume error
-			uResult = 10;
-			if (pData) {
-				// Convert into a stream (TRUE to not auto delete the buffer)
-				InputMemoryStream RawStream(pData,uDataSize);
-				FilePNG RawPNG;
-				// Convert PNG to Image
-				uResult = RawPNG.Load(&pTexture->m_Image,&RawStream);
-			}
-		}
+		uResult = pTexture->m_Image.InitPNG(static_cast<const char *>(pTexture->m_pUserData));
 		break;
 
 	// Release the image itself
@@ -914,7 +941,7 @@ Word BURGER_API Burger::Texture::CallbackFilePNG(Texture *pTexture,eLoader uLoad
 	\note The file is not loaded immediately. It will be loaded
 	after a call to LoadImage(void)
 
-	\sa LoadTGA(RezFile *,Word)
+	\sa LoadTGA(const char *), LoadBMP(const char *) or LoadGIF(const char *)
 
 ***************************************/
 
@@ -925,6 +952,68 @@ void BURGER_API Burger::Texture::LoadPNG(const char *pFilename)
 	if (pFilename) {
 		m_pUserData = StringDuplicate(pFilename);
 		m_pLoader = CallbackFilePNG;
+		m_uDirty |= DIRTY_IMAGE;
+	}
+}
+
+/*! ************************************
+
+	\brief Private callback to load PNG files from a file
+
+	Function to handle the loading and conversion to an Image
+	of a PNG file found in a file
+
+	\sa LoadPNG(Filename *)
+
+***************************************/
+
+Word BURGER_API Burger::Texture::CallbackFilenamePNG(Texture *pTexture,eLoader uLoader)
+{
+	Word uResult;
+	switch (uLoader) {
+	default:
+	case LOADER_LOAD:
+		// Convert PNG to Image
+		uResult = pTexture->m_Image.InitPNG(static_cast<Filename *>(pTexture->m_pUserData));
+		break;
+
+	// Release the image itself
+	case LOADER_UNLOAD:
+		pTexture->m_Image.Shutdown();
+		uResult = 0;
+		break;
+
+	// Release the user data
+	case LOADER_SHUTDOWN:
+		Delete(static_cast<Filename *>(pTexture->m_pUserData));
+		pTexture->m_pUserData = NULL;
+		uResult = 0;
+		break;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Set the texture to load the image from a PNG file
+
+	Set up for loading a hardware texture from a PNG file
+	stored in a file
+
+	\note The file is not loaded immediately. It will be loaded
+	after a call to LoadImage(void)
+
+	\sa LoadTGA(Filename *pFilename), LoadBMP(Filename *pFilename) or LoadGIF(Filename *pFilename)
+
+***************************************/
+
+void BURGER_API Burger::Texture::LoadPNG(Filename *pFilename)
+{
+	// Get rid of any previous loader
+	ShutdownImageMemory();
+	if (pFilename) {
+		m_pUserData = Filename::New(pFilename[0]);
+		m_pLoader = CallbackFilenamePNG;
 		m_uDirty |= DIRTY_IMAGE;
 	}
 }
@@ -949,20 +1038,8 @@ Word BURGER_API Burger::Texture::CallbackRezFileBMP(Texture *pTexture,eLoader uL
 		{
 			// Get the record
 			const RezFileLoad_t *pRezFileLoad = static_cast<const RezFileLoad_t *>(pTexture->m_pUserData);
-			RezFile *pRezFile = pRezFileLoad->m_pRezFile;
-			Word uRezNum = pRezFileLoad->m_uRezNum;
 			// Load the resource file
-			void *pData = pRezFile->Load(uRezNum);
-			// Assume error
-			uResult = 10;
-			if (pData) {
-				// Convert into a stream (TRUE to not auto delete the buffer)
-				InputMemoryStream RawStream(pData,pRezFile->GetSize(uRezNum),TRUE);
-				FileBMP RawBMP;
-				// Convert BMP to Image
-				uResult = RawBMP.Load(&pTexture->m_Image,&RawStream);
-				pRezFile->Release(uRezNum);
-			}
+			uResult = pTexture->m_Image.InitBMP(pRezFileLoad->m_pRezFile,pRezFileLoad->m_uRezNum);
 		}
 		break;
 
@@ -992,7 +1069,7 @@ Word BURGER_API Burger::Texture::CallbackRezFileBMP(Texture *pTexture,eLoader uL
 	\note The file is not loaded immediately. It will be loaded
 	after a call to LoadImage(void)
 
-	\sa LoadBMP(RezFile *,Word)
+	\sa LoadTGA(RezFile *,Word), LoadPNG(RezFile *,Word) or LoadGIF(RezFile *,Word)
 
 ***************************************/
 
@@ -1027,20 +1104,7 @@ Word BURGER_API Burger::Texture::CallbackFileBMP(Texture *pTexture,eLoader uLoad
 	switch (uLoader) {
 	default:
 	case LOADER_LOAD:
-		{
-			// Get the file
-			WordPtr uDataSize;
-			void *pData = FileManager::LoadFile(static_cast<const char *>(pTexture->m_pUserData),&uDataSize);
-			// Assume error
-			uResult = 10;
-			if (pData) {
-				// Convert into a stream (TRUE to not auto delete the buffer)
-				InputMemoryStream RawStream(pData,uDataSize);
-				FileBMP RawBMP;
-				// Convert BMP to Image
-				uResult = RawBMP.Load(&pTexture->m_Image,&RawStream);
-			}
-		}
+		uResult = pTexture->m_Image.InitBMP(static_cast<const char *>(pTexture->m_pUserData));
 		break;
 
 	// Release the image itself
@@ -1069,7 +1133,7 @@ Word BURGER_API Burger::Texture::CallbackFileBMP(Texture *pTexture,eLoader uLoad
 	\note The file is not loaded immediately. It will be loaded
 	after a call to LoadImage(void)
 
-	\sa LoadBMP(RezFile *,Word)
+	\sa LoadTGA(const char *), LoadPNG(const char *) or LoadGIF(const char *)
 
 ***************************************/
 
@@ -1083,6 +1147,331 @@ void BURGER_API Burger::Texture::LoadBMP(const char *pFilename)
 		m_uDirty |= DIRTY_IMAGE;
 	}
 }
+
+/*! ************************************
+
+	\brief Private callback to load BMP files from a file
+
+	Function to handle the loading and conversion to an Image
+	of a BMP file found in a file
+
+	\sa LoadBMP(Filename *)
+
+***************************************/
+
+Word BURGER_API Burger::Texture::CallbackFilenameBMP(Texture *pTexture,eLoader uLoader)
+{
+	Word uResult;
+	switch (uLoader) {
+	default:
+	case LOADER_LOAD:
+		// Convert BMP to Image
+		uResult = pTexture->m_Image.InitBMP(static_cast<Filename *>(pTexture->m_pUserData));
+		break;
+
+	// Release the image itself
+	case LOADER_UNLOAD:
+		pTexture->m_Image.Shutdown();
+		uResult = 0;
+		break;
+
+	// Release the user data
+	case LOADER_SHUTDOWN:
+		Delete(static_cast<Filename *>(pTexture->m_pUserData));
+		pTexture->m_pUserData = NULL;
+		uResult = 0;
+		break;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Set the texture to load the image from a BMP file
+
+	Set up for loading a hardware texture from a BMP file
+	stored in a file
+
+	\note The file is not loaded immediately. It will be loaded
+	after a call to LoadImage(void)
+
+	\sa LoadTGA(Filename *pFilename), LoadPNG(Filename *pFilename) or LoadGIF(Filename *pFilename)
+
+***************************************/
+
+void BURGER_API Burger::Texture::LoadBMP(Filename *pFilename)
+{
+	// Get rid of any previous loader
+	ShutdownImageMemory();
+	if (pFilename) {
+		m_pUserData = Filename::New(pFilename[0]);
+		m_pLoader = CallbackFilenameBMP;
+		m_uDirty |= DIRTY_IMAGE;
+	}
+}
+
+/*! ************************************
+
+	\brief Private callback to load GIF files from a resource file
+
+	Function to handle the loading and conversion to an Image
+	of a GIF file found in a resource file
+
+	\sa LoadGIF(RezFile *,Word)
+
+***************************************/
+
+Word BURGER_API Burger::Texture::CallbackRezFileGIF(Texture *pTexture,eLoader uLoader)
+{
+	Word uResult;
+	switch (uLoader) {
+	default:
+	case LOADER_LOAD:
+		{
+			// Get the record
+			const RezFileLoad_t *pRezFileLoad = static_cast<const RezFileLoad_t *>(pTexture->m_pUserData);
+			RezFile *pRezFile = pRezFileLoad->m_pRezFile;
+			Word uRezNum = pRezFileLoad->m_uRezNum;
+			// Load the resource file
+			void *pData = pRezFile->Load(uRezNum);
+			// Assume error
+			uResult = 10;
+			if (pData) {
+				// Convert into a stream (TRUE to not auto delete the buffer)
+				InputMemoryStream RawStream(pData,pRezFile->GetSize(uRezNum),TRUE);
+				FileGIF RawGIF;
+				// Convert GIF to Image
+				Image TempImage;
+				uResult = RawGIF.Load(&TempImage,&RawStream);
+				if (!uResult) {
+					// Convert from 8 bit paletted to RGBA
+					uResult = pTexture->m_Image.Init(TempImage.GetWidth(),TempImage.GetHeight(),Image::PIXELTYPE8888);
+					if (!uResult) {
+						uResult = pTexture->m_Image.Store8888(&TempImage,RawGIF.GetPalette());
+					}
+				}
+				pRezFile->Release(uRezNum);
+			}
+		}
+		break;
+
+	// Release the image itself
+	case LOADER_UNLOAD:
+		pTexture->m_Image.Shutdown();
+		uResult = 0;
+		break;
+
+	// Release the user data
+	case LOADER_SHUTDOWN:
+		Free(pTexture->m_pUserData);
+		pTexture->m_pUserData = NULL;
+		uResult = 0;
+		break;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Set the texture to load the image from a GIF file
+
+	Set up for loading a hardware texture from a GIF file
+	stored in a RezFile
+
+	\note The file is not loaded immediately. It will be loaded
+	after a call to LoadImage(void)
+
+	\sa LoadTGA(RezFile *,Word), LoadPNG(RezFile *,Word) or LoadBMP(RezFile *,Word)
+
+***************************************/
+
+void BURGER_API Burger::Texture::LoadGIF(RezFile *pRezFile,Word uRezNum)
+{
+	// Get rid of any previous loader
+	ShutdownImageMemory();
+	if (pRezFile) {
+		RezFileLoad_t *pRezFileLoad = static_cast<RezFileLoad_t *>(Alloc(sizeof(RezFileLoad_t)));
+		pRezFileLoad->m_pRezFile = pRezFile;
+		pRezFileLoad->m_uRezNum = uRezNum;
+		m_pUserData = pRezFileLoad;
+		m_pLoader = CallbackRezFileGIF;
+		m_uDirty |= DIRTY_IMAGE;
+	}
+}
+
+/*! ************************************
+
+	\brief Private callback to load GIF files from a file
+
+	Function to handle the loading and conversion to an Image
+	of a GIF file found in a file
+
+	\sa LoadGIF(const char *)
+
+***************************************/
+
+Word BURGER_API Burger::Texture::CallbackFileGIF(Texture *pTexture,eLoader uLoader)
+{
+	Word uResult;
+	switch (uLoader) {
+	default:
+	case LOADER_LOAD:
+		{
+			// Get the file
+			WordPtr uDataSize;
+			void *pData = FileManager::LoadFile(static_cast<const char *>(pTexture->m_pUserData),&uDataSize);
+			// Assume error
+			uResult = 10;
+			if (pData) {
+				// Convert into a stream (TRUE to not auto delete the buffer)
+				InputMemoryStream RawStream(pData,uDataSize);
+				FileGIF RawGIF;
+				// Convert GIF to Image
+				Image TempImage;
+				uResult = RawGIF.Load(&TempImage,&RawStream);
+				if (!uResult) {
+					// Convert from 8 bit paletted to RGBA
+					uResult = pTexture->m_Image.Init(TempImage.GetWidth(),TempImage.GetHeight(),Image::PIXELTYPE8888);
+					if (!uResult) {
+						uResult = pTexture->m_Image.Store8888(&TempImage,RawGIF.GetPalette());
+					}
+				}
+			}
+		}
+		break;
+
+	// Release the image itself
+	case LOADER_UNLOAD:
+		pTexture->m_Image.Shutdown();
+		uResult = 0;
+		break;
+
+	// Release the user data
+	case LOADER_SHUTDOWN:
+		Free(pTexture->m_pUserData);
+		pTexture->m_pUserData = NULL;
+		uResult = 0;
+		break;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Set the texture to load the image from a GIF file
+
+	Set up for loading a hardware texture from a GIF file
+	stored in a file
+
+	\note The file is not loaded immediately. It will be loaded
+	after a call to LoadImage(void)
+
+	\sa LoadTGA(const char *), LoadPNG(const char *) or LoadBMP(const char *)
+
+***************************************/
+
+void BURGER_API Burger::Texture::LoadGIF(const char *pFilename)
+{
+	// Get rid of any previous loader
+	ShutdownImageMemory();
+	if (pFilename) {
+		m_pUserData = StringDuplicate(pFilename);
+		m_pLoader = CallbackFileGIF;
+		m_uDirty |= DIRTY_IMAGE;
+	}
+}
+
+/*! ************************************
+
+	\brief Private callback to load GIF files from a file
+
+	Function to handle the loading and conversion to an Image
+	of a GIF file found in a file
+
+	\sa LoadGIF(Filename *)
+
+***************************************/
+
+Word BURGER_API Burger::Texture::CallbackFilenameGIF(Texture *pTexture,eLoader uLoader)
+{
+	Word uResult;
+	switch (uLoader) {
+	default:
+	case LOADER_LOAD:
+		{
+			// Get the file
+			WordPtr uDataSize;
+			void *pData = FileManager::LoadFile(static_cast<Filename *>(pTexture->m_pUserData),&uDataSize);
+			// Assume error
+			uResult = 10;
+			if (pData) {
+				// Convert into a stream (TRUE to not auto delete the buffer)
+				InputMemoryStream RawStream(pData,uDataSize);
+				FileGIF RawGIF;
+				// Convert GIF to Image
+				Image TempImage;
+				uResult = RawGIF.Load(&TempImage,&RawStream);
+				if (!uResult) {
+					// Convert from 8 bit paletted to RGBA
+					uResult = pTexture->m_Image.Init(TempImage.GetWidth(),TempImage.GetHeight(),Image::PIXELTYPE8888);
+					if (!uResult) {
+						uResult = pTexture->m_Image.Store8888(&TempImage,RawGIF.GetPalette());
+					}
+				}
+			}
+		}
+		break;
+
+	// Release the image itself
+	case LOADER_UNLOAD:
+		pTexture->m_Image.Shutdown();
+		uResult = 0;
+		break;
+
+	// Release the user data
+	case LOADER_SHUTDOWN:
+		Delete(static_cast<Filename *>(pTexture->m_pUserData));
+		pTexture->m_pUserData = NULL;
+		uResult = 0;
+		break;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Set the texture to load the image from a GIF file
+
+	Set up for loading a hardware texture from a GIF file
+	stored in a file
+
+	\note The file is not loaded immediately. It will be loaded
+	after a call to LoadImage(void)
+
+	\sa LoadTGA(Filename *), LoadPNG(Filename *) or LoadBMP(Filename *)
+
+***************************************/
+
+void BURGER_API Burger::Texture::LoadGIF(Filename *pFilename)
+{
+	// Get rid of any previous loader
+	ShutdownImageMemory();
+	if (pFilename) {
+		m_pUserData = Filename::New(pFilename[0]);
+		m_pLoader = CallbackFilenameGIF;
+		m_uDirty |= DIRTY_IMAGE;
+	}
+}
+
+
+/*! ************************************
+
+	\brief Release all textures
+
+	Iterate over every texture in existence and release them
+	from the display instance.
+
+***************************************/
 
 void BURGER_API Burger::Texture::ReleaseAll(Display *pDisplay)
 {

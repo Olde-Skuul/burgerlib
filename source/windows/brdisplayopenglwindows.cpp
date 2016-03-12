@@ -17,7 +17,7 @@
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 #include "brdebug.h"
-#include "brwindowsapp.h"
+#include "brgameapp.h"
 
 #if !defined(DOXYGEN)
 #define GL_GLEXT_PROTOTYPES
@@ -167,7 +167,7 @@ Word Burger::DisplayOpenGL::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlag
 	if (!(uFlags&FULLSCREEN) &&
 		!(m_uFlags&FULLSCREEN) &&
 		((m_uWidth!=uWidth) || (m_uHeight!=uHeight))) {
-		static_cast<WindowsApp *>(m_pGameApp)->ResetWindowLocation();
+		m_pGameApp->ResetWindowLocation();
 	}
 
 	//
@@ -212,39 +212,15 @@ Word Burger::DisplayOpenGL::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlag
 		m_uFlags &= (~FULLSCREEN);
 	}
 
-	// Resize the display the window to the new resolution
-	static_cast<WindowsApp *>(m_pGameApp)->SetWindowSize(m_uWidth,m_uHeight);
-
 	// Get the video contexts so drawing can commence
-	HWND pWindow = static_cast<WindowsApp *>(m_pGameApp)->GetWindow();
+	HWND pWindow = m_pGameApp->GetWindow();
 
 	// For full screen, the window needs to be borderless
 
 	if (m_uFlags&FULLSCREEN) {
-
-		// Create the window rect for the full screen window
-		RECT GameWindowRect;
-		GameWindowRect.top = 0;
-		GameWindowRect.left = 0;
-		GameWindowRect.bottom = static_cast<LONG>(m_uHeight);
-		GameWindowRect.right = static_cast<LONG>(m_uWidth);
-		DWORD uStyle = WS_POPUPWINDOW | (WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
-		DWORD uExStyle = WS_EX_DLGMODALFRAME | WS_EX_TOPMOST;		// Window Extended Style
-		AdjustWindowRectEx(&GameWindowRect,uStyle,FALSE,uExStyle);		// Adjust Window To True Requested Size
-
-		// Set the game's window style to the new settings
-		LONG uLongStyle = GetWindowLongW(pWindow,GWL_STYLE);	// Get the style of the window
-		uLongStyle |= WS_VISIBLE | WS_POPUP;			// Can't be a pop-up window
-		uLongStyle &= ~(WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX);
-		SetWindowLong(pWindow,GWL_STYLE,uLongStyle);	// Set the style
-		SetWindowPos(pWindow,NULL,GameWindowRect.left,GameWindowRect.top,GameWindowRect.right-GameWindowRect.left,GameWindowRect.bottom-GameWindowRect.top,(/*SWP_NOSIZE|*/SWP_NOZORDER));
-		ShowWindow(pWindow,SW_SHOW);				// Show The Window
-		SetForegroundWindow(pWindow);				// Slightly Higher Priority
-		SetFocus(pWindow);							// Sets Keyboard Focus To The Window
+		m_pGameApp->SetWindowFullScreen(m_uWidth,m_uHeight);
 	} else {
-		// For windowed mode, record the location of the window so
-		// future openings will open in the previous location
-		static_cast<WindowsApp *>(m_pGameApp)->RecordWindowLocation();
+		m_pGameApp->SetWindowSize(m_uWidth,m_uHeight);
 	}
 
 	m_pOpenGLDeviceContext = GetDC(pWindow);
@@ -307,7 +283,7 @@ Word Burger::DisplayOpenGL::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlag
 	// Boned?
 	if (!hGLContext) {
 		// Release the device
-		ReleaseDC(static_cast<WindowsApp *>(m_pGameApp)->GetWindow(),m_pOpenGLDeviceContext);
+		ReleaseDC(m_pGameApp->GetWindow(),m_pOpenGLDeviceContext);
 		m_pOpenGLDeviceContext = NULL;
 		return 10;
 	}
@@ -345,7 +321,7 @@ void Burger::DisplayOpenGL::Shutdown(void)
 	// Do I have a device?
 	if (m_pOpenGLDeviceContext) {
 		// Release the device
-		ReleaseDC(static_cast<WindowsApp *>(m_pGameApp)->GetWindow(),m_pOpenGLDeviceContext);
+		ReleaseDC(m_pGameApp->GetWindow(),m_pOpenGLDeviceContext);
 		m_pOpenGLDeviceContext = NULL;
 	}
 
@@ -378,7 +354,7 @@ void Burger::DisplayOpenGL::EndScene(void)
 {
 	// Consider it done!
 	SwapBuffers(m_pOpenGLDeviceContext);
-	ValidateRect(static_cast<WindowsApp *>(m_pGameApp)->GetWindow(),NULL);
+	ValidateRect(m_pGameApp->GetWindow(),NULL);
 }
 
 #if !defined(DOXYGEN)

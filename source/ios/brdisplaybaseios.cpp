@@ -16,7 +16,7 @@
 #include "brdisplay.h"
 
 #if defined(BURGER_IOS)
-#include "briosapp.h"
+#include "brgameapp.h"
 #include "brdebug.h"
 #include "brglobals.h"
 #include "brglobalmemorymanager.h"
@@ -36,25 +36,25 @@
 void BURGER_API Burger::Display::InitGlobals(void)
 {
 	if (!g_Globals.m_bInitialized) {
-		
+
 		//
 		// Start by getting the screen size in POINTS
 		//
-		
+
 		UIScreen *pMainScreen = [UIScreen mainScreen];
 		CGRect ScreenRect = pMainScreen.bounds;
-		
+
 		//
 		// Get the retina display scale factor
 		//
-		
+
 		float fRetinaScale = [pMainScreen scale];
 		g_Globals.m_fRetinaScale = fRetinaScale;
-		
+
 		// Get the TRUE display size in pixels
 		Word uDisplayWidth = static_cast<Word>(static_cast<int>(ScreenRect.size.width*fRetinaScale));
 		Word uDisplayHeight = static_cast<Word>(static_cast<int>(ScreenRect.size.height*fRetinaScale));
-		
+
 		// Save the size of the screen
 		g_Globals.m_uDefaultWidth = uDisplayWidth;
 		g_Globals.m_uDefaultHeight = uDisplayHeight;
@@ -64,9 +64,9 @@ void BURGER_API Burger::Display::InitGlobals(void)
 
 		g_Globals.m_uDefaultTotalWidth = uDisplayWidth;
 		g_Globals.m_uDefaultTotalHeight = uDisplayHeight;
-		
+
 		NSArray *pScreens = [UIScreen screens];
-		
+
 		g_Globals.m_uDefaultMonitorCount = static_cast<Word>([pScreens count]);
 		g_Globals.m_bInitialized = TRUE;
 	}

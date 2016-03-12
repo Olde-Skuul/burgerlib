@@ -15,7 +15,7 @@
 #include "brdisplaydibsoftware8.h"
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-#include "brwindowsapp.h"
+#include "brgameapp.h"
 #if !defined(WIN32_LEAN_AND_MEAN) && !defined(DOXYGEN)
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -154,12 +154,6 @@ void Burger::DisplayDIBSoftware8::PostShutdown(void)
 	if (m_pHBitMap) {
 		DeleteObject(m_pHBitMap);
 		m_pHBitMap = NULL;
-
-		// Because there was a video context, capture the location
-		// of the window, so if the window was re-opened, use it's
-		// old location.
-
-		static_cast<WindowsApp *>(m_pGameApp)->RecordWindowLocation();
 	}
 
 	// Release everything else

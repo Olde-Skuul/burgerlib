@@ -233,7 +233,7 @@ Burger::Renderer::~Renderer()
 	\param uHeight Height in pixels of the display to render to
 	\param uDepth Depth in bits of the display to render to
 	\param uFlags Bit flags to describe specific display features
-	\return Zero if no error occured, non-zero if the renderer could not initialize
+	\return Zero if no error occurred, non-zero if the renderer could not initialize
 
 ***************************************/
 

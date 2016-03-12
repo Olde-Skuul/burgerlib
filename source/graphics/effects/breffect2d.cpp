@@ -14,6 +14,30 @@
 #include "breffect2d.h"
 #include "brshaders.h"
 
+#if defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_OPENGL_SUPPORTED)
+
+//
+// Vertexes needed for Effect2D to render an entire texture
+// as a 2D shape
+//
+
+static const Burger::Effect2D::Vertex g_Vertices2DQuad[] = {
+	{0.0f,-2.0f,0.0f,1.0f},
+	{2.0f,-2.0f,1.0f,1.0f},
+	{0.0f, 0.0f,0.0f,0.0f},
+	{2.0f, 0.0f,1.0f,0.0f}
+};
+
+// 2 entries for position
+// 2 entries for UV
+const Word Burger::g_Effect2DMemberDescription[] = {2|Burger::VertexBuffer::USAGE_POSITION,2|Burger::VertexBuffer::USAGE_TEXCOORD,0};
+
+// Describe the location
+const Burger::VertexBuffer::VertexAoS_t Burger::g_Effect2DDefaultVertexBufferDescription = {
+	g_Vertices2DQuad,sizeof(g_Vertices2DQuad),NULL,0,Burger::g_Effect2DMemberDescription
+};
+#endif
+
 #if defined(BURGER_WINDOWS)
 #include <windows.h>
 #include <d3d9.h>

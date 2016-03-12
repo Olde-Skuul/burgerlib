@@ -84,7 +84,9 @@ public:
 	virtual void EndScene(void);
 	virtual Texture *CreateTextureObject(void);
 	virtual VertexBuffer *CreateVertexBufferObject(void);
+	virtual void Resize(Word uWidth,Word uHeight);
 	virtual void SetViewport(Word uX,Word uY,Word uWidth,Word uHeight);
+	virtual void SetScissorRect(Word uX,Word uY,Word uWidth,Word uHeight);
 	virtual void SetClearColor(float fRed,float fGreen,float fBlue,float fAlpha);
 	virtual void SetClearDepth(float fDepth);
 	virtual void Clear(Word uMask);
@@ -95,6 +97,7 @@ public:
 	virtual void SetZWrite(Word bEnable);
 	virtual void SetDepthTest(eDepthFunction uDepthFunction);
 	virtual void SetCullMode(eCullMode uCullMode);
+	virtual void SetScissor(Word bEnable);
 	virtual void DrawPrimitive(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer);
 	virtual void DrawElements(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer);
 

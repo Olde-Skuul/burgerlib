@@ -16,7 +16,7 @@
 #include "brdisplayopengl.h"
 #if defined(BURGER_IOS) || defined(DOXYGEN)
 #include "brdebug.h"
-#include "briosapp.h"
+#include "brgameapp.h"
 
 #if !defined(DOXYGEN)
 #define GL_GLEXT_PROTOTYPES
@@ -106,9 +106,9 @@
 }
 
 /***************************************
- 
+
 	This forces the class to be a CAEAGLLayer
- 
+
 ***************************************/
 
 + (Class)layerClass
@@ -143,27 +143,27 @@ Burger::Display::Display(Burger::GameApp *pGameApp) :
 	InitDefaults(pGameApp);
 	// Start by getting the screen size in POINTS
 	UIScreen *pMainScreen = [UIScreen mainScreen];
-	
+
 	m_uDisplayWidth = g_Globals.m_uDefaultWidth;
 	m_uDisplayHeight = g_Globals.m_uDefaultHeight;
 
 	// Create a default view of the current screen size in points
 	CGRect ScreenRect = pMainScreen.bounds;
 	BurgerOpenGLView *pView = [[BurgerOpenGLView alloc] initWithFrame:ScreenRect parent:this];
-	static_cast<iOSApp *>(pGameApp)->SetViewController(static_cast<iOSApp *>(pGameApp)->GetViewController(),pView);
+	pGameApp->SetViewController(pGameApp->GetViewController(),pView);
 	m_pEAGLContext = [pView getContext];
 }
 
 #endif
 
 /*! ************************************
- 
+
 	\brief Shut down OpenGL
- 
+
 	Release all resources allocated by OpenGL
- 
+
 	\sa DisplayOpenGL()
- 
+
  ***************************************/
 
 Burger::Display::~Display()
@@ -208,13 +208,13 @@ Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
 	m_uHeight = uHeight;
 	m_uDepth = uDepth;
 	m_uFlags = uFlags;
-	
+
 	m_uFlags |= FULLPALETTEALLOWED;
 
 	//
 	// Create an auto-release pool for memory clean up
 	//
-	
+
 	NSAutoreleasePool *pPool = [[NSAutoreleasePool alloc] init];
 
 	[EAGLContext setCurrentContext:m_pEAGLContext];
@@ -224,13 +224,13 @@ Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
 	glGenRenderbuffers(1,&m_uColorRenderBuffer);
 	// And the Z buffer
 	glGenRenderbuffers(1,&m_uDepthRenderBuffer);
-	
+
 	// Bind the frame buffers
 	glBindFramebuffer(GL_FRAMEBUFFER,m_uFrontBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER,m_uColorRenderBuffer);
-	
+
 	// Get the screen resolution
-	[m_pEAGLContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:[static_cast<BurgerOpenGLView *>(static_cast<iOSApp *>(m_pGameApp)->GetView()) getLayer]];
+	[m_pEAGLContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:[static_cast<BurgerOpenGLView *>(m_pGameApp->GetView()) getLayer]];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_RENDERBUFFER,m_uColorRenderBuffer);
 	GLint backingWidth;
 	GLint backingHeight;
@@ -238,7 +238,7 @@ Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER,GL_RENDERBUFFER_HEIGHT,&backingHeight);
 
 	// Create the Z buffer based on the screen size
-	
+
 	glBindRenderbuffer(GL_RENDERBUFFER,m_uDepthRenderBuffer);
 	glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH_COMPONENT16,backingWidth,backingHeight);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER,m_uDepthRenderBuffer);

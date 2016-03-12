@@ -103,7 +103,7 @@ void Burger::RendererSoftware8::Draw8BitPixels(int iX,int iY,Word uWidth,Word uH
 							// Copy 2 bytes
 							case 2:
 								do {
-#if (defined(BURGER_AMD64) || defined(BURGER_X86))
+#if defined(BURGER_INTELARCHITECTURE)
 									reinterpret_cast<Word16 *>(pDest)[0] = reinterpret_cast<const Word16 *>(pPixels)[0];
 #else
 									Word8 a = pPixels[0];

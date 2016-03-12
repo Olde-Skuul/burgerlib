@@ -13,7 +13,7 @@
 
 #include "brdisplaydirectx9software8.h"
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-#include "brwindowsapp.h"
+#include "brgameapp.h"
 #include "brglobals.h"
 
 #if !defined(DIRECTDRAW_VERSION) && !defined(DOXYGEN)
@@ -189,7 +189,7 @@ void Burger::DisplayDirectX9Software8::EndScene(void)
 			pDirect3DDevice9->DrawPrimitive(D3DPT_TRIANGLESTRIP,0,2);
 			pDirect3DDevice9->EndScene();
 			// Display the final result!
-			HWND pWindow = static_cast<WindowsApp *>(m_pGameApp)->GetWindow();
+			HWND pWindow = m_pGameApp->GetWindow();
 			hResult = pDirect3DDevice9->Present(NULL,NULL,pWindow,NULL);
 			if (hResult==D3D_OK) {
 				ValidateRect(pWindow,NULL);
