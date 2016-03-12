@@ -107,6 +107,7 @@ public:
 	BURGER_INLINE WordPtr GetStride(Word uMipMap) const { return m_Image.GetStride(uMipMap); }
 	BURGER_INLINE Image::ePixelTypes GetType(void) const { return m_Image.GetType(); }
 	BURGER_INLINE Word GetMipMapCount(void) const { return m_Image.GetMipMapCount(); }
+	BURGER_INLINE void SetImageDirty(void) { m_uDirty |= DIRTY_IMAGE; }
 	BURGER_INLINE eWrapping GetWrappingS(void) const { return m_eWrappingS; }
 	BURGER_INLINE void SetWrappingS(eWrapping uWrapping) { m_eWrappingS = uWrapping; m_uDirty |= DIRTY_WRAPPING_S; }
 	BURGER_INLINE eWrapping GetWrappingT(void) const { return m_eWrappingT; }
@@ -124,10 +125,16 @@ public:
 	BURGER_INLINE Texture *GetPrevious(void) const { return m_pPrev; }
 	void BURGER_API LoadTGA(RezFile *pRezFile,Word uRezNum);
 	void BURGER_API LoadTGA(const char *pFilename);
+	void BURGER_API LoadTGA(Filename *pFilename);
 	void BURGER_API LoadPNG(RezFile *pRezFile,Word uRezNum);
 	void BURGER_API LoadPNG(const char *pFilename);
+	void BURGER_API LoadPNG(Filename *pFilename);
 	void BURGER_API LoadBMP(RezFile *pRezFile,Word uRezNum);
 	void BURGER_API LoadBMP(const char *pFilename);
+	void BURGER_API LoadBMP(Filename *pFilename);
+	void BURGER_API LoadGIF(RezFile *pRezFile,Word uRezNum);
+	void BURGER_API LoadGIF(const char *pFilename);
+	void BURGER_API LoadGIF(Filename *pFilename);
 	static void BURGER_API ReleaseAll(Display *pDisplay);
 #if defined(BURGER_XBOX360)
 	Word BURGER_API GetD3DFormat(void) const;
@@ -141,10 +148,16 @@ public:
 private:
 	static Word BURGER_API CallbackRezFileTGA(Texture *pTexture,eLoader uLoader);
 	static Word BURGER_API CallbackFileTGA(Texture *pTexture,eLoader uLoader);
+	static Word BURGER_API CallbackFilenameTGA(Texture *pTexture,eLoader uLoader);
 	static Word BURGER_API CallbackRezFilePNG(Texture *pTexture,eLoader uLoader);
 	static Word BURGER_API CallbackFilePNG(Texture *pTexture,eLoader uLoader);
+	static Word BURGER_API CallbackFilenamePNG(Texture *pTexture,eLoader uLoader);
 	static Word BURGER_API CallbackRezFileBMP(Texture *pTexture,eLoader uLoader);
 	static Word BURGER_API CallbackFileBMP(Texture *pTexture,eLoader uLoader);
+	static Word BURGER_API CallbackFilenameBMP(Texture *pTexture,eLoader uLoader);
+	static Word BURGER_API CallbackRezFileGIF(Texture *pTexture,eLoader uLoader);
+	static Word BURGER_API CallbackFileGIF(Texture *pTexture,eLoader uLoader);
+	static Word BURGER_API CallbackFilenameGIF(Texture *pTexture,eLoader uLoader);
 };
 }
 /* END */

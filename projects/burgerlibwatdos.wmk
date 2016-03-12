@@ -6,7 +6,7 @@
 # sourcedir = Set the work directories for the source
 #
 
-sourcedir = ..\source\ansi;..\source\audio;..\source;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\msdos;..\source\text
+sourcedir = ..\source\ansi;..\source\audio;..\source;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\msdos;..\source\text
 
 #
 # Name of the output library
@@ -28,7 +28,17 @@ objs= &
 	$(A)\brfileansihelpers.obj &
 	$(A)\brmemoryansi.obj &
 	$(A)\brstdouthelpers.obj &
+	$(A)\bralaw.obj &
+	$(A)\brimportit.obj &
+	$(A)\brimports3m.obj &
+	$(A)\brimportxm.obj &
+	$(A)\brmace.obj &
+	$(A)\brmicrosoftadpcm.obj &
+	$(A)\brsequencer.obj &
 	$(A)\brsound.obj &
+	$(A)\brsoundbufferrez.obj &
+	$(A)\brsounddecompress.obj &
+	$(A)\brulaw.obj &
 	$(A)\brcommandparameter.obj &
 	$(A)\brcommandparameterbooltrue.obj &
 	$(A)\brcommandparameterstring.obj &
@@ -51,15 +61,16 @@ objs= &
 	$(A)\brdxt3.obj &
 	$(A)\brdxt5.obj &
 	$(A)\brhashmap.obj &
-	$(A)\brmace.obj &
 	$(A)\brmd2.obj &
 	$(A)\brmd4.obj &
 	$(A)\brmd5.obj &
 	$(A)\brpackfloat.obj &
 	$(A)\brsdbmhash.obj &
 	$(A)\brsha1.obj &
+	$(A)\brunpackbytes.obj &
 	$(A)\brdirectorysearch.obj &
 	$(A)\brfile.obj &
+	$(A)\brfileapf.obj &
 	$(A)\brfilebmp.obj &
 	$(A)\brfiledds.obj &
 	$(A)\brfilegif.obj &
@@ -107,6 +118,8 @@ objs= &
 	$(A)\breffectpositiontexturecolor.obj &
 	$(A)\breffectstaticpositiontexture.obj &
 	$(A)\brshaders.obj &
+	$(A)\brshader2dccolor.obj &
+	$(A)\brshader2dcolorvertex.obj &
 	$(A)\brjoypad.obj &
 	$(A)\brkeyboard.obj &
 	$(A)\brmouse.obj &
@@ -156,6 +169,7 @@ objs= &
 	$(A)\brmemorymanager.obj &
 	$(A)\brdirectorysearchmsdos.obj &
 	$(A)\brdosextender.obj &
+	$(A)\brdosextenderasm.obj &
 	$(A)\brfilemanagermsdos.obj &
 	$(A)\brfilemsdos.obj &
 	$(A)\brfilenamemsdos.obj &
@@ -179,7 +193,7 @@ objs= &
 # Final location folder
 #
 
-finalfolder = $(SDKS)\dos\burgerlib
+finalfolder = $(BURGER_SDKS)\dos\burgerlib
 
 #
 # Create the build environment

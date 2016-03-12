@@ -245,7 +245,7 @@ Word BURGER_API Burger::Keyboard::GetKeyEvent(KeyEvent_t *pEvent)
 	Word uIndex = m_uArrayStart;		/* Get the starting index */
 	if (uIndex!=m_uArrayEnd) {	/* Anything in the buffer? */
 		pEvent[0] = m_KeyEvents[uIndex];
-		m_uArrayStart = (uIndex+1)&(KEYBUFFSIZE-1);	/* Next key */
+		m_uArrayStart = (uIndex+1)&(cBufferSize-1);	/* Next key */
 		uResult = 1;
 	}
 	m_KeyboardLock.Unlock();
@@ -272,7 +272,7 @@ Word BURGER_API Burger::Keyboard::PostKeyEvent(const KeyEvent_t *pEvent)
 	Word uResult = 10;
 	Word uEnd = m_uArrayEnd;
 	// See if there's room in the buffer
-	Word uTemp = (uEnd+1)&(KEYBUFFSIZE-1);
+	Word uTemp = (uEnd+1)&(cBufferSize-1);
 	if (uTemp!=m_uArrayStart) {
 		// Didn't wrap, accept it!
 		m_uArrayEnd = uTemp;

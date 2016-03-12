@@ -13,6 +13,12 @@
 
 #include "brimage.h"
 #include "brglobalmemorymanager.h"
+#include "brpalette.h"
+#include "brrenderer.h"
+#include "brfilepng.h"
+#include "brfilegif.h"
+#include "brfilebmp.h"
+#include "brfiletga.h"
 
 /*! ************************************
 
@@ -401,6 +407,530 @@ Word Burger::Image::Init(const Image *pInput)
 	}
 	return uResult;
 }
+
+/*! ************************************
+
+	\brief Initialize an Image from a PNG file stream
+
+	Given a InputMemoryStream containing a PNG file,
+	convert the contents into an Image.
+
+	If this is an animated PNG file, only load in the first
+	frame. This is a convenience routine to simplify loading
+	a graphic file into memory.
+
+	\note If the graphic file has a palette, it will be returned to 
+	the buffer pointed to by pPalette. If there was an error or if
+	the image doesn't have a palette (24/32 bit color), the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pInput Pointer to a stream with a PNG file inside
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitPNG(const char *,RGBAWord8_t *), InitPNG(Filename *,RGBAWord8_t *), InitPNG(RezFile *,Word,RGBAWord8_t *) or FilePNG::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitPNG(InputMemoryStream *pInput,RGBAWord8_t *pPalette)
+{
+	// Graphic file translator
+	FilePNG Loader;
+	Word uResult = 10;
+	// Failure on load or an invalid stream?
+	if (!pInput->IsEmpty()) {
+		// Convert to an Image
+		uResult = Loader.Load(this,pInput);
+	}
+	// Was a palette requested?
+	if (pPalette) {
+		// Error?
+		if (uResult) {
+			// Clear the palette on error
+			ClearPalette(pPalette);
+		} else {
+			// Copy on success
+			MemoryCopy(pPalette,Loader.GetPalette(),sizeof(pPalette[0])*256);
+		}
+	}
+	// Return 0 on success!
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Initialize an Image from a PNG file
+
+	Given a Burgerlib format filename, open the file,
+	read it in, and convert the contents into an Image.
+
+	If this is an animated PNG file, only load in the first
+	frame. This is a convenience routine to simplify loading
+	a graphic file into memory.
+
+	\note If the graphic file has a palette, it will be returned to 
+	the buffer pointed to by pPalette. If there was an error or if
+	the image doesn't have a palette (24/32 bit color), the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pFilename Pointer to a Burgerlib filename
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitPNG(InputMemoryStream *,RGBAWord8_t *), InitPNG(Filename *,RGBAWord8_t *), InitPNG(RezFile *,Word,RGBAWord8_t *) or FilePNG::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitPNG(const char *pFilename,RGBAWord8_t *pPalette)
+{
+	// Load into a memory stream
+	InputMemoryStream Input(pFilename);
+	return InitPNG(&Input,pPalette);
+}
+
+/*! ************************************
+
+	\brief Initialize an Image from a PNG file
+
+	Given a Burgerlib Filename, open the file,
+	read it in, and convert the contents into an Image.
+
+	If this is an animated PNG file, only load in the first
+	frame. This is a convenience routine to simplify loading
+	a graphic file into memory.
+
+	\note If the graphic file has a palette, it will be returned to 
+	the buffer pointed to by pPalette. If there was an error or if
+	the image doesn't have a palette (24/32 bit color), the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pFilename Pointer to a Burgerlib Filename
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitPNG(InputMemoryStream *,RGBAWord8_t *), InitPNG(const char *,RGBAWord8_t *), InitPNG(RezFile *,Word,RGBAWord8_t *) or FilePNG::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitPNG(Filename *pFilename,RGBAWord8_t *pPalette)
+{
+	// Load into a memory stream
+	InputMemoryStream Input(pFilename);
+	return InitPNG(&Input,pPalette);
+}
+
+/*! ************************************
+
+	\brief Initialize an Image from a PNG file
+
+	Given a Burgerlib Filename, open the file,
+	read it in, and convert the contents into an Image.
+
+	If this is an animated PNG file, only load in the first
+	frame. This is a convenience routine to simplify loading
+	a graphic file into memory.
+
+	\note If the graphic file has a palette, it will be returned to 
+	the buffer pointed to by pPalette. If there was an error or if
+	the image doesn't have a palette (24/32 bit color), the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pRezFile Pointer to a Burgerlib RezFile
+	\param uRezNum Index number of the file in the RezFile
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitPNG(InputMemoryStream *,RGBAWord8_t *), InitPNG(Filename *,RGBAWord8_t *), InitPNG(const char *,RGBAWord8_t *) or FilePNG::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitPNG(RezFile *pRezFile,Word uRezNum,RGBAWord8_t *pPalette)
+{
+	// Load into a memory stream7
+	InputRezStream Input(pRezFile,uRezNum);
+	return InitPNG(&Input,pPalette);
+}
+
+
+/*! ************************************
+
+	\brief Initialize an Image from a GIF file stream
+
+	Given a InputMemoryStream containing a GIF file,
+	convert the contents into an Image.
+
+	If this is an animated GIF file, only load in the first
+	frame. This is a convenience routine to simplify loading
+	a graphic file into memory.
+
+	\note The palette will be returned to 
+	the buffer pointed to by pPalette. If there was an error, the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pInput Pointer to a stream with a GIF file inside
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitGIF(const char *,RGBAWord8_t *), InitGIF(Filename *,RGBAWord8_t *), InitGIF(RezFile *,Word,RGBAWord8_t *) or FileGIF::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitGIF(InputMemoryStream *pInput,RGBAWord8_t *pPalette)
+{
+	// Graphic file translator
+	FileGIF Loader;
+	Word uResult = 10;
+	// Failure on load or an invalid stream?
+	if (!pInput->IsEmpty()) {
+		// Convert to an Image
+		uResult = Loader.Load(this,pInput);
+	}
+	// Was a palette requested?
+	if (pPalette) {
+		// Error?
+		if (uResult) {
+			// Clear the palette on error
+			ClearPalette(pPalette);
+		} else {
+			// Copy on success
+			MemoryCopy(pPalette,Loader.GetPalette(),sizeof(pPalette[0])*256);
+		}
+	}
+	// Return 0 on success!
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Initialize an Image from a GIF file
+
+	Given a Burgerlib format filename, open the file,
+	read it in, and convert the contents into an Image.
+
+	If this is an animated GIF file, only load in the first
+	frame. This is a convenience routine to simplify loading
+	a graphic file into memory.
+
+	\note The palette will be returned to 
+	the buffer pointed to by pPalette. If there was an error, the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pFilename Pointer to a Burgerlib filename
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitGIF(InputMemoryStream *,RGBAWord8_t *), InitGIF(Filename *,RGBAWord8_t *), InitGIF(RezFile *,Word,RGBAWord8_t *) or FileGIF::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitGIF(const char *pFilename,RGBAWord8_t *pPalette)
+{
+	// Load into a memory stream
+	InputMemoryStream Input(pFilename);
+	return InitGIF(&Input,pPalette);
+}
+
+/*! ************************************
+
+	\brief Initialize an Image from a GIF file
+
+	Given a Burgerlib Filename, open the file,
+	read it in, and convert the contents into an Image.
+
+	If this is an animated GIF file, only load in the first
+	frame. This is a convenience routine to simplify loading
+	a graphic file into memory.
+
+	\note The palette will be returned to 
+	the buffer pointed to by pPalette. If there was an error, the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pFilename Pointer to a Burgerlib Filename
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitGIF(InputMemoryStream *,RGBAWord8_t *), InitGIF(const char *,RGBAWord8_t *), InitGIF(RezFile *,Word,RGBAWord8_t *) or FileGIF::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitGIF(Filename *pFilename,RGBAWord8_t *pPalette)
+{
+	// Load into a memory stream
+	InputMemoryStream Input(pFilename);
+	return InitGIF(&Input,pPalette);
+}
+
+/*! ************************************
+
+	\brief Initialize an Image from a GIF file
+
+	Given a Burgerlib Filename, open the file,
+	read it in, and convert the contents into an Image.
+
+	If this is an animated GIF file, only load in the first
+	frame. This is a convenience routine to simplify loading
+	a graphic file into memory.
+
+	\note The palette will be returned to 
+	the buffer pointed to by pPalette. If there was an error, the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pRezFile Pointer to a Burgerlib RezFile
+	\param uRezNum Index number of the file in the RezFile
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitGIF(InputMemoryStream *,RGBAWord8_t *), InitGIF(Filename *,RGBAWord8_t *), InitGIF(const char *,RGBAWord8_t *) or FileGIF::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitGIF(RezFile *pRezFile,Word uRezNum,RGBAWord8_t *pPalette)
+{
+	// Load into a memory stream7
+	InputRezStream Input(pRezFile,uRezNum);
+	return InitGIF(&Input,pPalette);
+}
+
+
+/*! ************************************
+
+	\brief Initialize an Image from a TGA file stream
+
+	Given a InputMemoryStream containing a TGA file,
+	convert the contents into an Image.
+
+	\note If the graphic file has a palette, it will be returned to 
+	the buffer pointed to by pPalette. If there was an error or if
+	the image doesn't have a palette (24/32 bit color), the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pInput Pointer to a stream with a TGA file inside
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitPNG(const char *,RGBAWord8_t *), InitTGA(Filename *,RGBAWord8_t *), InitTGA(RezFile *,Word,RGBAWord8_t *) or FileTGA::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitTGA(InputMemoryStream *pInput,RGBAWord8_t *pPalette)
+{
+	// Graphic file translator
+	FileTGA Loader;
+	Word uResult = 10;
+	// Failure on load or an invalid stream?
+	if (!pInput->IsEmpty()) {
+		// Convert to an Image
+		uResult = Loader.Load(this,pInput);
+	}
+	// Was a palette requested?
+	if (pPalette) {
+		// Error?
+		if (uResult) {
+			// Clear the palette on error
+			ClearPalette(pPalette);
+		} else {
+			// Copy on success
+			MemoryCopy(pPalette,Loader.GetPalette(),sizeof(pPalette[0])*256);
+		}
+	}
+	// Return 0 on success!
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Initialize an Image from a TGA file
+
+	Given a Burgerlib format filename, open the file,
+	read it in, and convert the contents into an Image.
+
+	\note If the graphic file has a palette, it will be returned to 
+	the buffer pointed to by pPalette. If there was an error or if
+	the image doesn't have a palette (24/32 bit color), the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pFilename Pointer to a Burgerlib filename
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitTGA(InputMemoryStream *,RGBAWord8_t *), InitTGA(Filename *,RGBAWord8_t *), InitTGA(RezFile *,Word,RGBAWord8_t *) or FileTGA::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitTGA(const char *pFilename,RGBAWord8_t *pPalette)
+{
+	// Load into a memory stream
+	InputMemoryStream Input(pFilename);
+	return InitTGA(&Input,pPalette);
+}
+
+/*! ************************************
+
+	\brief Initialize an Image from a TGA file
+
+	Given a Burgerlib Filename, open the file,
+	read it in, and convert the contents into an Image.
+
+	\note If the graphic file has a palette, it will be returned to 
+	the buffer pointed to by pPalette. If there was an error or if
+	the image doesn't have a palette (24/32 bit color), the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pFilename Pointer to a Burgerlib Filename
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitTGA(InputMemoryStream *,RGBAWord8_t *), InitTGA(const char *,RGBAWord8_t *), InitTGA(RezFile *,Word,RGBAWord8_t *) or FileTGA::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitTGA(Filename *pFilename,RGBAWord8_t *pPalette)
+{
+	// Load into a memory stream
+	InputMemoryStream Input(pFilename);
+	return InitTGA(&Input,pPalette);
+}
+
+/*! ************************************
+
+	\brief Initialize an Image from a TGA file
+
+	Given a Burgerlib Filename, open the file,
+	read it in, and convert the contents into an Image.
+
+	\note If the graphic file has a palette, it will be returned to 
+	the buffer pointed to by pPalette. If there was an error or if
+	the image doesn't have a palette (24/32 bit color), the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pRezFile Pointer to a Burgerlib RezFile
+	\param uRezNum Index number of the file in the RezFile
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitTGA(InputMemoryStream *,RGBAWord8_t *), InitTGA(Filename *,RGBAWord8_t *), InitTGA(const char *,RGBAWord8_t *) or FileTGA::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitTGA(RezFile *pRezFile,Word uRezNum,RGBAWord8_t *pPalette)
+{
+	// Load into a memory stream7
+	InputRezStream Input(pRezFile,uRezNum);
+	return InitTGA(&Input,pPalette);
+}
+
+
+/*! ************************************
+
+	\brief Initialize an Image from a BMP file stream
+
+	Given a InputMemoryStream containing a BMP file,
+	convert the contents into an Image.
+
+	\note If the graphic file has a palette, it will be returned to 
+	the buffer pointed to by pPalette. If there was an error or if
+	the image doesn't have a palette (24/32 bit color), the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pInput Pointer to a stream with a BMP file inside
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitBMP(const char *,RGBAWord8_t *), InitBMP(Filename *,RGBAWord8_t *), InitBMP(RezFile *,Word,RGBAWord8_t *) or FileBMP::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitBMP(InputMemoryStream *pInput,RGBAWord8_t *pPalette)
+{
+	// Graphic file translator
+	FileBMP Loader;
+	Word uResult = 10;
+	// Failure on load or an invalid stream?
+	if (!pInput->IsEmpty()) {
+		// Convert to an Image
+		uResult = Loader.Load(this,pInput);
+	}
+	// Was a palette requested?
+	if (pPalette) {
+		// Error?
+		if (uResult) {
+			// Clear the palette on error
+			ClearPalette(pPalette);
+		} else {
+			// Copy on success
+			MemoryCopy(pPalette,Loader.GetPalette(),sizeof(pPalette[0])*256);
+		}
+	}
+	// Return 0 on success!
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Initialize an Image from a BMP file
+
+	Given a Burgerlib format filename, open the file,
+	read it in, and convert the contents into an Image.
+
+	\note If the graphic file has a palette, it will be returned to 
+	the buffer pointed to by pPalette. If there was an error or if
+	the image doesn't have a palette (24/32 bit color), the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pFilename Pointer to a Burgerlib filename
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitBMP(InputMemoryStream *,RGBAWord8_t *), InitBMP(Filename *,RGBAWord8_t *), InitBMP(RezFile *,Word,RGBAWord8_t *) or FileBMP::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitBMP(const char *pFilename,RGBAWord8_t *pPalette)
+{
+	// Load into a memory stream
+	InputMemoryStream Input(pFilename);
+	return InitBMP(&Input,pPalette);
+}
+
+/*! ************************************
+
+	\brief Initialize an Image from a BMP file
+
+	Given a Burgerlib Filename, open the file,
+	read it in, and convert the contents into an Image.
+
+	\note If the graphic file has a palette, it will be returned to 
+	the buffer pointed to by pPalette. If there was an error or if
+	the image doesn't have a palette (24/32 bit color), the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pFilename Pointer to a Burgerlib Filename
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitBMP(InputMemoryStream *,RGBAWord8_t *), InitBMP(const char *,RGBAWord8_t *), InitBMP(RezFile *,Word,RGBAWord8_t *) or FileBMP::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitBMP(Filename *pFilename,RGBAWord8_t *pPalette)
+{
+	// Load into a memory stream
+	InputMemoryStream Input(pFilename);
+	return InitBMP(&Input,pPalette);
+}
+
+/*! ************************************
+
+	\brief Initialize an Image from a BMP file
+
+	Given a Burgerlib Filename, open the file,
+	read it in, and convert the contents into an Image.
+
+	\note If the graphic file has a palette, it will be returned to 
+	the buffer pointed to by pPalette. If there was an error or if
+	the image doesn't have a palette (24/32 bit color), the palette
+	will be cleared to black with an alpha set to 255,
+
+	\param pRezFile Pointer to a Burgerlib RezFile
+	\param uRezNum Index number of the file in the RezFile
+	\param pPalette Pointer to a 256 entry RGBAWord8_t palette, or \ref NULL if no buffer exists
+	\return Zero on success, non-zero on failure
+	\sa InitBMP(InputMemoryStream *,RGBAWord8_t *), InitBMP(Filename *,RGBAWord8_t *), InitBMP(const char *,RGBAWord8_t *) or FileBMP::Load(Image *,InputMemoryStream *)
+
+***************************************/
+
+Word Burger::Image::InitBMP(RezFile *pRezFile,Word uRezNum,RGBAWord8_t *pPalette)
+{
+	// Load into a memory stream7
+	InputRezStream Input(pRezFile,uRezNum);
+	return InitBMP(&Input,pPalette);
+}
+
 
 /*! ************************************
 
@@ -1324,4 +1854,214 @@ Word Burger::Image::HorizontalFlip(void)
 		}
 	}
 	return 0;
+}
+
+/*! ************************************
+
+	\brief Convert an image into PIXELTYPE8888 format
+
+	Assume that the Image is already an PIXELTYPE8888
+	format shape and a buffer is present. Return an error
+	if not.
+	
+	\note Supported input formats are PIXELTYPE8BIT, PIXELTYPE4444,
+		PIXELTYPE1555, PIXELTYPE555, PIXELTYPE565, PIXELTYPE888 and PIXELTYPE8888
+
+	\param pInput Pointer to an image to convert from
+	\param pPalette Optional color palette if converting from an 8 bit format
+
+***************************************/
+
+Word Burger::Image::Store8888(const Image *pInput,const RGBAWord8_t *pPalette)
+{
+	Word uResult = 10;
+	if ((m_eType==PIXELTYPE8888) &&
+		(m_uWidth==pInput->m_uWidth) &&
+		(m_uHeight==pInput->m_uHeight) &&
+		(m_uWidth && m_uHeight) &&
+		m_pImage) {
+		switch (pInput->m_eType) {
+		case PIXELTYPE8BIT:
+			{
+				if (pPalette) {
+					const Word8 *pInputBuffer = pInput->m_pImage;
+					Word8 *pOutputBuffer = m_pImage;
+					Word uHeight = m_uHeight;
+					do {
+						Word uWidth = m_uWidth;
+						const Word8 *pSrc = pInputBuffer;
+						Word8 *pDest = pOutputBuffer;
+						do {
+							const RGBAWord8_t *pColor = pPalette+pSrc[0];
+							++pSrc;
+							pDest[0] = pColor->m_uRed;
+							pDest[1] = pColor->m_uGreen;
+							pDest[2] = pColor->m_uBlue;
+							pDest[3] = pColor->m_uAlpha;
+							pDest+=4;
+						} while (--uWidth);
+						pInputBuffer += pInput->m_uStride;
+						pOutputBuffer += m_uStride;
+					} while (--uHeight);
+					uResult = 0;
+				}
+			}
+			break;
+
+		case PIXELTYPE4444:
+			{
+				const Word8 *pInputBuffer = pInput->m_pImage;
+				Word8 *pOutputBuffer = m_pImage;
+				Word uHeight = m_uHeight;
+				do {
+					Word uWidth = m_uWidth;
+					const Word8 *pSrc = pInputBuffer;
+					Word8 *pDest = pOutputBuffer;
+					do {
+						Word uTemp = reinterpret_cast<const Word16 *>(pSrc)[0];
+						pDest[0] = Renderer::RGB4ToRGB8Table[(uTemp>>8U)&0xFU];
+						pDest[1] = Renderer::RGB4ToRGB8Table[(uTemp>>4U)&0xFU];
+						pDest[2] = Renderer::RGB4ToRGB8Table[uTemp&0xFU];
+						pDest[3] = Renderer::RGB4ToRGB8Table[(uTemp>>12U)&0xFU];
+						pSrc+=2;
+						pDest+=4;
+					} while (--uWidth);
+					pInputBuffer += pInput->m_uStride;
+					pOutputBuffer += m_uStride;
+				} while (--uHeight);
+				uResult = 0;
+			}
+			break;
+
+		case PIXELTYPE1555:
+			{
+				const Word8 *pInputBuffer = pInput->m_pImage;
+				Word8 *pOutputBuffer = m_pImage;
+				Word uHeight = m_uHeight;
+				do {
+					Word uWidth = m_uWidth;
+					const Word8 *pSrc = pInputBuffer;
+					Word8 *pDest = pOutputBuffer;
+					do {
+						Word uTemp = reinterpret_cast<const Word16 *>(pSrc)[0];
+						pDest[0] = Renderer::RGB5ToRGB8Table[(uTemp>>10U)&0x1FU];
+						pDest[1] = Renderer::RGB5ToRGB8Table[(uTemp>>5U)&0x1FU];
+						pDest[2] = Renderer::RGB5ToRGB8Table[uTemp&0x1FU];
+						pDest[3] = static_cast<Word8>((uTemp&0x8000U) ? 0xFFU : 0);
+						pSrc+=2;
+						pDest+=4;
+					} while (--uWidth);
+					pInputBuffer += pInput->m_uStride;
+					pOutputBuffer += m_uStride;
+				} while (--uHeight);
+				uResult = 0;
+			}
+			break;
+
+		case PIXELTYPE555:
+			{
+				const Word8 *pInputBuffer = pInput->m_pImage;
+				Word8 *pOutputBuffer = m_pImage;
+				Word uHeight = m_uHeight;
+				do {
+					Word uWidth = m_uWidth;
+					const Word8 *pSrc = pInputBuffer;
+					Word8 *pDest = pOutputBuffer;
+					do {
+						Word uTemp = reinterpret_cast<const Word16 *>(pSrc)[0];
+						pDest[0] = Renderer::RGB5ToRGB8Table[(uTemp>>10U)&0x1FU];
+						pDest[1] = Renderer::RGB5ToRGB8Table[(uTemp>>5U)&0x1FU];
+						pDest[2] = Renderer::RGB5ToRGB8Table[uTemp&0x1FU];
+						pDest[3] = 0xFF;
+						pSrc+=2;
+						pDest+=4;
+					} while (--uWidth);
+					pInputBuffer += pInput->m_uStride;
+					pOutputBuffer += m_uStride;
+				} while (--uHeight);
+				uResult = 0;
+			}
+			break;
+
+
+
+		case PIXELTYPE565:
+			{
+				const Word8 *pInputBuffer = pInput->m_pImage;
+				Word8 *pOutputBuffer = m_pImage;
+				Word uHeight = m_uHeight;
+				do {
+					Word uWidth = m_uWidth;
+					const Word8 *pSrc = pInputBuffer;
+					Word8 *pDest = pOutputBuffer;
+					do {
+						Word uTemp = reinterpret_cast<const Word16 *>(pSrc)[0];
+						pDest[0] = Renderer::RGB5ToRGB8Table[(uTemp>>11U)&0x1FU];
+						pDest[1] = Renderer::RGB6ToRGB8Table[(uTemp>>5U)&0x3FU];
+						pDest[2] = Renderer::RGB5ToRGB8Table[uTemp&0x1FU];
+						pDest[3] = 0xFF;
+						pSrc+=2;
+						pDest+=4;
+					} while (--uWidth);
+					pInputBuffer += pInput->m_uStride;
+					pOutputBuffer += m_uStride;
+				} while (--uHeight);
+				uResult = 0;
+			}
+			break;
+
+		case PIXELTYPE888:
+			{
+				const Word8 *pInputBuffer = pInput->m_pImage;
+				Word8 *pOutputBuffer = m_pImage;
+				Word uHeight = m_uHeight;
+				do {
+					Word uWidth = m_uWidth;
+					const Word8 *pSrc = pInputBuffer;
+					Word8 *pDest = pOutputBuffer;
+					do {
+						pDest[0] = pSrc[0];
+						pDest[1] = pSrc[1];
+						pDest[2] = pSrc[2];
+						pDest[3] = 0xFF;
+						pSrc+=3;
+						pDest+=4;
+					} while (--uWidth);
+					pInputBuffer += pInput->m_uStride;
+					pOutputBuffer += m_uStride;
+				} while (--uHeight);
+				uResult = 0;
+			}
+			break;
+
+		case PIXELTYPE8888:
+			{
+				const Word8 *pInputBuffer = pInput->m_pImage;
+				Word8 *pOutputBuffer = m_pImage;
+				Word uHeight = m_uHeight;
+				do {
+					Word uWidth = m_uWidth;
+					const Word8 *pSrc = pInputBuffer;
+					Word8 *pDest = pOutputBuffer;
+					do {
+						pDest[0] = pSrc[0];
+						pDest[1] = pSrc[1];
+						pDest[2] = pSrc[2];
+						pDest[3] = pSrc[3];
+						pSrc+=4;
+						pDest+=4;
+					} while (--uWidth);
+					pInputBuffer += pInput->m_uStride;
+					pOutputBuffer += m_uStride;
+				} while (--uHeight);
+				uResult = 0;
+			}
+			break;
+
+		// Not supported
+		default:
+			break;
+		}
+	}
+	return uResult;
 }

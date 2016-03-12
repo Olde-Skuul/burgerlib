@@ -60,6 +60,8 @@ public:
 		DDRAW_DLL,		///< Index for ddraw.dll
 		DINPUT_DLL,		///< Index for dinput.dll
 		DINPUT8_DLL,	///< Index for dinput8.dll
+		XINPUT1_4_DLL,	///< Index for xinput1_4.dll
+		XINPUT1_3_DLL,	///< Index for xinput1_3.dll
 		D3D9_DLL,		///< Index for d3d9.dll
 		D3DX9_43_DLL,	///< Index for d3dx9_43.dll
 		D3D11_DLL,		///< Index for d3d11.dll
@@ -80,6 +82,14 @@ public:
 		CALL_DirectInputCreateA,				///< Index for DirectInputCreateA()
 		CALL_DirectInputCreateW,				///< Index for DirectInputCreateW()
 		CALL_DirectInput8Create,				///< Index for DirectInput8Create()
+		CALL_XInputGetState,					///< Index for XInputGetState()
+		CALL_XInputSetState,					///< Index for XInputSetState()
+		CALL_XInputGetCapabilities,				///< Index for XInputGetCapabilities()
+		CALL_XInputGetDSoundAudioDeviceGuids,	///< Index for XInputGetDSoundAudioDeviceGuids()
+		CALL_XInputEnable,						///< Index for XInputEnable()
+		CALL_XInputGetAudioDeviceIds,			///< Index for XInputGetAudioDeviceIds()
+		CALL_XInputGetBatteryInformation,		///< Index for XInputGetBatteryInformation()
+		CALL_XInputGetKeystroke,				///< Index for XInputGetKeystroke()
 		CALL_DirectDrawCreate,					///< Index for DirectDrawCreate()
 		CALL_DirectDrawCreateEx,				///< Index for DirectDrawCreateEx()
 		CALL_DirectDrawCreateClipper,			///< Index for DirectDrawCreateClipper()
@@ -201,6 +211,14 @@ public:
 	static Word BURGER_API DirectInputCreateA(HINSTANCE__ *hInst,Word32 uVersion,IDirectInputA **ppOutput,IUnknown *pOuter=NULL);
 	static Word BURGER_API DirectInputCreateW(HINSTANCE__ *hInst,Word32 uVersion,IDirectInputW **ppOutput,IUnknown *pOuter=NULL);
 	static Word BURGER_API DirectInput8Create(HINSTANCE__ *hInst,Word32 uVersion,const GUID &rGUID,void **ppOutput,IUnknown *pOuter=NULL);
+	static Word32 BURGER_API XInputGetState(Word32 dwUserIndex,_XINPUT_STATE* pState);
+	static Word32 BURGER_API XInputSetState(Word32 dwUserIndex,_XINPUT_VIBRATION* pVibration);
+	static Word32 BURGER_API XInputGetCapabilities(Word32 dwUserIndex,Word32 dwFlags,_XINPUT_CAPABILITIES* pCapabilities);
+	static Word32 BURGER_API XInputGetDSoundAudioDeviceGuids(Word32 dwUserIndex,GUID* pDSoundRenderGuid,GUID* pDSoundCaptureGuid);
+	static void BURGER_API XInputEnable(Word bEnable);
+	static Word32 BURGER_API XInputGetAudioDeviceIds(Word32 dwUserIndex,Word16 *pRenderDeviceId,Word *pRenderCount,Word16 *pCaptureDeviceId,Word*pCaptureCount);
+	static Word32 BURGER_API XInputGetBatteryInformation(Word32 dwUserIndex,Word devType,_XINPUT_BATTERY_INFORMATION* pBatteryInformation);
+	static Word32 BURGER_API XInputGetKeystroke(Word32 dwUserIndex,Word32 dwReserved,_XINPUT_KEYSTROKE *pKeystroke);
 	static Word BURGER_API DirectDrawCreate(const GUID *pGuid,IDirectDraw **ppOutput,IUnknown *pOuter=NULL);
 	static Word BURGER_API DirectDrawCreateEx(const GUID *pGuid,void **ppOutput,const GUID &rGUID,IUnknown *pOuter=NULL);
 	static Word BURGER_API DirectDrawCreateClipper(Word32 uFlags,IDirectDrawClipper **ppOutput,IUnknown *pOuter=NULL);
@@ -266,6 +284,8 @@ public:
 	static Word BURGER_API LaunchMediaCenter(void);
 	static HINSTANCE__ * BURGER_API LoadLibraryA(const char *pInput);
 	static HINSTANCE__ * BURGER_API LoadLibraryW(const Word16 *pInput);
+	static HINSTANCE__ * BURGER_API LoadLibraryExA(const char *pInput,void *hFile,Word32 uFlags);
+	static HINSTANCE__ * BURGER_API LoadLibraryExW(const Word16 *pInput,void *hFile,Word32 uFlags);
 	static HINSTANCE__ * BURGER_API LoadLibraryIndex(eWindowsDLLIndex eIndex);
 	static void * BURGER_API LoadFunctionIndex(eWindowsCallIndex eIndex);
 	static Word BURGER_API AddGroupToProgramMenu(const char *pGroupName);

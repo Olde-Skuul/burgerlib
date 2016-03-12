@@ -59,9 +59,20 @@
 #include <shlobj.h>
 #include <SetupAPI.h>
 #include <d3dcommon.h>
+#include <Xinput.h>
+
+//
+// These defines may not be defined in earlier Windows SDKs
+// To allow the use of these advanced features, they are manually
+// defined here if they hadn't already been done so.
+//
 
 #if !defined(STATUS_ENTRYPOINT_NOT_FOUND)
 #define STATUS_ENTRYPOINT_NOT_FOUND ((DWORD)0xC0000139L)
+#endif
+
+#if !defined(LOAD_LIBRARY_SEARCH_SYSTEM32)
+#define LOAD_LIBRARY_SEARCH_SYSTEM32 0x800
 #endif
 
 static const char g_SoftwareClasses[] = "Software\\Classes\\";
@@ -100,6 +111,8 @@ static const char *s_LibaryNames[Burger::Globals::DLL_COUNT] = {
 	"ddraw.dll",
 	"dinput.dll",
 	"dinput8.dll",
+	"xinput1_4.dll",
+	"xinput1_3.dll",
 	"d3d9.dll",
 	"d3dx9_43.dll",
 	"d3d11.dll",
@@ -131,6 +144,15 @@ static const CallNames_t g_CallNames[Burger::Globals::CALL_COUNT] = {
 
 	{Burger::Globals::DINPUT8_DLL,"DirectInput8Create"},
 	
+	{Burger::Globals::XINPUT1_4_DLL,"XInputGetState"},
+	{Burger::Globals::XINPUT1_4_DLL,"XInputSetState"},
+	{Burger::Globals::XINPUT1_4_DLL,"XInputGetCapabilities"},
+	{Burger::Globals::XINPUT1_4_DLL,"XInputGetDSoundAudioDeviceGuids"},
+	{Burger::Globals::XINPUT1_4_DLL,"XInputEnable"},
+	{Burger::Globals::XINPUT1_4_DLL,"XInputGetAudioDeviceIds"},
+	{Burger::Globals::XINPUT1_4_DLL,"XInputGetBatteryInformation"},
+	{Burger::Globals::XINPUT1_4_DLL,"XInputGetKeystroke"},
+
 	{Burger::Globals::DDRAW_DLL,"DirectDrawCreate"},
 	{Burger::Globals::DDRAW_DLL,"DirectDrawCreateEx"},
 	{Burger::Globals::DDRAW_DLL,"DirectDrawCreateClipper"},
@@ -768,6 +790,235 @@ Word BURGER_API Burger::Globals::DirectInput8Create(HINSTANCE__ *hInst,Word32 uV
 
 
 
+
+//
+// xinput1_4.dll or xinput1_3.dll
+//
+
+/*! ************************************
+
+	\brief Load in xinput1_4.dll and call XInputGetState
+
+	To allow maximum compatibility, this function will manually load
+	xinput1_4.dll or xinput1_3.dll and then invoke XInputGetState if present.
+
+	https://msdn.microsoft.com/en-us/library/windows/desktop/microsoft.directx_sdk.reference.xinputgetstate(v=vs.85).aspx
+
+	\windowsonly
+	\param dwUserIndex Index of the user's controller. Can be a value from 0 to 3.
+	\param pState Pointer to an XINPUT_STATE structure that receives the current state of the controller.
+	\return Zero if no error. Any other value means an error occurred, ERROR_CALL_NOT_IMPLEMENTED means the function was not found
+	
+***************************************/
+
+Word32 BURGER_API Burger::Globals::XInputGetState(Word32 dwUserIndex,_XINPUT_STATE* pState)
+{
+	// Get the function pointer
+	void *pXInputGetState = LoadFunctionIndex(CALL_XInputGetState);
+	Word32 uResult = ERROR_CALL_NOT_IMPLEMENTED;
+	if (pXInputGetState) {
+		uResult = static_cast<DWORD(WINAPI *)(DWORD,XINPUT_STATE *)>(pXInputGetState)(dwUserIndex,pState);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Load in xinput1_4.dll and call XInputSetState
+
+	To allow maximum compatibility, this function will manually load
+	xinput1_4.dll or xinput1_3.dll and then invoke XInputSetState if present.
+
+	https://msdn.microsoft.com/en-us/library/windows/desktop/microsoft.directx_sdk.reference.xinputsetstate(v=vs.85).aspx
+
+	\windowsonly
+	\param dwUserIndex Index of the user's controller. Can be a value from 0 to 3.
+	\param pVibration Pointer to an XINPUT_VIBRATION structure containing the vibration information to send to the controller.
+	\return Zero if no error. Any other value means an error occurred, ERROR_CALL_NOT_IMPLEMENTED means the function was not found
+	
+***************************************/
+
+Word32 BURGER_API Burger::Globals::XInputSetState(Word32 dwUserIndex,_XINPUT_VIBRATION* pVibration)
+{
+	// Get the function pointer
+	void *pXInputSetState = LoadFunctionIndex(CALL_XInputSetState);
+	Word32 uResult = ERROR_CALL_NOT_IMPLEMENTED;
+	if (pXInputSetState) {
+		uResult = static_cast<DWORD(WINAPI *)(DWORD,XINPUT_VIBRATION *)>(pXInputSetState)(dwUserIndex,pVibration);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Load in xinput1_4.dll and call XInputGetCapabilities
+
+	To allow maximum compatibility, this function will manually load
+	xinput1_4.dll or xinput1_3.dll and then invoke XInputGetCapabilities if present.
+
+	https://msdn.microsoft.com/en-us/library/windows/desktop/microsoft.directx_sdk.reference.xinputgetcapabilities(v=vs.85).aspx
+
+	\windowsonly
+	\param dwUserIndex Index of the user's controller. Can be a value from 0 to 3.
+	\param dwFlags Input flags that identify the controller type. If this value is 0, then the capabilities of all controllers connected to the system are returned.
+	\param pVibration Pointer to an XINPUT_CAPABILITIES structure that receives the controller capabilities.
+	\return Zero if no error. Any other value means an error occurred, ERROR_CALL_NOT_IMPLEMENTED means the function was not found
+	
+***************************************/
+
+Word32 BURGER_API Burger::Globals::XInputGetCapabilities(Word32 dwUserIndex,Word32 dwFlags,_XINPUT_CAPABILITIES* pCapabilities)
+{
+	// Get the function pointer
+	void *pXInputGetCapabilities = LoadFunctionIndex(CALL_XInputGetCapabilities);
+	Word32 uResult = ERROR_CALL_NOT_IMPLEMENTED;
+	if (pXInputGetCapabilities) {
+		uResult = static_cast<DWORD(WINAPI *)(DWORD,Word32,XINPUT_CAPABILITIES *)>(pXInputGetCapabilities)(dwUserIndex,dwFlags,pCapabilities);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Load in xinput1_4.dll and call XInputGetDSoundAudioDeviceGuids
+
+	To allow maximum compatibility, this function will manually load
+	xinput1_4.dll or xinput1_3.dll and then invoke XInputGetDSoundAudioDeviceGuids if present.
+
+	https://msdn.microsoft.com/en-us/library/windows/desktop/microsoft.directx_sdk.reference.xinputgetdsoundaudiodeviceguids(v=vs.85).aspx
+
+	\note This function is deprecated as of Windows 8 (DLL XInput 1.4 or later)
+
+	\windowsonly
+	\param dwUserIndex Index of the user's controller. Can be a value from 0 to 3.
+	\param pDSoundRenderGuid Pointer that receives the GUID of the headset sound rendering device.
+	\param pDSoundCaptureGuid Pointer that receives the GUID of the headset sound capture device.
+	\return Zero if no error. Any other value means an error occurred, ERROR_CALL_NOT_IMPLEMENTED means the function was not found
+	
+***************************************/
+
+Word32 BURGER_API Burger::Globals::XInputGetDSoundAudioDeviceGuids(Word32 dwUserIndex,GUID* pDSoundRenderGuid,GUID* pDSoundCaptureGuid)
+{
+	// Get the function pointer
+	void *pXInputGetDSoundAudioDeviceGuids = LoadFunctionIndex(CALL_XInputGetDSoundAudioDeviceGuids);
+	Word32 uResult = ERROR_CALL_NOT_IMPLEMENTED;
+	if (pXInputGetDSoundAudioDeviceGuids) {
+		uResult = static_cast<DWORD(WINAPI *)(DWORD,GUID *,GUID *)>(pXInputGetDSoundAudioDeviceGuids)(dwUserIndex,pDSoundRenderGuid,pDSoundCaptureGuid);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Load in xinput1_4.dll and call XInputEnable
+
+	To allow maximum compatibility, this function will manually load
+	xinput1_4.dll or xinput1_3.dll and then invoke XInputEnable if present.
+
+	https://msdn.microsoft.com/en-us/library/windows/desktop/microsoft.directx_sdk.reference.xinputenable(v=vs.85).aspx
+
+	\windowsonly
+	\param bEnable If enable is \ref FALSE, XInput will only send neutral data in response to XInputGetState() (all buttons up, axes centered, and triggers at 0).
+		Sending any value other than \ref FALSE will restore reading and writing functionality to normal.
+
+***************************************/
+
+void BURGER_API Burger::Globals::XInputEnable(Word bEnable)
+{
+	// Get the function pointer
+	void *pXInputEnable = LoadFunctionIndex(CALL_XInputEnable);
+	if (pXInputEnable) {
+		static_cast<void(WINAPI *)(BOOL)>(pXInputEnable)(bEnable!=0);
+	}
+}
+
+/*! ************************************
+
+	\brief Load in xinput1_4.dll and call XInputGetAudioDeviceIds
+
+	To allow maximum compatibility, this function will manually load
+	xinput1_4.dll or xinput1_3.dll and then invoke XInputGetAudioDeviceIds if present.
+
+	https://msdn.microsoft.com/en-us/library/windows/desktop/microsoft.directx_sdk.reference.xinputgetaudiodeviceids(v=vs.85).aspx
+
+	\note This function is only available as of Windows 8 (DLL XInput 1.4 or later)
+
+	\windowsonly
+	\param dwUserIndex Index of the gamer associated with the device.
+	\param pRenderDeviceId Pointer that receives Windows Core Audio device ID string for render (speakers).
+	\param pRenderCount Pointer that receives the size, in wide-chars, of the render device ID string buffer.
+	\param pCaptureDeviceId Pointer that receives Windows Core Audio device ID string for capture (microphone).
+	\param pCaptureCount Pointer that receives the size, in wide-chars, of capture device ID string buffer.
+	\return Zero if no error. Any other value means an error occurred, ERROR_CALL_NOT_IMPLEMENTED means the function was not found
+	
+***************************************/
+
+Word32 BURGER_API Burger::Globals::XInputGetAudioDeviceIds(Word32 dwUserIndex,Word16 *pRenderDeviceId,Word *pRenderCount,Word16 *pCaptureDeviceId,Word*pCaptureCount)
+{
+	// Get the function pointer
+	void *pXInputGetAudioDeviceIds = LoadFunctionIndex(CALL_XInputGetAudioDeviceIds);
+	Word32 uResult = ERROR_CALL_NOT_IMPLEMENTED;
+	if (pXInputGetAudioDeviceIds) {
+		uResult = static_cast<DWORD(WINAPI *)(DWORD,Word16 *,UINT*,Word16 *,UINT*)>(pXInputGetAudioDeviceIds)(dwUserIndex,pRenderDeviceId,pRenderCount,pCaptureDeviceId,pCaptureCount);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Load in xinput1_4.dll and call XInputGetBatteryInformation
+
+	To allow maximum compatibility, this function will manually load
+	xinput1_4.dll or xinput1_3.dll and then invoke XInputGetBatteryInformation if present.
+
+	https://msdn.microsoft.com/en-us/library/windows/desktop/microsoft.directx_sdk.reference.xinputgetbatteryinformation(v=vs.85).aspx
+
+	\windowsonly
+	\param dwUserIndex Index of the signed-in gamer associated with the device. Can be a value in the range 0-XUSER_MAX_COUNT - 1.
+	\param devType Input Specifies which device associated with this user index should be queried. Must be BATTERY_DEVTYPE_GAMEPAD or BATTERY_DEVTYPE_HEADSET.
+	\param pBatteryInformation Pointer to an XINPUT_BATTERY_INFORMATION structure that receives the battery information.
+	\return Zero if no error. Any other value means an error occurred, ERROR_CALL_NOT_IMPLEMENTED means the function was not found
+
+***************************************/
+
+Word32 BURGER_API Burger::Globals::XInputGetBatteryInformation(Word32 dwUserIndex,Word devType,_XINPUT_BATTERY_INFORMATION* pBatteryInformation)
+{
+	// Get the function pointer
+	void *pXInputGetBatteryInformation = LoadFunctionIndex(CALL_XInputGetBatteryInformation);
+	Word32 uResult = ERROR_CALL_NOT_IMPLEMENTED;
+	if (pXInputGetBatteryInformation) {
+		uResult = static_cast<DWORD(WINAPI *)(DWORD,BYTE,XINPUT_BATTERY_INFORMATION *)>(pXInputGetBatteryInformation)(dwUserIndex,static_cast<BYTE>(devType),pBatteryInformation);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Load in xinput1_4.dll and call XInputGetKeystroke
+
+	To allow maximum compatibility, this function will manually load
+	xinput1_4.dll or xinput1_3.dll and then invoke XInputGetKeystroke if present.
+
+	https://msdn.microsoft.com/en-us/library/windows/desktop/microsoft.directx_sdk.reference.xinputgetkeystroke(v=vs.85).aspx
+
+	\windowsonly
+	\param dwUserIndex Index of the signed-in gamer associated with the device. Can be a value in the range 0-XUSER_MAX_COUNT - 1 
+		or XUSER_INDEX_ANY to fetch the next available input event from any user.
+	\param dwReserved Set to zero.
+	\param pKeystroke Pointer to an XINPUT_KEYSTROKE structure that receives an input event.
+	\return Zero if no error. Any other value means an error occurred, ERROR_CALL_NOT_IMPLEMENTED means the function was not found
+
+***************************************/
+
+Word32 BURGER_API Burger::Globals::XInputGetKeystroke(Word32 dwUserIndex,Word32 dwReserved,_XINPUT_KEYSTROKE *pKeystroke)
+{
+	// Get the function pointer
+	void *pXInputGetKeystroke = LoadFunctionIndex(CALL_XInputGetKeystroke);
+	Word32 uResult = ERROR_CALL_NOT_IMPLEMENTED;
+	if (pXInputGetKeystroke) {
+		uResult = static_cast<DWORD(WINAPI *)(DWORD,DWORD,PXINPUT_KEYSTROKE)>(pXInputGetKeystroke)(dwUserIndex,dwReserved,pKeystroke);
+	}
+	return uResult;
+}
 
 
 //
@@ -2762,10 +3013,12 @@ Word BURGER_API Burger::Globals::LaunchMediaCenter(void)
 	before the call to LoadLibraryA() and restoring the
 	flag to the previous setting before function exit.
 
+	https://msdn.microsoft.com/en-us/library/windows/desktop/ms684175(v=vs.85).aspx
+
 	\windowsonly
 	\param pInput ASCII pathname of the DLL file to load.
 	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
-	\sa LoadLibraryW()
+	\sa LoadLibraryExA() or LoadLibraryW()
 
 ***************************************/
 
@@ -2790,10 +3043,12 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryA(const char *pInput)
 	before the call to LoadLibraryW() and restoring the
 	flag to the previous setting before function exit.
 
+	https://msdn.microsoft.com/en-us/library/windows/desktop/ms684175(v=vs.85).aspx
+
 	\windowsonly
 	\param pInput UTF16 pathname of the DLL file to load. 
 	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
-	\sa LoadLibraryA()
+	\sa LoadLibraryExW() or LoadLibraryA()
 
 ***************************************/
 
@@ -2801,6 +3056,68 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryW(const Word16 *pInput)
 {
 	UINT uOldMode = SetErrorMode(SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
 	HINSTANCE hResult = ::LoadLibraryW(reinterpret_cast<LPCWSTR>(pInput));
+	SetErrorMode(uOldMode);
+	return hResult;
+}
+
+/*! ************************************
+
+	\brief Call LoadLibraryExA() without file error boxes
+
+	When LoadLibraryExA() is called in windows, it's possible that
+	if the file is not found, windows will display an error message box
+	mentioning that a DLL is missing. This function will prohibit
+	this behavior by setting the ErrorMode to SEM_NOOPENFILEERRORBOX
+	before the call to LoadLibraryExA() and restoring the
+	flag to the previous setting before function exit.
+
+	https://msdn.microsoft.com/en-us/library/windows/desktop/ms684179(v=vs.85).aspx
+
+	\windowsonly
+	\param pInput ASCII pathname of the DLL file to load.
+	\param hFile This parameter is reserved for future use. It must be \ref NULL.
+	\param uFlags The action to be taken when loading the module. 
+	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
+	\sa LoadLibraryA() or LoadLibraryExW()
+
+***************************************/
+
+HINSTANCE BURGER_API Burger::Globals::LoadLibraryExA(const char *pInput,void *hFile,Word32 uFlags)
+{
+	// Disable user interactive dialogs
+	UINT uOldMode = SetErrorMode(SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
+	HINSTANCE hResult = ::LoadLibraryExA(pInput,hFile,uFlags);
+	// Restore the dialog state
+	SetErrorMode(uOldMode);
+	return hResult;
+}
+
+/*! ************************************
+
+	\brief Call LoadLibraryExW() without file error boxes
+
+	When LoadLibraryExW() is called in windows, it's possible that
+	if the file is not found, windows will display an error message box
+	mentioning that a DLL is missing. This function will prohibit
+	this behavior by setting the ErrorMode to SEM_NOOPENFILEERRORBOX
+	before the call to LoadLibraryExW() and restoring the
+	flag to the previous setting before function exit.
+
+	https://msdn.microsoft.com/en-us/library/windows/desktop/ms684179(v=vs.85).aspx
+
+	\windowsonly
+	\param pInput UTF16 pathname of the DLL file to load. 
+	\param hFile This parameter is reserved for future use. It must be \ref NULL.
+	\param uFlags The action to be taken when loading the module. 
+	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
+	\sa LoadLibraryExA() or LoadLibraryW()
+
+***************************************/
+
+HINSTANCE BURGER_API Burger::Globals::LoadLibraryExW(const Word16 *pInput,void *hFile,Word32 uFlags)
+{
+	UINT uOldMode = SetErrorMode(SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
+	HINSTANCE hResult = ::LoadLibraryExW(reinterpret_cast<LPCWSTR>(pInput),hFile,uFlags);
 	SetErrorMode(uOldMode);
 	return hResult;
 }
@@ -2832,10 +3149,32 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryIndex(eWindowsDLLIndex eIndex)
 		if (!hResult && !g_Globals.m_bInstancesTested[eIndex]) {
 			// Mark as tested
 			g_Globals.m_bInstancesTested[eIndex] = TRUE;
-			// Load the DLL
-			hResult = LoadLibraryA(s_LibaryNames[eIndex]);
+
+			// For security reasons, force searching only in the official
+			// windows folder to prevent a man-in-the-middle attack
+			// Supported on Windows Vista or later. If running on XP, you're
+			// out of luck.
+
+			Word32 uFlags = 0;
+			if (IsVistaOrGreater()) {
+				uFlags = LOAD_LIBRARY_SEARCH_SYSTEM32;
+			}
+
+			// Load the most recent version of the DLL
+			hResult = LoadLibraryExA(s_LibaryNames[eIndex],NULL,uFlags);
+
+			// Handle the special cases where if the most recent is not available, try
+			// an older version of the dll
+			if (!hResult) {
+	
+				// Try XInput 9.1.0
+				if (eIndex==XINPUT1_4_DLL) {
+					hResult = LoadLibraryExA(s_LibaryNames[eIndex+1],NULL,uFlags);
+				}
+			}
+
+			// If it loaded fine, save the result
 			if (hResult) {
-				// If it loaded fine, save the result
 				g_Globals.m_hInstances[eIndex] = hResult;
 			}
 		}

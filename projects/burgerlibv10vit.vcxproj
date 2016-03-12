@@ -16,25 +16,35 @@
 	</ItemGroup>
 	<PropertyGroup Label="Globals">
 		<ProjectName>burgerlib</ProjectName>
-		<FinalFolder>$(SDKS)\vita\burgerlib\</FinalFolder>
+		<FinalFolder>$(BURGER_SDKS)\vita\burgerlib\</FinalFolder>
 		<ProjectGuid>{56094A60-A7DF-38BD-99CB-7B7737DBFFF3}</ProjectGuid>
 	</PropertyGroup>
 	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-	<Import Project="$(SDKS)\visualstudio\burger.libv10.props" />
+	<Import Project="$(BURGER_SDKS)\visualstudio\burger.libv10.props" />
 	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
 	<ImportGroup Label="ExtensionSettings" />
 	<ImportGroup Label="PropertySheets" />
 	<PropertyGroup Label="UserMacros" />
 	<ItemDefinitionGroup>
 		<ClCompile>
-			<AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shadersvita;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\text;$(ProjectDir)..\source\vita;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersvita;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\text;$(ProjectDir)..\source\vita;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 		</ClCompile>
 	</ItemDefinitionGroup>
 	<ItemGroup>
 		<ClInclude Include="..\source\ansi\brfileansihelpers.h" />
 		<ClInclude Include="..\source\ansi\brmemoryansi.h" />
 		<ClInclude Include="..\source\ansi\brstdouthelpers.h" />
+		<ClInclude Include="..\source\audio\bralaw.h" />
+		<ClInclude Include="..\source\audio\brimportit.h" />
+		<ClInclude Include="..\source\audio\brimports3m.h" />
+		<ClInclude Include="..\source\audio\brimportxm.h" />
+		<ClInclude Include="..\source\audio\brmace.h" />
+		<ClInclude Include="..\source\audio\brmicrosoftadpcm.h" />
+		<ClInclude Include="..\source\audio\brsequencer.h" />
 		<ClInclude Include="..\source\audio\brsound.h" />
+		<ClInclude Include="..\source\audio\brsoundbufferrez.h" />
+		<ClInclude Include="..\source\audio\brsounddecompress.h" />
+		<ClInclude Include="..\source\audio\brulaw.h" />
 		<ClInclude Include="..\source\brgl.h" />
 		<ClInclude Include="..\source\brglext.h" />
 		<ClInclude Include="..\source\brglut.h" />
@@ -61,15 +71,16 @@
 		<ClInclude Include="..\source\compression\brdxt3.h" />
 		<ClInclude Include="..\source\compression\brdxt5.h" />
 		<ClInclude Include="..\source\compression\brhashmap.h" />
-		<ClInclude Include="..\source\compression\brmace.h" />
 		<ClInclude Include="..\source\compression\brmd2.h" />
 		<ClInclude Include="..\source\compression\brmd4.h" />
 		<ClInclude Include="..\source\compression\brmd5.h" />
 		<ClInclude Include="..\source\compression\brpackfloat.h" />
 		<ClInclude Include="..\source\compression\brsdbmhash.h" />
 		<ClInclude Include="..\source\compression\brsha1.h" />
+		<ClInclude Include="..\source\compression\brunpackbytes.h" />
 		<ClInclude Include="..\source\file\brdirectorysearch.h" />
 		<ClInclude Include="..\source\file\brfile.h" />
+		<ClInclude Include="..\source\file\brfileapf.h" />
 		<ClInclude Include="..\source\file\brfilebmp.h" />
 		<ClInclude Include="..\source\file\brfiledds.h" />
 		<ClInclude Include="..\source\file\brfilegif.h" />
@@ -117,6 +128,8 @@
 		<ClInclude Include="..\source\graphics\effects\breffectpositiontexturecolor.h" />
 		<ClInclude Include="..\source\graphics\effects\breffectstaticpositiontexture.h" />
 		<ClInclude Include="..\source\graphics\effects\brshaders.h" />
+		<ClInclude Include="..\source\graphics\shaders\brshader2dccolor.h" />
+		<ClInclude Include="..\source\graphics\shaders\brshader2dcolorvertex.h" />
 		<ClInclude Include="..\source\graphics\shadersvita\pstexturecolorvita.h" />
 		<ClInclude Include="..\source\graphics\shadersvita\pstexturevita.h" />
 		<ClInclude Include="..\source\graphics\shadersvita\vs20sprite2dvita.h" />
@@ -192,7 +205,17 @@
 		<ClCompile Include="..\source\ansi\brfileansihelpers.cpp" />
 		<ClCompile Include="..\source\ansi\brmemoryansi.cpp" />
 		<ClCompile Include="..\source\ansi\brstdouthelpers.cpp" />
+		<ClCompile Include="..\source\audio\bralaw.cpp" />
+		<ClCompile Include="..\source\audio\brimportit.cpp" />
+		<ClCompile Include="..\source\audio\brimports3m.cpp" />
+		<ClCompile Include="..\source\audio\brimportxm.cpp" />
+		<ClCompile Include="..\source\audio\brmace.cpp" />
+		<ClCompile Include="..\source\audio\brmicrosoftadpcm.cpp" />
+		<ClCompile Include="..\source\audio\brsequencer.cpp" />
 		<ClCompile Include="..\source\audio\brsound.cpp" />
+		<ClCompile Include="..\source\audio\brsoundbufferrez.cpp" />
+		<ClCompile Include="..\source\audio\brsounddecompress.cpp" />
+		<ClCompile Include="..\source\audio\brulaw.cpp" />
 		<ClCompile Include="..\source\commandline\brcommandparameter.cpp" />
 		<ClCompile Include="..\source\commandline\brcommandparameterbooltrue.cpp" />
 		<ClCompile Include="..\source\commandline\brcommandparameterstring.cpp" />
@@ -215,15 +238,16 @@
 		<ClCompile Include="..\source\compression\brdxt3.cpp" />
 		<ClCompile Include="..\source\compression\brdxt5.cpp" />
 		<ClCompile Include="..\source\compression\brhashmap.cpp" />
-		<ClCompile Include="..\source\compression\brmace.cpp" />
 		<ClCompile Include="..\source\compression\brmd2.cpp" />
 		<ClCompile Include="..\source\compression\brmd4.cpp" />
 		<ClCompile Include="..\source\compression\brmd5.cpp" />
 		<ClCompile Include="..\source\compression\brpackfloat.cpp" />
 		<ClCompile Include="..\source\compression\brsdbmhash.cpp" />
 		<ClCompile Include="..\source\compression\brsha1.cpp" />
+		<ClCompile Include="..\source\compression\brunpackbytes.cpp" />
 		<ClCompile Include="..\source\file\brdirectorysearch.cpp" />
 		<ClCompile Include="..\source\file\brfile.cpp" />
+		<ClCompile Include="..\source\file\brfileapf.cpp" />
 		<ClCompile Include="..\source\file\brfilebmp.cpp" />
 		<ClCompile Include="..\source\file\brfiledds.cpp" />
 		<ClCompile Include="..\source\file\brfilegif.cpp" />
@@ -271,6 +295,8 @@
 		<ClCompile Include="..\source\graphics\effects\breffectpositiontexturecolor.cpp" />
 		<ClCompile Include="..\source\graphics\effects\breffectstaticpositiontexture.cpp" />
 		<ClCompile Include="..\source\graphics\effects\brshaders.cpp" />
+		<ClCompile Include="..\source\graphics\shaders\brshader2dccolor.cpp" />
+		<ClCompile Include="..\source\graphics\shaders\brshader2dcolorvertex.cpp" />
 		<ClCompile Include="..\source\input\brjoypad.cpp" />
 		<ClCompile Include="..\source\input\brkeyboard.cpp" />
 		<ClCompile Include="..\source\input\brmouse.cpp" />

@@ -10,7 +10,37 @@
 		<ClInclude Include="..\source\ansi\brstdouthelpers.h">
 			<Filter>source\ansi</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\audio\bralaw.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brimportit.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brimports3m.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brimportxm.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brmace.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brmicrosoftadpcm.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brsequencer.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\audio\brsound.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brsoundbufferrez.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brsounddecompress.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brulaw.h">
 			<Filter>source\audio</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\brgl.h">
@@ -91,9 +121,6 @@
 		<ClInclude Include="..\source\compression\brhashmap.h">
 			<Filter>source\compression</Filter>
 		</ClInclude>
-		<ClInclude Include="..\source\compression\brmace.h">
-			<Filter>source\compression</Filter>
-		</ClInclude>
 		<ClInclude Include="..\source\compression\brmd2.h">
 			<Filter>source\compression</Filter>
 		</ClInclude>
@@ -112,10 +139,16 @@
 		<ClInclude Include="..\source\compression\brsha1.h">
 			<Filter>source\compression</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\compression\brunpackbytes.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\file\brdirectorysearch.h">
 			<Filter>source\file</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\file\brfile.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brfileapf.h">
 			<Filter>source\file</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\file\brfilebmp.h">
@@ -259,10 +292,28 @@
 		<ClInclude Include="..\source\graphics\effects\brshaders.h">
 			<Filter>source\graphics\effects</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\graphics\shaders\brshader2dccolor.h">
+			<Filter>source\graphics\shaders</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shaders\brshader2dcolorvertex.h">
+			<Filter>source\graphics\shaders</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersdx9\pscclr4dx9.h">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersdx9\pstex2clr4dx9.h">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\graphics\shadersdx9\pstexturecolordx9.h">
 			<Filter>source\graphics\shadersdx9</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\graphics\shadersdx9\pstexturedx9.h">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersdx9\vs20pos22ddx9.h">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersdx9\vs20pos2tex2clr42ddx9.h">
 			<Filter>source\graphics\shadersdx9</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\graphics\shadersdx9\vs20sprite2ddx9.h">
@@ -271,10 +322,22 @@
 		<ClInclude Include="..\source\graphics\shadersdx9\vsstaticpositiondx9.h">
 			<Filter>source\graphics\shadersdx9</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersopengl\pscclr4gl.h">
+			<Filter>source\graphics\shadersopengl</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersopengl\pstex2clr4gl.h">
+			<Filter>source\graphics\shadersopengl</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\graphics\shadersopengl\pstexturecolorgl.h">
 			<Filter>source\graphics\shadersopengl</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\graphics\shadersopengl\pstexturegl.h">
+			<Filter>source\graphics\shadersopengl</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersopengl\vs20pos22dgl.h">
+			<Filter>source\graphics\shadersopengl</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shadersopengl\vs20pos2tex2clr42dgl.h">
 			<Filter>source\graphics\shadersopengl</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\graphics\shadersopengl\vs20sprite2dgl.h">
@@ -487,6 +550,9 @@
 		<ClInclude Include="..\source\windows\brdisplaydibsoftware8.h">
 			<Filter>source\windows</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\windows\brdisplaydirectx11.h">
+			<Filter>source\windows</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\windows\brdisplaydirectx9.h">
 			<Filter>source\windows</Filter>
 		</ClInclude>
@@ -500,9 +566,6 @@
 			<Filter>source\windows</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\windows\brvertexbufferdirectx9.h">
-			<Filter>source\windows</Filter>
-		</ClInclude>
-		<ClInclude Include="..\source\windows\brwindowsapp.h">
 			<Filter>source\windows</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\windows\brwindowstypes.h">
@@ -524,6 +587,9 @@
 			<Filter>unittest</Filter>
 		</ClInclude>
 		<ClInclude Include="..\unittest\testbrendian.h">
+			<Filter>unittest</Filter>
+		</ClInclude>
+		<ClInclude Include="..\unittest\testbrfileloaders.h">
 			<Filter>unittest</Filter>
 		</ClInclude>
 		<ClInclude Include="..\unittest\testbrfilemanager.h">
@@ -565,7 +631,37 @@
 		<ClCompile Include="..\source\ansi\brstdouthelpers.cpp">
 			<Filter>source\ansi</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\audio\bralaw.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brimportit.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brimports3m.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brimportxm.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brmace.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brmicrosoftadpcm.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brsequencer.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\audio\brsound.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brsoundbufferrez.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brsounddecompress.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brulaw.cpp">
 			<Filter>source\audio</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\commandline\brcommandparameter.cpp">
@@ -634,9 +730,6 @@
 		<ClCompile Include="..\source\compression\brhashmap.cpp">
 			<Filter>source\compression</Filter>
 		</ClCompile>
-		<ClCompile Include="..\source\compression\brmace.cpp">
-			<Filter>source\compression</Filter>
-		</ClCompile>
 		<ClCompile Include="..\source\compression\brmd2.cpp">
 			<Filter>source\compression</Filter>
 		</ClCompile>
@@ -655,10 +748,16 @@
 		<ClCompile Include="..\source\compression\brsha1.cpp">
 			<Filter>source\compression</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\compression\brunpackbytes.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\file\brdirectorysearch.cpp">
 			<Filter>source\file</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\file\brfile.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brfileapf.cpp">
 			<Filter>source\file</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\file\brfilebmp.cpp">
@@ -801,6 +900,12 @@
 		</ClCompile>
 		<ClCompile Include="..\source\graphics\effects\brshaders.cpp">
 			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\shaders\brshader2dccolor.cpp">
+			<Filter>source\graphics\shaders</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\shaders\brshader2dcolorvertex.cpp">
+			<Filter>source\graphics\shaders</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\input\brjoypad.cpp">
 			<Filter>source\input</Filter>
@@ -1009,6 +1114,9 @@
 		<ClCompile Include="..\source\windows\brdisplaydibwindows.cpp">
 			<Filter>source\windows</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\windows\brdisplaydirectx11windows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\windows\brdisplaydirectx9software8windows.cpp">
 			<Filter>source\windows</Filter>
 		</ClCompile>
@@ -1054,7 +1162,13 @@
 		<ClCompile Include="..\source\windows\brrectwindows.cpp">
 			<Filter>source\windows</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\windows\brsequencerwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\windows\brsoundwindows.cpp">
+			<Filter>source\windows</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\windows\brstdouthelperswindows.cpp">
 			<Filter>source\windows</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\windows\brtexturedirectx9.cpp">
@@ -1087,6 +1201,9 @@
 		<ClCompile Include="..\unittest\testbrendian.cpp">
 			<Filter>unittest</Filter>
 		</ClCompile>
+		<ClCompile Include="..\unittest\testbrfileloaders.cpp">
+			<Filter>unittest</Filter>
+		</ClCompile>
 		<ClCompile Include="..\unittest\testbrfilemanager.cpp">
 			<Filter>unittest</Filter>
 		</ClCompile>
@@ -1117,10 +1234,22 @@
 		<ClCompile Include="..\unittest\testbrtypes.cpp">
 			<Filter>unittest</Filter>
 		</ClCompile>
+		<HLSL Include="..\source\graphics\shadersdx9\pscclr4dx9.hlsl">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</HLSL>
+		<HLSL Include="..\source\graphics\shadersdx9\pstex2clr4dx9.hlsl">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</HLSL>
 		<HLSL Include="..\source\graphics\shadersdx9\pstexturecolordx9.hlsl">
 			<Filter>source\graphics\shadersdx9</Filter>
 		</HLSL>
 		<HLSL Include="..\source\graphics\shadersdx9\pstexturedx9.hlsl">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</HLSL>
+		<HLSL Include="..\source\graphics\shadersdx9\vs20pos22ddx9.hlsl">
+			<Filter>source\graphics\shadersdx9</Filter>
+		</HLSL>
+		<HLSL Include="..\source\graphics\shadersdx9\vs20pos2tex2clr42ddx9.hlsl">
 			<Filter>source\graphics\shadersdx9</Filter>
 		</HLSL>
 		<HLSL Include="..\source\graphics\shadersdx9\vs20sprite2ddx9.hlsl">
@@ -1132,10 +1261,22 @@
 		<HLSL Include="..\source\windows\ps20display8bitdx9.hlsl">
 			<Filter>source\windows</Filter>
 		</HLSL>
+		<GLSL Include="..\source\graphics\shadersopengl\pscclr4gl.glsl">
+			<Filter>source\graphics\shadersopengl</Filter>
+		</GLSL>
+		<GLSL Include="..\source\graphics\shadersopengl\pstex2clr4gl.glsl">
+			<Filter>source\graphics\shadersopengl</Filter>
+		</GLSL>
 		<GLSL Include="..\source\graphics\shadersopengl\pstexturecolorgl.glsl">
 			<Filter>source\graphics\shadersopengl</Filter>
 		</GLSL>
 		<GLSL Include="..\source\graphics\shadersopengl\pstexturegl.glsl">
+			<Filter>source\graphics\shadersopengl</Filter>
+		</GLSL>
+		<GLSL Include="..\source\graphics\shadersopengl\vs20pos22dgl.glsl">
+			<Filter>source\graphics\shadersopengl</Filter>
+		</GLSL>
+		<GLSL Include="..\source\graphics\shadersopengl\vs20pos2tex2clr42dgl.glsl">
 			<Filter>source\graphics\shadersopengl</Filter>
 		</GLSL>
 		<GLSL Include="..\source\graphics\shadersopengl\vs20sprite2dgl.glsl">
@@ -1144,8 +1285,8 @@
 		<GLSL Include="..\source\graphics\shadersopengl\vsstaticpositiongl.glsl">
 			<Filter>source\graphics\shadersopengl</Filter>
 		</GLSL>
-		<Filter Include="source\graphics\shadersdx9">
-			<UniqueIdentifier>{93EA9D37-C0F1-3695-9283-CCF76C03830B}</UniqueIdentifier>
+		<Filter Include="source\graphics\shaders">
+			<UniqueIdentifier>{55333D47-AECF-3539-9AF7-A9CD630C6AC4}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="source\math">
 			<UniqueIdentifier>{AF7F60BD-734A-336E-B4E9-B27658EFA21B}</UniqueIdentifier>
@@ -1168,8 +1309,8 @@
 		<Filter Include="source\windows">
 			<UniqueIdentifier>{908017FC-F17E-3004-AE77-99C5545020CD}</UniqueIdentifier>
 		</Filter>
-		<Filter Include="source\text">
-			<UniqueIdentifier>{42A4D9A8-3E02-37D8-96D3-6EDE45262EEF}</UniqueIdentifier>
+		<Filter Include="source\graphics\shadersdx9">
+			<UniqueIdentifier>{93EA9D37-C0F1-3695-9283-CCF76C03830B}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="source\audio">
 			<UniqueIdentifier>{0DE547E4-4934-3902-82CF-4C461192953C}</UniqueIdentifier>
@@ -1194,6 +1335,9 @@
 		</Filter>
 		<Filter Include="source\file">
 			<UniqueIdentifier>{6CBA067E-3CBE-3307-BD98-6EBD698FB3B5}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\text">
+			<UniqueIdentifier>{42A4D9A8-3E02-37D8-96D3-6EDE45262EEF}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="source\graphics\effects">
 			<UniqueIdentifier>{A80A527D-57B7-3688-9BB7-39397B5200B4}</UniqueIdentifier>

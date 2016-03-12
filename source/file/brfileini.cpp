@@ -229,7 +229,31 @@ Burger::FileINI::Comment::~Comment()
 
 ***************************************/
 
+/*! ************************************
 
+	\brief Allocate an empty comment object
+
+***************************************/
+
+Burger::FileINI::Comment * BURGER_API Burger::FileINI::Comment::New(void)
+{
+	// Allocate the memory
+	return new (Alloc(sizeof(Comment))) Comment();
+}
+
+/*! ************************************
+
+	\brief Allocate a comment object with text
+
+	\param pComment Text to store in this newly created object
+
+***************************************/
+
+Burger::FileINI::Comment * BURGER_API Burger::FileINI::Comment::New(const char *pComment)
+{
+	// Allocate the memory
+	return new (Alloc(sizeof(Comment))) Comment(pComment);
+}
 
 
 
@@ -381,7 +405,7 @@ Burger::FileINI::Entry::~Entry()
 
 ***************************************/
 
-Word Burger::FileINI::Entry::GetBoolean(Word bDefault) const
+Word BURGER_API Burger::FileINI::Entry::GetBoolean(Word bDefault) const
 {
 	return m_Value.GetBoolean(bDefault);
 }
@@ -399,7 +423,7 @@ Word Burger::FileINI::Entry::GetBoolean(Word bDefault) const
 
 ***************************************/
 
-void Burger::FileINI::Entry::SetBoolean(Word bValue)
+void BURGER_API Burger::FileINI::Entry::SetBoolean(Word bValue)
 {
 	m_Value.SetTrueFalse(bValue);
 }
@@ -425,7 +449,7 @@ void Burger::FileINI::Entry::SetBoolean(Word bValue)
 
 ***************************************/
 
-Word Burger::FileINI::Entry::GetWord(Word uDefault,Word uMin,Word uMax) const
+Word BURGER_API Burger::FileINI::Entry::GetWord(Word uDefault,Word uMin,Word uMax) const
 {
 	return AsciiToWord(m_Value.GetPtr(),uDefault,uMin,uMax);
 }
@@ -442,7 +466,7 @@ Word Burger::FileINI::Entry::GetWord(Word uDefault,Word uMin,Word uMax) const
 
 ***************************************/
 
-void Burger::FileINI::Entry::SetWord(Word uValue)
+void BURGER_API Burger::FileINI::Entry::SetWord(Word uValue)
 {
 	m_Value.SetWord(uValue);
 }
@@ -460,7 +484,7 @@ void Burger::FileINI::Entry::SetWord(Word uValue)
 
 ***************************************/
 
-void Burger::FileINI::Entry::SetWordHex(Word uValue)
+void BURGER_API Burger::FileINI::Entry::SetWordHex(Word uValue)
 {
 	m_Value.SetWordHex(uValue);
 }
@@ -487,7 +511,7 @@ void Burger::FileINI::Entry::SetWordHex(Word uValue)
 
 ***************************************/
 
-Int Burger::FileINI::Entry::GetInt(Int iDefault,Int iMin,Int iMax) const
+Int BURGER_API Burger::FileINI::Entry::GetInt(Int iDefault,Int iMin,Int iMax) const
 {
 	return m_Value.GetInt(iDefault,iMin,iMax);
 }
@@ -504,7 +528,7 @@ Int Burger::FileINI::Entry::GetInt(Int iDefault,Int iMin,Int iMax) const
 
 ***************************************/
 
-void Burger::FileINI::Entry::SetInt(Int iValue)
+void BURGER_API Burger::FileINI::Entry::SetInt(Int iValue)
 {
 	m_Value.SetInt(iValue);
 }
@@ -530,7 +554,7 @@ void Burger::FileINI::Entry::SetInt(Int iValue)
 
 ***************************************/
 
-float Burger::FileINI::Entry::GetFloat(float fDefault,float fMin,float fMax) const
+float BURGER_API Burger::FileINI::Entry::GetFloat(float fDefault,float fMin,float fMax) const
 {
 	return m_Value.GetFloat(fDefault,fMin,fMax);
 }
@@ -547,7 +571,7 @@ float Burger::FileINI::Entry::GetFloat(float fDefault,float fMin,float fMax) con
 
 ***************************************/
 
-void Burger::FileINI::Entry::SetFloat(float fValue)
+void BURGER_API Burger::FileINI::Entry::SetFloat(float fValue)
 {
 	m_Value.SetFloat(fValue);
 }
@@ -573,7 +597,7 @@ void Burger::FileINI::Entry::SetFloat(float fValue)
 
 ***************************************/
 
-double Burger::FileINI::Entry::GetDouble(double dDefault,double dMin,double dMax) const
+double BURGER_API Burger::FileINI::Entry::GetDouble(double dDefault,double dMin,double dMax) const
 {
 	return m_Value.GetDouble(dDefault,dMin,dMax);
 }
@@ -590,7 +614,7 @@ double Burger::FileINI::Entry::GetDouble(double dDefault,double dMin,double dMax
 
 ***************************************/
 
-void Burger::FileINI::Entry::SetDouble(double dValue)
+void BURGER_API Burger::FileINI::Entry::SetDouble(double dValue)
 {
 	m_Value.SetDouble(dValue);
 }
@@ -611,7 +635,7 @@ void Burger::FileINI::Entry::SetDouble(double dValue)
 
 ***************************************/
 
-void Burger::FileINI::Entry::GetString(String *pOutput,const char *pDefault) const
+void BURGER_API Burger::FileINI::Entry::GetString(String *pOutput,const char *pDefault) const
 {
 	WordPtr uLength = m_Value.GetLength();
 	// No string?
@@ -647,7 +671,7 @@ void Burger::FileINI::Entry::GetString(String *pOutput,const char *pDefault) con
 
 ***************************************/
 
-void Burger::FileINI::Entry::SetString(const char *pValue)
+void BURGER_API Burger::FileINI::Entry::SetString(const char *pValue)
 {
 	// Valid input?
 	if (pValue && pValue[0]) {
@@ -675,6 +699,33 @@ void Burger::FileINI::Entry::SetString(const char *pValue)
 		// End now
 		m_Value.Clear();
 	}
+}
+
+/*! ************************************
+
+	\brief Allocate an empty key value pair object
+
+***************************************/
+
+Burger::FileINI::Entry * BURGER_API Burger::FileINI::Entry::New(void)
+{
+	// Allocate the memory
+	return new (Alloc(sizeof(Entry))) Entry();
+}
+
+/*! ************************************
+
+	\brief Allocate a key value pair object initialized with a key and a value
+
+	\param pKey "C" string containing the new key
+	\param pValue "C" string containing the data attached to the key
+
+***************************************/
+
+Burger::FileINI::Entry * BURGER_API Burger::FileINI::Entry::New(const char *pKey,const char *pValue)
+{
+	// Allocate the memory
+	return new (Alloc(sizeof(Entry))) Entry(pKey,pValue);
 }
 
 
@@ -772,7 +823,7 @@ Burger::FileINI::Section::~Section()
 
 ***************************************/
 
-Word Burger::FileINI::Section::Save(OutputMemoryStream *pOutput) const
+Word BURGER_API Burger::FileINI::Section::Save(OutputMemoryStream *pOutput) const
 {
 	Word uResult=FALSE;
 	// Is it nameless?
@@ -854,9 +905,9 @@ Word Burger::FileINI::Section::Save(OutputMemoryStream *pOutput) const
 
 ***************************************/
 
-Burger::FileINI::Entry *Burger::FileINI::Section::AddEntry(const char *pKey,const char *pValue)
+Burger::FileINI::Entry * BURGER_API Burger::FileINI::Section::AddEntry(const char *pKey,const char *pValue)
 {
-	Entry *pEntry = new (Alloc(sizeof(Entry))) Entry(pKey,pValue);
+	Entry *pEntry = Entry::New(pKey,pValue);
 	if (pEntry) {
 		m_Root.InsertBefore(pEntry);
 	}
@@ -873,7 +924,7 @@ Burger::FileINI::Entry *Burger::FileINI::Section::AddEntry(const char *pKey,cons
 
 ***************************************/
 
-Burger::FileINI::Entry * Burger::FileINI::Section::FindEntry(const char *pKey) const
+Burger::FileINI::Entry * BURGER_API Burger::FileINI::Section::FindEntry(const char *pKey) const
 {
 	const Generic *pGeneric = m_Root.GetNext();
 	Entry *pResult = NULL;
@@ -903,7 +954,7 @@ Burger::FileINI::Entry * Burger::FileINI::Section::FindEntry(const char *pKey) c
 
 ***************************************/
 
-Burger::FileINI::Entry * Burger::FileINI::Section::FindEntry(const char *pKey,Word bAlwaysCreate)
+Burger::FileINI::Entry * BURGER_API Burger::FileINI::Section::FindEntry(const char *pKey,Word bAlwaysCreate)
 {
 	const Generic *pGeneric = m_Root.GetNext();
 	Entry *pResult = NULL;
@@ -924,7 +975,7 @@ Burger::FileINI::Entry * Burger::FileINI::Section::FindEntry(const char *pKey,Wo
 	// Not found and create flag set?
 	if (!pResult && bAlwaysCreate) {
 		// Create it with no data
-		pResult = new (Alloc(sizeof(Entry))) Entry(pKey,"");
+		pResult = Entry::New(pKey,"");
 		if (pResult) {
 			// Insert it after the last located entry (But before the last comments)
 			// This will allow any spacing from the entries to the next section to be
@@ -945,9 +996,9 @@ Burger::FileINI::Entry * Burger::FileINI::Section::FindEntry(const char *pKey,Wo
 
 ***************************************/
 
-Burger::FileINI::Comment *Burger::FileINI::Section::AddComment(const char *pComment)
+Burger::FileINI::Comment * BURGER_API Burger::FileINI::Section::AddComment(const char *pComment)
 {
-	Comment *pEntry = new (Alloc(sizeof(Comment))) Comment(pComment);
+	Comment *pEntry = Comment::New(pComment);
 	if (pEntry) {
 		m_Root.InsertBefore(pEntry);
 	}
@@ -964,7 +1015,7 @@ Burger::FileINI::Comment *Burger::FileINI::Section::AddComment(const char *pComm
 
 ***************************************/
 
-const char * Burger::FileINI::Section::GetValue(const char *pKey) const
+const char * BURGER_API Burger::FileINI::Section::GetValue(const char *pKey) const
 {
 	Entry *pEntry = FindEntry(pKey);
 	if (pEntry) {
@@ -988,7 +1039,7 @@ const char * Burger::FileINI::Section::GetValue(const char *pKey) const
 
 ***************************************/
 
-void Burger::FileINI::Section::SetValue(const char *pKey,const char *pInput)
+void BURGER_API Burger::FileINI::Section::SetValue(const char *pKey,const char *pInput)
 {
 	Entry *pEntry = FindEntry(pKey,TRUE);
 	if (pEntry) {
@@ -1011,7 +1062,7 @@ void Burger::FileINI::Section::SetValue(const char *pKey,const char *pInput)
 
 ***************************************/
 
-void Burger::FileINI::Section::SetValue(const char *pKey,const String *pInput)
+void BURGER_API Burger::FileINI::Section::SetValue(const char *pKey,const String *pInput)
 {
 	Entry *pEntry = FindEntry(pKey,TRUE);
 	if (pEntry) {
@@ -1038,7 +1089,7 @@ void Burger::FileINI::Section::SetValue(const char *pKey,const String *pInput)
 
 ***************************************/
 
-Word Burger::FileINI::Section::GetBoolean(const char *pKey,Word bDefault) const
+Word BURGER_API Burger::FileINI::Section::GetBoolean(const char *pKey,Word bDefault) const
 {
 	const Entry *pEntry = FindEntry(pKey);
 	if (pEntry) {
@@ -1062,7 +1113,7 @@ Word Burger::FileINI::Section::GetBoolean(const char *pKey,Word bDefault) const
 
 ***************************************/
 
-void Burger::FileINI::Section::SetBoolean(const char *pKey,Word bValue)
+void BURGER_API Burger::FileINI::Section::SetBoolean(const char *pKey,Word bValue)
 {
 	Entry *pEntry = FindEntry(pKey,TRUE);
 	if (pEntry) {
@@ -1095,7 +1146,7 @@ void Burger::FileINI::Section::SetBoolean(const char *pKey,Word bValue)
 
 ***************************************/
 
-Word Burger::FileINI::Section::GetWord(const char *pKey,Word uDefault,Word uMin,Word uMax) const
+Word BURGER_API Burger::FileINI::Section::GetWord(const char *pKey,Word uDefault,Word uMin,Word uMax) const
 {
 	const Entry *pEntry = FindEntry(pKey);
 	if (pEntry) {
@@ -1119,7 +1170,7 @@ Word Burger::FileINI::Section::GetWord(const char *pKey,Word uDefault,Word uMin,
 
 ***************************************/
 
-void Burger::FileINI::Section::SetWord(const char *pKey,Word uValue)
+void BURGER_API Burger::FileINI::Section::SetWord(const char *pKey,Word uValue)
 {
 	Entry *pEntry = FindEntry(pKey,TRUE);
 	if (pEntry) {
@@ -1142,7 +1193,7 @@ void Burger::FileINI::Section::SetWord(const char *pKey,Word uValue)
 
 ***************************************/
 
-void Burger::FileINI::Section::SetWordHex(const char *pKey,Word uValue)
+void BURGER_API Burger::FileINI::Section::SetWordHex(const char *pKey,Word uValue)
 {
 	Entry *pEntry = FindEntry(pKey,TRUE);
 	if (pEntry) {
@@ -1176,7 +1227,7 @@ void Burger::FileINI::Section::SetWordHex(const char *pKey,Word uValue)
 
 ***************************************/
 
-Int Burger::FileINI::Section::GetInt(const char *pKey,Int iDefault,Int iMin,Int iMax) const
+Int BURGER_API Burger::FileINI::Section::GetInt(const char *pKey,Int iDefault,Int iMin,Int iMax) const
 {
 	Entry *pEntry = FindEntry(pKey);
 	if (pEntry) {
@@ -1201,7 +1252,7 @@ Int Burger::FileINI::Section::GetInt(const char *pKey,Int iDefault,Int iMin,Int 
 
 ***************************************/
 
-void Burger::FileINI::Section::SetInt(const char *pKey,Int iValue)
+void BURGER_API Burger::FileINI::Section::SetInt(const char *pKey,Int iValue)
 {
 	Entry *pEntry = FindEntry(pKey,TRUE);
 	if (pEntry) {
@@ -1234,7 +1285,7 @@ void Burger::FileINI::Section::SetInt(const char *pKey,Int iValue)
 
 ***************************************/
 
-float Burger::FileINI::Section::GetFloat(const char *pKey,float fDefault,float fMin,float fMax) const
+float BURGER_API Burger::FileINI::Section::GetFloat(const char *pKey,float fDefault,float fMin,float fMax) const
 {
 	const Entry *pEntry = FindEntry(pKey);
 	if (pEntry) {
@@ -1259,7 +1310,7 @@ float Burger::FileINI::Section::GetFloat(const char *pKey,float fDefault,float f
 
 ***************************************/
 
-void Burger::FileINI::Section::SetFloat(const char *pKey,float fValue)
+void BURGER_API Burger::FileINI::Section::SetFloat(const char *pKey,float fValue)
 {
 	Entry *pEntry = FindEntry(pKey,TRUE);
 	if (pEntry) {
@@ -1292,7 +1343,7 @@ void Burger::FileINI::Section::SetFloat(const char *pKey,float fValue)
 
 ***************************************/
 
-double Burger::FileINI::Section::GetDouble(const char *pKey,double dDefault,double dMin,double dMax) const
+double BURGER_API Burger::FileINI::Section::GetDouble(const char *pKey,double dDefault,double dMin,double dMax) const
 {
 	const Entry *pEntry = FindEntry(pKey);
 	if (pEntry) {
@@ -1317,7 +1368,7 @@ double Burger::FileINI::Section::GetDouble(const char *pKey,double dDefault,doub
 
 ***************************************/
 
-void Burger::FileINI::Section::SetDouble(const char *pKey,double dValue)
+void BURGER_API Burger::FileINI::Section::SetDouble(const char *pKey,double dValue)
 {
 	Entry *pEntry = FindEntry(pKey,TRUE);
 	if (pEntry) {
@@ -1343,7 +1394,7 @@ void Burger::FileINI::Section::SetDouble(const char *pKey,double dValue)
 
 ***************************************/
 
-void Burger::FileINI::Section::GetString(String *pOutput,const char *pKey,const char *pDefault) const
+void BURGER_API Burger::FileINI::Section::GetString(String *pOutput,const char *pKey,const char *pDefault) const
 {
 	const Entry *pEntry = FindEntry(pKey);
 	if (pEntry) {
@@ -1368,7 +1419,7 @@ void Burger::FileINI::Section::GetString(String *pOutput,const char *pKey,const 
 
 ***************************************/
 
-void Burger::FileINI::Section::SetString(const char *pKey,const char *pValue)
+void BURGER_API Burger::FileINI::Section::SetString(const char *pKey,const char *pValue)
 {
 	Entry *pEntry = FindEntry(pKey,TRUE);
 	if (pEntry) {
@@ -1376,7 +1427,31 @@ void Burger::FileINI::Section::SetString(const char *pKey,const char *pValue)
 	}
 }
 
+/*! ************************************
 
+	\brief Allocate an empty Section object
+
+***************************************/
+
+Burger::FileINI::Section * BURGER_API Burger::FileINI::Section::New(void)
+{
+	// Allocate the memory
+	return new (Alloc(sizeof(Section))) Section();
+}
+
+/*! ************************************
+
+	\brief Allocate a Section object initialized with a name
+
+	\param pSection "C" string containing the new section name
+
+***************************************/
+
+Burger::FileINI::Section * BURGER_API Burger::FileINI::Section::New(const char *pSection)
+{
+	// Allocate the memory
+	return new (Alloc(sizeof(Section))) Section(pSection);
+}
 
 /*! ************************************
 
@@ -1449,8 +1524,7 @@ Burger::FileINI::~FileINI()
 Burger::FileINI * BURGER_API Burger::FileINI::New(void)
 {
 	// Allocate the memory
-	FileINI *pThis = new (Alloc(sizeof(FileINI))) FileINI();
-	return pThis;
+	return new (Alloc(sizeof(FileINI))) FileINI();
 }
 
 /*! ************************************
@@ -1552,7 +1626,7 @@ Burger::FileINI * BURGER_API Burger::FileINI::New(InputMemoryStream *pInput,Word
 
 ***************************************/
 
-Word Burger::FileINI::Init(const char *pFilename)
+Word BURGER_API Burger::FileINI::Init(const char *pFilename)
 {
 	// Convert to a filename object
 	Filename NewName(pFilename);
@@ -1572,7 +1646,7 @@ Word Burger::FileINI::Init(const char *pFilename)
 
 ***************************************/
 
-Word Burger::FileINI::Init(Filename *pFilename)
+Word BURGER_API Burger::FileINI::Init(Filename *pFilename)
 {
 	// Purge
 	Shutdown();
@@ -1599,7 +1673,7 @@ Word Burger::FileINI::Init(Filename *pFilename)
 
 ***************************************/
 
-Word Burger::FileINI::Init(InputMemoryStream *pInput)
+Word BURGER_API Burger::FileINI::Init(InputMemoryStream *pInput)
 {
 	// Purge
 	Shutdown();
@@ -1629,7 +1703,7 @@ Word Burger::FileINI::Init(InputMemoryStream *pInput)
 			}
 		}
 		if (!pSection) {
-			pSection = new (Alloc(sizeof(Section))) Section;
+			pSection = Section::New();
 			m_Root.InsertAfter(pSection);
 		}
 		// Is this a Foo = Bar entry?
@@ -1668,7 +1742,7 @@ Word Burger::FileINI::Init(InputMemoryStream *pInput)
 
 ***************************************/
 
-void Burger::FileINI::Shutdown(void)
+void BURGER_API Burger::FileINI::Shutdown(void)
 {
 	Generic *pGeneric = m_Root.GetNext();
 	if (pGeneric!=&m_Root) {
@@ -1683,6 +1757,52 @@ void Burger::FileINI::Shutdown(void)
 
 /*! ************************************
 
+	\brief Save a script file to disk
+
+	Serialize the data contained in the entire class 
+	as a Windows style INI text file and save
+	it to a file.
+
+	\param pFilename Pointer to a Burgerlib Path name
+	\return Zero on success, non zero on error
+
+***************************************/
+
+Word BURGER_API Burger::FileINI::Save(const char *pFilename) const
+{
+	OutputMemoryStream Output;
+	Word uResult = Save(&Output);
+	if (!uResult) {
+		uResult = Output.SaveFile(pFilename);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Save a script file to disk
+
+	Serialize the data contained in the entire class 
+	as a Windows style INI text file and save
+	it to a file.
+
+	\param pFilename Pointer to a \ref Filename instance
+	\return Zero on success, non zero on error
+
+***************************************/
+
+Word BURGER_API Burger::FileINI::Save(Filename *pFilename) const
+{
+	OutputMemoryStream Output;
+	Word uResult = Save(&Output);
+	if (!uResult) {
+		uResult = Output.SaveFile(pFilename);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
 	\brief Save a script file
 
 	Serialize the data contained in the entire class 
@@ -1693,7 +1813,7 @@ void Burger::FileINI::Shutdown(void)
 
 ***************************************/
 
-Word Burger::FileINI::Save(OutputMemoryStream *pOutput) const
+Word BURGER_API Burger::FileINI::Save(OutputMemoryStream *pOutput) const
 {
 	Word uResult=FALSE;
 	const Generic *pSection = m_Root.GetNext();
@@ -1724,9 +1844,9 @@ Word Burger::FileINI::Save(OutputMemoryStream *pOutput) const
 
 ***************************************/
 
-Burger::FileINI::Section *Burger::FileINI::AddSection(const char *pSectionName)
+Burger::FileINI::Section * BURGER_API Burger::FileINI::AddSection(const char *pSectionName)
 {
-	Section *pSection = new (Alloc(sizeof(Section))) Section(pSectionName);
+	Section *pSection = Section::New(pSectionName);
 	if (pSection) {
 		// Insert at the end of the list
 		m_Root.InsertBefore(pSection);
@@ -1750,7 +1870,7 @@ Burger::FileINI::Section *Burger::FileINI::AddSection(const char *pSectionName)
 
 ***************************************/
 
-Burger::FileINI::Section * Burger::FileINI::FindSection(const char *pSectionName,Word bAlwaysCreate)
+Burger::FileINI::Section * BURGER_API Burger::FileINI::FindSection(const char *pSectionName,Word bAlwaysCreate)
 {
 	Generic *pGeneric = m_Root.GetNext();
 	Section *pResult = NULL;
@@ -1785,7 +1905,7 @@ Burger::FileINI::Section * Burger::FileINI::FindSection(const char *pSectionName
 
 ***************************************/
 
-void Burger::FileINI::DeleteSection(const char *pSectionName)
+void BURGER_API Burger::FileINI::DeleteSection(const char *pSectionName)
 {
 	Section *pSection = FindSection(pSectionName);
 	Delete(pSection);

@@ -53,9 +53,11 @@ public:
 	Image *Load(InputMemoryStream *pInput);
 	BURGER_INLINE const RGBAWord8_t *GetPalette(void) const { return m_Palette; }
 	BURGER_INLINE RGBAWord8_t *GetPalette(void) { return m_Palette; }
-	void SetPalette(const RGBWord8_t *pPalette,Word uStartIndex=0,Word uPaletteSize=256);
-	void SetPalette(const RGBAWord8_t *pPalette,Word uStartIndex=0,Word uPaletteSize=256);
+	BURGER_INLINE void SetPalette(const RGBWord8_t *pInput,Word uStartIndex=0,Word uPaletteSize=256) { CopyPalette256(m_Palette,pInput,uStartIndex,uPaletteSize); }
+	BURGER_INLINE void SetPalette(const RGBAWord8_t *pInput,Word uStartIndex=0,Word uPaletteSize=256) { CopyPalette256(m_Palette,pInput,uStartIndex,uPaletteSize); }
 };
+extern const void * BURGER_API FindAIFFChunk(const void *pInput,WordPtr uLength,Word32 uChunkName);
+extern const void * BURGER_API FindRIFFChunk(const void *pInput,WordPtr uLength,Word32 uChunkName);
 }
 /* END */
 

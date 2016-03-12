@@ -10,7 +10,37 @@
 		<ClInclude Include="..\source\ansi\brstdouthelpers.h">
 			<Filter>source\ansi</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\audio\bralaw.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brimportit.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brimports3m.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brimportxm.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brmace.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brmicrosoftadpcm.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brsequencer.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\audio\brsound.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brsoundbufferrez.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brsounddecompress.h">
+			<Filter>source\audio</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\audio\brulaw.h">
 			<Filter>source\audio</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\brgl.h">
@@ -91,9 +121,6 @@
 		<ClInclude Include="..\source\compression\brhashmap.h">
 			<Filter>source\compression</Filter>
 		</ClInclude>
-		<ClInclude Include="..\source\compression\brmace.h">
-			<Filter>source\compression</Filter>
-		</ClInclude>
 		<ClInclude Include="..\source\compression\brmd2.h">
 			<Filter>source\compression</Filter>
 		</ClInclude>
@@ -112,10 +139,16 @@
 		<ClInclude Include="..\source\compression\brsha1.h">
 			<Filter>source\compression</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\compression\brunpackbytes.h">
+			<Filter>source\compression</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\file\brdirectorysearch.h">
 			<Filter>source\file</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\file\brfile.h">
+			<Filter>source\file</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\file\brfileapf.h">
 			<Filter>source\file</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\file\brfilebmp.h">
@@ -258,6 +291,12 @@
 		</ClInclude>
 		<ClInclude Include="..\source\graphics\effects\brshaders.h">
 			<Filter>source\graphics\effects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shaders\brshader2dccolor.h">
+			<Filter>source\graphics\shaders</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\graphics\shaders\brshader2dcolorvertex.h">
+			<Filter>source\graphics\shaders</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\input\brjoypad.h">
 			<Filter>source\input</Filter>
@@ -469,7 +508,37 @@
 		<ClCompile Include="..\source\ansi\brstdouthelpers.cpp">
 			<Filter>source\ansi</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\audio\bralaw.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brimportit.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brimports3m.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brimportxm.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brmace.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brmicrosoftadpcm.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brsequencer.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\audio\brsound.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brsoundbufferrez.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brsounddecompress.cpp">
+			<Filter>source\audio</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\audio\brulaw.cpp">
 			<Filter>source\audio</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\commandline\brcommandparameter.cpp">
@@ -538,9 +607,6 @@
 		<ClCompile Include="..\source\compression\brhashmap.cpp">
 			<Filter>source\compression</Filter>
 		</ClCompile>
-		<ClCompile Include="..\source\compression\brmace.cpp">
-			<Filter>source\compression</Filter>
-		</ClCompile>
 		<ClCompile Include="..\source\compression\brmd2.cpp">
 			<Filter>source\compression</Filter>
 		</ClCompile>
@@ -559,10 +625,16 @@
 		<ClCompile Include="..\source\compression\brsha1.cpp">
 			<Filter>source\compression</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\compression\brunpackbytes.cpp">
+			<Filter>source\compression</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\file\brdirectorysearch.cpp">
 			<Filter>source\file</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\file\brfile.cpp">
+			<Filter>source\file</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\file\brfileapf.cpp">
 			<Filter>source\file</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\file\brfilebmp.cpp">
@@ -705,6 +777,12 @@
 		</ClCompile>
 		<ClCompile Include="..\source\graphics\effects\brshaders.cpp">
 			<Filter>source\graphics\effects</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\shaders\brshader2dccolor.cpp">
+			<Filter>source\graphics\shaders</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\graphics\shaders\brshader2dcolorvertex.cpp">
+			<Filter>source\graphics\shaders</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\input\brjoypad.cpp">
 			<Filter>source\input</Filter>
@@ -850,6 +928,9 @@
 		<ClCompile Include="..\source\ps3\brcriticalsectionps3.cpp">
 			<Filter>source\ps3</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\ps3\brfilenameps3.cpp">
+			<Filter>source\ps3</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\text\brisolatin1.cpp">
 			<Filter>source\text</Filter>
 		</ClCompile>
@@ -888,6 +969,9 @@
 		</ClCompile>
 		<Filter Include="source\ps3">
 			<UniqueIdentifier>{86C0352C-E211-38E6-AF73-676A1DAE5EC4}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="source\graphics\shaders">
+			<UniqueIdentifier>{B2350ECE-ABF5-3AEE-AF6A-7EDDB51D1F2B}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="source\math">
 			<UniqueIdentifier>{DFCF9EA7-AA7A-365E-89B9-12E4A96A3D4B}</UniqueIdentifier>

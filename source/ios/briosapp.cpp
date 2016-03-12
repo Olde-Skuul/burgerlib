@@ -11,7 +11,7 @@
 
 ***************************************/
 
-#include "briosapp.h"
+#include "brgameapp.h"
 #if defined(BURGER_IOS) || defined(DOXYGEN)
 #include "brfilemanager.h"
 #include "brfilename.h"
@@ -23,7 +23,7 @@
 
 // Static application instance
 
-Burger::iOSApp *Burger::iOSApp::g_piOSApp;
+Burger::GameApp *Burger::GameApp::g_piOSApp;
 
 #if !defined(DOXYGEN)
 
@@ -52,9 +52,9 @@ Burger::iOSApp *Burger::iOSApp::g_piOSApp;
 @implementation BurgerLaunchViewController
 
 /***************************************
- 
+
 	Initialize with the launch screen
- 
+
 ***************************************/
 
 - (id)init
@@ -64,7 +64,7 @@ Burger::iOSApp *Burger::iOSApp::g_piOSApp;
 	if (self == nil) {
 		return nil;
 	}
-	
+
 	//
 	// Get the window to show the image
 	UIImageView *pSplashImageView = [[UIImageView alloc] init];
@@ -75,14 +75,14 @@ Burger::iOSApp *Burger::iOSApp::g_piOSApp;
 	CGSize ScreenSize = [UIScreen mainScreen].bounds.size;
 	// Use the larger to get the portrait height
 	float fPortraitHeight = Burger::Max(ScreenSize.width,ScreenSize.height);
-	
+
 	// Get the larger size portrait image if available
 	UIImage *pPortraitImage = [UIImage imageNamed:[NSString stringWithFormat:@"Default-%dh.png",(int)fPortraitHeight]];
 	if (!pPortraitImage) {
 		// Use the default image
 		pPortraitImage = [UIImage imageNamed:@"Default.png"];
 	}
-	
+
 	// Do the same for the landscape mode
 	UIImage *pLandscapeImage = [UIImage imageNamed:@"Default-Landscape.png"];
 	// No landscape?
@@ -142,10 +142,10 @@ Burger::iOSApp *Burger::iOSApp::g_piOSApp;
 - (NSUInteger)supportedInterfaceOrientations
 {
 	NSUInteger uResult = UIInterfaceOrientationMaskAll;
-	
+
 	// Allow all directions on an iPad, but don't allow upside down
 	// on iPhones due to issues with taking a call.
-	
+
 	if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
 		uResult &= ~UIInterfaceOrientationMaskPortraitUpsideDown;
 	}
@@ -188,7 +188,7 @@ Burger::iOSApp *Burger::iOSApp::g_piOSApp;
 - (void)updateSplashImage:(UIInterfaceOrientation)interfaceOrientation
 {
 	UIImage *pImage;
-	
+
 	if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
 		pImage = m_pLandscapeImage;
 	} else {
@@ -202,18 +202,18 @@ Burger::iOSApp *Burger::iOSApp::g_piOSApp;
 @end
 
 /***************************************
- 
+
 	This class handles the opening of the launch screen
 	and starting the application via a call to CodeEntry()
- 
+
 ***************************************/
 
 @implementation BurgerUIKitDelegate
 
 /***************************************
- 
+
 	Initialize the delegate
- 
+
 ***************************************/
 
 - (id)init
@@ -223,41 +223,41 @@ Burger::iOSApp *Burger::iOSApp::g_piOSApp;
 }
 
 /***************************************
- 
+
 	Startup has completed, call the application
- 
+
 ***************************************/
 
 - (void)postFinishLaunch
 {
 	// Run the application and capture the exit code
-	Burger::Globals::SetErrorCode(CodeEntry(Burger::iOSApp::GetApp()));
+	Burger::Globals::SetErrorCode(CodeEntry(Burger::GameApp::GetApp()));
 	// Dispose of the window
-	Burger::iOSApp::GetApp()->ReleaseWindow();
+	Burger::GameApp::GetApp()->ReleaseWindow();
 }
 
 /***************************************
 
 	UIKit has completed the magic, show the start screen if needed
- 
+
 ***************************************/
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 #pragma unused(application)
 #pragma unused(launchOptions)
-	
-	Burger::iOSApp *pApp = Burger::iOSApp::GetApp();
-	
+
+	Burger::GameApp *pApp = Burger::GameApp::GetApp();
+
 	// Retain the launch image
 	UIWindow *pWindow = pApp->CreateWindow();
 	UIViewController *pLaunchViewController = [[BurgerLaunchViewController alloc] init];
 	pApp->SetViewController(pLaunchViewController,pLaunchViewController.view);
 	[pWindow makeKeyAndVisible];
-	
+
 	// Ensure the filemanager is pointing to the bundle folder
 	[[NSFileManager defaultManager] changeCurrentDirectoryPath: [[NSBundle mainBundle] resourcePath]];
-	
+
 	[self performSelector:@selector(postFinishLaunch) withObject:nil afterDelay:0.0];
 	return YES;
 }
@@ -272,11 +272,11 @@ Burger::iOSApp *Burger::iOSApp::g_piOSApp;
 {
 #pragma unused(application)
 	// Tell the application to exit
-	Burger::iOSApp::GetApp()->SetQuitCode();
+	Burger::GameApp::GetApp()->SetQuitCode();
 }
 
 /***************************************
-	
+
 	Called when memory is low
 
 ***************************************/
@@ -350,36 +350,24 @@ Burger::iOSApp *Burger::iOSApp::g_piOSApp;
 
 /*! ************************************
 
-	\class Burger::iOSApp
-	\brief Base class for iOS game applications.
-
-	This class contains everything needed to create a
-	cross-platform environment for writing console based
-	applications. Functions are included to allow for
-	the application to gain <i>drag and drop</i> functionality
-	on platforms that support it.
-
-***************************************/
-
-/*! ************************************
-
 	\brief Base constructor.
 
 	Start up a iOS app
 
 ***************************************/
 
-Burger::iOSApp::iOSApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,WordPtr uMinReserveSize) :
-	GameApp(uDefaultMemorySize,uDefaultHandleCount,uMinReserveSize),
+Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,WordPtr uMinReserveSize) :
+	m_MemoryManagerHandle(uDefaultMemorySize,uDefaultHandleCount,uMinReserveSize),
 	m_pWindow(NULL),
 	m_pViewController(NULL),
 	m_pView(NULL)
-{	
+{
+	InitDefaults();
 	g_piOSApp = this;
-	
+
 	// Add the iOS callback function
 	m_RunQueue.Add(Poll,this,RunQueue::HIGHESTPRIORITY);
-	
+
 	// Init the file system
 	FileManager::Init();
 }
@@ -388,29 +376,30 @@ Burger::iOSApp::iOSApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,WordP
 
 	\brief Dispose of any allocated resources
 
-	When a iOS app is shut down, dispose of 
+	When a iOS app is shut down, dispose of
 	everything here.
 
 ***************************************/
 
-Burger::iOSApp::~iOSApp()
+Burger::GameApp::~GameApp()
 {
 	RemoveRoutine(Poll,this);
 	ReleaseWindow();
 	// Release the file system
 	FileManager::Shutdown();
+	ShutdownDefaults();
 }
 
 /*! ************************************
 
 	\brief Set up iOS and call CodeEntry()
-	
+
 	Sets up an iOS application shell and calls CodeEntry()
 	\return Result obtained from the call to CodeEntry()
 
 ***************************************/
 
-int BURGER_API Burger::iOSApp::Run(void)
+int BURGER_API Burger::GameApp::Run(void)
 {
 	// Prevent leaks by making a global autorelease pool
 	NSAutoreleasePool * pPool = [[NSAutoreleasePool alloc] init];
@@ -423,31 +412,31 @@ int BURGER_API Burger::iOSApp::Run(void)
 
 /*! ************************************
 
-	\fn UIWindow *Burger::iOSApp::GetWindow(void) const
+	\fn UIWindow *Burger::GameApp::GetWindow(void) const
 	\brief Return the main application window
-	
+
 	iOS applications have a single master window that covers
 	the entire screen. This function will return the
 	pointer to that window
-	
+
 	\return Pointer to the current UIWindow.
 	\sa CreateWindow(void) or ReleaseWindow(void)
-	
+
 ***************************************/
 
 /*! ************************************
 
 	\brief Create the main application window
-	
+
 	iOS applications have a single master window that covers
 	the entire screen. This function will create the window
-	
+
 	\return Pointer to the newly created UIWindow.
 	\sa GetWindow(void) const or ReleaseWindow(void)
-	
+
 ***************************************/
 
-UIWindow * BURGER_API Burger::iOSApp::CreateWindow(void)
+UIWindow * BURGER_API Burger::GameApp::CreateWindow(void)
 {
 	ReleaseWindow();
 	UIWindow *pWindow = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -458,13 +447,13 @@ UIWindow * BURGER_API Burger::iOSApp::CreateWindow(void)
 /*! ************************************
 
 	\brief Dispose of the window
-	
+
 	Release the UIWindow used by the iOS application
 	\sa GetWindow(void) const or CreateWindow(void)
 
 ***************************************/
 
-void BURGER_API Burger::iOSApp::ReleaseWindow(void)
+void BURGER_API Burger::GameApp::ReleaseWindow(void)
 {
 	SetViewController(NULL,NULL);
 	// Clean up, we're leaving
@@ -475,34 +464,34 @@ void BURGER_API Burger::iOSApp::ReleaseWindow(void)
 
 /*! ************************************
 
-	\fn UIViewController *Burger::iOSApp::GetViewController(void) const
+	\fn UIViewController *Burger::GameApp::GetViewController(void) const
 	\brief Return the main application window controller
-	
+
 	iOS application windows can have an attached window controller,
 	this is the currently active controller pointer
-	
+
 	\return Pointer to the current UIViewController.
 	\sa GetView(void) const or SetViewController(UIViewController *,UIView*)
-	
+
 ***************************************/
 
 /*! ************************************
 
-	\fn UIView *Burger::iOSApp::GetView(void) const
+	\fn UIView *Burger::GameApp::GetView(void) const
 	\brief Return the main application window view
-	
+
 	iOS application windows can have an attached window view,
 	this is the currently active view pointer
-	
+
 	\return Pointer to the current UIView.
 	\sa GetViewController(void) const or SetViewController(UIViewController *,UIView*)
-	
+
 ***************************************/
 
 /*! ************************************
 
 	\brief Set the main window's UIView and UIViewController
-	
+
 	iOS applications have a single master window that covers
 	the entire screen. This function will attach (If different)
 	a UIViewController and / or UIView to it.
@@ -510,10 +499,10 @@ void BURGER_API Burger::iOSApp::ReleaseWindow(void)
 	\param pViewController Pointer to a UIViewController or \ref NULL to detach any previous controller
 	\param pView Pointer to a UIView or \ref NULL to detach any previous view
 	\sa GetViewController(void) const or GetView(void) const
-	
+
 ***************************************/
 
-void BURGER_API Burger::iOSApp::SetViewController(UIViewController *pViewController,UIView *pView)
+void BURGER_API Burger::GameApp::SetViewController(UIViewController *pViewController,UIView *pView)
 {
 	UIViewController *pOldViewController = m_pViewController;
 	UIView *pOldView = m_pView;
@@ -521,7 +510,7 @@ void BURGER_API Burger::iOSApp::SetViewController(UIViewController *pViewControl
 	m_pViewController = pViewController;
 
 	// Is the controller the same?
-	
+
 	if (pViewController==pOldViewController) {
 		// Did the view change?
 		if (pView!=pOldView) {
@@ -539,7 +528,7 @@ void BURGER_API Burger::iOSApp::SetViewController(UIViewController *pViewControl
 			pWindow.rootViewController = nil;
 		}
 		// Dispose (Release) the old controller
-		
+
 		[pOldViewController setView:nil];
 		[pOldViewController release];
 		[pOldView removeFromSuperview];
@@ -560,15 +549,15 @@ void BURGER_API Burger::iOSApp::SetViewController(UIViewController *pViewControl
 
 /*! ************************************
 
-	\fn iOSApp *Burger::iOSApp::GetApp(void)
+	\fn GameApp *Burger::GameApp::GetApp(void)
 	\brief Return the pointer to the global application instance
 
 	iOS applications only exist in a single instance, to simplify
 	internal code, the instance is reflected in a singleton
 	and the pointer to it is stored in a global which
 	is accessed through this function.
-		
-	\return Pointer to the singleton iOSApp instance
+
+	\return Pointer to the singleton GameApp instance
 
 ***************************************/
 
@@ -579,25 +568,25 @@ void BURGER_API Burger::iOSApp::SetViewController(UIViewController *pViewControl
 	Internal function that will call CFRunLoopRunInMode(kCFRunLoopDefaultMode)
 	and CFRunLoopRunInMode(UITrackingRunLoopMode) to yield time to
 	other apps
-		
-	\param pSelf "this" pointer to the iOSApp class
+
+	\param pSelf "this" pointer to the GameApp class
 	\return RunQueue::OKAY since this function never shuts down on its own
 
 ***************************************/
 
-Burger::RunQueue::eReturnCode BURGER_API Burger::iOSApp::Poll(void * /* pSelf */)
+Burger::RunQueue::eReturnCode BURGER_API Burger::GameApp::Poll(void * /* pSelf */)
 {
 	const CFTimeInterval fInterval = 0.000002;
-	
+
 	// Process input events
-	
+
 	SInt32 iResult;
 	do {
 		iResult = CFRunLoopRunInMode(kCFRunLoopDefaultMode,fInterval,TRUE);
 	} while (iResult == kCFRunLoopRunHandledSource);
-	
+
 	// Needed to allow UIScrollView to work
-	
+
 	do {
 		iResult = CFRunLoopRunInMode((CFStringRef)UITrackingRunLoopMode,fInterval,TRUE);
 	} while (iResult == kCFRunLoopRunHandledSource);

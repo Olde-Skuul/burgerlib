@@ -37,7 +37,20 @@
 /* BEGIN */
 namespace Burger {
 class Font4Bit : public Font {
+	BURGER_RTTI_IN_CLASS();		// Handle RTTI
 	BURGER_DISABLECOPYCONSTRUCTORS(Font4Bit);
+protected:
+	union {
+		Word8 Bytes[16];	///< Color of font for 8 bit rendering
+		Word16 Shorts[16];	///< Color of font for 16 bit rendering
+		Word32 Words[16];	///< Color of font for 32 bit rendering
+	} m_ColorTable;			///< Storage for the color tables for rendering
+	Renderer *m_pRenderer;	///< Software renderer context
+	RezFile *m_pRezFile;	///< Resource file manager
+	void **m_ppData;		///< Handle to the active font
+	WordPtr m_uPixelOffset;	///< Offset to the pixel array
+	Word m_uRezNum;			///< Resource ID of the last font loaded
+	Word m_uInvisibleColor;	///< Color to ignore for drawing
 public:
 	struct State_t {
 		Word32 m_ColorTable[16];	///< Colors to render with
@@ -55,27 +68,16 @@ public:
 	virtual ~Font4Bit();
 	virtual Word GetPixelWidth(const char *pInput,WordPtr uLength);
 	virtual void DrawChar(Word uLetter);
-	void Init(RezFile *pRezFile,Word uRezNum,const Word8 *pPalette,Renderer *pRenderer=NULL);
-	void Shutdown(void);
-	void SaveState(State_t *pOutput);
-	void RestoreState(const State_t *pInput);
-	void SetColor(Word uColorIndex,Word uColor);
+	void BURGER_API Init(RezFile *pRezFile,Word uRezNum,const Word8 *pPalette,Renderer *pRenderer=NULL);
+	void BURGER_API Shutdown(void);
+	void BURGER_API SaveState(State_t *pOutput);
+	void BURGER_API RestoreState(const State_t *pInput);
+	void BURGER_API SetColor(Word uColorIndex,Word uColor);
 	BURGER_INLINE void UseZero(void) { m_uInvisibleColor = 0x7FFF; }
 	BURGER_INLINE void UseMask(void) { m_uInvisibleColor = 0; }
-	void InstallToPalette(RezFile *pRezFile,Word uRezNum,const Word8 *pPalette);
-	void SetColorRGBListToPalette(const RGBColorList_t *pRGBList,const Word8 *pPalette);
-	void SetToPalette(const Word8 *pPalette);
-protected:
-	union {
-		Word8 Bytes[16];	///< Color of font for 8 bit rendering
-		Word16 Shorts[16];	///< Color of font for 16 bit rendering
-		Word32 Words[16];	///< Color of font for 32 bit rendering
-	} m_ColorTable;			///< Storage for the color tables for rendering
-	RezFile *m_pRezFile;	///< Resource file manager
-	void **m_ppData;		///< Handle to the active font
-	WordPtr m_uPixelOffset;	///< Offset to the pixel array
-	Word m_uRezNum;			///< Resource ID of the last font loaded
-	Word m_uInvisibleColor;	///< Color to ignore for drawing
+	void BURGER_API InstallToPalette(RezFile *pRezFile,Word uRezNum,const Word8 *pPalette);
+	void BURGER_API SetColorRGBListToPalette(const RGBColorList_t *pRGBList,const Word8 *pPalette);
+	void BURGER_API SetToPalette(const Word8 *pPalette);
 };
 }
 /* END */

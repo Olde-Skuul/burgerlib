@@ -68,8 +68,8 @@ public:
 	BURGER_INLINE RGBAWord8_t *GetPalette(void) { return m_Palette; }
 	BURGER_INLINE const Word8 *GetEGAPalette(void) const { return m_EGAPalette; }
 	BURGER_INLINE Word8 *GetEGAPalette(void) { return m_EGAPalette; }
-	void SetPalette(const RGBWord8_t *pPalette,Word uStartIndex=0,Word uPaletteSize=256);
-	void SetPalette(const RGBAWord8_t *pPalette,Word uStartIndex=0,Word uPaletteSize=256);
+	BURGER_INLINE void SetPalette(const RGBWord8_t *pInput,Word uStartIndex=0,Word uPaletteSize=256) { CopyPalette256(m_Palette,pInput,uStartIndex,uPaletteSize); }
+	BURGER_INLINE void SetPalette(const RGBAWord8_t *pInput,Word uStartIndex=0,Word uPaletteSize=256) { CopyPalette256(m_Palette,pInput,uStartIndex,uPaletteSize); }
 };
 }
 /* END */

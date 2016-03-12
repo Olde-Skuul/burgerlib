@@ -22,6 +22,10 @@
 #include "broutputmemorystream.h"
 #endif
 
+#ifndef __BRREZFILE_H__
+#include "brrezfile.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 class Image {
@@ -68,6 +72,22 @@ public:
 	Word Init(Word uWidth,Word uHeight,ePixelTypes eType);
 	Word Init(Word uWidth,Word uHeight,ePixelTypes eType,Word uMipMaps);
 	Word Init(const Image *pInput);
+	Word InitPNG(InputMemoryStream *pInput,RGBAWord8_t *pPalette=NULL);
+	Word InitPNG(const char *pFilename,RGBAWord8_t *pPalette=NULL);
+	Word InitPNG(Filename *pFilename,RGBAWord8_t *pPalette=NULL);
+	Word InitPNG(RezFile *pRezFile,Word uRezNum,RGBAWord8_t *pPalette=NULL);
+	Word InitGIF(InputMemoryStream *pInput,RGBAWord8_t *pPalette=NULL);
+	Word InitGIF(const char *pFilename,RGBAWord8_t *pPalette=NULL);
+	Word InitGIF(Filename *pFilename,RGBAWord8_t *pPalette=NULL);
+	Word InitGIF(RezFile *pRezFile,Word uRezNum,RGBAWord8_t *pPalette=NULL);
+	Word InitTGA(InputMemoryStream *pInput,RGBAWord8_t *pPalette=NULL);
+	Word InitTGA(const char *pFilename,RGBAWord8_t *pPalette=NULL);
+	Word InitTGA(Filename *pFilename,RGBAWord8_t *pPalette=NULL);
+	Word InitTGA(RezFile *pRezFile,Word uRezNum,RGBAWord8_t *pPalette=NULL);
+	Word InitBMP(InputMemoryStream *pInput,RGBAWord8_t *pPalette=NULL);
+	Word InitBMP(const char *pFilename,RGBAWord8_t *pPalette=NULL);
+	Word InitBMP(Filename *pFilename,RGBAWord8_t *pPalette=NULL);
+	Word InitBMP(RezFile *pRezFile,Word uRezNum,RGBAWord8_t *pPalette=NULL);
 	void Transfer(Image *pInput);
 	void Shutdown(void);
 	BURGER_INLINE const Word8 *GetImage(void) const { return m_pImage; }
@@ -95,6 +115,7 @@ public:
 	void ClearBitmap(void);
 	Word VerticleFlip(void);
 	Word HorizontalFlip(void);
+	Word Store8888(const Image *pInput,const RGBAWord8_t *pPalette);
 };
 }
 /* END */

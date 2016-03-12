@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "burgerlib", "burgerlibv13wiu.vcxproj", "{473B23FB-3B83-3BED-8ADB-5F33ECED3270}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Cafe = Debug|Cafe
+		Internal|Cafe = Internal|Cafe
+		Release|Cafe = Release|Cafe
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{473B23FB-3B83-3BED-8ADB-5F33ECED3270}.Debug|Cafe.ActiveCfg = Debug|Cafe
+		{473B23FB-3B83-3BED-8ADB-5F33ECED3270}.Debug|Cafe.Build.0 = Debug|Cafe
+		{473B23FB-3B83-3BED-8ADB-5F33ECED3270}.Internal|Cafe.ActiveCfg = Internal|Cafe
+		{473B23FB-3B83-3BED-8ADB-5F33ECED3270}.Internal|Cafe.Build.0 = Internal|Cafe
+		{473B23FB-3B83-3BED-8ADB-5F33ECED3270}.Release|Cafe.ActiveCfg = Release|Cafe
+		{473B23FB-3B83-3BED-8ADB-5F33ECED3270}.Release|Cafe.Build.0 = Release|Cafe
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

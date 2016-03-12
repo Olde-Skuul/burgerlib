@@ -15,19 +15,27 @@
 
 #include "brjoypad.h"
 
-#if defined(BURGER_WINDOWS)
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+
+#if !defined(DOXYGEN)
+#ifndef DIRECTINPUT_VERSION
 #define DIRECTINPUT_VERSION 0x0800
+#endif
 #include "brgameapp.h"
 #include "brglobals.h"
 #include "brstringfunctions.h"
+#include "brfixedpoint.h"
 #include <windows.h>
 #include <dinput.h>
 #include <dinputd.h>
+#include <Xinput.h>
 
 // Needed for Code Warrior
 #ifndef DIDFT_OPTIONAL
 #define DIDFT_OPTIONAL 0x80000000
 #endif
+
+#define XINPUT_GAMEPAD_TRIGGER_THRESHOLD 30
 
 //
 // Used by the device enumerator to collect the information on devices
@@ -155,6 +163,8 @@ static BOOL CALLBACK EnumObjectsCallback(const DIDEVICEOBJECTINSTANCEW *pObject,
 	}
 	return DIENUM_CONTINUE;
 }
+
+#endif
 
 /***************************************
 
@@ -301,7 +311,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 								and 36000 (360 degrees). 0 is forward, 9000 is right, 18000
 								is backward, and 27000 is left. Rather than saying the hat
 								is pressed to the right only when the Windows POV value
-								is exactly 9000 (90 degreese), we will say anything between
+								is exactly 9000 (90 degrees), we will say anything between
 								15 degrees (forward plus some slop) and 165 degrees (backward
 								minus some slop) means the hat is to the right.
 							*/
@@ -313,7 +323,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 								if ((uTemp > POVANALOGLEFT + POV_SLOP && uTemp <= MAXPOVVALUE) || (uTemp < POVANALOGRIGHT - POV_SLOP)) { /* we will consider the hat to be up if it is anywhere forward of left or right */
 									uButtons += POVUP;
 								}
-								if ((uTemp > POVANALOGFORWARD + POV_SLOP) && (uTemp < POVANALOGBACKWARD - POV_SLOP)) { /* we will consider the hat to be to the ritgh up if it is anywhere to the right opf up or down */
+								if ((uTemp > POVANALOGFORWARD + POV_SLOP) && (uTemp < POVANALOGBACKWARD - POV_SLOP)) { /* we will consider the hat to be to the right up if it is anywhere to the right of up or down */
 									uButtons += POVRIGHT;
 								}
 								if ((uTemp > POVANALOGRIGHT + POV_SLOP) && (uTemp < POVANALOGLEFT - POV_SLOP)) {
@@ -353,7 +363,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 	return RunQueue::OKAY;
 }
 
-void Burger::Joypad::Acquire(void)
+void BURGER_API Burger::Joypad::Acquire(void)
 {
 	Word i = m_uDeviceCount;
 	if (i) {
@@ -368,7 +378,7 @@ void Burger::Joypad::Acquire(void)
 	}
 }
 
-void Burger::Joypad::Unacquire(void)
+void BURGER_API Burger::Joypad::Unacquire(void)
 {
 	Word i = m_uDeviceCount;
 	if (i) {
@@ -382,5 +392,210 @@ void Burger::Joypad::Unacquire(void)
 		} while (--i);
 	}
 }
+
+/*! ************************************
+
+	\struct Burger::XInputGamePad_t
+	\brief Persistent state of an XInput gamepad
+
+	If the function XInputGetGamepadState() is called, it uses this structure
+	to maintain the state of the gamepad. An application should allocate four of
+	these structures and assign them to gamepad 0 through 3, calling
+	the function XInputGetGamepadState() indexed to the associated structure
+	to read and track the state of the gamepads. XInput, by design, only
+	supports a maximum of 4 gamepads.
+
+	Burgerlib's \ref Joypad class maintains it's own copies of this structure.
+	This class is exposed for programmers who wish to directly access XInput
+	for their own needs.
+
+	\windowsonly
+	
+***************************************/
+
+/*! ************************************
+
+	\brief Turn off rumbling on XInput managed controllers
+
+	If XInput is available, this function will clear the vibration state to
+	off on all four controllers.
+
+	This function is useful when the application is exiting or entering pause mode
+
+	\windowsonly
+
+	\return Zero if no error. Any other value means an error occurred, ERROR_CALL_NOT_IMPLEMENTED means XInput was not found
+	
+***************************************/
+
+Word BURGER_API Burger::XInputStopRumbleOnAllControllers(void)
+{
+	// Set the vibration to off
+	XINPUT_VIBRATION MyVibration;
+	MyVibration.wLeftMotorSpeed = 0;
+	MyVibration.wRightMotorSpeed = 0;
+
+	Word32 i = 0;
+	Word uResult = 0;
+	do {
+		// Only abort if XInput is not present, otherwise, issue the
+		// command to every device, regardless of connection state
+		Word uTemp = Globals::XInputSetState(i,&MyVibration);
+		if (uTemp==ERROR_CALL_NOT_IMPLEMENTED) {
+			uResult = uTemp;
+			break;
+		}
+	} while (++i<4);
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Read a controller using XInput
+
+	If XInput is available, this function will read in the data from
+	a gamepad controller.
+
+	The XInputGamePad_t structure is assumed to be persistent and initialized by the
+	application to zero before calling this function with the data. The function will
+	maintain state using the contents of the XInputGamePad_t structure during
+	successive calls. Calling this function with an XInputGamePad_t structure
+	that had never been initially filled with zeros will yield undefined behavior.
+
+	\windowsonly
+
+	\param uWhich Which controller to read, 0-3 are valid
+	\param pXInputGamePad Pointer to a structure that will receive the state.
+	\param uDeadZoneType Type of post processing on the raw thumbstick data.
+	\return Zero if no error. Any other value means an error occurred, ERROR_CALL_NOT_IMPLEMENTED means XInput was not found
+	
+***************************************/
+
+Word BURGER_API Burger::XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInputGamePad,eXInputDeadZoneType uDeadZoneType)
+{
+	Word32 uResult;
+	if ((uWhich >= 4) || !pXInputGamePad) {
+		uResult = static_cast<Word32>(E_FAIL);
+	} else {
+		// Read in the data from the game pad
+		XINPUT_STATE GamepadState;
+		uResult = Globals::XInputGetState(uWhich,&GamepadState);
+
+		// Test if XInput is present
+		if (uResult!=ERROR_CALL_NOT_IMPLEMENTED) {
+
+			// Test if this was an insertion or removal and report it
+
+			// Get the old and new states
+			Word bWasConnected = pXInputGamePad->m_bConnected!=0;	// Force boolean for & below
+			Word bIsConnected = (uResult == ERROR_SUCCESS);
+
+			// Save off the states as to how they were processed
+			pXInputGamePad->m_bConnected = static_cast<Word8>(bIsConnected);
+			pXInputGamePad->m_bRemoved = static_cast<Word8>(bWasConnected & (bIsConnected^1));
+			pXInputGamePad->m_bInserted = static_cast<Word8>((bWasConnected^1) & bIsConnected);
+
+			// No error from here on out.
+			uResult = 0;
+
+			// Don't update rest of the state if not connected
+			if (bIsConnected) {
+
+				// Was this an insertion? If so, nuke the state
+				// of the entire structure from orbit, just to be sure
+
+				if (pXInputGamePad->m_bInserted) {
+					MemoryClear(pXInputGamePad,sizeof(XInputGamePad_t));
+					// Restore these two values because the MemoryClear()
+					// erased them
+					pXInputGamePad->m_bConnected = TRUE;
+					pXInputGamePad->m_bInserted = TRUE;
+				}
+
+				// Load in the thumbstick values
+				
+				Int32 iThumbLX = GamepadState.Gamepad.sThumbLX;
+				Int32 iThumbLY = GamepadState.Gamepad.sThumbLY;
+				Int32 iThumbRX = GamepadState.Gamepad.sThumbRX;
+				Int32 iThumbRY = GamepadState.Gamepad.sThumbRY;
+				
+				// Do any special processing for the thumb sticks
+
+				// Handle dead zones on a per axis basis
+				switch (uDeadZoneType) {
+				case XINPUTDEADZONE_CARDINAL:
+					// If the values are in the dead zone, set to zero
+					if (Abs(iThumbLX) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
+						iThumbLX = 0;
+					}
+					if (Abs(iThumbLY) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
+						iThumbLY = 0;
+					}
+					// Note: The constant is different for the right thumbstick vs the left
+					if (Abs(iThumbRX) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) {
+						iThumbRX = 0;
+					}
+					if (Abs(iThumbRY) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) {
+						iThumbRY = 0;
+					}
+					break;
+				case XINPUTDEADZONE_CENTER:
+					// Handle dead zones on a center region basis
+					if ((Abs(iThumbLX) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) &&
+						(Abs(iThumbLY) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)) {
+						iThumbLX = 0;
+						iThumbLY = 0;
+					}
+
+					if ((Abs(iThumbRX) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) &&
+						(Abs(iThumbRY) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)) {
+						iThumbRX = 0;
+						iThumbRY = 0;
+					}
+					break;
+				default:
+					break;
+				}
+
+				// Store the final result in the structure
+				pXInputGamePad->m_iThumbLX = iThumbLX;
+				pXInputGamePad->m_iThumbLY = iThumbLY;
+				pXInputGamePad->m_iThumbRX = iThumbRX;
+				pXInputGamePad->m_iThumbRY = iThumbRY;
+				
+				// Store the floating point versions
+				pXInputGamePad->m_fThumbLX = static_cast<float>(iThumbLX) * (1.0f/32767.0f);
+				pXInputGamePad->m_fThumbLY = static_cast<float>(iThumbLY) * (1.0f/32767.0f);
+				pXInputGamePad->m_fThumbRX = static_cast<float>(iThumbRX) * (1.0f/32767.0f);
+				pXInputGamePad->m_fThumbRY = static_cast<float>(iThumbRY) * (1.0f/32767.0f);
+
+				// Process the pressed buttons
+				Word32 bButtons = GamepadState.Gamepad.wButtons;
+				// Using the previous buttons, determine the ones "pressed"
+				pXInputGamePad->m_uPressedButtons = (pXInputGamePad->m_uButtons ^ bButtons) & bButtons;
+				pXInputGamePad->m_uButtons = bButtons;
+
+				// Process the left trigger
+				Word uTriggerValue = GamepadState.Gamepad.bLeftTrigger;
+				Word bTriggerIsPressed = (uTriggerValue > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+				Word bTriggerWasPressed = (pXInputGamePad->m_uLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+				pXInputGamePad->m_uLeftTrigger = static_cast<Word8>(uTriggerValue);
+				pXInputGamePad->m_bPressedLeftTrigger = static_cast<Word8>(bTriggerIsPressed & (bTriggerWasPressed^1));
+
+				// Process the right trigger
+				uTriggerValue = GamepadState.Gamepad.bRightTrigger;
+				bTriggerIsPressed = (uTriggerValue > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+				bTriggerWasPressed = (pXInputGamePad->m_uRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+				pXInputGamePad->m_uRightTrigger = static_cast<Word8>(uTriggerValue);
+				pXInputGamePad->m_bPressedRightTrigger = static_cast<Word8>(bTriggerIsPressed & (bTriggerWasPressed^1));
+			}
+		} else {
+			// Zap the buffer if there is no XInput
+			MemoryClear(pXInputGamePad,sizeof(XInputGamePad_t));
+		}
+	}
+	return uResult;
+}
+
 
 #endif

@@ -495,7 +495,11 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 	// Set the global instance
 	Globals::SetInstance(hInstance);
 
-	// Ensure that threading is serialized
+	// Ensure that threading is serialized since it's assumed this
+	// is a GUI based application
+	
+	// Also disable OLE 1.0, since any code from XP on shouldn't use that
+	
 	if (CoInitializeEx(NULL,COINIT_APARTMENTTHREADED|COINIT_DISABLE_OLE1DDE) == S_OK) {
 		m_bCoCreateInstanceInit = TRUE;
 	}

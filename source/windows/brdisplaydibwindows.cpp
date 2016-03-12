@@ -15,7 +15,7 @@
 #include "brdisplaydib.h"
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-#include "brwindowsapp.h"
+#include "brgameapp.h"
 #if !defined(WIN32_LEAN_AND_MEAN) && !defined(DOXYGEN)
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -71,9 +71,9 @@ Word Burger::DisplayDIB::InitContext()
 	Word uWidth = m_uWidth;
 	Word uHeight = m_uHeight;
 
-	static_cast<WindowsApp *>(m_pGameApp)->SetWindowSize(uWidth,uHeight);
+	m_pGameApp->SetWindowSize(uWidth,uHeight);
 
-	HWND pWindow = static_cast<WindowsApp *>(m_pGameApp)->GetWindow();
+	HWND pWindow = m_pGameApp->GetWindow();
 	// Get the video contexts so drawing can commence
 
 	m_pWindowDC = GetDC(pWindow);
@@ -94,11 +94,11 @@ Word Burger::DisplayDIB::InitContext()
 void Burger::DisplayDIB::PostShutdown(void)
 {
 	if (m_pWindowDC) {
-		ReleaseDC(static_cast<WindowsApp *>(m_pGameApp)->GetWindow(),m_pWindowDC);
+		ReleaseDC(m_pGameApp->GetWindow(),m_pWindowDC);
 		m_pWindowDC = NULL;
 	}
 	if (m_pBitMapDC) {
-		ReleaseDC(static_cast<WindowsApp *>(m_pGameApp)->GetWindow(),m_pBitMapDC);
+		ReleaseDC(m_pGameApp->GetWindow(),m_pBitMapDC);
 		m_pBitMapDC = NULL;
 	}
 }
@@ -113,7 +113,7 @@ void Burger::DisplayDIB::PostShutdown(void)
 
 void Burger::DisplayDIB::PostEndScene(void)
 {
-	ValidateRect(static_cast<WindowsApp *>(m_pGameApp)->GetWindow(),NULL);
+	ValidateRect(m_pGameApp->GetWindow(),NULL);
 }
 
 #endif

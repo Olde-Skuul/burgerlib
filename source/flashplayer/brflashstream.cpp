@@ -264,7 +264,7 @@ float BURGER_API Burger::Flash::Stream::GetFloat16(void)
 	// Get the mantissa
 	uFloat |= (uPacked & 0x3FF) << 13U;
 	// Convert into a float
-	return reinterpret_cast<const float *>(&uFloat)[0];
+	return static_cast<const float *>(static_cast<const void *>(&uFloat))[0];
 }
 
 /*! ************************************

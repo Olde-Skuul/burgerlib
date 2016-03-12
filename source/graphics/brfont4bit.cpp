@@ -16,6 +16,10 @@
 #include "brendian.h"
 #include "brpalette.h"
 
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::Font4Bit,Burger::Font);
+#endif
+
 // The data is stored in little endian format
 
 #if !defined(DOXYGEN)
@@ -56,13 +60,17 @@ struct Font4BitImage_t {
 ***************************************/
 
 Burger::Font4Bit::Font4Bit(Renderer *pRenderer) :
-	Font(pRenderer),
+	Font(NULL),
+	m_pRenderer(pRenderer),
 	m_pRezFile(NULL),
 	m_ppData(NULL),
 	m_uPixelOffset(0),
 	m_uRezNum(0),
 	m_uInvisibleColor(0)
 {
+	if (pRenderer) {
+		m_pDisplay = pRenderer->GetDisplay();
+	}
 	MemoryClear(m_ColorTable.Words,sizeof(m_ColorTable.Words));
 }
 
@@ -366,7 +374,7 @@ void Burger::Font4Bit::DrawChar(Word uLetter)
 
 ***************************************/
 
-void Burger::Font4Bit::Init(RezFile *pRezFile,Word uRezNum,const Word8 *pPalette,Renderer *pRenderer)
+void BURGER_API Burger::Font4Bit::Init(RezFile *pRezFile,Word uRezNum,const Word8 *pPalette,Renderer *pRenderer)
 {
 	if (pRenderer) {
 		m_pRenderer = pRenderer;
@@ -385,7 +393,7 @@ void Burger::Font4Bit::Init(RezFile *pRezFile,Word uRezNum,const Word8 *pPalette
 
 ***************************************/
 
-void Burger::Font4Bit::Shutdown(void)
+void BURGER_API Burger::Font4Bit::Shutdown(void)
 {
 	Word uRezNum = m_uRezNum;
 	if (uRezNum) {		// Was a font loaded?
@@ -411,7 +419,7 @@ void Burger::Font4Bit::Shutdown(void)
 
 ***************************************/
 
-void Burger::Font4Bit::SaveState(State_t *pOutput)
+void BURGER_API Burger::Font4Bit::SaveState(State_t *pOutput)
 {
 	pOutput->m_iX = m_iX;				// Save the current pen position
 	pOutput->m_iY = m_iY;
@@ -429,7 +437,7 @@ void Burger::Font4Bit::SaveState(State_t *pOutput)
 
 ***************************************/
 
-void Burger::Font4Bit::RestoreState(const State_t *pInput)
+void BURGER_API Burger::Font4Bit::RestoreState(const State_t *pInput)
 {
 	m_iX = pInput->m_iX;		// Set the X and Y coords
 	m_iY = pInput->m_iY;
@@ -449,7 +457,7 @@ void Burger::Font4Bit::RestoreState(const State_t *pInput)
 
 ***************************************/
 
-void Burger::Font4Bit::SetColor(Word uColorIndex,Word uColor)
+void BURGER_API Burger::Font4Bit::SetColor(Word uColorIndex,Word uColor)
 {
 	if (uColorIndex<16) {
 		switch (m_pRenderer->GetDepth()) {		// Color mode?
@@ -495,7 +503,7 @@ void Burger::Font4Bit::SetColor(Word uColorIndex,Word uColor)
 
 ***************************************/
 
-void Burger::Font4Bit::InstallToPalette(Burger::RezFile *pRezFile,Word uRezNum,const Word8 *pPalette)
+void BURGER_API Burger::Font4Bit::InstallToPalette(Burger::RezFile *pRezFile,Word uRezNum,const Word8 *pPalette)
 {
 	if (m_uRezNum!=uRezNum) {		// Already in memory?
 		Shutdown();					// Release the previous font
@@ -531,7 +539,7 @@ void Burger::Font4Bit::InstallToPalette(Burger::RezFile *pRezFile,Word uRezNum,c
 
 ***************************************/
 
-void Burger::Font4Bit::SetColorRGBListToPalette(const RGBColorList_t *pRGBList,const Word8 *pPalette)
+void BURGER_API Burger::Font4Bit::SetColorRGBListToPalette(const RGBColorList_t *pRGBList,const Word8 *pPalette)
 {
 	Word uCount = pRGBList->m_uCount;	// Get the number of colors
 	if (uCount) {						// No colors?!?!?
@@ -547,7 +555,7 @@ void Burger::Font4Bit::SetColorRGBListToPalette(const RGBColorList_t *pRGBList,c
 				++pRGB;					// Some compilers pad!!
 			} while (++i<uCount);		// Next index
 		} else {
-			Display *pDisplay = m_pRenderer->GetDisplay();
+			Display *pDisplay = m_pDisplay;
 			do {
 				SetColor(i,Palette::ToDisplay(pRGB,pDisplay));
 				++pRGB;					// Some compilers pad!!
@@ -568,7 +576,7 @@ void Burger::Font4Bit::SetColorRGBListToPalette(const RGBColorList_t *pRGBList,c
 
 ***************************************/
 
-void Burger::Font4Bit::SetToPalette(const Word8 *pPalette)
+void BURGER_API Burger::Font4Bit::SetToPalette(const Word8 *pPalette)
 {
 	// Is there a handle?
 	if (m_ppData && pPalette) {

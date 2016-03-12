@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemGroup Label="ProjectConfigurations">
+		<ProjectConfiguration Include="Debug|Win32">
+			<Configuration>Debug</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Debug|x64">
+			<Configuration>Debug</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Internal|Win32">
+			<Configuration>Internal</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Internal|x64">
+			<Configuration>Internal</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Release|Win32">
+			<Configuration>Release</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Release|x64">
+			<Configuration>Release</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+	</ItemGroup>
+	<PropertyGroup Label="Globals">
+		<ProjectName>unittests</ProjectName>
+		<ProjectGuid>{094C8654-23E9-37E2-A7F0-0038E3A7A5B7}</ProjectGuid>
+	</PropertyGroup>
+	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+	<PropertyGroup Label="Configuration">
+		<PlatformToolset>v140</PlatformToolset>
+	</PropertyGroup>
+	<Import Project="$(BURGER_SDKS)\visualstudio\burger.toolv10.props" />
+	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+	<ImportGroup Label="ExtensionSettings" />
+	<ImportGroup Label="PropertySheets" />
+	<PropertyGroup Label="UserMacros" />
+	<ItemDefinitionGroup>
+		<ClCompile>
+			<AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(ProjectDir)..\source\windows;$(BURGER_SDKS)\windows\perforce;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<PreprocessorDefinitions>_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+		</ClCompile>
+		<Link>
+			<AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\perforce;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+		</Link>
+	</ItemDefinitionGroup>
+	<ItemGroup>
+		<ClInclude Include="..\source\ansi\brfileansihelpers.h" />
+		<ClInclude Include="..\source\ansi\brmemoryansi.h" />
+		<ClInclude Include="..\source\ansi\brstdouthelpers.h" />
+		<ClInclude Include="..\source\audio\bralaw.h" />
+		<ClInclude Include="..\source\audio\brimportit.h" />
+		<ClInclude Include="..\source\audio\brimports3m.h" />
+		<ClInclude Include="..\source\audio\brimportxm.h" />
+		<ClInclude Include="..\source\audio\brmace.h" />
+		<ClInclude Include="..\source\audio\brmicrosoftadpcm.h" />
+		<ClInclude Include="..\source\audio\brsequencer.h" />
+		<ClInclude Include="..\source\audio\brsound.h" />
+		<ClInclude Include="..\source\audio\brsoundbufferrez.h" />
+		<ClInclude Include="..\source\audio\brsounddecompress.h" />
+		<ClInclude Include="..\source\audio\brulaw.h" />
+		<ClInclude Include="..\source\brgl.h" />
+		<ClInclude Include="..\source\brglext.h" />
+		<ClInclude Include="..\source\brglut.h" />
+		<ClInclude Include="..\source\brglxext.h" />
+		<ClInclude Include="..\source\commandline\brcommandparameter.h" />
+		<ClInclude Include="..\source\commandline\brcommandparameterbooltrue.h" />
+		<ClInclude Include="..\source\commandline\brcommandparameterstring.h" />
+		<ClInclude Include="..\source\commandline\brcommandparameterwordptr.h" />
+		<ClInclude Include="..\source\commandline\brconsolemanager.h" />
+		<ClInclude Include="..\source\commandline\brgameapp.h" />
+		<ClInclude Include="..\source\compression\bradler16.h" />
+		<ClInclude Include="..\source\compression\bradler32.h" />
+		<ClInclude Include="..\source\compression\brcompress.h" />
+		<ClInclude Include="..\source\compression\brcompressdeflate.h" />
+		<ClInclude Include="..\source\compression\brcompresslbmrle.h" />
+		<ClInclude Include="..\source\compression\brcompresslzss.h" />
+		<ClInclude Include="..\source\compression\brcrc32.h" />
+		<ClInclude Include="..\source\compression\brdecompress.h" />
+		<ClInclude Include="..\source\compression\brdecompressdeflate.h" />
+		<ClInclude Include="..\source\compression\brdecompresslbmrle.h" />
+		<ClInclude Include="..\source\compression\brdecompresslzss.h" />
+		<ClInclude Include="..\source\compression\brdjb2hash.h" />
+		<ClInclude Include="..\source\compression\brdxt1.h" />
+		<ClInclude Include="..\source\compression\brdxt3.h" />
+		<ClInclude Include="..\source\compression\brdxt5.h" />
+		<ClInclude Include="..\source\compression\brhashmap.h" />
+		<ClInclude Include="..\source\compression\brmd2.h" />
+		<ClInclude Include="..\source\compression\brmd4.h" />
+		<ClInclude Include="..\source\compression\brmd5.h" />
+		<ClInclude Include="..\source\compression\brpackfloat.h" />
+		<ClInclude Include="..\source\compression\brsdbmhash.h" />
+		<ClInclude Include="..\source\compression\brsha1.h" />
+		<ClInclude Include="..\source\compression\brunpackbytes.h" />
+		<ClInclude Include="..\source\file\brdirectorysearch.h" />
+		<ClInclude Include="..\source\file\brfile.h" />
+		<ClInclude Include="..\source\file\brfileapf.h" />
+		<ClInclude Include="..\source\file\brfilebmp.h" />
+		<ClInclude Include="..\source\file\brfiledds.h" />
+		<ClInclude Include="..\source\file\brfilegif.h" />
+		<ClInclude Include="..\source\file\brfileini.h" />
+		<ClInclude Include="..\source\file\brfilelbm.h" />
+		<ClInclude Include="..\source\file\brfilemanager.h" />
+		<ClInclude Include="..\source\file\brfilename.h" />
+		<ClInclude Include="..\source\file\brfilepcx.h" />
+		<ClInclude Include="..\source\file\brfilepng.h" />
+		<ClInclude Include="..\source\file\brfiletga.h" />
+		<ClInclude Include="..\source\file\brfilexml.h" />
+		<ClInclude Include="..\source\file\brinputmemorystream.h" />
+		<ClInclude Include="..\source\file\broutputmemorystream.h" />
+		<ClInclude Include="..\source\file\brrezfile.h" />
+		<ClInclude Include="..\source\flashplayer\brflashaction.h" />
+		<ClInclude Include="..\source\flashplayer\brflashactionvalue.h" />
+		<ClInclude Include="..\source\flashplayer\brflashavm2.h" />
+		<ClInclude Include="..\source\flashplayer\brflashcolortransform.h" />
+		<ClInclude Include="..\source\flashplayer\brflashdisasmactionscript.h" />
+		<ClInclude Include="..\source\flashplayer\brflashmanager.h" />
+		<ClInclude Include="..\source\flashplayer\brflashmatrix23.h" />
+		<ClInclude Include="..\source\flashplayer\brflashrect.h" />
+		<ClInclude Include="..\source\flashplayer\brflashrgba.h" />
+		<ClInclude Include="..\source\flashplayer\brflashstream.h" />
+		<ClInclude Include="..\source\flashplayer\brflashutils.h" />
+		<ClInclude Include="..\source\graphics\brdisplay.h" />
+		<ClInclude Include="..\source\graphics\brdisplayopengl.h" />
+		<ClInclude Include="..\source\graphics\brdisplayopenglsoftware8.h" />
+		<ClInclude Include="..\source\graphics\brfont.h" />
+		<ClInclude Include="..\source\graphics\brfont4bit.h" />
+		<ClInclude Include="..\source\graphics\brimage.h" />
+		<ClInclude Include="..\source\graphics\brpalette.h" />
+		<ClInclude Include="..\source\graphics\brpoint2d.h" />
+		<ClInclude Include="..\source\graphics\brrect.h" />
+		<ClInclude Include="..\source\graphics\brrenderer.h" />
+		<ClInclude Include="..\source\graphics\brrenderersoftware16.h" />
+		<ClInclude Include="..\source\graphics\brrenderersoftware8.h" />
+		<ClInclude Include="..\source\graphics\brshape8bit.h" />
+		<ClInclude Include="..\source\graphics\brtexture.h" />
+		<ClInclude Include="..\source\graphics\brtextureopengl.h" />
+		<ClInclude Include="..\source\graphics\brvertexbuffer.h" />
+		<ClInclude Include="..\source\graphics\brvertexbufferopengl.h" />
+		<ClInclude Include="..\source\graphics\effects\breffect.h" />
+		<ClInclude Include="..\source\graphics\effects\breffect2d.h" />
+		<ClInclude Include="..\source\graphics\effects\breffectpositiontexturecolor.h" />
+		<ClInclude Include="..\source\graphics\effects\breffectstaticpositiontexture.h" />
+		<ClInclude Include="..\source\graphics\effects\brshaders.h" />
+		<ClInclude Include="..\source\graphics\shaders\brshader2dccolor.h" />
+		<ClInclude Include="..\source\graphics\shaders\brshader2dcolorvertex.h" />
+		<ClInclude Include="..\source\graphics\shadersdx9\pscclr4dx9.h" />
+		<ClInclude Include="..\source\graphics\shadersdx9\pstex2clr4dx9.h" />
+		<ClInclude Include="..\source\graphics\shadersdx9\pstexturecolordx9.h" />
+		<ClInclude Include="..\source\graphics\shadersdx9\pstexturedx9.h" />
+		<ClInclude Include="..\source\graphics\shadersdx9\vs20pos22ddx9.h" />
+		<ClInclude Include="..\source\graphics\shadersdx9\vs20pos2tex2clr42ddx9.h" />
+		<ClInclude Include="..\source\graphics\shadersdx9\vs20sprite2ddx9.h" />
+		<ClInclude Include="..\source\graphics\shadersdx9\vsstaticpositiondx9.h" />
+		<ClInclude Include="..\source\graphics\shadersopengl\pscclr4gl.h" />
+		<ClInclude Include="..\source\graphics\shadersopengl\pstex2clr4gl.h" />
+		<ClInclude Include="..\source\graphics\shadersopengl\pstexturecolorgl.h" />
+		<ClInclude Include="..\source\graphics\shadersopengl\pstexturegl.h" />
+		<ClInclude Include="..\source\graphics\shadersopengl\vs20pos22dgl.h" />
+		<ClInclude Include="..\source\graphics\shadersopengl\vs20pos2tex2clr42dgl.h" />
+		<ClInclude Include="..\source\graphics\shadersopengl\vs20sprite2dgl.h" />
+		<ClInclude Include="..\source\graphics\shadersopengl\vsstaticpositiongl.h" />
+		<ClInclude Include="..\source\input\brjoypad.h" />
+		<ClInclude Include="..\source\input\brkeyboard.h" />
+		<ClInclude Include="..\source\input\brmouse.h" />
+		<ClInclude Include="..\source\lowlevel\brarray.h" />
+		<ClInclude Include="..\source\lowlevel\brassert.h" />
+		<ClInclude Include="..\source\lowlevel\bratomic.h" />
+		<ClInclude Include="..\source\lowlevel\brautorepeat.h" />
+		<ClInclude Include="..\source\lowlevel\brbase.h" />
+		<ClInclude Include="..\source\lowlevel\brcodelibrary.h" />
+		<ClInclude Include="..\source\lowlevel\brcriticalsection.h" />
+		<ClInclude Include="..\source\lowlevel\brdebug.h" />
+		<ClInclude Include="..\source\lowlevel\brdetectmultilaunch.h" />
+		<ClInclude Include="..\source\lowlevel\brdoublylinkedlist.h" />
+		<ClInclude Include="..\source\lowlevel\brendian.h" />
+		<ClInclude Include="..\source\lowlevel\brglobals.h" />
+		<ClInclude Include="..\source\lowlevel\brgridindex.h" />
+		<ClInclude Include="..\source\lowlevel\brguid.h" />
+		<ClInclude Include="..\source\lowlevel\brlinkedlistobject.h" />
+		<ClInclude Include="..\source\lowlevel\brlinkedlistpointer.h" />
+		<ClInclude Include="..\source\lowlevel\brmetrowerks.h" />
+		<ClInclude Include="..\source\lowlevel\broscursor.h" />
+		<ClInclude Include="..\source\lowlevel\brpair.h" />
+		<ClInclude Include="..\source\lowlevel\brperforce.h" />
+		<ClInclude Include="..\source\lowlevel\brqueue.h" />
+		<ClInclude Include="..\source\lowlevel\brrandommanager.h" />
+		<ClInclude Include="..\source\lowlevel\brrunqueue.h" />
+		<ClInclude Include="..\source\lowlevel\brsimplearray.h" />
+		<ClInclude Include="..\source\lowlevel\brsmartpointer.h" />
+		<ClInclude Include="..\source\lowlevel\brsnsystems.h" />
+		<ClInclude Include="..\source\lowlevel\brstaticrtti.h" />
+		<ClInclude Include="..\source\lowlevel\brtick.h" />
+		<ClInclude Include="..\source\lowlevel\brtimedate.h" />
+		<ClInclude Include="..\source\lowlevel\brtypes.h" />
+		<ClInclude Include="..\source\lowlevel\brvisualstudio.h" />
+		<ClInclude Include="..\source\lowlevel\brwatcom.h" />
+		<ClInclude Include="..\source\lowlevel\brxcode.h" />
+		<ClInclude Include="..\source\math\brearcliptriangulate.h" />
+		<ClInclude Include="..\source\math\brfixedmatrix3d.h" />
+		<ClInclude Include="..\source\math\brfixedmatrix4d.h" />
+		<ClInclude Include="..\source\math\brfixedpoint.h" />
+		<ClInclude Include="..\source\math\brfixedvector2d.h" />
+		<ClInclude Include="..\source\math\brfixedvector3d.h" />
+		<ClInclude Include="..\source\math\brfixedvector4d.h" />
+		<ClInclude Include="..\source\math\brfloatingpoint.h" />
+		<ClInclude Include="..\source\math\brmatrix3d.h" />
+		<ClInclude Include="..\source\math\brmatrix4d.h" />
+		<ClInclude Include="..\source\math\brvector2d.h" />
+		<ClInclude Include="..\source\math\brvector3d.h" />
+		<ClInclude Include="..\source\math\brvector4d.h" />
+		<ClInclude Include="..\source\memory\brglobalmemorymanager.h" />
+		<ClInclude Include="..\source\memory\brmemoryhandle.h" />
+		<ClInclude Include="..\source\memory\brmemorymanager.h" />
+		<ClInclude Include="..\source\templateburgerbase.h" />
+		<ClInclude Include="..\source\text\brisolatin1.h" />
+		<ClInclude Include="..\source\text\brmacromanus.h" />
+		<ClInclude Include="..\source\text\brnumberstring.h" />
+		<ClInclude Include="..\source\text\brnumberstringhex.h" />
+		<ClInclude Include="..\source\text\brsimplestring.h" />
+		<ClInclude Include="..\source\text\brstring.h" />
+		<ClInclude Include="..\source\text\brstring16.h" />
+		<ClInclude Include="..\source\text\brstringfunctions.h" />
+		<ClInclude Include="..\source\text\brutf16.h" />
+		<ClInclude Include="..\source\text\brutf32.h" />
+		<ClInclude Include="..\source\text\brutf8.h" />
+		<ClInclude Include="..\source\text\brwin1252.h" />
+		<ClInclude Include="..\source\version.h" />
+		<ClInclude Include="..\source\windows\brdisplaydib.h" />
+		<ClInclude Include="..\source\windows\brdisplaydibsoftware8.h" />
+		<ClInclude Include="..\source\windows\brdisplaydirectx11.h" />
+		<ClInclude Include="..\source\windows\brdisplaydirectx9.h" />
+		<ClInclude Include="..\source\windows\brdisplaydirectx9software8.h" />
+		<ClInclude Include="..\source\windows\brstartup.h" />
+		<ClInclude Include="..\source\windows\brtexturedirectx9.h" />
+		<ClInclude Include="..\source\windows\brvertexbufferdirectx9.h" />
+		<ClInclude Include="..\source\windows\brwindowstypes.h" />
+		<ClInclude Include="..\source\windows\ps20display8bitdx9.h" />
+		<ClInclude Include="..\unittest\common.h" />
+		<ClInclude Include="..\unittest\createtables.h" />
+		<ClInclude Include="..\unittest\testbrcompression.h" />
+		<ClInclude Include="..\unittest\testbrdisplay.h" />
+		<ClInclude Include="..\unittest\testbrendian.h" />
+		<ClInclude Include="..\unittest\testbrfileloaders.h" />
+		<ClInclude Include="..\unittest\testbrfilemanager.h" />
+		<ClInclude Include="..\unittest\testbrfixedpoint.h" />
+		<ClInclude Include="..\unittest\testbrfloatingpoint.h" />
+		<ClInclude Include="..\unittest\testbrhashes.h" />
+		<ClInclude Include="..\unittest\testbrmatrix3d.h" />
+		<ClInclude Include="..\unittest\testbrmatrix4d.h" />
+		<ClInclude Include="..\unittest\testbrstaticrtti.h" />
+		<ClInclude Include="..\unittest\testbrstrings.h" />
+		<ClInclude Include="..\unittest\testbrtimedate.h" />
+		<ClInclude Include="..\unittest\testbrtypes.h" />
+		<ClCompile Include="..\source\ansi\brfileansihelpers.cpp" />
+		<ClCompile Include="..\source\ansi\brmemoryansi.cpp" />
+		<ClCompile Include="..\source\ansi\brstdouthelpers.cpp" />
+		<ClCompile Include="..\source\audio\bralaw.cpp" />
+		<ClCompile Include="..\source\audio\brimportit.cpp" />
+		<ClCompile Include="..\source\audio\brimports3m.cpp" />
+		<ClCompile Include="..\source\audio\brimportxm.cpp" />
+		<ClCompile Include="..\source\audio\brmace.cpp" />
+		<ClCompile Include="..\source\audio\brmicrosoftadpcm.cpp" />
+		<ClCompile Include="..\source\audio\brsequencer.cpp" />
+		<ClCompile Include="..\source\audio\brsound.cpp" />
+		<ClCompile Include="..\source\audio\brsoundbufferrez.cpp" />
+		<ClCompile Include="..\source\audio\brsounddecompress.cpp" />
+		<ClCompile Include="..\source\audio\brulaw.cpp" />
+		<ClCompile Include="..\source\commandline\brcommandparameter.cpp" />
+		<ClCompile Include="..\source\commandline\brcommandparameterbooltrue.cpp" />
+		<ClCompile Include="..\source\commandline\brcommandparameterstring.cpp" />
+		<ClCompile Include="..\source\commandline\brcommandparameterwordptr.cpp" />
+		<ClCompile Include="..\source\commandline\brconsolemanager.cpp" />
+		<ClCompile Include="..\source\commandline\brgameapp.cpp" />
+		<ClCompile Include="..\source\compression\bradler16.cpp" />
+		<ClCompile Include="..\source\compression\bradler32.cpp" />
+		<ClCompile Include="..\source\compression\brcompress.cpp" />
+		<ClCompile Include="..\source\compression\brcompressdeflate.cpp" />
+		<ClCompile Include="..\source\compression\brcompresslbmrle.cpp" />
+		<ClCompile Include="..\source\compression\brcompresslzss.cpp" />
+		<ClCompile Include="..\source\compression\brcrc32.cpp" />
+		<ClCompile Include="..\source\compression\brdecompress.cpp" />
+		<ClCompile Include="..\source\compression\brdecompressdeflate.cpp" />
+		<ClCompile Include="..\source\compression\brdecompresslbmrle.cpp" />
+		<ClCompile Include="..\source\compression\brdecompresslzss.cpp" />
+		<ClCompile Include="..\source\compression\brdjb2hash.cpp" />
+		<ClCompile Include="..\source\compression\brdxt1.cpp" />
+		<ClCompile Include="..\source\compression\brdxt3.cpp" />
+		<ClCompile Include="..\source\compression\brdxt5.cpp" />
+		<ClCompile Include="..\source\compression\brhashmap.cpp" />
+		<ClCompile Include="..\source\compression\brmd2.cpp" />
+		<ClCompile Include="..\source\compression\brmd4.cpp" />
+		<ClCompile Include="..\source\compression\brmd5.cpp" />
+		<ClCompile Include="..\source\compression\brpackfloat.cpp" />
+		<ClCompile Include="..\source\compression\brsdbmhash.cpp" />
+		<ClCompile Include="..\source\compression\brsha1.cpp" />
+		<ClCompile Include="..\source\compression\brunpackbytes.cpp" />
+		<ClCompile Include="..\source\file\brdirectorysearch.cpp" />
+		<ClCompile Include="..\source\file\brfile.cpp" />
+		<ClCompile Include="..\source\file\brfileapf.cpp" />
+		<ClCompile Include="..\source\file\brfilebmp.cpp" />
+		<ClCompile Include="..\source\file\brfiledds.cpp" />
+		<ClCompile Include="..\source\file\brfilegif.cpp" />
+		<ClCompile Include="..\source\file\brfileini.cpp" />
+		<ClCompile Include="..\source\file\brfilelbm.cpp" />
+		<ClCompile Include="..\source\file\brfilemanager.cpp" />
+		<ClCompile Include="..\source\file\brfilename.cpp" />
+		<ClCompile Include="..\source\file\brfilepcx.cpp" />
+		<ClCompile Include="..\source\file\brfilepng.cpp" />
+		<ClCompile Include="..\source\file\brfiletga.cpp" />
+		<ClCompile Include="..\source\file\brfilexml.cpp" />
+		<ClCompile Include="..\source\file\brinputmemorystream.cpp" />
+		<ClCompile Include="..\source\file\broutputmemorystream.cpp" />
+		<ClCompile Include="..\source\file\brrezfile.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashaction.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashactionvalue.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashavm2.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashcolortransform.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashdisasmactionscript.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashmanager.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashmatrix23.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashrect.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashrgba.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashstream.cpp" />
+		<ClCompile Include="..\source\flashplayer\brflashutils.cpp" />
+		<ClCompile Include="..\source\graphics\brdisplay.cpp" />
+		<ClCompile Include="..\source\graphics\brdisplayopengl.cpp" />
+		<ClCompile Include="..\source\graphics\brdisplayopenglsoftware8.cpp" />
+		<ClCompile Include="..\source\graphics\brfont.cpp" />
+		<ClCompile Include="..\source\graphics\brfont4bit.cpp" />
+		<ClCompile Include="..\source\graphics\brimage.cpp" />
+		<ClCompile Include="..\source\graphics\brpalette.cpp" />
+		<ClCompile Include="..\source\graphics\brpoint2d.cpp" />
+		<ClCompile Include="..\source\graphics\brrect.cpp" />
+		<ClCompile Include="..\source\graphics\brrenderer.cpp" />
+		<ClCompile Include="..\source\graphics\brrenderersoftware16.cpp" />
+		<ClCompile Include="..\source\graphics\brrenderersoftware8.cpp" />
+		<ClCompile Include="..\source\graphics\brshape8bit.cpp" />
+		<ClCompile Include="..\source\graphics\brtexture.cpp" />
+		<ClCompile Include="..\source\graphics\brtextureopengl.cpp" />
+		<ClCompile Include="..\source\graphics\brvertexbuffer.cpp" />
+		<ClCompile Include="..\source\graphics\brvertexbufferopengl.cpp" />
+		<ClCompile Include="..\source\graphics\effects\breffect.cpp" />
+		<ClCompile Include="..\source\graphics\effects\breffect2d.cpp" />
+		<ClCompile Include="..\source\graphics\effects\breffectpositiontexturecolor.cpp" />
+		<ClCompile Include="..\source\graphics\effects\breffectstaticpositiontexture.cpp" />
+		<ClCompile Include="..\source\graphics\effects\brshaders.cpp" />
+		<ClCompile Include="..\source\graphics\shaders\brshader2dccolor.cpp" />
+		<ClCompile Include="..\source\graphics\shaders\brshader2dcolorvertex.cpp" />
+		<ClCompile Include="..\source\input\brjoypad.cpp" />
+		<ClCompile Include="..\source\input\brkeyboard.cpp" />
+		<ClCompile Include="..\source\input\brmouse.cpp" />
+		<ClCompile Include="..\source\lowlevel\brarray.cpp" />
+		<ClCompile Include="..\source\lowlevel\brassert.cpp" />
+		<ClCompile Include="..\source\lowlevel\bratomic.cpp" />
+		<ClCompile Include="..\source\lowlevel\brautorepeat.cpp" />
+		<ClCompile Include="..\source\lowlevel\brbase.cpp" />
+		<ClCompile Include="..\source\lowlevel\brcodelibrary.cpp" />
+		<ClCompile Include="..\source\lowlevel\brcriticalsection.cpp" />
+		<ClCompile Include="..\source\lowlevel\brdebug.cpp" />
+		<ClCompile Include="..\source\lowlevel\brdetectmultilaunch.cpp" />
+		<ClCompile Include="..\source\lowlevel\brdoublylinkedlist.cpp" />
+		<ClCompile Include="..\source\lowlevel\brendian.cpp" />
+		<ClCompile Include="..\source\lowlevel\brglobals.cpp" />
+		<ClCompile Include="..\source\lowlevel\brgridindex.cpp" />
+		<ClCompile Include="..\source\lowlevel\brguid.cpp" />
+		<ClCompile Include="..\source\lowlevel\brlinkedlistobject.cpp" />
+		<ClCompile Include="..\source\lowlevel\brlinkedlistpointer.cpp" />
+		<ClCompile Include="..\source\lowlevel\broscursor.cpp" />
+		<ClCompile Include="..\source\lowlevel\brpair.cpp" />
+		<ClCompile Include="..\source\lowlevel\brperforce.cpp" />
+		<ClCompile Include="..\source\lowlevel\brqueue.cpp" />
+		<ClCompile Include="..\source\lowlevel\brrandommanager.cpp" />
+		<ClCompile Include="..\source\lowlevel\brrunqueue.cpp" />
+		<ClCompile Include="..\source\lowlevel\brsimplearray.cpp" />
+		<ClCompile Include="..\source\lowlevel\brsmartpointer.cpp" />
+		<ClCompile Include="..\source\lowlevel\brstaticrtti.cpp" />
+		<ClCompile Include="..\source\lowlevel\brtick.cpp" />
+		<ClCompile Include="..\source\lowlevel\brtimedate.cpp" />
+		<ClCompile Include="..\source\lowlevel\brtypes.cpp" />
+		<ClCompile Include="..\source\math\brearcliptriangulate.cpp" />
+		<ClCompile Include="..\source\math\brfixedmatrix3d.cpp" />
+		<ClCompile Include="..\source\math\brfixedmatrix4d.cpp" />
+		<ClCompile Include="..\source\math\brfixedpoint.cpp" />
+		<ClCompile Include="..\source\math\brfixedvector2d.cpp" />
+		<ClCompile Include="..\source\math\brfixedvector3d.cpp" />
+		<ClCompile Include="..\source\math\brfixedvector4d.cpp" />
+		<ClCompile Include="..\source\math\brfloatingpoint.cpp" />
+		<ClCompile Include="..\source\math\brmatrix3d.cpp" />
+		<ClCompile Include="..\source\math\brmatrix4d.cpp" />
+		<ClCompile Include="..\source\math\brvector2d.cpp" />
+		<ClCompile Include="..\source\math\brvector3d.cpp" />
+		<ClCompile Include="..\source\math\brvector4d.cpp" />
+		<ClCompile Include="..\source\memory\brglobalmemorymanager.cpp" />
+		<ClCompile Include="..\source\memory\brmemoryhandle.cpp" />
+		<ClCompile Include="..\source\memory\brmemorymanager.cpp" />
+		<ClCompile Include="..\source\text\brisolatin1.cpp" />
+		<ClCompile Include="..\source\text\brmacromanus.cpp" />
+		<ClCompile Include="..\source\text\brnumberstring.cpp" />
+		<ClCompile Include="..\source\text\brnumberstringhex.cpp" />
+		<ClCompile Include="..\source\text\brsimplestring.cpp" />
+		<ClCompile Include="..\source\text\brstring.cpp" />
+		<ClCompile Include="..\source\text\brstring16.cpp" />
+		<ClCompile Include="..\source\text\brstringfunctions.cpp" />
+		<ClCompile Include="..\source\text\brutf16.cpp" />
+		<ClCompile Include="..\source\text\brutf32.cpp" />
+		<ClCompile Include="..\source\text\brutf8.cpp" />
+		<ClCompile Include="..\source\text\brwin1252.cpp" />
+		<ClCompile Include="..\source\windows\brcodelibrarywindows.cpp" />
+		<ClCompile Include="..\source\windows\brconsolemanagerwindows.cpp" />
+		<ClCompile Include="..\source\windows\brcriticalsectionwindows.cpp" />
+		<ClCompile Include="..\source\windows\brdebugwindows.cpp" />
+		<ClCompile Include="..\source\windows\brdetectmultilaunchwindows.cpp" />
+		<ClCompile Include="..\source\windows\brdirectorysearchwindows.cpp" />
+		<ClCompile Include="..\source\windows\brdirectxdata.cpp" />
+		<ClCompile Include="..\source\windows\brdisplaybasewindows.cpp" />
+		<ClCompile Include="..\source\windows\brdisplaydibsoftware8windows.cpp" />
+		<ClCompile Include="..\source\windows\brdisplaydibwindows.cpp" />
+		<ClCompile Include="..\source\windows\brdisplaydirectx11windows.cpp" />
+		<ClCompile Include="..\source\windows\brdisplaydirectx9software8windows.cpp" />
+		<ClCompile Include="..\source\windows\brdisplaydirectx9windows.cpp" />
+		<ClCompile Include="..\source\windows\brdisplayopenglwindows.cpp" />
+		<ClCompile Include="..\source\windows\brfilemanagerwindows.cpp" />
+		<ClCompile Include="..\source\windows\brfilenamewindows.cpp" />
+		<ClCompile Include="..\source\windows\brfilewindows.cpp" />
+		<ClCompile Include="..\source\windows\brglobalswindows.cpp" />
+		<ClCompile Include="..\source\windows\brguidwindows.cpp" />
+		<ClCompile Include="..\source\windows\brjoypadwindows.cpp" />
+		<ClCompile Include="..\source\windows\brkeyboardwindows.cpp" />
+		<ClCompile Include="..\source\windows\brmousewindows.cpp" />
+		<ClCompile Include="..\source\windows\broscursorwindows.cpp" />
+		<ClCompile Include="..\source\windows\brperforcewindows.cpp" />
+		<ClCompile Include="..\source\windows\brpoint2dwindows.cpp" />
+		<ClCompile Include="..\source\windows\brrectwindows.cpp" />
+		<ClCompile Include="..\source\windows\brsequencerwindows.cpp" />
+		<ClCompile Include="..\source\windows\brsoundwindows.cpp" />
+		<ClCompile Include="..\source\windows\brstdouthelperswindows.cpp" />
+		<ClCompile Include="..\source\windows\brtexturedirectx9.cpp" />
+		<ClCompile Include="..\source\windows\brtickwindows.cpp" />
+		<ClCompile Include="..\source\windows\brtimedatewindows.cpp" />
+		<ClCompile Include="..\source\windows\brvertexbufferdirextx9.cpp" />
+		<ClCompile Include="..\source\windows\brwindowsapp.cpp" />
+		<ClCompile Include="..\unittest\common.cpp" />
+		<ClCompile Include="..\unittest\createtables.cpp" />
+		<ClCompile Include="..\unittest\testbrcompression.cpp" />
+		<ClCompile Include="..\unittest\testbrdisplay.cpp" />
+		<ClCompile Include="..\unittest\testbrendian.cpp" />
+		<ClCompile Include="..\unittest\testbrfileloaders.cpp" />
+		<ClCompile Include="..\unittest\testbrfilemanager.cpp" />
+		<ClCompile Include="..\unittest\testbrfixedpoint.cpp" />
+		<ClCompile Include="..\unittest\testbrfloatingpoint.cpp" />
+		<ClCompile Include="..\unittest\testbrhashes.cpp" />
+		<ClCompile Include="..\unittest\testbrmatrix3d.cpp" />
+		<ClCompile Include="..\unittest\testbrmatrix4d.cpp" />
+		<ClCompile Include="..\unittest\testbrstaticrtti.cpp" />
+		<ClCompile Include="..\unittest\testbrstrings.cpp" />
+		<ClCompile Include="..\unittest\testbrtimedate.cpp" />
+		<ClCompile Include="..\unittest\testbrtypes.cpp" />
+		<HLSL Include="..\source\graphics\shadersdx9\pscclr4dx9.hlsl">
+			<VariableName>g_pscclr4dx9</VariableName>
+			<TargetProfile>ps_2_0</TargetProfile>
+		</HLSL>
+		<HLSL Include="..\source\graphics\shadersdx9\pstex2clr4dx9.hlsl">
+			<VariableName>g_pstex2clr4dx9</VariableName>
+			<TargetProfile>ps_2_0</TargetProfile>
+		</HLSL>
+		<HLSL Include="..\source\graphics\shadersdx9\pstexturecolordx9.hlsl">
+			<VariableName>g_pstexturecolordx9</VariableName>
+			<TargetProfile>ps_2_0</TargetProfile>
+		</HLSL>
+		<HLSL Include="..\source\graphics\shadersdx9\pstexturedx9.hlsl">
+			<VariableName>g_pstexturedx9</VariableName>
+			<TargetProfile>ps_2_0</TargetProfile>
+		</HLSL>
+		<HLSL Include="..\source\graphics\shadersdx9\vs20pos22ddx9.hlsl">
+			<VariableName>g_vs20pos22ddx9</VariableName>
+			<TargetProfile>vs_2_0</TargetProfile>
+		</HLSL>
+		<HLSL Include="..\source\graphics\shadersdx9\vs20pos2tex2clr42ddx9.hlsl">
+			<VariableName>g_vs20pos2tex2clr42ddx9</VariableName>
+			<TargetProfile>vs_2_0</TargetProfile>
+		</HLSL>
+		<HLSL Include="..\source\graphics\shadersdx9\vs20sprite2ddx9.hlsl">
+			<VariableName>g_vs20sprite2ddx9</VariableName>
+			<TargetProfile>vs_2_0</TargetProfile>
+		</HLSL>
+		<HLSL Include="..\source\graphics\shadersdx9\vsstaticpositiondx9.hlsl">
+			<VariableName>g_vsstaticpositiondx9</VariableName>
+			<TargetProfile>vs_2_0</TargetProfile>
+		</HLSL>
+		<HLSL Include="..\source\windows\ps20display8bitdx9.hlsl">
+			<VariableName>g_ps20display8bitdx9</VariableName>
+			<TargetProfile>ps_2_0</TargetProfile>
+		</HLSL>
+		<GLSL Include="..\source\graphics\shadersopengl\pscclr4gl.glsl" />
+		<GLSL Include="..\source\graphics\shadersopengl\pstex2clr4gl.glsl" />
+		<GLSL Include="..\source\graphics\shadersopengl\pstexturecolorgl.glsl" />
+		<GLSL Include="..\source\graphics\shadersopengl\pstexturegl.glsl" />
+		<GLSL Include="..\source\graphics\shadersopengl\vs20pos22dgl.glsl" />
+		<GLSL Include="..\source\graphics\shadersopengl\vs20pos2tex2clr42dgl.glsl" />
+		<GLSL Include="..\source\graphics\shadersopengl\vs20sprite2dgl.glsl" />
+		<GLSL Include="..\source\graphics\shadersopengl\vsstaticpositiongl.glsl" />
+	</ItemGroup>
+	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+	<ImportGroup Label="ExtensionTargets" />
+</Project>

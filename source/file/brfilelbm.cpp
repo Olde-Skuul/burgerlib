@@ -13,6 +13,7 @@
 
 #include "brfilelbm.h"
 #include "brdebug.h"
+#include "brendian.h"
 
 /*! ************************************
 
@@ -381,6 +382,7 @@ Burger::Image * Burger::FileLBM::Load(InputMemoryStream *pInput)
 
 /*! ************************************
 
+	\fn void Burger::FileLBM::SetPalette(const RGBWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
 	\brief Set the file image's palette (RGB)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -391,29 +393,16 @@ Burger::Image * Burger::FileLBM::Load(InputMemoryStream *pInput)
 	the color entry count exceeds 256 colors, the remaining colors are ignored
 	to prevent buffer overruns
 
-	\param pPalette Pointer to the palette to copy
+	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
 	\sa SetPalette(const RGBAWord8_t *,Word,Word)
 
 ***************************************/
 
-void Burger::FileLBM::SetPalette(const RGBWord8_t *pPalette,Word uStartIndex,Word uPaletteSize)
-{
-	// Invalid start index?
-	if (uStartIndex<256) {
-		// Is the size in range?
-		if ((uPaletteSize+uStartIndex)>256U) {
-			// Set the size to the maximum (Clamp)
-			uPaletteSize = 256U-uStartIndex;
-		}
-		// Any colors to process?
-		CopyPalette(m_Palette+uStartIndex,pPalette,uPaletteSize);
-	}
-}
-
 /*! ************************************
 
+	\fn void Burger::FileLBM::SetPalette(const RGBAWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
 	\brief Set the file image's palette (RGBA)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -423,22 +412,81 @@ void Burger::FileLBM::SetPalette(const RGBWord8_t *pPalette,Word uStartIndex,Wor
 	the color entry count exceeds 256 colors, the remaining colors are ignored
 	to prevent buffer overruns
 
-	\param pPalette Pointer to the palette to copy
+	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
 	\sa SetPalette(const RGBWord8_t *,Word,Word)
 
 ***************************************/
 
-void Burger::FileLBM::SetPalette(const RGBAWord8_t *pPalette,Word uStartIndex,Word uPaletteSize)
+/*! ************************************
+
+	\brief Scan an AIFF file for a specific chunk
+
+	Scan an AIFF file in memory and return pointer to a chunk
+	or \ref NULL if the chunk was not found
+
+	\param pInput Pointer to the AIFF file in memory
+	\param uLength Length of the AIFF file in memory
+	\param uChunkName 4 byte code of the chunk to find in ASCII format 'CODE' = 0x434F4445U big endian or 0x45444F43U on little endian machines
+	\return Pointer to the start of the chunk located, or \ref NULL if not found
+
+***************************************/
+
+const void * BURGER_API Burger::FindAIFFChunk(const void *pInput,WordPtr uLength,Word32 uChunkName)
 {
-	// Invalid start index?
-	if (uStartIndex<256) {
-		// Is the size in range?
-		if ((uPaletteSize+uStartIndex)>256U) {
-			// Set the size to the maximum (Clamp)
-			uPaletteSize = 256U-uStartIndex;
-		}
-		CopyPalette(m_Palette+uStartIndex,pPalette,uPaletteSize);
+	// Not enough data?
+	const void *pResult = NULL;
+	if (uLength>=(12+8)) {
+		WordPtr uSkip = 12;		// Initial skip
+		do {
+			// Remove processed bytes
+			uLength-=uSkip;
+			pInput = static_cast<const Word8 *>(pInput)+uSkip;
+			if (BigEndian::LoadAny(static_cast<const Word32 *>(pInput)) == uChunkName) {	// Match?
+				pResult = pInput;
+				break;
+			}
+			uSkip = BigEndian::LoadAny(&static_cast<const Word32 *>(pInput)[1]);
+			uSkip = (uSkip+8U+1U)&(~1U);	// Align to short
+		} while (uSkip<uLength);
 	}
+	// Return NULL or the chunk
+	return pResult;
+}
+
+/*! ************************************
+
+	\brief Scan a RIFF file for a specific chunk
+
+	Scan a RIFF file in memory and return pointer to a chunk
+	or \ref NULL if the chunk was not found
+
+	\param pInput Pointer to the WAV/RIFF file in memory
+	\param uLength Length of the WAV/RIFF file in memory
+	\param uChunkName 4 byte code of the chunk to find in ASCII format 'CODE' = 0x434F4445U native endian
+	\return Pointer to the start of the chunk located, or \ref NULL if not found
+
+***************************************/
+
+const void * BURGER_API Burger::FindRIFFChunk(const void *pInput,WordPtr uLength,Word32 uChunkName)
+{
+	// Not enough data?
+	const void *pResult = NULL;
+	if (uLength>=(12+8)) {
+		WordPtr uSkip = 12;		// Initial skip
+		do {
+			// Remove processed bytes
+			uLength-=uSkip;
+			pInput = static_cast<const Word8 *>(pInput)+uSkip;
+			if (BigEndian::LoadAny(static_cast<const Word32 *>(pInput)) == uChunkName) {	// Match?
+				pResult = pInput;
+				break;
+			}
+			uSkip = LittleEndian::LoadAny(&static_cast<const Word32 *>(pInput)[1]);
+			uSkip = (uSkip+8U+1U)&(~1U);	// Align to short
+		} while (uSkip<uLength);
+	}
+	// Return NULL or the chunk
+	return pResult;
 }

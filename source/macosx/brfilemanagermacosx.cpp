@@ -182,10 +182,10 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 		// Set the initial prefix
 		const char *pBootName = MyFilename.GetPtr();
 		SetPrefix(PREFIXBOOT,pBootName);
-		Free(g_FileManager.m_pBootName);
+		Free(g_pFileManager->m_pBootName);
 		WordPtr uMax = StringLength(pBootName);
-		g_FileManager.m_uBootNameSize = static_cast<Word>(uMax);
-		g_FileManager.m_pBootName = StringDuplicate(pBootName);
+		g_pFileManager->m_uBootNameSize = static_cast<Word>(uMax);
+		g_pFileManager->m_pBootName = StringDuplicate(pBootName);
 	}
 	
 	char *pTemp = getcwd(NULL,0);					// This covers all versions
@@ -227,7 +227,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 	This routine will get the time and date
 	from a file.
-	Note, this routine is Operating system specfic!!!
+	Note, this routine is Operating system specific!!!
 
 ***************************************/
 
@@ -275,7 +275,7 @@ Word BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFile
 
 	This routine will get the time and date
 	from a file.
-	Note, this routine is Operating system specfic!!!
+	Note, this routine is Operating system specific!!!
 
 ***************************************/
 
@@ -326,7 +326,7 @@ Word BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileName
 	is a path to a file that exists, if it doesn't exist
 	or it's a directory, I return FALSE.
 	Note : I do not check if the file havs any data in it.
-	Just the existance of the file.
+	Just the existence of the file.
 
 ***************************************/
 

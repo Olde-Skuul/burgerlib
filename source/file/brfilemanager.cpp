@@ -29,7 +29,7 @@
 
 /*! ************************************
 
-	\struct Burger::FileManager
+	\class Burger::FileManager
 	\brief Global file system manager
 	
 	Since file systems are all tied to a single device
@@ -42,7 +42,7 @@
 	To ensure cross platform compatibility, all file/pathnames
 	use a generic universal format that BurgerLib will accept
 	and the library will perform any translations needed to
-	the exact same behavior is consistant across operating systems.
+	the exact same behavior is consistent across operating systems.
 	
 	The strings are "C" format, 8 bit ascii with a zero termination byte. They
 	are encoded using strict UTF8 format. Colons are used at filename
@@ -77,7 +77,61 @@
 	
 ***************************************/
 
-Burger::FileManager Burger::FileManager::g_FileManager;
+Burger::FileManager *Burger::FileManager::g_pFileManager;
+
+/*! ************************************
+
+	\brief Construct the file manager
+	
+***************************************/
+
+Burger::FileManager::FileManager() :
+	m_PingIOThread(),
+	m_IOThreadSync(),
+	m_Thread(),
+	m_uQueueStart(0),
+	m_uQueueEnd(0)
+#if defined(BURGER_MSDOS)
+	,m_bAllowed(FALSE)
+#endif
+#if defined(BURGER_MACOSX) || defined(BURGER_IOS)
+	,m_uBootNameSize(0),
+	m_pBootName(NULL)
+#endif
+{
+	MemoryClear(m_pPrefix,sizeof(m_pPrefix));
+	MemoryClear(m_IOQueue,sizeof(m_IOQueue));
+	// Start up the worker thread
+	m_Thread.Start(QueueHandler,this);
+}
+
+/*! ************************************
+
+	\brief Destruct the file manager
+	
+***************************************/
+
+Burger::FileManager::~FileManager()
+{
+	// Send a message to kill the thread
+	AddQueue(NULL,IOCOMMAND_ENDTHREAD,NULL,0);
+	// Wait until the thread dies
+	m_Thread.Wait();
+	// Release all of my prefixes
+	Word i = PREFIXMAX;
+	const char **pTable = m_pPrefix;
+	do {
+		Free(pTable[0]);	// Release the memory
+		pTable[0] = NULL;	// Gone
+		++pTable;
+	} while (--i);
+
+#if defined(BURGER_MACOSX) || defined(BURGER_IOS)
+	Free(m_pBootName);
+	m_pBootName = NULL;
+	m_uBootNameSize = 0;
+#endif
+}
 
 /*! ************************************
 
@@ -93,22 +147,29 @@ Burger::FileManager Burger::FileManager::g_FileManager;
 
 void BURGER_API Burger::FileManager::Init(void)
 {
-	// Init the directory cache (MacOS)
+	FileManager *pThis = g_pFileManager;
+	if (!pThis) {
+		pThis = new (Alloc(sizeof(FileManager))) FileManager;
+		g_pFileManager = pThis;
+
+		// Init the directory cache (MacOS)
 #if defined(BURGER_MAC)
-	Filename::InitDirectoryCache();
+		Filename::InitDirectoryCache();
 #endif
+
 #if defined(BURGER_XBOX360)
 #if defined(NDEBUG)
-	// Init the file cache to something small
-	XSetFileCacheSize(128 * 1024);
+		// Init the file cache to something small
+		XSetFileCacheSize(128 * 1024);
 #else
-	// Since runtime files can be added, and dev kits have more memory,
-	// bump up the file cache size a bit.
-	XSetFileCacheSize(1024 * 1024);
+		// Since runtime files can be added, and dev kits have more memory,
+		// bump up the file cache size a bit.
+		XSetFileCacheSize(1024 * 1024);
 #endif
 #endif
-	// Load the default prefixes
-	DefaultPrefixes();
+		// Load the default prefixes
+		DefaultPrefixes();
+	}
 }
 
 /*! ************************************
@@ -128,12 +189,17 @@ void BURGER_API Burger::FileManager::Init(void)
 
 void BURGER_API Burger::FileManager::Shutdown(void)
 {
-	// Release all of my prefixes
-	g_FileManager.ReleasePrefixes();
 	// Release any directories cached (MacOS)
 #if defined(BURGER_MAC)
 	Filename::PurgeDirectoryCache();
 #endif
+
+	// Dispose of the global file manager instance
+	if (g_pFileManager) {
+		g_pFileManager->~FileManager();
+		Free(g_pFileManager);
+		g_pFileManager = NULL;
+	}
 }
 
 /*! ************************************
@@ -161,16 +227,16 @@ void BURGER_API Burger::FileManager::Shutdown(void)
 	
 	Given a drive number (0-?), return the name of
 	the volume in the format of ":Volume name:". 
-	The function will guarantee the existance of the colons.
+	The function will guarantee the existence of the colons.
 
 	\note This function should be used with caution. Only mounted
-	drives would return immdiately and if the drive has
+	drives would return immediately and if the drive has
 	ejectable media may take a while for it to respond to
 	a volume name query.
 
 	\param pOutput A Burger::Filename structure to contain the filename (Can be \ref NULL)
 	\param uVolumeNum A valid drive number from 0-?? with ?? being the maximum number of drives in the system
-	\return Zero if no error, non-zero if an error occured
+	\return Zero if no error, non-zero if an error occurred
 	\sa Burger::FileManager::GetVolumeNumber(const char *)
 	
 ***************************************/
@@ -235,7 +301,7 @@ Word BURGER_API Burger::FileManager::GetVolumeNumber(const char *pVolumeName)
 
 /*! ************************************
 
-	\brief Set the initial default prefixs for a power up state
+	\brief Set the initial default prefixes for a power up state
 
 	Sets these prefixes based on the current setup of
 	the machine the application is running on.
@@ -279,7 +345,7 @@ Word BURGER_API Burger::FileManager::GetPrefix(Filename *pOutput,Word uPrefixNum
 {
 	Word uResult;
 	if (uPrefixNum<FileManager::PREFIXMAX) {		// Is the prefix number valid?
-		pOutput->Set(FileManager::g_FileManager.m_pPrefix[uPrefixNum]);	// Get the prefix string
+		pOutput->Set(g_pFileManager->m_pPrefix[uPrefixNum]);	// Get the prefix string
 		uResult = File::OKAY;
 	} else {
 		pOutput->Clear();
@@ -354,9 +420,9 @@ Word BURGER_API Burger::FileManager::SetPrefix(Word uPrefixNum,Filename *pPrefix
 			}	
 		}
 		// Was there a path already?
-		Free(Burger::FileManager::g_FileManager.m_pPrefix[uPrefixNum]);
+		Free(g_pFileManager->m_pPrefix[uPrefixNum]);
 		// Save the new pathname
-		FileManager::g_FileManager.m_pPrefix[uPrefixNum] = pTemp;
+		g_pFileManager->m_pPrefix[uPrefixNum] = pTemp;
 	}
 	return uResult;		// Return the result
 }
@@ -366,7 +432,7 @@ Word BURGER_API Burger::FileManager::SetPrefix(Word uPrefixNum,Filename *pPrefix
 	\brief Remove the last entry of a prefix
 
 	Given a prefix number, pop off the last entry so that it
-	effectively goes up one entry in a directory hiearchy.
+	effectively goes up one entry in a directory hierarchy.
 	Imagine performing the operation "cd .." on the prefix.
 
 	This can force the prefix to become an empty string if the
@@ -388,37 +454,6 @@ void BURGER_API Burger::FileManager::PopPrefix(Word uPrefixNum)
 	GetPrefix(&TempName,uPrefixNum);	// Get the current prefix
 	TempName.DirName();					// Remove a directory
 	SetPrefix(uPrefixNum,&TempName);	// Store the prefix
-}
-
-/*! ************************************
-
-	\brief Reset all file prefixes.
-	
-	Clear all file prefixes and release
-	any memory allocated for them.
-	
-	\note This is an internal function called
-	on Burger::FileManager shutdown. It's not meant
-	for application use.
-
-	\sa Burger::FileManager::DefaultPrefixes(void)
-	
-***************************************/
-
-void Burger::FileManager::ReleasePrefixes(void)
-{
-	Word i = PREFIXMAX;
-	const char **pTable = m_pPrefix;
-	do {
-		Free(pTable[0]);	// Release the memory
-		pTable[0] = NULL;	// Gone
-		++pTable;
-	} while (--i);
-#if defined(BURGER_MACOSX) || defined(BURGER_IOS)
-	Free(m_pBootName);
-	m_pBootName = NULL;
-	m_uBootNameSize = 0;
-#endif
 }
 
 /*! ************************************
@@ -509,7 +544,7 @@ Word BURGER_API Burger::FileManager::GetCreationTime(Filename * /* pFileName */,
 
 /*! ************************************
 
-	\brief Detect for a file's existance.
+	\brief Detect for a file's existence.
 	
 	Given a BurgerLib pathname, return \ref TRUE if the file
 	exists. \ref FALSE if there is an disk error or the file does not exist.
@@ -530,7 +565,7 @@ Word BURGER_API Burger::FileManager::DoesFileExist(const char *pFileName)
 
 /*! ************************************
 
-	\brief Detect for a file's existance using a native pathname.
+	\brief Detect for a file's existence using a native pathname.
 	
 	Given a OS native pathname, return \ref TRUE if the file
 	exists. \ref FALSE if there is an disk error or the file does not exist.
@@ -683,7 +718,7 @@ Word32 BURGER_API Burger::FileManager::GetFileType(Filename * /*pFileName*/)
 	\param pFileType Pointer to a \ref Word32 that will receive the file type code.
 	\param pAuxType Pointer to a \ref Word32 that will receive the file creator code.
 	\return Non-zero if the file doesn't exist, the function isn't implemented of if the 
-		file doesn't have extended information. Zero is returned on successfull completion.
+		file doesn't have extended information. Zero is returned on successful completion.
 	\sa Burger::FileManager::GetFileAndAuxType(Burger::Filename *,Word32 *,Word32 *),
 		Burger::FileManager::GetFileType(const char *) or
 		Burger::FileManager::GetAuxType(const char *)
@@ -712,7 +747,7 @@ Word BURGER_API Burger::FileManager::GetFileAndAuxType(const char *pFileName,Wor
 	\param pFileType Pointer to a \ref Word32 that will receive the file type code.
 	\param pAuxType Pointer to a \ref Word32 that will receive the file creator code.
 	\return Non-zero if the file doesn't exist, the function isn't implemented of if the 
-		file doesn't have extended information. Zero is returned on successfull completion.
+		file doesn't have extended information. Zero is returned on successful completion.
 	\sa Burger::FileManager::GetFileAndAuxType(Burger::Filename *,Word32 *,Word32 *),
 		Burger::FileManager::GetFileType(const char *) or
 		Burger::FileManager::GetAuxType(const char *)
@@ -1503,6 +1538,28 @@ void * BURGER_API Burger::FileManager::LoadFile(Filename *pFileName,WordPtr *pLe
 #endif
 }
 
+void BURGER_API Burger::FileManager::AddQueue(File *pFile,eIOCommand uIOCommand,void *pBuffer,WordPtr uLength)
+{
+	WaitUntilQueueHasSpace();
+
+	// Get the pointer to the end of the queue
+
+	Word32 uEnd = m_uQueueEnd;
+
+	// Get the pointer to the next entry
+	Queue_t *pQueue = &m_IOQueue[uEnd];
+	// Fill it in
+	pQueue->m_pFile = pFile;
+	pQueue->m_uIOCommand = uIOCommand;
+	pQueue->m_pBuffer = pBuffer;
+	pQueue->m_uLength = uLength;
+	m_uQueueEnd = (uEnd+1)&(cMaxQueue-1);
+
+	// Send a message to the thread to execute
+	m_PingIOThread.Release();
+}
+
+
 
 /*! ************************************
 
@@ -1514,7 +1571,7 @@ void * BURGER_API Burger::FileManager::LoadFile(Filename *pFileName,WordPtr *pLe
 	To make this process easier, create an instance of this class in your main() function
 	or use one of the application class templates which will do this task for you.
 
-	There should be only one instance of this class in existance in the application. 
+	There should be only one instance of this class in existence in the application. 
 
 	\code
 	int main(int argc,char **argv)

@@ -37,7 +37,7 @@
 	}
 	\endcode
 	
-	\sa struct Burger::FileManager
+	\sa class Burger::FileManager
 	\note All filenames are encoded using UTF8! Do not assume native encoding
 		
 ***************************************/

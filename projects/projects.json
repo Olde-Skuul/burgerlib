@@ -21,7 +21,7 @@
 		// List of additional defines
 		"defines": [],
 		// Folder to store the final binary that's checked into Perforce
-		"finalfolder": "$(SDKS)/ps3/burgerlib/",
+		"finalfolder": "$(BURGER_SDKS)/ps3/burgerlib/",
 		// Operating system target to build for (windows,macosx,linux,ps3,ps4,xbox,
 		// xbox360,xboxone,shield,ios,mac,msdos,beos,ouya)
 		"platform" : "ps3",
@@ -36,6 +36,7 @@
 			"../source/flashplayer",
 			"../source/graphics",
 			"../source/graphics/effects",
+			"../source/graphics/shaders",
 			"../source/input",
 			"../source/lowlevel",
 			"../source/math",
@@ -60,6 +61,7 @@
 			"../source/flashplayer",
 			"../source/graphics",
 			"../source/graphics/effects",
+			"../source/graphics/shaders",
 			"../source/input",
 			"../source/lowlevel",
 			"../source/math",
@@ -67,7 +69,7 @@
 			"../source/text",
 			"../source/ps4"
 		],
-		"finalfolder": "$(SDKS)/ps4/burgerlib/",
+		"finalfolder": "$(BURGER_SDKS)/ps4/burgerlib/",
 		"platform": "ps4"
 	},
 	"vs2010",
@@ -83,6 +85,7 @@
 			"../source/flashplayer",
 			"../source/graphics",
 			"../source/graphics/effects",
+			"../source/graphics/shaders",
 			"../source/graphics/shadersvita",
 			"../source/input",
 			"../source/lowlevel",
@@ -91,7 +94,7 @@
 			"../source/text",
 			"../source/vita"
 		],
-		"finalfolder": "$(SDKS)/vita/burgerlib/",
+		"finalfolder": "$(BURGER_SDKS)/vita/burgerlib/",
 		"platform": "vita"
 	},
 	"vs2010",
@@ -107,6 +110,31 @@
 			"../source/flashplayer",
 			"../source/graphics",
 			"../source/graphics/effects",
+			"../source/graphics/shaders",
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/text",
+			"../source/wiiu"
+		],
+		"finalfolder": "$(BURGER_SDKS)/wiiu/burgerlib/",
+		"platform": "wiiu"
+	},
+	"vs2013",
+
+	{
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/flashplayer",
+			"../source/graphics",
+			"../source/graphics/effects",
+			"../source/graphics/shaders",
 			"../source/graphics/shadersxbox360",
 			"../source/input",
 			"../source/lowlevel",
@@ -115,7 +143,7 @@
 			"../source/text",
 			"../source/xbox360"
 		],
-		"finalfolder": "$(SDKS)/xbox360/burgerlib/",
+		"finalfolder": "$(BURGER_SDKS)/xbox360/burgerlib/",
 		"platform": "xbox360"
 	},
 	"vs2010",
@@ -130,6 +158,7 @@
 			"../source/flashplayer",
 			"../source/graphics",
 			"../source/graphics/effects",
+			"../source/graphics/shaders",
 			"../source/graphics/shadersopengl",
 			"../source/input",
 			"../source/lowlevel",
@@ -138,7 +167,7 @@
 			"../source/text",
 			"../source/shield"
 		],
-		"finalfolder": "$(SDKS)/shield/burgerlib/",
+		"finalfolder": "$(BURGER_SDKS)/shield/burgerlib/",
 		"platform": "shield"
 	},
 	"vs2010",
@@ -153,6 +182,7 @@
 			"../source/flashplayer",
 			"../source/graphics",
 			"../source/graphics/effects",
+			"../source/graphics/shaders",
 			"../source/graphics/shadersopengl",
 			"../source/input",
 			"../source/lowlevel",
@@ -161,7 +191,7 @@
 			"../source/text",
 			"../source/macosx"
 		],
-		"finalfolder": "$(SDKS)/macosx/burgerlib/",
+		"finalfolder": "$(BURGER_SDKS)/macosx/burgerlib/",
 		"platform": "macosx"
 	},
 	"xcode3",
@@ -177,6 +207,7 @@
 			"../source/flashplayer",
 			"../source/graphics",
 			"../source/graphics/effects",
+			"../source/graphics/shaders",
 			"../source/graphics/shadersopengl",
 			"../source/input",
 			"../source/lowlevel",
@@ -185,7 +216,7 @@
 			"../source/text",
 			"../source/mac"
 		],
-		"finalfolder": "$(SDKS)/mac/burgerlib/",
+		"finalfolder": "$(BURGER_SDKS)/mac/burgerlib/",
 		"platform": "mac"
 	},
 	"codewarrior",
@@ -200,6 +231,7 @@
 			"../source/flashplayer",
 			"../source/graphics",
 			"../source/graphics/effects",
+			"../source/graphics/shaders",
 			"../source/graphics/shadersopengl",
 			"../source/input",
 			"../source/lowlevel",
@@ -208,7 +240,7 @@
 			"../source/text",
 			"../source/ios"
 		],
-		"finalfolder": "$(SDKS)/ios/burgerlib/",
+		"finalfolder": "$(BURGER_SDKS)/ios/burgerlib/",
 		"platform": "ios"
 	},
 	"xcode5",
@@ -223,6 +255,7 @@
 			"../source/flashplayer",
 			"../source/graphics",
 			"../source/graphics/effects",
+			"../source/graphics/shaders",
 			"../source/input",
 			"../source/lowlevel",
 			"../source/math",
@@ -230,7 +263,7 @@
 			"../source/text",
 			"../source/msdos"
 		],
-		"finalfolder": "$(SDKS)/dos/burgerlib/",
+		"finalfolder": "$(BURGER_SDKS)/dos/burgerlib/",
 		"platform": "msdos"
 	},
 	"watcom",
@@ -246,6 +279,7 @@
 			"../source/flashplayer",
 			"../source/graphics",
 			"../source/graphics/effects",
+			"../source/graphics/shaders",
 			"../source/graphics/shadersdx9",
 			"../source/graphics/shadersopengl",
 			"../source/input",
@@ -255,11 +289,12 @@
 			"../source/text",
 			"../source/windows"
 		],
-		"includefolders": ["$(SDKS)/windows/perforce"],
-		"finalfolder": "$(SDKS)/windows/burgerlib/",
+		"includefolders": ["$(BURGER_SDKS)/windows/perforce"],
+		"finalfolder": "$(BURGER_SDKS)/windows/burgerlib/",
 		"defines": ["_CRT_NONSTDC_NO_WARNINGS","_CRT_SECURE_NO_WARNINGS","GLUT_NO_LIB_PRAGMA"],
 		"platform": "windows"
 	},
+	"vs2015",
 	"vs2010",
 	"vs2008",
 	"vs2005",
@@ -280,6 +315,7 @@
 			"../source/flashplayer",
 			"../source/graphics",
 			"../source/graphics/effects",
+			"../source/graphics/shaders",
 			"../source/graphics/shadersdx9",
 			"../source/graphics/shadersopengl",
 			"../source/input",
@@ -290,10 +326,11 @@
 			"../unittest",
 			"../source/windows"
 		],
-		"includefolders": ["$(SDKS)/windows/perforce"],
+		"includefolders": ["$(BURGER_SDKS)/windows/perforce"],
 		"defines": ["_CRT_NONSTDC_NO_WARNINGS","_CRT_SECURE_NO_WARNINGS","GLUT_NO_LIB_PRAGMA"],
 		"platform": "windows"
 	},
+	"vs2015",
 	"vs2010",
 	"vs2008",
 	"vs2005",
@@ -317,6 +354,7 @@
 			"../source/flashplayer",
 			"../source/graphics",
 			"../source/graphics/effects",
+			"../source/graphics/shaders",
 			"../source/graphics/shadersopengl",
 			"../source/input",
 			"../source/lowlevel",
@@ -343,6 +381,7 @@
 			"../source/file",
 			"../source/flashplayer",
 			"../source/graphics/effects",
+			"../source/graphics/shaders",
 			"../source/graphics/shadersopengl",
 			"../source/input",
 			"../source/lowlevel",
@@ -371,6 +410,7 @@
 			"../source/flashplayer",
 			"../source/graphics",
 			"../source/graphics/effects",
+			"../source/graphics/shaders",
 			"../source/graphics/shadersxbox360",
 			"../source/input",
 			"../source/lowlevel",
@@ -399,6 +439,7 @@
 			"../source/flashplayer",
 			"../source/graphics",
 			"../source/graphics/effects",
+			"../source/graphics/shaders",
 			"../source/graphics/shadersvita",
 			"../source/input",
 			"../source/lowlevel",

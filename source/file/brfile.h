@@ -26,9 +26,14 @@
 #include "brtimedate.h"
 #endif
 
+#ifndef __BRCRITICALSECTION_H__
+#include "brcriticalsection.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 class File {
+	friend class FileManager;
 public:
 	enum eFileAccess {
 		READONLY=0x00,		///< Open file with read access only
@@ -36,7 +41,7 @@ public:
 		APPEND=0x02,		///< Open file with write access and set the mark at the end
 		READANDWRITE=0x3	///< Open file for read and write access
 	};
-	enum {
+	enum eError {
 		OKAY=0,				///< No error
 		NOT_IMPLEMENTED=1,	///< Requested task not available on this platform
 		IOERROR=2,			///< Device error
@@ -45,6 +50,16 @@ public:
 		OUTOFRANGE=5,		///< Parameter out of range
 		FILENOTFOUND=6		///< File not found
 	};
+private:
+	void *m_pFile;				///< Open file reference
+	WordPtr m_uPosition;		///< Seek position
+	Filename m_Filename;		///< Name of the file that was opened
+	Semaphore m_Semaphore;		///< Semaphore for syncing file operations
+#if defined(BURGER_MAC) || defined(DOXYGEN)
+	Word8 m_FSRef[80];			///< File reference (MacOS Only)
+#endif
+
+public:
 	File();
 	File(const char *pFileName,eFileAccess eAccess=READONLY);
 	File(Filename *pFileName,eFileAccess eAccess=READONLY);
@@ -52,19 +67,23 @@ public:
 	static File * BURGER_API New(const char *pFileName,eFileAccess eAccess=READONLY);
 	static File * BURGER_API New(Filename *pFileName,eFileAccess eAccess=READONLY);
 	BURGER_INLINE Word IsOpened(void) const { return m_pFile!=NULL; }
-	Word Open(const char *pFileName,eFileAccess eAccess=READONLY);
-	Word Open(Filename *pFileName,eFileAccess eAccess=READONLY);
-	Word Close(void);
-	WordPtr GetSize(void);
-	WordPtr Read(void *pOutput,WordPtr uSize);
-	WordPtr Write(const void *pInput,WordPtr uSize);
-	WordPtr GetMark(void);
-	Word SetMark(WordPtr uMark);
-	Word SetMarkAtEOF(void);
-	Word GetModificationTime(TimeDate_t *pOutput);
-	Word GetCreationTime(TimeDate_t *pOutput);
-	Word SetModificationTime(const TimeDate_t *pInput);
-	Word SetCreationTime(const TimeDate_t *pInput);
+	Word BURGER_API Open(const char *pFileName,eFileAccess eAccess=READONLY);
+	Word BURGER_API Open(Filename *pFileName,eFileAccess eAccess=READONLY);
+	Word BURGER_API OpenAsync(const char *pFileName,eFileAccess eAccess=READONLY);
+	Word BURGER_API OpenAsync(Filename *pFileName,eFileAccess eAccess=READONLY);
+	Word BURGER_API Close(void);
+	Word BURGER_API CloseAsync(void);
+	WordPtr BURGER_API GetSize(void);
+	WordPtr BURGER_API Read(void *pOutput,WordPtr uSize);
+	Word BURGER_API ReadAsync(void *pOutput,WordPtr uSize);
+	WordPtr BURGER_API Write(const void *pInput,WordPtr uSize);
+	WordPtr BURGER_API GetMark(void);
+	Word BURGER_API SetMark(WordPtr uMark);
+	Word BURGER_API SetMarkAtEOF(void);
+	Word BURGER_API GetModificationTime(TimeDate_t *pOutput);
+	Word BURGER_API GetCreationTime(TimeDate_t *pOutput);
+	Word BURGER_API SetModificationTime(const TimeDate_t *pInput);
+	Word BURGER_API SetCreationTime(const TimeDate_t *pInput);
 #if (defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
 	Word SetAuxType(Word32 uAuxType);
 	Word SetFileType(Word32 uFileType);
@@ -78,16 +97,11 @@ public:
 	BURGER_INLINE Word32 GetFileType(void) const { return 0; }
 	BURGER_INLINE Word SetAuxAndFileType(Word32 /* uAuxType */,Word32 /* uFileType */) { return NOT_IMPLEMENTED; }
 #endif
-	Word ReadCString(char *pOutput,WordPtr uLength);
-	Word32 ReadBigWord32(void);
-	Word16 ReadBigWord16(void);
-	Word32 ReadLittleWord32(void);
-	Word16 ReadLittleWord16(void);
-private:
-	void *m_pFile;				///< Open file reference
-#if defined(BURGER_MAC) || defined(DOXYGEN)
-	Word8 m_FSRef[80];			///< File reference (MacOS Only)
-#endif
+	Word BURGER_API ReadCString(char *pOutput,WordPtr uLength);
+	Word32 BURGER_API ReadBigWord32(void);
+	Word16 BURGER_API ReadBigWord16(void);
+	Word32 BURGER_API ReadLittleWord32(void);
+	Word16 BURGER_API ReadLittleWord16(void);
 };
 }
 /* END */

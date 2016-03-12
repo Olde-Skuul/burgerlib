@@ -29,7 +29,7 @@
 
 // Make it thread safe
 
-static Burger::CriticalSectionStatic LockString;
+static Burger::CriticalSectionStatic g_LockString;
 
 /***************************************
  
@@ -45,17 +45,17 @@ void BURGER_API Burger::Debug::String(const char *pString)
 		WordPtr i = StringLength(pString);
 		if (i) {
 			if (!IsDebuggerPresent()) {
-				LockString.Lock();
+				g_LockString.Lock();
 				File MyFile;
 				if (MyFile.Open("9:logfile.txt",File::APPEND)==File::OKAY) {
 					MyFile.Write(pString,i);		// Send the string to the log file
 					MyFile.Close();
 				}
 			} else {
-				LockString.Lock();
+				g_LockString.Lock();
 				fwrite(pString,1,i,stdout);		// Output to the debugger window
 			}
-			LockString.Unlock();
+			g_LockString.Unlock();
 		}
 	}
 }

@@ -84,7 +84,7 @@ Burger::Mouse::Mouse(GameApp *pAppInstance) :
 				}
 				++pRat;
 			}
-			pAppInstance->AddRoutine(Poll,this);
+			pAppInstance->AddRoutine(Poll,this,RunQueue::PRIORITY_MOUSE);
         }
         CFRelease(pDictionary);
     }

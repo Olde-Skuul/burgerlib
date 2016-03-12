@@ -12,6 +12,7 @@
 ***************************************/
 
 #include "brfile.h"
+#include "brfilemanager.h"
 #include "brendian.h"
 #include <stdio.h>
 
@@ -39,8 +40,14 @@
 ***************************************/
 
 Burger::File::File() :
-	m_pFile(NULL)
+	m_pFile(NULL),
+	m_uPosition(0),
+	m_Filename(),
+	m_Semaphore()
 {
+#if defined(BURGER_MAC)
+	MemoryClear(m_FSRef,sizeof(m_FSRef));
+#endif
 }
 
 /*! ************************************
@@ -58,8 +65,14 @@ Burger::File::File() :
 ***************************************/
 
 Burger::File::File(const char *pFileName,eFileAccess eAccess) :
-	m_pFile(NULL)
+	m_pFile(NULL),
+	m_uPosition(0),
+	m_Filename(pFileName),
+	m_Semaphore()
 {
+#if defined(BURGER_MAC)
+	MemoryClear(m_FSRef,sizeof(m_FSRef));
+#endif
 	Open(pFileName,eAccess);
 }
 
@@ -78,8 +91,14 @@ Burger::File::File(const char *pFileName,eFileAccess eAccess) :
 ***************************************/
 
 Burger::File::File(Filename *pFileName,eFileAccess eAccess) :
-	m_pFile(NULL)
+	m_pFile(NULL),
+	m_uPosition(0),
+	m_Filename(pFileName[0]),
+	m_Semaphore()
 {
+#if defined(BURGER_MAC)
+	MemoryClear(m_FSRef,sizeof(m_FSRef));
+#endif
 	Open(pFileName,eAccess);
 }
 
@@ -186,7 +205,7 @@ Burger::File * BURGER_API Burger::File::New(Filename *pFileName,eFileAccess eAcc
 
 ***************************************/
 
-Word Burger::File::Open(const char *pFileName,eFileAccess eAccess)
+Word BURGER_API Burger::File::Open(const char *pFileName,eFileAccess eAccess)
 {
 	Filename MyFilename(pFileName);
 	return Open(&MyFilename,eAccess);
@@ -206,7 +225,7 @@ Word Burger::File::Open(const char *pFileName,eFileAccess eAccess)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
-Word Burger::File::Open(Filename *pFileName,eFileAccess eAccess)
+Word BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAccess)
 {
 	static const char *g_OpenFlags[4] = {
 		"rb","wb","ab","r+b"
@@ -232,7 +251,7 @@ Word Burger::File::Open(Filename *pFileName,eFileAccess eAccess)
 
 ***************************************/
 
-Word Burger::File::Close(void)
+Word BURGER_API Burger::File::Close(void)
 {
 	Word uResult = OKAY;
 	FILE *fp = static_cast<FILE *>(m_pFile);
@@ -259,7 +278,7 @@ Word Burger::File::Close(void)
 
 ***************************************/
 
-WordPtr Burger::File::GetSize(void)
+WordPtr BURGER_API Burger::File::GetSize(void)
 {
 	WordPtr uSize = 0;
 	FILE *fp = static_cast<FILE *>(m_pFile);
@@ -293,7 +312,7 @@ WordPtr Burger::File::GetSize(void)
 
 ***************************************/
 
-WordPtr Burger::File::Read(void *pOutput,WordPtr uSize)
+WordPtr BURGER_API Burger::File::Read(void *pOutput,WordPtr uSize)
 {
 	WordPtr uResult = 0;
 	if (uSize && pOutput) {
@@ -319,7 +338,7 @@ WordPtr Burger::File::Read(void *pOutput,WordPtr uSize)
 
 ***************************************/
 
-WordPtr Burger::File::Write(const void *pInput,WordPtr uSize)
+WordPtr BURGER_API Burger::File::Write(const void *pInput,WordPtr uSize)
 {
 	WordPtr uResult = 0;
 	if (uSize && pInput) {
@@ -338,12 +357,12 @@ WordPtr Burger::File::Write(const void *pInput,WordPtr uSize)
 	If a file is open, query the operating system for the location
 	of the file mark for future reads or writes.
 
-	\return Current file mark or zero if an error occured
+	\return Current file mark or zero if an error occurred
 	\sa Write(const void *,WordPtr)
 
 ***************************************/
 
-WordPtr Burger::File::GetMark(void)
+WordPtr BURGER_API Burger::File::GetMark(void)
 {
 	WordPtr uMark = 0;
 	FILE *fp = static_cast<FILE *>(m_pFile);
@@ -370,7 +389,7 @@ WordPtr Burger::File::GetMark(void)
 
 ***************************************/
 
-Word Burger::File::SetMark(WordPtr uMark)
+Word BURGER_API Burger::File::SetMark(WordPtr uMark)
 {
 	Word uResult = INVALID_MARK;
 	FILE *fp = static_cast<FILE *>(m_pFile);
@@ -394,7 +413,7 @@ Word Burger::File::SetMark(WordPtr uMark)
 
 ***************************************/
 
-Word Burger::File::SetMarkAtEOF(void)
+Word BURGER_API Burger::File::SetMarkAtEOF(void)
 {
 	Word uResult = INVALID_MARK;
 	FILE *fp = static_cast<FILE *>(m_pFile);
@@ -419,7 +438,7 @@ Word Burger::File::SetMarkAtEOF(void)
 
 ***************************************/
 
-Word Burger::File::GetModificationTime(TimeDate_t *pOutput)
+Word BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 {
 	pOutput->Clear();
 	return NOT_IMPLEMENTED;
@@ -438,7 +457,7 @@ Word Burger::File::GetModificationTime(TimeDate_t *pOutput)
 
 ***************************************/
 
-Word Burger::File::GetCreationTime(TimeDate_t *pOutput)
+Word BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 {
 	pOutput->Clear();
 	return NOT_IMPLEMENTED;
@@ -457,7 +476,7 @@ Word Burger::File::GetCreationTime(TimeDate_t *pOutput)
 
 ***************************************/
 
-Word Burger::File::SetModificationTime(const TimeDate_t * /* pInput */)
+Word BURGER_API Burger::File::SetModificationTime(const TimeDate_t * /* pInput */)
 {
 	return NOT_IMPLEMENTED;
 }
@@ -475,26 +494,53 @@ Word Burger::File::SetModificationTime(const TimeDate_t * /* pInput */)
 
 ***************************************/
 
-Word Burger::File::SetCreationTime(const TimeDate_t * /* pInput */)
+Word BURGER_API Burger::File::SetCreationTime(const TimeDate_t * /* pInput */)
 {
 	return NOT_IMPLEMENTED;
 }
 #endif
 
+Word BURGER_API Burger::File::OpenAsync(const char *pFileName,eFileAccess eAccess)
+{
+	m_Filename.Set(pFileName);
+	FileManager::g_pFileManager->AddQueue(this,FileManager::IOCOMMAND_OPEN,NULL,eAccess);
+	return 0;
+}
+
+Word BURGER_API Burger::File::OpenAsync(Filename *pFileName,eFileAccess eAccess)
+{
+	m_Filename = pFileName[0];
+	FileManager::g_pFileManager->AddQueue(this,FileManager::IOCOMMAND_OPEN,NULL,eAccess);
+	return 0;
+}
+
+Word BURGER_API Burger::File::CloseAsync(void)
+{
+	FileManager::g_pFileManager->AddQueue(this,FileManager::IOCOMMAND_CLOSE,NULL,0);
+	return 0;
+}
+
+Word BURGER_API Burger::File::ReadAsync(void *pOutput,WordPtr uSize)
+{
+	FileManager::g_pFileManager->AddQueue(this,FileManager::IOCOMMAND_READ,pOutput,uSize);
+	return 0;
+}
+
+
 /*! ************************************
 
 	\fn Burger::File::SetAuxType(Word32 uAuxType)
-	\brief Set the file's auxillary type
+	\brief Set the file's auxiliary type
 
 	If a file is open, call the MacOS operating system to set the file's
-	auxillary type to the passed value.
+	auxiliary type to the passed value.
 
-	The file's auxillary type is usually set to the application ID code.
+	The file's auxiliary type is usually set to the application ID code.
 
 	\note This is a MacOS exclusive feature. If the application is not running
 	on MacOS, it will fail with a code of File::NOT_IMPLEMENTED.
 
-	\param uAuxType Value to set the file's auxillary type
+	\param uAuxType Value to set the file's auxiliary type
 	\return File::OKAY if successful, File::NOT_IMPLEMENTED if not available or other codes for errors
 	\sa SetAuxAndFileType(), SetFileType() or GetAuxType()
 
@@ -520,12 +566,12 @@ Word Burger::File::SetCreationTime(const TimeDate_t * /* pInput */)
 /*! ************************************
 
 	\fn Burger::File::GetAuxType(void)
-	\brief Get the file's auxillary type
+	\brief Get the file's auxiliary type
 
 	If a file is open, call the MacOS operating system to get the file's
-	auxillary type.
+	auxiliary type.
 
-	The file's auxillary type is usually set to the application ID code.
+	The file's auxiliary type is usually set to the application ID code.
 
 	\note This is a MacOS exclusive feature. If the application is not running
 	on MacOS, it will fail by returning zero.
@@ -554,17 +600,17 @@ Word Burger::File::SetCreationTime(const TimeDate_t * /* pInput */)
 /*! ************************************
 
 	\fn Burger::File::SetAuxAndFileType(Word32 uAuxType,Word32 uFileType)
-	\brief Set the file's auxillary and file type
+	\brief Set the file's auxiliary and file type
 
 	If a file is open, call the MacOS operating system to set the file's
-	auxillary and file types to the passed values.
+	auxiliary and file types to the passed values.
 
-	The file's auxillary type is usually set to the application ID code.
+	The file's auxiliary type is usually set to the application ID code.
 
 	\note This is a MacOS exclusive feature. If the application is not running
 	on MacOS, it will fail with a code of File::NOT_IMPLEMENTED.
 
-	\param uAuxType Value to set the file's auxillary type
+	\param uAuxType Value to set the file's auxiliary type
 	\param uFileType Value to set the file's type
 	\return File::OKAY if successful, File::NOT_IMPLEMENTED if not available or other codes for errors
 	\sa SetFileType() or SetAuxType()
@@ -589,7 +635,7 @@ Word Burger::File::SetCreationTime(const TimeDate_t * /* pInput */)
 
 ***************************************/
 
-Word Burger::File::ReadCString(char *pOutput,WordPtr uLength)
+Word BURGER_API Burger::File::ReadCString(char *pOutput,WordPtr uLength)
 {
 	// Set the maximum buffer size
 	// and remove 1 to make space or the ending zero
@@ -632,7 +678,7 @@ Word Burger::File::ReadCString(char *pOutput,WordPtr uLength)
 
 ***************************************/
 
-Word32 Burger::File::ReadBigWord32(void)
+Word32 BURGER_API Burger::File::ReadBigWord32(void)
 {
 	Word32 mValue;
 	Read(&mValue,4);		// Save the long word
@@ -651,7 +697,7 @@ Word32 Burger::File::ReadBigWord32(void)
 
 ***************************************/
 
-Word16 Burger::File::ReadBigWord16(void)
+Word16 BURGER_API Burger::File::ReadBigWord16(void)
 {
 	Word16 mValue;
 	Read(&mValue,2);		// Save the short word
@@ -670,7 +716,7 @@ Word16 Burger::File::ReadBigWord16(void)
 
 ***************************************/
 
-Word32 Burger::File::ReadLittleWord32(void)
+Word32 BURGER_API Burger::File::ReadLittleWord32(void)
 {
 	Word32 mValue;
 	Read(&mValue,4);		// Save the long word
@@ -689,7 +735,7 @@ Word32 Burger::File::ReadLittleWord32(void)
 
 ***************************************/
 
-Word16 Burger::File::ReadLittleWord16(void)
+Word16 BURGER_API Burger::File::ReadLittleWord16(void)
 {
 	Word16 mValue;
 	Read(&mValue,2);		// Save the long word

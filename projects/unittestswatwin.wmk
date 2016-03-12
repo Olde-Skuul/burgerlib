@@ -6,7 +6,7 @@
 # sourcedir = Set the work directories for the source
 #
 
-sourcedir = ..\source\ansi;..\source\audio;..\source;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\graphics\shadersdx9;..\source\graphics\shadersopengl;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows;..\unittest
+sourcedir = ..\source\ansi;..\source\audio;..\source;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersopengl;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows;..\unittest
 
 #
 # Name of the output library
@@ -18,7 +18,7 @@ projectname = unittests
 # includedir = Header includes
 #
 
-includedir = $(sourcedir);$(SDKS)\windows\perforce
+includedir = $(sourcedir);$(BURGER_SDKS)\windows\perforce
 
 #
 # Object files to work with for the library
@@ -28,7 +28,17 @@ objs= &
 	$(A)\brfileansihelpers.obj &
 	$(A)\brmemoryansi.obj &
 	$(A)\brstdouthelpers.obj &
+	$(A)\bralaw.obj &
+	$(A)\brimportit.obj &
+	$(A)\brimports3m.obj &
+	$(A)\brimportxm.obj &
+	$(A)\brmace.obj &
+	$(A)\brmicrosoftadpcm.obj &
+	$(A)\brsequencer.obj &
 	$(A)\brsound.obj &
+	$(A)\brsoundbufferrez.obj &
+	$(A)\brsounddecompress.obj &
+	$(A)\brulaw.obj &
 	$(A)\brcommandparameter.obj &
 	$(A)\brcommandparameterbooltrue.obj &
 	$(A)\brcommandparameterstring.obj &
@@ -51,15 +61,16 @@ objs= &
 	$(A)\brdxt3.obj &
 	$(A)\brdxt5.obj &
 	$(A)\brhashmap.obj &
-	$(A)\brmace.obj &
 	$(A)\brmd2.obj &
 	$(A)\brmd4.obj &
 	$(A)\brmd5.obj &
 	$(A)\brpackfloat.obj &
 	$(A)\brsdbmhash.obj &
 	$(A)\brsha1.obj &
+	$(A)\brunpackbytes.obj &
 	$(A)\brdirectorysearch.obj &
 	$(A)\brfile.obj &
+	$(A)\brfileapf.obj &
 	$(A)\brfilebmp.obj &
 	$(A)\brfiledds.obj &
 	$(A)\brfilegif.obj &
@@ -107,6 +118,8 @@ objs= &
 	$(A)\breffectpositiontexturecolor.obj &
 	$(A)\breffectstaticpositiontexture.obj &
 	$(A)\brshaders.obj &
+	$(A)\brshader2dccolor.obj &
+	$(A)\brshader2dcolorvertex.obj &
 	$(A)\brjoypad.obj &
 	$(A)\brkeyboard.obj &
 	$(A)\brmouse.obj &
@@ -176,6 +189,7 @@ objs= &
 	$(A)\brdisplaybasewindows.obj &
 	$(A)\brdisplaydibsoftware8windows.obj &
 	$(A)\brdisplaydibwindows.obj &
+	$(A)\brdisplaydirectx11windows.obj &
 	$(A)\brdisplaydirectx9software8windows.obj &
 	$(A)\brdisplaydirectx9windows.obj &
 	$(A)\brdisplayopenglwindows.obj &
@@ -191,7 +205,9 @@ objs= &
 	$(A)\brperforcewindows.obj &
 	$(A)\brpoint2dwindows.obj &
 	$(A)\brrectwindows.obj &
+	$(A)\brsequencerwindows.obj &
 	$(A)\brsoundwindows.obj &
+	$(A)\brstdouthelperswindows.obj &
 	$(A)\brtexturedirectx9.obj &
 	$(A)\brtickwindows.obj &
 	$(A)\brtimedatewindows.obj &
@@ -202,6 +218,7 @@ objs= &
 	$(A)\testbrcompression.obj &
 	$(A)\testbrdisplay.obj &
 	$(A)\testbrendian.obj &
+	$(A)\testbrfileloaders.obj &
 	$(A)\testbrfilemanager.obj &
 	$(A)\testbrfixedpoint.obj &
 	$(A)\testbrfloatingpoint.obj &

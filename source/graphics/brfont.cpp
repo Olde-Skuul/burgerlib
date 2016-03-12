@@ -15,6 +15,11 @@
 #include "brutf8.h"
 #include "brutf32.h"
 
+// RTTI data
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::Font,Burger::Base);
+#endif
+
 /*! ************************************
 
 	\class Burger::Font
@@ -34,13 +39,13 @@
 	
 	Initializes all shared variables to defaults.
 	
-	\param pRenderer Pointer to a rendering context to use for
+	\param pDisplay Pointer to a display context to use for
 		low level APIs
 
 ***************************************/
 
-Burger::Font::Font(Renderer *pRenderer) :
-	m_pRenderer(pRenderer),
+Burger::Font::Font(Display *pDisplay) :
+	m_pDisplay(pDisplay),
 	m_iX(0),
 	m_iY(0),
 	m_uHeight(0),
@@ -130,21 +135,21 @@ void Burger::Font::DrawChar(Word /* uLetter */)
 
 /*! ************************************
 
-	\fn Burger::Font::SetRenderer(Renderer *pRenderer)
-	\brief Set the Renderer to use
+	\fn Burger::Font::SetDisplay(Display *pDisplay)
+	\brief Set the Display to use
 
-	\param pRenderer Pointer to a Renderer
-	\sa GetRenderer(void) const
+	\param pDisplay Pointer to a Display
+	\sa GetDisplay(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::Font::GetRenderer(void) const
-	\brief Get the Renderer currently in use
+	\fn Burger::Font::GetDisplay(void) const
+	\brief Get the Display currently in use
 
-	\return Pointer to a Renderer, can be \ref NULL if no Renderer has been set
-	\sa SetRenderer(Renderer *)
+	\return Pointer to a Display, can be \ref NULL if no Display has been set
+	\sa SetDisplay(Display *)
 
 ***************************************/
 
@@ -260,7 +265,7 @@ void Burger::Font::DrawChar(Word /* uLetter */)
 
 ***************************************/
 
-Word Burger::Font::GetPixelWidthChar(Word uLetter)
+Word BURGER_API Burger::Font::GetPixelWidthChar(Word uLetter)
 {
 	char Ascii[8];
 	WordPtr uLength = UTF8::FromUTF32(Ascii,uLetter);
@@ -279,7 +284,7 @@ Word Burger::Font::GetPixelWidthChar(Word uLetter)
 
 ***************************************/
 
-Word Burger::Font::GetPixelWidthNumber(Int32 iInput)
+Word BURGER_API Burger::Font::GetPixelWidthNumber(Int32 iInput)
 {
 	char Ascii[16];
 
@@ -299,7 +304,7 @@ Word Burger::Font::GetPixelWidthNumber(Int32 iInput)
 
 ***************************************/
 
-Word Burger::Font::GetPixelWidthNumber(Word32 uInput)
+Word BURGER_API Burger::Font::GetPixelWidthNumber(Word32 uInput)
 {
 	char Ascii[16];
 
@@ -317,7 +322,7 @@ Word Burger::Font::GetPixelWidthNumber(Word32 uInput)
 
 ***************************************/
 
-Word Burger::Font::GetPixelWidthString(const char *pInput)
+Word BURGER_API Burger::Font::GetPixelWidthString(const char *pInput)
 {
 	if (pInput) {
 		return GetPixelWidth(pInput,StringLength(pInput));		// Get the text width
@@ -337,7 +342,7 @@ Word Burger::Font::GetPixelWidthString(const char *pInput)
 
 ***************************************/
 
-void Burger::Font::DrawNumber(Int32 iInput)
+void BURGER_API Burger::Font::DrawNumber(Int32 iInput)
 {
 	char Ascii[16];
 
@@ -357,7 +362,7 @@ void Burger::Font::DrawNumber(Int32 iInput)
 
 ***************************************/
 
-void Burger::Font::DrawNumber(Word32 uInput)
+void BURGER_API Burger::Font::DrawNumber(Word32 uInput)
 {
 	char Ascii[16];
 
@@ -377,7 +382,7 @@ void Burger::Font::DrawNumber(Word32 uInput)
 
 ***************************************/
 
-void Burger::Font::DrawString(const char *pInput)
+void BURGER_API Burger::Font::DrawString(const char *pInput)
 {
 	if (pInput) {
 		Draw(pInput,StringLength(pInput));		// Draw the text
@@ -399,7 +404,7 @@ void Burger::Font::DrawString(const char *pInput)
 
 ***************************************/
 
-void Burger::Font::DrawStringCenterX(int iX,int iY,const char *pInput)
+void BURGER_API Burger::Font::DrawStringCenterX(int iX,int iY,const char *pInput)
 {
 	if (pInput) {				// Failsafe
 		WordPtr uLength = StringLength(pInput);			// Get the string length
@@ -423,7 +428,7 @@ void Burger::Font::DrawStringCenterX(int iX,int iY,const char *pInput)
 
 ***************************************/
 
-void Burger::Font::DrawStringAtXY(int iX,int iY,const char *pInput)
+void BURGER_API Burger::Font::DrawStringAtXY(int iX,int iY,const char *pInput)
 {
 	m_iX = iX;		// Set the location
 	m_iY = iY;
@@ -448,7 +453,7 @@ void Burger::Font::DrawStringAtXY(int iX,int iY,const char *pInput)
 
 ***************************************/
 
-WordPtr Burger::Font::CharsForPixelWidth(const char *pInput,Word uWidth)
+WordPtr BURGER_API Burger::Font::CharsForPixelWidth(const char *pInput,Word uWidth)
 {
 	WordPtr uResult = 0;			// Number of characters that are valid
 	const char *pMark = pInput;		// Save in a temp

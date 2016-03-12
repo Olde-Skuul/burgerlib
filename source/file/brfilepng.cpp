@@ -151,9 +151,10 @@ Burger::FilePNG::FilePNG() :
 
 	\note A descriptive error message is passed to Debug::Warning()
 
+	\param pOutput Pointer to an Image record to store the new image into
 	\param pInput Pointer to a memory stream that has a PNG file image
 
-	\return A pointer to a valid Image on success or \ref NULL on failure
+	\return Zero for success or non-zero on failure
 
 ***************************************/
 
@@ -439,10 +440,9 @@ Word BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput)
 
 ***************************************/
 
-
-
 /*! ************************************
 
+	\fn void Burger::FilePNG::SetPalette(const RGBWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
 	\brief Set the file image's palette (RGB)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -453,29 +453,16 @@ Word BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput)
 	the color entry count exceeds 256 colors, the remaining colors are ignored
 	to prevent buffer overruns
 
-	\param pPalette Pointer to the palette to copy
+	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
 	\sa SetPalette(const RGBAWord8_t *,Word,Word)
 
 ***************************************/
 
-void Burger::FilePNG::SetPalette(const RGBWord8_t *pPalette,Word uStartIndex,Word uPaletteSize)
-{
-	// Invalid start index?
-	if (uStartIndex<256) {
-		// Is the size in range?
-		if ((uPaletteSize+uStartIndex)>256U) {
-			// Set the size to the maximum (Clamp)
-			uPaletteSize = 256U-uStartIndex;
-		}
-		// Any colors to process?
-		CopyPalette(m_Palette+uStartIndex,pPalette,uPaletteSize);
-	}
-}
-
 /*! ************************************
 
+	\fn void Burger::FilePNG::SetPalette(const RGBAWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
 	\brief Set the file image's palette (RGBA)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -485,22 +472,10 @@ void Burger::FilePNG::SetPalette(const RGBWord8_t *pPalette,Word uStartIndex,Wor
 	the color entry count exceeds 256 colors, the remaining colors are ignored
 	to prevent buffer overruns
 
-	\param pPalette Pointer to the palette to copy
+	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
 	\sa SetPalette(const RGBWord8_t *,Word,Word)
 
 ***************************************/
 
-void Burger::FilePNG::SetPalette(const RGBAWord8_t *pPalette,Word uStartIndex,Word uPaletteSize)
-{
-	// Invalid start index?
-	if (uStartIndex<256) {
-		// Is the size in range?
-		if ((uPaletteSize+uStartIndex)>256U) {
-			// Set the size to the maximum (Clamp)
-			uPaletteSize = 256U-uStartIndex;
-		}
-		CopyPalette(m_Palette+uStartIndex,pPalette,uPaletteSize);
-	}
-}

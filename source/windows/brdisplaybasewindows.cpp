@@ -16,7 +16,7 @@
 #include "brdisplay.h"
 
 #if defined(BURGER_WINDOWS)
-#include "brwindowsapp.h"
+#include "brgameapp.h"
 #include "brglobals.h"
 #include "brstring16.h"
 #ifndef WIN32_LEAN_AND_MEAN
@@ -34,7 +34,7 @@
 
 void Burger::Display::SetWindowTitle(const char *pTitle)
 {
-	HWND pWindow = static_cast<WindowsApp *>(m_pGameApp)->GetWindow();
+	HWND pWindow = m_pGameApp->GetWindow();
 	// Is the window present?
 	if (pWindow) {
 		String16 MyString(pTitle);
@@ -127,7 +127,7 @@ static HRESULT __stdcall EnumerateVideoDevice(GUID *pGUID,char *pDescription,cha
 	if (pGUID) {
 		Burger::ClassArray<Burger::Display::VideoCardDescription> *pOutput = static_cast<Burger::ClassArray<Burger::Display::VideoCardDescription> *>(pInput);
 		IDirectDraw7 *pDD;
-		if (Burger::Globals::DirectDrawCreateEx(pGUID,&pDD)==DD_OK) {
+		if (Burger::Globals::DirectDrawCreateEx(pGUID,reinterpret_cast<void **>(&pDD),IID_IDirectDraw7)==DD_OK) {
 			Burger::Display::VideoCardDescription Entry;
 
 			// Get the monitor GUID

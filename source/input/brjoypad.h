@@ -32,6 +32,34 @@
 
 /* BEGIN */
 namespace Burger {
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+struct XInputGamePad_t {
+	float m_fThumbLX;			///< Left thumbstick X -1.0f to 1.0f
+	float m_fThumbLY;			///< Left thumbstick Y -1.0f to 1.0f
+	float m_fThumbRX;			///< Right thumbstick X -1.0f to 1.0f
+	float m_fThumbRY;			///< Right thumbstick Y -1.0f to 1.0f
+	Int32 m_iThumbLX;			///< Left thumbstick X -32768 to 32767
+	Int32 m_iThumbLY;			///< Left thumbstick Y -32768 to 32767
+	Int32 m_iThumbRX;			///< Right thumbstick X -32768 to 32767
+	Int32 m_iThumbRY;			///< Right thumbstick Y -32768 to 32767
+	Word32 m_uButtons;			///< Current state of the buttons
+	Word32 m_uPressedButtons;	///< Buttons that were "pressed" during this update
+	Word8 m_uLeftTrigger;		///< Left trigger (0-255)
+	Word8 m_uRightTrigger;		///< Right trigger (0-255)
+	Word8 m_bPressedLeftTrigger;	///< \ref TRUE if the left trigger was "Pressed" this update
+	Word8 m_bPressedRightTrigger;	///< \ref TRUE if the right trigger was "Pressed" this update
+	Word8 m_bConnected;			///< \ref TRUE If the game pad is currently connected
+	Word8 m_bInserted;			///< \ref TRUE if the game pad was inserted during the last update
+	Word8 m_bRemoved;			///< \ref TRUE if the game pad was removed during the last update
+};
+enum eXInputDeadZoneType {
+	XINPUTDEADZONE_NONE,		///< Don't apply a dead zone
+	XINPUTDEADZONE_CARDINAL,	///< Apply an axis based dead zone
+	XINPUTDEADZONE_CENTER		///< Apply an x/y based dead zone
+};
+extern Word BURGER_API XInputStopRumbleOnAllControllers(void);
+extern Word BURGER_API XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInputGamePad,eXInputDeadZoneType uDeadZoneType=XINPUTDEADZONE_NONE);
+#endif
 class Joypad {
 public:
 	enum {
@@ -124,8 +152,8 @@ public:
 	void SetDigital(Word uWhich,Word uAxis,Word uPercent=20);
 	BURGER_INLINE Word GetDeviceCount(void) const { return m_uDeviceCount; }
 #if defined(BURGER_WINDOWS)
-	void Acquire(void);
-	void Unacquire(void);
+	void BURGER_API Acquire(void);
+	void BURGER_API Unacquire(void);
 #endif
 };
 }

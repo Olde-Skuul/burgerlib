@@ -32,6 +32,9 @@
 *.opensdf
 *.sdf
 *.xcworkspace
+*.pyc
+*.Auto.XGD
+*.mcp.xml
 
 # Ignore Mac desktop services store files 
 .DS_Store

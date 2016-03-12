@@ -43,11 +43,15 @@ namespace Burger {
 
 // Pixel shaders
 
+#include "pscclr4dx9.h"
+#include "pstex2clr4dx9.h"
 #include "pstexturedx9.h"
 #include "pstexturecolordx9.h"
 
 // Vertex shaders
 
+#include "vs20pos22ddx9.h"
+#include "vs20pos2tex2clr42ddx9.h"
 #include "vs20sprite2ddx9.h"
 #include "vsstaticpositiondx9.h"
 
@@ -74,11 +78,15 @@ const char g_glXYWidthHeight[] = "XYWidthHeight";
 
 // Pixel shaders
 
+#include "pscclr4gl.h"
+#include "pstex2clr4gl.h"
 #include "pstexturegl.h"
 #include "pstexturecolorgl.h"
 
 // Vertex shaders
 
+#include "vs20pos22dgl.h"
+#include "vs20pos2tex2clr42dgl.h"
 #include "vs20sprite2dgl.h"
 #include "vsstaticpositiongl.h"
 
@@ -93,11 +101,15 @@ const char g_glXYWidthHeight[] = "XYWidthHeight";
 
 // Pixel shaders
 
+#include "pscclr4360.h"
+#include "pstex2clr4360.h"
 #include "pstexture360.h"
 #include "pstexturecolor360.h"
 
 // Vertex shaders
 
+#include "vs20pos22d360.h"
+#include "vs20pos2tex2clr42d360.h"
 #include "vs20sprite2d360.h"
 #include "vsstaticposition360.h"
 
