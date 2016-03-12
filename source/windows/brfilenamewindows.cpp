@@ -17,10 +17,24 @@
 #include "brfilemanager.h"
 #include "brutf16.h"
 #include "brutf8.h"
+#include "brstring16.h"
+#include "brglobals.h"
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <Windows.h>
+#include <ObjBase.h>
+#include <shlobj.h>
+
+//
+// GUIDs needed for locating folders in Vista or higher
+//
+
+#define KF_FLAG_DONT_UNEXPAND 0x00002000
+#define KF_FLAG_DONT_VERIFY 0x00004000
+
+EXTERN_C const GUID DECLSPEC_SELECTANY FOLDERID_LocalAppData = {0xF1B32785,0x6FBA, 0x4FCF, 0x9D, 0x55, 0x7B, 0x8E, 0x7F, 0x15, 0x70, 0x91};
+EXTERN_C const GUID DECLSPEC_SELECTANY FOLDERID_RoamingAppData = {0x3EB685DB,0x65F9, 0x4CF6, 0xA0, 0x3A, 0xE3, 0xEF, 0x65, 0x72, 0x9F, 0x3D};
 
 /*! ************************************
 
@@ -185,6 +199,202 @@ const char *Burger::Filename::GetNative(void)
 
 /***************************************
 
+	\brief Set the filename to the current working directory
+
+	Query the operating system for the current working directory and
+	set the filename to that directory. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void)
+{
+	Clear();
+	DWORD uLength = GetCurrentDirectoryW(0,NULL);
+	if (uLength) {
+		WCHAR *pWBuffer = static_cast<WCHAR *>(Alloc(uLength*2));
+		if (pWBuffer) {
+			uLength = GetCurrentDirectoryW(uLength*2,pWBuffer);
+			if (uLength) {
+				String UTF8(static_cast<const Word16 *>(static_cast<void *>(pWBuffer)));
+				SetFromNative(UTF8.GetPtr());
+			}
+			Free(pWBuffer);
+		}
+	}
+}
+
+/***************************************
+
+	\brief Set the filename to the application's directory
+
+	Determine the directory where the application resides and set
+	the filename to that directory. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format.
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetApplicationDirectory(void)
+{
+	Clear();
+
+	// Ask windows what's the folder the app is running in
+
+	WCHAR Buffer[MAX_PATH];
+
+	// Try the easy way
+	DWORD uLength = GetModuleFileNameW(NULL,Buffer,BURGER_ARRAYSIZE(Buffer));
+	if (uLength) {
+		// There's a filename
+		WCHAR *pWBuffer;
+		// See if the buffer was filled. If so, it's a deep path so deal with it.
+
+		if (uLength>=BURGER_ARRAYSIZE(Buffer)) {
+
+			//
+			// DAMN YOU MICROSOFT!
+			// In case the folder is longer than MAX_PATH, do
+			// a binary doubling of a pathname buffer
+			// until the function succeeds or 
+			// the buffers just don't make sense anymore
+			//
+
+			// Start with this size
+			DWORD uTestLength = BURGER_ARRAYSIZE(Buffer);
+			pWBuffer = NULL;
+			do {
+				// Double the size for this pass
+				uTestLength<<=1U;
+
+				// Should NEVER happen
+				if (!uTestLength) {
+					Free(pWBuffer);
+					pWBuffer = NULL;
+					break;
+				}
+
+				// Memory failure?
+				pWBuffer = static_cast<WCHAR *>(Realloc(pWBuffer,uTestLength*2));
+				if (!pWBuffer) {
+					break;
+				}
+				// Try to get the pathname
+				uLength = GetModuleFileNameW(NULL,pWBuffer,uTestLength);
+			} while (uLength>=uTestLength);
+
+		} else {
+			// Use the internal buffer
+			pWBuffer = Buffer;
+		}
+
+		if (pWBuffer) {
+			// Convert to UTF8
+			String UTF8(static_cast<const Word16 *>(static_cast<void *>(pWBuffer)));
+			SetFromNative(UTF8.GetPtr());
+			// Release the buffer
+			if (pWBuffer!=Buffer) {
+				Free(pWBuffer);
+			}
+			// Remove the :foo.exe extension
+			DirName();
+		}
+	}
+}
+
+/***************************************
+
+	\brief Set the filename to the local machine preferences directory
+
+	Determine the directory where the user's preferences that are
+	local to the machine is located. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format.
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void)
+{
+	Clear();
+
+	// Try the code for Vista or higher
+	Word16 *pResult = NULL;
+	Word uResult = Globals::SHGetKnownFolderPath(&FOLDERID_LocalAppData,KF_FLAG_DONT_UNEXPAND|KF_FLAG_DONT_VERIFY,NULL,&pResult);
+	if (uResult==S_OK) {
+		// All good! Use this!
+		String UTF8(pResult);
+		SetFromNative(UTF8.GetPtr());
+		// Release the pointer
+		CoTaskMemFree(pResult);
+	} else {
+
+		// Try it for Windows XP instead
+		WCHAR NameBuffer[MAX_PATH];
+		// Application system data folder (Local for Vista and Win7)
+		uResult = static_cast<Word>(SHGetFolderPathW(NULL,CSIDL_LOCAL_APPDATA,NULL,0,NameBuffer));
+		if ((uResult==S_OK) || (uResult==E_FAIL)) {
+			// Convert to UTF8
+			String MyName2(reinterpret_cast<const Word16*>(NameBuffer));
+			SetFromNative(MyName2);
+		}
+	}
+}
+
+
+/***************************************
+
+	\brief Set the filename to the user's preferences directory
+
+	Determine the directory where the user's preferences that
+	could be shared among all machines the user has an account
+	with is located. The path is converted
+	into UTF8 character encoding and stored in Burgerlib
+	filename format.
+
+	On platforms where a current working directory doesn't make sense,
+	like an ROM based system, the filename is cleared out.
+
+***************************************/
+
+void BURGER_API Burger::Filename::SetUserPrefsDirectory(void)
+{
+	Clear();
+	Word16 *pResult = NULL;
+	Word uResult = Globals::SHGetKnownFolderPath(&FOLDERID_RoamingAppData,KF_FLAG_DONT_UNEXPAND|KF_FLAG_DONT_VERIFY,NULL,&pResult);
+	if (uResult==S_OK) {
+		// All good! Use this!
+		String UTF8(pResult);
+		SetFromNative(UTF8.GetPtr());
+		// Release the pointer
+		CoTaskMemFree(pResult);
+	} else {
+
+		// Try it for Windows XP instead
+		WCHAR NameBuffer[MAX_PATH];
+		// Application data folder (Roaming for Vista and Win7)
+		uResult = static_cast<Word>(SHGetFolderPathW(NULL,CSIDL_APPDATA,NULL,0,NameBuffer));
+		if ((uResult==S_OK) || (uResult==E_FAIL)) {
+			// Convert to UTF8
+			String MyName(reinterpret_cast<const Word16*>(NameBuffer));
+			SetFromNative(MyName);
+		}
+	}
+}
+
+
+
+/***************************************
+
 	Convert a Windows path to a Burgerlib path
 	
 	Paths without a leading '\' are prefixed with
@@ -205,7 +415,7 @@ const char *Burger::Filename::GetNative(void)
 	
 ***************************************/
 
-void Burger::Filename::SetFromNative(const char *pInput)
+void BURGER_API Burger::Filename::SetFromNative(const char *pInput)
 {
 	Clear();
 
@@ -256,7 +466,7 @@ void Burger::Filename::SetFromNative(const char *pInput)
 	
 	WordPtr uOutputLength = UTF8::FromUTF16(NULL,0,reinterpret_cast<Word16*>(pExpanded))+6;
 	char *pWork = m_Filename;
-	if (uOutputLength>=BUFFERSIZE) {
+	if (uOutputLength>=sizeof(m_Filename)) {
 		pWork = static_cast<char *>(Alloc(uOutputLength));
 		if (!pWork) {
 			if (pExpanded!=ExpandedPath) {
