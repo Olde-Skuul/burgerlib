@@ -27,6 +27,7 @@
 
 # IDE droppings
 *.pdb
+*.ncb
 *.user
 *.suo
 *.opensdf

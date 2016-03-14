@@ -662,7 +662,7 @@ IDirectInput8W * BURGER_API Burger::Globals::GetDirectInput8Singleton(void)
 	// Was there already a DirectInput instance?
 	IDirectInput8W *pDirectInput8W = g_Globals.m_pDirectInput8W;
 	if (!pDirectInput8W) {
-		// Get DirectInput
+		// Get DirectInput 8
 		DirectInput8Create(g_hInstance,0x800,IID_IDirectInput8W,reinterpret_cast<void **>(&g_Globals.m_pDirectInput8W));
 		// Get the updated pointer (Or NULL)
 		pDirectInput8W = g_Globals.m_pDirectInput8W;

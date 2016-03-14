@@ -148,7 +148,9 @@ extern Word16 * BURGER_API StringCharacterReverse(const Word16 *pInput,Word uCha
 extern char * BURGER_API MemoryCharacterReverse(const char *pInput,WordPtr uInputSize,int iChar);
 extern Word16 * BURGER_API MemoryCharacterReverse(const Word16 *pInput,WordPtr uInputSize,Word uChar);
 extern char * BURGER_API StringString(const char *pInput,const char *pTest);
+extern Word16 * BURGER_API StringString(const Word16 *pInput,const Word16 *pTest);
 extern char * BURGER_API StringCaseString(const char *pInput,const char *pTest);
+extern Word16 * BURGER_API StringCaseString(const Word16 *pInput,const Word16 *pTest);
 extern char * BURGER_API NumberToAsciiHex(char *pOutput,Word8 uInput);
 extern char * BURGER_API NumberToAsciiHex(char *pOutput,Word16 uInput);
 extern char * BURGER_API NumberToAsciiHex(char *pOutput,Word32 uInput);
@@ -182,7 +184,10 @@ extern Word BURGER_API AsciiToFloat(float *pOutput,const char *pInput);
 extern double BURGER_API AsciiToDouble(const char *pInput,double dDefault);
 extern double BURGER_API AsciiToDouble(const char *pInput,double dDefault,double dMin,double dMax);
 extern Word BURGER_API AsciiToDouble(double *pOutput,const char *pInput);
+extern Word32 BURGER_API AsciiHexToInteger(const char *pInput,WordPtr uLength);
+extern Word32 BURGER_API AsciiHexToInteger(const Word16 *pInput,WordPtr uLength);
 }
+
 /* END */
 
 #endif

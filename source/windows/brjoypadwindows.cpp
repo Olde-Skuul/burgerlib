@@ -18,9 +18,15 @@
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 
 #if !defined(DOXYGEN)
+
 #ifndef DIRECTINPUT_VERSION
 #define DIRECTINPUT_VERSION 0x0800
 #endif
+
+#if !defined(_WIN32_WINNT)
+#define _WIN32_WINNT 0x0501		// Windows XP
+#endif
+
 #include "brgameapp.h"
 #include "brglobals.h"
 #include "brstringfunctions.h"
@@ -29,6 +35,7 @@
 #include <dinput.h>
 #include <dinputd.h>
 #include <Xinput.h>
+#include <WbemCli.h>
 
 // Needed for Code Warrior
 #ifndef DIDFT_OPTIONAL
@@ -37,13 +44,28 @@
 
 #define XINPUT_GAMEPAD_TRIGGER_THRESHOLD 30
 
+// Hidden value
+#ifndef XINPUT_GAMEPAD_BIGBUTTON
+#define XINPUT_GAMEPAD_BIGBUTTON 0x800
+#endif
+
 //
 // Used by the device enumerator to collect the information on devices
 //
 
-struct JoystickCallBack_t {
-	GUID *m_pGameDeviceGUID;	// Pointer to where to store the device GUIDs
+class JoystickFound {
+public:
+	GUID m_InstanceGUID;			// Located instance GUID
+	GUID m_ProductGUID;				// Located product GUID
+	Burger::String m_InstanceName;	// Name of the DirectInput instance
+	Burger::String m_ProductName;	// Name of the DirectInput device
+};
+
+class JoystickCallBack {
+public:
 	Word m_uCount;				// Number of devices found
+	Word m_bXInputFound;		// TRUE if XInput devices should be skipped
+	JoystickFound m_Joysticks[Burger::Joypad::MAXJOYSTICKS];	// Joysticks enumerated
 };
 
 //
@@ -56,6 +78,19 @@ struct JoypadRawData_t {
 	Word8 m_bButtons[Burger::Joypad::MAXBUTTONS];	///< Button data (FALSE/TRUE)
 };
 
+//
+// Known gamepads
+// TODO: Integrate automatic button mapping for known gamepads
+//
+
+#if 0
+static const GUID IID_ValveStreamingGamepad = {0x11FF28DE,0x0000,0x0000,{0x00,0x00,0x50,0x49,0x44,0x56,0x49,0x44} };
+static const GUID IID_X360WirelessGamepad = {0x02A1045E,0x0000,0x0000,{0x00,0x00,0x50,0x49,0x44,0x56,0x49,0x44} };
+static const GUID IID_X360WiredGamepad = {0x028E045E,0x0000,0x0000,{0x00,0x00,0x50,0x49,0x44,0x56,0x49,0x44} };
+static const GUID IID_GamestopWiredGamepad = {0x04010E6F,0x0000,0x0000,{0x00,0x00,0x50,0x49,0x44,0x56,0x49,0x44} };
+static const GUID IID_SNESUSBGamepad = {0x028E045E,0x0000,0x0000,{0x00,0x00,0x50,0x49,0x44,0x56,0x49,0x44} };
+#endif
+
 /***************************************
 
 	This function is called for each and every game controller device
@@ -66,17 +101,32 @@ struct JoypadRawData_t {
 static BOOL CALLBACK EnumJoysticksCallback(const DIDEVICEINSTANCEW* pdidInstance,VOID* pThis)
 {
 	// Get the return value pointer
-	JoystickCallBack_t *pJoystick = static_cast<JoystickCallBack_t *>(pThis);
-	Word uIndex = pJoystick->m_uCount;
-	// Get the GUID
-	Burger::MemoryCopy(&pJoystick->m_pGameDeviceGUID[uIndex],&pdidInstance->guidInstance,sizeof(GUID));
-	++uIndex;
-	pJoystick->m_uCount = uIndex;
-	// Stop if the maximum number of devices is reached
-	if (uIndex<Burger::Joypad::MAXJOYSTICKS) {
-		return DIENUM_CONTINUE;
+	JoystickCallBack *pJoystick = static_cast<JoystickCallBack *>(pThis);
+	BOOL bResult = DIENUM_CONTINUE;
+
+	// If XInput is present, test if the game pad is controlled by XInput
+	if (!pJoystick->m_bXInputFound || !Burger::IsDeviceXInput(&pdidInstance->guidProduct)) {
+
+		// This is a non-XInput device. Add it to my DirectInput list
+
+		Word uIndex = pJoystick->m_uCount;
+		JoystickFound *pFound = &pJoystick->m_Joysticks[uIndex];
+
+		// Get the GUIDs from the device
+		Burger::MemoryCopy(&pFound->m_InstanceGUID,&pdidInstance->guidInstance,sizeof(GUID));
+		Burger::MemoryCopy(&pFound->m_ProductGUID,&pdidInstance->guidProduct,sizeof(GUID));
+		// Convert the names to UTF-8
+		pFound->m_InstanceName.Set(static_cast<const Word16 *>(static_cast<const void *>(pdidInstance->tszInstanceName)));
+		pFound->m_ProductName.Set(static_cast<const Word16 *>(static_cast<const void *>(pdidInstance->tszProductName)));
+		++uIndex;
+		pJoystick->m_uCount = uIndex;
+
+		// Stop if the maximum number of devices is reached (To prevent overflow)
+		if (uIndex>=Burger::Joypad::MAXJOYSTICKS) {
+			bResult = DIENUM_STOP;
+		}
 	}
-	return DIENUM_STOP;
+	return bResult;
 }
 
 //
@@ -97,7 +147,7 @@ struct ObjectCallBack_t {
 /***************************************
 
 	This function is called for each and every object in a game controller device
-	It's used to count the objects and calibrate them to 0-255
+	It's used to count the objects and calibrate them to 0 through MAXAXISVALUE
 
 ***************************************/
 
@@ -130,7 +180,7 @@ static BOOL CALLBACK EnumObjectsCallback(const DIDEVICEOBJECTINSTANCEW *pObject,
 			PropertyRange.diph.dwHow = DIPH_BYID;
 			PropertyRange.diph.dwObj = pObject->dwType; // Specify the enumerated axis
 			PropertyRange.lMin = 0;
-			PropertyRange.lMax = 255;
+			PropertyRange.lMax = Burger::Joypad::MAXAXISVALUE;
 			// Set the range for the axis
 			if (pCallback->m_pDevice->SetProperty(DIPROP_RANGE,&PropertyRange.diph)<0) {
 				return DIENUM_STOP;
@@ -172,34 +222,77 @@ static BOOL CALLBACK EnumObjectsCallback(const DIDEVICEOBJECTINSTANCEW *pObject,
 
 ***************************************/
 
-Burger::Joypad::Joypad(Burger::GameApp *pAppInstance)
+Burger::Joypad::Joypad(Burger::GameApp *pAppInstance) :
+	m_pAppInstance(pAppInstance),
+	m_bDirectInputFound(FALSE),
+	m_bXInputFound(FALSE),
+	m_uDirectInputDevices(0),
+	m_uDeviceCount(0)
 {
 	pAppInstance->SetJoypad(this);
+
 	// Initialize everything
 	MemoryClear(m_Data,sizeof(m_Data));
-	m_pAppInstance = pAppInstance;
-	m_uDeviceCount = 0;
+	MemoryClear(m_XInputGamepads,sizeof(m_XInputGamepads));
+	
+	//
+	// Start allocating joypad devices here
+	//
+	JoypadData_t *pJoypadData = m_Data;
+
+	// Determine if the XInput API is available.
+	if (Globals::LoadFunctionIndex(Globals::CALL_XInputGetState)) {
+
+		// XInput was found, define the 4 controllers that it will manage
+		m_bXInputFound = TRUE;
+		m_uDeviceCount = 4;
+		Word uXInputCount = 4;
+		do {
+			pJoypadData->m_uButtonCount = 12;		// XInput manages 12 buttons
+			pJoypadData->m_uPOVCount = 1;			// One POV controller
+			pJoypadData->m_uAxisCount = 6;			// Two thumbsticks and two triggers
+			pJoypadData->m_InstanceName.Set("Gamepad for Xbox 360 (Controller)");
+			pJoypadData->m_ProductName.Set("Gamepad for Xbox 360 (Controller)");
+			//pJoypadData->m_bConnected = FALSE;
+			++pJoypadData;
+		} while (--uXInputCount);
+	}
 
 	// Initialize the main direct input interface.
+
 	IDirectInput8W* pDirectInput8W = Globals::GetDirectInput8Singleton();
 	if (pDirectInput8W) {
 
+		//
 		// Enumerate the devices, after this function, the number of gaming devices
 		// and their GUIDs are known
-		JoystickCallBack_t Joy;
-		Joy.m_pGameDeviceGUID = m_GamePadGUID;
-		Joy.m_uCount = 0;
-		HRESULT hResult = pDirectInput8W->EnumDevices(DI8DEVCLASS_GAMECTRL,EnumJoysticksCallback,&Joy,DIEDFL_ALLDEVICES);
-		if (hResult>=0 && Joy.m_uCount) {
+		//
+
+		// Construct the buffer
+		JoystickCallBack EnumeratedJoysticks;
+		EnumeratedJoysticks.m_uCount = 0;
+		EnumeratedJoysticks.m_bXInputFound = m_bXInputFound;
+
+		HRESULT hResult = pDirectInput8W->EnumDevices(DI8DEVCLASS_GAMECTRL,EnumJoysticksCallback,&EnumeratedJoysticks,DIEDFL_ALLDEVICES);
+
+		// Error? Or something found?
+		if ((hResult>=0) && EnumeratedJoysticks.m_uCount) {
 			// Initialize the direct input interface for the keyboard.
 			Word i = 0;
-			JoypadData_t *pJoypadData = m_Data;
+			JoystickFound *pFound = EnumeratedJoysticks.m_Joysticks;
 			do {
 				IDirectInputDevice8W *pJoystickDeviceLocal = NULL;
-				hResult = pDirectInput8W->CreateDevice(m_GamePadGUID[i],&pJoystickDeviceLocal,NULL);
+
+				hResult = pDirectInput8W->CreateDevice(pFound->m_InstanceGUID,&pJoystickDeviceLocal,NULL);
 				if (hResult>=0) {
 					IDirectInputDevice8W *pJoystickDevice = pJoystickDeviceLocal;
+					
 					pJoypadData->m_pJoystickDevice = pJoystickDevice;
+					MemoryCopy(&pJoypadData->m_InstanceGUID,&pFound->m_InstanceGUID,sizeof(GUID));
+					MemoryCopy(&pJoypadData->m_ProductGUID,&pFound->m_ProductGUID,sizeof(GUID));
+					pJoypadData->m_InstanceName = pFound->m_InstanceName;
+					pJoypadData->m_ProductName = pFound->m_ProductName;
+
 					hResult = pJoystickDevice->SetCooperativeLevel(pAppInstance->GetWindow(),DISCL_FOREGROUND | DISCL_EXCLUSIVE);
 					if (hResult>=0) {
 						//
@@ -224,22 +317,37 @@ Burger::Joypad::Joypad(Burger::GameApp *pAppInstance)
 								pJoypadData->m_uButtonCount=Object.m_uButtonCount;
 								pJoypadData->m_uPOVCount=Object.m_uPOVCount;
 								pJoypadData->m_uAxisCount=Object.m_uAxisCount;
-								pAppInstance->AddRoutine(Poll,this,RunQueue::PRIORITY_JOYPAD);
 							}
 						}
 					}
+					++pJoypadData;
 				}
-				++pJoypadData;
-			} while (++i<Joy.m_uCount);
-			m_uDeviceCount = i;
-			Word j = 0;
-			do {
-				Word k = 0;
-				do {
-					SetDigital(j,k);		// Create the digital bounds
-				} while (++k<MAXAXIS);
-			} while (++j<i);
+				++pFound;
+			} while (++i<EnumeratedJoysticks.m_uCount);
+			m_uDeviceCount += i;
+			m_uDirectInputDevices = i;
+			m_bDirectInputFound = TRUE;
 		}
+	}
+
+	//
+	// All input devices have been logged.
+	//
+
+
+	// Create the digital bounds for all devices
+	Word j = 0;
+	do {
+		Word k = 0;
+		do {
+			SetDigital(j,k);
+		} while (++k<MAXAXIS);
+	} while (++j<MAXJOYSTICKS);
+
+	// Install the background task if any devices were found
+
+	if (m_bXInputFound || m_bDirectInputFound) {
+		pAppInstance->AddRoutine(Poll,this,RunQueue::PRIORITY_JOYPAD);
 	}
 }
 
@@ -251,8 +359,13 @@ Burger::Joypad::Joypad(Burger::GameApp *pAppInstance)
 
 Burger::Joypad::~Joypad()
 {
+	// Disconnect from the parent
 	m_pAppInstance->SetJoypad(NULL);
 	m_pAppInstance->RemoveRoutine(Poll,this);
+
+	// Make sure the controllers are not rumbling
+	XInputStopRumbleOnAllControllers();
+
 	JoypadData_t *pJoypadData = m_Data;
 	Word i = 0;
 	do {
@@ -269,19 +382,167 @@ Burger::Joypad::~Joypad()
 
 /***************************************
 
-	Poll the game device
+	Poll the game devices
 
 ***************************************/
 
 Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 {
 	Joypad *pThis = static_cast<Joypad *>(pData);
-	Word i = pThis->m_uDeviceCount;
-	if (i) {
-		JoypadData_t *pJoypadData = pThis->m_Data;
+
+	// Start data scanning here
+
+	JoypadData_t *pJoypadData = pThis->m_Data;
+
+	// Handle XInput devices first
+
+	if (pThis->m_bXInputFound) {
+		Word uWhich = 0;
 		do {
+			XINPUT_STATE State;
+			// Test if this was an insertion or removal and report it
+			// Get the old and new states
+
+			Word bIsConnected = (Globals::XInputGetState(uWhich,&State) == ERROR_SUCCESS);
+			Word bWasConnected = pJoypadData->m_bConnected;
+
+			// Save off the states as to how they were processed
+			pJoypadData->m_bConnected = static_cast<Word8>(bIsConnected);
+			pJoypadData->m_bRemoved = static_cast<Word8>(bWasConnected & (bIsConnected^1));
+			pJoypadData->m_bInserted = static_cast<Word8>((bWasConnected^1) & bIsConnected);
+
+			if (bIsConnected) {
+				Word32 uButtons;
+				Word uXBoxButtons = State.Gamepad.wButtons;
+
+				// The code is the "right" way to do it, but it has
+				// too many branches. The code that follows assumes
+				// the equates never change, so it uses bit twiddling instead
+
+#if (XINPUT_GAMEPAD_DPAD_LEFT==4) && (XINPUT_GAMEPAD_DPAD_RIGHT==8) && (XINPUT_GAMEPAD_DPAD_UP==1) && (XINPUT_GAMEPAD_DPAD_DOWN==2)
+				uButtons = ((uXBoxButtons&(XINPUT_GAMEPAD_DPAD_LEFT|XINPUT_GAMEPAD_DPAD_RIGHT))<<6U);	// Bits 8-9
+				uButtons += ((uXBoxButtons&(XINPUT_GAMEPAD_DPAD_UP|XINPUT_GAMEPAD_DPAD_DOWN))<<10U);		// Bits 10-11
+
+				uButtons += (uXBoxButtons&(XINPUT_GAMEPAD_A|XINPUT_GAMEPAD_B|XINPUT_GAMEPAD_X|XINPUT_GAMEPAD_Y));	// Bits 12-15
+				uButtons += ((uXBoxButtons&(XINPUT_GAMEPAD_LEFT_SHOULDER|XINPUT_GAMEPAD_RIGHT_SHOULDER))<<8U);		// Bits 16-17
+				uButtons += ((uXBoxButtons&(XINPUT_GAMEPAD_BACK))<<13U);		// Bit 18
+				uButtons += ((uXBoxButtons&(XINPUT_GAMEPAD_START))<<15U);		// Bit 19
+				uButtons += ((uXBoxButtons&(XINPUT_GAMEPAD_LEFT_THUMB|XINPUT_GAMEPAD_RIGHT_THUMB))<<14U);			// Bits 20-21
+				uButtons += ((uXBoxButtons&(XINPUT_GAMEPAD_BIGBUTTON))<<11);	// Bit 22
+#else
+				uButtons = 0;
+				// The equates have changed! Use the safe code
+				if (uXBoxButtons&XINPUT_GAMEPAD_DPAD_LEFT) {
+					uButtons = POVLEFT;
+				}
+				if (uXBoxButtons&XINPUT_GAMEPAD_DPAD_RIGHT) {
+					uButtons |= POVRIGHT;
+				}
+				if (uXBoxButtons&XINPUT_GAMEPAD_DPAD_UP) {
+					uButtons |= POVUP;
+				}
+				if (uXBoxButtons&XINPUT_GAMEPAD_DPAD_DOWN) {
+					uButtons |= POVDOWN;
+				}
+
+				if (uXBoxButtons&XINPUT_GAMEPAD_A) {
+					uButtons |= BUTTON1;
+				}
+				if (uXBoxButtons&XINPUT_GAMEPAD_B) {
+					uButtons |= BUTTON2;
+				}
+				if (uXBoxButtons&XINPUT_GAMEPAD_X) {
+					uButtons |= BUTTON3;
+				}
+				if (uXBoxButtons&XINPUT_GAMEPAD_Y) {
+					uButtons |= BUTTON4;
+				}
+				if (uXBoxButtons&XINPUT_GAMEPAD_LEFT_SHOULDER) {
+					uButtons |= BUTTON5;
+				}
+				if (uXBoxButtons&XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+					uButtons |= BUTTON6;
+				}
+				if (uXBoxButtons&XINPUT_GAMEPAD_BACK) {
+					uButtons |= BUTTON7;
+				}
+				if (uXBoxButtons&XINPUT_GAMEPAD_START) {
+					uButtons |= BUTTON8;
+				}
+				if (uXBoxButtons&XINPUT_GAMEPAD_LEFT_THUMB) {
+					uButtons |= BUTTON9;
+				}
+				if (uXBoxButtons&XINPUT_GAMEPAD_RIGHT_THUMB) {
+					uButtons |= BUTTON10;
+				}
+				if (uXBoxButtons&XINPUT_GAMEPAD_BIGBUTTON) {
+					uButtons |= BUTTON11;
+				}
+#endif
+
+				// Convert analog directions to digital info
+				const JoypadRange_t *pJoypadRange = pJoypadData->m_uAxisDigitalRanges;
+
+				Word uTemp = static_cast<Word16>(State.Gamepad.sThumbLY)^0x8000U;
+				pJoypadData->m_uAxis[0] = uTemp;
+				if (uTemp<pJoypadRange[0].m_uMin) {		// Test X axis
+					uButtons += AXIS1MIN;
+				}
+				if (uTemp>=pJoypadRange[0].m_uMax) {
+					uButtons += AXIS1MAX;
+				}
+
+				// Test Y axis
+				uTemp = static_cast<Word16>(State.Gamepad.sThumbLX)^0x8000U;
+				pJoypadData->m_uAxis[1] = uTemp;
+				if (uTemp<pJoypadRange[1].m_uMin) {
+					uButtons += AXIS2MIN;
+				}
+				if (uTemp>=pJoypadRange[1].m_uMax) {
+					uButtons += AXIS2MAX;
+				}
+
+				uTemp = static_cast<Word16>(State.Gamepad.sThumbRY)^0x8000U;
+				pJoypadData->m_uAxis[2] = uTemp;
+				if (uTemp<pJoypadRange[2].m_uMin) {		/* Test X axis */
+					uButtons += AXIS3MIN;
+				}
+				if (uTemp>=pJoypadRange[2].m_uMax) {
+					uButtons += AXIS3MAX;
+				}
+				// Test Y axis
+				uTemp = static_cast<Word16>(State.Gamepad.sThumbRX)^0x8000U;
+				pJoypadData->m_uAxis[3] = uTemp;
+				if (uTemp<pJoypadRange[3].m_uMin) {
+					uButtons += AXIS4MIN;
+				}
+				if (uTemp>=pJoypadRange[3].m_uMax) {
+					uButtons += AXIS4MAX;
+				}
+
+				pJoypadData->m_uAxis[4] = (static_cast<Word32>(State.Gamepad.bLeftTrigger)<<8U)+State.Gamepad.bLeftTrigger;
+				pJoypadData->m_uAxis[5] = (static_cast<Word32>(State.Gamepad.bRightTrigger)<<8U)+State.Gamepad.bRightTrigger;
+
+				// Store the button states
+				Word32 uCache = (pJoypadData->m_uButtonState ^ uButtons)&uButtons;
+				pJoypadData->m_uButtonStatePressed |= uCache;
+				pJoypadData->m_uButtonState = uButtons;
+			}
+			++pJoypadData;
+		} while (++uWhich<4);
+	}
+
+	//
+	// Poll all of the DirectInput devices
+
+	Word i = pThis->m_uDirectInputDevices;
+	if (i) {
+		do {
+			// Only poll if it's initialized
 			IDirectInputDevice8W *pJoystickDevice = pJoypadData->m_pJoystickDevice;
 			if (pJoystickDevice) {
+
+				// Ask DirectInput to read the data
 				HRESULT hResult = pJoystickDevice->Poll();
 				// If it failed, it's possible that it was not acquired
 				if (hResult<0) {
@@ -363,12 +624,25 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 	return RunQueue::OKAY;
 }
 
+/*! ************************************
+
+	\brief Acquire DirectInput joystick devices
+
+	When the application gains focus, call this function to acquire the joysticks
+
+	Burgerlib does this call automatically.
+
+	\windowsonly
+	
+***************************************/
+
 void BURGER_API Burger::Joypad::Acquire(void)
 {
 	Word i = m_uDeviceCount;
 	if (i) {
 		JoypadData_t *pJoypadData = m_Data;
 		do {
+			// Only acquire devices marked as DirectInput
 			IDirectInputDevice8W *pJoystickDevice = pJoypadData->m_pJoystickDevice;
 			if (pJoystickDevice) {
 				pJoystickDevice->Acquire();
@@ -378,12 +652,25 @@ void BURGER_API Burger::Joypad::Acquire(void)
 	}
 }
 
+/*! ************************************
+
+	\brief Unacquire DirectInput joystick devices
+
+	When the application loses focus, call this function to release the joysticks
+
+	Burgerlib does this call automatically.
+
+	\windowsonly
+	
+***************************************/
+
 void BURGER_API Burger::Joypad::Unacquire(void)
 {
 	Word i = m_uDeviceCount;
 	if (i) {
 		JoypadData_t *pJoypadData = m_Data;
 		do {
+			// Only release devices marked as DirectInput
 			IDirectInputDevice8W *pJoystickDevice = pJoypadData->m_pJoystickDevice;
 			if (pJoystickDevice) {
 				pJoystickDevice->Unacquire();
@@ -597,5 +884,232 @@ Word BURGER_API Burger::XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInp
 	return uResult;
 }
 
+/*! ************************************
 
+	\brief Test if a device GUID belongs to an XInput device
+
+	To allow DirectInput and XInput to work side-by-side, all devices
+	that are supported by XInput should be ignored when enumerated for
+	DirectInput control.
+
+	Given a GUID of a device, test the Plug and Play (PNP) device ID
+	if it contains the substring "IG_", because if it does, it's
+	an XInput supported device.
+
+	\note This code is compatible with Windows XP, however it does
+	follow Microsoft's recommendation of using an IWbemLocator
+	if the code detects it's running on Windows Vista or later.
+
+	\windowsonly
+
+	\return \ref FALSE if the device is not supported by XInput, \ref TRUE if so.
+	
+***************************************/
+
+Word BURGER_API Burger::IsDeviceXInput(const GUID *pGuid)
+{
+	// Assume it's not an XInput device
+	Word bResult = FALSE;
+
+	// Microsoft recommends using WbemLocator for finding devices that are using XInput,
+	// however, this requires Vista or higher
+
+	if (Globals::IsVistaOrGreater()) {
+		// Start up CoInitialize() to allow creating instances
+		Word bCleanupCOM = (CoInitialize(NULL)>=0);
+
+		// Create WMI
+		IWbemLocator *pIWbemLocator = NULL;
+		if ((CoCreateInstance(CLSID_WbemLocator,NULL,CLSCTX_INPROC_SERVER,IID_IWbemLocator,(LPVOID*)&pIWbemLocator)>=0) && 
+			pIWbemLocator) {
+   
+			// Connect to WMI 
+			IWbemServices *pIWbemServices = NULL;
+			if ((pIWbemLocator->ConnectServer((const BSTR)(L"\\\\.\\root\\cimv2"),NULL,NULL,NULL,0,NULL,NULL,&pIWbemServices)>=0) &&
+				pIWbemServices) {
+
+				// Switch security level to IMPERSONATE. 
+				CoSetProxyBlanket(pIWbemServices,RPC_C_AUTHN_WINNT,RPC_C_AUTHZ_NONE,NULL,
+					RPC_C_AUTHN_LEVEL_CALL,RPC_C_IMP_LEVEL_IMPERSONATE,NULL,EOAC_NONE);                    
+
+				// Get the PNPEntity list
+				IEnumWbemClassObject *pEnumDevices = NULL;
+				if ((pIWbemServices->CreateInstanceEnum((const BSTR)(L"Win32_PNPEntity"),0,NULL,&pEnumDevices)>=0) &&
+					pEnumDevices) {
+				
+					// Array of devices
+					IWbemClassObject *DevicePointers[20];
+					ULONG uDevice;
+				
+					// Loop over all devices
+					do {
+ 						// Get 20 at a time
+						ULONG uReturned;
+						MemoryClear(DevicePointers,sizeof(DevicePointers));
+						if ((pEnumDevices->Next(10000,BURGER_ARRAYSIZE(DevicePointers),DevicePointers,&uReturned)<0) ||
+							!uReturned) {
+							// Error, or ran out of devices
+							break;
+						}
+
+						// Iterate the group of devices obtained
+						uDevice = 0;
+						do {
+							// For each device, get its device ID
+							VARIANT MyVariant;
+							if ((DevicePointers[uDevice]->Get((const BSTR)(L"DeviceID"),0,&MyVariant,NULL,NULL)>=0) &&
+								(MyVariant.vt == VT_BSTR)) {
+
+								const Word16 *pVariantName = reinterpret_cast<const Word16 *>(MyVariant.bstrVal);
+								if (pVariantName) {
+									// Check if the device ID contains "IG_".  If it does, then it's an XInput device
+									// This information can not be found from DirectInput
+
+									if (StringString(pVariantName,(const Word16 *)L"IG_")) {
+
+										// If it does, then get the VID/PID from var.bstrVal
+										Word32 uFoundVendorID = 0;
+										const Word16 *pFound = StringString(pVariantName,(const Word16 *)L"VID_");
+										if (pFound) {
+											uFoundVendorID = AsciiHexToInteger(pFound+4,4);
+										}
+										Word32 uFoundPeripheralID = 0;
+										pFound = StringString(pVariantName,(const Word16 *)L"PID_" );
+										if (pFound) {
+											uFoundPeripheralID = AsciiHexToInteger(pFound+4,4);
+										}
+
+										// Check the Peripheral ID to the one in the GUID
+										Word32 uVIDPID = (uFoundVendorID&0xFFFF) + (uFoundPeripheralID<<16);
+										if (uVIDPID == pGuid->Data1) {
+											// Paydirt!
+											bResult = TRUE;
+											break;
+										}
+									}
+								}
+							}   
+							if (DevicePointers[uDevice]) {
+								DevicePointers[uDevice]->Release();
+								DevicePointers[uDevice] = NULL;
+							}
+						} while (++uDevice<uReturned);
+					} while (!bResult);
+
+					//
+					// Clean up any stragglers
+					//
+
+					uDevice = 0;
+					do {
+						if (DevicePointers[uDevice]) {
+							DevicePointers[uDevice]->Release();
+							//DevicePointers[uDevice] = NULL;
+						}
+					} while (++uDevice<BURGER_ARRAYSIZE(DevicePointers));
+				}
+
+				//
+				// Clean up the device list
+				//
+				if (pEnumDevices) {
+					pEnumDevices->Release();
+					//pEnumDevices = NULL;
+				}
+			}
+
+			//
+			// Clean up the services
+			//
+
+			if (pIWbemServices) {
+				pIWbemServices->Release();
+				//pIWbemServices = NULL;
+			}
+		}
+
+		//
+		// Clean up the locater
+		//
+
+		if (pIWbemLocator) {
+			pIWbemLocator->Release();
+			//pIWbemLocator = NULL;
+		}
+
+		//
+		// If CoInitialize() was successful, release it
+		//
+		if (bCleanupCOM) {
+			CoUninitialize();
+		}
+	} else {
+
+		//
+		// This is compatible with Windows XP
+		// Note to self, don't EVER trust sample code from a Microsoft web site. They
+		// will LIE to you about whether a piece of code (See above) would work
+		// on older versions of Windows.
+		//
+
+		UINT uDeviceCount;
+
+		// Get the device count from the raw device list
+
+		if (!GetRawInputDeviceList(NULL,&uDeviceCount,sizeof(RAWINPUTDEVICELIST)) && uDeviceCount) {
+
+			// Make a buffer for the list
+			RAWINPUTDEVICELIST *pList = static_cast<RAWINPUTDEVICELIST *>(Alloc(sizeof(RAWINPUTDEVICELIST)*uDeviceCount));
+			if (pList) {
+
+				// Read in the list and continue if the list has anything
+				if (GetRawInputDeviceList(pList,&uDeviceCount,sizeof(RAWINPUTDEVICELIST))!=BURGER_MAXUINT) {
+
+					// Iterate over the list
+
+					Word16 DeviceName[256];
+					RID_DEVICE_INFO RawDeviceInfo;
+					RawDeviceInfo.cbSize = sizeof(RawDeviceInfo);
+
+					const RAWINPUTDEVICELIST *pWorkList = pList;
+					Word i = uDeviceCount;
+					do {
+
+						// Only test HID devices
+						if (pWorkList->dwType == RIM_TYPEHID) {
+
+							// Get the device information
+							UINT uSize = sizeof(RawDeviceInfo);
+							if (GetRawInputDeviceInfoW(pWorkList->hDevice,RIDI_DEVICEINFO,&RawDeviceInfo,&uSize)!=BURGER_MAXUINT) {
+
+								// Is this device a match for the GUID?
+								if ((RawDeviceInfo.hid.dwVendorId == (pGuid->Data1&0xFFFF)) &&
+									(RawDeviceInfo.hid.dwProductId == (pGuid->Data1>>16))) {
+
+									// Now comes the moment of truth. Get the driver's name
+									uSize = BURGER_ARRAYSIZE(DeviceName);
+									if (GetRawInputDeviceInfoW(pWorkList->hDevice,RIDI_DEVICENAME,DeviceName,&uSize)!=BURGER_MAXUINT) {
+										// XInput device?
+										if (StringString(DeviceName,(const Word16 *)L"IG_")) {
+											// Gotcha!
+											bResult = TRUE;
+										}
+									}
+									// Exit the loop now, because the device was found.
+									break;
+								}
+							}
+						}
+						++pWorkList;
+					} while (--i);
+				}
+				Free(pList);
+			}
+		}
+	}
+
+	// Return TRUE or FALSE if found
+
+	return bResult;
+}
 #endif

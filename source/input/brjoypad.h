@@ -26,12 +26,17 @@
 #include "brguid.h"
 #endif
 
+#ifndef __BRSTRING_H__
+#include "brstring.h"
+#endif
+
 #if defined(BURGER_WINDOWS) && !defined(__BRWINDOWSTYPES_H__)
 #include "brwindowstypes.h"
 #endif
 
 /* BEGIN */
 namespace Burger {
+
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 struct XInputGamePad_t {
 	float m_fThumbLX;			///< Left thumbstick X -1.0f to 1.0f
@@ -59,8 +64,11 @@ enum eXInputDeadZoneType {
 };
 extern Word BURGER_API XInputStopRumbleOnAllControllers(void);
 extern Word BURGER_API XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInputGamePad,eXInputDeadZoneType uDeadZoneType=XINPUTDEADZONE_NONE);
+extern Word BURGER_API IsDeviceXInput(const GUID *pGuid);
 #endif
+
 class Joypad {
+	BURGER_DISABLECOPYCONSTRUCTORS(Joypad);
 public:
 	enum {
 		AXIS1MIN=0x1,			///< Joystick Axis 1 minimum motion button
@@ -97,22 +105,23 @@ public:
 		BUTTON20=0x80000000		///< 20th joystick button
 	};
 	enum {
-		MAXAXIS=6,			///< Maximum number of joystick axises
-#if defined(BURGER_XBOX360) || defined(BURGER_PS3)
-		MAXJOYSTICKS=4,		///< 4 joystick ports on the Xbox 360 and PS3
+		MAXAXIS=6,				///< Maximum number of joystick axises
+#if defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || defined(BURGER_PS3) || defined(BURGER_PS4)
+		MAXJOYSTICKS=4,			///< 4 joystick ports on the Xbox 360, Xbox ONE, PS3 and PS4
 #else
-		MAXJOYSTICKS=8,		///< Maximum number of simultaneous joysticks
+		MAXJOYSTICKS=8,			///< Maximum number of simultaneous joysticks
 #endif
-		MAXBUTTONS=20,		///< Maximum number of button controls
-		MAXPOV=1,			///< Maximum number of POV controllers
-		MAXAXISVALUE=255,	///< Maximum Axis value
-		POVANALOGFORWARD=0,		///< POV Forward value
-		POVANALOGRIGHT=9000,	///< POV Right value
+		MAXBUTTONS=20,				///< Maximum number of button controls
+		MAXPOV=1,					///< Maximum number of POV controllers
+		CENTERAXISVALUE=32768,		///< Axis value when centered
+		MAXAXISVALUE=65535,			///< Maximum Axis value
+		POVANALOGFORWARD=0,			///< POV Forward value
+		POVANALOGRIGHT=9000,		///< POV Right value
 		POVANALOGBACKWARD=18000,	///< POV Backward value
 		POVANALOGLEFT=27000,		///< POV Left value
-		MAXPOVVALUE=36000,	///< Maximum POV value
+		MAXPOVVALUE=36000,			///< Maximum POV value
 		INVALIDPOVVALUE=0xFFFFFFFF,	///< Invalid POV value
-		POV_SLOP=1500		///< Slop value for POV to digital conversion (15 degrees)
+		POV_SLOP=1500				///< Slop value for POV to digital conversion (15 degrees)
 	};
 	struct JoypadRange_t {
 		Word m_uMin;					///< Minimum value for a digital \ref TRUE
@@ -121,8 +130,14 @@ public:
 	struct JoypadData_t {
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 		IDirectInputDevice8W* m_pJoystickDevice;	///< DirectInput Device reference (WINDOWS only)
+		GUID m_InstanceGUID;						///< DirectInput Device instance GUID (WINDOWS only)
+		GUID m_ProductGUID;							///< DirectInput Device product GUID (WINDOWS only)
+		String m_InstanceName;						///< Name of the device instance UTF-8 encoded (WINDOWS only)
+		String m_ProductName;						///< Name of the device UTF-8 encoded (WINDOWS only)
 #endif
-		Word m_bActive;					///< \ref TRUE if it's active and/or plugged in
+		Word m_bConnected;				///< \ref TRUE If the game pad is currently connected
+		Word m_bInserted;				///< \ref TRUE if the game pad was inserted during the last update
+		Word m_bRemoved;				///< \ref TRUE if the game pad was removed during the last update
 		Word m_uButtonCount;			///< Number of buttons on this joypad
 		Word m_uPOVCount;				///< Number of POV units on this joypad
 		Word m_uAxisCount;				///< Number of Axis units on this joypad
@@ -133,24 +148,26 @@ public:
 		JoypadRange_t m_uAxisDigitalRanges[MAXAXIS];	///< Digital ranges
 	};
 private:
-	static RunQueue::eReturnCode BURGER_API Poll(void *pData);
-	Joypad(Joypad const &);						///< Prevent copying
-	Joypad & operator = (Joypad const &);			///< Prevent copying
 	GameApp *m_pAppInstance;							///< Application instances
 #if defined(BURGER_WINDOWS)
-	GUID m_GamePadGUID[MAXJOYSTICKS];					///< GUIDs for each joystick device
+	XInputGamePad_t m_XInputGamepads[4];				///< Structures for each XInput device
+	Word m_bDirectInputFound;							///< DirectInput devices found
+	Word m_bXInputFound;								///< XInput devices found
+	Word m_uDirectInputDevices;							///< Number of devices found from DirectInput, not managed by XInput
 #endif
 	JoypadData_t m_Data[MAXJOYSTICKS];					///< Current input data from game devices
 	Word m_uDeviceCount;								///< Number of game controller drivers found				
+
 public:
 	Joypad(GameApp *pAppInstance);
 	~Joypad();
-	Word32 ReadButtons(Word uWhich) const;
-	Word ReadAbsolute(Word uWhich,Word uAxis) const;
-	int ReadDelta(Word uWhich,Word uAxis) const;
-	Word GetAxisCount(Word uWhich) const;
-	void SetDigital(Word uWhich,Word uAxis,Word uPercent=20);
+	Word32 BURGER_API ReadButtons(Word uWhich) const;
+	Word BURGER_API ReadAbsolute(Word uWhich,Word uAxis) const;
+	int BURGER_API ReadDelta(Word uWhich,Word uAxis) const;
+	Word BURGER_API GetAxisCount(Word uWhich) const;
+	void BURGER_API SetDigital(Word uWhich,Word uAxis,Word uPercent=20);
 	BURGER_INLINE Word GetDeviceCount(void) const { return m_uDeviceCount; }
+	static RunQueue::eReturnCode BURGER_API Poll(void *pData);
 #if defined(BURGER_WINDOWS)
 	void BURGER_API Acquire(void);
 	void BURGER_API Unacquire(void);

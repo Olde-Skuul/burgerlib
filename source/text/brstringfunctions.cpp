@@ -4363,7 +4363,7 @@ Word16 * BURGER_API Burger::MemoryCharacterReverse(const Word16 *pInput,WordPtr 
 	\param pTest Pointer to the substring to look for
 	\return \ref NULL if substring was not found or the pointer to the first matching string
 
-	\sa Burger::StringCaseString()
+	\sa Burger::StringCaseString(const char *,const char *)
 
 ***************************************/
 
@@ -4397,6 +4397,53 @@ char *BURGER_API Burger::StringString(const char *pInput,const char *pTest)
 
 /*! ************************************
 
+	\brief Locate a substring (UTF-16 version)
+
+	Returns a pointer to the first occurrence of pTest in pInput,
+	or a \ref NULL pointer if pTest is not part of pInput.
+
+	The matching process does not include the terminating null-characters,
+	but it stops there.
+
+	\param pInput Pointer to the string to scan
+	\param pTest Pointer to the substring to look for
+	\return \ref NULL if substring was not found or the pointer to the first matching string
+
+	\sa Burger::StringCaseString(const Word16 *,const Word16 *)
+
+***************************************/
+
+Word16 *BURGER_API Burger::StringString(const Word16 *pInput,const Word16 *pTest)
+{
+	// Get the first character
+	Word uTemp = pInput[0];
+	if (uTemp) {						// Do I even bother?
+		do {
+			WordPtr i = 0;					// Init the index
+			Word uTemp2;
+			do {
+				// Get the first char of the test string
+				uTemp2 = pTest[i];
+				if (!uTemp2) {					// Match?
+					return const_cast<Word16 *>(pInput);		// I matched here!
+				}
+				// Get the source string
+				uTemp = pInput[i];
+				++i;							// Ack the char
+			} while (uTemp == uTemp2);			// Match?
+			++pInput;							// Next main string char
+			// Next entry
+			uTemp = pInput[0];
+			// Source string still ok?
+		} while (uTemp);
+	}
+	// No string match
+	return NULL;
+}
+
+
+/*! ************************************
+
 	\brief Locate a substring, case insensitive
 
 	Returns a pointer to the first occurrence of pTest in pInput,
@@ -4409,11 +4456,11 @@ char *BURGER_API Burger::StringString(const char *pInput,const char *pTest)
 	\param pTest Pointer to the substring to look for
 	\return \ref NULL if substring was not found or the pointer to the first matching string
 
-	\sa Burger::StringString()
+	\sa Burger::StringString(const char *,const char *)
 
 ***************************************/
 
-char *BURGER_API Burger::StringCaseString(const char *pInput, const char *pTest)
+char *BURGER_API Burger::StringCaseString(const char *pInput,const char *pTest)
 {
 	// Get the first character
 	Word uTemp = reinterpret_cast<const Word8 *>(pInput)[0];
@@ -4440,6 +4487,58 @@ char *BURGER_API Burger::StringCaseString(const char *pInput, const char *pTest)
 			++pInput;							// Next main string char
 			// Next entry
 			uTemp = reinterpret_cast<const Word8 *>(pInput)[0];
+			// Source string still ok?
+		} while (uTemp);
+	}
+	// No string match
+	return NULL;
+}
+
+/*! ************************************
+
+	\brief Locate a substring, case insensitive (UTF-16 version)
+
+	Returns a pointer to the first occurrence of pTest in pInput,
+	or a \ref NULL pointer if pTest is not part of pInput.
+
+	The case insensitive matching process does not include the terminating null-characters,
+	but it stops there.
+
+	\param pInput Pointer to the string to scan
+	\param pTest Pointer to the substring to look for
+	\return \ref NULL if substring was not found or the pointer to the first matching string
+
+	\sa Burger::StringString(const Word16 *,const Word16 *)
+
+***************************************/
+
+Word16 *BURGER_API Burger::StringCaseString(const Word16 *pInput,const Word16 *pTest)
+{
+	// Get the first character
+	Word uTemp = pInput[0];
+	if (uTemp) {						// Do I even bother?
+		do {
+			WordPtr i = 0;					// Init the index
+			Word uTemp2;
+			do {
+				// Get the first char of the test string
+				uTemp2 = pTest[i];
+				if (!uTemp2) {					// Match?
+					return const_cast<Word16 *>(pInput);		// I matched here!
+				}
+				// Get the source string
+				uTemp = pInput[i];
+				++i;							// Ack the char
+				if (uTemp2>='A' && uTemp2<='Z') {	// Convert to lower case
+					uTemp2 += 32;
+				}
+				if (uTemp>='A' && uTemp<='Z') {	// Convert to lower case
+					uTemp += 32;
+				}
+			} while (uTemp == uTemp2);			// Match?
+			++pInput;							// Next main string char
+			// Next entry
+			uTemp = pInput[0];
 			// Source string still ok?
 		} while (uTemp);
 	}
@@ -6640,4 +6739,94 @@ Word BURGER_API Burger::AsciiToDouble(double *pOutput,const char *pInput)
 	}
 	pOutput[0] = dOutput;
 	return uResult;		// Return the result
+}
+
+/*! ************************************
+
+	\brief Convert hex ASCII string to an integer
+
+	Scan a hex string and return a 32 bit unsigned integer
+
+	Parsing ends either when characters are exhausted of if a non-ASCII
+	character is found. Overflow returns \ref BURGER_MAXUINT
+
+	\param pInput Pointer to the ASCII string
+	\param uLength Length of the string in bytes
+	\return 0 if the string is invalid, or the hex value
+	\sa AsciiHexToInteger(const Word16 *,WordPtr)
+
+***************************************/
+
+Word32 BURGER_API Burger::AsciiHexToInteger(const char *pInput,WordPtr uLength)
+{
+	Word32 uResult = 0;
+	// Input valid?
+	if (pInput && uLength) {
+		do {
+			// Look up the character
+			Word32 uValue16 = g_AsciiToWord8Table[reinterpret_cast<const Word8 *>(pInput)[0]];
+			// Not 0-9, A-F?
+			if (uValue16>=16) {
+				// Exit
+				break;
+			}
+			++pInput;
+			// Overflow?
+			if (uResult>=0x10000000) {
+				uResult = BURGER_MAXUINT;		// Tilt
+				break;
+			}
+			// Fold in the number
+			uResult = (uResult<<4U)+uValue16;
+		} while (--uLength);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Convert hex UTF-16 string to an integer
+
+	Scan a hex string and return a 32 bit unsigned integer
+
+	Parsing ends either when characters are exhausted of if a non-ASCII
+	character is found. Overflow returns \ref BURGER_MAXUINT
+
+	\param pInput Pointer to the UTF-16 string
+	\param uLength Length of the string in bytes
+	\return 0 if the string is invalid, or the hex value
+	\sa AsciiHexToInteger(const char *,WordPtr)
+
+***************************************/
+
+Word32 BURGER_API Burger::AsciiHexToInteger(const Word16 *pInput,WordPtr uLength)
+{
+	Word32 uResult = 0;
+	// Input valid?
+	if (pInput && uLength) {
+		do {
+			// Get a character
+			Word uTemp = pInput[0];
+			// End now?
+			if (uTemp>=256) {
+				break;
+			}
+			// Look up the character
+			Word32 uValue16 = g_AsciiToWord8Table[uTemp];
+			// Not 0-9, A-F?
+			if (uValue16>=16) {
+				// Exit
+				break;
+			}
+			++pInput;
+			// Overflow?
+			if (uResult>=0x10000000) {
+				uResult = BURGER_MAXUINT;		// Tilt
+				break;
+			}
+			// Fold in the number
+			uResult = (uResult<<4U)+uValue16;
+		} while (--uLength);
+	}
+	return uResult;
 }

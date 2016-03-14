@@ -2,7 +2,7 @@
 
 	Joypad/joystick Manager
 	
-	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -77,7 +77,7 @@ Burger::Joypad::~Joypad()
 
 ***************************************/
 
-Word32 Burger::Joypad::ReadButtons(Word uWhich) const
+Word32 BURGER_API Burger::Joypad::ReadButtons(Word uWhich) const
 {
 	Word32 uButtons = 0;
 	if (uWhich<m_uDeviceCount) {
@@ -93,7 +93,7 @@ Word32 Burger::Joypad::ReadButtons(Word uWhich) const
 
 	Get information from the device and axis of a joystick and return
 	the value of the axis at this moment in time. The value returned is 0
-	to 255 with 0 being left/up and 255 being right/down.
+	to 65535 with 0 being left/up and 65535 being right/down.
 
 	Since reading a joystick may be slow, the function Poll() will
 	actually perform the read and keep all the data in a cache so that the
@@ -112,9 +112,9 @@ Word32 Burger::Joypad::ReadButtons(Word uWhich) const
 
 ***************************************/
 
-Word Burger::Joypad::ReadAbsolute(Word uWhich,Word uAxis) const
+Word BURGER_API Burger::Joypad::ReadAbsolute(Word uWhich,Word uAxis) const
 {
-	Word uResult = 128;
+	Word uResult = CENTERAXISVALUE;
 	// Bounds check
 	if (uWhich<m_uDeviceCount) {
 		const JoypadData_t *pJoypadData = &m_Data[uWhich];
@@ -131,8 +131,8 @@ Word Burger::Joypad::ReadAbsolute(Word uWhich,Word uAxis) const
 	\brief Read an analog joystick axis as delta
 
 	Get information from the device and axis of a joystick and return
-	the value of the axis at this moment in time. The value returned is -128
-	to 127 with -128 being left/up and 127 being right/down.
+	the value of the axis at this moment in time. The value returned is -32768
+	to 32767 with -32768 being left/up and 32767 being right/down.
 
 	Since reading a joystick may be slow, the function Poll(Word) will
 	actually perform the read and keep all the data in a cache so that the
@@ -147,10 +147,10 @@ Word Burger::Joypad::ReadAbsolute(Word uWhich,Word uAxis) const
 
 ***************************************/
 
-int Burger::Joypad::ReadDelta(Word uWhich,Word uAxis) const
+int BURGER_API Burger::Joypad::ReadDelta(Word uWhich,Word uAxis) const
 {
 	// Convert absolute value to signed offset
-	return static_cast<int>(ReadAbsolute(uWhich,uAxis))-128;
+	return static_cast<int>(ReadAbsolute(uWhich,uAxis))-CENTERAXISVALUE;
 }
 
 /*! ************************************
@@ -166,7 +166,7 @@ int Burger::Joypad::ReadDelta(Word uWhich,Word uAxis) const
 
 ***************************************/
 
-Word Burger::Joypad::GetAxisCount(Word uWhich) const
+Word BURGER_API Burger::Joypad::GetAxisCount(Word uWhich) const
 {
 	Word uResult = 0;
 	// Bounds check
@@ -195,7 +195,7 @@ Word Burger::Joypad::GetAxisCount(Word uWhich) const
 
 ***************************************/
 
-void Burger::Joypad::SetDigital(Word uWhich,Word uAxis,Word uPercent)
+void BURGER_API Burger::Joypad::SetDigital(Word uWhich,Word uAxis,Word uPercent)
 {
 	// Bounds check
 	if (uWhich<m_uDeviceCount) {
