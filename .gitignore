@@ -36,6 +36,7 @@
 *.pyc
 *.Auto.XGD
 *.mcp.xml
+*.dump
 
 # Ignore Mac desktop services store files 
 .DS_Store

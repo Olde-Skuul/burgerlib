@@ -3,7 +3,7 @@ Burgerlib 5.0
 
 **The only low level library you'll ever need.**
 
-Copyright 1995-2014 by Rebecca Ann Heineman becky@burgerbecky.com
+Copyright 1995-2016 by Rebecca Ann Heineman becky@burgerbecky.com
 
 It is released under an MIT Open Source license. Please see LICENSE
 for license details. Yes, you can use it in a
@@ -21,7 +21,7 @@ systems. It's been used in over 50 commercial video games.
 What does it run on?
 --------------------
 
-The library builds and runs for the Xbox 360, PS3, PS4, nVidia Shield,
+The library builds and runs for the Xbox 360, Xbox ONE, PS3, PS4, nVidia Shield,
 iOS, Mac OSX, MacOS, Android, OpenWatcom for MSDOS, OpenWatcom for Windows,
 Visual Studio 2005, Visual Studio 2008, Visual Studio 2010,
 Visual Studio 2013, Codewarrior for Windows, Codeblocks 13.12 for Windows,

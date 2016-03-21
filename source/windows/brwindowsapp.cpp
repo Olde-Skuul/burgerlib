@@ -2,7 +2,7 @@
 
 	Windows application manager
 
-	Copyright (c) 1995-2015 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -1171,11 +1171,12 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 
 int BURGER_API Burger::GameApp::InitWindow(const char *pGameName,MainWindowProc pCallBack,Word uIconResID)
 {
+	m_pCallBack = pCallBack;
+
 	if (!uIconResID) {
 		uIconResID = 32512;		// Default Windows application ID IDI_APPLICATION
 	}
 
-	m_pCallBack = pCallBack;
 	WNDCLASSEXW WindowClass;
 	MemoryClear(&WindowClass,sizeof(WindowClass));
 	WindowClass.cbSize = sizeof(WindowClass);
@@ -1201,6 +1202,7 @@ int BURGER_API Burger::GameApp::InitWindow(const char *pGameName,MainWindowProc 
 	// Success in creating my class?
 	if (MyAtom) {
 		m_uAtom = MyAtom;
+
 		// Convert the game name to unicode
 		String16 TitleUnicode(pGameName);
 
