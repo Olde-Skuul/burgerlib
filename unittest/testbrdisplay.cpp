@@ -43,7 +43,9 @@ static Word TestGetVideoModes(void)
 #endif
 			Message("Device = %s",pWork1->m_DeviceName.GetPtr());
 			Message("Monitor = %s",pWork1->m_MonitorName.GetPtr());
-			Message("Device number = %u, Hardware = %u",pWork1->m_uDevNumber,pWork1->m_bHardwareAccelerated);
+			Message("Device number = %u, Flags = %u",pWork1->m_uDevNumber,pWork1->m_uFlags);
+			Message("SystemRect = %d,%d,%d,%d",pWork1->m_SystemRect.m_iLeft,pWork1->m_SystemRect.m_iTop,pWork1->m_SystemRect.m_iRight,pWork1->m_SystemRect.m_iBottom);
+			Message("CurrentRect = %d,%d,%d,%d",pWork1->m_CurrentResolution.m_iLeft,pWork1->m_CurrentResolution.m_iTop,pWork1->m_CurrentResolution.m_iRight,pWork1->m_CurrentResolution.m_iBottom);
 			WordPtr uCount2 = pWork1->m_Array.size();
 			if (uCount2) {
 				const Burger::Display::VideoMode_t *pMode = pWork1->m_Array.GetPtr();

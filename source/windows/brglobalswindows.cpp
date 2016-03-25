@@ -60,6 +60,7 @@
 #include <SetupAPI.h>
 #include <d3dcommon.h>
 #include <Xinput.h>
+#include <io.h>
 
 //
 // These defines may not be defined in earlier Windows SDKs
@@ -87,9 +88,7 @@ Word32 Burger::Globals::g_uQuickTimeVersion;
 Word8 Burger::Globals::g_bQuickTimeVersionValid;
 Word32 Burger::Globals::g_uDirectXVersion;
 Word8 Burger::Globals::g_bDirectXVersionValid;
-Word8 Burger::Globals::g_bWindows95;
-Word8 Burger::Globals::g_bWindowsXP;
-Word8 Burger::Globals::g_bWindowsVista;
+Word8 Burger::Globals::g_bWindowsVersionFlags;
 #if defined(BURGER_WIN32) || defined(DOXYGEN)
 Word8 Burger::Globals::g_bIsWindows64Bit;
 #endif
@@ -100,8 +99,6 @@ Word8 Burger::Globals::g_bIsWindows64Bit;
 	application can launch if they are missing or missing functions)
 	
 ***************************************/
-
-#if !defined(DOXYGEN)
 
 //
 // These filenames MUST match eWindowsDLLIndex
@@ -220,7 +217,6 @@ static const CallNames_t g_CallNames[Burger::Globals::CALL_COUNT] = {
 	{Burger::Globals::SHELL32_DLL,"SHGetKnownFolderPath"}
 };
 
-#endif
 
 /***************************************
 
@@ -239,24 +235,34 @@ static const CallNames_t g_CallNames[Burger::Globals::CALL_COUNT] = {
 static VOID CALLBACK TrackMouseTimerProc(HWND pWindow,UINT /* uMsg */,UINT_PTR uEventID, DWORD /* dwTime */)
 {
 	// Get the rect of the tracked window
+
+	// Note: The only way the call to GetClientRect() to fail
+	// is in the rare case where the application is in shutdown 
+	// while this time function was active (I.E. The Window was
+	// released before this timer was externally killed). To
+	// handle that 1 in million case, test for GetClientRect()'s
+	// success
+
 	RECT TheClientRect;
-	GetClientRect(pWindow,&TheClientRect);
+	if (GetClientRect(pWindow,&TheClientRect)) {
 
-	// Remap it to the desktop (2 points make a rect)
-	MapWindowPoints(pWindow,HWND_DESKTOP,static_cast<POINT *>(static_cast<void*>(&TheClientRect)),2);
+		// Remap it to the desktop (2 points make a rect)
+		MapWindowPoints(pWindow,HWND_DESKTOP,static_cast<POINT *>(static_cast<void*>(&TheClientRect)),2);
 
-	// Where is the cursor?
-	POINT TheCursorLocation;
-	GetCursorPos(&TheCursorLocation);
+		// Where is the cursor?
+		POINT TheCursorLocation;
+		GetCursorPos(&TheCursorLocation);
 
-	// Check if outside
-	if (!PtInRect(&TheClientRect,TheCursorLocation) || (WindowFromPoint(TheCursorLocation) != pWindow) ) {
+		// Check if outside
+		if (!PtInRect(&TheClientRect,TheCursorLocation) || (WindowFromPoint(TheCursorLocation) != pWindow) ) {
 
-		// My work is done, commit suicide
-		KillTimer(pWindow,uEventID);
-		// Post the message to the app, to alert it that the mouse has
-		// gone AWOL
-		PostMessage(pWindow,WM_MOUSELEAVE,0,0);
+			// My work is done, commit suicide
+			KillTimer(pWindow,uEventID);
+
+			// Post the message to the app, to alert it that the mouse has
+			// gone AWOL
+			PostMessage(pWindow,WM_MOUSELEAVE,0,0);
+		}
 	}
 }
 
@@ -381,100 +387,97 @@ Burger::Globals::~Globals()
 
 /*! ************************************
 
-	\brief Detect and load DirectInput functions
+	\brief Test all versions of windows
+
+	Test for which version of windows the application is running
+	under and set the flags accordingly. This will set the global
+	\ref g_bWindowsVersionFlags.
+
+	\note This function currently returns the windows version of 8 when
+	running under Windows 10 if the application doesn't have a
+	Windows 10 manifest. 
 
 	\windowsonly
-	\return \ref TRUE if DirectInput is present on the system, \ref FALSE if not
-	\sa IsDirectInput8Present(void)
+	\return Returns the value of \ref g_bWindowsVersionFlags
+	\sa IsWin95orWin98(void), IsWinXPOrGreater(void) or IsVistaOrGreater(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::IsDirectInputPresent(void)
+Word BURGER_API Burger::Globals::TestWindowsVersion(void)
 {
-	Word uResult = FALSE;
-	if (LoadLibraryIndex(DINPUT_DLL)) {
-		uResult = TRUE;
+	Word uResult = g_bWindowsVersionFlags;	// Get the value
+	// Was it already tested?
+	if (!(uResult&WINDOWSVERSION_TESTED)) {
+		uResult = WINDOWSVERSION_TESTED;
+
+		// Initialize the version structure
+		OSVERSIONINFOW OSVersionInfo;
+		MemoryClear(&OSVersionInfo,sizeof(OSVersionInfo));
+		OSVersionInfo.dwOSVersionInfoSize = sizeof(OSVersionInfo);
+
+		// Read in the version information
+		if (GetVersionExW(&OSVersionInfo)) {
+			// Is this Windows 95/98?!?!?
+			if (OSVersionInfo.dwPlatformId==VER_PLATFORM_WIN32_WINDOWS) {
+				// Holy cow! Set and end testing
+				uResult = WINDOWSVERSION_TESTED|WINDOWSVERSION_9598;
+
+			// NT tech (Which is pretty much everything since windows 98)
+
+			} else if (OSVersionInfo.dwPlatformId==VER_PLATFORM_WIN32_NT) {
+
+				// Cache the versions
+				Word uMajor = OSVersionInfo.dwMajorVersion;
+				Word uMinor = OSVersionInfo.dwMinorVersion;
+
+				// Test for XP
+				if (uMajor>=5) {
+					if (uMinor>=1) {
+						// 5.1 = XP
+						uResult |= WINDOWSVERSION_XPORGREATER;
+					}
+
+					// Try Vista
+					if (uMajor>=6) {
+						// 6.0 = Vista
+						uResult |= WINDOWSVERSION_VISTAORGREATER;
+
+						// Try Windows 7
+						if (uMinor>=1) {
+							// 6.1 = 7
+							uResult |= WINDOWSVERSION_7ORGREATER;
+
+							// Ooh... Windows 8?
+							if (uMinor>=2) {
+								// 6.2 = 8
+								uResult |= WINDOWSVERSION_8ORGREATER;
+
+								// Microsoft. You suck.
+								
+								// This only returns 10 if the exe is manifested to
+								// be compatible for Windows 10 or higher, otherwise
+								// it will return 8 (6.2) because they suck
+
+								if (uMajor>=10) {
+									uResult |= WINDOWSVERSION_10ORGREATER;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// Store the final result
+		g_bWindowsVersionFlags = static_cast<Word8>(uResult);
 	}
+	// Return the value as is
 	return uResult;
 }
 
 /*! ************************************
 
-	\brief Detect and load DirectInput8 functions
-
-	\windowsonly
-	\return \ref TRUE if DirectInput8 is present on the system, \ref FALSE if not
-	\sa IsDirectInputPresent(void)
-
-***************************************/
-
-Word BURGER_API Burger::Globals::IsDirectInput8Present(void)
-{
-	Word uResult = FALSE;
-	if (LoadLibraryIndex(DINPUT8_DLL)) {
-		uResult = TRUE;		// The code is good!
-	}
-	return uResult;			// TRUE if ok!
-}
-
-/*! ************************************
-
-	\brief Detect and load DirectDraw functions
-
-	\windowsonly
-	\return \ref TRUE if DirectDraw is present on the system, \ref FALSE if not
-	\sa IsD3D9Present(void)
-
-***************************************/
-
-Word BURGER_API Burger::Globals::IsDirectDrawPresent(void)
-{
-	Word uResult = FALSE;
-	if (LoadLibraryIndex(DDRAW_DLL)) {
-		uResult = TRUE;		// The code is good!
-	}
-	return uResult;			// TRUE if ok!
-}
-
-/*! ************************************
-
-	\brief Detect and load D3D9 functions
-
-	\windowsonly
-	\return \ref TRUE if D3D9 is present on the system, \ref FALSE if not
-	\sa IsDirectDrawPresent(void)
-
-***************************************/
-
-Word BURGER_API Burger::Globals::IsD3D9Present(void)
-{
-	Word uResult = FALSE;
-	if (LoadLibraryIndex(D3D9_DLL)) {
-		uResult = TRUE;		// The code is good!
-	}
-	return uResult;			// TRUE if ok!
-}
-
-/*! ************************************
-
-	\brief Detect and load DirectSound functions
-
-	\windowsonly
-	\return \ref TRUE if DirectSound is present on the system, \ref FALSE if not
-	
-***************************************/
-
-Word BURGER_API Burger::Globals::IsDirectSoundPresent(void)
-{
-	Word uResult = FALSE;
-	if (LoadLibraryIndex(DSOUND_DLL)) {
-		uResult = TRUE;		// The code is good!
-	}
-	return uResult;			// TRUE if ok!
-}
-
-/*! ************************************
-
+	\fn Word Burger::Globals::IsWin95orWin98(void)
 	\brief Detect if running on an ancient version of windows
 
 	Test if the system is a pre-NT Windows operating system.
@@ -482,31 +485,13 @@ Word BURGER_API Burger::Globals::IsDirectSoundPresent(void)
 
 	\windowsonly
 	\return Returns \ref TRUE if Windows 3.1, 95, or 98. 
-	\sa IsWinXPOrGreater(void) or IsVistaOrGreater(void)
+	\sa TestWindowsVersion(void), IsWinXPOrGreater(void) or IsVistaOrGreater(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::IsWin95orWin98(void)
-{
-	Word bResult = g_bWindows95;	// Get the value
-	// Was it already tested?
-	if (!(bResult&0x80)) {
-		OSVERSIONINFOW Version;
-		MemoryClear(&Version,sizeof(Version));
-		Version.dwOSVersionInfoSize = sizeof(Version);
-		if (GetVersionExW(&Version) && Version.dwPlatformId==VER_PLATFORM_WIN32_WINDOWS) {
-			bResult = 0x80|TRUE;
-		} else {
-			bResult = 0x80|FALSE;
-		}
-		g_bWindows95 = static_cast<Word8>(bResult);
-	}
-	// Return the value minus the other flags
-	return bResult&1U;
-}
-
 /*! ************************************
 
+	\fn Word Burger::Globals::IsWinXPOrGreater(void)
 	\brief Detect if running Windows XP or higher
 
 	Test if the system is a Windows XP operating system or greater
@@ -514,34 +499,13 @@ Word BURGER_API Burger::Globals::IsWin95orWin98(void)
 
 	\windowsonly
 	\return Returns \ref TRUE if Windows XP or greater
-	\sa IsWin95orWin98(void) or IsVistaOrGreater(void)
+	\sa TestWindowsVersion(void), IsWin95orWin98(void) or IsVistaOrGreater(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::IsWinXPOrGreater(void)
-{
-	Word bResult = g_bWindowsXP;	// Get the tested value
-	// Was it already tested?
-	if (!(bResult&0x80)) {
-		OSVERSIONINFOW Version;
-		MemoryClear(&Version,sizeof(Version));
-		Version.dwOSVersionInfoSize = sizeof(Version);
-		if (GetVersionExW(&Version) &&
-			(Version.dwPlatformId==VER_PLATFORM_WIN32_NT) &&
-			(Version.dwMajorVersion >= 5) && 
-			(Version.dwMinorVersion >= 1)) {
-			bResult = 0x80|TRUE;
-		} else {
-			bResult = 0x80|FALSE;
-		}
-		g_bWindowsXP = static_cast<Word8>(bResult);
-	}
-	// Return the value minus the other flags
-	return bResult&1U;
-}
-
 /*! ************************************
 
+	\fn Word Burger::Globals::IsVistaOrGreater(void)
 	\brief Detect if running Windows Vista or higher
 
 	Test if the system is a Windows Vista operating system or greater
@@ -549,30 +513,57 @@ Word BURGER_API Burger::Globals::IsWinXPOrGreater(void)
 
 	\windowsonly
 	\return Returns \ref TRUE if Windows Vista or greater
-	\sa IsWin95orWin98(void) or IsWinXPOrGreater(void)
+	\sa TestWindowsVersion(void), IsWin95orWin98(void) or IsWinXPOrGreater(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::IsVistaOrGreater(void)
-{
-	Word bResult = g_bWindowsVista;	// Get the tested value
-	// Was it already tested?
-	if (!(bResult&0x80)) {
-		OSVERSIONINFOW Version;
-		MemoryClear(&Version,sizeof(Version));
-		Version.dwOSVersionInfoSize = sizeof(Version);
-		if (GetVersionExW(&Version) &&
-			(Version.dwPlatformId==VER_PLATFORM_WIN32_NT) &&
-			(Version.dwMajorVersion >= 6)) {
-			bResult = 0x80|TRUE;
-		} else {
-			bResult = 0x80|FALSE;
-		}
-		g_bWindowsVista = static_cast<Word8>(bResult);
-	}
-	// Return the value minus the other flags
-	return bResult&1U;
-}
+/*! ************************************
+
+	\fn Word Burger::Globals::IsWin7OrGreater(void)
+	\brief Detect if running Windows 7 or higher
+
+	Test if the system is a Windows 7 operating system or greater
+	If it returns \ref FALSE, it's before Windows 7
+
+	\windowsonly
+	\return Returns \ref TRUE if Windows 7 or greater
+	\sa TestWindowsVersion(void), IsVistaOrGreater(void) or IsWinXPOrGreater(void)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Globals::IsWin8OrGreater(void)
+	\brief Detect if running Windows 8 or higher
+
+	Test if the system is a Windows 8 operating system or greater
+	If it returns \ref FALSE, it's before Windows 8
+
+	\windowsonly
+	\return Returns \ref TRUE if Windows 8 or greater
+	\sa TestWindowsVersion(void), IsWin7OrGreater(void), IsVistaOrGreater(void) or IsWinXPOrGreater(void)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Globals::IsWin10OrGreater(void)
+	\brief Detect if running Windows 10 or higher
+
+	Test if the system is a Windows 10 operating system or greater
+	If it returns \ref FALSE, it's before Windows 10
+
+	\note Windows 10 requires a manifest linked into the application that
+	notifies Windows that the application is compatible with Windows 10. If
+	there is no manifest, this function will always return \ref FALSE
+	because Windows identifies itself as Windows 8.
+
+	\windowsonly
+	\return Returns \ref TRUE if Windows 10 or greater
+	\sa TestWindowsVersion(void), IsWin8OrGreater(void), IsWin7OrGreater(void), IsVistaOrGreater(void) or IsWinXPOrGreater(void)
+
+***************************************/
+
 
 #if defined(BURGER_WIN32) || defined(DOXYGEN)
 
@@ -587,7 +578,7 @@ Word BURGER_API Burger::Globals::IsVistaOrGreater(void)
 
 	\windowsonly
 	\return Returns \ref TRUE if the 32 bit application was running in 64 bit Windows
-	\sa GetSystemWow64DirectoryW(Word16 *,Word)
+	\sa GetSystemWow64DirectoryW(Word16 *,Word32)
 
 ***************************************/
 
@@ -610,6 +601,654 @@ Word BURGER_API Burger::Globals::IsWindows64Bit(void)
 }
 
 #endif
+
+
+/*! ************************************
+
+	\brief Load a library if needed
+
+	Given a DLL index, detect if the library has already been
+	loaded and if so, return the existing HINSTANCE, otherwise,
+	load the DLL and if successful, return the HINSTANCE. If
+	the load failed, return \ref NULL.
+
+	\note Since this function only loads in official Microsoft DLLs, it will
+	under Vista or higher, use the function LoadLibraryExA(LOAD_LIBRARY_SEARCH_SYSTEM32)
+	to ensure that only official DLL directories are scanned to find the files. 
+	This was done to prevent Man-In-The-Middle attacks used by users who want to
+	inject code to cheat. Windows versions before Vista (XP for example) doesn't
+	support this flag, so the feature isn't used on those platforms.
+
+	\windowsonly
+	\param eIndex \ref eWindowsDLLIndex index to a DLL Burgerlib is tracking.
+	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
+	\sa LoadFunctionIndex()
+	
+***************************************/
+
+HINSTANCE BURGER_API Burger::Globals::LoadLibraryIndex(eWindowsDLLIndex eIndex)
+{
+	HINSTANCE hResult = NULL;
+	// Valid index?
+	if (eIndex<DLL_COUNT) {
+		// Has it been loaded?
+		hResult = g_Globals.m_hInstances[eIndex];
+		// If not already tested and not loaded?
+		if (!hResult && !g_Globals.m_bInstancesTested[eIndex]) {
+			// Mark as tested
+			g_Globals.m_bInstancesTested[eIndex] = TRUE;
+
+			// For security reasons, force searching only in the official
+			// windows folder to prevent a man-in-the-middle attack
+			// Supported on Windows Vista or later. If running on XP, you're
+			// out of luck.
+
+			Word32 uFlags = 0;
+			if (IsVistaOrGreater()) {
+				uFlags = LOAD_LIBRARY_SEARCH_SYSTEM32;
+			}
+
+			// Load the most recent version of the DLL
+			hResult = LoadLibraryExA(s_LibaryNames[eIndex],NULL,uFlags);
+
+			// Handle the special cases where if the most recent is not available, try
+			// an older version of the dll
+			if (!hResult) {
+	
+				// Try XInput 9.1.0
+				if (eIndex==XINPUT1_4_DLL) {
+					hResult = LoadLibraryExA(s_LibaryNames[XINPUT1_3_DLL],NULL,uFlags);
+				}
+
+				// Here is where code should be added for future special casing of DLL searching.
+			}
+
+			// If it loaded fine, save the result
+			if (hResult) {
+				g_Globals.m_hInstances[eIndex] = hResult;
+			}
+		}
+	}
+	return hResult;
+}
+
+/*! ************************************
+
+	\brief Load a function from a DLL library if needed
+
+	Given a function index, detect if the library has already been
+	loaded and if not. load it. If loaded, look up the function
+	and return the pointer to the function or \ref NULL if
+	not found.
+
+	\windowsonly
+	\param eIndex \ref eWindowsCallIndex index to a Windows function Burgerlib is tracking.
+	\return \ref NULL if the DLL was not loaded or the function didn't exist, a valid function pointer on success
+	\sa LoadLibraryIndex()
+	
+***************************************/
+
+void * BURGER_API Burger::Globals::LoadFunctionIndex(eWindowsCallIndex eIndex)
+{
+	void *pResult = NULL;
+	// Valid index?
+	if (eIndex<CALL_COUNT) {
+		// Has the function been loaded?
+		pResult = g_Globals.m_pWindowsCalls[eIndex];
+		// Speed up in the form of disabling multiple tests
+		if (!pResult && !g_Globals.m_bFunctionsTested[eIndex]) {
+			// Mark as tested
+			g_Globals.m_bFunctionsTested[eIndex] = TRUE;
+			HINSTANCE hResult = LoadLibraryIndex(g_CallNames[eIndex].eDLL);
+			if (hResult) {
+				// Get the function from the DLL
+				pResult = GetProcAddress(hResult,g_CallNames[eIndex].m_pName);
+				g_Globals.m_pWindowsCalls[eIndex] = pResult;
+			}
+		}
+	}
+	return pResult;
+}
+
+
+
+/*! ************************************
+
+	\fn Word Burger::Globals::IsDirectInputPresent(void)
+	\brief Detect and load DirectInput functions
+
+	\windowsonly
+	\return \ref TRUE if DirectInput is present on the system, \ref FALSE if not
+	\sa IsDirectInput8Present(void) or IsXInputPresent(void)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Globals::IsDirectInput8Present(void)
+	\brief Detect and load DirectInput8 functions
+
+	\windowsonly
+	\return \ref TRUE if DirectInput8 is present on the system, \ref FALSE if not
+	\sa IsDirectInputPresent(void) or IsXInputPresent(void)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Globals::IsXInputPresent(void)
+	\brief Detect and load XInput functions
+
+	\windowsonly
+	\return \ref TRUE if XInput is present on the system, \ref FALSE if not
+	\sa IsDirectInputPresent(void) or IsDirectInput8Present(void)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Globals::IsDirectDrawPresent(void)
+	\brief Detect and load DirectDraw functions
+
+	\windowsonly
+	\return \ref TRUE if DirectDraw is present on the system, \ref FALSE if not
+	\sa IsD3D9Present(void)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Globals::IsD3D9Present(void)
+	\brief Detect and load D3D9 functions
+
+	\windowsonly
+	\return \ref TRUE if D3D9 is present on the system, \ref FALSE if not
+	\sa IsDirectDrawPresent(void)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::Globals::IsDirectSoundPresent(void)
+	\brief Detect and load DirectSound functions
+
+	\windowsonly
+	\return \ref TRUE if DirectSound is present on the system, \ref FALSE if not
+	
+***************************************/
+
+
+
+
+/*! ************************************
+
+	\brief Find a Quicktime folder by reading the registry
+
+	This function is a functional equivalent to the Quicktime for
+	Windows function GetQTFolderFromRegistry(). It will
+	query a registry value from the HKEY_LOCAL_MACHINE root
+	and will return the value. 
+
+	On success, the pathname will be in the buffer with a
+	'\' or a '/' ending the string. Otherwise, the string
+	will be empty on failure.
+
+	\note Quicktime for Windows is a 32 bit API. Don't use it
+	for 64 bit applications.
+
+	\windowsonly
+	\param pSubKey Pointer to registry sub key
+	\param pValueName Pointer to the registry value name to a string
+	\param pBuffer Pointer to a buffer to receive the string
+	\param uSize Number of bytes in size of the string buffer
+
+***************************************/
+
+void BURGER_API Burger::Globals::GetQTFolderFromRegistry(const char *pSubKey,const char *pValueName,char *pBuffer,Word32 uSize)
+{
+	if (uSize) {
+		pBuffer[0] = 0;
+		if (uSize>=2) {
+			// Clear out the output values
+			HKEY pKey = NULL;
+
+			// Open the key
+			if (RegOpenKeyExA(HKEY_LOCAL_MACHINE,pSubKey,0,KEY_QUERY_VALUE,&pKey)==ERROR_SUCCESS) {
+				DWORD uLength = uSize-1;	// Space for the forced '\'
+
+				// Read in the directory name and continue if there was data
+				if ((RegQueryValueExA(pKey,pValueName,NULL,NULL,static_cast<BYTE *>(static_cast<void *>(pBuffer)),&uLength)==ERROR_SUCCESS) &&
+					pBuffer[0]) {
+					// Force the last character to a '\'
+					EndWithWindowsSlashes(pBuffer);
+				}
+			}
+			// Release the key, if loaded
+			if (pKey) {
+				RegCloseKey(pKey);
+			}
+		}
+	}
+}
+
+/*! ************************************
+
+	\brief Find the Quicktime folder
+
+	This function is a functional equivalent to the Quicktime for
+	Windows function GetPathToQuickTimeFolder(). It will
+	query a registry values from the HKEY_LOCAL_MACHINE root
+	and if found, it will return the path. Otherwise, it will check
+	the system folder for the file Quicktime.qts.
+
+	On success, the pathname will be in the buffer with a
+	'\' or a '/' ending the string. Otherwise, the string
+	will be empty on failure.
+
+	\note Quicktime for Windows is a 32 bit API. Don't use it
+	for 64 bit applications.
+
+	\windowsonly
+	\param pBuffer Pointer to a buffer to receive the string
+	\param uSize Number of bytes in size of the string buffer
+	\param pReserved Reserved, pass \ref NULL
+	\return \ref TRUE if successful, \ref FALSE if not
+
+***************************************/
+
+Word BURGER_API Burger::Globals::GetPathToQuickTimeFolder(char *pBuffer,Word32 uSize,Word32 *pReserved)
+{
+	char Temp[1024];
+	Word bResult = FALSE;
+	// Only execute if there's a valid output buffer
+	if (pBuffer && uSize) {
+
+		// Erase the output buffer
+		pBuffer[0] = 0;
+
+		// Set the reserved value if there was a passed pointer
+		if (pReserved) {
+			pReserved[0] = 0;
+		}
+
+		if (uSize>=2) {
+
+			// See if the module is already loaded
+			HMODULE hQuickTime = GetModuleHandleA("QuickTime.qts");
+			if (hQuickTime) {
+
+				// Get the path from the loaded module
+				if (GetModuleFileNameA(hQuickTime,Temp,BURGER_ARRAYSIZE(Temp))) {
+
+					// Remove the string "Quicktime.qts"
+					WordPtr uStrLength = StringLength(Temp);
+					if (uStrLength>13) {
+						// Copy up the string minus the ending "Quicktime.qts"
+						// Note: This will end the string with a '\'
+						StringCopy(pBuffer,uSize,Temp,uStrLength-13);
+					}
+				}
+
+				// hQuicktime doesn't need to be released.
+			}
+
+			// No path yet?
+			if (!pBuffer[0]) {
+
+				// Try grabbing from the registry
+				GetQTFolderFromRegistry("Software\\Apple Computer, Inc.\\QuickTime","QTSysDir",pBuffer,uSize);
+
+				// Detect if the directory exists
+				if (pBuffer[0] && 
+					_access(pBuffer,0)) {
+					// Failed
+					pBuffer[0] = 0;
+				}
+			}
+
+			// No path yet?
+			if (!pBuffer[0]) {
+
+				// Try again, but using another key
+				GetQTFolderFromRegistry("Software\\Apple Computer, Inc.\\QuickTime","QuickTime.qts folder",pBuffer,uSize);
+
+				// Detect if the directory exists
+				if (pBuffer[0] && 
+					_access(pBuffer,0)) {
+					// Failed
+					pBuffer[0] = 0;
+				}
+			}
+
+
+			// No path yet?
+			if (!pBuffer[0]) {
+
+				// Try the windows directory
+				if (!GetSystemDirectoryA(pBuffer,uSize) ||
+					_access(pBuffer,0)) {
+					pBuffer[0] = 0;
+				}
+			}
+
+			// If something was found, ensure it ends with a slash
+
+			if (pBuffer[0]) {
+				EndWithWindowsSlashes(pBuffer);
+			}
+		}
+		// Return TRUE if there was something in the buffer
+		bResult = (pBuffer[0]!=0);
+	}
+	return bResult;
+}
+
+/*! ************************************
+
+	\brief Find the Quicktime folder
+
+	This function is a functional equivalent to the Quicktime for
+	Windows function GetQTSystemDirectoryA(). It will
+	query a registry values from the HKEY_LOCAL_MACHINE root
+	and if found, it will return the path. Otherwise, it will check
+	the system folder for the file Quicktime.qts.
+
+	On success, the pathname will be in the buffer with a
+	'\' or a '/' ending the string. Otherwise, the string
+	will be empty on failure.
+
+	\note Quicktime for Windows is a 32 bit API. Don't use it
+	for 64 bit applications.
+
+	\windowsonly
+	\param pBuffer Pointer to a buffer to receive the string
+	\param uSize Number of bytes in size of the string buffer
+	\return Length of the returned string in chars.
+
+***************************************/
+
+Word32 BURGER_API Burger::Globals::GetQTSystemDirectoryA(char *pBuffer,Word32 uSize)
+{
+	GetPathToQuickTimeFolder(pBuffer,uSize,NULL);
+	return static_cast<Word32>(StringLength(pBuffer));
+}
+
+/*! ************************************
+
+	\brief Find the Quicktime application folder
+
+	This function is a functional equivalent to the Quicktime for
+	Windows function GetQTApplicationDirectoryA(). It will
+	query a registry value from the HKEY_LOCAL_MACHINE root
+	and if found, it will return the path.
+
+	On success, the pathname will be in the buffer with a
+	'\' or a '/' ending the string. Otherwise, the string
+	will be empty on failure.
+
+	\note Quicktime for Windows is a 32 bit API. Don't use it
+	for 64 bit applications.
+
+	\windowsonly
+	\param pBuffer Pointer to a buffer to receive the string
+	\param uSize Number of bytes in size of the string buffer
+	\return Length of the returned string in chars.
+
+***************************************/
+
+Word32 BURGER_API Burger::Globals::GetQTApplicationDirectoryA(char *pBuffer,Word32 uSize)
+{
+	GetQTFolderFromRegistry("Software\\Apple Computer, Inc.\\QuickTime","InstallDir",pBuffer,uSize);
+	return static_cast<Word32>(StringLength(pBuffer));
+}
+
+/*! ************************************
+
+	\brief Find the Quicktime extensions folder
+
+	This function is a functional equivalent to the Quicktime for
+	Windows function GetQTExtensionDirectoryA(). It will
+	query a registry value from the HKEY_LOCAL_MACHINE root
+	and if found, it will return the path.
+
+	On success, the pathname will be in the buffer with a
+	'\' or a '/' ending the string. Otherwise, the string
+	will be empty on failure.
+
+	\note Quicktime for Windows is a 32 bit API. Don't use it
+	for 64 bit applications.
+
+	\windowsonly
+	\param pBuffer Pointer to a buffer to receive the string
+	\param uSize Number of bytes in size of the string buffer
+	\return Length of the returned string in chars.
+
+***************************************/
+
+Word32 BURGER_API Burger::Globals::GetQTExtensionDirectoryA(char *pBuffer,Word32 uSize)
+{
+	char SystemDirName[256];
+	char QTFolderName[256];
+
+	// Try getting it from the registry
+	GetQTFolderFromRegistry("Software\\Apple Computer, Inc.\\QuickTime","QTExtDir",pBuffer,uSize);
+	if (!pBuffer[0] && (uSize>=11)) {
+
+		// Didn't find it?
+		uSize -= 10;			// Make space for "Quicktime\"
+
+		// Find where Quicktime should be
+		GetPathToQuickTimeFolder(QTFolderName,uSize,NULL);
+
+		if (QTFolderName[0]) {
+
+			// Copy up the Quicktime folder name
+			StringCopy(pBuffer,uSize,QTFolderName);
+
+			// Read in the system directory name
+			GetSystemDirectoryA(SystemDirName,uSize);
+			EndWithWindowsSlashes(SystemDirName);
+
+			// Was the folder found the Windows system folder?
+			if (!StringCompare(SystemDirName,QTFolderName)) {
+				// Since it's the Windows folder that's found, append the
+				// string QuickTime\ to the end of the pathname
+				// to denote the old location of where Quicktime
+				// extensions were stored.
+				StringConcatenate(pBuffer,"QuickTime\\");
+			}
+		}
+	}
+	return static_cast<Word32>(StringLength(pBuffer));
+}
+
+/*! ************************************
+
+	\brief Find the Quicktime components folder
+
+	This function is a functional equivalent to the Quicktime for
+	Windows function GetQTComponentDirectoryA(). It will
+	query a registry value from the HKEY_LOCAL_MACHINE root
+	and if found, it will return the path.
+
+	On success, the pathname will be in the buffer with a
+	'\' or a '/' ending the string. Otherwise, the string
+	will be empty on failure.
+
+	\note Quicktime for Windows is a 32 bit API. Don't use it
+	for 64 bit applications.
+
+	\windowsonly
+	\param pBuffer Pointer to a buffer to receive the string
+	\param uSize Number of bytes in size of the string buffer
+	\return Length of the returned string in chars.
+
+***************************************/
+
+Word32 BURGER_API Burger::Globals::GetQTComponentDirectoryA(char *pBuffer,Word32 uSize)
+{
+	GetQTFolderFromRegistry("Software\\Apple Computer, Inc.\\QuickTime","QTComponentsDir",pBuffer,uSize);
+	if (!pBuffer[0]) {
+		GetSystemDirectoryA(pBuffer,uSize);
+		if (pBuffer[0]) {
+			EndWithWindowsSlashes(pBuffer);
+			// Since it's the Windows folder that's found, append the
+			// string QuickTime\ to the end of the pathname
+			// to denote the old location of where Quicktime
+			// extensions were stored.
+			StringConcatenate(pBuffer,"QuickTime\\");
+		}
+	}
+	return static_cast<Word32>(StringLength(pBuffer));
+}
+
+/*! ************************************
+
+	\brief Locate and load a Quicktime DLL
+
+	This function is a functional equivalent to the Quicktime for
+	Windows function QTLoadLibrary().
+
+	\note Do not pass in full pathnames. Only pass in the name of the DLL and
+	nothing more. If a full pathname is available, use a direct call to
+	LoadLibraryA(const char *) instead.
+
+	\note Quicktime for Windows is a 32 bit API. Don't use it
+	for 64 bit applications.
+
+	\windowsonly
+	\param pDLLName Pointer to the DLL requested
+	\return HINSTANCE of the DLL or \ref NULL on failure
+
+***************************************/
+
+HINSTANCE BURGER_API Burger::Globals::QTLoadLibrary(const char *pDLLName)
+{
+	char FinalPathname[1024];
+
+	// Assume no DLL
+	HINSTANCE pResult = NULL;
+	WordPtr uDLLNameLength = StringLength(pDLLName);
+
+	// Get the path for Quicktime
+	if (GetPathToQuickTimeFolder(FinalPathname,static_cast<Word32>(BURGER_ARRAYSIZE(FinalPathname)-uDLLNameLength),NULL)) {
+		StringConcatenate(FinalPathname,pDLLName);
+		pResult = LoadLibraryA(FinalPathname);
+		if (!pResult) {
+			GetLastError();
+			if (GetQTExtensionDirectoryA(FinalPathname,static_cast<Word32>(BURGER_ARRAYSIZE(FinalPathname)-uDLLNameLength))) {
+				StringConcatenate(FinalPathname,pDLLName);
+				pResult = LoadLibraryA(FinalPathname);
+			}
+		}
+	}
+	return pResult;
+}
+
+/*! ************************************
+
+	\brief Return the version of QuickTime.
+	
+	Detect if QuickTime is available, and if so, query
+	it for the version present. If QuickTime is not available,
+	the version returned is zero.
+	
+	This function is written so it only asks for the version
+	once from QuickTime. It will cache the version and
+	return the cached value on subsequent calls.
+	
+	By invoking DEEP magic, I will divine the version
+	of QuickTimeX that is present. It will do a manual
+	check of the system folder for either QTIM32.dll (Old)
+	or Quicktime.qts (Current) and pull the version resource
+	from the file.
+	
+	\return Version in the format of 0x0102 -> 1.2, 0x773 = 7.7.3
+		
+***************************************/
+
+Word BURGER_API Burger::Globals::GetQuickTimeVersion(void)
+{
+	char PathName[1024+32];
+
+	if (!g_bQuickTimeVersionValid) {
+		g_bQuickTimeVersionValid = TRUE;		// I got the version
+
+		Word uResult = 0;						// I assume version 0!
+		// Get the system directory for Quicktime
+		WordPtr uPathLength = GetSystemDirectoryA(PathName,BURGER_ARRAYSIZE(PathName)-32);
+		if (uPathLength) {
+
+			// Get the Quicktime DLL using the old name for 2.0 or 3.0
+			StringCopy(PathName+uPathLength,sizeof(PathName)-uPathLength,"\\QTIM32.DLL");
+			DWORD uZeroLong = 0;
+			DWORD uFileInfoSize = GetFileVersionInfoSizeA(PathName,&uZeroLong);
+			const char *pQueryString = "\\StringFileInfo\\040904E4\\ProductVersion";
+			// Any data?
+			if (!uFileInfoSize) {
+				// Try the location of Quicktime 4.0 and 5.0
+				pQueryString = "\\StringFileInfo\\040904B0\\FileVersion";
+				// Try Quicktime 4.0
+				uZeroLong = 0;
+				StringCopy(PathName+uPathLength,sizeof(PathName)-uPathLength,"\\QuickTime.qts");
+				uFileInfoSize = GetFileVersionInfoSizeA(PathName,&uZeroLong);
+				if (!uFileInfoSize) {
+					// Try the location of Quicktime 6.0 and later
+					uPathLength = GetEnvironmentVariableA("ProgramFiles(x86)",PathName,BURGER_ARRAYSIZE(PathName));
+					if (!uPathLength) {
+						uPathLength = GetEnvironmentVariableA("ProgramFiles",PathName,BURGER_ARRAYSIZE(PathName));
+					}
+					if (uPathLength) {
+						StringCopy(PathName+uPathLength,sizeof(PathName)-uPathLength,"\\QuickTime\\QTSystem\\QuickTime.qts");
+						uFileInfoSize = GetFileVersionInfoSizeA(PathName,&uZeroLong);
+					}
+				}
+			}
+			if (uFileInfoSize) {
+
+				// Use HeapAlloc() instead of Alloc to allow code to use this function
+				// without starting Burgerlib Memory
+
+				// Get the data buffer
+				HANDLE hHeap = GetProcessHeap();
+				char *pData = static_cast<char *>(HeapAlloc(hHeap,0,uFileInfoSize));
+				if (pData) {
+					void *pVersionData;			// Main data pointer to start parsing from
+					if (GetFileVersionInfoA(PathName,0,uFileInfoSize,pData)) {
+						UINT ZeroWord = 0;
+						if (VerQueryValueA(pData,const_cast<char *>(pQueryString),&pVersionData,&ZeroWord)) {
+							// Running ASCII pointer
+							const char *pWorkPtr = static_cast<const char *>(pVersionData);
+							uResult = AsciiToInteger(pWorkPtr,&pWorkPtr)<<8;
+							if (pWorkPtr[0]=='.') {
+								uFileInfoSize = AsciiToInteger(pWorkPtr+1,&pWorkPtr);
+								if (uFileInfoSize>=16) {
+									uFileInfoSize = 15;
+								}
+								uResult |= (uFileInfoSize<<4);
+								if (pWorkPtr[0]=='.') {
+									uFileInfoSize = AsciiToInteger(pWorkPtr+1);
+									if (uFileInfoSize>=16) {
+										uFileInfoSize = 15;
+									}
+									uResult |= uFileInfoSize;
+								}
+							}
+						}
+					}
+					// Release the info pointer
+					HeapFree(hHeap,0,pData);
+				}
+			}
+		}
+		g_uQuickTimeVersion = uResult;
+	}
+	// Return the QuickTime version
+	return g_uQuickTimeVersion;
+}
+
+
+
 
 /*! ************************************
 
@@ -2528,101 +3167,7 @@ Word BURGER_API Burger::Globals::SHGetKnownFolderPath(const GUID *pGuid,Word32 u
 	return static_cast<Word>(uResult);
 }
 
-/*! ************************************
 
-	\brief Return the version of QuickTime.
-	
-	Detect if QuickTime is available, and if so, query
-	it for the version present. If QuickTime is not available,
-	the version returned is zero.
-	
-	This function is written so it only asks for the version
-	once from QuickTime. It will cache the version and
-	return the cached value on subsequent calls.
-	
-	By invoking DEEP magic, I will divine the version
-	of QuickTimeX that is present. It will do a manual
-	check of the system folder for either QTIM32.dll (Old)
-	or Quicktime.qts (Current) and pull the version resource
-	from the file.
-	
-	\return Version in the format of 0x0102 -> 1.2, 0x773 = 7.7.3
-		
-***************************************/
-
-Word BURGER_API Burger::Globals::GetQuickTimeVersion(void)
-{
-	char PathName[MAX_PATH+32];
-
-	if (!g_bQuickTimeVersionValid) {
-		g_bQuickTimeVersionValid = TRUE;		// I got the version
-		Word uResult = 0;						// I assume version 0!
-		// Get the system directory for Quicktime
-		WordPtr uPathLength = GetSystemDirectoryA(PathName,MAX_PATH);
-		if (uPathLength) {
-
-			// Get the Quicktime DLL using the old name for 2.0 or 3.0
-			StringCopy(PathName+uPathLength,sizeof(PathName)-uPathLength,"\\QTIM32.DLL");
-			DWORD uZeroLong = 0;
-			DWORD uFileInfoSize = GetFileVersionInfoSizeA(PathName,&uZeroLong);
-			const char *pQuery = "\\StringFileInfo\\040904E4\\ProductVersion";
-			// Any data?
-			if (!uFileInfoSize) {
-				// Try the location of Quicktime 4.0 and 5.0
-				pQuery = "\\StringFileInfo\\040904B0\\FileVersion";
-				// Try Quicktime 4.0
-				uZeroLong = 0;
-				StringCopy(PathName+uPathLength,sizeof(PathName)-uPathLength,"\\QuickTime.qts");
-				uFileInfoSize = GetFileVersionInfoSizeA(PathName,&uZeroLong);
-				if (!uFileInfoSize) {
-					// Try the location of Quicktime 6.0 and later
-					uPathLength = GetEnvironmentVariableA("ProgramFiles(x86)",PathName,MAX_PATH);
-					if (!uPathLength) {
-						uPathLength = GetEnvironmentVariableA("ProgramFiles",PathName,MAX_PATH);
-					}
-					if (uPathLength) {
-						StringCopy(PathName+uPathLength,sizeof(PathName)-uPathLength,"\\QuickTime\\QTSystem\\QuickTime.qts");
-						uFileInfoSize = GetFileVersionInfoSizeA(PathName,&uZeroLong);
-					}
-				}
-			}
-			if (uFileInfoSize) {
-				// Get the data buffer
-				char *pData = static_cast<char *>(Alloc(uFileInfoSize));
-				if (pData) {
-					void *pVersionData;			// Main data pointer to start parsing from
-					if (GetFileVersionInfoA(PathName,0,uFileInfoSize,pData)) {
-						UINT ZeroWord = 0;
-						if (VerQueryValueA(pData,const_cast<char *>(pQuery),&pVersionData,&ZeroWord)) {
-							// Running ascii pointer
-							const char *pWorkPtr = static_cast<const char *>(pVersionData);
-							uResult = AsciiToInteger(pWorkPtr,&pWorkPtr)<<8;
-							if (pWorkPtr[0]=='.') {
-								uFileInfoSize = AsciiToInteger(pWorkPtr+1,&pWorkPtr);
-								if (uFileInfoSize>=16) {
-									uFileInfoSize = 15;
-								}
-								uResult |= (uFileInfoSize<<4);
-								if (pWorkPtr[0]=='.') {
-									uFileInfoSize = AsciiToInteger(pWorkPtr+1);
-									if (uFileInfoSize>=16) {
-										uFileInfoSize = 15;
-									}
-									uResult |= uFileInfoSize;
-								}
-							}
-						}
-					}
-					// Release the info pointer
-					Free(pData);
-				}
-			}
-		}
-		g_uQuickTimeVersion = uResult;
-	}
-	// Return the QuickTime version
-	return g_uQuickTimeVersion;
-}
 
 /*! ************************************
 
@@ -2644,7 +3189,8 @@ Word64 BURGER_API Burger::Globals::GetFileVersion64(const Word16* pWindowsFilena
 		// Get the size of the data
 		UINT uBufferSize = GetFileVersionInfoSizeW(pWindowsFilename,&uNotUsed);
 		if (uBufferSize) {
-			BYTE* pFileVersionBuffer = static_cast<BYTE *>(Alloc(uBufferSize));
+			HANDLE hHeap = GetProcessHeap();
+			BYTE* pFileVersionBuffer = static_cast<BYTE *>(HeapAlloc(hHeap,0,uBufferSize));
 			if (pFileVersionBuffer) {
 				// Load the data
 				if (GetFileVersionInfoW(pWindowsFilename,0,uBufferSize,pFileVersionBuffer)) {
@@ -2657,7 +3203,7 @@ Word64 BURGER_API Burger::Globals::GetFileVersion64(const Word16* pWindowsFilena
 					}
 				}
 				// Release the buffer
-				Free(pFileVersionBuffer);
+				HeapFree(hHeap,0,pFileVersionBuffer);
 			}
 		}
 	}
@@ -3120,106 +3666,6 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryExW(const Word16 *pInput,void *
 	HINSTANCE hResult = ::LoadLibraryExW(reinterpret_cast<LPCWSTR>(pInput),hFile,uFlags);
 	SetErrorMode(uOldMode);
 	return hResult;
-}
-
-/*! ************************************
-
-	\brief Load a library if needed
-
-	Given a DLL index, detect if the library has already been
-	loaded and if so, return the existing HINSTANCE, otherwise,
-	load the DLL and if successful, return the HINSTANCE. If
-	the load failed, return \ref NULL.
-
-	\windowsonly
-	\param eIndex \ref eWindowsDLLIndex index to a DLL Burgerlib is tracking.
-	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
-	\sa LoadFunctionIndex()
-	
-***************************************/
-
-HINSTANCE BURGER_API Burger::Globals::LoadLibraryIndex(eWindowsDLLIndex eIndex)
-{
-	HINSTANCE hResult = NULL;
-	// Valid index?
-	if (eIndex<DLL_COUNT) {
-		// Has it been loaded?
-		hResult = g_Globals.m_hInstances[eIndex];
-		// If not already tested and not loaded?
-		if (!hResult && !g_Globals.m_bInstancesTested[eIndex]) {
-			// Mark as tested
-			g_Globals.m_bInstancesTested[eIndex] = TRUE;
-
-			// For security reasons, force searching only in the official
-			// windows folder to prevent a man-in-the-middle attack
-			// Supported on Windows Vista or later. If running on XP, you're
-			// out of luck.
-
-			Word32 uFlags = 0;
-			if (IsVistaOrGreater()) {
-				uFlags = LOAD_LIBRARY_SEARCH_SYSTEM32;
-			}
-
-			// Load the most recent version of the DLL
-			hResult = LoadLibraryExA(s_LibaryNames[eIndex],NULL,uFlags);
-
-			// Handle the special cases where if the most recent is not available, try
-			// an older version of the dll
-			if (!hResult) {
-	
-				// Try XInput 9.1.0
-				if (eIndex==XINPUT1_4_DLL) {
-					hResult = LoadLibraryExA(s_LibaryNames[eIndex+1],NULL,uFlags);
-				}
-			}
-
-			// If it loaded fine, save the result
-			if (hResult) {
-				g_Globals.m_hInstances[eIndex] = hResult;
-			}
-		}
-	}
-	return hResult;
-}
-
-/*! ************************************
-
-	\brief Load a function from a DLL library if needed
-
-	Given a function index, detect if the library has already been
-	loaded and if not. load it. If loaded, look up the function
-	and return the pointer to the function or \ref NULL if
-	not found.
-
-	\windowsonly
-	\param eIndex \ref eWindowsCallIndex index to a Windows function Burgerlib is tracking.
-	\return \ref NULL if the DLL was not loaded or the function didn't exist, a valid function pointer on success
-	\sa LoadLibraryIndex()
-	
-***************************************/
-
-void * BURGER_API Burger::Globals::LoadFunctionIndex(eWindowsCallIndex eIndex)
-{
-	void *pResult;
-	// Valid index?
-	if (eIndex>=CALL_COUNT) {
-		pResult = NULL;
-	} else {
-		// Has the function been loaded?
-		pResult = g_Globals.m_pWindowsCalls[eIndex];
-		// Speed up in the form of disabling multiple tests
-		if (!pResult && !g_Globals.m_bFunctionsTested[eIndex]) {
-			// Mark as tested
-			g_Globals.m_bFunctionsTested[eIndex] = TRUE;
-			HINSTANCE hResult = LoadLibraryIndex(g_CallNames[eIndex].eDLL);
-			if (hResult) {
-				// Get the function from the DLL
-				pResult = GetProcAddress(hResult,g_CallNames[eIndex].m_pName);
-				g_Globals.m_pWindowsCalls[eIndex] = pResult;
-			}
-		}
-	}
-	return pResult;
 }
 
 /*! ************************************

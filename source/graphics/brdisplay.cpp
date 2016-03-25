@@ -171,8 +171,10 @@ Burger::Display::VideoCardDescription::VideoCardDescription() :
 	m_DeviceName(),
 	m_MonitorName(),
 	m_uDevNumber(0),
-	m_bHardwareAccelerated(FALSE)
+	m_uFlags(0)
 {
+	m_SystemRect.Clear();
+	m_CurrentResolution.Clear();
 #if defined(BURGER_WINDOWS)
 	MemoryClear(&m_GUID,sizeof(m_GUID));
 #endif
@@ -896,7 +898,7 @@ Burger::VertexBuffer * BURGER_API Burger::Display::CreateVertexBuffer(const Vert
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
 Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 {
 	pOutput->clear();

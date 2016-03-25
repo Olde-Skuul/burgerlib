@@ -21,12 +21,12 @@
 #include "brglobals.h"
 #include "brglobalmemorymanager.h"
 #include <AvailabilityMacros.h>
-#import <AppKit/NSWindow.h>
-#import <AppKit/NSScreen.h>
-#import <IOKit/graphics/IOGraphicsLib.h>
-#import <CoreVideo/CVBase.h>
-#import <CoreVideo/CVDisplayLink.h>
-#import <ApplicationServices/ApplicationServices.h>
+#include <AppKit/NSWindow.h>
+#include <AppKit/NSScreen.h>
+#include <IOKit/graphics/IOGraphicsLib.h>
+#include <CoreVideo/CVBase.h>
+#include <CoreVideo/CVDisplayLink.h>
+#include <ApplicationServices/ApplicationServices.h>
 
 /***************************************
 
@@ -137,7 +137,8 @@ static void GetResolutions(Burger::Display::VideoCardDescription *pOutput)
 		// Width and height are trivial
 		Entry.m_uWidth = static_cast<Word>(CGDisplayModeGetWidth(pDisplayMode));
 		Entry.m_uHeight = static_cast<Word>(CGDisplayModeGetHeight(pDisplayMode));
-		Entry.m_uFlags = 0;
+		Entry.m_uFlags = Burger::Display::VideoMode_t::VIDEOMODE_HARDWARE;
+
 		// Hertz is a value on monitors, however, some LCD screens
 		// have no refresh rate
 		Entry.m_uHertz = static_cast<Word>(CGDisplayModeGetRefreshRate(pDisplayMode));
@@ -147,6 +148,10 @@ static void GetResolutions(Burger::Display::VideoCardDescription *pOutput)
 				Entry.m_uHertz = static_cast<Word>(static_cast<double>(NominalTime.timeScale) / static_cast<double>(NominalTime.timeValue));
 			}
 		}
+		if (Entry.m_uHertz) {
+			Entry.m_uFlags |= Burger::Display::VideoMode_t::VIDEOMODE_REFRESHVALID;
+		}
+
 		//
 		// Apple uses a wacky way to map out pixels.
 		//
@@ -188,18 +193,22 @@ static void GetResolutions(Burger::Display::VideoCardDescription *pOutput)
 	// Get the display link to get the refresh rate
 	CVDisplayLinkRef pDisplayLink;
 	CVDisplayLinkCreateWithCGDisplay(pOutput->m_uDevNumber,&pDisplayLink);
+	
 	// Get the list of display modes
 	CFArrayRef pModeList = CGDisplayAvailableModes(pOutput->m_uDevNumber);
 	CFIndex uCount = CFArrayGetCount(pModeList);
 	for (CFIndex i=0; i<uCount;++i) {
+		
 		// Get the mode and query it
 		CFDictionaryRef pDisplayMode = static_cast<CFDictionaryRef>(const_cast<void *>(CFArrayGetValueAtIndex(pModeList,i)));
 		Burger::Display::VideoMode_t Entry;
 		Word bSkip = FALSE;
+
 		// Width and height are trivial
 		Entry.m_uWidth = static_cast<Word>(Burger::Globals::NumberFromKey(pDisplayMode,"Width"));
 		Entry.m_uHeight = static_cast<Word>(Burger::Globals::NumberFromKey(pDisplayMode,"Height"));
-		Entry.m_uFlags = 0;
+		Entry.m_uFlags = Burger::Display::VideoMode_t::VIDEOMODE_HARDWARE;
+	
 		// Hertz is a value on monitors, however, some LCD screens
 		// have no refresh rate
 		Entry.m_uHertz = static_cast<Word>(Burger::Globals::NumberFromKey(pDisplayMode,"RefreshRate"));
@@ -209,6 +218,10 @@ static void GetResolutions(Burger::Display::VideoCardDescription *pOutput)
 				Entry.m_uHertz = static_cast<Word>(static_cast<double>(NominalTime.timeScale) / static_cast<double>(NominalTime.timeValue));
 			}
 		}
+		if (Entry.m_uHertz) {
+			Entry.m_uFlags |= Burger::Display::VideoMode_t::VIDEOMODE_REFRESHVALID;
+		}
+
 		Entry.m_uDepth = Burger::Globals::NumberFromKey(pDisplayMode,"BitsPerPixel");
 
 		// Get rid of modes that are "faked" or unsafe
@@ -240,37 +253,66 @@ Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 {
 	NSAutoreleasePool *pPool = [[NSAutoreleasePool alloc] init];
 	pOutput->clear();
+	
 	Word uResult = 0;		// Assume success
 	uint32_t uDisplayCount;
+
 	// Get the number of displays attached to this mac.
 	// It CAN be zero
 	CGGetOnlineDisplayList(0,NULL,&uDisplayCount);
 	if (uDisplayCount) {
+
 		// Create a buffer to the display IDs
 		CGDirectDisplayID *pDisplayIDs = static_cast<CGDirectDisplayID *>(AllocClear(uDisplayCount*sizeof(CGDirectDisplayID)));
+
 		// Get the active display count (Some are mirrored or unplugged)
 		uint32_t uActiveDisplayCount;
 		CGGetOnlineDisplayList(uDisplayCount,pDisplayIDs,&uActiveDisplayCount);
 		if (uActiveDisplayCount) {
-			const CGDirectDisplayID *pDisplay = pDisplayIDs;
-			CFArrayRef pNSScreens = reinterpret_cast<CFArrayRef>([NSScreen screens]);
+
+			// Cache the screen count
+			CFArrayRef pNSScreens = static_cast<CFArrayRef>([NSScreen screens]);
 			CFIndex uScreenCount = CFArrayGetCount(pNSScreens);
+
+			// Iterate over the displays
+			const CGDirectDisplayID *pDisplay = pDisplayIDs;
 			do {
+				
+				// Get the ID of this display
 				CGDirectDisplayID uDisplayID = pDisplay[0];
+
 				// Skip sleeping monitors
 				if (!CGDisplayIsAsleep(uDisplayID)) {
+					
 					// If the display is a mirror, obtain the true display
 					// used by NSScreen
 					CGDirectDisplayID uNSScreenDisplayID = CGDisplayMirrorsDisplay(uDisplayID);
 					if (uNSScreenDisplayID == kCGNullDirectDisplay) {
 						uNSScreenDisplayID = uDisplayID;
 					}
+					
 					// Set up the video card description
 					VideoCardDescription Entry;
 					Globals::GetDisplayName(&Entry.m_MonitorName,uDisplayID);
 					Entry.m_uDevNumber = uDisplayID;
-					Entry.m_bHardwareAccelerated = TRUE;
 					Entry.m_DeviceName = "OpenGL";
+					
+					// OpenGL is available?
+					if (CGDisplayUsesOpenGLAcceleration(uDisplayID)) {
+						Entry.m_uFlags |= VideoCardDescription::VIDEOCARD_HARDWARE;
+					}
+
+					// Is this the primary display?
+					if (CGDisplayIsMain(uDisplayID)) {
+						Entry.m_uFlags |= VideoCardDescription::VIDEOCARD_PRIMARY;
+					}
+					
+					// Get the location of the monitor
+					CGRect MonitorBounds = CGDisplayBounds(uDisplayID);
+					Entry.m_SystemRect.Set(&MonitorBounds);
+					Entry.m_CurrentResolution.SetRight(static_cast<int>(MonitorBounds.size.width));
+					Entry.m_CurrentResolution.SetBottom(static_cast<int>(MonitorBounds.size.height));
+					
 					// See if there is an NSScreen that's attached to this
 					// display
 
@@ -281,7 +323,10 @@ Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 						NSNumber* pNumber = [pScreenDictionary objectForKey:@"NSScreenNumber"];
 						// Matched?
 						if ([pNumber unsignedIntegerValue] == uNSScreenDisplayID) {
+							
+							// Save the screen pointer
 							Entry.m_pNSScreen = pNSScreen;
+
 							// Iterate the video modes
 							GetResolutions(&Entry);
 							// Save the monitor

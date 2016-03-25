@@ -56,6 +56,15 @@ public:
 	};
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+	enum eWindowsVersionFound {
+		WINDOWSVERSION_9598 = 0x01,				///< Set if ancient version of windows
+		WINDOWSVERSION_XPORGREATER = 0x02,		///< Set if running on XP or higher
+		WINDOWSVERSION_VISTAORGREATER = 0x04,	///< Set if Vista or higher
+		WINDOWSVERSION_7ORGREATER = 0x08,		///< Set if Windows 7 or higher
+		WINDOWSVERSION_8ORGREATER = 0x10,		///< Set if Windows 8 or higher
+		WINDOWSVERSION_10ORGREATER = 0x20,		///< Set if Windows 10 or higher
+		WINDOWSVERSION_TESTED = 0x80			///< Set if the rest of the flags are valid
+	};
 	enum eWindowsDLLIndex {
 		DDRAW_DLL,		///< Index for ddraw.dll
 		DINPUT_DLL,		///< Index for dinput.dll
@@ -150,9 +159,7 @@ private:
 	static Word8 g_bQuickTimeVersionValid;	///< \ref TRUE if Quicktime's version is valid. (Windows only)
 	static Word32 g_uDirectXVersion;		///< DirectX version 0x0900 (9.0) format (Windows only)
 	static Word8 g_bDirectXVersionValid;	///< \ref TRUE if DirectX's version is valid (Windows only)
-	static Word8 g_bWindows95;				///< Non-zero if tested, low bit has \ref TRUE or \ref FALSE for Windows 95/98 detection (Windows only)
-	static Word8 g_bWindowsXP;				///< Non-zero if tested, low bit has \ref TRUE or \ref FALSE for Windows XP detection (Windows only)
-	static Word8 g_bWindowsVista;			///< Non-zero if tested, low bit has \ref TRUE or \ref FALSE for Windows Vista detection (Windows only)
+	static Word8 g_bWindowsVersionFlags;	///< See \ref eWindowsVersionFound for values. Set by \ref TestWindowsVersion()
 #if defined(BURGER_WIN32) || defined(DOXYGEN)
 	static Word8 g_bIsWindows64Bit;				///< Non-zero if tested, low bit has \ref TRUE or \ref FALSE if the 32 bit app was running under 64 bit windows (Windows only)
 #endif
@@ -169,12 +176,24 @@ private:
 	Word m_uAppleShareVersion;				///< Discovered version of AppleShare (Mac only)
 	Word m_uInputSprocketVersion;			///< Discovered version of InputSprocket (Mac only)
 	Word m_uDrawSprocketVersion;			///< Discovered version of DrawSprocket (Mac only)
-	Word m_uMacOSVersion;					///< Discovered version of MacOS (Mac only)
+	Word m_uSoundManagerVersion;			///< Sound manager version in 0x0102 (1.2) format (Mac only)
+	Word m_uMacOSVersion;					///< Discovered version of MacOS (MacOS only)
+	Word m_uQuickTimeVersion;				///< QuickTime's version in 0x0102 (1.2) format. (MacOS only)
 	Word8 m_bIsQuickTimePlugInTested;		///< Non-zero if tested, low bit has \ref TRUE or \ref FALSE for QuickTime Plugin present (Mac only)
 	Word8 m_bAppleShareVersionTested;		///< AppleShare version was tested (Mac only)
 	Word8 m_bInputSprocketVersionTested;	///< InputSprocket version was tested (Mac only)
 	Word8 m_bDrawSprocketVersionTested;		///< DrawSprocket version was tested (Mac only)
-	Word8 m_bMacOSTested;					///< MacOS version was tested (Mac only)
+	Word8 m_bSoundManagerVersionValid;		///< \ref TRUE if sound manager version is valid (Mac only)
+	Word8 m_bMacOSTested;					///< MacOS version was tested (MacOS only)
+	Word8 m_bQuickTimeVersionValid;			///< \ref TRUE if Quicktime's version is valid. (MacOS only)
+	Word8 m_bDrawSprocketActive;			///< \ref TRUE if DrawSprocket was started
+#endif
+
+#if defined(BURGER_MACOSX)
+	Word m_uMacOSVersion;					///< Discovered version of MacOS (MacOS only)
+	Word m_uQuickTimeVersion;				///< QuickTime's version in 0x0102 (1.2) format. (MacOS only)
+	Word8 m_bMacOSTested;					///< MacOS version was tested (MacOS only)
+	Word8 m_bQuickTimeVersionValid;			///< \ref TRUE if Quicktime's version is valid. (MacOS only)
 #endif
 
 private:
@@ -192,19 +211,39 @@ public:
 	static BURGER_INLINE void SetInstance(HINSTANCE__ *pInput) { g_hInstance = pInput; }
 	static BURGER_INLINE HWND__ *GetWindow(void) { return g_hWindow; }
 	static BURGER_INLINE void SetWindow(HWND__ *pInput) { g_hWindow = pInput; }
-	static Word BURGER_API IsDirectInputPresent(void);
-	static Word BURGER_API IsDirectInput8Present(void);
-	static Word BURGER_API IsDirectDrawPresent(void);
-	static Word BURGER_API IsD3D9Present(void);
-	static Word BURGER_API IsDirectSoundPresent(void);
-	static Word BURGER_API IsWin95orWin98(void);
-	static Word BURGER_API IsWinXPOrGreater(void);
-	static Word BURGER_API IsVistaOrGreater(void);
+
+	static Word BURGER_API TestWindowsVersion(void);
+	BURGER_INLINE static Word IsWin95orWin98(void) { return (TestWindowsVersion()&WINDOWSVERSION_9598); }
+	BURGER_INLINE static Word IsWinXPOrGreater(void) { return (TestWindowsVersion()&WINDOWSVERSION_XPORGREATER)!=0; }
+	BURGER_INLINE static Word IsVistaOrGreater(void) { return (TestWindowsVersion()&WINDOWSVERSION_VISTAORGREATER)!=0; }
+	BURGER_INLINE static Word IsWin7OrGreater(void) { return (TestWindowsVersion()&WINDOWSVERSION_7ORGREATER)!=0; }
+	BURGER_INLINE static Word IsWin8OrGreater(void) { return (TestWindowsVersion()&WINDOWSVERSION_8ORGREATER)!=0; }
+	BURGER_INLINE static Word IsWin10OrGreater(void) { return (TestWindowsVersion()&WINDOWSVERSION_10ORGREATER)!=0; }
+
 #if defined(BURGER_WIN32) || defined(DOXYGEN)
 	static Word BURGER_API IsWindows64Bit(void);
 #else
 	BURGER_INLINE static Word IsWindows64Bit(void) { return TRUE; }
 #endif
+
+	static HINSTANCE__ * BURGER_API LoadLibraryIndex(eWindowsDLLIndex eIndex);
+	static void * BURGER_API LoadFunctionIndex(eWindowsCallIndex eIndex);
+
+	BURGER_INLINE static Word IsDirectInputPresent(void) { return (LoadLibraryIndex(DINPUT_DLL)!=NULL); }
+	BURGER_INLINE static Word IsDirectInput8Present(void) { return (LoadLibraryIndex(DINPUT8_DLL)!=NULL); }
+	BURGER_INLINE static Word IsXInputPresent(void) { return (LoadLibraryIndex(XINPUT1_4_DLL)!=NULL); }
+	BURGER_INLINE static Word IsDirectDrawPresent(void) { return (LoadLibraryIndex(DDRAW_DLL)!=NULL); }
+	BURGER_INLINE static Word IsD3D9Present(void) { return (LoadLibraryIndex(D3D9_DLL)!=NULL); }
+	BURGER_INLINE static Word IsDirectSoundPresent(void) { return (LoadLibraryIndex(DSOUND_DLL)!=NULL); }
+
+	static void BURGER_API GetQTFolderFromRegistry(const char *pSubKey,const char *pValueName,char *pBuffer,Word32 uSize);
+	static Word BURGER_API GetPathToQuickTimeFolder(char *pBuffer,Word32 uSize,Word32 *pReserved);
+	static Word32 BURGER_API GetQTSystemDirectoryA(char *pBuffer,Word32 uSize);
+	static Word32 BURGER_API GetQTApplicationDirectoryA(char *pBuffer,Word32 uSize);
+	static Word32 BURGER_API GetQTExtensionDirectoryA(char *pBuffer,Word32 uSize);
+	static Word32 BURGER_API GetQTComponentDirectoryA(char *pBuffer,Word32 uSize);
+	static HINSTANCE__ * BURGER_API QTLoadLibrary(const char *pDLLName);
+
 	static IDirectInputW *BURGER_API GetDirectInputSingleton(Word uVersion=0x700);
 	static IDirectInput8W *BURGER_API GetDirectInput8Singleton(void);
 
@@ -275,7 +314,6 @@ public:
 	static Word BURGER_API GetSystemWow64DirectoryW(Word16 *pBuffer,Word32 uSize);
 	static Word BURGER_API SHGetKnownFolderPath(const GUID *pGuid,Word32 uFlags,void *hHandle,Word16 **ppResult);
 
-	static Word BURGER_API GetQuickTimeVersion(void);
 	static Word64 BURGER_API GetFileVersion64(const Word16* pWindowsFilename);
 	static Word BURGER_API GetDirectXVersionViaFileVersions(void);
 	static Word BURGER_API GetDirectXVersion(void);
@@ -286,8 +324,6 @@ public:
 	static HINSTANCE__ * BURGER_API LoadLibraryW(const Word16 *pInput);
 	static HINSTANCE__ * BURGER_API LoadLibraryExA(const char *pInput,void *hFile,Word32 uFlags);
 	static HINSTANCE__ * BURGER_API LoadLibraryExW(const Word16 *pInput,void *hFile,Word32 uFlags);
-	static HINSTANCE__ * BURGER_API LoadLibraryIndex(eWindowsDLLIndex eIndex);
-	static void * BURGER_API LoadFunctionIndex(eWindowsCallIndex eIndex);
 	static Word BURGER_API AddGroupToProgramMenu(const char *pGroupName);
 	static int BURGER_API CreateUserRegistryKey(const char *pKey,const char *pSubKey,const char *pData);
 	static void BURGER_API AssociateFileExtensionToExe(const char *pFileExtension,const char *pDescription,const char *pProgramID);
@@ -314,12 +350,18 @@ public:
 	static Word BURGER_API GetAppleShareVersion(void);
 	static Word BURGER_API GetInputSprocketVersion(void);
 	static Word BURGER_API GetDrawSprocketVersion(void);
+	static Word BURGER_API GetSoundManagerVersion(void);
 	static void BURGER_API KillProcess(ProcessSerialNumber *pVictim);
 	static void BURGER_API KillAllProcesses(void);
+	static Word BURGER_API StartDrawSprocket(void);
+	static void BURGER_API StopDrawSprocket(void);
 #endif
 
 #if defined(BURGER_MACOS) || defined(DOXYGEN)
 	static Word BURGER_API GetMacOSVersion(void);
+#endif
+#if defined(BURGER_MACOS) || defined(BURGER_WINDOWS) || defined(DOXYGEN)
+	static Word BURGER_API GetQuickTimeVersion(void);
 #endif
 
 	static BURGER_INLINE int GetErrorCode(void) { return g_iErrorCode; }

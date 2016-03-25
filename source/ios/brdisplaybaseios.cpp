@@ -84,7 +84,9 @@ static void GetResolutions(Burger::Display::VideoCardDescription *pOutput,UIScre
 	float fRetinaScale = Burger::Display::GetRetinaScale();
 	for (UIScreenMode *pMode in [pScreen availableModes]) {
 		Burger::Display::VideoMode_t Entry;
-		Entry.m_uFlags = 0;		// All LCDs
+		Entry.m_uFlags = Burger::Display::VideoMode_t::VIDEOMODE_HARDWARE;
+		
+		// All LCDs
 		Entry.m_uHertz = 0;		// Frequency is meaningless
 		Entry.m_uDepth = 32;
 
@@ -119,9 +121,19 @@ Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 	for (UIScreen *pScreen in [UIScreen screens]) {
 		VideoCardDescription Entry;
 		Entry.m_uDevNumber = uDisplayID;
-		Entry.m_bHardwareAccelerated = TRUE;
+		Entry.m_uFlags = VideoCardDescription::VIDEOCARD_HARDWARE|VideoCardDescription::VIDEOCARD_PRIMARY;
 		Entry.m_MonitorName = "LCD";
 		Entry.m_DeviceName = "OpenGL";
+
+		CGSize CurrentSize = [[pScreen currentMode] size];
+		int iWidth = static_cast<int>(CurrentSize.width);
+		int iHeight = static_cast<int>(CurrentSize.height);
+		
+		Entry.m_SystemRect.SetRight(iWidth);
+		Entry.m_SystemRect.SetBottom(iHeight);
+		Entry.m_CurrentResolution.SetRight(iWidth);
+		Entry.m_CurrentResolution.SetBottom(iHeight);
+
 		// Iterate the video modes
 		GetResolutions(&Entry,pScreen);
 		// Save the monitor

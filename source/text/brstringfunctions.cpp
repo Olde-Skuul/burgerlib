@@ -2071,7 +2071,7 @@ void BURGER_API Burger::SlashesToColons(char *pOutput,const char *pInput)
 	\brief Convert all forward slashes ('/') to back slashes ('\').
 	
 	Windows uses backslashes as directory separators. This function will take
-	unix style slashes and convert them into Windows slashes.
+	Linux style slashes and convert them into Windows slashes.
 		
 	\param pInput Pointer to the "C" string to perform the fix up on. \ref NULL will page fault.
 	\sa SlashesToWindowsSlashes(char *,const char *), SlashesToColons(char *) or SlashesToLinuxSlashes(char *)
@@ -2124,10 +2124,88 @@ void BURGER_API Burger::SlashesToWindowsSlashes(char *pOutput,const char *pInput
 
 /*! ************************************
 
+	\brief Force the last character of a string to be '\'
+	
+	Windows uses backslashes as directory separators. This function will take
+	Linux style slashes and convert them into Windows slashes. It will also append a
+	'\' character to the end of the string if a slash wasn't already there.
+		
+	\param pInput Pointer to the "C" string to perform the fix up on. \ref NULL will page fault.
+	\sa EndWithWindowsSlashes(char *,const char *)
+
+***************************************/
+
+void BURGER_API Burger::EndWithWindowsSlashes(char *pInput)
+{
+	// Get the initial character
+	Word uTemp = reinterpret_cast<Word8*>(pInput)[0];
+	Word uLastChar = 0;
+	if (uTemp) {
+		// Start the loop
+		do {
+			if (uTemp=='/') {	// Change the Linux slash to windows
+				uTemp = '\\';	// Set last char
+				pInput[0] = '\\';
+			}
+			uLastChar = uTemp;	// Record the last valid character
+			// Get the next character
+			uTemp = reinterpret_cast<Word8*>(pInput)[1];
+			++pInput;
+		} while (uTemp);		// End of string?
+	}
+
+	// If the last character wasn't a slash, add one
+	if (uLastChar!='\\') {
+		pInput[0] = '\\';
+		pInput[1] = 0;
+	}
+}
+
+/*! ************************************
+
+	\brief Copy a string and force the last character of a string to be '\'
+	
+	Windows uses backslashes as directory separators. This function will take
+	Linux style slashes and convert them into Windows slashes. It will also append a
+	'\' character to the end of the string if a slash wasn't already there.
+		
+	\param pOutput Pointer to a buffer large enough to hold the converted "C" string.
+	\param pInput Pointer to the "C" string to perform the fix up on. \ref NULL will page fault.
+	\sa EndWithWindowsSlashes(char *)
+
+***************************************/
+
+void BURGER_API Burger::EndWithWindowsSlashes(char *pOutput,const char *pInput)
+{
+	Word uTemp = reinterpret_cast<const Word8*>(pInput)[0];
+	Word uLastChar = 0;
+	if (uTemp) {
+		do {
+			if (uTemp=='/') {	// Change the slash
+				uTemp = '\\';
+			}
+			uLastChar = uTemp;	// Record the last valid character
+			pOutput[0] = static_cast<char>(uTemp);
+			++pOutput;
+			uTemp = reinterpret_cast<const Word8*>(pInput)[1];
+			++pInput;
+		} while (uTemp);		// End of string?
+	}
+
+	// If the last character wasn't a slash, add one
+	if (uLastChar!='\\') {
+		pOutput[0] = '\\';
+		++pOutput;
+	}
+	pOutput[0] = static_cast<char>(uTemp);
+}
+
+/*! ************************************
+
 	\brief Convert all back slashes ('\') to forward slashes ('/').
 	
 	Linux and MacOSX uses forward slashes as directory separators. This function will take
-	Windows slashes and convert them into unix style slashes.
+	Windows slashes and convert them into Linux style slashes.
 		
 	\param pInput Pointer to the "C" string to perform the fix up on. \ref NULL will page fault.
 	\sa SlashesToLinuxSlashes(char *,const char *),SlashesToColons(char *) or SlashesToWindowsSlashes(char *)
@@ -2174,6 +2252,84 @@ void BURGER_API Burger::SlashesToLinuxSlashes(char *pOutput,const char *pInput)
 			uTemp = reinterpret_cast<const Word8*>(pInput)[1];
 			++pInput;
 		} while (uTemp);		// End of string?
+	}
+	pOutput[0] = static_cast<char>(uTemp);
+}
+
+/*! ************************************
+
+	\brief Force the last character of a string to be '/'
+	
+	Linux uses forward slashes as directory separators. This function will take
+	Windows style slashes and convert them into Linux slashes. It will also append a
+	'/' character to the end of the string if a slash wasn't already there.
+		
+	\param pInput Pointer to the "C" string to perform the fix up on. \ref NULL will page fault.
+	\sa EndWithLinuxSlashes(char *,const char *)
+
+***************************************/
+
+void BURGER_API Burger::EndWithLinuxSlashes(char *pInput)
+{
+	// Get the initial character
+	Word uTemp = reinterpret_cast<Word8*>(pInput)[0];
+	Word uLastChar = 0;
+	if (uTemp) {
+		// Start the loop
+		do {
+			if (uTemp=='\\') {	// Change the Windows slash to Linux
+				uTemp = '/';	// Set last char
+				pInput[0] = '/';
+			}
+			uLastChar = uTemp;	// Record the last valid character
+			// Get the next character
+			uTemp = reinterpret_cast<Word8*>(pInput)[1];
+			++pInput;
+		} while (uTemp);		// End of string?
+	}
+
+	// If the last character wasn't a slash, add one
+	if (uLastChar!='/') {
+		pInput[0] = '/';
+		pInput[1] = 0;
+	}
+}
+
+/*! ************************************
+
+	\brief Copy a string and force the last character of a string to be '/'
+	
+	Linux uses forward slashes as directory separators. This function will take
+	Windows style slashes and convert them into Linux slashes. It will also append a
+	'/' character to the end of the string if a slash wasn't already there.
+		
+	\param pOutput Pointer to a buffer large enough to hold the converted "C" string.
+	\param pInput Pointer to the "C" string to perform the fix up on. \ref NULL will page fault.
+	\sa EndWithLinuxSlashes(char *)
+
+***************************************/
+
+void BURGER_API Burger::EndWithLinuxSlashes(char *pOutput,const char *pInput)
+{
+	Word uTemp = reinterpret_cast<const Word8*>(pInput)[0];
+	Word uLastChar = 0;
+	if (uTemp) {
+		do {
+			if (uTemp=='\\') {	// Change the slash
+				uTemp = '/';
+			}
+			uLastChar = uTemp;	// Record the last valid character
+			pOutput[0] = static_cast<char>(uTemp);
+			++pOutput;
+			uTemp = reinterpret_cast<const Word8*>(pInput)[1];
+			++pInput;
+		} while (uTemp);		// End of string?
+	}
+
+	// If the last character wasn't a slash, add one
+	if (uLastChar!='/') {
+		pOutput[0] = '/';
+		++pOutput;
 	}
 	pOutput[0] = static_cast<char>(uTemp);
 }

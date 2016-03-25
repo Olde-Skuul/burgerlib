@@ -50,30 +50,37 @@ void Burger::Display::SetWindowTitle(const char *pTitle)
 static HRESULT __stdcall ModeCallBack(DDSURFACEDESC2 *pSurface,void *pInput)
 {
 	Burger::Display::VideoCardDescription *pOutput = static_cast<Burger::Display::VideoCardDescription *>(pInput);
-	Burger::Display::VideoMode_t Entry;		// Video mode found
 
-	// Is there a valid size?
+	// Is the minimum records valid?
+
 	if (pSurface->dwFlags & (DDSD_HEIGHT|DDSD_WIDTH|DDSD_PIXELFORMAT)) {
+
+		Burger::Display::VideoMode_t Entry;		// Video mode found
 		Entry.m_uWidth = pSurface->dwWidth;		// Save the pixel width
 		Entry.m_uHeight = pSurface->dwHeight;
-		Entry.m_uFlags = 0;
-		Entry.m_uDepth = 0;
+		Word uFlags = Burger::Display::VideoMode_t::VIDEOMODE_HARDWARE;
 
 		// Was there a refresh rate?
+		
+		// Refresh rate makes no sense for pad or directly driven
+		// LED/LCD panels
+
 		if (pSurface->dwFlags & DDSD_REFRESHRATE) {
 			Entry.m_uHertz = pSurface->dwRefreshRate;					// Monitor refresh rate
+			uFlags |= Burger::Display::VideoMode_t::VIDEOMODE_REFRESHVALID;
 		} else {
-			Entry.m_uHertz = 0;
+			Entry.m_uHertz = 0;			// Force to zero as an alternate way of clearing the rate
 		}
 
 		// Check for supported video modes
 
 		// Test for 8 bit paletted format
 
+		Word uDepth = 0;
 		if (pSurface->ddpfPixelFormat.dwFlags&DDPF_PALETTEINDEXED8) {
 			if (pSurface->ddpfPixelFormat.dwRGBBitCount==8) {
 				// 8 bit palette
-				Entry.m_uDepth = 8;
+				uDepth = 8;
 			}
 
 		// True color modes
@@ -85,7 +92,7 @@ static HRESULT __stdcall ModeCallBack(DDSURFACEDESC2 *pSurface,void *pInput)
 				if ((pSurface->ddpfPixelFormat.dwRBitMask==0xFF0000) &&
 					(pSurface->ddpfPixelFormat.dwGBitMask==0xFF00) &&
 					(pSurface->ddpfPixelFormat.dwBBitMask==0xFF)) {
-					Entry.m_uDepth = pSurface->ddpfPixelFormat.dwRGBBitCount;
+					uDepth = pSurface->ddpfPixelFormat.dwRGBBitCount;
 				}
 				break;
 
@@ -97,20 +104,21 @@ static HRESULT __stdcall ModeCallBack(DDSURFACEDESC2 *pSurface,void *pInput)
 				if ((pSurface->ddpfPixelFormat.dwRBitMask==0xF800) &&
 					(pSurface->ddpfPixelFormat.dwGBitMask==0x07E0) &&
 					(pSurface->ddpfPixelFormat.dwBBitMask==0x001F)) {
-						Entry.m_uDepth = 16;
+						uDepth = 16;
 				} else if ((pSurface->ddpfPixelFormat.dwRBitMask==0x7C00) &&
 					(pSurface->ddpfPixelFormat.dwGBitMask==0x03E0) &&
 					(pSurface->ddpfPixelFormat.dwBBitMask==0x001F)) {
-						Entry.m_uDepth = 15;
+						uDepth = 15;
 				}
 				break;
 			default:
 				break;
 			}
 		}
-
 		// If valid, add to the list
-		if (Entry.m_uDepth) {
+		if (uDepth) {
+			Entry.m_uDepth = uDepth;
+			Entry.m_uFlags = uFlags;
 			pOutput->m_Array.push_back(Entry);
 		}
 	}
@@ -121,30 +129,56 @@ static HRESULT __stdcall ModeCallBack(DDSURFACEDESC2 *pSurface,void *pInput)
 // Local function to enumerate all video device adapters
 //
 
-static HRESULT __stdcall EnumerateVideoDevice(GUID *pGUID,char *pDescription,char *pName,void *pInput,HMONITOR /* pMonitor */)
+static HRESULT __stdcall EnumerateVideoDevice(GUID *pGUID,char *pDescription,char *pName,void *pInput,HMONITOR pMonitor)
 {
 	// Ignore NULL GUID (Primary)
 	if (pGUID) {
 		Burger::ClassArray<Burger::Display::VideoCardDescription> *pOutput = static_cast<Burger::ClassArray<Burger::Display::VideoCardDescription> *>(pInput);
-		IDirectDraw7 *pDD;
-		if (Burger::Globals::DirectDrawCreateEx(pGUID,reinterpret_cast<void **>(&pDD),IID_IDirectDraw7)==DD_OK) {
+
+		// Create a DirectDraw7 instance for queries
+
+		IDirectDraw7 *pDirectDraw7;
+		if (Burger::Globals::DirectDrawCreateEx(pGUID,reinterpret_cast<void **>(&pDirectDraw7),IID_IDirectDraw7)==DD_OK) {
+
+			// This has a constructor, so all values are set to zero
 			Burger::Display::VideoCardDescription Entry;
 
-			// Get the monitor GUID
+			// Get the specific display GUID
 			Burger::MemoryCopy(&Entry.m_GUID,pGUID,sizeof(GUID));
+
+			// Set the device enumeration
 			Entry.m_uDevNumber = static_cast<Word>(pOutput->size());
-			Entry.m_DeviceName = pDescription;
+			Entry.m_DeviceName = pDescription;		// Copy the name of the video card
+
+			// Get the information for the monitor
+
+			MONITORINFOEXW MonitorInfo;
+			MonitorInfo.cbSize = sizeof(MonitorInfo);
+			if (GetMonitorInfoW(pMonitor,&MonitorInfo)) {
+
+				// Capture the area of the desktop this monitor resides in
+				Entry.m_SystemRect.Set(&MonitorInfo.rcMonitor);
+				Entry.m_CurrentResolution.SetRight(static_cast<int>(MonitorInfo.rcMonitor.right-MonitorInfo.rcMonitor.left));
+				Entry.m_CurrentResolution.SetBottom(static_cast<int>(MonitorInfo.rcMonitor.bottom-MonitorInfo.rcMonitor.top));
+
+				// Is this the primary monitor?
+				if (MonitorInfo.dwFlags & MONITORINFOF_PRIMARY) {
+					Entry.m_uFlags |= Burger::Display::VideoCardDescription::VIDEOCARD_PRIMARY;
+				}
+			}
 
 			// Is it hardware accelerated?
-			DDCAPS DriverCaps;
-			DDCAPS HardwareCaps;
+			DDCAPS_DX7 DriverCaps;
+			DDCAPS_DX7 HardwareCaps;
 			Burger::MemoryClear(&DriverCaps,sizeof(DriverCaps));
 			Burger::MemoryClear(&HardwareCaps,sizeof(HardwareCaps));
 			DriverCaps.dwSize = sizeof(DriverCaps);
 			HardwareCaps.dwSize = sizeof(HardwareCaps);
-			if (pDD->GetCaps(&DriverCaps,&HardwareCaps)==DD_OK) {
+			if (pDirectDraw7->GetCaps(&DriverCaps,&HardwareCaps)==DD_OK) {
 				// Allow 3D?
-				Entry.m_bHardwareAccelerated = DriverCaps.dwCaps & DDCAPS_3D;
+				if (DriverCaps.dwCaps & DDCAPS_3D) {
+					Entry.m_uFlags |= Burger::Display::VideoCardDescription::VIDEOCARD_HARDWARE;
+				}
 			}
 
 			// Get the name of the monitor as found by
@@ -159,12 +193,16 @@ static HRESULT __stdcall EnumerateVideoDevice(GUID *pGUID,char *pDescription,cha
 
 			// Iterate over the display modes
 			Word bFailed = FALSE;
-			if (pDD->EnumDisplayModes(DDEDM_REFRESHRATES,0,&Entry,ModeCallBack)!=DD_OK) {
+			if (pDirectDraw7->EnumDisplayModes(DDEDM_REFRESHRATES,0,&Entry,ModeCallBack)!=DD_OK) {
 				// If refresh rates were not permitted, try again without them
-				if (pDD->EnumDisplayModes(0,0,&Entry,ModeCallBack) != DD_OK) {	// Oh oh...
+				if (pDirectDraw7->EnumDisplayModes(0,0,&Entry,ModeCallBack) != DD_OK) {	// Oh oh...
 					bFailed = TRUE;
 				}
 			}
+
+			// Release the DirectDraw7 instance
+			pDirectDraw7->Release();
+
 			if (!bFailed) {
 				pOutput->push_back(Entry);
 			}
@@ -184,7 +222,7 @@ Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 	// Enumerate all devices
 	if (Globals::DirectDrawEnumerateExA(EnumerateVideoDevice,pOutput,DDENUM_ATTACHEDSECONDARYDEVICES|
 		DDENUM_DETACHEDSECONDARYDEVICES|DDENUM_NONDISPLAYDEVICES)==DD_OK) {
-			uResult = 0;
+		uResult = 0;		// No error
 	}
 	return uResult;
 }

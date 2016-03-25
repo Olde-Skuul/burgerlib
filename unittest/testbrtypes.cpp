@@ -527,12 +527,68 @@ int BURGER_API TestBrtypes(void)
 	Message("Burger::HasAltiVec() = %u",uTest);
 
 	//
+	// Handle Windows Version
+	//
+
+#if defined(BURGER_WINDOWS)
+	uTest = Burger::Globals::IsWin95orWin98();
+	Message("Burger::Globals::IsWin95orWin98() = %u",uTest);
+	uTest = Burger::Globals::IsWinXPOrGreater();
+	Message("Burger::Globals::IsWinXPOrGreater() = %u",uTest);
+	uTest = Burger::Globals::IsVistaOrGreater();
+	Message("Burger::Globals::IsVistaOrGreater() = %u",uTest);
+	uTest = Burger::Globals::IsWin7OrGreater();
+	Message("Burger::Globals::IsWin7OrGreater() = %u",uTest);
+	uTest = Burger::Globals::IsWin8OrGreater();
+	Message("Burger::Globals::IsWin8OrGreater() = %u",uTest);
+	uTest = Burger::Globals::IsWin10OrGreater();
+	Message("Burger::Globals::IsWin10OrGreater() = %u",uTest);
+
+	uTest = Burger::Globals::IsWindows64Bit();
+	Message("Burger::Globals::IsWindows64Bit() = %u",uTest);
+
+	uTest = Burger::Globals::IsDirectInputPresent();
+	Message("Burger::Globals::IsDirectInputPresent() = %u",uTest);
+	uTest = Burger::Globals::IsDirectInput8Present();
+	Message("Burger::Globals::IsDirectInput8Present() = %u",uTest);
+	uTest = Burger::Globals::IsXInputPresent();
+	Message("Burger::Globals::IsXInputPresent() = %u",uTest);
+	uTest = Burger::Globals::IsDirectDrawPresent();
+	Message("Burger::Globals::IsDirectDrawPresent() = %u",uTest);
+	uTest = Burger::Globals::IsD3D9Present();
+	Message("Burger::Globals::IsD3D9Present() = %u",uTest);
+	uTest = Burger::Globals::IsDirectSoundPresent();
+	Message("Burger::Globals::IsDirectSoundPresent() = %u",uTest);
+
+	char QTBuffer[300];
+
+	uTest = Burger::Globals::GetPathToQuickTimeFolder(QTBuffer,sizeof(QTBuffer),NULL);
+	Message("Burger::Globals::GetPathToQuickTimeFolder() = %u, %s",uTest,QTBuffer);
+	uTest = Burger::Globals::GetQTSystemDirectoryA(QTBuffer,sizeof(QTBuffer));
+	Message("Burger::Globals::GetQTSystemDirectoryA() = %u, %s",uTest,QTBuffer);
+	uTest = Burger::Globals::GetQTApplicationDirectoryA(QTBuffer,sizeof(QTBuffer));
+	Message("Burger::Globals::GetQTApplicationDirectoryA() = %u, %s",uTest,QTBuffer);
+	uTest = Burger::Globals::GetQTExtensionDirectoryA(QTBuffer,sizeof(QTBuffer));
+	Message("Burger::Globals::GetQTExtensionDirectoryA() = %u, %s",uTest,QTBuffer);
+	uTest = Burger::Globals::GetQTComponentDirectoryA(QTBuffer,sizeof(QTBuffer));
+	Message("Burger::Globals::GetQTComponentDirectoryA() = %u, %s",uTest,QTBuffer);
+	uTest = Burger::Globals::GetQuickTimeVersion();
+	Message("Burger::Globals::GetQuickTimeVersion() = 0x%04X",uTest);
+
+	uTest = Burger::Globals::GetDirectXVersion();
+	Message("Burger::Globals::GetDirectXVersion() = 0x%04X",uTest);
+
+#endif
+
+	//
 	// Handle MacOS Version
 	//
 
 #if defined(BURGER_MACOS)
 	uTest = Burger::Globals::GetMacOSVersion();
 	Message("Burger::Globals::GetMacOSVersion() = %04X",uTest);
+	uTest = Burger::Globals::GetQuickTimeVersion();
+	Message("Burger::Globals::GetQuickTimeVersion() = 0x%04X",uTest);
 #endif
 
 	//
@@ -554,6 +610,9 @@ int BURGER_API TestBrtypes(void)
 
 	uTest = Burger::Globals::GetDrawSprocketVersion();
 	Message("Burger::Globals::GetDrawSprocketVersion() = %04X",uTest);
+
+	uTest = Burger::Globals::GetSoundManagerVersion();
+	Message("Burger::Globals::GetSoundManagerVersion() = %04X",uTest);
 
 #endif
 

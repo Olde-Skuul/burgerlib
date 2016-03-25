@@ -359,6 +359,41 @@ Word BURGER_API Burger::Globals::GetDrawSprocketVersion(void)
 
 /*! ************************************
 
+	\brief Return the version of the Sound Manager.
+	
+	Ask the MacOS Sound Manager what version it is and return that value.
+	The function caches the value so subsequent calls
+	do not ask the Sound Manager for the version again.
+	
+	\return Version in the format of 0x0102 -> 1.2
+	
+	\note If the sound manager is not installed (Very old mac models), it will return 0.
+	
+***************************************/
+
+Word BURGER_API Burger::Globals::GetSoundManagerVersion(void)
+{
+	Globals *pGlobals = &g_Globals;			// Get the pointer to the singleton
+	if (!pGlobals->m_bSoundManagerVersionValid) {
+		pGlobals->m_bSoundManagerVersionValid = TRUE;	// I got the version
+#if !defined(BURGER_CFM)							// 68K trap only 
+		if (GetToolTrapAddress(_SoundDispatch) != GetToolTrapAddress(_Unimplemented))
+#else
+		if (SndSoundManagerVersion!=NULL)			// Check the pointer for CFM 68k or PPC
+#endif
+		{
+			NumVersion MyVersion;
+			MyVersion = SndSoundManagerVersion();		// Get the version
+			Word uResult = (MyVersion.majorRev<<8)&0xFF00U;	// 8.8 version number
+			uResult |= (MyVersion.minorAndBugRev)&0xFF;
+			pGlobals->m_uSoundManagerVersion = uResult;		// Store the version in cache
+		}
+	}
+	return pGlobals->m_uSoundManagerVersion;		// Return the version
+}
+
+/*! ************************************
+
 	\brief Send a "Quit" event to the requested process
 
 	Send an Apple Event to the process to tell the process
@@ -473,6 +508,83 @@ void BURGER_API Burger::Globals::KillAllProcesses(void)
 
 /*! ************************************
 
+	\brief Start DrawSprocket
+	
+	If DrawSprocket was not started, test for its
+	existance and initialize the library. If 
+	DrawSprocket was started successfully or
+	was already started, return \ref TRUE, 
+	otherwise return \ref FALSE
+	
+	\note This call does nothing on non-CFM targets
+	
+	\return \ref TRUE on success
+	
+***************************************/
+
+Word BURGER_API Burger::Globals::StartDrawSprocket(void)
+{
+#if !defined(BURGER_CFM)
+	Word bResult = FALSE;
+#else
+	Globals *pGlobals = &g_Globals;
+
+	// Did I test for DrawSprocket?
+	Word bResult = pGlobals->m_bDrawSprocketActive;
+	if (!bResult) {
+	
+		// Is draw sprocket present?
+		if (DSpStartup!=NULL) {
+			// Init draw sprocket
+			if (!DSpStartup()) {
+		
+				// It's ok!
+				pGlobals->m_bDrawSprocketActive = TRUE;
+				// Initialize the blanking color to black
+				// (Some Performa computers don't set this
+				// on startup)
+				
+				RGBColor Black;
+				Black.red = 0;
+				Black.green = 0;
+				Black.blue = 0;
+				DSpSetBlankingColor(&Black);
+				bResult = TRUE;
+			}
+		}
+	}
+#endif
+	// Return TRUE if active
+	return bResult;
+}
+
+/*! ************************************
+
+	\brief Shut down DrawSprocket
+	
+	If DrawSprocket was started, shut it down.
+	
+	\note This call does nothing on non-CFM targets
+	
+***************************************/
+
+void BURGER_API Burger::Globals::StopDrawSprocket(void)
+{
+#if defined(BURGER_CFM)
+	Globals *pGlobals = &g_Globals;
+
+	// Already started?
+	if (pGlobals->m_bDrawSprocketActive) {
+		pGlobals->m_bDrawSprocketActive = FALSE;
+	
+		// Bye bye
+		DSpShutdown();
+	}
+#endif
+}
+
+/*! ************************************
+
 	\brief Return the version of MacOS.
 	
 	Ask MacOS what version it is and return that value.
@@ -501,6 +613,38 @@ Word BURGER_API Burger::Globals::GetMacOSVersion(void)
 	}
 	return uVersion;
 }
+
+/***************************************
+
+	\brief Return the version of QuickTime.
+	
+	Detect if QuickTime is available, and if so, query
+	it for the version present. If QuickTime is not available,
+	the version returned is zero.
+	
+	This function is written so it only asks for the version
+	once from QuickTime. It will cache the version and
+	return the cached value on subsequent calls.
+	
+	\return Version in the format of 0x0102 -> 1.2
+		
+***************************************/
+
+Word BURGER_API Burger::Globals::GetQuickTimeVersion(void)
+{
+	Globals *pGlobals = &g_Globals;			// Get the pointer to the singleton		
+	if (!pGlobals->m_bQuickTimeVersionValid) {
+		pGlobals->m_bQuickTimeVersionValid = TRUE;	// I got the version
+		long gestaltAnswer;
+		Word uResult = 0;
+		if (!Gestalt(gestaltQuickTimeVersion,&gestaltAnswer)) {
+			uResult = (gestaltAnswer >> 16) & 0xFFFFU;	// Major version
+		}
+		pGlobals->m_uQuickTimeVersion = uResult;
+	}
+	return pGlobals->m_uQuickTimeVersion;		// Return the quicktime version
+}
+
 
 /***************************************
 

@@ -43,10 +43,12 @@ Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 
 	VideoCardDescription *pEntry = pOutput->GetPtr();
 	// Use generic names for the details
-	pEntry->m_DeviceName = "XBox 360";
-	pEntry->m_MonitorName = "Monitor";
+	pEntry->m_DeviceName.Set("XBox 360");
+	pEntry->m_MonitorName.Set("Monitor");
+	pEntry->m_SystemRect.Set(0,0,VideoMode.dwDisplayWidth,VideoMode.dwDisplayHeight);
+	pEntry->m_CurrentResolution.Set(0,0,VideoMode.dwDisplayWidth,VideoMode.dwDisplayHeight);
 	pEntry->m_uDevNumber = 0;
-	pEntry->m_bHardwareAccelerated = TRUE;
+	pEntry->m_uFlags = VideoCardDescription::VIDEOCARD_HARDWARE|VideoCardDescription::VIDEOCARD_PRIMARY;
 	// Append the single mode
 	pEntry->m_Array.resize(1);
 
@@ -58,7 +60,7 @@ Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 	// Use FloatToInt to avoid LHS
 	__stfiwx(__fctiw(VideoMode.RefreshRate),0,&pMode->m_uHertz);
 	pMode->m_uDepth = 32;			// Always 32 bits
-	pMode->m_uFlags = VIDEOMODE_HARDWARE;		// Nothing special
+	pMode->m_uFlags = VideoMode_t::VIDEOMODE_HARDWARE;		// Nothing special
 
 	// All done!
 	return 0;

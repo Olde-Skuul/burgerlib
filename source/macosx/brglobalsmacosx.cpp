@@ -593,6 +593,37 @@ int BURGER_API Burger::Globals::ExecuteTool(const char *pFilename,const char *pP
 }
 
 /***************************************
+
+	\brief Return the version of QuickTime.
+	
+	Detect if QuickTime is available, and if so, query
+	it for the version present. If QuickTime is not available,
+	the version returned is zero.
+	
+	This function is written so it only asks for the version
+	once from QuickTime. It will cache the version and
+	return the cached value on subsequent calls.
+	
+	\return Version in the format of 0x0102 -> 1.2
+		
+***************************************/
+
+Word BURGER_API Burger::Globals::GetQuickTimeVersion(void)
+{
+	Globals *pGlobals = &g_Globals;			// Get the pointer to the singleton		
+	if (!pGlobals->m_bQuickTimeVersionValid) {
+		pGlobals->m_bQuickTimeVersionValid = TRUE;	// I got the version
+		SInt32 gestaltAnswer;
+		Word uResult = 0;
+		if (!Gestalt(gestaltQuickTimeVersion,&gestaltAnswer)) {
+			uResult = (gestaltAnswer >> 16) & 0xFFFFU;	// Major version
+		}
+		pGlobals->m_uQuickTimeVersion = uResult;
+	}
+	return pGlobals->m_uQuickTimeVersion;		// Return the quicktime version
+}
+
+/***************************************
  
 	Read an environment variable as UTF8
  

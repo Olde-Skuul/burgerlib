@@ -79,33 +79,33 @@ static int ValidateMacSystem(void)
 
 	// Check system version
 
-	if (Burger::Mac::GetOSVersion() < 0x0753) {
+	if (Burger::Globals::GetMacOSVersion() < 0x0753) {
 		pErrorText = "Requires system 7.5.3 or later to run";
 	} else
 
 	// Check for QuickTime
 
-	if (Burger::Mac::GetQuickTimeVersion() < 0x0201) {
+	if (Burger::Globals::GetQuickTimeVersion() < 0x0201) {
 		pErrorText = "Requires Quicktime 2.0 later to run";
 	} else
 
 	// Check for Sound Manager 3.0 or later
 
 #if defined(BURGER_POWERPC)
-	if (Burger::Mac::GetDrawSprocketVersion() < 0x175) {
+	if (Burger::Globals::GetDrawSprocketVersion() < 0x175) {
 		pErrorText = "Requires DrawSprocket 1.7.5 or later to run";
 	} else
 
 	// Check for Sound Manager 3.0 or later
 
-	if ((Burger::Mac::GetOSVersion()<0x9FF) && (Burger::Mac::GetInputSprocketVersion() < 0x173)) {
+	if ((Burger::Globals::GetMacOSVersion()<0x9FF) && (Burger::Globals::GetInputSprocketVersion() < 0x173)) {
 		pErrorText = "Requires Input Sprocket 1.7.3 or later to run";
 	} else
 #endif
 
 	// Check for Sound Manager 3.0 or later
 
-	if (Burger::Mac::GetSoundManagerVersion() < 0x300) {
+	if (Burger::Globals::GetSoundManagerVersion() < 0x300) {
 		pErrorText = "Requires Sound manager 3.2.1 or later to run";
 	} else
 

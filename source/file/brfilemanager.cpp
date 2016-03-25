@@ -101,8 +101,11 @@ Burger::FileManager::FileManager() :
 {
 	MemoryClear(m_pPrefix,sizeof(m_pPrefix));
 	MemoryClear(m_IOQueue,sizeof(m_IOQueue));
+
+#if 0
 	// Start up the worker thread
 	m_Thread.Start(QueueHandler,this);
+#endif
 }
 
 /*! ************************************

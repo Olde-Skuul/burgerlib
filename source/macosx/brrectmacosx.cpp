@@ -100,8 +100,8 @@ void Burger::Rect_t::Set(const CGRect *pInput)
 {
 	m_iLeft = static_cast<int>(pInput->origin.x);
 	m_iTop = static_cast<int>(pInput->origin.y);
-	m_iRight = static_cast<int>(pInput->size.width-pInput->origin.x);
-	m_iBottom = static_cast<int>(pInput->size.height-pInput->origin.y);
+	m_iRight = static_cast<int>(pInput->origin.x+pInput->size.width);
+	m_iBottom = static_cast<int>(pInput->origin.y+pInput->size.height);
 }
 
 /*! ************************************

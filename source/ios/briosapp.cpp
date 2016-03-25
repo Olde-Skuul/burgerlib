@@ -366,7 +366,7 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 	g_piOSApp = this;
 
 	// Add the iOS callback function
-	m_RunQueue.Add(Poll,this,RunQueue::HIGHESTPRIORITY);
+	m_RunQueue.Add(Poll,this,RunQueue::PRIORITY_FIRST);
 
 	// Init the file system
 	FileManager::Init();

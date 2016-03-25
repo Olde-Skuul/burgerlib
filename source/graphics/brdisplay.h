@@ -101,14 +101,13 @@ public:
 		DEFAULTFLAGS=FULLSCREEN	///< Default window flags (NDEBUG is full screen)
 #endif
 	};
-	enum eVideoModeFlags {
-		VIDEOMODE_HARDWARE=0x01		///<  VideoMode_t Set if hardware acceleration is available
-	};
+
 	enum eClearBits {
 		CLEAR_COLOR=0x01,			///< Used by Clear(Word) to clear the color buffer
 		CLEAR_DEPTH=0x02,			///< Used by Clear(Word) to clear the depth buffer
 		CLEAR_STENCIL=0x04			///< Used by Clear(Word) to clear the stencil buffer
 	};
+
 	enum eDepthFunction {
 		DEPTHCMP_NEVER,			///< Never render the pixel
 		DEPTHCMP_LESS,			///< Render if Z is less than Depth Z
@@ -119,11 +118,13 @@ public:
 		DEPTHCMP_GREATEREQUAL,	///< Render if Z is greater than or equal to the Depth Z
 		DEPTHCMP_ALWAYS			///< Always render the pixel (Same as turning off depth testing, allows zwrites)
 	};
+
 	enum eCullMode {
 		CULL_NONE,				///< Don't cull any polygons
 		CULL_CLOCKWISE,			///< Don't render clockwise oriented polygons
 		CULL_COUNTERCLOCKWISE	///< Don't render counter clockwise oriented polygons
 	};
+
 	enum eSourceBlendFactor {
 		SRCBLEND_ZERO,					///< Source alpha is forced to zero
 		SRCBLEND_ONE,					///< Source alpha is forced to one
@@ -135,6 +136,7 @@ public:
 		SRCBLEND_ONE_MINUS_DST_ALPHA,	///< Source alpha is the destination buffer 1-alpha component
 		SRCBLEND_SRC_ALPHA_SATURATE		///< Saturate the alpha with 1
 	};
+
 	enum eDestinationBlendFactor {
 		DSTBLEND_ZERO,					///< Destination alpha is forced to zero
 		DSTBLEND_ONE,					///< Destination alpha is forced to one
@@ -145,6 +147,7 @@ public:
 		DSTBLEND_SRC_ALPHA,				///< Destination alpha is the source buffer alpha component
 		DSTBLEND_ONE_MINUS_SRC_ALPHA	///< Destination alpha is the source buffer 1-alpha component
 	};
+
 	enum ePrimitiveType {
 		PRIM_POINTS,			///< Draw array as points
 		PRIM_LINES,				///< Draw array as line end to end pairs
@@ -153,16 +156,26 @@ public:
 		PRIM_TRIANGLESTRIP,		///< Draw array as triangle strip
 		PRIM_TRIANGLEFAN		///< Draw array as a triangle fan
 	};
+
 	struct VideoMode_t {
+		enum {
+			VIDEOMODE_HARDWARE=0x01,		///< Set if hardware acceleration is available
+			VIDEOMODE_REFRESHVALID=0x02		///< Set if refresh rate is valid
+		};
 		Word m_uWidth;		///< Width of video mode
 		Word m_uHeight;		///< Height of video mode
 		Word m_uDepth;		///< Depth of video mode
 		Word m_uHertz;		///< Video scan rate (0 if not supported)
-		Word m_uFlags;		///< Hardware/OpenGL
+		Word m_uFlags;		///< Flags for special features
 	};
+
 	class VideoCardDescription {
 	public:
-		SimpleArray<VideoMode_t> m_Array;		///< Array of modes
+		enum {
+			VIDEOCARD_HARDWARE=0x01,		///< Set if hardware acceleration is available
+			VIDEOCARD_PRIMARY=0x02			///< Set if this is the primary video display
+		};
+		SimpleArray<VideoMode_t> m_Array;		///< Array of display resolution modes
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 		GUID m_GUID;							///< (Windows only) Device GUID
 #endif
@@ -171,15 +184,19 @@ public:
 #endif
 		String m_DeviceName;					///< Name of the device
 		String m_MonitorName;					///< Name of the monitor
+		Rect_t m_SystemRect;					///< Location on the desktop
+		Rect_t m_CurrentResolution;				///< Current resolution of the device
 		Word m_uDevNumber;						///< Device number
-		Word m_bHardwareAccelerated;			///< Is 3D acceleration available?
+		Word m_uFlags;							///< Flags for special features
 		VideoCardDescription();
 		~VideoCardDescription();
 	};
+	
 	typedef Word (BURGER_API *FadeProc)(void *pThis,Word uStep);		///< Callback function prototype for palette fading functions
 	typedef void (BURGER_API *ResizeProc)(void *pThis,Word uWidth,Word uHeight);		///< Callback function prototype for window resizing
 	typedef void (BURGER_API *RenderProc)(void *pThis);					///< Callback function for rendering the scene
 	typedef void (BURGER_API *ReleaseProc)(void *pThis);				///< Callback function for releasing resources on shutdown
+
 protected:
 	struct Globals_t {
 		Word m_uDefaultWidth;			///< Default screen width of the main monitor
