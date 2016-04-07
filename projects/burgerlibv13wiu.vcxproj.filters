@@ -430,6 +430,9 @@
 		<ClInclude Include="..\source\math\brfloatingpoint.h">
 			<Filter>source\math</Filter>
 		</ClInclude>
+		<ClInclude Include="..\source\math\brfpinfo.h">
+			<Filter>source\math</Filter>
+		</ClInclude>
 		<ClInclude Include="..\source\math\brmatrix3d.h">
 			<Filter>source\math</Filter>
 		</ClInclude>
@@ -467,6 +470,9 @@
 			<Filter>source\text</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\text\brnumberstringhex.h">
+			<Filter>source\text</Filter>
+		</ClInclude>
+		<ClInclude Include="..\source\text\brprintf.h">
 			<Filter>source\text</Filter>
 		</ClInclude>
 		<ClInclude Include="..\source\text\brsimplestring.h">
@@ -898,6 +904,9 @@
 		<ClCompile Include="..\source\math\brfloatingpoint.cpp">
 			<Filter>source\math</Filter>
 		</ClCompile>
+		<ClCompile Include="..\source\math\brfpinfo.cpp">
+			<Filter>source\math</Filter>
+		</ClCompile>
 		<ClCompile Include="..\source\math\brmatrix3d.cpp">
 			<Filter>source\math</Filter>
 		</ClCompile>
@@ -932,6 +941,9 @@
 			<Filter>source\text</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\text\brnumberstringhex.cpp">
+			<Filter>source\text</Filter>
+		</ClCompile>
+		<ClCompile Include="..\source\text\brprintf.cpp">
 			<Filter>source\text</Filter>
 		</ClCompile>
 		<ClCompile Include="..\source\text\brsimplestring.cpp">

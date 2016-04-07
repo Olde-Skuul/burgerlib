@@ -182,6 +182,7 @@
 		<ClInclude Include="..\source\math\brfixedvector3d.h" />
 		<ClInclude Include="..\source\math\brfixedvector4d.h" />
 		<ClInclude Include="..\source\math\brfloatingpoint.h" />
+		<ClInclude Include="..\source\math\brfpinfo.h" />
 		<ClInclude Include="..\source\math\brmatrix3d.h" />
 		<ClInclude Include="..\source\math\brmatrix4d.h" />
 		<ClInclude Include="..\source\math\brvector2d.h" />
@@ -195,6 +196,7 @@
 		<ClInclude Include="..\source\text\brmacromanus.h" />
 		<ClInclude Include="..\source\text\brnumberstring.h" />
 		<ClInclude Include="..\source\text\brnumberstringhex.h" />
+		<ClInclude Include="..\source\text\brprintf.h" />
 		<ClInclude Include="..\source\text\brsimplestring.h" />
 		<ClInclude Include="..\source\text\brstring.h" />
 		<ClInclude Include="..\source\text\brstring16.h" />
@@ -340,6 +342,7 @@
 		<ClCompile Include="..\source\math\brfixedvector3d.cpp" />
 		<ClCompile Include="..\source\math\brfixedvector4d.cpp" />
 		<ClCompile Include="..\source\math\brfloatingpoint.cpp" />
+		<ClCompile Include="..\source\math\brfpinfo.cpp" />
 		<ClCompile Include="..\source\math\brmatrix3d.cpp" />
 		<ClCompile Include="..\source\math\brmatrix4d.cpp" />
 		<ClCompile Include="..\source\math\brvector2d.cpp" />
@@ -352,6 +355,7 @@
 		<ClCompile Include="..\source\text\brmacromanus.cpp" />
 		<ClCompile Include="..\source\text\brnumberstring.cpp" />
 		<ClCompile Include="..\source\text\brnumberstringhex.cpp" />
+		<ClCompile Include="..\source\text\brprintf.cpp" />
 		<ClCompile Include="..\source\text\brsimplestring.cpp" />
 		<ClCompile Include="..\source\text\brstring.cpp" />
 		<ClCompile Include="..\source\text\brstring16.cpp" />

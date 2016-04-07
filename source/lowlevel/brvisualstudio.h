@@ -54,10 +54,13 @@ extern Word64 __cdecl _rotr64(Word64,int);
 #if defined(BURGER_INTELARCHITECTURE)
 extern void __cpuid(int [4],int);
 #pragma intrinsic(__cpuid)
+
+// Visual studio 2010 or higher
 #if _MSC_VER>=1600
 extern void __cpuidex(int [4],int,int);
 #pragma intrinsic(__cpuidex)
 #endif
+
 #endif
 
 long __cdecl _InterlockedExchange(long volatile*,long);
@@ -74,13 +77,16 @@ __int64 _InterlockedDecrement64(__int64 volatile*);
 __int64 _InterlockedExchangeAdd64(__int64 volatile*,__int64);
 __int64 _InterlockedCompareExchange64(__int64 volatile*,__int64,__int64);
 #pragma intrinsic(_InterlockedExchange64,_InterlockedIncrement64,_InterlockedDecrement64,_InterlockedExchangeAdd64,_InterlockedCompareExchange64)
+
 #if _MSC_VER<1500		// Visual studio 2005 and earlier don't have these SSE type conversions
 BURGER_INLINE float _mm_cvtss_f32(__m128 vInput) { return vInput.m128_f32[0]; }
 BURGER_INLINE double _mm_cvtsd_f64(__m128d vInput) { return vInput.m128d_f64[0]; }
 #endif
+
 #endif
 }
 #endif
+
 #if defined(BURGER_INTELARCHITECTURE) && (defined(BURGER_LLVM) || defined(BURGER_GNUC))
 BURGER_INLINE void __cpuid(int a[4],int b) {
 	__asm__ __volatile__("cpuid"
@@ -92,7 +98,9 @@ BURGER_INLINE void __cpuidex(int a[4],int b,int c) {
 		: "=a" ((a)[0]), "=b" ((a)[1]), "=c" ((a)[2]), "=d" ((a)[3])
 		: "0" (b), "2" (c));
 }
+
 #elif defined(BURGER_X86)
+
 #if defined(BURGER_METROWERKS)
 BURGER_INLINE void __cpuid(int a[4],int b) {
 	asm {
@@ -106,6 +114,7 @@ BURGER_INLINE void __cpuid(int a[4],int b) {
 		mov [esi+12],edx
 	}
 }
+
 BURGER_INLINE void __cpuidex(int a[4],int b,int c) {
 	asm {
 		mov	esi,a		// Get the pointer to the destination buffer
@@ -118,7 +127,9 @@ BURGER_INLINE void __cpuidex(int a[4],int b,int c) {
 		mov [esi+12],edx
 	}
 }
+
 #elif defined(BURGER_WATCOM)
+
 extern void __cpuid(int a[4],int b);
 #pragma aux __cpuid = \
 	"xor ecx,ecx" \
@@ -138,6 +149,7 @@ extern void __cpuidex(int a[4],int b,int c);
 	"mov [esi+12],edx" \
 	parm [esi] [eax] [ecx] modify [ebx ecx edx];
 #endif
+
 #endif
 /* END */
 

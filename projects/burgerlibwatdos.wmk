@@ -159,6 +159,7 @@ objs= &
 	$(A)\brfixedvector3d.obj &
 	$(A)\brfixedvector4d.obj &
 	$(A)\brfloatingpoint.obj &
+	$(A)\brfpinfo.obj &
 	$(A)\brmatrix3d.obj &
 	$(A)\brmatrix4d.obj &
 	$(A)\brvector2d.obj &
@@ -180,6 +181,7 @@ objs= &
 	$(A)\brmacromanus.obj &
 	$(A)\brnumberstring.obj &
 	$(A)\brnumberstringhex.obj &
+	$(A)\brprintf.obj &
 	$(A)\brsimplestring.obj &
 	$(A)\brstring.obj &
 	$(A)\brstring16.obj &

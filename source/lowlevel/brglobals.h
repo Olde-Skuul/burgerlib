@@ -153,6 +153,8 @@ public:
 		CALL_COUNT
 	};
 private:
+	static const Word16 g_GameClass[];		///< Windows class name "BurgerGameClass" (Windows only)
+	static Word16 g_uAtom;					///< Atom assigned to my class (Windows only) 
 	static HINSTANCE__ *g_hInstance;		///< Current singular instance of the application (Windows only)
 	static HWND__ *g_hWindow;				///< Main window for the application (Windows only)
 	static Word32 g_uQuickTimeVersion;		///< QuickTime's version in 0x0102 (1.2) format. (Windows only)
@@ -207,10 +209,11 @@ public:
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	~Globals();
-	static BURGER_INLINE HINSTANCE__ *GetInstance(void) { return g_hInstance; }
-	static BURGER_INLINE void SetInstance(HINSTANCE__ *pInput) { g_hInstance = pInput; }
-	static BURGER_INLINE HWND__ *GetWindow(void) { return g_hWindow; }
-	static BURGER_INLINE void SetWindow(HWND__ *pInput) { g_hWindow = pInput; }
+	BURGER_INLINE static const Word16 *GetWindowClassName(void) { return g_GameClass;}
+	BURGER_INLINE static HINSTANCE__ *GetInstance(void) { return g_hInstance; }
+	BURGER_INLINE static void SetInstance(HINSTANCE__ *pInput) { g_hInstance = pInput; }
+	BURGER_INLINE static HWND__ *GetWindow(void) { return g_hWindow; }
+	BURGER_INLINE static void SetWindow(HWND__ *pInput) { g_hWindow = pInput; }
 
 	static Word BURGER_API TestWindowsVersion(void);
 	BURGER_INLINE static Word IsWin95orWin98(void) { return (TestWindowsVersion()&WINDOWSVERSION_9598); }
@@ -327,6 +330,9 @@ public:
 	static Word BURGER_API AddGroupToProgramMenu(const char *pGroupName);
 	static int BURGER_API CreateUserRegistryKey(const char *pKey,const char *pSubKey,const char *pData);
 	static void BURGER_API AssociateFileExtensionToExe(const char *pFileExtension,const char *pDescription,const char *pProgramID);
+	static void BURGER_API OutputWindowsMessage(Word uMessage,WordPtr wParam,WordPtr lParam);
+	static Word16 BURGER_API RegisterWindowClass(Word uIconResID=0);
+	static void BURGER_API UnregisterWindowClass(void);
 #endif
 
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)

@@ -140,6 +140,108 @@ static Word TestFPConsts(void)
 	return uResult;
 }
 
+/***************************************
+
+	Testing various features that are known to vary by compiler version
+	
+	Original code supplied by Matt Pritchard
+
+***************************************/
+
+static const Word32 g_FloatSNANTests[] = {
+	0x7F800001, 0xFF800001,			// NAN, -NAN (smallest signaling)
+	0x7F80FFFF, 0xFF80FFFF,			// NAN, -NAN (signaling) 
+	0x7FBFFFFF, 0xFFBFFFFF			// NAN, -NAN (largest signaling)
+};
+
+static const Word64 g_DoubleSNANTests[] = {
+	0x7FF0000000000001ULL, 0xFFF0000000000001ULL,		// NAN, -NAN (smallest signaling)
+	0x7FF0000FFFFFFFFFULL, 0xFFF000FFFFFFFFFFULL,		// NAN, -NAN (signaling)
+	0x7FF7FFFFFFFFFFFFULL, 0xFFF7FFFFFFFFFFFFULL		// NAN, -NAN (largest signaling)
+};
+
+static Word BURGER_API TestSNANToQNAN(void)
+{
+	Word uResult = 0;
+
+	// Test float NAN/QNAN
+
+	float FloatBuffer[BURGER_ARRAYSIZE(g_FloatSNANTests)];
+
+	// Copy the floats to a table
+	Word i = 0;
+	do {
+		float fSNAN = static_cast<const float *>(static_cast<const void *>(g_FloatSNANTests))[i];
+		// Copy the NAN
+		float fTempNAN = fSNAN;
+		// Store the NAN
+		FloatBuffer[i] = fTempNAN;
+	} while (++i<BURGER_ARRAYSIZE(g_FloatSNANTests));
+
+	Word bQNANFound = FALSE;
+	i = 0;
+	do {
+		Word32 uOriginal = g_FloatSNANTests[i];
+		Word32 uTest = static_cast<const Word32 *>(static_cast<const void *>(FloatBuffer))[i];
+
+		// Not a match?!?
+		if (uOriginal != uTest) {
+			if ((uOriginal | 0x00400000) == uTest) {
+				bQNANFound = TRUE;
+			} else {
+				uResult = 1;		// Failed
+				ReportFailure("Float SNAN 0x%08X converted to 0x%08X",1,uOriginal,uTest);
+			}
+		}
+	} while (++i<BURGER_ARRAYSIZE(g_FloatSNANTests));
+
+	// Print the warning on QNan CPUs
+	if (bQNANFound) {
+		// So far, x86 fires this
+		Message("Float SNAN was converted to QNAN on this CPU / Compiler");
+	}
+
+	// Test double NAN/QNAN
+
+	double DoubleBuffer[BURGER_ARRAYSIZE(g_DoubleSNANTests)];
+	
+	// Copy the doubles to a table
+	i = 0;
+	do {
+		double dSNAN = static_cast<const double *>(static_cast<const void *>(g_DoubleSNANTests))[i];
+		// Copy the NAN
+		double dTempNAN = dSNAN;
+		// Store the NAN
+		DoubleBuffer[i] = dTempNAN;
+	} while (++i<BURGER_ARRAYSIZE(g_DoubleSNANTests));
+
+	bQNANFound = FALSE;
+	i = 0;
+	do {
+		Word64 uOriginal = g_DoubleSNANTests[i];
+		Word64 uTest = static_cast<const Word64 *>(static_cast<const void *>(DoubleBuffer))[i];
+
+		// Not a match?!?
+		if (uOriginal != uTest) {
+			if ((uOriginal | 0x0008000000000000ULL) == uTest) {
+				bQNANFound = TRUE;
+			} else {
+				uResult = 1;		// Failed
+				ReportFailure("Double SNAN 0x%llX converted to 0x%llX",1,uOriginal,uTest);
+			}
+		}
+	} while (++i<BURGER_ARRAYSIZE(g_DoubleSNANTests));
+
+	// Print the warning on QNan CPUs
+	if (bQNANFound) {
+		// So far, x86 fires this
+		Message("Double SNAN was converted to QNAN on this CPU / Compiler");
+	}
+
+	return uResult;
+}
+
+
 //
 // Test IsNan(float)
 //
@@ -1305,6 +1407,7 @@ int BURGER_API TestBrfloatingpoint(void)
 	// Test floating point constants
 
 	uTotal = TestFPConsts();
+	uTotal |= TestSNANToQNAN();
 
 	// Test the test functions
 	uTotal |= TestIsNanFloat();

@@ -865,8 +865,8 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const Word *pSampleCounts,Word 
 	Counts[13] = 0;
 	Counts[14] = 0;
 	Counts[15] = 0;
-	const register Word *p = pSampleCounts;
-	register Word i = uNumberSamples;
+	const Word *p = pSampleCounts;
+	Word i = uNumberSamples;
 	do {
 		Counts[p[0]]++;				/* assume all entries <= BMAX */
 		++p;
@@ -880,14 +880,14 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const Word *pSampleCounts,Word 
 
 	/* Find minimum and maximum length, bound *m by those */
 	int l = static_cast<int>(*pNewTreeSize);
-	register Word j = 1;
+	Word j = 1;
 	do {
 		if (Counts[j]) {
 			break;
 		}
 	} while (++j<=BMAX);
 
-	register int k = static_cast<int>(j);						/* minimum code length */
+	int k = static_cast<int>(j);						/* minimum code length */
 	if ((Word)l < j) {
 		l = static_cast<int>(j);
 	}
@@ -943,7 +943,7 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const Word *pSampleCounts,Word 
 	x[0] = i = 0;					/* first Huffman code is zero */
 	p = pWorkArea;						/* grab values in bit order */
 	int h = -1;						/* no tables yet--level -1 */
-	register int w = -l;						/* bits decoded == (l * h) */
+	int w = -l;						/* bits decoded == (l * h) */
 	HuftPtrs[0] = NULL;		/* just to keep compilers happy */
 	DeflateHuft_t *q = NULL;		/* ditto */
 	Word z = 0;						/* ditto */

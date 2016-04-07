@@ -21,6 +21,7 @@
 /* BEGIN */
 #if defined(BURGER_WATCOM) && !defined(DOXYGEN)
 #pragma disable_message(549)		// Disable 'sizeof' operand contains compiler generated information
+#pragma disable_message(666)		// Disable assuming unary 'operator &' not overloaded for type
 extern "C" {
 namespace std {
 __declspec(__watcall) extern double log(double);

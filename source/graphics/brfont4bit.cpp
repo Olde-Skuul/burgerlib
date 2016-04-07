@@ -228,7 +228,7 @@ void Burger::Font4Bit::DrawChar(Word uLetter)
 	Word uInvisibleColor;			// Color index to ignore
 
 	// Draw here!
-	register Word8 *pDest = (m_pRenderer->GetStride()*iTempY)+static_cast<Word8*>(m_pRenderer->GetFrameBuffer());
+	Word8 *pDest = (m_pRenderer->GetStride()*iTempY)+static_cast<Word8*>(m_pRenderer->GetFrameBuffer());
 
 	// 8 bit renderer?
 	if (m_pRenderer->GetDepth()<9) {

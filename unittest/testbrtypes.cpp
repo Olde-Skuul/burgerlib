@@ -492,6 +492,27 @@ int BURGER_API TestBrtypes(void)
 	}
 
 	//
+	// Test BURGER_LONGIS64BIT
+	//
+
+#if defined(BURGER_LONGIS64BIT)
+	if (sizeof(long)!=8) {
+		ReportFailure("sizeof(long) is %u instead of 8 because BURGER_LONGIS64BIT was defined.",TRUE,static_cast<Word>(sizeof(long)));
+		uFailure = 10;
+	}
+#else
+	if (sizeof(long)!=4) {
+		ReportFailure("sizeof(long) is %u instead of 4 because BURGER_LONGIS64BIT was not defined.",TRUE,static_cast<Word>(sizeof(long)));
+		uFailure = 10;
+	}
+#endif
+
+	if (sizeof(long long)!=8) {
+		ReportFailure("sizeof(long long) is %u instead of 8.",TRUE,static_cast<Word>(sizeof(long long)));
+		uFailure = 10;
+	}
+
+	//
 	// Handle CPUID
 	//
 

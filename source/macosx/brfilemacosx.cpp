@@ -103,8 +103,8 @@ WordPtr BURGER_API Burger::File::GetSize(void)
 	int fp = static_cast<int>(reinterpret_cast<WordPtr>(m_pFile));
 	if (fp) {
 		struct stat MyStat;
-		int eError = fstat(fp,&MyStat);
-		if (eError!=-1) {
+		int iError = fstat(fp,&MyStat);
+		if (iError!=-1) {
 #if defined(BURGER_64BITCPU)
 			uSize = MyStat.st_size;
 #else
@@ -275,8 +275,8 @@ Word BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 	int fp = static_cast<int>(reinterpret_cast<WordPtr>(m_pFile));
 	if (fp) {
 		struct stat MyStat;
-		int eError = fstat(fp,&MyStat);
-		if (eError!=-1) {
+		int iError = fstat(fp,&MyStat);
+		if (iError!=-1) {
 			// If it succeeded, the file must exist
 			pOutput->Load(&MyStat.st_mtimespec);
 			uResult = OKAY;
@@ -309,8 +309,8 @@ Word BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 		// Is fstat64 supported?
 #if _POSIX_VERSION>=200112L
 		struct stat64 MyStat;
-		int eError = fstat64(fp,&MyStat);
-		if (eError!=-1) {
+		int iError = fstat64(fp,&MyStat);
+		if (iError!=-1) {
 			// If it succeeded, the file must exist
 			pOutput->Load(&MyStat.st_birthtimespec);
 			uResult = OKAY;
@@ -344,15 +344,15 @@ Word BURGER_API Burger::File::SetModificationTime(const TimeDate_t *pInput)
 		int fp = static_cast<int>(reinterpret_cast<WordPtr>(m_pFile));
 		if (fp) {
 			struct stat MyStat;
-			int eError = fstat(fp,&MyStat);
-			if (eError!=-1) {
+			int iError = fstat(fp,&MyStat);
+			if (iError!=-1) {
 				timeval Array[2];
 				Array[0].tv_sec = MyStat.st_atimespec.tv_sec;		// Access time
 				Array[0].tv_usec = static_cast<Word32>(MyStat.st_atimespec.tv_nsec/1000);
 				Array[1].tv_sec = static_cast<time_t>(NewTime);		// Modification time
 				Array[1].tv_usec = pInput->m_usMilliseconds*1000;
-				eError = futimes(fp,Array);
-				if (eError!=-1) {
+				iError = futimes(fp,Array);
+				if (iError!=-1) {
 					uResult = File::OKAY;
 				}
 			}

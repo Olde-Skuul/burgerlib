@@ -78,10 +78,12 @@ class Display : public Base {
 	BURGER_RTTI_IN_CLASS();
 public:
 	enum {
+
 		INWINDOW=0x0,				///< The display is in a desktop window, best for debugging
 		FULLSCREEN=0x1,				///< Set if full screen
 		ALLOWFULLSCREENTOGGLE=0x2,	///< Set if Alt-Enter is allowed to switch from full screen to windowed mode
 		ALLOWRESIZING=0x4,			///< On desktop platforms, allow the window to be resized
+		MAINTAIN_ASPECT_RATIO=0x8,	///< If Resizing is allowed, maintain the aspect ratio
 		STENCILENABLE=0x20,			///< Enable stencil mode
 		FULLPALETTEALLOWED=0x40,	///< Set if all 256 colors of the palette can be used
 		STEREO=0x80,				///< Set if 3D Glasses support is enabled
@@ -100,6 +102,14 @@ public:
 #else
 		DEFAULTFLAGS=FULLSCREEN	///< Default window flags (NDEBUG is full screen)
 #endif
+	};
+
+	enum eAspectRatio {
+		ASPECT_RATIO_UNKNOWN,		///< Undefined aspect ratio
+		ASPECT_RATIO_1x1,			///< Square aspect ratio
+		ASPECT_RATIO_4x3,			///< 4x3 aspect ratio (TV)
+		ASPECT_RATIO_16x9,			///< 16x9 aspect ratio (wide screen)
+		ASPECT_RATIO_16x10			///< 16x10 aspect ratio (laptops)
 	};
 
 	enum eClearBits {
@@ -176,12 +186,15 @@ public:
 			VIDEOCARD_PRIMARY=0x02			///< Set if this is the primary video display
 		};
 		SimpleArray<VideoMode_t> m_Array;		///< Array of display resolution modes
+
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 		GUID m_GUID;							///< (Windows only) Device GUID
 #endif
+
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
 		NSScreen *m_pNSScreen;					///< (MacOSX only) NSScreen associated with this card
 #endif
+
 		String m_DeviceName;					///< Name of the device
 		String m_MonitorName;					///< Name of the monitor
 		Rect_t m_SystemRect;					///< Location on the desktop
@@ -206,14 +219,17 @@ protected:
 		Word m_uDefaultTotalWidth;		///< Default screen width of all monitors
 		Word m_uDefaultTotalHeight;		///< Default screen height of all monitors
 		Word m_uDefaultMonitorCount;	///< Number of monitors attached
-#if defined(BURGER_XBOX360)
+
+#if defined(BURGER_XBOX360) || defined(DOXYGEN)
 		Word m_bIsWidescreen;			///< (Xbox 360 Only) \ref TRUE if wide screen display
 		Word m_bIsHiDef;				///< (Xbox 360 Only) \ref TRUE if high definition display
 		Word m_bIsInterlaced;			///< (Xbox 360 Only) \ref TRUE if interlaced display
 #endif
-#if defined(BURGER_IOS)
+
+#if defined(BURGER_IOS) || defined(DOXYGEN)
 		float m_fRetinaScale;			///< (iOS Only) Points to Pixels scale factor for retina displays
 #endif
+
 		Word m_bInitialized;			///< Are the globals set?
 	};
 	static Globals_t g_Globals;	///< Global values initialized when the first Display class is created
@@ -271,9 +287,6 @@ public:
 	Word *m_pCompressedFormats;				///< Pointer to an array of supported OpenGL compressed textures
 	float m_fOpenGLVersion;					///< Numeric value for the version of OpenGL
 	float m_fShadingLanguageVersion;		///< Numeric value for the version of the Shader compiler
-	float m_fAspectRatio;					///< Width/Height
-	float m_fWidth;							///< Width of the rendering target as a float
-	float m_fHeight;						///< Height of the rendering target as a float
 	Word m_uCompressedFormatCount;			///< Number of supported compressed texture formats
 	Word m_uMaximumVertexAttributes;		///< Maximum number of vertex attributes GL_MAX_VERTEX_ATTRIBS
 	Word m_uMaximumColorAttachments;		///< Maximum number of color frame attachments GL_MAX_COLOR_ATTACHMENTS
@@ -285,11 +298,15 @@ protected:
 
 	ResizeProc m_pResize;		///< Callback if the screen changed sizes
 	void *m_pResizeData;		///< pThis pointer for m_pResize calls
+
 	RenderProc m_pRender;		///< Callback if the operating system requests a scene draw
 	void *m_pRenderData;		///< pThis pointer for m_pRender calls
+
 	ReleaseProc m_pRelease;		///< Callback if the operating system requests a scene draw
 	void *m_pReleaseData;		///< pThis pointer for m_pRender calls
-	Texture *m_pBoundTextures[8];	///< Bound textures
+
+	Texture *m_pBoundTextures[8];	///< Bound textures for the current context
+
 	Word m_uWidth;				///< Width in pixels of the display buffer
 	Word m_uHeight;				///< Height in pixels of the display buffer
 	Word m_uDepth;				///< Depth in bits of the display buffer
@@ -297,6 +314,11 @@ protected:
 	Word m_uDisplayWidth;		///< Width of the display hardware (Can differ from m_uWidth for pixel stretching)
 	Word m_uDisplayHeight;		///< Height of the display hardware (Can differ from m_uHeight for pixel stretching)
 	Word m_uDisplayDepth;		///< Depth of the display hardware (Can differ from m_uDepth for pixel depth change)
+	float m_fWidth;				///< Width of the rendering target as a float
+	float m_fHeight;			///< Height of the rendering target as a float
+	float m_fAspectRatioX;		///< Width/Height
+	float m_fAspectRatioY;		///< Height/Width
+
 	Word m_uBorderColor;		///< Hardware border color (MSDOS / Amiga only)
 	Word m_bPaletteDirty;		///< \ref TRUE if the palette buffer was changed
 	Word m_bPaletteVSync;		///< \ref TRUE if palette updates sync to video
@@ -305,6 +327,7 @@ protected:
 	
 	static void BURGER_API InitGlobals(void);
 	void BURGER_API InitDefaults(GameApp *pGameApp);
+	void BURGER_API SetWidthHeight(Word uWidth,Word uHeight);
 public:
 	Display(GameApp *pGameApp);
 	virtual ~Display();
@@ -338,6 +361,10 @@ public:
 	BURGER_VIRTUAL(void,SetScissor,(Word bEnable))
 	BURGER_VIRTUAL(void,DrawPrimitive,(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer))
 	BURGER_VIRTUAL(void,DrawElements,(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer))
+
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+	Word BURGER_API HandleMinMax(HWND__ *pWindow,WordPtr lParam);
+#endif
 
 #if defined(BURGER_XBOX360) || defined(DOXYGEN)
 	D3DVertexShader * BURGER_API CreateVertexShader(const void *pVertexShaderBinary) const;
@@ -436,6 +463,11 @@ public:
 	BURGER_INLINE Word GetFlags(void) const { return m_uFlags; }
 	BURGER_INLINE Word GetDisplayWidth(void) const { return m_uDisplayWidth; }
 	BURGER_INLINE Word GetDisplayHeight(void) const { return m_uDisplayHeight; }
+	BURGER_INLINE float GetWidthFloat(void) const { return m_fWidth; }
+	BURGER_INLINE float GetHeightFloat(void) const { return m_fHeight; }
+	BURGER_INLINE float GetAspectRatioX(void) const { return m_fAspectRatioX; }
+	BURGER_INLINE float GetAspectRatioY(void) const { return m_fAspectRatioY; }
+	eAspectRatio BURGER_API GetAspectRatio(void) const;
 	BURGER_INLINE const Word8 *GetPalette(void) const { return m_Palette; }
 	BURGER_INLINE Word GetBorderColor(void) const { return m_uBorderColor; }
 	BURGER_INLINE Word GetFadeSpeed(void) const { return m_uPaletteFadeSpeed; }

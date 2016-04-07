@@ -26,6 +26,7 @@
 #include "testbrdisplay.h"
 #include "testbrfilemanager.h"
 #include "testbrfileloaders.h"
+#include "testbrprintf.h"
 #include "createtables.h"
 #include <stdarg.h>
 #include <stdlib.h>
@@ -219,6 +220,7 @@ int BURGER_ANSIAPI main(int /* argc */,const char ** /* argv */)
 	iResult |= TestBrDisplay();
 	iResult |= TestDateTime();
 	iResult |= TestStdoutHelpers(uVerbose);
+	iResult |= TestBrprintf();
 	iResult |= FileManagerTest(uVerbose);
 	iResult |= FileLoaderTest(uVerbose);
 	return iResult;

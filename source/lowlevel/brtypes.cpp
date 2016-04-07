@@ -101,6 +101,8 @@
 //#define BURGER_MACRO_TO_STRING(x) BURGER_HASHMACRO(x)
 
 #define BURGER_LONGLONG __int64
+#define BURGER_LONGIS64BIT
+#define BURGER_HASWCHAR_T
 //typedef signed char Int8;
 //typedef unsigned char Word8;
 //typedef signed short Int16;
@@ -149,6 +151,7 @@
 	<li>Mark Adler - Original Zlib decompressor</li>
 	<li>Thatcher Ulrich - Hash template</li>
 	<li>Daniel Julius Bernstein - djb2 hash algorithm</li>
+	<li>Matt Pritchard - SafePrint</li>
 	</ul></b>
 	
 ***************************************/
@@ -483,6 +486,7 @@
 	\li \ref FALSE
 	\li \ref NULL
 	\li \ref BURGER_MAXINT
+	\li \ref BURGER_MININT
 	\li \ref BURGER_MAXUINT
 	\li \ref BURGER_INLINE
 	\li \ref BURGER_API
@@ -1423,13 +1427,25 @@
 
 /*! ************************************
 
+	\def BURGER_MININT
+	\brief Minimum value of a signed integer.
+	
+	This is a replacement for the ANSI macro MIN_INT.
+	Normally, this is (-0x7FFFFFFF)-1, but it could be a 64
+	or 128 bit value on future processors.
+	\sa BURGER_MININT64 or BURGER_MAXINT
+	
+***************************************/
+
+/*! ************************************
+
 	\def BURGER_MAXINT
 	\brief Maximum value of a signed integer.
 	
 	This is a replacement for the ANSI macro MAX_INT.
 	Normally, this is 0x7FFFFFFF, but it could be a 64
 	or 128 bit value on future processors.
-	\sa BURGER_MAXWORDPTR, BURGER_MAXINTPTR or BURGER_MAXUINT
+	\sa BURGER_MININT, BURGER_MAXWORDPTR, BURGER_MAXINTPTR or BURGER_MAXUINT
 	
 ***************************************/
 
@@ -1447,6 +1463,19 @@
 
 /*! ************************************
 
+	\def BURGER_MININT64
+	\brief Minimum value of a \ref Int64.
+	
+	This is a replacement for the ANSI macro MIN_INT but
+	it's meant for 64 bit values defined as \ref Int64.
+	Normally, this is ((-0x7FFFFFFFFFFFFFFFLL)-1).
+
+	\sa BURGER_MAXINT64, BURGER_MAXUINT64, or BURGER_MAXINT
+	
+***************************************/
+
+/*! ************************************
+
 	\def BURGER_MAXINT64
 	\brief Maximum value of a \ref Int64.
 	
@@ -1454,7 +1483,7 @@
 	it's meant for 64 bit values defined as \ref Int64.
 	Normally, this is 0x7FFFFFFFFFFFFFFFLL.
 
-	\sa BURGER_MAXUINT64, or BURGER_MAXINT
+	\sa BURGER_MININT64, BURGER_MAXUINT64, or BURGER_MAXINT
 	
 ***************************************/
 
@@ -2013,6 +2042,31 @@
 	
 ***************************************/
 
+/*! ************************************
+
+	\def BURGER_LONGIS64BIT
+	\brief Integer type "long" is 64 bits wide.
+
+	Under normal circumstances, long is a 32 bit wide integer
+	but on some compilers, this is a 64 bit integer. This
+	define is present on platforms where the compiler
+	is treating a "long" as a 64 bit integer
+
+	\sa BURGER_PS2
+	
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_HASWCHAR_T
+	\brief Data type wchar_t is native
+
+	If this define is present, wchar_t is a native type 
+	for the compiler, otherwise, it's a typedef cast from
+	an unsigned short, which may cause collisions for classes
+	that want to treat wchar_t and Word16 as unique data types.
+	
+***************************************/
 
 /*! ************************************
 
@@ -2113,7 +2167,7 @@
 	\brief 64 bit unsigned integer.
 	
 	This integer can contain the number 0 through 
-	9,223,372,036,854,775,807 * 2 + 1. It
+	18,446,744,073,709,551,615. It
 	is compiler switch setting safe.
 
 	\note This is cast as an unsigned long on the Playstation 2.

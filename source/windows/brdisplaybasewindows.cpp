@@ -15,7 +15,9 @@
 
 #include "brdisplay.h"
 
-#if defined(BURGER_WINDOWS)
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+
+#if !defined(DOXYGEN)
 #include "brgameapp.h"
 #include "brglobals.h"
 #include "brstring16.h"
@@ -250,6 +252,60 @@ void BURGER_API Burger::Display::InitGlobals(void)
 		ReleaseDC(NULL,hDC);
 		g_Globals.m_bInitialized = TRUE;
 	}
+}
+
+#endif			// DOXYGEN
+
+/*! ************************************
+
+	\brief Handler for WM_GETMINMAXINFO events
+
+	To handle window resizing, this function is called
+	from the Burgerlib windows callback when WM_GETMINMAXINFO 
+	messages are passed. This function determines if resizing
+	should be disabled or limited to specific sizes or aspect ratios
+
+	\param pWindow HWND of the window the callback was handling
+	\param lParam lParam Value passed from Windows to the callback which is a pointer to a MINMAXINFO structure
+	\return \ref FALSE if this event is ignored, or \ref TRUE if this event was intercepted
+
+***************************************/
+
+Word BURGER_API Burger::Display::HandleMinMax(HWND__ *pWindow,WordPtr lParam)
+{
+	Word bResult = FALSE;
+	// If full screen or not allowed, disable
+	Word uFlags = m_uFlags;
+
+	// Check if this resizing should be disabled
+	if ((uFlags & FULLSCREEN) || !(uFlags&ALLOWRESIZING)) {
+
+		// This code will lock out all resizing events and force the window back to the size
+		// of the game screen
+
+		LONG lScreenHeight = static_cast<LONG>(m_uHeight);
+		LONG lScreenWidth = static_cast<LONG>(m_uWidth);
+
+		// Adjust the window size to whatever the video manager says it should be
+		RECT WindowSizeRect;
+		WindowSizeRect.top = 0;
+		WindowSizeRect.left = 0;
+		WindowSizeRect.bottom = lScreenHeight;
+		WindowSizeRect.right = lScreenWidth;
+		AdjustWindowRectEx(&WindowSizeRect,static_cast<DWORD>(GetWindowLongPtrW(pWindow,GWL_STYLE)),GetMenu(pWindow)!=0,static_cast<DWORD>(GetWindowLongPtrW(pWindow,GWL_EXSTYLE)));
+
+		// Set the minimum and maximum window sizes to the same value to perform the resize disabling
+		MINMAXINFO *pMinMaxInfo = reinterpret_cast<MINMAXINFO *>(lParam);
+		pMinMaxInfo->ptMaxSize.x = lScreenWidth;
+		pMinMaxInfo->ptMaxSize.y = lScreenHeight;
+		pMinMaxInfo->ptMaxTrackSize.x = WindowSizeRect.right-WindowSizeRect.left;
+		pMinMaxInfo->ptMaxTrackSize.y = WindowSizeRect.bottom-WindowSizeRect.top;
+		pMinMaxInfo->ptMinTrackSize.x = pMinMaxInfo->ptMaxTrackSize.x;
+		pMinMaxInfo->ptMinTrackSize.y = pMinMaxInfo->ptMaxTrackSize.y;
+		bResult = TRUE;
+
+	}
+	return bResult;
 }
 
 #endif

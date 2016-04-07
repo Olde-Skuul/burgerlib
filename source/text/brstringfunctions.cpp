@@ -15,6 +15,7 @@
 #include "brglobalmemorymanager.h"
 #include "brisolatin1.h"
 #include "brfloatingpoint.h"
+#include "brfixedpoint.h"
 #include <stdio.h>
 
 //
@@ -919,6 +920,78 @@ Word64 BURGER_API Burger::PowerOf2(Word64 uInput)
 	\sa ToLower(Word32)
 	
 ***************************************/
+
+
+
+/*! ************************************
+
+	\fn Word Burger::IsPointerInvalid(const void *pInput)
+	\brief Test if a pointer is invalid.
+
+	On windows platforms, memory pointers cannot point to any location
+	less than 65536, so any pointer less than 65536 is considered broken.
+	All other platforms will only consider \ref NULL as an invalid pointer.
+
+	No attempt is made to check if the memory points to a specific data type of
+	if the application has permission to access the memory.
+
+	\param pInput Pointer to test
+	\return \ref TRUE if it points to invalid memory, \ref FALSE if it's a good pointer.
+	\sa Burger::IsPointerValid(const void *pInput)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::IsPointerValid(const void *pInput)
+	\brief Test if a pointer is valid.
+
+	On windows platforms, memory pointers cannot point to any location
+	less than 65536, so any pointer less than 65536 is considered broken.
+	All other platforms will only consider \ref NULL as an invalid pointer.
+
+	No attempt is made to check if the memory points to a specific data type of
+	if the application has permission to access the memory.
+
+	\param pInput Pointer to test
+	\return \ref TRUE if it points to valid memory, \ref FALSE if it's a bad pointer.
+	\sa Burger::IsPointerInvalid(const void *pInput)
+	
+***************************************/
+
+
+
+/*! ************************************
+
+	\fn Word Burger::IsStringEmpty(const char *pInput)
+	\brief Test if a UTF-8 string pointer points to a \ref NULL string.
+
+	Test if the pointer is in a valid address range and if so,
+	test if the first byte is a non zero character. If both tests
+	pass, return \ref TRUE.
+
+	\param pInput Pointer to a UTF-8 string to test
+	\return \ref TRUE if it points to valid string, \ref FALSE if it's a bad pointer or empty string.
+	\sa Burger::IsStringEmpty(const Word16 *pInput)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::IsStringEmpty(const Word16 *pInput)
+	\brief Test if a UTF-16 string pointer points to a \ref NULL string.
+
+	Test if the pointer is in a valid address range and if so,
+	test if the first byte is a non zero character. If both tests
+	pass, return \ref TRUE.
+
+	\param pInput Pointer to a UTF-16 string to test
+	\return \ref TRUE if it points to valid string, \ref FALSE if it's a bad pointer or empty string.
+	\sa Burger::IsStringEmpty(const char *pInput)
+	
+***************************************/
+
+
 
 
 /*! ************************************
@@ -5393,6 +5466,260 @@ char *BURGER_API Burger::NumberToAscii(char *pOutput,double dInput)
 	}
 	return pOutput+iLength;
 }
+
+
+
+
+/*! ************************************
+
+	\brief Calculate the length of a string that represents this integer.
+
+	Determine the number of characters are needed to convert the
+	input value into a string. 32 bit integers have a
+	minimum of one character to a maximum of 10 characters.
+
+	\param uInput 32 bit unsigned integer to test.
+	\return 1 through 10 for the number of digits this number requires for string conversion.
+	\sa NumberStringLength(Word64) or NumberStringLength(Int32)
+	
+***************************************/
+
+Word BURGER_API Burger::NumberStringLength(Word32 uInput)
+{
+	// Perform a binary search for performance
+
+	Word uResult;
+	if (uInput<10000U) {			// 1-4 digits?
+		if (uInput<100U) {			// 1-2 digits
+			if (uInput < 10U) {		// 1 digit?
+				uResult = 1;		// 0-9
+			} else {
+				uResult = 2;		// 10-99
+			}
+		} else if (uInput<1000U) {
+			uResult = 3;			// 100-999
+		} else {
+			uResult = 4;			// 1000-9999
+		}
+	} else if (uInput<100000000U) {	// 5-8 digits?
+		if (uInput<1000000U) {		// 5-6 digits?
+			if (uInput<100000U) {
+				uResult = 5;		// 10000-99999
+			} else {
+				uResult = 6;		// 100000-999999
+			}
+		} else if (uInput<10000000U) {	// 7 digits?
+			uResult = 7;			// 1000000-9999999
+		} else {
+			uResult = 8;			// 10000000-99999999
+		}
+	} else if (uInput<1000000000U)	{	// 9-10 digits?
+		uResult = 9;				// 100000000-999999999
+	} else {
+		uResult = 10;				// 1000000000-4294967295
+	}
+	return uResult;
+}
+
+
+
+/*! ************************************
+
+	\brief Calculate the length of a string that represents this integer.
+
+	Determine the number of characters are needed to convert the
+	input value into a string. 32 bit integers have a
+	minimum of one character to a maximum of 10 characters and an extra character
+	for a '-' for negative numbers
+
+	\param iInput 32 bit signed integer to test.
+	\return 1 through 10 for the number of digits this number requires for string conversion.
+	\sa NumberStringLength(Word32) or NumberStringLength(Int64)
+	
+***************************************/
+
+Word BURGER_API Burger::NumberStringLength(Int32 iInput)
+{
+	Word uSign = static_cast<Word32>(iInput)>>31U;		// 1 if negative, 0 positive
+	return uSign+NumberStringLength(static_cast<Word32>(Abs(iInput)));
+}
+
+
+/*! ************************************
+
+	\brief Calculate the length of a string that represents this integer.
+
+	Determine the number of characters are needed to convert the
+	input value into a string. 64 bit integers have a
+	minimum of one character to a maximum of 21 characters.
+
+	\param uInput 32 bit unsigned integer to test.
+	\return 1 through 21 for the number of digits this number requires for string conversion.
+	\sa NumberStringLength(Int64) or NumberStringLength(Word32)
+	
+***************************************/
+
+Word BURGER_API Burger::NumberStringLength(Word64 uInput)
+{
+	// Assume no extra digits
+	Word uExtraDigits = 0;
+
+	// Is this REALLY a 64 bit value?
+	if (uInput >= 0x100000000ULL) {
+		// Divide by 1 billion (remove 9 digits) 
+		uInput = uInput / 1000000000U;
+		uExtraDigits = 9;	
+
+
+		// edge case.. very close to max_int64 will still be > 32 bits after division
+		if (uInput >= 0x100000000ULL) {
+			uInput = uInput / 100U;
+			uExtraDigits=11;
+		}
+	}
+	// Get the rest of the digit count
+	return uExtraDigits + NumberStringLength(static_cast<Word32>(uInput));
+}
+
+/*! ************************************
+
+	\brief Calculate the length of a string that represents this integer.
+
+	Determine the number of characters are needed to convert the
+	input value into a string. 64 bit integers have a
+	minimum of one character to a maximum of 21 characters and an extra character
+	for a '-' for negative numbers
+
+	\param iInput 64 bit signed integer to test.
+	\return 1 through 2 for the number of digits this number requires for string conversion.
+	\sa NumberStringLength(Word32) or NumberStringLength(Int64)
+	
+***************************************/
+
+Word BURGER_API Burger::NumberStringLength(Int64 iInput)
+{
+	Word uSign = static_cast<Word>(static_cast<Word64>(iInput)>>63U);		// 1 if negative, 0 positive
+	return uSign+NumberStringLength(static_cast<Word64>(Abs(iInput)));
+}
+
+
+/*! ************************************
+
+	\brief Calculate the length of a string that represents this hex integer.
+
+	Determine the number of characters are needed to convert the
+	input value into a hexadecimal string. 32 bit integers have a
+	minimum of one character to a maximum of 8 characters.
+
+	\param uInput 32 bit unsigned integer to test.
+	\return 1 through 8 for the number of digits this number requires for string conversion.
+	\sa NumberHexStringLength(Word64)
+	
+***************************************/
+
+Word BURGER_API Burger::NumberHexStringLength(Word32 uInput)
+{
+	Word uDigitCount = 1;
+
+	// Any other digits?
+	if (uInput&0xFFFFFFF0U) {
+		do {
+			// Add another digit
+			++uDigitCount;
+			uInput>>=4U;
+		} while (uInput&0xFFFFFFF0U);
+	}
+	return uDigitCount;
+}
+
+/*! ************************************
+
+	\brief Calculate the length of a string that represents this hex integer.
+
+	Determine the number of characters are needed to convert the
+	input value into a hexadecimal string. 64 bit integers have a
+	minimum of one character to a maximum of 16 characters.
+
+	\param uInput 64 bit unsigned integer to test.
+	\return 1 through 16 for the number of digits this number requires for string conversion.
+	\sa NumberHexStringLength(Word32)
+	
+***************************************/
+
+Word BURGER_API Burger::NumberHexStringLength(Word64 uInput)
+{
+	Word uDigitCount = 1;
+
+	// Any other digits?
+	if (uInput&0xFFFFFFFFFFFFFFF0ULL) {
+		do {
+			// Add another digit
+			++uDigitCount;
+			uInput>>=4U;
+		} while (uInput&0xFFFFFFFFFFFFFFF0ULL);
+	}
+	return uDigitCount;
+}
+
+/*! ************************************
+
+	\brief Calculate the length of a string that represents this octal integer.
+
+	Determine the number of characters are needed to convert the
+	input value into a octal string. 32 bit integers have a
+	minimum of one character to a maximum of 11 characters.
+
+	\param uInput 32 bit unsigned integer to test.
+	\return 1 through 11 for the number of digits this number requires for string conversion.
+	\sa NumberOctalStringLength(Word64)
+	
+***************************************/
+
+Word BURGER_API Burger::NumberOctalStringLength(Word32 uInput)
+{
+	Word uDigitCount = 1;
+
+	// Any other digits?
+	if (uInput&0xFFFFFFF8U) {
+		do {
+			// Add another digit
+			++uDigitCount;
+			uInput>>=3U;
+		} while (uInput&0xFFFFFFF8U);
+	}
+	return uDigitCount;
+}
+
+/*! ************************************
+
+	\brief Calculate the length of a string that represents this octal integer.
+
+	Determine the number of characters are needed to convert the
+	input value into a octal string. 64 bit integers have a
+	minimum of one character to a maximum of 22 characters.
+
+	\param uInput 32 bit unsigned integer to test.
+	\return 1 through 22 for the number of digits this number requires for string conversion.
+	\sa NumberOctalStringLength(Word32)
+	
+***************************************/
+
+Word BURGER_API Burger::NumberOctalStringLength(Word64 uInput)
+{
+	Word uDigitCount = 1;
+
+	// Any other digits?
+	if (uInput&0xFFFFFFFFFFFFFFF8ULL) {
+		do {
+			// Add another digit
+			++uDigitCount;
+			uInput>>=3U;
+		} while (uInput&0xFFFFFFFFFFFFFFF8ULL);
+	}
+	return uDigitCount;
+}
+
+
 
 /*! ************************************
 

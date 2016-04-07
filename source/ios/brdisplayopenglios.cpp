@@ -124,11 +124,12 @@
 
 	Base class for instantiating a video display using OpenGL
 
-	\sa Burger::DisplayOpenGL::~DisplayOpenGL()
+	\param pGameApp Pointer to the active game application pointer
+	\sa Burger::Display::~Display()
 
 ***************************************/
 
-Burger::Display::Display(Burger::GameApp *pGameApp) :
+Burger::Display::Display(GameApp *pGameApp) :
 	m_pCompressedFormats(NULL),
 	m_pEAGLContext(NULL),
 	m_uFrontBuffer(0),
@@ -204,8 +205,7 @@ Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
 	uWidth = m_uDisplayWidth;
 	uHeight = m_uDisplayHeight;
 
-	m_uWidth = uWidth;
-	m_uHeight = uHeight;
+	SetWidthHeight(uWidth,uHeight);
 	m_uDepth = uDepth;
 	m_uFlags = uFlags;
 
@@ -308,7 +308,7 @@ void Burger::Display::EndScene(void)
 
 /*! ************************************
 
-	\fn EAGLContext *Burger::DisplayOpenGL::GetGLContext(void) const
+	\fn EAGLContext *Burger::Display::GetGLContext(void) const
 	\brief The currently active OpenGL context
 
 	\iosonly
@@ -318,7 +318,7 @@ void Burger::Display::EndScene(void)
 
 /*! ************************************
 
-	\fn Word Burger::DisplayOpenGL::GetFrontBuffer(void) const
+	\fn Word Burger::Display::GetFrontBuffer(void) const
 	\brief Front buffer index
 
 	When an OpenGL context is created, a front buffer is declared
@@ -335,7 +335,7 @@ void Burger::Display::EndScene(void)
 
 /*! ************************************
 
-	\fn Word Burger::DisplayOpenGL::GetColorBuffer(void) const
+	\fn Word Burger::Display::GetColorBuffer(void) const
 	\brief Color buffer index
 
 	When an OpenGL context is created, a color buffer is declared
@@ -350,7 +350,7 @@ void Burger::Display::EndScene(void)
 
 /*! ************************************
 
-	\fn Word Burger::DisplayOpenGL::GetDepthBuffer(void) const
+	\fn Word Burger::Display::GetDepthBuffer(void) const
 	\brief Depth buffer index
 
 	When an OpenGL context is created, a depth buffer is declared
@@ -365,7 +365,7 @@ void Burger::Display::EndScene(void)
 
 /*! ************************************
 
-	\fn float Burger::DisplayOpenGL::GetRetinaScale(void) const
+	\fn float Burger::Display::GetRetinaScale(void) const
 	\brief Get the scale factor for the retina display
 
 	Some iOS devices have displays that are higher resolution than

@@ -398,7 +398,7 @@ Word BURGER_API Burger::Win1252::FromUTF8(char *pOutput,WordPtr uOutputSize,cons
 	was parsed. Zeros will be placed in the Win1252 stream as is.
 	
 	\param pOutput Pointer to a byte buffer to receive the Win1252 string. \ref NULL is okay
-		if uOutputSize is zero, outwise a page fault will occur.
+		if uOutputSize is zero, otherwise a page fault will occur.
 	\param uOutputSize Size of the output buffer in bytes.
 	\param pInput UTF8 encoded byte array. \ref NULL is okay if uInputSize is zero.
 	\param uInputSize Size of the input byte array.

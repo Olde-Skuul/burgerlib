@@ -271,7 +271,7 @@ Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 		if (uActiveDisplayCount) {
 
 			// Cache the screen count
-			CFArrayRef pNSScreens = static_cast<CFArrayRef>([NSScreen screens]);
+			const CFArrayRef pNSScreens = (const CFArrayRef)[NSScreen screens];
 			CFIndex uScreenCount = CFArrayGetCount(pNSScreens);
 
 			// Iterate over the displays

@@ -2141,6 +2141,35 @@ void BURGER_API Burger::String::SetFast(const char *pInput,WordPtr uLength)
 	MemoryCopy(m_Raw,pInput,uLength);
 }
 
+void BURGER_API Burger::String::InitFormattedString(const char* pFormat,WordPtr uArgCount,const SafePrintArgument **ppArgs)
+{
+	// Remove any previously allocated buffer
+	Clear();
+	if  ((pFormat == NULL) || (*pFormat == 0x00)) {
+		return;
+	}
+     
+	if (uArgCount && ppArgs) {
+		if (!SprintfUserAlloc(FormattedAllocCallback,this,TRUE,pFormat,uArgCount,ppArgs)) {
+			Clear();
+		}
+	} else {
+		Set(pFormat);
+	}
+}
+
+ Word BURGER_API Burger::String::FormattedAllocCallback(Word bNoErrors,WordPtr uRequestedSize,void **ppOutputBuffer,void *pContext)
+{
+	if (!bNoErrors || !pContext || !uRequestedSize) {
+		return FALSE;	// Abort
+	}
+	String* theString = static_cast<String*>(pContext);
+	theString->SetBufferSize(uRequestedSize);
+	ppOutputBuffer[0] = theString->m_pData;
+	return TRUE;		// Proceed
+}
+
+
 /*! ************************************
 
 	\fn Burger::String::operator == (Burger::String const &rInput1,Burger::String const &rInput2)

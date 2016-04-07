@@ -215,13 +215,7 @@ Burger::VertexBuffer *Burger::DisplayOpenGL::CreateVertexBufferObject(void)
 
 void Burger::DisplayOpenGL::Resize(Word uWidth,Word uHeight)
 {
-	m_uWidth = uWidth;
-	m_uHeight = uHeight;
-	float fWidth = static_cast<float>(static_cast<int>(uWidth));
-	float fHeight = static_cast<float>(static_cast<int>(uHeight));
-	m_fWidth = fWidth;
-	m_fHeight = fHeight;
-	m_fAspectRatio = fWidth/fHeight;
+	SetWidthHeight(uWidth,uHeight);
 	SetViewport(0,0,uWidth,uHeight);
 }
 
@@ -638,15 +632,6 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 	Debug::Message("m_uMaximumColorAttachments = %u\n",m_uMaximumColorAttachments);
 #endif
 
-	//
-	// Set up the internal screen aspect ratio
-	//
-
-	float fWidth = static_cast<float>(static_cast<int>(m_uWidth));
-	float fHeight = static_cast<float>(static_cast<int>(m_uHeight));
-	m_fWidth = fWidth;
-	m_fHeight = fHeight;
-	m_fAspectRatio = fWidth/fHeight;
 	m_uActiveTexture = 0;
 }
 

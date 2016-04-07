@@ -391,6 +391,8 @@
 		<Unit filename="../source/math/brfixedvector4d.h" />
 		<Unit filename="../source/math/brfloatingpoint.cpp" />
 		<Unit filename="../source/math/brfloatingpoint.h" />
+		<Unit filename="../source/math/brfpinfo.cpp" />
+		<Unit filename="../source/math/brfpinfo.h" />
 		<Unit filename="../source/math/brmatrix3d.cpp" />
 		<Unit filename="../source/math/brmatrix3d.h" />
 		<Unit filename="../source/math/brmatrix4d.cpp" />
@@ -416,6 +418,8 @@
 		<Unit filename="../source/text/brnumberstring.h" />
 		<Unit filename="../source/text/brnumberstringhex.cpp" />
 		<Unit filename="../source/text/brnumberstringhex.h" />
+		<Unit filename="../source/text/brprintf.cpp" />
+		<Unit filename="../source/text/brprintf.h" />
 		<Unit filename="../source/text/brsimplestring.cpp" />
 		<Unit filename="../source/text/brsimplestring.h" />
 		<Unit filename="../source/text/brstring.cpp" />
@@ -455,6 +459,7 @@
 		<Unit filename="../source/windows/brfilemanagerwindows.cpp" />
 		<Unit filename="../source/windows/brfilenamewindows.cpp" />
 		<Unit filename="../source/windows/brfilewindows.cpp" />
+		<Unit filename="../source/windows/brglobalsshimswindows.cpp" />
 		<Unit filename="../source/windows/brglobalswindows.cpp" />
 		<Unit filename="../source/windows/brguidwindows.cpp" />
 		<Unit filename="../source/windows/brjoypadwindows.cpp" />
@@ -501,6 +506,8 @@
 		<Unit filename="../unittest/testbrmatrix3d.h" />
 		<Unit filename="../unittest/testbrmatrix4d.cpp" />
 		<Unit filename="../unittest/testbrmatrix4d.h" />
+		<Unit filename="../unittest/testbrprintf.cpp" />
+		<Unit filename="../unittest/testbrprintf.h" />
 		<Unit filename="../unittest/testbrstaticrtti.cpp" />
 		<Unit filename="../unittest/testbrstaticrtti.h" />
 		<Unit filename="../unittest/testbrstrings.cpp" />

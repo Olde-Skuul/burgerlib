@@ -347,6 +347,10 @@ Burger::Joypad::Joypad(Burger::GameApp *pAppInstance) :
 
 	// Install the background task if any devices were found
 
+	if (m_bXInputFound) {
+		Globals::XInputEnable(TRUE);
+	}
+
 	if (m_bXInputFound || m_bDirectInputFound) {
 		pAppInstance->AddRoutine(Poll,this,RunQueue::PRIORITY_JOYPAD);
 	}
@@ -366,6 +370,7 @@ Burger::Joypad::~Joypad()
 
 	// Make sure the controllers are not rumbling
 	XInputStopRumbleOnAllControllers();
+	Globals::XInputEnable(FALSE);
 
 	JoypadData_t *pJoypadData = m_Data;
 	Word i = 0;
@@ -637,7 +642,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 	
 ***************************************/
 
-void BURGER_API Burger::Joypad::Acquire(void)
+void BURGER_API Burger::Joypad::AcquireDirectInput(void)
 {
 	Word i = m_uDeviceCount;
 	if (i) {
@@ -665,7 +670,7 @@ void BURGER_API Burger::Joypad::Acquire(void)
 	
 ***************************************/
 
-void BURGER_API Burger::Joypad::Unacquire(void)
+void BURGER_API Burger::Joypad::UnacquireDirectInput(void)
 {
 	Word i = m_uDeviceCount;
 	if (i) {

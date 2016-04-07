@@ -159,6 +159,7 @@ objs= &
 	$(A)\brfixedvector3d.obj &
 	$(A)\brfixedvector4d.obj &
 	$(A)\brfloatingpoint.obj &
+	$(A)\brfpinfo.obj &
 	$(A)\brmatrix3d.obj &
 	$(A)\brmatrix4d.obj &
 	$(A)\brvector2d.obj &
@@ -171,6 +172,7 @@ objs= &
 	$(A)\brmacromanus.obj &
 	$(A)\brnumberstring.obj &
 	$(A)\brnumberstringhex.obj &
+	$(A)\brprintf.obj &
 	$(A)\brsimplestring.obj &
 	$(A)\brstring.obj &
 	$(A)\brstring16.obj &
@@ -196,6 +198,7 @@ objs= &
 	$(A)\brfilemanagerwindows.obj &
 	$(A)\brfilenamewindows.obj &
 	$(A)\brfilewindows.obj &
+	$(A)\brglobalsshimswindows.obj &
 	$(A)\brglobalswindows.obj &
 	$(A)\brguidwindows.obj &
 	$(A)\brjoypadwindows.obj &
@@ -225,6 +228,7 @@ objs= &
 	$(A)\testbrhashes.obj &
 	$(A)\testbrmatrix3d.obj &
 	$(A)\testbrmatrix4d.obj &
+	$(A)\testbrprintf.obj &
 	$(A)\testbrstaticrtti.obj &
 	$(A)\testbrstrings.obj &
 	$(A)\testbrtimedate.obj &

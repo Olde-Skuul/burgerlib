@@ -51,9 +51,8 @@ Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
 	// Create my directx9 instance and store it
 	//
 
+	SetWidthHeight(uWidth,uHeight);
 	m_uFlags = uFlags;
-	m_uWidth = uWidth;
-	m_uHeight = uHeight;
 	m_uDepth = uDepth;
 
 	// Create my direct draw9 instance

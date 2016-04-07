@@ -30,14 +30,14 @@
 namespace Burger {
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 class DisplayDIB : public Display {
-public:
-	DisplayDIB(GameApp *pGameApp);
 protected:
 	virtual Word InitContext(void);
 	virtual void PostShutdown(void);
 	virtual void PostEndScene(void);
-	HDC__ *m_pWindowDC;				///< Pointer to the window's device contect
-	HDC__ *m_pBitMapDC;				///< Pointer to the BitMap's device contect
+	HDC__ *m_pWindowDC;				///< Pointer to the window's device context
+	HDC__ *m_pBitMapDC;				///< Pointer to the BitMap's device context
+public:
+	DisplayDIB(GameApp *pGameApp);
 };
 #endif
 }

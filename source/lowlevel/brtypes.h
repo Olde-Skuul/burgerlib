@@ -29,6 +29,7 @@
 #define BURGER_ASM _asm
 #define BURGER_INLINE inline
 #define BURGER_LONGLONG __int64
+#define BURGER_HASWCHAR_T
 #if defined(__DOS__)
 #define BURGER_MSDOS
 #elif defined(__NT__)
@@ -84,6 +85,7 @@
 #define BURGER_INLINE __forceinline
 #define BURGER_ASM _asm
 #define BURGER_LONGLONG __int64
+#define BURGER_HASWCHAR_T
 
 // SN Systems MIPS Compiler for PS2
 #elif (defined(__R5900) || defined(__R5900__)) || (defined(__MWERKS__) && defined(__MIPS__))
@@ -96,6 +98,7 @@
 #define BURGER_PS2
 #define BURGER_LITTLEENDIAN
 #define BURGER_LONGLONG long
+#define BURGER_LONGIS64BIT
 
 // SN Systems PPC Compiler for GameCube
 #elif (defined(__SN__) && defined(__PPC__)) || (defined(__MWERKS__) && defined(__PPCGEKKO__))
@@ -246,6 +249,9 @@
 #define BURGER_BIGENDIAN
 #endif
 #endif
+#if __option(wchar_type)
+#define BURGER_HASWCHAR_T
+#endif
 
 // XCode for MacOS X / iOS PPC, ARM and Intel
 #elif defined(__GNUC__) && defined(__MACH__) && (defined(__APPLE_CPP__) || defined(__APPLE_CC__) || defined(__NEXT_CPP__))
@@ -254,43 +260,59 @@
 #define BURGER_PREALIGN(s)
 #define BURGER_POSTALIGN(s) __attribute__((aligned(s)))
 #define BURGER_STRUCT_ALIGN
+#define BURGER_INLINE __inline__ __attribute__((always_inline))
+#define BURGER_HASWCHAR_T
+
 #if defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__)
 #define BURGER_IOS
 #else
 #define BURGER_MACOSX
 #endif
-#define BURGER_INLINE __inline__ __attribute__((always_inline))
+
+#if defined(__LP64__)
+#define BURGER_LONGLONG long
+#define BURGER_LONGIS64BIT
+#endif
+
 #if defined(__i386__)
 #define BURGER_X86
 #define BURGER_LITTLEENDIAN
 #define BURGER_API __attribute__((regparm(3)))
 #define BURGER_ANSIAPI __attribute((cdecl))
 #define BURGER_DECLSPECNAKED int int not supported
+
 #elif defined(__x86_64__)
 #define BURGER_AMD64
 #define BURGER_LITTLEENDIAN
 #define BURGER_64BITCPU
 #define BURGER_DECLSPECNAKED int int not supported
+
 #elif defined(__ppc64__)
 #define BURGER_POWERPC
 #define BURGER_BIGENDIAN
 #define BURGER_64BITCPU
+
 #elif defined(__ppc__)
 #define BURGER_POWERPC
 #define BURGER_BIGENDIAN
+
 #elif defined(__arm__)
 #define BURGER_ARM
+#define BURGER_LITTLEENDIAN
+
 #if defined(__ARM_NEON__)
 #define BURGER_NEON
 #endif
-#define BURGER_LITTLEENDIAN
+
 #elif defined(__arm64__)
 #define BURGER_ARM64
+#define BURGER_LITTLEENDIAN
+#define BURGER_64BITCPU
+
 #if defined(__ARM_NEON__)
 #define BURGER_NEON
 #endif
-#define BURGER_LITTLEENDIAN
-#define BURGER_64BITCPU
+
 #else
 #error Unknown CPU
 #endif
@@ -311,6 +333,7 @@
 #define BURGER_INLINE __forceinline
 #define BURGER_ASM _asm
 #define BURGER_LONGLONG __int64
+#define BURGER_HASWCHAR_T
 
 // Visual Studio for Win64
 #elif defined(_MSC_VER) && defined(_M_AMD64)
@@ -329,6 +352,7 @@
 #define BURGER_ASM _asm
 #define BURGER_LONGLONG __int64
 #define BURGER_64BITCPU
+#define BURGER_HASWCHAR_T
 
 // Sony Playstation VITA
 #elif defined(__psp2__)
@@ -396,12 +420,20 @@
 #define BURGER_ANSIAPI
 #endif
 
+#if !defined(BURGER_MININT)
+#define BURGER_MININT ((-0x7FFFFFFF)-1)
+#endif
+
 #if !defined(BURGER_MAXINT)
 #define BURGER_MAXINT 0x7FFFFFFF
 #endif
 
 #if !defined(BURGER_MAXUINT)
 #define BURGER_MAXUINT 0xFFFFFFFFU
+#endif
+
+#if !defined(BURGER_MININT64)
+#define BURGER_MININT64 ((-0x7FFFFFFFFFFFFFFFLL)-1)
 #endif
 
 #if !defined(BURGER_MAXINT64)
@@ -527,7 +559,10 @@ typedef unsigned int Vector_128 __attribute__((mode (TI)));
 typedef vec_float4 Vector_128;
 
 #elif defined(BURGER_PS4)
-typedef float Vector_128 __attribute__((__vector_size__(16)));
+#ifndef __XMMINTRIN_H
+#include <xmmintrin.h>
+#endif
+typedef __m128 Vector_128;
 
 #elif defined(BURGER_XBOX360)
 #ifndef __PPCINTRINSICS_H__
@@ -569,6 +604,13 @@ struct Vector_128 {
 };
 
 #else
+
+#if defined(BURGER_WATCOM)
+#ifndef _MMINTRIN_H_INCLUDED
+#include <mmintrin.h>
+#endif
+#endif
+
 struct Vector_128 {
 	float BURGER_ALIGN(m128_f32[4],16);			///< Opaque contents to the 128 bit vector register
 };

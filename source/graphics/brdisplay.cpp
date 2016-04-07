@@ -248,8 +248,8 @@ void BURGER_API Burger::Display::InitDefaults(GameApp *pGameApp)
 	m_pRenderData = NULL;
 	m_pRelease = NULL;
 	m_pReleaseData = NULL;
-	m_uWidth = 0;
-	m_uHeight = 0;
+
+	SetWidthHeight(0,0);
 	m_uDepth = 0;
 	m_uFlags = 0;
 	m_uDisplayWidth = 0;
@@ -277,6 +277,44 @@ void BURGER_API Burger::Display::InitDefaults(GameApp *pGameApp)
 
 /*! ************************************
 
+	\brief Set the width and height of the screen
+	
+	Sets the width and height in pixels of the display
+	and updates all other variables that depend on these values
+
+	\param uWidth New width of the screen in pixels
+	\param uHeight New height of the screen in pixels
+
+***************************************/
+
+void BURGER_API Burger::Display::SetWidthHeight(Word uWidth,Word uHeight)
+{
+	// Set the initial globals
+	m_uWidth = uWidth;
+	m_uHeight = uHeight;
+
+	// Convert to floats (Some functions prefer it in float format,
+	// so it's converted once at this location for performance)
+	float fWidth = static_cast<float>(static_cast<int>(uWidth));
+	float fHeight = static_cast<float>(static_cast<int>(uHeight));
+	m_fWidth = fWidth;
+	m_fHeight = fHeight;
+
+	// Both width and height are valid?
+	if (uHeight && uWidth) {
+		m_fAspectRatioX = fWidth/fHeight;
+		m_fAspectRatioY = fHeight/fWidth;
+	} else {
+		// Set the aspect ratio to 1:1
+		// in cases where the screen size is 0,y or x,0
+		// This also prevents a divide by zero in the code above
+		m_fAspectRatioX = 1.0f;
+		m_fAspectRatioY = 1.0f;
+	}
+}
+
+/*! ************************************
+
 	\brief Default constructor.
 	
 	Initializes all of the shared variables and
@@ -284,9 +322,8 @@ void BURGER_API Burger::Display::InitDefaults(GameApp *pGameApp)
 
 	Variables are initialized, but the display is not activated.
 	Call Init(Word,Word,Word,Word) to activate the display.
-	\param pGameApp Pointer to the game application
-	\param API Derived class API identifier
 
+	\param pGameApp Pointer to the game application
 	\sa Init(Word,Word,Word,Word)
 
 ***************************************/
@@ -407,8 +444,7 @@ Burger::VertexBuffer *Burger::Display::CreateVertexBufferObject(void)
 
 void Burger::Display::Resize(Word uWidth,Word uHeight)
 {
-	m_uWidth = uWidth;
-	m_uHeight = uHeight;
+	SetWidthHeight(uWidth,uHeight);
 }
 
 void Burger::Display::SetViewport(Word /* uX */,Word /* uY */,Word /* uWidth */,Word /* uHeight */)
@@ -1669,6 +1705,75 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 	\sa GetDisplayWidth() const or GetHeight() const
 	
 ***************************************/
+
+/*! ************************************
+
+	\fn float Burger::Display::GetWidthFloat(void) const
+	\brief Get the width in pixels of the display buffer
+	
+	\return Width of the display buffer in pixels as a float
+	\sa GetHeightFloat() const or GetWidth() const
+	
+***************************************/
+
+/*! ************************************
+
+	\fn float Burger::Display::GetHeightFloat(void) const
+	\brief Get the height in pixels of the display buffer
+	
+	\return Height of the display buffer in pixels as a float
+	\sa GetWidthFloat() const or GetHeight() const
+	
+***************************************/
+
+/*! ************************************
+
+	\fn float Burger::Display::GetAspectRatioX(void) const
+	\brief Get the aspect ratio in the format of width/height
+	
+	\return Aspect ratio in the X direction
+	\sa GetAspectRatioY() const
+	
+***************************************/
+
+/*! ************************************
+
+	\fn float Burger::Display::GetAspectRatioY(void) const
+	\brief Get the aspect ratio in the format of height/width
+	
+	\return Aspect ratio in the Y direction
+	\sa GetAspectRatioX() const
+	
+***************************************/
+
+
+/*! ************************************
+
+	\brief Get the enumeration of the screen aspect ratio
+	
+	Convert the aspect ratio values into the closest enumeration of
+	a standard aspect ratio.
+
+	\return Enumeration of the screen's current aspect ratio
+	
+***************************************/
+
+Burger::Display::eAspectRatio BURGER_API Burger::Display::GetAspectRatio(void) const
+{
+	eAspectRatio uResult = ASPECT_RATIO_UNKNOWN;
+	float fAspectRatioX = m_fAspectRatioX;
+	if (fAspectRatioX >= 1.77f) {			// 16/9
+		uResult = ASPECT_RATIO_16x9;
+	} else if (fAspectRatioX >= 1.60f) {	// 16/10
+		uResult = ASPECT_RATIO_16x10;
+	} else if (fAspectRatioX >= 1.33f) {	// 4/3
+		uResult = ASPECT_RATIO_4x3;
+	} else if (fAspectRatioX == 1.0f) {	// 1/1
+		uResult = ASPECT_RATIO_1x1;
+	}
+	return uResult;
+}
+
 
 /*! ************************************
 

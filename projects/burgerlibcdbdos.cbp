@@ -371,6 +371,8 @@
 		<Unit filename="../source/math/brfixedvector4d.h" />
 		<Unit filename="../source/math/brfloatingpoint.cpp" />
 		<Unit filename="../source/math/brfloatingpoint.h" />
+		<Unit filename="../source/math/brfpinfo.cpp" />
+		<Unit filename="../source/math/brfpinfo.h" />
 		<Unit filename="../source/math/brmatrix3d.cpp" />
 		<Unit filename="../source/math/brmatrix3d.h" />
 		<Unit filename="../source/math/brmatrix4d.cpp" />
@@ -406,6 +408,8 @@
 		<Unit filename="../source/text/brnumberstring.h" />
 		<Unit filename="../source/text/brnumberstringhex.cpp" />
 		<Unit filename="../source/text/brnumberstringhex.h" />
+		<Unit filename="../source/text/brprintf.cpp" />
+		<Unit filename="../source/text/brprintf.h" />
 		<Unit filename="../source/text/brsimplestring.cpp" />
 		<Unit filename="../source/text/brsimplestring.h" />
 		<Unit filename="../source/text/brstring.cpp" />

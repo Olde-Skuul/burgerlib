@@ -313,7 +313,7 @@ void FixNSRectOrigin(NSRect *pInput)
 }
 
 //
-// Check for the commmand "Alt-Enter and
+// Check for the command "Alt-Enter and
 // switch from full screen to windowed mode
 // if allowed
 //
@@ -349,11 +349,12 @@ void FixNSRectOrigin(NSRect *pInput)
 
 	Base class for instantiating a video display using OpenGL
 
-	\sa Burger::DisplayOpenGL::~DisplayOpenGL()
+	\param pGameApp Pointer to the active game application pointer
+	\sa Burger::Display::~Display()
 
 ***************************************/
 
-Burger::Display::Display(Burger::GameApp *pGameApp) :
+Burger::Display::Display(GameApp *pGameApp) :
 	m_pCompressedFormats(NULL),
 	m_pView(NULL),
 	m_pWindowController(NULL),
@@ -362,9 +363,6 @@ Burger::Display::Display(Burger::GameApp *pGameApp) :
 	m_pFullScreenWindow(NULL),
 	m_fOpenGLVersion(0.0f),
 	m_fShadingLanguageVersion(0.0f),
-	m_fAspectRatio(1.0f),
-	m_fWidth(0.0f),
-	m_fHeight(0.0f),
 	m_uCompressedFormatCount(0),
 	m_uMaximumVertexAttributes(0),
 	m_uMaximumColorAttachments(0),
@@ -387,7 +385,7 @@ Burger::Display::~Display()
 
 	Base class for instantiating a video display using OpenGL
 
-	\sa Burger::DisplayOpenGL::PostShutdown()
+	\sa Burger::Display::PostShutdown()
 
 ***************************************/
 
@@ -396,7 +394,7 @@ Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
 	// OpenGL allows all 256 palette colors to work FULLPALETTEALLOWED
 	// Pass the other flags through
     
-	m_uFlags = (m_uFlags&(~(ALLOWFULLSCREENTOGGLE|ALLOWRESIZING|STEREO))) | FULLPALETTEALLOWED | (uFlags&(ALLOWFULLSCREENTOGGLE|ALLOWRESIZING|STEREO));
+	m_uFlags = (m_uFlags&(~(ALLOWFULLSCREENTOGGLE|ALLOWRESIZING|STEREO|MAINTAIN_ASPECT_RATIO))) | FULLPALETTEALLOWED | (uFlags&(ALLOWFULLSCREENTOGGLE|ALLOWRESIZING|STEREO|MAINTAIN_ASPECT_RATIO));
 	
 	// If there's a release function, call it because it's likely that
 	// the reset of OpenGL will cause all resources to be destroyed
@@ -432,8 +430,7 @@ Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
 	// to be set.
 	//
 	
-	m_uWidth = uWidth;
-	m_uHeight = uHeight;
+	SetWidthHeight(uWidth,uHeight);
 	m_uDepth = uDepth;
 
 	//
@@ -591,7 +588,7 @@ Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
 
 	Shut down OpenGL
 
-	\sa Burger::DisplayOpenGL::PostShutdown()
+	\sa Burger::Display::PostShutdown()
 
 ***************************************/
 
@@ -636,7 +633,7 @@ void Burger::Display::BeginScene(void)
 
 	Calls SwapBuffers() in OpenGL to draw the rendered scene
 
-	\sa Burger::DisplayOpenGL::PreBeginScene()
+	\sa Burger::Display::PreBeginScene()
 
 ***************************************/
 
@@ -651,7 +648,7 @@ void Burger::Display::EndScene(void)
 
 /*! ************************************
 
-	\fn NSView *Burger::DisplayOpenGL::GetView(void) const
+	\fn NSView *Burger::Display::GetView(void) const
 	\brief Get the window's NSView
 
 	Get the current NSView being used by the primary application window.
@@ -663,7 +660,7 @@ void Burger::Display::EndScene(void)
 
 /*! ************************************
 
-	\fn NSWindowController *Burger::DisplayOpenGL::GetWindowController(void) const
+	\fn NSWindowController *Burger::Display::GetWindowController(void) const
 	\brief Get the window's NSWindowController
 
 	Get the current NSWindowController being used by the primary application window.
@@ -675,7 +672,7 @@ void Burger::Display::EndScene(void)
 
 /*! ************************************
 
-	\fn NSOpenGLView *Burger::DisplayOpenGL::GetOpenGLView(void) const
+	\fn NSOpenGLView *Burger::Display::GetOpenGLView(void) const
 	\brief Get the window's NSOpenGLView
 
 	Get the current NSOpenGLView being used by the primary application window.
@@ -687,7 +684,7 @@ void Burger::Display::EndScene(void)
 
 /*! ************************************
 
-	\fn _CGLContextObject *Burger::DisplayOpenGL::GetOpenGLContext(void) const
+	\fn _CGLContextObject *Burger::Display::GetOpenGLContext(void) const
 	\brief Get the window's _CGLContextObject
 
 	Get the current CGLContextObject being used by the primary application window.
@@ -699,7 +696,7 @@ void Burger::Display::EndScene(void)
 
 /*! ************************************
 
-	\fn NSWindow *Burger::DisplayOpenGL::GetFullScreenWindow(void) const
+	\fn NSWindow *Burger::Display::GetFullScreenWindow(void) const
 	\brief Get the window pointer
 
 	Get the secondary full screen application window.
@@ -711,7 +708,7 @@ void Burger::Display::EndScene(void)
 
 /*! ************************************
 
-	\fn void Burger::DisplayOpenGL::SetFullScreenWindow(NSWindow *pFullScreenWindow)
+	\fn void Burger::Display::SetFullScreenWindow(NSWindow *pFullScreenWindow)
 	\brief Enable a full screen window and disable the primary game window
 
 	Hide the game window and attach all the views to the supplied window that's

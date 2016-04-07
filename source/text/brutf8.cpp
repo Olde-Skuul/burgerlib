@@ -576,7 +576,10 @@ WordPtr BURGER_API Burger::UTF8::FromMacRomanUS(char *pOutput,WordPtr uOutputSiz
 		} while (uTemp);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()
@@ -602,7 +605,7 @@ WordPtr BURGER_API Burger::UTF8::FromMacRomanUS(char *pOutput,WordPtr uOutputSiz
 	was parsed. Zeros will be placed in the UTF8 stream as is.
 	
 	\param pOutput Pointer to UTF8 buffer to receive the converted string. \ref NULL is okay
-		if uOutputSize is zero, outwise a page fault will occur.
+		if uOutputSize is zero, otherwise a page fault will occur.
 	\param uOutputSize Size of the output buffer in bytes.
 	\param pInput MacRomanUS encoded byte array. \ref NULL is okay if uInputSize is zero.
 	\param uInputSize Size of the input byte array
@@ -662,7 +665,10 @@ WordPtr BURGER_API Burger::UTF8::FromMacRomanUS(char *pOutput,WordPtr uOutputSiz
 		} while (--uInputSize);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()
@@ -788,7 +794,10 @@ WordPtr BURGER_API Burger::UTF8::FromWin1252(char *pOutput,WordPtr uOutputSize,c
 		} while (Temp);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()
@@ -814,7 +823,7 @@ WordPtr BURGER_API Burger::UTF8::FromWin1252(char *pOutput,WordPtr uOutputSize,c
 	was parsed. Zeros will be placed in the UTF8 stream as is.
 	
 	\param pOutput Pointer to UTF8 buffer to receive the converted string. \ref NULL is okay
-		if uOutputSize is zero, outwise a page fault will occur.
+		if uOutputSize is zero, otherwise a page fault will occur.
 	\param uOutputSize Size of the output buffer in bytes.
 	\param pInput Win1252 encoded byte array. \ref NULL is okay if uInputSize is zero.
 	\param uInputSize Size of the input byte array
@@ -874,7 +883,10 @@ WordPtr BURGER_API Burger::UTF8::FromWin1252(char *pOutput,WordPtr uOutputSize,c
 		} while (--uInputSize);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()
@@ -985,7 +997,10 @@ WordPtr BURGER_API Burger::UTF8::FromISOLatin1(char *pOutput,WordPtr uOutputSize
 		} while (uTemp);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()
@@ -1011,7 +1026,7 @@ WordPtr BURGER_API Burger::UTF8::FromISOLatin1(char *pOutput,WordPtr uOutputSize
 	was parsed. Zeros will be placed in the UTF8 stream as is.
 	
 	\param pOutput Pointer to UTF8 buffer to receive the converted string. \ref NULL is okay
-		if uOutputSize is zero, outwise a page fault will occur.
+		if uOutputSize is zero, otherwise a page fault will occur.
 	\param uOutputSize Size of the output buffer in bytes.
 	\param pInput ISOLatin1 encoded byte array. \ref NULL is okay if uInputSize is zero.
 	\param uInputSize Size of the input byte array
@@ -1061,7 +1076,10 @@ WordPtr BURGER_API Burger::UTF8::FromISOLatin1(char *pOutput,WordPtr uOutputSize
 		} while (--uInputSize);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()
@@ -1224,7 +1242,10 @@ WordPtr BURGER_API Burger::UTF8::FromGeneric(char *pOutput,WordPtr uOutputSize,c
 		} while (uTemp);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()
@@ -1254,7 +1275,7 @@ WordPtr BURGER_API Burger::UTF8::FromGeneric(char *pOutput,WordPtr uOutputSize,c
 	was parsed. Zeros will be placed in the UTF8 stream as is.
 	
 	\param pOutput Pointer to UTF8 buffer to receive the converted string. \ref NULL is okay
-		if uOutputSize is zero, outwise a page fault will occur.
+		if uOutputSize is zero, otherwise a page fault will occur.
 	\param uOutputSize Size of the output buffer in bytes.
 	\param pTranslateTable Pointer to a 128x4 array to use as a UTF8 conversion table.
 	\param pInput Generic encoded byte array. \ref NULL is okay if uInputSize is zero.
@@ -1328,7 +1349,10 @@ WordPtr BURGER_API Burger::UTF8::FromGeneric(char *pOutput,WordPtr uOutputSize,c
 		} while (--uInputSize);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()
@@ -1415,7 +1439,7 @@ WordPtr BURGER_API Burger::UTF8::FromUTF16(char *pOutput,WordPtr uOutputSize,con
 	Word8 *pWorkPtr = reinterpret_cast<Word8 *>(pOutput);
 	
 	WordPtr uAddZero = uOutputSize;		// If nonzero, then I append a 0 to the string.
-	if (uOutputSize) {				// Valid?
+	if (uOutputSize) {					// Valid?
 		--uOutputSize;
 	}
 	Word8 *pEndPtr = pWorkPtr+uOutputSize;	// This is the end of the valid buffer
@@ -1424,16 +1448,16 @@ WordPtr BURGER_API Burger::UTF8::FromUTF16(char *pOutput,WordPtr uOutputSize,con
 	
 	Word uTemp = pInput[0];
 	++pInput;			// Accept it
-	if (uTemp) {			// Can I start the loop?
+	if (uTemp) {		// Can I start the loop?
 		do {
 	
 		// Get a char
 	
-			if (uTemp<0x80U) {		// ASCII?
+			if (uTemp<0x80U) {				// ASCII?
 				if (pWorkPtr<pEndPtr) {		// Can I write?
 					pWorkPtr[0] = static_cast<Word8>(uTemp);
 				}
-				++pWorkPtr;			// Increment the output
+				++pWorkPtr;						// Increment the output
 			} else if (uTemp < 0x800U) {		// 0x80-0x7FF (11 bit encoding) ?
 				if (pWorkPtr<pEndPtr) {
 					pWorkPtr[0] = static_cast<Word8>((uTemp>>6) | 0xC0U);		// Encode the upper 6 bits
@@ -1487,7 +1511,10 @@ WordPtr BURGER_API Burger::UTF8::FromUTF16(char *pOutput,WordPtr uOutputSize,con
 		} while (uTemp);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()
@@ -1516,7 +1543,7 @@ WordPtr BURGER_API Burger::UTF8::FromUTF16(char *pOutput,WordPtr uOutputSize,con
 	was parsed. Zeros will be placed in the UTF8 stream as is.
 	
 	\param pOutput Pointer to UTF8 buffer to receive the converted string. \ref NULL is okay
-		if uOutputSize is zero, outwise a page fault will occur.
+		if uOutputSize is zero, otherwise a page fault will occur.
 	\param uOutputSize Size of the output buffer in bytes.
 	\param pInput UTF16 encoded Word16 array. \ref NULL is okay if uInputSize is zero.
 	\param uInputSize Size of the input Word16 array in bytes
@@ -1597,7 +1624,10 @@ WordPtr BURGER_API Burger::UTF8::FromUTF16(char *pOutput,WordPtr uOutputSize,con
 		} while (--uInputSize);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()
@@ -1788,7 +1818,10 @@ WordPtr BURGER_API Burger::UTF8::FromUTF32(char *pOutput,WordPtr uOutputSize,con
 		} while (uTemp);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()
@@ -1814,7 +1847,7 @@ WordPtr BURGER_API Burger::UTF8::FromUTF32(char *pOutput,WordPtr uOutputSize,con
 	was parsed. Zeros will be placed in the UTF8 stream as is.
 	
 	\param pOutput Pointer to UTF8 buffer to receive the converted string. \ref NULL is okay
-		if uOutputSize is zero, outwise a page fault will occur.
+		if uOutputSize is zero, otherwise a page fault will occur.
 	\param uOutputSize Size of the output buffer in bytes.
 	\param pInput UTF32 encoded Word32 array. \ref NULL is okay if uInputSize is zero.
 	\param uInputSize Size of the input Word16 array in bytes
@@ -1891,7 +1924,10 @@ WordPtr BURGER_API Burger::UTF8::FromUTF32(char *pOutput,WordPtr uOutputSize,con
 		} while (--uInputSize);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()
@@ -2048,7 +2084,10 @@ WordPtr BURGER_API Burger::UTF8::ToGeneric(char *pOutput,WordPtr uOutputSize,con
 		} while (uFirst);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()
@@ -2074,7 +2113,7 @@ WordPtr BURGER_API Burger::UTF8::ToGeneric(char *pOutput,WordPtr uOutputSize,con
 	was parsed. Zeros will be placed in the generic stream as is.
 	
 	\param pOutput Pointer to a byte buffer to receive the converted string. \ref NULL is okay
-		if uOutputSize is zero, outwise a page fault will occur.
+		if uOutputSize is zero, otherwise a page fault will occur.
 	\param uOutputSize Size of the output buffer in bytes.
 	\param pTranslateTable Pointer to a 128x4 array to use as a UTF8 conversion table.
 	\param pInput UTF8 encoded byte array. \ref NULL is okay if uInputSize is zero.
@@ -2159,7 +2198,10 @@ WordPtr BURGER_API Burger::UTF8::ToGeneric(char *pOutput,WordPtr uOutputSize,con
 		} while (--uInputSize);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()

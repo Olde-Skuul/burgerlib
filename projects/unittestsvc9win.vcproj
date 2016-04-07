@@ -366,6 +366,7 @@
 				<File RelativePath="..\source\windows\brfilemanagerwindows.cpp" />
 				<File RelativePath="..\source\windows\brfilenamewindows.cpp" />
 				<File RelativePath="..\source\windows\brfilewindows.cpp" />
+				<File RelativePath="..\source\windows\brglobalsshimswindows.cpp" />
 				<File RelativePath="..\source\windows\brglobalswindows.cpp" />
 				<File RelativePath="..\source\windows\brguidwindows.cpp" />
 				<File RelativePath="..\source\windows\brjoypadwindows.cpp" />
@@ -398,6 +399,8 @@
 				<File RelativePath="..\source\text\brnumberstring.h" />
 				<File RelativePath="..\source\text\brnumberstringhex.cpp" />
 				<File RelativePath="..\source\text\brnumberstringhex.h" />
+				<File RelativePath="..\source\text\brprintf.cpp" />
+				<File RelativePath="..\source\text\brprintf.h" />
 				<File RelativePath="..\source\text\brsimplestring.cpp" />
 				<File RelativePath="..\source\text\brsimplestring.h" />
 				<File RelativePath="..\source\text\brstring.cpp" />
@@ -691,6 +694,8 @@
 				<File RelativePath="..\source\math\brfixedvector4d.h" />
 				<File RelativePath="..\source\math\brfloatingpoint.cpp" />
 				<File RelativePath="..\source\math\brfloatingpoint.h" />
+				<File RelativePath="..\source\math\brfpinfo.cpp" />
+				<File RelativePath="..\source\math\brfpinfo.h" />
 				<File RelativePath="..\source\math\brmatrix3d.cpp" />
 				<File RelativePath="..\source\math\brmatrix3d.h" />
 				<File RelativePath="..\source\math\brmatrix4d.cpp" />
@@ -728,6 +733,8 @@
 			<File RelativePath="..\unittest\testbrmatrix3d.h" />
 			<File RelativePath="..\unittest\testbrmatrix4d.cpp" />
 			<File RelativePath="..\unittest\testbrmatrix4d.h" />
+			<File RelativePath="..\unittest\testbrprintf.cpp" />
+			<File RelativePath="..\unittest\testbrprintf.h" />
 			<File RelativePath="..\unittest\testbrstaticrtti.cpp" />
 			<File RelativePath="..\unittest\testbrstaticrtti.h" />
 			<File RelativePath="..\unittest\testbrstrings.cpp" />

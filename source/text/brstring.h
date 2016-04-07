@@ -27,15 +27,47 @@
 #include "brstringfunctions.h"
 #endif
 
+#ifndef __BRPRINTF_H__
+#include "brprintf.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
+
+
+#define MAKE_BURGER_STRING_FORMATTED_CONSTRUCTOR( N ) \
+String( const char* pFmt, BURGER_SP_ARG##N ) \
+{ \
+	m_pData = m_Raw; m_uLength=0;m_Raw[0]=0; \
+	const Burger::SafePrintArgument*  args[ N ] = { BURGER_SP_INITARG##N }; \
+	InitFormattedString( pFmt, N, args ); \
+}
+
+#define MAKE_BURGER_STRING_PRINTF( N ) \
+void BURGER_INLINE Printf( const char* pFmt, BURGER_SP_ARG##N ) \
+{ \
+	const Burger::SafePrintArgument*  args[ N ] = { BURGER_SP_INITARG##N }; \
+	InitFormattedString( pFmt, N, args ); \
+}
+
+#define MAKE_BURGER_STRING_PRINTF_STRREF( N ) \
+void BURGER_INLINE Printf( const String& sFmt, BURGER_SP_ARG##N ) \
+{ \
+	const Burger::SafePrintArgument*  args[ N ] = { BURGER_SP_INITARG##N }; \
+	InitFormattedString( sFmt.GetPtr(), N, args ); \
+}
+
+
 class String {
+
 public:
 	static const Word BUFFERSIZE = 64-static_cast<int>(sizeof(char *)+sizeof(WordPtr));	///< Ensures the structure is 64 bytes in size on all platforms
+	
 private:
-	char *m_pData;			///< Pointer to the string
-	WordPtr m_uLength;		///< Length of the string
-	char m_Raw[BUFFERSIZE];	///< Temp preallocated buffer for most strings
+	char*       m_pData;			///< Pointer to the string
+	WordPtr     m_uLength;		    ///< Length of the string
+	char        m_Raw[BUFFERSIZE];	///< Temp preallocated buffer for most strings
+	
 public:
 	String(void) { m_pData = m_Raw;m_uLength=0;m_Raw[0]=0;}
 	String(const String &rInput);
@@ -50,7 +82,13 @@ public:
 	String(const char *pInput1,const char *pInput2);
 	String(const char *pInput1,const char *pInput2,const char *pInput3);
 	String(const char *pInput1,const char *pInput2,const char *pInput3,const char *pInput4);
-	~String() { if (m_pData != m_Raw) Burger::Free(m_pData); }
+	
+	BURGER_EXPAND_FORMATTING_FUNCTION( MAKE_BURGER_STRING_FORMATTED_CONSTRUCTOR );
+
+    BURGER_EXPAND_FORMATTING_FUNCTION( MAKE_BURGER_STRING_PRINTF );         ///< String.Printf( const char* pFmt, .... )
+    BURGER_EXPAND_FORMATTING_FUNCTION( MAKE_BURGER_STRING_PRINTF_STRREF );         ///< String.Printf( const String& pFmt, .... )
+	
+    ~String(void) { if (m_pData != m_Raw) Burger::Free(m_pData); }
 
 	BURGER_INLINE operator char *() { return m_pData; }
 	BURGER_INLINE operator const char *() const { return m_pData; }
@@ -66,6 +104,7 @@ public:
 	void BURGER_API Set(const Word16 *pInput);
 	void BURGER_API Set(const Word16 *pInput,WordPtr uLength);
 	void BURGER_API SetBufferSize(WordPtr uSize);
+	
 	String & operator = (const String &rInput);
 	String & operator = (const char *pInput);
 	String & operator = (char cInput);
@@ -146,6 +185,10 @@ public:
 	BURGER_INLINE friend Word operator >= (const char *pInput1,String const &rInput2) { return static_cast<Word>(rInput2.Compare(pInput1)<=0); }
 	BURGER_INLINE friend Word operator >= (String const &rInput1,char cInput2) { return static_cast<Word>(rInput1.Compare(cInput2)>=0); }
 	BURGER_INLINE friend Word operator >= (char cInput1,String const &rInput2) { return static_cast<Word>(rInput2.Compare(cInput1)<=0); }
+
+private:
+    void BURGER_API InitFormattedString(const char* pFormat,WordPtr uArgCount,const SafePrintArgument **ppArgs); 
+    static Word BURGER_API FormattedAllocCallback(Word bError,WordPtr uRequestedSize,void **ppOutputBuffer,void *pContext);
 };
 }
 /* END */

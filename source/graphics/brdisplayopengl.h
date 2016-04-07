@@ -37,7 +37,7 @@
 /* BEGIN */
 namespace Burger {
 class Image;
-#if defined(BURGER_WINDOWS)
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 class DisplayOpenGL : public Display {
 	BURGER_RTTI_IN_CLASS();
 public:
@@ -69,9 +69,6 @@ protected:
 	Word m_bResolutionChanged;		///< (Windows only) Set to \ref TRUE if the display needs to be restored
 	float m_fOpenGLVersion;					///< Numeric value for the version of OpenGL
 	float m_fShadingLanguageVersion;		///< Numeric value for the version of the Shader compiler
-	float m_fAspectRatio;					///< Width/Height
-	float m_fWidth;							///< Width of the rendering target as a float
-	float m_fHeight;						///< Height of the rendering target as a float
 	Word m_uCompressedFormatCount;			///< Number of supported compressed texture formats
 	Word m_uMaximumVertexAttributes;		///< Maximum number of vertex attributes GL_MAX_VERTEX_ATTRIBS
 	Word m_uMaximumColorAttachments;		///< Maximum number of color frame attachments GL_MAX_COLOR_ATTACHMENTS

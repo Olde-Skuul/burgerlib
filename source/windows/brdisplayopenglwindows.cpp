@@ -104,7 +104,8 @@ Burger::DisplayOpenGL::DisplayOpenGL(Burger::GameApp *pGameApp) :
 	m_fShadingLanguageVersion(0.0f),
 	m_uCompressedFormatCount(0),
 	m_uMaximumVertexAttributes(0),
-	m_uMaximumColorAttachments(0)
+	m_uMaximumColorAttachments(0),
+	m_uActiveTexture(0)
 {
 }
 
@@ -123,7 +124,7 @@ Word Burger::DisplayOpenGL::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlag
 	// OpenGL allows all 256 palette colors to work FULLPALETTEALLOWED
 	// Pass the other flags through
 
-	m_uFlags = (m_uFlags&(~(ALLOWFULLSCREENTOGGLE|ALLOWRESIZING|STEREO))) | FULLPALETTEALLOWED | (uFlags&(ALLOWFULLSCREENTOGGLE|ALLOWRESIZING|STEREO));
+	m_uFlags = (m_uFlags&(~(ALLOWFULLSCREENTOGGLE|ALLOWRESIZING|STEREO|MAINTAIN_ASPECT_RATIO))) | FULLPALETTEALLOWED | (uFlags&(ALLOWFULLSCREENTOGGLE|ALLOWRESIZING|STEREO|MAINTAIN_ASPECT_RATIO));
 
 	// If there's a release function, call it because it's likely that
 	// the reset of OpenGL will cause all resources to be destroyed
@@ -175,8 +176,7 @@ Word Burger::DisplayOpenGL::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlag
 	// to be set.
 	//
 
-	m_uWidth = uWidth;
-	m_uHeight = uHeight;
+	SetWidthHeight(uWidth,uHeight);
 	m_uDepth = uDepth;
 
 	// Full screen?
@@ -204,8 +204,7 @@ Word Burger::DisplayOpenGL::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlag
 		m_uDisplayWidth = BestVideoMode.dmPelsWidth;
 		m_uDisplayHeight = BestVideoMode.dmPelsHeight;
 		m_uDisplayDepth = BestVideoMode.dmBitsPerPel;
-		m_uWidth = m_uDisplayWidth;
-		m_uHeight = m_uDisplayHeight;
+		SetWidthHeight(m_uDisplayWidth,m_uDisplayHeight);
 		m_uDepth = m_uDisplayDepth;
 		m_bResolutionChanged = TRUE;
 	} else {

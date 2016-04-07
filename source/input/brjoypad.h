@@ -168,9 +168,9 @@ public:
 	void BURGER_API SetDigital(Word uWhich,Word uAxis,Word uPercent=20);
 	BURGER_INLINE Word GetDeviceCount(void) const { return m_uDeviceCount; }
 	static RunQueue::eReturnCode BURGER_API Poll(void *pData);
-#if defined(BURGER_WINDOWS)
-	void BURGER_API Acquire(void);
-	void BURGER_API Unacquire(void);
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+	void BURGER_API AcquireDirectInput(void);
+	void BURGER_API UnacquireDirectInput(void);
 #endif
 };
 }

@@ -65,6 +65,15 @@ extern Word32 BURGER_API PowerOf2(Word32 uInput);
 extern Word64 BURGER_API PowerOf2(Word64 uInput);
 BURGER_INLINE Word32 ToLower(Word32 uInput) { if (static_cast<Word32>(uInput-'A')<26U) uInput+=32; return uInput;}
 BURGER_INLINE Word32 ToUpper(Word32 uInput) { if (static_cast<Word32>(uInput-'a')<26U) uInput-=32; return uInput;}
+#if defined(BURGER_WINDOWS)
+BURGER_INLINE Word IsPointerInvalid(const void *pInput) { return (reinterpret_cast<WordPtr>(pInput) < 0x10000); }
+BURGER_INLINE Word IsPointerValid(const void *pInput) { return (reinterpret_cast<WordPtr>(pInput) >= 0x10000); }
+#else
+BURGER_INLINE Word IsPointerInvalid(const void *pInput) { return (pInput == NULL); }
+BURGER_INLINE Word IsPointerValid(const void *pInput) { return (pInput != NULL); }
+#endif
+BURGER_INLINE Word IsStringEmpty(const char *pInput) { return (IsPointerInvalid(pInput) || (pInput[0] == 0)); }
+BURGER_INLINE Word IsStringEmpty(const Word16 *pInput) { return (IsPointerInvalid(pInput) || (pInput[0] == 0)); }
 extern Word32 BURGER_API BitReverse(Word32 uInput,Word uBitLength);
 extern Word64 BURGER_API BitReverse(Word64 uInput,Word uBitLength);
 extern Word BURGER_API BitSetCount(Word32 uInput);
@@ -169,6 +178,14 @@ extern char * BURGER_API NumberToAscii(char *pOutput,Word64 uInput,Word uDigits=
 extern char * BURGER_API NumberToAscii(char *pOutput,Int64 iInput,Word uDigits=0);
 extern char * BURGER_API NumberToAscii(char *pOutput,float fInput);
 extern char * BURGER_API NumberToAscii(char *pOutput,double dInput);
+extern Word BURGER_API NumberStringLength(Word32 uInput);
+extern Word BURGER_API NumberStringLength(Int32 iInput);
+extern Word BURGER_API NumberStringLength(Word64 uInput);
+extern Word BURGER_API NumberStringLength(Int64 iInput);
+extern Word BURGER_API NumberHexStringLength(Word32 uInput);
+extern Word BURGER_API NumberHexStringLength(Word64 uInput);
+extern Word BURGER_API NumberOctalStringLength(Word32 uInput);
+extern Word BURGER_API NumberOctalStringLength(Word64 uInput);
 extern Word32 BURGER_API AsciiToInteger(const char *pInput,const char **pDest=NULL);
 extern Int BURGER_API AsciiToInteger(const char *pInput,Int iDefault,Int iMin=(-BURGER_MAXINT)-1,Int iMax=BURGER_MAXINT);
 extern Word BURGER_API AsciiToInteger(Word32 *pOutput,const char *pInput);

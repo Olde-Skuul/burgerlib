@@ -777,7 +777,10 @@ WordPtr BURGER_API Burger::UTF16::FromUTF8(Word16 *pOutput,WordPtr uOutputSize,c
 		} while (uFirst);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()
@@ -803,7 +806,7 @@ WordPtr BURGER_API Burger::UTF16::FromUTF8(Word16 *pOutput,WordPtr uOutputSize,c
 	was parsed. Zeros will be placed in the UTF16 stream as is.
 	
 	\param pOutput Pointer to a \ref Word16 buffer to receive the UTF16 string. \ref NULL is okay
-		if uOutputSize is zero, outwise a page fault will occur.
+		if uOutputSize is zero, otherwise a page fault will occur.
 	\param uOutputSize Size of the output buffer in bytes.
 	\param pInput UTF8 encoded byte array. \ref NULL is okay if uInputSize is zero.
 	\param uInputSize Size of the input byte array.
@@ -898,7 +901,10 @@ WordPtr BURGER_API Burger::UTF16::FromUTF8(Word16 *pOutput,WordPtr uOutputSize,c
 		} while (--uInputSize);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()

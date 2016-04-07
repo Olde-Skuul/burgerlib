@@ -348,7 +348,10 @@ WordPtr BURGER_API Burger::UTF32::FromUTF8(Word32 *pOutput,WordPtr uOutputSize,c
 		} while (uFirst);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()
@@ -466,7 +469,10 @@ WordPtr BURGER_API Burger::UTF32::FromUTF8(Word32 *pOutput,WordPtr uOutputSize,c
 		} while (--uInputSize);
 	}
 	if (uAddZero) {			// Can I add a trailing zero?
-		pWorkPtr[0] = 0;	// Write it, but don't add it to the strlen()
+		if (pWorkPtr<pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		pEndPtr[0] = 0;	// Write it, but don't add it to the strlen()
 	}
 
 	// Return the equivalent of strlen()

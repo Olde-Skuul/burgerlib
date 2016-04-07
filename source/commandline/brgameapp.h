@@ -80,8 +80,7 @@ protected:
 	int m_iWindowCenterX;			///< (Windows only) X coordinate of the center of the window
 	int m_iWindowCenterY;			///< (Windows only) Y coordinate of the center of the window
 	Word m_uErrorMode;				///< (Windows only) Initial GetErrorMode() value
-	Word16 m_uAtom;					///< (Windows only) Atom assigned to my class
-	Word16 m_bCoCreateInstanceInit;	///< (Windows only) \ref TRUE if CoInitializeEx() was initialized
+	Word m_bCoCreateInstanceInit;	///< (Windows only) \ref TRUE if CoInitializeEx() was initialized
 #endif
 
 #if defined(BURGER_IOS) || defined(DOXYGEN)
@@ -151,7 +150,6 @@ public:
 	BURGER_INLINE Word IsWindowSwitchRequested(void) const { return m_bWindowSwitchRequested; }
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	static void BURGER_API OutputWindowsMessage(Word uMessage,WordPtr wParam,WordPtr lParam);
 	BURGER_INLINE HINSTANCE__ *GetInstance(void) const { return m_hInstance; }
 	BURGER_INLINE HWND__ *GetWindow(void) const { return m_hWindow; }
 	BURGER_INLINE MainWindowProc GetCallBack(void) const { return m_pCallBack; }

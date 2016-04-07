@@ -1182,9 +1182,9 @@ void Burger::CompressDeflate::FlushPending(void)
 Word Burger::CompressDeflate::LongestMatch(Word cur_match)
 {
     unsigned chain_length = c_uMaxChainLength;/* max hash chain length */
-    register Word8 *scan = m_Window + m_uStringStart; /* current string */
-    register Word8 *match;                       /* matched string */
-    register int len;                           /* length of current match */
+    Word8 *scan = m_Window + m_uStringStart; /* current string */
+    Word8 *match;                       /* matched string */
+    int len;                           /* length of current match */
     int best_len = static_cast<int>(m_uPreviousLength);              /* best match length so far */
     int nice_match = c_iNiceMatch;             /* stop if match long enough */
     Word limit = m_uStringStart > (Word)(c_uWSize-MIN_LOOKAHEAD) ?
@@ -1198,9 +1198,9 @@ Word Burger::CompressDeflate::LongestMatch(Word cur_match)
     /* Compare two bytes at a time. Note: this is not always beneficial.
      * Try with and without -DUNALIGNED_OK to check.
      */
-    register Word8 *strend = m_Window + m_uStringStart + MAX_MATCH - 1;
-    register Word16 scan_start = *(Word16*)scan;
-    register Word16 scan_end   = *(Word16*)(scan+best_len-1);
+    Word8 *strend = m_Window + m_uStringStart + MAX_MATCH - 1;
+    Word16 scan_start = *(Word16*)scan;
+    Word16 scan_end   = *(Word16*)(scan+best_len-1);
 
 
     /* The code is optimized for HASH_BITS >= 8 and MAX_MATCH-2 multiple of 16.

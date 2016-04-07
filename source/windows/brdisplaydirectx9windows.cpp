@@ -255,9 +255,8 @@ Word Burger::DisplayDirectX9::Init(Word uWidth,Word uHeight,Word uDepth,Word uFl
 
 
 	// Save the states
+	SetWidthHeight(uWidth,uHeight);
 	m_uFlags = uFlags;
-	m_uWidth = uWidth;
-	m_uHeight = uHeight;
 	m_uDepth = uDepth;
 
 	//
