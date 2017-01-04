@@ -25,6 +25,8 @@
 /* BEGIN */
 namespace Burger {
 extern Word32 BURGER_API CalcCRC32B(const void *pInput,WordPtr uInputLength,Word32 uCRC=0);
+extern Word32 BURGER_API CalcCRC32(const void *pInput,WordPtr uInputLength,Word32 uCRC = 0);
+extern void BURGER_API GenerateCRCTable(Word32 *pOutput,Word32 uPolynomial=0x04C11DB7U,Word bBitReverse=TRUE);
 }
 /* END */
 

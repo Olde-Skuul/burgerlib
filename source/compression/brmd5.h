@@ -24,19 +24,24 @@
 
 /* BEGIN */
 namespace Burger {
+
 struct MD5_t {
-	Word8 m_Hash[16];	///< 128 bit hash value in RFC 1321 MD5 format
+	Word8 m_Hash[16];			///< 128 bit hash value in RFC 1321 MD5 format
 };
+
 struct MD5Hasher_t {
 	MD5_t m_Hash;				///< Current 128 bit value
 	Word64 m_uByteCount;		///< Number of bytes processed (64 bit value)
 	Word8 m_CacheBuffer[64];	///< input buffer for processing
-	void Init(void);
-	void Process(const Word8 *pBlock);
-	void Process(const void *pInput,WordPtr uLength);
-	void Finalize(void);
+
+	void BURGER_API Init(void);
+	void BURGER_API Process(const Word8 *pBlock);
+	void BURGER_API Process(const void *pInput,WordPtr uLength);
+	void BURGER_API Finalize(void);
 };
+
 extern void BURGER_API Hash(MD5_t *pOutput,const void *pInput,WordPtr uLength);
+
 }
 /* END */
 

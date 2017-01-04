@@ -672,7 +672,7 @@ void BURGER_API Burger::HashMapShared::Add(const void *pT,const void *pU)
 		// Initial creation of table. Make a minimum-sized table.
 		CreateHashBuffer(16);
 	} else if ((m_uEntryCount * 3) > ((m_uSizeMask + 1) * 2)) {
-		// Table is more than 2/3rds full.  Expand.
+		// Table is more than 2/3rds full. Expand.
 		CreateHashBuffer((m_uSizeMask + 1) * 2);
 	}
 	BURGER_ASSERT(m_pEntries);

@@ -49,7 +49,7 @@
 
 	\return 32 bit Alder-32 checksum of the data
 
-	\sa Burger::CalcCRC32B() or Burger::CalcAdler16()
+	\sa CalcCRC32B(const void *,WordPtr,Word32) or CalcAdler16(const void *,WordPtr,Word32)
 
 ***************************************/
 

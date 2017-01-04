@@ -67,20 +67,22 @@
 
 ***************************************/
 
-void Burger::MD4Hasher_t::Init(void)
+void BURGER_API Burger::MD4Hasher_t::Init(void)
 {
 	// Load magic initialization constants.
 
+	Word32 *pHash32 = static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash));
+
 #if defined(BURGER_LITTLEENDIAN)
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[0] = 0x67452301;
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[1] = 0xefcdab89;
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[2] = 0x98badcfe;
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[3] = 0x10325476;
+	pHash32[0] = 0x67452301;
+	pHash32[1] = 0xefcdab89;
+	pHash32[2] = 0x98badcfe;
+	pHash32[3] = 0x10325476;
 #else
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[0] = 0x01234567;
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[1] = 0x89abcdef;
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[2] = 0xfedcba98;
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[3] = 0x76543210;
+	pHash32[0] = 0x01234567;
+	pHash32[1] = 0x89abcdef;
+	pHash32[2] = 0xfedcba98;
+	pHash32[3] = 0x76543210;
 #endif
 	m_uByteCount = 0;
 }
@@ -88,42 +90,25 @@ void Burger::MD4Hasher_t::Init(void)
 // Constants for MD4Transform routine.
 
 #if !defined(DOXYGEN)
-#define S411 3
-#define S412 7
-#define S413 11
-#define S414 19
-#define S421 3
-#define S422 5
-#define S423 9
-#define S424 13
-#define S431 3
-#define S432 9
-#define S433 11
-#define S434 15
-
-// F, G and H are basic MD4 functions.
-
-#define F4(x, y, z) (((x) & (y)) | ((~x) & (z)))
-#define G4(x, y, z) (((x) & (y)) | ((x) & (z)) | ((y) & (z)))
-#define H4(x, y, z) ((x) ^ (y) ^ (z))
+#define SHIFT411 3
+#define SHIFT412 7
+#define SHIFT413 11
+#define SHIFT414 19
+#define SHIFT421 3
+#define SHIFT422 5
+#define SHIFT423 9
+#define SHIFT424 13
+#define SHIFT431 3
+#define SHIFT432 9
+#define SHIFT433 11
+#define SHIFT434 15
 
 // FF, GG and HH are transformations for rounds 1, 2 and 3
-// Rotation is separate from addition to prevent recomputation
 
-#define FF4(a, b, c, d, x, s) { \
-	(a) += F4((b), (c), (d)) + (x); \
-	(a) = RotateLeft(a,s); \
-}
+#define FF4(a,b,c,d,x,s) a = RotateLeft(((b & c) | ((~b) & d)) + x + a,s)
+#define GG4(a,b,c,d,x,s) a = RotateLeft(((b & c) | (b & d) | (c & d)) + x + a + 0x5a827999,s)
+#define HH4(a,b,c,d,x,s) a = RotateLeft((b ^ c ^ d) + x + a + 0x6ed9eba1,s)
 
-#define GG4(a, b, c, d, x, s) { \
-	(a) += G4((b), (c), (d)) + (x) + 0x5a827999; \
-	(a) = RotateLeft(a,s); \
-}
-
-#define HH4(a, b, c, d, x, s) { \
-	(a) += H4((b), (c), (d)) + (x) + 0x6ed9eba1; \
-	(a) = RotateLeft(a,s); \
-}
 #endif
 
 /*! ************************************
@@ -138,100 +123,97 @@ void Burger::MD4Hasher_t::Init(void)
 
 ***************************************/
 
-void Burger::MD4Hasher_t::Process(const Word8 *pBlock)
+void BURGER_API Burger::MD4Hasher_t::Process(const Word8 *pBlock)
 {
-	Word32 x[16];
+	// Prefetch the 64 bytes into registers (Taking into account data misalignment)
+
+	const Word32 *pBlock32 = static_cast<const Word32 *>(static_cast<const void *>(pBlock));
+	Word32 x0 = LittleEndian::LoadAny(pBlock32);
+	Word32 x1 = LittleEndian::LoadAny(pBlock32+1);
+	Word32 x2 = LittleEndian::LoadAny(pBlock32+2);
+	Word32 x3 = LittleEndian::LoadAny(pBlock32+3);
+	Word32 x4 = LittleEndian::LoadAny(pBlock32+4);
+	Word32 x5 = LittleEndian::LoadAny(pBlock32+5);
+	Word32 x6 = LittleEndian::LoadAny(pBlock32+6);
+	Word32 x7 = LittleEndian::LoadAny(pBlock32+7);
+	Word32 x8 = LittleEndian::LoadAny(pBlock32+8);
+	Word32 x9 = LittleEndian::LoadAny(pBlock32+9);
+	Word32 x10 = LittleEndian::LoadAny(pBlock32+10);
+	Word32 x11 = LittleEndian::LoadAny(pBlock32+11);
+	Word32 x12 = LittleEndian::LoadAny(pBlock32+12);
+	Word32 x13 = LittleEndian::LoadAny(pBlock32+13);
+	Word32 x14 = LittleEndian::LoadAny(pBlock32+14);
+	Word32 x15 = LittleEndian::LoadAny(pBlock32+15);
 
 	// Convert endian on big endian machines
-	Word32 hasha = LittleEndian::Load(&reinterpret_cast<Word32 *>(m_Hash.m_Hash)[0]);
-	Word32 hashb = LittleEndian::Load(&reinterpret_cast<Word32 *>(m_Hash.m_Hash)[1]);
-	Word32 hashc = LittleEndian::Load(&reinterpret_cast<Word32 *>(m_Hash.m_Hash)[2]);
-	Word32 hashd = LittleEndian::Load(&reinterpret_cast<Word32 *>(m_Hash.m_Hash)[3]);
-
-	Word i = 16;
-	Word8 *pDest = reinterpret_cast<Word8 *>(x);
-	do {
-#if defined(BURGER_LITTLEENDIAN)
-		pDest[0] = pBlock[0];
-		pDest[1] = pBlock[1];
-		pDest[2] = pBlock[2];
-		pDest[3] = pBlock[3];
-#else
-		pDest[0] = pBlock[3];
-		pDest[1] = pBlock[2];
-		pDest[2] = pBlock[1];
-		pDest[3] = pBlock[0];
-#endif
-		pBlock+=4;
-		pDest+=4;
-	} while (--i);
+	Word32 *pHash32 = static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash));
 
 	// Make a copy of the hash integers 
-	Word32 a = hasha;
-	Word32 b = hashb;
-	Word32 c = hashc;
-	Word32 d = hashd;
+	Word32 a = LittleEndian::Load(pHash32);
+	Word32 b = LittleEndian::Load(pHash32+1);
+	Word32 c = LittleEndian::Load(pHash32+2);
+	Word32 d = LittleEndian::Load(pHash32+3);
 
 	// Round 1
-	FF4(a,b,c,d,x[ 0],S411); // 1
-	FF4(d,a,b,c,x[ 1],S412); // 2
-	FF4(c,d,a,b,x[ 2],S413); // 3
-	FF4(b,c,d,a,x[ 3],S414); // 4
-	FF4(a,b,c,d,x[ 4],S411); // 5
-	FF4(d,a,b,c,x[ 5],S412); // 6
-	FF4(c,d,a,b,x[ 6],S413); // 7
-	FF4(b,c,d,a,x[ 7],S414); // 8
-	FF4(a,b,c,d,x[ 8],S411); // 9
-	FF4(d,a,b,c,x[ 9],S412); // 10
-	FF4(c,d,a,b,x[10],S413); // 11
-	FF4(b,c,d,a,x[11],S414); // 12
-	FF4(a,b,c,d,x[12],S411); // 13
-	FF4(d,a,b,c,x[13],S412); // 14
-	FF4(c,d,a,b,x[14],S413); // 15
-	FF4(b,c,d,a,x[15],S414); // 16
+	FF4(a,b,c,d,x0,SHIFT411);	// 1
+	FF4(d,a,b,c,x1,SHIFT412);	// 2
+	FF4(c,d,a,b,x2,SHIFT413);	// 3
+	FF4(b,c,d,a,x3,SHIFT414);	// 4
+	FF4(a,b,c,d,x4,SHIFT411);	// 5
+	FF4(d,a,b,c,x5,SHIFT412);	// 6
+	FF4(c,d,a,b,x6,SHIFT413);	// 7
+	FF4(b,c,d,a,x7,SHIFT414);	// 8
+	FF4(a,b,c,d,x8,SHIFT411);	// 9
+	FF4(d,a,b,c,x9,SHIFT412);	// 10
+	FF4(c,d,a,b,x10,SHIFT413);	// 11
+	FF4(b,c,d,a,x11,SHIFT414);	// 12
+	FF4(a,b,c,d,x12,SHIFT411);	// 13
+	FF4(d,a,b,c,x13,SHIFT412);	// 14
+	FF4(c,d,a,b,x14,SHIFT413);	// 15
+	FF4(b,c,d,a,x15,SHIFT414);	// 16
 
 	// Round 2
-	GG4(a,b,c,d,x[ 0],S421); // 17
-	GG4(d,a,b,c,x[ 4],S422); // 18
-	GG4(c,d,a,b,x[ 8],S423); // 19
-	GG4(b,c,d,a,x[12],S424); // 20
-	GG4(a,b,c,d,x[ 1],S421); // 21
-	GG4(d,a,b,c,x[ 5],S422); // 22
-	GG4(c,d,a,b,x[ 9],S423); // 23
-	GG4(b,c,d,a,x[13],S424); // 24
-	GG4(a,b,c,d,x[ 2],S421); // 25
-	GG4(d,a,b,c,x[ 6],S422); // 26
-	GG4(c,d,a,b,x[10],S423); // 27
-	GG4(b,c,d,a,x[14],S424); // 28
-	GG4(a,b,c,d,x[ 3],S421); // 29
-	GG4(d,a,b,c,x[ 7],S422); // 30
-	GG4(c,d,a,b,x[11],S423); // 31
-	GG4(b,c,d,a,x[15],S424); // 32
+	GG4(a,b,c,d,x0,SHIFT421);	// 17
+	GG4(d,a,b,c,x4,SHIFT422);	// 18
+	GG4(c,d,a,b,x8,SHIFT423);	// 19
+	GG4(b,c,d,a,x12,SHIFT424);	// 20
+	GG4(a,b,c,d,x1,SHIFT421);	// 21
+	GG4(d,a,b,c,x5,SHIFT422);	// 22
+	GG4(c,d,a,b,x9,SHIFT423);	// 23
+	GG4(b,c,d,a,x13,SHIFT424);	// 24
+	GG4(a,b,c,d,x2,SHIFT421);	// 25
+	GG4(d,a,b,c,x6,SHIFT422);	// 26
+	GG4(c,d,a,b,x10,SHIFT423);	// 27
+	GG4(b,c,d,a,x14,SHIFT424);	// 28
+	GG4(a,b,c,d,x3,SHIFT421);	// 29
+	GG4(d,a,b,c,x7,SHIFT422);	// 30
+	GG4(c,d,a,b,x11,SHIFT423);	// 31
+	GG4(b,c,d,a,x15,SHIFT424);	// 32
 
 	// Round 3
-	HH4(a,b,c,d,x[ 0],S431); // 33
-	HH4(d,a,b,c,x[ 8],S432); // 34
-	HH4(c,d,a,b,x[ 4],S433); // 35
-	HH4(b,c,d,a,x[12],S434); // 36
-	HH4(a,b,c,d,x[ 2],S431); // 37
-	HH4(d,a,b,c,x[10],S432); // 38
-	HH4(c,d,a,b,x[ 6],S433); // 39
-	HH4(b,c,d,a,x[14],S434); // 40
-	HH4(a,b,c,d,x[ 1],S431); // 41
-	HH4(d,a,b,c,x[ 9],S432); // 42
-	HH4(c,d,a,b,x[ 5],S433); // 43
-	HH4(b,c,d,a,x[13],S434); // 44
-	HH4(a,b,c,d,x[ 3],S431); // 45
-	HH4(d,a,b,c,x[11],S432); // 46
-	HH4(c,d,a,b,x[ 7],S433); // 47
-	HH4(b,c,d,a,x[15],S434); // 48
+	HH4(a,b,c,d,x0,SHIFT431);	// 33
+	HH4(d,a,b,c,x8,SHIFT432);	// 34
+	HH4(c,d,a,b,x4,SHIFT433);	// 35
+	HH4(b,c,d,a,x12,SHIFT434);	// 36
+	HH4(a,b,c,d,x2,SHIFT431);	// 37
+	HH4(d,a,b,c,x10,SHIFT432);	// 38
+	HH4(c,d,a,b,x6,SHIFT433);	// 39
+	HH4(b,c,d,a,x14,SHIFT434);	// 40
+	HH4(a,b,c,d,x1,SHIFT431);	// 41
+	HH4(d,a,b,c,x9,SHIFT432);	// 42
+	HH4(c,d,a,b,x5,SHIFT433);	// 43
+	HH4(b,c,d,a,x13,SHIFT434);	// 44
+	HH4(a,b,c,d,x3,SHIFT431);	// 45
+	HH4(d,a,b,c,x11,SHIFT432);	// 46
+	HH4(c,d,a,b,x7,SHIFT433);	// 47
+	HH4(b,c,d,a,x15,SHIFT434);	// 48
 
 	// Add in the adjusted hash (Store in little endian format)
 
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[0] = LittleEndian::Load(a+hasha);
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[1] = LittleEndian::Load(b+hashb);
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[2] = LittleEndian::Load(c+hashc);
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[3] = LittleEndian::Load(d+hashd);
+	LittleEndian::Store(pHash32,LittleEndian::Load(pHash32)+a);
+	LittleEndian::Store(pHash32+1,LittleEndian::Load(pHash32+1)+b);
+	LittleEndian::Store(pHash32+2,LittleEndian::Load(pHash32+2)+c);
+	LittleEndian::Store(pHash32+3,LittleEndian::Load(pHash32+3)+d);
 }
 
 /*! ************************************
@@ -249,7 +231,7 @@ void Burger::MD4Hasher_t::Process(const Word8 *pBlock)
 
 ***************************************/
 
-void Burger::MD4Hasher_t::Process(const void *pInput,WordPtr uLength)
+void BURGER_API Burger::MD4Hasher_t::Process(const void *pInput,WordPtr uLength)
 {
 	// Compute number of bytes mod 64
 	WordPtr uIndex = static_cast<WordPtr>(m_uByteCount & 0x3F);
@@ -266,7 +248,7 @@ void Burger::MD4Hasher_t::Process(const void *pInput,WordPtr uLength)
 
 		if ((i+63)<uLength) {
 			do {
-				Process(&static_cast<const Word8 *>(pInput)[i]);
+				Process(static_cast<const Word8 *>(pInput)+i);
 				i+=64;
 			} while ((i+63)<uLength);
 		}
@@ -277,7 +259,7 @@ void Burger::MD4Hasher_t::Process(const void *pInput,WordPtr uLength)
 
 	// Buffer remaining input
 
-	MemoryCopy(&m_CacheBuffer[uIndex],&static_cast<const Word8 *>(pInput)[i],uLength-i);
+	MemoryCopy(&m_CacheBuffer[uIndex],static_cast<const Word8 *>(pInput)+i,uLength-i);
 }
 
 /*! ************************************
@@ -292,7 +274,7 @@ void Burger::MD4Hasher_t::Process(const void *pInput,WordPtr uLength)
 
 ***************************************/
 
-void Burger::MD4Hasher_t::Finalize(void)
+void BURGER_API Burger::MD4Hasher_t::Finalize(void)
 {
 	Word8 Padding[64];
 	Padding[0] = 0x80;

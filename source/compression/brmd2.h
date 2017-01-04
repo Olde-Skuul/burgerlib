@@ -24,18 +24,21 @@
 
 /* BEGIN */
 namespace Burger {
+
 struct MD2_t {
 	Word8 m_Hash[16];	///< 128 bit hash value in RFC 1319 MD2 format
 };
+
 struct MD2Hasher_t {
-	MD2_t m_Hash;			///< Calculated hash
-	Word8 m_Checksum[16];	///< Running checksum
+	MD2_t m_Hash;				///< Calculated hash
+	Word8 m_Checksum[16];		///< Running checksum
 	Word8 m_CacheBuffer[16];	///< Cached input data for multi-pass hashing
-	WordPtr m_uCount;		///< Number of bytes in the cache (0-15)
-	void Init(void);
-	void Process(const Word8 *pBlock);
-	void Process(const void *pInput,WordPtr uLength);
-	void Finalize(void);
+	WordPtr m_uCount;			///< Number of bytes in the cache (0-15)
+
+	void BURGER_API Init(void);
+	void BURGER_API Process(const Word8 *pBlock);
+	void BURGER_API Process(const void *pInput,WordPtr uLength);
+	void BURGER_API Finalize(void);
 };
 extern void BURGER_API Hash(MD2_t *pOutput,const void *pInput,WordPtr uLength);
 }

@@ -67,22 +67,24 @@
 
 ***************************************/
 
-void Burger::SHA1Hasher_t::Init(void)
+void BURGER_API Burger::SHA1Hasher_t::Init(void)
 {
 	// Load magic initialization constants.
 
+	Word32 *pHash32 = static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash));
+
 #if !defined(BURGER_LITTLEENDIAN)
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[0] = 0x67452301;
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[1] = 0xefcdab89;
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[2] = 0x98badcfe;
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[3] = 0x10325476;
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[4] = 0xc3d2e1f0;
+	pHash32[0] = 0x67452301;
+	pHash32[1] = 0xefcdab89;
+	pHash32[2] = 0x98badcfe;
+	pHash32[3] = 0x10325476;
+	pHash32[4] = 0xc3d2e1f0;
 #else
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[0] = 0x01234567;
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[1] = 0x89abcdef;
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[2] = 0xfedcba98;
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[3] = 0x76543210;
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[4] = 0xf0e1d2c3;
+	pHash32[0] = 0x01234567;
+	pHash32[1] = 0x89abcdef;
+	pHash32[2] = 0xfedcba98;
+	pHash32[3] = 0x76543210;
+	pHash32[4] = 0xf0e1d2c3;
 #endif
 	m_uByteCount = 0;
 }
@@ -99,37 +101,33 @@ void Burger::SHA1Hasher_t::Init(void)
 
 ***************************************/
 
-void Burger::SHA1Hasher_t::Process(const Word8 *pBlock)
+void BURGER_API Burger::SHA1Hasher_t::Process(const Word8 *pBlock)
 {
 	Word32 block[16];
-
-	Word32 hasha = BigEndian::Load(&reinterpret_cast<Word32 *>(m_Hash.m_Hash)[0]);
-	Word32 hashb = BigEndian::Load(&reinterpret_cast<Word32 *>(m_Hash.m_Hash)[1]);
-	Word32 hashc = BigEndian::Load(&reinterpret_cast<Word32 *>(m_Hash.m_Hash)[2]);
-	Word32 hashd = BigEndian::Load(&reinterpret_cast<Word32 *>(m_Hash.m_Hash)[3]);
-	Word32 hashe = BigEndian::Load(&reinterpret_cast<Word32 *>(m_Hash.m_Hash)[4]);
-
 	Word32 i = 0;
+	const Word32 *pBlock32 = static_cast<const Word32 *>(static_cast<const void *>(pBlock));
 	do {
-		block[i] = BigEndian::LoadAny(&reinterpret_cast<const Word32 *>(pBlock)[i]);
+		block[i] = BigEndian::LoadAny(pBlock32+i);
 	} while (++i<16);
 
+	Word32 *pHash32 = static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash));
+
 	// Make a copy of the hash integers 
-	Word32 a = hasha;
-	Word32 b = hashb;
-	Word32 c = hashc;
-	Word32 d = hashd;
-	Word32 e = hashe;
+	Word32 a = BigEndian::Load(pHash32);
+	Word32 b = BigEndian::Load(pHash32+1);
+	Word32 c = BigEndian::Load(pHash32+2);
+	Word32 d = BigEndian::Load(pHash32+3);
+	Word32 e = BigEndian::Load(pHash32+4);
 
 #if !defined(DOXYGEN)
 #define blk(i) (block[i&15] = RotateLeft(block[(i+13)&15] ^ block[(i+8)&15] ^ block[(i+2)&15] ^ block[i&15],1))
 
 	// (R0+R1), R2, R3, R4 are the different operations used in SHA1
-#define R0(v,w,x,y,z,i) z += ((w&(x^y))^y) + block[i] + 0x5a827999 + RotateLeft(v,5); w=RotateLeft(w,30);
-#define R1(v,w,x,y,z,i) z += ((w&(x^y))^y) + blk(i) + 0x5a827999 + RotateLeft(v,5); w=RotateLeft(w,30);
-#define R2(v,w,x,y,z,i) z += (w^x^y) + blk(i) + 0x6ed9eba1 + RotateLeft(v,5); w=RotateLeft(w,30);
-#define R3(v,w,x,y,z,i) z += (((w|x)&y)|(w&x)) + blk(i) + 0x8f1bbcdc + RotateLeft(v,5); w=RotateLeft(w,30);
-#define R4(v,w,x,y,z,i) z += (w^x^y) + blk(i) + 0xca62c1d6 + RotateLeft(v,5); w=RotateLeft(w,30);
+#define R0(v,w,x,y,z,i) z += ((w&(x^y))^y) + block[i] + 0x5a827999 + RotateLeft(v,5); w=RotateLeft(w,30)
+#define R1(v,w,x,y,z,i) z += ((w&(x^y))^y) + blk(i) + 0x5a827999 + RotateLeft(v,5); w=RotateLeft(w,30)
+#define R2(v,w,x,y,z,i) z += (w^x^y) + blk(i) + 0x6ed9eba1 + RotateLeft(v,5); w=RotateLeft(w,30)
+#define R3(v,w,x,y,z,i) z += (((w|x)&y)|(w&x)) + blk(i) + 0x8f1bbcdc + RotateLeft(v,5); w=RotateLeft(w,30)
+#define R4(v,w,x,y,z,i) z += (w^x^y) + blk(i) + 0xca62c1d6 + RotateLeft(v,5); w=RotateLeft(w,30)
 #endif
 
 	// 4 rounds of 20 operations each. Loop unrolled.
@@ -149,6 +147,7 @@ void Burger::SHA1Hasher_t::Process(const Word8 *pBlock)
 	R0(c,d,e,a,b,13);
 	R0(b,c,d,e,a,14);
 	R0(a,b,c,d,e,15);
+
 	R1(e,a,b,c,d,16);
 	R1(d,e,a,b,c,17);
 	R1(c,d,e,a,b,18);
@@ -214,13 +213,13 @@ void Burger::SHA1Hasher_t::Process(const Word8 *pBlock)
 	R4(c,d,e,a,b,78);
 	R4(b,c,d,e,a,79);
 
-	// Add in the adjusted hash (Store in little endian format)
+	// Add in the adjusted hash (Store in big endian format)
 
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[0] = BigEndian::Load(a+hasha);
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[1] = BigEndian::Load(b+hashb);
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[2] = BigEndian::Load(c+hashc);
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[3] = BigEndian::Load(d+hashd);
-	reinterpret_cast<Word32 *>(m_Hash.m_Hash)[4] = BigEndian::Load(e+hashe);
+	BigEndian::Store(pHash32,BigEndian::Load(pHash32)+a);
+	BigEndian::Store(pHash32+1,BigEndian::Load(pHash32+1)+b);
+	BigEndian::Store(pHash32+2,BigEndian::Load(pHash32+2)+c);
+	BigEndian::Store(pHash32+3,BigEndian::Load(pHash32+3)+d);
+	BigEndian::Store(pHash32+4,BigEndian::Load(pHash32+4)+e);
 }
 
 /*! ************************************
@@ -238,10 +237,10 @@ void Burger::SHA1Hasher_t::Process(const Word8 *pBlock)
 
 ***************************************/
 
-void Burger::SHA1Hasher_t::Process(const void *pInput,WordPtr uLength)
+void BURGER_API Burger::SHA1Hasher_t::Process(const void *pInput,WordPtr uLength)
 {
 	// Compute number of bytes mod 64
-	WordPtr index = (Word)(m_uByteCount & 0x3F);
+	WordPtr index = static_cast<WordPtr>(m_uByteCount) & 0x3FU;
 
 	// Update number of bits (Perform a 64 bit add)
 	m_uByteCount += uLength;
@@ -259,7 +258,7 @@ void Burger::SHA1Hasher_t::Process(const void *pInput,WordPtr uLength)
 
 		if ((i+63)<uLength) {
 			do {
-	 			Process(&static_cast<const Word8 *>(pInput)[i]);
+	 			Process(static_cast<const Word8 *>(pInput)+i);
 				i += 64;
 			} while ((i+63) < uLength);
 		}
@@ -269,7 +268,7 @@ void Burger::SHA1Hasher_t::Process(const void *pInput,WordPtr uLength)
 	}
 
 	// Buffer remaining input
-	MemoryCopy(&m_CacheBuffer[index],&static_cast<const Word8 *>(pInput)[i],uLength-i);
+	MemoryCopy(&m_CacheBuffer[index],static_cast<const Word8 *>(pInput)+i,uLength-i);
 }
 
 /*! ************************************
@@ -284,7 +283,7 @@ void Burger::SHA1Hasher_t::Process(const void *pInput,WordPtr uLength)
 
 ***************************************/
 
-void Burger::SHA1Hasher_t::Finalize(void)
+void BURGER_API Burger::SHA1Hasher_t::Finalize(void)
 {
 	Word8 Padding[64];		// Pad array, first byte is 0x80, rest 0
 	Padding[0] = 0x80;
@@ -319,7 +318,7 @@ void Burger::SHA1Hasher_t::Finalize(void)
 
 void BURGER_API Burger::Hash(SHA1_t *pOutput,const void *pInput,WordPtr uLength)
 {
-	Burger::SHA1Hasher_t Context;
+	SHA1Hasher_t Context;
 	// Initialize
 	Context.Init();
 	// Process all of the data

@@ -84,7 +84,7 @@ static const Word8 BURGER_ALIGN(g_MD2PiTable[256],16) = {
 
 ***************************************/
 
-void Burger::MD2Hasher_t::Init(void)
+void BURGER_API Burger::MD2Hasher_t::Init(void)
 {
 	// Just erase the structure
 	MemoryClear(this,sizeof(*this));
@@ -102,7 +102,7 @@ void Burger::MD2Hasher_t::Init(void)
 
 ***************************************/
 
-void Burger::MD2Hasher_t::Process(const Word8 *pBlock)
+void BURGER_API Burger::MD2Hasher_t::Process(const Word8 *pBlock)
 {
 	// This buffer is initialized with the input block xor'd with the hash
 	Word8 XorBuffer[16];
@@ -188,7 +188,7 @@ void Burger::MD2Hasher_t::Process(const Word8 *pBlock)
 
 ***************************************/
 
-void Burger::MD2Hasher_t::Process(const void *pInput,WordPtr uLength)
+void BURGER_API Burger::MD2Hasher_t::Process(const void *pInput,WordPtr uLength)
 {
 	// Process data in chunks of 16
 
@@ -213,7 +213,7 @@ void Burger::MD2Hasher_t::Process(const void *pInput,WordPtr uLength)
 		if ((i+15)<uLength) {
 			do {
 				// Process the 16 byte chunk
-				Process(&reinterpret_cast<const Word8*>(pInput)[i]);
+				Process(static_cast<const Word8*>(pInput)+i);
 				i+=16;
 				// Continue until there's less than 16 bytes remaining
 			} while ((i+15)<uLength);
@@ -227,7 +227,7 @@ void Burger::MD2Hasher_t::Process(const void *pInput,WordPtr uLength)
 
 	// Buffer remaining input in the cache (Can be zero)
 
-	MemoryCopy(&m_CacheBuffer[uIndex],&reinterpret_cast<const Word8*>(pInput)[i],uLength-i);
+	MemoryCopy(&m_CacheBuffer[uIndex],static_cast<const Word8*>(pInput)+i,uLength-i);
 }
 
 /*! ************************************
@@ -242,7 +242,7 @@ void Burger::MD2Hasher_t::Process(const void *pInput,WordPtr uLength)
 
 ***************************************/
 
-void Burger::MD2Hasher_t::Finalize(void)
+void BURGER_API Burger::MD2Hasher_t::Finalize(void)
 {
 	Word8 Padding[16];
 
