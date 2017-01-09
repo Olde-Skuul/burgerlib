@@ -2,7 +2,7 @@
 
 	Typedefs specific to the Playstation 3
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -21,15 +21,18 @@
 /* BEGIN */
 #if defined(BURGER_PS3) && !defined(DOXYGEN)
 namespace Burger {
+
 typedef Word32 _sys_sleep_queue_t;
 struct sys_lwmutex_lock_info_t {
 	volatile Word32 owner;
 	volatile Word32 waiter;
 };
+
 union sys_lwmutex_variable_t {
 	sys_lwmutex_lock_info_t info;
 	volatile Word64 all_info;
 };
+
 struct sys_lwmutex_t {
 	sys_lwmutex_variable_t lock_var;
 	Word32 attribute;
@@ -38,6 +41,15 @@ struct sys_lwmutex_t {
 	Word32 pad;
 };
 }
+
+extern "C" {
+extern float sqrtf(float);
+extern double sqrt(double);
+}
+
+float __builtin_fabsf(float);
+double __builtin_fabs(double val);
+
 #endif
 /* END */
 

@@ -4,7 +4,7 @@
 	
 	MacOSX version
 	
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -50,29 +50,40 @@ int BURGER_ANSIAPI main(int argc,const char **argv);
 
 int BURGER_ANSIAPI main(int /* argc */,const char ** /* argv */)
 {
-	// Create an application instance
+	int iResult = 0;	// Exit without error if already running
 
-	Burger::GameApp MyApp(MEMORYSIZE,HANDLECOUNT,MINIMUMRESERVE);
+	// Singular instance enabled?
+#if defined(GAMELOCK)
+	Burger::DetectMultiLaunch OneShot;
+	if (!OneShot.IsMultiLaunched(GAMELOCK)) {
+#endif
+		// Create an application instance
 
-	// Error on startup?
-	int iResult = Burger::Globals::GetErrorCode();
+		Burger::GameApp MyApp(MEMORYSIZE,HANDLECOUNT,MINIMUMRESERVE);
 
-	if (!iResult) {
+		// Error on startup?
+		iResult = Burger::Globals::GetErrorCode();
+
+		if (!iResult) {
 	
-		// Create the default menu items for
-		// a Mac OSX application without
-		// a Interface Builder XML file
-
-		// Define BURGER_NOMENUS if the Mac OSX
-		// application uses Interface Builder to
-		// handle menu generation
+			// Create the default menu items for
+			// a Mac OSX application without
+			// a Interface Builder XML file
+	
+			// Define BURGER_NOMENUS if the Mac OSX
+			// application uses Interface Builder to
+			// handle menu generation
 
 #if !defined(BURGER_NOMENUS)
-		Burger::Globals::CreateDefaultMenus();
+			Burger::Globals::CreateDefaultMenus();
 #endif
 
-		iResult = CodeEntry(&MyApp);
+			iResult = CodeEntry(&MyApp);
+		}
+		// Needed to properly close for the lock
+#if defined(GAMELOCK)
 	}
+#endif
 	return iResult;
 }
 
