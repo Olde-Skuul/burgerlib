@@ -2,7 +2,7 @@
 
 	iOS application manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -366,7 +366,7 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 	g_piOSApp = this;
 
 	// Add the iOS callback function
-	m_RunQueue.Add(Poll,this,RunQueue::PRIORITY_FIRST);
+	m_RunQueue.Add(Poll,NULL,this,RunQueue::PRIORITY_FIRST);
 
 	// Init the file system
 	FileManager::Init();

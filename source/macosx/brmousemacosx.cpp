@@ -2,7 +2,7 @@
 
 	Mouse Manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -31,8 +31,8 @@ static const CFStringRef g_BurgerMouse CFSTR("BurgerMouse");
 
 ***************************************/
 
-Burger::Mouse::Mouse(GameApp *pAppInstance) :
-	m_pAppInstance(pAppInstance),
+Burger::Mouse::Mouse(GameApp *pGameApp) :
+	m_pGameApp(pGameApp),
 	m_MouseLock(),
 	m_pHIDManager(NULL),
 	m_uMiceCount(0),
@@ -51,9 +51,6 @@ Burger::Mouse::Mouse(GameApp *pAppInstance) :
 	m_uArrayEnd(0)
 {
 	// Back link to the game app
-
-	pAppInstance->SetMouse(this);
-	
 	CFMutableDictionaryRef pDictionary = Globals::CreateHIDDictionary(kHIDPage_GenericDesktop,kHIDUsage_GD_Mouse);
 	if (pDictionary != NULL) {
 		m_pHIDManager = IOHIDManagerCreate(kCFAllocatorDefault,kIOHIDOptionsTypeNone);
@@ -84,7 +81,7 @@ Burger::Mouse::Mouse(GameApp *pAppInstance) :
 				}
 				++pRat;
 			}
-			pAppInstance->AddRoutine(Poll,this,RunQueue::PRIORITY_MOUSE);
+			pGameApp->AddRoutine(Poll,NULL,this,RunQueue::PRIORITY_MOUSE);
         }
         CFRelease(pDictionary);
     }
@@ -98,8 +95,7 @@ Burger::Mouse::Mouse(GameApp *pAppInstance) :
 
 Burger::Mouse::~Mouse()
 {
-	m_pAppInstance->SetMouse(NULL);
-	m_pAppInstance->RemoveRoutine(Poll,this);
+	m_pGameApp->RemoveRoutine(Poll,this);
 	if (m_pHIDManager) {
 		IOHIDManagerClose(m_pHIDManager,kIOHIDOptionsTypeNone);
 		CFRelease(m_pHIDManager);

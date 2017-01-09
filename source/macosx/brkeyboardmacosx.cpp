@@ -4,7 +4,7 @@
 
 	MacOSX version
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -185,7 +185,6 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 	m_uInitialDelay(250),
 	m_uRepeatDelay(33)
 {
-	pAppInstance->SetKeyboard(this);
 	// Clear my variables
 	MemoryClear(const_cast<Word8 *>(m_KeyArray),sizeof(m_KeyArray));
 }
@@ -198,121 +197,6 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 
 Burger::Keyboard::~Keyboard()
 {
-	m_pAppInstance->SetKeyboard(NULL);
-}
-
-/***************************************
-
-	\brief Peek at the next keyboard press event
-
-	See if a key is pending from the keyboard, if
-	so, return the event without removing it from
-	the queue.
-
-	\sa Keyboard::Get()
-
-***************************************/
-
-Word BURGER_API Burger::Keyboard::PeekKeyEvent(KeyEvent_t *pEvent)
-{
-	m_KeyboardLock.Lock();
-	Word uIndex = m_uArrayStart;		/* Get the starting index */
-	Word uResult = 0;
-	if (uIndex!=m_uArrayEnd) {	/* Anything in the buffer? */
-		pEvent[0] = m_KeyEvents[uIndex];
-		uResult = 1;
-	}
-	// No event pending
-	m_KeyboardLock.Unlock();
-	return uResult;
-}
-
-
-/***************************************
-
-	\brief Return key up and down events
-
-	Get a key from the keyboard buffer but include key up events
-
-***************************************/
-
-Word BURGER_API Burger::Keyboard::GetKeyEvent(KeyEvent_t *pEvent)
-
-{
-	m_pAppInstance->Poll();
-	Word uResult = 0;
-	m_KeyboardLock.Lock();
-	Word uIndex = m_uArrayStart;		/* Get the starting index */
-	if (uIndex!=m_uArrayEnd) {	/* Anything in the buffer? */
-		pEvent[0] = m_KeyEvents[uIndex];
-		m_uArrayStart = (uIndex+1)&(cBufferSize-1);	/* Next key */
-		uResult = 1;
-	}
-	m_KeyboardLock.Unlock();
-
-	if (uResult && m_pAppInstance->IsWindowSwitchingAllowed()) {
-		if ((pEvent->m_uAscii==ASCII_RETURN) &&
-			((pEvent->m_uFlags&(FLAG_OPTION|FLAG_KEYDOWN))==(FLAG_OPTION|FLAG_KEYDOWN))) {
-			m_pAppInstance->SetWindowSwitchRequested(TRUE);
-		}
-	}
-	// No event pending
-	return uResult;
-}
-
-/***************************************
-
-	Post the keyboard event
-
-***************************************/
-
-Word BURGER_API Burger::Keyboard::PostKeyEvent(const KeyEvent_t *pEvent)
-{
-	m_KeyboardLock.Lock();
-	Word uResult = 10;
-	Word uEnd = m_uArrayEnd;
-	// See if there's room in the buffer
-	Word uTemp = (uEnd+1)&(cBufferSize-1);
-	if (uTemp!=m_uArrayStart) {
-		// Didn't wrap, accept it!
-		m_uArrayEnd = uTemp;
-	
-		// Insert the new event
-		KeyEvent_t *pNewEvent = &m_KeyEvents[uEnd];
-		pNewEvent->m_uAscii = pEvent->m_uAscii;
-		eScanCode uScanCode = static_cast<eScanCode>(pEvent->m_uScanCode);
-		pNewEvent->m_uScanCode = static_cast<Word16>(uScanCode);
-		Word uFlags = pEvent->m_uFlags;
-		pNewEvent->m_uFlags = static_cast<Word16>(uFlags);
-
-		// Add the proper time stamp
-		Word32 uTime = pEvent->m_uMSTimeStamp;
-		if (!uTime) {
-			uTime = Tick::ReadMilliseconds();
-		}
-		pNewEvent->m_uMSTimeStamp = uTime;
-
-		// Update the running state
-		if (uFlags&FLAG_KEYDOWN) {
-
-			Word8 uKey = m_KeyArray[uScanCode];
-			uKey = static_cast<Word8>((uKey|(KEYCAPDOWN|KEYCAPPRESSED))^KEYCAPTOGGLE);
-			m_KeyArray[uScanCode] = uKey;
-
-			if (!(pNewEvent->m_uFlags&FLAG_REPEAT)) {
-				m_RepeatEvent.m_uAscii = pNewEvent->m_uAscii;
-				m_RepeatEvent.m_uFlags = pNewEvent->m_uFlags;
-				m_RepeatEvent.m_uScanCode = pNewEvent->m_uScanCode;
-				m_RepeatEvent.m_uMSTimeStamp = 0;
-			}
-		} else {
-			// Mark as pressed
-			m_KeyArray[uScanCode] &= (~KEYCAPDOWN);
-		}
-		uResult = 0;
-	}
-	m_KeyboardLock.Unlock();
-	return uResult;
 }
 
 /*! ************************************

@@ -4,7 +4,7 @@
 
 	MacOSX version
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -208,7 +208,11 @@ static const AudioComponentDescription g_ConverterComponent = {
  
 ***************************************/
 
-Int32 Burger::SoundManager::Voice::PlayCallback(void *pData,Word32 * /* pActionFlags */,const AudioTimeStamp * /* pAudioTimeStamp */,Word32 /* uBusNumber */,Word32 /* uNumberFrames */,AudioBufferList * pAudioBufferList)
+#if __LP64__
+signed int Burger::SoundManager::Voice::PlayCallback(void *pData,unsigned int * /* pActionFlags */,const AudioTimeStamp * /* pAudioTimeStamp */,unsigned int /* uBusNumber */,unsigned int /* uNumberFrames */,AudioBufferList * pAudioBufferList)
+#else
+signed long Burger::SoundManager::Voice::PlayCallback(void *pData,unsigned long * /* pActionFlags */,const AudioTimeStamp * /* pAudioTimeStamp */,unsigned long /* uBusNumber */,unsigned long /* uNumberFrames */,AudioBufferList * pAudioBufferList)
+#endif
 {
 	//
 	// Get the pointer to the audio buffer to fill
@@ -810,7 +814,6 @@ Burger::SoundManager::SoundManager(GameApp *pGameApp) :
 	m_uBufferDepth(16),
 	m_uOutputSamplesPerSecond(44100)
 {
-	pGameApp->SetSoundManager(this);
 	MemoryClear(m_pSoundUnits,sizeof(m_pSoundUnits));
 	MemoryClear(m_iSoundNodes,sizeof(m_iSoundNodes));
 }
@@ -891,19 +894,22 @@ Word BURGER_API Burger::SoundManager::Init(void)
 					// Start with the output device
 					//
 					
-					uResult = AUGraphAddNode(m_pGraph,&g_DefaultOutputComponent,&m_iOutputNode);
+					SInt32 iTemp;
+					uResult = AUGraphAddNode(m_pGraph,&g_DefaultOutputComponent,&iTemp);
 					if (uResult) {
 						break;
 					}
+					m_iOutputNode = iTemp;
 					
 					//
 					// Create the mixer for the voices
 					//
 							
-					uResult = AUGraphAddNode(m_pGraph,&g_MixerComponent,&m_iMixerNode);
+					uResult = AUGraphAddNode(m_pGraph,&g_MixerComponent,&iTemp);
 					if (uResult) {
 						break;
 					}
+					m_iMixerNode = iTemp;
 					
 					//
 					// Connect the mixer to the output hardware
@@ -943,10 +949,11 @@ Word BURGER_API Burger::SoundManager::Init(void)
 					MyCallback.inputProc = Voice::PlayCallback;
 					WordPtr i = 0;
 					do {
-						uResult = AUGraphAddNode(m_pGraph,&g_ConverterComponent,&m_iSoundNodes[i]);
+						uResult = AUGraphAddNode(m_pGraph,&g_ConverterComponent,&iTemp);
 						if (uResult) {
 							break;
 						}
+						m_iSoundNodes[i] = iTemp;
 						uResult = AUGraphNodeInfo(m_pGraph,m_iSoundNodes[i],NULL,&m_pSoundUnits[i]);
 						if (uResult) {
 							break;
