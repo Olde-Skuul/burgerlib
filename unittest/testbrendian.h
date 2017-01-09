@@ -2,7 +2,7 @@
 
 	Unit tests for the Endian manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -18,6 +18,6 @@
 #include "brtypes.h"
 #endif
 
-extern int BURGER_API TestBrendian(void);
+extern int BURGER_API TestBrendian(Word bVerbose);
 
 #endif

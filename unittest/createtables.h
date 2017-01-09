@@ -2,7 +2,7 @@
 
 	Functions to create the generated source code for Burgerlib
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -19,5 +19,5 @@
 #endif
 
 extern void BURGER_API CreateTables(void);
-
+extern void BURGER_API WriteDataTables(void);
 #endif

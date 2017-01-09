@@ -2,7 +2,7 @@
 
 	Unit tests for burgerlib
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -28,6 +28,8 @@
 #include "testbrfileloaders.h"
 #include "testbrprintf.h"
 #include "createtables.h"
+#include "brconsolemanager.h"
+#include "brcommandparameterbooltrue.h"
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
@@ -66,7 +68,7 @@ static Word g_ErrorOnly = TRUE;
 // Used to simulate uninitialized memory
 //
 
-static const Word8 BlastPattern[16] = {
+static const Word8 g_BlastPattern[16] = {
 	0xD5,0xAA,0x96,0xDE,0xAA,0xDE,0xAD,0xBE,
 	0xEF,0x91,0x19,0x0F,0xF0,0xCA,0xFE,0x44
 };
@@ -157,7 +159,7 @@ void BURGER_API BlastBuffer(void *pOutput,WordPtr uSize)
 {
 	WordPtr i = 0;
 	do {
-		static_cast<Word8 *>(pOutput)[0] = BlastPattern[i];
+		static_cast<Word8 *>(pOutput)[0] = g_BlastPattern[i];
 		i=(i+1)&15;
 		pOutput = static_cast<Word8 *>(pOutput)+1;
 	} while (--uSize);
@@ -190,7 +192,7 @@ Word BURGER_API VerifyBuffer(const void *pBuffer,WordPtr uSize,const void *pInpu
 	do {
 		// Check if it's in the "skip" area.
 		if (uMark>=uSkip) {
-			uResult |= (static_cast<const Word8 *>(pBuffer)[0] != BlastPattern[i]);
+			uResult |= (static_cast<const Word8 *>(pBuffer)[0] != g_BlastPattern[i]);
 		}
 		i=(i+1)&15;		// Wrap around the BlastPattern Buffer
 		pBuffer = static_cast<const Word8 *>(pBuffer)+1;
@@ -203,25 +205,66 @@ Word BURGER_API VerifyBuffer(const void *pBuffer,WordPtr uSize,const void *pInpu
 // Test everything
 //
 
-int BURGER_ANSIAPI main(int /* argc */,const char ** /* argv */)
+int BURGER_ANSIAPI main(int argc,const char **argv)
 {
-	CreateTables();
-	Word uVerbose = TRUE;
-	int iResult = TestBrtypes();
-	iResult |= TestBrendian();
-	iResult |= TestBrfloatingpoint();
-	iResult |= TestBrfixedpoint();
-	iResult |= TestBrmatrix3d();
-	iResult |= TestBrmatrix4d();
-	iResult |= TestBrstrings();
-	iResult |= TestBrstaticrtti();
-	iResult |= TestBrhashes();
-	iResult |= TestBrcompression();
-	iResult |= TestBrDisplay();
-	iResult |= TestDateTime();
-	iResult |= TestStdoutHelpers(uVerbose);
-	iResult |= TestBrprintf();
-	iResult |= FileManagerTest(uVerbose);
-	iResult |= FileLoaderTest(uVerbose);
+	Word bVerbose = TRUE;
+	int iResult = 0;
+	Word bDoTests = TRUE;
+
+	// On systems that support a command line, allow the command line
+	// to be parsed and handle the tests based on the input
+
+#if defined(ALLOWCOMMANDLINE)
+	Burger::ConsoleApp MyApp(argc,argv);
+	Burger::CommandParameterBooleanTrue Verbose("Verbose output","v");
+	Burger::CommandParameterBooleanTrue WriteTables("Generate data tables","t");
+
+	const Burger::CommandParameter *MyParms[] = {
+		&Verbose,&WriteTables
+	};
+
+	iResult = Burger::CommandParameter::Process(MyApp.GetArgc(),MyApp.GetArgv(),MyParms,sizeof(MyParms)/sizeof(MyParms[0]),
+		"Usage: unittests\n\n"
+		"This program tests Burgerlib\n");
+
+	if (iResult<0) {
+		bDoTests = FALSE;
+	}
+	bVerbose = Verbose.GetValue();
+
+	if (WriteTables.GetValue()) {
+		WriteDataTables();
+		bDoTests = FALSE;
+		iResult = 0;
+	}
+
+
+#else
+	BURGER_UNUSED(argc);
+	BURGER_UNUSED(argv);
+#endif
+
+	if (bDoTests) {
+		iResult = TestBrtypes(bVerbose);
+		iResult |= TestBrendian(bVerbose);
+		iResult |= TestBrfixedpoint(bVerbose);
+		iResult |= TestBrfloatingpoint(bVerbose);
+
+#if 0
+		CreateTables();
+		iResult |= TestBrmatrix3d();
+		iResult |= TestBrmatrix4d();
+		iResult |= TestBrstrings();
+		iResult |= TestBrstaticrtti();
+		iResult |= TestBrhashes();
+		iResult |= TestBrcompression();
+		iResult |= TestBrDisplay();
+		iResult |= TestDateTime();
+		iResult |= TestStdoutHelpers(bVerbose);
+		iResult |= TestBrprintf();
+		iResult |= FileManagerTest(bVerbose);
+		iResult |= FileLoaderTest(bVerbose);
+#endif
+	}
 	return iResult;
 }

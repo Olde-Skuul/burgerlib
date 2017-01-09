@@ -2,7 +2,7 @@
 
 	Unit tests for the Date/Time manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -60,13 +60,13 @@ int BURGER_API TestDateTime(void)
 		Burger::TimeDate_t MyDate;
 		MyDate.GetTime();
 		MyDate.DateToStringVerbose(Buffer);
-		Message("Verbose:  %s",Buffer);
+		Message("Verbose: %s",Buffer);
 		MyDate.DateToString(Buffer);
-		Message("Normal:   %s",Buffer);
+		Message("Normal: %s",Buffer);
 		MyDate.TimeToString(Buffer);
 		Message("Military: %s",Buffer);
 		MyDate.TimeToStringPM(Buffer);
-		Message("AM/PM:   %s",Buffer);
+		Message("AM/PM: %s",Buffer);
 	}
 	return static_cast<int>(uResult);
 }

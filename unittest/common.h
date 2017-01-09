@@ -2,7 +2,7 @@
 
 	Unit tests for burgerlib
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -16,6 +16,10 @@
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
+#endif
+
+#if defined(BURGER_WINDOWS) || defined(BURGER_LINUX) || defined(BURGER_MACOSX)
+#define ALLOWCOMMANDLINE
 #endif
 
 extern void BURGER_ANSIAPI ReportFailure(const char *pTemplate,Word uFailure,...);

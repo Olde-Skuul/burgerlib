@@ -2,7 +2,7 @@
 
 	Unit tests for the Integer Math library
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -25,6 +25,16 @@ struct WordTest32_t {
 struct WordTest64_t {
 	Word64 m_uInput;	// Source value
 	Word64 m_uOutput;	// Expected output
+};
+
+struct IntTest8_t {
+	Int8 m_iInput;		// Source value
+	Int8 m_iOutput;		// Expected output
+};
+
+struct IntTest16_t {
+	Int16 m_iInput;		// Source value
+	Int16 m_iOutput;	// Expected output
 };
 
 struct IntTest32_t {
@@ -84,7 +94,7 @@ static const WordTest32_t PowerOf2_32Table[] = {
 	{0xFFFFFFFFU,0x00000000U}
 };
 
-static Word TestPowerOf2_32(void)
+static Word BURGER_API TestPowerOf2_32(void)
 {
 	Word uFailure = FALSE;
 	const WordTest32_t *pWork = PowerOf2_32Table;
@@ -129,7 +139,7 @@ static const WordTest64_t PowerOf2_64Table[] = {
 	{0xFFFFFFFFFFFFFFFFULL,0x0000000000000000ULL}
 };
 
-static Word TestPowerOf2_64(void)
+static Word BURGER_API TestPowerOf2_64(void)
 {
 	Word uFailure = FALSE;
 	const WordTest64_t *pWork = PowerOf2_64Table;
@@ -174,7 +184,7 @@ static const WordTest32_t BCDWordTable[] = {
 	{0xFFFFFFFFU,166666665}
 };
 
-static Word TestBCDWord(void)
+static Word BURGER_API TestBCDWord(void)
 {
 	Word uFailure = FALSE;
 	const WordTest32_t *pWork = BCDWordTable;
@@ -215,7 +225,7 @@ static const WordTest32_t BitReverse_32Table[] = {
 	{0x12345678U,0x1E6A2C48U}
 };
 
-static Word TestBitReverse_32(void)
+static Word BURGER_API TestBitReverse_32(void)
 {
 	Word uFailure = FALSE;
 	Word uBitCount = 1;
@@ -261,7 +271,7 @@ static const WordTest64_t BitReverse_64Table[] = {
 	{0x1234567890ABCDEFULL,0xF7B3D5091E6A2C48ULL}
 };
 
-static Word TestBitReverse_64(void)
+static Word BURGER_API TestBitReverse_64(void)
 {
 	Word uFailure = FALSE;
 	Word uBitCount = 1;
@@ -311,7 +321,7 @@ static const WordTest32_t BitSetCount_32Table[] = {
 	{0x12345678U,13}
 };
 
-static Word TestBitSetCount_32(void)
+static Word BURGER_API TestBitSetCount_32(void)
 {
 	Word uFailure = FALSE;
 	const WordTest32_t *pWork = BitSetCount_32Table;
@@ -354,7 +364,7 @@ static const WordTest64_t BitSetCount_64Table[] = {
 	{0x1234567890ABCDEFULL,32}
 };
 
-static Word TestBitSetCount_64(void)
+static Word BURGER_API TestBitSetCount_64(void)
 {
 	Word uFailure = FALSE;
 	const WordTest64_t *pWork = BitSetCount_64Table;
@@ -398,7 +408,7 @@ static const WordTest32_t GetLoWordTable[] = {
 	{0xFFFFFFFFU,0x0000FFFFU}
 };
 
-static Word TestGetLoWord(void)
+static Word BURGER_API TestGetLoWord(void)
 {
 	Word uFailure = FALSE;
 	const WordTest32_t *pWork = GetLoWordTable;
@@ -438,7 +448,7 @@ static const WordTest32_t GetHiWordTable[] = {
 	{0xFFFFFFFFU,0x0000FFFFU}
 };
 
-static Word TestGetHiWord(void)
+static Word BURGER_API TestGetHiWord(void)
 {
 	Word uFailure = FALSE;
 	const WordTest32_t *pWork = GetHiWordTable;
@@ -460,18 +470,18 @@ static Word TestGetHiWord(void)
 static const IntTest32_t IntToFixedTestTable[] = {
 	{0x00000000,0x00000000},
 	{0x00000001,0x00010000},
-	{0xFFFFFFFF,0xFFFF0000},
+	{static_cast<Int32>(0xFFFFFFFF),static_cast<Int32>(0xFFFF0000)},
 	{0x00007FFF,0x7FFF0000},
-	{0x00008000,0x80000000},
-	{0x80000000,0x00000000},
-	{0x80000001,0x00010000},
+	{0x00008000,static_cast<Int32>(0x80000000)},
+	{static_cast<Int32>(0x80000000),0x00000000},
+	{static_cast<Int32>(0x80000001),0x00010000},
 	{0x00004000,0x40000000},
 	{0x40000000,0x00000000},
-	{0x0000C000,0xC0000000},
-	{0xFFFFC000,0xC0000000}
+	{0x0000C000,static_cast<Int32>(0xC0000000)},
+	{static_cast<Int32>(0xFFFFC000),static_cast<Int32>(0xC0000000)}
 };
 
-static Word TestIntToFixed(void)
+static Word BURGER_API TestIntToFixed(void)
 {
 	Word uFailure = FALSE;
 	const IntTest32_t *pWork = IntToFixedTestTable;
@@ -493,18 +503,18 @@ static Word TestIntToFixed(void)
 static const IntTest32_t IntToFixedSaturateTestTable[] = {
 	{0x00000000,0x00000000},
 	{0x00000001,0x00010000},
-	{0xFFFFFFFF,0xFFFF0000},
+	{static_cast<Int32>(0xFFFFFFFF),static_cast<Int32>(0xFFFF0000)},
 	{0x00007FFF,0x7FFF0000},
 	{0x00008000,0x7FFFFFFF},
-	{0x80000000,0x80000000},
-	{0x80000001,0x80000000},
+	{static_cast<Int32>(0x80000000),static_cast<Int32>(0x80000000)},
+	{static_cast<Int32>(0x80000001),static_cast<Int32>(0x80000000)},
 	{0x00004000,0x40000000},
 	{0x40000000,0x7FFFFFFF},
 	{0x0000C000,0x7FFFFFFF},
-	{0xFFFFC000,0xC0000000}
+	{ static_cast<Int32>(0xFFFFC000),static_cast<Int32>(0xC0000000)}
 };
 
-static Word TestIntToFixedSaturate(void)
+static Word BURGER_API TestIntToFixedSaturate(void)
 {
 	Word uFailure = FALSE;
 	const IntTest32_t *pWork = IntToFixedSaturateTestTable;
@@ -534,7 +544,7 @@ static const IntTest32_t FixedToIntFloorTestTable[] = {
 	{FLOATTOFIXED(-0.95f)	,-1}
 };
 
-static Word TestFixedToIntFloor(void)
+static Word BURGER_API TestFixedToIntFloor(void)
 {
 	Word uFailure = FALSE;
 	const IntTest32_t *pWork = FixedToIntFloorTestTable;
@@ -564,7 +574,7 @@ static const IntTest32_t FixedToIntTestTable[] = {
 	{FLOATTOFIXED(-0.95f)	,0}
 };
 
-static Word TestFixedToInt(void)
+static Word BURGER_API TestFixedToInt(void)
 {
 	Word uFailure = FALSE;
 	const IntTest32_t *pWork = FixedToIntTestTable;
@@ -594,7 +604,7 @@ static const IntTest32_t FixedToIntCeilTestTable[] = {
 	{FLOATTOFIXED(-0.95f)	,0}
 };
 
-static Word TestFixedToIntCeil(void)
+static Word BURGER_API TestFixedToIntCeil(void)
 {
 	Word uFailure = FALSE;
 	const IntTest32_t *pWork = FixedToIntCeilTestTable;
@@ -624,7 +634,7 @@ static const IntTest32_t FixedToIntNearestTestTable[] = {
 	{FLOATTOFIXED(-0.95f)	,-1}
 };
 
-static Word TestFixedToIntNearest(void)
+static Word BURGER_API TestFixedToIntNearest(void)
 {
 	Word uFailure = FALSE;
 	const IntTest32_t *pWork = FixedToIntNearestTestTable;
@@ -654,7 +664,7 @@ static const FloatToIntTest32_t FloatToIntFloorTestTable[] = {
 	{-0.95f	,-1}
 };
 
-static Word TestFloatToIntFloor(void)
+static Word BURGER_API TestFloatToIntFloor(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToIntFloorTestTable;
@@ -691,7 +701,7 @@ static const FloatToIntTest32_t FloatToIntTestTable[] = {
 	{-0.95f	,0}
 };
 
-static Word TestFloatToInt(void)
+static Word BURGER_API TestFloatToInt(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToIntTestTable;
@@ -728,7 +738,7 @@ static const FloatToIntTest32_t FloatToIntCeilTestTable[] = {
 	{-0.95f	,0}
 };
 
-static Word TestFloatToIntCeil(void)
+static Word BURGER_API TestFloatToIntCeil(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToIntCeilTestTable;
@@ -765,7 +775,7 @@ static const FloatToIntTest32_t FloatToIntNearestTestTable[] = {
 	{-0.95f	,-1}
 };
 
-static Word TestFloatToIntNearest(void)
+static Word BURGER_API TestFloatToIntNearest(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToIntNearestTestTable;
@@ -794,15 +804,15 @@ static Word TestFloatToIntNearest(void)
 static const FloatToIntTest32_t FloatToFixedFloorTestTable[] = {
 	{1.1f	,0x00011999},
 	{1.95f	,0x0001F333},
-	{-1.1f	,0xFFFEE666},
-	{-1.95f	,0xFFFE0CCC},
+	{-1.1f	,static_cast<Int32>(0xFFFEE666)},
+	{-1.95f	,static_cast<Int32>(0xFFFE0CCC)},
 	{0.1f	,0x00001999},
 	{0.95f	,0x0000F333},
-	{-0.1f	,0xFFFFE666},
-	{-0.95f	,0xFFFF0CCC}
+	{-0.1f	,static_cast<Int32>(0xFFFFE666)},
+	{-0.95f	,static_cast<Int32>(0xFFFF0CCC)}
 };
 
-static Word TestFloatToFixedFloor(void)
+static Word BURGER_API TestFloatToFixedFloor(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToFixedFloorTestTable;
@@ -831,15 +841,15 @@ static Word TestFloatToFixedFloor(void)
 static const FloatToIntTest32_t FloatToFixedTestTable[] = {
 	{1.1f	,0x00011999},
 	{1.95f	,0x0001F333},
-	{-1.1f	,0xFFFEE667},
-	{-1.95f	,0xFFFE0CCD},
+	{-1.1f	,static_cast<Int32>(0xFFFEE667)},
+	{-1.95f	,static_cast<Int32>(0xFFFE0CCD)},
 	{0.1f	,0x00001999},
 	{0.95f	,0x0000F333},
-	{-0.1f	,0xFFFFE667},
-	{-0.95f	,0xFFFF0CCD}
+	{-0.1f	,static_cast<Int32>(0xFFFFE667)},
+	{-0.95f	,static_cast<Int32>(0xFFFF0CCD)}
 };
 
-static Word TestFloatToFixed(void)
+static Word BURGER_API TestFloatToFixed(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToFixedTestTable;
@@ -868,15 +878,15 @@ static Word TestFloatToFixed(void)
 static const FloatToIntTest32_t FloatToFixedCeilTestTable[] = {
 	{1.1f	,0x0001199A},
 	{1.95f	,0x0001F334},
-	{-1.1f	,0xFFFEE667},
-	{-1.95f	,0xFFFE0CCD},
+	{-1.1f	,static_cast<Int32>(0xFFFEE667)},
+	{-1.95f	,static_cast<Int32>(0xFFFE0CCD)},
 	{0.1f	,0x0000199A},
 	{0.95f	,0x0000F334},
-	{-0.1f	,0xFFFFE667},
-	{-0.95f	,0xFFFF0CCD}
+	{-0.1f	,static_cast<Int32>(0xFFFFE667)},
+	{-0.95f	,static_cast<Int32>(0xFFFF0CCD)}
 };
 
-static Word TestFloatToFixedCeil(void)
+static Word BURGER_API TestFloatToFixedCeil(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToFixedCeilTestTable;
@@ -905,15 +915,15 @@ static Word TestFloatToFixedCeil(void)
 static const FloatToIntTest32_t FloatToFixedNearestTestTable[] = {
 	{1.1f	,0x0001199A},
 	{1.95f	,0x0001F333},
-	{-1.1f	,0xFFFEE666},
-	{-1.95f	,0xFFFE0CCD},
+	{-1.1f	,static_cast<Int32>(0xFFFEE666)},
+	{-1.95f	,static_cast<Int32>(0xFFFE0CCD)},
 	{0.1f	,0x0000199A},
 	{0.95f	,0x0000F333},
-	{-0.1f	,0xFFFFE666},
-	{-0.95f	,0xFFFF0CCD}
+	{-0.1f	,static_cast<Int32>(0xFFFFE666)},
+	{-0.95f	,static_cast<Int32>(0xFFFF0CCD)}
 };
 
-static Word TestFloatToFixedNearest(void)
+static Word BURGER_API TestFloatToFixedNearest(void)
 {
 	Word uFailure = FALSE;
 	const FloatToIntTest32_t *pWork = FloatToFixedNearestTestTable;
@@ -936,24 +946,82 @@ static Word TestFloatToFixedNearest(void)
 }
 
 //
+// Test Abs(Int8)
+//
+
+static const IntTest8_t AbsTestTable8[] = {
+	{0x00,0x00},
+	{0x01,0x01},
+	{0x40,0x40},
+	{(-0x7F)-1,(-0x7F)-1},
+	{-0x7F,0x7F},
+	{-0x40,0x40},
+	{-0x01,0x01}
+};
+
+static Word BURGER_API TestAbs8(void)
+{
+	Word uFailure = FALSE;
+	const IntTest8_t *pWork = AbsTestTable8;
+	WordPtr uCount = BURGER_ARRAYSIZE(AbsTestTable8);
+	do {
+		Int8 iReturn = Burger::Abs(pWork->m_iInput);
+		Word uTest = iReturn!=pWork->m_iOutput;
+		uFailure |= uTest;
+		ReportFailure("Burger::Abs((Int8)0x%08X) = 0x%08X, expected 0x%08X",uTest,pWork->m_iInput,iReturn,pWork->m_iOutput);
+		++pWork;
+	} while (--uCount);
+	return uFailure;
+}
+
+//
+// Test Abs(Int16)
+//
+
+static const IntTest16_t AbsTestTable16[] = {
+	{0x0000,0x0000},
+	{0x0001,0x0001},
+	{0x4000,0x4000},
+	{(-0x7FFF)-1,(-0x7FFF)-1},
+	{-0x7FFF,0x7FFF},
+	{-0x4000,0x4000},
+	{-0x0001,0x0001}
+};
+
+static Word BURGER_API TestAbs16(void)
+{
+	Word uFailure = FALSE;
+	const IntTest16_t *pWork = AbsTestTable16;
+	WordPtr uCount = BURGER_ARRAYSIZE(AbsTestTable16);
+	do {
+		Int16 iReturn = Burger::Abs(pWork->m_iInput);
+		Word uTest = iReturn!=pWork->m_iOutput;
+		uFailure |= uTest;
+		ReportFailure("Burger::Abs((Int16)0x%08X) = 0x%08X, expected 0x%08X",uTest,pWork->m_iInput,iReturn,pWork->m_iOutput);
+		++pWork;
+	} while (--uCount);
+	return uFailure;
+}
+
+//
 // Test Abs(Int32)
 //
 
-static const IntTest32_t AbsTestTable[] = {
+static const IntTest32_t AbsTestTable32[] = {
 	{0x00000000,0x00000000},
 	{0x00000001,0x00000001},
 	{0x40000000,0x40000000},
-	{0x80000000,0x80000000},
-	{0x80000001,0x7FFFFFFF},
-	{0xC0000000,0x40000000},
-	{0xFFFFFFFF,0x00000001}
+	{static_cast<Int32>(0x80000000),static_cast<Int32>(0x80000000)},
+	{static_cast<Int32>(0x80000001),0x7FFFFFFF},
+	{static_cast<Int32>(0xC0000000),0x40000000},
+	{static_cast<Int32>(0xFFFFFFFF),0x00000001}
 };
 
-static Word TestAbs32(void)
+static Word BURGER_API TestAbs32(void)
 {
 	Word uFailure = FALSE;
-	const IntTest32_t *pWork = AbsTestTable;
-	WordPtr uCount = BURGER_ARRAYSIZE(AbsTestTable);
+	const IntTest32_t *pWork = AbsTestTable32;
+	WordPtr uCount = BURGER_ARRAYSIZE(AbsTestTable32);
 	do {
 		Int32 iReturn = Burger::Abs(pWork->m_iInput);
 		Word uTest = iReturn!=pWork->m_iOutput;
@@ -978,7 +1046,7 @@ static const IntTest64_t AbsTestTable64[] = {
 	{0xFFFFFFFFFFFFFFFFLL,0x0000000000000001LL}
 };
 
-static Word TestAbs64(void)
+static Word BURGER_API TestAbs64(void)
 {
 	Word uFailure = FALSE;
 	const IntTest64_t *pWork = AbsTestTable64;
@@ -998,6 +1066,128 @@ static Word TestAbs64(void)
 	return uFailure;
 }
 
+
+//
+// Test Sign(Int8)
+//
+
+static const IntTest8_t SignTestTable8[] = {
+	{0x00,0},
+	{0x01,1},
+	{0x40,1},
+	{(-0x7F)-1,-1},
+	{-0x7F,-1},
+	{-0x40,-1},
+	{-0x01,-1}
+};
+
+static Word BURGER_API TestSign8(void)
+{
+	Word uFailure = FALSE;
+	const IntTest8_t *pWork = SignTestTable8;
+	WordPtr uCount = BURGER_ARRAYSIZE(SignTestTable8);
+	do {
+		Int8 iReturn = Burger::Sign(pWork->m_iInput);
+		Word uTest = iReturn!=pWork->m_iOutput;
+		uFailure |= uTest;
+		ReportFailure("Burger::Sign((Int8)0x%08X) = 0x%08X, expected 0x%08X",uTest,pWork->m_iInput,iReturn,pWork->m_iOutput);
+		++pWork;
+	} while (--uCount);
+	return uFailure;
+}
+
+//
+// Test Sign(Int16)
+//
+
+static const IntTest16_t SignTestTable16[] = {
+	{0x0000,0},
+	{0x0001,1},
+	{0x4000,1},
+	{(-0x7FFF)-1,-1},
+	{-0x7FFF,-1},
+	{-0x4000,-1},
+	{-0x0001,-1}
+};
+
+static Word BURGER_API TestSign16(void)
+{
+	Word uFailure = FALSE;
+	const IntTest16_t *pWork = SignTestTable16;
+	WordPtr uCount = BURGER_ARRAYSIZE(SignTestTable16);
+	do {
+		Int16 iReturn = Burger::Sign(pWork->m_iInput);
+		Word uTest = iReturn!=pWork->m_iOutput;
+		uFailure |= uTest;
+		ReportFailure("Burger::Sign((Int16)0x%08X) = 0x%08X, expected 0x%08X",uTest,pWork->m_iInput,iReturn,pWork->m_iOutput);
+		++pWork;
+	} while (--uCount);
+	return uFailure;
+}
+
+//
+// Test Sign(Int32)
+//
+
+static const IntTest32_t SignTestTable32[] = {
+	{0x00000000,0},
+	{0x00000001,1},
+	{0x40000000,1},
+	{static_cast<Int32>(0x80000000),-1},
+	{static_cast<Int32>(0x80000001),-1},
+	{static_cast<Int32>(0xC0000000),-1},
+	{static_cast<Int32>(0xFFFFFFFF),-1}
+};
+
+static Word BURGER_API TestSign32(void)
+{
+	Word uFailure = FALSE;
+	const IntTest32_t *pWork = SignTestTable32;
+	WordPtr uCount = BURGER_ARRAYSIZE(SignTestTable32);
+	do {
+		Int32 iReturn = Burger::Sign(pWork->m_iInput);
+		Word uTest = iReturn!=pWork->m_iOutput;
+		uFailure |= uTest;
+		ReportFailure("Burger::Sign((Int32)0x%08X) = 0x%08X, expected 0x%08X",uTest,pWork->m_iInput,iReturn,pWork->m_iOutput);
+		++pWork;
+	} while (--uCount);
+	return uFailure;
+}
+
+//
+// Test Sign(Int64)
+//
+
+static const IntTest64_t SignTestTable64[] = {
+	{0x0000000000000000LL,0},
+	{0x0000000000000001LL,1},
+	{0x4000000000000000LL,1},
+	{0x8000000000000000LL,-1},
+	{0x8000000000000001LL,-1},
+	{0xC000000000000000LL,-1},
+	{0xFFFFFFFFFFFFFFFFLL,-1}
+};
+
+static Word BURGER_API TestSign64(void)
+{
+	Word uFailure = FALSE;
+	const IntTest64_t *pWork = SignTestTable64;
+	WordPtr uCount = BURGER_ARRAYSIZE(SignTestTable64);
+	do {
+		Int64 iReturn = Burger::Sign(pWork->m_iInput);
+		Word uTest = iReturn!=pWork->m_iOutput;
+		uFailure |= uTest;
+		if (uTest) {
+			Burger::NumberStringHex Text1(static_cast<Word64>(pWork->m_iInput));
+			Burger::NumberStringHex Text2(static_cast<Word64>(iReturn));
+			Burger::NumberStringHex Text3(static_cast<Word64>(pWork->m_iOutput));
+			ReportFailure("Burger::Sign((Int64)0x%s) = 0x%s, expected 0x%s",uTest,Text1.GetPtr(),Text2.GetPtr(),Text3.GetPtr());
+		}
+		++pWork;
+	} while (--uCount);
+	return uFailure;
+}
+
 //
 // Test Min(Int32)
 //
@@ -1005,19 +1195,19 @@ static Word TestAbs64(void)
 static const IntTest32x32_t MinTestTable[] = {
 	{0x00000000,0x00000001,0x00000000},
 	{0x00000001,0x00000000,0x00000000},
-	{0x00000000,0x80000000,0x80000000},
-	{0x80000000,0x00000000,0x80000000},
-	{0x80000000,0x80000000,0x80000000},
+	{0x00000000,static_cast<Int32>(0x80000000),static_cast<Int32>(0x80000000)},
+	{static_cast<Int32>(0x80000000),0x00000000,static_cast<Int32>(0x80000000)},
+	{static_cast<Int32>(0x80000000),static_cast<Int32>(0x80000000),static_cast<Int32>(0x80000000)},
 	{0x00000000,0x7FFFFFFF,0x00000000},
 	{0x7FFFFFFF,0x00000000,0x00000000},
-	{0x7FFFFFFF,0x80000000,0x80000000},
-	{0x40000000,0xC0000000,0xC0000000},
-	{0x80000001,0x7FFFFFFF,0x80000001},
-	{0x3FFFFFFF,0xBF000000,0xBF000000},
-	{0xFFFFFFFF,0x00000001,0xFFFFFFFF}
+	{0x7FFFFFFF,static_cast<Int32>(0x80000000),static_cast<Int32>(0x80000000)},
+	{0x40000000,static_cast<Int32>(0xC0000000),static_cast<Int32>(0xC0000000)},
+	{static_cast<Int32>(0x80000001),0x7FFFFFFF,static_cast<Int32>(0x80000001)},
+	{0x3FFFFFFF,static_cast<Int32>(0xBF000000),static_cast<Int32>(0xBF000000)},
+	{static_cast<Int32>(0xFFFFFFFF),0x00000001,static_cast<Int32>(0xFFFFFFFF)}
 };
 
-static Word TestMin32(void)
+static Word BURGER_API TestMin32(void)
 {
 	Word uFailure = FALSE;
 	const IntTest32x32_t *pWork = MinTestTable;
@@ -1051,7 +1241,7 @@ static const IntTest64x64_t MinTestTable64[] = {
 	{0xFFFFFFFFFFFFFFFFLL,0x0000000000000001LL,0xFFFFFFFFFFFFFFFFLL}
 };
 
-static Word TestMin64(void)
+static Word BURGER_API TestMin64(void)
 {
 	Word uFailure = FALSE;
 	const IntTest64x64_t *pWork = MinTestTable64;
@@ -1080,19 +1270,19 @@ static Word TestMin64(void)
 static const IntTest32x32_t MaxTestTable[] = {
 	{0x00000000,0x00000001,0x00000001},
 	{0x00000001,0x00000000,0x00000001},
-	{0x00000000,0x80000000,0x00000000},
-	{0x80000000,0x00000000,0x00000000},
-	{0x80000000,0x80000000,0x80000000},
+	{0x00000000,static_cast<Int32>(0x80000000),0x00000000},
+	{static_cast<Int32>(0x80000000),0x00000000,0x00000000},
+	{static_cast<Int32>(0x80000000),static_cast<Int32>(0x80000000),static_cast<Int32>(0x80000000)},
 	{0x00000000,0x7FFFFFFF,0x7FFFFFFF},
 	{0x7FFFFFFF,0x00000000,0x7FFFFFFF},
-	{0x7FFFFFFF,0x80000000,0x7FFFFFFF},
-	{0x40000000,0xC0000000,0x40000000},
-	{0x80000001,0x7FFFFFFF,0x7FFFFFFF},
-	{0x3FFFFFFF,0xBF000000,0x3FFFFFFF},
-	{0xFFFFFFFF,0x00000001,0x00000001}
+	{0x7FFFFFFF,static_cast<Int32>(0x80000000),0x7FFFFFFF},
+	{0x40000000,static_cast<Int32>(0xC0000000),0x40000000},
+	{static_cast<Int32>(0x80000001),0x7FFFFFFF,0x7FFFFFFF},
+	{0x3FFFFFFF,static_cast<Int32>(0xBF000000),0x3FFFFFFF},
+	{static_cast<Int32>(0xFFFFFFFF),0x00000001,0x00000001}
 };
 
-static Word TestMax32(void)
+static Word BURGER_API TestMax32(void)
 {
 	Word uFailure = FALSE;
 	const IntTest32x32_t *pWork = MaxTestTable;
@@ -1126,7 +1316,7 @@ static const IntTest64x64_t MaxTestTable64[] = {
 	{0xFFFFFFFFFFFFFFFFLL,0x0000000000000001LL,0x0000000000000001LL}
 };
 
-static Word TestMax64(void)
+static Word BURGER_API TestMax64(void)
 {
 	Word uFailure = FALSE;
 	const IntTest64x64_t *pWork = MaxTestTable64;
@@ -1168,7 +1358,7 @@ static const WordTest32_t Sqrt32TestTable[] = {
 	{0xFFFFFFFF,0x00010000}
 };
 
-static Word TestSqrt32(void)
+static Word BURGER_API TestSqrt32(void)
 {
 	Word uFailure = FALSE;
 	const WordTest32_t *pWork = Sqrt32TestTable;
@@ -1194,17 +1384,17 @@ static const FixedTest32_t SqrtFixedToWord32TestTable[] = {
 	{0x00000020,0x00000000},		// 5.8^2
 	{0x40000000,0x00000080},
 	{0x7FFFFFFF,0x000000B5},		// Maximum square root (65535.999999)
-	{0x80000000,0x00000000},		// Fail all negative numbers
-	{0x80000001,0x00000000},
-	{0xC0000000,0x00000000},
-	{0xFFFC0004,0x00000000},
-	{0xFFFD0002,0x00000000},
-	{0xFFFD0003,0x00000000},
-	{0xFFFE0001,0x00000000},
-	{0xFFFFFFFF,0x00000000}
+	{static_cast<Int32>(0x80000000),0x00000000},		// Fail all negative numbers
+	{static_cast<Int32>(0x80000001),0x00000000},
+	{static_cast<Int32>(0xC0000000),0x00000000},
+	{static_cast<Int32>(0xFFFC0004),0x00000000},
+	{static_cast<Int32>(0xFFFD0002),0x00000000},
+	{static_cast<Int32>(0xFFFD0003),0x00000000},
+	{static_cast<Int32>(0xFFFE0001),0x00000000},
+	{static_cast<Int32>(0xFFFFFFFF),0x00000000}
 };
 
-static Word TestSqrtFixedToWord32(void)
+static Word BURGER_API TestSqrtFixedToWord32(void)
 {
 	Word uFailure = FALSE;
 	const FixedTest32_t *pWork = SqrtFixedToWord32TestTable;
@@ -1234,17 +1424,17 @@ static const FixedTest32_t SqrtFixed32TestTable[] = {
 	{0x017A8E56,0x001374DE},		// 378.556f -> 19.45652f
 	{0x40000000,0x00800000},
 	{0x7FFFFFFF,0x00B5043E},		// Maximum square root (65535.999999)
-	{0x80000000,0x00000000},		// Fail all negative numbers
-	{0x80000001,0x00000000},
-	{0xC0000000,0x00000000},
-	{0xFFFC0004,0x00000000},
-	{0xFFFD0002,0x00000000},
-	{0xFFFD0003,0x00000000},
-	{0xFFFE0001,0x00000000},
-	{0xFFFFFFFF,0x00000000}
+	{static_cast<Int32>(0x80000000),0x00000000},		// Fail all negative numbers
+	{static_cast<Int32>(0x80000001),0x00000000},
+	{static_cast<Int32>(0xC0000000),0x00000000},
+	{static_cast<Int32>(0xFFFC0004),0x00000000},
+	{static_cast<Int32>(0xFFFD0002),0x00000000},
+	{static_cast<Int32>(0xFFFD0003),0x00000000},
+	{static_cast<Int32>(0xFFFE0001),0x00000000},
+	{static_cast<Int32>(0xFFFFFFFF),0x00000000}
 };
 
-static Word TestSqrtFixed32(void)
+static Word BURGER_API TestSqrtFixed32(void)
 {
 	Word uFailure = FALSE;
 	const FixedTest32_t *pWork = SqrtFixed32TestTable;
@@ -1260,9 +1450,11 @@ static Word TestSqrtFixed32(void)
 }
 
 
-int BURGER_API TestBrfixedpoint(void)
+int BURGER_API TestBrfixedpoint(Word bVerbose)
 {
-	Message("Running Integer Math tests");
+	if (bVerbose) {
+		Message("Running Integer Math tests");
+	}
 
 	Word uResult = TestPowerOf2_32();
 	uResult |= TestPowerOf2_64();
@@ -1287,8 +1479,14 @@ int BURGER_API TestBrfixedpoint(void)
 	uResult |= TestFloatToFixed();
 	uResult |= TestFloatToFixedCeil();
 	uResult |= TestFloatToFixedNearest();
+	uResult |= TestAbs8();
+	uResult |= TestAbs16();
 	uResult |= TestAbs32();
 	uResult |= TestAbs64();
+	uResult |= TestSign8();
+	uResult |= TestSign16();
+	uResult |= TestSign32();
+	uResult |= TestSign64();
 	uResult |= TestMin32();
 	uResult |= TestMin64();
 	uResult |= TestMax32();
@@ -1296,5 +1494,9 @@ int BURGER_API TestBrfixedpoint(void)
 	uResult |= TestSqrt32();
 	uResult |= TestSqrtFixedToWord32();
 	uResult |= TestSqrtFixed32();
+
+	if (!uResult && bVerbose) {
+		Message("Passed all Integer Math tests!");
+	}
 	return static_cast<int>(uResult);
 }

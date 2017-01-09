@@ -2,7 +2,7 @@
 
 	Unit tests for the File Manager library
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -1161,6 +1161,7 @@ static Word TestGetFileAndAuxType(Word uVerbose)
 static Word TestSetFileType(Word uVerbose)
 {
 #if defined(BURGER_MACOS)
+	BURGER_UNUSED(uVerbose);
 	Word32 uReturn = FileManager::SetFileType("9:testfile" TM ".txt",'ABCD');
 	Word uTest = uReturn!=0;
 	Word uFailure = uTest;
@@ -1198,6 +1199,7 @@ static Word TestSetFileType(Word uVerbose)
 static Word TestSetAuxType(Word uVerbose)
 {
 #if defined(BURGER_MACOS)
+	BURGER_UNUSED(uVerbose);
 	Word32 uReturn = FileManager::SetAuxType("9:testfile" TM ".txt",'ABCD');
 	Word uTest = uReturn!=0;
 	Word uFailure = uTest;
@@ -1235,6 +1237,7 @@ static Word TestSetAuxType(Word uVerbose)
 static Word TestSetFileAndAuxType(Word uVerbose)
 {
 #if defined(BURGER_MACOS)
+	BURGER_UNUSED(uVerbose);
 	Word32 uFileType;
 	Word32 uAuxType;
 	Word32 uReturn = FileManager::SetFileAndAuxType("9:testfile" TM ".txt",'ABCD','ABCD');

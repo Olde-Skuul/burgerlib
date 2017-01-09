@@ -2,7 +2,7 @@
 
 	Functions to create the generated source code for Burgerlib
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -14,23 +14,24 @@
 #include "createtables.h"
 #include "common.h"
 
-//
-// Create the Sin/Cosine constants so they can be converted
-// to binary for the Sin() and Cos() function constants
-//
-
-#if 0
+#if defined(ALLOWCOMMANDLINE)
 #include "brendian.h"
 #include "brfilemanager.h"
 #include "brconsolemanager.h"
 #include "brfloatingpoint.h"
 #include "brnumberstringhex.h"
-using namespace Burger;
-static void CreateSinConstants(void)
+#include "brmatrix3d.h"
+#include <math.h>
+
+//
+// Create the Sin/Cosine constants so they can be converted
+// to binary for the Sin() and Cos() function constants
+//
+
+static void BURGER_API CreateSinConstants(void)
 {
-	ConsoleApp Mine(0,0);
 #if defined(BURGER_X86)
-	Set8087Precision(PRECISION64);
+	Burger::Set8087Precision(Burger::PRECISION64);
 #endif
 	double dValueTable[20];
 	float fValueTable[20];
@@ -52,7 +53,7 @@ static void CreateSinConstants(void)
 		dStep = dStep+1.0;
 	} while (++i<11);
 
-	OutputMemoryStream Output;
+	Burger::OutputMemoryStream Output;
 
 	//
 	// Print the floating point constants for cosine
@@ -72,7 +73,7 @@ static void CreateSinConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{{0x");
-		NumberStringHex Hexit(reinterpret_cast<const Word32 *>(fValueTable)[i]^(((i^1U)&1U)<<31U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const Word32 *>(fValueTable)[i]^(((i^1U)&1U)<<31U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("}}");
 		if (i!=10) {
@@ -95,7 +96,7 @@ static void CreateSinConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{{0x");
-		NumberStringHex Hexit(reinterpret_cast<const Word32 *>(fInverseTable)[i]^(((i^1U)&1U)<<31U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const Word32 *>(fInverseTable)[i]^(((i^1U)&1U)<<31U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("}}");
 		if (i!=10) {
@@ -122,7 +123,7 @@ static void CreateSinConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{{0x");
-		NumberStringHex Hexit(reinterpret_cast<const Word64 *>(dValueTable)[i]^(((static_cast<Word64>(i)^1U)&1U)<<63U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const Word64 *>(dValueTable)[i]^(((static_cast<Word64>(i)^1U)&1U)<<63U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("ULL}}");
 		if (i!=10) {
@@ -145,7 +146,7 @@ static void CreateSinConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{{0x");
-		NumberStringHex Hexit(reinterpret_cast<const Word64 *>(dInverseTable)[i]^(((static_cast<Word64>(i)^1U)&1U)<<63U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const Word64 *>(dInverseTable)[i]^(((static_cast<Word64>(i)^1U)&1U)<<63U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("ULL}}");
 		if (i!=10) {
@@ -158,16 +159,15 @@ static void CreateSinConstants(void)
 	// Dump the output
 	//
 
-	String TheString;
+	Burger::String TheString;
 	Output.Save(&TheString);
 	Message(TheString.GetPtr());
 }
 
-static void CreateCosConstants(void)
+static void BURGER_API CreateCosConstants(void)
 {
-	ConsoleApp Mine(0,0);
 #if defined(BURGER_X86)
-	Set8087Precision(PRECISION64);
+	Burger::Set8087Precision(Burger::PRECISION64);
 #endif
 	double dValueTable[20];
 	float fValueTable[20];
@@ -189,7 +189,7 @@ static void CreateCosConstants(void)
 		dStep = dStep+1.0;
 	} while (++i<11);
 
-	OutputMemoryStream Output;
+	Burger::OutputMemoryStream Output;
 
 	//
 	// Print the floating point constants for cosine
@@ -209,7 +209,7 @@ static void CreateCosConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{{0x");
-		NumberStringHex Hexit(reinterpret_cast<const Word32 *>(fValueTable)[i]^(((i^1U)&1U)<<31U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const Word32 *>(fValueTable)[i]^(((i^1U)&1U)<<31U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("}}");
 		if (i!=10) {
@@ -232,7 +232,7 @@ static void CreateCosConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{{0x");
-		NumberStringHex Hexit(reinterpret_cast<const Word32 *>(fInverseTable)[i]^(((i^1U)&1U)<<31U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const Word32 *>(fInverseTable)[i]^(((i^1U)&1U)<<31U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("}}");
 		if (i!=10) {
@@ -259,7 +259,7 @@ static void CreateCosConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{{0x");
-		NumberStringHex Hexit(reinterpret_cast<const Word64 *>(dValueTable)[i]^(((static_cast<Word64>(i)^1U)&1U)<<63U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const Word64 *>(dValueTable)[i]^(((static_cast<Word64>(i)^1U)&1U)<<63U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("ULL}}");
 		if (i!=10) {
@@ -282,7 +282,7 @@ static void CreateCosConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{{0x");
-		NumberStringHex Hexit(reinterpret_cast<const Word64 *>(dInverseTable)[i]^(((static_cast<Word64>(i)^1U)&1U)<<63U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const Word64 *>(dInverseTable)[i]^(((static_cast<Word64>(i)^1U)&1U)<<63U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("ULL}}");
 		if (i!=10) {
@@ -295,24 +295,14 @@ static void CreateCosConstants(void)
 	// Dump the output
 	//
 
-	String TheString;
+	Burger::String TheString;
 	Output.Save(&TheString);
 	Message(TheString.GetPtr());
 }
-#else
-static BURGER_INLINE void CreateSinConstants(void) {}
-static BURGER_INLINE void CreateCosConstants(void) {}
-#endif
 
 //
 // Create the constants needed for the Euler calculations
 //
-
-#if 0
-#include "brmatrix3d.h"
-#include "broutputmemorystream.h"
-#include "brconsolemanager.h"
-using namespace Burger;
 
 //
 // Using primes to reverse the multiplications,
@@ -322,7 +312,7 @@ using namespace Burger;
 static const float g_SineY = 3.0f;
 static const float g_NegSineY = 5.0f;
 static const float g_CosineY = 7.0f;
-Matrix3D_t g_Yaw3D = {
+Burger::Matrix3D_t g_Yaw3D = {
 	{g_CosineY,0,g_NegSineY},
 	{0,1,0},
 	{g_SineY,0,g_CosineY}
@@ -331,7 +321,7 @@ Matrix3D_t g_Yaw3D = {
 static const float g_SineX = 11.0f;
 static const float g_NegSineX = 13.0f;
 static const float g_CosineX = 17.0f;
-Matrix3D_t g_Pitch3D = {
+Burger::Matrix3D_t g_Pitch3D = {
 	{1,0,0},
 	{0,g_CosineX,g_NegSineX},
 	{0,g_SineX,g_CosineX}
@@ -340,7 +330,7 @@ Matrix3D_t g_Pitch3D = {
 static const float g_SineZ = 19.0f;
 static const float g_NegSineZ = 23.0f;
 static const float g_CosineZ = 29.0f;
-Matrix3D_t g_Roll3D = {
+Burger::Matrix3D_t g_Roll3D = {
 	{g_CosineZ,g_NegSineZ,0},
 	{g_SineZ,g_CosineZ,0},
 	{0,0,1}
@@ -379,7 +369,7 @@ static const Factor_t FactorTableCode[9] = {
 // Return TRUE if factoring was successful
 //
 
-static Word SimpleFactor(OutputMemoryStream *pOutput,const Factor_t *pFactor,float fInput)
+static Word BURGER_API SimpleFactor(Burger::OutputMemoryStream *pOutput,const Factor_t *pFactor,float fInput)
 {
 	Word bSuccess = 0;
 	// Factor the primes!
@@ -388,7 +378,7 @@ static Word SimpleFactor(OutputMemoryStream *pOutput,const Factor_t *pFactor,flo
 		// Divide by a test prime
 		float fTest = fInput/pFactor->m_pValue[0];
 		// Did it yield a whole number?
-		if (fTest==Round(fTest)) {
+		if (fTest==Burger::Round(fTest)) {
 			// Accept it!
 			fInput = fTest;
 			if (pOutput) {
@@ -416,7 +406,7 @@ static Word SimpleFactor(OutputMemoryStream *pOutput,const Factor_t *pFactor,flo
 // addition in the middle
 //
 
-static Word Factor(OutputMemoryStream *pOutput,const char *pName,const Factor_t *pFactor,float fInput,float fPrevious)
+static Word BURGER_API Factor(Burger::OutputMemoryStream *pOutput,const char *pName,const Factor_t *pFactor,float fInput,float fPrevious)
 {
 	Word bSuccess=0;
 	pOutput->Append(pName);
@@ -430,7 +420,7 @@ static Word Factor(OutputMemoryStream *pOutput,const char *pName,const Factor_t 
 		pOutput->Append('1');
 		bSuccess = 1;
 	// If odd, then it's pure primes
-	} else if ((fInput*0.5f)!=Round(fInput*0.5f)) {
+	} else if ((fInput*0.5f)!=Burger::Round(fInput*0.5f)) {
 		bSuccess = SimpleFactor(pOutput,pFactor,fInput);
 	} else {
 		// It's even, it means two groups of primes,
@@ -456,7 +446,7 @@ static Word Factor(OutputMemoryStream *pOutput,const char *pName,const Factor_t 
 					if (fRemainder>=3.0f) {
 						float fFixer1 = fRemainder/fPrevious;
 						float fFixer2 = fRemainder/pFactor[j].m_pValue[0];
-						if ((fFixer1!=Round(fFixer1)) && (fFixer2!=Round(fFixer2))) {
+						if ((fFixer1!=Burger::Round(fFixer1)) && (fFixer2!=Burger::Round(fFixer2))) {
 							// Is the remainder a set of primes?
 							if (SimpleFactor(NULL,pFactor,fInput-fBisect)==3) {
 								// Looks like it was found, output the initial pair
@@ -484,7 +474,7 @@ static Word Factor(OutputMemoryStream *pOutput,const char *pName,const Factor_t 
 				if (fRemainder>=3.0f) {
 					float fFixer1 = fRemainder/fPrevious;
 					float fFixer2 = fRemainder/pFactor[j].m_pValue[0];
-					if ((fFixer1!=Round(fFixer1)) && (fFixer2!=Round(fFixer2))) {
+					if ((fFixer1!=Burger::Round(fFixer1)) && (fFixer2!=Burger::Round(fFixer2))) {
 						// Is the remainder a set of primes?
 						if (SimpleFactor(NULL,pFactor,fInput-fBisect)==2) {
 							// Looks like it was found, output the initial pair
@@ -515,7 +505,7 @@ static Word Factor(OutputMemoryStream *pOutput,const char *pName,const Factor_t 
 
 struct RotationTypes_t {
 	const char *m_pName;
-	const Matrix3D_t *m_pMatrices[3];
+	const Burger::Matrix3D_t *m_pMatrices[3];
 };
 
 static const RotationTypes_t Rotations[6] = {
@@ -527,16 +517,15 @@ static const RotationTypes_t Rotations[6] = {
 	{"ZXY",{&g_Roll3D,&g_Pitch3D,&g_Yaw3D}}
 };
 
-static void CreateEulerRotations(void)
+static void BURGER_API CreateEulerRotations(void)
 {
-	ConsoleApp Mine(0,0);
-	Matrix3D_t Result;
-	Matrix3D_t TempMatrix;
+	Burger::Matrix3D_t Result;
+	Burger::Matrix3D_t TempMatrix;
 
 	Word i = 0;
 	const RotationTypes_t *pRotations = Rotations;
 	do {
-		OutputMemoryStream Output;
+		Burger::OutputMemoryStream Output;
 		TempMatrix.Multiply(pRotations->m_pMatrices[0],pRotations->m_pMatrices[1]);
 		Result.Multiply(&TempMatrix,pRotations->m_pMatrices[2]);
 		Output.Append(pRotations->m_pName);
@@ -566,7 +555,7 @@ static void CreateEulerRotations(void)
 		Factor(&Output,";\n\tz.z = ",FactorTableCode,Result.z.z,TempMatrix.z.z);
 		Output.Append(";\n\n");
 
-		String Temp;
+		Burger::String Temp;
 		Output.Save(&Temp);
 		Message(Temp.GetPtr());
 		++pRotations;
@@ -575,8 +564,8 @@ static void CreateEulerRotations(void)
 	i = 0;
 	pRotations = Rotations;
 	do {
-		OutputMemoryStream Output;
-		Matrix3D_t Trans;
+		Burger::OutputMemoryStream Output;
+		Burger::Matrix3D_t Trans;
 		Result.Transpose(pRotations->m_pMatrices[0]);
 		Trans.Transpose(pRotations->m_pMatrices[1]);
 		TempMatrix.Multiply(&Result,&Trans);
@@ -610,16 +599,145 @@ static void CreateEulerRotations(void)
 		Factor(&Output,";\n\tz.z = ",FactorTableCode,Result.z.z,TempMatrix.z.z);
 		Output.Append(";\n\n");
 
-		String Temp;
+		Burger::String Temp;
 		Output.Save(&Temp);
 		Message(Temp.GetPtr());
 		++pRotations;
 	} while (++i<6);
 }
-#else
-static void CreateEulerRotations(void)
+
+/***************************************
+
+	Generate sqrt tables for the PowerPC
+	version of sqrt and sqrtf
+
+***************************************/
+
+static void BURGER_API CreateSqrtGuesses(void)
 {
+	Message("static const Burger::Word32ToFloat g_PPCSqrtGuess[2][256][2] = {{");
+
+	Burger::OutputMemoryStream Output;
+
+	// Generate the even roots
+	Burger::Word32ToFloat Converter;
+	Burger::NumberStringHex Hexit;
+	Burger::String TempString;
+
+	Word uCount = 256;
+	double dStep = 0.5;
+	Output.Append('\t');
+	do {
+		// Get the actual square root
+		double dSqrt = sqrt(dStep);
+
+		// Get the square root of the next step to get the rounding
+		double dNextSqrt = sqrt(dStep+(1.0/512.0));
+
+		// Generate the square root estimate by averaging between
+		// the steps
+		
+		Converter.f = static_cast<float>((dSqrt+dNextSqrt)*0.5);
+
+		// Print the value in hex
+		Hexit = Converter.w;
+		Output.Append("{{0x");
+		Output.Append(Hexit.GetPtr());
+		Output.Append("},{0x");
+
+		// Get the reciprocals
+		double dReciprocal2Guess = 1.0/(2.0*dSqrt);
+		double dNextReciprocal2Guess = 1.0/(2.0*dNextSqrt);
+
+		Converter.f = static_cast<float>((dReciprocal2Guess+dNextReciprocal2Guess)*0.5);
+		Hexit = Converter.w;
+		Output.Append(Hexit.GetPtr());
+		Output.Append("}}");
+
+		if ((uCount&3)==1) {
+			if (uCount!=1) {
+				Output.Append(',');
+			}
+			Output.Save(&TempString);
+			Message(TempString.GetPtr());		
+			Output.Clear();
+			if (uCount!=1) {
+				Output.Append('\t');
+			}
+		} else {
+			Output.Append(',');
+		}
+
+		// Next step
+		dStep = dStep + (1.0/512.0);
+	} while (--uCount);
+
+	Message("},{");
+
+	// Generate the odd roots
+
+	uCount = 256;
+	dStep = 0.5;
+	do {
+		// Get the actual square root * 2
+		double dSqrt = sqrt(dStep*2.0);
+
+		// Get the square root of the next step to get the rounding
+		double dNextSqrt = sqrt((dStep+1/512.0)*2.0);
+
+		// Generate the square root estimate by averaging between
+		// the steps
+
+		Converter.f = static_cast<float>((dSqrt+dNextSqrt)*0.5);
+
+		// Print the value in hex
+		Hexit = Converter.w;
+		Output.Append("{{0x");
+		Output.Append(Hexit.GetPtr());
+		Output.Append("},{0x");
+
+		// Get the reciprocals
+		double dReciprocal2Guess = 1.0/(2.0*dSqrt);
+		double dNextReciprocal2Guess = 1.0/(2.0*dNextSqrt);
+
+		Converter.f = static_cast<float>((dReciprocal2Guess+dNextReciprocal2Guess)*0.5);
+		Hexit = Converter.w;
+		Output.Append(Hexit.GetPtr());
+		Output.Append("}}");
+
+		if ((uCount&3)==1) {
+			if (uCount!=1) {
+				Output.Append(',');
+			}
+			Output.Save(&TempString);
+			Message(TempString.GetPtr());		
+			Output.Clear();
+			if (uCount!=1) {
+				Output.Append('\t');
+			}
+		} else {
+			Output.Append(',');
+		}
+
+		// Next step
+		dStep = dStep + (1.0/512.0);
+	} while (--uCount);
+
+	Message("}};");
 }
+
+//
+// Output the data tables for constants
+//
+
+void BURGER_API WriteDataTables(void)
+{
+	CreateSinConstants();
+	CreateCosConstants();
+	CreateEulerRotations();
+	CreateSqrtGuesses();
+}
+
 #endif
 
 //
@@ -690,6 +808,9 @@ Input.Clear();
 
 #endif
 
+
+
+
 //
 // Perform one shot functions
 //
@@ -743,8 +864,4 @@ void BURGER_API CreateTables(void)
 	GUIDFromString(&hfoo,buffer);
 	GUIDInit(&hfoo);
 	GUIDToString(buffer,&hfoo);
-
-	CreateSinConstants();
-	CreateCosConstants();
-	CreateEulerRotations();
 }
