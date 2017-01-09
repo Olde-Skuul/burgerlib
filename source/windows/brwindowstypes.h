@@ -2,7 +2,7 @@
 
 	Typedefs specific to Windows
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -32,6 +32,13 @@
 
 /* BEGIN */
 #if defined(BURGER_WINDOWS) && !defined(DOXYGEN)
+
+#if defined(_DEBUG)
+#ifndef D3D_DEBUG_INFO
+#define D3D_DEBUG_INFO
+#endif
+#endif
+
 struct IUnknown;
 struct HBITMAP__;
 struct HDC__;
@@ -39,6 +46,8 @@ struct HGLRC__;
 struct HHOOK__;
 struct HICON__;
 struct HINSTANCE__;
+struct HMENU__;
+struct HMONITOR__;
 struct HPALETTE__;
 struct HWND__;
 struct IDirectInputA;
@@ -113,12 +122,30 @@ struct IDirectSoundFXI3DL2Reverb;
 struct IDirectSoundCaptureFXAec;
 struct IDirectSoundCaptureFXNoiseSuppress;
 struct IDirectSoundFullDuplex;
+struct IDirectPlay;
+struct IDirectPlay2;
+struct IDirectPlay3;
+struct IDirectPlay4;
+struct IDirectPlay8Client;
+struct IDirectPlay8Server;
+struct IDirectPlay8Peer;
+struct IDirectPlay8ThreadPool;
+struct IDirectPlay8NATResolver;
+struct IDirectPlay8LobbiedApplication;
+struct IDirectPlay8Address;
+struct IDirectPlayLobby;
+struct IDirectPlayLobby2;
+struct IDirectPlayLobby3;
+struct IDirectPlay8LobbiedApplication;
+struct IDirectPlay8LobbyClient;
 struct ID3DXEffect;
 struct ID3DXEffectPool;
 struct ID3DXMatrixStack;
-struct _D3DPRESENT_PARAMETERS_;
+struct _D3DADAPTER_IDENTIFIER9;
 struct _D3DCAPS9;
 struct _D3DDISPLAYMODE;
+struct _D3DPRESENT_PARAMETERS_;
+struct _D3DSURFACE_DESC;
 struct _DIDATAFORMAT;
 struct _DSBUFFERDESC;
 struct _DSCBUFFERDESC;
@@ -135,12 +162,24 @@ struct _XINPUT_CAPABILITIES;
 struct _XINPUT_BATTERY_INFORMATION;
 struct _XINPUT_KEYSTROKE;
 struct tagFILTERKEYS;
+struct tagMONITORINFO;
 struct tagPOINT;
 struct tagRECT;
 struct tagSTICKYKEYS;
 struct tagTOGGLEKEYS;
 struct tagTRACKMOUSEEVENT;
+struct tagWINDOWPLACEMENT;
+
+struct IXAudio2;
+struct IXAudio2Voice;
+struct IXAudio2SourceVoice;
+struct IXAudio2SubmixVoice;
+struct IXAudio2MasteringVoice;
+struct IXAudio2EngineCallback;
+struct IXAudio2VoiceCallback;
+
 namespace Burger {
+
 struct CRITICAL_SECTION {
 	_RTL_CRITICAL_SECTION_DEBUG *DebugInfo;
 	Word32 LockCount;
@@ -149,14 +188,17 @@ struct CRITICAL_SECTION {
 	void *LockSemaphore;
 	WordPtr SpinCount;
 };
+
 struct tagSTICKYKEYS {
 	Word cbSize;
 	Word dwFlags;
 };
+
 struct tagTOGGLEKEYS {
 	Word cbSize;
 	Word dwFlags;
 };
+
 struct tagFILTERKEYS {
 	Word cbSize;
 	Word dwFlags;
@@ -165,12 +207,14 @@ struct tagFILTERKEYS {
 	Word iRepeatMSec;
 	Word iBounceMSec;
 };
+
 struct tagTRACKMOUSEEVENT {
 	Word cbSize;
 	Word dwFlags;
 	HWND__ *hwndTrack;
 	Word dwHoverTime;
 };
+
 }
 #endif
 /* END */

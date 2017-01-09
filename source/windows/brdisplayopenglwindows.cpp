@@ -4,7 +4,7 @@
 
 	Windows only
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -168,7 +168,7 @@ Word Burger::DisplayOpenGL::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlag
 	if (!(uFlags&FULLSCREEN) &&
 		!(m_uFlags&FULLSCREEN) &&
 		((m_uWidth!=uWidth) || (m_uHeight!=uHeight))) {
-		m_pGameApp->ResetWindowLocation();
+		//m_pGameApp->ResetWindowLocation();
 	}
 
 	//
@@ -278,7 +278,7 @@ Word Burger::DisplayOpenGL::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlag
 			}
 		}
 	}
-//	m_pGameApp->SetDisplay(this);
+
 	// Boned?
 	if (!hGLContext) {
 		// Release the device

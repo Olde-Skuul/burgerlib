@@ -5,7 +5,7 @@
 	Functions that will allow calling Windows Vista/7/8/10 functions
 	from a program that can be loaded on Windows XP.
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -20,6 +20,7 @@
 #include "brstring.h"
 #include "brstringfunctions.h"
 #include "brfilemanager.h"
+#include "brwindowstypes.h"
 
 #if !defined(DOXYGEN)
 
@@ -44,10 +45,6 @@
 #define DIRECTDRAW_VERSION 0x700
 #endif
 
-#if defined(_DEBUG) && !defined(DOXYGEN)
-#define D3D_DEBUG_INFO
-#endif
-
 #if !defined(BUILD_WINDOWS)
 #define BUILD_WINDOWS
 #endif
@@ -58,11 +55,16 @@
 #include <d3d.h>
 #include <ddraw.h>
 #include <dsound.h>
+#include <dplay.h>
+#include <dplay8.h>
+#include <dplobby.h>
+#include <dplobby8.h>
 #include <shellapi.h>
 #include <shlobj.h>
 #include <SetupAPI.h>
 #include <d3dcommon.h>
 #include <Xinput.h>
+#include <xaudio2.h>
 #include <io.h>
 
 //
@@ -101,6 +103,8 @@ static const char *s_LibaryNames[Burger::Globals::DLL_COUNT] = {
 	"d3d11.dll",
 	"dxgi.dll",
 	"dsound.dll",
+	"dplayx.dll",
+	"dplay.dll",
 	"rpcrt4.dll",
 	"winmm.dll",
 	"shlwapi.dll",
@@ -172,6 +176,13 @@ static const CallNames_t g_CallNames[Burger::Globals::CALL_COUNT] = {
 	{Burger::Globals::DSOUND_DLL,"DirectSoundFullDuplexCreate"},
 	{Burger::Globals::DSOUND_DLL,"GetDeviceID"},
 	
+	{Burger::Globals::DPLAYX_DLL,"DirectPlayCreate"},
+	{Burger::Globals::DPLAYX_DLL,"DirectPlayEnumerate"},
+	{Burger::Globals::DPLAYX_DLL,"DirectPlayEnumerateA"},
+	{Burger::Globals::DPLAYX_DLL,"DirectPlayEnumerateW"},
+	{Burger::Globals::DPLAYX_DLL,"DirectPlayLobbyCreateA"},
+	{Burger::Globals::DPLAYX_DLL,"DirectPlayLobbyCreateW"},
+
 	{Burger::Globals::RPCRT4_DLL,"UuidCreateSequential"},
 
 	{Burger::Globals::WINMM_DLL,"timeGetTime"},
@@ -196,6 +207,10 @@ static const CallNames_t g_CallNames[Burger::Globals::CALL_COUNT] = {
 	{Burger::Globals::SETUPAPI_DLL,"SetupDiDestroyDeviceInfoList"},
 
 	{Burger::Globals::USER32_DLL,"TrackMouseEvent"},
+	{Burger::Globals::USER32_DLL,"GetMonitorInfoA"},
+	{Burger::Globals::USER32_DLL,"GetMonitorInfoW"},
+	{Burger::Globals::USER32_DLL,"MonitorFromWindow"},
+	{Burger::Globals::USER32_DLL,"MonitorFromRect"},
 
 	{Burger::Globals::KERNEL32_DLL,"GetSystemWow64DirectoryA"},
 	{Burger::Globals::KERNEL32_DLL,"GetSystemWow64DirectoryW"},
@@ -304,10 +319,13 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryIndex(eWindowsDLLIndex eIndex)
 	HINSTANCE hResult = NULL;
 	// Valid index?
 	if (eIndex<DLL_COUNT) {
+
 		// Has it been loaded?
 		hResult = g_Globals.m_hInstances[eIndex];
+
 		// If not already tested and not loaded?
 		if (!hResult && !g_Globals.m_bInstancesTested[eIndex]) {
+
 			// Mark as tested
 			g_Globals.m_bInstancesTested[eIndex] = TRUE;
 
@@ -316,7 +334,7 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryIndex(eWindowsDLLIndex eIndex)
 			// Supported on Windows Vista or later. If running on XP, you're
 			// out of luck.
 
-			Word32 uFlags = 0;
+			Word32 uFlags = 0;		// XP Flags
 			if (IsVistaOrGreater()) {
 				uFlags = LOAD_LIBRARY_SEARCH_SYSTEM32;
 			}
@@ -328,9 +346,20 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryIndex(eWindowsDLLIndex eIndex)
 			// an older version of the dll
 			if (!hResult) {
 	
+				eWindowsDLLIndex uAlternate = DLL_COUNT;
+
 				// Try XInput 9.1.0
 				if (eIndex==XINPUT1_4_DLL) {
-					hResult = LoadLibraryExA(s_LibaryNames[XINPUT1_3_DLL],NULL,uFlags);
+					uAlternate = XINPUT1_3_DLL;
+
+				// Try DirectPlay 1.0 (XP, and REALLY old)
+				} else if (eIndex==DPLAYX_DLL) {
+					uAlternate = DPLAY_DLL;
+				}
+
+				// Was an alternate chosen?
+				if (uAlternate!=DLL_COUNT) {
+					hResult = LoadLibraryExA(s_LibaryNames[uAlternate],NULL,uFlags);
 				}
 
 				// Here is where code should be added for future special casing of DLL searching.
@@ -450,6 +479,15 @@ void * BURGER_API Burger::Globals::LoadFunctionIndex(eWindowsCallIndex eIndex)
 	
 ***************************************/
 
+/*! ************************************
+
+	\fn Word Burger::Globals::IsDirectPlayPresent(void)
+	\brief Detect and load DirectPlay functions
+
+	\windowsonly
+	\return \ref TRUE if DirectPlay is present on the system, \ref FALSE if not
+
+***************************************/
 
 
 
@@ -2215,6 +2253,174 @@ Word BURGER_API Burger::Globals::GetDeviceID(const GUID *pGuidSrc,GUID *pGuidDes
 	return static_cast<Word>(uResult);
 }
 
+//
+// dplayx.dll
+//
+
+
+/*! ************************************
+
+	\brief Load in dplayx.dll and call DirectPlayCreate
+
+	To allow maximum compatibility, this function will manually load
+	dplayx.dll or dplay.dll and then invoke DirectPlayCreate if present.
+
+	\windowsonly
+	\param pGuidSrc Address of a variable that specifies a valid device identifier
+	\param ppOutput Address of a variable that receives the unique identifier of the device
+	\param pOuter Address of IUnknown, set to \ref NULL
+	\return DP_OK if no error. Any other value means an error occurred
+	
+***************************************/
+
+Word BURGER_API Burger::Globals::DirectPlayCreate(GUID *pGuidSrc,IDirectPlay **ppOutput,IUnknown *pOuter)
+{
+	// Get the function pointer
+	void *pDirectPlayCreate = LoadFunctionIndex(CALL_DirectPlayCreate);
+	HRESULT uResult = DSERR_INVALIDCALL;
+	if (pDirectPlayCreate) {
+		uResult = static_cast<HRESULT (WINAPI *)(GUID *,LPDIRECTPLAY *,IUnknown *)>(pDirectPlayCreate)(pGuidSrc,ppOutput,pOuter);
+	}
+	return static_cast<Word>(uResult);
+}
+
+/*! ************************************
+
+	\brief Load in dplayx.dll and call DirectPlayEnumerate
+
+	This function is called CallDirectPlayEnumerate instead of DirectPlayEnumerate
+	to avoid a conflict of a macro found in the dplay.h header.
+
+	To allow maximum compatibility, this function will manually load
+	dplayx.dll or dplay.dll and then invoke DirectPlayEnumerate if present.
+
+	\note This function is OBSOLETE, call DirectPlayEnumerateA() instead
+
+	\windowsonly
+	\param pCallback Address of the callback function of type LPDPENUMDPCALLBACKA
+	\param pContext Address of user data
+	\return DP_OK if no error. Any other value means an error occurred
+	
+***************************************/
+
+Word BURGER_API Burger::Globals::CallDirectPlayEnumerate(void *pCallback,void *pContext)
+{
+	// Get the function pointer
+	void *pDirectPlayEnumerate = LoadFunctionIndex(CALL_DirectPlayEnumerate);
+	HRESULT uResult = DSERR_INVALIDCALL;
+	if (pDirectPlayEnumerate) {
+		uResult = static_cast<HRESULT (WINAPI *)(LPDPENUMDPCALLBACKA,LPVOID)>(pDirectPlayEnumerate)(static_cast<LPDPENUMDPCALLBACKA>(pCallback),pContext);
+	}
+	return static_cast<Word>(uResult);
+}
+
+/*! ************************************
+
+	\brief Load in dplayx.dll and call DirectPlayEnumerateA
+
+	To allow maximum compatibility, this function will manually load
+	dplayx.dll and then invoke DirectPlayEnumerateA if present.
+
+	\windowsonly
+	\param pCallback Address of the callback function of type LPDPENUMDPCALLBACKA
+	\param pContext Address of user data
+	\return DP_OK if no error. Any other value means an error occurred
+	
+***************************************/
+
+Word BURGER_API Burger::Globals::DirectPlayEnumerateA(void *pCallback,void *pContext)
+{
+	// Get the function pointer
+	void *pDirectPlayEnumerateA = LoadFunctionIndex(CALL_DirectPlayEnumerateA);
+	HRESULT uResult = DSERR_INVALIDCALL;
+	if (pDirectPlayEnumerateA) {
+		uResult = static_cast<HRESULT (WINAPI *)(LPDPENUMDPCALLBACKA,LPVOID)>(pDirectPlayEnumerateA)(static_cast<LPDPENUMDPCALLBACKA>(pCallback),pContext);
+	}
+	return static_cast<Word>(uResult);
+}
+
+/*! ************************************
+
+	\brief Load in dplayx.dll and call DirectPlayEnumerateW
+
+	To allow maximum compatibility, this function will manually load
+	dplayx.dll and then invoke DirectPlayEnumerateW if present.
+
+	\windowsonly
+	\param pCallback Address of the callback function of type LPDPENUMDPCALLBACK
+	\param pContext Address of user data
+	\return DP_OK if no error. Any other value means an error occurred
+	
+***************************************/
+
+Word BURGER_API Burger::Globals::DirectPlayEnumerateW(void *pCallback,void *pContext)
+{
+	// Get the function pointer
+	void *pDirectPlayEnumerateW = LoadFunctionIndex(CALL_DirectPlayEnumerateW);
+	HRESULT uResult = DSERR_INVALIDCALL;
+	if (pDirectPlayEnumerateW) {
+		uResult = static_cast<HRESULT (WINAPI *)(LPDPENUMDPCALLBACK,LPVOID)>(pDirectPlayEnumerateW)(static_cast<LPDPENUMDPCALLBACK>(pCallback),pContext);
+	}
+	return static_cast<Word>(uResult);
+}
+
+/*! ************************************
+
+	\brief Load in dplayx.dll and call DirectPlayLobbyCreateA
+
+	To allow maximum compatibility, this function will manually load
+	dplayx.dll and then invoke DirectPlayLobbyCreateA if present.
+
+	\windowsonly
+	\param pGuidSrc Address of a variable that specifies a valid device identifier
+	\param ppOutput Address of a variable that receives the pointer to the IDirectPlayLobby
+	\param pOuter Address of IUnknown, set to \ref NULL
+	\param pData Address of custom data needed for the lobby
+	\param uDataSize Size in bytes of the custom data for the lobby
+	\return DP_OK if no error. Any other value means an error occurred
+	
+***************************************/
+
+Word BURGER_API Burger::Globals::DirectPlayLobbyCreateA(GUID *pGuidSrc,IDirectPlayLobby **ppOutput,IUnknown *pOuter,void *pData,Word uDataSize)
+{
+	// Get the function pointer
+	void *pDirectPlayLobbyCreateA = LoadFunctionIndex(CALL_DirectPlayLobbyCreateA);
+	HRESULT uResult = DSERR_INVALIDCALL;
+	if (pDirectPlayLobbyCreateA) {
+		uResult = static_cast<HRESULT (WINAPI *)(LPGUID,LPDIRECTPLAYLOBBYA *,IUnknown *,LPVOID,DWORD)>(pDirectPlayLobbyCreateA)(pGuidSrc,ppOutput,pOuter,pData,uDataSize);
+	}
+	return static_cast<Word>(uResult);
+}
+
+/*! ************************************
+
+	\brief Load in dplayx.dll and call DirectPlayLobbyCreateW
+
+	To allow maximum compatibility, this function will manually load
+	dplayx.dll and then invoke DirectPlayLobbyCreateW if present.
+
+	\windowsonly
+	\param pGuidSrc Address of a variable that specifies a valid device identifier
+	\param ppOutput Address of a variable that receives the pointer to the IDirectPlayLobby
+	\param pOuter Address of IUnknown, set to \ref NULL
+	\param pData Address of custom data needed for the lobby
+	\param uDataSize Size in bytes of the custom data for the lobby
+
+	\return DP_OK if no error. Any other value means an error occurred
+	
+***************************************/
+
+Word BURGER_API Burger::Globals::DirectPlayLobbyCreateW(GUID *pGuidSrc,IDirectPlayLobby **ppOutput,IUnknown *pOuter,void *pData,Word uDataSize)
+{
+	// Get the function pointer
+	void *pDirectPlayLobbyCreateW = LoadFunctionIndex(CALL_DirectPlayLobbyCreateW);
+	HRESULT uResult = DSERR_INVALIDCALL;
+	if (pDirectPlayLobbyCreateW) {
+		uResult = static_cast<HRESULT (WINAPI *)(LPGUID,LPDIRECTPLAYLOBBY *,IUnknown *,LPVOID,DWORD)>(pDirectPlayLobbyCreateW)(pGuidSrc,ppOutput,pOuter,pData,uDataSize);
+	}
+	return static_cast<Word>(uResult);
+}
+
 
 
 
@@ -2752,6 +2958,151 @@ Word BURGER_API Burger::Globals::TrackMouseEvent(::tagTRACKMOUSEEVENT *pEventTra
 	return static_cast<Word>(static_cast<BOOL (WINAPI *)(LPTRACKMOUSEEVENT)>(pTrackMouseEvent)(pEventTrack));
 }
 
+/*! ************************************
+
+	\brief Load in user32.dll and call TrackMouseEvent
+
+	Manually load user32.dll if needed and
+	call the Windows function GetMonitorInfoA()
+
+	On versions of windows that do not have GetMonitorInfoA(), use a
+	compatibility function that performs the same task
+
+	https://msdn.microsoft.com/en-us/library/windows/desktop/dd144901(v=vs.85).aspx
+	
+	\windowsonly
+	\param hMonitor A handle to the display monitor of interest.
+	\param pMonitorInfo A pointer to a MONITORINFO or MONITORINFOEX structure that receives information about the specified display monitor.
+	\return If the function succeeds, the return value is nonzero.
+
+***************************************/
+
+Word BURGER_API Burger::Globals::GetMonitorInfoA(HMONITOR__ *hMonitor,tagMONITORINFO *pMonitorInfo)
+{
+	void *pGetMonitorInfoA = LoadFunctionIndex(CALL_GetMonitorInfoA);
+	BOOL uResult = FALSE;		// Failure
+	if (pGetMonitorInfoA) {
+		uResult = static_cast<BOOL (WINAPI *)(HMONITOR,LPMONITORINFO)>(pGetMonitorInfoA)(hMonitor,pMonitorInfo);
+	} else {
+		RECT TempRect;
+		if ((hMonitor == ((HMONITOR)0x12340042)) &&
+			pMonitorInfo &&
+			(pMonitorInfo->cbSize >= sizeof(MONITORINFO)) &&
+			SystemParametersInfoA(SPI_GETWORKAREA,0,&TempRect,0)) {
+
+			pMonitorInfo->rcMonitor.left = 0;
+			pMonitorInfo->rcMonitor.top = 0;
+			pMonitorInfo->rcMonitor.right = GetSystemMetrics(SM_CXSCREEN);
+			pMonitorInfo->rcMonitor.bottom = GetSystemMetrics(SM_CYSCREEN);
+			pMonitorInfo->rcWork = TempRect;
+			pMonitorInfo->dwFlags = MONITORINFOF_PRIMARY;
+			uResult = TRUE;
+		}
+	}
+	return static_cast<Word>(uResult);
+}
+
+/*! ************************************
+
+	\brief Load in user32.dll and call TrackMouseEvent
+
+	Manually load user32.dll if needed and
+	call the Windows function GetMonitorInfoW()
+
+	On versions of windows that do not have GetMonitorInfoW(), use a
+	compatibility function that performs the same task
+
+	https://msdn.microsoft.com/en-us/library/windows/desktop/dd144901(v=vs.85).aspx
+	
+	\windowsonly
+	\param hMonitor A handle to the display monitor of interest.
+	\param pMonitorInfo A pointer to a MONITORINFO or MONITORINFOEX structure that receives information about the specified display monitor.
+	\return If the function succeeds, the return value is nonzero.
+
+***************************************/
+
+Word BURGER_API Burger::Globals::GetMonitorInfoW(HMONITOR__ *hMonitor,tagMONITORINFO *pMonitorInfo)
+{
+	void *pGetMonitorInfoW = LoadFunctionIndex(CALL_GetMonitorInfoW);
+	BOOL uResult = FALSE;		// Failure
+	if (pGetMonitorInfoW) {
+		uResult = static_cast<BOOL (WINAPI *)(HMONITOR,LPMONITORINFO)>(pGetMonitorInfoW)(hMonitor,pMonitorInfo);
+	} else {
+		RECT TempRect;
+		if ((hMonitor == ((HMONITOR)0x12340042)) &&
+			pMonitorInfo &&
+			(pMonitorInfo->cbSize >= sizeof(MONITORINFO)) &&
+			SystemParametersInfoA(SPI_GETWORKAREA,0,&TempRect,0)) {
+
+			pMonitorInfo->rcMonitor.left = 0;
+			pMonitorInfo->rcMonitor.top = 0;
+			pMonitorInfo->rcMonitor.right = GetSystemMetrics(SM_CXSCREEN);
+			pMonitorInfo->rcMonitor.bottom = GetSystemMetrics(SM_CYSCREEN);
+			pMonitorInfo->rcWork = TempRect;
+			pMonitorInfo->dwFlags = MONITORINFOF_PRIMARY;
+			uResult = TRUE;
+		}
+	}
+	return static_cast<Word>(uResult);
+}
+
+/*! ************************************
+
+	\brief Load in user32.dll and call MonitorFromWindow
+
+	Manually load user32.dll if needed and
+	call the Windows function MonitorFromWindow()
+
+	On versions of windows that do not have MonitorFromWindow(), use a
+	compatibility function that performs the same task
+
+	https://msdn.microsoft.com/en-us/library/windows/desktop/dd145064(v=vs.85).aspx
+	
+	\windowsonly
+	\param pWindow A handle to the window of interest.
+	\param uFlags Determines the function's return value if the window does not intersect any display monitor.
+	\return \ref NULL on failure, HMONITOR on success.
+
+***************************************/
+
+HMONITOR__ * BURGER_API Burger::Globals::MonitorFromWindow(HWND__ *pWindow,Word uFlags)
+{
+	void *pMonitorFromWindow = LoadFunctionIndex(CALL_MonitorFromWindow);
+	HMONITOR pResult = ((HMONITOR)0x12340042);		// Failure
+	if (pMonitorFromWindow) {
+		pResult = static_cast<HMONITOR (WINAPI *)(HWND,DWORD)>(pMonitorFromWindow)(pWindow,uFlags);
+	}
+	return pResult;
+}
+
+/*! ************************************
+
+	\brief Load in user32.dll and call MonitorFromRect
+
+	Manually load user32.dll if needed and
+	call the Windows function MonitorFromRect()
+
+	On versions of windows that do not have MonitorFromRect(), use a
+	compatibility function that performs the same task
+
+	https://msdn.microsoft.com/en-us/library/windows/desktop/dd145063(v=vs.85).aspx
+	
+	\windowsonly
+	\param pRect A pointer to a RECT structure that specifies the rectangle of interest in virtual-screen coordinates.
+	\param uFlags Determines the function's return value if the window does not intersect any display monitor.
+	\return \ref NULL on failure, HMONITOR on success.
+
+***************************************/
+
+HMONITOR__ * BURGER_API Burger::Globals::MonitorFromRect(const tagRECT *pRect,Word uFlags)
+{
+	void *pMonitorFromRect = LoadFunctionIndex(CALL_MonitorFromRect);
+	HMONITOR pResult = ((HMONITOR)0x12340042);		// Failure
+	if (pMonitorFromRect) {
+		pResult = static_cast<HMONITOR (WINAPI *)(LPCRECT,DWORD)>(pMonitorFromRect)(pRect,uFlags);
+	}
+	return pResult;
+}
 
 
 

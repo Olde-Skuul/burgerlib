@@ -2,7 +2,7 @@
 
 	Detect multiple launches class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -19,6 +19,7 @@
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
+
 #include <Windows.h>
 
 /*! ************************************
@@ -29,14 +30,14 @@
 	
 ***************************************/
 
-Burger::DetectMultiLaunch::DetectMultiLaunch()
+Burger::DetectMultiLaunch::DetectMultiLaunch() :
+	m_hInstanceLock(INVALID_HANDLE_VALUE)
 {
-	m_hInstanceLock =  INVALID_HANDLE_VALUE;
 }
 
 /*! ************************************
 
-	\brief Teardown on exit
+	\brief Tear down on exit
 
 	If IsMultiLaunched() is called, a global object exists.
 	Once the class is destroyed, so is the object.

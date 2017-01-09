@@ -2,7 +2,7 @@
 
 	Console manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -191,10 +191,10 @@ Word BURGER_API Burger::ConsoleApp::ProcessFilenames(Burger::ConsoleApp::Callbac
 	// a match for the filename?
 
 	if (pCallback) {
-        // Check the startup information. If a window is present, it's a GUI interface
-        STARTUPINFOW StartupInfo;
-        GetStartupInfoW(&StartupInfo);
-        if (StartupInfo.dwFlags & STARTF_USESHOWWINDOW) {
+		// Check the startup information. If a window is present, it's a GUI interface
+		STARTUPINFOW StartupInfo;
+		GetStartupInfoW(&StartupInfo);
+		if (StartupInfo.dwFlags & STARTF_USESHOWWINDOW) {
 			m_bLaunchedFromDesktop = TRUE;			// I was directly launched
 			
 			// Okay, the command line is all about the files

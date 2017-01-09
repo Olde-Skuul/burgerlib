@@ -2,7 +2,7 @@
 
 	Windows application manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -43,6 +43,7 @@
 #include <shellapi.h>
 #include <stdlib.h>
 #include <ObjBase.h>
+#include <CommCtrl.h>
 
 #if !defined(DOXYGEN)
 // Needed for code that manually grabs the parm list
@@ -156,6 +157,11 @@ extern "C" char ** __argv;
 #define WM_DWMWINDOWMAXIMIZEDCHANGE 0x0321
 #endif
 
+// Needed for InitCommonControls()
+#if defined(BURGER_MSVC)
+#pragma comment(lib, "Comctl32.lib")
+#endif
+
 #endif
 
 /*! ************************************
@@ -187,14 +193,15 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 	m_MemoryManagerHandle(uDefaultMemorySize,uDefaultHandleCount,uMinReserveSize),
 //	m_hInstance(NULL),		// Will initialize below
 	m_hWindow(NULL),
+	m_hMenu(NULL),
 	m_pDefaultCursor(NULL),
 	m_ppOldArgv(NULL),
 	m_pCallBack(NULL),
-	m_iWindowCenterX(0),
-	m_iWindowCenterY(0),
 	m_uErrorMode(0),
-	m_bCoCreateInstanceInit(FALSE)
+	m_bCoCreateInstanceInit(FALSE),
+	m_bInSizeMove(FALSE)
 {
+	m_WindowRect.Clear();
 	HINSTANCE hInstance = GetModuleHandleW(NULL);
 	m_hInstance = hInstance;
 	// Set the global instance
@@ -212,6 +219,10 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 	// Make the app handle all of its own errors
 	m_uErrorMode = SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 
+	// Not always needed, but lets the app create GDI dialogs under Windows XP
+	// More recent operating systems, this function does nothing
+	InitCommonControls();
+	
 	// Set up the shared values
 	InitDefaults();
 
@@ -276,7 +287,7 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 
 	// Add the windows callback function
 	// and set it to be the first entry to be called
-	m_RunQueue.Add(Poll,this,RunQueue::PRIORITY_FIRST);
+	m_RunQueue.Add(Poll,NULL,this,RunQueue::PRIORITY_FIRST);
 
 	// Init the global cursor
 	OSCursor::Init();
@@ -298,12 +309,6 @@ Burger::GameApp::~GameApp()
 {
 	m_pCallBack = NULL;
 	RemoveRoutine(Poll,this);
-	// If there is a window, dispose of it
-	if (m_hWindow) {
-		Globals::SetWindow(NULL);
-		CloseWindow(m_hWindow);
-		m_hWindow = NULL;
-	}
 
 	// Release the file system
 	FileManager::Shutdown();
@@ -322,7 +327,15 @@ Burger::GameApp::~GameApp()
 	}
 
 	// Clear out the default variables
+	// It also unlinks the Display class
 	ShutdownDefaults();
+
+	// If there is a window, dispose of it
+	if (m_hWindow) {
+		Globals::SetWindow(NULL);
+		CloseWindow(m_hWindow);
+		m_hWindow = NULL;
+	}
 
 	// Restore the system error mode
 	SetErrorMode(m_uErrorMode);
@@ -370,6 +383,34 @@ Burger::GameApp::~GameApp()
 
 /*! ************************************
 
+	\fn HMENU Burger::GameApp::GetMenu(void) const
+	\brief Get the HMENU of the running application
+
+	Return the HMENU that's attached to the window
+
+	\windowsonly
+
+	\return The application's HMENU
+	\sa Display or SetMenu(HMENU__ *)
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::GameApp::SetMenu(HMENU__ *hMenu)
+	\brief Set the HMENU of the running application
+
+	\windowsonly
+
+	\param hMenu The application's new HMENU
+	\sa Display or GetMenu(void) const
+
+***************************************/
+
+
+
+/*! ************************************
+
 	\fn Burger::GameApp::MainWindowProc Burger::GameApp::GetCallBack(void) const
 	\brief Get the pointer to the window callback
 
@@ -381,6 +422,28 @@ Burger::GameApp::~GameApp()
 
 	\windowsonly
 	\return The user supplied callback function pointer
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::GameApp::GetInSizeMove(void) const
+	\brief Return \ref TRUE if the window is resizing
+
+	\windowsonly
+	\return \ref TRUE if in resizing, \ref FALSE if not.
+	\sa SetInSizeMove(Word)
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::GameApp::SetInSizeMove(Word bInSizeMode)
+	\brief Set or clear the resizing window flag
+
+	\windowsonly
+	\param bInSizeMode \ref TRUE if in resizing, \ref FALSE if not.
+	\sa GetInSizeMove(void) const
 
 ***************************************/
 
@@ -419,17 +482,23 @@ int BURGER_API Burger::GameApp::InitWindow(const char *pGameName,MainWindowProc 
 		// Convert the game name to unicode
 		String16 TitleUnicode(pGameName);
 
-		ResetWindowLocation();
+		// Put the window in the center of the screen
+		RECT TheRect;
+		int x = GetSystemMetrics(SM_CXSCREEN)/2;
+		int y = GetSystemMetrics(SM_CYSCREEN)/2;
+		SetRect(&TheRect,x-320,y-240,x+320,y+240);
+		AdjustWindowRect(&TheRect,WS_OVERLAPPEDWINDOW,FALSE);
+
 		// Create the window and pass it the "this" pointer
 		HWND pWindow = CreateWindowExW(
-			WS_EX_APPWINDOW,					// Force top level to the task bar when minimized
+			WS_EX_OVERLAPPEDWINDOW,				// Force top level to the task bar when minimized
 			MAKEINTRESOURCEW(MyAtom),			// Pointer to registered class name
 			reinterpret_cast<LPCWSTR>(TitleUnicode.c_str()),	// Window title string
-			WS_MINIMIZE,	// Make it an INVISIBLE window
-			m_iWindowCenterX-(320/2),	// X coord
-			m_iWindowCenterY-(200/2),	// Y coord
-			320,						// Width
-			200,						// Height
+			WS_OVERLAPPEDWINDOW,	// Make an overlapped window
+			TheRect.left,			// X coordinate
+			TheRect.top,			// Y coordinate
+			(TheRect.right-TheRect.left),	// Width
+			(TheRect.bottom-TheRect.top),	// Height
 			NULL,			// Window parent
 			NULL,			// Window menu
 			m_hInstance,	// Task number
@@ -440,13 +509,13 @@ int BURGER_API Burger::GameApp::InitWindow(const char *pGameName,MainWindowProc 
 			m_hWindow = pWindow;
 			// Set the system global, obsolete
 			Globals::SetWindow(pWindow);
+			// Copy the bounds rect
+			RecordWindowLocation();
 
 			// Set the pointer to the "this" pointer so the window
 			// function will activate
-			SetWindowLongPtrW(pWindow,GWLP_USERDATA,PtrToLong(this));
+			SetWindowLongPtrW(pWindow,GWLP_USERDATA,reinterpret_cast<LONG_PTR>(this));
 
-			UpdateWindow(pWindow);		// Blank out the window to black
-			SetFocus(pWindow);			// All input is directed to me
 			iResult = 0;				// I'm OK!
 		} else {
 			iResult = static_cast<int>(GetLastError());
@@ -501,7 +570,7 @@ int BURGER_API Burger::GameApp::SetWindowSize(Word uWidth,Word uHeight)
 
 	// Calculate the rect of the window after the borders are added...
 
-	AdjustWindowRectEx(&NewWindowRect,static_cast<DWORD>(dwStyle),static_cast<BOOL>(GetMenu(pWindow)!= 0),static_cast<DWORD>(GetWindowLongPtrW(pWindow,GWL_EXSTYLE)));
+	AdjustWindowRectEx(&NewWindowRect,static_cast<DWORD>(dwStyle),m_hMenu!= 0,static_cast<DWORD>(GetWindowLongPtrW(pWindow,GWL_EXSTYLE)));
 
 	// Get the rect of the main screen (Note, removes the
 	// windows task bar if one is present)
@@ -515,13 +584,13 @@ int BURGER_API Burger::GameApp::SetWindowSize(Word uWidth,Word uHeight)
 
 	// Get the center x,y position of the window
 
-	if (!m_iWindowCenterX) {
-		ResetWindowLocation();		// Find the center of the main monitor
+	if (!m_WindowRect.GetLeft()) {
+//		ResetWindowLocation();		// Find the center of the main monitor
 	}
 
 	// Get the screen size and center it there
-	NewWindowRect.left = static_cast<LONG>(m_iWindowCenterX-(uAdjustedWidth/2));
-	NewWindowRect.top = static_cast<LONG>(m_iWindowCenterY-(uAdjustedHeight/2));
+	NewWindowRect.left = static_cast<LONG>(m_WindowRect.GetLeft()-(uAdjustedWidth/2));
+	NewWindowRect.top = static_cast<LONG>(m_WindowRect.GetTop()-(uAdjustedHeight/2));
 
 	// Make sure the window is on screen
 
@@ -595,8 +664,8 @@ int BURGER_API Burger::GameApp::SetWindowFullScreen(Word uWidth,Word uHeight)
 void BURGER_API Burger::GameApp::ResetWindowLocation(void)
 {
 	// Record the center of the main monitor as the center point of the window
-	m_iWindowCenterX = GetSystemMetrics(SM_CXSCREEN)/2;
-	m_iWindowCenterY = GetSystemMetrics(SM_CYSCREEN)/2;
+	m_WindowRect.SetLeft(GetSystemMetrics(SM_CXSCREEN)/2);
+	m_WindowRect.SetTop(GetSystemMetrics(SM_CYSCREEN)/2);
 }
 
 /*! ************************************
@@ -615,22 +684,10 @@ void BURGER_API Burger::GameApp::ResetWindowLocation(void)
 void BURGER_API Burger::GameApp::RecordWindowLocation(void)
 {
 	RECT TempRect;
-
 	// Get the current size of the window
 	HWND pWindow = m_hWindow;
-	GetClientRect(pWindow,&TempRect);
-
-	// Calculate the center point
-	POINT TempCenter;
-	TempCenter.x = (TempRect.right-TempRect.left)/2;
-	TempCenter.y = (TempRect.bottom-TempRect.top)/2;
-
-	// Remap the point to the desktop
-	MapWindowPoints(pWindow,HWND_DESKTOP,&TempCenter,1);
-
-	// Store the global center point of the window
-	m_iWindowCenterX = TempCenter.x;
-	m_iWindowCenterY = TempCenter.y;
+	GetWindowRect(pWindow,&TempRect);
+	m_WindowRect.Set(&TempRect);
 }
 
 /*! ************************************

@@ -4,7 +4,7 @@
 
 	Windows version
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -27,13 +27,14 @@
 #endif
 
 #if !defined(WAVE_FORMAT_IEEE_FLOAT)
-#define WAVE_FORMAT_IEEE_FLOAT  0x0003
+#define WAVE_FORMAT_IEEE_FLOAT 0x0003
 #endif
 #endif
 
 #include <Windows.h>
 #include <MMReg.h>
 #include <dsound.h>
+#include <xaudio2.h>
 
 /*! ************************************
 
@@ -497,6 +498,8 @@ void BURGER_API Burger::SoundManager::Voice::ReachedEnd(void)
 
 Burger::SoundManager::SoundManager(GameApp *pGameApp) :
 	m_pGameApp(pGameApp),
+	m_pIXAudio2(NULL),
+	m_pIXAudio2MasteringVoice(NULL),
 	m_pDirectSound8Device(NULL),
 	m_pDirectSound3DListener(NULL),
 	m_pDirectSoundBuffer(NULL),
@@ -510,7 +513,6 @@ Burger::SoundManager::SoundManager(GameApp *pGameApp) :
 	m_uBufferDepth(16),
 	m_uOutputSamplesPerSecond(22050)
 {
-	pGameApp->SetSoundManager(this);
 	MemoryClear(m_hEvents,sizeof(m_hEvents));
 }
 
@@ -679,7 +681,17 @@ Word BURGER_API Burger::SoundManager::Init(void)
 									// Commit the changes to Rolloff Factor and orientation
 									m_pDirectSound3DListener->CommitDeferredSettings();
 
-									return 0;
+
+									// Start up XAudio2
+									uResult = XAudio2Create(&m_pIXAudio2,0,XAUDIO2_DEFAULT_PROCESSOR);
+									if (uResult == S_OK) {
+										uResult = m_pIXAudio2->CreateMasteringVoice(&m_pIXAudio2MasteringVoice);
+										if (uResult == S_OK) {
+											return 0;
+										}
+										m_pIXAudio2->Release();
+										m_pIXAudio2 = NULL;
+									}
 								}
 							}
 							pDirectSoundBuffer->Release();
@@ -715,6 +727,18 @@ void BURGER_API Burger::SoundManager::Shutdown(void)
 		pVoice->Shutdown();
 		++pVoice;
 	} while (--i);
+
+	// Stop XAudio2
+	if (m_pIXAudio2MasteringVoice) {
+		m_pIXAudio2MasteringVoice->DestroyVoice();
+		m_pIXAudio2MasteringVoice = NULL;
+	}
+
+	if (m_pIXAudio2) {
+		m_pIXAudio2->Release();
+		m_pIXAudio2 = NULL;
+	}
+
 
 	// Shut down the worker thread
 	if (m_hCallback) {

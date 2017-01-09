@@ -304,7 +304,7 @@ public:
 	BURGER_INLINE SafePrintArgument(const __m64 *arg) : m_eType(ARG_PSIMD64) { m_Data.m_pSIMD = arg; };
 #endif
 
-#if (defined(BURGER_INTELARCHITECTURE) && !defined(BURGER_WATCOM))  || defined(DOXYGEN)
+#if (defined(BURGER_INTELARCHITECTURE) && !defined(BURGER_WATCOM)) || defined(DOXYGEN)
 	BURGER_INLINE SafePrintArgument(const __m128 arg) : m_eType(ARG_SIMD128) { m_Data.m_pSIMD = &arg; };
 	BURGER_INLINE SafePrintArgument(const __m128 *arg) : m_eType(ARG_PSIMD128) { m_Data.m_pSIMD = arg; };
 	BURGER_INLINE SafePrintArgument(const __m128d arg) : m_eType(ARG_SIMD128D) { m_Data.m_pSIMD = &arg; };
@@ -313,7 +313,7 @@ public:
 	BURGER_INLINE SafePrintArgument(const __m128i *arg) : m_eType(ARG_PSIMD128I) { m_Data.m_pSIMD = arg; };
 #endif
 
-    // void* has to last because the above list of pointers will be checked first, and void* will catch implicit conversion
+	// void* has to last because the above list of pointers will be checked first, and void* will catch implicit conversion
 	BURGER_INLINE SafePrintArgument(const void* arg) : m_eType(ARG_PVOID) { m_Data.m_pVoid = arg; };
 	BURGER_INLINE SafePrintArgument(const SafePrintArgument &rArg) : m_Data(rArg.m_Data),m_eType(rArg.m_eType) { };
 

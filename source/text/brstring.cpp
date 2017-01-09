@@ -6,7 +6,7 @@
 	care in making sure that the class
 	structure is in a valid state at all times
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -1448,7 +1448,7 @@ WordPtr BURGER_API Burger::String::Insert(WordPtr uStart,const char *pInput,Word
 	Increase the buffer if needed and append the input string to the existing string.
 	If the input string is empty, no operation is performed.
 
-	\param pInput Pointer to a UTF8  string to append. \ref NULL performs no operation
+	\param pInput Pointer to a UTF8 string to append. \ref NULL performs no operation
 	\param uInputSize Number of bytes to append
 	\return Number of bytes of the resulting string but not including the terminating zero
 
@@ -2145,10 +2145,10 @@ void BURGER_API Burger::String::InitFormattedString(const char* pFormat,WordPtr 
 {
 	// Remove any previously allocated buffer
 	Clear();
-	if  ((pFormat == NULL) || (*pFormat == 0x00)) {
+	if ((pFormat == NULL) || (*pFormat == 0x00)) {
 		return;
 	}
-     
+
 	if (uArgCount && ppArgs) {
 		if (!SprintfUserAlloc(FormattedAllocCallback,this,TRUE,pFormat,uArgCount,ppArgs)) {
 			Clear();

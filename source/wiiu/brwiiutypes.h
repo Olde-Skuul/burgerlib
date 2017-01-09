@@ -1,6 +1,6 @@
 /***************************************
 
-	Create and work with Windows style GUID structures
+	Typedefs specific to the Nintendo WiiU
 
 	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
@@ -11,20 +11,21 @@
 
 ***************************************/
 
-#include "brguid.h"
+#ifndef __BRWIIUTYPES_H__
+#define __BRWIIUTYPES_H__
 
-#if defined(BURGER_WINDOWS)
-#include "brglobals.h"
+#ifndef __BRTYPES_H__
+#include "brtypes.h"
+#endif
 
-/***************************************
+/* BEGIN */
+#if defined(BURGER_WIIU) && !defined(DOXYGEN)
 
-	Create a unique UUID
+#define __fsel __FSEL
+#define __lwarx __LWARX
+#define __stwcx __STWCX
 
-***************************************/
-
-void BURGER_API Burger::GUIDInit(GUID *pOutput)
-{
-	Globals::UuidCreateSequential(pOutput);
-}
+#endif
+/* END */
 
 #endif

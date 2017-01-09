@@ -2,7 +2,7 @@
 
 	Texture for rendering class, DirectX9 version
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -45,7 +45,7 @@ public:
 	TextureDirectX9();
 	TextureDirectX9(eWrapping uWrapping,eFilter uFilter);
 	virtual ~TextureDirectX9();
-	virtual Word Bind(Display *pDisplay);
+	virtual Word CheckLoad(Display *pDisplay);
 	virtual void Release(Display *pDisplay);
 	Word BURGER_API GetD3DFormat(void) const;
 	BURGER_INLINE IDirect3DTexture9 * GetTexture(void) const { return m_pD3DTexture; }

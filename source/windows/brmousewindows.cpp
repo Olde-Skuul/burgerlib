@@ -2,7 +2,7 @@
 
 	Mouse Manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -24,6 +24,7 @@
 #include "brglobals.h"
 #include "brcriticalsection.h"
 #include "bratomic.h"
+#include "brtick.h"
 #include <dinput.h>
 #include <stdio.h>
 #include <winreg.h>
@@ -103,18 +104,19 @@ WordPtr BURGER_API Burger::Mouse::WindowsMouseThread(void *pData)
 						DWORD uDataOffset = pObject->dwOfs;
 						// Data read in
 						DWORD uData = pObject->dwData;
+						Word32 uTimeStamp = Tick::ReadMilliseconds();
 
 						// Mouse X motion event
 						if (uDataOffset==DIMOFS_X) {
 							// Update the mouse delta
-							pThis->PostMouseMotion(static_cast<Int32>(uData),0,pObject->dwTimeStamp);
+							pThis->PostMouseMotion(static_cast<Int32>(uData),0,uTimeStamp);
 						// Mouse Y motion event
 						} else if (uDataOffset==DIMOFS_Y) {
 							// Update the mouse delta
-							pThis->PostMouseMotion(0,static_cast<Int32>(uData),pObject->dwTimeStamp);
+							pThis->PostMouseMotion(0,static_cast<Int32>(uData),uTimeStamp);
 						// Handle the mouse Z
 						} else if (uDataOffset==DIMOFS_Z) {
-							pThis->PostMouseWheel(0,static_cast<Int32>(uData)/WHEEL_DELTA,pObject->dwTimeStamp);
+							pThis->PostMouseWheel(0,static_cast<Int32>(uData)/WHEEL_DELTA,uTimeStamp);
 
 						// Handle the button downs
 						} else if ((uDataOffset>=DIMOFS_BUTTON0) && (uDataOffset<=DIMOFS_BUTTON7)) {
@@ -133,10 +135,10 @@ WordPtr BURGER_API Burger::Mouse::WindowsMouseThread(void *pData)
 							// Mouse down?
 							if (uData&0x80) {
 								// Press the button
-								pThis->PostMouseDown(uMask,pObject->dwTimeStamp);
+								pThis->PostMouseDown(uMask,uTimeStamp);
 							} else {
 								// Clear the button
-								pThis->PostMouseUp(uMask,pObject->dwTimeStamp);
+								pThis->PostMouseUp(uMask,uTimeStamp);
 							}
 						}
 						++pObject;
@@ -156,8 +158,8 @@ WordPtr BURGER_API Burger::Mouse::WindowsMouseThread(void *pData)
 
 ***************************************/
 
-Burger::Mouse::Mouse(GameApp *pAppInstance) :
-	m_pAppInstance(pAppInstance),
+Burger::Mouse::Mouse(GameApp *pGameApp) :
+	m_pGameApp(pGameApp),
 	m_MouseLock(),
 	m_pMouseDevice(NULL),
 	m_pMouseEvent(NULL),
@@ -178,10 +180,6 @@ Burger::Mouse::Mouse(GameApp *pAppInstance) :
 	m_uArrayStart(0),
 	m_uArrayEnd(0)
 {
-	// Back link to the game app
-
-	pAppInstance->SetMouse(this);
-
 	// Read the left/right state from windows
 	ReadSystemMouseValues();
 
@@ -205,7 +203,7 @@ Burger::Mouse::Mouse(GameApp *pAppInstance) :
 				// Play nice with the system and let others use the keyboard
 				// Disable the windows key if the application is running in the foreground
 
-				hResult = pMouseDevice->SetCooperativeLevel(pAppInstance->GetWindow(),DISCL_FOREGROUND | DISCL_EXCLUSIVE);
+				hResult = pMouseDevice->SetCooperativeLevel(pGameApp->GetWindow(),DISCL_FOREGROUND | DISCL_EXCLUSIVE);
 				if (hResult>=0) {
 					DIPROPDWORD MouseProperties;
 					
@@ -220,10 +218,10 @@ Burger::Mouse::Mouse(GameApp *pAppInstance) :
 						m_pMouseEvent = CreateEventW(NULL,FALSE,FALSE,NULL);
 						hResult = pMouseDevice->SetEventNotification(m_pMouseEvent);
 						m_MouseThread.Start(WindowsMouseThread,this);
-
 						// Acquire Direct Input only if the application is full screen
-						if (pAppInstance->IsAppFullScreen()) {
+						if (pGameApp->IsAppFullScreen()) {
 							AcquireDirectInput();
+							pGameApp->SetMouseOnScreen(TRUE);
 						}
 					}
 				}
@@ -236,9 +234,11 @@ Burger::Mouse::Mouse(GameApp *pAppInstance) :
 				m_bAcquired = FALSE;
 				pMouseDevice->SetEventNotification(NULL);
 				if (m_pMouseEvent) {
+
 					// Send the quit event
 					m_bQuit = TRUE;
 					SetEvent(m_pMouseEvent);
+					
 					// Wait for the thread to shut down
 					m_MouseThread.Wait();
 					CloseHandle(m_pMouseEvent);
@@ -260,23 +260,27 @@ Burger::Mouse::Mouse(GameApp *pAppInstance) :
 
 Burger::Mouse::~Mouse()
 {
-	m_pAppInstance->SetMouse(NULL);
 	// Was a device allocated?
 	IDirectInputDevice8W *pMouseDevice = m_pMouseDevice;
 	if (pMouseDevice) {
 		// Release it!
 		pMouseDevice->Unacquire();
 		m_bAcquired = FALSE;
+		
 		// Turn off asynchronous events
 		pMouseDevice->SetEventNotification(NULL);
 		m_bQuit = TRUE;
+
 		// Send the quit event
 		SetEvent(m_pMouseEvent);
+		
 		// Wait for the thread to shut down
 		m_MouseThread.Wait();
+		
 		// Release the events
 		CloseHandle(m_pMouseEvent);
 		m_pMouseEvent = NULL;
+		
 		// Release Direct Input
 		pMouseDevice->Release();
 		m_pMouseDevice = NULL;
@@ -348,6 +352,7 @@ void Burger::Mouse::AcquireDirectInput(void)
 		HRESULT hResult = pMouseDevice->Acquire();
 		if (hResult>=0) {
 			m_bAcquired = TRUE;
+			m_pGameApp->SetMouseOnScreen(TRUE);
 		}
 	}
 }

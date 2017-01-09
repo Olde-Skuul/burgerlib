@@ -2,7 +2,7 @@
 
 	Texture for rendering class, DirectX9 version
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -19,7 +19,9 @@
 #include "brdisplaydirectx9.h"
 #include <d3d9.h>
 
+#if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::TextureDirectX9,Burger::Texture);
+#endif
 
 /*! ************************************
 
@@ -74,7 +76,7 @@ Burger::TextureDirectX9::~TextureDirectX9()
 	}
 }
 
-Word Burger::TextureDirectX9::Bind(Display *pDisplay)
+Word Burger::TextureDirectX9::CheckLoad(Display *pDisplay)
 {
 	Word bLoaded = FALSE;
 	IDirect3DTexture9 *pTexture = m_pD3DTexture;

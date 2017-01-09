@@ -2,7 +2,7 @@
 
 	Vertex buffer class for DirectX9
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -34,21 +34,13 @@
 namespace Burger {
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 class VertexBufferDirectX9 : public VertexBuffer {
+	BURGER_DISABLECOPYCONSTRUCTORS(VertexBufferDirectX9);
 	BURGER_RTTI_IN_CLASS();
-protected:
-	IDirect3DVertexBuffer9 * m_pVertexBuffer;		///< DirectX vertex buffer
-	IDirect3DVertexDeclaration9 *m_pDescription;	///< DirectX vertex array description
-	Word m_uStride;									///< Size in bytes of each entry in the array
-	Word m_uArrayEntryCount;						///< Number of entries in the array
 public:
 	VertexBufferDirectX9();
 	virtual ~VertexBufferDirectX9();
-	virtual Word LoadData(Display *pDisplay,const VertexAoS_t *pDescription);
-	virtual void ReleaseData(void);
-	BURGER_INLINE IDirect3DVertexBuffer9 *GetDX9VertexBuffer(void) const { return m_pVertexBuffer; }
-	BURGER_INLINE IDirect3DVertexDeclaration9 *GetDX9VertexDescription(void) const { return m_pDescription; }
-	BURGER_INLINE Word GetStride(void) const { return m_uStride; }
-	BURGER_INLINE Word GetArrayEntryCount(void) const { return m_uArrayEntryCount; }
+	virtual Word CheckLoad(Display *pDisplay);
+	virtual void Release(Display *pDisplay);
 };
 #endif
 }

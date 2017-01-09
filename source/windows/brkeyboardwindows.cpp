@@ -4,7 +4,7 @@
 
 	Windows version
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -18,20 +18,31 @@
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 
 #if !defined(DOXYGEN)
+
 #if !defined(DIRECTINPUT_VERSION)
 #define DIRECTINPUT_VERSION 0x0800
 #endif
+
 #if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x0501		// Windows XP
 #endif
+
 #if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
+
 #include "brgameapp.h"
 #include "brglobals.h"
 #include "brassert.h"
 #include "brstringfunctions.h"
+#include "brtick.h"
 #include <dinput.h>
+
+//
+// Windows 10 broke DirectInput. Turning it off
+//
+
+//#define ENABLE_DIRECTINPUT
 
 // Number of keyboard events to cache
 
@@ -329,10 +340,10 @@ static LRESULT CALLBACK DisableWindowsKeysCallback(int iCode,WPARAM wParam,LPARA
 	// Only interested in HC_ACTION events
 
 	if (iCode == HC_ACTION) {
-		KBDLLHOOKSTRUCT *pHookStruct = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
+		const KBDLLHOOKSTRUCT *pHookStruct = reinterpret_cast<const KBDLLHOOKSTRUCT*>(lParam);
 		
 		switch (wParam) {
-		case WM_KEYDOWN:  
+		case WM_KEYDOWN:
 		case WM_KEYUP:
 			// Only devour if the game app is in the foreground. (Be nice to the system)
 			// and allow these keys if the app doesn't have focus
@@ -373,6 +384,7 @@ static LRESULT CALLBACK DisableWindowsKeysCallback(int iCode,WPARAM wParam,LPARA
 
 ***************************************/
 
+#if defined(ENABLE_DIRECTINPUT) || defined(DOXYGEN)
 WordPtr BURGER_API Burger::Keyboard::WindowsKeyboardThread(void *pData)
 {
 	// Get the pointer to the class instance
@@ -403,10 +415,10 @@ WordPtr BURGER_API Burger::Keyboard::WindowsKeyboardThread(void *pData)
 						uCount = DIRECTINPUT_KEYBOARDBUFFERSIZE;
 						hResult = pKeyboardDevice->GetDeviceData(sizeof(DIDEVICEOBJECTDATA),KeyboardData,&uCount,0);
 					} else {
-						pThis->m_bAcquired = FALSE;
+						pThis->m_bDirectInput8Acquired = FALSE;
 					}
 				} else {
-					pThis->m_bAcquired = FALSE;
+					pThis->m_bDirectInput8Acquired = FALSE;
 				}
 			}
 
@@ -424,11 +436,14 @@ WordPtr BURGER_API Burger::Keyboard::WindowsKeyboardThread(void *pData)
 					do {
 						if (!pThis->EncodeWindowsScanCode(&NewEvent,pObject->dwOfs)) {
 							// Overwrite the time stamp
-							NewEvent.m_uMSTimeStamp = pObject->dwTimeStamp;
+							NewEvent.m_uMSTimeStamp = Tick::ReadMilliseconds();
 							bEnableTimer = (pObject->dwData&0x80)>>7;
 							if (bEnableTimer) {
-								NewEvent.m_uFlags |= FLAG_KEYDOWN;
+								NewEvent.m_uEvent = EVENT_KEYDOWN;
+							} else {
+								NewEvent.m_uEvent = EVENT_KEYUP;
 							}
+							NewEvent.m_uWhich = 0;
 							pThis->PostKeyEvent(&NewEvent);
 						}
 						++pObject;
@@ -448,10 +463,12 @@ WordPtr BURGER_API Burger::Keyboard::WindowsKeyboardThread(void *pData)
 		} else if (uEventCode == (WAIT_OBJECT_0+1)) {
 			// Lock the data and update it
 			KeyEvent_t NewEvent;
+			NewEvent.m_uEvent = EVENT_KEYAUTO;
+			NewEvent.m_uWhich = pThis->m_RepeatEvent.m_uWhich;
 			NewEvent.m_uAscii = pThis->m_RepeatEvent.m_uAscii;
-			NewEvent.m_uFlags = static_cast<Word16>(pThis->m_RepeatEvent.m_uFlags|FLAG_REPEAT);
+			NewEvent.m_uFlags = pThis->m_RepeatEvent.m_uFlags;
 			NewEvent.m_uScanCode = pThis->m_RepeatEvent.m_uScanCode;
-			NewEvent.m_uMSTimeStamp = 0;
+			NewEvent.m_uMSTimeStamp = Tick::ReadMilliseconds();
 			pThis->PostKeyEvent(&NewEvent);
 
 			// Set the delay to the next key press
@@ -464,7 +481,7 @@ WordPtr BURGER_API Burger::Keyboard::WindowsKeyboardThread(void *pData)
 	// Exit normally
 	return 0;
 }
-
+#endif
 
 /***************************************
 
@@ -480,7 +497,7 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 	m_pPreviousKeyboardHook(NULL),
 	m_KeyboardThread(),
 	m_KeyboardLock(),
-	m_bAcquired(FALSE),
+	m_bDirectInput8Acquired(FALSE),
 	m_bRepeatActive(FALSE),
 	m_bQuit(FALSE),
 	m_uArrayStart(0),
@@ -488,11 +505,9 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 	m_uInitialDelay(250),
 	m_uRepeatDelay(33)
 {
-	// Connect to the parent application
-	pAppInstance->SetKeyboard(this);
-
 	// Clear my variables
-	MemoryClear(const_cast<Word8 *>(m_KeyArray),sizeof(m_KeyArray));
+	MemoryClear(m_KeyArray,sizeof(m_KeyArray));
+	MemoryClear(&m_RepeatEvent,sizeof(m_RepeatEvent));
 
 	// Safety switch to verify the declaration in brwindowstypes.h matches the real thing
 	BURGER_COMPILE_TIME_ASSERT(sizeof(::tagSTICKYKEYS)==sizeof(Burger::tagSTICKYKEYS));
@@ -507,7 +522,7 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 	SystemParametersInfoW(SPI_GETTOGGLEKEYS,sizeof(m_DefaultToggleKeys),&m_DefaultToggleKeys,0);
 	SystemParametersInfoW(SPI_GETFILTERKEYS,sizeof(m_DefaultFilterKeys),&m_DefaultFilterKeys,0);
 
-	// Read from windows the current keyboard delays
+	// Read from windows the current keyboard delays (And capture CapsLock and NumLock)
 	ReadSystemKeyboardDelays();
 
 	// Disable the windows key while the game is running
@@ -518,6 +533,7 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 
 	// Next step, obtain DirectInput
 
+#if defined(ENABLE_DIRECTINPUT)
 	IDirectInput8W* pDirectInput8W = Globals::GetDirectInput8Singleton();
 	if (pDirectInput8W) {
 
@@ -562,7 +578,7 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 			if (hResult<0) {
 				// Uh oh...
 				pKeyboardDevice->Unacquire();
-				m_bAcquired = FALSE;
+				m_bDirectInput8Acquired = FALSE;
 				pKeyboardDevice->SetEventNotification(NULL);
 				if (m_pKeyboardEvent) {
 					// Send the quit event
@@ -583,6 +599,8 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 			}
 		}
 	}
+#endif
+
 }
 
 /***************************************
@@ -593,13 +611,14 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 
 Burger::Keyboard::~Keyboard()
 {
-	m_pAppInstance->SetKeyboard(NULL);
+
+#if defined(ENABLE_DIRECTINPUT)
 	// Was a device allocated?
 	IDirectInputDevice8W *pKeyboardDevice = m_pKeyboardDevice;
 	if (pKeyboardDevice) {
 		// Release it!
 		pKeyboardDevice->Unacquire();
-		m_bAcquired = FALSE;
+		m_bDirectInput8Acquired = FALSE;
 		// Turn off asynchronous events
 		pKeyboardDevice->SetEventNotification(NULL);
 		m_bQuit = TRUE;
@@ -616,6 +635,7 @@ Burger::Keyboard::~Keyboard()
 		pKeyboardDevice->Release();
 		m_pKeyboardDevice = NULL;
 	}
+#endif
 
 	// Remove the keyboard intercept hook
 	EnableWindowsKey();
@@ -624,122 +644,6 @@ Burger::Keyboard::~Keyboard()
 	RestoreAccessibilityShortcutKeys();
 }
 
-/***************************************
-
-	\brief Peek at the next keyboard press event
-
-	See if a key is pending from the keyboard, if
-	so, return the event without removing it from
-	the queue.
-
-	\sa Keyboard::Get()
-
-***************************************/
-
-Word BURGER_API Burger::Keyboard::PeekKeyEvent(KeyEvent_t *pEvent)
-{
-	m_KeyboardLock.Lock();
-	Word uIndex = m_uArrayStart;		/* Get the starting index */
-	Word bResult = FALSE;
-	if (uIndex!=m_uArrayEnd) {	/* Anything in the buffer? */
-		pEvent[0] = m_KeyEvents[uIndex];
-		bResult = TRUE;
-	}
-	// No event pending
-	m_KeyboardLock.Unlock();
-	return bResult;
-}
-
-
-/***************************************
-
-	\brief Return key up and down events
-
-	Get a key from the keyboard buffer but include key up events
-
-***************************************/
-
-Word BURGER_API Burger::Keyboard::GetKeyEvent(KeyEvent_t *pEvent)
-{
-	m_pAppInstance->Poll();
-	m_KeyboardLock.Lock();
-	Word uIndex = m_uArrayStart;		/* Get the starting index */
-	Word bResult = FALSE;
-	if (uIndex!=m_uArrayEnd) {	/* Anything in the buffer? */
-		pEvent[0] = m_KeyEvents[uIndex];
-		m_uArrayStart = (uIndex+1)&(cBufferSize-1);	/* Next key */
-		bResult = TRUE;
-	}
-	m_KeyboardLock.Unlock();
-
-	if (bResult && m_pAppInstance->IsWindowSwitchingAllowed()) {
-		if ((pEvent->m_uAscii==ASCII_RETURN) &&
-			((pEvent->m_uFlags&(FLAG_ALT|FLAG_KEYDOWN))==(FLAG_ALT|FLAG_KEYDOWN))) {
-			m_pAppInstance->SetWindowSwitchRequested(TRUE);
-		}
-	}
-	// No event pending
-	return bResult;
-}
-
-/***************************************
-
-	Post the keyboard event
-
-***************************************/
-
-Word BURGER_API Burger::Keyboard::PostKeyEvent(const KeyEvent_t *pEvent)
-{
-	m_KeyboardLock.Lock();
-	Word uResult = 10;
-	Word uEnd = m_uArrayEnd;
-	// See if there's room in the buffer
-	Word uTemp = (uEnd+1)&(cBufferSize-1);
-	if (uTemp!=m_uArrayStart) {
-		// Didn't wrap, accept it!
-		m_uArrayEnd = uTemp;
-	
-		// Insert the new event
-		KeyEvent_t *pNewEvent = &m_KeyEvents[uEnd];
-		pNewEvent->m_uAscii = pEvent->m_uAscii;
-		eScanCode uScanCode = static_cast<eScanCode>(pEvent->m_uScanCode);
-		pNewEvent->m_uScanCode = static_cast<Word16>(uScanCode);
-		Word uFlags = pEvent->m_uFlags;
-		pNewEvent->m_uFlags = static_cast<Word16>(uFlags);
-
-		// Add the proper time stamp
-		Word32 uTime = pEvent->m_uMSTimeStamp;
-		if (!uTime) {
-			uTime = Globals::timeGetTime();
-		}
-		pNewEvent->m_uMSTimeStamp = uTime;
-
-		// Update the running state
-		if (uFlags&FLAG_KEYDOWN) {
-
-			Word8 uKey = m_KeyArray[uScanCode];
-			uKey = static_cast<Word8>((uKey|(KEYCAPDOWN|KEYCAPPRESSED))^KEYCAPTOGGLE);
-			m_KeyArray[uScanCode] = uKey;
-
-			if (!(pNewEvent->m_uFlags&FLAG_REPEAT)) {
-				m_RepeatEvent.m_uAscii = pNewEvent->m_uAscii;
-				m_RepeatEvent.m_uFlags = pNewEvent->m_uFlags;
-				m_RepeatEvent.m_uScanCode = pNewEvent->m_uScanCode;
-				m_RepeatEvent.m_uMSTimeStamp = 0;
-			}
-		} else {
-			// Mark as pressed
-			m_KeyArray[uScanCode] &= (~KEYCAPDOWN);
-			if (m_bRepeatActive) {
-				CancelWaitableTimer(m_pKeyboardTimerEvent);
-				m_bRepeatActive = FALSE;
-			}
-		}
-		uResult = 0;
-	}
-	m_KeyboardLock.Unlock();
-	return uResult;
-}
 
 /*! ************************************
 
@@ -772,6 +676,13 @@ Word BURGER_API Burger::Keyboard::DisableWindowsKey(void)
 			} else {
 				// Store the previous hook
 				m_pPreviousKeyboardHook = pResult;
+
+				// Set a global to the this pointer because
+				// there is no mechanism to pass a local pointer
+				// to the WindowsHook chain.
+
+				// Curse you, Microsoft.
+
 				g_pKeyboard = this;
 			}
 		}
@@ -816,49 +727,44 @@ void BURGER_API Burger::Keyboard::EnableWindowsKey(void)
 
 /*! ************************************
 
-	\brief Post a windows scan code key down
+	\fn Word Burger::Keyboard::IsDirectInputActive(void) const
+	\brief Is DirectInput active?
 
-	Given a Windows keyboard scan code, convert it to a
-	Burgerlib key press and post the event
+	Returns \ref TRUE is keyboard input is managed by DirectInput. This
+	mode is only active if the game has focus and is full screen.
 
 	\windowsonly
-	\param uScanCode Windows keyboard scan code
-	\return Zero if posted successfully, non-zero if not.
-	\sa PostWindowsKeyUp(Word32)
+	\return \ref TRUE if DirectInput is active, \ref FALSE if not
 
 ***************************************/
 
-Word BURGER_API Burger::Keyboard::PostWindowsKeyDown(Word32 uScanCode)
-{
-	KeyEvent_t NewEvent;
-	Word bResult = EncodeWindowsScanCode(&NewEvent,uScanCode);
-	if (!bResult) {
-		NewEvent.m_uFlags |= FLAG_KEYDOWN;
-		bResult = PostKeyEvent(&NewEvent);
-	}
-	return bResult;
-}
-
+ 
 /*! ************************************
 
-	\brief Post a windows scan code key up
+	\brief Post a windows scan code key event
 
 	Given a Windows keyboard scan code, convert it to a
 	Burgerlib key press and post the event
 
 	\windowsonly
+	\param uEvent Type of key event to post
 	\param uScanCode Windows keyboard scan code
 	\return Zero if posted successfully, non-zero if not.
-	\sa PostWindowsKeyDown(Word32)
+	\sa PostKeyEvent(const KeyEvent_t *)
 
 ***************************************/
 
-Word BURGER_API Burger::Keyboard::PostWindowsKeyUp(Word32 uScanCode)
+Word BURGER_API Burger::Keyboard::PostWindowsKeyEvent(eEvent uEvent,Word32 uScanCode)
 {
-	KeyEvent_t NewEvent;
-	Word bResult = EncodeWindowsScanCode(&NewEvent,uScanCode);
-	if (!bResult) {
-		bResult = PostKeyEvent(&NewEvent);
+	Word bResult = FALSE;
+	if (!m_bDirectInput8Acquired) {
+		KeyEvent_t NewEvent;
+		bResult = EncodeWindowsScanCode(&NewEvent,uScanCode);
+		if (!bResult) {
+			NewEvent.m_uEvent = uEvent;
+			NewEvent.m_uWhich = 0;
+			bResult = PostKeyEvent(&NewEvent);
+		}
 	}
 	return bResult;
 }
@@ -897,13 +803,15 @@ Word BURGER_API Burger::Keyboard::EncodeWindowsScanCode(KeyEvent_t *pEvent,Word 
 
 void BURGER_API Burger::Keyboard::AcquireDirectInput(void)
 {
+#if defined(ENABLE_DIRECTINPUT)
 	IDirectInputDevice8W *pKeyboardDevice = m_pKeyboardDevice;
 	if (pKeyboardDevice) {
 		HRESULT hResult = pKeyboardDevice->Acquire();
 		if (hResult>=0) {
-			m_bAcquired = TRUE;
+			m_bDirectInput8Acquired = TRUE;
 		}
 	}
+#endif
 }
 
 /*! ************************************
@@ -920,7 +828,7 @@ void BURGER_API Burger::Keyboard::AcquireDirectInput(void)
 void BURGER_API Burger::Keyboard::UnacquireDirectInput(void)
 {
 	// Release DirectInput
-
+#if defined(ENABLE_DIRECTINPUT)
 	IDirectInputDevice8W *pKeyboardDevice = m_pKeyboardDevice;
 	if (pKeyboardDevice) {
 
@@ -928,9 +836,10 @@ void BURGER_API Burger::Keyboard::UnacquireDirectInput(void)
 		CancelWaitableTimer(m_pKeyboardTimerEvent);
 		m_bRepeatActive = FALSE;
 
-		m_bAcquired = FALSE;
+		m_bDirectInput8Acquired = FALSE;
 		pKeyboardDevice->Unacquire();
 	}
+#endif
 }
 
 /*! ************************************
@@ -974,20 +883,23 @@ void BURGER_API Burger::Keyboard::ReadSystemKeyboardDelays(void)
 	//
 	// Get the state of the caps lock key
 	//
-	uValue = static_cast<DWORD>(m_KeyArray[SC_CAPSLOCK]&(~KEYCAPTOGGLE));
-	if (GetKeyState(VK_CAPITAL)&1) {
-		uValue |= KEYCAPTOGGLE;
+
+	// Mask with 0x01 for the toggle state
+	if (GetKeyState(VK_CAPITAL)&0x1) {
+		m_KeyArray[SC_CAPSLOCK] |= static_cast<Word8>(KEYCAPTOGGLE);
+	} else {
+		m_KeyArray[SC_CAPSLOCK] &= static_cast<Word8>(~KEYCAPTOGGLE);
 	}
-	m_KeyArray[SC_CAPSLOCK] = static_cast<Word8>(uValue);
 
 	//
 	// Get the state of the num lock key
 	//
-	uValue = static_cast<DWORD>(m_KeyArray[SC_NUMLOCK]&(~KEYCAPTOGGLE));
-	if (GetKeyState(VK_NUMLOCK)&1) {
-		uValue |= KEYCAPTOGGLE;
+
+	if (GetKeyState(VK_NUMLOCK)&0x1) {
+		m_KeyArray[SC_NUMLOCK] |= static_cast<Word8>(KEYCAPTOGGLE);
+	} else {
+		m_KeyArray[SC_NUMLOCK] &= static_cast<Word8>(~KEYCAPTOGGLE);
 	}
-	m_KeyArray[SC_NUMLOCK] = static_cast<Word8>(uValue);
 }
 
 /*! ************************************

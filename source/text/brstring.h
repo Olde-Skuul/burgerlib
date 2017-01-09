@@ -3,7 +3,7 @@
 	C++ ANSI "C" string class
 	This is optimized for performance
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -39,21 +39,21 @@ namespace Burger {
 String( const char* pFmt, BURGER_SP_ARG##N ) \
 { \
 	m_pData = m_Raw; m_uLength=0;m_Raw[0]=0; \
-	const Burger::SafePrintArgument*  args[ N ] = { BURGER_SP_INITARG##N }; \
+	const Burger::SafePrintArgument* args[ N ] = { BURGER_SP_INITARG##N }; \
 	InitFormattedString( pFmt, N, args ); \
 }
 
 #define MAKE_BURGER_STRING_PRINTF( N ) \
 void BURGER_INLINE Printf( const char* pFmt, BURGER_SP_ARG##N ) \
 { \
-	const Burger::SafePrintArgument*  args[ N ] = { BURGER_SP_INITARG##N }; \
+	const Burger::SafePrintArgument* args[ N ] = { BURGER_SP_INITARG##N }; \
 	InitFormattedString( pFmt, N, args ); \
 }
 
 #define MAKE_BURGER_STRING_PRINTF_STRREF( N ) \
 void BURGER_INLINE Printf( const String& sFmt, BURGER_SP_ARG##N ) \
 { \
-	const Burger::SafePrintArgument*  args[ N ] = { BURGER_SP_INITARG##N }; \
+	const Burger::SafePrintArgument* args[ N ] = { BURGER_SP_INITARG##N }; \
 	InitFormattedString( sFmt.GetPtr(), N, args ); \
 }
 
@@ -64,9 +64,9 @@ public:
 	static const Word BUFFERSIZE = 64-static_cast<int>(sizeof(char *)+sizeof(WordPtr));	///< Ensures the structure is 64 bytes in size on all platforms
 	
 private:
-	char*       m_pData;			///< Pointer to the string
-	WordPtr     m_uLength;		    ///< Length of the string
-	char        m_Raw[BUFFERSIZE];	///< Temp preallocated buffer for most strings
+	char *m_pData;			///< Pointer to the string
+	WordPtr m_uLength;		///< Length of the string
+	char m_Raw[BUFFERSIZE];	///< Temp preallocated buffer for most strings
 	
 public:
 	String(void) { m_pData = m_Raw;m_uLength=0;m_Raw[0]=0;}
@@ -85,10 +85,10 @@ public:
 	
 	BURGER_EXPAND_FORMATTING_FUNCTION( MAKE_BURGER_STRING_FORMATTED_CONSTRUCTOR );
 
-    BURGER_EXPAND_FORMATTING_FUNCTION( MAKE_BURGER_STRING_PRINTF );         ///< String.Printf( const char* pFmt, .... )
-    BURGER_EXPAND_FORMATTING_FUNCTION( MAKE_BURGER_STRING_PRINTF_STRREF );         ///< String.Printf( const String& pFmt, .... )
+	BURGER_EXPAND_FORMATTING_FUNCTION( MAKE_BURGER_STRING_PRINTF );				///< String.Printf( const char* pFmt, .... )
+	BURGER_EXPAND_FORMATTING_FUNCTION( MAKE_BURGER_STRING_PRINTF_STRREF );		///< String.Printf( const String& pFmt, .... )
 	
-    ~String(void) { if (m_pData != m_Raw) Burger::Free(m_pData); }
+	~String(void) { if (m_pData != m_Raw) Burger::Free(m_pData); }
 
 	BURGER_INLINE operator char *() { return m_pData; }
 	BURGER_INLINE operator const char *() const { return m_pData; }
@@ -187,8 +187,8 @@ public:
 	BURGER_INLINE friend Word operator >= (char cInput1,String const &rInput2) { return static_cast<Word>(rInput2.Compare(cInput1)<=0); }
 
 private:
-    void BURGER_API InitFormattedString(const char* pFormat,WordPtr uArgCount,const SafePrintArgument **ppArgs); 
-    static Word BURGER_API FormattedAllocCallback(Word bError,WordPtr uRequestedSize,void **ppOutputBuffer,void *pContext);
+	void BURGER_API InitFormattedString(const char* pFormat,WordPtr uArgCount,const SafePrintArgument **ppArgs); 
+	static Word BURGER_API FormattedAllocCallback(Word bError,WordPtr uRequestedSize,void **ppOutputBuffer,void *pContext);
 };
 }
 /* END */

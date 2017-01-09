@@ -2,7 +2,7 @@
 
 	Global variable manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -17,11 +17,11 @@
 #include "brstring.h"
 #include "brstringfunctions.h"
 #include "brfilemanager.h"
-
 #include "brgameapp.h"
 #include "brkeyboard.h"
 #include "brmouse.h"
 #include "brdisplay.h"
+#include "brwindowstypes.h"
 
 #if !defined(DOXYGEN)
 
@@ -50,10 +50,6 @@
 #define DIRECTDRAW_VERSION 0x700
 #endif
 
-#if defined(_DEBUG) && !defined(DOXYGEN)
-#define D3D_DEBUG_INFO
-#endif
-
 #if !defined(BUILD_WINDOWS)
 #define BUILD_WINDOWS
 #endif
@@ -70,6 +66,7 @@
 #include <SetupAPI.h>
 #include <d3dcommon.h>
 #include <Xinput.h>
+#include <xaudio2.h>
 #include <io.h>
 
 //
@@ -382,12 +379,29 @@ Word BURGER_API Burger::Globals::TestWindowsVersion(void)
 
 								// Microsoft. You suck.
 								
-								// This only returns 10 if the exe is manifested to
+								// uMinor only returns 10 if the exe is manifested to
 								// be compatible for Windows 10 or higher, otherwise
 								// it will return 8 (6.2) because they suck
 
-								if (uMajor>=10) {
-									uResult |= WINDOWSVERSION_10ORGREATER;
+								// Hack to bypass this feature, query the registry key
+								// that has the REAL version of the operating system
+
+								HKEY hKey = NULL;
+								// Open the pre-existing registry key
+								LONG lStatus = RegOpenKeyExA(HKEY_LOCAL_MACHINE,"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion",0,KEY_QUERY_VALUE,&hKey);
+
+								if (lStatus==ERROR_SUCCESS) {
+
+									DWORD uMajorEx = 0;
+									DWORD uLength = sizeof(DWORD);
+									lStatus = RegQueryValueExA(hKey,"CurrentMajorVersionNumber",NULL,NULL,static_cast<BYTE *>(static_cast<void *>(&uMajorEx)),&uLength);
+										
+									RegCloseKey(hKey);
+									
+									// Test for Windows 10 or higher
+									if (uMajorEx>=10) {
+										uResult |= WINDOWSVERSION_10ORGREATER;
+									}
 								}
 							}
 						}
@@ -530,8 +544,41 @@ Word BURGER_API Burger::Globals::IsWindows64Bit(void)
 
 #endif
 
+/*! ************************************
 
+	\brief Detect if XAudio2 2.7 or higher is installed
 
+	Test if XAudio2 2.7 or higher is installed and return TRUE if found.
+
+	\windowsonly
+	\return Returns \ref TRUE if the XAudio2 is available
+
+***************************************/
+
+Word BURGER_API Burger::Globals::IsXAudio2Present(void)
+{
+	// Start up CoInitialize() to allow creating instances
+	Word bCleanupCOM = (CoInitialize(NULL)>=0);
+
+	IXAudio2 *pXAudio2 = NULL;
+	HRESULT hr = CoCreateInstance(CLSID_XAudio2,NULL,CLSCTX_INPROC_SERVER,IID_IXAudio2,reinterpret_cast<void**>(&pXAudio2));
+	Word bResult = FALSE;
+
+	// Did the call succeed?
+	if (hr>=0) {
+		// Release the instance
+		pXAudio2->Release();
+		bResult = TRUE;
+	}
+
+	//
+	// If CoInitialize() was successful, release it
+	//
+	if (bCleanupCOM) {
+		CoUninitialize();
+	}
+	return bResult;
+}
 
 /*! ************************************
 
@@ -705,41 +752,54 @@ Word BURGER_API Burger::Globals::GetDirectXVersionViaFileVersions(void)
 		// Switch off the d3d9 version
 		StringCopy(pDest,uRemaining,reinterpret_cast<const Word16 *>(L"\\d3d9.dll"));
 		Word64 uVersionD3D9 = GetFileVersion64(szPath);
+
 		if (uVersionD3D9) {
-			// File exists, but be at least DX9
+			// File exists, so it must be at least DX9
 			uResult = 0x0900;		// 9.0
 		}
-		if (uVersionD3D9>=0x0004000900000385ULL) {
+		
+		if (uVersionD3D9>=0x0004000900000385ULL) {		// 4.09.00.0901
 			uResult = 0x0901;		// 9.0a
 		}
-		if (uVersionD3D9>=0x0004000900000386ULL) {
+		
+		if (uVersionD3D9>=0x0004000900000386ULL) {		// 4.09.00.0902
 			uResult = 0x0902;		// 9.0b
 		}
-		if (uVersionD3D9>=0x0004000900000387ULL) {
+		
+		if (uVersionD3D9>=0x0004000900000387ULL) {		// 4.09.00.0903
 			uResult = 0x0903;		// 9.0c
 		}
+
+		// DirectX 10
 		if (uVersionD3D9>=0x0006000017704002ULL) {		// 6.00.6000.16386
 			uResult = 0x0A00;		// 10.0
 		}
 		if (uVersionD3D9>=0x0006000017714650ULL) {		// 6.00.6001.18000
 			uResult = 0x0A10;		// 10.1
 		}
+
+		// DirectX 11
 		if (uVersionD3D9>=0x00060000177246BBULL) {		// 6.00.6002.18107
 			uResult = 0x0B00;		// 11.0
 		}
 		if (uVersionD3D9>=0x0006000223F04000ULL) {		// 6.02.9200.16384
 			uResult = 0x0B10;		// 11.1
 		}
+
 		if (uVersionD3D9>=0x0006000225804000ULL) {		// 6.02.9600.16384
 			uResult = 0x0B20;		// 11.2
 		}
+
+		if (uVersionD3D9>=0x00060002383901BFULL) {		// 6.02.14393.447
+			uResult = 0x0B30;		// 11.3
+		}
+ 
 //		if (uVersionD3D9>=0x000A000028004000ULL) {		// 10.00.10240.16384 (Not found yet)
 //			uResult = 0x0C00;		// 12.0
 //		}
 	}
 	return uResult;
 }
-
 
 /*! ************************************
 
@@ -766,6 +826,12 @@ Word BURGER_API Burger::Globals::GetDirectXVersionViaFileVersions(void)
 
 Word BURGER_API Burger::Globals::GetDirectXVersion(void)
 {
+	// There is a version number in the registry, however, it is only valid for
+	// DirectX versions 1 through 9.0c. The registry key is not valid for DirectX 10 and higher
+	
+	// The same issue exists for obtaining the version of DirectX using the "Dialog" string, it
+	// tops out at DirectX 9, and doesn't properly map to versions of DirectX later than 11
+
 	if (!g_bDirectXVersionValid) {
 		g_bDirectXVersionValid = TRUE;	// I got the version
 		Word uResult = GetDirectXVersionViaFileVersions();
@@ -1530,12 +1596,38 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 
 	case WM_GETMINMAXINFO:
 		{
+			// Ensure a MINIMUM size of 320x200
+			reinterpret_cast<MINMAXINFO*>(lParam)->ptMinTrackSize.x = 320;
+			reinterpret_cast<MINMAXINFO*>(lParam)->ptMinTrackSize.y = 200;
 			// Only if a video display is present
 			Burger::Display *pDisplay = pThis->GetDisplay();
 			if (pDisplay) {
 				if (pDisplay->HandleMinMax(pWindow,static_cast<WordPtr>(lParam))) {
 					return FALSE;
 				}
+			}
+		}
+		break;
+
+	case WM_ENTERSIZEMOVE:
+		{
+			Burger::Display *pDisplay = pThis->GetDisplay();
+			if (pDisplay) {
+				// Halt frame movement while the app is sizing or moving
+				pDisplay->Pause(TRUE);
+				pThis->SetInSizeMove(TRUE);
+			}
+		}
+		break;
+
+	case WM_EXITSIZEMOVE:
+		{
+			Burger::Display *pDisplay = pThis->GetDisplay();
+			if (pDisplay) {
+				pDisplay->Pause(FALSE);
+				pDisplay->CheckForWindowSizeChange();
+				pDisplay->CheckForWindowChangingMonitors();
+				pThis->SetInSizeMove(FALSE);
 			}
 		}
 		break;
@@ -1793,8 +1885,9 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 				Burger::Display *pDisplay = pThis->GetDisplay();
 				if (pDisplay) {
 					// Force a front screen update
-					if (pDisplay->GetRenderCallback()) {
-						(pDisplay->GetRenderCallback())(pDisplay->GetRenderCallbackData());
+					Burger::Display::RenderProc pCallback = pDisplay->GetRenderCallback();
+					if (pCallback) {
+						(pCallback)(pDisplay->GetRenderCallbackData());
 					}
 				}
 				EndPaint(pWindow,&ps);
@@ -1875,23 +1968,27 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
-		{
-			// If there's a mouse device, set the position
-			Burger::Keyboard *pKeyboard = pThis->GetKeyboard();
-			if (pKeyboard) {
-				pKeyboard->PostWindowsKeyDown(((static_cast<Word32>(lParam)>>16U)&0x7FU)|((static_cast<Word32>(lParam)>>17U)&0x80U));
-				return 0;
-			}
-		}
-		break;
-
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
 		{
-			// If there's a mouse device, set the position
+			// If there's a keyboard manager, pass the keys to it.
 			Burger::Keyboard *pKeyboard = pThis->GetKeyboard();
 			if (pKeyboard) {
-				pKeyboard->PostWindowsKeyUp(((static_cast<Word32>(lParam)>>16U)&0x7FU)|((static_cast<Word32>(lParam)>>17U)&0x80U));
+				Burger::eEvent uEvent;
+
+				// Key up event?
+				if (lParam&(KF_UP<<16)) {
+					uEvent = Burger::EVENT_KEYUP;
+				} else {
+					// Repeated key event?
+					if (lParam&(KF_REPEAT<<16)) {
+						uEvent = Burger::EVENT_KEYAUTO;
+					} else {
+						// Normal key down event
+						uEvent = Burger::EVENT_KEYDOWN;
+					}
+				}
+				pKeyboard->PostWindowsKeyEvent(uEvent,((static_cast<Word32>(lParam)>>16U)&0x7FU)|((static_cast<Word32>(lParam)>>17U)&0x80U));
 				return 0;
 			}
 		}
@@ -1961,21 +2058,34 @@ Word16 BURGER_API Burger::Globals::RegisterWindowClass(Word uIconResID)
 	ATOM uAtom = g_uAtom;
 	if (uAtom==INVALID_ATOM) {
 
+		// Is the an app instance?
+		if (!g_hInstance) {
+			// Obtain it
+			g_hInstance = GetModuleHandleW(NULL);
+		}
+
+		// Try to load the icon for the app
+		HICON hIcon = NULL;
+		if (uIconResID) {
+			hIcon = LoadIcon(g_hInstance,MAKEINTRESOURCE(uIconResID));
+		}
 		// No icon?
-		if (!uIconResID) {
-			// Set to default
-			uIconResID = 32512;		// Default Windows application ID IDI_APPLICATION
+		if (hIcon) {
+			// Try pulling the icon from the app itself by getting the first icon found
+			WCHAR TheExePath[1024];
+			GetModuleFileNameW(NULL,TheExePath,BURGER_ARRAYSIZE(TheExePath));
+			hIcon = ExtractIconW(g_hInstance,TheExePath,0);
 		}
 
 		WNDCLASSEXW WindowClass;
 		MemoryClear(&WindowClass,sizeof(WindowClass));
 		WindowClass.cbSize = sizeof(WindowClass);
-		WindowClass.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;		// Accept double clicks, redraw on resize
+		WindowClass.style = CS_DBLCLKS;			// Accept double clicks
 		WindowClass.lpfnWndProc = InternalCallBack;	// My window callback
 		//	WindowClass.cbClsExtra = 0;			// No extra class bytes
 		//	WindowClass.cbWndExtra = 0;			// No extra space was needed
 		WindowClass.hInstance = g_hInstance;
-		WindowClass.hIcon = LoadIcon(g_hInstance,MAKEINTRESOURCE(uIconResID));
+		WindowClass.hIcon = hIcon;
 		// Keep the cursor NULL to allow updating of the cursor by the app
 		//	WindowClass.hCursor = NULL;		//LoadCursorW(NULL,MAKEINTRESOURCEW(IDC_ARROW));
 		WindowClass.hbrBackground = reinterpret_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));

@@ -2,7 +2,7 @@
 
 	Incremental tick Manager Class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -149,7 +149,7 @@ Burger::FloatTimer::FloatTimer() :
 	// No need to test for error, since BurgerLib requires Windows XP or higher, this function
 	// is guaranteed to succeed
 
-    LARGE_INTEGER uFrequency;
+	LARGE_INTEGER uFrequency;
 	QueryPerformanceFrequency(&uFrequency);
 	m_dReciprocalFrequency = 1.0 / static_cast<double>(uFrequency.QuadPart);
 	

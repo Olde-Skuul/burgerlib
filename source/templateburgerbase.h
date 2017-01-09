@@ -20,6 +20,7 @@
 /* DIR: "math:" */
 /* DIR: "memory:" */
 /* DIR: "shield:" */
+/* DIR: "random:" */
 /* DIR: "text:" */
 /* DIR: "windows:" */
 /* DIR: "xbox360:" */
@@ -29,6 +30,7 @@
 /* DIR: "ps3:" */
 /* DIR: "ps4:" */
 /* DIR: "vita:" */
+/* DIR: "wiiu:" */
 /* OUTPUT: "..:bin:burger.h" */
 
 /* BEGIN */
@@ -36,7 +38,7 @@
 
 	Burgerlib base header
 	
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -51,6 +53,7 @@
 
 #ifndef __BURGER__
 #define __BURGER__
+
 #include "brtypes.h"
 
 #ifndef _INC_STDIO
@@ -87,10 +90,14 @@
 #include "brps4types.h"
 #include "brshieldtypes.h"
 #include "brvitatypes.h"
+#include "brwiiutypes.h"
 #include "brendian.h"
 #include "brfpinfo.h"
 #include "brstaticrtti.h"
 #include "brbase.h"
+#include "brrandombase.h"
+#include "brrandom.h"
+#include "brmersennetwist.h"
 #include "brstdouthelpers.h"
 #include "brguid.h"
 #include "brisolatin1.h"
@@ -122,6 +129,7 @@
 #include "brmd5.h"
 #include "brpackfloat.h"
 #include "brsha1.h"
+#include "brgost.h"
 #include "brunpackbytes.h"
 #include "brglobals.h"
 #include "brstring.h"
@@ -156,7 +164,6 @@
 #include "brdirectorysearch.h"
 #include "brdosextender.h"
 #include "brautorepeat.h"
-#include "brrandommanager.h"
 #include "brrunqueue.h"
 #include "brdetectmultilaunch.h"
 #include "broscursor.h"
@@ -179,10 +186,12 @@
 #include "brrenderersoftware8.h"
 #include "brrenderersoftware16.h"
 #include "brimage.h"
+#include "brdisplayobject.h"
 #include "brtexture.h"
 #include "brvertexbuffer.h"
 #include "brvertexbufferopengl.h"
 #include "brvertexbufferdirectx9.h"
+#include "breffect.h"
 #include "brdisplay.h"
 #include "brdisplayopengl.h"
 #include "brdisplayopenglsoftware8.h"
@@ -198,7 +207,6 @@
 #include "brtexturedirectx9.h"
 #include "brtextureopengl.h"
 #include "brshaders.h"
-#include "breffect.h"
 #include "breffectstaticpositiontexture.h"
 #include "breffect2d.h"
 #include "breffectpositiontexturecolor.h"
@@ -261,6 +269,43 @@
 #elif defined(BURGER_STRUCT_PACK)
 #pragma pack()
 #endif
+
+// Remap redirectable classes to the generic form
+// for platforms that have multiple graphic APIs
+
+namespace Burger {
+
+#if defined(BURGER_WINDOWS)
+
+#if defined(BURGER_USEOPENGL)
+typedef DisplayOpenGL DisplayDefault;
+typedef Effect2DOpenGL Effect2DDefault;
+typedef EffectPositionColorTextureOpenGL EffectPositionColorTextureDefault;
+typedef EffectPositionTextureOpenGL EffectPositionTextureDefault;
+typedef Shader2DCColorOpenGL Shader2DCColorDefault;
+typedef Shader2DColorVertexOpenGL Shader2DColorVertexDefault;
+typedef VertexBufferOpenGL VertexBufferDefault;
+#else
+typedef DisplayDirectX9 DisplayDefault;
+typedef Effect2DDX9 Effect2DDefault;
+typedef EffectPositionColorTextureDX9 EffectPositionColorTextureDefault;
+typedef EffectPositionTextureDX9 EffectPositionTextureDefault;
+typedef Shader2DCColorDX9 Shader2DCColorDefault;
+typedef Shader2DColorVertexDX9 Shader2DColorVertexDefault;
+typedef VertexBufferDirectX9 VertexBufferDefault;
+#endif
+
+#else
+typedef Display DisplayDefault;
+typedef Effect2D Effect2DDefault;
+typedef EffectPositionColorTexture EffectPositionColorTextureDefault;
+typedef EffectPositionTexture EffectPositionTextureDefault;
+typedef Shader2DCColor Shader2DCColorDefault;
+typedef Shader2DColorVertex Shader2DColorVertexDefault;
+typedef VertexBuffer VertexBufferDefault;
+#endif
+
+}
 
 #if !defined(BURGER_NO_USING_NAMESPACE)
 using namespace Burger;

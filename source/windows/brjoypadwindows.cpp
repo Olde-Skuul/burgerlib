@@ -4,7 +4,7 @@
 
 	Windows specific version
 	
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -223,15 +223,13 @@ static BOOL CALLBACK EnumObjectsCallback(const DIDEVICEOBJECTINSTANCEW *pObject,
 
 ***************************************/
 
-Burger::Joypad::Joypad(Burger::GameApp *pAppInstance) :
+Burger::Joypad::Joypad(GameApp *pAppInstance) :
 	m_pAppInstance(pAppInstance),
 	m_bDirectInputFound(FALSE),
 	m_bXInputFound(FALSE),
 	m_uDirectInputDevices(0),
 	m_uDeviceCount(0)
 {
-	pAppInstance->SetJoypad(this);
-
 	// Initialize everything
 	MemoryClear(m_Data,sizeof(m_Data));
 	MemoryClear(m_XInputGamepads,sizeof(m_XInputGamepads));
@@ -352,7 +350,7 @@ Burger::Joypad::Joypad(Burger::GameApp *pAppInstance) :
 	}
 
 	if (m_bXInputFound || m_bDirectInputFound) {
-		pAppInstance->AddRoutine(Poll,this,RunQueue::PRIORITY_JOYPAD);
+		pAppInstance->AddRoutine(Poll,NULL,this,RunQueue::PRIORITY_JOYPAD);
 	}
 }
 
@@ -364,8 +362,6 @@ Burger::Joypad::Joypad(Burger::GameApp *pAppInstance) :
 
 Burger::Joypad::~Joypad()
 {
-	// Disconnect from the parent
-	m_pAppInstance->SetJoypad(NULL);
 	m_pAppInstance->RemoveRoutine(Poll,this);
 
 	// Make sure the controllers are not rumbling
@@ -928,7 +924,7 @@ Word BURGER_API Burger::IsDeviceXInput(const GUID *pGuid)
 		IWbemLocator *pIWbemLocator = NULL;
 		if ((CoCreateInstance(CLSID_WbemLocator,NULL,CLSCTX_INPROC_SERVER,IID_IWbemLocator,(LPVOID*)&pIWbemLocator)>=0) && 
 			pIWbemLocator) {
-   
+
 			// Connect to WMI 
 			IWbemServices *pIWbemServices = NULL;
 			if ((pIWbemLocator->ConnectServer((const BSTR)(L"\\\\.\\root\\cimv2"),NULL,NULL,NULL,0,NULL,NULL,&pIWbemServices)>=0) &&
@@ -936,7 +932,7 @@ Word BURGER_API Burger::IsDeviceXInput(const GUID *pGuid)
 
 				// Switch security level to IMPERSONATE. 
 				CoSetProxyBlanket(pIWbemServices,RPC_C_AUTHN_WINNT,RPC_C_AUTHZ_NONE,NULL,
-					RPC_C_AUTHN_LEVEL_CALL,RPC_C_IMP_LEVEL_IMPERSONATE,NULL,EOAC_NONE);                    
+					RPC_C_AUTHN_LEVEL_CALL,RPC_C_IMP_LEVEL_IMPERSONATE,NULL,EOAC_NONE);
 
 				// Get the PNPEntity list
 				IEnumWbemClassObject *pEnumDevices = NULL;
@@ -968,7 +964,7 @@ Word BURGER_API Burger::IsDeviceXInput(const GUID *pGuid)
 
 								const Word16 *pVariantName = reinterpret_cast<const Word16 *>(MyVariant.bstrVal);
 								if (pVariantName) {
-									// Check if the device ID contains "IG_".  If it does, then it's an XInput device
+									// Check if the device ID contains "IG_". If it does, then it's an XInput device
 									// This information can not be found from DirectInput
 
 									if (StringString(pVariantName,(const Word16 *)L"IG_")) {
@@ -994,7 +990,7 @@ Word BURGER_API Burger::IsDeviceXInput(const GUID *pGuid)
 										}
 									}
 								}
-							}   
+							}
 							if (DevicePointers[uDevice]) {
 								DevicePointers[uDevice]->Release();
 								DevicePointers[uDevice] = NULL;

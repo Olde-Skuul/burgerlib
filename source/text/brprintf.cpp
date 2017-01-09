@@ -6,7 +6,7 @@
 
 	Copyright (c) 2012-2013 by Matt Pritchard <mattp_2006@yahoo.com>
 
-	Merged into Burgerlib 2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Merged into Burgerlib 2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a

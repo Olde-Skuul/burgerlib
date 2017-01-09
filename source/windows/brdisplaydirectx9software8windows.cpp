@@ -2,7 +2,7 @@
 
 	DirectX 9 manager class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -15,6 +15,7 @@
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 #include "brgameapp.h"
 #include "brglobals.h"
+#include "brwindowstypes.h"
 
 #if !defined(DIRECTDRAW_VERSION) && !defined(DOXYGEN)
 #define DIRECTDRAW_VERSION 0x700
@@ -26,10 +27,6 @@
 
 #if !defined(WIN32_LEAN_AND_MEAN) && !defined(DOXYGEN)
 #define WIN32_LEAN_AND_MEAN
-#endif
-
-#if defined(_DEBUG) && !defined(DOXYGEN)
-#define D3D_DEBUG_INFO
 #endif
 
 #include <Windows.h>
@@ -372,7 +369,7 @@ long Burger::DisplayDirectX9Software8::ResetLostDevice(void)
 {
 	ReleaseResources();
 	D3DPRESENT_PARAMETERS Parms;
-	CreatePresentParameters(&Parms);
+	m_D3D9Settings.GetPresentParameters(&Parms);
 	HRESULT hResult = m_pDirect3DDevice9->Reset(&Parms);
 	if (hResult<0) {
 		if (hResult!=D3DERR_DEVICELOST) {

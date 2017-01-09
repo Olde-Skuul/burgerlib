@@ -4,7 +4,7 @@
 
 	Windows version
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -60,7 +60,7 @@ Word BURGER_API Burger::Perforce::Init(void)
 	if (!m_bFilenameInitialized) {
 		// Let's find the perforce EXE
 		// Check for an environment variable with the directory
-		const char *pAppdirectory =  Globals::GetEnvironmentString("PERFORCE");
+		const char *pAppdirectory = Globals::GetEnvironmentString("PERFORCE");
 		Word bFilenameInitialized = FALSE;
 		if (pAppdirectory) {
 			m_PerforceFilename.SetFromNative(pAppdirectory);

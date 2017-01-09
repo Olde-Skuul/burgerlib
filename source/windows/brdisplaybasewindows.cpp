@@ -4,7 +4,7 @@
 
 	Windows version
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -258,6 +258,18 @@ void BURGER_API Burger::Display::InitGlobals(void)
 
 /*! ************************************
 
+	\fn WINDOWPLACEMENT *Burger::Display::GetWindowedPlacement(void)
+
+	\brief Return the pointer to a WINDOWPLACEMENT
+
+	\windowsonly
+
+	\return Pointer to a WINDOWPLACEMENT structure
+
+***************************************/
+
+/*! ************************************
+
 	\brief Handler for WM_GETMINMAXINFO events
 
 	To handle window resizing, this function is called
@@ -283,29 +295,53 @@ Word BURGER_API Burger::Display::HandleMinMax(HWND__ *pWindow,WordPtr lParam)
 		// This code will lock out all resizing events and force the window back to the size
 		// of the game screen
 
-		LONG lScreenHeight = static_cast<LONG>(m_uHeight);
 		LONG lScreenWidth = static_cast<LONG>(m_uWidth);
+		LONG lScreenHeight = static_cast<LONG>(m_uHeight);
+		if (lScreenWidth && lScreenHeight) {
+			// Adjust the window size to whatever the video manager says it should be
+			RECT WindowSizeRect;
+			WindowSizeRect.top = 0;
+			WindowSizeRect.left = 0;
+			WindowSizeRect.bottom = lScreenHeight;
+			WindowSizeRect.right = lScreenWidth;
+			AdjustWindowRectEx(&WindowSizeRect,static_cast<DWORD>(GetWindowLongPtrW(pWindow,GWL_STYLE)),GetMenu(pWindow) != 0,static_cast<DWORD>(GetWindowLongPtrW(pWindow,GWL_EXSTYLE)));
 
-		// Adjust the window size to whatever the video manager says it should be
-		RECT WindowSizeRect;
-		WindowSizeRect.top = 0;
-		WindowSizeRect.left = 0;
-		WindowSizeRect.bottom = lScreenHeight;
-		WindowSizeRect.right = lScreenWidth;
-		AdjustWindowRectEx(&WindowSizeRect,static_cast<DWORD>(GetWindowLongPtrW(pWindow,GWL_STYLE)),GetMenu(pWindow)!=0,static_cast<DWORD>(GetWindowLongPtrW(pWindow,GWL_EXSTYLE)));
-
-		// Set the minimum and maximum window sizes to the same value to perform the resize disabling
-		MINMAXINFO *pMinMaxInfo = reinterpret_cast<MINMAXINFO *>(lParam);
-		pMinMaxInfo->ptMaxSize.x = lScreenWidth;
-		pMinMaxInfo->ptMaxSize.y = lScreenHeight;
-		pMinMaxInfo->ptMaxTrackSize.x = WindowSizeRect.right-WindowSizeRect.left;
-		pMinMaxInfo->ptMaxTrackSize.y = WindowSizeRect.bottom-WindowSizeRect.top;
-		pMinMaxInfo->ptMinTrackSize.x = pMinMaxInfo->ptMaxTrackSize.x;
-		pMinMaxInfo->ptMinTrackSize.y = pMinMaxInfo->ptMaxTrackSize.y;
+			// Set the minimum and maximum window sizes to the same value to perform the resize disabling
+			MINMAXINFO *pMinMaxInfo = reinterpret_cast<MINMAXINFO *>(lParam);
+			pMinMaxInfo->ptMaxSize.x = lScreenWidth;
+			pMinMaxInfo->ptMaxSize.y = lScreenHeight;
+			pMinMaxInfo->ptMaxTrackSize.x = WindowSizeRect.right - WindowSizeRect.left;
+			pMinMaxInfo->ptMaxTrackSize.y = WindowSizeRect.bottom - WindowSizeRect.top;
+			pMinMaxInfo->ptMinTrackSize.x = pMinMaxInfo->ptMaxTrackSize.x;
+			pMinMaxInfo->ptMinTrackSize.y = pMinMaxInfo->ptMaxTrackSize.y;
+		}
 		bResult = TRUE;
-
 	}
 	return bResult;
+}
+
+/*! ************************************
+
+	\brief Resize the back buffer if the window size changed
+	
+	\windowsonly
+
+***************************************/
+
+void Burger::Display::CheckForWindowSizeChange(void)
+{
+}
+
+/*! ************************************
+
+	\brief Check if the window has changed monitors
+
+	\windowsonly
+
+***************************************/
+
+void Burger::Display::CheckForWindowChangingMonitors(void)
+{
 }
 
 #endif

@@ -2,7 +2,7 @@
 
 	DirectX 11 manager class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -29,8 +29,23 @@ class DisplayDirectX11 : public Display {
 	BURGER_DISABLECOPYCONSTRUCTORS(DisplayDirectX11);
 	BURGER_RTTI_IN_CLASS();
 public:
+	struct DXGISurfaceDesc_t {
+		Word m_uWidth;			///< Width of the surface in pixels
+		Word m_uHeight;			///< Height of the surface in pixels
+		Word m_uFormat;			///< DXGI_FORMAT enumeration of the pixel format
+		Word m_uSampleCount;	///< DXGI_SAMPLE_DESC sample count
+		Word m_uSampleQuality;	///< DXGI_SAMPLE_DESC sample quality
+	};
+protected:
+	Word m_bShowCursorWhenFullScreen;	///< TRUE if the cursor is visible in full screen mode
+	Word m_bClipCursorWhenFullScreen;	///< TRUE if the cursor is clipped in full screen mode
+	void BURGER_API SetupCursor(void) const;
+public:
 	static void BURGER_API ClearContext(ID3D11DeviceContext *pDX11Context);
 };
+
+extern Word BURGER_API GetDXGI_FORMATColorChannelBits(Word uDXGI_FORMAT);
+
 #endif
 }
 /* END */

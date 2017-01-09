@@ -2,7 +2,7 @@
 
 	Stand alone string functions
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -843,14 +843,28 @@ Word32 BURGER_API Burger::PowerOf2(Word32 uInput)
 	// the or's and shifts do nothing and 0x00 will be
 	// returned due to overflow
 	
+	// The 64 bit PowerPC compiler has a bug when
+	// returning a 32 bit value. It doesn't truncate properly
+	// so this alternate version passes the unit tests.
+#if defined(BURGER_GNUC) && defined(BURGER_POWERPC)
 	--uInput;
-	uInput |= uInput>>1;	// Blend in the odd bits.
-	uInput |= uInput>>2;	// Now, every 2nd bit
-	uInput |= uInput>>4;	// Every 4th bit
-	uInput |= uInput>>8;	// Every 8th bit
-	uInput |= uInput>>16;	// Final pass!
+	// Count leading zeros (Reverse the count)
+	Word32 uReverseCount = 32U-__builtin_clz(uInput);
+	// Test for 0
+	Word32 uMask = ((0-uInput)|uInput)>>31U;
+	// Add in 1 in case ofuReverseCount == 32
+	return (uMask<<uReverseCount)+(uMask^1);
+	
+#else
+	--uInput;				// Adjust the input
+	uInput |= uInput>>1U;	// Blend in the odd bits.
+	uInput |= uInput>>2U;	// Now, every 2nd bit
+	uInput |= uInput>>4U;	// Every 4th bit
+	uInput |= uInput>>8U;	// Every 8th bit
+	uInput |= uInput>>16U;	// Final pass!
 	++uInput;				// Inc and I have the power of 2
 	return uInput;
+#endif
 	
 }
 #endif
