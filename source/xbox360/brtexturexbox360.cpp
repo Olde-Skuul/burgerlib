@@ -2,7 +2,7 @@
 
 	Texture for rendering class, DirectX9 version
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -38,7 +38,6 @@ Burger::Texture::Texture() :
 	m_uDirty(BURGER_MAXUINT),
 	m_pD3DTexture(NULL)
 {
-	AddToGlobalList();
 }
 
 Burger::Texture::Texture(eWrapping uWrapping,eFilter uFilter) :
@@ -52,7 +51,6 @@ Burger::Texture::Texture(eWrapping uWrapping,eFilter uFilter) :
 	m_uDirty(BURGER_MAXUINT),
 	m_pD3DTexture(NULL)
 {
-	AddToGlobalList();
 }
 
 /*! ************************************
@@ -79,10 +77,9 @@ Burger::Texture::~Texture()
 	}
 	// Release all resources created by loader
 	ShutdownImageMemory();
-	RemoveFromGlobalList();
 }
 
-Word Burger::Texture::Bind(Display *pDisplay)
+Word Burger::Texture::CheckLoad(Display *pDisplay)
 {
 	Word bLoaded = FALSE;
 	D3DTexture *pTexture = m_pD3DTexture;

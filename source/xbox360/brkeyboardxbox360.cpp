@@ -4,7 +4,7 @@
 
 	Xbox 360 version
 	
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -17,6 +17,7 @@
 
 #if defined(BURGER_XBOX360)
 #include "brstringfunctions.h"
+#include "brtick.h"
 #define NOD3D
 #define NONET
 #include <xtl.h>
@@ -225,15 +226,17 @@ static const ScanCodeTranslation_t *ScanCodeTranslate(Word uWindowsCode)
 ***************************************/
 
 Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
+	m_pAppInstance(pAppInstance),
 	m_uArrayStart(0),
 	m_uArrayEnd(0),
-	m_pAppInstance(pAppInstance)
+	m_uInitialDelay(500),
+	m_uRepeatDelay(33)
 {
-	pAppInstance->SetKeyboard(this);
 	// Clear my variables
-	MemoryClear(const_cast<Word8 *>(m_KeyArray),sizeof(m_KeyArray));
+	MemoryClear(m_KeyArray,sizeof(m_KeyArray));
+	MemoryClear(&m_RepeatEvent,sizeof(m_RepeatEvent));
 
-	pAppInstance->AddRoutine(Poll,this,RunQueue::PRIORITY_KEYBOARD);
+	pAppInstance->AddRoutine(Poll,NULL,this,RunQueue::PRIORITY_KEYBOARD);
 }
 
 /***************************************
@@ -247,60 +250,16 @@ Burger::Keyboard::~Keyboard()
 	m_pAppInstance->RemoveRoutine(Poll,this);
 }
 
-/***************************************
-
-	\brief Peek at the next keyboard press event
-
-	See if a key is pending from the keyboard, if
-	so, return the event without removing it from
-	the queue.
-
-	\sa Keyboard::Get()
-
-***************************************/
-
-Word BURGER_API Burger::Keyboard::PeekKeyEvent(KeyEvent_t *pEvent)
-{
-	Word uIndex = m_uArrayStart;		/* Get the starting index */
-	if (uIndex!=m_uArrayEnd) {	/* Anything in the buffer? */
-		pEvent[0] = m_KeyEvents[uIndex];
-		return 1;
-	}
-	// No event pending
-	return 0;
-}
-
-
-/***************************************
-
-	\brief Return key up and down events
-
-	Get a key from the keyboard buffer but include key up events
-
-***************************************/
-
-Word BURGER_API Burger::Keyboard::GetKeyEvent(KeyEvent_t *pEvent)
-{
-	m_pAppInstance->Poll();
-	Word uResult = 0;
-	Word uIndex = m_uArrayStart;		/* Get the starting index */
-	if (uIndex!=m_uArrayEnd) {	/* Anything in the buffer? */
-		pEvent[0] = m_KeyEvents[uIndex];
-		uResult = 1;
-		m_uArrayStart = (uIndex+1)&(cBufferSize-1);	/* Next key */
-	}
-	// No event pending
-	return uResult;
-}
-
 Burger::RunQueue::eReturnCode BURGER_API Burger::Keyboard::Poll(void *pData)
 {
 	Keyboard *pThis = static_cast<Keyboard *>(pData);
 	// Poll the keyboard device for events
 
 	XINPUT_KEYSTROKE KeyStroke;
+
 	// Note: Calling this function without the 2nd parameter set to XINPUT_FLAG_KEYBOARD is a TCR #43
 	// violation.
+
 	while (XInputGetKeystroke(XUSER_INDEX_ANY,XINPUT_FLAG_KEYBOARD,&KeyStroke) == ERROR_SUCCESS) {
 		// Convert from Windows scan code to Burgerlib
 		const ScanCodeTranslation_t *pTranslation = ScanCodeTranslate(KeyStroke.VirtualKey);
@@ -310,8 +269,19 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Keyboard::Poll(void *pData)
 			// Direct Input keyboard scan code
 			Word uScanCode = pTranslation->m_uScanCode;
 			KeyEvent_t *pNewEvent = &pThis->m_KeyEvents[pThis->m_uArrayEnd];
-			pNewEvent->m_uScanCode = static_cast<Word16>(uScanCode);
-			pNewEvent->m_uFlags = static_cast<Word16>(uPressed);
+			if (!uPressed) {
+				pNewEvent->m_uEvent = EVENT_KEYUP;
+			} else if (KeyStroke.Flags&XINPUT_KEYSTROKE_REPEAT) {
+				pNewEvent->m_uEvent = EVENT_KEYAUTO;
+			} else {
+				pNewEvent->m_uEvent = EVENT_KEYDOWN;
+			}
+			// Which player pressed the key?
+			pNewEvent->m_uWhich = KeyStroke.UserIndex;
+			pNewEvent->m_uScanCode = static_cast<Word32>(uScanCode);
+			pNewEvent->m_uFlags = 0;
+			pNewEvent->m_uMSTimeStamp = Tick::ReadMilliseconds();
+
 			if (uPressed) {
 				// Mark as pressed
 				pThis->m_KeyArray[uScanCode] |= (KEYCAPDOWN|KEYCAPPRESSED);

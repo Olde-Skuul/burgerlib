@@ -2,7 +2,7 @@
 
 	Vertex buffer class for Xbox 360
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -20,142 +20,143 @@
 #define NONET
 #include <xtl.h>
 
-static const DWORD g_D3DDECLTYPE[4] = {
-	D3DDECLTYPE_FLOAT1,D3DDECLTYPE_FLOAT2,D3DDECLTYPE_FLOAT3,D3DDECLTYPE_FLOAT4
-};
-
-//
-// Initialize the D3D Vertex buffer
-//
-
-Burger::VertexBuffer::VertexBuffer() :
-	m_pD3DVertexBuffer(NULL),
-	m_pD3DVertexDeclaration(NULL),
-	m_uStride(0),
-	m_uArrayEntryCount(0)
-{
-}
-
-//
-// Release the vertex buffer data and exit
-//
-
-Burger::VertexBuffer::~VertexBuffer()
-{
-	ReleaseData();
-}
-
 //
 // Upload vertex data onto the video hardware
 //
 
-Word Burger::VertexBuffer::LoadData(Display *pDisplay,const VertexAoS_t *pDescription)
+#if !defined(DOXYGEN)
+static const D3DDECLTYPE g_D3DType[5] = {
+	D3DDECLTYPE_FLOAT1,
+	D3DDECLTYPE_FLOAT2,
+	D3DDECLTYPE_FLOAT3,
+	D3DDECLTYPE_FLOAT4,
+	D3DDECLTYPE_D3DCOLOR
+};
+
+#endif
+
+//
+// Update the vertex data to VRAM
+//
+
+Word Burger::VertexBuffer::CheckLoad(Display *pDisplay)
 {
-	// If there was any data, release it to
-	// replace it with the new vertex data
+	HRESULT hResult = D3D_OK;
+	if (m_uFlags & FLAG_VERTEXDIRTY) {
+		VertexBuffer::Release(NULL);
 
-	ReleaseData();
-
-	// No error if the description is NULL
-	HRESULT uResult = 0;
-	if (pDescription) {
 		D3DDevice *pDevice = pDisplay->GetD3DDevice();
 
-		// Allocate memory for the vertex array
-		uResult = pDevice->CreateVertexBuffer(static_cast<UINT>(pDescription->m_uVertexArraySize),D3DUSAGE_WRITEONLY,
-			0,D3DPOOL_DEFAULT,&m_pD3DVertexBuffer,NULL);
+		if (m_uVertexArraySize) {
 
-		// Success?
-		if (uResult==D3D_OK) {
-			void *pVertices;
-			// Access a buffer to upload vertex data
-			uResult = m_pD3DVertexBuffer->Lock(0,static_cast<UINT>(pDescription->m_uVertexArraySize),&pVertices,0);
-			if (uResult==D3D_OK) {
-				// Copy it up
-				MemoryCopy(pVertices,pDescription->m_pVertexArray,pDescription->m_uVertexArraySize);
-				m_pD3DVertexBuffer->Unlock();
+			// Create a vertex buffer object 
 
-				//
-				// Get the number of members in the array of structures
-				//
+			hResult = pDevice->CreateVertexBuffer(static_cast<UINT>(m_uVertexArraySize),0,
+				0,D3DPOOL_DEFAULT,&m_pD3DVertexBuffer,NULL);
 
-				const Word *pMembers = pDescription->m_pMembers;
+			// If there's data to initialize with, upload it.
 
-				// It's not an error to have no declaration
-				if (pMembers) {
+			if ((hResult>=0)&&
+				m_pVertexArray) {
+				void *pVertices = NULL;
+				hResult = m_pD3DVertexBuffer->Lock(0,static_cast<UINT>(m_uVertexArraySize),&pVertices,0);
+				if (hResult>=0) {
+					MemoryCopy(pVertices,m_pVertexArray,m_uVertexArraySize);
+					m_pD3DVertexBuffer->Unlock();
+				}
+			}
 
-					// Create a description of the buffer for 
+			// Create the vertex data description if there is one
+
+			if ((hResult>=0) &&
+				m_uMemberCount) {
+
+				// Anything larger than 32 entries is totally INSANE!
+				D3DVERTEXELEMENT9 TempElement[32];
+				D3DVERTEXELEMENT9 *pDest = TempElement;
+
+				// Size of the description
+				const Word *pMembers = m_pMembers;
+				Word uCount = m_uMemberCount;
+				Word uOffset = 0;
+				do {
 					Word uMember = pMembers[0];
-					if (uMember) {
-					
-						// Anything larger than 32 entries is totally INSANE!
+					++pMembers;
 
-						D3DVERTEXELEMENT9 TempElement[32];
-						D3DVERTEXELEMENT9 *pDest = TempElement;
-						Word uOffset = 0;
-						do {
-							pDest->Stream = 0;
-							pDest->Offset = static_cast<WORD>(uOffset);
-							Word uChunk = (uMember&USAGE_CHUNKMASK);
-							Word uEntryCount = (uMember&USAGE_COUNTMASK);
-							if (uChunk==USAGE_FLOAT) {
-								BURGER_ASSERT(uEntryCount>=1 && uEntryCount<5);
-								uOffset += uEntryCount*4;
-								pDest->Type = g_D3DDECLTYPE[uEntryCount-1];
-							} else {
-								// Short is not supported yet
-								BURGER_ASSERT(uChunk!=USAGE_FLOAT);
-								uResult = 10;
-								break;
-							}
-							pDest->Method = D3DDECLMETHOD_DEFAULT;
-							// Convert to D3D usage type
-							// Note: The Burgerlib enumeration matches DirectX
+					pDest->Stream = 0;
+					pDest->Offset = static_cast<WORD>(uOffset);
+					Word uType = (uMember&USAGE_CHUNKMASK)>>USAGE_CHUNKMASKSHIFT;
+					uOffset += g_ChunkElementSizes[uType]*g_ChunkElementCounts[uType];
+					pDest->Type = g_D3DType[uType];
 
-							pDest->Usage = static_cast<BYTE>((uMember>>8)&0xF);
-							pDest->UsageIndex = 0;
-							++pMembers;
+					pDest->Method = D3DDECLMETHOD_DEFAULT;
+					// Convert to D3D usage type
+					// Note: The Burgerlib enumeration matches DirectX
+					pDest->Usage = static_cast<BYTE>((uMember&USAGE_TYPEMASK)>>USAGE_TYPEMASKSHIFT);
+					pDest->UsageIndex = 0;
 
-							// Buffer overflow?
-							if (++pDest>=&TempElement[32]) {
-								// Force error and abort immediately via truncation
-								uResult = 10;
-								break;
-							}
-							uMember = pMembers[0];
-						} while (uMember);
-
-						// Store the size in bytes of each element in the array
-						m_uStride = uOffset;
-						// Store the number of elements in the array
-						m_uArrayEntryCount = static_cast<Word>(pDescription->m_uVertexArraySize/uOffset);
-
-						if (!uResult) {
-							// Mark the end of the array
-							pDest->Stream = 0xFF;
-							pDest->Offset = 0;
-							pDest->Type = static_cast<DWORD>(D3DDECLTYPE_UNUSED);
-							pDest->Method = 0;
-							pDest->Usage = 0;
-							pDest->UsageIndex = 0;
-							
-							// Create the declaration
-
-							uResult = pDevice->CreateVertexDeclaration(TempElement,&m_pD3DVertexDeclaration);
-						}
+					// Buffer overflow?
+					if (++pDest>=&TempElement[32]) {
+						// Force error
+						hResult = -10;
+						break;
 					}
+				} while (--uCount);
+				
+				// No error in generating the table?
+				if (hResult>=0) {
+					// Mark the end of the array
+					pDest->Stream = 0xFF;
+					pDest->Offset = 0;
+					pDest->Type = static_cast<DWORD>(D3DDECLTYPE_UNUSED);
+					pDest->Method = 0;
+					pDest->Usage = 0;
+					pDest->UsageIndex = 0;
+
+					// Create the declaration
+					hResult = pDevice->CreateVertexDeclaration(TempElement,&m_pD3DVertexDeclaration);
 				}
 			}
 		}
+
+		// Upload any index buffers
+		if ((hResult>=0)&&
+			m_uElementSize) {
+
+			// Handle both 16 and 32 bit index buffers
+			D3DFORMAT uFormat = D3DFMT_INDEX16;
+			if (m_uFlags&FLAGAOS_ELEMENTS_32BIT) {
+				uFormat = D3DFMT_INDEX32;
+			}
+
+			// Create the buffer
+			hResult = pDevice->CreateIndexBuffer(static_cast<UINT>(m_uElementSize),
+				0,uFormat,D3DPOOL_DEFAULT,&m_pD3DIndexBuffer,NULL);
+			if (hResult>=0) {
+				void *pIndices = NULL;
+				hResult = m_pD3DIndexBuffer->Lock(0,static_cast<UINT>(m_uElementSize),&pIndices,0);
+				if (hResult>=0) {
+					MemoryCopy(pIndices,m_pElements,m_uElementSize);
+					m_pD3DIndexBuffer->Unlock();
+				}
+			}
+		}
+
+		// All good! Clear the flag
+		if (hResult>=0) {
+			hResult = 0;
+			m_uFlags &= (~FLAG_VERTEXDIRTY);
+		}
 	}
-	return static_cast<Word>(uResult);
+	// Set the error code to return
+	return static_cast<Word>(hResult);
 }
 
 //
 // Release the buffer
 //
 
-void Burger::VertexBuffer::ReleaseData(void)
+void Burger::VertexBuffer::Release(Display *)
 {
 	D3DVertexBuffer *pVertexBuffer = m_pD3DVertexBuffer;
 	if (pVertexBuffer) {
@@ -179,6 +180,18 @@ void Burger::VertexBuffer::ReleaseData(void)
 		pDeclaration->Release();
 		m_pD3DVertexDeclaration = NULL;
 	}
+
+	D3DIndexBuffer *pIndexBuffer = m_pD3DIndexBuffer; 
+	if (pIndexBuffer) {
+		// Make sure there is no connection to a D3D device
+		IDirect3DDevice9 *pDevice;
+		pIndexBuffer->GetDevice(&pDevice);
+		if (pDevice) {
+			pDevice->SetIndices(NULL);
+		}
+		pIndexBuffer->Release();
+		m_pD3DIndexBuffer = NULL;
+	}	
 }
 
 #endif
