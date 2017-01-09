@@ -2,7 +2,7 @@
 
 	MacOSX application manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -28,6 +28,8 @@
 #import <AppKit/NSWindow.h>
 #import <AppKit/NSScreen.h>
 #import <AppKit/NSEvent.h>
+#include <AppKit/NSMenu.h>
+#include <AppKit/NSApplicationScripting.h>
 
 #if !defined(DOXYGEN)
 
@@ -817,7 +819,7 @@ context:(void *)context
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-    int button;
+    NSInteger button;
     
     switch ([theEvent buttonNumber]) {
         case 0:
@@ -1103,7 +1105,7 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 			}
 		}
 	}
-	AddRoutine(EventPoll,this,RunQueue::PRIORITY_FIRST);
+	AddRoutine(EventPoll,NULL,this,RunQueue::PRIORITY_FIRST);
 	// Garbage collect
 	[pPool release];
 }
