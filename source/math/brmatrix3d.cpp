@@ -2,7 +2,7 @@
 
 	3D Floating point matrix manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -3057,7 +3057,7 @@ Word BURGER_API Burger::Matrix3D_t::AffineInverse(const Matrix3D_t *pInput)
 		// Matrix4 M has no inverse
 		return FALSE;
 	}
-	//  Calculate inverse(A) = adj(A) / det(A)
+	// Calculate inverse(A) = adj(A) / det(A)
 	fDeterminate = 1.0F / fDeterminate;
 
 	x.x =  (pInput->y.y * pInput->z.z - pInput->y.z * pInput->z.y) * fDeterminate;

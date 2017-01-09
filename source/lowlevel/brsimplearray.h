@@ -2,7 +2,7 @@
 
 	intrinsic<T> compatible array template
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -114,6 +114,21 @@ public:
 			do {
 				if (pWork[0] == rData) {
 					remove_at(m_uSize-uSize);
+					bResult = TRUE;
+					break;
+				}
+				++pWork;
+			} while (--uSize);
+		}
+		return bResult;
+	}
+	BURGER_INLINE Word contains(T rData) const {
+		WordPtr uSize = m_uSize;
+		Word bResult = FALSE;
+		if (uSize) {
+			const T *pWork = static_cast<const T *>(m_pData);
+			do {
+				if (pWork[0] == rData) {
 					bResult = TRUE;
 					break;
 				}

@@ -2,7 +2,7 @@
 
 	Smart pointer template class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -122,8 +122,9 @@ Burger::ProxyReferenceCounter *Burger::ProxyReferenceCounter::New(void)
 
 
 
+#if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::ReferenceCounter,Burger::Base);
-
+#endif
 
 /*! ************************************
 
@@ -356,7 +357,9 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 
 ***************************************/
 
+#if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCounter);
+#endif
 
 /*! ************************************
 

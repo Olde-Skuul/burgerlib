@@ -2,7 +2,7 @@
 
 	intrinsic<T> compatible array template
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -569,6 +569,20 @@ void BURGER_API Burger::SimpleArrayBase::append(const void *pData,WordPtr uCount
 
 	\param rData Copy of the item to remove
 	\return \ref TRUE if an item was removed, \ref FALSE if not
+	\sa append(const SimpleArray&), insert_at(WordPtr,T), resize(WordPtr) or reserve(WordPtr)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Word Burger::SimpleArray::contains(T rData) const
+	\brief Find an item in the array.
+
+	Given an item, scan the array for an element
+	that matches the value.
+
+	\param rData Copy of the item to search for
+	\return \ref TRUE if an item was found, \ref FALSE if not
 	\sa append(const SimpleArray&), insert_at(WordPtr,T), resize(WordPtr) or reserve(WordPtr)
 
 ***************************************/

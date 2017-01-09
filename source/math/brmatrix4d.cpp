@@ -2,7 +2,7 @@
 
 	4D Floating point matrix manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -1048,7 +1048,7 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetYXZ(float fYaw,float fPitch,floa
 	x.x = (fCY*fCZ)-(fSY*fSXSZ);
 	x.y = fCX*fSZ;
 	x.z = (fSY*fCZ)+(fCY*fSXSZ);
-	x.w  = 0.0f;
+	x.w = 0.0f;
 
 	y.x = (-fSY*fSXCZ)-(fCY*fSZ);
 	y.y = fCX*fCZ;
@@ -1115,7 +1115,7 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetYZX(float fYaw,float fPitch,floa
 	x.x = fCY*fCZ;
 	x.y = fSZ;
 	x.z = fSY*fCZ;
-	x.w  = 0.0f;
+	x.w = 0.0f;
 
 	y.x = (fCY*fNegSZCX)-(fSY*fSX);
 	y.y = fCX*fCZ;
@@ -1182,7 +1182,7 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetXYZ(float fYaw,float fPitch,floa
 	x.x = fCY*fCZ;
 	x.y = (fCX*fSZ)-(fSYSX*fCZ);
 	x.z = (fSYCX*fCZ)+(fSX*fSZ);
-	x.w  = 0.0f;
+	x.w = 0.0f;
 
 	y.x = fCY*-fSZ;
 	y.y = (fCX*fCZ)+(fSYSX*fSZ);
@@ -1249,7 +1249,7 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetXZY(float fYaw,float fPitch,floa
 	x.x = fCY*fCZ;
 	x.y = (fCX*fSZCY)-(fSY*fSX);
 	x.z = (fSX*fSZCY)+(fSY*fCX);
-	x.w  = 0.0f;
+	x.w = 0.0f;
 
 	y.x = -fSZ;
 	y.y = fCX*fCZ;
@@ -1316,7 +1316,7 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetZYX(float fYaw,float fPitch,floa
 	x.x = fCY*fCZ;
 	x.y = fCY*fSZ;
 	x.z = fSY;
-	x.w  = 0.0f;
+	x.w = 0.0f;
 
 	y.x = (-fSZ*fCX)-(fSYSX*fCZ);
 	y.y = (fCZ*fCX)-(fSYSX*fSZ);
@@ -1383,7 +1383,7 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetZXY(float fYaw,float fPitch,floa
 	x.x = (fCZ*fCY)+(fSXSZ*fSY);
 	x.y = (fSZ*fCY)-(fSXCZ*fSY);
 	x.z = fSY*fCX;
-	x.w  = 0.0f;
+	x.w = 0.0f;
 
 	y.x = fCX*-fSZ;
 	y.y = fCX*fCZ;

@@ -2,7 +2,7 @@
 
 	Run Time Type Information class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -32,7 +32,7 @@
 
 	\code
 
-	// ****  In the header ****
+	// **** In the header ****
 
 	// Class definitions using a virtual table (A VTable must exist in the base
 	// for this system to work
@@ -181,7 +181,7 @@
 Word BURGER_API Burger::StaticRTTI::IsInList(const StaticRTTI *pInput) const
 {
 	// since there should be only one static instance of the type ID, it should
-	//   be safe to compare the ID string pointers
+	// be safe to compare the ID string pointers
 	Word bRetVal = (pInput->m_pClassName == m_pClassName);
 	if (!bRetVal && m_pParent) {
 		bRetVal = m_pParent->IsInList(pInput);

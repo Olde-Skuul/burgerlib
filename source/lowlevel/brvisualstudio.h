@@ -2,7 +2,7 @@
 
 	Intrinsics and subroutines exclusive to the Microsoft Visual Studio compilers
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -35,10 +35,22 @@
 
 /* BEGIN */
 #if defined(BURGER_MSVC) && !defined(DOXYGEN)
+
 extern "C" {
+
 extern double __cdecl fabs(double);
 extern double __cdecl sqrt(double);
 #pragma intrinsic(fabs,sqrt)
+
+#if defined(BURGER_AMD64) || defined(BURGER_ARM)
+extern float __cdecl sqrtf(float);
+#pragma intrinsic(sqrtf)
+#endif
+
+#if defined(BURGER_ARM)
+extern float __cdecl fabsf(float);
+#pragma intrinsic(fabsf)
+#endif
 
 extern Word16 __cdecl _byteswap_ushort(Word16);
 extern unsigned long __cdecl _byteswap_ulong(unsigned long);
@@ -56,6 +68,7 @@ extern void __cpuid(int [4],int);
 #pragma intrinsic(__cpuid)
 
 // Visual studio 2010 or higher
+
 #if _MSC_VER>=1600
 extern void __cpuidex(int [4],int,int);
 #pragma intrinsic(__cpuidex)
@@ -87,12 +100,16 @@ BURGER_INLINE double _mm_cvtsd_f64(__m128d vInput) { return vInput.m128d_f64[0];
 }
 #endif
 
+// __cpuid() and __cpuidex() intrinsics for other compilers
+
 #if defined(BURGER_INTELARCHITECTURE) && (defined(BURGER_LLVM) || defined(BURGER_GNUC))
+
 BURGER_INLINE void __cpuid(int a[4],int b) {
 	__asm__ __volatile__("cpuid"
 	: "=a" ((a)[0]), "=b" ((a)[1]), "=c" ((a)[2]), "=d" ((a)[3])
 	: "0" (b), "2" (0));
 }
+
 BURGER_INLINE void __cpuidex(int a[4],int b,int c) {
 	__asm__ __volatile__("cpuid"
 		: "=a" ((a)[0]), "=b" ((a)[1]), "=c" ((a)[2]), "=d" ((a)[3])
@@ -102,6 +119,7 @@ BURGER_INLINE void __cpuidex(int a[4],int b,int c) {
 #elif defined(BURGER_X86)
 
 #if defined(BURGER_METROWERKS)
+
 BURGER_INLINE void __cpuid(int a[4],int b) {
 	asm {
 		mov	esi,a		// Get the pointer to the destination buffer
@@ -131,6 +149,7 @@ BURGER_INLINE void __cpuidex(int a[4],int b,int c) {
 #elif defined(BURGER_WATCOM)
 
 extern void __cpuid(int a[4],int b);
+
 #pragma aux __cpuid = \
 	"xor ecx,ecx" \
 	"cpuid" \
@@ -141,6 +160,7 @@ extern void __cpuid(int a[4],int b);
 	parm [esi] [eax] modify [ebx ecx edx];
 
 extern void __cpuidex(int a[4],int b,int c);
+
 #pragma aux __cpuidex = \
 	"cpuid" \
 	"mov [esi+0],eax" \
@@ -148,6 +168,7 @@ extern void __cpuidex(int a[4],int b,int c);
 	"mov [esi+8],ecx" \
 	"mov [esi+12],edx" \
 	parm [esi] [eax] [ecx] modify [ebx ecx edx];
+
 #endif
 
 #endif

@@ -2,7 +2,7 @@
 
 	Fixed point math functions
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -60,6 +60,7 @@ namespace Burger {
 	BURGER_INLINE Int32 FixedToInt(Fixed32 fInput) { return static_cast<Int32>((fInput+((fInput>>31)&0xFFFF))>>16); }
 	BURGER_INLINE Int32 FixedToIntCeil(Fixed32 fInput) { return static_cast<Int32>((fInput+0xFFFF)>>16); }
 	BURGER_INLINE Int32 FixedToIntNearest(Fixed32 fInput) { return static_cast<Int32>((fInput+0x8000)>>16); }
+
 #if defined(BURGER_WATCOM)
 	BURGER_INLINE Int32 FloatToIntFloor(float fInput) { return BurgerIntMathFromFloatFloor(fInput); }
 	BURGER_INLINE Int32 FloatToInt(float fInput) { return BurgerIntMathFromFloat(fInput); }
@@ -69,6 +70,7 @@ namespace Burger {
 	BURGER_INLINE void FloatToInt(Int32 *pOutput,float fInput) { BurgerIntMathFromFloat2(pOutput,fInput); }
 	BURGER_INLINE void FloatToIntCeil(Int32 *pOutput,float fInput) { BurgerIntMathFromFloatCeil2(pOutput,fInput); }
 	BURGER_INLINE void FloatToIntNearest(Int32 *pOutput,float fInput) { BurgerIntMathFromFloatNearest2(pOutput,fInput); }
+
 #elif defined(BURGER_XBOX360) && !defined(DOXYGEN)
 	BURGER_INLINE Int32 FloatToIntFloor(float fInput) { Int32 iResult; __stfiwx(__fctiw(fInput-0.5f),0,&iResult); return iResult; }
 	BURGER_INLINE Int32 FloatToInt(float fInput) { Int32 iResult; __stfiwx(__fctiwz(fInput),0,&iResult); return iResult; }
@@ -85,6 +87,7 @@ namespace Burger {
 	BURGER_INLINE void FloatToIntCeil(Int32 *pOutput,float fInput) { pOutput[0] = FloatToIntCeil(fInput); }
 	BURGER_INLINE void FloatToIntNearest(Int32 *pOutput,float fInput) { pOutput[0] = FloatToIntNearest(fInput); }
 #endif
+
 #elif defined(BURGER_POWERPC) && defined(BURGER_METROWERKS)
 	BURGER_INLINE Int32 FloatToIntFloor(register float fInput) { volatile Int32 iResult; fInput = fInput-0.5f; register volatile Int32 *pResult = &iResult; asm { fctiw fInput,fInput; stfiwx fInput,r0,pResult } return iResult; }
 	BURGER_INLINE Int32 FloatToInt(register float fInput) { volatile Int32 iResult; register volatile Int32 *pResult = &iResult; asm { fctiwz fInput,fInput; stfiwx fInput,r0,pResult } return iResult; }
@@ -94,76 +97,143 @@ namespace Burger {
 	BURGER_INLINE void FloatToInt(register Int32 *pOutput,register float fInput) { asm { fctiwz fInput,fInput; stfiwx fInput,r0,pOutput } }
 	BURGER_INLINE void FloatToIntCeil(register Int32 *pOutput,register float fInput) { fInput = fInput+(0.5f-(1.0f/(65536.0f*256.0f))); asm { fctiw fInput,fInput; stfiwx fInput,r0,pOutput } }
 	BURGER_INLINE void FloatToIntNearest(register Int32 *pOutput,register float fInput) { asm { fctiw fInput,fInput; stfiwx fInput,r0,pOutput } }
+
 #elif defined(BURGER_X86) && defined(BURGER_METROWERKS)
-	BURGER_INLINE Int32 FloatToIntFloor(float fInput) { asm fld DWORD PTR fInput
-		asm fadd DWORD PTR [g_fBurgerIntMathNearesttable]
-		asm fistp DWORD PTR fInput
-		return reinterpret_cast<Int32 *>(&fInput)[0];}
-	BURGER_INLINE Int32 FloatToInt(float fInput) { asm fld DWORD PTR fInput
-		asm mov eax,fInput
-		asm shr eax,31
-		asm fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]
-		asm fistp DWORD PTR fInput
-		return reinterpret_cast<Int32 *>(&fInput)[0]; }
-	BURGER_INLINE Int32 FloatToIntCeil(float fInput) { asm fld DWORD PTR fInput
-		asm fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
-		asm fistp DWORD PTR fInput
-		return reinterpret_cast<Int32 *>(&fInput)[0]; }
-	BURGER_INLINE Int32 FloatToIntNearest(float fInput) { asm fld DWORD PTR fInput
-		asm fistp DWORD PTR fInput
-		return reinterpret_cast<Int32 *>(&fInput)[0]; }
-	BURGER_INLINE void FloatToIntFloor(Int32 *pOutput,float fInput) { asm mov ecx,pOutput
-		asm fld DWORD PTR fInput
-		asm fadd DWORD PTR [g_fBurgerIntMathNearesttable]
-		asm { fistp DWORD PTR [ecx] } }
-	BURGER_INLINE void FloatToInt(Int32 *pOutput,float fInput) { asm mov ecx,pOutput
-		asm fld DWORD PTR fInput
-		asm mov eax,fInput
-		asm shr eax,31
-		asm fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]
-		asm { fistp DWORD PTR [ecx] } }
-	BURGER_INLINE void FloatToIntCeil(Int32 *pOutput,float fInput) { asm mov ecx,pOutput
-		asm fld DWORD PTR fInput
-		asm fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
-		asm { fistp DWORD PTR [ecx] } }
-	BURGER_INLINE void FloatToIntNearest(Int32 *pOutput,float fInput) { asm mov ecx,pOutput
-		asm fld DWORD PTR fInput
-		asm { fistp DWORD PTR [ecx] } }
+	BURGER_INLINE Int32 FloatToIntFloor(float fInput) { 
+		asm {
+			fld DWORD PTR [fInput]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable]
+			fistp DWORD PTR [fInput]
+		}
+		return reinterpret_cast<Int32 *>(&fInput)[0];
+	}
+	BURGER_INLINE Int32 FloatToInt(float fInput) {
+		asm {
+			mov eax,[fInput]
+			fld DWORD PTR [fInput]
+			shr eax,31
+			fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]
+			fistp DWORD PTR [fInput]
+		}
+		return reinterpret_cast<Int32 *>(&fInput)[0]; 
+	}
+	BURGER_INLINE Int32 FloatToIntCeil(float fInput) {
+		asm {
+			fld DWORD PTR [fInput]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
+			fistp DWORD PTR [fInput]
+		}
+		return reinterpret_cast<Int32 *>(&fInput)[0]; 
+	}
+	BURGER_INLINE Int32 FloatToIntNearest(float fInput) {
+		asm {
+			fld DWORD PTR [fInput]
+			fistp DWORD PTR [fInput]
+		}
+		return reinterpret_cast<Int32 *>(&fInput)[0]; 
+	}
+	BURGER_INLINE void FloatToIntFloor(Int32 *pOutput,float fInput) {
+		asm {
+			mov ecx,pOutput
+			fld DWORD PTR [fInput]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable]
+			fistp DWORD PTR [ecx] 
+		}
+	}
+	BURGER_INLINE void FloatToInt(Int32 *pOutput,float fInput) { 
+		asm {
+			mov ecx,pOutput
+			fld DWORD PTR [fInput]
+			mov eax,[fInput]
+			shr eax,31
+			fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]
+			fistp DWORD PTR [ecx] 
+		}
+	}
+	BURGER_INLINE void FloatToIntCeil(Int32 *pOutput,float fInput) {
+		asm {
+			mov ecx,pOutput
+			fld DWORD PTR [fInput]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
+			fistp DWORD PTR [ecx] 
+		}
+	}
+	BURGER_INLINE void FloatToIntNearest(Int32 *pOutput,float fInput) { 
+		asm {
+			mov ecx,pOutput
+			fld DWORD PTR [fInput]
+			fistp DWORD PTR [ecx] 
+		}
+	}
+
 #elif defined(BURGER_X86) && defined(BURGER_MSVC)
-	BURGER_INLINE Int32 FloatToIntFloor(float fInput) { __asm fld DWORD PTR [fInput]
-		__asm fadd DWORD PTR [g_fBurgerIntMathNearesttable]
-		__asm fistp DWORD PTR [fInput]
-		return reinterpret_cast<Int32 *>(&fInput)[0]; }
-	BURGER_INLINE Int32 FloatToInt(float fInput) { __asm fld DWORD PTR [fInput]
-		__asm mov eax,[fInput]
-		__asm shr eax,31
-		__asm fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]
-		__asm fistp DWORD PTR [fInput]
-		return reinterpret_cast<Int32 *>(&fInput)[0]; }
-	BURGER_INLINE Int32 FloatToIntCeil(float fInput) { __asm fld DWORD PTR [fInput]
-		__asm fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
-		__asm fistp DWORD PTR [fInput]
-		return reinterpret_cast<Int32 *>(&fInput)[0]; }
-	BURGER_INLINE Int32 FloatToIntNearest(float fInput) { __asm fld DWORD PTR [fInput]
-		__asm fistp DWORD PTR [fInput]
-		return reinterpret_cast<Int32 *>(&fInput)[0]; }
-	BURGER_INLINE void FloatToIntFloor(Int32 *pOutput,float fInput) { __asm mov ecx,pOutput
-		__asm fld DWORD PTR [fInput]
-		__asm fadd DWORD PTR [g_fBurgerIntMathNearesttable]
-		__asm fistp DWORD PTR [ecx] }
-	BURGER_INLINE void FloatToInt(Int32 *pOutput,float fInput) { __asm mov ecx,pOutput
-		__asm fld DWORD PTR [fInput]
-		__asm mov eax,[fInput]
-		__asm shr eax,31
-		__asm fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]
-		__asm fistp DWORD PTR [ecx] }
-	BURGER_INLINE void FloatToIntCeil(Int32 *pOutput,float fInput) { __asm mov ecx,pOutput
-		__asm fld DWORD PTR [fInput]
-		__asm fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
-		__asm fistp DWORD PTR [ecx] }
-	BURGER_INLINE void FloatToIntNearest(Int32 *pOutput,float fInput) { __asm mov ecx,pOutput
-		__asm fld DWORD PTR [fInput]
-		__asm fistp DWORD PTR [ecx] }
+	BURGER_INLINE Int32 FloatToIntFloor(float fInput) {
+		__asm {
+			fld DWORD PTR [fInput]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable]
+			fistp DWORD PTR [fInput]
+		}
+		return reinterpret_cast<Int32 *>(&fInput)[0]; 
+	}
+	BURGER_INLINE Int32 FloatToInt(float fInput) {
+		__asm {
+			mov eax,[fInput]
+			fld DWORD PTR [fInput]
+			shr eax,31
+			fadd DWORD ptr [g_fBurgerIntMathNearesttable+eax*4]
+			fistp DWORD PTR [fInput]
+		}
+		return reinterpret_cast<Int32 *>(&fInput)[0]; 
+	}
+	BURGER_INLINE Int32 FloatToIntCeil(float fInput) { 
+		__asm {
+			fld DWORD PTR [fInput]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
+			fistp DWORD PTR [fInput]
+		}
+		return reinterpret_cast<Int32 *>(&fInput)[0]; 
+	}
+	BURGER_INLINE Int32 FloatToIntNearest(float fInput) {
+		__asm {
+			fld DWORD PTR [fInput]
+			fistp DWORD PTR [fInput]
+		}
+		return reinterpret_cast<Int32 *>(&fInput)[0];
+	}
+	BURGER_INLINE void FloatToIntFloor(Int32 *pOutput,float fInput) {
+		__asm {
+			mov ecx,pOutput
+			fld DWORD PTR [fInput]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable]
+			fistp DWORD PTR [ecx] 
+		}
+	}
+	BURGER_INLINE void FloatToInt(register Int32 *pOutput,float fInput) {
+		__asm {
+			mov ecx,pOutput
+			fld DWORD PTR [fInput]
+			mov eax,[fInput]
+			shr eax,31
+			fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]
+			fistp DWORD PTR [ecx] 
+		}
+	}
+	BURGER_INLINE void FloatToIntCeil(Int32 *pOutput,float fInput) { 
+		__asm {
+			mov ecx,pOutput
+			fld DWORD PTR [fInput]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
+			fistp DWORD PTR [ecx]
+		}
+	}
+	BURGER_INLINE void FloatToIntNearest(Int32 *pOutput,float fInput) {
+		__asm {
+			mov ecx,pOutput
+			fld DWORD PTR [fInput]
+			fistp DWORD PTR [ecx]
+		}
+	}
+
 #elif defined(BURGER_AMD64) && defined(BURGER_MSVC)
 	BURGER_INLINE Int32 FloatToIntFloor(float fInput) { return _mm_cvt_ss2si(_mm_set_ss(fInput+g_fBurgerIntMathNearesttable[0])); }
 	BURGER_INLINE Int32 FloatToInt(float fInput) { return static_cast<Int32>(fInput); }
@@ -174,6 +244,7 @@ namespace Burger {
 	BURGER_INLINE void FloatToIntCeil(Int32 *pOutput,float fInput) { pOutput[0] = _mm_cvt_ss2si(_mm_set_ss(fInput+g_fBurgerIntMathNearesttable[1])); }
 	BURGER_INLINE void FloatToIntNearest(Int32 *pOutput,float fInput) { pOutput[0] = _mm_cvt_ss2si(_mm_set_ss(fInput)); }
 #else
+
 	extern Int32 BURGER_API FloatToIntFloor(float fInput);
 	extern Int32 BURGER_API FloatToInt(float fInput);
 	extern Int32 BURGER_API FloatToIntCeil(float fInput);
@@ -183,6 +254,7 @@ namespace Burger {
 	BURGER_INLINE void FloatToIntCeil(Int32 *pOutput,float fInput) { pOutput[0] = FloatToIntCeil(fInput); }
 	BURGER_INLINE void FloatToIntNearest(Int32 *pOutput,float fInput) { pOutput[0] = FloatToIntNearest(fInput); }
 #endif
+
 #if defined(BURGER_WATCOM)
 	BURGER_INLINE Fixed32 FloatToFixedFloor(float fInput) { return BurgerFixedMathFromFloatFloor(fInput); }
 	BURGER_INLINE Fixed32 FloatToFixed(float fInput) { return BurgerFixedMathFromFloat(fInput); }
@@ -193,91 +265,165 @@ namespace Burger {
 	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) { BurgerFixedMathFromFloatCeil2(pOutput,fInput); }
 	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) { BurgerFixedMathFromFloatNearest2(pOutput,fInput); }
 #elif defined(BURGER_X86) && defined(BURGER_METROWERKS)
-	BURGER_INLINE Fixed32 FloatToFixedFloor(float fInput) { asm fld DWORD PTR fInput
-		asm fmul DWORD PTR [g_fBurgerMath65536]
-		asm fadd DWORD PTR [g_fBurgerIntMathNearesttable]
-		asm fistp DWORD PTR fInput
-		return reinterpret_cast<Fixed32 *>(&fInput)[0];}
-	BURGER_INLINE Fixed32 FloatToFixed(float fInput) { asm fld DWORD PTR fInput
-		asm fmul DWORD PTR [g_fBurgerMath65536]
-		asm mov eax,fInput
-		asm shr eax,31
-		asm fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]
-		asm fistp DWORD PTR fInput
-		return reinterpret_cast<Fixed32 *>(&fInput)[0]; }
-	BURGER_INLINE Fixed32 FloatToFixedCeil(float fInput) { asm fld DWORD PTR fInput
-		asm fmul DWORD PTR [g_fBurgerMath65536]
-		asm fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
-		asm fistp DWORD PTR fInput
-		return reinterpret_cast<Fixed32 *>(&fInput)[0]; }
-	BURGER_INLINE Fixed32 FloatToFixedNearest(float fInput) { asm fld DWORD PTR fInput
-		asm fmul DWORD PTR [g_fBurgerMath65536]
-		asm fistp DWORD PTR fInput
-		return reinterpret_cast<Fixed32 *>(&fInput)[0]; }
-	BURGER_INLINE void FloatToFixedFloor(Fixed32 *pOutput,float fInput) { asm mov ecx,pOutput
-		asm fld DWORD PTR fInput
-		asm fmul DWORD PTR [g_fBurgerMath65536]
-		asm fadd DWORD PTR [g_fBurgerIntMathNearesttable]
-		asm { fistp DWORD PTR [ecx] } }
-	BURGER_INLINE void FloatToFixed(Fixed32 *pOutput,float fInput) { asm mov ecx,pOutput
-		asm fld DWORD PTR fInput
-		asm fmul DWORD PTR [g_fBurgerMath65536]
-		asm mov eax,DWORD PTR [fInput]
-		asm shr eax,31
-		asm fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]
-		asm { fistp DWORD PTR [ecx] } }
-	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) { asm mov ecx,pOutput
-		asm fld DWORD PTR fInput
-		asm fmul DWORD PTR [g_fBurgerMath65536]
-		asm fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
-		asm { fistp DWORD PTR [ecx] } }
-	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) { asm mov ecx,pOutput
-		asm fld DWORD PTR fInput
-		asm fmul DWORD PTR [g_fBurgerMath65536]
-		asm { fistp DWORD PTR [ecx] } }
+
+	BURGER_INLINE Fixed32 FloatToFixedFloor(float fInput) { 
+		asm {
+			fld DWORD PTR fInput
+			fmul DWORD PTR [g_fBurgerMath65536]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable]
+			fistp DWORD PTR fInput
+		}
+		return reinterpret_cast<Fixed32 *>(&fInput)[0];
+	}
+
+	BURGER_INLINE Fixed32 FloatToFixed(float fInput) {
+		asm {
+			fld DWORD PTR fInput
+			fmul DWORD PTR [g_fBurgerMath65536]
+			mov eax,fInput
+			shr eax,31
+			fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]
+			fistp DWORD PTR fInput
+		}
+		return reinterpret_cast<Fixed32 *>(&fInput)[0]; 
+	}
+
+	BURGER_INLINE Fixed32 FloatToFixedCeil(float fInput) { 
+		asm {
+			fld DWORD PTR fInput
+			fmul DWORD PTR [g_fBurgerMath65536]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
+			fistp DWORD PTR fInput
+		}
+		return reinterpret_cast<Fixed32 *>(&fInput)[0]; 
+	}
+
+	BURGER_INLINE Fixed32 FloatToFixedNearest(float fInput) {
+		asm {
+			fld DWORD PTR fInput
+			fmul DWORD PTR [g_fBurgerMath65536]
+			fistp DWORD PTR fInput
+		}
+		return reinterpret_cast<Fixed32 *>(&fInput)[0]; 
+	}
+
+	BURGER_INLINE void FloatToFixedFloor(Fixed32 *pOutput,float fInput) {
+		asm {
+			mov ecx,pOutput
+			fld DWORD PTR fInput
+			fmul DWORD PTR [g_fBurgerMath65536]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable]
+			fistp DWORD PTR [ecx] 
+		}
+	}
+
+	BURGER_INLINE void FloatToFixed(Fixed32 *pOutput,float fInput) { 
+		asm {
+			mov ecx,pOutput
+			fld DWORD PTR fInput
+			fmul DWORD PTR [g_fBurgerMath65536]
+			mov eax,DWORD PTR [fInput]
+			shr eax,31
+			fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]
+			fistp DWORD PTR [ecx] 
+		}
+	}
+
+	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) {
+		asm {
+			mov ecx,pOutput
+			fld DWORD PTR fInput
+			fmul DWORD PTR [g_fBurgerMath65536]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
+			fistp DWORD PTR [ecx]
+		}
+	}
+
+	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) {
+		asm {
+			mov ecx,pOutput
+			fld DWORD PTR fInput
+			fmul DWORD PTR [g_fBurgerMath65536]
+			fistp DWORD PTR [ecx] 
+		}
+	}
+
 #elif defined(BURGER_X86) && defined(BURGER_MSVC)
-	BURGER_INLINE Int32 FloatToFixedFloor(float fInput) { __asm fld DWORD PTR [fInput]
-		__asm fmul DWORD PTR [g_fBurgerMath65536]
-		__asm fadd DWORD PTR [g_fBurgerIntMathNearesttable]
-		__asm fistp DWORD PTR [fInput]
-		return reinterpret_cast<Fixed32 *>(&fInput)[0]; }
-	BURGER_INLINE Int32 FloatToFixed(float fInput) { __asm fld DWORD PTR [fInput]
-		__asm fmul DWORD PTR [g_fBurgerMath65536]
-		__asm mov eax,[fInput]
-		__asm shr eax,31
-		__asm fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]
-		__asm fistp DWORD PTR [fInput]
-		return reinterpret_cast<Fixed32 *>(&fInput)[0]; }
-	BURGER_INLINE Int32 FloatToFixedCeil(float fInput) { __asm fld DWORD PTR [fInput]
-		__asm fmul DWORD PTR [g_fBurgerMath65536]
-		__asm fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
-		__asm fistp DWORD PTR [fInput]
-		return reinterpret_cast<Fixed32 *>(&fInput)[0]; }
-	BURGER_INLINE Int32 FloatToFixedNearest(float fInput) { __asm fld DWORD PTR [fInput]
-		__asm fmul DWORD PTR [g_fBurgerMath65536]
-		__asm fistp DWORD PTR [fInput]
-		return reinterpret_cast<Fixed32 *>(&fInput)[0]; }
-	BURGER_INLINE void FloatToFixedFloor(Fixed32 *pOutput,float fInput) { __asm mov ecx,pOutput
-		__asm fld DWORD PTR [fInput]
-		__asm fmul DWORD PTR [g_fBurgerMath65536]
-		__asm fadd DWORD PTR [g_fBurgerIntMathNearesttable]
-		__asm fistp DWORD PTR [ecx] }
-	BURGER_INLINE void FloatToFixed(Fixed32 *pOutput,float fInput) { __asm mov ecx,pOutput
-		__asm fld DWORD PTR [fInput]
-		__asm fmul DWORD PTR [g_fBurgerMath65536]
-		__asm mov eax,[fInput]
-		__asm shr eax,31
-		__asm fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]
-		__asm fistp DWORD PTR [ecx] }
-	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) { __asm mov ecx,pOutput
-		__asm fld DWORD PTR [fInput]
-		__asm fmul DWORD PTR [g_fBurgerMath65536]
-		__asm fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
-		__asm fistp DWORD PTR [ecx] }
-	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) { __asm mov ecx,pOutput
-		__asm fld DWORD PTR [fInput]
-		__asm fmul DWORD PTR [g_fBurgerMath65536]
-		__asm fistp DWORD PTR [ecx] }
+	BURGER_INLINE Int32 FloatToFixedFloor(float fInput) {
+		__asm {
+			fld DWORD PTR [fInput]
+			fmul DWORD PTR [g_fBurgerMath65536]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable]
+			fistp DWORD PTR [fInput]
+		}
+		return reinterpret_cast<Fixed32 *>(&fInput)[0]; 
+	}
+	BURGER_INLINE Int32 FloatToFixed(float fInput) { 
+		__asm {
+			fld DWORD PTR [fInput]
+			fmul DWORD PTR [g_fBurgerMath65536]
+			mov eax,[fInput]
+			shr eax,31
+			fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]
+			fistp DWORD PTR [fInput]
+		}
+		return reinterpret_cast<Fixed32 *>(&fInput)[0]; 
+	}
+	BURGER_INLINE Int32 FloatToFixedCeil(float fInput) { 
+		__asm {
+			fld DWORD PTR [fInput]
+			fmul DWORD PTR [g_fBurgerMath65536]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
+			fistp DWORD PTR [fInput]
+		}
+		return reinterpret_cast<Fixed32 *>(&fInput)[0]; 
+	}
+	BURGER_INLINE Int32 FloatToFixedNearest(float fInput) { 
+		__asm {
+			fld DWORD PTR [fInput]
+			fmul DWORD PTR [g_fBurgerMath65536]
+			fistp DWORD PTR [fInput]
+		}
+		return reinterpret_cast<Fixed32 *>(&fInput)[0]; 
+	}
+	BURGER_INLINE void FloatToFixedFloor(Fixed32 *pOutput,float fInput) { 
+		__asm {
+			mov ecx,pOutput
+			fld DWORD PTR [fInput]
+			fmul DWORD PTR [g_fBurgerMath65536]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable]
+			fistp DWORD PTR [ecx] 
+		}
+	}
+	BURGER_INLINE void FloatToFixed(Fixed32 *pOutput,float fInput) { 
+		__asm {
+			mov ecx,pOutput
+			fld DWORD PTR [fInput]
+			fmul DWORD PTR [g_fBurgerMath65536]
+			mov eax,[fInput]
+			shr eax,31
+			fadd dword ptr [g_fBurgerIntMathNearesttable+eax*4]
+			fistp DWORD PTR [ecx] 
+		}
+	}
+	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) {
+		__asm {
+			mov ecx,pOutput
+			fld DWORD PTR [fInput]
+			fmul DWORD PTR [g_fBurgerMath65536]
+			fadd DWORD PTR [g_fBurgerIntMathNearesttable+4]
+			fistp DWORD PTR [ecx] 
+		}
+	}
+	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) { 
+		__asm {
+			mov ecx,pOutput
+			fld DWORD PTR [fInput]
+			fmul DWORD PTR [g_fBurgerMath65536]
+			fistp DWORD PTR [ecx] 
+		}
+	}
+
 #else
 	BURGER_INLINE Fixed32 FloatToFixedFloor(float fInput) { return static_cast<Fixed32>(FloatToIntFloor(fInput*65536.0f)); }
 	BURGER_INLINE Fixed32 FloatToFixed(float fInput) { return static_cast<Fixed32>(FloatToInt(fInput*65536.0f)); }
@@ -288,23 +434,46 @@ namespace Burger {
 	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) { FloatToIntCeil(reinterpret_cast<Int32*>(pOutput),fInput*65536.0f); }
 	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) { FloatToIntNearest(reinterpret_cast<Int32*>(pOutput),fInput*65536.0f); }
 #endif
+
 #if defined(BURGER_ARM) || defined(BURGER_AMD64) || (defined(BURGER_X86) && !defined(BURGER_WINDOWS)) || defined(DOXYGEN)
+	BURGER_INLINE Int8 Abs(Int8 iInput) { if (iInput<0) { iInput=-iInput; } return iInput; }
+	BURGER_INLINE Int16 Abs(Int16 iInput) { if (iInput<0) { iInput=-iInput; } return iInput; }
 	BURGER_INLINE Int32 Abs(Int32 iInput) { if (iInput<0) { iInput=-iInput; } return iInput; }
 	BURGER_INLINE Int64 Abs(Int64 iInput) { if (iInput<0) { iInput=-iInput; } return iInput; }
+	BURGER_INLINE Int8 ClampZero(Int8 iInput) { if (iInput<0) { iInput=0; } return iInput; }
+	BURGER_INLINE Int16 ClampZero(Int16 iInput) { if (iInput<0) { iInput=0; } return iInput; }
 	BURGER_INLINE Int32 ClampZero(Int32 iInput) { if (iInput<0) { iInput=0; } return iInput; }
 	BURGER_INLINE Int64 ClampZero(Int64 iInput) { if (iInput<0) { iInput=0; } return iInput; }
 #else
+	BURGER_INLINE Int8 Abs(Int8 iInput) { Int8 iMask = static_cast<Int8>(iInput>>7); return static_cast<Int8>((iInput^iMask)-iMask); }
+	BURGER_INLINE Int16 Abs(Int16 iInput) { Int16 iMask = static_cast<Int16>(iInput>>15); return static_cast<Int16>((iInput^iMask)-iMask); }
 	BURGER_INLINE Int32 Abs(Int32 iInput) { Int32 iMask = (iInput>>31); return (iInput^iMask)-iMask; }
 	BURGER_INLINE Int64 Abs(Int64 iInput) { Int64 iMask = (iInput>>63); return (iInput^iMask)-iMask; }
+	BURGER_INLINE Int8 ClampZero(Int8 iInput) { return static_cast<Int8>((~(iInput>>7))&iInput); }
+	BURGER_INLINE Int16 ClampZero(Int16 iInput) { return static_cast<Int16>((~(iInput>>15))&iInput); }
 	BURGER_INLINE Int32 ClampZero(Int32 iInput) { return (~(iInput>>31))&iInput; }
 	BURGER_INLINE Int64 ClampZero(Int64 iInput) { return (~(iInput>>63))&iInput; }
 #endif
+
+	BURGER_INLINE Int8 Sign(Int8 iInput) { return static_cast<Int8>((iInput>>7) | static_cast<Int8>(static_cast<Word8>(-iInput)>>7U)); }
+	BURGER_INLINE Int16 Sign(Int16 iInput) { return static_cast<Int16>((iInput>>15) | static_cast<Int16>(static_cast<Word16>(-iInput)>>15U)); }
+	BURGER_INLINE Int32 Sign(Int32 iInput) { return (iInput>>31) | static_cast<Int32>(static_cast<Word32>(-iInput)>>31U); }
+	BURGER_INLINE Int64 Sign(Int64 iInput) { return (iInput>>63) | static_cast<Int64>(static_cast<Word64>(-iInput)>>63U); }
+
+	BURGER_INLINE Int8 Min(Int8 iA,Int8 iB) { return ((iA < iB) ? iA : iB); }
+	BURGER_INLINE Int16 Min(Int16 iA,Int16 iB) { return ((iA < iB) ? iA : iB); }
 	BURGER_INLINE Int32 Min(Int32 iA,Int32 iB) { return ((iA < iB) ? iA : iB); }
 	BURGER_INLINE Int64 Min(Int64 iA,Int64 iB) { return ((iA < iB) ? iA : iB); }
+	BURGER_INLINE Word8 Min(Word8 uA,Word8 uB) { return ((uA < uB) ? uA : uB); }
+	BURGER_INLINE Word16 Min(Word16 uA,Word16 uB) { return ((uA < uB) ? uA : uB); }
 	BURGER_INLINE Word32 Min(Word32 uA,Word32 uB) { return ((uA < uB) ? uA : uB); }
 	BURGER_INLINE Word64 Min(Word64 uA,Word64 uB) { return ((uA < uB) ? uA : uB); }
+	BURGER_INLINE Int8 Max(Int8 iA,Int8 iB) { return ((iA > iB) ? iA : iB); }
+	BURGER_INLINE Int16 Max(Int16 iA,Int16 iB) { return ((iA > iB) ? iA : iB); }
 	BURGER_INLINE Int32 Max(Int32 iA,Int32 iB) { return ((iA > iB) ? iA : iB); }
 	BURGER_INLINE Int64 Max(Int64 iA,Int64 iB) { return ((iA > iB) ? iA : iB); }
+	BURGER_INLINE Word8 Max(Word8 uA,Word8 uB) { return ((uA > uB) ? uA : uB); }
+	BURGER_INLINE Word16 Max(Word16 uA,Word16 uB) { return ((uA > uB) ? uA : uB); }
 	BURGER_INLINE Word32 Max(Word32 uA,Word32 uB) { return ((uA > uB) ? uA : uB); }
 	BURGER_INLINE Word64 Max(Word64 uA,Word64 uB) { return ((uA > uB) ? uA : uB); }
 	BURGER_INLINE Int32 Clamp(Int32 iInput,Int32 iMin,Int32 iMax) { iInput = Max(iInput,iMin); return Min(iInput,iMax); }
@@ -389,9 +558,11 @@ namespace Burger {
 	extern Fixed32 BURGER_API FixedDivide(Fixed32 fInputNumerator,Fixed32 fInputDenominator);
 	extern Fixed32 BURGER_API FixedReciprocal(Fixed32 fInput);
 #endif
+
 	extern Word32 BURGER_API Sqrt(Word32 uInput);
 	extern Word32 BURGER_API SqrtFixedToWord32(Fixed32 fInput);
 	extern Fixed32 BURGER_API Sqrt(Fixed32 uInput);
+
 #if defined(BURGER_MSVC) || defined(BURGER_WATCOM)
 	BURGER_INLINE Word32 RotateLeft(Word32 uInput,Word uShiftCount) { return static_cast<Word32>(_rotl(uInput,uShiftCount)); }
 	BURGER_INLINE Word32 RotateRight(Word32 uInput,Word uShiftCount) { return static_cast<Word32>(_rotr(uInput,uShiftCount)); }
@@ -408,6 +579,7 @@ namespace Burger {
 	BURGER_INLINE Word32 RotateLeft(Word32 uInput,Word uShiftCount) { return ((uInput<<uShiftCount) | (uInput>>(32-uShiftCount))); }
 	BURGER_INLINE Word32 RotateRight(Word32 uInput,Word uShiftCount) { return ((uInput>>uShiftCount) | (uInput<<(32-uShiftCount))); }
 #endif
+
 #if defined(BURGER_MSVC)
 	BURGER_INLINE Word64 RotateLeft(Word64 uInput,Word uShiftCount) { return _rotl64(uInput,uShiftCount); }
 	BURGER_INLINE Word64 RotateRight(Word64 uInput,Word uShiftCount) { return _rotr64(uInput,uShiftCount); }
@@ -415,6 +587,7 @@ namespace Burger {
 	BURGER_INLINE Word64 RotateLeft(Word64 uInput,Word uShiftCount) { return ((uInput<<uShiftCount) | (uInput>>(64-uShiftCount))); }
 	BURGER_INLINE Word64 RotateRight(Word64 uInput,Word uShiftCount) { return ((uInput>>uShiftCount) | (uInput<<(64-uShiftCount))); }
 #endif
+
 }
 /* END */
 

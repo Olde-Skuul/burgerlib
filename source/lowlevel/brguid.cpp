@@ -2,7 +2,7 @@
 
 	Create and work with Windows style GUID structures
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -90,7 +90,7 @@ static BURGER_INLINE Word GUIDCharIsHex(Word uInput)
 	
 ***************************************/
 
-static Word32 GUIDFromHex(const char **ppInput,Word uDigits)
+static Word32 BURGER_API GUIDFromHex(const char **ppInput,Word uDigits)
 {
 	const char *pInput = ppInput[0];
 	while (!GUIDCharIsHex(reinterpret_cast<const Word8 *>(pInput)[0])) {

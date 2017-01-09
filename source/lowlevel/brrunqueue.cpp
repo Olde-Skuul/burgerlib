@@ -2,7 +2,7 @@
 
 	Run Queue execution handler
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -28,6 +28,8 @@
 	
 	\note Due to the nature of memory use, the copying of this
 	class is forbidden.
+
+	\sa \ref RunQueueEntry
 	
 ***************************************/
 
@@ -44,16 +46,84 @@
 ***************************************/
 
 
+
+/*! ************************************
+
+	\class Burger::RunQueue::RunQueueEntry
+	\brief Function pointer entry
+
+	The RunQueue manages a list of these class entries that hold 
+	the callback pointers for every callback entry.
+
+	They are created with a call to RunQueue::Add().
+
+	To dispose this class, call Delete()
+
+	\sa \ref RunQueueEntry
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::RunQueue::RunQueueEntry::RunQueueEntry(CallbackProc pCallBack,CallbackProc pShutdownCallback,void *pData,Word uPriority)
+	\brief RunQueueEntry constructor.
+
+	\param pCallBack Pointer to a function that is called when the queue is polled
+	\param pShutdownCallback Pointer to a function that is called when this entry is disposed of
+	\param pData Pointer to function data.
+	\param uPriority Priority value for location in the queue
+	\sa RunQueue
+	
+***************************************/
+
+/*! ************************************
+
+	\brief RunQueueEntry destructor.
+
+	When a RunQueueEntry is destroyed, if there is a shutdown
+	procedure defined, call the function with the application
+	supplied data pointer before deleting the entry.
+
+	This function does not attempt to delete the application data,
+	it's the shutdown function's responsibility to dispose
+	of any data that it's managing.
+
+	\sa RunQueue
+	
+***************************************/
+
+Burger::RunQueue::RunQueueEntry::~RunQueueEntry()
+{
+	if (m_pShutdownCallback) {
+		m_pShutdownCallback(m_pData);
+	}
+	m_pData = NULL;
+	m_pShutdownCallback = NULL;
+	m_pCallBack = NULL;
+}
+
+/*! ************************************
+
+	\fn Word Burger::RunQueue::RunQueueEntry::GetPriority(void) const
+	\brief Get the priority value
+
+	\return The priority of this entry
+	\sa RunQueue
+	
+***************************************/
+
+
+
+
 /*! ************************************
 
 	\fn Burger::RunQueue::RunQueue()
 	\brief RunQueue constructor.
 
 	Initialize the class to contain no list. This is
-	inlined due to its only zeroing out members.
+	inline due to its only zeroing out members.
 	
 ***************************************/
-
 
 /*! ************************************
 
@@ -90,41 +160,35 @@ Burger::RunQueue::~RunQueue()
 	\note There is a recursion checker, this function will
 	do nothing if it is called by a RunQueue::CallbackProc proc.
 
-	\sa Add(CallbackProc,void*,Word), Remove(CallbackProc,void*) or RemoveAll(CallbackProc);
+	\sa Add(CallbackProc,CallbackProc,void*,Word), Remove(CallbackProc,void*) or RemoveAll(CallbackProc);
 
 ***************************************/
 
 void BURGER_API Burger::RunQueue::Call(void)
 {
 	if (!m_Recurse) {
-		RunQueueEntry_t *pWork = m_pFirst;		// Get the master handle
-		if (pWork) { 							// Any in the list?
+		// Get the master handle
+		RunQueueEntry *pWork = static_cast<RunQueueEntry *>(m_Entries.GetNext());
+		if (pWork!=&m_Entries) {				// Any in the list?
 			m_Recurse = TRUE;					// Prevent recursion
-			RunQueueEntry_t **pPrev = &m_pFirst;		// Previous entry
 			do {
 				// Call the function
-				eReturnCode eCode = pWork->m_pProc(pWork->m_pData);
+				eReturnCode uCode = pWork->m_pCallBack(pWork->m_pData);
+				// Abort execution
+				if (uCode==ABORT) {
+					break;
+				}
 
 				// Next in the chain
-				RunQueueEntry_t *pNext = pWork->m_pNext;
-
-				// Abort execution
-				if (eCode==ABORT) {
-					break;
+				RunQueueEntry *pNext = static_cast<RunQueueEntry *>(pWork->GetNext());
 
 				// Dispose of this entry
-				} else if (eCode==DISPOSE) {
-					// Remove from the linked list
-					pPrev[0] = pNext;
+				if (uCode==DISPOSE) {
 					// Remove this entry
-					Free(pWork);
-				} else {
-					// Since this is retained, this will be the previous entry for 
-					// unlinking (If needed)
-					pPrev = &pWork->m_pNext;
+					Delete(pWork);
 				}
 				pWork = pNext;				// Next one
-			} while (pWork); 				// Any more?
+			} while (pWork!=&m_Entries);	// Any more?
 			m_Recurse = FALSE;				// I'm done, so release the lock
 		}
 	}
@@ -143,45 +207,40 @@ void BURGER_API Burger::RunQueue::Call(void)
 	like numbered priorities.
 	
 	\param pProc Pointer to a function of type RunQueue::CallbackProc.
+	\param pShutdown Pointer to a function of type RunQueue::CallbackProc that is called when this entry is disposed of
 	\param pData Pointer to be passed to the function when called.
 	\param uPriority Priority value to determine order of calling. Higher values get called first.
 
-	\return Returns \ref TRUE if successful, \ref FALSE if out of memory or if the
+	\return Returns a pointer to the created \ref RunQueueEntry if successful, \ref NULL if out of memory or if the
 	function pointer was \ref NULL.
 	\sa Remove(CallbackProc,void*).
 	
 ***************************************/
 
-Word BURGER_API Burger::RunQueue::Add(CallbackProc pProc,void *pData,Word uPriority)
+Burger::RunQueue::RunQueueEntry *BURGER_API Burger::RunQueue::Add(CallbackProc pProc,CallbackProc pShutdown,void *pData,Word uPriority)
 {
 	// Assume failure
-	Word uResult = FALSE;
+	RunQueueEntry *pResult = NULL;
 	if (pProc) {
-		RunQueueEntry_t *pNew = static_cast<RunQueueEntry_t *>(Alloc(sizeof(RunQueueEntry_t)));
-		if (pNew) {
-			pNew->m_pProc = pProc;		// Save the proc
-			pNew->m_pData = pData;		// Save the data
-			pNew->m_uPriority = uPriority;	// Priority
-			RunQueueEntry_t *pNext = m_pFirst;
+		pResult = new (Alloc(sizeof(RunQueueEntry))) RunQueueEntry(pProc,pShutdown,pData,uPriority);
+		if (pResult) {
+			RunQueueEntry *pNext = static_cast<RunQueueEntry *>(m_Entries.GetNext());
 			// No entries? No need to test priorities
-			if (!pNext) {
-				pNew->m_pNext = NULL;	// Link it in
-				m_pFirst = pNew;		// New master handle
+			if (pNext==&m_Entries) {
+				m_Entries.InsertAfter(pResult);	// Link it in
 			} else {
 				// Traverse the linked list until the end is 
 				// reached, or an entry with lower priority shows up
-				RunQueueEntry_t *pWork;
+				RunQueueEntry *pWork;
 				do {
 					pWork = pNext;
-					pNext = pNext->m_pNext;
-				} while (pNext && (pWork->m_uPriority>uPriority));
-				pNew->m_pNext = pNext;
-				pWork->m_pNext = pNew;
-				uResult = TRUE;				// Success
+					pNext = static_cast<RunQueueEntry *>(pNext->GetNext());
+				} while ((pNext!=&m_Entries) && (pWork->m_uPriority>uPriority));
+				pNext->InsertBefore(pResult);
 			}
 		}
 	}
-	return uResult;
+	return pResult;
 }
 
 /*! ************************************
@@ -192,26 +251,26 @@ Word BURGER_API Burger::RunQueue::Add(CallbackProc pProc,void *pData,Word uPrior
 	If a match is found, return \ref TRUE.
 	
 	\param pProc Pointer to the function.
-	\return \ref TRUE if the function pointer was found, \ref FALSE if not.
-	\sa Add(CallbackProc,void*,Word), Clear() or Call().
+	\return \ref RunQueueEntry pointer if the function pointer was found, \ref NULL if not.
+	\sa Add(CallbackProc,CallbackProc,void*,Word), Clear() or Call().
 
 ***************************************/
 
-Word BURGER_API Burger::RunQueue::Find(CallbackProc pProc) const
+Burger::RunQueue::RunQueueEntry * BURGER_API Burger::RunQueue::Find(CallbackProc pProc) const
 {
-	Word uResult = FALSE;
+	RunQueueEntry *pResult = NULL;
 	// Get the master handle
-	const RunQueueEntry_t *pWork = m_pFirst;
-	if (pWork) {							// Is it valid?
+	RunQueueEntry *pWork = static_cast<RunQueueEntry *>(m_Entries.GetNext());
+	if (pWork!=&m_Entries) {							// Is it valid?
 		do {
-			if (pWork->m_pProc==pProc) {	// Match?
-				uResult = TRUE;				// I found it
+			if (pWork->m_pCallBack==pProc) {	// Match?
+				pResult = pWork;				// I found it
 				break;
 			}
-			pWork = pWork->m_pNext;			// Follow the list
-		} while (pWork);					// Still more?
+			pWork = static_cast<RunQueueEntry *>(pWork->GetNext());			// Follow the list
+		} while (pWork!=&m_Entries);			// Still more?
 	}
-	return uResult;
+	return pResult;
 }
 
 /*! ************************************
@@ -224,27 +283,28 @@ Word BURGER_API Burger::RunQueue::Find(CallbackProc pProc) const
 		
 	\param pProc Pointer to the function.
 	\param pData Void pointer to pass to the function if called.
-	\return \ref TRUE if the Function/Data pair was found, \ref FALSE if not.
-	\sa Add(CallbackProc,void*,Word), Find(CallbackProc) const or Call().
+	\return \ref RunQueueEntry pointer if the Function/Data pair was found, \ref NULL if not.
+	\sa Add(CallbackProc,CallbackProc,void*,Word), Find(CallbackProc) const or Call().
 
 ***************************************/
 
-Word BURGER_API Burger::RunQueue::Find(CallbackProc pProc,void *pData) const
+Burger::RunQueue::RunQueueEntry * BURGER_API Burger::RunQueue::Find(CallbackProc pProc,void *pData) const
 {
-	Word uResult = FALSE;
+	RunQueueEntry *pResult = NULL;
 	// Get the master handle
-	const RunQueueEntry_t *pWork = m_pFirst;	
-	if (pWork) {							// Is it valid?
+	RunQueueEntry *pWork = static_cast<RunQueueEntry *>(m_Entries.GetNext());	
+	if (pWork!=&m_Entries) {							// Is it valid?
 		do {
 			// Match?
-			if ((pWork->m_pProc==pProc) && (pWork->m_pData==pData)) {
-				uResult = TRUE;			// I found it
+			if ((pWork->m_pCallBack==pProc) &&
+				(pWork->m_pData==pData)) {
+				pResult = pWork;			// I found it
 				break;
 			}
-			pWork = pWork->m_pNext;				// Follow the list
-		} while (pWork);				// Still more?
+			pWork = static_cast<RunQueueEntry *>(pWork->GetNext());				// Follow the list
+		} while (pWork!=&m_Entries);				// Still more?
 	}
-	return uResult;
+	return pResult;
 }
 
 /*! ************************************
@@ -260,27 +320,23 @@ Word BURGER_API Burger::RunQueue::Find(CallbackProc pProc,void *pData) const
 	
 	\param pProc Pointer to the function.
 	\return \ref TRUE if the Function/Data pair was found, \ref FALSE if not.
-	\sa Add(CallbackProc,void*,Word), Clear() or Call().
+	\sa Add(CallbackProc,CallbackProc,void*,Word), Clear() or Call().
 
 ***************************************/
 
 Word BURGER_API Burger::RunQueue::RemoveAll(CallbackProc pProc)
 {
 	Word uResult = FALSE;
-	RunQueueEntry_t *pWork = m_pFirst;		// Get the master handle
-	if (pWork) {							// Is it valid?
-		RunQueueEntry_t **pPrev = &m_pFirst;	// This is where I'll store the forward link
+	RunQueueEntry *pWork = static_cast<RunQueueEntry *>(m_Entries.GetNext());		// Get the master handle
+	if (pWork!=&m_Entries) {							// Is it valid?
 		do {
-			RunQueueEntry_t *pNext = pWork->m_pNext;		// Get the forward link (For unlinking)
-			if (pWork->m_pProc==pProc) {	// Match?
-				pPrev[0] = pNext;			// I'm gone!
-				Free(pWork);				// Dispose of the current record
+			RunQueueEntry *pNext = static_cast<RunQueueEntry *>(pWork->GetNext());		// Get the forward link (For unlinking)
+			if (pWork->m_pCallBack==pProc) {	// Match?
+				Delete(pWork);				// Dispose of the current record
 				uResult = TRUE;				// I deleted it
-			} else {
-				pPrev = &pWork->m_pNext;	// This is the link that will be broken
 			}
 			pWork = pNext;					// Follow the list
-		} while (pWork);					// Still more?
+		} while (pWork!=&m_Entries);		// Still more?
 	}
 	return uResult;
 }
@@ -302,27 +358,27 @@ Word BURGER_API Burger::RunQueue::RemoveAll(CallbackProc pProc)
 	\param pProc Pointer to the function.
 	\param pData Void pointer to pass to the function if called.
 	\return \ref TRUE if the Function/Data pair was found, \ref FALSE if not.
-	\sa Add(CallbackProc,void*,Word), Clear() or Call().
+	\sa Add(CallbackProc,CallbackProc,void*,Word), Clear() or Call().
 
 ***************************************/
 
 Word BURGER_API Burger::RunQueue::Remove(CallbackProc pProc,void *pData)
 {
 	Word uResult = FALSE;
-	RunQueueEntry_t *pWork = m_pFirst;		// Get the master handle
-	if (pWork) {							// Is it valid?
-		RunQueueEntry_t **pPrev = &m_pFirst;	// This is where I'll store the forward link
+	// Get the master handle
+	RunQueueEntry *pWork = static_cast<RunQueueEntry *>(m_Entries.GetNext());		
+	if (pWork!=&m_Entries) {							// Is it valid?
 		do {
-			RunQueueEntry_t *pNext = pWork->m_pNext;		// Get the forward link (For unlinking)
-			if (pWork->m_pProc==pProc && pWork->m_pData==pData) {	// Match?
-				pPrev[0] = pNext;	// I'm gone!
-				Free(pWork);		// Dispose of the current record
-				uResult = TRUE;			// I deleted it
+			// Match?
+			if ((pWork->m_pCallBack==pProc) && (pWork->m_pData==pData)) {
+				Delete(pWork);		// Dispose of the current record
+				uResult = TRUE;		// I deleted it
 				break;
 			}
-			pPrev = &pWork->m_pNext;	// This is the link that will be broken
-			pWork = pNext;				// Follow the list
-		} while (pWork);				// Still more?
+			// Follow the list
+			pWork = static_cast<RunQueueEntry *>(pWork->GetNext());				
+			// Still more?
+		} while (pWork!=&m_Entries);				
 	}
 	return uResult;
 }
@@ -336,20 +392,20 @@ Word BURGER_API Burger::RunQueue::Remove(CallbackProc pProc,void *pData)
 	
 	\note No functions will be called. Only the list will be destroyed.	
 
-	\sa Add(CallbackProc,void*,Word) or Remove(CallbackProc,void*).
+	\sa Add(CallbackProc,CallbackProc,void*,Word) or Remove(CallbackProc,void*).
 	
 ***************************************/
 
 void BURGER_API Burger::RunQueue::Clear(void)
 {
-	RunQueueEntry_t *pWork = m_pFirst;	// Get the master handle
-	if (pWork) {						// Is it valid?
+	// Get the master handle
+	RunQueueEntry *pWork = static_cast<RunQueueEntry *>(m_Entries.GetNext());	
+	if (pWork!=&m_Entries) {						// Is it valid?
 		do {
 			// Get the forward link (For unlinking)
-			RunQueueEntry_t *pNext = pWork->m_pNext;	
-			Free(pWork);				// Dispose of the current record
+			RunQueueEntry *pNext = static_cast<RunQueueEntry *>(pWork->GetNext());	
+			Delete(pWork);				// Dispose of the current record
 			pWork = pNext;				// Follow the list
-		} while (pWork);				// Still more?
-		m_pFirst = pWork;				// Erase with NULL without loading a constant
+		} while (pWork!=&m_Entries);	// Still more?
 	}
 }

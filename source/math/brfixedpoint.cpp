@@ -2,7 +2,7 @@
 
 	Fixed point math functions
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -709,6 +709,35 @@ Int32 BURGER_API Burger::FloatToIntNearest(float fInput)
 	
 ***************************************/
 
+
+/*! ************************************
+
+	\fn Int8 Burger::Abs(Int8 iInput)
+	\brief Get the absolute value of an integer.
+	
+	Without branching, calculate the absolute value of an integer.
+		
+	\param iInput Value to get the absolute value of.
+	\return The absolute value of iInput.
+	
+	\sa Abs(Int16), Abs(Int32), Abs(Int64), Abs(float) and Abs(double) 
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Int16 Burger::Abs(Int16 iInput)
+	\brief Get the absolute value of an integer.
+	
+	Without branching, calculate the absolute value of an integer.
+		
+	\param iInput Value to get the absolute value of.
+	\return The absolute value of iInput.
+	
+	\sa Abs(Int8), Abs(Int32), Abs(Int64), Abs(float) and Abs(double) 
+	
+***************************************/
+
 /*! ************************************
 
 	\fn Int32 Burger::Abs(Int32 iInput)
@@ -719,7 +748,7 @@ Int32 BURGER_API Burger::FloatToIntNearest(float fInput)
 	\param iInput Value to get the absolute value of.
 	\return The absolute value of iInput.
 	
-	\sa Abs(Int64), Abs(float) and Abs(double) 
+	\sa Abs(Int8), Abs(Int16), Abs(Int64), Abs(float) and Abs(double) 
 	
 ***************************************/
 
@@ -733,7 +762,37 @@ Int32 BURGER_API Burger::FloatToIntNearest(float fInput)
 	\param iInput Value to get the absolute value of.
 	\return The absolute value of iInput.
 	
-	\sa Abs(Int32), Abs(float) and Abs(double) 
+	\sa Abs(Int8), Abs(Int16), Abs(Int32), Abs(float) and Abs(double) 
+	
+***************************************/
+
+
+
+/*! ************************************
+
+	\fn Int8 Burger::ClampZero(Int8 iInput)
+	\brief Clamp an integer to 0
+	
+	Without branching, if the integer is less than zero, set it to zero.
+		
+	\param iInput Value to test for less than zero.
+	\return The zero clamped value of iInput.
+	
+	\sa ClampZero(Int16), ClampZero(Int32) or ClampZero(Int64)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Int16 Burger::ClampZero(Int16 iInput)
+	\brief Clamp an integer to 0
+	
+	Without branching, if the integer is less than zero, set it to zero.
+		
+	\param iInput Value to test for less than zero.
+	\return The zero clamped value of iInput.
+	
+	\sa ClampZero(Int8), ClampZero(Int32) or ClampZero(Int64)
 	
 ***************************************/
 
@@ -747,7 +806,7 @@ Int32 BURGER_API Burger::FloatToIntNearest(float fInput)
 	\param iInput Value to test for less than zero.
 	\return The zero clamped value of iInput.
 	
-	\sa ClampZero(Int64)
+	\sa ClampZero(Int8), ClampZero(Int16) or ClampZero(Int64)
 	
 ***************************************/
 
@@ -761,7 +820,109 @@ Int32 BURGER_API Burger::FloatToIntNearest(float fInput)
 	\param iInput Value to test for less than zero.
 	\return The zero clamped value of iInput.
 	
-	\sa ClampZero(Int32)
+	\sa ClampZero(Int8), ClampZero(Int16) or ClampZero(Int32)
+	
+***************************************/
+
+
+
+/*! ************************************
+
+	\fn Int8 Burger::Sign(Int8 iInput)
+	\brief Get the sign value of an integer.
+	
+	Without branching, calculate the sign value of an integer. If
+	the input was zero, return zero, if it's positive, return 1 and
+	if negative, return -1.
+		
+	\param iInput Value to get the sign value of.
+	\return 0, 1 or -1.
+	
+	\sa Sign(Int16), Sign(Int32), Sign(Int64), Sign(float) and Sign(double) 
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Int16 Burger::Sign(Int16 iInput)
+	\brief Get the sign value of an integer.
+	
+	Without branching, calculate the sign value of an integer. If
+	the input was zero, return zero, if it's positive, return 1 and
+	if negative, return -1.
+		
+	\param iInput Value to get the sign value of.
+	\return 0, 1 or -1.
+	
+	\sa Sign(Int8), Sign(Int32), Sign(Int64), Sign(float) and Sign(double) 
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Int32 Burger::Sign(Int32 iInput)
+	\brief Get the sign value of an integer.
+	
+	Without branching, calculate the sign value of an integer. If
+	the input was zero, return zero, if it's positive, return 1 and
+	if negative, return -1.
+		
+	\param iInput Value to get the sign value of.
+	\return 0, 1 or -1.
+	
+	\sa Sign(Int8), Sign(Int16), Sign(Int64), Sign(float) and Sign(double) 
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Int64 Burger::Sign(Int64 iInput)
+	\brief Get the sign value of a 64 bit integer.
+	
+	Without branching, calculate the sign value of an integer. If
+	the input was zero, return zero, if it's positive, return 1 and
+	if negative, return -1.
+		
+	\param iInput Value to get the sign value of.
+	\return 0, 1 or -1.
+	
+	\sa Sign(Int8), Sign(Int16), Sign(Int32), Sign(float) and Sign(double) 
+	
+***************************************/
+
+
+
+
+
+
+
+/*! ************************************
+
+	\fn Int8 Burger::Min(Int8 iA,Int8 iB)
+	\brief Return the lesser of two numbers
+
+	Compare the two input values and return the lesser of the two.
+		
+	\param iA First value to test
+	\param iB Second value to test
+	\return The lesser of the two inputs
+	
+	\sa Max(Int8,Int8), Min(Word8,Word8), or Min(Int32,Int32)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Int8 Burger::Min(Int16 iA,Int16 iB)
+	\brief Return the lesser of two numbers
+
+	Compare the two input values and return the lesser of the two.
+		
+	\param iA First value to test
+	\param iB Second value to test
+	\return The lesser of the two inputs
+	
+	\sa Max(Int16,Int16), Min(Word16,Word16), or Min(Int32,Int32)
 	
 ***************************************/
 
@@ -797,6 +958,36 @@ Int32 BURGER_API Burger::FloatToIntNearest(float fInput)
 
 /*! ************************************
 
+	\fn Word8 Burger::Min(Word8 uA,Word8 uB)
+	\brief Return the lesser of two numbers
+
+	Compare the two input values and return the lesser of the two.
+		
+	\param uA First value to test
+	\param uB Second value to test
+	\return The lesser of the two inputs
+	
+	\sa Max(Word8,Word8), Min(Int32,Int32), or Min(Word64,Word64)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word16 Burger::Min(Word16 uA,Word16 uB)
+	\brief Return the lesser of two numbers
+
+	Compare the two input values and return the lesser of the two.
+		
+	\param uA First value to test
+	\param uB Second value to test
+	\return The lesser of the two inputs
+	
+	\sa Max(Word16,Word16), Min(Int32,Int32), or Min(Word64,Word64)
+	
+***************************************/
+
+/*! ************************************
+
 	\fn Word32 Burger::Min(Word32 uA,Word32 uB)
 	\brief Return the lesser of two numbers
 
@@ -826,6 +1017,39 @@ Int32 BURGER_API Burger::FloatToIntNearest(float fInput)
 ***************************************/
 
 
+
+
+
+/*! ************************************
+
+	\fn Int8 Burger::Max(Int8 iA,Int8 iB)
+	\brief Return the greater of two numbers
+
+	Compare the two input values and return the greater of the two.
+		
+	\param iA First value to test
+	\param iB Second value to test
+	\return The greater of the two inputs
+	
+	\sa Min(Int8,Int8), Max(Word32,Word32), or Max(Int64,Int64)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Int16 Burger::Max(Int16 iA,Int16 iB)
+	\brief Return the greater of two numbers
+
+	Compare the two input values and return the greater of the two.
+		
+	\param iA First value to test
+	\param iB Second value to test
+	\return The greater of the two inputs
+	
+	\sa Min(Int16,Int16), Max(Word32,Word32), or Max(Int64,Int64)
+	
+***************************************/
+
 /*! ************************************
 
 	\fn Int32 Burger::Max(Int32 iA,Int32 iB)
@@ -853,6 +1077,36 @@ Int32 BURGER_API Burger::FloatToIntNearest(float fInput)
 	\return The greater of the two inputs
 	
 	\sa Min(Int64,Int64), Max(Word64,Word64), or Max(Int32,Int32)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word8 Burger::Max(Word8 uA,Word8 uB)
+	\brief Return the greater of two numbers
+
+	Compare the two input values and return the greater of the two.
+		
+	\param uA First value to test
+	\param uB Second value to test
+	\return The greater of the two inputs
+	
+	\sa Min(Word8,Word8), Max(Int32,Int32), or Max(Word64,Word64)
+	
+***************************************/
+
+/*! ************************************
+
+	\fn Word16 Burger::Max(Word16 uA,Word16 uB)
+	\brief Return the greater of two numbers
+
+	Compare the two input values and return the greater of the two.
+		
+	\param uA First value to test
+	\param uB Second value to test
+	\return The greater of the two inputs
+	
+	\sa Min(Word16,Word16), Max(Int32,Int32), or Max(Word64,Word64)
 	
 ***************************************/
 

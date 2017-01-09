@@ -4,7 +4,7 @@
 	create standardized typedefs and macros
 	so generic code can be created cross platform
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -17,9 +17,11 @@
 #define __BRTYPES_H__
 
 /* BEGIN */
+
 // Open Watcom C++ for Win32 and MS-DOS
+
 #if defined(__WATCOMC__)
-#define BURGER_WATCOM
+#define BURGER_WATCOM __WATCOMC__
 #define BURGER_ALIGN(x,s) (x)
 #define BURGER_PREALIGN(s)
 #define BURGER_POSTALIGN(s)
@@ -30,6 +32,7 @@
 #define BURGER_INLINE inline
 #define BURGER_LONGLONG __int64
 #define BURGER_HASWCHAR_T
+
 #if defined(__DOS__)
 #define BURGER_MSDOS
 #elif defined(__NT__)
@@ -39,6 +42,7 @@
 #endif
 
 // MRC for MacOS Classic and Carbon
+
 #elif defined(__MRC__)
 #define BURGER_MRC
 #define BURGER_ALIGN(x,s) __align(s) (x)
@@ -54,14 +58,17 @@
 #endif
 
 // SC Compiler for 680x0 for Mac OS Classic
+
 #elif defined(__SC__) && (defined(MPW_CPLUS) || defined(MPW_C))
 #define BURGER_APPLESC
 #define BURGER_ALIGN(x,s) __align(s) (x)
 #define BURGER_PREALIGN(s) __align(s)
 #define BURGER_POSTALIGN(s)
+
 #if (__SC__ >= 0x0801)
 #define BURGER_STRUCT_ALIGN
 #endif
+
 #define BURGER_MAC
 #define BURGER_68K
 #define BURGER_BIGENDIAN
@@ -141,12 +148,14 @@
 #define BURGER_STRUCT_PACK
 
 // Visual Studio 2003/2005/2008 for Xbox and Xbox 360
+
 #elif defined(_XBOX) || defined(XBOX)
 #define BURGER_MSVC
 #define BURGER_ALIGN(x,s) __declspec(align(s)) (x)
 #define BURGER_PREALIGN(s) __declspec(align(s))
 #define BURGER_POSTALIGN(s)
 #define BURGER_STRUCT_PACKPUSH
+
 #if !defined(_M_IX86)
 #define BURGER_POWERPC
 #define BURGER_BIGENDIAN
@@ -159,12 +168,14 @@
 #define BURGER_API __fastcall
 #define BURGER_FASTCALLENABLED
 #endif
+
 #define BURGER_ANSIAPI __cdecl
 #define BURGER_INLINE __forceinline
-#define BURGER_ASM _asm
+#define BURGER_ASM __asm
 #define BURGER_LONGLONG __int64
 
 // Detect PS3
+
 #elif defined(__CELLOS_LV2__)
 #define BURGER_GNUC
 #define BURGER_POWERPC
@@ -179,6 +190,7 @@
 #define BURGER_LONGLONG long long
 
 // PS4 Orbis
+
 #elif defined(__ORBIS__)
 #define BURGER_LLVM
 #define BURGER_AMD64
@@ -192,14 +204,19 @@
 #define BURGER_LONGLONG long long
 
 // Metrowerks CodeWarrior for MacOS Classic, OSX, Win32
+
 #elif defined(__MWERKS__)
+
 #define BURGER_METROWERKS
+
 #if defined(macintosh) && macintosh
 #define BURGER_BIGENDIAN
 #define BURGER_STRUCT_ALIGN
 #define BURGER_MAC
+
 #if !defined(__POWERPC__)
 #define BURGER_68K
+
 #if !defined(NDEBUG) && !defined(_DEBUG)
 #if __option(sym)
 #define _DEBUG
@@ -207,9 +224,11 @@
 #define NDEBUG
 #endif
 #endif
+
 #if defined(__CFM68K) || defined(__CFM68K__)
 #define BURGER_CFM
 #endif
+
 #else
 #define BURGER_POWERPC
 #define BURGER_CFM
@@ -217,16 +236,19 @@
 #define BURGER_PREALIGN(s) __declspec(align(s))
 #define BURGER_POSTALIGN(s)
 #endif
+
 #elif defined(__MACH__)
 #define BURGER_STRUCT_ALIGN
 #define BURGER_MACOSX
 #define BURGER_POWERPC
 #define BURGER_BIGENDIAN
+
 #elif !defined(__be_os) || (__be_os != __dest_os)
 #define BURGER_STRUCT_PACKPUSH
 #define BURGER_WIN32
 #define BURGER_X86
 #define BURGER_LITTLEENDIAN
+
 #if __MWERKS__>=0x3200
 #define BURGER_ANSIAPI __cdecl
 #define BURGER_API __fastcall
@@ -234,13 +256,16 @@
 #else
 #define BURGER_DECLSPECNAKED asm
 #endif
+
 #define BURGER_ALIGN(x,s) __declspec(align(s)) (x)
 #define BURGER_PREALIGN(s) __declspec(align(s))
 #define BURGER_POSTALIGN(s)
 #define BURGER_LONGLONG long long
+
 #else
 #define BURGER_BEOS
 #define BURGER_STRUCT_ALIGN
+
 #if !defined(__POWERPC__)
 #define BURGER_X86
 #define BURGER_LITTLEENDIAN
@@ -248,7 +273,9 @@
 #define BURGER_POWERPC
 #define BURGER_BIGENDIAN
 #endif
+
 #endif
+
 #if __option(wchar_type)
 #define BURGER_HASWCHAR_T
 #endif
@@ -319,6 +346,7 @@
 
 // Visual Studio for Win32
 #elif defined(_MSC_VER) && defined(_M_IX86)
+
 #define BURGER_MSVC
 #define BURGER_ALIGN(x,s) __declspec(align(s)) (x)
 #define BURGER_PREALIGN(s) __declspec(align(s))
@@ -355,13 +383,17 @@
 #define BURGER_HASWCHAR_T
 
 // Sony Playstation VITA
+
 #elif defined(__psp2__)
+
 #if defined(__GNUC__)
 #define BURGER_GNUC
-#endif
-#if defined(__SNC__)
+#elif defined(__SNC__)
 #define BURGER_SNSYSTEMS
+#else
+#error Unknown PS Vita compiler
 #endif
+
 #define BURGER_VITA
 #define BURGER_INLINE __inline__ __attribute__((always_inline))
 #define BURGER_ALIGN(x,s) (x) __attribute__((aligned(s)))
@@ -385,21 +417,24 @@
 #define BURGER_GEKKO
 #define BURGER_BIGENDIAN
 #define NDEBUG
-#define __fsel __FSEL
 
 #else
 #error Unknown compiler / platform
 #endif
 
+// Set up generic defines
 
+// Generic windows platform?
 #if defined(BURGER_WIN32) || defined(BURGER_WIN64)
 #define BURGER_WINDOWS
 #endif
 
+// Intel x86 or AMD 64 CPU?
 #if defined(BURGER_X86) || defined(BURGER_AMD64)
 #define BURGER_INTELARCHITECTURE
 #endif
 
+// MacOS has two binaries, CFM and Trap
 #if defined(BURGER_MAC)
 #if !defined(TARGET_API_MAC_CARBON) || (TARGET_API_MAC_CARBON==0)
 #define BURGER_MACCLASSIC
@@ -408,10 +443,12 @@
 #endif
 #endif
 
+// Any form of MacOS
 #if defined(BURGER_MAC) || defined(BURGER_MACOSX)
 #define BURGER_MACOS
 #endif
 
+// Set up null defines if not already set up
 #if !defined(BURGER_API)
 #define BURGER_API
 #endif
@@ -420,6 +457,19 @@
 #define BURGER_ANSIAPI
 #endif
 
+#if !defined(BURGER_ASM)
+#define BURGER_ASM asm
+#endif
+
+#if !defined(BURGER_DECLSPECNAKED)
+#define BURGER_DECLSPECNAKED __declspec(naked)
+#endif
+
+#if !defined(BURGER_LONGLONG) && !defined(DOXYGEN)
+#define BURGER_LONGLONG long long
+#endif
+
+// Standard defines (Can be overridden)
 #if !defined(BURGER_MININT)
 #define BURGER_MININT ((-0x7FFFFFFF)-1)
 #endif
@@ -444,48 +494,6 @@
 #define BURGER_MAXUINT64 0xFFFFFFFFFFFFFFFFULL
 #endif
 
-#if !defined(BURGER_ASM)
-#define BURGER_ASM asm
-#endif
-
-#if !defined(BURGER_DECLSPECNAKED)
-#define BURGER_DECLSPECNAKED __declspec(naked)
-#endif
-
-#if !defined(BURGER_LONGLONG) && !defined(DOXYGEN)
-#define BURGER_LONGLONG long long
-#endif
-
-#ifndef BURGER_INLINE
-#if defined(__cplusplus) || defined(__GNUC__) || defined(__MWERKS__) || defined(DOXYGEN)
-#define BURGER_INLINE inline
-#elif defined(BURGER_WINDOWS)
-#define BURGER_INLINE __inline
-#else
-#define BURGER_INLINE
-#endif
-#endif
-
-#ifndef BURGER_ALIGN
-#define BURGER_ALIGN(x,s) x
-#endif
-
-#ifndef BURGER_PREALIGN
-#define BURGER_PREALIGN(s)
-#endif
-
-#ifndef BURGER_POSTALIGN
-#define BURGER_POSTALIGN(s)
-#endif
-
-#if !(defined(BURGER_LITTLEENDIAN) || defined(BURGER_BIGENDIAN))
-#if defined(BURGER_INTELARCHITECTURE) || defined(BURGER_PS2) || defined(BURGER_IOS) || defined(BURGER_DS)
-#define BURGER_LITTLEENDIAN
-#else
-#define BURGER_BIGENDIAN
-#endif
-#endif
-
 #if !defined(NULL)
 #define NULL 0
 #endif
@@ -498,6 +506,41 @@
 #define FALSE 0
 #endif
 
+// Choose the inline keyword
+#if !defined(BURGER_INLINE)
+#if defined(__cplusplus) || defined(__GNUC__) || defined(__MWERKS__) || defined(DOXYGEN)
+#define BURGER_INLINE inline
+#elif defined(BURGER_WINDOWS)
+#define BURGER_INLINE __inline
+#else
+#define BURGER_INLINE
+#endif
+#endif
+
+// Stucture alignment macros defaults
+#ifndef BURGER_ALIGN
+#define BURGER_ALIGN(x,s) x
+#endif
+
+#ifndef BURGER_PREALIGN
+#define BURGER_PREALIGN(s)
+#endif
+
+#ifndef BURGER_POSTALIGN
+#define BURGER_POSTALIGN(s)
+#endif
+
+// Check if endian was set
+
+#if !(defined(BURGER_LITTLEENDIAN) || defined(BURGER_BIGENDIAN))
+#if defined(BURGER_INTELARCHITECTURE) || defined(BURGER_PS2) || defined(BURGER_IOS) || defined(BURGER_DS)
+#define BURGER_LITTLEENDIAN
+#else
+#define BURGER_BIGENDIAN
+#endif
+#endif
+
+// Sanity check for debug defines
 #if defined(NDEBUG) && defined(_DEBUG)
 #error NDEBUG and _DEBUG are both defined. Choose one or the other
 #endif
@@ -506,38 +549,44 @@
 #error NDEBUG nor _DEBUG were defined. Choose one or the other.
 #endif
 
+// Is OpenGL supported on this platform?
 #if (!(defined(BURGER_VITA)) && \
 	(defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_ANDROID) || defined(BURGER_LINUX))) || defined(DOXYGEN)
 #define BURGER_OPENGL_SUPPORTED
 #endif
 
+// Is OpenGLES supported on this platform?
 #if (!(defined(BURGER_VITA)) && (defined(BURGER_IOS) || defined(BURGER_ANDROID))) || defined(DOXYGEN)
 #define BURGER_OPENGLES
 #endif
 
+// Is Vulkan supported on this platform?
+#if (defined(BURGER_ANDROID) || defined(BURGER_WINDOWS) || defined(BURGER_LINUX))
+#define BURGER_VULKAN
+#endif
+
+// Helper macros
 #define BURGER_OFFSETOF(__type,member) (reinterpret_cast<WordPtr>(&(reinterpret_cast<const __type *>(1)->member))-1)
 #define BURGER_ARRAYSIZE(x) static_cast<WordPtr>(sizeof(x)/sizeof(x[0]))
 #define BURGER_UNUSED(x) (void)(x)
 #define BURGER_HASHMACRO(x) #x
 #define BURGER_MACRO_TO_STRING(x) BURGER_HASHMACRO(x)
 
+// Macro to create copy constructors to disable the feature
 #if defined(DOXYGEN)
 #define BURGER_DISABLECOPYCONSTRUCTORS(x) private:
 #else
 #define BURGER_DISABLECOPYCONSTRUCTORS(x) private: x(x const &); x &operator = (x const &)
 #endif
 
+// Data types
+
 typedef signed char Int8;
 typedef unsigned char Word8;
 typedef signed short Int16;
 typedef unsigned short Word16;
-#if defined(BURGER_PS2) || defined(BURGER_64BITCPU)
 typedef signed int Int32;
 typedef unsigned int Word32;
-#else
-typedef signed long Int32;
-typedef unsigned long Word32;
-#endif
 
 typedef signed BURGER_LONGLONG Int64;
 typedef unsigned BURGER_LONGLONG Word64;
@@ -547,7 +596,7 @@ typedef Int32 Fixed32;
 typedef unsigned int Word;
 typedef signed int Int;
 
-
+// 128 bit types
 
 #if defined(BURGER_PS2) || defined(BURGER_PSP)
 typedef unsigned int Vector_128 __attribute__((mode (TI)));
@@ -616,6 +665,7 @@ struct Vector_128 {
 };
 #endif
 
+// Pointer types cast to an integer
 #if defined(BURGER_64BITCPU) && !defined(BURGER_XBOX360) && !defined(BURGER_PS3)
 typedef Word64 WordPtr;
 typedef Int64 IntPtr;
@@ -628,6 +678,7 @@ typedef Int32 IntPtr;
 #define BURGER_MAXINTPTR 0x7FFFFFFF
 #endif
 
+// new override support
 #if !defined(BURGER_NONEW)
 
 #if defined(BURGER_METROWERKS)
@@ -637,7 +688,7 @@ BURGER_INLINE void *operator new(__typeof__(sizeof(0)), void*x) { return x; }
 #define __PLACEMENT_NEW_INLINE
 BURGER_INLINE void* BURGER_ANSIAPI operator new(size_t, void*x) {return x;}
 
-#elif defined(__GNUC__) && defined(__MACH__) && (defined(__APPLE_CPP__) || defined(__APPLE_CC__) || defined(__NEXT_CPP__)) && defined(BURGER_64BITCPU)
+#elif defined(__GNUC__) && defined(__MACH__) && (defined(__APPLE_CPP__) || defined(__APPLE_CC__) || defined(__NEXT_CPP__))
 BURGER_INLINE void* operator new(unsigned long int,void *x) {return x;}
 
 #elif defined(BURGER_PS4)
@@ -651,13 +702,18 @@ BURGER_INLINE void* operator new(WordPtr, void*x) {return x;}
 #endif
 #endif
 
+// Simple global templates
+
 namespace Burger {
+
+// Swap the contents of two memory variables
 template<class T>
 BURGER_INLINE void SwapVariables(T *pA,T *pB) {
 	T tTemp(*pA);
 	*pA = *pB;
 	*pB = tTemp;
 }
+
 }
 /* END */
 

@@ -2,7 +2,7 @@
 
 	Run Queue execution handler
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -16,6 +16,10 @@
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
+#endif
+
+#ifndef __BRDOUBLYLINKEDLIST_H__
+#include "brdoublylinkedlist.h"
 #endif
 
 /* BEGIN */
@@ -36,29 +40,40 @@ public:
 		PRIORITY_INPUTPROCESSING=0x7000000,	///< Priority for processing game input
 		PRIORITY_SEQUENCING=0x68001000,		///< Priority for music processing
 		PRIORITY_SOUNDPROCESSING=0x6800000,	///< Priority for handling sound effects
-		PRIORITY_FILEPROCESSING=0x6400000,	///< Priority for async file I/O processing
+		PRIORITY_FILEPROCESSING=0x6400000,	///< Priority for asynchronous file I/O processing
 		PRIORITY_HIGH=0x6000000,			///< High priority for RunQueue tasks
 		PRIORITY_MEDIUM=0x4000000,			///< Average priority for RunQueue tasks
 		PRIORITY_LOW=0x2000000,				///< Low priority for RunQueue tasks
 		PRIORITY_LAST=0						///< Lowest priority for RunQueue tasks, executed last, do not go lower than this value
 	};
 	typedef eReturnCode (BURGER_API *CallbackProc)(void *);
-private:
-	struct RunQueueEntry_t {
-		RunQueueEntry_t *m_pNext;	///< Handle to the next FunctionEntry_t in chain
-		CallbackProc m_pProc;		///< Function to call for this entry
+
+	class RunQueueEntry : protected DoublyLinkedList {
+		friend class RunQueue;
+		CallbackProc m_pCallBack;	///< Function to call for this entry
+		CallbackProc m_pShutdownCallback;	///< Function to call on deletion
 		void *m_pData;				///< User supplied data pointer to call the function with
 		Word m_uPriority;			///< User supplied priority for inserting a new entry into the list
+		RunQueueEntry(CallbackProc pCallBack,CallbackProc pShutdownCallback,void *pData,Word uPriority) :
+			m_pCallBack(pCallBack),
+			m_pShutdownCallback(pShutdownCallback),
+			m_pData(pData),
+			m_uPriority(uPriority) {}
+	public:
+		~RunQueueEntry();
+		BURGER_INLINE Word GetPriority(void) const { return m_uPriority; }
 	};
-	RunQueueEntry_t *m_pFirst;	///< Pointer to the first entry
+
+private:
+	DoublyLinkedList m_Entries;	///< Head entry of the linked list
 	Word m_Recurse;				///< \ref TRUE if this class is the process of executing.
 public:
-	RunQueue() : m_pFirst(NULL), m_Recurse(FALSE) {}
+	RunQueue() : m_Entries(), m_Recurse(FALSE) {}
 	~RunQueue();
 	void BURGER_API Call(void);
-	Word BURGER_API Add(CallbackProc pProc,void *pData=NULL,Word uPriority=PRIORITY_MEDIUM);
-	Word BURGER_API Find(CallbackProc pProc) const;
-	Word BURGER_API Find(CallbackProc pProc,void *pData) const;
+	RunQueueEntry * BURGER_API Add(CallbackProc pProc,CallbackProc pShutdown=NULL,void *pData=NULL,Word uPriority=PRIORITY_MEDIUM);
+	RunQueueEntry * BURGER_API Find(CallbackProc pProc) const;
+	RunQueueEntry * BURGER_API Find(CallbackProc pProc,void *pData) const;
 	Word BURGER_API RemoveAll(CallbackProc pProc);
 	Word BURGER_API Remove(CallbackProc pProc,void *pData=NULL);
 	void BURGER_API Clear(void);

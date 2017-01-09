@@ -2,7 +2,7 @@
 
 	Floating point analysis
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -257,7 +257,7 @@ void BURGER_API Burger::FPInfo::InitHalf(Word16 sValue)
 				uFlags |= cFlagNAN;
 
 				// Get the bit that determines if it is a NAN
-				const Word uNANBit =  1U << (cMantissaBitCount16-1);
+				const Word uNANBit = 1U << (cMantissaBitCount16-1);
 
 				// Determine if is a quiet NaN and possibly also an Indefinite NaN in addition
 				if (uTemp & uNANBit) {
@@ -336,7 +336,7 @@ void BURGER_API Burger::FPInfo::InitFloat(float fValue)
 				uFlags |= cFlagNAN;
 
 				// Get the bit that determines if it is a NAN
-				const Word uNANBit =  1U << (cMantissaBitCount32-1);
+				const Word uNANBit = 1U << (cMantissaBitCount32-1);
 
 				// Determine if is a quiet NaN and possibly also an Indefinite NaN in addition
 				if (uTemp & uNANBit) {
@@ -415,7 +415,7 @@ void BURGER_API Burger::FPInfo::InitDouble(double dValue)
 				uFlags |= cFlagNAN;
 
 				// Get the bit that determines if it is a NAN
-				const Word64 uNANBit =  1ULL << (cMantissaBitCount64-1);
+				const Word64 uNANBit = 1ULL << (cMantissaBitCount64-1);
 
 				// Determine if is a quiet NaN and possibly also an Indefinite NaN in addition
 				if (uTemp & uNANBit) {

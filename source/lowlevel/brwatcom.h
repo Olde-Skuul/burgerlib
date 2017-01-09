@@ -2,7 +2,7 @@
 
 	Intrinsics and subroutines exclusive to the Open Watcom compiler
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -22,8 +22,12 @@
 #if defined(BURGER_WATCOM) && !defined(DOXYGEN)
 #pragma disable_message(549)		// Disable 'sizeof' operand contains compiler generated information
 #pragma disable_message(666)		// Disable assuming unary 'operator &' not overloaded for type
+
 extern "C" {
 namespace std {
+
+// Found in math.h
+#if defined(_M_IX86)
 __declspec(__watcall) extern double log(double);
 __declspec(__watcall) extern double cos(double);
 __declspec(__watcall) extern double sin(double);
@@ -34,6 +38,7 @@ __declspec(__watcall) extern double pow(double,double);
 __declspec(__watcall) extern double atan2(double,double);
 __declspec(__watcall) extern double fmod(double,double);
 #pragma intrinsic(log,cos,sin,tan,sqrt,fabs,pow,atan2,fmod)
+
 __declspec(__watcall) extern double acos(double);
 __declspec(__watcall) extern double asin(double);
 __declspec(__watcall) extern double atan(double);
@@ -43,10 +48,13 @@ __declspec(__watcall) extern double log10(double);
 __declspec(__watcall) extern double sinh(double);
 __declspec(__watcall) extern double tanh(double);
 #pragma intrinsic(acos,asin,atan,cosh,exp,log10,sinh,tanh)
+#endif
+
 __declspec(__watcall) extern int abs(int);
 //__declspec(__watcall) extern div_t div(int,int);
 __declspec(__watcall) extern long int labs(long int);
 #pragma intrinsic(abs,/* div, */ labs)
+
 }
 
 __declspec(__watcall) extern unsigned int _rotl(unsigned int,unsigned int);
@@ -154,8 +162,11 @@ extern void BurgerFixedMathFromFloatCeil2(Fixed32 *pOutput,float fInput);
 
 extern void BurgerFixedMathFromFloatNearest2(Fixed32 *pOutput,float fInput);
 #pragma aux BurgerFixedMathFromFloatNearest2 = "fmul dword ptr [g_fBurgerMath65536]" "fistp dword ptr [eax]" parm [eax] [8087] modify exact [];
+
 }
+
 #endif
+
 /* END */
 
 #endif

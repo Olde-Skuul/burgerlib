@@ -4,7 +4,7 @@
 	create standardized typedefs and macros
 	so generic code can be created cross platform
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -125,7 +125,7 @@
 	\mainpage Welcome to Burgerlib.
 	<center><h1>The only low level library you'll ever need.</h1></center>
 
-	BurgerLib is copyright 1995-2016 by <a href="mailto:becky@burgerbecky.com">Rebecca Ann Heineman</a>.
+	BurgerLib is copyright 1995-2017 by <a href="mailto:becky@burgerbecky.com">Rebecca Ann Heineman</a>.
 	Email all suggestions, corrections, optimizations and insults to her and she'll be eternally grateful.
 	
 	You can always find the latest version of <a href="https://github.com/Olde-Skuul/burgerlib" target="_blank">Burgerlib's source code here</a>

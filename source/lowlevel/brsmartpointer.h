@@ -2,7 +2,7 @@
 
 	Smart pointer template class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -38,6 +38,7 @@
 namespace Burger {
 class ProxyReferenceCounter {
 	BURGER_DISABLECOPYCONSTRUCTORS(ProxyReferenceCounter);
+private:
 	Word m_uRefCount;				///< Number of weak pointers that are using this object as an anchor
 	Word m_bParentAlive;			///< \ref TRUE if the parent object was deleted
 	ProxyReferenceCounter() : m_uRefCount(0),m_bParentAlive(TRUE) {}
@@ -51,8 +52,9 @@ public:
 
 class ReferenceCounter : public Base {
 	BURGER_DISABLECOPYCONSTRUCTORS(ReferenceCounter);
-	Word m_uRefCount;					///< Number of smart pointers that are claiming ownership of this object
 	BURGER_RTTI_IN_CLASS();
+private:
+	Word m_uRefCount;					///< Number of smart pointers that are claiming ownership of this object
 public:
 	ReferenceCounter() : m_uRefCount(0) { }
 	virtual ~ReferenceCounter();
