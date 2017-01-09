@@ -2,7 +2,7 @@
 
 	Sound manager class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -55,15 +55,30 @@
 #endif
 
 /* BEGIN */
+
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+
+extern "C" {
+	extern const GUID IID_IXAudio2_2_8;
+	extern const GUID CLSID_AudioVolumeMeter_2_8;
+	extern const GUID CLSID_AudioReverb_2_8;
+	extern const GUID IID_IXAudio2_2_9;
+}
+#endif
+
 namespace Burger {
+
 class DecompressAudio;
+
 class SoundManager : public Base {
 	BURGER_DISABLECOPYCONSTRUCTORS(SoundManager);
 	BURGER_RTTI_IN_CLASS();
 public:
+
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	static const Int16 BURGER_ALIGN(g_DirectSoundVolumes[256],16);
 #endif
+
 	typedef void (BURGER_API *CompletionProc)(void *);	///< Function prototype for sound event callbacks
 	static const Word cMaxVoiceCount = 32;			///< Maximum number of simultaneous tones to mix for output
 	static const Word cMaxVolume = 255;				///< Maximum volume value
@@ -85,9 +100,11 @@ public:
 	static const Word32 calawASCII = 0x616C6177U;	///< 'alaw'
 	static const Word32 culawASCII = 0x756C6177U;	///< 'ulaw'
 	static const Word32 cfl32ASCII = 0x666C3332U;	///< 'fl32'
+
 	enum {	
 		FLAGDOUBLEBUFFER=0x4000		///< Double buffered
 	};
+
 	enum eCodecCommand {
 		CODECBUFFERSIZE,	///< Size in byte for codec data
 		CODECINIT,			///< Initialize a sound codec
@@ -95,6 +112,7 @@ public:
 		CODECDECODE,		///< Decode sound data
 		CODECRESET			///< Reset a sound codec
 	};
+
 	enum eDataType {
 		TYPEBYTE,		///< Unsigned 8 bit data
 		TYPECHAR,		///< Signed 8 bit data
@@ -137,6 +155,7 @@ public:
 		SoundCardDescription();
 		~SoundCardDescription();
 	};
+
 	struct BufferDescription_t {
 		const Word8 *m_pSoundImage;	///< Pointer to the data
 		WordPtr m_uSoundLength;		///< Length of the data in bytes
@@ -168,9 +187,11 @@ public:
 		BURGER_DISABLECOPYCONSTRUCTORS(Buffer);
 		BURGER_RTTI_IN_CLASS();
 	protected:
+
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 		IDirectSoundBuffer8 *m_pDirectSoundBuffer8;	///< DirectSound8 buffer (Windows Only)
 #endif
+
 #if !(defined(BURGER_WINDOWS)) || defined(DOXYGEN)
 		const void *m_pBufferData;	///< Buffer data
 		WordPtr m_uBufferSize;		///< Size of the buffer
@@ -214,7 +235,11 @@ public:
 		SoundManager *m_pManager;				///< Parent sound manager
 		WordPtr m_uCurrentMark;					///< Mark into the waveform
 	public:
-		static Int32 PlayCallback(void *pData,Word32 *pActionFlags,const AudioTimeStamp *pAudioTimeStamp,Word32 uBusNumber,Word32 uNumberFrames,AudioBufferList *pAudioBufferList);
+#if __LP64__
+		static signed int PlayCallback(void *pData,unsigned int *pActionFlags,const AudioTimeStamp *pAudioTimeStamp,unsigned int uBusNumber,unsigned int uNumberFrames,AudioBufferList *pAudioBufferList);
+#else
+		static signed long PlayCallback(void *pData,unsigned long *pActionFlags,const AudioTimeStamp *pAudioTimeStamp,unsigned long uBusNumber,unsigned long uNumberFrames,AudioBufferList *pAudioBufferList);
+#endif
 	protected:
 #endif
 		SmartPointer<Buffer> m_pBuffer;	///< Sound buffer connected to
@@ -259,7 +284,11 @@ public:
 
 protected:
 	GameApp *m_pGameApp;						///< Reference to the game application
+
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+	IXAudio2 *m_pIXAudio2;						///< XAudio2 object (Xbox 360, XBone, Windows Store)
+	IXAudio2MasteringVoice *m_pIXAudio2MasteringVoice;		///< XAudio2 mastering voice buffer (Xbox 360, XBone, Windows Store)
+
 	IDirectSound8 *m_pDirectSound8Device;		///< Primary DirectSound Device (Windows Only)
 	IDirectSound3DListener *m_pDirectSound3DListener;	///< Object for 3D audio origin (Windows Only)
 	IDirectSoundBuffer *m_pDirectSoundBuffer;	///< Primary DirectSoundBuffer (Windows Only)
@@ -269,6 +298,7 @@ protected:
 	void *m_hEvents[cMaxVoiceCount];			///< Events for DirectSound completion functions (Windows Only)
 	static unsigned long __stdcall ThreadCallback(void *pThis);
 #endif
+
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
 	OpaqueAUGraph *m_pGraph;			///< Main audio rendering graph
 	ComponentInstanceRecord *m_pOutputUnit;		///< Audio component instance
@@ -279,6 +309,7 @@ protected:
 	Int32 m_iMixerNode;					///< Mixer node index
 	Word32 m_uDeviceID;		///< Audio device ID
 #endif
+
 	Voice m_ActiveVoices[cMaxVoiceCount];	///< Array of active sound buffers being played
 	Word m_uMaxVoices;				///< Maximum number of voices supported for mixing
 	Word m_uVolume;					///< Current volume
@@ -306,11 +337,15 @@ public:
 	BURGER_INLINE Word GetVolume(void) const { return m_uVolume; }
 	Buffer * BURGER_API NewBuffer(void *pWaveFile,WordPtr uLength);
 	static Word BURGER_API GetAudioModes(ClassArray<SoundCardDescription> *pOutput);
+
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+	BURGER_INLINE IXAudio2 *GetXAudio2(void) const { return m_pIXAudio2; }
+	BURGER_INLINE IXAudio2MasteringVoice *GetXAudio2MasteringVoice(void) const { return m_pIXAudio2MasteringVoice; }
 	BURGER_INLINE IDirectSound8 *GetDirectSound8(void) const { return m_pDirectSound8Device; }
 	BURGER_INLINE IDirectSound3DListener * GetDirectSound3DListener(void) const { return m_pDirectSound3DListener; }
 	BURGER_INLINE IDirectSoundBuffer * GetPrimaryDirectSoundBuffer(void) const { return m_pDirectSoundBuffer; }
 #endif
+
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
 	BURGER_INLINE OpaqueAUGraph *GetGraph(void) const { return m_pGraph; }
 	BURGER_INLINE ComponentInstanceRecord *GetAudioUnit(void) const { return m_pOutputUnit; }
@@ -318,6 +353,7 @@ public:
 	BURGER_INLINE Int32 GetMixerNode(void) const { return m_iMixerNode; }
 	BURGER_INLINE Word32 GetDeviceID(void) const { return m_uDeviceID; }
 #endif
+
 protected:
 	Voice * BURGER_API AllocVoice(void);
 };

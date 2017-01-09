@@ -4,7 +4,7 @@
 
 	Based on source written by Thatcher Ulrich
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -491,7 +491,7 @@ void BURGER_API Burger::GridIndexPoints::remove(Entry_t *pEntry)
 		ppUnlink = &pPrevious->m_pNext;
 		pPrevious = ppUnlink[0];
 	}
-	// Didn't find entry!  Something is wrong.
+	// Didn't find entry! Something is wrong.
 	BURGER_ASSERT(0);
 }
 
@@ -906,7 +906,7 @@ Word BURGER_API Burger::GridIndexBox::iterator::AdvanceInCell(void)
 Burger::GridIndexBox::iterator Burger::GridIndexBox::begin(const Vector4D_t *pBounds)
 {
 	if (++m_uQueryCount == 0) {
-		// Query id wrapped around!  Clear m_uQueryCount in all entries in our
+		// Query id wrapped around! Clear m_uQueryCount in all entries in our
 		// array, to avoid aliasing from old queries.
 		WordPtr uCount = m_uXCells * m_uYCells;
 		if (uCount) {

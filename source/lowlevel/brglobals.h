@@ -2,7 +2,7 @@
 
 	Global variable manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -76,6 +76,8 @@ public:
 		D3D11_DLL,		///< Index for d3d11.dll
 		DXGI_DLL,		///< Index for dxgi.dll
 		DSOUND_DLL,		///< Index for dsound.dll
+		DPLAYX_DLL,		///< Index for dplayx.dll
+		DPLAY_DLL,		///< Index for dplay.dll
 		RPCRT4_DLL,		///< Index for rpcrt4.dll
 		WINMM_DLL,		///< Index for winmm.dll
 		SHLWAPI_DLL,	///< Index for shlwapi.dll
@@ -128,6 +130,12 @@ public:
 		CALL_DirectSoundCreate8,				///< Index for DirectSoundCreate8()
 		CALL_DirectSoundCaptureCreate8,			///< Index for DirectSoundCaptureCreate8()
 		CALL_DirectSoundFullDuplexCreate,		///< Index for DirectSoundFullDuplexCreate()
+		CALL_DirectPlayCreate,					///< Index for DirectPlayCreate()
+		CALL_DirectPlayEnumerate,				///< Index for DirectPlayEnumerate() Note, this is REALLY obsolete
+		CALL_DirectPlayEnumerateA,				///< Index for DirectPlayEnumerateA()
+		CALL_DirectPlayEnumerateW,				///< Index for DirectPlayEnumerateW() 
+		CALL_DirectPlayLobbyCreateA,			///< Index for DirectPlayLobbyCreateA() 
+		CALL_DirectPlayLobbyCreateW,			///< Index for DirectPlayLobbyCreateW() 
 		CALL_GetDeviceID,						///< Index for GetDeviceID()
 		CALL_UuidCreateSequential,				///< Index for UuidCreateSequential()
 		CALL_timeGetTime,						///< Index for timeGetTime()
@@ -147,6 +155,10 @@ public:
 		CALL_SetupDiEnumDeviceInterfaces,		///< Index for SetupDiEnumDeviceInterfaces()
 		CALL_SetupDiDestroyDeviceInfoList,		///< Index for SetupDiDestroyDeviceInfoList()
 		CALL_TrackMouseEvent,					///< Index for TrackMouseEvent()
+		CALL_GetMonitorInfoA,					///< Index for GetMonitorInfoA()
+		CALL_GetMonitorInfoW,					///< Index for GetMonitorInfoW()
+		CALL_MonitorFromWindow,					///< Index for MonitorFromWindow()
+		CALL_MonitorFromRect,					///< Index for MonitorFromRect()
 		CALL_GetSystemWow64DirectoryA,			///< Index for GetSystemWow64DirectoryA()
 		CALL_GetSystemWow64DirectoryW,			///< Index for GetSystemWow64DirectoryW()
 		CALL_SHGetKnownFolderPath,				///< Index for SHGetKnownFolderPath()
@@ -238,6 +250,8 @@ public:
 	BURGER_INLINE static Word IsDirectDrawPresent(void) { return (LoadLibraryIndex(DDRAW_DLL)!=NULL); }
 	BURGER_INLINE static Word IsD3D9Present(void) { return (LoadLibraryIndex(D3D9_DLL)!=NULL); }
 	BURGER_INLINE static Word IsDirectSoundPresent(void) { return (LoadLibraryIndex(DSOUND_DLL)!=NULL); }
+	BURGER_INLINE static Word IsDirectPlayPresent(void) { return (LoadLibraryIndex(DPLAYX_DLL)!=NULL); }
+	static Word BURGER_API IsXAudio2Present(void);
 
 	static void BURGER_API GetQTFolderFromRegistry(const char *pSubKey,const char *pValueName,char *pBuffer,Word32 uSize);
 	static Word BURGER_API GetPathToQuickTimeFolder(char *pBuffer,Word32 uSize,Word32 *pReserved);
@@ -295,6 +309,12 @@ public:
 		const _DSCBUFFERDESC *pDSCBufferDesc,const _DSBUFFERDESC *pDSBufferDesc,HWND__ *hWnd,Word32 uLevel,
 		IDirectSoundFullDuplex **ppDSFD,IDirectSoundCaptureBuffer8 **ppDSCBuffer8,IDirectSoundBuffer8 **ppDSBuffer8,IUnknown *pOuter=NULL);
 	static Word BURGER_API GetDeviceID(const GUID *pGuidSrc,GUID *pGuidDest);
+	static Word BURGER_API DirectPlayCreate(GUID *pGuidSrc,IDirectPlay **ppOutput,IUnknown *pOuter=NULL);
+	static Word BURGER_API CallDirectPlayEnumerate(void *pCallback,void *pContext);
+	static Word BURGER_API DirectPlayEnumerateA(void *pCallback,void *pContext);
+	static Word BURGER_API DirectPlayEnumerateW(void *pCallback,void *pContext);
+	static Word BURGER_API DirectPlayLobbyCreateA(GUID *pGuidSrc,IDirectPlayLobby **ppOutput,IUnknown *pOuter=NULL,void *pData=NULL,Word uDataSize=0);
+	static Word BURGER_API DirectPlayLobbyCreateW(GUID *pGuidSrc,IDirectPlayLobby **ppOutput,IUnknown *pOuter=NULL,void *pData=NULL,Word uDataSize=0);
 	static Word BURGER_API UuidCreateSequential(GUID *pOutput);
 	static Word32 BURGER_API timeGetTime(void);
 	static Word BURGER_API PathSearchAndQualifyA(const char *pszPath,char *pszBuf,Word32 cchBuf);
@@ -313,6 +333,10 @@ public:
 	static Word BURGER_API SetupDiEnumDeviceInterfaces(void *DeviceInfoSet,_SP_DEVINFO_DATA *DeviceInfoData,const GUID *InterfaceClassGuid,Word32 MemberIndex,_SP_DEVICE_INTERFACE_DATA *DeviceInterfaceData);
 	static Word BURGER_API SetupDiDestroyDeviceInfoList(void *DeviceInfoSet);
 	static Word BURGER_API TrackMouseEvent(::tagTRACKMOUSEEVENT *pEventTrack);
+	static Word BURGER_API GetMonitorInfoA(HMONITOR__ *hMonitor,tagMONITORINFO *pMonitorInfo);
+	static Word BURGER_API GetMonitorInfoW(HMONITOR__ *hMonitor,tagMONITORINFO *pMonitorInfo);
+	static HMONITOR__ *BURGER_API MonitorFromWindow(HWND__ *pWindow,Word uFlags);
+	static HMONITOR__ *BURGER_API MonitorFromRect(const tagRECT *pRect,Word uFlags);
 	static Word BURGER_API GetSystemWow64DirectoryA(char *pBuffer,Word32 uSize);
 	static Word BURGER_API GetSystemWow64DirectoryW(Word16 *pBuffer,Word32 uSize);
 	static Word BURGER_API SHGetKnownFolderPath(const GUID *pGuid,Word32 uFlags,void *hHandle,Word16 **ppResult);

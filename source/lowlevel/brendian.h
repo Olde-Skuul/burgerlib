@@ -2,7 +2,7 @@
 
 	Handle endian swapping
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -190,23 +190,6 @@ static BURGER_INLINE Int16 Load(Int16 iInput) { return static_cast<Int16>(Load(s
 static BURGER_INLINE Int32 Load(Int32 iInput) { return static_cast<Int32>(Load(static_cast<Word32>(iInput))); }
 static BURGER_INLINE Int64 Load(Int64 iInput) { return static_cast<Int64>(Load(static_cast<Word64>(iInput))); }
 	
-#if (!defined(BURGER_PS2) && !defined(BURGER_64BITCPU)) || defined(DOXYGEN)
-static BURGER_INLINE Word Load(Word uInput) { return static_cast<Word>(Load(static_cast<Word32>(uInput))); }
-static BURGER_INLINE Int Load(Int iInput) { return static_cast<Int>(Load(static_cast<Word32>(iInput))); }
-static BURGER_INLINE Word Load(const Word *pInput) { return static_cast<Word>(Load(reinterpret_cast<const Word32*>(pInput))); }
-static BURGER_INLINE Int Load(const Int *pInput) { return static_cast<Int>(Load(reinterpret_cast<const Word32*>(pInput))); }
-static BURGER_INLINE void Store(Word *pOutput,Word uInput) { Store(reinterpret_cast<Word32*>(pOutput),static_cast<Word32>(uInput)); }
-static BURGER_INLINE void Store(Int *pOutput,Int iInput) { Store(reinterpret_cast<Word32*>(pOutput),static_cast<Word32>(iInput)); }
-static BURGER_INLINE Word LoadAny(const Word *pInput) { return static_cast<Word>(LoadAny(reinterpret_cast<const Word32*>(pInput))); }
-static BURGER_INLINE Int LoadAny(const Int *pInput) { return static_cast<Int>(LoadAny(reinterpret_cast<const Word32*>(pInput))); }
-static BURGER_INLINE void StoreAny(Word *pOutput,Word uInput) { StoreAny(reinterpret_cast<Word32*>(pOutput),static_cast<Word32>(uInput)); }
-static BURGER_INLINE void StoreAny(Int *pOutput,Int iInput) { StoreAny(reinterpret_cast<Word32*>(pOutput),static_cast<Word32>(iInput)); }
-static BURGER_INLINE void Fixup(Word *pInput) { Fixup(reinterpret_cast<Word32*>(pInput)); }
-static BURGER_INLINE void Fixup(Int *pInput) { Fixup(reinterpret_cast<Word32*>(pInput)); }
-static BURGER_INLINE void FixupAny(Word *pInput) { FixupAny(reinterpret_cast<Word32*>(pInput)); }
-static BURGER_INLINE void FixupAny(Int *pInput) { FixupAny(reinterpret_cast<Word32*>(pInput)); }
-#endif
-	
 static BURGER_INLINE Int16 Load(const Int16 *pInput) { return static_cast<Int16>(Load(reinterpret_cast<const Word16*>(pInput))); }
 static BURGER_INLINE Int32 Load(const Int32 *pInput) { return static_cast<Int32>(Load(reinterpret_cast<const Word32*>(pInput))); }
 static BURGER_INLINE Int64 Load(const Int64 *pInput) { return static_cast<Int64>(Load(reinterpret_cast<const Word64*>(pInput))); }
@@ -273,23 +256,6 @@ static BURGER_INLINE void FixupAny(Word64 *) {}
 static BURGER_INLINE Int16 Load(Int16 iInput) { return iInput; }
 static BURGER_INLINE Int32 Load(Int32 iInput) { return iInput; }
 static BURGER_INLINE Int64 Load(Int64 iInput) { return iInput; }
-	
-#if (!defined(BURGER_PS2) && !defined(BURGER_64BITCPU)) || defined(DOXYGEN)
-static BURGER_INLINE Word Load(Word uInput) { return uInput; }
-static BURGER_INLINE Int Load(Int iInput) { return iInput; }
-static BURGER_INLINE Word Load(const Word *pInput) { return pInput[0]; }
-static BURGER_INLINE Int Load(const Int *pInput) { return pInput[0]; }
-static BURGER_INLINE void Store(Word *pOutput,Word uInput) { pOutput[0] = uInput; }
-static BURGER_INLINE void Store(Int *pOutput,Int iInput) { pOutput[0] = iInput; }
-static BURGER_INLINE Word LoadAny(const Word *pInput) { return static_cast<Word>(LoadAny(reinterpret_cast<const Word32*>(pInput))); }
-static BURGER_INLINE Int LoadAny(const Int *pInput) { return static_cast<Int>(LoadAny(reinterpret_cast<const Word32*>(pInput))); }
-static BURGER_INLINE void StoreAny(Word *pOutput,Word uInput) { StoreAny(reinterpret_cast<Word32*>(pOutput),static_cast<Word32>(uInput)); }
-static BURGER_INLINE void StoreAny(Int *pOutput,Int iInput) { StoreAny(reinterpret_cast<Word32*>(pOutput),static_cast<Word32>(iInput)); }
-static BURGER_INLINE void Fixup(Word *) {}
-static BURGER_INLINE void Fixup(Int *) {}
-static BURGER_INLINE void FixupAny(Word *) {}
-static BURGER_INLINE void FixupAny(Int *) {}
-#endif
 	
 static BURGER_INLINE Int16 Load(const Int16 *pInput) { return pInput[0]; }
 static BURGER_INLINE Int32 Load(const Int32 *pInput) { return pInput[0]; }

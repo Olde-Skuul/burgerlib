@@ -1,8 +1,9 @@
+
 /***************************************
 
 	Compression manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -783,19 +784,19 @@ void Burger::CompressDeflate::GenerateBitLengths(const TreeDesc_t *pTreeDescript
      * lengths instead of fixing only the wrong ones. This idea is taken
      * from 'ar' written by Haruhiko Okumura.)
      */
-    for (bits = iMaxLength; bits != 0; bits--) {
-        n = m_BitLengthCount[bits];
-        while (n != 0) {
-            m = m_Heap[--h];
-            if (m > iMaximumCode) continue;
-            if (pDynamicTree[m].m_DataLength.m_uLength != (Word) bits) {
-                m_uOptimalLength += static_cast<Word32>(((long)bits - (long)pDynamicTree[m].m_DataLength.m_uLength)
-                              *(long)pDynamicTree[m].m_FrequencyCount.m_uFrequency);
-                pDynamicTree[m].m_DataLength.m_uLength = (Word16)bits;
-            }
-            n--;
-        }
-    }
+	for (bits = iMaxLength; bits!=0; bits--) {
+		n = m_BitLengthCount[bits];
+		while (n!=0) {
+			m = m_Heap[--h];
+			if (m > iMaximumCode) continue;
+			if (pDynamicTree[m].m_DataLength.m_uLength!=(Word)bits) {
+				m_uOptimalLength += static_cast<Word32>(((long)bits-(long)pDynamicTree[m].m_DataLength.m_uLength)
+														*(long)pDynamicTree[m].m_FrequencyCount.m_uFrequency);
+				pDynamicTree[m].m_DataLength.m_uLength = (Word16)bits;
+			}
+			n--;
+		}
+	}
 }
 
 
@@ -809,29 +810,29 @@ void Burger::CompressDeflate::GenerateBitLengths(const TreeDesc_t *pTreeDescript
  */
 void Burger::CompressDeflate::GenerateCodes(CodeData_t *tree, int max_code, Word16 *bl_count)
 {
-    Word16 next_code[MAX_BITS+1]; /* next code value for each bit length */
-    Word16 code = 0;              /* running code value */
-    int bits;                  /* bit index */
-    int n;                     /* code index */
+	Word16 next_code[MAX_BITS+1];	/* next code value for each bit length */
+	Word16 code = 0;				/* running code value */
+	int bits;						/* bit index */
+	int n;							/* code index */
 
     /* The distribution counts are first used to generate the code values
      * without bit reversal.
      */
-    for (bits = 1; bits <= MAX_BITS; bits++) {
-	    code = static_cast<Word16>((code + bl_count[bits-1]) << 1);
-        next_code[bits] = code;
-    }
+	for (bits = 1; bits<=MAX_BITS; bits++) {
+		code = static_cast<Word16>((code+bl_count[bits-1])<<1);
+		next_code[bits] = code;
+	}
     /* Check that the bit counts in bl_count are consistent. The last code
      * must be all ones.
      */
 
-    for (n = 0;  n <= max_code; n++) {
-        Word len = tree[n].m_DataLength.m_uLength;
-        if (len) {
-	        /* Now reverse the bits */
-    	    tree[n].m_FrequencyCount.m_uCode = static_cast<Word16>(BitReverse(static_cast<Word32>(next_code[len]++), len));
+	for (n = 0; n<=max_code; n++) {
+		Word len = tree[n].m_DataLength.m_uLength;
+		if (len) {
+			/* Now reverse the bits */
+			tree[n].m_FrequencyCount.m_uCode = static_cast<Word16>(BitReverse(static_cast<Word32>(next_code[len]++),len));
 		}
-    }
+	}
 }
 
 /* ===========================================================================
@@ -1430,29 +1431,29 @@ void Burger::CompressDeflate::LongestMatchInit(void)
     /* Set the default configuration parameters:
      */
 
-    m_uStringStart = 0;
-    m_iBlockStart = 0L;
-    m_uLookAhead = 0;
-    m_uMatchLength = m_uPreviousLength = MIN_MATCH-1;
-    m_bMatchAvailable = 0;
-    m_uInsertHash = 0;
+	m_uStringStart = 0;
+	m_iBlockStart = 0L;
+	m_uLookAhead = 0;
+	m_uMatchLength = m_uPreviousLength = MIN_MATCH-1;
+	m_bMatchAvailable = 0;
+	m_uInsertHash = 0;
 }
 
 /* ========================================================================= */
 int Burger::CompressDeflate::DeflateReset(void)
 {
-    m_iPending = 0;
-    m_pPendingOutput = m_PendingBuffer;
+	m_iPending = 0;
+	m_pPendingOutput = m_PendingBuffer;
 
-    if (m_bNoHeader < 0) {
-        m_bNoHeader = 0; /* was set to -1 by deflate(..., Z_FINISH); */
-    }
-    m_eState = m_bNoHeader ? BUSY_STATE : INIT_STATE;
-    m_uAdler = 1;
-    m_iLastFlush = Z_NO_FLUSH;
+	if (m_bNoHeader < 0) {
+		m_bNoHeader = 0; /* was set to -1 by deflate(..., Z_FINISH); */
+	}
+	m_eState = m_bNoHeader ? BUSY_STATE : INIT_STATE;
+	m_uAdler = 1;
+	m_iLastFlush = Z_NO_FLUSH;
 
-    StaticTreeInit();
-    LongestMatchInit();
+	StaticTreeInit();
+	LongestMatchInit();
 
     return Z_OK;
 }

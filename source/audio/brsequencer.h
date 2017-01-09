@@ -2,7 +2,7 @@
 
 	Music Sequencer
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -406,21 +406,29 @@ public:
 	void BURGER_API Reset(void);
 	void BURGER_API Pause(void);
 	void BURGER_API Resume(void);
+
 	BURGER_INLINE Word GetMaxVoices(void) const { return m_uMaxVoices; }
 	void BURGER_API SetMaxVoices(Word uMaxVoices);
+
 	BURGER_INLINE SoundManager::eDataType GetOutputDataType(void) const { return m_eOutputDataType; }
 	void BURGER_API SetOutputDataType(SoundManager::eDataType uOutputDataType);
+
 	BURGER_INLINE Word GetSampleRate(void) const { return m_uFinalSampleRate; }
 	void BURGER_API SetSampleRate(Word uSampleRate);
+
 	BURGER_INLINE Word GetMicroDelayDuration(void) const { return m_uMicroDelayDuration; }
 	void BURGER_API SetMicroDelayDuration(Word uMicroDelayDuration);
+
 	BURGER_INLINE Word GetReverbSize(void) const { return m_uReverbSizeMS; }
 	BURGER_INLINE Word GetReverbStrength(void) const { return m_uReverbStrength; }
 	void BURGER_API SetReverb(Word uReverbSizeMS,Word uReverbStrength);
+
 	BURGER_INLINE Word IsPlaying(void) const { return m_bSongIsPlaying; }
 	BURGER_INLINE Word IsLooping(void) const { return m_bRepeatEnabled; }
 	BURGER_INLINE void EnableLooping(void) { m_bRepeatEnabled = TRUE; }
 	BURGER_INLINE void DisableLooping(void) { m_bRepeatEnabled = FALSE; }
+	BURGER_INLINE void SetSoundManager(SoundManager *pSoundManager) { m_pSoundManager = pSoundManager; }
+	BURGER_INLINE SoundManager *GetSoundManager(void) const { return m_pSoundManager; }
 	static eNote BURGER_API AddNoteSaturate(eNote uNote,Int32 iOffset);
 	static Word BURGER_API GetNotePeriod(eNote uNote,Word uC2Speed);
 };

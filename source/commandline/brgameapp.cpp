@@ -2,7 +2,7 @@
 
 	Game Application startup class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -16,13 +16,128 @@
 #include "brmouse.h"
 #include "brkeyboard.h"
 #include "brjoypad.h"
+#include "brsound.h"
+
 #if defined(BURGER_WINDOWS)
-#include "brgameapp.h"
+#include "brdisplayopengl.h"
 #endif
 
 #if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::GameApp,Burger::Base);
 #endif
+
+/*! ************************************
+
+	\enum Burger::eEvent
+	\brief Enumeration for input events
+
+***************************************/
+
+/*! ************************************
+
+	\struct Burger::EventHeader_t
+	\brief Base structure for events
+
+	All events derive from this class. Based on the \ref eEvent
+	enumeration value in \ref m_uEvent, the derived class type can be determined
+
+	\sa KeyEvent_t, MouseButtonEvent_t, MouseMotionEvent_t, MousePositionEvent_t or MouseWheelEvent_t
+
+***************************************/
+
+/*! ************************************
+
+	\struct Burger::KeyEvent_t
+
+	\brief Structure holding a keyboard event
+
+	\ref m_uEvent must be set to \ref EVENT_KEYDOWN, \ref EVENT_KEYUP or \ref EVENT_KEYAUTO.
+
+	When a keyboard event is generated, an event is
+	filled out and stored until it's retrieved by
+	the application by one of the many
+	keyboard event retrieval functions. This
+	structure contains the scan code, Unicode code,
+	modifiers and time in milliseconds of when
+	the key was pressed.
+
+	\sa EventHeader_t or eKeyFlags
+
+***************************************/
+
+
+/*! ************************************
+
+	\struct Burger::MouseButtonEvent_t
+	\brief Structure for mouse button events
+
+	\ref m_uEvent must be set to \ref EVENT_MOUSEDOWN or \ref EVENT_MOUSEUP.
+
+	When posting a \ref EVENT_MOUSEDOWN or \ref EVENT_MOUSEUP event, only
+	the \ref m_uButtons value needs to be set since \ref m_uX and \ref m_uY
+	will be filled in by the Mouse::PostMouseEvent() function.
+
+	When receiving this event, all entries are valid.
+
+	\sa EventHeader_t, MouseMotionEvent_t, MousePositionEvent_t or MouseWheelEvent_t
+
+***************************************/
+
+/*! ************************************
+
+	\struct Burger::MouseMotionEvent_t
+	\brief Structure for mouse motion events
+
+	\ref m_uEvent must be set to \ref EVENT_MOUSEMOVE.
+
+	This structure is used for posting a mouse motion delta event.
+
+	\sa EventHeader_t, MouseButtonEvent_t, MousePositionEvent_t or MouseWheelEvent_t
+
+***************************************/
+
+/*! ************************************
+
+	\struct Burger::MousePositionEvent_t
+	\brief Structure for mouse position events
+
+	\ref m_uEvent must be set to \ref EVENT_MOUSEPOSITION.
+
+	This structure is used for posting a mouse position event.
+	The values will be clamped to the Mouse::SetRange() parameters.
+
+	\sa EventHeader_t, MouseButtonEvent_t, MouseMotionEvent_t or MouseWheelEvent_t
+
+***************************************/
+
+/*! ************************************
+
+	\struct Burger::MouseWheelEvent_t
+	\brief Structure for mouse wheel events
+
+	\ref m_uEvent must be set to \ref EVENT_MOUSEWHEEL.
+
+	This structure is used for posting a mouse wheel event.
+
+	\sa EventHeader_t, MouseButtonEvent_t, MouseMotionEvent_t or MousePositionEvent_t
+
+***************************************/
+
+/*! ************************************
+
+	\struct Burger::JoypadButtonEvent_t
+	\brief Structure for joypad button events
+
+	\ref m_uEvent must be set to \ref EVENT_JOYPADDOWN or \ref EVENT_JOYPADUP.
+
+	This structure is used for posting a joypad button event.
+
+	\sa EventHeader_t
+
+***************************************/
+
+
+
 
 /*! ************************************
 
@@ -40,6 +155,16 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::GameApp,Burger::Base);
 
 ***************************************/
 
+/*! ************************************
+
+	\brief Initialize shared variables
+
+	For variables that are present on all platforms, this
+	function will clear them.
+	\sa ShutdownDefaults(void)
+
+***************************************/
+
 void BURGER_API Burger::GameApp::InitDefaults(void)
 {
 	m_pKeyboard = NULL;
@@ -47,7 +172,6 @@ void BURGER_API Burger::GameApp::InitDefaults(void)
 	m_pJoypad = NULL;
 	m_pSoundManager = NULL;
 	m_pDisplay = NULL;
-	m_pRenderer = NULL;
 	m_ppArgv = NULL;
 	m_iArgc = 0;
 	m_bQuit = FALSE;
@@ -56,19 +180,45 @@ void BURGER_API Burger::GameApp::InitDefaults(void)
 	m_bAllowWindowSwitching = TRUE;
 	m_bMouseOnScreen = FALSE;
 	m_bWindowSwitchRequested = FALSE;
+	m_bKeyboardStarted = FALSE;
+	m_bMouseStarted = FALSE;
+	m_bJoypadStarted = FALSE;
+	m_bDisplayStarted = FALSE;
+	m_bSoundManagerStarted = FALSE;
 }
+
+/*! ************************************
+
+	\brief Release shared variables
+
+	For variables that are present on all platforms, this
+	function will clear them and release all resources
+	under this classes' control.
+
+	\sa InitDefaults(void)
+
+***************************************/
 
 void BURGER_API Burger::GameApp::ShutdownDefaults(void)
 {
 	// Clear out the managers
-	m_pKeyboard = NULL;
-	m_pMouse = NULL;
-	m_pJoypad = NULL;
-	m_pSoundManager = NULL;
-	m_pDisplay = NULL;
-	m_pRenderer = NULL;
+
+	// Note, manually calling the base class destructor to
+	// prevent the compiler from linking in these classes
+	// if the application never created the instances
+
+	SetKeyboard(NULL);
+	SetMouse(NULL);
+	SetJoypad(NULL);
+	SetSoundManager(NULL);
+	SetDisplay(NULL);
+
+	// Clear out the rest
 	m_ppArgv = NULL;
 	m_iArgc = 0;
+
+	// Release the RunQueue
+	m_RunQueue.Clear();
 }
 
 
@@ -76,7 +226,7 @@ void BURGER_API Burger::GameApp::ShutdownDefaults(void)
 
 	\brief Create an instance of a GameApp
 
-	Upon startup, a handle based memory manager is instanciated and used for
+	Upon startup, a handle based memory manager is instantiated and used for
 	all future memory allocations. Variables are passed for setting the
 	amount of memory the application could manage.
 
@@ -132,16 +282,17 @@ Burger::GameApp::~GameApp()
 
 /*! ************************************
 
-	\fn void GameApp::AddRoutine(RunQueue::CallbackProc Proc,void *pData,Word uPriority)
+	\fn void GameApp::AddRoutine(RunQueue::CallbackProc Proc,RunQueue::CallbackProc pShutdown,void *pData,Word uPriority)
 	\brief Add a RunQueue polling routine
 
 	Given a proc pointer and a pointer to data to pass to the
-	proc pointer, add this to the list of procs that are called with
+	proc pointer, add this to the list of procedures that are called with
 	each call to Poll(). The pointer pData is not
 	used by the polling manager itself. Only the polling proc uses the
 	pointer for it's internal use.
 
 	\param Proc Pointer to a function of type RunQueue::CallbackProc
+	\param pShutdown Pointer to a function to call when this is deleted, can be \ref NULL
 	\param pData Pointer that is passed to the Proc upon calling. Otherwise, it's not used by Burger::GameApp.
 	\param uPriority Priority value to use to determine the location of this new entry in the linked list.
 
@@ -170,19 +321,252 @@ Burger::GameApp::~GameApp()
 	\fn RunQueue *Burger::GameApp::GetRunQueue(void)
 	\brief Get the pointer to the RunQueue
 
-	Accessor to get the RunQueue associatied with the application.
+	Accessor to get the RunQueue associated with the application.
 
 	\return Pointer to the RunQueue.
 	\sa Poll(), AddRoutine(), and RemoveRoutine()
 
 ***************************************/
 
+
+
+/*! ************************************
+
+	\brief Create an instance of the \ref Keyboard manager
+
+	If a \ref Keyboard manager was already allocated or manually assigned,
+	return the pointer to the preexisting \ref Keyboard manager. Otherwise
+	allocate a new instance of a \ref Keyboard manager and use
+	it as the default. 
+
+	\note If a \ref Keyboard manager was allocated by this function, it
+	will automatically be released when this class shuts down.
+
+	\return Pointer to the \ref Keyboard manager
+	\sa StartupEverything(void)
+
+***************************************/
+
+Burger::Keyboard * BURGER_API Burger::GameApp::StartupKeyboard(void)
+{
+	// Get the previous instance
+	Keyboard *pResult = m_pKeyboard;
+
+	// If not valid and one wasn't allocated...
+	if (!pResult && !m_bKeyboardStarted) {
+		// Allocate it.
+		pResult = new (Alloc(sizeof(Keyboard))) Keyboard(this);
+		if (pResult) {
+
+			// Success!
+			m_pKeyboard = pResult;
+			m_bKeyboardStarted = TRUE;
+		}
+	}
+
+	// Return the requested instance
+	return pResult;
+}
+
+/*! ************************************
+
+	\brief Create an instance of the \ref Mouse manager
+
+	If a \ref Mouse manager was already allocated or manually assigned,
+	return the pointer to the preexisting \ref Mouse manager. Otherwise
+	allocate a new instance of a \ref Mouse manager and use
+	it as the default. 
+
+	\note If a \ref Mouse manager was allocated by this function, it
+	will automatically be released when this class shuts down.
+
+	\return Pointer to the \ref Mouse manager
+	\sa StartupEverything(void)
+
+***************************************/
+
+Burger::Mouse * BURGER_API Burger::GameApp::StartupMouse(void)
+{
+	// Get the previous instance
+	Mouse *pResult = m_pMouse;
+
+	// If not valid and one wasn't allocated...
+	if (!pResult && !m_bMouseStarted) {
+		// Allocate it.
+		pResult = new (Alloc(sizeof(Mouse))) Mouse(this);
+		if (pResult) {
+
+			// Success!
+			m_pMouse = pResult;
+			m_bMouseStarted = TRUE;
+		}
+	}
+
+	// Return the requested instance
+	return pResult;
+}
+
+/*! ************************************
+
+	\brief Create an instance of the \ref Joypad manager
+
+	If a \ref Joypad manager was already allocated or manually assigned,
+	return the pointer to the preexisting \ref Joypad manager. Otherwise
+	allocate a new instance of a \ref Joypad manager and use
+	it as the default. 
+
+	\note If a \ref Joypad manager was allocated by this function, it
+	will automatically be released when this class shuts down.
+
+	\return Pointer to the \ref Joypad manager
+	\sa StartupEverything(void)
+
+***************************************/
+
+Burger::Joypad * BURGER_API Burger::GameApp::StartupJoypad(void)
+{
+	// Get the previous instance
+	Joypad *pResult = m_pJoypad;
+
+	// If not valid and one wasn't allocated...
+	if (!pResult && !m_bJoypadStarted) {
+		// Allocate it.
+		pResult = new (Alloc(sizeof(Joypad))) Joypad(this);
+		if (pResult) {
+
+			// Success!
+			m_pJoypad = pResult;
+			m_bJoypadStarted = TRUE;
+		}
+	}
+
+	// Return the requested instance
+	return pResult;
+}
+
+/*! ************************************
+
+	\brief Create an instance of the \ref Display manager
+
+	If a \ref Display manager was already allocated or manually assigned,
+	return the pointer to the preexisting \ref Display manager. Otherwise
+	allocate a new instance of a \ref Display manager and use
+	it as the default. 
+
+	\note If a \ref Display manager was allocated by this function, it
+	will automatically be released when this class shuts down.
+
+	\note On Windows, the default display is OpenGL. If a different
+	renderer is desired like DirectX 9 or DirectX 11, create and
+	attach the custom display instance before calling this function
+	or \ref StartupEverything(void)
+
+	\return Pointer to the \ref Display manager
+	\sa StartupEverything(void)
+
+***************************************/
+
+Burger::Display * BURGER_API Burger::GameApp::StartupDisplay(void)
+{
+	// Get the previous instance
+	Display *pResult = m_pDisplay;
+
+	// If not valid and one wasn't allocated...
+	if (!pResult && !m_bDisplayStarted) {
+		// Allocate it.
+#if defined(BURGER_WINDOWS)
+		pResult = new (Alloc(sizeof(DisplayOpenGL))) DisplayOpenGL(this);
+#else
+		pResult = new (Alloc(sizeof(Display))) Display(this);
+#endif
+		if (pResult) {
+
+			// Success!
+			m_pDisplay = pResult;
+			m_bDisplayStarted = TRUE;
+		}
+	}
+
+	// Return the requested instance
+	return pResult;
+}
+
+
+/*! ************************************
+
+	\brief Create an instance of the \ref SoundManager
+
+	If a \ref SoundManager was already allocated or manually assigned,
+	return the pointer to the preexisting \ref SoundManager . Otherwise
+	allocate a new instance of a \ref SoundManager and use
+	it as the default. 
+
+	\note If a \ref SoundManager was allocated by this function, it
+	will automatically be released when this class shuts down.
+
+	\return Pointer to the \ref SoundManager
+	\sa StartupEverything(void)
+
+***************************************/
+
+Burger::SoundManager * BURGER_API Burger::GameApp::StartupSoundManager(void)
+{
+	// Get the previous instance
+	SoundManager *pResult = m_pSoundManager;
+
+	// If not valid and one wasn't allocated...
+	if (!pResult && !m_bSoundManagerStarted) {
+		// Allocate it.
+		pResult = new (Alloc(sizeof(SoundManager))) SoundManager(this);
+		if (pResult) {
+
+			// Success!
+			m_pSoundManager = pResult;
+			m_bSoundManagerStarted = TRUE;
+		}
+	}
+
+	// Return the requested instance
+	return pResult;
+}
+
+/*! ************************************
+
+	\brief Create instances of all default classes for a game
+
+	Game applications usually need Mouse/Keyboard/Joypad input, 
+	video display and audio managers initialized. This function
+	will initialize all five subsystems and return an error code if
+	it failed.
+
+	All managers this function creates will be disposed of when
+	this class shuts down
+
+	\return Zero on success, error code if not.
+	\sa StartupKeyboard(void), StartupMouse(void), StartupJoypad(void), StartupDisplay(void)
+		or StartupSoundManager(void)S
+
+***************************************/
+
+Word BURGER_API Burger::GameApp::StartupEverything(void)
+{
+	Word uResult = 10;	// Assume error
+	if (StartupDisplay() &&
+		StartupKeyboard() &&
+		StartupMouse() &&
+		StartupJoypad() &&
+		StartupSoundManager()) {
+		uResult = 0;
+	}
+	return uResult;
+}
+
 /*! ************************************
 
 	\fn MemoryManagerGlobalHandle * Burger::GameApp::GetMemoryManager(void)
 	\brief Get the pointer to the MemoryManagerGlobalHandle
 
-	Accessor to get the MemoryManagerGlobalHandle associatied with the application.
+	Accessor to get the MemoryManagerGlobalHandle associated with the application.
 
 	\return Pointer to the MemoryManagerGlobalHandle.
 
@@ -282,7 +666,7 @@ Burger::GameApp::~GameApp()
 	\fn void Burger::GameApp::SetInBackground(Word bInBackground)
 	\brief Set the state if app should go into pause mode
 
-	On many platforms, apps can be put in the background either
+	On many platforms, applications can be put in the background either
 	through OS or user events from an external source. This flag
 	is set and cleared by Burgerlib when the app is in the background
 	or foreground.
@@ -299,7 +683,7 @@ Burger::GameApp::~GameApp()
 	\fn Word Burger::GameApp::IsInBackground(void) const
 	\brief Detect if the app is should go into pause mode
 
-	On many platforms, apps can be put in the background either
+	On many platforms, applications can be put in the background either
 	through OS or user events from an external source. This flag
 	is set and cleared by Burgerlib when the app is in the background
 	or foreground.
@@ -311,17 +695,36 @@ Burger::GameApp::~GameApp()
 
 ***************************************/
 
+
+
 /*! ************************************
 
-	\fn void Burger::GameApp::SetKeyboard(Keyboard *pKeyboard)
 	\brief Set the pointer to the current Keyboard class instance
 
 	Sets the pointer to the active Keyboard instance
 
-	\param pKeyboard Pointer to an active Keyboard instance or \ref NULL to disable the connection
-	\sa GetKeyboard()
+	\param pKeyboard Pointer to an active Keyboard instance or \ref NULL to disable the connection or delete
+		the instance allocated by StartupKeyboard(void)
+	\sa GetKeyboard(void) const or StartupKeyboard(void)
 
 ***************************************/
+
+void BURGER_API Burger::GameApp::SetKeyboard(Keyboard *pKeyboard) 
+{
+	// Was the keyboard locally started?
+	if (m_bKeyboardStarted) {
+
+		// Is this pointer the same as before?
+		if (pKeyboard!=m_pKeyboard) {
+			// It's not, so dispose of the allocated one
+			Delete(static_cast<Base *>(m_pKeyboard));
+			m_bKeyboardStarted = FALSE;
+		}
+	}
+	// Set the new pointer
+	m_pKeyboard = pKeyboard;
+}
+
 
 /*! ************************************
 
@@ -333,17 +736,38 @@ Burger::GameApp::~GameApp()
 
 ***************************************/
 
+
+
+
+
 /*! ************************************
 
-	\fn void Burger::GameApp::SetMouse(Mouse *pMouse)
 	\brief Set the pointer to the current Mouse class instance
 
 	Sets the pointer to the active Mouse instance
 
-	\param pMouse Pointer to an active Mouse instance or \ref NULL to disable the connection
-	\sa GetMouse()
+	\param pMouse Pointer to an active Mouse instance or \ref NULL to disable the connection or delete
+		the instance allocated by StartupMouse(void)
+	\sa GetMouse(void) const or StartupMouse(void)
 
 ***************************************/
+
+void BURGER_API Burger::GameApp::SetMouse(Mouse *pMouse) 
+{
+	// Was the keyboard locally started?
+	if (m_bMouseStarted) {
+
+		// Is this pointer the same as before?
+		if (pMouse!=m_pMouse) {
+			// It's not, so dispose of the allocated one
+			Delete(static_cast<Base *>(m_pMouse));
+			m_bMouseStarted = FALSE;
+		}
+	}
+	// Set the new pointer
+	m_pMouse = pMouse;
+}
+
 
 /*! ************************************
 
@@ -355,17 +779,37 @@ Burger::GameApp::~GameApp()
 
 ***************************************/
 
+
+
+
+
 /*! ************************************
 
-	\fn void Burger::GameApp::SetJoypad(Joypad *pJoypad)
 	\brief Set the pointer to the current Joypad class instance
 
 	Sets the pointer to the active Joypad instance
 
-	\param pJoypad Pointer to an active Joypad instance or \ref NULL to disable the connection
-	\sa GetJoypad()
+	\param pJoypad Pointer to an active Joypad instance or \ref NULL to disable the connection or delete
+		the instance allocated by StartupJoypad(void)
+	\sa GetJoypad(void) const or StartupJoypad(void)
 
 ***************************************/
+
+void BURGER_API Burger::GameApp::SetJoypad(Joypad *pJoypad) 
+{
+	// Was the keyboard locally started?
+	if (m_bJoypadStarted) {
+
+		// Is this pointer the same as before?
+		if (pJoypad!=m_pJoypad) {
+			// It's not, so dispose of the allocated one
+			Delete(static_cast<Base *>(m_pJoypad));
+			m_bJoypadStarted = FALSE;
+		}
+	}
+	// Set the new pointer
+	m_pJoypad = pJoypad;
+}
 
 /*! ************************************
 
@@ -377,17 +821,38 @@ Burger::GameApp::~GameApp()
 
 ***************************************/
 
+
+
+
+
 /*! ************************************
 
-	\fn void Burger::GameApp::SetSoundManager(SoundManager *pSound)
 	\brief Set the pointer to the current SoundManager class instance
 
 	Sets the pointer to the active SoundManager instance
 
-	\param pSound Pointer to an active SoundManager instance or \ref NULL to disable the connection
-	\sa GetSoundManager()
+	\param pSetSoundManager Pointer to an active SoundManager instance or \ref NULL to disable the connection or delete
+		the instance allocated by StartupSoundManager(void)
+	\sa GetSoundManager(void) const or StartupSoundManager(void)
 
 ***************************************/
+
+void BURGER_API Burger::GameApp::SetSoundManager(SoundManager *pSetSoundManager) 
+{
+	// Was the keyboard locally started?
+	if (m_bSoundManagerStarted) {
+
+		// Is this pointer the same as before?
+		if (pSetSoundManager!=m_pSoundManager) {
+			// It's not, so dispose of the allocated one
+			Delete(static_cast<Base *>(m_pSoundManager));
+			m_bSoundManagerStarted = FALSE;
+		}
+	}
+	// Set the new pointer
+	m_pSoundManager = pSetSoundManager;
+}
+
 
 /*! ************************************
 
@@ -399,17 +864,37 @@ Burger::GameApp::~GameApp()
 
 ***************************************/
 
+
+
+
+
 /*! ************************************
 
-	\fn void Burger::GameApp::SetDisplay(Display *pDisplay)
 	\brief Set the pointer to the current Display class instance
 
 	Sets the pointer to the active Display instance
 
-	\param pDisplay Pointer to an active Display instance or \ref NULL to disable the connection
-	\sa GetDisplay()
+	\param pDisplay Pointer to an active Display instance or \ref NULL to disable the connection or delete
+		the instance allocated by StartupDisplay(void)
+	\sa GetDisplay(void) const or StartupDisplay(void)
 
 ***************************************/
+
+void BURGER_API Burger::GameApp::SetDisplay(Display *pDisplay) 
+{
+	// Was the keyboard locally started?
+	if (m_bDisplayStarted) {
+
+		// Is this pointer the same as before?
+		if (pDisplay!=m_pDisplay) {
+			// It's not, so dispose of the allocated one
+			Delete(static_cast<Base *>(m_pDisplay));
+			m_bDisplayStarted = FALSE;
+		}
+	}
+	// Set the new pointer
+	m_pDisplay = pDisplay;
+}
 
 /*! ************************************
 
@@ -421,27 +906,8 @@ Burger::GameApp::~GameApp()
 
 ***************************************/
 
-/*! ************************************
 
-	\fn void Burger::GameApp::SetRenderer(Renderer *pRenderer)
-	\brief Set the pointer to the current Renderer class instance
 
-	Sets the pointer to the active Renderer instance
-
-	\param pRenderer Pointer to an active Renderer instance or \ref NULL to disable the connection
-	\sa GetRenderer()
-
-***************************************/
-
-/*! ************************************
-
-	\fn Display *Burger::GameApp::GetRenderer(void) const
-	\brief Get the current Renderer class instance
-
-	\return A pointer to the active Renderer class or \ref NULL if no class is active
-	\sa SetRenderer()
-
-***************************************/
 
 /*! ************************************
 

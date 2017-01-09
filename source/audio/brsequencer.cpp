@@ -2,7 +2,7 @@
 
 	Music Sequencer
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -208,8 +208,8 @@ Burger::Sequencer::PatternData_t * BURGER_API Burger::Sequencer::PatternData_t::
 Burger::Sequencer::Command_t* BURGER_API Burger::Sequencer::PatternData_t::GetCommand(int iRow,int iChannel)
 {
 	// Negative numbers become zero
-	Word uRow = static_cast<Word>(ClampZero(static_cast<Int32>(iRow)));
-	Word uChannel = static_cast<Word>(ClampZero(static_cast<Int32>(iChannel)));
+	Word uRow = static_cast<Word>(ClampZero(iRow));
+	Word uChannel = static_cast<Word>(ClampZero(iChannel));
 
 	// Out of bounds?
 	if (uRow >= m_uRowCount) {

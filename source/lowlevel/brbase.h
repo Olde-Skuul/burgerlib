@@ -2,7 +2,7 @@
 
 	Root base class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -24,11 +24,15 @@
 
 /* BEGIN */
 namespace Burger {
+
 class Base {
 	BURGER_RTTI_IN_BASE_CLASS();
 public:
 	virtual ~Base();
 };
+
+extern void BURGER_API Delete(const Base *pInput);
+
 }
 /* END */
 

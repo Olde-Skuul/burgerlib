@@ -2,7 +2,7 @@
 
 	ANSI Based Memory Manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -30,7 +30,7 @@ public:
 	MemoryManagerANSI();
 	BURGER_INLINE void *Alloc(WordPtr uSize) { return Alloc(this,uSize); }
 	BURGER_INLINE void Free(const void *pInput) { return Free(this,pInput); }
-	BURGER_INLINE void *Realloc(const void *pInput,WordPtr uSize)  { return Realloc(this,pInput,uSize); }
+	BURGER_INLINE void *Realloc(const void *pInput,WordPtr uSize) { return Realloc(this,pInput,uSize); }
 protected:
 	static void *BURGER_API Alloc(MemoryManager *pThis,WordPtr uSize);
 	static void BURGER_API Free(MemoryManager *pThis,const void *pInput);

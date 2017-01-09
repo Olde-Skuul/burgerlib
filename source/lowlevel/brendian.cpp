@@ -2,7 +2,7 @@
 
 	Handle endian swapping
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -414,11 +414,11 @@ Word16 BURGER_API Burger::NativeEndian::LoadAny(const Word16 *pInput)
 #if defined(BURGER_WATCOM)		// Inlined
 
 #elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)) && !defined(DOXYGEN)
-// __ZN6Burger12NativeEndian7LoadAnyEPKm = Word16 BURGER_API Burger::NativeEndian::LoadAny(const Word32 * /* pInput */)
+// __ZN6Burger12NativeEndian7LoadAnyEPKj = Word32 BURGER_API Burger::NativeEndian::LoadAny(const Word32 * /* pInput */)
 __asm__(
 "	.align	4,0x90\n"
-"	.globl __ZN6Burger12NativeEndian7LoadAnyEPKm\n"
-"__ZN6Burger12NativeEndian7LoadAnyEPKm:\n"
+"	.globl __ZN6Burger12NativeEndian7LoadAnyEPKj\n"
+"__ZN6Burger12NativeEndian7LoadAnyEPKj:\n"
 "	movb	(%eax),%cl\n"
 "	movb	1(%eax),%ch\n"
 "	bswapl	%ecx\n"

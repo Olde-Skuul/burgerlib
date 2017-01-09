@@ -4,7 +4,7 @@
 
 	Format is found at http://www.fileformat.info/format/xm/corion.htm
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -133,7 +133,7 @@
      +3      1   (byte) Effect type
      +4      1   (byte) Effect parameter
 
-   A simle packing scheme is also adopted, so that the patterns not become
+   A simple packing scheme is also adopted, so that the patterns not become
    TOO large: Since the MSB in the note value is never used, if is used for
    the compression. If the bit is set, then the other bits are interpreted
    as follows:

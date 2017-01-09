@@ -2,7 +2,7 @@
 
 	Low devel doubly linked list manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -21,7 +21,7 @@
 /* BEGIN */
 namespace Burger {
 class DoublyLinkedList {
-   	BURGER_DISABLECOPYCONSTRUCTORS(DoublyLinkedList);
+	BURGER_DISABLECOPYCONSTRUCTORS(DoublyLinkedList);
 	DoublyLinkedList *m_pNext;		///< Pointer to the next entry
 	DoublyLinkedList *m_pPrev;		///< Pointer to the previous entry
 public:

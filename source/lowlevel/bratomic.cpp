@@ -2,7 +2,7 @@
 
 	Atomic memory
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -22,9 +22,19 @@
 #include <Gestalt.h>
 #endif
 
+//
+// If MacOSX was build with an earlier version of GNU C than 4.0, the atomic
+// intrinsics are missing. Use the OSAtomic.h functions in that case.
+//
+
+#if ((__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) <= 40100) && defined(BURGER_MACOSX)
+#include <libkern/OSAtomic.h>
+#endif
+
+#if (((__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) <= 40100) && defined(BURGER_MACOSX)) || defined(DOXYGEN)
+		   
 /*! ************************************
 
-	\fn Word32 Burger::AtomicSwap(volatile Word32 *pOutput,Word32 uInput)
 	\brief Atomically swap a 32 bit value for one in memory
 
 	For multi-CPU machines, this function will atomically swap a value
@@ -36,9 +46,18 @@
 
 ***************************************/
 
+Word32 BURGER_API Burger::AtomicSwap(volatile Word32 *pOutput,Word32 uInput)
+{
+	Word32 uOldValue;
+	do {
+		uOldValue = pOutput[0];
+	} while (!OSAtomicCompareAndSwap32Barrier(static_cast<int32_t>(uOldValue),static_cast<int32_t>(uInput),
+		static_cast<volatile int32_t *>(static_cast<volatile void *>(pOutput))));
+	return uOldValue;
+}
+
 /*! ************************************
 
-	\fn Word32 Burger::AtomicPreIncrement(volatile Word32 *pInput)
 	\brief Atomically pre-increment a 32 bit variable in memory
 
 	For multi-CPU machines, this function will atomically increment a value
@@ -50,9 +69,13 @@
 
 ***************************************/
 
+Word32 BURGER_API Burger::AtomicPreIncrement(volatile Word32 *pInput)
+{
+	return static_cast<Word32>(OSAtomicIncrement32Barrier(static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput))));
+}
+
 /*! ************************************
 
-	\fn Word32 Burger::AtomicPostIncrement(volatile Word32 *pInput)
 	\brief Atomically post-increment a 32 bit variable in memory
 
 	For multi-CPU machines, this function will atomically increment a value
@@ -64,9 +87,13 @@
 
 ***************************************/
 
+Word32 BURGER_API Burger::AtomicPostIncrement(volatile Word32 *pInput)
+{
+	return static_cast<Word32>(OSAtomicIncrement32Barrier(static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput)))-1);
+}
+
 /*! ************************************
 
-	\fn Word32 Burger::AtomicPreDecrement(volatile Word32 *pInput)
 	\brief Atomically pre-decrement a 32 bit variable in memory
 
 	For multi-CPU machines, this function will atomically decrement a value
@@ -78,9 +105,13 @@
 
 ***************************************/
 
+Word32 BURGER_API Burger::AtomicPreDecrement(volatile Word32 *pInput)
+{
+	return static_cast<Word32>(OSAtomicDecrement32Barrier(static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput))));
+}
+
 /*! ************************************
 
-	\fn Word32 Burger::AtomicPostDecrement(volatile Word32 *pInput)
 	\brief Atomically post-decrement a 32 bit variable in memory
 
 	For multi-CPU machines, this function will atomically decrement a value
@@ -92,9 +123,13 @@
 
 ***************************************/
 
+Word32 BURGER_API Burger::AtomicPostDecrement(volatile Word32 *pInput)
+{
+	return static_cast<Word32>(OSAtomicDecrement32Barrier(static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput)))+1);
+}
+
 /*! ************************************
 
-	\fn Word32 Burger::AtomicAdd(volatile Word32 *pInput,Word32 uValue)
 	\brief Atomically add a 32 bit value to a variable in memory
 
 	For multi-CPU machines, this function will atomically add a value
@@ -107,9 +142,13 @@
 
 ***************************************/
 
+Word32 BURGER_API Burger::AtomicAdd(volatile Word32 *pInput,Word32 uValue)
+{
+	return static_cast<Word32>(OSAtomicAdd32Barrier(static_cast<int32_t>(uValue),static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput))));
+}
+
 /*! ************************************
 
-	\fn Word32 Burger::AtomicSubtract(volatile Word32 *pInput,Word32 uValue)
 	\brief Atomically subtract a 32 bit value from a variable in memory
 
 	For multi-CPU machines, this function will atomically subtract a value
@@ -122,9 +161,13 @@
 
 ***************************************/
 
+Word32 BURGER_API Burger::AtomicSubtract(volatile Word32 *pInput,Word32 uValue)
+{
+	return static_cast<Word32>(OSAtomicAdd32Barrier(-static_cast<int32_t>(uValue),static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput))));
+}
+
 /*! ************************************
 
-	\fn Word32 Burger::AtomicSetIfMatch(volatile Word32 *pInput,Word32 uBefore,Word32 uAfter)
 	\brief Atomically set a 32 bit value from a variable in memory if it matches a requested value
 
 	For multi-CPU machines, this function will atomically test a value
@@ -139,9 +182,14 @@
 
 ***************************************/
 
+Word BURGER_API Burger::AtomicSetIfMatch(volatile Word32 *pInput,Word32 uBefore,Word32 uAfter)
+{
+	return OSAtomicCompareAndSwap32Barrier(static_cast<int32_t>(uBefore),static_cast<int32_t>(uAfter),
+		static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput)));
+}
+
 /*! ************************************
 
-	\fn Word64 Burger::AtomicSwap(volatile Word64 *pOutput,Word64 uInput)
 	\brief Atomically swap a 64 bit value for one in memory
 
 	For multi-CPU machines, this function will atomically swap a value
@@ -154,9 +202,19 @@
 
 ***************************************/
 
+#if defined(BURGER_64BITCPU) || defined(DOXYGEN)
+Word64 BURGER_API Burger::AtomicSwap(volatile Word64 *pOutput,Word64 uInput)
+{
+	Word64 uOldValue;
+	do {
+		uOldValue = pOutput[0];
+	} while (!OSAtomicCompareAndSwap64Barrier(static_cast<int64_t>(uOldValue),static_cast<int64_t>(uInput),
+		static_cast<volatile int64_t *>(static_cast<volatile void *>(pOutput))));
+	return uOldValue;
+}
+
 /*! ************************************
 
-	\fn Word64 Burger::AtomicPreIncrement(volatile Word64 *pInput)
 	\brief Atomically pre-increment a 64 bit variable in memory
 
 	For multi-CPU machines, this function will atomically increment a value
@@ -169,9 +227,13 @@
 
 ***************************************/
 
+Word64 BURGER_API Burger::AtomicPreIncrement(volatile Word64 *pInput)
+{
+	return static_cast<Word64>(OSAtomicIncrement64Barrier(static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput))));
+}
+
 /*! ************************************
 
-	\fn Word64 Burger::AtomicPostIncrement(volatile Word64 *pInput)
 	\brief Atomically post-increment a 64 bit variable in memory
 
 	For multi-CPU machines, this function will atomically increment a value
@@ -184,9 +246,13 @@
 
 ***************************************/
 
+Word64 BURGER_API Burger::AtomicPostIncrement(volatile Word64 *pInput)
+{
+	return static_cast<Word64>(OSAtomicIncrement64Barrier(static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput)))-1);
+}
+
 /*! ************************************
 
-	\fn Word64 Burger::AtomicPreDecrement(volatile Word64 *pInput)
 	\brief Atomically pre-decrement a 64 bit variable in memory
 
 	For multi-CPU machines, this function will atomically decrement a value
@@ -199,9 +265,13 @@
 
 ***************************************/
 
+Word64 BURGER_API Burger::AtomicPreDecrement(volatile Word64 *pInput)
+{
+	return static_cast<Word64>(OSAtomicDecrement64Barrier(static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput))));
+}
+
 /*! ************************************
 
-	\fn Word64 Burger::AtomicPostDecrement(volatile Word64 *pInput)
 	\brief Atomically post-decrement a 64 bit variable in memory
 
 	For multi-CPU machines, this function will atomically decrement a value
@@ -214,9 +284,13 @@
 
 ***************************************/
 
+Word64 BURGER_API Burger::AtomicPostDecrement(volatile Word64 *pInput)
+{
+	return static_cast<Word64>(OSAtomicDecrement64Barrier(static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput)))+1);
+}
+
 /*! ************************************
 
-	\fn Word64 Burger::AtomicAdd(volatile Word64 *pInput,Word64 uValue) 
 	\brief Atomically add a 64 bit value to a variable in memory
 
 	For multi-CPU machines, this function will atomically add a value
@@ -230,9 +304,13 @@
 
 ***************************************/
 
+Word64 BURGER_API Burger::AtomicAdd(volatile Word64 *pInput,Word64 uValue)
+{
+	return static_cast<Word64>(OSAtomicAdd64Barrier(static_cast<int64_t>(uValue),static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput))));
+}
+
 /*! ************************************
 
-	\fn Word64 Burger::AtomicSubtract(volatile Word64 *pInput,Word64 uValue)
 	\brief Atomically subtract a 64 bit value from a variable in memory
 
 	For multi-CPU machines, this function will atomically subtract a value
@@ -246,9 +324,13 @@
 
 ***************************************/
 
+Word64 BURGER_API Burger::AtomicSubtract(volatile Word64 *pInput,Word64 uValue)
+{
+	return static_cast<Word64>(OSAtomicAdd64Barrier(-static_cast<int64_t>(uValue),static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput))));
+}
+
 /*! ************************************
 
-	\fn Word64 Burger::AtomicSetIfMatch(volatile Word64 *pInput,Word64 uBefore,Word64 uAfter)
 	\brief Atomically set a 64 bit value from a variable in memory if it matches a requested value
 
 	For multi-CPU machines, this function will atomically test a value
@@ -263,6 +345,15 @@
 	\return \ref TRUE if the exchange occurred, \ref FALSE if not
 
 ***************************************/
+
+Word BURGER_API Burger::AtomicSetIfMatch(volatile Word64 *pInput,Word64 uBefore,Word64 uAfter)
+{
+	return OSAtomicCompareAndSwap64Barrier(static_cast<int64_t>(uBefore),static_cast<int64_t>(uAfter),
+		static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput)));
+}
+
+#endif
+#endif
 
 /*! ************************************
 
@@ -283,7 +374,8 @@
 
 ***************************************/
 
-#if defined(BURGER_X86) || defined(DOXYGEN)
+#if (defined(BURGER_X86) && !defined(BURGER_XBOX)) || defined(DOXYGEN)
+
 #if defined(BURGER_GNUC)
 __asm__(
 "	.align	4,0x90\n"
@@ -302,7 +394,9 @@ __asm__(
 "	popfl\n"
 "	retl\n"
 );
+
 #else
+
 BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 {
 	BURGER_ASM {
@@ -311,17 +405,17 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 		// If it can, it's higher than 486, which
 		// implies that CPUID is available
 
-		pushfd					// save flags on the stack
+		pushfd						// save flags on the stack
 		mov		eax,dword ptr[esp]	// Get in register and leave on stack
-		xor		eax,0x00200000	// Switch bit 21 for the test
-		push	eax				// Set the flags with the new value
+		xor		eax,0x00200000		// Switch bit 21 for the test
+		push	eax					// Set the flags with the new value
 		popfd
-		pushfd					// Read in the flags into a register
+		pushfd						// Read in the flags into a register
 		pop		eax
 		xor		eax,dword ptr[esp]	// Did the change "take"
-		shr		eax,21			// Move to the lowest bit
-		and		eax,1			// Set to TRUE or FALSE
-		popfd					// Restore the flags to the original state
+		shr		eax,21				// Move to the lowest bit
+		and		eax,1				// Set to TRUE or FALSE
+		popfd						// Restore the flags to the original state
 		ret
 	}
 }
@@ -348,6 +442,8 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\fn BURGER_INLINE Word Burger::CPUID_t::HasRTSC(void) const
 	\brief Returns non-zero if the RTSC instruction is available
 
+	https://en.wikipedia.org/wiki/Time_Stamp_Counter
+
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instruction is available, zero if not.
@@ -359,6 +455,8 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 	\fn BURGER_INLINE Word Burger::CPUID_t::HasCMOV(void) const
 	\brief Returns non-zero if the CMOV instructions are available
+
+	https://en.wikipedia.org/wiki/FCMOV
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -372,6 +470,8 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\fn BURGER_INLINE Word Burger::CPUID_t::HasMMX(void) const
 	\brief Returns non-zero if the MMX instructions are available
 
+	https://en.wikipedia.org/wiki/MMX_(instruction_set)
+
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
@@ -383,6 +483,8 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 	\fn BURGER_INLINE Word Burger::CPUID_t::HasSSE(void) const
 	\brief Returns non-zero if SSE instructions are available
+
+	https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -396,6 +498,8 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\fn BURGER_INLINE Word Burger::CPUID_t::HasSSE2(void) const
 	\brief Returns non-zero if SSE2 instructions are available
 
+	https://en.wikipedia.org/wiki/SSE2
+
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
@@ -407,6 +511,8 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 	\fn BURGER_INLINE Word Burger::CPUID_t::HasSSE3(void) const
 	\brief Returns non-zero if SSE3 instructions are available
+
+	https://en.wikipedia.org/wiki/SSE3
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -420,6 +526,22 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\fn BURGER_INLINE Word Burger::CPUID_t::HasSSSE3(void) const
 	\brief Returns non-zero if SSSE3 instructions are available
 
+	https://en.wikipedia.org/wiki/SSSE3
+
+	\note This structure only matters on systems with an x86 or x64 CPU
+
+	\return Non-zero if the instructions are available, zero if not.
+	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+
+***************************************/
+
+/*! ************************************
+
+	\fn BURGER_INLINE Word Burger::CPUID_t::HasSSE4a(void) const
+	\brief Returns non-zero if HasSSE4a instructions are available
+
+	https://en.wikipedia.org/wiki/SSE4#SSE4a
+
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
@@ -431,6 +553,8 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 	\fn BURGER_INLINE Word Burger::CPUID_t::HasSSE41(void) const
 	\brief Returns non-zero if SSE4.1 instructions are available
+
+	https://en.wikipedia.org/wiki/SSE4#SSE4.1
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -444,6 +568,22 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\fn BURGER_INLINE Word Burger::CPUID_t::HasSSE42(void) const
 	\brief Returns non-zero if SSE4.2 instructions are available
 
+	https://en.wikipedia.org/wiki/SSE4#SSE4.2
+
+	\note This structure only matters on systems with an x86 or x64 CPU
+
+	\return Non-zero if the instructions are available, zero if not.
+	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+
+***************************************/
+
+/*! ************************************
+
+	\fn BURGER_INLINE Word Burger::CPUID_t::HasAES(void) const
+	\brief Returns non-zero if AES instructions are available
+
+	https://en.wikipedia.org/wiki/AES_instruction_set
+
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
@@ -455,6 +595,92 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 	\fn BURGER_INLINE Word Burger::CPUID_t::HasAVX(void) const
 	\brief Returns non-zero if AVX instructions are available
+
+	https://en.wikipedia.org/wiki/Advanced_Vector_Extensions
+
+	\note This structure only matters on systems with an x86 or x64 CPU
+
+	\return Non-zero if the instructions are available, zero if not.
+	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+
+***************************************/
+
+/*! ************************************
+
+	\fn BURGER_INLINE Word Burger::CPUID_t::HasCMPXCHG16B(void) const
+	\brief Returns non-zero if the CMPXCHG16B instruction is available
+
+	http://www.felixcloutier.com/x86/CMPXCHG8B:CMPXCHG16B.html
+
+	\note This structure only matters on systems with an x86 or x64 CPU
+
+	\return Non-zero if the CMPXCHG16B instruction is available, zero if not.
+	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+
+***************************************/
+
+/*! ************************************
+
+	\fn BURGER_INLINE Word Burger::CPUID_t::HasF16C(void) const
+	\brief Returns non-zero if the F16C data type is supported
+
+	https://en.wikipedia.org/wiki/F16C
+
+	\note This structure only matters on systems with an x86 or x64 CPU
+
+	\return Non-zero if the F16C data type is supported, zero if not.
+	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+
+***************************************/
+
+/*! ************************************
+
+	\fn BURGER_INLINE Word Burger::CPUID_t::HasFMA3(void) const
+	\brief Returns non-zero if FMA3 instructions are available
+
+	https://en.wikipedia.org/wiki/FMA_instruction_set
+
+	\note This structure only matters on systems with an x86 or x64 CPU
+
+	\return Non-zero if the instructions are available, zero if not.
+	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+
+***************************************/
+
+/*! ************************************
+
+	\fn BURGER_INLINE Word Burger::CPUID_t::HasFMA4(void) const
+	\brief Returns non-zero if FMA4 instructions are available
+
+	https://en.wikipedia.org/wiki/FMA_instruction_set#FMA4_instruction_set
+
+	\note This structure only matters on systems with an x86 or x64 CPU
+
+	\return Non-zero if the instructions are available, zero if not.
+	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+
+***************************************/
+
+/*! ************************************
+
+	\fn BURGER_INLINE Word Burger::CPUID_t::HasLAHFSAHF(void) const
+	\brief Returns non-zero if LAHF and SAHF instructions support long mode
+
+	http://www.tptp.cc/mirrors/siyobik.info/instruction/LAHF.html
+
+	\note This structure only matters on systems with an x86 or x64 CPU
+
+	\return Non-zero if the instructions are available, zero if not.
+	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+
+***************************************/
+
+/*! ************************************
+
+	\fn BURGER_INLINE Word Burger::CPUID_t::HasPrefetchW(void) const
+	\brief Returns non-zero if PrefetchW instructions are available
+
+	http://www.felixcloutier.com/x86/PREFETCHW.html
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
@@ -468,6 +694,8 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\fn BURGER_INLINE Word Burger::CPUID_t::Has3DNOW(void) const
 	\brief Returns non-zero if AMD 3DNow! instructions are available
 
+	https://en.wikipedia.org/wiki/3DNow!
+
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
@@ -475,7 +703,19 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 ***************************************/
 
+/*! ************************************
 
+	\fn BURGER_INLINE Word Burger::CPUID_t::HasExtended3DNOW(void) const
+	\brief Returns non-zero if extendeed AMD 3DNow! instructions are available
+
+	https://en.wikipedia.org/wiki/3DNow!#3DNow_extensions
+
+	\note This structure only matters on systems with an x86 or x64 CPU
+
+	\return Non-zero if the instructions are available, zero if not.
+	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+
+***************************************/
 
 
 
@@ -516,7 +756,13 @@ static const CPUHashes_t g_CPUHashes[] = {
 	{"SiS SiS SiS ",Burger::CPUID_t::CPU_SIS},
 	{"UMC UMC UMC ",Burger::CPUID_t::CPU_UMC},
 	{"VIA VIA VIA ",Burger::CPUID_t::CPU_VIA},
-	{"Vortex86 SoC",Burger::CPUID_t::CPU_VORTEX}
+	{"Vortex86 SoC",Burger::CPUID_t::CPU_VORTEX},
+	{"KVMKVMKVM   ",Burger::CPUID_t::CPU_KVM},
+	{"Microsoft Hv",Burger::CPUID_t::CPU_MICROSOFT_VIRTUAL_PC},
+	{" lrpepyh  vr",Burger::CPUID_t::CPU_PARALLELS},
+	{"prl hyperv  ",Burger::CPUID_t::CPU_PARALLELS},
+	{"VMwareVMware",Burger::CPUID_t::CPU_VMWARE},
+	{"XenVMMXenVMM",Burger::CPUID_t::CPU_XEN}
 };
 
 //
@@ -526,7 +772,7 @@ static const CPUHashes_t g_CPUHashes[] = {
 // of a request of data that the chip isn't aware of
 //
 
-static Word32 FixCount(Word32 uBase,int iValue)
+static Word32 BURGER_API FixCount(Word32 uBase,int iValue)
 {
 	// Invalid if too small
 	if (static_cast<Word32>(iValue)<=uBase) {
@@ -548,6 +794,7 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 	// Clear out the result
 	//
 	MemoryClear(pOutput,sizeof(CPUID_t));
+	pOutput->m_uCPUType = CPUID_t::CPU_UNKNOWN;
 
 #if defined(BURGER_INTELARCHITECTURE)
 
@@ -585,7 +832,6 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 
 	WordPtr i = BURGER_ARRAYSIZE(g_CPUHashes);
 	const CPUHashes_t *pHash = g_CPUHashes;
-	pOutput->m_uCPUType = CPUID_t::CPU_UNKNOWN;
 	do {
 		if (!StringCompare(pHash->m_CPUName,pOutput->m_CPUName)) {
 			pOutput->m_uCPUType = pHash->m_uCPU;
@@ -601,8 +847,16 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 		__cpuid(Results,1);
 		pOutput->m_uModel = static_cast<Word32>(Results[0]);
 		pOutput->m_uBrand = static_cast<Word32>(Results[1]);
-		pOutput->m_uExtendedFeatureInformation = static_cast<Word32>(Results[2]);
-		pOutput->m_uFeatureInformation = static_cast<Word32>(Results[3]);
+		pOutput->m_uCPUID1ECX = static_cast<Word32>(Results[2]);
+		pOutput->m_uCPUID1EDX = static_cast<Word32>(Results[3]);
+
+		// Even more features?
+		if (uHighestID>=7) {
+			__cpuid(Results,7);
+			pOutput->m_uCPUID7EBX = static_cast<Word32>(Results[1]);
+			pOutput->m_uCPUID7ECX = static_cast<Word32>(Results[2]);
+			pOutput->m_uCPUID7EDX = static_cast<Word32>(Results[3]);
+		}
 	}
 
 	//
@@ -619,8 +873,8 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 
 	if (uExtendedID>=0x80000001U) {
 		__cpuid(Results,0x80000001U);
-		pOutput->m_uExtendedProcessorInformation = static_cast<Word32>(Results[3]);
-		pOutput->m_uExtendedFeatureBits = static_cast<Word32>(Results[2]);
+		pOutput->m_uCPUID80000001ECX = static_cast<Word32>(Results[2]);
+		pOutput->m_uCPUID80000001EDX = static_cast<Word32>(Results[3]);
 
 		//
 		// Check if Processor Brand String is available

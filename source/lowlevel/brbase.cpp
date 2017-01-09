@@ -2,7 +2,7 @@
 
 	Root base class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -12,6 +12,7 @@
 ***************************************/
 
 #include "brbase.h"
+#include "brglobalmemorymanager.h"
 
 /*! ************************************
 
@@ -44,6 +45,30 @@ BURGER_CREATE_STATICRTTI_BASE(Burger::Base);
 
 Burger::Base::~Base()
 {
+}
+
+/*! ************************************
+
+	\brief Delete a base class.
+	
+	If the pointer passed is not \ref NULL, call the destructor and
+	then dispose of the pointer with a call to
+	\ref Free(const void *)
+
+	\param pInput Pointer to a base class
+	
+***************************************/
+
+void BURGER_API Burger::Delete(const Base *pInput)
+{
+	// Valid pointer?
+	if (pInput) {
+		// Destroy the class
+		const_cast<Base *>(pInput)->~Base();
+
+		// Dispose of the memory
+		Free(pInput);
+	}
 }
 
 /*! ************************************
