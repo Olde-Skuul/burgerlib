@@ -2,7 +2,7 @@
 
 	Joypad/joystick Manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -16,6 +16,10 @@
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
+#endif
+
+#ifndef __BRBASE_H__
+#include "brbase.h"
 #endif
 
 #ifndef __BRGAMEAPP_H__
@@ -37,7 +41,8 @@
 /* BEGIN */
 namespace Burger {
 
-#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+#if defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(DOXYGEN)
+
 struct XInputGamePad_t {
 	float m_fThumbLX;			///< Left thumbstick X -1.0f to 1.0f
 	float m_fThumbLY;			///< Left thumbstick Y -1.0f to 1.0f
@@ -57,18 +62,24 @@ struct XInputGamePad_t {
 	Word8 m_bInserted;			///< \ref TRUE if the game pad was inserted during the last update
 	Word8 m_bRemoved;			///< \ref TRUE if the game pad was removed during the last update
 };
+
 enum eXInputDeadZoneType {
 	XINPUTDEADZONE_NONE,		///< Don't apply a dead zone
 	XINPUTDEADZONE_CARDINAL,	///< Apply an axis based dead zone
 	XINPUTDEADZONE_CENTER		///< Apply an x/y based dead zone
 };
+
 extern Word BURGER_API XInputStopRumbleOnAllControllers(void);
 extern Word BURGER_API XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInputGamePad,eXInputDeadZoneType uDeadZoneType=XINPUTDEADZONE_NONE);
+#endif
+
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 extern Word BURGER_API IsDeviceXInput(const GUID *pGuid);
 #endif
 
-class Joypad {
+class Joypad : public Base {
 	BURGER_DISABLECOPYCONSTRUCTORS(Joypad);
+	BURGER_RTTI_IN_CLASS();
 public:
 	enum {
 		AXIS1MIN=0x1,			///< Joystick Axis 1 minimum motion button
@@ -104,6 +115,7 @@ public:
 		BUTTON19=0x40000000,	///< 19th joystick button
 		BUTTON20=0x80000000		///< 20th joystick button
 	};
+
 	enum {
 		MAXAXIS=6,				///< Maximum number of joystick axises
 #if defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || defined(BURGER_PS3) || defined(BURGER_PS4)
@@ -123,10 +135,12 @@ public:
 		INVALIDPOVVALUE=0xFFFFFFFF,	///< Invalid POV value
 		POV_SLOP=1500				///< Slop value for POV to digital conversion (15 degrees)
 	};
+
 	struct JoypadRange_t {
 		Word m_uMin;					///< Minimum value for a digital \ref TRUE
 		Word m_uMax;					///< Maximum value for a digital \ref TRUE
 	};
+
 	struct JoypadData_t {
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 		IDirectInputDevice8W* m_pJoystickDevice;	///< DirectInput Device reference (WINDOWS only)
@@ -147,14 +161,20 @@ public:
 		Word m_uAxisPercents[MAXAXIS];	///< Cache for percentages
 		JoypadRange_t m_uAxisDigitalRanges[MAXAXIS];	///< Digital ranges
 	};
+
 private:
 	GameApp *m_pAppInstance;							///< Application instances
-#if defined(BURGER_WINDOWS)
+
+#if (defined(BURGER_WINDOWS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
 	XInputGamePad_t m_XInputGamepads[4];				///< Structures for each XInput device
+#endif
+
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	Word m_bDirectInputFound;							///< DirectInput devices found
 	Word m_bXInputFound;								///< XInput devices found
 	Word m_uDirectInputDevices;							///< Number of devices found from DirectInput, not managed by XInput
 #endif
+
 	JoypadData_t m_Data[MAXJOYSTICKS];					///< Current input data from game devices
 	Word m_uDeviceCount;								///< Number of game controller drivers found				
 
@@ -168,10 +188,12 @@ public:
 	void BURGER_API SetDigital(Word uWhich,Word uAxis,Word uPercent=20);
 	BURGER_INLINE Word GetDeviceCount(void) const { return m_uDeviceCount; }
 	static RunQueue::eReturnCode BURGER_API Poll(void *pData);
+
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	void BURGER_API AcquireDirectInput(void);
 	void BURGER_API UnacquireDirectInput(void);
 #endif
+
 };
 }
 

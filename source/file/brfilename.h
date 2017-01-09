@@ -2,7 +2,7 @@
 
 	Filename Class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -43,7 +43,7 @@ class Filename {
 	char m_Filename[cBufferSize-(sizeof(char *)+sizeof(long)+sizeof(short))];	///< Local buffer containing the filename (If it can fit in this buffer)
 	char m_NativeFilename[cBufferSize-(sizeof(char *)+80)];	///< Local buffer containing the native filename
 
-	static const Word DIRCACHESIZE = 8;	///<  Number of cache entries (MacOS 9 only)
+	static const Word DIRCACHESIZE = 8;	///< Number of cache entries (MacOS 9 only)
 	struct ExpandCache_t {
 		const char *m_pName;		///< Pointer to the original directory name
 		Word32 m_uHitTick;			///< Last time hit (For purging)

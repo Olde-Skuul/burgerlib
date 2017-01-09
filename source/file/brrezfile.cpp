@@ -2,7 +2,7 @@
 
 	Resource manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -375,13 +375,13 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 			} while (--uGroupCount);
 		} else {
 		// Parse the new way
-  			do {
+			do {
 				Word uNewCount = LittleEndian::Load(&reinterpret_cast<const FileRezGroup_t *>(pWork)->m_uCount);	/* Get the count */
 				// Number of bytes needed to store this record
 				uNewLength += (uNewCount*sizeof(RezEntry_t))+(sizeof(RezGroup_t)-sizeof(RezEntry_t));
 				// Next group
 				pWork = pWork + (sizeof(Word32)*2) + (uNewCount*(sizeof(Word32)*4));
-	   		} while (--uGroupCount);
+			} while (--uGroupCount);
 		}
 		// How many bytes until the end of the data
 		WordPtr uAdjust = static_cast<WordPtr>(pWork-pData);
@@ -495,7 +495,7 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 							Word uNameOffset = LittleEndian::Load(&reinterpret_cast<const FileRezEntry_t *>(pWork)->m_uNameOffset);
 							pEntry->m_uCompressedLength = LittleEndian::Load(&reinterpret_cast<const FileRezEntry_t *>(pWork)->m_uCompressedLength);
 							// Next 4 longwords (Rigid)
-  							pWork += (sizeof(Word32)*4);
+							pWork += (sizeof(Word32)*4);
 							if (uNameOffset&ENTRYFLAGSNAMEOFFSETMASK) {
 								pEntry->m_pRezName = pAdjusted+(uNameOffset&ENTRYFLAGSNAMEOFFSETMASK);
 							}

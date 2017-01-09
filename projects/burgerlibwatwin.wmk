@@ -6,7 +6,7 @@
 # sourcedir = Set the work directories for the source
 #
 
-sourcedir = ..\source\ansi;..\source\audio;..\source;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersopengl;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\source\windows
+sourcedir = ..\source\ansi;..\source\audio;..\source;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersopengl;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\random;..\source\text;..\source\windows
 
 #
 # Name of the output library
@@ -60,6 +60,7 @@ objs= &
 	$(A)\brdxt1.obj &
 	$(A)\brdxt3.obj &
 	$(A)\brdxt5.obj &
+	$(A)\brgost.obj &
 	$(A)\brhashmap.obj &
 	$(A)\brmd2.obj &
 	$(A)\brmd4.obj &
@@ -97,6 +98,7 @@ objs= &
 	$(A)\brflashstream.obj &
 	$(A)\brflashutils.obj &
 	$(A)\brdisplay.obj &
+	$(A)\brdisplayobject.obj &
 	$(A)\brdisplayopengl.obj &
 	$(A)\brdisplayopenglsoftware8.obj &
 	$(A)\brfont.obj &
@@ -143,7 +145,6 @@ objs= &
 	$(A)\brpair.obj &
 	$(A)\brperforce.obj &
 	$(A)\brqueue.obj &
-	$(A)\brrandommanager.obj &
 	$(A)\brrunqueue.obj &
 	$(A)\brsimplearray.obj &
 	$(A)\brsmartpointer.obj &
@@ -168,6 +169,9 @@ objs= &
 	$(A)\brglobalmemorymanager.obj &
 	$(A)\brmemoryhandle.obj &
 	$(A)\brmemorymanager.obj &
+	$(A)\brmersennetwist.obj &
+	$(A)\brrandom.obj &
+	$(A)\brrandombase.obj &
 	$(A)\brisolatin1.obj &
 	$(A)\brmacromanus.obj &
 	$(A)\brnumberstring.obj &

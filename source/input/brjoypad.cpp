@@ -2,7 +2,7 @@
 
 	Joypad/joystick Manager
 	
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -14,6 +14,10 @@
 #include "brjoypad.h"
 #include "brtick.h"
 #include "brstringfunctions.h"
+
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::Joypad,Burger::Base);
+#endif
 
 /*! ************************************
 
@@ -40,7 +44,6 @@
 #if (!defined(BURGER_WINDOWS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
 Burger::Joypad::Joypad(GameApp *pAppInstance)
 {
-	pAppInstance->SetJoypad(this);
 	m_pAppInstance = pAppInstance;
 	MemoryClear(m_Data,sizeof(m_Data));
 }
@@ -188,7 +191,7 @@ Word BURGER_API Burger::Joypad::GetAxisCount(Word uWhich) const
 	call.
 
 	\param uWhich Which joystick device to affect
-	\param uAxis  Which analog axis to affect
+	\param uAxis Which analog axis to affect
 	\param uPercent Percentage from center point for dead zone (20% is normal)
 
 	\sa ReadButtons()

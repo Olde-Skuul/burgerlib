@@ -2,7 +2,7 @@
 
 	Mouse Manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -16,6 +16,10 @@
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
+#endif
+
+#ifndef __BRBASE_H__
+#include "brbase.h"
 #endif
 
 #ifndef __BRGAMEAPP_H__
@@ -40,11 +44,15 @@
 
 /* BEGIN */
 namespace Burger {
-class Mouse {
+class Mouse : public Base {
+	BURGER_DISABLECOPYCONSTRUCTORS(Mouse);
+	BURGER_RTTI_IN_CLASS();
+
 public:
 	enum {
 		MOUSEBUFFSIZE=128			///< Number of mouse events in the event cache
 	};
+
 	enum eMouseButtons {
 		BUTTON_LEFT=0x1,			///< Mask for the left mouse button
 		BUTTON_RIGHT=0x2,			///< Mask for the right mouse button
@@ -63,13 +71,7 @@ public:
 		BUTTON_15=0x4000,			///< Mask for the 15th mouse button
 		BUTTON_16=0x8000			///< Mask for the 16th mouse button
 	};
-	enum eMouseEvent {
-		EVENT_BUTTONDOWN,			///< Mouse button down event
-		EVENT_BUTTONUP,				///< Mouse button up event
-		EVENT_MOVE,					///< Mouse motion event
-		EVENT_POSITION,				///< Mouse motion event
-		EVENT_WHEEL					///< Mouse wheel event
-	};
+
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
 	enum {
 		MAX_MOUSE_DEVICE_COUNT=8	///< Maximum number of mice/trackpads OSX will track
@@ -80,38 +82,19 @@ public:
 		Word m_bUnplugged;			///< \ref TRUE if this device was unplugged
 	};
 #endif
-	struct MouseDataHeader_t {
-		eMouseEvent m_eEvent;		///< Mouse motion event
-		Word32 m_uMSTimeStamp;		///< Time when the event occurred
-	};
-	struct MouseButtonData_t : public MouseDataHeader_t {
-		Word32 m_uX;		///< Absolute X position on the screen
-		Word32 m_uY;		///< Absolute Y position on the screen
-		Word32 m_uButtons;	///< Mouse buttons
-	};	
-	struct MouseWheelData_t : public MouseDataHeader_t {
-		Int32 m_iMouseWheelX;	///< Horizontal mouse wheel motion (Apple ball mice support this)
-		Int32 m_iMouseWheelY;	///< Vertical mouse wheel motion (Most mice support this)
-	};
-	struct MouseMotionData_t : public MouseDataHeader_t {
-		Int32 m_iDeltaX;		///< Relative X motion
-		Int32 m_iDeltaY;		///< Relative Y motion
-	};
-	struct MousePositionData_t : public MouseDataHeader_t {
-		Word32 m_uX;		///< Absolute X position on the screen
-		Word32 m_uY;		///< Absolute Y position on the screen
-	};
+
 	union MouseEvent_t {
-		MouseDataHeader_t m_Header;		///< Header shared by all data chunks
-		MouseButtonData_t m_Button;		///< Data for a EVENT_BUTTONUP or EVENT_BUTTONDOWN event
-		MouseWheelData_t m_Wheel;		///< Data for a EVENT_WHEEL event
-		MouseMotionData_t m_Motion;		///< Data for a EVENT_MOVE event
-		MousePositionData_t m_Position;	///< Data for a EVENT_POSITION event
+		EventHeader_t m_Header;		///< Header shared by all data chunks
+		MouseButtonEvent_t m_Button;		///< Data for a EVENT_BUTTONUP or EVENT_BUTTONDOWN event
+		MouseWheelEvent_t m_Wheel;		///< Data for a EVENT_WHEEL event
+		MouseMotionEvent_t m_Motion;		///< Data for a EVENT_MOVE event
+		MousePositionEvent_t m_Position;	///< Data for a EVENT_POSITION event
 	};
-private:
-	BURGER_DISABLECOPYCONSTRUCTORS(Mouse);
-	GameApp *m_pAppInstance;		///< Application instance
+
+protected:
+	GameApp *m_pGameApp;			///< Application instance
 	CriticalSection m_MouseLock;	///< Lock for multi-threading
+
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	static WordPtr BURGER_API WindowsMouseThread(void *pData);
 	IDirectInputDevice8W *m_pMouseDevice;	///< Direct input device (Windows only)
@@ -120,11 +103,13 @@ private:
 	Word m_bAcquired;				///< \ref TRUE if DirectInput8 is active (Windows only)
 	volatile Word32 m_bQuit;		///< \ref TRUE when the thread is shutting down (Windows only)
 #endif
+
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
 	__IOHIDManager *m_pHIDManager;	///< HID Manager pointer
 	DeviceStruct m_Mice[MAX_MOUSE_DEVICE_COUNT];	///< Array of mice devices
 	Word m_uMiceCount;				///< Number of mice devices found
 #endif
+
 	Word32 m_uX;					///< Current X coordinate of the mouse
 	Word32 m_uY;					///< Current Y coordinate of the mouse
 	Word32 m_uBoundsX;				///< Screen width bounds for the mouse
@@ -140,7 +125,7 @@ private:
 	Word m_uArrayEnd;				///< Write index for m_KeyEvents
 	MouseEvent_t m_MouseEvents[MOUSEBUFFSIZE];	///< Circular buffer holding mouse events
 public:
-	Mouse(GameApp *pAppInstance);
+	Mouse(GameApp *pGameApp);
 	~Mouse();
 	Word BURGER_API PeekMouseEvent(MouseEvent_t *pEvent);
 	Word BURGER_API GetMouseEvent(MouseEvent_t *pEvent);
@@ -157,18 +142,21 @@ public:
 	void BURGER_API PostMouseDown(Word32 uMouseBits,Word32 uMSTimeStamp=0);
 	void BURGER_API PostMouseUp(Word32 uMouseBits,Word32 uMSTimeStamp=0);
 	void BURGER_API PostMouseWheel(Int32 iWheelXMovement,Int32 iWheelYMovement,Word32 uMSTimeStamp=0);
-	Word BURGER_API PostMouseEvent(const MouseDataHeader_t *pEvent);
+	Word BURGER_API PostMouseEvent(const EventHeader_t *pEvent);
+
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	void BURGER_API AcquireDirectInput(void);
 	void BURGER_API UnacquireDirectInput(void);
 	void BURGER_API ReadSystemMouseValues(void);
 #endif
+
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
 	static void EnumerationCallback(void *pData,int iReturn,void *pSender,__IOHIDDevice *pDevice);
 	static void DisconnectionCallback(void *pData,int iReturn,void *pSender);
 	static void InputCallback(void *pData,int iReturn,void *pSender,__IOHIDValue *pValue);
 	static RunQueue::eReturnCode BURGER_API Poll(void *pData);
 #endif
+
 };
 }
 /* END */

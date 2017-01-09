@@ -2,7 +2,7 @@
 
 	Graphic file format transport class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -114,7 +114,7 @@ Burger::Image * BURGER_API Burger::Image::New(void)
 	Release this object with a call to delete
 
 	\code 
-		Image *pFoo =  Burger::Image::New(pOldImage);
+		Image *pFoo = Burger::Image::New(pOldImage);
 		if (pFoo) {
 			DoStuff(pFoo);
 			Delete(pFoo);

@@ -6,7 +6,7 @@
 # sourcedir = Set the work directories for the source
 #
 
-sourcedir = ..\source\ansi;..\source\audio;..\source;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\msdos;..\source\text
+sourcedir = ..\source\ansi;..\source\audio;..\source;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\msdos;..\source\random;..\source\text
 
 #
 # Name of the output library
@@ -60,6 +60,7 @@ objs= &
 	$(A)\brdxt1.obj &
 	$(A)\brdxt3.obj &
 	$(A)\brdxt5.obj &
+	$(A)\brgost.obj &
 	$(A)\brhashmap.obj &
 	$(A)\brmd2.obj &
 	$(A)\brmd4.obj &
@@ -97,6 +98,7 @@ objs= &
 	$(A)\brflashstream.obj &
 	$(A)\brflashutils.obj &
 	$(A)\brdisplay.obj &
+	$(A)\brdisplayobject.obj &
 	$(A)\brdisplayopengl.obj &
 	$(A)\brdisplayopenglsoftware8.obj &
 	$(A)\brfont.obj &
@@ -143,7 +145,6 @@ objs= &
 	$(A)\brpair.obj &
 	$(A)\brperforce.obj &
 	$(A)\brqueue.obj &
-	$(A)\brrandommanager.obj &
 	$(A)\brrunqueue.obj &
 	$(A)\brsimplearray.obj &
 	$(A)\brsmartpointer.obj &
@@ -177,6 +178,9 @@ objs= &
 	$(A)\brglobalsmsdos.obj &
 	$(A)\brtickmsdos.obj &
 	$(A)\brtimedatemsdos.obj &
+	$(A)\brmersennetwist.obj &
+	$(A)\brrandom.obj &
+	$(A)\brrandombase.obj &
 	$(A)\brisolatin1.obj &
 	$(A)\brmacromanus.obj &
 	$(A)\brnumberstring.obj &

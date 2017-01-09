@@ -2,7 +2,7 @@
 
 	Keyboard Manager
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -16,6 +16,10 @@
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
+#endif
+
+#ifndef __BRBASE_H__
+#include "brbase.h"
 #endif
 
 #ifndef __BRGAMEAPP_H__
@@ -36,14 +40,18 @@
 
 /* BEGIN */
 namespace Burger {
-class Keyboard {
+class Keyboard : public Base {
+	BURGER_DISABLECOPYCONSTRUCTORS(Keyboard);
+	BURGER_RTTI_IN_CLASS();
 public:
 	static const Word cBufferSize=128;		///< Number of keystrokes in keyboard cache
+
 	enum {
 		KEYCAPDOWN=0x01,	///< If \ref TRUE in m_KeyArray, this key is currently held down
 		KEYCAPPRESSED=0x02,	///< If \ref TRUE in m_KeyArray, this key was pressed, but wasn't acknowledged by the application
 		KEYCAPTOGGLE=0x4	///< If \ref TRUE in m_KeyArray, this key is toggled "on"
 	};
+
 	enum eAsciiCode {
 		ASCII_BACKSPACE=0x08,	///< Backspace key
 		ASCII_TAB=0x09,			///< Tab key
@@ -81,6 +89,7 @@ public:
 		ASCII_INSERT=0x2380,	///< Insert key
 		ASCII_PRINTSCREEN=0x2399 ///< Printscreen key
 	};
+
 	enum eScanCode {
 		SC_INVALID,			///< Zero means no key
 		SC_A,				///< A Key
@@ -244,46 +253,47 @@ public:
 		SC_EXTRA,			///< Extra key codes
 		SC_MAXENTRY=255		///< Highest scan code valid value
 	};
+
 	enum eKeyFlags {
-		FLAG_KEYDOWN=0x01,	///< Key is pressed
 		FLAG_ALT=0x02,		///< Alt/Open Apple key is held down at the same time
 		FLAG_CONTROL=0x04,	///< Control key is held down at the same time
 		FLAG_OPTION=0x08,	///< Option key is held down at the same time
 		FLAG_SHIFT=0x10,	///< Shift key is held down at the same time
-		FLAG_REPEAT=0x20,	///< This is a auto generated repeat key
 		FLAG_CAPSLOCK=0x40,	///< Caps lock is active,
 		FLAG_NUMLOCK=0x80	///< Num lock is active
 	};
-	struct KeyEvent_t {
-		Word32 m_uAscii;	///< Unicode ASCII value
-		Word16 m_uFlags;	///< Flags for key modifiers
-		Word16 m_uScanCode;	///< Scan code of the key
-		Word32 m_uMSTimeStamp;	///< Timestamp of when this event was recorded in milliseconds
-	};
-private:
-	BURGER_DISABLECOPYCONSTRUCTORS(Keyboard);
+
+protected:
 	GameApp *m_pAppInstance;			///< Application instances
+
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	static WordPtr BURGER_API WindowsKeyboardThread(void *pData);
 	IDirectInputDevice8W* m_pKeyboardDevice;	///< DirectInput Device reference (Windows only)
-	void *m_pKeyboardEvent;			///< Event signal for DirectInput (Windows only)
-	void *m_pKeyboardTimerEvent;	///< Keyboard repeat timer event (Windows only)
-	HHOOK__ *m_pPreviousKeyboardHook;	///< Previous keyboard low level hook
-	Thread m_KeyboardThread;		///< Asynchronous thread monitoring DirectInput (Windows only)
-	CriticalSection m_KeyboardLock;	///< Lock for multi-threading (Windows only)
-	Word m_bAcquired;				///< \ref TRUE if DirectInput8 is active (Windows only)
-	Word m_bRepeatActive;			///< \ref TRUE if auto repeat time is active (Windows only)
-	volatile Word32 m_bQuit;		///< \ref TRUE when the thread is shutting down (Windows only)
-	tagSTICKYKEYS m_DefaultStickyKeys;	///< Previous settings for Sticky Keys (Windows only)
-	tagTOGGLEKEYS m_DefaultToggleKeys;	///< Previous settings for Toggle Keys (Windows only)
-	tagFILTERKEYS m_DefaultFilterKeys;	///< Previous settings for Filter Keys (Windows only)
+	void *m_pKeyboardEvent;						///< Event signal for DirectInput (Windows only)
+	void *m_pKeyboardTimerEvent;				///< Keyboard repeat timer event (Windows only)
+	HHOOK__ *m_pPreviousKeyboardHook;			///< Previous keyboard low level hook
+	Thread m_KeyboardThread;					///< Asynchronous thread monitoring DirectInput (Windows only)
+	Word m_bDirectInput8Acquired;				///< \ref TRUE if DirectInput8 is active (Windows only)
+	Word m_bRepeatActive;						///< \ref TRUE if auto repeat time is active (Windows only)
+	volatile Word32 m_bQuit;					///< \ref TRUE when the thread is shutting down (Windows only)
+	tagSTICKYKEYS m_DefaultStickyKeys;			///< Previous settings for Sticky Keys (Windows only)
+	tagTOGGLEKEYS m_DefaultToggleKeys;			///< Previous settings for Toggle Keys (Windows only)
+	tagFILTERKEYS m_DefaultFilterKeys;			///< Previous settings for Filter Keys (Windows only)
 #endif
+
 #if defined(BURGER_XBOX360)
 	static RunQueue::eReturnCode BURGER_API Poll(void *pData);
 #endif
-#if defined(BURGER_MACOSX) || defined(DOXYGEN)
-	CriticalSection m_KeyboardLock;			///< Lock for multi-threading (MacOSX only)
+
+#if (defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
+	CriticalSection m_KeyboardLock;			///< Lock for multi-threading (MacOSX and Windows only)
+	BURGER_INLINE void Lock(void) { m_KeyboardLock.Lock(); }
+	BURGER_INLINE void Unlock(void) { m_KeyboardLock.Unlock(); }
+#else
+	BURGER_INLINE void Lock(void) {}
+	BURGER_INLINE void Unlock(void) {}
 #endif
+
 	Word8 m_KeyArray[SC_MAXENTRY+1];		///< Array with the current state of the keyboard
 	Word m_uArrayStart;						///< Read index for m_KeyEvents
 	Word m_uArrayEnd;						///< Write index for m_KeyEvents
@@ -291,6 +301,7 @@ private:
 	Word m_uRepeatDelay;					///< Delay between repeating keystrokes
 	KeyEvent_t m_KeyEvents[cBufferSize];	///< Circular buffer holding keyboard events
 	KeyEvent_t m_RepeatEvent;				///< Event to post on a repeat
+
 public:
 	Keyboard(GameApp *pAppInstance);
 	~Keyboard();
@@ -319,12 +330,13 @@ public:
 	Word BURGER_API GetCurrentFlags(void) const;
 	static eScanCode BURGER_API StringToScanCode(const char *pString);
 	static void BURGER_API ScanCodeToString(char *pString,WordPtr uStringSize,eScanCode uScanCode);
+
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	Word BURGER_API DisableWindowsKey(void);
 	void BURGER_API EnableWindowsKey(void);
 	BURGER_INLINE HHOOK__ *GetWindowsPreviousKeyboardHook(void) const { return m_pPreviousKeyboardHook; }
-	Word BURGER_API PostWindowsKeyDown(Word32 uScanCode);
-	Word BURGER_API PostWindowsKeyUp(Word32 uScanCode);
+	BURGER_INLINE Word IsDirectInputActive(void) const { return m_bDirectInput8Acquired; }
+	Word BURGER_API PostWindowsKeyEvent(eEvent uEvent,Word32 uScanCode);
 	Word BURGER_API EncodeWindowsScanCode(KeyEvent_t *pEvent,Word uWindowsCode) const;
 	void BURGER_API AcquireDirectInput(void);
 	void BURGER_API UnacquireDirectInput(void);
@@ -332,6 +344,7 @@ public:
 	void BURGER_API DisableAccessibilityShortcutKeys(void) const;
 	void BURGER_API RestoreAccessibilityShortcutKeys(void);
 #endif
+
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
 	void BURGER_API ProcessEvent(NSEvent *pEvent);
 #endif

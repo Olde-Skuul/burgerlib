@@ -2,7 +2,7 @@
 
 	Library to handle xml files (XML)
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -104,7 +104,7 @@ public:
 		void BURGER_API DeleteRawText(void);
 	};
 
-	class Comment : public Generic  {
+	class Comment : public Generic {
 		String m_Comment;	///< Unmodified text for a comment line
 	public:
 		Comment();
@@ -119,7 +119,7 @@ public:
 		static Comment * BURGER_API New(const char *pComment);
 	};
 
-	class CData : public Generic  {
+	class CData : public Generic {
 		String m_CData;				///< Unmodified text for a CData line
 	public:
 		CData();

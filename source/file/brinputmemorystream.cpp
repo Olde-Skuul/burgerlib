@@ -2,7 +2,7 @@
 
 	Simple data stream class for input
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -459,7 +459,7 @@ void BURGER_API Burger::InputMemoryStream::GetString(char *pOutput,WordPtr uOutp
 	The output String will be sized to contain the new string.
 
 	\param pOutput Buffer to receive the "C" style UTF-8 data string.
-	\sa  GetCString(char *,WordPtr),GetPString(char *,WordPtr)
+	\sa GetCString(char *,WordPtr),GetPString(char *,WordPtr)
 
 ***************************************/
 

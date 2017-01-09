@@ -2,7 +2,7 @@
 
 	GIF File handler class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -400,7 +400,7 @@ void Burger::GIFEncoder::WriteCode(Word uCode)
 
 	if ((m_uRunningCode >= m_uMaximumRunningCode) && 
 		(uCode <= cLZLastCode)) {
-   		m_uMaximumRunningCode = (1U << (++m_uRunningBits));
+		m_uMaximumRunningCode = (1U << (++m_uRunningBits));
 	}
 }
 
@@ -1444,14 +1444,14 @@ Word Burger::FileGIF::AnimationSaveFinish(OutputMemoryStream *pOutput)
 	\brief Get the file image's pixel aspect ratio
 
 	Factor used to compute an approximation
-	of the aspect ratio of the pixel in the original image.  If the
+	of the aspect ratio of the pixel in the original image. If the
 	value of the field is not 0, this approximation of the aspect ratio
 	is computed based on the formula:
 
 	Aspect Ratio = (GetAspectRatio() + 15) / 64 (15 is for rounding up)
 
 	The Pixel Aspect Ratio is defined to be the quotient of the pixel's
-	width over its height.  The value range in this field allows
+	width over its height. The value range in this field allows
 	specification of the widest pixel of 4:1 to the tallest pixel of
 	1:4 in increments of 1/64th.
 

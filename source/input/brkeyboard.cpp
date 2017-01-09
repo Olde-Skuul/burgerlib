@@ -2,7 +2,7 @@
 
 	Keyboard Manager
 	
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -17,10 +17,18 @@
 #include "brutf32.h"
 
 #if defined(BURGER_WINDOWS) && !defined(DOXYGEN)
+
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
+
+//#define ENABLE_DIRECTINPUT
+
 #include <Windows.h>
+#endif
+
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::Keyboard,Burger::Base);
 #endif
 
 /*! ************************************
@@ -89,24 +97,6 @@
 	
 ***************************************/
 
-/*! ************************************
-
-	\struct Burger::Keyboard::KeyEvent_t
-
-	\brief Structure holding a keyboard event
-
-	When a keyboard event is generated, an event is
-	filled out and stored until it's retrieved by
-	the application by one of the many
-	keyboard event retrieval functions. This
-	structure contains the scan code, Unicode code,
-	modifiers and time in milliseconds of when
-	the key was pressed.
-
-	\sa eKeyFlags
-	
-***************************************/
-
 
 /***************************************
 
@@ -120,6 +110,7 @@
 ***************************************/
 
 #if !defined(DOXYGEN)
+
 struct ScanEntry_t {
 	const char *m_pName;	///< Pointer to key name
 	Burger::Keyboard::eScanCode m_uScanCode;		///< Actual scan code
@@ -420,8 +411,8 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 	m_uInitialDelay(500),
 	m_uRepeatDelay(33)
 {
-	pAppInstance->SetKeyboard(this);
-	MemoryClear(const_cast<Word8 *>(m_KeyArray),sizeof(m_KeyArray));
+	MemoryClear(m_KeyArray,sizeof(m_KeyArray));
+	MemoryClear(&m_RepeatEvent,sizeof(m_RepeatEvent));
 }
 
 /*! ************************************
@@ -436,6 +427,8 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 Burger::Keyboard::~Keyboard()
 {
 }
+
+#endif
 
 /*! ************************************
 
@@ -463,10 +456,21 @@ Burger::Keyboard::~Keyboard()
 
 ***************************************/
 
-Word BURGER_API Burger::Keyboard::PeekKeyEvent(KeyEvent_t * /* pEvent */)
+Word BURGER_API Burger::Keyboard::PeekKeyEvent(KeyEvent_t *pEvent)
 {
-	return 0;		// No event
+	Lock();
+	Word uIndex = m_uArrayStart;	// Get the starting index
+	Word bResult = FALSE;			// No event pending
+	if (uIndex!=m_uArrayEnd) {		// Anything in the buffer?
+		pEvent[0] = m_KeyEvents[uIndex];	// Copy the data
+		bResult = TRUE;
+	}
+	Unlock();
+
+	// No event pending
+	return bResult;
 }
+
 
 /*! ************************************
 
@@ -481,14 +485,41 @@ Word BURGER_API Burger::Keyboard::PeekKeyEvent(KeyEvent_t * /* pEvent */)
 
 ***************************************/
 
-Word BURGER_API Burger::Keyboard::GetKeyEvent(KeyEvent_t * /* pEvent */)
+Word BURGER_API Burger::Keyboard::GetKeyEvent(KeyEvent_t *pEvent)
 {
-	m_pAppInstance->Poll();
-	// Return nothing
-	return 0;
+	Lock();
+	Word uIndex = m_uArrayStart;		// Get the starting index
+	Word bResult = FALSE;
+	if (uIndex!=m_uArrayEnd) {			// Anything in the buffer?
+		pEvent[0] = m_KeyEvents[uIndex];
+		m_uArrayStart = (uIndex+1)&(cBufferSize-1);		// Next key
+		bResult = TRUE;
+	}
+	Unlock();
+
+#if defined(BURGER_WINDOWS)
+	if (bResult && m_pAppInstance->IsWindowSwitchingAllowed()) {
+		if ((pEvent->m_uAscii==ASCII_RETURN) &&
+			(pEvent->m_uEvent==EVENT_KEYDOWN) &&
+			((pEvent->m_uFlags&FLAG_ALT)!=0)) {
+			m_pAppInstance->SetWindowSwitchRequested(TRUE);
+		}
+	}
+#endif
+
+#if defined(BURGER_MACOSX)
+	if (bResult && m_pAppInstance->IsWindowSwitchingAllowed()) {
+		if ((pEvent->m_uAscii==ASCII_RETURN) &&
+			(pEvent->m_uEvent==EVENT_KEYDOWN) &&
+			((pEvent->m_uFlags&FLAG_OPTION)!=0)) {
+			m_pAppInstance->SetWindowSwitchRequested(TRUE);
+		}
+	}
+#endif
+	// Return TRUE if an event was found
+	return bResult;
 }
 
-#endif
 
 /*! ************************************
 
@@ -523,6 +554,7 @@ void BURGER_API Burger::Keyboard::ClearKey(eScanCode uScanCode)
 ***************************************/
 
 #if !defined(DOXYGEN)
+
 #if defined(BURGER_BIGENDIAN)
 #define MASK1 (KEYCAPDOWN<<24U)
 #define MASK2 (KEYCAPDOWN<<16U)
@@ -532,6 +564,7 @@ void BURGER_API Burger::Keyboard::ClearKey(eScanCode uScanCode)
 #define MASK2 (KEYCAPDOWN<<8U)
 #define MASK3 (KEYCAPDOWN<<16U)
 #endif
+
 #endif
 
 Burger::Keyboard::eScanCode BURGER_API Burger::Keyboard::AnyPressed(void) const
@@ -541,9 +574,10 @@ Burger::Keyboard::eScanCode BURGER_API Burger::Keyboard::AnyPressed(void) const
 	WordPtr uCount = sizeof(m_KeyArray)/sizeof(Word32);
 	eScanCode uResult = SC_INVALID;
 	do {
-		Word32 uTempVal = reinterpret_cast<const Word32 *>(pWork)[0];		// I am going to perform a Word32
+		// I am going to perform a Word32 test
+		Word32 uTempVal = reinterpret_cast<const Word32 *>(pWork)[0];
 		// Test 4 in a row
-		if (uTempVal & ((KEYCAPDOWN<<24)|(KEYCAPDOWN<<16)|(KEYCAPDOWN<<8)|(KEYCAPDOWN))) {
+		if (uTempVal & (KEYCAPDOWN*0x01010101U)) {
 			// Which key was pressed?
 			WordPtr uPossible = static_cast<WordPtr>(pWork-m_KeyArray);
 			if (!(uTempVal&MASK1)) {			// Was it the first one?
@@ -658,7 +692,8 @@ Word BURGER_API Burger::Keyboard::GetKey(void)
 		// Was is a key down?
 		do {
 			// Key down?
-			if (NewEvent.m_uFlags&FLAG_KEYDOWN) {
+			if ((NewEvent.m_uEvent==EVENT_KEYDOWN) || 
+				(NewEvent.m_uEvent==EVENT_KEYAUTO)) {
 				// Isolate the ASCII
 				uResult = NewEvent.m_uAscii;
 				break;
@@ -723,15 +758,15 @@ void BURGER_API Burger::Keyboard::Flush(void)
 
 	while (GetKeyEvent(&NewEvent)) {
 	}
-	volatile Word32 *pWork = reinterpret_cast<volatile Word32 *>(m_KeyArray);
+	Word32 *pWork = static_cast<Word32 *>(static_cast<void*>(m_KeyArray));
 
 	// Clear all key presses
-	WordPtr uCount = BURGER_ARRAYSIZE(m_KeyArray)/sizeof(Word32);
+	WordPtr uCount = sizeof(m_KeyArray)/sizeof(Word32);
 	do {
-		pWork[0] = pWork[0]&(~((KEYCAPPRESSED<<24U)|(KEYCAPPRESSED<<16U)|(KEYCAPPRESSED<<8U)|KEYCAPPRESSED));
+		pWork[0] = pWork[0]&(~(KEYCAPPRESSED*0x01010101U));
 		++pWork;
 	} while (--uCount);
-	MemoryClear(m_KeyArray,sizeof(m_KeyArray));
+	MemoryClear(&m_RepeatEvent,sizeof(m_RepeatEvent));
 }
 
 /*! ************************************
@@ -749,12 +784,15 @@ Word BURGER_API Burger::Keyboard::Wait(void)
 {
 	KeyEvent_t NewEvent;
 	// Key pending?
-	while (!PeekKeyEvent(&NewEvent)) {
-#if defined(BURGER_WINDOWS)		// Sleep the application until a key is pressed
-		WaitMessage();			// Any messages arrived?
+	while (!GetKeyEvent(&NewEvent)) {
+
+		// Sleep the application until a key is pressed
+#if defined(BURGER_WINDOWS)	
+		::WaitMessage();			
 #endif
+		// Handle operating system events
+		m_pAppInstance->Poll();
 	}
-	GetKeyEvent(&NewEvent);		// Return the key
 	return NewEvent.m_uAscii;
 }
 
@@ -776,7 +814,8 @@ Word BURGER_API Burger::Keyboard::PostKeyDown(eScanCode uScanCode)
 	KeyEvent_t NewEvent;
 	Word bResult = EncodeScanCode(&NewEvent,uScanCode);
 	if (!bResult) {
-		NewEvent.m_uFlags |= FLAG_KEYDOWN;
+		NewEvent.m_uEvent = EVENT_KEYDOWN;
+		NewEvent.m_uWhich = 0;
 		bResult = PostKeyEvent(&NewEvent);
 	}
 	return bResult;
@@ -800,6 +839,8 @@ Word BURGER_API Burger::Keyboard::PostKeyUp(eScanCode uScanCode)
 	KeyEvent_t NewEvent;
 	Word bResult = EncodeScanCode(&NewEvent,uScanCode);
 	if (!bResult) {
+		NewEvent.m_uEvent = EVENT_KEYUP;
+		NewEvent.m_uWhich = 0;
 		bResult = PostKeyEvent(&NewEvent);
 	}
 	return bResult;
@@ -823,10 +864,11 @@ Word BURGER_API Burger::Keyboard::PostKey(eScanCode uScanCode)
 	KeyEvent_t NewEvent;
 	Word bResult = EncodeScanCode(&NewEvent,uScanCode);
 	if (!bResult) {
-		NewEvent.m_uFlags |= FLAG_KEYDOWN;
+		NewEvent.m_uEvent = EVENT_KEYDOWN;
+		NewEvent.m_uWhich = 0;
 		bResult = PostKeyEvent(&NewEvent);
 		if (!bResult) {
-			NewEvent.m_uFlags &= (~FLAG_KEYDOWN);
+			NewEvent.m_uEvent = EVENT_KEYUP;
 			bResult = PostKeyEvent(&NewEvent);
 		}
 	}
@@ -853,7 +895,8 @@ Word BURGER_API Burger::Keyboard::PostUnicodeDown(Word32 uUnicode)
 	KeyEvent_t NewEvent;
 	Word bResult = EncodeUnicode(&NewEvent,uUnicode);
 	if (!bResult) {
-		NewEvent.m_uFlags |= FLAG_KEYDOWN;
+		NewEvent.m_uEvent = EVENT_KEYDOWN;
+		NewEvent.m_uWhich = 0;
 		bResult = PostKeyEvent(&NewEvent);
 	}
 	return bResult;
@@ -877,6 +920,8 @@ Word BURGER_API Burger::Keyboard::PostUnicodeUp(Word32 uUnicode)
 	KeyEvent_t NewEvent;
 	Word bResult = EncodeUnicode(&NewEvent,uUnicode);
 	if (!bResult) {
+		NewEvent.m_uEvent = EVENT_KEYUP;
+		NewEvent.m_uWhich = 0;
 		bResult = PostKeyEvent(&NewEvent);
 	}
 	return bResult;
@@ -900,10 +945,11 @@ Word BURGER_API Burger::Keyboard::PostUnicode(Word32 uUnicode)
 	KeyEvent_t NewEvent;
 	Word bResult = EncodeUnicode(&NewEvent,uUnicode);
 	if (!bResult) {
-		NewEvent.m_uFlags |= FLAG_KEYDOWN;
+		NewEvent.m_uEvent = EVENT_KEYDOWN;
+		NewEvent.m_uWhich = 0;
 		bResult = PostKeyEvent(&NewEvent);
 		if (!bResult) {
-			NewEvent.m_uFlags &= (~FLAG_KEYDOWN);
+			NewEvent.m_uEvent = EVENT_KEYUP;
 			bResult = PostKeyEvent(&NewEvent);
 		}
 	}
@@ -922,25 +968,28 @@ Word BURGER_API Burger::Keyboard::PostUnicode(Word32 uUnicode)
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
-
 Word BURGER_API Burger::Keyboard::PostKeyEvent(const KeyEvent_t *pEvent)
 {
+	Lock();
+
 	Word bResult = 10;
 	Word uEnd = m_uArrayEnd;
 	// See if there's room in the buffer
 	Word uTemp = (uEnd+1)&(cBufferSize-1);
 	if (uTemp!=m_uArrayStart) {
+
 		// Didn't wrap, accept it!
 		m_uArrayEnd = uTemp;
 	
 		// Insert the new event
 		KeyEvent_t *pNewEvent = &m_KeyEvents[uEnd];
+		pNewEvent->m_uEvent = pEvent->m_uEvent;
+		pNewEvent->m_uWhich = pEvent->m_uWhich;
 		pNewEvent->m_uAscii = pEvent->m_uAscii;
 		eScanCode uScanCode = static_cast<eScanCode>(pEvent->m_uScanCode);
-		pNewEvent->m_uScanCode = static_cast<Word16>(uScanCode);
-		Word uFlags = pEvent->m_uFlags;
-		pNewEvent->m_uFlags = static_cast<Word16>(uFlags);
+		pNewEvent->m_uScanCode = static_cast<Word32>(uScanCode);
+		Word32 uFlags = pEvent->m_uFlags;
+		pNewEvent->m_uFlags = uFlags;
 
 		// Add the proper time stamp
 		Word32 uTime = pEvent->m_uMSTimeStamp;
@@ -951,29 +1000,43 @@ Word BURGER_API Burger::Keyboard::PostKeyEvent(const KeyEvent_t *pEvent)
 
 		if ((uScanCode!=SC_INVALID) &&
 			(static_cast<Word>(uScanCode)<static_cast<Word>(SC_MAXENTRY+1))) {
+
 			// Update the running state
-			if (uFlags&FLAG_KEYDOWN) {
+			if ((pEvent->m_uEvent==EVENT_KEYDOWN) || (pEvent->m_uEvent==EVENT_KEYAUTO)) {
 
 				Word8 uKey = m_KeyArray[uScanCode];
 				uKey = static_cast<Word8>((uKey|(KEYCAPDOWN|KEYCAPPRESSED))^KEYCAPTOGGLE);
 				m_KeyArray[uScanCode] = uKey;
 
-				if (!(pNewEvent->m_uFlags&FLAG_REPEAT)) {
+				if (pEvent->m_uEvent!=EVENT_KEYAUTO) {
+					m_RepeatEvent.m_uEvent = EVENT_KEYAUTO;
+					m_RepeatEvent.m_uWhich = pNewEvent->m_uWhich;
+					m_RepeatEvent.m_uMSTimeStamp = 0;
 					m_RepeatEvent.m_uAscii = pNewEvent->m_uAscii;
 					m_RepeatEvent.m_uFlags = pNewEvent->m_uFlags;
 					m_RepeatEvent.m_uScanCode = pNewEvent->m_uScanCode;
-					m_RepeatEvent.m_uMSTimeStamp = 0;
 				}
 			} else {
 				// Mark as pressed
 				m_KeyArray[uScanCode] &= (~KEYCAPDOWN);
+
+				// DirectInput for Windows has a timer to simulate autorepeat
+#if defined(ENABLE_DIRECTINPUT)
+				if (m_bRepeatActive) {
+					CancelWaitableTimer(m_pKeyboardTimerEvent);
+					m_bRepeatActive = FALSE;
+				}
+#endif
 			}
 		}
+		// Key was accepted
 		bResult = 0;
 	}
+	// Unlock the buffer
+	Unlock();
+	// Return the result
 	return bResult;
 }
-#endif
 
 /*! ************************************
 
@@ -995,11 +1058,11 @@ Word BURGER_API Burger::Keyboard::EncodeScanCode(KeyEvent_t *pEvent,eScanCode uS
 		(static_cast<WordPtr>(uScanCode)<BURGER_ARRAYSIZE(g_ScanCodeTranslation))) {
 		// Initialize the time stamp
 		pEvent->m_uMSTimeStamp = 0;
-		pEvent->m_uScanCode = static_cast<Word16>(uScanCode);
+		pEvent->m_uScanCode = static_cast<Word32>(uScanCode);
 
 		// Determine the flags for the key
 		Word uFlags = GetCurrentFlags();
-		pEvent->m_uFlags = static_cast<Word16>(uFlags);
+		pEvent->m_uFlags = static_cast<Word32>(uFlags);
 
 		// Which translation entry to use?
 		const ScanCodeToAscii_t *pTranslation = &g_ScanCodeTranslation[uScanCode];
@@ -1081,10 +1144,14 @@ Word BURGER_API Burger::Keyboard::EncodeUnicode(KeyEvent_t *pEvent,Word32 uUnico
 			}
 			++pTranslation;
 		} while (++uCounter<BURGER_ARRAYSIZE(g_ScanCodeTranslation));
-		// Store the scan code and flags
-		pEvent->m_uFlags = static_cast<Word16>(uFlags);
-		pEvent->m_uScanCode = static_cast<Word16>(uScanCode);
-		uResult = 0;
+
+		// Found it?
+		if (uScanCode!=SC_INVALID) {
+			// Store the scan code and flags
+			pEvent->m_uFlags = static_cast<Word32>(uFlags);
+			pEvent->m_uScanCode = static_cast<Word32>(uScanCode);
+			uResult = 0;
+		}
 	}
 	return uResult;
 }
@@ -1096,9 +1163,7 @@ Word BURGER_API Burger::Keyboard::EncodeUnicode(KeyEvent_t *pEvent,Word32 uUnico
 	Check the state of previously pressed keys and return the 
 	modifier flags for converting a scan code into an ASCII/Unicode
 	value.
-
-	\ref FLAG_KEYDOWN is not returned as \ref TRUE.
-
+	
 	\return FLAG_??? merged together for setting KeyEvent_t::m_uFlags
 
 ***************************************/
@@ -1192,5 +1257,3 @@ void BURGER_API Burger::Keyboard::ScanCodeToString(char *pString,WordPtr uString
 		pString[0] = 0;		// Don't return the string
 	}
 }
-
-

@@ -2,7 +2,7 @@
 
 	Library to handle windows style configuration files (INI)
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -67,7 +67,7 @@ public:
 		BURGER_INLINE void InsertAfter(Generic *pGeneric) { m_Link.InsertAfter(&pGeneric->m_Link); }
 	};
 
-	class Comment : public Generic  {
+	class Comment : public Generic {
 		String m_Comment;	///< Unmodified text for a comment line
 	public:
 		Comment();
@@ -81,7 +81,7 @@ public:
 	};
 
 	class Entry : public Generic {
-		String m_Key;	   		///< Value's key
+		String m_Key;			///< Value's key
 		String m_Value;			///< UTF-8 form of the value
 	public:
 		Entry();
@@ -110,7 +110,7 @@ public:
 		static Entry * BURGER_API New(const char *pKey,const char *pValue);
 	};
 
-	class Section : public Generic  {
+	class Section : public Generic {
 		Generic m_Root;			///< Linked list root for all attached entries
 		String m_SectionName;	///< Name of the section
 	public:
