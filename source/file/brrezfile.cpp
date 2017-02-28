@@ -1621,7 +1621,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(Word uRezNum,Word *pLoadedFlag)
 							m_pMemoryManager->FreeHandle(ppData);		// Discard the memory
 							ppData = NULL;				// Can't load it in!
 						} else {
-							pEntry->m_uLength = static_cast<Word32>(uNewLength); // Save the size
+							pEntry->m_uLength = static_cast<Word32>(uNewLength);	// Save the size
 						}
 					}
 				}
@@ -1834,7 +1834,7 @@ Word BURGER_API Burger::RezFile::Read(Word uRezNum,void *pBuffer,WordPtr uBuffer
 	void **ppData = LoadHandle(uRezNum);	// Load it in
 	if (ppData) {							// Ok?
 		RezEntry_t *pEntry = Find(uRezNum);
-		WordPtr uLength = pEntry->m_uLength; // How much memory does this take?
+		WordPtr uLength = pEntry->m_uLength;	// How much memory does this take?
 		if (uBufferSize>=uLength) {			// Is the output buffer big enough?
 			uBufferSize = uLength;			// Use the smaller
 			uResult = FALSE;				// It's ok

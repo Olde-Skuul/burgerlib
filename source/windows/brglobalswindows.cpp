@@ -1518,7 +1518,7 @@ void BURGER_API Burger::Globals::OutputWindowsMessage(Word uMessage,WordPtr wPar
 	// If a message wasn't found, convert the unknown code to an
 	// ASCII message
 
-	char HexAsASCII[32]; 
+	char HexAsASCII[32];
 	if (!pMessage) {
 		NumberToAsciiHex(HexAsASCII,static_cast<Word32>(uMessage),LEADINGZEROS|8);
 		pMessage = HexAsASCII;
@@ -2212,16 +2212,16 @@ int BURGER_API Burger::Globals::ExecuteTool(const char *pFilename,const char *pP
 
 	// Only capture if needed
 	if (bResult && pOutput) {
-		DWORD uBytesRead; 
+		DWORD uBytesRead;
 		Word8 Buffer[1024]; 
 		for (;;) {
 			// Read from the finite pipe
 			BOOL bSuccess = ReadFile(hCaptureIn,Buffer,sizeof(Buffer),&uBytesRead,NULL);
 			// Error or all done?
 			if ((!bSuccess) || (!uBytesRead)) {
-				break; 
+				break;
 			}
-			pOutput->Append(Buffer,uBytesRead); 
+			pOutput->Append(Buffer,uBytesRead);
 		} 
 	}
 	// Clean up the last handle

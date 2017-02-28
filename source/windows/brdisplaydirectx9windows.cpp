@@ -3084,7 +3084,7 @@ void Burger::DisplayDirectX9::CheckForWindowSizeChange(void)
 
 			DeviceSettings_t NewSettings;
 			MemoryCopy(&NewSettings,&m_D3D9Settings,sizeof(NewSettings));
-			NewSettings.m_uBackBufferWidth = 0; 
+			NewSettings.m_uBackBufferWidth = 0;
 			NewSettings.m_uBackBufferHeight = 0;
 			ChangeDevice(&NewSettings,FALSE,FALSE);
 		}
@@ -3489,7 +3489,7 @@ Word BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *pN
 					// client rect of the current window w/o resizing the window.
 					DeviceSettings_t SettingsCopy;
 					MemoryCopy(&SettingsCopy,&m_D3D9Settings,sizeof(m_D3D9Settings));
-					SettingsCopy.m_uBackBufferWidth = 0; 
+					SettingsCopy.m_uBackBufferWidth = 0;
 					SettingsCopy.m_uBackBufferHeight = 0;
 
 					uResult = ChangeDevice(&SettingsCopy,FALSE,bClipWindowToSingleAdapter);
@@ -3587,7 +3587,7 @@ Word BURGER_API Burger::DisplayDirectX9::Create3DEnvironment(void)
 		m_uMaxTextureSamplers = pCaps->MaxSimultaneousTextures;
 		m_uMaxPossibleAnisotropy = pCaps->MaxAnisotropy;
 		m_uMaxTextureWidth = pCaps->MaxTextureWidth;
-		m_uMaxTextureHeight = pCaps->MaxTextureHeight; 
+		m_uMaxTextureHeight = pCaps->MaxTextureHeight;
 		m_bMultiRenderTargets = (pCaps->NumSimultaneousRTs >= 2);
 		m_bSeparateAlphaBlend = (pCaps->PrimitiveMiscCaps & D3DPMISCCAPS_SEPARATEALPHABLEND)!=0;
 
@@ -3821,7 +3821,7 @@ void BURGER_API Burger::DisplayDirectX9::SetupCursor(void) const
 	// Show the cursor again if returning to full screen 
 	IDirect3DDevice9* pD3D9Device = m_pDirect3DDevice9;
 	if (pD3D9Device && !bIsWindowed) {
-		SetCursor(NULL); // Turn off Windows cursor in full screen mode
+		SetCursor(NULL);	// Turn off Windows cursor in full screen mode
 		if (m_bShowCursorWhenFullScreen) {
 			// Convert cursor to a DirectX 9 shape
 			HCURSOR hCursor = reinterpret_cast<HCURSOR>(GetClassLongPtrW(pWindow,GCLP_HCURSOR));
@@ -3988,7 +3988,7 @@ Word BURGER_API Burger::DisplayDirectX9::SnapDeviceSettingsToEnumDevice(DeviceSe
 	if (!pBestFormatGroup->IsWindowed()) {
 		const DisplayMode_t *pWhichMode = pBestFormatGroup->GetAdapterInfo()->GetDisplayModeList()+uBestModeIndex;
 		// Grab the size of the display
-		pDeviceSettings->m_uBackBufferWidth = pWhichMode->m_uWidth; 
+		pDeviceSettings->m_uBackBufferWidth = pWhichMode->m_uWidth;
 		pDeviceSettings->m_uBackBufferHeight = pWhichMode->m_uHeight;
 		pDeviceSettings->m_uFullScreen_RefreshRateInHz = pWhichMode->m_uRefreshRate;
 	}

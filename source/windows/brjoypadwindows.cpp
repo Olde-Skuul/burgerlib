@@ -179,7 +179,7 @@ static BOOL CALLBACK EnumObjectsCallback(const DIDEVICEOBJECTINSTANCEW *pObject,
 			PropertyRange.diph.dwSize = sizeof(DIPROPRANGE);
 			PropertyRange.diph.dwHeaderSize = sizeof(DIPROPHEADER);
 			PropertyRange.diph.dwHow = DIPH_BYID;
-			PropertyRange.diph.dwObj = pObject->dwType; // Specify the enumerated axis
+			PropertyRange.diph.dwObj = pObject->dwType;	// Specify the enumerated axis
 			PropertyRange.lMin = 0;
 			PropertyRange.lMax = Burger::Joypad::MAXAXISVALUE;
 			// Set the range for the axis

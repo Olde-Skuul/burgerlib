@@ -18,6 +18,6 @@
 #include "brtypes.h"
 #endif
 
-extern int BURGER_API TestBrhashes(void);
+extern int BURGER_API TestBrhashes(Word bVerbose);
 
 #endif

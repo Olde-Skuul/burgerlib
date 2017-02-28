@@ -267,8 +267,8 @@ public:
 	IDirect3DSurface9 *m_pCurrentRenderTarget;
 	HMONITOR__ *m_AdapterMonitor;					///< the monitor of the adapter 
 	Word m_bIgnoreSizeChange;						///< if true, don't reset the device upon window size change
-	Word m_uFullScreenBackBufferWidthAtModeChange;  ///< back buffer size of full screen mode right before switching to windowed mode. Used to restore to same resolution when toggling back to fullscreen
-	Word m_uFullScreenBackBufferHeightAtModeChange; ///< back buffer size of full screen mode right before switching to windowed mode. Used to restore to same resolution when toggling back to fullscreen
+	Word m_uFullScreenBackBufferWidthAtModeChange;	///< back buffer size of full screen mode right before switching to windowed mode. Used to restore to same resolution when toggling back to fullscreen
+	Word m_uFullScreenBackBufferHeightAtModeChange;	///< back buffer size of full screen mode right before switching to windowed mode. Used to restore to same resolution when toggling back to fullscreen
 	Word m_uWindowBackBufferWidthAtModeChange;		///< back buffer size of windowed mode right before switching to full screen mode. Used to restore to same resolution when toggling back to windowed mode
 	Word m_uWindowBackBufferHeightAtModeChange;		///< back buffer size of windowed mode right before switching to full screen mode. Used to restore to same resolution when toggling back to windowed mode
 	Word m_uWindowedStyleAtModeChange;				///< window style

@@ -29,19 +29,29 @@
 /* BEGIN */
 namespace Burger {
 class OutputMemoryStream {
-	enum {
-		CHUNKSIZE = 0x40000-static_cast<int>(sizeof(Word8 *))	///< Size of each data chunk
+	static const WordPtr CHUNKSIZE = 0x40000U-(sizeof(Word8 *)+sizeof(WordPtr));	///< Size of each data chunk
+
+	struct Chunk_t {
+		Chunk_t *m_pNext;			///< Pointer to the next chunk
+		WordPtr m_uMark;			///< Base file mark for this chunk
+		Word8 m_Buffer[CHUNKSIZE];	///< Chunk data
 	};
-	Word8 *m_pData;		///< Pointer to the first data buffer
-	Word8 *m_pWork;		///< Pointer to the current buffer
-	WordPtr m_uIndex;	///< Current file mark
+
+	Chunk_t *m_pRoot;		///< Pointer to the first chunk
+	Chunk_t *m_pCurrent;	///< Pointer to the current chunk
+	WordPtr m_uIndex;		///< Number of bytes used the current chunk
+	WordPtr m_uFileSize;	///< Number of bytes stored in the stream
+	Word m_uError;			///< Did an error occur?
 	BURGER_DISABLECOPYCONSTRUCTORS(OutputMemoryStream);
 public:
 	OutputMemoryStream();
 	~OutputMemoryStream();
 	void BURGER_API Clear(void);
-	WordPtr BURGER_API GetSize(void) const;
-	Word BURGER_API IsEmpty(void) const;
+	BURGER_INLINE WordPtr GetSize(void) const { return m_uFileSize; }
+	BURGER_INLINE Word IsEmpty(void) const { return m_uFileSize==0; }
+	BURGER_INLINE Word GetError(void) const { return m_uError; }
+	Word BURGER_API SetMark(WordPtr uMark);
+	WordPtr BURGER_API GetMark(void) const;
 	Word BURGER_API SaveFile(const char *pFilename) const;
 	Word BURGER_API SaveFile(Filename *pFilename) const;
 	Word BURGER_API Save(String *pOutput) const;

@@ -64,7 +64,7 @@ public:
 		};
 	private:
 		LinkedListPointer m_Link;	///< Linked list entry
-		eType m_eType; 				///< Type of derived class
+		eType m_eType;				///< Type of derived class
 	public:
 		Generic(eType uType);
 		virtual ~Generic();

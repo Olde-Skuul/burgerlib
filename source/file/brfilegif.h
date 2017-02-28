@@ -84,8 +84,8 @@ class GIFDecoder {
 	Word m_uChunkCount;				///< Number of bytes in stream
 	Word m_uLZWCodeSize;			///< Starting data size
 	const Word8 *m_LZWTable[4096];	///< Dictionary pointers
-	Word8 m_LZWArray[256]; 			///< 0-255 for default data
-	Word m_LZWSize[4096]; 			///< Size of each entry
+	Word8 m_LZWArray[256];			///< 0-255 for default data
+	Word m_LZWSize[4096];			///< Size of each entry
 	void Init(void);
 	void Reset(void);
 	Word GetCode(Word uBitsRequested);

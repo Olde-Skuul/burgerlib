@@ -15,6 +15,7 @@
 
 #include "testbrtypes.h"
 #include "bratomic.h"
+#include "brfloatingpoint.h"
 #include "brglobals.h"
 #include "common.h"
 #include <stdio.h>
@@ -219,6 +220,13 @@ static Word BURGER_API TestCPUMacros(Word bVerbose)
 	++uTest;
 #endif
 
+#if defined(BURGER_GEKKO)
+	if (bVerbose) {
+		Message("BURGER_GEKKO is defined");
+	}
+	++uTest;
+#endif
+
 #if defined(BURGER_ARM)
 	if (bVerbose) {
 		Message("BURGER_ARM is defined");
@@ -247,13 +255,6 @@ static Word BURGER_API TestCPUMacros(Word bVerbose)
 	++uTest;
 #endif
 
-#if defined(BURGER_GEKKO)
-	if (bVerbose) {
-		Message("BURGER_GEKKO is defined");
-	}
-	++uTest;
-#endif
-
 	// This is an enhancement, not a CPU type, so it's okay to
 	// be defined with a CPU type
 
@@ -266,6 +267,10 @@ static Word BURGER_API TestCPUMacros(Word bVerbose)
 		Message("BURGER_INTELARCHITECTURE is defined");
 #endif
 
+#if defined(BURGER_PPC)
+		Message("BURGER_PPC is defined");
+#endif
+
 #if defined(BURGER_NEON)
 		Message("BURGER_NEON is defined");
 #endif
@@ -276,6 +281,7 @@ static Word BURGER_API TestCPUMacros(Word bVerbose)
 		Message("Multiple CPUs have been defined!");
 		uFailure = 10;
 	}
+
 	if (uTest==0) {
 		Message("Unknown CPU detected!");
 		uFailure = 10;
@@ -972,6 +978,19 @@ static void BURGER_API ShowCPUFeatures(Word bVerbose)
 	}
 
 	//
+	// Display 32 bit Intel special registers
+	//
+
+#if defined(BURGER_X86)
+	if (bVerbose) {
+		Burger::e8087Precision uPrecision = Burger::Get8087Precision();
+		Message("Burger::Get8087Precision() = %u",static_cast<Word>(uPrecision));
+		Burger::e8087Rounding uRounding = Burger::Get8087Rounding();
+		Message("Burger::Get8087Rounding() = %u",static_cast<Word>(uRounding));
+	}
+#endif
+
+	//
 	// Handle AltiVec (MacOS / MacOSX) PowerPC
 	//
 
@@ -979,6 +998,25 @@ static void BURGER_API ShowCPUFeatures(Word bVerbose)
 		uTest = Burger::HasAltiVec();
 		Message("Burger::HasAltiVec() = %u",uTest);
 	}
+
+	//
+	// Handle PowerPC special registers
+	//
+
+#if defined(BURGER_POWERPC)
+	if (bVerbose) {
+		Burger::ePowerPCRounding uRounding = Burger::GetPowerPCRounding();
+		Message("Burger::GetPowerPCRounding() = %u",static_cast<Word>(uRounding));
+
+		Burger::ePowerPCRounding uRounding2 = Burger::SetPowerPCRounding(Burger::ROUNDDOWN);
+		uRounding2 = Burger::GetPowerPCRounding();
+		Message("Burger::GetPowerPCRounding() = %u",static_cast<Word>(uRounding2));
+		Burger::SetPowerPCRounding(Burger::ROUNDUP);
+		uRounding2 = Burger::GetPowerPCRounding();
+		Message("Burger::GetPowerPCRounding() = %u",static_cast<Word>(uRounding2));
+		Burger::SetPowerPCRounding(uRounding);
+	}
+#endif
 }
 
 

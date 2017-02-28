@@ -249,6 +249,7 @@ int BURGER_ANSIAPI main(int argc,const char **argv)
 		iResult |= TestBrendian(bVerbose);
 		iResult |= TestBrfixedpoint(bVerbose);
 		iResult |= TestBrfloatingpoint(bVerbose);
+		iResult |= TestBrhashes(bVerbose);
 
 #if 0
 		CreateTables();
@@ -256,7 +257,6 @@ int BURGER_ANSIAPI main(int argc,const char **argv)
 		iResult |= TestBrmatrix4d();
 		iResult |= TestBrstrings();
 		iResult |= TestBrstaticrtti();
-		iResult |= TestBrhashes();
 		iResult |= TestBrcompression();
 		iResult |= TestBrDisplay();
 		iResult |= TestDateTime();

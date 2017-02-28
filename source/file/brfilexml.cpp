@@ -1844,10 +1844,10 @@ Word Burger::FileXML::Declaration::Save(OutputMemoryStream *pOutput,Word uDepth)
 
 		// Force the value to be in the format of x.xx
 		float fInt = RoundToZero(m_fVersion);
-		uResult |= pOutput->AppendAscii(FloatToIntNearest(fInt));
+		uResult |= pOutput->AppendAscii(FloatToIntRound(fInt));
 		uResult |= pOutput->Append('.');
 		float fFrac = RoundToZero((m_fVersion-fInt)*10.f);		// 10 gets 1 digits of fraction
-		uResult |= pOutput->AppendAscii(FloatToIntNearest(fFrac));
+		uResult |= pOutput->AppendAscii(FloatToIntRound(fFrac));
 		uResult |= pOutput->Append('"');
 	}
 

@@ -69,7 +69,7 @@ Word BURGER_API Burger::Sequencer::PlatformInit(void)
 
 		// Set up DSBUFFERDESC structure.
 		DSBUFFERDESC dsbdesc;
-		MemoryClear(&dsbdesc,sizeof(DSBUFFERDESC)); // Zero it out.
+		MemoryClear(&dsbdesc,sizeof(DSBUFFERDESC));	// Zero it out.
 		dsbdesc.dwSize = sizeof(DSBUFFERDESC);
 
 		dsbdesc.dwFlags = DSBCAPS_CTRLPAN|DSBCAPS_CTRLVOLUME|DSBCAPS_CTRLFREQUENCY|DSBCAPS_CTRLPOSITIONNOTIFY|DSBCAPS_STICKYFOCUS;

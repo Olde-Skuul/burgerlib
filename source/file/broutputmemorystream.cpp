@@ -37,9 +37,26 @@
 	stored in little endian format so files created
 	this way will be cross platform.
 
-	\sa Burger::InputMemoryStream
+	\sa InputMemoryStream or Chunk_t
 
 ***************************************/
+
+/*! ************************************
+
+	\struct Burger::OutputMemoryStream::Chunk_t
+	\brief Data chunk for OutputMemoryStream
+
+	To prevent allocation failures, the OutputMemoryStream class
+	allocates data chunks in small sizes so if the memory is fragmented
+	the odds of a successful allocation increases.
+
+	Once the OutputMemoryStream is disposed of or a call to OutputMemoryStream::Clear()
+	is issued, all chunks are disposed of.
+
+	\sa OutputMemoryStream
+
+***************************************/
+
 
 /*! ************************************
 
@@ -50,9 +67,11 @@
 ***************************************/
 
 Burger::OutputMemoryStream::OutputMemoryStream() :
-	m_pData(NULL),
-	m_pWork(NULL),
-	m_uIndex(CHUNKSIZE)
+	m_pRoot(NULL),
+	m_pCurrent(NULL),
+	m_uIndex(CHUNKSIZE),	// Will force Append(Word8) to add a new buffer
+	m_uFileSize(0),
+	m_uError(0)
 {
 }
 
@@ -83,22 +102,25 @@ Burger::OutputMemoryStream::~OutputMemoryStream()
 
 void BURGER_API Burger::OutputMemoryStream::Clear(void)
 {
-	Word8 *pData = m_pData;
-	if (pData) {
-		Word8 *pNext;
+	const Chunk_t *pChunk = m_pRoot;
+	if (pChunk) {
+		const Chunk_t *pNext;
 		do {
-			pNext = reinterpret_cast<Word8**>(pData+CHUNKSIZE)[0];
-			Free(pData);
-			pData = pNext;
+			pNext = pChunk->m_pNext;
+			Free(pChunk);
+			pChunk = pNext;
 		} while (pNext);
-		m_pData = NULL;
+		m_pRoot = NULL;
 	}
-	m_pWork = NULL;
+	m_pCurrent = NULL;
 	m_uIndex = CHUNKSIZE;
+	m_uFileSize = 0;
+	m_uError = 0;		// Clear out the error state
 }
 
 /*! ************************************
 
+	\fn WordPtr Burger::OutputMemoryStream::GetSize(void) const
 	\brief Return the amount of data stored in the stream
 
 	Calculate and return the number of bytes of valid data
@@ -108,28 +130,9 @@ void BURGER_API Burger::OutputMemoryStream::Clear(void)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::OutputMemoryStream::GetSize(void) const
-{
-	// If the pointer is NULL, return 0 for size
-	WordPtr uSize = 0;
-	Word8 *pData = m_pData;
-	if (pData) {
-		// Start with the size from the last chunk
-		uSize = m_uIndex;
-		pData = reinterpret_cast<Word8**>(pData+CHUNKSIZE)[0];
-		if (pData) {
-			do {
-				// Every other chunk is full size
-				pData = reinterpret_cast<Word8**>(pData+CHUNKSIZE)[0];
-				uSize += CHUNKSIZE;
-			} while (pData);
-		}
-	}
-	return uSize;
-}
-
 /*! ************************************
 
+	\fn Word Burger::OutputMemoryStream::IsEmpty(void) const
 	\brief Return \ref TRUE if there is no data in the stream
 
 	If there is any data stored in the data stream, return \ref TRUE,
@@ -139,15 +142,153 @@ WordPtr BURGER_API Burger::OutputMemoryStream::GetSize(void) const
 
 ***************************************/
 
-Word BURGER_API Burger::OutputMemoryStream::IsEmpty(void) const
+/*! ************************************
+
+	\fn Word Burger::OutputMemoryStream::GetError(void) const
+	\brief Return non zero if the stream is corrupt.
+
+	During data writing, memory may need to be allocated. If an allocation
+	failed, the error state is set and can only be cleared with a 
+	call to Clear() which resets the state to empty.
+
+	\return Non zero if corrupt. Zero if the stream is okay.
+
+***************************************/
+
+/*! ************************************
+
+	\brief Set the current write mark.
+
+	Set the write mark. If it's beyond the existing write buffer,
+	expand the buffer to accommodate and adjust the buffer length.
+
+	\return Zero if no error, non-zero if memory couldn't be allocated.
+	\sa GetMark(void) const
+
+***************************************/
+
+Word BURGER_API Burger::OutputMemoryStream::SetMark(WordPtr uMark)
 {
-	// If the pointer is NULL, we're empty
-	Word uResult = TRUE;
-	const Word8 *pData = m_pData;
-	if (pData) {
-		uResult = FALSE;
+	// Only work if the data is intact
+	if (!m_uError) {
+
+		// Try the easy way first
+		if (m_uFileSize>=uMark) {
+
+			// No need to expand, just find the mark in the
+			// existing data and stop there.
+
+			// Zero is a special case
+			if (!uMark) {
+				// Was there any data allocated?
+				if (m_pRoot) {
+					// Reset to the first record
+					m_pCurrent = m_pRoot;
+					m_uIndex = 0;
+				}
+			} else {
+
+				// Traverse the chunks from the root until the chunk that
+				// contains the mark is found
+
+				Chunk_t *pChunk = m_pRoot;
+				do {
+					// On this chunk?
+					if ((pChunk->m_uMark+CHUNKSIZE)>=uMark) {
+						// Update the mark information
+						m_pCurrent = pChunk;
+						m_uIndex = uMark-pChunk->m_uMark;	// Can be CHUNKSIZE, this is okay
+						break;
+					}
+					pChunk = pChunk->m_pNext;
+				} while (pChunk);
+
+				// pChunk should never be NULL here,
+				// if it is, data was trashed
+
+			}
+		} else {
+
+			// The mark is beyond the end of the buffer. In this case, add chunks
+			// until the mark is reached
+
+			Chunk_t *pChunk = m_pCurrent;
+			if (!pChunk) {
+				// Make sure there is at least one chunk
+				Append(static_cast<Word8>(0));
+				pChunk = m_pCurrent;
+			}
+
+			// If it's m_pCurrent==NULL at this point, it means that the Append() above
+			// failed and the code should exit immediately.
+
+			if (pChunk) {
+
+				// Traverse to the end of the chain.
+				Chunk_t *pNext = pChunk->m_pNext;
+				if (pNext) {
+					do {
+						// Save the last known good
+						pChunk = pNext;
+						// Next one
+						pNext = pChunk->m_pNext;
+					} while (pNext);
+				}
+
+				// At this point, pChunk is pointing to the last record of the
+				// linked list.
+
+				do {
+					// On this chunk?
+					if ((pChunk->m_uMark+CHUNKSIZE)>=uMark) {
+
+						// Update the mark information
+						m_uFileSize = uMark;				// Extend the file mark to this point
+						m_pCurrent = pChunk;				// Ensure the current record is correct
+						m_uIndex = uMark-pChunk->m_uMark;	// Can be CHUNKSIZE, this is okay
+						break;
+					}
+
+					// Since pChunk is the end of the list,
+					// allocations are performed to extend the list
+
+					// Force an allocation
+					m_uIndex = CHUNKSIZE;
+
+					// Add a chunk by appending a byte
+					Append(static_cast<Word8>(0));
+
+					// Continue where we left off
+					pChunk = m_pCurrent;
+
+					// Keep looping if there was no error
+				} while (!m_uError);
+			}
+		}
 	}
-	return uResult;
+	return m_uError;
+}
+
+/*! ************************************
+
+	\brief Return the current write mark.
+
+	Calculate the current offset from the beginning of the stream
+	where the next data will be written, return that value.
+
+	\return Current write mark
+	\sa SetMark(WordPtr)
+
+***************************************/
+
+WordPtr BURGER_API Burger::OutputMemoryStream::GetMark(void) const
+{
+	WordPtr uMark = 0;
+	const Chunk_t *pChunk = m_pCurrent;
+	if (pChunk) {
+		uMark = pChunk->m_uMark+m_uIndex;
+	}
+	return uMark;
 }
 
 /*! ************************************
@@ -165,30 +306,37 @@ Word BURGER_API Burger::OutputMemoryStream::IsEmpty(void) const
 
 Word BURGER_API Burger::OutputMemoryStream::SaveFile(const char *pFilename) const
 {
-	// Try to open the output file
-	File FileRef;
-	Word uResult = FileRef.Open(pFilename,File::WRITEONLY);
-	// File opened fine?
+	// Are we in a good state?
+	Word uResult = m_uError;
 	if (!uResult) {
-		// Assume success
-		Word8 *pData = m_pData;
-		if (pData) {
-			Word8 *pNext;
-			do {
-				pNext = reinterpret_cast<Word8**>(pData+CHUNKSIZE)[0];
-				WordPtr uChunk = CHUNKSIZE;
-				if (!pNext) {
-					uChunk = m_uIndex;
-				}
-				if (FileRef.Write(pData,uChunk)!=uChunk) {
-					uResult = 5;		// File error!
-					break;
-				}
-				pData = pNext;
-			} while (pNext);
+		// Try to open the output file
+		File FileRef;
+		uResult = FileRef.Open(pFilename,File::WRITEONLY);
+		// File opened fine?
+		if (!uResult) {
+			// Assume success
+			WordPtr uRemaining = m_uFileSize;
+			if (uRemaining) {
+				const Chunk_t *pChunk = m_pRoot;
+				do {
+					WordPtr uChunkSize = CHUNKSIZE;
+					if (uRemaining<uChunkSize) {
+						uChunkSize = uRemaining;
+					}
+					if (FileRef.Write(pChunk->m_Buffer,uChunkSize)!=uChunkSize) {
+						// File error! But not a state error
+						// so don't update m_uError
+						uResult = 5;
+						break;
+					}
+					pChunk = pChunk->m_pNext;
+					// All done?
+					uRemaining -= uChunkSize;
+				} while (uRemaining);
+			}
+			// Close the file
+			FileRef.Close();
 		}
-		// Close the file
-		FileRef.Close();
 	}
 	// Return the error code
 	return uResult;
@@ -209,30 +357,37 @@ Word BURGER_API Burger::OutputMemoryStream::SaveFile(const char *pFilename) cons
 
 Word BURGER_API Burger::OutputMemoryStream::SaveFile(Filename *pFilename) const
 {
-	// Try to open the output file
-	File FileRef;
-	Word uResult = FileRef.Open(pFilename,File::WRITEONLY);
-	// File opened fine?
+	// Are we in a good state?
+	Word uResult = m_uError;
 	if (!uResult) {
-		// Assume success
-		Word8 *pData = m_pData;
-		if (pData) {
-			Word8 *pNext;
-			do {
-				pNext = reinterpret_cast<Word8**>(pData+CHUNKSIZE)[0];
-				WordPtr uChunk = CHUNKSIZE;
-				if (!pNext) {
-					uChunk = m_uIndex;
-				}
-				if (FileRef.Write(pData,uChunk)!=uChunk) {
-					uResult = 5;		// File error!
-					break;
-				}
-				pData = pNext;
-			} while (pNext);
+		// Try to open the output file
+		File FileRef;
+		uResult = FileRef.Open(pFilename,File::WRITEONLY);
+		// File opened fine?
+		if (!uResult) {
+			// Assume success
+			WordPtr uRemaining = m_uFileSize;
+			if (uRemaining) {
+				const Chunk_t *pChunk = m_pRoot;
+				do {
+					WordPtr uChunkSize = CHUNKSIZE;
+					if (uRemaining<uChunkSize) {
+						uChunkSize = uRemaining;
+					}
+					if (FileRef.Write(pChunk->m_Buffer,uChunkSize)!=uChunkSize) {
+						// File error! But not a state error
+						// so don't update m_uError
+						uResult = 5;		// File error!
+						break;
+					}
+					pChunk = pChunk->m_pNext;
+					// All done?
+					uRemaining -= uChunkSize;
+				} while (uRemaining);
+			}
+			// Close the file
+			FileRef.Close();
 		}
-		// Close the file
-		FileRef.Close();
 	}
 	// Return the error code
 	return uResult;
@@ -249,31 +404,40 @@ Word BURGER_API Burger::OutputMemoryStream::SaveFile(Filename *pFilename) const
 
 ***************************************/
 
-Word BURGER_API Burger::OutputMemoryStream::Save(Burger::String *pOutput) const
+Word BURGER_API Burger::OutputMemoryStream::Save(String *pOutput) const
 {
 	// SetBufferSize() retains the text, disable it by clearing first
 	pOutput->Clear();
-	WordPtr uSize = GetSize();
-	pOutput->SetBufferSize(uSize);
-	// Assume success
-	Word8 *pData = m_pData;
-	char *pWork = pOutput->GetPtr();
-	if (pData) {
-		Word8 *pNext;
-		do {
-			pNext = reinterpret_cast<Word8**>(pData+CHUNKSIZE)[0];
-			WordPtr uChunk = CHUNKSIZE;
-			if (!pNext) {
-				uChunk = m_uIndex;
+	// Are we in a good state?
+	Word uResult = m_uError;
+	if (!uResult) {
+		// Ensure the buffer is ready
+		WordPtr uRemaining = m_uFileSize;
+		uResult = pOutput->SetBufferSize(uRemaining);
+		if (!uResult) {
+			// Get the buffer pointer
+			char *pWork = pOutput->GetPtr();
+			if (uRemaining) {
+				const Chunk_t *pChunk = m_pRoot;
+				do {
+					WordPtr uChunkSize = CHUNKSIZE;
+					if (uRemaining<uChunkSize) {
+						uChunkSize = uRemaining;
+					}
+					MemoryCopy(pWork,pChunk->m_Buffer,uChunkSize);
+					pWork+=uChunkSize;
+					pChunk = pChunk->m_pNext;
+					// All done?
+					uRemaining-=uChunkSize;
+				} while (uRemaining);
 			}
-			MemoryCopy(pWork,pData,uChunk);
-			pWork+=uChunk;
-			pData = pNext;
-		} while (pNext);
+
+			// Terminate the string
+			pWork[0] = 0;
+		}
 	}
-	pWork[0] = 0;
 	// Return the error code
-	return 0;
+	return uResult;
 }
 
 /*! ************************************
@@ -282,8 +446,8 @@ Word BURGER_API Burger::OutputMemoryStream::Save(Burger::String *pOutput) const
 
 	Fill a supplied buffer with the contents of the byte stream
 
-	\note The buffer MUST be an exact match to the number of bytes in
-	the stream or an error will occur
+	\note The buffer must be large enough to contain the data
+	or it will return an error code and not copy anything.
 	
 	\param pOutput Pointer to a buffer to copy the data into
 	\param uLength Size of the buffer
@@ -293,24 +457,25 @@ Word BURGER_API Burger::OutputMemoryStream::Save(Burger::String *pOutput) const
 
 Word BURGER_API Burger::OutputMemoryStream::Flatten(void *pOutput,WordPtr uLength) const
 {
-	WordPtr uSize = GetSize();
-	if (uSize!=uLength) {
-		return TRUE;
+	WordPtr uRemaining = m_uFileSize;
+	if (uRemaining<uLength) {
+		// Not enough buffer to store in
+		return 10;
 	}
 	// Assume success
-	Word8 *pData = m_pData;
-	if (pData) {
-		Word8 *pNext;
+	if (uRemaining) {
+		const Chunk_t *pChunk = m_pRoot;
 		do {
-			pNext = reinterpret_cast<Word8**>(pData+CHUNKSIZE)[0];
-			WordPtr uChunk = CHUNKSIZE;
-			if (!pNext) {
-				uChunk = m_uIndex;
+			WordPtr uChunkSize = CHUNKSIZE;
+			if (uRemaining<uChunkSize) {
+				uChunkSize = uRemaining;
 			}
-			MemoryCopy(pOutput,pData,uChunk);
-			pOutput = static_cast<Word8 *>(pOutput) + uChunk;
-			pData = pNext;
-		} while (pNext);
+			MemoryCopy(pOutput,pChunk->m_Buffer,uChunkSize);
+			pOutput = static_cast<Word8 *>(pOutput) + uChunkSize;
+			pChunk = pChunk->m_pNext;
+			// All done?
+			uRemaining-=uChunkSize;
+		} while (uRemaining);
 	}
 	return 0;
 }
@@ -330,30 +495,34 @@ Word BURGER_API Burger::OutputMemoryStream::Flatten(void *pOutput,WordPtr uLengt
 
 void * BURGER_API Burger::OutputMemoryStream::Flatten(WordPtr *pLength) const
 {
-	WordPtr uSize = GetSize();
-	void *pResult = Alloc(uSize);
+	WordPtr uRemaining = m_uFileSize;
+	void *pResult = Alloc(uRemaining);
 	if (!pResult) {
-		uSize = 0;
+		// Error!
+		uRemaining = 0;
 	} else {
 		// Assume success
-		Word8 *pData = m_pData;
-		if (pData) {
+		if (uRemaining) {
 			void *pOutput = pResult;
-			Word8 *pNext;
+			const Chunk_t *pChunk = m_pRoot;
 			do {
-				pNext = reinterpret_cast<Word8**>(pData+CHUNKSIZE)[0];
-				WordPtr uChunk = CHUNKSIZE;
-				if (!pNext) {
-					uChunk = m_uIndex;
+				WordPtr uChunkSize = CHUNKSIZE;
+				if (uRemaining<uChunkSize) {
+					uChunkSize = uRemaining;
 				}
-				MemoryCopy(pOutput,pData,uChunk);
-				pOutput = static_cast<Word8 *>(pOutput) + uChunk;
-				pData = pNext;
-			} while (pNext);
+				MemoryCopy(pOutput,pChunk->m_Buffer,uChunkSize);
+				pOutput = static_cast<Word8 *>(pOutput) + uChunkSize;
+				pChunk = pChunk->m_pNext;
+				// All done?
+				uRemaining-=uChunkSize;
+			} while (uRemaining);
+			// Restore the length
+			uRemaining = m_uFileSize;
 		}
 	}
+	// Save the length stored
 	if (pLength) {
-		pLength[0] = uSize;
+		pLength[0] = uRemaining;
 	}
 	return pResult;
 }
@@ -374,7 +543,7 @@ void * BURGER_API Burger::OutputMemoryStream::Flatten(WordPtr *pLength) const
 
 Word BURGER_API Burger::OutputMemoryStream::Append(char iChar)
 {
-	// Switch to \r for macos classic (OSX is Unix)
+	// Switch to \r for MacOS classic (OSX is Unix)
 #if defined(BURGER_MAC)
 	if (iChar=='\n') {
 		iChar = '\r';
@@ -408,7 +577,6 @@ Word BURGER_API Burger::OutputMemoryStream::Append(char iChar)
 Word BURGER_API Burger::OutputMemoryStream::Append(const char *pString)
 {
 	// Start with no error
-	Word uResult=0;
 	if (pString) {
 		// Output a character at a time to allow \n
 		// to be converted to \r or \n\r depending
@@ -423,7 +591,7 @@ Word BURGER_API Burger::OutputMemoryStream::Append(const char *pString)
 		}
 	}
 	// Return 0 or error code
-	return uResult;
+	return m_uError;
 }
 
 /*! ************************************
@@ -443,20 +611,18 @@ Word BURGER_API Burger::OutputMemoryStream::Append(const char *pString)
 
 Word BURGER_API Burger::OutputMemoryStream::AppendCString(const char *pString)
 {
-	Word uResult;
-
 	// NULL string?
 	if (!pString) {
 		// Insert a zero length string
-		uResult = Append(static_cast<Word8>(0));
+		Append(static_cast<Word8>(0));
 	} else {
 		// Get the length
 		WordPtr uLength = StringLength(pString);
 		// Insert in one go
-		uResult = Append(pString,uLength+1);
+		Append(pString,uLength+1);
 	}
 	// Return 0 or error code
-	return uResult;
+	return m_uError;
 }
 
 /*! ************************************
@@ -493,20 +659,17 @@ Word BURGER_API Burger::OutputMemoryStream::AppendCString(const char *pString)
 
 Word BURGER_API Burger::OutputMemoryStream::AppendPString(const char *pString)
 {
-	// Start with no error
-	Word uResult=0;
 	if (pString) {
 		WordPtr uLength = StringLength(pString);
+		// Truncate to the maximum length of a "P" string
 		if (uLength>=256) {
 			uLength=255;
 		}
-		uResult = Append(static_cast<Word8>(uLength));
-		if (!uResult) {
-			uResult = Append(pString,uLength);
-		}
+		Append(static_cast<Word8>(uLength));
+		Append(pString,uLength);
 	}
 	// Return 0 or error code
-	return uResult;
+	return m_uError;
 }
 
 /*! ************************************
@@ -527,37 +690,85 @@ Word BURGER_API Burger::OutputMemoryStream::Append(Word8 uByte)
 	// Write the byte into the stream
 
 	WordPtr uIndex = m_uIndex;
+	Chunk_t *pChunk = m_pCurrent;
+
 	// Fast case, space for the data already exists
 	if (uIndex<CHUNKSIZE) {
 		// Store the data
-		Word8 *pWork = m_pWork;
-		pWork[uIndex] = uByte;
+		pChunk->m_Buffer[uIndex] = uByte;
 		++uIndex;
+		// Update the index
 		m_uIndex = uIndex;
+
+		// Did the end of file move?
+		uIndex += pChunk->m_uMark;	// Get the mark + the number of bytes used
+		if (m_uFileSize<uIndex) {
+			// Update it
+			m_uFileSize = uIndex;
+		}
 		// All done!
-		return 0;
+		return m_uError;
+	}
+
+	// Check if there is already another chunk allocated
+	// This occurs if the write mark was moved backwards
+
+	if (pChunk) {
+		Chunk_t *pNext = pChunk->m_pNext;
+		if (pNext) {
+			pNext->m_Buffer[0] = uByte;
+
+			// Update the working chunk data
+			m_pCurrent = pNext;
+			m_uIndex = 1;
+
+			// Did the end of file move?
+			uIndex = pNext->m_uMark+1;	// Get the mark + the number of bytes used
+			if (m_uFileSize<uIndex) {
+				// Update it
+				m_uFileSize = uIndex;
+			}
+			// All done!
+			return m_uError;
+		}
 	}
 
 	// Looks like another buffer is needed
-	Word8 *pNewData = static_cast<Word8*>(Alloc(CHUNKSIZE+sizeof(Word8*)));
-	if (!pNewData) {
-		return 10;
-	}
-	// Initialize the buffer with the next link (NULL)
-	// and insert the byte to save
-	m_uIndex = 1;
-	pNewData[0] = uByte;
-	reinterpret_cast<Word8 **>(pNewData+CHUNKSIZE)[0] = NULL;
-	// Is this the first buffer? If so, make it the root.
-	Word8 *pOldWork = m_pWork;
-	m_pWork = pNewData;
-	if (!pOldWork) {
-		m_pData = pNewData;
+	// Make sure it's cleared out in case the mark is skipped ahead
+	Chunk_t *pNewChunk = static_cast<Chunk_t*>(AllocClear(sizeof(Chunk_t)));
+	if (!pNewChunk) {
+		// Error!!! Data is corrupt from now on!
+		m_uError = 10;
+
 	} else {
-		// Insert this pointer into the linked list for later disposal
-		reinterpret_cast<Word8 **>(pOldWork+CHUNKSIZE)[0] = pNewData;
+
+		// Initialize the buffer with the next link (NULL)
+		// pNext->m_pNext = NULL;		// Already cleared
+	
+		// Insert the byte to save
+		m_uIndex = 1;
+		pNewChunk->m_Buffer[0] = uByte;
+	
+		// Is this the first buffer? If so, make it the root.
+		m_pCurrent = pNewChunk;
+		if (!pChunk) {
+			// pNext->m_uMark = 0;			// Already cleared
+			m_pRoot = pNewChunk;
+		} else {
+			// Set the new mark
+			pNewChunk->m_uMark = pChunk->m_uMark+CHUNKSIZE;
+			// Insert this pointer into the linked list for later disposal
+			pChunk->m_pNext = pNewChunk;
+		}
+
+		// Did the end of file move?
+		uIndex = pNewChunk->m_uMark+1;
+		if (m_uFileSize<uIndex) {
+			// Update it
+			m_uFileSize = uIndex;
+		}
 	}
-	return 0;
+	return m_uError;
 }
 
 /*! ************************************
@@ -575,9 +786,8 @@ Word BURGER_API Burger::OutputMemoryStream::Append(Word8 uByte)
 
 Word BURGER_API Burger::OutputMemoryStream::Append(Word16 uShort)
 {
-	Word uError = Append(static_cast<Word8>(uShort));
-	uError |= Append(static_cast<Word8>(uShort>>8U));
-	return uError;
+	Append(static_cast<Word8>(uShort));
+	return Append(static_cast<Word8>(uShort>>8U));
 }
 
 /*! ************************************
@@ -595,11 +805,10 @@ Word BURGER_API Burger::OutputMemoryStream::Append(Word16 uShort)
 
 Word BURGER_API Burger::OutputMemoryStream::Append(Word32 uWord)
 {
-	Word uError = Append(static_cast<Word8>(uWord));
-	uError |= Append(static_cast<Word8>(uWord>>8U));
-	uError |= Append(static_cast<Word8>(uWord>>16U));
-	uError |= Append(static_cast<Word8>(uWord>>24U));
-	return uError;
+	Append(static_cast<Word8>(uWord));
+	Append(static_cast<Word8>(uWord>>8U));
+	Append(static_cast<Word8>(uWord>>16U));
+	return Append(static_cast<Word8>(uWord>>24U));
 }
 
 /*! ************************************
@@ -713,19 +922,15 @@ Word BURGER_API Burger::OutputMemoryStream::Append(const RGBAWord8_t *pInput)
 
 	\param pInput Pointer to an X, Y, and Z value to append to the stream
 	\return Error code with zero being no error, non-zero is out of memory
+	\sa Append(const RGBFloat_t *)
 
 ***************************************/
 
 Word BURGER_API Burger::OutputMemoryStream::Append(const Vector3D_t *pInput)
 {
-	Word uResult = Append(pInput->x);
-	if (!uResult) {
-		uResult = Append(pInput->y);
-		if (!uResult) {
-			uResult = Append(pInput->z);
-		}
-	}
-	return uResult;
+	Append(pInput->x);
+	Append(pInput->y);
+	return Append(pInput->z);
 }
 
 /*! ************************************
@@ -740,23 +945,52 @@ Word BURGER_API Burger::OutputMemoryStream::Append(const Vector3D_t *pInput)
 
 	\param pInput Pointer to an X, Y, Z and W value to append to the stream
 	\return Error code with zero being no error, non-zero is out of memory
+	\sa Append(const RGBAFloat_t *)
 
 ***************************************/
 
 Word BURGER_API Burger::OutputMemoryStream::Append(const Vector4D_t *pInput)
 {
-	Word uResult = Append(pInput->x);
-	if (!uResult) {
-		uResult = Append(pInput->y);
-		if (!uResult) {
-			uResult = Append(pInput->z);
-			if (!uResult) {
-				uResult = Append(pInput->w);
-			}
-		}
-	}
-	return uResult;
+	Append(pInput->x);
+	Append(pInput->y);
+	Append(pInput->z);
+	return Append(pInput->w);
 }
+
+/*! ************************************
+
+	\fn Burger::OutputMemoryStream::Append(const RGBFloat_t *)
+	\brief Add an R, G, B floating point value to the end of the data stream
+
+	Append three 32 bit floats to the end of the data stream 
+	and allocate memory if necessary. If the memory allocation fails, a
+	non-zero error code will be returned.
+
+	Data is stored in little endian format
+
+	\param pInput Pointer to an R, B, and G value to append to the stream
+	\return Error code with zero being no error, non-zero is out of memory
+	\sa Append(const Vector3D_t *)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::OutputMemoryStream::Append(const RGBAFloat_t *)
+	\brief Add an R, G, B, A floating point value to the end of the data stream
+
+	Append four 32 bit floats to the end of the data stream 
+	and allocate memory if necessary. If the memory allocation fails, a
+	non-zero error code will be returned.
+
+	Data is stored in little endian format
+
+	\param pInput Pointer to an R, G, B and A value to append to the stream
+	\return Error code with zero being no error, non-zero is out of memory
+	\sa Append(const Vector4D_t *)
+
+***************************************/
+
 
 /*! ************************************
 
@@ -774,21 +1008,16 @@ Word BURGER_API Burger::OutputMemoryStream::Append(const Vector4D_t *pInput)
 Word BURGER_API Burger::OutputMemoryStream::Append(const void *pData,WordPtr uSize)
 {
 	// Start with no error
-	Word uResult=0;
 	if (pData && uSize) {
 		// Let's add the data
 		do {
-			uResult = Append(static_cast<const Word8 *>(pData)[0]);
-			// Error?
-			if (uResult) {
-				break;
-			}
+			Append(static_cast<const Word8 *>(pData)[0]);
 			pData = static_cast<const Word8 *>(pData)+1;
 			// Continue?
 		} while (--uSize);
 	}
 	// Return 0 or error code
-	return uResult;
+	return m_uError;
 }
 
 /*! ************************************
@@ -919,16 +1148,12 @@ Word BURGER_API Burger::OutputMemoryStream::AppendAscii(double dInput)
 
 Word BURGER_API Burger::OutputMemoryStream::AppendTabs(Word uTabCount)
 {
-	Word uResult = FALSE;		// Assume no error
 	if (uTabCount) {
 		do {
-			uResult = Append('\t');	// Insert the tabs
-			if (uResult) {			// Abort on error
-				break;
-			}
+			Append('\t');	// Insert the tabs
 		} while (--uTabCount);		// Count down
 	}
-	return uResult;
+	return m_uError;
 }
 
 /*! ************************************
@@ -949,44 +1174,47 @@ Word BURGER_API Burger::OutputMemoryStream::Compare(const void *pInput,WordPtr u
 {
 	// Assume failure
 	Word uResult = TRUE;
-	const Word8 *pData = m_pData;
-	// Checking for empty?
-	if (!uLength) {
-		if (!pData) {
-			// Match!
-			uResult = FALSE;
-		}
-	} else {
-		if (pData) {
-			const Word8 *pNext;
-			do {
-				pNext = reinterpret_cast<Word8* const *>(pData+CHUNKSIZE)[0];
-				// Get the number of valid bytes
-				WordPtr uChunk = CHUNKSIZE;
-				if (!pNext) {
-					uChunk = m_uIndex;
-				}
-				// Are there less bytes to check than in the buffer?
-				if (uLength<uChunk) {
-					// Size mismatch!
-					break;
-				}
-				// Compare this chunk
-				if (MemoryCompare(pData,pInput,uChunk)) {
-					// Data mismatch!
-					break;
-				}
-				// Consume this input data
-				pInput=static_cast<const Word8 *>(pInput)+uChunk;
-				uLength-=uChunk;
-				// No more data from input and stream?
-				if (!uLength && !pNext) {
-					// The data is a match!
-					uResult = FALSE;
-					break;
-				}
-				pData = pNext;
-			} while (pNext);
+	if (!m_uError) {
+
+		WordPtr uRemaining = m_uFileSize;
+		// Checking for empty?
+		if (!uLength) {
+			if (!uRemaining) {
+				// Match!
+				uResult = FALSE;
+			}
+		} else {
+			if (uRemaining) {
+				const Chunk_t *pChunk = m_pRoot;
+				do {
+					// Get the number of valid bytes
+					WordPtr uChunkSize = CHUNKSIZE;
+					if (uRemaining<uChunkSize) {
+						uChunkSize = uRemaining;
+					}
+					// Are there less bytes to check than in the buffer?
+					if (uLength<uChunkSize) {
+						// Size mismatch!
+						break;
+					}
+					// Compare this chunk
+					if (MemoryCompare(pChunk->m_Buffer,pInput,uChunkSize)) {
+						// Data mismatch!
+						break;
+					}
+					// Consume this input data
+					pInput=static_cast<const Word8 *>(pInput)+uChunkSize;
+					uLength-=uChunkSize;
+					uRemaining-=uChunkSize;
+					// No more data from input and stream?
+					if (!uLength && !uRemaining) {
+						// The data is a match!
+						uResult = FALSE;
+						break;
+					}
+					pChunk = pChunk->m_pNext;
+				} while (uRemaining);
+			}
 		}
 	}
 	// Return the error code
@@ -1016,46 +1244,52 @@ Word BURGER_API Burger::OutputMemoryStream::Overwrite(const void *pInput,WordPtr
 	if (uLength) {
 		// Now assume failure
 		uResult = 1;
-		Word8 *pData = m_pData;
-		if (pData) {
-			Word8 *pNext;
+		WordPtr uRemaining = m_uFileSize;
+		if (uRemaining) {
 			// Set the write mark
-			WordPtr uMark = 0;
+			Chunk_t *pChunk = m_pRoot;
 			do {
-				pNext = reinterpret_cast<Word8**>(pData+CHUNKSIZE)[0];
-				// Get the number of valid bytes in this chunk
-				WordPtr uChunk = CHUNKSIZE;
-				if (!pNext) {
-					uChunk = m_uIndex;
+				WordPtr uMark = pChunk->m_uMark;
+				// Get the number of valid bytes
+				WordPtr uChunkSize = CHUNKSIZE;
+				if (uRemaining<uChunkSize) {
+					uChunkSize = uRemaining;
 				}
 				// Is the offset beyond this chunk?
 
-				WordPtr uEndMark = uMark + uChunk;
+				WordPtr uEndMark = uMark + uChunkSize;
 				if (uEndMark>uOffset) {
 					// How many bytes to skip?
 					WordPtr uSkip = uOffset-uMark;
-					pData += uSkip;
-					uChunk -= uSkip;
-					if (uLength<uChunk) {
-						uChunk = uLength;
+					uChunkSize -= uSkip;
+					
+					// Apply the same adjustment to uRemaining from uChunkSize to
+					// allow the uRemaining -= uChunkSize below to stay correct
+					uRemaining -= uSkip;
+
+					if (uLength<uChunkSize) {
+						uChunkSize = uLength;
 					}
 
 					// Overwrite this chunk
-					MemoryCopy(pData,pInput,uChunk);
+					MemoryCopy(&pChunk->m_Buffer[uSkip],pInput,uChunkSize);
 
 					// Consume this input data
-					pInput=static_cast<const Word8 *>(pInput)+uChunk;
-					uLength-=uChunk;
+					pInput=static_cast<const Word8 *>(pInput)+uChunkSize;
+					uLength-=uChunkSize;
+
+					// All done?
 					if (!uLength) {
 						uResult = 0;
 						break;
 					}
+					// Set the new mark
 					uOffset = uEndMark;
 				}
-				// Update the data mark
-				uMark = uEndMark;
-				pData = pNext;
-			} while (pNext);
+				// Next chunk
+				pChunk = pChunk->m_pNext;
+				uRemaining-=uChunkSize;
+			} while (uRemaining);
 		}
 	}
 	// Return the error code

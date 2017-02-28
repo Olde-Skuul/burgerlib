@@ -16,10 +16,15 @@
 #include "brfloatingpoint.h"
 #include "brnumberstringhex.h"
 
-typedef struct FloatInt_t {
+struct FloatInt_t {
 	float m_fValue;
 	int m_iValue;
-} FloatInt_t;
+};
+
+struct NanTest_t {
+	Word64 uInput;
+	Word32 uFlags;
+};
 
 static const Word64 g_dInf = 0x7FF0000000000000ULL;		///< Constant for Infinity in the double format.
 static const Word64 g_dNan = 0x7FF7FFFFFFFFFFFFULL;		///< Constant for Not a Number (NaN) in the double format
@@ -283,7 +288,7 @@ static const Word32 IsNanTest[][2] = {
 	{0xFFFFFFFFU,NANTEST+SIGNTEST}					// QNan	
 };
 
-static Word TestIsNanFloat(void)
+static Word BURGER_API TestIsNanFloat(void)
 {
 	const Word32 *pWork = IsNanTest[0];
 	WordPtr i = BURGER_ARRAYSIZE(IsNanTest);
@@ -303,11 +308,6 @@ static Word TestIsNanFloat(void)
 //
 // Test IsNan(double)
 //
-
-struct NanTest_t {
-	Word64 uInput;
-	Word32 uFlags;
-};
 
 static const NanTest_t IsNanTestDouble[] = {
 	{0x0000000000000000ULL,FINITETEST},						// 0.0f
@@ -340,7 +340,7 @@ static const NanTest_t IsNanTestDouble[] = {
 	{0xFFFFFFFFFFFFFFFFULL,NANTEST+SIGNTEST}				// QNan	
 };
 
-static Word TestIsNanDouble(void)
+static Word BURGER_API TestIsNanDouble(void)
 {
 	const NanTest_t *pWork = IsNanTestDouble;
 	WordPtr i = BURGER_ARRAYSIZE(IsNanTestDouble);
@@ -361,7 +361,7 @@ static Word TestIsNanDouble(void)
 // Test IsInf(float)
 //
 
-static Word TestIsInfFloat(void)
+static Word BURGER_API TestIsInfFloat(void)
 {
 	const Word32 *pWork = IsNanTest[0];
 	WordPtr i = BURGER_ARRAYSIZE(IsNanTest);
@@ -382,7 +382,7 @@ static Word TestIsInfFloat(void)
 // Test IsInf(double)
 //
 
-static Word TestIsInfDouble(void)
+static Word BURGER_API TestIsInfDouble(void)
 {
 	const NanTest_t *pWork = IsNanTestDouble;
 	WordPtr i = BURGER_ARRAYSIZE(IsNanTestDouble);
@@ -403,7 +403,7 @@ static Word TestIsInfDouble(void)
 // Test IsFinite(float)
 //
 
-static Word TestIsFiniteFloat(void)
+static Word BURGER_API TestIsFiniteFloat(void)
 {
 	const Word32 *pWork = IsNanTest[0];
 	WordPtr i = BURGER_ARRAYSIZE(IsNanTest);
@@ -424,7 +424,7 @@ static Word TestIsFiniteFloat(void)
 // Test IsFinite(double)
 //
 
-static Word TestIsFiniteDouble(void)
+static Word BURGER_API TestIsFiniteDouble(void)
 {
 	const NanTest_t *pWork = IsNanTestDouble;
 	WordPtr i = BURGER_ARRAYSIZE(IsNanTestDouble);
@@ -445,7 +445,7 @@ static Word TestIsFiniteDouble(void)
 // Test IsNormal(float)
 //
 
-static Word TestIsNormalFloat(void)
+static Word BURGER_API TestIsNormalFloat(void)
 {
 	const Word32 *pWork = IsNanTest[0];
 	WordPtr i = BURGER_ARRAYSIZE(IsNanTest);
@@ -466,7 +466,7 @@ static Word TestIsNormalFloat(void)
 // Test IsNormal(double)
 //
 
-static Word TestIsNormalDouble(void)
+static Word BURGER_API TestIsNormalDouble(void)
 {
 	const NanTest_t *pWork = IsNanTestDouble;
 	WordPtr i = BURGER_ARRAYSIZE(IsNanTestDouble);
@@ -487,7 +487,7 @@ static Word TestIsNormalDouble(void)
 // Test SignBit(float)
 //
 
-static Word TestSignBitFloat(void)
+static Word BURGER_API TestSignBitFloat(void)
 {
 	const Word32 *pWork = IsNanTest[0];
 	WordPtr i = BURGER_ARRAYSIZE(IsNanTest);
@@ -508,7 +508,7 @@ static Word TestSignBitFloat(void)
 // Test SignBit(double)
 //
 
-static Word TestSignBitDouble(void)
+static Word BURGER_API TestSignBitDouble(void)
 {
 	const NanTest_t *pWork = IsNanTestDouble;
 	WordPtr i = BURGER_ARRAYSIZE(IsNanTestDouble);
@@ -553,7 +553,7 @@ static const Burger::Word32ToFloat AbsFloatArray[][2] = {
 //	{{0x7FC00000U},{0x7FC00000U}},	// Burger::SingleQaN,Burger::SingleQaN
 //	{{0xFFC00001U},{0x7FC00001U}}	// -Burger::SingleQNaN,Burger::SingleQaN
 };
-static Word TestAbsFloat(void)
+static Word BURGER_API TestAbsFloat(void)
 {
 	const Burger::Word32ToFloat *pWork = AbsFloatArray[0];
 	WordPtr i = BURGER_ARRAYSIZE(AbsFloatArray);
@@ -598,7 +598,7 @@ static const Burger::Word64ToDouble AbsDoubleArray[][2] = {
 	{{0xFFF0000000000000ULL},{0x7FF0000000000000ULL}}	// -Burger::g_dInf,Burger::g_dInf
 };
 
-static Word TestAbsDouble(void)
+static Word BURGER_API TestAbsDouble(void)
 {
 	const Burger::Word64ToDouble *pWork = AbsDoubleArray[0];
 	WordPtr i = BURGER_ARRAYSIZE(AbsDoubleArray);
@@ -622,23 +622,23 @@ static Word TestAbsDouble(void)
 static const Burger::Word32ToFloat SignFloatArray[][2] = {
 	{{0x00000000U},{0x00000000U}},	// 0.0f,0.0f
 	{{0x80000000U},{0x00000000U}},	// 0.0f,0.0f
-	{{0x00000001U},{0x3F800000U}},	// 0.0f,0.0f
-	{{0x80000001U},{0xBF800000U}},	// 0.0f,0.0f
-	{{0x00000010U},{0x3F800000U}},	// 0.0f,0.0f
-	{{0x80000010U},{0xBF800000U}},	// 0.0f,0.0f
-	{{0x007FFFFFU},{0x3F800000U}},	// 0.0f,0.0f
-	{{0x807FFFFFU},{0xBF800000U}},	// 0.0f,0.0f
-	{{0x3F800000U},{0x3F800000U}},	// 1.0f,-1.0f
+	{{0x00000001U},{0x3F800000U}},	// 0.0f,1.0f
+	{{0x80000001U},{0xBF800000U}},	// 0.0f,-1.0f
+	{{0x00000010U},{0x3F800000U}},	// 0.0f,1.0f
+	{{0x80000010U},{0xBF800000U}},	// 0.0f,-1.0f
+	{{0x007FFFFFU},{0x3F800000U}},	// 0.0f,1.0f
+	{{0x807FFFFFU},{0xBF800000U}},	// 0.0f,-1.0f
+	{{0x3F800000U},{0x3F800000U}},	// 1.0f,1.0f
 	{{0xBF800000U},{0xBF800000U}},	// -1.0f,-1.0f
-	{{0x40490CDDU},{0x3F800000U}},	// 3.14141f,-1.0f
+	{{0x40490CDDU},{0x3F800000U}},	// 3.14141f,1.0f
 	{{0xC0490CDDU},{0xBF800000U}},	// -3.14141f,-1.0f
-	{{0x4640E400U},{0x3F800000U}},	// 12345.0f,-1.0f
+	{{0x4640E400U},{0x3F800000U}},	// 12345.0f,1.0f
 	{{0xC640E400U},{0xBF800000U}},	// -12345.0f,-1.0f
-	{{0x7F800000U},{0x3F800000U}},	// Burger::g_fInf,-1.0f
+	{{0x7F800000U},{0x3F800000U}},	// Burger::g_fInf,1.0f
 	{{0xFF800000U},{0xBF800000U}}	// -Burger::g_fInf,-1.0f,
 };
 
-static Word TestSignFloat(void)
+static Word BURGER_API TestSignFloat(void)
 {
 	const Burger::Word32ToFloat *pWork = SignFloatArray[0];
 	WordPtr i = BURGER_ARRAYSIZE(SignFloatArray);
@@ -652,6 +652,49 @@ static Word TestSignFloat(void)
 			Burger::NumberStringHex Test(fTest.w);
 			Burger::NumberStringHex Expected(pWork[1].w);
 			ReportFailure("Burger::Sign(float(%g)) = %g 0x%s / Wanted %g 0x%s",uFailure,pWork[0].f,fTest.f,Test.GetPtr(),pWork[1].f,Expected.GetPtr());
+		}
+		pWork+=2;
+	} while (--i);
+	return uResult;
+}
+
+//
+// Test Sign(double)
+//
+
+static const Burger::Word64ToDouble SignDoubleArray[][2] = {
+	{{0x0000000000000000ULL},{0x0000000000000000ULL}},	// 0.0f,0.0f
+	{{0x8000000000000000ULL},{0x0000000000000000ULL}},	// 0.0f,0.0f
+	{{0x0000000000000001ULL},{0x3FF0000000000000ULL}},	// 0.0f,1.0f
+	{{0x8000000000000001ULL},{0xBFF0000000000000ULL}},	// 0.0f,-1.0f
+	{{0x0000000000000010ULL},{0x3FF0000000000000ULL}},	// 0.0f,1.0f
+	{{0x8000000000000010ULL},{0xBFF0000000000000ULL}},	// 0.0f,-1.0f
+	{{0x000FFFFFFFFFFFFFULL},{0x3FF0000000000000ULL}},	// 0.0f,1.0f
+	{{0x800FFFFFFFFFFFFFULL},{0xBFF0000000000000ULL}},	// 0.0f,-1.0f
+	{{0x3FF0000000000000ULL},{0x3FF0000000000000ULL}},	// 1.0f,1.0f
+	{{0xBFF0000000000000ULL},{0xBFF0000000000000ULL}},	// -1.0f,-1.0f
+	{{0x400921FB54442D18ULL},{0x3FF0000000000000ULL}},	// 3.14141f,1.0f
+	{{0xC00921FB54442D18ULL},{0xBFF0000000000000ULL}},	// -3.14141f,-1.0f
+	{{0x40C81C8000000000ULL},{0x3FF0000000000000ULL}},	// 12345.0f,1.0f
+	{{0xC0C81C8000000000ULL},{0xBFF0000000000000ULL}},	// -12345.0f,-1.0f
+	{{0x7FF0000000000000ULL},{0x3FF0000000000000ULL}},	// Burger::g_fInf,1.0f
+	{{0xFFF0000000000000ULL},{0xBFF0000000000000ULL}}	// -Burger::g_fInf,-1.0f,
+};
+
+static Word BURGER_API TestSignDouble(void)
+{
+	const Burger::Word64ToDouble *pWork = SignDoubleArray[0];
+	WordPtr i = BURGER_ARRAYSIZE(SignDoubleArray);
+	Word uResult = FALSE;
+	do {
+		Burger::Word64ToDouble fTest;
+		fTest = Burger::Sign(pWork[0]);
+		Word uFailure = (fTest.w!=pWork[1].w);
+		uResult |= uFailure;
+		if (uFailure) {
+			Burger::NumberStringHex Test(fTest.w);
+			Burger::NumberStringHex Expected(pWork[1].w);
+			ReportFailure("Burger::Sign(double(%g)) = %g 0x%s / Wanted %g 0x%s",uFailure,pWork[0].d,fTest.d,Test.GetPtr(),pWork[1].d,Expected.GetPtr());
 		}
 		pWork+=2;
 	} while (--i);
@@ -674,7 +717,7 @@ static const Burger::Word32ToFloat ClampFloatArray[][4] = {
 	{{0xFF800000U},{0xBF800000U},{0x3F800000U},{0xBF800000U}}	// -Burger::g_fInf,-1.0f,1.0f,-1.0f
 };
 
-static Word TestClampFloat(void)
+static Word BURGER_API TestClampFloat(void)
 {
 	const Burger::Word32ToFloat *pWork = ClampFloatArray[0];
 	WordPtr i = BURGER_ARRAYSIZE(ClampFloatArray);
@@ -688,6 +731,43 @@ static Word TestClampFloat(void)
 			Burger::NumberStringHex Test(fTest.w);
 			Burger::NumberStringHex Expected(pWork[3].w);
 			ReportFailure("Burger::Clamp(float(%g),float(%g),float(%g)) = %g 0x%s / Wanted %g 0x%s",uFailure,pWork[0].f,pWork[1].f,pWork[2].f,fTest.f,Test.GetPtr(),pWork[3].f,Expected.GetPtr());
+		}
+		pWork+=4;
+	} while (--i);
+	return uResult;
+}
+
+
+//
+// Test Clamp(double,double,double)
+//
+
+static const Burger::Word64ToDouble ClampDoubleArray[][4] = {
+	{{0x0000000000000000ULL},{0xBFF0000000000000ULL},{0x3FF0000000000000ULL},{0x0000000000000000ULL}},	// 0.0f,-1.0f,1.0f,0.0f
+	{{0x3FF0000000000000ULL},{0xBFF0000000000000ULL},{0x3FF0000000000000ULL},{0x3FF0000000000000ULL}},	// 1.0f,-1.0f,1.0f,1.0f
+	{{0xBFF0000000000000ULL},{0xBFF0000000000000ULL},{0x3FF0000000000000ULL},{0xBFF0000000000000ULL}},	// -1.0f,-1.0f,1.0f,-1.0f
+	{{0x400921FB54442D18ULL},{0xBFF0000000000000ULL},{0x3FF0000000000000ULL},{0x3FF0000000000000ULL}},	// 3.14141f,-1.0f,1.0f,1.0f
+	{{0xC00921FB54442D18ULL},{0xBFF0000000000000ULL},{0x3FF0000000000000ULL},{0xBFF0000000000000ULL}},	// -3.14141f,-1.0f,1.0f,-1.0f
+	{{0x40C81C8000000000ULL},{0xBFF0000000000000ULL},{0x3FF0000000000000ULL},{0x3FF0000000000000ULL}},	// 12345.0f,-1.0f,1.0f,1.0f
+	{{0xC0C81C8000000000ULL},{0xBFF0000000000000ULL},{0x3FF0000000000000ULL},{0xBFF0000000000000ULL}},	// -12345.0f,-1.0f,1.0f,-1.0f
+	{{0x7FF0000000000000ULL},{0xBFF0000000000000ULL},{0x3FF0000000000000ULL},{0x3FF0000000000000ULL}},	// Burger::g_fInf,-1.0f,1.0f,1.0f
+	{{0xFFF0000000000000ULL},{0xBFF0000000000000ULL},{0x3FF0000000000000ULL},{0xBFF0000000000000ULL}}	// -Burger::g_fInf,-1.0f,1.0f,-1.0f
+};
+
+static Word BURGER_API TestClampDouble(void)
+{
+	const Burger::Word64ToDouble *pWork = ClampDoubleArray[0];
+	WordPtr i = BURGER_ARRAYSIZE(ClampDoubleArray);
+	Word uResult = FALSE;
+	do {
+		Burger::Word64ToDouble fTest;
+		fTest = Burger::Clamp(pWork[0],pWork[1],pWork[2]);
+		Word uFailure = (fTest.w!=pWork[3].w);
+		uResult |= uFailure;
+		if (uFailure) {
+			Burger::NumberStringHex Test(fTest.w);
+			Burger::NumberStringHex Expected(pWork[3].w);
+			ReportFailure("Burger::Clamp(float(%g),float(%g),float(%g)) = %g 0x%s / Wanted %g 0x%s",uFailure,pWork[0].d,pWork[1].d,pWork[2].d,fTest.d,Test.GetPtr(),pWork[3].d,Expected.GetPtr());
 		}
 		pWork+=4;
 	} while (--i);
@@ -722,7 +802,7 @@ static const Burger::Word32ToFloat SqrtFloatArray[][2] = {
 	//{{0xBF800000U},{0xFFC00000U}}	// -1.0f,1.0f
 };
 
-static Word TestSqrtFloat(void)
+static Word BURGER_API TestSqrtFloat(void)
 {
 	const Burger::Word32ToFloat *pWork = SqrtFloatArray[0];
 	WordPtr i = BURGER_ARRAYSIZE(SqrtFloatArray);
@@ -768,7 +848,7 @@ static const Burger::Word64ToDouble SqrtDoubleArray[][2] = {
 	//{{0xBFF0000000000000ULL},{0xFFF0000000000000ULL}}	// -1.0f,1.0f
 };
 
-static Word TestSqrtDouble(void)
+static Word BURGER_API TestSqrtDouble(void)
 {
 	const Burger::Word64ToDouble *pWork = SqrtDoubleArray[0];
 	WordPtr i = BURGER_ARRAYSIZE(SqrtDoubleArray);
@@ -786,15 +866,211 @@ static Word TestSqrtDouble(void)
 	return uResult;
 }
 
+
+//
+// Test IntToFloat(float *,const Int32 *)
+//
+
+static const Burger::Word32ToFloat IntToFloatArray[][2] = {
+	{{0x00000000U},{0x00000000U}},	// 0
+	{{0x00000001U},{0x3F800000U}},	// 1
+	{{0xFFFFFFFFU},{0xBF800000U}},	// -1
+	{{0x7FFFFFFFU},{0x4F000000U}},	// MAXINT
+	{{0x80000000U},{0xCF000000U}},	// -MAXINT
+	{{0x7FFFFFFEU},{0x4F000000U}},	// MAXINT-1
+	{{0x80000001U},{0xCF000000U}},	// -MAXINT+1
+	{{0x00800000U},{0x4B000000U}},	// 8388608
+	{{0xFF800000U},{0xCB000000U}},	// -8388608
+	{{0x00800001U},{0x4B000001U}},	// 8388609
+	{{0xFF7FFFFFU},{0xCB000001U}},	// -8388609
+	{{0x01000000U},{0x4B800000U}},	// 16777216
+	{{0xFF000000U},{0xCB800000U}},	// -16777216
+	{{0x01000001U},{0x4B800000U}},	// 16777217
+	{{0xFEFFFFFFU},{0xCB800000U}},	// -16777217
+	{{0x01000002U},{0x4B800001U}},	// 16777218
+	{{0xFEFFFFFEU},{0xCB800001U}},	// -16777218
+	{{0x01000003U},{0x4B800002U}},	// 16777219
+	{{0xFEFFFFFDU},{0xCB800002U}},	// -16777219
+	{{0x01000004U},{0x4B800002U}},	// 16777220
+	{{0xFEFFFFFCU},{0xCB800002U}},	// -16777220
+	{{0x01000005U},{0x4B800002U}},	// 16777221
+	{{0xFEFFFFFBU},{0xCB800002U}},	// -16777221
+	{{0x01000006U},{0x4B800003U}},	// 16777222
+	{{0xFEFFFFFAU},{0xCB800003U}},	// -16777222
+	{{0x01000007U},{0x4B800004U}},	// 16777223
+	{{0xFEFFFFF9U},{0xCB800004U}},	// -16777223
+	{{0x01000008U},{0x4B800004U}},	// 16777224
+	{{0xFEFFFFF8U},{0xCB800004U}},	// -16777224
+	{{0x01000009U},{0x4B800004U}},	// 16777225
+	{{0xFEFFFFF7U},{0xCB800004U}},	// -16777225
+	{{0x0100000AU},{0x4B800005U}},	// 16777226
+	{{0xFEFFFFF6U},{0xCB800005U}},	// -16777226
+	{{0x0100000BU},{0x4B800006U}},	// 16777227
+	{{0xFEFFFFF5U},{0xCB800006U}}	// -16777227
+};
+
+static Word BURGER_API TestIntToFloat(void)
+{
+	const Burger::Word32ToFloat *pWork = IntToFloatArray[0];
+	WordPtr i = BURGER_ARRAYSIZE(IntToFloatArray);
+	Word uResult = FALSE;
+	do {
+		Int iOriginal = static_cast<Int>(pWork[0].GetWord());
+		float fExpected = pWork[1];
+
+		volatile float fTest = Burger::IntToFloat(iOriginal);
+		Word uFailure = (fTest!=fExpected);
+		uResult |= uFailure;
+		ReportFailure("Burger::IntToFloat((Int)%d) = %.16g / Wanted %.16g",uFailure,iOriginal,fTest,fExpected);
+
+		fTest = Burger::IntToFloat(&iOriginal);
+		uFailure = (fTest!=fExpected);
+		uResult |= uFailure;
+		ReportFailure("Burger::IntToFloat((const Int *)%d) = %.16g / Wanted %.16g",uFailure,iOriginal,fTest,fExpected);
+
+		float fTemp;
+		Burger::IntToFloat(&fTemp,iOriginal);
+		fTest = fTemp;
+		uFailure = (fTest!=fExpected);
+		uResult |= uFailure;
+		ReportFailure("Burger::IntToFloat((float *),(Int)%d) = %.16g / Wanted %.16g",uFailure,iOriginal,fTest,fExpected);
+
+		Burger::IntToFloat(&fTemp,&iOriginal);
+		fTest = fTemp;
+		uFailure = (fTest!=fExpected);
+		uResult |= uFailure;
+		ReportFailure("Burger::IntToFloat((float *),(Int *)%d) = %.16g / Wanted %.16g",uFailure,iOriginal,fTest,fExpected);
+		pWork+=2;
+	} while (--i);
+	return uResult;
+}
+
+
+//
+// Test FixedToFloat(float *,const Fixed32 *)
+//
+
+static const Burger::Word32ToFloat FixedToFloatArray[][2] = {
+	{{0x00000000U},{0x00000000U}},	// 0
+	{{0x00010000U},{0x3F800000U}},	// 1
+	{{0xFFFF0000U},{0xBF800000U}},	// -1
+	{{0x7FFFFFFFU},{0x47000000U}},	// 32767.999999
+	{{0x80000000U},{0xC7000000U}},	// -32768
+	{{0x7FFFFFFEU},{0x47000000U}},	// 32767.999999-1
+	{{0x80000001U},{0xC7000000U}},	// -32768+1
+	{{0x00800000U},{0x43000000U}},	// 128
+	{{0xFF800000U},{0xC3000000U}},	// -128
+	{{0x00800001U},{0x43000001U}},	// 128.0000152587891
+	{{0xFF7FFFFFU},{0xC3000001U}},	// -128.0000152587891
+	{{0x01000000U},{0x43800000U}},	// 256
+	{{0xFF000000U},{0xC3800000U}},	// -256
+	{{0x01000001U},{0x43800000U}},	// 256.0000152587891
+	{{0xFEFFFFFFU},{0xC3800000U}},	// -256.0000152587891
+	{{0x01000002U},{0x43800001U}},	// 256.0000305175781
+	{{0xFEFFFFFEU},{0xC3800001U}},	// -256.0000305175781
+	{{0x01000003U},{0x43800002U}},	// 256.0000305175781
+	{{0xFEFFFFFDU},{0xC3800002U}},	// -256.0000305175781
+	{{0x01000004U},{0x43800002U}},	// 256.0000305175781
+	{{0xFEFFFFFCU},{0xC3800002U}},	// -256.0000305175781
+	{{0x01000005U},{0x43800002U}},	// 256.0000305175781
+	{{0xFEFFFFFBU},{0xC3800002U}},	// -256.0000305175781
+	{{0x01000006U},{0x43800003U}},	// 256.0000305175781
+	{{0xFEFFFFFAU},{0xC3800003U}},	// -256.0000305175781
+	{{0x01000007U},{0x43800004U}},	// 256.0000305175781
+	{{0xFEFFFFF9U},{0xC3800004U}},	// -256.0000305175781
+	{{0x01000008U},{0x43800004U}},	// 256.0000305175781
+	{{0xFEFFFFF8U},{0xC3800004U}},	// -256.0000305175781
+	{{0x01000009U},{0x43800004U}},	// 256.0000305175781
+	{{0xFEFFFFF7U},{0xC3800004U}},	// -256.0000305175781
+	{{0x0100000AU},{0x43800005U}},	// 256.0000305175781
+	{{0xFEFFFFF6U},{0xC3800005U}},	// -256.0000305175781
+	{{0x0100000BU},{0x43800006U}},	// 256.0000305175781
+	{{0xFEFFFFF5U},{0xC3800006U}}	// -256.0000305175781
+};
+
+static Word BURGER_API TestFixedToFloat(void)
+{
+	const Burger::Word32ToFloat *pWork = FixedToFloatArray[0];
+	WordPtr i = BURGER_ARRAYSIZE(FixedToFloatArray);
+	Word uResult = FALSE;
+	do {
+		Int iOriginal = static_cast<Int>(pWork[0].GetWord());
+		float fExpected = pWork[1];
+
+		volatile float fTest = Burger::FixedToFloat(iOriginal);
+		Word uFailure = (fTest!=fExpected);
+		uResult |= uFailure;
+		ReportFailure("Burger::FixedToFloat((Fixed)0x%08X) = %.16g / Wanted %.16g",uFailure,iOriginal,fTest,fExpected);
+
+		fTest = Burger::FixedToFloat(&iOriginal);
+		uFailure = (fTest!=fExpected);
+		uResult |= uFailure;
+		ReportFailure("Burger::FixedToFloat((const Fixed *)0x%08X) = %.16g / Wanted %.16g",uFailure,iOriginal,fTest,fExpected);
+
+		float fTemp;
+		Burger::FixedToFloat(&fTemp,iOriginal);
+		fTest = fTemp;
+		uFailure = (fTest!=fExpected);
+		uResult |= uFailure;
+		ReportFailure("Burger::FixedToFloat((float *),(Fixed)0x%08X) = %.16g / Wanted %.16g",uFailure,iOriginal,fTest,fExpected);
+
+		Burger::FixedToFloat(&fTemp,&iOriginal);
+		fTest = fTemp;
+		uFailure = (fTest!=fExpected);
+		uResult |= uFailure;
+		ReportFailure("Burger::FixedToFloat((float *),(Fixed *)0x%08X) = %.16g / Wanted %.16g",uFailure,iOriginal,fTest,fExpected);
+		pWork+=2;
+	} while (--i);
+	return uResult;
+}
+
 //
 // Test Floor(float)
 //
 
 static const Burger::Word32ToFloat FloorFloatArray[][2] = {
+	{{0xC07FFFFFU},{0xC0800000U}},	// -3.999f,-4.0f
+	{{0xC0600000U},{0xC0800000U}},	// -3.5f,-4.0f
+	{{0xC05FFFFFU},{0xC0800000U}},	// -3.499f,-4.0f
+	{{0xC0400000U},{0xC0400000U}},	// -3.0f,-3.0f
+	{{0xC03FFFFFU},{0xC0400000U}},	// -2.999f,-3.0f
+	{{0xC0200000U},{0xC0400000U}},	// -2.5f,-3.0f
+	{{0xC01FFFFFU},{0xC0400000U}},	// -2.499f,-3.0f
+	{{0xC0000000U},{0xC0000000U}},	// -2.0f,-2.0f
+	{{0xBFFFFFFFU},{0xC0000000U}},	// -1.999f,-2.0f
+	{{0xBFC00000U},{0xC0000000U}},	// -1.5f,-2.0f
+	{{0xBFBFFFFFU},{0xC0000000U}},	// -1.499f,-2.0f
+	{{0xBF800000U},{0xBF800000U}},	// -1.0f,-1.0f
+	{{0xBF7FFFFFU},{0xBF800000U}},	// -0.999f,-1.0f
+	{{0xBF000000U},{0xBF800000U}},	// -0.5f,-1.0f
+	{{0xBEFFFFFFU},{0xBF800000U}},	// -0.499f,-1.0f
+	{{0x80000000U},{0x00000000U}},	// -0.0f,0.0f
+
+	{{0x00000000U},{0x00000000U}},	// 0.0f,0.0f
+	{{0x3EFFFFFFU},{0x00000000U}},	// 0.499f,0.0f
+	{{0x3F000000U},{0x00000000U}},	// 0.5f,0.0f
+	{{0x3F7FFFFFU},{0x00000000U}},	// 0.999f,0.0f
+	{{0x3F800000U},{0x3F800000U}},	// 1.0f,1.0f
+	{{0x3FBFFFFFU},{0x3F800000U}},	// 1.499f,1.0f
+	{{0x3FC00000U},{0x3F800000U}},	// 1.5f,1.0f
+	{{0x3FFFFFFFU},{0x3F800000U}},	// 1.999f,1.0f
+	{{0x40000000U},{0x40000000U}},	// 2.0f,2.0f
+	{{0x401FFFFFU},{0x40000000U}},	// 2.499f,2.0f
+	{{0x40200000U},{0x40000000U}},	// 2.5f,2.0f
+	{{0x403FFFFFU},{0x40000000U}},	// 2.999f,2.0f
+	{{0x40400000U},{0x40400000U}},	// 3.0f,3.0f
+	{{0x405FFFFFU},{0x40400000U}},	// 3.499f,3.0f
+	{{0x40600000U},{0x40400000U}},	// 3.5f,3.0f
+	{{0x407FFFFFU},{0x40400000U}},	// 3.999f,3.0f
+
 	{{0x3F8CCCCDU},{0x3F800000U}},	// 1.1f,1.0f
 	{{0x3FF9999AU},{0x3F800000U}},	// 1.95f,1.0f
+	{{0x40066666U},{0x40000000U}},	// 2.1f,2.0f
+	{{0x403CCCCDU},{0x40000000U}},	// 2.95f,2.0f
 	{{0xBF8CCCCDU},{0xC0000000U}},	// -1.1f,-2.0f
 	{{0xBFF9999AU},{0xC0000000U}},	// -1.95f,-2.0f
+	{{0xC0066666U},{0xC0400000U}},	// -2.1f,-3.0f
+	{{0xC03CCCCDU},{0xC0400000U}},	// -2.95f,-3.0f
 	{{0x3DCCCCCDU},{0x00000000U}},	// 0.1f,0.0f
 	{{0x3F733333U},{0x00000000U}},	// 0.95f,0.0f
 	{{0xBDCCCCCDU},{0xBF800000U}},	// -0.1f,-1.0f
@@ -807,10 +1083,22 @@ static const Burger::Word32ToFloat FloorFloatArray[][2] = {
 	{{0xCE480000U},{0xCE480000U}},	// -838860800.0f,-838860800.0f
 	{{0x4F000000U},{0x4F000000U}},	// 0x7FFFFFF
 	{{0x4EFFFFFFU},{0x4EFFFFFFU}},	// 0x7FFFFFF-Epsilon
-	{{0xCF000000U},{0xCF000000U}}	// 0x8000000
+	{{0xCF000000U},{0xCF000000U}},	// 0x8000000
+	{{0x00000001U},{0x00000000U}},	// Min Denormal
+	{{0x00000010U},{0x00000000U}},
+	{{0x00400000U},{0x00000000U}},
+	{{0x007FFFFFU},{0x00000000U}},	// Max Denormal
+	{{0x00800000U},{0x00000000U}},	// FLT_MIN
+	{{0x7F7FFFFFU},{0x7F7FFFFFU}},	// FLT_MAX
+	{{0x80000001U},{0xBF800000U}},	// -Min Denormal
+	{{0x80000010U},{0xBF800000U}},
+	{{0x80400000U},{0xBF800000U}},
+	{{0x807FFFFFU},{0xBF800000U}},	// -Max Denormal
+	{{0x80800000U},{0xBF800000U}},	// -FLT_MIN
+	{{0xFF7FFFFFU},{0xFF7FFFFFU}}	// -FLT_MAX
 };
 
-static Word TestFloorFloat(void)
+static Word BURGER_API TestFloorFloat(void)
 {
 	const Burger::Word32ToFloat *pWork = FloorFloatArray[0];
 	WordPtr i = BURGER_ARRAYSIZE(FloorFloatArray);
@@ -833,10 +1121,52 @@ static Word TestFloorFloat(void)
 //
 
 static const Burger::Word64ToDouble FloorDoubleArray[][2] = {
+	{{0xC00FFFFFFFFFFFFFULL},{0xC010000000000000ULL}},	// -3.999f,-4.0f
+	{{0xC00C000000000000ULL},{0xC010000000000000ULL}},	// -3.5f,-4.0f
+	{{0xC00BFFFFFFFFFFFFULL},{0xC010000000000000ULL}},	// -3.499f,-4.0f
+	{{0xC008000000000000ULL},{0xC008000000000000ULL}},	// -3.0f,-3.0f
+	{{0xC007FFFFFFFFFFFFULL},{0xC008000000000000ULL}},	// -2.999f,-3.0f
+	{{0xC004000000000000ULL},{0xC008000000000000ULL}},	// -2.5f,-3.0f
+	{{0xC003FFFFFFFFFFFFULL},{0xC008000000000000ULL}},	// -2.499f,-3.0f
+	{{0xC000000000000000ULL},{0xC000000000000000ULL}},	// -2.0f,-2.0f
+	{{0xBFFFFFFFFFFFFFFFULL},{0xC000000000000000ULL}},	// -1.999f,-2.0f
+	{{0xBFF8000000000000ULL},{0xC000000000000000ULL}},	// -1.5f,-2.0f
+	{{0xBFF7FFFFFFFFFFFFULL},{0xC000000000000000ULL}},	// -1.499f,-2.0f
+	{{0xBFF0000000000000ULL},{0xBFF0000000000000ULL}},	// -1.0f,-1.0f
+	{{0xBFEFFFFFFFFFFFFFULL},{0xBFF0000000000000ULL}},	// -0.999f,-1.0f
+	{{0xBFE0000000000000ULL},{0xBFF0000000000000ULL}},	// -0.5f,-1.0f
+	{{0xBFDFFFFFFFFFFFFFULL},{0xBFF0000000000000ULL}},	// -0.499f,-1.0f
+	{{0x8000000000000000ULL},{0x0000000000000000ULL}},	// -0.0f,0.0f
+
+	{{0x0000000000000000ULL},{0x0000000000000000ULL}},	// 0.0f,0.0f
+	{{0x3FDFFFFFFFFFFFFFULL},{0x0000000000000000ULL}},	// 0.499f,0.0f
+	{{0x3FE0000000000000ULL},{0x0000000000000000ULL}},	// 0.5f,0.0f
+	{{0x3FEFFFFFFFFFFFFFULL},{0x0000000000000000ULL}},	// 0.999f,0.0f
+	{{0x3FF0000000000000ULL},{0x3FF0000000000000ULL}},	// 1.0f,1.0f
+	{{0x3FF7FFFFFFFFFFFFULL},{0x3FF0000000000000ULL}},	// 1.499f,1.0f
+	{{0x3FF8000000000000ULL},{0x3FF0000000000000ULL}},	// 1.5f,1.0f
+	{{0x3FFFFFFFFFFFFFFFULL},{0x3FF0000000000000ULL}},	// 1.999f,1.0f
+	{{0x4000000000000000ULL},{0x4000000000000000ULL}},	// 2.0f,2.0f
+	{{0x4003FFFFFFFFFFFFULL},{0x4000000000000000ULL}},	// 2.499f,2.0f
+	{{0x4004000000000000ULL},{0x4000000000000000ULL}},	// 2.5f,2.0f
+	{{0x4007FFFFFFFFFFFFULL},{0x4000000000000000ULL}},	// 2.999f,2.0f
+	{{0x4008000000000000ULL},{0x4008000000000000ULL}},	// 3.0f,3.0f
+	{{0x400BFFFFFFFFFFFFULL},{0x4008000000000000ULL}},	// 3.499f,3.0f
+	{{0x400C000000000000ULL},{0x4008000000000000ULL}},	// 3.5f,3.0f
+	{{0x400FFFFFFFFFFFFFULL},{0x4008000000000000ULL}},	// 3.999f,3.0f
+
+	{{0x0000000000000000ULL},{0x0000000000000000ULL}},	// 0.0f,0.0f
+	{{0x8000000000000000ULL},{0x8000000000000000ULL}},	// -0.0f,-0.0f
+	{{0x3FF0000000000000ULL},{0x3FF0000000000000ULL}},	// 1.0f,1.0f
+	{{0xBFF0000000000000ULL},{0xBFF0000000000000ULL}},	// -1.0f,-1.0f
 	{{0x3FF199999999999AULL},{0x3FF0000000000000ULL}},	// 1.1f,1.0f
 	{{0x3FFF333333333333ULL},{0x3FF0000000000000ULL}},	// 1.95f,1.0f
+	{{0x4000CCCCCCCCCCCDULL},{0x4000000000000000ULL}},	// 2.1f,2.0f
+	{{0x400799999999999aULL},{0x4000000000000000ULL}},	// 2.95f,2.0f
 	{{0xBFF199999999999AULL},{0xC000000000000000ULL}},	// -1.1f,-2.0f
 	{{0xBFFF333333333333ULL},{0xC000000000000000ULL}},	// -1.95f,-2.0f
+	{{0xC000CCCCCCCCCCCDULL},{0xC008000000000000ULL}},	// -2.1f,-3.0f
+	{{0xC00799999999999aULL},{0xC008000000000000ULL}},	// -2.95f,-3.0f
 	{{0x3FB999999999999AULL},{0x0000000000000000ULL}},	// 0.1f,0.0f
 	{{0x3FEE666666666666ULL},{0x0000000000000000ULL}},	// 0.95f,0.0f
 	{{0xBFB999999999999AULL},{0xBFF0000000000000ULL}},	// -0.1f,-1.0f
@@ -849,7 +1179,19 @@ static const Burger::Word64ToDouble FloorDoubleArray[][2] = {
 	{{0xC399000000000000ULL},{0xC399000000000000ULL}},	// -450359962737049600.0f,-450359962737049600.0f
 	{{0x43E0000000000000ULL},{0x43E0000000000000ULL}},	// 0x7FFFFFFFFFFFFFF
 	{{0x43DFFFFFFFFFFFFFULL},{0x43DFFFFFFFFFFFFFULL}},	// 0x7FFFFFFFFFFFFFF-Epsilon
-	{{0xC3E0000000000000ULL},{0xC3E0000000000000ULL}}	// 0x800000000000000
+	{{0xC3E0000000000000ULL},{0xC3E0000000000000ULL}},	// 0x800000000000000
+	{{0x0000000000000001ULL},{0x0000000000000000ULL}},	// Min Denormal
+	{{0x0000000000000010ULL},{0x0000000000000000ULL}},
+	{{0x0008000000000000ULL},{0x0000000000000000ULL}},
+	{{0x000FFFFFFFFFFFFFULL},{0x0000000000000000ULL}},	// Max Denormal
+	{{0x0010000000000000ULL},{0x0000000000000000ULL}},	// FLT_MIN
+	{{0x7FEFFFFFFFFFFFFFULL},{0x7FEFFFFFFFFFFFFFULL}},	// FLT_MAX
+	{{0x8000000000000001ULL},{0xBFF0000000000000ULL}},	// -Min Denormal
+	{{0x8000000000000010ULL},{0xBFF0000000000000ULL}},
+	{{0x8008000000000000ULL},{0xBFF0000000000000ULL}},
+	{{0x800FFFFFFFFFFFFFULL},{0xBFF0000000000000ULL}},	// -Max Denormal
+	{{0x8010000000000000ULL},{0xBFF0000000000000ULL}},	// -FLT_MIN
+	{{0xFFEFFFFFFFFFFFFFULL},{0xFFEFFFFFFFFFFFFFULL}}	// -FLT_MAX
 };
 
 static Word TestFloorDouble(void)
@@ -858,12 +1200,12 @@ static Word TestFloorDouble(void)
 	WordPtr i = BURGER_ARRAYSIZE(FloorDoubleArray);
 	Word uResult = FALSE;
 	do {
-		double fOriginal = pWork[0];
-		double fTest = Burger::Floor(fOriginal);
-		double fExpected = pWork[1];
-		Word uFailure = (fTest!=fExpected);
+		double dOriginal = pWork[0];
+		double dTest = Burger::Floor(dOriginal);
+		double dExpected = pWork[1];
+		Word uFailure = (dTest!=dExpected);
 		uResult |= uFailure;
-		ReportFailure("Burger::Floor((double)%.16g) = %.16g / Wanted %.16g",uFailure,fOriginal,fTest,fExpected);
+		ReportFailure("Burger::Floor((double)%.16g) = %.16g / Wanted %.16g",uFailure,dOriginal,dTest,dExpected);
 		pWork+=2;
 	} while (--i);
 	return uResult;
@@ -874,10 +1216,48 @@ static Word TestFloorDouble(void)
 //
 
 static const Burger::Word32ToFloat CeilFloatArray[][2] = {
+	{{0xC07FFFFFU},{0xC0400000U}},	// -3.999f,-3.0f
+	{{0xC0600000U},{0xC0400000U}},	// -3.5f,-3.0f
+	{{0xC05FFFFFU},{0xC0400000U}},	// -3.499f,-3.0f
+	{{0xC0400000U},{0xC0400000U}},	// -3.0f,-3.0f
+	{{0xC03FFFFFU},{0xC0000000U}},	// -2.999f,-2.0f
+	{{0xC0200000U},{0xC0000000U}},	// -2.5f,-2.0f
+	{{0xC01FFFFFU},{0xC0000000U}},	// -2.499f,-2.0f
+	{{0xC0000000U},{0xC0000000U}},	// -2.0f,-2.0f
+	{{0xBFFFFFFFU},{0xBF800000U}},	// -1.999f,-1.0f
+	{{0xBFC00000U},{0xBF800000U}},	// -1.5f,-1.0f
+	{{0xBFBFFFFFU},{0xBF800000U}},	// -1.499f,-1.0f
+	{{0xBF800000U},{0xBF800000U}},	// -1.0f,-1.0f
+	{{0xBF7FFFFFU},{0x00000000U}},	// -0.999f,-0.0f
+	{{0xBF000000U},{0x00000000U}},	// -0.5f,-0.0f
+	{{0xBEFFFFFFU},{0x00000000U}},	// -0.499f,0.0f
+	{{0x80000000U},{0x00000000U}},	// -0.0f,0.0f
+
+	{{0x00000000U},{0x00000000U}},	// 0.0f,0.0f
+	{{0x3EFFFFFFU},{0x3F800000U}},	// 0.499f,1.0f
+	{{0x3F000000U},{0x3F800000U}},	// 0.5f,1.0f
+	{{0x3F7FFFFFU},{0x3F800000U}},	// 0.999f,1.0f
+	{{0x3F800000U},{0x3F800000U}},	// 1.0f,1.0f
+	{{0x3FBFFFFFU},{0x40000000U}},	// 1.499f,2.0f
+	{{0x3FC00000U},{0x40000000U}},	// 1.5f,2.0f
+	{{0x3FFFFFFFU},{0x40000000U}},	// 1.999f,2.0f
+	{{0x40000000U},{0x40000000U}},	// 2.0f,2.0f
+	{{0x401FFFFFU},{0x40400000U}},	// 2.499f,3.0f
+	{{0x40200000U},{0x40400000U}},	// 2.5f,3.0f
+	{{0x403FFFFFU},{0x40400000U}},	// 2.999f,3.0f
+	{{0x40400000U},{0x40400000U}},	// 3.0f,3.0f
+	{{0x405FFFFFU},{0x40800000U}},	// 3.499f,4.0f
+	{{0x40600000U},{0x40800000U}},	// 3.5f,4.0f
+	{{0x407FFFFFU},{0x40800000U}},	// 3.999f,4.0f
+
 	{{0x3F8CCCCDU},{0x40000000U}},	// 1.1f,2.0f
 	{{0x3FF9999AU},{0x40000000U}},	// 1.95f,2.0f
+	{{0x40066666U},{0x40400000U}},	// 2.1f,3.0f
+	{{0x403CCCCDU},{0x40400000U}},	// 2.95f,3.0f
 	{{0xBF8CCCCDU},{0xBF800000U}},	// -1.1f,-1.0f
 	{{0xBFF9999AU},{0xBF800000U}},	// -1.95f,-1.0f
+	{{0xC0066666U},{0xC0000000U}},	// -2.1f,-2.0f
+	{{0xC03CCCCDU},{0xC0000000U}},	// -2.95f,-2.0f
 	{{0x3DCCCCCDU},{0x3F800000U}},	// 0.1f,1.0f
 	{{0x3F733333U},{0x3F800000U}},	// 0.95f,1.0f
 	{{0xBDCCCCCDU},{0x00000000U}},	// -0.1f,0.0f
@@ -890,7 +1270,19 @@ static const Burger::Word32ToFloat CeilFloatArray[][2] = {
 	{{0xCE480000U},{0xCE480000U}},	// -838860800.0f,-838860800.0f
 	{{0x4F000000U},{0x4F000000U}},	// 0x7FFFFFF
 	{{0x4EFFFFFFU},{0x4EFFFFFFU}},	// 0x7FFFFFF-Epsilon
-	{{0xCF000000U},{0xCF000000U}}	// 0x8000000
+	{{0xCF000000U},{0xCF000000U}},	// 0x8000000
+	{{0x00000001U},{0x3F800000U}},	// Min Denormal
+	{{0x00000010U},{0x3F800000U}},
+	{{0x00400000U},{0x3F800000U}},
+	{{0x007FFFFFU},{0x3F800000U}},	// Max Denormal
+	{{0x00800000U},{0x3F800000U}},	// FLT_MIN
+	{{0x7F7FFFFFU},{0x7F7FFFFFU}},	// FLT_MAX
+	{{0x80000001U},{0x00000000U}},	// -Min Denormal
+	{{0x80000010U},{0x00000000U}},
+	{{0x80400000U},{0x00000000U}},
+	{{0x807FFFFFU},{0x00000000U}},	// -Max Denormal
+	{{0x80800000U},{0x00000000U}},	// -FLT_MIN
+	{{0xFF7FFFFFU},{0xFF7FFFFFU}}	// -FLT_MAX
 };
 
 static Word TestCeilFloat(void)
@@ -916,10 +1308,48 @@ static Word TestCeilFloat(void)
 //
 
 static const Burger::Word64ToDouble CeilDoubleArray[][2] = {
+	{{0xC00FFFFFFFFFFFFFULL},{0xC008000000000000ULL}},	// -3.999f,-3.0f
+	{{0xC00C000000000000ULL},{0xC008000000000000ULL}},	// -3.5f,-3.0f
+	{{0xC00BFFFFFFFFFFFFULL},{0xC008000000000000ULL}},	// -3.499f,-3.0f
+	{{0xC008000000000000ULL},{0xC008000000000000ULL}},	// -3.0f,-3.0f
+	{{0xC007FFFFFFFFFFFFULL},{0xC000000000000000ULL}},	// -2.999f,-2.0f
+	{{0xC004000000000000ULL},{0xC000000000000000ULL}},	// -2.5f,-2.0f
+	{{0xC003FFFFFFFFFFFFULL},{0xC000000000000000ULL}},	// -2.499f,-2.0f
+	{{0xC000000000000000ULL},{0xC000000000000000ULL}},	// -2.0f,-2.0f
+	{{0xBFFFFFFFFFFFFFFFULL},{0xBFF0000000000000ULL}},	// -1.999f,-1.0f
+	{{0xBFF8000000000000ULL},{0xBFF0000000000000ULL}},	// -1.5f,-1.0f
+	{{0xBFF7FFFFFFFFFFFFULL},{0xBFF0000000000000ULL}},	// -1.499f,-1.0f
+	{{0xBFF0000000000000ULL},{0xBFF0000000000000ULL}},	// -1.0f,-1.0f
+	{{0xBFEFFFFFFFFFFFFFULL},{0x0000000000000000ULL}},	// -0.999f,-0.0f
+	{{0xBFE0000000000000ULL},{0x0000000000000000ULL}},	// -0.5f,-0.0f
+	{{0xBFDFFFFFFFFFFFFFULL},{0x0000000000000000ULL}},	// -0.499f,-0.0f
+	{{0x8000000000000000ULL},{0x0000000000000000ULL}},	// -0.0f,0.0f
+
+	{{0x0000000000000000ULL},{0x0000000000000000ULL}},	// 0.0f,0.0f
+	{{0x3FDFFFFFFFFFFFFFULL},{0x3FF0000000000000ULL}},	// 0.499f,1.0f
+	{{0x3FE0000000000000ULL},{0x3FF0000000000000ULL}},	// 0.5f,1.0f
+	{{0x3FEFFFFFFFFFFFFFULL},{0x3FF0000000000000ULL}},	// 0.999f,1.0f
+	{{0x3FF0000000000000ULL},{0x3FF0000000000000ULL}},	// 1.0f,1.0f
+	{{0x3FF7FFFFFFFFFFFFULL},{0x4000000000000000ULL}},	// 1.499f,2.0f
+	{{0x3FF8000000000000ULL},{0x4000000000000000ULL}},	// 1.5f,2.0f
+	{{0x3FFFFFFFFFFFFFFFULL},{0x4000000000000000ULL}},	// 1.999f,2.0f
+	{{0x4000000000000000ULL},{0x4000000000000000ULL}},	// 2.0f,2.0f
+	{{0x4003FFFFFFFFFFFFULL},{0x4008000000000000ULL}},	// 2.499f,3.0f
+	{{0x4004000000000000ULL},{0x4008000000000000ULL}},	// 2.5f,3.0f
+	{{0x4007FFFFFFFFFFFFULL},{0x4008000000000000ULL}},	// 2.999f,3.0f
+	{{0x4008000000000000ULL},{0x4008000000000000ULL}},	// 3.0f,3.0f
+	{{0x400BFFFFFFFFFFFFULL},{0x4010000000000000ULL}},	// 3.499f,4.0f
+	{{0x400C000000000000ULL},{0x4010000000000000ULL}},	// 3.5f,4.0f
+	{{0x400FFFFFFFFFFFFFULL},{0x4010000000000000ULL}},	// 3.999f,4.0f
+
 	{{0x3FF199999999999AULL},{0x4000000000000000ULL}},	// 1.1f,2.0f
 	{{0x3FFF333333333333ULL},{0x4000000000000000ULL}},	// 1.95f,2.0f
+	{{0x4000CCCCCCCCCCCDULL},{0x4008000000000000ULL}},	// 2.1f,3.0f
+	{{0x400799999999999aULL},{0x4008000000000000ULL}},	// 2.95f,3.0f
 	{{0xBFF199999999999AULL},{0xBFF0000000000000ULL}},	// -1.1f,-1.0f
 	{{0xBFFF333333333333ULL},{0xBFF0000000000000ULL}},	// -1.95f,-1.0f
+	{{0xC000CCCCCCCCCCCDULL},{0xC000000000000000ULL}},	// -2.1f,-2.0f
+	{{0xC00799999999999aULL},{0xC000000000000000ULL}},	// -2.95f,-2.0f
 	{{0x3FB999999999999AULL},{0x3FF0000000000000ULL}},	// 0.1f,1.0f
 	{{0x3FEE666666666666ULL},{0x3FF0000000000000ULL}},	// 0.95f,1.0f
 	{{0xBFB999999999999AULL},{0x0000000000000000ULL}},	// -0.1f,0.0f
@@ -932,7 +1362,19 @@ static const Burger::Word64ToDouble CeilDoubleArray[][2] = {
 	{{0xC399000000000000ULL},{0xC399000000000000ULL}},	// -450359962737049600.0f,-450359962737049600.0f
 	{{0x43E0000000000000ULL},{0x43E0000000000000ULL}},	// 0x7FFFFFFFFFFFFFF
 	{{0x43DFFFFFFFFFFFFFULL},{0x43DFFFFFFFFFFFFFULL}},	// 0x7FFFFFFFFFFFFFF-Epsilon
-	{{0xC3E0000000000000ULL},{0xC3E0000000000000ULL}}	// 0x800000000000000
+	{{0xC3E0000000000000ULL},{0xC3E0000000000000ULL}},	// 0x800000000000000
+	{{0x0000000000000001ULL},{0x3FF0000000000000ULL}},	// Min Denormal
+	{{0x0000000000000010ULL},{0x3FF0000000000000ULL}},
+	{{0x0008000000000000ULL},{0x3FF0000000000000ULL}},
+	{{0x000FFFFFFFFFFFFFULL},{0x3FF0000000000000ULL}},	// Max Denormal
+	{{0x0010000000000000ULL},{0x3FF0000000000000ULL}},	// FLT_MIN
+	{{0x7FEFFFFFFFFFFFFFULL},{0x7FEFFFFFFFFFFFFFULL}},	// FLT_MAX
+	{{0x8000000000000001ULL},{0x0000000000000000ULL}},	// -Min Denormal
+	{{0x8000000000000010ULL},{0x0000000000000000ULL}},
+	{{0x8008000000000000ULL},{0x0000000000000000ULL}},
+	{{0x800FFFFFFFFFFFFFULL},{0x0000000000000000ULL}},	// -Max Denormal
+	{{0x8010000000000000ULL},{0x0000000000000000ULL}},	// -FLT_MIN
+	{{0xFFEFFFFFFFFFFFFFULL},{0xFFEFFFFFFFFFFFFFULL}}	// -FLT_MAX
 };
 
 static Word TestCeilDouble(void)
@@ -957,10 +1399,52 @@ static Word TestCeilDouble(void)
 //
 
 static const Burger::Word32ToFloat RoundFloatArray[][2] = {
+	{{0xC07FFFFFU},{0xC0800000U}},	// -3.999f,-4.0f
+	{{0xC0600000U},{0xC0800000U}},	// -3.5f,-4.0f
+	{{0xC05FFFFFU},{0xC0400000U}},	// -3.499f,-3.0f
+	{{0xC0400000U},{0xC0400000U}},	// -3.0f,-3.0f
+	{{0xC03FFFFFU},{0xC0400000U}},	// -2.999f,-3.0f
+	{{0xC0200000U},{0xC0400000U}},	// -2.5f,-3.0f
+	{{0xC01FFFFFU},{0xC0000000U}},	// -2.499f,-2.0f
+	{{0xC0000000U},{0xC0000000U}},	// -2.0f,-2.0f
+	{{0xBFFFFFFFU},{0xC0000000U}},	// -1.999f,-2.0f
+	{{0xBFC00000U},{0xC0000000U}},	// -1.5f,-2.0f
+	{{0xBFBFFFFFU},{0xBF800000U}},	// -1.499f,-1.0f
+	{{0xBF800000U},{0xBF800000U}},	// -1.0f,-1.0f
+	{{0xBF7FFFFFU},{0xBF800000U}},	// -0.999f,-1.0f
+	{{0xBF000000U},{0xBF800000U}},	// -0.5f,-1.0f
+	{{0xBEFFFFFFU},{0x00000000U}},	// -0.499f,0.0f
+	{{0x80000000U},{0x00000000U}},	// -0.0f,0.0f
+
+	{{0x00000000U},{0x00000000U}},	// 0.0f,0.0f
+	{{0x3EFFFFFFU},{0x00000000U}},	// 0.499f,0.0f
+	{{0x3F000000U},{0x3F800000U}},	// 0.5f,1.0f
+	{{0x3F7FFFFFU},{0x3F800000U}},	// 0.999f,1.0f
+	{{0x3F800000U},{0x3F800000U}},	// 1.0f,1.0f
+	{{0x3FBFFFFFU},{0x3F800000U}},	// 1.499f,1.0f
+	{{0x3FC00000U},{0x40000000U}},	// 1.5f,2.0f
+	{{0x3FFFFFFFU},{0x40000000U}},	// 1.999f,2.0f
+	{{0x40000000U},{0x40000000U}},	// 2.0f,2.0f
+	{{0x401FFFFFU},{0x40000000U}},	// 2.499f,2.0f
+	{{0x40200000U},{0x40400000U}},	// 2.5f,3.0f
+	{{0x403FFFFFU},{0x40400000U}},	// 2.999f,3.0f
+	{{0x40400000U},{0x40400000U}},	// 3.0f,3.0f
+	{{0x405FFFFFU},{0x40400000U}},	// 3.499f,3.0f
+	{{0x40600000U},{0x40800000U}},	// 3.5f,4.0f
+	{{0x407FFFFFU},{0x40800000U}},	// 3.999f,4.0f
+
+	{{0x00000000U},{0x00000000U}},	// 0.0f,0.0f
+	{{0x80000000U},{0x80000000U}},	// -0.0f,-0.0f
+	{{0x3F800000U},{0x3F800000U}},	// 1.0f,1.0f
+	{{0xBF800000U},{0xBF800000U}},	// -1.0f,-1.0f
 	{{0x3F8CCCCDU},{0x3F800000U}},	// 1.1f,1.0f
 	{{0x3FF9999AU},{0x40000000U}},	// 1.95f,2.0f
+	{{0x40066666U},{0x40000000U}},	// 2.1f,3.0f
+	{{0x403CCCCDU},{0x40400000U}},	// 2.95f,3.0f
 	{{0xBF8CCCCDU},{0xBF800000U}},	// -1.1f,-1.0f
 	{{0xBFF9999AU},{0xC0000000U}},	// -1.95f,-2.0f
+	{{0xC0066666U},{0xC0000000U}},	// -2.1f,3.0f
+	{{0xC03CCCCDU},{0xC0400000U}},	// -2.95f,3.0f
 	{{0x3DCCCCCDU},{0x00000000U}},	// 0.1f,0.0f
 	{{0x3F733333U},{0x3F800000U}},	// 0.95f,1.0f
 	{{0xBDCCCCCDU},{0x00000000U}},	// -0.1f,0.0f
@@ -973,7 +1457,19 @@ static const Burger::Word32ToFloat RoundFloatArray[][2] = {
 	{{0xCE480000U},{0xCE480000U}},	// -838860800.0f,-838860800.0f
 	{{0x4F000000U},{0x4F000000U}},	// 0x7FFFFFF
 	{{0x4EFFFFFFU},{0x4EFFFFFFU}},	// 0x7FFFFFF-Epsilon
-	{{0xCF000000U},{0xCF000000U}}	// 0x8000000
+	{{0xCF000000U},{0xCF000000U}},	// 0x8000000
+	{{0x00000001U},{0x00000000U}},	// Min Denormal
+	{{0x00000010U},{0x00000000U}},
+	{{0x00400000U},{0x00000000U}},
+	{{0x007FFFFFU},{0x00000000U}},	// Max Denormal
+	{{0x00800000U},{0x00000000U}},	// FLT_MIN
+	{{0x7F7FFFFFU},{0x7F7FFFFFU}},	// FLT_MAX
+	{{0x80000001U},{0x00000000U}},	// -Min Denormal
+	{{0x80000010U},{0x00000000U}},
+	{{0x80400000U},{0x00000000U}},
+	{{0x807FFFFFU},{0x00000000U}},	// -Max Denormal
+	{{0x80800000U},{0x00000000U}},	// -FLT_MIN
+	{{0xFF7FFFFFU},{0xFF7FFFFFU}}	// -FLT_MAX
 };
 
 static Word TestRoundFloat(void)
@@ -999,10 +1495,48 @@ static Word TestRoundFloat(void)
 //
 
 static const Burger::Word64ToDouble RoundDoubleArray[][2] = {
+	{{0xC00FFFFFFFFFFFFFULL},{0xC010000000000000ULL}},	// -3.999f,-4.0f
+	{{0xC00C000000000000ULL},{0xC010000000000000ULL}},	// -3.5f,-4.0f
+	{{0xC00BFFFFFFFFFFFFULL},{0xC008000000000000ULL}},	// -3.499f,-3.0f
+	{{0xC008000000000000ULL},{0xC008000000000000ULL}},	// -3.0f,-3.0f
+	{{0xC007FFFFFFFFFFFFULL},{0xC008000000000000ULL}},	// -2.999f,-3.0f
+	{{0xC004000000000000ULL},{0xC008000000000000ULL}},	// -2.5f,-3.0f
+	{{0xC003FFFFFFFFFFFFULL},{0xC000000000000000ULL}},	// -2.499f,-2.0f
+	{{0xC000000000000000ULL},{0xC000000000000000ULL}},	// -2.0f,-2.0f
+	{{0xBFFFFFFFFFFFFFFFULL},{0xC000000000000000ULL}},	// -1.999f,-2.0f
+	{{0xBFF8000000000000ULL},{0xC000000000000000ULL}},	// -1.5f,-2.0f
+	{{0xBFF7FFFFFFFFFFFFULL},{0xBFF0000000000000ULL}},	// -1.499f,-1.0f
+	{{0xBFF0000000000000ULL},{0xBFF0000000000000ULL}},	// -1.0f,-1.0f
+	{{0xBFEFFFFFFFFFFFFFULL},{0xBFF0000000000000ULL}},	// -0.999f,-1.0f
+	{{0xBFE0000000000000ULL},{0xBFF0000000000000ULL}},	// -0.5f,-1.0f
+	{{0xBFDFFFFFFFFFFFFFULL},{0x0000000000000000ULL}},	// -0.499f,-0.0f
+	{{0x8000000000000000ULL},{0x0000000000000000ULL}},	// -0.0f,0.0f
+
+	{{0x0000000000000000ULL},{0x0000000000000000ULL}},	// 0.0f,0.0f
+	{{0x3FDFFFFFFFFFFFFFULL},{0x0000000000000000ULL}},	// 0.499f,0.0f
+	{{0x3FE0000000000000ULL},{0x3FF0000000000000ULL}},	// 0.5f,1.0f
+	{{0x3FEFFFFFFFFFFFFFULL},{0x3FF0000000000000ULL}},	// 0.999f,1.0f
+	{{0x3FF0000000000000ULL},{0x3FF0000000000000ULL}},	// 1.0f,1.0f
+	{{0x3FF7FFFFFFFFFFFFULL},{0x3FF0000000000000ULL}},	// 1.499f,1.0f
+	{{0x3FF8000000000000ULL},{0x4000000000000000ULL}},	// 1.5f,2.0f
+	{{0x3FFFFFFFFFFFFFFFULL},{0x4000000000000000ULL}},	// 1.999f,2.0f
+	{{0x4000000000000000ULL},{0x4000000000000000ULL}},	// 2.0f,2.0f
+	{{0x4003FFFFFFFFFFFFULL},{0x4000000000000000ULL}},	// 2.499f,2.0f
+	{{0x4004000000000000ULL},{0x4008000000000000ULL}},	// 2.5f,3.0f
+	{{0x4007FFFFFFFFFFFFULL},{0x4008000000000000ULL}},	// 2.999f,3.0f
+	{{0x4008000000000000ULL},{0x4008000000000000ULL}},	// 3.0f,3.0f
+	{{0x400BFFFFFFFFFFFFULL},{0x4008000000000000ULL}},	// 3.499f,3.0f
+	{{0x400C000000000000ULL},{0x4010000000000000ULL}},	// 3.5f,4.0f
+	{{0x400FFFFFFFFFFFFFULL},{0x4010000000000000ULL}},	// 3.999f,4.0f
+
 	{{0x3FF199999999999AULL},{0x3FF0000000000000ULL}},	// 1.1f,1.0f
 	{{0x3FFF333333333333ULL},{0x4000000000000000ULL}},	// 1.95f,2.0f
+	{{0x4000CCCCCCCCCCCDULL},{0x4000000000000000ULL}},	// 2.1f,3.0f
+	{{0x400799999999999aULL},{0x4008000000000000ULL}},	// 2.95f,3.0f
 	{{0xBFF199999999999AULL},{0xBFF0000000000000ULL}},	// -1.1f,-1.0f
 	{{0xBFFF333333333333ULL},{0xC000000000000000ULL}},	// -1.95f,-2.0f
+	{{0xC000CCCCCCCCCCCDULL},{0xC000000000000000ULL}},	// -2.1f,-2.0f
+	{{0xC00799999999999aULL},{0xC008000000000000ULL}},	// -2.95f,-3.0f
 	{{0x3FB999999999999AULL},{0x0000000000000000ULL}},	// 0.1f,0.0f
 	{{0x3FEE666666666666ULL},{0x3FF0000000000000ULL}},	// 0.95f,1.0f
 	{{0xBFB999999999999AULL},{0x0000000000000000ULL}},	// -0.1f,0.0f
@@ -1015,7 +1549,19 @@ static const Burger::Word64ToDouble RoundDoubleArray[][2] = {
 	{{0xC399000000000000ULL},{0xC399000000000000ULL}},	// -450359962737049600.0f,-450359962737049600.0f
 	{{0x43E0000000000000ULL},{0x43E0000000000000ULL}},	// 0x7FFFFFFFFFFFFFF
 	{{0x43DFFFFFFFFFFFFFULL},{0x43DFFFFFFFFFFFFFULL}},	// 0x7FFFFFFFFFFFFFF-Epsilon
-	{{0xC3E0000000000000ULL},{0xC3E0000000000000ULL}}	// 0x800000000000000
+	{{0xC3E0000000000000ULL},{0xC3E0000000000000ULL}},	// 0x800000000000000
+	{{0x0000000000000001ULL},{0x0000000000000000ULL}},	// Min Denormal
+	{{0x0000000000000010ULL},{0x0000000000000000ULL}},
+	{{0x0008000000000000ULL},{0x0000000000000000ULL}},
+	{{0x000FFFFFFFFFFFFFULL},{0x0000000000000000ULL}},	// Max Denormal
+	{{0x0010000000000000ULL},{0x0000000000000000ULL}},	// FLT_MIN
+	{{0x7FEFFFFFFFFFFFFFULL},{0x7FEFFFFFFFFFFFFFULL}},	// FLT_MAX
+	{{0x8000000000000001ULL},{0x0000000000000000ULL}},	// -Min Denormal
+	{{0x8000000000000010ULL},{0x0000000000000000ULL}},
+	{{0x8008000000000000ULL},{0x0000000000000000ULL}},
+	{{0x800FFFFFFFFFFFFFULL},{0x0000000000000000ULL}},	// -Max Denormal
+	{{0x8010000000000000ULL},{0x0000000000000000ULL}},	// -FLT_MIN
+	{{0xFFEFFFFFFFFFFFFFULL},{0xFFEFFFFFFFFFFFFFULL}}	// -FLT_MAX
 };
 
 static Word TestRoundDouble(void)
@@ -1027,7 +1573,7 @@ static Word TestRoundDouble(void)
 		// Note: Use volatile to force the compiler to use 32 bit float precision
 		Burger::Word64ToDouble dTest;
 		dTest.d = Burger::Round(pWork[0]);
-		Word uFailure = (dTest.w!=pWork[1].w);
+		Word uFailure = (dTest.d!=pWork[1].d);
 		uResult |= uFailure;
 		if (uFailure) {
 			Burger::NumberStringHex Test(dTest.w);
@@ -1044,6 +1590,40 @@ static Word TestRoundDouble(void)
 //
 
 static const Burger::Word32ToFloat RoundToZeroFloatArray[][2] = {
+	{{0xC07FFFFFU},{0xC0400000U}},	// -3.999f,-3.0f
+	{{0xC0600000U},{0xC0400000U}},	// -3.5f,-3.0f
+	{{0xC05FFFFFU},{0xC0400000U}},	// -3.499f,-3.0f
+	{{0xC0400000U},{0xC0400000U}},	// -3.0f,-3.0f
+	{{0xC03FFFFFU},{0xC0000000U}},	// -2.999f,-2.0f
+	{{0xC0200000U},{0xC0000000U}},	// -2.5f,-2.0f
+	{{0xC01FFFFFU},{0xC0000000U}},	// -2.499f,-2.0f
+	{{0xC0000000U},{0xC0000000U}},	// -2.0f,-2.0f
+	{{0xBFFFFFFFU},{0xBF800000U}},	// -1.999f,-1.0f
+	{{0xBFC00000U},{0xBF800000U}},	// -1.5f,-1.0f
+	{{0xBFBFFFFFU},{0xBF800000U}},	// -1.499f,-1.0f
+	{{0xBF800000U},{0xBF800000U}},	// -1.0f,-1.0f
+	{{0xBF7FFFFFU},{0x00000000U}},	// -0.999f,-0.0f
+	{{0xBF000000U},{0x00000000U}},	// -0.5f,-0.0f
+	{{0xBEFFFFFFU},{0x00000000U}},	// -0.499f,0.0f
+	{{0x80000000U},{0x00000000U}},	// -0.0f,0.0f
+
+	{{0x00000000U},{0x00000000U}},	// 0.0f,0.0f
+	{{0x3EFFFFFFU},{0x00000000U}},	// 0.499f,0.0f
+	{{0x3F000000U},{0x00000000U}},	// 0.5f,0.0f
+	{{0x3F7FFFFFU},{0x00000000U}},	// 0.999f,0.0f
+	{{0x3F800000U},{0x3F800000U}},	// 1.0f,1.0f
+	{{0x3FBFFFFFU},{0x3F800000U}},	// 1.499f,1.0f
+	{{0x3FC00000U},{0x3F800000U}},	// 1.5f,1.0f
+	{{0x3FFFFFFFU},{0x3F800000U}},	// 1.999f,1.0f
+	{{0x40000000U},{0x40000000U}},	// 2.0f,2.0f
+	{{0x401FFFFFU},{0x40000000U}},	// 2.499f,2.0f
+	{{0x40200000U},{0x40000000U}},	// 2.5f,2.0f
+	{{0x403FFFFFU},{0x40000000U}},	// 2.999f,2.0f
+	{{0x40400000U},{0x40400000U}},	// 3.0f,3.0f
+	{{0x405FFFFFU},{0x40400000U}},	// 3.499f,3.0f
+	{{0x40600000U},{0x40400000U}},	// 3.5f,3.0f
+	{{0x407FFFFFU},{0x40400000U}},	// 3.999f,3.0f
+
 	{{0x3F8CCCCDU},{0x3F800000U}},	// 1.1f,1.0f
 	{{0x3FF9999AU},{0x3F800000U}},	// 1.95f,1.0f
 	{{0xBF8CCCCDU},{0xBF800000U}},	// -1.1f,-1.0f
@@ -1086,6 +1666,40 @@ static Word TestRoundToZeroFloat(void)
 //
 
 static const Burger::Word64ToDouble RoundToZeroDoubleArray[][2] = {
+	{{0xC00FFFFFFFFFFFFFULL},{0xC008000000000000ULL}},	// -3.999f,-3.0f
+	{{0xC00C000000000000ULL},{0xC008000000000000ULL}},	// -3.5f,-3.0f
+	{{0xC00BFFFFFFFFFFFFULL},{0xC008000000000000ULL}},	// -3.499f,-3.0f
+	{{0xC008000000000000ULL},{0xC008000000000000ULL}},	// -3.0f,-3.0f
+	{{0xC007FFFFFFFFFFFFULL},{0xC000000000000000ULL}},	// -2.999f,-2.0f
+	{{0xC004000000000000ULL},{0xC000000000000000ULL}},	// -2.5f,-2.0f
+	{{0xC003FFFFFFFFFFFFULL},{0xC000000000000000ULL}},	// -2.499f,-2.0f
+	{{0xC000000000000000ULL},{0xC000000000000000ULL}},	// -2.0f,-2.0f
+	{{0xBFFFFFFFFFFFFFFFULL},{0xBFF0000000000000ULL}},	// -1.999f,-1.0f
+	{{0xBFF8000000000000ULL},{0xBFF0000000000000ULL}},	// -1.5f,-1.0f
+	{{0xBFF7FFFFFFFFFFFFULL},{0xBFF0000000000000ULL}},	// -1.499f,-1.0f
+	{{0xBFF0000000000000ULL},{0xBFF0000000000000ULL}},	// -1.0f,-1.0f
+	{{0xBFEFFFFFFFFFFFFFULL},{0x0000000000000000ULL}},	// -0.999f,-0.0f
+	{{0xBFE0000000000000ULL},{0x0000000000000000ULL}},	// -0.5f,-0.0f
+	{{0xBFDFFFFFFFFFFFFFULL},{0x0000000000000000ULL}},	// -0.499f,-0.0f
+	{{0x8000000000000000ULL},{0x0000000000000000ULL}},	// -0.0f,0.0f
+
+	{{0x0000000000000000ULL},{0x0000000000000000ULL}},	// 0.0f,0.0f
+	{{0x3FDFFFFFFFFFFFFFULL},{0x0000000000000000ULL}},	// 0.499f,0.0f
+	{{0x3FE0000000000000ULL},{0x0000000000000000ULL}},	// 0.5f,1.0f
+	{{0x3FEFFFFFFFFFFFFFULL},{0x0000000000000000ULL}},	// 0.999f,1.0f
+	{{0x3FF0000000000000ULL},{0x3FF0000000000000ULL}},	// 1.0f,1.0f
+	{{0x3FF7FFFFFFFFFFFFULL},{0x3FF0000000000000ULL}},	// 1.499f,1.0f
+	{{0x3FF8000000000000ULL},{0x3FF0000000000000ULL}},	// 1.5f,2.0f
+	{{0x3FFFFFFFFFFFFFFFULL},{0x3FF0000000000000ULL}},	// 1.999f,2.0f
+	{{0x4000000000000000ULL},{0x4000000000000000ULL}},	// 2.0f,2.0f
+	{{0x4003FFFFFFFFFFFFULL},{0x4000000000000000ULL}},	// 2.499f,2.0f
+	{{0x4004000000000000ULL},{0x4000000000000000ULL}},	// 2.5f,2.0f
+	{{0x4007FFFFFFFFFFFFULL},{0x4000000000000000ULL}},	// 2.999f,2.0f
+	{{0x4008000000000000ULL},{0x4008000000000000ULL}},	// 3.0f,3.0f
+	{{0x400BFFFFFFFFFFFFULL},{0x4008000000000000ULL}},	// 3.499f,3.0f
+	{{0x400C000000000000ULL},{0x4008000000000000ULL}},	// 3.5f,3.0f
+	{{0x400FFFFFFFFFFFFFULL},{0x4008000000000000ULL}},	// 3.999f,3.0f
+
 	{{0x3FF199999999999AULL},{0x3FF0000000000000ULL}},	// 1.1f,1.0f
 	{{0x3FFF333333333333ULL},{0x3FF0000000000000ULL}},	// 1.95f,1.0f
 	{{0xBFF199999999999AULL},{0xBFF0000000000000ULL}},	// -1.1f,-1.0f
@@ -1114,7 +1728,7 @@ static Word TestRoundToZeroDouble(void)
 		// Note: Use volatile to force the compiler to use 32 bit float precision
 		Burger::Word64ToDouble dTest;
 		dTest.d = Burger::RoundToZero(pWork[0]);
-		Word uFailure = (dTest.w!=pWork[1].w);
+		Word uFailure = (dTest.d!=pWork[1].d);
 		uResult |= uFailure;
 		if (uFailure) {
 			Burger::NumberStringHex Test(dTest.w);
@@ -1239,7 +1853,7 @@ static const Burger::Word32ToFloat SinFloatArray[][2] = {
 
 #if 0
 #if 0
-//#elif defined(BURGER_POWERPC)
+//#elif defined(BURGER_PPC)
 	{{0x3FC90FDBU},{0x3F7FFFFFU}},	// PI/2,1.0f
 	{{0x40490FDBU},{0x348BC409U}},	// PI,1.22461e-16f
 	{{0x4096CBE4U},{0xBF800000U}},	// PI*1.5f,-1.0f
@@ -1303,7 +1917,7 @@ static Word TestSinFloat(void)
 //
 
 static const Burger::Word64ToDouble SinDoubleArray[][2] = {
-#if defined(BURGER_POWERPC)
+#if defined(BURGER_PPC)
 	{{0x0000000000000000ULL},{0x0000000000000000ULL}},	// 0.0f,0.0f
 	{{0x3FF921FB54442D18ULL},{0x3FF0000000000001ULL}},	// PI/2,1.0f
 	{{0x400921FB54442D18ULL},{0x3D47E87817621143ULL}},	// PI,1.22461e-16f
@@ -1365,7 +1979,7 @@ static const Burger::Word32ToFloat CosFloatArray[][2] = {
 	{{0x4096CBE4U},{0xB42758D4U}},	// SingleDegreesToRadians*270.0f,-1.0f
 	{{0x441D1463U},{0x3F800000U}},	// SingleDegreesToRadians*36000.0f,-5.7220458984375e-006
 	{{0xC0490FDBU},{0xBF7FFFFEU}},	// -PI,1.176484119014276e-007
-#elif defined(BURGER_POWERPC)
+#elif defined(BURGER_PPC)
 	{{0x3FC90FDBU},{0xB350E6E7U}},	// PI/2,1.0f
 	{{0x40490FDBU},{0xBF7FFFFEU}},	// PI,1.176484119014276e-007
 	{{0x4096CBE4U},{0xB3F5EA3DU}},	// PI*1.5f,-1.0f
@@ -1427,7 +2041,7 @@ static Word TestCosFloat(void)
 //
 
 static const Burger::Word64ToDouble CosDoubleArray[][2] = {
-#if defined(BURGER_POWERPC)
+#if defined(BURGER_PPC)
 	{{0x0000000000000000ULL},{0x3FF0000000000000ULL}},	// 0.0f,0.0f
 	{{0x3FF921FB54442D18ULL},{0x3FE45F306DC9C884ULL}},	// PI/2,1.0f
 	{{0x400921FB54442D18ULL},{0xBD2E8321619D4797ULL}},	// PI,1.22461e-16f
@@ -1519,9 +2133,13 @@ int BURGER_API TestBrfloatingpoint(Word bVerbose)
 	uResult |= TestAbsFloat();
 	uResult |= TestAbsDouble();
 	uResult |= TestSignFloat();
+	uResult |= TestSignDouble();
 	uResult |= TestClampFloat();
+	uResult |= TestClampDouble();
 	uResult |= TestSqrtFloat();
 	uResult |= TestSqrtDouble();
+	uResult |= TestIntToFloat();
+	uResult |= TestFixedToFloat();
 	uResult |= TestFloorFloat();
 	uResult |= TestFloorDouble();
 	uResult |= TestCeilFloat();

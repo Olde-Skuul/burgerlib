@@ -153,7 +153,7 @@ const char * BURGER_API Burger::FileLBM::UnpackILBM(Word8 *pOutput,Word uWidth,W
 
 		// Merge the planes
 		MemoryClear(pOutput,uWidth);	// Clear out the old line
-		Word uPlaneIndex = 0; 			// Start at the first bit plane
+		Word uPlaneIndex = 0;			// Start at the first bit plane
 		Word uPlaneMask = 1;			// Init dest mask
 		do {
 			Word j = uPlaneIndex>>3U;			// Init dest index
@@ -272,7 +272,7 @@ Burger::Image * Burger::FileLBM::Load(InputMemoryStream *pInput)
 	if (!pBadNews) {
 		// Scan the IFF file from here
 		uStartOffset = pInput->GetMark();
-		pBadNews = SeekIffChunk(pInput,BMHDASCII,uStartOffset); // Find the common chunk
+		pBadNews = SeekIffChunk(pInput,BMHDASCII,uStartOffset);	// Find the common chunk
 		if (!pBadNews) {
 			pInput->SkipForward(4);
 			uWidth = pInput->GetBigShort();
@@ -301,7 +301,7 @@ Burger::Image * Burger::FileLBM::Load(InputMemoryStream *pInput)
 
 	if (!pBadNews) {
 		if (uDepth<9) {		// Get the palette
-			pBadNews = SeekIffChunk(pInput,CMAPASCII,uStartOffset); // Read in the palette
+			pBadNews = SeekIffChunk(pInput,CMAPASCII,uStartOffset);	// Read in the palette
 			if (!pBadNews) {
 				MemoryClear(m_Palette,sizeof(m_Palette));
 				Word32 uPaletteSize = pInput->GetBigWord32()/3U;
@@ -325,7 +325,7 @@ Burger::Image * Burger::FileLBM::Load(InputMemoryStream *pInput)
 	//
 
 	if (!pBadNews) {
-		pBadNews = SeekIffChunk(pInput,BODYASCII,uStartOffset); // Find the image
+		pBadNews = SeekIffChunk(pInput,BODYASCII,uStartOffset);	// Find the image
 		if (!pBadNews) {
 			pInput->SkipForward(4);
 			if (FormType) {
