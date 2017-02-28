@@ -1,6 +1,9 @@
 /***************************************
 
-	Typedefs specific to nVidia SHIELD (Android)
+	CRC16 hash manager
+
+	Implemented following the documentation found in
+	http://en.wikipedia.org/wiki/Cyclic_redundancy_check
 
 	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
@@ -8,39 +11,21 @@
 	for license details. Yes, you can use it in a
 	commercial title without paying anything, just give me a credit.
 	Please? It's not like I'm asking you for money!
-
+	
 ***************************************/
 
-#ifndef __BRSHIELDTYPES_H__
-#define __BRSHIELDTYPES_H__
+#ifndef __BRCRC16_H__
+#define __BRCRC16_H__
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
 #endif
 
 /* BEGIN */
-#if defined(BURGER_ANDROID) && !defined(DOXYGEN)
 namespace Burger {
-struct pthread_mutex_t {
-	int volatile value;
-#if defined(BURGER_64BITCPU)
-	char __reserved[36];
-#endif
-};
-struct sem_t {
-	volatile unsigned int count;
-#if defined(BURGER_64BITCPU)
-	int __reserved[3];
-#endif
-};
-struct pthread_cond_t {
-	int volatile value;
-#if defined(BURGER_64BITCPU)
-	char __reserved[44];
-#endif
-};
+extern Word16 BURGER_API CalcCRC16IBM(const void *pInput,WordPtr uInputLength,Word16 uCRC=0);
+extern void BURGER_API GenerateCRCTable(Word16 *pOutput,Word16 uPolynomial=0x8005,Word bBitReverse=TRUE);
 }
-#endif
 /* END */
 
 #endif

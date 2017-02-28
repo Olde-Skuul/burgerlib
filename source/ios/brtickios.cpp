@@ -147,7 +147,7 @@ Burger::FloatTimer::FloatTimer() :
 	
 	// The value gives the scale for nanoseconds. Convert to a scale for seconds
 	
-	m_dReciprocalFrequency = static_cast<double>(sTimebaseInfo.denom) / (static_cast<double>(sTimebaseInfo.numer)*1000000000);
+	m_dReciprocalFrequency = (static_cast<double>(sTimebaseInfo.numer) / static_cast<double>(sTimebaseInfo.denom)) /1000000000.0;
 	
 	// Initialize the timer
 	Reset();

@@ -536,7 +536,7 @@ void Burger::CompressDeflate::PQDownHeap(const CodeData_t *pTree,int k)
 				break;
 			}
 			// Exchange v with the smallest son
-			pHeap[k] = pHeap[j]; 
+			pHeap[k] = pHeap[j];
 			k = j;
 
 			// And continue down the tree, setting j to the left son of k
@@ -734,7 +734,7 @@ void Burger::CompressDeflate::GenerateBitLengths(const TreeDesc_t *pTreeDescript
 	/* In a first pass, compute the optimal bit lengths (which may
 	* overflow in the case of the bit length tree).
 	*/
-	pDynamicTree[m_Heap[m_iHeapMaximum]].m_DataLength.m_uLength = 0; /* root of the heap */
+	pDynamicTree[m_Heap[m_iHeapMaximum]].m_DataLength.m_uLength = 0;		// root of the heap
 
 	for (h = m_iHeapMaximum+1; h < HEAP_SIZE; h++) {
 		n = m_Heap[h];
@@ -747,7 +747,7 @@ void Burger::CompressDeflate::GenerateBitLengths(const TreeDesc_t *pTreeDescript
 		/* We overwrite tree[n].dl.dad which is no longer needed */
 
 		if (n > iMaximumCode) {
-			continue; /* not a leaf node */
+			continue;	/* not a leaf node */
 		}
 		m_BitLengthCount[bits]++;
 		xbits = 0;
@@ -770,8 +770,8 @@ void Burger::CompressDeflate::GenerateBitLengths(const TreeDesc_t *pTreeDescript
         while (m_BitLengthCount[bits] == 0) {
         	bits--;
         }
-        m_BitLengthCount[bits]--;      /* move one leaf down the tree */
-        m_BitLengthCount[bits+1] += 2; /* move one overflow item as its brother */
+        m_BitLengthCount[bits]--;		/* move one leaf down the tree */
+        m_BitLengthCount[bits+1] += 2;	/* move one overflow item as its brother */
         m_BitLengthCount[iMaxLength]--;
         /* The brother of the overflow item also moves one step up,
          * but this does not affect bl_count[max_length]

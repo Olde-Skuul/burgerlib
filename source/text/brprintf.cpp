@@ -1637,7 +1637,7 @@ const void* BURGER_API Burger::SafePrintArgument::GetDataAddress( void ) const
 		pResult = &m_Data.m_pVoid;
 		break;
 	case ARG_SIMD64:
-		pResult = m_Data.m_pSIMD;        // SIMD types are only pointed to, not stored
+		pResult = m_Data.m_pSIMD;		// SIMD types are only pointed to, not stored
 		break;
 	case ARG_SIMD128:
 		pResult = m_Data.m_pSIMD;
@@ -2904,7 +2904,7 @@ void BURGER_API Burger::SafePrint::ParamInfo_t::GetFormattedOutputLength(const S
 			TheFPInfo.InitHalf(pArg->m_Data.m_fHalf);
 			break;
 		case SafePrintArgument::ARG_FLOAT:
-			TheFPInfo.InitFloat(pArg->m_Data.m_fFloat); 
+			TheFPInfo.InitFloat(pArg->m_Data.m_fFloat);
 			break;
 		case SafePrintArgument::ARG_DOUBLE:
 			TheFPInfo.InitDouble(pArg->m_Data.m_dDouble);
@@ -3199,8 +3199,8 @@ void BURGER_API Burger::SafePrint::ParamInfo_t::CheckConversionFlags(void)
 				SetWarning(WARN_PRECISION_UNDEFINED);
 
 				// Remove precision info from the conversion
-				ClearFlag(CONVFLAG_PRECISION_SPECIFIED); 
-				ClearFlag(CONVFLAG_PRECISION_MARKER); 
+				ClearFlag(CONVFLAG_PRECISION_SPECIFIED);
+				ClearFlag(CONVFLAG_PRECISION_MARKER);
 				SetPrecision(0);
 				bHasPrecision = FALSE;
 			}
@@ -3432,7 +3432,7 @@ WordPtr BURGER_API Burger::SafePrint::ParamInfo_t::FormatInteger(char *pOutBuffe
 	Word uPrecision = GetPrecision();
 
 	// handle field width & left justify flags
-	char *pOutText = pOutBuffer + PadFieldWidth(pOutBuffer); 
+	char *pOutText = pOutBuffer + PadFieldWidth(pOutBuffer);
 
 	// Point to last character - we're filling in backwards
 	pOutText = pOutText + GetFormattedLength()-1;
@@ -3570,7 +3570,7 @@ WordPtr BURGER_API Burger::SafePrint::ParamInfo_t::FormatHexOrOctal(char *pOutBu
 	}
 
 	// handle field width & left justify flags
-	char *pOutText = pOutBuffer + PadFieldWidth(pOutBuffer); 
+	char *pOutText = pOutBuffer + PadFieldWidth(pOutBuffer);
 
 	Word bIsHex = (GetConversion() != CONVSPEC_OCTAL);
 
@@ -3758,7 +3758,7 @@ WordPtr BURGER_API Burger::SafePrint::ParamInfo_t::FormatChar(char* pOutBuffer,c
 	}
 
 	// handle field width & left justify flags
-	char *pOutText = pOutBuffer + PadFieldWidth(pOutBuffer); 
+	char *pOutText = pOutBuffer + PadFieldWidth(pOutBuffer);
 	WordPtr uCharsWritten = 0;
 
 	// do we need to convert a wide char or a regular char?
@@ -3859,7 +3859,7 @@ WordPtr BURGER_API Burger::SafePrint::ParamInfo_t::FormatBool(char* pOutBuffer,c
 	BURGER_ASSERT(pArg->IsNumeric());
 
 	// handle field width & left justify flags
-	char* pOutText = pOutBuffer + PadFieldWidth(pOutBuffer); 
+	char* pOutText = pOutBuffer + PadFieldWidth(pOutBuffer);
 	const char* pSrcText = (IsFlagSet(CONVFLAG_UPPERCASE)) ? (bIsValueZero) ?  "FALSE" : "TRUE": (bIsValueZero) ? "false" : "true";
 	MemoryCopy(pOutText,pSrcText,uNumChars);
 	return GetOutputLength();
@@ -3927,7 +3927,7 @@ WordPtr BURGER_API Burger::SafePrint::ParamInfo_t::FormatBinary(char* pOutBuffer
 
 		do {
 			*pBinDigits++ = (uTheByte & uBitMask) ? '1' : '0';
-			++uDigitsWritten; 
+			++uDigitsWritten;
 
 			if (bCommaFlag) {
 				if ((uDigitsWritten == 4) || ((uDigitsWritten == 8) && (uByteCount > 1))) {
@@ -4011,7 +4011,7 @@ WordPtr BURGER_API Burger::SafePrint::ParamInfo_t::FormatReal(char *pOutBuffer,c
 	Word bBlankSign = IsFlagSet(CONVFLAG_BLANK_SIGN);
 
 	// handle field width & left justify flags
-	char* pOutText = pOutBuffer + PadFieldWidth(pOutBuffer); 
+	char* pOutText = pOutBuffer + PadFieldWidth(pOutBuffer);
 	WordPtr uCharsWritten = 0;
 
 	// all these will be initialized with cached off values 
@@ -4570,8 +4570,8 @@ WordPtr BURGER_API Burger::SafePrint::ProcessResults_t::GenerateFormattedOutputT
 								return uCharCount;
 							}
 
-							uCharCount += uBufferUsed;    // update stats
-							uBufferUsed = 0;         // reset buffer
+							uCharCount += uBufferUsed;		// update stats
+							uBufferUsed = 0;				// reset buffer
 						}
 					}
 				} else {		// fast path, we don't have '%%' sequences to convert
@@ -5655,75 +5655,75 @@ Burger::SafePrint::eOpcode BURGER_API Burger::SafePrint::GetDefaultArgumentType(
 			uCode = OP_OUTPUT_DECIMALINT;
 			break;
 		case SafePrintArgument::ARG_INT32:
-			uCode = OP_OUTPUT_DECIMALINT; 
+			uCode = OP_OUTPUT_DECIMALINT;
 			break;
 		case SafePrintArgument::ARG_INT64:
-			uCode = OP_OUTPUT_DECIMALINT; 
+			uCode = OP_OUTPUT_DECIMALINT;
 			break;
 
 		case SafePrintArgument::ARG_WORD8:
-			uCode = OP_OUTPUT_DECIMALWORD; 
+			uCode = OP_OUTPUT_DECIMALWORD;
 			break;
 		case SafePrintArgument::ARG_WORD16:
-			uCode = OP_OUTPUT_DECIMALWORD; 
+			uCode = OP_OUTPUT_DECIMALWORD;
 			break;
 		case SafePrintArgument::ARG_WORD32:
-			uCode = OP_OUTPUT_DECIMALWORD; 
+			uCode = OP_OUTPUT_DECIMALWORD;
 			break;
 		case SafePrintArgument::ARG_WORD64:
-			uCode = OP_OUTPUT_DECIMALWORD; 
+			uCode = OP_OUTPUT_DECIMALWORD;
 			break;
 
 		case SafePrintArgument::ARG_HALF:
-			uCode = OP_OUTPUT_DECIMALFLOAT; 
+			uCode = OP_OUTPUT_DECIMALFLOAT;
 			break;
 		case SafePrintArgument::ARG_FLOAT:
-			uCode = OP_OUTPUT_DECIMALFLOAT; 
+			uCode = OP_OUTPUT_DECIMALFLOAT;
 			break;
 		case SafePrintArgument::ARG_DOUBLE:
-			uCode = OP_OUTPUT_DECIMALFLOAT; 
+			uCode = OP_OUTPUT_DECIMALFLOAT;
 			break;
 
 		case SafePrintArgument::ARG_BOOL:
-			uCode = OP_OUTPUT_BOOLTEXT; 
+			uCode = OP_OUTPUT_BOOLTEXT;
 			break;
 
 		case SafePrintArgument::ARG_PSTRING:
-			uCode = OP_OUTPUT_CSTRING; 
+			uCode = OP_OUTPUT_CSTRING;
 			break;
 		case SafePrintArgument::ARG_PCHAR:
-			uCode = OP_OUTPUT_CSTRING; 
+			uCode = OP_OUTPUT_CSTRING;
 			break;
 		case SafePrintArgument::ARG_PSCHAR:
-			uCode = OP_OUTPUT_CSTRING; 
+			uCode = OP_OUTPUT_CSTRING;
 			break;
 		case SafePrintArgument::ARG_PUCHAR:
-			uCode = OP_OUTPUT_CSTRING; 
+			uCode = OP_OUTPUT_CSTRING;
 			break;
 
 		case SafePrintArgument::ARG_PINT16:
-			uCode = OP_OUTPUT_POINTER; 
+			uCode = OP_OUTPUT_POINTER;
 			break;
 		case SafePrintArgument::ARG_PWORD16:
-			uCode = OP_OUTPUT_POINTER; 
+			uCode = OP_OUTPUT_POINTER;
 			break;
 		case SafePrintArgument::ARG_PINT32:
-			uCode = OP_OUTPUT_POINTER; 
+			uCode = OP_OUTPUT_POINTER;
 			break;
 		case SafePrintArgument::ARG_PWORD32:
-			uCode = OP_OUTPUT_POINTER; 
+			uCode = OP_OUTPUT_POINTER;
 			break;
 		case SafePrintArgument::ARG_PINT64:
-			uCode = OP_OUTPUT_POINTER; 
+			uCode = OP_OUTPUT_POINTER;
 			break;
 		case SafePrintArgument::ARG_PWORD64:
-			uCode = OP_OUTPUT_POINTER; 
+			uCode = OP_OUTPUT_POINTER;
 			break;
 		case SafePrintArgument::ARG_PFLOAT:
-			uCode = OP_OUTPUT_POINTER; 
+			uCode = OP_OUTPUT_POINTER;
 			break;
 		case SafePrintArgument::ARG_PDOUBLE:
-			uCode = OP_OUTPUT_POINTER; 
+			uCode = OP_OUTPUT_POINTER;
 			break;
 		case SafePrintArgument::ARG_PVOID:
 			uCode = OP_OUTPUT_POINTER;

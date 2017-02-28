@@ -34,7 +34,7 @@ protected:
 	Word32 m_uSignature;		///< 4 character code to identify this decompresser
 public:
 	enum eError {
-		DECOMPRESS_OKAY,		///< No errors
+		DECOMPRESS_OKAY,			///< No errors
 		DECOMPRESS_OUTPUTUNDERRUN,	///< All input was exhausted before output was satisfied
 		DECOMPRESS_OUTPUTOVERRUN,	///< Input data remained after output was satisfied
 		DECOMPRESS_BADINPUT			///< Error found in compressed data (Decompression was aborted)

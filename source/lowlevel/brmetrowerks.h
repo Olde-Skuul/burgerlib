@@ -32,22 +32,7 @@
 extern "C" {
 
 #if defined(BURGER_X86)
-__inline long _InterlockedExchange(register long volatile*pOutput,register long lValue) { asm { lock xchg lValue,[pOutput] } return lValue; }
-__inline long _InterlockedIncrement(register long volatile*pOutput) { register long lTemp=1; asm { lock xadd [pOutput],lTemp } return lTemp+1; }
-__inline long _InterlockedDecrement(register long volatile*pOutput) { register long lTemp=-1; asm { lock xadd [pOutput],lTemp } return lTemp-1; }
-__inline long _InterlockedExchangeAdd(register long volatile*pOutput,register long lValue) { asm { lock xadd [pOutput],lValue } return lValue; }
 
-__inline long _InterlockedCompareExchange(register long volatile*pOutput,register long lAfter,register long lBefore) 
-{
-	asm {
-		mov eax,lBefore
-		lock xadd [pOutput],lAfter
-		mov lBefore,eax
-	}
-	return lBefore; 
-}
-
-namespace std {
 extern float __builtin_fabsf(float) __attribute__((nothrow)) __attribute__((const));
 extern double __builtin_fabs(double) __attribute__((nothrow)) __attribute__((const));
 extern double __builtin_sqrt(double) __attribute__((nothrow)) __attribute__((const));
@@ -55,34 +40,73 @@ extern unsigned int __builtin___count_leading_zero32(unsigned int) __attribute__
 extern unsigned int __builtin___count_trailing_zero32(unsigned int) __attribute__((nothrow)) __attribute__((const));
 extern unsigned int __builtin___count_leading_zero64(unsigned long long) __attribute__((nothrow)) __attribute__((const));
 extern unsigned int __builtin___count_trailing_zero64(unsigned long long) __attribute__((nothrow)) __attribute__((const));
-extern unsigned int __builtin___count_bits64(unsigned long long) __attribute__((nothrow)) __attribute__((const));
+//extern unsigned int __builtin___count_bits32(unsigned long long) __attribute__((nothrow)) __attribute__((const));
+//extern unsigned int __builtin___count_bits64(unsigned long long) __attribute__((nothrow)) __attribute__((const));
+
+BURGER_INLINE long _InterlockedExchange(register long volatile *pOutput,register long lValue) 
+{
+	__asm lock xchg lValue,[pOutput];
+	return lValue;
 }
 
-BURGER_INLINE Word16 __builtin_bswap16(Word16 uInput) 
+BURGER_INLINE long _InterlockedIncrement(register long volatile *pOutput) 
+{
+	register long lTemp=1;
+	__asm lock xadd [pOutput],lTemp;
+	return lTemp+1;
+}
+
+BURGER_INLINE long _InterlockedDecrement(register long volatile *pOutput) 
+{
+	register long lTemp=-1;
+	 __asm lock xadd [pOutput],lTemp;
+	 return lTemp-1;
+}
+
+BURGER_INLINE long _InterlockedExchangeAdd(register long volatile *pOutput,register long lValue)
+{
+	__asm lock xadd [pOutput],lValue;
+	return lValue; 
+}
+
+BURGER_INLINE long _InterlockedCompareExchange(register long volatile *pOutput,register long lAfter,register long lBefore) 
+{
+	__asm {
+		mov eax,lBefore
+		lock xadd [pOutput],lAfter
+		mov lBefore,eax
+	}
+	return lBefore; 
+}
+
+BURGER_INLINE Word16 __builtin_bswap16(register Word16 uInput) 
 {
 	return __ror(uInput,8); 
 }
 
-BURGER_INLINE Word16 _byteswap_ushort(Word16 uInput) 
+BURGER_INLINE Word16 _byteswap_ushort(register Word16 uInput) 
 {
 	return __ror(uInput,8); 
 }
+
+// Undocumented feature of the Metrowerks compiler.
+// Turn on to alert the optimizer that results are static
+
+#pragma volatile_asm off
 
 BURGER_INLINE Word32 __builtin_bswap32(register Word32 uInput) 
 {
-	asm {
-		bswap uInput 
-	} 
+	__asm bswap uInput;
 	return uInput; 
 }
 
 BURGER_INLINE Word32 _byteswap_ulong(register Word32 uInput) 
 {
-	asm {
-		bswap uInput
-	}
+	__asm bswap uInput;
 	return uInput; 
 }
+
+#pragma volatile_asm reset
 
 #elif defined(BURGER_68K)
 
@@ -108,9 +132,10 @@ Int32 BurgerIntMathMul32x32To64Div32(Int32 iInputMulA,Int32 iInputMulB,Int32 iIn
 extern double __fabs(double x);
 extern void* __alloca(unsigned x);
 
-#elif defined(BURGER_POWERPC)
+#elif defined(BURGER_PPC)
 
 // Most PowerPC CPUs don't have fsqrt or fsqrts in hardware.
+// Use Burgerlib's Sqrt() which is optimized PPC code
 
 extern double sqrt(double);
 

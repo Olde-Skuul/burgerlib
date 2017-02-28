@@ -42,12 +42,12 @@ extern double __cdecl fabs(double);
 extern double __cdecl sqrt(double);
 #pragma intrinsic(fabs,sqrt)
 
-#if defined(BURGER_AMD64) || defined(BURGER_ARM)
+#if defined(BURGER_AMD64) || defined(BURGER_ARMARCHITECTURE)
 extern float __cdecl sqrtf(float);
 #pragma intrinsic(sqrtf)
 #endif
 
-#if defined(BURGER_ARM)
+#if defined(BURGER_ARMARCHITECTURE)
 extern float __cdecl fabsf(float);
 #pragma intrinsic(fabsf)
 #endif
@@ -74,6 +74,10 @@ extern void __cpuidex(int [4],int,int);
 #pragma intrinsic(__cpuidex)
 #endif
 
+Word8 _BitScanForward(unsigned long *Index,unsigned long Mask);
+Word8 _BitScanReverse(unsigned long *Index,unsigned long Mask);
+#pragma intrinsic(_BitScanForward,_BitScanReverse)
+
 #endif
 
 long __cdecl _InterlockedExchange(long volatile*,long);
@@ -91,9 +95,23 @@ __int64 _InterlockedExchangeAdd64(__int64 volatile*,__int64);
 __int64 _InterlockedCompareExchange64(__int64 volatile*,__int64,__int64);
 #pragma intrinsic(_InterlockedExchange64,_InterlockedIncrement64,_InterlockedDecrement64,_InterlockedExchangeAdd64,_InterlockedCompareExchange64)
 
-#if _MSC_VER<1500		// Visual studio 2005 and earlier don't have these SSE type conversions
+#if defined(BURGER_INTELARCHITECTURE)
+Word8 _BitScanForward64(unsigned long *Index,Word64 Mask);
+Word8 _BitScanReverse64(unsigned long *Index,Word64 Mask);
+#pragma intrinsic(_BitScanForward64,_BitScanReverse64)
+#endif
+
+// Visual studio 2005 and earlier don't have these SSE type conversions
+
+#if defined(BURGER_AMD64) && (_MSC_VER<1500)
 BURGER_INLINE float _mm_cvtss_f32(__m128 vInput) { return vInput.m128_f32[0]; }
 BURGER_INLINE double _mm_cvtsd_f64(__m128d vInput) { return vInput.m128d_f64[0]; }
+BURGER_INLINE __m128 _mm_castpd_ps(__m128d vInput) { union { __m128d a; __m128 b; } x; x.a = vInput; return x.b; }
+BURGER_INLINE __m128i _mm_castpd_si128(__m128d vInput) { union { __m128d a; __m128i b; } x; x.a = vInput; return x.b; }
+BURGER_INLINE __m128d _mm_castps_pd(__m128 vInput) { union { __m128 a; __m128d b; } x; x.a = vInput; return x.b; }
+BURGER_INLINE __m128i _mm_castps_si128(__m128 vInput) { union { __m128 a; __m128i b; } x; x.a = vInput; return x.b; }
+BURGER_INLINE __m128 _mm_castsi128_ps(__m128i vInput) { union { __m128i a; __m128 b; } x; x.a = vInput; return x.b; }
+BURGER_INLINE __m128d _mm_castsi128_pd(__m128i vInput) { union { __m128i a; __m128d b; } x; x.a = vInput; return x.b; }
 #endif
 
 #endif
@@ -104,54 +122,146 @@ BURGER_INLINE double _mm_cvtsd_f64(__m128d vInput) { return vInput.m128d_f64[0];
 
 #if defined(BURGER_INTELARCHITECTURE) && (defined(BURGER_LLVM) || defined(BURGER_GNUC))
 
+#if defined(BURGER_X86) && defined(__PIC__)
+
+// If PIC is enabled, EBX / RBX is the pointer to the local data
+// so it must be preserved
+
 BURGER_INLINE void __cpuid(int a[4],int b) {
-	__asm__ __volatile__("cpuid"
-	: "=a" ((a)[0]), "=b" ((a)[1]), "=c" ((a)[2]), "=d" ((a)[3])
-	: "0" (b), "2" (0));
+	__asm__ __volatile__(
+		"pushl	%%ebx\n" \
+		"cpuid\n" \
+		"movl	%%ebx,%1\n" \
+		"popl	%%ebx"
+		: "=a" ((a)[0]), "=r" ((a)[1]), "=c" ((a)[2]), "=d" ((a)[3])
+		: "0" (b));
 }
 
 BURGER_INLINE void __cpuidex(int a[4],int b,int c) {
-	__asm__ __volatile__("cpuid"
+	__asm__ __volatile__(
+		"pushl	%%ebx\n" \
+		"cpuid\n" \
+		"movl	%%ebx,%1\n" \
+		"popl	%%ebx"
+		: "=a" ((a)[0]), "=r" ((a)[1]), "=c" ((a)[2]), "=d" ((a)[3])
+		: "0" (b),"2" (c));
+}
+
+#elif defined(BURGER_AMD64) && defined(__PIC__)
+
+BURGER_INLINE void __cpuid(int a[4],int b) {
+	__asm__ __volatile__(
+		"pushq	%%rbx\n" \
+		"cpuid\n" \
+		"movl	%%ebx,%1\n" \
+		"popq	%%rbx"
+		: "=a" ((a)[0]), "=r" ((a)[1]), "=c" ((a)[2]), "=d" ((a)[3]) 
+		: "0" (b));
+}
+
+BURGER_INLINE void __cpuidex(int a[4],int b,int c) {
+	__asm__ __volatile__(
+		"pushq	%%rbx\n" \
+		"cpuid\n" \
+		"movl	%%ebx,%1\n" \
+		"popq	%%rbx"
+		: "=a" ((a)[0]), "=r" ((a)[1]), "=c" ((a)[2]), "=d" ((a)[3])
+		: "0" (b),"2" (c));
+}
+
+#else
+
+BURGER_INLINE void __cpuid(int a[4],int b) {
+	__asm__ __volatile__(
+		"cpuid"
+		: "=a" ((a)[0]), "=b" ((a)[1]), "=c" ((a)[2]), "=d" ((a)[3])
+		: "0" (b));
+}
+
+BURGER_INLINE void __cpuidex(int a[4],int b,int c) {
+	__asm__ __volatile__(
+		"cpuid"
 		: "=a" ((a)[0]), "=b" ((a)[1]), "=c" ((a)[2]), "=d" ((a)[3])
 		: "0" (b), "2" (c));
 }
 
-#elif defined(BURGER_X86)
+#endif
 
-#if defined(BURGER_METROWERKS)
+BURGER_INLINE Word32 _BitScanForward(unsigned long *Index,unsigned long Mask)
+{
+	Word8 bZero;
+	__asm__("bsf %2, %0 \n \
+			setne %1" : "=r" (*Index), "=q" (bZero) : "mr" (Mask));
+	return bZero;
+}
+
+BURGER_INLINE Word32 _BitScanReverse(unsigned long *Index,unsigned long Mask)
+{
+	Word8 bZero;
+	__asm__("bsr %2, %0 \n \
+			setne %1" : "=r" (*Index), "=q" (bZero) : "mr" (Mask));
+	return bZero;
+}
+
+#elif defined(BURGER_PPC) && defined(BURGER_MSVC)
+
+#define __cntlzw(x) _CountLeadingZeros(x)
+#define __cntlzd(x) _CountLeadingZeros64(x)
+
+#elif defined(BURGER_X86) && defined(BURGER_METROWERKS)
 
 BURGER_INLINE void __cpuid(int a[4],int b) {
-	asm {
-		mov	esi,a		// Get the pointer to the destination buffer
-		mov eax,b		// Command byte
-		xor ecx,ecx		// Set to zero (Duplicates behavior in Visual C)
-		cpuid			// Invoke CPUID
-		mov [esi],eax	// Store the result in the same order as Visual C
-		mov [esi+4],ebx
-		mov [esi+8],ecx
-		mov [esi+12],edx
-	}
+BURGER_ASM {
+	mov	esi,a		// Get the pointer to the destination buffer
+	mov eax,b		// Command byte
+	cpuid			// Invoke CPUID
+	mov [esi],eax	// Store the result in the same order as Visual C
+	mov [esi+4],ebx
+	mov [esi+8],ecx
+	mov [esi+12],edx
+}
 }
 
 BURGER_INLINE void __cpuidex(int a[4],int b,int c) {
-	asm {
-		mov	esi,a		// Get the pointer to the destination buffer
-		mov eax,b		// Command byte
-		mov ecx,c		// Get the sub command
-		cpuid			// Invoke CPUID
-		mov [esi],eax	// Store the result in the same order as Visual C
-		mov [esi+4],ebx
-		mov [esi+8],ecx
-		mov [esi+12],edx
-	}
+BURGER_ASM {
+	mov	esi,a		// Get the pointer to the destination buffer
+	mov eax,b		// Command byte
+	mov ecx,c		// Get the sub command
+	cpuid			// Invoke CPUID
+	mov [esi],eax	// Store the result in the same order as Visual C
+	mov [esi+4],ebx
+	mov [esi+8],ecx
+	mov [esi+12],edx
+}
 }
 
-#elif defined(BURGER_WATCOM)
+BURGER_INLINE Word32 _BitScanForward(register unsigned long *Index,register unsigned long Mask)
+{
+BURGER_ASM {
+	mov	eax,Mask
+	mov ebx,Index
+	bsf	eax,eax
+	mov	dword ptr [ebx],eax
+	setne al
+}
+}
+
+BURGER_INLINE Word32 _BitScanReverse(register unsigned long *Index,register unsigned long Mask)
+{
+BURGER_ASM {
+	mov	eax,Mask
+	mov ebx,Index
+	bsr	eax,eax
+	mov	dword ptr [ebx],eax
+	setne al
+}
+}
+
+#elif defined(BURGER_X86) && defined(BURGER_WATCOM)
 
 extern void __cpuid(int a[4],int b);
 
 #pragma aux __cpuid = \
-	"xor ecx,ecx" \
 	"cpuid" \
 	"mov [esi+0],eax" \
 	"mov [esi+4],ebx" \
@@ -169,9 +279,24 @@ extern void __cpuidex(int a[4],int b,int c);
 	"mov [esi+12],edx" \
 	parm [esi] [eax] [ecx] modify [ebx ecx edx];
 
-#endif
+extern Word32 _BitScanForward(unsigned long *Index,unsigned long Mask);
+
+#pragma aux _BitScanForward = \
+	"bsf eax,eax" \
+	"mov dword ptr [edx],eax" \
+	"setne al" \
+	parm [eax] [ecx] value [eax] modify exact [eax];
+
+extern Word32 _BitScanReverse(unsigned long *Index,unsigned long Mask);
+
+#pragma aux _BitScanReverse = \
+	"bsr eax,eax" \
+	"mov dword ptr [edx],eax" \
+	"setne al" \
+	parm [eax] [ecx] value [eax] modify exact [eax];
 
 #endif
+
 /* END */
 
 #endif

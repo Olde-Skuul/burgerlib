@@ -53,6 +53,7 @@
 /* BEGIN */
 struct timespec;
 namespace Burger {
+
 struct TimeDate_t {
 	Word32 m_uYear;				///< Year "2009"
 	Word16 m_usMilliseconds;	///< 0-999
@@ -62,6 +63,7 @@ struct TimeDate_t {
 	Word8 m_bHour;				///< 0-23
 	Word8 m_bMinute;			///< 0-59
 	Word8 m_bSecond;			///< 0-59
+
 	void Clear(void);
 	void GetTime(void);
 	void TimeToString(char *pOutput) const;
@@ -81,22 +83,29 @@ struct TimeDate_t {
 	Word StoreTimeT(WordPtr *pTimeT) const;
 	Word Load(const timespec *pTimeSpec);
 	Word Store(timespec *pTimeSpec) const;
+
 #if defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(DOXYGEN)
 	Word Load(const _FILETIME *pFileTime);
 	Word Store(_FILETIME *pFileTime) const;
 #endif
+
 #if defined(BURGER_MSDOS) || defined(DOXYGEN)
 	void LoadMSDOS(Word32 uMSDOSTime);
 	Word32 StoreMSDOS(void) const;
 #endif
+
 #if defined(BURGER_MACOS) || defined(DOXYGEN)
 	Word Load(const UTCDateTime *pUTCDateTime);
 	Word Store(UTCDateTime *pUTCDateTime) const;
+	void LoadFileSeconds(Word32 uTime);
+	Word32 GetFileSeconds(void) const;
 #endif
+
 #if defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(DOXYGEN)
 	Word Load(double dNSTimeInterval);
 	Word Store(double *pNSTimeInterval) const;
 #endif
+
 #if defined(BURGER_VITA) || defined(DOXYGEN)
 	Word Load(const SceDateTime *pSceDateTime);
 	Word Store(SceDateTime *pSceDateTime) const;

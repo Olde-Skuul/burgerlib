@@ -356,17 +356,20 @@ const Word16 Burger::g_NoString16[3] = {'n','o',0};
 
 /*! ************************************
 
-	\var const Word8 Burger::g_AsciiTestTable[128]
+	\var const Word8 Burger::g_AsciiTestTable[256]
 	\brief Table to quickly determine the type of low ASCII character.
 	
 	This table is used for code to quickly determine if an
 	ASCII code from 0 to 127 is upper case, lower case, whitespace, etc.
+	
+	Entries 128-255 are all zeros, because they are escape codes
+	for UTF-8 lookup
 
 	\sa Burger::ASCII_CONTROL,Burger::ASCII_UPPER,Burger::ASCII_LOWER or Burger::ASCII_PUNCTUATION
 
 ***************************************/
 
-const Word8 BURGER_ALIGN(Burger::g_AsciiTestTable[128],16) = {
+const Word8 BURGER_ALIGN(Burger::g_AsciiTestTable[256],16) = {
 	Burger::ASCII_CONTROL,								// 00 (NUL)
 	Burger::ASCII_CONTROL,								// 01 (SOH)
 	Burger::ASCII_CONTROL,								// 02 (STX)
@@ -494,7 +497,15 @@ const Word8 BURGER_ALIGN(Burger::g_AsciiTestTable[128],16) = {
 	Burger::ASCII_PUNCTUATION,							// 7C |
 	Burger::ASCII_PUNCTUATION,							// 7D }
 	Burger::ASCII_PUNCTUATION,							// 7E ~
-	Burger::ASCII_CONTROL								// 7F (DEL)
+	Burger::ASCII_CONTROL,								// 7F (DEL)
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,					// 80-8F
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,					// 90-9F
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,					// A0-AF
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,					// B0-BF
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,					// C0-CF
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,					// D0-DF
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,					// E0-EF
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0						// F0-FF
 };
 
 /*! ************************************
@@ -698,34 +709,34 @@ Word32 BURGER_API Burger::WordToBCD(Word32 uInput)
 		Word32 uTemp;
 		uOutput = 0;			// Init output
 		// Because divides cost so much, Try to skip them with branches
-		if (uInput>=1000000) {
-			uTemp = uInput/10000000;
-			uOutput = uTemp<<28;
-			uInput -= uTemp*10000000;
-			uTemp = uInput/1000000;
-			uOutput |= uTemp<<24;
-			uInput -= uTemp*1000000;
+		if (uInput>=1000000U) {
+			uTemp = uInput/10000000U;
+			uOutput = uTemp<<28U;
+			uInput -= uTemp*10000000U;
+			uTemp = uInput/1000000U;
+			uOutput |= uTemp<<24U;
+			uInput -= uTemp*1000000U;
 		}
-		if (uInput>=10000) {
-			uTemp = uInput/100000;
-			uOutput |= uTemp<<20;
-			uInput -= uTemp*100000;
-			uTemp = uInput/10000;
-			uOutput |= uTemp<<16;
-			uInput -= uTemp*10000;
+		if (uInput>=10000U) {
+			uTemp = uInput/100000U;
+			uOutput |= uTemp<<20U;
+			uInput -= uTemp*100000U;
+			uTemp = uInput/10000U;
+			uOutput |= uTemp<<16U;
+			uInput -= uTemp*10000U;
 		}
-		if (uInput>=100) {
-			uTemp = uInput/1000;
-			uOutput |= uTemp<<12;
-			uInput -= uTemp*1000;
-			uTemp = uInput/100;
-			uOutput |= uTemp<<8;
-			uInput -= uTemp*100;
+		if (uInput>=100U) {
+			uTemp = uInput/1000U;
+			uOutput |= uTemp<<12U;
+			uInput -= uTemp*1000U;
+			uTemp = uInput/100U;
+			uOutput |= uTemp<<8U;
+			uInput -= uTemp*100U;
 		}
 		// Just do the last two digits.
-		uTemp = uInput/10;
-		uOutput |= uTemp<<4;
-		uInput -= uTemp*10;	
+		uTemp = uInput/10U;
+		uOutput |= uTemp<<4U;
+		uInput -= uTemp*10U;	
 
 		uOutput |= uInput;
 	}
@@ -748,9 +759,7 @@ Word32 BURGER_API Burger::WordToBCD(Word32 uInput)
 
 ***************************************/
 
-// Watcom, Metrowerks and Visual C version (Note, assembly is only allowed for 32 bit mode)
-
-#if ((defined(BURGER_WATCOM) || defined(BURGER_FASTCALLENABLED)) && defined(BURGER_X86)) && !defined(DOXYGEN)
+#if defined(BURGER_X86) && (defined(BURGER_WATCOM) || defined(BURGER_FASTCALLENABLED))
 
 BURGER_DECLSPECNAKED Word32 BURGER_API Burger::PowerOf2(Word32 /* uInput */)
 {
@@ -787,49 +796,59 @@ BURGER_DECLSPECNAKED Word32 BURGER_API Burger::PowerOf2(Word32 /* uInput */)
 	}
 }
 
-// Metrowerks PowerPC version
-#elif (defined(BURGER_POWERPC) && defined(BURGER_METROWERKS)) && !defined(DOXYGEN)
-asm Word32 BURGER_API Burger::PowerOf2(register Word32 uInput)
-{
-	subi	r4,r3,1			// Adjust the input
-	neg		r5,r4			// Test r4 for zero
-	cntlzw	r3,r4			// Count the leading zeros
-	or		r5,r5,r4
-	subfic	r0,r3,32		// I want the reverse to the count
-	srwi	r5,r5,31		// if r4 was zero, r5 = 0, else 1
-	xori	r4,r5,1			// Get the reverse of r5
-	slw		r3,r5,r0		// Shift 1<<count or 0<<count (Can overflow which is okay)
-	add		r3,r3,r4		// Add in 1 in case of 0<<count
-	blr
-}
+#elif (defined(BURGER_AMD64) && defined(BURGER_MSVC)) || (defined(BURGER_INTELARCHITECTURE) && (defined(BURGER_GNUC) || defined(BURGER_LLVM)))
 
-// GNU version for MacOSX
-#elif defined(BURGER_INTELARCHITECTURE) && defined(BURGER_GNUC) && !defined(DOXYGEN)
 Word32 BURGER_API Burger::PowerOf2(Word32 uInput)
 {
 	// Use the Intel instruction Bit Scan Reverse to 
 	// speed up the bit search
-	Word8 bZero;
+
 	// Force 0x4000 to be 0x3fff so in the end
 	// it's changed back to 0x4000
 	--uInput;
+
 	// Find the LEFTMOST bit, uInput will have 0x00 to 0x1F
 	// Zero will set the zero flag and leave uInput undefined
-	__asm__("bsr %1,%1 \n \
-			setne %0" : "=a" (bZero),
-			 "+r" (uInput)
-			);
-	// Convert the byte to a 32 bit value
-	Word uZero = bZero;
+	unsigned long uResult;
+	Word32 uZero = _BitScanReverse(&uResult,uInput);
+
 	// This handles all but the 0 case (0x1 is input)
 	// In the zero case, uZero is 0, so the result is zero
-	uInput = uZero<<uInput;
+	uResult = uZero<<uResult;
 	// I'm one bit shy, so shift up one bit and use
 	// an add for Intel efficiency
 	// and finally, for the zero case, or with 1
 	// if the input was 1 (1-1) -> 0, so, uZero^1 = 1+0 = 1
-	return uInput+uInput+(uZero^1);
+	return uResult+uResult+(uZero^1);
 }
+
+// PowerPC version
+#elif defined(BURGER_XBOX360) || (defined(BURGER_PPC) && (defined(BURGER_METROWERKS) || defined(BURGER_GNUC) || defined(BURGER_LLVM)))
+
+Word32 BURGER_API Burger::PowerOf2(Word32 uInput)
+{
+	--uInput;
+	// Count leading zeros (Reverse the count)
+	Word32 uReverseCount = 32U-__cntlzw(uInput);
+	// Test for 0
+	Word32 uMask = ((0-uInput)|uInput)>>31U;
+	// Add in 1 in case ofuReverseCount == 32
+	return (uMask<<uReverseCount)+(uMask^1);
+}
+
+#elif defined(BURGER_ARMARCHITECTURE)
+
+Word32 BURGER_API Burger::PowerOf2(Word32 uInput)
+{
+	--uInput;
+	// Count leading zeros (Reverse the count)
+	Word32 uReverseCount = 32U-__builtin_clz(uInput);
+	// Test for 0
+	Word32 uMask = ((0-uInput)|uInput)>>31U;
+	// Add in 1 in case ofuReverseCount == 32
+	return (uMask<<uReverseCount)+(uMask^1);
+}
+
 
 #else
 
@@ -843,19 +862,6 @@ Word32 BURGER_API Burger::PowerOf2(Word32 uInput)
 	// the or's and shifts do nothing and 0x00 will be
 	// returned due to overflow
 	
-	// The 64 bit PowerPC compiler has a bug when
-	// returning a 32 bit value. It doesn't truncate properly
-	// so this alternate version passes the unit tests.
-#if defined(BURGER_GNUC) && defined(BURGER_POWERPC)
-	--uInput;
-	// Count leading zeros (Reverse the count)
-	Word32 uReverseCount = 32U-__builtin_clz(uInput);
-	// Test for 0
-	Word32 uMask = ((0-uInput)|uInput)>>31U;
-	// Add in 1 in case ofuReverseCount == 32
-	return (uMask<<uReverseCount)+(uMask^1);
-	
-#else
 	--uInput;				// Adjust the input
 	uInput |= uInput>>1U;	// Blend in the odd bits.
 	uInput |= uInput>>2U;	// Now, every 2nd bit
@@ -863,10 +869,9 @@ Word32 BURGER_API Burger::PowerOf2(Word32 uInput)
 	uInput |= uInput>>8U;	// Every 8th bit
 	uInput |= uInput>>16U;	// Final pass!
 	++uInput;				// Inc and I have the power of 2
-	return uInput;
-#endif
-	
+	return uInput;	
 }
+
 #endif
 
 /*! ************************************
@@ -885,6 +890,21 @@ Word32 BURGER_API Burger::PowerOf2(Word32 uInput)
 	
 ***************************************/
 
+// PowerPC version
+#if defined(BURGER_XBOX360) || (defined(BURGER_POWERPC64) && (defined(BURGER_METROWERKS) || defined(BURGER_GNUC) || defined(BURGER_LLVM)))
+
+Word64 BURGER_API Burger::PowerOf2(Word64 uInput)
+{
+	--uInput;
+	// Count leading zeros (Reverse the count)
+	Word64 uReverseCount = 64U-__cntlzd(uInput);
+	// Test for 0
+	Word64 uMask = ((0-uInput)|uInput)>>63U;
+	// Add in 1 in case ofuReverseCount == 64
+	return (uMask<<uReverseCount)+(uMask^1);
+}
+
+#else
 Word64 BURGER_API Burger::PowerOf2(Word64 uInput)
 {
 	// To do this, I blend the bits so from the highest will set
@@ -906,6 +926,7 @@ Word64 BURGER_API Burger::PowerOf2(Word64 uInput)
 	return uInput;
 }
 
+#endif
 
 /*! ************************************
 
@@ -2595,7 +2616,7 @@ void BURGER_API Burger::SetFileExtension(char* pInput,const char* pNewExtension)
 	
 ***************************************/
 
-#if defined(BURGER_POWERPC)
+#if defined(BURGER_PPC)
 
 /***************************************
 

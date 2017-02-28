@@ -36,7 +36,7 @@
 
 WordPtr BURGER_API Burger::SDBMHashFunctor(const void *pData,WordPtr uDataSize)
 {
-	return SDBMHash(pData,uDataSize); 
+	return SDBMHash(pData,uDataSize);
 }
 
 /*! ************************************
@@ -55,7 +55,7 @@ WordPtr BURGER_API Burger::SDBMHashFunctor(const void *pData,WordPtr uDataSize)
 
 WordPtr BURGER_API Burger::SDBMHashCaseFunctor(const void *pData,WordPtr uDataSize)
 {
-	return SDBMHashCase(pData,uDataSize); 
+	return SDBMHashCase(pData,uDataSize);
 }
 
 /*! ************************************
@@ -74,7 +74,7 @@ WordPtr BURGER_API Burger::SDBMHashCaseFunctor(const void *pData,WordPtr uDataSi
 
 WordPtr BURGER_API Burger::DJB2HashAddFunctor(const void *pData,WordPtr uDataSize)
 {
-	return DJB2HashAdd(pData,uDataSize); 
+	return DJB2HashAdd(pData,uDataSize);
 }
 
 /*! ************************************
@@ -93,7 +93,7 @@ WordPtr BURGER_API Burger::DJB2HashAddFunctor(const void *pData,WordPtr uDataSiz
 
 WordPtr BURGER_API Burger::DJB2HashAddCaseFunctor(const void *pData,WordPtr uDataSize)
 {
-	return DJB2HashAddCase(pData,uDataSize); 
+	return DJB2HashAddCase(pData,uDataSize);
 }
 
 /*! ************************************
@@ -112,7 +112,7 @@ WordPtr BURGER_API Burger::DJB2HashAddCaseFunctor(const void *pData,WordPtr uDat
 
 WordPtr BURGER_API Burger::DJB2HashXorFunctor(const void *pData,WordPtr uDataSize)
 {
-	return DJB2HashXor(pData,uDataSize); 
+	return DJB2HashXor(pData,uDataSize);
 }
 
 /*! ************************************
@@ -131,7 +131,7 @@ WordPtr BURGER_API Burger::DJB2HashXorFunctor(const void *pData,WordPtr uDataSiz
 
 WordPtr BURGER_API Burger::DJB2HashXorCaseFunctor(const void *pData,WordPtr uDataSize)
 {
-	return DJB2HashXorCase(pData,uDataSize); 
+	return DJB2HashXorCase(pData,uDataSize);
 }
 
 /*! ************************************
@@ -1003,7 +1003,7 @@ void BURGER_API Burger::HashMapShared::Clear(void)
 void BURGER_API Burger::HashMapShared::Resize(WordPtr uNewSize) 
 {
 	if (uNewSize < m_uEntryCount) {
-		uNewSize = m_uEntryCount; 
+		uNewSize = m_uEntryCount;
 	}
 	CreateHashBuffer(uNewSize);
 }

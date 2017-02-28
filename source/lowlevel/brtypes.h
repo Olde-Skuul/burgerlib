@@ -114,7 +114,6 @@
 #define BURGER_PREALIGN(s)
 #define BURGER_POSTALIGN(s) __attribute__((aligned(s)))
 #define BURGER_STRUCT_PACK
-#define BURGER_POWERPC
 #define BURGER_GEKKO
 #if defined(RVL_SDK)
 #define BURGER_WII
@@ -134,10 +133,24 @@
 #define BURGER_DS
 #define BURGER_LITTLEENDIAN
 
-// Android (Shield)
+// Android (Shield) (Ouya) (Amazon Fire)
 #elif defined(ANDROID)
 #define BURGER_GNUC
+#if defined(__arm__)
 #define BURGER_ARM
+#elif defined(__arm64__) || defined(__aarch64__)
+#define BURGER_ARM64
+#define BURGER_64BITCPU
+#elif defined(__i386__)
+#define BURGER_X86
+#elif defined(__x86_64__)
+#define BURGER_AMD64
+#define BURGER_64BITCPU
+#elif defined(__mips__)
+#define BURGER_MIPS
+#else
+#error Unknown Android CPU
+#endif
 #define BURGER_SHIELD
 #define BURGER_ANDROID
 #define BURGER_LITTLEENDIAN
@@ -157,8 +170,8 @@
 #define BURGER_STRUCT_PACKPUSH
 
 #if !defined(_M_IX86)
-#define BURGER_POWERPC
 #define BURGER_BIGENDIAN
+#define BURGER_POWERPC64
 #define BURGER_XBOX360
 #define BURGER_64BITCPU
 #else
@@ -178,7 +191,7 @@
 
 #elif defined(__CELLOS_LV2__)
 #define BURGER_GNUC
-#define BURGER_POWERPC
+#define BURGER_POWERPC64
 #define BURGER_BIGENDIAN
 #define BURGER_PS3
 #define BURGER_64BITCPU
@@ -235,6 +248,7 @@
 #define BURGER_ALIGN(x,s) __declspec(align(s)) (x)
 #define BURGER_PREALIGN(s) __declspec(align(s))
 #define BURGER_POSTALIGN(s)
+#define BURGER_DECLSPECNAKED asm
 #endif
 
 #elif defined(__MACH__)
@@ -242,12 +256,14 @@
 #define BURGER_MACOSX
 #define BURGER_POWERPC
 #define BURGER_BIGENDIAN
+#define BURGER_DECLSPECNAKED asm
 
 #elif !defined(__be_os) || (__be_os != __dest_os)
 #define BURGER_STRUCT_PACKPUSH
 #define BURGER_WIN32
 #define BURGER_X86
 #define BURGER_LITTLEENDIAN
+#define BURGER_INLINE __inline
 
 #if __MWERKS__>=0x3200
 #define BURGER_ANSIAPI __cdecl
@@ -269,6 +285,7 @@
 #if !defined(__POWERPC__)
 #define BURGER_X86
 #define BURGER_LITTLEENDIAN
+#define BURGER_DECLSPECNAKED asm
 #else
 #define BURGER_POWERPC
 #define BURGER_BIGENDIAN
@@ -315,13 +332,15 @@
 #define BURGER_DECLSPECNAKED int int not supported
 
 #elif defined(__ppc64__)
-#define BURGER_POWERPC
+#define BURGER_POWERPC64
 #define BURGER_BIGENDIAN
+#define BURGER_DECLSPECNAKED asm
 #define BURGER_64BITCPU
 
 #elif defined(__ppc__)
 #define BURGER_POWERPC
 #define BURGER_BIGENDIAN
+#define BURGER_DECLSPECNAKED asm
 
 #elif defined(__arm__)
 #define BURGER_ARM
@@ -413,7 +432,6 @@
 #define BURGER_PREALIGN(s)
 #define BURGER_POSTALIGN(s) __attribute__((aligned(s)))
 #define BURGER_STRUCT_ALIGN
-#define BURGER_POWERPC
 #define BURGER_GEKKO
 #define BURGER_BIGENDIAN
 #define NDEBUG
@@ -432,6 +450,16 @@
 // Intel x86 or AMD 64 CPU?
 #if defined(BURGER_X86) || defined(BURGER_AMD64)
 #define BURGER_INTELARCHITECTURE
+#endif
+
+// PowerPC cpus
+#if defined(BURGER_POWERPC) || defined(BURGER_POWERPC64) || defined(BURGER_GEKKO)
+#define BURGER_PPC
+#endif
+
+// ARM CPUs
+#if defined(BURGER_ARM) || defined(BURGER_ARM64)
+#define BURGER_ARMARCHITECTURE
 #endif
 
 // MacOS has two binaries, CFM and Trap
@@ -517,7 +545,7 @@
 #endif
 #endif
 
-// Stucture alignment macros defaults
+// Structure alignment macros defaults
 #ifndef BURGER_ALIGN
 #define BURGER_ALIGN(x,s) x
 #endif
@@ -538,6 +566,15 @@
 #else
 #define BURGER_BIGENDIAN
 #endif
+#endif
+
+// Create the endian indexes
+#if defined(BURGER_LITTLEENDIAN) || defined(DOXYGEN)
+#define BURGER_ENDIANINDEX_LOW 0
+#define BURGER_ENDIANINDEX_HIGH 1
+#else
+#define BURGER_ENDIANINDEX_LOW 1
+#define BURGER_ENDIANINDEX_HIGH 0
 #endif
 
 // Sanity check for debug defines
@@ -587,9 +624,9 @@ typedef signed short Int16;
 typedef unsigned short Word16;
 typedef signed int Int32;
 typedef unsigned int Word32;
-
 typedef signed BURGER_LONGLONG Int64;
 typedef unsigned BURGER_LONGLONG Word64;
+
 typedef Word8 Bool;
 typedef Int32 Frac32;
 typedef Int32 Fixed32;
@@ -613,6 +650,12 @@ typedef vec_float4 Vector_128;
 #endif
 typedef __m128 Vector_128;
 
+#elif defined(BURGER_INTELARCHITECTURE) && (defined(BURGER_MSVC) || defined(BURGER_XBOX))
+#ifndef _INCLUDED_EMM
+#include <emmintrin.h>
+#endif
+typedef __m128 Vector_128;
+
 #elif defined(BURGER_XBOX360)
 #ifndef __PPCINTRINSICS_H__
 #include <ppcintrinsics.h>
@@ -621,12 +664,6 @@ typedef __m128 Vector_128;
 #include <vectorintrinsics.h>
 #endif
 typedef __vector4 Vector_128;
-
-#elif defined(BURGER_MSVC) || defined(BURGER_XBOX)
-#ifndef _INCLUDED_EMM
-#include <emmintrin.h>
-#endif
-typedef __m128 Vector_128;
 
 #elif defined(BURGER_METROWERKS) && defined(BURGER_X86)
 #ifndef _XMMINTRIN_H
@@ -691,7 +728,7 @@ BURGER_INLINE void* BURGER_ANSIAPI operator new(size_t, void*x) {return x;}
 #elif defined(__GNUC__) && defined(__MACH__) && (defined(__APPLE_CPP__) || defined(__APPLE_CC__) || defined(__NEXT_CPP__))
 BURGER_INLINE void* operator new(unsigned long int,void *x) {return x;}
 
-#elif defined(BURGER_PS4)
+#elif defined(BURGER_PS4) || (defined(BURGER_ANDROID) && defined(BURGER_64BITCPU))
 BURGER_INLINE void* operator new(unsigned long, void*x) {return x;}
 
 #elif defined(BURGER_ANDROID) || defined(BURGER_SNSYSTEMS) || defined(BURGER_GHS)

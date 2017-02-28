@@ -26,7 +26,7 @@ extern "C" double sqrt(double);
 extern "C" float fabsf(float);
 extern "C" double fabs(double);
 
-#if defined(BURGER_POWERPC)
+#if defined(BURGER_PPC)
 
 BURGER_INLINE float __sqrt(float fA)
 {
@@ -56,6 +56,51 @@ BURGER_INLINE double __fsel(double dA,double dB,double dC)
 	return dD; 
 }
 
+BURGER_INLINE double __fnabs(double dA)
+{
+	double dD;
+	__asm__("fnabs %0, %1" : "=f" (dD) : "f" (dA));
+	return dD;
+}
+
+BURGER_INLINE double __fctiw(double dA)
+{	
+	double dD;
+	__asm__("fctiw %0, %1" : "=f" (dD) : "f" (dA));
+	return dD;
+}
+
+BURGER_INLINE double __fctiwz(double dA)
+{
+	double dD;
+	__asm__("fctiwz %0, %1" : "=f" (dD) : "f" (dA));
+	return dD;
+}
+
+BURGER_INLINE double __fctidz(double dA)
+{
+	double dD;
+	__asm__("fctidz %0, %1" : "=f" (dD) : "f" (dA));
+	return dD;
+}
+
+BURGER_INLINE double __fctid(double dA)
+{
+	double dD;
+	__asm__("fctid %0, %1" : "=f" (dD) : "f" (dA));
+	return dD;
+}
+
+BURGER_INLINE double __fcfid(double dA)
+{
+	double dD;
+	__asm__ ("fcfid %0, %1" : "=f" (dD) : "f" (dA));
+	return dD;
+}
+
+#define __stfiwx(dA,iBase,iIndex) \
+	__asm__("stfiwx %0, %1, %2" : : "f" (dA), "b%" (iIndex), "r" (iBase) : "memory")
+
 // Must be macros due to the fact that the input is also an output
 #define __rlwimi(rA,rS,cnt,mb,me) ({ __asm__("rlwimi %0,%2,%3,%4,%5":"=r" (rA) : "0"(rA), "r"(rS),"n"(cnt),"n"(mb),"n"(me)); rA; })
 #define __rlwinm(rS,cnt,mb,me) ({ int rA; __asm__("rlwinm %0,%1,%2,%3,%4":"=r" (rA) : "r"(rS),"n"(cnt),"n"(mb),"n"(me)); rA; } )
@@ -82,6 +127,20 @@ BURGER_INLINE void __sthbrx(Word16 uValue,void *pInput,int offset)
 BURGER_INLINE void __stwbrx(Word32 uValue,void *pInput,int offset)
 {
 	__asm__("stwbrx %0,%1,%2": : "r"(uValue),"b%"(offset),"r"(pInput) : "memory");
+}
+
+BURGER_INLINE Word32 __cntlzw(Word32 uInput) 
+{
+	Word32 uResult;
+	__asm__("cntlzw %0,%1":"=r"(uResult) : "r"(uInput));
+	return uResult; 
+}
+
+BURGER_INLINE Word64 __cntlzd(Word64 uInput) 
+{
+	Word64 uResult;
+	__asm__("cntlzd %0,%1":"=r"(uResult) : "r"(uInput));
+	return uResult; 
 }
 
 #endif

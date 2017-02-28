@@ -672,7 +672,7 @@ void BURGER_API Burger::Hash(GOST_t *pOutput,const void *pInput,WordPtr uLength)
 	MemoryCopy(pOutput,&Context.m_Hash,32);
 }
 
-/*!************************************
+/*! ************************************
 
 	\brief Calculate a GOST polynomial table
 

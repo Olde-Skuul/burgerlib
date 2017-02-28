@@ -103,31 +103,29 @@ void BURGER_API Burger::SHA1Hasher_t::Init(void)
 
 void BURGER_API Burger::SHA1Hasher_t::Process(const Word8 *pBlock)
 {
-	Word32 block[16];
-	Word32 i = 0;
+	Word32 DataBlock[16];
+	WordPtr i = 0;
 	const Word32 *pBlock32 = static_cast<const Word32 *>(static_cast<const void *>(pBlock));
 	do {
-		block[i] = BigEndian::LoadAny(pBlock32+i);
+		DataBlock[i] = BigEndian::LoadAny(pBlock32+i);
 	} while (++i<16);
 
-	Word32 *pHash32 = static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash));
-
 	// Make a copy of the hash integers 
-	Word32 a = BigEndian::Load(pHash32);
-	Word32 b = BigEndian::Load(pHash32+1);
-	Word32 c = BigEndian::Load(pHash32+2);
-	Word32 d = BigEndian::Load(pHash32+3);
-	Word32 e = BigEndian::Load(pHash32+4);
+	Word32 a = BigEndian::Load(static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash+0)));
+	Word32 b = BigEndian::Load(static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash+4)));
+	Word32 c = BigEndian::Load(static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash+8)));
+	Word32 d = BigEndian::Load(static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash+12)));
+	Word32 e = BigEndian::Load(static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash+16)));
 
 #if !defined(DOXYGEN)
-#define blk(i) (block[i&15] = RotateLeft(block[(i+13)&15] ^ block[(i+8)&15] ^ block[(i+2)&15] ^ block[i&15],1))
+#define blk(i) (DataBlock[i&15] = RotateLeft(DataBlock[(i+13)&15] ^ DataBlock[(i+8)&15] ^ DataBlock[(i+2)&15] ^ DataBlock[i&15],1))
 
 	// (R0+R1), R2, R3, R4 are the different operations used in SHA1
-#define R0(v,w,x,y,z,i) z += ((w&(x^y))^y) + block[i] + 0x5a827999 + RotateLeft(v,5); w=RotateLeft(w,30)
-#define R1(v,w,x,y,z,i) z += ((w&(x^y))^y) + blk(i) + 0x5a827999 + RotateLeft(v,5); w=RotateLeft(w,30)
-#define R2(v,w,x,y,z,i) z += (w^x^y) + blk(i) + 0x6ed9eba1 + RotateLeft(v,5); w=RotateLeft(w,30)
-#define R3(v,w,x,y,z,i) z += (((w|x)&y)|(w&x)) + blk(i) + 0x8f1bbcdc + RotateLeft(v,5); w=RotateLeft(w,30)
-#define R4(v,w,x,y,z,i) z += (w^x^y) + blk(i) + 0xca62c1d6 + RotateLeft(v,5); w=RotateLeft(w,30)
+#define R0(v,w,x,y,z,i) z += RotateLeft(v,5); z+= 0x5a827999; z+= DataBlock[i]; z+= (((x^y)&w)^y); w=RotateLeft(w,30)
+#define R1(v,w,x,y,z,i) z += RotateLeft(v,5); z+= 0x5a827999; z+= blk(i); z+= (((x^y)&w)^y); w=RotateLeft(w,30)
+#define R2(v,w,x,y,z,i) z += RotateLeft(v,5); z+= 0x6ed9eba1; z+= blk(i); z+= (w^x^y); w=RotateLeft(w,30)
+#define R3(v,w,x,y,z,i) z += RotateLeft(v,5); z+= 0x8f1bbcdc; z+= blk(i); z+= (((w|x)&y)|(w&x)); w=RotateLeft(w,30)
+#define R4(v,w,x,y,z,i) z += RotateLeft(v,5); z+= 0xca62c1d6; z+= blk(i); z+= (w^x^y); w=RotateLeft(w,30)
 #endif
 
 	// 4 rounds of 20 operations each. Loop unrolled.
@@ -152,6 +150,7 @@ void BURGER_API Burger::SHA1Hasher_t::Process(const Word8 *pBlock)
 	R1(d,e,a,b,c,17);
 	R1(c,d,e,a,b,18);
 	R1(b,c,d,e,a,19);
+
 	R2(a,b,c,d,e,20);
 	R2(e,a,b,c,d,21);
 	R2(d,e,a,b,c,22);
@@ -172,6 +171,7 @@ void BURGER_API Burger::SHA1Hasher_t::Process(const Word8 *pBlock)
 	R2(d,e,a,b,c,37);
 	R2(c,d,e,a,b,38);
 	R2(b,c,d,e,a,39);
+
 	R3(a,b,c,d,e,40);
 	R3(e,a,b,c,d,41);
 	R3(d,e,a,b,c,42);
@@ -192,6 +192,7 @@ void BURGER_API Burger::SHA1Hasher_t::Process(const Word8 *pBlock)
 	R3(d,e,a,b,c,57);
 	R3(c,d,e,a,b,58);
 	R3(b,c,d,e,a,59);
+
 	R4(a,b,c,d,e,60);
 	R4(e,a,b,c,d,61);
 	R4(d,e,a,b,c,62);
@@ -215,11 +216,13 @@ void BURGER_API Burger::SHA1Hasher_t::Process(const Word8 *pBlock)
 
 	// Add in the adjusted hash (Store in big endian format)
 
-	BigEndian::Store(pHash32,BigEndian::Load(pHash32)+a);
-	BigEndian::Store(pHash32+1,BigEndian::Load(pHash32+1)+b);
-	BigEndian::Store(pHash32+2,BigEndian::Load(pHash32+2)+c);
-	BigEndian::Store(pHash32+3,BigEndian::Load(pHash32+3)+d);
-	BigEndian::Store(pHash32+4,BigEndian::Load(pHash32+4)+e);
+	{
+		BigEndian::Store(static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash+0)),BigEndian::Load(static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash+0)))+a);
+		BigEndian::Store(static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash+4)),BigEndian::Load(static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash+4)))+b);
+		BigEndian::Store(static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash+8)),BigEndian::Load(static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash+8)))+c);
+		BigEndian::Store(static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash+12)),BigEndian::Load(static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash+12)))+d);
+		BigEndian::Store(static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash+16)),BigEndian::Load(static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash+16)))+e);
+	}
 }
 
 /*! ************************************
@@ -308,7 +311,7 @@ void BURGER_API Burger::SHA1Hasher_t::Finalize(void)
 	
 	Given a buffer of data, generate the SHA-1 hash key
 
-	\param pOutput Pointer to an unitialized SHA1_t structure
+	\param pOutput Pointer to an uninitialized SHA1_t structure
 	\param pInput Pointer to a buffer of data to hash
 	\param uLength Number of bytes to hash
 

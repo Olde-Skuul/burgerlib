@@ -23,8 +23,13 @@
 #define BURGER_POWERPC
 #define BURGER_68K
 #define BURGER_ARM
+#define BURGER_ARM64
 #define BURGER_64BITCPU
 #define BURGER_INTELARCHITECTURE
+#define BURGER_ARMARCHITECTURE
+#define BURGER_GEKKO
+#define BURGER_POWERPC64
+#define BURGER_PPC
 
 //#define BURGER_BIGENDIAN
 #define BURGER_LITTLEENDIAN
@@ -415,7 +420,9 @@
 	
 	\li \ref BURGER_X86 CPU is 32 bit Intel compatible.
 	\li \ref BURGER_AMD64 CPU is 64 bit Intel compatible.
-	\li \ref BURGER_POWERPC CPU is part of the PowerPC family.
+	\li \ref BURGER_POWERPC CPU is a 32 bit PowerPC
+	\li \ref BURGER_POWERPC64 CPU is a 64 bit PowerPC
+	\li \ref BURGER_GEKKO CPU is a 32 bit Nintendo variant PowerPC
 	\li \ref BURGER_ARM CPU is part of the Advanced RISC Machines family.
 	\li \ref BURGER_68K CPU is part of the Motorola 68000 family.
 	\li \ref BURGER_MIPS CPU is part of the SGI MIPS family.
@@ -425,6 +432,7 @@
 
 	\li \ref BURGER_64BITCPU The CPU has native 64 bit registers (AMD64, PPC64, ARM64).
 	\li \ref BURGER_INTELARCHITECTURE The CPU is either AMD64 or X86
+	\li \ref BURGER_PPC CPU is part of the PowerPC family.
 
 	Endian defines, only one is enabled on each compile. Do not
 	use the CPU to determine the endian, because it may change on
@@ -514,7 +522,9 @@
 	\li \ref BURGER_UNUSED
 	\li \ref BURGER_MACRO_TO_STRING
 	\li \ref BURGER_DISABLECOPYCONSTRUCTORS
-	
+	\li \ref BURGER_ENDIANINDEX_LOW
+	\li \ref BURGER_ENDIANINDEX_HIGH
+
 ***************************************/
 
 
@@ -655,9 +665,49 @@
 	
 ***************************************/
 
+
 /*! ************************************
 
 	\def BURGER_POWERPC
+	\brief Define to determine if code is being built for 32 bit PowerPC processors.
+	
+	If this define exists, then you are creating code that runs on
+	a 32 bit PowerPC processor. The Nintendo GameCube, Power
+	Macintosh and the Nintendo Wii all will have this define present.
+	
+	\sa BURGER_PPC, BURGER_WIIU, BURGER_WII, BURGER_MAC, BURGER_MACOSX, BURGER_BEOS or BURGER_GAMECUBE
+	
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_POWERPC64
+	\brief Define to determine if code is being built for 64 bit PowerPC processors.
+	
+	If this define exists, then you are creating code that runs on
+	a 64 bit PowerPC processor. The G5 Power Macintosh, Sony Playstation 3 and Microsoft
+	XBox 360 all will have this define present.
+	
+	\sa BURGER_PPC, BURGER_XBOX360, BURGER_PS3 or BURGER_MACOSX
+	
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_GEKKO
+	\brief Define to determine if code is being built for 32 bit Nintendo PowerPC processors.
+	
+	If this define exists, then you are creating code that runs on
+	a 32 bit PowerPC processor made for Nintendo. The Nintendo GameCube,
+	Nintendo Wii, and Nintendo WiiU all will have this define present.
+	
+	\sa BURGER_PPC, BURGER_WIIU, BURGER_WII or BURGER_GAMECUBE
+	
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_PPC
 	\brief Define to determine if code is being built for PowerPC processors.
 	
 	If this define exists, then you are creating code that runs on
@@ -665,22 +715,51 @@
 	Macintosh, Nintendo Wii, Sony Playstation 3 and Microsoft
 	XBox 360 all will have this define present.
 	
-	\sa BURGER_XBOX360, BURGER_WII, BURGER_PS3, BURGER_MAC, BURGER_MACOSX, BURGER_BEOS or BURGER_GAMECUBE
+	\sa BURGER_POWERPC, BURGER_GEKKO, BURGER_POWERPC64, BURGER_XBOX360, BURGER_WII, BURGER_PS3, BURGER_MAC, BURGER_MACOSX, BURGER_BEOS or BURGER_GAMECUBE
 	
 ***************************************/
+
+
 
 /*! ************************************
 
 	\def BURGER_ARM
-	\brief Define to determine if code is being built for Advanced RISC Machine processors.
+	\brief Define to determine if code is being built for 32 bit Advanced RISC Machine processors.
 	
 	If this define exists, then you are creating code that runs on
 	the Advanced RISC Machines line of processors. The Gameboy Advanced, Nintendo DS, Nokia NGage,
 	Apple iPad/iPhone/iPod and certain cell phones will have this define present.
 	
-	\sa BURGER_GBA, BURGER_ANDROID, BURGER_SHIELD, BURGER_OUYA, BURGER_DS, BURGER_3DS, BURGER_IOS, BURGER_NGAGE, or BURGER_SYMBIAN
+	\sa BURGER_ARM64, BURGER_ARMARCHITECTURE, BURGER_GBA, BURGER_ANDROID, BURGER_SHIELD, BURGER_OUYA, BURGER_DS, BURGER_3DS, BURGER_IOS, BURGER_NGAGE, or BURGER_SYMBIAN
 	
 ***************************************/
+
+/*! ************************************
+
+	\def BURGER_ARM64
+	\brief Define to determine if code is being built for 64 bit Advanced RISC Machine processors.
+	
+	If this define exists, then you are creating code that runs on
+	the Advanced RISC Machines line of processors. 
+	Apple iPad/iPhone/iPod and certain cell phones will have this define present.
+	
+	\sa BURGER_ARM, BURGER_ARMARCHITECTURE, BURGER_ANDROID or BURGER_IOS
+	
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_ARMARCHITECTURE
+	\brief Define to determine if code is being built for Advanced RISC Machine processors.
+
+	If this define exists, then you are creating code that runs on
+	the Advanced RISC Machines line of processors.
+
+	\sa BURGER_ARM or BURGER_ARM64
+
+***************************************/
+
+
 
 /*! ************************************
 
@@ -752,7 +831,7 @@
 	If this macro is present, the machine the code is being built
 	for is little endian.
 	
-	\sa BURGER_BIGENDIAN
+	\sa BURGER_BIGENDIAN, BURGER_ENDIANINDEX_LOW or BURGER_ENDIANINDEX_HIGH
 	
 ***************************************/
 
@@ -768,7 +847,30 @@
 	If this macro is present, the machine the code is being built
 	for is big endian.
 	
-	\sa BURGER_LITTLEENDIAN
+	\sa BURGER_LITTLEENDIAN, BURGER_ENDIANINDEX_LOW or BURGER_ENDIANINDEX_HIGH
+	
+***************************************/
+
+
+/*! ************************************
+
+	\def BURGER_ENDIANINDEX_LOW
+	\brief Index to the "low" word of a 64 bit value as a 32 value
+	
+	On little endian machines, this value is 0, otherwise it's 1.
+	
+	\sa BURGER_ENDIANINDEX_HIGH, BURGER_LITTLEENDIAN or BURGER_BIGENDIAN
+	
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_ENDIANINDEX_HIGH
+	\brief Index to the "high" word of a 64 bit value as a 32 value
+	
+	On little endian machines, this value is 1, otherwise it's 0.
+	
+	\sa BURGER_ENDIANINDEX_LOW, BURGER_LITTLEENDIAN or BURGER_BIGENDIAN
 	
 ***************************************/
 

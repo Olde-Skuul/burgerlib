@@ -112,7 +112,7 @@ extern void BURGER_API CPUID(CPUID_t *pOutput);
 #if defined(BURGER_PS3) || defined(BURGER_XBOX360)
 BURGER_INLINE Word HasAltiVec(void) { return TRUE; }
 
-#elif (defined(BURGER_POWERPC) && defined(BURGER_MACOS)) || defined(DOXYGEN)
+#elif (defined(BURGER_PPC) && defined(BURGER_MACOS)) || defined(DOXYGEN)
 extern Word BURGER_API HasAltiVec(void);
 
 #else
@@ -275,7 +275,7 @@ BURGER_INLINE Word AtomicSetIfMatch(volatile Word64 *pInput,Word64 uBefore,Word6
 	return uResult; 
 }
 
-#elif defined(BURGER_POWERPC) && defined(BURGER_METROWERKS)
+#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 	
 BURGER_INLINE Word32 AtomicSwap(register volatile Word32 *pOutput,register Word32 uInput) 
 {
@@ -492,7 +492,7 @@ BURGER_INLINE Word AtomicSetIfMatch(volatile Word64 *pInput,Word64 uBefore,Word6
 BURGER_INLINE Word32 AtomicSwap(volatile Word32 *pOutput,Word32 uInput) { Word32 uTemp; do { uTemp = pOutput[0]; } while(__sync_val_compare_and_swap(pOutput,uTemp,uInput)!=uTemp); return uTemp;}
 BURGER_INLINE Word32 AtomicPreIncrement(volatile Word32 *pInput) { return __sync_add_and_fetch(pInput,1); }
 BURGER_INLINE Word32 AtomicPostIncrement(volatile Word32 *pInput) { return __sync_fetch_and_add(pInput,1); }
-#if defined(BURGER_POWERPC) && defined(BURGER_MACOSX)	// Hack to get around a compiler crash for Xcode 3.1.4 for PowerPC!!!
+#if defined(BURGER_PPC) && defined(BURGER_MACOSX)	// Hack to get around a compiler crash for Xcode 3.1.4 for PowerPC!!!
 BURGER_INLINE Word32 AtomicPreDecrement(volatile Word32 *pInput) { return __sync_add_and_fetch(pInput,0xFFFFFFFFU); }
 #else
 BURGER_INLINE Word32 AtomicPreDecrement(volatile Word32 *pInput) { return __sync_sub_and_fetch(pInput,1); }

@@ -137,7 +137,7 @@ static const Word32 g_CRC32Table[256] = {
 	\brief Calculate the CRC32B checksum (ZLib) for a buffer
 
 	Calculates a 32-bit CRC, "CRC32B", which is the 32-bit Frame Check Sequence of ITU V.42.
-	This is the CRC algorithm used for Zlib, PNG, MPEG-2 and others
+	This is the CRC algorithm used for Zlib, PNG, MPEG-2, Gzip and others
 
 	The polynomial format is X^32+X^26+X^23+X^22+X^16+X^12+X^11+X^10+X^8+X^7+X^5+X^4+X^2+X^1+X^0
 	or 0x04C11DB7

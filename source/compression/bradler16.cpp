@@ -62,7 +62,7 @@ Word BURGER_API Burger::CalcAdler16(const void *pInput,WordPtr uInputLength,Word
 	if (pInput && uInputLength) {
 
 		Word32 uAdditive = static_cast<Word8>(uAdler16);		// Get the additive checksum
-		Word32 uFactorial = static_cast<Word8>(uAdler16>>8U); 	// Get the factorial checksum
+		Word32 uFactorial = static_cast<Word8>(uAdler16>>8U);	// Get the factorial checksum
 		do {
 			// Get the chunk size to process
 			Word uCount = LARGESTBLOCK;

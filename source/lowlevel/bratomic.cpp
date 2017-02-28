@@ -14,11 +14,11 @@
 #include "bratomic.h"
 #include "brstringfunctions.h"
 
-#if (defined(BURGER_POWERPC) && defined(BURGER_MACOSX))
+#if (defined(BURGER_PPC) && defined(BURGER_MACOSX))
 #include <sys/sysctl.h>
 #endif
 
-#if (defined(BURGER_POWERPC) && defined(BURGER_MAC))
+#if (defined(BURGER_PPC) && defined(BURGER_MAC))
 #include <Gestalt.h>
 #endif
 
@@ -32,7 +32,7 @@
 #endif
 
 #if (((__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) <= 40100) && defined(BURGER_MACOSX)) || defined(DOXYGEN)
-		   
+
 /*! ************************************
 
 	\brief Atomically swap a 32 bit value for one in memory
@@ -852,7 +852,11 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 
 		// Even more features?
 		if (uHighestID>=7) {
+#if defined(BURGER_MSVC) && (_MSC_VER<1600)
 			__cpuid(Results,7);
+#else
+			__cpuidex(Results,7,0);
+#endif
 			pOutput->m_uCPUID7EBX = static_cast<Word32>(Results[1]);
 			pOutput->m_uCPUID7ECX = static_cast<Word32>(Results[2]);
 			pOutput->m_uCPUID7EDX = static_cast<Word32>(Results[3]);
@@ -937,11 +941,11 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 
 	\note This function only matters on systems with an PowerPC CPU
 	\return \ref TRUE if AltiVec is available, \ref FALSE if not
-	\sa BURGER_POWERPC
+	\sa BURGER_PPC
 
 ***************************************/
 
-#if (defined(BURGER_POWERPC) && defined(BURGER_MACOSX)) || defined(DOXYGEN)
+#if (defined(BURGER_PPC) && defined(BURGER_MACOSX)) || defined(DOXYGEN)
 
 Word BURGER_API Burger::HasAltiVec(void)
 {
@@ -961,7 +965,7 @@ Word BURGER_API Burger::HasAltiVec(void)
 	return uResult;
 }
 
-#elif (defined(BURGER_POWERPC) && defined(BURGER_MAC))
+#elif (defined(BURGER_PPC) && defined(BURGER_MAC))
 
 Word BURGER_API Burger::HasAltiVec(void)
 {

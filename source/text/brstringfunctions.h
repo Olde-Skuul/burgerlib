@@ -52,7 +52,7 @@ extern const Word16 g_TrueString16[5];
 extern const Word16 g_FalseString16[6];
 extern const Word16 g_YesString16[4];
 extern const Word16 g_NoString16[3];
-extern const Word8 BURGER_ALIGN(g_AsciiTestTable[128],16);
+extern const Word8 BURGER_ALIGN(g_AsciiTestTable[256],16);
 extern const char BURGER_ALIGN(g_NibbleToAsciiUppercase[16],16);
 extern const char BURGER_ALIGN(g_NibbleToAsciiLowercase[16],16);
 extern const Word8 BURGER_ALIGN(g_AsciiToWord8Table[256],16);

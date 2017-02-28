@@ -11,6 +11,8 @@
 
 ***************************************/
 
+#define __useAppleExts__
+
 #include "brfileansihelpers.h"
 #include "brendian.h"
 #include "brstringfunctions.h"
@@ -24,6 +26,7 @@
 
 #if defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_XBOX360)
 #include <io.h>
+#include <fcntl.h>
 #if defined(BURGER_METROWERKS)
 #include <crtl.h>
 #include <windows.h>
@@ -37,6 +40,9 @@
 #define _MSL_CANT_THROW
 #endif
 extern "C" char __msl_system_has_new_file_apis(void) _MSL_CANT_THROW;
+#else
+#include <fcntl.h>
+#include <stdio.h>
 #endif
 #endif
 
@@ -989,4 +995,38 @@ void * BURGER_API Burger::LoadFile(FILE *fp,WordPtr *pLength)
 		pLength[0] = uFileLength;	// Ok
 	}
 	return pResult;		// Return the result
+}
+
+/*! ************************************
+
+	\brief Force an ANSI FILE * to binary mode
+	
+	If the "C" standard library supports it, change the mode for an
+	open FILE * to binary
+
+	\note This is only relevant to operating systems that
+	require remapping of text files on to and from a non-linux
+	line feed only line endings.
+
+	\param fp FILE * to the file to read from
+
+***************************************/
+
+void BURGER_API Burger::SetBinaryMode(FILE *fp)
+{
+#if defined(__EMX__)
+	_fsetmode(fp,"b");
+#elif defined(__BORLANDC__)
+	setmode(_fileno(fp),O_BINARY);
+#elif defined(__CYGWIN__)
+	setmode(fileno(fp),_O_BINARY);
+#elif defined(BURGER_WINDOWS) || defined(BURGER_WATCOM) || defined(BURGER_XBOX360)
+	_setmode(_fileno(fp),_O_BINARY);
+	// Metrowerks MSL library
+#elif defined(BURGER_MAC) && defined(__MSL__)
+	fp->mode.binary_io = 1;
+#else
+	// Linux/Android/MacOSX/BSD
+	BURGER_UNUSED(fp);
+#endif
 }

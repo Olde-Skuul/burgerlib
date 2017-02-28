@@ -370,7 +370,7 @@ __asm__(
 "	movzwl	%cx,%eax\n"
 "	ret\n"
 );
-#elif defined(BURGER_X86) && !defined(DOXYGEN)
+#elif defined(BURGER_X86) && !defined(BURGER_ANDROID) && !defined(DOXYGEN)
 BURGER_DECLSPECNAKED Word16 BURGER_API Burger::NativeEndian::LoadAny(const Word16 * /* pInput */)
 {
 	BURGER_ASM {
@@ -428,7 +428,7 @@ __asm__(
 "	movl	%ecx,%eax\n"
 "	ret\n"
 );
-#elif defined(BURGER_X86) && !defined(DOXYGEN)
+#elif defined(BURGER_X86) && !defined(BURGER_ANDROID) && !defined(DOXYGEN)
 BURGER_DECLSPECNAKED Word32 BURGER_API Burger::NativeEndian::LoadAny(const Word32 * /* pInput */)
 {
 	BURGER_ASM {
@@ -504,7 +504,8 @@ BURGER_DECLSPECNAKED Word64 BURGER_API Burger::NativeEndian::LoadAny(const Word6
 }
 
 #else
-#if !defined(BURGER_X86) || ((defined(BURGER_MACOSX) || defined(BURGER_IOS)) && defined(BURGER_X86)) || defined(DOXYGEN)
+
+#if !defined(BURGER_X86) || defined(BURGER_ANDROID) || ((defined(BURGER_MACOSX) || defined(BURGER_IOS)) && defined(BURGER_X86)) || defined(DOXYGEN)
 Word64 BURGER_API Burger::NativeEndian::LoadAny(const Word64 *pInput)
 {
 	Word64 Result;		// Make sure it's aligned
@@ -519,7 +520,9 @@ Word64 BURGER_API Burger::NativeEndian::LoadAny(const Word64 *pInput)
 	reinterpret_cast<Word8*>(&Result)[7] = reinterpret_cast<const Word8*>(pInput)[7];
 	return Result;			// Return the 64 bit value in a register
 }
+
 #else
+
 BURGER_DECLSPECNAKED Word64 BURGER_API Burger::NativeEndian::LoadAny(const Word64 * /* pInput */)
 {
 	// Intel returns 64 bit values in EAX:EDX
@@ -658,7 +661,7 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::NativeEndian::LoadAny(const doubl
 	}
 }
 
-#elif !defined(BURGER_X86) || ((defined(BURGER_MACOSX) || defined(BURGER_IOS)) && defined(BURGER_X86)) || defined(DOXYGEN)
+#elif !defined(BURGER_X86) || defined(BURGER_ANDROID) || ((defined(BURGER_MACOSX) || defined(BURGER_IOS)) && defined(BURGER_X86)) || defined(DOXYGEN)
 double BURGER_API Burger::NativeEndian::LoadAny(const double *pInput)
 {
 	double dResult;		// Make sure it's aligned
@@ -1597,13 +1600,13 @@ void BURGER_API Burger::NativeEndian::StoreAny(double *pOutput,double dInput)
 ***************************************/
 
 #if (defined(BURGER_XBOX360) || \
-	(defined(BURGER_POWERPC) && (defined(BURGER_MACOS) || defined(BURGER_PS3))) || \
+	(defined(BURGER_PPC) && (defined(BURGER_MACOS) || defined(BURGER_PS3))) || \
 	defined(BURGER_INTELCOMPILER) || \
 	(defined(BURGER_X86) && defined(BURGER_METROWERKS)) || \
 	defined(BURGER_WATCOM) || \
 	(defined(BURGER_METROWERKS) && defined(BURGER_68K)) || \
 	(defined(BURGER_INTELARCHITECTURE) && defined(BURGER_MSVC)) || \
-	((defined(BURGER_INTELARCHITECTURE) || defined(BURGER_ARM) || defined(BURGER_ARM64)) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))) && \
+	((defined(BURGER_INTELARCHITECTURE) || defined(BURGER_ARMARCHITECTURE)) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))) && \
 	!defined(DOXYGEN)
 
 #elif (defined(BURGER_ARM) && defined(BURGER_METROWERKS)) && !defined(DOXYGEN)
@@ -1642,13 +1645,13 @@ Word16 BURGER_API Burger::SwapEndian::Load(Word16 uInput)
 ***************************************/
 
 #if (defined(BURGER_XBOX360) || \
-	(defined(BURGER_POWERPC) && (defined(BURGER_MACOS) || defined(BURGER_PS3))) || \
+	(defined(BURGER_PPC) && (defined(BURGER_MACOS) || defined(BURGER_PS3))) || \
 	defined(BURGER_INTELCOMPILER) || \
 	(defined(BURGER_X86) && defined(BURGER_METROWERKS)) || \
 	defined(BURGER_WATCOM) || \
 	(defined(BURGER_METROWERKS) && defined(BURGER_68K)) || \
 	(defined(BURGER_INTELARCHITECTURE) && defined(BURGER_MSVC)) || \
-	((defined(BURGER_INTELARCHITECTURE) || defined(BURGER_ARM) || defined(BURGER_ARM64)) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))) && \
+	((defined(BURGER_INTELARCHITECTURE) || defined(BURGER_ARMARCHITECTURE)) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))) && \
 	!defined(DOXYGEN)
 
 #elif defined(BURGER_ARM) && defined(BURGER_METROWERKS)
@@ -1691,13 +1694,13 @@ Word32 BURGER_API Burger::SwapEndian::Load(Word32 uInput)
 ***************************************/
 
 #if (defined(BURGER_XBOX360) || \
-	(defined(BURGER_POWERPC) && (defined(BURGER_MACOS) || defined(BURGER_PS3))) || \
+	(defined(BURGER_PPC) && (defined(BURGER_MACOS) || defined(BURGER_PS3))) || \
 	defined(BURGER_INTELCOMPILER) || \
 	(defined(BURGER_X86) && defined(BURGER_METROWERKS)) || \
 	defined(BURGER_WATCOM) || \
 	(defined(BURGER_METROWERKS) && defined(BURGER_68K)) || \
 	(defined(BURGER_INTELARCHITECTURE) && defined(BURGER_MSVC)) || \
-	((defined(BURGER_INTELARCHITECTURE) || defined(BURGER_ARM) || defined(BURGER_ARM64)) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))) && \
+	((defined(BURGER_INTELARCHITECTURE) || defined(BURGER_ARMARCHITECTURE)) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))) && \
 	!defined(DOXYGEN)
 #else
 
@@ -1728,13 +1731,13 @@ Word16 BURGER_API Burger::SwapEndian::Load(const Word16 *pInput)
 ***************************************/
 
 #if (defined(BURGER_XBOX360) || \
-	(defined(BURGER_POWERPC) && (defined(BURGER_MACOS) || defined(BURGER_PS3))) || \
+	(defined(BURGER_PPC) && (defined(BURGER_MACOS) || defined(BURGER_PS3))) || \
 	defined(BURGER_INTELCOMPILER) || \
 	(defined(BURGER_X86) && defined(BURGER_METROWERKS)) || \
 	defined(BURGER_WATCOM) || \
 	(defined(BURGER_METROWERKS) && defined(BURGER_68K)) || \
 	(defined(BURGER_INTELARCHITECTURE) && defined(BURGER_MSVC)) || \
-	((defined(BURGER_INTELARCHITECTURE) || defined(BURGER_ARM) || defined(BURGER_ARM64)) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))) && \
+	((defined(BURGER_INTELARCHITECTURE) || defined(BURGER_ARMARCHITECTURE)) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))) && \
 	!defined(DOXYGEN)
 #else
 
@@ -1783,7 +1786,7 @@ BURGER_DECLSPECNAKED Word64 __fastcall Burger::SwapEndian::Load(Word64 /* uInput
 	}
 }
 
-#elif defined(BURGER_POWERPC) && defined(__MWERKS__)
+#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
 asm Word64 BURGER_API Burger::SwapEndian::Load(Word64 /* uInput */)
 {
@@ -1853,7 +1856,7 @@ BURGER_DECLSPECNAKED float __fastcall Burger::SwapEndian::Load(float /* fInput *
 	}
 }
 
-#elif defined(BURGER_POWERPC) && defined(__MWERKS__)
+#elif defined(BURGER_PPC) && defined(__MWERKS__)
 
 asm float BURGER_API Burger::SwapEndian::Load(float /* fInput */)
 {
@@ -1917,7 +1920,7 @@ BURGER_DECLSPECNAKED double __fastcall Burger::SwapEndian::Load(double /* dInput
 	}
 }
 
-#elif defined(BURGER_POWERPC) && defined(__MWERKS__)
+#elif defined(BURGER_PPC) && defined(__MWERKS__)
 
 asm double BURGER_API Burger::SwapEndian::Load(double /* dInput */)
 {
@@ -1993,7 +1996,7 @@ BURGER_DECLSPECNAKED Word64 __fastcall Burger::SwapEndian::Load(const Word64 * /
 	}
 }
 
-#elif defined(BURGER_POWERPC) && defined(__MWERKS__)
+#elif defined(BURGER_PPC) && defined(__MWERKS__)
 
 asm Word64 BURGER_API Burger::SwapEndian::Load(const Word64 * /* pInput */)
 {
@@ -2062,7 +2065,7 @@ BURGER_DECLSPECNAKED float __fastcall Burger::SwapEndian::Load(const float * /* 
 	}
 }
 
-#elif defined(BURGER_POWERPC) && defined(__MWERKS__)
+#elif defined(BURGER_PPC) && defined(__MWERKS__)
 
 asm float BURGER_API Burger::SwapEndian::Load(const float * /* pInput */)
 {
@@ -2126,7 +2129,7 @@ BURGER_DECLSPECNAKED double __fastcall Burger::SwapEndian::Load(const double * /
 	}
 }
 
-#elif defined(BURGER_POWERPC) && defined(__MWERKS__)
+#elif defined(BURGER_PPC) && defined(__MWERKS__)
 
 asm double BURGER_API Burger::SwapEndian::Load(const double * /* pInput */)
 {
@@ -2185,13 +2188,13 @@ double BURGER_API Burger::SwapEndian::Load(const double *pInput)
 ***************************************/
 
 #if (defined(BURGER_XBOX360) || \
-	(defined(BURGER_POWERPC) && (defined(BURGER_MACOS) || defined(BURGER_PS3))) || \
+	(defined(BURGER_PPC) && (defined(BURGER_MACOS) || defined(BURGER_PS3))) || \
 	defined(BURGER_INTELCOMPILER) || \
 	(defined(BURGER_X86) && defined(BURGER_METROWERKS)) || \
 	defined(BURGER_WATCOM) || \
 	(defined(BURGER_METROWERKS) && defined(BURGER_68K)) || \
 	(defined(BURGER_INTELARCHITECTURE) && defined(BURGER_MSVC)) || \
-	((defined(BURGER_INTELARCHITECTURE) || defined(BURGER_ARM) || defined(BURGER_ARM64)) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))) && \
+	((defined(BURGER_INTELARCHITECTURE) || defined(BURGER_ARMARCHITECTURE)) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))) && \
 	!defined(DOXYGEN)
 #else
 
@@ -2221,13 +2224,13 @@ void BURGER_API Burger::SwapEndian::Store(Word16 *pOutput,Word16 uInput)
 ***************************************/
 
 #if (defined(BURGER_XBOX360) || \
-	(defined(BURGER_POWERPC) && (defined(BURGER_MACOS) || defined(BURGER_PS3))) || \
+	(defined(BURGER_PPC) && (defined(BURGER_MACOS) || defined(BURGER_PS3))) || \
 	defined(BURGER_INTELCOMPILER) || \
 	(defined(BURGER_X86) && defined(BURGER_METROWERKS)) || \
 	defined(BURGER_WATCOM) || \
 	(defined(BURGER_METROWERKS) && defined(BURGER_68K)) || \
 	(defined(BURGER_INTELARCHITECTURE) && defined(BURGER_MSVC)) || \
-	((defined(BURGER_INTELARCHITECTURE) || defined(BURGER_ARM) || defined(BURGER_ARM64)) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))) && \
+	((defined(BURGER_INTELARCHITECTURE) || defined(BURGER_ARMARCHITECTURE)) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))) && \
 	!defined(DOXYGEN)
 #else
 
@@ -2391,9 +2394,9 @@ Word16 BURGER_API Burger::SwapEndian::LoadAny(const Word16 *pInput)
 	Word Low = reinterpret_cast<const Word8*>(pInput)[0];	// Grab 16 bits
 	Word High = reinterpret_cast<const Word8*>(pInput)[1];
 #if defined(BURGER_LITTLEENDIAN)
-	Word16 Result = static_cast<Word16>((Low<<8) + High);	// Intel likes +
+	Word16 Result = static_cast<Word16>((Low<<8U) + High);	// Intel likes +
 #else
-	Word16 Result = static_cast<Word16>(Low | (High<<8));	// PPC likes |
+	Word16 Result = static_cast<Word16>(Low | (High<<8U));	// PPC likes |
 #endif
 	return Result;
 }
@@ -2436,11 +2439,11 @@ Word32 BURGER_API Burger::SwapEndian::LoadAny(const Word32 *pInput)
 	Word Low3 = reinterpret_cast<const Word8*>(pInput)[2];
 	Word Low4 = reinterpret_cast<const Word8*>(pInput)[3];
 #if defined(BURGER_LITTLEENDIAN)
-	Word32 Result = static_cast<Word32>((Low1<<24) + (Low2<<16) +
-		(Low3<<8) + Low4);			// Intel likes +
+	Word32 Result = static_cast<Word32>((Low1<<24U) + (Low2<<16U) +
+		(Low3<<8U) + Low4);			// Intel likes +
 #else
-	Word32 Result = static_cast<Word32>(Low1 | (Low2<<8) |
-		(Low3<<16) | (Low4<<24));	// PPC likes |
+	Word32 Result = static_cast<Word32>(Low1 | (Low2<<8U) |
+		(Low3<<16U) | (Low4<<24U));	// PPC likes |
 #endif
 	return Result;
 }
@@ -2835,7 +2838,7 @@ void BURGER_API Burger::SwapEndian::StoreAny(double *pOutput,double dInput)
 #if (defined(BURGER_XBOX360) || defined(BURGER_PS3) || \
 	defined(BURGER_AMD64) || \
 	((defined(BURGER_MACOS) || defined(BURGER_IOS)) && (defined(BURGER_AMD64) || defined(BURGER_ARM64))) || \
-	(defined(BURGER_POWERPC) && defined(BURGER_METROWERKS))) && \
+	(defined(BURGER_PPC) && defined(BURGER_METROWERKS))) && \
 	!defined(DOXYGEN)
 
 #else

@@ -764,11 +764,14 @@ void BURGER_API Burger::String::Set(const Word16 *pInput,WordPtr uLength)
 	zero. The output of Burger::StringLength() is acceptable as input for a new string.
 
 	\param uSize Number of bytes to set the buffer to
+	\return Zero if no error, error code if the buffer couldn't be resized
 
 ***************************************/
 
-void BURGER_API Burger::String::SetBufferSize(WordPtr uSize)
+Word BURGER_API Burger::String::SetBufferSize(WordPtr uSize)
 {
+	// Assume no error
+	Word uResult = 0;
 	if (uSize!=m_uLength) {
 		// If no space is requested, clear the buffer
 		if (!uSize) {
@@ -784,6 +787,7 @@ void BURGER_API Burger::String::SetBufferSize(WordPtr uSize)
 				if (!pDest) {			// Oh oh...
 					pDest = m_Raw;
 					uSize = 0;			// Don't copy anything
+					uResult = 10;		// Out of memory error!
 				}
 			}
 			// Get the size of the string
@@ -802,6 +806,7 @@ void BURGER_API Burger::String::SetBufferSize(WordPtr uSize)
 			pDest[uSize] = 0;			// Ensure the terminating zero is present
 		}
 	}
+	return uResult;
 }
 
 /*! ************************************

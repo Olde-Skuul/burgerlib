@@ -65,7 +65,7 @@ static BURGER_INLINE Word32 Load(const Word32 *pInput) { return __builtin_lwbrx(
 static BURGER_INLINE void Store(Word16 *pOutput,Word16 uInput) { __builtin_sthbrx(uInput,pOutput,0); }
 static BURGER_INLINE void Store(Word32 *pOutput,Word32 uInput) { __builtin_stwbrx(uInput,pOutput,0); }
 
-#elif (defined(BURGER_POWERPC) && (defined(BURGER_MACOS))) && !defined(DOXYGEN)
+#elif (defined(BURGER_PPC) && (defined(BURGER_MACOS))) && !defined(DOXYGEN)
 static BURGER_INLINE Word16 Load(Word16 uInput) {
 	int iResult = __rlwinm(static_cast<int>(uInput),24,24,31);
 	iResult = __rlwimi(iResult,static_cast<int>(uInput),8,16,23);
@@ -102,7 +102,7 @@ static BURGER_INLINE void Store(Word32 *pOutput,Word32 uInput) { pOutput[0] = _b
 #elif (defined(BURGER_WATCOM) || \
 	(defined(BURGER_METROWERKS) && defined(BURGER_68K)) || \
 	(defined(BURGER_INTELARCHITECTURE) && defined(BURGER_MSVC)) || \
-	((defined(BURGER_INTELARCHITECTURE) || defined(BURGER_ARM) || defined(BURGER_ARM64)) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))) && \
+	((defined(BURGER_INTELARCHITECTURE) || defined(BURGER_ARMARCHITECTURE)) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))) && \
 	!defined(DOXYGEN)
 static BURGER_INLINE Word16 Load(Word16 uInput) { return _byteswap_ushort(uInput); }
 static BURGER_INLINE Word32 Load(Word32 uInput) { return _byteswap_ulong(uInput); }
@@ -171,7 +171,7 @@ static BURGER_INLINE void Fixup(Word32 *pInput) { pInput[0] = Load(pInput); }
 	((defined(BURGER_MACOS) || defined(BURGER_IOS)) && (defined(BURGER_AMD64) || defined(BURGER_ARM64)))) && \
 	!defined(DOXYGEN)
 static BURGER_INLINE void Fixup(Word64 *pInput) { pInput[0] = Load(pInput); }
-#elif defined(BURGER_POWERPC) && defined(BURGER_METROWERKS)
+#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 static BURGER_INLINE void Fixup(Word64 *pInput) {
 	Word32 uLow = __lwbrx(pInput,0);
 	Word32 uHigh = __lwbrx(pInput,4);
@@ -281,6 +281,7 @@ static BURGER_INLINE void FixupAny(float *) {}
 static BURGER_INLINE void FixupAny(double *) {}
 };
 
+// Which endian to swap, which to not.
 #if defined(BURGER_LITTLEENDIAN)
 class LittleEndian : public NativeEndian {};
 class BigEndian : public SwapEndian {};
@@ -288,6 +289,7 @@ class BigEndian : public SwapEndian {};
 class LittleEndian : public SwapEndian {};
 class BigEndian : public NativeEndian {};
 #endif
+
 extern void BURGER_API ConvertEndian(Word16 *pInput,WordPtr uCount);
 extern void BURGER_API ConvertEndian(Word16 *pOutput,const Word16 *pInput,WordPtr uCount);
 extern void BURGER_API ConvertEndian(Word32 *pInput,WordPtr uCount);

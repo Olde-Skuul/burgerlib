@@ -50,6 +50,7 @@ extern WordPtr BURGER_API GetSize(FILE *fp);
 extern Word64 BURGER_API GetSize64(FILE *fp);
 extern Word BURGER_API SaveFile(FILE *fp,const void *pData,WordPtr uLength);
 extern void * BURGER_API LoadFile(FILE *fp,WordPtr *uLength);
+extern void BURGER_API SetBinaryMode(FILE *fp);
 }
 /* END */
 

@@ -103,7 +103,7 @@ public:
 	void BURGER_API Set(const char *pInput,WordPtr uLength);
 	void BURGER_API Set(const Word16 *pInput);
 	void BURGER_API Set(const Word16 *pInput,WordPtr uLength);
-	void BURGER_API SetBufferSize(WordPtr uSize);
+	Word BURGER_API SetBufferSize(WordPtr uSize);
 	
 	String & operator = (const String &rInput);
 	String & operator = (const char *pInput);
@@ -142,7 +142,7 @@ public:
 	BURGER_INLINE Word GetBoolean(Word bDefault) const { return AsciiToBoolean(m_pData,bDefault); }
 	void BURGER_API SetTrueFalse(Word bInput);
 	void BURGER_API SetYesNo(Word bInput);
-	Word BURGER_API GetWord(Word uDefault,Word uMin=0,Word uMax=BURGER_MAXUINT) const { return AsciiToWord(m_pData,uDefault,uMin,uMax); }
+	BURGER_INLINE Word GetWord(Word uDefault,Word uMin=0,Word uMax=BURGER_MAXUINT) const { return AsciiToWord(m_pData,uDefault,uMin,uMax); }
 	void BURGER_API SetWord(Word uInput);
 	void BURGER_API SetWordHex(Word uInput);
 	BURGER_INLINE Int GetInt(Int iDefault,Int iMin=(-BURGER_MAXINT)-1,Int iMax=BURGER_MAXINT) const { return AsciiToInteger(m_pData,iDefault,iMin,iMax); }
@@ -187,7 +187,7 @@ public:
 	BURGER_INLINE friend Word operator >= (char cInput1,String const &rInput2) { return static_cast<Word>(rInput2.Compare(cInput1)<=0); }
 
 private:
-	void BURGER_API InitFormattedString(const char* pFormat,WordPtr uArgCount,const SafePrintArgument **ppArgs); 
+	void BURGER_API InitFormattedString(const char* pFormat,WordPtr uArgCount,const SafePrintArgument **ppArgs);
 	static Word BURGER_API FormattedAllocCallback(Word bError,WordPtr uRequestedSize,void **ppOutputBuffer,void *pContext);
 };
 }

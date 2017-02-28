@@ -819,25 +819,4 @@ Word BURGER_API Burger::FileManager::CreateResourceFIle(const char *pFileName)
 	return ResError();
 }
 
-/***************************************
-
-	Given an open directory, read in the next filename
-	Return TRUE when the entries dry up.
-
-***************************************/
-
-void BURGER_API MacOSFileSecondsToTimeDate(Burger::TimeDate_t *pOutput,Word32 Time)
-{
-	DateTimeRec Temp2;
-	SecondsToDate(Time,&Temp2);		/* Convert to date */
-	pOutput->m_usMilliseconds = 0;		/* MacOS doesn't use milliseconds */
-	pOutput->m_bSecond = (Word8)Temp2.second;	/* Get the seconds */
-	pOutput->m_bMinute = (Word8)Temp2.minute;	/* Get the minute */
-	pOutput->m_bHour = (Word8)Temp2.hour;		/* Get the hour */
-	pOutput->m_bDay = (Word8)Temp2.day;			/* Get the day */
-	pOutput->m_bMonth = (Word8)Temp2.month;		/* Get the month */
-	pOutput->m_uYear = (Word16)Temp2.year;		/* Get the year */
-	pOutput->m_bDayOfWeek = static_cast<Word8>(Temp2.dayOfWeek-1);	/* Day of the week */
-}
-
 #endif

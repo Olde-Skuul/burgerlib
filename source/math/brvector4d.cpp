@@ -1618,7 +1618,7 @@ void BURGER_API Burger::Vector4D_t::ExpandRect(const Vector4D_t *pInput)
 ***************************************/
 
 const Burger::Vector4D_t Burger::g_Vector4DZero = {0.0f,0.0f,0.0f,0.0f};	///< Constant of 0.0f,0.0f,0.0f,0.0f
-const Burger::Vector4D_t Burger::g_Vector4DOne = {1.0f,1.0f,1.0f,1.0f};	///< Constant of 1.0f,1.0f,1.0f,1.0f
+const Burger::Vector4D_t Burger::g_Vector4DOne = {1.0f,1.0f,1.0f,1.0f};		///< Constant of 1.0f,1.0f,1.0f,1.0f
 const Burger::Vector4D_t Burger::g_Vector4DOneX = {1.0f,0.0f,0.0f,0.0f};	///< Constant of 1.0f,0.0f,0.0f,0.0f
 const Burger::Vector4D_t Burger::g_Vector4DOneY = {0.0f,1.0f,0.0f,0.0f};	///< Constant of 0.0f,1.0f,0.0f,0.0f
 const Burger::Vector4D_t Burger::g_Vector4DOneZ = {0.0f,0.0f,1.0f,0.0f};	///< Constant of 0.0f,0.0f,1.0f,0.0f

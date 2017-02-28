@@ -328,5 +328,5 @@ double BURGER_API Burger::RandomBase::GetDouble(void)
 	Int32 iLower=static_cast<Int32>(Get()>>6U);
 
 	// 0x20000000000000 = 9007199254740992.0
-	return ((static_cast<double>(iUpper)*67108864.0)+static_cast<double>(iLower))*(1.0/9007199254740992.0); 
+	return ((static_cast<double>(iUpper)*67108864.0)+static_cast<double>(iLower))*(1.0/9007199254740992.0);
 }

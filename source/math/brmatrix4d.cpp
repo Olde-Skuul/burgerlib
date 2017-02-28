@@ -4398,42 +4398,42 @@ Word BURGER_API Burger::Matrix4D_t::AffineInverse(const Matrix4D_t *pInput)
 	if (fTemp >= 0.0f) {
 		fPositive += fTemp;
 	} else { 
-		fNegative += fTemp; 
+		fNegative += fTemp;
 	}
 
 	fTemp = pInput->x.y * pInput->y.z * pInput->z.x;
 	if (fTemp >= 0.0f) {
 		fPositive += fTemp;
 	} else { 
-		fNegative += fTemp; 
+		fNegative += fTemp;
 	}
 
 	fTemp = pInput->x.z * pInput->y.x * pInput->z.y;
 	if (fTemp >= 0.0f) {
 		fPositive += fTemp;
 	} else { 
-		fNegative += fTemp; 
+		fNegative += fTemp;
 	}
 
 	fTemp = -pInput->x.z * pInput->y.y * pInput->z.x;
 	if (fTemp >= 0.0f) {
 		fPositive += fTemp;
 	} else { 
-		fNegative += fTemp; 
+		fNegative += fTemp;
 	}
 
 	fTemp = -pInput->x.y * pInput->y.x * pInput->z.z;
 	if (fTemp >= 0.0f) {
 		fPositive += fTemp;
 	} else { 
-		fNegative += fTemp; 
+		fNegative += fTemp;
 	}
 
 	fTemp = -pInput->x.x * pInput->y.z * pInput->z.y;
 	if (fTemp >= 0.0f) {
 		fPositive += fTemp;
 	} else { 
-		fNegative += fTemp; 
+		fNegative += fTemp;
 	}
 
 	// The determinant is the sum

@@ -153,7 +153,7 @@ protected:
 	NSApplication *m_pApplication;			///< Pointer to the current application context (Copy of NSApp)
 	NSApplicationDelegate *m_pApplicationDelegate;	///< Pointer to the current application delegate
 	NSWindow *m_pWindow;					///< Game window
-	NSResponder *m_pListener;               ///< Main listener for window events
+	NSResponder *m_pListener;				///< Main listener for window events
 	Word m_bCenterWindow;					///< \ref TRUE if the window needs to be centered
 	static RunQueue::eReturnCode BURGER_API EventPoll(void *pData);
 #endif
