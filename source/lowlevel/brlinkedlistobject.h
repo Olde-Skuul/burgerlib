@@ -24,14 +24,19 @@
 
 /* BEGIN */
 namespace Burger {
+
 class LinkedListObjects {
+
 public:
+
 	enum {
 		CONTINUE = 0,		///< Don't do anything
 		ABORT = 1,			///< Abort iteration
 		DELETEOBJECT = 2	///< Delete this object and continue iterating
 	};
+
 	typedef Word (BURGER_API *ProcAction)(void *);
+
 	class Object : private DoublyLinkedList {
 	friend class LinkedListObjects;
 	public:
@@ -60,9 +65,11 @@ public:
 		BURGER_INLINE ProcDataDelete GetDataDeleteProc(void) const { return m_ProcDataDelete; }
 		BURGER_INLINE void SetDataDeleteProc(ProcDataDelete pProc) { m_ProcDataDelete = pProc; }
 	};
+
 private:
 	Object *m_pRoot;		///< Root linked list entry
 	Word m_uCount;			///< Number of objects in the list
+
 public:
 	LinkedListObjects() : m_pRoot(NULL),m_uCount(0) {}
 	~LinkedListObjects() { Destroy(); }
@@ -87,6 +94,7 @@ public:
 	Object *IterateForward(ProcAction pProc);
 	Object *IterateReverse(ProcAction pProc);
 };
+
 }
 /* END */
 

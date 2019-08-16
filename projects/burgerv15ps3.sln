@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "burger", "burgerv15ps3.vcxproj", "{B9879DDE-F30A-3C66-9E6D-2E415296DD70}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|PS3 = Debug|PS3
+		Internal|PS3 = Internal|PS3
+		Release|PS3 = Release|PS3
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B9879DDE-F30A-3C66-9E6D-2E415296DD70}.Debug|PS3.ActiveCfg = Debug|PS3
+		{B9879DDE-F30A-3C66-9E6D-2E415296DD70}.Debug|PS3.Build.0 = Debug|PS3
+		{B9879DDE-F30A-3C66-9E6D-2E415296DD70}.Internal|PS3.ActiveCfg = Internal|PS3
+		{B9879DDE-F30A-3C66-9E6D-2E415296DD70}.Internal|PS3.Build.0 = Internal|PS3
+		{B9879DDE-F30A-3C66-9E6D-2E415296DD70}.Release|PS3.ActiveCfg = Release|PS3
+		{B9879DDE-F30A-3C66-9E6D-2E415296DD70}.Release|PS3.Build.0 = Release|PS3
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

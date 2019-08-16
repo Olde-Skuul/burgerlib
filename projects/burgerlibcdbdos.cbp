@@ -17,9 +17,10 @@
 				<Compiler>
 					<Add option="-d2" />
 					<Add option="-wx" />
+					<Add option="-fr=$(ERROR_FILE)" />
+					<Add option="-bcl=dos" />
 					<Add option="-fp6" />
 					<Add option="-6r" />
-					<Add option="-fr=$(ERROR_FILE)" />
 					<Add option="-d_DEBUG" />
 				</Compiler>
 			</Target>
@@ -65,14 +66,15 @@
 			<Add alias="Everything" targets="Debug;Internal;Release;" />
 		</VirtualTargets>
 		<Compiler>
+			<Add option="-bt=dos" />
+			<Add option="-bcl=dos" />
 			<Add option="-dGLUT_DISABLE_ATEXIT_HACK" />
 			<Add option="-dGLUT_NO_LIB_PRAGMA" />
 			<Add option="-dTARGET_CPU_X86=1" />
-			<Add option="-dTARGET_OS_WIN32=1" />
+			<Add option="-d__DOS4GW__" />
 			<Add option="-dTYPE_BOOL=1" />
 			<Add option="-dUNICODE" />
 			<Add option="-d_UNICODE" />
-			<Add option="-dWIN32_LEAN_AND_MEAN" />
 			<Add directory='&quot;../source&quot;' />
 			<Add directory='&quot;../source/ansi&quot;' />
 			<Add directory='&quot;../source/audio&quot;' />
@@ -80,6 +82,7 @@
 			<Add directory='&quot;../source/compression&quot;' />
 			<Add directory='&quot;../source/file&quot;' />
 			<Add directory='&quot;../source/flashplayer&quot;' />
+			<Add directory='&quot;../source/generated&quot;' />
 			<Add directory='&quot;../source/graphics&quot;' />
 			<Add directory='&quot;../source/graphics/effects&quot;' />
 			<Add directory='&quot;../source/graphics/shaders&quot;' />
@@ -87,6 +90,8 @@
 			<Add directory='&quot;../source/lowlevel&quot;' />
 			<Add directory='&quot;../source/math&quot;' />
 			<Add directory='&quot;../source/memory&quot;' />
+			<Add directory='&quot;../source/network&quot;' />
+			<Add directory='&quot;../source/random&quot;' />
 			<Add directory='&quot;../source/text&quot;' />
 			<Add directory='&quot;../source/msdos&quot;' />
 			<Add directory='&quot;$(BURGER_SDKS)/windows/perforce&quot;' />
@@ -94,6 +99,8 @@
 			<Add directory='&quot;$(BURGER_SDKS)/windows/directx9&quot;' />
 			<Add directory='&quot;$(BURGER_SDKS)/windows/windows5&quot;' />
 		</Compiler>
+		<Unit filename="../source/ansi/brcapturestdout.cpp" />
+		<Unit filename="../source/ansi/brcapturestdout.h" />
 		<Unit filename="../source/ansi/brfileansihelpers.cpp" />
 		<Unit filename="../source/ansi/brfileansihelpers.h" />
 		<Unit filename="../source/ansi/brmemoryansi.cpp" />
@@ -112,6 +119,8 @@
 		<Unit filename="../source/audio/brmace.h" />
 		<Unit filename="../source/audio/brmicrosoftadpcm.cpp" />
 		<Unit filename="../source/audio/brmicrosoftadpcm.h" />
+		<Unit filename="../source/audio/brmp3.cpp" />
+		<Unit filename="../source/audio/brmp3.h" />
 		<Unit filename="../source/audio/brsequencer.cpp" />
 		<Unit filename="../source/audio/brsequencer.h" />
 		<Unit filename="../source/audio/brsound.cpp" />
@@ -126,6 +135,7 @@
 		<Unit filename="../source/brglext.h" />
 		<Unit filename="../source/brglut.h" />
 		<Unit filename="../source/brglxext.h" />
+		<Unit filename="../source/brstdint.h" />
 		<Unit filename="../source/commandline/brcommandparameter.cpp" />
 		<Unit filename="../source/commandline/brcommandparameter.h" />
 		<Unit filename="../source/commandline/brcommandparameterbooltrue.cpp" />
@@ -150,6 +160,8 @@
 		<Unit filename="../source/compression/brcompresslbmrle.h" />
 		<Unit filename="../source/compression/brcompresslzss.cpp" />
 		<Unit filename="../source/compression/brcompresslzss.h" />
+		<Unit filename="../source/compression/brcrc16.cpp" />
+		<Unit filename="../source/compression/brcrc16.h" />
 		<Unit filename="../source/compression/brcrc32.cpp" />
 		<Unit filename="../source/compression/brcrc32.h" />
 		<Unit filename="../source/compression/brdecompress.cpp" />
@@ -168,6 +180,8 @@
 		<Unit filename="../source/compression/brdxt3.h" />
 		<Unit filename="../source/compression/brdxt5.cpp" />
 		<Unit filename="../source/compression/brdxt5.h" />
+		<Unit filename="../source/compression/brgost.cpp" />
+		<Unit filename="../source/compression/brgost.h" />
 		<Unit filename="../source/compression/brhashmap.cpp" />
 		<Unit filename="../source/compression/brhashmap.h" />
 		<Unit filename="../source/compression/brmd2.cpp" />
@@ -202,6 +216,8 @@
 		<Unit filename="../source/file/brfilelbm.h" />
 		<Unit filename="../source/file/brfilemanager.cpp" />
 		<Unit filename="../source/file/brfilemanager.h" />
+		<Unit filename="../source/file/brfilemp3.cpp" />
+		<Unit filename="../source/file/brfilemp3.h" />
 		<Unit filename="../source/file/brfilename.cpp" />
 		<Unit filename="../source/file/brfilename.h" />
 		<Unit filename="../source/file/brfilepcx.cpp" />
@@ -242,6 +258,8 @@
 		<Unit filename="../source/flashplayer/brflashutils.h" />
 		<Unit filename="../source/graphics/brdisplay.cpp" />
 		<Unit filename="../source/graphics/brdisplay.h" />
+		<Unit filename="../source/graphics/brdisplayobject.cpp" />
+		<Unit filename="../source/graphics/brdisplayobject.h" />
 		<Unit filename="../source/graphics/brdisplayopengl.cpp" />
 		<Unit filename="../source/graphics/brdisplayopengl.h" />
 		<Unit filename="../source/graphics/brdisplayopenglsoftware8.cpp" />
@@ -294,6 +312,8 @@
 		<Unit filename="../source/input/brkeyboard.h" />
 		<Unit filename="../source/input/brmouse.cpp" />
 		<Unit filename="../source/input/brmouse.h" />
+		<Unit filename="../source/lowlevel/bralgorithm.cpp" />
+		<Unit filename="../source/lowlevel/bralgorithm.h" />
 		<Unit filename="../source/lowlevel/brarray.cpp" />
 		<Unit filename="../source/lowlevel/brarray.h" />
 		<Unit filename="../source/lowlevel/brassert.cpp" />
@@ -322,6 +342,8 @@
 		<Unit filename="../source/lowlevel/brgridindex.h" />
 		<Unit filename="../source/lowlevel/brguid.cpp" />
 		<Unit filename="../source/lowlevel/brguid.h" />
+		<Unit filename="../source/lowlevel/brlastinfirstout.cpp" />
+		<Unit filename="../source/lowlevel/brlastinfirstout.h" />
 		<Unit filename="../source/lowlevel/brlinkedlistobject.cpp" />
 		<Unit filename="../source/lowlevel/brlinkedlistobject.h" />
 		<Unit filename="../source/lowlevel/brlinkedlistpointer.cpp" />
@@ -335,8 +357,6 @@
 		<Unit filename="../source/lowlevel/brperforce.h" />
 		<Unit filename="../source/lowlevel/brqueue.cpp" />
 		<Unit filename="../source/lowlevel/brqueue.h" />
-		<Unit filename="../source/lowlevel/brrandommanager.cpp" />
-		<Unit filename="../source/lowlevel/brrandommanager.h" />
 		<Unit filename="../source/lowlevel/brrunqueue.cpp" />
 		<Unit filename="../source/lowlevel/brrunqueue.h" />
 		<Unit filename="../source/lowlevel/brsimplearray.cpp" />
@@ -377,6 +397,8 @@
 		<Unit filename="../source/math/brmatrix3d.h" />
 		<Unit filename="../source/math/brmatrix4d.cpp" />
 		<Unit filename="../source/math/brmatrix4d.h" />
+		<Unit filename="../source/math/brmp3math.cpp" />
+		<Unit filename="../source/math/brmp3math.h" />
 		<Unit filename="../source/math/brvector2d.cpp" />
 		<Unit filename="../source/math/brvector2d.h" />
 		<Unit filename="../source/math/brvector3d.cpp" />
@@ -399,15 +421,43 @@
 		<Unit filename="../source/msdos/brmsdostypes.h" />
 		<Unit filename="../source/msdos/brtickmsdos.cpp" />
 		<Unit filename="../source/msdos/brtimedatemsdos.cpp" />
+		<Unit filename="../source/network/brnetendpoint.cpp" />
+		<Unit filename="../source/network/brnetendpoint.h" />
+		<Unit filename="../source/network/brnetendpointtcp.cpp" />
+		<Unit filename="../source/network/brnetendpointtcp.h" />
+		<Unit filename="../source/network/brnetmanager.cpp" />
+		<Unit filename="../source/network/brnetmanager.h" />
+		<Unit filename="../source/network/brnetmodule.cpp" />
+		<Unit filename="../source/network/brnetmodule.h" />
+		<Unit filename="../source/network/brnetmoduletcp.cpp" />
+		<Unit filename="../source/network/brnetmoduletcp.h" />
+		<Unit filename="../source/network/brnetplay.cpp" />
+		<Unit filename="../source/network/brnetplay.h" />
+		<Unit filename="../source/random/brmersennetwist.cpp" />
+		<Unit filename="../source/random/brmersennetwist.h" />
+		<Unit filename="../source/random/brrandom.cpp" />
+		<Unit filename="../source/random/brrandom.h" />
+		<Unit filename="../source/random/brrandombase.cpp" />
+		<Unit filename="../source/random/brrandombase.h" />
 		<Unit filename="../source/templateburgerbase.h" />
+		<Unit filename="../source/text/brasciito.cpp" />
+		<Unit filename="../source/text/brasciito.h" />
 		<Unit filename="../source/text/brisolatin1.cpp" />
 		<Unit filename="../source/text/brisolatin1.h" />
+		<Unit filename="../source/text/brlocalization.cpp" />
+		<Unit filename="../source/text/brlocalization.h" />
 		<Unit filename="../source/text/brmacromanus.cpp" />
 		<Unit filename="../source/text/brmacromanus.h" />
+		<Unit filename="../source/text/brmemoryfunctions.cpp" />
+		<Unit filename="../source/text/brmemoryfunctions.h" />
 		<Unit filename="../source/text/brnumberstring.cpp" />
 		<Unit filename="../source/text/brnumberstring.h" />
 		<Unit filename="../source/text/brnumberstringhex.cpp" />
 		<Unit filename="../source/text/brnumberstringhex.h" />
+		<Unit filename="../source/text/brnumberto.cpp" />
+		<Unit filename="../source/text/brnumberto.h" />
+		<Unit filename="../source/text/brosstringfunctions.cpp" />
+		<Unit filename="../source/text/brosstringfunctions.h" />
 		<Unit filename="../source/text/brprintf.cpp" />
 		<Unit filename="../source/text/brprintf.h" />
 		<Unit filename="../source/text/brsimplestring.cpp" />

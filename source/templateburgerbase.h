@@ -19,6 +19,7 @@
 /* DIR: "lowlevel:" */
 /* DIR: "math:" */
 /* DIR: "memory:" */
+/* DIR: "network:" */
 /* DIR: "shield:" */
 /* DIR: "random:" */
 /* DIR: "text:" */
@@ -27,6 +28,7 @@
 /* DIR: "macosx:" */
 /* DIR: "mac:" */
 /* DIR: "msdos:" */
+/* DIR: "linux:" */
 /* DIR: "ps3:" */
 /* DIR: "ps4:" */
 /* DIR: "vita:" */
@@ -68,7 +70,7 @@
 #pragma pack(8)
 #endif
 
-#if defined(__MWERKS__)
+#if defined(BURGER_METROWERKS)
 #pragma ANSI_strict off
 #pragma enumsalwaysint on
 #endif
@@ -80,12 +82,14 @@
 #include "brsnsystems.h"
 #include "brassert.h"
 #include "brdebug.h"
+#include "brguid.h"
 #include "brwindowstypes.h"
 #include "brxbox360types.h"
 #include "brmacosxtypes.h"
 #include "brmactypes.h"
 #include "briostypes.h"
 #include "brmsdostypes.h"
+#include "brlinuxtypes.h"
 #include "brps3types.h"
 #include "brps4types.h"
 #include "brshieldtypes.h"
@@ -99,7 +103,6 @@
 #include "brrandom.h"
 #include "brmersennetwist.h"
 #include "brstdouthelpers.h"
-#include "brguid.h"
 #include "brisolatin1.h"
 #include "brmacromanus.h"
 #include "brwin1252.h"
@@ -109,6 +112,9 @@
 #include "brmemoryansi.h"
 #include "brmemoryhandle.h"
 #include "brglobalmemorymanager.h"
+#include "brasciito.h"
+#include "brnumberto.h"
+#include "brmemoryfunctions.h"
 #include "brstringfunctions.h"
 #include "brutf8.h"
 #include "brutf16.h"
@@ -121,6 +127,7 @@
 #include "brarray.h"
 #include "bradler16.h"
 #include "bradler32.h"
+#include "brcrc16.h"
 #include "brcrc32.h"
 #include "brsdbmhash.h"
 #include "brdjb2hash.h"
@@ -134,7 +141,10 @@
 #include "brglobals.h"
 #include "brstring.h"
 #include "brstring16.h"
+#include "brosstringfunctions.h"
+#include "brcapturestdout.h"
 #include "brhashmap.h"
+#include "bralgorithm.h"
 #include "brfixedpoint.h"
 #include "brfloatingpoint.h"
 #include "brvector2d.h"
@@ -147,6 +157,8 @@
 #include "brmatrix4d.h"
 #include "brfixedmatrix3d.h"
 #include "brfixedmatrix4d.h"
+#include "brmp3math.h"
+#include "brlastinfirstout.h"
 #include "brdoublylinkedlist.h"
 #include "brlinkedlistpointer.h"
 #include "brlinkedlistobject.h"
@@ -218,6 +230,7 @@
 #include "brfilegif.h"
 #include "brfileini.h"
 #include "brfilelbm.h"
+#include "brfilemp3.h"
 #include "brfilepcx.h"
 #include "brfilepng.h"
 #include "brfiletga.h"
@@ -238,11 +251,18 @@
 #include "brulaw.h"
 #include "bralaw.h"
 #include "brmicrosoftadpcm.h"
+#include "brmp3.h"
 #include "brsoundbufferrez.h"
 #include "brsequencer.h"
 #include "brimports3m.h"
 #include "brimportit.h"
 #include "brimportxm.h"
+#include "brnetmanager.h"
+#include "brnetendpoint.h"
+#include "brnetmodule.h"
+#include "brnetmoduletcp.h"
+#include "brnetendpointtcp.h"
+#include "brnetplay.h"
 #include "brgridindex.h"
 #include "brearcliptriangulate.h"
 #include "brflashstream.h"
@@ -257,7 +277,7 @@
 #include "brflashactionvalue.h"
 #include "brflashavm2.h"
 
-#if defined(__MWERKS__)
+#if defined(BURGER_METROWERKS)
 #pragma ANSI_strict reset
 #pragma enumsalwaysint reset
 #endif

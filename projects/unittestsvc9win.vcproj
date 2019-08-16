@@ -1,14 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="unittests"
-	ProjectGUID="{EF7E438C-866C-3E32-A40D-04479DC29B05}"
+	ProjectGUID="{3B014DC2-DAE7-357C-A928-26AD8C34FD18}"
+	RootNamespace="unittests"
+	Keyword="Win32Proj"
+	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
-		<Platform Name="Win32" />
-		<Platform Name="x64" />
+		<Platform
+			Name="Win32"
+		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
+	<ToolFiles>
+		<DefaultToolFile
+			FileName="glsl.rules"
+		/>
+		<DefaultToolFile
+			FileName="hlsl.rules"
+		/>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
@@ -16,43 +31,86 @@
 			IntermediateDirectory="temp\unittestsvc9w32dbg\"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="1"
 			>
 			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA"
+				Optimization="0"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
 				StructMemberAlignment="4"
+				BufferSecurityCheck="true"
 				EnableFunctionLevelLinking="true"
 				FloatingPointModel="2"
+				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="false"
-				PrecompiledHeaderFile=""
+				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
-				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
-				ProgramDataBaseFileName="$(OutDir)\$(TargetName).pdb"
 				CallingConvention="1"
-				CompileAs="2"
-				FavorSizeOrSpeed="1"
 				DisableSpecificWarnings="4201"
-				Optimization="0"
-				EnableIntrinsicFunctions="true"
-				BufferSecurityCheck="true"
-				RuntimeLibrary="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersopengl;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 			/>
 			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="burgerlibvc9w32dbg.lib"
+				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w32dbg.exe&quot;"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\opengl"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
+				OptimizeReferences="2"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
 		<Configuration
@@ -61,43 +119,86 @@
 			IntermediateDirectory="temp\unittestsvc9w64dbg\"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="1"
 			>
 			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="_DEBUG;WIN64;_WINDOWS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA"
+				Optimization="0"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
 				StructMemberAlignment="4"
+				BufferSecurityCheck="true"
 				EnableFunctionLevelLinking="true"
 				FloatingPointModel="2"
+				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="false"
-				PrecompiledHeaderFile=""
+				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
-				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
-				ProgramDataBaseFileName="$(OutDir)\$(TargetName).pdb"
 				CallingConvention="1"
-				CompileAs="2"
-				FavorSizeOrSpeed="1"
 				DisableSpecificWarnings="4201"
-				Optimization="0"
-				EnableIntrinsicFunctions="true"
-				BufferSecurityCheck="true"
-				RuntimeLibrary="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersopengl;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\text;..\unittest;..\source\windows;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 			/>
 			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="burgerlibvc9w64dbg.lib"
+				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w64dbg.exe&quot;"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\opengl"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
+				OptimizeReferences="2"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
 		<Configuration
@@ -106,12 +207,33 @@
 			IntermediateDirectory="temp\unittestsvc9w32int\"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="1"
 			>
 			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA"
+				Optimization="3"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
+				EnableFiberSafeOptimizations="true"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
 				StructMemberAlignment="4"

@@ -12,7 +12,7 @@
 	{
 		// Name of the project (And output filename)
 		"projectname": "burgerlib",
-		// Kind of project (library,game,screensaver,tool)
+		// Kind of project (library,app,screensaver,tool)
 		"kind": "library",
 		// Configurations to generate (Debug,Internal,Release,Profile)
 		"configurations": ["Debug","Internal","Release"],
@@ -41,6 +41,8 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../source/ps3"
 		],
@@ -66,6 +68,8 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../source/ps4"
 		],
@@ -91,6 +95,8 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../source/vita"
 		],
@@ -115,6 +121,8 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../source/wiiu"
 		],
@@ -140,6 +148,8 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../source/xbox360"
 		],
@@ -164,6 +174,8 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../source/shield"
 		],
@@ -188,6 +200,8 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../source/macosx"
 		],
@@ -213,13 +227,15 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../source/mac"
 		],
 		"finalfolder": "$(BURGER_SDKS)/mac/burgerlib/",
-		"platform": "mac"
+		"platform": "macos9"
 	},
-	"codewarrior",
+	"codewarrior58",
 	{
 		"sourcefolders": [
 			"../source",
@@ -237,6 +253,8 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../source/ios"
 		],
@@ -260,6 +278,8 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../source/msdos"
 		],
@@ -268,6 +288,34 @@
 	},
 	"watcom",
 	"codeblocks",
+
+	{
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/flashplayer",
+			"../source/graphics",
+			"../source/graphics/effects",
+			"../source/graphics/shaders",
+			"../source/graphics/shadersopengl",			
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/network",
+			"../source/random",
+			"../source/text",
+			"../source/linux"
+		],
+		"finalfolder": "$(BURGER_SDKS)/linux/burgerlib/",
+		"platform": "linux"
+	},
+	"makefile",
+
 	{
 		"sourcefolders": [
 			"../source",
@@ -286,6 +334,8 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../source/windows"
 		],
@@ -294,11 +344,12 @@
 		"defines": ["_CRT_NONSTDC_NO_WARNINGS","_CRT_SECURE_NO_WARNINGS","GLUT_NO_LIB_PRAGMA"],
 		"platform": "windows"
 	},
+	"vs2017",
 	"vs2015",
+	"vs2013",
+	"vs2012",
 	"vs2010",
-	"vs2008",
-	"vs2005",
-	"codewarrior",
+	"codewarrior50",
 	"watcom",
 	"codeblocks",
 	{
@@ -322,6 +373,8 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../unittest",
 			"../source/windows"
@@ -330,11 +383,12 @@
 		"defines": ["_CRT_NONSTDC_NO_WARNINGS","_CRT_SECURE_NO_WARNINGS","GLUT_NO_LIB_PRAGMA"],
 		"platform": "windows"
 	},
+	"vs2017",
 	"vs2015",
+	"vs2013",
+	"vs2012",
 	"vs2010",
-	"vs2008",
-	"vs2005",
-	"codewarrior",
+	"codewarrior50",
 	"watcom",
 	"codeblocks",
 	{
@@ -360,6 +414,8 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../unittest",
 			"../source/macosx"
@@ -387,15 +443,17 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../unittest",
 			"../source/mac"
 		],
 		"includefolders": [],
 		"defines": [],
-		"platform": "mac"
+		"platform": "macos9"
 	},
-	"codewarrior",
+	"codewarrior58",
 	{
 		"projectname": "unittests",
 		"kind": "tool",
@@ -416,6 +474,8 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../unittest",
 			"../source/xbox360"
@@ -445,6 +505,8 @@
 			"../source/lowlevel",
 			"../source/math",
 			"../source/memory",
+			"../source/network",
+			"../source/random",
 			"../source/text",
 			"../unittest",
 			"../source/vita"
@@ -452,5 +514,36 @@
 		"defines": [],
 		"platform": "vita"
 	},
-	"vs2010"
+	"vs2010",
+
+	{
+		"projectname": "unittests",
+		"kind": "tool",
+		"finalfolder": null,
+		"sourcefolders": [
+			"../source",
+			"../source/ansi",
+			"../source/audio",
+			"../source/commandline",
+			"../source/compression",
+			"../source/file",
+			"../source/flashplayer",
+			"../source/graphics",
+			"../source/graphics/effects",
+			"../source/graphics/shaders",
+			"../source/graphics/shadersopengl",
+			"../source/input",
+			"../source/lowlevel",
+			"../source/math",
+			"../source/memory",
+			"../source/network",
+			"../source/random",
+			"../source/text",
+			"../unittest",
+			"../source/linux"
+		],
+		"defines": [],
+		"platform": "linux"
+	},
+	"makefile"
 ]

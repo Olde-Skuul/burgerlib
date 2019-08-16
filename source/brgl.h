@@ -18,6 +18,10 @@
 #include <burger.h>
 #endif
 
+#ifndef GL_GLEXT_PROTOTYPES
+#define GL_GLEXT_PROTOTYPES
+#endif
+
 // iOS uses OpenGLES
 
 #if defined(BURGER_IOS)
@@ -60,6 +64,10 @@
 #endif
 #define BURGER_OPENGLES
 
+// Linux
+#elif defined(BURGER_LINUX)
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
 #endif
 
 //

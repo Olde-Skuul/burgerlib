@@ -22,10 +22,6 @@
 #include <brgl.h>
 #endif
 
-#ifndef GL_GLEXT_PROTOTYPES
-#define GL_GLEXT_PROTOTYPES
-#endif
-
 // iOS uses OpenGLES
 
 #if defined(BURGER_IOS)
@@ -94,6 +90,9 @@
 #define glGenVertexArrays glGenVertexArraysOES
 #define glDeleteVertexArrays glDeleteVertexArraysOES
 
+// Linux
+#elif defined(BURGER_LINUX)
+#include <GL/glext.h>
 #endif
 
 //
