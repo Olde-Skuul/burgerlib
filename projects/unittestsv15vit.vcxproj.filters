@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="..\source\ansi\brcapturestdout.h">
       <Filter>source\ansi</Filter>
@@ -322,53 +322,17 @@
     <ClInclude Include="..\source\graphics\shaders\brshader2dcolorvertex.h">
       <Filter>source\graphics\shaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\pscclr4dx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
+    <ClInclude Include="..\source\graphics\shadersvita\generated\pstexturecolorvita.h">
+      <Filter>source\graphics\shadersvita\generated</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\pstex2clr4dx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
+    <ClInclude Include="..\source\graphics\shadersvita\generated\pstexturevita.h">
+      <Filter>source\graphics\shadersvita\generated</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\pstexturecolordx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
+    <ClInclude Include="..\source\graphics\shadersvita\generated\vs20sprite2dvita.h">
+      <Filter>source\graphics\shadersvita\generated</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\pstexturedx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\vs20pos22ddx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\vs20pos2tex2clr42ddx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\vs20sprite2ddx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\vsstaticpositiondx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\pscclr4gl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\pstex2clr4gl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\pstexturecolorgl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\pstexturegl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\vs20pos22dgl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\vs20pos2tex2clr42dgl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\vs20sprite2dgl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\vsstaticpositiongl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
+    <ClInclude Include="..\source\graphics\shadersvita\generated\vsstaticpositionvita.h">
+      <Filter>source\graphics\shadersvita\generated</Filter>
     </ClInclude>
     <ClInclude Include="..\source\input\brjoypad.h">
       <Filter>source\input</Filter>
@@ -619,35 +583,11 @@
     <ClInclude Include="..\source\text\brwin1252.h">
       <Filter>source\text</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\windows\brdisplaydib.h">
-      <Filter>source\windows</Filter>
+    <ClInclude Include="..\source\vita\brvitamemory.h">
+      <Filter>source\vita</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\windows\brdisplaydibsoftware8.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\brdisplaydirectx11.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\brdisplaydirectx9.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\brdisplaydirectx9software8.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\brstartup.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\brtexturedirectx9.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\brvertexbufferdirectx9.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\brwindowstypes.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\generated\ps20display8bitdx9.h">
-      <Filter>source\windows\generated</Filter>
+    <ClInclude Include="..\source\vita\brvitatypes.h">
+      <Filter>source\vita</Filter>
     </ClInclude>
     <ClInclude Include="..\unittest\common.h">
       <Filter>unittest</Filter>
@@ -1243,170 +1183,29 @@
     <ClCompile Include="..\source\text\brwin1252.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\windows\brcodelibrarywindows.cpp">
-      <Filter>source\windows</Filter>
+    <ClCompile Include="..\source\vita\brcriticalsectionvita.cpp">
+      <Filter>source\vita</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\windows\brconsolemanagerwindows.cpp">
-      <Filter>source\windows</Filter>
+    <ClCompile Include="..\source\vita\brdirectorysearchvita.cpp">
+      <Filter>source\vita</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\windows\brcriticalsectionwindows.cpp">
-      <Filter>source\windows</Filter>
+    <ClCompile Include="..\source\vita\brfilemanagervita.cpp">
+      <Filter>source\vita</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\windows\brdebugwindows.cpp">
-      <Filter>source\windows</Filter>
+    <ClCompile Include="..\source\vita\brfilenamevita.cpp">
+      <Filter>source\vita</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\windows\brdetectmultilaunchwindows.cpp">
-      <Filter>source\windows</Filter>
+    <ClCompile Include="..\source\vita\brfilevita.cpp">
+      <Filter>source\vita</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\windows\brdirectorysearchwindows.cpp">
-      <Filter>source\windows</Filter>
+    <ClCompile Include="..\source\vita\brticksvita.cpp">
+      <Filter>source\vita</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\windows\brdirectxdata.cpp">
-      <Filter>source\windows</Filter>
+    <ClCompile Include="..\source\vita\brtimedatevita.cpp">
+      <Filter>source\vita</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\windows\brdisplaybasewindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdisplaydibsoftware8windows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdisplaydibwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdisplaydirectx11windows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdisplaydirectx9software8windows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdisplaydirectx9windows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdisplayopenglwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brfilemanagerwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brfilenamewindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brfilewindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brglobalsshimswindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brglobalswindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brguidwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brjoypadwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brkeyboardwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brmousewindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brnetmanagerwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\broscursorwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brosstringfunctionswindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brperforcewindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brpoint2dwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brrectwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brsequencerwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brsoundwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brstdouthelperswindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brtexturedirectx9.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brtickwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brtimedatewindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brvertexbufferdirextx9.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsapp.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsd3d.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsd3d11.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsddraw.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsdinput.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsdplay.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsdsound.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowshid.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowskernel32.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsrpcrt4.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowssetupapi.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsshell32.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsshlwapi.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowstest.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowstypes1.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsuser32.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsversion.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowswinmm.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsxinput.cpp">
-      <Filter>source\windows</Filter>
+    <ClCompile Include="..\source\vita\brvitamemory.cpp">
+      <Filter>source\vita</Filter>
     </ClCompile>
     <ClCompile Include="..\unittest\common.cpp">
       <Filter>unittest</Filter>
@@ -1468,131 +1267,83 @@
     <ClCompile Include="..\unittest\testcharset.cpp">
       <Filter>unittest</Filter>
     </ClCompile>
-    <HLSL Include="..\source\graphics\shadersdx9\pscclr4dx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\graphics\shadersdx9\pstex2clr4dx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\graphics\shadersdx9\pstexturecolordx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\graphics\shadersdx9\pstexturedx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\graphics\shadersdx9\vs20pos22ddx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\graphics\shadersdx9\vs20pos2tex2clr42ddx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\graphics\shadersdx9\vs20sprite2ddx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\graphics\shadersdx9\vsstaticpositiondx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\windows\ps20display8bitdx9.hlsl">
-      <Filter>source\windows</Filter>
-    </HLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\pscclr4gl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\pstex2clr4gl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\pstexturecolorgl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\pstexturegl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\vs20pos22dgl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\vs20pos2tex2clr42dgl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\vs20sprite2dgl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\vsstaticpositiongl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
+    <VitaCGCompile Include="..\source\graphics\shadersvita\pstexturecolorvita.vitacg">
+      <Filter>source\graphics\shadersvita</Filter>
+    </VitaCGCompile>
+    <VitaCGCompile Include="..\source\graphics\shadersvita\pstexturevita.vitacg">
+      <Filter>source\graphics\shadersvita</Filter>
+    </VitaCGCompile>
+    <VitaCGCompile Include="..\source\graphics\shadersvita\vs20sprite2dvita.vitacg">
+      <Filter>source\graphics\shadersvita</Filter>
+    </VitaCGCompile>
+    <VitaCGCompile Include="..\source\graphics\shadersvita\vsstaticpositionvita.vitacg">
+      <Filter>source\graphics\shadersvita</Filter>
+    </VitaCGCompile>
     <Filter Include="source">
-      <UniqueIdentifier>BC2675C5-FE41-34E7-AA84-831381B5001F</UniqueIdentifier>
+      <UniqueIdentifier>E68D92FE-18B1-3C0D-8249-211A02412DC2</UniqueIdentifier>
     </Filter>
     <Filter Include="source\ansi">
-      <UniqueIdentifier>BBF66B60-3963-3181-872F-D733A52F3845</UniqueIdentifier>
+      <UniqueIdentifier>182FA521-F326-33D2-A2B2-8E680B240F36</UniqueIdentifier>
     </Filter>
     <Filter Include="source\audio">
-      <UniqueIdentifier>B5AFD993-527D-3A57-9504-0D483F07FDA4</UniqueIdentifier>
+      <UniqueIdentifier>834CEEB7-4D1D-3C80-B461-7712FF842A2F</UniqueIdentifier>
     </Filter>
     <Filter Include="source\commandline">
-      <UniqueIdentifier>944E05B4-39A2-37A7-AF9F-9DE71A9CF856</UniqueIdentifier>
+      <UniqueIdentifier>EE29D96E-B769-36A9-9003-2B04093EDEF4</UniqueIdentifier>
     </Filter>
     <Filter Include="source\compression">
-      <UniqueIdentifier>81CAE315-1D4C-363F-B22A-BE494B47BD36</UniqueIdentifier>
+      <UniqueIdentifier>422340B1-065B-3876-8022-62554986389D</UniqueIdentifier>
     </Filter>
     <Filter Include="source\file">
-      <UniqueIdentifier>F6AF236F-64AF-35EE-9382-7A6EAC317FB7</UniqueIdentifier>
+      <UniqueIdentifier>F31D2907-2677-311B-A625-91BD631BFC7F</UniqueIdentifier>
     </Filter>
     <Filter Include="source\flashplayer">
-      <UniqueIdentifier>B335362F-C623-379C-B598-7EC2DF482599</UniqueIdentifier>
+      <UniqueIdentifier>E2AF2417-0AD4-39F0-B8E6-7EBF7D22D387</UniqueIdentifier>
     </Filter>
     <Filter Include="source\generated">
-      <UniqueIdentifier>9A2B0CA0-E414-366C-849B-7BEBE8EA3CE6</UniqueIdentifier>
+      <UniqueIdentifier>C27BF369-C631-3E4C-85A7-C2D7145CBF5C</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics">
-      <UniqueIdentifier>72E0C8A8-6F4B-38D2-AEB6-9A95DAD8E0F5</UniqueIdentifier>
+      <UniqueIdentifier>B307771A-E891-355D-9F33-2B09093B7D77</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\effects">
-      <UniqueIdentifier>A795E83C-659C-3893-AFBD-6A818984AB6D</UniqueIdentifier>
+      <UniqueIdentifier>49BE3144-3A2D-36D7-AA65-D3BEB1D06464</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\shaders">
-      <UniqueIdentifier>376291EA-3DE8-35B8-BFA4-B7B9A402E251</UniqueIdentifier>
+      <UniqueIdentifier>C8C19770-DF83-370F-9122-51AD975C367A</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\graphics\shadersdx9">
-      <UniqueIdentifier>750C54EB-B488-3F1F-B48D-6739EC026739</UniqueIdentifier>
+    <Filter Include="source\graphics\shadersvita">
+      <UniqueIdentifier>AF9482C0-9A94-3818-91C2-19F20AD28C2E</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\graphics\shadersdx9\generated">
-      <UniqueIdentifier>609C796C-1901-33E7-A548-F2A70F0EF48B</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\graphics\shadersopengl">
-      <UniqueIdentifier>1E5CB3A5-4D29-3262-BD29-D21F4F50ACF4</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\graphics\shadersopengl\generated">
-      <UniqueIdentifier>91380BC8-F6E2-32C0-A496-CE09F49DCCB7</UniqueIdentifier>
+    <Filter Include="source\graphics\shadersvita\generated">
+      <UniqueIdentifier>10D04E0C-F303-38D2-B76E-6D2BA059E96D</UniqueIdentifier>
     </Filter>
     <Filter Include="source\input">
-      <UniqueIdentifier>A296E2D2-AB70-3FE7-B46D-0C66E2AA9C6C</UniqueIdentifier>
+      <UniqueIdentifier>FC686416-037D-3416-A3E9-25A69AB065F9</UniqueIdentifier>
     </Filter>
     <Filter Include="source\lowlevel">
-      <UniqueIdentifier>6C024BD5-4349-33E9-89B8-72D06D0648E5</UniqueIdentifier>
+      <UniqueIdentifier>97366C3C-86CC-339E-9FDF-A0FC69FBC76B</UniqueIdentifier>
     </Filter>
     <Filter Include="source\math">
-      <UniqueIdentifier>15E5A3B4-A025-3260-8E68-4D7804AF174A</UniqueIdentifier>
+      <UniqueIdentifier>AB5F39CC-9AE4-34C6-9E39-53CE3E63922F</UniqueIdentifier>
     </Filter>
     <Filter Include="source\memory">
-      <UniqueIdentifier>3CB492DA-A090-3A82-BBC6-FC217D05DBF0</UniqueIdentifier>
+      <UniqueIdentifier>3FFEF1FA-AA39-305D-9BB1-E467E7A2D9BD</UniqueIdentifier>
     </Filter>
     <Filter Include="source\network">
-      <UniqueIdentifier>1468DDF4-77B2-392D-88FF-B795E9DB9300</UniqueIdentifier>
+      <UniqueIdentifier>D3E2716D-BAA0-3783-81DF-AB8916011FE5</UniqueIdentifier>
     </Filter>
     <Filter Include="source\random">
-      <UniqueIdentifier>C48FD389-EB47-3459-A673-321A0C1DB497</UniqueIdentifier>
+      <UniqueIdentifier>EC1FBD1B-13D7-3BBF-B5A5-CF7AC89EDC2A</UniqueIdentifier>
     </Filter>
     <Filter Include="source\text">
-      <UniqueIdentifier>90289C52-45A6-35B6-B6DE-5C3F21F201D0</UniqueIdentifier>
+      <UniqueIdentifier>5DAF90F9-8C1F-30A2-BB00-1F319BE3F254</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\windows">
-      <UniqueIdentifier>BBE71550-5D4F-3228-A72A-4103B0A3B530</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\windows\generated">
-      <UniqueIdentifier>82C889B5-1BD5-3558-B485-BB09C9A15765</UniqueIdentifier>
+    <Filter Include="source\vita">
+      <UniqueIdentifier>D8C4DA68-BE79-3808-968F-89B8D6B375FE</UniqueIdentifier>
     </Filter>
     <Filter Include="unittest">
-      <UniqueIdentifier>4E59A0C9-96D9-3565-ABB6-5677D9CC774D</UniqueIdentifier>
+      <UniqueIdentifier>D148BA12-CC5D-36BF-96AA-FE49CFC8334E</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

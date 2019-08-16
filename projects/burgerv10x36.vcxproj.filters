@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="..\source\ansi\brcapturestdout.h">
@@ -322,53 +322,29 @@
     <ClInclude Include="..\source\graphics\shaders\brshader2dcolorvertex.h">
       <Filter>source\graphics\shaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\pscclr4dx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
+    <ClInclude Include="..\source\graphics\shadersxbox360\generated\pscclr4360.h">
+      <Filter>source\graphics\shadersxbox360\generated</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\pstex2clr4dx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
+    <ClInclude Include="..\source\graphics\shadersxbox360\generated\pstex2clr4360.h">
+      <Filter>source\graphics\shadersxbox360\generated</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\pstexturecolordx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
+    <ClInclude Include="..\source\graphics\shadersxbox360\generated\pstexture360.h">
+      <Filter>source\graphics\shadersxbox360\generated</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\pstexturedx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
+    <ClInclude Include="..\source\graphics\shadersxbox360\generated\pstexturecolor360.h">
+      <Filter>source\graphics\shadersxbox360\generated</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\vs20pos22ddx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
+    <ClInclude Include="..\source\graphics\shadersxbox360\generated\vs20pos22d360.h">
+      <Filter>source\graphics\shadersxbox360\generated</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\vs20pos2tex2clr42ddx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
+    <ClInclude Include="..\source\graphics\shadersxbox360\generated\vs20pos2tex2clr42d360.h">
+      <Filter>source\graphics\shadersxbox360\generated</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\vs20sprite2ddx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
+    <ClInclude Include="..\source\graphics\shadersxbox360\generated\vs20sprite2d360.h">
+      <Filter>source\graphics\shadersxbox360\generated</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersdx9\generated\vsstaticpositiondx9.h">
-      <Filter>source\graphics\shadersdx9\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\pscclr4gl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\pstex2clr4gl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\pstexturecolorgl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\pstexturegl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\vs20pos22dgl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\vs20pos2tex2clr42dgl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\vs20sprite2dgl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\graphics\shadersopengl\generated\vsstaticpositiongl.h">
-      <Filter>source\graphics\shadersopengl\generated</Filter>
+    <ClInclude Include="..\source\graphics\shadersxbox360\generated\vsstaticposition360.h">
+      <Filter>source\graphics\shadersxbox360\generated</Filter>
     </ClInclude>
     <ClInclude Include="..\source\input\brjoypad.h">
       <Filter>source\input</Filter>
@@ -619,95 +595,11 @@
     <ClInclude Include="..\source\text\brwin1252.h">
       <Filter>source\text</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\windows\brdisplaydib.h">
-      <Filter>source\windows</Filter>
+    <ClInclude Include="..\source\xbox360\brstartup.h">
+      <Filter>source\xbox360</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\windows\brdisplaydibsoftware8.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\brdisplaydirectx11.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\brdisplaydirectx9.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\brdisplaydirectx9software8.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\brstartup.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\brtexturedirectx9.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\brvertexbufferdirectx9.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\brwindowstypes.h">
-      <Filter>source\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\windows\generated\ps20display8bitdx9.h">
-      <Filter>source\windows\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\common.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\createtables.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbralgorithm.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrcompression.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrdisplay.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrendian.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfileloaders.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfilemanager.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfixedpoint.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfloatingpoint.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrhashes.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrmatrix3d.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrmatrix4d.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrnetwork.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrprintf.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrstaticrtti.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrstrings.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrtimedate.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrtypes.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testcharset.h">
-      <Filter>unittest</Filter>
+    <ClInclude Include="..\source\xbox360\brxbox360types.h">
+      <Filter>source\xbox360</Filter>
     </ClInclude>
     <ClCompile Include="..\source\ansi\brcapturestdout.cpp">
       <Filter>source\ansi</Filter>
@@ -1243,356 +1135,143 @@
     <ClCompile Include="..\source\text\brwin1252.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\windows\brcodelibrarywindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brconsolemanagerwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brcriticalsectionwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdebugwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdetectmultilaunchwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdirectorysearchwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdirectxdata.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdisplaybasewindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdisplaydibsoftware8windows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdisplaydibwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdisplaydirectx11windows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdisplaydirectx9software8windows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdisplaydirectx9windows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brdisplayopenglwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brfilemanagerwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brfilenamewindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brfilewindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brglobalsshimswindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brglobalswindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brguidwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brjoypadwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brkeyboardwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brmousewindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brnetmanagerwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\broscursorwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brosstringfunctionswindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brperforcewindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brpoint2dwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brrectwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brsequencerwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brsoundwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brstdouthelperswindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brtexturedirectx9.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brtickwindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brtimedatewindows.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brvertexbufferdirextx9.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsapp.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsd3d.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsd3d11.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsddraw.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsdinput.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsdplay.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsdsound.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowshid.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowskernel32.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsrpcrt4.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowssetupapi.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsshell32.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsshlwapi.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowstest.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowstypes1.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsuser32.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsversion.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowswinmm.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\windows\brwindowsxinput.cpp">
-      <Filter>source\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\common.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\createtables.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbralgorithm.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrcompression.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrdisplay.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrendian.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfileloaders.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfilemanager.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfixedpoint.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfloatingpoint.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrhashes.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrmatrix3d.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrmatrix4d.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrnetwork.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrprintf.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrstaticrtti.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrstrings.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrtimedate.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrtypes.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testcharset.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <HLSL Include="..\source\graphics\shadersdx9\pscclr4dx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\graphics\shadersdx9\pstex2clr4dx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\graphics\shadersdx9\pstexturecolordx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\graphics\shadersdx9\pstexturedx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\graphics\shadersdx9\vs20pos22ddx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\graphics\shadersdx9\vs20pos2tex2clr42ddx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\graphics\shadersdx9\vs20sprite2ddx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\graphics\shadersdx9\vsstaticpositiondx9.hlsl">
-      <Filter>source\graphics\shadersdx9</Filter>
-    </HLSL>
-    <HLSL Include="..\source\windows\ps20display8bitdx9.hlsl">
-      <Filter>source\windows</Filter>
-    </HLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\pscclr4gl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\pstex2clr4gl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\pstexturecolorgl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\pstexturegl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\vs20pos22dgl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\vs20pos2tex2clr42dgl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\vs20sprite2dgl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
-    <GLSL Include="..\source\graphics\shadersopengl\vsstaticpositiongl.glsl">
-      <Filter>source\graphics\shadersopengl</Filter>
-    </GLSL>
+    <ClCompile Include="..\source\xbox360\brcriticalsectionxbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brdirectorysearchxbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brdisplaybasexbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brdisplayxbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brfilemanagerxbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brfilenamexbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brfilexbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brjoypadxbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brkeyboardxbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brpoint2dxbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brrectxbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brsoundxbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brtexturexbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brtickxbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brtimedatexbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brvertexbufferxbox360.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\xbox360\brxbox360app.cpp">
+      <Filter>source\xbox360</Filter>
+    </ClCompile>
+    <X360SL Include="..\source\graphics\shadersxbox360\pscclr4360.x360sl">
+      <Filter>source\graphics\shadersxbox360</Filter>
+    </X360SL>
+    <X360SL Include="..\source\graphics\shadersxbox360\pstex2clr4360.x360sl">
+      <Filter>source\graphics\shadersxbox360</Filter>
+    </X360SL>
+    <X360SL Include="..\source\graphics\shadersxbox360\pstexture360.x360sl">
+      <Filter>source\graphics\shadersxbox360</Filter>
+    </X360SL>
+    <X360SL Include="..\source\graphics\shadersxbox360\pstexturecolor360.x360sl">
+      <Filter>source\graphics\shadersxbox360</Filter>
+    </X360SL>
+    <X360SL Include="..\source\graphics\shadersxbox360\vs20pos22d360.x360sl">
+      <Filter>source\graphics\shadersxbox360</Filter>
+    </X360SL>
+    <X360SL Include="..\source\graphics\shadersxbox360\vs20pos2tex2clr42d360.x360sl">
+      <Filter>source\graphics\shadersxbox360</Filter>
+    </X360SL>
+    <X360SL Include="..\source\graphics\shadersxbox360\vs20sprite2d360.x360sl">
+      <Filter>source\graphics\shadersxbox360</Filter>
+    </X360SL>
+    <X360SL Include="..\source\graphics\shadersxbox360\vsstaticposition360.x360sl">
+      <Filter>source\graphics\shadersxbox360</Filter>
+    </X360SL>
     <Filter Include="source">
-      <UniqueIdentifier>BC2675C5-FE41-34E7-AA84-831381B5001F</UniqueIdentifier>
+      <UniqueIdentifier>27787436-5977-3021-89EA-75D238559314</UniqueIdentifier>
     </Filter>
     <Filter Include="source\ansi">
-      <UniqueIdentifier>BBF66B60-3963-3181-872F-D733A52F3845</UniqueIdentifier>
+      <UniqueIdentifier>6B8612EE-2CAA-327F-9228-7E8DA947889B</UniqueIdentifier>
     </Filter>
     <Filter Include="source\audio">
-      <UniqueIdentifier>B5AFD993-527D-3A57-9504-0D483F07FDA4</UniqueIdentifier>
+      <UniqueIdentifier>BE71E3A1-9111-3183-9EF9-1DADA1CAD8D3</UniqueIdentifier>
     </Filter>
     <Filter Include="source\commandline">
-      <UniqueIdentifier>944E05B4-39A2-37A7-AF9F-9DE71A9CF856</UniqueIdentifier>
+      <UniqueIdentifier>C1DFCC26-AD18-38F6-B085-B8772B028C56</UniqueIdentifier>
     </Filter>
     <Filter Include="source\compression">
-      <UniqueIdentifier>81CAE315-1D4C-363F-B22A-BE494B47BD36</UniqueIdentifier>
+      <UniqueIdentifier>5C4A998B-CA3B-3156-98E1-2BB37349B2B1</UniqueIdentifier>
     </Filter>
     <Filter Include="source\file">
-      <UniqueIdentifier>F6AF236F-64AF-35EE-9382-7A6EAC317FB7</UniqueIdentifier>
+      <UniqueIdentifier>86507A99-0446-31B7-BF35-090861E921AA</UniqueIdentifier>
     </Filter>
     <Filter Include="source\flashplayer">
-      <UniqueIdentifier>B335362F-C623-379C-B598-7EC2DF482599</UniqueIdentifier>
+      <UniqueIdentifier>F6EC5DE6-2691-34AB-B632-A2EDE3B3C83A</UniqueIdentifier>
     </Filter>
     <Filter Include="source\generated">
-      <UniqueIdentifier>9A2B0CA0-E414-366C-849B-7BEBE8EA3CE6</UniqueIdentifier>
+      <UniqueIdentifier>EF6CA94A-AFD2-38B5-95D1-1B035BD1C896</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics">
-      <UniqueIdentifier>72E0C8A8-6F4B-38D2-AEB6-9A95DAD8E0F5</UniqueIdentifier>
+      <UniqueIdentifier>E5F6DBEE-6C4F-3270-A7DA-71C09AB3AE3E</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\effects">
-      <UniqueIdentifier>A795E83C-659C-3893-AFBD-6A818984AB6D</UniqueIdentifier>
+      <UniqueIdentifier>0962F44B-1276-3CE5-A95B-301D25FFE53D</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\shaders">
-      <UniqueIdentifier>376291EA-3DE8-35B8-BFA4-B7B9A402E251</UniqueIdentifier>
+      <UniqueIdentifier>91CB4550-5279-3EA3-AAF7-22FD3301CDC1</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\graphics\shadersdx9">
-      <UniqueIdentifier>750C54EB-B488-3F1F-B48D-6739EC026739</UniqueIdentifier>
+    <Filter Include="source\graphics\shadersxbox360">
+      <UniqueIdentifier>005744E1-3280-3B4F-B239-AA87146B3D27</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\graphics\shadersdx9\generated">
-      <UniqueIdentifier>609C796C-1901-33E7-A548-F2A70F0EF48B</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\graphics\shadersopengl">
-      <UniqueIdentifier>1E5CB3A5-4D29-3262-BD29-D21F4F50ACF4</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\graphics\shadersopengl\generated">
-      <UniqueIdentifier>91380BC8-F6E2-32C0-A496-CE09F49DCCB7</UniqueIdentifier>
+    <Filter Include="source\graphics\shadersxbox360\generated">
+      <UniqueIdentifier>56EE357B-BCA2-3949-86FC-D1315318980A</UniqueIdentifier>
     </Filter>
     <Filter Include="source\input">
-      <UniqueIdentifier>A296E2D2-AB70-3FE7-B46D-0C66E2AA9C6C</UniqueIdentifier>
+      <UniqueIdentifier>60BD42E1-8DF3-3895-9708-DBD1CC11CAD5</UniqueIdentifier>
     </Filter>
     <Filter Include="source\lowlevel">
-      <UniqueIdentifier>6C024BD5-4349-33E9-89B8-72D06D0648E5</UniqueIdentifier>
+      <UniqueIdentifier>79F6AAE4-7EB0-32B8-AB5F-5D9F74EB4AD5</UniqueIdentifier>
     </Filter>
     <Filter Include="source\math">
-      <UniqueIdentifier>15E5A3B4-A025-3260-8E68-4D7804AF174A</UniqueIdentifier>
+      <UniqueIdentifier>968B91D9-210E-357B-A0E1-FE13201AB138</UniqueIdentifier>
     </Filter>
     <Filter Include="source\memory">
-      <UniqueIdentifier>3CB492DA-A090-3A82-BBC6-FC217D05DBF0</UniqueIdentifier>
+      <UniqueIdentifier>015CDDF1-A0E4-33F0-AE45-03926DF561EE</UniqueIdentifier>
     </Filter>
     <Filter Include="source\network">
-      <UniqueIdentifier>1468DDF4-77B2-392D-88FF-B795E9DB9300</UniqueIdentifier>
+      <UniqueIdentifier>4450620E-545F-3744-B5B3-207B933A8261</UniqueIdentifier>
     </Filter>
     <Filter Include="source\random">
-      <UniqueIdentifier>C48FD389-EB47-3459-A673-321A0C1DB497</UniqueIdentifier>
+      <UniqueIdentifier>656FCA8C-7C87-35C2-BB90-619DB273B864</UniqueIdentifier>
     </Filter>
     <Filter Include="source\text">
-      <UniqueIdentifier>90289C52-45A6-35B6-B6DE-5C3F21F201D0</UniqueIdentifier>
+      <UniqueIdentifier>09755F2E-7DEE-364B-AB99-2E490DA29405</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\windows">
-      <UniqueIdentifier>BBE71550-5D4F-3228-A72A-4103B0A3B530</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\windows\generated">
-      <UniqueIdentifier>82C889B5-1BD5-3558-B485-BB09C9A15765</UniqueIdentifier>
-    </Filter>
-    <Filter Include="unittest">
-      <UniqueIdentifier>4E59A0C9-96D9-3565-ABB6-5677D9CC774D</UniqueIdentifier>
+    <Filter Include="source\xbox360">
+      <UniqueIdentifier>279CDC47-F9DC-36A2-A24B-DF930BEC2E77</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

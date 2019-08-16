@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "burger", "burgerv15ps4.vcxproj", "{CFD7C081-DD23-3B1D-BFFD-6C53FEBE32A3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ORBIS = Debug|ORBIS
+		Internal|ORBIS = Internal|ORBIS
+		Release|ORBIS = Release|ORBIS
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CFD7C081-DD23-3B1D-BFFD-6C53FEBE32A3}.Debug|ORBIS.ActiveCfg = Debug|ORBIS
+		{CFD7C081-DD23-3B1D-BFFD-6C53FEBE32A3}.Debug|ORBIS.Build.0 = Debug|ORBIS
+		{CFD7C081-DD23-3B1D-BFFD-6C53FEBE32A3}.Internal|ORBIS.ActiveCfg = Internal|ORBIS
+		{CFD7C081-DD23-3B1D-BFFD-6C53FEBE32A3}.Internal|ORBIS.Build.0 = Internal|ORBIS
+		{CFD7C081-DD23-3B1D-BFFD-6C53FEBE32A3}.Release|ORBIS.ActiveCfg = Release|ORBIS
+		{CFD7C081-DD23-3B1D-BFFD-6C53FEBE32A3}.Release|ORBIS.Build.0 = Release|ORBIS
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

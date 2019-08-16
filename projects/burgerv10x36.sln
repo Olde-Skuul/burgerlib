@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "burger", "burgerv10x36.vcxproj", "{4D79F22B-4031-3C3A-BC48-1022103B965C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		CodeAnalysis|Xbox 360 = CodeAnalysis|Xbox 360
+		Debug|Xbox 360 = Debug|Xbox 360
+		Internal|Xbox 360 = Internal|Xbox 360
+		Profile|Xbox 360 = Profile|Xbox 360
+		Profile_FastCap|Xbox 360 = Profile_FastCap|Xbox 360
+		Release|Xbox 360 = Release|Xbox 360
+		Release_LTCG|Xbox 360 = Release_LTCG|Xbox 360
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D79F22B-4031-3C3A-BC48-1022103B965C}.CodeAnalysis|Xbox 360.ActiveCfg = CodeAnalysis|Xbox 360
+		{4D79F22B-4031-3C3A-BC48-1022103B965C}.CodeAnalysis|Xbox 360.Build.0 = CodeAnalysis|Xbox 360
+		{4D79F22B-4031-3C3A-BC48-1022103B965C}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
+		{4D79F22B-4031-3C3A-BC48-1022103B965C}.Debug|Xbox 360.Build.0 = Debug|Xbox 360
+		{4D79F22B-4031-3C3A-BC48-1022103B965C}.Internal|Xbox 360.ActiveCfg = Internal|Xbox 360
+		{4D79F22B-4031-3C3A-BC48-1022103B965C}.Internal|Xbox 360.Build.0 = Internal|Xbox 360
+		{4D79F22B-4031-3C3A-BC48-1022103B965C}.Profile|Xbox 360.ActiveCfg = Profile|Xbox 360
+		{4D79F22B-4031-3C3A-BC48-1022103B965C}.Profile|Xbox 360.Build.0 = Profile|Xbox 360
+		{4D79F22B-4031-3C3A-BC48-1022103B965C}.Profile_FastCap|Xbox 360.ActiveCfg = Profile_FastCap|Xbox 360
+		{4D79F22B-4031-3C3A-BC48-1022103B965C}.Profile_FastCap|Xbox 360.Build.0 = Profile_FastCap|Xbox 360
+		{4D79F22B-4031-3C3A-BC48-1022103B965C}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
+		{4D79F22B-4031-3C3A-BC48-1022103B965C}.Release|Xbox 360.Build.0 = Release|Xbox 360
+		{4D79F22B-4031-3C3A-BC48-1022103B965C}.Release_LTCG|Xbox 360.ActiveCfg = Release_LTCG|Xbox 360
+		{4D79F22B-4031-3C3A-BC48-1022103B965C}.Release_LTCG|Xbox 360.Build.0 = Release_LTCG|Xbox 360
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

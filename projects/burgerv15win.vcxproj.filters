@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="..\source\ansi\brcapturestdout.h">
       <Filter>source\ansi</Filter>
@@ -648,66 +648,6 @@
     </ClInclude>
     <ClInclude Include="..\source\windows\generated\ps20display8bitdx9.h">
       <Filter>source\windows\generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\common.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\createtables.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbralgorithm.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrcompression.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrdisplay.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrendian.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfileloaders.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfilemanager.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfixedpoint.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrfloatingpoint.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrhashes.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrmatrix3d.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrmatrix4d.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrnetwork.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrprintf.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrstaticrtti.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrstrings.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrtimedate.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testbrtypes.h">
-      <Filter>unittest</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unittest\testcharset.h">
-      <Filter>unittest</Filter>
     </ClInclude>
     <ClCompile Include="..\source\ansi\brcapturestdout.cpp">
       <Filter>source\ansi</Filter>
@@ -1408,66 +1348,6 @@
     <ClCompile Include="..\source\windows\brwindowsxinput.cpp">
       <Filter>source\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\unittest\common.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\createtables.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbralgorithm.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrcompression.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrdisplay.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrendian.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfileloaders.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfilemanager.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfixedpoint.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrfloatingpoint.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrhashes.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrmatrix3d.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrmatrix4d.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrnetwork.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrprintf.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrstaticrtti.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrstrings.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrtimedate.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testbrtypes.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\unittest\testcharset.cpp">
-      <Filter>unittest</Filter>
-    </ClCompile>
     <HLSL Include="..\source\graphics\shadersdx9\pscclr4dx9.hlsl">
       <Filter>source\graphics\shadersdx9</Filter>
     </HLSL>
@@ -1520,79 +1400,76 @@
       <Filter>source\graphics\shadersopengl</Filter>
     </GLSL>
     <Filter Include="source">
-      <UniqueIdentifier>BC2675C5-FE41-34E7-AA84-831381B5001F</UniqueIdentifier>
+      <UniqueIdentifier>A35DA21A-B35F-3AD2-928B-B63A4DC2305A</UniqueIdentifier>
     </Filter>
     <Filter Include="source\ansi">
-      <UniqueIdentifier>BBF66B60-3963-3181-872F-D733A52F3845</UniqueIdentifier>
+      <UniqueIdentifier>3C1B2F5D-15E0-325F-9D7B-488A202BC201</UniqueIdentifier>
     </Filter>
     <Filter Include="source\audio">
-      <UniqueIdentifier>B5AFD993-527D-3A57-9504-0D483F07FDA4</UniqueIdentifier>
+      <UniqueIdentifier>05DE10CB-ADFB-3C7B-9295-285254AABB9B</UniqueIdentifier>
     </Filter>
     <Filter Include="source\commandline">
-      <UniqueIdentifier>944E05B4-39A2-37A7-AF9F-9DE71A9CF856</UniqueIdentifier>
+      <UniqueIdentifier>520EFA98-CF0A-3525-BDBF-BDB35D447B59</UniqueIdentifier>
     </Filter>
     <Filter Include="source\compression">
-      <UniqueIdentifier>81CAE315-1D4C-363F-B22A-BE494B47BD36</UniqueIdentifier>
+      <UniqueIdentifier>E71F5C9D-1B69-33F8-85D2-B9A066756DF1</UniqueIdentifier>
     </Filter>
     <Filter Include="source\file">
-      <UniqueIdentifier>F6AF236F-64AF-35EE-9382-7A6EAC317FB7</UniqueIdentifier>
+      <UniqueIdentifier>6D682913-966B-33BE-A773-EEEACAE74655</UniqueIdentifier>
     </Filter>
     <Filter Include="source\flashplayer">
-      <UniqueIdentifier>B335362F-C623-379C-B598-7EC2DF482599</UniqueIdentifier>
+      <UniqueIdentifier>83026558-1E76-39BF-A56D-5787BB67495F</UniqueIdentifier>
     </Filter>
     <Filter Include="source\generated">
-      <UniqueIdentifier>9A2B0CA0-E414-366C-849B-7BEBE8EA3CE6</UniqueIdentifier>
+      <UniqueIdentifier>DBF7C2DC-E368-31A4-8CF4-2FC3DDF1D63E</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics">
-      <UniqueIdentifier>72E0C8A8-6F4B-38D2-AEB6-9A95DAD8E0F5</UniqueIdentifier>
+      <UniqueIdentifier>5A7FE3D9-BA42-3913-A076-CFFD6AB6D258</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\effects">
-      <UniqueIdentifier>A795E83C-659C-3893-AFBD-6A818984AB6D</UniqueIdentifier>
+      <UniqueIdentifier>F32D5A57-7D52-3C81-BA90-0B8C72452F61</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\shaders">
-      <UniqueIdentifier>376291EA-3DE8-35B8-BFA4-B7B9A402E251</UniqueIdentifier>
+      <UniqueIdentifier>A9954454-7B04-3301-9935-FC14AF830334</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\shadersdx9">
-      <UniqueIdentifier>750C54EB-B488-3F1F-B48D-6739EC026739</UniqueIdentifier>
+      <UniqueIdentifier>EF4C180B-3F0B-38F4-AA3F-B21CEECBA01B</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\shadersdx9\generated">
-      <UniqueIdentifier>609C796C-1901-33E7-A548-F2A70F0EF48B</UniqueIdentifier>
+      <UniqueIdentifier>922E33D3-DDEB-3BC6-B2FC-1904DB87E654</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\shadersopengl">
-      <UniqueIdentifier>1E5CB3A5-4D29-3262-BD29-D21F4F50ACF4</UniqueIdentifier>
+      <UniqueIdentifier>5E969BAB-5F83-39FC-8028-C821A2BE3D8F</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\shadersopengl\generated">
-      <UniqueIdentifier>91380BC8-F6E2-32C0-A496-CE09F49DCCB7</UniqueIdentifier>
+      <UniqueIdentifier>777C00AA-9F37-326B-B01A-8356A8FCABE6</UniqueIdentifier>
     </Filter>
     <Filter Include="source\input">
-      <UniqueIdentifier>A296E2D2-AB70-3FE7-B46D-0C66E2AA9C6C</UniqueIdentifier>
+      <UniqueIdentifier>2FE37055-2961-30B4-A595-3E13FD3FA01D</UniqueIdentifier>
     </Filter>
     <Filter Include="source\lowlevel">
-      <UniqueIdentifier>6C024BD5-4349-33E9-89B8-72D06D0648E5</UniqueIdentifier>
+      <UniqueIdentifier>D4437D75-1834-38E0-94E8-FBA95DA9FD60</UniqueIdentifier>
     </Filter>
     <Filter Include="source\math">
-      <UniqueIdentifier>15E5A3B4-A025-3260-8E68-4D7804AF174A</UniqueIdentifier>
+      <UniqueIdentifier>9BBBC488-89B2-3FD3-9D08-6290AC761467</UniqueIdentifier>
     </Filter>
     <Filter Include="source\memory">
-      <UniqueIdentifier>3CB492DA-A090-3A82-BBC6-FC217D05DBF0</UniqueIdentifier>
+      <UniqueIdentifier>257D85F5-0358-36CB-83C7-0F70A76066D2</UniqueIdentifier>
     </Filter>
     <Filter Include="source\network">
-      <UniqueIdentifier>1468DDF4-77B2-392D-88FF-B795E9DB9300</UniqueIdentifier>
+      <UniqueIdentifier>33FF6573-2B7C-3DF7-861C-5E12513BBB49</UniqueIdentifier>
     </Filter>
     <Filter Include="source\random">
-      <UniqueIdentifier>C48FD389-EB47-3459-A673-321A0C1DB497</UniqueIdentifier>
+      <UniqueIdentifier>C6F081AA-97D6-3778-991F-6F9E16EA8AD4</UniqueIdentifier>
     </Filter>
     <Filter Include="source\text">
-      <UniqueIdentifier>90289C52-45A6-35B6-B6DE-5C3F21F201D0</UniqueIdentifier>
+      <UniqueIdentifier>8E338000-7760-3007-A379-4EE12EBCCDB2</UniqueIdentifier>
     </Filter>
     <Filter Include="source\windows">
-      <UniqueIdentifier>BBE71550-5D4F-3228-A72A-4103B0A3B530</UniqueIdentifier>
+      <UniqueIdentifier>4F65007E-102F-3CE4-85E7-B90DD6C60A2E</UniqueIdentifier>
     </Filter>
     <Filter Include="source\windows\generated">
-      <UniqueIdentifier>82C889B5-1BD5-3558-B485-BB09C9A15765</UniqueIdentifier>
-    </Filter>
-    <Filter Include="unittest">
-      <UniqueIdentifier>4E59A0C9-96D9-3565-ABB6-5677D9CC774D</UniqueIdentifier>
+      <UniqueIdentifier>3AC61A8A-F047-3B0A-B10F-C61107B1FD4D</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

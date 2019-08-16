@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "burger", "burgerv15shi.vcxproj", "{592984D9-772D-3EFF-9ED6-A380D7CE5987}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Tegra-Android = Debug|Tegra-Android
+		Debug|ARM-Android-NVIDIA = Debug|ARM-Android-NVIDIA
+		Debug|AArch64-Android-NVIDIA = Debug|AArch64-Android-NVIDIA
+		Debug|x86-Android-NVIDIA = Debug|x86-Android-NVIDIA
+		Debug|x64-Android-NVIDIA = Debug|x64-Android-NVIDIA
+		Internal|Tegra-Android = Internal|Tegra-Android
+		Internal|ARM-Android-NVIDIA = Internal|ARM-Android-NVIDIA
+		Internal|AArch64-Android-NVIDIA = Internal|AArch64-Android-NVIDIA
+		Internal|x86-Android-NVIDIA = Internal|x86-Android-NVIDIA
+		Internal|x64-Android-NVIDIA = Internal|x64-Android-NVIDIA
+		Release|Tegra-Android = Release|Tegra-Android
+		Release|ARM-Android-NVIDIA = Release|ARM-Android-NVIDIA
+		Release|AArch64-Android-NVIDIA = Release|AArch64-Android-NVIDIA
+		Release|x86-Android-NVIDIA = Release|x86-Android-NVIDIA
+		Release|x64-Android-NVIDIA = Release|x64-Android-NVIDIA
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Debug|Tegra-Android.ActiveCfg = Debug|Tegra-Android
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Debug|Tegra-Android.Build.0 = Debug|Tegra-Android
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Debug|ARM-Android-NVIDIA.ActiveCfg = Debug|ARM-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Debug|ARM-Android-NVIDIA.Build.0 = Debug|ARM-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Debug|AArch64-Android-NVIDIA.ActiveCfg = Debug|AArch64-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Debug|AArch64-Android-NVIDIA.Build.0 = Debug|AArch64-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Debug|x86-Android-NVIDIA.ActiveCfg = Debug|x86-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Debug|x86-Android-NVIDIA.Build.0 = Debug|x86-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Debug|x64-Android-NVIDIA.ActiveCfg = Debug|x64-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Debug|x64-Android-NVIDIA.Build.0 = Debug|x64-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Internal|Tegra-Android.ActiveCfg = Internal|Tegra-Android
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Internal|Tegra-Android.Build.0 = Internal|Tegra-Android
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Internal|ARM-Android-NVIDIA.ActiveCfg = Internal|ARM-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Internal|ARM-Android-NVIDIA.Build.0 = Internal|ARM-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Internal|AArch64-Android-NVIDIA.ActiveCfg = Internal|AArch64-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Internal|AArch64-Android-NVIDIA.Build.0 = Internal|AArch64-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Internal|x86-Android-NVIDIA.ActiveCfg = Internal|x86-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Internal|x86-Android-NVIDIA.Build.0 = Internal|x86-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Internal|x64-Android-NVIDIA.ActiveCfg = Internal|x64-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Internal|x64-Android-NVIDIA.Build.0 = Internal|x64-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Release|Tegra-Android.ActiveCfg = Release|Tegra-Android
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Release|Tegra-Android.Build.0 = Release|Tegra-Android
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Release|ARM-Android-NVIDIA.ActiveCfg = Release|ARM-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Release|ARM-Android-NVIDIA.Build.0 = Release|ARM-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Release|AArch64-Android-NVIDIA.ActiveCfg = Release|AArch64-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Release|AArch64-Android-NVIDIA.Build.0 = Release|AArch64-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Release|x86-Android-NVIDIA.ActiveCfg = Release|x86-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Release|x86-Android-NVIDIA.Build.0 = Release|x86-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Release|x64-Android-NVIDIA.ActiveCfg = Release|x64-Android-NVIDIA
+		{592984D9-772D-3EFF-9ED6-A380D7CE5987}.Release|x64-Android-NVIDIA.Build.0 = Release|x64-Android-NVIDIA
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

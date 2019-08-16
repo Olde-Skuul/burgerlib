@@ -31,48 +31,48 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>unittests</ProjectName>
-    <ProjectGuid>{7DB6CB76-A39D-34E2-8CE1-B21C65C4D9EF}</ProjectGuid>
+    <ProjectName>burger</ProjectName>
+    <ProjectGuid>{4D79F22B-4031-3C3A-BC48-1022103B965C}</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Internal|Xbox 360'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
@@ -165,7 +165,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\xbox360;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\xbox360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_XBOX;XBOX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -180,16 +180,19 @@
       <PREfast>Analyze</PREfast>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\xbox360\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>xbdm.lib;xboxkrnl.lib;d3d9ltcg.lib;d3dx9.lib;xgraphics.lib;xapilib.lib;xaudio2.lib;x3daudioltcg.lib;xmcoreltcg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>false</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Deploy>
-      <DeploymentType>EmulateDvd</DeploymentType>
-      <DvdEmulationType>ZeroSeekTimes</DvdEmulationType>
-      <DeploymentFiles>$(RemoteRoot)=$(ImagePath)</DeploymentFiles>
-    </Deploy>
+    <PostBuildEvent>
+      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\xbox360\burgerlib\</Message>
+      <Command>mkdir "$(BURGER_SDKS)\xbox360\burgerlib\" 2&gt;nul
+cmd /c p4 edit "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+copy /Y "$(TargetPath)" "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+cmd /c p4 revert -a "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+cmd /c p4 edit "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"
+copy /Y "$(TargetDir)$(TargetName).pdb" "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"
+cmd /c p4 revert -a "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
     <ClCompile>
@@ -199,7 +202,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\xbox360;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\xbox360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_XBOX;XBOX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -213,16 +216,19 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\xbox360\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>xbdm.lib;xboxkrnl.lib;d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>false</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Deploy>
-      <DeploymentType>EmulateDvd</DeploymentType>
-      <DvdEmulationType>ZeroSeekTimes</DvdEmulationType>
-      <DeploymentFiles>$(RemoteRoot)=$(ImagePath)</DeploymentFiles>
-    </Deploy>
+    <PostBuildEvent>
+      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\xbox360\burgerlib\</Message>
+      <Command>mkdir "$(BURGER_SDKS)\xbox360\burgerlib\" 2&gt;nul
+cmd /c p4 edit "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+copy /Y "$(TargetPath)" "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+cmd /c p4 revert -a "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+cmd /c p4 edit "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"
+copy /Y "$(TargetDir)$(TargetName).pdb" "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"
+cmd /c p4 revert -a "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Internal|Xbox 360'">
     <ClCompile>
@@ -232,7 +238,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\xbox360;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\xbox360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_XBOX;XBOX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -246,17 +252,20 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\xbox360\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>xbdm.lib;xboxkrnl.lib;d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <Deploy>
-      <DeploymentType>EmulateDvd</DeploymentType>
-      <DvdEmulationType>ZeroSeekTimes</DvdEmulationType>
-      <DeploymentFiles>$(RemoteRoot)=$(ImagePath)</DeploymentFiles>
-    </Deploy>
+    <PostBuildEvent>
+      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\xbox360\burgerlib\</Message>
+      <Command>mkdir "$(BURGER_SDKS)\xbox360\burgerlib\" 2&gt;nul
+cmd /c p4 edit "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+copy /Y "$(TargetPath)" "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+cmd /c p4 revert -a "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+cmd /c p4 edit "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"
+copy /Y "$(TargetDir)$(TargetName).pdb" "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"
+cmd /c p4 revert -a "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'">
     <ClCompile>
@@ -268,7 +277,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\xbox360;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\xbox360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_XBOX;XBOX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -283,18 +292,21 @@
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\xbox360\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>xbdm.lib;xboxkrnl.lib;d3d9i.lib;d3dx9i.lib;xgraphics.lib;xapilibi.lib;xaudio2.lib;x3daudioi.lib;xmcorei.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <Profile>true</Profile>
     </Link>
-    <Deploy>
-      <DeploymentType>EmulateDvd</DeploymentType>
-      <DvdEmulationType>ZeroSeekTimes</DvdEmulationType>
-      <DeploymentFiles>$(RemoteRoot)=$(ImagePath)</DeploymentFiles>
-    </Deploy>
+    <PostBuildEvent>
+      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\xbox360\burgerlib\</Message>
+      <Command>mkdir "$(BURGER_SDKS)\xbox360\burgerlib\" 2&gt;nul
+cmd /c p4 edit "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+copy /Y "$(TargetPath)" "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+cmd /c p4 revert -a "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+cmd /c p4 edit "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"
+copy /Y "$(TargetDir)$(TargetName).pdb" "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"
+cmd /c p4 revert -a "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'">
     <ClCompile>
@@ -306,7 +318,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\xbox360;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\xbox360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_XBOX;XBOX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -321,18 +333,21 @@
       <CallAttributedProfiling>Fastcap</CallAttributedProfiling>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\xbox360\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>xbdm.lib;xboxkrnl.lib;d3d9i.lib;d3dx9i.lib;xgraphics.lib;xapilibi.lib;xaudio2.lib;x3daudioi.lib;xmcorei.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <Profile>true</Profile>
     </Link>
-    <Deploy>
-      <DeploymentType>EmulateDvd</DeploymentType>
-      <DvdEmulationType>ZeroSeekTimes</DvdEmulationType>
-      <DeploymentFiles>$(RemoteRoot)=$(ImagePath)</DeploymentFiles>
-    </Deploy>
+    <PostBuildEvent>
+      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\xbox360\burgerlib\</Message>
+      <Command>mkdir "$(BURGER_SDKS)\xbox360\burgerlib\" 2&gt;nul
+cmd /c p4 edit "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+copy /Y "$(TargetPath)" "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+cmd /c p4 revert -a "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+cmd /c p4 edit "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"
+copy /Y "$(TargetDir)$(TargetName).pdb" "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"
+cmd /c p4 revert -a "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
     <ClCompile>
@@ -344,7 +359,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\xbox360;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\xbox360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_XBOX;XBOX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -358,17 +373,20 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\xbox360\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>xbdm.lib;xboxkrnl.lib;d3d9ltcg.lib;d3dx9.lib;xgraphics.lib;xapilib.lib;xaudio2.lib;x3daudioltcg.lib;xmcoreltcg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <Deploy>
-      <DeploymentType>EmulateDvd</DeploymentType>
-      <DvdEmulationType>ZeroSeekTimes</DvdEmulationType>
-      <DeploymentFiles>$(RemoteRoot)=$(ImagePath)</DeploymentFiles>
-    </Deploy>
+    <PostBuildEvent>
+      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\xbox360\burgerlib\</Message>
+      <Command>mkdir "$(BURGER_SDKS)\xbox360\burgerlib\" 2&gt;nul
+cmd /c p4 edit "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+copy /Y "$(TargetPath)" "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+cmd /c p4 revert -a "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+cmd /c p4 edit "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"
+copy /Y "$(TargetDir)$(TargetName).pdb" "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"
+cmd /c p4 revert -a "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">
     <ClCompile>
@@ -380,7 +398,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\xbox360;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersxbox360;$(ProjectDir)..\source\graphics\shadersxbox360\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\xbox360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_XBOX;XBOX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -394,17 +412,20 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\xbox360\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>xbdm.lib;xboxkrnl.lib;d3d9ltcg.lib;d3dx9.lib;xgraphics.lib;xapilib.lib;xaudio2.lib;x3daudioltcg.lib;xmcoreltcg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <Deploy>
-      <DeploymentType>EmulateDvd</DeploymentType>
-      <DvdEmulationType>ZeroSeekTimes</DvdEmulationType>
-      <DeploymentFiles>$(RemoteRoot)=$(ImagePath)</DeploymentFiles>
-    </Deploy>
+    <PostBuildEvent>
+      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\xbox360\burgerlib\</Message>
+      <Command>mkdir "$(BURGER_SDKS)\xbox360\burgerlib\" 2&gt;nul
+cmd /c p4 edit "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+copy /Y "$(TargetPath)" "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+cmd /c p4 revert -a "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName)$(TargetExt)"
+cmd /c p4 edit "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"
+copy /Y "$(TargetDir)$(TargetName).pdb" "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"
+cmd /c p4 revert -a "$(BURGER_SDKS)\xbox360\burgerlib\$(TargetName).pdb"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\source\ansi\brcapturestdout.h" />
@@ -607,26 +628,6 @@
     <ClInclude Include="..\source\text\brwin1252.h" />
     <ClInclude Include="..\source\xbox360\brstartup.h" />
     <ClInclude Include="..\source\xbox360\brxbox360types.h" />
-    <ClInclude Include="..\unittest\common.h" />
-    <ClInclude Include="..\unittest\createtables.h" />
-    <ClInclude Include="..\unittest\testbralgorithm.h" />
-    <ClInclude Include="..\unittest\testbrcompression.h" />
-    <ClInclude Include="..\unittest\testbrdisplay.h" />
-    <ClInclude Include="..\unittest\testbrendian.h" />
-    <ClInclude Include="..\unittest\testbrfileloaders.h" />
-    <ClInclude Include="..\unittest\testbrfilemanager.h" />
-    <ClInclude Include="..\unittest\testbrfixedpoint.h" />
-    <ClInclude Include="..\unittest\testbrfloatingpoint.h" />
-    <ClInclude Include="..\unittest\testbrhashes.h" />
-    <ClInclude Include="..\unittest\testbrmatrix3d.h" />
-    <ClInclude Include="..\unittest\testbrmatrix4d.h" />
-    <ClInclude Include="..\unittest\testbrnetwork.h" />
-    <ClInclude Include="..\unittest\testbrprintf.h" />
-    <ClInclude Include="..\unittest\testbrstaticrtti.h" />
-    <ClInclude Include="..\unittest\testbrstrings.h" />
-    <ClInclude Include="..\unittest\testbrtimedate.h" />
-    <ClInclude Include="..\unittest\testbrtypes.h" />
-    <ClInclude Include="..\unittest\testcharset.h" />
     <ClCompile Include="..\source\ansi\brcapturestdout.cpp" />
     <ClCompile Include="..\source\ansi\brfileansihelpers.cpp" />
     <ClCompile Include="..\source\ansi\brmemoryansi.cpp" />
@@ -822,26 +823,6 @@
     <ClCompile Include="..\source\xbox360\brtimedatexbox360.cpp" />
     <ClCompile Include="..\source\xbox360\brvertexbufferxbox360.cpp" />
     <ClCompile Include="..\source\xbox360\brxbox360app.cpp" />
-    <ClCompile Include="..\unittest\common.cpp" />
-    <ClCompile Include="..\unittest\createtables.cpp" />
-    <ClCompile Include="..\unittest\testbralgorithm.cpp" />
-    <ClCompile Include="..\unittest\testbrcompression.cpp" />
-    <ClCompile Include="..\unittest\testbrdisplay.cpp" />
-    <ClCompile Include="..\unittest\testbrendian.cpp" />
-    <ClCompile Include="..\unittest\testbrfileloaders.cpp" />
-    <ClCompile Include="..\unittest\testbrfilemanager.cpp" />
-    <ClCompile Include="..\unittest\testbrfixedpoint.cpp" />
-    <ClCompile Include="..\unittest\testbrfloatingpoint.cpp" />
-    <ClCompile Include="..\unittest\testbrhashes.cpp" />
-    <ClCompile Include="..\unittest\testbrmatrix3d.cpp" />
-    <ClCompile Include="..\unittest\testbrmatrix4d.cpp" />
-    <ClCompile Include="..\unittest\testbrnetwork.cpp" />
-    <ClCompile Include="..\unittest\testbrprintf.cpp" />
-    <ClCompile Include="..\unittest\testbrstaticrtti.cpp" />
-    <ClCompile Include="..\unittest\testbrstrings.cpp" />
-    <ClCompile Include="..\unittest\testbrtimedate.cpp" />
-    <ClCompile Include="..\unittest\testbrtypes.cpp" />
-    <ClCompile Include="..\unittest\testcharset.cpp" />
     <X360SL Include="..\source\graphics\shadersxbox360\pscclr4360.x360sl">
       <VariableName>g_pscclr4360</VariableName>
       <TargetProfile>ps_2_0</TargetProfile>

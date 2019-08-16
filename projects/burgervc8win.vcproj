@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
-	Name="unittests"
-	ProjectGUID="{3B014DC2-DAE7-357C-A928-26AD8C34FD18}"
-	RootNamespace="unittests"
+	Version="8.00"
+	Name="burger"
+	ProjectGUID="{E2A29CD1-DF1D-383B-BEDA-92F1FF506286}"
+	RootNamespace="burger"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
 		<Platform
@@ -28,8 +27,8 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w32dbg\"
-			ConfigurationType="1"
+			IntermediateDirectory="temp\burgervc8w32dbg\"
+			ConfigurationType="4"
 			UseOfMFC="0"
 			CharacterSet="1"
 			>
@@ -52,8 +51,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
-				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
@@ -81,15 +80,8 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
-				OutputFile="&quot;$(OutDir)unittestsvc9w32dbg.exe&quot;"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
-				SubSystem="1"
-				OptimizeReferences="2"
+				Name="VCLibrarianTool"
+				OutputFile="&quot;$(OutDir)burgervc8w32dbg.lib&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -110,14 +102,19 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Copying $(TargetFileName) to $(BURGER_SDKS)\windows\burgerlib\"
+				CommandLine="mkdir &quot;$(BURGER_SDKS)\windows\burgerlib\&quot; 2&gt;nul&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;copy /Y &quot;$(TargetPath)&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
 			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w64dbg\"
-			ConfigurationType="1"
+			IntermediateDirectory="temp\burgervc8w64dbg\"
+			ConfigurationType="4"
 			UseOfMFC="0"
 			CharacterSet="1"
 			>
@@ -140,8 +137,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
-				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
@@ -169,15 +166,8 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
-				OutputFile="&quot;$(OutDir)unittestsvc9w64dbg.exe&quot;"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
-				SubSystem="1"
-				OptimizeReferences="2"
+				Name="VCLibrarianTool"
+				OutputFile="&quot;$(OutDir)burgervc8w64dbg.lib&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -198,14 +188,19 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Copying $(TargetFileName) to $(BURGER_SDKS)\windows\burgerlib\"
+				CommandLine="mkdir &quot;$(BURGER_SDKS)\windows\burgerlib\&quot; 2&gt;nul&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;copy /Y &quot;$(TargetPath)&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Internal|Win32"
 			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w32int\"
-			ConfigurationType="1"
+			IntermediateDirectory="temp\burgervc8w32int\"
+			ConfigurationType="4"
 			UseOfMFC="0"
 			CharacterSet="1"
 			>
@@ -232,8 +227,8 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
-				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
 				RuntimeLibrary="1"
@@ -260,16 +255,8 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
-				OutputFile="&quot;$(OutDir)unittestsvc9w32int.exe&quot;"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
-				SubSystem="1"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
+				Name="VCLibrarianTool"
+				OutputFile="&quot;$(OutDir)burgervc8w32int.lib&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -290,14 +277,19 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Copying $(TargetFileName) to $(BURGER_SDKS)\windows\burgerlib\"
+				CommandLine="mkdir &quot;$(BURGER_SDKS)\windows\burgerlib\&quot; 2&gt;nul&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;copy /Y &quot;$(TargetPath)&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Internal|x64"
 			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w64int\"
-			ConfigurationType="1"
+			IntermediateDirectory="temp\burgervc8w64int\"
+			ConfigurationType="4"
 			UseOfMFC="0"
 			CharacterSet="1"
 			>
@@ -324,8 +316,8 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
-				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
 				RuntimeLibrary="1"
@@ -352,16 +344,8 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
-				OutputFile="&quot;$(OutDir)unittestsvc9w64int.exe&quot;"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
-				SubSystem="1"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
+				Name="VCLibrarianTool"
+				OutputFile="&quot;$(OutDir)burgervc8w64int.lib&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -382,14 +366,19 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Copying $(TargetFileName) to $(BURGER_SDKS)\windows\burgerlib\"
+				CommandLine="mkdir &quot;$(BURGER_SDKS)\windows\burgerlib\&quot; 2&gt;nul&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;copy /Y &quot;$(TargetPath)&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w32rel\"
-			ConfigurationType="1"
+			IntermediateDirectory="temp\burgervc8w32rel\"
+			ConfigurationType="4"
 			UseOfMFC="0"
 			CharacterSet="1"
 			>
@@ -416,8 +405,8 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
-				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
 				RuntimeLibrary="0"
@@ -429,6 +418,7 @@
 				RuntimeTypeInfo="false"
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
+				DebugInformationFormat="3"
 				CallingConvention="1"
 				DisableSpecificWarnings="4201"
 			/>
@@ -443,16 +433,8 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
-				OutputFile="&quot;$(OutDir)unittestsvc9w32rel.exe&quot;"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
-				GenerateDebugInformation="false"
-				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
-				SubSystem="1"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
+				Name="VCLibrarianTool"
+				OutputFile="&quot;$(OutDir)burgervc8w32rel.lib&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -473,14 +455,19 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Copying $(TargetFileName) to $(BURGER_SDKS)\windows\burgerlib\"
+				CommandLine="mkdir &quot;$(BURGER_SDKS)\windows\burgerlib\&quot; 2&gt;nul&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;copy /Y &quot;$(TargetPath)&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
 			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w64rel\"
-			ConfigurationType="1"
+			IntermediateDirectory="temp\burgervc8w64rel\"
+			ConfigurationType="4"
 			UseOfMFC="0"
 			CharacterSet="1"
 			>
@@ -507,8 +494,8 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
-				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
 				RuntimeLibrary="0"
@@ -520,6 +507,7 @@
 				RuntimeTypeInfo="false"
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
+				DebugInformationFormat="3"
 				CallingConvention="1"
 				DisableSpecificWarnings="4201"
 			/>
@@ -534,16 +522,8 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
-				OutputFile="&quot;$(OutDir)unittestsvc9w64rel.exe&quot;"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
-				GenerateDebugInformation="false"
-				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
-				SubSystem="1"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
+				Name="VCLibrarianTool"
+				OutputFile="&quot;$(OutDir)burgervc8w64rel.lib&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -564,14 +544,19 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Copying $(TargetFileName) to $(BURGER_SDKS)\windows\burgerlib\"
+				CommandLine="mkdir &quot;$(BURGER_SDKS)\windows\burgerlib\&quot; 2&gt;nul&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;copy /Y &quot;$(TargetPath)&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release_LTCG|Win32"
 			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w32ltc\"
-			ConfigurationType="1"
+			IntermediateDirectory="temp\burgervc8w32ltc\"
+			ConfigurationType="4"
 			UseOfMFC="0"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -600,8 +585,8 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
-				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
 				RuntimeLibrary="0"
@@ -613,6 +598,7 @@
 				RuntimeTypeInfo="false"
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
+				DebugInformationFormat="3"
 				CallingConvention="1"
 				DisableSpecificWarnings="4201"
 			/>
@@ -627,17 +613,8 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
-				OutputFile="&quot;$(OutDir)unittestsvc9w32ltc.exe&quot;"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
-				GenerateDebugInformation="false"
-				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
-				SubSystem="1"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				LinkTimeCodeGeneration="1"
+				Name="VCLibrarianTool"
+				OutputFile="&quot;$(OutDir)burgervc8w32ltc.lib&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -658,14 +635,19 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Copying $(TargetFileName) to $(BURGER_SDKS)\windows\burgerlib\"
+				CommandLine="mkdir &quot;$(BURGER_SDKS)\windows\burgerlib\&quot; 2&gt;nul&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;copy /Y &quot;$(TargetPath)&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release_LTCG|x64"
 			OutputDirectory="bin\"
-			IntermediateDirectory="temp\unittestsvc9w64ltc\"
-			ConfigurationType="1"
+			IntermediateDirectory="temp\burgervc8w64ltc\"
+			ConfigurationType="4"
 			UseOfMFC="0"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -694,8 +676,8 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
-				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
 				RuntimeLibrary="0"
@@ -707,6 +689,7 @@
 				RuntimeTypeInfo="false"
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
+				DebugInformationFormat="3"
 				CallingConvention="1"
 				DisableSpecificWarnings="4201"
 			/>
@@ -721,17 +704,8 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
-				OutputFile="&quot;$(OutDir)unittestsvc9w64ltc.exe&quot;"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
-				GenerateDebugInformation="false"
-				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
-				SubSystem="1"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				LinkTimeCodeGeneration="1"
+				Name="VCLibrarianTool"
+				OutputFile="&quot;$(OutDir)burgervc8w64ltc.lib&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -752,7 +726,12 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Copying $(TargetFileName) to $(BURGER_SDKS)\windows\burgerlib\"
+				CommandLine="mkdir &quot;$(BURGER_SDKS)\windows\burgerlib\&quot; 2&gt;nul&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;copy /Y &quot;$(TargetPath)&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -3950,170 +3929,6 @@
 					</File>
 				</Filter>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="unittest"
-			>
-			<File
-				RelativePath="..\unittest\common.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\common.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\createtables.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\createtables.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbralgorithm.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbralgorithm.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrcompression.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrcompression.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrdisplay.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrdisplay.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrendian.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrendian.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrfileloaders.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrfileloaders.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrfilemanager.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrfilemanager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrfixedpoint.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrfixedpoint.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrfloatingpoint.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrfloatingpoint.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrhashes.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrhashes.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrmatrix3d.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrmatrix3d.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrmatrix4d.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrmatrix4d.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrnetwork.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrnetwork.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrprintf.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrprintf.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrstaticrtti.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrstaticrtti.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrstrings.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrstrings.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrtimedate.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrtimedate.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrtypes.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrtypes.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testcharset.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testcharset.h"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>

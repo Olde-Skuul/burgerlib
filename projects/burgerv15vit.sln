@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "burger", "burgerv15vit.vcxproj", "{D65F9CE8-82B0-386D-B7B5-B223D8D28FDA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|PSVita = Debug|PSVita
+		Internal|PSVita = Internal|PSVita
+		Release|PSVita = Release|PSVita
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D65F9CE8-82B0-386D-B7B5-B223D8D28FDA}.Debug|PSVita.ActiveCfg = Debug|PSVita
+		{D65F9CE8-82B0-386D-B7B5-B223D8D28FDA}.Debug|PSVita.Build.0 = Debug|PSVita
+		{D65F9CE8-82B0-386D-B7B5-B223D8D28FDA}.Internal|PSVita.ActiveCfg = Internal|PSVita
+		{D65F9CE8-82B0-386D-B7B5-B223D8D28FDA}.Internal|PSVita.Build.0 = Internal|PSVita
+		{D65F9CE8-82B0-386D-B7B5-B223D8D28FDA}.Release|PSVita.ActiveCfg = Release|PSVita
+		{D65F9CE8-82B0-386D-B7B5-B223D8D28FDA}.Release|PSVita.Build.0 = Release|PSVita
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

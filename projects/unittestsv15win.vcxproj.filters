@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="..\source\ansi\brcapturestdout.h">
       <Filter>source\ansi</Filter>
@@ -1520,79 +1520,79 @@
       <Filter>source\graphics\shadersopengl</Filter>
     </GLSL>
     <Filter Include="source">
-      <UniqueIdentifier>BC2675C5-FE41-34E7-AA84-831381B5001F</UniqueIdentifier>
+      <UniqueIdentifier>1CD02106-125E-3EC4-8776-978DF0FC31EE</UniqueIdentifier>
     </Filter>
     <Filter Include="source\ansi">
-      <UniqueIdentifier>BBF66B60-3963-3181-872F-D733A52F3845</UniqueIdentifier>
+      <UniqueIdentifier>91D3ABBF-76EB-3AEA-BE8C-F4933E7A800A</UniqueIdentifier>
     </Filter>
     <Filter Include="source\audio">
-      <UniqueIdentifier>B5AFD993-527D-3A57-9504-0D483F07FDA4</UniqueIdentifier>
+      <UniqueIdentifier>7C6826F2-4EAB-3BB2-8790-A08786DF08AA</UniqueIdentifier>
     </Filter>
     <Filter Include="source\commandline">
-      <UniqueIdentifier>944E05B4-39A2-37A7-AF9F-9DE71A9CF856</UniqueIdentifier>
+      <UniqueIdentifier>90EFEBF7-A4A9-3F5B-AAEE-6876C4082C61</UniqueIdentifier>
     </Filter>
     <Filter Include="source\compression">
-      <UniqueIdentifier>81CAE315-1D4C-363F-B22A-BE494B47BD36</UniqueIdentifier>
+      <UniqueIdentifier>3D900955-32DB-37DB-8F54-0C0CD70A00FF</UniqueIdentifier>
     </Filter>
     <Filter Include="source\file">
-      <UniqueIdentifier>F6AF236F-64AF-35EE-9382-7A6EAC317FB7</UniqueIdentifier>
+      <UniqueIdentifier>5B94DE72-9129-3CCC-95C2-285687143733</UniqueIdentifier>
     </Filter>
     <Filter Include="source\flashplayer">
-      <UniqueIdentifier>B335362F-C623-379C-B598-7EC2DF482599</UniqueIdentifier>
+      <UniqueIdentifier>EDFE5D9D-875B-30DF-ADBF-1AE26B1DC119</UniqueIdentifier>
     </Filter>
     <Filter Include="source\generated">
-      <UniqueIdentifier>9A2B0CA0-E414-366C-849B-7BEBE8EA3CE6</UniqueIdentifier>
+      <UniqueIdentifier>BE42A018-DDA6-34CB-A223-CA6B47994E33</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics">
-      <UniqueIdentifier>72E0C8A8-6F4B-38D2-AEB6-9A95DAD8E0F5</UniqueIdentifier>
+      <UniqueIdentifier>55AA1611-A16A-300F-8B29-B46C72F1BF02</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\effects">
-      <UniqueIdentifier>A795E83C-659C-3893-AFBD-6A818984AB6D</UniqueIdentifier>
+      <UniqueIdentifier>2FC4C0A7-0BE1-3D87-82C1-5F63C1D67E50</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\shaders">
-      <UniqueIdentifier>376291EA-3DE8-35B8-BFA4-B7B9A402E251</UniqueIdentifier>
+      <UniqueIdentifier>13E43689-5868-38AD-B781-9EAF2E09F2BF</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\shadersdx9">
-      <UniqueIdentifier>750C54EB-B488-3F1F-B48D-6739EC026739</UniqueIdentifier>
+      <UniqueIdentifier>8379EC08-7546-389F-813E-F32182D8A9A5</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\shadersdx9\generated">
-      <UniqueIdentifier>609C796C-1901-33E7-A548-F2A70F0EF48B</UniqueIdentifier>
+      <UniqueIdentifier>375AACB7-B435-359A-A9F9-60A4218EC669</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\shadersopengl">
-      <UniqueIdentifier>1E5CB3A5-4D29-3262-BD29-D21F4F50ACF4</UniqueIdentifier>
+      <UniqueIdentifier>1DECA7E6-C495-393F-9783-A306A1E89D35</UniqueIdentifier>
     </Filter>
     <Filter Include="source\graphics\shadersopengl\generated">
-      <UniqueIdentifier>91380BC8-F6E2-32C0-A496-CE09F49DCCB7</UniqueIdentifier>
+      <UniqueIdentifier>C6DF4912-DD09-32EA-93F1-EC929CB9A8C3</UniqueIdentifier>
     </Filter>
     <Filter Include="source\input">
-      <UniqueIdentifier>A296E2D2-AB70-3FE7-B46D-0C66E2AA9C6C</UniqueIdentifier>
+      <UniqueIdentifier>88CC6079-E20C-3552-9600-126488507FB6</UniqueIdentifier>
     </Filter>
     <Filter Include="source\lowlevel">
-      <UniqueIdentifier>6C024BD5-4349-33E9-89B8-72D06D0648E5</UniqueIdentifier>
+      <UniqueIdentifier>6B34CCF5-A7A9-3A8D-8425-A27422164793</UniqueIdentifier>
     </Filter>
     <Filter Include="source\math">
-      <UniqueIdentifier>15E5A3B4-A025-3260-8E68-4D7804AF174A</UniqueIdentifier>
+      <UniqueIdentifier>AD951AEE-E84D-3B84-9BF6-18E107DF431F</UniqueIdentifier>
     </Filter>
     <Filter Include="source\memory">
-      <UniqueIdentifier>3CB492DA-A090-3A82-BBC6-FC217D05DBF0</UniqueIdentifier>
+      <UniqueIdentifier>6274AFD6-FEB6-3035-AFEC-A199C39A4480</UniqueIdentifier>
     </Filter>
     <Filter Include="source\network">
-      <UniqueIdentifier>1468DDF4-77B2-392D-88FF-B795E9DB9300</UniqueIdentifier>
+      <UniqueIdentifier>39FEF700-3A74-3AA4-8316-EC4D352DAF22</UniqueIdentifier>
     </Filter>
     <Filter Include="source\random">
-      <UniqueIdentifier>C48FD389-EB47-3459-A673-321A0C1DB497</UniqueIdentifier>
+      <UniqueIdentifier>8EB230F9-A7F4-3028-98EB-BF7FBED5AD19</UniqueIdentifier>
     </Filter>
     <Filter Include="source\text">
-      <UniqueIdentifier>90289C52-45A6-35B6-B6DE-5C3F21F201D0</UniqueIdentifier>
+      <UniqueIdentifier>5E7F1BB7-0A2E-3002-9AED-D1C6598895B8</UniqueIdentifier>
     </Filter>
     <Filter Include="source\windows">
-      <UniqueIdentifier>BBE71550-5D4F-3228-A72A-4103B0A3B530</UniqueIdentifier>
+      <UniqueIdentifier>7EB3118E-0462-37E4-8A67-316730D754CA</UniqueIdentifier>
     </Filter>
     <Filter Include="source\windows\generated">
-      <UniqueIdentifier>82C889B5-1BD5-3558-B485-BB09C9A15765</UniqueIdentifier>
+      <UniqueIdentifier>8BE39800-70E1-3CF4-961F-1C895A5AFA29</UniqueIdentifier>
     </Filter>
     <Filter Include="unittest">
-      <UniqueIdentifier>4E59A0C9-96D9-3565-ABB6-5677D9CC774D</UniqueIdentifier>
+      <UniqueIdentifier>A8F9096C-091E-313B-A1C3-C7A54A044ABF</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

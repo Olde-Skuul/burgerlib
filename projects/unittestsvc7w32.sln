@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unittests", "unittestsvc7w32.vcproj", "{05792708-ACF4-314F-ABDC-FABD540C0E1A}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Internal = Internal
+		Release = Release
+		Release_LTCG = Release_LTCG
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{05792708-ACF4-314F-ABDC-FABD540C0E1A}.Debug.ActiveCfg = Debug|Win32
+		{05792708-ACF4-314F-ABDC-FABD540C0E1A}.Debug.Build.0 = Debug|Win32
+		{05792708-ACF4-314F-ABDC-FABD540C0E1A}.Internal.ActiveCfg = Internal|Win32
+		{05792708-ACF4-314F-ABDC-FABD540C0E1A}.Internal.Build.0 = Internal|Win32
+		{05792708-ACF4-314F-ABDC-FABD540C0E1A}.Release.ActiveCfg = Release|Win32
+		{05792708-ACF4-314F-ABDC-FABD540C0E1A}.Release.Build.0 = Release|Win32
+		{05792708-ACF4-314F-ABDC-FABD540C0E1A}.Release_LTCG.ActiveCfg = Release_LTCG|Win32
+		{05792708-ACF4-314F-ABDC-FABD540C0E1A}.Release_LTCG.Build.0 = Release_LTCG|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
