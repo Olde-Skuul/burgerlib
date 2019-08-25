@@ -2,7 +2,7 @@
 
 	Intrinsics and subroutines exclusive to the Microsoft Visual Studio compilers
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2019 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -21,6 +21,8 @@
 //
 // Note: _MSC_VER values for determining specific version.
 //
+// _MSC_VER == 1920 (Visual Studio 2019)
+// _MSC_VER == 1910 (Visual Studio 2017)
 // _MSC_VER == 1900 (Visual Studio 2015)
 // _MSC_VER == 1800 (Visual Studio 2013)
 // _MSC_VER == 1700 (Visual Studio 2012)
@@ -42,20 +44,15 @@ extern double __cdecl fabs(double);
 extern double __cdecl sqrt(double);
 #pragma intrinsic(fabs,sqrt)
 
-#if defined(BURGER_AMD64) || defined(BURGER_ARMARCHITECTURE)
+#if defined(BURGER_AMD64) || defined(BURGER_ARM)
 extern float __cdecl sqrtf(float);
 #pragma intrinsic(sqrtf)
 #endif
 
-#if defined(BURGER_ARMARCHITECTURE)
+#if defined(BURGER_ARM)
 extern float __cdecl fabsf(float);
 #pragma intrinsic(fabsf)
 #endif
-
-extern Word16 __cdecl _byteswap_ushort(Word16);
-extern unsigned long __cdecl _byteswap_ulong(unsigned long);
-extern Word64 __cdecl _byteswap_uint64(Word64);
-#pragma intrinsic(_byteswap_ushort,_byteswap_ulong,_byteswap_uint64)
 
 extern unsigned int __cdecl _rotl(unsigned int,int);
 extern Word64 __cdecl _rotl64(Word64,int);
@@ -63,9 +60,38 @@ extern unsigned int __cdecl _rotr(unsigned int,int);
 extern Word64 __cdecl _rotr64(Word64,int);
 #pragma intrinsic(_rotl,_rotl64,_rotr,_rotr64)
 
-#if defined(BURGER_INTELARCHITECTURE)
+#if defined(BURGER_INTEL)
+
+// Visual Studio 2005 or higher
+#if _MSC_VER>=1400
 extern void __cpuid(int [4],int);
 #pragma intrinsic(__cpuid)
+#else
+BURGER_INLINE void __cpuid(int a[4],int b) {
+BURGER_ASM {
+	mov	esi,a		// Get the pointer to the destination buffer
+	mov eax,b		// Command byte
+	cpuid			// Invoke CPUID
+	mov [esi],eax	// Store the result in the same order as Visual C
+	mov [esi+4],ebx
+	mov [esi+8],ecx
+	mov [esi+12],edx
+}
+}
+
+BURGER_INLINE void __cpuidex(int a[4],int b,int c) {
+BURGER_ASM {
+	mov	esi,a		// Get the pointer to the destination buffer
+	mov eax,b		// Command byte
+	mov ecx,c		// Get the sub command
+	cpuid			// Invoke CPUID
+	mov [esi],eax	// Store the result in the same order as Visual C
+	mov [esi+4],ebx
+	mov [esi+8],ecx
+	mov [esi+12],edx
+}
+}
+#endif
 
 // Visual studio 2010 or higher
 
@@ -74,17 +100,26 @@ extern void __cpuidex(int [4],int,int);
 #pragma intrinsic(__cpuidex)
 #endif
 
-Word8 _BitScanForward(unsigned long *Index,unsigned long Mask);
-Word8 _BitScanReverse(unsigned long *Index,unsigned long Mask);
-#pragma intrinsic(_BitScanForward,_BitScanReverse)
-
 #endif
 
+Word8 _BitScanForward(unsigned long *Index,unsigned long Mask);
+Word8 _BitScanReverse(unsigned long *Index,unsigned long Mask);
+#if !defined(BURGER_XBOX360)
+#pragma intrinsic(_BitScanForward,_BitScanReverse)
+#endif
+
+#if defined(BURGER_X86) && (_MSC_VER>=1700)  // Visual Studio before 2012 doesn't __cdecl these
 long __cdecl _InterlockedExchange(long volatile*,long);
-long __cdecl _InterlockedIncrement(long volatile*);
-long __cdecl _InterlockedDecrement(long volatile*);
 long __cdecl _InterlockedExchangeAdd(long volatile*,long);
 long __cdecl _InterlockedCompareExchange(long volatile*,long,long);
+#else
+long _InterlockedExchange(long volatile*,long);
+long _InterlockedExchangeAdd(long volatile*,long);
+long _InterlockedCompareExchange(long volatile*,long,long);
+#endif
+
+long __cdecl _InterlockedIncrement(long volatile*);
+long __cdecl _InterlockedDecrement(long volatile*);
 #pragma intrinsic(_InterlockedExchange,_InterlockedIncrement,_InterlockedDecrement,_InterlockedExchangeAdd,_InterlockedCompareExchange)
 
 #if defined(BURGER_64BITCPU)
@@ -95,7 +130,7 @@ __int64 _InterlockedExchangeAdd64(__int64 volatile*,__int64);
 __int64 _InterlockedCompareExchange64(__int64 volatile*,__int64,__int64);
 #pragma intrinsic(_InterlockedExchange64,_InterlockedIncrement64,_InterlockedDecrement64,_InterlockedExchangeAdd64,_InterlockedCompareExchange64)
 
-#if defined(BURGER_INTELARCHITECTURE)
+#if defined(BURGER_INTEL)
 Word8 _BitScanForward64(unsigned long *Index,Word64 Mask);
 Word8 _BitScanReverse64(unsigned long *Index,Word64 Mask);
 #pragma intrinsic(_BitScanForward64,_BitScanReverse64)
@@ -120,7 +155,7 @@ BURGER_INLINE __m128d _mm_castsi128_pd(__m128i vInput) { union { __m128i a; __m1
 
 // __cpuid() and __cpuidex() intrinsics for other compilers
 
-#if defined(BURGER_INTELARCHITECTURE) && (defined(BURGER_LLVM) || defined(BURGER_GNUC))
+#if defined(BURGER_INTEL) && (defined(BURGER_CLANG) || defined(BURGER_GNUC))
 
 #if defined(BURGER_X86) && defined(__PIC__)
 

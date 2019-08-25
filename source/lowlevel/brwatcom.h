@@ -2,7 +2,7 @@
 
 	Intrinsics and subroutines exclusive to the Open Watcom compiler
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2019 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -27,7 +27,7 @@ extern "C" {
 namespace std {
 
 // Found in math.h
-#if defined(_M_IX86)
+#if defined(BURGER_X86)
 __declspec(__watcall) extern double log(double);
 __declspec(__watcall) extern double cos(double);
 __declspec(__watcall) extern double sin(double);
@@ -67,24 +67,7 @@ extern const float g_fBurgerMath65536;
 extern void WatcomAssertNothing(void);
 #pragma aux WatcomAssertNothing = modify exact [] nomemory;
 
-extern Word16 _bswap16(Word16 uInput);
-#pragma aux _bswap16 = "ror ax,8" parm [ax] value [ax] modify exact [ax] nomemory;
-
-extern Word16 _byteswap_ushort(Word16 uInput);
-#pragma aux _byteswap_ushort = "ror ax,8" parm [ax] value [ax] modify exact [ax] nomemory;
-	
-extern Word32 _bswap(Word32 uInput);
-#pragma aux _bswap = "bswap eax" parm [eax] value [eax] modify exact [eax] nomemory;
-
-extern Word32 _byteswap_ulong(Word32 uInput);
-#pragma aux _byteswap_ulong = "bswap eax" parm [eax] value [eax] modify exact [eax] nomemory;
-
-extern Word16 BurgerNativeEndianLoadAny16(const Word16 *pInput);
-#pragma aux BurgerNativeEndianLoadAny16 = "mov al,byte ptr[edx]" "mov ah,byte ptr[edx+1]" parm [edx] value [ax] modify exact [eax];
-
-extern Word32 BurgerNativeEndianLoadAny32(const Word32 *pInput);
-#pragma aux BurgerNativeEndianLoadAny32 = "mov al,byte ptr[edx]" "mov ah,byte ptr[edx+1]" "ror eax,16" "mov al,byte ptr[edx+2]" "mov ah,byte ptr[edx+3]" "ror eax,16" parm [edx] value [eax] modify exact [eax];
-
+// Modern intrinsics
 extern long _InterlockedExchange(long volatile*,long);
 #pragma aux _InterlockedExchange parm [edx] [eax] = "lock xchg eax,[edx]" value [eax] modify exact [eax];
 

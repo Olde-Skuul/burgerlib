@@ -573,7 +573,7 @@
 
 // Alignment commands
 #if defined(BURGER_INTEL_COMPILER) || defined(BURGER_MSVC) || \
-    defined(BURGER_PS4) || defined(BURGER_METROWERKS)
+    defined(BURGER_PS4) || (defined(BURGER_METROWERKS) && !defined(BURGER_68K))
 #define BURGER_ALIGN(x, s) __declspec(align(s))(x)
 #define BURGER_PREALIGN(s) __declspec(align(s))
 #define BURGER_POSTALIGN(s)
@@ -847,7 +847,15 @@ class ulonglong_t;
 #endif
 
 #if !defined(NDEBUG) && !defined(_DEBUG)
+#if defined(BURGER_METROWERKS)
+#if __option(sym)
+#define _DEBUG
+#else
+#define NDEBUG
+#endif
+#else
 #error NDEBUG nor _DEBUG were defined. Choose one or the other.
+#endif
 #endif
 
 // Is OpenGL supported on this platform?
