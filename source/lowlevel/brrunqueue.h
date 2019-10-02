@@ -25,13 +25,15 @@
 /* BEGIN */
 namespace Burger {
 class RunQueue {
-	BURGER_DISABLECOPYCONSTRUCTORS(RunQueue);
+    BURGER_DISABLE_COPY(RunQueue);
+
 public:
 	enum eReturnCode {
 		OKAY,		///< Executed normally
 		ABORT,		///< Error occurred that requires an immediate abort
 		DISPOSE		///< Dispose of this callback
 	};
+	
 	enum {
 		PRIORITY_FIRST=0x7FFFFFF,			///< Highest priority for RunQueue tasks, executed first (Reserved for Burgerlib, do not use or exceed this value)
 		PRIORITY_JOYPAD=0x7000040,			///< Priority for reading joypad (Can generate keystrokes and mouse events)
@@ -46,19 +48,23 @@ public:
 		PRIORITY_LOW=0x2000000,				///< Low priority for RunQueue tasks
 		PRIORITY_LAST=0						///< Lowest priority for RunQueue tasks, executed last, do not go lower than this value
 	};
-	typedef eReturnCode (BURGER_API *CallbackProc)(void *);
+
+	typedef eReturnCode (BURGER_API *CallbackProc)(void *pContext);
 
 	class RunQueueEntry : protected DoublyLinkedList {
 		friend class RunQueue;
+
 		CallbackProc m_pCallBack;	///< Function to call for this entry
 		CallbackProc m_pShutdownCallback;	///< Function to call on deletion
 		void *m_pData;				///< User supplied data pointer to call the function with
 		Word m_uPriority;			///< User supplied priority for inserting a new entry into the list
+
 		RunQueueEntry(CallbackProc pCallBack,CallbackProc pShutdownCallback,void *pData,Word uPriority) :
 			m_pCallBack(pCallBack),
 			m_pShutdownCallback(pShutdownCallback),
 			m_pData(pData),
 			m_uPriority(uPriority) {}
+
 	public:
 		~RunQueueEntry();
 		BURGER_INLINE Word GetPriority(void) const { return m_uPriority; }
@@ -67,6 +73,7 @@ public:
 private:
 	DoublyLinkedList m_Entries;	///< Head entry of the linked list
 	Word m_Recurse;				///< \ref TRUE if this class is the process of executing.
+
 public:
 	RunQueue() : m_Entries(), m_Recurse(FALSE) {}
 	~RunQueue();
@@ -78,6 +85,7 @@ public:
 	Word BURGER_API Remove(CallbackProc pProc,void *pData=NULL);
 	void BURGER_API Clear(void);
 };
+
 }
 /* END */
 

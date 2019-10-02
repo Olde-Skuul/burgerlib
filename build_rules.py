@@ -62,14 +62,17 @@ GENERATED_FOLDERS = (
     'source/windows/generated'
 )
 
+# Was Burgerlib already installed?
+SDKS_FOLDER = get_sdks_folder()
+
 ########################################
 
 
 def do_prebuild(working_directory):
-    """ Copy the headers of burgerlib into their proper folder
+    """ Generate folders and create version.h
 
     :Args:
-        working_dir: Directory where the headers to copy are located
+        working_dir: Directory where the headers to create are located
 
     Returns:
         Zero on no error, non-zero on error
@@ -79,23 +82,16 @@ def do_prebuild(working_directory):
     # Too many branches
     # pylint: disable=R0912
 
+    # Create folders for storing shader headers
+    for item in GENERATED_FOLDERS:
+        create_folder_if_needed(os.path.join(working_directory, item))
+
     # Update the changelist header
     dest_folder = os.path.join(working_directory, 'source', 'generated')
-    create_folder_if_needed(dest_folder)
     make_version_header(
         working_directory,
         os.path.join(dest_folder, 'version.h'),
         verbose=False)
-
-    # Was Burgerlib already installed?
-    sdks_folder = get_sdks_folder()
-
-    # Ensure the destination directories exist for headers
-    for item in TARGETFOLDERS:
-        create_folder_if_needed(os.path.join(sdks_folder, item, 'burgerlib'))
-
-    for item in GENERATED_FOLDERS:
-        create_folder_if_needed(os.path.join(working_directory, item))
 
     # Ensure the output folder exists
     dest_folder = os.path.join(working_directory, 'bin')
@@ -110,24 +106,40 @@ def do_prebuild(working_directory):
     print(' '.join(cmd))
     error = run_command(cmd, working_dir=working_directory)[0]
 
-    if not error:
+    return error
 
-        # Was there a change in the output?
+########################################
 
-        windowsburgerlib = os.path.join(sdks_folder, 'windows', 'burgerlib')
-        testfile = os.path.join(windowsburgerlib, 'burger.h')
+
+def do_postbuild(working_directory):
+    """ Copy the headers of burgerlib into their proper folder
+
+    :Args:
+        working_dir: Directory where the headers to copy are located
+
+    Returns:
+        Zero on no error, non-zero on error
+
+    """
+
+    # Get the location of the super header
+    dest_folder = os.path.join(working_directory, 'bin')
+    headerfilepath = os.path.join(dest_folder, 'burger.h')
+
+    # Was there a change in the output?
+    error = 0
+    for item in TARGETFOLDERS:
+        destfolder = os.path.join(SDKS_FOLDER, item, 'burgerlib')
+        create_folder_if_needed(destfolder)
+        testfile = os.path.join(destfolder, 'burger.h')
+
+        # Copy only if changed or doesn't exist
         if not os.path.isfile(testfile) or not compare_files(
                 headerfilepath, testfile):
-
-            # Copy only if changed
-
-            for item in TARGETFOLDERS:
-                destfolder = os.path.join(sdks_folder, item, 'burgerlib')
-                error = copy_file_if_needed(
-                    headerfilepath, os.path.join(
-                        destfolder, 'burger.h'), perforce=True)
-                if error:
-                    break
+            error = copy_file_if_needed(
+                headerfilepath, testfile, perforce=True)
+            if error:
+                break
 
     # Was there a change in special headers?
     if not error:
@@ -159,7 +171,7 @@ def do_prebuild(working_directory):
                         # Use the override
                         headerfilepath = headerfiletest
 
-                destfile = os.path.join(sdks_folder, dest, 'burgerlib', item)
+                destfile = os.path.join(SDKS_FOLDER, dest, 'burgerlib', item)
 
                 # Copy if the destination doesn't exist or it's different
                 # from the header
@@ -170,10 +182,10 @@ def do_prebuild(working_directory):
                     if error:
                         break
 
-    # Did any of the Mac Carbon/Classic resource files change?
     if not error:
+        # Did any of the Mac Carbon/Classic resource files change?
         sourcefolder = os.path.join(working_directory, 'source', 'mac')
-        destfolder = os.path.join(sdks_folder, 'mac', 'burgerlib')
+        destfolder = os.path.join(SDKS_FOLDER, 'mac', 'burgerlib')
         filedata = os.listdir(sourcefolder)
         for item in filedata:
             if item.lower().endswith('.r'):
@@ -231,6 +243,11 @@ def rules(command, working_directory, **kargs):
         # Return non zero integer on error.
         return do_prebuild(working_directory)
 
+    if command == 'postbuild':
+        # Perform actions after building all IDE based projects
+        # Return non zero integer on error.
+        return do_postbuild(working_directory)
+
     return 0
 
 ########################################
@@ -238,4 +255,8 @@ def rules(command, working_directory, **kargs):
 
 # If called as a command line and not a class, perform the build
 if __name__ == "__main__":
-    sys.exit(do_prebuild(os.path.dirname(os.path.abspath(__file__))))
+    WORKING_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+    ERROR = do_prebuild(WORKING_DIRECTORY)
+    if not ERROR:
+        ERROR = do_postbuild(WORKING_DIRECTORY)
+    sys.exit(ERROR)

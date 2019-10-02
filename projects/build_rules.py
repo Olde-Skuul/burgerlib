@@ -143,7 +143,12 @@ ARG_LISTS = [
     ('xbox360', 'unittests', 'console', ['vs2010']),
     ('wiiu', 'burger', 'library', ['vs2013']),
     ('shield', 'burger', 'library', ['vs2015']),
-    ('msdos', 'burger', 'library', ['watcom'])
+    ('msdos', 'burger', 'library', ['watcom']),
+    ('macosx', 'burger', 'library', ['xcode3', 'xcode5']),
+    ('macosx', 'unittests', 'console', ['xcode3', 'xcode5']),
+    ('ios', 'burger', 'library', ['xcode5']),
+    ('linux', 'burger', 'library', ['make']),
+    ('linux', 'unittests', 'console', ['make'])
 ]
 
 ########################################
@@ -158,13 +163,12 @@ def do_generate(working_directory):
     """
 
     ARG_LISTS_TEST = [
-        ('windows', 'burger', 'library',
-         ['codewarrior50']),
-        ('windows', 'unittests', 'console',
-         ['codewarrior50'])
+        ('msdos', 'burger', 'library', ['codeblocks']),
+        ('windows', 'burger', 'library', ['codeblocks']),
+        ('windows', 'unittests', 'console', ['codeblocks'])
     ]
 
-    for item in ARG_LISTS:
+    for item in ARG_LISTS_TEST:
         args = []
         args.extend(['-p', item[0]])
         args.extend(['-n', item[1]])
@@ -284,9 +288,12 @@ def do_project(working_directory, project):
 
         if not ide.is_codewarrior():
             include_folders_list.extend([
-                "$(BURGER_SDKS)/windows/perforce",
+                '$(BURGER_SDKS)/windows/perforce',
                 '$(BURGER_SDKS)/windows/directx9',
                 '$(BURGER_SDKS)/windows/opengl'])
+
+        if ide in (IDETypes.watcom, IDETypes.codeblocks):
+            include_folders_list.append('$(BURGER_SDKS)/windows/windows5')
 
         # Visual Studio 2019 doesn't have the old Win XP headers
         # if ide >= IDETypes.vs2017:
@@ -309,6 +316,25 @@ def do_project(working_directory, project):
     if platform.is_msdos():
         platform_folder = 'dos'
         source_folders_list.extend(BURGER_LIB_DOS)
+        include_folders_list.append('$(BURGER_SDKS)/dos/x32')
+
+    # Linux
+    if platform is PlatformTypes.linux:
+        platform_folder = 'linux'
+        source_folders_list.extend(BURGER_LIB_LINUX)
+
+    # Apple platforms
+    if platform.is_macosx():
+        platform_folder = 'macosx'
+        source_folders_list.extend(BURGER_LIB_MACOSX)
+
+    if platform.is_ios():
+        platform_folder = 'ios'
+        source_folders_list.extend(BURGER_LIB_IOS)
+
+    if platform.is_macos():
+        platform_folder = 'mac'
+        source_folders_list.extend(BURGER_LIB_MAC)
 
     # Sony platforms
     if platform is PlatformTypes.ps3:
@@ -333,7 +359,7 @@ def do_project(working_directory, project):
             _VITACG_MATCH)
 
     # Microsoft platforms
-    if platform == PlatformTypes.xbox360:
+    if platform is PlatformTypes.xbox360:
         platform_folder = 'xbox360'
         source_folders_list.extend(BURGER_LIB_XBOX_360)
         vs_props.append('$(VCTargetsPath)\\BuildCustomizations\\x360sl.props')
@@ -372,7 +398,7 @@ def do_project(working_directory, project):
             ])
 
     # Enable OpenGL extensions
-    if platform.is_windows() or platform.is_android():
+    if platform.is_windows() or platform.is_android() or platform is PlatformTypes.linux:
         vs_props.append(
             '$(VCTargetsPath)\\BuildCustomizations\\glsl.props')
         vs_targets.append(

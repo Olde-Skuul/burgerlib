@@ -1308,9 +1308,9 @@ static uint_t BURGER_API TestCompilerMacros(uint_t uVerbose)
     ++uTest;
 #endif
 
-#if defined(BURGER_APPLESC)
+#if defined(BURGER_APPLE_SC)
     if (uVerbose & VERBOSE_MACROS) {
-        Message("BURGER_APPLESC is defined");
+        Message("BURGER_APPLE_SC is defined");
     }
     ++uTest;
 #endif

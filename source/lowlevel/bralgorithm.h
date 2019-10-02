@@ -34,7 +34,7 @@
 /* BEGIN */
 namespace Burger {
 
-// value is true if both are the same
+// Value is true if both are the same
 template<typename T, typename U>
 struct is_same {
     static const bool value = false;

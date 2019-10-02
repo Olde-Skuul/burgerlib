@@ -60,6 +60,9 @@ Compilers supported:
 * Green Hills Compiler
 * DJGPP
 * Cygwin
+* Intel Compiler
+* Apple MrC PowerPC Compiler
+* Apple SC 68000 Compiler
 
 CPUS supported:
 

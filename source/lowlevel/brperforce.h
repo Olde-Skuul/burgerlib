@@ -26,7 +26,7 @@
 #if (defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
 namespace Burger {
 class Perforce {
-	BURGER_DISABLECOPYCONSTRUCTORS(Perforce);
+    BURGER_DISABLE_COPY(Perforce);
 	Filename m_PerforceFilename;		///< Filename for p4 executable file
 	Word m_bFilenameInitialized;		///< \ref TRUE if the perforce executable is found
 public:
@@ -41,8 +41,9 @@ public:
 #else
 namespace Burger {
 class Perforce {
-	BURGER_DISABLECOPYCONSTRUCTORS(Perforce);
+    BURGER_DISABLE_COPY(Perforce);
 public:
+	BURGER_INLINE Perforce() {}
 	BURGER_INLINE Word Init(void) const { return 20; }
 	BURGER_INLINE Word Shutdown(void) const { return 20; }
 	BURGER_INLINE Word Edit(const char * /* pFilename */) const { return 20; }

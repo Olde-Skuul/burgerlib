@@ -17,6 +17,25 @@
 #define _DEBUG
 #define NDEBUG
 
+#define BURGER_WATCOM __WATCOMC__
+#define BURGER_MRC __MRC__
+#define BURGER_APPLE_SC __SC__
+#define BURGER_DJGPP ((__DJGPP__ * 100) + __DJGPP_MINOR__)
+#define BURGER_SNSYSTEMS __SN_VER__
+#define BURGER_GHS __GHS_VERSION_NUMBER
+#define BURGER_INTEL_COMPILER \
+    ((__INTEL_COMPILER * 10) + __INTEL_COMPILER_UPDATE)
+#define BURGER_MINGW
+#define BURGER_CLANG \
+    ((__clang_major__ * 10000) + (__clang_minor__ * 100) + __clang_patchlevel__)
+#define BURGER_GNUC \
+    ((__GNUC__ * 10000) + (__GNUC_MINOR__ * 100) + __GNUC_PATCHLEVEL__)
+#define BURGER_METROWERKS __MWERKS__
+#define BURGER_ARM_COMPILER __ARMCC_VERSION
+#define BURGER_MSVC _MSC_FULL_VER
+#define BURGER_COMPILER_NAME "The name of the compiler"
+#define BURGER_COMPILER_VERSION 1234
+
 #define BURGER_X86
 #define BURGER_AMD64
 #define BURGER_ITANIUM
@@ -32,84 +51,53 @@
 #define BURGER_MSP430
 #define BURGER_SPARC32
 #define BURGER_SPARC64
+#define BURGER_CPU_TYPE "The name of the CPU"
 
-#define BURGER_INTEL
-#define BURGER_PPC
-#define BURGER_ARM
-#define BURGER_MIPS
-#define BURGER_SPARC
-#define BURGER_64BITCPU
-
-#define BURGER_NEON
-#define BURGER_68881
-#define BURGER_ALTIVEC
 #define BURGER_3DNOW
-#define BURGER_SSE
-#define BURGER_SSE2
-#define BURGER_AVX
-#define BURGER_AVX2
-#define BURGER_GEKKO
 
-#define BURGER_BIGENDIAN
-#define BURGER_LITTLEENDIAN
-
-#define BURGER_WATCOM
-#define BURGER_MRC
-#define BURGER_APPLE_SC
-#define BURGER_DJGPP
-#define BURGER_SNSYSTEMS
-#define BURGER_GHS
-#define BURGER_INTEL_COMPILER
-#define BURGER_METROWERKS
-#define BURGER_ARM_COMPILER
-#define BURGER_MSVC
-#define BURGER_GNUC
-#define BURGER_CLANG
-#define BURGER_MINGW
-
-//#define BURGER_CPP89
-#define BURGER_CPP98
-#define BURGER_CPP11
-#define BURGER_CPP14
-#define BURGER_CPP17
-#define BURGER_CPP20
-//#define BURGER_STDCPP_TYPE
-
-#define BURGER_WIN32
-#define BURGER_WIN64
-#define BURGER_WINDOWS
+#define BURGER_XBOX
+#define BURGER_XBOX360
+#define BURGER_XBOXONE
 #define BURGER_MSDOS
 #define BURGER_DOS4G
 #define BURGER_X32
-#define BURGER_MAC
-#define BURGER_MACOSX
-#define BURGER_MACCARBON
-#define BURGER_MACCLASSIC
-#define BURGER_MACOS
-#define TARGET_API_MAC_CARBON 1
-#define BURGER_CFM
-#define BURGER_IOS
-#define BURGER_NGAGE
-#define BURGER_SYMBIAN
+#define BURGER_WIN32
+#define BURGER_WIN64
 #define BURGER_PS1
 #define BURGER_PS2
 #define BURGER_PS3
 #define BURGER_PS4
 #define BURGER_PSP
 #define BURGER_VITA
-#define BURGER_GAMECUBE
-#define BURGER_WII
-#define BURGER_WIIU
-#define BURGER_GBA
-#define BURGER_DS
-#define BURGER_3DS
-#define BURGER_XBOX
-#define BURGER_XBOX360
-#define BURGER_XBOXONE
 #define BURGER_ANDROID
 #define BURGER_SHIELD
 #define BURGER_OUYA
+#define BURGER_GBA
+#define BURGER_DS
+#define BURGER_3DS
+#define BURGER_GAMECUBE
+#define BURGER_WII
+#define BURGER_WIIU
+#define BURGER_SWITCH
 #define BURGER_BEOS
+#define BURGER_SYMBIAN
+#define BURGER_NGAGE
+#define BURGER_AMIGA
+#define BURGER_MAC
+#define BURGER_CFM
+#define BURGER_MACCLASSIC
+#define BURGER_MACCARBON
+#define TARGET_API_MAC_CARBON 1
+#define BURGER_IOS
+#define BURGER_MACOSX
+#define BURGER_LINUX
+#define BURGER_ARDUINO
+
+#define BURGER_BIGENDIAN
+#define BURGER_LITTLEENDIAN
+
+#define BURGER_FASTCALLENABLED
+#define BURGER_HAS_WCHAR_T
 
 //#define TRUE 1
 //#define FALSE 0
@@ -119,11 +107,6 @@
 //#define BURGER_MAXWORDPTR 0xFFFFFFFFFFFFFFFFULL
 //#define BURGER_MAXINTPTR 0x7FFFFFFFFFFFFFFFLL
 
-//#define BURGER_INLINE __forceinline
-//#define BURGER_API __fastcall
-//#define BURGER_ANSIAPI __cdecl
-//#define BURGER_ASM asm
-#define BURGER_FASTCALLENABLED
 //#define BURGER_DECLSPECNAKED __declspec(naked)
 //#define BURGER_ALIGN(x,s) __align(s) (x)
 //#define BURGER_PREALIGN(s) __align(s)
@@ -134,14 +117,13 @@
 #define BURGER_NO_USING_NAMESPACE
 //#define BURGER_OFFSETOF(type, member)
 // reinterpret_cast<WordPtr>(&(reinterpret_cast<const type *>(0)->member))
-//#define BURGER_HASHMACRO(x) #x
-//#define BURGER_MACRO_TO_STRING(x) BURGER_HASHMACRO(x)
 
+#define nullptr 0
 #define BURGER_SIZEOF_INT 4
 #define BURGER_SIZEOF_LONG 4
 #define BURGER_LONGLONG __int64
 #define BURGER_LONGIS64BIT
-#define BURGER_HAS_WCHAR_T
+
 // typedef signed char Int8;
 // typedef unsigned char Word8;
 // typedef signed short Int16;
@@ -668,6 +650,7 @@
     * * \ref BURGER_ARM_COMPILER Advanced RISC Machines ARM compiler
     * * \ref BURGER_MSVC Microsoft Visual Studio
     * * \ref BURGER_COMPILER_NAME String of the compiler's name
+    * * \ref BURGER_COMPILER_VERSION Integer of the version of the compiler
 
     CPU defines, only one is enabled on each compile.
 
@@ -696,6 +679,8 @@
     * * \ref BURGER_SPARC32 compiled for 32 bit SPARC CPUs.
     * * \ref BURGER_SPARC64 compiled for 64 bit SPARC CPUs.
 
+    * * \ref BURGER_CPU_TYPE String of the CPU's name.
+
     "Type of CPU" defines, they are defined to help determine the type of CPU is
     running.
 
@@ -706,6 +691,8 @@
     * * \ref BURGER_ARM CPU is part of the Advanced RISC Machines family.
 
     * * \ref BURGER_MIPS CPU is part of the MIPS family.
+
+    * * \ref BURGER_SPARC CPU is part of the SPARC family.
 
     * * \ref BURGER_64BITCPU The CPU has native 64 bit registers (AMD64, PPC64,
         ARM64, ITANIUM, SPARC64).
@@ -756,6 +743,7 @@
     * * \ref BURGER_GAMECUBE Build for Nintendo Gamecube
     * * \ref BURGER_WII Build for Nintendo Wii
     * * \ref BURGER_WIIU Build for Nintendo WiiU
+    * * \ref BURGER_SWITCH Build for Nintendo Switch
     * * \ref BURGER_GBA Gameboy Advanced Build for Nintendo Gameboy Advance
     * * \ref BURGER_DS Build for Nintendo DS and DSi
     * * \ref BURGER_3DS Build for Nintendo 3DS
@@ -938,7 +926,8 @@
     \note Burgerlib requires this as a baseline. It will likely not compile
     using a compiler that isn't at least ANSI C89 level of compatibility.
 
-    \sa BURGER_CPP98, BURGER_CPP11, BURGER_CPP14, BURGER_CPP17, and BURGER_CPP20
+    \sa BURGER_STDCPP_TYPE, BURGER_CPP98, BURGER_CPP11, BURGER_CPP14,
+        BURGER_CPP17, and BURGER_CPP20
 
 ***************************************/
 
@@ -950,7 +939,8 @@
     If this define exists, then you are creating code with a compiler that has a
     minimum feature set found in C++98 compilers.
 
-    \sa BURGER_CPP89, BURGER_CPP11, BURGER_CPP14, BURGER_CPP17, and BURGER_CPP20
+    \sa BURGER_STDCPP_TYPE, BURGER_CPP89, BURGER_CPP11, BURGER_CPP14,
+        BURGER_CPP17, and BURGER_CPP20
 
 ***************************************/
 
@@ -962,7 +952,8 @@
     If this define exists, then you are creating code with a compiler that has a
     minimum feature set found in C++11 compilers.
 
-    \sa BURGER_CPP89, BURGER_CPP98, BURGER_CPP14, BURGER_CPP17, and BURGER_CPP20
+    \sa BURGER_STDCPP_TYPE, BURGER_CPP89, BURGER_CPP98, BURGER_CPP14,
+        BURGER_CPP17, and BURGER_CPP20
 
 ***************************************/
 
@@ -974,7 +965,8 @@
     If this define exists, then you are creating code with a compiler that has a
     minimum feature set found in C++14 compilers.
 
-    \sa BURGER_CPP89, BURGER_CPP98, BURGER_CPP11, BURGER_CPP17, and BURGER_CPP20
+    \sa BURGER_STDCPP_TYPE, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
+        BURGER_CPP17, and BURGER_CPP20
 
 ***************************************/
 
@@ -986,7 +978,8 @@
     If this define exists, then you are creating code with a compiler that has a
     minimum feature set found in C++17 compilers.
 
-    \sa BURGER_CPP89, BURGER_CPP98, BURGER_CPP11, BURGER_CPP14, and BURGER_CPP20
+    \sa BURGER_STDCPP_TYPE, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
+        BURGER_CPP14, and BURGER_CPP20
 
 ***************************************/
 
@@ -998,7 +991,8 @@
     If this define exists, then you are creating code with a compiler that has a
     minimum feature set found in C++20 compilers.
 
-    \sa BURGER_CPP89, BURGER_CPP98, BURGER_CPP11, BURGER_CPP14, and BURGER_CPP17
+    \sa BURGER_STDCPP_TYPE, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
+        BURGER_CPP14, and BURGER_CPP17
 
 ***************************************/
 
@@ -1038,7 +1032,7 @@
     "MrC Compiler download page")
 
 
-    \sa BURGER_GNUC, BURGER_METROWERKS, BURGER_APPLESC and BURGER_POWERPC
+    \sa BURGER_GNUC, BURGER_METROWERKS, BURGER_APPLE_SC and BURGER_POWERPC
 
 ***************************************/
 
@@ -1143,9 +1137,8 @@
     If this define exists, then you are creating code with the [GNUC compiler]
     (https://gcc.gnu.org/ "GCC home page")
 
-    \sa BURGER_GNUC_VERSION, BURGER_CLANG_VERSION, BURGER_LLVM,
-        BURGER_METROWERKS, BURGER_POWERPC, BURGER_ARM32, BURGER_AMD64 and
-        BURGER_X86
+    \sa BURGER_CLANG, BURGER_METROWERKS, BURGER_POWERPC, BURGER_ARM32,
+        BURGER_AMD64 and BURGER_X86
 
 ***************************************/
 
@@ -1197,8 +1190,23 @@
 
     This define is of a string naming the compiler.
 
-    \sa BURGER_INTEL_COMPILER, BURGER_MSVC, BURGER_WATCOM, BURGER_CLANG,
-    BURGER_GNUC, or BURGER_METROWERKS
+    \sa BURGER_COMPILER_VERSION, BURGER_INTEL_COMPILER, BURGER_MSVC,
+        BURGER_WATCOM, BURGER_CLANG, BURGER_GNUC, or BURGER_METROWERKS
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_COMPILER_VERSION
+    \brief Integer of the version of the current compiler.
+
+    This define is of an integer for the version of the compiler.
+
+    The value is compiler specific, and must be checked for the specific
+    compiler before testing this number against a constant.
+
+    \sa BURGER_COMPILER_NAME, BURGER_INTEL_COMPILER, BURGER_MSVC,
+        BURGER_WATCOM, BURGER_CLANG, BURGER_GNUC, or BURGER_METROWERKS
 
 ***************************************/
 
@@ -1213,7 +1221,7 @@
     Win32 platforms which are running on Pentium, 386, 486, and AMD CPUs will
     have this define present.
 
-    \sa BURGER_INTEL, BURGER_AMD64, BURGER_WIN32, BURGER_BEOS,
+    \sa BURGER_CPU_TYPE, BURGER_INTEL, BURGER_AMD64, BURGER_WIN32, BURGER_BEOS,
         BURGER_MSDOS, BURGER_MACOSX or BURGER_XBOX
 
 ***************************************/
@@ -1229,8 +1237,8 @@
     platforms which are running on Pentium and AMD CPUs in 64 bit mode will have
     this define present.
 
-    \sa BURGER_INTEL, BURGER_WIN64, BURGER_MACOSX, BURGER_XBOXONE,
-        BURGER_PS4 or BURGER_X86
+    \sa BURGER_CPU_TYPE, BURGER_INTEL, BURGER_WIN64, BURGER_MACOSX,
+        BURGER_XBOXONE, BURGER_PS4 or BURGER_X86
 
 ***************************************/
 
@@ -1244,7 +1252,7 @@
     Itanium compatible processors. The Microsoft Win64 and Linux which are
     running on Itanium compatible processors will have this define present.
 
-    \sa BURGER_WIN64 or BURGER_LINUX
+    \sa BURGER_CPU_TYPE, BURGER_WIN64 or BURGER_LINUX
 
 ***************************************/
 
@@ -1259,7 +1267,7 @@
     Nokia NGage, Apple iPad/iPhone/iPod and certain cell phones will have this
     define present.
 
-    \sa BURGER_ARM64, BURGER_ARM, BURGER_GBA, BURGER_ANDROID,
+    \sa BURGER_CPU_TYPE, BURGER_ARM64, BURGER_ARM, BURGER_GBA, BURGER_ANDROID,
         BURGER_SHIELD, BURGER_OUYA, BURGER_DS, BURGER_3DS, BURGER_IOS,
         BURGER_NGAGE, or BURGER_SYMBIAN
 
@@ -1275,7 +1283,7 @@
     RISC Machines 64 bit line of processors. Apple iPad/iPhone/iPod and certain
     cell phones will have this define present.
 
-    \sa BURGER_ARM32, BURGER_ARM, BURGER_ANDROID or BURGER_IOS
+    \sa BURGER_CPU_TYPE, BURGER_ARM32, BURGER_ARM, BURGER_ANDROID or BURGER_IOS
 
 ***************************************/
 
@@ -1289,7 +1297,8 @@
     bit line of processors. R5900 (PS2), R3300 (PS1) and R4400 (PSP) all will
     have this define present.
 
-    \sa BURGER_MIPS64, BURGER_PS2, BURGER_PSP, BURGER_PS1 or BURGER_MIPS
+    \sa BURGER_CPU_TYPE, BURGER_MIPS64, BURGER_PS2, BURGER_PSP, BURGER_PS1 or
+        BURGER_MIPS
 
 ***************************************/
 
@@ -1302,7 +1311,7 @@
     If this define exists, then you are creating code that runs on the MIPS 64
     bit line of 64 bit processors.
 
-    \sa BURGER_MIPS32, BURGER_MIPS
+    \sa BURGER_CPU_TYPE, BURGER_MIPS32, BURGER_MIPS
 
 ***************************************/
 
@@ -1316,8 +1325,8 @@
     PowerPC processor. The Nintendo GameCube, Power Macintosh and the Nintendo
     Wii all will have this define present.
 
-    \sa BURGER_PPC, BURGER_WIIU, BURGER_WII, BURGER_MAC, BURGER_MACOSX,
-        BURGER_BEOS or BURGER_GAMECUBE
+    \sa BURGER_CPU_TYPE, BURGER_PPC, BURGER_WIIU, BURGER_WII, BURGER_MAC,
+        BURGER_MACOSX, BURGER_BEOS or BURGER_GAMECUBE
 
 ***************************************/
 
@@ -1331,7 +1340,7 @@
     PowerPC processor. The G5 Power Macintosh, Sony Playstation 3 and Microsoft
     XBox 360 all will have this define present.
 
-    \sa BURGER_PPC, BURGER_XBOX360, BURGER_PS3 or BURGER_MACOSX
+    \sa BURGER_CPU_TYPE, BURGER_PPC, BURGER_XBOX360, BURGER_PS3 or BURGER_MACOSX
 
 ***************************************/
 
@@ -1345,7 +1354,7 @@
     680x0 line of processors. The classic Macintosh and certain PDAs will have
     this define present.
 
-    \sa BURGER_68881, BURGER_MAC or BURGER_CFM
+    \sa BURGER_CPU_TYPE, BURGER_68881, BURGER_MAC or BURGER_CFM
 
 ***************************************/
 
@@ -1358,7 +1367,7 @@
     If this define exists, then you are creating code that runs on the RISC-V
     line of processors. Micro controllers will have this define present.
 
-    \sa BURGER_MSP430, BURGER_ARM64, BURGER_ARM32 or BURGER_AVR
+    \sa BURGER_CPU_TYPE, BURGER_MSP430, BURGER_ARM64, BURGER_ARM32 or BURGER_AVR
 
 ***************************************/
 
@@ -1371,7 +1380,7 @@
     If this define exists, then you are creating code that runs on the Atmel
     AVR line of processors. Micro controllers will have this define present.
 
-    \sa BURGER_ARM64, BURGER_ARM32 or BURGER_RISCV
+    \sa BURGER_CPU_TYPE, BURGER_ARM64, BURGER_ARM32 or BURGER_RISCV
 
 ***************************************/
 
@@ -1384,7 +1393,7 @@
     If this define exists, then you are creating code that runs on the MSP430
     line of 16 bit processors. Micro controllers will have this define present.
 
-    \sa BURGER_RISCV, BURGER_ARM32 or BURGER_AVR
+    \sa BURGER_CPU_TYPE, BURGER_RISCV, BURGER_ARM32 or BURGER_AVR
 
 ***************************************/
 
@@ -1397,7 +1406,7 @@
     If this define exists, then you are creating code that runs on the Sparc
     line of 32 bit processors. Sun servers will have this define present.
 
-    \sa BURGER_LINUX, or BURGER_SPARC64
+    \sa BURGER_CPU_TYPE, BURGER_LINUX, or BURGER_SPARC64
 
 ***************************************/
 
@@ -1410,7 +1419,18 @@
     If this define exists, then you are creating code that runs on the Sparc
     line of 64 bit processors. Sun servers will have this define present.
 
-    \sa BURGER_LINUX, or BURGER_SPARC32
+    \sa BURGER_CPU_TYPE, BURGER_LINUX, or BURGER_SPARC32
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_CPU_TYPE
+    \brief String of the name of the CPU.
+
+    "C" string of the name of the CPU.
+
+    \sa BURGER_X86, BURGER_AMD64, BURGER_ARM32, or BURGER_SPARC32
 
 ***************************************/
 
@@ -1438,7 +1458,7 @@
     line of processors. The Nintendo GameCube, Power Macintosh, Nintendo Wii,
     Sony Playstation 3 and Microsoft XBox 360 all will have this define present.
 
-    \sa BURGER_POWERPC, BURGER_GEKKO, BURGER_POWERPC64, BURGER_XBOX360,
+    \sa BURGER_POWERPC, BURGER_POWERPC64, BURGER_XBOX360,
         BURGER_WII, BURGER_PS3, BURGER_MAC, BURGER_MACOSX, BURGER_BEOS or
         BURGER_GAMECUBE
 
@@ -1495,20 +1515,6 @@ line of processors.
     calculations.
 
     \sa BURGER_XBOXONE, BURGER_PS4, BURGER_PS3, BURGER_XBOX360, or BURGER_AMD64
-
-***************************************/
-
-/*! ************************************
-
-    \def BURGER_GEKKO
-    \brief Define to determine if code is being built for 32 bit Nintendo
-        PowerPC processors.
-
-    If this define exists, then you are creating code that runs on a 32 bit
-    PowerPC processor made for Nintendo. The Nintendo GameCube, Nintendo Wii,
-    and Nintendo WiiU all will have this define present.
-
-    \sa BURGER_PPC, BURGER_WIIU, BURGER_WII or BURGER_GAMECUBE
 
 ***************************************/
 
@@ -2096,7 +2102,7 @@ line of processors.
     If this define exists, then you are creating code that runs on the Broadway
     processor for a Nintendo Wii.
 
-    \sa BURGER_POWERPC, BURGER_WIIU or BURGER_GAMECUBE
+    \sa BURGER_SWITCH, BURGER_POWERPC, BURGER_WIIU or BURGER_GAMECUBE
 
 ***************************************/
 
@@ -2108,7 +2114,19 @@ line of processors.
     If this define exists, then you are creating code that runs on the Broadway
     processor for a Nintendo WiiU.
 
-    \sa BURGER_POWERPC, BURGER_WII or BURGER_GAMECUBE
+    \sa BURGER_SWITCH, BURGER_POWERPC, BURGER_WII or BURGER_GAMECUBE
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_SWITCH
+    \brief Define to determine if code is being built for the Nintendo Switch.
+
+    If this define exists, then you are creating code that runs on the Arm64
+    processor for a Nintendo Switch.
+
+    \sa BURGER_ARM64, BURGER_WII, BURGER_WII or BURGER_3DS
 
 ***************************************/
 
@@ -2699,6 +2717,18 @@ line of processors.
 
 /*! ************************************
 
+    \def BURGER_NOEXCEPT
+    \brief Defined to nothing if noexcept is not supported.
+
+    On compilers that support the keyword noexcept, this define will
+    be set to noexcept, otherwise this define will be defined to nothing.
+
+    \sa BURGER_CPP11, BURGER_FINAL, BURGER_OVERRIDE or nullptr
+
+***************************************/
+
+/*! ************************************
+
     \def nullptr
     \brief Defined to nothing if the feature is not available.
 
@@ -3055,6 +3085,8 @@ line of processors.
 
     \endcode
 
+    \sa BURGER_MACRO_TO_STRING
+
 ***************************************/
 
 /*! ************************************
@@ -3062,7 +3094,8 @@ line of processors.
     \def BURGER_MACRO_TO_STRING
     \brief Convert a macro into a string literal.
 
-    Using deep magic, convert the macro into an 8 bit quoted string literal.
+    Using deep magic in the form of \ref BURGER_HASHMACRO,
+    convert the macro into an 8 bit quoted string literal.
 
     \param x Name of the macro to turn into a string
 
@@ -3073,17 +3106,19 @@ line of processors.
     // Prints "4" (Without the quotes)
 
     \endcode
+    \sa BURGER_HASHMACRO
 
 ***************************************/
 
 /*! ************************************
 
     \def BURGER_DISABLE_COPY
-    \brief Declares copy constructors to disable invocation at runtime
+    \brief Declares copy constructors to disable invocation at runtime.
 
-    Some classes by their nature should not be or can't be copied, by declaring
+    Some classes by their nature shouldn't be or can't be copied, by declaring
     this macro, the x(x const &) constructor and the x &operator = (x const &)
-    operator are declared.
+    operator are declared. If compiled with C++11 or higher, the x(x &&) and
+    x& operator = (x &&) are also declared as '= delete'.
 
     \note This macro MUST be invoked in a private section of a class or it will
     inadvertently declare that there are copy constructors in existence which
