@@ -45,8 +45,7 @@ void BURGER_API Burger::PrintHexDigit(uint_t uInput)
     Print two hex digits in the form of 00 to stdout
 
     \param uInput 8 bit value to print in HEX to stdout
-    \sa PrintHexDigit(uint_t), PrintHex(uint16_t), PrintHex(uint32_t), or
-        PrintHex(uint64_t)
+    \sa PrintHexDigit(uint_t), PrintHex(char), or PrintHex(signed char)
 
 ***************************************/
 
@@ -67,8 +66,7 @@ void BURGER_API Burger::PrintHex(uint8_t uInput)
     Print four hex digits in the form of 0000 to stdout
 
     \param uInput 16 bit value to print in HEX to stdout
-    \sa PrintHexDigit(uint_t), PrintHex(uint8_t), PrintHex(uint32_t), or
-        PrintHex(uint64_t)
+    \sa PrintHexDigit(uint_t), PrintHex(short), or PrintHex(wchar_t)
 
 ***************************************/
 
@@ -89,8 +87,8 @@ void BURGER_API Burger::PrintHex(uint16_t uInput)
     Print eight hex digits in the form of 00000000 to stdout
 
     \param uInput 32 bit value to print in HEX to stdout
-    \sa PrintHexDigit(uint_t), PrintHex(uint8_t), PrintHex(uint16_t), or
-        PrintHex(uint64_t)
+    \sa PrintHexDigit(uint_t), PrintHex(int), PrintHex(unsigned int),
+        PrintHex(long), or PrintHex(unsigned long)
 
 ***************************************/
 
@@ -111,8 +109,8 @@ void BURGER_API Burger::PrintHex(uint32_t uInput)
     Print sixteen hex digits in the form of 0000000000000000 to stdout
 
     \param uInput 64 bit value to print in HEX to stdout
-    \sa PrintHexDigit(uint_t), PrintHex(uint8_t), PrintHex(uint16_t), or
-        PrintHex(uint32_t)
+    \sa PrintHexDigit(uint_t), PrintHex(long), PrintHex(unsigned long),
+        PrintHex(long long), or PrintHex(unsigned long long)
 
 ***************************************/
 
@@ -167,6 +165,96 @@ void BURGER_API Burger::PrintHex(double dInput)
     // Send the string to stdout
     fputs(temp_string, stdout);
 }
+
+/*! ************************************
+
+    \fn Burger::PrintHex(char)
+    \brief Print a char in hex to standard out
+
+    \param iInput char to print in HEX to stdout
+    \sa PrintHex(uint8_t), or PrintHex(signed char)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::PrintHex(signed char)
+    \brief Print a signed char in hex to standard out
+
+    \param iInput signed char to print in HEX to stdout
+    \sa PrintHex(uint8_t), or PrintHex(char)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::PrintHex(short)
+    \brief Print a short in hex to standard out
+
+    \param iInput short to print in HEX to stdout
+    \sa PrintHex(uint16_t), or PrintHex(wchar_t)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::PrintHex(wchar_t)
+    \brief Print a wchar_t in hex to standard out
+
+    \param uInput wchar_t to print in HEX to stdout
+    \sa PrintHex(uint16_t), or PrintHex(short)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::PrintHex(int)
+    \brief Print an integer in hex to standard out
+
+    \param iInput integer to print in HEX to stdout
+    \sa PrintHex(uint32_t), PrintHex(uint16_t), or PrintHex(unsigned int)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::PrintHex(unsigned int)
+    \brief Print an unsigned integer in hex to standard out
+
+    \param uInput unsigned integer to print in HEX to stdout
+    \sa PrintHex(uint32_t), PrintHex(uint16_t), or PrintHex(int)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::PrintHex(long)
+    \brief Print a long integer in hex to standard out
+
+    \param iInput long integer to print in HEX to stdout
+    \sa PrintHex(uint64_t), PrintHex(uint32_t), or PrintHex(unsigned long)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::PrintHex(unsigned long)
+    \brief Print an unsigned long integer in hex to standard out
+
+    \param uInput unsigned long integer to print in HEX to stdout
+    \sa PrintHex(uint64_t), PrintHex(uint32_t), or PrintHex(long)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::PrintHex(long long)
+    \brief Print a long long integer in hex to standard out
+
+    \param iInput long integer to print in HEX to stdout
+    \sa PrintHex(uint64_t)
+
+***************************************/
 
 /*! ************************************
 

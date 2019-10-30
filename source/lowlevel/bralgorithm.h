@@ -40,10 +40,12 @@ struct is_same {
     static const bool value = false;
 };
 
+#if !defined(BURGER_APPLE_SC)
 template<typename T>
 struct is_same<T, T> {
     static const bool value = true;
 };
+#endif
 
 // Add const to type
 template<typename T>
@@ -57,10 +59,12 @@ struct remove_const {
     typedef T type;
 };
 
+#if !defined(BURGER_APPLE_SC)
 template<typename T>
 struct remove_const<const T> {
     typedef T type;
 };
+#endif
 
 // Remove const and volatile from type
 template<typename T>
@@ -68,6 +72,7 @@ struct remove_cv {
     typedef T type;
 };
 
+#if !defined(BURGER_APPLE_SC)
 template<typename T>
 struct remove_cv<const T> {
     typedef T type;
@@ -82,6 +87,7 @@ template<typename T>
 struct remove_cv<volatile T> {
     typedef T type;
 };
+#endif
 
 // Remove reference from type
 template<class T>
@@ -89,6 +95,7 @@ struct remove_reference {
     typedef T type;
 };
 
+#if !defined(BURGER_APPLE_SC)
 template<class T>
 struct remove_reference<T&> {
     typedef T type;
@@ -100,17 +107,27 @@ struct remove_reference<T&&> {
     typedef T type;
 };
 #endif
+#endif
+
+// Swap the contents of two memory variables
+template<class T>
+BURGER_INLINE void SwapVariables(T* pA, T* pB)
+{
+    T tTemp(*pA);
+    *pA = *pB;
+    *pB = tTemp;
+}
 
 // Return the minimum value
 template<typename T>
-BURGER_INLINE T Min(T A, T B)
+BURGER_INLINE T Min(T A, T B) BURGER_NOEXCEPT
 {
     return ((A < B) ? A : B);
 }
 
 // Return the maximum value
 template<typename T>
-BURGER_INLINE T Max(T A, T B)
+BURGER_INLINE T Max(T A, T B) BURGER_NOEXCEPT
 {
     return ((A > B) ? A : B);
 }

@@ -1,5 +1,8 @@
-/* What follows are commands for the directories */
-/* to find the included headers */
+/***************************************
+
+    What follows are commands for the directories to find the included headers
+
+***************************************/
 
 #ifndef __TEMPLATEBURGERBASE_H__
 #define __TEMPLATEBURGERBASE_H__
@@ -38,18 +41,19 @@
 /* BEGIN */
 /***************************************
 
-	Burgerlib base header
-	
-	Copyright (c) 1995-2019 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Burgerlib base header
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
-	Documentation can be found at http://www.burgerbecky.com/burgerlib/docs
-	
-	Comments, suggestions, bug fixes, email me at becky@burgerbecky.com
+    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE	for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
+    Documentation can be found at http://www.burgerbecky.com/burgerlib/docs
+
+    Comments, suggestions, bug fixes, email me at becky@burgerbecky.com
 
 ***************************************/
 
@@ -63,9 +67,9 @@
 #endif
 
 #if defined(BURGER_STRUCT_ALIGN)
-#pragma options align=native
+#pragma options align = native
 #elif defined(BURGER_STRUCT_PACKPUSH)
-#pragma pack(push,8)
+#pragma pack(push, 8)
 #elif defined(BURGER_STRUCT_PACK)
 #pragma pack(8)
 #endif
@@ -75,8 +79,11 @@
 #pragma enumsalwaysint on
 #endif
 
+// clang-format off
+#include "brerror.h"
 #include "brwatcom.h"
 #include "brvisualstudio.h"
+#include "brintelcompiler.h"
 #include "brxcode.h"
 #include "brmetrowerks.h"
 #include "brsnsystems.h"
@@ -142,7 +149,6 @@
 #include "brstring.h"
 #include "brstring16.h"
 #include "brosstringfunctions.h"
-#include "brcapturestdout.h"
 #include "brhashmap.h"
 #include "bralgorithm.h"
 #include "brfixedpoint.h"
@@ -167,6 +173,7 @@
 #include "brsimplestring.h"
 #include "brinputmemorystream.h"
 #include "broutputmemorystream.h"
+#include "brcapturestdout.h"
 #include "brtimedate.h"
 #include "brtick.h"
 #include "brfilename.h"
@@ -276,6 +283,7 @@
 #include "brflashmanager.h"
 #include "brflashactionvalue.h"
 #include "brflashavm2.h"
+// clang-format on
 
 #if defined(BURGER_METROWERKS)
 #pragma ANSI_strict reset
@@ -283,7 +291,7 @@
 #endif
 
 #if defined(BURGER_STRUCT_ALIGN)
-#pragma options align=reset
+#pragma options align = reset
 #elif defined(BURGER_STRUCT_PACKPUSH)
 #pragma pack(pop)
 #elif defined(BURGER_STRUCT_PACK)

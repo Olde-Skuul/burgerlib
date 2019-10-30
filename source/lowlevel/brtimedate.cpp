@@ -12,13 +12,14 @@
 ***************************************/
 
 #include "brtimedate.h"
+#include "brnumberto.h"
 #include <time.h>
 
 #if defined(BURGER_DS)
 #include <nitro/rtc/ARM9/api.h>
 #endif
 
-#if !(defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_PS4) || defined(BURGER_SHIELD)) && !defined(DOXYGEN)
+#if !(defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_PS4) || defined(BURGER_SHIELD) || defined(BURGER_LINUX)|| defined(BURGER_INTEL_COMPILER)) && !defined(DOXYGEN)
 #if !(defined(BURGER_MSVC) && _MSC_VER>=1900)		// Visual studio 2015 or higher has timespec defined
 struct timespec {
 	time_t tv_sec;	// seconds
@@ -371,7 +372,7 @@ int Burger::TimeDate_t::Compare(const TimeDate_t *pInput) const
 
 	\brief Convert a time_t to a TimeDate_t.
 
-	The time is assumed to be GMT and will be converted to 
+	The time is assumed to be GMT and will be converted to
 	local time before stored into the TimeDate_t structure
 
 	\param uTimeT A time_t value obtained by a call to the "C" library.
@@ -409,7 +410,7 @@ Word Burger::TimeDate_t::LoadTimeT(WordPtr uTimeT)
 
 	\brief Convert a TimeDate_t to a time_t.
 
-	The time is assumed to be local and will be converted to 
+	The time is assumed to be local and will be converted to
 	GMT time before stored into the time_t value
 
 	\param pTimeT A time_t value to receive the new time
@@ -444,7 +445,7 @@ Word Burger::TimeDate_t::StoreTimeT(WordPtr *pTimeT) const
 
 	\brief Convert a timespec to a Burger::TimeDate_t.
 
-	The time is assumed to be GMT and will be converted to 
+	The time is assumed to be GMT and will be converted to
 	local time before stored into the Burger::TimeDate_t structure
 
 	\param pTimeSpec A timespec value to retrieve the time from
@@ -471,7 +472,7 @@ Word Burger::TimeDate_t::Load(const timespec *pTimeSpec)
 
 	\brief Convert a Burger::TimeDate_t to a timespec.
 
-	The time is assumed to be local and will be converted to 
+	The time is assumed to be local and will be converted to
 	GMT before stored into the timespec structure
 
 	\param pTimeSpec A timespec value to receive the time

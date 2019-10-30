@@ -61,6 +61,11 @@ extern unsigned int __cdecl _rotr(unsigned int, int);
 extern unsigned __int64 __cdecl _rotr64(unsigned __int64, int);
 #pragma intrinsic(_rotl, _rotl64, _rotr, _rotr64)
 
+extern unsigned short __cdecl _byteswap_ushort(unsigned short);
+extern unsigned long __cdecl _byteswap_ulong(unsigned long);
+extern unsigned __int64 __cdecl _byteswap_uint64(unsigned __int64);
+#pragma intrinsic(_byteswap_ushort, _byteswap_ulong, _byteswap_uint64)
+
 #if defined(BURGER_INTEL)
 
 // Visual Studio 2005 or higher

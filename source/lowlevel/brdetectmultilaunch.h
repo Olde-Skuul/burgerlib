@@ -25,7 +25,7 @@
 /* BEGIN */
 namespace Burger {
 class DetectMultiLaunch {
-	BURGER_DISABLECOPYCONSTRUCTORS(DetectMultiLaunch);
+    BURGER_DISABLE_COPY(DetectMultiLaunch);
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	void *m_hInstanceLock;			///< Windows handle to an instance lock (Windows only)

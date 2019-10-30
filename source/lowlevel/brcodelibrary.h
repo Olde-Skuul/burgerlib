@@ -26,10 +26,14 @@
 #include "brmactypes.h"
 #endif
 
+#if defined(BURGER_MACOSX) && !defined(__BRMACOSXTYPES_H__)
+#include "brmacosxtypes.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 class CodeLibrary {
-	BURGER_DISABLECOPYCONSTRUCTORS(CodeLibrary);
+    BURGER_DISABLE_COPY(CodeLibrary);
 	void *m_pLibInstance;			///< Instance of the code library
 public:
 	CodeLibrary() : m_pLibInstance(NULL) {}
@@ -39,6 +43,22 @@ public:
 	void *GetFunction(const char *pFunctionName);
 	BURGER_INLINE Word IsInitialized(void) const { return m_pLibInstance!=NULL; }
 };
+
+#if ((defined(BURGER_MAC) && TARGET_API_MAC_CARBON) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
+
+class CodeFramework {
+    BURGER_DISABLE_COPY(CodeFramework);
+	__CFBundle *m_pBundle;			///< Instance of the framework bundle
+public:
+	CodeFramework();
+	~CodeFramework();
+	eError BURGER_API Init(const char *pName);
+	void BURGER_API Shutdown(void);
+	void * BURGER_API GetFunction(const char *pFunctionName);
+};
+
+#endif
+
 }
 
 /* END */

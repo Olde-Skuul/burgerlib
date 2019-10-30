@@ -1,16 +1,17 @@
 /***************************************
 
-	stdint.h compatibility header
+    stdint.h compatibility header
 
-	It's 2018, stdint.h is available for all compilers except vintage ones.
-	This header adds that support to vintage compilers.
+    It's 2018, stdint.h is available for all compilers except vintage ones.
+    This header adds that support to vintage compilers.
 
-	Copyright (c) 1995-2018 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2018 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 

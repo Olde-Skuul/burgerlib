@@ -22,7 +22,7 @@ Word32 Burger::Tick::s_LastTick;
 
 	\class Burger::Tick
 	\brief 60 hertz timer
-	
+
 	Upon application start up, a global 60 hertz timer is created and via
 	a background interrupt, it will increment 60 times a second. This is global
 	and shared by all threads. The timer cannot stop.
@@ -38,7 +38,7 @@ Word32 Burger::Tick::s_LastTick;
 /*! ************************************
 
 	\brief Retrieve the 60 hertz timer system time
-	
+
 	Upon application start up, a 60 hertz timer is created and via
 	a background interrupt, it will increment 60 times a second.
 
@@ -54,7 +54,9 @@ Word32 Burger::Tick::s_LastTick;
 
 Word32 BURGER_API Burger::Tick::Read(void)
 {
-#if CLOCKS_PER_SEC==TICKSPERSEC
+#if defined(BURGER_LINUX)
+	return static_cast<Word32>((clock()*TICKSPERSEC)/CLOCKS_PER_SEC);
+#elif CLOCKS_PER_SEC==TICKSPERSEC
 	return clock();
 #else
 	return static_cast<Word32>((clock()*TICKSPERSEC)/CLOCKS_PER_SEC);
@@ -188,7 +190,7 @@ Word BURGER_API Burger::Tick::WaitEvent(Word uCount)
 /*! ************************************
 
 	\brief Retrieve the 1Mhz timer
-	
+
 	Upon application start up, a 1Mhz hertz timer is created and via
 	a hardward timer, it will increment 1Mhz times a second.
 
@@ -208,7 +210,9 @@ Word BURGER_API Burger::Tick::WaitEvent(Word uCount)
 
 Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
 {
-#if CLOCKS_PER_SEC==1000000
+#if defined(BURGER_LINUX)
+	return static_cast<Word32>((clock()*1000000)/CLOCKS_PER_SEC);
+#elif CLOCKS_PER_SEC==1000000
 	return static_cast<Word32>(clock());
 #else
 	return static_cast<Word32>((clock()*1000000)/CLOCKS_PER_SEC);
@@ -221,7 +225,7 @@ Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
 /*! ************************************
 
 	\brief Retrieve the 1Khz timer
-	
+
 	Upon application start up, a 1Khz hertz timer is created and via
 	a hardware timer, it will increment 1Mhz times a second.
 
@@ -241,7 +245,9 @@ Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
 
 Word32 BURGER_API Burger::Tick::ReadMilliseconds(void)
 {
-#if CLOCKS_PER_SEC==1000
+#if defined(BURGER_LINUX)
+	return static_cast<Word32>((clock()*1000)/CLOCKS_PER_SEC);
+#elif CLOCKS_PER_SEC==1000
 	return static_cast<Word32>(clock());
 #else
 	return static_cast<Word32>((clock()*1000)/CLOCKS_PER_SEC);
@@ -258,9 +264,9 @@ Word32 BURGER_API Burger::Tick::ReadMilliseconds(void)
 
 	\class Burger::FloatTimer
 	\brief Floating point timer
-	
+
 	Upon class start up, a high accuracy timer is read and this moment is
-	considered 0.0f elapsed time. When the timer is queried, it will return 
+	considered 0.0f elapsed time. When the timer is queried, it will return
 	a floating point number in seconds. 0.5f is a half second, etc...
 
 	The value is as high an accuracy as the platform supports.
@@ -273,7 +279,7 @@ Word32 BURGER_API Burger::Tick::ReadMilliseconds(void)
 /*! ************************************
 
 	\brief Constructor for the floating point timer
-	
+
 	Reads in the default data needed to maintain the timer
 	and sets the elapsed time to 0.0f
 
@@ -345,7 +351,7 @@ void BURGER_API Burger::FloatTimer::SetBase(void)
 
 	\brief Reset the timer
 
-	Clear the timer to 0.0f. 
+	Clear the timer to 0.0f.
 
 	\sa GetTime(void)
 
@@ -383,7 +389,7 @@ float BURGER_API Burger::FloatTimer::GetTime(void)
 	// If paused, just return the frozen elapsed time
 	if (m_bPaused) {
 		fResult = m_fElapsedTime;
-	} else {	
+	} else {
 		// Generic code
 
 		Word32 uTick = Tick::ReadMicroseconds();
@@ -405,7 +411,7 @@ float BURGER_API Burger::FloatTimer::GetTime(void)
 
 	If the timer was not paused, accumulate the current time
 	into the elapsed time and freeze the timer at that value.
-	
+
 	If it was already paused, this function will do nothing.
 
 	\sa Unpause(void)
@@ -450,7 +456,7 @@ void BURGER_API Burger::FloatTimer::Unpause(void)
 	\brief Sleep the current thread
 
 	On multithreaded systems, if \ref SLEEP_YIELD is passed to this function
-	it will yield the thread's remaining time quantum. 
+	it will yield the thread's remaining time quantum.
 	If \ref SLEEP_INFINITE is passed then the thread will sleep
 	forever unless an Remote Procedure Call or an I/O event occurs.
 	Otherwise, pass the number of milliseconds that are desired

@@ -1,34 +1,93 @@
 /***************************************
 
-	Handle endian swapping
+    Handle endian swapping
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brendian.h"
+#include "brfloatingpoint.h"
 
 /*! ************************************
 
-	\class Burger::BigEndian
-	\brief Loads a 16, 32 or 64 bit value with byte swapping if needed.
-	
-	This class will map to either to \ref NativeEndian or \ref SwapEndian
-	depending on if this is a big endian machine or not. Use of this class will allow the programmer
-	to write code that is endian neutral since the compiler will perform the proper
-	mapping depending on the target's settings..
-	
-	Big endian is considered true if the \ref Word32 value 0x12345678 is stored in memory as
-	0x12, 0x34, 0x56, 0x78.
-	
-	Examples of use:
-	\code
-	Word32 LoadedInt;
+    \brief Swap endian of a 64 bit integer.
+
+    Visual Studio declares this function as an intrinsic, this is an
+    implementation of the intrinsic for other compilers.
+
+    \param uInput 64 integer to swap endian.
+
+***************************************/
+
+#if (defined(BURGER_METROWERKS) && defined(BURGER_68K)) || defined(DOXYGEN)
+// clang-format off
+BURGER_ASM uint64_t _swapendian64(uint64_t uInput)
+{
+    // Get the pointer for the return value
+    movea.l 4(a7), a0
+    // Get the input value
+    move.l  8(a7), d0
+    move.l  12(a7), d1
+    // Swap the endian
+    ror.w #8, d0
+    ror.w #8, d1
+    swap d0
+    swap d1
+    ror.w #8, d0
+    ror.w #8, d1
+    // Save the result, swapping the halves.
+    move.l d1, 0(a0)
+    move.l d0, 4(a0)
+    rts
+}
+// clang-format on
+
+#elif defined(BURGER_APPLE_SC) && defined(BURGER_68K)
+
+// This is written in 68000 assembly for speed
+#pragma parameter _swapendian64_asm(__A0, __A1)
+extern "C" void _swapendian64_asm(
+    uint64_t * pDest, const uint64_t * pInput) = {
+        0x2029, 0x0000, // move.l 0(a1),d0
+        0x2229, 0x0004, // move.l 4(a1),d1
+        0xE058, 0xE059, // ror.w #8,d0 and d1
+        0x4840, 0x4841, // swap d0 - swap d1
+        0xE058, 0xE059, // ror.w #8,d0 and d1
+        0x2141, 0x0000, // move.l d1,0(a0)
+        0x2140, 0x0004  // move.l d0,4(a0)
+};
+
+uint64_t _swapendian64(const uint64_t& rInput)
+{
+    uint64_t temp;
+    _swapendian64_asm(&temp, &rInput);
+    return temp;
+}
+#endif
+
+/*! ************************************
+
+    \class Burger::BigEndian
+    \brief Loads a 16, 32 or 64 bit value with byte swapping if needed.
+
+    This class will map to either to \ref NativeEndian or \ref SwapEndian
+    depending on if this is a big endian machine or not. Use of this class will
+allow the programmer to write code that is endian neutral since the compiler
+will perform the proper mapping depending on the target's settings..
+
+    Big endian is considered true if the \ref Word32 value 0x12345678 is stored
+in memory as 0x12, 0x34, 0x56, 0x78.
+
+    Examples of use:
+    \code
+    Word32 LoadedInt;
 
 	// Load 4 bytes from a file
 	fread(fp,1,4,&LoadedInt);

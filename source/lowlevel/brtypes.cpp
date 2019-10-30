@@ -3,7 +3,7 @@
     Determine which compiler is being used and create standardized typedefs and
     macros so generic code can be created cross platform
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
     It is released under an MIT Open Source license. Please see LICENSE for
     license details. Yes, you can use it in a commercial title without paying
@@ -51,7 +51,7 @@
 #define BURGER_MSP430
 #define BURGER_SPARC32
 #define BURGER_SPARC64
-#define BURGER_CPU_TYPE "The name of the CPU"
+#define BURGER_CPU_NAME "The name of the CPU"
 
 #define BURGER_3DNOW
 
@@ -92,100 +92,28 @@
 #define BURGER_MACOSX
 #define BURGER_LINUX
 #define BURGER_ARDUINO
+#define BURGER_PLATFORM_NAME "Name of operating system"
 
-#define BURGER_BIGENDIAN
 #define BURGER_LITTLEENDIAN
 
 #define BURGER_FASTCALLENABLED
-#define BURGER_HAS_WCHAR_T
+#define BURGER_STRUCT_ALIGN
+#define BURGER_STRUCT_PACK
+#define BURGER_STRUCT_PACKPUSH
 
-//#define TRUE 1
-//#define FALSE 0
-//#define NULL 0
+#define nullptr 0
+#define __underlying_type(x) int
+
+#define BURGER_HAS_WCHAR_T
+#define BURGER_INT_NOT_IN_STDINT
+//#define BURGER_LONG_NOT_IN_STDINT
+
 //#define BURGER_MAXINT 0x7FFFFFFF
 //#define BURGER_MAXUINT 0xFFFFFFFFU
 //#define BURGER_MAXWORDPTR 0xFFFFFFFFFFFFFFFFULL
 //#define BURGER_MAXINTPTR 0x7FFFFFFFFFFFFFFFLL
 
-//#define BURGER_DECLSPECNAKED __declspec(naked)
-//#define BURGER_ALIGN(x,s) __align(s) (x)
-//#define BURGER_PREALIGN(s) __align(s)
-//#define BURGER_POSTALIGN(s)
-#define BURGER_STRUCT_ALIGN
-#define BURGER_STRUCT_PACK
-#define BURGER_STRUCT_PACKPUSH
 #define BURGER_NO_USING_NAMESPACE
-//#define BURGER_OFFSETOF(type, member)
-// reinterpret_cast<WordPtr>(&(reinterpret_cast<const type *>(0)->member))
-
-#define nullptr 0
-#define BURGER_SIZEOF_INT 4
-#define BURGER_SIZEOF_LONG 4
-#define BURGER_LONGLONG __int64
-#define BURGER_LONGIS64BIT
-
-// typedef signed char Int8;
-// typedef unsigned char Word8;
-// typedef signed short Int16;
-// typedef unsigned short Word16;
-// typedef signed int Int32;
-// typedef unsigned int Word32;
-// typedef signed __int64 Int64;
-// typedef unsigned __int64 Word64;
-// typedef __vector4 Vector_128;
-// typedef Word64 WordPtr;
-// typedef Int64 IntPtr;
-// typedef Word8 Bool;
-// typedef Int32 Frac32;
-// typedef Int32 Fixed32;
-// typedef unsigned int Word;
-// typedef signed int Int;
-// typedef unsigned int uint_t;
-// typedef signed int int_t;
-
-/*! ************************************
-
-    \mainpage Welcome to Burgerlib.
-    <center><h1>The only low level library you'll ever need.</h1></center>
-
-    BurgerLib is copyright 1995-2017 by <a
-    href="mailto:becky@burgerbecky.com">Rebecca Ann Heineman</a>. Email all
-    suggestions, corrections, optimizations and insults to her and she'll be
-    eternally grateful.
-
-    You can always find the latest version of <a
-    href="https://github.com/Olde-Skuul/burgerlib" target="_blank">Burgerlib's
-    source code here</a> or the <a
-    href="https://github.com/Olde-Skuul/KitchenSink" target="_blank">precompiled
-    version here</a>, also check out Rebecca's personal website <a
-    href="http://www.burgerbecky.com"
-    target="_blank">http://www.burgerbecky.com</a>.
-
-    <a href="http://www.burgerbecky.com/burgerlib/docs/burgerlib.chm"
-    target="_blank">Offline documentation for Windows can be downloaded
-    here.</a>
-
-    Sections of interest:
-    * * \subpage pageintroduction
-    * * \subpage pagewindowsinstall
-    * * \subpage pagemacosinstall
-    * * \subpage pageusingburgerlib
-    * * \subpage pagedefines
-    * * \subpage pagetypes
-    * * \subpage pagewhitepapers
-
-    <center><h2>Credits</h2></center>
-    <b><ul>
-    <li>Rebecca Ann Heineman - most of the codebase</li>
-    <li>Gary S. Brown - CRC32B</li>
-    <li>Jean-loup Gailly - Original Zlib compressor</li>
-    <li>Mark Adler - Original Zlib decompressor</li>
-    <li>Thatcher Ulrich - Hash template</li>
-    <li>Daniel Julius Bernstein - djb2 hash algorithm</li>
-    <li>Matt Pritchard - SafePrint</li>
-    </ul></b>
-
-***************************************/
 
 /*! ************************************
 
@@ -326,539 +254,6 @@
 
 /*! ************************************
 
-    \page pagewindowsinstall Installing Burgerlib on a Win32 machine.
-
-    \section win32copysdk Step 1: Copying the SDKs onto your host machine.
-
-    Create a folder on your hard drive to copy all of the SDKs that you will be
-    using. The usual place is C:\\SDKs but you can place them anywhere you wish.
-
-    Once the folder is created, you need to copy and unzip these basic SDKs into
-    their respective folders. The links below will download the current stable
-    versions of the respective folder.
-
-    * * <a href="http://www.burgerbecky.com/burgerlib/w32burger.zip">Burgerlib
-        for Win32</a> into w32burger.
-
-    * * <a href="http://www.burgerbecky.com/burgerlib/w32directx9.zip">DirectX 9
-        and 10 headers for Win32</a> into w32directx9.
-
-    * * <a href="http://www.burgerbecky.com/burgerlib/w32platformsdk.zip">Win32
-        headers from Microsoft for all compilers</a> into w32platformsdk.
-
-    * * <a href="http://www.burgerbecky.com/burgerlib/w32opengl.zip">OpenGL for
-        Win32</a> into w32opengl.
-
-    * * <a href="http://www.burgerbecky.com/burgerlib/w32qt7sdk.zip">Quicktime 7
-        headers for Win32</a> into w32qt7sdk.
-
-    For best use, an environment variable needs to be set up to point to the
-    SDKs directory. The easiest way is to edit your AUTOEXEC.BAT file. Editing
-    your system registry is acceptable as well, but this way it is easier to
-    modify if you decide to move the folder somewhere else.
-
-    Insert this line into your C:\\AUTOEXEC.BAT file.
-
-    \code SET BURGER_SDKS=C:\SDKs
-    \endcode
-
-    \section win32accesssdk Step 2: Accessing the SDKs from the environment.
-
-    For each target in your Win32 project, you need to add these folders into
-    the include and link include directories so the headers and the libraries
-    can be found. Please note the use of quotes, it will allow the variable
-    \$(BURGER_SDKS) to contain a space.
-
-    \subsection win32vc71 Include directories for Visual Studio .NET 2003.
-
-    In Configuration Properties: C/C++ : General : Additional Include
-    Directories...
-
-    \code
-        "$(BURGER_SDKS)\windows\burger";"$(BURGER_SDKS)\windows\opengl";"$(BURGER_SDKS)\windows\directx9";"$(BURGER_SDKS)\windows\windows5"
-    \endcode
-
-    In Configuration Properties: Linker : General : Additional Library
-    Directories...
-
-    \code
-        "$(BURGER_SDKS)\windows\burger";"$(BURGER_SDKS)\windows\opengl";"$(BURGER_SDKS)\windows\directx9"
-    \endcode
-    \subsection win32cw9 Access paths for Codewarrior 9.4.
-
-    In the menu bar, select Edit : Preferences... : General : Source
-    Trees...<br> Create the name of "BURGER_SDKS" and set the path to the folder
-    where the SDKS are.<br> The typical combination is Name = BURGER_SDKS and
-    the environment variable is SDKS which usually resolves to C:\\SDKS.<br> For
-    each project, in Settings : Target Settings Panels: Target: Access Paths<br>
-
-    \code
-        {BURGER_SDKS}windows\burger
-        {BURGER_SDKS}windows\opengl
-        {BURGER_SDKS}windows\directx9
-        {BURGER_SDKS}windows\windows5
-    \endcode
-
-    \section win32selectlib Step 3: Include the proper library for your target.
-    Include only one of these libraries for the build target.
-
-    \subsection win32selectlibvc71 Libraries for Visual Studio .NET 2003.
-    * * burgervc7w32dbg.lib for no optimizations and debug information.
-    * * burgervc7w32int.lib for full optimizations and debug information.
-    * * burgervc7w32rel.lib for full optimizations and no debug information.
-
-    \subsection win32selectlibvc8 Libraries for Visual Studio .NET 2005.
-    * * burgervc8w32dbg.lib for no optimizations and debug information.
-    * * burgervc8w32int.lib for full optimizations and debug information.
-    * * burgervc8w32rel.lib for full optimizations and no debug information.
-
-    \subsection win32selectlibcw9 Libraries for Codewarrior 9.4.
-    * * burgerc50w32dbg.lib for no optimizations and debug information.
-    * * burgerc50w32int.lib for full optimizations and debug information.
-    * * burgerc50w32del.lib for full optimizations and no debug information.
-
-    \subsection win32selectlibwat Libraries for Open Watcom 1.9.
-    * * burgerwatw32dbg.lib for no optimizations and debug information.
-    * * burgerwatw32int.lib for full optimizations and debug information.
-    * * burgerwatw32rel.lib for full optimizations and no debug information.
-
-***************************************/
-
-/*! ************************************
-
-    \page pagemacosinstall Installing Burgerlib on a MacOS machine.
-
-    \section macosinstallsoftware Step 1: Installing development software
-
-    \subsection powermacinstall Using a PowerPC Mac running with MacOSX Leopard
-
-    Install these applications
-
-    * * <a
-        href="http://support.apple.com/downloads/DL761/en_US/QuickTime770_Leopard.dmg">Quicktime
-        7.7 for Leopard</a>
-
-    * * <a
-        href="ftp://ftp.perforce.com/perforce/r11.1/bin.macosx105u/P4V.dmg">Perforce
-        Visual Client 11.1 for Power Mac</a>
-
-    * * <a
-        href="http://adcdownload.apple.com/Developer_Tools/xcode_3.1.4_developer_tools/xcode314_2809_developerdvd.dmg">XCode
-        3.1.4 for MacOSX Leopard PowerPC</a>, may need to be logged into Apple's
-        Developer Connection to get access
-
-    * * <a
-        href="https://www.python.org/ftp/python/2.7.8/python-2.7.8-macosx10.5.dmg">Python
-        2.7.8 for MacOSX Leopard PowerPC</a>
-
-    * * <a href="http://pine.barebones.com/freeware/TextWrangler_3.5.3.dmg">Text
-        Wrangler for MacOSX Leopard PowerPC</a>
-
-
-    \subsection intelmacinstall Using an Intel Mac macOS Mavericks or higher
-
-    Install these applications
-
-    * * <a
-        href="ftp://ftp.perforce.com/perforce/r11.1/bin.macosx105u/P4V.dmg">Perforce
-        Visual Client 11.1 for Power Mac</a>
-
-    * * XCode for MacOSX via the app store
-
-    * * <a
-        href="https://www.python.org/ftp/python/2.7.8/python-2.7.8-macosx10.5.dmg">Python
-        2.7.8 for MacOSX Leopard PowerPC</a>
-
-    * * Text Wrangler for MacOSX Via the app store
-
-    \section macoscopysdk Step 2: Copying the SDKs onto your host machine.
-
-    Create a folder on your hard drive to copy all of the SDKs that you will be
-    using. The usual place is SDKS off of your boot volume, but you can place
-    them anywhere you wish.
-
-    Once the folder is created, you need to copy and uncompress these basic SDKS
-    into their respective folders. The links below will download the current
-    stable versions of the respective folder.
-
-    * * <a
-        href="http://www.burgerbecky.com/burgerlib/macburger.sitx">Burgerlib for
-        MacOS</a> into macburger.
-
-    * * <a
-        href="http://www.burgerbecky.com/burgerlib/macgamesprockets.sitx">Gamesprockets
-        for MacOS 9</a> into macgamesprockets.
-
-    * * <a href="http://www.burgerbecky.com/burgerlib/macglide.sitx">Glide for
-        MacOS 9 (Obsolete)</a> into macglide.
-
-    * * <a href="http://www.burgerbecky.com/burgerlib/macopengl.sitx">OpenGL for
-        MacOS 9</a> into macopengl.
-
-    * * <a href="http://www.burgerbecky.com/burgerlib/macqt6sdk.sitx">Quicktime
-        for MacOS 9</a> into macqt6sdk.
-
-    * * <a href="http://www.burgerbecky.com/burgerlib/macstdclib.sitx">StdCLib
-        support for Classic and OSX.</a> into macstdclib.
-
-    \section macosaccesssdk Step 3: Accessing the SDKs in the build environment.
-
-    \subsection macoscw9 Access paths for Codewarrior 8.3 or 10.0.
-
-    In the menu bar, select Edit : Preferences... : General : Source
-    Trees...<br> Create the name of "BURGER_SDKS" and set the path to the folder
-    where the SDKS are.<br> The typical combination is Name = BURGER_SDKS and
-    the Path = /SDKs.<br> For each project, in Settings : Target Settings
-    Panels: Target: Access Paths<br>
-
-    \code
-        {BURGER_SDKS}macburger
-        {BURGER_SDKS}macopengl
-        {BURGER_SDKS}macgamesprockets
-    \endcode
-
-    \section macosselectlib Step 4: Include the proper library for your target.
-
-    Include only one of these libraries for the build target.
-
-    \subsection macosselectlibc10 Libraries for Codewarrior 10.0 / PowerPC.
-
-    * * burgerc10macppcdbg.lib for no optimizations and debug information
-        (Classic only).
-
-    * * burgerc10macppcdbf.lib for full optimizations and debug information
-        (Classic only).
-
-    * * burgerc10macppcrel.lib for full optimizations and no debug information
-        (Classic only).
-
-    * * burgerc10carppcdbg.lib for no optimizations and debug information
-        (Carbon for OS9 and OSX).
-
-    * * burgerc10carppcdbf.lib for full optimizations and debug information
-        (Carbon for OS9 and OSX).
-
-    * * burgerc10carppcrel.lib for full optimizations and no debug information
-        (Carbon for OS9 and OSX).
-
-    * * burgerc10osxdbg.lib for no optimizations and debug information (OSX
-        Mach-O).
-
-    * * burgerc10osxdbf.lib for full optimizations and debug information (OSX
-        Mach-O).
-
-    * * burgerc10osxrel.lib for full optimizations and no debug information (OSX
-        Mach-O).
-
-    \subsection macosselectlibcw8 Codewarrior 8.3 / 68k classic only.
-
-    * * burgercw868kdbg.lib for no optimizations and debug information.
-
-    * * burgercw868kdbf.lib for full optimizations and debug information.
-
-    * * burgercw868krel.lib for full optimizations and no debug information.
-
-    * * burgercw868kdbgfar.lib for no optimizations and debug information (Far
-        data).
-
-    * * burgercw868kdbffar.lib for full optimizations and debug information (Far
-        data).
-
-    * * burgercw868krelfar.lib for full optimizations and no debug information
-        (Far data).
-
-    * * burgercw868kcfmdbg.lib for no optimizations and debug information (Code
-        fragment).
-
-    * * burgercw868kcfmdbf.lib for full optimizations and debug information
-        (Code fragment).
-
-    * * burgercw868kcfmrel.lib for full optimizations and no debug information
-        (Code fragment).
-
-    * * burgercw868kcfmdbgfar.lib for no optimizations and debug information
-        (Code fragment, Far data).
-
-    * * burgercw868kcfmdbffar.lib for full optimizations and debug information
-        (Code fragment, Far data).
-
-    * * burgercw868kcfmrelfar.lib for full optimizations and no debug
-        information (Code fragment, Far data).
-
-***************************************/
-
-/*! ************************************
-
-    \page pageusingburgerlib Using Burgerlib.
-
-    \section introduction Introduction
-
-    To use burgerlib is simplicity itself. Just add this to the beginning of
-    your source files or headers (Or both).
-
-    \code
-    // The #ifndef __BURGER__ is optional, but useful to prevent double includes
-    // if included from a user supplied header.
-    #ifndef __BURGER__
-    #include <burger.h>
-    #endif
-    \endcode
-
-    <h3>That's it!</h3>
-
-***************************************/
-
-/*! ************************************
-
-    \page pagedefines Platform defines
-
-    This is the mainstay of all of Burgerlib. You include the file burger.h in
-    your project which will determine the compiler, target, CPU, and system
-    specific features so you can write platform neutral code.
-
-    Debug defines, one is required MUST be present and is supplied by the build
-    project. This is not created by default by Burgerlib. If both exist or both
-    are missing, burger.h will force a compile error.
-
-    * * \ref _DEBUG Debugging asserts are enabled.
-    * * \ref NDEBUG	Debugging asserts are disabled.
-
-    Compiler C++ level, all are defined up to the feature level present.
-
-    * * \ref BURGER_CPP89 Compiler is at least C++89 level of features
-    * * \ref BURGER_CPP98 Compiler is at least C++98 level of features
-    * * \ref BURGER_CPP11 Compiler is at least C++11 level of features
-    * * \ref BURGER_CPP14 Compiler is at least C++14 level of features
-    * * \ref BURGER_CPP17 Compiler is at least C++17 level of features
-    * * \ref BURGER_CPP20 Compiler is at least C++20 level of features
-    * * \ref BURGER_STDCPP_TYPE String of maximum C++ level
-
-    Compiler defines, to determine any compiler specific features are available.
-    Only one macro is defined. All are defined as the compiler version number.
-
-    * * \ref BURGER_WATCOM Open Watcom
-    * * \ref BURGER_MRC Apple's PowerPC MPW compiler
-    * * \ref BURGER_APPLE_SC Apple's 68000 MPW compiler
-    * * \ref BURGER_DJGPP DJ's GNU compiler
-    * * \ref BURGER_SNSYSTEMS SN System's compiler
-    * * \ref BURGER_GHS Green Hills compiler
-    * * \ref BURGER_INTEL_COMPILER Intel compiler
-    * * \ref BURGER_MINGW MinGW compiler
-    * * \ref BURGER_CLANG clang compiler
-    * * \ref BURGER_GNUC GNU C, found on Linux and other platforms
-    * * \ref BURGER_METROWERKS Metrowerks Codewarrior (PowerPC, Intel, 68000)
-    * * \ref BURGER_ARM_COMPILER Advanced RISC Machines ARM compiler
-    * * \ref BURGER_MSVC Microsoft Visual Studio
-    * * \ref BURGER_COMPILER_NAME String of the compiler's name
-    * * \ref BURGER_COMPILER_VERSION Integer of the version of the compiler
-
-    CPU defines, only one is enabled on each compile.
-
-    * * \ref BURGER_X86 compiled for 32 bit Intel CPUs.
-    * * \ref BURGER_AMD64 compiled for 64 bit AMD64/Intel CPUs.
-
-    * * \ref BURGER_ITANIUM compiled for 64 bit Intel Itanium.
-
-    * * \ref BURGER_ARM32 compiled for 32 bit ARM CPUs.
-    * * \ref BURGER_ARM64 compiled for 64 bit ARM CPUs.
-
-    * * \ref BURGER_MIPS32 compiled for 32 bit MIPS CPUs.
-    * * \ref BURGER_MIPS64 compiled for 64 bit MIPS CPUs.
-
-    * * \ref BURGER_POWERPC compiled for 32 bit PowerPC CPUs.
-    * * \ref BURGER_POWERPC64 compiled for 64 bit PowerPC CPUs.
-
-    * * \ref BURGER_68K compiled for 32 bit 68000 CPUs.
-
-    * * \ref BURGER_RISCV compiled for 32 bit RISC-V CPUs.
-
-    * * \ref BURGER_AVR compiled for 32 bit Atmel AVR CPUS.
-
-    * * \ref BURGER_MSP430 compiled for 32 bit Texas Instruments MSP430 CPUs.
-
-    * * \ref BURGER_SPARC32 compiled for 32 bit SPARC CPUs.
-    * * \ref BURGER_SPARC64 compiled for 64 bit SPARC CPUs.
-
-    * * \ref BURGER_CPU_TYPE String of the CPU's name.
-
-    "Type of CPU" defines, they are defined to help determine the type of CPU is
-    running.
-
-    * * \ref BURGER_INTEL The CPU is either AMD64 or X86.
-
-    * * \ref BURGER_PPC CPU is part of the PowerPC family.
-
-    * * \ref BURGER_ARM CPU is part of the Advanced RISC Machines family.
-
-    * * \ref BURGER_MIPS CPU is part of the MIPS family.
-
-    * * \ref BURGER_SPARC CPU is part of the SPARC family.
-
-    * * \ref BURGER_64BITCPU The CPU has native 64 bit registers (AMD64, PPC64,
-        ARM64, ITANIUM, SPARC64).
-
-    CPU special feature macros.
-
-    * * \ref BURGER_NEON ARM NEON features are enabled.
-
-    * * \ref BURGER_68881 68000 math co-processor features are enabled.
-
-    * * \ref BURGER_ALTIVEC PowerPC Altivec features are enabled.
-
-    * * \ref BURGER_3DNOW AMD 3DNow! features are enabled.
-    * * \ref BURGER_SSE Intel SSE features are enabled.
-    * * \ref BURGER_SSE2 Intel SSE features are enabled.
-    * * \ref BURGER_AVX Intel SSE features are enabled.
-    * * \ref BURGER_AVX2 Intel SSE features are enabled.
-
-    Endian defines, only one is enabled on each compile. Do not use the CPU to
-    determine the endian, because it may change on some platforms.
-
-    * * \ref BURGER_BIGENDIAN Defined on big endian machines
-    * * \ref BURGER_LITTLEENDIAN Defined on little endian machine
-    * * \ref BURGER_ENDIANINDEX_LOW Index for low byte for 16 bit value (0 or 1)
-    * * \ref BURGER_ENDIANINDEX_HIGH Index for high byte for 16 bit value (0 or
-        1)
-
-    Platform defines, only one is enabled on each compile.
-
-    * * \ref BURGER_WIN32 The underlying OS is 32 bit Windows (XP/NT/7/8 Etc)
-    * * \ref BURGER_WIN64 The underlying OS is 64 bit Windows
-    * * \ref BURGER_WINDOWS The underlying OS is any flavor of Microsoft Windows
-    * * \ref BURGER_MSDOS The underlying OS is MSDOS
-    * * \ref BURGER_MAC The underlying OS is MacOS (Pre-X)
-    * * \ref BURGER_MACOSX The underlying OS is a version of MacOSX
-    * * \ref BURGER_MACCLASSIC macOS 7-9 using class API
-    * * \ref BURGER_MACCARBON macOS7-9 using CarbonLib
-    * * \ref BURGER_MACOS The underlying OS is ANY version of MacOS
-    * * \ref BURGER_IOS Build for iOS
-    * * \ref BURGER_NGAGE Build for Nokia NGage
-    * * \ref BURGER_SYMBIAN Build for Symbian OS
-    * * \ref BURGER_PS1 Build for Playstation classic
-    * * \ref BURGER_PS2 Build for Playstation 2
-    * * \ref BURGER_PS3 Build for Playstation 3
-    * * \ref BURGER_PS4 Build for Playstation 4
-    * * \ref BURGER_PSP Build for Playstation Portable
-    * * \ref BURGER_VITA Build for Playstation Portable 2
-    * * \ref BURGER_GAMECUBE Build for Nintendo Gamecube
-    * * \ref BURGER_WII Build for Nintendo Wii
-    * * \ref BURGER_WIIU Build for Nintendo WiiU
-    * * \ref BURGER_SWITCH Build for Nintendo Switch
-    * * \ref BURGER_GBA Gameboy Advanced Build for Nintendo Gameboy Advance
-    * * \ref BURGER_DS Build for Nintendo DS and DSi
-    * * \ref BURGER_3DS Build for Nintendo 3DS
-    * * \ref BURGER_XBOX Build for the original XBox
-    * * \ref BURGER_XBOX360 Build for the Xbox 360
-    * * \ref BURGER_XBOXONE Build for the Xbox ONE
-    * * \ref BURGER_ANDROID Build for Android
-    * * \ref BURGER_SHIELD Build for nVidia Shield
-    * * \ref BURGER_OUYA Build for Ouya
-    * * \ref BURGER_BEOS Build for BeOS and Haiku.
-    * * BURGER_APPLEIIGS has been removed.
-    * * BURGER_3DO has been removed.
-
-    Standard defines present on all build targets
-
-    * * \ref TRUE
-    * * \ref FALSE
-    * * \ref NULL
-    * * \ref BURGER_MAXINT
-    * * \ref BURGER_MININT
-    * * \ref BURGER_MAXUINT
-    * * \ref BURGER_INLINE
-    * * \ref BURGER_API
-    * * \ref BURGER_ANSIAPI
-    * * \ref BURGER_ASM
-    * * \ref BURGER_CFM macOS 7-9 Code Fragment Manager
-    * * \ref BURGER_FASTCALLENABLED Used for Intel assembly functions to use the
-        __fastcall ABI
-
-    * * \ref BURGER_DECLSPECNAKED Used to create a function without a
-        prologue or epilogue
-
-    * * \ref BURGER_ALIGN
-    * * \ref BURGER_PREALIGN
-    * * \ref BURGER_POSTALIGN
-    * * \ref BURGER_STRUCT_ALIGN
-    * * \ref BURGER_STRUCT_PACK
-    * * \ref BURGER_STRUCT_PACKPUSH
-
-    Defines to denote if features, compilation switches or high level APIs are
-    present
-
-    * * \ref BURGER_OPENGL_SUPPORTED
-    * * \ref BURGER_OPENGLES
-    * * \ref BURGER_TCPIP Is TCP/IP available on this platform
-    * * \ref BURGER_APPLETALK Is AppleTalk supported on this platform
-    * * \ref BURGER_IPX Is IPX/SPX available on this platform
-    * * \ref BURGER_STEAM Is Steam is available on this platform
-    * * \ref BURGER_XBOXLIVE Is Xbox Live available on this platform
-
-    Handy macros
-
-    * * \ref BURGER_HASHMACRO Macro to # a macro
-    * * \ref BURGER_MACRO_TO_STRING Convert a macro's definition into a string
-    * * \ref BURGER_OFFSETOF Get offset of a structure member
-    * * \ref BURGER_GET_BASE_PTR
-    * * \ref BURGER_CONST_GET_BASE_PTR
-    * * \ref BURGER_ARRAYSIZE Get number of members in an array
-    * * \ref BURGER_UNUSED Mark variables as unused
-    * * \ref BURGER_EQUALS_DELETE Insert '= delete' on compilers that support it
-    * * \ref BURGER_EQUALS_DEFAULT Insert '= default' on compilers that support
-        it
-    * * \ref BURGER_DISABLE_COPY Disable the ability to copy the class
-    * * \ref BURGER_COMPILE_TIME_ASSERT static_assert
-    * * \ref BURGER_CONSTEXPR constexpr
-    * * \ref BURGER_OVERRIDE override
-    * * \ref BURGER_FINAL final
-
-***************************************/
-
-/*! ************************************
-
-    \page pagetypes Platform types
-
-    These data types are stable and will generate the exact same size on any
-    platform.
-
-    * * \ref Word8 8 bit unsigned integer.
-    * * \ref Int8 8 bit signed integer.
-    * * \ref Word16 16 bit unsigned integer.
-    * * \ref Int16 16 bit signed integer.
-    * * \ref Word32 32 bit unsigned integer.
-    * * \ref Int32 32 bit signed integer.
-    * * \ref Word64 64 bit unsigned integer.
-    * * \ref Int64 64 bit signed integer.
-    * * \ref Vector_128 128 bit vector intrinsic.
-    * * \ref WordPtr Unsigned integer that matches in size to a void *.
-    * * \ref IntPtr Signed integer that matches in size to a void *.
-    * * \ref Bool Unsigned 8 bit integer for boolean operations.
-    * * \ref Frac32 Signed 2.30 32 bit integer for fixed point operations.
-    * * \ref Fixed32 Signed 16.16 32 bit integer for fixed point operations.
-    * * \ref Word Unsigned integer.
-    * * \ref Int Signed integer.
-
-***************************************/
-
-/*! ************************************
-
-    \page pagewhitepapers White Papers
-
-    These white papers were used to generate some of the code in Burgerlib
-
-    * * [ISO Latin 1 character set.](isolatin1.htm)
-    * * [MacOS Roman US character set.](macromanus.htm)
-    * * [Windows 1252 character set.](windows1252.htm)
-    * * [GIF File format.](spec-gif89a.txt)
-    * * [ActionScript Virtual Machine 2 Overview.](avm2overview.pdf)
-    * * [SWF File format specification Version 19.](swf-file-format-spec.pdf)
-    * * [3D Now! instruction set.](3dnow.pdf)
-    * * [AVX instruction set.](avx.pdf)
-
-***************************************/
-
-/*! ************************************
-
     \file burger.h
     \brief The master all inclusive header.
 
@@ -926,7 +321,7 @@
     \note Burgerlib requires this as a baseline. It will likely not compile
     using a compiler that isn't at least ANSI C89 level of compatibility.
 
-    \sa BURGER_STDCPP_TYPE, BURGER_CPP98, BURGER_CPP11, BURGER_CPP14,
+    \sa BURGER_STDCPP_NAME, BURGER_CPP98, BURGER_CPP11, BURGER_CPP14,
         BURGER_CPP17, and BURGER_CPP20
 
 ***************************************/
@@ -939,7 +334,7 @@
     If this define exists, then you are creating code with a compiler that has a
     minimum feature set found in C++98 compilers.
 
-    \sa BURGER_STDCPP_TYPE, BURGER_CPP89, BURGER_CPP11, BURGER_CPP14,
+    \sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP11, BURGER_CPP14,
         BURGER_CPP17, and BURGER_CPP20
 
 ***************************************/
@@ -952,7 +347,7 @@
     If this define exists, then you are creating code with a compiler that has a
     minimum feature set found in C++11 compilers.
 
-    \sa BURGER_STDCPP_TYPE, BURGER_CPP89, BURGER_CPP98, BURGER_CPP14,
+    \sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP98, BURGER_CPP14,
         BURGER_CPP17, and BURGER_CPP20
 
 ***************************************/
@@ -965,7 +360,7 @@
     If this define exists, then you are creating code with a compiler that has a
     minimum feature set found in C++14 compilers.
 
-    \sa BURGER_STDCPP_TYPE, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
+    \sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
         BURGER_CPP17, and BURGER_CPP20
 
 ***************************************/
@@ -978,7 +373,7 @@
     If this define exists, then you are creating code with a compiler that has a
     minimum feature set found in C++17 compilers.
 
-    \sa BURGER_STDCPP_TYPE, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
+    \sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
         BURGER_CPP14, and BURGER_CPP20
 
 ***************************************/
@@ -991,14 +386,14 @@
     If this define exists, then you are creating code with a compiler that has a
     minimum feature set found in C++20 compilers.
 
-    \sa BURGER_STDCPP_TYPE, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
+    \sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
         BURGER_CPP14, and BURGER_CPP17
 
 ***************************************/
 
 /*! ************************************
 
-    \def BURGER_STDCPP_TYPE
+    \def BURGER_STDCPP_NAME
     \brief String of the C++ feature level.
 
     This define is of a string naming the compiler feature level.
@@ -1212,6 +607,66 @@
 
 /*! ************************************
 
+    \def __has_builtin
+    \brief Clang feature macro.
+
+    On non-clang compilers, this compiles to 0.
+
+    \sa BURGER_CLANG, __has_feature, __has_extension, __has_cpp_attribute, or
+        __has_declspec_attribute
+
+***************************************/
+
+/*! ************************************
+
+    \def __has_feature
+    \brief Clang feature macro.
+
+    On non-clang compilers, this compiles to 0.
+
+    \sa BURGER_CLANG, __has_builtin, __has_extension, __has_cpp_attribute, or
+        __has_declspec_attribute
+
+***************************************/
+
+/*! ************************************
+
+    \def __has_extension
+    \brief Clang feature macro.
+
+    On non-clang compilers, this compiles to 0.
+
+    \sa BURGER_CLANG, __has_builtin, __has_feature, __has_cpp_attribute, or
+        __has_declspec_attribute
+
+***************************************/
+
+/*! ************************************
+
+    \def __has_cpp_attribute
+    \brief Clang feature macro.
+
+    On non-clang compilers, this compiles to 0.
+
+    \sa BURGER_CLANG, __has_builtin, __has_feature, __has_extension, or
+        __has_declspec_attribute
+
+***************************************/
+
+/*! ************************************
+
+    \def __has_declspec_attribute
+    \brief Clang feature macro.
+
+    On non-clang compilers, this compiles to 0.
+
+    \sa BURGER_CLANG, __has_builtin, __has_feature, __has_extension, or
+        __has_cpp_attribute
+
+***************************************/
+
+/*! ************************************
+
     \def BURGER_X86
     \brief Define to determine if code is being built for 32 bit Intel
         processors.
@@ -1221,7 +676,7 @@
     Win32 platforms which are running on Pentium, 386, 486, and AMD CPUs will
     have this define present.
 
-    \sa BURGER_CPU_TYPE, BURGER_INTEL, BURGER_AMD64, BURGER_WIN32, BURGER_BEOS,
+    \sa BURGER_CPU_NAME, BURGER_INTEL, BURGER_AMD64, BURGER_WIN32, BURGER_BEOS,
         BURGER_MSDOS, BURGER_MACOSX or BURGER_XBOX
 
 ***************************************/
@@ -1237,7 +692,7 @@
     platforms which are running on Pentium and AMD CPUs in 64 bit mode will have
     this define present.
 
-    \sa BURGER_CPU_TYPE, BURGER_INTEL, BURGER_WIN64, BURGER_MACOSX,
+    \sa BURGER_CPU_NAME, BURGER_INTEL, BURGER_WIN64, BURGER_MACOSX,
         BURGER_XBOXONE, BURGER_PS4 or BURGER_X86
 
 ***************************************/
@@ -1252,7 +707,7 @@
     Itanium compatible processors. The Microsoft Win64 and Linux which are
     running on Itanium compatible processors will have this define present.
 
-    \sa BURGER_CPU_TYPE, BURGER_WIN64 or BURGER_LINUX
+    \sa BURGER_CPU_NAME, BURGER_WIN64 or BURGER_LINUX
 
 ***************************************/
 
@@ -1267,7 +722,7 @@
     Nokia NGage, Apple iPad/iPhone/iPod and certain cell phones will have this
     define present.
 
-    \sa BURGER_CPU_TYPE, BURGER_ARM64, BURGER_ARM, BURGER_GBA, BURGER_ANDROID,
+    \sa BURGER_CPU_NAME, BURGER_ARM64, BURGER_ARM, BURGER_GBA, BURGER_ANDROID,
         BURGER_SHIELD, BURGER_OUYA, BURGER_DS, BURGER_3DS, BURGER_IOS,
         BURGER_NGAGE, or BURGER_SYMBIAN
 
@@ -1283,7 +738,7 @@
     RISC Machines 64 bit line of processors. Apple iPad/iPhone/iPod and certain
     cell phones will have this define present.
 
-    \sa BURGER_CPU_TYPE, BURGER_ARM32, BURGER_ARM, BURGER_ANDROID or BURGER_IOS
+    \sa BURGER_CPU_NAME, BURGER_ARM32, BURGER_ARM, BURGER_ANDROID or BURGER_IOS
 
 ***************************************/
 
@@ -1297,7 +752,7 @@
     bit line of processors. R5900 (PS2), R3300 (PS1) and R4400 (PSP) all will
     have this define present.
 
-    \sa BURGER_CPU_TYPE, BURGER_MIPS64, BURGER_PS2, BURGER_PSP, BURGER_PS1 or
+    \sa BURGER_CPU_NAME, BURGER_MIPS64, BURGER_PS2, BURGER_PSP, BURGER_PS1 or
         BURGER_MIPS
 
 ***************************************/
@@ -1311,7 +766,7 @@
     If this define exists, then you are creating code that runs on the MIPS 64
     bit line of 64 bit processors.
 
-    \sa BURGER_CPU_TYPE, BURGER_MIPS32, BURGER_MIPS
+    \sa BURGER_CPU_NAME, BURGER_MIPS32, BURGER_MIPS
 
 ***************************************/
 
@@ -1325,7 +780,7 @@
     PowerPC processor. The Nintendo GameCube, Power Macintosh and the Nintendo
     Wii all will have this define present.
 
-    \sa BURGER_CPU_TYPE, BURGER_PPC, BURGER_WIIU, BURGER_WII, BURGER_MAC,
+    \sa BURGER_CPU_NAME, BURGER_PPC, BURGER_WIIU, BURGER_WII, BURGER_MAC,
         BURGER_MACOSX, BURGER_BEOS or BURGER_GAMECUBE
 
 ***************************************/
@@ -1340,7 +795,7 @@
     PowerPC processor. The G5 Power Macintosh, Sony Playstation 3 and Microsoft
     XBox 360 all will have this define present.
 
-    \sa BURGER_CPU_TYPE, BURGER_PPC, BURGER_XBOX360, BURGER_PS3 or BURGER_MACOSX
+    \sa BURGER_CPU_NAME, BURGER_PPC, BURGER_XBOX360, BURGER_PS3 or BURGER_MACOSX
 
 ***************************************/
 
@@ -1354,7 +809,7 @@
     680x0 line of processors. The classic Macintosh and certain PDAs will have
     this define present.
 
-    \sa BURGER_CPU_TYPE, BURGER_68881, BURGER_MAC or BURGER_CFM
+    \sa BURGER_CPU_NAME, BURGER_68881, BURGER_MAC or BURGER_CFM
 
 ***************************************/
 
@@ -1367,7 +822,7 @@
     If this define exists, then you are creating code that runs on the RISC-V
     line of processors. Micro controllers will have this define present.
 
-    \sa BURGER_CPU_TYPE, BURGER_MSP430, BURGER_ARM64, BURGER_ARM32 or BURGER_AVR
+    \sa BURGER_CPU_NAME, BURGER_MSP430, BURGER_ARM64, BURGER_ARM32 or BURGER_AVR
 
 ***************************************/
 
@@ -1380,7 +835,7 @@
     If this define exists, then you are creating code that runs on the Atmel
     AVR line of processors. Micro controllers will have this define present.
 
-    \sa BURGER_CPU_TYPE, BURGER_ARM64, BURGER_ARM32 or BURGER_RISCV
+    \sa BURGER_CPU_NAME, BURGER_ARM64, BURGER_ARM32 or BURGER_RISCV
 
 ***************************************/
 
@@ -1393,7 +848,7 @@
     If this define exists, then you are creating code that runs on the MSP430
     line of 16 bit processors. Micro controllers will have this define present.
 
-    \sa BURGER_CPU_TYPE, BURGER_RISCV, BURGER_ARM32 or BURGER_AVR
+    \sa BURGER_CPU_NAME, BURGER_RISCV, BURGER_ARM32 or BURGER_AVR
 
 ***************************************/
 
@@ -1406,7 +861,7 @@
     If this define exists, then you are creating code that runs on the Sparc
     line of 32 bit processors. Sun servers will have this define present.
 
-    \sa BURGER_CPU_TYPE, BURGER_LINUX, or BURGER_SPARC64
+    \sa BURGER_CPU_NAME, BURGER_LINUX, or BURGER_SPARC64
 
 ***************************************/
 
@@ -1419,13 +874,13 @@
     If this define exists, then you are creating code that runs on the Sparc
     line of 64 bit processors. Sun servers will have this define present.
 
-    \sa BURGER_CPU_TYPE, BURGER_LINUX, or BURGER_SPARC32
+    \sa BURGER_CPU_NAME, BURGER_LINUX, or BURGER_SPARC32
 
 ***************************************/
 
 /*! ************************************
 
-    \def BURGER_CPU_TYPE
+    \def BURGER_CPU_NAME
     \brief String of the name of the CPU.
 
     "C" string of the name of the CPU.
@@ -2241,6 +1696,40 @@ line of processors.
 
 /*! ************************************
 
+    \def BURGER_AMIGA
+    \brief Define to determine if code is being built for the Commodore Amiga.
+
+    If this define exists, then you are creating code that runs on the Amiga for
+    68K or PowerPC.
+
+    \sa BURGER_POWERPC or BURGER_68K
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_LINUX
+    \brief Define to determine if code is being built for Linux.
+
+    If this define exists, then you are creating code that runs on Linux.
+
+    \sa BURGER_POWERPC, BURGER_AMD64 or BURGER_X86
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_PLATFORM_NAME
+    \brief String with the operating system's name.
+
+    This string is of the operating system the code is being compiled for.
+
+    \sa BURGER_WINDOWS, BURGER_LINUX or BURGER_MACOS
+
+***************************************/
+
+/*! ************************************
+
     \def TRUE
     \brief Define of the number 1 for boolean operations.
 
@@ -2376,14 +1865,33 @@ line of processors.
 /*! ************************************
 
     \def BURGER_INLINE
-    \brief Define to create inline code in ANSI C source files.
+    \brief Define to create inline code.
 
     Since pre-C++ compilers created different keywords to force inlining of a
     function, this define standardizes the keyword. Normally, it will evaluate
-    to inline, but it can become __inline or __forceinline or some other token
-    that is compiler specific.
+    to inline, but it can become `__inline` or `__forceinline` or some other
+    token that is compiler specific.
 
     In all cases, the behavior of the C++ inline keyword is what is expected.
+
+    \sa BURGER_NO_INLINE
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_NO_INLINE
+    \brief Define to disable inline code.
+
+    Since pre-C++ compilers created different keywords to disable inlining of a
+    function, this define standardizes the keyword. Normally, it will evaluate
+    to `__declspec(noinline)`, but it can become `__attribute__((noinline))`
+    or some other token that is compiler specific.
+
+    Some compilers don't support this keyword, for those compilers, this define
+    resolves into nothing.
+
+    \sa BURGER_INLINE
 
 ***************************************/
 
@@ -2393,9 +1901,9 @@ line of processors.
     \brief Default parameter passing type for Burgerlib functions.
 
     On Intel platforms, there are several methods of passing parameters.
-    Burgerlib uses the __fastcall method and this define will evaluate to
-    __fastcall on compilers that support it. Otherwise, this will evaluate to
-    nothing on non-intel platforms.
+    Burgerlib uses the `__fastcall` method and this define will evaluate to
+    `__fastcall` on compilers that support it. Otherwise, this will evaluate
+    to nothing on non-Intel platforms.
 
     For non Intel platforms, this resolves into a blank \#define.
 
@@ -2648,7 +2156,7 @@ line of processors.
 
 /*! ************************************
 
-    \def BURGER_COMPILE_TIME_ASSERT(x)
+    \def BURGER_STATIC_ASSERT(x)
     \brief Test a compile time condition and if it's false, force a compiler
         error
 
@@ -2665,17 +2173,17 @@ line of processors.
 
     \code
     // Will succeed
-    BURGER_COMPILE_TIME_ASSERT(sizeof(Word32)==sizeof(Int32));
+    BURGER_STATIC_ASSERT(sizeof(Word32)==sizeof(Int32));
     // Will fail
-    BURGER_COMPILE_TIME_ASSERT(sizeof(char)==sizeof(int));
+    BURGER_STATIC_ASSERT(sizeof(char)==sizeof(int));
     // Will fail if sizeof(eType) != sizeof(int)
     enum eType {
         TEST
     };
-    BURGER_COMPILE_TIME_ASSERT(sizeof(eType)==sizeof(int));
+    BURGER_STATIC_ASSERT(sizeof(eType)==sizeof(int));
 
     // Use BURGER_ASSERT(x) instead, since this example is resolved at runtime
-    BURGER_COMPILE_TIME_ASSERT(Burger::StringLength("EpicFail")==8);
+    BURGER_STATIC_ASSERT(Burger::StringLength("EpicFail")==8);
     \endcode
 
 ***************************************/
@@ -2735,7 +2243,20 @@ line of processors.
     On compilers that support nullptr, this macro does not exist. To support
     this feature on older compilers, this macro exists to simulate the feature
 
-    \sa BURGER_CPP11, override or constexpr
+    \sa BURGER_CPP11, BURGER_OVERRIDE or BURGER_CONSTEXPR
+
+***************************************/
+
+/*! ************************************
+
+    \def __underlying_type
+    \brief Defined if __underlying_type is not available.
+
+    If the feature __underlying_type isn't supported by the compiler, this
+    macro will be defined to `int` to allow code to compile on older
+    compilers.
+
+    \sa BURGER_CPP11, nullptr or BURGER_CONSTEXPR
 
 ***************************************/
 
@@ -2761,6 +2282,18 @@ line of processors.
 
     Microsoft Visual C can set this to sealed, or for GNU compilers it is
     set to __final.
+
+    \sa BURGER_CPP11, nullptr, BURGER_OVERRIDE or BURGER_CONSTEXPR
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_RVALUE_REFERENCES
+    \brief Defined if move semantics are available.
+
+    On compilers that support move constructors, this define
+    will exist.
 
     \sa BURGER_CPP11, nullptr, BURGER_OVERRIDE or BURGER_CONSTEXPR
 
@@ -2838,11 +2371,11 @@ line of processors.
 
 /*! ************************************
 
-    \def BURGER_OPENGL_SUPPORTED
+    \def BURGER_OPENGL
     \brief Define for the presence of OpenGL
 
     If this define exists, then OpenGL is supported.
-    \sa BURGER_OPENGLES
+    \sa BURGER_OPENGLES, or BURGER_VULKAN
 
 ***************************************/
 
@@ -2852,7 +2385,17 @@ line of processors.
     \brief Define for the presence of OpenGL ES
 
     If this define exists, then OpenGL ES is supported.
-    \sa BURGER_OPENGL_SUPPORTED
+    \sa BURGER_OPENGL, or BURGER_VULKAN
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_VULKAN
+    \brief Define for the presence of Vulkan
+
+    If this define exists, then Vulkan is supported.
+    \sa BURGER_OPENGL, or BURGER_OPENGLES
 
 ***************************************/
 
@@ -2925,7 +2468,7 @@ line of processors.
     Return the byte offset of a member variable from a class or struct.
 
     \param __type Name of the class / struct type
-    \param member Name of the member in the type to determine the offset of.
+    \param __member Name of the member in the type to determine the offset of.
 
     \code
     struct foo {
@@ -2938,6 +2481,8 @@ line of processors.
 
     \endcode
 
+    \sa BURGER_GET_BASE_PTR
+
 ***************************************/
 
 /*! ************************************
@@ -2949,7 +2494,7 @@ line of processors.
 
     \param x Pointer to the member variable that needs fixup
     \param __type Name of the class / struct type
-    \param member Name of the member in the type to determine the offset of.
+    \param __member Name of the member in the type to determine the offset of.
 
     \code
     struct foo {
@@ -2974,7 +2519,7 @@ line of processors.
 
     \endcode
 
-    \sa BURGER_CONST_GET_BASE_PTR
+    \sa BURGER_OFFSETOF, BURGER_CONST_GET_BASE_PTR
 
 ***************************************/
 
@@ -2988,7 +2533,7 @@ line of processors.
 
     \param x Const pointer to the member variable that needs fixup
     \param __type Name of the class / struct type
-    \param member Name of the member in the type to determine the offset of.
+    \param __member Name of the member in the type to determine the offset of.
 
     \code
     struct foo {
@@ -3013,7 +2558,7 @@ line of processors.
 
     \endcode
 
-    \sa BURGER_GET_BASE_PTR
+    \sa BURGER_OFFSETOF, BURGER_GET_BASE_PTR
 
 ***************************************/
 
@@ -3034,6 +2579,21 @@ line of processors.
     int ElementsInFoo = BURGER_ARRAYSIZE(Foo);
 
     \endcode
+    \sa _BurgerArraySize
+
+***************************************/
+
+/*! ************************************
+
+    \fn const char(*_BurgerArraySize(T(&)[N]))[N]
+    \brief Helper for \ref BURGER_ARRAYSIZE
+
+    Non-existent array for determining array element size.
+
+    \tparam T Data type of the elements of the array/
+    \tparam N Number of elements in the array
+
+    \sa BURGER_ARRAYSIZE
 
 ***************************************/
 
@@ -3069,7 +2629,28 @@ line of processors.
 
 /*! ************************************
 
-    \def BURGER_HASHMACRO
+    \def BURGER_MACRO_TO_STRING
+    \brief Convert a macro into a string literal.
+
+    Using deep magic in the form of \ref BURGER_MACRO_TO_STRING2,
+    convert the macro into an 8 bit quoted string literal.
+
+    \param x Name of the macro to turn into a string
+
+    \code
+    #define foo 4
+    printf(BURGER_MACRO_TO_STRING2(foo));
+
+    // Prints "4" (Without the quotes)
+
+    \endcode
+    \sa BURGER_MACRO_TO_STRING2
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_MACRO_TO_STRING2
     \brief Convert the parameter into a string literal.
 
     Using the # token, convert the macro parameter into an 8 bit quoted string
@@ -3079,7 +2660,7 @@ line of processors.
 
     \code
     int foo = 4;
-    printf(BURGER_HASHMACRO(foo));
+    printf(BURGER_MACRO_TO_STRING2(foo));
 
     // Prints "foo" (Without the quotes)
 
@@ -3091,22 +2672,70 @@ line of processors.
 
 /*! ************************************
 
-    \def BURGER_MACRO_TO_STRING
-    \brief Convert a macro into a string literal.
+    \def BURGER_JOIN
+    \brief Concatenates two strings, even if they are macros.
 
-    Using deep magic in the form of \ref BURGER_HASHMACRO,
-    convert the macro into an 8 bit quoted string literal.
+    Using deep magic in the form of \ref BURGER_JOIN2 and \ref BURGER_JOIN3,
+    join the two macros into one.
 
-    \param x Name of the macro to turn into a string
+    \param x The first macro to join.
+    \param y The second macro to join.
 
-    \code
-    #define foo 4
-    printf(BURGER_HASHMACRO(foo));
+    \sa BURGER_JOIN2 or BURGER_JOIN3
 
-    // Prints "4" (Without the quotes)
+***************************************/
 
-    \endcode
-    \sa BURGER_HASHMACRO
+/*! ************************************
+
+    \def BURGER_JOIN2
+    \brief Invokes \ref BURGER_JOIN3
+
+    Invoke \ref BURGER_JOIN3 to join macros with ##.
+
+    \param x The first macro to join.
+    \param y The second macro to join.
+
+    \sa BURGER_JOIN or BURGER_JOIN3
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_JOIN3
+    \brief Combine two macros with ##.
+
+    Use ## to join two macros.
+
+    \param x The first macro to join.
+    \param y The second macro to join.
+
+    \sa BURGER_JOIN or BURGER_JOIN2
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_LEFT_PARENTHESIS
+    \brief The character (
+
+    If a macro contains a parenthesis, it will be treated as an enclosure for a
+    parameter list. Use this macro inside another macro to output a left
+    parenthesis without actually invoking parameters.
+
+    \sa BURGER_RIGHT_PARENTHESIS
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_RIGHT_PARENTHESIS
+    \brief The character )
+
+    If a macro contains a parenthesis, it will be treated as an enclosure for a
+    parameter list. UUse this macro inside another macro to output a right
+    parenthesis without actually invoking parameters.
+
+    \sa BURGER_LEFT_PARENTHESIS
 
 ***************************************/
 
@@ -3400,25 +3029,22 @@ line of processors.
 /*! ************************************
 
     \def BURGER_LONGLONG
-    \brief 64 bit type specific to the current compiler.
+    \brief Signed 64 bit integer type specific to the current compiler.
 
-    Define that has the compiler keyword that defines a 64 bit integer data
-    type.
+    Define that has the compiler keyword that defines a 64 bit signed integer.
 
-    \sa Int64 and Word64
+    \sa BURGER_ULONGLONG
 
 ***************************************/
 
 /*! ************************************
 
-    \def BURGER_LONGIS64BIT
-    \brief Integer type "long" is 64 bits wide.
+    \def BURGER_ULONGLONG
+    \brief Unsigned 64 bit integer type specific to the current compiler.
 
-    Under normal circumstances, long is a 32 bit wide integer but on some
-    compilers, this is a 64 bit integer. This define is present on platforms
-    where the compiler is treating a "long" as a 64 bit integer
+    Define that has the compiler keyword that defines a 64 bit unsigned integer.
 
-    \sa BURGER_PS2
+    \sa BURGER_LONGLONG
 
 ***************************************/
 
@@ -3431,6 +3057,48 @@ line of processors.
     otherwise, it's a typedef cast from an unsigned short, which may cause
     collisions for classes that want to treat wchar_t and Word16 as unique data
     types.
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_INT_NOT_IN_STDINT
+    \brief Is `int` used in stdint.h
+
+    If this define is present, `int` isn't used in the int32_t family of data
+    types, so if a series of functions wish to allow a function to be
+    automatically called using `int` as a parameter, a function specifically
+    using `int` as an input must be declared.
+
+    \sa BURGER_LONG_NOT_IN_STDINT
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_LONG_NOT_IN_STDINT
+    \brief Is `long` used in stdint.h
+
+    If this define is present, `long` isn't used in the int32_t family of
+    data types, so if a series of functions wish to allow a function to be
+    automatically called using `long` as a parameter, a function specifically
+    using `long` as an input must be declared.
+
+    \sa BURGER_INT_NOT_IN_STDINT
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_HAS_64_BIT_SUPPORT
+    \brief Computer supports 64 bit integers.
+
+    Most compilers support 64 bit integers, but older compilers only support 32
+    bit integers. To allow limited 64 bit integer support, this define exists
+    and `Burger::longlong_t` and `Burger::ulonglong_t` are used to preform 64 bit
+    integer math.
+
+    \sa Burger::longlong_t, or Burger::ulonglong_t
 
 ***************************************/
 
@@ -3690,6 +3358,54 @@ line of processors.
 
 /*! ************************************
 
+    \typedef int2int_t
+    \brief `int` to int??_t.
+
+    Data type to convert native `int` to the `int32_t`, `int16_t`
+    or other compatible type that reflects the proper size.
+
+    \sa uint2uint_t
+
+***************************************/
+
+/*! ************************************
+
+    \typedef uint2uint_t
+    \brief `unsigned int` to uint??_t.
+
+    Data type to convert native `unsigned int` to the `uint32_t`,
+    `uint16_t` or other compatible type that reflects the proper size.
+
+    \sa int2int_t
+
+***************************************/
+
+/*! ************************************
+
+    \typedef long2int_t
+    \brief `long` to int??_t.
+
+    Data type to convert native `long` to the `int32_t`, `int64_t`
+    or other compatible type that reflects the proper size.
+
+    \sa ulong2uint_t
+
+***************************************/
+
+/*! ************************************
+
+    \typedef ulong2uint_t
+    \brief `unsigned long` to uint??_t.
+
+    Data type to convert native `unsigned long` to the `uint32_t`,
+    `uint64_t` or other compatible type that reflects the proper size.
+
+    \sa long2int_t
+
+***************************************/
+
+/*! ************************************
+
     \fn void Burger::SwapVariables(T *pA,T *pB)
     \brief Swap two variables of the same kind
 
@@ -3700,19 +3416,6 @@ line of processors.
 
     \param pA Pointer to the first variable to swap.
     \param pB Pointer to the second variable to swap.
-
-***************************************/
-
-/*! ************************************
-
-    \enum Burger::eError
-    \brief Global error codes
-
-    Maps to Burger::eErrorType
-
-    When a Burgerlib function fails, it will return one of these error codes. If
-    the code returned by the operating system can't be mapped to these codes, it
-    will be returned unmodified instead.
 
 ***************************************/
 

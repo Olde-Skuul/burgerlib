@@ -1,13 +1,14 @@
 /***************************************
 
-	File Manager ANSI helper functions
+    File Manager ANSI helper functions
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -15,9 +16,9 @@
 
 #include "brfileansihelpers.h"
 #include "brendian.h"
-#include "brstringfunctions.h"
-#include "brglobalmemorymanager.h"
 #include "brfloatingpoint.h"
+#include "brglobalmemorymanager.h"
+#include "brstringfunctions.h"
 #include <errno.h>
 
 //
@@ -25,8 +26,8 @@
 //
 
 #if defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_XBOX360)
-#include <io.h>
 #include <fcntl.h>
+#include <io.h>
 #if defined(BURGER_METROWERKS)
 #include <crtl.h>
 #include <windows.h>
@@ -48,7 +49,7 @@ extern "C" char __msl_system_has_new_file_apis(void) _MSL_CANT_THROW;
 
 /*! ************************************
 
-	\brief Write a big endian 16-bit integer to a file.
+    \brief Write a big endian 16-bit integer to a file.
 
 	Given an ANSI FILE *, write a 16-bit integer in big endian format
 	into the file stream.
