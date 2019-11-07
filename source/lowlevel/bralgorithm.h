@@ -161,25 +161,25 @@ BURGER_INLINE double Max(double dA, double dB)
     defined(BURGER_PS4) || \
     ((defined(BURGER_MACOSX) || defined(BURGER_IOS)) && defined(BURGER_INTEL))
 template<>
-BURGER_INLINE float Min(float fA, float fB)
+BURGER_INLINE float Min(float fA, float fB) BURGER_NOEXCEPT
 {
     return _mm_cvtss_f32(_mm_min_ss(_mm_set_ss(fA), _mm_set_ss(fB)));
 }
 
 template<>
-BURGER_INLINE double Min(double dA, double dB)
+BURGER_INLINE double Min(double dA, double dB) BURGER_NOEXCEPT
 {
     return _mm_cvtsd_f64(_mm_min_sd(_mm_set_sd(dA), _mm_set_sd(dB)));
 }
 
 template<>
-BURGER_INLINE float Max(float fA, float fB)
+BURGER_INLINE float Max(float fA, float fB) BURGER_NOEXCEPT
 {
     return _mm_cvtss_f32(_mm_max_ss(_mm_set_ss(fA), _mm_set_ss(fB)));
 }
 
 template<>
-BURGER_INLINE double Max(double dA, double dB)
+BURGER_INLINE double Max(double dA, double dB) BURGER_NOEXCEPT
 {
     return _mm_cvtsd_f64(_mm_max_sd(_mm_set_sd(dA), _mm_set_sd(dB)));
 }

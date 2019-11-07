@@ -81,6 +81,7 @@
 
 // clang-format off
 #include "brerror.h"
+#include "brintrinsics.h"
 #include "brwatcom.h"
 #include "brvisualstudio.h"
 #include "brintelcompiler.h"

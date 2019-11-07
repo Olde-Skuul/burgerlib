@@ -5,8 +5,8 @@
 		<tab type="mainpage" visible="yes" title="Home"/>
 		<tab type="pages" visible="yes" title="" intro=""/>
 		<tab type="modules" visible="yes" title="" intro=""/>
-		<tab type="user" url="@ref pagedefines" title="Defines"/>
-		<tab type="user" url="@ref pagetypes" title="Typedefs"/>
+		<tab type="user" url="@ref page_defines" title="Defines"/>
+		<tab type="user" url="@ref page_platform_types" title="Typedefs"/>
 		<tab type="namespaces" visible="yes" title="">
 			<tab type="namespacelist" visible="yes" title="" intro=""/>
 			<tab type="namespacemembers" visible="yes" title="" intro=""/>

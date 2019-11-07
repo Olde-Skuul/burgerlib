@@ -1,143 +1,141 @@
 /***************************************
 
-	Unit tests for the Endian manager
+    Unit tests for the Endian manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "testbrendian.h"
 #include "brendian.h"
+#include "brmemoryfunctions.h"
 #include "common.h"
 
 #if defined(BURGER_XBOX360) && defined(NDEBUG)
 //#define XBOXBUG
 #endif
 
-//
-// Some code needed to print a 64-bit integer has
-// to index the 64-bit value as two 32-bit values.
-// Since endian matters for the indexing, these defines
-// will ensure the right 32-bit value is printed in order.
-//
-
-#if defined(BURGER_LITTLEENDIAN)
-#define WORD64LOW 0
-#define WORD64HIGH 1
-#else
-#define WORD64LOW 1
-#define WORD64HIGH 0
-#endif
-
-// These are unions to be able to access 
-// shorts, longs and long longs in a byte 
+// These are unions to be able to access
+// shorts, longs and long longs in a byte
 // manner so I can do endian checking
 
 union Union16_t {
-	Word8 m_bData[2];
-	Int16 m_Int16;
-	Word16 m_Word16;
+    uint8_t m_bData[2];
+    int16_t m_Int16;
+    uint16_t m_Word16;
 };
 
 union Union32_t {
-	Word8 m_bData[4];
-	Int32 m_Int32;
-	Word32 m_Word32;
-	float m_Float;
+    uint8_t m_bData[4];
+    int32_t m_Int32;
+    uint32_t m_Word32;
+    float m_Float;
 };
 
 union Union64_t {
-	Word8 m_bData[8];
-	Word32 m_Word32[2];
-	Int64 m_Int64;
-	Word64 m_Word64;
-	double m_Double;
+    uint8_t m_bData[8];
+    uint32_t m_Word32[2];
+    int64_t m_Int64;
+    uint64_t m_Word64;
+    double m_Double;
 };
 
 // These are hard coded values in a known endian
 
-const Int16 NEi16 = 0x1234;
-const Word16 NEu16 = 0x1234;
-const Int32 NEi32 = 0x12345678;
-const Word32 NEu32 = 0x12345678;
-const Int64 NEi64 = 0x123456789ABCDEF0LL;
-const Word64 NEu64 = 0x123456789ABCDEF0LL;
-const float NEf32 = float(0x923456)/(65536.0f*256.0f);
-const double NEf64 = (double(0x789ABCD)/(65536.0*65536.0*65536.0*16.0))+(double(0x1123456)/(65536.0*256.0));
+const int16_t NEi16 = 0x1234;
+const uint16_t NEu16 = 0x1234;
+const int32_t NEi32 = 0x12345678;
+const uint32_t NEu32 = 0x12345678;
+const int64_t NEi64 = 0x123456789ABCDEF0LL;
+const uint64_t NEu64 = 0x123456789ABCDEF0LL;
+const float NEf32 = float(0x923456) / (65536.0f * 256.0f);
+const double NEf64 =
+    (double(0x789ABCD) / (65536.0 * 65536.0 * 65536.0 * 16.0)) +
+    (double(0x1123456) / (65536.0 * 256.0));
 
-const Int16 REi16 = 0x3412;
-const Word16 REu16 = 0x3412;
-const Int32 REi32 = 0x78563412;
-const Word32 REu32 = 0x78563412;
-const Int64 REi64 = 0xF0DEBC9A78563412LL;
-const Word64 REu64 = 0xF0DEBC9A78563412ULL;
-const float REf32 = float(0xB4123F)*(65536.0f*64.0f);
-const double REf64 = -((double(0x23F13F)*(65536.0*65536.0*65536.0*65536.0*65536.0*65536.0*65536.0*65536.0*65536.0*65536.0*128.0))+ 
-						(double(0x1B896745)*(65536.0*65536.0*65536.0*65536.0*65536.0*65536.0*65536.0*65536.0*65536.0*65536.0*65536.0*32768.0))
-						);
+const int16_t REi16 = 0x3412;
+const uint16_t REu16 = 0x3412;
+const int32_t REi32 = 0x78563412;
+const uint32_t REu32 = 0x78563412;
+const int64_t REi64 = 0xF0DEBC9A78563412LL;
+const uint64_t REu64 = 0xF0DEBC9A78563412ULL;
+const float REf32 = float(0xB4123F) * (65536.0f * 64.0f);
+const double REf64 =
+    -((double(0x23F13F) *
+          (65536.0 * 65536.0 * 65536.0 * 65536.0 * 65536.0 * 65536.0 * 65536.0 *
+              65536.0 * 65536.0 * 65536.0 * 128.0)) +
+        (double(0x1B896745) *
+            (65536.0 * 65536.0 * 65536.0 * 65536.0 * 65536.0 * 65536.0 *
+                65536.0 * 65536.0 * 65536.0 * 65536.0 * 65536.0 * 32768.0)));
 
-static const Union16_t g_BE16_1234 = {{0x12,0x34}};
-static const Union32_t g_BE32_1234 = {{0x12,0x34,0x56,0x78}};
-static const Union64_t g_BE64_1234 = {{0x12,0x34,0x56,0x78,0x9A,0xBC,0xDE,0xF0}};
-static const Union32_t g_BEF32_1234 = {{0x3F,0x12,0x34,0x56}};
-static const Union64_t g_BEF64_1234 = {{0x3F,0xF1,0x23,0x45,0x67,0x89,0xAB,0xCD}};
-static const Union16_t g_LE16_1234 = {{0x34,0x12}};
-static const Union32_t g_LE32_1234 = {{0x78,0x56,0x34,0x12}};
-static const Union64_t g_LE64_1234 = {{0xF0,0xDE,0xBC,0x9A,0x78,0x56,0x34,0x12}};
-static const Union32_t g_LEF32_1234 = {{0x56,0x34,0x12,0x3f}};
-static const Union64_t g_LEF64_1234 = {{0xCD,0xAB,0x89,0x67,0x45,0x23,0xF1,0x3F}};
+static const Union16_t g_BE16_1234 = {{0x12, 0x34}};
+static const Union32_t g_BE32_1234 = {{0x12, 0x34, 0x56, 0x78}};
+static const Union64_t g_BE64_1234 = {
+    {0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0xDE, 0xF0}};
+static const Union32_t g_BEF32_1234 = {{0x3F, 0x12, 0x34, 0x56}};
+static const Union64_t g_BEF64_1234 = {
+    {0x3F, 0xF1, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD}};
+static const Union16_t g_LE16_1234 = {{0x34, 0x12}};
+static const Union32_t g_LE32_1234 = {{0x78, 0x56, 0x34, 0x12}};
+static const Union64_t g_LE64_1234 = {
+    {0xF0, 0xDE, 0xBC, 0x9A, 0x78, 0x56, 0x34, 0x12}};
+static const Union32_t g_LEF32_1234 = {{0x56, 0x34, 0x12, 0x3f}};
+static const Union64_t g_LEF64_1234 = {
+    {0xCD, 0xAB, 0x89, 0x67, 0x45, 0x23, 0xF1, 0x3F}};
 
 /***************************************
 
-	Primary test!
+    Primary test!
 
-	Test the endian flags to see if the endian REALLY matches
-	what the compiler flags are set to.
+    Test the endian flags to see if the endian REALLY matches what the compiler
+    flags are set to.
 
-	This test MUST pass. Failure of this test renders
-	ALL remaining Endian Manager tests invalid.
+    This test MUST pass. Failure of this test renders ALL remaining Endian
+    Manager tests invalid.
 
 ***************************************/
 
-static Word BURGER_API TestEndianFlags(void)
+static uint_t BURGER_API TestEndianFlags(void)
 {
-	// Test for Little Endian
+    // Test for Little Endian
 #if defined(BURGER_LITTLEENDIAN)
 
-	// If both are set, die immediately, compiling is bogus!
+    // If both are set, die immediately, compiling is bogus!
 #if defined(BURGER_BIGENDIAN)
 #error Both Endian flags are present!
 
 #else
-	// Test if the machine REALLY is little endian
-	Word uResult = g_LE32_1234.m_Word32;
+    // Test if the machine REALLY is little endian
+    uint_t uResult = g_LE32_1234.m_Word32;
 #endif
 
 #elif defined(BURGER_BIGENDIAN)
-	// Test if the machine REALLY is big endian
-	Word uResult = g_BE32_1234.m_Word32;
+    // Test if the machine REALLY is big endian
+    uint_t uResult = g_BE32_1234.m_Word32;
 #else
 
-	// Neither flag was set, die immediately, compiling is bogus!
+    // Neither flag was set, die immediately, compiling is bogus!
 #error Endian flags are incorrect!
 #endif
 
-	// Load a binary representation of a value in
-	// what should be native endian and test it against to
-	// what the machine really has
-	Word uFailure = (uResult!=0x12345678);
-	ReportFailure("BURGER_ENDIAN = 0x%08X / Wanted (0x12345678)",uFailure,uResult);
-	return uFailure;
+    // Load a binary representation of a value in
+    // what should be native endian and test it against to
+    // what the machine really has
+    uint_t uFailure = (uResult != 0x12345678);
+    ReportFailure(
+        "BURGER_ENDIAN = 0x%08X / Wanted (0x12345678)", uFailure, uResult);
+    return uFailure;
 }
 
 /***************************************
 
-	Tests for the SwapEndian class.
+    Tests for the SwapEndian class.
 
 ***************************************/
 
@@ -145,28 +143,34 @@ static Word BURGER_API TestEndianFlags(void)
 // Test SwapEndian::Load()
 //
 
-static Word BURGER_API TestBurgerSwapEndianLoadWord16(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadWord16(void)
 {
-	Word16 uResult = Burger::SwapEndian::Load(NEu16);
-	Word uFailure = (uResult!=REu16);
-	ReportFailure("Burger::SwapEndian::Load(Word16) = 0x%04X / Wanted (0x%04X)",uFailure,uResult,REu16);
-	return uFailure;
+    uint16_t uResult = Burger::SwapEndian::Load(NEu16);
+    uint_t uFailure = (uResult != REu16);
+    ReportFailure(
+        "Burger::SwapEndian::Load(uint16_t) = 0x%04X / Wanted (0x%04X)",
+        uFailure, uResult, REu16);
+    return uFailure;
 }
 
-static Word BURGER_API TestBurgerSwapEndianLoadInt16(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadInt16(void)
 {
-	Int16 iResult = Burger::SwapEndian::Load(NEi16);
-	Word uFailure = (iResult!=REi16);
-	ReportFailure("Burger::SwapEndian::Load(Int16) = 0x%04X / Wanted (0x%04X)",uFailure,iResult,REi16);
-	return uFailure;
+    int16_t iResult = Burger::SwapEndian::Load(NEi16);
+    uint_t uFailure = (iResult != REi16);
+    ReportFailure(
+        "Burger::SwapEndian::Load(int16_t) = 0x%04X / Wanted (0x%04X)",
+        uFailure, iResult, REi16);
+    return uFailure;
 }
 
-static Word BURGER_API TestBurgerSwapEndianLoadWord32(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadWord32(void)
 {
-	Word32 uResult = Burger::SwapEndian::Load(NEu32);
-	Word uFailure = (uResult!=REu32);
-	ReportFailure("Burger::SwapEndian::Load(Word32) = 0x%08X / Wanted (0x%08X)",uFailure,uResult,REu32);
-	return uFailure;
+    uint32_t uResult = Burger::SwapEndian::Load(NEu32);
+    uint_t uFailure = (uResult != REu32);
+    ReportFailure(
+        "Burger::SwapEndian::Load(uint32_t) = 0x%08X / Wanted (0x%08X)",
+        uFailure, uResult, REu32);
+    return uFailure;
 }
 
 static Word BURGER_API TestBurgerSwapEndianLoadInt32(void)
@@ -1126,32 +1130,40 @@ static Word BURGER_API TestBurgerNativeEndianLoadAnyInt16Ptr(void)
 	return uFailureTotal;
 }
 
-static Word BURGER_API TestBurgerNativeEndianLoadAnyWord32Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupAnyWord32Ptr(void)
 {
-	Word8 Buffer[16];
-	Word i=8;
-	Word8 *pWork = Buffer;
-	Word uFailureTotal = FALSE;
-	do {
-		// Init the source buffer
-		BlastBuffer(Buffer,sizeof(Buffer));
-		// Copy the value to read (Keep endian native)
+    uint8_t Buffer[16];
+    uint_t i = 8;
+    uint8_t* pWork = Buffer;
+    uint_t uFailureTotal = FALSE;
+    do {
+        // Init the source buffer
+        BlastBuffer(Buffer, sizeof(Buffer));
+        // Copy the value to read (Keep endian native)
 #if defined(XBOXBUG)
-		memcpy(pWork,&NEu32,4);
+        memcpy(pWork, &NEu32, 4);
 #else
-		pWork[0] = reinterpret_cast<const Word8 *>(&NEu32)[0];
-		pWork[1] = reinterpret_cast<const Word8 *>(&NEu32)[1];
-		pWork[2] = reinterpret_cast<const Word8 *>(&NEu32)[2];
-		pWork[3] = reinterpret_cast<const Word8 *>(&NEu32)[3];
+        pWork[0] = reinterpret_cast<const uint8_t*>(&NEu32)[0];
+        pWork[1] = reinterpret_cast<const uint8_t*>(&NEu32)[1];
+        pWork[2] = reinterpret_cast<const uint8_t*>(&NEu32)[2];
+        pWork[3] = reinterpret_cast<const uint8_t*>(&NEu32)[3];
 #endif
-		// Load the value
-		Word32 uResult = Burger::NativeEndian::LoadAny(reinterpret_cast<const Word32 *>(pWork));
-		Word uFailure = (uResult!=NEu32);
-		uFailureTotal|=uFailure;
-		ReportFailure("Burger::NativeEndian::LoadAny(const Word32 *%p) = 0x%08X / Wanted (0x%08X)",uFailure,pWork,uResult,NEu32);
-		++pWork;
-	} while (--i);
-	return uFailureTotal;
+        Burger::SwapEndian::FixupAny(reinterpret_cast<uint32_t*>(pWork));
+        uint_t uFailure = VerifyBuffer(Buffer, sizeof(Buffer), pWork, 4);
+        // Load the value
+        uint32_t uResult;
+        reinterpret_cast<uint8_t*>(&uResult)[0] = pWork[0];
+        reinterpret_cast<uint8_t*>(&uResult)[1] = pWork[1];
+        reinterpret_cast<uint8_t*>(&uResult)[2] = pWork[2];
+        reinterpret_cast<uint8_t*>(&uResult)[3] = pWork[3];
+        uFailure |= (uResult != REu32);
+        uFailureTotal |= uFailure;
+        ReportFailure(
+            "Burger::SwapEndian::FixupAny(uint32_t *%p) = 0x%08X / Wanted (0x%08X)",
+            uFailure, pWork, uResult, REu32);
+        ++pWork;
+    } while (--i);
+    return uFailureTotal;
 }
 
 static Word BURGER_API TestBurgerNativeEndianLoadAnyInt32Ptr(void)
@@ -2349,195 +2361,238 @@ static Word BURGER_API TestBurgerBigEndianFixupAnyInt64Ptr(void)
 
 static Word BURGER_API TestBurgerBigEndianFixupAnyFloatPtr(void)
 {
-	Word8 Buffer[16];
-	Word i=8;
-	Word8 *pWork = Buffer;
-	Word uFailureTotal = FALSE;
-	do {
-		// Init the source buffer
-		BlastBuffer(Buffer,sizeof(Buffer));
-		// Copy the value to read (Keep endian native)
-		pWork[0] = reinterpret_cast<const Word8 *>(&g_BEF32_1234.m_Float)[0];
-		pWork[1] = reinterpret_cast<const Word8 *>(&g_BEF32_1234.m_Float)[1];
-		pWork[2] = reinterpret_cast<const Word8 *>(&g_BEF32_1234.m_Float)[2];
-		pWork[3] = reinterpret_cast<const Word8 *>(&g_BEF32_1234.m_Float)[3];
-		Burger::BigEndian::FixupAny(reinterpret_cast<float *>(pWork));
-		Word uFailure = VerifyBuffer(Buffer,sizeof(Buffer),pWork,4);
-		// Load the value
-		float fResult;
-		reinterpret_cast<Word8 *>(&fResult)[0] = pWork[0];
-		reinterpret_cast<Word8 *>(&fResult)[1] = pWork[1];
-		reinterpret_cast<Word8 *>(&fResult)[2] = pWork[2];
-		reinterpret_cast<Word8 *>(&fResult)[3] = pWork[3];
-		uFailure |= (fResult!=NEf32);
-		uFailureTotal|=uFailure;
-		ReportFailure("Burger::BigEndian::FixupAny(float *%p) = %g / Wanted (%g)",uFailure,pWork,fResult,NEf32);
-		++pWork;
-	} while (--i);
-	return uFailureTotal;
+    uint8_t Buffer[16];
+    uint_t i = 8;
+    uint8_t* pWork = Buffer;
+    uint_t uFailureTotal = FALSE;
+    do {
+        // Init the source buffer
+        BlastBuffer(Buffer, sizeof(Buffer));
+        // Copy the value to read (Keep endian native)
+#if defined(XBOXBUG)
+        memcpy(pWork, &NEf32, 4);
+#else
+        pWork[0] = reinterpret_cast<const uint8_t*>(&NEf32)[0];
+        pWork[1] = reinterpret_cast<const uint8_t*>(&NEf32)[1];
+        pWork[2] = reinterpret_cast<const uint8_t*>(&NEf32)[2];
+        pWork[3] = reinterpret_cast<const uint8_t*>(&NEf32)[3];
+#endif
+        Burger::NativeEndian::FixupAny(reinterpret_cast<float*>(pWork));
+        uint_t uFailure = VerifyBuffer(Buffer, sizeof(Buffer), pWork, 4);
+        // Load the value
+        float fResult;
+        reinterpret_cast<uint8_t*>(&fResult)[0] = pWork[0];
+        reinterpret_cast<uint8_t*>(&fResult)[1] = pWork[1];
+        reinterpret_cast<uint8_t*>(&fResult)[2] = pWork[2];
+        reinterpret_cast<uint8_t*>(&fResult)[3] = pWork[3];
+        uFailure |= (fResult != NEf32);
+        uFailureTotal |= uFailure;
+        ReportFailure(
+            "Burger::NativeEndian::FixupAny(float *%p) = %g / Wanted (%g)",
+            uFailure, pWork, fResult, NEf32);
+        ++pWork;
+    } while (--i);
+    return uFailureTotal;
 }
 
-static Word BURGER_API TestBurgerBigEndianFixupAnyDoublePtr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupAnyDoublePtr(void)
 {
-	Word8 Buffer[32];
-	Word i=16;
-	Word8 *pWork = Buffer;
-	Word uFailureTotal = FALSE;
-	do {
-		// Init the source buffer
-		BlastBuffer(Buffer,sizeof(Buffer));
-		// Copy the value to read (Keep endian native)
-		pWork[0] = reinterpret_cast<const Word8 *>(&g_BEF64_1234.m_Double)[0];
-		pWork[1] = reinterpret_cast<const Word8 *>(&g_BEF64_1234.m_Double)[1];
-		pWork[2] = reinterpret_cast<const Word8 *>(&g_BEF64_1234.m_Double)[2];
-		pWork[3] = reinterpret_cast<const Word8 *>(&g_BEF64_1234.m_Double)[3];
-		pWork[4] = reinterpret_cast<const Word8 *>(&g_BEF64_1234.m_Double)[4];
-		pWork[5] = reinterpret_cast<const Word8 *>(&g_BEF64_1234.m_Double)[5];
-		pWork[6] = reinterpret_cast<const Word8 *>(&g_BEF64_1234.m_Double)[6];
-		pWork[7] = reinterpret_cast<const Word8 *>(&g_BEF64_1234.m_Double)[7];
-		Burger::BigEndian::FixupAny(reinterpret_cast<double *>(pWork));
-		Word uFailure = VerifyBuffer(Buffer,sizeof(Buffer),pWork,8);
-		// Load the value
-		double dResult;
-		reinterpret_cast<Word8 *>(&dResult)[0] = pWork[0];
-		reinterpret_cast<Word8 *>(&dResult)[1] = pWork[1];
-		reinterpret_cast<Word8 *>(&dResult)[2] = pWork[2];
-		reinterpret_cast<Word8 *>(&dResult)[3] = pWork[3];
-		reinterpret_cast<Word8 *>(&dResult)[4] = pWork[4];
-		reinterpret_cast<Word8 *>(&dResult)[5] = pWork[5];
-		reinterpret_cast<Word8 *>(&dResult)[6] = pWork[6];
-		reinterpret_cast<Word8 *>(&dResult)[7] = pWork[7];
-		uFailure |= (dResult!=NEf64);
-		ReportFailure("Burger::BigEndian::FixupAny(double *%p) = %g / Wanted (%g)",uFailure,pWork,dResult,NEf64);
-		++pWork;
-	} while (--i);
-	return uFailureTotal;
+    uint8_t Buffer[32];
+    uint_t i = 16;
+    uint8_t* pWork = Buffer;
+    uint_t uFailureTotal = FALSE;
+    do {
+        // Init the source buffer
+        BlastBuffer(Buffer, sizeof(Buffer));
+        // Copy the value to read (Keep endian native)
+#if defined(XBOXBUG)
+        memcpy(pWork, &NEf64, 8);
+#else
+        pWork[0] = reinterpret_cast<const uint8_t*>(&NEf64)[0];
+        pWork[1] = reinterpret_cast<const uint8_t*>(&NEf64)[1];
+        pWork[2] = reinterpret_cast<const uint8_t*>(&NEf64)[2];
+        pWork[3] = reinterpret_cast<const uint8_t*>(&NEf64)[3];
+        pWork[4] = reinterpret_cast<const uint8_t*>(&NEf64)[4];
+        pWork[5] = reinterpret_cast<const uint8_t*>(&NEf64)[5];
+        pWork[6] = reinterpret_cast<const uint8_t*>(&NEf64)[6];
+        pWork[7] = reinterpret_cast<const uint8_t*>(&NEf64)[7];
+#endif
+        Burger::NativeEndian::FixupAny(reinterpret_cast<double*>(pWork));
+        uint_t uFailure = VerifyBuffer(Buffer, sizeof(Buffer), pWork, 8);
+        // Load the value
+        double dResult;
+        reinterpret_cast<uint8_t*>(&dResult)[0] = pWork[0];
+        reinterpret_cast<uint8_t*>(&dResult)[1] = pWork[1];
+        reinterpret_cast<uint8_t*>(&dResult)[2] = pWork[2];
+        reinterpret_cast<uint8_t*>(&dResult)[3] = pWork[3];
+        reinterpret_cast<uint8_t*>(&dResult)[4] = pWork[4];
+        reinterpret_cast<uint8_t*>(&dResult)[5] = pWork[5];
+        reinterpret_cast<uint8_t*>(&dResult)[6] = pWork[6];
+        reinterpret_cast<uint8_t*>(&dResult)[7] = pWork[7];
+        uFailure |= (dResult != NEf64);
+        ReportFailure(
+            "Burger::NativeEndian::FixupAny(double *%p) = %g / Wanted (%g)",
+            uFailure, pWork, dResult, NEf64);
+        ++pWork;
+    } while (--i);
+    return uFailureTotal;
 }
 
 /***************************************
 
-	Tests for the LittleEndian class.
+    Tests for the BigEndian class.
 
 ***************************************/
 
 //
-// Test LittleEndian::Load()
+// Test BigEndian::Load()
 //
 
-static Word BURGER_API TestBurgerLittleEndianLoadWord16(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadWord16(void)
 {
-	Word16 uResult = Burger::LittleEndian::Load(g_LE16_1234.m_Word16);
-	Word uFailure = (uResult!=NEu16);
-	ReportFailure("Burger::LittleEndian::Load(Word16) = 0x%04X / Wanted (0x%04X)",uFailure,uResult,NEu16);
-	return uFailure;
+    uint16_t uResult = Burger::BigEndian::Load(g_BE16_1234.m_Word16);
+    uint_t uFailure = (uResult != NEu16);
+    ReportFailure(
+        "Burger::BigEndian::Load(uint16_t) = 0x%04X / Wanted (0x%04X)",
+        uFailure, uResult, NEu16);
+    return uFailure;
 }
 
-static Word BURGER_API TestBurgerLittleEndianLoadInt16(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadInt16(void)
 {
-	Int16 iResult = Burger::LittleEndian::Load(g_LE16_1234.m_Int16);
-	Word uFailure = (iResult!=NEi16);
-	ReportFailure("Burger::LittleEndian::Load(Int16) = 0x%04X / Wanted (0x%04X)",uFailure,iResult,NEi16);
-	return uFailure;
+    int16_t iResult = Burger::BigEndian::Load(g_BE16_1234.m_Int16);
+    uint_t uFailure = (iResult != NEi16);
+    ReportFailure("Burger::BigEndian::Load(int16_t) = 0x%04X / Wanted (0x%04X)",
+        uFailure, iResult, NEi16);
+    return uFailure;
 }
 
-static Word BURGER_API TestBurgerLittleEndianLoadWord32(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadWord32(void)
 {
-	Word32 uResult = Burger::LittleEndian::Load(g_LE32_1234.m_Word32);
-	Word uFailure = (uResult!=NEu32);
-	ReportFailure("Burger::LittleEndian::Load(Word32) = 0x%08X / Wanted (0x%08X)",uFailure,uResult,NEu32);
-	return uFailure;
+    uint32_t uResult = Burger::BigEndian::Load(g_BE32_1234.m_Word32);
+    uint_t uFailure = (uResult != NEu32);
+    ReportFailure(
+        "Burger::BigEndian::Load(uint32_t) = 0x%08X / Wanted (0x%08X)",
+        uFailure, uResult, NEu32);
+    return uFailure;
 }
 
-static Word BURGER_API TestBurgerLittleEndianLoadInt32(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadInt32(void)
 {
-	Int32 iResult = Burger::LittleEndian::Load(g_LE32_1234.m_Int32);
-	Word uFailure = (iResult!=NEi32);
-	ReportFailure("Burger::LittleEndian::Load(Int32) = 0x%08X / Wanted (0x%08X)",uFailure,iResult,NEi32);
-	return uFailure;
+    int32_t iResult = Burger::BigEndian::Load(g_BE32_1234.m_Int32);
+    uint_t uFailure = (iResult != NEi32);
+    ReportFailure("Burger::BigEndian::Load(int32_t) = 0x%08X / Wanted (0x%08X)",
+        uFailure, iResult, NEi32);
+    return uFailure;
 }
 
-static Word BURGER_API TestBurgerLittleEndianLoadWord64(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadWord64(void)
 {
-	Word64 uResult = Burger::LittleEndian::Load(g_LE64_1234.m_Word64);
-	Word uFailure = (uResult!=NEu64);
-	Union64_t uMem1;
-	uMem1.m_Word64 = uResult;
-	Union64_t uMem2;
-	uMem2.m_Word64 = NEu64;
-	ReportFailure("Burger::LittleEndian::Load(Word64) = 0x%08X%08X / Wanted (0x%08X%08X)",uFailure,uMem1.m_Word32[WORD64HIGH],uMem1.m_Word32[WORD64LOW],uMem2.m_Word32[WORD64HIGH],uMem2.m_Word32[WORD64LOW]);
-	return uFailure;
+    uint64_t uResult = Burger::BigEndian::Load(g_BE64_1234.m_Word64);
+    uint_t uFailure = (uResult != NEu64);
+    Union64_t uMem1;
+    uMem1.m_Word64 = uResult;
+    Union64_t uMem2;
+    uMem2.m_Word64 = NEu64;
+    ReportFailure(
+        "Burger::BigEndian::Load(uint64_t) = 0x%08X%08X / Wanted (0x%08X%08X)",
+        uFailure, uMem1.m_Word32[BURGER_ENDIANINDEX_HIGH],
+        uMem1.m_Word32[BURGER_ENDIANINDEX_LOW],
+        uMem2.m_Word32[BURGER_ENDIANINDEX_HIGH],
+        uMem2.m_Word32[BURGER_ENDIANINDEX_LOW]);
+    return uFailure;
 }
 
-static Word BURGER_API TestBurgerLittleEndianLoadInt64(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadInt64(void)
 {
-	Int64 iResult = Burger::LittleEndian::Load(g_LE64_1234.m_Int64);
-	Word uFailure = (iResult!=NEi64);
-	Union64_t uMem1;
-	uMem1.m_Int64 = iResult;
-	Union64_t uMem2;
-	uMem2.m_Int64 = NEi64;
-	ReportFailure("Burger::LittleEndian::Load(Int64) = 0x%08X%08X / Wanted (0x%08X%08X)",uFailure,uMem1.m_Word32[WORD64HIGH],uMem1.m_Word32[WORD64LOW],uMem2.m_Word32[WORD64HIGH],uMem2.m_Word32[WORD64LOW]);
-	return uFailure;
+    int64_t iResult = Burger::BigEndian::Load(g_BE64_1234.m_Int64);
+    uint_t uFailure = (iResult != NEi64);
+    Union64_t uMem1;
+    uMem1.m_Int64 = iResult;
+    Union64_t uMem2;
+    uMem2.m_Int64 = NEi64;
+    ReportFailure(
+        "Burger::BigEndian::Load(int64_t) = 0x%08X%08X / Wanted (0x%08X%08X)",
+        uFailure, uMem1.m_Word32[BURGER_ENDIANINDEX_HIGH],
+        uMem1.m_Word32[BURGER_ENDIANINDEX_LOW],
+        uMem2.m_Word32[BURGER_ENDIANINDEX_HIGH],
+        uMem2.m_Word32[BURGER_ENDIANINDEX_LOW]);
+    return uFailure;
 }
 
-static Word BURGER_API TestBurgerLittleEndianLoadFloat(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadFloat(void)
 {
-	float fResult = Burger::LittleEndian::Load(g_LEF32_1234.m_Float);
-	Word uFailure = (fResult!=NEf32);
-	ReportFailure("Burger::LittleEndian::Load(float) = %g / Wanted (%g)",uFailure,fResult,NEf32);
-	return uFailure;
+    float fResult = Burger::BigEndian::Load(g_BEF32_1234.m_Float);
+    uint_t uFailure = (fResult != NEf32);
+    ReportFailure("Burger::BigEndian::Load(float) = %g / Wanted (%g)", uFailure,
+        fResult, NEf32);
+    return uFailure;
 }
 
-static Word BURGER_API TestBurgerLittleEndianLoadDouble(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadDouble(void)
 {
-	double fResult = Burger::LittleEndian::Load(g_LEF64_1234.m_Double);
-	Word uFailure = (fResult!=NEf64);
-	ReportFailure("Burger::LittleEndian::Load(double) = %g / Wanted (%g)",uFailure,fResult,NEf64);
-	return uFailure;
+    double fResult = Burger::BigEndian::Load(g_BEF64_1234.m_Double);
+    uint_t uFailure = (fResult != NEf64);
+    ReportFailure("Burger::BigEndian::Load(double) = %g / Wanted (%g)",
+        uFailure, fResult, NEf64);
+    return uFailure;
 }
 
-static Word BURGER_API TestBurgerLittleEndianLoadWord16Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadWord16Ptr(void)
 {
-	Word16 uResult = Burger::LittleEndian::Load(&g_LE16_1234.m_Word16);
-	Word uFailure = (uResult!=NEu16);
-	ReportFailure("Burger::LittleEndian::Load(const Word16 *) = 0x%04X / Wanted (0x%04X)",uFailure,uResult,NEu16);
-	return uFailure;
+    uint16_t uResult = Burger::BigEndian::Load(&g_BE16_1234.m_Word16);
+    uint_t uFailure = (uResult != NEu16);
+    ReportFailure(
+        "Burger::BigEndian::Load(const uint16_t *) = 0x%04X / Wanted (0x%04X)",
+        uFailure, uResult, NEu16);
+    return uFailure;
 }
 
-static Word BURGER_API TestBurgerLittleEndianLoadInt16Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadInt16Ptr(void)
 {
-	Int16 iResult = Burger::LittleEndian::Load(&g_LE16_1234.m_Int16);
-	Word uFailure = (iResult!=NEi16);
-	ReportFailure("Burger::LittleEndian::Load(const Int16 *) = 0x%04X / Wanted (0x%04X)",uFailure,iResult,NEi16);
-	return uFailure;
+    int16_t iResult = Burger::BigEndian::Load(&g_BE16_1234.m_Int16);
+    uint_t uFailure = (iResult != NEi16);
+    ReportFailure(
+        "Burger::BigEndian::Load(const int16_t *) = 0x%04X / Wanted (0x%04X)",
+        uFailure, iResult, NEi16);
+    return uFailure;
 }
 
-static Word BURGER_API TestBurgerLittleEndianLoadWord32Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadWord32Ptr(void)
 {
-	Word32 uResult = Burger::LittleEndian::Load(&g_LE32_1234.m_Word32);
-	Word uFailure = (uResult!=NEu32);
-	ReportFailure("Burger::LittleEndian::Load(const Word32 *) = 0x%08X / Wanted (0x%08X)",uFailure,uResult,NEu32);
-	return uFailure;
+    uint32_t uResult = Burger::BigEndian::Load(&g_BE32_1234.m_Word32);
+    uint_t uFailure = (uResult != NEu32);
+    ReportFailure(
+        "Burger::BigEndian::Load(const uint32_t *) = 0x%08X / Wanted (0x%08X)",
+        uFailure, uResult, NEu32);
+    return uFailure;
 }
 
-static Word BURGER_API TestBurgerLittleEndianLoadInt32Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadInt32Ptr(void)
 {
-	Int32 iResult = Burger::LittleEndian::Load(&g_LE32_1234.m_Int32);
-	Word uFailure = (iResult!=NEi32);
-	ReportFailure("Burger::LittleEndian::Load(const Int32 *) = 0x%08X / Wanted (0x%08X)",uFailure,iResult,NEi32);
-	return uFailure;
+    int32_t iResult = Burger::BigEndian::Load(&g_BE32_1234.m_Int32);
+    uint_t uFailure = (iResult != NEi32);
+    ReportFailure(
+        "Burger::BigEndian::Load(const int32_t *) = 0x%08X / Wanted (0x%08X)",
+        uFailure, iResult, NEi32);
+    return uFailure;
 }
 
-static Word BURGER_API TestBurgerLittleEndianLoadWord64Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadWord64Ptr(void)
 {
-	Word64 uResult = Burger::LittleEndian::Load(&g_LE64_1234.m_Word64);
-	Word uFailure = (uResult!=NEu64);
-	Union64_t uMem1;
-	uMem1.m_Word64 = uResult;
-	Union64_t uMem2;
-	uMem2.m_Word64 = NEu64;
-	ReportFailure("Burger::LittleEndian::Load(const Word64 *) = 0x%08X%08X / Wanted (0x%08X%08X)",uFailure,uMem1.m_Word32[WORD64HIGH],uMem1.m_Word32[WORD64LOW],uMem2.m_Word32[WORD64HIGH],uMem2.m_Word32[WORD64LOW]);
-	return uFailure;
+    uint64_t uResult = Burger::BigEndian::Load(&g_BE64_1234.m_Word64);
+    uint_t uFailure = (uResult != NEu64);
+    Union64_t uMem1;
+    uMem1.m_Word64 = uResult;
+    Union64_t uMem2;
+    uMem2.m_Word64 = NEu64;
+    ReportFailure(
+        "Burger::BigEndian::Load(const uint64_t *) = 0x%08X%08X / Wanted (0x%08X%08X)",
+        uFailure, uMem1.m_Word32[BURGER_ENDIANINDEX_HIGH],
+        uMem1.m_Word32[BURGER_ENDIANINDEX_LOW],
+        uMem2.m_Word32[BURGER_ENDIANINDEX_HIGH],
+        uMem2.m_Word32[BURGER_ENDIANINDEX_LOW]);
+    return uFailure;
 }
 
 static Word BURGER_API TestBurgerLittleEndianLoadInt64Ptr(void)

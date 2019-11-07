@@ -98,37 +98,6 @@ BURGER_INLINE double __fcfid(double dA)
 	return dD;
 }
 
-#define __stfiwx(dA,iBase,iIndex) \
-	__asm__("stfiwx %0, %1, %2" : : "f" (dA), "b%" (iIndex), "r" (iBase) : "memory")
-
-// Must be macros due to the fact that the input is also an output
-#define __rlwimi(rA,rS,cnt,mb,me) ({ __asm__("rlwimi %0,%2,%3,%4,%5":"=r" (rA) : "0"(rA), "r"(rS),"n"(cnt),"n"(mb),"n"(me)); rA; })
-#define __rlwinm(rS,cnt,mb,me) ({ int rA; __asm__("rlwinm %0,%1,%2,%3,%4":"=r" (rA) : "r"(rS),"n"(cnt),"n"(mb),"n"(me)); rA; } )
-
-BURGER_INLINE int __lhbrx(void *pInput,int offset) 
-{
-	Word16 uResult;
-	__asm__ volatile ("lhbrx %0,%1,%2":"=r"(uResult) : "b%"(offset),"r"(pInput) : "memory");
-	return uResult; 
-}
-
-BURGER_INLINE int __lwbrx(void *pInput,int offset) 
-{
-	Word32 uResult;
-	__asm__ volatile ("lwbrx %0,%1,%2":"=r"(uResult) : "b%"(offset),"r"(pInput) : "memory"); 
-	return uResult; 
-}
-
-BURGER_INLINE void __sthbrx(Word16 uValue,void *pInput,int offset)
-{
-	__asm__("sthbrx %0,%1,%2": : "r"(uValue),"b%"(offset),"r"(pInput) : "memory");
-}
-
-BURGER_INLINE void __stwbrx(Word32 uValue,void *pInput,int offset)
-{
-	__asm__("stwbrx %0,%1,%2": : "r"(uValue),"b%"(offset),"r"(pInput) : "memory");
-}
-
 BURGER_INLINE Word32 __cntlzw(Word32 uInput) 
 {
 	Word32 uResult;

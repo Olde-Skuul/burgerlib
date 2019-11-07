@@ -1,0 +1,30 @@
+// For Visual Studio 2017 or higher, Intellisense can be confused with
+// macros. This file is auto-magically loaded in by the Visual Studio
+// IDE to get the assumed values of these macros so Intellisense
+// will parse the C++ source code properly.
+//
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+
+#define BURGER_LONGLONG long long
+#define BURGER_ULONGLONG unsigned long long
+#define BURGER_INLINE __forceinline
+#define BURGER_API
+#define BURGER_COMPILE_TIME_ASSERT(x) static_assert(x, #x)
+#define BURGER_NOEXCEPT noexcept
+#define BURGER_CONSTEXPR constexpr
+#define BURGER_OVERRIDE override
+#define BURGER_EQUALS_DELETE = delete
+#define BURGER_EQUALS_DEFAULT = default
+#define BURGER_FINAL final
+#define BURGER_ENUMSTART(x, y) enum class x : y
+#define BURGER_ENUMEND(x) ; typedef x x##Type;
+#define BURGER_UNUSED(x)
+#define BURGER_ASM __asm
+#define BURGER_DECLSPECNAKED __declspec(naked)
+
+#define BURGER_DISABLE_COPY(x) \
+private: \
+    x(const x&) BURGER_EQUALS_DELETE; \
+    x& operator=(const x&) BURGER_EQUALS_DELETE; \
+    x(x&&) BURGER_EQUALS_DELETE; \
+    x& operator=(x&&) BURGER_EQUALS_DELETE

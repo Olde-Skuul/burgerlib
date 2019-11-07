@@ -148,7 +148,10 @@ ARG_LISTS = [
     ('macosx', 'unittests', 'console', ['xcode3', 'xcode5']),
     ('ios', 'burger', 'library', ['xcode5']),
     ('linux', 'burger', 'library', ['make']),
-    ('linux', 'unittests', 'console', ['make'])
+    ('linux', 'unittests', 'console', ['make']),
+    ('msdos', 'burger', 'library', ['codeblocks']),
+    ('windows', 'burger', 'library', ['codeblocks']),
+    ('windows', 'unittests', 'console', ['codeblocks'])
 ]
 
 ########################################
@@ -168,7 +171,7 @@ def do_generate(working_directory):
         ('windows', 'unittests', 'console', ['codeblocks'])
     ]
 
-    for item in ARG_LISTS_TEST:
+    for item in ARG_LISTS:
         args = []
         args.extend(['-p', item[0]])
         args.extend(['-n', item[1]])

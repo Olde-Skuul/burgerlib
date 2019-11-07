@@ -17,221 +17,100 @@
 
 /*! ************************************
 
-    \brief Swap endian of a 64 bit integer.
+    \class Burger::NativeEndian
+    \brief Loads a 16, 32 or 64 bit value with no byte swapping.
 
-    Visual Studio declares this function as an intrinsic, this is an
-    implementation of the intrinsic for other compilers.
+    The classes Burger::LittleEndian and Burger::BigEndian either map
+    to \ref NativeEndian or \ref SwapEndian. If the machine's
+    endian matches the class, then it maps to this class.
 
-    \param uInput 64 integer to swap endian.
+    This class does nothing for most functions by design. It
+    is meant to vanish when the program is asking for no endian swapping
+    since the data being read is the same endian as the machine.
 
-***************************************/
+    The only functions that do not disappear are the LoadAny(??? *) group
+    of calls since they have the ability to fetch a 16, 32 or 64 bit value
+regardless of the alignment of the data pointer. These are useful in grabbing
+data from a byte stream and won't trigger an alignment access fault.
 
-#if (defined(BURGER_METROWERKS) && defined(BURGER_68K)) || defined(DOXYGEN)
-// clang-format off
-BURGER_ASM uint64_t _swapendian64(uint64_t uInput)
-{
-    // Get the pointer for the return value
-    movea.l 4(a7), a0
-    // Get the input value
-    move.l  8(a7), d0
-    move.l  12(a7), d1
-    // Swap the endian
-    ror.w #8, d0
-    ror.w #8, d1
-    swap d0
-    swap d1
-    ror.w #8, d0
-    ror.w #8, d1
-    // Save the result, swapping the halves.
-    move.l d1, 0(a0)
-    move.l d0, 4(a0)
-    rts
-}
-// clang-format on
+    Under most circumstances, you will not call this class directly.
 
-#elif defined(BURGER_APPLE_SC) && defined(BURGER_68K)
-
-// This is written in 68000 assembly for speed
-#pragma parameter _swapendian64_asm(__A0, __A1)
-extern "C" void _swapendian64_asm(
-    uint64_t * pDest, const uint64_t * pInput) = {
-        0x2029, 0x0000, // move.l 0(a1),d0
-        0x2229, 0x0004, // move.l 4(a1),d1
-        0xE058, 0xE059, // ror.w #8,d0 and d1
-        0x4840, 0x4841, // swap d0 - swap d1
-        0xE058, 0xE059, // ror.w #8,d0 and d1
-        0x2141, 0x0000, // move.l d1,0(a0)
-        0x2140, 0x0004  // move.l d0,4(a0)
-};
-
-uint64_t _swapendian64(const uint64_t& rInput)
-{
-    uint64_t temp;
-    _swapendian64_asm(&temp, &rInput);
-    return temp;
-}
-#endif
-
-/*! ************************************
-
-    \class Burger::BigEndian
-    \brief Loads a 16, 32 or 64 bit value with byte swapping if needed.
-
-    This class will map to either to \ref NativeEndian or \ref SwapEndian
-    depending on if this is a big endian machine or not. Use of this class will
-allow the programmer to write code that is endian neutral since the compiler
-will perform the proper mapping depending on the target's settings..
-
-    Big endian is considered true if the \ref Word32 value 0x12345678 is stored
-in memory as 0x12, 0x34, 0x56, 0x78.
-
-    Examples of use:
-    \code
-    Word32 LoadedInt;
-
-	// Load 4 bytes from a file
-	fread(fp,1,4,&LoadedInt);
-
-	// Fetch the big endian data
-	Word32 foo = Burger::BigEndian::Load(&LoadedInt);
-	\endcode
-	
-	\note The documentation will describe the behavior of \ref SwapEndian, be
-	warned that it will map to \ref NativeEndian on a big endian machine.
-	
-	\sa \ref NativeEndian, \ref LittleEndian and \ref SwapEndian
-
-***************************************/
-
-
-/*! ************************************
-
-	\class Burger::LittleEndian
-	\brief Loads a 16, 32 or 64 bit value with byte swapping if needed.
-	
-	This class will map to either to \ref NativeEndian or \ref SwapEndian
-	depending on if this is a little endian machine or not. Use of this class will allow the programmer
-	to write code that is endian neutral since the compiler will perform the proper
-	mapping depending on the target's settings..
-	
-	Little endian is considered true if the \ref Word32 value 0x12345678 is stored in memory as
-	0x78, 0x56, 0x34, 0x12.
-	
-	Examples of use:
-	\code
-	Word32 LoadedInt;
-
-	// Load 4 bytes from a file
-	fread(fp,1,4,&LoadedInt);
-
-	// Fetch the little endian data
-	Word32 foo = Burger::LittleEndian::Load(&LoadedInt);
-	\endcode
-	
-	\note The documentation will describe the behavior of \ref NativeEndian, be
-	warned that it will map to \ref SwapEndian on a big endian machine.
-	
-	\sa \ref NativeEndian, \ref BigEndian and \ref SwapEndian
-
-***************************************/
-
-
-/*! ************************************
-
-	\class Burger::NativeEndian
-	\brief Loads a 16, 32 or 64 bit value with no byte swapping.
-	
-	The classes Burger::LittleEndian and Burger::BigEndian either map
-	to \ref NativeEndian or \ref SwapEndian. If the machine's
-	endian matches the class, then it maps to this class.
-	
-	This class does nothing for most functions by design. It
-	is meant to vanish when the program is asking for no endian swapping
-	since the data being read is the same endian as the machine.
-	
-	The only functions that do not disappear are the LoadAny(??? *) group
-	of calls since they have the ability to fetch a 16, 32 or 64 bit value regardless
-	of the alignment of the data pointer. These are useful in grabbing data
-	from a byte stream and won't trigger an alignment access fault.
-	
-	Under most circumstances, you will not call this class directly.
-	
-	\sa \ref SwapEndian, \ref LittleEndian and \ref BigEndian
+    \sa \ref SwapEndian, \ref LittleEndian and \ref BigEndian
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::NativeEndian::Load(Word16 uInput);
-	\brief Fetch a 16 bit value.
-	
-	Pass a 16 bit value through with no change. This function is usually
-	optimized into oblivion.
-	
-	\param uInput Unsigned 16 bit input.
-	\return \a uInput untouched.
-	
-	\sa SwapEndian::Load(Word16)
+    \fn Burger::NativeEndian::Load(Word16 uInput);
+    \brief Fetch a 16 bit value.
+
+    Pass a 16 bit value through with no change. This function is usually
+    optimized into oblivion.
+
+    \param uInput Unsigned 16 bit input.
+    \return \a uInput untouched.
+
+    \sa SwapEndian::Load(Word16)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::NativeEndian::Load(Word32 uInput);
-	\brief Fetch a 32 bit value.
-	
-	Pass a 32 bit value through with no change. This function is usually
-	optimized into oblivion.
-	
-	\param uInput Unsigned 32 bit input.
-	\return \a uInput untouched.
-	
-	\sa SwapEndian::Load(Word32)
+    \fn Burger::NativeEndian::Load(Word32 uInput);
+    \brief Fetch a 32 bit value.
+
+    Pass a 32 bit value through with no change. This function is usually
+    optimized into oblivion.
+
+    \param uInput Unsigned 32 bit input.
+    \return \a uInput untouched.
+
+    \sa SwapEndian::Load(Word32)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::NativeEndian::Load(Word64 uInput);
-	\brief Fetch a 64 bit value.
-	
-	Pass a 64 bit value through with no change. This function is usually
-	optimized into oblivion.
-	
-	\param uInput Unsigned 64 bit input.
-	\return \a uInput untouched.
-	
-	\sa SwapEndian::Load(Word64)
+    \fn Burger::NativeEndian::Load(Word64 uInput);
+    \brief Fetch a 64 bit value.
+
+    Pass a 64 bit value through with no change. This function is usually
+    optimized into oblivion.
+
+    \param uInput Unsigned 64 bit input.
+    \return \a uInput untouched.
+
+    \sa SwapEndian::Load(Word64)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::NativeEndian::Load(float fInput);
-	\brief Fetch a float value.
-	
-	Pass a float value through with no change. This function is usually
-	optimized into oblivion.
-	
-	\param fInput A float input.
-	\return \a fInput untouched.
-	
-	\sa SwapEndian::Load(float)
+    \fn Burger::NativeEndian::Load(float fInput);
+    \brief Fetch a float value.
+
+    Pass a float value through with no change. This function is usually
+    optimized into oblivion.
+
+    \param fInput A float input.
+    \return \a fInput untouched.
+
+    \sa SwapEndian::Load(float)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::NativeEndian::Load(double dInput);
-	\brief Fetch a double value.
-	
-	Pass a double value through with no change. This function is usually
-	optimized into oblivion.
-	
-	\param dInput A double input.
-	\return \a dInput untouched.
-	
-	\sa SwapEndian::Load(double)
+    \fn Burger::NativeEndian::Load(double dInput);
+    \brief Fetch a double value.
+
+    Pass a double value through with no change. This function is usually
+    optimized into oblivion.
+
+    \param dInput A double input.
+    \return \a dInput untouched.
+
+    \sa SwapEndian::Load(double)
 
 ***************************************/
 
@@ -3700,249 +3579,598 @@ void BURGER_API Burger::SwapEndian::FixupAny(Word64 *pInput)
 
 /*! ************************************
 
-	\fn Burger::SwapEndian::FixupAny(double *pInput);
-	\brief Reverse the endian of a 64-bit float value with byte alignment.
+    \fn Burger::SwapEndian::FixupAny(double *pInput);
+    \brief Reverse the endian of a 64-bit float value with byte alignment.
 
-	Given a pointer to a 64-bit value in memory, load it and swap the bytes
-	so that 0x123456789ABCDEF0 becomes 0xF0DEBC9A78563412. The pointer does not have
-	to be 16-bit aligned. \ref Word8 alignment is acceptable.
+    Given a pointer to a 64-bit value in memory, load it and swap the bytes
+    so that 0x123456789ABCDEF0 becomes 0xF0DEBC9A78563412. The pointer does not
+have to be 16-bit aligned. \ref Word8 alignment is acceptable.
 
-	\param pInput Pointer to the value to endian convert
+    \param pInput Pointer to the value to endian convert
 
-	\note \ref NULL pointers are illegal and will page fault.
-	\note This function is inlined to actually use SwapEndian::FixupAny(Word64 *).
+    \note \ref NULL pointers are illegal and will page fault.
+    \note This function is inlined to actually use SwapEndian::FixupAny(Word64
+*).
 
-	\sa SwapEndian::FixupAny(Word64 *)
+    \sa SwapEndian::FixupAny(Word64 *)
 
 ***************************************/
-
-
-
 
 /*! ************************************
 
-	\brief Reverse the endian of an array of 16-bit integers
+    \fn Burger::NativeEndian::FixupAny(char *pInput)
+    \brief Does nothing.
 
-	Given a pointer to an array of 16-bit integers, swap the
-	endian of every entry
+    Single byte variables can't be endian swapped.
 
-	\param pInput Pointer to the array to endian swap
-	\param uCount Number of entries in the array (Not bytes)
+    \param pInput Pointer to an 8 bit value.
 
-	\sa ConvertEndian(Word16 *,const Word16 *,WordPtr)
+    \sa SwapEndian::FixupAny(char*)
 
 ***************************************/
 
-void BURGER_API Burger::ConvertEndian(Word16 *pInput,WordPtr uCount)
+/*! ************************************
+
+    \fn Burger::NativeEndian::FixupAny(uint8_t *pInput)
+    \brief Does nothing.
+
+    Single byte variables can't be endian swapped.
+
+    \param pInput Pointer to an 8 bit value.
+
+    \sa SwapEndian::FixupAny(uint8_t*)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::NativeEndian::FixupAny(int8_t *pInput)
+    \brief Does nothing.
+
+    Single byte variables can't be endian swapped.
+
+    \param pInput Pointer to an 8 bit value.
+
+    \sa SwapEndian::FixupAny(int8_t *)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::NativeEndian::FixupAny(uint16_t *pInput)
+    \brief Does nothing.
+
+    The \ref SwapEndian class would swap the endian of a non aligned variable,
+    but this class performs no operation since the endian is already a match for
+    what the machine expects.
+
+    \param pInput Pointer to a 16 bit value.
+
+    \sa SwapEndian::FixupAny(uint16_t*)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::NativeEndian::FixupAny(int16_t *pInput)
+    \brief Does nothing.
+
+    The \ref SwapEndian class would swap the endian of a non aligned variable,
+    but this class performs no operation since the endian is already a match for
+    what the machine expects.
+
+    \param pInput Pointer to a 16 bit value.
+
+    \sa SwapEndian::FixupAny(int16_t*)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::NativeEndian::FixupAny(uint32_t *pInput)
+    \brief Does nothing.
+
+    The \ref SwapEndian class would swap the endian of a non aligned variable,
+    but this class performs no operation since the endian is already a match for
+    what the machine expects.
+
+    \param pInput Pointer to a 32 bit value.
+
+    \sa SwapEndian::FixupAny(uint32_t*)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::NativeEndian::FixupAny(int32_t *pInput)
+    \brief Does nothing.
+
+    The \ref SwapEndian class would swap the endian of a non aligned variable,
+    but this class performs no operation since the endian is already a match for
+    what the machine expects.
+
+    \param pInput Pointer to a 32 bit value.
+
+    \sa SwapEndian::FixupAny(int32_t*)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::NativeEndian::FixupAny(uint64_t *pInput)
+    \brief Does nothing.
+
+    The \ref SwapEndian class would swap the endian of a non aligned variable,
+    but this class performs no operation since the endian is already a match for
+    what the machine expects.
+
+    \param pInput Pointer to a 64 bit value.
+
+    \sa SwapEndian::FixupAny(uint64_t*)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::NativeEndian::FixupAny(int64_t *pInput)
+    \brief Does nothing.
+
+    The \ref SwapEndian class would swap the endian of a non aligned variable,
+    but this class performs no operation since the endian is already a match for
+    what the machine expects.
+
+    \param pInput Pointer to a 64 bit value.
+
+    \sa SwapEndian::FixupAny(int64_t*)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::NativeEndian::FixupAny(wchar_t *pInput)
+    \brief Does nothing.
+
+    The \ref SwapEndian class would swap the endian of a non aligned variable,
+    but this class performs no operation since the endian is already a match for
+    what the machine expects.
+
+    \param pInput Pointer to wchar_t value.
+
+    \sa SwapEndian::FixupAny(wchar_t*)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::NativeEndian::FixupAny(unsigned int *pInput)
+    \brief Does nothing.
+
+    The \ref SwapEndian class would swap the endian of a non aligned variable,
+    but this class performs no operation since the endian is already a match for
+    what the machine expects.
+
+    \param pInput Pointer to a 16-32 bit value.
+
+    \sa SwapEndian::FixupAny(unsigned int*)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::NativeEndian::FixupAny(signed int *pInput)
+    \brief Does nothing.
+
+    The \ref SwapEndian class would swap the endian of a non aligned variable,
+    but this class performs no operation since the endian is already a match for
+    what the machine expects.
+
+    \param pInput Pointer to a 16-32 bit value.
+
+    \sa SwapEndian::FixupAny(signed int*)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::NativeEndian::FixupAny(unsigned long *pInput)
+    \brief Does nothing.
+
+    The \ref SwapEndian class would swap the endian of a non aligned variable,
+    but this class performs no operation since the endian is already a match for
+    what the machine expects.
+
+    \param pInput Pointer to a 32-64 bit value.
+
+    \sa SwapEndian::FixupAny(unsigned long*)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::NativeEndian::FixupAny(signed long *pInput)
+    \brief Does nothing.
+
+    The \ref SwapEndian class would swap the endian of a non aligned variable,
+    but this class performs no operation since the endian is already a match for
+    what the machine expects.
+
+    \param pInput Pointer to a 32-64 bit value.
+
+    \sa SwapEndian::FixupAny(signed long*)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::NativeEndian::FixupAny(float *pInput)
+    \brief Does nothing.
+
+    The \ref SwapEndian class would swap the endian of a non aligned variable,
+    but this class performs no operation since the endian is already a match for
+    what the machine expects.
+
+    \param pInput Pointer to a float value.
+
+    \sa SwapEndian::FixupAny(float*)
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::NativeEndian::FixupAny(double *pInput)
+    \brief Does nothing.
+
+    The \ref SwapEndian class would swap the endian of a non aligned variable,
+    but this class performs no operation since the endian is already a match for
+    what the machine expects.
+
+    \param pInput Pointer to a double value.
+
+    \sa SwapEndian::FixupAny(double*)
+
+***************************************/
+
+/*! ************************************
+
+    \class Burger::BigEndian
+    \brief Loads a 16, 32 or 64 bit value with byte swapping if needed.
+
+    This class will map to either to \ref NativeEndian or \ref SwapEndian
+    depending on if this is a big endian machine or not. Use of this class will
+    allow the programmer to write code that is endian neutral since the compiler
+    will perform the proper mapping depending on the target's settings..
+
+    Big endian is considered true if the \ref Word32 value 0x12345678 is stored
+    in memory as 0x12, 0x34, 0x56, 0x78.
+
+    Examples of use:
+    \code
+    uint32_t LoadedInt;
+
+    // Load 4 bytes from a file
+    fread(fp,1,4,&LoadedInt);
+
+    // Fetch the big endian data
+    uint32_t foo = Burger::BigEndian::Load(&LoadedInt);
+    \endcode
+
+    \note The documentation will describe the behavior of \ref SwapEndian, be
+        warned that it will map to \ref NativeEndian on a big endian machine.
+
+    \sa \ref NativeEndian, \ref LittleEndian and \ref SwapEndian
+
+***************************************/
+
+/*! ************************************
+
+    \class Burger::LittleEndian
+    \brief Loads a 16, 32 or 64 bit value with byte swapping if needed.
+
+    This class will map to either to \ref NativeEndian or \ref SwapEndian
+    depending on if this is a little endian machine or not. Use of this class
+    will allow the programmer to write code that is endian neutral since the
+    compiler will perform the proper mapping depending on the target's settings.
+
+    Little endian is considered true if the \ref Word32 value 0x12345678 is
+    stored in memory as 0x78, 0x56, 0x34, 0x12.
+
+    Examples of use:
+    \code
+    uint32_t LoadedInt;
+
+    // Load 4 bytes from a file
+    fread(fp,1,4,&LoadedInt);
+
+    // Fetch the little endian data
+    uint32_t foo = Burger::LittleEndian::Load(&LoadedInt);
+    \endcode
+
+    \note The documentation will describe the behavior of \ref NativeEndian, be
+        warned that it will map to \ref SwapEndian on a big endian machine.
+
+    \sa \ref NativeEndian, \ref BigEndian and \ref SwapEndian
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_BIGENDIAN16(x)
+    \brief Endian swaps a 16 bit constant on little endian machines.
+
+    If a constant is required to exist as big endian, this macro will perform
+    the endian swap at compile time if the machine is little endian.
+
+    \param x 16 bit constant
+    \return Constant in big endian format.
+    \sa BURGER_BIGENDIAN32() or BURGER_LITTLEENDIAN16()
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_BIGENDIAN32(x)
+    \brief Endian swaps a 32 bit constant on little endian machines.
+
+    If a constant is required to exist as big endian, this macro will perform
+    the endian swap at compile time if the machine is little endian.
+
+    \param x 32 bit constant
+    \return Constant in big endian format.
+    \sa BURGER_BIGENDIAN16() or BURGER_LITTLEENDIAN32()
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_LITTLEENDIAN16(x)
+    \brief Endian swaps a 16 bit constant on big endian machines.
+
+    If a constant is required to exist as little endian, this macro will perform
+    the endian swap at compile time if the machine is big endian.
+
+    \param x 16 bit constant
+    \return Constant in little endian format.
+    \sa BURGER_LITTLEENDIAN32() or BURGER_BIGENDIAN16()
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_LITTLEENDIAN32(x)
+    \brief Endian swaps a 32 bit constant on big endian machines.
+
+    If a constant is required to exist as little endian, this macro will perform
+    the endian swap at compile time if the machine is big endian.
+
+    \param x 32 bit constant
+    \return Constant in little endian format.
+    \sa BURGER_LITTLEENDIAN16() or BURGER_BIGENDIAN32()
+
+***************************************/
+
+/*! ************************************
+
+    \brief Reverse the endian of an array of 16-bit integers
+
+    Given a pointer to an array of 16-bit integers, swap the endian of every
+    entry
+
+    \param pInput Pointer to the array to endian swap
+    \param uCount Number of entries in the array (Not bytes)
+
+    \sa ConvertEndian(uint16_t *,const uint16_t *,uintptr_t)
+
+***************************************/
+
+void BURGER_API Burger::ConvertEndian(uint16_t* pInput, uintptr_t uCount)
 {
-	// Any data?
-	if (uCount) {
-		do {
-			// Swap in place
-			SwapEndian::Fixup(pInput);
-			++pInput;
-		} while (--uCount);
-	}
+    // Any data?
+    if (uCount) {
+        do {
+            // Swap in place
+            SwapEndian::Fixup(pInput);
+            ++pInput;
+        } while (--uCount);
+    }
 }
 
 /*! ************************************
 
-	\brief Reverse the endian of a copied array of 16-bit integers
+    \brief Reverse the endian of a copied array of 16-bit integers
 
-	Given a pointer to an array of 16-bit integers, swap the
-	endian of every entry and store the result into another
-	array of equal or greater size
+    Given a pointer to an array of 16-bit integers, swap the endian of every
+    entry and store the result into another array of equal or greater size
 
-	\param pOutput Pointer to the array to receive the swapped data
-	\param pInput Pointer to the array to endian swap
-	\param uCount Number of entries in the array (Not bytes)
+    \param pOutput Pointer to the array to receive the swapped data
+    \param pInput Pointer to the array to endian swap
+    \param uCount Number of entries in the array (Not bytes)
 
-	\sa ConvertEndian(Word16 *,WordPtr)
+    \sa ConvertEndian(Word16 *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::ConvertEndian(Word16 *pOutput,const Word16 *pInput,WordPtr uCount)
+void BURGER_API Burger::ConvertEndian(
+    uint16_t* pOutput, const uint16_t* pInput, uintptr_t uCount)
 {
-	// Any data?
-	if (uCount) {
-		do {
-			// Swap and copy
-			pOutput[0] = SwapEndian::Load(pInput);
-			++pInput;
-			++pOutput;
-		} while (--uCount);
-	}
+    // Any data?
+    if (uCount) {
+        do {
+            // Swap and copy
+            pOutput[0] = SwapEndian::Load(pInput);
+            ++pInput;
+            ++pOutput;
+        } while (--uCount);
+    }
 }
 
 /*! ************************************
 
-	\brief Reverse the endian of an array of 32-bit integers
+    \brief Reverse the endian of an array of 32-bit integers
 
-	Given a pointer to an array of 32-bit integers, swap the
-	endian of every entry
+    Given a pointer to an array of 32-bit integers, swap the endian of every
+    entry
 
-	\param pInput Pointer to the array to endian swap
-	\param uCount Number of entries in the array (Not bytes)
+    \param pInput Pointer to the array to endian swap
+    \param uCount Number of entries in the array (Not bytes)
 
-	\sa ConvertEndian(Word32 *,const Word32 *,WordPtr)
+    \sa ConvertEndian(uint32_t *,const uint32_t *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::ConvertEndian(Word32 *pInput,WordPtr uCount)
+void BURGER_API Burger::ConvertEndian(uint32_t* pInput, uintptr_t uCount)
 {
-	// Any data?
-	if (uCount) {
-		do {
-			// Swap in place
-			SwapEndian::Fixup(pInput);
-			++pInput;
-		} while (--uCount);
-	}
+    // Any data?
+    if (uCount) {
+        do {
+            // Swap in place
+            SwapEndian::Fixup(pInput);
+            ++pInput;
+        } while (--uCount);
+    }
 }
 
 /*! ************************************
 
-	\brief Reverse the endian of a copied array of 32-bit integers
+    \brief Reverse the endian of a copied array of 32-bit integers
 
-	Given a pointer to an array of 32-bit integers, swap the
-	endian of every entry and store the result into another
-	array of equal or greater size
+    Given a pointer to an array of 32-bit integers, swap the endian of every
+    entry and store the result into another array of equal or greater size
 
-	\param pOutput Pointer to the array to receive the swapped data
-	\param pInput Pointer to the array to endian swap
-	\param uCount Number of entries in the array (Not bytes)
+    \param pOutput Pointer to the array to receive the swapped data
+    \param pInput Pointer to the array to endian swap
+    \param uCount Number of entries in the array (Not bytes)
 
-	\sa ConvertEndian(Word32 *,WordPtr)
-
-***************************************/
-
-void BURGER_API Burger::ConvertEndian(Word32 *pOutput,const Word32 *pInput,WordPtr uCount)
-{
-	// Any data?
-	if (uCount) {
-		do {
-			// Swap and copy
-			pOutput[0] = SwapEndian::Load(pInput);
-			++pInput;
-			++pOutput;
-		} while (--uCount);
-	}
-}
-
-
-
-/*! ************************************
-
-	\brief Reverse the endian of an array of 64-bit integers
-
-	Given a pointer to an array of 64-bit integers, swap the
-	endian of every entry
-
-	\param pInput Pointer to the array to endian swap
-	\param uCount Number of entries in the array (Not bytes)
-
-	\sa ConvertEndian(Word64 *,const Word64 *,WordPtr)
+    \sa ConvertEndian(uint32_t *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::ConvertEndian(Word64 *pInput,WordPtr uCount)
+void BURGER_API Burger::ConvertEndian(
+    uint32_t* pOutput, const uint32_t* pInput, uintptr_t uCount)
 {
-	// Any data?
-	if (uCount) {
-		do {
-			// Swap in place
-			SwapEndian::Fixup(pInput);
-			++pInput;
-		} while (--uCount);
-	}
+    // Any data?
+    if (uCount) {
+        do {
+            // Swap and copy
+            pOutput[0] = SwapEndian::Load(pInput);
+            ++pInput;
+            ++pOutput;
+        } while (--uCount);
+    }
 }
 
 /*! ************************************
 
-	\brief Reverse the endian of a copied array of 64-bit integers
+    \brief Reverse the endian of an array of 64-bit integers
 
-	Given a pointer to an array of 64-bit integers, swap the
-	endian of every entry and store the result into another
-	array of equal or greater size
+    Given a pointer to an array of 64-bit integers, swap the endian of every
+    entry
 
-	\param pOutput Pointer to the array to receive the swapped data
-	\param pInput Pointer to the array to endian swap
-	\param uCount Number of entries in the array (Not bytes)
+    \param pInput Pointer to the array to endian swap
+    \param uCount Number of entries in the array (Not bytes)
 
-	\sa ConvertEndian(Word64 *,WordPtr)
+    \sa ConvertEndian(uint64_t *,const uint64_t *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::ConvertEndian(Word64 *pOutput,const Word64 *pInput,WordPtr uCount)
+void BURGER_API Burger::ConvertEndian(uint64_t* pInput, uintptr_t uCount)
 {
-	// Any data?
-	if (uCount) {
-		do {
-			// Swap and copy
+    // Any data?
+    if (uCount) {
+        do {
+            // Swap in place
+            SwapEndian::Fixup(pInput);
+            ++pInput;
+        } while (--uCount);
+    }
+}
+
+/*! ************************************
+
+    \brief Reverse the endian of a copied array of 64-bit integers
+
+    Given a pointer to an array of 64-bit integers, swap the endian of every
+    entry and store the result into another array of equal or greater size
+
+    \param pOutput Pointer to the array to receive the swapped data
+    \param pInput Pointer to the array to endian swap
+    \param uCount Number of entries in the array (Not bytes)
+
+    \sa ConvertEndian(uint64_t *,uintptr_t)
+
+***************************************/
+
+void BURGER_API Burger::ConvertEndian(
+    uint64_t* pOutput, const uint64_t* pInput, uintptr_t uCount)
+{
+    // Any data?
+    if (uCount) {
+        do {
+            // Swap and copy
 #if defined(BURGER_64BITCPU)
-			pOutput[0] = SwapEndian::Load(pInput);
+            pOutput[0] = SwapEndian::Load(pInput);
 #else
-			// For non 64 bit CPUs, do the swap in 32 bit chunks
-			Word32 uLow = Burger::SwapEndian::Load(&static_cast<const Word32 *>(static_cast<const void *>(pInput))[0]);
-			Word32 uHigh = Burger::SwapEndian::Load(&static_cast<const Word32 *>(static_cast<const void *>(pInput))[1]);
-			static_cast<Word32 *>(static_cast<void *>(pOutput))[0] = uHigh;
-			static_cast<Word32 *>(static_cast<void *>(pOutput))[1] = uLow;
+            // For non 64 bit CPUs, do the swap in 32 bit chunks
+            uint32_t uLow = SwapEndian::Load(&static_cast<const uint32_t*>(
+                static_cast<const void*>(pInput))[0]);
+            uint32_t uHigh = SwapEndian::Load(&static_cast<const uint32_t*>(
+                static_cast<const void*>(pInput))[1]);
+            static_cast<uint32_t*>(static_cast<void*>(pOutput))[0] = uHigh;
+            static_cast<uint32_t*>(static_cast<void*>(pOutput))[1] = uLow;
 #endif
-			++pInput;
-			++pOutput;
-		} while (--uCount);
-	}
-}
-
-
-/*! ************************************
-
-	\brief Add 128 to every byte to convert a char to a byte or vice versa
-
-	Given a pointer to an array of bytes, add 128 to every 
-	entry
-
-	\param pInput Pointer to the array to bytes
-	\param uLength Number of bytes in the array
-
-	\sa SwapCharsToBytes(void *,const void *,WordPtr)
-
-***************************************/
-
-void BURGER_API Burger::SwapCharsToBytes(void *pInput,WordPtr uLength)
-{
-	if (uLength) {
-		do {
-			static_cast<Word8 *>(pInput)[0] = static_cast<Word8>(static_cast<Word8 *>(pInput)[0]^0x80U);
-			pInput = static_cast<Word8 *>(pInput)+1;
-		} while (--uLength);
-	}
+            ++pInput;
+            ++pOutput;
+        } while (--uCount);
+    }
 }
 
 /*! ************************************
 
-	\brief Add 128 to every byte to convert a char to a byte or vice versa
+    \brief Add 128 to every byte to convert a char to a byte or vice versa
 
-	Given a pointer to an array of bytes, add 128 to every 
-	entry and store the result into another
-	array of equal or greater size
+    Given a pointer to an array of bytes, add 128 to every entry
 
-	\param pOutput Pointer to the array to receive the converted data
-	\param pInput Pointer to the array to bytes
-	\param uLength Number of bytes in the array
+    \param pInput Pointer to the array to bytes
+    \param uLength Number of bytes in the array
 
-	\sa SwapCharsToBytes(void *,WordPtr)
+    \sa SwapCharsToBytes(void *,const void *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::SwapCharsToBytes(void *pOutput,const void *pInput,WordPtr uLength)
+void BURGER_API Burger::SwapCharsToBytes(void* pInput, uintptr_t uLength)
 {
-	if (uLength) {
-		do {
-			static_cast<Word8 *>(pOutput)[0] = static_cast<Word8>(static_cast<const Word8 *>(pInput)[0]^0x80U);
-			pInput = static_cast<const Word8 *>(pInput)+1;
-			pOutput = static_cast<Word8 *>(pOutput)+1;
-		} while (--uLength);
-	}
+    if (uLength) {
+        do {
+            static_cast<uint8_t*>(pInput)[0] =
+                static_cast<uint8_t>(static_cast<uint8_t*>(pInput)[0] ^ 0x80U);
+            pInput = static_cast<uint8_t*>(pInput) + 1;
+        } while (--uLength);
+    }
 }
 
+/*! ************************************
+
+    \brief Add 128 to every byte to convert a char to a byte or vice versa
+
+    Given a pointer to an array of bytes, add 128 to every entry and store the
+    result into another array of equal or greater size
+
+    \param pOutput Pointer to the array to receive the converted data
+    \param pInput Pointer to the array to bytes
+    \param uLength Number of bytes in the array
+
+    \sa SwapCharsToBytes(void *,uintptr_t)
+
+***************************************/
+
+void BURGER_API Burger::SwapCharsToBytes(
+    void* pOutput, const void* pInput, uintptr_t uLength)
+{
+    if (uLength) {
+        do {
+            static_cast<uint8_t*>(pOutput)[0] = static_cast<uint8_t>(
+                static_cast<const uint8_t*>(pInput)[0] ^ 0x80U);
+            pInput = static_cast<const uint8_t*>(pInput) + 1;
+            pOutput = static_cast<uint8_t*>(pOutput) + 1;
+        } while (--uLength);
+    }
+}

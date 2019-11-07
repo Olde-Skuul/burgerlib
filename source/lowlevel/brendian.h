@@ -19,24 +19,8 @@
 #include "brtypes.h"
 #endif
 
-#ifndef __BRWATCOM_H__
-#include "brwatcom.h"
-#endif
-
-#ifndef __BRMETROWERKS_H__
-#include "brmetrowerks.h"
-#endif
-
-#ifndef __BRVISUALSTUDIO_H__
-#include "brvisualstudio.h"
-#endif
-
-#ifndef __BRINTELCOMPILER_H__
-#include "brintelcompiler.h"
-#endif
-
-#ifndef __BRXCODE_H__
-#include "brxcode.h"
+#ifndef __BRINTRINSICS_H__
+#include "brintrinsics.h"
 #endif
 
 /* BEGIN */
@@ -47,501 +31,6 @@
 #if (defined(BURGER_METROWERKS) && defined(BURGER_X86))
 #pragma volatile_asm off
 #endif
-
-// Inline assembly prototypes, all are done as "C"
-
-extern "C" {
-
-/***************************************
-
-    Symantec Cpp 68k
-
- ***************************************/
-
-#if (defined(BURGER_APPLE_SC) && defined(BURGER_68K)) && !defined(DOXYGEN)
-// rorw #8,d0
-#pragma parameter __D0 _swapendian16(__D0)
-uint16_t _swapendian16(uint16_t) = {0xE058};
-
-// rorw #8,d0, swap d0, rorw #8,d0
-#pragma parameter __D0 _swapendian32(__D0)
-uint32_t _swapendian32(uint32_t) = {0xE058, 0x4840, 0xE058};
-
-extern uint64_t _swapendian64(const uint64_t& rInput);
-
-/***************************************
-
-    Metrowerks 68k
-
-***************************************/
-
-#elif (defined(BURGER_METROWERKS) && defined(BURGER_68K)) && !defined(DOXYGEN)
-
-BURGER_INLINE uint16_t _swapendian16(uint16_t uInput)
-{
-    return __ror(uInput, 8);
-}
-
-// clang-format off
-BURGER_INLINE uint32_t _swapendian32(uint32_t : __D0):
-__D0 = {
-    0xE058, // rorw #8,d0
-    0x4840, // swap d0
-    0xE058  // rorw #8,d0
-};
-// clang-format on
-
-extern uint64_t _swapendian64(uint64_t uInput);
-
-/***************************************
-
-    GNU for 68K
-    Favor built in intrinsics over inline assembly.
-
-***************************************/
-
-#elif (defined(BURGER_GNUC) && defined(BURGER_68K)) && !defined(DOXYGEN)
-
-BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput)
-{
-#if __has_builtin(__builtin_bswap16) || (BURGER_GNUC >= 40800)
-    return __builtin_bswap16(uInput);
-#else
-    __asm__("rorw $8,%0" : : "=d"(uInput) : "0"(uInput) : "cc");
-    return uInput;
-#endif
-}
-
-BURGER_INLINE uint32_t _swapendian32(register uint32_t uInput)
-{
-#if __has_builtin(__builtin_bswap32) || (BURGER_GNUC >= 40300)
-    return __builtin_bswap32(uInput);
-#else
-    __asm__(
-        "rolw #8,%0\n"
-        "swap %0\n"
-        "rolw #8,%0"
-        : "=d"(uInput)
-        : "0"(uInput)
-        : "cc");
-    return uInput;
-#endif
-}
-
-/***************************************
-
-    Metrowerks PowerPC 32
-
-***************************************/
-
-#elif (defined(BURGER_METROWERKS) && defined(BURGER_PPC)) && !defined(DOXYGEN)
-
-BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput)
-{
-    int iResult = __rlwinm(static_cast<int>(uInput), 24, 24, 31);
-    iResult = __rlwimi(iResult, static_cast<int>(uInput), 8, 16, 23);
-    return static_cast<uint16_t>(iResult);
-}
-
-BURGER_INLINE uint32_t _swapendian32(register uint32_t uInput)
-{
-    int iResult = __rlwinm(static_cast<int>(uInput), 24, 0, 31);
-    iResult = __rlwimi(iResult, static_cast<int>(uInput), 8, 8, 15);
-    iResult = __rlwimi(iResult, static_cast<int>(uInput), 8, 24, 31);
-    return static_cast<uint32_t>(iResult);
-}
-
-BURGER_INLINE uint64_t _swapendian64(register uint64_t uInput)
-{
-    // Perform a 64 bit endian swap using register halves
-    register uint64_t uTemp;
-    // clang-format off
-	asm{
-		// ROR 24 bits to swap first and last bytes
-		rlwinm uTemp@hiword,uInput@loword,24, 0, 31
-		rlwinm uTemp@loword,uInput@hiword,24, 0, 31
-
-		// Perform insertions to get the middle two bytes
-		rlwimi uTemp@hiword,uInput@loword,8, 8, 15
-		rlwimi uTemp@loword,uInput@hiword,8, 8, 15
-		rlwimi uTemp@hiword,uInput@loword,8, 24, 31
-		rlwimi uTemp@loword,uInput@hiword,8, 24, 31
-	}
-    // clang-format on
-    return uTemp;
-}
-
-/***************************************
-
-    SN Systems for PowerPC 32 (Playstation 3)
-
-***************************************/
-
-#elif (defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC)) && !defined(DOXYGEN)
-
-BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput)
-{
-    int iResult = __rlwinm(static_cast<int>(uInput), 24, 24, 31);
-    iResult = __rlwimi(iResult, static_cast<int>(uInput), 8, 16, 23);
-    return static_cast<uint16_t>(iResult);
-}
-
-BURGER_INLINE uint32_t _swapendian32(register uint32_t uInput)
-{
-    int iResult = __rlwinm(static_cast<int>(uInput), 24, 0, 31);
-    iResult = __rlwimi(iResult, static_cast<int>(uInput), 8, 8, 15);
-    iResult = __rlwimi(iResult, static_cast<int>(uInput), 8, 24, 31);
-    return static_cast<uint32_t>(iResult);
-}
-
-/***************************************
-
-    GNU and clang for PowerPC 32
-    Favor built in intrinsics over inline assembly.
-
-***************************************/
-
-#elif ( \
-    (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)) && \
-    !defined(DOXYGEN)
-
-BURGER_INLINE uint16_t _swapendian16(uint16_t uInput)
-{
-#if __has_builtin(__builtin_bswap16) || (BURGER_GNUC >= 40800)
-    return __builtin_bswap16(uInput);
-#else
-    __asm__(
-        "rlwinm %0,%1,8,16,23\n"
-        "rlwimi %0,%1,24,24,31"
-        : "=&r"(uInput)
-        : "r"(uInput));
-    return uInput;
-#endif
-}
-
-BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
-{
-#if __has_builtin(__builtin_bswap32) || (BURGER_GNUC >= 40300)
-    return __builtin_bswap32(uInput);
-#else
-    __asm__(
-        "rlwinm %0,%1,24,0,31\n"
-        "rlwimi %0,%1,8,8,15\n"
-        "rlwimi %0,%1,8,24,31"
-        : "=&r"(uInput)
-        : "r"(uInput));
-    return uInput;
-#endif
-}
-
-BURGER_INLINE uint64_t _swapendian64(uint64_t uInput)
-{
-#if __has_builtin(__builtin_bswap64) || (BURGER_GNUC >= 40300)
-    return __builtin_bswap64(uInput);
-#else
-#if defined(BURGER_POWERPC64)
-    uint64_t uInputHi = uInput >> 32;
-    uint64_t uTemp;
-    uint64_t uResult;
-    __asm__(
-        "rlwinm %0,%2,24,0,31\n"
-        "rlwinm %1,%3,24,0,31\n"
-        "rlwimi %0,%2,8,8,15\n"
-        "rlwimi %1,%3,8,8,15\n"
-        "rlwimi %0,%2,8,24,31\n"
-        "rlwimi %1,%3,8,24,31\n"
-        : "=&r"(uResult), "=&r"(uTemp)
-        : "r"(uInput), "r"(uInputHi));
-    return (uResult << 32) | uTemp;
-#else
-    __asm__(
-        "rlwinm %L0,%1,24,0,31\n"
-        "rlwinm %0,%L1,24,0,31\n"
-        "rlwimi %L0,%1,8,8,15\n"
-        "rlwimi %0,%L1,8,8,15\n"
-        "rlwimi %L0,%1,8,24,31\n"
-        "rlwimi %0,%L1,8,24,31"
-        : "=&r"(uInput)
-        : "r"(uInput));
-    return uInput;
-#endif
-#endif
-}
-
-/***************************************
-
-    SN Systems for ARM 32
-
-***************************************/
-
-#elif (defined(BURGER_SNSYSTEMS) && defined(BURGER_ARM32)) && !defined(DOXYGEN)
-
-BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput)
-{
-    return static_cast<uint16_t>((__builtin_rev(uInput) >> 16));
-}
-
-BURGER_INLINE uint32_t _swapendian32(register uint32_t uInput)
-{
-    return __builtin_rev(uInput);
-}
-
-/***************************************
-
-    GNU and clang for ARM 32
-    Favor built in intrinsics over inline assembly.
-
-***************************************/
-
-#elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-    defined(BURGER_ARM32)) && \
-    !defined(DOXYGEN)
-
-BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput)
-{
-#if __has_builtin(__builtin_bswap16) || (BURGER_GNUC >= 40800)
-    return __builtin_bswap16(uInput);
-#else
-    uint16_t uResult;
-    __asm__("rev16 %0,%1" : "=r"(uResult) : "r"(uInput));
-    return uResult;
-#endif
-}
-
-BURGER_INLINE uint32_t _swapendian32(register uint32_t uInput)
-{
-#if __has_builtin(__builtin_bswap32) || (BURGER_GNUC >= 40300)
-    return __builtin_bswap32(uInput);
-#else
-    uint32_t uResult;
-    __asm__("rev %0,%1" : "=r"(uResult) : "r"(uInput));
-    return uResult;
-#endif
-}
-
-/***************************************
-
-    GNU and clang for ARM 64
-    Favor built in intrinsics over inline assembly.
-
-***************************************/
-
-#elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-    defined(BURGER_ARM64)) && \
-    !defined(DOXYGEN)
-
-BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput)
-{
-#if __has_builtin(__builtin_bswap16) || (BURGER_GNUC >= 40800)
-    return __builtin_bswap16(uInput);
-#else
-    uint16_t uResult;
-    __asm__("rev16 %w0,%w1" : "=r"(uResult) : "r"(uInput));
-    return uResult;
-#endif
-}
-
-BURGER_INLINE uint32_t _swapendian32(register uint32_t uInput)
-{
-#if __has_builtin(__builtin_bswap32) || (BURGER_GNUC >= 40300)
-    return __builtin_bswap32(uInput);
-#else
-    uint32_t uResult;
-    __asm__("rev %w0,%w1" : "=r"(uResult) : "r"(uInput));
-    return uResult;
-#endif
-}
-
-BURGER_INLINE uint64_t _swapendian64(uint64_t uInput)
-{
-#if __has_builtin(__builtin_bswap64) || (BURGER_GNUC >= 40300)
-    return __builtin_bswap64(uInput);
-#else
-    uint64_t uResult;
-    __asm__("rev %x0,%x1" : "=r"(uResult) : "r"(uInput));
-    return uResult;
-#endif
-}
-
-/***************************************
-
-    Metrowerks x86
-
-***************************************/
-
-#elif (defined(BURGER_METROWERKS) && defined(BURGER_X86)) && !defined(DOXYGEN)
-
-BURGER_INLINE uint16_t _swapendian16(uint16_t uInput)
-{
-    return __ror(uInput, 8);
-}
-
-BURGER_INLINE uint32_t _swapendian32(register uint32_t uInput)
-{
-    __asm bswap uInput;
-    return uInput;
-}
-
-BURGER_INLINE uint64_t _swapendian64(register uint64_t uInput)
-{
-    register uint32_t uLo = static_cast<uint32_t>(uInput);
-    register uint32_t uHi = static_cast<uint32_t>(uInput >> 32);
-    __asm {
-      mov eax,uHi
-      mov edx,uLo
-      bswap eax
-      bswap edx
-    }
-}
-
-/***************************************
-
-    Watcom assembly to simulate Visual Studio intrinsics
-
-***************************************/
-
-#elif (defined(BURGER_WATCOM) && defined(BURGER_X86)) && !defined(DOXYGEN)
-
-// Simulate the Visual Studio intrinsics
-
-extern uint16_t _swapendian16(uint16_t uInput);
-extern uint32_t _swapendian32(uint32_t uInput);
-extern uint64_t _swapendian64(uint64_t uInput);
-
-#pragma aux _swapendian16 = \
-    "ror ax,8" parm[ax] value[ax] modify exact[ax] nomemory;
-
-#pragma aux _swapendian32 = \
-    "bswap eax" parm[eax] value[eax] modify exact[eax] nomemory;
-
-#pragma aux _swapendian64 = \
-    "bswap eax" \
-    "bswap edx" \
-    "xchg eax,edx" parm[eax edx] value[eax edx] modify \
-        exact[eax edx] nomemory;
-
-/***************************************
-
-    GNU and clang for i386
-    Favor built in intrinsics over inline assembly.
-
-***************************************/
-
-#elif ( \
-    (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_X86)) && \
-    !defined(DOXYGEN)
-
-BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput)
-{
-#if __has_builtin(__builtin_bswap16) || (BURGER_GNUC >= 40800)
-    return __builtin_bswap16(uInput);
-#else
-    __asm__("rorw $8,%0" : "+r"(uInput));
-    return uInput;
-#endif
-}
-
-BURGER_INLINE uint32_t _swapendian32(register uint32_t uInput)
-{
-#if __has_builtin(__builtin_bswap32) || (BURGER_GNUC >= 40300)
-    return __builtin_bswap32(uInput);
-#else
-    __asm__("bswap %0" : "+r"(uInput));
-    return uInput;
-#endif
-}
-
-/***************************************
-
-    GNU and clang for AMD64
-    Favor built in intrinsics over inline assembly.
-
-***************************************/
-
-#elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-    defined(BURGER_AMD64)) && \
-    !defined(DOXYGEN)
-
-BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput)
-{
-#if __has_builtin(__builtin_bswap16) || (BURGER_GNUC >= 40800)
-    return __builtin_bswap16(uInput);
-#else
-    __asm__("rorw $8,%0" : "+r"(uInput));
-    return uInput;
-#endif
-}
-
-BURGER_INLINE uint32_t _swapendian32(register uint32_t uInput)
-{
-#if __has_builtin(__builtin_bswap32) || (BURGER_GNUC >= 40300)
-    return __builtin_bswap32(uInput);
-#else
-    __asm__("bswap %0" : "+r"(uInput));
-    return uInput;
-#endif
-}
-
-BURGER_INLINE uint64_t _swapendian64(uint64_t uInput)
-{
-#if __has_builtin(__builtin_bswap64) || (BURGER_GNUC >= 40300)
-    return __builtin_bswap64(uInput);
-#else
-    __asm__("bswap %0" : "+r"(uInput));
-    return uInput;
-#endif
-}
-
-/***************************************
-
-    Intel Compiler
-
-***************************************/
-
-#elif defined(BURGER_INTEL_COMPILER)
-
-// _bswap instead of _byteswap_ulong, because... reasons
-
-BURGER_INLINE uint16_t _swapendian16(uint16_t uInput)
-{
-    return static_cast<uint16_t>(_bswap(uInput) >> 16);
-}
-
-BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
-{
-    return _bswap(uInput);
-}
-
-BURGER_INLINE uint64_t _swapendian64(uint64_t uInput)
-{
-    return _bswap64(uInput);
-}
-
-/***************************************
-
-    Visual Studio
-
-***************************************/
-
-#elif defined(BURGER_MSVC) && !defined(DOXYGEN)
-
-BURGER_INLINE uint16_t _swapendian16(uint16_t uInput)
-{
-    return _byteswap_ushort(uInput);
-}
-
-BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
-{
-    return _byteswap_ulong(uInput);
-}
-
-BURGER_INLINE uint64_t _swapendian64(uint64_t uInput)
-{
-    return _byteswap_uint64(uInput);
-}
-
-#endif
-}
 
 /***************************************
 
@@ -560,115 +49,26 @@ namespace Burger {
 
 class SwapEndian {
 public:
-    /***************************************
-
-        Swap 16 bits
-
-    ***************************************/
-
     static BURGER_INLINE uint16_t Load(uint16_t uInput)
     {
-#if defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER) || \
-    ((defined(BURGER_GNUC) || defined(BURGER_CLANG) || \
-         defined(BURGER_SNSYSTEMS) || defined(BURGER_METROWERKS)) && \
-        defined(BURGER_PPC)) || \
-    ((defined(BURGER_METROWERKS) || defined(BURGER_APPLE_SC) || \
-         defined(BURGER_GNUC)) && \
-        defined(BURGER_68K)) || \
-    ((defined(BURGER_GNUC) || defined(BURGER_CLANG) || \
-         defined(BURGER_SNSYSTEMS)) && \
-        defined(BURGER_ARM32)) || \
-    ((defined(BURGER_METROWERKS) || defined(BURGER_WATCOM) || \
-         defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-        defined(BURGER_X86)) || \
-    ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_ARM64))
-
         return _swapendian16(uInput);
-#else
-        return ((uInput & 0xFF) << 8) | ((uInput >> 8) & 0xFF);
-#endif
     }
-
-    /***************************************
-
-        Swap 32 bits
-
-    ***************************************/
 
 #if (defined(BURGER_METROWERKS) && defined(BURGER_ARM32)) && !defined(DOXYGEN)
     static uint32_t BURGER_API Load(uint32_t uInput);
 
 #else
 
-    static BURGER_INLINE uint32_t Load(register uint32_t uInput)
+    static BURGER_INLINE uint32_t Load(uint32_t uInput)
     {
-#if defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER) || \
-    ((defined(BURGER_GNUC) || defined(BURGER_CLANG) || \
-         defined(BURGER_SNSYSTEMS) || defined(BURGER_METROWERKS)) && \
-        defined(BURGER_PPC)) || \
-    ((defined(BURGER_METROWERKS) || defined(BURGER_APPLE_SC) || \
-         defined(BURGER_GNUC)) && \
-        defined(BURGER_68K)) || \
-    ((defined(BURGER_GNUC) || defined(BURGER_CLANG) || \
-         defined(BURGER_SNSYSTEMS)) && \
-        defined(BURGER_ARM32)) || \
-    ((defined(BURGER_METROWERKS) || defined(BURGER_WATCOM) || \
-         defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-        defined(BURGER_X86)) || \
-    ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_ARM64))
-
         return _swapendian32(uInput);
-
-#elif defined(BURGER_ARM_COMPILER)
-        return __builtin_bswap32(uInput);
-
-#else
-        uint32_t uTemp = (uInput >> 24U) & 0xFFU;
-        uTemp |= (uInput >> 8U) & 0xFF00U;
-        uTemp |= (uInput << 8U) & 0xFF0000U;
-        uTemp |= uInput << 24U;
-        return uTemp;
-#endif
     }
 #endif
 
-    /***************************************
-
-        Swap 64 bits
-
-        Not all compilers handle 64 bit endian swap as easily as 16/32 bit
-
-    ***************************************/
-#if defined(BURGER_HAS_64_BIT_SUPPORT)
     static BURGER_INLINE uint64_t Load(uint64_t uInput)
     {
-
-        // _byteswap_uint64() is broken on Visual Studio 2003 with optimizations
-        // on
-#if (BURGER_MSVC >= 140000000) || \
-    ((defined(BURGER_GNUC) || defined(BURGER_CLANG) || \
-         defined(BURGER_METROWERKS)) && \
-        defined(BURGER_PPC)) || \
-    ((defined(BURGER_METROWERKS) || defined(BURGER_APPLE_SC)) && \
-        defined(BURGER_68K)) || \
-    ((defined(BURGER_METROWERKS) || defined(BURGER_WATCOM)) && \
-        defined(BURGER_X86)) || \
-    ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_ARM64))
-
         return _swapendian64(uInput);
-
-#elif defined(BURGER_ARM_COMPILER)
-        return __builtin_bswap64(uInput);
-
-#else
-        // Swap the endian on each piece
-        uint32_t uLo = Load(static_cast<uint32_t>(uInput));
-        uint32_t uHi = Load(static_cast<uint32_t>(uInput >> 32U));
-        // Reconstruct the uint64_t with lo and hi swapped
-        return (static_cast<uint64_t>(uLo) << 32) + uHi;
-#endif
     }
-#endif
 
     /***************************************
 
@@ -679,7 +79,8 @@ public:
     ***************************************/
 
 #if (defined(BURGER_PS4) || \
-    (defined(BURGER_GNUC) && !defined(__SNC__)) && defined(BURGER_AMD64)) && \
+    ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
+        defined(BURGER_AMD64))) && \
     !defined(DOXYGEN)
     static BURGER_INLINE float Load(float fInput)
     {
@@ -754,7 +155,7 @@ public:
 #elif defined(BURGER_METROWERKS) && defined(BURGER_PPC)
         return static_cast<uint16_t>(__lhbrx(const_cast<uint16_t*>(pInput), 0));
 
-#elif (defined(BURGER_GNUC) && !defined(__SNC__)) && defined(BURGER_PPC)
+#elif (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)
         uint16_t uTemp;
         __asm__ __volatile__("lhbrx %0,0,%1"
                              : "=r"(uTemp)
@@ -772,11 +173,8 @@ public:
         __asm__("movbew %1,%0" : "=r"(uTemp) : "m"(*pInput));
         return uTemp;
 
-#elif defined(BURGER_INTEL_COMPILER)
-        return _swapendian16(pInput[0]);
-
 #else
-        return Load(pInput[0]);
+        return _swapendian16(pInput[0]);
 
 #endif
     }
@@ -792,7 +190,7 @@ public:
 #if (defined(BURGER_METROWERKS) && defined(BURGER_PPC))
         return __lwbrx(const_cast<uint32_t*>(pInput), 0);
 
-#elif (defined(BURGER_GNUC) && !defined(__SNC__)) && defined(BURGER_PPC)
+#elif (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)
         uint32_t uTemp;
         __asm__ __volatile__("lwbrx %0,0,%1"
                              : "=r"(uTemp)
@@ -810,15 +208,8 @@ public:
         __asm__ __volatile__("movbel %1,%0" : "=r"(uTemp) : "m"(*pInput));
         return uTemp;
 
-#elif defined(BURGER_INTEL_COMPILER)
-        return _swapendian32(pInput[0]);
-
-#elif ((defined(BURGER_METROWERKS) && defined(BURGER_68K)) || \
-    defined(BURGER_MSVC))
-        return _swapendian32(pInput[0]);
-
 #else
-        return Load(pInput[0]);
+        return _swapendian32(pInput[0]);
 #endif
     }
 
@@ -827,7 +218,7 @@ public:
         Load and swap a 64 bit integer
 
     ***************************************/
-#if defined(BURGER_HAS_64_BIT_SUPPORT)
+
     static BURGER_INLINE uint64_t Load(const uint64_t* pInput)
     {
         // PowerMac G5 doesn't have the ldbrx instruction
@@ -868,10 +259,9 @@ public:
         return uTemp;
 
 #else
-        return Load(pInput[0]);
+        return _swapendian64(pInput[0]);
 #endif
     }
-#endif
 
     /***************************************
 
@@ -1220,12 +610,10 @@ public:
     {
         return static_cast<Int32>(Load(static_cast<uint32_t>(iInput)));
     }
-#if defined(BURGER_HAS_64_BIT_SUPPORT)
     static BURGER_INLINE Int64 Load(Int64 iInput)
     {
         return static_cast<Int64>(Load(static_cast<uint64_t>(iInput)));
     }
-#endif
 
     static BURGER_INLINE Int16 Load(const Int16* pInput)
     {
@@ -1237,13 +625,11 @@ public:
         return static_cast<Int32>(
             Load(reinterpret_cast<const uint32_t*>(pInput)));
     }
-#if defined(BURGER_HAS_64_BIT_SUPPORT)
     static BURGER_INLINE Int64 Load(const Int64* pInput)
     {
         return static_cast<Int64>(
             Load(reinterpret_cast<const uint64_t*>(pInput)));
     }
-#endif
     static BURGER_INLINE void Store(Int16* pOutput, Int16 iInput)
     {
         Store(reinterpret_cast<uint16_t*>(pOutput),
@@ -1254,13 +640,11 @@ public:
         Store(reinterpret_cast<uint32_t*>(pOutput),
             static_cast<uint32_t>(iInput));
     }
-#if defined(BURGER_HAS_64_BIT_SUPPORT)
     static BURGER_INLINE void Store(Int64* pOutput, Int64 iInput)
     {
         Store(reinterpret_cast<uint64_t*>(pOutput),
             static_cast<uint64_t>(iInput));
     }
-#endif
     static BURGER_INLINE Int16 LoadAny(const Int16* pInput)
     {
         return static_cast<Int16>(
@@ -1271,13 +655,11 @@ public:
         return static_cast<Int32>(
             LoadAny(reinterpret_cast<const uint32_t*>(pInput)));
     }
-#if defined(BURGER_HAS_64_BIT_SUPPORT)
     static BURGER_INLINE Int64 LoadAny(const Int64* pInput)
     {
         return static_cast<Int64>(
             LoadAny(reinterpret_cast<const uint64_t*>(pInput)));
     }
-#endif
     static BURGER_INLINE void StoreAny(Int16* pOutput, Int16 iInput)
     {
         StoreAny(reinterpret_cast<uint16_t*>(pOutput),
@@ -1288,13 +670,11 @@ public:
         StoreAny(reinterpret_cast<uint32_t*>(pOutput),
             static_cast<uint32_t>(iInput));
     }
-#if defined(BURGER_HAS_64_BIT_SUPPORT)
     static BURGER_INLINE void StoreAny(Int64* pOutput, Int64 iInput)
     {
         StoreAny(reinterpret_cast<uint64_t*>(pOutput),
             static_cast<uint64_t>(iInput));
     }
-#endif
     static BURGER_INLINE void Fixup(Int16* pInput)
     {
         Fixup(reinterpret_cast<uint16_t*>(pInput));
@@ -1337,215 +717,174 @@ public:
     }
 };
 
+/***************************************
+
+    Don't swap endian
+
+***************************************/
+
 class NativeEndian {
 
 public:
-    static BURGER_INLINE uint16_t Load(uint16_t uInput)
-    {
-        return uInput;
-    }
-    static BURGER_INLINE uint32_t Load(uint32_t uInput)
-    {
-        return uInput;
-    }
-    static BURGER_INLINE uint64_t Load(uint64_t uInput)
-    {
-        return uInput;
-    }
-    static BURGER_INLINE float Load(float fInput)
-    {
-        return fInput;
-    }
-    static BURGER_INLINE double Load(double dInput)
-    {
-        return dInput;
-    }
+    // clang-format off
+    static BURGER_INLINE BURGER_CONSTEXPR char Load(char iInput) BURGER_NOEXCEPT { return iInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR uint8_t Load(uint8_t uInput) BURGER_NOEXCEPT { return uInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR int8_t Load(int8_t iInput) BURGER_NOEXCEPT { return iInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR uint16_t Load(uint16_t uInput) BURGER_NOEXCEPT { return uInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR int16_t Load(int16_t iInput) BURGER_NOEXCEPT { return iInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR uint32_t Load(uint32_t uInput) BURGER_NOEXCEPT { return uInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR int32_t Load(int32_t iInput) BURGER_NOEXCEPT { return iInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR uint64_t Load(uint64_t uInput) BURGER_NOEXCEPT { return uInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR int64_t Load(int64_t iInput) BURGER_NOEXCEPT { return iInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR float Load(float fInput) BURGER_NOEXCEPT { return fInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR double Load(double dInput) BURGER_NOEXCEPT { return dInput; }
 
-    static BURGER_INLINE uint16_t Load(const uint16_t* pInput)
-    {
-        return pInput[0];
-    }
-    static BURGER_INLINE uint32_t Load(const uint32_t* pInput)
-    {
-        return pInput[0];
-    }
-    static BURGER_INLINE uint64_t Load(const uint64_t* pInput)
-    {
-        return pInput[0];
-    }
-    static BURGER_INLINE float Load(const float* pInput)
-    {
-        return pInput[0];
-    }
-    static BURGER_INLINE double Load(const double* pInput)
-    {
-        return pInput[0];
-    }
+    static BURGER_INLINE BURGER_CONSTEXPR char Load(const char* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR uint8_t Load(const uint8_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR int8_t Load(const int8_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR uint16_t Load(const uint16_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR int16_t Load(const int16_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR uint32_t Load(const uint32_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR int32_t Load(const int32_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR uint64_t Load(const uint64_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR int64_t Load(const int64_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR float Load(const float* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR double Load(const double* pInput) BURGER_NOEXCEPT { return pInput[0]; }
 
-#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) && !defined(DOXYGEN)
-    static BURGER_INLINE uint16_t LoadAny(const uint16_t* pInput)
-    {
-        return pInput[0];
-    }
+    static BURGER_INLINE void Store(char* pOutput, char iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
+    static BURGER_INLINE void Store(uint8_t* pOutput, uint8_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
+    static BURGER_INLINE void Store(int8_t* pOutput, signed char iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
+    static BURGER_INLINE void Store(uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
+    static BURGER_INLINE void Store(int16_t* pOutput, int16_t iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
+    static BURGER_INLINE void Store(uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
+    static BURGER_INLINE void Store(int32_t* pOutput, int32_t iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
+    static BURGER_INLINE void Store(int64_t* pOutput, int64_t iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
+    static BURGER_INLINE void Store(uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
+    static BURGER_INLINE void Store(float* pOutput, float fInput) BURGER_NOEXCEPT { pOutput[0] = fInput; }
+    static BURGER_INLINE void Store(double* pOutput, double dInput) BURGER_NOEXCEPT { pOutput[0] = dInput; }
 
-    static BURGER_INLINE uint32_t LoadAny(const uint32_t* pInput)
-    {
-        return pInput[0];
-    }
-
-    static BURGER_INLINE uint64_t LoadAny(const uint64_t* pInput)
-    {
-        return pInput[0];
-    }
+#if defined(BURGER_INTEL) && !defined(DOXYGEN)
+    static BURGER_INLINE BURGER_CONSTEXPR uint16_t LoadAny(const uint16_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR uint32_t LoadAny(const uint32_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR uint64_t LoadAny(const uint64_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
 #else
-    static uint16_t BURGER_API LoadAny(const uint16_t* pInput);
-    static uint32_t BURGER_API LoadAny(const uint32_t* pInput);
-    static uint64_t BURGER_API LoadAny(const uint64_t* pInput);
+    static uint16_t BURGER_API LoadAny(const uint16_t* pInput) BURGER_NOEXCEPT;
+    static uint32_t BURGER_API LoadAny(const uint32_t* pInput) BURGER_NOEXCEPT;
+    static uint64_t BURGER_API LoadAny(const uint64_t* pInput) BURGER_NOEXCEPT;
 #endif
+    static BURGER_INLINE BURGER_CONSTEXPR char LoadAny(const char* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR uint8_t LoadAny(const uint8_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR int8_t LoadAny(const int8_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE int16_t LoadAny(const int16_t* pInput) BURGER_NOEXCEPT {
+        return static_cast<int16_t>(LoadAny(reinterpret_cast<const uint16_t*>(pInput)));}
+    static BURGER_INLINE int32_t LoadAny(const int32_t* pInput) BURGER_NOEXCEPT {
+        return static_cast<int32_t>(LoadAny(reinterpret_cast<const uint32_t*>(pInput))); }
+    static BURGER_INLINE int64_t LoadAny(const int64_t* pInput) BURGER_NOEXCEPT {
+        return static_cast<int64_t>(LoadAny(reinterpret_cast<const uint64_t*>(pInput))); }
+    static float BURGER_API LoadAny(const float* pInput) BURGER_NOEXCEPT;
+    static double BURGER_API LoadAny(const double* pInput) BURGER_NOEXCEPT;
 
-    static float BURGER_API LoadAny(const float* pInput);
-    static double BURGER_API LoadAny(const double* pInput);
-
-    static BURGER_INLINE void Store(uint16_t* pOutput, uint16_t uInput)
-    {
-        pOutput[0] = uInput;
-    }
-    static BURGER_INLINE void Store(uint32_t* pOutput, uint32_t uInput)
-    {
-        pOutput[0] = uInput;
-    }
-    static BURGER_INLINE void Store(uint64_t* pOutput, uint64_t uInput)
-    {
-        pOutput[0] = uInput;
-    }
-    static BURGER_INLINE void Store(float* pOutput, float fInput)
-    {
-        pOutput[0] = fInput;
-    }
-    static BURGER_INLINE void Store(double* pOutput, double dInput)
-    {
-        pOutput[0] = dInput;
-    }
-
-#if (defined(BURGER_WATCOM) && defined(BURGER_X86)) && !defined(DOXYGEN)
-    static void BURGER_API StoreAny(uint16_t* pOutput, uint16_t uInput)
-    {
-        pOutput[0] = uInput;
-    }
-
-    static void BURGER_API StoreAny(uint32_t* pOutput, uint32_t uInput)
-    {
-        pOutput[0] = uInput;
-    }
-
-    static void BURGER_API StoreAny(uint64_t* pOutput, uint64_t uInput)
-    {
-        pOutput[0] = uInput;
-    }
-
+#if defined(BURGER_INTEL) && !defined(DOXYGEN)
+    static void BURGER_API StoreAny(uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
+    static void BURGER_API StoreAny(uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
+    static void BURGER_API StoreAny(uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
 #else
-    static void BURGER_API StoreAny(uint16_t* pOutput, uint16_t uInput);
-    static void BURGER_API StoreAny(uint32_t* pOutput, uint32_t uInput);
-    static void BURGER_API StoreAny(uint64_t* pOutput, uint64_t uInput);
+    static void BURGER_API StoreAny(uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT;
+    static void BURGER_API StoreAny(uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT;
+    static void BURGER_API StoreAny(uint64_t* pOutput, uint64_t uInput) BURGER_NOEXCEPT;
 #endif
 
-    static void BURGER_API StoreAny(float* pOutput, float fInput);
-    static void BURGER_API StoreAny(double* pOutput, double dInput);
+    static BURGER_INLINE void StoreAny(char* pOutput, char iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
+    static BURGER_INLINE void StoreAny(uint8_t* pOutput, uint8_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
+    static BURGER_INLINE void StoreAny(int8_t* pOutput, signed char iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
+    static BURGER_INLINE void StoreAny(int16_t* pOutput, int16_t iInput) BURGER_NOEXCEPT {
+        StoreAny(reinterpret_cast<uint16_t*>(pOutput), static_cast<uint16_t>(iInput)); }
+    static BURGER_INLINE void StoreAny(int32_t* pOutput, int32_t iInput) BURGER_NOEXCEPT {
+        StoreAny(reinterpret_cast<uint32_t*>(pOutput), static_cast<uint32_t>(iInput)); }
+    static BURGER_INLINE void StoreAny(int64_t* pOutput, int64_t iInput) BURGER_NOEXCEPT {
+        StoreAny(reinterpret_cast<uint64_t*>(pOutput),  static_cast<uint64_t>(iInput)); }
+    static void BURGER_API StoreAny(float* pOutput, float fInput) BURGER_NOEXCEPT;
+    static void BURGER_API StoreAny(double* pOutput, double dInput) BURGER_NOEXCEPT;
 
-    static BURGER_INLINE void Fixup(uint16_t*) {}
-    static BURGER_INLINE void Fixup(uint32_t*) {}
-    static BURGER_INLINE void Fixup(uint64_t*) {}
+    static BURGER_INLINE void Fixup(char*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void Fixup(uint8_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void Fixup(int8_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void Fixup(uint16_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void Fixup(int16_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void Fixup(uint32_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void Fixup(int32_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void Fixup(uint64_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void Fixup(int64_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void Fixup(float*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void Fixup(double*) BURGER_NOEXCEPT {}
 
-    static BURGER_INLINE void FixupAny(uint16_t*) {}
-    static BURGER_INLINE void FixupAny(uint32_t*) {}
-    static BURGER_INLINE void FixupAny(uint64_t*) {}
+    static BURGER_INLINE void FixupAny(char*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void FixupAny(uint8_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void FixupAny(int8_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void FixupAny(uint16_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void FixupAny(int16_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void FixupAny(uint32_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void FixupAny(int32_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void FixupAny(uint64_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void FixupAny(int64_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void FixupAny(float*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void FixupAny(double*) BURGER_NOEXCEPT {}
 
-    static BURGER_INLINE Int16 Load(Int16 iInput)
-    {
-        return iInput;
+#if defined(BURGER_HAS_WCHAR_T) || defined(DOXYGEN)
+    static BURGER_INLINE BURGER_CONSTEXPR wchar_t Load(wchar_t uInput) BURGER_NOEXCEPT { return uInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR wchar_t Load(const wchar_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE void Store(wchar_t* pOutput, wchar_t uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
+    static BURGER_INLINE wchar_t LoadAny(const wchar_t* pInput) BURGER_NOEXCEPT {
+        return static_cast<wchar_t>(LoadAny(reinterpret_cast<const uint16_t*>(pInput))); }
+    static BURGER_INLINE void StoreAny(wchar_t* pOutput, wchar_t uInput)BURGER_NOEXCEPT {
+        StoreAny(reinterpret_cast<uint16_t*>(pOutput), uInput);
     }
-    static BURGER_INLINE Int32 Load(Int32 iInput)
-    {
-        return iInput;
-    }
-    static BURGER_INLINE Int64 Load(Int64 iInput)
-    {
-        return iInput;
-    }
-
-    static BURGER_INLINE Int16 Load(const Int16* pInput)
-    {
-        return pInput[0];
-    }
-    static BURGER_INLINE Int32 Load(const Int32* pInput)
-    {
-        return pInput[0];
-    }
-#if defined(BURGER_HAS_64_BIT_SUPPORT)
-    static BURGER_INLINE Int64 Load(const Int64* pInput)
-    {
-        return pInput[0];
-    }
-#endif
-    static BURGER_INLINE void Store(Int16* pOutput, Int16 iInput)
-    {
-        pOutput[0] = iInput;
-    }
-    static BURGER_INLINE void Store(Int32* pOutput, Int32 iInput)
-    {
-        pOutput[0] = iInput;
-    }
-    static BURGER_INLINE void Store(Int64* pOutput, Int64 iInput)
-    {
-        pOutput[0] = iInput;
-    }
-
-    static BURGER_INLINE Int16 LoadAny(const Int16* pInput)
-    {
-        return static_cast<Int16>(
-            LoadAny(reinterpret_cast<const uint16_t*>(pInput)));
-    }
-    static BURGER_INLINE Int32 LoadAny(const Int32* pInput)
-    {
-        return static_cast<Int32>(
-            LoadAny(reinterpret_cast<const uint32_t*>(pInput)));
-    }
-#if defined(BURGER_HAS_64_BIT_SUPPORT)
-    static BURGER_INLINE Int64 LoadAny(const Int64* pInput)
-    {
-        return static_cast<Int64>(
-            LoadAny(reinterpret_cast<const uint64_t*>(pInput)));
-    }
-#endif
-    static BURGER_INLINE void StoreAny(Int16* pOutput, Int16 iInput)
-    {
-        StoreAny(reinterpret_cast<uint16_t*>(pOutput),
-            static_cast<uint16_t>(iInput));
-    }
-    static BURGER_INLINE void StoreAny(Int32* pOutput, Int32 iInput)
-    {
-        StoreAny(reinterpret_cast<uint32_t*>(pOutput),
-            static_cast<uint32_t>(iInput));
-    }
-#if defined(BURGER_HAS_64_BIT_SUPPORT)
-    static BURGER_INLINE void StoreAny(Int64* pOutput, Int64 iInput)
-    {
-        StoreAny(reinterpret_cast<uint64_t*>(pOutput),
-            static_cast<uint64_t>(iInput));
-    }
+    static BURGER_INLINE void Fixup(wchar_t*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void FixupAny(wchar_t*) BURGER_NOEXCEPT {}
 #endif
 
-    static BURGER_INLINE void Fixup(Int16*) {}
-    static BURGER_INLINE void Fixup(Int32*) {}
-    static BURGER_INLINE void Fixup(Int64*) {}
-    static BURGER_INLINE void Fixup(float*) {}
-    static BURGER_INLINE void Fixup(double*) {}
+#if defined(BURGER_INT_NOT_IN_STDINT) || defined(DOXYGEN)
+    static BURGER_INLINE BURGER_CONSTEXPR unsigned int Load(unsigned int uInput) BURGER_NOEXCEPT { return uInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR signed int Load(signed int iInput) BURGER_NOEXCEPT { return iInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR unsigned int Load(const unsigned int* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR signed int Load(const signed int* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE void Store(unsigned int* pOutput, unsigned int uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
+    static BURGER_INLINE void Store(signed int* pOutput, signed int iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR unsigned int LoadAny(const unsigned int* pInput) BURGER_NOEXCEPT {
+        return static_cast<unsigned int>(LoadAny(reinterpret_cast<const uint2uint_t*>(pInput)));}
+    static BURGER_INLINE BURGER_CONSTEXPR signed int LoadAny(const signed int* pInput) BURGER_NOEXCEPT {
+        return static_cast<signed int>(LoadAny(reinterpret_cast<const uint2uint_t*>(pInput))); }
+    static BURGER_INLINE void StoreAny(unsigned int* pOutput, unsigned int uInput) BURGER_NOEXCEPT {
+        StoreAny(reinterpret_cast<uint2uint_t*>(pOutput), static_cast<uint2uint_t>(uInput)); }
+    static BURGER_INLINE void StoreAny(signed int* pOutput, signed int iInput) BURGER_NOEXCEPT {
+        StoreAny(reinterpret_cast<uint2uint_t*>(pOutput), static_cast<uint2uint_t>(iInput)); }
+    static BURGER_INLINE void Fixup(unsigned int*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void Fixup(signed int*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void FixupAny(unsigned int*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void FixupAny(signed int*) BURGER_NOEXCEPT {}
+#endif
 
-    static BURGER_INLINE void FixupAny(Int16*) {}
-    static BURGER_INLINE void FixupAny(Int32*) {}
-    static BURGER_INLINE void FixupAny(Int64*) {}
-    static BURGER_INLINE void FixupAny(float*) {}
-    static BURGER_INLINE void FixupAny(double*) {}
+#if defined(BURGER_LONG_NOT_IN_STDINT) || defined(DOXYGEN)
+    static BURGER_INLINE BURGER_CONSTEXPR unsigned long Load(unsigned long uInput) BURGER_NOEXCEPT { return uInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR signed long Load(signed long iInput) BURGER_NOEXCEPT { return iInput; }
+    static BURGER_INLINE BURGER_CONSTEXPR unsigned long Load(const unsigned long* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE BURGER_CONSTEXPR signed long Load(const signed long* pInput) BURGER_NOEXCEPT { return pInput[0]; }
+    static BURGER_INLINE void Store(unsigned long* pOutput, unsigned long uInput) BURGER_NOEXCEPT { pOutput[0] = uInput; }
+    static BURGER_INLINE void Store(signed long* pOutput, signed long iInput) BURGER_NOEXCEPT { pOutput[0] = iInput; }
+    static BURGER_INLINE unsigned long LoadAny(const unsigned long* pInput) BURGER_NOEXCEPT {
+        return static_cast<unsigned long>(LoadAny(reinterpret_cast<const ulong2uint_t*>(pInput))); }
+    static BURGER_INLINE signed long LoadAny(const signed long* pInput) BURGER_NOEXCEPT {
+        return static_cast<signed long>(LoadAny(reinterpret_cast<const ulong2uint_t*>(pInput))); }
+    static BURGER_INLINE void StoreAny(unsigned long* pOutput, unsigned long uInput) BURGER_NOEXCEPT {
+        StoreAny(reinterpret_cast<ulong2uint_t*>(pOutput), static_cast<ulong2uint_t>(uInput)); }
+    static BURGER_INLINE void StoreAny(signed long* pOutput, signed long iInput) BURGER_NOEXCEPT {
+        StoreAny(reinterpret_cast<ulong2uint_t*>(pOutput), static_cast<ulong2uint_t>(iInput)); }
+    static BURGER_INLINE void Fixup(unsigned long*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void Fixup(signed long*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void FixupAny(unsigned long*) BURGER_NOEXCEPT {}
+    static BURGER_INLINE void FixupAny(signed long*) BURGER_NOEXCEPT {}
+#endif
+    // clang-format on
 };
 
 #if (defined(BURGER_METROWERKS) && defined(BURGER_X86))
