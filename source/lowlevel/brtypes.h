@@ -29,8 +29,8 @@
 
 ***************************************/
 
-#define BURGER_MACRO_TO_STRING2(x) #x
-#define BURGER_MACRO_TO_STRING(x) BURGER_MACRO_TO_STRING2(x)
+#define BURGER_STRINGIZE2(x) #x
+#define BURGER_STRINGIZE(x) BURGER_STRINGIZE2(x)
 
 #define BURGER_JOIN3(x, y) x##y
 #define BURGER_JOIN2(x, y) BURGER_JOIN3(x, y)
@@ -1105,6 +1105,7 @@ typedef uint64_t ulong2uint_t;
 
 // 64 bit types for 32 bit compilers
 namespace Burger {
+struct ulonglong_t;
 struct longlong_t {
 #if defined(BURGER_BIGENDIAN)
     int32_t hi;  ///< High 32 bits of the 64 bit integer
@@ -1113,6 +1114,10 @@ struct longlong_t {
     uint32_t lo; ///< Low 32 bits of the 64 bit integer
     int32_t hi;  ///< High 32 bits of the 64 bit integer
 #endif
+    BURGER_INLINE operator ulonglong_t&() BURGER_NOEXCEPT
+    {
+        return *reinterpret_cast<ulonglong_t*>(this);
+    }
 };
 
 struct ulonglong_t {
@@ -1123,6 +1128,10 @@ struct ulonglong_t {
     uint32_t lo; ///< Low 32 bits of the 64 bit integer
     uint32_t hi; ///< High 32 bits of the 64 bit integer
 #endif
+    BURGER_INLINE operator longlong_t&() BURGER_NOEXCEPT
+    {
+        return *reinterpret_cast<longlong_t*>(this);
+    }
 };
 }
 

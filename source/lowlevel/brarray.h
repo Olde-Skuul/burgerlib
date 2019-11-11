@@ -96,7 +96,7 @@ public:
 	BURGER_INLINE T &operator[](WordPtr uIndex) { BURGER_ASSERT(uIndex < m_uSize); return m_pData[uIndex]; }
 	BURGER_INLINE const T &operator[](WordPtr uIndex) const { BURGER_ASSERT(uIndex < m_uSize); return m_pData[uIndex]; }
 	BURGER_INLINE WordPtr capacity(void) const { return m_uBufferSize; }
-	BURGER_INLINE static WordPtr max_size(void) { return (256*1024*1024) / sizeof(T); }
+    static BURGER_INLINE WordPtr max_size(void) { return (256*1024*1024) / sizeof(T); }
 	BURGER_INLINE WordPtr size(void) const { return m_uSize; }
 	BURGER_INLINE Word empty(void) const { return m_uSize==0; }
 	BURGER_INLINE T& front(void) { return m_pData[0]; }

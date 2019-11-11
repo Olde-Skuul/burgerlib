@@ -67,6 +67,7 @@ private:
 	float m_fXCells;			///< Number of cells wide as a float
 	float m_fYCells;			///< Number of cells high as a float
 
+public:
 	BURGER_INLINE Entry_t *GetCell(Word uX,Word uY) const
 	{
 		BURGER_ASSERT(uX < m_uXCells);
@@ -136,6 +137,7 @@ private:
 	float m_fYCells;					///< Number of cells high as a float
 	Word m_uQueryCount;					///< Token for iterating over the grid
 
+public:
 	BURGER_INLINE SimpleArray<Entry*>* GetCell(Word uX,Word uY) const {
 		BURGER_ASSERT(uX < m_uXCells);
 		BURGER_ASSERT(uY < m_uYCells);

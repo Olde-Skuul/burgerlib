@@ -1,27 +1,28 @@
 /***************************************
 
 	Unit tests for the Static RTTI library
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "testbrstaticrtti.h"
-#include "common.h"
 #include "brstaticrtti.h"
 #include "brstringfunctions.h"
+#include "common.h"
+
 
 using namespace Burger;
 
 //
 // Create classes to test RTTI
 //
-
 
 class foo {
 public:
@@ -54,10 +55,10 @@ public:
 	BURGER_RTTI_IN_CLASS();
 };
 BURGER_CREATE_STATICRTTI_BASE(foo);
-BURGER_CREATE_STATICRTTI_PARENT(foo2,foo);
-BURGER_CREATE_STATICRTTI_PARENT(foo3,foo2);
-BURGER_CREATE_STATICRTTI_PARENT(foo4,foo2);
-BURGER_CREATE_STATICRTTI_PARENT(foo5,foo);
+BURGER_CREATE_STATICRTTI_PARENT(foo2, foo);
+BURGER_CREATE_STATICRTTI_PARENT(foo3, foo2);
+BURGER_CREATE_STATICRTTI_PARENT(foo4, foo2);
+BURGER_CREATE_STATICRTTI_PARENT(foo5, foo);
 
 //
 // Brute force tests
@@ -71,129 +72,129 @@ static Word TestRTTI(void)
 	foo3 bar3;
 	foo4 bar4;
 	foo5 bar5;
-	foo *pBar = &bar;
-	foo *pBar2 = &bar2;
-	foo *pBar3 = &bar3;
-	foo *pBar4 = &bar4;
-	foo *pBar5 = &bar5;
+	foo* pBar = &bar;
+	foo* pBar2 = &bar2;
+	foo* pBar3 = &bar3;
+	foo* pBar4 = &bar4;
+	foo* pBar5 = &bar5;
 	Word uTest;
 
-	uTest = StringCompare(pBar->GetClassName(),"foo")!=0;
-	ReportFailure("pBar->GetClassName()!='foo'",uTest);
+	uTest = StringCompare(pBar->GetClassName(), "foo") != 0;
+	ReportFailure("pBar->GetClassName()!='foo'", uTest);
 	uResult |= uTest;
-	uTest = StringCompare(pBar2->GetClassName(),"foo2")!=0;
-	ReportFailure("pBar2->GetClassName()!='foo2'",uTest);
+	uTest = StringCompare(pBar2->GetClassName(), "foo2") != 0;
+	ReportFailure("pBar2->GetClassName()!='foo2'", uTest);
 	uResult |= uTest;
-	uTest = StringCompare(pBar3->GetClassName(),"foo3")!=0;
-	ReportFailure("pBar3->GetClassName()!='foo3'",uTest);
+	uTest = StringCompare(pBar3->GetClassName(), "foo3") != 0;
+	ReportFailure("pBar3->GetClassName()!='foo3'", uTest);
 	uResult |= uTest;
-	uTest = StringCompare(pBar4->GetClassName(),"foo4")!=0;
-	ReportFailure("pBar4->GetClassName()!='foo4'",uTest);
+	uTest = StringCompare(pBar4->GetClassName(), "foo4") != 0;
+	ReportFailure("pBar4->GetClassName()!='foo4'", uTest);
 	uResult |= uTest;
-	uTest = StringCompare(pBar5->GetClassName(),"foo5")!=0;
-	ReportFailure("pBar5->GetClassName()!='foo5'",uTest);
-	uResult |= uTest;
-
-	uTest = BURGER_STATICRTTI_ISTYPE(foo,pBar)!=1;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo,pBar)!=1",uTest);
-	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo2,pBar)!=0;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo2,pBar)!=0",uTest);
-	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo3,pBar)!=0;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo3,pBar)!=0",uTest);
-	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo4,pBar)!=0;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo4,pBar)!=0",uTest);
-	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo5,pBar)!=0;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo5,pBar)!=0",uTest);
+	uTest = StringCompare(pBar5->GetClassName(), "foo5") != 0;
+	ReportFailure("pBar5->GetClassName()!='foo5'", uTest);
 	uResult |= uTest;
 
-	uTest = BURGER_STATICRTTI_ISTYPE(foo,pBar2)!=1;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo,pBar2)!=1",uTest);
+	uTest = BURGER_STATICRTTI_ISTYPE(foo, pBar) != 1;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo,pBar)!=1", uTest);
 	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo2,pBar2)!=1;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo2,pBar2)!=1",uTest);
+	uTest = BURGER_STATICRTTI_ISTYPE(foo2, pBar) != 0;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo2,pBar)!=0", uTest);
 	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo3,pBar2)!=0;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo3,pBar2)!=0",uTest);
+	uTest = BURGER_STATICRTTI_ISTYPE(foo3, pBar) != 0;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo3,pBar)!=0", uTest);
 	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo4,pBar2)!=0;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo4,pBar2)!=0",uTest);
+	uTest = BURGER_STATICRTTI_ISTYPE(foo4, pBar) != 0;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo4,pBar)!=0", uTest);
 	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo5,pBar2)!=0;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo5,pBar2)!=0",uTest);
-	uResult |= uTest;
-
-	uTest = BURGER_STATICRTTI_ISTYPE(foo,pBar3)!=1;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo,pBar3)!=1",uTest);
-	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo2,pBar3)!=1;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo2,pBar3)!=1",uTest);
-	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo3,pBar3)!=1;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo3,pBar3)!=1",uTest);
-	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo4,pBar3)!=0;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo4,pBar3)!=0",uTest);
-	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo5,pBar3)!=0;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo5,pBar3)!=0",uTest);
+	uTest = BURGER_STATICRTTI_ISTYPE(foo5, pBar) != 0;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo5,pBar)!=0", uTest);
 	uResult |= uTest;
 
-	uTest = BURGER_STATICRTTI_ISTYPE(foo,pBar4)!=1;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo,pBar4)!=1",uTest);
+	uTest = BURGER_STATICRTTI_ISTYPE(foo, pBar2) != 1;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo,pBar2)!=1", uTest);
 	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo2,pBar4)!=1;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo2,pBar4)!=1",uTest);
+	uTest = BURGER_STATICRTTI_ISTYPE(foo2, pBar2) != 1;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo2,pBar2)!=1", uTest);
 	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo3,pBar4)!=0;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo3,pBar4)!=0",uTest);
+	uTest = BURGER_STATICRTTI_ISTYPE(foo3, pBar2) != 0;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo3,pBar2)!=0", uTest);
 	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo4,pBar4)!=1;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo4,pBar4)!=1",uTest);
+	uTest = BURGER_STATICRTTI_ISTYPE(foo4, pBar2) != 0;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo4,pBar2)!=0", uTest);
 	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo5,pBar4)!=0;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo5,pBar4)!=0",uTest);
+	uTest = BURGER_STATICRTTI_ISTYPE(foo5, pBar2) != 0;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo5,pBar2)!=0", uTest);
 	uResult |= uTest;
 
-	uTest = BURGER_STATICRTTI_ISTYPE(foo,pBar5)!=1;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo,pBar5)!=1",uTest);
+	uTest = BURGER_STATICRTTI_ISTYPE(foo, pBar3) != 1;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo,pBar3)!=1", uTest);
 	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo2,pBar5)!=0;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo2,pBar5)!=0",uTest);
+	uTest = BURGER_STATICRTTI_ISTYPE(foo2, pBar3) != 1;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo2,pBar3)!=1", uTest);
 	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo3,pBar5)!=0;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo3,pBar5)!=0",uTest);
+	uTest = BURGER_STATICRTTI_ISTYPE(foo3, pBar3) != 1;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo3,pBar3)!=1", uTest);
 	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo4,pBar5)!=0;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo4,pBar5)!=0",uTest);
+	uTest = BURGER_STATICRTTI_ISTYPE(foo4, pBar3) != 0;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo4,pBar3)!=0", uTest);
 	uResult |= uTest;
-	uTest = BURGER_STATICRTTI_ISTYPE(foo5,pBar5)!=1;
-	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo5,pBar5)!=1",uTest);
+	uTest = BURGER_STATICRTTI_ISTYPE(foo5, pBar3) != 0;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo5,pBar3)!=0", uTest);
+	uResult |= uTest;
+
+	uTest = BURGER_STATICRTTI_ISTYPE(foo, pBar4) != 1;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo,pBar4)!=1", uTest);
+	uResult |= uTest;
+	uTest = BURGER_STATICRTTI_ISTYPE(foo2, pBar4) != 1;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo2,pBar4)!=1", uTest);
+	uResult |= uTest;
+	uTest = BURGER_STATICRTTI_ISTYPE(foo3, pBar4) != 0;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo3,pBar4)!=0", uTest);
+	uResult |= uTest;
+	uTest = BURGER_STATICRTTI_ISTYPE(foo4, pBar4) != 1;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo4,pBar4)!=1", uTest);
+	uResult |= uTest;
+	uTest = BURGER_STATICRTTI_ISTYPE(foo5, pBar4) != 0;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo5,pBar4)!=0", uTest);
+	uResult |= uTest;
+
+	uTest = BURGER_STATICRTTI_ISTYPE(foo, pBar5) != 1;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo,pBar5)!=1", uTest);
+	uResult |= uTest;
+	uTest = BURGER_STATICRTTI_ISTYPE(foo2, pBar5) != 0;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo2,pBar5)!=0", uTest);
+	uResult |= uTest;
+	uTest = BURGER_STATICRTTI_ISTYPE(foo3, pBar5) != 0;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo3,pBar5)!=0", uTest);
+	uResult |= uTest;
+	uTest = BURGER_STATICRTTI_ISTYPE(foo4, pBar5) != 0;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo4,pBar5)!=0", uTest);
+	uResult |= uTest;
+	uTest = BURGER_STATICRTTI_ISTYPE(foo5, pBar5) != 1;
+	ReportFailure("BURGER_STATICRTTI_ISTYPE(foo5,pBar5)!=1", uTest);
 	uResult |= uTest;
 
 	// Will properly upcast
-	foo5 *pTemp = BURGER_RTTICAST(foo5,pBar5);
-	uTest = pTemp==NULL;
-	ReportFailure("BURGER_RTTICAST(foo5,pBar5)==NULL",uTest);
+	foo5* pTemp = BURGER_RTTICAST(foo5, pBar5);
+	uTest = pTemp == NULL;
+	ReportFailure("BURGER_RTTICAST(foo5,pBar5)==NULL", uTest);
 	uResult |= uTest;
 
-	const foo5 *pCTemp = BURGER_RTTICONSTCAST(foo5,pBar5);
-	uTest = pCTemp==NULL;
-	ReportFailure("BURGER_RTTICONSTCAST(foo5,pBar5)==NULL",uTest);
+	const foo5* pCTemp = BURGER_RTTICONSTCAST(foo5, pBar5);
+	uTest = pCTemp == NULL;
+	ReportFailure("BURGER_RTTICONSTCAST(foo5,pBar5)==NULL", uTest);
 	uResult |= uTest;
 
 	// Will return NULL since these classes are not a foo5
-	pTemp = BURGER_RTTICAST(foo5,pBar4);
-	uTest = pTemp!=NULL;
-	ReportFailure("BURGER_RTTICONSTCAST(foo5,pBar4)==NULL",uTest);
+	pTemp = BURGER_RTTICAST(foo5, pBar4);
+	uTest = pTemp != NULL;
+	ReportFailure("BURGER_RTTICONSTCAST(foo5,pBar4)==NULL", uTest);
 	uResult |= uTest;
 
-	pCTemp = BURGER_RTTICONSTCAST(foo5,pBar3);
-	uTest = pCTemp!=NULL;
-	ReportFailure("BURGER_RTTICONSTCAST(foo5,pBar3)==NULL",uTest);
+	pCTemp = BURGER_RTTICONSTCAST(foo5, pBar3);
+	uTest = pCTemp != NULL;
+	ReportFailure("BURGER_RTTICONSTCAST(foo5,pBar3)==NULL", uTest);
 	uResult |= uTest;
 	return uResult;
 }
@@ -202,12 +203,16 @@ static Word TestRTTI(void)
 // Perform all the tests for the Burgerlib Static RTTI
 //
 
-int BURGER_API TestBrstaticrtti(void)
+int BURGER_API TestBrstaticrtti(Word uVerbose)
 {
-	Word uTotal;	// Assume no failures
+	if (uVerbose & VERBOSE_MSG) {
+		Message("Running Static RTTI tests");
+	}
 
-	Message("Running Static RTTI tests");
-	uTotal = TestRTTI();
+	Word uTotal = TestRTTI();
 
+	if (!uTotal && (uVerbose & VERBOSE_MSG)) {
+		Message("Passed all Static RTTI tests!");
+	}
 	return static_cast<int>(uTotal);
 }

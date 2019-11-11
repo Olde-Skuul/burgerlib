@@ -123,6 +123,7 @@ INCLUDE_DIRS = $(SOURCE_DIRS)
 INCLUDE_DIRS +=;$(BURGER_SDKS)/windows/perforce
 INCLUDE_DIRS +=;$(BURGER_SDKS)/windows/directx9
 INCLUDE_DIRS +=;$(BURGER_SDKS)/windows/opengl
+INCLUDE_DIRS +=;$(BURGER_SDKS)/windows/windows5
 
 #
 # Tell WMAKE where to find the files to work with
@@ -272,6 +273,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/breffectpositiontexturecolor.obj &
 	$(A)/breffectstaticpositiontexture.obj &
 	$(A)/brendian.obj &
+	$(A)/brerror.obj &
 	$(A)/brfile.obj &
 	$(A)/brfileansihelpers.obj &
 	$(A)/brfileapf.obj &
@@ -326,6 +328,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brimports3m.obj &
 	$(A)/brimportxm.obj &
 	$(A)/brinputmemorystream.obj &
+	$(A)/brintrinsics.obj &
 	$(A)/brisolatin1.obj &
 	$(A)/brjoypad.obj &
 	$(A)/brjoypadwindows.obj &

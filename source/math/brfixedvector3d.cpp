@@ -184,9 +184,9 @@ void BURGER_API Burger::FixedVector3D_t::Set(const Vector3D_t *pInput)
 
 void BURGER_API Burger::FixedVector3D_t::SetAsInt(const Vector3D_t *pInput)
 {
-	FloatToIntNearest(reinterpret_cast<Int32*>(&x),pInput->x);
-	FloatToIntNearest(reinterpret_cast<Int32*>(&y),pInput->y);
-	FloatToIntNearest(reinterpret_cast<Int32*>(&z),pInput->z);
+	FloatToIntRound(reinterpret_cast<Int32*>(&x),pInput->x);
+	FloatToIntRound(reinterpret_cast<Int32*>(&y),pInput->y);
+	FloatToIntRound(reinterpret_cast<Int32*>(&z),pInput->z);
 }
 
 /*! ************************************

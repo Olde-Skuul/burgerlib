@@ -1657,6 +1657,12 @@
 					RelativePath="..\source\lowlevel\brendian.h">
 				</File>
 				<File
+					RelativePath="..\source\lowlevel\brerror.cpp">
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brerror.h">
+				</File>
+				<File
 					RelativePath="..\source\lowlevel\brglobals.cpp">
 				</File>
 				<File
@@ -1673,6 +1679,15 @@
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brguid.h">
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brintelcompiler.h">
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brintrinsics.cpp">
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brintrinsics.h">
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brlastinfirstout.cpp">

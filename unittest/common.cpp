@@ -1,111 +1,119 @@
 /***************************************
 
-	Unit tests for burgerlib
+    Unit tests for burgerlib
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2018 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "common.h"
-#include "testbrtypes.h"
-#include "testbrendian.h"
-#include "testbrfloatingpoint.h"
-#include "testbrfixedpoint.h"
-#include "testbrhashes.h"
-#include "testbrstrings.h"
+#include "brcommandparameterbooltrue.h"
+#include "brconsolemanager.h"
+#include "brglobals.h"
+#include "createtables.h"
+#include "testbralgorithm.h"
 #include "testbrcompression.h"
-#include "testbrtimedate.h"
+#include "testbrdisplay.h"
+#include "testbrendian.h"
+#include "testbrfileloaders.h"
+#include "testbrfilemanager.h"
+#include "testbrfixedpoint.h"
+#include "testbrfloatingpoint.h"
+#include "testbrhashes.h"
 #include "testbrmatrix3d.h"
 #include "testbrmatrix4d.h"
-#include "testbrstaticrtti.h"
-#include "testbrdisplay.h"
-#include "testbrfilemanager.h"
-#include "testbrfileloaders.h"
+#include "testbrnetwork.h"
 #include "testbrprintf.h"
-#include "createtables.h"
-#include "brconsolemanager.h"
-#include "brcommandparameterbooltrue.h"
+#include "testbrstaticrtti.h"
+#include "testbrstrings.h"
+#include "testbrtimedate.h"
+#include "testbrtypes.h"
+#include "testcharset.h"
 #include <stdarg.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
+
+using namespace Burger;
 
 #if defined(BURGER_WINDOWS)
-#ifndef WIN32_LEAN_AND_MEAN
+
+#if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
+
 #include <windows.h>
 #endif
 
-#if defined(BURGER_XBOX) || defined(BURGER_XBOX360) || (defined(BURGER_WINDOWS) && !defined(BURGER_WATCOM) && !defined(BURGER_METROWERKS))
+#if (defined(_MSC_VER) && (_MSC_VER<1400)) || (defined(BURGER_METROWERKS) && !defined(__MSL__))
+#else
 #define USESECURE
 #endif
 
 //
-// Boolean string to display PASSED on "false" and
-// FAILED if "true".
+// Boolean string to display PASSED on "false" and FAILED if "true".
 //
 
-static const char *cFailed[2] = {
-	"PASSED",
-	"FAILED"
-};
+static const char* cFailed[2] = {"PASSED", "FAILED"};
 
 //
-// Set to true if only failed tests are to be output.
-// false will display all warnings.
+// Set to true if only failed tests are to be output. false will display all
+// warnings.
 //
 
 static Word g_ErrorOnly = TRUE;
 
 //
-// Data pattern that's unlikely to be found in a unit test.
-// Used to simulate uninitialized memory
+// Data pattern that's unlikely to be found in a unit test. Used to simulate
+// uninitialized memory
 //
 
-static const Word8 g_BlastPattern[16] = {
-	0xD5,0xAA,0x96,0xDE,0xAA,0xDE,0xAD,0xBE,
-	0xEF,0x91,0x19,0x0F,0xF0,0xCA,0xFE,0x44
-};
+static const Word8 g_BlastPattern[16] = {0xD5, 0xAA, 0x96, 0xDE, 0xAA, 0xDE,
+	0xAD, 0xBE, 0xEF, 0x91, 0x19, 0x0F, 0xF0, 0xCA, 0xFE, 0x44};
 
 /***************************************
 
-	Output the test failures to stderr and
-	for Windows platforms, OutputDebugString()
+	Output the test failures to stderr and for Windows platforms,
+	OutputDebugString()
 
 	\param pTemplate Error message formatted for printf
-	\param uFailure FALSE if no failure (And no debug spew), non-FALSE, print the error
+	\param uFailure FALSE if no failure (And no debug spew), non-FALSE, print
+		the error
 
 ***************************************/
 
-void BURGER_ANSIAPI ReportFailure(const char *pTemplate,Word uFailure,...)
+void BURGER_ANSIAPI ReportFailure(const char* pTemplate, Word uFailure, ...)
 {
 	if (!g_ErrorOnly || uFailure) {
 		va_list Args;
 		char TempString[2048];
-		memcpy(TempString,cFailed[uFailure!=0],6);
+		memcpy(TempString, cFailed[uFailure != 0], 6);
 		WordPtr uEndMark;
-		if (pTemplate) {						// No message, no error!
-			va_start(Args,uFailure);		// Start parm passing
-			TempString[6]=' ';
+		if (pTemplate) {			  // No message, no error!
+			va_start(Args, uFailure); // Start parm passing
+			TempString[6] = ' ';
 #if defined(USESECURE)
-			uEndMark = vsprintf_s(TempString+7,sizeof(TempString)-9,pTemplate,Args)+7U;		// Create the message
+			uEndMark = vsnprintf(TempString + 7, sizeof(TempString) - 9,
+						   pTemplate, Args)
+				+ 7U; // Create the message
 #else
-			uEndMark = vsprintf(TempString+7,pTemplate,Args)+7U;		// Create the message
+			uEndMark = vsprintf(TempString + 7, pTemplate, Args)
+				+ 7U; // Create the message
 #endif
-			va_end(Args);					// End parm passing
+			va_end(Args); // End parm passing
 		} else {
-			uEndMark = 6;		// Kill the string
+			uEndMark = 6; // Kill the string
 		}
 		TempString[uEndMark] = '\n';
-		fwrite(TempString,1,uEndMark+1,stdout);
+		fwrite(TempString, 1, uEndMark + 1, stdout);
 #if defined(BURGER_WINDOWS)
-		TempString[uEndMark+1] = '\0';
+		TempString[uEndMark + 1] = '\0';
 		OutputDebugStringA(TempString);
 #endif
 	}
@@ -113,30 +121,31 @@ void BURGER_ANSIAPI ReportFailure(const char *pTemplate,Word uFailure,...)
 
 /***************************************
 
-	Output a message to stdout and for Windows
-	OutputDebugString
+	Output a message to stdout and for Windows OutputDebugString
 
 	\param pMessage String formatted for printf
 
 ***************************************/
 
-void BURGER_ANSIAPI Message(const char *pMessage,...)
+void BURGER_ANSIAPI Message(const char* pMessage, ...)
 {
 	if (pMessage && pMessage[0]) {
 		va_list Args;
 		char TempString[2048];
 		WordPtr uEndMark;
-		va_start(Args,pMessage);		// Start parm passing
+		va_start(Args, pMessage); // Start parm passing
 #if defined(USESECURE)
-		uEndMark = vsprintf_s(TempString,sizeof(TempString)-2,pMessage,Args)+0U;		// Create the message
+		uEndMark = vsnprintf(TempString, sizeof(TempString) - 2, pMessage, Args)
+			+ 0U; // Create the message
 #else
-		uEndMark = vsprintf(TempString,pMessage,Args)+0U;		// Create the message
+		uEndMark =
+			vsprintf(TempString, pMessage, Args) + 0U; // Create the message
 #endif
-		va_end(Args);					// End parm passing
+		va_end(Args); // End parm passing
 		TempString[uEndMark] = '\n';
-		fwrite(TempString,1,uEndMark+1,stdout);
+		fwrite(TempString, 1, uEndMark + 1, stdout);
 #if defined(BURGER_WINDOWS)
-		TempString[uEndMark+1] = '\0';
+		TempString[uEndMark + 1] = '\0';
 		OutputDebugStringA(TempString);
 #endif
 	}
@@ -145,23 +154,23 @@ void BURGER_ANSIAPI Message(const char *pMessage,...)
 /***************************************
 
 	\brief Fill a buffer with a known byte pattern
-	Take a 16 byte pattern and fill the buffer with it.
-	This is designed to check for buffer overruns or
-	underruns by looking for an unlikely data pattern in
-	memory
+
+	Take a 16 byte pattern and fill the buffer with it. This is designed to
+	check for buffer overruns or underruns by looking for an unlikely data
+pattern in memory
 
 	\param pOutput Buffer to fill with the pattern
 	\param uSize Size of the buffer to fill with the pattern
 
 ***************************************/
 
-void BURGER_API BlastBuffer(void *pOutput,WordPtr uSize)
+void BURGER_API BlastBuffer(void* pOutput, WordPtr uSize)
 {
 	WordPtr i = 0;
 	do {
-		static_cast<Word8 *>(pOutput)[0] = g_BlastPattern[i];
-		i=(i+1)&15;
-		pOutput = static_cast<Word8 *>(pOutput)+1;
+		static_cast<Word8*>(pOutput)[0] = g_BlastPattern[i];
+		i = (i + 1) & 15;
+		pOutput = static_cast<Word8*>(pOutput) + 1;
 	} while (--uSize);
 }
 
@@ -169,33 +178,37 @@ void BURGER_API BlastBuffer(void *pOutput,WordPtr uSize)
 
 	\brief Test a buffer with a known byte pattern
 
-	Check to see if the "uninitialized" memory is still
-	untouched. There will be a pie
-	and check the "out of bounds memory" if it matches
-	the fill buffer from the function BlastBuffer().
+	Check to see if the "uninitialized" memory is still untouched. There will be
+	a pie and check the "out of bounds memory" if it matches the fill buffer
+from the function BlastBuffer().
 
-	This is used to verify memory write functions to ensure
-	that there is no buffer over or under run.
+	This is used to verify memory write functions to ensure that there is no
+	buffer over or under run.
 
 	\param pBuffer Buffer to fill with the pattern
 	\param uSize Size of the buffer to fill with the pattern
 
 ***************************************/
 
-Word BURGER_API VerifyBuffer(const void *pBuffer,WordPtr uSize,const void *pInput,WordPtr uSkip)
+Word BURGER_API VerifyBuffer(
+	const void* pBuffer, WordPtr uSize, const void* pInput, WordPtr uSkip)
 {
-	WordPtr i=0;	// Index to the BlastPattern buffer
-	Word uResult=FALSE;
+	WordPtr i = 0; // Index to the BlastPattern
+				   // buffer
+	Word uResult = FALSE;
 	// Get the offset mark. Note that "negative" numbers become huge positive
-	// numbers so the uMark>=uSkip test works for both before and after the skip buffer
-	WordPtr uMark=static_cast<WordPtr>(static_cast<const Word8*>(pBuffer)-static_cast<const Word8 *>(pInput));
+	// numbers so the uMark>=uSkip test works for both before and after the skip
+	// buffer
+	WordPtr uMark = static_cast<WordPtr>(
+		static_cast<const Word8*>(pBuffer) - static_cast<const Word8*>(pInput));
 	do {
 		// Check if it's in the "skip" area.
-		if (uMark>=uSkip) {
-			uResult |= (static_cast<const Word8 *>(pBuffer)[0] != g_BlastPattern[i]);
+		if (uMark >= uSkip) {
+			uResult |=
+				(static_cast<const Word8*>(pBuffer)[0] != g_BlastPattern[i]);
 		}
-		i=(i+1)&15;		// Wrap around the BlastPattern Buffer
-		pBuffer = static_cast<const Word8 *>(pBuffer)+1;
+		i = (i + 1) & 15; // Wrap around the BlastPattern Buffer
+		pBuffer = static_cast<const Word8*>(pBuffer) + 1;
 		++uMark;
 	} while (--uSize);
 	return uResult;
@@ -205,64 +218,132 @@ Word BURGER_API VerifyBuffer(const void *pBuffer,WordPtr uSize,const void *pInpu
 // Test everything
 //
 
-int BURGER_ANSIAPI main(int argc,const char **argv)
+int BURGER_ANSIAPI main(int argc,const char** argv)
 {
-	Word bVerbose = TRUE;
+	Word uVerbose = VERBOSE_ALL;
 	int iResult = 0;
-	Word bDoTests = TRUE;
+	Word bVersion;
 
-	// On systems that support a command line, allow the command line
-	// to be parsed and handle the tests based on the input
+	// On systems that support a command line, allow the command line to be
+	// parsed and handle the tests based on the input
 
+	ConsoleApp MyApp(argc, argv);
 #if defined(ALLOWCOMMANDLINE)
-	Burger::ConsoleApp MyApp(argc,argv);
-	Burger::CommandParameterBooleanTrue Verbose("Verbose output","v");
-	Burger::CommandParameterBooleanTrue WriteTables("Generate data tables","t");
+	CommandParameterBooleanTrue Version("Show version and exit", "version");
+	CommandParameterBooleanTrue WriteTables(
+		"Generate data tables and exit", "table");
+	CommandParameterBooleanTrue AllTests("Perform all tests", "all");
 
-	const Burger::CommandParameter *MyParms[] = {
-		&Verbose,&WriteTables
-	};
+	CommandParameterBooleanTrue Verbose("Verbose output", "v");
+	CommandParameterBooleanTrue ShowMacros("Show Macros", "macros");
+	CommandParameterBooleanTrue DialogTests("Dialog tests", "dialog");
+	CommandParameterBooleanTrue NetworkTests("Network tests", "network");
+	CommandParameterBooleanTrue TimeTests("Time tests", "time");
+	CommandParameterBooleanTrue DisplayTests("Display tests", "display");
+	CommandParameterBooleanTrue FileTests("File tests", "file");
+	CommandParameterBooleanTrue CompressTests("Compression tests", "compress");
 
-	iResult = Burger::CommandParameter::Process(MyApp.GetArgc(),MyApp.GetArgv(),MyParms,sizeof(MyParms)/sizeof(MyParms[0]),
+	const CommandParameter* MyParms[] = {&Version, &WriteTables, &AllTests,
+		&Verbose, &ShowMacros, &DialogTests, &NetworkTests, &TimeTests,
+		&DisplayTests, &FileTests, &CompressTests};
+
+	iResult = CommandParameter::Process(MyApp.GetArgc(), MyApp.GetArgv(),
+		MyParms, sizeof(MyParms) / sizeof(MyParms[0]),
 		"Usage: unittests\n\n"
 		"This program tests Burgerlib\n");
 
-	if (iResult<0) {
-		bDoTests = FALSE;
-	}
-	bVerbose = Verbose.GetValue();
+	bVersion = Version.GetValue();
 
+	// Determine the tests to perform
+	if (iResult < 0) {
+		uVerbose = VERBOSE_DISABLE;
+	} else if (AllTests.GetValue()) {
+		uVerbose = VERBOSE_ALL;
+		bVersion = TRUE;
+	} else {
+		uVerbose = VERBOSE_DOTESTS;
+		if (Verbose.GetValue()) {
+			uVerbose |= VERBOSE_MSG;
+		}
+		if (ShowMacros.GetValue()) {
+			uVerbose |= VERBOSE_MACROS;
+		}
+		if (DialogTests.GetValue()) {
+			uVerbose |= VERBOSE_DIALOGS;
+		}
+		if (NetworkTests.GetValue()) {
+			uVerbose |= VERBOSE_NETWORK;
+		}
+		if (TimeTests.GetValue()) {
+			uVerbose |= VERBOSE_TIME;
+		}
+		if (DisplayTests.GetValue()) {
+			uVerbose |= VERBOSE_DISPLAY;
+		}
+		if (FileTests.GetValue()) {
+			uVerbose |= VERBOSE_FILE;
+		}
+		if (CompressTests.GetValue()) {
+			uVerbose |= VERBOSE_COMPRESS;
+		}
+	}
+
+	// Special cases
+
+	// Write out the data tables.
 	if (WriteTables.GetValue()) {
 		WriteDataTables();
-		bDoTests = FALSE;
+		uVerbose = VERBOSE_DISABLE;
 		iResult = 0;
 	}
-
 
 #else
 	BURGER_UNUSED(argc);
 	BURGER_UNUSED(argv);
+	// Create an instance of the memory manager so tests that allocate memory
+	// won't fail
+	bVersion = TRUE;
 #endif
 
-	if (bDoTests) {
-		iResult = TestBrtypes(bVerbose);
-		iResult |= TestBrendian(bVerbose);
-		iResult |= TestBrfixedpoint(bVerbose);
-		iResult |= TestBrfloatingpoint(bVerbose);
-		iResult |= TestBrhashes(bVerbose);
+	if (uVerbose & VERBOSE_DOTESTS) {
+		if (bVersion) {
+			Word32 uVersion = Globals::Version();
+			Word32 uBuild = Globals::VersionBuild();
+			Message("Burgerlib version %d.%d build #%u", uVersion >> 24U,
+				(uVersion >> 16U) & 0xFF, uBuild);
+		}
+
+		// Perform the main tests
+		iResult = TestBrtypes(uVerbose);
+		iResult |= TestBrendian(uVerbose);
+		iResult |= TestBralgorithm(uVerbose);
+		iResult |= TestBrfixedpoint(uVerbose);
+		iResult |= TestBrfloatingpoint(uVerbose);
+		iResult |= TestBrmatrix3d(uVerbose);
+		iResult |= TestBrmatrix4d(uVerbose);
+		iResult |= TestBrstaticrtti(uVerbose);
+		iResult |= TestBrhashes(uVerbose);
+		iResult |= TestCharset(uVerbose);
+		iResult |= TestBrstrings(uVerbose);
+		iResult |= TestStdoutHelpers(uVerbose);
+		iResult |= TestDateTime(uVerbose);
+		iResult |= TestNetwork(uVerbose);
+		iResult |= TestBrcompression(uVerbose);
+		iResult |= TestBrFileManager(uVerbose);
+
+		if (uVerbose & VERBOSE_DIALOGS) {
+			TestBrDialogs();
+		}
+
+		if (uVerbose & VERBOSE_DISPLAY) {
+			iResult |= TestBrDisplay();
+		}
 
 #if 0
 		CreateTables();
-		iResult |= TestBrmatrix3d();
-		iResult |= TestBrmatrix4d();
-		iResult |= TestBrstrings();
-		iResult |= TestBrstaticrtti();
-		iResult |= TestBrcompression();
-		iResult |= TestBrDisplay();
-		iResult |= TestDateTime();
-		iResult |= TestStdoutHelpers(bVerbose);
+
 		iResult |= TestBrprintf();
-		iResult |= FileManagerTest(bVerbose);
+
 		iResult |= FileLoaderTest(bVerbose);
 #endif
 	}

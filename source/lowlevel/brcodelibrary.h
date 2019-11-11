@@ -18,6 +18,10 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRERROR_H__
+#include "brerror.h"
+#endif
+
 #if defined(BURGER_WINDOWS) && !defined(__BRWINDOWSTYPES_H__)
 #include "brwindowstypes.h"
 #endif

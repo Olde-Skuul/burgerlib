@@ -21,72 +21,81 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#if !defined(DOXYGEN)
-#if defined(BURGER_XBOX) || defined(BURGER_XBOX360) || (defined(BURGER_WINDOWS) && !defined(BURGER_WATCOM) && !defined(BURGER_METROWERKS))
-#define USESECURE
-#endif
+#if !(defined(BURGER_MAC) && !defined(__MSL__)) && !(defined(_MSC_VER) && (_MSC_VER<1400)) && !defined(DOXYGEN)
+#define HASVSNPRINTF
 #endif
 
 /*! ************************************
 
-	\class Burger::Debug
-	\brief Class of functions to assist in debugging
+	\namespace Burger::Debug
+	\brief Group of functions to assist in debugging
 
 	These thread safe functions will print messages to the
 	debug console of the attached debugger and
 	if a debugger is not available, the output
-	will be logged into a text file
+	will be logged into a text file on applicable
+	platforms.
 
-	\sa Burger::Globals
+	\sa \ref Globals
 	
 ***************************************/
+
+
 
 /*! ************************************
 
 	\brief A fatal error has occurred, print message, then exit.
 	
 	If the input message pointer is not \ref NULL, then print
-	the message string into the global error string buffer
-	using printf() rules.
+	the message string using printf() rules.
 	
-	This message, if any, will be output through \ref Burger::Debug::Message()
+	This message, if any, will be output through \ref Debug::Message()
 	which either outputs it to a log file or a debugger's console (If
 	a debugger is present and running).
-		
-	\code
-	if (TestError) {
-		Burger::Debug::Fatal("Fatal error, file %s was not found.",pFileName);
-		return;
-	}
-	\endcode
-	
-	\note This will call exit() with a default error code of 1. You
-	must call \ref Burger::Globals::SetErrorCode() to change the code to something else.
+			
+	\note This will call Globals::Shutdown() with a default error code of 1. You
+	must call \ref Globals::SetErrorCode() to change the code to something else.
 	
 	Secondly, this function won't return unless it was called while
-	Burger::Globals::Shutdown(), then this function CAN return, so you must
+	Globals::Shutdown() was already invoked, then this function CAN return, so you must
 	add a return statement after calling this function in the case
 	that there is a recursion error in progress.
 	
+	\code
+	if (TestError) {
+		Debug::Fatal("Fatal error, file %s was not found.",pFileName);
+		return;
+	}
+	\endcode
+
 	\param pMessage Pointer to a string suitable for printf or \ref NULL.
-	
-	\sa Burger::Debug::Warning
+	\return 0 if this function returns. In most cases, this function never returns.
+
+	\sa Debug::Warning, Globals::GetExitFlag() and Globals::Shutdown()
 	
 ***************************************/
 
 Word BURGER_ANSIAPI Burger::Debug::Fatal(const char *pMessage,...)
 {
 	if (!Globals::GetExitFlag()) {
-		va_list Args;
+
 		if (pMessage) {		// Message to print?
+			char TempBuffer[512];
+
+			va_list Args;
 			va_start(Args,pMessage);
-			vsprintf(Globals::GetErrorMsg(),pMessage,Args);	// Create the message
+#if defined(HASVSNPRINTF)
+			vsnprintf(TempBuffer,sizeof(TempBuffer),pMessage,Args);
+#else
+			vsprintf(TempBuffer,pMessage,Args);	// Create the message
+#endif
 			va_end(Args);
-			String(Globals::GetErrorMsg());		// Print it
+
+			PrintString(TempBuffer);		// Print it
 		}
 		Globals::Shutdown();	// Exit to OS
 	}
-	return FALSE;				// Return FALSE for \ref BURGER_ASSERTTEST()
+	return 0;					// Return 0 for \ref BURGER_ASSERTTEST()
 }
 
 /*! ************************************
@@ -98,11 +107,11 @@ Word BURGER_ANSIAPI Burger::Debug::Fatal(const char *pMessage,...)
 	using printf() rules. If it's \ref NULL, do nothing to the error message buffer.
 	
 	If \ref Globals::SetErrorCode() was called with \ref TRUE, this function
-	will then treat this warning as an error and call \ref Burger::Debug::Fatal(const char *pFatalMsg,...) and exit.
+	will then treat this warning as an error and call \ref Debug::Fatal(const char *pFatalMsg,...) and exit.
 		
 	\code
 	if (TestError) {
-		Burger::Debug::Warning("Warning, file %s was not found.",pFileName);
+		Debug::Warning("Warning, file %s was not found.",pFileName);
 		return;
 	}
 	\endcode
@@ -113,30 +122,41 @@ Word BURGER_ANSIAPI Burger::Debug::Fatal(const char *pMessage,...)
 		
 	\param pMessage Pointer to a string suitable for printf or \ref NULL.
 	
-	\sa Burger::Debug::Fatal(const char *pFatalMsg,...)
+	\sa Debug::Fatal(const char *pFatalMsg,...)
 	
 ***************************************/
 
 void BURGER_ANSIAPI Burger::Debug::Warning(const char *pMessage,...)
 {
-	va_list Args;
+	char TempBuffer[512];
+	// Ensure the buffer is a valid "C" string
+	TempBuffer[0] = 0;
+
 	if (pMessage) {						// No message, no error!
-		va_start(Args,pMessage);		// Start parm passing
-#if defined(USESECURE)
-		vsprintf_s(Globals::GetErrorMsg(),512,pMessage,Args);		// Create the message
-#else
-		vsprintf(Globals::GetErrorMsg(),pMessage,Args);		// Create the message
-		BURGER_ASSERT(StringLength(Globals::GetErrorMsg())<512);
-#endif
-		va_end(Args);					// End parm passing
+
 		// Should the warning be printed?
 		if ((Globals::GetTraceFlag()&Globals::TRACE_WARNINGS) ||
 			Globals::GetErrorBombFlag()) {
-			String(Globals::GetErrorMsg());
+
+			va_list Args;
+			va_start(Args,pMessage);		// Start parameter passing
+#if defined(HASVSNPRINTF)
+			vsnprintf(TempBuffer,sizeof(TempBuffer),pMessage,Args);		// Create the message
+#else
+			vsprintf(TempBuffer,pMessage,Args);		// Create the message
+			BURGER_ASSERT(StringLength(TempBuffer)<sizeof(TempBuffer));
+#endif
+			va_end(Args);					// End parameter passing
+
+			PrintString(TempBuffer);
 		}
 	}
-	if (Globals::GetErrorBombFlag()) {	// Bomb on ANY Error?
-		Fatal(NULL);					// Force a fatal error with the stored message
+
+	// Bomb on ANY Error?
+	if (Globals::GetErrorBombFlag()) {	
+		// Print the buffer as is, do not apply printf on it.
+		// Which is why %s is used.
+		Fatal("%s",TempBuffer);			// Force a fatal error with the stored message
 	}
 }
 
@@ -150,30 +170,33 @@ void BURGER_ANSIAPI Burger::Debug::Warning(const char *pMessage,...)
 	the message to the output stream, which is a console or an
 	attached debugger
 
-	\sa Debug::String(const char *), Debug::String(Word32) and Debug::String(Word64)
+	\sa Debug::PrintString(const char *), Debug::PrintString(Word32) and Debug::PrintString(Word64)
 
 ***************************************/
 
 void BURGER_ANSIAPI Burger::Debug::Message(const char *pMessage,...)
 {
-	va_list Args;
-	// Local string buffer
-	char TempBuffer[2048];
 	// No message, no output!
 	if (pMessage) {
+
+		// Local string buffer
+		char TempBuffer[2048];
+
+		va_list Args;
 		// Start parameter passing
 		va_start(Args,pMessage);
 		// Create the message in a single buffer
-#if defined(USESECURE)
-		vsprintf_s(TempBuffer,sizeof(TempBuffer),pMessage,Args);
+#if defined(HASVSNPRINTF)
+		vsnprintf(TempBuffer,sizeof(TempBuffer),pMessage,Args);
 #else
 		vsprintf(TempBuffer,pMessage,Args);
 		BURGER_ASSERT(StringLength(TempBuffer)<sizeof(TempBuffer));
 #endif
 		// End the parameter passing
 		va_end(Args);
+
 		// Actually print the message to the console
-		String(TempBuffer);
+		PrintString(TempBuffer);
 	}
 }
 
@@ -191,19 +214,23 @@ void BURGER_ANSIAPI Burger::Debug::Message(const char *pMessage,...)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
-void BURGER_API Burger::Debug::String(const char *pString)
+void BURGER_API Burger::Debug::PrintString(const char *pString)
 {
 	if (pString && !Globals::GetExitFlag()) {
 		WordPtr i = StringLength(pString);
 		if (i) {
-#if defined(BURGER_IOS)
-			fwrite(pString,1,i,stdout);
-#else
+
+			// MacOS 9/Carbon doesn't have a console,
+			// so send the data to a file
+#if defined(BURGER_MAC)
 			File MyFile;
 			if (MyFile.Open("9:LogFile.Txt",File::APPEND)==File::OKAY) {
 				MyFile.Write(pString,i);		// Send the string to the log file
 				MyFile.Close();
 			}
+#else
+			// Send to stdout on all other platforms
+			fwrite(pString,1,i,stdout);
 #endif
 		}
 	}
@@ -213,27 +240,27 @@ void BURGER_API Burger::Debug::String(const char *pString)
 /*! ************************************
 
 	\brief Print a Word32 to the debug port
-	\sa Debug::String(Word64)
+	\sa Debug::PrintString(Word64)
 
 ***************************************/
 
-void BURGER_API Burger::Debug::String(Word32 uInput)
+void BURGER_API Burger::Debug::PrintString(Word32 uInput)
 {
 	NumberString TempBuffer(uInput);
-	String(TempBuffer);
+	PrintString(TempBuffer);
 }
 
 /*! ************************************
 
 	\brief Print a Word32 to the debug port
-	\sa Debug::String(Word32)
+	\sa Debug::PrintString(Word32)
 
 ***************************************/
 
-void BURGER_API Burger::Debug::String(Word64 uInput)
+void BURGER_API Burger::Debug::PrintString(Word64 uInput)
 {
 	NumberString TempBuffer(uInput);
-	String(TempBuffer);
+	PrintString(TempBuffer);
 }
 
 /*! ************************************
@@ -266,13 +293,13 @@ Word BURGER_API Burger::Debug::IsDebuggerPresent(void)
 void BURGER_API Burger::Debug::PrintErrorMessage(Word uErrorCode)
 {
 	// Print the error string
-	String("Error: 0x");
+	PrintString("Error: 0x");
 
 	// Show the error in hex
 	NumberStringHex TempBuffer(static_cast<Word32>(uErrorCode));
-	String(TempBuffer);
+	PrintString(TempBuffer);
 
-	String("\n");
+	PrintString("\n");
 }
 #endif
 
@@ -287,7 +314,7 @@ void BURGER_API Burger::Debug::PrintErrorMessage(Word uErrorCode)
 
 	\param pMessage Message to print in the center of the dialog box
 	\param pTitle Pointer to "C" string or \ref NULL for a message in the title bar
-	\sa OkCancelAlertMessage() or Debug::String(const char *)
+	\sa OkCancelAlertMessage() or Debug::PrintString(const char *)
 
 ***************************************/
 
@@ -295,13 +322,13 @@ void BURGER_API Burger::Debug::PrintErrorMessage(Word uErrorCode)
 
 void BURGER_API Burger::OkAlertMessage(const char *pMessage,const char *pTitle)
 {
-	Debug::String("Alert message : ");
+	Debug::PrintString("Alert message : ");
 	if (pTitle) {
-		Debug::String(pTitle);
-		Debug::String(", ");
+		Debug::PrintString(pTitle);
+		Debug::PrintString(", ");
 	}
-	Debug::String(pMessage);
-	Debug::String("\n");
+	Debug::PrintString(pMessage);
+	Debug::PrintString("\n");
 }
 
 #endif
@@ -320,7 +347,7 @@ void BURGER_API Burger::OkAlertMessage(const char *pMessage,const char *pTitle)
 	can be answered with Okay or Cancel
 	\param pTitle Pointer to "C" string or \ref NULL for a message in the title bar
 	\return \ref TRUE if the user pressed "Okay" or \ref FALSE if pressed "Cancel"
-	\sa OkAlertMessage() or Debug::String(const char *)
+	\sa OkAlertMessage() or Debug::PrintString(const char *)
 
 ***************************************/
 
@@ -328,13 +355,13 @@ void BURGER_API Burger::OkAlertMessage(const char *pMessage,const char *pTitle)
 
 Word BURGER_API Burger::OkCancelAlertMessage(const char *pMessage,const char *pTitle)
 {
-	Debug::String("Cancel alert message : ");
+	Debug::PrintString("Cancel alert message : ");
 	if (pTitle) {
-		Debug::String(pTitle);
-		Debug::String(", ");
+		Debug::PrintString(pTitle);
+		Debug::PrintString(", ");
 	}
-	Debug::String(pMessage);
-	Debug::String("\n");
+	Debug::PrintString(pMessage);
+	Debug::PrintString("\n");
 	return FALSE;		// Always cancel!
 }
 

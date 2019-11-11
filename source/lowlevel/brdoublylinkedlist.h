@@ -20,13 +20,18 @@
 
 /* BEGIN */
 namespace Burger {
+
 class DoublyLinkedList {
-	BURGER_DISABLECOPYCONSTRUCTORS(DoublyLinkedList);
+    BURGER_DISABLE_COPY(DoublyLinkedList);
+
+private:
 	DoublyLinkedList *m_pNext;		///< Pointer to the next entry
 	DoublyLinkedList *m_pPrev;		///< Pointer to the previous entry
+
 public:
 	DoublyLinkedList() { m_pNext = this; m_pPrev = this; }
 	~DoublyLinkedList() { Detach(); }
+
 	BURGER_INLINE void Detach(void) {
 		DoublyLinkedList *pNext = m_pNext;
 		DoublyLinkedList *pPrev = m_pPrev;
@@ -35,6 +40,7 @@ public:
 		m_pNext = this;
 		m_pPrev = this;
 	}
+
 	BURGER_INLINE void InsertAfter(DoublyLinkedList *pInput) {
 		DoublyLinkedList *pNext = pInput->m_pNext;
 		DoublyLinkedList *pPrev = pInput->m_pPrev;
@@ -46,6 +52,7 @@ public:
 		pNext->m_pPrev = pInput;
 		m_pNext = pInput;
 	}
+
 	BURGER_INLINE void InsertBefore(DoublyLinkedList *pInput) {
 		DoublyLinkedList *pNext = pInput->m_pNext;
 		DoublyLinkedList *pPrev = pInput->m_pPrev;
@@ -58,10 +65,13 @@ public:
 		pPrev->m_pNext = pInput;
 		m_pPrev = pInput;
 	}
+
 	BURGER_INLINE DoublyLinkedList *GetNext(void) const { return m_pNext; }
 	BURGER_INLINE DoublyLinkedList *GetPrevious(void) const { return m_pPrev; }
+
 	static DoublyLinkedList * BURGER_API New(void);
 };
+
 }
 /* END */
 

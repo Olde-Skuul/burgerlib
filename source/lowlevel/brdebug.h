@@ -20,19 +20,24 @@
 
 /* BEGIN */
 namespace Burger {
-class Debug {
-public:
-	static Word BURGER_ANSIAPI Fatal(const char *pMessage,...);
-	static void BURGER_ANSIAPI Warning(const char *pMessage,...);
-	static void BURGER_ANSIAPI Message(const char *pMessage,...);
-	static void BURGER_API String(const char *pMessage);
-	static void BURGER_API String(Word32 uInput);
-	static void BURGER_API String(Word64 uInput);
-	static Word BURGER_API IsDebuggerPresent(void);
-	static void BURGER_API PrintErrorMessage(Word uErrorCode);
-};
+
+namespace Debug {
+extern Word BURGER_ANSIAPI Fatal(const char *pMessage,...);
+extern void BURGER_ANSIAPI Warning(const char *pMessage,...);
+extern void BURGER_ANSIAPI Message(const char *pMessage,...);
+extern void BURGER_API PrintString(const char *pMessage);
+extern void BURGER_API PrintString(Word32 uInput);
+extern void BURGER_API PrintString(Word64 uInput);
+#if defined(BURGER_NEED_UINTPTR_REMAP)
+BURGER_INLINE void PrintString(uintptr_t uInput) { PrintString(static_cast<BURGER_NEED_UINTPTR_REMAP>(uInput)); }
+#endif
+extern Word BURGER_API IsDebuggerPresent(void);
+extern void BURGER_API PrintErrorMessage(Word uErrorCode);
+}
+
 extern void BURGER_API OkAlertMessage(const char *pMessage,const char *pTitle=NULL);
 extern Word BURGER_API OkCancelAlertMessage(const char *pMessage,const char *pTitle=NULL);
+
 }
 /* END */
 

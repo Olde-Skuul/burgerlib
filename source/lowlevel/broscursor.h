@@ -31,7 +31,7 @@ namespace Burger {
 class OSCursor;
 class OSCursorImage {
 	friend class OSCursor;
-	BURGER_DISABLECOPYCONSTRUCTORS(OSCursorImage);
+    BURGER_DISABLE_COPY(OSCursorImage);
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	HICON__ *m_pCursorImage;	///< Windows only, handle to the cursor image
 #endif
@@ -58,16 +58,20 @@ public:
 		CURSOR_CUSTOM	///< Cursor set by a call with SetImage()
 	};
 private:
-	BURGER_DISABLECOPYCONSTRUCTORS(OSCursor);
+    BURGER_DISABLE_COPY(OSCursor);
+
 #if defined(BURGER_MAC) || defined(DOXYGEN)
 	CCrsr **m_pCursorImage;		///< MacOS only, handle to the cursor image
 #endif
+
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	HICON__ *m_pCursorImage;	///< Windows only, handle to the cursor image
 #endif
-	eCursor m_eIDNumber;		///< ID Number of the currently set cursor
+
 	Word m_bVisibleFlag;		///< \ref TRUE if the cursor is visible
 	Word m_bActiveFlag;			///< \ref TRUE if a game cursor is loaded
+	eCursor m_eIDNumber;		///< ID Number of the currently set cursor
+
 	static OSCursor g_Global;
 	OSCursor();
 public:

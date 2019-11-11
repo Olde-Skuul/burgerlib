@@ -1,13 +1,14 @@
 /***************************************
 
-	Unit tests for the Integer Math library
+    Unit tests for the Integer Math library
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -1375,10 +1376,10 @@ static const IntTest64_t AbsTestTable64[] = {
 	{0x0000000000000000LL,0x0000000000000000LL},
 	{0x0000000000000001LL,0x0000000000000001LL},
 	{0x4000000000000000LL,0x4000000000000000LL},
-	{0x8000000000000000LL,0x8000000000000000LL},
-	{0x8000000000000001LL,0x7FFFFFFFFFFFFFFFLL},
-	{0xC000000000000000LL,0x4000000000000000LL},
-	{0xFFFFFFFFFFFFFFFFLL,0x0000000000000001LL}
+	{static_cast<Int64>(0x8000000000000000LL),static_cast<Int64>(0x8000000000000000LL)},
+	{-0x7FFFFFFFFFFFFFFFLL,0x7FFFFFFFFFFFFFFFLL},
+	{-0x4000000000000000LL,0x4000000000000000LL},
+	{-0x000000000000001LL,0x0000000000000001LL}
 };
 
 static Word BURGER_API TestAbs64(void)
@@ -1497,10 +1498,10 @@ static const IntTest64_t SignTestTable64[] = {
 	{0x0000000000000000LL,0},
 	{0x0000000000000001LL,1},
 	{0x4000000000000000LL,1},
-	{0x8000000000000000LL,-1},
-	{0x8000000000000001LL,-1},
-	{0xC000000000000000LL,-1},
-	{0xFFFFFFFFFFFFFFFFLL,-1}
+	{static_cast<Int64>(0x8000000000000000LL),-1},
+	{static_cast<Int64>(0x8000000000000001LL),-1},
+	{static_cast<Int64>(0xC000000000000000LL),-1},
+	{static_cast<Int64>(0xFFFFFFFFFFFFFFFFLL),-1}
 };
 
 static Word BURGER_API TestSign64(void)
@@ -1517,155 +1518,6 @@ static Word BURGER_API TestSign64(void)
 			Burger::NumberStringHex Text2(static_cast<Word64>(iReturn));
 			Burger::NumberStringHex Text3(static_cast<Word64>(pWork->m_iOutput));
 			ReportFailure("Burger::Sign((Int64)0x%s) = 0x%s, expected 0x%s",uTest,Text1.GetPtr(),Text2.GetPtr(),Text3.GetPtr());
-		}
-		++pWork;
-	} while (--uCount);
-	return uFailure;
-}
-
-//
-// Test Min(Int32)
-//
-
-static const IntTest32x32_t MinTestTable[] = {
-	{0x00000000,0x00000001,0x00000000},
-	{0x00000001,0x00000000,0x00000000},
-	{0x00000000,static_cast<Int32>(0x80000000),static_cast<Int32>(0x80000000)},
-	{static_cast<Int32>(0x80000000),0x00000000,static_cast<Int32>(0x80000000)},
-	{static_cast<Int32>(0x80000000),static_cast<Int32>(0x80000000),static_cast<Int32>(0x80000000)},
-	{0x00000000,0x7FFFFFFF,0x00000000},
-	{0x7FFFFFFF,0x00000000,0x00000000},
-	{0x7FFFFFFF,static_cast<Int32>(0x80000000),static_cast<Int32>(0x80000000)},
-	{0x40000000,static_cast<Int32>(0xC0000000),static_cast<Int32>(0xC0000000)},
-	{static_cast<Int32>(0x80000001),0x7FFFFFFF,static_cast<Int32>(0x80000001)},
-	{0x3FFFFFFF,static_cast<Int32>(0xBF000000),static_cast<Int32>(0xBF000000)},
-	{static_cast<Int32>(0xFFFFFFFF),0x00000001,static_cast<Int32>(0xFFFFFFFF)}
-};
-
-static Word BURGER_API TestMin32(void)
-{
-	Word uFailure = FALSE;
-	const IntTest32x32_t *pWork = MinTestTable;
-	WordPtr uCount = BURGER_ARRAYSIZE(MinTestTable);
-	do {
-		Int32 iReturn = Burger::Min(pWork->m_iInput1,pWork->m_iInput2);
-		Word uTest = iReturn!=pWork->m_iOutput;
-		uFailure |= uTest;
-		ReportFailure("Burger::Min((Int32)0x%08X,(Int32)0x%08X) = 0x%08X, expected 0x%08X",uTest,pWork->m_iInput1,pWork->m_iInput2,iReturn,pWork->m_iOutput);
-		++pWork;
-	} while (--uCount);
-	return uFailure;
-}
-
-//
-// Test Min(Int64)
-//
-
-static const IntTest64x64_t MinTestTable64[] = {
-	{0x0000000000000000LL,0x0000000000000001LL,0x0000000000000000LL},
-	{0x0000000000000001LL,0x0000000000000000LL,0x0000000000000000LL},
-	{0x0000000000000000LL,0x8000000000000000LL,0x8000000000000000LL},
-	{0x8000000000000000LL,0x0000000000000000LL,0x8000000000000000LL},
-	{0x8000000000000000LL,0x8000000000000000LL,0x8000000000000000LL},
-	{0x0000000000000000LL,0x7FFFFFFFFFFFFFFFLL,0x0000000000000000LL},
-	{0x7FFFFFFFFFFFFFFFLL,0x0000000000000000LL,0x0000000000000000LL},
-	{0x7FFFFFFFFFFFFFFFLL,0x8000000000000000LL,0x8000000000000000LL},
-	{0x4000000000000000LL,0xC000000000000000LL,0xC000000000000000LL},
-	{0x8000000000000001LL,0x7FFFFFFFFFFFFFFFLL,0x8000000000000001LL},
-	{0x3FFFFFFFFFFFFFFFLL,0xBF00000000000000LL,0xBF00000000000000LL},
-	{0xFFFFFFFFFFFFFFFFLL,0x0000000000000001LL,0xFFFFFFFFFFFFFFFFLL}
-};
-
-static Word BURGER_API TestMin64(void)
-{
-	Word uFailure = FALSE;
-	const IntTest64x64_t *pWork = MinTestTable64;
-	WordPtr uCount = BURGER_ARRAYSIZE(MinTestTable64);
-	do {
-		Int64 iReturn = Burger::Min(pWork->m_iInput1,pWork->m_iInput2);
-		Word uTest = iReturn!=pWork->m_iOutput;
-		uFailure |= uTest;
-		if (uTest) {
-			Burger::NumberStringHex Text1(static_cast<Word64>(pWork->m_iInput1));
-			Burger::NumberStringHex Text2(static_cast<Word64>(pWork->m_iInput2));
-			Burger::NumberStringHex Text3(static_cast<Word64>(iReturn));
-			Burger::NumberStringHex Text4(static_cast<Word64>(pWork->m_iOutput));
-			ReportFailure("Burger::Min((Int64)0x%s,(Int64)0x%s) = 0x%s, expected 0x%s",uTest,Text1.GetPtr(),Text2.GetPtr(),Text3.GetPtr(),Text4.GetPtr());
-		}
-		++pWork;
-	} while (--uCount);
-	return uFailure;
-}
-
-
-//
-// Test Max(Int32)
-//
-
-static const IntTest32x32_t MaxTestTable[] = {
-	{0x00000000,0x00000001,0x00000001},
-	{0x00000001,0x00000000,0x00000001},
-	{0x00000000,static_cast<Int32>(0x80000000),0x00000000},
-	{static_cast<Int32>(0x80000000),0x00000000,0x00000000},
-	{static_cast<Int32>(0x80000000),static_cast<Int32>(0x80000000),static_cast<Int32>(0x80000000)},
-	{0x00000000,0x7FFFFFFF,0x7FFFFFFF},
-	{0x7FFFFFFF,0x00000000,0x7FFFFFFF},
-	{0x7FFFFFFF,static_cast<Int32>(0x80000000),0x7FFFFFFF},
-	{0x40000000,static_cast<Int32>(0xC0000000),0x40000000},
-	{static_cast<Int32>(0x80000001),0x7FFFFFFF,0x7FFFFFFF},
-	{0x3FFFFFFF,static_cast<Int32>(0xBF000000),0x3FFFFFFF},
-	{static_cast<Int32>(0xFFFFFFFF),0x00000001,0x00000001}
-};
-
-static Word BURGER_API TestMax32(void)
-{
-	Word uFailure = FALSE;
-	const IntTest32x32_t *pWork = MaxTestTable;
-	WordPtr uCount = BURGER_ARRAYSIZE(MaxTestTable);
-	do {
-		Int32 iReturn = Burger::Max(pWork->m_iInput1,pWork->m_iInput2);
-		Word uTest = iReturn!=pWork->m_iOutput;
-		uFailure |= uTest;
-		ReportFailure("Burger::Max((Int32)0x%08X,(Int32)0x%08X) = 0x%08X, expected 0x%08X",uTest,pWork->m_iInput1,pWork->m_iInput2,iReturn,pWork->m_iOutput);
-		++pWork;
-	} while (--uCount);
-	return uFailure;
-}
-
-//
-// Test Max(Int64)
-//
-
-static const IntTest64x64_t MaxTestTable64[] = {
-	{0x0000000000000000LL,0x0000000000000001LL,0x0000000000000001LL},
-	{0x0000000000000001LL,0x0000000000000000LL,0x0000000000000001LL},
-	{0x0000000000000000LL,0x8000000000000000LL,0x0000000000000000LL},
-	{0x8000000000000000LL,0x0000000000000000LL,0x0000000000000000LL},
-	{0x8000000000000000LL,0x8000000000000000LL,0x8000000000000000LL},
-	{0x0000000000000000LL,0x7FFFFFFFFFFFFFFFLL,0x7FFFFFFFFFFFFFFFLL},
-	{0x7FFFFFFFFFFFFFFFLL,0x0000000000000000LL,0x7FFFFFFFFFFFFFFFLL},
-	{0x7FFFFFFFFFFFFFFFLL,0x8000000000000000LL,0x7FFFFFFFFFFFFFFFLL},
-	{0x4000000000000000LL,0xC000000000000000LL,0x4000000000000000LL},
-	{0x8000000000000001LL,0x7FFFFFFFFFFFFFFFLL,0x7FFFFFFFFFFFFFFFLL},
-	{0x3FFFFFFFFFFFFFFFLL,0xBF00000000000000LL,0x3FFFFFFFFFFFFFFFLL},
-	{0xFFFFFFFFFFFFFFFFLL,0x0000000000000001LL,0x0000000000000001LL}
-};
-
-static Word BURGER_API TestMax64(void)
-{
-	Word uFailure = FALSE;
-	const IntTest64x64_t *pWork = MaxTestTable64;
-	WordPtr uCount = BURGER_ARRAYSIZE(MaxTestTable64);
-	do {
-		Int64 iReturn = Burger::Max(pWork->m_iInput1,pWork->m_iInput2);
-		Word uTest = iReturn!=pWork->m_iOutput;
-		uFailure |= uTest;
-		if (uTest) {
-			Burger::NumberStringHex Text1(static_cast<Word64>(pWork->m_iInput1));
-			Burger::NumberStringHex Text2(static_cast<Word64>(pWork->m_iInput2));
-			Burger::NumberStringHex Text3(static_cast<Word64>(iReturn));
-			Burger::NumberStringHex Text4(static_cast<Word64>(pWork->m_iOutput));
-			ReportFailure("Burger::Max((Int64)0x%s,(Int64)0x%s) = 0x%s, expected 0x%s",uTest,Text1.GetPtr(),Text2.GetPtr(),Text3.GetPtr(),Text4.GetPtr());
 		}
 		++pWork;
 	} while (--uCount);
@@ -1784,10 +1636,15 @@ static Word BURGER_API TestSqrtFixed32(void)
 	return uFailure;
 }
 
+/***************************************
 
-int BURGER_API TestBrfixedpoint(Word bVerbose)
+	Test fixed point math
+
+***************************************/
+
+int BURGER_API TestBrfixedpoint(Word uVerbose)
 {
-	if (bVerbose) {
+	if (uVerbose & VERBOSE_MSG) {
 		Message("Running Integer Math tests");
 	}
 
@@ -1829,15 +1686,11 @@ int BURGER_API TestBrfixedpoint(Word bVerbose)
 	uResult |= TestSign16();
 	uResult |= TestSign32();
 	uResult |= TestSign64();
-	uResult |= TestMin32();
-	uResult |= TestMin64();
-	uResult |= TestMax32();
-	uResult |= TestMax64();
 	uResult |= TestSqrt32();
 	uResult |= TestSqrtFixedToWord32();
 	uResult |= TestSqrtFixed32();
 
-	if (!uResult && bVerbose) {
+	if (!uResult && (uVerbose & VERBOSE_MSG)) {
 		Message("Passed all Integer Math tests!");
 	}
 	return static_cast<int>(uResult);

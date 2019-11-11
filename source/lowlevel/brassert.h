@@ -23,11 +23,24 @@
 #endif
 
 /* BEGIN */
+
 namespace Burger {
-	typedef int (BURGER_API *ProcAssert)(void *pThis,const char *pCondition,const char *pFilename,Word uLineNumber);
-	extern int BURGER_API Assert(const char *pCondition,const char *pFilename,Word uLineNumber);
-	extern void BURGER_API AssertRedirect(ProcAssert pAssert,void *pThis);
-	extern void BURGER_API Halt(void);
+
+struct Assert_t {
+	typedef int (BURGER_API *CallbackProc)(void *pThis,const char *pCondition,const char *pFilename,Word uLineNumber);
+	
+	CallbackProc m_pCallback;		///< Function pointer to the redirected Assert function
+	void *m_pThis;					///< "this" pointer passed to the m_pProcAssert function
+
+	static Assert_t g_Instance;		///< Global instance of the Assert redirection
+
+	void BURGER_API SetCallback(CallbackProc pCallback,void *pThis);
+	static int BURGER_API DefaultAssert(void *pThis,const char *pCondition,const char *pFilename,Word uLineNumber);
+};
+
+extern int BURGER_API Assert(const char *pCondition,const char *pFilename,Word uLineNumber);
+extern void BURGER_API Halt(void);
+
 }
 
 #if defined(BURGER_WATCOM) && !defined(DOXYGEN)
@@ -48,8 +61,6 @@ namespace Burger {
 #define BURGER_ASSERT(conditional) static_cast<void>(NULL)
 #define BURGER_ASSERTTEST(conditional) ((conditional) ? TRUE : FALSE)
 #endif
-
-#define BURGER_COMPILE_TIME_ASSERT(x) typedef int ThisIsABogusTypeDef ## __LINE__ [(x) * 2 - 1]
 
 /* END */
 

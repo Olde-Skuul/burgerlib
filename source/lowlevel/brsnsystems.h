@@ -28,7 +28,6 @@ extern float __builtin_sqrtf(float);
 extern double __builtin_sqrt(double);
 extern Word32 __builtin_rol(Word32,const Word32);
 extern Word32 __builtin_ror(Word32,const Word32);
-extern Word32 __builtin_rev(Word32);
 extern int __builtin_clz(int);
 
 #endif

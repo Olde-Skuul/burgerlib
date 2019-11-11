@@ -21,7 +21,7 @@
 #include <stdlib.h>
 
 #if !defined(DOXYGEN)
-#if defined(BURGER_XBOX) || defined(BURGER_XBOX360) || (defined(BURGER_WINDOWS) && !defined(BURGER_WATCOM) && !defined(BURGER_METROWERKS))
+#if defined(BURGER_XBOX) || defined(BURGER_XBOX360) || (defined(BURGER_WINDOWS) && !defined(BURGER_WATCOM) && !defined(BURGER_METROWERKS) && !(defined(_MSC_VER) && (_MSC_VER<1400)))
 #define USESECURE
 #endif
 #endif
@@ -34,7 +34,7 @@
 	These globals are used for the application to manage operating
 	system resources that have a global effect.
 
-	\sa Burger::Debug
+	\sa Burger::Debug or Burger::Windows
 	
 ***************************************/
 
@@ -50,20 +50,6 @@ Word Burger::Globals::g_uTraceFlags;
 char Burger::Globals::g_ErrorMsg[512];
 Word Burger::Globals::g_bBombFlag;
 Word Burger::Globals::g_bExitFlag;
-
-
-/*! ************************************
-
-	\fn Burger::Globals::~Globals()
-	\brief Clean up globals
-
-	If any global resources were allocated at runtime,
-	this function will release all resources before
-	application shutdown
-
-	\note This should not be called by an application directly.
-	
-***************************************/
 
 
 /*! ************************************
@@ -308,13 +294,40 @@ void BURGER_API Burger::Globals::Shutdown(int iError)
 
 	\brief Return the version of Burgerlib
 
-	Returns the changelist number that generated this
-	version of Burgerlib. Use this value to determine
-	if a specific version is needed for compatibility
-		
+	Returns the version of Burgerlib in a single number.
+
+	Currently, Burgerlib is 5.0.3
+
+	\code
+	Word32 uVersion = Globals::Version();
+	Word32 uMajor = (uVersion>>24);
+	Word32 uMinor = (uVersion>>16)&0xFFU;
+	Word32 uPatch = (uVersion&0xFFFFU);
+	\endcode
+
+	\return Version in a single 32 bit value
+	\sa VersionBuild(void)
+
 ***************************************/
 
-Word BURGER_API Burger::Globals::Version(void)
+Word32 BURGER_API Burger::Globals::Version(void)
+{
+	return 0x05000003;
+}
+
+/*! ************************************
+
+	\brief Return the build number of Burgerlib
+
+	Returns the change list number that generated this version of Burgerlib. Use
+	this value to determine if a specific version is needed for compatibility
+	
+	\return Build number in a single 32 bit value
+	\sa Version(void)
+
+***************************************/
+
+Word32 BURGER_API Burger::Globals::VersionBuild(void)
 {
 	return P4_CHANGELIST;
 }
@@ -323,10 +336,9 @@ Word BURGER_API Burger::Globals::Version(void)
 
 	\brief Load and launch a web page from an address string
 	
-	For Windows and MacOS platforms, this will open a
-	web browser to a specific URL. It will
-	use the default browser selected by the user
-	from the operating system settings
+	For Windows and MacOS platforms, this will open a web browser to a specific
+	URL. It will use the default browser selected by the user from the operating
+	system settings
 
 	\param pURL Pointer to a UTF8 string with the URL to a web page to open
 	\return Zero for no error, non-zero for error

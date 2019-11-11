@@ -12,9 +12,10 @@
 ***************************************/
 
 #include "brguid.h"
-#include "brstringfunctions.h"
+#include "brnumberto.h"
 #include "brendian.h"
 #include "brtick.h"
+#include "brstringfunctions.h"
 
 /*! ************************************
 
@@ -75,10 +76,8 @@ const GUID Burger::g_GUIDZero = {0x00000000,0x0000,0x0000,{0x00,0x00,0x00,0x00,0
 static BURGER_INLINE Word GUIDCharIsHex(Word uInput)
 {
 	Word uResult = FALSE;		// Assume it's bad
-	if (uInput<128U) {
-		if (!uInput || (Burger::g_AsciiTestTable[uInput]&Burger::ASCII_HEX)) {
-			uResult = TRUE;		// It's good!
-		}
+	if (!uInput || (Burger::g_AsciiTestTable[uInput]&Burger::ASCII_HEX)) {
+		uResult = TRUE;		// It's good!
 	}
 	return uResult;
 }

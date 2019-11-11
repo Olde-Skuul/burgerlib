@@ -2629,28 +2629,28 @@ line of processors.
 
 /*! ************************************
 
-    \def BURGER_MACRO_TO_STRING
+    \def BURGER_STRINGIZE
     \brief Convert a macro into a string literal.
 
-    Using deep magic in the form of \ref BURGER_MACRO_TO_STRING2,
+    Using deep magic in the form of \ref BURGER_STRINGIZE2,
     convert the macro into an 8 bit quoted string literal.
 
     \param x Name of the macro to turn into a string
 
     \code
     #define foo 4
-    printf(BURGER_MACRO_TO_STRING2(foo));
+    printf(BURGER_STRINGIZE(foo));
 
     // Prints "4" (Without the quotes)
 
     \endcode
-    \sa BURGER_MACRO_TO_STRING2
+    \sa BURGER_STRINGIZE2
 
 ***************************************/
 
 /*! ************************************
 
-    \def BURGER_MACRO_TO_STRING2
+    \def BURGER_STRINGIZE2
     \brief Convert the parameter into a string literal.
 
     Using the # token, convert the macro parameter into an 8 bit quoted string
@@ -2660,13 +2660,13 @@ line of processors.
 
     \code
     int foo = 4;
-    printf(BURGER_MACRO_TO_STRING2(foo));
+    printf(BURGER_STRINGIZE2(foo));
 
     // Prints "foo" (Without the quotes)
 
     \endcode
 
-    \sa BURGER_MACRO_TO_STRING
+    \sa BURGER_STRINGIZE
 
 ***************************************/
 
