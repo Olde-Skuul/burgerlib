@@ -887,6 +887,22 @@
 #define BURGER_RVALUE_REFERENCES
 #endif
 
+// Test for address sanitization
+#if __has_feature(address_sanitizer)
+#define BURGER_ADDRESS_SANITIZER
+#define BURGER_DISABLE_ASAN __attribute__((no_sanitize("address")))
+#else
+#define BURGER_DISABLE_ASAN
+#endif
+
+// Test for memory sanitization
+#if __has_feature(memory_sanitizer)
+#define BURGER_MEMORY_SANITIZER
+#define BURGER_DISABLE_MSAN __attribute__((no_sanitize("memory")))
+#else
+#define BURGER_DISABLE_MSAN
+#endif
+
 /***************************************
 
     Helper macros
