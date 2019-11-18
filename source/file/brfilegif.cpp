@@ -14,6 +14,7 @@
 #include "brfilegif.h"
 #include "brdebug.h"
 #include "brglobalmemorymanager.h"
+#include "brmemoryfunctions.h"
 
 /***************************************
 
@@ -1041,18 +1042,19 @@ Word Burger::FileGIF::WriteImage(OutputMemoryStream *pOutput,const Image *pInput
 		}
 		if (!uResult) {
 			// Write out the pixel data
-			GIFEncoder Compressor;
-			Compressor.Init(pOutput,8);
+			GIFEncoder *pCompressor = GIFEncoder::New();
+			pCompressor->Init(pOutput,8);
 			const Word8 *pData = pInput->GetImage();
 			Word uTemp = m_uLogicalHeight;
 			Word uWidth = m_uLogicalWidth;
 			if (uTemp) {
 				do {
-					Compressor.WritePixels(pData,uWidth);
+					pCompressor->WritePixels(pData,uWidth);
 					pData += pInput->GetStride();
 				} while (--uTemp);
 			}
-			Compressor.Flush();
+			pCompressor->Flush();
+			Delete(pCompressor);
 		}
 	}
 	return uResult;

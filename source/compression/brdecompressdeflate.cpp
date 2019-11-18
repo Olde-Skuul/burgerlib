@@ -13,7 +13,7 @@
 
 #include "brdecompressdeflate.h"
 #include "bradler32.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include "brglobalmemorymanager.h"
 
 #if !defined(DOXYGEN)
@@ -1786,9 +1786,11 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,Word
 
 Burger::Decompress::eError BURGER_API Burger::SimpleDecompressDeflate(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength)
 {
-	Burger::DecompressDeflate Local;
-	Local.DecompressDeflate::Reset();
-	return Local.DecompressDeflate::Process(pOutput,uOutputChunkLength,pInput,uInputChunkLength);
+	DecompressDeflate *pDecompress = New<DecompressDeflate>();
+	pDecompress->DecompressDeflate::Reset();
+	Decompress::eError uError = pDecompress->DecompressDeflate::Process(pOutput,uOutputChunkLength,pInput,uInputChunkLength);
+	Delete(pDecompress);
+	return uError;
 }
 
 /*! ************************************

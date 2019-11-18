@@ -16,7 +16,7 @@
 ***************************************/
 
 #include "brmd4.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include "brendian.h"
 #include "brfixedpoint.h"
 

@@ -78,7 +78,7 @@ extern Word BURGER_API IsDeviceXInput(const GUID *pGuid);
 #endif
 
 class Joypad : public Base {
-	BURGER_DISABLECOPYCONSTRUCTORS(Joypad);
+    BURGER_DISABLE_COPY(Joypad);
 	BURGER_RTTI_IN_CLASS();
 public:
 	enum {
@@ -180,7 +180,7 @@ private:
 
 public:
 	Joypad(GameApp *pAppInstance);
-	~Joypad();
+	virtual ~Joypad();
 	Word32 BURGER_API ReadButtons(Word uWhich) const;
 	Word BURGER_API ReadAbsolute(Word uWhich,Word uAxis) const;
 	int BURGER_API ReadDelta(Word uWhich,Word uAxis) const;

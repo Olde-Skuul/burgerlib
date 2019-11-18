@@ -30,6 +30,10 @@
 #include "brcompress.h"
 #endif
 
+#ifndef __BRMEMORYFUNCTIONS_H__
+#include "brmemoryfunctions.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 class CompressDeflate : public Compress {
@@ -239,7 +243,7 @@ protected:
  *    input characters, so that a running hash key can be computed from the
  *    previous key instead of complete recalculation each time.
  */
-	BURGER_INLINE static Word UpdateHash(Word uHash,Word8 uInput) 
+    static BURGER_INLINE Word UpdateHash(Word uHash,Word8 uInput)
 	{
 		return ((uHash<<c_uHashShift) ^ uInput) & c_uHashMask;
 	}

@@ -4,48 +4,48 @@
 
 	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
+
 	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brgameapp.h"
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
-#include "broscursor.h"
+#include "brdisplay.h"
 #include "brfilemanager.h"
 #include "brfilename.h"
-#include "brstringfunctions.h"
 #include "brkeyboard.h"
 #include "brmouse.h"
-#include "brdisplay.h"
+#include "broscursor.h"
+#include "brstringfunctions.h"
 #include "brtick.h"
-#import <ApplicationServices/ApplicationServices.h>
 #import <AppKit/NSApplication.h>
-#import <Foundation/NSAutoreleasePool.h>
-#import <Foundation/NSNotification.h>
-#import <AppKit/NSWindow.h>
-#import <AppKit/NSScreen.h>
+#include <AppKit/NSApplicationScripting.h>
 #import <AppKit/NSEvent.h>
 #include <AppKit/NSMenu.h>
-#include <AppKit/NSApplicationScripting.h>
+#import <AppKit/NSScreen.h>
+#import <AppKit/NSWindow.h>
+#import <ApplicationServices/ApplicationServices.h>
+#import <Foundation/NSAutoreleasePool.h>
+#import <Foundation/NSNotification.h>
 
 #if !defined(DOXYGEN)
 
-extern void FixNSRectOrigin(NSRect *pInput);
+extern void FixNSRectOrigin(NSRect* pInput);
 
 @class BurgerWindowListener;
 
 /***************************************
 
-	Extend the NSApplication so events
-	can be intercepted
+	Extend the NSApplication so events can be intercepted
 
 ***************************************/
 
 @interface BurgerApplication : NSApplication {
-	Burger::GameApp *m_App;		///< Parent app
+	Burger::GameApp* m_App; ///< Parent app
 }
 - (void)terminate:(id)sender;
 @end
@@ -58,7 +58,7 @@ extern void FixNSRectOrigin(NSRect *pInput);
 
 - (void)terminate:(id)sender
 {
-	#pragma unused(sender)
+#pragma unused(sender)
 	// Alert burgerlib to shut down the app
 	m_App->SetQuitCode();
 }
@@ -69,7 +69,7 @@ extern void FixNSRectOrigin(NSRect *pInput);
 // initWithGameApp is not an option to set the value on startup
 //
 
-- (void)setGameApp:(Burger::GameApp *)pGameApp
+- (void)setGameApp:(Burger::GameApp*)pGameApp
 {
 	m_App = pGameApp;
 }
@@ -78,16 +78,15 @@ extern void FixNSRectOrigin(NSRect *pInput);
 
 /***************************************
 
-	Create an NSApplicationDelegate to capture
-	window activate/deactivate events
+	Create an NSApplicationDelegate to capture window activate/deactivate events
 
 ***************************************/
 
 @interface BurgerApplicationDelegate : NSObject {
-	Burger::GameApp *m_App;
+	Burger::GameApp* m_App;
 	Word m_bStarted;
 }
-- (id)initWithGameApp:(Burger::GameApp *)pGameApp;
+- (id)initWithGameApp:(Burger::GameApp*)pGameApp;
 @end
 
 //

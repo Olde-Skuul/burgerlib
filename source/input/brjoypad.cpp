@@ -13,7 +13,7 @@
 
 #include "brjoypad.h"
 #include "brtick.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 
 #if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::Joypad,Burger::Base);

@@ -1485,7 +1485,7 @@ void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
 
 /*! ************************************
 
-	\fn Burger::HashMap::iterator Burger::HashMap::find(const T&rKey)
+	\fn Burger::HashMap::iterator Burger::HashMap::find(const T &rKey)
 	\brief Set an iterator to a specific entry in the hash
 
 	Return an STL compatible iterator pointing to the requested entry
@@ -1499,7 +1499,7 @@ void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
 
 /*! ************************************
 
-	\fn Burger::HashMap::const_iterator Burger::HashMap::find(const T&rKey)
+	\fn Burger::HashMap::const_iterator Burger::HashMap::find(const T &rKey) const
 	\brief Set an iterator to a specific entry in the hash
 
 	Return an STL compatible const_iterator pointing to the requested entry

@@ -4,10 +4,11 @@
 
 	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -19,7 +20,7 @@
 #include "brsound.h"
 
 #if defined(BURGER_WINDOWS)
-#include "brdisplayopengl.h"
+#include "brdisplaydirectx9.h"
 #endif
 
 #if !defined(DOXYGEN)
@@ -240,7 +241,7 @@ void BURGER_API Burger::GameApp::ShutdownDefaults(void)
 ***************************************/
 
 #if !(defined(BURGER_XBOX360) || defined(BURGER_WINDOWS) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,WordPtr uMinReserveSize) :
+Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,uint_t uDefaultHandleCount, uintptr_t uMinReserveSize) :
 	m_MemoryManagerHandle(uDefaultMemorySize,uDefaultHandleCount,uMinReserveSize)
 {
 	InitDefaults();
@@ -475,7 +476,7 @@ Burger::Display * BURGER_API Burger::GameApp::StartupDisplay(void)
 	if (!pResult && !m_bDisplayStarted) {
 		// Allocate it.
 #if defined(BURGER_WINDOWS)
-		pResult = new (Alloc(sizeof(DisplayOpenGL))) DisplayOpenGL(this);
+        pResult = new (Alloc(sizeof(DisplayDirectX9))) DisplayDirectX9(this);
 #else
 		pResult = new (Alloc(sizeof(Display))) Display(this);
 #endif

@@ -158,7 +158,7 @@ Burger::Decompress::eError Burger::DecompressALaw::Process(void *pOutput,WordPtr
 		case STATE_INIT:
 			{
 				// Copy the data while converting the endian
-				WordPtr uPacketCount = Min(uInputChunkLength,uOutputChunkLength/2);
+				WordPtr uPacketCount = Min(uInputChunkLength,uOutputChunkLength>>1U);
 				uInputChunkLength -= uPacketCount;
 				uOutputChunkLength -= uPacketCount*2;
 
@@ -178,7 +178,7 @@ Burger::Decompress::eError Burger::DecompressALaw::Process(void *pOutput,WordPtr
 
 						do {
 							// Convert to endian with unaligned data
-							NativeEndian::StoreAny(static_cast<Int16 *>(pOutput),g_Table[static_cast<const Word8 *>(pInput)[0]]);
+							NativeEndian::StoreAny(static_cast<int16_t *>(pOutput),g_Table[static_cast<const Word8 *>(pInput)[0]]);
 							pInput = static_cast<const Word8 *>(pInput)+1;
 							pOutput = static_cast<Word16 *>(pOutput)+1;
 						} while (--uLength);

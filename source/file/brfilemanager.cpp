@@ -16,6 +16,7 @@
 #include "brfileansihelpers.h"
 #include "brdebug.h"
 #include "brglobals.h"
+#include "brmemoryfunctions.h"
 #include <stdio.h>
 
 #if defined(BURGER_XBOX360)
@@ -1518,9 +1519,9 @@ void * BURGER_API Burger::FileManager::LoadFile(Filename *pFileName,WordPtr *pLe
 	if (uNewSize) {
 #if defined(_DEBUG)
 		if (Globals::GetTraceFlag()&Globals::TRACE_FILELOAD) {
-			Debug::String("Loading native file ");
-			Debug::String(pFileName->GetNative());
-			Debug::String(".\n");
+			Debug::PrintString("Loading native file ");
+			Debug::PrintString(pFileName->GetNative());
+			Debug::PrintString(".\n");
 		}
 #endif	
 		pResult = Alloc(uNewSize);

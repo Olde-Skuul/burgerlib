@@ -33,7 +33,7 @@
 /* BEGIN */
 namespace Burger {
 class RezFile {
-	BURGER_DISABLECOPYCONSTRUCTORS(RezFile);
+    BURGER_DISABLE_COPY(RezFile);
 public:
 	static const char g_RezFileSignature[4];		///< 'BRGR'
 	enum {

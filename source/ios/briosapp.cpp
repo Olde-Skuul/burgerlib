@@ -561,7 +561,7 @@ void BURGER_API Burger::GameApp::SetViewController(UIViewController *pViewContro
 
 ***************************************/
 
-/*! ************************************
+/***************************************
 
 	\brief Process iOS events
 

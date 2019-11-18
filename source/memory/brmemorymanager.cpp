@@ -12,7 +12,7 @@
 ***************************************/
 
 #include "brmemorymanager.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include <stdlib.h>
 
 /*! ************************************
@@ -38,7 +38,7 @@
 
 /*! ************************************
 
-	\fn void *Burger::MemoryManager::Alloc(WordPtr uSize)
+	\fn void *Burger::MemoryManager::Alloc(uintptr_t uSize)
 	\brief Allocate memory.
 
 	Call the "virtual" function in \ref m_pAlloc to allocate memory
@@ -65,7 +65,7 @@
 
 /*! ************************************
 
-	\fn void *Burger::MemoryManager::Realloc(const void *pInput,WordPtr uSize)
+	\fn void *Burger::MemoryManager::Realloc(const void *pInput,uintptr_t uSize)
 	\brief Reallocate memory.
 
 	Call the "virtual" function in \ref m_pRealloc to reallocate memory
@@ -103,7 +103,7 @@
 	
 ***************************************/
 
-void * BURGER_API Burger::MemoryManager::AllocClear(WordPtr uSize)
+void * BURGER_API Burger::MemoryManager::AllocClear(uintptr_t uSize)
 {
 	// Get the function pointer into a register
 	void *pResult = m_pAlloc(this,uSize);
@@ -147,7 +147,7 @@ void BURGER_API Burger::MemoryManager::Shutdown(MemoryManager * /*pThis */)
 ***************************************/
 
 #if !defined(BURGER_VITA) || defined(DOXYGEN)
-void * BURGER_API Burger::MemoryManager::AllocSystemMemory(WordPtr uSize)
+void * BURGER_API Burger::MemoryManager::AllocSystemMemory(uintptr_t uSize)
 {
 	return malloc(uSize);
 }
@@ -162,8 +162,8 @@ void * BURGER_API Burger::MemoryManager::AllocSystemMemory(WordPtr uSize)
 	the memory back. Generic systems call free(),
 	other systems call the low level functions directly
 
-	\param pInput Pointer to memory previously allocated by AllocSystemMemory(WordPtr)
-	\sa Burger::MemoryManager::AllocSystemMemory(WordPtr uSize)
+	\param pInput Pointer to memory previously allocated by AllocSystemMemory(uintptr_t)
+	\sa Burger::MemoryManager::AllocSystemMemory(uintptr_t uSize)
 
 ***************************************/
 

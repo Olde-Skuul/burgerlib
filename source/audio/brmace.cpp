@@ -12,7 +12,7 @@
 ***************************************/
 
 #include "brmace.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include "brfixedpoint.h"
 
 #if !defined(DOXYGEN)

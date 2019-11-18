@@ -15,7 +15,7 @@
 
 #include "brimportxm.h"
 #include "brendian.h"
-
+#include "brmemoryfunctions.h"
 
 /***************************************
 

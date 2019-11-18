@@ -13,6 +13,7 @@
 
 #include "brfilename.h"
 #include "brfilemanager.h"
+#include "brmemoryfunctions.h"
 
 /*! ************************************
 
@@ -340,6 +341,34 @@ void BURGER_API Burger::Filename::Set(const char *pInput)
 			}
 		}
 	}
+}
+
+/*! ************************************
+
+	\brief Sets the pathname to a UTF-16 input string
+
+	Given a UTF-16 string passed by pInput, set the contained string to match.
+	In a majority of cases, no memory is allocated. If in the rare case the
+	string is of a large length, it will allocate a buffer and store the string
+	within the allocated memory and ignore the internal buffer.
+
+	\note This function does not alter the string in any way. It is stored in
+	the internal buffer as is. It also will not modify any platform specific
+	variables.
+
+	\param pInput Pointer to a valid "C" string or \ref NULL to force the class
+		to empty.
+
+	\sa Clear() or Set(const char *)
+
+***************************************/
+
+void BURGER_API Burger::Filename::Set(const Word16* pInput)
+{
+	// Convert from UTF-16 to UTF-8
+	String Temp(pInput);
+	// Set the string
+	Set(Temp.GetPtr());
 }
 
 /*! ************************************
@@ -1063,7 +1092,9 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 					if (uPeriodCount) {
 						WordPtr uPrefixLenCache = uPrefixLen;
 						do {
-							if (!uPrefixLen) {			// Prefix already empty?
+							// Popped the entire prefix?
+							if (!uPrefixLen) {
+								// Use the root prefix
 								uPrefixLen = uPrefixLenCache;
 								break;
 							}
@@ -1071,9 +1102,17 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 							const Word8 *pWork = reinterpret_cast<const Word8 *>(pPrefix);
 							do {
 								--uPrefixLen;		// Go to previous char
-							} while ((uPrefixLen!=static_cast<WordPtr>(-1)) && (pWork[uPrefixLen]!=':'));
+								if (pWork[uPrefixLen] == ':') {
+									// Is this the root prefix?
+									if (uPrefixLen) {
+										uPrefixLenCache = uPrefixLen+1;
+									}
+									break;
+								}
+							} while ((uPrefixLen!=static_cast<WordPtr>(-1)));
 							++uPrefixLen;			// Grab the final colon 
 						} while (--uPeriodCount);					// Discard the period
+
 						// Edge case. If all the prefixes were reduced to nothing but
 						// a single colon, keep the volume name/number
 						if (uPrefixLen<2) {
@@ -1286,27 +1325,56 @@ void BURGER_API Burger::Filename::SetUserPrefsDirectory(void)
 /*! ************************************
 
 	\brief Expand a filename from the native format to Burgerlib.
-	
-	For generic code, obtain a filename (Usually from a command line)
-	and convert it to a BurgerLib path. This function is an inline
-	redirection to the proper low level function that will
-	perform the actual conversion.
-	
+
+	For generic code, obtain a filename (Usually from a command line) and
+	convert it to a BurgerLib path. This function is an inline redirection to
+	the proper low level function that will perform the actual conversion.
+
 	\param pInput Pointer to a pathname string
-	
-	\note Due to MacOS requiring extra information such as a directory ID
-	and volume number, ensure that the current volume and working directory
-	are pointing to the directory the file is located. The MacOS call HSetVol()
-	and HGetVol() can assist in those cases. It's preferred to use the 
-	\ref Burger::ConsoleApp class's built in file name management functions since they
-	take this quirk into account.
+
+	\note Due to MacOS requiring extra information such as a directory ID and
+	volume number, ensure that the current volume and working directory are
+	pointing to the directory the file is located. The MacOS call HSetVol() and
+	HGetVol() can assist in those cases. It's preferred to use the \ref
+	Burger::ConsoleApp class's built in file name management functions since
+	they take this quirk into account.
+
+	\sa SetFromNative(const Word16 *)
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
-void BURGER_API Burger::Filename::SetFromNative(const char *pInput)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
+	defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || \
+	defined(BURGER_VITA)) || \
+	defined(DOXYGEN)
+void BURGER_API Burger::Filename::SetFromNative(const char* pInput)
 {
 	Set(pInput);
+}
+#endif
+
+/*! ************************************
+
+	\brief Expand a UTF-16 filename from the native format to Burgerlib.
+
+	Copy the native pathname string into the internal native pathname buffer
+	after converting the string to UTF-8.
+
+	\param pInput Pointer to a pathname string
+
+	\note This function does not exist on MacOS classic
+
+	\sa SetFromNative(const char *) or SetFromNative(const char *,long,short)
+
+***************************************/
+
+#if !defined(BURGER_MAC) || defined(DOXYGEN)
+void BURGER_API Burger::Filename::SetFromNative(const Word16* pInput)
+{
+	// Convert to UTF-8
+	String Temp(pInput);
+	// Set the path
+	Set(Temp.GetPtr());
 }
 #endif
 

@@ -41,7 +41,7 @@
 /* BEGIN */
 namespace Burger {
 class Keyboard : public Base {
-	BURGER_DISABLECOPYCONSTRUCTORS(Keyboard);
+    BURGER_DISABLE_COPY(Keyboard);
 	BURGER_RTTI_IN_CLASS();
 public:
 	static const Word cBufferSize=128;		///< Number of keystrokes in keyboard cache
@@ -276,9 +276,9 @@ protected:
 	Word m_bDirectInput8Acquired;				///< \ref TRUE if DirectInput8 is active (Windows only)
 	Word m_bRepeatActive;						///< \ref TRUE if auto repeat time is active (Windows only)
 	volatile Word32 m_bQuit;					///< \ref TRUE when the thread is shutting down (Windows only)
-	tagSTICKYKEYS m_DefaultStickyKeys;			///< Previous settings for Sticky Keys (Windows only)
-	tagTOGGLEKEYS m_DefaultToggleKeys;			///< Previous settings for Toggle Keys (Windows only)
-	tagFILTERKEYS m_DefaultFilterKeys;			///< Previous settings for Filter Keys (Windows only)
+	BurgertagSTICKYKEYS m_DefaultStickyKeys;	///< Previous settings for Sticky Keys (Windows only)
+	BurgertagTOGGLEKEYS m_DefaultToggleKeys;	///< Previous settings for Toggle Keys (Windows only)
+	BurgertagFILTERKEYS m_DefaultFilterKeys;	///< Previous settings for Filter Keys (Windows only)
 #endif
 
 #if defined(BURGER_XBOX360)
@@ -304,7 +304,7 @@ protected:
 
 public:
 	Keyboard(GameApp *pAppInstance);
-	~Keyboard();
+	virtual ~Keyboard();
 	BURGER_INLINE GameApp *GetApp(void) const { return m_pAppInstance; }
 	Word BURGER_API PeekKeyEvent(KeyEvent_t *pEvent);
 	Word BURGER_API GetKeyEvent(KeyEvent_t *pEvent);

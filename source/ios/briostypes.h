@@ -20,6 +20,7 @@
 
 /* BEGIN */
 #if defined(BURGER_IOS) && !defined(DOXYGEN)
+
 struct Point;
 struct Rect;
 struct FSRef;
@@ -28,6 +29,7 @@ struct CGPoint;
 struct CGSize;
 struct CGRect;
 struct _opaque_pthread_t;
+
 @class EAGLContext;
 @class NSObject;
 @class UIView;
@@ -35,18 +37,31 @@ struct _opaque_pthread_t;
 @class UIImage;
 @class UIImageView;
 @class UIViewController;
-namespace Burger {
-	typedef int sem_t;
-	typedef unsigned int semaphore_t;
-	typedef unsigned int task_t;
+
+typedef int Burgersem_t;
+typedef unsigned int Burgersemaphore_t;
+typedef unsigned int Burgertask_t;
+
 #if defined(BURGER_64BITCPU)
-	struct pthread_mutex_t { Word64 m_Opaque[8]; };
-	struct pthread_cond_t { Word64 m_Opaque[6]; };
+struct Burgerpthread_mutex_t {
+	Word64 m_Opaque[8]; 
+};
+
+struct Burgerpthread_cond_t {
+	Word64 m_Opaque[6]; 
+};
+
 #else
-	struct pthread_mutex_t { Word32 m_Opaque[11]; };
-	struct pthread_cond_t { Word32 m_Opaque[7]; };
+struct Burgerpthread_mutex_t {
+	Word32 m_Opaque[11]; 
+};
+
+struct Burgerpthread_cond_t { 
+	Word32 m_Opaque[7];
+};
+
 #endif
-}
+
 #endif
 /* END */
 

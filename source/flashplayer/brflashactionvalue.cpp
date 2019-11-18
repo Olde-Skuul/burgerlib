@@ -1,19 +1,21 @@
 /***************************************
 
 	Flash player action buffer
-	
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
 	commercial title without paying anything, just give me a credit.
 	Please? It's not like I'm asking you for money!
-		
+
 ***************************************/
 
 #include "brflashactionvalue.h"
 
+#if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::Flash::ActionScriptProperty,Burger::WeakAndStrongBase);
+#endif
 
 /*! ************************************
 
@@ -28,7 +30,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::Flash::ActionScriptProperty,Burger::Weak
 
 ***************************************/
 
-#if defined(BURGER_VITA)
+#if defined(BURGER_VITA) || defined(BURGER_LINUX)
 
 namespace Burger { namespace Flash {
 class ActionScriptFunction : public ReferenceCounter {

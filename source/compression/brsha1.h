@@ -30,8 +30,8 @@ struct SHA1_t {
 };
 
 struct SHA1Hasher_t {
-	SHA1_t m_Hash;				///< Current 160 bit value
 	Word64 m_uByteCount;		///< Number of bytes processed (64 bit value)
+	SHA1_t m_Hash;				///< Current 160 bit value
 	Word8 m_CacheBuffer[64];	///< input buffer for processing
 
 	void BURGER_API Init(void);

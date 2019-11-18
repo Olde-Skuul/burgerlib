@@ -16,7 +16,7 @@
 ***************************************/
 
 #include "brmd2.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 
 /*! ************************************
 

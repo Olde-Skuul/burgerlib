@@ -12,22 +12,29 @@
 ***************************************/
 
 #include "brconsolemanager.h"
+
 #if defined(BURGER_MAC)
 #include "brfilemanager.h"
-#include "brstringfunctions.h"
-#include "brmactypes.h"
 #include "brglobals.h"
+#include "brmactypes.h"
+#include "brstringfunctions.h"
+
+
 #if defined(__MSL__)
 #include <SIOUX.h>
 #endif
-#include <MacTypes.h>
+
 #include <AppleEvents.h>
 #include <Gestalt.h>
+#include <MacTypes.h>
+
+
 #if !TARGET_API_MAC_CARBON
+#include <Dialogs.h>
 #include <Fonts.h>
 #include <MacWindows.h>
 #include <TextEdit.h>
-#include <Dialogs.h>
+
 #endif
 
 /*! ************************************
@@ -42,10 +49,11 @@
 
 ***************************************/
 
-Burger::ConsoleApp::ConsoleApp(int iArgc,const char **ppArgv) :
-	m_ANSIMemoryManager(),
-	m_bLaunchedFromDesktop(FALSE)
+Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv, Word uFlags) :
+	m_ANSIMemoryManager(), m_bLaunchedFromDesktop(FALSE)
 {
+	BURGER_UNUSED(uFlags);
+
 	// Assume the input is UTF8 for all other platforms
 	m_ppArgv = ppArgv;
 	m_iArgc = iArgc;
@@ -54,35 +62,41 @@ Burger::ConsoleApp::ConsoleApp(int iArgc,const char **ppArgv) :
 	// a console window
 
 #if !TARGET_API_MAC_CARBON
-	InitGraf(&qd.thePort);			// Init the graphics system
-	InitFonts();					// Init the font manager
-	InitWindows();					// Init the window manager
-	InitMenus();					// Init the menu manager
-	TEInit();						// Init text edit
-	InitDialogs(NULL);				// Init the dialog manager
-	FlushEvents(everyEvent,0L);		// Clear pending keyboard/mouse events
-	MaxApplZone();					// Expand the heap so code segments load at the top
+	InitGraf(&qd.thePort);		 // Init the graphics system
+	InitFonts();				 // Init the font manager
+	InitWindows();				 // Init the window manager
+	InitMenus();				 // Init the menu manager
+	TEInit();					 // Init text edit
+	InitDialogs(NULL);			 // Init the dialog manager
+	FlushEvents(everyEvent, 0L); // Clear pending keyboard/mouse events
+	MaxApplZone(); // Expand the heap so code segments load at the top
 #endif
-	MoreMasters();					// Ensure I have some extra handles available
 
-#if defined(__MSL__)		// Only on Metrowerks standard libraries
-	SIOUXSettings.initializeTB = FALSE;
-	SIOUXSettings.asktosaveonclose = FALSE;
+	// Ensure I have some extra handles available
+	Word i = 5;
+	do {
+		MoreMasters();
+	} while (--i);
+
+	// Only on Metrowerks standard libraries
+#if defined(__MSL__)
+	SIOUXSettings.initializeTB = FALSE;		// Don't init the toolbox
+	SIOUXSettings.asktosaveonclose = FALSE; // Don't ask to save on close
 #endif
 
 	// Init the file system
-	FileManager::Init();	
+	FileManager::Init();
 }
 
 /*! ************************************
 
 	\brief Pause console output if the return code is not zero.
-	
+
 	If the return code is not set to zero, force the text output
 	to remain on the screen if the application was launched
 	from double clicking. If the application was launched
 	from a console, this function does nothing.
-	
+
 ***************************************/
 
 void Burger::ConsoleApp::PauseOnError(void) const
@@ -99,87 +113,96 @@ void Burger::ConsoleApp::PauseOnError(void) const
 
 /*! ************************************
 
-	\fn Burger::ConsoleApp::ProcessFilenames(Burger::ConsoleApp::CallbackProc pCallback) 
-	\brief Handle drag and drop for console apps
-	
+	\fn Burger::ConsoleApp::ProcessFilenames(Burger::ConsoleApp::CallbackProc
+pCallback) \brief Handle drag and drop for console apps
+
 	Detect if the application was launched from the Finder
 	or from Explorer. If so, detect if it was because data
 	files were "dropped" on the application for processing.
 	If both cases are true, then call the user supplied function
 	pointer for each file to be processed. The filenames are
 	in Burgerlib format.
-	
+
 	\note This function will set the console return code to
 	1 on entry, so if the processing doesn't take place, it
 	will assume an error has occurred. The processing procedure
 	can set the return code to zero or any other value at will
 	and that's the return code that will be retained.
-	
-	\param pCallback Function pointer to a call that accepts a Burgerlib filename.
-	\return TRUE if the function pointer was called. FALSE if normal processing should occur.
-	
+
+	\param pCallback Function pointer to a call that accepts a Burgerlib
+filename. \return TRUE if the function pointer was called. FALSE if normal
+processing should occur.
+
 ***************************************/
 
 typedef struct Foo_t {
-	Burger::ConsoleApp *m_pThis;				// This pointer for callback
-	Burger::ConsoleApp::CallbackProc m_Proc;	// Function to call
-	Word m_bAbort;								// Return value
-	Word m_bProcessed;							// TRUE if something was processed
+	Burger::ConsoleApp* m_pThis;			 // This pointer for callback
+	Burger::ConsoleApp::CallbackProc m_Proc; // Function to call
+	Word m_bAbort;							 // Return value
+	Word m_bProcessed;						 // TRUE if something was processed
 } Foo_t;
 
 /*! ************************************
 
 	This is my Apple Event handler that's monitoring
-	the Open Doc events and sending them back to the 
+	the Open Doc events and sending them back to the
 	console application for processing
 
 ***************************************/
 
-static pascal OSErr OpenDocMacProcessFilenames(const AEDescList *pAppleEventDescList, AEDescList * /* reply */,long iRefCon) 
+static pascal OSErr OpenDocMacProcessFilenames(
+	const AEDescList* pAppleEventDescList, AEDescList* /* reply */,
+	long iRefCon)
 {
 	char TempBuffer[2048];
 #if TARGET_API_MAC_CARBON
-	char TempBuffer2[2048];		// Used for URL translations on OSX
+	char TempBuffer2[2048]; // Used for URL translations on OSX
 #endif
 	AEDesc FileListDescription;
-						
+
 	// First, I see if any files are present
 	// by checking the apple event that waw given to me to process
-	
-	FileListDescription.descriptorType = typeWildCard;	// Any file
-	FileListDescription.dataHandle = nil;				// No handle (Yet)
-	
-	if (!AEGetKeyDesc(pAppleEventDescList,keyDirectObject,typeAEList,&FileListDescription)) {
-		
+
+	FileListDescription.descriptorType = typeWildCard; // Any file
+	FileListDescription.dataHandle = nil;			   // No handle (Yet)
+
+	if (!AEGetKeyDesc(pAppleEventDescList, keyDirectObject, typeAEList,
+			&FileListDescription)) {
+
 		/* Now load each and every file */
 
-		Foo_t *FooPtr = reinterpret_cast<Foo_t *>(iRefCon);
+		Foo_t* FooPtr = reinterpret_cast<Foo_t*>(iRefCon);
 		if (!FooPtr->m_bAbort) {
 			AEKeyword MyKeyword;
 			DescType MyFileType;
-			long lDataSize;		// Size of the data returned from the Apple Event
-			long iIndex = 1;	// Start at the first entry
+			long lDataSize;  // Size of the data returned from the Apple Event
+			long iIndex = 1; // Start at the first entry
 			do {
 
 #if TARGET_API_MAC_CARBON
-				// First, check if I'm running under OSX. If so, use OSX compatible filenames
-				
-				if (!AEGetNthPtr(&FileListDescription,iIndex,typeFileURL,&MyKeyword,&MyFileType,TempBuffer,sizeof(TempBuffer)-1,&lDataSize)) {
-					
+				// First, check if I'm running under OSX. If so, use OSX
+				// compatible filenames
+
+				if (!AEGetNthPtr(&FileListDescription, iIndex, typeFileURL,
+						&MyKeyword, &MyFileType, TempBuffer,
+						sizeof(TempBuffer) - 1, &lDataSize)) {
+
 					// Convert to Burgerlib path
-					TempBuffer[lDataSize] = 0;		// Convert to "C" string
-#if 0		// BECKY FIX THIS
+					TempBuffer[lDataSize] = 0; // Convert to "C" string
+#if 0										   // BECKY FIX THIS
 					char *pBuffer = Burger::Mac::GetPathFromFileURL(TempBuffer2,sizeof(TempBuffer2),TempBuffer);
 #else
-					char *pBuffer = NULL;
+					char* pBuffer = NULL;
 #endif
 					if (pBuffer) {
 						FooPtr->m_bProcessed = TRUE;
-						
+
 						// Process the file
-						int iResult = FooPtr->m_Proc(FooPtr->m_pThis,pBuffer,NULL);
-						if (pBuffer!=TempBuffer2) {
-							Burger::Free(pBuffer);		// Release the buffer if needed
+						int iResult =
+							FooPtr->m_Proc(FooPtr->m_pThis, pBuffer, NULL);
+						if (pBuffer != TempBuffer2) {
+							Burger::Free(
+								pBuffer); // Release the buffer if needed
 						}
 						if (iResult) {
 							Burger::Globals::SetErrorCode(iResult);
@@ -193,22 +216,26 @@ static pascal OSErr OpenDocMacProcessFilenames(const AEDescList *pAppleEventDesc
 				// I fell through, probably I'm Carbon, running on OS9
 #endif
 
-				FSSpec TheFileSpec;	// FSSpec returned
+				FSSpec TheFileSpec; // FSSpec returned
 				// I must be in OS9, do it the old fashioned way
-				if (!AEGetNthPtr(&FileListDescription,iIndex,typeFSS,&MyKeyword,&MyFileType,&TheFileSpec,sizeof(FSSpec),&lDataSize)) {
+				if (!AEGetNthPtr(&FileListDescription, iIndex, typeFSS,
+						&MyKeyword, &MyFileType, &TheFileSpec, sizeof(FSSpec),
+						&lDataSize)) {
 					// Convert the FSSpec to a Burgerlib path
-#if 0	// BECKY FIX THIS
+#if 0 // BECKY FIX THIS
 					char *pBuffer = Burger::Filename::GetPathFromFSSpec(TempBuffer,sizeof(TempBuffer),&TheFileSpec);
 #else
-					char *pBuffer = NULL;
+					char* pBuffer = NULL;
 #endif
 					if (pBuffer) {
 						FooPtr->m_bProcessed = TRUE;
 
 						// Process the file
-						int iResult = FooPtr->m_Proc(FooPtr->m_pThis,pBuffer,NULL);
-						if (pBuffer!=TempBuffer) {
-							Burger::Free(pBuffer);		// Release the buffer if needed
+						int iResult =
+							FooPtr->m_Proc(FooPtr->m_pThis, pBuffer, NULL);
+						if (pBuffer != TempBuffer) {
+							Burger::Free(
+								pBuffer); // Release the buffer if needed
 						}
 						if (iResult) {
 							Burger::Globals::SetErrorCode(iResult);
@@ -217,77 +244,87 @@ static pascal OSErr OpenDocMacProcessFilenames(const AEDescList *pAppleEventDesc
 						}
 					}
 				} else {
-					break;		// No more events
+					break; // No more events
 				}
-				++iIndex;		// Next one
+				++iIndex; // Next one
 			} while (1);
 		}
 	}
-	
-	// I'm all done processing. 
-	AEDisposeDesc(&FileListDescription);		// Release this
+
+	// I'm all done processing.
+	AEDisposeDesc(&FileListDescription); // Release this
 	return noErr;
 }
 
 /*! ************************************
 
 	By installing an OpenDoc AppleEvent, see if I
-	can capture incoming open file requests so I 
+	can capture incoming open file requests so I
 	can pass them to the tool for processing
 
 ***************************************/
 
-Word BURGER_API Burger::ConsoleApp::ProcessFilenames(Burger::ConsoleApp::CallbackProc pCallback) 
+Word BURGER_API Burger::ConsoleApp::ProcessFilenames(
+	Burger::ConsoleApp::CallbackProc pCallback)
 {
-	long lGestalt;					// Gestalt temp
-	Foo_t FooData;					// Data state
+	long lGestalt; // Gestalt temp
+	Foo_t FooData; // Data state
 
-	FooData.m_pThis = this;			// Initialize my callback data
-	FooData.m_Proc = pCallback;		// Callback
-	FooData.m_bAbort = FALSE;		// Not cancelled
-	FooData.m_bProcessed = FALSE;	// Nothing processed yet
-	
-	if (pCallback && !Gestalt(gestaltAppleEventsAttr,&lGestalt)) {		// Do I have apple events and a valid callback?
-	
-		AEEventHandlerUPP OpenFileProc = NewAEEventHandlerUPP(OpenDocMacProcessFilenames);	// Create a function pointer
+	FooData.m_pThis = this;		  // Initialize my callback data
+	FooData.m_Proc = pCallback;   // Callback
+	FooData.m_bAbort = FALSE;	 // Not cancelled
+	FooData.m_bProcessed = FALSE; // Nothing processed yet
+
+	if (pCallback
+		&& !Gestalt(gestaltAppleEventsAttr,
+			   &lGestalt)) { // Do I have apple events and a valid callback?
+
+		AEEventHandlerUPP OpenFileProc = NewAEEventHandlerUPP(
+			OpenDocMacProcessFilenames); // Create a function pointer
 		if (OpenFileProc) {
 
 			EventRecord MyEvent;
-			AEEventHandlerUPP PrevFileProc;	// Previous proc pointer
+			AEEventHandlerUPP PrevFileProc; // Previous proc pointer
 			long lPrevRefCon;				// Previous proc refcon
-			
+
 			// Get the old event handler
-			OSErr iPrevErr = AEGetEventHandler(kCoreEventClass,kAEOpenDocuments,&PrevFileProc,&lPrevRefCon,FALSE);
+			OSErr iPrevErr = AEGetEventHandler(kCoreEventClass,
+				kAEOpenDocuments, &PrevFileProc, &lPrevRefCon, FALSE);
 			// Set it to my event handler
-			
-			AEInstallEventHandler(kCoreEventClass,kAEOpenDocuments,OpenFileProc,reinterpret_cast<long>(&FooData),FALSE);
-			// 50 times should be enough attempts to poll for my events of interest
+
+			AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments,
+				OpenFileProc, reinterpret_cast<long>(&FooData), FALSE);
+			// 50 times should be enough attempts to poll for my events of
+			// interest
 			Word i = 50;
 			do {
 				// I only care about Apple Events
-				if (!GetNextEvent(highLevelEventMask,&MyEvent)) {
+				if (!GetNextEvent(highLevelEventMask, &MyEvent)) {
 					MyEvent.what = nullEvent;
 				}
 				// Did I get an Apple event?
-				
-				if (MyEvent.what==kHighLevelEvent) {
-					m_bLaunchedFromDesktop = TRUE;		// I was directly launched
-					AEProcessAppleEvent(&MyEvent);		// Let the OS invoke my callback
+
+				if (MyEvent.what == kHighLevelEvent) {
+					m_bLaunchedFromDesktop = TRUE; // I was directly launched
+					AEProcessAppleEvent(
+						&MyEvent); // Let the OS invoke my callback
 				}
 			} while (--i);
-			
+
 			// I'm done. Remove my callback
-			AERemoveEventHandler(kCoreEventClass,kAEOpenDocuments,OpenFileProc,FALSE);
+			AERemoveEventHandler(
+				kCoreEventClass, kAEOpenDocuments, OpenFileProc, FALSE);
 			// Clean up
 			DisposeAEEventHandlerUPP(OpenFileProc);
-			
+
 			// If there was a previous callback, restore it
 			if (!iPrevErr) {
-				AEInstallEventHandler(kCoreEventClass,kAEOpenDocuments,PrevFileProc,lPrevRefCon,FALSE);
+				AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments,
+					PrevFileProc, lPrevRefCon, FALSE);
 			}
 		}
 	}
-	return FooData.m_bProcessed;		// Did I process anything?
+	return FooData.m_bProcessed; // Did I process anything?
 }
 
 #endif

@@ -2,7 +2,7 @@
 
 	Flash player manager
 	
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -18,8 +18,8 @@
 #include "brtypes.h"
 #endif
 
-#ifndef __BRRANDOMMANAGER_H__
-#include "brrandommanager.h"
+#ifndef __BRRANDOM_H__
+#include "brrandom.h"
 #endif
 
 #ifndef __BRFILENAME_H__
@@ -51,7 +51,7 @@ class ActionScriptObject;
 typedef Word (BURGER_API *FSCommandProc)(CharacterObject *pMovie,const char *pCommand,const char *pArgs);		///< Function prototype for user supplied FSCommand function
 typedef void (BURGER_API *ActionScriptCFunctionProc)(const FunctionCallParms *pParms);				///< Function prototype to implement an ActionScript command
 class Manager {
-	BURGER_DISABLECOPYCONSTRUCTORS(Manager);
+    BURGER_DISABLE_COPY(Manager);
 	GameApp *m_pGameApp;				///< Pointer to the application instance
 	FSCommandProc m_pFSCommmand;		///< Callback for FSCommand support
 	WeakPointer<RootObject> m_pCurrentObject;

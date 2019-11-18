@@ -14,6 +14,7 @@
 #include "brfile.h"
 #include "brfilemanager.h"
 #include "brendian.h"
+#include "brmemoryfunctions.h"
 #include <stdio.h>
 
 /*! ************************************

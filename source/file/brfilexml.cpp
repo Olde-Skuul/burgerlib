@@ -12,7 +12,7 @@
 ***************************************/
 
 #include "brfilexml.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include "brglobalmemorymanager.h"
 #include "brfilemanager.h"
 #include "brnumberstring.h"
@@ -372,7 +372,7 @@ Word BURGER_API Burger::FileXML::Root::ParseList(InputMemoryStream *pInput,Word 
 				break;
 			}
 			// If not a space character, see if it can be parsed as a text string
-			if ((uTemp>=128) || !(g_AsciiTestTable[uTemp]&ASCII_SPACE)) {
+			if (!(g_AsciiTestTable[uTemp]&ASCII_SPACE)) {
 				// Undo the fetch
 				pInput->SkipBack(1);
 				// Text found?
@@ -2116,7 +2116,7 @@ Word Burger::FileXML::RawText::Parse(InputMemoryStream *pInput)
 			break;
 		}
 		// Allowable character?
-		if ((uTemp>=128) || (!(g_AsciiTestTable[uTemp]&ASCII_SPACE))) {
+		if (!(g_AsciiTestTable[uTemp]&ASCII_SPACE)) {
 			uEndMark = pInput->GetMark();
 		}
 	}
@@ -4354,8 +4354,9 @@ Word BURGER_API Burger::FileXML::ReadXMLText(String *pOutput,InputMemoryStream *
 	// According to the standard, it should fail. However, too many files have non-quoted
 	// attributes, so handle it with space delimiters
 	} else {
-		while ((uTemp>=128) ||
-			((uTemp!='/') && (uTemp!='>') && (!(g_AsciiTestTable[uTemp]&ASCII_SPACE)))) {
+		while ((uTemp!='/') && 
+			(uTemp!='>') && 
+			!(g_AsciiTestTable[uTemp]&ASCII_SPACE)) {
 			uTemp = pInput->GetByte();
 		}
 		WordPtr uSize = (pInput->GetMark()-uMark)-1;

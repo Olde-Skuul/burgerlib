@@ -12,7 +12,7 @@
 ***************************************/
 
 #include "brrezfile.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include "brendian.h"
 #include "brglobalmemorymanager.h"
 #include "brfilemanager.h"

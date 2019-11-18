@@ -15,6 +15,7 @@
 #include "brdebug.h"
 #include "brdecompressdeflate.h"
 #include "brfixedpoint.h"
+#include "brmemoryfunctions.h"
 
 /*! ************************************
 

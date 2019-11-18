@@ -12,7 +12,7 @@
 ***************************************/
 
 #include "brmicrosoftadpcm.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include "brfixedpoint.h"
 #include "brendian.h"
 
@@ -29,8 +29,6 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::DecompressMicrosoftADPCM,Burger::Decompr
 	reference to the parent
 
 ***************************************/
-
-
 
 
 //

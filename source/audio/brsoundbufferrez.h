@@ -33,7 +33,7 @@
 /* BEGIN */
 namespace Burger {
 class SoundBufferRez : public SoundManager::Buffer {
-	BURGER_DISABLECOPYCONSTRUCTORS(SoundBufferRez);
+    BURGER_DISABLE_COPY(SoundBufferRez);
 	BURGER_RTTI_IN_CLASS();
 protected:
 	RezFile *m_pRezFile;			///< Pointer to the resource class that the resource is attached to

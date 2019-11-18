@@ -2,7 +2,7 @@
 
 	Flash player action buffer
 	
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -33,7 +33,7 @@ class SharedBuffer : public ReferenceCounter {
 	BURGER_RTTI_IN_CLASS();
 public:
 	SharedBuffer();
-	~SharedBuffer();
+	virtual ~SharedBuffer();
 	BURGER_INLINE WordPtr GetDataSize(void) const { return m_Buffer.size();}
 	BURGER_INLINE void Append(Word8 uInput) { m_Buffer.push_back(uInput); }
 	BURGER_INLINE const Word8 *GetData(void) const { return &m_Buffer[0]; }

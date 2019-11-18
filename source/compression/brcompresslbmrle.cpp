@@ -12,6 +12,7 @@
 ***************************************/
 
 #include "brcompresslbmrle.h"
+#include "brmemoryfunctions.h"
 
 #if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::CompressILBMRLE,Burger::Compress);

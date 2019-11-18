@@ -17,7 +17,7 @@
 
 #include "brgost.h"
 #include "brendian.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include "brfixedpoint.h"
 
 /*! ************************************

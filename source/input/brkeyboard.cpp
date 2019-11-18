@@ -12,13 +12,13 @@
 ***************************************/
 
 #include "brkeyboard.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include "brtick.h"
 #include "brutf32.h"
 
 #if defined(BURGER_WINDOWS) && !defined(DOXYGEN)
 
-#ifndef WIN32_LEAN_AND_MEAN
+#if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
 

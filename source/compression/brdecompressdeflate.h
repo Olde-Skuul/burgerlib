@@ -137,7 +137,7 @@ protected:
 public:
 	static const Word32 Signature = 0x5A4C4942;		///< 'ZLIB'
 	DecompressDeflate();
-	~DecompressDeflate();
+	virtual ~DecompressDeflate();
 	virtual eError Reset(void);
 	virtual eError Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength);
 };

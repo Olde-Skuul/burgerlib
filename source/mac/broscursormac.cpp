@@ -26,9 +26,9 @@
 
 void BURGER_API Burger::OSCursor::SetImageFromIDNumber(eCursor eCursorNumber)
 {
-	if (eCursorNumber!=g_Global.m_eIDNumber) {
+	if (eCursorNumber != g_Global.m_eIDNumber) {
 		// Load the cursor
-		CCrsrHandle hCursor = GetCCursor(eCursorNumber);		
+		CCrsrHandle hCursor = GetCCursor(eCursorNumber);
 		// Did it load?
 		if (hCursor) {
 			g_Global.m_eIDNumber = eCursorNumber;
@@ -70,9 +70,9 @@ Word BURGER_API Burger::OSCursor::Show(void)
 
 Word BURGER_API Burger::OSCursor::Show(Word bVisible)
 {
-	bVisible = (bVisible!=0);
+	bVisible = (bVisible != 0);
 	Word uResult = g_Global.m_bVisibleFlag;
-	if (uResult!=bVisible) {
+	if (uResult != bVisible) {
 		// It's visible now!
 		g_Global.m_bVisibleFlag = bVisible;
 		if (bVisible) {
@@ -101,7 +101,6 @@ Word BURGER_API Burger::OSCursor::Hide(void)
 	return uResult;
 }
 
-
 /***************************************
 
 	Reset an OS cursor to an arrow and show it
@@ -114,7 +113,6 @@ void BURGER_API Burger::OSCursor::Init(void)
 	g_Global.m_bVisibleFlag = TRUE;
 	g_Global.m_eIDNumber = CURSOR_ARROW;
 }
-
 
 /***************************************
 

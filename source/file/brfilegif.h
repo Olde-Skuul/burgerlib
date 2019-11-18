@@ -61,11 +61,11 @@ class GIFEncoder {
 public:
 	GIFEncoder();
 	static GIFEncoder * BURGER_API New(void);
-	BURGER_INLINE static Word GetHashKey(Word uInput) { return ((uInput >> cLZBits) ^ uInput) & cHashKeyMask; }
-	BURGER_INLINE static Word GetKey(Word uInput) { return uInput >> cLZBits; }
-	BURGER_INLINE static Word PutKey(Word uInput) { return uInput << cLZBits; }
-	BURGER_INLINE static Word GetCode(Word uInput) { return uInput & 0xFFFU; }
-	BURGER_INLINE static Word PutCode(Word uInput) { return uInput & 0xFFFU; }
+    static BURGER_INLINE Word GetHashKey(Word uInput) { return ((uInput >> cLZBits) ^ uInput) & cHashKeyMask; }
+    static BURGER_INLINE Word GetKey(Word uInput) { return uInput >> cLZBits; }
+    static BURGER_INLINE Word PutKey(Word uInput) { return uInput << cLZBits; }
+    static BURGER_INLINE Word GetCode(Word uInput) { return uInput & 0xFFFU; }
+    static BURGER_INLINE Word PutCode(Word uInput) { return uInput & 0xFFFU; }
 	BURGER_INLINE Word GetClearCode(void) const { return 1U << m_uColorDepth; }
 	BURGER_INLINE Word GetEOFCode(void) const { return (1U << m_uColorDepth) + 1U; }
 	void Init(OutputMemoryStream *pOutput,Word uDepth);

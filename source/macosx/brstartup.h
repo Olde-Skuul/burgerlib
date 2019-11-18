@@ -1,14 +1,15 @@
 /***************************************
 
 	Start up code for games based applications
-	
+
 	MacOSX version
-	
+
 	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
+
 	Please? It's not like I'm asking you for money!
 
 ***************************************/
@@ -46,11 +47,12 @@
 
 ***************************************/
 
-int BURGER_ANSIAPI main(int argc,const char **argv);
+int BURGER_ANSIAPI main(int argc, const char** argv);
 
-int BURGER_ANSIAPI main(int /* argc */,const char ** /* argv */)
+int BURGER_ANSIAPI main(int /* argc */, const char** /* argv */)
 {
-	int iResult = 0;	// Exit without error if already running
+	// Exit without error if already running
+	int iResult = 0;
 
 	// Singular instance enabled?
 #if defined(GAMELOCK)
@@ -59,21 +61,18 @@ int BURGER_ANSIAPI main(int /* argc */,const char ** /* argv */)
 #endif
 		// Create an application instance
 
-		Burger::GameApp MyApp(MEMORYSIZE,HANDLECOUNT,MINIMUMRESERVE);
+		Burger::GameApp MyApp(MEMORYSIZE, HANDLECOUNT, MINIMUMRESERVE);
 
 		// Error on startup?
 		iResult = Burger::Globals::GetErrorCode();
 
 		if (!iResult) {
-	
-			// Create the default menu items for
-			// a Mac OSX application without
-			// a Interface Builder XML file
-	
-			// Define BURGER_NOMENUS if the Mac OSX
-			// application uses Interface Builder to
-			// handle menu generation
 
+			// Create the default menu items for a Mac OSX application without
+			// an Interface Builder XML file
+
+			// Define BURGER_NOMENUS if the Mac OSX application uses Interface
+			// Builder to handle menu generation
 #if !defined(BURGER_NOMENUS)
 			Burger::Globals::CreateDefaultMenus();
 #endif
@@ -88,4 +87,3 @@ int BURGER_ANSIAPI main(int /* argc */,const char ** /* argv */)
 }
 
 #endif
-

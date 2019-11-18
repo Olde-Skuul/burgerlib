@@ -29,7 +29,7 @@
 /* BEGIN */
 namespace Burger {
 class MemoryManagerHandle : public MemoryManager {
-	BURGER_DISABLECOPYCONSTRUCTORS(MemoryManagerHandle);
+    BURGER_DISABLE_COPY(MemoryManagerHandle);
 public:
 	enum {
 		LOCKED=0x80,		///< Lock flag
@@ -60,7 +60,7 @@ public:
 private:
 	struct Handle_t {
 		void *m_pData;				///< Pointer to true memory (Must be the first entry!)
-		WordPtr m_uLength;			///< Length of allocated memory
+        uintptr_t m_uLength;			///< Length of allocated memory
 		Handle_t *m_pNextHandle;	///< Next handle in the chain
 		Handle_t *m_pPrevHandle;	///< Previous handle in the chain
 		Handle_t *m_pNextPurge;		///< Next handle in purge list
@@ -74,8 +74,8 @@ private:
 	SystemBlock_t *m_pSystemMemoryBlocks;	///< Linked list of memory blocks taken from the system
 	MemPurgeProc m_MemPurgeCallBack;	///< Callback before memory purging
 	void *m_pMemPurge;					///< User pointer for memory purge
-	WordPtr m_uTotalAllocatedMemory;	///< All of the memory currently allocated
-	WordPtr m_uTotalSystemMemory;		///< Total allocated system memory
+    uintptr_t m_uTotalAllocatedMemory;	///< All of the memory currently allocated
+    uintptr_t m_uTotalSystemMemory;		///< Total allocated system memory
 	Handle_t *m_pFreeHandle;			///< Pointer to the free handle list
 	Word m_uTotalHandleCount;			///< Number of handles allocated
 
@@ -85,30 +85,30 @@ private:
 	Handle_t m_PurgeHands;			///< Purged handle list
 	Handle_t m_PurgeHandleFiFo;		///< Purged handle linked list
 	CriticalSection m_Lock;			///< Lock for multithreading support
-	static void *BURGER_API AllocProc(MemoryManager *pThis,WordPtr uSize);
+	static void *BURGER_API AllocProc(MemoryManager *pThis, uintptr_t uSize);
 	static void BURGER_API FreeProc(MemoryManager *pThis,const void *pInput);
-	static void *BURGER_API ReallocProc(MemoryManager *pThis,const void *pInput,WordPtr uSize);
+	static void *BURGER_API ReallocProc(MemoryManager *pThis,const void *pInput, uintptr_t uSize);
 	static void BURGER_API ShutdownProc(MemoryManager *pThis);
 	Handle_t *BURGER_API AllocNewHandle(void);
-	void BURGER_API GrabMemoryRange(void *pData,WordPtr uLength,Handle_t *pParent,Handle_t *pHandle);
-	void BURGER_API ReleaseMemoryRange(void *pData,WordPtr uLength,Handle_t *pParent);
+	void BURGER_API GrabMemoryRange(void *pData, uintptr_t uLength,Handle_t *pParent,Handle_t *pHandle);
+	void BURGER_API ReleaseMemoryRange(void *pData, uintptr_t uLength,Handle_t *pParent);
 	void BURGER_API PrintHandles(const Handle_t *pFirst,const Handle_t *pLast,Word bNoCheck);
 public:
-	MemoryManagerHandle(WordPtr uDefaultMemorySize=DEFAULTMEMORYCHUNK,Word uDefaultHandleCount=DEFAULTHANDLECOUNT,WordPtr uMinReserveSize=DEFAULTMINIMUMRESERVE);
+	MemoryManagerHandle(uintptr_t uDefaultMemorySize=DEFAULTMEMORYCHUNK,Word uDefaultHandleCount=DEFAULTHANDLECOUNT, uintptr_t uMinReserveSize=DEFAULTMINIMUMRESERVE);
 	~MemoryManagerHandle();
-	BURGER_INLINE WordPtr GetTotalAllocatedMemory(void) const { return m_uTotalAllocatedMemory; }
-	BURGER_INLINE void *Alloc(WordPtr uSize) { return AllocProc(this,uSize); }
+	BURGER_INLINE uintptr_t GetTotalAllocatedMemory(void) const { return m_uTotalAllocatedMemory; }
+	BURGER_INLINE void *Alloc(uintptr_t uSize) { return AllocProc(this,uSize); }
 	BURGER_INLINE void Free(const void *pInput) { return FreeProc(this,pInput); }
-	BURGER_INLINE void *Realloc(const void *pInput,WordPtr uSize) { return ReallocProc(this,pInput,uSize); }
+	BURGER_INLINE void *Realloc(const void *pInput, uintptr_t uSize) { return ReallocProc(this,pInput,uSize); }
 	BURGER_INLINE void Shutdown(void) { ShutdownProc(this); }
-	void **BURGER_API AllocHandle(WordPtr uSize,Word uFlags=0);
+	void **BURGER_API AllocHandle(uintptr_t uSize,Word uFlags=0);
 	void BURGER_API FreeHandle(void **ppInput);
-	void **BURGER_API ReallocHandle(void **ppInput,WordPtr uSize);
+	void **BURGER_API ReallocHandle(void **ppInput, uintptr_t uSize);
 	void **BURGER_API RefreshHandle(void **ppInput);
 	void **BURGER_API FindHandle(const void *pInput);
-	static WordPtr BURGER_API GetSize(void **ppInput);
-	static WordPtr BURGER_API GetSize(const void *pInput);
-	WordPtr BURGER_API GetTotalFreeMemory(void);
+	static uintptr_t BURGER_API GetSize(void **ppInput);
+	static uintptr_t BURGER_API GetSize(const void *pInput);
+    uintptr_t BURGER_API GetTotalFreeMemory(void);
 	static void * BURGER_API Lock(void **ppInput);
 	static void BURGER_API Unlock(void **ppInput);
 	static void BURGER_API SetID(void **ppInput,Word uID);
@@ -116,15 +116,15 @@ public:
 	static Word BURGER_API GetLockedState(void **ppInput);
 	void BURGER_API SetLockedState(void **ppInput,Word uFlag);
 	void BURGER_API Purge(void **ppInput);
-	Word BURGER_API PurgeHandles(WordPtr uSize);
+	Word BURGER_API PurgeHandles(uintptr_t uSize);
 	void BURGER_API CompactHandles(void);
 	void BURGER_API DumpHandles(void);
 };
 class MemoryManagerGlobalHandle : public MemoryManagerHandle {
-	BURGER_DISABLECOPYCONSTRUCTORS(MemoryManagerGlobalHandle);
+    BURGER_DISABLE_COPY(MemoryManagerGlobalHandle);
 	MemoryManager *m_pPrevious;			///< Pointer to the previous memory manager
 public:
-	MemoryManagerGlobalHandle(WordPtr uDefaultMemorySize=DEFAULTMEMORYCHUNK,Word uDefaultHandleCount=DEFAULTHANDLECOUNT,WordPtr uMinReserveSize=DEFAULTMINIMUMRESERVE);
+	MemoryManagerGlobalHandle(uintptr_t uDefaultMemorySize=DEFAULTMEMORYCHUNK,Word uDefaultHandleCount=DEFAULTHANDLECOUNT, uintptr_t uMinReserveSize=DEFAULTMINIMUMRESERVE);
 	~MemoryManagerGlobalHandle();
 };
 }

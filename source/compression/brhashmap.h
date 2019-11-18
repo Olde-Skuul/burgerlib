@@ -41,10 +41,10 @@ extern WordPtr BURGER_API DJB2StringHashXorCaseFunctor(const void *pData,WordPtr
 
 class HashMapShared {
 protected:
-	static const WordPtr INVALID_HASH = BURGER_MAXWORDPTR;		///< Invalid hash value for marking an Entry as uninitialized
-	static const WordPtr INVALID_INDEX = BURGER_MAXWORDPTR;		///< Error value for invalid indexes
-	static const WordPtr END_OF_CHAIN = BURGER_MAXWORDPTR;		///< Constant to mark the end of a hash chain
-	static const WordPtr EMPTY_RECORD = BURGER_MAXWORDPTR-1;	///< Constant to mark an unused hash record
+	static const WordPtr INVALID_HASH = UINTPTR_MAX;		///< Invalid hash value for marking an Entry as uninitialized
+	static const WordPtr INVALID_INDEX = UINTPTR_MAX;		///< Error value for invalid indexes
+	static const WordPtr END_OF_CHAIN = UINTPTR_MAX;		///< Constant to mark the end of a hash chain
+	static const WordPtr EMPTY_RECORD = UINTPTR_MAX -1;	///< Constant to mark an unused hash record
 public:
 	struct Entry {
 		WordPtr m_uNextInChain;	///< Next item index in the linked list chain or \ref END_OF_CHAIN to mark the end of a linked list
@@ -98,6 +98,7 @@ protected:
 	void BURGER_API Copy(const HashMapShared *pInput);
 	void BURGER_API Add(const void *pT,const void *pU);
 	const void* BURGER_API GetData(const void *pT) const;
+public:
 	BURGER_INLINE Entry *GetEntry(WordPtr uIndex)
 	{
 		BURGER_ASSERT(m_pEntries && (uIndex <= m_uSizeMask));

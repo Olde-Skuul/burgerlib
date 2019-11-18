@@ -49,7 +49,7 @@ protected:
 	const Word8 *m_pData;			///< Pointer to the first data buffer
 	WordPtr m_uBufferSize;			///< Size of the buffer
 	Word m_bDontFree;				///< \ref TRUE if the memory isn't released on Clear()
-	BURGER_DISABLECOPYCONSTRUCTORS(InputMemoryStream);
+    BURGER_DISABLE_COPY(InputMemoryStream);
 public:
 	InputMemoryStream();
 	InputMemoryStream(const char *pFilename);

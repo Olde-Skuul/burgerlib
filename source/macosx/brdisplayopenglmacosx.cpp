@@ -6,9 +6,10 @@
 
 	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
+
 	Please? It's not like I'm asking you for money!
 
 ***************************************/
@@ -28,30 +29,31 @@
 #else
 #include <OpenGL/gl.h>
 #endif
-#include <OpenGL/glext.h>
-#include <OpenGL/OpenGL.h>
-#import <AppKit/NSWindow.h>
-#import <AppKit/NSScreen.h>
-#import <AppKit/NSOpenGLView.h>
-#import <AppKit/NSOpenGL.h>
-#import <AppKit/NSWindowController.h>
 #import <AppKit/NSApplication.h>
-#import <AppKit/NSResponder.h>
 #import <AppKit/NSEvent.h>
+#import <AppKit/NSOpenGL.h>
+#import <AppKit/NSOpenGLView.h>
+#import <AppKit/NSResponder.h>
+#import <AppKit/NSScreen.h>
+#import <AppKit/NSWindow.h>
+#import <AppKit/NSWindowController.h>
+#include <OpenGL/OpenGL.h>
+#include <OpenGL/glext.h>
 
 #if !defined(DOXYGEN)
 
 //
-// Function to fix the origin of an NSRect due to MacOSX inserting
-// space for the doc
+// Function to fix the origin of an NSRect due to MacOSX inserting space for the
+// doc
 //
 
-void FixNSRectOrigin(NSRect *pInput)
+extern void FixNSRectOrigin(NSRect* pInput);
+void FixNSRectOrigin(NSRect* pInput)
 {
-    pInput->origin.y = (CGDisplayPixelsHigh(kCGDirectMainDisplay) - pInput->origin.y) - pInput->size.height;
+	pInput->origin.y =
+		(CGDisplayPixelsHigh(kCGDirectMainDisplay) - pInput->origin.y) -
+		pInput->size.height;
 }
-
-
 
 //
 // Special window for full screen rendering

@@ -2,7 +2,7 @@
 
 	Flash player utility functions
 	
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -392,7 +392,9 @@ void BURGER_API Burger::Flash::GetFullURL(Filename *pOutput,const Filename *pDir
 
 
 
+#if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::Flash::BaseExecute,Burger::Base);
+#endif
 
 /*! ************************************
 
@@ -469,7 +471,7 @@ void Burger::Flash::BaseExecute::ExecuteState(Flash::CharacterObject* /* pObject
 void Burger::Flash::BaseExecute::ExecuteStateReverse(Flash::CharacterObject *pObject,Word /* uFrame */)
 {
 	// Default behavior is apply the generic state change
-	ExecuteState(pObject); 
+	ExecuteState(pObject);
 }
 
 /*! ************************************

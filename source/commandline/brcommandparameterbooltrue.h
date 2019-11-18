@@ -1,13 +1,14 @@
 /***************************************
 
-	Class for a boolean command parameter
+    Class for a boolean command parameter
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -24,17 +25,28 @@
 
 /* BEGIN */
 namespace Burger {
-class CommandParameterBooleanTrue : public CommandParameter {
-	Word m_bValue;			///< \ref TRUE if triggered, \ref FALSE if not
+class CommandParameterBooleanTrue: public CommandParameter {
+    uint_t m_bValue; ///< \ref TRUE if triggered, \ref FALSE if not
 public:
-	CommandParameterBooleanTrue(const char *pHelp,const char *const *ppParameterName,WordPtr uParameterCount) :
-		CommandParameter(pHelp,ppParameterName,uParameterCount),
-		m_bValue(FALSE) {}
-	CommandParameterBooleanTrue(const char *pHelp,const char *pParameterName) :
-		CommandParameter(pHelp,reinterpret_cast<const char *const *>(pParameterName),0),
-		m_bValue(FALSE) {}
-	virtual int Action(int argc,const char **argv);
-	BURGER_INLINE Word GetValue(void) const { return m_bValue; }
+    CommandParameterBooleanTrue(const char* pHelp,
+        const char* const* ppParameterName,
+        uintptr_t uParameterCount) BURGER_NOEXCEPT
+        : CommandParameter(pHelp, ppParameterName, uParameterCount),
+          m_bValue(FALSE)
+    {
+    }
+    CommandParameterBooleanTrue(
+        const char* pHelp, const char* pParameterName) BURGER_NOEXCEPT
+        : CommandParameter(
+              pHelp, reinterpret_cast<const char* const*>(pParameterName), 0),
+          m_bValue(FALSE)
+    {
+    }
+    int Action(int argc, const char** argv) BURGER_NOEXCEPT BURGER_OVERRIDE;
+    BURGER_INLINE uint_t GetValue(void) const BURGER_NOEXCEPT
+    {
+        return m_bValue;
+    }
 };
 }
 /* END */

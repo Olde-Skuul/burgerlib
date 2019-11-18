@@ -2,7 +2,7 @@
 
 	Flash player Adobe Virtual Machine Version 2 support
 	
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -113,7 +113,7 @@ public:
 	};
 	SimpleArray<Word> m_uMetadataArray;	///< Array of indexes into the metadata array
 	TraitsInfo();
-	~TraitsInfo();
+	virtual ~TraitsInfo();
 	void BURGER_API Read(Stream *pStream,ABC_Definition *pABCDefinition);
 };
 class MetadataInfo : public WeakAndStrongBase {
@@ -121,7 +121,7 @@ public:
 	Word m_uName;									///< Name index into the string array
 	SimpleArray<ItemInfo_t> m_ItemInfoArray;		///< Array of key / value pairs
 	MetadataInfo();
-	~MetadataInfo();
+	virtual ~MetadataInfo();
 	void BURGER_API Read(Stream* pStream);
 };
 class ExceptionInfo : public WeakAndStrongBase {
@@ -132,7 +132,7 @@ public:
 	Word m_uExceptionType;	///< An index into the string array of the constant pool that identifies the name of the type of exception
 	Word m_uVariableName;	///< This index into the string array of the constant pool defines the name of the variable that is to receive the exception object
 	ExceptionInfo();
-	~ExceptionInfo();
+	virtual ~ExceptionInfo();
 	void BURGER_API Read(Stream* pStream);
 };
 class InstanceInfo : public WeakAndStrongBase {
@@ -152,7 +152,7 @@ public:
 	Word m_uProtectedNamespace;	///< If protected, this contains the index to the protected namespace
 	Word m_uInitializationIndex;	///< Index to the initialization function
 	InstanceInfo();
-	~InstanceInfo();
+	virtual ~InstanceInfo();
 	void BURGER_API Read(Stream *pStream,ABC_Definition *pABCDefinition);
 };
 class ClassInfo : public WeakAndStrongBase {
@@ -161,7 +161,7 @@ public:
 	ClassArray<SmartPointer<TraitsInfo> > m_pTraitArray;
 	Word m_uClassInit;
 	ClassInfo();
-	~ClassInfo();
+	virtual ~ClassInfo();
 	void BURGER_API Read(Stream* pStream,ABC_Definition *pABCDefinition);
 };
 class ScriptInfo : public WeakAndStrongBase {
@@ -169,7 +169,7 @@ public:
 	ClassArray<SmartPointer<TraitsInfo> > m_pTraitArray;
 	Word m_uScriptInit;
 	ScriptInfo();
-	~ScriptInfo();
+	virtual ~ScriptInfo();
 	void BURGER_API Read(Stream* pStream,ABC_Definition *pABCDefinition);
 };
 

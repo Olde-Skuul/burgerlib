@@ -602,6 +602,7 @@ Word BURGER_API Burger::Mouse::PostMouseEvent(const EventHeader_t *pEvent)
 				pNewEvent->m_Wheel.m_iMouseWheelX = iX;
 				pNewEvent->m_Wheel.m_iMouseWheelY = iY;
 			}
+		default:
 			break;
 		}
 		uResult = 0;

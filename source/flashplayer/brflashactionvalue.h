@@ -2,7 +2,7 @@
 
 	Flash player action buffer
 	
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -158,7 +158,7 @@ public:
 	BURGER_INLINE Word IsReadOnly(void) const { return static_cast<Word>(m_uFlags & READ_ONLY ? TRUE : FALSE); }
 	BURGER_INLINE Word IsProtected(void) const { return static_cast<Word>(m_uFlags & DONT_DELETE ? TRUE : FALSE); }
 	BURGER_INLINE Word GetFlags(void) const { return m_uFlags; }
-	BURGER_INLINE void SetFlags(Word flags) const  { m_uFlags = flags; }
+	BURGER_INLINE void SetFlags(Word flags) const { m_uFlags = flags; }
 	static Word CompareEqual(const ActionScriptValue &rInput1,const ActionScriptValue &rInput2);
 	static ActionScriptValue RelationalCompareEqual(const ActionScriptValue &rInput1,const ActionScriptValue &rInput2);
 };

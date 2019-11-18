@@ -16,6 +16,7 @@
 #include "brendian.h"
 #include "brnumberstring.h"
 #include "brpalette.h"
+#include "brmemoryfunctions.h"
 
 /*! ************************************
 
@@ -413,7 +414,8 @@ Word BURGER_API Burger::OutputMemoryStream::Save(String *pOutput) const
 	if (!uResult) {
 		// Ensure the buffer is ready
 		WordPtr uRemaining = m_uFileSize;
-		uResult = pOutput->SetBufferSize(uRemaining);
+		// BECKY FIXME (eError)
+		uResult = (Word)pOutput->SetBufferSize(uRemaining);
 		if (!uResult) {
 			// Get the buffer pointer
 			char *pWork = pOutput->GetPtr();

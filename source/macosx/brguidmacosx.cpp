@@ -4,9 +4,10 @@
 
 	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
+
 	Please? It's not like I'm asking you for money!
 
 ***************************************/
@@ -22,10 +23,10 @@
 
 ***************************************/
 
-void BURGER_API Burger::GUIDInit(GUID *pOutput)
+void BURGER_API Burger::GUIDInit(GUID* pOutput)
 {
 	CFUUIDRef rUUID = CFUUIDCreate(kCFAllocatorDefault);
-	reinterpret_cast<CFUUIDBytes *>(pOutput)[0] = CFUUIDGetUUIDBytes(rUUID);
+	reinterpret_cast<CFUUIDBytes*>(pOutput)[0] = CFUUIDGetUUIDBytes(rUUID);
 	CFRelease(rUUID);
 }
 

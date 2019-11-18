@@ -42,7 +42,7 @@ class OutputMemoryStream {
 	WordPtr m_uIndex;		///< Number of bytes used the current chunk
 	WordPtr m_uFileSize;	///< Number of bytes stored in the stream
 	Word m_uError;			///< Did an error occur?
-	BURGER_DISABLECOPYCONSTRUCTORS(OutputMemoryStream);
+    BURGER_DISABLE_COPY(OutputMemoryStream);
 public:
 	OutputMemoryStream();
 	~OutputMemoryStream();

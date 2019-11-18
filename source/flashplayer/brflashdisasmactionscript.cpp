@@ -2,7 +2,7 @@
 
 	Flash player ActionScript disassembler
 		
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -241,13 +241,13 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 		Debug::Message("Unsupported opcode 0x%02X\n",uOpcode);
 	} else {
 		// Print the instruction
-		Debug::String(pInstruction->m_pName);
+		Debug::PrintString(pInstruction->m_pName);
 
 		// Print the arguments
 		eArgumentFormat uFormatCode = pInstruction->m_eArgumentFormat;
 		switch (uFormatCode) {
 		case ARGUMENT_NONE:
-			Debug::String("\n");
+			Debug::PrintString("\n");
 			break;
 
 		// A single unsigned 8 bit value
@@ -274,9 +274,9 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 				uResult = LittleEndian::LoadAny(reinterpret_cast<const Word16 *>(pInput+1))+3U;
 				Word8 uTemp = pInput[uResult];
 				const_cast<Word8 *>(pInput)[uResult] = 0;
-				Debug::String(" \"");
-				Debug::String(reinterpret_cast<const char *>(pInput+3));
-				Debug::String("\"\n");
+				Debug::PrintString(" \"");
+				Debug::PrintString(reinterpret_cast<const char *>(pInput+3));
+				Debug::PrintString("\"\n");
 				const_cast<Word8 *>(pInput)[uResult] = uTemp;
 			}
 			break;
@@ -287,11 +287,11 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 				uResult = LittleEndian::LoadAny(reinterpret_cast<const Word16 *>(pInput+1))+3U;
 				Word8 uTemp = pInput[uResult];
 				const_cast<Word8 *>(pInput)[uResult] = 0;
-				Debug::String(" \"");
-				Debug::String(reinterpret_cast<const char *>(pInput+3));
-				Debug::String("\", \"");
-				Debug::String(reinterpret_cast<const char *>(pInput+4)+StringLength(reinterpret_cast<const char *>(pInput+3)));
-				Debug::String("\"\n");
+				Debug::PrintString(" \"");
+				Debug::PrintString(reinterpret_cast<const char *>(pInput+3));
+				Debug::PrintString("\", \"");
+				Debug::PrintString(reinterpret_cast<const char *>(pInput+4)+StringLength(reinterpret_cast<const char *>(pInput+3)));
+				Debug::PrintString("\"\n");
 				const_cast<Word8 *>(pInput)[uResult] = uTemp;
 			}
 			break;
@@ -313,7 +313,7 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 						++pInput;
 					} while (--uCount);
 				}
-				Debug::String("\n");
+				Debug::PrintString("\n");
 			}
 			break;
 
@@ -329,9 +329,9 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 					switch (uPushType) {
 					case 0:
 						// string
-						Debug::String(" STRING:\"");
-						Debug::String(reinterpret_cast<const char *>(pInput));
-						Debug::String("\"");
+						Debug::PrintString(" STRING:\"");
+						Debug::PrintString(reinterpret_cast<const char *>(pInput));
+						Debug::PrintString("\"");
 						pInput+=StringLength(reinterpret_cast<const char *>(pInput))+1;
 						break;
 					case 1:
@@ -373,7 +373,7 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 						break;
 					}
 				}
-				Debug::String("\n");
+				Debug::PrintString("\n");
 			}
 			break;
 		case ARGUMENT_CONSTANT_POOL:
@@ -389,15 +389,15 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 						pTemp[0] = 0;
 						pInput+=5;
 						do {
-							Debug::String(" \"");
-							Debug::String(reinterpret_cast<const char *>(pInput));
-							Debug::String("\"");
+							Debug::PrintString(" \"");
+							Debug::PrintString(reinterpret_cast<const char *>(pInput));
+							Debug::PrintString("\"");
 							pInput+=StringLength(reinterpret_cast<const char *>(pInput))+1;
 						} while (--uCount);
 						pTemp[0] = uTemp;
 					}
 				}
-				Debug::String("\n");
+				Debug::PrintString("\n");
 			}
 			break;
 		case ARGUMENT_DEFINEFUNCTION2:
@@ -413,32 +413,32 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 
 				Word uFlag = pInput[0];
 				if (uFlag&0x80) {
-					Debug::String(" PreloadParentFlag");
+					Debug::PrintString(" PreloadParentFlag");
 				}
 				if (uFlag&0x40) {
-					Debug::String(" PreloadRootFlag");
+					Debug::PrintString(" PreloadRootFlag");
 				}
 				if (uFlag&0x20) {
-					Debug::String(" SuppressSuperFlag");
+					Debug::PrintString(" SuppressSuperFlag");
 				}
 				if (uFlag&0x10) {
-					Debug::String(" PreloadSuperFlag");
+					Debug::PrintString(" PreloadSuperFlag");
 				}
 				if (uFlag&0x8) {
-					Debug::String(" SuppressArgumentsFlag");
+					Debug::PrintString(" SuppressArgumentsFlag");
 				}
 				if (uFlag&0x4) {
-					Debug::String(" PreloadArgumentsFlag");
+					Debug::PrintString(" PreloadArgumentsFlag");
 				}
 				if (uFlag&0x2) {
-					Debug::String(" SuppressThisFlag");
+					Debug::PrintString(" SuppressThisFlag");
 				}
 				if (uFlag&0x1) {
-					Debug::String(" PreloadThisFlag");
+					Debug::PrintString(" PreloadThisFlag");
 				}
 				uFlag = pInput[1];
 				if (uFlag&0x1) {
-					Debug::String(" PreloadGlobalFlag");
+					Debug::PrintString(" PreloadGlobalFlag");
 				}
 				pInput+=2;
 				if (uNumParams) {

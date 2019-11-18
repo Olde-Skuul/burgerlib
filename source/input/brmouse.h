@@ -45,7 +45,7 @@
 /* BEGIN */
 namespace Burger {
 class Mouse : public Base {
-	BURGER_DISABLECOPYCONSTRUCTORS(Mouse);
+    BURGER_DISABLE_COPY(Mouse);
 	BURGER_RTTI_IN_CLASS();
 
 public:
@@ -126,7 +126,7 @@ protected:
 	MouseEvent_t m_MouseEvents[MOUSEBUFFSIZE];	///< Circular buffer holding mouse events
 public:
 	Mouse(GameApp *pGameApp);
-	~Mouse();
+	virtual ~Mouse();
 	Word BURGER_API PeekMouseEvent(MouseEvent_t *pEvent);
 	Word BURGER_API GetMouseEvent(MouseEvent_t *pEvent);
 	Word BURGER_API IsPresent(void) const;

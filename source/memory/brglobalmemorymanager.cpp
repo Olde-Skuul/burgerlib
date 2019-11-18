@@ -12,7 +12,7 @@
 ***************************************/
 
 #include "brglobalmemorymanager.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 
 /*! ************************************
 
@@ -67,7 +67,7 @@ Burger::MemoryManager *Burger::GlobalMemoryManager::g_pInstance;
 
 ***************************************/
 
-Burger::MemoryManager * BURGER_API Burger::GlobalMemoryManager::Init(MemoryManager *pInstance)
+Burger::MemoryManager * BURGER_API Burger::GlobalMemoryManager::Init(MemoryManager *pInstance) BURGER_NOEXCEPT
 {
 	MemoryManager *pOldInstance = g_pInstance;
 	g_pInstance = pInstance;
@@ -89,7 +89,7 @@ Burger::MemoryManager * BURGER_API Burger::GlobalMemoryManager::Init(MemoryManag
 
 ***************************************/
 
-void BURGER_API Burger::GlobalMemoryManager::Shutdown(MemoryManager *pPrevious)
+void BURGER_API Burger::GlobalMemoryManager::Shutdown(MemoryManager *pPrevious) BURGER_NOEXCEPT
 {
 	MemoryManager *pThis = g_pInstance;
 	if (pThis) {
@@ -121,7 +121,7 @@ void BURGER_API Burger::GlobalMemoryManager::Shutdown(MemoryManager *pPrevious)
 	
 ***************************************/
 
-void *BURGER_API Burger::Alloc(WordPtr uSize)
+void *BURGER_API Burger::Alloc(uintptr_t uSize)
 {
 	return GlobalMemoryManager::GetInstance()->Alloc(uSize);
 }
@@ -140,7 +140,7 @@ void *BURGER_API Burger::Alloc(WordPtr uSize)
 	
 ***************************************/
 
-void *BURGER_API Burger::AllocClear(WordPtr uSize)
+void *BURGER_API Burger::AllocClear(uintptr_t uSize)
 {
 	void *pResult = GlobalMemoryManager::GetInstance()->Alloc(uSize);
 	if (pResult) {
@@ -185,7 +185,7 @@ void BURGER_API Burger::Free(const void *pInput)
 	
 ***************************************/
 
-void *BURGER_API Burger::Realloc(const void *pInput,WordPtr uSize)
+void *BURGER_API Burger::Realloc(const void *pInput, uintptr_t uSize)
 {
 	return GlobalMemoryManager::GetInstance()->Realloc(pInput,uSize);
 }
@@ -205,9 +205,9 @@ void *BURGER_API Burger::Realloc(const void *pInput,WordPtr uSize)
 	
 ***************************************/
 
-void *BURGER_API Burger::AllocCopy(const void *pInput,WordPtr uSize)
+void *BURGER_API Burger::AllocCopy(const void *pInput, uintptr_t uSize)
 {
-	void *pOutput=NULL;
+    void* pOutput = nullptr;
 	if (uSize) {			// Sanity check
 		pOutput = GlobalMemoryManager::GetInstance()->Alloc(uSize);
 		if (pOutput) {			// Valid?
@@ -226,7 +226,7 @@ void *BURGER_API Burger::AllocCopy(const void *pInput,WordPtr uSize)
 	\fn T * Burger::New(void)
 	\brief Allocate a class instance
 
-	Allocate memory with Burger::Alloc(WordPtr) and invoke the default
+	Allocate memory with Burger::Alloc(uintptr_t) and invoke the default
 	constructor on it.
 
 	\return \ref NULL on memory error or a valid pointer to a new class instance

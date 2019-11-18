@@ -33,6 +33,7 @@ class Filename {
 
 	char *m_pFilename;				///< Pointer to the burgerlib filename
 	char *m_pNativeFilename;		///< Pointer to the native filename
+
 #if !defined(BURGER_MAC) && !defined(DOXYGEN)
 	char m_Filename[cBufferSize-(sizeof(char *))];	///< Local buffer containing the filename (If it can fit in this buffer)
 	char m_NativeFilename[cBufferSize-(sizeof(char *))];	///< Local buffer containing the native filename
@@ -55,6 +56,7 @@ public:
 	static void BURGER_API InitDirectoryCache(void);
 	static void BURGER_API PurgeDirectoryCache(void);
 #endif
+
 public:
 	Filename() : m_pFilename(m_Filename), m_pNativeFilename(m_NativeFilename)
 #if defined(BURGER_MAC)
@@ -68,6 +70,7 @@ public:
 	BURGER_INLINE const char *GetPtr(void) const { return m_pFilename; }
 	BURGER_INLINE char *GetPtr(void) { return m_pFilename; }
 	void BURGER_API Set(const char *pInput);
+	void BURGER_API Set(const Word16 *pInput);
 	void BURGER_API Clear(void);
 	void BURGER_API Append(const char *pInput);
 	void BURGER_API GetFileName(char *pOutput,WordPtr uOutputLength) const;
@@ -86,9 +89,12 @@ public:
 	void BURGER_API SetMachinePrefsDirectory(void);
 	void BURGER_API SetUserPrefsDirectory(void);
 	const char * BURGER_API GetNative(void);
+
 #if !defined(BURGER_MAC) || defined(DOXYGEN)
 	void BURGER_API SetFromNative(const char *pInput);
+	void BURGER_API SetFromNative(const Word16 *pInput);
 #endif
+
 #if defined(BURGER_MAC) || defined(DOXYGEN)
 	void BURGER_API SetFromNative(const char *pInput,long lDirID=0,short sVRefNum=0);
 	BURGER_INLINE FSRef *GetFSRef(void) { return reinterpret_cast<FSRef *>(m_FSRef); }
@@ -98,6 +104,7 @@ public:
 	BURGER_INLINE void SetVRefNum(short sVRefNum) { m_sVRefNum = sVRefNum; }
 	Word BURGER_API SetFromDirectoryID(long lDirID,short sVolRefNum);
 #endif
+
 	static Filename * BURGER_API New(void);
 	static Filename * BURGER_API New(const char *pFilename);
 	static Filename * BURGER_API New(Filename const &rInput);

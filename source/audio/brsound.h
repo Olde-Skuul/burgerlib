@@ -71,7 +71,7 @@ namespace Burger {
 class DecompressAudio;
 
 class SoundManager : public Base {
-	BURGER_DISABLECOPYCONSTRUCTORS(SoundManager);
+    BURGER_DISABLE_COPY(SoundManager);
 	BURGER_RTTI_IN_CLASS();
 public:
 
@@ -184,7 +184,7 @@ public:
 	class Voice;
 
 	class Buffer : public ReferenceCounter {
-		BURGER_DISABLECOPYCONSTRUCTORS(Buffer);
+        BURGER_DISABLE_COPY(Buffer);
 		BURGER_RTTI_IN_CLASS();
 	protected:
 
@@ -320,7 +320,7 @@ protected:
 
 public:
 	SoundManager(GameApp *pGameApp);
-	~SoundManager();
+	virtual ~SoundManager();
 	static SoundManager * BURGER_API New(GameApp *pGameApp);
 	Word BURGER_API Init(void);
 	void BURGER_API Shutdown(void);
