@@ -19,8 +19,11 @@
 #endif
 
 /* BEGIN */
+
 #if defined(BURGER_VITA) && !defined(DOXYGEN)
+
 struct SceDateTime;
+
 #endif
 /* END */
 

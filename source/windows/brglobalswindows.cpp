@@ -13,15 +13,16 @@
 
 #include "brglobals.h"
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-#include "brstring16.h"
-#include "brstring.h"
-#include "brstringfunctions.h"
+#include "brdisplay.h"
 #include "brfilemanager.h"
 #include "brgameapp.h"
 #include "brkeyboard.h"
 #include "brmouse.h"
-#include "brdisplay.h"
+#include "brstring.h"
+#include "brstring16.h"
+#include "brnumberto.h"
 #include "brwindowstypes.h"
+#include "brmemoryfunctions.h"
 
 #if !defined(DOXYGEN)
 
@@ -35,7 +36,7 @@
 #endif
 
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0501			// Windows XP
+#define _WIN32_WINNT 0x0501 // Windows XP
 #endif
 
 #if !defined(DIRECTINPUT_VERSION)
@@ -55,19 +56,20 @@
 #endif
 
 #include <Windows.h>
-#include <WindowsX.h>
+
 #include <MMReg.h>
-#include <dinput.h>
+#include <SetupAPI.h>
+#include <WindowsX.h>
+#include <Xinput.h>
 #include <d3d.h>
+#include <d3dcommon.h>
 #include <ddraw.h>
+#include <dinput.h>
 #include <dsound.h>
+#include <io.h>
 #include <shellapi.h>
 #include <shlobj.h>
-#include <SetupAPI.h>
-#include <d3dcommon.h>
-#include <Xinput.h>
 #include <xaudio2.h>
-#include <io.h>
 
 //
 // These defines are missing from some versions of windows.h
@@ -182,58 +184,21 @@ static const char g_SoftwareClasses[] = "Software\\Classes\\";
 // Globals
 //
 
-const Word16 Burger::Globals::g_GameClass[] = {0x42,0x75,0x72,0x67,0x65,0x72,0x47,0x61,0x6D,0x65,0x43,0x6C,0x61,0x73,0x73,0x0};	//"BurgerGameClass";
-ATOM Burger::Globals::g_uAtom = INVALID_ATOM;			///< Atom assigned to my class (Windows only) 
-HINSTANCE Burger::Globals::g_hInstance;
+const Word16 Burger::Globals::g_GameClass[] = {'B', 'u', 'r', 'g', 'e', 'r',
+	'G', 'a', 'm', 'e', 'C', 'l', 'a', 's', 's', 0}; //"BurgerGameClass";
+ATOM Burger::Globals::g_uAtom =
+	INVALID_ATOM; ///< Atom assigned to my class (Windows only)
 HWND Burger::Globals::g_hWindow;
 Word32 Burger::Globals::g_uQuickTimeVersion;
 Word8 Burger::Globals::g_bQuickTimeVersionValid;
 Word32 Burger::Globals::g_uDirectXVersion;
 Word8 Burger::Globals::g_bDirectXVersionValid;
-Word8 Burger::Globals::g_bWindowsVersionFlags;
 #if defined(BURGER_WIN32) || defined(DOXYGEN)
 Word8 Burger::Globals::g_bIsWindows64Bit;
 #endif
 
-#endif		// Allow doxygen
+#endif // Allow doxygen
 
-/***************************************
-
-	\brief Windows specific clean up code
-	
-	Some functions perform actions that reserve resources. Release them
-	on application shutdown
-	
-***************************************/
-
-Burger::Globals::~Globals()
-{
-	// Was DirectInput8 instantiated?
-	if (m_pDirectInput8W) {
-		m_pDirectInput8W->Release();
-		m_pDirectInput8W = NULL;
-	}
-	
-	// Was DirectInput instantiated?
-	if (m_pDirectInputW) {
-		m_pDirectInputW->Release();
-		m_pDirectInputW = NULL;
-	}
-
-	// Dispose of all resolved calls to Windows
-	MemoryClear(m_pWindowsCalls,sizeof(m_pWindowsCalls));
-	MemoryClear(m_bFunctionsTested,sizeof(m_bFunctionsTested));
-
-	// Finally, release all of the allocated DLLs
-	WordPtr i = 0;
-	do {
-		if (m_hInstances[i]) {
-			FreeLibrary(m_hInstances[i]);
-			m_hInstances[i] = NULL;
-		}
-		m_bInstancesTested[i] = FALSE;
-	} while (++i<DLL_COUNT);
-}
 
 /*! ************************************
 
@@ -248,38 +213,9 @@ Burger::Globals::~Globals()
 	\return Pointer to a wchar_t * compatible pointer
 
 	\sa Globals::RegisterWindowClass(Word)
-	
+
 ***************************************/
 
-/*! ************************************
-
-	\fn Burger::Globals::GetInstance()
-	\brief Get the application instance
-
-	\windowsonly
-
-	\return Instance set by Globals::SetInstance()
-
-	\sa Globals::SetInstance()
-	
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::Globals::SetInstance(HINSTANCE__ *)
-	\brief Set the application instance
-
-	Upon application startup, an instance is assigned, use
-	this function to allow Burgerlib to use this instance in
-	other parts of the library.
-
-	\windowsonly
-
-	\param pInput Instance of the application
-
-	\sa Globals::GetInstance()
-	
-***************************************/
 
 /*! ************************************
 
@@ -291,7 +227,7 @@ Burger::Globals::~Globals()
 	\return Window set by Globals::SetWindow()
 
 	\sa Globals::SetWindow()
-	
+
 ***************************************/
 
 /*! ************************************
@@ -310,203 +246,6 @@ Burger::Globals::~Globals()
 	
 ***************************************/
 
-/*! ************************************
-
-	\brief Test all versions of windows
-
-	Test for which version of windows the application is running
-	under and set the flags accordingly. This will set the global
-	\ref g_bWindowsVersionFlags.
-
-	\note This function currently returns the windows version of 8 when
-	running under Windows 10 if the application doesn't have a
-	Windows 10 manifest. 
-
-	\windowsonly
-	\return Returns the value of \ref g_bWindowsVersionFlags
-	\sa IsWin95orWin98(void), IsWinXPOrGreater(void) or IsVistaOrGreater(void)
-
-***************************************/
-
-Word BURGER_API Burger::Globals::TestWindowsVersion(void)
-{
-	Word uResult = g_bWindowsVersionFlags;	// Get the value
-	// Was it already tested?
-	if (!(uResult&WINDOWSVERSION_TESTED)) {
-		uResult = WINDOWSVERSION_TESTED;
-
-		// Initialize the version structure
-		OSVERSIONINFOW OSVersionInfo;
-		MemoryClear(&OSVersionInfo,sizeof(OSVersionInfo));
-		OSVersionInfo.dwOSVersionInfoSize = sizeof(OSVersionInfo);
-
-		// Read in the version information
-		if (GetVersionExW(&OSVersionInfo)) {
-			// Is this Windows 95/98?!?!?
-			if (OSVersionInfo.dwPlatformId==VER_PLATFORM_WIN32_WINDOWS) {
-				// Holy cow! Set and end testing
-				uResult = WINDOWSVERSION_TESTED|WINDOWSVERSION_9598;
-
-			// NT tech (Which is pretty much everything since windows 98)
-
-			} else if (OSVersionInfo.dwPlatformId==VER_PLATFORM_WIN32_NT) {
-
-				// Cache the versions
-				Word uMajor = OSVersionInfo.dwMajorVersion;
-				Word uMinor = OSVersionInfo.dwMinorVersion;
-
-				// Test for XP
-				if (uMajor>=5) {
-					if (uMinor>=1) {
-						// 5.1 = XP
-						uResult |= WINDOWSVERSION_XPORGREATER;
-					}
-
-					// Try Vista
-					if (uMajor>=6) {
-						// 6.0 = Vista
-						uResult |= WINDOWSVERSION_VISTAORGREATER;
-
-						// Try Windows 7
-						if (uMinor>=1) {
-							// 6.1 = 7
-							uResult |= WINDOWSVERSION_7ORGREATER;
-
-							// Ooh... Windows 8?
-							if (uMinor>=2) {
-								// 6.2 = 8
-								uResult |= WINDOWSVERSION_8ORGREATER;
-
-								// Microsoft. You suck.
-								
-								// uMinor only returns 10 if the exe is manifested to
-								// be compatible for Windows 10 or higher, otherwise
-								// it will return 8 (6.2) because they suck
-
-								// Hack to bypass this feature, query the registry key
-								// that has the REAL version of the operating system
-
-								HKEY hKey = NULL;
-								// Open the pre-existing registry key
-								LONG lStatus = RegOpenKeyExA(HKEY_LOCAL_MACHINE,"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion",0,KEY_QUERY_VALUE,&hKey);
-
-								if (lStatus==ERROR_SUCCESS) {
-
-									DWORD uMajorEx = 0;
-									DWORD uLength = sizeof(DWORD);
-									lStatus = RegQueryValueExA(hKey,"CurrentMajorVersionNumber",NULL,NULL,static_cast<BYTE *>(static_cast<void *>(&uMajorEx)),&uLength);
-										
-									RegCloseKey(hKey);
-									
-									// Test for Windows 10 or higher
-									if (uMajorEx>=10) {
-										uResult |= WINDOWSVERSION_10ORGREATER;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		// Store the final result
-		g_bWindowsVersionFlags = static_cast<Word8>(uResult);
-	}
-	// Return the value as is
-	return uResult;
-}
-
-/*! ************************************
-
-	\fn Word Burger::Globals::IsWin95orWin98(void)
-	\brief Detect if running on an ancient version of windows
-
-	Test if the system is a pre-NT Windows operating system.
-	If it returns \ref FALSE, it's an NT kernel (XP, Vista, 7, 8 ...)
-
-	\windowsonly
-	\return Returns \ref TRUE if Windows 3.1, 95, or 98. 
-	\sa TestWindowsVersion(void), IsWinXPOrGreater(void) or IsVistaOrGreater(void)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Word Burger::Globals::IsWinXPOrGreater(void)
-	\brief Detect if running Windows XP or higher
-
-	Test if the system is a Windows XP operating system or greater
-	If it returns \ref FALSE, it's before Windows XP
-
-	\windowsonly
-	\return Returns \ref TRUE if Windows XP or greater
-	\sa TestWindowsVersion(void), IsWin95orWin98(void) or IsVistaOrGreater(void)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Word Burger::Globals::IsVistaOrGreater(void)
-	\brief Detect if running Windows Vista or higher
-
-	Test if the system is a Windows Vista operating system or greater
-	If it returns \ref FALSE, it's before Windows Vista (Usually XP)
-
-	\windowsonly
-	\return Returns \ref TRUE if Windows Vista or greater
-	\sa TestWindowsVersion(void), IsWin95orWin98(void) or IsWinXPOrGreater(void)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Word Burger::Globals::IsWin7OrGreater(void)
-	\brief Detect if running Windows 7 or higher
-
-	Test if the system is a Windows 7 operating system or greater
-	If it returns \ref FALSE, it's before Windows 7
-
-	\windowsonly
-	\return Returns \ref TRUE if Windows 7 or greater
-	\sa TestWindowsVersion(void), IsVistaOrGreater(void) or IsWinXPOrGreater(void)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Word Burger::Globals::IsWin8OrGreater(void)
-	\brief Detect if running Windows 8 or higher
-
-	Test if the system is a Windows 8 operating system or greater
-	If it returns \ref FALSE, it's before Windows 8
-
-	\windowsonly
-	\return Returns \ref TRUE if Windows 8 or greater
-	\sa TestWindowsVersion(void), IsWin7OrGreater(void), IsVistaOrGreater(void) or IsWinXPOrGreater(void)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Word Burger::Globals::IsWin10OrGreater(void)
-	\brief Detect if running Windows 10 or higher
-
-	Test if the system is a Windows 10 operating system or greater
-	If it returns \ref FALSE, it's before Windows 10
-
-	\note Windows 10 requires a manifest linked into the application that
-	notifies Windows that the application is compatible with Windows 10. If
-	there is no manifest, this function will always return \ref FALSE
-	because Windows identifies itself as Windows 8.
-
-	\windowsonly
-	\return Returns \ref TRUE if Windows 10 or greater
-	\sa TestWindowsVersion(void), IsWin8OrGreater(void), IsWin7OrGreater(void), IsVistaOrGreater(void) or IsWinXPOrGreater(void)
-
-***************************************/
-
-
 #if defined(BURGER_WIN32) || defined(DOXYGEN)
 
 /*! ************************************
@@ -519,8 +258,8 @@ Word BURGER_API Burger::Globals::TestWindowsVersion(void)
 	then this function will return \ref FALSE.
 
 	\windowsonly
-	\return Returns \ref TRUE if the 32 bit application was running in 64 bit Windows
-	\sa GetSystemWow64DirectoryW(Word16 *,Word32)
+	\return Returns \ref TRUE if the 32 bit application was running in 64 bit
+	Windows \sa GetSystemWow64DirectoryW(Word16 *,Word32)
 
 ***************************************/
 
@@ -528,88 +267,63 @@ Word BURGER_API Burger::Globals::IsWindows64Bit(void)
 {
 	Word bResult = g_bIsWindows64Bit;
 	// Was it already tested?
-	if (!(bResult&0x80)) {
+	if (!(bResult & 0x80)) {
 		Word16 Temp[MAX_PATH];
-		if ((GetSystemWow64DirectoryW(Temp,BURGER_ARRAYSIZE(Temp)) == 0) &&
-			(GetLastError() == ERROR_CALL_NOT_IMPLEMENTED)) {
-			bResult = 0x80|FALSE;		// Not present? This is a 32 bit version of Windows
+		if ((Windows::GetSystemWow64DirectoryW(Temp, BURGER_ARRAYSIZE(Temp)) == 0)
+			&& (GetLastError() == ERROR_CALL_NOT_IMPLEMENTED)) {
+			bResult = 0x80
+				| FALSE; // Not present? This is a 32 bit version of Windows
 		} else {
-			bResult = 0x80|TRUE;		// The 32 bit app is running in a 64 bit version of Windows
+			bResult = 0x80 | TRUE; // The 32 bit app is running in a 64 bit
+								   // version of Windows
 		}
 		g_bIsWindows64Bit = static_cast<Word8>(bResult);
 	}
 	// Return the value minus the other flags
-	return bResult&1U;
+	return bResult & 1U;
 }
 
 #endif
 
-/*! ************************************
-
-	\brief Detect if XAudio2 2.7 or higher is installed
-
-	Test if XAudio2 2.7 or higher is installed and return TRUE if found.
-
-	\windowsonly
-	\return Returns \ref TRUE if the XAudio2 is available
-
-***************************************/
-
-Word BURGER_API Burger::Globals::IsXAudio2Present(void)
-{
-	// Start up CoInitialize() to allow creating instances
-	Word bCleanupCOM = (CoInitialize(NULL)>=0);
-
-	IXAudio2 *pXAudio2 = NULL;
-	HRESULT hr = CoCreateInstance(CLSID_XAudio2,NULL,CLSCTX_INPROC_SERVER,IID_IXAudio2,reinterpret_cast<void**>(&pXAudio2));
-	Word bResult = FALSE;
-
-	// Did the call succeed?
-	if (hr>=0) {
-		// Release the instance
-		pXAudio2->Release();
-		bResult = TRUE;
-	}
-
-	//
-	// If CoInitialize() was successful, release it
-	//
-	if (bCleanupCOM) {
-		CoUninitialize();
-	}
-	return bResult;
-}
 
 /*! ************************************
 
 	\brief Returns a 64 bit version of a file.
-	
+
 	Given a filename in Windows Unicode format, open the file and return
 	the 64 bit Windows extended version number from the dwFileVersionMS
 	and dwFileVersionLS entries in the VS_FIXEDFILEINFO structure.
 	
 	\return Version in 64 bit Windows format or 0 on error
-		
+
 ***************************************/
 
-Word64 BURGER_API Burger::Globals::GetFileVersion64(const Word16* pWindowsFilename)
+Word64 BURGER_API Burger::Globals::GetFileVersion64(
+	const Word16* pWindowsFilename)
 {
 	Word64 uResult = 0;
 	if (pWindowsFilename) {
 		DWORD uNotUsed;
 		// Get the size of the data
-		UINT uBufferSize = GetFileVersionInfoSizeW(pWindowsFilename,&uNotUsed);
+		UINT uBufferSize = Windows::GetFileVersionInfoSizeW(pWindowsFilename, &uNotUsed);
 		if (uBufferSize) {
 			HANDLE hHeap = GetProcessHeap();
-			BYTE* pFileVersionBuffer = static_cast<BYTE *>(HeapAlloc(hHeap,0,uBufferSize));
+			BYTE* pFileVersionBuffer =
+				static_cast<BYTE*>(HeapAlloc(hHeap, 0, uBufferSize));
 			if (pFileVersionBuffer) {
 				// Load the data
-				if (GetFileVersionInfoW(pWindowsFilename,0,uBufferSize,pFileVersionBuffer)) {
+				if (Windows::GetFileVersionInfoW(
+						pWindowsFilename, 0, uBufferSize, pFileVersionBuffer)) {
 					VS_FIXEDFILEINFO* pVersion = NULL;
 					// Extract the version value
-					if (VerQueryValueW(pFileVersionBuffer,reinterpret_cast<const Word16 *>(L"\\"),(VOID**)&pVersion,&uBufferSize)) {
+					if (Windows::VerQueryValueW(pFileVersionBuffer,
+							reinterpret_cast<const Word16*>(L"\\"),
+							(VOID**)&pVersion, &uBufferSize)) {
 						if (pVersion != NULL) {
-							uResult = (static_cast<Word64>(pVersion->dwFileVersionMS)<<32U)+pVersion->dwFileVersionLS;
+							uResult =
+								(static_cast<Word64>(pVersion->dwFileVersionMS)
+									<< 32U)
+								+ pVersion->dwFileVersionLS;
 						}
 					}
 				}
@@ -1727,86 +1441,79 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 	case WM_XBUTTONDOWN:
 	case WM_XBUTTONUP:
 	case WM_XBUTTONDBLCLK:
-	case WM_MOUSEHWHEEL:
-		{
-			// If there's a mouse device, set the position
-			Burger::Mouse *pMouse = pThis->GetMouse();
-			if (pMouse) {
-				Word uMouseX;
-				Word uMouseY;
+	case WM_MOUSEHWHEEL: {
+		// If there's a mouse device, set the position
+		Burger::Mouse* pMouse = pThis->GetMouse();
+		if (pMouse) {
+			Word uMouseX;
+			Word uMouseY;
 
-				// Mouse wheel events give global coordinates. Go figure
-				if ((uMessage == WM_MOUSEWHEEL) || (uMessage == WM_MOUSEHWHEEL)) {
-					// Must use GET_X_LPARAM because the values
-					// are signed shorts on multiple monitors
-					POINT TempPoint;
-					TempPoint.x = static_cast<LONG>(GET_X_LPARAM(lParam));
-					TempPoint.y = static_cast<LONG>(GET_Y_LPARAM(lParam));
-					ScreenToClient(pThis->GetWindow(),&TempPoint);
-					uMouseX = static_cast<Word>(TempPoint.x);
-					uMouseY = static_cast<Word>(TempPoint.y);
-				} else {
-					// They are unsigned values!
-					uMouseX = LOWORD(lParam);
-					uMouseY = HIWORD(lParam);
-				}
-				// Pass the value to the mouse driver
-				pMouse->PostMousePosition(uMouseX,uMouseY);
+			// Mouse wheel events give global coordinates. Go figure
+			if ((uMessage == WM_MOUSEWHEEL) || (uMessage == WM_MOUSEHWHEEL)) {
+				// Must use GET_X_LPARAM because the values
+				// are signed shorts on multiple monitors
+				POINT TempPoint;
+				TempPoint.x = static_cast<LONG>(GET_X_LPARAM(lParam));
+				TempPoint.y = static_cast<LONG>(GET_Y_LPARAM(lParam));
+				ScreenToClient(pThis->GetWindow(), &TempPoint);
+				uMouseX = static_cast<Word>(TempPoint.x);
+				uMouseY = static_cast<Word>(TempPoint.y);
+			} else {
+				// They are unsigned values!
+				uMouseX = LOWORD(lParam);
+				uMouseY = HIWORD(lParam);
+			}
+			// Pass the value to the mouse driver
+			pMouse->PostMousePosition(uMouseX, uMouseY);
 
-				// Pass the mouse button events down
-				switch (uMessage) {
-				case WM_MOUSEWHEEL:
-					{
-						int iDelta = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
-						pMouse->PostMouseWheel(0,iDelta);
-					}
-					break;
-				case WM_MOUSEHWHEEL:
-					{
-						int iDelta = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
-						pMouse->PostMouseWheel(iDelta,0);
-					}
-					break;
-				case WM_LBUTTONDOWN:
-				case WM_LBUTTONDBLCLK:
-					pMouse->PostMouseDown(Burger::Mouse::BUTTON_LEFT);
-					break;
-				case WM_RBUTTONDOWN:
-				case WM_RBUTTONDBLCLK:
-					pMouse->PostMouseDown(Burger::Mouse::BUTTON_RIGHT);
-					break;
-				case WM_MBUTTONDOWN:
-				case WM_MBUTTONDBLCLK:
-					pMouse->PostMouseDown(Burger::Mouse::BUTTON_MIDDLE);
-					break;
-				case WM_XBUTTONDOWN:
-				case WM_XBUTTONDBLCLK:
-					{
-						// uBits is 1 or 2, convert to 0x8 or 0x10
-						Word uBits = GET_XBUTTON_WPARAM(wParam);
-						pMouse->PostMouseDown(uBits<<3U);
-					}
-					// XBUTTON events need to return TRUE
-					// http://msdn.microsoft.com/en-us/library/windows/desktop/ms646245(v=vs.85).aspx
-					return TRUE;
-				case WM_LBUTTONUP:
-					pMouse->PostMouseUp(Burger::Mouse::BUTTON_LEFT);
-					break;
-				case WM_RBUTTONUP:
-					pMouse->PostMouseUp(Burger::Mouse::BUTTON_RIGHT);
-					break;
-				case WM_MBUTTONUP:
-					pMouse->PostMouseUp(Burger::Mouse::BUTTON_MIDDLE);
-					break;
-				case WM_XBUTTONUP:
-					{
-						// uBits is 1 or 2, convert to 0x8 or 0x10
-						Word uBits = GET_XBUTTON_WPARAM(wParam);
-						pMouse->PostMouseUp(uBits<<3U);
-					}
-					// XBUTTON events need to return TRUE
-					// http://msdn.microsoft.com/en-us/library/windows/desktop/ms646245(v=vs.85).aspx
-					return TRUE;
+			// Pass the mouse button events down
+			switch (uMessage) {
+			case WM_MOUSEWHEEL: {
+				int iDelta = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
+				pMouse->PostMouseWheel(0, iDelta);
+			} break;
+			case WM_MOUSEHWHEEL: {
+				int iDelta = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
+				pMouse->PostMouseWheel(iDelta, 0);
+			} break;
+			case WM_LBUTTONDOWN:
+			case WM_LBUTTONDBLCLK:
+				pMouse->PostMouseDown(Burger::Mouse::BUTTON_LEFT);
+				break;
+			case WM_RBUTTONDOWN:
+			case WM_RBUTTONDBLCLK:
+				pMouse->PostMouseDown(Burger::Mouse::BUTTON_RIGHT);
+				break;
+			case WM_MBUTTONDOWN:
+			case WM_MBUTTONDBLCLK:
+				pMouse->PostMouseDown(Burger::Mouse::BUTTON_MIDDLE);
+				break;
+			case WM_XBUTTONDOWN:
+			case WM_XBUTTONDBLCLK: {
+				// uBits is 1 or 2, convert to 0x8 or 0x10
+				Word uBits = GET_XBUTTON_WPARAM(wParam);
+				pMouse->PostMouseDown(uBits << 3U);
+			}
+				// XBUTTON events need to return TRUE
+				// http://msdn.microsoft.com/en-us/library/windows/desktop/ms646245(v=vs.85).aspx
+				return TRUE;
+			case WM_LBUTTONUP:
+				pMouse->PostMouseUp(Burger::Mouse::BUTTON_LEFT);
+				break;
+			case WM_RBUTTONUP:
+				pMouse->PostMouseUp(Burger::Mouse::BUTTON_RIGHT);
+				break;
+			case WM_MBUTTONUP:
+				pMouse->PostMouseUp(Burger::Mouse::BUTTON_MIDDLE);
+				break;
+			case WM_XBUTTONUP: {
+				// uBits is 1 or 2, convert to 0x8 or 0x10
+				Word uBits = GET_XBUTTON_WPARAM(wParam);
+				pMouse->PostMouseUp(uBits << 3U);
+			}
+				// XBUTTON events need to return TRUE
+				// http://msdn.microsoft.com/en-us/library/windows/desktop/ms646245(v=vs.85).aspx
+				return TRUE;
 
 				default:
 					break;

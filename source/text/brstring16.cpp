@@ -13,7 +13,7 @@
 ***************************************/
 
 #include "brstring16.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include "brutf16.h"
 
 /*! ************************************
@@ -315,6 +315,87 @@ Burger::String16::String16(const Word16 *pInput)
 
 /*! ************************************
 
+	\brief Copy a "C" string to a Burger::String
+
+	\note This function allows using the tail end of
+	the current string as input
+
+	\param pInput Pointer to a UTF8 "C" string. \ref NULL generates an empty string.
+	\return Zero if no error, non zero if memory allocation failed
+
+***************************************/
+
+Burger::eError BURGER_API Burger::String16::Set(const Word16 *pInput)
+{
+	// Assume no error
+	eError uResult = kErrorNone;
+
+	if (!pInput) {
+		pInput = g_EmptyString16;
+	}
+	Word16 *pDest = m_Raw;
+	WordPtr uInputLength = StringLength(pInput);		// Length of the new string
+	if (uInputLength>=BUFFERSIZE) {		// Buffer big enough?
+		pDest = static_cast<Word16 *>(Alloc((uInputLength+1)*sizeof(Word16)));
+		if (!pDest) {					// Oh oh...
+			pDest = m_Raw;
+			uInputLength = 0;			// Don't copy anything
+			pInput = g_EmptyString16;		// Will copy the null character
+			uResult = kErrorOutOfMemory;	// Error!
+		}
+	}
+	Word16 *pOld = m_pData;
+	m_uLength = uInputLength;			// Save the new length
+	m_pData = pDest;					// Set the pointer
+	MemoryMove(pDest,pInput,(uInputLength+1)*sizeof(Word16));	// Copy the string
+	if (pOld!=m_Raw) {					// Discard previous memory
+		Free(pOld);
+	}
+	// Return error
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Copy an 8 bit "C" string to a Burger::String16
+
+	\param pInput Pointer to a UTF16 "C" string. \ref NULL generates an empty string.
+	\return Zero if no error, non zero if memory allocation failed
+
+***************************************/
+
+Burger::eError BURGER_API Burger::String16::Set(const char *pInput)
+{
+	// Assume no error
+	eError uResult = kErrorNone;
+
+	if (!pInput) {
+		pInput = g_EmptyString;
+	}
+	Word16 *pDest = m_Raw;
+	WordPtr uInputLength = UTF16::FromUTF8(NULL,0,pInput);		// Length of the new string
+	if (uInputLength>=BUFFERSIZE) {		// Buffer big enough?
+		pDest = static_cast<Word16 *>(Alloc((uInputLength+1)*sizeof(Word16)));
+		if (!pDest) {					// Oh oh...
+			pDest = m_Raw;
+			uInputLength = 0;			// Don't copy anything
+			pInput = g_EmptyString;	// Will copy the null character
+			uResult = kErrorOutOfMemory;	// Error!
+		}
+	}
+	Word16 *pOld = m_pData;
+	m_uLength = uInputLength;			// Save the new length
+	m_pData = pDest;					// Set the pointer
+	UTF16::FromUTF8(pDest,uInputLength+1,pInput);		// Copy the string
+	if (pOld!=m_Raw) {					// Discard previous memory
+		Free(pOld);
+	}
+	// Return error
+	return uResult;
+}
+
+/*! ************************************
+
 	\brief Force a buffer size
 
 	Set the buffer to a specific size while retaining the existing string.
@@ -365,6 +446,110 @@ void BURGER_API Burger::String16::SetBufferSize(WordPtr uSize)
 			pDest[uSize] = 0;			// Ensure the terminating zero is present
 		}
 	}
+}
+
+/*! ************************************
+
+	\brief Assign a Burger::String16
+
+	Copy the contents of a Burger::String16 into this Burger::String16
+
+	\param rInput Reference to a Burger::String16 to copy from
+	\return A reference to the this pointer
+
+***************************************/
+
+Burger::String16 & Burger::String16::operator =(const Burger::String16 &rInput)
+{
+	if (this!=&rInput) {		// Am I copying myself?
+		Word16 *pWork = m_pData;
+		if (pWork!=m_Raw) {		// Discard previous memory
+			Free(pWork);
+			pWork = m_Raw;
+		}
+
+		WordPtr uInputLength = rInput.m_uLength;	// Length of the new string
+		const Word16 *pInput = rInput.m_pData;		// Copy the new length
+		if (uInputLength>=BUFFERSIZE) {		// Buffer big enough?
+			pWork = static_cast<Word16 *>(Alloc((uInputLength+1)*sizeof(Word16)));
+			if (!pWork) {					// Oh oh...
+				pWork = m_Raw;
+				uInputLength = 0;			// Don't copy anything
+				pInput = g_EmptyString16;		// Will copy the null character
+			}
+		}
+		m_uLength = uInputLength;			// Save the new length
+		m_pData = pWork;					// Set the pointer
+		MemoryCopy(pWork,pInput,(uInputLength+1)*sizeof(Word16));	// Copy the string
+	}
+	return *this;
+}
+
+/*! ************************************
+
+	\brief Assign a "C" string to a Burger::String16
+
+	Copy the contents of a UTF8 "C" string into this Burger::String16
+
+	\param pInput Pointer to a UTF8 "C" string. \ref NULL generates an empty string.
+	\return A reference to the this pointer
+
+***************************************/
+
+Burger::String16 & Burger::String16::operator =(const Word16 *pInput)
+{
+	Set(pInput);
+	return *this;
+}
+
+/*! ************************************
+
+	\brief Assign a "C" string to a Burger::String16
+
+	Copy the contents of a UTF8 "C" string into this Burger::String16
+
+	\param pInput Pointer to a UTF8 "C" string. \ref NULL generates an empty string.
+	\return A reference to the this pointer
+
+***************************************/
+
+Burger::String16 & Burger::String16::operator =(const char *pInput)
+{
+	Set(pInput);
+	return *this;
+}
+
+/*! ************************************
+
+	\brief Assign a single character length string to this Burger::String
+
+	If the input is zero, the string is empty.
+
+	\note Since the default encoding is UFT8, input that's greater than
+	127 will yield a possibly invalid string due to UTF8 decoding.
+
+	\param cInput Single low ASCII character to create a string.
+	\return A reference to the this pointer
+
+***************************************/
+
+Burger::String16 & Burger::String16::operator =(char cInput)
+{
+	Word16 *pWork = m_pData;
+	if (pWork!=m_Raw) {		// Discard previous memory
+		Free(pWork);
+		pWork = m_Raw;
+	}
+
+	pWork[0] = cInput;		// Store the char in the string
+	pWork[1] = 0;
+	WordPtr uInputLength = 1;
+	if (!cInput) {			// Valid string?
+		uInputLength = 0;	// 1 char long
+	}
+	m_uLength = uInputLength;			// Save the new length
+	m_pData = pWork;					// Set the pointer
+	return *this;
 }
 
 /*! ************************************

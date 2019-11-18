@@ -13,6 +13,7 @@
 
 #include "brsimplestring.h"
 #include "brglobalmemorymanager.h"
+#include "brmemoryfunctions.h"
 
 /*! ************************************
 
@@ -24,7 +25,7 @@
 	memory to hold it and make a copy so the application doesn't
 	have to worry about managing the buffer.
 	
-	The first and formost goal of this class is to use the least
+	The first and foremost goal of this class is to use the least
 	amount of memory to store a string. This class only has a 
 	single member of a const char * to the string so it only
 	occupies 4 or 8 bytes when it's a member of a higher class.

@@ -165,7 +165,7 @@ public:
 			m_pEntry(NULL),
 			m_uCurrentCellX(0),
 			m_uCurrentCellY(0),
-			m_uCurrentCellArrayIndex(BURGER_MAXWORDPTR) {
+			m_uCurrentCellArrayIndex(UINTPTR_MAX) {
 			m_QueryRect.Zero();
 			m_QueryCellsRect.Clear();
 		}

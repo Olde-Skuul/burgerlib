@@ -391,6 +391,9 @@
     <ClInclude Include="..\source\lowlevel\brendian.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brerror.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brglobals.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -398,6 +401,12 @@
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brguid.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brintelcompiler.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brintrinsics.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brlastinfirstout.h">
@@ -949,6 +958,9 @@
     <ClCompile Include="..\source\lowlevel\brendian.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brerror.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brglobals.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -956,6 +968,9 @@
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brguid.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brintrinsics.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
     <ClCompile Include="..\source\lowlevel\brlastinfirstout.cpp">

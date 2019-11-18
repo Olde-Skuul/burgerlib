@@ -37,13 +37,13 @@
 /* BEGIN */
 namespace Burger {
 class ProxyReferenceCounter {
-	BURGER_DISABLECOPYCONSTRUCTORS(ProxyReferenceCounter);
+    BURGER_DISABLE_COPY(ProxyReferenceCounter);
 private:
 	Word m_uRefCount;				///< Number of weak pointers that are using this object as an anchor
 	Word m_bParentAlive;			///< \ref TRUE if the parent object was deleted
 	ProxyReferenceCounter() : m_uRefCount(0),m_bParentAlive(TRUE) {}
 public:
-	static ProxyReferenceCounter *New(void);
+	static ProxyReferenceCounter * BURGER_API New(void);
 	BURGER_INLINE Word IsParentAlive(void) const { return m_bParentAlive; }
 	BURGER_INLINE void ParentIsDead(void) { m_bParentAlive = FALSE; }
 	BURGER_INLINE void AddRef(void) { ++m_uRefCount; }
@@ -51,7 +51,7 @@ public:
 };
 
 class ReferenceCounter : public Base {
-	BURGER_DISABLECOPYCONSTRUCTORS(ReferenceCounter);
+    BURGER_DISABLE_COPY(ReferenceCounter);
 	BURGER_RTTI_IN_CLASS();
 private:
 	Word m_uRefCount;					///< Number of smart pointers that are claiming ownership of this object

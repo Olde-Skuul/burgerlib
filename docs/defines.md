@@ -206,7 +206,7 @@ Defines to denote if features, compilation switches or high level APIs are prese
 Handy macros {#sect_handy_macros}
 ------------
 
-* \ref BURGER_MACRO_TO_STRING Convert a macro's definition into a string
+* \ref BURGER_STRINGIZE Convert a macro's definition into a string
 * \ref BURGER_JOIN Join two macros together.
 * \ref BURGER_LEFT_PARENTHESIS (
 * \ref BURGER_RIGHT_PARENTHESIS )
@@ -225,3 +225,4 @@ Handy macros {#sect_handy_macros}
 * \ref nullptr 0 on compilers that don't support this keyword.
 * \ref __underlying_type `int` on compilers that don't support this keyword.
 * \ref BURGER_RVALUE_REFERENCES Test for && operations.
+* \ref BURGER_HAS_SFINAE Compiler supports SFINAE

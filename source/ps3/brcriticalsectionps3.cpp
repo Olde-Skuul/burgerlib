@@ -14,7 +14,7 @@
 #include "brcriticalsection.h"
 
 #if defined(BURGER_PS3)
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include <sys/synchronization.h>
 
 /***************************************
@@ -29,16 +29,17 @@ Burger::CriticalSection::CriticalSection()
 	// Create a First In, First Out, recursive lock
 	// to mimic the PC CRITICAL_SECTION
 
+    BURGER_STATIC_ASSERT(sizeof(Burgersys_lwmutex_t)==sizeof(sys_lwmutex_t));
     sys_lwmutex_attribute_t LockAttributes;
 	MemoryClear(&LockAttributes,sizeof(LockAttributes));
     LockAttributes.attr_protocol = SYS_SYNC_FIFO;
     LockAttributes.attr_recursive = SYS_SYNC_RECURSIVE;
-    sys_lwmutex_create(reinterpret_cast< ::sys_lwmutex_t *>(&m_Lock),&LockAttributes);
+    sys_lwmutex_create(reinterpret_cast<sys_lwmutex_t *>(&m_Lock),&LockAttributes);
 }
 
 Burger::CriticalSection::~CriticalSection()
 {
-	sys_lwmutex_destroy(reinterpret_cast< ::sys_lwmutex_t *>(&m_Lock));
+	sys_lwmutex_destroy(reinterpret_cast<sys_lwmutex_t *>(&m_Lock));
 }
 
 /***************************************
@@ -49,7 +50,7 @@ Burger::CriticalSection::~CriticalSection()
 
 void Burger::CriticalSection::Lock()
 {
-	sys_lwmutex_lock(reinterpret_cast< ::sys_lwmutex_t *>(&m_Lock),0);
+	sys_lwmutex_lock(reinterpret_cast<sys_lwmutex_t *>(&m_Lock),0);
 }
 
 /***************************************
@@ -60,7 +61,7 @@ void Burger::CriticalSection::Lock()
 
 Word Burger::CriticalSection::TryLock()
 {
-	return sys_lwmutex_trylock(reinterpret_cast< ::sys_lwmutex_t *>(&m_Lock))==CELL_OK;
+	return sys_lwmutex_trylock(reinterpret_cast<sys_lwmutex_t *>(&m_Lock))==CELL_OK;
 }
 
 
@@ -72,7 +73,7 @@ Word Burger::CriticalSection::TryLock()
 
 void Burger::CriticalSection::Unlock()
 {
-	sys_lwmutex_unlock(reinterpret_cast< ::sys_lwmutex_t *>(&m_Lock));
+	sys_lwmutex_unlock(reinterpret_cast<sys_lwmutex_t *>(&m_Lock));
 }
 	
 #endif

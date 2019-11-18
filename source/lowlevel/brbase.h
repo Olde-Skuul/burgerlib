@@ -1,13 +1,13 @@
 /***************************************
 
-	Root base class
+    Root base class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE
+    for license details. Yes, you can use it in a
+    commercial title without paying anything, just give me a credit.
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -26,12 +26,13 @@
 namespace Burger {
 
 class Base {
-	BURGER_RTTI_IN_BASE_CLASS();
+    BURGER_RTTI_IN_BASE_CLASS();
+
 public:
-	virtual ~Base();
+    virtual ~Base() BURGER_DEFAULT_DESTRUCTOR;
 };
 
-extern void BURGER_API Delete(const Base *pInput);
+extern void BURGER_API Delete(const Base* pInput);
 
 }
 /* END */

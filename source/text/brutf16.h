@@ -18,16 +18,22 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRENDIAN_H__
+#include "brendian.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 class UTF16 {
 public:
-	enum {BAD=-1,ENDIANMARK=0xFEFF,
-#if defined(BURGER_LITTLEENDIAN)
-	BE=0xFFFE,LE=0xFEFF};
-#else
-	BE=0xFEFF,LE=0xFFFE};
-#endif
+
+	enum {
+		BAD=-1,
+		ENDIANMARK=0xFEFF,
+		BE=BURGER_LITTLEENDIAN16(0xFFFE),
+		LE=BURGER_LITTLEENDIAN16(0xFEFF)
+	};
+
 	static const Word16 BURGER_ALIGN(FromMacRomanUSTable[128],16);
 	static const Word16 BURGER_ALIGN(FromWin1252Table[128],16);
 	static const Word16 BURGER_ALIGN(FromISOLatin1Table[128],16);

@@ -24,8 +24,11 @@
 
 /* BEGIN */
 namespace Burger {
+
 class LinkedListPointer : public DoublyLinkedList {
+
 	void *m_pData;			///< Pointer to the data
+
 public:
 	LinkedListPointer() : DoublyLinkedList(), m_pData(NULL) {}
 	LinkedListPointer(void *pData) : DoublyLinkedList(), m_pData(pData) {}
@@ -35,7 +38,7 @@ public:
 	BURGER_INLINE void SetData(void *pInput) { m_pData = pInput; }
 	static LinkedListPointer * BURGER_API New(void *pInput = NULL);
 };
-extern void BURGER_API Delete(const LinkedListPointer *pInput);
+
 }
 /* END */
 

@@ -20,26 +20,28 @@
 
 /* BEGIN */
 #if defined(BURGER_ANDROID) && !defined(DOXYGEN)
-namespace Burger {
-struct pthread_mutex_t {
+
+struct Burgerpthread_mutex_t {
 	int volatile value;
 #if defined(BURGER_64BITCPU)
 	char __reserved[36];
 #endif
 };
-struct sem_t {
+
+struct Burgersem_t {
 	volatile unsigned int count;
 #if defined(BURGER_64BITCPU)
 	int __reserved[3];
 #endif
 };
-struct pthread_cond_t {
+
+struct Burgerpthread_cond_t {
 	int volatile value;
 #if defined(BURGER_64BITCPU)
 	char __reserved[44];
 #endif
 };
-}
+
 #endif
 /* END */
 

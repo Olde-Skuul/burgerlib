@@ -303,9 +303,12 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\ps4\burgerlib\$(TargetName)$(TargetExt)"</Co
     <ClInclude Include="..\source\lowlevel\brdetectmultilaunch.h" />
     <ClInclude Include="..\source\lowlevel\brdoublylinkedlist.h" />
     <ClInclude Include="..\source\lowlevel\brendian.h" />
+    <ClInclude Include="..\source\lowlevel\brerror.h" />
     <ClInclude Include="..\source\lowlevel\brglobals.h" />
     <ClInclude Include="..\source\lowlevel\brgridindex.h" />
     <ClInclude Include="..\source\lowlevel\brguid.h" />
+    <ClInclude Include="..\source\lowlevel\brintelcompiler.h" />
+    <ClInclude Include="..\source\lowlevel\brintrinsics.h" />
     <ClInclude Include="..\source\lowlevel\brlastinfirstout.h" />
     <ClInclude Include="..\source\lowlevel\brlinkedlistobject.h" />
     <ClInclude Include="..\source\lowlevel\brlinkedlistpointer.h" />
@@ -488,9 +491,11 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\ps4\burgerlib\$(TargetName)$(TargetExt)"</Co
     <ClCompile Include="..\source\lowlevel\brdetectmultilaunch.cpp" />
     <ClCompile Include="..\source\lowlevel\brdoublylinkedlist.cpp" />
     <ClCompile Include="..\source\lowlevel\brendian.cpp" />
+    <ClCompile Include="..\source\lowlevel\brerror.cpp" />
     <ClCompile Include="..\source\lowlevel\brglobals.cpp" />
     <ClCompile Include="..\source\lowlevel\brgridindex.cpp" />
     <ClCompile Include="..\source\lowlevel\brguid.cpp" />
+    <ClCompile Include="..\source\lowlevel\brintrinsics.cpp" />
     <ClCompile Include="..\source\lowlevel\brlastinfirstout.cpp" />
     <ClCompile Include="..\source\lowlevel\brlinkedlistobject.cpp" />
     <ClCompile Include="..\source\lowlevel\brlinkedlistpointer.cpp" />

@@ -49,7 +49,7 @@ namespace Burger {
 class String;
 
 class GiantWord {
-	BURGER_DISABLECOPYCONSTRUCTORS(GiantWord);
+    BURGER_DISABLE_COPY(GiantWord);
 private:
 	static const Word cBitsPerElement = 32;			///< Number of bits per Word32
 	static const Word cTotalBitsInTable = 32*34;	///< Number of bits in the table
@@ -133,8 +133,8 @@ public:
 	BURGER_INLINE Word IsSpecial(void) const { return ((m_ePrintResult >= cResultFirstSpecial) && (m_ePrintResult <= cResultLastSpecial)); }
 	BURGER_INLINE Word IsInfinity(void) const { return ((m_ePrintResult == cResultPositiveInfinity) || (m_ePrintResult == cResultNegativeInfinity)); }
 	BURGER_INLINE Word IsNaN(void) const { return ((m_ePrintResult >= cResultPositiveNaN) && (m_ePrintResult <= cResultIndefiniteNaN)); }
-	BURGER_INLINE static Word GetClip(void) { return g_uClipFloatDigitsAfter; }
-	BURGER_INLINE static void SetClip(Word uNewClip) { g_uClipFloatDigitsAfter = uNewClip; }
+    static BURGER_INLINE Word GetClip(void) { return g_uClipFloatDigitsAfter; }
+    static BURGER_INLINE void SetClip(Word uNewClip) { g_uClipFloatDigitsAfter = uNewClip; }
 	void BURGER_API AnalyzeFloat(const FPInfo *pFPInfo,Word uPrecisionDigits);
 };
 
@@ -198,28 +198,28 @@ public:
 	static const char cInvalidCharConversion = '~';	///< Character returned from \ref GetChar() const for invalid chararacter
 
 	union {
-		Int8 m_iInt8;				///< Signed char value
-		Word8 m_uWord8;				///< Unsigned char value
-		Int16 m_iInt16;				///< Signed short value
-		Word16 m_uWord16;			///< Unsigned short value
-		Int32 m_iInt32;				///< Signed 32 bit integer value
-		Word32 m_uWord32;			///< Unsigned 32 bit integer value
-		Int64 m_iInt64;				///< Signed 64 bit integer value
-		Word64 m_uWord64;			///< Unsigned 64 bit integer value
-		Word16 m_fHalf;				///< 16 bit floating point value
+		int8_t m_iInt8;				///< Signed char value
+		uint8_t m_uWord8;				///< Unsigned char value
+		int16_t m_iInt16;				///< Signed short value
+		uint16_t m_uWord16;			///< Unsigned short value
+		int32_t m_iInt32;				///< Signed 32 bit integer value
+		uint32_t m_uWord32;			///< Unsigned 32 bit integer value
+		int64_t m_iInt64;				///< Signed 64 bit integer value
+		uint64_t m_uWord64;			///< Unsigned 64 bit integer value
+		uint16_t m_fHalf;				///< 16 bit floating point value
 		float m_fFloat;				///< 32 bit floating point value
 		double m_dDouble;			///< 64 bit floating point value
 		bool m_bBool;				///< Boolean value
 		const String *m_pString;	///< Pointer to a Burgerlib \ref String class
 		const char *m_pChar;		///< Generic char pointer for strings
-		const Int8 *m_pInt8;		///< Pointer to a signed char	
-		const Word8 *m_pWord8;		///< Pointer to an unsigned char
-		const Int16 *m_pInt16;		///< Pointer to a signed 16 bit integer
-		const Word16 *m_pWord16;	///< Pointer to an unsigned 16 bit integer
-		const Int32 *m_pInt32;		///< Pointer to a signed 32 bit integer
-		const Word32 *m_pWord32;	///< Pointer to an unsigned 32 bit integer
-		const Int64 *m_pInt64;		///< Pointer to a signed 64 bit integer
-		const Word64 *m_pWord64;	///< Pointer to an unsigned 64 bit integer
+		const int8_t*m_pInt8;		///< Pointer to a signed char	
+		const uint8_t*m_pWord8;		///< Pointer to an unsigned char
+		const int16_t*m_pInt16;		///< Pointer to a signed 16 bit integer
+		const uint16_t*m_pWord16;	///< Pointer to an unsigned 16 bit integer
+		const int32_t*m_pInt32;		///< Pointer to a signed 32 bit integer
+		const uint32_t*m_pWord32;	///< Pointer to an unsigned 32 bit integer
+		const int64_t*m_pInt64;		///< Pointer to a signed 64 bit integer
+		const uint64_t*m_pWord64;	///< Pointer to an unsigned 64 bit integer
 		const float *m_pFloat;		///< Pointer to a 32 bit floating point number
 		const double *m_pDouble;	///< Pointer to a 64 bit floating point number
 		const void *m_pVoid;		///< Pointer to generic data
@@ -238,33 +238,44 @@ public:
 	//        we list them in size order, though int is an exception... trial and error
 	//
 
-	BURGER_INLINE SafePrintArgument(int arg) : m_eType(ARG_INT32) { m_Data.m_iInt32 = arg; };
-	BURGER_INLINE SafePrintArgument(unsigned int arg): m_eType(ARG_WORD32) { m_Data.m_uWord32 = arg; };
+    BURGER_INLINE SafePrintArgument(char arg) : m_eType(ARG_INT8) { m_Data.m_iInt8 = arg; };
+    BURGER_INLINE SafePrintArgument(int8_t arg) : m_eType(ARG_INT8) { m_Data.m_iInt8 = arg; };
+    BURGER_INLINE SafePrintArgument(uint8_t arg) : m_eType(ARG_WORD8) { m_Data.m_uWord8 = arg; };
 
-	BURGER_INLINE SafePrintArgument(char arg) : m_eType(ARG_INT8) { m_Data.m_iInt8 = arg; };
-	BURGER_INLINE SafePrintArgument(signed char arg) : m_eType(ARG_INT8) { m_Data.m_iInt8 = arg; };
-	BURGER_INLINE SafePrintArgument(unsigned char arg) : m_eType(ARG_WORD8) { m_Data.m_uWord8 = arg; };
+    BURGER_INLINE SafePrintArgument(int16_t arg) : m_eType(ARG_INT16) { m_Data.m_iInt16 = arg; };
+    BURGER_INLINE SafePrintArgument(uint16_t arg) : m_eType(ARG_WORD16) { m_Data.m_uWord16 = arg; };
 
-	BURGER_INLINE SafePrintArgument(short arg) : m_eType(ARG_INT16) { m_Data.m_iInt16 = arg; };
-	BURGER_INLINE SafePrintArgument(unsigned short arg) : m_eType(ARG_WORD16) { m_Data.m_uWord16 = arg; };
+	BURGER_INLINE SafePrintArgument(int32_t arg) : m_eType(ARG_INT32) { m_Data.m_iInt32 = arg; };
+	BURGER_INLINE SafePrintArgument(uint32_t arg): m_eType(ARG_WORD32) { m_Data.m_uWord32 = arg; };
 
-#if defined(BURGER_HASWCHAR_T) || defined(DOXYGEN)
+    BURGER_INLINE SafePrintArgument(int64_t arg) : m_eType(ARG_INT64) { m_Data.m_iInt64 = arg; };
+    BURGER_INLINE SafePrintArgument(uint64_t arg) : m_eType(ARG_WORD64) { m_Data.m_uWord64 = arg; };
+
+#if defined(BURGER_HAS_WCHAR_T) || defined(DOXYGEN)
 	BURGER_INLINE SafePrintArgument(wchar_t arg) : m_eType(ARG_WORD16) { m_Data.m_uWord16 = static_cast<Word16>(arg); };
 #endif 
 
-#if defined(BURGER_LONGIS64BIT)
-	BURGER_INLINE SafePrintArgument(long arg) : m_eType(ARG_INT64) { m_Data.m_iInt64 = arg; };
-	BURGER_INLINE SafePrintArgument(unsigned long arg): m_eType(ARG_WORD64) { m_Data.m_iInt64 = arg; };
-	BURGER_INLINE SafePrintArgument(long long arg) : m_eType(ARG_INT64) { m_Data.m_iInt64 = arg; };
-	BURGER_INLINE SafePrintArgument(unsigned long long arg): m_eType(ARG_WORD64) { m_Data.m_iInt64 = arg; };
+#if defined(BURGER_INT_NOT_IN_STDINT) || defined(DOXYGEN)
+#if BURGER_SIZEOF_LONG == 4
+    BURGER_INLINE SafePrintArgument(signed int arg) : m_eType(ARG_INT32) { m_Data.m_iInt32 = arg; };
+    BURGER_INLINE SafePrintArgument(unsigned int arg) : m_eType(ARG_WORD32) { m_Data.m_uWord32 = arg; };
 #else
-	BURGER_INLINE SafePrintArgument(long arg) : m_eType(ARG_INT32) { m_Data.m_iInt32 = arg; };
-	BURGER_INLINE SafePrintArgument(unsigned long arg): m_eType(ARG_WORD32) { m_Data.m_uWord32 = arg; };
-	BURGER_INLINE SafePrintArgument(Int64 arg) : m_eType(ARG_INT64) { m_Data.m_iInt64 = arg; };
-	BURGER_INLINE SafePrintArgument(Word64 arg) : m_eType(ARG_WORD64) { m_Data.m_uWord64 = arg; };
+    BURGER_INLINE SafePrintArgument(signed int arg) : m_eType(ARG_INT16) { m_Data.m_iInt16 = arg; };
+    BURGER_INLINE SafePrintArgument(unsigned int arg) : m_eType(ARG_WORD16) { m_Data.m_uWord16 = arg; };
+#endif
 #endif
 
-	BURGER_INLINE SafePrintArgument(Word16 arg,eType uType) : m_eType(uType) { m_Data.m_fHalf = arg; };
+#if defined(BURGER_LONG_NOT_IN_STDINT) || defined(DOXYGEN)
+#if BURGER_SIZEOF_LONG == 8
+	BURGER_INLINE SafePrintArgument(signed long arg) : m_eType(ARG_INT64) { m_Data.m_iInt64 = arg; };
+	BURGER_INLINE SafePrintArgument(unsigned long arg): m_eType(ARG_WORD64) { m_Data.m_iInt64 = arg; };
+#else
+	BURGER_INLINE SafePrintArgument(signed long arg) : m_eType(ARG_INT32) { m_Data.m_iInt32 = arg; };
+	BURGER_INLINE SafePrintArgument(unsigned long arg): m_eType(ARG_WORD32) { m_Data.m_uWord32 = arg; };
+#endif
+#endif
+
+	BURGER_INLINE SafePrintArgument(uint16_t arg,eType uType) : m_eType(uType) { m_Data.m_fHalf = arg; };
 	BURGER_INLINE SafePrintArgument(float arg) : m_eType(ARG_FLOAT) { m_Data.m_fFloat = arg; };
 	BURGER_INLINE SafePrintArgument(double arg): m_eType(ARG_DOUBLE) { m_Data.m_dDouble = arg; };
 
@@ -274,28 +285,43 @@ public:
 	BURGER_INLINE SafePrintArgument(const String &arg) : m_eType(ARG_PSTRING) { m_Data.m_pString = &arg; };
 
 	BURGER_INLINE SafePrintArgument(const char *arg) : m_eType(ARG_PCHAR) { m_Data.m_pChar = arg; };
-	BURGER_INLINE SafePrintArgument(const signed char *arg) : m_eType(ARG_PSCHAR) { m_Data.m_pInt8 = arg; };
-	BURGER_INLINE SafePrintArgument(const unsigned char *arg) : m_eType(ARG_PUCHAR) { m_Data.m_pWord8 = arg; };
+	BURGER_INLINE SafePrintArgument(const int8_t *arg) : m_eType(ARG_PSCHAR) { m_Data.m_pInt8 = arg; };
+	BURGER_INLINE SafePrintArgument(const uint8_t *arg) : m_eType(ARG_PUCHAR) { m_Data.m_pWord8 = arg; };
 
-	BURGER_INLINE SafePrintArgument(const short *arg) : m_eType(ARG_PINT16) { m_Data.m_pInt16 = arg; };
-	BURGER_INLINE SafePrintArgument(const unsigned short *arg ) : m_eType(ARG_PWORD16) { m_Data.m_pWord16 = arg; };
+	BURGER_INLINE SafePrintArgument(const int16_t *arg) : m_eType(ARG_PINT16) { m_Data.m_pInt16 = arg; };
+	BURGER_INLINE SafePrintArgument(const uint16_t *arg ) : m_eType(ARG_PWORD16) { m_Data.m_pWord16 = arg; };
 
-#if defined(BURGER_HASWCHAR_T) || defined(DOXYGEN)
-	BURGER_INLINE SafePrintArgument(const wchar_t *arg) : m_eType(ARG_PWORD16) { m_Data.m_pWord16 = static_cast<const Word16 *>(static_cast<const void *>(arg)); };
+    BURGER_INLINE SafePrintArgument(const int32_t* arg) : m_eType(ARG_PINT32) { m_Data.m_pInt32 = arg; };
+    BURGER_INLINE SafePrintArgument(const uint32_t* arg) : m_eType(ARG_PWORD32) { m_Data.m_pWord32 = arg; };
+
+    BURGER_INLINE SafePrintArgument(const int64_t* arg) : m_eType(ARG_PINT64) { m_Data.m_pInt64 = arg; };
+    BURGER_INLINE SafePrintArgument(const uint64_t* arg) : m_eType(ARG_PWORD64) { m_Data.m_pWord64 = arg; };
+
+
+#if defined(BURGER_HAS_WCHAR_T) || defined(DOXYGEN)
+	BURGER_INLINE SafePrintArgument(const wchar_t *arg) : m_eType(ARG_PWORD16) { m_Data.m_pWord16 = static_cast<const uint16_t*>(static_cast<const void *>(arg)); };
 #endif 
 
-	BURGER_INLINE SafePrintArgument(const int *arg) : m_eType(ARG_PINT32) { m_Data.m_pInt32 = static_cast<const Int32 *>(static_cast<const void *>(arg)); };
-	BURGER_INLINE SafePrintArgument(const unsigned int *arg) : m_eType(ARG_PWORD32) { m_Data.m_pWord32 = static_cast<const Word32 *>(static_cast<const void *>(arg)); };
-
-#if defined(BURGER_LONGIS64BIT)
-	BURGER_INLINE SafePrintArgument(const long *arg) : m_eType(ARG_PINT64) { m_Data.m_pInt64 = arg; };
-	BURGER_INLINE SafePrintArgument(const unsigned long *arg) : m_eType(ARG_PWORD64) { m_Data.m_pWord64 = arg; };
+#if defined(BURGER_INT_NOT_IN_STDINT) || defined(DOXYGEN)
+#if BURGER_SIZEOF_LONG == 4
+	BURGER_INLINE SafePrintArgument(const signed int *arg) : m_eType(ARG_PINT32) { m_Data.m_pInt32 = static_cast<const int32_t *>(static_cast<const void *>(arg)); };
+	BURGER_INLINE SafePrintArgument(const unsigned int *arg) : m_eType(ARG_PWORD32) { m_Data.m_pWord32 = static_cast<const uint32_t *>(static_cast<const void *>(arg)); };
 #else
-	BURGER_INLINE SafePrintArgument(const long *arg) : m_eType(ARG_PINT32) { m_Data.m_pInt32 = static_cast<const Int32 *>(static_cast<const void *>(arg)); };
-	BURGER_INLINE SafePrintArgument(const unsigned long *arg) : m_eType(ARG_PWORD32) { m_Data.m_pWord32 = static_cast<const Word32 *>(static_cast<const void *>(arg)); };
-	BURGER_INLINE SafePrintArgument(const Int64 *arg) : m_eType(ARG_PINT64) { m_Data.m_pInt64 = arg; };
-	BURGER_INLINE SafePrintArgument(const Word64 *arg) : m_eType(ARG_PWORD64) { m_Data.m_pWord64 = arg; };
+    BURGER_INLINE SafePrintArgument(const signed int* arg) : m_eType(ARG_PINT16) { m_Data.m_pInt32 = static_cast<const int16_t*>(static_cast<const void*>(arg)); };
+    BURGER_INLINE SafePrintArgument(const unsigned int* arg) : m_eType(ARG_PWORD16) { m_Data.m_pWord32 = static_cast<const uint16_t*>(static_cast<const void*>(arg)); };
 #endif
+#endif
+
+#if defined(BURGER_LONG_NOT_IN_STDINT) || defined(DOXYGEN)
+#if BURGER_SIZEOF_LONG == 8
+	BURGER_INLINE SafePrintArgument(const signed long *arg) : m_eType(ARG_PINT64) { m_Data.m_pInt64 = reinterpret_cast<const int64_t *>(arg); };
+	BURGER_INLINE SafePrintArgument(const unsigned long *arg) : m_eType(ARG_PWORD64) { m_Data.m_pWord64 = reinterpret_cast<const uint64_t *>(arg); };
+#else
+	BURGER_INLINE SafePrintArgument(const signed long *arg) : m_eType(ARG_PINT32) { m_Data.m_pInt32 = static_cast<const int32_t *>(static_cast<const void *>(arg)); };
+	BURGER_INLINE SafePrintArgument(const unsigned long *arg) : m_eType(ARG_PWORD32) { m_Data.m_pWord32 = static_cast<const uint32_t *>(static_cast<const void *>(arg)); };
+#endif
+#endif
+
 	BURGER_INLINE SafePrintArgument(const float* arg) : m_eType(ARG_PFLOAT) { m_Data.m_pFloat = arg; };
 	BURGER_INLINE SafePrintArgument(const double* arg) : m_eType(ARG_PDOUBLE) { m_Data.m_pDouble = arg; };
 
@@ -304,7 +330,7 @@ public:
 	BURGER_INLINE SafePrintArgument(const __m64 *arg) : m_eType(ARG_PSIMD64) { m_Data.m_pSIMD = arg; };
 #endif
 
-#if (defined(BURGER_INTELARCHITECTURE) && !defined(BURGER_WATCOM)) || defined(DOXYGEN)
+#if (defined(BURGER_INTEL) && !defined(BURGER_WATCOM)) || defined(DOXYGEN)
 	BURGER_INLINE SafePrintArgument(const __m128 arg) : m_eType(ARG_SIMD128) { m_Data.m_pSIMD = &arg; };
 	BURGER_INLINE SafePrintArgument(const __m128 *arg) : m_eType(ARG_PSIMD128) { m_Data.m_pSIMD = arg; };
 	BURGER_INLINE SafePrintArgument(const __m128d arg) : m_eType(ARG_SIMD128D) { m_Data.m_pSIMD = &arg; };

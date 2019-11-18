@@ -46,12 +46,13 @@
 
 #include "brprintf.h"
 #include "brfpinfo.h"
-#include "brstringfunctions.h"
+#include "brnumberto.h"
 #include "brstring.h"
 #include "brfixedpoint.h"
 #include "brfloatingpoint.h"
 #include "brassert.h"
 #include "brutf8.h"
+#include "brmemoryfunctions.h"
 
 /*! ************************************
 
@@ -829,7 +830,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(int arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(signed int arg)
 	\brief Constructor for a signed integer
 
 	\param arg Signed integer for storage
@@ -856,7 +857,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(signed char arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(int8_t arg)
 	\brief Constructor for a signed char
 
 	\param arg Signed char for storage
@@ -865,7 +866,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(unsigned char arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(uint8_t arg)
 	\brief Constructor for an unsigned char
 
 	\param arg Unsigned char for storage
@@ -874,7 +875,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(short arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(int16_t arg)
 	\brief Constructor for a signed short
 
 	\param arg Signed short for storage
@@ -883,7 +884,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(unsigned short arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(uint16_t arg)
 	\brief Constructor for an unsigned short
 
 	\param arg Unsigned short for storage
@@ -904,7 +905,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(long arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(signed long arg)
 	\brief Constructor for a signed long
 
 	\param arg Signed long for storage
@@ -922,7 +923,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(Int64 arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(int64_t arg)
 	\brief Constructor for a signed 64 bit integer
 
 	\param arg Int64 for storage
@@ -931,7 +932,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(Word64 arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(uint64_t arg)
 	\brief Constructor for an unsigned 64 bit integer
 
 	\param arg Word64 for storage
@@ -940,7 +941,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(Word16 arg,eType uType)
+	\fn Burger::SafePrintArgument::SafePrintArgument(uint16_t arg,eType uType)
 	\brief Constructor for a 16 bit float
 
 	Since 16 bit floats are not native to C++, it has to be manually cast by
@@ -1011,7 +1012,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(const signed char *arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(const int8_t *arg)
 	\brief Constructor for a pointer to a Int8 string which is treated as a "C" string
 
 	\param arg Pointer to a "C" string stored as Int8
@@ -1020,7 +1021,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(const unsigned char *arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(const uint8_t *arg)
 	\brief Constructor for a pointer to a Word8 string which is treated as a "C" string
 
 	\param arg Pointer to a "C" string stored as Word8
@@ -1029,7 +1030,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(const short *arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(const int16_t *arg)
 	\brief Constructor for a pointer to a short
 
 	\param arg Pointer to a short
@@ -1038,7 +1039,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(const unsigned short *arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(const uint16_t *arg)
 	\brief Constructor for a pointer to a unsigned short
 
 	\param arg Pointer to a unsigned short
@@ -1056,7 +1057,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(const int *arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(const signed int *arg)
 	\brief Constructor for a pointer to a int
 
 	\param arg Pointer to a int
@@ -1074,7 +1075,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(const long *arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(const signed long *arg)
 	\brief Constructor for a pointer to a long
 
 	\param arg Pointer to a long
@@ -1092,7 +1093,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(const Int64 *arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(const int64_t *arg)
 	\brief Constructor for a pointer to an Int64
 
 	\param arg Pointer to an Int64
@@ -1101,7 +1102,7 @@ void BURGER_API Burger::FPPrintInfo::AnalyzeFloat(const FPInfo *pFPInfo,Word uPr
 
 /*! ************************************
 
-	\fn Burger::SafePrintArgument::SafePrintArgument(const Word64 *arg)
+	\fn Burger::SafePrintArgument::SafePrintArgument(const uint64_t *arg)
 	\brief Constructor for a pointer to a Word64
 
 	\param arg Pointer to a Word64
@@ -3299,11 +3300,11 @@ void BURGER_API Burger::SafePrint::ParamInfo_t::CheckConversionForWarnings(const
 		// Need to implement all 'n' modifiers
 
 		if (IsFlagSet(CONVFLAG_INTERPRET_SSHORT)) {		// hh = char
-			uExpectedLength = (bIntFlags_diouxX) ? 1 : BURGER_MAXWORDPTR;
+			uExpectedLength = (bIntFlags_diouxX) ? 1 : UINTPTR_MAX;
 		}
 
 		if (IsFlagSet(CONVFLAG_INTERPRET_SHORT)) {		// h = short
-			uExpectedLength = (bIntFlags_diouxX) ? 2 : BURGER_MAXWORDPTR;
+			uExpectedLength = (bIntFlags_diouxX) ? 2 : UINTPTR_MAX;
 		}
 
 		if (IsFlagSet(CONVFLAG_INTERPRET_LONG)) {		// l = long int
@@ -3317,32 +3318,32 @@ void BURGER_API Burger::SafePrint::ParamInfo_t::CheckConversionForWarnings(const
 			} else if (bFloatFlags_aAeEfFgG) {
 				SetWarning(WARN_FLAG_NO_EFFECT);
 			} else {
-				uExpectedLength = BURGER_MAXWORDPTR;
+				uExpectedLength = UINTPTR_MAX;
 			}
 		}
 
 		if (IsFlagSet(CONVFLAG_INTERPRET_LLONG)) {		// ll = long long int
-			uExpectedLength = (bIntFlags_diouxX) ? sizeof(Int64) : BURGER_MAXWORDPTR;
+			uExpectedLength = (bIntFlags_diouxX) ? sizeof(Int64) : UINTPTR_MAX;
 		}
 
 		if (IsFlagSet(CONVFLAG_INTERPRET_DOUBLE)) {		// L = long double
-			uExpectedLength = (bFloatFlags_aAeEfFgG) ? sizeof(long double) : BURGER_MAXWORDPTR;
+			uExpectedLength = (bFloatFlags_aAeEfFgG) ? sizeof(long double) : UINTPTR_MAX;
 		}
 
 		if (IsFlagSet(CONVFLAG_INTERPRET_INTMAX)) {		// j = intmax_t or uintmax_t
-			uExpectedLength = (bIntFlags_diouxX ) ? sizeof(Int32) : BURGER_MAXWORDPTR;
+			uExpectedLength = (bIntFlags_diouxX ) ? sizeof(Int32) : UINTPTR_MAX;
 		}
 
 		if (IsFlagSet(CONVFLAG_INTERPRET_SIZET)) {		// z = size_t
-			uExpectedLength = (bIntFlags_diouxX) ? sizeof(WordPtr) : BURGER_MAXWORDPTR;
+			uExpectedLength = (bIntFlags_diouxX) ? sizeof(WordPtr) : UINTPTR_MAX;
 		}
 
 		if (IsFlagSet(CONVFLAG_INTERPRET_WORDPTR)) {	// t = ptrdiff_t
-			uExpectedLength = (bIntFlags_diouxX) ? sizeof(WordPtr) : BURGER_MAXWORDPTR;
+			uExpectedLength = (bIntFlags_diouxX) ? sizeof(WordPtr) : UINTPTR_MAX;
 		}
 
 		// is the length modifier not defined for the conversion?
-		if (uExpectedLength == BURGER_MAXWORDPTR) {
+		if (uExpectedLength == UINTPTR_MAX) {
 			SetWarning(WARN_LENGTH_NOT_VALID_FOR_CONVERSION);
 		}
 	}
@@ -3402,17 +3403,17 @@ Burger::SafePrint::eError BURGER_API Burger::SafePrint::ParamInfo_t::StoreOffNum
 	\brief Outputs an integer value
 
 	Relevant flags and inputs:
-	\li Width value	- if width > output length, fill with spaces
-	\li	Left Justify flag - Left justifies the output
-	\li	Display sign - forces a sign to be displayed
-    \li	Blank sign - displays a blank in front of a positive number
-	\li	Left Pad Zeros - fills zeros in front of the number
-	\li	Comma flag - insert commas in front of every group of 3 digits
+	* * Width value	- if width > output length, fill with spaces
+	* *	Left Justify flag - Left justifies the output
+	* *	Display sign - forces a sign to be displayed
+    * *	Blank sign - displays a blank in front of a positive number
+	* *	Left Pad Zeros - fills zeros in front of the number
+	* *	Comma flag - insert commas in front of every group of 3 digits
 
 	Caveats:
-	\li	Left Justify overrides padding with zeros
-	\li	Comma Flag overrides padding with zeros
-	\li	Display Sign overrides Blank Sign
+	* *	Left Justify overrides padding with zeros
+	* *	Comma Flag overrides padding with zeros
+	* *	Display Sign overrides Blank Sign
 
 	Composes numeric text from right to left (Except for padding)
 
@@ -3539,11 +3540,11 @@ WordPtr BURGER_API Burger::SafePrint::ParamInfo_t::FormatInteger(char *pOutBuffe
 	also handles pointer conversion
 
 	Relevant flags and inputs:	
-	\li Width value - if width > output length, fill with spaces
-	\li Left Justify flag - Left justifies the output
-	\li Left Pad Zeros - fills zeros in front of the number
-	\li Comma flag - insert commas? in front of every group of 3 digits
-	\li AddBasePrefix - inserts base prefix in front of output
+	* * Width value - if width > output length, fill with spaces
+	* * Left Justify flag - Left justifies the output
+	* * Left Pad Zeros - fills zeros in front of the number
+	* * Comma flag - insert commas? in front of every group of 3 digits
+	* * AddBasePrefix - inserts base prefix in front of output
 
 	\param pOutBuffer Pointer to the buffer to store the printed string
 	\param pArg Pointer to the argument value
@@ -3699,9 +3700,9 @@ WordPtr BURGER_API Burger::SafePrint::ParamInfo_t::FormatHexOrOctal(char *pOutBu
 	\brief Outputs an pointer as a hex address value
 
 	Relevant flags and inputs:	
-	\li Width value - if width > output length, fill with spaces
-	\li Left Justify flag - Left justifies the output
-	\li DisplayUpperCase - modifies textual output
+	* * Width value - if width > output length, fill with spaces
+	* * Left Justify flag - Left justifies the output
+	* * DisplayUpperCase - modifies textual output
 
 	\param pOutBuffer Pointer to the buffer to store the printed string
 	\param pArg Pointer to the argument value
@@ -3716,11 +3717,11 @@ WordPtr BURGER_API Burger::SafePrint::ParamInfo_t::FormatPointer(char* pOutBuffe
 
 	// make a copy of the output command as hex output with full precision
 	ParamInfo_t TempParamInfo(*this);
-	TempParamInfo.SetPrecision(2 * sizeof(WordPtr));
+	TempParamInfo.SetPrecision(static_cast<Word>(2U * sizeof(WordPtr)));
 	TempParamInfo.SetFlag(CONVFLAG_PRECISION_SPECIFIED);
 
 	// make a copy of the argument as a Unsigned int
-#if BURGER_MAXWORDPTR==0xFFFFFFFFU
+#if UINTPTR_MAX==0xFFFFFFFFU
 	SafePrintArgument TempArg(reinterpret_cast<Word32>(pArg->m_Data.m_pVoid));
 	TempArg.SetType(SafePrintArgument::ARG_WORD32);
 #else
@@ -3736,9 +3737,9 @@ WordPtr BURGER_API Burger::SafePrint::ParamInfo_t::FormatPointer(char* pOutBuffe
 	\brief Outputs a character value
 
 	Relevant flags and inputs:	
-	\li Left Justify flag	- left justifies the output in the field
-	\li Width value			- if width > output length, fill with spaces or zeros
-	\li Left Justify flag	- obvious flag is obvious
+	* * Left Justify flag	- left justifies the output in the field
+	* * Width value			- if width > output length, fill with spaces or zeros
+	* * Left Justify flag	- obvious flag is obvious
 
 	\param pOutBuffer Pointer to the buffer to store the printed string
 	\param pArg Pointer to the argument value
@@ -3794,8 +3795,8 @@ WordPtr BURGER_API Burger::SafePrint::ParamInfo_t::FormatChar(char* pOutBuffer,c
 	\brief Outputs a text string
 
 	Relevant flags and inputs:	
-	\li Width value - if width > output length, fill with spaces
-	\li Left Justify flag - Left justifies the output
+	* * Width value - if width > output length, fill with spaces
+	* * Left Justify flag - Left justifies the output
 
 	\param pOutBuffer Pointer to the buffer to store the printed string
 	\param pArg Pointer to the argument value
@@ -3838,9 +3839,9 @@ WordPtr BURGER_API Burger::SafePrint::ParamInfo_t::FormatTextString(char *pOutBu
 	\brief Outputs a boolean values value as "true"/"false"
 
 	Relevant flags and inputs:	
-	\li Width value - if width > output length, fill with spaces
-	\li Left Justify flag - obvious flag is obvious
-	\li DisplayUpperCase - modifies textual output
+	* * Width value - if width > output length, fill with spaces
+	* * Left Justify flag - obvious flag is obvious
+	* * DisplayUpperCase - modifies textual output
 
 	\param pOutBuffer Pointer to the buffer to store the printed string
 	\param pArg Pointer to the argument value
@@ -3870,10 +3871,10 @@ WordPtr BURGER_API Burger::SafePrint::ParamInfo_t::FormatBool(char* pOutBuffer,c
 	\brief Output a data value as a binary bit pattern, MSB to LSB
 
 	Relevant flags and inputs:	
-	\li Width value - if width > output length, fill with spaces
-	\li Left Justify flag - obvious flag is obvious
-	\li Comma flag - inserts spaces between each nibbles worth of digits
-	\li Alternative form - display bits LSB to MSB
+	* * Width value - if width > output length, fill with spaces
+	* * Left Justify flag - obvious flag is obvious
+	* * Comma flag - inserts spaces between each nibbles worth of digits
+	* * Alternative form - display bits LSB to MSB
 
 	\param pOutBuffer Pointer to the buffer to store the printed string
 	\param pArg Pointer to the argument value
@@ -3983,17 +3984,17 @@ WordPtr BURGER_API Burger::SafePrint::ParamInfo_t::FormatSpecialReal(char* pOutB
 	\brief Outputs a floating point value
 
 	Relevant flags and inputs:	
-	\li Width value - if width > output length, fill with spaces
-	\li Precision Value - minimum number of characters/digits to emit
-	\li Left Justify flag - Left justifies the output
-	\li Display sign - forces a sign to be displayed
-	\li Blank sign - displays a blank in front of a positive number
-	\li Left Pad Zeros - fills zeros in front of the number
-	\li Comma flag - insert commas in front of every group of 3 digits
+	* * Width value - if width > output length, fill with spaces
+	* * Precision Value - minimum number of characters/digits to emit
+	* * Left Justify flag - Left justifies the output
+	* * Display sign - forces a sign to be displayed
+	* * Blank sign - displays a blank in front of a positive number
+	* * Left Pad Zeros - fills zeros in front of the number
+	* * Comma flag - insert commas in front of every group of 3 digits
 
 	Caveats:
-	\li Left Justify overrides padding with zeros
-	\li Comma Flag overrides padding with zeros
+	* * Left Justify overrides padding with zeros
+	* * Comma Flag overrides padding with zeros
 
 	\param pOutBuffer Pointer to the buffer to store the printed string
 	\param pArg Pointer to the argument value
@@ -4635,10 +4636,10 @@ WordPtr BURGER_API Burger::SafePrint::ProcessResults_t::GenerateFormattedOutputT
 	checking externally supplied format strings at load time
 
 	Returns results in \ref ProcessResults_t :
-	\li Success in parsing the format string ( and arguments )
-	\li Accurate total OR estimated length of formatted output in bytes
-	\li Number of output commands created
-	\li Info on the format sequence that caused an error (if any)
+	* * Success in parsing the format string ( and arguments )
+	* * Accurate total OR estimated length of formatted output in bytes
+	* * Number of output commands created
+	* * Info on the format sequence that caused an error (if any)
 
 	\param uOptions
 	\param pFormat
@@ -4659,8 +4660,8 @@ Word BURGER_API Burger::SafePrint::ProcessResults_t::FormatPreProcess(eParseOpti
 	m_uPhaseResults = ERROR_UNSPECIFIED;
 	m_uFormattedOutputLength = 0;
 	m_uNumOutputCommands = 0;
-	m_uErrorFormatSequencePos = BURGER_MAXWORDPTR;
-	m_uErrorCharPos = BURGER_MAXWORDPTR;
+	m_uErrorFormatSequencePos = UINTPTR_MAX;
+	m_uErrorCharPos = UINTPTR_MAX;
 
 	// Check format string for validity. An empty string (just a null) is ok
 	if (IsPointerInvalid(pFormat)) {
@@ -4694,7 +4695,7 @@ Word BURGER_API Burger::SafePrint::ProcessResults_t::FormatPreProcess(eParseOpti
 	// Initialize the parsing engine
 	WordPtr uParsePosition = 0;					// index of character currently being parsed
 	WordPtr uFormatSequencePosition = 0;		// index of 1st character of the argument format section being parsed
-	WordPtr uCurrentCommandIndex = BURGER_MAXWORDPTR;	// index of the current output command being composed
+	WordPtr uCurrentCommandIndex = UINTPTR_MAX;	// index of the current output command being composed
 	Word32 uCurrentArgumentNext = 0;			// index of the next argument to use for formatting
 
 	Word bParsingParam = false;					// parsing mode: decoding an argument format section
@@ -4756,7 +4757,7 @@ Word BURGER_API Burger::SafePrint::ProcessResults_t::FormatPreProcess(eParseOpti
 				if (pFormat[uParsePosition+1] == static_cast<char>(cFORMAT_ESCAPE_CHAR)) {
 					// first character in the format string? or right after a conversion command?
 					// if so, we need to make a new command
-					if ((uCurrentCommandIndex == BURGER_MAXWORDPTR) || (pParamInfos[uCurrentCommandIndex].GetCommand() == COMMAND_FORMAT_ARGUMENT)) {
+					if ((uCurrentCommandIndex == UINTPTR_MAX) || (pParamInfos[uCurrentCommandIndex].GetCommand() == COMMAND_FORMAT_ARGUMENT)) {
 						BURGER_ASSERT(!bParsingText);
 
 						// emit text copy command
@@ -5328,7 +5329,7 @@ const Burger::SafePrint::OutputTypeAndFlags_t Burger::SafePrint::g_PrintfOutputT
 ***************************************/
 
 const WordPtr Burger::SafePrint::g_ConversionArgumentSizes[14] = {
-	BURGER_MAXWORDPTR,		// CONVSPEC_INVALID
+    UINTPTR_MAX,		// CONVSPEC_INVALID
 	0,						// CONVSPEC_BINNUMBER
 	sizeof(bool),			// CONVSPEC_BOOLTEXT
 	sizeof(int),			// CONVSPEC_CHAR
@@ -5836,9 +5837,9 @@ const char* BURGER_API Burger::SafePrint::GetOutputCommandName(eConversionComman
 
 	\brief Reports the size of a formatted output in bytes without actually creating any formatted output.
 
-	\li Step 1) Parse the format string and arguments
-	\li Step 2) Report the format results and call back for an output buffer.
-	\li Step 3) If no issues found in Step 1 and a buffer was returned in step 2,
+	* * Step 1) Parse the format string and arguments
+	* * Step 2) Report the format results and call back for an output buffer.
+	* * Step 3) If no issues found in Step 1 and a buffer was returned in step 2,
 		execute the list of format & copy output commands.
 
 	\param pFormat Pointer to a "C" format string
@@ -5882,9 +5883,9 @@ IntPtr BURGER_API Burger::GetFormattedLength(const char *pFormat,WordPtr uArgCou
 	determining the required size.  A null terminator written to the
 	end of the output is optional requested by the caller.
 
-	\li Step 1) Parse the format string and arguments
-	\li Step 2) Report the format results and call back for an output buffer.
-	\li Step 3) If no issues found in Step 1 and a buffer was returned in step 2,
+	* * Step 1) Parse the format string and arguments
+	* * Step 2) Report the format results and call back for an output buffer.
+	* * Step 3) If no issues found in Step 1 and a buffer was returned in step 2,
 		execute the list of format & copy output commands.
 
 	\param pCallback Pointer to a callback function
@@ -5952,8 +5953,8 @@ IntPtr BURGER_API Burger::SprintfUserAlloc(SafePrint::SprintfCallbackProc pCallb
 	Return value is the number of characters written to the buffer, or a 
 	negative value indicating an error occurred during the attempt.
 
-	\li Step 1) Parse the format string and arguments
-	\li Step 2) if no issues found in Step 1, execute the list of format & copy output commands.
+	* * Step 1) Parse the format string and arguments
+	* * Step 2) if no issues found in Step 1, execute the list of format & copy output commands.
 
 	\note This function can easily overrun the buffer since no buffer
 		is supplied.  It is recommended you use Snprintf() instead.
@@ -6011,8 +6012,8 @@ IntPtr BURGER_API Burger::Sprintf(char *pOutput,const char* pFormat,WordPtr uArg
 	sufficiently large to hold the entire formatted output, or a 
 	negative value indicating an error occurred during the attempt.
 
-	\li Step 1) Parse the format string and arguments
-	\li Step 2) if no issues found in Step 1, execute the list of format & copy output commands.
+	* * Step 1) Parse the format string and arguments
+	* * Step 2) if no issues found in Step 1, execute the list of format & copy output commands.
 
 	\param pOutput Pointer to the output buffer
 	\param uOutputSize Size of the output buffer in bytes
@@ -6066,8 +6067,8 @@ IntPtr BURGER_API Burger::Snprintf(char* pOutput,WordPtr uOutputSize,const char*
 	Return value is the number of characters transmitted, or a negative value
 	indicating an error occurred during the attempt.
 
-	\li Step 1) Parse the format string and arguments
-	\li Step 2) if no issues found in Step 1, execute the list of format & copy output commands.
+	* * Step 1) Parse the format string and arguments
+	* * Step 2) if no issues found in Step 1, execute the list of format & copy output commands.
 
 	\param pFormat Pointer to a "C" format string
 	\param uArgCount Number of arguments in the argument array
@@ -6114,8 +6115,8 @@ IntPtr BURGER_API Burger::Printf(const char *pFormat,WordPtr uArgCount,const Saf
 	Return value is the number of characters transmitted, or a negative value
 	indicating an error occurred during the attempt.
 
-	\li Step 1) Parse the format string and arguments
-	\li Step 2) if no issues found in Step 1, execute the list of format & copy output commands.
+	* * Step 1) Parse the format string and arguments
+	* * Step 2) if no issues found in Step 1, execute the list of format & copy output commands.
 
 	\param fp Pointer to a FILE stream
 	\param pFormat Pointer to a "C" format string
@@ -6165,8 +6166,8 @@ IntPtr BURGER_API Burger::Fprintf(FILE *fp,const char *pFormat,WordPtr uArgCount
 	Parse the parameters and do a printf() dump of the contents, used exclusively
 	for debugging.
 
-	\li Step 1) Parse the format string and arguments
-	\li Step 2) if no issues found in Step 1, execute the list of format & copy output commands.
+	* * Step 1) Parse the format string and arguments
+	* * Step 2) if no issues found in Step 1, execute the list of format & copy output commands.
 
 	\param pOutput Pointer to a output buffer
 	\param uOutputSize Number of bytes in the output buffer

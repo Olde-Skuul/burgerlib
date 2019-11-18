@@ -31,14 +31,14 @@
 Burger::CriticalSection::CriticalSection()
 {
 	// Safety switch to verify the declaration in brshieldtypes.h matches the real thing
-	BURGER_COMPILE_TIME_ASSERT(sizeof(Burger::pthread_mutex_t)==sizeof(::pthread_mutex_t));
+    BURGER_STATIC_ASSERT(sizeof(Burgerpthread_mutex_t)==sizeof(pthread_mutex_t));
 
-	pthread_mutex_init(reinterpret_cast< ::pthread_mutex_t *>(&m_Lock),NULL);
+	pthread_mutex_init(reinterpret_cast<pthread_mutex_t *>(&m_Lock),NULL);
 }
 
 Burger::CriticalSection::~CriticalSection()
 {
-	pthread_mutex_destroy(reinterpret_cast< ::pthread_mutex_t *>(&m_Lock));
+	pthread_mutex_destroy(reinterpret_cast<pthread_mutex_t *>(&m_Lock));
 }
 
 /***************************************
@@ -47,9 +47,9 @@ Burger::CriticalSection::~CriticalSection()
 	
 ***************************************/
 
-void Burger::CriticalSection::Lock()
+void Burger::CriticalSection::Lock(void)
 {
-	pthread_mutex_lock(reinterpret_cast< ::pthread_mutex_t *>(&m_Lock));
+	pthread_mutex_lock(reinterpret_cast<pthread_mutex_t *>(&m_Lock));
 }
 
 /***************************************
@@ -58,9 +58,9 @@ void Burger::CriticalSection::Lock()
 	
 ***************************************/
 
-Word Burger::CriticalSection::TryLock()
+Word Burger::CriticalSection::TryLock(void)
 {
-	return pthread_mutex_trylock(reinterpret_cast< ::pthread_mutex_t *>(&m_Lock))!=EBUSY;
+	return pthread_mutex_trylock(reinterpret_cast<pthread_mutex_t *>(&m_Lock))!=EBUSY;
 }
 
 
@@ -70,9 +70,9 @@ Word Burger::CriticalSection::TryLock()
 	
 ***************************************/
 
-void Burger::CriticalSection::Unlock()
+void Burger::CriticalSection::Unlock(void)
 {
-	pthread_mutex_unlock(reinterpret_cast< ::pthread_mutex_t *>(&m_Lock));
+	pthread_mutex_unlock(reinterpret_cast<pthread_mutex_t *>(&m_Lock));
 }
 
 
@@ -87,10 +87,10 @@ Burger::Semaphore::Semaphore(Word32 uCount) :
 	m_bInitialized(FALSE)
 {
 	// Safety switch to verify the declaration in brshieldtypes.h matches the real thing
-	BURGER_COMPILE_TIME_ASSERT(sizeof(Burger::sem_t)==sizeof(::sem_t));
+    BURGER_STATIC_ASSERT(sizeof(Burgersem_t)==sizeof(sem_t));
 
 	// Initialize the semaphore
-	if (!sem_init(reinterpret_cast< ::sem_t *>(&m_Semaphore),0,uCount)) {
+	if (!sem_init(reinterpret_cast<sem_t *>(&m_Semaphore),0,uCount)) {
 		m_bInitialized = TRUE;
 	}
 }
@@ -104,7 +104,7 @@ Burger::Semaphore::Semaphore(Word32 uCount) :
 Burger::Semaphore::~Semaphore()
 {
 	if (m_bInitialized) {
-		sem_destroy(reinterpret_cast< ::sem_t *>(&m_Semaphore));
+		sem_destroy(reinterpret_cast<sem_t *>(&m_Semaphore));
 		m_bInitialized = FALSE;
 	}
 	m_uCount = 0;
@@ -124,7 +124,7 @@ Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
 		// No wait?
 		if (!uMilliseconds) {
 			// Use the fast function
-			if (!sem_trywait(reinterpret_cast< ::sem_t *>(&m_Semaphore))) {
+			if (!sem_trywait(reinterpret_cast<sem_t *>(&m_Semaphore))) {
 				// Got it!
 				uResult = 0;
 			}
@@ -133,7 +133,7 @@ Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
 			// Use the special function for halt until acquired
 			int iSemResult;
 			do {
-				iSemResult = sem_wait(reinterpret_cast< ::sem_t *>(&m_Semaphore));
+				iSemResult = sem_wait(reinterpret_cast<sem_t *>(&m_Semaphore));
 				// Got it?
 				if (!iSemResult) {
 					// Exit now
@@ -175,7 +175,7 @@ Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
 			// Wait for the semaphore
 			int iTest;
 			do {
-				iTest = sem_timedwait(reinterpret_cast< ::sem_t *>(&m_Semaphore),&TimeSpecTimeOut);
+				iTest = sem_timedwait(reinterpret_cast<sem_t *>(&m_Semaphore),&TimeSpecTimeOut);
 				// Loop only on interrupts
 			} while ((iTest == -1) && (errno == EINTR));
 			// Success?
@@ -199,7 +199,6 @@ Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
 
 Word BURGER_API Burger::Semaphore::Release(void)
 {
-	pthread_cond_t foo;
 	Word uResult = 10;
 	if (m_bInitialized) {
 		// Release the count immediately, because it's
@@ -207,7 +206,7 @@ Word BURGER_API Burger::Semaphore::Release(void)
 		// can execute before the call to ReleaseSemaphore()
 		// returns
 		AtomicPreIncrement(&m_uCount);
-		if (sem_post(reinterpret_cast< ::sem_t *>(&m_Semaphore))) {
+		if (sem_post(reinterpret_cast<sem_t *>(&m_Semaphore))) {
 			// Error!!! Undo the AtomicPreIncrement()
 			AtomicPreDecrement(&m_uCount);
 		} else {
@@ -228,9 +227,9 @@ Burger::ConditionVariable::ConditionVariable() :
 	m_bInitialized(FALSE)
 {
 	// Safety switch to verify the declaration in brshieldtypes.h matches the real thing
-	BURGER_COMPILE_TIME_ASSERT(sizeof(Burger::pthread_cond_t)==sizeof(::pthread_cond_t));
+    BURGER_STATIC_ASSERT(sizeof(Burgerpthread_cond_t)==sizeof(pthread_cond_t));
 
-	if (!pthread_cond_init(reinterpret_cast< ::pthread_cond_t *>(&m_ConditionVariable),NULL)) {
+	if (!pthread_cond_init(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable),NULL)) {
 		m_bInitialized = TRUE;
 	}
 }
@@ -244,7 +243,7 @@ Burger::ConditionVariable::ConditionVariable() :
 Burger::ConditionVariable::~ConditionVariable()
 {
 	if (m_bInitialized) {
-		pthread_cond_destroy(reinterpret_cast< ::pthread_cond_t *>(&m_ConditionVariable));
+		pthread_cond_destroy(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable));
 		m_bInitialized = FALSE;
 	}
 }
@@ -259,7 +258,7 @@ Word BURGER_API Burger::ConditionVariable::Signal(void)
 {
 	Word uResult = 10;
 	if (m_bInitialized) {
-		if (!pthread_cond_signal(reinterpret_cast< ::pthread_cond_t *>(&m_ConditionVariable))) {
+		if (!pthread_cond_signal(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable))) {
 			uResult = 0;
 		}
 	}
@@ -276,7 +275,7 @@ Word BURGER_API Burger::ConditionVariable::Broadcast(void)
 {
 	Word uResult = 10;
 	if (m_bInitialized) {
-		if (!pthread_cond_broadcast(reinterpret_cast< ::pthread_cond_t *>(&m_ConditionVariable))) {
+		if (!pthread_cond_broadcast(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable))) {
 			uResult = 0;
 		}
 	}
@@ -294,7 +293,7 @@ Word BURGER_API Burger::ConditionVariable::Wait(CriticalSection *pCriticalSectio
 	Word uResult = 10;
 	if (m_bInitialized) {
 		if (uMilliseconds==BURGER_MAXUINT) {
-			if (!pthread_cond_wait(reinterpret_cast< ::pthread_cond_t *>(&m_ConditionVariable),reinterpret_cast< ::pthread_mutex_t *>(&pCriticalSection->m_Lock))) {
+			if (!pthread_cond_wait(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable),reinterpret_cast<pthread_mutex_t *>(&pCriticalSection->m_Lock))) {
 				uResult = 0;
 			}
 		} else {
@@ -324,7 +323,7 @@ Word BURGER_API Burger::ConditionVariable::Wait(CriticalSection *pCriticalSectio
 			int iResult;
 			do {
 				// Send the signal and possibly time out
-				iResult = pthread_cond_timedwait(reinterpret_cast< ::pthread_cond_t *>(&m_ConditionVariable),reinterpret_cast< ::pthread_mutex_t *>(&pCriticalSection->m_Lock), &StopTimeHere);
+				iResult = pthread_cond_timedwait(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable),reinterpret_cast<pthread_mutex_t *>(&pCriticalSection->m_Lock), &StopTimeHere);
 				// Interrupted?
 			} while (iResult == EINTR);
 			

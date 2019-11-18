@@ -100,19 +100,13 @@
 #define BURGER_STRUCT_ALIGN
 #define BURGER_STRUCT_PACK
 #define BURGER_STRUCT_PACKPUSH
+#define BURGER_NO_ALIGN
 
 #define nullptr 0
 #define __underlying_type(x) int
 
 #define BURGER_HAS_WCHAR_T
 #define BURGER_INT_NOT_IN_STDINT
-//#define BURGER_LONG_NOT_IN_STDINT
-
-//#define BURGER_MAXINT 0x7FFFFFFF
-//#define BURGER_MAXUINT 0xFFFFFFFFU
-//#define BURGER_MAXWORDPTR 0xFFFFFFFFFFFFFFFFULL
-//#define BURGER_MAXINTPTR 0x7FFFFFFFFFFFFFFFLL
-
 #define BURGER_NO_USING_NAMESPACE
 
 /*! ************************************
@@ -1784,7 +1778,7 @@ line of processors.
     This is a replacement for the ANSI macro MAX_INT. Normally, this is
     0x7FFFFFFF, but it could be a 64 or 128 bit value on future processors.
 
-    \sa BURGER_MININT, BURGER_MAXWORDPTR, BURGER_MAXINTPTR or BURGER_MAXUINT
+    \sa BURGER_MININT, BURGER_MAXINTPTR or BURGER_MAXUINT
 
 ***************************************/
 
@@ -1796,7 +1790,7 @@ line of processors.
     This is a replacement for the ANSI macro MAX_UINT. Normally, this is
     0xFFFFFFFFU, but it could be a 64 or 128 bit value on future processors.
 
-    \sa BURGER_MAXWORDPTR, BURGER_MAXINTPTR or BURGER_MAXINT
+    \sa BURGER_MAXINTPTR or BURGER_MAXINT
 
 ***************************************/
 
@@ -1838,19 +1832,6 @@ line of processors.
 
 /*! ************************************
 
-    \def BURGER_MAXWORDPTR
-    \brief Maximum value of a unsigned address space integer.
-
-    This is a constant value of the largest allowable address. Normally, this is
-    0xFFFFFFFF on 32 bit CPUs and 0xFFFFFFFFFFFFFFFFULL on 64 bit CPUs. It may
-    be a 128 bit value on future processors.
-
-    \sa BURGER_MAXINTPTR, BURGER_MAXINT or BURGER_MAXUINT
-
-***************************************/
-
-/*! ************************************
-
     \def BURGER_MAXINTPTR
     \brief Maximum value of a signed address space integer.
 
@@ -1858,7 +1839,7 @@ line of processors.
     0x7FFFFFFF on 32 bit CPUs and 0x7FFFFFFFFFFFFFFFLL on 64 bit CPUs. It may be
     a 128 bit value on future processors.
 
-    \sa BURGER_MAXWORDPTR, BURGER_MAXINT or BURGER_MAXUINT
+    \sa BURGER_MAXINT or BURGER_MAXUINT
 
 ***************************************/
 
@@ -2016,7 +1997,7 @@ line of processors.
         int BURGER_ALIGN(DataArray[4],8) = {1,2,3,4};
     \endcode
 
-    \sa BURGER_PREALIGN and BURGER_POSTALIGN
+    \sa BURGER_NO_ALIGN, BURGER_PREALIGN and BURGER_POSTALIGN
 
 ***************************************/
 
@@ -2041,7 +2022,7 @@ line of processors.
     } BURGER_POSTALIGN(32);
     \endcode
 
-    \sa BURGER_ALIGN and BURGER_POSTALIGN
+    \sa BURGER_NO_ALIGN, BURGER_ALIGN and BURGER_POSTALIGN
 
 ***************************************/
 
@@ -2066,7 +2047,20 @@ line of processors.
     } BURGER_POSTALIGN(32);
     \endcode
 
-    \sa BURGER_PREALIGN and BURGER_ALIGN
+    \sa BURGER_NO_ALIGN, BURGER_PREALIGN and BURGER_ALIGN
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_NO_ALIGN
+    \brief Per object alignment is not supported.
+
+    On older compilers, the ability to set the alignment of individual object is
+    not supported. This macro exists on those compilers to alert code to be
+    written to handle this case.
+
+    \sa BURGER_PREALIGN, BURGER_POSTALIGN and BURGER_ALIGN
 
 ***************************************/
 
@@ -2296,6 +2290,89 @@ line of processors.
     will exist.
 
     \sa BURGER_CPP11, nullptr, BURGER_OVERRIDE or BURGER_CONSTEXPR
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_ADDRESS_SANITIZER
+    \brief Detect if address sanitization is active.
+
+    If the code is being built with Address Sanitization, this macro will exist.
+
+    \sa BURGER_DISABLE_ASAN or BURGER_CLANG
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_DISABLE_ASAN
+    \brief Disable address sanitization.
+
+    If the code is being built with Address Sanitization, this macro will
+    disable testing any function that is marked. It's to work around false
+    positives.
+
+    \sa BURGER_ADDRESS_SANITIZER, BURGER_DISABLE_MSAN or BURGER_CLANG
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_MEMORY_SANITIZER
+    \brief Detect if memory sanitization is active.
+
+    If the code is being built with Memory Sanitization, this macro will exist.
+
+    \sa BURGER_DISABLE_MSAN or BURGER_CLANG
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_DISABLE_MSAN
+    \brief Disable memory sanitization.
+
+    If the code is being built with Memory Sanitization, this macro will disable
+    testing any function that is marked. It's to work around false positives.
+
+    \sa BURGER_MEMORY_SANITIZER, BURGER_DISABLE_ASAN or BURGER_CLANG
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_MAYBE_UNUSED
+    \brief Mark with [[maybe_unused]]
+
+    For C++17 or higher compilers, or those that support the equivalent, insert
+    the [[maybe_unused]] attribute to the code.
+
+    \sa BURGER_NODISCARD or BURGER_FALLTHROUGH
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_NODISCARD
+    \brief Mark with [[nodiscard]]
+
+    For C++17 or higher compilers, or those that support the equivalent, insert
+    the [[nodiscard]] attribute to the code.
+
+    \sa BURGER_MAYBE_UNUSED or BURGER_FALLTHROUGH
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_FALLTHROUGH
+    \brief Mark with [[fallthrough]]
+
+    For C++17 or higher compilers, or those that support the equivalent, insert
+    the [[fallthrough]] attribute to the code.
+
+    \sa BURGER_NODISCARD or BURGER_MAYBE_UNUSED
 
 ***************************************/
 
@@ -2812,7 +2889,31 @@ line of processors.
 
     \endcode
 
-    \sa BURGER_EQUALS_DELETE
+    \sa BURGER_EQUALS_DELETE or BURGER_DEFAULT_DESTRUCTOR
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_DEFAULT_DESTRUCTOR
+    \brief Declare "= default" on C++ 11 compilers
+
+    For a default destructor, "= default" is the preferred method for C++ 11 or
+    higher compilers, while earlier compilers prefer {} for default destructors.
+    This macro will expand to the preferred format for creating default
+    destructors.
+
+    \code
+    class DefaultClass {
+        // Default destructor
+        ~DefaultClass() BURGER_DEFAULT_DESTRUCTOR;
+
+    public:
+        void DoStuff(void);
+
+    \endcode
+
+    \sa BURGER_EQUALS_DEFAULT or BURGER_EQUALS_DELETE
 
 ***************************************/
 
@@ -3095,10 +3196,54 @@ line of processors.
 
     Most compilers support 64 bit integers, but older compilers only support 32
     bit integers. To allow limited 64 bit integer support, this define exists
-    and `Burger::longlong_t` and `Burger::ulonglong_t` are used to preform 64 bit
-    integer math.
+    and `Burger::longlong_t` and `Burger::ulonglong_t` are used to preform 64
+    bit integer math.
 
     \sa Burger::longlong_t, or Burger::ulonglong_t
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_HAS_SFINAE
+    \brief Compiler supports SFINAE
+
+    Most compilers support "Substitution Failure Is Not An Error" (SFINAE), for
+    those few old compilers that don't support it, this macro doesn't exist.
+
+    \sa BURGER_EMPTY_TEMPLATE_DECLARATION
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_EMPTY_TEMPLATE_DECLARATION
+    \brief Declares an empty template parameter list
+
+    Apple's MPW compilers, MrC and SCpp, do not support the C++ term
+    "template <>", but if the term is removed, template overrides can be
+    declared. To help ease the development of template overrides, this macro
+    will remove the template<> keyword to allow code to compile properly on MPW
+    compilers.
+
+    Example of use:
+
+    \code
+    template<class T>
+    T Square(T Value)
+    {
+        return Value*Value;
+    }
+
+    BURGER_EMPTY_TEMPLATE_DECLARATION
+    float Square(float Value)
+    {
+        return Value*Value;
+    }
+
+    \endcode
+
+    \sa BURGER_HAS_SFINAE
 
 ***************************************/
 

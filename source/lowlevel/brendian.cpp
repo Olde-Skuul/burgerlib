@@ -1821,6 +1821,8 @@ void BURGER_API Burger::SwapEndian::StoreAny(
 
 #if defined(BURGER_64BITCPU) && !defined(DOXYGEN)
 
+#elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
+
 #else
 void BURGER_API Burger::SwapEndian::Fixup(uint64_t* pInput) BURGER_NOEXCEPT
 {

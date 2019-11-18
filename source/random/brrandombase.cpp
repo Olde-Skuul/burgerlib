@@ -135,9 +135,9 @@ void BURGER_API Burger::RandomBase::RandomSeed(void)
 
 ***************************************/
 
-Word32 BURGER_API Burger::RandomBase::GetWord(Word32 uRange)
+uint32_t BURGER_API Burger::RandomBase::GetWord(uint32_t uRange)
 {
-	Word32 uNewVal = Get();
+    uint32_t uNewVal = Get();
 	// Return as is
 	if (uRange) {
 		
@@ -179,16 +179,16 @@ Word32 BURGER_API Burger::RandomBase::GetWord(Word32 uRange)
 
 ***************************************/
 
-Word32 BURGER_API Burger::RandomBase::GetDice(Word32 uDiceCount,Word32 uDiceSize)
+uint32_t BURGER_API Burger::RandomBase::GetDice(uint32_t uDiceCount, uint32_t uDiceSize)
 {
-	Word32 uResult = 0;
+    uint32_t uResult = 0;
 	if (uDiceCount && uDiceSize) {
 
 		// Prime the value with the dice count so 
 		// there is no need to do a +1 per iteration
 		uResult = uDiceCount;
 		do {
-			Word32 uTemp = GetWord(uDiceSize)+uResult;
+            uint32_t uTemp = GetWord(uDiceSize)+uResult;
 			// Test for overflow
 			// Likely will never happen, but you never know.
 			if (uTemp<uResult) {
@@ -216,9 +216,9 @@ Word32 BURGER_API Burger::RandomBase::GetDice(Word32 uDiceCount,Word32 uDiceSize
 
 ***************************************/
 
-Int32 BURGER_API Burger::RandomBase::GetSigned(Word32 uRange)
+int32_t BURGER_API Burger::RandomBase::GetSigned(uint32_t uRange)
 {
-	return static_cast<Int32>(GetWord(uRange<<1U)-uRange);		/* Get the random number */
+	return static_cast<int32_t>(GetWord(uRange<<1U)-uRange);		/* Get the random number */
 }
 
 /*! ************************************
@@ -235,7 +235,7 @@ Int32 BURGER_API Burger::RandomBase::GetSigned(Word32 uRange)
 
 float BURGER_API Burger::RandomBase::GetFloat(void)
 {
-	Int32 iValue = static_cast<Int32>(Get())&0x7FFFFFFF;		// Max 32 bit int
+    int32_t iValue = static_cast<int32_t>(Get())&0x7FFFFFFF;		// Max 32 bit int
 	// Convert to float
 	return static_cast<float>(iValue)*
 		(1.0f/static_cast<float>(0x80000000U));
@@ -255,7 +255,7 @@ float BURGER_API Burger::RandomBase::GetFloat(void)
 
 float BURGER_API Burger::RandomBase::GetFloat(float fRange)
 {
-	Int32 iValue = static_cast<Int32>(Get())&0x7FFFFFFF;		// Max 32 bit int
+    int32_t iValue = static_cast<int32_t>(Get())&0x7FFFFFFF;		// Max 32 bit int
 	// Convert to float
 	return fRange*static_cast<float>(iValue)*
 		(1.0f/static_cast<float>(0x80000000U));
@@ -275,7 +275,7 @@ float BURGER_API Burger::RandomBase::GetFloat(float fRange)
 
 float BURGER_API Burger::RandomBase::GetSymmetricFloat(void)
 {
-	Int32 iValue = static_cast<Int32>(Get());		// Max 32 bit int
+    int32_t iValue = static_cast<int32_t>(Get());		// Max 32 bit int
 	// Convert to float
 	float fValue = static_cast<float>(iValue&0x7FFFFFFF)*
 		(1.0f/static_cast<float>(0x80000000U));
@@ -299,7 +299,7 @@ float BURGER_API Burger::RandomBase::GetSymmetricFloat(void)
 
 float BURGER_API Burger::RandomBase::GetSymmetricFloat(float fRange)
 {
-	Int32 iValue = static_cast<Int32>(Get());		// Max 32 bit int
+    int32_t iValue = static_cast<int32_t>(Get());		// Max 32 bit int
 	// Convert to float
 	float fValue = static_cast<float>(iValue&0x7FFFFFFF)*
 		(1.0f/static_cast<float>(0x80000000U));
@@ -324,8 +324,8 @@ float BURGER_API Burger::RandomBase::GetSymmetricFloat(float fRange)
 
 double BURGER_API Burger::RandomBase::GetDouble(void)
 {
-	Int32 iUpper=static_cast<Int32>(Get()>>5U);
-	Int32 iLower=static_cast<Int32>(Get()>>6U);
+    int32_t iUpper=static_cast<int32_t>(Get()>>5U);
+    int32_t iLower=static_cast<int32_t>(Get()>>6U);
 
 	// 0x20000000000000 = 9007199254740992.0
 	return ((static_cast<double>(iUpper)*67108864.0)+static_cast<double>(iLower))*(1.0/9007199254740992.0);

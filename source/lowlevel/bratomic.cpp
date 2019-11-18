@@ -12,14 +12,35 @@
 ***************************************/
 
 #include "bratomic.h"
+#include "brmemoryfunctions.h"
 #include "brstringfunctions.h"
 
+// Used for MacOSX CPU tests
 #if (defined(BURGER_PPC) && defined(BURGER_MACOSX))
 #include <sys/sysctl.h>
 #endif
 
-#if (defined(BURGER_PPC) && defined(BURGER_MAC))
+// Gestalt for MacOS
+#if defined(BURGER_MAC)
 #include <Gestalt.h>
+#endif
+
+#if defined(BURGER_MSVC)
+
+// Perform an intrinsic test (Should not cause compile errors)
+#include "brvisualstudio.h"
+
+#if defined(BURGER_WINDOWS)
+#if (defined(_MSC_VER) && (_MSC_VER<1400))
+#include <mmintrin.h>
+#else
+#include <intrin.h>
+#endif
+#elif defined(BURGER_XBOX360)
+#include <ppcintrinsics.h>
+#include <vectorintrinsics.h>
+#endif
+
 #endif
 
 //
@@ -370,13 +391,13 @@ Word BURGER_API Burger::AtomicSetIfMatch(volatile Word64 *pInput,Word64 uBefore,
 
 	\note This function only matters on systems with an x86 CPU
 	\return \ref TRUE if the instruction is available, \ref FALSE if not
-	\sa BURGER_INTELARCHITECTURE
+	\sa BURGER_INTEL
 
 ***************************************/
 
 #if (defined(BURGER_X86) && !defined(BURGER_XBOX)) || defined(DOXYGEN)
 
-#if defined(BURGER_GNUC)
+#if defined(BURGER_GNUC) || defined(BURGER_CLANG)
 __asm__(
 "	.align	4,0x90\n"
 "	.globl __ZN6Burger14IsCPUIDPresentEv\n"
@@ -433,7 +454,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 	\note This structure only matters on systems with an x86 or x64 CPU
 
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -447,7 +468,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instruction is available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -461,7 +482,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -475,7 +496,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -489,7 +510,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -503,7 +524,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -517,7 +538,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -531,7 +552,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -545,7 +566,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -559,7 +580,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -573,7 +594,21 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
+
+***************************************/
+
+/*! ************************************
+
+	\fn BURGER_INLINE Word Burger::CPUID_t::HasMOVBE(void) const
+	\brief Returns non-zero if the MOVBE instruction is available
+
+	https://www.tptp.cc/mirrors/siyobik.info/instruction/MOVBE.html
+
+	\note This structure only matters on systems with an x86 or x64 CPU
+
+	\return Non-zero if the instruction is available, zero if not.
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -587,7 +622,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -601,7 +636,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -615,7 +650,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the CMPXCHG16B instruction is available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -629,7 +664,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the F16C data type is supported, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -643,7 +678,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -657,7 +692,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -671,7 +706,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -685,7 +720,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -699,7 +734,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -713,7 +748,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 	\note This structure only matters on systems with an x86 or x64 CPU
 
 	\return Non-zero if the instructions are available, zero if not.
-	\sa void CPUID(CPUID_t *) or BURGER_INTELARCHITECTURE
+	\sa void CPUID(CPUID_t *) or BURGER_INTEL
 
 ***************************************/
 
@@ -731,11 +766,11 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 	\note This function only matters on systems with an x86 or x64 CPU
 	\param pOutput Pointer to a CPUID_t to initialize
-	\sa BURGER_INTELARCHITECTURE
+	\sa BURGER_INTEL
 
 ***************************************/
 
-#if defined(BURGER_INTELARCHITECTURE) && !defined(DOXYGEN)
+#if defined(BURGER_INTEL) && !defined(DOXYGEN)
 
 struct CPUHashes_t {
 	char m_CPUName[16];		// CPU ID
@@ -796,12 +831,12 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 	MemoryClear(pOutput,sizeof(CPUID_t));
 	pOutput->m_uCPUType = CPUID_t::CPU_UNKNOWN;
 
-#if defined(BURGER_INTELARCHITECTURE)
+#if defined(BURGER_INTEL)
 
 	//
 	// Buffer to get data from CPUID
 	//
-	
+
 	int Results[4];
 
 	//
@@ -830,13 +865,14 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 	// Iterate over known CPU names to create the enumeration
 	//
 
-	WordPtr i = BURGER_ARRAYSIZE(g_CPUHashes);
+	uintptr_t i = BURGER_ARRAYSIZE(g_CPUHashes);
 	const CPUHashes_t *pHash = g_CPUHashes;
 	do {
 		if (!StringCompare(pHash->m_CPUName,pOutput->m_CPUName)) {
 			pOutput->m_uCPUType = pHash->m_uCPU;
 			break;
 		}
+        ++pHash;
 	} while (--i);
 
 	//
@@ -852,7 +888,7 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 
 		// Even more features?
 		if (uHighestID>=7) {
-#if defined(BURGER_MSVC) && (_MSC_VER<1600)
+#if defined(BURGER_MSVC) && (_MSC_VER<1500)
 			__cpuid(Results,7);
 #else
 			__cpuidex(Results,7,0);
@@ -982,3 +1018,81 @@ Word BURGER_API Burger::HasAltiVec(void)
 
 #endif
 
+/*! ************************************
+
+	\brief Return \ref TRUE if floating point sqrt is supported in hardware
+
+	Most modern CPUs have floating point in hardware, and on most platforms,
+	this function will return \ref TRUE. On 680x0 and PowerPC platforms, this function will
+	test for the existance of an instruction to perform a floating point square root
+	and will return non-zero if one is found.
+
+	\return Non-zero if fsqrt() is available, \ref FALSE if not.
+	\sa BURGER_68K and BURGER_PPC
+
+***************************************/
+
+#if (defined(BURGER_PPC) && defined(BURGER_MACOSX)) || defined(DOXYGEN)
+
+Word BURGER_API Burger::HasFSqrt(void)
+{
+    size_t uLength = 4;
+    uint32_t uBuffer = 0;
+
+    // Call the OS to get the flag for the fsqrt instruction
+    long lResult = sysctlbyname("hw.optional.fsqrt", &uBuffer, &uLength, nullptr, 0);
+    return (!lResult && uBuffer) ? TRUE : FALSE;
+}
+
+
+#elif (defined(BURGER_PPC) && defined(BURGER_MAC))
+
+Word BURGER_API Burger::HasFSqrt(void)
+{
+	// Carbon/Classic version
+
+	long gestaltAnswer;
+	Word uResult = 0;
+	if (!Gestalt(gestaltPowerPCProcessorFeatures,&gestaltAnswer)) {
+		// Return the FPU type
+		uResult = static_cast<Word>(gestaltAnswer>>gestaltPowerPCHasSquareRootInstructions)&1;
+	}
+	return uResult;		// Return zero or non-zero
+}
+
+#endif
+
+/*! ************************************
+
+	\brief Return \ref TRUE if floating point is supported in hardware
+
+	Most modern CPUs have floating point in hardware, and on most platforms,
+	this function will return \ref TRUE. On 680x0 platforms, this function will
+	test for the existance of an FPU and will return non-zero if one is found
+	and zero if there is no FPU.
+
+	\note If a 680x0 project is running on the MacOS 9 680x0 CPU emulator, this
+	function will always return \ref FALSE to help prevent runtime code from
+	executing FPU instructions which would cause a runtime exception.
+
+	\return Non-zero if an FPU is available, \ref FALSE if not.
+	\sa BURGER_68K
+
+***************************************/
+
+#if (defined(BURGER_MAC) && defined(BURGER_68K)) || defined(DOXYGEN)
+
+Word BURGER_API Burger::HasFPU(void)
+{
+	// Carbon/Classic version
+
+	long gestaltAnswer;
+	Word uResult = 0;
+	if (!Gestalt(gestaltFPUType,&gestaltAnswer)) {
+		// Return the FPU type
+		uResult = static_cast<Word>(gestaltAnswer);
+	}
+	return uResult;		// Return zero or non-zero
+}
+
+#endif

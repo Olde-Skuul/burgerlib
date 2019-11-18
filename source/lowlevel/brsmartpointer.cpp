@@ -48,7 +48,7 @@
 
 ***************************************/
 
-Burger::ProxyReferenceCounter *Burger::ProxyReferenceCounter::New(void)
+Burger::ProxyReferenceCounter * BURGER_API Burger::ProxyReferenceCounter::New(void)
 {
 	// In place new
 	return new(Alloc(sizeof(ProxyReferenceCounter))) ProxyReferenceCounter;

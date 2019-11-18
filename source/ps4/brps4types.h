@@ -20,17 +20,21 @@
 
 /* BEGIN */
 #if defined(BURGER_PS4) && !defined(DOXYGEN)
+
 struct pthread_mutex;
+
 extern "C" {
 extern float fabsf(float);
 extern double fabs(double);
 extern float sqrtf(float);
 extern double sqrt(double);
 }
+
 float __builtin_fabsf(float);
 double __builtin_fabs(double val);
 float __builtin_sqrtf(float val);
 double __builtin_sqrt(double val);
+
 #endif
 /* END */
 

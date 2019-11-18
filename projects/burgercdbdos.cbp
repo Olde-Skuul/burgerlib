@@ -2,60 +2,123 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="burgerlib" />
+		<Option title="burger" />
 		<Option makefile="makefile" />
 		<Option pch_mode="2" />
 		<Option compiler="ow" />
 		<Build>
-			<Target title="Debug">
-				<Option output="bin/burgerlibcdbwatw32dbg.lib" prefix_auto="0" extension_auto="0" />
+			<Target title="Debug_dos4gw">
+				<Option output="bin/burgercdbdos4gwdbg.lib" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
-				<Option object_output="temp/burgerlibcbpwatw32dbg/" />
+				<Option object_output="temp/burgercdbdos4gwdbg/" />
 				<Option type="2" />
 				<Option compiler="ow" />
 				<Option createDefFile="1" />
 				<Compiler>
+					<Add option="-bt=dos" />
 					<Add option="-d2" />
 					<Add option="-wx" />
-					<Add option="-fr=$(ERROR_FILE)" />
-					<Add option="-bcl=dos" />
 					<Add option="-fp6" />
 					<Add option="-6r" />
+					<Add option="-fr=$(ERROR_FILE)" />
 					<Add option="-d_DEBUG" />
+					<Add option="-d__DOS4G__" />
 				</Compiler>
 			</Target>
-			<Target title="Internal">
-				<Option output="bin/burgerlibcdbwatw32int.lib" prefix_auto="0" extension_auto="0" />
+			<Target title="Debug_dosx32">
+				<Option output="bin/burgercdbdosx32dbg.lib" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
-				<Option object_output="temp/burgerlibcbpwatw32int/" />
+				<Option object_output="temp/burgercdbdosx32dbg/" />
 				<Option type="2" />
 				<Option compiler="ow" />
 				<Option createDefFile="1" />
 				<Compiler>
-					<Add option="-ox" />
-					<Add option="-ot" />
+					<Add option="-bt=dos" />
+					<Add option="-d2" />
 					<Add option="-wx" />
-					<Add option="-fr=$(ERROR_FILE)" />
 					<Add option="-fp6" />
 					<Add option="-6r" />
+					<Add option="-fr=$(ERROR_FILE)" />
 					<Add option="-d_DEBUG" />
+					<Add option="-d__X32__" />
 				</Compiler>
 			</Target>
-			<Target title="Release">
-				<Option output="bin/burgerlibcdbwatw32rel.lib" prefix_auto="0" extension_auto="0" />
+			<Target title="Internal_dos4gw">
+				<Option output="bin/burgercdbdos4gwint.lib" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
-				<Option object_output="temp/burgerlibcbpwatw32rel/" />
+				<Option object_output="temp/burgercdbdos4gwint/" />
 				<Option type="2" />
 				<Option compiler="ow" />
 				<Option createDefFile="1" />
 				<Compiler>
+					<Add option="-bt=dos" />
+					<Add option="-d2" />
 					<Add option="-ox" />
 					<Add option="-ot" />
 					<Add option="-wx" />
-					<Add option="-fr=$(ERROR_FILE)" />
 					<Add option="-fp6" />
 					<Add option="-6r" />
+					<Add option="-fr=$(ERROR_FILE)" />
+					<Add option="-d_DEBUG" />
+					<Add option="-d__DOS4G__" />
+				</Compiler>
+			</Target>
+			<Target title="Internal_dosx32">
+				<Option output="bin/burgercdbdosx32int.lib" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="temp/burgercdbdosx32int/" />
+				<Option type="2" />
+				<Option compiler="ow" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-bt=dos" />
+					<Add option="-d2" />
+					<Add option="-ox" />
+					<Add option="-ot" />
+					<Add option="-wx" />
+					<Add option="-fp6" />
+					<Add option="-6r" />
+					<Add option="-fr=$(ERROR_FILE)" />
+					<Add option="-d_DEBUG" />
+					<Add option="-d__X32__" />
+				</Compiler>
+			</Target>
+			<Target title="Release_dos4gw">
+				<Option output="bin/burgercdbdos4gwrel.lib" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="temp/burgercdbdos4gwrel/" />
+				<Option type="2" />
+				<Option compiler="ow" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-bt=dos" />
+					<Add option="-ox" />
+					<Add option="-ot" />
+					<Add option="-wx" />
+					<Add option="-fp6" />
+					<Add option="-6r" />
+					<Add option="-fr=$(ERROR_FILE)" />
 					<Add option="-dNDEBUG" />
+					<Add option="-d__DOS4G__" />
+				</Compiler>
+			</Target>
+			<Target title="Release_dosx32">
+				<Option output="bin/burgercdbdosx32rel.lib" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="temp/burgercdbdosx32rel/" />
+				<Option type="2" />
+				<Option compiler="ow" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-bt=dos" />
+					<Add option="-ox" />
+					<Add option="-ot" />
+					<Add option="-wx" />
+					<Add option="-fp6" />
+					<Add option="-6r" />
+					<Add option="-fr=$(ERROR_FILE)" />
+					<Add option="-dNDEBUG" />
+					<Add option="-d__X32__" />
 				</Compiler>
 			</Target>
 			<Environment>
@@ -63,18 +126,10 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="Everything" targets="Debug;Internal;Release;" />
+			<Add alias="Everything" targets="Debug_dos4gw;Debug_dosx32;Internal_dos4gw;Internal_dosx32;Release_dos4gw;Release_dosx32" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="-bt=dos" />
-			<Add option="-bcl=dos" />
-			<Add option="-dGLUT_DISABLE_ATEXIT_HACK" />
-			<Add option="-dGLUT_NO_LIB_PRAGMA" />
-			<Add option="-dTARGET_CPU_X86=1" />
-			<Add option="-d__DOS4GW__" />
-			<Add option="-dTYPE_BOOL=1" />
-			<Add option="-dUNICODE" />
-			<Add option="-d_UNICODE" />
+			<Add directory='&quot;$(BURGER_SDKS)/dos/x32&quot;' />
 			<Add directory='&quot;../source&quot;' />
 			<Add directory='&quot;../source/ansi&quot;' />
 			<Add directory='&quot;../source/audio&quot;' />
@@ -90,14 +145,10 @@
 			<Add directory='&quot;../source/lowlevel&quot;' />
 			<Add directory='&quot;../source/math&quot;' />
 			<Add directory='&quot;../source/memory&quot;' />
+			<Add directory='&quot;../source/msdos&quot;' />
 			<Add directory='&quot;../source/network&quot;' />
 			<Add directory='&quot;../source/random&quot;' />
 			<Add directory='&quot;../source/text&quot;' />
-			<Add directory='&quot;../source/msdos&quot;' />
-			<Add directory='&quot;$(BURGER_SDKS)/windows/perforce&quot;' />
-			<Add directory='&quot;$(BURGER_SDKS)/windows/opengl&quot;' />
-			<Add directory='&quot;$(BURGER_SDKS)/windows/directx9&quot;' />
-			<Add directory='&quot;$(BURGER_SDKS)/windows/windows5&quot;' />
 		</Compiler>
 		<Unit filename="../source/ansi/brcapturestdout.cpp" />
 		<Unit filename="../source/ansi/brcapturestdout.h" />
@@ -256,6 +307,7 @@
 		<Unit filename="../source/flashplayer/brflashstream.h" />
 		<Unit filename="../source/flashplayer/brflashutils.cpp" />
 		<Unit filename="../source/flashplayer/brflashutils.h" />
+		<Unit filename="../source/generated/version.h" />
 		<Unit filename="../source/graphics/brdisplay.cpp" />
 		<Unit filename="../source/graphics/brdisplay.h" />
 		<Unit filename="../source/graphics/brdisplayobject.cpp" />
@@ -336,12 +388,17 @@
 		<Unit filename="../source/lowlevel/brdoublylinkedlist.h" />
 		<Unit filename="../source/lowlevel/brendian.cpp" />
 		<Unit filename="../source/lowlevel/brendian.h" />
+		<Unit filename="../source/lowlevel/brerror.cpp" />
+		<Unit filename="../source/lowlevel/brerror.h" />
 		<Unit filename="../source/lowlevel/brglobals.cpp" />
 		<Unit filename="../source/lowlevel/brglobals.h" />
 		<Unit filename="../source/lowlevel/brgridindex.cpp" />
 		<Unit filename="../source/lowlevel/brgridindex.h" />
 		<Unit filename="../source/lowlevel/brguid.cpp" />
 		<Unit filename="../source/lowlevel/brguid.h" />
+		<Unit filename="../source/lowlevel/brintelcompiler.h" />
+		<Unit filename="../source/lowlevel/brintrinsics.cpp" />
+		<Unit filename="../source/lowlevel/brintrinsics.h" />
 		<Unit filename="../source/lowlevel/brlastinfirstout.cpp" />
 		<Unit filename="../source/lowlevel/brlastinfirstout.h" />
 		<Unit filename="../source/lowlevel/brlinkedlistobject.cpp" />
@@ -414,6 +471,7 @@
 		<Unit filename="../source/msdos/brdirectorysearchmsdos.cpp" />
 		<Unit filename="../source/msdos/brdosextender.cpp" />
 		<Unit filename="../source/msdos/brdosextender.h" />
+		<Unit filename="../source/msdos/brdosextenderasm.x86" />
 		<Unit filename="../source/msdos/brfilemanagermsdos.cpp" />
 		<Unit filename="../source/msdos/brfilemsdos.cpp" />
 		<Unit filename="../source/msdos/brfilenamemsdos.cpp" />
@@ -476,7 +534,6 @@
 		<Unit filename="../source/text/brutf8.h" />
 		<Unit filename="../source/text/brwin1252.cpp" />
 		<Unit filename="../source/text/brwin1252.h" />
-		<Unit filename="../source/version.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

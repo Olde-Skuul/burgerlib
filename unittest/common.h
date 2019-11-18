@@ -24,24 +24,24 @@
 #endif
 
 // Flags to determine verbosity on output
-#define VERBOSE_DISABLE 0x0000 // Disable all tests and messages
-#define VERBOSE_MSG 0x0001	 // Set for information messages
-#define VERBOSE_TIME 0x0002	// Set for time display
-#define VERBOSE_MACROS 0x0004  // Set for showing macros
-#define VERBOSE_FILE 0x0008	// Set for file testing
-#define VERBOSE_NETWORK 0x0010 // Set for network testing
-#define VERBOSE_DIALOGS 0x0020 // Set for testing dialogs
-#define VERBOSE_DISPLAY 0x0040 // Set for testing display modes
-#define VERBOSE_COMPRESS 0x0080	// Set for testing compression algorithms
-#define VERBOSE_DOTESTS 0x8000 // Set if tests are to be performed
+#define VERBOSE_DISABLE 0x0000  // Disable all tests and messages
+#define VERBOSE_MSG 0x0001      // Set for information messages
+#define VERBOSE_TIME 0x0002     // Set for time display
+#define VERBOSE_MACROS 0x0004   // Set for showing macros
+#define VERBOSE_FILE 0x0008     // Set for file testing
+#define VERBOSE_NETWORK 0x0010  // Set for network testing
+#define VERBOSE_DIALOGS 0x0020  // Set for testing dialogs
+#define VERBOSE_DISPLAY 0x0040  // Set for testing display modes
+#define VERBOSE_COMPRESS 0x0080 // Set for testing compression algorithms
+#define VERBOSE_DOTESTS 0x8000  // Set if tests are to be performed
 #define VERBOSE_ALL 0xFFFF
 
 extern void BURGER_ANSIAPI ReportFailure(
-	const char* pTemplate, Word uFailure, ...);
+    const char* pTemplate, uint_t uFailure, ...);
 extern void BURGER_ANSIAPI Message(const char* pMessage, ...);
-extern void BURGER_API BlastBuffer(void* pOutput, WordPtr uSize);
-extern Word BURGER_API VerifyBuffer(
-	const void* pBuffer, WordPtr uSize, const void* pInput, WordPtr uSkip);
-extern int BURGER_ANSIAPI main(int argc,const char** argv);
+extern void BURGER_API BlastBuffer(void* pOutput, uintptr_t uSize) BURGER_NOEXCEPT;
+extern uint_t BURGER_API VerifyBuffer(
+    const void* pBuffer, uintptr_t uSize, const void* pInput, uintptr_t uSkip) BURGER_NOEXCEPT;
+extern int BURGER_ANSIAPI main(int argc, const char** argv);
 
 #endif

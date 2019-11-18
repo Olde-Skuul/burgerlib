@@ -120,6 +120,7 @@
 ***************************************/
 
 #define BURGER_HAS_64_BIT_SUPPORT
+#define BURGER_HAS_SFINAE
 
 #if defined(__WATCOMC__)
 #define BURGER_COMPILER_NAME "Open Watcom Compiler"
@@ -143,6 +144,8 @@
 #error bool required, use '-bool on'
 #endif
 
+#undef BURGER_HAS_SFINAE
+
 #elif defined(__SC__)
 #define BURGER_COMPILER_NAME "Symantec C++ Compiler"
 #define BURGER_APPLE_SC __SC__
@@ -156,6 +159,7 @@
 #error bool required, use '-bool on'
 #endif
 #undef BURGER_HAS_64_BIT_SUPPORT
+#undef BURGER_HAS_SFINAE
 
 #elif defined(__DJGPP__)
 #define BURGER_COMPILER_NAME "DJ's GNU Programming Platform"
@@ -235,6 +239,12 @@
 #define BURGER_COMPILER_NAME "Unknown Compiler"
 #error Unknown compiler
 
+#endif
+
+#if defined(BURGER_HAS_SFINAE) || defined(DOXYGEN)
+#define BURGER_EMPTY_TEMPLATE_DECLARATION template<>
+#else
+#define BURGER_EMPTY_TEMPLATE_DECLARATION
 #endif
 
 /***************************************
@@ -752,7 +762,7 @@
 
 #if defined(BURGER_INTEL_COMPILER) || defined(BURGER_MSVC) || \
     defined(BURGER_PS4) || \
-    (defined(BURGER_METROWERKS) && !defined(BURGER_68K))
+    (defined(BURGER_METROWERKS) && !defined(BURGER_68K)) || defined(DOXYGEN)
 #define BURGER_ALIGN(x, s) __declspec(align(s))(x)
 #define BURGER_PREALIGN(s) __declspec(align(s))
 #define BURGER_POSTALIGN(s)
@@ -766,6 +776,7 @@
 #define BURGER_ALIGN(x, s) (x)
 #define BURGER_PREALIGN(s)
 #define BURGER_POSTALIGN(s)
+#define BURGER_NO_ALIGN
 #endif
 
 // Structure packing macro switches
@@ -875,9 +886,13 @@
     defined(DOXYGEN)
 #define BURGER_EQUALS_DELETE = delete
 #define BURGER_EQUALS_DEFAULT = default
+#define BURGER_DEFAULT_DESTRUCTOR = default
 #else
 #define BURGER_EQUALS_DELETE
 #define BURGER_EQUALS_DEFAULT
+#define BURGER_DEFAULT_DESTRUCTOR \
+    { \
+    }
 #endif
 
 // Test for && rvalue support
@@ -888,19 +903,54 @@
 #endif
 
 // Test for address sanitization
-#if __has_feature(address_sanitizer)
+#if __has_feature(address_sanitizer) || (BURGER_GNUC >= 40800) || \
+    defined(DOXYGEN)
 #define BURGER_ADDRESS_SANITIZER
-#define BURGER_DISABLE_ASAN __attribute__((no_sanitize("address")))
+#define BURGER_DISABLE_ASAN __attribute__((no_sanitize_address))
 #else
 #define BURGER_DISABLE_ASAN
 #endif
 
 // Test for memory sanitization
-#if __has_feature(memory_sanitizer)
+#if __has_feature(memory_sanitizer) || defined(DOXYGEN)
 #define BURGER_MEMORY_SANITIZER
 #define BURGER_DISABLE_MSAN __attribute__((no_sanitize("memory")))
 #else
 #define BURGER_DISABLE_MSAN
+#endif
+
+#if defined(BURGER_CPP17) || __has_cpp_attribute(maybe_unused) || \
+    defined(DOXYGEN)
+#define BURGER_MAYBE_UNUSED [[maybe_unused]]
+#elif __has_cpp_attribute(gnu::unused)
+#define BURGER_MAYBE_UNUSED [[gnu::unused]]
+#elif __has_cpp_attribute(unused) && defined(BURGER_CLANG)
+#define BURGER_NODISCARD __attribute__((unused))
+#else
+#define BURGER_MAYBE_UNUSED
+#endif
+
+#if defined(BURGER_CPP17) || __has_cpp_attribute(nodiscard) || defined(DOXYGEN)
+#define BURGER_NODISCARD [[nodiscard]]
+#elif __has_cpp_attribute(clang::warn_unused_result)
+#define BURGER_NODISCARD [[clang::warn_unused_result]]
+#elif __has_cpp_attribute(gnu::warn_unused_result)
+#define BURGER_NODISCARD [[gnu::warn_unused_result]]
+#elif __has_cpp_attribute(warn_unused_result) && defined(BURGER_CLANG)
+#define BURGER_NODISCARD __attribute__((warn_unused_result))
+#else
+#define BURGER_NODISCARD
+#endif
+
+#if defined(BURGER_CPP17) || __has_cpp_attribute(fallthrough) || \
+    defined(DOXYGEN)
+#define BURGER_FALLTHROUGH [[fallthrough]]
+#elif __has_cpp_attribute(clang::fallthrough)
+#define BURGER_FALLTHROUGH [[clang::fallthrough]]
+#elif __has_cpp_attribute(gnu::fallthrough)
+#define BURGER_FALLTHROUGH [[gnu::fallthrough]]
+#else
+#define BURGER_FALLTHROUGH
 #endif
 
 /***************************************
@@ -971,29 +1021,21 @@ private: \
 #define BURGER_ENUMFLAGSEND(x, y) \
     BURGER_ENUMEND(x) \
     BURGER_INLINE x##Type& operator|=(x##Type& uInput1, x##Type uInput2) { \
-        return uInput1 = static_cast<x##Type>(static_cast<y>(uInput1) | static_cast<y>(uInput2)); \
-    } \
+        return uInput1 = static_cast<x##Type>(static_cast<y>(uInput1) | static_cast<y>(uInput2)); } \
     BURGER_INLINE x##Type& operator&=(x##Type& uInput1, x##Type uInput2) { \
-        return uInput1 = static_cast<x##Type>(static_cast<y>(uInput1) & static_cast<y>(uInput2)); \
-    } \
+        return uInput1 = static_cast<x##Type>(static_cast<y>(uInput1) & static_cast<y>(uInput2)); } \
     BURGER_INLINE x##Type& operator^=(x##Type& uInput1, x##Type uInput2) { \
-        return uInput1 = static_cast<x##Type>(static_cast<y>(uInput1) ^ static_cast<y>(uInput2)); \
-    } \
-    BURGER_INLINE constexpr x##Type operator|(x##Type uInput1, x##Type uInput2) { \
-        return static_cast<x##Type>(static_cast<y>(uInput1) | static_cast<y>(uInput2)); \
-    } \
-    BURGER_INLINE constexpr x##Type operator&(x##Type uInput1, x##Type uInput2) { \
-        return static_cast<x##Type>(static_cast<y>(uInput1) & static_cast<y>(uInput2)); \
-    } \
-    BURGER_INLINE constexpr x##Type operator^(x##Type uInput1, x##Type uInput2) { \
-        return static_cast<x##Type>(static_cast<y>(uInput1) ^ static_cast<y>(uInput2)); \
-    } \
-    BURGER_INLINE constexpr Word operator!(x##Type uInput) { \
-        return !static_cast<y>(uInput); \
-    } \
+        return uInput1 = static_cast<x##Type>(static_cast<y>(uInput1) ^ static_cast<y>(uInput2)); } \
+    BURGER_INLINE BURGER_CONSTEXPR x##Type operator|(x##Type uInput1, x##Type uInput2) { \
+        return static_cast<x##Type>(static_cast<y>(uInput1) | static_cast<y>(uInput2)); } \
+    BURGER_INLINE BURGER_CONSTEXPR x##Type operator&(x##Type uInput1, x##Type uInput2) { \
+        return static_cast<x##Type>(static_cast<y>(uInput1) & static_cast<y>(uInput2)); } \
+    BURGER_INLINE BURGER_CONSTEXPR x##Type operator^(x##Type uInput1, x##Type uInput2) { \
+        return static_cast<x##Type>(static_cast<y>(uInput1) ^ static_cast<y>(uInput2)); } \
+    BURGER_INLINE BURGER_CONSTEXPR uint_t operator!(x##Type uInput) { \
+        return !static_cast<y>(uInput); } \
     BURGER_INLINE constexpr x##Type operator~(x##Type uInput) { \
-        return static_cast<x##Type>(~static_cast<y>(uInput)); \
-    }
+        return static_cast<x##Type>(~static_cast<y>(uInput)); }
 // clang-format on
 
 /***************************************
@@ -1176,7 +1218,7 @@ typedef __m128 Vector_128;
 
 #elif defined(BURGER_INTEL) && \
     (defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER) || \
-        defined(BURGER_LINUX) || defined(BURGER_ANDROID))
+        defined(BURGER_GNUC) || defined(BURGER_CLANG))
 #ifndef _INCLUDED_EMM
 #include <emmintrin.h>
 #endif

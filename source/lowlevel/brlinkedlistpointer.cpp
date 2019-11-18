@@ -50,21 +50,3 @@ Burger::LinkedListPointer * BURGER_API Burger::LinkedListPointer::New(void *pInp
 	return pThis;
 }
 
-/*! ************************************
-
-	\brief Dispose of a new LinkedListPointer instance
-
-	When LinkedListPointer::New() is called, release the memory with this call
-
-	\param pThis Pointer to a valid LinkedListPointer instance or \ref NULL
-	\sa LinkedListPointer::New(void) or LinkedListPointer::~LinkedListPointer()
-
-***************************************/
-
-void BURGER_API Burger::Delete(const LinkedListPointer *pThis)
-{
-	if (pThis) {
-		const_cast<LinkedListPointer *>(pThis)->~LinkedListPointer();
-		Free(pThis);
-	}
-}

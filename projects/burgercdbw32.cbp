@@ -2,59 +2,90 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="burgerlib" />
+		<Option title="burger" />
 		<Option makefile="makefile" />
 		<Option pch_mode="2" />
 		<Option compiler="ow" />
 		<Build>
-			<Target title="Debug">
-				<Option output="bin/burgerlibcdbwatw32dbg.lib" prefix_auto="0" extension_auto="0" />
+			<Target title="Debug_w32">
+				<Option output="bin/burgercdbw32dbg.lib" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
-				<Option object_output="temp/burgerlibcbpwatw32dbg/" />
+				<Option object_output="temp/burgercdbw32dbg/" />
 				<Option type="2" />
 				<Option compiler="ow" />
 				<Option createDefFile="1" />
 				<Compiler>
+					<Add option="-bt=nt" />
 					<Add option="-d2" />
 					<Add option="-wx" />
 					<Add option="-fp6" />
 					<Add option="-6r" />
 					<Add option="-fr=$(ERROR_FILE)" />
 					<Add option="-d_DEBUG" />
+					<Add option="-d_WINDOWS" />
+					<Add option="-dWIN32_LEAN_AND_MEAN" />
+					<Add option="-dWIN32" />
+					<Add option="-dGLUT_DISABLE_ATEXIT_HACK" />
+					<Add option="-dGLUT_NO_LIB_PRAGMA" />
+					<Add option="-d_CRT_NONSTDC_NO_WARNINGS" />
+					<Add option="-d_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-dGLUT_NO_LIB_PRAGMA" />
+					<Add option="-d_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1" />
 				</Compiler>
 			</Target>
-			<Target title="Internal">
-				<Option output="bin/burgerlibcdbwatw32int.lib" prefix_auto="0" extension_auto="0" />
+			<Target title="Internal_w32">
+				<Option output="bin/burgercdbw32int.lib" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
-				<Option object_output="temp/burgerlibcbpwatw32int/" />
+				<Option object_output="temp/burgercdbw32int/" />
 				<Option type="2" />
 				<Option compiler="ow" />
 				<Option createDefFile="1" />
 				<Compiler>
+					<Add option="-bt=nt" />
+					<Add option="-d2" />
 					<Add option="-ox" />
 					<Add option="-ot" />
 					<Add option="-wx" />
-					<Add option="-fr=$(ERROR_FILE)" />
 					<Add option="-fp6" />
 					<Add option="-6r" />
+					<Add option="-fr=$(ERROR_FILE)" />
 					<Add option="-d_DEBUG" />
+					<Add option="-d_WINDOWS" />
+					<Add option="-dWIN32_LEAN_AND_MEAN" />
+					<Add option="-dWIN32" />
+					<Add option="-dGLUT_DISABLE_ATEXIT_HACK" />
+					<Add option="-dGLUT_NO_LIB_PRAGMA" />
+					<Add option="-d_CRT_NONSTDC_NO_WARNINGS" />
+					<Add option="-d_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-dGLUT_NO_LIB_PRAGMA" />
+					<Add option="-d_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1" />
 				</Compiler>
 			</Target>
-			<Target title="Release">
-				<Option output="bin/burgerlibcdbwatw32rel.lib" prefix_auto="0" extension_auto="0" />
+			<Target title="Release_w32">
+				<Option output="bin/burgercdbw32rel.lib" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
-				<Option object_output="temp/burgerlibcbpwatw32rel/" />
+				<Option object_output="temp/burgercdbw32rel/" />
 				<Option type="2" />
 				<Option compiler="ow" />
 				<Option createDefFile="1" />
 				<Compiler>
+					<Add option="-bt=nt" />
 					<Add option="-ox" />
 					<Add option="-ot" />
 					<Add option="-wx" />
-					<Add option="-fr=$(ERROR_FILE)" />
 					<Add option="-fp6" />
 					<Add option="-6r" />
+					<Add option="-fr=$(ERROR_FILE)" />
 					<Add option="-dNDEBUG" />
+					<Add option="-d_WINDOWS" />
+					<Add option="-dWIN32_LEAN_AND_MEAN" />
+					<Add option="-dWIN32" />
+					<Add option="-dGLUT_DISABLE_ATEXIT_HACK" />
+					<Add option="-dGLUT_NO_LIB_PRAGMA" />
+					<Add option="-d_CRT_NONSTDC_NO_WARNINGS" />
+					<Add option="-d_CRT_SECURE_NO_WARNINGS" />
+					<Add option="-dGLUT_NO_LIB_PRAGMA" />
+					<Add option="-d_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1" />
 				</Compiler>
 			</Target>
 			<Environment>
@@ -62,17 +93,13 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="Everything" targets="Debug;Internal;Release;" />
+			<Add alias="Everything" targets="Debug_w32;Internal_w32;Release_w32" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="-dGLUT_DISABLE_ATEXIT_HACK" />
-			<Add option="-dGLUT_NO_LIB_PRAGMA" />
-			<Add option="-dTARGET_CPU_X86=1" />
-			<Add option="-dTARGET_OS_WIN32=1" />
-			<Add option="-dTYPE_BOOL=1" />
-			<Add option="-dUNICODE" />
-			<Add option="-d_UNICODE" />
-			<Add option="-dWIN32_LEAN_AND_MEAN" />
+			<Add directory='&quot;$(BURGER_SDKS)/windows/directx9&quot;' />
+			<Add directory='&quot;$(BURGER_SDKS)/windows/opengl&quot;' />
+			<Add directory='&quot;$(BURGER_SDKS)/windows/perforce&quot;' />
+			<Add directory='&quot;$(BURGER_SDKS)/windows/windows5&quot;' />
 			<Add directory='&quot;../source&quot;' />
 			<Add directory='&quot;../source/ansi&quot;' />
 			<Add directory='&quot;../source/audio&quot;' />
@@ -80,14 +107,12 @@
 			<Add directory='&quot;../source/compression&quot;' />
 			<Add directory='&quot;../source/file&quot;' />
 			<Add directory='&quot;../source/flashplayer&quot;' />
-   			<Add directory='&quot;../source/generated&quot;' />
+			<Add directory='&quot;../source/generated&quot;' />
 			<Add directory='&quot;../source/graphics&quot;' />
 			<Add directory='&quot;../source/graphics/effects&quot;' />
 			<Add directory='&quot;../source/graphics/shaders&quot;' />
-			<Add directory='&quot;../source/graphics/shadersdx9&quot;' />
-			<Add directory='&quot;../source/graphics/shadersdx9/generated&quot;' />            
-			<Add directory='&quot;../source/graphics/shadersopengl&quot;' />
-			<Add directory='&quot;../source/graphics/shadersopengl/generated&quot;' />            
+			<Add directory='&quot;../source/graphics/shadersdx9/generated&quot;' />
+			<Add directory='&quot;../source/graphics/shadersopengl/generated&quot;' />
 			<Add directory='&quot;../source/input&quot;' />
 			<Add directory='&quot;../source/lowlevel&quot;' />
 			<Add directory='&quot;../source/math&quot;' />
@@ -96,11 +121,7 @@
 			<Add directory='&quot;../source/random&quot;' />
 			<Add directory='&quot;../source/text&quot;' />
 			<Add directory='&quot;../source/windows&quot;' />
-			<Add directory='&quot;../source/windows/generated&quot;' />            
-			<Add directory='&quot;$(BURGER_SDKS)/windows/perforce&quot;' />
-			<Add directory='&quot;$(BURGER_SDKS)/windows/opengl&quot;' />
-			<Add directory='&quot;$(BURGER_SDKS)/windows/directx9&quot;' />
-			<Add directory='&quot;$(BURGER_SDKS)/windows/windows5&quot;' />
+			<Add directory='&quot;../source/windows/generated&quot;' />
 		</Compiler>
 		<Unit filename="../source/ansi/brcapturestdout.cpp" />
 		<Unit filename="../source/ansi/brcapturestdout.h" />
@@ -259,6 +280,7 @@
 		<Unit filename="../source/flashplayer/brflashstream.h" />
 		<Unit filename="../source/flashplayer/brflashutils.cpp" />
 		<Unit filename="../source/flashplayer/brflashutils.h" />
+		<Unit filename="../source/generated/version.h" />
 		<Unit filename="../source/graphics/brdisplay.cpp" />
 		<Unit filename="../source/graphics/brdisplay.h" />
 		<Unit filename="../source/graphics/brdisplayobject.cpp" />
@@ -309,22 +331,22 @@
 		<Unit filename="../source/graphics/shaders/brshader2dccolor.h" />
 		<Unit filename="../source/graphics/shaders/brshader2dcolorvertex.cpp" />
 		<Unit filename="../source/graphics/shaders/brshader2dcolorvertex.h" />
-		<Unit filename="../source/graphics/shadersdx9/pscclr4dx9.h" />
-		<Unit filename="../source/graphics/shadersdx9/pstex2clr4dx9.h" />
-		<Unit filename="../source/graphics/shadersdx9/pstexturecolordx9.h" />
-		<Unit filename="../source/graphics/shadersdx9/pstexturedx9.h" />
-		<Unit filename="../source/graphics/shadersdx9/vs20pos22ddx9.h" />
-		<Unit filename="../source/graphics/shadersdx9/vs20pos2tex2clr42ddx9.h" />
-		<Unit filename="../source/graphics/shadersdx9/vs20sprite2ddx9.h" />
-		<Unit filename="../source/graphics/shadersdx9/vsstaticpositiondx9.h" />
-		<Unit filename="../source/graphics/shadersopengl/pscclr4gl.h" />
-		<Unit filename="../source/graphics/shadersopengl/pstex2clr4gl.h" />
-		<Unit filename="../source/graphics/shadersopengl/pstexturecolorgl.h" />
-		<Unit filename="../source/graphics/shadersopengl/pstexturegl.h" />
-		<Unit filename="../source/graphics/shadersopengl/vs20pos22dgl.h" />
-		<Unit filename="../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.h" />
-		<Unit filename="../source/graphics/shadersopengl/vs20sprite2dgl.h" />
-		<Unit filename="../source/graphics/shadersopengl/vsstaticpositiongl.h" />
+		<Unit filename="../source/graphics/shadersdx9/generated/pscclr4dx9.h" />
+		<Unit filename="../source/graphics/shadersdx9/generated/pstex2clr4dx9.h" />
+		<Unit filename="../source/graphics/shadersdx9/generated/pstexturecolordx9.h" />
+		<Unit filename="../source/graphics/shadersdx9/generated/pstexturedx9.h" />
+		<Unit filename="../source/graphics/shadersdx9/generated/vs20pos22ddx9.h" />
+		<Unit filename="../source/graphics/shadersdx9/generated/vs20pos2tex2clr42ddx9.h" />
+		<Unit filename="../source/graphics/shadersdx9/generated/vs20sprite2ddx9.h" />
+		<Unit filename="../source/graphics/shadersdx9/generated/vsstaticpositiondx9.h" />
+		<Unit filename="../source/graphics/shadersopengl/generated/pscclr4gl.h" />
+		<Unit filename="../source/graphics/shadersopengl/generated/pstex2clr4gl.h" />
+		<Unit filename="../source/graphics/shadersopengl/generated/pstexturecolorgl.h" />
+		<Unit filename="../source/graphics/shadersopengl/generated/pstexturegl.h" />
+		<Unit filename="../source/graphics/shadersopengl/generated/vs20pos22dgl.h" />
+		<Unit filename="../source/graphics/shadersopengl/generated/vs20pos2tex2clr42dgl.h" />
+		<Unit filename="../source/graphics/shadersopengl/generated/vs20sprite2dgl.h" />
+		<Unit filename="../source/graphics/shadersopengl/generated/vsstaticpositiongl.h" />
 		<Unit filename="../source/input/brjoypad.cpp" />
 		<Unit filename="../source/input/brjoypad.h" />
 		<Unit filename="../source/input/brkeyboard.cpp" />
@@ -355,12 +377,17 @@
 		<Unit filename="../source/lowlevel/brdoublylinkedlist.h" />
 		<Unit filename="../source/lowlevel/brendian.cpp" />
 		<Unit filename="../source/lowlevel/brendian.h" />
+		<Unit filename="../source/lowlevel/brerror.cpp" />
+		<Unit filename="../source/lowlevel/brerror.h" />
 		<Unit filename="../source/lowlevel/brglobals.cpp" />
 		<Unit filename="../source/lowlevel/brglobals.h" />
 		<Unit filename="../source/lowlevel/brgridindex.cpp" />
 		<Unit filename="../source/lowlevel/brgridindex.h" />
 		<Unit filename="../source/lowlevel/brguid.cpp" />
 		<Unit filename="../source/lowlevel/brguid.h" />
+		<Unit filename="../source/lowlevel/brintelcompiler.h" />
+		<Unit filename="../source/lowlevel/brintrinsics.cpp" />
+		<Unit filename="../source/lowlevel/brintrinsics.h" />
 		<Unit filename="../source/lowlevel/brlastinfirstout.cpp" />
 		<Unit filename="../source/lowlevel/brlastinfirstout.h" />
 		<Unit filename="../source/lowlevel/brlinkedlistobject.cpp" />
@@ -485,7 +512,6 @@
 		<Unit filename="../source/text/brutf8.h" />
 		<Unit filename="../source/text/brwin1252.cpp" />
 		<Unit filename="../source/text/brwin1252.h" />
-		<Unit filename="../source/version.h" />
 		<Unit filename="../source/windows/brcodelibrarywindows.cpp" />
 		<Unit filename="../source/windows/brconsolemanagerwindows.cpp" />
 		<Unit filename="../source/windows/brcriticalsectionwindows.cpp" />
@@ -550,7 +576,7 @@
 		<Unit filename="../source/windows/brwindowsversion.cpp" />
 		<Unit filename="../source/windows/brwindowswinmm.cpp" />
 		<Unit filename="../source/windows/brwindowsxinput.cpp" />
-		<Unit filename="../source/windows/ps20display8bitdx9.h" />
+		<Unit filename="../source/windows/generated/ps20display8bitdx9.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

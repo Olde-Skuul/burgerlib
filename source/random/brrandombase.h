@@ -28,15 +28,15 @@ namespace Burger {
 class RandomBase : public Base {
 	BURGER_RTTI_IN_CLASS();
 protected:
-	Word32 m_uSeed;		///< Random number seed
+	uint32_t m_uSeed;		///< Random number seed
 public:
-	virtual void SetSeed(Word32 uNewSeed) = 0;
-	virtual Word32 Get(void) = 0;
-	BURGER_INLINE Word32 GetSeed(void) const { return m_uSeed; }
+	virtual void SetSeed(uint32_t uNewSeed) = 0;
+	virtual uint32_t Get(void) = 0;
+	BURGER_INLINE uint32_t GetSeed(void) const { return m_uSeed; }
 	void BURGER_API RandomSeed(void);
-	Word32 BURGER_API GetWord(Word32 uRange);
-	Word32 BURGER_API GetDice(Word32 uDiceCount,Word32 uDiceSize);
-	Int32 BURGER_API GetSigned(Word32 uRange);
+    uint32_t BURGER_API GetWord(uint32_t uRange);
+    uint32_t BURGER_API GetDice(uint32_t uDiceCount, uint32_t uDiceSize);
+    int32_t BURGER_API GetSigned(uint32_t uRange);
 	float BURGER_API GetFloat(void);
 	float BURGER_API GetFloat(float fRange);
 	float BURGER_API GetSymmetricFloat(void);

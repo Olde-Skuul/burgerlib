@@ -48,7 +48,7 @@ Burger::CriticalSection::~CriticalSection()
 	
 ***************************************/
 
-void Burger::CriticalSection::Lock()
+void Burger::CriticalSection::Lock(void)
 {
 	scePthreadMutexLock(&m_Lock);
 }
@@ -59,7 +59,7 @@ void Burger::CriticalSection::Lock()
 	
 ***************************************/
 
-Word Burger::CriticalSection::TryLock()
+Word Burger::CriticalSection::TryLock(void)
 {
 	return scePthreadMutexTrylock(&m_Lock)==SCE_OK;
 }
@@ -71,7 +71,7 @@ Word Burger::CriticalSection::TryLock()
 	
 ***************************************/
 
-void Burger::CriticalSection::Unlock()
+void Burger::CriticalSection::Unlock(void)
 {
 	scePthreadMutexUnlock(&m_Lock);
 }

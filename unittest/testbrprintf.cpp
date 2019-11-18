@@ -680,6 +680,11 @@ static Word BURGER_API ArgTypeUnitTestSIMDTypes(void)
 	simd128.m128_f32[1] = 0;
 	simd128.m128_f32[2] = -1;
 	simd128.m128_f32[3] = -1;
+#elif defined(BURGER_CLANG)
+    simd128[0] = 0;
+    simd128[1] = 0;
+    simd128[2] = -1;
+    simd128[3] = -1;
 #else
 	simd128.m128_i64[0] = 0;
 	simd128.m128_i64[1] = -1;
@@ -691,6 +696,9 @@ static Word BURGER_API ArgTypeUnitTestSIMDTypes(void)
 #if defined(BURGER_METROWERKS)
 	simd128d.m128_f64[0] = 0.0;
 	simd128d.m128_f64[1] = -123456789.9988776655;
+#elif defined(BURGER_CLANG)
+    simd128d[0] = 0.0;
+    simd128d[1] = -123456789.9988776655;
 #else
 	simd128d.m128d_f64[0] = 0.0;
 	simd128d.m128d_f64[1] = -123456789.9988776655;
@@ -702,6 +710,9 @@ static Word BURGER_API ArgTypeUnitTestSIMDTypes(void)
 #if defined(BURGER_METROWERKS)
 	simd128i.m128_u64[0] = 0;
 	simd128i.m128_u64[1] = BURGER_MAXUINT64;
+#elif defined(BURGER_CLANG)
+    simd128i[0] = 0;
+    simd128i[1] = BURGER_MAXUINT64;
 #else
 	simd128i.m128i_u64[0] = 0;
 	simd128i.m128i_i64[1] = -1;

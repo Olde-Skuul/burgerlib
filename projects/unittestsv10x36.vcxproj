@@ -537,9 +537,12 @@
     <ClInclude Include="..\source\lowlevel\brdetectmultilaunch.h" />
     <ClInclude Include="..\source\lowlevel\brdoublylinkedlist.h" />
     <ClInclude Include="..\source\lowlevel\brendian.h" />
+    <ClInclude Include="..\source\lowlevel\brerror.h" />
     <ClInclude Include="..\source\lowlevel\brglobals.h" />
     <ClInclude Include="..\source\lowlevel\brgridindex.h" />
     <ClInclude Include="..\source\lowlevel\brguid.h" />
+    <ClInclude Include="..\source\lowlevel\brintelcompiler.h" />
+    <ClInclude Include="..\source\lowlevel\brintrinsics.h" />
     <ClInclude Include="..\source\lowlevel\brlastinfirstout.h" />
     <ClInclude Include="..\source\lowlevel\brlinkedlistobject.h" />
     <ClInclude Include="..\source\lowlevel\brlinkedlistpointer.h" />
@@ -627,6 +630,7 @@
     <ClInclude Include="..\unittest\testbrtimedate.h" />
     <ClInclude Include="..\unittest\testbrtypes.h" />
     <ClInclude Include="..\unittest\testcharset.h" />
+    <ClInclude Include="..\unittest\testmacros.h" />
     <ClCompile Include="..\source\ansi\brcapturestdout.cpp" />
     <ClCompile Include="..\source\ansi\brfileansihelpers.cpp" />
     <ClCompile Include="..\source\ansi\brmemoryansi.cpp" />
@@ -743,9 +747,11 @@
     <ClCompile Include="..\source\lowlevel\brdetectmultilaunch.cpp" />
     <ClCompile Include="..\source\lowlevel\brdoublylinkedlist.cpp" />
     <ClCompile Include="..\source\lowlevel\brendian.cpp" />
+    <ClCompile Include="..\source\lowlevel\brerror.cpp" />
     <ClCompile Include="..\source\lowlevel\brglobals.cpp" />
     <ClCompile Include="..\source\lowlevel\brgridindex.cpp" />
     <ClCompile Include="..\source\lowlevel\brguid.cpp" />
+    <ClCompile Include="..\source\lowlevel\brintrinsics.cpp" />
     <ClCompile Include="..\source\lowlevel\brlastinfirstout.cpp" />
     <ClCompile Include="..\source\lowlevel\brlinkedlistobject.cpp" />
     <ClCompile Include="..\source\lowlevel\brlinkedlistpointer.cpp" />
@@ -842,6 +848,7 @@
     <ClCompile Include="..\unittest\testbrtimedate.cpp" />
     <ClCompile Include="..\unittest\testbrtypes.cpp" />
     <ClCompile Include="..\unittest\testcharset.cpp" />
+    <ClCompile Include="..\unittest\testmacros.cpp" />
     <X360SL Include="..\source\graphics\shadersxbox360\pscclr4360.x360sl">
       <VariableName>g_pscclr4360</VariableName>
       <TargetProfile>ps_2_0</TargetProfile>

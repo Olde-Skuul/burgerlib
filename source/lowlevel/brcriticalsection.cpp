@@ -39,7 +39,7 @@
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_PS3) || \
 	defined(BURGER_PS4) || defined(BURGER_SHIELD) || defined(BURGER_VITA) || \
-	defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+	defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_MAC)) || defined(DOXYGEN)
 Burger::CriticalSection::CriticalSection()
 {
 }

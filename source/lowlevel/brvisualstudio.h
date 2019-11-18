@@ -265,26 +265,28 @@ BURGER_INLINE void __cpuidex(int a[4], int b, int c)
 
 #elif defined(BURGER_AMD64) && defined(__PIC__)
 
-BURGER_INLINE void __cpuid(int a[4], int b)
-{
-    __asm__ __volatile__(
-        "pushq	%%rbx\n"
-        "cpuid\n"
-        "movl	%%ebx,%1\n"
-        "popq	%%rbx"
-        : "=a"((a)[0]), "=r"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
-        : "0"(b));
-}
+extern "C" {
+    BURGER_INLINE void __cpuid(int a[4], int b)
+    {
+        __asm__ __volatile__(
+            "pushq	%%rbx\n"
+            "cpuid\n"
+            "movl	%%ebx,%1\n"
+            "popq	%%rbx"
+            : "=a"((a)[0]), "=r"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
+            : "0"(b));
+    }
 
-BURGER_INLINE void __cpuidex(int a[4], int b, int c)
-{
-    __asm__ __volatile__(
-        "pushq	%%rbx\n"
-        "cpuid\n"
-        "movl	%%ebx,%1\n"
-        "popq	%%rbx"
-        : "=a"((a)[0]), "=r"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
-        : "0"(b), "2"(c));
+    BURGER_INLINE void __cpuidex(int a[4], int b, int c)
+    {
+        __asm__ __volatile__(
+            "pushq	%%rbx\n"
+            "cpuid\n"
+            "movl	%%ebx,%1\n"
+            "popq	%%rbx"
+            : "=a"((a)[0]), "=r"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
+            : "0"(b), "2"(c));
+    }
 }
 
 #else
@@ -307,7 +309,8 @@ BURGER_INLINE void __cpuidex(int a[4], int b, int c)
 
 #endif
 
-BURGER_INLINE Word32 _BitScanForward(unsigned long* Index, unsigned long Mask)
+#if !__has_builtin(_BitScanForward)
+BURGER_INLINE uint8_t _BitScanForward(unsigned long* Index, unsigned long Mask)
 {
     Word8 bZero;
     __asm__(
@@ -317,8 +320,10 @@ BURGER_INLINE Word32 _BitScanForward(unsigned long* Index, unsigned long Mask)
         : "mr"(Mask));
     return bZero;
 }
+#endif
 
-BURGER_INLINE Word32 _BitScanReverse(unsigned long* Index, unsigned long Mask)
+#if !__has_builtin(_BitScanReverse)
+BURGER_INLINE uint8_t _BitScanReverse(unsigned long* Index, unsigned long Mask)
 {
     Word8 bZero;
     __asm__(
@@ -328,6 +333,7 @@ BURGER_INLINE Word32 _BitScanReverse(unsigned long* Index, unsigned long Mask)
         : "mr"(Mask));
     return bZero;
 }
+#endif
 
 #elif defined(BURGER_PPC) && defined(BURGER_MSVC)
 

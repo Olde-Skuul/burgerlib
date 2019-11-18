@@ -20,27 +20,27 @@
 
 /* BEGIN */
 #if defined(BURGER_PS3) && !defined(DOXYGEN)
-namespace Burger {
 
-typedef Word32 _sys_sleep_queue_t;
-struct sys_lwmutex_lock_info_t {
+// Clones of PS3 structures
+typedef Word32 Burger_sys_sleep_queue_t;
+
+struct Burgersys_lwmutex_lock_info_t {
 	volatile Word32 owner;
 	volatile Word32 waiter;
 };
 
-union sys_lwmutex_variable_t {
-	sys_lwmutex_lock_info_t info;
+union Burgersys_lwmutex_variable_t {
+	Burgersys_lwmutex_lock_info_t info;
 	volatile Word64 all_info;
 };
 
-struct sys_lwmutex_t {
-	sys_lwmutex_variable_t lock_var;
+struct Burgersys_lwmutex_t {
+	Burgersys_lwmutex_variable_t lock_var;
 	Word32 attribute;
 	Word32 recursive_count;
-	_sys_sleep_queue_t sleep_queue;
+	Burger_sys_sleep_queue_t sleep_queue;
 	Word32 pad;
 };
-}
 
 extern "C" {
 extern float sqrtf(float);
@@ -51,6 +51,7 @@ float __builtin_fabsf(float);
 double __builtin_fabs(double val);
 
 #endif
+
 /* END */
 
 #endif

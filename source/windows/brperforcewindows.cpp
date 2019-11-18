@@ -90,7 +90,7 @@ Word BURGER_API Burger::Perforce::Init(void)
 
 		if (!bFilenameInitialized) {
 			Word16 Output[2048];
-			if (Globals::PathSearchAndQualifyW(reinterpret_cast<const Word16 *>(L"p4.exe"),Output,BURGER_ARRAYSIZE(Output))) {
+			if (Windows::PathSearchAndQualifyW(reinterpret_cast<const Word16 *>(L"p4.exe"),Output,BURGER_ARRAYSIZE(Output))) {
 				pAppdirectory = UTF8::FromUTF16(Output);
 				m_PerforceFilename.SetFromNative(pAppdirectory);
 				Free(pAppdirectory);

@@ -19,11 +19,15 @@
 #include <nitro/rtc/ARM9/api.h>
 #endif
 
-#if !(defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_PS4) || defined(BURGER_SHIELD) || defined(BURGER_LINUX)|| defined(BURGER_INTEL_COMPILER)) && !defined(DOXYGEN)
-#if !(defined(BURGER_MSVC) && _MSC_VER>=1900)		// Visual studio 2015 or higher has timespec defined
+#if !(defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_PS4) || \
+    defined(BURGER_SHIELD) || defined(BURGER_LINUX) || \
+    defined(BURGER_INTEL_COMPILER) || defined(BURGER_CLANG)) && \
+    !defined(DOXYGEN)
+// Visual studio 2015 or higher has timespec defined
+#if !(BURGER_MSVC >= 190000000)
 struct timespec {
-	time_t tv_sec;	// seconds
-	Int32 tv_nsec;	// and nanoseconds
+    time_t tv_sec; // seconds
+    Int32 tv_nsec; // and nanoseconds
 };
 #endif
 #endif

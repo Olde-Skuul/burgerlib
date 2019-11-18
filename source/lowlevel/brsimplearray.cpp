@@ -12,7 +12,8 @@
 ***************************************/
 
 #include "brsimplearray.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
+#include "brdebug.h"
 
 /*! ************************************
 
@@ -45,25 +46,40 @@
 
 	Initializes the array to contain uDefault number of uninitialized members.
 
+	\note If the initial buffer allocation fails, the array size will
+	be set to zero.
+
+	\param uChunkSize Size of each data chunk
 	\param uDefault Number of members to create the array with. Zero
 		will generate an empty array.
-	\param uChunkSize Size of each data chunk
 
 	\sa SimpleArrayBase(WordPtr) or SimpleArrayBase(const SimpleArrayBase&)
 
 ***************************************/
 
-Burger::SimpleArrayBase::SimpleArrayBase(WordPtr uDefault,WordPtr uChunkSize) :
-	m_pData(NULL),
+Burger::SimpleArrayBase::SimpleArrayBase(WordPtr uChunkSize,WordPtr uDefault) :
 	m_uSize(uDefault),
-	m_uBufferSize(uDefault),
-	m_uChunkSize(uChunkSize) {
+	m_uBufferSize(uDefault)
+{
+	// Minimum chunk size of 1 byte per entry
+	if (!uChunkSize) {
+		uChunkSize = 1;
+	}
+	m_uChunkSize = uChunkSize;
+
 	// Anything?
+	void *pData = NULL;
 	if (uDefault) {
 		// Get the default buffer and die if failed in debug
-		m_pData = Alloc(uChunkSize * uDefault);
-		BURGER_ASSERT(m_pData);
+		pData = Alloc(uChunkSize * uDefault);
+		if (!pData) {
+			// Set the size to empty
+			uDefault = 0;
+		}
 	}
+	m_uBufferSize = uDefault;
+	m_uSize = uDefault;
+	m_pData = pData;
 }
 
 /*! ************************************
@@ -89,7 +105,11 @@ Burger::SimpleArrayBase::SimpleArrayBase(const SimpleArrayBase &rData) :
 	m_uChunkSize = uChunkSize;
 	if (uCount) {
 		m_pData = AllocCopy(rData.m_pData,uChunkSize * uCount);
-		BURGER_ASSERT(m_pData);
+		if (!m_pData) {
+			m_uBufferSize = 0;
+			m_uSize = 0;
+			Debug::Fatal("SimpleArrayBase(const SimpleArrayBase &) allocation failure");
+		}
 	}
 }
 
@@ -127,12 +147,15 @@ Burger::SimpleArrayBase & Burger::SimpleArrayBase::operator=(const SimpleArrayBa
 {
 	// Copying over itself?
 	if (&rData!=this) {
+		
 		// Dispose of the contents
 		clear();
+		
 		// Get the size to copy
 		WordPtr uCount = rData.m_uSize;
 		WordPtr uChunkSize = rData.m_uChunkSize;
-		// Chunksize COULD change, bad idea, however, support
+
+		// Chunk size COULD change, bad idea, however, support
 		// it to prevent subtle bugs
 		m_uChunkSize = uChunkSize;
 		if (uCount) {
@@ -140,40 +163,14 @@ Burger::SimpleArrayBase & Burger::SimpleArrayBase::operator=(const SimpleArrayBa
 			m_uSize = uCount;
 			m_uBufferSize = uCount;
 			m_pData = AllocCopy(rData.m_pData,uChunkSize * uCount);
-			BURGER_ASSERT(m_pData);
+			if (!m_pData) {
+				m_uSize = 0;
+				m_uBufferSize = 0;
+				Debug::Fatal("SimpleArrayBase::operator=(const SimpleArrayBase &) allocation failure");
+			}
 		}
 	}
 	return *this;
-}
-
-/*! ************************************
-
-	\brief Remove an object from the array.
-
-	Call the destructor on the specific object in the array and
-	then compact the array if needed.
-
-	\param uIndex Index into the array of the object to remove.
-	\sa resize(WordPtr) or reserve(WordPtr)
-
-***************************************/
-
-void BURGER_API Burger::SimpleArrayBase::remove_at(WordPtr uIndex)
-{
-	WordPtr uSize = m_uSize;
-	BURGER_ASSERT(uIndex < uSize);
-	if (uSize == 1) {
-		// Nuke it
-		clear();
-	} else {
-		--uSize;
-		m_uSize = uSize;
-		WordPtr uChunkSize = m_uChunkSize;
-		// Calculate the base pointer to the array
-		Word8 *pMark = static_cast<Word8 *>(m_pData) + (uIndex*uChunkSize);
-		// Copy over the single entry
-		MemoryMove(pMark,pMark+uChunkSize,uChunkSize * (uSize - uIndex));
-	}
 }
 
 /*! ************************************
@@ -196,6 +193,45 @@ void BURGER_API Burger::SimpleArrayBase::clear(void)
 
 /*! ************************************
 
+	\brief Remove an object from the array.
+
+	Call the destructor on the specific object in the array and
+	then compact the array if needed.
+
+	\param uIndex Index into the array of the object to remove.
+	\return Zero on success, or non zero on failure
+
+	\sa resize(WordPtr) or reserve(WordPtr)
+
+***************************************/
+
+Burger::eError BURGER_API Burger::SimpleArrayBase::remove_at(WordPtr uIndex)
+{
+	eError uResult = kErrorInvalidParameter;
+	WordPtr uSize = m_uSize;
+	if (uIndex < uSize) {
+		if (uSize == 1) {
+			// Nuke it
+			clear();
+
+		} else {
+			--uSize;
+			m_uSize = uSize;
+			WordPtr uChunkSize = m_uChunkSize;
+
+			// Calculate the base pointer to the array
+			Word8 *pMark = static_cast<Word8 *>(m_pData) + (uIndex*uChunkSize);
+
+			// Copy over the single entry
+			MemoryMove(pMark,pMark+uChunkSize,uChunkSize * (uSize - uIndex));
+		}
+		uResult = kErrorNone;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
 	\brief Resize the valid entry count of the array.
 
 	If uNewSize is zero, erase all data. If uNewSize increases
@@ -206,18 +242,27 @@ void BURGER_API Burger::SimpleArrayBase::clear(void)
 	is substantially smaller.
 
 	\param uNewSize Number of valid objects the new array will contain.
+	\return Zero on success, or non zero on failure
+
 	\sa clear(void) or reserve(WordPtr)
 
 ***************************************/
 
-void BURGER_API Burger::SimpleArrayBase::resize(WordPtr uNewSize) 
+Burger::eError BURGER_API Burger::SimpleArrayBase::resize(WordPtr uNewSize) 
 {
+	eError uResult;
 	if (!uNewSize) {
 		clear();
+		uResult = kErrorNone;
+
 	} else {
-		reserve(uNewSize);
-		m_uSize = uNewSize;
+		uResult = reserve(uNewSize);
+		if (uResult== kErrorNone) {
+			// If no error, set the new size
+			m_uSize = uNewSize;
+		}
 	}
+	return uResult;
 }
 
 /*! ************************************
@@ -237,24 +282,38 @@ void BURGER_API Burger::SimpleArrayBase::resize(WordPtr uNewSize)
 	The array size will be adjusted to the match the buffer size.
 
 	\param uNewBufferSize Size in elements of the memory buffer.
+	\return Zero on success, or non zero on failure
+
 	\sa clear(void) or resize(WordPtr)
 
 ***************************************/
 
-void BURGER_API Burger::SimpleArrayBase::reserve(WordPtr uNewBufferSize)
+Burger::eError BURGER_API Burger::SimpleArrayBase::reserve(WordPtr uNewBufferSize)
 {
+	eError uResult = kErrorNone;
+
 	// Resize the buffer.
 	if (!uNewBufferSize) {
 		clear();
+
 	} else {
+
 		// If the reservation size truncates the buffer, update the size
 		if (m_uSize>uNewBufferSize) {
 			m_uSize = uNewBufferSize;
 		}
+		void *pData = Realloc(m_pData,m_uChunkSize * uNewBufferSize);
+
+		// If a bad pointer, return the error
+		if (!pData) {
+			uResult = kErrorOutOfMemory;
+			uNewBufferSize = 0;
+			m_uSize = 0;
+		}
 		m_uBufferSize = uNewBufferSize;
-		m_pData = Realloc(m_pData,m_uChunkSize * uNewBufferSize);
-		BURGER_ASSERT(m_pData);
+		m_pData = pData;
 	}
+	return uResult;
 }
 
 /*! ************************************
@@ -267,18 +326,30 @@ void BURGER_API Burger::SimpleArrayBase::reserve(WordPtr uNewBufferSize)
 
 	\param pData Pointer to the first element in an array of objects
 	\param uCount Number of elements in the array
+	\return Zero on success, or non zero on failure
+
 	\sa resize(WordPtr) or reserve(WordPtr)
 
 ***************************************/
 
-void BURGER_API Burger::SimpleArrayBase::append(const void *pData,WordPtr uCount)
+Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,WordPtr uCount)
 {
+	eError uResult = kErrorNone;
+	// No new entries?
 	if (uCount) {
+
+		// Expand the buffer by the entry count
 		WordPtr uSize = m_uSize;
-		resize(uSize + uCount);
-		WordPtr uChunkSize = m_uChunkSize;
-		MemoryCopy(static_cast<Word8*>(m_pData)+(uSize*uChunkSize),pData,uCount*uChunkSize);
+		uResult = resize(uSize + uCount);
+
+		// Success?
+		if (uResult== kErrorNone) {
+			// Copy in the new entries
+			WordPtr uChunkSize = m_uChunkSize;
+			MemoryCopy(static_cast<Word8*>(m_pData)+(uSize*uChunkSize),pData,uCount*uChunkSize);
+		}
 	}
+	return uResult;
 }
 
 
@@ -365,6 +436,9 @@ void BURGER_API Burger::SimpleArrayBase::append(const void *pData,WordPtr uCount
 
 ***************************************/
 
+
+
+
 /*! ************************************
 
 	\fn T & Burger::SimpleArray::operator[](WordPtr uIndex)
@@ -378,7 +452,7 @@ void BURGER_API Burger::SimpleArrayBase::append(const void *pData,WordPtr uCount
 
 	\param uIndex Object number in the array to retrieve a reference to.
 	\return A reference of the object indexed.
-	\sa operator[](WordPtr) const
+	\sa operator[](WordPtr) const or GetIndexedItem(WordPtr)
 
 ***************************************/
 
@@ -395,9 +469,45 @@ void BURGER_API Burger::SimpleArrayBase::append(const void *pData,WordPtr uCount
 
 	\param uIndex Object number in the array to retrieve a constant reference to.
 	\return A constant reference of the object indexed.
-	\sa operator[](WordPtr)
+	\sa operator[](WordPtr) or GetIndexedItem(WordPtr) const
 
 ***************************************/
+
+/*! ************************************
+
+	\fn T & Burger::SimpleArray::GetIndexedItem(WordPtr uIndex) 
+	\brief Obtain a reference to an item in the array.
+
+	Index into the array and return a reference to the object.
+
+	\note In \ref _DEBUG builds, this will \ref BURGER_ASSERT()
+	if the uIndex value exceeds the size of the number of valid
+	entries in the array.
+
+	\param uIndex Object number in the array to retrieve a reference to.
+	\return A reference of the object indexed.
+	\sa operator[](WordPtr) or GetIndexedItem(WordPtr) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn const T & Burger::SimpleArray::GetIndexedItem(WordPtr uIndex) const
+	\brief Obtain a constant reference to an item in the array.
+
+	Index into the array and return a constant reference to the object.
+
+	\note In \ref _DEBUG builds, this will \ref BURGER_ASSERT()
+	if the uIndex value exceeds the size of the number of valid
+	entries in the array.
+
+	\param uIndex Object number in the array to retrieve a constant reference to.
+	\return A constant reference of the object indexed.
+	\sa operator[](WordPtr) const or GetIndexedItem(WordPtr)
+
+***************************************/
+
+
 
 /*! ************************************
 
@@ -501,7 +611,7 @@ void BURGER_API Burger::SimpleArrayBase::append(const void *pData,WordPtr uCount
 
 /*! ************************************
 
-	\fn void Burger::SimpleArray::push_back(T rData)
+	\fn Burger::eError Burger::SimpleArray::push_back(T rData)
 	\brief Append an object to the end of the array.
 
 	Make a copy of the object at the end of the array. If there
@@ -511,17 +621,20 @@ void BURGER_API Burger::SimpleArrayBase::append(const void *pData,WordPtr uCount
 	improve performance.
 
 	\param rData An instance of the object to copy at the end of the array
+	\return Zero on success, or non zero on failure
+
 	\sa pop_back(void), insert_at(WordPtr,T), resize(WordPtr) or reserve(WordPtr)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::SimpleArray::pop_back(void)
+	\fn Burger::eError Burger::SimpleArray::pop_back(void)
 	\brief Remove an object from the end of the array.
 
 	Call the destructor on the last object in the array and
 	reduce the array size by one.
+	\return Zero on success, or non zero on failure
 
 	\sa push_back(T), remove_at(WordPtr), resize(WordPtr) or reserve(WordPtr)
 
@@ -544,7 +657,7 @@ void BURGER_API Burger::SimpleArrayBase::append(const void *pData,WordPtr uCount
 
 /*! ************************************
 
-	\fn void Burger::SimpleArray::insert_at(WordPtr uIndex,T rData)
+	\fn Burger::eError Burger::SimpleArray::insert_at(WordPtr uIndex,T rData)
 	\brief Insert an object into the array.
 
 	Expand the buffer if needed and make a copy of the rData
@@ -552,6 +665,8 @@ void BURGER_API Burger::SimpleArrayBase::append(const void *pData,WordPtr uCount
 
 	\param uIndex Index into the array for the location of the object to insert.
 	\param rData Reference to the object to copy into the array
+	\return Zero on success, or non zero on failure
+
 	\sa remove_at(WordPtr), resize(WordPtr) or reserve(WordPtr)
 
 ***************************************/
@@ -598,6 +713,8 @@ void BURGER_API Burger::SimpleArrayBase::append(const void *pData,WordPtr uCount
 
 	\param pSourceData Pointer to the first element in an array of objects
 	\param uCount Number of elements in the array
+	\return Zero on success, or non zero on failure
+
 	\sa append(const SimpleArray&), insert_at(WordPtr,T), resize(WordPtr) or reserve(WordPtr)
 
 ***************************************/
@@ -612,6 +729,8 @@ void BURGER_API Burger::SimpleArrayBase::append(const void *pData,WordPtr uCount
 	will increase the size of the buffer if needed.
 
 	\param rData Reference to a like typed SimpleArray to copy from.
+	\return Zero on success, or non zero on failure
+
 	\sa append(const T *,WordPtr), resize(WordPtr) or reserve(WordPtr)
 
 ***************************************/
@@ -726,13 +845,17 @@ void BURGER_API Burger::SimpleArrayBase::append(const void *pData,WordPtr uCount
 
 /*! ************************************
 
-	\fn Burger::SimpleArray::erase(const_iterator it)
+	\fn Burger::eError Burger::SimpleArray::erase(const_iterator it)
 	\brief Remove an entry from the array using an iterator as the index
 
 	Using an iterator index, delete an entry in the array. Note, this
 	will change the end() value in an index
 
 	\param it Iterator index into an array
+	\return Zero on success, or non zero on failure
+
 	\sa remove_at(WordPtr)
 
 ***************************************/
+
+

@@ -834,7 +834,7 @@ void BURGER_API Burger::GridIndexBox::iterator::advance(void)
 	
 	Go to the next valid element in the current cell.
 	If the end of the cell is reached, set
-	m_uCurrentCellArrayIndex to \ref BURGER_MAXWORDPTR and return \ref FALSE.
+	m_uCurrentCellArrayIndex to UINTPTR_MAX and return \ref FALSE.
 	Otherwise point m_uCurrentCellArrayIndex at the valid
 	element, and return \ref TRUE.
 
@@ -861,7 +861,7 @@ Word BURGER_API Burger::GridIndexBox::iterator::AdvanceInCell(void)
 	}
 	// No more valid entries in this cell.
 	m_pEntry = NULL;
-	m_uCurrentCellArrayIndex = BURGER_MAXWORDPTR;
+	m_uCurrentCellArrayIndex = UINTPTR_MAX;
 	return FALSE;
 }
 

@@ -17,6 +17,8 @@
 
 #include "brstring.h"
 #include "brutf8.h"
+#include "brnumberto.h"
+#include "brmemoryfunctions.h"
 
 /*! ************************************
 
@@ -610,11 +612,15 @@ Burger::String::String(const char *pInput1,const char *pInput2,const char *pInpu
 	the current string as input
 
 	\param pInput Pointer to a UTF8 "C" string. \ref NULL generates an empty string.
+	\return Zero if no error, non zero if memory allocation failed
 
 ***************************************/
 
-void BURGER_API Burger::String::Set(const char *pInput)
+Burger::eError BURGER_API Burger::String::Set(const char *pInput)
 {
+	// Assume no error
+	eError uResult = kErrorNone;
+
 	if (!pInput) {
 		pInput = g_EmptyString;
 	}
@@ -626,6 +632,7 @@ void BURGER_API Burger::String::Set(const char *pInput)
 			pDest = m_Raw;
 			uInputLength = 0;			// Don't copy anything
 			pInput = g_EmptyString;		// Will copy the null character
+			uResult = kErrorOutOfMemory;	// Error!
 		}
 	}
 	char *pOld = m_pData;
@@ -635,6 +642,8 @@ void BURGER_API Burger::String::Set(const char *pInput)
 	if (pOld!=m_Raw) {					// Discard previous memory
 		Free(pOld);
 	}
+	// Return error
+	return uResult;
 }
 
 /*! ************************************
@@ -647,11 +656,15 @@ void BURGER_API Burger::String::Set(const char *pInput)
 
 	\param pInput Pointer to an array of UTF8 characters. \ref NULL generates an empty string.
 	\param uLength Length of the input data
+	\return Zero if no error, non zero if memory allocation failed
 
 ***************************************/
 
-void BURGER_API Burger::String::Set(const char *pInput,WordPtr uLength)
+Burger::eError BURGER_API Burger::String::Set(const char *pInput,WordPtr uLength)
 {
+	// Assume no error
+	eError uResult = kErrorNone;
+
 	// Failsafe
 	if (!pInput) {
 		uLength = 0;
@@ -671,6 +684,7 @@ void BURGER_API Burger::String::Set(const char *pInput,WordPtr uLength)
 		if (!pDest) {					// Oh oh...
 			pDest = m_Raw;
 			uLength = 0;				// Don't copy anything
+			uResult = kErrorOutOfMemory;	// Error!
 		}
 	}
 	char *pOld = m_pData;
@@ -681,6 +695,8 @@ void BURGER_API Burger::String::Set(const char *pInput,WordPtr uLength)
 	if (pOld!=m_Raw) {					// Discard previous memory
 		Free(pOld);
 	}
+	// Return error
+	return uResult;
 }
 
 /*! ************************************
@@ -688,11 +704,15 @@ void BURGER_API Burger::String::Set(const char *pInput,WordPtr uLength)
 	\brief Copy a 16 bit "C" string to a Burger::String
 
 	\param pInput Pointer to a UTF16 "C" string. \ref NULL generates an empty string.
+	\return Zero if no error, non zero if memory allocation failed
 
 ***************************************/
 
-void BURGER_API Burger::String::Set(const Word16 *pInput)
+Burger::eError BURGER_API Burger::String::Set(const Word16 *pInput)
 {
+	// Assume no error
+	eError uResult = kErrorNone;
+
 	if (!pInput) {
 		pInput = g_EmptyString16;
 	}
@@ -704,6 +724,7 @@ void BURGER_API Burger::String::Set(const Word16 *pInput)
 			pDest = m_Raw;
 			uInputLength = 0;			// Don't copy anything
 			pInput = g_EmptyString16;	// Will copy the null character
+			uResult = kErrorOutOfMemory;	// Error!
 		}
 	}
 	char *pOld = m_pData;
@@ -713,6 +734,8 @@ void BURGER_API Burger::String::Set(const Word16 *pInput)
 	if (pOld!=m_Raw) {					// Discard previous memory
 		Free(pOld);
 	}
+	// Return error
+	return uResult;
 }
 
 /*! ************************************
@@ -721,11 +744,15 @@ void BURGER_API Burger::String::Set(const Word16 *pInput)
 
 	\param pInput Pointer to a UTF16 "C" string. \ref NULL generates an empty string.
 	\param uLength Length of the UTF16 string in characters (sizeof(buffer)/2)
+	\return Zero if no error, non zero if memory allocation failed
 
 ***************************************/
 
-void BURGER_API Burger::String::Set(const Word16 *pInput,WordPtr uLength)
+Burger::eError BURGER_API Burger::String::Set(const Word16 *pInput,WordPtr uLength)
 {
+	// Assume no error
+	eError uResult = kErrorNone;
+
 	if (!pInput) {
 		pInput = g_EmptyString16;
 	}
@@ -737,6 +764,7 @@ void BURGER_API Burger::String::Set(const Word16 *pInput,WordPtr uLength)
 			pDest = m_Raw;
 			uInputLength = 0;			// Don't copy anything
 			pInput = g_EmptyString16;	// Will copy the null character
+			uResult = kErrorOutOfMemory;	// Error!
 		}
 	}
 	char *pOld = m_pData;
@@ -746,6 +774,8 @@ void BURGER_API Burger::String::Set(const Word16 *pInput,WordPtr uLength)
 	if (pOld!=m_Raw) {					// Discard previous memory
 		Free(pOld);
 	}
+	// Return error
+	return uResult;
 }
 
 
@@ -768,10 +798,10 @@ void BURGER_API Burger::String::Set(const Word16 *pInput,WordPtr uLength)
 
 ***************************************/
 
-Word BURGER_API Burger::String::SetBufferSize(WordPtr uSize)
+Burger::eError BURGER_API Burger::String::SetBufferSize(WordPtr uSize)
 {
 	// Assume no error
-	Word uResult = 0;
+	eError uResult = kErrorNone;
 	if (uSize!=m_uLength) {
 		// If no space is requested, clear the buffer
 		if (!uSize) {
@@ -787,7 +817,7 @@ Word BURGER_API Burger::String::SetBufferSize(WordPtr uSize)
 				if (!pDest) {			// Oh oh...
 					pDest = m_Raw;
 					uSize = 0;			// Don't copy anything
-					uResult = 10;		// Out of memory error!
+					uResult = kErrorOutOfMemory;	// Out of memory error!
 				}
 			}
 			// Get the size of the string
@@ -806,6 +836,7 @@ Word BURGER_API Burger::String::SetBufferSize(WordPtr uSize)
 			pDest[uSize] = 0;			// Ensure the terminating zero is present
 		}
 	}
+	// Return error
 	return uResult;
 }
 
@@ -1489,7 +1520,9 @@ WordPtr BURGER_API Burger::String::Append(const char *pInput,WordPtr uInputSize)
 		// If the output buffer is local, it is logical to
 		// assume that the original buffer was local.
 		// Perform a simple concatenation and be done with it
-		MemoryCopy(pWork+uInputLen1,pInput,uInputSize+1);
+		MemoryCopy(pWork+uInputLen1,pInput,uInputSize);
+		// Zero terminate
+		pWork[uInputLen1+uInputSize] = 0;
 	}
 	return uTotal;
 }

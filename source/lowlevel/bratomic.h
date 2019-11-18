@@ -85,21 +85,22 @@ struct CPUID_t {
 	char m_BrandName[52];				///< 48 character full name of the CPU (Null terminated)
 	char m_HypervisorName[16];			///< 12 character full name of the hypervisor (Null terminated)
 	char m_HypervisorSignature[8];		///< 4 character hypervisor signature (Null terminated)
-	BURGER_INLINE Word HasRTSC(void) const { return m_uCPUID1EDX& 0x00000010U; }
-	BURGER_INLINE Word HasCMOV(void) const { return m_uCPUID1EDX& 0x00008000U; }
-	BURGER_INLINE Word HasMMX(void) const { return m_uCPUID1EDX& 0x00800000U; }
-	BURGER_INLINE Word HasSSE(void) const { return m_uCPUID1EDX& 0x02000000U; }
-	BURGER_INLINE Word HasSSE2(void) const { return m_uCPUID1EDX& 0x04000000U; }
-	BURGER_INLINE Word HasSSE3(void) const { return m_uCPUID1ECX&0x00000001U; }
-	BURGER_INLINE Word HasSSSE3(void) const { return m_uCPUID1ECX& 0x00000200U; }
-	BURGER_INLINE Word HasSSE4a(void) const { return m_uCPUID80000001ECX&0x00000040U; }
-	BURGER_INLINE Word HasSSE41(void) const { return m_uCPUID1ECX&0x00080000U; }
-	BURGER_INLINE Word HasSSE42(void) const { return m_uCPUID1ECX& 0x00100000U; }
-	BURGER_INLINE Word HasAES(void) const { return m_uCPUID1ECX&0x02000000U; }
-	BURGER_INLINE Word HasAVX(void) const { return m_uCPUID1ECX&0x10000000U; }
-	BURGER_INLINE Word HasCMPXCHG16B(void) const { return m_uCPUID1ECX&0x00002000U; }
-	BURGER_INLINE Word HasF16C(void) const { return m_uCPUID1ECX&0x20000000U; }
-	BURGER_INLINE Word HasFMA3(void) const { return m_uCPUID1ECX&0x00001000U; }
+	BURGER_INLINE Word HasRTSC(void) const { return m_uCPUID1EDX & 0x00000010U; }
+	BURGER_INLINE Word HasCMOV(void) const { return m_uCPUID1EDX & 0x00008000U; }
+	BURGER_INLINE Word HasMMX(void) const { return m_uCPUID1EDX & 0x00800000U; }
+	BURGER_INLINE Word HasSSE(void) const { return m_uCPUID1EDX & 0x02000000U; }
+	BURGER_INLINE Word HasSSE2(void) const { return m_uCPUID1EDX & 0x04000000U; }
+	BURGER_INLINE Word HasSSE3(void) const { return m_uCPUID1ECX & 0x00000001U; }
+	BURGER_INLINE Word HasSSSE3(void) const { return m_uCPUID1ECX & 0x00000200U; }
+	BURGER_INLINE Word HasSSE4a(void) const { return m_uCPUID80000001ECX & 0x00000040U; }
+	BURGER_INLINE Word HasSSE41(void) const { return m_uCPUID1ECX & 0x00080000U; }
+	BURGER_INLINE Word HasSSE42(void) const { return m_uCPUID1ECX & 0x00100000U; }
+	BURGER_INLINE Word HasMOVBE(void) const { return m_uCPUID1ECX & 0x00400000U; }
+	BURGER_INLINE Word HasAES(void) const { return m_uCPUID1ECX & 0x02000000U; }
+	BURGER_INLINE Word HasAVX(void) const { return m_uCPUID1ECX & 0x10000000U; }
+	BURGER_INLINE Word HasCMPXCHG16B(void) const { return m_uCPUID1ECX & 0x00002000U; }
+	BURGER_INLINE Word HasF16C(void) const { return m_uCPUID1ECX & 0x20000000U; }
+	BURGER_INLINE Word HasFMA3(void) const { return m_uCPUID1ECX & 0x00001000U; }
 	BURGER_INLINE Word HasFMA4(void) const { return m_uCPUID80000001ECX&0x00010000U; }
 	BURGER_INLINE Word HasLAHFSAHF(void) const { return m_uCPUID80000001ECX&0x00000001U; }
 	BURGER_INLINE Word HasPrefetchW(void) const { return m_uCPUID80000001ECX&0x00000100U; }
@@ -111,12 +112,21 @@ extern void BURGER_API CPUID(CPUID_t *pOutput);
 
 #if defined(BURGER_PS3) || defined(BURGER_XBOX360)
 BURGER_INLINE Word HasAltiVec(void) { return TRUE; }
+BURGER_INLINE Word HasFSqrt(void) { return TRUE; }
 
 #elif (defined(BURGER_PPC) && defined(BURGER_MACOS)) || defined(DOXYGEN)
 extern Word BURGER_API HasAltiVec(void);
+extern Word BURGER_API HasFSqrt(void);
 
 #else
 BURGER_INLINE Word HasAltiVec(void) { return FALSE; }
+BURGER_INLINE Word HasFSqrt(void) { return FALSE; }
+#endif
+
+#if (defined(BURGER_MAC) && defined(BURGER_68K)) || defined(DOXYGEN)
+extern Word BURGER_API HasFPU(void);
+#else
+BURGER_INLINE Word HasFPU(void) { return TRUE; }
 #endif
 
 // PS3 specific atomics
@@ -127,8 +137,8 @@ BURGER_INLINE Word32 AtomicSwap(volatile Word32 *pOutput,Word32 uInput)
 {
 	Word32 uTemp;
 	do {
-		uTemp = __builtin_lwarx(pOutput,0);
-	} while(__builtin_stwcx(uInput,pOutput,0)==0); 
+		uTemp = __lwarx(pOutput);
+	} while(__stwcx(pOutput,uInput)==0); 
 	return uTemp; 
 }
 
@@ -136,8 +146,8 @@ BURGER_INLINE Word32 AtomicPreIncrement(volatile Word32 *pInput)
 {
 	Word32 uTemp; 
 	do {
-		uTemp = __builtin_lwarx(pInput,0)+1;
-	} while(__builtin_stwcx(uTemp,pInput,0)==0); 
+		uTemp = __lwarx(pInput)+1;
+	} while(__stwcx(pInput,uTemp)==0); 
 	return uTemp;
 }
 
@@ -145,8 +155,8 @@ BURGER_INLINE Word32 AtomicPostIncrement(volatile Word32 *pInput)
 {
 	Word32 uTemp;
 	do {
-		uTemp = __builtin_lwarx(pInput,0); 
-	} while(__builtin_stwcx(uTemp+1,pInput,0)==0);
+		uTemp = __lwarx(pInput); 
+	} while(__stwcx(pInput,uTemp+1)==0);
 	return uTemp; 
 }
 
@@ -154,8 +164,8 @@ BURGER_INLINE Word32 AtomicPreDecrement(volatile Word32 *pInput)
 {
 	Word32 uTemp; 
 	do {
-		uTemp = __builtin_lwarx(pInput,0)-1;
-	} while(__builtin_stwcx(uTemp,pInput,0)==0);
+		uTemp = __lwarx(pInput)-1;
+	} while(__stwcx(pInput,uTemp)==0);
 	return uTemp; 
 }
 
@@ -163,8 +173,8 @@ BURGER_INLINE Word32 AtomicPostDecrement(volatile Word32 *pInput)
 { 
 	Word32 uTemp; 
 	do { 
-		uTemp = __builtin_lwarx(pInput,0);
-	} while(__builtin_stwcx(uTemp-1,pInput,0)==0);
+		uTemp = __lwarx(pInput);
+	} while(__stwcx(pInput,uTemp-1)==0);
 	return uTemp;
 }
 
@@ -172,8 +182,8 @@ BURGER_INLINE Word32 AtomicAdd(volatile Word32 *pInput,Word32 uValue)
 {
 	Word32 uTemp; 
 	do {
-		uTemp = __builtin_lwarx(pInput,0);
-	} while(__builtin_stwcx(uTemp+uValue,pInput,0)==0); 
+		uTemp = __lwarx(pInput);
+	} while(__stwcx(pInput,uTemp+uValue)==0); 
 	return uTemp; 
 }
 
@@ -181,8 +191,8 @@ BURGER_INLINE Word32 AtomicSubtract(volatile Word32 *pInput,Word32 uValue)
 {
 	Word32 uTemp; 
 	do {
-		uTemp = __builtin_lwarx(pInput,0);
-	} while(__builtin_stwcx(uTemp-uValue,pInput,0)==0); 
+		uTemp = __lwarx(pInput);
+	} while(__stwcx(pInput,uTemp-uValue)==0); 
 	return uTemp; 
 }
 
@@ -190,12 +200,12 @@ BURGER_INLINE Word AtomicSetIfMatch(volatile Word32 *pInput,Word32 uBefore,Word3
 {
 	Word uResult;
 	do { 
-		Word32 uTemp = __builtin_lwarx(pInput,0);
+		Word32 uTemp = __lwarx(pInput);
 		uResult = (uTemp == uBefore);
 		if (!uResult) {
 			break; 
 		}
-	} while(__builtin_stwcx(uAfter,pInput,0)==0); 
+	} while(__stwcx(pInput,uAfter)==0); 
 	return uResult;
 }
 
@@ -203,8 +213,8 @@ BURGER_INLINE Word32 AtomicSwap(volatile Word64 *pOutput,Word64 uInput)
 {
 	Word64 uTemp; 
 	do { 
-		uTemp = __builtin_ldarx(pOutput,0);
-	} while(__builtin_stdcx(uInput,pOutput,0)==0);
+		uTemp = __ldarx(pOutput);
+	} while(__stdcx(pOutput,uInput)==0);
 	return uTemp; 
 }
 
@@ -212,8 +222,8 @@ BURGER_INLINE Word32 AtomicPreIncrement(volatile Word64 *pInput)
 {
 	Word64 uTemp; 
 	do {
-		uTemp = __builtin_ldarx(pInput,0)+1;
-	} while(__builtin_stdcx(uTemp,pInput,0)==0);
+		uTemp = __ldarx(pInput)+1;
+	} while(__stdcx(pInput,uTemp)==0);
 	return uTemp; 
 }
 
@@ -221,8 +231,8 @@ BURGER_INLINE Word32 AtomicPostIncrement(volatile Word64 *pInput)
 {
 	Word64 uTemp;
 	do { 
-		uTemp = __builtin_ldarx(pInput,0);
-	} while(__builtin_stdcx(uTemp+1,pInput,0)==0); 
+		uTemp = __ldarx(pInput);
+	} while(__stdcx(pInput,uTemp+1)==0); 
 	return uTemp; 
 }
 
@@ -230,8 +240,8 @@ BURGER_INLINE Word32 AtomicPreDecrement(volatile Word64 *pInput)
 {
 	Word64 uTemp; 
 	do {
-		uTemp = __builtin_ldarx(pInput,0)-1;
-	} while(__builtin_stdcx(uTemp,pInput,0)==0); 
+		uTemp = __ldarx(pInput)-1;
+	} while(__stdcx(pInput,uTemp)==0); 
 	return uTemp; 
 }
 
@@ -239,8 +249,8 @@ BURGER_INLINE Word32 AtomicPostDecrement(volatile Word64 *pInput)
 {
 	Word64 uTemp; 
 	do {
-		uTemp = __builtin_ldarx(pInput,0);
-	} while(__builtin_stdcx(uTemp-1,pInput,0)==0);
+		uTemp = __ldarx(pInput);
+	} while(__stdcx(pInput,uTemp-1)==0);
 	return uTemp;
 }
 
@@ -248,8 +258,8 @@ BURGER_INLINE Word32 AtomicAdd(volatile Word64 *pInput,Word64 uValue)
 {
 	Word64 uTemp;
 	do {
-		uTemp = __builtin_ldarx(pInput,0);
-	} while(__builtin_stdcx(uTemp+uValue,pInput,0)==0); 
+		uTemp = __ldarx(pInput);
+	} while(__stdcx(pInput,uTemp+uValue)==0); 
 	return uTemp;
 }
 
@@ -257,8 +267,8 @@ BURGER_INLINE Word32 AtomicSubtract(volatile Word64 *pInput,Word64 uValue)
 {
 	Word64 uTemp; 
 	do { 
-		uTemp = __builtin_ldarx(pInput,0); 
-	} while(__builtin_stdcx(uTemp-uValue,pInput,0)==0);
+		uTemp = __ldarx(pInput); 
+	} while(__stdcx(pInput,uTemp-uValue)==0);
 	return uTemp;
 }
 
@@ -266,12 +276,12 @@ BURGER_INLINE Word AtomicSetIfMatch(volatile Word64 *pInput,Word64 uBefore,Word6
 {
 	Word uResult; 
 	do {
-		Word64 uTemp = __builtin_ldarx(pInput,0);
+		Word64 uTemp = __ldarx(pInput);
 		uResult = (uTemp == uBefore);
 		if (!uResult) {
 			break;
 		}
-	} while(__builtin_stdcx(uAfter,pInput,0)==0); 
+	} while(__stdcx(pInput,uAfter)==0); 
 	return uResult; 
 }
 
@@ -464,7 +474,7 @@ BURGER_INLINE Word AtomicSetIfMatch(volatile Word32 *pInput, Word32 uBefore, Wor
 }
 
 // Visual C compilers
-#elif defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || defined(BURGER_WINDOWS) || defined(BURGER_MSDOS)
+#elif defined(BURGER_MSVC) || ((defined(BURGER_WATCOM) || defined(BURGER_METROWERKS)) && defined(BURGER_X86))
 
 BURGER_INLINE Word32 AtomicSwap(volatile Word32 *pOutput,Word32 uInput) { return static_cast<Word32>(_InterlockedExchange(reinterpret_cast<volatile long *>(pOutput),static_cast<long>(uInput)));}
 BURGER_INLINE Word32 AtomicPreIncrement(volatile Word32 *pInput) { return static_cast<Word32>(_InterlockedIncrement(reinterpret_cast<volatile long *>(pInput))); }
@@ -487,7 +497,7 @@ BURGER_INLINE Word AtomicSetIfMatch(volatile Word64 *pInput,Word64 uBefore,Word6
 #endif
 	
 // If GnuC 4.0 or higher. use the intrinsics
-#elif ((__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) > 40100)
+#elif (BURGER_GNUC > 40100)
 
 BURGER_INLINE Word32 AtomicSwap(volatile Word32 *pOutput,Word32 uInput) { Word32 uTemp; do { uTemp = pOutput[0]; } while(__sync_val_compare_and_swap(pOutput,uTemp,uInput)!=uTemp); return uTemp;}
 BURGER_INLINE Word32 AtomicPreIncrement(volatile Word32 *pInput) { return __sync_add_and_fetch(pInput,1); }
@@ -511,7 +521,7 @@ BURGER_INLINE Word64 AtomicAdd(volatile Word64 *pInput,Word64 uValue) { return _
 BURGER_INLINE Word64 AtomicSubtract(volatile Word64 *pInput,Word64 uValue) { return __sync_fetch_and_sub(pInput,uValue); }
 BURGER_INLINE Word AtomicSetIfMatch(volatile Word64 *pInput,Word64 uBefore,Word64 uAfter) { return __sync_bool_compare_and_swap(pInput,uAfter,uBefore); }
 	
-#elif (((__GNUC * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) <= 40100) && defined(BURGER_MACOSX)) || defined(DOXYGEN)
+#elif (defined(BURGER_GNUC) && (BURGER_GNUC <= 40100) && defined(BURGER_MACOSX)) || defined(DOXYGEN)
 	
 Word32 BURGER_API AtomicSwap(volatile Word32 *pOutput,Word32 uInput);
 Word32 BURGER_API AtomicPreIncrement(volatile Word32 *pInput);

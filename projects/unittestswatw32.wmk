@@ -467,7 +467,8 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/testbrstrings.obj &
 	$(A)/testbrtimedate.obj &
 	$(A)/testbrtypes.obj &
-	$(A)/testcharset.obj
+	$(A)/testcharset.obj &
+	$(A)/testmacros.obj
 
 #
 # List the names of all of the final binaries to build

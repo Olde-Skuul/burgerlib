@@ -4134,6 +4134,14 @@
 				RelativePath="..\unittest\testcharset.h"
 				>
 			</File>
+			<File
+				RelativePath="..\unittest\testmacros.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\unittest\testmacros.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

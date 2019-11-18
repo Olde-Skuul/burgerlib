@@ -18,7 +18,7 @@
 
 #if defined(BURGER_VITA)
 #include "brmemorymanager.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include <stdlib.h>
 #include <kernel.h>
 #include <new>

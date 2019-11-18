@@ -14,6 +14,7 @@
 #include "brfile.h"
 
 #if defined(BURGER_VITA) || defined(DOXYGEN)
+#include "brmemoryfunctions.h"
 #include <kernel.h>
 
 /***************************************
