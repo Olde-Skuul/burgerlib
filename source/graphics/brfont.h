@@ -34,7 +34,7 @@
 namespace Burger {
 class Font : public Base {
 	BURGER_RTTI_IN_CLASS();		// Handle RTTI
-	BURGER_DISABLECOPYCONSTRUCTORS(Font);
+    BURGER_DISABLE_COPY(Font);
 protected:
 	Display *m_pDisplay;	///< Rendering context to draw into
 	int m_iX;				///< X coord to draw the font

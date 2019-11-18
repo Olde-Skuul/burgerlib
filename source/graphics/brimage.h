@@ -29,7 +29,7 @@
 /* BEGIN */
 namespace Burger {
 class Image {
-	BURGER_DISABLECOPYCONSTRUCTORS(Image);
+    BURGER_DISABLE_COPY(Image);
 public:
 	enum eFlags {
 		FLAGS_IMAGENOTALLOCATED=0x0020,	///< \ref TRUE if the image pointer was not allocated (And won't be released when Image goes out of scope)

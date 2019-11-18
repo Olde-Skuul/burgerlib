@@ -178,11 +178,10 @@ Burger::Decompress::eError Burger::DecompressULaw::Process(void *pOutput,WordPtr
 
 						do {
 							// Convert to endian with unaligned data
-							NativeEndian::StoreAny(static_cast<Int16 *>(pOutput),g_Table[static_cast<const Word8 *>(pInput)[0]]);
+							NativeEndian::StoreAny(static_cast<int16_t*>(pOutput),g_Table[static_cast<const Word8 *>(pInput)[0]]);
 							pInput = static_cast<const Word8 *>(pInput)+1;
 							pOutput = static_cast<Word16 *>(pOutput)+1;
 						} while (--uLength);
-
 					}
 				}
 

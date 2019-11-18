@@ -208,8 +208,8 @@ Burger::Sequencer::PatternData_t * BURGER_API Burger::Sequencer::PatternData_t::
 Burger::Sequencer::Command_t* BURGER_API Burger::Sequencer::PatternData_t::GetCommand(int iRow,int iChannel)
 {
 	// Negative numbers become zero
-	Word uRow = static_cast<Word>(ClampZero(iRow));
-	Word uChannel = static_cast<Word>(ClampZero(iChannel));
+	Word uRow = static_cast<Word>(ClampZero(static_cast<int32_t>(iRow)));
+	Word uChannel = static_cast<Word>(ClampZero(static_cast<int32_t>(iChannel)));
 
 	// Out of bounds?
 	if (uRow >= m_uRowCount) {
@@ -498,16 +498,16 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(Word uCall)
 		//
 
 		case 0x6:
-			m_uVolume = Min(static_cast<Word32>(
-				ClampZero(static_cast<Int32>(m_uVolume-uVolumeArgument))),cMaxVolume);
+			m_uVolume = Min(static_cast<uint32_t>(
+				ClampZero(static_cast<int32_t>(m_uVolume-uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
 			break;
 
 		//
 		// Volume slide up
 		//
 		case 0x7:
-			m_uVolume = Min(static_cast<Word32>(
-				ClampZero(static_cast<Int32>(m_uVolume+uVolumeArgument))),cMaxVolume);
+			m_uVolume = Min(static_cast<uint32_t>(
+				ClampZero(static_cast<Int32>(m_uVolume+uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
 			break;
 
 		//
@@ -517,7 +517,7 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(Word uCall)
 		case 0x8:
 			// Only sub call 1 is supported
 			if (uCall == 1) {
-				m_uVolume = Min(static_cast<Word32>(ClampZero(static_cast<Int32>(m_uVolume-uVolumeArgument))),cMaxVolume);
+				m_uVolume = Min(static_cast<Word32>(ClampZero(static_cast<Int32>(m_uVolume-uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
 			}
 			break;
 
@@ -527,7 +527,7 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(Word uCall)
 		case 0x9:
 			// Only sub call 1 is supported
 			if (uCall == 1) {
-				m_uVolume = Min(static_cast<Word32>(ClampZero(static_cast<Int32>(m_uVolume+uVolumeArgument))),cMaxVolume);
+				m_uVolume = Min(static_cast<const uint32_t>(ClampZero(static_cast<Int32>(m_uVolume+uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
 			}
 			break;
 
@@ -2615,11 +2615,11 @@ void BURGER_API Burger::Sequencer::MixTo16(void)
 		WordPtr uAccumBufferSize = m_uAccumBufferSize*2;
 		if (uAccumBufferSize) {
 			do {
-				Int32 iTemp = pAccumBuffer[0]+128;
+				int32_t iTemp = pAccumBuffer[0]+128;
 				pAccumBuffer[0] = 0;
 				++pAccumBuffer;
 				iTemp = ClampZero(iTemp);
-				iTemp = Min(iTemp,255);
+				iTemp = Min(iTemp,static_cast<int32_t>(255));
 				pBuffer[0] = static_cast<Word8>(iTemp);
 				++pBuffer;
 			} while (--uAccumBufferSize);

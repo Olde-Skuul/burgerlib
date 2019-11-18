@@ -20,6 +20,7 @@
 #include "bralaw.h"
 #include "brulaw.h"
 #include "brmicrosoftadpcm.h"
+#include "brmemoryfunctions.h"
 
 #if !defined(DOXYGEN)
 
@@ -562,7 +563,7 @@ Word BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const v
 		(BigEndian::Load(static_cast<const Word32 *>(pInput)) == cOggSASCII)) {
 		m_eDataType = TYPEOGG;
 		m_pSoundImage = static_cast<const Word8 *>(pInput);
-		m_uSoundLength = BURGER_MAXWORDPTR;		// Can't tell unless I scan the whole thing
+		m_uSoundLength = UINTPTR_MAX;		// Can't tell unless I scan the whole thing
 		m_uSampleRate = LittleEndian::Load(&static_cast<const Word32 *>(pInput)[0x28/4]);
 		if (static_cast<const Word8 *>(pInput)[0x27]==2) {
 			m_eDataType = static_cast<eDataType>(m_eDataType|TYPESTEREO);
@@ -1801,13 +1802,13 @@ void BURGER_API Burger::ComputeReverb(Word8 *pOutput,const Word8 *pInput,WordPtr
 		do {
 			// Do a signed scale from 0 (Unsigned zero is 128)
 			// using 25.7 fixed point
-			Int32 iTemp = pOutput[0] + (((pInput[0] - 128)*iPercentage)>>7);
+			int32_t iTemp = pOutput[0] + (((pInput[0] - 128)*iPercentage)>>7);
 			++pInput;
 
 			// Underflow?
 			iTemp = ClampZero(iTemp);
 			// Overflow?
-			iTemp = Min(iTemp,255);
+			iTemp = Min(iTemp,static_cast<int32_t>(255));
 
 			// Store in the reverb buffer
 			pOutput[0] = static_cast<Word8>(iTemp);
@@ -1840,13 +1841,13 @@ void BURGER_API Burger::ComputeReverb(Int16 *pOutput,const Int16 *pInput,WordPtr
 		do {
 			// Do a signed scale
 			// using 25.7 fixed point
-			Int32 iTemp = pOutput[0] + ((pInput[0]*iPercentage)>>7);
+			int32_t iTemp = pOutput[0] + ((pInput[0]*iPercentage)>>7);
 			++pInput;
 
 			// Underflow?
-			iTemp = Max(iTemp,-32767);
+			iTemp = Max(iTemp,static_cast<int32_t>(-32767));
 			// Overflow?
-			iTemp = Min(iTemp,32767);
+			iTemp = Min(iTemp,static_cast<int32_t>(32767));
 
 			// Store in the reverb buffer
 			pOutput[0] = static_cast<Int16>(iTemp);

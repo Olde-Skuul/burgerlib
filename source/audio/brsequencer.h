@@ -26,6 +26,10 @@
 #include "brsounddecompress.h"
 #endif
 
+#ifndef __BRMEMORYFUNCTIONS_H__
+#include "brmemoryfunctions.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 class Sequencer {

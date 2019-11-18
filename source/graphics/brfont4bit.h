@@ -38,7 +38,7 @@
 namespace Burger {
 class Font4Bit : public Font {
 	BURGER_RTTI_IN_CLASS();		// Handle RTTI
-	BURGER_DISABLECOPYCONSTRUCTORS(Font4Bit);
+    BURGER_DISABLE_COPY(Font4Bit);
 protected:
 	union {
 		Word8 Bytes[16];	///< Color of font for 8 bit rendering

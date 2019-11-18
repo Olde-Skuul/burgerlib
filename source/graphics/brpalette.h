@@ -30,6 +30,10 @@
 #include "brvector4d.h"
 #endif
 
+#ifndef __BRMEMORYFUNCTIONS_H__
+#include "brmemoryfunctions.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 struct RGBWord8_t {
