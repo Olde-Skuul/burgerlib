@@ -32,7 +32,7 @@
 
 /* BEGIN */
 namespace Burger {
-#if defined(BURGER_OPENGL_SUPPORTED)
+#if defined(BURGER_OPENGL)
 #if defined(BURGER_WINDOWS)
 class DisplayOpenGLSoftware8 : public DisplayOpenGL {
 #else

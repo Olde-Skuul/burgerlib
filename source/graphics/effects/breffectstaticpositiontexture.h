@@ -2,7 +2,7 @@
 
 	Static position texturing shader
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -48,38 +48,53 @@
 
 /* BEGIN */
 namespace Burger {
+
+class EffectPositionTexture : public Effect {
+
+    BURGER_DISABLE_COPY(EffectPositionTexture);
+	BURGER_RTTI_IN_CLASS();
+
+protected:
+#if defined(BURGER_OPENGL) || defined(DOXYGEN)
+	const Word *m_pVertexMembers;	///< (OpenGL only) Pointer to the vertex members
+	Int m_iEffectMatrix;			///< (OpenGL only) Index for the Matrix
+#endif
+
+public:
+	EffectPositionTexture(Display *pDisplay,const Word *pVertexMembers);
+
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-class EffectPositionTextureDX9 : public EffectDX9 {
+	virtual void SetProjection(const Matrix4D_t *pMatrix) = 0;
+#else
+	virtual Word CheckLoad(Display *pDisplay);
+	void BURGER_API SetProjection(const Matrix4D_t *pMatrix);
+#endif
+};
+
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+class EffectPositionTextureDX9 : public EffectPositionTexture {
+    BURGER_DISABLE_COPY(EffectPositionTextureDX9);
 	BURGER_RTTI_IN_CLASS();
 public:
 	EffectPositionTextureDX9(DisplayDirectX9 *pDisplay,const Word *pVertexMembers);
-	void BURGER_API SetProjection(const Matrix4D_t *pMatrix);
+	virtual Word CheckLoad(Display *pDisplay);
+	virtual void Release(Display *pDisplay);
+	virtual void SetProjection(const Matrix4D_t *pMatrix);
 };
-#endif
-#if defined(BURGER_OPENGL_SUPPORTED)
-class EffectPositionTextureOpenGL : public EffectOpenGL {
+
+class EffectPositionTextureOpenGL : public EffectPositionTexture {
+    BURGER_DISABLE_COPY(EffectPositionTextureOpenGL);
 	BURGER_RTTI_IN_CLASS();
 protected:
 	Int m_iEffectMatrix;		///< Index for the Matrix
 public:
 	EffectPositionTextureOpenGL(Display *pDisplay,const Word *pVertexMembers);
-	void BURGER_API SetProjection(const Matrix4D_t *pMatrix);
-};
-#endif
-#if defined(BURGER_XBOX360) || defined(DOXYGEN)
-class EffectPositionTexture : public Effect {
-	BURGER_RTTI_IN_CLASS();
-public:
-	EffectPositionTexture(Display *pDisplay,const Word *pVertexMembers);
-	void BURGER_API SetProjection(const Matrix4D_t *pMatrix);
+	virtual Word CheckLoad(Display *pDisplay);
+	virtual void Release(Display *pDisplay);
+	virtual void SetProjection(const Matrix4D_t *pMatrix);
 };
 #endif
 
-#if defined(BURGER_WINDOWS)
-typedef EffectPositionTextureDX9 EffectPositionTexture;
-#elif defined(BURGER_OPENGL_SUPPORTED)
-typedef EffectPositionTextureOpenGL EffectPositionTexture;
-#endif
 }
 /* END */
 

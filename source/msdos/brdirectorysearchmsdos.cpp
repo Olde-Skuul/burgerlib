@@ -18,6 +18,7 @@
 #include "brdosextender.h"
 #include "brfilemanager.h"
 #include "brfilename.h"
+#include "brmemoryfunctions.h"
 #include <dos.h>
 
 /***************************************

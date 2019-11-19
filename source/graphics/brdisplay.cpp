@@ -2,7 +2,7 @@
 
 	Display base class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -15,6 +15,7 @@
 #include "brtick.h"
 #include "brrenderer.h"
 #include "brpalette.h"
+#include "brmemoryfunctions.h"
 
 /*! ************************************
 
@@ -72,7 +73,7 @@ Burger::Display::Globals_t Burger::Display::g_Globals;
 /*! ************************************
 
 	\enum Burger::Display::eDepthFunction
-	
+
 	\brief Settings for SetDepthTest(eDepthFunction)
 
 	Enumeration to set the depth test type.
@@ -84,7 +85,7 @@ Burger::Display::Globals_t Burger::Display::g_Globals;
 /*! ************************************
 
 	\enum Burger::Display::eCullMode
-	
+
 	\brief Settings for SetCullMode(eCullMode)
 
 	Enumeration to set the polygon culling mode.
@@ -96,7 +97,7 @@ Burger::Display::Globals_t Burger::Display::g_Globals;
 /*! ************************************
 
 	\enum Burger::Display::eSourceBlendFactor
-	
+
 	\brief Settings for SetBlendFunction(eSourceBlendFactor)
 
 	Enumeration to set the source pixel blending mode.
@@ -108,7 +109,7 @@ Burger::Display::Globals_t Burger::Display::g_Globals;
 /*! ************************************
 
 	\enum Burger::Display::eDestinationBlendFactor
-	
+
 	\brief Settings for SetBlendFunction(eDestinationBlendFactor)
 
 	Enumeration to set the destination pixel blending mode.
@@ -120,7 +121,7 @@ Burger::Display::Globals_t Burger::Display::g_Globals;
 /*! ************************************
 
 	\enum Burger::Display::ePrimitiveType
-	
+
 	\brief Describe how to render a vertex array.
 
 	Enumeration to determine how to render an array of vertices
@@ -141,6 +142,32 @@ Burger::Display::Globals_t Burger::Display::g_Globals;
 	\sa Display or Display::VideoCardDescription
 
 ***************************************/
+
+/*! ************************************
+
+	\struct Burger::Display::OpenGLVertexInputs_t
+
+	\brief Description of an OpenGL vertex input list
+
+	This is a description of an OpenGL shader's input labels and how
+	they map to a vertex buffer's parameter hint
+
+	\sa Display or VertexBuffer
+
+***************************************/
+
+/*! ************************************
+
+	\struct Burger::Display::OpenGLVertexBufferObjectDescription_t
+
+	\brief Description of an OpenGL vertex buffer object
+
+	This is a description of an OpenGL vertex buffer object
+
+	\sa Display or DisplayOpenGL
+
+***************************************/
+
 
 /*! ************************************
 
@@ -242,6 +269,10 @@ void BURGER_API Burger::Display::InitDefaults(GameApp *pGameApp)
 	m_pGameApp = pGameApp;
 	m_pRenderer = NULL;
 
+#if defined(BURGER_WINDOWS)
+	MemoryClear(m_WindowPlacement,sizeof(m_WindowPlacement));
+#endif
+
 	m_pResize = NULL;
 	m_pResizeData = NULL;
 	m_pRender = NULL;
@@ -255,10 +286,15 @@ void BURGER_API Burger::Display::InitDefaults(GameApp *pGameApp)
 	m_uDisplayWidth = 0;
 	m_uDisplayHeight = 0;
 	m_uDisplayDepth = 0;
+
 	m_uBorderColor = 0;
+	m_uPaletteFadeSpeed = Tick::TICKSPERSEC / 15;
+
+	m_iPauseRenderingCount = 0;
+	m_bRenderingPaused = FALSE;
 	m_bPaletteDirty = TRUE;
 	m_bPaletteVSync = FALSE;
-	m_uPaletteFadeSpeed = Tick::TICKSPERSEC/15;
+
 	MemoryClear(m_pBoundTextures,sizeof(m_pBoundTextures));
 	MemoryClear(m_Palette,sizeof(m_Palette));
 #if defined(BURGER_MACOS)
@@ -270,15 +306,13 @@ void BURGER_API Burger::Display::InitDefaults(GameApp *pGameApp)
 	m_Palette[255*3+1] = 255;
 	m_Palette[255*3+2] = 255;
 #endif
-	// Set the GameApp to point to the active renderer
-	pGameApp->SetDisplay(this);
 	InitGlobals();
 }
 
 /*! ************************************
 
 	\brief Set the width and height of the screen
-	
+
 	Sets the width and height in pixels of the display
 	and updates all other variables that depend on these values
 
@@ -316,7 +350,7 @@ void BURGER_API Burger::Display::SetWidthHeight(Word uWidth,Word uHeight)
 /*! ************************************
 
 	\brief Default constructor.
-	
+
 	Initializes all of the shared variables and
 	hooks up the Display and the Renderer to the GameApp.
 
@@ -328,28 +362,28 @@ void BURGER_API Burger::Display::SetWidthHeight(Word uWidth,Word uHeight)
 
 ***************************************/
 
-#if defined(BURGER_WINDOWS) || !(defined(BURGER_XBOX360) || defined(BURGER_OPENGL_SUPPORTED)) || defined(DOXYGEN)
+#if defined(BURGER_WINDOWS) || !(defined(BURGER_XBOX360) || defined(BURGER_OPENGL)) || defined(DOXYGEN)
 Burger::Display::Display(GameApp *pGameApp)
 {
 	InitDefaults(pGameApp);
 }
+#endif
 
 /*! ************************************
 
 	\brief Default destructor.
-	
+
 	Shuts down the video context and issues a shutdown to the renderer
-	
+
 	\sa Shutdown() and SetRenderer()
 
 ***************************************/
 
+#if defined(BURGER_LINUX) || defined(BURGER_WINDOWS) || !(defined(BURGER_XBOX360) || defined(BURGER_OPENGL)) || defined(DOXYGEN)
 Burger::Display::~Display()
 {
-	if (m_pGameApp) {
-		m_pGameApp->SetDisplay(NULL);
-	}
 }
+#endif
 
 /*! ************************************
 
@@ -368,9 +402,10 @@ Burger::Display::~Display()
 	\return Zero if no error, non-zero if an error has occurred.
 
 	\sa Shutdown() and InitContext()
-	
+
 ***************************************/
 
+#if defined(BURGER_WINDOWS) || !(defined(BURGER_XBOX360) || defined(BURGER_OPENGL)) || defined(DOXYGEN)
 #if !defined(BURGER_WINDOWS) || defined(DOXYGEN)
 Word Burger::Display::Init(Word /* uWidth */,Word /* uHeight */,Word /* uDepth */,Word /* uFlags */)
 {
@@ -382,14 +417,14 @@ Word Burger::Display::Init(Word /* uWidth */,Word /* uHeight */,Word /* uDepth *
 
 	\brief Shut down the current video display context
 
-	Release all resources and restore the video display to the 
+	Release all resources and restore the video display to the
 	system defaults. This is an internal function and is meant
 	to be called as part of a call to Display::Shutdown()
 	so the renderer is shut down first before the display
 
 	This code does nothing. It's a placeholder for classes that have no
 	need for a shutdown call
-	
+
 	\sa Init(Word,Word,Word,Word)
 
 ***************************************/
@@ -402,14 +437,14 @@ void Burger::Display::Shutdown(void)
 
 	\fn void Burger::Display::BeginScene(void)
 	\brief Prepare the display for rendering.
-	
+
 	This function will call the Renderer::BeginScene() function
 	after any operating system calls are issued so the renderer can prepare for drawing.
 
 	This must be paired with a subsequent call to Burger::Display::EndScene()
 
 	\sa Burger::Display::EndScene()
-	
+
 ***************************************/
 
 /*! ************************************
@@ -423,9 +458,9 @@ void Burger::Display::Shutdown(void)
 	The renderer is issued a call to Renderer::EndScene() before
 	the operating system so all rendering calls can be completed before
 	the scene is sent to the GPU or other rendering sub-system.
-	
+
 	\sa Burger::Display::BeginScene()
-	
+
 ***************************************/
 
 void Burger::Display::EndScene(void)
@@ -473,6 +508,10 @@ void Burger::Display::Bind(Texture *pTexture,Word uIndex)
 	m_pBoundTextures[uIndex] = pTexture;
 }
 
+void Burger::Display::Bind(Effect * /* pEffect */)
+{
+}
+
 void Burger::Display::SetBlend(Word /* bEnable */)
 {
 }
@@ -514,6 +553,38 @@ void Burger::Display::DrawElements(ePrimitiveType /* uPrimitiveType */,VertexBuf
 
 /*! ************************************
 
+	\brief Pause or resume rendering
+
+	Set or clear the flag to pause rendering. This is required
+	to keep background tasks from attempting to
+	use the display device for rendering while it's
+	in a transitory state.
+
+	\note Pausing is reference counted, match every call to \ref Pause(\ref TRUE) with
+	a call of \ref Pause(\ref FALSE)
+
+	\param bPauseRendering \ref TRUE to pause rendering, \ref FALSE to resume rendering.
+
+***************************************/
+
+void BURGER_API Burger::Display::Pause(Word bPauseRendering)
+{
+	int iPauseRenderingCount = m_iPauseRenderingCount;
+	if (bPauseRendering) {
+		++iPauseRenderingCount;
+	} else {
+		--iPauseRenderingCount;
+	}
+	// Make sure it never goes negative
+	if (iPauseRenderingCount < 0) {
+		iPauseRenderingCount = 0;
+	}
+	m_iPauseRenderingCount = iPauseRenderingCount;
+	m_bRenderingPaused = (iPauseRenderingCount > 0);
+}
+
+/*! ************************************
+
 	\brief Create a texture object with wrapping and filters preset
 
 	Create a texture object and set the wrapping and
@@ -522,9 +593,9 @@ void Burger::Display::DrawElements(ePrimitiveType /* uPrimitiveType */,VertexBuf
 	\param uWrapping Texture wrapping constant
 	\param uFilter Texture filter constant
 	\return \ref NULL if the object couldn't be created or a valid texture object.
-	
+
 	\sa CreateTextureObject()
-	
+
 ***************************************/
 
 Burger::Texture * BURGER_API Burger::Display::CreateTexture(Texture::eWrapping uWrapping,Texture::eFilter uFilter)
@@ -550,9 +621,9 @@ Burger::Texture * BURGER_API Burger::Display::CreateTexture(Texture::eWrapping u
 	\param uWrapping Texture wrapping constant
 	\param uFilter Texture filter constant
 	\return \ref NULL if the object couldn't be created or a valid texture object.
-	
+
 	\sa CreateTextureObject()
-	
+
 ***************************************/
 
 Burger::Texture * BURGER_API Burger::Display::CreateTexture(Word uWidth,Word uHeight,Image::ePixelTypes uPixelType,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
@@ -581,9 +652,9 @@ Burger::Texture * BURGER_API Burger::Display::CreateTexture(Word uWidth,Word uHe
 	\param uWrapping Texture wrapping constant
 	\param uFilter Texture filter constant
 	\return \ref NULL if the object couldn't be created or a valid texture object.
-	
+
 	\sa CreateTextureObject()
-	
+
 ***************************************/
 
 Burger::Texture * BURGER_API Burger::Display::CreateTexturePNG(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
@@ -608,9 +679,9 @@ Burger::Texture * BURGER_API Burger::Display::CreateTexturePNG(const char *pFile
 	\param uWrapping Texture wrapping constant
 	\param uFilter Texture filter constant
 	\return \ref NULL if the object couldn't be created or a valid texture object.
-	
+
 	\sa CreateTextureObject()
-	
+
 ***************************************/
 
 Burger::Texture * BURGER_API Burger::Display::CreateTexturePNG(Filename *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
@@ -632,13 +703,13 @@ Burger::Texture * BURGER_API Burger::Display::CreateTexturePNG(Filename *pFilena
 	filter settings and set it up to obtain the bitmap from a PNG file.
 
 	\param pRezFile Pointer to a Burgerlib RezFile
-	\param uRezNum Chuck ID of the data containing the image file 
+	\param uRezNum Chuck ID of the data containing the image file
 	\param uWrapping Texture wrapping constant
 	\param uFilter Texture filter constant
 	\return \ref NULL if the object couldn't be created or a valid texture object.
-	
+
 	\sa CreateTextureObject()
-	
+
 ***************************************/
 
 Burger::Texture * BURGER_API Burger::Display::CreateTexturePNG(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
@@ -663,9 +734,9 @@ Burger::Texture * BURGER_API Burger::Display::CreateTexturePNG(RezFile *pRezFile
 	\param uWrapping Texture wrapping constant
 	\param uFilter Texture filter constant
 	\return \ref NULL if the object couldn't be created or a valid texture object.
-	
+
 	\sa CreateTextureObject()
-	
+
 ***************************************/
 
 Burger::Texture * BURGER_API Burger::Display::CreateTextureGIF(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
@@ -690,9 +761,9 @@ Burger::Texture * BURGER_API Burger::Display::CreateTextureGIF(const char *pFile
 	\param uWrapping Texture wrapping constant
 	\param uFilter Texture filter constant
 	\return \ref NULL if the object couldn't be created or a valid texture object.
-	
+
 	\sa CreateTextureObject()
-	
+
 ***************************************/
 
 Burger::Texture * BURGER_API Burger::Display::CreateTextureGIF(Filename *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
@@ -714,13 +785,13 @@ Burger::Texture * BURGER_API Burger::Display::CreateTextureGIF(Filename *pFilena
 	filter settings and set it up to obtain the bitmap from a GIF file.
 
 	\param pRezFile Pointer to a Burgerlib RezFile
-	\param uRezNum Chuck ID of the data containing the image file 
+	\param uRezNum Chuck ID of the data containing the image file
 	\param uWrapping Texture wrapping constant
 	\param uFilter Texture filter constant
 	\return \ref NULL if the object couldn't be created or a valid texture object.
-	
+
 	\sa CreateTextureObject()
-	
+
 ***************************************/
 
 Burger::Texture * BURGER_API Burger::Display::CreateTextureGIF(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
@@ -745,9 +816,9 @@ Burger::Texture * BURGER_API Burger::Display::CreateTextureGIF(RezFile *pRezFile
 	\param uWrapping Texture wrapping constant
 	\param uFilter Texture filter constant
 	\return \ref NULL if the object couldn't be created or a valid texture object.
-	
+
 	\sa CreateTextureObject()
-	
+
 ***************************************/
 
 Burger::Texture * BURGER_API Burger::Display::CreateTextureTGA(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
@@ -772,7 +843,7 @@ Burger::Texture * BURGER_API Burger::Display::CreateTextureTGA(const char *pFile
 	\param uWrapping Texture wrapping constant
 	\param uFilter Texture filter constant
 	\return \ref NULL if the object couldn't be created or a valid texture object.
-	
+
 	\sa CreateTextureObject()
 
 ***************************************/
@@ -796,13 +867,13 @@ Burger::Texture * BURGER_API Burger::Display::CreateTextureTGA(Filename *pFilena
 	filter settings and set it up to obtain the bitmap from a TGA file.
 
 	\param pRezFile Pointer to a Burgerlib RezFile
-	\param uRezNum Chuck ID of the data containing the image file 
+	\param uRezNum Chuck ID of the data containing the image file
 	\param uWrapping Texture wrapping constant
 	\param uFilter Texture filter constant
 	\return \ref NULL if the object couldn't be created or a valid texture object.
-	
+
 	\sa CreateTextureObject()
-	
+
 ***************************************/
 
 Burger::Texture * BURGER_API Burger::Display::CreateTextureTGA(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
@@ -827,9 +898,9 @@ Burger::Texture * BURGER_API Burger::Display::CreateTextureTGA(RezFile *pRezFile
 	\param uWrapping Texture wrapping constant
 	\param uFilter Texture filter constant
 	\return \ref NULL if the object couldn't be created or a valid texture object.
-	
+
 	\sa CreateTextureObject()
-	
+
 ***************************************/
 
 Burger::Texture * BURGER_API Burger::Display::CreateTextureBMP(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
@@ -854,9 +925,9 @@ Burger::Texture * BURGER_API Burger::Display::CreateTextureBMP(const char *pFile
 	\param uWrapping Texture wrapping constant
 	\param uFilter Texture filter constant
 	\return \ref NULL if the object couldn't be created or a valid texture object.
-	
+
 	\sa CreateTextureObject()
-	
+
 ***************************************/
 
 Burger::Texture * BURGER_API Burger::Display::CreateTextureBMP(Filename *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
@@ -878,13 +949,13 @@ Burger::Texture * BURGER_API Burger::Display::CreateTextureBMP(Filename *pFilena
 	filter settings and set it up to obtain the bitmap from a BMP file.
 
 	\param pRezFile Pointer to a Burgerlib RezFile
-	\param uRezNum Chuck ID of the data containing the image file 
+	\param uRezNum Chuck ID of the data containing the image file
 	\param uWrapping Texture wrapping constant
 	\param uFilter Texture filter constant
 	\return \ref NULL if the object couldn't be created or a valid texture object.
-	
+
 	\sa CreateTextureObject()
-	
+
 ***************************************/
 
 Burger::Texture * BURGER_API Burger::Display::CreateTextureBMP(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
@@ -907,7 +978,7 @@ Burger::Texture * BURGER_API Burger::Display::CreateTextureBMP(RezFile *pRezFile
 
 	\param pDescription Pointer to a description
 	\return \ref NULL if the object couldn't be created or a valid vertex object.
-	
+
 	\sa CreateVertexBufferObject()
 
 ***************************************/
@@ -928,7 +999,7 @@ Burger::VertexBuffer * BURGER_API Burger::Display::CreateVertexBuffer(const Vert
 /*! ************************************
 
 	\brief Get a list of available video modes
-	
+
 	\param pOutput Pointer to array of VideoCardDescription entries
 	\return Zero if no error, non-zero on error
 
@@ -955,7 +1026,7 @@ Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 	\param uStart First color entry to update (0-255)
 	\param uCount Number of colors to update (256-uStart)
 	\param pPalette Base pointer to the colors to use in the update in the size of uCount*3
-	
+
 	\sa SetPalette(const Word8 *) or SetPalette(void **)
 
 ***************************************/
@@ -1029,7 +1100,7 @@ void BURGER_API Burger::Display::SetPalette(Word uStart,Word uCount,const Word8 
 	\param uStart First color entry to update (0-255)
 	\param uCount Number of colors to update (256-uStart)
 	\param pPalette Base pointer to an array of RGBAWord8_t colors to use in the update in the size of uCount
-	
+
 	\sa SetPalette(const Word8 *) or SetPalette(void **)
 
 ***************************************/
@@ -1110,7 +1181,7 @@ void BURGER_API Burger::Display::SetPalette(Word uStart,Word uCount,const RGBAWo
 	\note On MSDOS, the EGA value of the border color is 4 bits (0-15).
 
 	\param uColor Border color that is specific to the hardware being updated.
-	
+
 	\sa GetBorderColor()
 
 ***************************************/
@@ -1125,15 +1196,15 @@ void BURGER_API Burger::Display::SetBorderColor(Word uColor)
 /*! ************************************
 
 	\brief Set the display window title
-	
+
 	On desktop platforms such as Windows or MacOS,
 	the game could be running in a desktop window.
-	The window can have a title string, and it can be 
+	The window can have a title string, and it can be
 	set using this function.
 
 	On consoles and handhelds, this function does nothing.
 	\param pTitle UTF-8 string to display for the title bar
-	
+
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
@@ -1335,8 +1406,8 @@ void BURGER_API Burger::Display::FadeTo(const Word8 *pPalette,FadeProc pProc,voi
 	if (MemoryCompare(pPalette,m_Palette,768)) {
 		// Save the palette VSync flag
 		// Since I am fading, I can wait for VSync
-		Word OldVSync = m_bPaletteVSync;		
-		m_bPaletteVSync = TRUE;		
+		Word8 bOldVSync = m_bPaletteVSync;
+		m_bPaletteVSync = TRUE;
 
 		// Need to first get the deltas for each color component
 		// Since a char is -127 to 128 and the differences are -255 to 255
@@ -1412,7 +1483,7 @@ void BURGER_API Burger::Display::FadeTo(const Word8 *pPalette,FadeProc pProc,voi
 			} while (fScale);
 		}
 		// Restore the sync value
-		m_bPaletteVSync = OldVSync;
+		m_bPaletteVSync = bOldVSync;
 	} else {
 		// On occasions where there is no palette change, alert any callback that the
 		// stepping concluded
@@ -1493,7 +1564,7 @@ void BURGER_API Burger::Display::FadeTo(RezFile *pRez,Word uResID,FadeProc pProc
 /*! ************************************
 
 	\brief Fade the hardware palette to a palette
-	
+
 	All color entries in the hardware palette are
 	set to the new palette slowly over time.
 
@@ -1527,12 +1598,12 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 	This is initialized with the size of the user's
 	desktop width from the primary display.
-	
+
 	\note This value is only valid after a Display class instance
 		was created.
 	\return Default monitor width in pixels
 	\sa GetDefaultHeight(void), GetDefaultDepth(void) or GetDefaultHertz(void)
-	
+
 ***************************************/
 
 /*! ************************************
@@ -1542,12 +1613,12 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 	This is initialized with the size of the user's
 	desktop height from the primary display.
-	
+
 	\note This value is only valid after a Display class instance
 		was created.
 	\return Default monitor height in pixels
 	\sa GetDefaultWidth(void), GetDefaultDepth(void) or GetDefaultHertz(void)
-	
+
 ***************************************/
 
 /*! ************************************
@@ -1557,12 +1628,12 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 	This is initialized with the pixel depth of the user's
 	desktop from the primary display.
-	
+
 	\note This value is only valid after a Display class instance
 		was created.
 	\return Default pixel depth in bits
 	\sa GetDefaultWidth(void), GetDefaultHeight(void) or GetDefaultHertz(void)
-	
+
 ***************************************/
 
 /*! ************************************
@@ -1572,12 +1643,12 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 	This is initialized with the refresh rate of the user's
 	desktop from the primary display.
-	
+
 	\note This value is only valid after a Display class instance
 		was created.
 	\return Default refresh rate in hertz (Can be zero if not applicable)
 	\sa GetDefaultWidth(void), GetDefaultHeight(void) or GetDefaultDepth(void)
-	
+
 ***************************************/
 
 /*! ************************************
@@ -1592,7 +1663,7 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 		was created.
 	\return Number of active display monitors used for the desktop.
 	\sa GetDefaultWidth(void), GetDefaultHeight(void), GetDefaultDepth(void) or GetDefaultHertz(void)
-	
+
 ***************************************/
 
 /*! ************************************
@@ -1602,12 +1673,12 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 	This is initialized with the size of the user's
 	entire desktop width. It is a union of all active monitors.
-	
+
 	\note This value is only valid after a Display class instance
 		was created.
 	\return Default total width in pixels
 	\sa GetDefaultTotalHeight(void), GetDefaultWidth(void) or GetDefaultMonitorCount(void)
-	
+
 ***************************************/
 
 /*! ************************************
@@ -1617,145 +1688,145 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 	This is initialized with the size of the user's
 	entire desktop height. It is a union of all active monitors.
-	
+
 	\note This value is only valid after a Display class instance
 		was created.
 	\return Default total height in pixels
 	\sa GetDefaultTotalWidth(void), GetDefaultHeight(void) or GetDefaultMonitorCount(void)
-	
+
 ***************************************/
 
 /*! ************************************
 
 	\fn GameApp * Burger::Display::GetGameApp(void) const
 	\brief Get the parent application pointer
-	
+
 	\return Pointer to the parent application
 	\sa GetWidth() const, GetHeight() const or GetDepth() const
-	
+
 ***************************************/
 
 /*! ************************************
 
 	\fn Word Burger::Display::GetWidth(void) const
 	\brief Get the width in pixels of the display buffer
-	
+
 	\return Width of the display buffer in pixels
 	\sa GetHeight() const or GetDepth() const
-	
+
 ***************************************/
 
 /*! ************************************
 
 	\fn Word Burger::Display::GetHeight(void) const
 	\brief Get the height in pixels of the display buffer
-	
+
 	\return Height of the display buffer in pixels
 	\sa GetWidth() const or GetDepth() const
-	
+
 ***************************************/
 
 /*! ************************************
 
 	\fn Word Burger::Display::GetDepth(void) const
 	\brief Get the depth in bits of the display buffer
-	
+
 	The display buffer could be 8 for 8 bit palette, 15 for 5:5:5 RGB, 16
 	for 5:6:5 RGB or 24 or 32 for hardware rendering
 
 	\return Depth of the display buffer in bits
 	\sa GetWidth() const or GetHeight() const
-	
+
 ***************************************/
-	
+
 /*! ************************************
 
 	\fn Word Burger::Display::GetFlags(void) const
 	\brief Get the flags associated with this Display class instance
-	
+
 	\return Flags containing the current state of the display system
 	\sa GetWidth() const or GetHeight() const
-	
+
 ***************************************/
 
 /*! ************************************
 
 	\fn Word Burger::Display::GetDisplayWidth(void) const
 	\brief Get the width in pixels of the display hardware
-	
+
 	This differs from GetWidth() in that this is the
 	actual display hardware's resolution, which can differ
 	from the resolution of the draw buffer.
 
 	\return Width of the display hardware in pixels
 	\sa GetDisplayHeight() const or GetWidth() const
-	
+
 ***************************************/
 
 /*! ************************************
 
 	\fn Word Burger::Display::GetDisplayHeight(void) const
 	\brief Get the height in pixels of the display hardware
-	
+
 	This differs from GetHeight() in that this is the
 	actual display hardware's resolution, which can differ
 	from the resolution of the draw buffer.
 
 	\return Height of the display hardware in pixels
 	\sa GetDisplayWidth() const or GetHeight() const
-	
+
 ***************************************/
 
 /*! ************************************
 
 	\fn float Burger::Display::GetWidthFloat(void) const
 	\brief Get the width in pixels of the display buffer
-	
+
 	\return Width of the display buffer in pixels as a float
 	\sa GetHeightFloat() const or GetWidth() const
-	
+
 ***************************************/
 
 /*! ************************************
 
 	\fn float Burger::Display::GetHeightFloat(void) const
 	\brief Get the height in pixels of the display buffer
-	
+
 	\return Height of the display buffer in pixels as a float
 	\sa GetWidthFloat() const or GetHeight() const
-	
+
 ***************************************/
 
 /*! ************************************
 
 	\fn float Burger::Display::GetAspectRatioX(void) const
 	\brief Get the aspect ratio in the format of width/height
-	
+
 	\return Aspect ratio in the X direction
 	\sa GetAspectRatioY() const
-	
+
 ***************************************/
 
 /*! ************************************
 
 	\fn float Burger::Display::GetAspectRatioY(void) const
 	\brief Get the aspect ratio in the format of height/width
-	
+
 	\return Aspect ratio in the Y direction
 	\sa GetAspectRatioX() const
-	
+
 ***************************************/
 
 
 /*! ************************************
 
 	\brief Get the enumeration of the screen aspect ratio
-	
+
 	Convert the aspect ratio values into the closest enumeration of
 	a standard aspect ratio.
 
 	\return Enumeration of the screen's current aspect ratio
-	
+
 ***************************************/
 
 Burger::Display::eAspectRatio BURGER_API Burger::Display::GetAspectRatio(void) const
@@ -1788,7 +1859,7 @@ Burger::Display::eAspectRatio BURGER_API Burger::Display::GetAspectRatio(void) c
 	it's not guaranteed that all colors will be updated due to system
 	reserved colors (For windowed modes). The palette will have
 	the reserved colors in it if this is the case.
-	
+
 	\return Pointer to a 768 byte array of Red,Green,Blue color components
 	\sa SetPalette()
 
@@ -1855,7 +1926,7 @@ Burger::Display::eAspectRatio BURGER_API Burger::Display::GetAspectRatio(void) c
 /*! ************************************
 
 	\fn void Burger::Display::SetPaletteVSync(Word bPaletteVSync)
-	\brief Set the flag to enable palette updates 
+	\brief Set the flag to enable palette updates
 
 	\param bPaletteVSync \ref TRUE to enable vertical blank syncing, \ref FALSE to disable it
 	\sa GetPaletteVSync() const
@@ -1955,7 +2026,9 @@ Burger::Display::eAspectRatio BURGER_API Burger::Display::GetAspectRatio(void) c
 
 ***************************************/
 
+#if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::Display,Burger::Base);
+#endif
 
 /*! ************************************
 

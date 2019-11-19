@@ -2,7 +2,7 @@
 
 	Shaders
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -35,20 +35,23 @@
 namespace Burger {
 
 #if defined(BURGER_WINDOWS)
+
+// Crap, WATCOM doesn't support __declspec(align(4))
+
 #if defined(BURGER_WATCOM)
 #define BYTE Word8
 #else
 #define BYTE __declspec(align(4)) Word8
 #endif
 
-// Pixel shaders
+// Pixel shaders for DirectX 9
 
 #include "pscclr4dx9.h"
 #include "pstex2clr4dx9.h"
 #include "pstexturedx9.h"
 #include "pstexturecolordx9.h"
 
-// Vertex shaders
+// Vertex shaders for DirectX 9
 
 #include "vs20pos22ddx9.h"
 #include "vs20pos2tex2clr42ddx9.h"
@@ -65,25 +68,25 @@ namespace Burger {
 // "C" strings
 //
 
-#if defined(BURGER_OPENGL_SUPPORTED)
+#if defined(BURGER_OPENGL)
 
 // Variable names
 
-const char g_glDiffuseTexture[] = "DiffuseTexture";
-const char g_glPosition[] = "Position";
-const char g_glTexcoord[] = "Texcoord";
-const char g_glColor[] = "Color";
-const char g_glViewProjectionMatrix[] = "ViewProjectionMatrix";
-const char g_glXYWidthHeight[] = "XYWidthHeight";
+const char g_glDiffuseTexture[15] = "DiffuseTexture";
+const char g_glPosition[9] = "Position";
+const char g_glTexcoord[9] = "Texcoord";
+const char g_glColor[6] = "Color";
+const char g_glViewProjectionMatrix[21] = "ViewProjectionMatrix";
+const char g_glXYWidthHeight[14] = "XYWidthHeight";
 
-// Pixel shaders
+// Pixel shaders for OpenGL
 
 #include "pscclr4gl.h"
 #include "pstex2clr4gl.h"
 #include "pstexturegl.h"
 #include "pstexturecolorgl.h"
 
-// Vertex shaders
+// Vertex shaders for OpenGL
 
 #include "vs20pos22dgl.h"
 #include "vs20pos2tex2clr42dgl.h"
@@ -97,16 +100,18 @@ const char g_glXYWidthHeight[] = "XYWidthHeight";
 //
 
 #if defined(BURGER_XBOX360)
+
+// Remap from DWORD to the burgerlib type
 #define DWORD Word32
 
-// Pixel shaders
+// Pixel shaders for DirectX 9 for Xbox
 
 #include "pscclr4360.h"
 #include "pstex2clr4360.h"
 #include "pstexture360.h"
 #include "pstexturecolor360.h"
 
-// Vertex shaders
+// Vertex shaders for DirectX 9 for Xbox
 
 #include "vs20pos22d360.h"
 #include "vs20pos2tex2clr42d360.h"

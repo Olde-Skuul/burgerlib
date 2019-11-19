@@ -13,7 +13,7 @@
 
 #include "brdisplayopenglsoftware8.h"
 
-#if defined(BURGER_OPENGL_SUPPORTED)
+#if defined(BURGER_OPENGL)
 #if !defined(DOXYGEN)
 #define __BURGER__
 #endif

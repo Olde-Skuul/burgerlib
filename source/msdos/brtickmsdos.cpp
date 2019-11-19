@@ -39,7 +39,7 @@ static volatile Word32 TimerCount;
 static Bool Started;				/* True if started */
 static Bool ExitIn;			/* TRUE if atexit() */
 
-#if defined(__DOS4G__)
+#if defined(BURGER_DOS4G)
 
 /***************************************
 

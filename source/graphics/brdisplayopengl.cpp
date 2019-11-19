@@ -2,7 +2,7 @@
 
 	OpenGL manager class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -13,16 +13,24 @@
 
 #include "brdisplayopengl.h"
 
-#if defined(BURGER_OPENGL_SUPPORTED)
+#if defined(BURGER_OPENGL)
 #include "brdebug.h"
 #include "brimage.h"
 #include "brtextureopengl.h"
 #include "brvertexbufferopengl.h"
+#include "brnumberto.h"
+#include "brmemoryfunctions.h"
 
 // Don't include burger.h
 #define __BURGER__
 #include "brgl.h"
 #include "brglext.h"
+
+// Detect if OpenGL or OpenGL ES version 2.0 is available
+
+#if defined(GL_VERSION_2_0)	|| defined(GL_ES_VERSION_2_0)
+#define USE_GL2
+#endif
 
 //
 // OpenGL is a derived class for Windows
@@ -35,7 +43,9 @@
 #define TextureOpenGL Texture
 #define VertexBufferOpenGL VertexBuffer
 #else
+#if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::DisplayOpenGL,Burger::Display);
+#endif
 #endif
 
 
@@ -47,23 +57,23 @@ struct MessageLookup_t {
 };
 
 // Used by the shader compiler to force a version match
-#if defined(BURGER_OPENGL_SUPPORTED)
+#if defined(BURGER_OPENGL)
 static const char g_Version[] = "#version ";
 
 // Defines inserted into the shader for a vertex or fragment shader
-static const char g_VertexShader[] = 
+static const char g_VertexShader[] =
 	"#define VERTEX_SHADER\n"
 	"#define PIPED varying\n"
 	"#define VERTEX_INPUT attribute\n";
-static const char g_VertexShader140[] = 
+static const char g_VertexShader140[] =
 	"#define VERTEX_SHADER\n"
 	"#define PIPED out\n"
 	"#define VERTEX_INPUT in\n";
-static const char g_FragmentShader[] = 
+static const char g_FragmentShader[] =
 	"#define FRAGMENT_SHADER\n"
 	"#define PIPED varying\n"
 	"#define FRAGCOLOR_USED\n";
-static const char g_FragmentShader140[] = 
+static const char g_FragmentShader140[] =
 	"#define FRAGMENT_SHADER\n"
 	"#define PIPED in\n"
 	"#define FRAGCOLOR_USED out vec4 fragColor;\n"
@@ -131,7 +141,7 @@ static const GLenum s_Prims[] = {
 
 ***************************************/
 
-#if !defined(BURGER_OPENGL_SUPPORTED)
+#if !defined(BURGER_OPENGL) || defined(BURGER_LINUX)
 
 /*! ************************************
 
@@ -271,8 +281,22 @@ void Burger::DisplayOpenGL::Bind(Texture *pTexture,Word uIndex)
 	if (!pTexture) {
 		glBindTexture(GL_TEXTURE_2D,0);
 	} else {
-		pTexture->Bind(this);
+		pTexture->CheckLoad(this);
 	}
+}
+
+void Burger::DisplayOpenGL::Bind(Effect *pEffect)
+{
+#if defined(USE_GL2)
+	if (!pEffect) {
+		glUseProgram(0);
+	} else {
+		pEffect->CheckLoad(this);
+		glUseProgram(pEffect->GetProgramID());
+	}
+#else
+	BURGER_UNUSED(pEffect);
+#endif
 }
 
 void Burger::DisplayOpenGL::SetBlend(Word bEnable)
@@ -343,7 +367,8 @@ void Burger::DisplayOpenGL::SetScissor(Word bEnable)
 
 void Burger::DisplayOpenGL::DrawPrimitive(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer)
 {
-#if defined(GL_VERSION_2_0)
+	pVertexBuffer->CheckLoad(this);
+#if defined(USE_GL2)
 	glBindVertexArray(static_cast<VertexBufferOpenGL *>(pVertexBuffer)->GetVertexArrayObject());
 	glDrawArrays(s_Prims[uPrimitiveType],0,static_cast<GLsizei>(static_cast<VertexBufferOpenGL *>(pVertexBuffer)->GetArrayEntryCount()));
 #else
@@ -354,7 +379,8 @@ void Burger::DisplayOpenGL::DrawPrimitive(ePrimitiveType uPrimitiveType,VertexBu
 
 void Burger::DisplayOpenGL::DrawElements(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer)
 {
-#if defined(GL_VERSION_2_0)
+#if defined(USE_GL2)
+	pVertexBuffer->CheckLoad(this);
 	glBindVertexArray(static_cast<VertexBufferOpenGL *>(pVertexBuffer)->GetVertexArrayObject());
 	glDrawElements(s_Prims[uPrimitiveType],static_cast<GLsizei>(static_cast<VertexBufferOpenGL *>(pVertexBuffer)->GetElementEntryCount()),GL_UNSIGNED_SHORT,0);
 #else
@@ -372,7 +398,7 @@ void Burger::DisplayOpenGL::DrawElements(ePrimitiveType uPrimitiveType,VertexBuf
 	started up via a call to InitContext().
 
 	\return 0.0f if OpenGL is not started or a valid version number, example: 4.4f.
-	
+
 ***************************************/
 
 /*! ************************************
@@ -384,7 +410,7 @@ void Burger::DisplayOpenGL::DrawElements(ePrimitiveType uPrimitiveType,VertexBuf
 	started up via a call to InitContext().
 
 	\return 0.0f if OpenGL is not started or a valid version number for the compiler, example: 4.4f.
-	
+
 ***************************************/
 
 /*! ************************************
@@ -426,16 +452,16 @@ void Burger::DisplayOpenGL::DrawElements(ePrimitiveType uPrimitiveType,VertexBuf
 /*! ************************************
 
 	\brief Initialize the display for supporting OpenGL
-	
+
 	Once OpenGL is started, this function queries the driver for
 	the supported feature list and sets up the rendering status for
 	best performance in rendering scenes.
 
 	\sa InitContext()
-	
+
 ***************************************/
 
-#if defined(BURGER_OPENGL_SUPPORTED) && defined(_DEBUG) && !defined(DOXYGEN)
+#if defined(BURGER_OPENGL) && defined(_DEBUG) && !defined(DOXYGEN)
 
 // Data and a function to dump the OpenGL driver data
 // for debugging
@@ -450,7 +476,7 @@ static const GLStringIndex_t g_StringIndexes[] = {
 	{"Vendor",GL_VENDOR},
 	{"Renderer",GL_RENDERER},
 	{"Extensions",GL_EXTENSIONS}
-#if defined(GL_VERSION_2_0)	
+#if defined(USE_GL2)
 	,{"Shader Language Version",GL_SHADING_LANGUAGE_VERSION}
 #endif
 };
@@ -470,6 +496,10 @@ static const GLStringIndex_t g_TextureIndexes[] = {
 	{"GL_PALETTE8_R5_G6_B5_OES",0x8B97},
 	{"GL_PALETTE8_RGBA4_OES",0x8B98},
 	{"GL_PALETTE8_RGB5_A1_OES",0x8B99},
+	{"GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG",0x8C00},
+	{"GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG",0x8C01},
+	{"GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG",0x8C02},
+	{"GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG",0x8C03},
 	{"GL_COMPRESSED_R11_EAC",0x9270},
 	{"GL_COMPRESSED_SIGNED_R11_EAC",0x9271},
 	{"GL_COMPRESSED_RG11_EAC",0x9272},
@@ -530,8 +560,8 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 			if (pString) {
 				Debug::Message("%s = ",pWork->m_pName);
 				// Use String() because pResult can be long enough to overrun the buffer
-				Debug::String(pString);
-				Debug::String("\n");
+				Debug::PrintString(pString);
+				Debug::PrintString("\n");
 			}
 			++pWork;
 		} while (--uCount);
@@ -557,7 +587,7 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 	//
 
 	fVersion = 0.0f;
-#if defined(GL_VERSION_2_0)	
+#if defined(USE_GL2)
 	pString = reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
 	if (pString) {
 		if (!MemoryCompare("OpenGL ES GLSL ES ",pString,18)) {
@@ -613,21 +643,21 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 	}
 	m_uCompressedFormatCount = uTemp;
 
-#if defined(GL_VERSION_2_0)
+#if defined(USE_GL2)
 	GLint iMaxAttributes = 1;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS,&iMaxAttributes);
 	m_uMaximumVertexAttributes = static_cast<Word>(iMaxAttributes);
 #endif
-	
+
 #if defined(_DEBUG)
 	Debug::Message("m_uMaximumVertexAttributes = %u\n",m_uMaximumVertexAttributes);
-#endif	
-	
+#endif
+
 	// If not supported, preflight with 1 attachment
 	GLint iMaxColorattachments = 1;
 	glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS,&iMaxColorattachments);
 	m_uMaximumColorAttachments = static_cast<Word>(iMaxColorattachments);
-	
+
 #if defined(_DEBUG)
 	Debug::Message("m_uMaximumColorAttachments = %u\n",m_uMaximumColorAttachments);
 #endif
@@ -638,7 +668,7 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 /*! ************************************
 
 	\brief Compile an OpenGL shader
-	
+
 	Given a string that has the source to a shader, compile it
 	with OpenGL's GLSL compiler.
 
@@ -674,14 +704,14 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 	\param pShaderCode "C" string of the source code of the shader to compile
 	\param uShaderCodeLength Length of the source code string. If zero, pShaderCode is assumed to be zero terminated
 	\return Zero if the code can't be compiled, non-zero is a valid OpenGL shader reference
-	
+
 ***************************************/
 
 Word BURGER_API Burger::DisplayOpenGL::CompileShader(Word GLEnum,const char *pShaderCode,WordPtr uShaderCodeLength) const
 {
 	// Create a blank shader
 	GLuint uShader = 0;
-#if defined(GL_VERSION_2_0)	
+#if defined(USE_GL2)
 	// Valid pointer?
 	if (pShaderCode) {
 
@@ -705,7 +735,7 @@ Word BURGER_API Burger::DisplayOpenGL::CompileShader(Word GLEnum,const char *pSh
 				// If a version opcode already exists, don't insert one
 
 				if ((uShaderCodeLength<8) || MemoryCompare(g_Version,pShaderCode,8)) {
-					
+
 					// Since the first line isn't #version, create one
 
 					StringCopy(VersionString,g_Version);
@@ -721,7 +751,7 @@ Word BURGER_API Burger::DisplayOpenGL::CompileShader(Word GLEnum,const char *pSh
 					// Use the version found in the shader to determine the macros to use
 					iVersion = AsciiToInteger(pShaderCode+8,iVersion,0,iVersion);
 				}
-				
+
 				// Insert a #define for known shader types so
 				// unified shaders can compile only what's
 				// needed
@@ -782,9 +812,9 @@ Word BURGER_API Burger::DisplayOpenGL::CompileShader(Word GLEnum,const char *pSh
 						// Note: The log could be so long that it could overflow the
 						// Debug::Message buffer (Which would assert)
 						// So use Debug::String() to avoid this
-						Debug::String("Shader compile log:\n");
-						Debug::String(pLog);	
-						Debug::String("\n");
+						Debug::PrintString("Shader compile log:\n");
+						Debug::PrintString(pLog);
+						Debug::PrintString("\n");
 						Free(pLog);
 					}
 					glDeleteShader(uShader);
@@ -805,7 +835,7 @@ Word BURGER_API Burger::DisplayOpenGL::CompileShader(Word GLEnum,const char *pSh
 /*! ************************************
 
 	\brief Compile and link a unified OpenGL shader
-	
+
 	Given a string that has the source to both a vertex and a
 	fragment shader, compile them with OpenGL's GLSL compiler
 	and link them all together.
@@ -819,18 +849,18 @@ Word BURGER_API Burger::DisplayOpenGL::CompileShader(Word GLEnum,const char *pSh
 	\param pNormal Pointer to a "C" string of the label to use to attach to the program the vertex normals from the vertex buffer object, set to \ref NULL for no connection.
 	\param pTexcoord Pointer to a "C" string of the label to use to attach to the program the vertex texture coordinates from the vertex buffer object, set to \ref NULL for no connection.
 	\return Zero if the code can't be compiled, non-zero is a valid OpenGL shader reference
-	
+
 ***************************************/
 
-Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pUnifiedShader,WordPtr uLength,const VertexInputs_t *pVertexInputs,const Word *pMembers) const
+Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pUnifiedShader,WordPtr uLength,const OpenGLVertexInputs_t *pVertexInputs,const Word *pMembers) const
 {
 	return CompileProgram(pUnifiedShader,uLength,pUnifiedShader,uLength,pVertexInputs,pMembers);
 }
 
-Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShader,WordPtr uVSLength,const char *pPixelShader,WordPtr uPSLength,const VertexInputs_t *pVertexInputs,const Word *pMembers) const
+Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShader,WordPtr uVSLength,const char *pPixelShader,WordPtr uPSLength,const OpenGLVertexInputs_t *pVertexInputs,const Word *pMembers) const
 {
 	GLuint uProgram = 0;
-#if defined(GL_VERSION_2_0)	
+#if defined(USE_GL2)
 	// Only if there is source to compile
 	if (pVertexShader) {
 
@@ -843,14 +873,14 @@ Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShader,
 
 		if (pVertexInputs) {
 			Word uIndex = pVertexInputs->m_uIndex;
-			if (uIndex!=VERTEX_END) {
+			if (uIndex!=VertexBuffer::USAGE_END) {
 				if (!pMembers) {
 					GLuint uGLIndex = 0;
 					do {
 						glBindAttribLocation(uProgram,uGLIndex,pVertexInputs->m_pName);
 						++pVertexInputs;
 						++uGLIndex;
-					} while (pVertexInputs->m_uIndex!=VERTEX_END);
+					} while (pVertexInputs->m_uIndex!=VertexBuffer::USAGE_END);
 				} else {
 					GLuint uGLIndex = 0;
 					GLuint uGLIndexUsed;
@@ -858,20 +888,20 @@ Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShader,
 						const Word *pTempMembers = pMembers;
 						Word uMember = pTempMembers[0];
 						uGLIndexUsed = uGLIndex;
-						if (uMember) {
+						if (uMember!=VertexBuffer::USAGE_END) {
 							do {
-								if (!((uMember^pVertexInputs->m_uIndex)&0xF00)) {
+								if (!((uMember^pVertexInputs->m_uIndex)&VertexBuffer::USAGE_TYPEMASK)) {
 									uGLIndexUsed = static_cast<GLuint>(pTempMembers-pMembers);
 									break;
 								}
 								++pTempMembers;
 								uMember = pTempMembers[0];
-							} while (uMember);
+							} while (uMember!=VertexBuffer::USAGE_END);
 						}
 						glBindAttribLocation(uProgram,uGLIndexUsed,pVertexInputs->m_pName);
 						++pVertexInputs;
 						++uGLIndex;
-					} while (pVertexInputs->m_uIndex!=VERTEX_END);
+					} while (pVertexInputs->m_uIndex!=VertexBuffer::USAGE_END);
 				}
 			}
 		}
@@ -901,16 +931,16 @@ Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShader,
 				glGetProgramiv(uProgram,GL_LINK_STATUS,&iStatus);
 				if (iStatus==GL_FALSE) {
 
-					Debug::String("Failed to link program\n");
+					Debug::PrintString("Failed to link program\n");
 					// Print out the log
 					GLint iLogLength;
 					glGetProgramiv(uProgram,GL_INFO_LOG_LENGTH,&iLogLength);
 					if (iLogLength > 1) {
 						GLchar *pErrorLog = static_cast<GLchar*>(Alloc(static_cast<WordPtr>(iLogLength)));
 						glGetProgramInfoLog(uProgram,iLogLength,&iLogLength,pErrorLog);
-						Debug::String("Program link log:\n");
-						Debug::String(pErrorLog);
-						Debug::String("\n");
+						Debug::PrintString("Program link log:\n");
+						Debug::PrintString(pErrorLog);
+						Debug::PrintString("\n");
 						Free(pErrorLog);
 					}
 
@@ -925,13 +955,13 @@ Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShader,
 						// Dump the log for post link validation failures
 						GLint iLogLength;
 						glGetProgramiv(uProgram,GL_INFO_LOG_LENGTH,&iLogLength);
-						Debug::String("Failed to validate program\n");
+						Debug::PrintString("Failed to validate program\n");
 						if (iLogLength > 1) {
 							GLchar *pErrorLog = static_cast<GLchar*>(Alloc(static_cast<WordPtr>(iLogLength)));
 							glGetProgramInfoLog(uProgram, iLogLength, &iLogLength,pErrorLog);
-							Debug::String("Program validate log:\n");
-							Debug::String(pErrorLog);
-							Debug::String("\n");
+							Debug::PrintString("Program validate log:\n");
+							Debug::PrintString(pErrorLog);
+							Debug::PrintString("\n");
 							Free(pErrorLog);
 						}
 					} else {
@@ -964,10 +994,10 @@ Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShader,
 // Create a vertex array object
 //
 
-Word BURGER_API Burger::DisplayOpenGL::CreateVertexArrayObject(const VertexBufferObjectDescription_t *pDescription) const
+Word BURGER_API Burger::DisplayOpenGL::CreateVertexArrayObject(const OpenGLVertexBufferObjectDescription_t *pDescription) const
 {
 	GLuint uVertexArrayObjectID = 0;
-#if defined(GL_VERSION_2_0)		
+#if defined(USE_GL2)
 	if (pDescription) {
 
 		// Create a vertex array object
@@ -1038,7 +1068,7 @@ Word BURGER_API Burger::DisplayOpenGL::CreateVertexArrayObject(const VertexBuffe
 				}
 			}
 
-			// 
+			//
 			// Are there texture UV coordinates?
 			//
 
@@ -1049,7 +1079,7 @@ Word BURGER_API Burger::DisplayOpenGL::CreateVertexArrayObject(const VertexBuffe
 				GLuint uUVBufferID = uBufferID;
 				if (!uUVBufferID) {
 					bSuccess = FALSE;
-				} else {			
+				} else {
 					glBindBuffer(GL_ARRAY_BUFFER,uUVBufferID);
 
 					// Allocate and load UV coordinates into the Vertex Buffer Object
@@ -1098,28 +1128,28 @@ Word BURGER_API Burger::DisplayOpenGL::CreateVertexArrayObject(const VertexBuffe
 /*! ************************************
 
 	\brief Dispose of a vertex array object
-	
+
 	Dispose of all the vertex objects (GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING)
 	and the GL_ELEMENT_ARRAY_BUFFER_BINDING object and then
 	dispose of the vertex array object.
 
 	\param uVertexArrayObject OpenGL vertex array object (0 does nothing)
-	
+
 ***************************************/
 
 void BURGER_API Burger::DisplayOpenGL::DeleteVertexArrayObject(Word uVertexArrayObject) const
 {
-#if defined(GL_VERSION_2_0)	
+#if defined(USE_GL2)
 	if (uVertexArrayObject) {
 		// Bind the vertex array object so we can get data from it
 		glBindVertexArray(uVertexArrayObject);
-		
+
 		// For every possible attribute set in the vertex array object
 		GLint iBufferID;
 		GLuint uBufferID;
 		GLuint uIndex = 0;
 		do {
-			// Get the  vertex array object set for that attribute
+			// Get the vertex array object set for that attribute
 			glGetVertexAttribiv(uIndex,GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING,&iBufferID);
 
 			// If there was a vertex array object set...
@@ -1171,7 +1201,7 @@ void BURGER_API Burger::DisplayOpenGL::DeleteVertexArrayObject(Word uVertexArray
 Word BURGER_API Burger::DisplayOpenGL::BuildFrameBufferObject(Word uWidth,Word uHeight,Word uGLDepth,Word uGLClamp,Word uGLZDepth) const
 {
 	GLuint uFrontBufferObject = 0;
-#if defined(GL_VERSION_2_0)		
+#if defined(USE_GL2)
 	// Create the front buffer texture
 	GLuint uColorTextureID;
 	glGenTextures(1,&uColorTextureID);
@@ -1231,7 +1261,7 @@ Word BURGER_API Burger::DisplayOpenGL::BuildFrameBufferObject(Word uWidth,Word u
 /*! ************************************
 
 	\brief Dispose of a frame buffer data object's attachment
-	
+
 	Given an OpenGL frame buffer attachment like GL_DEPTH_ATTACHMENT, delete
 	it from the currently bound Framebuffer. It will first query the
 	attachment to determine if it's a GL_RENDERBUFFER or a GL_TEXTURE
@@ -1239,12 +1269,12 @@ Word BURGER_API Burger::DisplayOpenGL::BuildFrameBufferObject(Word uWidth,Word u
 
 	\param uAttachment OpenGL attachment enumeration
 	\sa DeleteFrameBufferObject(Word) const
-	
+
 ***************************************/
 
 void BURGER_API Burger::DisplayOpenGL::DeleteFrameBufferObjectAttachment(Word uAttachment)
 {
-#if defined(GL_VERSION_2_0)	
+#if defined(USE_GL2)
 	GLint iObjectID;
 	// Get the type of frame buffer
 	glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER,uAttachment,GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE,&iObjectID);
@@ -1254,7 +1284,7 @@ void BURGER_API Burger::DisplayOpenGL::DeleteFrameBufferObjectAttachment(Word uA
 		glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER,uAttachment,GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME,&iObjectID);
 		uObjectID = static_cast<GLuint>(iObjectID);
 		glDeleteRenderbuffers(1,&uObjectID);
-		
+
 	// If it's a texture buffer, call glDeleteTextures()
 	} else if (GL_TEXTURE == iObjectID) {
 		glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER,uAttachment,GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME,&iObjectID);
@@ -1269,7 +1299,7 @@ void BURGER_API Burger::DisplayOpenGL::DeleteFrameBufferObjectAttachment(Word uA
 /*! ************************************
 
 	\brief Dispose of a frame buffer data object
-	
+
 	Given an OpenGL frame buffer, dispose of it and everything attached to it.
 
 	\param uFrameBufferObject OpenGL frame buffer (Zero does nothing)
@@ -1279,7 +1309,7 @@ void BURGER_API Burger::DisplayOpenGL::DeleteFrameBufferObjectAttachment(Word uA
 
 void BURGER_API Burger::DisplayOpenGL::DeleteFrameBufferObject(Word uFrameBufferObject) const
 {
-#if defined(GL_VERSION_2_0)	
+#if defined(USE_GL2)
 	if (uFrameBufferObject) {
 		glBindFramebuffer(GL_FRAMEBUFFER,uFrameBufferObject);
 		Word uCount = m_uMaximumColorAttachments;
@@ -1306,7 +1336,7 @@ void BURGER_API Burger::DisplayOpenGL::DeleteFrameBufferObject(Word uFrameBuffer
 /*! ************************************
 
 	\brief Create an OpenGL texture
-	
+
 	Given a bit map image, upload it to the OpenGL system while
 	trying to retain the format as close as possible.
 
@@ -1333,7 +1363,7 @@ Word BURGER_API Burger::DisplayOpenGL::CreateTextureID(const Image *pImage,Word 
 		iFormat = GL_RGBA;
 		break;
 	default:
-		break;	
+		break;
 	}
 
 	// Is the format supported?
@@ -1391,7 +1421,7 @@ Word BURGER_API Burger::DisplayOpenGL::CreateTextureID(const Image *pImage,Word 
 
 			// If the texture doesn't have a mip map and one is requested, generate it
 
-#if defined(GL_VERSION_2_0)	
+#if defined(USE_GL2)
 			if (bGenerateMipMap && (pImage->GetMipMapCount()<2)) {
 				glGenerateMipmap(GL_TEXTURE_2D);
 			}
@@ -1404,13 +1434,13 @@ Word BURGER_API Burger::DisplayOpenGL::CreateTextureID(const Image *pImage,Word 
 /*! ************************************
 
 	\brief Convert an OpenGL error enumeration into a string
-	
-	Given an enum from a call to glGetError(), call this function 
+
+	Given an enum from a call to glGetError(), call this function
 	convert the number into a string describing the error.
 
 	\param uGLErrorEnum OpenGL error enum
 	\return Pointer to a "C" string with the error message (Don't dispose)
-	
+
 ***************************************/
 
 static const MessageLookup_t g_GetErrorString[] = {
@@ -1455,7 +1485,7 @@ const char * BURGER_API Burger::DisplayOpenGL::GetErrorString(Word uGLErrorEnum)
 
 	\param uGLTypeEnum OpenGL data type enum
 	\return Number of bytes for the type or 0 if unknown
-	
+
 ***************************************/
 
 WordPtr BURGER_API Burger::DisplayOpenGL::GetGLTypeSize(Word uGLTypeEnum)
@@ -1510,19 +1540,19 @@ WordPtr BURGER_API Burger::DisplayOpenGL::GetGLTypeSize(Word uGLTypeEnum)
 }
 
 /*! ************************************
- 
+
 	\brief Poll OpenGL for errors and print them
- 
-	Call glGetError(), and if any errors were found, 
+
+	Call glGetError(), and if any errors were found,
 	print them using Debug::Warning().
- 
+
 	Used for debugging OpenGL
- 
+
 	\param pErrorLocation Pointer to a string that describes where this
 		error condition could be occurring.
- 
+
 	\return \ref TRUE if an error was found, \ref FALSE if not
- 
+
 ***************************************/
 
 Word BURGER_API Burger::DisplayOpenGL::PrintGLError(const char *pErrorLocation)

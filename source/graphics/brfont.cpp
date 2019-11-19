@@ -14,6 +14,7 @@
 #include "brfont.h"
 #include "brutf8.h"
 #include "brutf32.h"
+#include "brnumberto.h"
 
 // RTTI data
 #if !defined(DOXYGEN)

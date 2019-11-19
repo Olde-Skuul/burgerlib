@@ -2,7 +2,7 @@
 
 	OpenGL manager class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -40,28 +40,6 @@ class Image;
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 class DisplayOpenGL : public Display {
 	BURGER_RTTI_IN_CLASS();
-public:
-	static const Word VERTEX_END = BURGER_MAXUINT;
-	struct VertexInputs_t {
-		Word m_uIndex;				///< OpenGL BindAttribLocation
-		const char *m_pName;		///< Variable name for input
-	};
-	struct VertexBufferObjectDescription_t {
-		const void *m_pPositions;	///< Pointer to the vertex positions
-		const void *m_pNormals;		///< Pointer to the vertex normals
-		const void *m_pTexcoords;	///< Pointer to the texture UVs
-		const void *m_pElements;	///< Pointer to the polygon vertex indexes
-		WordPtr m_uPositionSize;	///< Size of the positions in bytes
-		WordPtr m_uNormalSize;		///< Size of the vertex normals in bytes
-		WordPtr m_uTexcoordSize;	///< Size of the texture UVs in bytes
-		WordPtr m_uElementSize;		///< Size of the polygon vertex indexes in bytes
-		Word m_ePositionType;		///< Open GL type of positions (GL_FLOAT)
-		Word m_uPositionElementCount;	///< Number of elements per position (3 or 4)
-		Word m_eNormalType;			///< Open GL type of vertex normal (GL_FLOAT)
-		Word m_uNormalElementCount;	///< Number of elements per vertex normal (3 or 4)
-		Word m_eTexcoordType;		///< Open GL type of texture UVs (GL_FLOAT)
-		Word m_uTexcoordElementCount;	///< Number of elements per uv (2)
-	};
 protected:
 	Word *m_pCompressedFormats;		///< Pointer to an array of supported OpenGL compressed textures
 	HDC__ *m_pOpenGLDeviceContext;	///< (Windows only) Window to attach the GL context to
@@ -88,6 +66,7 @@ public:
 	virtual void SetClearDepth(float fDepth);
 	virtual void Clear(Word uMask);
 	virtual void Bind(Texture *pTexture,Word uIndex=0);
+	virtual void Bind(Effect *pEffect);
 	virtual void SetBlend(Word bEnable);
 	virtual void SetBlendFunction(eSourceBlendFactor uSourceFactor,eDestinationBlendFactor uDestFactor);
 	virtual void SetLighting(Word bEnable);
@@ -105,9 +84,9 @@ public:
 	BURGER_INLINE Word GetMaximumVertexAttributes(void) const { return m_uMaximumVertexAttributes; }
 	void BURGER_API SetupOpenGL(void);
 	Word BURGER_API CompileShader(Word GLEnum,const char *pShaderCode,WordPtr uShaderCodeLength=0) const;
-	Word BURGER_API CompileProgram(const char *pUnifiedShader,WordPtr uLength,const VertexInputs_t *pVertexInputs=NULL,const Word *pMembers=NULL) const;
-	Word BURGER_API CompileProgram(const char *pVertexShader,WordPtr uVSLength,const char *pPixelShader,WordPtr uPSLength,const VertexInputs_t *pVertexInputs=NULL,const Word *pMembers=NULL) const;
-	Word BURGER_API CreateVertexArrayObject(const VertexBufferObjectDescription_t *pDescription) const;
+	Word BURGER_API CompileProgram(const char *pUnifiedShader,WordPtr uLength,const OpenGLVertexInputs_t *pVertexInputs=NULL,const Word *pMembers=NULL) const;
+	Word BURGER_API CompileProgram(const char *pVertexShader,WordPtr uVSLength,const char *pPixelShader,WordPtr uPSLength,const OpenGLVertexInputs_t *pVertexInputs=NULL,const Word *pMembers=NULL) const;
+	Word BURGER_API CreateVertexArrayObject(const OpenGLVertexBufferObjectDescription_t *pDescription) const;
 	void BURGER_API DeleteVertexArrayObject(Word uVertexArrayObject) const;
 	Word BURGER_API BuildFrameBufferObject(Word uWidth,Word uHeight,Word uGLDepth,Word uGLClamp,Word uGLZDepth=0) const;
 	static void BURGER_API DeleteFrameBufferObjectAttachment(Word uAttachment);
@@ -118,7 +97,7 @@ public:
 	static Word BURGER_API PrintGLError(const char *pErrorLocation);
 	static void BURGER_API WindowsLink(void);
 	static void BURGER_API WindowsUnlink(void);
-	BURGER_INLINE static Word GetFrontBuffer(void) { return 0; }
+    static BURGER_INLINE Word GetFrontBuffer(void) { return 0; }
 
 };
 #endif

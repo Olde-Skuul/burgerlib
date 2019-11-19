@@ -2,7 +2,7 @@
 
 	Base shader effect class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -22,6 +22,10 @@
 #include "brbase.h"
 #endif
 
+#ifndef __BRDISPLAYOBJECT_H__
+#include "brdisplayobject.h"
+#endif
+
 #if defined(BURGER_WINDOWS) && !defined(__BRWINDOWSTYPES_H__)
 #include "brwindowstypes.h"
 #endif
@@ -32,46 +36,61 @@
 
 /* BEGIN */
 namespace Burger {
-#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-class EffectDX9 : public Base {
+
+class Effect : public DisplayObject {
+
+    BURGER_DISABLE_COPY(Effect);
 	BURGER_RTTI_IN_CLASS();
+
 protected:
-	IDirect3DPixelShader9 *m_pPixelShader;		///< DirectX9 Pixel shader
-	IDirect3DVertexShader9 *m_pVertexShader;	///< DirectX9 Vertex shader
-	IDirect3DDevice9 *m_pDevice;				///< DirectX9 parent device
-public:
-	EffectDX9();
-	virtual ~EffectDX9();
-	void BURGER_API SetEffect(void);
-};
-#endif
-class EffectOpenGL : public Base {
-	BURGER_RTTI_IN_CLASS();
-protected:
-	Word m_uEffect;				///< Program ID for the compiled shader
-public:
-	EffectOpenGL();
-	virtual ~EffectOpenGL();
-	void BURGER_API SetEffect(void);
-};
+
 #if defined(BURGER_XBOX360) || defined(DOXYGEN)
-class Effect : public Base {
-	BURGER_RTTI_IN_CLASS();
-protected:
 	D3DPixelShader *m_pPixelShader;		///< (Xbox360 only) Pixel shader
 	D3DVertexShader *m_pVertexShader;	///< (Xbox360 only) Vertex shader
 	D3DDevice *m_pDevice;				///< (Xbox360 only) parent device
+#endif
+
+#if defined(BURGER_WINDOWS) || defined(BURGER_OPENGL) || defined(DOXYGEN)
+	union {
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+		struct {
+			IDirect3DPixelShader9 *m_pPixelShader;		///< DirectX9 Pixel shader
+			IDirect3DVertexShader9 *m_pVertexShader;	///< DirectX9 Vertex shader
+			IDirect3DDevice9 *m_pDevice;				///< DirectX9 parent device
+		} m_DX9;		///< DirectX 9 specific data
+#endif
+		struct {
+			Word m_uProgramID;							///< OpenGL Program ID for the compiled shader
+		} m_GL;			///< OpenGL specific data
+	} m_ShaderData;		///< Union of vertex/pixel shader data
+#endif
+
 public:
 	Effect();
 	virtual ~Effect();
-	void BURGER_API SetEffect(void);
+#if !defined(BURGER_WINDOWS) || defined(DOXYGEN)
+	virtual void Release(Display *pDisplay);
+#endif
+
+#if defined(BURGER_XBOX360) || defined(DOXYGEN)
+	BURGER_INLINE D3DPixelShader *GetPixelShader360(void) const { return m_pPixelShader; }
+	BURGER_INLINE D3DVertexShader *GetVertexShader360(void) const { return m_pVertexShader; }
+	BURGER_INLINE D3DDevice *GetDevice360(void) const { return m_pDevice; }
+#endif
+
+#if defined(BURGER_OPENGL) || defined(DOXYGEN)
+	BURGER_INLINE Word GetProgramID(void) const { return m_ShaderData.m_GL.m_uProgramID; }
+#endif
+
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+	BURGER_INLINE IDirect3DPixelShader9 *GetPixelShaderDX9(void) const { return m_ShaderData.m_DX9.m_pPixelShader; }
+	BURGER_INLINE IDirect3DVertexShader9 *GetVertexShaderDX9(void) const { return m_ShaderData.m_DX9.m_pVertexShader; }
+	BURGER_INLINE IDirect3DDevice9 *GetDeviceDX9(void) const { return m_ShaderData.m_DX9.m_pDevice; }
+protected:
+	void BURGER_API ReleaseGL(void);
+	void BURGER_API ReleaseDX9(void);
+#endif
 };
-#endif
-#if defined(BURGER_WINDOWS)
-typedef EffectDX9 Effect;
-#elif defined(BURGER_OPENGL_SUPPORTED)
-typedef EffectOpenGL Effect;
-#endif
 }
 /* END */
 

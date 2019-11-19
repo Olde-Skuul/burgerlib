@@ -68,7 +68,7 @@
 
 /*! ************************************
 
-	\fn Burger::Point2D_t::SetX(int iX)
+	\fn Burger::Point2D_t::SetX(int32_t iX)
 	\brief Set the X coordinate
 	
 	This inline function sets the X coordinate for the point
@@ -80,7 +80,7 @@
 
 /*! ************************************
 
-	\fn Burger::Point2D_t::SetY(int iY)
+	\fn Burger::Point2D_t::SetY(int32_t iY)
 	\brief Set the Y coordinate
 	
 	This inline function sets the Y coordinate for the point
@@ -92,7 +92,7 @@
 
 /*! ************************************
 
-	\fn Burger::Point2D_t::Set(int iX,int iY)
+	\fn Burger::Point2D_t::Set(int32_t iX,int32_t iY)
 	\brief Set the X and Y coordinates
 	
 	This inline function sets the X and Y coordinates for the point,

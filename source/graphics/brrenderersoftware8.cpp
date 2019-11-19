@@ -2,7 +2,7 @@
 
 	8 bit software manager class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -12,6 +12,7 @@
 ***************************************/
 
 #include "brrenderersoftware8.h"
+#include "brmemoryfunctions.h"
 
 /*! ************************************
 
@@ -103,7 +104,7 @@ void Burger::RendererSoftware8::Draw8BitPixels(int iX,int iY,Word uWidth,Word uH
 							// Copy 2 bytes
 							case 2:
 								do {
-#if defined(BURGER_INTELARCHITECTURE)
+#if defined(BURGER_INTEL)
 									reinterpret_cast<Word16 *>(pDest)[0] = reinterpret_cast<const Word16 *>(pPixels)[0];
 #else
 									Word8 a = pPixels[0];

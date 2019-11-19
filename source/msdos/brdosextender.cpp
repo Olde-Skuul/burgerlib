@@ -21,13 +21,13 @@
 
 #if defined(BURGER_MSDOS) || defined(DOXYGEN)
 #include "brdebug.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include <stdlib.h>
 
 // Force including the x32.library
 // if using the x32 dos extender
 
-#if defined(__X32__)
+#if defined(BURGER_X32)
 #include <X32.h>
 #pragma library ("x32.lib");
 #endif
@@ -403,7 +403,7 @@ int BURGER_API CallRealProcX32(Word32 pAddress,const Burger::Regs16 *pInput,Burg
 void * BURGER_API RealToProtectedPtr(Word32 pReal)
 {
 	Word32 uFlattened = ((pReal>>12)&0xFFFFFFF0U)+static_cast<Word16>(pReal);
-#if defined(__X32__)
+#if defined(BURGER_X32)
 	return ZeroBase()+uFlattened;
 #else
 	return reinterpret_cast<void *>(uFlattened);
@@ -497,7 +497,7 @@ Word32 BURGER_API GetRealBufferPtr(void)
 
 Word32 BURGER_API AllocRealMemory(Word32 uSize)
 {
-#if defined(__X32__)
+#if defined(BURGER_X32)
 	// Call X32 to allocate memory
 	return _x32_real_alloc(uSize);	
 #else
@@ -532,7 +532,7 @@ Word32 BURGER_API AllocRealMemory(Word32 uSize)
 void BURGER_API DeallocRealMemory(Word32 pReal)
 {
 	if (pReal) {
-#if defined(__X32__)
+#if defined(BURGER_X32)
 		// Call X32 to allocate memory
 		_x32_real_free(pReal);
 #else

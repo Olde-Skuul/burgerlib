@@ -49,15 +49,15 @@
 /* BEGIN */
 namespace Burger {
 struct Point2D_t {
-	int	m_iX;		///< X coordinate of the point
-	int m_iY;		///< Y coordinate of the point
-	BURGER_INLINE int GetX(void) const { return m_iX; }
-	BURGER_INLINE int GetY(void) const { return m_iY; }
-	BURGER_INLINE int *GetXPtr(void) { return &m_iX; }
-	BURGER_INLINE int *GetYPtr(void) { return &m_iY; }
-	BURGER_INLINE void SetX(int iX) { m_iX = iX; }
-	BURGER_INLINE void SetY(int iY) { m_iY = iY; }
-	BURGER_INLINE void Set(int iX,int iY) { m_iX = iX; m_iY = iY; }
+	int32_t	m_iX;		///< X coordinate of the point
+	int32_t m_iY;		///< Y coordinate of the point
+	BURGER_INLINE int32_t GetX(void) const { return m_iX; }
+	BURGER_INLINE int32_t GetY(void) const { return m_iY; }
+	BURGER_INLINE int32_t *GetXPtr(void) { return &m_iX; }
+	BURGER_INLINE int32_t *GetYPtr(void) { return &m_iY; }
+	BURGER_INLINE void SetX(int32_t iX) { m_iX = iX; }
+	BURGER_INLINE void SetY(int32_t iY) { m_iY = iY; }
+	BURGER_INLINE void Set(int32_t iX,int32_t iY) { m_iX = iX; m_iY = iY; }
 	BURGER_INLINE void Clear(void) { m_iX = 0; m_iY = 0; }
 	Word Read(FILE *fp);
 	Word Write(FILE *fp) const;

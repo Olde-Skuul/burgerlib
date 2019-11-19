@@ -2,7 +2,7 @@
 
 	Texture for rendering class, OpenGL version
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -32,7 +32,7 @@
 
 /* BEGIN */
 namespace Burger {
-#if defined(BURGER_WINDOWS)
+#if defined(BURGER_WINDOWS) && defined(BURGER_INTEL)
 class TextureOpenGL : public Texture {
 	BURGER_RTTI_IN_CLASS();
 protected:
@@ -41,7 +41,7 @@ public:
 	TextureOpenGL();
 	TextureOpenGL(eWrapping uWrapping,eFilter uFilter);
 	virtual ~TextureOpenGL();
-	virtual Word Bind(Display *pDisplay);
+	virtual Word CheckLoad(Display *pDisplay);
 	virtual void Release(Display *pDisplay);	
 	static int GetWrapping(eWrapping uWrapping);
 	static int GetFilter(eFilter uFilter);

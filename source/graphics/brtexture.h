@@ -2,7 +2,7 @@
 
 	Texture for rendering class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -22,6 +22,10 @@
 #include "brsmartpointer.h"
 #endif
 
+#ifndef __BRDISPLAYOBJECT_H__
+#include "brdisplayobject.h"
+#endif
+
 #ifndef __BRIMAGE_H__
 #include "brimage.h"
 #endif
@@ -36,8 +40,9 @@
 
 /* BEGIN */
 namespace Burger {
-class Display;
-class Texture : public ReferenceCounter {
+
+class Texture : public DisplayObject {
+    BURGER_DISABLE_COPY(Texture);
 	BURGER_RTTI_IN_CLASS();
 public:
 	enum eWrapping {
@@ -65,33 +70,31 @@ protected:
 	};
 	LoaderProc m_pLoader;	///< Function to load the image in case of texture purge
 	void *m_pUserData;		///< Pointer to user data for the loader
-	Texture *m_pNext;		///< Pointer to the next entry
-	Texture *m_pPrev;		///< Pointer to the previous entry
+
 #if defined(BURGER_XBOX360)
 	D3DTexture *m_pD3DTexture;
 #endif
-#if defined(BURGER_OPENGL_SUPPORTED) && !defined(BURGER_WINDOWS)
+
+#if defined(BURGER_OPENGL) && !defined(BURGER_WINDOWS)
 	Word m_uTextureID;		///< OpenGL Texture ID
 #endif
+
 	Image m_Image;			///< Description of the texture data
 	eWrapping m_eWrappingS;	///< Wrapping setting for the S value
 	eWrapping m_eWrappingT;	///< Wrapping setting for the T value
 	eFilter m_eMinFilter;	///< Filter for shrinkage
 	eFilter m_eMagFilter;	///< Filter for expansion
 	Word m_uDirty;			///< Values needed to be updated
-	static Texture *g_pHead;	///< Global pointer to the linked list of textures
-	void AddToGlobalList(void);
-	void RemoveFromGlobalList(void);
 public:
 	Texture();
 	Texture(eWrapping uWrapping,eFilter uFilter);
 	virtual ~Texture();
 #if defined(BURGER_WINDOWS)
-	virtual Word Bind(Display *pDisplay) = 0;
+	virtual Word CheckLoad(Display *pDisplay) = 0;
 	virtual void Release(Display *pDisplay) = 0;
 #else
-	Word Bind(Display *pDisplay);
-	void Release(Display *pDisplay);
+	virtual Word CheckLoad(Display *pDisplay);
+	virtual void Release(Display *pDisplay);
 #endif
 	Word BURGER_API LoadImageMemory(void);
 	void BURGER_API UnloadImageMemory(void);
@@ -120,9 +123,6 @@ public:
 	BURGER_INLINE void SetFilter(eFilter uFilter) { m_eMinFilter = uFilter; m_eMagFilter = uFilter; m_uDirty |= (DIRTY_MIN|DIRTY_MAG); }
 	BURGER_INLINE LoaderProc GetLoader(void) const { return m_pLoader; }
 	BURGER_INLINE void SetLoader(LoaderProc pCallback) { m_pLoader = pCallback; }
-	BURGER_INLINE static Texture *GetFirstTexture(void) { return g_pHead; }
-	BURGER_INLINE Texture *GetNext(void) const { return m_pNext; }
-	BURGER_INLINE Texture *GetPrevious(void) const { return m_pPrev; }
 	void BURGER_API LoadTGA(RezFile *pRezFile,Word uRezNum);
 	void BURGER_API LoadTGA(const char *pFilename);
 	void BURGER_API LoadTGA(Filename *pFilename);
@@ -135,16 +135,18 @@ public:
 	void BURGER_API LoadGIF(RezFile *pRezFile,Word uRezNum);
 	void BURGER_API LoadGIF(const char *pFilename);
 	void BURGER_API LoadGIF(Filename *pFilename);
-	static void BURGER_API ReleaseAll(Display *pDisplay);
+
 #if defined(BURGER_XBOX360)
 	Word BURGER_API GetD3DFormat(void) const;
 	BURGER_INLINE D3DTexture *GetTexture(void) const { return m_pD3DTexture; }
 #endif
-#if defined(BURGER_OPENGL_SUPPORTED) && !defined(BURGER_WINDOWS)
+
+#if defined(BURGER_OPENGL) && !defined(BURGER_WINDOWS)
 	static int GetWrapping(eWrapping uWrapping);
 	static int GetFilter(eFilter uFilter);
 	BURGER_INLINE Word GetTextureID(void) const { return m_uTextureID; }
 #endif
+
 private:
 	static Word BURGER_API CallbackRezFileTGA(Texture *pTexture,eLoader uLoader);
 	static Word BURGER_API CallbackFileTGA(Texture *pTexture,eLoader uLoader);

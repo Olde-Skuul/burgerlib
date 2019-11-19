@@ -24,12 +24,20 @@
 
 /* BEGIN */
 #if defined(BURGER_MSDOS) || defined(DOXYGEN)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+// These exist in the X32 DOS extender, Burgerlib creates them
+// for DOS4GW and others so code can assume these exist
+// for all MSDOS targets.
+
 extern void *_x32_zero_base_ptr;		///< Base Pointer to Real memory MSDOS Only
 extern Word16 _x32_zero_base_selector;	///< Segment to Real memory MSDOS Only
+
 BURGER_INLINE Word8 *ZeroBase(void) { return static_cast<Word8 *>(_x32_zero_base_ptr); }
+
 extern void BURGER_API CallInt10(Word EAX);
 extern Word BURGER_API CallInt14(Word EAX,Word EDX);
 extern Word BURGER_API CallInt17(Word EAX,Word EDX);
@@ -46,6 +54,7 @@ extern void * BURGER_API GetRealBufferProtectedPtr(void);
 extern Word32 BURGER_API GetRealBufferPtr(void);
 extern Word32 BURGER_API AllocRealMemory(Word32 uSize);
 extern void BURGER_API DeallocRealMemory(Word32 pReal);
+
 #ifdef __cplusplus
 }
 #endif

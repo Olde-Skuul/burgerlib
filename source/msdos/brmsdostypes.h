@@ -24,7 +24,9 @@
 
 /* BEGIN */
 #if defined(BURGER_MSDOS) || defined(DOXYGEN)
+
 namespace Burger {
+
 struct Regs16 {
 	Word16 ax;		///< 80x86 ax register
 	Word16 bx;		///< 80x86 bx register
@@ -37,6 +39,7 @@ struct Regs16 {
 	Word16 es;		///< 80x86 es segment register
 	Word16 flags;	///< 80x86 flags register
 };
+
 }
 #endif
 /* END */

@@ -16,6 +16,7 @@
 #if defined(BURGER_MSDOS)
 #include "brdosextender.h"
 #include "brfilemanager.h"
+#include "brmemoryfunctions.h"
 
 /***************************************
 

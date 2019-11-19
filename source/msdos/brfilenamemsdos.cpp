@@ -16,6 +16,7 @@
 #if defined(BURGER_MSDOS)
 #include "brfilemanager.h"
 #include "brdosextender.h"
+#include "brnumberto.h"
 #include <dos.h>
 #include <direct.h>
 

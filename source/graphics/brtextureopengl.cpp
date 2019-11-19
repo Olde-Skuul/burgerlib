@@ -2,7 +2,7 @@
 
 	Texture for rendering class, OpenGL version
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -13,7 +13,7 @@
 
 #include "brtextureopengl.h"
 
-#if defined(BURGER_OPENGL_SUPPORTED)
+#if defined(BURGER_OPENGL)
 #include "brglobalmemorymanager.h"
 #include "brdisplayopengl.h"
 
@@ -30,7 +30,9 @@
 #if !defined(BURGER_WINDOWS)
 #define TextureOpenGL Texture
 #else
+#if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::TextureOpenGL,Burger::Texture);
+#endif
 #endif
 
 /*! ************************************
@@ -81,7 +83,6 @@ Burger::Texture::Texture() :
 	m_eMagFilter(FILTER_NEAREST),
 	m_uDirty(BURGER_MAXUINT)
 {
-	AddToGlobalList();
 }
 
 Burger::Texture::Texture(eWrapping uWrapping,eFilter uFilter) :
@@ -95,7 +96,6 @@ Burger::Texture::Texture(eWrapping uWrapping,eFilter uFilter) :
 	m_eMagFilter(uFilter),
 	m_uDirty(BURGER_MAXUINT)
 {
-	AddToGlobalList();
 }
 #endif
 
@@ -119,7 +119,6 @@ Burger::TextureOpenGL::~TextureOpenGL()
 #if !defined(BURGER_WINDOWS)
 	// Release all resources created by loader
 	ShutdownImageMemory();
-	RemoveFromGlobalList();
 #endif
 }
 
@@ -135,7 +134,7 @@ Burger::TextureOpenGL::~TextureOpenGL()
 
 ***************************************/
 
-Word Burger::TextureOpenGL::Bind(Display * /* pDisplay */)
+Word Burger::TextureOpenGL::CheckLoad(Display * /* pDisplay */)
 {
 	// Is a texture object defined?
 	GLuint uID = m_uTextureID;
@@ -244,7 +243,7 @@ Word Burger::TextureOpenGL::Bind(Display * /* pDisplay */)
 	Allow the derived class to release hardware
 	resources
 
-	\sa Bind(Display *)
+	\sa CheckLoad(Display *)
 
 ***************************************/
 

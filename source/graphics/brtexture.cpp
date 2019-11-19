@@ -2,7 +2,7 @@
 
 	Texture for rendering class
 
-	Copyright (c) 1995-2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE
 	for license details. Yes, you can use it in a
@@ -19,7 +19,9 @@
 #include "brfilegif.h"
 #include "brfilemanager.h"
 
-BURGER_CREATE_STATICRTTI_PARENT(Burger::Texture,Burger::ReferenceCounter);
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::Texture,Burger::DisplayObject);
+#endif
 
 /*! ************************************
 
@@ -86,68 +88,6 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::Texture,Burger::ReferenceCounter);
 
 ***************************************/
 
-Burger::Texture *Burger::Texture::g_pHead = NULL;
-
-/*! ************************************
-
-	\brief Add this texture to the global linked list
-
-	To allow all textures to get an event such as a
-	reload due to surface loss, this function
-	will add this Texture to the global list
-
-	\sa RemoveFromGlobalList(void)
-
-***************************************/
-
-void Burger::Texture::AddToGlobalList(void)
-{
-	// Set the links to make this head of the list
-	m_pPrev = NULL;
-
-	// Get the previous head
-	Texture *pHead = g_pHead;
-	m_pNext = pHead;
-	g_pHead = this;		// Set the new head
-	if (pHead) {
-		// Set the new reverse link to this entry
-		pHead->m_pPrev = this;
-	}
-}
-
-/*! ************************************
-
-	\brief Remove this texture from the global linked list
-
-	To allow all textures to get an event such as a
-	reload due to surface loss, this function
-	will remove this Texture from the global list
-
-	\sa AddToGlobalList(void)
-
-***************************************/
-
-void Burger::Texture::RemoveFromGlobalList(void)
-{
-	Texture *pNext = m_pNext;
-	Texture *pPrev = m_pPrev;
-
-	// Was this texture the head?
-	if (g_pHead == this) {
-		g_pHead = pNext;
-	}
-	// Unlink
-	if (pPrev) {
-		pPrev->m_pNext = pNext;
-	}
-	if (pNext) {
-		pNext->m_pPrev = pPrev;
-	}
-	// Remove the links
-	m_pNext = NULL;
-	m_pPrev = NULL;
-}
-
 /*! ************************************
 
 	\brief Default constructor
@@ -158,7 +98,7 @@ void Burger::Texture::RemoveFromGlobalList(void)
 
 ***************************************/
 
-#if defined(BURGER_WINDOWS) || !(defined(BURGER_XBOX360) || defined(BURGER_OPENGL_SUPPORTED)) || defined(DOXYGEN)
+#if defined(BURGER_WINDOWS) || !(defined(BURGER_XBOX360) || defined(BURGER_OPENGL)) || defined(DOXYGEN)
 Burger::Texture::Texture() :
 	m_pLoader(NULL),
 	m_pUserData(NULL),
@@ -169,7 +109,6 @@ Burger::Texture::Texture() :
 	m_eMagFilter(FILTER_NEAREST),
 	m_uDirty(BURGER_MAXUINT)
 {
-	AddToGlobalList();
 }
 
 /*! ************************************
@@ -192,7 +131,6 @@ Burger::Texture::Texture(eWrapping uWrapping,eFilter uFilter) :
 	m_eMagFilter(uFilter),
 	m_uDirty(BURGER_MAXUINT)
 {
-	AddToGlobalList();
 }
 
 /*! ************************************
@@ -209,7 +147,6 @@ Burger::Texture::~Texture()
 {
 	// Release all resources created by loader
 	ShutdownImageMemory();
-	RemoveFromGlobalList();
 }
 
 /*! ************************************
@@ -224,7 +161,7 @@ Burger::Texture::~Texture()
 ***************************************/
 
 #if !defined(BURGER_WINDOWS) || defined(DOXYGEN)
-Word Burger::Texture::Bind(Display * /*pDisplay */)
+Word Burger::Texture::CheckLoad(Display * /*pDisplay */)
 {
 	m_uDirty = 0;
 	// Error!
@@ -238,7 +175,7 @@ Word Burger::Texture::Bind(Display * /*pDisplay */)
 	Allow the derived class to release hardware
 	resources
 
-	\sa Bind(Display *)
+	\sa CheckLoad(Display *)
 
 ***************************************/
 
@@ -570,49 +507,6 @@ void BURGER_API Burger::Texture::ShutdownImageMemory(void)
 	\param pCallback The new pointer to the texture loading callback
 
 	\sa GetLoader(void) const or UploadImage(void)
-
-***************************************/
-
-/*! ************************************
-
-	\fn Texture *Burger::Texture::GetFirstTexture(void)
-	\brief Get the first texture in the global linked list
-
-	To traverse the linked list of textures, use this function to 
-	get the first texture and if not \ref NULL, use GetNext(void) const
-	to get the next texture until the end of the linked list is
-	reached when a \ref NULL is found.
-
-	\return \ref NULL if no textures exist or a valid Texture pointer at the
-	head of the list.
-
-	\sa GetNext(void) const or GetPrevious(void) const
-
-***************************************/
-
-/*! ************************************
-
-	\fn Texture *Burger::Texture::GetNext(void) const
-	\brief Get the next texture in the global linked list
-
-	Return the pointer to the next texture in the linked list.
-
-	\return \ref NULL if no textures exist or the next valid Texture pointer.
-
-	\sa GetFirstTexture(void) or GetPrevious(void) const
-
-***************************************/
-
-/*! ************************************
-
-	\fn Texture *Burger::Texture::GetPrevious(void) const
-	\brief Get the previous texture in the global linked list
-
-	Return the pointer to the previous texture in the linked list.
-
-	\return \ref NULL if no textures exist or the previous valid Texture pointer.
-
-	\sa GetFirstTexture(void) or GetNext(void) const
 
 ***************************************/
 
@@ -1460,26 +1354,5 @@ void BURGER_API Burger::Texture::LoadGIF(Filename *pFilename)
 		m_pUserData = Filename::New(pFilename[0]);
 		m_pLoader = CallbackFilenameGIF;
 		m_uDirty |= DIRTY_IMAGE;
-	}
-}
-
-
-/*! ************************************
-
-	\brief Release all textures
-
-	Iterate over every texture in existence and release them
-	from the display instance.
-
-***************************************/
-
-void BURGER_API Burger::Texture::ReleaseAll(Display *pDisplay)
-{
-	Texture *pHead = g_pHead;
-	if (pHead) {
-		do {
-			pHead->Release(pDisplay);
-			pHead = pHead->GetNext();
-		} while (pHead);
 	}
 }
