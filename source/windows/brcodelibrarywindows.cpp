@@ -16,8 +16,8 @@
 #include "brcodelibrary.h"
 
 #if defined(BURGER_WINDOWS)
-#include "brglobals.h"
 #include "brfilename.h"
+#include "brglobals.h"
 #include "brstring16.h"
 #if !defined(WIN32_LEAN_AND_MEAN) && !defined(DOXYGEN)
 #define WIN32_LEAN_AND_MEAN
@@ -26,17 +26,14 @@
 
 /***************************************
 
-	Attempt to load in a shared library or DLL using
-	the standard paths. Return NULL if it fails
-	Please note, in Win95, passing in just the
-	DLL name without a full path will allow
-	the SYSTEM DLL's to be loaded, so, to
-	see if you want to load a system DLL, I check
-	the pathname if it has a ':' in it.
+	Attempt to load in a shared library or DLL using the standard paths. Return
+	NULL if it fails Please note, in Win95, passing in just the DLL name without
+	a full path will allow the SYSTEM DLL's to be loaded, so, to see if you want
+	to load a system DLL, I check the pathname if it has a ':' in it.
 
 ***************************************/
 
-Word Burger::CodeLibrary::Init(const char *pFilename)
+Word Burger::CodeLibrary::Init(const char* pFilename)
 {
 	// If there was a previous library, release it
 	Shutdown();
@@ -44,7 +41,7 @@ Word Burger::CodeLibrary::Init(const char *pFilename)
 	Filename Pathname;
 	// Is this a burgerlib pathname?
 	// Test by checking for a colon
-	if (StringCharacter(pFilename,':')) {
+	if (StringCharacter(pFilename, ':')) {
 		// Convert to a native windows pathname
 		Pathname.Set(pFilename);
 		pFilename = Pathname.GetNative();
@@ -53,9 +50,9 @@ Word Burger::CodeLibrary::Init(const char *pFilename)
 	// Convert from UTF8 to UTF16
 	String16 FinalName(pFilename);
 	// Load the library from Windows
-	HMODULE hModule = Globals::LoadLibraryW(FinalName.GetPtr());
+	HMODULE hModule = Windows::LoadLibraryW(FinalName.GetPtr());
 	// On success!
-	if (hModule!=NULL) {
+	if (hModule != NULL) {
 		m_pLibInstance = hModule;
 		uResult = TRUE;
 	}
@@ -79,16 +76,17 @@ void Burger::CodeLibrary::Shutdown(void)
 
 /***************************************
 
-	Return a function pointer to a procedure or data
-	contained within a shared library
+	Return a function pointer to a procedure or data contained within a shared
+	library
 
 ***************************************/
 
-void * Burger::CodeLibrary::GetFunction(const char *pFunctionName)
+void* Burger::CodeLibrary::GetFunction(const char* pFunctionName)
 {
-	void *pFunction = NULL;
+	void* pFunction = NULL;
 	if (pFunctionName && m_pLibInstance) {
-		pFunction = GetProcAddress(static_cast<HINSTANCE>(m_pLibInstance),pFunctionName);
+		pFunction = GetProcAddress(
+			static_cast<HINSTANCE>(m_pLibInstance), pFunctionName);
 	}
 	return pFunction;
 }

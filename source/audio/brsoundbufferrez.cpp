@@ -89,7 +89,7 @@ Burger::SoundBufferRez::SoundBufferRez(Burger::RezFile *pRezFile,Word uRezNum) :
 
 ***************************************/
 
-Word Burger::SoundBufferRez::Upload(SoundManager *pSoundManager)
+uint_t Burger::SoundBufferRez::Upload(SoundManager *pSoundManager)
 {
 	// Assume success
 	Word uResult = 0;

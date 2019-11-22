@@ -41,7 +41,7 @@ protected:
 	SoundBufferRez(void);
 	SoundBufferRez(RezFile *pRezFile,Word uRezNum);
 public:
-	virtual Word Upload(SoundManager *pSoundManager);
+    uint_t Upload(SoundManager *pSoundManager) BURGER_OVERRIDE;
 	void BURGER_API Set(RezFile *pRezFile,Word uRezNum);
 	static SoundBufferRez * BURGER_API New(void);
 	static SoundBufferRez * BURGER_API New(RezFile *pRezFile,Word uRezNum);

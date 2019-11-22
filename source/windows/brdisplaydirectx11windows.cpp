@@ -4,9 +4,10 @@
 
 	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
+
 	Please? It's not like I'm asking you for money!
 
 ***************************************/
@@ -15,6 +16,7 @@
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 #include "brgameapp.h"
 #include "brwindowstypes.h"
+#include "brmemoryfunctions.h"
 
 #if !defined(DIRECTDRAW_VERSION) && !defined(DOXYGEN)
 #define DIRECTDRAW_VERSION 0x700
@@ -33,7 +35,11 @@
 #include <ddraw.h>
 
 #ifdef _DEBUG
-#define PRINTHRESULT(hResult) /* m_pGameApp->Poll(); */ if (hResult!=D3D_OK) Debug::Message("Error at line " BURGER_MACRO_TO_STRING(__LINE__) " with 0x%08X\n",hResult)
+#define PRINTHRESULT(hResult) /* m_pGameApp->Poll(); */ \
+	if (hResult != D3D_OK) \
+	Debug::Message( \
+		"Error at line " BURGER_STRINGIZE(__LINE__) " with 0x%08X\n", \
+		hResult)
 #else
 #define PRINTHRESULT(hResult)
 #endif
@@ -48,53 +54,81 @@
 
 ***************************************/
 
-void BURGER_API Burger::DisplayDirectX11::ClearContext(ID3D11DeviceContext *pDX11Context)
+void BURGER_API Burger::DisplayDirectX11::ClearContext(
+	ID3D11DeviceContext* pDX11Context)
 {
 	// Detach everything from the DirectX 11 context
 	if (pDX11Context) {
 		// Detach the shaders
-		pDX11Context->VSSetShader(NULL,NULL,0);
-		pDX11Context->HSSetShader(NULL,NULL,0);
-		pDX11Context->DSSetShader(NULL,NULL,0);
-		pDX11Context->GSSetShader(NULL,NULL,0);
-		pDX11Context->PSSetShader(NULL,NULL,0);
+		pDX11Context->VSSetShader(NULL, NULL, 0);
+		pDX11Context->HSSetShader(NULL, NULL, 0);
+		pDX11Context->DSSetShader(NULL, NULL, 0);
+		pDX11Context->GSSetShader(NULL, NULL, 0);
+		pDX11Context->PSSetShader(NULL, NULL, 0);
 
 		// Clear this buffer to pass the array clear out states
-		ID3D11Buffer *ZeroBuffers[16];
-		MemoryClear(ZeroBuffers,sizeof(ZeroBuffers));
+		ID3D11Buffer* ZeroBuffers[16];
+		MemoryClear(ZeroBuffers, sizeof(ZeroBuffers));
 
 		// Clear out the index buffers
-		pDX11Context->IASetVertexBuffers(0,16,ZeroBuffers,static_cast<const UINT *>(static_cast<const void *>(ZeroBuffers)),static_cast<const UINT *>(static_cast<const void *>(ZeroBuffers)));
-		pDX11Context->IASetIndexBuffer(NULL,DXGI_FORMAT_R16_UINT,0);
+		pDX11Context->IASetVertexBuffers(0, 16, ZeroBuffers,
+			static_cast<const UINT*>(static_cast<const void*>(ZeroBuffers)),
+			static_cast<const UINT*>(static_cast<const void*>(ZeroBuffers)));
+		pDX11Context->IASetIndexBuffer(NULL, DXGI_FORMAT_R16_UINT, 0);
 		pDX11Context->IASetInputLayout(NULL);
 
 		// Clear out the constant buffers
-		pDX11Context->VSSetConstantBuffers(0,14,ZeroBuffers);
-		pDX11Context->HSSetConstantBuffers(0,14,ZeroBuffers);
-		pDX11Context->DSSetConstantBuffers(0,14,ZeroBuffers);
-		pDX11Context->GSSetConstantBuffers(0,14,ZeroBuffers);
-		pDX11Context->PSSetConstantBuffers(0,14,ZeroBuffers);
+		pDX11Context->VSSetConstantBuffers(0, 14, ZeroBuffers);
+		pDX11Context->HSSetConstantBuffers(0, 14, ZeroBuffers);
+		pDX11Context->DSSetConstantBuffers(0, 14, ZeroBuffers);
+		pDX11Context->GSSetConstantBuffers(0, 14, ZeroBuffers);
+		pDX11Context->PSSetConstantBuffers(0, 14, ZeroBuffers);
 
 		// Clear out the resources attached to the shaders
-		pDX11Context->VSSetShaderResources(0,16,static_cast<ID3D11ShaderResourceView * const *>(static_cast<const void *>(ZeroBuffers)));
-		pDX11Context->HSSetShaderResources(0,16,static_cast<ID3D11ShaderResourceView * const *>(static_cast<const void *>(ZeroBuffers)));
-		pDX11Context->DSSetShaderResources(0,16,static_cast<ID3D11ShaderResourceView * const *>(static_cast<const void *>(ZeroBuffers)));
-		pDX11Context->GSSetShaderResources(0,16,static_cast<ID3D11ShaderResourceView * const *>(static_cast<const void *>(ZeroBuffers)));
-		pDX11Context->PSSetShaderResources(0,16,static_cast<ID3D11ShaderResourceView * const *>(static_cast<const void *>(ZeroBuffers)));
+		pDX11Context->VSSetShaderResources(0, 16,
+			static_cast<ID3D11ShaderResourceView* const*>(
+				static_cast<const void*>(ZeroBuffers)));
+		pDX11Context->HSSetShaderResources(0, 16,
+			static_cast<ID3D11ShaderResourceView* const*>(
+				static_cast<const void*>(ZeroBuffers)));
+		pDX11Context->DSSetShaderResources(0, 16,
+			static_cast<ID3D11ShaderResourceView* const*>(
+				static_cast<const void*>(ZeroBuffers)));
+		pDX11Context->GSSetShaderResources(0, 16,
+			static_cast<ID3D11ShaderResourceView* const*>(
+				static_cast<const void*>(ZeroBuffers)));
+		pDX11Context->PSSetShaderResources(0, 16,
+			static_cast<ID3D11ShaderResourceView* const*>(
+				static_cast<const void*>(ZeroBuffers)));
 
 		// Clear out the samplers
-		pDX11Context->VSSetSamplers(0,16,static_cast<ID3D11SamplerState * const *>(static_cast<const void *>(ZeroBuffers)));
-		pDX11Context->HSSetSamplers(0,16,static_cast<ID3D11SamplerState * const *>(static_cast<const void *>(ZeroBuffers)));	
-		pDX11Context->DSSetSamplers(0,16,static_cast<ID3D11SamplerState * const *>(static_cast<const void *>(ZeroBuffers)));
-		pDX11Context->GSSetSamplers(0,16,static_cast<ID3D11SamplerState * const *>(static_cast<const void *>(ZeroBuffers)));
-		pDX11Context->PSSetSamplers(0,16,static_cast<ID3D11SamplerState * const *>(static_cast<const void *>(ZeroBuffers)));
+		pDX11Context->VSSetSamplers(0, 16,
+			static_cast<ID3D11SamplerState* const*>(
+				static_cast<const void*>(ZeroBuffers)));
+		pDX11Context->HSSetSamplers(0, 16,
+			static_cast<ID3D11SamplerState* const*>(
+				static_cast<const void*>(ZeroBuffers)));
+		pDX11Context->DSSetSamplers(0, 16,
+			static_cast<ID3D11SamplerState* const*>(
+				static_cast<const void*>(ZeroBuffers)));
+		pDX11Context->GSSetSamplers(0, 16,
+			static_cast<ID3D11SamplerState* const*>(
+				static_cast<const void*>(ZeroBuffers)));
+		pDX11Context->PSSetSamplers(0, 16,
+			static_cast<ID3D11SamplerState* const*>(
+				static_cast<const void*>(ZeroBuffers)));
 
 		// Clear out the render target
-		pDX11Context->OMSetRenderTargets(8,static_cast<ID3D11RenderTargetView * const *>(static_cast<const void *>(ZeroBuffers)),NULL);
+		pDX11Context->OMSetRenderTargets(8,
+			static_cast<ID3D11RenderTargetView* const*>(
+				static_cast<const void*>(ZeroBuffers)),
+			NULL);
 
 		// Clear out the rest of the states
-		pDX11Context->OMSetBlendState(NULL,static_cast<const FLOAT *>(static_cast<const void *>(ZeroBuffers)),0xFFFFFFFF);
-		pDX11Context->OMSetDepthStencilState(NULL,0);
+		pDX11Context->OMSetBlendState(NULL,
+			static_cast<const FLOAT*>(static_cast<const void*>(ZeroBuffers)),
+			0xFFFFFFFF);
+		pDX11Context->OMSetDepthStencilState(NULL, 0);
 		pDX11Context->RSSetState(NULL);
 	}
 }
@@ -103,22 +137,21 @@ void BURGER_API Burger::DisplayDirectX11::ClearContext(ID3D11DeviceContext *pDX1
 
 	\brief Update the cursor clip rect
 
-	If the cursor is clipped to the full screen,
-	let DirectX 11 know.
+	If the cursor is clipped to the full screen, let DirectX 11 know.
 
 	\windowsonly
-	
+
 ***************************************/
 
 void BURGER_API Burger::DisplayDirectX11::SetupCursor(void) const
 {
-	Word bIsFullScreen = m_uFlags&FULLSCREEN;
+	Word bIsFullScreen = m_uFlags & FULLSCREEN;
 
 	// Clip cursor if requested
 	if (bIsFullScreen && m_bClipCursorWhenFullScreen) {
 		RECT TheRect;
 		// Confine cursor to full screen window
-		GetWindowRect(m_pGameApp->GetWindow(),&TheRect);
+		GetWindowRect(m_pGameApp->GetWindow(), &TheRect);
 		ClipCursor(&TheRect);
 	} else {
 		ClipCursor(NULL);
@@ -129,26 +162,25 @@ void BURGER_API Burger::DisplayDirectX11::SetupCursor(void) const
 
 	\brief Get the number of bits for a single color channel
 
-	Using a DirectX 11 DXGI_FORMAT value, return the 
-	number of bits needed to hold a smallest color value
-	in a single pixel.
+	Using a DirectX 11 DXGI_FORMAT value, return the number of bits needed to
+	hold a smallest color value in a single pixel.
 
 	Return 0 if the value is invalid
 
-	\note For formats like DXGI_FORMAT_B5G6R5_UNORM where the color
-	channels have different widths, the smallest width is returned,
-	which in this example is five.
+	\note For formats like DXGI_FORMAT_B5G6R5_UNORM where the color channels
+	have different widths, the smallest width is returned, which in this example
+	is five.
 
 	\windowsonly
 	\param uDXGI_FORMAT DXGI_FORMAT value
 	\return Number of bits per pixel, 0 on error
 	\sa GetD3DFORMATColorChannelBits(Word)
-	
+
 ***************************************/
 
 Word BURGER_API Burger::GetDXGI_FORMATColorChannelBits(Word uDXGI_FORMAT)
 {
-	switch(uDXGI_FORMAT) {
+	switch (uDXGI_FORMAT) {
 	case DXGI_FORMAT_R32G32B32A32_TYPELESS:
 	case DXGI_FORMAT_R32G32B32A32_FLOAT:
 	case DXGI_FORMAT_R32G32B32A32_UINT:
@@ -199,7 +231,7 @@ Word BURGER_API Burger::GetDXGI_FORMATColorChannelBits(Word uDXGI_FORMAT)
 }
 
 #if !defined(DOXYGEN)
-BURGER_CREATE_STATICRTTI_PARENT(Burger::DisplayDirectX11,Burger::Display);
+BURGER_CREATE_STATICRTTI_PARENT(Burger::DisplayDirectX11, Burger::Display);
 #endif
 
 /*! ************************************
@@ -207,8 +239,8 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::DisplayDirectX11,Burger::Display);
 	\var const Burger::StaticRTTI Burger::DisplayDirectX11::g_StaticRTTI
 	\brief The global description of the class
 
-	This record contains the name of this class and a
-	reference to the parent (If any)
+	This record contains the name of this class and a reference to the parent
+	(If any)
 
 ***************************************/
 

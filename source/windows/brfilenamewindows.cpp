@@ -19,12 +19,19 @@
 #include "brutf8.h"
 #include "brstring16.h"
 #include "brglobals.h"
-#ifndef WIN32_LEAN_AND_MEAN
+#include "brnumberto.h"
+
+#if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
+
 #include <Windows.h>
 #include <ObjBase.h>
 #include <shlobj.h>
+
+#if defined(BURGER_WATCOM)
+#pragma library ("shfolder.lib");
+#endif
 
 //
 // GUIDs needed for locating folders in Vista or higher
@@ -329,7 +336,7 @@ void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void)
 
 	// Try the code for Vista or higher
 	Word16 *pResult = NULL;
-	Word uResult = Globals::SHGetKnownFolderPath(&FOLDERID_LocalAppData,KF_FLAG_DONT_UNEXPAND|KF_FLAG_DONT_VERIFY,NULL,&pResult);
+	Word uResult = Windows::SHGetKnownFolderPath(&FOLDERID_LocalAppData,KF_FLAG_DONT_UNEXPAND|KF_FLAG_DONT_VERIFY,NULL,&pResult);
 	if (uResult==S_OK) {
 		// All good! Use this!
 		String UTF8(pResult);
@@ -370,7 +377,7 @@ void BURGER_API Burger::Filename::SetUserPrefsDirectory(void)
 {
 	Clear();
 	Word16 *pResult = NULL;
-	Word uResult = Globals::SHGetKnownFolderPath(&FOLDERID_RoamingAppData,KF_FLAG_DONT_UNEXPAND|KF_FLAG_DONT_VERIFY,NULL,&pResult);
+	Word uResult = Windows::SHGetKnownFolderPath(&FOLDERID_RoamingAppData,KF_FLAG_DONT_UNEXPAND|KF_FLAG_DONT_VERIFY,NULL,&pResult);
 	if (uResult==S_OK) {
 		// All good! Use this!
 		String UTF8(pResult);

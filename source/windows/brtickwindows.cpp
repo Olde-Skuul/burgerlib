@@ -15,9 +15,11 @@
 
 #if defined(BURGER_WINDOWS)
 #include "brglobals.h"
-#ifndef WIN32_LEAN_AND_MEAN
+
+#if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
+
 #include <windows.h>
 
 /***************************************
@@ -42,7 +44,7 @@ static Word32 g_u60HertzTickFraction;	// 3000/60 time fraction
 
 Word32 BURGER_API Burger::Tick::Read(void)
 {
-	Word32 uMark = Globals::timeGetTime();
+	Word32 uMark = Windows::timeGetTime();
 	Word32 uTick;
 	if (!g_b60HertzTimerStarted) {			// Never initialized?
 		g_b60HertzTimerStarted = TRUE;
@@ -127,7 +129,7 @@ Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
 
 Word32 BURGER_API Burger::Tick::ReadMilliseconds(void)
 {
-	return Globals::timeGetTime();		/* Call windows 95/NT */
+	return Windows::timeGetTime();		/* Call windows 95/NT */
 }
 
 /***************************************

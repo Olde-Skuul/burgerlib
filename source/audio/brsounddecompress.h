@@ -46,8 +46,8 @@ class DecompressUnsigned8BitAudio : public DecompressAudio {
 public:
 	static const Word32 Signature = 0x41595445;		///< 'BYTE'
 	DecompressUnsigned8BitAudio();
-	virtual eError Reset(void);
-	virtual eError Process(void *pOutput,WordPtr uOutputChunkSize,const void *pInput,WordPtr uInputChunkLength);
+	eError Reset(void) BURGER_OVERRIDE;
+	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
 	static DecompressUnsigned8BitAudio * BURGER_API New(void);
 };
 
@@ -56,8 +56,8 @@ class DecompressSigned8BitAudio : public DecompressAudio {
 public:
 	static const Word32 Signature = 0x43484152;		///< 'CHAR'
 	DecompressSigned8BitAudio();
-	virtual eError Reset(void);
-	virtual eError Process(void *pOutput,WordPtr uOutputChunkSize,const void *pInput,WordPtr uInputChunkLength);
+	eError Reset(void) BURGER_OVERRIDE;
+	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
 	static DecompressSigned8BitAudio * BURGER_API New(void);
 };
 
@@ -77,8 +77,8 @@ protected:
 public:
 	static const Word32 Signature = 0x42453136;		///< 'BE16'
 	Decompress16BitBEAudio();
-	virtual eError Reset(void);
-	virtual eError Process(void *pOutput,WordPtr uOutputChunkSize,const void *pInput,WordPtr uInputChunkLength);
+	eError Reset(void) BURGER_OVERRIDE;
+	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
 	static Decompress16BitBEAudio * BURGER_API New(void);
 };
 
@@ -98,8 +98,8 @@ protected:
 public:
 	static const Word32 Signature = 0x4C453136;		///< 'LE16'
 	Decompress16BitLEAudio();
-	virtual eError Reset(void);
-	virtual eError Process(void *pOutput,WordPtr uOutputChunkSize,const void *pInput,WordPtr uInputChunkLength);
+	eError Reset(void) BURGER_OVERRIDE;
+	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
 	static Decompress16BitLEAudio * BURGER_API New(void);
 };
 
@@ -119,8 +119,8 @@ protected:
 public:
 	static const Word32 Signature = 0x42453332;		///< 'BE32'
 	Decompress32BitBEAudio();
-	virtual eError Reset(void);
-	virtual eError Process(void *pOutput,WordPtr uOutputChunkSize,const void *pInput,WordPtr uInputChunkLength);
+	eError Reset(void) BURGER_OVERRIDE;
+	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
 	static Decompress32BitBEAudio * BURGER_API New(void);
 };
 
@@ -140,8 +140,8 @@ protected:
 public:
 	static const Word32 Signature = 0x4C453332;		///< 'LE32'
 	Decompress32BitLEAudio();
-	virtual eError Reset(void);
-	virtual eError Process(void *pOutput,WordPtr uOutputChunkSize,const void *pInput,WordPtr uInputChunkLength);
+	eError Reset(void) BURGER_OVERRIDE;
+	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
 	static Decompress32BitLEAudio * BURGER_API New(void);
 };
 }

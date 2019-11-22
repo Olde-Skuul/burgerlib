@@ -1,15 +1,16 @@
 /***************************************
 
-	Integer Point handlers
+    Integer Point handlers
 
-	Xbox 360 specific code
+    Xbox 360 specific code
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -23,10 +24,10 @@
 /*! ************************************
 
 	\brief Convert a Burger::Point2D_t into a Microsoft POINT structure.
-	
+
 	Converts the contents of a Burger::Point2D_t into a Microsoft POINT
 	structure.
-	
+
 	\param pOutput Pointer to an uninitialized Microsoft POINT structure.
 	\note This function is Windows and Xbox 360 only.
 
@@ -41,10 +42,10 @@ void Burger::Point2D_t::Get(tagPOINT *pOutput) const
 /*! ************************************
 
 	\brief Convert a Microsoft POINT structure into a Burger::Point2D_t
-	
+
 	Converts the contents of a Microsoft POINT structure
 	into a Burger::Point2D_t.
-	
+
 	\param pInput Pointer to a valid Microsoft POINT structure.
 	\note This function is Windows and Xbox 360 only.
 

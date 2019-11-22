@@ -78,10 +78,10 @@ class EffectPositionColorTextureDX9 : public EffectPositionColorTexture {
 	BURGER_RTTI_IN_CLASS();
 public:
 	EffectPositionColorTextureDX9(Display *pDisplay,const Word *pVertexMembers);
-	virtual Word CheckLoad(Display *pDisplay);
-	virtual void Release(Display *pDisplay);
-	virtual void SetProjection(const Matrix4D_t *pMatrix);
-	virtual void SetColor(const Vector4D_t *pColor);
+	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	void Release(Display *pDisplay) BURGER_OVERRIDE;
+	void SetProjection(const Matrix4D_t *pMatrix) BURGER_OVERRIDE;
+	void SetColor(const Vector4D_t *pColor) BURGER_OVERRIDE;
 };
 
 class EffectPositionColorTextureOpenGL : public EffectPositionColorTexture {
@@ -89,10 +89,10 @@ class EffectPositionColorTextureOpenGL : public EffectPositionColorTexture {
 	BURGER_RTTI_IN_CLASS();
 public:
 	EffectPositionColorTextureOpenGL(Display *pDisplay,const Word *pVertexMembers);
-	virtual Word CheckLoad(Display *pDisplay);
-	virtual void Release(Display *pDisplay);
-	virtual void SetProjection(const Matrix4D_t *pMatrix);
-	virtual void SetColor(const Vector4D_t *pColor);
+	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	void Release(Display *pDisplay) BURGER_OVERRIDE;
+	void SetProjection(const Matrix4D_t *pMatrix) BURGER_OVERRIDE;
+	void SetColor(const Vector4D_t *pColor) BURGER_OVERRIDE;
 };
 #endif
 

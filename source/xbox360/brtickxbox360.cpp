@@ -1,14 +1,15 @@
 /***************************************
 
-	Incremental tick Manager Class
+    Incremental tick Manager Class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brtick.h"
@@ -21,7 +22,7 @@
 /***************************************
 
 	\brief Constructor floating point timer
-	
+
 	Reads in the default data needed to maintain the timer
 	and sets the elapsed time to 0.0f
 
@@ -40,7 +41,7 @@ Burger::FloatTimer::FloatTimer() :
 
 	// Get the frequency of the high precision timer
 	m_dReciprocalFrequency = 1.0 / static_cast<double>(49875000);
-	
+
 	// Initialize the timer
 	Reset();
 }
@@ -61,7 +62,7 @@ void BURGER_API Burger::FloatTimer::SetBase(void)
 	// Read the counter
 	Word64 uTemp = __mftb();
 	if (!static_cast<Word32>(uTemp)) {
-		// Fix for a CPU error. If the lower 32 bits of the 
+		// Fix for a CPU error. If the lower 32 bits of the
 		// counter is zero, the upper 32 bits has a 4 cycle window
 		// where it's NOT properly incremented. By reading
 		// a second time, the 4 second window will pass
@@ -97,14 +98,14 @@ float BURGER_API Burger::FloatTimer::GetTime(void)
 		// Read the counter
 		Word64 uMark = __mftb();
 		if (!static_cast<Word32>(uMark)) {
-			// Fix for a CPU error. If the lower 32 bits of the 
+			// Fix for a CPU error. If the lower 32 bits of the
 			// counter is zero, the upper 32 bits has a 4 cycle window
 			// where it's NOT properly incremented. By reading
 			// a second time, the 4 second window will pass
 			// and the 64 bit value is good.
 			uMark = __mftb();
 		}
-		
+
 		// Get the elapsed time
 
 		Word64 uElapsedTime = uMark-m_uBaseTime;

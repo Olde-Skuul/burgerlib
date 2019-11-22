@@ -27,10 +27,10 @@ namespace Burger {
 class Decompress : public Base {
 	BURGER_RTTI_IN_CLASS();
 protected:
-	WordPtr m_uTotalInput;		///< Total number of bytes processed for input
-	WordPtr m_uTotalOutput;		///< Total number of bytes processed for output
-	WordPtr m_uInputLength;		///< Number of input bytes processed from the last call to Process()
-	WordPtr m_uOutputLength;	///< Number of output bytes processed from the last call to Process()
+    uintptr_t m_uTotalInput;		///< Total number of bytes processed for input
+    uintptr_t m_uTotalOutput;		///< Total number of bytes processed for output
+    uintptr_t m_uInputLength;		///< Number of input bytes processed from the last call to Process()
+    uintptr_t m_uOutputLength;	///< Number of output bytes processed from the last call to Process()
 	Word32 m_uSignature;		///< 4 character code to identify this decompresser
 public:
 	enum eError {
@@ -41,11 +41,11 @@ public:
 	};
 	Decompress(void);
 	virtual eError Reset(void) = 0;
-	virtual eError Process(void *pOutput,WordPtr uOutputChunkSize,const void *pInput,WordPtr uInputChunkLength) = 0;
-	BURGER_INLINE WordPtr GetTotalInputSize(void) const { return m_uTotalInput; }
-	BURGER_INLINE WordPtr GetTotalOutputSize(void) const { return m_uTotalOutput; }
-	BURGER_INLINE WordPtr GetProcessedInputSize(void) const { return m_uInputLength; }
-	BURGER_INLINE WordPtr GetProcessedOutputSize(void) const { return m_uOutputLength; }
+	virtual eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) = 0;
+	BURGER_INLINE uintptr_t GetTotalInputSize(void) const { return m_uTotalInput; }
+	BURGER_INLINE uintptr_t GetTotalOutputSize(void) const { return m_uTotalOutput; }
+	BURGER_INLINE uintptr_t GetProcessedInputSize(void) const { return m_uInputLength; }
+	BURGER_INLINE uintptr_t GetProcessedOutputSize(void) const { return m_uOutputLength; }
 	BURGER_INLINE Word32 GetSignature(void) const { return m_uSignature; }
 };
 }

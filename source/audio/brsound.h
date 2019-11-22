@@ -205,7 +205,7 @@ public:
 		Word BURGER_API Init(const void *pSoundFile,WordPtr uLength);
 		Word BURGER_API Init(const BufferDescription_t *pRawData);
 		virtual void Shutdown(void);
-		virtual Word Upload(SoundManager *pSoundManager);
+		virtual uint_t Upload(SoundManager *pSoundManager);
 		BURGER_INLINE BufferDecoder *GetBufferDescription(void) { return &m_Decoder; }
 		BURGER_INLINE const BufferDecoder *GetBufferDescription(void) const { return &m_Decoder; }
 		BURGER_INLINE void SetSampleRate(Word uSampleRate) { m_Decoder.m_uSampleRate = uSampleRate; }

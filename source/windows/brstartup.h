@@ -1,15 +1,16 @@
 /***************************************
 
-	Start up code for games based applications
+    Start up code for games based applications
 
-	Windows version
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Windows version
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -50,38 +51,41 @@
 
 /***************************************
 
-	This is the main entry point for a windows version of the game
+    This is the main entry point for a windows version of the game
 
 ***************************************/
 
-extern "C" int __stdcall WinMain(HINSTANCE__ *hInstance,HINSTANCE__ *hPrevInstance,char *lpCmdLine,int nCmdShow);
+extern "C" int __stdcall WinMain(HINSTANCE__* hInstance,
+    HINSTANCE__* hPrevInstance, char* lpCmdLine, int nCmdShow);
 
-int __stdcall WinMain(HINSTANCE__ * /* hInstance */,HINSTANCE__ * /* hPrevInstance */,char * /* lpCmdLine */,int /* nCmdShow */)
+int __stdcall WinMain(HINSTANCE__* /* hInstance */,
+    HINSTANCE__* /* hPrevInstance */, char* /* lpCmdLine */, int /* nCmdShow */)
 {
-	int iResult = 0;	// Exit without error if already running
+    int iResult = 0; // Exit without error if already running
 
-	// Singular instance enabled?
+    // Singular instance enabled?
 #if defined(GAMELOCK)
-	Burger::DetectMultiLaunch OneShot;
-	if (!OneShot.IsMultiLaunched(GAMELOCK)) {
+    Burger::DetectMultiLaunch OneShot;
+    if (!OneShot.IsMultiLaunched(GAMELOCK)) {
 #endif
-		// Create the game instance
-		Burger::GameApp MyApp(MEMORYSIZE,HANDLECOUNT,MINIMUMRESERVE);
-		iResult = Burger::Globals::GetErrorCode();
-		if (!iResult) {
+        // Create the game instance
+        Burger::GameApp MyApp(MEMORYSIZE, HANDLECOUNT, MINIMUMRESERVE);
+        iResult = Burger::Globals::GetErrorCode();
+        if (!iResult) {
 
-			// Create the initial window
-			iResult = MyApp.InitWindow(GAMENAME,WINDOWS_CALLBACK,WINDOWS_ICONID);
-			if (!iResult) {
-				// Run the app
-				iResult = CodeEntry(&MyApp);
-			}
-		}
-	// Needed to properly close for the lock
+            // Create the initial window
+            iResult =
+                MyApp.InitWindow(GAMENAME, WINDOWS_CALLBACK, WINDOWS_ICONID);
+            if (!iResult) {
+                // Run the app
+                iResult = CodeEntry(&MyApp);
+            }
+        }
+        // Needed to properly close for the lock
 #if defined(GAMELOCK)
-	}
+    }
 #endif
-	return iResult;
+    return iResult;
 }
 
 #endif

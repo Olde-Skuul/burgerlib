@@ -77,9 +77,9 @@ class EffectPositionTextureDX9 : public EffectPositionTexture {
 	BURGER_RTTI_IN_CLASS();
 public:
 	EffectPositionTextureDX9(DisplayDirectX9 *pDisplay,const Word *pVertexMembers);
-	virtual Word CheckLoad(Display *pDisplay);
-	virtual void Release(Display *pDisplay);
-	virtual void SetProjection(const Matrix4D_t *pMatrix);
+	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	void Release(Display *pDisplay) BURGER_OVERRIDE;
+	void SetProjection(const Matrix4D_t *pMatrix) BURGER_OVERRIDE;
 };
 
 class EffectPositionTextureOpenGL : public EffectPositionTexture {
@@ -89,9 +89,9 @@ protected:
 	Int m_iEffectMatrix;		///< Index for the Matrix
 public:
 	EffectPositionTextureOpenGL(Display *pDisplay,const Word *pVertexMembers);
-	virtual Word CheckLoad(Display *pDisplay);
-	virtual void Release(Display *pDisplay);
-	virtual void SetProjection(const Matrix4D_t *pMatrix);
+	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	void Release(Display *pDisplay) BURGER_OVERRIDE;
+	void SetProjection(const Matrix4D_t *pMatrix) BURGER_OVERRIDE;
 };
 #endif
 

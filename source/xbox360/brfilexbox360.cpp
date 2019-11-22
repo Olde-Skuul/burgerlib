@@ -1,13 +1,14 @@
 /***************************************
 
-	XBox 360 version of Burger::File
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    XBox 360 version of Burger::File
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -80,7 +81,7 @@ Word BURGER_API Burger::File::Close(void)
 
 	\note The return value is 32 bits wide on a 32 bit operating system, 64 bits
 		wide on 64 bit operating systems
-	\return 0 if error or an empty file. Non-zero is the size of the file in bytes. 
+	\return 0 if error or an empty file. Non-zero is the size of the file in bytes.
 	\sa Open(const char *, eFileAccess) and Open(Filename *,eFileAccess)
 
 ***************************************/

@@ -61,9 +61,9 @@ protected:
 public:
 	static const Word32 Signature = 0x4C5A5353;		///< 'LZSS'
 	CompressLZSS(void);
-	virtual eError Init(void);
-	virtual eError Process(const void *pInput,WordPtr uInputLength);
-	virtual eError Finalize(void);
+	eError Init(void) BURGER_OVERRIDE;
+	eError Process(const void *pInput, uintptr_t uInputLength) BURGER_OVERRIDE;
+	eError Finalize(void) BURGER_OVERRIDE;
 };
 }
 /* END */

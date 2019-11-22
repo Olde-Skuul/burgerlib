@@ -356,26 +356,26 @@ BURGER_INLINE T Max(T A, T B) BURGER_NOEXCEPT
     return ((A > B) ? A : B);
 }
 
-#if defined(BURGER_PPC) && !defined(BURGER_MRC)
-template<>
+#if defined(BURGER_PPC)
+BURGER_EMPTY_TEMPLATE_DECLARATION
 BURGER_INLINE float Min(float fA, float fB)
 {
     return static_cast<float>(__fsel((fA - fB), fB, fA));
 }
 
-template<>
+BURGER_EMPTY_TEMPLATE_DECLARATION
 BURGER_INLINE double Min(double dA, double dB)
 {
     return __fsel((dA - dB), dB, dA);
 }
 
-template<>
+BURGER_EMPTY_TEMPLATE_DECLARATION
 BURGER_INLINE float Max(float fA, float fB)
 {
     return static_cast<float>(__fsel((fA - fB), fA, fB));
 }
 
-template<>
+BURGER_EMPTY_TEMPLATE_DECLARATION
 BURGER_INLINE double Max(double dA, double dB)
 {
     return __fsel((dA - dB), dA, dB);

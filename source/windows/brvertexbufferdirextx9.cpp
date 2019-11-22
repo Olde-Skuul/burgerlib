@@ -14,7 +14,7 @@
 #include "brvertexbufferdirectx9.h"
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 #include "brglobalmemorymanager.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include "brdisplaydirectx9.h"
 #include <windows.h>
 #include <d3dx9.h>

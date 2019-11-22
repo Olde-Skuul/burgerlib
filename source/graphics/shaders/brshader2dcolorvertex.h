@@ -84,10 +84,10 @@ class Shader2DColorVertexDX9 : public Shader2DColorVertex {
 	BURGER_RTTI_IN_CLASS();
 public:
 	Shader2DColorVertexDX9(Display *pDisplay,const Word *pVertexMembers);
-	virtual Word CheckLoad(Display *pDisplay);
-	virtual void Release(Display *pDisplay);
-	virtual void SetPosition(float fX,float fY,float fWidth,float fHeight);
-	virtual void SetPosition(const Vector4D_t *pPosition);
+	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	void Release(Display *pDisplay) BURGER_OVERRIDE;
+	void SetPosition(float fX,float fY,float fWidth,float fHeight) BURGER_OVERRIDE;
+	void SetPosition(const Vector4D_t *pPosition) BURGER_OVERRIDE;
 };
 
 class Shader2DColorVertexOpenGL : public Shader2DColorVertex {
@@ -97,10 +97,10 @@ protected:
 	Int m_iEffect2DPosition;	///< Index for the position
 public:
 	Shader2DColorVertexOpenGL(Display *pDisplay,const Word *pVertexMembers);
-	virtual Word CheckLoad(Display *pDisplay);
-	virtual void Release(Display *pDisplay);
-	virtual void SetPosition(float fX,float fY,float fWidth,float fHeight);
-	virtual void SetPosition(const Vector4D_t *pPosition);
+	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	void Release(Display *pDisplay) BURGER_OVERRIDE;
+	void SetPosition(float fX,float fY,float fWidth,float fHeight) BURGER_OVERRIDE;
+	void SetPosition(const Vector4D_t *pPosition) BURGER_OVERRIDE;
 };
 #endif
 

@@ -29,7 +29,7 @@
 
 #include "brgameapp.h"
 #include "brglobals.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include "brfixedpoint.h"
 #include <windows.h>
 #include <dinput.h>
@@ -240,7 +240,7 @@ Burger::Joypad::Joypad(GameApp *pAppInstance) :
 	JoypadData_t *pJoypadData = m_Data;
 
 	// Determine if the XInput API is available.
-	if (Globals::LoadFunctionIndex(Globals::CALL_XInputGetState)) {
+	if (Windows::LoadFunctionIndex(Windows::CALL_XInputGetState)) {
 
 		// XInput was found, define the 4 controllers that it will manage
 		m_bXInputFound = TRUE;
@@ -259,7 +259,7 @@ Burger::Joypad::Joypad(GameApp *pAppInstance) :
 
 	// Initialize the main direct input interface.
 
-	IDirectInput8W* pDirectInput8W = Globals::GetDirectInput8Singleton();
+	IDirectInput8W* pDirectInput8W = Windows::GetDirectInput8Singleton();
 	if (pDirectInput8W) {
 
 		//
@@ -346,7 +346,7 @@ Burger::Joypad::Joypad(GameApp *pAppInstance) :
 	// Install the background task if any devices were found
 
 	if (m_bXInputFound) {
-		Globals::XInputEnable(TRUE);
+		Windows::XInputEnable(TRUE);
 	}
 
 	if (m_bXInputFound || m_bDirectInputFound) {
@@ -366,7 +366,7 @@ Burger::Joypad::~Joypad()
 
 	// Make sure the controllers are not rumbling
 	XInputStopRumbleOnAllControllers();
-	Globals::XInputEnable(FALSE);
+	Windows::XInputEnable(FALSE);
 
 	JoypadData_t *pJoypadData = m_Data;
 	Word i = 0;
@@ -405,7 +405,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 			// Test if this was an insertion or removal and report it
 			// Get the old and new states
 
-			Word bIsConnected = (Globals::XInputGetState(uWhich,&State) == ERROR_SUCCESS);
+			Word bIsConnected = (Windows::XInputGetState(uWhich,&State) == ERROR_SUCCESS);
 			Word bWasConnected = pJoypadData->m_bConnected;
 
 			// Save off the states as to how they were processed
@@ -729,7 +729,7 @@ Word BURGER_API Burger::XInputStopRumbleOnAllControllers(void)
 	do {
 		// Only abort if XInput is not present, otherwise, issue the
 		// command to every device, regardless of connection state
-		Word uTemp = Globals::XInputSetState(i,&MyVibration);
+		Word uTemp = Windows::XInputSetState(i,&MyVibration);
 		if (uTemp==ERROR_CALL_NOT_IMPLEMENTED) {
 			uResult = uTemp;
 			break;
@@ -768,7 +768,7 @@ Word BURGER_API Burger::XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInp
 	} else {
 		// Read in the data from the game pad
 		XINPUT_STATE GamepadState;
-		uResult = Globals::XInputGetState(uWhich,&GamepadState);
+		uResult = Windows::XInputGetState(uWhich,&GamepadState);
 
 		// Test if XInput is present
 		if (uResult!=ERROR_CALL_NOT_IMPLEMENTED) {
@@ -916,7 +916,7 @@ Word BURGER_API Burger::IsDeviceXInput(const GUID *pGuid)
 	// Microsoft recommends using WbemLocator for finding devices that are using XInput,
 	// however, this requires Vista or higher
 
-	if (Globals::IsVistaOrGreater()) {
+	if (Windows::IsVistaOrGreater()) {
 		// Start up CoInitialize() to allow creating instances
 		Word bCleanupCOM = (CoInitialize(NULL)>=0);
 

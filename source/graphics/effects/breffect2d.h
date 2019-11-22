@@ -79,10 +79,10 @@ class Effect2DDX9 : public Effect2D {
 	BURGER_RTTI_IN_CLASS();
 public:
 	Effect2DDX9(Display *pDisplay,const Word *pVertexMembers);
-	virtual Word CheckLoad(Display *pDisplay);
-	virtual void Release(Display *pDisplay);
-	virtual void SetPosition(float fX,float fY,float fWidth,float fHeight);
-	virtual void SetPosition(const Vector4D_t *pPosition);
+	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	void Release(Display *pDisplay) BURGER_OVERRIDE;
+	void SetPosition(float fX,float fY,float fWidth,float fHeight) BURGER_OVERRIDE;
+	void SetPosition(const Vector4D_t *pPosition) BURGER_OVERRIDE;
 };
 
 class Effect2DOpenGL : public Effect2D {
@@ -90,10 +90,10 @@ class Effect2DOpenGL : public Effect2D {
 	BURGER_RTTI_IN_CLASS();
 public:
 	Effect2DOpenGL(Display *pDisplay,const Word *pVertexMembers);
-	virtual Word CheckLoad(Display *pDisplay);
-	virtual void Release(Display *pDisplay);
-	virtual void SetPosition(float fX,float fY,float fWidth,float fHeight);
-	virtual void SetPosition(const Vector4D_t *pPosition);
+	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	void Release(Display *pDisplay) BURGER_OVERRIDE;
+	void SetPosition(float fX,float fY,float fWidth,float fHeight) BURGER_OVERRIDE;
+	void SetPosition(const Vector4D_t *pPosition) BURGER_OVERRIDE;
 };
 #endif
 

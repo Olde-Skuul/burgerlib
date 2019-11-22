@@ -1,14 +1,15 @@
 /***************************************
 
-	Xbox 360 version
+    Xbox 360 version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brfilemanager.h"
@@ -42,7 +43,7 @@ Word BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,Word uVolum
 		char OutputNames[MAX_PATH];	// Buffer to copy to + two colons and a terminating zero
 		char InputName[4];				// Drive name template ( "C:\\" )
 
-		InputName[0] = static_cast<char>('A'+uVolumeNum);	// Create "C:\\" 
+		InputName[0] = static_cast<char>('A'+uVolumeNum);	// Create "C:\\"
 		InputName[1] = ':';
 		InputName[2] = '\\';
 		InputName[3] = 0;
@@ -81,7 +82,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 {
 	Filename MyFilename(":D:");
 
-	SetPrefix(8,&MyFilename);		// Set the standard work prefix 
+	SetPrefix(8,&MyFilename);		// Set the standard work prefix
 	SetPrefix(9,&MyFilename);		// Set the application prefix
 	// Set the system folder
 	SetPrefix(FileManager::PREFIXSYSTEM,&MyFilename);
@@ -101,7 +102,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 Word BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,TimeDate_t *pOutput)
 {
 	// Clear out the output
-	pOutput->Clear();	
+	pOutput->Clear();
 	WIN32_FIND_DATAA FindData;
 	HANDLE FileHandle = FindFirstFileA(pFileName->GetNative(),&FindData);
 	Word uResult = TRUE;
@@ -123,7 +124,7 @@ Word BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,Tim
 Word BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDate_t *pOutput)
 {
 	// Clear out the output
-	pOutput->Clear();	
+	pOutput->Clear();
 	WIN32_FIND_DATAA FindData;
 	HANDLE FileHandle = FindFirstFileA(pFileName->GetNative(),&FindData);
 	Word uResult = TRUE;
@@ -178,7 +179,7 @@ Word BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
 	String NewName(pFileName->GetNative());
 
 	// Easy way!
-	if (!DirCreate(NewName.GetPtr())) {	
+	if (!DirCreate(NewName.GetPtr())) {
 		return FALSE;				// No error
 	}
 	// Ok see if I can create the directory tree

@@ -26,16 +26,18 @@
 #if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x0501				// Windows XP
 #endif
-#ifndef WIN32_LEAN_AND_MEAN
+
+#if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
+
 #include <Windows.h>
 
 // Make it thread safe
 
 static Burger::CriticalSectionStatic g_LockString;
 
-void BURGER_API Burger::Debug::String(const char *pString)
+void BURGER_API Burger::Debug::PrintString(const char *pString)
 {
 	// Allow multiple threads to call me!
 
@@ -89,24 +91,24 @@ Word BURGER_API Burger::Debug::IsDebuggerPresent(void)
 void BURGER_API Burger::Debug::PrintErrorMessage(Word uErrorCode)
 {
 	// Print the error string
-	String("Windows error: 0x");
+	PrintString("Windows error: 0x");
 
 	// Show the error in hex
 	NumberStringHex TempBuffer(static_cast<Word32>(uErrorCode));
-	String(TempBuffer);
+	PrintString(TempBuffer);
 
 	// Convert to a windows string in the native language
 	char *pBuffer = NULL;
 	if (FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,NULL,uErrorCode,MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),static_cast<LPSTR>(static_cast<void *>(&pBuffer)),0,NULL)) {
-		String(", ");
-		String(pBuffer);
+		PrintString(", ");
+		PrintString(pBuffer);
 		LocalFree(pBuffer);
 	} else {
-		String("\n");
+		PrintString("\n");
 	}
 }
 
-/*! ************************************
+/***************************************
 
 	\brief Display a dialog box
 	
@@ -125,21 +127,24 @@ void BURGER_API Burger::OkAlertMessage(const char *pMessage,const char *pTitle)
 {
 	// Make sure that the OS cursor is visible otherwise the user will
 	// wonder what's up when the user can't see the cursor to click the button
+
 	Word bVisible = OSCursor::Show();
 	HWND hFrontWindow = GetForegroundWindow();
 	SetForegroundWindow(GetDesktopWindow());
+	
 	// Convert UTF-8 to UTF-16
 	String16 Message(pMessage);
 	String16 Title(pTitle);
 	MessageBoxW(GetDesktopWindow(),
 		reinterpret_cast<LPCWSTR>(Message.GetPtr()),
 		reinterpret_cast<LPCWSTR>(Title.GetPtr()),MB_OK);
+	
 	// Restore state
 	SetForegroundWindow(hFrontWindow);
 	OSCursor::Show(bVisible);
 }
 
-/*! ************************************
+/***************************************
 
 	\brief Display a dialog to alert the user of a possible error condition or message.
 
@@ -160,21 +165,23 @@ void BURGER_API Burger::OkAlertMessage(const char *pMessage,const char *pTitle)
 Word BURGER_API Burger::OkCancelAlertMessage(const char *pMessage,const char *pTitle)
 {
 	// Make sure that the OS cursor is visible otherwise the user will
-	// wonder what's up when he can't see the cursor to click the button
+	// wonder what's up when they can't see the cursor to click the button
+
 	Word bVisible = OSCursor::Show();
 	HWND hFrontWindow = GetForegroundWindow();
 	SetForegroundWindow(GetDesktopWindow());
+
 	// Convert UTF-8 to UTF-16
 	String16 Message(pMessage);
 	String16 Title(pTitle);
-	Word result = MessageBoxW(GetDesktopWindow(),
+	Word bResult = MessageBoxW(GetDesktopWindow(),
 		reinterpret_cast<LPCWSTR>(Message.GetPtr()),
 		reinterpret_cast<LPCWSTR>(Title.GetPtr()),MB_ICONWARNING|MB_OKCANCEL) == IDOK;
 
 	// Restore state
 	SetForegroundWindow(hFrontWindow);
 	OSCursor::Show(bVisible);
-	return result;
+	return bResult;
 }
 
 #endif

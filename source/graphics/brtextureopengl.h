@@ -41,8 +41,8 @@ public:
 	TextureOpenGL();
 	TextureOpenGL(eWrapping uWrapping,eFilter uFilter);
 	virtual ~TextureOpenGL();
-	virtual Word CheckLoad(Display *pDisplay);
-	virtual void Release(Display *pDisplay);	
+	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	void Release(Display *pDisplay) BURGER_OVERRIDE;
 	static int GetWrapping(eWrapping uWrapping);
 	static int GetFilter(eFilter uFilter);
 	BURGER_INLINE Word GetTextureID(void) const { return m_uTextureID; }

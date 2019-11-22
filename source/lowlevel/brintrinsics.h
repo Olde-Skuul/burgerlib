@@ -143,7 +143,7 @@ BURGER_INLINE uint16_t _swapendian16(uint16_t uInput)
     return __builtin_bswap16(uInput);
 }
 
-#elif ((defined(BURGER_METROWERKS) || defined(BURGER_SNSYSTEMS)) && \
+#elif ((defined(BURGER_METROWERKS) || defined(BURGER_MRC) || defined(BURGER_SNSYSTEMS)) && \
     defined(BURGER_PPC)) && \
     !defined(DOXYGEN)
 
@@ -287,7 +287,7 @@ BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
     return __builtin_bswap32(uInput);
 }
 
-#elif ((defined(BURGER_METROWERKS) || defined(BURGER_SNSYSTEMS)) && \
+#elif ((defined(BURGER_METROWERKS) || defined(BURGER_MRC) || defined(BURGER_SNSYSTEMS)) && \
     defined(BURGER_PPC)) && \
     !defined(DOXYGEN)
 

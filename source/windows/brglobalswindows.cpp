@@ -328,7 +328,7 @@ Word64 BURGER_API Burger::Globals::GetFileVersion64(
 					}
 				}
 				// Release the buffer
-				HeapFree(hHeap,0,pFileVersionBuffer);
+				HeapFree(hHeap, 0, pFileVersionBuffer);
 			}
 		}
 	}
@@ -340,177 +340,207 @@ Word64 BURGER_API Burger::Globals::GetFileVersion64(
 	\brief Return the version of DirectX by scanning file versions
 
 	Tries to get the DirectX version by looking at DirectX file versions
-	Uses http://en.wikipedia.org/wiki/DirectX as a reference for file version lookups
-	\return Version number of DirectX in 16 bit format 0x900 is 9.0, 0x903 = 9.0c
+	Uses http://en.wikipedia.org/wiki/DirectX as a reference for file version
+	lookups \return Version number of DirectX in 16 bit format 0x900 is 9.0, 0x903
+	= 9.0c
 
 ***************************************/
 
 Word BURGER_API Burger::Globals::GetDirectXVersionViaFileVersions(void)
 {
-	Word16 szPath[MAX_PATH*2];
+	Word16 szPath[MAX_PATH * 2];
 
 	Word uResult = 0;
-	if (GetSystemDirectoryW(reinterpret_cast<LPWSTR>(szPath),MAX_PATH) != 0) {
-	
-		szPath[MAX_PATH-1] = 0;		// Failsafe
+	if (GetSystemDirectoryW(reinterpret_cast<LPWSTR>(szPath), MAX_PATH) != 0) {
+
+		szPath[MAX_PATH - 1] = 0; // Failsafe
 
 		// Switch off the ddraw version
 		WordPtr uLen = StringLength(szPath);
-		Word16 *pDest = szPath+uLen;
-		WordPtr uRemaining = sizeof(szPath)-(uLen*sizeof(Word16));
+		Word16* pDest = szPath + uLen;
+		WordPtr uRemaining = sizeof(szPath) - (uLen * sizeof(Word16));
 
-		StringCopy(pDest,uRemaining,reinterpret_cast<const Word16 *>(L"\\ddraw.dll"));
+		StringCopy(
+			pDest, uRemaining, reinterpret_cast<const Word16*>(L"\\ddraw.dll"));
 
 		Word64 uVersionDDraw = GetFileVersion64(szPath);
-		if (uVersionDDraw>=0x000400020000005FULL) {	// Win9x version 
+		if (uVersionDDraw >= 0x000400020000005FULL) { // Win9x version
 			// file is >= DX1.0 version, so we must be at least DX1.0
 			uResult = 0x0100;
 		}
-		if (uVersionDDraw>=0x0004000300000448ULL) {	// Win9x version
-			// file is is >= DX2.0 version, so we must DX2.0 or DX2.0a (no redist change)
+		if (uVersionDDraw >= 0x0004000300000448ULL) { // Win9x version
+			// file is is >= DX2.0 version, so we must DX2.0 or DX2.0a (no
+			// redist change)
 			uResult = 0x0200;
 		}
-		if (uVersionDDraw>=0x0004000400000044ULL) {	// Win9x version
+		if (uVersionDDraw >= 0x0004000400000044ULL) { // Win9x version
 			// file is is >= DX3.0 version, so we must be at least DX3.0
 			uResult = 0x0300;
 		}
 
 		// Switch off the d3drg8x.dll version
-		StringCopy(pDest,uRemaining,reinterpret_cast<const Word16 *>(L"\\d3drg8x.dll"));
+		StringCopy(pDest, uRemaining,
+			reinterpret_cast<const Word16*>(L"\\d3drg8x.dll"));
 		Word64 uVersionD3Drg8x = GetFileVersion64(szPath);
-		if (uVersionD3Drg8x>=0x0004000400000046ULL) {	// Win9x version
-			// d3drg8x.dll is the DX3.0a version, so we must be DX3.0a or DX3.0b (no redist change)
+		if (uVersionD3Drg8x >= 0x0004000400000046ULL) { // Win9x version
+			// d3drg8x.dll is the DX3.0a version, so we must be DX3.0a or DX3.0b
+			// (no redist change)
 			uResult = 0x301;
 		}
 
 		// No DirectX 4
 
 		// Switch off the ddraw version
-		if (uVersionDDraw>=0x000400050000009BULL) {	// Win9x version
-			// ddraw.dll is the DX5.0 version, so we must be DX5.0 or DX5.2 (no redist change)
+		if (uVersionDDraw >= 0x000400050000009BULL) { // Win9x version
+			// ddraw.dll is the DX5.0 version, so we must be DX5.0 or DX5.2 (no
+			// redist change)
 			uResult = 0x0500;
 		}
 
-		if (uVersionDDraw>=0x000400060000013EULL) {		// Win9x version
+		if (uVersionDDraw >= 0x000400060000013EULL) { // Win9x version
 			// ddraw.dll is the DX6.0 version, so we must be at least DX6.0
 			uResult = 0x0600;
 		}
 
-		if (uVersionDDraw>=0x00040006000001B4) {		// Win9x version
+		if (uVersionDDraw >= 0x00040006000001B4) { // Win9x version
 			// ddraw.dll is the DX6.1 version, so we must be at least DX6.1
 			uResult = 0x0610;
 		}
 
-
 		// Switch off the dplayx.dll version
-		StringCopy(pDest,uRemaining,reinterpret_cast<const Word16 *>(L"\\dplayx.dll"));
+		StringCopy(pDest, uRemaining,
+			reinterpret_cast<const Word16*>(L"\\dplayx.dll"));
 		Word64 uVersionDPlayx = GetFileVersion64(szPath);
-		if (uVersionDPlayx>=0x0004000600030206ULL) {	// Win9x version
+		if (uVersionDPlayx >= 0x0004000600030206ULL) { // Win9x version
 			// ddraw.dll is the DX6.1 version, so we must be at least DX6.1a
 			uResult = 0x0611;
 		}
 
 		// Switch off the ddraw version
-		if (uVersionDDraw>=0x00040007000002BC) {	// Win9x version
+		if (uVersionDDraw >= 0x00040007000002BC) { // Win9x version
 			// ddraw.dll is the DX7.0 version, so we must be at least DX7.0
 			uResult = 0x0700;
 		}
 
 		// Switch off the dinput version
-		StringCopy(pDest,uRemaining,reinterpret_cast<const Word16 *>(L"\\dinput.dll"));
+		StringCopy(pDest, uRemaining,
+			reinterpret_cast<const Word16*>(L"\\dinput.dll"));
 		Word64 uVersionDInput = GetFileVersion64(szPath);
-		if (uVersionDInput>=0x00040007000002CC) {	// Win9x version
+		if (uVersionDInput >= 0x00040007000002CC) { // Win9x version
 			// ddraw.dll is the DX7.0 version, so we must be at least DX7.0a
 			uResult = 0x0701;
 		}
 
 		// Switch off the ddraw version
-		if ((((uVersionDDraw&0xFFFF000000000000ULL)==0x0004000000000000ULL) && (uVersionDDraw>=0x0004000800000190ULL)) || // Win9x version
-			(((uVersionDDraw&0xFFFF000000000000ULL)==0x0005000000000000ULL) && (uVersionDDraw>=0x0005000108D20190ULL))) { // Win2k/WinXP version
-			// ddraw.dll is the DX8.0 version, so we must be at least DX8.0 or DX8.0a (no redist change)
+		if ((((uVersionDDraw & 0xFFFF000000000000ULL) == 0x0004000000000000ULL)
+				&& (uVersionDDraw >= 0x0004000800000190ULL))
+			|| // Win9x version
+			(((uVersionDDraw & 0xFFFF000000000000ULL) == 0x0005000000000000ULL)
+				&& (uVersionDDraw
+					   >= 0x0005000108D20190ULL))) { // Win2k/WinXP version
+			// ddraw.dll is the DX8.0 version, so we must be at least DX8.0 or
+			// DX8.0a (no redist change)
 			uResult = 0x0800;
 		}
 
 		// Switch off the d3d8 version
-		StringCopy(pDest,uRemaining,reinterpret_cast<const Word16 *>(L"\\d3d8.dll"));
+		StringCopy(
+			pDest, uRemaining, reinterpret_cast<const Word16*>(L"\\d3d8.dll"));
 		Word64 uVersionD3D8 = GetFileVersion64(szPath);
-		if ((((uVersionD3D8&0xFFFF000000000000ULL)==0x0004000000000000ULL) && (uVersionD3D8>=0x0004000800010371ULL)) || // Win9x version
-			(((uVersionD3D8&0xFFFF000000000000ULL)==0x0005000000000000ULL) && (uVersionD3D8>=0x000500010A280371ULL))) { // Win2k/WinXP version
+		if ((((uVersionD3D8 & 0xFFFF000000000000ULL) == 0x0004000000000000ULL)
+				&& (uVersionD3D8 >= 0x0004000800010371ULL))
+			|| // Win9x version
+			(((uVersionD3D8 & 0xFFFF000000000000ULL) == 0x0005000000000000ULL)
+				&& (uVersionD3D8
+					   >= 0x000500010A280371ULL))) { // Win2k/WinXP version
 			// d3d8.dll is the DX8.1 version, so we must be at least DX8.1
 			uResult = 0x0810;
 		}
 
-		if ((((uVersionD3D8&0xFFFF000000000000ULL)==0x0004000000000000ULL) && (uVersionD3D8>=0x0004000800010385ULL)) || // Win9x version
-			(((uVersionD3D8&0xFFFF000000000000ULL)==0x0005000000000000ULL) && (uVersionD3D8>=0x000500010A280385ULL))) { // Win2k/WinXP version
+		if ((((uVersionD3D8 & 0xFFFF000000000000ULL) == 0x0004000000000000ULL)
+				&& (uVersionD3D8 >= 0x0004000800010385ULL))
+			|| // Win9x version
+			(((uVersionD3D8 & 0xFFFF000000000000ULL) == 0x0005000000000000ULL)
+				&& (uVersionD3D8
+					   >= 0x000500010A280385ULL))) { // Win2k/WinXP version
 			// d3d8.dll is the DX8.1a version, so we must be at least DX8.1a
 			uResult = 0x0811;
 		}
 
 		// Switch off the Mpg2splt version
-		StringCopy(pDest,uRemaining,reinterpret_cast<const Word16 *>(L"\\mpg2splt.ax"));
+		StringCopy(pDest, uRemaining,
+			reinterpret_cast<const Word16*>(L"\\mpg2splt.ax"));
 		Word64 uVersionMPG2Splt = GetFileVersion64(szPath);
-		if (uVersionMPG2Splt>=0x0006000300010375ULL) { // Win9x/Win2k/WinXP version
+		if (uVersionMPG2Splt
+			>= 0x0006000300010375ULL) { // Win9x/Win2k/WinXP version
 			// quartz.dll is the DX8.1b version, so we must be at least DX8.1b
 			uResult = 0x0812;
 		}
 
 		// Switch off the dpnet version
-		StringCopy(pDest,uRemaining,reinterpret_cast<const Word16 *>(L"\\dpnet.dll"));
+		StringCopy(
+			pDest, uRemaining, reinterpret_cast<const Word16*>(L"\\dpnet.dll"));
 		Word64 uVersionDPNet = GetFileVersion64(szPath);
-		if ((((uVersionDPNet&0xFFFF000000000000ULL)==0x0004000000000000ULL) && (uVersionDPNet>=0x0004000900000086ULL)) || // Win9x version
-			(((uVersionDPNet&0xFFFF000000000000ULL)==0x0005000000000000ULL) && (uVersionDPNet>=0x000500020E5D0086ULL))) { // Win2k/WinXP version
+		if ((((uVersionDPNet & 0xFFFF000000000000ULL) == 0x0004000000000000ULL)
+				&& (uVersionDPNet >= 0x0004000900000086ULL))
+			|| // Win9x version
+			(((uVersionDPNet & 0xFFFF000000000000ULL) == 0x0005000000000000ULL)
+				&& (uVersionDPNet
+					   >= 0x000500020E5D0086ULL))) { // Win2k/WinXP version
 			// dpnet.dll is the DX8.2 version, so we must be at least DX8.2
 			uResult = 0x0820;
 		}
 
 		// Switch off the d3d9 version
-		StringCopy(pDest,uRemaining,reinterpret_cast<const Word16 *>(L"\\d3d9.dll"));
+		StringCopy(
+			pDest, uRemaining, reinterpret_cast<const Word16*>(L"\\d3d9.dll"));
 		Word64 uVersionD3D9 = GetFileVersion64(szPath);
 
 		if (uVersionD3D9) {
 			// File exists, so it must be at least DX9
-			uResult = 0x0900;		// 9.0
+			uResult = 0x0900; // 9.0
 		}
-		
-		if (uVersionD3D9>=0x0004000900000385ULL) {		// 4.09.00.0901
-			uResult = 0x0901;		// 9.0a
+
+		if (uVersionD3D9 >= 0x0004000900000385ULL) { // 4.09.00.0901
+			uResult = 0x0901;						 // 9.0a
 		}
-		
-		if (uVersionD3D9>=0x0004000900000386ULL) {		// 4.09.00.0902
-			uResult = 0x0902;		// 9.0b
+
+		if (uVersionD3D9 >= 0x0004000900000386ULL) { // 4.09.00.0902
+			uResult = 0x0902;						 // 9.0b
 		}
-		
-		if (uVersionD3D9>=0x0004000900000387ULL) {		// 4.09.00.0903
-			uResult = 0x0903;		// 9.0c
+
+		if (uVersionD3D9 >= 0x0004000900000387ULL) { // 4.09.00.0903
+			uResult = 0x0903;						 // 9.0c
 		}
 
 		// DirectX 10
-		if (uVersionD3D9>=0x0006000017704002ULL) {		// 6.00.6000.16386
-			uResult = 0x0A00;		// 10.0
+		if (uVersionD3D9 >= 0x0006000017704002ULL) { // 6.00.6000.16386
+			uResult = 0x0A00;						 // 10.0
 		}
-		if (uVersionD3D9>=0x0006000017714650ULL) {		// 6.00.6001.18000
-			uResult = 0x0A10;		// 10.1
+		if (uVersionD3D9 >= 0x0006000017714650ULL) { // 6.00.6001.18000
+			uResult = 0x0A10;						 // 10.1
 		}
 
 		// DirectX 11
-		if (uVersionD3D9>=0x00060000177246BBULL) {		// 6.00.6002.18107
-			uResult = 0x0B00;		// 11.0
+		if (uVersionD3D9 >= 0x00060000177246BBULL) { // 6.00.6002.18107
+			uResult = 0x0B00;						 // 11.0
 		}
-		if (uVersionD3D9>=0x0006000223F04000ULL) {		// 6.02.9200.16384
-			uResult = 0x0B10;		// 11.1
-		}
-
-		if (uVersionD3D9>=0x0006000225804000ULL) {		// 6.02.9600.16384
-			uResult = 0x0B20;		// 11.2
+		if (uVersionD3D9 >= 0x0006000223F04000ULL) { // 6.02.9200.16384
+			uResult = 0x0B10;						 // 11.1
 		}
 
-		if (uVersionD3D9>=0x00060002383901BFULL) {		// 6.02.14393.447
-			uResult = 0x0B30;		// 11.3
+		if (uVersionD3D9 >= 0x0006000225804000ULL) { // 6.02.9600.16384
+			uResult = 0x0B20;						 // 11.2
 		}
- 
-//		if (uVersionD3D9>=0x000A000028004000ULL) {		// 10.00.10240.16384 (Not found yet)
-//			uResult = 0x0C00;		// 12.0
-//		}
+
+		if (uVersionD3D9 >= 0x00060002383901BFULL) { // 6.02.14393.447
+			uResult = 0x0B30;						 // 11.3
+		}
+
+		//		if (uVersionD3D9>=0x000A000028004000ULL) {
+		//// 10.00.10240.16384 (Not found yet) 			uResult = 0x0C00;
+		//// 12.0
+		//		}
 	}
 	return uResult;
 }
@@ -519,14 +549,20 @@ Word BURGER_API Burger::Globals::GetDirectXVersionViaFileVersions(void)
 
 	\brief Return the version of DirectX.
 	
+
+
 	Detect if DirectX is available, and if so, query
 	it for the version present. If DirectX is not available,
 	the version returned is zero.
 	
+
+
 	This function is written so it only asks for the version
 	once from DirectX. It will cache the version and
 	return the cached value on subsequent calls.
 	
+
+
 	By invoking DEEP magic, I will divine the version
 	of DirectX that is present. It will do a manual
 	check of the system folder for the DLLs
@@ -541,13 +577,15 @@ Word BURGER_API Burger::Globals::GetDirectXVersionViaFileVersions(void)
 Word BURGER_API Burger::Globals::GetDirectXVersion(void)
 {
 	// There is a version number in the registry, however, it is only valid for
-	// DirectX versions 1 through 9.0c. The registry key is not valid for DirectX 10 and higher
-	
-	// The same issue exists for obtaining the version of DirectX using the "Dialog" string, it
-	// tops out at DirectX 9, and doesn't properly map to versions of DirectX later than 11
+	// DirectX versions 1 through 9.0c. The registry key is not valid for
+	// DirectX 10 and higher
+
+	// The same issue exists for obtaining the version of DirectX using the
+	// "Dialog" string, it tops out at DirectX 9, and doesn't properly map to
+	// versions of DirectX later than 11
 
 	if (!g_bDirectXVersionValid) {
-		g_bDirectXVersionValid = TRUE;	// I got the version
+		g_bDirectXVersionValid = TRUE; // I got the version
 		Word uResult = GetDirectXVersionViaFileVersions();
 		g_uDirectXVersion = uResult;
 	}
@@ -568,258 +606,88 @@ Word BURGER_API Burger::Globals::GetDirectXVersion(void)
 
 #if !defined(DOXYGEN)
 struct DeviceGuid_t {
-	GUID *m_pGUID;		// Buffer to store the located GUID
-	Word m_uDevNum;		// Count down
+	GUID* m_pGUID;  // Buffer to store the located GUID
+	Word m_uDevNum; // Count down
 };
 #endif
 
-static int CALLBACK FindDeviceCallback(GUID *pGUID,LPSTR /* pName */,LPSTR /* pDeviceName */,void *pThis,void * /* pMonitor */)
+static int CALLBACK FindDeviceCallback(GUID* pGUID, LPSTR /* pName */,
+	LPSTR /* pDeviceName */, void* pThis, void* /* pMonitor */)
 {
-	DeviceGuid_t *pRef = static_cast<DeviceGuid_t *>(pThis);		// Deref the pointer
-	int iResult = DDENUMRET_OK;				// Keep going
-	if (!--pRef->m_uDevNum) {				// Found the device yet?
-		if (pGUID) {						// Specific device?
+	DeviceGuid_t* pRef = static_cast<DeviceGuid_t*>(pThis); // Deref the pointer
+	int iResult = DDENUMRET_OK;								// Keep going
+	if (!--pRef->m_uDevNum) { // Found the device yet?
+		if (pGUID) {		  // Specific device?
 			// Copy the GUID
-			Burger::MemoryCopy(pRef->m_pGUID,pGUID,sizeof(GUID));
+			Burger::MemoryCopy(pRef->m_pGUID, pGUID, sizeof(GUID));
 		} else {
 			// Clear the GUID
-			Burger::MemoryClear(pRef->m_pGUID,sizeof(GUID));
+			Burger::MemoryClear(pRef->m_pGUID, sizeof(GUID));
 		}
-		iResult = DDENUMRET_CANCEL;		// Stop now
+		iResult = DDENUMRET_CANCEL; // Stop now
 	}
 	return iResult;
 }
 
 /*! ************************************
 
-	\brief Given a specific device number, return the DirectX GUID
+    \brief Given a specific device number, return the DirectX GUID
 
-	Scan the device list for the GUID of the requested device.
-	Device #0 returns the global display device (All screens)
+    Scan the device list for the GUID of the requested device.
+    Device #0 returns the global display device (All screens)
 
-	\windowsonly
-	\param pOutput Pointer to a buffer to accept the returned GUID. Cannot be \ref NULL
-	\param uDevNum 0 for the master global device, 1-??? for the enumerated displays
-	\return Zero if no error, non-zero if an error has occurred
+    \windowsonly
+    \param pOutput Pointer to a buffer to accept the returned GUID. Cannot be
+        \ref nullptr
+    \param uDevNum 0 for the master global device, 1-??? for the enumerated
+        displays
+
+    \return Zero if no error, non-zero if an error has occurred
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::GetVideoGUID(GUID *pOutput,Word uDevNum)
+Word BURGER_API Burger::Globals::GetVideoGUID(GUID* pOutput, Word uDevNum)
 {
 	HRESULT uError = E_FAIL;
 	if (pOutput) {
 
 		DeviceGuid_t Ref;
-		Ref.m_pGUID = pOutput;			// Set the pointer to the GUID to store the result
-		Ref.m_uDevNum = ++uDevNum;		// Scan for this device
+		Ref.m_pGUID =
+			pOutput; // Set the pointer to the GUID to store the result
+		Ref.m_uDevNum = ++uDevNum; // Scan for this device
 
-		uError = static_cast<HRESULT>(DirectDrawEnumerateExW(FindDeviceCallback,&Ref,DDENUM_ATTACHEDSECONDARYDEVICES|
-			DDENUM_DETACHEDSECONDARYDEVICES|DDENUM_NONDISPLAYDEVICES));
-		// The nVidia GT 545 fails on this call, so call using the 8 Bit Ascii version instead
+		uError = static_cast<HRESULT>(Windows::DirectDrawEnumerateExW(FindDeviceCallback,
+			&Ref,
+			DDENUM_ATTACHEDSECONDARYDEVICES | DDENUM_DETACHEDSECONDARYDEVICES
+				| DDENUM_NONDISPLAYDEVICES));
+		// The nVidia GT 545 fails on this call, so call using the 8 Bit Ascii
+		// version instead
 		if (uError == E_NOTIMPL) {
-			Ref.m_uDevNum = uDevNum;	// Scan for this device
-			uError = static_cast<HRESULT>(DirectDrawEnumerateExA(FindDeviceCallback,&Ref,DDENUM_ATTACHEDSECONDARYDEVICES|
-				DDENUM_DETACHEDSECONDARYDEVICES|DDENUM_NONDISPLAYDEVICES));
+			Ref.m_uDevNum = uDevNum; // Scan for this device
+			uError = static_cast<HRESULT>(
+				Windows::DirectDrawEnumerateExA(FindDeviceCallback, &Ref,
+					DDENUM_ATTACHEDSECONDARYDEVICES
+						| DDENUM_DETACHEDSECONDARYDEVICES
+						| DDENUM_NONDISPLAYDEVICES));
 		}
-		if (uError==DD_OK) {
-			if (Ref.m_uDevNum) {		// Got it?
-				uError = E_FAIL;		// Force an error
+		if (uError == DD_OK) {
+			if (Ref.m_uDevNum) { // Got it?
+				uError = E_FAIL; // Force an error
 			}
 		}
 	}
 	return static_cast<Word>(uError);
 }
 
-/*! ************************************
-
-	\brief Call ShellExecuteW() with a UTF8 string
-
-	Convert the input string from UTF-8 encoding and call ShellExecuteW(NULL,"open",pFileToOpen,NULL,NULL,SW_SHOWNORMAL)
-
-	This function will return the result code without modification, a value of 33 or higher means the
-	function executed successfully.
-
-	\windowsonly
-	\param pFileToOpen UTF-8 encoded string to convert to use as input for ShellExecuteW()
-	\return Returned value from the call to ShellExecuteW(), cast as a \ref WordPtr
-
-***************************************/
-
-WordPtr BURGER_API Burger::Globals::ShellExecuteOpen(const char *pFileToOpen)
-{
-	String16 Data16(pFileToOpen);
-	HINSTANCE uResult = ShellExecuteW(NULL,reinterpret_cast<LPCWSTR>(L"open"),reinterpret_cast<LPCWSTR>(Data16.GetPtr()),NULL,NULL,SW_SHOWNORMAL);
-	return reinterpret_cast<WordPtr>(uResult);
-}
-
-/*! ************************************
-
-	\brief Launch the Media Center
-
-	Locate the exe file ehshell.exe in the windows folder
-	and execute it.
-
-	\note As of Windows 10, this function is obsolete. Please do
-	not expect this function to successfully execute on Windows 10
-	platforms.
-
-	\windowsonly
-	\return Zero if media center was successfully launched, non-zero on error.
-
-***************************************/
-
-Word BURGER_API Burger::Globals::LaunchMediaCenter(void)
-{
-	const char *pString = GetEnvironmentString("SystemRoot");
-	Word uResult = 10;		// Assume error
-	if (pString) {
-		Filename MediaCenterName;
-		MediaCenterName.SetFromNative(pString);
-		// Release the environment string
-		Free(pString);
-
-		// Append the filename of the media center
-		MediaCenterName.Append("ehome:ehshell.exe");
-
-		// See if the file exists
-		if (FileManager::DoesFileExist(&MediaCenterName)) {
-			// If the returned value is higher then 32, it was successful
-			if (ShellExecuteOpen(MediaCenterName.GetNative())>32) {
-				uResult = 0;
-			}
-		}
-	}
-	return uResult;
-}
-
-/*! ************************************
-
-	\brief Call LoadLibraryA() without file error boxes
-
-	When LoadLibraryA() is called in windows, it's possible that
-	if the file is not found, windows will display an error message box
-	mentioning that a DLL is missing. This function will prohibit
-	this behavior by setting the ErrorMode to SEM_NOOPENFILEERRORBOX
-	before the call to LoadLibraryA() and restoring the
-	flag to the previous setting before function exit.
-
-	https://msdn.microsoft.com/en-us/library/windows/desktop/ms684175(v=vs.85).aspx
-
-	\windowsonly
-	\param pInput ASCII pathname of the DLL file to load.
-	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
-	\sa LoadLibraryExA() or LoadLibraryW()
-
-***************************************/
-
-HINSTANCE BURGER_API Burger::Globals::LoadLibraryA(const char *pInput)
-{
-	// Disable user interactive dialogs
-	UINT uOldMode = SetErrorMode(SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
-	HINSTANCE hResult = ::LoadLibraryA(pInput);
-	// Restore the dialog state
-	SetErrorMode(uOldMode);
-	return hResult;
-}
-
-/*! ************************************
-
-	\brief Call LoadLibraryW() without file error boxes
-
-	When LoadLibraryW() is called in windows, it's possible that
-	if the file is not found, windows will display an error message box
-	mentioning that a DLL is missing. This function will prohibit
-	this behavior by setting the ErrorMode to SEM_NOOPENFILEERRORBOX
-	before the call to LoadLibraryW() and restoring the
-	flag to the previous setting before function exit.
-
-	https://msdn.microsoft.com/en-us/library/windows/desktop/ms684175(v=vs.85).aspx
-
-	\windowsonly
-	\param pInput UTF16 pathname of the DLL file to load. 
-	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
-	\sa LoadLibraryExW() or LoadLibraryA()
-
-***************************************/
-
-HINSTANCE BURGER_API Burger::Globals::LoadLibraryW(const Word16 *pInput)
-{
-	UINT uOldMode = SetErrorMode(SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
-	HINSTANCE hResult = ::LoadLibraryW(reinterpret_cast<LPCWSTR>(pInput));
-	SetErrorMode(uOldMode);
-	return hResult;
-}
-
-/*! ************************************
-
-	\brief Call LoadLibraryExA() without file error boxes
-
-	When LoadLibraryExA() is called in windows, it's possible that
-	if the file is not found, windows will display an error message box
-	mentioning that a DLL is missing. This function will prohibit
-	this behavior by setting the ErrorMode to SEM_NOOPENFILEERRORBOX
-	before the call to LoadLibraryExA() and restoring the
-	flag to the previous setting before function exit.
-
-	https://msdn.microsoft.com/en-us/library/windows/desktop/ms684179(v=vs.85).aspx
-
-	\windowsonly
-	\param pInput ASCII pathname of the DLL file to load.
-	\param hFile This parameter is reserved for future use. It must be \ref NULL.
-	\param uFlags The action to be taken when loading the module. 
-	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
-	\sa LoadLibraryA() or LoadLibraryExW()
-
-***************************************/
-
-HINSTANCE BURGER_API Burger::Globals::LoadLibraryExA(const char *pInput,void *hFile,Word32 uFlags)
-{
-	// Disable user interactive dialogs
-	UINT uOldMode = SetErrorMode(SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
-	HINSTANCE hResult = ::LoadLibraryExA(pInput,hFile,uFlags);
-	// Restore the dialog state
-	SetErrorMode(uOldMode);
-	return hResult;
-}
-
-/*! ************************************
-
-	\brief Call LoadLibraryExW() without file error boxes
-
-	When LoadLibraryExW() is called in windows, it's possible that
-	if the file is not found, windows will display an error message box
-	mentioning that a DLL is missing. This function will prohibit
-	this behavior by setting the ErrorMode to SEM_NOOPENFILEERRORBOX
-	before the call to LoadLibraryExW() and restoring the
-	flag to the previous setting before function exit.
-
-	https://msdn.microsoft.com/en-us/library/windows/desktop/ms684179(v=vs.85).aspx
-
-	\windowsonly
-	\param pInput UTF16 pathname of the DLL file to load. 
-	\param hFile This parameter is reserved for future use. It must be \ref NULL.
-	\param uFlags The action to be taken when loading the module. 
-	\return \ref NULL if the DLL was not loaded, a valid HINSTANCE on success
-	\sa LoadLibraryExA() or LoadLibraryW()
-
-***************************************/
-
-HINSTANCE BURGER_API Burger::Globals::LoadLibraryExW(const Word16 *pInput,void *hFile,Word32 uFlags)
-{
-	UINT uOldMode = SetErrorMode(SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
-	HINSTANCE hResult = ::LoadLibraryExW(reinterpret_cast<LPCWSTR>(pInput),hFile,uFlags);
-	SetErrorMode(uOldMode);
-	return hResult;
-}
 
 /*! ************************************
 
 	\brief Adds a directory to the start folder.
 
 	When installing an application, it may be desirable to create an entry in
-	the start menu to show an application folder and links for files/applications
-	of interest. This function locates the users start menu folder and
-	ensures that the folder is created and Windows Explorer is notified
+	the start menu to show an application folder and links for
+files/applications of interest. This function locates the users start menu
+folder and ensures that the folder is created and Windows Explorer is notified
 	of the change
 
 	\param pGroupName UTF8 "C" string of the folder name for the start menu
@@ -829,34 +697,38 @@ HINSTANCE BURGER_API Burger::Globals::LoadLibraryExW(const Word16 *pInput,void *
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::AddGroupToProgramMenu(const char *pGroupName)
+Word BURGER_API Burger::Globals::AddGroupToProgramMenu(const char* pGroupName)
 {
 	// Get the pidl for the start menu
 	// this will be used to initialize the folder browser
 
 	Word uResult = 10;
-	ITEMIDLIST *pIDListStartMenu;		// Item list for the start menu
-	if (SHGetSpecialFolderLocation(GetWindow(),CSIDL_PROGRAMS,&pIDListStartMenu)==NOERROR) {
-		Word16 WorkPath[MAX_PATH*2];
-		if (SHGetPathFromIDListW(pIDListStartMenu,reinterpret_cast<LPWSTR>(WorkPath))) {
+	ITEMIDLIST* pIDListStartMenu; // Item list for the start menu
+	if (SHGetSpecialFolderLocation(
+			GetWindow(), CSIDL_PROGRAMS, &pIDListStartMenu)
+		== NOERROR) {
+		Word16 WorkPath[MAX_PATH * 2];
+		if (SHGetPathFromIDListW(
+				pIDListStartMenu, reinterpret_cast<LPWSTR>(WorkPath))) {
 			// Append a directory divider
 			WordPtr uLength = StringLength(WorkPath);
 			WorkPath[uLength] = '\\';
-			WorkPath[uLength+1] = 0;
+			WorkPath[uLength + 1] = 0;
 
 			// Append the new folder name
 			String16 GroupName(pGroupName);
-			StringConcatenate(WorkPath,sizeof(WorkPath),GroupName.GetPtr());
+			StringConcatenate(WorkPath, sizeof(WorkPath), GroupName.GetPtr());
 			// Convert to UTF8 for Burgerlib
 			String UTF8(WorkPath);
 			Filename TempPath;
 			TempPath.SetFromNative(UTF8.GetPtr());
-			if (!FileManager::CreateDirectoryPath(&TempPath)) {		// Create the directory
+			if (!FileManager::CreateDirectoryPath(
+					&TempPath)) { // Create the directory
 				// Notify the shell that this folder was updated
 				// Use SHCNF_PATHW since WorkPath is UTF16
-				SHChangeNotify(SHCNE_MKDIR,SHCNF_PATHW,WorkPath,NULL);
+				SHChangeNotify(SHCNE_MKDIR, SHCNF_PATHW, WorkPath, NULL);
 			}
-			uResult = 0;	// Success!
+			uResult = 0; // Success!
 		}
 	}
 	return uResult;
@@ -871,30 +743,34 @@ Word BURGER_API Burger::Globals::AddGroupToProgramMenu(const char *pGroupName)
 
 	\windowsonly
 	\param pKey Key found in HKEY_CURRENT_USER
-	\param pSubKey Name of the sub-key of interest, can be \ref NULL
+	\param pSubKey Name of the sub-key of interest, can be \ref nullptr
 	\param pData String to store in the registry
 	\return Zero if successful, non-zero is the Windows error code.
 	\sa AssociateFileExtensionToExe(const char *,const char *,const char *)
 
 ***************************************/
 
-int BURGER_API Burger::Globals::CreateUserRegistryKey(const char *pKey,const char *pSubKey,const char *pData)
+int BURGER_API Burger::Globals::CreateUserRegistryKey(
+	const char* pKey, const char* pSubKey, const char* pData)
 {
 	// Convert from UTF8 to UTF16 for Windows
 	String16 KeyUTF16(pKey);
 	HKEY hKey = NULL;
 	// Create the registry key
-	LONG lStatus = RegCreateKeyExW(HKEY_CURRENT_USER,reinterpret_cast<LPWSTR>(KeyUTF16.GetPtr()),
-		0,0,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&hKey,NULL);
+	LONG lStatus = RegCreateKeyExW(HKEY_CURRENT_USER,
+		reinterpret_cast<LPWSTR>(KeyUTF16.GetPtr()), 0, 0,
+		REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, NULL);
 	if (lStatus == ERROR_SUCCESS) {
-		const wchar_t *pSub16 = NULL;
+		const wchar_t* pSub16 = NULL;
 		// SubKeyUTF16 has to remain in scope
 		String16 SubKeyUTF16(pSubKey);
 		if (SubKeyUTF16.GetLength()) {
-			pSub16 = reinterpret_cast<const wchar_t *>(SubKeyUTF16.GetPtr());
+			pSub16 = reinterpret_cast<const wchar_t*>(SubKeyUTF16.GetPtr());
 		}
 		String16 DataUTF16(pData);
-		lStatus = RegSetValueExW(hKey,reinterpret_cast<LPCWSTR>(pSub16),0,REG_SZ,reinterpret_cast<const BYTE *>(DataUTF16.GetPtr()),(static_cast<DWORD>(DataUTF16.GetLength())+1)*2);
+		lStatus = RegSetValueExW(hKey, reinterpret_cast<LPCWSTR>(pSub16), 0,
+			REG_SZ, reinterpret_cast<const BYTE*>(DataUTF16.GetPtr()),
+			(static_cast<DWORD>(DataUTF16.GetLength()) + 1) * 2);
 		RegCloseKey(hKey);
 	}
 	return lStatus;
@@ -902,56 +778,70 @@ int BURGER_API Burger::Globals::CreateUserRegistryKey(const char *pKey,const cha
 
 /*! ************************************
 
-	\brief Associate a data file to the application.
-	
-	Set the user registry to associate a data file type with the
-	currently running executable.
-	
-	\windowsonly
+    \brief Associate a data file to the application.
 
-	\code
-	// Tell Windows Explorer to launch .datafile files with the currently running app by double-clicking
-	AssociateFileExtensionToExe(".datafile","Data for the Fubar application","com.oldskuul.fubar");
-	\endcode
+    Set the user registry to associate a data file type with the
+    currently running executable.
 
-	\param pFileExtension ".foo" Pointer to a "C" string with the file extension
-	\param pDescription "Foo file" Description of this file type to be visible to Explorer
-	\param pProgramID "com.company.application" program ID
-	\sa CreateUserRegistryKey(const char *,const char *,const char *)
+    \windowsonly
+
+    \code
+    // Tell Windows Explorer to launch .datafile files with the currently
+    // running app by double-clicking
+
+    AssociateFileExtensionToExe(".datafile",
+        "Data for the Fubar application","com.oldskuul.fubar");
+
+    \endcode
+
+    \param pFileExtension ".foo" Pointer to a "C" string with the file extension
+    \param pDescription "Foo file" Description of this file type to be visible
+        to Explorer
+    \param pProgramID "com.company.application" program ID
+
+    \sa CreateUserRegistryKey(const char *,const char *,const char *)
 
 ***************************************/
 
-void BURGER_API Burger::Globals::AssociateFileExtensionToExe(const char *pFileExtension,const char *pDescription,const char *pProgramID)
+void BURGER_API Burger::Globals::AssociateFileExtensionToExe(
+	const char* pFileExtension, const char* pDescription,
+	const char* pProgramID)
 {
-	// Create the keys for the file extension and the description to show in Explorer
+	// Create the keys for the file extension and the description to show in
+	// Explorer
 	{
-		// Create the key for the file extension itself. .foo -> Unique program ID
-		String ClassExtension(g_SoftwareClasses,pFileExtension);
-		CreateUserRegistryKey(ClassExtension.GetPtr(),NULL,pProgramID);
+		// Create the key for the file extension itself. .foo -> Unique program
+		// ID
+		String ClassExtension(g_SoftwareClasses, pFileExtension);
+		CreateUserRegistryKey(ClassExtension.GetPtr(), NULL, pProgramID);
 	}
 	{
 		// Create the key for the unique program ID, with the file's description
-		String ClassExtension(g_SoftwareClasses,pProgramID);
-		CreateUserRegistryKey(ClassExtension.GetPtr(),NULL,pDescription);
+		String ClassExtension(g_SoftwareClasses, pProgramID);
+		CreateUserRegistryKey(ClassExtension.GetPtr(), NULL, pDescription);
 	}
 
-	// With the program ID already requested, generate the app's location for the ID
-	// and the sample command line to use if you "drag and drop" a file on the exe.
+	// With the program ID already requested, generate the app's location for
+	// the ID and the sample command line to use if you "drag and drop" a file
+	// on the exe.
 	Word16 TempBuffer[MAX_PATH];
 	// Get the pathname to the currently running application
-	if (GetModuleFileNameW(NULL,reinterpret_cast<LPWSTR>(TempBuffer),MAX_PATH)<MAX_PATH) {
+	if (GetModuleFileNameW(NULL, reinterpret_cast<LPWSTR>(TempBuffer), MAX_PATH)
+		< MAX_PATH) {
 		String ExePath(TempBuffer);
 		{
 			// Create the key and command to launch on double click
-			String ClassShellOpen(g_SoftwareClasses,pProgramID,"\\shell\\open\\command");
-			String Command("\"",ExePath.GetPtr(),"\" \"%1\"");
-			CreateUserRegistryKey(ClassShellOpen.GetPtr(),NULL,Command.GetPtr());
+			String ClassShellOpen(
+				g_SoftwareClasses, pProgramID, "\\shell\\open\\command");
+			String Command("\"", ExePath.GetPtr(), "\" \"%1\"");
+			CreateUserRegistryKey(
+				ClassShellOpen.GetPtr(), NULL, Command.GetPtr());
 		}
 		{
 			// Create the key and reference to the icon for the data file
-			String ClassIcon(g_SoftwareClasses,pProgramID,"\\DefaultIcon");
-			String Command2("\"",ExePath.GetPtr(),"\",1");
-			CreateUserRegistryKey(ClassIcon.GetPtr(),NULL,Command2.GetPtr());
+			String ClassIcon(g_SoftwareClasses, pProgramID, "\\DefaultIcon");
+			String Command2("\"", ExePath.GetPtr(), "\",1");
+			CreateUserRegistryKey(ClassIcon.GetPtr(), NULL, Command2.GetPtr());
 		}
 	}
 }
@@ -974,255 +864,110 @@ void BURGER_API Burger::Globals::AssociateFileExtensionToExe(const char *pFileEx
 ***************************************/
 
 #if !defined(DOXYGEN)
-#define CASE(x) { #x,x }
+#define CASE(x)                                                                \
+	{                                                                          \
+#x, x                                                                  \
+	}
 
 struct MessageLookup_t {
-	const char *m_pName;			// String of the enum
-	Word m_uEnum;					// Enum value that matched the string
+	const char* m_pName; // String of the enum
+	Word m_uEnum;		 // Enum value that matched the string
 };
 
 //
 // All known event messages for a window are here.
 //
 
-static const MessageLookup_t g_MessageLookup[] = {
-	CASE(WM_NULL),
-	CASE(WM_CREATE),
-	CASE(WM_DESTROY),
-	CASE(WM_MOVE),
-	CASE(WM_SIZE),
-	CASE(WM_ACTIVATE),
-	CASE(WM_SETFOCUS),
-	CASE(WM_KILLFOCUS),
-	CASE(WM_ENABLE),
-	CASE(WM_SETREDRAW),
-	CASE(WM_SETTEXT),
-	CASE(WM_GETTEXT),
-	CASE(WM_GETTEXTLENGTH),
-	CASE(WM_PAINT),
-	CASE(WM_CLOSE),
-	CASE(WM_QUERYENDSESSION),
-	CASE(WM_QUIT),
-	CASE(WM_QUERYOPEN),
-	CASE(WM_ERASEBKGND),
-	CASE(WM_SYSCOLORCHANGE),
-	CASE(WM_SHOWWINDOW),
-	CASE(WM_SETTINGCHANGE),
-	CASE(WM_DEVMODECHANGE),
-	CASE(WM_ACTIVATEAPP),
-	CASE(WM_FONTCHANGE),
-	CASE(WM_TIMECHANGE),
-	CASE(WM_CANCELMODE),
-	CASE(WM_SETCURSOR),
-	CASE(WM_MOUSEACTIVATE),
-	CASE(WM_CHILDACTIVATE),
-	CASE(WM_QUEUESYNC),
-	CASE(WM_GETMINMAXINFO),
-	CASE(WM_PAINTICON),
-	CASE(WM_ICONERASEBKGND),
-	CASE(WM_NEXTDLGCTL),
-	CASE(WM_SPOOLERSTATUS),
-	CASE(WM_DRAWITEM),
-	CASE(WM_MEASUREITEM),
-	CASE(WM_DELETEITEM),
-	CASE(WM_VKEYTOITEM),
-	CASE(WM_CHARTOITEM),
-	CASE(WM_SETFONT),
-	CASE(WM_GETFONT),
-	CASE(WM_SETHOTKEY),
-	CASE(WM_GETHOTKEY),
-	CASE(WM_QUERYDRAGICON),
-	CASE(WM_COMPAREITEM),
-	CASE(WM_GETOBJECT),
-	CASE(WM_COMPACTING),
-	CASE(WM_COMMNOTIFY),
-	CASE(WM_WINDOWPOSCHANGING),
-	CASE(WM_WINDOWPOSCHANGED),
-	CASE(WM_POWER),
-	CASE(WM_COPYDATA),
-	CASE(WM_CANCELJOURNAL),
-	CASE(WM_KEYF1),
-	CASE(WM_NOTIFY),
-	CASE(WM_INPUTLANGCHANGEREQUEST),
-	CASE(WM_INPUTLANGCHANGE),
-	CASE(WM_TCARD),
-	CASE(WM_HELP),
-	CASE(WM_USERCHANGED),
-	CASE(WM_NOTIFYFORMAT),
-	CASE(WM_CONTEXTMENU),
-	CASE(WM_STYLECHANGING),
-	CASE(WM_STYLECHANGED),
-	CASE(WM_DISPLAYCHANGE),
-	CASE(WM_GETICON),
-	CASE(WM_SETICON),
-	CASE(WM_NCCREATE),
-	CASE(WM_NCDESTROY),
-	CASE(WM_NCCALCSIZE),
-	CASE(WM_NCHITTEST),
-	CASE(WM_NCPAINT),
-	CASE(WM_NCACTIVATE),
-	CASE(WM_GETDLGCODE),
-	CASE(WM_SYNCPAINT),
-	CASE(WM_UAHDESTROYWINDOW),
-	CASE(WM_UAHDRAWMENU),
-	CASE(WM_UAHDRAWMENUITEM),
-	CASE(WM_UAHINITMENU),
-	CASE(WM_UAHMEASUREMENUITEM),
-	CASE(WM_UAHNCPAINTMENUPOPUP),
-	CASE(WM_NCMOUSEMOVE),
-	CASE(WM_NCLBUTTONDOWN),
-	CASE(WM_NCLBUTTONUP),
-	CASE(WM_NCLBUTTONDBLCLK),
-	CASE(WM_NCRBUTTONDOWN),
-	CASE(WM_NCRBUTTONUP),
-	CASE(WM_NCRBUTTONDBLCLK),
-	CASE(WM_NCMBUTTONDOWN),
-	CASE(WM_NCMBUTTONUP),
-	CASE(WM_NCMBUTTONDBLCLK),
-	CASE(WM_NCXBUTTONDOWN),
-	CASE(WM_NCXBUTTONUP),
-	CASE(WM_NCXBUTTONDBLCLK),
-	CASE(WM_NCUAHDRAWCAPTION),
-	CASE(WM_NCUAHDRAWFRAME),
-	CASE(WM_INPUT_DEVICE_CHANGE),
-	CASE(WM_INPUT),
-	CASE(WM_KEYDOWN),
-	CASE(WM_KEYUP),
-	CASE(WM_CHAR),
-	CASE(WM_DEADCHAR),
-	CASE(WM_SYSKEYDOWN),
-	CASE(WM_SYSKEYUP),
-	CASE(WM_SYSCHAR),
-	CASE(WM_SYSDEADCHAR),
-	CASE(WM_UNICHAR),
-	CASE(WM_IME_STARTCOMPOSITION),
-	CASE(WM_IME_ENDCOMPOSITION),
-	CASE(WM_IME_COMPOSITION),
-	CASE(WM_INITDIALOG),
-	CASE(WM_COMMAND),
-	CASE(WM_SYSCOMMAND),
-	CASE(WM_TIMER),
-	CASE(WM_HSCROLL),
-	CASE(WM_VSCROLL),
-	CASE(WM_INITMENU),
-	CASE(WM_INITMENUPOPUP),
-	CASE(WM_GESTURE),
-	CASE(WM_GESTURENOTIFY),
-	CASE(WM_MENUSELECT),
-	CASE(WM_MENUCHAR),
-	CASE(WM_ENTERIDLE),
-	CASE(WM_MENURBUTTONUP),
-	CASE(WM_MENUDRAG),
-	CASE(WM_MENUGETOBJECT),
-	CASE(WM_UNINITMENUPOPUP),
-	CASE(WM_MENUCOMMAND),
-	CASE(WM_CHANGEUISTATE),
-	CASE(WM_UPDATEUISTATE),
-	CASE(WM_QUERYUISTATE),
-	CASE(WM_CTLCOLORMSGBOX),
-	CASE(WM_CTLCOLOREDIT),
-	CASE(WM_CTLCOLORLISTBOX),
-	CASE(WM_CTLCOLORBTN),
-	CASE(WM_CTLCOLORDLG),
-	CASE(WM_CTLCOLORSCROLLBAR),
-	CASE(WM_CTLCOLORSTATIC),
-	CASE(MN_GETHMENU),
-	CASE(WM_MOUSEMOVE),
-	CASE(WM_LBUTTONDOWN),
-	CASE(WM_LBUTTONUP),
-	CASE(WM_LBUTTONDBLCLK),
-	CASE(WM_RBUTTONDOWN),
-	CASE(WM_RBUTTONUP),
-	CASE(WM_RBUTTONDBLCLK),
-	CASE(WM_MBUTTONDOWN),
-	CASE(WM_MBUTTONUP),
-	CASE(WM_MBUTTONDBLCLK),
-	CASE(WM_MOUSEWHEEL),
-	CASE(WM_XBUTTONDOWN),
-	CASE(WM_XBUTTONUP),
-	CASE(WM_XBUTTONDBLCLK),
-	CASE(WM_MOUSEHWHEEL),
-	CASE(WM_PARENTNOTIFY),
-	CASE(WM_ENTERMENULOOP),
-	CASE(WM_EXITMENULOOP),
-	CASE(WM_NEXTMENU),
-	CASE(WM_SIZING),
-	CASE(WM_CAPTURECHANGED),
-	CASE(WM_MOVING),
-	CASE(WM_POWERBROADCAST),
-	CASE(WM_DEVICECHANGE),
-	CASE(WM_MDICREATE),
-	CASE(WM_MDIDESTROY),
-	CASE(WM_MDIACTIVATE),
-	CASE(WM_MDIRESTORE),
-	CASE(WM_MDINEXT),
-	CASE(WM_MDIMAXIMIZE),
-	CASE(WM_MDITILE),
-	CASE(WM_MDICASCADE),
-	CASE(WM_MDIICONARRANGE),
-	CASE(WM_MDIGETACTIVE),
-	CASE(WM_MDISETMENU),
-	CASE(WM_ENTERSIZEMOVE),
-	CASE(WM_EXITSIZEMOVE),
-	CASE(WM_DROPFILES),
-	CASE(WM_MDIREFRESHMENU),
-	CASE(WM_TOUCH),
-	CASE(WM_IME_SETCONTEXT),
-	CASE(WM_IME_NOTIFY),
-	CASE(WM_IME_CONTROL),
-	CASE(WM_IME_COMPOSITIONFULL),
-	CASE(WM_IME_SELECT),
-	CASE(WM_IME_CHAR),
-	CASE(WM_IME_REQUEST),
-	CASE(WM_IME_KEYDOWN),
-	CASE(WM_IME_KEYUP),
-	CASE(WM_NCMOUSEHOVER),
-	CASE(WM_MOUSEHOVER),
-	CASE(WM_NCMOUSELEAVE),
-	CASE(WM_MOUSELEAVE),
-	CASE(WM_WTSSESSION_CHANGE),
-	CASE(WM_CUT),
-	CASE(WM_COPY),
-	CASE(WM_PASTE),
-	CASE(WM_CLEAR),
-	CASE(WM_UNDO),
-	CASE(WM_RENDERFORMAT),
-	CASE(WM_RENDERALLFORMATS),
-	CASE(WM_DESTROYCLIPBOARD),
-	CASE(WM_DRAWCLIPBOARD),
-	CASE(WM_PAINTCLIPBOARD),
-	CASE(WM_VSCROLLCLIPBOARD),
-	CASE(WM_SIZECLIPBOARD),
-	CASE(WM_ASKCBFORMATNAME),
-	CASE(WM_CHANGECBCHAIN),
-	CASE(WM_HSCROLLCLIPBOARD),
-	CASE(WM_QUERYNEWPALETTE),
-	CASE(WM_PALETTEISCHANGING),
-	CASE(WM_PALETTECHANGED),
-	CASE(WM_HOTKEY),
-	CASE(WM_PRINT),
-	CASE(WM_PRINTCLIENT),
-	CASE(WM_APPCOMMAND),
-	CASE(WM_THEMECHANGED),
-	CASE(WM_CLIPBOARDUPDATE),
-	CASE(WM_DWMCOMPOSITIONCHANGED),
-	CASE(WM_DWMNCRENDERINGCHANGED),
-	CASE(WM_DWMCOLORIZATIONCOLORCHANGED),
-	CASE(WM_DWMWINDOWMAXIMIZEDCHANGE)
-};
+static const MessageLookup_t g_MessageLookup[] = {CASE(WM_NULL),
+	CASE(WM_CREATE), CASE(WM_DESTROY), CASE(WM_MOVE), CASE(WM_SIZE),
+	CASE(WM_ACTIVATE), CASE(WM_SETFOCUS), CASE(WM_KILLFOCUS), CASE(WM_ENABLE),
+	CASE(WM_SETREDRAW), CASE(WM_SETTEXT), CASE(WM_GETTEXT),
+	CASE(WM_GETTEXTLENGTH), CASE(WM_PAINT), CASE(WM_CLOSE),
+	CASE(WM_QUERYENDSESSION), CASE(WM_QUIT), CASE(WM_QUERYOPEN),
+	CASE(WM_ERASEBKGND), CASE(WM_SYSCOLORCHANGE), CASE(WM_SHOWWINDOW),
+	CASE(WM_SETTINGCHANGE), CASE(WM_DEVMODECHANGE), CASE(WM_ACTIVATEAPP),
+	CASE(WM_FONTCHANGE), CASE(WM_TIMECHANGE), CASE(WM_CANCELMODE),
+	CASE(WM_SETCURSOR), CASE(WM_MOUSEACTIVATE), CASE(WM_CHILDACTIVATE),
+	CASE(WM_QUEUESYNC), CASE(WM_GETMINMAXINFO), CASE(WM_PAINTICON),
+	CASE(WM_ICONERASEBKGND), CASE(WM_NEXTDLGCTL), CASE(WM_SPOOLERSTATUS),
+	CASE(WM_DRAWITEM), CASE(WM_MEASUREITEM), CASE(WM_DELETEITEM),
+	CASE(WM_VKEYTOITEM), CASE(WM_CHARTOITEM), CASE(WM_SETFONT),
+	CASE(WM_GETFONT), CASE(WM_SETHOTKEY), CASE(WM_GETHOTKEY),
+	CASE(WM_QUERYDRAGICON), CASE(WM_COMPAREITEM), CASE(WM_GETOBJECT),
+	CASE(WM_COMPACTING), CASE(WM_COMMNOTIFY), CASE(WM_WINDOWPOSCHANGING),
+	CASE(WM_WINDOWPOSCHANGED), CASE(WM_POWER), CASE(WM_COPYDATA),
+	CASE(WM_CANCELJOURNAL), CASE(WM_KEYF1), CASE(WM_NOTIFY),
+	CASE(WM_INPUTLANGCHANGEREQUEST), CASE(WM_INPUTLANGCHANGE), CASE(WM_TCARD),
+	CASE(WM_HELP), CASE(WM_USERCHANGED), CASE(WM_NOTIFYFORMAT),
+	CASE(WM_CONTEXTMENU), CASE(WM_STYLECHANGING), CASE(WM_STYLECHANGED),
+	CASE(WM_DISPLAYCHANGE), CASE(WM_GETICON), CASE(WM_SETICON),
+	CASE(WM_NCCREATE), CASE(WM_NCDESTROY), CASE(WM_NCCALCSIZE),
+	CASE(WM_NCHITTEST), CASE(WM_NCPAINT), CASE(WM_NCACTIVATE),
+	CASE(WM_GETDLGCODE), CASE(WM_SYNCPAINT), CASE(WM_UAHDESTROYWINDOW),
+	CASE(WM_UAHDRAWMENU), CASE(WM_UAHDRAWMENUITEM), CASE(WM_UAHINITMENU),
+	CASE(WM_UAHMEASUREMENUITEM), CASE(WM_UAHNCPAINTMENUPOPUP),
+	CASE(WM_NCMOUSEMOVE), CASE(WM_NCLBUTTONDOWN), CASE(WM_NCLBUTTONUP),
+	CASE(WM_NCLBUTTONDBLCLK), CASE(WM_NCRBUTTONDOWN), CASE(WM_NCRBUTTONUP),
+	CASE(WM_NCRBUTTONDBLCLK), CASE(WM_NCMBUTTONDOWN), CASE(WM_NCMBUTTONUP),
+	CASE(WM_NCMBUTTONDBLCLK), CASE(WM_NCXBUTTONDOWN), CASE(WM_NCXBUTTONUP),
+	CASE(WM_NCXBUTTONDBLCLK), CASE(WM_NCUAHDRAWCAPTION),
+	CASE(WM_NCUAHDRAWFRAME), CASE(WM_INPUT_DEVICE_CHANGE), CASE(WM_INPUT),
+	CASE(WM_KEYDOWN), CASE(WM_KEYUP), CASE(WM_CHAR), CASE(WM_DEADCHAR),
+	CASE(WM_SYSKEYDOWN), CASE(WM_SYSKEYUP), CASE(WM_SYSCHAR),
+	CASE(WM_SYSDEADCHAR), CASE(WM_UNICHAR), CASE(WM_IME_STARTCOMPOSITION),
+	CASE(WM_IME_ENDCOMPOSITION), CASE(WM_IME_COMPOSITION), CASE(WM_INITDIALOG),
+	CASE(WM_COMMAND), CASE(WM_SYSCOMMAND), CASE(WM_TIMER), CASE(WM_HSCROLL),
+	CASE(WM_VSCROLL), CASE(WM_INITMENU), CASE(WM_INITMENUPOPUP),
+	CASE(WM_GESTURE), CASE(WM_GESTURENOTIFY), CASE(WM_MENUSELECT),
+	CASE(WM_MENUCHAR), CASE(WM_ENTERIDLE), CASE(WM_MENURBUTTONUP),
+	CASE(WM_MENUDRAG), CASE(WM_MENUGETOBJECT), CASE(WM_UNINITMENUPOPUP),
+	CASE(WM_MENUCOMMAND), CASE(WM_CHANGEUISTATE), CASE(WM_UPDATEUISTATE),
+	CASE(WM_QUERYUISTATE), CASE(WM_CTLCOLORMSGBOX), CASE(WM_CTLCOLOREDIT),
+	CASE(WM_CTLCOLORLISTBOX), CASE(WM_CTLCOLORBTN), CASE(WM_CTLCOLORDLG),
+	CASE(WM_CTLCOLORSCROLLBAR), CASE(WM_CTLCOLORSTATIC), CASE(MN_GETHMENU),
+	CASE(WM_MOUSEMOVE), CASE(WM_LBUTTONDOWN), CASE(WM_LBUTTONUP),
+	CASE(WM_LBUTTONDBLCLK), CASE(WM_RBUTTONDOWN), CASE(WM_RBUTTONUP),
+	CASE(WM_RBUTTONDBLCLK), CASE(WM_MBUTTONDOWN), CASE(WM_MBUTTONUP),
+	CASE(WM_MBUTTONDBLCLK), CASE(WM_MOUSEWHEEL), CASE(WM_XBUTTONDOWN),
+	CASE(WM_XBUTTONUP), CASE(WM_XBUTTONDBLCLK), CASE(WM_MOUSEHWHEEL),
+	CASE(WM_PARENTNOTIFY), CASE(WM_ENTERMENULOOP), CASE(WM_EXITMENULOOP),
+	CASE(WM_NEXTMENU), CASE(WM_SIZING), CASE(WM_CAPTURECHANGED),
+	CASE(WM_MOVING), CASE(WM_POWERBROADCAST), CASE(WM_DEVICECHANGE),
+	CASE(WM_MDICREATE), CASE(WM_MDIDESTROY), CASE(WM_MDIACTIVATE),
+	CASE(WM_MDIRESTORE), CASE(WM_MDINEXT), CASE(WM_MDIMAXIMIZE),
+	CASE(WM_MDITILE), CASE(WM_MDICASCADE), CASE(WM_MDIICONARRANGE),
+	CASE(WM_MDIGETACTIVE), CASE(WM_MDISETMENU), CASE(WM_ENTERSIZEMOVE),
+	CASE(WM_EXITSIZEMOVE), CASE(WM_DROPFILES), CASE(WM_MDIREFRESHMENU),
+	CASE(WM_TOUCH), CASE(WM_IME_SETCONTEXT), CASE(WM_IME_NOTIFY),
+	CASE(WM_IME_CONTROL), CASE(WM_IME_COMPOSITIONFULL), CASE(WM_IME_SELECT),
+	CASE(WM_IME_CHAR), CASE(WM_IME_REQUEST), CASE(WM_IME_KEYDOWN),
+	CASE(WM_IME_KEYUP), CASE(WM_NCMOUSEHOVER), CASE(WM_MOUSEHOVER),
+	CASE(WM_NCMOUSELEAVE), CASE(WM_MOUSELEAVE), CASE(WM_WTSSESSION_CHANGE),
+	CASE(WM_CUT), CASE(WM_COPY), CASE(WM_PASTE), CASE(WM_CLEAR), CASE(WM_UNDO),
+	CASE(WM_RENDERFORMAT), CASE(WM_RENDERALLFORMATS), CASE(WM_DESTROYCLIPBOARD),
+	CASE(WM_DRAWCLIPBOARD), CASE(WM_PAINTCLIPBOARD), CASE(WM_VSCROLLCLIPBOARD),
+	CASE(WM_SIZECLIPBOARD), CASE(WM_ASKCBFORMATNAME), CASE(WM_CHANGECBCHAIN),
+	CASE(WM_HSCROLLCLIPBOARD), CASE(WM_QUERYNEWPALETTE),
+	CASE(WM_PALETTEISCHANGING), CASE(WM_PALETTECHANGED), CASE(WM_HOTKEY),
+	CASE(WM_PRINT), CASE(WM_PRINTCLIENT), CASE(WM_APPCOMMAND),
+	CASE(WM_THEMECHANGED), CASE(WM_CLIPBOARDUPDATE),
+	CASE(WM_DWMCOMPOSITIONCHANGED), CASE(WM_DWMNCRENDERINGCHANGED),
+	CASE(WM_DWMCOLORIZATIONCOLORCHANGED), CASE(WM_DWMWINDOWMAXIMIZEDCHANGE)};
 #endif
 
-void BURGER_API Burger::Globals::OutputWindowsMessage(Word uMessage,WordPtr wParam,WordPtr lParam)
+void BURGER_API Burger::Globals::OutputWindowsMessage(
+	Word uMessage, WordPtr wParam, WordPtr lParam)
 {
-	// Static global value containing the number of times this function was called
-	static Word uMessageCount=0;
+	// Static global value containing the number of times this function was
+	// called
+	static Word uMessageCount = 0;
 
 	// Scan the table for a match
 	WordPtr uCount = BURGER_ARRAYSIZE(g_MessageLookup);
-	const MessageLookup_t *pLookup = g_MessageLookup;
-	const char *pMessage = NULL;
+	const MessageLookup_t* pLookup = g_MessageLookup;
+	const char* pMessage = NULL;
 	do {
-		if (uMessage==pLookup->m_uEnum) {
+		if (uMessage == pLookup->m_uEnum) {
 			pMessage = pLookup->m_pName;
 			break;
 		}
@@ -1234,14 +979,16 @@ void BURGER_API Burger::Globals::OutputWindowsMessage(Word uMessage,WordPtr wPar
 
 	char HexAsASCII[32];
 	if (!pMessage) {
-		NumberToAsciiHex(HexAsASCII,static_cast<Word32>(uMessage),LEADINGZEROS|8);
+		NumberToAsciiHex(
+			HexAsASCII, static_cast<Word32>(uMessage), LEADINGZEROS | 8);
 		pMessage = HexAsASCII;
 	}
 	// Output the message and parameter values. It's not 64 bit clean for the
 	// parameters, however, this is only for information to give clues on how
 	// events are sent to a window from the operating system
 
-	Debug::Message("Message %08X is %s with parms %08X, %08X\n",uMessageCount,pMessage,static_cast<Word>(wParam),static_cast<Word>(lParam));
+	Debug::Message("Message %08X is %s with parms %08X, %08X\n", uMessageCount,
+		pMessage, static_cast<Word>(wParam), static_cast<Word>(lParam));
 	++uMessageCount;
 }
 
@@ -1253,36 +1000,42 @@ void BURGER_API Burger::Globals::OutputWindowsMessage(Word uMessage,WordPtr wPar
 
 #if !defined(DOXYGEN)
 
-static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wParam,LPARAM lParam)
+static LRESULT CALLBACK InternalCallBack(
+	HWND pWindow, UINT uMessage, WPARAM wParam, LPARAM lParam)
 {
 	// Firstly, get the "this" pointer
 	// Note that this is not automatically set, the pointer is
-	// passed in the WM_NCCREATE command and it's manually set into the 
+	// passed in the WM_NCCREATE command and it's manually set into the
 	// WindowLongPtr index of GWLP_USERDATA.
 
 	// Use GetWindowLongPtrW to be 64 bit clean
-	Burger::GameApp *pThis = reinterpret_cast<Burger::GameApp *>(GetWindowLongPtrW(pWindow,GWLP_USERDATA));
+	Burger::GameApp* pThis = reinterpret_cast<Burger::GameApp*>(
+		GetWindowLongPtrW(pWindow, GWLP_USERDATA));
 
 	// Never initialized?
 	if (!pThis) {
-		// If this is a WM_NCCREATE event, then get the class instance pointer passed.
-//		if (uMessage==WM_NCCREATE) {
-//			// Use SetWindowLongPtrW to be 64 bit clean
-//			pThis = static_cast<Burger::GameApp *>(reinterpret_cast<CREATESTRUCT *>(lParam)->lpCreateParams);
-//			SetWindowLongPtrW(pWindow,GWLP_USERDATA,PtrToLong(pThis));
-//		}
+		// If this is a WM_NCCREATE event, then get the class instance pointer
+		// passed.
+		if (uMessage == WM_NCCREATE) {
+			// Use SetWindowLongPtrW to be 64 bit clean
+			pThis = static_cast<Burger::GameApp*>(
+				reinterpret_cast<CREATESTRUCT*>(lParam)->lpCreateParams);
+			SetWindowLongPtrW(pWindow, GWLP_USERDATA,
+				static_cast<LONG_PTR>(reinterpret_cast<WordPtr>(pThis)));
+		}
 		// If I didn't get a pThis set, just call the default procedure and exit
-//		if (!pThis) {
-			return DefWindowProcW(pWindow,uMessage,wParam,lParam);
-//		}
+		if (!pThis) {
+			return DefWindowProcW(pWindow, uMessage, wParam, lParam);
+		}
 	}
 
 	// The pThis class instance is valid!
 
 	// For debugging, if needed
 #if defined(_DEBUG)
-	if (Burger::Globals::GetTraceFlag()&Burger::Globals::TRACE_MESSAGES) {
-		Burger::Globals::OutputWindowsMessage(uMessage,wParam,static_cast<WordPtr>(lParam));
+	if (Burger::Globals::GetTraceFlag() & Burger::Globals::TRACE_MESSAGES) {
+		Burger::Globals::OutputWindowsMessage(
+			uMessage, wParam, static_cast<WordPtr>(lParam));
 	}
 #endif
 
@@ -1290,9 +1043,13 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 
 	Burger::GameApp::MainWindowProc pCallBack = pThis->GetCallBack();
 	if (pCallBack) {
-		WordPtr uOutput = FALSE;		// Assume not handled (In case the callback doesn't set the variable)
-		// If the function returns non-zero, assume it should terminate immediately
-		if (pCallBack(pThis,pWindow,static_cast<Word>(uMessage),static_cast<WordPtr>(wParam),static_cast<WordPtr>(lParam),&uOutput)) {
+		WordPtr uOutput = FALSE; // Assume not handled (In case the callback
+								 // doesn't set the variable)
+		// If the function returns non-zero, assume it should terminate
+		// immediately
+		if (pCallBack(pThis, pWindow, static_cast<Word>(uMessage),
+				static_cast<WordPtr>(wParam), static_cast<WordPtr>(lParam),
+				&uOutput)) {
 			// Return the passed result code
 			return static_cast<LRESULT>(uOutput);
 		}
@@ -1304,75 +1061,69 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 
 	switch (uMessage) {
 
-	//
-	// This function will disable the ability to resize the window
-	//
+		//
+		// This function will disable the ability to resize the window
+		//
 
-	case WM_GETMINMAXINFO:
-		{
-			// Ensure a MINIMUM size of 320x200
-			reinterpret_cast<MINMAXINFO*>(lParam)->ptMinTrackSize.x = 320;
-			reinterpret_cast<MINMAXINFO*>(lParam)->ptMinTrackSize.y = 200;
-			// Only if a video display is present
-			Burger::Display *pDisplay = pThis->GetDisplay();
-			if (pDisplay) {
-				if (pDisplay->HandleMinMax(pWindow,static_cast<WordPtr>(lParam))) {
-					return FALSE;
-				}
+	case WM_GETMINMAXINFO: {
+		// Ensure a MINIMUM size of 320x200
+		reinterpret_cast<MINMAXINFO*>(lParam)->ptMinTrackSize.x = 320;
+		reinterpret_cast<MINMAXINFO*>(lParam)->ptMinTrackSize.y = 200;
+		// Only if a video display is present
+		Burger::Display* pDisplay = pThis->GetDisplay();
+		if (pDisplay) {
+			if (pDisplay->HandleMinMax(pWindow, static_cast<WordPtr>(lParam))) {
+				return FALSE;
 			}
 		}
-		break;
+	} break;
 
-	case WM_ENTERSIZEMOVE:
-		{
-			Burger::Display *pDisplay = pThis->GetDisplay();
-			if (pDisplay) {
-				// Halt frame movement while the app is sizing or moving
-				pDisplay->Pause(TRUE);
-				pThis->SetInSizeMove(TRUE);
-			}
+	case WM_ENTERSIZEMOVE: {
+		Burger::Display* pDisplay = pThis->GetDisplay();
+		if (pDisplay) {
+			// Halt frame movement while the app is sizing or moving
+			pDisplay->Pause(TRUE);
+			pThis->SetInSizeMove(TRUE);
 		}
-		break;
+	} break;
 
-	case WM_EXITSIZEMOVE:
-		{
-			Burger::Display *pDisplay = pThis->GetDisplay();
-			if (pDisplay) {
-				pDisplay->Pause(FALSE);
-				pDisplay->CheckForWindowSizeChange();
-				pDisplay->CheckForWindowChangingMonitors();
-				pThis->SetInSizeMove(FALSE);
-			}
+	case WM_EXITSIZEMOVE: {
+		Burger::Display* pDisplay = pThis->GetDisplay();
+		if (pDisplay) {
+			pDisplay->Pause(FALSE);
+			pDisplay->CheckForWindowSizeChange();
+			pDisplay->CheckForWindowChangingMonitors();
+			pThis->SetInSizeMove(FALSE);
 		}
-		break;
+	} break;
 
-	//
-	// This handles cursor updates when the Windows cursor is
-	// moving over the window when the window doesn't have focus
-	//
+		//
+		// This handles cursor updates when the Windows cursor is
+		// moving over the window when the window doesn't have focus
+		//
 
 	case WM_SETCURSOR:
 		if (pThis->HandleCursor(static_cast<Word>(lParam))) {
-			return TRUE;		// Handled
+			return TRUE; // Handled
 		}
 		break;
 
-	//
-	// The app is "activated"
-	//
+		//
+		// The app is "activated"
+		//
 
 	case WM_ACTIVATEAPP:
 		// If quitting, do NOT activate!
 		if (pThis->GetQuitCode()) {
-			return 0;		// Message is processed
+			return 0; // Message is processed
 		}
 
 		// Is it active and was in the background?
-		if ((wParam==TRUE) && pThis->IsInBackground()) {
+		if ((wParam == TRUE) && pThis->IsInBackground()) {
 
 			// If the joypad is present, enable XInput
 			if (pThis->GetJoypad()) {
-				Burger::Globals::XInputEnable(TRUE);
+				Burger::Windows::XInputEnable(TRUE);
 			}
 			// Move to the foreground
 			if (pThis->IsAppFullScreen()) {
@@ -1388,12 +1139,12 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 			}
 			pThis->SetInBackground(FALSE);
 
-		// Is it being deactivated and was in the foreground?
+			// Is it being deactivated and was in the foreground?
 		} else if ((!wParam) && !pThis->IsInBackground()) {
 
 			// If the joypad is present, disable XInput
 			if (pThis->GetJoypad()) {
-				Burger::Globals::XInputEnable(FALSE);
+				Burger::Windows::XInputEnable(FALSE);
 			}
 
 			// Ensure the OS has input
@@ -1413,7 +1164,7 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 
 	// Mouse move events only happen when the mouse cursor is on the screen
 	case WM_MOUSEMOVE:
-		// If not previously tracked, ask Windows to send 
+		// If not previously tracked, ask Windows to send
 		// me an event if the mouse is OFF this window
 		// so the application is aware that the mouse
 		// is no longer available
@@ -1424,7 +1175,7 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 			TrackIt.dwFlags = TME_LEAVE;
 			TrackIt.hwndTrack = pWindow;
 			TrackIt.dwHoverTime = 0;
-			Burger::Globals::TrackMouseEvent(&TrackIt);
+			Burger::Windows::TrackMouseEvent(&TrackIt);
 			pThis->SetMouseOnScreen(TRUE);
 		}
 
@@ -1515,14 +1266,14 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 				// http://msdn.microsoft.com/en-us/library/windows/desktop/ms646245(v=vs.85).aspx
 				return TRUE;
 
-				default:
-					break;
-				}
-				return 0;
+			default:
+				break;
 			}
+			return 0;
 		}
-		// No mouse driver, pass the events down
-		break;
+	}
+	// No mouse driver, pass the events down
+	break;
 
 	// Mouse is off the client area. Turn off any software cursor
 	case WM_MOUSELEAVE:
@@ -1531,90 +1282,93 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 		pThis->SetMouseOnScreen(FALSE);
 		break;
 
-	// An external program (The Keyboard control panel most likely)
-	// changed the keyboard repeat speed.
-	// Alert the keyboard manager, if one was started, about the
-	// event.
+		// An external program (The Keyboard control panel most likely)
+		// changed the keyboard repeat speed.
+		// Alert the keyboard manager, if one was started, about the
+		// event.
 
 	case WM_SETTINGCHANGE:
-		if ((wParam==SPI_SETKEYBOARDSPEED) || (wParam==SPI_SETKEYBOARDDELAY)) {
-			Burger::Keyboard *pKeyboard = pThis->GetKeyboard();
+		if ((wParam == SPI_SETKEYBOARDSPEED)
+			|| (wParam == SPI_SETKEYBOARDDELAY)) {
+			Burger::Keyboard* pKeyboard = pThis->GetKeyboard();
 			if (pKeyboard) {
 				pKeyboard->ReadSystemKeyboardDelays();
 			}
-		} else if (wParam==SPI_SETMOUSEBUTTONSWAP) {
-			Burger::Mouse *pMouse = pThis->GetMouse();
+		} else if (wParam == SPI_SETMOUSEBUTTONSWAP) {
+			Burger::Mouse* pMouse = pThis->GetMouse();
 			if (pMouse) {
 				pMouse->ReadSystemMouseValues();
 			}
-
 		}
 		break;
 
 	case WM_SIZE:
-	case WM_MOVE:
-		{
-			Burger::Display *pDisplay = pThis->GetDisplay();
-			if (pDisplay) {
-				if (!(pDisplay->GetFlags()&Burger::Display::FULLSCREEN)) {
-					pThis->RecordWindowLocation();
-				}
-				RECT TempRect;
-				GetClientRect(pThis->GetWindow(),&TempRect);
-				pDisplay->Resize(static_cast<Word>(TempRect.right),static_cast<Word>(TempRect.bottom));
-				if (pDisplay->GetResizeCallback()) {
-					(pDisplay->GetResizeCallback())(pDisplay->GetResizeCallbackData(),static_cast<Word>(TempRect.right),static_cast<Word>(TempRect.bottom));
-				}
-			// Alert the mouse subsystem to the new mouse bounds
-				Burger::Mouse *pMouse = pThis->GetMouse();
-				if (pMouse) {
-					// Reset the mouse coords for mouse handler
-					pMouse->SetRange(pDisplay->GetWidth(),pDisplay->GetHeight());
-				}
-			} else {
+	case WM_MOVE: {
+		Burger::Display* pDisplay = pThis->GetDisplay();
+		if (pDisplay) {
+			if (!(pDisplay->GetFlags() & Burger::Display::FULLSCREEN)) {
 				pThis->RecordWindowLocation();
 			}
+			RECT TempRect;
+			GetClientRect(pThis->GetWindow(), &TempRect);
+			pDisplay->Resize(static_cast<Word>(TempRect.right),
+				static_cast<Word>(TempRect.bottom));
+			if (pDisplay->GetResizeCallback()) {
+				(pDisplay->GetResizeCallback())(
+					pDisplay->GetResizeCallbackData(),
+					static_cast<Word>(TempRect.right),
+					static_cast<Word>(TempRect.bottom));
+			}
+			// Alert the mouse subsystem to the new mouse bounds
+			Burger::Mouse* pMouse = pThis->GetMouse();
+			if (pMouse) {
+				// Reset the mouse coords for mouse handler
+				pMouse->SetRange(pDisplay->GetWidth(), pDisplay->GetHeight());
+			}
+		} else {
+			pThis->RecordWindowLocation();
 		}
-		break;
+	} break;
 
-	// Windows is asking for the window to be redrawn, possibly
-	// from recovering from minimization?
+		// Windows is asking for the window to be redrawn, possibly
+		// from recovering from minimization?
 
 	case WM_NCPAINT:
 	case WM_PAINT:
 		// Any region to draw?
-		if (GetUpdateRect(pWindow,NULL,FALSE)) {
+		if (GetUpdateRect(pWindow, NULL, FALSE)) {
 			PAINTSTRUCT ps;
 			// Save the old context
-			HDC PaintDC = BeginPaint(pWindow,&ps);
+			HDC PaintDC = BeginPaint(pWindow, &ps);
 			if (PaintDC) {
 				// Get the video context
-				Burger::Display *pDisplay = pThis->GetDisplay();
+				Burger::Display* pDisplay = pThis->GetDisplay();
 				if (pDisplay) {
 					// Force a front screen update
-					Burger::Display::RenderProc pCallback = pDisplay->GetRenderCallback();
+					Burger::Display::RenderProc pCallback =
+						pDisplay->GetRenderCallback();
 					if (pCallback) {
 						(pCallback)(pDisplay->GetRenderCallbackData());
 					}
 				}
-				EndPaint(pWindow,&ps);
+				EndPaint(pWindow, &ps);
 			}
 			RECT TempRect;
-			GetClientRect(pThis->GetWindow(),&TempRect);
-			ValidateRect(pWindow,&TempRect);
+			GetClientRect(pThis->GetWindow(), &TempRect);
+			ValidateRect(pWindow, &TempRect);
 		}
-		if (uMessage==WM_PAINT) {
+		if (uMessage == WM_PAINT) {
 			return 1;
 		}
 		break;
-		
 
 	// Power functions
 	case WM_POWERBROADCAST:
 		switch (wParam) {
 		case PBT_APMQUERYSUSPEND:
-		// Do not allow the app to suspend!
-		// Note: Screen savers should quit and apps should send a notification!
+			// Do not allow the app to suspend!
+			// Note: Screen savers should quit and apps should send a
+			// notification!
 			return BROADCAST_QUERY_DENY;
 
 		// Resume from power saving?
@@ -1625,7 +1379,7 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 
 	// A menu was active and the user pressed an invalid key. Disable the beep
 	case WM_MENUCHAR:
-		return MAKELRESULT(0,MNC_CLOSE);
+		return MAKELRESULT(0, MNC_CLOSE);
 
 	// Disable menu selection by forcing high level code to think
 	// everything is part of the client area.
@@ -1635,7 +1389,7 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 		}
 		if (!pThis->IsResizingAllowed()) {
 			// Process the test
-			LRESULT lResult = DefWindowProcW(pWindow,uMessage,wParam,lParam);
+			LRESULT lResult = DefWindowProcW(pWindow, uMessage, wParam, lParam);
 			// Override the borders to the caption to change resizing
 			// to window movement events
 			switch (lResult) {
@@ -1658,10 +1412,10 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 
 	case WM_SYSCOMMAND:
 		// Prevent moving/sizing in full screen mode
-		switch(GET_SC_WPARAM(wParam)) {
+		switch (GET_SC_WPARAM(wParam)) {
 		case SC_SIZE:
 			if (!pThis->IsResizingAllowed()) {
-				return 0;		// Discard resize commands
+				return 0; // Discard resize commands
 			}
 		case SC_MOVE:
 		case SC_MAXIMIZE:
@@ -1676,30 +1430,30 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	case WM_KEYUP:
-	case WM_SYSKEYUP:
-		{
-			// If there's a keyboard manager, pass the keys to it.
-			Burger::Keyboard *pKeyboard = pThis->GetKeyboard();
-			if (pKeyboard) {
-				Burger::eEvent uEvent;
+	case WM_SYSKEYUP: {
+		// If there's a keyboard manager, pass the keys to it.
+		Burger::Keyboard* pKeyboard = pThis->GetKeyboard();
+		if (pKeyboard) {
+			Burger::eEvent uEvent;
 
-				// Key up event?
-				if (lParam&(KF_UP<<16)) {
-					uEvent = Burger::EVENT_KEYUP;
+			// Key up event?
+			if (lParam & (KF_UP << 16)) {
+				uEvent = Burger::EVENT_KEYUP;
+			} else {
+				// Repeated key event?
+				if (lParam & (KF_REPEAT << 16)) {
+					uEvent = Burger::EVENT_KEYAUTO;
 				} else {
-					// Repeated key event?
-					if (lParam&(KF_REPEAT<<16)) {
-						uEvent = Burger::EVENT_KEYAUTO;
-					} else {
-						// Normal key down event
-						uEvent = Burger::EVENT_KEYDOWN;
-					}
+					// Normal key down event
+					uEvent = Burger::EVENT_KEYDOWN;
 				}
-				pKeyboard->PostWindowsKeyEvent(uEvent,((static_cast<Word32>(lParam)>>16U)&0x7FU)|((static_cast<Word32>(lParam)>>17U)&0x80U));
-				return 0;
 			}
+			pKeyboard->PostWindowsKeyEvent(uEvent,
+				((static_cast<Word32>(lParam) >> 16U) & 0x7FU)
+					| ((static_cast<Word32>(lParam) >> 17U) & 0x80U));
+			return 0;
 		}
-		break;
+	} break;
 
 	case WM_KILLFOCUS:
 		pThis->KillInputFocus();
@@ -1717,13 +1471,13 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 		return 1;
 
 	case WM_DESTROY:
-	case WM_QUIT:		// External quit event (System shutdown)
+	case WM_QUIT: // External quit event (System shutdown)
 		pThis->SetQuitCode();
 		return 0;
 	default:
 		break;
 	}
-	return DefWindowProcW(pWindow,uMessage,wParam,lParam);
+	return DefWindowProcW(pWindow, uMessage, wParam, lParam);
 }
 
 #endif
@@ -1738,6 +1492,8 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 	function is called which calls RegisterClassExW() in
 	windows that creates an ATOM of the type BurgerGameClass.
 	
+
+
 	The string can be obtained with a call to GetWindowClassName()
 	if it's desired for an application to create a Burgerlib window
 	without Burgerlib doing it for you.
@@ -1755,50 +1511,55 @@ static LRESULT CALLBACK InternalCallBack(HWND pWindow,UINT uMessage,WPARAM wPara
 
 	\windowsonly
 
-	\param uIconResID Numeric ID of the Windows Icon to attach to the window that's in the EXE files resource data (0 to use the default application icon from Windows)
-	\sa UnregisterWindowClass(void)
+	\param uIconResID Numeric ID of the Windows Icon to attach to the window
+that's in the EXE files resource data (0 to use the default application icon
+from Windows) \sa UnregisterWindowClass(void)
 
 ***************************************/
 
 Word16 BURGER_API Burger::Globals::RegisterWindowClass(Word uIconResID)
 {
 	ATOM uAtom = g_uAtom;
-	if (uAtom==INVALID_ATOM) {
+	if (uAtom == INVALID_ATOM) {
 
 		// Is the an app instance?
-		if (!g_hInstance) {
+		if (!Windows::GetInstance()) {
 			// Obtain it
-			g_hInstance = GetModuleHandleW(NULL);
+			Windows::SetInstance(GetModuleHandleW(NULL));
 		}
 
 		// Try to load the icon for the app
 		HICON hIcon = NULL;
 		if (uIconResID) {
-			hIcon = LoadIcon(g_hInstance,MAKEINTRESOURCE(uIconResID));
+			hIcon = LoadIcon(Windows::GetInstance(), MAKEINTRESOURCE(uIconResID));
 		}
 		// No icon?
 		if (hIcon) {
-			// Try pulling the icon from the app itself by getting the first icon found
+			// Try pulling the icon from the app itself by getting the first
+			// icon found
 			WCHAR TheExePath[1024];
-			GetModuleFileNameW(NULL,TheExePath,BURGER_ARRAYSIZE(TheExePath));
-			hIcon = ExtractIconW(g_hInstance,TheExePath,0);
+			GetModuleFileNameW(NULL, TheExePath, BURGER_ARRAYSIZE(TheExePath));
+			hIcon = ExtractIconW(Windows::GetInstance(), TheExePath, 0);
 		}
 
 		WNDCLASSEXW WindowClass;
-		MemoryClear(&WindowClass,sizeof(WindowClass));
+		MemoryClear(&WindowClass, sizeof(WindowClass));
 		WindowClass.cbSize = sizeof(WindowClass);
-		WindowClass.style = CS_DBLCLKS;			// Accept double clicks
-		WindowClass.lpfnWndProc = InternalCallBack;	// My window callback
+		WindowClass.style = CS_DBLCLKS;				// Accept double clicks
+		WindowClass.lpfnWndProc = InternalCallBack; // My window callback
 		//	WindowClass.cbClsExtra = 0;			// No extra class bytes
 		//	WindowClass.cbWndExtra = 0;			// No extra space was needed
-		WindowClass.hInstance = g_hInstance;
+		WindowClass.hInstance = Windows::GetInstance();
 		WindowClass.hIcon = hIcon;
 		// Keep the cursor NULL to allow updating of the cursor by the app
-		//	WindowClass.hCursor = NULL;		//LoadCursorW(NULL,MAKEINTRESOURCEW(IDC_ARROW));
-		WindowClass.hbrBackground = reinterpret_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
+		//	WindowClass.hCursor = NULL;
+		////LoadCursorW(NULL,MAKEINTRESOURCEW(IDC_ARROW));
+		WindowClass.hbrBackground =
+			reinterpret_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
 		//	WindowClass.lpszMenuName = NULL;
 		WindowClass.lpszClassName = (LPCWSTR)Globals::GetWindowClassName();
-		//	WindowClass.hIconSm = NULL;		// Assume hIcon has the small icon in the set
+		//	WindowClass.hIconSm = NULL;		// Assume hIcon has the small icon
+		//in the set
 
 		// Register my window's class
 		uAtom = RegisterClassExW(&WindowClass);
@@ -1826,10 +1587,33 @@ Word16 BURGER_API Burger::Globals::RegisterWindowClass(Word uIconResID)
 void BURGER_API Burger::Globals::UnregisterWindowClass(void)
 {
 	ATOM uAtom = g_uAtom;
-	if (uAtom!=INVALID_ATOM) {
+	if (uAtom != INVALID_ATOM) {
 		// Release the class
-		UnregisterClassW(MAKEINTRESOURCEW(uAtom),g_hInstance);
+		UnregisterClassW(MAKEINTRESOURCEW(uAtom),Windows::GetInstance());
 		g_uAtom = INVALID_ATOM;
+	}
+}
+
+/*! ************************************
+
+	\brief Pump windows messages
+
+	Windows requires a function to pump messages
+
+	\windowsonly
+
+	\sa RegisterWindowClass(Word)
+
+***************************************/
+
+void BURGER_API Burger::Globals::PumpMessages(void)
+{
+	MSG TempMessage;
+	while (PeekMessageW(&TempMessage, NULL, 0, 0, PM_REMOVE)) {
+		// Translate the keyboard (Localize)
+		TranslateMessage(&TempMessage);
+		// Pass to the window event proc
+		DispatchMessageW(&TempMessage);
 	}
 }
 
@@ -1839,10 +1623,11 @@ void BURGER_API Burger::Globals::UnregisterWindowClass(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::LaunchURL(const char *pURL)
+Word BURGER_API Burger::Globals::LaunchURL(const char* pURL)
 {
-	Word uResult = (ShellExecuteOpen(pURL)>32);		// I launched if greater than 32
-	return uResult;		
+	Word uResult =
+		(Windows::ShellExecuteOpen(pURL) > 32); // I launched if greater than 32
+	return uResult;
 }
 
 /***************************************
@@ -1851,19 +1636,20 @@ Word BURGER_API Burger::Globals::LaunchURL(const char *pURL)
 
 ***************************************/
 
-int BURGER_API Burger::Globals::ExecuteTool(const char *pFilename,const char *pParameters,OutputMemoryStream *pOutput)
+int BURGER_API Burger::Globals::ExecuteTool(
+	const char* pFilename, const char* pParameters, OutputMemoryStream* pOutput)
 {
 	// Get the parameter list
 	Filename AppName(pFilename);
-	String Full("\"",AppName.GetNative(),"\" ",pParameters);
+	String Full("\"", AppName.GetNative(), "\" ", pParameters);
 	// Create the full Unicode command string
 	String16 Unicode(Full);
 
 	// Prepare the process information
 	PROCESS_INFORMATION ProcessInfo;
-	MemoryClear(&ProcessInfo,sizeof(ProcessInfo));
+	MemoryClear(&ProcessInfo, sizeof(ProcessInfo));
 	STARTUPINFOW StartupInfo;
-	MemoryClear(&StartupInfo,sizeof(StartupInfo));
+	MemoryClear(&StartupInfo, sizeof(StartupInfo));
 	StartupInfo.cb = sizeof(StartupInfo);
 
 	// Assume no text capturing
@@ -1875,13 +1661,13 @@ int BURGER_API Burger::Globals::ExecuteTool(const char *pFilename,const char *pP
 	if (pOutput) {
 		// Create a pipe for STDOUT
 		SECURITY_ATTRIBUTES SecurityAttributes;
-		MemoryClear(&SecurityAttributes,sizeof(SecurityAttributes));
+		MemoryClear(&SecurityAttributes, sizeof(SecurityAttributes));
 		SecurityAttributes.nLength = sizeof(SecurityAttributes);
 		SecurityAttributes.bInheritHandle = TRUE;
 		SecurityAttributes.lpSecurityDescriptor = NULL;
 		// Create them and allow the capture pipe to inherit permissions
-		if (CreatePipe(&hCaptureIn,&hCaptureOut,&SecurityAttributes,0)) {
-			if (SetHandleInformation(hCaptureIn,HANDLE_FLAG_INHERIT,0)) {
+		if (CreatePipe(&hCaptureIn, &hCaptureOut, &SecurityAttributes, 0)) {
+			if (SetHandleInformation(hCaptureIn, HANDLE_FLAG_INHERIT, 0)) {
 				// It's good, capture the output
 				StartupInfo.hStdError = hCaptureOut;
 				StartupInfo.hStdOutput = hCaptureOut;
@@ -1891,18 +1677,20 @@ int BURGER_API Burger::Globals::ExecuteTool(const char *pFilename,const char *pP
 	}
 
 	// Assume failure
-	DWORD nExitCode=10;
+	DWORD nExitCode = 10;
 
 	// Call the tool
-	BOOL bResult = CreateProcessW(NULL,reinterpret_cast<LPWSTR>(Unicode.GetPtr()),
-		NULL,NULL,pOutput!=NULL,0,NULL,NULL,&StartupInfo,&ProcessInfo);
+	BOOL bResult =
+		CreateProcessW(NULL, reinterpret_cast<LPWSTR>(Unicode.GetPtr()), NULL,
+			NULL, pOutput != NULL, 0, NULL, NULL, &StartupInfo, &ProcessInfo);
 
 	// Did it even launch?
 	if (bResult) {
 		// Wait for the tool to finish executing
-		if (WaitForSingleObject(ProcessInfo.hProcess,INFINITE)==WAIT_OBJECT_0) {
+		if (WaitForSingleObject(ProcessInfo.hProcess, INFINITE)
+			== WAIT_OBJECT_0) {
 			// Get the exit code from the tool
-			if (!GetExitCodeProcess(ProcessInfo.hProcess,&nExitCode)) {
+			if (!GetExitCodeProcess(ProcessInfo.hProcess, &nExitCode)) {
 				// Failure! Assume an error code of 10
 				nExitCode = 10;
 			}
@@ -1920,16 +1708,17 @@ int BURGER_API Burger::Globals::ExecuteTool(const char *pFilename,const char *pP
 	// Only capture if needed
 	if (bResult && pOutput) {
 		DWORD uBytesRead;
-		Word8 Buffer[1024]; 
+		Word8 Buffer[1024];
 		for (;;) {
 			// Read from the finite pipe
-			BOOL bSuccess = ReadFile(hCaptureIn,Buffer,sizeof(Buffer),&uBytesRead,NULL);
+			BOOL bSuccess =
+				ReadFile(hCaptureIn, Buffer, sizeof(Buffer), &uBytesRead, NULL);
 			// Error or all done?
 			if ((!bSuccess) || (!uBytesRead)) {
 				break;
 			}
-			pOutput->Append(Buffer,uBytesRead);
-		} 
+			pOutput->Append(Buffer, uBytesRead);
+		}
 	}
 	// Clean up the last handle
 	if (hCaptureIn) {
@@ -1945,20 +1734,22 @@ int BURGER_API Burger::Globals::ExecuteTool(const char *pFilename,const char *pP
 
 ***************************************/
 
-const char *BURGER_API Burger::Globals::GetEnvironmentString(const char *pKey)
+const char* BURGER_API Burger::Globals::GetEnvironmentString(const char* pKey)
 {
 	// Convert the key to UTF16
 	String16 Key16(pKey);
 	// How long is the key?
-	DWORD uLength = GetEnvironmentVariableW(reinterpret_cast<LPCWSTR>(Key16.GetPtr()),NULL,0);
-	char *pValue = NULL;
+	DWORD uLength = GetEnvironmentVariableW(
+		reinterpret_cast<LPCWSTR>(Key16.GetPtr()), NULL, 0);
+	char* pValue = nullptr;
 	// Any key?
 	if (uLength) {
 		// Set the buffer to accept the value
 		String16 Output;
 		Output.SetBufferSize(uLength);
 		// Read in the environment variable as UTF16
-		GetEnvironmentVariableW(reinterpret_cast<LPCWSTR>(Key16.GetPtr()),reinterpret_cast<LPWSTR>(Output.GetPtr()),uLength+1);
+		GetEnvironmentVariableW(reinterpret_cast<LPCWSTR>(Key16.GetPtr()),
+			reinterpret_cast<LPWSTR>(Output.GetPtr()), uLength + 1);
 		// Convert to UTF8
 		String Final(Output.GetPtr());
 		// Return a copy
@@ -1973,7 +1764,8 @@ const char *BURGER_API Burger::Globals::GetEnvironmentString(const char *pKey)
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::SetEnvironmentString(const char *pKey,const char *pInput)
+Word BURGER_API Burger::Globals::SetEnvironmentString(
+	const char* pKey, const char* pInput)
 {
 	// Convert the key to UTF16
 	String16 Key16(pKey);
@@ -1987,7 +1779,8 @@ Word BURGER_API Burger::Globals::SetEnvironmentString(const char *pKey,const cha
 	}
 	// Set the variable!
 	Word uResult = 0;
-	if (!SetEnvironmentVariableW(reinterpret_cast<LPCWSTR>(Key16.GetPtr()),pInput16)) {
+	if (!SetEnvironmentVariableW(
+			reinterpret_cast<LPCWSTR>(Key16.GetPtr()), pInput16)) {
 		uResult = static_cast<Word>(GetLastError());
 	}
 	return uResult;

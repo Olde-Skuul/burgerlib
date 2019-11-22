@@ -49,10 +49,10 @@ protected:
 	long ResetLostDevice(void);
 public:
 	DisplayDirectX9Software8(GameApp *pGameApp);
-	virtual Word Init(Word uWidth,Word uHeight,Word uDepth=32,Word uFlags=DEFAULTFLAGS);
-	virtual void Shutdown(void);
-	virtual void BeginScene(void);
-	virtual void EndScene(void);
+	Word Init(Word uWidth,Word uHeight,Word uDepth=32,Word uFlags=DEFAULTFLAGS) BURGER_OVERRIDE;
+	void Shutdown(void) BURGER_OVERRIDE;
+	void BeginScene(void) BURGER_OVERRIDE;
+	void EndScene(void) BURGER_OVERRIDE;
 	BURGER_INLINE Renderer *GetRenderer(void) { return &m_Renderer; }
 };
 #endif

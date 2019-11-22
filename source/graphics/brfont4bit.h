@@ -66,8 +66,8 @@ public:
 	};
 	Font4Bit(Renderer *pRenderer=NULL);
 	virtual ~Font4Bit();
-	virtual Word GetPixelWidth(const char *pInput,WordPtr uLength);
-	virtual void DrawChar(Word uLetter);
+	Word GetPixelWidth(const char *pInput,WordPtr uLength) BURGER_OVERRIDE;
+	void DrawChar(Word uLetter) BURGER_OVERRIDE;
 	void BURGER_API Init(RezFile *pRezFile,Word uRezNum,const Word8 *pPalette,Renderer *pRenderer=NULL);
 	void BURGER_API Shutdown(void);
 	void BURGER_API SaveState(State_t *pOutput);

@@ -69,7 +69,7 @@ public:
 	Effect();
 	virtual ~Effect();
 #if !defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	virtual void Release(Display *pDisplay);
+	virtual void Release(Display *pDisplay) BURGER_OVERRIDE;
 #endif
 
 #if defined(BURGER_XBOX360) || defined(DOXYGEN)

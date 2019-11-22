@@ -38,7 +38,7 @@
 namespace Burger {
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 class DisplayDirectX9 : public Display {
-	BURGER_DISABLECOPYCONSTRUCTORS(DisplayDirectX9);
+    BURGER_DISABLE_COPY(DisplayDirectX9);
 	BURGER_RTTI_IN_CLASS();
 public:
 
@@ -175,7 +175,7 @@ public:
 	typedef Word (BURGER_API *DeviceCreatedProc)(IDirect3DDevice9 *pD3DDevice,const _D3DSURFACE_DESC *pBackBufferSurfaceDesc,void *pData);
 
 	class Enumerator {
-		BURGER_DISABLECOPYCONSTRUCTORS(Enumerator);
+        BURGER_DISABLE_COPY(Enumerator);
 	private:
 		IDirect3D9* m_pD3D;								///< DirectX 9 device used for enumeration
 		IsDeviceOkayProc m_pIsDeviceAcceptableFunc;		///< Callback for pruning requested devices
@@ -312,29 +312,29 @@ public:
 public:
 	DisplayDirectX9(GameApp *pGameApp);
 	~DisplayDirectX9();
-	virtual Word Init(Word uWidth,Word uHeight,Word uDepth=32,Word uFlags=DEFAULTFLAGS);
-	virtual void Shutdown(void);
-	virtual void BeginScene(void);
-	virtual void EndScene(void);
-	virtual Texture *CreateTextureObject(void);
-	virtual VertexBuffer *CreateVertexBufferObject(void);
-	virtual void Resize(Word uWidth,Word uHeight);
-	virtual void SetViewport(Word uX,Word uY,Word uWidth,Word uHeight);
-	virtual void SetScissorRect(Word uX,Word uY,Word uWidth,Word uHeight);
-	virtual void SetClearColor(float fRed,float fGreen,float fBlue,float fAlpha);
-	virtual void SetClearDepth(float fDepth);
-	virtual void Clear(Word uMask);
-	virtual void Bind(Texture *pTexture,Word uIndex=0);
-	virtual void Bind(Effect *pEffect);
-	virtual void SetBlend(Word bEnable);
-	virtual void SetBlendFunction(eSourceBlendFactor uSourceFactor,eDestinationBlendFactor uDestFactor);
-	virtual void SetLighting(Word bEnable);
-	virtual void SetZWrite(Word bEnable);
-	virtual void SetDepthTest(eDepthFunction uDepthFunction);
-	virtual void SetCullMode(eCullMode uCullMode);
-	virtual void SetScissor(Word bEnable);
-	virtual void DrawPrimitive(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer);
-	virtual void DrawElements(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer);
+	Word Init(Word uWidth,Word uHeight,Word uDepth=32,Word uFlags=DEFAULTFLAGS) BURGER_OVERRIDE;
+	void Shutdown(void) BURGER_OVERRIDE;
+	void BeginScene(void) BURGER_OVERRIDE;
+	void EndScene(void) BURGER_OVERRIDE;
+	Texture *CreateTextureObject(void) BURGER_OVERRIDE;
+	VertexBuffer *CreateVertexBufferObject(void) BURGER_OVERRIDE;
+	void Resize(Word uWidth,Word uHeight) BURGER_OVERRIDE;
+	void SetViewport(Word uX,Word uY,Word uWidth,Word uHeight) BURGER_OVERRIDE;
+	void SetScissorRect(Word uX,Word uY,Word uWidth,Word uHeight) BURGER_OVERRIDE;
+	void SetClearColor(float fRed,float fGreen,float fBlue,float fAlpha) BURGER_OVERRIDE;
+	void SetClearDepth(float fDepth) BURGER_OVERRIDE;
+	void Clear(Word uMask) BURGER_OVERRIDE;
+	void Bind(Texture *pTexture,Word uIndex=0) BURGER_OVERRIDE;
+	void Bind(Effect *pEffect) BURGER_OVERRIDE;
+	void SetBlend(Word bEnable) BURGER_OVERRIDE;
+	void SetBlendFunction(eSourceBlendFactor uSourceFactor,eDestinationBlendFactor uDestFactor) BURGER_OVERRIDE;
+	void SetLighting(Word bEnable) BURGER_OVERRIDE;
+	void SetZWrite(Word bEnable) BURGER_OVERRIDE;
+	void SetDepthTest(eDepthFunction uDepthFunction) BURGER_OVERRIDE;
+	void SetCullMode(eCullMode uCullMode) BURGER_OVERRIDE;
+	void SetScissor(Word bEnable) BURGER_OVERRIDE;
+	void DrawPrimitive(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer) BURGER_OVERRIDE;
+	void DrawElements(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer) BURGER_OVERRIDE;
 	IDirect3DVertexShader9 * BURGER_API CreateVertexShader(const void *pVertexShaderBinary) const;
 	IDirect3DPixelShader9 * BURGER_API CreatePixelShader(const void *pPixelShaderBinary) const;
 
@@ -367,8 +367,8 @@ public:
 	void BURGER_API UpdateBackBufferDesc(void);
 	Word BURGER_API ToggleFullScreen(void);
 	Word BURGER_API ToggleREF(void);
-	virtual void CheckForWindowSizeChange(void);
-	virtual void CheckForWindowChangingMonitors(void);
+	void CheckForWindowSizeChange(void) BURGER_OVERRIDE;
+	void CheckForWindowChangingMonitors(void) BURGER_OVERRIDE;
 protected:
 	Word BURGER_API ChangeDevice(const DeviceSettings_t *pNewSettings,Word bForceEnumeration,Word bClipWindowToSingleAdapter);
 	Word BURGER_API Create3DEnvironment(void);
@@ -382,15 +382,15 @@ protected:
 };
 
 class DirectXPerfMarker {
-	BURGER_DISABLECOPYCONSTRUCTORS(DirectXPerfMarker);
+    BURGER_DISABLE_COPY(DirectXPerfMarker);
 public:
 	BURGER_INLINE DirectXPerfMarker(Word32 uColor,const Word16 *pMessage) 
 	{
-		Globals::D3DPERF_BeginEvent(uColor,pMessage);
+		Windows::D3DPERF_BeginEvent(uColor,pMessage);
 	}
 	BURGER_INLINE ~DirectXPerfMarker() 
 	{
-		Globals::D3DPERF_EndEvent();
+		Windows::D3DPERF_EndEvent();
 	}
 };
 

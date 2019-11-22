@@ -15,9 +15,10 @@
 
 #include "brdisplayopengl.h"
 
-#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+#if (defined(BURGER_WINDOWS) && defined(BURGER_INTEL)) || defined(DOXYGEN)
 #include "brdebug.h"
 #include "brgameapp.h"
+#include "brmemoryfunctions.h"
 
 #if !defined(DOXYGEN)
 #define GL_GLEXT_PROTOTYPES
@@ -35,9 +36,9 @@
 #if defined(BURGER_WATCOM)
 #pragma library ("opengl32.lib");
 #else
-#if defined(BURGER_WIN64)
+#if defined(BURGER_AMD64)
 #pragma comment(lib,"opengl64.lib")
-#else
+#elif defined(BURGER_X86)
 #pragma comment(lib,"opengl32.lib")
 #endif
 #endif

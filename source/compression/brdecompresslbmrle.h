@@ -39,8 +39,8 @@ protected:
 public:
 	static const Word32 Signature = 0x524C4420;		///< 'RLE '
 	DecompressILBMRLE();
-	virtual eError Reset(void);
-	virtual eError Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength);
+	eError Reset(void) BURGER_OVERRIDE;
+	eError Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
 };
 extern Decompress::eError BURGER_API SimpleDecompressILBMRLE(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength);
 }

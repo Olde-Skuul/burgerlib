@@ -39,8 +39,8 @@ protected:
 public:
 	RandomMersenneTwist(Word32 uNewSeed=5489U);
 	static RandomMersenneTwist* BURGER_API New(Word32 uNewSeed=0);
-	virtual void SetSeed(Word32 uNewSeed);
-	virtual Word32 Get(void);
+	void SetSeed(Word32 uNewSeed) BURGER_OVERRIDE;
+	Word32 Get(void) BURGER_OVERRIDE;
 };
 }
 

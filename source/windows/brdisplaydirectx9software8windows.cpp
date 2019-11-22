@@ -16,6 +16,7 @@
 #include "brgameapp.h"
 #include "brglobals.h"
 #include "brwindowstypes.h"
+#include "brmemoryfunctions.h"
 
 #if !defined(DIRECTDRAW_VERSION) && !defined(DOXYGEN)
 #define DIRECTDRAW_VERSION 0x700

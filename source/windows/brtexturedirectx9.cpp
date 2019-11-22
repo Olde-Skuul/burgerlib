@@ -17,6 +17,7 @@
 
 #include "brglobalmemorymanager.h"
 #include "brdisplaydirectx9.h"
+#include "brmemoryfunctions.h"
 #include <d3d9.h>
 
 #if !defined(DOXYGEN)

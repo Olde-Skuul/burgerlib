@@ -1,15 +1,16 @@
 /***************************************
 
-	Integer Rect handlers
-	
-	Xbox 360 specific code
+    Integer Rect handlers
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Xbox 360 specific code
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -23,9 +24,9 @@
 /*! ************************************
 
 	\brief Convert a Rect_t into a Windows RECT structure.
-	
+
 	Converts the contents of a Rect_t into a Windows RECT structure.
-	
+
 	\param pOutput Pointer to an uninitialized Windows RECT structure.
 	\note This function is Windows or Xbox 360 only.
 
@@ -42,10 +43,10 @@ void Burger::Rect_t::Get(tagRECT *pOutput) const
 /*! ************************************
 
 	\brief Convert a Windows RECT structure into a Rect_t
-	
+
 	Converts the contents of a Windows RECT structure
 	into a Rect_t.
-	
+
 	\param pInput Pointer to a valid Windows RECT structure.
 	\note This function is Windows or Xbox 360 only.
 

@@ -20,6 +20,7 @@
 #include "brvertexbufferdirectx9.h"
 #include "brmatrix4d.h"
 #include "brwindowstypes.h"
+#include "brmemoryfunctions.h"
 
 #if !defined(DIRECTDRAW_VERSION) && !defined(DOXYGEN)
 #define DIRECTDRAW_VERSION 0x700
@@ -39,7 +40,7 @@
 #include <d3dx9math.h>
 
 #ifdef _DEBUG
-#define PRINTHRESULT(hResult) /* m_pGameApp->Poll(); */ if (hResult!=D3D_OK) Debug::Message("Error at line " BURGER_MACRO_TO_STRING(__LINE__) " with 0x%08X\n",hResult)
+#define PRINTHRESULT(hResult) /* m_pGameApp->Poll(); */ if (hResult!=D3D_OK) Debug::Message("Error at line " BURGER_STRINGIZE(__LINE__) " with 0x%08X\n",hResult)
 #else
 #define PRINTHRESULT(hResult)
 #endif
@@ -275,16 +276,16 @@ void BURGER_API Burger::DisplayDirectX9::DeviceSettings_t::GetPresentParameters(
 	\brief Set up the defaults for a DirectX 9 display
 
 	Settings for default are as follows:
-	\li Width 640
-	\li Height 480
-	\li Back buffer 8:8:8 RGB (32 bit with no alpha)
-	\li Default refresh rate
-	\li No Anti-Aliasing
-	\li 24 bit depth buffer
-	\li 8 bit stencil
-	\li Windowed mode
-	\li Focus window (\ref NULL)
-	\li Immediate display mode (No VSync)
+	* * Width 640
+	* * Height 480
+	* * Back buffer 8:8:8 RGB (32 bit with no alpha)
+	* * Default refresh rate
+	* * No Anti-Aliasing
+	* * 24 bit depth buffer
+	* * 8 bit stencil
+	* * Windowed mode
+	* * Focus window (\ref NULL)
+	* * Immediate display mode (No VSync)
 	
 ***************************************/
 
@@ -351,7 +352,7 @@ Burger::DisplayDirectX9::DeviceInfo::DeviceInfo(Word uAdapterOrdinal,Word uDevic
 	m_uDeviceType(uDeviceType),
 	m_BufferFormatList()
 {
-	BURGER_COMPILE_TIME_ASSERT(sizeof(m_D3DCaps)==sizeof(D3DCAPS9));
+    BURGER_STATIC_ASSERT(sizeof(m_D3DCaps)==sizeof(D3DCAPS9));
 	MemoryClear(&m_D3DCaps,sizeof(m_D3DCaps));
 }
 
@@ -524,7 +525,7 @@ Burger::DisplayDirectX9::AdapterInfo::AdapterInfo(Word uAdapterOrdinal) :
 
 	// This is why the test below is >= instead of ==
 
-	BURGER_COMPILE_TIME_ASSERT(sizeof(m_AdapterIdentifier)>=sizeof(D3DADAPTER_IDENTIFIER9));
+    BURGER_STATIC_ASSERT(sizeof(m_AdapterIdentifier)>=sizeof(D3DADAPTER_IDENTIFIER9));
 
 	MemoryClear(&m_AdapterIdentifier,sizeof(m_AdapterIdentifier));
 }
@@ -1015,7 +1016,7 @@ void BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::CreateMultiSampleTyp
 				// Clamp the quality, for performance reasons.
 				MSQuality_t Temp;
 				Temp.m_uMSType = uSampleType;
-				Temp.m_uMaxQuality = Min(uQuality,uMaxQuality + 1);
+				Temp.m_uMaxQuality = Min(static_cast<Word>(uQuality),uMaxQuality + 1);
 				m_MultiSampleQualityList.push_back(Temp);
 			}
 			++pMultis;
@@ -1107,7 +1108,7 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(const De
 		fCurRanking += 1.0f;
 	} else {
 		// Score based by the bit depths
-		int iDelta = Abs(static_cast<int>(GetD3DFORMATColorChannelBits(m_uAdapterFormat) -
+		int iDelta = Abs(static_cast<Int32>(GetD3DFORMATColorChannelBits(m_uAdapterFormat) -
 			GetD3DFORMATColorChannelBits(pOptimalDeviceSettings->m_uAdapterFormat)));
 		float fScale = Max(0.9f - static_cast<float>(iDelta) * 0.2f,0.0f);
 		fCurRanking += fScale;
@@ -1158,8 +1159,8 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(const De
 					bResolutionFound = TRUE;
 				}
 
-				int iCurrent = Abs(static_cast<int>(pModes->m_uWidth - pOptimalDeviceSettings->m_uBackBufferWidth)) + 
-					Abs(static_cast<int>(pModes->m_uHeight - pOptimalDeviceSettings->m_uBackBufferHeight));
+				int iCurrent = Abs(static_cast<Int32>(pModes->m_uWidth - pOptimalDeviceSettings->m_uBackBufferWidth)) + 
+					Abs(static_cast<Int32>(pModes->m_uHeight - pOptimalDeviceSettings->m_uBackBufferHeight));
 				if (static_cast<Word>(iCurrent) < uBest) {
 					uBest = static_cast<Word>(iCurrent);
 					uBestModeIndex = uIndex;
@@ -1180,7 +1181,7 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(const De
 	if (m_uBackBufferFormat == pOptimalDeviceSettings->m_uBackBufferFormat) {
 		fCurRanking += 1.0f;
 	} else {
-		int iDelta = Abs(static_cast<int>(GetD3DFORMATColorChannelBits(m_uBackBufferFormat) -
+		int iDelta = Abs(static_cast<Int32>(GetD3DFORMATColorChannelBits(m_uBackBufferFormat) -
 			GetD3DFORMATColorChannelBits(pOptimalDeviceSettings->m_uBackBufferFormat)));
 		float fScale = Max(0.9f - static_cast<float>(iDelta) * 0.2f,0.0f);
 		fCurRanking += fScale;
@@ -1277,10 +1278,10 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(const De
 
 	\brief Set up the DirectX 9 device enumerator to defaults
 	
-	\li Minimum width is 640
-	\li Minimum height is 480
-	\li Enable software, hardware and pure hardware renderer
-	\li Require shader support
+	* * Minimum width is 640
+	* * Minimum height is 480
+	* * Enable software, hardware and pure hardware renderer
+	* * Require shader support
 
 ***************************************/
 
@@ -1551,12 +1552,12 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 	Clear out the depth stencil list, and insert the minimum list
 	that is permitted with DirectX 9
 
-	\li D3DFMT_D16
-	\li D3DFMT_D15S1
-	\li D3DFMT_D24X8
-	\li D3DFMT_D24S8
-	\li D3DFMT_D24X4S4
-	\li D3DFMT_D32
+	* * D3DFMT_D16
+	* * D3DFMT_D15S1
+	* * D3DFMT_D24X8
+	* * D3DFMT_D24S8
+	* * D3DFMT_D24X4S4
+	* * D3DFMT_D32
 
 	\sa ResetPossibleMultisampleTypeList(void) or 
 		ResetPossiblePresentIntervalList(void)
@@ -2168,9 +2169,9 @@ Burger::DisplayDirectX9::DisplayDirectX9(GameApp *pGameApp) :
 	m_fClearDepth(1.0f)
 {
 	// Safety switch to verify the declaration of m_WindowPlacement matches the real thing
-	BURGER_COMPILE_TIME_ASSERT(sizeof(m_WindowPlacement) == sizeof(WINDOWPLACEMENT));
-	BURGER_COMPILE_TIME_ASSERT(sizeof(m_D3DSurfaceDesc)==sizeof(D3DSURFACE_DESC));
-	BURGER_COMPILE_TIME_ASSERT(sizeof(m_D3DCaps)==sizeof(D3DCAPS9));
+    BURGER_STATIC_ASSERT(sizeof(m_WindowPlacement) == sizeof(WINDOWPLACEMENT));
+    BURGER_STATIC_ASSERT(sizeof(m_D3DSurfaceDesc)==sizeof(D3DSURFACE_DESC));
+    BURGER_STATIC_ASSERT(sizeof(m_D3DCaps)==sizeof(D3DCAPS9));
 	MemoryClear(&m_D3D9Settings,sizeof(m_D3D9Settings));
 }
 
@@ -2237,7 +2238,7 @@ Word Burger::DisplayDirectX9::Init(Word uWidth,Word uHeight,Word uDepth,Word uFl
 	//
 
 	if (!m_pD3DXMatrixStack) {
-		if (Globals::D3DXCreateMatrixStack(0,&m_pD3DXMatrixStack)!=D3D_OK) {
+		if (Windows::D3DXCreateMatrixStack(0,&m_pD3DXMatrixStack)!=D3D_OK) {
 			return 10;		// Boned?
 		}
 	}
@@ -2724,7 +2725,7 @@ IDirect3D9 * BURGER_API Burger::DisplayDirectX9::LoadDirect3D9(void)
 	IDirect3D9 *pDirect3D9 = m_pDirect3D9;
 	if (!pDirect3D9) {
 		// Create it
-		pDirect3D9 = Globals::Direct3DCreate9(D3D_SDK_VERSION);
+		pDirect3D9 = Windows::Direct3DCreate9(D3D_SDK_VERSION);
 		// Store the instance (Or NULL if it failed)
 		m_pDirect3D9 = pDirect3D9;
 	}
@@ -2741,22 +2742,22 @@ IDirect3D9 * BURGER_API Burger::DisplayDirectX9::LoadDirect3D9(void)
 	\note If a DirectX 9 device was not already started, this function does nothing.
 
 	States set:
-	\li Vertex shader set to \ref NULL
-	\li FVF set to D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1
-	\li D3DRS_ZENABLE set to FALSE
-	\li D3DRS_CULLMODE set to D3DCULL_NONE
-	\li D3DRS_LIGHTING set to FALSE
-	\li Texture state 0 D3DTSS_COLOROP = D3DTOP_MODULATE
-	\li	D3DTSS_COLORARG1 = D3DTA_TEXTURE
-	\li D3DTSS_COLORARG2 = D3DTA_DIFFUSE
-	\li Alpha state 0 D3DTSS_ALPHAOP = D3DTOP_MODULATE
-	\li D3DTSS_ALPHAARG1 = D3DTA_TEXTURE
-	\li D3DTSS_ALPHAARG2 = D3DTA_DIFFUSE
-	\li D3DRS_SEPARATEALPHABLENDENABLE set to TRUE
-	\li Texture state 1 D3DTSS_COLOROP = D3DTOP_DISABLE
-	\li D3DTSS_ALPHAOP = D3DTOP_DISABLE
-	\li Matrix D3DTS_WORLD set to identity
-	\li Matrix D3DTS_VIEW set to identity
+	* * Vertex shader set to \ref NULL
+	* * FVF set to D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1
+	* * D3DRS_ZENABLE set to FALSE
+	* * D3DRS_CULLMODE set to D3DCULL_NONE
+	* * D3DRS_LIGHTING set to FALSE
+	* * Texture state 0 D3DTSS_COLOROP = D3DTOP_MODULATE
+	* *	D3DTSS_COLORARG1 = D3DTA_TEXTURE
+	* * D3DTSS_COLORARG2 = D3DTA_DIFFUSE
+	* * Alpha state 0 D3DTSS_ALPHAOP = D3DTOP_MODULATE
+	* * D3DTSS_ALPHAARG1 = D3DTA_TEXTURE
+	* * D3DTSS_ALPHAARG2 = D3DTA_DIFFUSE
+	* * D3DRS_SEPARATEALPHABLENDENABLE set to TRUE
+	* * Texture state 1 D3DTSS_COLOROP = D3DTOP_DISABLE
+	* * D3DTSS_ALPHAOP = D3DTOP_DISABLE
+	* * Matrix D3DTS_WORLD set to identity
+	* * Matrix D3DTS_VIEW set to identity
 
 	\windowsonly
 
@@ -3107,7 +3108,7 @@ void Burger::DisplayDirectX9::CheckForWindowChangingMonitors(void)
 		m_bDeviceCreated &&
 		m_D3D9Settings.m_bWindowed) {
 
-		HMONITOR hWindowMonitor = Globals::MonitorFromWindow(m_D3D9Settings.m_pDeviceWindow,MONITOR_DEFAULTTOPRIMARY);
+		HMONITOR hWindowMonitor = Windows::MonitorFromWindow(m_D3D9Settings.m_pDeviceWindow,MONITOR_DEFAULTTOPRIMARY);
 		if (hWindowMonitor != m_AdapterMonitor) {
 
 			Word uNewAdapterOrdinal;
@@ -3367,8 +3368,8 @@ Word BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *pN
 					miAdapter.cbSize = sizeof(MONITORINFO);
 
 					hAdapterMonitor = m_pDirect3D9->GetAdapterMonitor(m_D3D9Settings.m_uAdapterOrdinal);
-					Globals::GetMonitorInfo(hAdapterMonitor,&miAdapter);
-					HMONITOR hWindowMonitor = Globals::MonitorFromWindow(m_pGameApp->GetWindow(),MONITOR_DEFAULTTOPRIMARY);
+					Windows::GetMonitorInfo(hAdapterMonitor,&miAdapter);
+					HMONITOR hWindowMonitor = Windows::MonitorFromWindow(m_pGameApp->GetWindow(),MONITOR_DEFAULTTOPRIMARY);
 
 					// Get the rect of the window
 					RECT rcWindow;
@@ -3407,12 +3408,12 @@ Word BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *pN
 					MONITORINFO miAdapter;
 					miAdapter.cbSize = sizeof(MONITORINFO);
 					hAdapterMonitor = m_pDirect3D9->GetAdapterMonitor(m_D3D9Settings.m_uAdapterOrdinal);
-					Globals::GetMonitorInfo( hAdapterMonitor,&miAdapter);
+					Windows::GetMonitorInfo( hAdapterMonitor,&miAdapter);
 
 					// Get the rect of the monitor attached to the window
 					MONITORINFO miWindow;
 					miWindow.cbSize = sizeof(MONITORINFO);
-					Globals::GetMonitorInfo(Globals::MonitorFromWindow(m_pGameApp->GetWindow(),MONITOR_DEFAULTTOPRIMARY),&miWindow);
+					Windows::GetMonitorInfo(Windows::MonitorFromWindow(m_pGameApp->GetWindow(),MONITOR_DEFAULTTOPRIMARY),&miWindow);
 
 					// Do something reasonable if the BackBuffer size is greater than the monitor size
 					LONG iAdapterMonitorWidth = miAdapter.rcWork.right - miAdapter.rcWork.left;
@@ -3870,11 +3871,11 @@ void BURGER_API Burger::DisplayDirectX9::ReleaseRenderTargets(void)
 	\brief Find the closest match to a device
 
 	Find the best combination of: 
-	\li Adapter Ordinal
-	\li Device Type
-	\li Adapter Format
-	\li Back Buffer Format
-	\li Windowed
+	* * Adapter Ordinal
+	* * Device Type
+	* * Adapter Format
+	* * Back Buffer Format
+	* * Windowed
 	
 	Given what's available on the system and the match options combined with the device settings input.
 	This combination of settings is encapsulated by the BufferFormatGroup class.

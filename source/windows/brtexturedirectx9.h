@@ -45,8 +45,8 @@ public:
 	TextureDirectX9();
 	TextureDirectX9(eWrapping uWrapping,eFilter uFilter);
 	virtual ~TextureDirectX9();
-	virtual Word CheckLoad(Display *pDisplay);
-	virtual void Release(Display *pDisplay);
+	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	void Release(Display *pDisplay) BURGER_OVERRIDE;
 	Word BURGER_API GetD3DFormat(void) const;
 	BURGER_INLINE IDirect3DTexture9 * GetTexture(void) const { return m_pD3DTexture; }
 };

@@ -138,8 +138,8 @@ public:
 	static const Word32 Signature = 0x5A4C4942;		///< 'ZLIB'
 	DecompressDeflate();
 	virtual ~DecompressDeflate();
-	virtual eError Reset(void);
-	virtual eError Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength);
+	eError Reset(void) BURGER_OVERRIDE;
+	eError Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
 };
 extern Decompress::eError BURGER_API SimpleDecompressDeflate(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength);
 }

@@ -34,13 +34,13 @@
 namespace Burger {
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 class VertexBufferDirectX9 : public VertexBuffer {
-	BURGER_DISABLECOPYCONSTRUCTORS(VertexBufferDirectX9);
+    BURGER_DISABLE_COPY(VertexBufferDirectX9);
 	BURGER_RTTI_IN_CLASS();
 public:
 	VertexBufferDirectX9();
 	virtual ~VertexBufferDirectX9();
-	virtual Word CheckLoad(Display *pDisplay);
-	virtual void Release(Display *pDisplay);
+	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	void Release(Display *pDisplay) BURGER_OVERRIDE;
 };
 #endif
 }

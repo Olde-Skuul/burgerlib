@@ -205,7 +205,7 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 	HINSTANCE hInstance = GetModuleHandleW(NULL);
 	m_hInstance = hInstance;
 	// Set the global instance
-	Globals::SetInstance(hInstance);
+	Windows::SetInstance(hInstance);
 
 	// Ensure that threading is serialized since it's assumed this
 	// is a GUI based application
@@ -348,7 +348,7 @@ Burger::GameApp::~GameApp()
 
 	// The instance is not tracked anymore
 	m_hInstance = NULL;
-	Globals::SetInstance(NULL);
+	Windows::SetInstance(nullptr);
 }
 
 /*! ************************************
@@ -514,7 +514,7 @@ int BURGER_API Burger::GameApp::InitWindow(const char *pGameName,MainWindowProc 
 
 			// Set the pointer to the "this" pointer so the window
 			// function will activate
-			SetWindowLongPtrW(pWindow,GWLP_USERDATA,reinterpret_cast<LONG_PTR>(this));
+			//SetWindowLongPtrW(pWindow,GWLP_USERDATA,reinterpret_cast<LONG_PTR>(this));
 
 			iResult = 0;				// I'm OK!
 		} else {
@@ -824,7 +824,7 @@ void BURGER_API Burger::GameApp::KillInputFocus(void)
 Burger::RunQueue::eReturnCode BURGER_API Burger::GameApp::Poll(void * /* pSelf */)
 {
 	MSG TempMessage;
-	while (PeekMessageW(&TempMessage,NULL,0,0,PM_REMOVE)) {
+	while (PeekMessageW(&TempMessage,nullptr,0,0,PM_REMOVE)) {
 		// Translate the keyboard (Localize)
 		TranslateMessage(&TempMessage);
 		// Pass to the window event proc

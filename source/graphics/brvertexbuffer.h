@@ -142,11 +142,11 @@ public:
 	virtual ~VertexBuffer();
 
 #if defined(BURGER_WINDOWS)
-	virtual Word CheckLoad(Display *pDisplay) = 0;
-	virtual void Release(Display *pDisplay) = 0;
+	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE = 0;
+	void Release(Display *pDisplay) BURGER_OVERRIDE = 0;
 #else
-	virtual Word CheckLoad(Display *pDisplay);
-	virtual void Release(Display *pDisplay);
+	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	void Release(Display *pDisplay) BURGER_OVERRIDE;
 #endif
 
 	Word BURGER_API LoadData(Display *pDisplay,const VertexAoS_t *pDescription);

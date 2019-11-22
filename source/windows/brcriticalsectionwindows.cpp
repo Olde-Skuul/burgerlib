@@ -16,13 +16,17 @@
 #if defined(BURGER_WINDOWS)
 #include "brassert.h"
 #include "bratomic.h"
+
 // InitializeCriticalSectionAndSpinCount() is minimum XP
+
 #if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x0501				// Windows XP
 #endif
-#ifndef WIN32_LEAN_AND_MEAN
+
+#if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
+
 #include <windows.h>
 
 /***************************************
@@ -35,14 +39,14 @@
 Burger::CriticalSection::CriticalSection()
 {
 	// Safety switch to verify the declaration in brwindowstypes.h matches the real thing
-	BURGER_COMPILE_TIME_ASSERT(sizeof(::CRITICAL_SECTION)==sizeof(Burger::CRITICAL_SECTION));
+    BURGER_STATIC_ASSERT(sizeof(CRITICAL_SECTION)==sizeof(BurgerCRITICAL_SECTION));
 
-	InitializeCriticalSectionAndSpinCount(reinterpret_cast< ::CRITICAL_SECTION *>(&m_Lock),1000);
+	InitializeCriticalSectionAndSpinCount(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock),1000);
 }
 
 Burger::CriticalSection::~CriticalSection()
 {
-	DeleteCriticalSection(reinterpret_cast< ::CRITICAL_SECTION *>(&m_Lock));
+	DeleteCriticalSection(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock));
 }
 
 /***************************************
@@ -51,9 +55,9 @@ Burger::CriticalSection::~CriticalSection()
 	
 ***************************************/
 
-void Burger::CriticalSection::Lock()
+void Burger::CriticalSection::Lock(void)
 {
-	EnterCriticalSection(reinterpret_cast< ::CRITICAL_SECTION *>(&m_Lock));
+	EnterCriticalSection(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock));
 }
 
 /***************************************
@@ -62,9 +66,9 @@ void Burger::CriticalSection::Lock()
 	
 ***************************************/
 
-Word Burger::CriticalSection::TryLock()
+Word Burger::CriticalSection::TryLock(void)
 {
-	return static_cast<Word>(TryEnterCriticalSection(reinterpret_cast< ::CRITICAL_SECTION *>(&m_Lock)));
+	return static_cast<Word>(TryEnterCriticalSection(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock)));
 }
 
 /***************************************
@@ -73,9 +77,9 @@ Word Burger::CriticalSection::TryLock()
 	
 ***************************************/
 
-void Burger::CriticalSection::Unlock()
+void Burger::CriticalSection::Unlock(void)
 {
-	LeaveCriticalSection(reinterpret_cast< ::CRITICAL_SECTION *>(&m_Lock));
+	LeaveCriticalSection(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock));
 }
 
 

@@ -41,7 +41,7 @@ public:
 	Compress(void);
 	virtual ~Compress();
 	virtual eError Init(void) = 0;
-	virtual eError Process(const void *pInput,WordPtr uInputLength) = 0;
+	virtual eError Process(const void *pInput, uintptr_t uInputLength) = 0;
 	virtual eError Finalize(void) = 0;
 	BURGER_INLINE OutputMemoryStream *GetOutput(void) { return &m_Output; }
 	BURGER_INLINE WordPtr GetOutputSize(void) const { return m_Output.GetSize(); }

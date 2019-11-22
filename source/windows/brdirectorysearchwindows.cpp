@@ -16,9 +16,11 @@
 #if defined(BURGER_WINDOWS)
 #include "brutf8.h"
 #include "brstring16.h"
-#ifndef WIN32_LEAN_AND_MEAN
+
+#if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
+
 #include <windows.h>
 #include <wchar.h>
 #if !defined(__MWERKS__)

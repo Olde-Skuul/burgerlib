@@ -46,8 +46,8 @@ public:
 	static const Word32 Signature = 0x77616C75;		///< 'ulaw'
 #endif
 	DecompressULaw();
-	virtual eError Reset(void);
-	virtual eError Process(void *pOutput,WordPtr uOutputChunkSize,const void *pInput,WordPtr uInputChunkLength);
+	eError Reset(void) BURGER_OVERRIDE;
+	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
 	static DecompressULaw * BURGER_API New(void);
 };
 }

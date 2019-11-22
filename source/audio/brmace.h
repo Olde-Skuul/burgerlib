@@ -62,8 +62,8 @@ protected:
 public:
 	static const Word32 Signature = 0x4D414333;		///< 'MAC3'
 	DecompressMace3();
-	virtual eError Reset(void);
-	virtual eError Process(void *pOutput,WordPtr uOutputChunkSize,const void *pInput,WordPtr uInputChunkLength);
+	eError Reset(void) BURGER_OVERRIDE;
+	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
 	static DecompressMace3 * BURGER_API New(void);
 };
 
@@ -84,8 +84,8 @@ protected:
 public:
 	static const Word32 Signature = 0x4D414336;		///< 'MAC6'
 	DecompressMace6();
-	virtual eError Reset(void);
-	virtual eError Process(void *pOutput,WordPtr uOutputChunkSize,const void *pInput,WordPtr uInputChunkLength);
+	eError Reset(void) BURGER_OVERRIDE;
+	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
 	static DecompressMace6 * BURGER_API New(void);
 };
 

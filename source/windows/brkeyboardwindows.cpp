@@ -34,7 +34,7 @@
 #include "brgameapp.h"
 #include "brglobals.h"
 #include "brassert.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include "brtick.h"
 #include <dinput.h>
 
@@ -510,9 +510,9 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 	MemoryClear(&m_RepeatEvent,sizeof(m_RepeatEvent));
 
 	// Safety switch to verify the declaration in brwindowstypes.h matches the real thing
-	BURGER_COMPILE_TIME_ASSERT(sizeof(::tagSTICKYKEYS)==sizeof(Burger::tagSTICKYKEYS));
-	BURGER_COMPILE_TIME_ASSERT(sizeof(::tagTOGGLEKEYS)==sizeof(Burger::tagTOGGLEKEYS));
-	BURGER_COMPILE_TIME_ASSERT(sizeof(::tagFILTERKEYS)==sizeof(Burger::tagFILTERKEYS));
+    BURGER_STATIC_ASSERT(sizeof(tagSTICKYKEYS)==sizeof(BurgertagSTICKYKEYS));
+    BURGER_STATIC_ASSERT(sizeof(tagTOGGLEKEYS)==sizeof(BurgertagTOGGLEKEYS));
+    BURGER_STATIC_ASSERT(sizeof(tagFILTERKEYS)==sizeof(BurgertagFILTERKEYS));
 
 	// Save the current sticky/toggle/filter key settings so they can be restored them later
 	m_DefaultStickyKeys.cbSize = sizeof(m_DefaultStickyKeys);
@@ -669,7 +669,7 @@ Word BURGER_API Burger::Keyboard::DisableWindowsKey(void)
 	if (!m_pPreviousKeyboardHook) {
 		if (!(Globals::GetTraceFlag()&Globals::TRACE_ACTIVEDEBUGGING)) {
 			// Install the function
-			HHOOK pResult = SetWindowsHookExW(WH_KEYBOARD_LL,DisableWindowsKeysCallback,Globals::GetInstance(),0);
+			HHOOK pResult = SetWindowsHookExW(WH_KEYBOARD_LL,DisableWindowsKeysCallback,Windows::GetInstance(),0);
 			if (!pResult) {
 				// Uh, oh. Get the error code
 				uResult = GetLastError();

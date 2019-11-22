@@ -53,7 +53,7 @@ public:
 	Renderer(void);
 	virtual ~Renderer();
 	virtual Word Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags);
-	virtual void Shutdown(void);
+    virtual void Shutdown(void);
 	virtual void BeginScene(void);
 	virtual void EndScene(void);
 	virtual void Draw8BitPixels(int iX,int iY,Word uWidth,Word uHeight,WordPtr uStride,const Word8 *pPixels);

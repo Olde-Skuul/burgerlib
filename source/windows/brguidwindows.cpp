@@ -24,7 +24,7 @@
 
 void BURGER_API Burger::GUIDInit(GUID *pOutput)
 {
-	Globals::UuidCreateSequential(pOutput);
+	Windows::UuidCreateSequential(pOutput);
 }
 
 #endif

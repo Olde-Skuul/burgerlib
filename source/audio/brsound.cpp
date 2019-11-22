@@ -872,7 +872,7 @@ void Burger::SoundManager::Buffer::Shutdown(void)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
-Word Burger::SoundManager::Buffer::Upload(SoundManager * /* pSoundManager */)
+uint_t Burger::SoundManager::Buffer::Upload(SoundManager * /* pSoundManager */)
 {
 	Word uResult = 0;
 	// Not already uploaded?

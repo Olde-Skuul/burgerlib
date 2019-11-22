@@ -18,9 +18,11 @@
 #if defined(BURGER_WINDOWS)
 #include "brglobals.h"
 #include "brimage.h"
-#ifndef WIN32_LEAN_AND_MEAN
+
+#if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
+
 #include <Windows.h>
 
 //
@@ -52,7 +54,7 @@ Word BURGER_API Burger::OSCursorImage::CreateMonoChromeImage(const Word8 *pXor,c
 		m_uHeight = uFinalHeight;
 		m_iHotX = iHotX;
 		m_iHotY = iHotY;
-		HCURSOR hCursor = CreateCursor(Globals::GetInstance(),iHotX,iHotY,static_cast<int>(uFinalWidth),static_cast<int>(uFinalHeight),pAnd,pXor);
+		HCURSOR hCursor = CreateCursor(Windows::GetInstance(),iHotX,iHotY,static_cast<int>(uFinalWidth),static_cast<int>(uFinalHeight),pAnd,pXor);
 		if (hCursor) {
 			m_pCursorImage = hCursor;
 		}
@@ -94,7 +96,7 @@ void BURGER_API Burger::OSCursor::SetImageFromIDNumber(eCursor eCursorNumber)
 				hInstance = NULL;
 			} else {
 				uCursorResource = static_cast<WordPtr>(eCursorNumber);
-				hInstance = Globals::GetInstance();
+				hInstance = Windows::GetInstance();
 			}
 			// Try from the application's resource
 			HCURSOR hCurs = LoadCursorW(hInstance,MAKEINTRESOURCEW(uCursorResource));

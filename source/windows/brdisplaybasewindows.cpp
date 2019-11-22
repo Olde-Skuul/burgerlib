@@ -21,9 +21,12 @@
 #include "brgameapp.h"
 #include "brglobals.h"
 #include "brstring16.h"
-#ifndef WIN32_LEAN_AND_MEAN
+#include "brmemoryfunctions.h"
+
+#if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
+
 #include <Windows.h>
 #include <d3d9.h>
 #include <ddraw.h>
@@ -140,7 +143,7 @@ static HRESULT __stdcall EnumerateVideoDevice(GUID *pGUID,char *pDescription,cha
 		// Create a DirectDraw7 instance for queries
 
 		IDirectDraw7 *pDirectDraw7;
-		if (Burger::Globals::DirectDrawCreateEx(pGUID,reinterpret_cast<void **>(&pDirectDraw7),IID_IDirectDraw7)==DD_OK) {
+		if (Burger::Windows::DirectDrawCreateEx(pGUID,reinterpret_cast<void **>(&pDirectDraw7),IID_IDirectDraw7)==DD_OK) {
 
 			// This has a constructor, so all values are set to zero
 			Burger::Display::VideoCardDescription Entry;
@@ -222,7 +225,7 @@ Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 	pOutput->clear();
 	Word uResult = 10;
 	// Enumerate all devices
-	if (Globals::DirectDrawEnumerateExA(EnumerateVideoDevice,pOutput,DDENUM_ATTACHEDSECONDARYDEVICES|
+	if (Windows::DirectDrawEnumerateExA(EnumerateVideoDevice,pOutput,DDENUM_ATTACHEDSECONDARYDEVICES|
 		DDENUM_DETACHEDSECONDARYDEVICES|DDENUM_NONDISPLAYDEVICES)==DD_OK) {
 		uResult = 0;		// No error
 	}

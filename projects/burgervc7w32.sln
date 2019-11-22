@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "burger", "burgervc7w32.vcproj", "{152DCF05-3AED-37F4-B8AB-37D596C9C2D8}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Internal = Internal
+		Release = Release
+		Release_LTCG = Release_LTCG
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{152DCF05-3AED-37F4-B8AB-37D596C9C2D8}.Debug.ActiveCfg = Debug|Win32
+		{152DCF05-3AED-37F4-B8AB-37D596C9C2D8}.Debug.Build.0 = Debug|Win32
+		{152DCF05-3AED-37F4-B8AB-37D596C9C2D8}.Internal.ActiveCfg = Internal|Win32
+		{152DCF05-3AED-37F4-B8AB-37D596C9C2D8}.Internal.Build.0 = Internal|Win32
+		{152DCF05-3AED-37F4-B8AB-37D596C9C2D8}.Release.ActiveCfg = Release|Win32
+		{152DCF05-3AED-37F4-B8AB-37D596C9C2D8}.Release.Build.0 = Release|Win32
+		{152DCF05-3AED-37F4-B8AB-37D596C9C2D8}.Release_LTCG.ActiveCfg = Release_LTCG|Win32
+		{152DCF05-3AED-37F4-B8AB-37D596C9C2D8}.Release_LTCG.Build.0 = Release_LTCG|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

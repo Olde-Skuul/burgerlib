@@ -83,12 +83,12 @@ class Shader2DCColorDX9 : public Shader2DCColor {
 	BURGER_RTTI_IN_CLASS();
 public:
 	Shader2DCColorDX9(Display *pDisplay,const Word *pVertexMembers);
-	virtual Word CheckLoad(Display *pDisplay);
-	virtual void Release(Display *pDisplay);
-	virtual void SetPosition(float fX,float fY,float fWidth,float fHeight);
-	virtual void SetPosition(const Vector4D_t *pPosition);
-	virtual void SetColor(float fRed,float fGreen,float fBlue,float fAlpha);
-	virtual void SetColor(const Vector4D_t *pColor);
+	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	void Release(Display *pDisplay) BURGER_OVERRIDE;
+	void SetPosition(float fX,float fY,float fWidth,float fHeight) BURGER_OVERRIDE;
+	void SetPosition(const Vector4D_t *pPosition) BURGER_OVERRIDE;
+	void SetColor(float fRed,float fGreen,float fBlue,float fAlpha) BURGER_OVERRIDE;
+	void SetColor(const Vector4D_t *pColor) BURGER_OVERRIDE;
 };
 
 class Shader2DCColorOpenGL : public Shader2DCColor {
@@ -96,12 +96,12 @@ class Shader2DCColorOpenGL : public Shader2DCColor {
 	BURGER_RTTI_IN_CLASS();
 public:
 	Shader2DCColorOpenGL(Display *pDisplay,const Word *pVertexMembers);
-	virtual Word CheckLoad(Display *pDisplay);
-	virtual void Release(Display *pDisplay);
-	virtual void SetPosition(float fX,float fY,float fWidth,float fHeight);
-	virtual void SetPosition(const Vector4D_t *pPosition);
-	virtual void SetColor(float fRed,float fGreen,float fBlue,float fAlpha);
-	virtual void SetColor(const Vector4D_t *pColor);
+	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	void Release(Display *pDisplay) BURGER_OVERRIDE;
+	void SetPosition(float fX,float fY,float fWidth,float fHeight) BURGER_OVERRIDE;
+	void SetPosition(const Vector4D_t *pPosition) BURGER_OVERRIDE;
+	void SetColor(float fRed,float fGreen,float fBlue,float fAlpha) BURGER_OVERRIDE;
+	void SetColor(const Vector4D_t *pColor) BURGER_OVERRIDE;
 };
 #endif
 

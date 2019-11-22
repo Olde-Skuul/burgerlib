@@ -53,29 +53,29 @@ protected:
 	Word m_uActiveTexture;					///< OpenGL glActiveTexture() shadow value
 public:
 	DisplayOpenGL(GameApp *pGameApp);
-	virtual Word Init(Word uWidth,Word uHeight,Word uDepth=32,Word uFlags=DEFAULTFLAGS);
-	virtual void Shutdown(void);
-	virtual void BeginScene(void);
-	virtual void EndScene(void);
-	virtual Texture *CreateTextureObject(void);
-	virtual VertexBuffer *CreateVertexBufferObject(void);
-	virtual void Resize(Word uWidth,Word uHeight);
-	virtual void SetViewport(Word uX,Word uY,Word uWidth,Word uHeight);
-	virtual void SetScissorRect(Word uX,Word uY,Word uWidth,Word uHeight);
-	virtual void SetClearColor(float fRed,float fGreen,float fBlue,float fAlpha);
-	virtual void SetClearDepth(float fDepth);
-	virtual void Clear(Word uMask);
-	virtual void Bind(Texture *pTexture,Word uIndex=0);
-	virtual void Bind(Effect *pEffect);
-	virtual void SetBlend(Word bEnable);
-	virtual void SetBlendFunction(eSourceBlendFactor uSourceFactor,eDestinationBlendFactor uDestFactor);
-	virtual void SetLighting(Word bEnable);
-	virtual void SetZWrite(Word bEnable);
-	virtual void SetDepthTest(eDepthFunction uDepthFunction);
-	virtual void SetCullMode(eCullMode uCullMode);
-	virtual void SetScissor(Word bEnable);
-	virtual void DrawPrimitive(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer);
-	virtual void DrawElements(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer);
+	Word Init(Word uWidth,Word uHeight,Word uDepth=32,Word uFlags=DEFAULTFLAGS) BURGER_OVERRIDE;
+	void Shutdown(void) BURGER_OVERRIDE;
+	void BeginScene(void) BURGER_OVERRIDE;
+	void EndScene(void) BURGER_OVERRIDE;
+	Texture *CreateTextureObject(void) BURGER_OVERRIDE;
+	VertexBuffer *CreateVertexBufferObject(void) BURGER_OVERRIDE;
+	void Resize(Word uWidth,Word uHeight) BURGER_OVERRIDE;
+	void SetViewport(Word uX,Word uY,Word uWidth,Word uHeight) BURGER_OVERRIDE;
+	void SetScissorRect(Word uX,Word uY,Word uWidth,Word uHeight) BURGER_OVERRIDE;
+	void SetClearColor(float fRed,float fGreen,float fBlue,float fAlpha) BURGER_OVERRIDE;
+	void SetClearDepth(float fDepth) BURGER_OVERRIDE;
+	void Clear(Word uMask) BURGER_OVERRIDE;
+	void Bind(Texture *pTexture,Word uIndex=0) BURGER_OVERRIDE;
+	void Bind(Effect *pEffect) BURGER_OVERRIDE;
+	void SetBlend(Word bEnable) BURGER_OVERRIDE;
+	void SetBlendFunction(eSourceBlendFactor uSourceFactor,eDestinationBlendFactor uDestFactor) BURGER_OVERRIDE;
+	void SetLighting(Word bEnable) BURGER_OVERRIDE;
+	void SetZWrite(Word bEnable) BURGER_OVERRIDE;
+	void SetDepthTest(eDepthFunction uDepthFunction) BURGER_OVERRIDE;
+	void SetCullMode(eCullMode uCullMode) BURGER_OVERRIDE;
+	void SetScissor(Word bEnable) BURGER_OVERRIDE;
+    void DrawPrimitive(ePrimitiveType uPrimitiveType, VertexBuffer* pVertexBuffer) BURGER_OVERRIDE;
+	void DrawElements(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer) BURGER_OVERRIDE;
 
 	BURGER_INLINE float GetOpenGLVersion(void) const { return m_fOpenGLVersion; }
 	BURGER_INLINE float GetShadingLanguageVersion(void) const { return m_fShadingLanguageVersion; }

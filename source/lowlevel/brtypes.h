@@ -861,6 +861,10 @@
     (BURGER_CLANG >= 20900) || (BURGER_GNUC >= 40700) || \
     (BURGER_MSVC >= 140000000) || defined(DOXYGEN)
 #define BURGER_OVERRIDE override
+#if (BURGER_MSVC >= 140000000) && (BURGER_MSVC < 170000000)
+// Disable warning for override in VS 2005-2010
+#pragma warning(disable: 4481)
+#endif
 #else
 #define BURGER_OVERRIDE
 #endif

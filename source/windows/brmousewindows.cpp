@@ -185,7 +185,7 @@ Burger::Mouse::Mouse(GameApp *pGameApp) :
 
 	// First step, obtain DirectInput
 
-	IDirectInput8W* pDirectInput8W = Globals::GetDirectInput8Singleton();
+	IDirectInput8W* pDirectInput8W = Windows::GetDirectInput8Singleton();
 	if (pDirectInput8W) {
 
 		// Create a system mouse device (Merges all mice)
@@ -297,8 +297,8 @@ Word Burger::Mouse::IsPresent(void) const
 {
 	GUID HIDGUID;
 	// Get the HID GUID
-	Globals::HidD_GetHidGuid(&HIDGUID);
-	HDEVINFO hDevInfo = Globals::SetupDiGetClassDevsW(&HIDGUID,NULL,NULL,DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+	Windows::HidD_GetHidGuid(&HIDGUID);
+	HDEVINFO hDevInfo = Windows::SetupDiGetClassDevsW(&HIDGUID,NULL,NULL,DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 	Word uResult = FALSE;
 	if (hDevInfo!=INVALID_HANDLE_VALUE) {
 		uResult = TRUE;
@@ -307,7 +307,7 @@ Word Burger::Mouse::IsPresent(void) const
 		for (;;) {
 			SP_DEVICE_INTERFACE_DATA DeviceInterface;
 			DeviceInterface.cbSize = sizeof(DeviceInterface);
-			if (!Globals::SetupDiEnumDeviceInterfaces(hDevInfo,NULL,&HIDGUID,uIndex,&DeviceInterface)) {
+			if (!Windows::SetupDiEnumDeviceInterfaces(hDevInfo,NULL,&HIDGUID,uIndex,&DeviceInterface)) {
 				// Likely reached the end of the list
 				break;
 			}
@@ -318,7 +318,7 @@ Word Burger::Mouse::IsPresent(void) const
 			SP_DEVINFO_DATA DeviceInfoData;
 			DeviceInfoData.cbSize = sizeof(DeviceInfoData);
 			// Get the details about this device
-			if (!Globals::SetupDiGetDeviceInterfaceDetailW(hDevInfo,&DeviceInterface,pDeviceInterfaceDetailData,sizeof(Buffer),NULL,&DeviceInfoData)) {\
+			if (!Windows::SetupDiGetDeviceInterfaceDetailW(hDevInfo,&DeviceInterface,pDeviceInterfaceDetailData,sizeof(Buffer),NULL,&DeviceInfoData)) {\
 				break;
 			}
 			// Is this a mouse device?
@@ -329,7 +329,7 @@ Word Burger::Mouse::IsPresent(void) const
 			++uIndex;
 		}
 		// Clean up
-		Globals::SetupDiDestroyDeviceInfoList(hDevInfo);
+		Windows::SetupDiDestroyDeviceInfoList(hDevInfo);
 	}
 	// Return TRUE or FALSE if there was a mouse in the device list
 	return uResult;

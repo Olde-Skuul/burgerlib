@@ -1,14 +1,15 @@
 /***************************************
 
-	Time Manager Class
-	Xbox 360 specific code
+    Time Manager Class
+    Xbox 360 specific code
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -32,7 +33,7 @@
 void Burger::TimeDate_t::GetTime(void)
 {
 	SYSTEMTIME MySystemTime;			// Windows time structure
-	::GetLocalTime(&MySystemTime);		// Call windows 
+	::GetLocalTime(&MySystemTime);		// Call windows
 
 	m_uYear = MySystemTime.wYear;		// Windows has 16 bit values
 	m_usMilliseconds = MySystemTime.wMilliseconds;
@@ -47,7 +48,7 @@ void Burger::TimeDate_t::GetTime(void)
 /***************************************
 
 	\brief Convert a Windows FILETIME into a Burger::TimeDate_t
-	
+
 	\return FALSE if successful, non-zero if not.
 
 ***************************************/
@@ -77,7 +78,7 @@ Word Burger::TimeDate_t::Load(const _FILETIME *pFileTime)
 /***************************************
 
 	\brief Convert a Burger::TimeDate_t into a Windows FILETIME
-	
+
 	\return FALSE if successful, non-zero if not.
 
 ***************************************/

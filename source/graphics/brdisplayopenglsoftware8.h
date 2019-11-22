@@ -50,10 +50,17 @@ class DisplayOpenGLSoftware8 : public Display {
 	BURGER_RTTI_IN_CLASS();
 public:
 	DisplayOpenGLSoftware8(GameApp *pGameApp);
-	virtual Word Init(Word uWidth,Word uHeight,Word uDepth=8,Word uFlags=DEFAULTFLAGS);
-	virtual void Shutdown(void);
-	virtual void BeginScene(void);
-	virtual void EndScene(void);
+#if defined(BURGER_WINDOWS)
+	Word Init(Word uWidth,Word uHeight,Word uDepth=8,Word uFlags=DEFAULTFLAGS) BURGER_OVERRIDE;
+	void Shutdown(void) BURGER_OVERRIDE;
+	void BeginScene(void) BURGER_OVERRIDE;
+	void EndScene(void) BURGER_OVERRIDE;
+#else
+	Word Init(Word uWidth, Word uHeight, Word uDepth = 8, Word uFlags = DEFAULTFLAGS);
+	void Shutdown(void);
+	void BeginScene(void);
+	void EndScene(void);
+#endif
 	BURGER_INLINE RendererSoftware8 *GetRenderer(void) { return &m_Renderer; }
 };
 #endif

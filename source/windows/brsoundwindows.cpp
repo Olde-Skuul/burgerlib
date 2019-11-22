@@ -20,6 +20,7 @@
 #include "brglobals.h"
 #include "brrunqueue.h"
 #include "brendian.h"
+#include "brmemoryfunctions.h"
 
 #if !defined(DOXYGEN)
 #if !defined(WIN32_LEAN_AND_MEAN)
@@ -111,7 +112,7 @@ void Burger::SoundManager::Buffer::Shutdown(void)
 // Upload to DirectSound
 //
 
-Word Burger::SoundManager::Buffer::Upload(SoundManager *pSoundManager)
+uint_t Burger::SoundManager::Buffer::Upload(SoundManager *pSoundManager)
 {
 	Word uResult = 0;
 	// Not already uploaded?
@@ -550,7 +551,7 @@ Word BURGER_API Burger::SoundManager::Init(void)
 		if (i==cMaxVoiceCount) {
 			// Open the sound device by creating an DirectSound object
 
-			uResult = static_cast<HRESULT>(Globals::DirectSoundCreate8(NULL,&m_pDirectSound8Device));
+			uResult = static_cast<HRESULT>(Windows::DirectSoundCreate8(NULL,&m_pDirectSound8Device));
 			pError = "Direct sound could not be started";
 			if (uResult==DS_OK) {
 
@@ -832,7 +833,7 @@ static BOOL CALLBACK EnumerateAudioDevices(GUID *pGUID,const Word16 *pDescriptio
 		IDirectSound8 *pDirectSound8;
 
 		// Get the direct sound device for this specific GUID
-		if (Burger::Globals::DirectSoundCreate8(pGUID,&pDirectSound8)==DS_OK) {
+		if (Burger::Windows::DirectSoundCreate8(pGUID,&pDirectSound8)==DS_OK) {
 
 			// Entry to create
 			Burger::SoundManager::SoundCardDescription Entry;
@@ -901,7 +902,7 @@ Word BURGER_API Burger::SoundManager::GetAudioModes(ClassArray<SoundCardDescript
 	pOutput->clear();
 	Word uResult = 10;
 	// Enumerate all devices
-	if (Globals::DirectSoundEnumerateW(EnumerateAudioDevices,pOutput)==DS_OK) {
+	if (Windows::DirectSoundEnumerateW(EnumerateAudioDevices,pOutput)==DS_OK) {
 		uResult = 0;
 	}
 	return uResult;

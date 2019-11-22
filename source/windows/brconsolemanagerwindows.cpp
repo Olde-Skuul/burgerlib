@@ -17,14 +17,14 @@
 #include "brfilemanager.h"
 #include "brutf8.h"
 #include "brglobals.h"
-#ifndef WIN32_LEAN_AND_MEAN
+
+#if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
+
 #include <windows.h>
 #include <conio.h>
 #include <shellapi.h>
-//#include <winbase.h>
-//#include <wincon.h>
 
 // Needed for code that manually grabs the parm list
 extern "C" char **__argv;
@@ -41,11 +41,13 @@ extern "C" char **__argv;
 
 ***************************************/
 
-Burger::ConsoleApp::ConsoleApp(int iArgc,const char **ppArgv) :
+Burger::ConsoleApp::ConsoleApp(int iArgc,const char **ppArgv,Word uFlags) :
 	m_ANSIMemoryManager(),
 	m_bLaunchedFromDesktop(FALSE),
 	m_ppOldArgv(NULL)
 {
+	BURGER_UNUSED(uFlags);
+
 	// In order to support unicode command lines under windows,
 	// the command line needs to be re-processed by calling the
 	// shellapi and manually extracting the commands and 
