@@ -1,13 +1,14 @@
 /***************************************
 
-	Typedefs specific to Mac OS Carbon and Classic
+    Typedefs specific to Mac OS Carbon and Classic
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without
+    paying anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -26,10 +27,13 @@
 
 struct Point;
 struct Rect;
+struct MacRegion;
+struct BitMap;
 struct FSRef;
 struct UTCDateTime;
 struct CCrsr;
 struct GrafPort;
+struct CGrafPort;
 struct OpaqueDialogPtr;
 struct FSSpec;
 struct OpaqueCFragConnectionID;
@@ -51,33 +55,73 @@ typedef struct GrafPort* DialogRef;
 namespace Burger {
 class Mac {
 private:
-	Word m_uAppleShareVersion;				///< Discovered version of AppleShare (Mac only)
-	Word m_uInputSprocketVersion;			///< Discovered version of InputSprocket (Mac only)
-	Word m_uDrawSprocketVersion;			///< Discovered version of DrawSprocket (Mac only)
-	Word m_uSoundManagerVersion;			///< Sound manager version in 0x0102 (1.2) format (Mac only)
-	Word8 m_bAppleShareVersionTested;		///< AppleShare version was tested (Mac only)
-	Word8 m_bIsQuickTimePlugInTested;		///< Non-zero if tested, low bit has \ref TRUE or \ref FALSE for QuickTime Plugin present (Mac only)
-	Word8 m_bInputSprocketVersionTested;	///< InputSprocket version was tested (Mac only)
-	Word8 m_bDrawSprocketVersionTested;		///< DrawSprocket version was tested (Mac only)
-	Word8 m_bSoundManagerVersionValid;		///< \ref TRUE if sound manager version is valid (Mac only)
-	Word8 m_bDrawSprocketActive;			///< \ref TRUE if DrawSprocket was started
+    /** Discovered version of NavServices (Mac only) */
+    uint32_t m_uNavServicesVersion;
 
-	static Mac g_Globals;		///< Singleton instance of the global variables
+    /** Discovered version of ControlStrip (Mac only) */
+    uint32_t m_uControlStripVersion;
+
+    /** Discovered version of AppleShare (Mac only) */
+    uint_t m_uAppleShareVersion;
+
+    /** Discovered version of InputSprocket (Mac only) */
+    uint_t m_uInputSprocketVersion;
+
+    /** Discovered version of DrawSprocket (Mac only) */
+    uint_t m_uDrawSprocketVersion;
+
+    /** Sound manager version in 0x0102 (1.2) format (Mac only) */
+    uint_t m_uSoundManagerVersion;
+
+    /** NavServices version was tested (Mac only) */
+    uint8_t m_bNavServicesVersionTested;
+
+    /** ControlStrip version was tested (Mac only) */
+    uint8_t m_bControlStripVersionTested;
+
+    /** AppleShare version was tested (Mac only) */
+    uint8_t m_bAppleShareVersionTested;
+
+    /** Non-zero if tested, low bit has \ref TRUE or \ref FALSE for QuickTime
+     * Plugin present (Mac only) */
+    uint8_t m_bIsQuickTimePlugInTested;
+
+    /** InputSprocket version was tested (Mac only) */
+    uint8_t m_bInputSprocketVersionTested;
+
+    /** DrawSprocket version was tested (Mac only) */
+    uint8_t m_bDrawSprocketVersionTested;
+
+    /** \ref TRUE if sound manager version is valid (Mac only) */
+    uint8_t m_bSoundManagerVersionValid;
+
+    /** \ref TRUE if DrawSprocket was started */
+    uint8_t m_bDrawSprocketActive;
+
+    /** Singleton instance of the global variables */
+    static Mac g_Globals;
 
 public:
-	static Word BURGER_API IsTrapAvailable(Word uTrapNum);
-	static Word BURGER_API IsQuickTimePowerPlugAvailable(void);
-	static Word BURGER_API GetAppleShareVersion(void);
-	static Word BURGER_API GetInputSprocketVersion(void);
-	static Word BURGER_API GetDrawSprocketVersion(void);
-	static Word BURGER_API GetSoundManagerVersion(void);
-	static void BURGER_API KillProcess(ProcessSerialNumber *pVictim);
-	static void BURGER_API KillAllProcesses(void);
-	static Word BURGER_API StartDrawSprocket(void);
-	static void BURGER_API StopDrawSprocket(void);
-	static Word BURGER_API IsRunningUnderMacOSX(void);
+    static uint_t BURGER_API IsTrapAvailable(uint_t uTrapNum);
+    static uint_t BURGER_API IsQuickTimePowerPlugAvailable(void);
+    static uint_t BURGER_API GetAppleShareVersion(void);
+    static uint_t BURGER_API GetInputSprocketVersion(void);
+    static uint_t BURGER_API GetDrawSprocketVersion(void);
+    static uint_t BURGER_API GetSoundManagerVersion(void);
+    static void BURGER_API KillProcess(ProcessSerialNumber* pVictim);
+    static void BURGER_API KillAllProcesses(void);
+    static uint_t BURGER_API StartDrawSprocket(void);
+    static void BURGER_API StopDrawSprocket(void);
+    static uint_t BURGER_API IsRunningUnderMacOSX(void);
+    static uint32_t BURGER_API GetNavServicesVersion(void);
+    static uint32_t BURGER_API GetControlStripVersion(void);
 };
 }
+
+#if defined(BURGER_MACCLASSIC) && !ACCESSOR_CALLS_ARE_FUNCTIONS
+extern const BitMap* GetPortBitMapForCopyBits(CGrafPort* port);
+extern MacRegion** GetPortVisibleRegion(CGrafPort* port, MacRegion** visRgn);
+#endif
 
 #endif
 

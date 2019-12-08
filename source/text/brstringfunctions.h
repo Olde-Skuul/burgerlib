@@ -37,30 +37,30 @@ enum {
 struct FourCharacterCode_t {
 	union {
 		char c[4]; ///< Array of 4 characters for the code
-		Word32 w;  ///< Value in binary
+		uint32_t w;  ///< Value in binary
 	};
-	BURGER_INLINE operator const char*() const
+	BURGER_INLINE operator const char*() const BURGER_NOEXCEPT
 	{
 		return c;
 	}
-	BURGER_INLINE operator char*()
+	BURGER_INLINE operator char*() BURGER_NOEXCEPT
 	{
 		return c;
 	}
-	BURGER_INLINE operator Word32() const
+	BURGER_INLINE operator uint32_t() const BURGER_NOEXCEPT
 	{
 		return w;
 	}
-	BURGER_INLINE FourCharacterCode_t& operator=(Word32 uInput)
+	BURGER_INLINE FourCharacterCode_t& operator=(uint32_t uInput) BURGER_NOEXCEPT
 	{
 		w = uInput;
 		return *this;
 	}
-	BURGER_INLINE Word32 GetCode(void) const
+	BURGER_INLINE uint32_t GetCode(void) const BURGER_NOEXCEPT
 	{
 		return w;
 	}
-	BURGER_INLINE void SetCode(Word32 uInput)
+	BURGER_INLINE void SetCode(uint32_t uInput) BURGER_NOEXCEPT
 	{
 		w = uInput;
 	}
@@ -100,73 +100,67 @@ extern Word64 BURGER_API PowerOf2(Word64 uInput);
 #if defined(BURGER_NEED_UINTPTR_REMAP)
 BURGER_INLINE uintptr_t PowerOf2(uintptr_t uInput) { return PowerOf2(static_cast<BURGER_NEED_UINTPTR_REMAP>(uInput)); }
 #endif
-BURGER_INLINE Word32 ToLower(Word32 uInput)
+BURGER_INLINE BURGER_CONSTEXPR uint32_t ToLower(uint32_t uInput) BURGER_NOEXCEPT
 {
-	if (static_cast<Word32>(uInput - 'A') < 26U) {
-		uInput += 32;
-	}
-	return uInput;
+    return (static_cast<uint32_t>(uInput - 'A') < 26U) ? uInput + 32 : uInput;
 }
-BURGER_INLINE Word32 ToUpper(Word32 uInput)
+BURGER_INLINE BURGER_CONSTEXPR uint32_t ToUpper(uint32_t uInput) BURGER_NOEXCEPT
 {
-	if (static_cast<Word32>(uInput - 'a') < 26U) {
-		uInput -= 32;
-	}
-	return uInput;
+    return (static_cast<uint32_t>(uInput - 'a') < 26U) ? uInput - 32 : uInput;
 }
 
 #if defined(BURGER_WINDOWS)
-BURGER_INLINE Word IsPointerInvalid(const void* pInput)
+BURGER_INLINE uint_t IsPointerInvalid(const void* pInput) BURGER_NOEXCEPT
 {
-	return (reinterpret_cast<WordPtr>(pInput) < 0x10000U);
+	return (reinterpret_cast<uintptr_t>(pInput) < 0x10000U);
 }
-BURGER_INLINE Word IsPointerValid(const void* pInput)
+BURGER_INLINE uint_t IsPointerValid(const void* pInput) BURGER_NOEXCEPT
 {
-	return (reinterpret_cast<WordPtr>(pInput) >= 0x10000U);
+	return (reinterpret_cast<uintptr_t>(pInput) >= 0x10000U);
 }
 #else
-BURGER_INLINE Word IsPointerInvalid(const void* pInput)
+BURGER_INLINE uint_t IsPointerInvalid(const void* pInput)
 {
 	return (pInput == nullptr);
 }
-BURGER_INLINE Word IsPointerValid(const void* pInput)
+BURGER_INLINE uint_t IsPointerValid(const void* pInput)
 {
 	return (pInput != nullptr);
 }
 #endif
 
-BURGER_INLINE Word IsStringEmpty(const char* pInput)
+BURGER_INLINE uint_t IsStringEmpty(const char* pInput) BURGER_NOEXCEPT
 {
 	return (IsPointerInvalid(pInput) || (!pInput[0]));
 }
-BURGER_INLINE Word IsStringEmpty(const Word16* pInput)
+BURGER_INLINE uint_t IsStringEmpty(const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	return (IsPointerInvalid(pInput) || (!pInput[0]));
 }
-BURGER_INLINE Word IsDigit(char iInput)
+BURGER_INLINE uint_t IsDigit(char iInput) BURGER_NOEXCEPT
 {
-	return static_cast<Word>(
-		g_AsciiTestTable[static_cast<Word8>(iInput)] & ASCII_DIGIT);
+	return static_cast<uint_t>(
+		g_AsciiTestTable[static_cast<uint8_t>(iInput)] & ASCII_DIGIT);
 }
-BURGER_INLINE Word IsHex(char iInput)
+BURGER_INLINE uint_t IsHex(char iInput) BURGER_NOEXCEPT
 {
-	return static_cast<Word>(
-		g_AsciiTestTable[static_cast<Word8>(iInput)] & ASCII_HEX);
+	return static_cast<uint_t>(
+		g_AsciiTestTable[static_cast<uint8_t>(iInput)] & ASCII_HEX);
 }
-BURGER_INLINE Word IsWhitespace(char iInput)
+BURGER_INLINE uint_t IsWhitespace(char iInput) BURGER_NOEXCEPT
 {
-	return static_cast<Word>(
-		g_AsciiTestTable[static_cast<Word8>(iInput)] & ASCII_WHITESPACE);
+	return static_cast<uint_t>(
+		g_AsciiTestTable[static_cast<uint8_t>(iInput)] & ASCII_WHITESPACE);
 }
-BURGER_INLINE Word IsLowercase(char iInput)
+BURGER_INLINE uint_t IsLowercase(char iInput) BURGER_NOEXCEPT
 {
-	return static_cast<Word>(
-		g_AsciiTestTable[static_cast<Word8>(iInput)] & ASCII_LOWER);
+	return static_cast<uint_t>(
+		g_AsciiTestTable[static_cast<uint8_t>(iInput)] & ASCII_LOWER);
 }
-BURGER_INLINE Word IsUppercase(char iInput)
+BURGER_INLINE uint_t IsUppercase(char iInput) BURGER_NOEXCEPT
 {
-	return static_cast<Word>(
-		g_AsciiTestTable[static_cast<Word8>(iInput)] & ASCII_UPPER);
+	return static_cast<uint_t>(
+		g_AsciiTestTable[static_cast<uint8_t>(iInput)] & ASCII_UPPER);
 }
 
 extern Word32 BURGER_API BitReverse(Word32 uInput, Word uBitLength);
@@ -248,20 +242,20 @@ extern void BURGER_API StringConcatenate(Word16* pOutput, const Word16* pInput);
 extern void BURGER_API StringConcatenate(
 	Word16* pOutput, WordPtr uOutputSize, const Word16* pInput);
 
-extern int BURGER_API StringCompare(const char* pInput1, const char* pInput2);
+extern int BURGER_API StringCompare(const char* pInput1, const char* pInput2) BURGER_NOEXCEPT;
 extern int BURGER_API StringCompare(
-	const char* pInput1, const char* pInput2, WordPtr uMaxLength);
+	const char* pInput1, const char* pInput2, WordPtr uMaxLength) BURGER_NOEXCEPT;
 extern int BURGER_API StringCompare(
-	const Word16* pInput1, const Word16* pInput2);
+	const Word16* pInput1, const Word16* pInput2) BURGER_NOEXCEPT;
 extern int BURGER_API StringCompare(
-	const Word16* pInput1, const Word16* pInput2, WordPtr uMaxLength);
+	const Word16* pInput1, const Word16* pInput2, WordPtr uMaxLength) BURGER_NOEXCEPT;
 extern int BURGER_API StringCaseCompare(
 	const char* pInput1, const char* pInput2) BURGER_NOEXCEPT;
 extern int BURGER_API StringCaseCompare(
-	const char* pInput1, const char* pInput2, WordPtr uMaxLength);
+    const char* pInput1, const char* pInput2, WordPtr uMaxLength) BURGER_NOEXCEPT;
 
-extern Word BURGER_API Wildcardcmp(const char* pInput, const char* pWildcard);
-extern Word BURGER_API HasWildcard(const char* pInput);
+extern Word BURGER_API Wildcardcmp(const char* pInput, const char* pWildcard) BURGER_NOEXCEPT;
+extern Word BURGER_API HasWildcard(const char* pInput) BURGER_NOEXCEPT;
 
 extern void BURGER_API StringUppercase(char* pInput);
 extern void BURGER_API StringUppercase(char* pOutput, const char* pInput);
@@ -274,14 +268,14 @@ extern char* BURGER_API StringCharacterReverse(const char* pInput, int iChar);
 extern Word16* BURGER_API StringCharacterReverse(
 	const Word16* pInput, Word uChar);
 
-extern WordPtr BURGER_API StringSkipOver(
-	const char* pInput,const char* pDelimiters);
-extern WordPtr BURGER_API StringSkipOver(
-	const Word16* pInput,const Word16* pDelimiters);
-extern WordPtr BURGER_API StringStopAt(
-	const char* pInput, const char* pDelimiters);
-extern WordPtr BURGER_API StringStopAt(
-	const Word16* pInput, const Word16* pDelimiters);
+extern uintptr_t BURGER_API StringSkipOver(
+	const char* pInput,const char* pDelimiters) BURGER_NOEXCEPT;
+extern uintptr_t BURGER_API StringSkipOver(
+	const Word16* pInput,const Word16* pDelimiters) BURGER_NOEXCEPT;
+extern uintptr_t BURGER_API StringStopAt(
+	const char* pInput, const char* pDelimiters) BURGER_NOEXCEPT;
+extern uintptr_t BURGER_API StringStopAt(
+	const Word16* pInput, const Word16* pDelimiters) BURGER_NOEXCEPT;
 
 extern char* BURGER_API StringString(const char* pInput, const char* pTest);
 extern Word16* BURGER_API StringString(
@@ -291,9 +285,9 @@ extern Word16* BURGER_API StringCaseString(
 	const Word16* pInput, const Word16* pTest);
 
 extern char* BURGER_API StringToken(
-	char* pInput, const char* pDelimiters, char** ppSave);
+	char* pInput, const char* pDelimiters, char** ppSave) BURGER_NOEXCEPT;
 extern Word16* BURGER_API StringToken(
-	Word16* pInput, const Word16* pDelimiters, Word16** ppSave);
+	Word16* pInput, const Word16* pDelimiters, Word16** ppSave) BURGER_NOEXCEPT;
 
 }
 

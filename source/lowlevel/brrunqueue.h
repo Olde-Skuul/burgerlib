@@ -75,7 +75,7 @@ private:
 	Word m_Recurse;				///< \ref TRUE if this class is the process of executing.
 
 public:
-	RunQueue() : m_Entries(), m_Recurse(FALSE) {}
+	RunQueue() BURGER_NOEXCEPT : m_Entries(), m_Recurse(FALSE) {}
 	~RunQueue();
 	void BURGER_API Call(void);
 	RunQueueEntry * BURGER_API Add(CallbackProc pProc,CallbackProc pShutdown=NULL,void *pData=NULL,Word uPriority=PRIORITY_MEDIUM);

@@ -18,6 +18,10 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRERROR_H__
+#include "brerror.h"
+#endif
+
 #ifndef __BRFILENAME_H__
 #include "brfilename.h"
 #endif
@@ -52,7 +56,7 @@ public:
 	};
 private:
 	void *m_pFile;				///< Open file reference
-	WordPtr m_uPosition;		///< Seek position
+	uintptr_t m_uPosition;		///< Seek position
 	Filename m_Filename;		///< Name of the file that was opened
 	Semaphore m_Semaphore;		///< Semaphore for syncing file operations
 #if defined(BURGER_MAC) || defined(DOXYGEN)
@@ -66,17 +70,17 @@ public:
 	~File();
 	static File * BURGER_API New(const char *pFileName,eFileAccess eAccess=READONLY);
 	static File * BURGER_API New(Filename *pFileName,eFileAccess eAccess=READONLY);
-	BURGER_INLINE Word IsOpened(void) const { return m_pFile!=NULL; }
-	Word BURGER_API Open(const char *pFileName,eFileAccess eAccess=READONLY);
-	Word BURGER_API Open(Filename *pFileName,eFileAccess eAccess=READONLY);
+	BURGER_INLINE Word IsOpened(void) const { return m_pFile!= nullptr; }
+	Burger::eError BURGER_API Open(const char *pFileName,eFileAccess eAccess=READONLY) BURGER_NOEXCEPT;
+    Burger::eError BURGER_API Open(Filename *pFileName,eFileAccess eAccess=READONLY) BURGER_NOEXCEPT;
 	Word BURGER_API OpenAsync(const char *pFileName,eFileAccess eAccess=READONLY);
 	Word BURGER_API OpenAsync(Filename *pFileName,eFileAccess eAccess=READONLY);
-	Word BURGER_API Close(void);
+	Word BURGER_API Close(void) BURGER_NOEXCEPT;
 	Word BURGER_API CloseAsync(void);
 	WordPtr BURGER_API GetSize(void);
 	WordPtr BURGER_API Read(void *pOutput,WordPtr uSize);
 	Word BURGER_API ReadAsync(void *pOutput,WordPtr uSize);
-	WordPtr BURGER_API Write(const void *pInput,WordPtr uSize);
+	WordPtr BURGER_API Write(const void *pInput,WordPtr uSize) BURGER_NOEXCEPT;
 	WordPtr BURGER_API GetMark(void);
 	Word BURGER_API SetMark(WordPtr uMark);
 	Word BURGER_API SetMarkAtEOF(void);

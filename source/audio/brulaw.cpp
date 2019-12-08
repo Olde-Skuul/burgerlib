@@ -132,7 +132,7 @@ Burger::Decompress::eError Burger::DecompressULaw::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressULaw::Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength)
+Burger::Decompress::eError Burger::DecompressULaw::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 	//
 	// Handle data "decompression"

@@ -236,7 +236,7 @@ int BURGER_API Burger::ConsoleApp::InputAndOutput(
         // Call the function and exit
         iResult = pCallback(this, FirstName.GetPtr(), pOutputFile);
     }
-    Globals::SetErrorCode(iResult);
+    Globals::SetErrorCode(static_cast<Burger::eError>(iResult));
     return iResult; // Exit
 }
 

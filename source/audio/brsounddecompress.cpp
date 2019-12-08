@@ -203,7 +203,7 @@ Burger::Decompress::eError Burger::DecompressUnsigned8BitAudio::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressUnsigned8BitAudio::Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength)
+Burger::Decompress::eError Burger::DecompressUnsigned8BitAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 	// Which is smaller? Input or output?
 	WordPtr uCount = Min(uInputChunkLength,uOutputChunkLength);
@@ -312,7 +312,7 @@ Burger::Decompress::eError Burger::DecompressSigned8BitAudio::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressSigned8BitAudio::Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength)
+Burger::Decompress::eError Burger::DecompressSigned8BitAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 	// Which is smaller? Input or output?
 	WordPtr uCount = Min(uInputChunkLength,uOutputChunkLength);
@@ -424,7 +424,7 @@ Burger::Decompress::eError Burger::Decompress16BitBEAudio::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::Decompress16BitBEAudio::Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength)
+Burger::Decompress::eError Burger::Decompress16BitBEAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 #if defined(BURGER_BIGENDIAN)
 
@@ -682,7 +682,7 @@ Burger::Decompress::eError Burger::Decompress16BitLEAudio::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::Decompress16BitLEAudio::Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength)
+Burger::Decompress::eError Burger::Decompress16BitLEAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 #if !defined(BURGER_BIGENDIAN)
 
@@ -941,7 +941,7 @@ Burger::Decompress::eError Burger::Decompress32BitBEAudio::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::Decompress32BitBEAudio::Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength)
+Burger::Decompress::eError Burger::Decompress32BitBEAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 #if defined(BURGER_BIGENDIAN)
 
@@ -1219,7 +1219,7 @@ Burger::Decompress::eError Burger::Decompress32BitLEAudio::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::Decompress32BitLEAudio::Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength)
+Burger::Decompress::eError Burger::Decompress32BitLEAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 #if !defined(BURGER_BIGENDIAN)
 

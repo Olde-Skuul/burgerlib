@@ -31,7 +31,7 @@
 
 ***************************************/
 
-Word BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAccess)
+Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT
 {
 	static const Word16 g_OpenAccess[4] = { 0x00,0x01,0x01,0x02 };
 	static const Word16 g_CreateAction[4] = {1,2+16,1+16,1+16};
@@ -93,7 +93,7 @@ Word BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAccess)
 			}
 		}
 	}
-	return uResult;
+	return static_cast<Burger::eError>(uResult);
 }
 
 /***************************************
@@ -107,7 +107,7 @@ Word BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAccess)
 
 ***************************************/
 
-Word BURGER_API Burger::File::Close(void)
+Word BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 {
 	Word uResult = OKAY;
 	int fp = reinterpret_cast<int>(m_pFile);
@@ -230,7 +230,7 @@ WordPtr BURGER_API Burger::File::Read(void *pOutput,WordPtr uSize)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::Write(const void *pInput,WordPtr uSize)
+WordPtr BURGER_API Burger::File::Write(const void *pInput,WordPtr uSize) BURGER_NOEXCEPT
 {
 	WordPtr uResult = 0;
 	if (uSize && pInput) {

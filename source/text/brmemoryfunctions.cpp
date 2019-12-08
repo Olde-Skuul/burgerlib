@@ -53,7 +53,7 @@
 ***************************************/
 
 void BURGER_API Burger::MemoryCopy(
-	void* pOutput, const void* pInput, WordPtr uCount)
+	void* pOutput, const void* pInput, WordPtr uCount) BURGER_NOEXCEPT
 {
 	if (reinterpret_cast<WordPtr>(pInput) &
 		3) {			  // Is the source pointer not long word aligned?
@@ -182,7 +182,7 @@ AlignSource:
 //
 
 void BURGER_API Burger::MemoryCopy(
-	void* pOutput, const void* pInput, WordPtr uCount)
+	void* pOutput, const void* pInput, WordPtr uCount) BURGER_NOEXCEPT
 {
 	// Do anything?
 	if (uCount && pOutput) {
@@ -563,15 +563,15 @@ void BURGER_API Burger::MemoryXor(
 ***************************************/
 
 int BURGER_API Burger::MemoryCompare(
-	const void* pInput1, const void* pInput2, WordPtr uCount)
+	const void* pInput1, const void* pInput2, uintptr_t uCount) BURGER_NOEXCEPT
 {
 	int iTemp = 0;
 	if (uCount) {
 		do {
-			Word uTemp1 = reinterpret_cast<const Word8*>(pInput1)[0];
-			pInput1 = reinterpret_cast<const Word8*>(pInput1) + 1;
-			Word uTemp2 = reinterpret_cast<const Word8*>(pInput2)[0];
-			pInput2 = reinterpret_cast<const Word8*>(pInput2) + 1;
+			uint_t uTemp1 = reinterpret_cast<const uint8_t*>(pInput1)[0];
+			pInput1 = reinterpret_cast<const uint8_t*>(pInput1) + 1;
+            uint_t uTemp2 = reinterpret_cast<const uint8_t*>(pInput2)[0];
+			pInput2 = reinterpret_cast<const uint8_t*>(pInput2) + 1;
 			iTemp = static_cast<int>(uTemp1 - uTemp2); // Compare
 			if (iTemp) {
 				break;
@@ -602,7 +602,7 @@ int BURGER_API Burger::MemoryCompare(
 ***************************************/
 
 int BURGER_API Burger::MemoryCaseCompare(
-	const void* pInput1, const void* pInput2, WordPtr uCount) BURGER_NOEXCEPT
+	const void* pInput1, const void* pInput2, uintptr_t uCount) BURGER_NOEXCEPT
 {
 	int iTemp = 0;
 	if (uCount) {

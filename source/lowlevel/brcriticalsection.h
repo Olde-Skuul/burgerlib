@@ -202,7 +202,7 @@ public:
 	BURGER_INLINE WordPtr GetResult(void) const { return m_uResult; }
 
 #if (defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-	BURGER_INLINE Word IsInitialized(void) const { return m_pThreadHandle!=NULL; }
+	BURGER_INLINE Word IsInitialized(void) const { return m_pThreadHandle!= nullptr; }
 
 #elif defined(BURGER_VITA)
 	BURGER_INLINE Word IsInitialized(void) const { return m_iThreadID>=0; }

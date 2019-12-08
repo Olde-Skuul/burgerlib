@@ -707,6 +707,12 @@ static void BURGER_API ShowPlatformFeatures(uint_t uVerbose)
 
         uTest = Burger::Mac::GetSoundManagerVersion();
         Message("Burger::Mac::GetSoundManagerVersion() = %04X", uTest);
+
+        uTest = Burger::Mac::GetNavServicesVersion();
+        Message("Burger::Mac::GetNavServicesVersion() = %08X", uTest);
+
+        uTest = Burger::Mac::GetControlStripVersion();
+        Message("Burger::Mac::GetControlStripVersion() = %08X", uTest);
     }
 #endif
 }

@@ -82,20 +82,20 @@ public:
 	{
 		m_Raw[0] = 0;
 	}
-	String(const String& rInput);
+	String(const String& rInput) BURGER_NOEXCEPT;
 	String(
-		const String& rInput, WordPtr uStart, WordPtr uEnd = UINTPTR_MAX);
-	String(const char* pInput);
-	String(const char* pInput, WordPtr uPadding);
-	String(const Word16* pInput);
-	String(const Word32* pInput);
-	String(const char* pInput, WordPtr uStart, WordPtr uEnd);
-	String(char cInput);
-	String(char cInput, WordPtr uFillSize);
-	String(const char* pInput1, const char* pInput2);
-	String(const char* pInput1, const char* pInput2, const char* pInput3);
+		const String& rInput, WordPtr uStart, WordPtr uEnd = UINTPTR_MAX) BURGER_NOEXCEPT;
+	String(const char* pInput) BURGER_NOEXCEPT;
+	String(const char* pInput, WordPtr uPadding) BURGER_NOEXCEPT;
+	String(const Word16* pInput) BURGER_NOEXCEPT;
+	String(const Word32* pInput) BURGER_NOEXCEPT;
+	String(const char* pInput, WordPtr uStart, WordPtr uEnd) BURGER_NOEXCEPT;
+	String(char cInput) BURGER_NOEXCEPT;
+	String(char cInput, WordPtr uFillSize) BURGER_NOEXCEPT;
+	String(const char* pInput1, const char* pInput2) BURGER_NOEXCEPT;
+	String(const char* pInput1, const char* pInput2, const char* pInput3) BURGER_NOEXCEPT;
 	String(const char* pInput1, const char* pInput2, const char* pInput3,
-		const char* pInput4);
+		const char* pInput4) BURGER_NOEXCEPT;
 
 	BURGER_EXPAND_FORMATTING_FUNCTION(MAKE_BURGER_STRING_FORMATTED_CONSTRUCTOR);
 
@@ -112,35 +112,35 @@ public:
 		}
 	}
 
-	BURGER_INLINE operator char*()
+	BURGER_INLINE operator char*() BURGER_NOEXCEPT
 	{
 		return m_pData;
 	}
-	BURGER_INLINE operator const char*() const
+	BURGER_INLINE operator const char*() const BURGER_NOEXCEPT
 	{
 		return m_pData;
 	}
-	BURGER_INLINE const char* c_str(void) const
+	BURGER_INLINE const char* c_str(void) const BURGER_NOEXCEPT
 	{
 		return m_pData;
 	}
-	BURGER_INLINE char* c_str(void)
+	BURGER_INLINE char* c_str(void) BURGER_NOEXCEPT
 	{
 		return m_pData;
 	}
-	BURGER_INLINE operator char() const
+	BURGER_INLINE operator char() const BURGER_NOEXCEPT
 	{
 		return m_pData[0];
 	}
-	BURGER_INLINE WordPtr length(void) const
+	BURGER_INLINE WordPtr length(void) const BURGER_NOEXCEPT
 	{
 		return m_uLength;
 	}
-	BURGER_INLINE WordPtr GetLength(void) const
+	BURGER_INLINE WordPtr GetLength(void) const BURGER_NOEXCEPT
 	{
 		return m_uLength;
 	}
-	BURGER_INLINE char* GetPtr(void)
+	BURGER_INLINE char* GetPtr(void) BURGER_NOEXCEPT
 	{
 		return m_pData;
 	}
@@ -152,7 +152,7 @@ public:
 	eError BURGER_API Set(const char* pInput, WordPtr uLength);
 	eError BURGER_API Set(const Word16* pInput);
 	eError BURGER_API Set(const Word16* pInput, WordPtr uLength);
-	eError BURGER_API SetBufferSize(WordPtr uSize);
+	eError BURGER_API SetBufferSize(WordPtr uSize) BURGER_NOEXCEPT;
 
 	String& operator=(const String& rInput);
 	String& operator=(const char* pInput);
@@ -160,11 +160,11 @@ public:
 	String& operator+=(const String& rInput);
 	String& operator+=(const char* pInput);
 	String& operator+=(char cInput);
-	BURGER_INLINE String operator()(WordPtr uStart, WordPtr uEnd) const
+	BURGER_INLINE String operator()(WordPtr uStart, WordPtr uEnd) const BURGER_NOEXCEPT
 	{
 		return String(*this, uStart, uEnd);
 	}
-	BURGER_INLINE char& operator()(WordPtr uInput)
+	BURGER_INLINE char& operator()(WordPtr uInput) BURGER_NOEXCEPT
 	{
 		if (uInput >= m_uLength) {
 			m_Raw[BUFFERSIZE - 1] = 0;
@@ -172,14 +172,14 @@ public:
 		}
 		return m_pData[uInput];
 	}
-	BURGER_INLINE char const& operator()(WordPtr uInput) const
+	BURGER_INLINE char const& operator()(WordPtr uInput) const BURGER_NOEXCEPT
 	{
 		if (uInput >= m_uLength) {
 			return g_EmptyString[0];
 		}
 		return m_pData[uInput];
 	}
-	BURGER_INLINE char& operator[](WordPtr uInput)
+	BURGER_INLINE char& operator[](WordPtr uInput) BURGER_NOEXCEPT
 	{
 		if (uInput >= m_uLength) {
 			m_Raw[BUFFERSIZE - 1] = 0;
@@ -187,7 +187,7 @@ public:
 		}
 		return m_pData[uInput];
 	}
-	BURGER_INLINE char const& operator[](WordPtr uInput) const
+	BURGER_INLINE char const& operator[](WordPtr uInput) const BURGER_NOEXCEPT
 	{
 		if (uInput >= m_uLength) {
 			return g_EmptyString[0];
@@ -215,15 +215,15 @@ public:
 	{
 		return String(*this).ToUppercase();
 	}
-	BURGER_INLINE Word operator!() const
+	BURGER_INLINE Word operator!() const BURGER_NOEXCEPT
 	{
 		return (m_uLength == 0);
 	}
-	BURGER_INLINE Word IsValid(void) const
+	BURGER_INLINE Word IsValid(void) const BURGER_NOEXCEPT
 	{
 		return (m_uLength != 0);
 	}
-	void BURGER_API Clear(void);
+	void BURGER_API Clear(void) BURGER_NOEXCEPT;
 	WordPtr BURGER_API Copy(
 		char* pOutput, WordPtr uOutputSize = UINTPTR_MAX) const;
 	WordPtr BURGER_API PCopy(Word8* pOutput, WordPtr uOutputSize = 256) const;

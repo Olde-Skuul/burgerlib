@@ -205,7 +205,7 @@ static pascal OSErr OpenDocMacProcessFilenames(
 								pBuffer); // Release the buffer if needed
 						}
 						if (iResult) {
-							Burger::Globals::SetErrorCode(iResult);
+							Burger::Globals::SetErrorCode(static_cast<Burger::eError>(iResult));
 							FooPtr->m_bAbort = TRUE;
 							break;
 						}
@@ -238,7 +238,7 @@ static pascal OSErr OpenDocMacProcessFilenames(
 								pBuffer); // Release the buffer if needed
 						}
 						if (iResult) {
-							Burger::Globals::SetErrorCode(iResult);
+							Burger::Globals::SetErrorCode(static_cast<Burger::eError>(iResult));
 							FooPtr->m_bAbort = TRUE;
 							break;
 						}

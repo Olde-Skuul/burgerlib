@@ -18,6 +18,10 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRERROR_H__
+#include "brerror.h"
+#endif
+
 #ifndef __BRDEBUG_H__
 #include "brdebug.h"
 #endif
@@ -87,7 +91,7 @@ private:
 #endif
 
 private:
-	static int g_iErrorCode;		///< Global default error code used by \ref Globals::Shutdown().
+	static eError g_iErrorCode;		///< Global default error code used by \ref Globals::Shutdown().
 	static Word g_uTraceFlags;		///< Debug information level
 	static char g_ErrorMsg[512];	///< Global Buffer containing the last fatal error or warning
 	static Word g_bBombFlag;		///< \ref TRUE if non-fatal errors are treated as fatal
@@ -157,17 +161,17 @@ public:
 	static Word BURGER_API GetQuickTimeVersion(void);
 #endif
 
-	static BURGER_INLINE int GetErrorCode(void) { return g_iErrorCode; }
-	static BURGER_INLINE void SetErrorCode(int iNewError) { g_iErrorCode = iNewError; }
-	static BURGER_INLINE char *GetErrorMsg(void) { return g_ErrorMsg; }
+	static BURGER_INLINE eError GetErrorCode(void) BURGER_NOEXCEPT { return g_iErrorCode; }
+	static BURGER_INLINE void SetErrorCode(eError iNewError) BURGER_NOEXCEPT { g_iErrorCode = iNewError; }
+	static BURGER_INLINE char *GetErrorMsg(void) BURGER_NOEXCEPT { return g_ErrorMsg; }
 	static void BURGER_ANSIAPI SetErrorMsg(const char *pMessage,...);
-	static BURGER_INLINE Word GetTraceFlag(void) { return g_uTraceFlags; }
-	static BURGER_INLINE void SetTraceFlag(Word uNewFlag) { g_uTraceFlags = uNewFlag; }
-	static BURGER_INLINE Word AreWarningsEnabled(void) { return g_uTraceFlags&TRACE_WARNINGS; }
-	static BURGER_INLINE Word GetErrorBombFlag(void) { return g_bBombFlag; }
-	static BURGER_INLINE Word SetErrorBombFlag(Word uNewFlag) { Word uOld = g_bBombFlag; g_bBombFlag = uNewFlag; return uOld; }
-	static BURGER_INLINE Word GetExitFlag(void) { return g_bExitFlag; }
-	static BURGER_INLINE void SetExitFlag(Word uNewFlag) { g_bExitFlag = uNewFlag; }
+	static BURGER_INLINE Word GetTraceFlag(void) BURGER_NOEXCEPT { return g_uTraceFlags; }
+	static BURGER_INLINE void SetTraceFlag(Word uNewFlag) BURGER_NOEXCEPT { g_uTraceFlags = uNewFlag; }
+	static BURGER_INLINE Word AreWarningsEnabled(void) BURGER_NOEXCEPT { return g_uTraceFlags&TRACE_WARNINGS; }
+	static BURGER_INLINE Word GetErrorBombFlag(void) BURGER_NOEXCEPT { return g_bBombFlag; }
+	static BURGER_INLINE Word SetErrorBombFlag(Word uNewFlag)BURGER_NOEXCEPT { Word uOld = g_bBombFlag; g_bBombFlag = uNewFlag; return uOld; }
+	static BURGER_INLINE Word GetExitFlag(void)BURGER_NOEXCEPT { return g_bExitFlag; }
+	static BURGER_INLINE void SetExitFlag(Word uNewFlag) BURGER_NOEXCEPT { g_bExitFlag = uNewFlag; }
 	static void BURGER_API Shutdown(void);
 	static void BURGER_API Shutdown(int iError);
 	static Word32 BURGER_API Version(void);

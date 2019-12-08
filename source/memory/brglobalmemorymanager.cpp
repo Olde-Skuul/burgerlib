@@ -121,7 +121,7 @@ void BURGER_API Burger::GlobalMemoryManager::Shutdown(MemoryManager *pPrevious) 
 	
 ***************************************/
 
-void *BURGER_API Burger::Alloc(uintptr_t uSize)
+void *BURGER_API Burger::Alloc(uintptr_t uSize) BURGER_NOEXCEPT
 {
 	return GlobalMemoryManager::GetInstance()->Alloc(uSize);
 }
@@ -140,7 +140,7 @@ void *BURGER_API Burger::Alloc(uintptr_t uSize)
 	
 ***************************************/
 
-void *BURGER_API Burger::AllocClear(uintptr_t uSize)
+void *BURGER_API Burger::AllocClear(uintptr_t uSize) BURGER_NOEXCEPT
 {
 	void *pResult = GlobalMemoryManager::GetInstance()->Alloc(uSize);
 	if (pResult) {
@@ -162,7 +162,7 @@ void *BURGER_API Burger::AllocClear(uintptr_t uSize)
 
 ***************************************/
 
-void BURGER_API Burger::Free(const void *pInput)
+void BURGER_API Burger::Free(const void *pInput) BURGER_NOEXCEPT
 {
 	if (pInput) {
 		GlobalMemoryManager::GetInstance()->Free(pInput);

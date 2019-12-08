@@ -163,7 +163,7 @@ void Burger::DisplayDirectX9Software8::EndScene(void)
 				if ((hResult<0) && (hResult!=D3DERR_DEVICELOST) && (!m_uResetAttempts)) {
 					// The device has totally failed. 
 					// The application is totally boned.
-					Globals::SetErrorCode(67);
+					Globals::SetErrorCode(static_cast<Burger::eError>(67));
 					m_pGameApp->SetQuitCode();
 				}
 			}
@@ -198,7 +198,7 @@ void Burger::DisplayDirectX9Software8::EndScene(void)
 				} else if (hResult==D3DERR_DRIVERINTERNALERROR) {
 					// The driver has just exploded. Force the application to quit
 					m_bLostDevice = TRUE;
-					Globals::SetErrorCode(66);
+					Globals::SetErrorCode(static_cast<Burger::eError>(66));
 					m_pGameApp->SetQuitCode();
 				}
 			}

@@ -45,7 +45,7 @@
 ***************************************/
 
 Burger::Globals Burger::Globals::g_Globals;
-int Burger::Globals::g_iErrorCode;
+Burger::eError Burger::Globals::g_iErrorCode;
 Word Burger::Globals::g_uTraceFlags;
 char Burger::Globals::g_ErrorMsg[512];
 Word Burger::Globals::g_bBombFlag;

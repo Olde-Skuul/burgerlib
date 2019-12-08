@@ -27,7 +27,19 @@ WINDOWS_LIB_FILES = (
 MAC68K_LIB_FILES = (
     'burgerc58mac68krel.lib',
     'burgerc58mac68kdbg.lib',
-    'burgerc58mac68kint.lib'
+    'burgerc58mac68kint.lib',
+    'burgerc58mac68kfardbg.lib',
+    'burgerc58mac68kfarint.lib',
+    'burgerc58mac68kfarrel.lib',
+    'burgerc58mac68kfpudbg.lib',
+    'burgerc58mac68kfpuint.lib',
+    'burgerc58mac68kfpurel.lib',
+    'burgerc58mac68kfarfpudbg.lib',
+    'burgerc58mac68kfarfpuint.lib',
+    'burgerc58mac68kfarfpurel.lib',
+    'burgerc58car68kfarfpudbg.lib',
+    'burgerc58car68kfarfpuint.lib',
+    'burgerc58car68kfarfpurel.lib'
 )
 
 ## Directories for the cross platform source code

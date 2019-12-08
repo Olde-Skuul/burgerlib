@@ -780,7 +780,7 @@ Burger::Decompress::eError Burger::DecompressMace3::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressMace3::Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength)
+Burger::Decompress::eError Burger::DecompressMace3::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 	//
 	// Handle data "decompression"
@@ -1082,7 +1082,7 @@ Burger::Decompress::eError Burger::DecompressMace6::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressMace6::Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength)
+Burger::Decompress::eError Burger::DecompressMace6::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 	//
 	// Handle data "decompression"

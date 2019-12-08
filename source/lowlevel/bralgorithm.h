@@ -89,7 +89,7 @@ struct alignment_of {
 };
 #endif
 
-// Intrgral Constant Expression for and, or, equal, not
+// Integral Constant Expression for and, or, equal, not
 template<bool p1, bool p2, bool p3 = true, bool p4 = true, bool p5 = true,
     bool p6 = true, bool p7 = true>
 struct ice_and;
@@ -344,14 +344,14 @@ BURGER_INLINE void SwapVariables(T* pA, T* pB)
 
 // Return the minimum value
 template<typename T>
-BURGER_INLINE T Min(T A, T B) BURGER_NOEXCEPT
+BURGER_INLINE BURGER_CONSTEXPR T Min(T A, T B) BURGER_NOEXCEPT
 {
     return ((A < B) ? A : B);
 }
 
 // Return the maximum value
 template<typename T>
-BURGER_INLINE T Max(T A, T B) BURGER_NOEXCEPT
+BURGER_INLINE BURGER_CONSTEXPR T Max(T A, T B) BURGER_NOEXCEPT
 {
     return ((A > B) ? A : B);
 }

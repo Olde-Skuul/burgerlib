@@ -1293,7 +1293,7 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 0510;
 			};
-			buildConfigurationList = 62B5FC9EBBE924B9064B1666 /* Build configuration list for PBXProject "burger" */;
+			buildConfigurationList = FF990A4B0EABE7A55F0B3B8E /* Build configuration list for PBXProject "burgerxc5osx" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -1552,7 +1552,76 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		0219AE2CEC4225EC12E1D17C /* Internal */ = {
+		0C09F75A07446657CA62D867 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					ppc64,
+					i386,
+					x86_64,
+				);
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)/$(PRODUCT_NAME)xc5osxrel";
+				CONFIGURATION_TEMP_DIR = "$(SYMROOT)/$(PRODUCT_NAME)xc5osxrel";
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_CW_ASM_SYNTAX = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				"GCC_DYNAMIC_NO_PIC[arch=i386]" = YES;
+				"GCC_DYNAMIC_NO_PIC[arch=ppc64]" = YES;
+				"GCC_DYNAMIC_NO_PIC[arch=ppc]" = YES;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
+				GCC_MODEL_PPC64 = NO;
+				"GCC_MODEL_PPC64[arch=ppc64]" = YES;
+				GCC_MODEL_TUNING = G4;
+				"GCC_MODEL_TUNING[arch=ppc64]" = G5;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					NDEBUG,
+				);
+				GCC_THREADSAFE_STATICS = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				"GCC_VERSION[sdk=macosx10.4]" = com.apple.compilers.llvmgcc42;
+				"GCC_VERSION[sdk=macosx10.5]" = com.apple.compilers.llvmgcc42;
+				"GCC_VERSION[sdk=macosx10.5][arch=i386]" = 4.2;
+				"GCC_VERSION[sdk=macosx10.5][arch=ppc64]" = 4.0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = NO;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PROTOTYPE_CONVERSION = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_PROFILING_CODE = NO;
+				MACH_O_TYPE = mh_execute;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				OBJROOT = temp;
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.5;
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				SUFFIX = osxrel;
+				SYMROOT = temp;
+			};
+			name = Release;
+		};
+		1ED5CB0D77A4AF359AB995B2 /* Internal */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -1627,19 +1696,7 @@
 			};
 			name = Internal;
 		};
-		925017CD8E60B04983CF3A6A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Debug;
-		};
-		A81AA9290757A79DAB84FBEA /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Release;
-		};
-		B3DBB5278A1EC8652DFEE32D /* Debug */ = {
+		67837A0EE366F9A99F90C8CA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -1708,94 +1765,37 @@
 			};
 			name = Debug;
 		};
-		F4E781142590B0F5F8AD4B30 /* Release */ = {
+		925017CD8E60B04983CF3A6A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					ppc64,
-					i386,
-					x86_64,
-				);
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)/$(PRODUCT_NAME)xc5osxrel";
-				CONFIGURATION_TEMP_DIR = "$(SYMROOT)/$(PRODUCT_NAME)xc5osxrel";
-				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				GCC_CW_ASM_SYNTAX = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				"GCC_DYNAMIC_NO_PIC[arch=i386]" = YES;
-				"GCC_DYNAMIC_NO_PIC[arch=ppc64]" = YES;
-				"GCC_DYNAMIC_NO_PIC[arch=ppc]" = YES;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
-				GCC_MODEL_PPC64 = NO;
-				"GCC_MODEL_PPC64[arch=ppc64]" = YES;
-				GCC_MODEL_TUNING = G4;
-				"GCC_MODEL_TUNING[arch=ppc64]" = G5;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					NDEBUG,
-				);
-				GCC_THREADSAFE_STATICS = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				"GCC_VERSION[sdk=macosx10.4]" = com.apple.compilers.llvmgcc42;
-				"GCC_VERSION[sdk=macosx10.5]" = com.apple.compilers.llvmgcc42;
-				"GCC_VERSION[sdk=macosx10.5][arch=i386]" = 4.2;
-				"GCC_VERSION[sdk=macosx10.5][arch=ppc64]" = 4.0;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
-				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = NO;
-				GCC_WARN_MISSING_PARENTHESES = YES;
-				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				GCC_WARN_PROTOTYPE_CONVERSION = YES;
-				GCC_WARN_SHADOW = YES;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_PARAMETER = YES;
-				GCC_WARN_UNUSED_VALUE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_PROFILING_CODE = NO;
-				MACH_O_TYPE = mh_execute;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				OBJROOT = temp;
-				ONLY_ACTIVE_ARCH = NO;
-				PREBINDING = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.5;
-				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
-				SUFFIX = osxrel;
-				SYMROOT = temp;
+			};
+			name = Debug;
+		};
+		A81AA9290757A79DAB84FBEA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		62B5FC9EBBE924B9064B1666 /* Build configuration list for PBXProject "burger" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B3DBB5278A1EC8652DFEE32D /* Debug */,
-				0219AE2CEC4225EC12E1D17C /* Internal */,
-				F4E781142590B0F5F8AD4B30 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		9CBFC9E767EDA0BDB239A12D /* Build configuration list for PBXNativeTarget "burger" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				925017CD8E60B04983CF3A6A /* Debug */,
 				3689FAD7FFD2916C03D977C6 /* Internal */,
 				A81AA9290757A79DAB84FBEA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FF990A4B0EABE7A55F0B3B8E /* Build configuration list for PBXProject "burgerxc5osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				67837A0EE366F9A99F90C8CA /* Debug */,
+				1ED5CB0D77A4AF359AB995B2 /* Internal */,
+				0C09F75A07446657CA62D867 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

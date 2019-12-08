@@ -360,7 +360,7 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength)
+Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 	//
 	// Handle data "decompression"

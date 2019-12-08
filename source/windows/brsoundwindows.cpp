@@ -710,7 +710,7 @@ Word BURGER_API Burger::SoundManager::Init(void)
 	StringCopy(OhGreat,pError);
 	StringConcatenate(OhGreat,", sound is disabled");
 	OkAlertMessage(OhGreat,"Direct sound error");
-	Globals::SetErrorCode(uResult);
+	Globals::SetErrorCode(static_cast<Burger::eError>(uResult));
 	return static_cast<Word>(uResult);
 }
 

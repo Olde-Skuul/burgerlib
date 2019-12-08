@@ -827,7 +827,7 @@
 #define BURGER_STATIC_ASSERT(x) static_assert(x, #x)
 #else
 #define BURGER_STATIC_ASSERT(x) \
-    typedef int ThisIsABogusTypeDef##__LINE__[(x)*2 - 1]
+    typedef int ThisIsABogusTypeDef##__LINE__[(x) ? 1 : -1]
 #endif
 
 // Test for constexpr support
@@ -863,7 +863,7 @@
 #define BURGER_OVERRIDE override
 #if (BURGER_MSVC >= 140000000) && (BURGER_MSVC < 170000000)
 // Disable warning for override in VS 2005-2010
-#pragma warning(disable: 4481)
+#pragma warning(disable : 4481)
 #endif
 #else
 #define BURGER_OVERRIDE
@@ -953,8 +953,10 @@
 #define BURGER_FALLTHROUGH [[clang::fallthrough]]
 #elif __has_cpp_attribute(gnu::fallthrough)
 #define BURGER_FALLTHROUGH [[gnu::fallthrough]]
+#elif (BURGER_GNUC >= 70000)
+#define BURGER_FALLTHROUGH __attribute__((fallthrough))
 #else
-#define BURGER_FALLTHROUGH
+#define BURGER_FALLTHROUGH ((void)0)
 #endif
 
 /***************************************
@@ -1399,5 +1401,13 @@ typedef intptr_t IntPtr;
 #define BURGER_MAXINTPTR INTPTR_MAX
 
 /* END */
+
+#if (BURGER_MSVC >= 192000000)
+#pragma warning(disable : 26446 26472 26481 26482 26485 26490)
+#endif
+
+#if (BURGER_MSVC >= 190000000)
+#pragma warning(disable : 4577)
+#endif
 
 #endif

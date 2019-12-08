@@ -207,7 +207,7 @@
 
 /*! ************************************
 
-	\fn Burger::FourCharacterCode_t::operator Word32()
+	\fn Burger::FourCharacterCode_t::operator uint32_t()
 	\brief Read the four character code as an integer.
 
 	\return The four character code as a 32 bit unsigned integer.
@@ -3626,7 +3626,7 @@ void BURGER_API Burger::StringConcatenate(
 
 ***************************************/
 
-int BURGER_API Burger::StringCompare(const char* pInput1, const char* pInput2)
+int BURGER_API Burger::StringCompare(const char* pInput1, const char* pInput2) BURGER_NOEXCEPT
 {
 	int iTemp;
 	Word uTemp1;
@@ -3667,7 +3667,7 @@ int BURGER_API Burger::StringCompare(const char* pInput1, const char* pInput2)
 ***************************************/
 
 int BURGER_API Burger::StringCompare(
-	const char* pInput1, const char* pInput2, WordPtr uMaxLength)
+	const char* pInput1, const char* pInput2, WordPtr uMaxLength) BURGER_NOEXCEPT
 {
 	int iTemp = 0;
 	Word uTemp1;
@@ -3707,7 +3707,7 @@ int BURGER_API Burger::StringCompare(
 ***************************************/
 
 int BURGER_API Burger::StringCompare(
-	const Word16* pInput1, const Word16* pInput2)
+	const Word16* pInput1, const Word16* pInput2) BURGER_NOEXCEPT
 {
 	int iTemp;
 	Word uTemp1;
@@ -3747,7 +3747,7 @@ int BURGER_API Burger::StringCompare(
 ***************************************/
 
 int BURGER_API Burger::StringCompare(
-	const Word16* pInput1, const Word16* pInput2, WordPtr uMaxLength)
+	const Word16* pInput1, const Word16* pInput2, WordPtr uMaxLength) BURGER_NOEXCEPT
 {
 	int iTemp = 0;
 	Word uTemp1;
@@ -3794,9 +3794,9 @@ int BURGER_API Burger::StringCaseCompare(
 	int iTemp;
 	Word uTemp1;
 	do {
-		uTemp1 = reinterpret_cast<const Word8*>(pInput1)[0]; // First byte
+		uTemp1 = reinterpret_cast<const uint8_t*>(pInput1)[0]; // First byte
 		++pInput1;
-		Word uTemp2 = reinterpret_cast<const Word8*>(pInput2)[0]; // Second byte
+		Word uTemp2 = reinterpret_cast<const uint8_t*>(pInput2)[0]; // Second byte
 		++pInput2;
 		if ((uTemp1 - 'A') < 26) { // Convert to lower case
 			uTemp1 = uTemp1 + 32;
@@ -3835,16 +3835,16 @@ int BURGER_API Burger::StringCaseCompare(
 ***************************************/
 
 int BURGER_API Burger::StringCaseCompare(
-	const char* pInput1, const char* pInput2, WordPtr uMaxLength)
+	const char* pInput1, const char* pInput2, WordPtr uMaxLength) BURGER_NOEXCEPT
 {
 	int iTemp = 0;
 	Word uTemp1;
 	if (uMaxLength) {
 		do {
-			uTemp1 = reinterpret_cast<const Word8*>(pInput1)[0]; // First byte
+			uTemp1 = reinterpret_cast<const uint8_t*>(pInput1)[0]; // First byte
 			++pInput1;
 			Word uTemp2 =
-				reinterpret_cast<const Word8*>(pInput2)[0]; // Second byte
+				reinterpret_cast<const uint8_t*>(pInput2)[0]; // Second byte
 			++pInput2;
 			if ((uTemp1 - 'A') < 26) { // Convert to lower case
 				uTemp1 = uTemp1 + 32;
@@ -3892,17 +3892,17 @@ int BURGER_API Burger::StringCaseCompare(
 
 ***************************************/
 
-Word BURGER_API Burger::Wildcardcmp(const char* pInput, const char* pWildcard)
+Word BURGER_API Burger::Wildcardcmp(const char* pInput, const char* pWildcard) BURGER_NOEXCEPT
 {
 	Word uTemp;
 	Word uResult = TRUE;
 	do {
 		// Main entry, assume no previous state
 		// Grab an input char
-		uTemp = ISOLatin1::UpperCaseTable[reinterpret_cast<const Word8*>(
+		uTemp = ISOLatin1::UpperCaseTable[reinterpret_cast<const uint8_t*>(
 			pInput)[0]];
 		// Get a wildcard char
-		Word uWild = ISOLatin1::UpperCaseTable[reinterpret_cast<const Word8*>(
+		Word uWild = ISOLatin1::UpperCaseTable[reinterpret_cast<const uint8_t*>(
 			pWildcard)[0]];
 
 		// Is the wildcard a "?"
@@ -3919,7 +3919,7 @@ Word BURGER_API Burger::Wildcardcmp(const char* pInput, const char* pWildcard)
 
 		if (uWild == '*') {
 			++pWildcard;
-			uWild = reinterpret_cast<const Word8*>(pWildcard)[0];
+			uWild = reinterpret_cast<const uint8_t*>(pWildcard)[0];
 			if (!uWild) { // Was the '*' at the end of the wildcard string?
 				uResult = FALSE;
 				break; // Assume it's a full match.
@@ -3939,7 +3939,7 @@ Word BURGER_API Burger::Wildcardcmp(const char* pInput, const char* pWildcard)
 					}
 					++pInput;
 					uTemp = ISOLatin1::UpperCaseTable
-						[reinterpret_cast<const Word8*>(pInput)[0]];
+						[reinterpret_cast<const uint8_t*>(pInput)[0]];
 				} while (uTemp);
 			}
 		} else {
@@ -3975,12 +3975,12 @@ Word BURGER_API Burger::Wildcardcmp(const char* pInput, const char* pWildcard)
 
 ***************************************/
 
-Word BURGER_API Burger::HasWildcard(const char* pInput)
+Word BURGER_API Burger::HasWildcard(const char* pInput) BURGER_NOEXCEPT
 {
 	// Assume not a wild card
 	Word uResult = FALSE;
 	if (pInput) {
-		Word uTemp = reinterpret_cast<const Word8*>(pInput)[0];
+		Word uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
 		if (uTemp) {
 			++pInput;
 			do {
@@ -3989,7 +3989,7 @@ Word BURGER_API Burger::HasWildcard(const char* pInput)
 					uResult = TRUE;
 					break;
 				}
-				uTemp = reinterpret_cast<const Word8*>(pInput)[0];
+				uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
 				++pInput;
 			} while (uTemp);
 		}
@@ -4326,11 +4326,11 @@ Word16* BURGER_API Burger::StringCharacterReverse(
 
 ***************************************/
 
-WordPtr BURGER_API Burger::StringSkipOver(
-	const char* pInput, const char* pDelimiters)
+uintptr_t BURGER_API Burger::StringSkipOver(
+	const char* pInput, const char* pDelimiters) BURGER_NOEXCEPT
 {
 	// Result value
-	WordPtr uResult;
+	uintptr_t uResult;
 	if (!pInput || !pDelimiters || !pDelimiters[0]) {
 		// If there are no delimiters, return length of the string immediately
 		uResult = 0;
@@ -4388,11 +4388,11 @@ WordPtr BURGER_API Burger::StringSkipOver(
 
 ***************************************/
 
-WordPtr BURGER_API Burger::StringSkipOver(
-	const Word16* pInput, const Word16* pDelimiters)
+uintptr_t BURGER_API Burger::StringSkipOver(
+	const Word16* pInput, const Word16* pDelimiters) BURGER_NOEXCEPT
 {
 	// Result value
-	WordPtr uResult;
+    uintptr_t uResult;
 	if (!pInput || !pDelimiters || !pDelimiters[0]) {
 		// If there are no delimiters, return zero immediately
 		uResult = 0;
@@ -4450,8 +4450,8 @@ WordPtr BURGER_API Burger::StringSkipOver(
 
 ***************************************/
 
-WordPtr BURGER_API Burger::StringStopAt(
-	const char* pInput, const char* pDelimiters)
+uintptr_t BURGER_API Burger::StringStopAt(
+	const char* pInput, const char* pDelimiters) BURGER_NOEXCEPT
 {
 	// Result value
 	WordPtr uResult;
@@ -4515,8 +4515,8 @@ WordPtr BURGER_API Burger::StringStopAt(
 
 ***************************************/
 
-WordPtr BURGER_API Burger::StringStopAt(
-	const Word16* pInput, const Word16* pDelimiters)
+uintptr_t BURGER_API Burger::StringStopAt(
+	const Word16* pInput, const Word16* pDelimiters) BURGER_NOEXCEPT
 {
 	// Result value
 	WordPtr uResult;
@@ -4794,7 +4794,7 @@ Word16* BURGER_API Burger::StringCaseString(
 ***************************************/
 
 char* BURGER_API Burger::StringToken(
-	char* pInput, const char* pDelimiters, char** ppSave)
+	char* pInput, const char* pDelimiters, char** ppSave) BURGER_NOEXCEPT
 {
 	// If no input string, use the saved pointer
 	if (!pInput) {
@@ -4850,7 +4850,7 @@ char* BURGER_API Burger::StringToken(
 ***************************************/
 
 Word16* BURGER_API Burger::StringToken(
-	Word16* pInput, const Word16* pDelimiters, Word16** ppSave)
+	Word16* pInput, const Word16* pDelimiters, Word16** ppSave) BURGER_NOEXCEPT
 {
 	// If no input string, use the saved pointer
 	if (!pInput) {

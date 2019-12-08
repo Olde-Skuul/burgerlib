@@ -29,8 +29,8 @@ struct MemoryManager {
 	ProcFree m_pFree;			///< Pointer to memory release function
 	ProcRealloc m_pRealloc;		///< Pointer to the memory reallocation function
 	ProcShutdown m_pShutdown;	///< Pointer to the shutdown function
-	BURGER_INLINE void *Alloc(uintptr_t uSize) { return m_pAlloc(this,uSize); }
-	BURGER_INLINE void Free(const void *pInput) { return m_pFree(this,pInput); }
+	BURGER_INLINE void *Alloc(uintptr_t uSize) BURGER_NOEXCEPT { return m_pAlloc(this,uSize); }
+	BURGER_INLINE void Free(const void *pInput) BURGER_NOEXCEPT { return m_pFree(this,pInput); }
 	BURGER_INLINE void *Realloc(const void *pInput, uintptr_t uSize) { return m_pRealloc(this,pInput,uSize); }
 	BURGER_INLINE void Shutdown(void) { m_pShutdown(this); }
 	void * BURGER_API AllocClear(uintptr_t uSize);

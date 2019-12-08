@@ -23,33 +23,33 @@
 namespace Burger {
 
 extern void BURGER_API MemoryCopy(
-	void* pOutput, const void* pInput, WordPtr uCount);
+	void* pOutput, const void* pInput, uintptr_t uCount) BURGER_NOEXCEPT;
 extern void BURGER_API MemoryMove(
-	void* pOutput, const void* pInput, WordPtr uCount);
-extern void BURGER_API MemoryClear(void* pOutput, WordPtr uCount);
-extern void BURGER_API MemoryFill(void* pOutput, Word8 uFill, WordPtr uCount);
-extern void BURGER_API MemoryNot(void* pOutput, WordPtr uCount);
+	void* pOutput, const void* pInput, uintptr_t uCount);
+extern void BURGER_API MemoryClear(void* pOutput, uintptr_t uCount);
+extern void BURGER_API MemoryFill(void* pOutput, Word8 uFill, uintptr_t uCount);
+extern void BURGER_API MemoryNot(void* pOutput, uintptr_t uCount);
 extern void BURGER_API MemoryNot(
-	void* pOutput, const void* pInput, WordPtr uCount);
-extern void BURGER_API MemoryXor(void* pOutput, Word8 uXor, WordPtr uCount);
+	void* pOutput, const void* pInput, uintptr_t uCount);
+extern void BURGER_API MemoryXor(void* pOutput, Word8 uXor, uintptr_t uCount);
 extern void BURGER_API MemoryXor(
-	void* pOutput, const void* pInput, Word8 uXor, WordPtr uCount);
+	void* pOutput, const void* pInput, Word8 uXor, uintptr_t uCount);
 extern void BURGER_API MemoryXor(
-	void* pOutput, const void* pInput, WordPtr uCount);
+	void* pOutput, const void* pInput, uintptr_t uCount);
 extern void BURGER_API MemoryXor(
-	void* pOutput, const void* pInput1, const void* pInput2, WordPtr uCount);
+	void* pOutput, const void* pInput1, const void* pInput2, uintptr_t uCount);
 extern int BURGER_API MemoryCompare(
-	const void* pInput1, const void* pInput2, WordPtr uCount);
+	const void* pInput1, const void* pInput2, uintptr_t uCount) BURGER_NOEXCEPT;
 extern int BURGER_API MemoryCaseCompare(
-	const void* pInput1, const void* pInput2, WordPtr uCount) BURGER_NOEXCEPT;
+	const void* pInput1, const void* pInput2, uintptr_t uCount) BURGER_NOEXCEPT;
 extern char* BURGER_API MemoryCharacter(
-	const char* pInput, WordPtr uInputSize, int iChar);
+	const char* pInput, uintptr_t uInputSize, int iChar);
 extern Word16* BURGER_API MemoryCharacter(
-	const Word16* pInput, WordPtr uInputSize, Word uChar);
+	const Word16* pInput, uintptr_t uInputSize, Word uChar);
 extern char* BURGER_API MemoryCharacterReverse(
-	const char* pInput, WordPtr uInputSize, int iChar);
+	const char* pInput, uintptr_t uInputSize, int iChar);
 extern Word16* BURGER_API MemoryCharacterReverse(
-	const Word16* pInput, WordPtr uInputSize, Word uChar);
+	const Word16* pInput, uintptr_t uInputSize, Word uChar);
 
 }
 

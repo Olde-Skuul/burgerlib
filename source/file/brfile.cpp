@@ -138,7 +138,7 @@ Burger::File * BURGER_API Burger::File::New(const char *pFileName,eFileAccess eA
 	File *pThis = new (Alloc(sizeof(File))) File();
 	if (pThis) {
 	// Load up the data
-		if (pThis->Open(pFileName,eAccess)==OKAY) {
+		if (pThis->Open(pFileName,eAccess)==kErrorNone) {
 			// We're good!
 			return pThis;
 		}
@@ -146,7 +146,7 @@ Burger::File * BURGER_API Burger::File::New(const char *pFileName,eFileAccess eA
 		Delete(pThis);
 	}
 	// Sorry Charlie!
-	return NULL;
+	return nullptr;
 }
 
 /*! ************************************
@@ -169,7 +169,7 @@ Burger::File * BURGER_API Burger::File::New(Filename *pFileName,eFileAccess eAcc
 	File *pThis = new (Alloc(sizeof(File))) File();
 	if (pThis) {
 	// Load up the data
-		if (pThis->Open(pFileName,eAccess)==OKAY) {
+		if (pThis->Open(pFileName,eAccess)==kErrorNone) {
 			// We're good!
 			return pThis;
 		}
@@ -177,7 +177,7 @@ Burger::File * BURGER_API Burger::File::New(Filename *pFileName,eFileAccess eAcc
 		Delete(pThis);
 	}
 	// Sorry Charlie!
-	return NULL;
+	return nullptr;
 }
 
 /*! ************************************
@@ -206,7 +206,7 @@ Burger::File * BURGER_API Burger::File::New(Filename *pFileName,eFileAccess eAcc
 
 ***************************************/
 
-Word BURGER_API Burger::File::Open(const char *pFileName,eFileAccess eAccess)
+Burger::eError BURGER_API Burger::File::Open(const char *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT
 {
 	Filename MyFilename(pFileName);
 	return Open(&MyFilename,eAccess);
@@ -226,7 +226,7 @@ Word BURGER_API Burger::File::Open(const char *pFileName,eFileAccess eAccess)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
-Word BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAccess)
+Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT
 {
 	static const char *g_OpenFlags[4] = {
 		"rb","wb","ab","r+b"
@@ -238,7 +238,7 @@ Word BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAccess)
 		m_pFile = fp;
 		uResult = OKAY;
 	}
-	return uResult;
+	return static_cast<Burger::eError>(uResult);
 }
 
 /*! ************************************
@@ -252,7 +252,7 @@ Word BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAccess)
 
 ***************************************/
 
-Word BURGER_API Burger::File::Close(void)
+Word BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 {
 	Word uResult = OKAY;
 	FILE *fp = static_cast<FILE *>(m_pFile);
@@ -339,7 +339,7 @@ WordPtr BURGER_API Burger::File::Read(void *pOutput,WordPtr uSize)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::Write(const void *pInput,WordPtr uSize)
+WordPtr BURGER_API Burger::File::Write(const void *pInput,WordPtr uSize) BURGER_NOEXCEPT
 {
 	WordPtr uResult = 0;
 	if (uSize && pInput) {

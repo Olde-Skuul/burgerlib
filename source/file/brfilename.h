@@ -58,7 +58,7 @@ public:
 #endif
 
 public:
-	Filename() : m_pFilename(m_Filename), m_pNativeFilename(m_NativeFilename)
+	Filename() BURGER_NOEXCEPT : m_pFilename(m_Filename), m_pNativeFilename(m_NativeFilename)
 #if defined(BURGER_MAC)
 	,m_lDirID(0),m_sVRefNum(0)
 #endif

@@ -65,7 +65,7 @@
 				RuntimeTypeInfo="false"
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
-				DebugInformationFormat="3"
+				DebugInformationFormat="1"
 				CallingConvention="1"
 				DisableSpecificWarnings="4201"
 			/>
@@ -151,7 +151,7 @@
 				RuntimeTypeInfo="false"
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
-				DebugInformationFormat="3"
+				DebugInformationFormat="1"
 				CallingConvention="1"
 				DisableSpecificWarnings="4201"
 			/>
@@ -240,7 +240,7 @@
 				RuntimeTypeInfo="false"
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
-				DebugInformationFormat="3"
+				DebugInformationFormat="1"
 				CallingConvention="1"
 				DisableSpecificWarnings="4201"
 			/>
@@ -329,7 +329,7 @@
 				RuntimeTypeInfo="false"
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
-				DebugInformationFormat="3"
+				DebugInformationFormat="1"
 				CallingConvention="1"
 				DisableSpecificWarnings="4201"
 			/>
@@ -418,7 +418,7 @@
 				RuntimeTypeInfo="false"
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
-				DebugInformationFormat="3"
+				DebugInformationFormat="1"
 				CallingConvention="1"
 				DisableSpecificWarnings="4201"
 			/>
@@ -507,7 +507,7 @@
 				RuntimeTypeInfo="false"
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
-				DebugInformationFormat="3"
+				DebugInformationFormat="1"
 				CallingConvention="1"
 				DisableSpecificWarnings="4201"
 			/>
@@ -598,7 +598,7 @@
 				RuntimeTypeInfo="false"
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
-				DebugInformationFormat="3"
+				DebugInformationFormat="1"
 				CallingConvention="1"
 				DisableSpecificWarnings="4201"
 			/>
@@ -689,7 +689,7 @@
 				RuntimeTypeInfo="false"
 				ProgramDataBaseFileName="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				WarningLevel="4"
-				DebugInformationFormat="3"
+				DebugInformationFormat="1"
 				CallingConvention="1"
 				DisableSpecificWarnings="4201"
 			/>

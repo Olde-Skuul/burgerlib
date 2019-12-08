@@ -47,7 +47,7 @@ protected:
 
 public:
 	SimpleArrayBase(WordPtr uChunkSize) :
-		m_pData(NULL),
+		m_pData(nullptr),
 		m_uSize(0),
 		m_uBufferSize(0),
 		m_uChunkSize(!uChunkSize ? 1U : uChunkSize)

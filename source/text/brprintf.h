@@ -118,7 +118,7 @@ private:
 	eResult m_ePrintResult;					///< Type of floating point number
 	static Word g_uClipFloatDigitsAfter;	///< Number of digits to print maximum (0 = no maximum)
 public:
-	FPPrintInfo(void) { Reset(); }
+	FPPrintInfo(void) BURGER_NOEXCEPT { Reset(); }
 	void BURGER_API Reset(void);
 	BURGER_INLINE Word HasInteger(void) const { return m_bHasIntegerPart; }
 	BURGER_INLINE Word HasFractional(void) const { return m_bHasFractionalPart; }
@@ -762,13 +762,13 @@ extern IntPtr BURGER_API Fprintf(FILE *fp,const char *pFormat,WordPtr uArgCount,
 extern IntPtr BURGER_API DebugSnprintf(char *pOutput,WordPtr uOutputSize,const char *pFormat,WordPtr uArgCount,const SafePrintArgument **ppArgs);
 
 #if !defined(DOXYGEN)
-BURGER_INLINE IntPtr GetFormattedLength(const char *pFormat) { return GetFormattedLength(pFormat,0,NULL); }
+BURGER_INLINE IntPtr GetFormattedLength(const char *pFormat) { return GetFormattedLength(pFormat,0,nullptr); }
 BURGER_INLINE IntPtr SprintfUserAlloc(SafePrint::SprintfCallbackProc pCallback,void *pContext,Word bAddNull,const char *pFormat) { return SprintfUserAlloc(pCallback,pContext,bAddNull,pFormat,0,NULL); }
-BURGER_INLINE IntPtr Sprintf(char *pOutput,const char *pFormat) { return Sprintf(pOutput,pFormat,0,NULL); }
-BURGER_INLINE IntPtr Snprintf(char *pOutput,WordPtr uOutputSize,const char *pFormat) { return Snprintf(pOutput,uOutputSize,pFormat,0,NULL); }
-BURGER_INLINE IntPtr Printf(const char* pFormat) { return Printf(pFormat,0,NULL); }
-BURGER_INLINE IntPtr Fprintf(FILE *fp,const char* pFormat) { return Fprintf(fp,pFormat,0,NULL); }
-BURGER_INLINE IntPtr DebugSnprintf(char *pOutput,WordPtr uOutputSize,const char *pFormat) { return DebugSnprintf(pOutput,uOutputSize,pFormat,0,NULL); }
+BURGER_INLINE IntPtr Sprintf(char *pOutput,const char *pFormat) { return Sprintf(pOutput,pFormat,0, nullptr); }
+BURGER_INLINE IntPtr Snprintf(char *pOutput,WordPtr uOutputSize,const char *pFormat) { return Snprintf(pOutput,uOutputSize,pFormat,0, nullptr); }
+BURGER_INLINE IntPtr Printf(const char* pFormat) { return Printf(pFormat,0, nullptr); }
+BURGER_INLINE IntPtr Fprintf(FILE *fp,const char* pFormat) { return Fprintf(fp,pFormat,0, nullptr); }
+BURGER_INLINE IntPtr DebugSnprintf(char *pOutput,WordPtr uOutputSize,const char *pFormat) { return DebugSnprintf(pOutput,uOutputSize,pFormat,0, nullptr); }
 
 #define BURGER_TEMPMACRO(N) \
 	BURGER_INLINE IntPtr GetFormattedLength(const char *pFormat,BURGER_SP_ARG##N) { \

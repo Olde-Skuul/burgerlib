@@ -214,7 +214,7 @@ Word BURGER_API Burger::ConsoleApp::ProcessFilenames(Burger::ConsoleApp::Callbac
 						// Call the function
 						int iCode = pCallback(this,pNewName,NULL);
 						if (iCode) {
-							Globals::SetErrorCode(iCode);
+							Globals::SetErrorCode(static_cast<Burger::eError>(iCode));
 							break;
 						}
 					}

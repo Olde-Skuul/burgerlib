@@ -29,7 +29,7 @@ private:
 	DoublyLinkedList *m_pPrev;		///< Pointer to the previous entry
 
 public:
-	DoublyLinkedList() { m_pNext = this; m_pPrev = this; }
+	DoublyLinkedList() BURGER_NOEXCEPT { m_pNext = this; m_pPrev = this; }
 	~DoublyLinkedList() { Detach(); }
 
 	BURGER_INLINE void Detach(void) {

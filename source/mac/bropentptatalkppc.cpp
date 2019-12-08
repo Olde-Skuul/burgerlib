@@ -1,21 +1,20 @@
 /***************************************
 
-	OpenTptATalkPPC.o compatible library
+    OpenTptATalkPPC.o compatible library
 
-	This replaces Apple's OpenTptATalkPPC.o file
-	so profiling, debugging and other compiler
-	features that are available with source level
-	debugging become available to an application.
+    This replaces Apple's OpenTptATalkPPC.o file so profiling, debugging and
+    other compiler features that are available with source level debugging
+    become available to an application.
 
-	This code is intended only for MacOS Classic
-	PowerPC targeted applications.
+    This code is intended only for MacOS Classic PowerPC targeted applications.
 
-	Copyright (c) 2002-2008 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 2002-2008 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -23,7 +22,7 @@
 
 // Only build on PowerPC MacOS Classic targets.
 
-#if defined(BURGER_MAC) && defined(BURGER_POWERPC) && !TARGET_API_MAC_CARBON
+#if defined(BURGER_MACCLASSIC) && defined(BURGER_POWERPC) && !defined(DOXYGEN)
 
 #include <Files.h>
 #include <OpenTptAppleTalk.h>
@@ -39,15 +38,15 @@ extern "C" {
 
 typedef struct OTClientContext_t OTClientContext_t;
 
-extern OTClientContext_t
-	__gOTClientRecord; // Pointer to an application network state
+// Pointer to an application network state
+extern OTClientContext_t __gOTClientRecord;
 
 extern pascal OSStatus OTAsyncOpenAppleTalkServicesPriv(OTConfigurationRef cfig,
-	OTOpenFlags flags, OTNotifyProcPtr, void* contextPtr,
-	OTClientContext_t* pClientContext);
+    OTOpenFlags flags, OTNotifyProcPtr, void* contextPtr,
+    OTClientContext_t* pClientContext);
 
 extern pascal ATSvcRef OTOpenAppleTalkServicesPriv(OTConfigurationRef cfig,
-	OTOpenFlags flags, OSStatus* err, OTClientContext_t* pClientContext);
+    OTOpenFlags flags, OSStatus* err, OTClientContext_t* pClientContext);
 
 #ifdef __cplusplus
 }
@@ -55,27 +54,27 @@ extern pascal ATSvcRef OTOpenAppleTalkServicesPriv(OTConfigurationRef cfig,
 
 /***************************************
 
-	Call OTAsyncOpenAppleTalkServices
+    Call OTAsyncOpenAppleTalkServices
 
 ***************************************/
 
 pascal OSStatus OTAsyncOpenAppleTalkServices(OTConfigurationRef cfig,
-	OTOpenFlags flags, OTNotifyProcPtr proc, void* contextPtr)
+    OTOpenFlags flags, OTNotifyProcPtr proc, void* contextPtr)
 {
-	return OTAsyncOpenAppleTalkServicesPriv(
-		cfig, flags, proc, contextPtr, &__gOTClientRecord);
+    return OTAsyncOpenAppleTalkServicesPriv(
+        cfig, flags, proc, contextPtr, &__gOTClientRecord);
 }
 
 /***************************************
 
-	Call OTOpenAppleTalkServices
+    Call OTOpenAppleTalkServices
 
 ***************************************/
 
 pascal ATSvcRef OTOpenAppleTalkServices(
-	OTConfigurationRef cfig, OTOpenFlags flags, OSStatus* err)
+    OTConfigurationRef cfig, OTOpenFlags flags, OSStatus* err)
 {
-	return OTOpenAppleTalkServicesPriv(cfig, flags, err, &__gOTClientRecord);
+    return OTOpenAppleTalkServicesPriv(cfig, flags, err, &__gOTClientRecord);
 }
 
 #endif

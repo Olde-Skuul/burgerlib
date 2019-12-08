@@ -1528,7 +1528,7 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 0510;
 			};
-			buildConfigurationList = 62B5FC9EBBE924B9064B1666 /* Build configuration list for PBXProject "burger" */;
+			buildConfigurationList = 583AAC7E9160DB9FC55DD9A8 /* Build configuration list for PBXProject "burgerxc5ios" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -2003,7 +2003,7 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		0219AE2CEC4225EC12E1D17C /* Internal */ = {
+		04612986A37E8705233208FD /* Internal */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -2113,26 +2113,7 @@
 			};
 			name = Internal;
 		};
-		925017CD8E60B04983CF3A6A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Debug;
-		};
-		933AA1D66FECD00620B31A47 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				SDKROOT = iphoneos;
-			};
-			name = Debug;
-		};
-		A81AA9290757A79DAB84FBEA /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Release;
-		};
-		B3DBB5278A1EC8652DFEE32D /* Debug */ = {
+		85E542E091B2702649E4C221 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -2201,7 +2182,26 @@
 			};
 			name = Debug;
 		};
-		F4E781142590B0F5F8AD4B30 /* Release */ = {
+		925017CD8E60B04983CF3A6A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		933AA1D66FECD00620B31A47 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		A81AA9290757A79DAB84FBEA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		A8691394169031CE306A42E8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -2283,12 +2283,12 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		62B5FC9EBBE924B9064B1666 /* Build configuration list for PBXProject "burger" */ = {
+		583AAC7E9160DB9FC55DD9A8 /* Build configuration list for PBXProject "burgerxc5ios" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B3DBB5278A1EC8652DFEE32D /* Debug */,
-				0219AE2CEC4225EC12E1D17C /* Internal */,
-				F4E781142590B0F5F8AD4B30 /* Release */,
+				85E542E091B2702649E4C221 /* Debug */,
+				04612986A37E8705233208FD /* Internal */,
+				A8691394169031CE306A42E8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -56,16 +56,16 @@ class ReferenceCounter : public Base {
 private:
 	Word m_uRefCount;					///< Number of smart pointers that are claiming ownership of this object
 public:
-	ReferenceCounter() : m_uRefCount(0) { }
+	ReferenceCounter() BURGER_NOEXCEPT : m_uRefCount(0) { }
 	virtual ~ReferenceCounter();
-	BURGER_INLINE void AddRef(void) { ++m_uRefCount; }
-	BURGER_INLINE void Release(void) { if (--m_uRefCount == 0) { Delete(this); } }
+	BURGER_INLINE void AddRef(void) BURGER_NOEXCEPT { ++m_uRefCount; }
+	BURGER_INLINE void Release(void) BURGER_NOEXCEPT { if (--m_uRefCount == 0) { Delete(this); } }
 };
 
 class WeakPointerAnchor {
 	mutable ProxyReferenceCounter* m_pReferenceCounter;
 public:
-	WeakPointerAnchor() : m_pReferenceCounter(NULL) {}
+	WeakPointerAnchor() BURGER_NOEXCEPT : m_pReferenceCounter(nullptr) {}
 	~WeakPointerAnchor();
 	ProxyReferenceCounter* GetProxyReferenceCounter(void) const;
 };

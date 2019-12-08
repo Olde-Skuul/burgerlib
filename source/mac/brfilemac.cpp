@@ -29,7 +29,7 @@
 
 ***************************************/
 
-Word BURGER_API Burger::File::Open(Filename* pFileName, eFileAccess eAccess)
+Burger::eError BURGER_API Burger::File::Open(Filename* pFileName, eFileAccess eAccess) BURGER_NOEXCEPT
 {
 	Close();
 	eAccess = static_cast<eFileAccess>(eAccess & 3);
@@ -75,7 +75,7 @@ Word BURGER_API Burger::File::Open(Filename* pFileName, eFileAccess eAccess)
 			}
 		}
 	}
-	return uResult;
+	return static_cast<Burger::eError>(uResult);
 }
 
 /***************************************
@@ -89,7 +89,7 @@ Word BURGER_API Burger::File::Open(Filename* pFileName, eFileAccess eAccess)
 
 ***************************************/
 
-Word BURGER_API Burger::File::Close(void)
+Word BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 {
 	Word uResult = OKAY;
 	short fp = static_cast<short>(reinterpret_cast<WordPtr>(m_pFile));
@@ -179,7 +179,7 @@ EOF or write errors) \sa Read(void *,WordPtr)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::Write(const void* pInput, WordPtr uSize)
+WordPtr BURGER_API Burger::File::Write(const void* pInput, WordPtr uSize) BURGER_NOEXCEPT
 {
 	WordPtr uResult = 0;
 	if (uSize && pInput) {

@@ -57,7 +57,7 @@
 
 ***************************************/
 
-Burger::String::String(const Burger::String &rInput)
+Burger::String::String(const Burger::String &rInput) BURGER_NOEXCEPT
 {
 	WordPtr uInputLength = rInput.m_uLength;	// Get the source length
 	char *pWork = m_Raw;
@@ -90,7 +90,7 @@ Burger::String::String(const Burger::String &rInput)
 
 ***************************************/
 
-Burger::String::String(const Burger::String &rInput,WordPtr uStart,WordPtr uEnd)
+Burger::String::String(const Burger::String &rInput,WordPtr uStart,WordPtr uEnd) BURGER_NOEXCEPT
 {
 	WordPtr uInputLength = rInput.m_uLength;	// Get the source length
 	if (uEnd>uInputLength) {					// Clamp the end of the string
@@ -130,7 +130,7 @@ Burger::String::String(const Burger::String &rInput,WordPtr uStart,WordPtr uEnd)
 
 ***************************************/
 
-Burger::String::String(const char *pInput)
+Burger::String::String(const char *pInput) BURGER_NOEXCEPT
 {
 	if (!pInput) {
 		pInput = g_EmptyString;
@@ -165,7 +165,7 @@ Burger::String::String(const char *pInput)
 
 ***************************************/
 
-Burger::String::String(const char *pInput,WordPtr uPadding)
+Burger::String::String(const char *pInput,WordPtr uPadding) BURGER_NOEXCEPT
 {
 	if (!pInput) {
 		pInput = g_EmptyString;
@@ -197,7 +197,7 @@ Burger::String::String(const char *pInput,WordPtr uPadding)
 
 ***************************************/
 
-Burger::String::String(const Word16 *pInput)
+Burger::String::String(const Word16 *pInput) BURGER_NOEXCEPT
 {
 	if (!pInput) {
 		pInput = g_EmptyString16;
@@ -229,7 +229,7 @@ Burger::String::String(const Word16 *pInput)
 
 ***************************************/
 
-Burger::String::String(const Word32 *pInput)
+Burger::String::String(const Word32 *pInput) BURGER_NOEXCEPT
 {
 	Word32 uTemp;
 	if (!pInput) {
@@ -265,7 +265,7 @@ Burger::String::String(const Word32 *pInput)
 
 ***************************************/
 
-Burger::String::String(const char *pInput,WordPtr uStart,WordPtr uEnd)
+Burger::String::String(const char *pInput,WordPtr uStart,WordPtr uEnd) BURGER_NOEXCEPT
 {
 	if (!pInput) {
 		pInput = g_EmptyString;
@@ -311,7 +311,7 @@ Burger::String::String(const char *pInput,WordPtr uStart,WordPtr uEnd)
 
 ***************************************/
 
-Burger::String::String(char cInput)
+Burger::String::String(char cInput) BURGER_NOEXCEPT
 {
 	char *pWork = m_Raw;
 	pWork[0] = cInput;		// Store the char in the string
@@ -335,7 +335,7 @@ Burger::String::String(char cInput)
 
 ***************************************/
 
-Burger::String::String(char cInput,WordPtr uFillSize)
+Burger::String::String(char cInput,WordPtr uFillSize) BURGER_NOEXCEPT
 {
 	// Fix a logic error. If the character is null, then the string is empty
 	// by default. Kill the fill length
@@ -368,7 +368,7 @@ Burger::String::String(char cInput,WordPtr uFillSize)
 
 ***************************************/
 
-Burger::String::String(const char *pInput1,const char *pInput2)
+Burger::String::String(const char *pInput1,const char *pInput2) BURGER_NOEXCEPT
 {
 	if (!pInput1) {			// Remove all NULLs
 		pInput1 = g_EmptyString;
@@ -410,7 +410,7 @@ Burger::String::String(const char *pInput1,const char *pInput2)
 
 ***************************************/
 
-Burger::String::String(const char *pInput1,const char *pInput2,const char *pInput3)
+Burger::String::String(const char *pInput1,const char *pInput2,const char *pInput3) BURGER_NOEXCEPT
 {
 	if (!pInput1) {			// Remove all NULLs
 		pInput1 = g_EmptyString;
@@ -460,7 +460,7 @@ Burger::String::String(const char *pInput1,const char *pInput2,const char *pInpu
 
 ***************************************/
 
-Burger::String::String(const char *pInput1,const char *pInput2,const char *pInput3,const char *pInput4)
+Burger::String::String(const char *pInput1,const char *pInput2,const char *pInput3,const char *pInput4) BURGER_NOEXCEPT
 {
 	if (!pInput1) {			// Remove all NULLs
 		pInput1 = g_EmptyString;
@@ -798,7 +798,7 @@ Burger::eError BURGER_API Burger::String::Set(const Word16 *pInput,WordPtr uLeng
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::String::SetBufferSize(WordPtr uSize)
+Burger::eError BURGER_API Burger::String::SetBufferSize(WordPtr uSize) BURGER_NOEXCEPT
 {
 	// Assume no error
 	eError uResult = kErrorNone;
@@ -1297,7 +1297,7 @@ char * BURGER_API Burger::String::StringString(const char *pInput) const
 
 ***************************************/
 
-void BURGER_API Burger::String::Clear(void)
+void BURGER_API Burger::String::Clear(void) BURGER_NOEXCEPT
 {
 	char *pWork = m_pData;		// Old data pointer
 	m_pData = m_Raw;			// New pointer
