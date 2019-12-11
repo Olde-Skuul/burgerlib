@@ -12,9 +12,11 @@
 ***************************************/
 
 #include "brglobals.h"
+
 #if defined(BURGER_MAC) || defined(DOXYGEN)
 #include "brstring.h"
 #include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include <Folders.h>
 #include <Gestalt.h>
 #include <InternetConfig.h>
@@ -29,18 +31,18 @@
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::GetMacOSVersion(void)
+uint_t BURGER_API Burger::Globals::GetMacOSVersion(void)
 {
 	Globals* pGlobals = &g_Globals;
-	Word uVersion;
+	uint_t uVersion;
 	if (!pGlobals->m_bMacOSTested) {
-		long MyAnswer;
+		long lAnswer;
 		// Get the version with Gestalt
-		if (Gestalt(gestaltSystemVersion, &MyAnswer)) {
-			MyAnswer = 0; // Should NEVER execute, failsafe
+		if (Gestalt(gestaltSystemVersion, &lAnswer)) {
+			lAnswer = 0; // Should NEVER execute, failsafe
 		}
 		// Get the version of the OS in 0x0102 (1.2) format
-		uVersion = static_cast<Word>(MyAnswer & 0xFFFFU);
+		uVersion = static_cast<uint_t>(lAnswer & 0xFFFFU);
 		pGlobals->m_uMacOSVersion = uVersion;
 		pGlobals->m_bMacOSTested = TRUE;
 	} else {
@@ -64,7 +66,7 @@ Word BURGER_API Burger::Globals::GetMacOSVersion(void)
 
 ***************************************/
 
-#if TARGET_API_MAC_CARBON
+#if defined(BURGER_MACCARBON)
 void BURGER_API Burger::Globals::StringCopy(String* pOutput, CFStringRef pInput)
 {
 	// Try the easy way the just yank a "C" string pointer out directly
@@ -120,13 +122,14 @@ void BURGER_API Burger::Globals::StringCopy(String* pOutput, CFStringRef pInput)
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::GetQuickTimeVersion(void)
+uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void)
 {
-	Globals* pGlobals = &g_Globals; // Get the pointer to the singleton
+// Get the pointer to the singleton
+	Globals* pGlobals = &g_Globals; 
 	if (!pGlobals->m_bQuickTimeVersionValid) {
 		pGlobals->m_bQuickTimeVersionValid = TRUE; // I got the version
 		long gestaltAnswer;
-		Word uResult = 0;
+		uint_t uResult = 0;
 		if (!Gestalt(gestaltQuickTimeVersion, &gestaltAnswer)) {
 			uResult = (gestaltAnswer >> 16) & 0xFFFFU; // Major version
 		}
@@ -141,15 +144,15 @@ Word BURGER_API Burger::Globals::GetQuickTimeVersion(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::LaunchURL(const char* pURL)
+uint_t BURGER_API Burger::Globals::LaunchURL(const char* pURL)
 {
 	ICInstance inst;
 
 	OSStatus err = -1;
-	if (ICStart != NULL) {
+	if (ICStart != nullptr) {
 		err = ICStart(&inst, '????'); // Use your creator code if you have one!
 		if (err == noErr) {
-#if !TARGET_API_MAC_CARBON
+#if !defined(BURGER_MACCARBON)
 			err = ICFindConfigFile(inst, 0, nil);
 			if (err == noErr)
 #endif
@@ -163,6 +166,91 @@ Word BURGER_API Burger::Globals::LaunchURL(const char* pURL)
 		}
 	}
 	return static_cast<Word>(err);
+}
+
+/*! ************************************
+
+	\brief Load InterfaceLib for manual linking.
+
+	Load in the shared system library ``InterfaceLib``.
+
+    \return Pointer to Burger::CodeLibrary that has InterfaceLib.
+    
+***************************************/
+
+Burger::CodeLibrary * BURGER_API Burger::Globals::GetInterfaceLib(void) 
+{
+	Globals* pGlobals = &g_Globals;
+    	
+    // Is InterfaceLib installed? 
+	if (!pGlobals->m_Interface.IsInitialized()) {		
+        // Try to get the lib 	
+        pGlobals->m_Interface.Init("InterfaceLib");	
+	}
+    return &pGlobals->m_Interface;    
+}
+
+/*! ************************************
+
+	\brief Load DriverLoaderLib for manual linking.
+
+    Load in the shared system library ``DriverLoaderLib``.
+    
+    \return Pointer to Burger::CodeLibrary that has DriverLoaderLib.
+	
+***************************************/
+
+Burger::CodeLibrary * BURGER_API Burger::Globals::GetDriverLoaderLib(void) 
+{
+	Globals* pGlobals = &g_Globals;
+    	
+    // Is DriverLoaderLib installed? 
+	if (!pGlobals->m_DriverLoader.IsInitialized()) {		
+        // Try to get the lib 	
+        pGlobals->m_DriverLoader.Init("DriverLoaderLib");	
+	}
+    return &pGlobals->m_DriverLoader;    
+}
+
+/*! ************************************
+
+	\brief Pull an FSSpec from an AppleEvent.
+
+    Given an AppleEvent, index into in and extract an FSSpec.
+    
+    \param pList AEDescList pointer of a list of AppleEvents to process
+    \param iIndex Entry index into the list.
+    \param pFSSpec Pointer to the FSSpec record to receive the file reference.
+    
+    \return OSErr of 0 for no error on non-zero OSErr.
+	
+***************************************/
+
+int16_t BURGER_API Burger::Globals::GetSpecFromNthDesc(AEDesc *pList, long iIndex, FSSpec *pFSSpec) 
+{
+    AEDesc firstDesc;
+    AEKeyword ignoreKeyword;
+    
+    // Initialize firstDesc
+    OSErr uError = AEGetNthDesc(pList,iIndex,typeFSS,&ignoreKeyword,&firstDesc);
+    if (!uError) {
+        // Get data only if there was no error.
+        #if defined(BURGER_MACCARBON)
+        uError = AEGetDescData(&firstDesc,pFSSpec,sizeof(*pFSSpec));
+        #else
+        Size uSize = GetHandleSize(firstDesc.dataHandle);
+        if (uSize<sizeof(*pFSSpec)) {
+            uError = memSCErr;
+        } else {
+            MemoryCopy(pFSSpec,*(firstDesc.dataHandle),sizeof(*pFSSpec));
+        }
+        #endif
+        OSErr uDisposeError = AEDisposeDesc(&firstDesc);
+        if (!uError) {
+            uError= uDisposeError;
+        }
+    }
+    return uError;
 }
 
 #endif

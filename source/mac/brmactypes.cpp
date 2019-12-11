@@ -724,25 +724,4 @@ uint32_t BURGER_API Burger::Mac::GetControlStripVersion(void)
     return uVersion;
 }
 
-/***************************************
-
-    Accessor calls
-
-***************************************/
-
-#if defined(BURGER_MACCLASSIC) && !ACCESSOR_CALLS_ARE_FUNCTIONS
-
-const BitMap* GetPortBitMapForCopyBits(CGrafPtr port)
-{
-    return &reinterpret_cast<GrafPtr>(port)->portBits;
-}
-
-RgnHandle GetPortVisibleRegion(CGrafPtr port, RgnHandle visRgn)
-{
-    CopyRgn(port->visRgn, visRgn);
-    return visRgn;
-}
-
-#endif
-
 #endif

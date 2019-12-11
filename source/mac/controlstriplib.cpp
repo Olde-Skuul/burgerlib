@@ -21,7 +21,7 @@
 
 #include "brtypes.h"
 
-#if defined(BURGER_POWERPC) && defined(BURGER_MACCLASSIC) && !defined(DOXYGEN)
+#if defined(BURGER_POWERPC) && defined(BURGER_MACCLASSIC) && !defined(DOXYGEN) && 0
 
 #include <ControlStrip.h>
 

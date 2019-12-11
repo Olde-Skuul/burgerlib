@@ -29,6 +29,7 @@ struct Point;
 struct Rect;
 struct MacRegion;
 struct BitMap;
+struct PixMap;
 struct FSRef;
 struct UTCDateTime;
 struct CCrsr;
@@ -41,6 +42,7 @@ struct OpaqueFSIterator;
 struct ProcessSerialNumber;
 struct OTAddress;
 struct OpaqueOTClientContextPtr;
+struct AEDesc;
 
 #if TARGET_API_MAC_CARBON
 struct __CFBundle;
@@ -119,8 +121,12 @@ public:
 }
 
 #if defined(BURGER_MACCLASSIC) && !ACCESSOR_CALLS_ARE_FUNCTIONS
+extern "C" {
+extern void SetQDError(int16_t err);
+extern PixMap **GetPortPixMap(CGrafPort* port);
 extern const BitMap* GetPortBitMapForCopyBits(CGrafPort* port);
 extern MacRegion** GetPortVisibleRegion(CGrafPort* port, MacRegion** visRgn);
+}
 #endif
 
 #endif
