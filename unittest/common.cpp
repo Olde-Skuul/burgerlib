@@ -90,7 +90,7 @@ static const uint8_t g_BlastPattern[16] = {0xD5, 0xAA, 0x96, 0xDE, 0xAA, 0xDE,
 
 ***************************************/
 
-void BURGER_ANSIAPI ReportFailure(const char* pTemplate, uint_t uFailure, ...)
+void BURGER_ANSIAPI ReportFailure(const char* pTemplate, uint_t uFailure, ...) BURGER_NOEXCEPT
 {
     if (!g_ErrorOnly || uFailure) {
         va_list Args;
@@ -129,7 +129,7 @@ void BURGER_ANSIAPI ReportFailure(const char* pTemplate, uint_t uFailure, ...)
 
 ***************************************/
 
-void BURGER_ANSIAPI Message(const char* pMessage, ...)
+void BURGER_ANSIAPI Message(const char* pMessage, ...) BURGER_NOEXCEPT
 {
     if (pMessage && pMessage[0]) {
         va_list Args;

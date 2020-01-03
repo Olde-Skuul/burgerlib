@@ -42,6 +42,10 @@
 #include "brmactypes.h"
 #endif
 
+#ifndef __BRCODELIBRARY_H__
+#include "brcodelibrary.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 class OutputMemoryStream;
@@ -77,17 +81,18 @@ private:
 #endif
 
 #if defined(BURGER_MAC) || defined(DOXYGEN)
-	Word m_uMacOSVersion;					///< Discovered version of MacOS (MacOS only)
-	Word m_uQuickTimeVersion;				///< QuickTime's version in 0x0102 (1.2) format. (MacOS only)
-	Word8 m_bMacOSTested;					///< MacOS version was tested (MacOS only)
-	Word8 m_bQuickTimeVersionValid;			///< \ref TRUE if Quicktime's version is valid. (MacOS only)
-#endif
+    /** Reference to InterfaceLib if needed (Mac only) */
+	CodeLibrary m_Interface;		
 
-#if defined(BURGER_MACOSX)
-	Word m_uMacOSVersion;					///< Discovered version of MacOS (MacOS only)
-	Word m_uQuickTimeVersion;				///< QuickTime's version in 0x0102 (1.2) format. (MacOS only)
-	Word8 m_bMacOSTested;					///< MacOS version was tested (MacOS only)
-	Word8 m_bQuickTimeVersionValid;			///< \ref TRUE if Quicktime's version is valid. (MacOS only)
+    /** Reference to DriverLoaderLib if needed (Mac only) */
+	CodeLibrary m_DriverLoader;		
+#endif
+	
+#if defined(BURGER_MACOS) || defined(DOXYGEN)
+	uint_t m_uMacOSVersion;					///< Discovered version of MacOS (MacOS only)
+	uint_t m_uQuickTimeVersion;				///< QuickTime's version in 0x0102 (1.2) format. (MacOS only)
+	uint8_t m_bMacOSTested;					///< MacOS version was tested (MacOS only)
+	uint8_t m_bQuickTimeVersionValid;		///< \ref TRUE if Quicktime's version is valid. (MacOS only)
 #endif
 
 private:
@@ -131,6 +136,12 @@ public:
 	static void BURGER_API PumpMessages(void);
 #endif
 
+#if defined(BURGER_MAC) || defined(DOXYGEN)
+    static CodeLibrary * BURGER_API GetInterfaceLib(void);
+    static CodeLibrary * BURGER_API GetDriverLoaderLib(void);
+    static int16_t BURGER_API GetSpecFromNthDesc(AEDesc *pList, long iIndex, FSSpec *pFSSpec);
+#endif
+
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
 	static void BURGER_API AddToMenubar(NSMenu *pNSMenu);
 	static NSString *BURGER_API GetApplicationName(void);
@@ -150,7 +161,7 @@ public:
 #endif
 
 #if defined(BURGER_MACOS) || defined(DOXYGEN)
-	static Word BURGER_API GetMacOSVersion(void);
+	static uint_t BURGER_API GetMacOSVersion(void);
 #endif
 
 #if ((defined(BURGER_MAC) && TARGET_API_MAC_CARBON) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
@@ -158,25 +169,25 @@ public:
 #endif
 
 #if defined(BURGER_MACOS) || defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	static Word BURGER_API GetQuickTimeVersion(void);
+	static uint_t BURGER_API GetQuickTimeVersion(void);
 #endif
 
 	static BURGER_INLINE eError GetErrorCode(void) BURGER_NOEXCEPT { return g_iErrorCode; }
 	static BURGER_INLINE void SetErrorCode(eError iNewError) BURGER_NOEXCEPT { g_iErrorCode = iNewError; }
 	static BURGER_INLINE char *GetErrorMsg(void) BURGER_NOEXCEPT { return g_ErrorMsg; }
 	static void BURGER_ANSIAPI SetErrorMsg(const char *pMessage,...);
-	static BURGER_INLINE Word GetTraceFlag(void) BURGER_NOEXCEPT { return g_uTraceFlags; }
-	static BURGER_INLINE void SetTraceFlag(Word uNewFlag) BURGER_NOEXCEPT { g_uTraceFlags = uNewFlag; }
-	static BURGER_INLINE Word AreWarningsEnabled(void) BURGER_NOEXCEPT { return g_uTraceFlags&TRACE_WARNINGS; }
-	static BURGER_INLINE Word GetErrorBombFlag(void) BURGER_NOEXCEPT { return g_bBombFlag; }
-	static BURGER_INLINE Word SetErrorBombFlag(Word uNewFlag)BURGER_NOEXCEPT { Word uOld = g_bBombFlag; g_bBombFlag = uNewFlag; return uOld; }
-	static BURGER_INLINE Word GetExitFlag(void)BURGER_NOEXCEPT { return g_bExitFlag; }
-	static BURGER_INLINE void SetExitFlag(Word uNewFlag) BURGER_NOEXCEPT { g_bExitFlag = uNewFlag; }
+	static BURGER_INLINE uint_t GetTraceFlag(void) BURGER_NOEXCEPT { return g_uTraceFlags; }
+	static BURGER_INLINE void SetTraceFlag(uint_t uNewFlag) BURGER_NOEXCEPT { g_uTraceFlags = uNewFlag; }
+	static BURGER_INLINE uint_t AreWarningsEnabled(void) BURGER_NOEXCEPT { return g_uTraceFlags&TRACE_WARNINGS; }
+	static BURGER_INLINE uint_t GetErrorBombFlag(void) BURGER_NOEXCEPT { return g_bBombFlag; }
+	static BURGER_INLINE Word SetErrorBombFlag(uint_t uNewFlag)BURGER_NOEXCEPT { uint_t uOld = g_bBombFlag; g_bBombFlag = uNewFlag; return uOld; }
+	static BURGER_INLINE uint_t GetExitFlag(void)BURGER_NOEXCEPT { return g_bExitFlag; }
+	static BURGER_INLINE void SetExitFlag(uint_t uNewFlag) BURGER_NOEXCEPT { g_bExitFlag = uNewFlag; }
 	static void BURGER_API Shutdown(void);
 	static void BURGER_API Shutdown(int iError);
 	static Word32 BURGER_API Version(void);
 	static Word32 BURGER_API VersionBuild(void);
-	static Word BURGER_API LaunchURL(const char *pURL);
+	static uint_t BURGER_API LaunchURL(const char *pURL);
 	static int BURGER_API ExecuteTool(const char *pFilename,const char *pParameters,OutputMemoryStream *pOutput=NULL);
 	static const char * BURGER_API GetEnvironmentString(const char *pKey);
 	static Word BURGER_API SetEnvironmentString(const char *pKey,const char *pInput);

@@ -33,15 +33,15 @@ extern char* BURGER_API NumberToAsciiHex(
 extern char* BURGER_API NumberToAsciiHex(
 	char* pOutput, Word64 uInput, Word uDigits);
 extern char* BURGER_API NumberToAscii(
-	char* pOutput, Word32 uInput, Word uDigits = 0);
+	char* pOutput, Word32 uInput, Word uDigits = 0) BURGER_NOEXCEPT;
 extern char* BURGER_API NumberToAscii(
-	char* pOutput, Int32 iInput, Word uDigits = 0);
+	char* pOutput, Int32 iInput, Word uDigits = 0) BURGER_NOEXCEPT;
 extern char* BURGER_API NumberToAscii(
-	char* pOutput, Word64 uInput, Word uDigits = 0);
+	char* pOutput, Word64 uInput, Word uDigits = 0) BURGER_NOEXCEPT;
 extern char* BURGER_API NumberToAscii(
-	char* pOutput, Int64 iInput, Word uDigits = 0);
-extern char* BURGER_API NumberToAscii(char* pOutput, float fInput);
-extern char* BURGER_API NumberToAscii(char* pOutput, double dInput);
+	char* pOutput, Int64 iInput, Word uDigits = 0) BURGER_NOEXCEPT;
+extern char* BURGER_API NumberToAscii(char* pOutput, float fInput) BURGER_NOEXCEPT;
+extern char* BURGER_API NumberToAscii(char* pOutput, double dInput) BURGER_NOEXCEPT;
 extern Word BURGER_API NumberStringLength(Word32 uInput);
 extern Word BURGER_API NumberStringLength(Int32 iInput);
 extern Word BURGER_API NumberStringLength(Word64 uInput);

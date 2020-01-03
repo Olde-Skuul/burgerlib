@@ -462,11 +462,11 @@ private:
 public:
 	~Windows();
 
-    static BURGER_INLINE HINSTANCE__* GetInstance(void)
+    static BURGER_INLINE HINSTANCE__* GetInstance(void) BURGER_NOEXCEPT
 	{
 		return g_hInstance;
 	}
-    static BURGER_INLINE void SetInstance(HINSTANCE__* pInput)
+    static BURGER_INLINE void SetInstance(HINSTANCE__* pInput) BURGER_NOEXCEPT
 	{
 		g_hInstance = pInput;
 	}

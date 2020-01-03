@@ -273,6 +273,10 @@
 #define __has_declspec_attribute(x) 0
 #endif
 
+#if !defined(__has_attribute)
+#define __has_attribute(x) 0
+#endif
+
 /***************************************
 
     Detect the CPU being compiled for
@@ -929,7 +933,7 @@
 #elif __has_cpp_attribute(gnu::unused)
 #define BURGER_MAYBE_UNUSED [[gnu::unused]]
 #elif __has_cpp_attribute(unused) && defined(BURGER_CLANG)
-#define BURGER_NODISCARD __attribute__((unused))
+#define BURGER_MAYBE_UNUSED __attribute__((unused))
 #else
 #define BURGER_MAYBE_UNUSED
 #endif
@@ -957,6 +961,14 @@
 #define BURGER_FALLTHROUGH __attribute__((fallthrough))
 #else
 #define BURGER_FALLTHROUGH ((void)0)
+#endif
+
+#if __has_cpp_attribute(used) || __has_attribute(used) || (BURGER_GNUC >= 30100)
+#define BURGER_USED __attribute__((used))
+#elif __has_attribute(__used__)
+#define BURGER_USED __attribute__((__used__))
+#else
+#define BURGER_USED
 #endif
 
 /***************************************

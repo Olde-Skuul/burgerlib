@@ -261,6 +261,41 @@ Burger::NumberString::NumberString(double dInput) BURGER_NOEXCEPT
     NumberToAscii(m_Data, dInput);
 }
 
+#if defined(BURGER_HAS_WCHAR_T) || defined(DOXYGEN)
+Burger::NumberString::NumberString(wchar_t uInput) BURGER_NOEXCEPT
+{
+    NumberToAscii(m_Data, static_cast<uint32_t>(uInput));
+}
+
+Burger::NumberString::NumberString(wchar_t uInput, uint_t uFormat) BURGER_NOEXCEPT
+{
+    NumberToAscii(m_Data, static_cast<uint32_t>(uInput), uFormat);
+}
+#endif
+
+#if defined(BURGER_INT_NOT_IN_STDINT) || defined(DOXYGEN)
+Burger::NumberString::NumberString(unsigned int uInput) BURGER_NOEXCEPT
+{
+    NumberToAscii(m_Data, static_cast<uint2uint_t>(uInput));
+}
+
+Burger::NumberString::NumberString(unsigned int uInput, uint_t uFormat) BURGER_NOEXCEPT
+{
+    NumberToAscii(m_Data, static_cast<uint2uint_t>(uInput), uFormat);
+}
+#endif
+
+#if defined(BURGER_LONG_NOT_IN_STDINT) || defined(DOXYGEN)
+Burger::NumberString::NumberString(unsigned long uInput) BURGER_NOEXCEPT
+{
+    NumberToAscii(m_Data, static_cast<ulong2uint_t>(uInput));
+}
+Burger::NumberString::NumberString(unsigned long uInput, uint_t uFormat) BURGER_NOEXCEPT
+{
+    NumberToAscii(m_Data, static_cast<ulong2uint_t>(uInput), uFormat);
+}
+#endif
+
 /*! ************************************
 
     \brief Copy operator for an unsigned 32 bit integer.

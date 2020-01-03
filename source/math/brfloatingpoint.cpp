@@ -1414,7 +1414,7 @@ static const Burger::Word32ToFloat g_PPCSqrtGuess[2][256][2] = {
 // http://www.sosmath.com/calculus/diff/der07/der07.html
 //
 
-float BURGER_API Burger::Sqrt(float fInput)
+float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 {
 
     // 0.5f + epsilon
@@ -1544,7 +1544,7 @@ float BURGER_API Burger::Sqrt(float fInput)
 #elif defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_LINUX)
 #else
 
-float BURGER_API Burger::Sqrt(float fInput)
+float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 {
     // Convert to binary
     Word32ToFloat Convert;
@@ -1679,7 +1679,7 @@ float BURGER_API Burger::Sqrt(float fInput)
 // http://www.sosmath.com/calculus/diff/der07/der07.html
 //
 
-double BURGER_API Burger::Sqrt(double dInput)
+double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 {
     // 0.5 + epsilon
     const double g_dHalfPlusEpsilon = 0.5000000000000001;
@@ -1819,7 +1819,7 @@ double BURGER_API Burger::Sqrt(double dInput)
 #elif defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_LINUX)
 #else
 
-double BURGER_API Burger::Sqrt(double dInput)
+double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 {
     // Convert to binary
     Word64ToDouble Converter;
@@ -2252,7 +2252,8 @@ double BURGER_API Burger::Sqrt(double dInput)
 #if defined(BURGER_XBOX360) || \
     (defined(BURGER_PPC) && defined(BURGER_METROWERKS))
 
-BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsNan(float /* fInput */)
+BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsNan(
+    float /* fInput */) BURGER_NOEXCEPT
 {
     // clang-format off
 #if defined(BURGER_XBOX360)
@@ -2283,7 +2284,7 @@ __asm__(
 
 #else
 
-uint_t BURGER_API Burger::IsNan(float fInput)
+uint_t BURGER_API Burger::IsNan(float fInput) BURGER_NOEXCEPT
 {
     uint32_t uInput =
         static_cast<const uint32_t*>(static_cast<const void*>(&fInput))[0];
@@ -2313,7 +2314,8 @@ uint_t BURGER_API Burger::IsNan(float fInput)
 #if defined(BURGER_XBOX360) || \
     (defined(BURGER_PPC) && defined(BURGER_METROWERKS))
 
-BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsNan(double /* dInput */)
+BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsNan(
+    double /* dInput */) BURGER_NOEXCEPT
 {
     // clang-format off
 #if defined(BURGER_XBOX360)
@@ -2344,7 +2346,7 @@ __asm__(
 
 #else
 
-uint_t BURGER_API Burger::IsNan(double dInput)
+uint_t BURGER_API Burger::IsNan(double dInput) BURGER_NOEXCEPT
 {
 #if defined(BURGER_64BITCPU)
     uint64_t uInput =
@@ -2377,14 +2379,14 @@ uint_t BURGER_API Burger::IsNan(double dInput)
 
 #if defined(BURGER_XBOX360)
 
-uint_t BURGER_API Burger::IsInf(float fInput)
+uint_t BURGER_API Burger::IsInf(float fInput) BURGER_NOEXCEPT
 {
     return (fabs(fInput) == g_fInf);
 }
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM uint_t BURGER_API Burger::IsInf(float fInput)
+BURGER_ASM uint_t BURGER_API Burger::IsInf(float fInput) BURGER_NOEXCEPT
 {
     // clang-format off
     lwz r3, g_fInf(RTOC) // Get the address of g_fInf
@@ -2414,11 +2416,11 @@ __asm__(
 
 #else
 
-uint_t BURGER_API Burger::IsInf(float fInput)
+uint_t BURGER_API Burger::IsInf(float fInput) BURGER_NOEXCEPT
 {
-    uint32_t uInput =
+    const uint32_t uInput =
         static_cast<const uint32_t*>(static_cast<const void*>(&fInput))[0];
-    uint32_t uTemp = uInput & 0x7FFFFFFF;
+    const uint32_t uTemp = uInput & 0x7FFFFFFF;
     return uTemp == 0x7F800000;
 }
 
@@ -2439,23 +2441,23 @@ uint_t BURGER_API Burger::IsInf(float fInput)
 
 #if defined(BURGER_XBOX360)
 
-uint_t BURGER_API Burger::IsInf(double dInput)
+uint_t BURGER_API Burger::IsInf(double dInput) BURGER_NOEXCEPT
 {
     return (fabs(dInput) == g_dInf);
 }
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM uint_t BURGER_API Burger::IsInf(double dInput)
+BURGER_ASM uint_t BURGER_API Burger::IsInf(double dInput) BURGER_NOEXCEPT
 {
     // clang-format off
-    lwz r3, g_dInf(RTOC) // Get the address of g_dInf
-    fabs fp1, fp1       // Strip the sign
-    lfd fp0, 0(r3)      // Fetch dInf
-    fcmpu cr0, fp1, fp0 // Compare for equality
-    mfcr r0             // Move cr0 into r0
-    extrwi r3, r0, 1, 2 // (Flags>>29)&1 Grab the "Equal" flag
-    blr                 // Exit
+    lwz r3, g_dInf(RTOC)    // Get the address of g_dInf
+    fabs fp1, fp1           // Strip the sign
+    lfd fp0, 0(r3)          // Fetch dInf
+    fcmpu cr0, fp1, fp0     // Compare for equality
+    mfcr r0                 // Move cr0 into r0
+    extrwi r3, r0, 1, 2     // (Flags>>29)&1 Grab the "Equal" flag
+    blr                     // Exit
     // clang-format on
 }
 
@@ -2476,7 +2478,7 @@ __asm__(
 
 #else
 
-uint_t BURGER_API Burger::IsInf(double dInput)
+uint_t BURGER_API Burger::IsInf(double dInput) BURGER_NOEXCEPT
 {
     return (static_cast<const uint64_t*>(static_cast<const void*>(&dInput))[0]
                << 1U) == (0x7ff0000000000000ULL << 1U);
@@ -2499,7 +2501,8 @@ uint_t BURGER_API Burger::IsInf(double dInput)
 
 #if defined(BURGER_XBOX360)
 
-BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsFinite(float /* fInput */)
+BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsFinite(
+    float /* fInput */) BURGER_NOEXCEPT
 {
     // clang-format off
     BURGER_ASM
@@ -2517,7 +2520,7 @@ BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsFinite(float /* fInput */)
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM uint_t BURGER_API Burger::IsFinite(float fInput)
+BURGER_ASM uint_t BURGER_API Burger::IsFinite(float fInput) BURGER_NOEXCEPT
 {
     // clang-format off
     lwz r3, g_fInf(RTOC) // Get the address of g_fInf
@@ -2547,7 +2550,7 @@ __asm__(
 
 #else
 
-uint_t BURGER_API Burger::IsFinite(float fInput)
+uint_t BURGER_API Burger::IsFinite(float fInput) BURGER_NOEXCEPT
 {
     uint32_t uInput =
         static_cast<const uint32_t*>(static_cast<const void*>(&fInput))[0];
@@ -2573,7 +2576,8 @@ uint_t BURGER_API Burger::IsFinite(float fInput)
 
 #if defined(BURGER_XBOX360)
 
-BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsFinite(double /* dInput */)
+BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsFinite(
+    double /* dInput */) BURGER_NOEXCEPT
 {
     // clang-format off
     BURGER_ASM
@@ -2591,7 +2595,7 @@ BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsFinite(double /* dInput */)
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM uint_t BURGER_API Burger::IsFinite(double dInput)
+BURGER_ASM uint_t BURGER_API Burger::IsFinite(double dInput) BURGER_NOEXCEPT
 {
     // clang-format off
     lwz r3, g_dInf(RTOC) // Get the address of g_dInf
@@ -2621,7 +2625,7 @@ __asm__(
 
 #else
 
-uint_t BURGER_API Burger::IsFinite(double dInput)
+uint_t BURGER_API Burger::IsFinite(double dInput) BURGER_NOEXCEPT
 {
     uint32_t uInput;
 #if defined(BURGER_BIGENDIAN)
@@ -2652,7 +2656,7 @@ uint_t BURGER_API Burger::IsFinite(double dInput)
 #if defined(BURGER_PPC) && \
     (defined(BURGER_METROWERKS) || defined(BURGER_MACOSX))
 
-uint_t BURGER_API Burger::IsNormal(float fInput)
+uint_t BURGER_API Burger::IsNormal(float fInput) BURGER_NOEXCEPT
 {
     // Force absolute
     double fInputNew = fabs(static_cast<double>(fInput));
@@ -2672,7 +2676,7 @@ uint_t BURGER_API Burger::IsNormal(float fInput)
 // instead of the fcmpu stall.
 //
 
-uint_t BURGER_API Burger::IsNormal(float fInput)
+uint_t BURGER_API Burger::IsNormal(float fInput) BURGER_NOEXCEPT
 {
     uint32_t uInput =
         static_cast<const uint32_t*>(static_cast<const void*>(&fInput))[0];
@@ -2700,7 +2704,7 @@ uint_t BURGER_API Burger::IsNormal(float fInput)
 #if defined(BURGER_PPC) && \
     (defined(BURGER_METROWERKS) || defined(BURGER_MACOSX))
 
-uint_t BURGER_API Burger::IsNormal(double dInput)
+uint_t BURGER_API Burger::IsNormal(double dInput) BURGER_NOEXCEPT
 {
     // Force absolute
     dInput = fabs(dInput);
@@ -2716,7 +2720,7 @@ uint_t BURGER_API Burger::IsNormal(double dInput)
 // Note: Xbox 360 and PS3 are better to take the Load/Hit/Store
 // instead of the fcmpu stall.
 
-uint_t BURGER_API Burger::IsNormal(double dInput)
+uint_t BURGER_API Burger::IsNormal(double dInput) BURGER_NOEXCEPT
 {
     uint32_t uInput;
 #if defined(BURGER_BIGENDIAN)
@@ -2744,7 +2748,7 @@ uint_t BURGER_API Burger::IsNormal(double dInput)
 
 ***************************************/
 
-uint_t BURGER_API Burger::SignBit(float fInput)
+uint_t BURGER_API Burger::SignBit(float fInput) BURGER_NOEXCEPT
 {
     return static_cast<const uint32_t*>(static_cast<const void*>(&fInput))[0] >>
         31U;
@@ -2763,7 +2767,7 @@ uint_t BURGER_API Burger::SignBit(float fInput)
 
 ***************************************/
 
-uint_t BURGER_API Burger::SignBit(double dInput)
+uint_t BURGER_API Burger::SignBit(double dInput) BURGER_NOEXCEPT
 {
 #if defined(BURGER_BIGENDIAN)
     return static_cast<const uint32_t*>(static_cast<const void*>(&dInput))[0] >>
@@ -2962,7 +2966,7 @@ uint_t BURGER_API Burger::EqualWithEpsilon(
 
 // Do this completely branchless
 
-float BURGER_API Burger::Floor(float fInput)
+float BURGER_API Burger::Floor(float fInput) BURGER_NOEXCEPT
 {
     // Convert to the input to an integer (Can fail on large numbers)
     double dVar = __fcfid(__fctiwz(fInput));
@@ -2976,7 +2980,7 @@ float BURGER_API Burger::Floor(float fInput)
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM float BURGER_API Burger::Floor(float fInput)
+BURGER_ASM float BURGER_API Burger::Floor(float fInput) BURGER_NOEXCEPT
 {
     // clang-format off
     lwz r3, g_fMinNoInteger
@@ -3034,7 +3038,8 @@ __asm__(
     (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
         defined(BURGER_MSVC))
 
-BURGER_DECLSPECNAKED float BURGER_API Burger::Floor(float /* fInput */)
+BURGER_DECLSPECNAKED float BURGER_API Burger::Floor(
+    float /* fInput */) BURGER_NOEXCEPT
 {
     // clang-format off
     BURGER_ASM
@@ -3082,7 +3087,7 @@ __asm__(
 
 #else
 
-float BURGER_API Burger::Floor(float fInput)
+float BURGER_API Burger::Floor(float fInput) BURGER_NOEXCEPT
 {
     // Note : 8388608 is the first floating point number
     // that cannot have a fraction. Therefore this routine can't
@@ -3135,7 +3140,7 @@ float BURGER_API Burger::Floor(float fInput)
 
 // Do this completely branchless
 
-double BURGER_API Burger::Floor(double dInput)
+double BURGER_API Burger::Floor(double dInput) BURGER_NOEXCEPT
 {
     // Convert to the input to an integer (Can fail on large numbers)
     double dVar = __fcfid(__fctidz(dInput));
@@ -3148,7 +3153,7 @@ double BURGER_API Burger::Floor(double dInput)
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM double BURGER_API Burger::Floor(double dInput)
+BURGER_ASM double BURGER_API Burger::Floor(double dInput) BURGER_NOEXCEPT
 {
     // clang-format off
     lwz r3, g_dMinNoInteger
@@ -3207,7 +3212,8 @@ __asm__(
     (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
         defined(BURGER_MSVC))
 
-BURGER_DECLSPECNAKED double BURGER_API Burger::Floor(double /* dInput */)
+BURGER_DECLSPECNAKED double BURGER_API Burger::Floor(
+    double /* dInput */) BURGER_NOEXCEPT
 {
     // clang-format off
     BURGER_ASM
@@ -3255,7 +3261,7 @@ __asm__(
 
 #else
 
-double BURGER_API Burger::Floor(double dInput)
+double BURGER_API Burger::Floor(double dInput) BURGER_NOEXCEPT
 {
     // Note : 4503599627370496.0 is the first floating point number
     // that cannot have a fraction. Therefore this routine can't
@@ -3309,7 +3315,7 @@ double BURGER_API Burger::Floor(double dInput)
 
 // Do this completely branchless
 
-float BURGER_API Burger::Ceil(float fInput)
+float BURGER_API Burger::Ceil(float fInput) BURGER_NOEXCEPT
 {
     // Convert to the input to an integer (Can fail on large numbers)
     double dVar = __fcfid(__fctiwz(fInput));
@@ -3323,7 +3329,7 @@ float BURGER_API Burger::Ceil(float fInput)
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM float BURGER_API Burger::Ceil(float fInput)
+BURGER_ASM float BURGER_API Burger::Ceil(float fInput) BURGER_NOEXCEPT
 {
     // clang-format off
     lwz r3, g_fMinNoInteger
@@ -3381,7 +3387,8 @@ __asm__(
     (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
         defined(BURGER_MSVC))
 
-BURGER_DECLSPECNAKED float BURGER_API Burger::Ceil(float /* fInput */)
+BURGER_DECLSPECNAKED float BURGER_API Burger::Ceil(
+    float /* fInput */) BURGER_NOEXCEPT
 {
     // clang-format off
     BURGER_ASM
@@ -3427,7 +3434,7 @@ __asm__(
 
 #else
 
-float BURGER_API Burger::Ceil(float fInput)
+float BURGER_API Burger::Ceil(float fInput) BURGER_NOEXCEPT
 {
     // Note : 8388608 is the first floating point number
     // that cannot have a fraction. Therefore this routine can't
@@ -3479,7 +3486,7 @@ float BURGER_API Burger::Ceil(float fInput)
 
 // Do this completely branchless
 
-double BURGER_API Burger::Ceil(double dInput)
+double BURGER_API Burger::Ceil(double dInput) BURGER_NOEXCEPT
 {
     // Convert to the input to an integer (Can fail on large numbers)
     double dVar = __fcfid(__fctidz(dInput));
@@ -3492,7 +3499,7 @@ double BURGER_API Burger::Ceil(double dInput)
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM double BURGER_API Burger::Ceil(double dInput)
+BURGER_ASM double BURGER_API Burger::Ceil(double dInput) BURGER_NOEXCEPT
 {
     // clang-format off
     lwz r3, g_dMinNoInteger
@@ -3551,7 +3558,8 @@ __asm__(
     (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
         defined(BURGER_MSVC))
 
-BURGER_DECLSPECNAKED double BURGER_API Burger::Ceil(double /* dInput */)
+BURGER_DECLSPECNAKED double BURGER_API Burger::Ceil(
+    double /* dInput */) BURGER_NOEXCEPT
 {
     // clang-format off
     BURGER_ASM
@@ -3597,7 +3605,7 @@ __asm__(
 
 #else
 
-double BURGER_API Burger::Ceil(double dInput)
+double BURGER_API Burger::Ceil(double dInput) BURGER_NOEXCEPT
 {
     // Note : 4503599627370496.0 is the first floating point number
     // that cannot have a fraction. Therefore this routine can't
@@ -3655,7 +3663,7 @@ double BURGER_API Burger::Ceil(double dInput)
 
 // x86 version
 
-BURGER_DECLSPECNAKED float BURGER_API Burger::Round(float /* fInput */)
+BURGER_DECLSPECNAKED float BURGER_API Burger::Round(float /* fInput */) BURGER_NOEXCEPT
 {
     // clang-format off
     BURGER_ASM
@@ -3675,7 +3683,7 @@ BURGER_DECLSPECNAKED float BURGER_API Burger::Round(float /* fInput */)
 
 #elif defined(BURGER_AMD64)
 
-float BURGER_API Burger::Round(float fInput)
+float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
 {
     // Convert to SSE register
     __m128 vInput = _mm_set_ss(fInput);
@@ -3719,7 +3727,7 @@ float BURGER_API Burger::Round(float fInput)
 
 #elif defined(BURGER_XBOX360)
 
-float BURGER_API Burger::Round(float fInput)
+float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
 {
     // Get the absolute value
     double dAbs = fabs(fInput);
@@ -3742,7 +3750,7 @@ float BURGER_API Burger::Round(float fInput)
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM float BURGER_API Burger::Round(float fInput)
+BURGER_ASM float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
 {
     // clang-format off
     lwz r3, g_fMinNoInteger
@@ -3770,7 +3778,7 @@ BURGER_ASM float BURGER_API Burger::Round(float fInput)
 
 #else
 
-float BURGER_API Burger::Round(float fInput)
+float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
 {
     Word32ToFloat Converter;
     Converter.f = fInput;
@@ -3858,7 +3866,7 @@ float BURGER_API Burger::Round(float fInput)
 
 // x86 version
 
-BURGER_DECLSPECNAKED double BURGER_API Burger::Round(double /* fInput */)
+BURGER_DECLSPECNAKED double BURGER_API Burger::Round(double /* fInput */) BURGER_NOEXCEPT
 {
     // clang-format off
     BURGER_ASM
@@ -3879,7 +3887,7 @@ BURGER_DECLSPECNAKED double BURGER_API Burger::Round(double /* fInput */)
 // Note: VS 2005 and earlier doesn't support the _mm_cvtsd_si64() intrinsic
 #elif defined(BURGER_AMD64) && !(defined(BURGER_MSVC) && (_MSC_VER < 1500))
 
-double BURGER_API Burger::Round(double dInput)
+double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
 {
     // Convert to SSE register
     __m128d vInput = _mm_set_sd(dInput);
@@ -3923,7 +3931,7 @@ double BURGER_API Burger::Round(double dInput)
 
 #elif defined(BURGER_XBOX360)
 
-double BURGER_API Burger::Round(double dInput)
+double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
 {
     // Get the absolute value
     double dAbs = fabs(dInput);
@@ -3946,7 +3954,7 @@ double BURGER_API Burger::Round(double dInput)
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM double BURGER_API Burger::Round(double dInput)
+BURGER_ASM double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
 {
     // clang-format off
     lwz r3, g_dMinNoInteger
@@ -3974,7 +3982,7 @@ BURGER_ASM double BURGER_API Burger::Round(double dInput)
 
 #else
 
-double BURGER_API Burger::Round(double dInput)
+double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
 {
     Word64ToDouble Converter;
     Converter.d = dInput;
@@ -4071,7 +4079,7 @@ double BURGER_API Burger::Round(double dInput)
 
 ***************************************/
 
-float BURGER_API Burger::RoundToZero(float fInput)
+float BURGER_API Burger::RoundToZero(float fInput) BURGER_NOEXCEPT
 {
     if (fInput < 0.0f) {
         fInput = Ceil(fInput);
@@ -4108,7 +4116,7 @@ float BURGER_API Burger::RoundToZero(float fInput)
 
 ***************************************/
 
-double BURGER_API Burger::RoundToZero(double dInput)
+double BURGER_API Burger::RoundToZero(double dInput) BURGER_NOEXCEPT
 {
     if (dInput < 0.0) {
         dInput = Ceil(dInput);
@@ -4118,1219 +4126,7 @@ double BURGER_API Burger::RoundToZero(double dInput)
     return dInput;
 }
 
-/*! ************************************
-
-    \brief Modulo the range of the input so that -BURGER_PI <= fInput <
-        BURGER_PI
-
-    Wrap around a value in radians into remain in the valid range of radians.
-
-    \note Due to 32 bit precision, numbers larger than 16*pi will likely contain
-        rounding errors
-
-    \param fInput 32 bit floating point value in radians
-    \return The input converted to a 32 bit floating point value wrapped to fit
-        within.
-
-    \sa ModuloRadians(double), Sin(float), Cos(float)
-
-***************************************/
-
-#if defined(BURGER_X86) && \
-    (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-        defined(BURGER_MSVC))
-
-// x86 version
-
-BURGER_DECLSPECNAKED float BURGER_API Burger::ModuloRadians(float /* fInput */)
-{
-    // clang-format off
-    BURGER_ASM
-    {
-        fld dword ptr[esp + 4]  // Load into the FPU
-        fld dword ptr[g_fReciprocalPi2] // Load in 1/ 2Pi
-        fmul st(0), st(1)       // Multiply (Really fInput/2Pi)
-        fadd dword ptr[g_fHalf] // Add half for rounding
-        fst dword ptr[esp + 4]  // Round to nearest in 24 bit to force consistent precision
-        frndint                 // Convert to integer
-        fcom dword ptr[esp + 4] // Compare the two and get rid of the pre-rounded
-        fnstsw ax
-        test ah, 0x41          // Branch if less or equal
-        jne ModuloRadiansFExit // Did it round up?
-        fsub dword ptr[g_fOne] // Fixup
-    ModuloRadiansFExit:
-        fmul dword ptr[g_fPi2] // Mul by 2 pi
-        fsubp st(1), st(0)  // Subtract and clean up
-        ret 4               // Clean up and exit
-    }
-    // clang-format on
-}
-#elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS))
-
-// SSE2 version for MacOSX on X86 intel
-
-// __ZN6Burger13ModuloRadiansEf = float BURGER_API Burger::ModuloRadians(float
-// /* fInput */)
-__asm__(
-    "	.align	4,0x90\n"
-    "	.globl __ZN6Burger13ModuloRadiansEf\n"
-    "__ZN6Burger13ModuloRadiansEf:\n"
-    "	movss	4(%esp),%xmm0\n"                          // Load into the FPU
-    "	movss	(__ZN6Burger16g_fReciprocalPi2E),%xmm2\n" // Load in 1/ 2Pi
-    "	mulss	%xmm0,%xmm2\n"                  // Multiply (Really fInput/2Pi)
-    "	addss	(__ZN6Burger7g_fHalfE),%xmm2\n" // Add half for rounding
-    "	cvttss2si	%xmm2,%eax\n"               // Convert to integer
-    "	cvtsi2ss	%eax,%xmm1\n"
-    "	ucomiss	%xmm2,%xmm1\n" // Compare the two and get rid of the pre-rounded
-    "	jbe		1f\n"          // Did it round up?
-    "	subss	(__ZN6Burger6g_fOneE),%xmm1\n" // Fixup
-    "1: mulss	(__ZN6Burger6g_fPi2E),%xmm1\n" // Mul by 2 pi
-    "	subss	%xmm1,%xmm0\n"                 // Subtract and clean up
-    "	movss	%xmm0,4(%esp)\n"               // Return in st(0)
-    "	flds	4(%esp)\n"
-    "	ret\n");
-
-//
-// PowerPC version
-//
-// Due to the inaccuracy of fnmsubs, the function is hand coded
-// to pass all unit tests
-//
-
-#elif defined(BURGER_PPC) && defined(BURGER_MACOSX)
-
-//
-// PowerPC MacOSX using XCode
-//
-
-// __ZN6Burger13ModuloRadiansEf = float BURGER_API Burger::ModuloRadians(float
-// /* fInput */)
-__asm__(
-    "	.align	2,0\n"
-    "	.globl __ZN6Burger13ModuloRadiansEf\n"
-    "__ZN6Burger13ModuloRadiansEf:\n"
-    "	lis		r3,ha16(__ZN6Burger16g_fReciprocalPi2E)\n" // Fetch the pointers
-    "	lis		r6,0x4330\n" // Create 0x4330000080000000 for integer to float
-                             // conversions
-    "	lis		r4,ha16(__ZN6Burger7g_fHalfE)\n"
-    "	lis		r7,0x8000\n"
-    "	lis		r5,ha16(__ZN6Burger9g_fNegPi2E)\n"
-    "	lfs		f3,lo16(__ZN6Burger16g_fReciprocalPi2E)(r3)\n" // Load in 1/ 2Pi
-    "	lfs		f4,lo16(__ZN6Burger7g_fHalfE)(r4)\n"           // Load in 0.5f
-    "	lfs		f5,lo16(__ZN6Burger9g_fNegPi2E)(r5)\n"         // Load in Pi2
-    "	fmadds	f3,f1,f3,f4\n" // (fInput*g_fReciprocalPi2)+g_fHalf
-    "	stw		r6,-16(r1)\n"  // Store 0x4330000080000000
-    "	stw		r7,-12(r1)\n"
-    "	lfd		f2,-16(r1)\n" // Load 0x4330000080000000 in FPU
-    "	fctiwz	f0,f3\n"      // Convert to integer
-    "	stfd	f0,-8(r1)\n"  // Store the integer in memory (64 bit)
-    "	lwz		r0,-4(r1)\n"  // Extract the low word
-    "	xor		r0,r0,r7\n"   // Flip the bit
-    "	stw		r6,-8(r1)\n"  // Create a fake double
-    "	stw		r0,-4(r1)\n"  // Store the integer
-    "	lfd		f0,-8(r1)\n"  // Load the rounded double
-    "	fsubs 	f2,f0,f2\n"   // Complete the int to float conversion
-    "	fcmpu 	cr0,f2,f3\n"  // Compare the two and get rid of the pre-rounded
-    "	ble		1f\n"
-    "	fadds	f0,f4,f4\n" // Load 1.0f
-    "	fsubs	f2,f2,f0\n" // Fixup
-
-    // Don't use fnmsubs, it doesn't handle the sign bit properly
-    "1:	fmadds	f1,f2,f5,f1\n" // (fVar*-g_fPi2) + fInput
-    "	blr\n");
-
-//
-// Mac Classic version
-//
-
-#elif defined(BURGER_MAC) && defined(BURGER_PPC)
-
-BURGER_ASM float BURGER_API Burger::ModuloRadians(float /* fInput */)
-{
-    // clang-format off
-    lwz r3, g_fReciprocalPi2(RTOC) // Fetch the pointers
-    lis r6, 0x4330 // Create 0x4330000080000000 for integer to float conversions
-    lwz r4, g_fHalf(RTOC)
-    lis r7, 0x8000
-    lwz r5, g_fNegPi2(RTOC)
-    lfs fp3, 0(r3) // Load in 1/ 2Pi
-    lfs fp4, 0(r4) // Load in 0.5f
-    lfs fp5, 0(r5) // Load in -Pi2
-    fmadds fp3, fp1, fp3, fp4 // (fInput*g_fReciprocalPi2)+g_fHalf
-    stw r6, -16(SP) // Store 0x4330000080000000
-    stw r7, -12(SP)
-    lfd fp2, -16(SP) // Load 0x4330000080000000 in FPU
-    fctiwz fp0, fp3 // Convert to integer
-    stfd fp0, -8(SP) // Store the integer in memory (64 bit)
-    lwz r0, -4(SP) // Extract the low word
-    xor r0, r0, r7 // Flip the bit
-    stw r6, -8(SP) // Create a fake double
-    stw r0, -4(SP) // Store the integer
-    lfd fp0, -8(SP) // Load the rounded double
-    fsubs fp2, fp0, fp2 // Complete the int to float conversion
-    fcmpu cr0, fp2, fp3 // Compare the two and get rid of the prerounded
-    ble FModule1
-    fadds fp0, fp4, fp4 // Load 1.0f
-    fsubs fp2, fp2, fp0 // Fixup
-FModule1:
-        // Don't use fnmsubs, it doesn't handle the sign bit properly
-    fmadds fp1, fp2, fp5, fp1 // (fVar*-g_fPi2) + fInput
-    blr
-    // clang-format on
-}
-
-#elif defined(BURGER_XBOX360)
-
-//
-// Xbox 360 Power PC version
-//
-
-BURGER_DECLSPECNAKED float BURGER_API Burger::ModuloRadians(float /* fInput */)
-{
-    // clang-format off
-    BURGER_ASM
-    {
-        lau r3, g_fReciprocalPi2 // Fetch the pointers
-        lau r4, g_fHalf
-        lau r5, g_fNegPi2
-        lfs fp3, g_fReciprocalPi2(r3) // Load in 1/ 2Pi
-        lfs fp4, g_fHalf(r4) // Load in 0.5f
-        lfs fp5, g_fNegPi2(r5) // Load in Pi2
-        fmadds fp3, fp1, fp3, fp4 // (fInput*g_fReciprocalPi2)+g_fHalf
-        fctidz fp2, fp3 // Convert to integer
-        fcfid fp2, fp2 // Convert back to float
-        fcmpu cr0, fp2, fp3 // Compare the two and get rid of the pre-rounded
-        ble FModule1
-        fadds fp0, fp4, fp4 // Load 1.0f
-        fsubs fp2, fp2, fp0 // Subtract 1.0f
-    FModule1:
-            // Don't use fnmsubs, it doesn't handle the sign bit properly
-        fmadds fp1, fp2, fp5, fp1 // (fVar*-g_fPi2) + fInput
-        blr
-    }
-    // clang-format on
-}
-
-#else
-
-// Generic code
-
-float BURGER_API Burger::ModuloRadians(float fInput)
-{
-    // Produce Input/(BURGER_PI*2)
-    const float fTemp = (fInput * g_fReciprocalPi2) + 0.5f;
-    // Convert to int but rounded!
-    const int iVar = static_cast<int>(fTemp);
-    float fVar = static_cast<float>(iVar);
-    if (fVar > fTemp) { // Did I round up?
-        --fVar;         // Fix it
-    }
-    // Get the whole number and remove it
-    return fInput - (fVar * g_fPi2);
-}
-
-#endif
-
-/*! ************************************
-
-    \brief Modulo the range of the input so that -BURGER_PI <= fInput <
-        BURGER_PI
-
-    Wrap around a value in radians into remain in the valid range of radians.
-
-    \note Due to 64 bit precision, numbers larger than 1024*pi will likely
-        contain rounding errors
-
-    \param dInput 64 bit floating point value in radians
-    \return The input converted to a 64 bit floating point value wrapped to fit
-        within.
-
-    \sa ModuloRadians(float), Sin(double), Cos(double)
-
-***************************************/
-
-#if defined(BURGER_X86) && \
-    (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-        defined(BURGER_MSVC))
-
-BURGER_DECLSPECNAKED double BURGER_API Burger::ModuloRadians(
-    double /* dInput */)
-{
-    // clang-format off
-    BURGER_ASM
-    {
-        fld qword ptr[esp + 4]          // Load into the FPU
-        fld qword ptr[g_dReciprocalPi2] // Load in 1/2Pi
-        fmul st(0), st(1)               // Multiply
-        fadd qword ptr[g_dHalf] // Add half for rounding
-        fst qword ptr[esp + 4]  // Store at double precision
-        frndint                 // Remove fraction
-        fcom qword ptr[esp + 4] // Compare the two and get rid of the pre-rounded
-        fnstsw ax
-        test ah, 0x41
-        jnz ModuloRadiansFExit  // Did it round up?
-        fsub qword ptr[g_dOne]  // Fixup
-    ModuloRadiansFExit:
-        fmul qword ptr[g_dPi2]  // Mul by 2 pi
-        fsubp st(1), st(0)      // Subtract and clean up
-        ret 8                   // Clean up and exit
-    }
-    // clang-format on
-}
-#elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS))
-
-// __ZN6Burger13ModuloRadiansEd = double BURGER_API Burger::ModuloRadians(double
-// /* fInput */)
-__asm__(
-    "	.align	4,0x90\n"
-    "	.globl __ZN6Burger13ModuloRadiansEd\n"
-    "__ZN6Burger13ModuloRadiansEd:\n"
-    "	movsd	4(%esp),%xmm0\n"                          // Load into the FPU
-    "	movsd	(__ZN6Burger16g_dReciprocalPi2E),%xmm2\n" // Load in 1/2Pi
-    "	mulsd	%xmm0,%xmm2\n"                            // Multiply
-    "	addsd	(__ZN6Burger7g_dHalfE),%xmm2\n" // Add half for rounding
-    "	cvttsd2si	%xmm2,%eax\n"               // Remove fraction
-    "	cvtsi2sdl	%eax,%xmm1\n"
-    "	ucomisd	%xmm2,%xmm1\n" // Compare the two and get rid of the pre-rounded
-    "	jbe		1f\n"          // Did it round up?
-    "	subsd	(__ZN6Burger6g_dOneE),%xmm1\n" // Fixup
-    "1:	mulsd	(__ZN6Burger6g_dPi2E),%xmm1\n" // Mul by 2 pi
-    "	subsd	%xmm1,%xmm0\n"                 // Subtract and clean up
-    "	movsd	%xmm0,4(%esp)\n"
-    "	fldl	4(%esp)\n" // Return in st(0)
-    "	ret\n");
-
-//
-// PowerPC version
-//
-// Due to the inaccuracy of fnmsubs, the function is hand coded
-// to pass all unit tests
-//
-
-#elif defined(BURGER_PPC) && defined(BURGER_MACOSX)
-
-//
-// PowerPC MacOSX using XCode
-//
-
-// __ZN6Burger13ModuloRadiansEd = double BURGER_API Burger::ModuloRadians(double
-// /* fInput */)
-__asm__(
-    "	.align	2,0\n"
-    "	.globl __ZN6Burger13ModuloRadiansEd\n"
-    "__ZN6Burger13ModuloRadiansEd:\n"
-    "	lis		r3,ha16(__ZN6Burger16g_dReciprocalPi2E)\n" // Fetch the pointers
-    "	lis		r6,0x4330\n" // Create 0x4330000080000000 for integer to float
-                             // conversions
-    "	lis		r4,ha16(__ZN6Burger7g_dHalfE)\n"
-    "	lis		r7,0x8000\n"
-    "	lis		r5,ha16(__ZN6Burger9g_dNegPi2E)\n"
-    "	lfd		f3,lo16(__ZN6Burger16g_dReciprocalPi2E)(r3)\n" // Load in 1/ 2Pi
-    "	lfd		f4,lo16(__ZN6Burger7g_dHalfE)(r4)\n"           // Load in 0.5f
-    "	fmul	f3,f1,f3\n" // (fInput*g_fReciprocalPi2)
-    "	lfd		f5,lo16(__ZN6Burger9g_dNegPi2E)(r5)\n" // Load in Pi2
-    "	fadd	f3,f3,f4\n" // (fInput*g_fReciprocalPi2)+g_fHalf
-
-    // fmadd doesn't handle sign properly so it failed the unit test
-    // Used explicit fmul and fadd to get the accuracy
-    //"	fmadd	f3,f1,f3,f4\n"			// (fInput*g_fReciprocalPi2)+g_fHalf
-    "	stw		r6,-16(r1)\n" // Store 0x4330000080000000
-    "	stw		r7,-12(r1)\n"
-    "	lfd		f2,-16(r1)\n" // Load 0x4330000080000000 in FPU
-    "	fctiwz	f0,f3\n"      // Convert to integer
-    "	stfd	f0,-8(r1)\n"  // Store the integer in memory (64 bit)
-    "	lwz		r0,-4(r1)\n"  // Extract the low word
-    "	xor		r0,r0,r7\n"   // Flip the bit
-    "	stw		r6,-8(r1)\n"  // Create a fake double
-    "	stw		r0,-4(r1)\n"  // Store the integer
-    "	lfd		f0,-8(r1)\n"  // Load the rounded double
-    "	fsub	f2,f0,f2\n"   // Complete the int to float conversion
-    "	fcmpu	cr0,f2,f3\n"  // Compare the two and get rid of the prerounded
-    "	ble		1f\n"
-    "	fadd	f0,f4,f4\n"
-    "	fsub	f2,f2,f0\n" // Fixup
-
-    // Don't use fnmsubs, it doesn't handle the sign bit properly
-    "1:	fmadd	f1,f2,f5,f1\n" // (fVar*-g_fPi2) + fInput
-    "	blr\n");
-
-//
-// Mac Classic version
-//
-
-#elif defined(BURGER_METROWERKS) && defined(BURGER_PPC)
-
-BURGER_ASM double BURGER_API Burger::ModuloRadians(double /* dInput */)
-{
-    // clang-format off
-    lwz r3, g_dReciprocalPi2(RTOC) // Fetch the pointers
-    lis r6, 0x4330 // Create 0x4330000080000000 for integer to float conversions
-    lwz r4, g_dHalf(RTOC)
-    lis r7, 0x8000
-    lwz r5, g_dNegPi2(RTOC)
-    lfd fp3, 0(r3) // Load in 1/ 2Pi
-    lfd fp4, 0(r4) // Load in 0.5f
-    fmul fp3, fp1, fp3 // (fInput*g_fReciprocalPi2)
-    lfd fp5, 0(r5) // Load in Pi2
-    fadd fp3, fp3, fp4 // (fInput*g_fReciprocalPi2)+g_fHalf
-
-    // fmadd doesn't handle sign properly so it failed the unit test
-    // Used explicit fmul and fadd to get the accuracy
-    //	fmadd	fp3,fp1,fp3,fp4  // (fInput*g_fReciprocalPi2)+g_fHalf
-    stw r6, -16(SP) // Store 0x4330000080000000
-    stw r7, -12(SP)
-    lfd fp2, -16(SP) // Load 0x4330000080000000 in FPU
-    fctiwz fp0, fp3 // Convert to integer
-    stfd fp0, -8(SP) // Store the integer in memory (64 bit)
-    lwz r0, -4(SP) // Extract the low word
-    xor r0, r0, r7 // Flip the bit
-    stw r6, -8(SP) // Create a fake double
-    stw r0, -4(SP) // Store the integer
-    lfd fp0, -8(SP) // Load the rounded double
-    fsub fp2, fp0, fp2 // Complete the int to float conversion
-    fcmpu cr0, fp2, fp3 // Compare the two and get rid of the pre-rounded
-    ble FModule1
-    fadd fp0, fp4, fp4 // Load 1.0f
-    fsub fp2, fp2, fp0 // Fixup
-FModule1:
-    // Don't use fnmsubs, it doesn't handle the sign bit properly
-    fmadd fp1, fp2, fp5, fp1 // (fVar*-g_fPi2) + fInput
-    blr
-    // clang-format on
-}
-
-#elif defined(BURGER_XBOX360)
-
-//
-// Xbox 360 Power PC version
-//
-
-BURGER_DECLSPECNAKED double BURGER_API Burger::ModuloRadians(
-    double /* dInput */)
-{
-    // clang-format off
-    BURGER_ASM
-    {
-        lau r3, g_dReciprocalPi2 // Fetch the pointers
-        lau r4, g_dHalf
-        lau r5, g_dNegPi2
-        lfd fp3, g_dReciprocalPi2(r3) // Load in 1/ 2Pi
-        lfd fp4, g_dHalf(r4) // Load in 0.5f
-        lfd fp5, g_dNegPi2(r5) // Load in Pi2
-        fmul fp3, fp1, fp3  // (fInput*g_fReciprocalPi2)
-        fadd fp3, fp3, fp4  // (fInput*g_fReciprocalPi2)+g_fHalf
-        fctidz fp2, fp3     // Convert to integer
-        fcfid fp2, fp2      // Convert back to float
-        fcmpu cr0, fp2, fp3 // Compare the two and get rid of the pre-rounded
-        ble FModule1
-        fadd fp0, fp4, fp4 // Load 1.0f
-        fsub fp2, fp2, fp0 // Subtract 1.0f
-    FModule1:
-            // Don't use fnmsubs, it doesn't handle the sign bit properly
-        fmadd fp1, fp2, fp5, fp1 // (fVar*-g_fPi2) + fInput
-        blr
-    }
-    // clang-format on
-}
-
-#else
-
-// Generic code
-
-double BURGER_API Burger::ModuloRadians(double dInput)
-{
-    // Produce Input/(BURGER_PI*2)
-    const double dTemp = (dInput * g_dReciprocalPi2) + 0.5;
-    //
-    const int64_t iVar =
-        static_cast<int64_t>(dTemp); // Convert to int but rounded!
-    double dVar = static_cast<double>(iVar);
-    if (dVar > dTemp) { // Did I round up?
-        --dVar;         // Fix it
-    }
-    // Get the whole number and remove it
-    return dInput - (dVar * g_dPi2);
-}
-#endif
-
-/*! ************************************
-
-    \fn float BURGER_API Burger::Sin(float fInput)
-    \brief Return the sine from radians
-
-    This is a replacement of sinf() from the C++ libraries
-
-    To calculate sine...
-    sin(x) = x - ((x^3)/ 3!) + ((x^5)/ 5!) - ((x^7)/ 7!) + ((x^9)/ 9!) ...
-    Repeat the pattern by reversing the sign of the addition and adding
-    2 to the factors for every iteration
-
-    This function will perform 10 iterations from 3,5,7,...,23
-
-    \note ! is factoral so 3! = 1*2*3, and 5! = 1*2*3*4*5
-
-    \param fInput Value in Radians
-    \return Sine of fInput
-
-    \sa Sin(double) or Cos(float)
-
-***************************************/
-
-// 3!, 5!, to 23!
-// static const Burger::Word32ToFloat g_fSineFactors[11] = {
-//	{0xC0C00000},{0x42F00000},{0xC59D8000},{0x48B13000},{0xCC184540},
-//	{0x4FB99466},{0xD3983BBC},{0x57A1BF77},{0xDBD815CA},{0x603141DF},
-//	{0xE4AF2E1A}
-//};
-
-// 1/3!, 1/5!, to 1/23!
-#if !defined(BURGER_X86) && !defined(BURGER_MACOSX)
-static const
-#endif
-    Burger::Word32ToFloat g_fInverseSineFactors[11] = {{0xBE2AAAAB},
-        {0x3C088889}, {0xB9500D01}, {0x3638EF1D}, {0xB2D7322B}, {0x2F309231},
-        {0xAB573F9F}, {0x274A963C}, {0xA317A4DA}, {0x1EB8DC78}, {0x9A3B0DA1}};
-
-#if defined(BURGER_X86) && \
-    (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-        defined(BURGER_MSVC))
-BURGER_DECLSPECNAKED float BURGER_API Burger::Sin(float /* fInput */)
-{
-    // clang-format off
-    BURGER_ASM
-    {
-        fld dword ptr[esp + 4]              // Load into the FPU
-        fld dword ptr[g_fReciprocalPi2] // Load in 1/2Pi
-        fmul st(0), st(1)                   // Multiply
-        fadd dword ptr[g_fHalf] // Add half for rounding
-        fst dword ptr[esp + 4]  // Round to nearest in 24 bit to force consistent precision
-        frndint // Convert to integer
-        fcom dword ptr[esp + 4] // Compare the two and get rid of the prerounded
-#if defined(BURGER_WATCOM)
-        nop // There is an alignment bug in Watcom C. Remove this and
-            // [g_fInverseSineFactors+8] vanishes
-#endif
-        fnstsw ax
-        test ah, 0x41                       // ble
-        jne SinFExit               // Did it round up?
-        fsub dword ptr[g_fOne] // Fixup
-    SinFExit:
-        fmul dword ptr[g_fPi2] // Mul by 2 pi
-        fsubp st(1), st(0) // Subtract and clean up
-
-        fld st(0) // Make a copy for squaring
-        fmul st(0), st(1) // Square the input
-        fld st(0)
-        fmul st(0), st(2)                                // Create the Power of 3
-        fld dword ptr[g_fInverseSineFactors] // Start iterating
-        fmul st(0), st(1) // fInput*(1/3!)
-        faddp st(3), st(0) // fResult + fInput*(1/3!)
-        fmul st(0), st(1) // Up the power by 2
-        fld dword ptr[g_fInverseSineFactors + 4]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseSineFactors + 8]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseSineFactors + 12]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseSineFactors + 16]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseSineFactors + 20]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseSineFactors + 24]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseSineFactors + 28]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseSineFactors + 32]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseSineFactors + 36]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmulp st(1), st(0)
-        fmul dword ptr[g_fInverseSineFactors + 40]
-        faddp st(1), st(0)
-        ret 4 // Clean up and exit
-    }
-    // clang-format on
-}
-#elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS))
-// __ZN6Burger3SinEf = float BURGER_API Burger::Sin(float fInput)
-__asm__(
-    ".globl __ZN6Burger3SinEf\n"
-    "__ZN6Burger3SinEf:\n"
-    "	flds	4(%esp)\n"                          // Load into the FPU
-    "	flds	(__ZN6Burger16g_fReciprocalPi2E)\n" // Load in 1/2Pi
-    "	fmul	%st(1),%st(0)\n"          // Multiply (Really fInput/2Pi)
-    "	fadds	(__ZN6Burger7g_fHalfE)\n" // Add half for rounding
-    "	fsts	4(%esp)\n" // Round to nearest in 24 bit to force consistent
-                           // precision
-    "	frndint\n"         // Convert to integer
-    "	fcoms	4(%esp)\n" // Compare the two and get rid of the prerounded
-    "	fnstsw	%ax\n"
-    "	testb	$0x41,%ah\n"             // ble
-    "	jne		1f\n"                    // Did it round up?
-    "	fsubs	(__ZN6Burger6g_fOneE)\n" // Fixup
-    "1:\n"
-    "	fmuls	(__ZN6Burger6g_fPi2E)\n" // Mul by 2 pi
-    "	fsubrp	%st(1),%st(0)\n"         // Subtract and clean up
-    "	fld		%st(0)\n"                // Make a copy for squaring
-    "	fmul	%st(1),%st(0)\n"         // Square the input
-    "	fld		%st(0)\n"
-    "	fmul	%st(2),%st(0)\n"            // Create the Power of 3
-    "	flds	(_g_fInverseSineFactors)\n" // Start iterating
-    "	fmul	%st(1),%st(0)\n"            // fInput*(1/3!)
-    "	faddp	%st(0),%st(3)\n"            // fResult + fInput*(1/3!)
-    "	fmul	%st(1),%st(0)\n"            // Up the power by 2
-    "	flds	(_g_fInverseSineFactors+4)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseSineFactors+8)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseSineFactors+12)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseSineFactors+16)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseSineFactors+20)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseSineFactors+24)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseSineFactors+28)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseSineFactors+32)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseSineFactors+36)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmulp	%st(0),%st(1)\n"
-    "	fmuls	(_g_fInverseSineFactors+40)\n"
-    "	faddp	%st(0),%st(1)\n"
-    "	ret\n" // Clean up and exit
-);
-
-#else
-float BURGER_API Burger::Sin(float fInput)
-{
-    // Start by rounding the radians to reduce the chance
-    // of floating point rounding errors
-    fInput = ModuloRadians(fInput);
-
-    // To calculate sine...
-    // Note: ! is factoral so 3! = 1*2*3, and 5! = 1*2*3*4*5
-    // sin(x) = x - ((x^3)/ 3!) + ((x^5)/ 5!) - ((x^7)/ 7!) + ((x^9)/ 9!)
-    // Repeat the pattern by reversing the sign of the addition and adding
-    // 2 for the square for every iteration
-
-    const float fInput2 = (fInput * fInput);
-
-    float fInputFactorial = (fInput2 * fInput);
-
-    //- ((x^3)/ 3!)
-    float fResult = (fInputFactorial * g_fInverseSineFactors[0]) + fInput;
-    //+ ((x^5)/ 5!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[1]) + fResult;
-    //- ((x^7)/ 7!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[2]) + fResult;
-    //+ ((x^9)/ 9!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[3]) + fResult;
-    //- ((x^11)/ 11!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[4]) + fResult;
-    //+ ((x^13)/ 13!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[5]) + fResult;
-    //- ((x^15)/ 15!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[6]) + fResult;
-    //+ ((x^17)/ 17!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[7]) + fResult;
-    //- ((x^19)/ 19!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[8]) + fResult;
-    //+ ((x^21)/ 21!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[9]) + fResult;
-    //- ((x^23)/ 23!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[10]) + fResult;
-    return fResult;
-}
-#endif
-
-/*! ************************************
-
-    \fn double BURGER_API Burger::Sin(double dInput)
-    \brief Return the sine from radians
-
-    This is a replacement of sin() from the C++ libraries
-
-    \param dInput Value in Radians
-    \return Sine of dInput
-
-    \sa Sin(float) or Cos(double)
-
-***************************************/
-
-// 3!, 5!, to 23!
-// static const Burger::Word64ToDouble g_dSineFactors[11] = {
-//	{0xC018000000000000ULL},{0x405E000000000000ULL},{0xC0B3B00000000000ULL},{0x4116260000000000ULL},{0xC18308A800000000ULL},
-//	{0x41F7328CC0000000ULL},{0xC273077775800000ULL},{0x42F437EEECD80000ULL},{0xC37B02B930689000ULL},{0x4406283BE9B5C620ULL},
-//	{0xC495E5C335F8A4CEULL}
-//};
-
-// 1/3!, 1/5!, to 1/23!
-static const Burger::Word64ToDouble g_dInverseSineFactors[11] = {
-    {0xBFC5555555555555ULL}, {0x3F81111111111111ULL}, {0xBF2A01A01A01A01AULL},
-    {0x3EC71DE3A556C734ULL}, {0xBE5AE64567F544E4ULL}, {0x3DE6124613A86D09ULL},
-    {0xBD6AE7F3E733B81FULL}, {0x3CE952C77030AD4AULL}, {0xBC62F49B46814157ULL},
-    {0x3BD71B8EF6DCF572ULL}, {0xBB4761B413163819ULL}};
-
-#if defined(BURGER_X86) && \
-    (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-        defined(BURGER_MSVC))
-BURGER_DECLSPECNAKED double BURGER_API Burger::Sin(double /* dInput */)
-{
-    // clang-format off
-    BURGER_ASM
-    {
-        fld qword ptr[esp + 4]              // Load into the FPU
-        fld qword ptr[g_dReciprocalPi2] // Load in 1/2Pi
-        fmul st(0), st(1)                   // Multiply
-        fadd qword ptr[g_dHalf] // Add half for rounding
-        fst qword ptr[esp + 4]  // Store at double precision
-        frndint                 // Remove fraction
-        fcom qword ptr[esp + 4] // Compare the two and get rid of the prerounded
-#if defined(BURGER_WATCOM)
-        nop // There is an alignment bug in Watcom C. Remove this and
-            // [g_dInverseSineFactors+16] vanishes
-#endif
-        fnstsw ax
-        test ah, 0x41
-        jnz SinFExit          // Did it round up?
-        fsub qword ptr[g_dOne] // Fixup
-    SinFExit:
-        fmul qword ptr[g_dPi2] // Mul by 2 pi
-        fsubp st(1), st(0) // Subtract and clean up
-
-        fld st(0) // Make a copy for squaring
-        fmul st(0), st(1) // Square the input
-        fld st(0)
-        fmul st(0), st(2)                                // Create the Power of 3
-        fld qword ptr[g_dInverseSineFactors] // Start iterating
-        fmul st(0), st(1) // fInput*(1/3!)
-        faddp st(3), st(0) // fResult + fInput*(1/3!)
-        fmul st(0), st(1) // Up the power by 2
-        fld qword ptr[g_dInverseSineFactors + 8]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseSineFactors + 16]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseSineFactors + 24]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseSineFactors + 32]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseSineFactors + 40]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseSineFactors + 48]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseSineFactors + 56]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseSineFactors + 64]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseSineFactors + 72]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmulp st(1), st(0)
-        fmul qword ptr[g_dInverseSineFactors + 80]
-        faddp st(1), st(0)
-        ret 8 // Clean up and exit
-    }
-    // clang-format on
-}
-// No MacOSX 32 bit intel version assembly version, since SSE builds quite
-// nicely
-#else
-double BURGER_API Burger::Sin(double dInput)
-{
-    // Start by rounding the radians to reduce the chance
-    // of floating point rounding errors
-    dInput = ModuloRadians(dInput);
-
-    // To calculate sine...
-    // Note: ! is factoral so 3! = 1*2*3, and 5! = 1*2*3*4*5
-    // sin(x) = x - ((x^3)/ 3!) + ((x^5)/ 5!) - ((x^7)/ 7!) + ((x^9)/ 9!)
-    // Repeat the pattern by reversing the sign of the addition and adding
-    // 2 for the square for every iteration
-
-    const double dInput2 = (dInput * dInput);
-
-    double dInputFactorial = (dInput2 * dInput);
-
-    //- ((x^3)/ 3!)
-    double dResult = (dInputFactorial * g_dInverseSineFactors[0]) + dInput;
-    //+ ((x^5)/ 5!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseSineFactors[1]) + dResult;
-    //- ((x^7)/ 7!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseSineFactors[2]) + dResult;
-    //+ ((x^9)/ 9!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseSineFactors[3]) + dResult;
-    //- ((x^11)/ 11!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseSineFactors[4]) + dResult;
-    //+ ((x^13)/ 13!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseSineFactors[5]) + dResult;
-    //- ((x^15)/ 15!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseSineFactors[6]) + dResult;
-    //+ ((x^17)/ 17!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseSineFactors[7]) + dResult;
-    //- ((x^19)/ 19!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseSineFactors[8]) + dResult;
-    //+ ((x^21)/ 21!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseSineFactors[9]) + dResult;
-    //- ((x^23)/ 23!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseSineFactors[10]) + dResult;
-    return dResult;
-}
-#endif
-
-/*! ************************************
-
-    \fn float BURGER_API Burger::Cos(float fInput)
-    \brief Return the cosine from radians
-
-    This is a replacement of cosf() from the C++ libraries
-
-    \param fInput Value in Radians
-    \return Cosine of fInput
-
-    \sa Cos(double) or Sin(float)
-
-***************************************/
-
-// 2!, 4!, to 22!
-// static const Burger::Word32ToFloat g_fCosineFactors[11] = {
-//	{0xC0000000},{0x41C00000},{0xC4340000},{0x471D8000},{0xCA5D7C00},
-//	{0x4DE467E0},{0xD1A261D9},{0x55983BBC},{0xD9B5F766},{0x5E070D9E},
-//	{0xE273BA93}
-//};
-
-// 1/2!, 1/4!, to 1/22!
-#if !defined(BURGER_X86) && !defined(BURGER_MACOSX)
-static const
-#endif
-    Burger::Word32ToFloat g_fInverseCosineFactors[11] = {{0xBF000000},
-        {0x3D2AAAAB}, {0xBAB60B61}, {0x37D00D01}, {0xB493F27E}, {0x310F76C7},
-        {0xAD49CBA5}, {0x29573F9F}, {0xA53413C3}, {0x20F2A15D}, {0x9C8671CB}};
-
-#if defined(BURGER_X86) && \
-    (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-        defined(BURGER_MSVC))
-BURGER_DECLSPECNAKED float BURGER_API Burger::Cos(float /* fInput */)
-{
-    // clang-format off
-    BURGER_ASM
-    {
-        fld1
-        fld dword ptr[esp + 4]         // Load into the FPU
-        fld dword ptr[g_fReciprocalPi2] // Load in 1/2Pi
-        fmul st(0), st(1)                   // Multiply
-        fadd dword ptr[g_fHalf] // Add half for rounding
-        fst dword ptr[esp + 4]  // Round to nearest in 24 bit to force consistent precision
-        frndint // Convert to integer
-        fcom dword ptr[esp + 4] // Compare the two and get rid of the prerounded
-        fnstsw ax
-        test ah, 0x41                       // ble
-        jne CosinFExit             // Did it round up?
-        fsub dword ptr[g_fOne] // Fixup
-    CosinFExit:
-        fmul dword ptr[g_fPi2] // Mul by 2 pi
-        fsubp st(1), st(0)  // Subtract and clean up
-
-        fmul st(0), st(0)   // Square the input
-        fld st(0)           // Copy the Power of 2
-        fld dword ptr[g_fInverseCosineFactors] // Start iterating
-        fmul st(0), st(1)   // fInput*(1/2!)
-        faddp st(3), st(0) // fResult + fInput*(1/2!)
-        fmul st(0), st(1) // Up the power by 2
-        fld dword ptr[g_fInverseCosineFactors + 4]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseCosineFactors + 8]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseCosineFactors + 12]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseCosineFactors + 16]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseCosineFactors + 20]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseCosineFactors + 24]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseCosineFactors + 28]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseCosineFactors + 32]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld dword ptr[g_fInverseCosineFactors + 36]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmulp st(1), st(0)
-        fmul dword ptr[g_fInverseCosineFactors + 40]
-        faddp st(1), st(0)
-        ret 4 // Clean up and exit
-    }
-    // clang-format on 
-}
-#elif defined(BURGER_X86) && (defined(BURGER_MACOSX) || defined(BURGER_IOS))
-// __ZN6Burger3CosEf = float BURGER_API Burger::Cos(float fInput)
-__asm__(
-    ".globl __ZN6Burger3CosEf\n"
-    "__ZN6Burger3CosEf:\n"
-    "	flds	(__ZN6Burger6g_fOneE)\n"            // Initial 1
-    "	flds	4(%esp)\n"                          // Load into the FPU
-    "	flds	(__ZN6Burger16g_fReciprocalPi2E)\n" // Load in 1/2Pi
-    "	fmul	%st(1),%st(0)\n"          // Multiply (Really fInput/2Pi)
-    "	fadds	(__ZN6Burger7g_fHalfE)\n" // Add half for rounding
-    "	fsts	4(%esp)\n" // Round to nearest in 24 bit to force consistent
-                           // precision
-    "	frndint\n"         // Convert to integer
-    "	fcoms	4(%esp)\n" // Compare the two and get rid of the prerounded
-    "	fnstsw	%ax\n"
-    "	testb	$0x41,%ah\n"             // ble
-    "	jne		1f\n"                    // Did it round up?
-    "	fsubs	(__ZN6Burger6g_fOneE)\n" // Fixup
-    "1:\n"
-    "	fmuls	(__ZN6Burger6g_fPi2E)\n"      // Mul by 2 pi
-    "	fsubrp	%st(1),%st(0)\n"              // Subtract and clean up
-    "	fmul	%st(0),%st(0)\n"              // Square the input
-    "	fld		%st(0)\n"                     // Copy the Power of 2
-    "	flds	(_g_fInverseCosineFactors)\n" // Start iterating
-    "	fmul	%st(1),%st(0)\n"              // fInput*(1/2!)
-    "	faddp	%st(0),%st(3)\n"              // fResult + fInput*(1/2!)
-    "	fmul	%st(1),%st(0)\n"              // Up the power by 2
-    "	flds	(_g_fInverseCosineFactors+4)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseCosineFactors+8)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseCosineFactors+12)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseCosineFactors+16)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseCosineFactors+20)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseCosineFactors+24)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseCosineFactors+28)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseCosineFactors+32)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	flds	(_g_fInverseCosineFactors+36)\n"
-    "	fmul	%st(1),%st(0)\n"
-    "	faddp	%st(0),%st(3)\n"
-    "	fmulp	%st(0),%st(1)\n"
-    "	fmuls	(_g_fInverseCosineFactors+40)\n"
-    "	faddp	%st(0),%st(1)\n"
-    "	ret\n" // Clean up and exit
-);
-
-#else
-float BURGER_API Burger::Cos(float fInput)
-{
-    // Start by rounding the radians to reduce the chance
-    // of floating point rounding errors
-    fInput = ModuloRadians(fInput);
-
-    // To calculate cosine...
-    // Note: ! is factoral so 2! = 1*2, and 4! = 1*2*3*4
-    // cos(x) = 1 - ((x^2)/ 2!) + ((x^4)/ 4!) - ((x^6)/ 6!) + ((x^8)/ 8!)
-    // Repeat the pattern by reversing the sign of the addition and adding
-    // 2 for the square for every iteration
-
-    const float fInput2 = (fInput * fInput);
-
-    //- ((x^2)/ 2!)
-    float fResult = (fInput2 * g_fInverseCosineFactors[0]) + 1.0f;
-    //+ ((x^4)/ 4!)
-    float fInputFactorial = fInput2 * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[1]) + fResult;
-    //- ((x^6)/ 6!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[2]) + fResult;
-    //+ ((x^8)/ 8!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[3]) + fResult;
-    //- ((x^10)/ 10!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[4]) + fResult;
-    //+ ((x^12)/ 12!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[5]) + fResult;
-    //- ((x^14)/ 14!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[6]) + fResult;
-    //+ ((x^16)/ 16!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[7]) + fResult;
-    //- ((x^18)/ 18!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[8]) + fResult;
-    //+ ((x^20)/ 20!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[9]) + fResult;
-    //- ((x^22)/ 22!)
-    fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[10]) + fResult;
-    return fResult;
-}
-#endif
-
-/*! ************************************
-
-    \fn double BURGER_API Burger::Cos(double dInput)
-    \brief Return the cosine from radians
-
-    This is a replacement of cos() from the C++ libraries
-
-    \param dInput Value in Radians
-    \return Cosine of dInput
-
-    \sa Cos(float) or Sin(double)
-
-***************************************/
-
-// 2!, 4!, to 22!
-//#if !defined(BURGER_X86) && !defined(BURGER_MACOSX)
-// static const
-//#endif
-// Burger::Word64ToDouble g_dCosineFactors[11] = {
-//	{0xC000000000000000ULL},{0x4038000000000000ULL},{0xC086800000000000ULL},{0x40E3B00000000000ULL},{0xC14BAF8000000000ULL},
-//	{0x41BC8CFC00000000ULL},{0xC2344C3B28000000ULL},{0x42B3077775800000ULL},{0xC336BEECCA730000ULL},{0x43C0E1B3BE415A00ULL},
-//	{0xC44E77526159F06CULL}
-//};
-// 1/2!, 1/4!, to 1/22!
-#if !defined(BURGER_X86) && !defined(BURGER_MACOSX)
-static const
-#endif
-    Burger::Word64ToDouble g_dInverseCosineFactors[11] = {
-        {0xBFE0000000000000ULL}, {0x3FA5555555555555ULL},
-        {0xBF56C16C16C16C17ULL}, {0x3EFA01A01A01A01AULL},
-        {0xBE927E4FB7789F5CULL}, {0x3E21EED8EFF8D898ULL},
-        {0xBDA93974A8C07C9DULL}, {0x3D2AE7F3E733B81FULL},
-        {0xBCA6827863B97D97ULL}, {0x3C1E542BA4020225ULL},
-        {0xBB90CE396DB7F853ULL}};
-
-#if defined(BURGER_X86) && \
-    (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || \
-        defined(BURGER_MSVC))
-BURGER_DECLSPECNAKED double BURGER_API Burger::Cos(double /* dInput */)
-{
-    // clang-format off
-    BURGER_ASM
-    {
-        fld1
-        fld qword ptr[esp + 4]         // Load into the FPU
-        fld qword ptr[g_dReciprocalPi2] // Load in 1/2Pi
-        fmul st(0), st(1)                   // Multiply
-        fadd qword ptr[g_dHalf] // Add half for rounding
-        fst qword ptr[esp + 4]  // Store at double precision
-        frndint                 // Remove fraction
-        fcom qword ptr[esp + 4] // Compare the two and get rid of the prerounded
-        fnstsw ax
-        test ah, 0x41
-        jnz SinFExit          // Did it round up?
-        fsub qword ptr[g_dOne] // Fixup
-    SinFExit:
-        fmul qword ptr[g_dPi2] // Mul by 2 pi
-        fsubp st(1), st(0) // Subtract and clean up
-
-        fmul st(0), st(0) // Square the input
-        fld st(0)                              // Copy the Power of 2
-        fld qword ptr[g_dInverseCosineFactors] // Start iterating
-        fmul st(0), st(1) // fInput*(1/2!)
-        faddp st(3), st(0) // fResult + fInput*(1/2!)
-        fmul st(0), st(1) // Up the power by 2
-        fld qword ptr[g_dInverseCosineFactors + 8]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseCosineFactors + 16]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseCosineFactors + 24]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseCosineFactors + 32]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseCosineFactors + 40]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseCosineFactors + 48]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseCosineFactors + 56]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseCosineFactors + 64]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmul st(0), st(1)
-        fld qword ptr[g_dInverseCosineFactors + 72]
-        fmul st(0), st(1)
-        faddp st(3), st(0)
-        fmulp st(1), st(0)
-        fmul qword ptr[g_dInverseCosineFactors + 80]
-        faddp st(1), st(0)
-        ret 8 // Clean up and exit
-    }
-    // clang-format on
-}
-// No MacOSX 32 bit intel version assembly version, since SSE builds quite
-// nicely
-#else
-double BURGER_API Burger::Cos(double dInput)
-{
-    // Start by rounding the radians to reduce the chance
-    // of floating point rounding errors
-    dInput = ModuloRadians(dInput);
-
-    // To calculate cosine...
-    // Note: ! is factoral so 2! = 1*2, and 4! = 1*2*3*4
-    // cos(x) = 1 - ((x^2)/ 2!) + ((x^4)/ 4!) - ((x^6)/ 6!) + ((x^8)/ 8!)
-    // Repeat the pattern by reversing the sign of the addition and adding
-    // 2 for the square for every iteration
-
-    const double dInput2 = (dInput * dInput);
-
-    //- ((x^2)/ 2!)
-    double dResult = (dInput2 * g_dInverseCosineFactors[0]) + 1.0;
-    //+ ((x^4)/ 4!)
-    double dInputFactorial = dInput2 * dInput2;
-    dResult = (dInputFactorial * g_dInverseCosineFactors[1]) + dResult;
-    //- ((x^6)/ 6!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseCosineFactors[2]) + dResult;
-    //+ ((x^8)/ 8!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseCosineFactors[3]) + dResult;
-    //- ((x^10)/ 10!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseCosineFactors[4]) + dResult;
-    //+ ((x^12)/ 12!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseCosineFactors[5]) + dResult;
-    //- ((x^14)/ 14!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseCosineFactors[6]) + dResult;
-    //+ ((x^16)/ 16!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseCosineFactors[7]) + dResult;
-    //- ((x^18)/ 18!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseCosineFactors[8]) + dResult;
-    //+ ((x^20)/ 20!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseCosineFactors[9]) + dResult;
-    //- ((x^22)/ 22!)
-    dInputFactorial = dInputFactorial * dInput2;
-    dResult = (dInputFactorial * g_dInverseCosineFactors[10]) + dResult;
-    return dResult;
-}
-#endif
-
-float BURGER_API Burger::Tan(float fInput)
+float BURGER_API Burger::Tan(float fInput) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -5340,12 +4136,12 @@ float BURGER_API Burger::Tan(float fInput)
 #endif
 }
 
-double BURGER_API Burger::Tan(double dInput)
+double BURGER_API Burger::Tan(double dInput) BURGER_NOEXCEPT
 {
     return tan(dInput);
 }
 
-float BURGER_API Burger::ASin(float fInput)
+float BURGER_API Burger::ASin(float fInput) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -5355,12 +4151,12 @@ float BURGER_API Burger::ASin(float fInput)
 #endif
 }
 
-double BURGER_API Burger::ASin(double dInput)
+double BURGER_API Burger::ASin(double dInput) BURGER_NOEXCEPT
 {
     return asin(dInput);
 }
 
-float BURGER_API Burger::ACos(float fInput)
+float BURGER_API Burger::ACos(float fInput) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -5370,12 +4166,12 @@ float BURGER_API Burger::ACos(float fInput)
 #endif
 }
 
-double BURGER_API Burger::ACos(double dInput)
+double BURGER_API Burger::ACos(double dInput) BURGER_NOEXCEPT
 {
     return acos(dInput);
 }
 
-float BURGER_API Burger::ATan(float fInput)
+float BURGER_API Burger::ATan(float fInput) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -5385,12 +4181,12 @@ float BURGER_API Burger::ATan(float fInput)
 #endif
 }
 
-double BURGER_API Burger::ATan(double dInput)
+double BURGER_API Burger::ATan(double dInput) BURGER_NOEXCEPT
 {
     return atan(dInput);
 }
 
-float BURGER_API Burger::ATan2(float fSin, float fCos)
+float BURGER_API Burger::ATan2(float fSin, float fCos) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -5400,7 +4196,7 @@ float BURGER_API Burger::ATan2(float fSin, float fCos)
 #endif
 }
 
-double BURGER_API Burger::ATan2(double dSin, double dCos)
+double BURGER_API Burger::ATan2(double dSin, double dCos) BURGER_NOEXCEPT
 {
     return atan2(dSin, dCos);
 }
@@ -5420,7 +4216,7 @@ double BURGER_API Burger::Pow(double dX, double dY) BURGER_NOEXCEPT
     return pow(dX, dY);
 }
 
-float BURGER_API Burger::Exp(float fInput)
+float BURGER_API Burger::Exp(float fInput) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -5430,7 +4226,7 @@ float BURGER_API Burger::Exp(float fInput)
 #endif
 }
 
-double BURGER_API Burger::Exp(double dInput)
+double BURGER_API Burger::Exp(double dInput) BURGER_NOEXCEPT
 {
     return exp(dInput);
 }
@@ -5452,12 +4248,12 @@ double BURGER_API Burger::Log(double dInput) BURGER_NOEXCEPT
 
 static const float LN_2 = 1.44269504088896340736f;
 
-float BURGER_API Burger::Log2(float fInput)
+float BURGER_API Burger::Log2(float fInput) BURGER_NOEXCEPT
 {
     return Log(fInput) * LN_2;
 }
 
-double BURGER_API Burger::Log2(double dInput)
+double BURGER_API Burger::Log2(double dInput) BURGER_NOEXCEPT
 {
     return Log(dInput) * 1.44269504088896340736;
 }
@@ -5477,7 +4273,7 @@ double BURGER_API Burger::Log10(double dInput) BURGER_NOEXCEPT
     return log10(dInput);
 }
 
-float BURGER_API Burger::Modf(float fInput, float* pInteger)
+float BURGER_API Burger::Modf(float fInput, float* pInteger) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -5492,12 +4288,12 @@ float BURGER_API Burger::Modf(float fInput, float* pInteger)
 #endif
 }
 
-double BURGER_API Burger::Modf(double dInput, double* pInteger)
+double BURGER_API Burger::Modf(double dInput, double* pInteger) BURGER_NOEXCEPT
 {
     return modf(dInput, pInteger);
 }
 
-float BURGER_API Burger::Fmod(float fInput, float fDivisor)
+float BURGER_API Burger::Fmod(float fInput, float fDivisor) BURGER_NOEXCEPT
 {
 // Watcom and Mac Class StdC do not have the fast version
 #if defined(BURGER_WATCOM) || (defined(BURGER_MAC) && defined(__MATH_H__))
@@ -5507,7 +4303,7 @@ float BURGER_API Burger::Fmod(float fInput, float fDivisor)
 #endif
 }
 
-double BURGER_API Burger::Fmod(double dInput, double dDivisor)
+double BURGER_API Burger::Fmod(double dInput, double dDivisor) BURGER_NOEXCEPT
 {
     return fmod(dInput, dDivisor);
 }
@@ -5525,7 +4321,7 @@ double BURGER_API Burger::Fmod(double dInput, double dDivisor)
 
 ***************************************/
 
-double BURGER_API Burger::BigEndianLoadExtended(const Float80Bit pInput)
+double BURGER_API Burger::BigEndianLoadExtended(const Float80Bit pInput) BURGER_NOEXCEPT
 {
     // Union to expose the double
     union {
@@ -5594,7 +4390,7 @@ double BURGER_API Burger::BigEndianLoadExtended(const Float80Bit pInput)
 
 ***************************************/
 
-double BURGER_API Burger::LittleEndianLoadExtended(const Float80Bit pInput)
+double BURGER_API Burger::LittleEndianLoadExtended(const Float80Bit pInput) BURGER_NOEXCEPT
 {
     // Union to expose the double
     union {
@@ -5665,7 +4461,7 @@ double BURGER_API Burger::LittleEndianLoadExtended(const Float80Bit pInput)
 
 ***************************************/
 
-long BURGER_API Burger::ConvertToDirectSoundVolume(uint_t uInput)
+long BURGER_API Burger::ConvertToDirectSoundVolume(uint_t uInput) BURGER_NOEXCEPT
 {
     long lResult;
     // Anything softer than this is pretty much silence
@@ -5700,7 +4496,7 @@ long BURGER_API Burger::ConvertToDirectSoundVolume(uint_t uInput)
 
 ***************************************/
 
-long BURGER_API Burger::ConvertToDirectSoundVolume(float fInput)
+long BURGER_API Burger::ConvertToDirectSoundVolume(float fInput) BURGER_NOEXCEPT
 {
     long lResult;
     // Anything softer than this is pretty much silence

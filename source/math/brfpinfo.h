@@ -75,19 +75,19 @@ public:
 	explicit FPInfo(Word16 sValue);
 	explicit FPInfo(float fValue);
 	explicit FPInfo(double dValue);
-	BURGER_INLINE Word64 GetMantissa(void) const { return m_uMantissa; }
-	BURGER_INLINE Word GetBiasedExponent(void) const { return m_uBiasedExponent; }
-	BURGER_INLINE Int GetExponent(void) const { return m_iExponent; }
-	BURGER_INLINE Word GetMantissaBitCount(void) const { return m_uMantissaBitCount; }
-	BURGER_INLINE Word GetExponentBitCount(void) const { return m_uExponentBitCount; }
-	BURGER_INLINE Word IsValid(void) const { return (m_uFlags&cFlagValid)!=0; }
-	BURGER_INLINE Word IsNegative(void) const { return (m_uFlags&cFlagNegative)!=0; }
-	BURGER_INLINE Word IsZero(void) const { return (m_uFlags&cFlagZero)!=0; }
-	BURGER_INLINE Word IsNAN(void) const { return (m_uFlags&cFlagNAN)!=0; }
-	BURGER_INLINE Word IsQNAN(void) const { return (m_uFlags&cFlagQNAN)!=0; }
-	BURGER_INLINE Word IsIndefiniteNAN(void) const { return (m_uFlags&cFlagIndefiniteNAN)!=0; }
-	BURGER_INLINE Word IsInfinity(void) const { return (m_uFlags&cFlagInfinity)!=0; }
-	BURGER_INLINE Word IsSubNormal(void) const { return (m_uFlags&cFlagSubNormal)!=0; }
+	BURGER_INLINE Word64 GetMantissa(void) const BURGER_NOEXCEPT { return m_uMantissa; }
+	BURGER_INLINE Word GetBiasedExponent(void) const BURGER_NOEXCEPT { return m_uBiasedExponent; }
+	BURGER_INLINE Int GetExponent(void) const BURGER_NOEXCEPT { return m_iExponent; }
+	BURGER_INLINE Word GetMantissaBitCount(void) const BURGER_NOEXCEPT { return m_uMantissaBitCount; }
+	BURGER_INLINE Word GetExponentBitCount(void) const BURGER_NOEXCEPT { return m_uExponentBitCount; }
+	BURGER_INLINE Word IsValid(void) const BURGER_NOEXCEPT { return (m_uFlags&cFlagValid)!=0; }
+	BURGER_INLINE Word IsNegative(void) const BURGER_NOEXCEPT { return (m_uFlags&cFlagNegative)!=0; }
+	BURGER_INLINE Word IsZero(void) const BURGER_NOEXCEPT { return (m_uFlags&cFlagZero)!=0; }
+	BURGER_INLINE Word IsNAN(void) const BURGER_NOEXCEPT { return (m_uFlags&cFlagNAN)!=0; }
+	BURGER_INLINE Word IsQNAN(void) const BURGER_NOEXCEPT { return (m_uFlags&cFlagQNAN)!=0; }
+	BURGER_INLINE Word IsIndefiniteNAN(void) const BURGER_NOEXCEPT { return (m_uFlags&cFlagIndefiniteNAN)!=0; }
+	BURGER_INLINE Word IsInfinity(void) const BURGER_NOEXCEPT { return (m_uFlags&cFlagInfinity)!=0; }
+	BURGER_INLINE Word IsSubNormal(void) const BURGER_NOEXCEPT { return (m_uFlags&cFlagSubNormal)!=0; }
 	void BURGER_API InitHalf(Word16 sValue);
 	void BURGER_API InitFloat(float fValue);
 	void BURGER_API InitDouble(double dValue);

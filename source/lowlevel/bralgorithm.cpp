@@ -211,6 +211,46 @@
 
 /*! ************************************
 
+    \fn Burger::round_up_pointer(T*,uintptr_t uSize)
+    \brief Align a pointer.
+
+    A template to force the alignment value of a pointer. The template will use
+    a specified alignment or auto detect the alignment of the data referenced by
+    the pointer.
+
+    \tparam T Pointer of object to align.
+    \param pInput Pointer to force alignment
+    \param uSize Power of 2 alignment to use.
+
+    \return Newly aligned pointer.
+
+    Example of use:
+    \code
+
+    // Pointer is already aligned
+    char *pWork;
+    pWork = reinterpret_cast<char *>(0);
+    pWork = Burger::round_up_pointer(pWork,8);
+    pWork == reinterpret_cast<char *>(0);
+
+    // Force 8 byte alignment
+    pWork = reinterpret_cast<char *>(1);
+    pWork = Burger::round_up_pointer(pWork,8);
+    pWork == reinterpret_cast<char *>(8);
+
+    // Force alignment of data automatically by using the alignment of the data
+    //of the pointer.
+    pWork = reinterpret_cast<uint32_t *>(1);
+    pWork = Burger::round_up_pointer(pWork);
+    pWork == reinterpret_cast<char *>(4);
+
+    \endcode
+    \sa alignment_of
+
+***************************************/
+
+/*! ************************************
+
     \struct Burger::default_delete
     \brief Delete an object using delete
 

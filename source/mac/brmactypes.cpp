@@ -153,6 +153,40 @@ uint_t BURGER_API Burger::Mac::IsQuickTimePowerPlugAvailable(void)
 
 /*! ************************************
 
+    \brief Return the version of Quickdraw.
+
+    Use Gestalt to test for what version of Quickdraw is available.
+
+    \return Version in the format of 0x0102 -> 1.2
+
+***************************************/
+
+uint_t BURGER_API Burger::Mac::GetQuickdrawVersion(void)
+{
+    Mac* pGlobals = &g_Globals;
+    uint_t uVersion;
+    if (!pGlobals->m_bQuickdrawVersionTested) {
+        long MyAnswer;
+
+        // Assume failure (Ancient Mac, like Mac 128K)
+        uVersion = gestaltOriginalQD;
+
+        // Get the version (Quickdraw always exists)
+        if (!Gestalt(gestaltQuickdrawVersion, &MyAnswer)) {
+            uVersion = static_cast<uint_t>(MyAnswer);
+        }
+
+        pGlobals->m_uQuickdrawVersion = uVersion;
+        pGlobals->m_bQuickdrawVersionTested = TRUE;
+    } else {
+        // Use the cached version
+        uVersion = pGlobals->m_uQuickdrawVersion;
+    }
+    return uVersion;
+}
+
+/*! ************************************
+
     \brief Return the version of AppleShare library.
 
     Ask the AppleShare library what version it is and return that value. The
@@ -722,6 +756,42 @@ uint32_t BURGER_API Burger::Mac::GetControlStripVersion(void)
         uVersion = pGlobals->m_uControlStripVersion;
     }
     return uVersion;
+}
+
+/*! ************************************
+
+    \brief Test for color Quickdraw
+
+    Check the version of quickdraw and if color is supported, return TRUE.
+
+    \return TRUE if color is supported.
+
+***************************************/
+
+uint_t BURGER_API Burger::Mac::HaveColorQuickDraw(void)
+{
+    return GetQuickdrawVersion() > gestaltOriginalQD;
+}
+
+/*! ************************************
+
+    \brief Test for color GrafPort
+
+    Check the version of the GrafPort and if color is supported, return TRUE.
+
+    \return TRUE if the GrafPort is really a CGrafPort.
+
+***************************************/
+
+uint_t BURGER_API Burger::Mac::IsColorGrafPort(const GrafPort* pInput)
+{
+#if defined(BURGER_MACCARBON)
+    BURGER_UNUSED(pInput);
+    return TRUE;
+#else
+    // Do a version check to detect for color
+    return reinterpret_cast<const CGrafPort*>(pInput)->portVersion < 0;
+#endif
 }
 
 #endif

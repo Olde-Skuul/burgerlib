@@ -214,7 +214,7 @@ extern char* BURGER_API GetFileExtension(const char* pInput);
 extern void BURGER_API SetFileExtension(
 	char* pInput, const char* pNewExtension);
 
-extern WordPtr BURGER_API StringLength(const char* pInput) BURGER_NOEXCEPT;
+extern uintptr_t BURGER_API StringLength(const char* pInput) BURGER_NOEXCEPT;
 extern WordPtr BURGER_API StringLength(const Word16* pInput);
 
 extern void BURGER_API StringCopy(char* pOutput, const char* pInput);

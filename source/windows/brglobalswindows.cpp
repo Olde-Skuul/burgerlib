@@ -1623,9 +1623,9 @@ void BURGER_API Burger::Globals::PumpMessages(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::LaunchURL(const char* pURL)
+uint_t BURGER_API Burger::Globals::LaunchURL(const char* pURL)
 {
-	Word uResult =
+	uint_t uResult =
 		(Windows::ShellExecuteOpen(pURL) > 32); // I launched if greater than 32
 	return uResult;
 }

@@ -99,7 +99,7 @@ Burger::Semaphore::Semaphore(Word32 uCount) :
 		// Use max
 		uMax = BURGER_MAXUINT;
 	}
-	m_pSemaphore = CreateSemaphoreW(NULL,static_cast<LONG>(uCount),static_cast<LONG>(uMax),NULL);
+	m_pSemaphore = CreateSemaphoreW(nullptr,static_cast<LONG>(uCount),static_cast<LONG>(uMax), nullptr);
 }
 
 /***************************************
@@ -113,7 +113,7 @@ Burger::Semaphore::~Semaphore()
 	HANDLE hSemaphore = m_pSemaphore;
 	if (hSemaphore) {
 		CloseHandle(hSemaphore);
-		m_pSemaphore = NULL;
+		m_pSemaphore = nullptr;
 	}
 	m_uCount = 0;
 }
@@ -170,7 +170,7 @@ Word BURGER_API Burger::Semaphore::Release(void)
 		// can execute before the call to ReleaseSemaphore()
 		// returns
 		AtomicPreIncrement(&m_uCount);
-		if (ReleaseSemaphore(hSemaphore,1,NULL)==FALSE) {
+		if (ReleaseSemaphore(hSemaphore,1, nullptr)==FALSE) {
 			// Error!!! Undo the AtomicPreIncrement()
 			AtomicPreDecrement(&m_uCount);
 		} else {
@@ -201,10 +201,10 @@ static DWORD WINAPI Dispatcher(LPVOID pThis)
 ***************************************/
 
 Burger::Thread::Thread() :
-	m_pFunction(NULL),
-	m_pData(NULL),
-	m_pSemaphore(NULL),
-	m_pThreadHandle(NULL),
+	m_pFunction(nullptr),
+	m_pData(nullptr),
+	m_pSemaphore(nullptr),
+	m_pThreadHandle(nullptr),
 	m_uThreadID(0),
 	m_uResult(BURGER_MAXUINT)
 {
@@ -217,10 +217,10 @@ Burger::Thread::Thread() :
 ***************************************/
 
 Burger::Thread::Thread(FunctionPtr pThread,void *pData) :
-	m_pFunction(NULL),
-	m_pData(NULL),
-	m_pSemaphore(NULL),
-	m_pThreadHandle(NULL),
+	m_pFunction(nullptr),
+	m_pData(nullptr),
+	m_pSemaphore(nullptr),
+	m_pThreadHandle(nullptr),
 	m_uThreadID(0),
 	m_uResult(BURGER_MAXUINT)
 {
@@ -255,7 +255,7 @@ Word BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
 		m_pSemaphore = &Temp;
 		DWORD uID;
 		// Start the thread
-		HANDLE hThread = CreateThread(NULL,0,Dispatcher,this,0,&uID);
+		HANDLE hThread = CreateThread(nullptr,0,Dispatcher,this,0,&uID);
 		if (hThread) {
 			// Ensure these are set up
 			m_uThreadID = uID;
@@ -263,7 +263,7 @@ Word BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
 			// Wait until the thread has started
 			Temp.Acquire();
 			// Kill the dangling pointer
-			m_pSemaphore = NULL;
+			m_pSemaphore = nullptr;
 
 			// All good!
 			uResult = 0;
@@ -289,7 +289,7 @@ Word BURGER_API Burger::Thread::Wait(void)
 		CloseHandle(m_pThreadHandle);
 		// Allow restarting
 		m_uThreadID = 0;
-		m_pThreadHandle = NULL;
+		m_pThreadHandle = nullptr;
 		// Shutdown fine?
 		if (uError==WAIT_OBJECT_0) {
 			uResult = 0;

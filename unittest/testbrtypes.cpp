@@ -696,6 +696,9 @@ static void BURGER_API ShowPlatformFeatures(uint_t uVerbose)
         uTest = Burger::Mac::IsQuickTimePowerPlugAvailable();
         Message("Burger::Mac::IsQuickTimePowerPlugAvailable() = %u", uTest);
 
+        uTest = Burger::Mac::GetQuickdrawVersion();
+        Message("Burger::Mac::GetQuickdrawVersion() = %04X", uTest);
+                
         uTest = Burger::Mac::GetAppleShareVersion();
         Message("Burger::Mac::GetAppleShareVersion() = %04X", uTest);
 

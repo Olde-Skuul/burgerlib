@@ -1,15 +1,16 @@
 /***************************************
 
-	Code library (DLL) manager
+    Code library (DLL) manager
 
-	MacOS version
+    MacOS version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -27,65 +28,65 @@
 
 /***************************************
 
-	Attempt to load in a shared library or DLL using
-	the standard paths. Return NULL if it fails
+    Attempt to load in a shared library or DLL using
+    the standard paths. Return NULL if it fails
 
 ***************************************/
 
 Word Burger::CodeLibrary::Init(const char* pFilename)
 {
-	Str255 TempName; // Copy of the "C" string as a PASCAL string
-	Str255 ErrStr;   // Returned error code if any
-	Ptr EntryPtr;	// Pointer to the fragment entry
-	CFragConnectionID ConnID;
+    Str255 TempName; // Copy of the "C" string as a PASCAL string
+    Str255 ErrStr;   // Returned error code if any
+    Ptr EntryPtr;    // Pointer to the fragment entry
+    CFragConnectionID ConnID;
 
-	/* This code only works for CFM functions */
-	Burger::CStringToPString(TempName, pFilename);
-	Word uResult = FALSE;
-	if (!GetSharedLibrary(TempName, kCompiledCFragArch, kLoadCFrag, &ConnID,
-			&EntryPtr, ErrStr)) {
-		m_pLibInstance = ConnID;
-		uResult = TRUE;
-	}
-	return uResult;
+    /* This code only works for CFM functions */
+    Burger::CStringToPString(TempName, pFilename);
+    Word uResult = FALSE;
+    if (!GetSharedLibrary(TempName, kCompiledCFragArch, kLoadCFrag, &ConnID,
+            &EntryPtr, ErrStr)) {
+        m_pLibInstance = ConnID;
+        uResult = TRUE;
+    }
+    return uResult;
 }
 
 /***************************************
 
-	Release a shared library
+    Release a shared library
 
 ***************************************/
 
 void Burger::CodeLibrary::Shutdown(void)
 {
-	if (m_pLibInstance) {
-		CloseConnection(reinterpret_cast<CFragConnectionID*>(&m_pLibInstance));
-		m_pLibInstance = NULL;
-	}
+    if (m_pLibInstance) {
+        CloseConnection(reinterpret_cast<CFragConnectionID*>(&m_pLibInstance));
+        m_pLibInstance = NULL;
+    }
 }
 
 /***************************************
 
-	Return a function pointer to a procedure or data
-	contained within a shared library
+    Return a function pointer to a procedure or data contained within a shared
+    library
 
 ***************************************/
 
 void* Burger::CodeLibrary::GetFunction(const char* pFunctionName)
 {
-	Str255 TempName; // Copy of the "C" string as a PASCAL string
-	Ptr ProcPtr;	 // Pointer to the function
-	void* pFunction = NULL;
+    Str255 TempName; // Copy of the "C" string as a PASCAL string
+    Ptr ProcPtr;     // Pointer to the function
+    void* pFunction = NULL;
 
-	// This code only works for CFM functions
-	if (pFunctionName && m_pLibInstance) {
-		Burger::CStringToPString(TempName, pFunctionName);
-		if (!FindSymbol(static_cast<OpaqueCFragConnectionID*>(m_pLibInstance),
-				TempName, &ProcPtr, 0)) {
-			pFunction = ProcPtr;
-		}
-	}
-	return pFunction;
+    // This code only works for CFM functions
+    if (pFunctionName && m_pLibInstance) {
+        Burger::CStringToPString(TempName, pFunctionName);
+        if (!FindSymbol(static_cast<OpaqueCFragConnectionID*>(m_pLibInstance),
+                TempName, &ProcPtr, 0)) {
+            pFunction = ProcPtr;
+        }
+    }
+    return pFunction;
 }
 
 #endif
@@ -94,159 +95,155 @@ void* Burger::CodeLibrary::GetFunction(const char* pFunctionName)
 
 /*! ************************************
 
-	\class Burger::CodeFramework
-	\brief Manage MacOSX / iOS Framework library files.
+    \class Burger::CodeFramework
+    \brief Manage MacOSX / iOS Framework library files.
 
-	Loading a Framework bundle on MacOSX and iOS
-	is managed with this generic class. Initialize it with a
-	call to Init(const char) and then call GetFunction(const char *)
-	to extract each and every pointer to the code
-	 or data contained within.
+    Loading a Framework bundle on MacOSX and iOS is managed with this generic
+    class. Initialize it with a call to Init(const char) and then call
+    GetFunction(const char *) to extract each and every pointer to the code or
+    data contained within.
 
-	If this class is shut down by the Shutdown() call or
-	the class going out of scope, all of
-	the pointers will become invalid and should never be used again.
+    If this class is shut down by the Shutdown() call or the class going out of
+    scope, all of the pointers will become invalid and should never be used
+    again.
 
-	\sa CodeLibrary
+    \sa CodeLibrary
 
 ***************************************/
 
 /*! ************************************
 
-	\brief Default constructor
+    \brief Default constructor
 
 ***************************************/
 
-Burger::CodeFramework::CodeFramework() : m_pBundle(NULL) {}
+Burger::CodeFramework::CodeFramework(): m_pBundle(NULL) {}
 
 /*! ************************************
 
-	\brief Default destructor
+    \brief Default destructor
 
-	If a Framework was loaded, it will be
-	released
+    If a Framework was loaded, it will be released
 
-	\sa Shutdown(void)
+    \sa Shutdown(void)
 
 ***************************************/
 
 Burger::CodeFramework::~CodeFramework()
 {
-	Shutdown();
+    Shutdown();
 }
 
 /*! ************************************
 
-	\brief Load a Framework
+    \brief Load a Framework
 
-	Attempt to load in a Framework using
-	the standard paths.
+    Attempt to load in a Framework using the standard paths.
 
-	\param pName Name of the Framework to load
-	\return Zero on success, non-zero on failure
+    \param pName Name of the Framework to load
+    \return Zero on success, non-zero on failure
 
 ***************************************/
 
 Burger::eError BURGER_API Burger::CodeFramework::Init(const char* pName)
 {
-	// Release any previous instance
-	Shutdown();
+    // Release any previous instance
+    Shutdown();
 
-	// Folder for the framework
-	FSRef frameworksFolderRef;
+    // Folder for the framework
+    FSRef frameworksFolderRef;
 
-	// Does the framework folder exist? (Only on a MacOS X install)
+    // Does the framework folder exist? (Only on a MacOS X install)
 
-	eError Result = static_cast<eError>(FSFindFolder(
-		kOnAppropriateDisk, kFrameworksFolderType, TRUE, &frameworksFolderRef));
+    eError Result = static_cast<eError>(FSFindFolder(
+        kOnAppropriateDisk, kFrameworksFolderType, TRUE, &frameworksFolderRef));
 
-	if (!Result) {
+    if (!Result) {
 
-		// Convert the FSRef into a URL
+        // Convert the FSRef into a URL
 
-		CFURLRef baseURL = CFURLCreateFromFSRef(0, &frameworksFolderRef);
+        CFURLRef baseURL = CFURLCreateFromFSRef(0, &frameworksFolderRef);
 
-		Result = kErrorOutOfMemory;
-		if (baseURL) {
+        Result = kErrorOutOfMemory;
+        if (baseURL) {
 
-			// Convert to a string ref
+            // Convert to a string ref
 
-			CFStringRef StringRef =
-				CFStringCreateWithCString(0, pName, kCFStringEncodingUTF8);
-			CFURLRef bundleURL = CFURLCreateCopyAppendingPathComponent(
-				0, baseURL, StringRef, FALSE);
+            CFStringRef StringRef =
+                CFStringCreateWithCString(0, pName, kCFStringEncodingUTF8);
+            CFURLRef bundleURL = CFURLCreateCopyAppendingPathComponent(
+                0, baseURL, StringRef, FALSE);
 
-			// Dispose of the string ref
-			CFRelease(StringRef);
+            // Dispose of the string ref
+            CFRelease(StringRef);
 
-			if (bundleURL) {
-				CFBundleRef bundleRef = CFBundleCreate(0, bundleURL);
-				if (bundleRef) {
-					if (!CFBundleLoadExecutable(bundleRef)) {
-						CFRelease(bundleRef);
-						Result = kErrorReadFailure;
-					} else {
-						m_pBundle = bundleRef;
-						Result = kErrorNone;
-					}
-				}
-				CFRelease(bundleURL);
-			}
-			CFRelease(baseURL);
-		}
-	}
-	return Result;
+            if (bundleURL) {
+                CFBundleRef bundleRef = CFBundleCreate(0, bundleURL);
+                if (bundleRef) {
+                    if (!CFBundleLoadExecutable(bundleRef)) {
+                        CFRelease(bundleRef);
+                        Result = kErrorReadFailure;
+                    } else {
+                        m_pBundle = bundleRef;
+                        Result = kErrorNone;
+                    }
+                }
+                CFRelease(bundleURL);
+            }
+            CFRelease(baseURL);
+        }
+    }
+    return Result;
 }
 
 /*! ************************************
 
-	\brief Release the Framework
+    \brief Release the Framework
 
-	If a Framework was loaded, it will be
-	released
+    If a Framework was loaded, it will be released
 
 ***************************************/
 
 void BURGER_API Burger::CodeFramework::Shutdown(void)
 {
-	if (m_pBundle) {
-		CFRelease(m_pBundle);
-		m_pBundle = NULL;
-	}
+    if (m_pBundle) {
+        CFRelease(m_pBundle);
+        m_pBundle = NULL;
+    }
 }
 
 /*! ************************************
 
-	\brief Locate a function pointer in a Framework
+    \brief Locate a function pointer in a Framework
 
-	Return a function pointer to a procedure or data
-	contained within a shared library
+    Return a function pointer to a procedure or data contained within a shared
+    library
 
-	\param pFunctionName Pointer to a "C" string in UTF-8
-		encoding of the function to locate.
-	\return \ref NULL on failure, or valid pointer on success
+    \param pFunctionName Pointer to a "C" string in UTF-8
+        encoding of the function to locate.
+    \return \ref NULL on failure, or valid pointer on success
 
 ***************************************/
 
 void* BURGER_API Burger::CodeFramework::GetFunction(const char* pFunctionName)
 {
-	// Assume failure
-	void* pResult = NULL;
+    // Assume failure
+    void* pResult = NULL;
 
-	// Is the lib valid?
-	if (m_pBundle) {
+    // Is the lib valid?
+    if (m_pBundle) {
 
-		// Convert to a string ref
-		CFStringRef StringRef =
-			CFStringCreateWithCString(0, pFunctionName, kCFStringEncodingUTF8);
+        // Convert to a string ref
+        CFStringRef StringRef =
+            CFStringCreateWithCString(0, pFunctionName, kCFStringEncodingUTF8);
 
-		// Get the function
-		pResult = CFBundleGetFunctionPointerForName(m_pBundle, StringRef);
+        // Get the function
+        pResult = CFBundleGetFunctionPointerForName(m_pBundle, StringRef);
 
-		// Dispose of the string ref
-		CFRelease(StringRef);
-	}
-	return pResult; /* Return 0 or the pointer */
+        // Dispose of the string ref
+        CFRelease(StringRef);
+    }
+    return pResult; /* Return 0 or the pointer */
 }
 
 #endif

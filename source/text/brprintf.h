@@ -763,7 +763,7 @@ extern IntPtr BURGER_API DebugSnprintf(char *pOutput,WordPtr uOutputSize,const c
 
 #if !defined(DOXYGEN)
 BURGER_INLINE IntPtr GetFormattedLength(const char *pFormat) { return GetFormattedLength(pFormat,0,nullptr); }
-BURGER_INLINE IntPtr SprintfUserAlloc(SafePrint::SprintfCallbackProc pCallback,void *pContext,Word bAddNull,const char *pFormat) { return SprintfUserAlloc(pCallback,pContext,bAddNull,pFormat,0,NULL); }
+BURGER_INLINE IntPtr SprintfUserAlloc(SafePrint::SprintfCallbackProc pCallback,void *pContext,Word bAddNull,const char *pFormat) { return SprintfUserAlloc(pCallback,pContext,bAddNull,pFormat,0,nullptr); }
 BURGER_INLINE IntPtr Sprintf(char *pOutput,const char *pFormat) { return Sprintf(pOutput,pFormat,0, nullptr); }
 BURGER_INLINE IntPtr Snprintf(char *pOutput,WordPtr uOutputSize,const char *pFormat) { return Snprintf(pOutput,uOutputSize,pFormat,0, nullptr); }
 BURGER_INLINE IntPtr Printf(const char* pFormat) { return Printf(pFormat,0, nullptr); }

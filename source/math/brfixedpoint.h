@@ -256,33 +256,33 @@ namespace Burger {
 
 #if defined(BURGER_ARM) || defined(BURGER_AMD64) || (defined(BURGER_X86) && !defined(BURGER_WINDOWS)) || defined(DOXYGEN)
 	BURGER_INLINE Int8 Abs(Int8 iInput) { if (iInput<0) { iInput=-iInput; } return iInput; }
-	BURGER_INLINE Int16 Abs(Int16 iInput) { if (iInput<0) { iInput=-iInput; } return iInput; }
-	BURGER_INLINE Int32 Abs(Int32 iInput) { if (iInput<0) { iInput=-iInput; } return iInput; }
-	BURGER_INLINE Int64 Abs(Int64 iInput) { if (iInput<0) { iInput=-iInput; } return iInput; }
-	BURGER_INLINE Int8 ClampZero(Int8 iInput) { if (iInput<0) { iInput=0; } return iInput; }
-	BURGER_INLINE Int16 ClampZero(Int16 iInput) { if (iInput<0) { iInput=0; } return iInput; }
-	BURGER_INLINE Int32 ClampZero(Int32 iInput) { if (iInput<0) { iInput=0; } return iInput; }
-	BURGER_INLINE Int64 ClampZero(Int64 iInput) { if (iInput<0) { iInput=0; } return iInput; }
+	BURGER_INLINE Int16 Abs(Int16 iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=-iInput; } return iInput; }
+	BURGER_INLINE Int32 Abs(Int32 iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=-iInput; } return iInput; }
+	BURGER_INLINE Int64 Abs(Int64 iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=-iInput; } return iInput; }
+	BURGER_INLINE Int8 ClampZero(Int8 iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
+	BURGER_INLINE Int16 ClampZero(Int16 iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
+	BURGER_INLINE Int32 ClampZero(Int32 iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
+	BURGER_INLINE Int64 ClampZero(Int64 iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
 #else
-	BURGER_INLINE Int8 Abs(Int8 iInput) { Int8 iMask = static_cast<Int8>(iInput>>7); return static_cast<Int8>((iInput^iMask)-iMask); }
-	BURGER_INLINE Int16 Abs(Int16 iInput) { Int16 iMask = static_cast<Int16>(iInput>>15); return static_cast<Int16>((iInput^iMask)-iMask); }
-	BURGER_INLINE Int32 Abs(Int32 iInput) { Int32 iMask = (iInput>>31); return (iInput^iMask)-iMask; }
-	BURGER_INLINE Int64 Abs(Int64 iInput) { Int64 iMask = (iInput>>63); return (iInput^iMask)-iMask; }
-	BURGER_INLINE Int8 ClampZero(Int8 iInput) { return static_cast<Int8>((~(iInput>>7))&iInput); }
-	BURGER_INLINE Int16 ClampZero(Int16 iInput) { return static_cast<Int16>((~(iInput>>15))&iInput); }
-	BURGER_INLINE Int32 ClampZero(Int32 iInput) { return (~(iInput>>31))&iInput; }
-	BURGER_INLINE Int64 ClampZero(Int64 iInput) { return (~(iInput>>63))&iInput; }
+	BURGER_INLINE int8_t Abs(int8_t iInput) BURGER_NOEXCEPT { const int8_t iMask = static_cast<int8_t>(iInput>>7); return static_cast<int8_t>((iInput^iMask)-iMask); }
+	BURGER_INLINE int16_t Abs(int16_t iInput) BURGER_NOEXCEPT { int16_t iMask = static_cast<int16_t>(iInput>>15); return static_cast<int16_t>((iInput^iMask)-iMask); }
+	BURGER_INLINE Int32 Abs(Int32 iInput) BURGER_NOEXCEPT { Int32 iMask = (iInput>>31); return (iInput^iMask)-iMask; }
+	BURGER_INLINE Int64 Abs(Int64 iInput) BURGER_NOEXCEPT { Int64 iMask = (iInput>>63); return (iInput^iMask)-iMask; }
+	BURGER_INLINE BURGER_CONSTEXPR int8_t ClampZero(int8_t iInput) BURGER_NOEXCEPT { return static_cast<int8_t>((~(iInput>>7))&iInput); }
+	BURGER_INLINE BURGER_CONSTEXPR int16_t ClampZero(int16_t iInput) BURGER_NOEXCEPT { return static_cast<int16_t>((~(iInput>>15))&iInput); }
+	BURGER_INLINE BURGER_CONSTEXPR Int32 ClampZero(Int32 iInput) BURGER_NOEXCEPT { return (~(iInput>>31))&iInput; }
+	BURGER_INLINE BURGER_CONSTEXPR Int64 ClampZero(Int64 iInput) BURGER_NOEXCEPT { return (~(iInput>>63))&iInput; }
 #endif
 
-	BURGER_INLINE Int8 Sign(Int8 iInput) { return static_cast<Int8>((iInput>>7) | static_cast<Int8>(static_cast<Word8>(-iInput)>>7U)); }
-	BURGER_INLINE Int16 Sign(Int16 iInput) { return static_cast<Int16>((iInput>>15) | static_cast<Int16>(static_cast<Word16>(-iInput)>>15U)); }
-	BURGER_INLINE Int32 Sign(Int32 iInput) { return (iInput>>31) | static_cast<Int32>(static_cast<Word32>(-iInput)>>31U); }
-	BURGER_INLINE Int64 Sign(Int64 iInput) { return (iInput>>63) | static_cast<Int64>(static_cast<Word64>(-iInput)>>63U); }
+	BURGER_INLINE BURGER_CONSTEXPR int8_t Sign(int8_t iInput) BURGER_NOEXCEPT { return static_cast<int8_t>((iInput>>7) | static_cast<int8_t>(static_cast<uint8_t>(-iInput)>>7U)); }
+	BURGER_INLINE BURGER_CONSTEXPR int16_t Sign(int16_t iInput) BURGER_NOEXCEPT { return static_cast<int16_t>((iInput>>15) | static_cast<int16_t>(static_cast<uint16_t>(-iInput)>>15U)); }
+	BURGER_INLINE BURGER_CONSTEXPR Int32 Sign(Int32 iInput) BURGER_NOEXCEPT { return (iInput>>31) | static_cast<Int32>(static_cast<Word32>(-iInput)>>31U); }
+	BURGER_INLINE BURGER_CONSTEXPR Int64 Sign(Int64 iInput) BURGER_NOEXCEPT { return (iInput>>63) | static_cast<Int64>(static_cast<Word64>(-iInput)>>63U); }
 
-	BURGER_INLINE Int32 Clamp(Int32 iInput,Int32 iMin,Int32 iMax) { iInput = Max(iInput,iMin); return Min(iInput,iMax); }
-	BURGER_INLINE Int64 Clamp(Int64 iInput,Int64 iMin,Int64 iMax) { iInput = Max(iInput,iMin); return Min(iInput,iMax); }
-	BURGER_INLINE Word32 Clamp(Word32 uInput,Word32 uMin,Word32 uMax) { uInput = Max(uInput,uMin); return Min(uInput,uMax); }
-	BURGER_INLINE Word64 Clamp(Word64 uInput,Word64 uMin,Word64 uMax) { uInput = Max(uInput,uMin); return Min(uInput,uMax); }
+	BURGER_INLINE Int32 Clamp(Int32 iInput,Int32 iMin,Int32 iMax) BURGER_NOEXCEPT { iInput = Max(iInput,iMin); return Min(iInput,iMax); }
+	BURGER_INLINE Int64 Clamp(Int64 iInput,Int64 iMin,Int64 iMax) BURGER_NOEXCEPT { iInput = Max(iInput,iMin); return Min(iInput,iMax); }
+	BURGER_INLINE Word32 Clamp(Word32 uInput,Word32 uMin,Word32 uMax) BURGER_NOEXCEPT { uInput = Max(uInput,uMin); return Min(uInput,uMax); }
+	BURGER_INLINE Word64 Clamp(Word64 uInput,Word64 uMin,Word64 uMax) BURGER_NOEXCEPT { uInput = Max(uInput,uMin); return Min(uInput,uMax); }
 
 #if defined(BURGER_WATCOM)
 	BURGER_INLINE Fixed32 FixedMultiply(Fixed32 fInput1,Fixed32 fInput2) { return BurgerFixedMathMultiply(fInput1,fInput2); }

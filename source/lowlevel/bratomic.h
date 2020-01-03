@@ -85,27 +85,27 @@ struct CPUID_t {
 	char m_BrandName[52];				///< 48 character full name of the CPU (Null terminated)
 	char m_HypervisorName[16];			///< 12 character full name of the hypervisor (Null terminated)
 	char m_HypervisorSignature[8];		///< 4 character hypervisor signature (Null terminated)
-	BURGER_INLINE Word HasRTSC(void) const { return m_uCPUID1EDX & 0x00000010U; }
-	BURGER_INLINE Word HasCMOV(void) const { return m_uCPUID1EDX & 0x00008000U; }
-	BURGER_INLINE Word HasMMX(void) const { return m_uCPUID1EDX & 0x00800000U; }
-	BURGER_INLINE Word HasSSE(void) const { return m_uCPUID1EDX & 0x02000000U; }
-	BURGER_INLINE Word HasSSE2(void) const { return m_uCPUID1EDX & 0x04000000U; }
-	BURGER_INLINE Word HasSSE3(void) const { return m_uCPUID1ECX & 0x00000001U; }
-	BURGER_INLINE Word HasSSSE3(void) const { return m_uCPUID1ECX & 0x00000200U; }
-	BURGER_INLINE Word HasSSE4a(void) const { return m_uCPUID80000001ECX & 0x00000040U; }
-	BURGER_INLINE Word HasSSE41(void) const { return m_uCPUID1ECX & 0x00080000U; }
-	BURGER_INLINE Word HasSSE42(void) const { return m_uCPUID1ECX & 0x00100000U; }
-	BURGER_INLINE Word HasMOVBE(void) const { return m_uCPUID1ECX & 0x00400000U; }
-	BURGER_INLINE Word HasAES(void) const { return m_uCPUID1ECX & 0x02000000U; }
-	BURGER_INLINE Word HasAVX(void) const { return m_uCPUID1ECX & 0x10000000U; }
-	BURGER_INLINE Word HasCMPXCHG16B(void) const { return m_uCPUID1ECX & 0x00002000U; }
-	BURGER_INLINE Word HasF16C(void) const { return m_uCPUID1ECX & 0x20000000U; }
-	BURGER_INLINE Word HasFMA3(void) const { return m_uCPUID1ECX & 0x00001000U; }
-	BURGER_INLINE Word HasFMA4(void) const { return m_uCPUID80000001ECX&0x00010000U; }
-	BURGER_INLINE Word HasLAHFSAHF(void) const { return m_uCPUID80000001ECX&0x00000001U; }
-	BURGER_INLINE Word HasPrefetchW(void) const { return m_uCPUID80000001ECX&0x00000100U; }
-	BURGER_INLINE Word Has3DNOW(void) const { return (m_uCPUType==CPU_AMD) && (m_uCPUID80000001EDX& 0x80000000U); }
-	BURGER_INLINE Word HasExtended3DNOW(void) const { return (m_uCPUType==CPU_AMD)&&(m_uCPUID80000001EDX&0x40000000U); }
+	BURGER_INLINE Word HasRTSC(void) const BURGER_NOEXCEPT { return m_uCPUID1EDX & 0x00000010U; }
+	BURGER_INLINE Word HasCMOV(void) const BURGER_NOEXCEPT { return m_uCPUID1EDX & 0x00008000U; }
+	BURGER_INLINE Word HasMMX(void) const BURGER_NOEXCEPT { return m_uCPUID1EDX & 0x00800000U; }
+	BURGER_INLINE Word HasSSE(void) const BURGER_NOEXCEPT { return m_uCPUID1EDX & 0x02000000U; }
+	BURGER_INLINE Word HasSSE2(void) const BURGER_NOEXCEPT { return m_uCPUID1EDX & 0x04000000U; }
+	BURGER_INLINE Word HasSSE3(void) const BURGER_NOEXCEPT { return m_uCPUID1ECX & 0x00000001U; }
+	BURGER_INLINE Word HasSSSE3(void) const BURGER_NOEXCEPT { return m_uCPUID1ECX & 0x00000200U; }
+	BURGER_INLINE Word HasSSE4a(void) const BURGER_NOEXCEPT { return m_uCPUID80000001ECX & 0x00000040U; }
+	BURGER_INLINE Word HasSSE41(void) const BURGER_NOEXCEPT { return m_uCPUID1ECX & 0x00080000U; }
+	BURGER_INLINE Word HasSSE42(void) const BURGER_NOEXCEPT { return m_uCPUID1ECX & 0x00100000U; }
+	BURGER_INLINE Word HasMOVBE(void) const BURGER_NOEXCEPT { return m_uCPUID1ECX & 0x00400000U; }
+	BURGER_INLINE Word HasAES(void) const BURGER_NOEXCEPT { return m_uCPUID1ECX & 0x02000000U; }
+	BURGER_INLINE Word HasAVX(void) const BURGER_NOEXCEPT { return m_uCPUID1ECX & 0x10000000U; }
+	BURGER_INLINE Word HasCMPXCHG16B(void) const BURGER_NOEXCEPT { return m_uCPUID1ECX & 0x00002000U; }
+	BURGER_INLINE Word HasF16C(void) const BURGER_NOEXCEPT { return m_uCPUID1ECX & 0x20000000U; }
+	BURGER_INLINE Word HasFMA3(void) const BURGER_NOEXCEPT { return m_uCPUID1ECX & 0x00001000U; }
+	BURGER_INLINE Word HasFMA4(void) const BURGER_NOEXCEPT { return m_uCPUID80000001ECX&0x00010000U; }
+	BURGER_INLINE Word HasLAHFSAHF(void) const BURGER_NOEXCEPT { return m_uCPUID80000001ECX&0x00000001U; }
+	BURGER_INLINE Word HasPrefetchW(void) const BURGER_NOEXCEPT { return m_uCPUID80000001ECX&0x00000100U; }
+	BURGER_INLINE Word Has3DNOW(void) const BURGER_NOEXCEPT { return (m_uCPUType==CPU_AMD) && (m_uCPUID80000001EDX& 0x80000000U); }
+	BURGER_INLINE Word HasExtended3DNOW(void) const BURGER_NOEXCEPT { return (m_uCPUType==CPU_AMD)&&(m_uCPUID80000001EDX&0x40000000U); }
 };
 
 extern void BURGER_API CPUID(CPUID_t *pOutput);

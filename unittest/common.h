@@ -37,8 +37,8 @@
 #define VERBOSE_ALL 0xFFFF
 
 extern void BURGER_ANSIAPI ReportFailure(
-    const char* pTemplate, uint_t uFailure, ...);
-extern void BURGER_ANSIAPI Message(const char* pMessage, ...);
+    const char* pTemplate, uint_t uFailure, ...) BURGER_NOEXCEPT;
+extern void BURGER_ANSIAPI Message(const char* pMessage, ...) BURGER_NOEXCEPT;
 extern void BURGER_API BlastBuffer(void* pOutput, uintptr_t uSize) BURGER_NOEXCEPT;
 extern uint_t BURGER_API VerifyBuffer(
     const void* pBuffer, uintptr_t uSize, const void* pInput, uintptr_t uSkip) BURGER_NOEXCEPT;

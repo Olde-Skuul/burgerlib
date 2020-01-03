@@ -43,6 +43,22 @@ public:
     NumberString(int64_t iInput, uint_t uFormat) BURGER_NOEXCEPT;
     NumberString(float fInput) BURGER_NOEXCEPT;
     NumberString(double dInput) BURGER_NOEXCEPT;
+
+#if defined(BURGER_HAS_WCHAR_T) || defined(DOXYGEN)
+    NumberString(wchar_t uInput) BURGER_NOEXCEPT;
+    NumberString(wchar_t uInput, uint_t uFormat) BURGER_NOEXCEPT;
+#endif
+
+#if defined(BURGER_INT_NOT_IN_STDINT) || defined(DOXYGEN)
+    NumberString(unsigned int uInput) BURGER_NOEXCEPT;
+    NumberString(unsigned int uInput, uint_t uFormat) BURGER_NOEXCEPT;
+#endif
+
+#if defined(BURGER_LONG_NOT_IN_STDINT) || defined(DOXYGEN)
+    NumberString(unsigned long uInput) BURGER_NOEXCEPT;
+    NumberString(unsigned long uInput, uint_t uFormat) BURGER_NOEXCEPT;
+#endif
+
     NumberString& operator=(uint32_t uInput) BURGER_NOEXCEPT;
     NumberString& operator=(int32_t iInput) BURGER_NOEXCEPT;
     NumberString& operator=(uint64_t uInput) BURGER_NOEXCEPT;
@@ -54,6 +70,10 @@ public:
         return m_Data;
     }
     BURGER_INLINE const char* GetPtr(void) const BURGER_NOEXCEPT
+    {
+        return m_Data;
+    }
+    BURGER_INLINE const char* c_str(void) const BURGER_NOEXCEPT
     {
         return m_Data;
     }

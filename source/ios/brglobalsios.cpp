@@ -23,7 +23,7 @@
  
 ***************************************/
 
-Word BURGER_API Burger::Globals::LaunchURL(const char *pURL)
+uint_t BURGER_API Burger::Globals::LaunchURL(const char *pURL)
 {
 	// Convert to an NSString
 	NSString *pString = [[NSString alloc] initWithCString:pURL encoding:NSUTF8StringEncoding];

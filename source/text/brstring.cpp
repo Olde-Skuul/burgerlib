@@ -202,7 +202,7 @@ Burger::String::String(const Word16 *pInput) BURGER_NOEXCEPT
 	if (!pInput) {
 		pInput = g_EmptyString16;
 	}
-	WordPtr uInputLength = UTF8::FromUTF16(NULL,0,pInput);
+	WordPtr uInputLength = UTF8::FromUTF16(nullptr,0,pInput);
 	char *pWork = m_Raw;
 	if (uInputLength>=BUFFERSIZE) {				// Buffer big enough?
 		pWork = static_cast<char *>(Alloc(uInputLength+1));
@@ -236,7 +236,7 @@ Burger::String::String(const Word32 *pInput) BURGER_NOEXCEPT
 		uTemp = 0;
 		pInput = &uTemp;
 	}
-	WordPtr uInputLength = UTF8::FromUTF32(NULL,0,pInput);
+	WordPtr uInputLength = UTF8::FromUTF32(nullptr,0,pInput);
 	char *pWork = m_Raw;
 	if (uInputLength>=BUFFERSIZE) {				// Buffer big enough?
 		pWork = static_cast<char *>(Alloc(uInputLength+1));
@@ -717,7 +717,7 @@ Burger::eError BURGER_API Burger::String::Set(const Word16 *pInput)
 		pInput = g_EmptyString16;
 	}
 	char *pDest = m_Raw;
-	WordPtr uInputLength = UTF8::FromUTF16(NULL,0,pInput);		// Length of the new string
+	WordPtr uInputLength = UTF8::FromUTF16(nullptr,0,pInput);		// Length of the new string
 	if (uInputLength>=BUFFERSIZE) {		// Buffer big enough?
 		pDest = static_cast<char *>(Alloc(uInputLength+1));
 		if (!pDest) {					// Oh oh...
@@ -757,7 +757,7 @@ Burger::eError BURGER_API Burger::String::Set(const Word16 *pInput,WordPtr uLeng
 		pInput = g_EmptyString16;
 	}
 	char *pDest = m_Raw;
-	WordPtr uInputLength = UTF8::FromUTF16(NULL,0,pInput,uLength<<1U);		// Length of the new string
+	WordPtr uInputLength = UTF8::FromUTF16(nullptr,0,pInput,uLength<<1U);		// Length of the new string
 	if (uInputLength>=BUFFERSIZE) {		// Buffer big enough?
 		pDest = static_cast<char *>(Alloc(uInputLength+1));
 		if (!pDest) {					// Oh oh...
@@ -888,7 +888,7 @@ Burger::String & Burger::String::operator =(const Burger::String &rInput)
 
 ***************************************/
 
-Burger::String & Burger::String::operator =(const char *pInput)
+Burger::String & Burger::String::operator =(const char *pInput) BURGER_NOEXCEPT
 {
 	if (!pInput) {
 		pInput = g_EmptyString;
@@ -1006,7 +1006,7 @@ Burger::String & Burger::String::operator +=(const Burger::String &rInput)
 
 ***************************************/
 
-Burger::String & Burger::String::operator +=(const char *pInput)
+Burger::String & Burger::String::operator +=(const char *pInput) BURGER_NOEXCEPT
 {
 	if (pInput) {
 		WordPtr uInputLen2 = StringLength(pInput);
@@ -1224,7 +1224,7 @@ char * BURGER_API Burger::String::StringString(const char *pInput) const
 	if (pInput) {
 		return Burger::StringString(m_pData,pInput);
 	}
-	return NULL;
+	return nullptr;
 }
 
 /*! ************************************
@@ -2183,7 +2183,7 @@ void BURGER_API Burger::String::InitFormattedString(const char* pFormat,WordPtr 
 {
 	// Remove any previously allocated buffer
 	Clear();
-	if ((pFormat == NULL) || (*pFormat == 0x00)) {
+	if ((pFormat == nullptr) || (*pFormat == 0x00)) {
 		return;
 	}
 

@@ -440,7 +440,7 @@ char* BURGER_API Burger::NumberToAsciiHex(
 ***************************************/
 
 char* BURGER_API Burger::NumberToAscii(
-	char* pOutput, Word32 uInput, Word uDigits)
+	char* pOutput, Word32 uInput, Word uDigits) BURGER_NOEXCEPT
 {
 	Word uIndex = uDigits & 0xFFU; // How many digits to process?
 	if ((uIndex - 1U) >= 9U) { // Out of bounds? Or default? (Allow 1-10 only)
@@ -527,7 +527,7 @@ char* BURGER_API Burger::NumberToAscii(
 ***************************************/
 
 char* BURGER_API Burger::NumberToAscii(
-	char* pOutput, Int32 iInput, Word uDigits)
+	char* pOutput, Int32 iInput, Word uDigits) BURGER_NOEXCEPT
 {
 	if (iInput < 0) {	 // Negative?
 		iInput = -iInput; // Convert to positive
@@ -574,7 +574,7 @@ char* BURGER_API Burger::NumberToAscii(
 ***************************************/
 
 char* BURGER_API Burger::NumberToAscii(
-	char* pOutput, Word64 uInput, Word uDigits)
+	char* pOutput, Word64 uInput, Word uDigits) BURGER_NOEXCEPT
 {
 	Word uIndex = uDigits & 0xFFU; // How many digits to process?
 	if ((uIndex - 1U) >= 19U) { // Out of bounds? Or default? (Allow 1-10 only)
@@ -661,7 +661,7 @@ char* BURGER_API Burger::NumberToAscii(
 ***************************************/
 
 char* BURGER_API Burger::NumberToAscii(
-	char* pOutput, Int64 iInput, Word uDigits)
+	char* pOutput, Int64 iInput, Word uDigits) BURGER_NOEXCEPT
 {
 	if (iInput < 0) {	 // Negative?
 		iInput = -iInput; // Convert to positive
@@ -697,7 +697,7 @@ char* BURGER_API Burger::NumberToAscii(
 
 ***************************************/
 
-char* BURGER_API Burger::NumberToAscii(char* pOutput, float fInput)
+char* BURGER_API Burger::NumberToAscii(char* pOutput, float fInput) BURGER_NOEXCEPT
 {
 #if defined(BURGER_XBOX360) || (defined(BURGER_WINDOWS) && (defined(_MSC_VER) && (_MSC_VER>=1400)))
 	int iLength = sprintf_s(pOutput, 32, "%f", static_cast<double>(fInput));
@@ -737,7 +737,7 @@ Burger::NumberToAsciiHex(char *,Word32,Word)
 
 ***************************************/
 
-char* BURGER_API Burger::NumberToAscii(char* pOutput, double dInput)
+char* BURGER_API Burger::NumberToAscii(char* pOutput, double dInput) BURGER_NOEXCEPT
 {
 #if defined(BURGER_XBOX360) || (defined(BURGER_WINDOWS) && (defined(_MSC_VER) && (_MSC_VER>=1400)))
 	int iLength = sprintf_s(pOutput, 32, "%f", dInput);

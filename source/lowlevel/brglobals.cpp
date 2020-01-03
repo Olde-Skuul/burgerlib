@@ -346,7 +346,7 @@ Word32 BURGER_API Burger::Globals::VersionBuild(void)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-Word BURGER_API Burger::Globals::LaunchURL(const char * /* pURL */)
+uint_t BURGER_API Burger::Globals::LaunchURL(const char * /* pURL */)
 {
 	return TRUE;		// Unimplemented
 }

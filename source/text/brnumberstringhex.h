@@ -28,24 +28,25 @@ class NumberStringHex {
 private:
 	char m_Data[32];		///< String buffer
 public:
-	NumberStringHex() { m_Data[0] = 0; }
-	NumberStringHex(Word32 uInput);
-	NumberStringHex(Word32 uInput,Word uFormat);
-	NumberStringHex(Word64 uInput);
-	NumberStringHex(Word64 uInput,Word uFormat);
+	NumberStringHex() BURGER_NOEXCEPT { m_Data[0] = 0; }
+	NumberStringHex(uint32_t uInput);
+	NumberStringHex(uint32_t uInput,uint_t uFormat);
+	NumberStringHex(uint64_t uInput);
+	NumberStringHex(uint64_t uInput, uint_t uFormat);
 	NumberStringHex(float fInput);
 	NumberStringHex(double dInput);
-	NumberStringHex & operator = (Word32 uInput);
-	NumberStringHex & operator = (Word64 uInput);
+	NumberStringHex & operator = (uint32_t uInput);
+	NumberStringHex & operator = (uint64_t uInput);
 	NumberStringHex & operator = (float fInput);
 	NumberStringHex & operator = (double dInput);
-	BURGER_INLINE operator const char *() const { return m_Data; }
-	BURGER_INLINE const char *GetPtr(void) const { return m_Data; }
-	BURGER_INLINE char operator[](WordPtr uIndex) const { return m_Data[uIndex]; }
-	BURGER_INLINE const char &operator[](WordPtr uIndex) { return m_Data[uIndex]; }
-	BURGER_INLINE void Clear(void) { m_Data[0] = 0; }
-	BURGER_INLINE Word IsEmpty(void) const { return !m_Data[0]; }
-	BURGER_INLINE WordPtr GetLength(void) const { return Burger::StringLength(m_Data); }
+	BURGER_INLINE operator const char *() const BURGER_NOEXCEPT { return m_Data; }
+	BURGER_INLINE const char *GetPtr(void) const BURGER_NOEXCEPT { return m_Data; }
+    BURGER_INLINE const char* c_str(void) const BURGER_NOEXCEPT { return m_Data; }
+	BURGER_INLINE char operator[](uintptr_t uIndex) const BURGER_NOEXCEPT { return m_Data[uIndex]; }
+	BURGER_INLINE const char &operator[](uintptr_t uIndex) BURGER_NOEXCEPT { return m_Data[uIndex]; }
+	BURGER_INLINE void Clear(void) BURGER_NOEXCEPT { m_Data[0] = 0; }
+	BURGER_INLINE uint_t IsEmpty(void) const BURGER_NOEXCEPT { return !m_Data[0]; }
+	BURGER_INLINE uintptr_t GetLength(void) const BURGER_NOEXCEPT { return Burger::StringLength(m_Data); }
 };
 }
 /* END */

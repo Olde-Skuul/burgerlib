@@ -163,6 +163,14 @@ struct is_same<T, T> {
 };
 #endif
 
+template<typename T>
+T* round_up_pointer(
+    T* pInput, uintptr_t uSize = alignment_of<T>::value) BURGER_NOEXCEPT
+{
+    return reinterpret_cast<T*>(
+        (reinterpret_cast<uintptr_t>(pInput) + (uSize - 1)) & (~(uSize - 1)));
+}
+
 // Default deleter for std::delete
 template<class T>
 struct default_delete {

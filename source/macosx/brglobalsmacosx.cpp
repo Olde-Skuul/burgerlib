@@ -551,7 +551,7 @@ int Burger::Globals::NumberFromKey(
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::GetMacOSVersion(void)
+uint_t BURGER_API Burger::Globals::GetMacOSVersion(void)
 {
 	int selector[2];
 
@@ -602,7 +602,7 @@ Word BURGER_API Burger::Globals::GetMacOSVersion(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::LaunchURL(const char* pURL)
+uint_t BURGER_API Burger::Globals::LaunchURL(const char* pURL)
 {
 	// Convert the string to a URL
 	CFURLRef URLReference =
@@ -662,7 +662,7 @@ int BURGER_API Burger::Globals::ExecuteTool(
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::GetQuickTimeVersion(void)
+uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void)
 {
 	Globals* pGlobals = &g_Globals; // Get the pointer to the singleton
 	if (!pGlobals->m_bQuickTimeVersionValid) {

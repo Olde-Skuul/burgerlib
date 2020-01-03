@@ -506,7 +506,7 @@ HINSTANCE BURGER_API Burger::Globals::QTLoadLibrary(const char* pDLLName)
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::GetQuickTimeVersion(void)
+uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void)
 {
 	char PathName[1024 + 32];
 

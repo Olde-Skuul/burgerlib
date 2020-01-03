@@ -111,7 +111,7 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 
 #if !defined(BURGER_PPC)
 		// MacOSX Version 10.10 or higher uses a new API
-		Word uOSVersion = Globals::GetMacOSVersion();
+		uint_t uOSVersion = Globals::GetMacOSVersion();
 #endif
 
 		int eError = 0;

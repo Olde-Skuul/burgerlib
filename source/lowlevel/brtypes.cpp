@@ -2348,7 +2348,7 @@ line of processors.
     For C++17 or higher compilers, or those that support the equivalent, insert
     the [[maybe_unused]] attribute to the code.
 
-    \sa BURGER_NODISCARD or BURGER_FALLTHROUGH
+    \sa BURGER_NODISCARD, BURGER_USED or BURGER_FALLTHROUGH
 
 ***************************************/
 
@@ -2360,7 +2360,7 @@ line of processors.
     For C++17 or higher compilers, or those that support the equivalent, insert
     the [[nodiscard]] attribute to the code.
 
-    \sa BURGER_MAYBE_UNUSED or BURGER_FALLTHROUGH
+    \sa BURGER_MAYBE_UNUSED, BURGER_USED or BURGER_FALLTHROUGH
 
 ***************************************/
 
@@ -2371,6 +2371,19 @@ line of processors.
 
     For C++17 or higher compilers, or those that support the equivalent, insert
     the [[fallthrough]] attribute to the code.
+
+    \sa BURGER_NODISCARD or BURGER_MAYBE_UNUSED
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_USED
+    \brief Mark with __attribute__((used))
+
+    Some compilers remove functions and variables that are not used by the
+    program. To force a function or variable to be compiled and linked into the
+    final product, mark it with this macro.
 
     \sa BURGER_NODISCARD or BURGER_MAYBE_UNUSED
 

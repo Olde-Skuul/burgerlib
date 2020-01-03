@@ -155,10 +155,10 @@ public:
 	eError BURGER_API SetBufferSize(WordPtr uSize) BURGER_NOEXCEPT;
 
 	String& operator=(const String& rInput);
-	String& operator=(const char* pInput);
+	String& operator=(const char* pInput) BURGER_NOEXCEPT;
 	String& operator=(char cInput);
 	String& operator+=(const String& rInput);
-	String& operator+=(const char* pInput);
+	String& operator+=(const char* pInput) BURGER_NOEXCEPT;
 	String& operator+=(char cInput);
 	BURGER_INLINE String operator()(WordPtr uStart, WordPtr uEnd) const BURGER_NOEXCEPT
 	{

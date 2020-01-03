@@ -2945,7 +2945,7 @@ void BURGER_API Burger::SetFileExtension(
 	!defined(DOXYGEN)
 
 // clang-format off
-BURGER_DECLSPECNAKED WordPtr BURGER_API Burger::StringLength(
+BURGER_DECLSPECNAKED uintptr_t BURGER_API Burger::StringLength(
 	const char* /* pInput */) BURGER_NOEXCEPT
 {
 	BURGER_ASM
@@ -3023,21 +3023,21 @@ DoAlign:			// Pre-align
 // And it compiles to excellent ARM code
 //
 
-WordPtr BURGER_API Burger::StringLength(const char* pInput) BURGER_NOEXCEPT
+uintptr_t BURGER_API Burger::StringLength(const char* pInput) BURGER_NOEXCEPT
 {
-	Word32 uSample;  // Needed for the endian neutral version
-	Word32 uAddTemp; // Temp for the vector add test
+	uint32_t uSample;  // Needed for the endian neutral version
+    uint32_t uAddTemp; // Temp for the vector add test
 
 	const char* pWork = pInput;
 
 	// Get the address and see if it is already aligned
-	WordPtr uCount = reinterpret_cast<WordPtr>(pInput) & 3;
+	uintptr_t uCount = reinterpret_cast<uintptr_t>(pInput) & 3;
 	if (uCount) { // Nope, perform a phony first fetch
 		pWork = pWork -
 			uCount;   // Adjust the start pointer to align by 4 (Backwards)
 		uCount <<= 3; // 1,2,3 -> 8,16,24
 		uSample =
-			reinterpret_cast<const Word32*>(pWork)[0]; // Get the first longword
+			reinterpret_cast<const uint32_t*>(pWork)[0]; // Get the first longword
 		pWork += 4;
 		// Make 0xFFFFFF00, 0xFFFF0000 or 0xFF000000 for 1,2,3 (little)
 #if defined(BURGER_LITTLEENDIAN)
@@ -3061,14 +3061,14 @@ WordPtr BURGER_API Burger::StringLength(const char* pInput) BURGER_NOEXCEPT
 	// This is the main loop
 	do {
 		uSample =
-			reinterpret_cast<const Word32*>(pWork)[0]; // Fetch the longword
+			reinterpret_cast<const uint32_t*>(pWork)[0]; // Fetch the longword
 		pWork += 4;									   // Accept the 4 bytes
 		uAddTemp =
 			uSample + 0xFEFEFEFFU;		 // Do the vector addition for 0x01-0x80
 		uAddTemp &= (~uSample);			 // Perform the xor test for 0x80-0xFF
 	} while (!(uAddTemp & 0x80808080U)); // All bytes are non-zero, loop
 Skip1:;
-	uCount = static_cast<WordPtr>(pWork - pInput);
+	uCount = static_cast<uintptr_t>(pWork - pInput);
 #if defined(BURGER_LITTLEENDIAN)
 	if (!(uSample & 0xFF)) { // Was the first byte the zero one?
 		return uCount - 4;   // Adjust result and exit

@@ -1,14 +1,15 @@
 /***************************************
 
-	Typedefs specific to the Xbox 360
+    Typedefs specific to the Xbox 360
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+    
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #ifndef __BRXBOX360TYPES_H__
@@ -23,7 +24,9 @@
 #endif
 
 /* BEGIN */
+
 #if defined(BURGER_XBOX360) && !defined(DOXYGEN)
+
 struct Direct3D;
 struct D3DDevice;
 struct D3DStateBlock;
@@ -52,8 +55,8 @@ struct _FILETIME;
 struct _GUID;
 struct tagPOINT;
 struct tagRECT;
-namespace Burger {
-struct CRITICAL_SECTION {
+
+struct BurgerCRITICAL_SECTION {
 	union {
 		Word32 RawEvent[4];
 	} Synchronization;
@@ -61,7 +64,7 @@ struct CRITICAL_SECTION {
 	Word32 RecursionCount;
 	void *OwningThread;
 };
-}
+
 #endif
 /* END */
 

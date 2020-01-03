@@ -40,12 +40,12 @@ class CodeLibrary {
     BURGER_DISABLE_COPY(CodeLibrary);
 	void *m_pLibInstance;			///< Instance of the code library
 public:
-	CodeLibrary() : m_pLibInstance(NULL) {}
+	CodeLibrary() : m_pLibInstance(nullptr) {}
 	~CodeLibrary() { Shutdown(); }
 	Word Init(const char *pFilename);
 	void Shutdown(void);
 	void *GetFunction(const char *pFunctionName);
-	BURGER_INLINE Word IsInitialized(void) const { return m_pLibInstance!=NULL; }
+	BURGER_INLINE Word IsInitialized(void) const { return m_pLibInstance!=nullptr; }
 };
 
 #if ((defined(BURGER_MAC) && TARGET_API_MAC_CARBON) || defined(BURGER_MACOSX)) || defined(DOXYGEN)

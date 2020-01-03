@@ -630,6 +630,89 @@ static uint_t BURGER_API Testice_not(void)
 
     return uFailure;
 }
+
+/***************************************
+
+    Test round_up_pointer<>
+
+***************************************/
+
+struct round_up_test_t {
+    uintptr_t m_uPtr;
+    uintptr_t m_uAlign;
+    uintptr_t m_uResult;
+};
+
+static const round_up_test_t g_round_up_tests[] = {{0, 2, 0}, {1, 2, 2},
+    {2, 2, 2}, {0, 1, 0}, {1, 1, 1}, {2, 1, 2}, {1, 8, 8},
+    {9834893, 4, 9834896}};
+
+static uint_t BURGER_API Testround_up_pointer(void)
+{
+    uint_t uFailure = FALSE;
+    const round_up_test_t* pWork = g_round_up_tests;
+    uintptr_t uCount = BURGER_ARRAYSIZE(g_round_up_tests);
+    do {
+        double* pReturn = Burger::round_up_pointer(
+            reinterpret_cast<double*>(pWork->m_uPtr), pWork->m_uAlign);
+        uint_t uTest = pReturn != reinterpret_cast<double*>(pWork->m_uResult);
+        uFailure |= uTest;
+        if (uTest) {
+            Burger::String Text(
+                "Burger::round_up_pointer((double *)0x%016llX,0x%016llX) = 0x%016llX, expected 0x%016llX",
+                pWork->m_uPtr, pWork->m_uAlign,
+                reinterpret_cast<uintptr_t>(pReturn), pWork->m_uResult);
+            ReportFailure(Text.GetPtr(), uTest);
+        }
+
+        short* pReturn2 = Burger::round_up_pointer(
+            reinterpret_cast<short*>(pWork->m_uPtr), pWork->m_uAlign);
+        uTest = pReturn2 != reinterpret_cast<short*>(pWork->m_uResult);
+        uFailure |= uTest;
+        if (uTest) {
+            Burger::String Text(
+                "Burger::round_up_pointer((short *)0x%016llX,0x%016llX) = 0x%016llX, expected 0x%016llX",
+                pWork->m_uPtr, pWork->m_uAlign,
+                reinterpret_cast<uintptr_t>(pReturn2), pWork->m_uResult);
+            ReportFailure(Text.GetPtr(), uTest);
+        }
+
+        ++pWork;
+    } while (--uCount);
+
+    uCount = 0;
+    do {
+        double* pReturn =
+            Burger::round_up_pointer(reinterpret_cast<double*>(uCount));
+        uintptr_t uExpected = (uCount + 7) & (~7);
+        uint_t uTest = pReturn != reinterpret_cast<double*>(uExpected);
+        uFailure |= uTest;
+        if (uTest) {
+            Burger::String Text(
+                "Burger::round_up_pointer((double *)0x%016llX) = 0x%016llX, expected 0x%016llX",
+                pWork->m_uPtr, reinterpret_cast<uintptr_t>(pReturn), uExpected);
+            ReportFailure(Text.GetPtr(), uTest);
+        }
+    } while (++uCount < 17);
+
+    uCount = 0;
+    do {
+        short* pReturn =
+            Burger::round_up_pointer(reinterpret_cast<short*>(uCount));
+        uintptr_t uExpected = (uCount + 1) & (~1);
+        uint_t uTest = pReturn != reinterpret_cast<short*>(uExpected);
+        uFailure |= uTest;
+        if (uTest) {
+            Burger::String Text(
+                "Burger::round_up_pointer((double *)0x%016llX) = 0x%016llX, expected 0x%016llX",
+                pWork->m_uPtr, reinterpret_cast<uintptr_t>(pReturn), uExpected);
+            ReportFailure(Text.GetPtr(), uTest);
+        }
+    } while (++uCount < 17);
+
+    return uFailure;
+}
+
 /***************************************
 
     Test algorithms
@@ -659,6 +742,7 @@ uint_t BURGER_API TestBralgorithm(uint_t uVerbose)
     uResult |= Testice_eq();
     uResult |= Testice_ne();
     uResult |= Testice_not();
+    uResult |= Testround_up_pointer();
 
     if (!uResult && (uVerbose & VERBOSE_MSG)) {
         Message("Passed all Algorithm tests!");
