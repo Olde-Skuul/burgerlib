@@ -67,42 +67,43 @@ public:
     void BURGER_API SkipForward(WordPtr uOffset);
     void BURGER_API SkipBack(WordPtr uOffset);
     void BURGER_API SetMark(WordPtr uOffset);
-    BURGER_INLINE const Word8* GetPtr(void) const
+
+    BURGER_INLINE const uint8_t* GetPtr(void) const BURGER_NOEXCEPT
     {
         return m_pWork;
     }
-    BURGER_INLINE WordPtr GetMark(void) const
+    BURGER_INLINE uintptr_t GetMark(void) const BURGER_NOEXCEPT
     {
         return static_cast<WordPtr>(m_pWork - m_pData);
     }
-    BURGER_INLINE WordPtr GetSize(void) const
+    BURGER_INLINE uintptr_t GetSize(void) const BURGER_NOEXCEPT
     {
         return m_uBufferSize;
     }
-    BURGER_INLINE Word IsEmpty(void) const
+    BURGER_INLINE uint_t IsEmpty(void) const BURGER_NOEXCEPT
     {
         return m_pWork >= m_pEndOfBuffer;
     }
-    BURGER_INLINE WordPtr BytesRemaining(void) const
+    BURGER_INLINE uintptr_t BytesRemaining(void) const BURGER_NOEXCEPT
     {
-        return static_cast<WordPtr>(m_pEndOfBuffer - m_pWork);
+        return static_cast<uintptr_t>(m_pEndOfBuffer - m_pWork);
     }
-    void BURGER_API GetString(char* pOutput, WordPtr uOutputSize);
+    void BURGER_API GetString(char* pOutput, uintptr_t uOutputSize);
     void BURGER_API GetString(String* pOutput);
-    void BURGER_API GetCString(char* pOutput, WordPtr uOutputSize);
-    void BURGER_API GetPString(char* pOutput, WordPtr uOutputSize);
-    Word8 BURGER_API GetByte(void);
-    Word16 BURGER_API GetShort(void);
-    Word16 BURGER_API GetBigShort(void);
-    Word32 BURGER_API GetWord32(void);
-    Word32 BURGER_API GetBigWord32(void);
-    Word64 BURGER_API GetWord64(void);
-    Word64 BURGER_API GetBigWord64(void);
+    void BURGER_API GetCString(char* pOutput, uintptr_t uOutputSize);
+    void BURGER_API GetPString(char* pOutput, uintptr_t uOutputSize);
+    uint8_t BURGER_API GetByte(void) BURGER_NOEXCEPT;
+    uint16_t BURGER_API GetShort(void) BURGER_NOEXCEPT;
+    uint16_t BURGER_API GetBigShort(void) BURGER_NOEXCEPT;
+    uint32_t BURGER_API GetWord32(void) BURGER_NOEXCEPT;
+    uint32_t BURGER_API GetBigWord32(void) BURGER_NOEXCEPT;
+    uint64_t BURGER_API GetWord64(void);
+    uint64_t BURGER_API GetBigWord64(void);
     float BURGER_API GetFloat(void);
     float BURGER_API GetBigFloat(void);
     double BURGER_API GetDouble(void);
     double BURGER_API GetBigDouble(void);
-    WordPtr BURGER_API Get(void* pOutput, WordPtr uOutputSize);
+    uintptr_t BURGER_API Get(void* pOutput, uintptr_t uOutputSize);
     Word BURGER_API Get(RGBWord8_t* pOutput);
     Word BURGER_API Get(RGBAWord8_t* pOutput);
     Word BURGER_API Get(Vector2D_t* pOutput);

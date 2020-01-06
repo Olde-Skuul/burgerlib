@@ -1,13 +1,14 @@
 /***************************************
 
-	Texture for rendering class, DirectX9 version
+    Texture for rendering class, DirectX9 version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -16,13 +17,14 @@
 
 #include "brglobalmemorymanager.h"
 #include "brdisplay.h"
+#include "brmemoryfunctions.h"
 #define NONET
 #include <xtl.h>
 
 /*! ************************************
 
 	\brief Default constructor
-	
+
 	Initialize to an empty image
 
 ***************************************/
@@ -56,7 +58,7 @@ Burger::Texture::Texture(eWrapping uWrapping,eFilter uFilter) :
 /*! ************************************
 
 	\brief Default destructor
-	
+
 	Release all data
 
 	\sa Shutdown(void)

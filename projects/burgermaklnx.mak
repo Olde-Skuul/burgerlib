@@ -324,6 +324,7 @@ OBJS= bradler16.o \
 	brshape8bit.o \
 	brsimplearray.o \
 	brsimplestring.o \
+	brsinecosine.o \
 	brsmartpointer.o \
 	brsound.o \
 	brsoundbufferrez.o \

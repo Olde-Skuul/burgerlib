@@ -30,7 +30,7 @@
 
 ***************************************/
 
-void Burger::TimeDate_t::GetTime(void)
+void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 {
     DateTimeRec MyDate; // MacOS time structure
     ::GetTime(&MyDate); // Call MacOS

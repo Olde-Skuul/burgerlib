@@ -29,23 +29,26 @@
 
 ***************************************/
 
-void Burger::TimeDate_t::GetTime(void)
+void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 {
 	CFTimeZoneRef pTimeZone = CFTimeZoneCopySystem();
 	if (pTimeZone) {
 		CFAbsoluteTime dTime = CFAbsoluteTimeGetCurrent();
 		CFGregorianDate TimeRec =
 			CFAbsoluteTimeGetGregorianDate(dTime, pTimeZone);
-		m_uYear = static_cast<Word>(TimeRec.year);
-		m_bMonth = static_cast<Word8>(TimeRec.month);
-		m_bDay = static_cast<Word8>(TimeRec.day);
-		m_bHour = static_cast<Word8>(TimeRec.hour);
-		m_bMinute = static_cast<Word8>(TimeRec.minute);
-		m_bSecond = static_cast<Word8>(TimeRec.second);
-		m_usMilliseconds = static_cast<Word16>(
+		m_uYear = static_cast<uint_t>(TimeRec.year);
+		m_bMonth = static_cast<uint8_t>(TimeRec.month);
+		m_bDay = static_cast<uint8_t>(TimeRec.day);
+		m_bHour = static_cast<uint8_t>(TimeRec.hour);
+		m_bMinute = static_cast<uint8_t>(TimeRec.minute);
+		m_bSecond = static_cast<uint8_t>(TimeRec.second);
+		m_usMilliseconds = static_cast<uint16_t>(
 			(TimeRec.second - static_cast<double>(m_bSecond)) * 1000.0);
-		m_bDayOfWeek =
-			static_cast<Word8>(CFAbsoluteTimeGetDayOfWeek(dTime, pTimeZone));
+		SInt32 uDay = CFAbsoluteTimeGetDayOfWeek(dTime, pTimeZone);
+		if (uDay == 7) {
+			uDay = 0;
+		}
+		m_bDayOfWeek = static_cast<uint8_t>(uDay);
 		CFRelease(pTimeZone);
 	} else {
 		Clear();
@@ -62,10 +65,10 @@ void Burger::TimeDate_t::GetTime(void)
 
 ***************************************/
 
-Word Burger::TimeDate_t::Load(const UTCDateTime* pUTCDateTime)
+uint_t Burger::TimeDate_t::Load(const UTCDateTime* pUTCDateTime)
 {
 	Clear();
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	CFAbsoluteTime AbsTime;
 	if (!UCConvertUTCDateTimeToCFAbsoluteTime(pUTCDateTime, &AbsTime)) {
 		uResult = Load(AbsTime);
@@ -83,12 +86,12 @@ Word Burger::TimeDate_t::Load(const UTCDateTime* pUTCDateTime)
 
 ***************************************/
 
-Word Burger::TimeDate_t::Store(UTCDateTime* pUTCDateTime) const
+uint_t Burger::TimeDate_t::Store(UTCDateTime* pUTCDateTime) const
 {
 	CFAbsoluteTime AbsTime;
-	Word uResult = Store(&AbsTime);
+	uint_t uResult = Store(&AbsTime);
 	if (!uResult) {
-		uResult = static_cast<Word>(
+		uResult = static_cast<uint_t>(
 			UCConvertCFAbsoluteTimeToUTCDateTime(AbsTime, pUTCDateTime));
 	}
 	return uResult;
@@ -104,23 +107,26 @@ Word Burger::TimeDate_t::Store(UTCDateTime* pUTCDateTime) const
 
 ***************************************/
 
-Word Burger::TimeDate_t::Load(double dNSTimeInterval)
+uint_t Burger::TimeDate_t::Load(double dNSTimeInterval)
 {
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	CFTimeZoneRef pTimeZone = CFTimeZoneCopySystem();
 	if (pTimeZone) {
 		CFGregorianDate TimeRec =
 			CFAbsoluteTimeGetGregorianDate(dNSTimeInterval, pTimeZone);
-		m_uYear = static_cast<Word>(TimeRec.year);
-		m_bMonth = static_cast<Word8>(TimeRec.month);
-		m_bDay = static_cast<Word8>(TimeRec.day);
-		m_bHour = static_cast<Word8>(TimeRec.hour);
-		m_bMinute = static_cast<Word8>(TimeRec.minute);
-		m_bSecond = static_cast<Word8>(TimeRec.second);
-		m_usMilliseconds = static_cast<Word16>(
+		m_uYear = static_cast<uint_t>(TimeRec.year);
+		m_bMonth = static_cast<uint8_t>(TimeRec.month);
+		m_bDay = static_cast<uint8_t>(TimeRec.day);
+		m_bHour = static_cast<uint8_t>(TimeRec.hour);
+		m_bMinute = static_cast<uint8_t>(TimeRec.minute);
+		m_bSecond = static_cast<uint8_t>(TimeRec.second);
+		m_usMilliseconds = static_cast<uint16_t>(
 			(TimeRec.second - static_cast<double>(m_bSecond)) * 1000.0);
-		m_bDayOfWeek = static_cast<Word8>(
-			CFAbsoluteTimeGetDayOfWeek(dNSTimeInterval, pTimeZone));
+		SInt32 uDay = CFAbsoluteTimeGetDayOfWeek(dNSTimeInterval, pTimeZone);
+		if (uDay == 7) {
+			uDay = 0;
+		}
+		m_bDayOfWeek = static_cast<uint8_t>(uDay);		
 		CFRelease(pTimeZone);
 		uResult = FALSE;
 	}
@@ -137,9 +143,9 @@ Word Burger::TimeDate_t::Load(double dNSTimeInterval)
 
 ***************************************/
 
-Word Burger::TimeDate_t::Store(double* pNSTimeInterval) const
+uint_t Burger::TimeDate_t::Store(double* pNSTimeInterval) const
 {
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	CFTimeZoneRef pTimeZone = CFTimeZoneCopySystem();
 	if (pTimeZone) {
 		CFGregorianDate TimeRec;

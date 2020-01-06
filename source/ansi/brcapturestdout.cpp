@@ -139,12 +139,10 @@ Burger::eError BURGER_API Burger::CaptureStdout::Init(
     eError uError = Shutdown();
     if (uError == kErrorNone) {
 
+        // Most platforms support Posix, use it.
+#if defined(USE_POSIX)
         // Assume error
         uError = kErrorNoMoreFileDescriptors;
-
-        // Most platforms support Posix, use it.
-
-#if defined(USE_POSIX)
 
         // Create the pipes with a specific buffer
         int Pipes[2];
@@ -158,8 +156,7 @@ Burger::eError BURGER_API Burger::CaptureStdout::Init(
         // Since the parameter is only 32 bit, handle the rare overflow case.
 
 #if defined(BURGER_64BITCPU)
-        uBufferSize =
-            Burger::Min(uBufferSize, static_cast<uintptr_t>(UINT_MAX));
+        uBufferSize = Min(uBufferSize, static_cast<uintptr_t>(UINT_MAX));
 #endif
 
         if (_pipe(Pipes, static_cast<unsigned int>(uBufferSize), O_BINARY) !=
@@ -224,6 +221,7 @@ Burger::eError BURGER_API Burger::CaptureStdout::Init(
             ppDest[3] = pSource->ref_con;
             pSource->ref_con = reinterpret_cast<std::__ref_con>(this);
 #else
+            // Older MSL support
             ppDest[3] = pSource->idle_proc;
             pSource->idle_proc = reinterpret_cast<std::__idle_proc>(this);
 #endif
@@ -237,6 +235,9 @@ Burger::eError BURGER_API Burger::CaptureStdout::Init(
         // Initialized just fine
         uError = kErrorNone;
 
+#else
+        // Not supported
+        uError = kErrorNotSupportedOnThisPlatform;
 #endif
     }
     return uError;
@@ -254,8 +255,7 @@ Burger::eError BURGER_API Burger::CaptureStdout::Init(
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::CaptureStdout::Shutdown(
-    void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::CaptureStdout::Shutdown(void) BURGER_NOEXCEPT
 {
     // Flush the output (To ensure everything is captured)
     fflush(stdout);

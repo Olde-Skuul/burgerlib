@@ -2,12 +2,12 @@
 
     Typedefs specific to the Xbox 360
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
     It is released under an MIT Open Source license. Please see LICENSE for
     license details. Yes, you can use it in a commercial title without paying
     anything, just give me a credit.
-    
+
     Please? It's not like I'm asking you for money!
 
 ***************************************/
@@ -52,17 +52,18 @@ struct D3DCommandBuffer;
 struct D3DAsyncCommandBufferCall;
 struct D3DOcclusionQueryBatch;
 struct _FILETIME;
+struct _SYSTEMTIME;
 struct _GUID;
 struct tagPOINT;
 struct tagRECT;
 
 struct BurgerCRITICAL_SECTION {
-	union {
-		Word32 RawEvent[4];
-	} Synchronization;
-	Word32 LockCount;
-	Word32 RecursionCount;
-	void *OwningThread;
+    union {
+        uint32_t RawEvent[4];
+    } Synchronization;
+    uint32_t LockCount;
+    uint32_t RecursionCount;
+    void* OwningThread;
 };
 
 #endif

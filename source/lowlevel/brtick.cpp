@@ -382,7 +382,7 @@ void BURGER_API Burger::FloatTimer::Reset(void)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-float BURGER_API Burger::FloatTimer::GetTime(void)
+float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 {
 	float fResult;
 

@@ -175,6 +175,7 @@
 		A5A549BEA78B4A7CB2C5787B /* brlinkedlistobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC7988CE2FA43602FD96F85C /* brlinkedlistobject.cpp */; };
 		A7FE5316F529B5A50867A298 /* brflashavm2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F4902B0660A9A646921CE8D /* brflashavm2.cpp */; };
 		A83622FEF6F6206B72CFA6A9 /* brimportit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 329C139EE86D6AEF5753AA0A /* brimportit.cpp */; };
+		A855E08AE5B83323D4F43C5C /* brsinecosine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94441F3FFABFEBB6CF6EF4F2 /* brsinecosine.cpp */; };
 		ADB086DDCD43BB2E8F729DFA /* brlocalization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45DB5C3D6043B8833C26813B /* brlocalization.cpp */; };
 		AE070FB020D93930A404D157 /* brdisplayopengl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 633F1396031A685EA7F3558E /* brdisplayopengl.cpp */; };
 		AED099E0B879EF3A3AD89191 /* brdxt3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9B718D561CF6048E4501BE95 /* brdxt3.cpp */; };
@@ -549,6 +550,7 @@
 		93A9FA4DE7B9202121620FE6 /* testbrtypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = testbrtypes.cpp; path = ../unittest/testbrtypes.cpp; sourceTree = SOURCE_ROOT; };
 		93C85ADEE38198DA3C3DBB87 /* testbrmatrix4d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = testbrmatrix4d.cpp; path = ../unittest/testbrmatrix4d.cpp; sourceTree = SOURCE_ROOT; };
 		9428DE91B59DC3AEE4A2DA71 /* brfiledds.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = brfiledds.cpp; path = ../source/file/brfiledds.cpp; sourceTree = SOURCE_ROOT; };
+		94441F3FFABFEBB6CF6EF4F2 /* brsinecosine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = brsinecosine.cpp; path = ../source/math/brsinecosine.cpp; sourceTree = SOURCE_ROOT; };
 		94AEA26DDAA7AC0FE049C4B2 /* brglobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = brglobals.h; path = ../source/lowlevel/brglobals.h; sourceTree = SOURCE_ROOT; };
 		957F7268BCFABFC0E258709B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		95B6DC6D1226FCE10E845941 /* testbrfileloaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = testbrfileloaders.h; path = ../unittest/testbrfileloaders.h; sourceTree = SOURCE_ROOT; };
@@ -1203,6 +1205,7 @@
 				3AD90E8395FB06191B37216E /* brmatrix4d.h */,
 				5702F0B7B237D90E9E3325C1 /* brmp3math.cpp */,
 				ECF96C87E7915EDBDEEEF4C0 /* brmp3math.h */,
+				94441F3FFABFEBB6CF6EF4F2 /* brsinecosine.cpp */,
 				870160953A9F12109B55EDFB /* brvector2d.cpp */,
 				CB6E3265CA7115CB28B3421A /* brvector2d.h */,
 				5786553DCC430A643024488F /* brvector3d.cpp */,
@@ -1678,6 +1681,7 @@
 				A529889C048C2171B39837C7 /* brshape8bit.cpp in Sources */,
 				5940E73B7229031C8BD081B3 /* brsimplearray.cpp in Sources */,
 				77B2BFFCE49EDEEDA6920A30 /* brsimplestring.cpp in Sources */,
+				A855E08AE5B83323D4F43C5C /* brsinecosine.cpp in Sources */,
 				842C0BDB44014FAD18AE59F5 /* brsmartpointer.cpp in Sources */,
 				28A5FA8EEA47CB6DB6A12911 /* brsound.cpp in Sources */,
 				EFAD3C6D80780152A402CFD8 /* brsoundbufferrez.cpp in Sources */,

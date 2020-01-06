@@ -1864,6 +1864,9 @@
 					RelativePath="..\source\math\brmp3math.h">
 				</File>
 				<File
+					RelativePath="..\source\math\brsinecosine.cpp">
+				</File>
+				<File
 					RelativePath="..\source\math\brvector2d.cpp">
 				</File>
 				<File

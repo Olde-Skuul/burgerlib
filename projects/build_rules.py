@@ -84,6 +84,11 @@ BURGER_LIB_WIIU = (
     '../source/wiiu',
 )
 
+## Nintendo Switch specific code
+BURGER_LIB_SWITCH = (
+    '../source/switch',
+)
+
 ## Microsoft Xbox 360 specific code
 BURGER_LIB_XBOX_360 = (
     '../source/xbox360',
@@ -154,6 +159,8 @@ ARG_LISTS = [
     ('xbox360', 'burger', 'library', ['vs2010']),
     ('xbox360', 'unittests', 'console', ['vs2010']),
     ('wiiu', 'burger', 'library', ['vs2013']),
+    ('switch', 'burger', 'library', ['vs2017']),
+    ('switch', 'unittests', 'app', ['vs2017']),
     ('shield', 'burger', 'library', ['vs2015']),
     ('msdos', 'burger', 'library', ['watcom']),
     ('macosx', 'burger', 'library', ['xcode3', 'xcode5']),
@@ -178,9 +185,7 @@ def do_generate(working_directory):
     """
 
     ARG_LISTS_TEST = [
-        ('msdos', 'burger', 'library', ['codeblocks']),
-        ('windows', 'burger', 'library', ['codeblocks']),
-        ('windows', 'unittests', 'console', ['codeblocks'])
+        ('switch', 'burger', 'library', ['vs2017'])
     ]
 
     for item in ARG_LISTS:
@@ -394,6 +399,10 @@ def do_project(working_directory, project):
     if platform is PlatformTypes.wiiu:
         platform_folder = 'wiiu'
         source_folders_list.extend(BURGER_LIB_WIIU)
+
+    if platform is PlatformTypes.switch:
+        platform_folder = 'switch'
+        source_folders_list.extend(BURGER_LIB_SWITCH)
 
     # Add property files for unittests or burgerlib
     if project.name == 'unittests':

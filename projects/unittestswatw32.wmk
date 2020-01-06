@@ -398,6 +398,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brshape8bit.obj &
 	$(A)/brsimplearray.obj &
 	$(A)/brsimplestring.obj &
+	$(A)/brsinecosine.obj &
 	$(A)/brsmartpointer.obj &
 	$(A)/brsound.obj &
 	$(A)/brsoundbufferrez.obj &

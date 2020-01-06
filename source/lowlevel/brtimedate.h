@@ -1,13 +1,14 @@
 /***************************************
 
-	Time Manager Class
+    Time Manager Class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -16,6 +17,10 @@
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
+#endif
+
+#ifndef __BRERROR_H__
+#include "brerror.h"
 #endif
 
 #ifndef __BROUTPUTMEMORYSTREAM_H__
@@ -55,60 +60,88 @@ struct timespec;
 namespace Burger {
 
 struct TimeDate_t {
-	Word32 m_uYear;				///< Year "2009"
-	Word16 m_usMilliseconds;	///< 0-999
-	Word8 m_bMonth;				///< 1-12
-	Word8 m_bDay;				///< 1-31
-	Word8 m_bDayOfWeek;			///< 0-6
-	Word8 m_bHour;				///< 0-23
-	Word8 m_bMinute;			///< 0-59
-	Word8 m_bSecond;			///< 0-59
+    uint32_t m_uYear;          ///< Year "2009"
+    uint16_t m_usMilliseconds; ///< 0-999
+    uint8_t m_bMonth;          ///< 1-12
+    uint8_t m_bDay;            ///< 1-31
+    uint8_t m_bDayOfWeek;      ///< 0-6
+    uint8_t m_bHour;           ///< 0-23
+    uint8_t m_bMinute;         ///< 0-59
+    uint8_t m_bSecond;         ///< 0-59
 
-	void Clear(void);
-	void GetTime(void);
-	void TimeToString(char *pOutput) const;
-	void TimeToStringPM(char *pOutput) const;
-	void DateToString(char *pOutput) const;
-	void DateToStringVerbose(char *pOutput) const;
-	Word Read(Burger::InputMemoryStream *pInput);
-	Word Write(Burger::OutputMemoryStream *pOutput) const;
-	int Compare(const TimeDate_t *pInput) const;
-	BURGER_INLINE friend Word operator == (const TimeDate_t &rInput1,const TimeDate_t &rInput2) { return rInput1.Compare(&rInput2)==0; }
-	BURGER_INLINE friend Word operator != (const TimeDate_t &rInput1,const TimeDate_t &rInput2) { return rInput1.Compare(&rInput2)!=0; }
-	BURGER_INLINE friend Word operator > (const TimeDate_t &rInput1,const TimeDate_t &rInput2) { return rInput1.Compare(&rInput2)>0; }
-	BURGER_INLINE friend Word operator >= (const TimeDate_t &rInput1,const TimeDate_t &rInput2) { return rInput1.Compare(&rInput2)>=0; }
-	BURGER_INLINE friend Word operator < (const TimeDate_t &rInput1,const TimeDate_t &rInput2) { return rInput1.Compare(&rInput2)<0; }
-	BURGER_INLINE friend Word operator <= (const TimeDate_t &rInput1,const TimeDate_t &rInput2) { return rInput1.Compare(&rInput2)<=0; }
-	Word LoadTimeT(WordPtr uTimeT);
-	Word StoreTimeT(WordPtr *pTimeT) const;
-	Word Load(const timespec *pTimeSpec);
-	Word Store(timespec *pTimeSpec) const;
+    void Clear(void) BURGER_NOEXCEPT;
+    void GetTime(void) BURGER_NOEXCEPT;
+    void TimeToString(char* pOutput) const BURGER_NOEXCEPT;
+    void TimeToStringPM(char* pOutput) const BURGER_NOEXCEPT;
+    void DateToString(char* pOutput) const BURGER_NOEXCEPT;
+    void DateToStringVerbose(char* pOutput) const BURGER_NOEXCEPT;
+    eError Read(InputMemoryStream* pInput) BURGER_NOEXCEPT;
+    eError Write(OutputMemoryStream* pOutput) const BURGER_NOEXCEPT;
+    int Compare(const TimeDate_t* pInput) const BURGER_NOEXCEPT;
+
+    BURGER_INLINE friend uint_t operator==(
+        const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
+    {
+        return rInput1.Compare(&rInput2) == 0;
+    }
+    BURGER_INLINE friend uint_t operator!=(
+        const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
+    {
+        return rInput1.Compare(&rInput2) != 0;
+    }
+    BURGER_INLINE friend uint_t operator>(
+        const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
+    {
+        return rInput1.Compare(&rInput2) > 0;
+    }
+    BURGER_INLINE friend uint_t operator>=(
+        const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
+    {
+        return rInput1.Compare(&rInput2) >= 0;
+    }
+    BURGER_INLINE friend uint_t operator<(
+        const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
+    {
+        return rInput1.Compare(&rInput2) < 0;
+    }
+    BURGER_INLINE friend uint_t operator<=(
+        const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
+    {
+        return rInput1.Compare(&rInput2) <= 0;
+    }
+
+    eError LoadTimeT(uintptr_t uTimeT) BURGER_NOEXCEPT;
+    eError StoreTimeT(uintptr_t* pTimeT) const BURGER_NOEXCEPT;
+    eError Load(const timespec* pTimeSpec) BURGER_NOEXCEPT;
+    eError Store(timespec* pTimeSpec) const BURGER_NOEXCEPT;
 
 #if defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(DOXYGEN)
-	Word Load(const _FILETIME *pFileTime);
-	Word Store(_FILETIME *pFileTime) const;
+    Word Load(const _SYSTEMTIME* pSystemTime);
+    Word Store(_SYSTEMTIME* pSystemTime) const;
+    Word Load(const _FILETIME* pFileTime);
+    Word Store(_FILETIME* pFileTime) const;
 #endif
 
 #if defined(BURGER_MSDOS) || defined(DOXYGEN)
-	void LoadMSDOS(Word32 uMSDOSTime);
-	Word32 StoreMSDOS(void) const;
+    void LoadMSDOS(Word32 uMSDOSTime);
+    Word32 StoreMSDOS(void) const;
 #endif
 
 #if defined(BURGER_MACOS) || defined(DOXYGEN)
-	Word Load(const UTCDateTime *pUTCDateTime);
-	Word Store(UTCDateTime *pUTCDateTime) const;
-	void LoadFileSeconds(Word32 uTime);
-	Word32 GetFileSeconds(void) const;
+    Word Load(const UTCDateTime* pUTCDateTime);
+    Word Store(UTCDateTime* pUTCDateTime) const;
+    void LoadFileSeconds(Word32 uTime);
+    Word32 GetFileSeconds(void) const;
 #endif
 
 #if defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(DOXYGEN)
-	Word Load(double dNSTimeInterval);
-	Word Store(double *pNSTimeInterval) const;
+    Word Load(double dNSTimeInterval);
+    Word Store(double* pNSTimeInterval) const;
 #endif
 
 #if defined(BURGER_VITA) || defined(DOXYGEN)
-	Word Load(const SceDateTime *pSceDateTime);
-	Word Store(SceDateTime *pSceDateTime) const;
+    Word Load(const SceDateTime* pSceDateTime);
+    Word Store(SceDateTime* pSceDateTime) const;
 #endif
 };
 }

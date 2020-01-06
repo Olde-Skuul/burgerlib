@@ -624,7 +624,7 @@ void BURGER_API Burger::InputMemoryStream::GetPString(char *pOutput,WordPtr uOut
 
 ***************************************/
 
-Word8 BURGER_API Burger::InputMemoryStream::GetByte(void)
+uint8_t BURGER_API Burger::InputMemoryStream::GetByte(void) BURGER_NOEXCEPT
 {
 	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
 	const Word8 *pWork = m_pWork;
@@ -647,7 +647,7 @@ Word8 BURGER_API Burger::InputMemoryStream::GetByte(void)
 
 ***************************************/
 
-Word16 BURGER_API Burger::InputMemoryStream::GetShort(void)
+uint16_t BURGER_API Burger::InputMemoryStream::GetShort(void) BURGER_NOEXCEPT
 {
 	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
 	const Word8 *pWork = m_pWork;
@@ -674,7 +674,7 @@ Word16 BURGER_API Burger::InputMemoryStream::GetShort(void)
 
 ***************************************/
 
-Word16 BURGER_API Burger::InputMemoryStream::GetBigShort(void)
+uint16_t BURGER_API Burger::InputMemoryStream::GetBigShort(void) BURGER_NOEXCEPT
 {
 	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
 	const Word8 *pWork = m_pWork;
@@ -701,7 +701,7 @@ Word16 BURGER_API Burger::InputMemoryStream::GetBigShort(void)
 
 ***************************************/
 
-Word32 BURGER_API Burger::InputMemoryStream::GetWord32(void)
+uint32_t BURGER_API Burger::InputMemoryStream::GetWord32(void) BURGER_NOEXCEPT
 {
 	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
 	const Word8 *pWork = m_pWork;
@@ -728,7 +728,7 @@ Word32 BURGER_API Burger::InputMemoryStream::GetWord32(void)
 
 ***************************************/
 
-Word32 BURGER_API Burger::InputMemoryStream::GetBigWord32(void)
+uint32_t BURGER_API Burger::InputMemoryStream::GetBigWord32(void) BURGER_NOEXCEPT
 {
 	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
 	const Word8 *pWork = m_pWork;

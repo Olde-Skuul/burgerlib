@@ -1,6 +1,6 @@
 /***************************************
 
-    Fixed point math functions
+    Floating point math functions
 
     Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 

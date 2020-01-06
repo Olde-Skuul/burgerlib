@@ -27,7 +27,7 @@
  
  ***************************************/
 
-void Burger::TimeDate_t::GetTime(void)
+void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 {
 	CFTimeZoneRef pTimeZone = CFTimeZoneCopySystem();
 	if (pTimeZone) {

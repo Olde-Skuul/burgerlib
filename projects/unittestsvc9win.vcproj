@@ -3338,6 +3338,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\source\math\brsinecosine.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\source\math\brvector2d.cpp"
 					>
 				</File>

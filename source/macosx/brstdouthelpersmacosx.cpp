@@ -29,7 +29,7 @@
 
 ***************************************/
 
-void BURGER_API Burger::ClearConsole(void)
+void BURGER_API Burger::ClearConsole(void) BURGER_NOEXCEPT
 {
     if (!cur_term) {
         int result;

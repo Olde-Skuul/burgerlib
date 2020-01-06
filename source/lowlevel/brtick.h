@@ -57,7 +57,7 @@ public:
 	BURGER_INLINE float GetLastTime(void) const { return m_fElapsedTime; }
 	BURGER_INLINE Word IsPaused(void) const { return m_bPaused; }
 	void BURGER_API Reset(void);
-	float BURGER_API GetTime(void);
+	float BURGER_API GetTime(void) BURGER_NOEXCEPT;
 	void BURGER_API Pause(void);
 	void BURGER_API Unpause(void);
 };

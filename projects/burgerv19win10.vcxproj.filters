@@ -1099,6 +1099,9 @@
     <ClCompile Include="..\source\math\brmp3math.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\math\brsinecosine.cpp">
+      <Filter>source\math</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\math\brvector2d.cpp">
       <Filter>source\math</Filter>
     </ClCompile>

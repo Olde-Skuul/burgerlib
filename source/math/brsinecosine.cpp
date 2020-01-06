@@ -1,8 +1,8 @@
 /***************************************
 
-    Fixed point math functions
+    Sine/Cosine floating point math functions
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
     It is released under an MIT Open Source license. Please see LICENSE for
     license details. Yes, you can use it in a commercial title without paying
@@ -12,10 +12,10 @@
 
 ***************************************/
 
+#include "brfloatingpoint.h"
+
 #include "brendian.h"
 #include "brfixedpoint.h"
-#include "brfloatingpoint.h"
-#include <math.h>
 
 //
 // Note: The Xbox 360 PPC compiler has a bug. It's not acknowledging
@@ -1249,11 +1249,11 @@ __asm__(
     "	fld		%st(0)\n"                // Make a copy for squaring
     "	fmul	%st(1),%st(0)\n"         // Square the input
     "	fld		%st(0)\n"
-    "	fmul	%st(2),%st(0)\n"            // Create the Power of 3
+    "	fmul	%st(2),%st(0)\n"                 // Create the Power of 3
     "	flds	(__ZL21g_fInverseSineFactors)\n" // Start iterating
-    "	fmul	%st(1),%st(0)\n"            // fInput*(1/3!)
-    "	faddp	%st(0),%st(3)\n"            // fResult + fInput*(1/3!)
-    "	fmul	%st(1),%st(0)\n"            // Up the power by 2
+    "	fmul	%st(1),%st(0)\n"                 // fInput*(1/3!)
+    "	faddp	%st(0),%st(3)\n"                 // fResult + fInput*(1/3!)
+    "	fmul	%st(1),%st(0)\n"                 // Up the power by 2
     "	flds	(__ZL21g_fInverseSineFactors+4)\n"
     "	fmul	%st(1),%st(0)\n"
     "	faddp	%st(0),%st(3)\n"

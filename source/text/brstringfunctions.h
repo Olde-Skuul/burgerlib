@@ -217,30 +217,30 @@ extern void BURGER_API SetFileExtension(
 extern uintptr_t BURGER_API StringLength(const char* pInput) BURGER_NOEXCEPT;
 extern WordPtr BURGER_API StringLength(const Word16* pInput);
 
-extern void BURGER_API StringCopy(char* pOutput, const char* pInput);
+extern void BURGER_API StringCopy(char* pOutput, const char* pInput) BURGER_NOEXCEPT;
 extern void BURGER_API StringCopy(
-	char* pOutput, WordPtr uOutputSize, const char* pInput);
+	char* pOutput, WordPtr uOutputSize, const char* pInput) BURGER_NOEXCEPT;
 extern void BURGER_API StringCopy(
-	char* pOutput, WordPtr uOutputSize, const char* pInput, WordPtr uInputSize);
-extern void BURGER_API StringCopy(Word16* pOutput, const Word16* pInput);
+	char* pOutput, WordPtr uOutputSize, const char* pInput, WordPtr uInputSize) BURGER_NOEXCEPT;
+extern void BURGER_API StringCopy(Word16* pOutput, const Word16* pInput) BURGER_NOEXCEPT;
 extern void BURGER_API StringCopy(
-	Word16* pOutput, WordPtr uOutputSize, const Word16* pInput);
+	Word16* pOutput, WordPtr uOutputSize, const Word16* pInput) BURGER_NOEXCEPT;
 extern void BURGER_API StringCopy(Word16* pOutput, WordPtr uOutputSize,
-	const Word16* pInput, WordPtr uInputSize);
+	const Word16* pInput, WordPtr uInputSize) BURGER_NOEXCEPT;
 
 extern char* BURGER_API StringDuplicate(const char* pInput);
 extern char* BURGER_API StringDuplicate(const char* pInput, WordPtr uPadding);
 
 extern void BURGER_API StringDelete(const char* pInput);
 
-extern void BURGER_API StringConcatenate(char* pOutput, const char* pInput);
+extern void BURGER_API StringConcatenate(char* pOutput, const char* pInput) BURGER_NOEXCEPT;
 extern void BURGER_API StringConcatenate(
-	char* pOutput, WordPtr uOutputSize, const char* pInput);
+	char* pOutput, WordPtr uOutputSize, const char* pInput) BURGER_NOEXCEPT;
 extern void BURGER_API StringConcatenate(
-	char* pOutput, WordPtr uOutputSize, const char* pInput, WordPtr uInputSize);
-extern void BURGER_API StringConcatenate(Word16* pOutput, const Word16* pInput);
+	char* pOutput, WordPtr uOutputSize, const char* pInput, WordPtr uInputSize) BURGER_NOEXCEPT;
+extern void BURGER_API StringConcatenate(Word16* pOutput, const Word16* pInput) BURGER_NOEXCEPT;
 extern void BURGER_API StringConcatenate(
-	Word16* pOutput, WordPtr uOutputSize, const Word16* pInput);
+	Word16* pOutput, WordPtr uOutputSize, const Word16* pInput) BURGER_NOEXCEPT;
 
 extern int BURGER_API StringCompare(const char* pInput1, const char* pInput2) BURGER_NOEXCEPT;
 extern int BURGER_API StringCompare(

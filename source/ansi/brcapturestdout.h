@@ -48,7 +48,7 @@ private:
 #endif
 
 #if defined(__MSL__) || defined(DOXYGEN)
-    void* m_pSaved[2 * 4];       ///< Saved function pointers from stdout, stderr
+    void* m_pSaved[2 * 4]; ///< Saved function pointers from stdout, stderr
     OutputMemoryStream m_Stream; ///< Memory stream for capturing output
 
     static int BURGER_ANSIAPI ReadIntercept(unsigned long pFile,

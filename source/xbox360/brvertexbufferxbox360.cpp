@@ -1,13 +1,14 @@
 /***************************************
 
-	Vertex buffer class for Xbox 360
+    Vertex buffer class for Xbox 360
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -15,7 +16,7 @@
 #if defined(BURGER_XBOX360) || defined(DOXYGEN)
 
 #include "brglobalmemorymanager.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include "brdisplay.h"
 #define NONET
 #include <xtl.h>
@@ -49,7 +50,7 @@ Word Burger::VertexBuffer::CheckLoad(Display *pDisplay)
 
 		if (m_uVertexArraySize) {
 
-			// Create a vertex buffer object 
+			// Create a vertex buffer object
 
 			hResult = pDevice->CreateVertexBuffer(static_cast<UINT>(m_uVertexArraySize),0,
 				0,D3DPOOL_DEFAULT,&m_pD3DVertexBuffer,NULL);
@@ -102,7 +103,7 @@ Word Burger::VertexBuffer::CheckLoad(Display *pDisplay)
 						break;
 					}
 				} while (--uCount);
-				
+
 				// No error in generating the table?
 				if (hResult>=0) {
 					// Mark the end of the array
@@ -169,7 +170,7 @@ void Burger::VertexBuffer::Release(Display *)
 		pVertexBuffer->Release();
 		m_pD3DVertexBuffer = NULL;
 	}
-	D3DVertexDeclaration *pDeclaration = m_pD3DVertexDeclaration; 
+	D3DVertexDeclaration *pDeclaration = m_pD3DVertexDeclaration;
 	if (pDeclaration) {
 		// Make sure there is no connection to a D3D device
 		IDirect3DDevice9 *pDevice;
@@ -181,7 +182,7 @@ void Burger::VertexBuffer::Release(Display *)
 		m_pD3DVertexDeclaration = NULL;
 	}
 
-	D3DIndexBuffer *pIndexBuffer = m_pD3DIndexBuffer; 
+	D3DIndexBuffer *pIndexBuffer = m_pD3DIndexBuffer;
 	if (pIndexBuffer) {
 		// Make sure there is no connection to a D3D device
 		IDirect3DDevice9 *pDevice;
@@ -191,7 +192,7 @@ void Burger::VertexBuffer::Release(Display *)
 		}
 		pIndexBuffer->Release();
 		m_pD3DIndexBuffer = NULL;
-	}	
+	}
 }
 
 #endif

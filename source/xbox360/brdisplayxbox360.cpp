@@ -1,18 +1,20 @@
 /***************************************
 
-	Display manager class for XBox 360
+    Display manager class for XBox 360
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brdisplay.h"
 #if defined(BURGER_XBOX360) || defined(DOXYGEN)
+#include "brmemoryfunctions.h"
 #define NONET
 #include <xtl.h>
 
@@ -33,7 +35,7 @@ static const D3DPRIMITIVETYPE g_Prims[] = {
 
 static const D3DTEXTUREADDRESS g_Wrapping[] = {
 	D3DTADDRESS_WRAP,	// WRAP_REPEAT
-	D3DTADDRESS_CLAMP	// WRAP_CLAMP	
+	D3DTADDRESS_CLAMP	// WRAP_CLAMP
 };
 
 static const D3DTEXTUREFILTERTYPE g_Filter[] = {

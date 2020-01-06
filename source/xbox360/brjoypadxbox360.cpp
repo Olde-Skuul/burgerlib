@@ -1,9 +1,16 @@
 /***************************************
 
-	Joypad/joystick Manager
-	Copyright Rebecca Ann Heineman
+    Joypad/joystick Manager
 
-	Xbox 360 specific version
+    Xbox 360 specific version
+
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -11,6 +18,7 @@
 
 #if defined(BURGER_XBOX360)
 #include "brfixedpoint.h"
+#include "brmemoryfunctions.h"
 
 #define NOD3D
 #define NONET
@@ -242,7 +250,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 	\windowsonly
 
 	\return Zero if no error. Any other value means an error occurred, ERROR_CALL_NOT_IMPLEMENTED means XInput was not found
-	
+
 ***************************************/
 
 Word BURGER_API Burger::XInputStopRumbleOnAllControllers(void)
@@ -285,7 +293,7 @@ Word BURGER_API Burger::XInputStopRumbleOnAllControllers(void)
 	\param pXInputGamePad Pointer to a structure that will receive the state.
 	\param uDeadZoneType Type of post processing on the raw thumbstick data.
 	\return Zero if no error. Any other value means an error occurred, ERROR_CALL_NOT_IMPLEMENTED means XInput was not found
-	
+
 ***************************************/
 
 Word BURGER_API Burger::XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInputGamePad,eXInputDeadZoneType uDeadZoneType)
@@ -330,12 +338,12 @@ Word BURGER_API Burger::XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInp
 				}
 
 				// Load in the thumbstick values
-				
+
 				Int32 iThumbLX = GamepadState.Gamepad.sThumbLX;
 				Int32 iThumbLY = GamepadState.Gamepad.sThumbLY;
 				Int32 iThumbRX = GamepadState.Gamepad.sThumbRX;
 				Int32 iThumbRY = GamepadState.Gamepad.sThumbRY;
-				
+
 				// Do any special processing for the thumb sticks
 
 				// Handle dead zones on a per axis basis
@@ -379,7 +387,7 @@ Word BURGER_API Burger::XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInp
 				pXInputGamePad->m_iThumbLY = iThumbLY;
 				pXInputGamePad->m_iThumbRX = iThumbRX;
 				pXInputGamePad->m_iThumbRY = iThumbRY;
-				
+
 				// Store the floating point versions
 				pXInputGamePad->m_fThumbLX = static_cast<float>(iThumbLX) * (1.0f/32767.0f);
 				pXInputGamePad->m_fThumbLY = static_cast<float>(iThumbLY) * (1.0f/32767.0f);

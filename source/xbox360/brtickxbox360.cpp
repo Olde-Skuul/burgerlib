@@ -84,7 +84,7 @@ void BURGER_API Burger::FloatTimer::SetBase(void)
 
 ***************************************/
 
-float BURGER_API Burger::FloatTimer::GetTime(void)
+float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 {
 	float fResult;
 

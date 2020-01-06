@@ -21,37 +21,37 @@
 
 /* BEGIN */
 namespace Burger {
-extern void BURGER_API PrintHexDigit(uint_t uInput);
-extern void BURGER_API PrintHex(uint8_t uInput);
-extern void BURGER_API PrintHex(uint16_t uInput);
-extern void BURGER_API PrintHex(uint32_t uInput);
-extern void BURGER_API PrintHex(uint64_t uInput);
+extern void BURGER_API PrintHexDigit(uint_t uInput) BURGER_NOEXCEPT;
+extern void BURGER_API PrintHex(uint8_t uInput) BURGER_NOEXCEPT;
+extern void BURGER_API PrintHex(uint16_t uInput) BURGER_NOEXCEPT;
+extern void BURGER_API PrintHex(uint32_t uInput) BURGER_NOEXCEPT;
+extern void BURGER_API PrintHex(uint64_t uInput) BURGER_NOEXCEPT;
 
 // clang-format off
-BURGER_INLINE void PrintHex(char iInput) { PrintHex(static_cast<uint8_t>(iInput)); }
-BURGER_INLINE void PrintHex(signed char iInput) { PrintHex(static_cast<uint8_t>(iInput)); }
-BURGER_INLINE void PrintHex(short iInput) { PrintHex(static_cast<uint16_t>(iInput)); }
-BURGER_INLINE void PrintHex(int iInput) { PrintHex(static_cast<uint2uint_t>(iInput)); }
-BURGER_INLINE void PrintHex(long iInput) { PrintHex(static_cast<ulong2uint_t>(iInput)); }
-BURGER_INLINE void PrintHex(long long iInput) { PrintHex(static_cast<uint64_t>(iInput)); }
+BURGER_INLINE void PrintHex(char iInput) BURGER_NOEXCEPT { PrintHex(static_cast<uint8_t>(iInput)); }
+BURGER_INLINE void PrintHex(signed char iInput) BURGER_NOEXCEPT { PrintHex(static_cast<uint8_t>(iInput)); }
+BURGER_INLINE void PrintHex(short iInput) BURGER_NOEXCEPT { PrintHex(static_cast<uint16_t>(iInput)); }
+BURGER_INLINE void PrintHex(int iInput) BURGER_NOEXCEPT { PrintHex(static_cast<uint2uint_t>(iInput)); }
+BURGER_INLINE void PrintHex(long iInput) BURGER_NOEXCEPT { PrintHex(static_cast<ulong2uint_t>(iInput)); }
+BURGER_INLINE void PrintHex(long long iInput) BURGER_NOEXCEPT { PrintHex(static_cast<uint64_t>(iInput)); }
 
 #if defined(BURGER_HAS_WCHAR_T) || defined(DOXYGEN)
-BURGER_INLINE void PrintHex(wchar_t uInput) { PrintHex(static_cast<uint16_t>(uInput)); }
+BURGER_INLINE void PrintHex(wchar_t uInput) BURGER_NOEXCEPT { PrintHex(static_cast<uint16_t>(uInput)); }
 #endif
 
 #if defined(BURGER_INT_NOT_IN_STDINT) || defined(DOXYGEN)
-BURGER_INLINE void PrintHex(unsigned int uInput) { PrintHex(static_cast<uint2uint_t>(uInput)); }
+BURGER_INLINE void PrintHex(unsigned int uInput) BURGER_NOEXCEPT { PrintHex(static_cast<uint2uint_t>(uInput)); }
 #endif
 
 #if defined(BURGER_LONG_NOT_IN_STDINT) || defined(DOXYGEN)
-BURGER_INLINE void PrintHex(unsigned long uInput) { PrintHex(static_cast<ulong2uint_t> (uInput)); }
+BURGER_INLINE void PrintHex(unsigned long uInput) BURGER_NOEXCEPT { PrintHex(static_cast<ulong2uint_t> (uInput)); }
 #endif
 
 // clang-format on
 
-extern void BURGER_API PrintHex(float fInput);
-extern void BURGER_API PrintHex(double dInput);
-extern void BURGER_API ClearConsole(void);
+extern void BURGER_API PrintHex(float fInput) BURGER_NOEXCEPT;
+extern void BURGER_API PrintHex(double dInput) BURGER_NOEXCEPT;
+extern void BURGER_API ClearConsole(void) BURGER_NOEXCEPT;
 }
 /* END */
 

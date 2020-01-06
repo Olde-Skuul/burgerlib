@@ -33,7 +33,7 @@
 
 ***************************************/
 
-void BURGER_API Burger::ClearConsole(void)
+void BURGER_API Burger::ClearConsole(void) BURGER_NOEXCEPT
 {
     // Get the handle to the current console
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);

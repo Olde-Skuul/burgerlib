@@ -30,7 +30,7 @@
 
 ***************************************/
 
-void Burger::TimeDate_t::GetTime(void)
+void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 {
 	SYSTEMTIME MySystemTime;			// Windows time structure
 	::GetLocalTime(&MySystemTime);		// Call windows

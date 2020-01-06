@@ -3148,7 +3148,7 @@ WordPtr BURGER_API Burger::StringLength(const Word16* pInput)
 
 ***************************************/
 
-void BURGER_API Burger::StringCopy(char* pOutput, const char* pInput)
+void BURGER_API Burger::StringCopy(char* pOutput, const char* pInput) BURGER_NOEXCEPT
 {
 	//
 	// First, if the two pointers can't both be long word aligned
@@ -3237,7 +3237,7 @@ void BURGER_API Burger::StringCopy(char* pOutput, const char* pInput)
 ***************************************/
 
 void BURGER_API Burger::StringCopy(
-	char* pOutput, WordPtr uOutputSize, const char* pInput)
+	char* pOutput, WordPtr uOutputSize, const char* pInput) BURGER_NOEXCEPT
 {
 	if (uOutputSize) {
 		WordPtr uFinalLength = StringLength(pInput) + 1;
@@ -3271,7 +3271,7 @@ void BURGER_API Burger::StringCopy(
 ***************************************/
 
 void BURGER_API Burger::StringCopy(
-	char* pOutput, WordPtr uOutputSize, const char* pInput, WordPtr uInputSize)
+	char* pOutput, WordPtr uOutputSize, const char* pInput, WordPtr uInputSize) BURGER_NOEXCEPT
 {
 	if (uOutputSize) {
 		// How much can be copied?
@@ -3302,7 +3302,7 @@ void BURGER_API Burger::StringCopy(
 
 ***************************************/
 
-void BURGER_API Burger::StringCopy(Word16* pOutput, const Word16* pInput)
+void BURGER_API Burger::StringCopy(Word16* pOutput, const Word16* pInput) BURGER_NOEXCEPT
 {
 	Word16 bChar2;
 	do {
@@ -3333,7 +3333,7 @@ void BURGER_API Burger::StringCopy(Word16* pOutput, const Word16* pInput)
 ***************************************/
 
 void BURGER_API Burger::StringCopy(
-	Word16* pOutput, WordPtr uOutputSize, const Word16* pInput)
+	Word16* pOutput, WordPtr uOutputSize, const Word16* pInput) BURGER_NOEXCEPT
 {
 	if (uOutputSize >= 2 && pOutput) {
 		WordPtr uFinalLength = (StringLength(pInput) * 2) + 2;
@@ -3367,7 +3367,7 @@ void BURGER_API Burger::StringCopy(
 ***************************************/
 
 void BURGER_API Burger::StringCopy(Word16* pOutput, WordPtr uOutputSize,
-	const Word16* pInput, WordPtr uInputSize)
+	const Word16* pInput, WordPtr uInputSize) BURGER_NOEXCEPT
 {
 	if (uOutputSize) {
 		// How much can be copied?
@@ -3402,7 +3402,7 @@ void BURGER_API Burger::StringCopy(Word16* pOutput, WordPtr uOutputSize,
 
 char* BURGER_API Burger::StringDuplicate(const char* pInput)
 {
-	WordPtr uLength = StringLength(pInput) + 1; // Get the length
+	const uintptr_t uLength = StringLength(pInput) + 1; // Get the length
 	return static_cast<char*>(
 		AllocCopy(pInput, uLength)); // Allocate the memory
 }
@@ -3478,7 +3478,7 @@ void BURGER_API Burger::StringDelete(const char* pInput)
 
 ***************************************/
 
-void BURGER_API Burger::StringConcatenate(char* pOutput, const char* pInput)
+void BURGER_API Burger::StringConcatenate(char* pOutput, const char* pInput) BURGER_NOEXCEPT
 {
 	// Get the end of the first string
 	WordPtr uLength = StringLength(pOutput);
@@ -3504,7 +3504,7 @@ void BURGER_API Burger::StringConcatenate(char* pOutput, const char* pInput)
 ***************************************/
 
 void BURGER_API Burger::StringConcatenate(
-	char* pOutput, WordPtr uOutputSize, const char* pInput)
+	char* pOutput, WordPtr uOutputSize, const char* pInput) BURGER_NOEXCEPT
 {
 	// Get the end of the first string
 	WordPtr uLength = StringLength(pOutput);
@@ -3536,7 +3536,7 @@ void BURGER_API Burger::StringConcatenate(
 ***************************************/
 
 void BURGER_API Burger::StringConcatenate(
-	char* pOutput, WordPtr uOutputSize, const char* pInput, WordPtr uInputSize)
+	char* pOutput, WordPtr uOutputSize, const char* pInput, WordPtr uInputSize) BURGER_NOEXCEPT
 {
 	// Get the end of the first string
 	WordPtr uLength = StringLength(pOutput);
@@ -3567,7 +3567,7 @@ void BURGER_API Burger::StringConcatenate(
 
 ***************************************/
 
-void BURGER_API Burger::StringConcatenate(Word16* pOutput, const Word16* pInput)
+void BURGER_API Burger::StringConcatenate(Word16* pOutput, const Word16* pInput) BURGER_NOEXCEPT
 {
 	// Get the end of the first string
 	WordPtr uLength = StringLength(pOutput);
@@ -3595,7 +3595,7 @@ void BURGER_API Burger::StringConcatenate(Word16* pOutput, const Word16* pInput)
 ***************************************/
 
 void BURGER_API Burger::StringConcatenate(
-	Word16* pOutput, WordPtr uOutputSize, const Word16* pInput)
+	Word16* pOutput, WordPtr uOutputSize, const Word16* pInput) BURGER_NOEXCEPT
 {
 	// Get the end of the first string
 	WordPtr uLength = StringLength(pOutput);

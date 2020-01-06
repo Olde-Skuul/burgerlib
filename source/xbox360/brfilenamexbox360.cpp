@@ -1,14 +1,15 @@
 /***************************************
 
-	Filename Class
-	Xbox 360 specific code
+    Filename Class
+    Xbox 360 specific code
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -16,6 +17,7 @@
 
 #if defined(BURGER_XBOX360)
 #include "brfilemanager.h"
+#include "brmemoryfunctions.h"
 #define NOD3D
 #define NONET
 #include <xtl.h>
@@ -40,14 +42,14 @@
 
 	All returned pathnames will NOT have a trailing "\", they will
 	take the form of c:\\foo\\bar\\file.txt or similar
-	
+
 	Examples:<br>
 	If drive C: is named "boot" then ":boot:foo:bar.txt" = "c:\foo\bar.txt"<br>
 	If there is no drive named "boot" then ":boot:foo:bar.txt" = "\\boot\foo\bar.txt"<br>
 	".D2:foo:bar.txt" = "c:\foo\bar.txt"<br>
 	".D4:foo:bar.txt" = "e:\foo\bar.txt"<br>
 	"@:game:data.dat" = "c:\users\<Current user>\appdata\roaming\game\data.dat"
-	
+
 	\param pInput Pointer to a pathname string
 	\sa Burger::Filename::Set(const char *)
 
@@ -204,15 +206,15 @@ void BURGER_API Burger::Filename::SetUserPrefsDirectory(void)
 /***************************************
 
 	Convert a Windows path to a Burgerlib path
-	
+
 	Paths without a leading '\' are prefixed with
 	the current working directory
-	
+
 	Paths with a drive letter but no leading \ will use
 	the drive's current working directory
-	
+
 	If it's a network path "\\" then use that as the volume name.
-	
+
 	The Windows version converts these types of paths:
 
 	"C:\foo\bar2" = ".D2:foo:bar2:"<br>
@@ -220,7 +222,7 @@ void BURGER_API Burger::Filename::SetUserPrefsDirectory(void)
 	"foo\bar2" = "(working directory from 8):foo:bar2:"<br>
 	"\foo" = ".D(Mounted drive number):foo:"<br>
 	"\\foo\bar\file.txt" = ":foo:bar:file.txt:"
-	
+
 ***************************************/
 
 void Burger::Filename::SetFromNative(const char *pInput)
@@ -230,9 +232,9 @@ void Burger::Filename::SetFromNative(const char *pInput)
 	if (!pInput || !pInput[0]) {	// No directory at all?
 		pInput = "D:\\";			// Just get the current directory
 	}
-	
+
 	// How long would the string be if it was UTF8?
-	
+
 	WordPtr uExpandedLength = StringLength(pInput);
 	WordPtr uOutputLength = uExpandedLength+6;
 	char *pOutput = m_Filename;
@@ -244,7 +246,7 @@ void Burger::Filename::SetFromNative(const char *pInput)
 	}
 	m_pFilename = pOutput;
 	const char *pSrc = pInput;
-	
+
 	pOutput[0] = ':';
 	++pOutput;
 
@@ -273,7 +275,7 @@ void Burger::Filename::SetFromNative(const char *pInput)
 			++pSrc;
 		} while (uTemp2);			// Still more?
 	}
-	
+
 	// The wrap up...
 	// Make sure it's appended with a colon
 

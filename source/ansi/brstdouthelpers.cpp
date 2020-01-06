@@ -32,7 +32,7 @@
 
 ***************************************/
 
-void BURGER_API Burger::PrintHexDigit(uint_t uInput)
+void BURGER_API Burger::PrintHexDigit(uint_t uInput) BURGER_NOEXCEPT
 {
     // Print the char
     putchar(g_NibbleToAsciiUppercase[uInput & 0xFU]);
@@ -49,7 +49,7 @@ void BURGER_API Burger::PrintHexDigit(uint_t uInput)
 
 ***************************************/
 
-void BURGER_API Burger::PrintHex(uint8_t uInput)
+void BURGER_API Burger::PrintHex(uint8_t uInput) BURGER_NOEXCEPT
 {
     // Convert to a string
     char temp_string[(sizeof(uint8_t) * 2) + 1];
@@ -70,7 +70,7 @@ void BURGER_API Burger::PrintHex(uint8_t uInput)
 
 ***************************************/
 
-void BURGER_API Burger::PrintHex(uint16_t uInput)
+void BURGER_API Burger::PrintHex(uint16_t uInput) BURGER_NOEXCEPT
 {
     // Convert to a string
     char temp_string[(sizeof(uint16_t) * 2) + 1];
@@ -92,7 +92,7 @@ void BURGER_API Burger::PrintHex(uint16_t uInput)
 
 ***************************************/
 
-void BURGER_API Burger::PrintHex(uint32_t uInput)
+void BURGER_API Burger::PrintHex(uint32_t uInput) BURGER_NOEXCEPT
 {
     // Convert to a string
     char temp_string[(sizeof(uint32_t) * 2) + 1];
@@ -114,7 +114,7 @@ void BURGER_API Burger::PrintHex(uint32_t uInput)
 
 ***************************************/
 
-void BURGER_API Burger::PrintHex(uint64_t uInput)
+void BURGER_API Burger::PrintHex(uint64_t uInput) BURGER_NOEXCEPT
 {
     // Convert to a string
     char temp_string[(sizeof(uint64_t) * 2) + 1];
@@ -135,7 +135,7 @@ void BURGER_API Burger::PrintHex(uint64_t uInput)
 
 ***************************************/
 
-void BURGER_API Burger::PrintHex(float fInput)
+void BURGER_API Burger::PrintHex(float fInput) BURGER_NOEXCEPT
 {
     // Convert to a string
     char temp_string[(sizeof(float) * 2) + 1];
@@ -156,7 +156,7 @@ void BURGER_API Burger::PrintHex(float fInput)
 
 ***************************************/
 
-void BURGER_API Burger::PrintHex(double dInput)
+void BURGER_API Burger::PrintHex(double dInput) BURGER_NOEXCEPT
 {
     // Convert to a string
     char temp_string[(sizeof(double) * 2) + 1];
@@ -270,7 +270,7 @@ void BURGER_API Burger::PrintHex(double dInput)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
-void BURGER_API Burger::ClearConsole(void)
+void BURGER_API Burger::ClearConsole(void) BURGER_NOEXCEPT
 {
     // Send a line feed to clear the screen
     putchar(12);

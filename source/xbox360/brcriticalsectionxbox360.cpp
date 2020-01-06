@@ -1,13 +1,14 @@
 /***************************************
 
-	Class to handle critical sections
+    Class to handle critical sections
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -23,58 +24,59 @@
 
 	Initialize the spin count to 1000 since this
 	class is usually used for quick data locks
-	
+
 ***************************************/
 
 Burger::CriticalSection::CriticalSection()
 {
-	InitializeCriticalSectionAndSpinCount(reinterpret_cast< ::CRITICAL_SECTION *>(&m_Lock),1000);
+    BURGER_STATIC_ASSERT(sizeof(CRITICAL_SECTION)==sizeof(BurgerCRITICAL_SECTION));
+	InitializeCriticalSectionAndSpinCount(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock),1000);
 }
 
 Burger::CriticalSection::~CriticalSection()
 {
-	DeleteCriticalSection(reinterpret_cast< ::CRITICAL_SECTION *>(&m_Lock));
+	DeleteCriticalSection(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock));
 }
 
 /***************************************
 
 	Lock the CriticalSection
-	
+
 ***************************************/
 
 void Burger::CriticalSection::Lock()
 {
-	EnterCriticalSection(reinterpret_cast< ::CRITICAL_SECTION *>(&m_Lock));
+	EnterCriticalSection(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock));
 }
 
 /***************************************
 
 	Try to lock the CriticalSection
-	
+
 ***************************************/
 
 Word Burger::CriticalSection::TryLock()
 {
-	return TryEnterCriticalSection(reinterpret_cast< ::CRITICAL_SECTION *>(&m_Lock));
+	return TryEnterCriticalSection(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock));
 }
 
 
 /***************************************
 
 	Unlock the CriticalSection
-	
+
 ***************************************/
 
 void Burger::CriticalSection::Unlock()
 {
-	LeaveCriticalSection(reinterpret_cast< ::CRITICAL_SECTION *>(&m_Lock));
+	LeaveCriticalSection(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock));
 }
-	
+
 
 /***************************************
 
 	Initialize the semaphore
-	
+
 ***************************************/
 
 Burger::Semaphore::Semaphore(Word32 uCount) :
@@ -93,7 +95,7 @@ Burger::Semaphore::Semaphore(Word32 uCount) :
 /***************************************
 
 	Release the semaphore
-	
+
 ***************************************/
 
 Burger::Semaphore::~Semaphore()
@@ -109,7 +111,7 @@ Burger::Semaphore::~Semaphore()
 /***************************************
 
 	Attempt to acquire the semaphore
-	
+
 ***************************************/
 
 Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
@@ -145,7 +147,7 @@ Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
 /***************************************
 
 	Release the semaphore
-	
+
 ***************************************/
 
 Word BURGER_API Burger::Semaphore::Release(void)
@@ -173,7 +175,7 @@ Word BURGER_API Burger::Semaphore::Release(void)
 
 	This code fragment calls the Run function that has
 	permission to access the members
-	
+
 ***************************************/
 
 static DWORD WINAPI Dispatcher(LPVOID pThis)
@@ -185,7 +187,7 @@ static DWORD WINAPI Dispatcher(LPVOID pThis)
 /***************************************
 
 	Initialize a thread to a dormant state
-	
+
 ***************************************/
 
 Burger::Thread::Thread() :
@@ -201,7 +203,7 @@ Burger::Thread::Thread() :
 /***************************************
 
 	Initialize a thread and begin execution
-	
+
 ***************************************/
 
 Burger::Thread::Thread(FunctionPtr pThread,void *pData) :
@@ -218,7 +220,7 @@ Burger::Thread::Thread(FunctionPtr pThread,void *pData) :
 /***************************************
 
 	Release resources
-	
+
 ***************************************/
 
 Burger::Thread::~Thread()
@@ -229,7 +231,7 @@ Burger::Thread::~Thread()
 /***************************************
 
 	Launch a new thread if one isn't already started
-	
+
 ***************************************/
 
 Word BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
@@ -263,7 +265,7 @@ Word BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
 /***************************************
 
 	Wait until the thread has completed execution
-	
+
 ***************************************/
 
 Word BURGER_API Burger::Thread::Wait(void)
@@ -291,7 +293,7 @@ Word BURGER_API Burger::Thread::Wait(void)
 
 	Invoke the nuclear option to kill a thread
 	NOT RECOMMENDED!
-	
+
 ***************************************/
 
 Word BURGER_API Burger::Thread::Kill(void)
@@ -311,7 +313,7 @@ Word BURGER_API Burger::Thread::Kill(void)
 
 	Synchronize and then execute the thread and save
 	the result if any
-	
+
 ***************************************/
 
 void BURGER_API Burger::Thread::Run(void *pThis)
