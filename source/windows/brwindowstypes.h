@@ -472,29 +472,29 @@ public:
 		g_hInstance = pInput;
 	}
 
-	static Word BURGER_API TestVersion(void);
+	static Word BURGER_API TestVersion(void) BURGER_NOEXCEPT;
 
-    static BURGER_INLINE Word IsWin95orWin98(void)
+    static BURGER_INLINE Word IsWin95orWin98(void) BURGER_NOEXCEPT
 	{
 		return TestVersion() & VERSION_9598;
 	}
-    static BURGER_INLINE Word IsWinXPOrGreater(void)
+    static BURGER_INLINE Word IsWinXPOrGreater(void) BURGER_NOEXCEPT
 	{
 		return (TestVersion() & VERSION_XPORGREATER) != 0;
 	}
-    static BURGER_INLINE Word IsVistaOrGreater(void)
+    static BURGER_INLINE Word IsVistaOrGreater(void) BURGER_NOEXCEPT
 	{
 		return (TestVersion() & VERSION_VISTAORGREATER) != 0;
 	}
-    static BURGER_INLINE Word IsWin7OrGreater(void)
+    static BURGER_INLINE Word IsWin7OrGreater(void) BURGER_NOEXCEPT
 	{
 		return (TestVersion() & VERSION_7ORGREATER) != 0;
 	}
-    static BURGER_INLINE Word IsWin8OrGreater(void)
+    static BURGER_INLINE Word IsWin8OrGreater(void) BURGER_NOEXCEPT
 	{
 		return (TestVersion() & VERSION_8ORGREATER) != 0;
 	}
-    static BURGER_INLINE Word IsWin10OrGreater(void)
+    static BURGER_INLINE Word IsWin10OrGreater(void) BURGER_NOEXCEPT
 	{
 		return (TestVersion() & VERSION_10ORGREATER) != 0;
 	}

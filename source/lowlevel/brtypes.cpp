@@ -2552,6 +2552,19 @@ line of processors.
 
 /*! ************************************
 
+    \def BURGER_CONSOLE
+    \brief Define for the presence of a text console.
+
+    If this define exists, then the platform supports a terminal console such as
+    CMD.COM, bash, sh etc. Test for this macro if the code requires a console,
+    such as code for a command line tool.
+
+    \sa BURGER_MSDOS, BURGER_LINUX, BURGER_MACOS or BURGER_WINDOWS
+
+***************************************/
+
+/*! ************************************
+
     \def BURGER_OFFSETOF
     \brief Define to return the offset of a member variable.
 

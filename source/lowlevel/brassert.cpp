@@ -122,7 +122,7 @@
 
 Burger::Assert_t Burger::Assert_t::g_Instance = {
 	DefaultAssert,		// default Function pointer
-	NULL				// default "this" pointer
+	nullptr				// default "this" pointer
 };
 
 

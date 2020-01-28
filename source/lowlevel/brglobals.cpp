@@ -376,48 +376,79 @@ int BURGER_API Burger::Globals::ExecuteTool(const char * /* pFilename */,const c
 
 /*! ************************************
 
-	\brief Retrieve an environment string
+    \brief Retrieve an environment string
 
-	On systems that support it, query the system for an environment
-	variable and return a COPY of the string. Once the string
-	is no longer needed, call Burger::Free(const void *) on it
-	to release it.
+    On systems that support it, query the system for an environment variable and
+    return a COPY of the string. Once the string is no longer needed, call
+    Burger::Free(const void *) on it to release it.
 
-	Once obtained, the string will not change due to it being a
-	copy of the one that exists in the operating system.
+    Once obtained, the string will not change due to it being a copy of the one
+    that exists in the operating system.
 
-	The string is encoded to UTF8 on all systems
- 
-	\param pKey Pointer to a "C" string of the environment variable name
-	\return \ref NULL on failure or if the string didn't exist. A valid "C" string pointer otherwise. Release with a call to Burger::Free(const void *)
- 
+    The string is encoded to UTF8 on all systems
+
+    \param pKey Pointer to a "C" string of the environment variable name
+    \return nullptr on failure or if the string didn't exist. A valid "C"
+        string pointer otherwise. Release with a call to
+        Burger::Free(const void *)
+
+    \sa SetEnvironmentString(const char *,const char *)
+
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
-const char *BURGER_API Burger::Globals::GetEnvironmentString(const char * /* pKey */)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
+    defined(BURGER_MACOSX) || defined(BURGER_LINUX)) || \
+    defined(DOXYGEN)
+const char* BURGER_API Burger::GetEnvironmentString(
+    const char* /* pKey */) BURGER_NOEXCEPT
 {
-	return NULL;
+    return nullptr;
 }
 #endif
 
 /*! ************************************
 
-	\brief Set an environment string
+    \brief Set an environment string
 
-	On systems that support it, set or create an environment
-	variable.
+    On systems that support it, set or create an environment variable.
 
-	The string will be properly converted from UTF8 into the operating system's native character encoding.
- 
-	\param pKey Pointer to a "C" string of the environment variable name
-	\param pInput Pointer to a "C" string of the environment variable value or \ref NULL to remove the variable
-	\return Zero on success, non-zero on error
- 
+    The string will be properly converted from UTF8 into the operating system's
+    native character encoding.
+
+    \param pKey Pointer to a "C" string of the environment variable name
+    \param pInput Pointer to a "C" string of the environment variable value or
+        nullptr to remove the variable
+    \return Zero on success, non-zero on error
+
+    \sa GetEnvironmentString(const char *)
+
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
-Word BURGER_API Burger::Globals::SetEnvironmentString(const char * /* pKey */,const char * /* pInput */)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
+    defined(BURGER_MACOSX)|| defined(BURGER_LINUX)) || \
+    defined(DOXYGEN)
+Burger::eError BURGER_API Burger::SetEnvironmentString(
+    const char* /* pKey */, const char* /* pInput */) BURGER_NOEXCEPT
 {
-	return 10;
+    return kErrorNotSupportedOnThisPlatform;
 }
 #endif
+
+/*! ************************************
+
+    \fn Burger::IsElevated(void)
+    \brief Test if the application has elevated privileges
+
+    On systems that support it, check if the user has elevated privileges.
+
+    Systems such as MSDOS and game consoles allow full access to all system
+    resources, but on modern desktops, only Administrators or root accounts can
+    modify system folders.
+
+    \note Windows XP tests for access restriction, where all other systems test
+        for access token elevation.
+
+    \return Zero if user access is not granted, non-zero if elevated access was
+        granted.
+
+***************************************/

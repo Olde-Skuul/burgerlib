@@ -692,7 +692,7 @@ Word32 BURGER_API Burger::UTF16::FromUTF8(const char *pInput)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::UTF16::FromUTF8(Word16 *pOutput,WordPtr uOutputSize,const char *pInput)
+uintptr_t BURGER_API Burger::UTF16::FromUTF8(uint16_t *pOutput,uintptr_t uOutputSize,const char *pInput) BURGER_NOEXCEPT
 {
 	Word16 *pWorkPtr = pOutput;
 	
@@ -815,7 +815,7 @@ WordPtr BURGER_API Burger::UTF16::FromUTF8(Word16 *pOutput,WordPtr uOutputSize,c
 
 ***************************************/
 
-WordPtr BURGER_API Burger::UTF16::FromUTF8(Word16 *pOutput,WordPtr uOutputSize,const char *pInput,WordPtr uInputSize)
+uintptr_t BURGER_API Burger::UTF16::FromUTF8(uint16_t *pOutput,uintptr_t uOutputSize,const char *pInput,uintptr_t uInputSize) BURGER_NOEXCEPT
 {
 	Word16 *pWorkPtr = pOutput;
 	uOutputSize>>=1;				// Convert to shorts

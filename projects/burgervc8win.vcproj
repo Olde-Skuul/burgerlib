@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
@@ -3314,6 +3314,10 @@
 				</File>
 				<File
 					RelativePath="..\source\math\brmp3math.h"
+					>
+				</File>
+				<File
+					RelativePath="..\source\math\brsinecosine.cpp"
 					>
 				</File>
 				<File

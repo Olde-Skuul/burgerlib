@@ -16,7 +16,7 @@
 
 // Most platforms support Posix
 #if (defined(BURGER_WINDOWS) || defined(BURGER_MACOSX) || \
-    defined(BURGER_LINUX) || defined(BURGER_MSDOS)) && \
+    defined(BURGER_LINUX)) && \
     !defined(__MSL__)
 
 #if defined(BURGER_MACOSX) || defined(BURGER_LINUX)

@@ -611,10 +611,12 @@ static Word BURGER_API ArgTypeUnitTestLiterals2(void)
 	Burger::SafePrintArgument G4(0172UL);
 	Burger::SafePrintArgument G5(12UL);
 	Burger::SafePrintArgument G6(0x1bcdef12UL);
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
 	Burger::SafePrintArgument G7(012LL);
 	Burger::SafePrintArgument G8(12LL);
 	Burger::SafePrintArgument G9(0x1bcdef12LL);
 	Burger::SafePrintArgument G0(12ULL);
+#endif
 
 #if BURGER_SIZEOF_LONG == 8
 	uResult |= TestArgType(&G1, Burger::SafePrintArgument::ARG_INT64);
@@ -634,10 +636,12 @@ static Word BURGER_API ArgTypeUnitTestLiterals2(void)
 	uResult |= TestArgType(&G6, Burger::SafePrintArgument::ARG_WORD32);
 #endif
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
 	uResult |= TestArgType(&G7, Burger::SafePrintArgument::ARG_INT64);
 	uResult |= TestArgType(&G8, Burger::SafePrintArgument::ARG_INT64);
 	uResult |= TestArgType(&G9, Burger::SafePrintArgument::ARG_INT64);
 	uResult |= TestArgType(&G0, Burger::SafePrintArgument::ARG_WORD64);
+#endif
 	return uResult;
 }
 

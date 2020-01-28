@@ -43,7 +43,7 @@ public:
 	static WordPtr BURGER_API FromGeneric(char *pOutput,WordPtr uOutputSize,const Word8 pTranslateTable[128][4],const char *pInput);
 	static WordPtr BURGER_API FromGeneric(char *pOutput,WordPtr uOutputSize,const Word8 pTranslateTable[128][4],const char *pInput,WordPtr uInputSize);
 	static WordPtr BURGER_API FromUTF16(char *pOutput,Word16 uInput);
-	static WordPtr BURGER_API FromUTF16(char *pOutput,WordPtr uOutputSize,const Word16 *pInput);
+	static uintptr_t BURGER_API FromUTF16(char *pOutput,uintptr_t uOutputSize,const uint16_t *pInput) BURGER_NOEXCEPT;
 	static WordPtr BURGER_API FromUTF16(char *pOutput,WordPtr uOutputSize,const Word16 *pInput,WordPtr uInputSize);
 	static char * BURGER_API FromUTF16(const Word16 *pInput);
 	static WordPtr BURGER_API FromUTF32(char *pOutput,Word32 uInput);

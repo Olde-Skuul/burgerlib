@@ -616,7 +616,7 @@ Burger::String::String(const char *pInput1,const char *pInput2,const char *pInpu
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::String::Set(const char *pInput)
+Burger::eError BURGER_API Burger::String::Set(const char *pInput) BURGER_NOEXCEPT
 {
 	// Assume no error
 	eError uResult = kErrorNone;
@@ -660,7 +660,7 @@ Burger::eError BURGER_API Burger::String::Set(const char *pInput)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::String::Set(const char *pInput,WordPtr uLength)
+Burger::eError BURGER_API Burger::String::Set(const char *pInput,uintptr_t uLength) BURGER_NOEXCEPT
 {
 	// Assume no error
 	eError uResult = kErrorNone;
@@ -708,7 +708,7 @@ Burger::eError BURGER_API Burger::String::Set(const char *pInput,WordPtr uLength
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::String::Set(const Word16 *pInput)
+Burger::eError BURGER_API Burger::String::Set(const uint16_t *pInput) BURGER_NOEXCEPT
 {
 	// Assume no error
 	eError uResult = kErrorNone;
@@ -748,7 +748,7 @@ Burger::eError BURGER_API Burger::String::Set(const Word16 *pInput)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::String::Set(const Word16 *pInput,WordPtr uLength)
+Burger::eError BURGER_API Burger::String::Set(const uint16_t *pInput,uintptr_t uLength) BURGER_NOEXCEPT
 {
 	// Assume no error
 	eError uResult = kErrorNone;

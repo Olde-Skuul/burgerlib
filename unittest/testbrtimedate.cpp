@@ -20,15 +20,13 @@
 #include "brtimedate.h"
 #include "common.h"
 
-using namespace Burger;
-
 /***************************************
 
     Test the clear function
 
 ***************************************/
 
-static uint_t BURGER_API TestBurgerTimeDateClear(void)
+static uint_t BURGER_API TestBurgerTimeDateClear(void) BURGER_NOEXCEPT
 {
     Burger::TimeDate_t Buffer[3];
 
@@ -50,16 +48,14 @@ static uint_t BURGER_API TestBurgerTimeDateClear(void)
 // Perform all the tests for the Burgerlib Time Manager
 //
 
-int BURGER_API TestDateTime(uint_t uVerbose)
+int BURGER_API TestDateTime(uint_t uVerbose) BURGER_NOEXCEPT
 {
-    uint_t uResult; // Assume no failures
-
     if (uVerbose & VERBOSE_MSG) {
         Message("Running Date/Time tests");
     }
 
     // Test compiler switches
-    uResult = TestBurgerTimeDateClear();
+    const uint_t uResult = TestBurgerTimeDateClear();
 
     if (!uResult && (uVerbose & VERBOSE_TIME)) {
         char Buffer[256];
@@ -81,20 +77,23 @@ int BURGER_API TestDateTime(uint_t uVerbose)
 // Test PrintHexDigit(uint_t)
 //
 
-static uint_t BURGER_API TestPrintHexDigit(void)
+static uint_t BURGER_API TestPrintHexDigit(void) BURGER_NOEXCEPT
 {
     // Capture the string output
     Burger::CaptureStdout Capture;
-    Capture.Init(512);
+    if (Capture.Init(512)) {
+        return FALSE;
+    }
     Burger::PrintHexDigit(0x12345678);
-    String CapturedString;
+    Burger::String CapturedString;
     Capture.GetCapture(&CapturedString);
     Capture.Shutdown();
 
     const char* pExpected = "8";
-    uint_t uTest = Burger::StringCompare(CapturedString.GetPtr(), pExpected) != 0;
+    const uint_t uTest =
+        Burger::StringCompare(CapturedString.c_str(), pExpected) != 0;
     ReportFailure("Burger::PrintHexDigit(0x12345678) = %s, expected %s", uTest,
-        CapturedString.GetPtr(), pExpected);
+        CapturedString.c_str(), pExpected);
     return uTest;
 }
 
@@ -102,21 +101,24 @@ static uint_t BURGER_API TestPrintHexDigit(void)
 // Test PrintHex(uint8_t)
 //
 
-static uint_t BURGER_API TestPrintHexWord8(void)
+static uint_t BURGER_API TestPrintHexWord8(void) BURGER_NOEXCEPT
 {
     // Capture the string output
     Burger::CaptureStdout Capture;
-    Capture.Init(512);
+    if (Capture.Init(512)) {
+        return FALSE;
+    }
     Burger::PrintHex(static_cast<uint8_t>(0x12));
-    String CapturedString;
+    Burger::String CapturedString;
     Capture.GetCapture(&CapturedString);
     Capture.Shutdown();
 
     const char* pExpected = "12";
-    uint_t uTest = Burger::StringCompare(CapturedString.GetPtr(), pExpected) != 0;
+    const uint_t uTest =
+        Burger::StringCompare(CapturedString.c_str(), pExpected) != 0;
     ReportFailure(
         "Burger::PrintHex(static_cast<uint8_t>(0x12)) = %s, expected %s", uTest,
-        CapturedString.GetPtr(), pExpected);
+        CapturedString.c_str(), pExpected);
     return uTest;
 }
 
@@ -124,21 +126,24 @@ static uint_t BURGER_API TestPrintHexWord8(void)
 // Test PrintHex(uint16_t)
 //
 
-static uint_t BURGER_API TestPrintHexWord16(void)
+static uint_t BURGER_API TestPrintHexWord16(void) BURGER_NOEXCEPT
 {
     // Capture the string output
     Burger::CaptureStdout Capture;
-    Capture.Init(512);
+    if (Capture.Init(512)) {
+        return FALSE;
+    }
     Burger::PrintHex(static_cast<uint16_t>(0x1234));
-    String CapturedString;
+    Burger::String CapturedString;
     Capture.GetCapture(&CapturedString);
     Capture.Shutdown();
 
     const char* pExpected = "1234";
-    uint_t uTest = Burger::StringCompare(CapturedString.GetPtr(), pExpected) != 0;
+    const uint_t uTest =
+        Burger::StringCompare(CapturedString.c_str(), pExpected) != 0;
     ReportFailure(
         "Burger::PrintHex(static_cast<uint16_t>(0x1234)) = %s, expected %s",
-        uTest, CapturedString.GetPtr(), pExpected);
+        uTest, CapturedString.c_str(), pExpected);
     return uTest;
 }
 
@@ -146,21 +151,24 @@ static uint_t BURGER_API TestPrintHexWord16(void)
 // Test PrintHex(uint32_t)
 //
 
-static uint_t BURGER_API TestPrintHexWord32(void)
+static uint_t BURGER_API TestPrintHexWord32(void) BURGER_NOEXCEPT
 {
     // Capture the string output
     Burger::CaptureStdout Capture;
-    Capture.Init(512);
+    if (Capture.Init(512)) {
+        return FALSE;
+    }
     Burger::PrintHex(static_cast<uint32_t>(0x12345678));
-    String CapturedString;
+    Burger::String CapturedString;
     Capture.GetCapture(&CapturedString);
     Capture.Shutdown();
 
     const char* pExpected = "12345678";
-    uint_t uTest = Burger::StringCompare(CapturedString.GetPtr(), pExpected) != 0;
+    const uint_t uTest =
+        Burger::StringCompare(CapturedString.c_str(), pExpected) != 0;
     ReportFailure(
         "Burger::PrintHex(static_cast<uint32_t>(0x12345678)) = %s, expected %s",
-        uTest, CapturedString.GetPtr(), pExpected);
+        uTest, CapturedString.c_str(), pExpected);
     return uTest;
 }
 
@@ -168,21 +176,24 @@ static uint_t BURGER_API TestPrintHexWord32(void)
 // Test PrintHex(uint64_t)
 //
 
-static uint_t BURGER_API TestPrintHexWord64(void)
+static uint_t BURGER_API TestPrintHexWord64(void) BURGER_NOEXCEPT
 {
     // Capture the string output
     Burger::CaptureStdout Capture;
-    Capture.Init(512);
+    if (Capture.Init(512)) {
+        return FALSE;
+    }
     Burger::PrintHex(static_cast<uint64_t>(0x123456789ABCDEFULL));
-    String CapturedString;
+    Burger::String CapturedString;
     Capture.GetCapture(&CapturedString);
     Capture.Shutdown();
 
     const char* pExpected = "0123456789ABCDEF";
-    uint_t uTest = Burger::StringCompare(CapturedString.GetPtr(), pExpected) != 0;
+    const uint_t uTest =
+        Burger::StringCompare(CapturedString.c_str(), pExpected) != 0;
     ReportFailure(
         "Burger::PrintHex(static_cast<uint64_t>(0x123456789ABCDEFULL)) = %s, expected %s",
-        uTest, CapturedString.GetPtr(), pExpected);
+        uTest, CapturedString.c_str(), pExpected);
     return uTest;
 }
 
@@ -198,7 +209,7 @@ struct PrintFloat_t {
 static const PrintFloat_t PrintHexFloatTestTable[] = {
     {0x7FFFFFFF, "7FFFFFFF"}, {0x3F800000, "3F800000"}};
 
-static uint_t BURGER_API TestPrintHexFloat(void)
+static uint_t BURGER_API TestPrintHexFloat(void) BURGER_NOEXCEPT
 {
     uint_t uFailure = FALSE;
     const PrintFloat_t* pWork = PrintHexFloatTestTable;
@@ -206,18 +217,20 @@ static uint_t BURGER_API TestPrintHexFloat(void)
     do {
         // Capture the string output
         Burger::CaptureStdout Capture;
-        Capture.Init(512);
+        if (Capture.Init(512)) {
+            break;
+        }
         Burger::PrintHex(static_cast<const float*>(
             static_cast<const void*>(&pWork->m_uData))[0]);
-        String CapturedString;
+        Burger::String CapturedString;
         Capture.GetCapture(&CapturedString);
         Capture.Shutdown();
 
-        uint_t uTest =
-            Burger::StringCompare(CapturedString.GetPtr(), pWork->m_pData) != 0;
+        const uint_t uTest =
+            Burger::StringCompare(CapturedString.c_str(), pWork->m_pData) != 0;
         ReportFailure(
             "Burger::PrintHex(static_cast<float>(0x%08X)) = %s, expected %s",
-            uTest, pWork->m_uData, CapturedString.GetPtr(), pWork->m_pData);
+            uTest, pWork->m_uData, CapturedString.c_str(), pWork->m_pData);
         uFailure |= uTest;
         ++pWork;
     } while (--uCount);
@@ -237,7 +250,7 @@ static const PrintDouble_t PrintHexDoubleTestTable[] = {
     {0x7FFFFFFFFFFFFFFFULL, "7FFFFFFFFFFFFFFF"},
     {0x3FF0000000000000ULL, "3FF0000000000000"}};
 
-static uint_t BURGER_API TestPrintHexDouble(void)
+static uint_t BURGER_API TestPrintHexDouble(void) BURGER_NOEXCEPT
 {
     uint_t uFailure = FALSE;
     const PrintDouble_t* pWork = PrintHexDoubleTestTable;
@@ -245,20 +258,22 @@ static uint_t BURGER_API TestPrintHexDouble(void)
     do {
         // Capture the string output
         Burger::CaptureStdout Capture;
-        Capture.Init(512);
+        if (Capture.Init(512)) {
+            break;
+        }
         Burger::PrintHex(static_cast<const double*>(
             static_cast<const void*>(&pWork->m_uData))[0]);
-        String CapturedString;
+        Burger::String CapturedString;
         Capture.GetCapture(&CapturedString);
         Capture.Shutdown();
 
-        uint_t uTest =
-            Burger::StringCompare(CapturedString.GetPtr(), pWork->m_pData) != 0;
+        const uint_t uTest =
+            Burger::StringCompare(CapturedString.c_str(), pWork->m_pData) != 0;
         if (uTest) {
             Burger::NumberStringHex Input(pWork->m_uData);
             ReportFailure(
                 "Burger::PrintHex(static_cast<double>(0x%s)) = %s, expected %s",
-                uTest, Input.GetPtr(), CapturedString.GetPtr(), pWork->m_pData);
+                uTest, Input.c_str(), CapturedString.c_str(), pWork->m_pData);
         }
         uFailure |= uTest;
         ++pWork;
@@ -270,57 +285,62 @@ static uint_t BURGER_API TestPrintHexDouble(void)
 // Test for generic types for proper remapping
 //
 
-static void TestPrintHexes(void)
+static void TestPrintHexes(void) BURGER_NOEXCEPT
 {
     Burger::CaptureStdout Capture;
-    Capture.Init(1024);
+    const Burger::eError uError = Capture.Init(1024);
 
-    Burger::PrintHex('a');
+    // Only process tests if text capture is supported on this platform.
+    if (uError == Burger::kErrorNone) {
+        Burger::PrintHex('a');
 #if defined(BURGER_HAS_WCHAR_T)
-    Burger::PrintHex(L'a');
+        Burger::PrintHex(L'a');
 #endif
 
-    Burger::PrintHex(1);
-    Burger::PrintHex(1U);
-    Burger::PrintHex(1LL);
-    Burger::PrintHex(1ULL);
-    Burger::PrintHex(1.0);
-    Burger::PrintHex(1.0f);
+        Burger::PrintHex(1);
+        Burger::PrintHex(1U);
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
+        Burger::PrintHex(1LL);
+        Burger::PrintHex(1ULL);
+#endif
+        Burger::PrintHex(1.0);
+        Burger::PrintHex(1.0f);
 
-    Burger::PrintHex(static_cast<char>(1));
-    Burger::PrintHex(static_cast<signed char>(1));
-    Burger::PrintHex(static_cast<unsigned char>(1));
+        Burger::PrintHex(static_cast<char>(1));
+        Burger::PrintHex(static_cast<signed char>(1));
+        Burger::PrintHex(static_cast<unsigned char>(1));
 
-    Burger::PrintHex(static_cast<short>(1));
-    Burger::PrintHex(static_cast<signed short>(1));
-    Burger::PrintHex(static_cast<unsigned short>(1));
+        Burger::PrintHex(static_cast<short>(1));
+        Burger::PrintHex(static_cast<signed short>(1));
+        Burger::PrintHex(static_cast<unsigned short>(1));
 
-    Burger::PrintHex(static_cast<int>(1));
-    Burger::PrintHex(static_cast<unsigned int>(1));
-    Burger::PrintHex(static_cast<signed char>(1));
+        Burger::PrintHex(static_cast<int>(1));
+        Burger::PrintHex(static_cast<unsigned int>(1));
+        Burger::PrintHex(static_cast<signed char>(1));
 
-    Burger::PrintHex(static_cast<long>(1));
-    Burger::PrintHex(static_cast<unsigned long>(1));
-    Burger::PrintHex(static_cast<signed long>(1));
+        Burger::PrintHex(static_cast<long>(1));
+        Burger::PrintHex(static_cast<unsigned long>(1));
+        Burger::PrintHex(static_cast<signed long>(1));
 
-    Burger::PrintHex(static_cast<long long>(1));
-    Burger::PrintHex(static_cast<unsigned long long>(1));
-    Burger::PrintHex(static_cast<signed long long>(1));
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
+        Burger::PrintHex(static_cast<long long>(1));
+        Burger::PrintHex(static_cast<unsigned long long>(1));
+        Burger::PrintHex(static_cast<signed long long>(1));
+#endif
+    }
 }
 
 //
 // Perform all the tests for the Burgerlib Stdouthelpers Manager
 //
 
-int BURGER_API TestStdoutHelpers(uint_t uVerbose)
+int BURGER_API TestStdoutHelpers(uint_t uVerbose) BURGER_NOEXCEPT
 {
-    uint_t uResult = FALSE; // Assume no failures
-
     if (uVerbose & VERBOSE_MSG) {
         Message("Running Stdout Helpers tests");
     }
 
-    uResult |= TestPrintHexDigit();
+    uint_t uResult = TestPrintHexDigit();
     uResult |= TestPrintHexWord8();
     uResult |= TestPrintHexWord16();
     uResult |= TestPrintHexWord32();

@@ -42,7 +42,7 @@ kErrorNotSupportedOnThisPlatform as an error code.
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::GetLoggedInUserName(String* pOutput)
+Burger::eError BURGER_API Burger::GetLoggedInUserName(String* pOutput) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorItemNotFound;
 
@@ -127,7 +127,7 @@ kErrorNotSupportedOnThisPlatform as an error code.
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::GetMachineName(String* pOutput)
+Burger::eError BURGER_API Burger::GetMachineName(String* pOutput) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorItemNotFound;
 

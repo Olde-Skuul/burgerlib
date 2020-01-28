@@ -1,0 +1,490 @@
+#
+# Build unittests with WMAKE
+# Generated with makeprojects
+#
+# Require the environment variable WATCOM set to the OpenWatcom folder
+# Example: WATCOM=C:\WATCOM
+#
+
+# This speeds up the building process for Watcom because it
+# keeps the apps in memory and doesn't have to reload for every source file
+# Note: There is a bug that if the wlib app is loaded, it will not
+# get the proper WOW file if a full build is performed
+
+# The bug is gone from Watcom 1.2
+
+!ifdef %WATCOM
+!ifdef __LOADDLL__
+!loaddll wcc $(%WATCOM)/binnt/wccd
+!loaddll wccaxp $(%WATCOM)/binnt/wccdaxp
+!loaddll wcc386 $(%WATCOM)/binnt/wccd386
+!loaddll wpp $(%WATCOM)/binnt/wppdi86
+!loaddll wppaxp $(%WATCOM)/binnt/wppdaxp
+!loaddll wpp386 $(%WATCOM)/binnt/wppd386
+!loaddll wlink $(%WATCOM)/binnt/wlinkd
+!loaddll wlib $(%WATCOM)/binnt/wlibd
+!endif
+!endif
+
+#
+# Default configuration
+#
+
+!ifndef CONFIG
+CONFIG = Release
+!endif
+
+#
+# Default target
+#
+
+!ifndef TARGET
+TARGET = dos4gw
+!endif
+
+#
+# Directory name fragments
+#
+
+TARGET_SUFFIX_dos4gw = 4gw
+
+CONFIG_SUFFIX_Debug = dbg
+CONFIG_SUFFIX_Internal = int
+CONFIG_SUFFIX_Release = rel
+
+#
+# Set the set of known files supported
+# Note: They are in the reverse order of building. .c is built first, then .x86
+# until the .exe or .lib files are built
+#
+
+.extensions:
+.extensions: .exe .exp .lib .obj .h .cpp .x86 .c .i86
+
+#
+# Ensure sdks are pulled from the environment
+#
+
+BURGER_SDKS = $(%BURGER_SDKS)
+
+#
+# SOURCE_DIRS = Work directories for the source code
+#
+
+SOURCE_DIRS =../source
+SOURCE_DIRS +=;../source/ansi
+SOURCE_DIRS +=;../source/audio
+SOURCE_DIRS +=;../source/commandline
+SOURCE_DIRS +=;../source/compression
+SOURCE_DIRS +=;../source/file
+SOURCE_DIRS +=;../source/flashplayer
+SOURCE_DIRS +=;../source/generated
+SOURCE_DIRS +=;../source/graphics
+SOURCE_DIRS +=;../source/graphics/effects
+SOURCE_DIRS +=;../source/graphics/shaders
+SOURCE_DIRS +=;../source/input
+SOURCE_DIRS +=;../source/lowlevel
+SOURCE_DIRS +=;../source/math
+SOURCE_DIRS +=;../source/memory
+SOURCE_DIRS +=;../source/msdos
+SOURCE_DIRS +=;../source/network
+SOURCE_DIRS +=;../source/random
+SOURCE_DIRS +=;../source/text
+SOURCE_DIRS +=;../unittest
+
+#
+# Name of the output library
+#
+
+PROJECT_NAME = unittests
+
+#
+# Base name of the temp directory
+#
+
+BASE_TEMP_DIR = temp/$(PROJECT_NAME)
+BASE_SUFFIX = wat$(TARGET_SUFFIX_$(%TARGET))$(CONFIG_SUFFIX_$(%CONFIG))
+TEMP_DIR = $(BASE_TEMP_DIR)$(BASE_SUFFIX)
+
+#
+# Binary directory
+#
+
+DESTINATION_DIR = bin
+
+#
+# INCLUDE_DIRS = Header includes
+#
+
+INCLUDE_DIRS = $(SOURCE_DIRS)
+INCLUDE_DIRS +=;$(BURGER_SDKS)/dos/x32
+
+#
+# Tell WMAKE where to find the files to work with
+#
+
+.c: $(SOURCE_DIRS)
+.cpp: $(SOURCE_DIRS)
+.x86: $(SOURCE_DIRS)
+.i86: $(SOURCE_DIRS)
+
+#
+# Set the compiler flags for each of the build types
+#
+
+CFlagsDebug=-d_DEBUG -d2 -od
+CFlagsInternal=-d_DEBUG -d2 -oaxsh
+CFlagsRelease=-dNDEBUG -d0 -oaxsh
+
+#
+# Set the flags for each target operating system
+#
+
+CFlagscom=-bt=com -d__COM__=1 -i="$(%BURGER_SDKS)/dos/burgerlib;$(%BURGER_SDKS)/dos/x32;$(%WATCOM)/h"
+CFlagsdosx32=-bt=DOS -d__X32__=1 -i="$(%BURGER_SDKS)/dos/burgerlib;$(%BURGER_SDKS)/dos/x32;$(%WATCOM)/h"
+CFlagsdos4gw=-bt=DOS -d__DOS4G__=1 -i="$(%BURGER_SDKS)/dos/burgerlib;$(%BURGER_SDKS)/dos/sosaudio;$(%WATCOM)/h;$(%WATCOM)/h/nt"
+CFlagsw32=-bt=NT -dGLUT_DISABLE_ATEXIT_HACK -dGLUT_NO_LIB_PRAGMA -dTARGET_CPU_X86=1 -dTARGET_OS_WIN32=1 -dTYPE_BOOL=1 -dUNICODE -d_UNICODE -dWIN32_LEAN_AND_MEAN -i="$(%BURGER_SDKS)/windows/burgerlib;$(%BURGER_SDKS)/windows/opengl;$(%BURGER_SDKS)/windows/directx9;$(%BURGER_SDKS)/windows/windows5;$(%BURGER_SDKS)/windows/quicktime7;$(%WATCOM)/h;$(%WATCOM)/h/nt"
+
+#
+# Set the WASM flags for each of the build types
+#
+
+AFlagsDebug=-d_DEBUG
+AFlagsInternal=-d_DEBUG
+AFlagsRelease=-dNDEBUG
+
+#
+# Set the WASM flags for each operating system
+#
+
+AFlagscom=-d__COM__=1
+AFlagsdosx32=-d__X32__=1
+AFlagsdos4gw=-d__DOS4G__=1
+AFlagsw32=-d__WIN32__=1
+
+LFlagsDebug=
+LFlagsInternal=
+LFlagsRelease=
+
+LFlagscom=format dos com libp $(%BURGER_SDKS)/dos/burgerlib
+LFlagsx32=system x32r libp $(%BURGER_SDKS)/dos/burgerlib;$(%BURGER_SDKS)/dos/x32
+LFlagsdos4gw=system dos4g libp $(%BURGER_SDKS)/dos/burgerlib;$(%BURGER_SDKS)/dos/sosaudio
+LFlagsw32=system nt libp $(%BURGER_SDKS)/windows/burgerlib;$(%BURGER_SDKS)/windows/directx9 LIBRARY VERSION.lib,opengl32.lib,winmm.lib,shell32.lib,shfolder.lib
+
+# Now, set the compiler flags
+
+CL=WCC386 -6r -fp6 -w4 -ei -j -mf -zq -zp=8 -wcd=7 -i=$(INCLUDE_DIRS)
+CP=WPP386 -6r -fp6 -w4 -ei -j -mf -zq -zp=8 -wcd=7 -i=$(INCLUDE_DIRS)
+ASM=WASM -5r -fp6 -w4 -zq -d__WATCOM__=1
+LINK=*WLINK option caseexact option quiet PATH $(%WATCOM)/binnt;$(%WATCOM)/binw;.
+
+# Set the default build rules
+# Requires ASM, CP to be set
+
+# Macro expansion is on page 93 of the C//C++ Tools User's Guide
+# $^* = C:\dir\target (No extension)
+# $[* = C:\dir\dep (No extension)
+# $^@ = C:\dir\target.ext
+# $^: = C:\dir\
+
+.i86.obj : .AUTODEPEND
+	@echo $[&.i86 / $(%CONFIG) / $(%TARGET)
+	@$(ASM) -0 -w4 -zq -d__WATCOM__=1 $(AFlags$(%CONFIG)) $(AFlags$(%TARGET)) $[*.i86 -fo=$^@ -fr=$^*.err
+
+.x86.obj : .AUTODEPEND
+	@echo $[&.x86 / $(%CONFIG) / $(%TARGET)
+	@$(ASM) $(AFlags$(%CONFIG)) $(AFlags$(%TARGET)) $[*.x86 -fo=$^@ -fr=$^*.err
+
+.c.obj : .AUTODEPEND
+	@echo $[&.c / $(%CONFIG) / $(%TARGET)
+	@$(CP) $(CFlags$(%CONFIG)) $(CFlags$(%TARGET)) $[*.c -fo=$^@ -fr=$^*.err
+
+.cpp.obj : .AUTODEPEND
+	@echo $[&.cpp / $(%CONFIG) / $(%TARGET)
+	@$(CP) $(CFlags$(%CONFIG)) $(CFlags$(%TARGET)) $[*.cpp -fo=$^@ -fr=$^*.err
+
+#
+# Object files to work with for the library
+#
+
+OBJS= $(A)/bradler16.obj &
+	$(A)/bradler32.obj &
+	$(A)/bralaw.obj &
+	$(A)/bralgorithm.obj &
+	$(A)/brarray.obj &
+	$(A)/brasciito.obj &
+	$(A)/brassert.obj &
+	$(A)/bratomic.obj &
+	$(A)/brautorepeat.obj &
+	$(A)/brbase.obj &
+	$(A)/brcapturestdout.obj &
+	$(A)/brcodelibrary.obj &
+	$(A)/brcommandparameter.obj &
+	$(A)/brcommandparameterbooltrue.obj &
+	$(A)/brcommandparameterstring.obj &
+	$(A)/brcommandparameterwordptr.obj &
+	$(A)/brcompress.obj &
+	$(A)/brcompressdeflate.obj &
+	$(A)/brcompresslbmrle.obj &
+	$(A)/brcompresslzss.obj &
+	$(A)/brconsolemanager.obj &
+	$(A)/brcrc16.obj &
+	$(A)/brcrc32.obj &
+	$(A)/brcriticalsection.obj &
+	$(A)/brdebug.obj &
+	$(A)/brdecompress.obj &
+	$(A)/brdecompressdeflate.obj &
+	$(A)/brdecompresslbmrle.obj &
+	$(A)/brdecompresslzss.obj &
+	$(A)/brdetectmultilaunch.obj &
+	$(A)/brdirectorysearch.obj &
+	$(A)/brdirectorysearchmsdos.obj &
+	$(A)/brdisplay.obj &
+	$(A)/brdisplayobject.obj &
+	$(A)/brdisplayopengl.obj &
+	$(A)/brdisplayopenglsoftware8.obj &
+	$(A)/brdjb2hash.obj &
+	$(A)/brdosextender.obj &
+	$(A)/brdosextenderasm.obj &
+	$(A)/brdoublylinkedlist.obj &
+	$(A)/brdxt1.obj &
+	$(A)/brdxt3.obj &
+	$(A)/brdxt5.obj &
+	$(A)/brearcliptriangulate.obj &
+	$(A)/breffect.obj &
+	$(A)/breffect2d.obj &
+	$(A)/breffectpositiontexturecolor.obj &
+	$(A)/breffectstaticpositiontexture.obj &
+	$(A)/brendian.obj &
+	$(A)/brerror.obj &
+	$(A)/brfile.obj &
+	$(A)/brfileansihelpers.obj &
+	$(A)/brfileapf.obj &
+	$(A)/brfilebmp.obj &
+	$(A)/brfiledds.obj &
+	$(A)/brfilegif.obj &
+	$(A)/brfileini.obj &
+	$(A)/brfilelbm.obj &
+	$(A)/brfilemanager.obj &
+	$(A)/brfilemanagermsdos.obj &
+	$(A)/brfilemp3.obj &
+	$(A)/brfilemsdos.obj &
+	$(A)/brfilename.obj &
+	$(A)/brfilenamemsdos.obj &
+	$(A)/brfilepcx.obj &
+	$(A)/brfilepng.obj &
+	$(A)/brfiletga.obj &
+	$(A)/brfilexml.obj &
+	$(A)/brfixedmatrix3d.obj &
+	$(A)/brfixedmatrix4d.obj &
+	$(A)/brfixedpoint.obj &
+	$(A)/brfixedvector2d.obj &
+	$(A)/brfixedvector3d.obj &
+	$(A)/brfixedvector4d.obj &
+	$(A)/brflashaction.obj &
+	$(A)/brflashactionvalue.obj &
+	$(A)/brflashavm2.obj &
+	$(A)/brflashcolortransform.obj &
+	$(A)/brflashdisasmactionscript.obj &
+	$(A)/brflashmanager.obj &
+	$(A)/brflashmatrix23.obj &
+	$(A)/brflashrect.obj &
+	$(A)/brflashrgba.obj &
+	$(A)/brflashstream.obj &
+	$(A)/brflashutils.obj &
+	$(A)/brfloatingpoint.obj &
+	$(A)/brfont.obj &
+	$(A)/brfont4bit.obj &
+	$(A)/brfpinfo.obj &
+	$(A)/brgameapp.obj &
+	$(A)/brglobalmemorymanager.obj &
+	$(A)/brglobals.obj &
+	$(A)/brglobalsmsdos.obj &
+	$(A)/brgost.obj &
+	$(A)/brgridindex.obj &
+	$(A)/brguid.obj &
+	$(A)/brhashmap.obj &
+	$(A)/brimage.obj &
+	$(A)/brimportit.obj &
+	$(A)/brimports3m.obj &
+	$(A)/brimportxm.obj &
+	$(A)/brinputmemorystream.obj &
+	$(A)/brintrinsics.obj &
+	$(A)/brisolatin1.obj &
+	$(A)/brjoypad.obj &
+	$(A)/brkeyboard.obj &
+	$(A)/brlastinfirstout.obj &
+	$(A)/brlinkedlistobject.obj &
+	$(A)/brlinkedlistpointer.obj &
+	$(A)/brlocalization.obj &
+	$(A)/brmace.obj &
+	$(A)/brmacromanus.obj &
+	$(A)/brmatrix3d.obj &
+	$(A)/brmatrix4d.obj &
+	$(A)/brmd2.obj &
+	$(A)/brmd4.obj &
+	$(A)/brmd5.obj &
+	$(A)/brmemoryansi.obj &
+	$(A)/brmemoryfunctions.obj &
+	$(A)/brmemoryhandle.obj &
+	$(A)/brmemorymanager.obj &
+	$(A)/brmersennetwist.obj &
+	$(A)/brmicrosoftadpcm.obj &
+	$(A)/brmouse.obj &
+	$(A)/brmp3.obj &
+	$(A)/brmp3math.obj &
+	$(A)/brnetendpoint.obj &
+	$(A)/brnetendpointtcp.obj &
+	$(A)/brnetmanager.obj &
+	$(A)/brnetmodule.obj &
+	$(A)/brnetmoduletcp.obj &
+	$(A)/brnetplay.obj &
+	$(A)/brnumberstring.obj &
+	$(A)/brnumberstringhex.obj &
+	$(A)/brnumberto.obj &
+	$(A)/broscursor.obj &
+	$(A)/brosstringfunctions.obj &
+	$(A)/broutputmemorystream.obj &
+	$(A)/brpackfloat.obj &
+	$(A)/brpair.obj &
+	$(A)/brpalette.obj &
+	$(A)/brperforce.obj &
+	$(A)/brpoint2d.obj &
+	$(A)/brprintf.obj &
+	$(A)/brqueue.obj &
+	$(A)/brrandom.obj &
+	$(A)/brrandombase.obj &
+	$(A)/brrect.obj &
+	$(A)/brrenderer.obj &
+	$(A)/brrenderersoftware16.obj &
+	$(A)/brrenderersoftware8.obj &
+	$(A)/brrezfile.obj &
+	$(A)/brrunqueue.obj &
+	$(A)/brsdbmhash.obj &
+	$(A)/brsequencer.obj &
+	$(A)/brsha1.obj &
+	$(A)/brshader2dccolor.obj &
+	$(A)/brshader2dcolorvertex.obj &
+	$(A)/brshaders.obj &
+	$(A)/brshape8bit.obj &
+	$(A)/brsimplearray.obj &
+	$(A)/brsimplestring.obj &
+	$(A)/brsinecosine.obj &
+	$(A)/brsmartpointer.obj &
+	$(A)/brsound.obj &
+	$(A)/brsoundbufferrez.obj &
+	$(A)/brsounddecompress.obj &
+	$(A)/brstaticrtti.obj &
+	$(A)/brstdouthelpers.obj &
+	$(A)/brstring.obj &
+	$(A)/brstring16.obj &
+	$(A)/brstringfunctions.obj &
+	$(A)/brtexture.obj &
+	$(A)/brtextureopengl.obj &
+	$(A)/brtick.obj &
+	$(A)/brtickmsdos.obj &
+	$(A)/brtimedate.obj &
+	$(A)/brtimedatemsdos.obj &
+	$(A)/brtypes.obj &
+	$(A)/brulaw.obj &
+	$(A)/brunpackbytes.obj &
+	$(A)/brutf16.obj &
+	$(A)/brutf32.obj &
+	$(A)/brutf8.obj &
+	$(A)/brvector2d.obj &
+	$(A)/brvector3d.obj &
+	$(A)/brvector4d.obj &
+	$(A)/brvertexbuffer.obj &
+	$(A)/brvertexbufferopengl.obj &
+	$(A)/brwin1252.obj &
+	$(A)/common.obj &
+	$(A)/createtables.obj &
+	$(A)/testbralgorithm.obj &
+	$(A)/testbrcompression.obj &
+	$(A)/testbrdisplay.obj &
+	$(A)/testbrendian.obj &
+	$(A)/testbrfileloaders.obj &
+	$(A)/testbrfilemanager.obj &
+	$(A)/testbrfixedpoint.obj &
+	$(A)/testbrfloatingpoint.obj &
+	$(A)/testbrhashes.obj &
+	$(A)/testbrmatrix3d.obj &
+	$(A)/testbrmatrix4d.obj &
+	$(A)/testbrnetwork.obj &
+	$(A)/testbrprintf.obj &
+	$(A)/testbrstaticrtti.obj &
+	$(A)/testbrstrings.obj &
+	$(A)/testbrtimedate.obj &
+	$(A)/testbrtypes.obj &
+	$(A)/testcharset.obj &
+	$(A)/testmacros.obj
+
+#
+# List the names of all of the final binaries to build
+#
+
+all: Debug Internal Release .SYMBOLIC
+	@%null
+
+#
+# Configurations
+#
+
+Debug: Debugdos4gw .SYMBOLIC
+	@%null
+
+Internal: Internaldos4gw .SYMBOLIC
+	@%null
+
+Release: Releasedos4gw .SYMBOLIC
+	@%null
+
+dos4gw: Debugdos4gw Internaldos4gw Releasedos4gw .SYMBOLIC
+	@%null
+
+Debugdos4gw: .SYMBOLIC
+	@if not exist "$(DESTINATION_DIR)" @mkdir "$(DESTINATION_DIR)"
+	@if not exist "$(BASE_TEMP_DIR)wat4gwdbg" @mkdir "$(BASE_TEMP_DIR)wat4gwdbg"
+	@set CONFIG=Debug
+	@set TARGET=dos4gw
+	@%make $(DESTINATION_DIR)\$(PROJECT_NAME)wat4gwdbg.exe
+
+Internaldos4gw: .SYMBOLIC
+	@if not exist "$(DESTINATION_DIR)" @mkdir "$(DESTINATION_DIR)"
+	@if not exist "$(BASE_TEMP_DIR)wat4gwint" @mkdir "$(BASE_TEMP_DIR)wat4gwint"
+	@set CONFIG=Internal
+	@set TARGET=dos4gw
+	@%make $(DESTINATION_DIR)\$(PROJECT_NAME)wat4gwint.exe
+
+Releasedos4gw: .SYMBOLIC
+	@if not exist "$(DESTINATION_DIR)" @mkdir "$(DESTINATION_DIR)"
+	@if not exist "$(BASE_TEMP_DIR)wat4gwrel" @mkdir "$(BASE_TEMP_DIR)wat4gwrel"
+	@set CONFIG=Release
+	@set TARGET=dos4gw
+	@%make $(DESTINATION_DIR)\$(PROJECT_NAME)wat4gwrel.exe
+
+#
+# Disable building this make file
+#
+
+unittestswatdos4gw.wmk:
+	@%null
+
+#
+# A = The object file temp folder
+#
+
+A = $(BASE_TEMP_DIR)wat4gwdbg
+$(DESTINATION_DIR)\$(PROJECT_NAME)wat4gwdbg.exe: $+$(OBJS)$- unittestswatdos4gw.wmk
+	@SET WOW={$+$(OBJS)$-}
+	@$(LINK) $(LFlags$(%TARGET)) $(LFlags$(%CONFIG)) LIBRARY burger$(BASE_SUFFIX).lib NAME $^@ FILE @wow
+
+A = $(BASE_TEMP_DIR)wat4gwint
+$(DESTINATION_DIR)\$(PROJECT_NAME)wat4gwint.exe: $+$(OBJS)$- unittestswatdos4gw.wmk
+	@SET WOW={$+$(OBJS)$-}
+	@$(LINK) $(LFlags$(%TARGET)) $(LFlags$(%CONFIG)) LIBRARY burger$(BASE_SUFFIX).lib NAME $^@ FILE @wow
+
+A = $(BASE_TEMP_DIR)wat4gwrel
+$(DESTINATION_DIR)\$(PROJECT_NAME)wat4gwrel.exe: $+$(OBJS)$- unittestswatdos4gw.wmk
+	@SET WOW={$+$(OBJS)$-}
+	@$(LINK) $(LFlags$(%TARGET)) $(LFlags$(%CONFIG)) LIBRARY burger$(BASE_SUFFIX).lib NAME $^@ FILE @wow

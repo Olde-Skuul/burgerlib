@@ -29,8 +29,8 @@ namespace Burger {
 extern void* BURGER_API Alloc(uintptr_t uSize) BURGER_NOEXCEPT;
 extern void* BURGER_API AllocClear(uintptr_t uSize) BURGER_NOEXCEPT;
 extern void BURGER_API Free(const void* pInput) BURGER_NOEXCEPT;
-extern void* BURGER_API Realloc(const void* pInput, uintptr_t uSize);
-extern void* BURGER_API AllocCopy(const void* pInput, uintptr_t uSize);
+extern void* BURGER_API Realloc(const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT;
+extern void* BURGER_API AllocCopy(const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT;
 
 class GlobalMemoryManager {
 public:

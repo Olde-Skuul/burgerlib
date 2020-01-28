@@ -3113,11 +3113,11 @@ Skip1:;
 
 ***************************************/
 
-WordPtr BURGER_API Burger::StringLength(const Word16* pInput)
+uintptr_t BURGER_API Burger::StringLength(const uint16_t* pInput) BURGER_NOEXCEPT
 {
-	WordPtr uResult = 0; // Nothing found yet.
+	uintptr_t uResult = 0; // Nothing found yet.
 	if (pInput) {
-		Word uTemp = pInput[0];
+		uint_t uTemp = pInput[0];
 		++pInput;
 		if (uTemp) { // Is there any string yet?
 			do {
@@ -3400,7 +3400,7 @@ void BURGER_API Burger::StringCopy(Word16* pOutput, WordPtr uOutputSize,
 
 ***************************************/
 
-char* BURGER_API Burger::StringDuplicate(const char* pInput)
+char* BURGER_API Burger::StringDuplicate(const char* pInput) BURGER_NOEXCEPT
 {
 	const uintptr_t uLength = StringLength(pInput) + 1; // Get the length
 	return static_cast<char*>(
@@ -3429,9 +3429,9 @@ char* BURGER_API Burger::StringDuplicate(const char* pInput)
 
 ***************************************/
 
-char* BURGER_API Burger::StringDuplicate(const char* pInput, WordPtr uPadding)
+char* BURGER_API Burger::StringDuplicate(const char* pInput, uintptr_t uPadding) BURGER_NOEXCEPT
 {
-	WordPtr uLength = StringLength(pInput) + 1; // Get the length
+	const uintptr_t uLength = StringLength(pInput) + 1; // Get the length
 	char* pResult =
 		static_cast<char*>(Alloc(uLength + uPadding)); // Allocate the memory
 	if (pResult) {
@@ -4143,7 +4143,7 @@ void BURGER_API Burger::StringLowercase(char* pOutput, const char* pInput)
 
 ***************************************/
 
-char* BURGER_API Burger::StringCharacter(const char* pInput, int iChar)
+char* BURGER_API Burger::StringCharacter(const char* pInput, int iChar) BURGER_NOEXCEPT
 {
 	// Valid pointer?
 	if (pInput) {
@@ -4187,7 +4187,7 @@ char* BURGER_API Burger::StringCharacter(const char* pInput, int iChar)
 
 ***************************************/
 
-Word16* BURGER_API Burger::StringCharacter(const Word16* pInput, Word uChar)
+uint16_t* BURGER_API Burger::StringCharacter(const uint16_t* pInput, uint_t uChar) BURGER_NOEXCEPT
 {
 	// Valid pointer?
 	if (pInput) {
@@ -4232,7 +4232,7 @@ Word16* BURGER_API Burger::StringCharacter(const Word16* pInput, Word uChar)
 
 ***************************************/
 
-char* BURGER_API Burger::StringCharacterReverse(const char* pInput, int iChar)
+char* BURGER_API Burger::StringCharacterReverse(const char* pInput, int iChar) BURGER_NOEXCEPT
 {
 	// Assume it's not found
 	char* pFound = nullptr;
@@ -4279,8 +4279,8 @@ char* BURGER_API Burger::StringCharacterReverse(const char* pInput, int iChar)
 
 ***************************************/
 
-Word16* BURGER_API Burger::StringCharacterReverse(
-	const Word16* pInput, Word uChar)
+uint16_t* BURGER_API Burger::StringCharacterReverse(
+	const uint16_t* pInput, uint_t uChar) BURGER_NOEXCEPT
 {
 	// Assume it's not found
 	Word16* pFound = nullptr;

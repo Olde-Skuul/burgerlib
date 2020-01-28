@@ -325,7 +325,7 @@ Burger::String16::String16(const Word16 *pInput)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::String16::Set(const Word16 *pInput)
+Burger::eError BURGER_API Burger::String16::Set(const uint16_t *pInput) BURGER_NOEXCEPT
 {
 	// Assume no error
 	eError uResult = kErrorNone;
@@ -333,10 +333,10 @@ Burger::eError BURGER_API Burger::String16::Set(const Word16 *pInput)
 	if (!pInput) {
 		pInput = g_EmptyString16;
 	}
-	Word16 *pDest = m_Raw;
-	WordPtr uInputLength = StringLength(pInput);		// Length of the new string
+	uint16_t *pDest = m_Raw;
+	uintptr_t uInputLength = StringLength(pInput);		// Length of the new string
 	if (uInputLength>=BUFFERSIZE) {		// Buffer big enough?
-		pDest = static_cast<Word16 *>(Alloc((uInputLength+1)*sizeof(Word16)));
+		pDest = static_cast<uint16_t *>(Alloc((uInputLength+1)*sizeof(uint16_t)));
 		if (!pDest) {					// Oh oh...
 			pDest = m_Raw;
 			uInputLength = 0;			// Don't copy anything
@@ -344,10 +344,10 @@ Burger::eError BURGER_API Burger::String16::Set(const Word16 *pInput)
 			uResult = kErrorOutOfMemory;	// Error!
 		}
 	}
-	Word16 *pOld = m_pData;
+	const uint16_t *pOld = m_pData;
 	m_uLength = uInputLength;			// Save the new length
 	m_pData = pDest;					// Set the pointer
-	MemoryMove(pDest,pInput,(uInputLength+1)*sizeof(Word16));	// Copy the string
+	MemoryMove(pDest,pInput,(uInputLength+1)*sizeof(uint16_t));	// Copy the string
 	if (pOld!=m_Raw) {					// Discard previous memory
 		Free(pOld);
 	}
@@ -364,34 +364,40 @@ Burger::eError BURGER_API Burger::String16::Set(const Word16 *pInput)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::String16::Set(const char *pInput)
+Burger::eError BURGER_API Burger::String16::Set(
+    const char* pInput) BURGER_NOEXCEPT
 {
-	// Assume no error
-	eError uResult = kErrorNone;
+    // Assume no error
+    eError uResult = kErrorNone;
 
-	if (!pInput) {
-		pInput = g_EmptyString;
-	}
-	Word16 *pDest = m_Raw;
-	WordPtr uInputLength = UTF16::FromUTF8(NULL,0,pInput);		// Length of the new string
-	if (uInputLength>=BUFFERSIZE) {		// Buffer big enough?
-		pDest = static_cast<Word16 *>(Alloc((uInputLength+1)*sizeof(Word16)));
-		if (!pDest) {					// Oh oh...
-			pDest = m_Raw;
-			uInputLength = 0;			// Don't copy anything
-			pInput = g_EmptyString;	// Will copy the null character
-			uResult = kErrorOutOfMemory;	// Error!
-		}
-	}
-	Word16 *pOld = m_pData;
-	m_uLength = uInputLength;			// Save the new length
-	m_pData = pDest;					// Set the pointer
-	UTF16::FromUTF8(pDest,uInputLength+1,pInput);		// Copy the string
-	if (pOld!=m_Raw) {					// Discard previous memory
-		Free(pOld);
-	}
-	// Return error
-	return uResult;
+    if (!pInput) {
+        pInput = g_EmptyString;
+    }
+    uint16_t* pDest = m_Raw;
+    // Length of the new string
+    uintptr_t uInputLength = UTF16::FromUTF8(nullptr, 0, pInput);
+    // Buffer big enough?
+    if (uInputLength >= BUFFERSIZE) {
+        pDest =
+            static_cast<Word16*>(Alloc((uInputLength + 1) * sizeof(Word16)));
+        if (!pDest) { // Oh oh...
+            pDest = m_Raw;
+            uInputLength = 0;            // Don't copy anything
+            pInput = g_EmptyString;      // Will copy the null character
+            uResult = kErrorOutOfMemory; // Error!
+        }
+    }
+    uint16_t* pOld = m_pData;
+    m_uLength = uInputLength; // Save the new length
+    m_pData = pDest;          // Set the pointer
+    // Copy the string
+    UTF16::FromUTF8(pDest, uInputLength + sizeof(uint16_t), pInput);
+    // Discard previous memory
+    if (pOld != m_Raw) {
+        Free(pOld);
+    }
+    // Return error
+    return uResult;
 }
 
 /*! ************************************
@@ -411,27 +417,29 @@ Burger::eError BURGER_API Burger::String16::Set(const char *pInput)
 
 ***************************************/
 
-void BURGER_API Burger::String16::SetBufferSize(WordPtr uSize)
+Burger::eError BURGER_API Burger::String16::SetBufferSize(uintptr_t uSize) BURGER_NOEXCEPT
 {
+    eError uResult = kErrorNone;
 	if (uSize!=m_uLength) {
 		// If no space is requested, clear the buffer
 		if (!uSize) {
 			Clear();
 		} else {
 			// Hold the old buffer
-			Word16 *pWork = m_pData;
+			uint16_t *pWork = m_pData;
 			// Get the new buffer
-			Word16 *pDest = m_Raw;
+			uint16_t *pDest = m_Raw;
 			// Allocate a new buffer if needed
 			if (uSize>=BUFFERSIZE) {	// Buffer big enough?
-				pDest = static_cast<Word16 *>(Alloc((uSize+1)*2));
+				pDest = static_cast<uint16_t *>(Alloc((uSize+1)*2));
 				if (!pDest) {			// Oh oh...
 					pDest = m_Raw;
 					uSize = 0;			// Don't copy anything
+                    uResult = kErrorOutOfMemory;
 				}
 			}
 			// Get the size of the string
-			WordPtr uDestSize = m_uLength;
+			uintptr_t uDestSize = m_uLength;
 			if (uDestSize>=uSize) {
 				// Truncate the string
 				uDestSize = uSize;
@@ -446,6 +454,7 @@ void BURGER_API Burger::String16::SetBufferSize(WordPtr uSize)
 			pDest[uSize] = 0;			// Ensure the terminating zero is present
 		}
 	}
+    return uResult;
 }
 
 /*! ************************************
@@ -658,9 +667,9 @@ Burger::String16 & Burger::String16::operator =(char cInput)
 
 ***************************************/
 
-void Burger::String16::Clear(void)
+void Burger::String16::Clear(void) BURGER_NOEXCEPT
 {
-	Word16 *pWork = m_pData;	// Old data pointer
+	uint16_t *pWork = m_pData;	// Old data pointer
 	m_pData = m_Raw;			// New pointer
 	m_uLength = 0;				// No length
 	m_Raw[0] = 0;				// Kill the string

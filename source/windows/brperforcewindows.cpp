@@ -60,7 +60,7 @@ Word BURGER_API Burger::Perforce::Init(void)
 	if (!m_bFilenameInitialized) {
 		// Let's find the perforce EXE
 		// Check for an environment variable with the directory
-		const char *pAppdirectory = Globals::GetEnvironmentString("PERFORCE");
+		const char *pAppdirectory = GetEnvironmentString("PERFORCE");
 		Word bFilenameInitialized = FALSE;
 		if (pAppdirectory) {
 			m_PerforceFilename.SetFromNative(pAppdirectory);
@@ -75,7 +75,7 @@ Word BURGER_API Burger::Perforce::Init(void)
 		// Try finding it in the usual installation folder
 
 		if (!bFilenameInitialized) {
-			pAppdirectory = Globals::GetEnvironmentString("ProgramFiles");
+			pAppdirectory = GetEnvironmentString("ProgramFiles");
 			if (pAppdirectory) {
 				m_PerforceFilename.SetFromNative(pAppdirectory);
 				Free(pAppdirectory);

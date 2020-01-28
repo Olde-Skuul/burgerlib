@@ -60,6 +60,7 @@ Word Burger::DirectorySearch::Open(Burger::Filename *pDirName)
 
 Word Burger::DirectorySearch::GetNextEntry(void)
 {
+    #if 0
 	// Assume no more entries
 	Word uResult = File::OUTOFRANGE;
 	int fp = m_fp;
@@ -144,11 +145,11 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 			m_bHidden = ((m_Name[0]=='.') || ((reinterpret_cast<const Word8 *>(Entry.finderInfo)[8]&0x40U)!=0));
 
 			// Is the file locked?
-			m_bLocked = (Entry.m_Flags&UF_IMMUTABLE)!=0;
+			m_bLocked = FALSE; //(Entry.m_Flags&UF_IMMUTABLE)!=0;
 
 			// Get the mac specific file type and creator type
-			m_uFileType = reinterpret_cast<Word32 *>(Entry.finderInfo)[0];
-			m_uAuxType = reinterpret_cast<Word32 *>(Entry.finderInfo)[1];
+			//m_uFileType = reinterpret_cast<Word32 *>(Entry.finderInfo)[0];
+			//m_uAuxType = reinterpret_cast<Word32 *>(Entry.finderInfo)[1];
 
 
 			// It's parsed!
@@ -156,6 +157,8 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 		}
 	}
 	return uResult;
+    #endif
+    return File::OUTOFRANGE;
 }
 
 /***************************************

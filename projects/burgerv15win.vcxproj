@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -894,6 +894,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb"</Comman
     <ClCompile Include="..\source\math\brmatrix3d.cpp" />
     <ClCompile Include="..\source\math\brmatrix4d.cpp" />
     <ClCompile Include="..\source\math\brmp3math.cpp" />
+    <ClCompile Include="..\source\math\brsinecosine.cpp" />
     <ClCompile Include="..\source\math\brvector2d.cpp" />
     <ClCompile Include="..\source\math\brvector3d.cpp" />
     <ClCompile Include="..\source\math\brvector4d.cpp" />

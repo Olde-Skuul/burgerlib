@@ -445,6 +445,7 @@
 		<Unit filename="../source/math/brmatrix4d.h" />
 		<Unit filename="../source/math/brmp3math.cpp" />
 		<Unit filename="../source/math/brmp3math.h" />
+		<Unit filename="../source/math/brsinecosine.cpp" />
 		<Unit filename="../source/math/brvector2d.cpp" />
 		<Unit filename="../source/math/brvector2d.h" />
 		<Unit filename="../source/math/brvector3d.cpp" />

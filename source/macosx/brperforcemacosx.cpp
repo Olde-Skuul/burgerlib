@@ -61,7 +61,7 @@ Word BURGER_API Burger::Perforce::Init(void)
 		// Let's find the perforce EXE
 
 		// Check for an environment variable with the directory
-		const char* pAppdirectory = Globals::GetEnvironmentString("PERFORCE");
+		const char* pAppdirectory = GetEnvironmentString("PERFORCE");
 		Word bFilenameInitialized = FALSE;
 		if (pAppdirectory) {
 			m_PerforceFilename.SetFromNative(pAppdirectory);
@@ -77,7 +77,7 @@ Word BURGER_API Burger::Perforce::Init(void)
 		// It's included in burgerlib, so check there next
 
 		if (!bFilenameInitialized) {
-			pAppdirectory = Globals::GetEnvironmentString("BURGER_SDKS");
+			pAppdirectory = GetEnvironmentString("BURGER_SDKS");
 			if (pAppdirectory) {
 				m_PerforceFilename.SetFromNative(pAppdirectory);
 				Free(pAppdirectory);
@@ -92,7 +92,7 @@ Word BURGER_API Burger::Perforce::Init(void)
 
 		if (!bFilenameInitialized) {
 			// Get the path environment variable
-			pAppdirectory = Globals::GetEnvironmentString("PATH");
+			pAppdirectory = GetEnvironmentString("PATH");
 			if (pAppdirectory) {
 				// This is the pointer to the chunks
 

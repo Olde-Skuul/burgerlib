@@ -277,6 +277,18 @@
 #define __has_attribute(x) 0
 #endif
 
+#if !defined(__has_warning)
+#define __has_warning(x) 0
+#endif
+
+#if !defined(__has_include)
+#define __has_include(x) 0
+#endif
+
+#if !defined(__has_include_next)
+#define __has_include_next(x) 0
+#endif
+
 /***************************************
 
     Detect the CPU being compiled for
@@ -656,6 +668,12 @@
 #define BURGER_XBOXLIVE
 #endif
 
+#if (defined(BURGER_MACOSX) || defined(BURGER_MSDOS) || \
+    defined(BURGER_LINUX) || defined(BURGER_WINDOWS)) || \
+    defined(DOXYGEN)
+#define BURGER_CONSOLE
+#endif
+
 /***************************************
 
     Determine the endian by testing the platform / CPU
@@ -737,6 +755,25 @@
 #define BURGER_NO_INLINE
 #endif
 
+// Noreturn
+#if (BURGER_MSVC >= 120000000)
+#define BURGER_NORETURN __declspec(noreturn)
+#elif (BURGER_GNUC >= 20800) || __has_attribute(__noreturn__)
+#define BURGER_NORETURN __attribute__((__noreturn__))
+#elif defined(BURGER_CPP11)
+#define BURGER_NORETURN [[noreturn]]
+#else
+#define BURGER_NORETURN
+#endif
+
+// Attribute printf format
+#if (BURGER_GNUC >= 20300) || __has_attribute(format)
+#define BURGER_PRINTF_ATTRIBUTE(_index, _check) \
+    __attribute__((format(printf, _index, _check)))
+#else
+#define BURGER_PRINTF_ATTRIBUTE(_index, _check)
+#endif
+
 // Asm keyword for inline assembly (If supported)
 #if defined(BURGER_WATCOM) || defined(BURGER_INTEL_COMPILER) || \
     defined(BURGER_MINGW)
@@ -773,7 +810,7 @@
 #elif defined(BURGER_GNUC) || defined(BURGER_CLANG) || \
     defined(BURGER_SNSYSTEMS) || defined(BURGER_ARM_COMPILER) || \
     defined(BURGER_GHS)
-#define BURGER_ALIGN(x, s) (x) __attribute__((aligned(s)))
+#define BURGER_ALIGN(x, s) x __attribute__((aligned(s)))
 #define BURGER_PREALIGN(s)
 #define BURGER_POSTALIGN(s) __attribute__((aligned(s)))
 #else

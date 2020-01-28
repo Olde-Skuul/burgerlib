@@ -185,7 +185,7 @@ void BURGER_API Burger::Free(const void *pInput) BURGER_NOEXCEPT
 	
 ***************************************/
 
-void *BURGER_API Burger::Realloc(const void *pInput, uintptr_t uSize)
+void *BURGER_API Burger::Realloc(const void *pInput, uintptr_t uSize) BURGER_NOEXCEPT
 {
 	return GlobalMemoryManager::GetInstance()->Realloc(pInput,uSize);
 }
@@ -205,7 +205,7 @@ void *BURGER_API Burger::Realloc(const void *pInput, uintptr_t uSize)
 	
 ***************************************/
 
-void *BURGER_API Burger::AllocCopy(const void *pInput, uintptr_t uSize)
+void *BURGER_API Burger::AllocCopy(const void *pInput, uintptr_t uSize) BURGER_NOEXCEPT
 {
     void* pOutput = nullptr;
 	if (uSize) {			// Sanity check

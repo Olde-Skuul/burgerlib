@@ -24,7 +24,7 @@
 
 ***************************************/
 
-const char *BURGER_API Burger::Globals::GetEnvironmentString(const char *pKey)
+const char *BURGER_API Burger::GetEnvironmentString(const char *pKey) BURGER_NOEXCEPT
 {
 	const char *pValue = getenv(pKey);
 	if (pValue) {
@@ -39,12 +39,10 @@ const char *BURGER_API Burger::Globals::GetEnvironmentString(const char *pKey)
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::SetEnvironmentString(const char *pKey,const char *pInput)
+Burger::eError BURGER_API Burger::SetEnvironmentString(const char *pKey,const char *pInput) BURGER_NOEXCEPT
 {
-	// Create a Foo=bar string
-	String Joined(pKey,"=",pInput);
-	// Pass to the operating system
-	return static_cast<Word>(putenv(Joined.GetPtr()));
+    // Pass to the operating system
+    return static_cast<eError>(setenv(pKey, pInput, TRUE));
 }
 
 #endif

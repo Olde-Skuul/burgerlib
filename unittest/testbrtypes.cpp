@@ -673,6 +673,14 @@ static void BURGER_API ShowPlatformFeatures(uint_t uVerbose)
     }
 #endif
 
+#if defined(BURGER_LINUX) || defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)
+    if (uVerbose & VERBOSE_MSG) {
+        // Is Elevated privliges?
+        uTest = Burger::IsElevated();
+        Message("Burger::IsElevated() = %u", uTest);
+    }
+#endif
+
     //
     // Handle MacOS Version
     //

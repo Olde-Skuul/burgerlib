@@ -148,10 +148,10 @@ public:
 	{
 		return m_pData;
 	}
-	eError BURGER_API Set(const char* pInput);
-	eError BURGER_API Set(const char* pInput, WordPtr uLength);
-	eError BURGER_API Set(const Word16* pInput);
-	eError BURGER_API Set(const Word16* pInput, WordPtr uLength);
+	eError BURGER_API Set(const char* pInput) BURGER_NOEXCEPT;
+	eError BURGER_API Set(const char* pInput, uintptr_t uLength) BURGER_NOEXCEPT;
+	eError BURGER_API Set(const uint16_t* pInput) BURGER_NOEXCEPT;
+	eError BURGER_API Set(const uint16_t* pInput, uintptr_t uLength) BURGER_NOEXCEPT;
 	eError BURGER_API SetBufferSize(WordPtr uSize) BURGER_NOEXCEPT;
 
 	String& operator=(const String& rInput);

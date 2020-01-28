@@ -679,30 +679,48 @@ uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void)
 
 /***************************************
 
-	Read an environment variable as UTF8
+    Read an environment variable as UTF8
 
 ***************************************/
 
-const char* BURGER_API Burger::Globals::GetEnvironmentString(const char* pKey)
+const char* BURGER_API Burger::GetEnvironmentString(
+    const char* pKey) BURGER_NOEXCEPT
 {
-	const char* pValue = getenv(pKey);
-	if (pValue) {
-		pValue = StringDuplicate(pValue);
-	}
-	return pValue;
+    const char* pValue = getenv(pKey);
+    if (pValue) {
+        pValue = StringDuplicate(pValue);
+    }
+    return pValue;
 }
 
 /***************************************
 
-	Set an environment variable with a UTF8 string
+    Set an environment variable with a UTF8 string
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::SetEnvironmentString(
-	const char* pKey, const char* pInput)
+Burger::eError BURGER_API Burger::SetEnvironmentString(
+    const char* pKey, const char* pInput) BURGER_NOEXCEPT
 {
-	// Pass to the operating system
-	return static_cast<Word>(setenv(pKey, pInput, TRUE));
+    // Pass to the operating system
+    return static_cast<eError>(setenv(pKey, pInput, TRUE));
+}
+
+/***************************************
+
+    Test if the application has elevated privileges
+
+***************************************/
+
+uint_t BURGER_API Burger::IsElevated(void) BURGER_NOEXCEPT
+{
+    // Assume not elevated
+    uint_t bResult = FALSE;
+
+    if (!getuid()) {
+        bResult = TRUE;
+    }
+    return bResult;
 }
 
 #endif

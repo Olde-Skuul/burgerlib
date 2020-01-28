@@ -19,6 +19,6 @@
 #include "brtypes.h"
 #endif
 
-extern int BURGER_API TestDateTime(uint_t uVerbose);
-extern int BURGER_API TestStdoutHelpers(uint_t uVerbose);
+extern int BURGER_API TestDateTime(uint_t uVerbose) BURGER_NOEXCEPT;
+extern int BURGER_API TestStdoutHelpers(uint_t uVerbose) BURGER_NOEXCEPT;
 #endif

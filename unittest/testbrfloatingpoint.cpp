@@ -2164,7 +2164,6 @@ int BURGER_API TestBrfloatingpoint(uint_t uVerbose)
     }
     return 0;
 #else
-    uint_t uResult; // Assume no failures
 
     if (uVerbose & VERBOSE_MSG) {
         Message("Running Floating Point Math tests");
@@ -2172,7 +2171,7 @@ int BURGER_API TestBrfloatingpoint(uint_t uVerbose)
 
     // Test floating point constants
 
-    uResult = TestFPConsts();
+    uint_t uResult = TestFPConsts();
     uResult |= TestSNANToQNAN();
 
     // Test the test functions

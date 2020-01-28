@@ -177,8 +177,10 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
 #endif
     Burger::SwapEndian::Load(1);
     Burger::SwapEndian::Load(1U);
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::SwapEndian::Load(1LL);
     Burger::SwapEndian::Load(1ULL);
+#endif
     Burger::SwapEndian::Load(1.0);
     Burger::SwapEndian::Load(1.0f);
 
@@ -198,9 +200,11 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
     Burger::SwapEndian::Load(static_cast<signed long>(123));
     Burger::SwapEndian::Load(static_cast<unsigned long>(123));
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::SwapEndian::Load(static_cast<long long>(123));
     Burger::SwapEndian::Load(static_cast<signed long long>(123));
     Burger::SwapEndian::Load(static_cast<unsigned long long>(123));
+#endif
 
 #if defined(BURGER_HAS_WCHAR_T)
     Burger::SwapEndian::Load(&VarWChar);
@@ -222,9 +226,11 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
     Burger::SwapEndian::Load(&VarULong);
     Burger::SwapEndian::Load(&VarSLong);
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::SwapEndian::Load(&VarLongLong);
     Burger::SwapEndian::Load(&VarULongLong);
     Burger::SwapEndian::Load(&VarSLongLong);
+#endif
 
     Burger::SwapEndian::Load(&VarFloat);
     Burger::SwapEndian::Load(&VarDouble);
@@ -249,11 +255,13 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
     Burger::SwapEndian::Store(&VarULong, static_cast<unsigned long>(1));
     Burger::SwapEndian::Store(&VarSLong, static_cast<signed long>(1));
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::SwapEndian::Store(&VarLongLong, static_cast<long long>(1));
     Burger::SwapEndian::Store(
         &VarULongLong, static_cast<unsigned long long>(1));
     Burger::SwapEndian::Store(
         &VarSLongLong, static_cast<signed long long>(1));
+#endif
 
     Burger::SwapEndian::Store(&VarFloat, 1.0f);
     Burger::SwapEndian::Store(&VarDouble, 1.0);
@@ -288,12 +296,14 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
     Burger::SwapEndian::LoadAny(
         reinterpret_cast<const signed long*>(Unaligned + 1));
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::SwapEndian::LoadAny(
         reinterpret_cast<const long long*>(Unaligned + 1));
     Burger::SwapEndian::LoadAny(
         reinterpret_cast<const unsigned long long*>(Unaligned + 1));
     Burger::SwapEndian::LoadAny(
         reinterpret_cast<const signed long long*>(Unaligned + 1));
+#endif
 
     Burger::SwapEndian::LoadAny(
         reinterpret_cast<const float*>(Unaligned + 1));
@@ -340,6 +350,7 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
         reinterpret_cast<signed long*>(Unaligned + 1),
         static_cast<signed long>(1));
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::SwapEndian::StoreAny(
         reinterpret_cast<long long*>(Unaligned + 1), static_cast<long long>(1));
     Burger::SwapEndian::StoreAny(
@@ -348,6 +359,7 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
     Burger::SwapEndian::StoreAny(
         reinterpret_cast<signed long long*>(Unaligned + 1),
         static_cast<signed long long>(1));
+#endif
 
     Burger::SwapEndian::StoreAny(
         reinterpret_cast<float*>(Unaligned + 1), 1.0f);
@@ -374,9 +386,11 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
     Burger::SwapEndian::Fixup(&VarULong);
     Burger::SwapEndian::Fixup(&VarSLong);
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::SwapEndian::Fixup(&VarLongLong);
     Burger::SwapEndian::Fixup(&VarULongLong);
     Burger::SwapEndian::Fixup(&VarSLongLong);
+#endif
 
     Burger::SwapEndian::Fixup(&VarFloat);
     Burger::SwapEndian::Fixup(&VarDouble);
@@ -409,12 +423,13 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
     Burger::SwapEndian::FixupAny(
         reinterpret_cast<signed long*>(Unaligned + 1));
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::SwapEndian::FixupAny(reinterpret_cast<long long*>(Unaligned + 1));
     Burger::SwapEndian::FixupAny(
         reinterpret_cast<unsigned long long*>(Unaligned + 1));
     Burger::SwapEndian::FixupAny(
         reinterpret_cast<signed long long*>(Unaligned + 1));
-
+#endif
     Burger::SwapEndian::FixupAny(reinterpret_cast<float*>(Unaligned + 1));
     Burger::SwapEndian::FixupAny(reinterpret_cast<double*>(Unaligned + 1));
 }
@@ -1568,8 +1583,10 @@ static void BURGER_API TestBurgerNativeEndianTypes(void)
 #endif
     Burger::NativeEndian::Load(1);
     Burger::NativeEndian::Load(1U);
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::NativeEndian::Load(1LL);
     Burger::NativeEndian::Load(1ULL);
+#endif
     Burger::NativeEndian::Load(1.0);
     Burger::NativeEndian::Load(1.0f);
 
@@ -1589,9 +1606,11 @@ static void BURGER_API TestBurgerNativeEndianTypes(void)
     Burger::NativeEndian::Load(static_cast<signed long>(123));
     Burger::NativeEndian::Load(static_cast<unsigned long>(123));
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::NativeEndian::Load(static_cast<long long>(123));
     Burger::NativeEndian::Load(static_cast<signed long long>(123));
     Burger::NativeEndian::Load(static_cast<unsigned long long>(123));
+#endif
 
 #if defined(BURGER_HAS_WCHAR_T)
     Burger::NativeEndian::Load(&VarWChar);
@@ -1613,9 +1632,11 @@ static void BURGER_API TestBurgerNativeEndianTypes(void)
     Burger::NativeEndian::Load(&VarULong);
     Burger::NativeEndian::Load(&VarSLong);
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::NativeEndian::Load(&VarLongLong);
     Burger::NativeEndian::Load(&VarULongLong);
     Burger::NativeEndian::Load(&VarSLongLong);
+#endif
 
     Burger::NativeEndian::Load(&VarFloat);
     Burger::NativeEndian::Load(&VarDouble);
@@ -1640,11 +1661,13 @@ static void BURGER_API TestBurgerNativeEndianTypes(void)
     Burger::NativeEndian::Store(&VarULong, static_cast<unsigned long>(1));
     Burger::NativeEndian::Store(&VarSLong, static_cast<signed long>(1));
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::NativeEndian::Store(&VarLongLong, static_cast<long long>(1));
     Burger::NativeEndian::Store(
         &VarULongLong, static_cast<unsigned long long>(1));
     Burger::NativeEndian::Store(
         &VarSLongLong, static_cast<signed long long>(1));
+#endif
 
     Burger::NativeEndian::Store(&VarFloat, 1.0f);
     Burger::NativeEndian::Store(&VarDouble, 1.0);
@@ -1679,12 +1702,14 @@ static void BURGER_API TestBurgerNativeEndianTypes(void)
     Burger::NativeEndian::LoadAny(
         reinterpret_cast<const signed long*>(Unaligned + 1));
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::NativeEndian::LoadAny(
         reinterpret_cast<const long long*>(Unaligned + 1));
     Burger::NativeEndian::LoadAny(
         reinterpret_cast<const unsigned long long*>(Unaligned + 1));
     Burger::NativeEndian::LoadAny(
         reinterpret_cast<const signed long long*>(Unaligned + 1));
+#endif
 
     Burger::NativeEndian::LoadAny(
         reinterpret_cast<const float*>(Unaligned + 1));
@@ -1731,6 +1756,7 @@ static void BURGER_API TestBurgerNativeEndianTypes(void)
         reinterpret_cast<signed long*>(Unaligned + 1),
         static_cast<signed long>(1));
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::NativeEndian::StoreAny(
         reinterpret_cast<long long*>(Unaligned + 1), static_cast<long long>(1));
     Burger::NativeEndian::StoreAny(
@@ -1739,6 +1765,7 @@ static void BURGER_API TestBurgerNativeEndianTypes(void)
     Burger::NativeEndian::StoreAny(
         reinterpret_cast<signed long long*>(Unaligned + 1),
         static_cast<signed long long>(1));
+#endif
 
     Burger::NativeEndian::StoreAny(
         reinterpret_cast<float*>(Unaligned + 1), 1.0f);
@@ -1765,9 +1792,11 @@ static void BURGER_API TestBurgerNativeEndianTypes(void)
     Burger::NativeEndian::Fixup(&VarULong);
     Burger::NativeEndian::Fixup(&VarSLong);
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::NativeEndian::Fixup(&VarLongLong);
     Burger::NativeEndian::Fixup(&VarULongLong);
     Burger::NativeEndian::Fixup(&VarSLongLong);
+#endif
 
     Burger::NativeEndian::Fixup(&VarFloat);
     Burger::NativeEndian::Fixup(&VarDouble);
@@ -1800,11 +1829,13 @@ static void BURGER_API TestBurgerNativeEndianTypes(void)
     Burger::NativeEndian::FixupAny(
         reinterpret_cast<signed long*>(Unaligned + 1));
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::NativeEndian::FixupAny(reinterpret_cast<long long*>(Unaligned + 1));
     Burger::NativeEndian::FixupAny(
         reinterpret_cast<unsigned long long*>(Unaligned + 1));
     Burger::NativeEndian::FixupAny(
         reinterpret_cast<signed long long*>(Unaligned + 1));
+#endif
 
     Burger::NativeEndian::FixupAny(reinterpret_cast<float*>(Unaligned + 1));
     Burger::NativeEndian::FixupAny(reinterpret_cast<double*>(Unaligned + 1));

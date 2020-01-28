@@ -65,15 +65,14 @@ Burger::OSCursorImage::~OSCursorImage()
 
     Given a black and white image, create a cursor.
 
-	\note MacOS has a 16x16 maximum and Windows has a 32x32 maximum. Care should be used with this function.
-	\param pXor Pointer to the 1 bit per pixel bit map that is exclusive ored with the screen
-	\param pAnd Pointer to the 1 bit per pixel bit map that is and'd with the screen before the exclusive or
-	\param uWidth Width of the cursor image in pixels
-	\param uHeight Height of the cursor image in pixels
-	\param iHotX X coordinate of the hot spot in the cursor
-	\param iHotY Y coordinate of the hot spot in the cursor
-	\return Zero on success, non-zero on failure
-	\sa Shutdown()
+    \note MacOS has a 16x16 maximum and Windows has a 32x32 maximum. Care should
+be used with this function. \param pXor Pointer to the 1 bit per pixel bit map
+that is exclusive ored with the screen \param pAnd Pointer to the 1 bit per
+pixel bit map that is and'd with the screen before the exclusive or \param
+uWidth Width of the cursor image in pixels \param uHeight Height of the cursor
+image in pixels \param iHotX X coordinate of the hot spot in the cursor \param
+iHotY Y coordinate of the hot spot in the cursor \return Zero on success,
+non-zero on failure \sa Shutdown()
 
 ***************************************/
 
@@ -173,8 +172,9 @@ Burger::OSCursor::~OSCursor()
 
     \fn Word Burger::OSCursor::IsActive(void);
 
-	\brief Return \ref TRUE if a cursor is visible while the mouse is in the client area
-	\return \ref TRUE if a cursor should be visible in the client area of the window, \ref FALSE if not.
+    \brief Return \ref TRUE if a cursor is visible while the mouse is in the
+client area \return \ref TRUE if a cursor should be visible in the client area
+of the window, \ref FALSE if not.
 
 ***************************************/
 
@@ -207,11 +207,12 @@ Burger::OSCursor::~OSCursor()
 
     \brief Load an OS resource and set the cursor to it
 
-	Given a resource number specific to the operating system, set the cursor to it.
+    Given a resource number specific to the operating system, set the cursor to
+it.
 
-	\note This function will pull the cursor from the Windows Resource data or the MacOS
-	Resource fork using this value as the index. Great care must be taken if this
-	call is issued in platform neutral code.
+    \note This function will pull the cursor from the Windows Resource data or
+the MacOS Resource fork using this value as the index. Great care must be taken
+if this call is issued in platform neutral code.
 
 ***************************************/
 
@@ -225,8 +226,9 @@ void BURGER_API Burger::OSCursor::SetImageFromIDNumber(eCursor eCursorNumber) BU
 
     \brief Set the cursor to a generated cursor
 
-	Given a custom cursor, set the cursor to it.
-	\param pImage \ref NULL to hide the cursor, or a pointer to a generated cursor
+    Given a custom cursor, set the cursor to it.
+    \param pImage \ref NULL to hide the cursor, or a pointer to a generated
+cursor
 
 ***************************************/
 

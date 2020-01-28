@@ -1434,11 +1434,11 @@ WordPtr BURGER_API Burger::UTF8::FromUTF16(char *pOutput,Word16 uInput)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::UTF8::FromUTF16(char *pOutput,WordPtr uOutputSize,const Word16 *pInput)
+uintptr_t BURGER_API Burger::UTF8::FromUTF16(char *pOutput,uintptr_t uOutputSize,const uint16_t *pInput) BURGER_NOEXCEPT
 {
 	Word8 *pWorkPtr = reinterpret_cast<Word8 *>(pOutput);
 	
-	WordPtr uAddZero = uOutputSize;		// If nonzero, then I append a 0 to the string.
+	uintptr_t uAddZero = uOutputSize;		// If nonzero, then I append a 0 to the string.
 	if (uOutputSize) {					// Valid?
 		--uOutputSize;
 	}

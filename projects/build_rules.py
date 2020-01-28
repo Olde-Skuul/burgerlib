@@ -163,6 +163,7 @@ ARG_LISTS = [
     ('switch', 'unittests', 'app', ['vs2017']),
     ('shield', 'burger', 'library', ['vs2015']),
     ('msdos', 'burger', 'library', ['watcom']),
+    ('msdos4gw', 'unittests', 'console', ['watcom']),
     ('macosx', 'burger', 'library', ['xcode3', 'xcode5']),
     ('macosx', 'unittests', 'console', ['xcode3', 'xcode5']),
     ('ios', 'burger', 'library', ['xcode5']),

@@ -118,24 +118,29 @@ static Word BURGER_API TestParseQuotedString(void)
 	"\xA6\xE5\xA3\xAB\xE3\x82\xBB\xE3\x83\xBC\xE3\x83\xA9\xE3\x83\xBC" \
 	"\xE3\x83\xA0\xE3\x83\xBC\xE3\x83\xB3"
 
-static Word BURGER_API TestGetEnvironmentString(Word uVerbose)
+static uint_t BURGER_API TestGetEnvironmentString(uint_t uVerbose)
 {
-	Word uFailure = 0;
-	const char* pTest = Burger::Globals::GetEnvironmentString("JAPANESE");
-	if (pTest) {
-		Word uTest =
-			static_cast<Word>(Burger::StringCompare(pTest, SAILORMOON));
-		uFailure |= uTest;
-		ReportFailure(
-			"Burger::GetEnvironmentString(\"JAPANESE\") = \"%s\", expected \"%s\"",
-			uTest, pTest, pTest, SAILORMOON);
-		Burger::Free(pTest);
-	} else {
-		if (uVerbose & VERBOSE_MSG) {
-			Message("JAPANESE environment variable not found");
-		}
-	}
-	return 0;
+#if defined(BURGER_LINUX) || defined(BURGER_MACOSX) || defined(BURGER_WINDOWS)
+    uint_t uFailure = 0;
+    const char* pTest = Burger::GetEnvironmentString("JAPANESE");
+    if (pTest) {
+        uint_t uTest =
+            static_cast<Word>(Burger::StringCompare(pTest, SAILORMOON));
+        uFailure |= uTest;
+        ReportFailure(
+            "Burger::GetEnvironmentString(\"JAPANESE\") = \"%s\", expected \"%s\"",
+            uTest, pTest, pTest, SAILORMOON);
+        Burger::Free(pTest);
+    } else {
+        if (uVerbose & VERBOSE_MSG) {
+            Message("JAPANESE environment variable not found");
+        }
+    }
+    return uFailure;
+#else
+    BURGER_UNUSED(uVerbose);
+    return 0;
+#endif
 }
 
 /***************************************

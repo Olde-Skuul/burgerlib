@@ -38,7 +38,7 @@ private:
     uint_t m_bActive; ///< \ref TRUE if currently capturing stream output
 
 #if ((defined(BURGER_WINDOWS) || defined(BURGER_MACOSX) || \
-         defined(BURGER_LINUX) || defined(BURGER_MSDOS)) && \
+         defined(BURGER_LINUX)) && \
     !defined(__MSL__)) || \
     defined(DOXYGEN)
     int m_iInputPipe;      ///< New input pipe

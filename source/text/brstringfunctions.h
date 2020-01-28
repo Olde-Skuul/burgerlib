@@ -215,7 +215,7 @@ extern void BURGER_API SetFileExtension(
 	char* pInput, const char* pNewExtension);
 
 extern uintptr_t BURGER_API StringLength(const char* pInput) BURGER_NOEXCEPT;
-extern WordPtr BURGER_API StringLength(const Word16* pInput);
+extern uintptr_t BURGER_API StringLength(const uint16_t* pInput) BURGER_NOEXCEPT;
 
 extern void BURGER_API StringCopy(char* pOutput, const char* pInput) BURGER_NOEXCEPT;
 extern void BURGER_API StringCopy(
@@ -228,8 +228,8 @@ extern void BURGER_API StringCopy(
 extern void BURGER_API StringCopy(Word16* pOutput, WordPtr uOutputSize,
 	const Word16* pInput, WordPtr uInputSize) BURGER_NOEXCEPT;
 
-extern char* BURGER_API StringDuplicate(const char* pInput);
-extern char* BURGER_API StringDuplicate(const char* pInput, WordPtr uPadding);
+extern char* BURGER_API StringDuplicate(const char* pInput) BURGER_NOEXCEPT;
+extern char* BURGER_API StringDuplicate(const char* pInput, uintptr_t uPadding) BURGER_NOEXCEPT;
 
 extern void BURGER_API StringDelete(const char* pInput);
 
@@ -262,11 +262,11 @@ extern void BURGER_API StringUppercase(char* pOutput, const char* pInput);
 extern void BURGER_API StringLowercase(char* pInput);
 extern void BURGER_API StringLowercase(char* pOutput, const char* pInput);
 
-extern char* BURGER_API StringCharacter(const char* pInput, int iChar);
-extern Word16* BURGER_API StringCharacter(const Word16* pInput, Word uChar);
-extern char* BURGER_API StringCharacterReverse(const char* pInput, int iChar);
-extern Word16* BURGER_API StringCharacterReverse(
-	const Word16* pInput, Word uChar);
+extern char* BURGER_API StringCharacter(const char* pInput, int iChar) BURGER_NOEXCEPT;
+extern uint16_t* BURGER_API StringCharacter(const uint16_t* pInput, uint_t uChar) BURGER_NOEXCEPT;
+extern char* BURGER_API StringCharacterReverse(const char* pInput, int iChar) BURGER_NOEXCEPT;
+extern uint16_t* BURGER_API StringCharacterReverse(
+	const uint16_t* pInput, uint_t uChar) BURGER_NOEXCEPT;
 
 extern uintptr_t BURGER_API StringSkipOver(
 	const char* pInput,const char* pDelimiters) BURGER_NOEXCEPT;
