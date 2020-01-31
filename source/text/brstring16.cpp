@@ -19,9 +19,9 @@
 /*! ************************************
 
 	\class Burger::String16
-	
+
 	\brief UTF 16 bit string class
-	
+
 	This commonly used string class was designed for performance in mind. Each
 	instance takes 128 bytes to contain data for the string and a pointer
 	to allocated memory if the internal string buffer is too large. Since
@@ -34,7 +34,7 @@
 	which this string class uses internally for data storage.
 
 	\sa Burger::String
-	
+
 ***************************************/
 
 /*! ************************************
@@ -152,7 +152,7 @@ Burger::String16::String16(const char *pInput)
 	\brief Initialize with a UTF8 "C" string with padding
 
 	Initialize the Burger::String16 with a copy of the passed string. The original string
-	can be discarded after the call returns. 
+	can be discarded after the call returns.
 	Allocate a buffer that can hold the initialization string + the uPadding number
 	of bytes so the programmer can manually append data to the end of the string
 	with Burger::StringCopy() or equivalent
@@ -186,7 +186,7 @@ Burger::String16::String16(const char *pInput,WordPtr uPadding)
 
 	\brief Initialize with a UTF16 string
 
-	Copy the UTF16 encoded input string 
+	Copy the UTF16 encoded input string
 	and initialize this class with it. The input
 	string can be discarded after this call.
 
@@ -226,7 +226,7 @@ Burger::String16::String16(const Word16 *pInput)
 
 /*! ************************************
 
-	\fn Burger::String16::operator Word16 *()
+	\fn Burger::String16::operator uint16_t *()
 	\brief Return the pointer to the string
 
 	Helper to access the pointer to the UTF16 string
@@ -236,7 +236,7 @@ Burger::String16::String16(const Word16 *pInput)
 
 /*! ************************************
 
-	\fn Burger::String16::operator const Word16 *() const
+	\fn Burger::String16::operator const uint16_t *() const
 	\brief Return the const pointer to the string
 
 	Helper to access the const pointer to the UTF16 string
@@ -266,7 +266,7 @@ Burger::String16::String16(const Word16 *pInput)
 
 /*! ************************************
 
-	\fn Burger::String16::operator Word16 () const
+	\fn Burger::String16::operator uint16_t () const
 	\brief Return the first character of the UTF16 "C" string
 
 	Helper to access the first character of the UTF16 "C" string. It can be zero.

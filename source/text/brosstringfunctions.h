@@ -29,6 +29,17 @@ namespace Burger {
 extern eError BURGER_API GetLoggedInUserName(String* pOutput) BURGER_NOEXCEPT;
 extern eError BURGER_API GetMachineName(String* pOutput) BURGER_NOEXCEPT;
 
+#if defined(BURGER_MAC) || defined(DOXYGEN)
+extern eError BURGER_API GetOSString(
+    String* pOutput, int16_t iStringID) BURGER_NOEXCEPT;
+extern eError BURGER_API GetOSIndString(
+    String* pOutput, int16_t iStringID, int16_t iIndex) BURGER_NOEXCEPT;
+#endif
+
+#if defined(BURGER_MACOS) || defined(DOXYGEN)
+extern eError BURGER_API GetMacModelIdentifier(String* pOutput) BURGER_NOEXCEPT;
+#endif
+
 }
 /* END */
 

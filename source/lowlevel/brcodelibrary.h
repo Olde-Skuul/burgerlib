@@ -48,7 +48,7 @@ public:
 	BURGER_INLINE Word IsInitialized(void) const { return m_pLibInstance!=nullptr; }
 };
 
-#if ((defined(BURGER_MAC) && TARGET_API_MAC_CARBON) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
+#if (defined(BURGER_MACCARBON) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
 
 class CodeFramework {
     BURGER_DISABLE_COPY(CodeFramework);
@@ -63,6 +63,11 @@ public:
 
 #endif
 
+#if defined(BURGER_MACCARBON) || defined(DOXYGEN)
+extern CodeLibrary* BURGER_API GetInterfaceLib(void);
+extern CodeLibrary* BURGER_API GetDriverLoaderLib(void);
+extern CodeLibrary* BURGER_API GetNameRegistryLib(void);
+#endif
 }
 
 /* END */

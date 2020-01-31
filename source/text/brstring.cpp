@@ -798,7 +798,7 @@ Burger::eError BURGER_API Burger::String::Set(const uint16_t *pInput,uintptr_t u
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::String::SetBufferSize(WordPtr uSize) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::String::SetBufferSize(uintptr_t uSize) BURGER_NOEXCEPT
 {
 	// Assume no error
 	eError uResult = kErrorNone;
@@ -821,7 +821,7 @@ Burger::eError BURGER_API Burger::String::SetBufferSize(WordPtr uSize) BURGER_NO
 				}
 			}
 			// Get the size of the string
-			WordPtr uDestSize = m_uLength;
+			uintptr_t uDestSize = m_uLength;
 			if (uDestSize>=uSize) {
 				// Truncate the string
 				uDestSize = uSize;

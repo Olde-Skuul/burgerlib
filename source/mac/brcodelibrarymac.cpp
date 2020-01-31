@@ -20,7 +20,7 @@
 #include "brstringfunctions.h"
 #include <CodeFragments.h>
 
-#if TARGET_API_MAC_CARBON
+#if defined(BURGER_MACCARBON)
 #include <CFBundle.h>
 #include <CFDate.h>
 #include <Folders.h>
@@ -91,7 +91,7 @@ void* Burger::CodeLibrary::GetFunction(const char* pFunctionName)
 
 #endif
 
-#if (defined(BURGER_MAC) && TARGET_API_MAC_CARBON) || defined(DOXYGEN)
+#if defined(BURGER_MACCARBON) || defined(DOXYGEN)
 
 /*! ************************************
 
@@ -244,6 +244,75 @@ void* BURGER_API Burger::CodeFramework::GetFunction(const char* pFunctionName)
         CFRelease(StringRef);
     }
     return pResult; /* Return 0 or the pointer */
+}
+
+/*! ************************************
+
+    \brief Load InterfaceLib for manual linking.
+
+    Load in the shared system library ``InterfaceLib``.
+
+    \return Pointer to Burger::CodeLibrary that has InterfaceLib.
+
+***************************************/
+
+Burger::CodeLibrary* BURGER_API Burger::GetInterfaceLib(void)
+{
+    // Reference to InterfaceLib
+    static CodeLibrary s_Interface;
+
+    // Is InterfaceLib installed?
+    if (!s_Interface.IsInitialized()) {
+        // Try to get the lib
+        s_Interface.Init("InterfaceLib");
+    }
+    return &s_Interface;
+}
+
+/*! ************************************
+
+    \brief Load DriverLoaderLib for manual linking.
+
+    Load in the shared system library ``DriverLoaderLib``.
+
+    \return Pointer to Burger::CodeLibrary that has DriverLoaderLib.
+
+***************************************/
+
+Burger::CodeLibrary* BURGER_API Burger::GetDriverLoaderLib(void)
+{
+    // Reference to DriverLoaderLib
+    static CodeLibrary s_Interface;
+
+    // Is DriverLoaderLib installed?
+    if (!s_Interface.IsInitialized()) {
+        // Try to get the lib
+        s_Interface.Init("DriverLoaderLib");
+    }
+    return &s_Interface;
+}
+
+/*! ************************************
+
+    \brief Load NameRegistryLib for manual linking.
+
+    Load in the shared system library ``NameRegistryLib``.
+
+    \return Pointer to Burger::CodeLibrary that has NameRegistryLib.
+
+***************************************/
+
+Burger::CodeLibrary* BURGER_API Burger::GetNameRegistryLib(void)
+{
+    // Reference to DriverLoaderLib
+    static CodeLibrary s_Interface;
+
+    // Is DriverLoaderLib installed?
+    if (!s_Interface.IsInitialized()) {
+        // Try to get the lib
+        s_Interface.Init("NameRegistryLib");
+    }
+    return &s_Interface;
 }
 
 #endif

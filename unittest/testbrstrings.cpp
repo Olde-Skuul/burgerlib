@@ -266,6 +266,12 @@ int BURGER_API TestBrstrings(Word uVerbose)
 
 		Burger::GetLoggedInUserName(&TempString);
 		Message("GetLoggedInUserName() returned \"%s\"", TempString.GetPtr());
+	
+#if defined(BURGER_MACOS)
+		Burger::GetMacModelIdentifier(&TempString);
+		Message("GetMacModelIdentifier() returned \"%s\"", TempString.GetPtr());
+#endif
+
 	}
 
 	if (!uTotal && (uVerbose & VERBOSE_MSG)) {

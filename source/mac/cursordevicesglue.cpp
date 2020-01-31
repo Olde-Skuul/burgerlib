@@ -159,7 +159,7 @@ static Locals_t Locals;
 #if defined(BURGER_MACCARBON)
 static void LoadFrags(Locals_t* pLocals)
 {
-    Burger::CodeLibrary* pInterfaceLib = Burger::Globals::GetInterfaceLib();
+    Burger::CodeLibrary* pInterfaceLib = Burger::GetInterfaceLib();
     // Will succeed in classic
     if (pInterfaceLib) {
         // I Will call 680x0 code, sigh

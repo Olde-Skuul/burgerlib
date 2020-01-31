@@ -94,14 +94,6 @@ private:
 
 #endif
 
-#if defined(BURGER_MAC) || defined(DOXYGEN)
-    /** Reference to InterfaceLib if needed (Mac only) */
-    CodeLibrary m_Interface;
-
-    /** Reference to DriverLoaderLib if needed (Mac only) */
-    CodeLibrary m_DriverLoader;
-#endif
-
 #if defined(BURGER_MACOS) || defined(DOXYGEN)
     /** Discovered version of MacOS (MacOS only) */
     uint_t m_uMacOSVersion;
@@ -183,8 +175,6 @@ public:
 #endif
 
 #if defined(BURGER_MAC) || defined(DOXYGEN)
-    static CodeLibrary* BURGER_API GetInterfaceLib(void);
-    static CodeLibrary* BURGER_API GetDriverLoaderLib(void);
     static int16_t BURGER_API GetSpecFromNthDesc(
         AEDesc* pList, long iIndex, FSSpec* pFSSpec);
 #endif

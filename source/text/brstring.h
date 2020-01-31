@@ -70,11 +70,11 @@ class String {
 public:
 	/** Ensures the structure is 64 bytes in size on all platforms */
 	static const Word BUFFERSIZE =
-		static_cast<Word>(64 - (sizeof(char*) + sizeof(WordPtr)));
+		static_cast<Word>(64 - (sizeof(char*) + sizeof(uintptr_t)));
 
 private:
 	char* m_pData;			///< Pointer to the string
-	WordPtr m_uLength;		///< Length of the string
+	uintptr_t m_uLength;		///< Length of the string
 	char m_Raw[BUFFERSIZE]; ///< Temp preallocated buffer for most strings
 
 public:
@@ -132,11 +132,11 @@ public:
 	{
 		return m_pData[0];
 	}
-	BURGER_INLINE WordPtr length(void) const BURGER_NOEXCEPT
+	BURGER_INLINE uintptr_t length(void) const BURGER_NOEXCEPT
 	{
 		return m_uLength;
 	}
-	BURGER_INLINE WordPtr GetLength(void) const BURGER_NOEXCEPT
+	BURGER_INLINE uintptr_t GetLength(void) const BURGER_NOEXCEPT
 	{
 		return m_uLength;
 	}
@@ -152,7 +152,7 @@ public:
 	eError BURGER_API Set(const char* pInput, uintptr_t uLength) BURGER_NOEXCEPT;
 	eError BURGER_API Set(const uint16_t* pInput) BURGER_NOEXCEPT;
 	eError BURGER_API Set(const uint16_t* pInput, uintptr_t uLength) BURGER_NOEXCEPT;
-	eError BURGER_API SetBufferSize(WordPtr uSize) BURGER_NOEXCEPT;
+	eError BURGER_API SetBufferSize(uintptr_t uSize) BURGER_NOEXCEPT;
 
 	String& operator=(const String& rInput);
 	String& operator=(const char* pInput) BURGER_NOEXCEPT;

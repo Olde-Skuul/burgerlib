@@ -171,50 +171,6 @@ uint_t BURGER_API Burger::Globals::LaunchURL(const char* pURL)
 
 /*! ************************************
 
-    \brief Load InterfaceLib for manual linking.
-
-    Load in the shared system library ``InterfaceLib``.
-
-    \return Pointer to Burger::CodeLibrary that has InterfaceLib.
-
-***************************************/
-
-Burger::CodeLibrary* BURGER_API Burger::Globals::GetInterfaceLib(void)
-{
-    Globals* pGlobals = &g_Globals;
-
-    // Is InterfaceLib installed?
-    if (!pGlobals->m_Interface.IsInitialized()) {
-        // Try to get the lib
-        pGlobals->m_Interface.Init("InterfaceLib");
-    }
-    return &pGlobals->m_Interface;
-}
-
-/*! ************************************
-
-    \brief Load DriverLoaderLib for manual linking.
-
-    Load in the shared system library ``DriverLoaderLib``.
-
-    \return Pointer to Burger::CodeLibrary that has DriverLoaderLib.
-
-***************************************/
-
-Burger::CodeLibrary* BURGER_API Burger::Globals::GetDriverLoaderLib(void)
-{
-    Globals* pGlobals = &g_Globals;
-
-    // Is DriverLoaderLib installed?
-    if (!pGlobals->m_DriverLoader.IsInitialized()) {
-        // Try to get the lib
-        pGlobals->m_DriverLoader.Init("DriverLoaderLib");
-    }
-    return &pGlobals->m_DriverLoader;
-}
-
-/*! ************************************
-
     \brief Pull an FSSpec from an AppleEvent.
 
     Given an AppleEvent, index into in and extract an FSSpec.
