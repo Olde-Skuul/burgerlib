@@ -1,4 +1,4 @@
-# Doxyfile 1.8.16
+# Doxyfile 1.8.17
 
 # This file describes the settings to be used by the documentation system
 # doxygen (www.doxygen.org) for a project.
@@ -317,7 +317,7 @@ OPTIMIZE_OUTPUT_SLICE  = NO
 # parses. With this tag you can assign which parser to use for a given
 # extension. Doxygen has a built-in mapping, but you can override or extend it
 # using this tag. The format is ext=language, where ext is a file extension, and
-# language is one of the parsers supported by doxygen: IDL, Java, Javascript,
+# language is one of the parsers supported by doxygen: IDL, Java, JavaScript,
 # Csharp (C#), C, C++, D, PHP, md (Markdown), Objective-C, Python, Slice,
 # Fortran (fixed format Fortran: FortranFixed, free formatted Fortran:
 # FortranFree, unknown formatted Fortran: Fortran. In the later case the parser
@@ -543,8 +543,8 @@ HIDE_UNDOC_MEMBERS     = NO
 HIDE_UNDOC_CLASSES     = NO
 
 # If the HIDE_FRIEND_COMPOUNDS tag is set to YES, doxygen will hide all friend
-# (class|struct|union) declarations. If set to NO, these declarations will be
-# included in the documentation.
+# declarations. If set to NO, these declarations will be included in the
+# documentation.
 # The default value is: NO.
 
 HIDE_FRIEND_COMPOUNDS  = NO
@@ -859,8 +859,10 @@ INPUT_ENCODING         = UTF-8
 # If left blank the following patterns are tested:*.c, *.cc, *.cxx, *.cpp,
 # *.c++, *.java, *.ii, *.ixx, *.ipp, *.i++, *.inl, *.idl, *.ddl, *.odl, *.h,
 # *.hh, *.hxx, *.hpp, *.h++, *.cs, *.d, *.php, *.php4, *.php5, *.phtml, *.inc,
-# *.m, *.markdown, *.md, *.mm, *.dox, *.py, *.pyw, *.f90, *.f95, *.f03, *.f08,
-# *.f, *.for, *.tcl, *.vhd, *.vhdl, *.ucf, *.qsf and *.ice.
+# *.m, *.markdown, *.md, *.mm, *.dox (to be provided as doxygen C comment),
+# *.doc (to be provided as doxygen C comment), *.txt (to be provided as doxygen
+# C comment), *.py, *.pyw, *.f90, *.f95, *.f03, *.f08, *.f, *.for, *.tcl, *.vhd,
+# *.vhdl, *.ucf, *.qsf and *.ice.
 
 FILE_PATTERNS          = *.c \
                          *.h \
@@ -1237,11 +1239,28 @@ HTML_EXTRA_FILES       = isolatin1.htm \
                          facebook.png \
                          linkedin.png \
                          burgerbackground.png \
-                         spec-gif89a.txt \
-                         avm2overview.pdf \
-                         swf-file-format-spec.pdf \
-                         3dnow.pdf \
-                         avx.pdf
+                         manuals/spec-gif89a.txt \
+                         manuals/swf-file-format-spec.pdf \
+                         manuals/avm2overview.pdf \
+                         manuals/qtff-2001.pdf \
+                         manuals/mpeg-2_audio_is.pdf \
+                         manuals/11172-3.pdf \
+                         manuals/aiff-1.3.pdf \
+                         manuals/aiff-c.9.26.91.pdf \
+                         "manuals/creative voice file format.txt" \ 
+                         manuals/3dnow.pdf \
+                         manuals/avx.pdf \
+                         manuals/m68000prm.pdf \
+                         manuals/powerpc-cwg.pdf \
+                         manuals/qt6apiref.pdf \
+                         manuals/qt4reference-extract.pdf \
+                         manuals/MacintoshToolboxEssentials.pdf \
+                         manuals/Sound_Manager.pdf \
+                         manuals/macos_sound-extract.pdf \
+                         manuals/mp3_theory.pdf \
+                         manuals/lfsr04.pdf \
+                         manuals/is138181.pdf \
+                         manuals/is138182.pdf
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the style sheet and background images according to
@@ -1284,9 +1303,9 @@ HTML_TIMESTAMP         = NO
 
 # If the HTML_DYNAMIC_MENUS tag is set to YES then the generated HTML
 # documentation will contain a main index with vertical navigation menus that
-# are dynamically created via Javascript. If disabled, the navigation index will
+# are dynamically created via JavaScript. If disabled, the navigation index will
 # consists of multiple levels of tabs that are statically embedded in every HTML
-# page. Disable this option to support browsers that do not have Javascript,
+# page. Disable this option to support browsers that do not have JavaScript,
 # like the Qt help browser.
 # The default value is: YES.
 # This tag requires that the tag GENERATE_HTML is set to YES.
@@ -1574,8 +1593,14 @@ FORMULA_FONTSIZE       = 10
 
 FORMULA_TRANSPARENT    = YES
 
+# The FORMULA_MACROFILE can contain LaTeX \newcommand and \renewcommand commands
+# to create new LaTeX commands to be used in formulas as building blocks. See
+# the section "Including formulas" for details.
+
+FORMULA_MACROFILE      =
+
 # Enable the USE_MATHJAX option to render LaTeX formulas using MathJax (see
-# https://www.mathjax.org) which uses client side Javascript for the rendering
+# https://www.mathjax.org) which uses client side JavaScript for the rendering
 # instead of using pre-rendered bitmaps. Use this if you do not have LaTeX
 # installed or if you want to formulas look prettier in the HTML output. When
 # enabled you may also need to install MathJax separately and configure the path
@@ -1645,7 +1670,7 @@ MATHJAX_CODEFILE       =
 SEARCHENGINE           = YES
 
 # When the SERVER_BASED_SEARCH tag is enabled the search engine will be
-# implemented using a web server instead of a web client using Javascript. There
+# implemented using a web server instead of a web client using JavaScript. There
 # are two flavors of web server based searching depending on the EXTERNAL_SEARCH
 # setting. When disabled, doxygen will generate a PHP script for searching and
 # an index file used by the script. When EXTERNAL_SEARCH is enabled the indexing
@@ -1756,7 +1781,7 @@ MAKEINDEX_CMD_NAME     = makeindex
 # The default value is: makeindex.
 # This tag requires that the tag GENERATE_LATEX is set to YES.
 
-LATEX_MAKEINDEX_CMD    = \makeindex
+LATEX_MAKEINDEX_CMD    = makeindex
 
 # If the COMPACT_LATEX tag is set to YES, doxygen generates more compact LaTeX
 # documents. This may be useful for small projects and may help to save some

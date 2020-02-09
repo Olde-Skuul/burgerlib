@@ -1,0 +1,113 @@
+reative Voice (VOC) file format
+===============================
+
+
+
+
+ >From: galt@dsd.es.com
+
+(byte numbers are hex!)
+
+    HEADER (bytes 00-19)
+    Series of DATA BLOCKS (bytes 1A+) [Must end w/ Terminator Block]
+
+- ---------------------------------------------------------------
+
+HEADER:
+-------
+     byte #     Description
+     ------     ------------------------------------------
+     00-12      "Creative Voice File"
+     13         1A (eof to abort printing of file)
+     14-15      Offset of first datablock in .voc file (std 1A 00
+                in Intel Notation)
+     16-17      Version number (minor,major) (VOC-HDR puts 0A 01)
+     18-19      2's Comp of Ver. # + 1234h (VOC-HDR puts 29 11)
+
+- ---------------------------------------------------------------
+
+DATA BLOCK:
+-----------
+
+   Data Block:  TYPE(1-byte), SIZE(3-bytes), INFO(0+ bytes)
+   NOTE: Terminator Block is an exception -- it has only the TYPE byte.
+
+      TYPE   Description     Size (3-byte int)   Info
+      ----   -----------     -----------------   -----------------------
+      00     Terminator      (NONE)              (NONE)
+      01     Sound data      2+length of data    *
+      02     Sound continue  length of data      Voice Data
+      03     Silence         3                   **
+      04     Marker          2                   Marker# (2 bytes)
+      05     ASCII           length of string    null terminated string
+      06     Repeat          2                   Count# (2 bytes)
+      07     End repeat      0                   (NONE)
+      08     Extended        4                   ***
+
+      *Sound Info Format:       **Silence Info Format:
+       ---------------------      ----------------------------
+       00   Sample Rate           00-01  Length of silence - 1
+       01   Compression Type      02     Sample Rate
+       02+  Voice Data
+
+    ***Extended Info Format:
+       ---------------------
+       00-01  Time Constant: Mono: 65536 - (256000000/sample_rate)
+                             Stereo: 65536 - (25600000/(2*sample_rate))
+       02     Pack
+       03     Mode: 0 = mono
+                    1 = stereo
+
+
+  Marker#           -- Driver keeps the most recent marker in a status byte
+  Count#            -- Number of repetitions + 1
+                         Count# may be 1 to FFFE for 0 - FFFD repetitions
+                         or FFFF for endless repetitions
+  Sample Rate       -- SR byte = 256-(1000000/sample_rate)
+  Length of silence -- in units of sampling cycle
+  Compression Type  -- of voice data
+                         8-bits    = 0
+                         4-bits    = 1
+                         2.6-bits  = 2
+                         2-bits    = 3
+                         Multi DAC = 3+(# of channels) [interesting--
+                                       this isn't in the developer's manual]
+
+Detailed description of new data blocks (VOC files version 1.20 and above):
+
+        (Source is fax from Barry Boone at Creative Labs, 405/742-6622)
+
+BLOCK 8 - digitized sound attribute extension, must preceed block 1.
+          Used to define stereo, 8 bit audio
+        BYTE bBlockID;       // = 8
+        BYTE nBlockLen[3];   // 3 byte length
+        WORD wTimeConstant;  // time constant = same as block 1
+        BYTE bPackMethod;    // same as in block 1
+        BYTE bVoiceMode;     // 0-mono, 1-stereo
+
+        Data is stored left, right
+
+BLOCK 9 - data block that supersedes blocks 1 and 8.  
+          Used for stereo, 16 bit.
+
+        BYTE bBlockID;          // = 9
+        BYTE nBlockLen[3];      // length 12 plus length of sound
+        DWORD dwSamplesPerSec;  // samples per second, not time const.
+        BYTE bBitsPerSample;    // e.g., 8 or 16
+        BYTE bChannels;         // 1 for mono, 2 for stereo
+        WORD wFormat;           // see below
+        BYTE reserved[4];       // pad to make block w/o data 
+                                // have a size of 16 bytes
+
+        Valid values of wFormat are:
+
+                0x0000  8-bit unsigned PCM
+                0x0001  Creative 8-bit to 4-bit ADPCM
+                0x0002  Creative 8-bit to 3-bit ADPCM
+                0x0003  Creative 8-bit to 2-bit ADPCM
+                0x0004  16-bit signed PCM
+                0x0006  CCITT a-Law
+                0x0007  CCITT u-Law
+                0x02000 Creative 16-bit to 4-bit ADPCM
+
+        Data is stored left, right

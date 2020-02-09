@@ -21,6 +21,9 @@
 #define BURGER_UNUSED(x)
 #define BURGER_ASM __asm
 #define BURGER_DECLSPECNAKED __declspec(naked)
+#define BURGER_ALIGN(x, s) alignas(s) x
+#define BURGER_PREALIGN(s) alignas(s)
+#define BURGER_POSTALIGN(s)
 
 #define BURGER_DISABLE_COPY(x) \
 private: \
