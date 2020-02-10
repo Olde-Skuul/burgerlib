@@ -51,7 +51,7 @@ PROJECT_BRIEF          =
 # pixels and the maximum width should not exceed 200 pixels. Doxygen will copy
 # the logo to the output directory.
 
-PROJECT_LOGO           = burger.png
+PROJECT_LOGO           = images/burger.png
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
@@ -1229,16 +1229,16 @@ HTML_EXTRA_STYLESHEET  = docs.css
 # files will be copied as-is; there are no commands or markers available.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_FILES       = isolatin1.htm \
-                         macromanus.htm \
-                         windows1252.htm \
-                         oldeskuul.png \
-                         sourceforge.jpg \
-                         github.png \
-                         twitter.jpg \
-                         facebook.png \
-                         linkedin.png \
-                         burgerbackground.png \
+HTML_EXTRA_FILES       = charsets/isolatin1.htm \
+                         charsets/macromanus.htm \
+                         charsets/windows1252.htm \
+                         images/oldeskuul.png \
+                         images/sourceforge.jpg \
+                         images/github.png \
+                         images/twitter.jpg \
+                         images/facebook.png \
+                         images/linkedin.png \
+                         images/burgerbackground.png \
                          manuals/spec-gif89a.txt \
                          manuals/swf-file-format-spec.pdf \
                          manuals/avm2overview.pdf \
