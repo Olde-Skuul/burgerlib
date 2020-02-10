@@ -142,7 +142,7 @@ struct Word64ToDouble {
 
 struct Vector_128Float32 {
     union {
-        float BURGER_ALIGN(f[4], 16); ///< Value as 4 32 bit floats
+        BURGER_ALIGN(float f[4], 16); ///< Value as 4 32 bit floats
         Vector_128 v;                 ///< Value as a 128 bit vector
     };
     BURGER_INLINE operator Vector_128() const BURGER_NOEXCEPT
@@ -154,7 +154,7 @@ struct Vector_128Float32 {
 struct Vector_128Float64 {
     union {
         /** Value as 2 64 bit floats */
-        double BURGER_ALIGN(d[2], 16);
+        BURGER_ALIGN(double d[2], 16);
         /** Value as a 128 bit vector */
         Vector_128 v;
     };
@@ -167,7 +167,7 @@ struct Vector_128Float64 {
 struct Vector_128Int32 {
     union {
         /** Value as 4 signed 32 bit integers */
-        int32_t BURGER_ALIGN(i[4], 16);
+        BURGER_ALIGN(int32_t i[4], 16);
         /** Value as a 128 bit vector */
         Vector_128 v;
     };
@@ -180,7 +180,7 @@ struct Vector_128Int32 {
 struct Vector_128Word64 {
     union {
         /** Value as 2 unsigned 64 bit integers */
-        uint64_t BURGER_ALIGN(u[2], 16);
+        BURGER_ALIGN(uint64_t u[2], 16);
         /** Value as a 128 bit vector */
         Vector_128 v;
     };
@@ -193,7 +193,7 @@ struct Vector_128Word64 {
 struct Vector_128Word32 {
     union {
         /** Value as 4 unsigned 32 bit integers */
-        uint32_t BURGER_ALIGN(u[4], 16);
+        BURGER_ALIGN(uint32_t u[4], 16);
         /** Value as a 128 bit vector */
         Vector_128 v;
     };
@@ -206,7 +206,7 @@ struct Vector_128Word32 {
 struct Vector_128Word8 {
     union {
         /** Value as 16 unsigned 8 bit integers */
-        uint8_t BURGER_ALIGN(u[16], 16);
+        BURGER_ALIGN(uint8_t u[16], 16);
         /** Value as a 128 bit vector */
         Vector_128 v;
     };
@@ -219,7 +219,7 @@ struct Vector_128Word8 {
 struct Vector_128Word16 {
     union {
         /** Value as 8 unsigned 16 bit integers */
-        uint16_t BURGER_ALIGN(u[8], 16);
+        BURGER_ALIGN(uint16_t u[8], 16);
         /** Value as a 128 bit vector */
         Vector_128 v;
     };

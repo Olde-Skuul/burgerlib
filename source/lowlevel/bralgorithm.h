@@ -39,7 +39,7 @@ typedef char yes_type;
 
 /** Type used for templates to return 0 */
 struct no_type {
-    char m_NotUsed[8];
+    char m_NotUsed[8];      //< Literally not used.
 };
 
 /** Template helper to detect a parameter exists */

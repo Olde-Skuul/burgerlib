@@ -23,7 +23,7 @@ namespace Burger {
 class UTF8 {
 public:
 	enum {BAD=-1};
-	static const Word8 BURGER_ALIGN(TokenSizeTable[256],16);
+	BURGER_ALIGN(static const Word8 TokenSizeTable[256],16);
 	static const Word8 ByteOrderMark[3];
 	static Word BURGER_API IsValidSingle(const char *pInput);
 	static Word BURGER_API IsValid(const char *pInput);

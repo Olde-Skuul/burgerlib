@@ -4,9 +4,10 @@
 
     Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE
-    for license details. Yes, you can use it in a
-    commercial title without paying anything, just give me a credit.
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
     Please? It's not like I'm asking you for money!
 
 ***************************************/
@@ -20,7 +21,6 @@
 #include <Folders.h>
 #include <Gestalt.h>
 #include <InternetConfig.h>
-
 
 /*! ************************************
 
@@ -57,9 +57,8 @@ uint_t BURGER_API Burger::Globals::GetMacOSVersion(void)
 
     \brief Convert an NSString to a Burger::String (MacOSX and Carbon Only)
 
-    Given a valid const NSString, convert the string into
-    UTF8 encoding and store the result into an output
-    \ref String.
+    Given a valid const NSString, convert the string into UTF8 encoding and
+    store the result into an output \ref String.
 
     \macosxonly
     \param pOutput Pointer to a String class instance to recieve the string
@@ -89,7 +88,7 @@ void BURGER_API Burger::Globals::StringCopy(String* pOutput, CFStringRef pInput)
             CFIndex uMaxLength = CFStringGetMaximumSizeForEncoding(
                 uLength, kCFStringEncodingUTF8);
             // Create the buffer
-            pOutput->SetBufferSize(static_cast<WordPtr>(uMaxLength));
+            pOutput->SetBufferSize(static_cast<uintptr_t>(uMaxLength));
             // Convert the string and store into the buffer
             if (!CFStringGetCString(pInput, pOutput->GetPtr(), uMaxLength + 1,
                     kCFStringEncodingUTF8)) {

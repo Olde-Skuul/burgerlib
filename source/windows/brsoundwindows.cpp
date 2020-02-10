@@ -1,15 +1,16 @@
 /***************************************
 
-	Sound manager class
+    Sound manager class
 
-	Windows version
+    Windows version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -48,7 +49,7 @@
 
 ***************************************/
 
-const Int16 BURGER_ALIGN(Burger::SoundManager::g_DirectSoundVolumes[256],16) = {
+BURGER_ALIGN(const Int16 Burger::SoundManager::g_DirectSoundVolumes[256],16) = {
 	-10000, -8000, -7000, -6415, -6000, -5678, -5415, -5192,
 	 -5000, -4830, -4678, -4540, -4415, -4299, -4192, -4093,
 	 -4000, -3912, -3830, -3752, -3678, -3607, -3540, -3476,

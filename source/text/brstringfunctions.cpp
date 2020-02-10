@@ -462,7 +462,7 @@ const Word16 Burger::g_NoString16[3] = {'n', 'o', 0};
 
 ***************************************/
 
-const Word8 BURGER_ALIGN(Burger::g_AsciiTestTable[256], 16) = {
+BURGER_ALIGN(const Word8 Burger::g_AsciiTestTable[256], 16) = {
 	Burger::ASCII_CONTROL, // 00 (NUL)
 	Burger::ASCII_CONTROL, // 01 (SOH)
 	Burger::ASCII_CONTROL, // 02 (STX)
@@ -614,7 +614,7 @@ const Word8 BURGER_ALIGN(Burger::g_AsciiTestTable[256], 16) = {
 
 ***************************************/
 
-const char BURGER_ALIGN(Burger::g_NibbleToAsciiUppercase[16], 16) = {'0', '1',
+BURGER_ALIGN(const char Burger::g_NibbleToAsciiUppercase[16], 16) = {'0', '1',
 	'2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
 /*! ************************************
@@ -629,7 +629,7 @@ const char BURGER_ALIGN(Burger::g_NibbleToAsciiUppercase[16], 16) = {'0', '1',
 
 ***************************************/
 
-const char BURGER_ALIGN(Burger::g_NibbleToAsciiLowercase[16], 16) = {'0', '1',
+BURGER_ALIGN(const char Burger::g_NibbleToAsciiLowercase[16], 16) = {'0', '1',
 	'2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
 /*! ************************************
@@ -642,7 +642,7 @@ const char BURGER_ALIGN(Burger::g_NibbleToAsciiLowercase[16], 16) = {'0', '1',
 
 ***************************************/
 
-const Word8 BURGER_ALIGN(Burger::g_AsciiToWord8Table[256], 16) = {
+BURGER_ALIGN(const Word8 Burger::g_AsciiToWord8Table[256], 16) = {
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 	0xFF, 0xFF, 0xFF, 0xFF, // 0x00
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -687,7 +687,7 @@ const Word8 BURGER_ALIGN(Burger::g_AsciiToWord8Table[256], 16) = {
 
 ***************************************/
 
-const Word8 BURGER_ALIGN(Burger::g_ReverseBits[256], 16) = {
+BURGER_ALIGN(const Word8 Burger::g_ReverseBits[256], 16) = {
 	0x00, 0x80, 0x40, 0xC0, 0x20, 0xA0, 0x60, 0xE0, 0x10, 0x90, 0x50, 0xD0,
 	0x30, 0xB0, 0x70, 0xF0, // 0x00
 	0x08, 0x88, 0x48, 0xC8, 0x28, 0xA8, 0x68, 0xE8, 0x18, 0x98, 0x58, 0xD8,

@@ -410,6 +410,9 @@ def do_project(working_directory, project):
         source_folders_list.append('../unittest')
         library_folders_list.append(
             '$(BURGER_SDKS)/{}/burgerlib'.format(platform_folder))
+        if platform is PlatformTypes.linux:
+            project.libraries_list.append('GL')
+
     else:
         project.deploy_folder = \
             '$(BURGER_SDKS)/{}/burgerlib'.format(platform_folder)

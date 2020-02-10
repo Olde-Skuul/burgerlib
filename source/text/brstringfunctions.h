@@ -85,11 +85,11 @@ extern const Word16 g_FalseString16[6];
 extern const Word16 g_YesString16[4];
 extern const Word16 g_NoString16[3];
 
-extern const Word8 BURGER_ALIGN(g_AsciiTestTable[256], 16);
-extern const char BURGER_ALIGN(g_NibbleToAsciiUppercase[16], 16);
-extern const char BURGER_ALIGN(g_NibbleToAsciiLowercase[16], 16);
-extern const Word8 BURGER_ALIGN(g_AsciiToWord8Table[256], 16);
-extern const Word8 BURGER_ALIGN(g_ReverseBits[256], 16);
+BURGER_ALIGN(extern const Word8 g_AsciiTestTable[256], 16);
+BURGER_ALIGN(extern const char g_NibbleToAsciiUppercase[16], 16);
+BURGER_ALIGN(extern const char g_NibbleToAsciiLowercase[16], 16);
+BURGER_ALIGN(extern const Word8 g_AsciiToWord8Table[256], 16);
+BURGER_ALIGN(extern const Word8 g_ReverseBits[256], 16);
 
 extern const Word32 g_TensTable32[10];
 extern const Word64 g_TensTable64[20];

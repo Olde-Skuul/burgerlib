@@ -76,7 +76,7 @@ class SoundManager : public Base {
 public:
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	static const Int16 BURGER_ALIGN(g_DirectSoundVolumes[256],16);
+	BURGER_ALIGN(static const Int16 g_DirectSoundVolumes[256],16);
 #endif
 
 	typedef void (BURGER_API *CompletionProc)(void *);	///< Function prototype for sound event callbacks

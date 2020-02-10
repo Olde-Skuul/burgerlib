@@ -125,7 +125,7 @@ Burger::eError BURGER_API Burger::GetOSIndString(
     // Get the string from the system resource string array
     Str255 resStr;
     resStr[0] = 0;
-    GetIndString(resStr, iIndex, iIndex);
+    GetIndString(resStr, iStringID, iIndex);
 
     // Restore the resource reference
     UseResFile(sOldResFile);
@@ -146,25 +146,90 @@ Burger::eError BURGER_API Burger::GetOSIndString(
 
 /***************************************
 
-    \brief Get the name of the current user
+    \brief Retrieves the login name of the user associated with the current
+        thread.
 
-    When someone has logged onto a computer, that person had to give a user
-    name. This routine will retrieve that user name. If for some reason a user
-    name can't be found or the operating system doesn't support user log ons,
-    the name "User" will be returned.
+    On systems that use user logins, return the login name of the account
+    associated with the current thread. If the platform doesn't support multiple
+    user accounts, it will return "User" and the error code \ref
+    kErrorNotSupportedOnThisPlatform.
 
     \param pOutput Pointer to a \ref String to receive the name in UTF-8
         encoding
-    \return Zero on no error, or non zero on failure.
+     \return Zero on no error, or non zero on failure.
 
-    \note On platforms where networking or user level access isn't available, it
-        will return \ref kErrorNotSupportedOnThisPlatform as an error code.
+     \note On platforms where networking or user level access isn't available,
+        it will return \ref kErrorNotSupportedOnThisPlatform as an error code.
 
-    \sa GetMachineName(String *)
+    \sa GetUserRealName(String *) or GetMachineName(String *)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::GetLoggedInUserName(
+Burger::eError BURGER_API Burger::GetUserLoginName(
+    String* pOutput) BURGER_NOEXCEPT
+{
+#if defined(BURGER_MACCARBON)
+    eError uResult = kErrorNotSupportedOnThisPlatform;
+    // Carbon
+    if (Globals::GetMacOSVersion() >= 0x1000U) {
+        uResult = kErrorItemNotFound;
+        CodeFramework LibRef;
+        if (!LibRef.Init("SystemConfiguration.framework")) {
+
+            CFStringRef (*pNSUserName)(void);
+            pNSUserName =
+                (CFStringRef(*)(void))LibRef.GetFunction("NSUserName");
+            if (pNSUserName) {
+
+                // Return the user name
+                CFStringRef pStringRef = pNSUserName();
+                if (pStringRef) {
+
+                    Globals::StringCopy(pOutput, pStringRef);
+
+                    // Dispose of the string ref
+                    CFRelease(pStringRef);
+                    uResult = kErrorNone;
+                }
+            }
+        }
+    }
+    if (uResult) {
+        // Get the user folder name
+        if (uResult) {
+            pOutput->Set("User");
+        }
+    }
+    return uResult;
+    
+    #else
+    pOutput->Set("User");
+    return kErrorNotSupportedOnThisPlatform;
+    #endif
+}
+
+/***************************************
+
+    \brief Get the real name of the current user.
+
+    When someone has logged onto a computer, that person can associate a real
+    name to the login user account. This routine will retrieve real name of the
+    user. If for some reason a user name can't be found or the operating system
+    doesn't support user logins, the name "User" will be returned.
+
+    \param pOutput Pointer to a \ref String to receive the real name in UTF-8
+        encoding
+    \return Zero on no error, or non zero on failure.
+
+     \note On platforms where networking or user level access isn't available,
+        it will always return \ref kErrorNotSupportedOnThisPlatform as an error
+        code.
+
+    \sa GetUserLoginName(String *) or GetMachineName(String *)
+
+***************************************/
+
+Burger::eError BURGER_API Burger::GetUserRealName(
     String* pOutput) BURGER_NOEXCEPT
 {
     eError uResult = kErrorItemNotFound;
@@ -214,7 +279,7 @@ Burger::eError BURGER_API Burger::GetLoggedInUserName(
 
 /***************************************
 
-    \brief Get the name the user has called the computer
+    \brief Get the name the user has called the computer.
 
     Some computer owners have the option to give their computer a whimsical
     name. This routine will retrieve that name. If for some reason a name can't
@@ -223,15 +288,15 @@ Burger::eError BURGER_API Burger::GetLoggedInUserName(
 
     \param pOutput Pointer to a \ref String to receive the name in UTF-8
         encoding
-
     \return Zero on no error, or non zero on failure.
+
     \note On platforms where networking or user level access isn't available, it
         will return \ref kErrorNotSupportedOnThisPlatform as an error code.
 
-    \note On MacOS 9, the machine name is found in the OS string
-        number -16413 from the system resource file.
+    \note On MacOS 9, the machine name is found in the OS string number -16413
+        from the system resource file.
 
-    \sa GetLoggedInUserName(String *)
+    \sa GetUserLoginName(String *) or NetworkManager::GetHostName()
 
 ***************************************/
 
@@ -309,8 +374,8 @@ Burger::eError BURGER_API Burger::GetMacModelIdentifier(
         if (!Gestalt(gestaltUserVisibleMachineName, &lResponse)) {
             // Did I get a name?
             if (reinterpret_cast<uint8_t*>(lResponse)[0]) {
-                uResult = pOutput->Set(reinterpret_cast<char*>(lResponse + 1)),
-                (reinterpret_cast<uint8_t*>(lResponse)[0]);
+                uResult = pOutput->Set(reinterpret_cast<char*>(lResponse + 1),
+                reinterpret_cast<uint8_t*>(lResponse)[0]);
             }
         } else if (!Gestalt(gestaltMachineType, &lResponse)) {
             // Get the machine name string from the system resource

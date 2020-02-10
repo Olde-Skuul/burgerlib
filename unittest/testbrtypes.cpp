@@ -307,14 +307,14 @@ static uint_t BURGER_API TestStructureAlignment(uint_t uVerbose)
 
     struct ElementAlign_t {
         int8_t m_0;                    // Offset 0
-        int8_t BURGER_ALIGN(m_2, 2);   // Offset 2
+        BURGER_ALIGN(int8_t m_2, 2);   // Offset 2
         int8_t m_3;                    // Offset 3
         int8_t m_4;                    // Offset 4
-        int8_t BURGER_ALIGN(m_8, 4);   // Offset 8
+        BURGER_ALIGN(int8_t m_8, 4);   // Offset 8
         int8_t m_9;                    // Offset 9
-        int8_t BURGER_ALIGN(m_16, 8);  // Offset 16
+        BURGER_ALIGN(int8_t m_16, 8);  // Offset 16
         int8_t m_17;                   // Offset 17
-        int8_t BURGER_ALIGN(m_32, 16); // Offset 32
+        BURGER_ALIGN(int8_t m_32, 16); // Offset 32
     };
 
     uTest = BURGER_OFFSETOF(ElementAlign_t, m_0) != 0;

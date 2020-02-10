@@ -801,10 +801,17 @@
 
 ***************************************/
 
-#if defined(BURGER_INTEL_COMPILER) || defined(BURGER_MSVC) || \
+#if defined(BURGER_CPP11) || __has_feature(cxx_alignas) || \
+    __has_extension(cxx_alignas) || \
+    ((BURGER_GNUC >= 40800) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
+    defined(DOXYGEN)
+#define BURGER_ALIGN(x, s) alignas(s) x
+#define BURGER_PREALIGN(s) alignas(s)
+#define BURGER_POSTALIGN(s)
+#elif defined(BURGER_INTEL_COMPILER) || defined(BURGER_MSVC) || \
     defined(BURGER_PS4) || \
-    (defined(BURGER_METROWERKS) && !defined(BURGER_68K)) || defined(DOXYGEN)
-#define BURGER_ALIGN(x, s) __declspec(align(s))(x)
+    (defined(BURGER_METROWERKS) && !defined(BURGER_68K))
+#define BURGER_ALIGN(x, s) __declspec(align(s)) x
 #define BURGER_PREALIGN(s) __declspec(align(s))
 #define BURGER_POSTALIGN(s)
 #elif defined(BURGER_GNUC) || defined(BURGER_CLANG) || \
@@ -814,24 +821,20 @@
 #define BURGER_PREALIGN(s)
 #define BURGER_POSTALIGN(s) __attribute__((aligned(s)))
 #else
-#define BURGER_ALIGN(x, s) (x)
+#define BURGER_ALIGN(x, s) x
 #define BURGER_PREALIGN(s)
 #define BURGER_POSTALIGN(s)
 #define BURGER_NO_ALIGN
 #endif
 
 // Structure packing macro switches
-#if defined(BURGER_PS2) || defined(BURGER_ANDROID) || defined(BURGER_DS)
-#define BURGER_STRUCT_PACK
-#elif defined(BURGER_WATCOM) || defined(BURGER_INTEL_COMPILER) || \
-    defined(BURGER_ARM_COMPILER) || defined(BURGER_MSVC) || \
-    defined(BURGER_PS3) || defined(BURGER_PS4) || defined(BURGER_MINGW) || \
-    (defined(BURGER_METROWERKS) && defined(BURGER_INTEL))
-#define BURGER_STRUCT_PACKPUSH
-#elif defined(BURGER_MRC) || defined(BURGER_APPLE_SC) || \
-    defined(BURGER_METROWERKS) || defined(BURGER_MACOSX) || \
-    defined(BURGER_IOS) || defined(BURGER_GNUC) || defined(BURGER_VITA)
+#if defined(BURGER_MRC) || defined(BURGER_APPLE_SC) || \
+    (defined(BURGER_METROWERKS) && (defined(BURGER_PPC) || defined(BURGER_68K)))
 #define BURGER_STRUCT_ALIGN
+#elif defined(BURGER_PS2) || defined(BURGER_DS)
+#define BURGER_STRUCT_PACK
+#else
+#define BURGER_STRUCT_PACKPUSH
 #endif
 
 /***************************************
@@ -1309,8 +1312,8 @@ typedef float32x4_t Vector_128;
 #elif defined(BURGER_WIIU)
 #include <ppc_ghs.h>
 struct Vector_128 {
-    float BURGER_ALIGN(
-        m128_f32[4], 16); ///< Opaque contents to the 128 bit vector register
+    /** Opaque contents to the 128 bit vector register */
+    BURGER_ALIGN(float m128_f32[4], 16);
 };
 
 #elif defined(BURGER_MINGW)
@@ -1328,8 +1331,8 @@ typedef __m128 Vector_128;
 #endif
 
 struct Vector_128 {
-    float BURGER_ALIGN(
-        m128_f32[4], 16); ///< Opaque contents to the 128 bit vector register
+    /** Opaque contents to the 128 bit vector register */
+    BURGER_ALIGN(float m128_f32[4], 16);
 };
 #endif
 

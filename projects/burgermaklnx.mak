@@ -154,35 +154,25 @@ INCLUDE_DIRS = $(SOURCE_DIRS) $(BURGER_SDKS)/linux/burgerlib
 # Set the compiler flags for each of the build types
 #
 
-CFlagsDebug:=-D_DEBUG -g -Og
-CFlagsInternal:=-D_DEBUG -g -O3
-CFlagsRelease:=-DNDEBUG -O3
-
-#
-# Set the flags for each target operating system
-#
-
-CFlagslnx:=-D__LINUX__
+CFlagsDebuglnx:= -g -Og -D_DEBUG -D__LINUX__
+CFlagsInternallnx:= -g -O3 -D_DEBUG -D__LINUX__
+CFlagsReleaselnx:= -O3 -DNDEBUG -D__LINUX__
 
 #
 # Set the WASM flags for each of the build types
 #
 
-AFlagsDebug:=-D_DEBUG -g
-AFlagsInternal:=-D_DEBUG -g
-AFlagsRelease:=-DNDEBUG
+AFlagsDebuglnx:= -g -D_DEBUG -D__LINUX__
+AFlagsInternallnx:= -g -D_DEBUG -D__LINUX__
+AFlagsReleaselnx:= -DNDEBUG -D__LINUX__
 
 #
-# Set the as flags for each operating system
+# Set the Linker flags for each of the build types
 #
 
-AFlagslnx:=-D__LINUX__=1
-
-LFlagsDebug:=-g -lburgerlibmaklnxdbg
-LFlagsInternal:=-g -lburgerlibmaklnxint
-LFlagsRelease:=-lburgerlibmaklnxrel
-
-LFlagslnx:=-lGL -L$(BURGER_SDKS)/linux/burgerlib
+LFlagsDebuglnx:= -g
+LFlagsInternallnx:= -g
+LFlagsReleaselnx:=
 
 # Now, set the compiler flags
 
@@ -198,7 +188,7 @@ LINK:=$(CXX)
 
 define BUILD_CPP=
 @echo $(<F) / $(CONFIG) / $(TARGET); \
-$(CP) $(CFlags$(CONFIG)) $(CFlags$(TARGET)) $< -o $@ -MT '$@' -MMD -MF '$*.d'
+$(CP) $(CFlags$(CONFIG)$(TARGET)) $< -o $@ -MT '$@' -MMD -MF '$*.d'
 endef
 
 #

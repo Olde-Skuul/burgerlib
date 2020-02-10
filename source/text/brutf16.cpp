@@ -85,7 +85,7 @@
 	
 ***************************************/
 
-const Word16 BURGER_ALIGN(Burger::UTF16::FromMacRomanUSTable[128],16) = {
+BURGER_ALIGN(const Word16 Burger::UTF16::FromMacRomanUSTable[128],16) = {
 	0x00C4,	// 0x80
 	0x00C5,	// 0x81
 	0x00C7,	// 0x82
@@ -232,7 +232,7 @@ const Word16 BURGER_ALIGN(Burger::UTF16::FromMacRomanUSTable[128],16) = {
 	
 ***************************************/
 
-const Word16 BURGER_ALIGN(Burger::UTF16::FromWin1252Table[128],16) = {
+BURGER_ALIGN(const Word16 Burger::UTF16::FromWin1252Table[128],16) = {
 	0x20AC,	// 0x80
 	0x0081,	// 0x81
 	0x201A,	// 0x82
@@ -378,7 +378,7 @@ const Word16 BURGER_ALIGN(Burger::UTF16::FromWin1252Table[128],16) = {
 
 ***************************************/
 
-const Word16 BURGER_ALIGN(Burger::UTF16::FromISOLatin1Table[128],16) = {
+BURGER_ALIGN(const Word16 Burger::UTF16::FromISOLatin1Table[128],16) = {
 	0x0080,	// 0x80
 	0x0081,	// 0x81
 	0x0082,	// 0x82

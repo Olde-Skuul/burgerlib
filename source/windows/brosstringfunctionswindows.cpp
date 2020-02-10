@@ -33,39 +33,95 @@
 #include "brstring16.h"
 
 #include <windows.h>
+
 #include <lm.h>
 #include <security.h>
 
 /***************************************
 
-    \brief Get the name of the current user
+    \brief Retrieves the login name of the user associated with the current
+        thread.
 
-    When someone has logged onto a computer, that person had to give a user
-    name. This routine will retrieve that user name. If for some reason a user
-    name can't be found or the operating system doesn't support user log ons,
-    the name "User" will be returned.
+    On systems that use user logins, return the login name of the account
+    associated with the current thread. If the platform doesn't support multiple
+    user accounts, it will return "User" and the error code \ref
+    kErrorNotSupportedOnThisPlatform.
 
     \param pOutput Pointer to a \ref String to receive the name in UTF-8
         encoding
-    \return Zero on no error, or non zero on failure.
+     \return Zero on no error, or non zero on failure.
 
-    \note On platforms where networking or user level access isn't available, it
-        will return \ref kErrorNotSupportedOnThisPlatform as an error code.
+     \note On platforms where networking or user level access isn't available,
+        it will return \ref kErrorNotSupportedOnThisPlatform as an error code.
 
-    \sa GetMachineName(String *)
+    \sa GetUserRealName(String *) or GetMachineName(String *)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::GetLoggedInUserName(
+Burger::eError BURGER_API Burger::GetUserLoginName(
     String* pOutput) BURGER_NOEXCEPT
 {
+
+#if defined(BURGER_WATCOM)
+#pragma library("Advapi32.lib")
+#else
+#pragma comment(lib, "Advapi32.lib")
+#endif
+
+    eError uResult = kErrorItemNotFound;
+    DWORD uBufferSize = 0;
+    GetUserNameW(nullptr, &uBufferSize);
+    if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
+        WCHAR* pBuffer =
+            static_cast<WCHAR*>(AllocClear(sizeof(WCHAR) * (uBufferSize + 1)));
+        if (pBuffer) {
+            if (GetUserNameW(pBuffer, &uBufferSize)) {
+                uResult = pOutput->Set(static_cast<const uint16_t*>(
+                    static_cast<const void*>(pBuffer)));
+            }
+            Free(pBuffer);
+        }
+    }
+
+    if (uResult) {
+        pOutput->Set("User");
+    }
+
+    return uResult;
+}
+
+/***************************************
+
+    \brief Get the real name of the current user.
+
+    When someone has logged onto a computer, that person can associate a real
+    name to the login user account. This routine will retrieve real name of the
+    user. If for some reason a user name can't be found or the operating system
+    doesn't support user logins, the name "User" will be returned.
+
+    \param pOutput Pointer to a \ref String to receive the real name in UTF-8
+        encoding
+    \return Zero on no error, or non zero on failure.
+
+     \note On platforms where networking or user level access isn't available,
+        it will always return \ref kErrorNotSupportedOnThisPlatform as an error
+        code.
+
+    \sa GetUserLoginName(String *) or GetMachineName(String *)
+
+***************************************/
+
+Burger::eError BURGER_API Burger::GetUserRealName(
+    String* pOutput) BURGER_NOEXCEPT
+{
+
 #if defined(BURGER_WATCOM)
 #pragma library("Secur32.lib")
 #else
 #pragma comment(lib, "Secur32.lib")
 #endif
 
-    eError uResult = kErrorGeneric;
+    eError uResult = kErrorItemNotFound;
 
     // Get the length of the user name
     DWORD uBufferSize = 0;
@@ -84,27 +140,14 @@ Burger::eError BURGER_API Burger::GetLoggedInUserName(
 
     // No name found yet?
     if (uResult) {
-        uBufferSize = 0;
-        if (!GetUserNameW(nullptr, &uBufferSize)) {
-            WCHAR* pBuffer = static_cast<WCHAR*>(
-                AllocClear(sizeof(WCHAR) * (uBufferSize + 1)));
-            if (GetUserNameW(pBuffer, &uBufferSize)) {
-                uResult = pOutput->Set(static_cast<const Word16*>(
-                    static_cast<const void*>(pBuffer)));
-            }
-            Free(pBuffer);
-        }
-
-        if (uResult) {
-            pOutput->Set("User");
-        }
+        uResult = GetUserLoginName(pOutput);
     }
     return uResult;
 }
 
 /***************************************
 
-    \brief Get the name the user has called the computer
+    \brief Get the name the user has called the computer.
 
     Some computer owners have the option to give their computer a whimsical
     name. This routine will retrieve that name. If for some reason a name can't
@@ -118,10 +161,10 @@ Burger::eError BURGER_API Burger::GetLoggedInUserName(
     \note On platforms where networking or user level access isn't available, it
         will return \ref kErrorNotSupportedOnThisPlatform as an error code.
 
-    \note On MacOS 9, the machine name is found in the OS string
-        number -16413 from the system resource file.
+    \note On MacOS 9, the machine name is found in the OS string number -16413
+        from the system resource file.
 
-    \sa GetLoggedInUserName(String *)
+    \sa GetUserLoginName(String *) or NetworkManager::GetHostName()
 
 ***************************************/
 

@@ -21,42 +21,41 @@
 #include <Foundation/NSPathUtilities.h>
 #include <IOKit/IOKitLib.h>
 #include <SystemConfiguration/SCDynamicStoreCopySpecific.h>
+#include <unistd.h>
+#include <pwd.h>
+#include <sys/types.h>
+#include <limits.h>
 
 /***************************************
 
-    \brief Get the name of the current user
+    \brief Retrieves the login name of the user associated with the current
+        thread.
 
-    When someone has logged onto a computer, that person had to give a user
-    name. This routine will retrieve that user name. If for some reason a user
-    name can't be found or the operating system doesn't support user log ons,
-    the name "User" will be returned.
+    On systems that use user logins, return the login name of the account
+    associated with the current thread. If the platform doesn't support multiple
+    user accounts, it will return "User" and the error code \ref
+    kErrorNotSupportedOnThisPlatform.
 
     \param pOutput Pointer to a \ref String to receive the name in UTF-8
         encoding
-    \return Zero on no error, or non zero on failure.
+     \return Zero on no error, or non zero on failure.
 
-    \note On platforms where networking or user level access isn't available, it
-        will return \ref kErrorNotSupportedOnThisPlatform as an error code.
+     \note On platforms where networking or user level access isn't available,
+        it will return \ref kErrorNotSupportedOnThisPlatform as an error code.
 
-    \a GetMachineName(String *)
+    \sa GetUserRealName(String *) or GetMachineName(String *)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::GetLoggedInUserName(
+Burger::eError BURGER_API Burger::GetUserLoginName(
     String* pOutput) BURGER_NOEXCEPT
 {
     eError uResult = kErrorItemNotFound;
-
-    // Return the user name
-    CFStringRef pStringRef = (CFStringRef)NSFullUserName();
-    if (pStringRef) {
-        Globals::StringCopy(pOutput, pStringRef);
-
-        // Dispose of the string ref
-        CFRelease(pStringRef);
-
-        uResult = kErrorNone;
-    }
+	// Get the user information
+	struct passwd* pPasswd = getpwuid(getuid());
+	if (pPasswd) {
+		uResult = pOutput->Set(pPasswd->pw_name);
+	}
     if (uResult) {
         // The name wasn't present, use the default
         pOutput->Set("User");
@@ -66,7 +65,63 @@ Burger::eError BURGER_API Burger::GetLoggedInUserName(
 
 /***************************************
 
-    \brief Get the name the user has called the computer
+    \brief Get the real name of the current user.
+
+    When someone has logged onto a computer, that person can associate a real
+    name to the login user account. This routine will retrieve real name of the
+    user. If for some reason a user name can't be found or the operating system
+    doesn't support user logins, the name "User" will be returned.
+
+    \param pOutput Pointer to a \ref String to receive the real name in UTF-8
+        encoding
+    \return Zero on no error, or non zero on failure.
+
+     \note On platforms where networking or user level access isn't available,
+        it will always return \ref kErrorNotSupportedOnThisPlatform as an error
+        code.
+
+    \sa GetUserLoginName(String *) or GetMachineName(String *)
+
+***************************************/
+
+Burger::eError BURGER_API Burger::GetUserRealName(
+    String* pOutput) BURGER_NOEXCEPT
+{
+    eError uResult = kErrorGeneric;
+    // Get the user information
+    struct passwd* pPasswd = getpwuid(getuid());
+	
+    // Get the comment which would have the name
+    // Test if value or garbage
+    if (pPasswd->pw_gecos) {
+		
+        // Only use the first part of a comma delimited string.
+        const char* pEnd = StringCharacter(pPasswd->pw_gecos, ',');
+        uintptr_t uLength;
+        if (pEnd) {
+            uLength = pEnd - pPasswd->pw_gecos;
+        } else {
+            // Use the entire string
+            uLength = StringLength(pPasswd->pw_gecos);
+        }
+        // Only use it if there is a string
+        if (uLength) {
+            uResult = pOutput->Set(pPasswd->pw_gecos, uLength);
+        }
+    }
+    if (uResult) {
+        // Get the user folder name
+        uResult = pOutput->Set(pPasswd->pw_name);
+        if (uResult) {
+            pOutput->Set("User");
+        }
+    }
+    return uResult;	
+}
+
+/***************************************
+
+    \brief Get the name the user has called the computer.
 
     Some computer owners have the option to give their computer a whimsical
     name. This routine will retrieve that name. If for some reason a name can't
@@ -75,7 +130,6 @@ Burger::eError BURGER_API Burger::GetLoggedInUserName(
 
     \param pOutput Pointer to a \ref String to receive the name in UTF-8
         encoding
-
     \return Zero on no error, or non zero on failure.
 
     \note On platforms where networking or user level access isn't available, it
@@ -84,7 +138,7 @@ Burger::eError BURGER_API Burger::GetLoggedInUserName(
     \note On MacOS 9, the machine name is found in the OS string number -16413
         from the system resource file.
 
-    \a GetLoggedInUserName(String *)
+    \sa GetUserLoginName(String *) or NetworkManager::GetHostName()
 
 ***************************************/
 
@@ -157,10 +211,9 @@ Burger::eError BURGER_API Burger::GetMacModelIdentifier(
                 while ((pIOService = IOIteratorNext(pIOIterator))) {
 
                     // Look up the entry
-                    CFDataRef pDataRef =
-                        static_cast<CFDataRef>(IORegistryEntryCreateCFProperty(
-                            pIOService, CFSTR("model"),
-                            kCFAllocatorDefault, kNilOptions));
+                    CFDataRef pDataRef = static_cast<CFDataRef>(
+                        IORegistryEntryCreateCFProperty(pIOService,
+                            CFSTR("model"), kCFAllocatorDefault, kNilOptions));
                     if (pDataRef) {
                         // Found it! However, it's raw data, not a string
                         uintptr_t uLength =

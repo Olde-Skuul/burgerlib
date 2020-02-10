@@ -250,31 +250,33 @@ int BURGER_API TestBrstrings(Word uVerbose)
 		Message("Running String tests");
 	}
 
-	// Test compiler switches
-	uTotal = TestWildcard();
-	uTotal |= TestParseQuotedString();
-	uTotal |= TestGetEnvironmentString(uVerbose);
-	uTotal |= TestStringStopAt();
-	uTotal |= TestStringSkipOver();
-	uTotal |= TestStringToken();
+    // Test compiler switches
+    uTotal = TestWildcard();
+    uTotal |= TestParseQuotedString();
+    uTotal |= TestGetEnvironmentString(uVerbose);
+    uTotal |= TestStringStopAt();
+    uTotal |= TestStringSkipOver();
+    uTotal |= TestStringToken();
 
-	if (uVerbose & VERBOSE_MSG) {
-		Burger::String TempString;
+    if (uVerbose & VERBOSE_MSG) {
+        Burger::String TempString;
 
-		Burger::GetMachineName(&TempString);
-		Message("GetMachineName() returned \"%s\"", TempString.GetPtr());
+        Burger::GetUserLoginName(&TempString);
+        Message("GetUserLoginName() returned \"%s\"", TempString.c_str());
 
-		Burger::GetLoggedInUserName(&TempString);
-		Message("GetLoggedInUserName() returned \"%s\"", TempString.GetPtr());
-	
+        Burger::GetUserRealName(&TempString);
+        Message("GetUserRealName() returned \"%s\"", TempString.c_str());
+        
+        Burger::GetMachineName(&TempString);
+        Message("GetMachineName() returned \"%s\"", TempString.c_str());
+
 #if defined(BURGER_MACOS)
-		Burger::GetMacModelIdentifier(&TempString);
-		Message("GetMacModelIdentifier() returned \"%s\"", TempString.GetPtr());
+        Burger::GetMacModelIdentifier(&TempString);
+        Message("GetMacModelIdentifier() returned \"%s\"", TempString.GetPtr());
 #endif
+    }
 
-	}
-
-	if (!uTotal && (uVerbose & VERBOSE_MSG)) {
+    if (!uTotal && (uVerbose & VERBOSE_MSG)) {
 		Message("Passed all String tests!");
 	}
 
