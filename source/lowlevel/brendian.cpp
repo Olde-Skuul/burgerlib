@@ -17,7 +17,7 @@
 
 /*! ************************************
 
-    \class Burger::SwapEndian
+    \struct Burger::SwapEndian
     \brief Swap the byte order of 16, 32 and 64 bit values.
 
     When reading data from machines that are using different microprocessors,
@@ -2422,7 +2422,7 @@ void BURGER_API Burger::SwapEndian::FixupAny(uint64_t* pInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-    \class Burger::NativeEndian
+    \struct Burger::NativeEndian
     \brief Loads a 16, 32 or 64 bit value with no byte swapping.
 
     The classes Burger::LittleEndian and Burger::BigEndian either map to \ref
@@ -3861,12 +3861,13 @@ void BURGER_API Burger::NativeEndian::StoreAny(
 
 /*! ************************************
 
-    \fn Burger::NativeEndian::Fixup(char *pInput)
+    \fn Burger::NativeEndian::Fixup(T)
     \brief Does nothing.
 
-    Single byte variables can't be endian swapped.
+    Native endian value do not need to be endian swapped, so this function will
+    do nothing.
 
-    \param pInput Pointer to an 8 bit value.
+    \tparam T Pointer to a value to not endian swap.
 
     \sa SwapEndian::Fixup(char*)
 
@@ -3874,233 +3875,14 @@ void BURGER_API Burger::NativeEndian::StoreAny(
 
 /*! ************************************
 
-    \fn Burger::NativeEndian::Fixup(uint8_t *pInput)
+    \fn Burger::NativeEndian::FixupAny(T)
     \brief Does nothing.
 
-    Single byte variables can't be endian swapped.
-
-    \param pInput Pointer to an 8 bit value.
-
-    \sa SwapEndian::Fixup(uint8_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::Fixup(int8_t *pInput)
-    \brief Does nothing.
-
-    Single byte variables can't be endian swapped.
-
-    \param pInput Pointer to an 8 bit value.
-
-    \sa SwapEndian::Fixup(int8_t *)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::Fixup(uint16_t *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of the variable, but this
-    class performs no operation since the endian is already a match for what the
-    machine expects.
-
-    \param pInput Pointer to a 16 bit value.
-
-    \sa SwapEndian::Fixup(uint16_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::Fixup(int16_t *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of the variable, but this
-    class performs no operation since the endian is already a match for what the
-    machine expects.
-
-    \param pInput Pointer to a 16 bit value.
-
-    \sa SwapEndian::Fixup(int16_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::Fixup(uint32_t *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of the variable, but this
-    class performs no operation since the endian is already a match for what the
-    machine expects.
-
-    \param pInput Pointer to a 32 bit value.
-
-    \sa SwapEndian::Fixup(uint32_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::Fixup(int32_t *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of the variable, but this
-    class performs no operation since the endian is already a match for what the
-    machine expects.
-
-    \param pInput Pointer to a 32 bit value.
-
-    \sa SwapEndian::Fixup(int32_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::Fixup(uint64_t *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of the variable, but this
-    class performs no operation since the endian is already a match for what the
-    machine expects.
-
-    \param pInput Pointer to a 64 bit value.
-
-    \sa SwapEndian::Fixup(uint64_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::Fixup(int64_t *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of the variable, but this
-    class performs no operation since the endian is already a match for what the
-    machine expects.
-
-    \param pInput Pointer to a 64 bit value.
-
-    \sa SwapEndian::Fixup(int64_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::Fixup(wchar_t *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of the variable, but this
-    class performs no operation since the endian is already a match for what the
-    machine expects.
-
-    \param pInput Pointer to a wchar_t value.
-
-    \sa SwapEndian::Fixup(wchar_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::Fixup(unsigned int *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of the variable, but this
-    class performs no operation since the endian is already a match for what the
-    machine expects.
-
-    \param pInput Pointer to a 16-32 bit value.
-
-    \sa SwapEndian::Fixup(unsigned int *)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::Fixup(signed int *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of the
-    variable, but this class performs no operation since the
-    endian is already a match for what the machine expects.
-
-    \param pInput Pointer to a 16-32 bit value.
-
-    \sa SwapEndian::Fixup(signed int*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::Fixup(unsigned long *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of the variable, but this
-    class performs no operation since the endian is already a match for what the
-    machine expects.
-
-    \param pInput Pointer to a 32-64 bit value.
-
-    \sa SwapEndian::Fixup(unsigned long *)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::Fixup(signed long *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of the variable, but this
-    class performs no operation since the endian is already a match for what the
-    machine expects.
-
-    \param pInput Pointer to a 32-64 bit value.
-
-    \sa SwapEndian::Fixup(signed long*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::Fixup(float *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of the variable, but this
-    class performs no operation since the endian is already a match for what
-    the machine expects.
-
-    \param pInput Pointer to a float value.
-
-    \sa SwapEndian::Fixup(float*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::Fixup(double *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of the variable, but this
-    class performs no operation since the endian is already a match for what
-    the machine expects.
-
-    \param pInput Pointer to a double value.
-
-    \sa SwapEndian::Fixup(double*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::FixupAny(char *pInput)
-    \brief Does nothing.
-
-    Single byte variables can't be endian swapped.
-
-    \param pInput Pointer to an 8 bit value.
+    The \ref SwapEndian class would swap the endian of a non aligned variable,
+    but this class performs no operation since the endian is already a match for
+    what the machine expects.
+
+    \tparam T Pointer to a value to not endian swap.
 
     \sa SwapEndian::FixupAny(char*)
 
@@ -4108,228 +3890,7 @@ void BURGER_API Burger::NativeEndian::StoreAny(
 
 /*! ************************************
 
-    \fn Burger::NativeEndian::FixupAny(uint8_t *pInput)
-    \brief Does nothing.
-
-    Single byte variables can't be endian swapped.
-
-    \param pInput Pointer to an 8 bit value.
-
-    \sa SwapEndian::FixupAny(uint8_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::FixupAny(int8_t *pInput)
-    \brief Does nothing.
-
-    Single byte variables can't be endian swapped.
-
-    \param pInput Pointer to an 8 bit value.
-
-    \sa SwapEndian::FixupAny(int8_t *)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::FixupAny(uint16_t *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of a non aligned variable,
-    but this class performs no operation since the endian is already a match for
-    what the machine expects.
-
-    \param pInput Pointer to a 16 bit value.
-
-    \sa SwapEndian::FixupAny(uint16_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::FixupAny(int16_t *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of a non aligned variable,
-    but this class performs no operation since the endian is already a match for
-    what the machine expects.
-
-    \param pInput Pointer to a 16 bit value.
-
-    \sa SwapEndian::FixupAny(int16_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::FixupAny(uint32_t *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of a non aligned variable,
-    but this class performs no operation since the endian is already a match for
-    what the machine expects.
-
-    \param pInput Pointer to a 32 bit value.
-
-    \sa SwapEndian::FixupAny(uint32_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::FixupAny(int32_t *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of a non aligned variable,
-    but this class performs no operation since the endian is already a match for
-    what the machine expects.
-
-    \param pInput Pointer to a 32 bit value.
-
-    \sa SwapEndian::FixupAny(int32_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::FixupAny(uint64_t *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of a non aligned variable,
-    but this class performs no operation since the endian is already a match for
-    what the machine expects.
-
-    \param pInput Pointer to a 64 bit value.
-
-    \sa SwapEndian::FixupAny(uint64_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::FixupAny(int64_t *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of a non aligned variable,
-    but this class performs no operation since the endian is already a match for
-    what the machine expects.
-
-    \param pInput Pointer to a 64 bit value.
-
-    \sa SwapEndian::FixupAny(int64_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::FixupAny(wchar_t *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of a non aligned variable,
-    but this class performs no operation since the endian is already a match for
-    what the machine expects.
-
-    \param pInput Pointer to wchar_t value.
-
-    \sa SwapEndian::FixupAny(wchar_t*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::FixupAny(unsigned int *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of a non aligned variable,
-    but this class performs no operation since the endian is already a match for
-    what the machine expects.
-
-    \param pInput Pointer to a 16-32 bit value.
-
-    \sa SwapEndian::FixupAny(unsigned int*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::FixupAny(signed int *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of a non aligned variable,
-    but this class performs no operation since the endian is already a match for
-    what the machine expects.
-
-    \param pInput Pointer to a 16-32 bit value.
-
-    \sa SwapEndian::FixupAny(signed int*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::FixupAny(unsigned long *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of a non aligned variable,
-    but this class performs no operation since the endian is already a match for
-    what the machine expects.
-
-    \param pInput Pointer to a 32-64 bit value.
-
-    \sa SwapEndian::FixupAny(unsigned long*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::FixupAny(signed long *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of a non aligned variable,
-    but this class performs no operation since the endian is already a match for
-    what the machine expects.
-
-    \param pInput Pointer to a 32-64 bit value.
-
-    \sa SwapEndian::FixupAny(signed long*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::FixupAny(float *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of a non aligned variable,
-    but this class performs no operation since the endian is already a match for
-    what the machine expects.
-
-    \param pInput Pointer to a float value.
-
-    \sa SwapEndian::FixupAny(float*)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::NativeEndian::FixupAny(double *pInput)
-    \brief Does nothing.
-
-    The \ref SwapEndian class would swap the endian of a non aligned variable,
-    but this class performs no operation since the endian is already a match for
-    what the machine expects.
-
-    \param pInput Pointer to a double value.
-
-    \sa SwapEndian::FixupAny(double*)
-
-***************************************/
-
-/*! ************************************
-
-    \class Burger::BigEndian
+    \struct Burger::BigEndian
     \brief Loads a 16, 32 or 64 bit value with byte swapping if needed.
 
     This class will map to either to \ref NativeEndian or \ref SwapEndian

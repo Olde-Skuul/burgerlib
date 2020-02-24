@@ -47,8 +47,8 @@
 
 namespace Burger {
 
-class SwapEndian {
-public:
+struct SwapEndian {
+
     // clang-format off
     static BURGER_INLINE BURGER_CONSTEXPR char Load(char iInput) BURGER_NOEXCEPT { return iInput; }
     static BURGER_INLINE BURGER_CONSTEXPR uint8_t Load(uint8_t uInput) BURGER_NOEXCEPT { return uInput; }
@@ -524,9 +524,8 @@ public:
 
 ***************************************/
 
-class NativeEndian {
+struct NativeEndian {
 
-public:
     // clang-format off
     static BURGER_INLINE BURGER_CONSTEXPR char Load(char iInput) BURGER_NOEXCEPT { return iInput; }
     static BURGER_INLINE BURGER_CONSTEXPR uint8_t Load(uint8_t uInput) BURGER_NOEXCEPT { return uInput; }
@@ -611,30 +610,6 @@ public:
     static BURGER_INLINE void StoreAny(int64_t* pOutput, int64_t iInput) BURGER_NOEXCEPT {
         StoreAny(reinterpret_cast<uint64_t*>(pOutput),  static_cast<uint64_t>(iInput)); }
 
-    static BURGER_INLINE void Fixup(char*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void Fixup(uint8_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void Fixup(int8_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void Fixup(uint16_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void Fixup(int16_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void Fixup(uint32_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void Fixup(int32_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void Fixup(uint64_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void Fixup(int64_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void Fixup(float*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void Fixup(double*) BURGER_NOEXCEPT {}
-
-    static BURGER_INLINE void FixupAny(char*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void FixupAny(uint8_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void FixupAny(int8_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void FixupAny(uint16_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void FixupAny(int16_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void FixupAny(uint32_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void FixupAny(int32_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void FixupAny(uint64_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void FixupAny(int64_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void FixupAny(float*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void FixupAny(double*) BURGER_NOEXCEPT {}
-
 #if defined(BURGER_HAS_WCHAR_T) || defined(DOXYGEN)
     static BURGER_INLINE BURGER_CONSTEXPR wchar_t Load(wchar_t uInput) BURGER_NOEXCEPT { return uInput; }
     static BURGER_INLINE BURGER_CONSTEXPR wchar_t Load(const wchar_t* pInput) BURGER_NOEXCEPT { return pInput[0]; }
@@ -644,8 +619,6 @@ public:
     static BURGER_INLINE void StoreAny(wchar_t* pOutput, wchar_t uInput) BURGER_NOEXCEPT {
         StoreAny(reinterpret_cast<uint16_t*>(pOutput), uInput);
     }
-    static BURGER_INLINE void Fixup(wchar_t*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void FixupAny(wchar_t*) BURGER_NOEXCEPT {}
 #endif
 
 #if defined(BURGER_INT_NOT_IN_STDINT) || defined(DOXYGEN)
@@ -663,10 +636,6 @@ public:
         StoreAny(reinterpret_cast<uint2uint_t*>(pOutput), static_cast<uint2uint_t>(uInput)); }
     static BURGER_INLINE void StoreAny(signed int* pOutput, signed int iInput) BURGER_NOEXCEPT {
         StoreAny(reinterpret_cast<uint2uint_t*>(pOutput), static_cast<uint2uint_t>(iInput)); }
-    static BURGER_INLINE void Fixup(unsigned int*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void Fixup(signed int*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void FixupAny(unsigned int*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void FixupAny(signed int*) BURGER_NOEXCEPT {}
 #endif
 
 #if defined(BURGER_LONG_NOT_IN_STDINT) || defined(DOXYGEN)
@@ -684,12 +653,18 @@ public:
         StoreAny(reinterpret_cast<ulong2uint_t*>(pOutput), static_cast<ulong2uint_t>(uInput)); }
     static BURGER_INLINE void StoreAny(signed long* pOutput, signed long iInput) BURGER_NOEXCEPT {
         StoreAny(reinterpret_cast<ulong2uint_t*>(pOutput), static_cast<ulong2uint_t>(iInput)); }
-    static BURGER_INLINE void Fixup(unsigned long*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void Fixup(signed long*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void FixupAny(unsigned long*) BURGER_NOEXCEPT {}
-    static BURGER_INLINE void FixupAny(signed long*) BURGER_NOEXCEPT {}
 #endif
     // clang-format on
+
+    template<typename T>
+    static BURGER_INLINE void Fixup(T) BURGER_NOEXCEPT
+    {
+    }
+
+    template<typename T>
+    static BURGER_INLINE void FixupAny(T) BURGER_NOEXCEPT
+    {
+    }
 };
 
 #if (defined(BURGER_METROWERKS) && defined(BURGER_X86))
@@ -700,9 +675,9 @@ public:
 
 #if defined(BURGER_LITTLEENDIAN)
 
-class LittleEndian: public NativeEndian {
+struct LittleEndian: public NativeEndian {
 };
-class BigEndian: public SwapEndian {
+struct BigEndian: public SwapEndian {
 };
 #define BURGER_BIGENDIAN16(x) (((x & 0xFFU) << 8U) + ((x >> 8U) & 0xFFU))
 #define BURGER_BIGENDIAN32(x) \
@@ -712,9 +687,9 @@ class BigEndian: public SwapEndian {
 #define BURGER_LITTLEENDIAN32(x) (x)
 #else
 
-class LittleEndian: public SwapEndian {
+struct LittleEndian: public SwapEndian {
 };
-class BigEndian: public NativeEndian {
+struct BigEndian: public NativeEndian {
 };
 #define BURGER_LITTLEENDIAN16(x) (((x & 0xFFU) << 8U) + ((x >> 8U) & 0xFFU))
 #define BURGER_LITTLEENDIAN32(x) \

@@ -105,7 +105,6 @@
 #define nullptr 0
 #define __underlying_type(x) int
 
-#define BURGER_HAS_WCHAR_T
 #define BURGER_INT_NOT_IN_STDINT
 #define BURGER_NO_USING_NAMESPACE
 
@@ -1992,9 +1991,9 @@ line of processors.
     and 32. Larger are acceptable, as long as they are powers of two.
 
     \code
-        extern int BURGER_ALIGN(foo,8);
-        CoolClass BURGER_ALIGN(MyClass,1);
-        int BURGER_ALIGN(DataArray[4],8) = {1,2,3,4};
+        BURGER_ALIGN(extern int, foo, 8);
+        BURGER_ALIGN(CoolClass, MyClass, 1);
+        BURGER_ALIGN(int, DataArray[4], 8) = {1,2,3,4};
     \endcode
 
     \sa BURGER_NO_ALIGN, BURGER_PREALIGN and BURGER_POSTALIGN
@@ -2835,10 +2834,21 @@ line of processors.
     \brief The character )
 
     If a macro contains a parenthesis, it will be treated as an enclosure for a
-    parameter list. UUse this macro inside another macro to output a right
+    parameter list. Use this macro inside another macro to output a right
     parenthesis without actually invoking parameters.
 
     \sa BURGER_LEFT_PARENTHESIS
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_NULL_MACRO_PARAM
+    \brief An empty macro parameter.
+
+    To trick the preprocessor to accept an empty parameter in a macro, use this
+    macro which inserts a "C" style empty comment to force data seperation so an
+    empty parameter can be passed to a macro.
 
 ***************************************/
 
@@ -3184,6 +3194,31 @@ line of processors.
     otherwise, it's a typedef cast from an unsigned short, which may cause
     collisions for classes that want to treat wchar_t and Word16 as unique data
     types.
+
+    \sa BURGER_HAS_CHAR8_T or BURGER_HAS_CHAR16_T
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_HAS_CHAR8_T
+    \brief Data type char8_t is native
+
+    If this define is present, char8_t is a native type for the compiler.
+
+    \sa BURGER_CPP20, BURGER_HAS_WCHAR_T or BURGER_HAS_CHAR16_T
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_HAS_CHAR16_T
+    \brief Data type char16_t and char32_t are native
+
+    If this define is present, char16_t and char32_t are a native types for the
+    compiler.
+
+    \sa BURGER_CPP11, BURGER_HAS_CHAR8_T or BURGER_HAS_WCHAR_T
 
 ***************************************/
 

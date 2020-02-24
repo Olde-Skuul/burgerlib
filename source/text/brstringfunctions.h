@@ -1,13 +1,14 @@
 /***************************************
 
-	Stand alone string functions
+    Stand alone string functions
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -85,11 +86,11 @@ extern const Word16 g_FalseString16[6];
 extern const Word16 g_YesString16[4];
 extern const Word16 g_NoString16[3];
 
-BURGER_ALIGN(extern const Word8 g_AsciiTestTable[256], 16);
-BURGER_ALIGN(extern const char g_NibbleToAsciiUppercase[16], 16);
-BURGER_ALIGN(extern const char g_NibbleToAsciiLowercase[16], 16);
-BURGER_ALIGN(extern const Word8 g_AsciiToWord8Table[256], 16);
-BURGER_ALIGN(extern const Word8 g_ReverseBits[256], 16);
+BURGER_ALIGN(extern const Word8, g_AsciiTestTable[256], 16);
+BURGER_ALIGN(extern const char, g_NibbleToAsciiUppercase[16], 16);
+BURGER_ALIGN(extern const char, g_NibbleToAsciiLowercase[16], 16);
+BURGER_ALIGN(extern const Word8, g_AsciiToWord8Table[256], 16);
+BURGER_ALIGN(extern const Word8, g_ReverseBits[256], 16);
 
 extern const Word32 g_TensTable32[10];
 extern const Word64 g_TensTable64[20];

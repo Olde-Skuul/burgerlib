@@ -24,9 +24,9 @@ namespace Burger {
 class MacRomanUS {
 public:
     enum { BAD = -1 };
-    BURGER_ALIGN(static const uint8_t UpperCaseTable[256], 16);
-    BURGER_ALIGN(static const uint8_t LowerCaseTable[256], 16);
-    BURGER_ALIGN(static const uint8_t ToUTF8Table[128][4], 16);
+    BURGER_ALIGN(static const uint8_t, UpperCaseTable[256], 16);
+    BURGER_ALIGN(static const uint8_t, LowerCaseTable[256], 16);
+    BURGER_ALIGN(static const uint8_t, ToUTF8Table[128][4], 16);
     static uint_t BURGER_API FromUTF8(const char* pInput) BURGER_NOEXCEPT;
     static uint_t BURGER_API FromUTF8(char* pOutput, uintptr_t uOutputSize,
         const char* pInput) BURGER_NOEXCEPT;

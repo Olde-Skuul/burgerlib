@@ -35,21 +35,21 @@ namespace Burger {
 class Renderer {
 public:
 	static const Word ByteSquareTable[255+256];					///< Table of squares from -255 to 255
-	BURGER_ALIGN(static const Word8 RGB2ToRGB3Table[4],4);		///< Table to convert 2 bit color to 3 bit color
-	BURGER_ALIGN(static const Word8 RGB2ToRGB4Table[4],4);		///< Table to convert 2 bit color to 4 bit color
-	BURGER_ALIGN(static const Word8 RGB2ToRGB5Table[4],4);		///< Table to convert 2 bit color to 5 bit color
-	BURGER_ALIGN(static const Word8 RGB2ToRGB6Table[4],4);		///< Table to convert 2 bit color to 6 bit color
-	BURGER_ALIGN(static const Word8 RGB2ToRGB8Table[4],4);		///< Table to convert 2 bit color to 8 bit color
-	BURGER_ALIGN(static const Word8 RGB3ToRGB4Table[8],8);		///< Table to convert 3 bit color to 4 bit color
-	BURGER_ALIGN(static const Word8 RGB3ToRGB5Table[8],8);		///< Table to convert 3 bit color to 5 bit color
-	BURGER_ALIGN(static const Word8 RGB3ToRGB6Table[8],8);		///< Table to convert 3 bit color to 6 bit color
-	BURGER_ALIGN(static const Word8 RGB3ToRGB8Table[8],8);		///< Table to convert 3 bit color to 8 bit color
-	BURGER_ALIGN(static const Word8 RGB4ToRGB5Table[16],16);	///< Table to convert 4 bit color to 5 bit color
-	BURGER_ALIGN(static const Word8 RGB4ToRGB6Table[16],16);	///< Table to convert 4 bit color to 6 bit color
-	BURGER_ALIGN(static const Word8 RGB4ToRGB8Table[16],16);	///< Table to convert 4 bit color to 8 bit color
-	BURGER_ALIGN(static const Word8 RGB5ToRGB6Table[32],16);	///< Table to convert 5 bit color to 6 bit color
-	BURGER_ALIGN(static const Word8 RGB5ToRGB8Table[32],16);	///< Table to convert 5 bit color to 8 bit color
-	BURGER_ALIGN(static const Word8 RGB6ToRGB8Table[64],16);	///< Table to convert 6 bit color to 8 bit color
+	BURGER_ALIGN(static const Word8, RGB2ToRGB3Table[4],4);		///< Table to convert 2 bit color to 3 bit color
+	BURGER_ALIGN(static const Word8, RGB2ToRGB4Table[4],4);		///< Table to convert 2 bit color to 4 bit color
+	BURGER_ALIGN(static const Word8, RGB2ToRGB5Table[4],4);		///< Table to convert 2 bit color to 5 bit color
+	BURGER_ALIGN(static const Word8, RGB2ToRGB6Table[4],4);		///< Table to convert 2 bit color to 6 bit color
+	BURGER_ALIGN(static const Word8, RGB2ToRGB8Table[4],4);		///< Table to convert 2 bit color to 8 bit color
+	BURGER_ALIGN(static const Word8, RGB3ToRGB4Table[8],8);		///< Table to convert 3 bit color to 4 bit color
+	BURGER_ALIGN(static const Word8, RGB3ToRGB5Table[8],8);		///< Table to convert 3 bit color to 5 bit color
+	BURGER_ALIGN(static const Word8, RGB3ToRGB6Table[8],8);		///< Table to convert 3 bit color to 6 bit color
+	BURGER_ALIGN(static const Word8, RGB3ToRGB8Table[8],8);		///< Table to convert 3 bit color to 8 bit color
+	BURGER_ALIGN(static const Word8, RGB4ToRGB5Table[16],16);	///< Table to convert 4 bit color to 5 bit color
+	BURGER_ALIGN(static const Word8, RGB4ToRGB6Table[16],16);	///< Table to convert 4 bit color to 6 bit color
+	BURGER_ALIGN(static const Word8, RGB4ToRGB8Table[16],16);	///< Table to convert 4 bit color to 8 bit color
+	BURGER_ALIGN(static const Word8, RGB5ToRGB6Table[32],16);	///< Table to convert 5 bit color to 6 bit color
+	BURGER_ALIGN(static const Word8, RGB5ToRGB8Table[32],16);	///< Table to convert 5 bit color to 8 bit color
+	BURGER_ALIGN(static const Word8, RGB6ToRGB8Table[64],16);	///< Table to convert 6 bit color to 8 bit color
 	Renderer(void);
 	virtual ~Renderer();
 	virtual Word Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags);

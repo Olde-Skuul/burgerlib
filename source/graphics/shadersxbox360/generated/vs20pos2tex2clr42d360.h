@@ -4,7 +4,7 @@
 //
 //   fxc ..\source\graphics\shadersxbox360\vs20pos2tex2clr42d360.x360sl /nologo
 //    /FhD:\projects\burger\libs\burgerlib\source\graphics\shadersxbox360\Generated\vs20pos2tex2clr42d360.h
-//    /XFdD:\projects\burger\libs\burgerlib\projects\temp\unittestsv10x36dbg\vs20pos2tex2clr42d360.updb
+//    /XFdD:\projects\burger\libs\burgerlib\projects\temp\unittestsv10x36rel\vs20pos2tex2clr42d360.updb
 //    /Vng_vs20pos2tex2clr42d360 /Tvs_2_0
 //
 //

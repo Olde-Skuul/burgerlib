@@ -76,10 +76,10 @@ class SoundManager : public Base {
 public:
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	BURGER_ALIGN(static const Int16 g_DirectSoundVolumes[256],16);
+    BURGER_ALIGN(static const Int16, g_DirectSoundVolumes[256], 16);
 #endif
 
-	typedef void (BURGER_API *CompletionProc)(void *);	///< Function prototype for sound event callbacks
+    typedef void (BURGER_API* CompletionProc)(void*);	///< Function prototype for sound event callbacks
 	static const Word cMaxVoiceCount = 32;			///< Maximum number of simultaneous tones to mix for output
 	static const Word cMaxVolume = 255;				///< Maximum volume value
 	static const Word cPanLeft = 0x0000;			///< Pan left value

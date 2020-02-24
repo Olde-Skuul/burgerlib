@@ -34,33 +34,37 @@
 /* BEGIN */
 namespace Burger {
 
-/** Type used for templates to return 1 */
+namespace type_traits {
 typedef char yes_type;
 
-/** Type used for templates to return 0 */
 struct no_type {
-    char m_NotUsed[8];      //< Literally not used.
+    /** Literally not used. */
+    char m_NotUsed[8];
 };
 
-/** Template helper to detect a parameter exists */
-template<class T>
-struct wrap {
+template<uintptr_t T>
+struct size_type {
 };
+}
 
 template<class T, T _Value>
 struct integral_constant {
+
     /** Encapsulated value */
     static BURGER_CONSTEXPR const T value = _Value;
+
     /** Encapsulated type */
     typedef T value_type;
+
     /** Instanciated type of this template */
     typedef integral_constant<T, _Value> type;
-    BURGER_INLINE BURGER_CONSTEXPR operator value_type() const BURGER_NOEXCEPT
+
+    BURGER_INLINE BURGER_CONSTEXPR operator T() const BURGER_NOEXCEPT
     {
         return value;
     }
 
-    BURGER_INLINE BURGER_CONSTEXPR value_type operator()() const BURGER_NOEXCEPT
+    BURGER_INLINE BURGER_CONSTEXPR T operator()() const BURGER_NOEXCEPT
     {
         return value;
     }
@@ -73,13 +77,14 @@ struct bool_constant: Burger::integral_constant<bool, _Value> {
 typedef bool_constant<true> true_type;
 typedef bool_constant<false> false_type;
 
-// Get alignment of an object
 template<class T>
 #if defined(BURGER_CPP11) || __has_feature(cxx_alignof) || \
     __has_extension(cxx_alignof) || defined(DOXYGEN)
 struct alignment_of: integral_constant<uintptr_t, alignof(T)> {
 };
+
 #else
+
 struct alignment_of {
     struct pad {
         T val;
@@ -87,6 +92,7 @@ struct alignment_of {
     };
     enum { value = sizeof(pad) - sizeof(T) };
 };
+
 #endif
 
 // Integral Constant Expression for and, or, equal, not
@@ -150,18 +156,392 @@ struct ice_not<true> {
     };
 };
 
-// Value is true if both are the same
-template<typename T1, typename T2>
+template<typename T, typename U>
 struct is_same {
+    /** If this instantiated, the types are not the same */
     static const bool value = false;
 };
 
 #if defined(BURGER_HAS_SFINAE)
 template<typename T>
 struct is_same<T, T> {
+    /** If this instantiated, the types are the same */
     static const bool value = true;
 };
 #endif
+
+template<class T>
+struct remove_const {
+    typedef T type; ///< Type without const
+};
+
+template<class T>
+struct remove_const<T const> {
+    typedef T type; ///< Type without const
+};
+
+#if !(defined(BURGER_METROWERKS) && defined(BURGER_X86))
+template<class T>
+struct remove_const<T const[]> {
+    typedef T type[]; ///< Type without const
+};
+#endif
+
+template<class T, uintptr_t N>
+struct remove_const<T const[N]> {
+    typedef T type[N]; ///< Type without const
+};
+
+template<class T>
+struct remove_volatile {
+    typedef T type; ///< Type without volatile
+};
+
+template<class T>
+struct remove_volatile<T volatile> {
+    typedef T type; ///< Type without volatile
+};
+
+#if !(defined(BURGER_METROWERKS) && defined(BURGER_X86))
+template<class T>
+struct remove_volatile<T volatile[]> {
+    typedef T type[]; ///< Type without volatile
+};
+#endif
+
+template<class T, uintptr_t N>
+struct remove_volatile<T volatile[N]> {
+    typedef T type[N]; ///< Type without volatile
+};
+
+template<class T>
+struct remove_cv {
+    /** Type without volatile or const */
+    typedef typename remove_volatile<typename remove_const<T>::type>::type type;
+};
+
+template<class T>
+struct add_const {
+    typedef T const type; ///< Type with const
+};
+
+template<class T>
+struct add_const<T&> {
+    typedef T& type; ///< Type with const
+};
+
+template<class T>
+struct add_volatile {
+    typedef volatile T type; ///< Type with volatile
+};
+
+template<class T>
+struct add_volatile<T&> {
+    typedef T& type; ///< Type with volatile
+};
+
+template<class T>
+struct add_cv {
+    typedef const volatile T type; ///< Type with const and volatile
+};
+
+template<class T>
+struct add_cv<T&> {
+    typedef T& type; ///< Type with const and volatile
+};
+
+template<class T>
+struct remove_reference {
+    typedef T type; ///< Type with reference removed
+};
+
+template<class T>
+struct remove_reference<T&> {
+    typedef T type; ///< Type with reference removed
+};
+
+#if defined(BURGER_RVALUE_REFERENCES)
+template<class T>
+struct remove_reference<T&&> {
+    typedef T type; ///< Type with reference removed
+};
+#endif
+
+template<class T>
+struct is_const: false_type {
+};
+
+template<class T>
+struct is_const<const T>: true_type {
+};
+
+template<class T>
+struct is_volatile: false_type {
+};
+
+template<class T>
+struct is_volatile<volatile T>: true_type {
+};
+
+template<class T>
+struct is_void: public false_type {
+};
+
+template<>
+struct is_void<void>: public true_type {
+};
+
+template<>
+struct is_void<const void>: public true_type {
+};
+
+template<>
+struct is_void<volatile void>: public true_type {
+};
+
+template<>
+struct is_void<const volatile void>: public true_type {
+};
+
+template<class T>
+struct is_floating_point: public false_type {
+};
+
+template<class T>
+struct is_floating_point<volatile const T>: public is_floating_point<T> {
+};
+
+template<class T>
+struct is_floating_point<const T>: public is_floating_point<T> {
+};
+
+template<class T>
+struct is_floating_point<volatile T>: public is_floating_point<T> {
+};
+
+template<>
+struct is_floating_point<float>: public true_type {
+};
+
+template<>
+struct is_floating_point<double>: public true_type {
+};
+
+template<>
+struct is_floating_point<long double>: public true_type {
+};
+
+template<class T>
+struct is_integral: public false_type {
+};
+
+template<class T>
+struct is_integral<const T>: public is_integral<T> {
+};
+
+template<class T>
+struct is_integral<volatile const T>: public is_integral<T> {
+};
+
+template<class T>
+struct is_integral<volatile T>: public is_integral<T> {
+};
+
+template<>
+struct is_integral<char>: public true_type {
+};
+
+template<>
+struct is_integral<signed char>: public true_type {
+};
+
+template<>
+struct is_integral<unsigned char>: public true_type {
+};
+
+template<>
+struct is_integral<short>: public true_type {
+};
+
+template<>
+struct is_integral<unsigned short>: public true_type {
+};
+
+template<>
+struct is_integral<int>: public true_type {
+};
+
+template<>
+struct is_integral<unsigned int>: public true_type {
+};
+
+template<>
+struct is_integral<long>: public true_type {
+};
+
+template<>
+struct is_integral<unsigned long>: public true_type {
+};
+
+template<>
+struct is_integral<long long>: public true_type {
+};
+
+template<>
+struct is_integral<unsigned long long>: public true_type {
+};
+
+template<>
+struct is_integral<bool>: public true_type {
+};
+
+#if defined(BURGER_HAS_CHAR8_T)
+template<>
+struct is_integral<char8_t>: public true_type {
+};
+#endif
+
+#if defined(BURGER_HAS_WCHAR_T)
+template<>
+struct is_integral<wchar_t>: public true_type {
+};
+#endif
+
+#if defined(BURGER_HAS_CHAR16_T)
+template<>
+struct is_integral<char16_t>: public true_type {
+};
+
+template<>
+struct is_integral<char32_t>: public true_type {
+};
+#endif
+
+template<class T>
+struct is_arithmetic: public bool_constant<is_integral<T>::value ||
+                          is_floating_point<T>::value> {
+};
+
+template<class T>
+struct is_pointer: public false_type {
+};
+
+template<class T>
+struct is_pointer<T*>: public true_type {
+};
+
+template<class T>
+struct is_pointer<T* const>: public true_type {
+};
+
+template<class T>
+struct is_pointer<T* volatile>: public true_type {
+};
+
+template<class T>
+struct is_pointer<T* const volatile>: public true_type {
+};
+
+template<class T>
+struct is_pointer<T const>: public is_pointer<T> {
+};
+
+template<class T>
+struct is_pointer<T volatile>: public is_pointer<T> {
+};
+
+template<class T>
+struct is_pointer<T const volatile>: public is_pointer<T> {
+};
+
+// Workaround MSVC 2005-2013 bug on edge case for T (*)(X) where the types are
+// different.
+#if defined(BURGER_MSVC) && (BURGER_MSVC < 190000000)
+
+template<class T>
+struct remove_pointer_4 {
+    typedef T type;
+};
+
+template<class T>
+struct remove_pointer_4<T*> {
+    typedef T type;
+};
+
+template<class T, bool b>
+struct remove_pointer_3 {
+    typedef
+        typename remove_pointer_4<typename ::Burger::remove_cv<T>::type>::type
+            type;
+};
+
+template<class T>
+struct remove_pointer_3<T, false> {
+    typedef T type;
+};
+
+template<class T>
+struct remove_pointer_2 {
+    typedef
+        typename remove_pointer_3<T, ::Burger::is_pointer<T>::value>::type type;
+};
+
+template<class T>
+struct remove_pointer {
+    typedef typename remove_pointer_2<T>::type type;
+};
+
+#else
+
+template<class T>
+struct remove_pointer {
+    typedef T type;
+};
+
+template<class T>
+struct remove_pointer<T*> {
+    typedef T type;
+};
+
+template<class T>
+struct remove_pointer<T* const> {
+    typedef T type;
+};
+
+template<class T>
+struct remove_pointer<T* volatile> {
+    typedef T type;
+};
+
+template<class T>
+struct remove_pointer<T* const volatile> {
+    typedef T type;
+};
+
+#endif
+
+template<class T>
+struct is_lvalue_reference: public false_type {
+};
+
+template<class T>
+struct is_lvalue_reference<T&>: public true_type {
+};
+
+template<class T>
+struct is_rvalue_reference: public false_type {
+};
+
+#if defined(BURGER_RVALUE_REFERENCES)
+template<class T>
+struct is_rvalue_reference<T&&>: public true_type {
+};
+#endif
+
+template<class T>
+struct is_reference: public bool_constant<is_lvalue_reference<T>::value ||
+                         is_rvalue_reference<T>::value> {
+};
 
 template<typename T>
 T* round_up_pointer(
@@ -416,7 +796,6 @@ BURGER_INLINE double Max(double dA, double dB) BURGER_NOEXCEPT
     return _mm_cvtsd_f64(_mm_max_sd(_mm_set_sd(dA), _mm_set_sd(dB)));
 }
 #endif
-
 }
 /* END */
 

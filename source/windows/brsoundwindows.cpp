@@ -49,7 +49,7 @@
 
 ***************************************/
 
-BURGER_ALIGN(const Int16 Burger::SoundManager::g_DirectSoundVolumes[256],16) = {
+BURGER_ALIGN(const Int16, Burger::SoundManager::g_DirectSoundVolumes[256],16) = {
 	-10000, -8000, -7000, -6415, -6000, -5678, -5415, -5192,
 	 -5000, -4830, -4678, -4540, -4415, -4299, -4192, -4093,
 	 -4000, -3912, -3830, -3752, -3678, -3607, -3540, -3476,

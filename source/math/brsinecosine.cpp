@@ -17,6 +17,11 @@
 #include "brendian.h"
 #include "brfixedpoint.h"
 
+#if defined(BURGER_MSVC) && defined(BURGER_X86)
+// Instruction may be inaccurate on some Pentiums
+#pragma warning(disable : 4725)
+#endif
+
 //
 // Note: The Xbox 360 PPC compiler has a bug. It's not acknowledging
 // that fcmpu modifies the condition code register, so the inline assembler
@@ -999,8 +1004,8 @@ float BURGER_API Burger::Sin6Digits(float fInput) BURGER_NOEXCEPT
 {
     // Handle negative arguments
 #if defined(BURGER_PPC)
-    float fSign =
-        __fsel(fInput, g_fSinefCosfValues[1].f, g_fSinefCosfValues[2].f);
+    float fSign = static_cast<float>(
+        __fsel(fInput, g_fSinefCosfValues[1].f, g_fSinefCosfValues[2].f));
 #else
     float fSign = g_fSinefCosfValues[1].f;
     if (reinterpret_cast<int32_t*>(&fInput)[0] < 0) {

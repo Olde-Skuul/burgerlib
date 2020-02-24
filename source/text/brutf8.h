@@ -1,13 +1,14 @@
 /***************************************
 
-	String handlers for UTF8 support
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    String handlers for UTF8 support
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -23,7 +24,7 @@ namespace Burger {
 class UTF8 {
 public:
 	enum {BAD=-1};
-	BURGER_ALIGN(static const Word8 TokenSizeTable[256],16);
+	BURGER_ALIGN(static const Word8, TokenSizeTable[256],16);
 	static const Word8 ByteOrderMark[3];
 	static Word BURGER_API IsValidSingle(const char *pInput);
 	static Word BURGER_API IsValid(const char *pInput);

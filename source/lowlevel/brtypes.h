@@ -38,6 +38,7 @@
 
 #define BURGER_LEFT_PARENTHESIS (
 #define BURGER_RIGHT_PARENTHESIS )
+#define BURGER_NULL_MACRO_PARAM /**/
 
 #if !defined(NULL)
 #define NULL 0
@@ -805,31 +806,33 @@
     __has_extension(cxx_alignas) || \
     ((BURGER_GNUC >= 40800) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
     defined(DOXYGEN)
-#define BURGER_ALIGN(x, s) alignas(s) x
-#define BURGER_PREALIGN(s) alignas(s)
-#define BURGER_POSTALIGN(s)
+#define BURGER_ALIGN(__type, __name, __a) alignas(__a) __type __name
+#define BURGER_PREALIGN(__a) alignas(__a)
+#define BURGER_POSTALIGN(__a)
 #elif defined(BURGER_INTEL_COMPILER) || defined(BURGER_MSVC) || \
     defined(BURGER_PS4) || \
     (defined(BURGER_METROWERKS) && !defined(BURGER_68K))
-#define BURGER_ALIGN(x, s) __declspec(align(s)) x
-#define BURGER_PREALIGN(s) __declspec(align(s))
-#define BURGER_POSTALIGN(s)
+#define BURGER_ALIGN(__type, __name, __a) __type __declspec(align(__a)) __name
+#define BURGER_PREALIGN(__a) __declspec(align(__a))
+#define BURGER_POSTALIGN(__a)
 #elif defined(BURGER_GNUC) || defined(BURGER_CLANG) || \
     defined(BURGER_SNSYSTEMS) || defined(BURGER_ARM_COMPILER) || \
     defined(BURGER_GHS)
-#define BURGER_ALIGN(x, s) x __attribute__((aligned(s)))
-#define BURGER_PREALIGN(s)
-#define BURGER_POSTALIGN(s) __attribute__((aligned(s)))
+#define BURGER_ALIGN(__type, __name, __a) \
+    __type __name __attribute__((aligned(__a)))
+#define BURGER_PREALIGN(__a)
+#define BURGER_POSTALIGN(__a) __attribute__((aligned(__a)))
 #else
-#define BURGER_ALIGN(x, s) x
-#define BURGER_PREALIGN(s)
-#define BURGER_POSTALIGN(s)
+#define BURGER_ALIGN(__type, __name, __a) __type __name
+#define BURGER_PREALIGN(__a)
+#define BURGER_POSTALIGN(__a)
 #define BURGER_NO_ALIGN
 #endif
 
 // Structure packing macro switches
 #if defined(BURGER_MRC) || defined(BURGER_APPLE_SC) || \
-    (defined(BURGER_METROWERKS) && (defined(BURGER_PPC) || defined(BURGER_68K)))
+    (defined(BURGER_METROWERKS) && \
+        (defined(BURGER_PPC) || defined(BURGER_68K)))
 #define BURGER_STRUCT_ALIGN
 #elif defined(BURGER_PS2) || defined(BURGER_DS)
 #define BURGER_STRUCT_PACK
@@ -1207,16 +1210,27 @@ typedef int64_t long2int_t;
 typedef uint64_t ulong2uint_t;
 #endif
 
-// Is wchar_t a native type?
+// Are wchar_t, char8_t, char16_t and char32_t native types?
 
 #if defined(BURGER_INTEL_COMPILER) || defined(BURGER_CLANG) || \
     defined(BURGER_GNUC) || defined(_NATIVE_WCHAR_T_DEFINED) || \
-    defined(BURGER_MINGW)
+    defined(BURGER_MINGW) || defined(DOXYGEN)
 #define BURGER_HAS_WCHAR_T
 #elif defined(BURGER_METROWERKS)
 #if __option(wchar_type)
 #define BURGER_HAS_WCHAR_T
 #endif
+#endif
+
+#if defined(__cpp_char8_t) || defined(DOXYGEN)
+#define BURGER_HAS_CHAR8_T
+#endif
+
+#if defined(BURGER_CPP11) || (__cpp_unicode_characters >= 200704) || \
+    (_HAS_CHAR16_T_LANGUAGE_SUPPORT > 0) || \
+    ((BURGER_GNUC >= 40400) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
+    defined(DOXYGEN)
+#define BURGER_HAS_CHAR16_T
 #endif
 
 // 64 bit types for 32 bit compilers
@@ -1313,7 +1327,7 @@ typedef float32x4_t Vector_128;
 #include <ppc_ghs.h>
 struct Vector_128 {
     /** Opaque contents to the 128 bit vector register */
-    BURGER_ALIGN(float m128_f32[4], 16);
+    BURGER_ALIGN(float, m128_f32[4], 16);
 };
 
 #elif defined(BURGER_MINGW)
@@ -1332,7 +1346,7 @@ typedef __m128 Vector_128;
 
 struct Vector_128 {
     /** Opaque contents to the 128 bit vector register */
-    BURGER_ALIGN(float m128_f32[4], 16);
+    BURGER_ALIGN(float, m128_f32[4], 16);
 };
 #endif
 

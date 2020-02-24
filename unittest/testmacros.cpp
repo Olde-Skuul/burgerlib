@@ -137,8 +137,15 @@ static void BURGER_API ShowDefaultSigns(uint_t uVerbose) BURGER_NOEXCEPT
         Message("\nInteger value settings");
 
         SHOW_DEFAULT_SIGN(char);
+#if defined(BURGER_HAS_CHAR8_T)
+        SHOW_DEFAULT_SIGN(char8_t);
+#endif
 #if defined(BURGER_HAS_WCHAR_T)
         SHOW_DEFAULT_SIGN(wchar_t);
+#endif
+#if defined(BURGER_HAS_CHAR16_T)
+        SHOW_DEFAULT_SIGN(char16_t);
+        SHOW_DEFAULT_SIGN(char32_t);
 #endif
     }
 }
@@ -155,8 +162,15 @@ static void BURGER_API ShowIntrinsicSizes(uint_t uVerbose) BURGER_NOEXCEPT
         Message("\nData type sizes");
 
         SHOW_TYPE_SIZE(char);
+#if defined(BURGER_HAS_CHAR8_T)
+        SHOW_TYPE_SIZE(char8_t);
+#endif
 #if defined(BURGER_HAS_WCHAR_T)
         SHOW_TYPE_SIZE(wchar_t);
+#endif
+#if defined(BURGER_HAS_CHAR16_T)
+        SHOW_TYPE_SIZE(char16_t);
+        SHOW_TYPE_SIZE(char32_t);
 #endif
         SHOW_TYPE_SIZE(short);
         SHOW_TYPE_SIZE(int);
@@ -549,9 +563,9 @@ static void BURGER_API ShowMacros(uint_t uVerbose) BURGER_NOEXCEPT
         SHOW_MACRO(TRUE);
         SHOW_MACRO(FALSE);
 
-        SHOW_MACRO(BURGER_ALIGN(x, s));
-        SHOW_MACRO(BURGER_PREALIGN(s));
-        SHOW_MACRO(BURGER_POSTALIGN(s));
+        SHOW_MACRO(BURGER_ALIGN(__type, __name, __a));
+        SHOW_MACRO(BURGER_PREALIGN(__a));
+        SHOW_MACRO(BURGER_POSTALIGN(__a));
 
         SHOW_MACRO(BURGER_API);
         SHOW_MACRO(BURGER_ANSIAPI);

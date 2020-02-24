@@ -4,7 +4,7 @@
 //
 //   fxc ..\source\graphics\shadersxbox360\pstex2clr4360.x360sl /nologo
 //    /FhD:\projects\burger\libs\burgerlib\source\graphics\shadersxbox360\Generated\pstex2clr4360.h
-//    /XFdD:\projects\burger\libs\burgerlib\projects\temp\unittestsv10x36dbg\pstex2clr4360.updb
+//    /XFdD:\projects\burger\libs\burgerlib\projects\temp\unittestsv10x36rel\pstex2clr4360.updb
 //    /Vng_pstex2clr4360 /Tps_2_0
 //
 //

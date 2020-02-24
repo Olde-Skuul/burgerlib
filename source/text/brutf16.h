@@ -34,9 +34,9 @@ public:
         LE = BURGER_LITTLEENDIAN16(0xFEFF)
     };
 
-    BURGER_ALIGN(static const Word16 FromMacRomanUSTable[128], 16);
-    BURGER_ALIGN(static const Word16 FromWin1252Table[128], 16);
-    BURGER_ALIGN(static const Word16 FromISOLatin1Table[128], 16);
+    BURGER_ALIGN(static const Word16, FromMacRomanUSTable[128], 16);
+    BURGER_ALIGN(static const Word16, FromWin1252Table[128], 16);
+    BURGER_ALIGN(static const Word16, FromISOLatin1Table[128], 16);
     static Word BURGER_API IsValid(Word16 uInput);
     static Word BURGER_API IsValid(const Word16* pInput);
     static Word BURGER_API IsValid(const Word16* pInput, WordPtr uInputSize);

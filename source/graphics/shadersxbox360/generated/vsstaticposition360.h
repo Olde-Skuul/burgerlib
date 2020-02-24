@@ -4,7 +4,7 @@
 //
 //   fxc ..\source\graphics\shadersxbox360\vsstaticposition360.x360sl /nologo
 //    /FhD:\projects\burger\libs\burgerlib\source\graphics\shadersxbox360\Generated\vsstaticposition360.h
-//    /XFdD:\projects\burger\libs\burgerlib\projects\temp\unittestsv10x36dbg\vsstaticposition360.updb
+//    /XFdD:\projects\burger\libs\burgerlib\projects\temp\unittestsv10x36rel\vsstaticposition360.updb
 //    /Vng_vsstaticposition360 /Tvs_2_0
 //
 //

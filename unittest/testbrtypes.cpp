@@ -37,6 +37,11 @@
 #pragma pack()
 #endif
 
+#if defined(BURGER_WATCOM)
+// No reference to symbol in structure
+#pragma warning 14 9
+#endif
+
 #if defined(BURGER_MSVC)
 // Disable not enough actual parameters for macro
 #pragma warning(disable : 4003)
@@ -306,15 +311,15 @@ static uint_t BURGER_API TestStructureAlignment(uint_t uVerbose)
     //
 
     struct ElementAlign_t {
-        int8_t m_0;                    // Offset 0
-        BURGER_ALIGN(int8_t m_2, 2);   // Offset 2
-        int8_t m_3;                    // Offset 3
-        int8_t m_4;                    // Offset 4
-        BURGER_ALIGN(int8_t m_8, 4);   // Offset 8
-        int8_t m_9;                    // Offset 9
-        BURGER_ALIGN(int8_t m_16, 8);  // Offset 16
-        int8_t m_17;                   // Offset 17
-        BURGER_ALIGN(int8_t m_32, 16); // Offset 32
+        int8_t m_0;                     // Offset 0
+        BURGER_ALIGN(int8_t, m_2, 2);   // Offset 2
+        int8_t m_3;                     // Offset 3
+        int8_t m_4;                     // Offset 4
+        BURGER_ALIGN(int8_t, m_8, 4);   // Offset 8
+        int8_t m_9;                     // Offset 9
+        BURGER_ALIGN(int8_t, m_16, 8);  // Offset 16
+        int8_t m_17;                    // Offset 17
+        BURGER_ALIGN(int8_t, m_32, 16); // Offset 32
     };
 
     uTest = BURGER_OFFSETOF(ElementAlign_t, m_0) != 0;
@@ -324,8 +329,8 @@ static uint_t BURGER_API TestStructureAlignment(uint_t uVerbose)
 
     uTest = BURGER_OFFSETOF(ElementAlign_t, m_2) != 2;
     uFailure |= uTest;
-    ReportFailure("BURGER_ALIGN(m_2,2) is %u instead of 2.", uTest,
-        static_cast<uint_t>(BURGER_OFFSETOF(ElementAlign_t, m_2)));
+    ReportFailure("BURGER_OFFSETOF(ElementAlign_t,m_2,2) is %u instead of 2.",
+        uTest, static_cast<uint_t>(BURGER_OFFSETOF(ElementAlign_t, m_2)));
 
     uTest = BURGER_OFFSETOF(ElementAlign_t, m_3) != 3;
     uFailure |= uTest;
@@ -339,8 +344,8 @@ static uint_t BURGER_API TestStructureAlignment(uint_t uVerbose)
 
     uTest = BURGER_OFFSETOF(ElementAlign_t, m_8) != 8;
     uFailure |= uTest;
-    ReportFailure("BURGER_ALIGN(m_8,4) is %u instead of 8.", uTest,
-        static_cast<uint_t>(BURGER_OFFSETOF(ElementAlign_t, m_8)));
+    ReportFailure("BURGER_OFFSETOF(ElementAlign_t,m_8,4) is %u instead of 8.",
+        uTest, static_cast<uint_t>(BURGER_OFFSETOF(ElementAlign_t, m_8)));
 
     uTest = BURGER_OFFSETOF(ElementAlign_t, m_9) != 9;
     uFailure |= uTest;
@@ -349,8 +354,8 @@ static uint_t BURGER_API TestStructureAlignment(uint_t uVerbose)
 
     uTest = BURGER_OFFSETOF(ElementAlign_t, m_16) != 16;
     uFailure |= uTest;
-    ReportFailure("BURGER_ALIGN(m_16,8) is %u instead of 16.", uTest,
-        static_cast<uint_t>(BURGER_OFFSETOF(ElementAlign_t, m_16)));
+    ReportFailure("BURGER_OFFSETOF(ElementAlign_t,m_16,8) is %u instead of 16.",
+        uTest, static_cast<uint_t>(BURGER_OFFSETOF(ElementAlign_t, m_16)));
 
     uTest = BURGER_OFFSETOF(ElementAlign_t, m_17) != 17;
     uFailure |= uTest;
@@ -359,7 +364,8 @@ static uint_t BURGER_API TestStructureAlignment(uint_t uVerbose)
 
     uTest = BURGER_OFFSETOF(ElementAlign_t, m_32) != 32;
     uFailure |= uTest;
-    ReportFailure("BURGER_ALIGN(m_32,16) is %u instead of 32.", uTest,
+    ReportFailure(
+        "BURGER_OFFSETOF(ElementAlign_t,m_32,16) is %u instead of 32.", uTest,
         static_cast<uint_t>(BURGER_OFFSETOF(ElementAlign_t, m_32)));
 
 #endif
@@ -377,10 +383,16 @@ static uint_t BURGER_API TestStructureAlignment(uint_t uVerbose)
     ReportFailure("Burger::alignment_of<float>::value %u instead of 4.", uTest,
         static_cast<uint_t>(Burger::alignment_of<float>::value));
 
-    uTest = Burger::alignment_of<double>::value != sizeof(double);
+    struct aligndouble_t {
+        double a;
+        char b;
+    };
+    uintptr_t uAlign = sizeof(aligndouble_t) - sizeof(double);
+    uTest = Burger::alignment_of<double>::value != uAlign;
     uFailure |= uTest;
-    ReportFailure("Burger::alignment_of<double>::value %u instead of 8.", uTest,
-        static_cast<uint_t>(Burger::alignment_of<double>::value));
+    ReportFailure("Burger::alignment_of<double>::value %u instead of %u.",
+        uTest, static_cast<uint_t>(Burger::alignment_of<double>::value),
+        static_cast<uint_t>(uAlign));
 
     uTest = Burger::alignment_of<void*>::value != sizeof(void*);
     uFailure |= uTest;
@@ -706,7 +718,7 @@ static void BURGER_API ShowPlatformFeatures(uint_t uVerbose)
 
         uTest = Burger::Mac::GetQuickdrawVersion();
         Message("Burger::Mac::GetQuickdrawVersion() = %04X", uTest);
-                
+
         uTest = Burger::Mac::GetAppleShareVersion();
         Message("Burger::Mac::GetAppleShareVersion() = %04X", uTest);
 

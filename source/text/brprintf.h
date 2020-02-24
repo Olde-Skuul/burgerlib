@@ -1,17 +1,20 @@
 /***************************************
 
-	Matt Pritchard's typesafe & enhanced c++ formatted output function replacements
+    Matt Pritchard's typesafe & enhanced c++ formatted output function
+    replacements
 
-	Note from Matt Pritchard: mprintf is dedicated to the ones I love: Jennifer, Nathan and Lauren.
+    Note from Matt Pritchard: mprintf is dedicated to the ones I love: Jennifer,
+    Nathan and Lauren.
 
-	Copyright (c) 2012-2013 by Matt Pritchard <mattp_2006@yahoo.com>
+    Copyright (c) 2012-2013 by Matt Pritchard <mattp_2006@yahoo.com>
 
-	Merged into Burgerlib 2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Merged into Burgerlib 2016 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 

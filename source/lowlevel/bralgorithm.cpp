@@ -16,21 +16,68 @@
 
 /*! ************************************
 
-    \struct Burger::integral_constant
-    \brief Wrap a static constant of specified type.
+    \namespace Burger::type_traits
+    \brief Semi-private template classes for type checking.
 
-    A template to wrap a static constant of a specified type. It's the base
-    class for type traits.
-
-    \tparam T Type of wrapped value
-    \tparam _Value value to wrap.
+    For templates that requite checking of types, many helper structures are in
+    this namespace to prevent pollution of the Burger namespace.
 
 ***************************************/
 
 /*! ************************************
 
-    \fn Burger::integral_constant::operator value_type() const
-    \brief Function to return the encapulated value.
+    \typedef Burger::type_traits::yes_type
+    \brief Type used for templates to return 1.
+
+    This type resolves to sizeof(char) to force sizeof( \ref
+    type_traits::yes_type) != sizeof( \ref type_traits::no_type)
+
+    \sa type_traits::no_type
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::type_traits::no_type
+    \brief Type used for templates to return 0.
+
+    This type resolves to (sizeof(char) * 8) to force sizeof( \ref
+    type_traits::yes_type) != sizeof( \ref type_traits::no_type)
+
+    \sa type_traits::yes_type
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::type_traits::size_type
+    \brief Type used for templates the require a specific size.
+
+    This type resolves to an empty struct that could be used to force a template
+    to only instanciate with a specific data size. The struct itself is not
+    meant to be used.
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::integral_constant
+    \brief Wrap a static constant of specified type.
+
+    A template to wrap a static constant of a specified type so templates can
+    resolve the value at compile time. It's the base class for type traits.
+
+    \tparam T Type of wrapped value
+    \tparam _Value value to wrap.
+
+    \sa bool_constant
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::integral_constant::operator T() const
+    \brief Function to return the encapsulated value.
 
     \return The encapsulated value.
 
@@ -39,9 +86,66 @@
 /*! ************************************
 
     \fn Burger::integral_constant::operator ()() const
-    \brief Function to return the encapulated value.
+    \brief Function to return the encapsulated value.
 
     \return The encapsulated value.
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::bool_constant
+    \brief Wrap a static bool constant.
+
+    A template to wrap a static bool constant so templates can resolve the value
+    at compile time.
+
+    This is an implemtation from C++17.
+
+    \tparam _Value value to wrap.
+
+    \sa integral_constant
+
+***************************************/
+
+/*! ************************************
+
+    \typedef Burger::true_type
+    \brief Static bool constant of true.
+
+    A bool_constant set to true.
+
+    \sa bool_constant or false_type
+
+***************************************/
+
+/*! ************************************
+
+    \typedef Burger::false_type
+    \brief Static bool constant of false.
+
+    A bool_constant set to false.
+
+    \sa bool_constant or true_type
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::alignment_of
+    \brief Determine the alignment of an object.
+
+    A template to obtain the alignment value of an object.
+
+    \tparam T Type of object to test
+
+    Example of use:
+    \code
+
+    printf("Alignment of int is %u", Burger::alignment_of<int>::value);
+
+    \endcode
+    \sa integral_constant
 
 ***************************************/
 
@@ -192,20 +296,269 @@
 
 /*! ************************************
 
-    \struct Burger::alignment_of
-    \brief Determine the alignment of an object.
+    \struct Burger::is_same
+    \brief Determine if two objects are the same type.
 
-    A template to obtain the alignment value of an object.
+    A template that sets its value to true if both classes are the same type.
 
-    \tparam T Type of object to test
+    \tparam T Type of first object to test
+    \tparam U Type of second object to test
 
     Example of use:
     \code
 
-    printf("Alignment of int is %u", Burger::alignment_of<int>::value);
+    printf("int and float are not the same %u", Burger::is_same<int,
+        float>::value);
+    printf("int and int are the same %u", Burger::is_same<int, int>::value);
 
     \endcode
-    \sa integral_constant
+    \sa is_same<T,T>
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::is_same<T,T>
+    \brief Determine if two objects are the same type.
+
+    A template that sets its value to true if both classes are the same type.
+
+    \tparam T Type that matched
+
+    Example of use:
+    \code
+
+    printf("int and float are not the same %u", Burger::is_same<int,
+        float>::value);
+    printf("int and int are the same %u", Burger::is_same<int,int>::value);
+
+    \endcode
+
+    \sa is_same
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::remove_const
+    \brief Remove the const qualifier from a type.
+
+    A template that sets its type to be the declared type without the const
+    keyword.
+
+    \tparam T Type to remove the const keyword.
+
+    \sa remove_const<const T>
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::remove_const<const T>
+    \brief Remove the const qualifier from a type.
+
+    A template that sets its type to be the declared type without the const
+    keyword.
+
+    \tparam T Type to remove the const keyword.
+
+    \sa remove_const, remove_volatile or remove_cv
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::remove_volatile
+    \brief Remove the volatile qualifier from a type.
+
+    A template that sets its type to be the declared type without the volatile
+    keyword.
+
+    \tparam T Type to remove the volatile keyword.
+
+    \sa remove_volatile<const T>
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::remove_volatile<volatile T>
+    \brief Remove the volatile qualifier from a type.
+
+    A template that sets its type to be the declared type without the volatile
+    keyword.
+
+    \tparam T Type to remove the volatile keyword.
+
+    \sa remove_volatile, remove_const or remove_cv
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::remove_cv
+    \brief Remove the volatile and const qualifier from a type.
+
+    A template that sets its type to be the declared type without the volatile
+    or const keywords.
+
+    \tparam T Type to remove the volatile or const keywords.
+
+    \sa remove_volatile or remove_const
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::add_const
+    \brief Add the const qualifier to a type.
+
+    A template that sets its type to be the declared type with the const
+    keyword.
+
+    \tparam T Type to add the const keyword.
+
+    \sa add_volatile or add_cv
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::add_volatile
+    \brief Add the volatile qualifier to a type.
+
+    A template that sets its type to be the declared type with the volatile
+    keyword.
+
+    \tparam T Type to add the volatile keyword.
+
+    \sa add_const or add_cv
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::add_cv
+    \brief Add the const and volatile qualifier to a type.
+
+    A template that sets its type to be the declared type with the const and
+    volatile keywords.
+
+    \tparam T Type to add the const and volatile keywords.
+
+    \sa add_const or add_volatile
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::remove_reference
+    \brief Remove the reference qualifier to a type.
+
+    A template that sets its type to be the declared type without references.
+
+    \tparam T Type to remove reference.
+
+    \sa remove_reference<T&> or remove_reference<T&&>
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::remove_reference<T&>
+    \brief Remove the reference qualifier to a type.
+
+    A template that sets its type to be the declared type without references.
+
+    \tparam T Type to remove reference.
+
+    \sa remove_reference or remove_reference<T&&>
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::remove_reference<T&&>
+    \brief Remove the reference qualifier to a type.
+
+    A template that sets its type to be the declared type without references.
+
+    \tparam T Type to remove reference.
+
+    \sa remove_reference or remove_reference<T&>
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::is_const
+    \brief Test if a type is const.
+
+    A template that checks a type if it has the keyword const.
+
+    This instantiation derives from \ref false_type
+
+    \tparam T Type to check.
+
+    \sa is_const<const T> or false_type
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::is_const<const T>
+    \brief Test if a type is const.
+
+    A template that checks a type if it has the keyword const.
+
+    This instantiation derives from \ref true_type
+
+    \tparam T Type to check.
+
+    \sa is_const or true_type
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::is_volatile
+    \brief Test if a type is volatile.
+
+    A template that checks a type if it has the keyword volatile.
+
+    This instantiation derives from \ref false_type
+
+    \tparam T Type to check.
+
+    \sa is_volatile<volatile T> or false_type
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::is_volatile<volatile T>
+    \brief Test if a type is volatile.
+
+    A template that checks a type if it has the keyword volatile.
+
+    This instantiation derives from \ref true_type
+
+    \tparam T Type to check.
+
+    \sa is_volatile or true_type
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::is_floating_point
+    \brief Test if a type is a float.
+
+    A template that checks a type if it is a floating point integral.
+
+    \tparam T Type to check.
+
+    \sa false_type or true_type
 
 ***************************************/
 

@@ -58,7 +58,7 @@
 // Permutation of 0..255 constructed from the digits of pi. It gives a
 // "random" nonlinear byte substitution operation.
 
-BURGER_ALIGN(static const Word8 g_MD2PiTable[256],16) = {
+ BURGER_ALIGN(static const Word8, g_MD2PiTable[256],16) = {
 	 41, 46, 67,201,162,216,124,  1, 61, 54, 84,161,236,240,  6, 19,
      98,167,  5,243,192,199,115,140,152,147, 43,217,188, 76,130,202,
 	 30,155, 87, 60,253,212,224, 22,103, 66,111, 24,138, 23,229, 18,

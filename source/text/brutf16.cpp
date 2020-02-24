@@ -1,13 +1,14 @@
 /***************************************
 
-	String handlers for UTF16 support
+    String handlers for UTF16 support
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -85,7 +86,7 @@
 	
 ***************************************/
 
-BURGER_ALIGN(const Word16 Burger::UTF16::FromMacRomanUSTable[128],16) = {
+BURGER_ALIGN(const Word16, Burger::UTF16::FromMacRomanUSTable[128],16) = {
 	0x00C4,	// 0x80
 	0x00C5,	// 0x81
 	0x00C7,	// 0x82
@@ -232,7 +233,7 @@ BURGER_ALIGN(const Word16 Burger::UTF16::FromMacRomanUSTable[128],16) = {
 	
 ***************************************/
 
-BURGER_ALIGN(const Word16 Burger::UTF16::FromWin1252Table[128],16) = {
+BURGER_ALIGN(const Word16, Burger::UTF16::FromWin1252Table[128],16) = {
 	0x20AC,	// 0x80
 	0x0081,	// 0x81
 	0x201A,	// 0x82
@@ -378,7 +379,7 @@ BURGER_ALIGN(const Word16 Burger::UTF16::FromWin1252Table[128],16) = {
 
 ***************************************/
 
-BURGER_ALIGN(const Word16 Burger::UTF16::FromISOLatin1Table[128],16) = {
+BURGER_ALIGN(const Word16, Burger::UTF16::FromISOLatin1Table[128],16) = {
 	0x0080,	// 0x80
 	0x0081,	// 0x81
 	0x0082,	// 0x82
