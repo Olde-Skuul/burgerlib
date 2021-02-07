@@ -101,7 +101,7 @@ static const Union64_t g_LEF64_1234 = {
 
 ***************************************/
 
-static uint_t BURGER_API TestEndianFlags(void)
+static uint_t BURGER_API TestEndianFlags(void) BURGER_NOEXCEPT
 {
     // Test for Little Endian
 #if defined(BURGER_LITTLEENDIAN)
@@ -133,14 +133,13 @@ static uint_t BURGER_API TestEndianFlags(void)
     return uFailure;
 }
 
-
 /***************************************
 
     Tests for the SwapEndian class.
 
 ***************************************/
 
-static void BURGER_API TestBurgerSwapEndianTypes(void)
+static void BURGER_API TestBurgerSwapEndianTypes(void) BURGER_NOEXCEPT
 {
     char VarChar = 1;
     unsigned char VarUChar = 1;
@@ -169,7 +168,7 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
     wchar_t VarWChar = 1;
 #endif
 
-    uint8_t Unaligned[33] = { 0 };
+    uint8_t Unaligned[33] = {0};
 
     Burger::SwapEndian::Load('a');
 #if defined(BURGER_HAS_WCHAR_T)
@@ -259,8 +258,7 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
     Burger::SwapEndian::Store(&VarLongLong, static_cast<long long>(1));
     Burger::SwapEndian::Store(
         &VarULongLong, static_cast<unsigned long long>(1));
-    Burger::SwapEndian::Store(
-        &VarSLongLong, static_cast<signed long long>(1));
+    Burger::SwapEndian::Store(&VarSLongLong, static_cast<signed long long>(1));
 #endif
 
     Burger::SwapEndian::Store(&VarFloat, 1.0f);
@@ -277,8 +275,7 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
     Burger::SwapEndian::LoadAny(
         reinterpret_cast<const signed char*>(Unaligned + 1));
 
-    Burger::SwapEndian::LoadAny(
-        reinterpret_cast<const short*>(Unaligned + 1));
+    Burger::SwapEndian::LoadAny(reinterpret_cast<const short*>(Unaligned + 1));
     Burger::SwapEndian::LoadAny(
         reinterpret_cast<const unsigned short*>(Unaligned + 1));
     Burger::SwapEndian::LoadAny(
@@ -305,10 +302,8 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
         reinterpret_cast<const signed long long*>(Unaligned + 1));
 #endif
 
-    Burger::SwapEndian::LoadAny(
-        reinterpret_cast<const float*>(Unaligned + 1));
-    Burger::SwapEndian::LoadAny(
-        reinterpret_cast<const double*>(Unaligned + 1));
+    Burger::SwapEndian::LoadAny(reinterpret_cast<const float*>(Unaligned + 1));
+    Burger::SwapEndian::LoadAny(reinterpret_cast<const double*>(Unaligned + 1));
 
 #if defined(BURGER_HAS_WCHAR_T)
     Burger::SwapEndian::StoreAny(
@@ -320,8 +315,7 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
     Burger::SwapEndian::StoreAny(
         reinterpret_cast<unsigned char*>(Unaligned + 1),
         static_cast<unsigned char>(1));
-    Burger::SwapEndian::StoreAny(
-        reinterpret_cast<signed char*>(Unaligned + 1),
+    Burger::SwapEndian::StoreAny(reinterpret_cast<signed char*>(Unaligned + 1),
         static_cast<signed char>(1));
 
     Burger::SwapEndian::StoreAny(
@@ -329,14 +323,12 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
     Burger::SwapEndian::StoreAny(
         reinterpret_cast<unsigned short*>(Unaligned + 1),
         static_cast<unsigned short>(1));
-    Burger::SwapEndian::StoreAny(
-        reinterpret_cast<signed short*>(Unaligned + 1),
+    Burger::SwapEndian::StoreAny(reinterpret_cast<signed short*>(Unaligned + 1),
         static_cast<signed short>(1));
 
     Burger::SwapEndian::StoreAny(
         reinterpret_cast<int*>(Unaligned + 1), static_cast<int>(1));
-    Burger::SwapEndian::StoreAny(
-        reinterpret_cast<unsigned int*>(Unaligned + 1),
+    Burger::SwapEndian::StoreAny(reinterpret_cast<unsigned int*>(Unaligned + 1),
         static_cast<unsigned int>(1));
     Burger::SwapEndian::StoreAny(reinterpret_cast<signed int*>(Unaligned + 1),
         static_cast<signed int>(1));
@@ -346,8 +338,7 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
     Burger::SwapEndian::StoreAny(
         reinterpret_cast<unsigned long*>(Unaligned + 1),
         static_cast<unsigned long>(1));
-    Burger::SwapEndian::StoreAny(
-        reinterpret_cast<signed long*>(Unaligned + 1),
+    Burger::SwapEndian::StoreAny(reinterpret_cast<signed long*>(Unaligned + 1),
         static_cast<signed long>(1));
 
 #if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
@@ -361,10 +352,8 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
         static_cast<signed long long>(1));
 #endif
 
-    Burger::SwapEndian::StoreAny(
-        reinterpret_cast<float*>(Unaligned + 1), 1.0f);
-    Burger::SwapEndian::StoreAny(
-        reinterpret_cast<double*>(Unaligned + 1), 1.0);
+    Burger::SwapEndian::StoreAny(reinterpret_cast<float*>(Unaligned + 1), 1.0f);
+    Burger::SwapEndian::StoreAny(reinterpret_cast<double*>(Unaligned + 1), 1.0);
 
 #if defined(BURGER_HAS_WCHAR_T)
     Burger::SwapEndian::Fixup(&VarWChar);
@@ -402,8 +391,7 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
     Burger::SwapEndian::FixupAny(reinterpret_cast<char*>(Unaligned + 1));
     Burger::SwapEndian::FixupAny(
         reinterpret_cast<unsigned char*>(Unaligned + 1));
-    Burger::SwapEndian::FixupAny(
-        reinterpret_cast<signed char*>(Unaligned + 1));
+    Burger::SwapEndian::FixupAny(reinterpret_cast<signed char*>(Unaligned + 1));
 
     Burger::SwapEndian::FixupAny(reinterpret_cast<short*>(Unaligned + 1));
     Burger::SwapEndian::FixupAny(
@@ -414,14 +402,12 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
     Burger::SwapEndian::FixupAny(reinterpret_cast<int*>(Unaligned + 1));
     Burger::SwapEndian::FixupAny(
         reinterpret_cast<unsigned int*>(Unaligned + 1));
-    Burger::SwapEndian::FixupAny(
-        reinterpret_cast<signed int*>(Unaligned + 1));
+    Burger::SwapEndian::FixupAny(reinterpret_cast<signed int*>(Unaligned + 1));
 
     Burger::SwapEndian::FixupAny(reinterpret_cast<long*>(Unaligned + 1));
     Burger::SwapEndian::FixupAny(
         reinterpret_cast<unsigned long*>(Unaligned + 1));
-    Burger::SwapEndian::FixupAny(
-        reinterpret_cast<signed long*>(Unaligned + 1));
+    Burger::SwapEndian::FixupAny(reinterpret_cast<signed long*>(Unaligned + 1));
 
 #if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
     Burger::SwapEndian::FixupAny(reinterpret_cast<long long*>(Unaligned + 1));
@@ -444,7 +430,7 @@ static void BURGER_API TestBurgerSwapEndianTypes(void)
 // Test SwapEndian::Load()
 //
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadWord16(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadWord16(void) BURGER_NOEXCEPT
 {
     uint16_t uResult = Burger::SwapEndian::Load(NEu16);
     uint_t uFailure = (uResult != REu16);
@@ -454,7 +440,7 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadWord16(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadInt16(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadInt16(void) BURGER_NOEXCEPT
 {
     int16_t iResult = Burger::SwapEndian::Load(NEi16);
     uint_t uFailure = (iResult != REi16);
@@ -464,7 +450,7 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadInt16(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadWord32(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadWord32(void) BURGER_NOEXCEPT
 {
     uint32_t uResult = Burger::SwapEndian::Load(NEu32);
     uint_t uFailure = (uResult != REu32);
@@ -474,7 +460,7 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadWord32(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadInt32(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadInt32(void) BURGER_NOEXCEPT
 {
     int32_t iResult = Burger::SwapEndian::Load(NEi32);
     uint_t uFailure = (iResult != REi32);
@@ -484,7 +470,7 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadInt32(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadWord64(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadWord64(void) BURGER_NOEXCEPT
 {
     uint64_t uResult = Burger::SwapEndian::Load(NEu64);
     uint_t uFailure = (uResult != REu64);
@@ -501,7 +487,7 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadWord64(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadInt64(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadInt64(void) BURGER_NOEXCEPT
 {
     int64_t iResult = Burger::SwapEndian::Load(NEi64);
     uint_t uFailure = (iResult != REi64);
@@ -518,7 +504,7 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadInt64(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadFloat(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadFloat(void) BURGER_NOEXCEPT
 {
     float fResult = Burger::SwapEndian::Load(NEf32);
     uint_t uFailure = (fResult != REf32);
@@ -527,7 +513,7 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadFloat(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadDouble(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadDouble(void) BURGER_NOEXCEPT
 {
     double fResult = Burger::SwapEndian::Load(NEf64);
     uint_t uFailure = (fResult != REf64);
@@ -536,7 +522,7 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadDouble(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadWord16Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadWord16Ptr(void) BURGER_NOEXCEPT
 {
     uint16_t uResult = Burger::SwapEndian::Load(&NEu16);
     uint_t uFailure = (uResult != REu16);
@@ -546,7 +532,7 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadWord16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadInt16Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadInt16Ptr(void) BURGER_NOEXCEPT
 {
     int16_t iResult = Burger::SwapEndian::Load(&NEi16);
     uint_t uFailure = (iResult != REi16);
@@ -556,7 +542,7 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadInt16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadWord32Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadWord32Ptr(void) BURGER_NOEXCEPT
 {
     uint32_t uResult = Burger::SwapEndian::Load(&NEu32);
     uint_t uFailure = (uResult != REu32);
@@ -566,7 +552,7 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadWord32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadInt32Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadInt32Ptr(void) BURGER_NOEXCEPT
 {
     int32_t iResult = Burger::SwapEndian::Load(&NEi32);
     uint_t uFailure = (iResult != REi32);
@@ -576,7 +562,7 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadInt32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadWord64Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadWord64Ptr(void) BURGER_NOEXCEPT
 {
     uint64_t uResult = Burger::SwapEndian::Load(&NEu64);
     uint_t uFailure = (uResult != REu64);
@@ -593,7 +579,7 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadWord64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadInt64Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadInt64Ptr(void) BURGER_NOEXCEPT
 {
     int64_t iResult = Burger::SwapEndian::Load(&NEi64);
     uint_t uFailure = (iResult != REi64);
@@ -610,7 +596,7 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadInt64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadFloatPtr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadFloatPtr(void) BURGER_NOEXCEPT
 {
     float fResult = Burger::SwapEndian::Load(&NEf32);
     uint_t uFailure = (fResult != REf32);
@@ -619,7 +605,7 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadFloatPtr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadDoublePtr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadDoublePtr(void) BURGER_NOEXCEPT
 {
     double fResult = Burger::SwapEndian::Load(&NEf64);
     uint_t uFailure = (fResult != REf64);
@@ -632,7 +618,8 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadDoublePtr(void)
 // Test SwapEndian::LoadAny()
 //
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadAnyWord16Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadAnyWord16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -664,7 +651,8 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadAnyWord16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadAnyInt16Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadAnyInt16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -696,7 +684,8 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadAnyInt16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadAnyWord32Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadAnyWord32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -727,7 +716,8 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadAnyWord32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadAnyInt32Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadAnyInt32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -758,7 +748,8 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadAnyInt32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadAnyWord64Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadAnyWord64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -800,7 +791,8 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadAnyWord64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadAnyInt64Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadAnyInt64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -842,7 +834,8 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadAnyInt64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadAnyFloatPtr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadAnyFloatPtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -873,7 +866,8 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadAnyFloatPtr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianLoadAnyDoublePtr(void)
+static uint_t BURGER_API TestBurgerSwapEndianLoadAnyDoublePtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -912,7 +906,8 @@ static uint_t BURGER_API TestBurgerSwapEndianLoadAnyDoublePtr(void)
 // Test SwapEndian::StoreAny()
 //
 
-static uint_t BURGER_API TestBurgerSwapEndianStoreAnyWord16Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianStoreAnyWord16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -937,7 +932,8 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyWord16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianStoreAnyInt16Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianStoreAnyInt16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -960,7 +956,8 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyInt16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianStoreAnyWord32Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianStoreAnyWord32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -984,7 +981,8 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyWord32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianStoreAnyInt32Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianStoreAnyInt32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -1008,7 +1006,8 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyInt32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianStoreAnyWord64Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianStoreAnyWord64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -1038,7 +1037,8 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyWord64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianStoreAnyInt64Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianStoreAnyInt64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -1069,7 +1069,8 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyInt64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianStoreAnyFloatPtr(void)
+static uint_t BURGER_API TestBurgerSwapEndianStoreAnyFloatPtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -1092,7 +1093,8 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyFloatPtr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianStoreAnyDoublePtr(void)
+static uint_t BURGER_API TestBurgerSwapEndianStoreAnyDoublePtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -1119,7 +1121,8 @@ static uint_t BURGER_API TestBurgerSwapEndianStoreAnyDoublePtr(void)
 // Burger::SwapEndian::Fixup()
 //
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupWord16Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupWord16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint16_t uResult = NEu16;
     Burger::SwapEndian::Fixup(&uResult);
@@ -1130,7 +1133,7 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupWord16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupInt16Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupInt16Ptr(void) BURGER_NOEXCEPT
 {
     int16_t iResult = NEi16;
     Burger::SwapEndian::Fixup(&iResult);
@@ -1141,7 +1144,8 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupInt16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupWord32Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupWord32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint32_t uResult = NEu32;
     Burger::SwapEndian::Fixup(&uResult);
@@ -1152,7 +1156,7 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupWord32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupInt32Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupInt32Ptr(void) BURGER_NOEXCEPT
 {
     int32_t iResult = NEi32;
     Burger::SwapEndian::Fixup(&iResult);
@@ -1163,7 +1167,8 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupInt32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupWord64Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupWord64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint64_t uResult = NEu64;
     Burger::SwapEndian::Fixup(&uResult);
@@ -1181,7 +1186,7 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupWord64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupInt64Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupInt64Ptr(void) BURGER_NOEXCEPT
 {
     int64_t iResult = NEi64;
     Burger::SwapEndian::Fixup(&iResult);
@@ -1199,7 +1204,7 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupInt64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupFloatPtr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupFloatPtr(void) BURGER_NOEXCEPT
 {
     float fResult = NEf32;
     Burger::SwapEndian::Fixup(&fResult);
@@ -1209,7 +1214,8 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupFloatPtr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupDoublePtr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupDoublePtr(
+    void) BURGER_NOEXCEPT
 {
     double fResult = NEf64;
     Burger::SwapEndian::Fixup(&fResult);
@@ -1223,7 +1229,8 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupDoublePtr(void)
 // Burger::SwapEndian::FixupAny()
 //
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupAnyWord16Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupAnyWord16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -1255,7 +1262,8 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupAnyWord16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupAnyInt16Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupAnyInt16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -1287,7 +1295,8 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupAnyInt16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupAnyWord32Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupAnyWord32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -1323,7 +1332,8 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupAnyWord32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupAnyInt32Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupAnyInt32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -1359,7 +1369,8 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupAnyInt32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupAnyWord64Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupAnyWord64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -1410,7 +1421,8 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupAnyWord64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupAnyInt64Ptr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupAnyInt64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -1461,7 +1473,8 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupAnyInt64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupAnyFloatPtr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupAnyFloatPtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -1497,7 +1510,8 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupAnyFloatPtr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerSwapEndianFixupAnyDoublePtr(void)
+static uint_t BURGER_API TestBurgerSwapEndianFixupAnyDoublePtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -1546,7 +1560,7 @@ static uint_t BURGER_API TestBurgerSwapEndianFixupAnyDoublePtr(void)
 
 ***************************************/
 
-static void BURGER_API TestBurgerNativeEndianTypes(void)
+static void BURGER_API TestBurgerNativeEndianTypes(void) BURGER_NOEXCEPT
 {
     char VarChar = 1;
     unsigned char VarUChar = 1;
@@ -1841,7 +1855,7 @@ static void BURGER_API TestBurgerNativeEndianTypes(void)
 // Test NativeEndian::Load()
 //
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadWord16(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadWord16(void) BURGER_NOEXCEPT
 {
     uint16_t uResult = Burger::NativeEndian::Load(NEu16);
     uint_t uFailure = (uResult != NEu16);
@@ -1851,7 +1865,7 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadWord16(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadInt16(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadInt16(void) BURGER_NOEXCEPT
 {
     int16_t iResult = Burger::NativeEndian::Load(NEi16);
     uint_t uFailure = (iResult != NEi16);
@@ -1861,7 +1875,7 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadInt16(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadWord32(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadWord32(void) BURGER_NOEXCEPT
 {
     uint32_t uResult = Burger::NativeEndian::Load(NEu32);
     uint_t uFailure = (uResult != NEu32);
@@ -1871,7 +1885,7 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadWord32(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadInt32(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadInt32(void) BURGER_NOEXCEPT
 {
     int32_t iResult = Burger::NativeEndian::Load(NEi32);
     uint_t uFailure = (iResult != NEi32);
@@ -1881,7 +1895,7 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadInt32(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadWord64(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadWord64(void) BURGER_NOEXCEPT
 {
     uint64_t uResult = Burger::NativeEndian::Load(NEu64);
     uint_t uFailure = (uResult != NEu64);
@@ -1898,7 +1912,7 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadWord64(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadInt64(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadInt64(void) BURGER_NOEXCEPT
 {
     int64_t iResult = Burger::NativeEndian::Load(NEi64);
     uint_t uFailure = (iResult != NEi64);
@@ -1915,7 +1929,7 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadInt64(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadFloat(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadFloat(void) BURGER_NOEXCEPT
 {
     float fResult = Burger::NativeEndian::Load(NEf32);
     uint_t uFailure = (fResult != NEf32);
@@ -1924,7 +1938,7 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadFloat(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadDouble(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadDouble(void) BURGER_NOEXCEPT
 {
     double fResult = Burger::NativeEndian::Load(NEf64);
     uint_t uFailure = (fResult != NEf64);
@@ -1933,7 +1947,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadDouble(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadWord16Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadWord16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint16_t uResult = Burger::NativeEndian::Load(&NEu16);
     uint_t uFailure = (uResult != NEu16);
@@ -1943,7 +1958,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadWord16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadInt16Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadInt16Ptr(
+    void) BURGER_NOEXCEPT
 {
     int16_t iResult = Burger::NativeEndian::Load(&NEi16);
     uint_t uFailure = (iResult != NEi16);
@@ -1953,7 +1969,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadInt16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadWord32Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadWord32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint32_t uResult = Burger::NativeEndian::Load(&NEu32);
     uint_t uFailure = (uResult != NEu32);
@@ -1963,7 +1980,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadWord32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadInt32Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadInt32Ptr(
+    void) BURGER_NOEXCEPT
 {
     int32_t iResult = Burger::NativeEndian::Load(&NEi32);
     uint_t uFailure = (iResult != NEi32);
@@ -1973,7 +1991,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadInt32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadWord64Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadWord64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint64_t uResult = Burger::NativeEndian::Load(&NEu64);
     uint_t uFailure = (uResult != NEu64);
@@ -1990,7 +2009,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadWord64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadInt64Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadInt64Ptr(
+    void) BURGER_NOEXCEPT
 {
     int64_t iResult = Burger::NativeEndian::Load(&NEi64);
     uint_t uFailure = (iResult != NEi64);
@@ -2007,7 +2027,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadInt64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadFloatPtr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadFloatPtr(
+    void) BURGER_NOEXCEPT
 {
     float fResult = Burger::NativeEndian::Load(&NEf32);
     uint_t uFailure = (fResult != NEf32);
@@ -2017,7 +2038,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadFloatPtr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadDoublePtr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadDoublePtr(
+    void) BURGER_NOEXCEPT
 {
     double fResult = Burger::NativeEndian::Load(&NEf64);
     uint_t uFailure = (fResult != NEf64);
@@ -2031,7 +2053,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadDoublePtr(void)
 // Test NativeEndian::LoadAny()
 //
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadAnyWord16Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadAnyWord16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -2060,7 +2083,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadAnyWord16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadAnyInt16Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadAnyInt16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -2089,7 +2113,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadAnyInt16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadAnyWord32Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadAnyWord32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -2120,7 +2145,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadAnyWord32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadAnyInt32Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadAnyInt32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -2151,7 +2177,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadAnyInt32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadAnyWord64Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadAnyWord64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -2193,7 +2220,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadAnyWord64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadAnyInt64Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadAnyInt64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -2235,7 +2263,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadAnyInt64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadAnyFloatPtr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadAnyFloatPtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -2266,7 +2295,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadAnyFloatPtr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianLoadAnyDoublePtr(void)
+static uint_t BURGER_API TestBurgerNativeEndianLoadAnyDoublePtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -2305,7 +2335,8 @@ static uint_t BURGER_API TestBurgerNativeEndianLoadAnyDoublePtr(void)
 // Test NativeEndian::StoreAny()
 //
 
-static uint_t BURGER_API TestBurgerNativeEndianStoreAnyWord16Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianStoreAnyWord16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -2329,7 +2360,8 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyWord16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianStoreAnyInt16Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianStoreAnyInt16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -2353,7 +2385,8 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyInt16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianStoreAnyWord32Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianStoreAnyWord32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -2377,7 +2410,8 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyWord32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianStoreAnyInt32Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianStoreAnyInt32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -2401,7 +2435,8 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyInt32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianStoreAnyWord64Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianStoreAnyWord64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -2432,7 +2467,8 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyWord64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianStoreAnyInt64Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianStoreAnyInt64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -2463,7 +2499,8 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyInt64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianStoreAnyFloatPtr(void)
+static uint_t BURGER_API TestBurgerNativeEndianStoreAnyFloatPtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -2486,7 +2523,8 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyFloatPtr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianStoreAnyDoublePtr(void)
+static uint_t BURGER_API TestBurgerNativeEndianStoreAnyDoublePtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -2514,7 +2552,8 @@ static uint_t BURGER_API TestBurgerNativeEndianStoreAnyDoublePtr(void)
 // Burger::NativeEndian::Fixup()
 //
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupWord16Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupWord16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint16_t uResult = NEu16;
     Burger::NativeEndian::Fixup(&uResult);
@@ -2525,7 +2564,8 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupWord16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupInt16Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupInt16Ptr(
+    void) BURGER_NOEXCEPT
 {
     int16_t iResult = NEi16;
     Burger::NativeEndian::Fixup(&iResult);
@@ -2536,7 +2576,8 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupInt16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupWord32Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupWord32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint32_t uResult = NEu32;
     Burger::NativeEndian::Fixup(&uResult);
@@ -2547,7 +2588,8 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupWord32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupInt32Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupInt32Ptr(
+    void) BURGER_NOEXCEPT
 {
     int32_t iResult = NEi32;
     Burger::NativeEndian::Fixup(&iResult);
@@ -2558,7 +2600,8 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupInt32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupWord64Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupWord64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint64_t uResult = NEu64;
     Burger::NativeEndian::Fixup(&uResult);
@@ -2576,7 +2619,8 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupWord64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupInt64Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupInt64Ptr(
+    void) BURGER_NOEXCEPT
 {
     int64_t iResult = NEi64;
     Burger::NativeEndian::Fixup(&iResult);
@@ -2594,7 +2638,8 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupInt64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupFloatPtr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupFloatPtr(
+    void) BURGER_NOEXCEPT
 {
     float fResult = NEf32;
     Burger::NativeEndian::Fixup(&fResult);
@@ -2604,7 +2649,8 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupFloatPtr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupDoublePtr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupDoublePtr(
+    void) BURGER_NOEXCEPT
 {
     double fResult = NEf64;
     Burger::NativeEndian::Fixup(&fResult);
@@ -2618,7 +2664,8 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupDoublePtr(void)
 // Burger::NativeEndian::FixupAny()
 //
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupAnyWord16Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupAnyWord16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -2650,7 +2697,8 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupAnyWord16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupAnyInt16Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupAnyInt16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -2682,7 +2730,8 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupAnyInt16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupAnyWord32Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupAnyWord32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -2718,7 +2767,8 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupAnyWord32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupAnyInt32Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupAnyInt32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -2754,7 +2804,8 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupAnyInt32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupAnyWord64Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupAnyWord64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -2805,7 +2856,8 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupAnyWord64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupAnyInt64Ptr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupAnyInt64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -2856,7 +2908,8 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupAnyInt64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupAnyFloatPtr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupAnyFloatPtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -2892,7 +2945,8 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupAnyFloatPtr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerNativeEndianFixupAnyDoublePtr(void)
+static uint_t BURGER_API TestBurgerNativeEndianFixupAnyDoublePtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -2945,7 +2999,7 @@ static uint_t BURGER_API TestBurgerNativeEndianFixupAnyDoublePtr(void)
 // Test BigEndian::Load()
 //
 
-static uint_t BURGER_API TestBurgerBigEndianLoadWord16(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadWord16(void) BURGER_NOEXCEPT
 {
     uint16_t uResult = Burger::BigEndian::Load(g_BE16_1234.m_Word16);
     uint_t uFailure = (uResult != NEu16);
@@ -2955,7 +3009,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadWord16(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadInt16(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadInt16(void) BURGER_NOEXCEPT
 {
     int16_t iResult = Burger::BigEndian::Load(g_BE16_1234.m_Int16);
     uint_t uFailure = (iResult != NEi16);
@@ -2964,7 +3018,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadInt16(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadWord32(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadWord32(void) BURGER_NOEXCEPT
 {
     uint32_t uResult = Burger::BigEndian::Load(g_BE32_1234.m_Word32);
     uint_t uFailure = (uResult != NEu32);
@@ -2974,7 +3028,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadWord32(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadInt32(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadInt32(void) BURGER_NOEXCEPT
 {
     int32_t iResult = Burger::BigEndian::Load(g_BE32_1234.m_Int32);
     uint_t uFailure = (iResult != NEi32);
@@ -2983,7 +3037,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadInt32(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadWord64(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadWord64(void) BURGER_NOEXCEPT
 {
     uint64_t uResult = Burger::BigEndian::Load(g_BE64_1234.m_Word64);
     uint_t uFailure = (uResult != NEu64);
@@ -3000,7 +3054,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadWord64(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadInt64(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadInt64(void) BURGER_NOEXCEPT
 {
     int64_t iResult = Burger::BigEndian::Load(g_BE64_1234.m_Int64);
     uint_t uFailure = (iResult != NEi64);
@@ -3017,7 +3071,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadInt64(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadFloat(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadFloat(void) BURGER_NOEXCEPT
 {
     float fResult = Burger::BigEndian::Load(g_BEF32_1234.m_Float);
     uint_t uFailure = (fResult != NEf32);
@@ -3026,7 +3080,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadFloat(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadDouble(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadDouble(void) BURGER_NOEXCEPT
 {
     double fResult = Burger::BigEndian::Load(g_BEF64_1234.m_Double);
     uint_t uFailure = (fResult != NEf64);
@@ -3035,7 +3089,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadDouble(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadWord16Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadWord16Ptr(void) BURGER_NOEXCEPT
 {
     uint16_t uResult = Burger::BigEndian::Load(&g_BE16_1234.m_Word16);
     uint_t uFailure = (uResult != NEu16);
@@ -3045,7 +3099,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadWord16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadInt16Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadInt16Ptr(void) BURGER_NOEXCEPT
 {
     int16_t iResult = Burger::BigEndian::Load(&g_BE16_1234.m_Int16);
     uint_t uFailure = (iResult != NEi16);
@@ -3055,7 +3109,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadInt16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadWord32Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadWord32Ptr(void) BURGER_NOEXCEPT
 {
     uint32_t uResult = Burger::BigEndian::Load(&g_BE32_1234.m_Word32);
     uint_t uFailure = (uResult != NEu32);
@@ -3065,7 +3119,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadWord32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadInt32Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadInt32Ptr(void) BURGER_NOEXCEPT
 {
     int32_t iResult = Burger::BigEndian::Load(&g_BE32_1234.m_Int32);
     uint_t uFailure = (iResult != NEi32);
@@ -3075,7 +3129,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadInt32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadWord64Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadWord64Ptr(void) BURGER_NOEXCEPT
 {
     uint64_t uResult = Burger::BigEndian::Load(&g_BE64_1234.m_Word64);
     uint_t uFailure = (uResult != NEu64);
@@ -3092,7 +3146,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadWord64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadInt64Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadInt64Ptr(void) BURGER_NOEXCEPT
 {
     int64_t iResult = Burger::BigEndian::Load(&g_BE64_1234.m_Int64);
     uint_t uFailure = (iResult != NEi64);
@@ -3109,7 +3163,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadInt64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadFloatPtr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadFloatPtr(void) BURGER_NOEXCEPT
 {
     float fResult = Burger::BigEndian::Load(&g_BEF32_1234.m_Float);
     uint_t uFailure = (fResult != NEf32);
@@ -3118,7 +3172,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadFloatPtr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadDoublePtr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadDoublePtr(void) BURGER_NOEXCEPT
 {
     double fResult = Burger::BigEndian::Load(&g_BEF64_1234.m_Double);
     uint_t uFailure = (fResult != NEf64);
@@ -3131,7 +3185,8 @@ static uint_t BURGER_API TestBurgerBigEndianLoadDoublePtr(void)
 // Test BigEndian::LoadAny()
 //
 
-static uint_t BURGER_API TestBurgerBigEndianLoadAnyWord16Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadAnyWord16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -3156,7 +3211,8 @@ static uint_t BURGER_API TestBurgerBigEndianLoadAnyWord16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadAnyInt16Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadAnyInt16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -3181,7 +3237,8 @@ static uint_t BURGER_API TestBurgerBigEndianLoadAnyInt16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadAnyWord32Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadAnyWord32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -3208,7 +3265,8 @@ static uint_t BURGER_API TestBurgerBigEndianLoadAnyWord32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadAnyInt32Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadAnyInt32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -3235,7 +3293,8 @@ static uint_t BURGER_API TestBurgerBigEndianLoadAnyInt32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadAnyWord64Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadAnyWord64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -3273,7 +3332,8 @@ static uint_t BURGER_API TestBurgerBigEndianLoadAnyWord64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadAnyInt64Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadAnyInt64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -3311,7 +3371,8 @@ static uint_t BURGER_API TestBurgerBigEndianLoadAnyInt64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadAnyFloatPtr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadAnyFloatPtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -3338,7 +3399,8 @@ static uint_t BURGER_API TestBurgerBigEndianLoadAnyFloatPtr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianLoadAnyDoublePtr(void)
+static uint_t BURGER_API TestBurgerBigEndianLoadAnyDoublePtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -3373,7 +3435,7 @@ static uint_t BURGER_API TestBurgerBigEndianLoadAnyDoublePtr(void)
 // Burger::BigEndian::Fixup()
 //
 
-static uint_t BURGER_API TestBurgerBigEndianFixupWord16Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupWord16Ptr(void) BURGER_NOEXCEPT
 {
     uint16_t uResult = g_BE16_1234.m_Word16;
     Burger::BigEndian::Fixup(&uResult);
@@ -3384,7 +3446,7 @@ static uint_t BURGER_API TestBurgerBigEndianFixupWord16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianFixupInt16Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupInt16Ptr(void) BURGER_NOEXCEPT
 {
     int16_t iResult = g_BE16_1234.m_Int16;
     Burger::BigEndian::Fixup(&iResult);
@@ -3395,7 +3457,7 @@ static uint_t BURGER_API TestBurgerBigEndianFixupInt16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianFixupWord32Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupWord32Ptr(void) BURGER_NOEXCEPT
 {
     uint32_t uResult = g_BE32_1234.m_Word32;
     Burger::BigEndian::Fixup(&uResult);
@@ -3406,7 +3468,7 @@ static uint_t BURGER_API TestBurgerBigEndianFixupWord32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianFixupInt32Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupInt32Ptr(void) BURGER_NOEXCEPT
 {
     int32_t iResult = g_BE32_1234.m_Int32;
     Burger::BigEndian::Fixup(&iResult);
@@ -3417,7 +3479,7 @@ static uint_t BURGER_API TestBurgerBigEndianFixupInt32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianFixupWord64Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupWord64Ptr(void) BURGER_NOEXCEPT
 {
     uint64_t uResult = g_BE64_1234.m_Word64;
     Burger::BigEndian::Fixup(&uResult);
@@ -3435,7 +3497,7 @@ static uint_t BURGER_API TestBurgerBigEndianFixupWord64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianFixupInt64Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupInt64Ptr(void) BURGER_NOEXCEPT
 {
     int64_t iResult = g_BE64_1234.m_Int64;
     Burger::BigEndian::Fixup(&iResult);
@@ -3453,7 +3515,7 @@ static uint_t BURGER_API TestBurgerBigEndianFixupInt64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianFixupFloatPtr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupFloatPtr(void) BURGER_NOEXCEPT
 {
     float fResult = g_BEF32_1234.m_Float;
     Burger::BigEndian::Fixup(&fResult);
@@ -3463,7 +3525,7 @@ static uint_t BURGER_API TestBurgerBigEndianFixupFloatPtr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianFixupDoublePtr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupDoublePtr(void) BURGER_NOEXCEPT
 {
     double fResult = g_BEF64_1234.m_Double;
     Burger::BigEndian::Fixup(&fResult);
@@ -3477,7 +3539,8 @@ static uint_t BURGER_API TestBurgerBigEndianFixupDoublePtr(void)
 // Burger::BigEndian::FixupAny()
 //
 
-static uint_t BURGER_API TestBurgerBigEndianFixupAnyWord16Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupAnyWord16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -3505,7 +3568,8 @@ static uint_t BURGER_API TestBurgerBigEndianFixupAnyWord16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianFixupAnyInt16Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupAnyInt16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -3533,7 +3597,8 @@ static uint_t BURGER_API TestBurgerBigEndianFixupAnyInt16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianFixupAnyWord32Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupAnyWord32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -3565,7 +3630,8 @@ static uint_t BURGER_API TestBurgerBigEndianFixupAnyWord32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianFixupAnyInt32Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupAnyInt32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -3597,7 +3663,8 @@ static uint_t BURGER_API TestBurgerBigEndianFixupAnyInt32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianFixupAnyWord64Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupAnyWord64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -3644,7 +3711,8 @@ static uint_t BURGER_API TestBurgerBigEndianFixupAnyWord64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianFixupAnyInt64Ptr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupAnyInt64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -3691,7 +3759,8 @@ static uint_t BURGER_API TestBurgerBigEndianFixupAnyInt64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianFixupAnyFloatPtr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupAnyFloatPtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -3723,7 +3792,8 @@ static uint_t BURGER_API TestBurgerBigEndianFixupAnyFloatPtr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerBigEndianFixupAnyDoublePtr(void)
+static uint_t BURGER_API TestBurgerBigEndianFixupAnyDoublePtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -3772,7 +3842,7 @@ static uint_t BURGER_API TestBurgerBigEndianFixupAnyDoublePtr(void)
 // Test LittleEndian::Load()
 //
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadWord16(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadWord16(void) BURGER_NOEXCEPT
 {
     uint16_t uResult = Burger::LittleEndian::Load(g_LE16_1234.m_Word16);
     uint_t uFailure = (uResult != NEu16);
@@ -3782,7 +3852,7 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadWord16(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadInt16(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadInt16(void) BURGER_NOEXCEPT
 {
     int16_t iResult = Burger::LittleEndian::Load(g_LE16_1234.m_Int16);
     uint_t uFailure = (iResult != NEi16);
@@ -3792,7 +3862,7 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadInt16(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadWord32(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadWord32(void) BURGER_NOEXCEPT
 {
     uint32_t uResult = Burger::LittleEndian::Load(g_LE32_1234.m_Word32);
     uint_t uFailure = (uResult != NEu32);
@@ -3802,7 +3872,7 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadWord32(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadInt32(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadInt32(void) BURGER_NOEXCEPT
 {
     int32_t iResult = Burger::LittleEndian::Load(g_LE32_1234.m_Int32);
     uint_t uFailure = (iResult != NEi32);
@@ -3812,7 +3882,7 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadInt32(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadWord64(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadWord64(void) BURGER_NOEXCEPT
 {
     uint64_t uResult = Burger::LittleEndian::Load(g_LE64_1234.m_Word64);
     uint_t uFailure = (uResult != NEu64);
@@ -3829,7 +3899,7 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadWord64(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadInt64(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadInt64(void) BURGER_NOEXCEPT
 {
     int64_t iResult = Burger::LittleEndian::Load(g_LE64_1234.m_Int64);
     uint_t uFailure = (iResult != NEi64);
@@ -3846,7 +3916,7 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadInt64(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadFloat(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadFloat(void) BURGER_NOEXCEPT
 {
     float fResult = Burger::LittleEndian::Load(g_LEF32_1234.m_Float);
     uint_t uFailure = (fResult != NEf32);
@@ -3855,7 +3925,7 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadFloat(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadDouble(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadDouble(void) BURGER_NOEXCEPT
 {
     double fResult = Burger::LittleEndian::Load(g_LEF64_1234.m_Double);
     uint_t uFailure = (fResult != NEf64);
@@ -3864,7 +3934,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadDouble(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadWord16Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadWord16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint16_t uResult = Burger::LittleEndian::Load(&g_LE16_1234.m_Word16);
     uint_t uFailure = (uResult != NEu16);
@@ -3874,7 +3945,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadWord16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadInt16Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadInt16Ptr(
+    void) BURGER_NOEXCEPT
 {
     int16_t iResult = Burger::LittleEndian::Load(&g_LE16_1234.m_Int16);
     uint_t uFailure = (iResult != NEi16);
@@ -3884,7 +3956,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadInt16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadWord32Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadWord32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint32_t uResult = Burger::LittleEndian::Load(&g_LE32_1234.m_Word32);
     uint_t uFailure = (uResult != NEu32);
@@ -3894,7 +3967,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadWord32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadInt32Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadInt32Ptr(
+    void) BURGER_NOEXCEPT
 {
     int32_t iResult = Burger::LittleEndian::Load(&g_LE32_1234.m_Int32);
     uint_t uFailure = (iResult != NEi32);
@@ -3904,7 +3978,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadInt32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadWord64Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadWord64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint64_t uResult = Burger::LittleEndian::Load(&g_LE64_1234.m_Word64);
     uint_t uFailure = (uResult != NEu64);
@@ -3921,7 +3996,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadWord64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadInt64Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadInt64Ptr(
+    void) BURGER_NOEXCEPT
 {
     int64_t iResult = Burger::LittleEndian::Load(&g_LE64_1234.m_Int64);
     uint_t uFailure = (iResult != NEi64);
@@ -3938,7 +4014,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadInt64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadFloatPtr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadFloatPtr(
+    void) BURGER_NOEXCEPT
 {
     float fResult = Burger::LittleEndian::Load(&g_LEF32_1234.m_Float);
     uint_t uFailure = (fResult != NEf32);
@@ -3948,7 +4025,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadFloatPtr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadDoublePtr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadDoublePtr(
+    void) BURGER_NOEXCEPT
 {
     double fResult = Burger::LittleEndian::Load(&g_LEF64_1234.m_Double);
     uint_t uFailure = (fResult != NEf64);
@@ -3962,7 +4040,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadDoublePtr(void)
 // Test LittleEndian::LoadAny()
 //
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadAnyWord16Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadAnyWord16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -3987,7 +4066,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadAnyWord16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadAnyInt16Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadAnyInt16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -4012,7 +4092,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadAnyInt16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadAnyWord32Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadAnyWord32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -4039,7 +4120,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadAnyWord32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadAnyInt32Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadAnyInt32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -4066,7 +4148,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadAnyInt32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadAnyWord64Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadAnyWord64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -4104,7 +4187,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadAnyWord64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadAnyInt64Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadAnyInt64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -4142,7 +4226,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadAnyInt64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadAnyFloatPtr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadAnyFloatPtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -4169,7 +4254,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadAnyFloatPtr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianLoadAnyDoublePtr(void)
+static uint_t BURGER_API TestBurgerLittleEndianLoadAnyDoublePtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -4204,7 +4290,8 @@ static uint_t BURGER_API TestBurgerLittleEndianLoadAnyDoublePtr(void)
 // Burger::LittleEndian::Fixup()
 //
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupWord16Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupWord16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint16_t uResult = g_LE16_1234.m_Word16;
     Burger::LittleEndian::Fixup(&uResult);
@@ -4215,7 +4302,8 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupWord16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupInt16Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupInt16Ptr(
+    void) BURGER_NOEXCEPT
 {
     int16_t iResult = g_LE16_1234.m_Int16;
     Burger::LittleEndian::Fixup(&iResult);
@@ -4226,7 +4314,8 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupInt16Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupWord32Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupWord32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint32_t uResult = g_LE32_1234.m_Word32;
     Burger::LittleEndian::Fixup(&uResult);
@@ -4237,7 +4326,8 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupWord32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupInt32Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupInt32Ptr(
+    void) BURGER_NOEXCEPT
 {
     int32_t iResult = g_LE32_1234.m_Int32;
     Burger::LittleEndian::Fixup(&iResult);
@@ -4248,7 +4338,8 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupInt32Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupWord64Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupWord64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint64_t uResult = g_LE64_1234.m_Word64;
     Burger::LittleEndian::Fixup(&uResult);
@@ -4266,7 +4357,8 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupWord64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupInt64Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupInt64Ptr(
+    void) BURGER_NOEXCEPT
 {
     int64_t iResult = g_LE64_1234.m_Int64;
     Burger::LittleEndian::Fixup(&iResult);
@@ -4284,7 +4376,8 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupInt64Ptr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupFloatPtr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupFloatPtr(
+    void) BURGER_NOEXCEPT
 {
     float fResult = g_LEF32_1234.m_Float;
     Burger::LittleEndian::Fixup(&fResult);
@@ -4294,7 +4387,8 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupFloatPtr(void)
     return uFailure;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupDoublePtr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupDoublePtr(
+    void) BURGER_NOEXCEPT
 {
     double fResult = g_LEF64_1234.m_Double;
     Burger::LittleEndian::Fixup(&fResult);
@@ -4308,7 +4402,8 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupDoublePtr(void)
 // Burger::LittleEndian::FixupAny()
 //
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupAnyWord16Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupAnyWord16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -4336,7 +4431,8 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupAnyWord16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupAnyInt16Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupAnyInt16Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 4;
@@ -4364,7 +4460,8 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupAnyInt16Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupAnyWord32Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupAnyWord32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -4396,7 +4493,8 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupAnyWord32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupAnyInt32Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupAnyInt32Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -4428,7 +4526,8 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupAnyInt32Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupAnyWord64Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupAnyWord64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -4475,7 +4574,8 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupAnyWord64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupAnyInt64Ptr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupAnyInt64Ptr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -4522,7 +4622,8 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupAnyInt64Ptr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupAnyFloatPtr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupAnyFloatPtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[16];
     uint_t i = 8;
@@ -4554,7 +4655,8 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupAnyFloatPtr(void)
     return uFailureTotal;
 }
 
-static uint_t BURGER_API TestBurgerLittleEndianFixupAnyDoublePtr(void)
+static uint_t BURGER_API TestBurgerLittleEndianFixupAnyDoublePtr(
+    void) BURGER_NOEXCEPT
 {
     uint8_t Buffer[32];
     uint_t i = 16;
@@ -4597,16 +4699,14 @@ static uint_t BURGER_API TestBurgerLittleEndianFixupAnyDoublePtr(void)
 // Perform all the tests for the Burgerlib Endian Manager
 //
 
-int BURGER_API TestBrendian(uint_t uVerbose)
+int BURGER_API TestBrendian(uint_t uVerbose) BURGER_NOEXCEPT
 {
-    uint_t uTotal; // Assume no failures
-
     if (uVerbose & VERBOSE_MSG) {
         Message("Running Endian tests");
     }
 
     // Test compiler switches
-    uTotal = TestEndianFlags();
+    uint_t uTotal = TestEndianFlags();
 
     TestBurgerSwapEndianTypes();
 

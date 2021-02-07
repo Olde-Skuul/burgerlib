@@ -55,7 +55,7 @@ struct IntTest64_t {
 };
 
 struct FloatToIntTest32_t {
-	Burger::Word32ToFloat m_fInput;		// Source value
+	Burger::uint32_float_t m_fInput;		// Source value
 	Int32 m_iOutput;	// Expected output
 };
 
@@ -164,7 +164,7 @@ static Word BURGER_API TestPowerOf2_64(void)
 			Burger::NumberStringHex Input(pWork->m_uInput);
 			Burger::NumberStringHex Return(uReturn);
 			Burger::NumberStringHex Output(pWork->m_uOutput);
-			ReportFailure("Burger::PowerOf2(0x%s) = 0x%s, expected 0x%s",uTest,Input.GetPtr(),Return.GetPtr(),Output.GetPtr());
+			ReportFailure("Burger::PowerOf2(0x%s) = 0x%s, expected 0x%s",uTest,Input.c_str(),Return.c_str(),Output.c_str());
 		}
 		++pWork;
 	} while (--uCount);
@@ -305,7 +305,7 @@ static Word BURGER_API TestBitReverse_64(void)
 				Burger::NumberStringHex Input(pWork->m_uInput);
 				Burger::NumberStringHex Return(uReturn);
 				Burger::NumberStringHex Output(pWork->m_uOutput);
-				ReportFailure("Burger::BitReverse(0x%s,%u) = 0x%s, expected 0x%s",uTest,Input.GetPtr(),uBitCount,Return.GetPtr(),Output.GetPtr());
+				ReportFailure("Burger::BitReverse(0x%s,%u) = 0x%s, expected 0x%s",uTest,Input.c_str(),uBitCount,Return.c_str(),Output.c_str());
 			}
 			++pWork;
 		} while (--uCount);
@@ -403,7 +403,7 @@ static Word BURGER_API TestBitSetCount_64(void)
 		uFailure |= uTest;
 		if (uTest) {
 			Burger::NumberStringHex Input(pWork->m_uInput);
-			ReportFailure("Burger::BitSetCount(0x%s) = 0x%08X, expected 0x%08X",uTest,Input.GetPtr(),uReturn,uToTest);
+			ReportFailure("Burger::BitSetCount(0x%s) = 0x%08X, expected 0x%08X",uTest,Input.c_str(),uReturn,uToTest);
 		}
 		++pWork;
 	} while (--uCount);
@@ -1395,7 +1395,7 @@ static Word BURGER_API TestAbs64(void)
 			Burger::NumberStringHex Text1(static_cast<Word64>(pWork->m_iInput));
 			Burger::NumberStringHex Text2(static_cast<Word64>(iReturn));
 			Burger::NumberStringHex Text3(static_cast<Word64>(pWork->m_iOutput));
-			ReportFailure("Burger::Abs((Int64)0x%s) = 0x%s, expected 0x%s",uTest,Text1.GetPtr(),Text2.GetPtr(),Text3.GetPtr());
+			ReportFailure("Burger::Abs((Int64)0x%s) = 0x%s, expected 0x%s",uTest,Text1.c_str(),Text2.c_str(),Text3.c_str());
 		}
 		++pWork;
 	} while (--uCount);
@@ -1517,7 +1517,7 @@ static Word BURGER_API TestSign64(void)
 			Burger::NumberStringHex Text1(static_cast<Word64>(pWork->m_iInput));
 			Burger::NumberStringHex Text2(static_cast<Word64>(iReturn));
 			Burger::NumberStringHex Text3(static_cast<Word64>(pWork->m_iOutput));
-			ReportFailure("Burger::Sign((Int64)0x%s) = 0x%s, expected 0x%s",uTest,Text1.GetPtr(),Text2.GetPtr(),Text3.GetPtr());
+			ReportFailure("Burger::Sign((Int64)0x%s) = 0x%s, expected 0x%s",uTest,Text1.c_str(),Text2.c_str(),Text3.c_str());
 		}
 		++pWork;
 	} while (--uCount);

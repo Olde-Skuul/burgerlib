@@ -242,10 +242,18 @@
 
 #endif
 
-#if defined(BURGER_HAS_SFINAE) || defined(DOXYGEN)
-#define BURGER_EMPTY_TEMPLATE_DECLARATION template<>
-#else
-#define BURGER_EMPTY_TEMPLATE_DECLARATION
+// Disable ``noexcept`` used with no exception handling mode specified
+#if (BURGER_MSVC >= 190000000)
+#pragma warning(disable : 4577)
+#endif
+
+#if defined(BURGER_WATCOM)
+// Conditional expression is always true
+#pragma warning 367 9
+// Conditional expression is always false
+#pragma warning 368 9
+// Conditional expression is always false (zero)
+#pragma warning 690 9
 #endif
 
 /***************************************
@@ -729,7 +737,7 @@
 
 // Set the inline keyword
 
-#if (BURGER_MSVC >= 12000000) || defined(BURGER_INTEL_COMPILER) || \
+#if (BURGER_MSVC >= 120000000) || defined(BURGER_INTEL_COMPILER) || \
     defined(BURGER_MINGW)
 #define BURGER_INLINE __forceinline
 
@@ -768,7 +776,7 @@
 #endif
 
 // Attribute printf format
-#if (BURGER_GNUC >= 20300) || __has_attribute(format)
+#if (BURGER_GNUC >= 20300) || __has_attribute(format) || defined(DOXYGEN)
 #define BURGER_PRINTF_ATTRIBUTE(_index, _check) \
     __attribute__((format(printf, _index, _check)))
 #else
@@ -1469,11 +1477,7 @@ typedef intptr_t IntPtr;
 /* END */
 
 #if (BURGER_MSVC >= 192000000)
-#pragma warning(disable : 26446 26472 26481 26482 26485 26490)
-#endif
-
-#if (BURGER_MSVC >= 190000000)
-#pragma warning(disable : 4577)
+#pragma warning(disable : 26429 26446 26472 26481 26482 26485 26490)
 #endif
 
 #endif

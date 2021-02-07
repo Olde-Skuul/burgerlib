@@ -29,18 +29,18 @@
 
 
 //
-// Convert a float into an entry for Word32ToFloat
+// Convert a float into an entry for uint32_float_t
 //
 
 static void BURGER_API OutputAsHex(
 	Burger::OutputMemoryStream* pOutput, float fInput)
 {
-	Burger::Word32ToFloat Converter;
+	Burger::uint32_float_t Converter;
 	Converter.f = fInput;
 	// Print the value in hex
 	Burger::NumberStringHex Hexit(Converter.w);
 	pOutput->Append("{0x");
-	pOutput->Append(Hexit.GetPtr());
+	pOutput->Append(Hexit.c_str());
 	pOutput->Append("}");
 }
 
@@ -51,7 +51,7 @@ static void BURGER_API OutputAsHex(
 static void BURGER_API OutputArrayAsHex(
 	const char* pName, const float* pInput, WordPtr uLength)
 {
-	Message("const Burger::Word32ToFloat Burger::%s[%u] = {", pName,
+	Message("const Burger::uint32_float_t Burger::%s[%u] = {", pName,
 		static_cast<Word>(uLength));
 
 	Burger::OutputMemoryStream Output;
@@ -87,7 +87,7 @@ static void BURGER_API OutputArrayAsHex(
 static void BURGER_API Output2DArrayAsHex(
 	const char* pName, const float* pInput, WordPtr uLength1, WordPtr uLength2)
 {
-	Message("const Burger::Word32ToFloat Burger::%s[%u][%u] = {", pName,
+    Message("const Burger::uint32_float_t Burger::%s[%u][%u] = {", pName,
 		static_cast<Word>(uLength1), static_cast<Word>(uLength2));
 	Message("{");
 	Burger::OutputMemoryStream Output;
@@ -145,7 +145,7 @@ static void BURGER_API OutputArrayAsUnsigned(
 		} else {
 			Burger::NumberStringHex Num(pInput[0]);
 			Output.Append("0x");
-			Output.Append(Num.GetPtr());
+			Output.Append(Num.c_str());
 		}
 		if ((uCounter & uMask) == uMask || uCounter == (uLength - 1)) {
 			if (uCounter != (uLength - 1)) {
@@ -263,7 +263,7 @@ static void BURGER_API CreateSinConstants(void)
 	Output.Append("#if !defined(BURGER_X86) && !defined(BURGER_MACOSX)\n");
 	Output.Append("\tstatic const\n");
 	Output.Append("#endif\n");
-	Output.Append("Burger::Word32ToFloat g_fSineFactors[11] = {\n");
+	Output.Append("Burger::uint32_float_t g_fSineFactors[11] = {\n");
 	i = 0;
 	do {
 		if ((i%5)==0) {
@@ -286,7 +286,7 @@ static void BURGER_API CreateSinConstants(void)
 	Output.Append("#if !defined(BURGER_X86) && !defined(BURGER_MACOSX)\n");
 	Output.Append("\tstatic const\n");
 	Output.Append("#endif\n");
-	Output.Append("Burger::Word32ToFloat g_fInverseSineFactors[11] = {\n");
+	Output.Append("Burger::uint32_float_t g_fInverseSineFactors[11] = {\n");
 	i = 0;
 	do {
 		if ((i%5)==0) {
@@ -313,7 +313,7 @@ static void BURGER_API CreateSinConstants(void)
 	Output.Append("#if !defined(BURGER_X86) && !defined(BURGER_MACOSX)\n");
 	Output.Append("\tstatic const\n");
 	Output.Append("#endif\n");
-	Output.Append("Burger::Word64ToDouble g_dSineFactors[11] = {\n");
+	Output.Append("Burger::uint64_double_t g_dSineFactors[11] = {\n");
 	i = 0;
 	do {
 		if ((i%5)==0) {
@@ -336,7 +336,7 @@ static void BURGER_API CreateSinConstants(void)
 	Output.Append("#if !defined(BURGER_X86) && !defined(BURGER_MACOSX)\n");
 	Output.Append("\tstatic const\n");
 	Output.Append("#endif\n");
-	Output.Append("Burger::Word64ToDouble g_dInverseSineFactors[11] = {\n");
+	Output.Append("Burger::uint64_double_t g_dInverseSineFactors[11] = {\n");
 	i = 0;
 	do {
 		if ((i%5)==0) {
@@ -399,7 +399,7 @@ static void BURGER_API CreateCosConstants(void)
 	Output.Append("#if !defined(BURGER_X86) && !defined(BURGER_MACOSX)\n");
 	Output.Append("\tstatic const\n");
 	Output.Append("#endif\n");
-	Output.Append("Burger::Word32ToFloat g_fCosineFactors[11] = {\n");
+	Output.Append("Burger::uint32_float_t g_fCosineFactors[11] = {\n");
 	i = 0;
 	do {
 		if ((i%5)==0) {
@@ -422,7 +422,7 @@ static void BURGER_API CreateCosConstants(void)
 	Output.Append("#if !defined(BURGER_X86) && !defined(BURGER_MACOSX)\n");
 	Output.Append("\tstatic const\n");
 	Output.Append("#endif\n");
-	Output.Append("Burger::Word32ToFloat g_fInverseCosineFactors[11] = {\n");
+	Output.Append("Burger::uint32_float_t g_fInverseCosineFactors[11] = {\n");
 	i = 0;
 	do {
 		if ((i%5)==0) {
@@ -449,7 +449,7 @@ static void BURGER_API CreateCosConstants(void)
 	Output.Append("#if !defined(BURGER_X86) && !defined(BURGER_MACOSX)\n");
 	Output.Append("\tstatic const\n");
 	Output.Append("#endif\n");
-	Output.Append("Burger::Word64ToDouble g_dCosineFactors[11] = {\n");
+	Output.Append("Burger::uint64_double_t g_dCosineFactors[11] = {\n");
 	i = 0;
 	do {
 		if ((i%5)==0) {
@@ -472,7 +472,7 @@ static void BURGER_API CreateCosConstants(void)
 	Output.Append("#if !defined(BURGER_X86) && !defined(BURGER_MACOSX)\n");
 	Output.Append("\tstatic const\n");
 	Output.Append("#endif\n");
-	Output.Append("Burger::Word64ToDouble g_dInverseCosineFactors[11] = {\n");
+	Output.Append("Burger::uint64_double_t g_dInverseCosineFactors[11] = {\n");
 	i = 0;
 	do {
 		if ((i%5)==0) {
@@ -815,7 +815,7 @@ static void BURGER_API CreateEulerRotations(void)
 
 static void BURGER_API CreateSqrtGuesses(void)
 {
-	Message("static const Burger::Word32ToFloat g_PPCSqrtGuess[2][256][2] = {{");
+	Message("static const Burger::uint32_float_t g_PPCSqrtGuess[2][256][2] = {{");
 
 	Burger::OutputMemoryStream Output;
 
@@ -1735,7 +1735,7 @@ Input.Clear();
 
 using namespace Burger;
 
-static WordPtr BURGER_API Code(void* pInput)
+static WordPtr BURGER_API Code(void* pInput) BURGER_NOEXCEPT
 {
 	++static_cast<Word*>(pInput)[0];
 	return 12345;

@@ -818,7 +818,7 @@ __asm__(
 #endif
 
 // Terms for Cos3Digits()
-static const Burger::Word32ToFloat g_fCos3DigitsValues[9] = {
+static const Burger::uint32_float_t g_fCos3DigitsValues[9] = {
     {0x00000000}, // 0.0
     {0x40490FDB}, // PI
     {0xC0490FDB}, // -PI
@@ -894,7 +894,7 @@ float BURGER_API Burger::Sin3Digits(float fInput) BURGER_NOEXCEPT
 }
 
 // Terms for Cos5Digits()
-static const Burger::Word32ToFloat g_fCos5DigitsValues[10] = {
+static const Burger::uint32_float_t g_fCos5DigitsValues[10] = {
     {0x00000000}, // 0.0
     {0x40490FDB}, // PI
     {0xC0490FDB}, // -PI
@@ -972,7 +972,7 @@ float BURGER_API Burger::Sin5Digits(float fInput) BURGER_NOEXCEPT
     return Cos5Digits(static_cast<float>(BURGER_PI * 0.5f) - fInput);
 }
 
-static const Burger::Word32ToFloat g_fSinefCosfValues[11] = {
+static const Burger::uint32_float_t g_fSinefCosfValues[11] = {
     {0x3FA2F983}, // 4.0 / BURGER_PI (Division by PI/4)
     {0x3F800000}, // 1.0
     {0xBF800000}, // -1.0
@@ -1138,7 +1138,7 @@ float BURGER_API Burger::Cos6Digits(float fInput) BURGER_NOEXCEPT
 ***************************************/
 
 // 3!, 5!, to 23!
-// static const Burger::Word32ToFloat g_fSineFactors[11] = {
+// static const Burger::uint32_float_t g_fSineFactors[11] = {
 //	{0xC0C00000},{0x42F00000},{0xC59D8000},{0x48B13000},{0xCC184540},
 //	{0x4FB99466},{0xD3983BBC},{0x57A1BF77},{0xDBD815CA},{0x603141DF},
 //	{0xE4AF2E1A}
@@ -1146,7 +1146,7 @@ float BURGER_API Burger::Cos6Digits(float fInput) BURGER_NOEXCEPT
 
 // 1/3!, 1/5!, to 1/23!
 
-static const BURGER_USED Burger::Word32ToFloat g_fInverseSineFactors[11] = {
+static const BURGER_USED Burger::uint32_float_t g_fInverseSineFactors[11] = {
     {0xBE2AAAAB}, {0x3C088889}, {0xB9500D01}, {0x3638EF1D}, {0xB2D7322B},
     {0x2F309231}, {0xAB573F9F}, {0x274A963C}, {0xA317A4DA}, {0x1EB8DC78},
     {0x9A3B0DA1}};
@@ -1369,14 +1369,14 @@ float BURGER_API Burger::Sin(float fInput) BURGER_NOEXCEPT
 ***************************************/
 
 // 2!, 4!, to 22!
-// static const Burger::Word32ToFloat g_fCosineFactors[11] = {
+// static const Burger::uint32_float_t g_fCosineFactors[11] = {
 //	{0xC0000000},{0x41C00000},{0xC4340000},{0x471D8000},{0xCA5D7C00},
 //	{0x4DE467E0},{0xD1A261D9},{0x55983BBC},{0xD9B5F766},{0x5E070D9E},
 //	{0xE273BA93}
 //};
 
 // 1/2!, 1/4!, to 1/22!
-static const BURGER_USED Burger::Word32ToFloat g_fInverseCosineFactors[11] = {
+static const BURGER_USED Burger::uint32_float_t g_fInverseCosineFactors[11] = {
     {0xBF000000}, {0x3D2AAAAB}, {0xBAB60B61}, {0x37D00D01}, {0xB493F27E},
     {0x310F76C7}, {0xAD49CBA5}, {0x29573F9F}, {0xA53413C3}, {0x20F2A15D},
     {0x9C8671CB}};
@@ -1576,7 +1576,7 @@ float BURGER_API Burger::Cos(float fInput) BURGER_NOEXCEPT
 #endif
 // clang-format on
 
-static const Burger::Word64ToDouble g_fxcosf7Values[11] = {
+static const Burger::uint64_double_t g_fxcosf7Values[11] = {
     {0x0000000000000000ULL}, // 0.0
     {0x400921FB54442D18ULL}, // PI
     {0xC00921FB54442D18ULL}, // -PI
@@ -1657,7 +1657,7 @@ double BURGER_API Burger::Sin7Digits(double dInput) BURGER_NOEXCEPT
     return Cos7Digits((BURGER_PI * 0.5) - dInput);
 }
 
-static const Burger::Word64ToDouble g_fxcosf12Values[13] = {
+static const Burger::uint64_double_t g_fxcosf12Values[13] = {
     {0x0000000000000000ULL}, // 0.0
     {0x400921FB54442D18ULL}, // PI
     {0xC00921FB54442D18ULL}, // -PI
@@ -1760,14 +1760,14 @@ double BURGER_API Burger::Sin12Digits(double dInput) BURGER_NOEXCEPT
 ***************************************/
 
 // 3!, 5!, to 23!
-// static const Burger::Word64ToDouble g_dSineFactors[11] = {
+// static const Burger::uint64_double_t g_dSineFactors[11] = {
 //	{0xC018000000000000ULL},{0x405E000000000000ULL},{0xC0B3B00000000000ULL},{0x4116260000000000ULL},{0xC18308A800000000ULL},
 //	{0x41F7328CC0000000ULL},{0xC273077775800000ULL},{0x42F437EEECD80000ULL},{0xC37B02B930689000ULL},{0x4406283BE9B5C620ULL},
 //	{0xC495E5C335F8A4CEULL}
 //};
 
 // 1/3!, 1/5!, to 1/23!
-static const Burger::Word64ToDouble g_dInverseSineFactors[11] = {
+static const Burger::uint64_double_t g_dInverseSineFactors[11] = {
     {0xBFC5555555555555ULL}, {0x3F81111111111111ULL}, {0xBF2A01A01A01A01AULL},
     {0x3EC71DE3A556C734ULL}, {0xBE5AE64567F544E4ULL}, {0x3DE6124613A86D09ULL},
     {0xBD6AE7F3E733B81FULL}, {0x3CE952C77030AD4AULL}, {0xBC62F49B46814157ULL},
@@ -1926,14 +1926,14 @@ double BURGER_API Burger::Sin18Digits(double dInput) BURGER_NOEXCEPT
 //#if !defined(BURGER_X86) && !defined(BURGER_MACOSX)
 // static const
 //#endif
-// Burger::Word64ToDouble g_dCosineFactors[11] = {
+// Burger::uint64_double_t g_dCosineFactors[11] = {
 //	{0xC000000000000000ULL},{0x4038000000000000ULL},{0xC086800000000000ULL},{0x40E3B00000000000ULL},{0xC14BAF8000000000ULL},
 //	{0x41BC8CFC00000000ULL},{0xC2344C3B28000000ULL},{0x42B3077775800000ULL},{0xC336BEECCA730000ULL},{0x43C0E1B3BE415A00ULL},
 //	{0xC44E77526159F06CULL}
 //};
 // 1/2!, 1/4!, to 1/22!
 
-static const Burger::Word64ToDouble g_dInverseCosineFactors[11] = {
+static const Burger::uint64_double_t g_dInverseCosineFactors[11] = {
     {0xBFE0000000000000ULL}, {0x3FA5555555555555ULL}, {0xBF56C16C16C16C17ULL},
     {0x3EFA01A01A01A01AULL}, {0xBE927E4FB7789F5CULL}, {0x3E21EED8EFF8D898ULL},
     {0xBDA93974A8C07C9DULL}, {0x3D2AE7F3E733B81FULL}, {0xBCA6827863B97D97ULL},
@@ -2065,7 +2065,7 @@ double BURGER_API Burger::Cos18Digits(double dInput) BURGER_NOEXCEPT
 }
 #endif
 
-static const Burger::Word64ToDouble g_fxcosf20Values[16] = {
+static const Burger::uint64_double_t g_fxcosf20Values[16] = {
     {0x0000000000000000ULL}, // 0.0
     {0x400921FB54442D18ULL}, // PI
     {0xC00921FB54442D18ULL}, // -PI

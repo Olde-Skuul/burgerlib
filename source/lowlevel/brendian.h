@@ -23,6 +23,10 @@
 #include "brintrinsics.h"
 #endif
 
+#ifndef __BRALGORITHM_H__
+#include "bralgorithm.h"
+#endif
+
 /* BEGIN */
 
 // Undocumented feature of the Metrowerks compiler.

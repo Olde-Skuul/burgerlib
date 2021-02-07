@@ -60,222 +60,10 @@ extern const Burger::Float80Bit Pi280bit = {
 
 const uint16_t Burger::g_X86RoundDownFlag =
     0x0F7F; // 8087 control word to round down with 64 bit precision
-const Burger::Word32ToFloat Burger::g_X86OneAndNegOne[2] = {
+const Burger::uint32_float_t Burger::g_X86OneAndNegOne[2] = {
     0x3F000000U, 0xBF000000U};
 
 #endif
-
-/*! ************************************
-
-    \typedef Burger::Float80Bit
-
-    This is a type to abstract the 80-bit floating point data type found in the
-    x8087 and 680x0 math co-processors. Currently, this type is hardly used
-    anymore with the exception of the audio frame rate used in AIFF files.
-
-    Burgerlib only has functions to read and write this format into double and
-    float.
-
-    \note Use of this data type for runtime math is discouraged and only used
-        for x86 code and AIFF audio file support.
-
-***************************************/
-
-/*! ************************************
-
-    \struct Burger::Word32ToFloat
-    \brief Class to create float values with integer constants
-
-    Some "C" compilers are not 100% accurate in creating floating point
-    constants. To get around this limitation, once the binary representation of
-    a floating point number is determined, it will be used to assign the value
-    so the binary representation does not change from compiler to compiler.
-
-    \code
-    // Binary representation for Single Epsilon
-    Burger::Word32ToFloat Epsilon = {0x34000000U};
-
-    void code(void)
-    {
-        // Fetch as a float
-        float fEpsilon = Epsilon;
-
-        // Set a new floating point value
-        Epsilon = 1.5f;
-
-        // Get the binary value as a 32 bit integer
-        uint32_t uEpsilon = Epsilon.GetWord();
-
-        // Set the binary value as a 32 bit integer
-        Epsilon.SetWord(0x34000000U);
-    }
-    \endcode
-
-    \sa Word64ToDouble
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::Word32ToFloat::operator float() const
-    \brief Accessor to load the floating point value
-
-    \sa Word32ToFloat::operator = (float)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::Word32ToFloat::operator = (float fInput)
-    \brief Update with a new floating point value
-
-    \param fInput 32 bit floating point number to store in the union
-    \sa Word32ToFloat::operator float() const
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::Word32ToFloat::GetWord(void) const
-    \brief Accessor to load the 32 bit value in binary
-
-    \return Floating point value as a binary representation in an integer
-    \sa SetWord(uint32_t)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::Word32ToFloat::SetWord(uint32_t uInput)
-    \brief Set the floating point value with a binary representation in an
-        integer
-
-    \param uInput 32 bit integer to store in the union
-    \sa GetWord(void) const
-
-***************************************/
-
-/*! ************************************
-
-    \struct Burger::Word64ToDouble
-    \brief Class to create double values with integer constants
-
-    Some "C" compilers are not 100% accurate in creating floating point
-    constants. To get around this limitation, once the binary representation of
-    a floating point number is determined, it will be used to assign the value
-    so the binary representation does not change from compiler to compiler.
-
-    \code
-    // Binary representation for Double Epsilon
-    Burger::Word64ToDouble Epsilon = {0x3CB0000000000000ULL};
-
-    void code(void)
-    {
-        // Fetch as a float
-        double dEpsilon = Epsilon;
-
-        // Set a new floating point value
-        Epsilon = 1.5;
-
-        // Get the binary value as a 64 bit integer
-        uint64_t uEpsilon = Epsilon.GetWord();
-
-        // Set the binary value as a 64 bit integer
-        Epsilon.SetWord(0x3CB0000000000000ULL);
-
-        // Get the binary value as 32 bit integers
-        uint32_t uLowEpsilon = Epsilon.GetLowWord();
-        uint32_t uHiEpsilon = Epsilon.GetHiWord();
-
-        // Set the binary value as 32 bit integers
-        Epsilon.SetLowWord(0x00000000U);
-        Epsilon.SetHiWord(0x3CB00000U);
-    }
-    \endcode
-
-    \sa Word32ToFloat
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::Word64ToDouble::operator double() const
-    \brief Accessor to load the double precision floating point value
-
-    \sa Word64ToDouble::operator = (double)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::Word64ToDouble::operator = (double dInput)
-    \brief Update with a new floating point value
-
-    \param dInput 64 bit floating point number to store in the union
-    \sa Word64ToDouble::operator double() const
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::Word64ToDouble::GetWord(void) const
-    \brief Accessor to load the 64 bit value in binary
-
-    \return Floating point value as a binary representation in an integer
-    \sa SetWord(uint64_t), SetLowWord(uint32_t) or SetHiWord(uint32_t)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::Word64ToDouble::SetWord(uint64_t uInput)
-    \brief Set the floating point value with a binary representation in an
-        integer
-
-    \param uInput 64 bit integer to store in the union
-    \sa GetWord(void) const, GetLowWord(void) const or GetHiWord(void) const
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::Word64ToDouble::GetLowWord(void) const
-    \brief Accessor to load the low 32 bits of the 64 bit word
-
-    \return Lower 32 bits of the 64 bit word
-    \sa GetHiWord(void) const or SetLowWord(uint32_t)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::Word64ToDouble::GetHiWord(void) const
-    \brief Accessor to load the upper 32 bits of the 64 bit word
-
-    \return Upper 32 bits of the 64 bit word
-    \sa GetLowWord(void) const or SetHiWord(uint32_t)
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::Word64ToDouble::SetLowWord(uint32_t uInput)
-    \brief Accessor to load the low 32 bits of the 64 bit word
-
-    \param uInput 32 bit integer to store in the low 32 bits of the double
-    \sa SetHiWord(uint32_t) or GetLowWord(void) const
-
-***************************************/
-
-/*! ************************************
-
-    \fn Burger::Word64ToDouble::SetHiWord(uint32_t uInput)
-    \brief Accessor to load the low 32 bits of the 64 bit word
-
-    \param uInput 32 bit integer to store in the upper 32 bits of the double
-    \sa SetLowWord(uint32_t) or GetHiWord(void) const
-
-***************************************/
 
 /*! ************************************
 
@@ -480,108 +268,108 @@ const Burger::Word32ToFloat Burger::g_X86OneAndNegOne[2] = {
 
 ***************************************/
 
-const Burger::Word64ToDouble Burger::g_dOne = {0x3FF0000000000000ULL};
-const Burger::Word64ToDouble Burger::g_dNegOne = {0xBFF0000000000000ULL};
-const Burger::Word64ToDouble Burger::g_dHalf = {0x3FE0000000000000ULL};
-const Burger::Word64ToDouble Burger::g_dNegHalf = {0xBFE0000000000000ULL};
-const Burger::Word64ToDouble Burger::g_dInf = {0x7FF0000000000000ULL};
-const Burger::Word64ToDouble Burger::g_dNegInf = {0xFFF0000000000000ULL};
-const Burger::Word64ToDouble Burger::g_dNan = {0x7FF7FFFFFFFFFFFFULL};
-const Burger::Word64ToDouble Burger::g_dNegNan = {0xFFF7FFFFFFFFFFFFULL};
-const Burger::Word64ToDouble Burger::g_dQNan = {0x7FFFFFFFFFFFFFFFULL};
-const Burger::Word64ToDouble Burger::g_dNegQNan = {0xFFFFFFFFFFFFFFFFULL};
-const Burger::Word64ToDouble Burger::g_dMin = {0x0010000000000000ULL};
-const Burger::Word64ToDouble Burger::g_dNegMin = {0x8010000000000000ULL};
-const Burger::Word64ToDouble Burger::g_dMax = {0x7FEFFFFFFFFFFFFFULL};
-const Burger::Word64ToDouble Burger::g_dNegMax = {0xFFEFFFFFFFFFFFFFULL};
-const Burger::Word64ToDouble Burger::g_dMinNoInteger = {0x4330000000000000ULL};
-const Burger::Word64ToDouble Burger::g_dNegMinNoInteger = {
+const Burger::uint64_double_t Burger::g_dOne = {0x3FF0000000000000ULL};
+const Burger::uint64_double_t Burger::g_dNegOne = {0xBFF0000000000000ULL};
+const Burger::uint64_double_t Burger::g_dHalf = {0x3FE0000000000000ULL};
+const Burger::uint64_double_t Burger::g_dNegHalf = {0xBFE0000000000000ULL};
+const Burger::uint64_double_t Burger::g_dInf = {0x7FF0000000000000ULL};
+const Burger::uint64_double_t Burger::g_dNegInf = {0xFFF0000000000000ULL};
+const Burger::uint64_double_t Burger::g_dNan = {0x7FF7FFFFFFFFFFFFULL};
+const Burger::uint64_double_t Burger::g_dNegNan = {0xFFF7FFFFFFFFFFFFULL};
+const Burger::uint64_double_t Burger::g_dQNan = {0x7FFFFFFFFFFFFFFFULL};
+const Burger::uint64_double_t Burger::g_dNegQNan = {0xFFFFFFFFFFFFFFFFULL};
+const Burger::uint64_double_t Burger::g_dMin = {0x0010000000000000ULL};
+const Burger::uint64_double_t Burger::g_dNegMin = {0x8010000000000000ULL};
+const Burger::uint64_double_t Burger::g_dMax = {0x7FEFFFFFFFFFFFFFULL};
+const Burger::uint64_double_t Burger::g_dNegMax = {0xFFEFFFFFFFFFFFFFULL};
+const Burger::uint64_double_t Burger::g_dMinNoInteger = {0x4330000000000000ULL};
+const Burger::uint64_double_t Burger::g_dNegMinNoInteger = {
     0xC330000000000000ULL};
-const Burger::Word64ToDouble Burger::g_dEpsilon = {0x3CB0000000000000ULL};
-const Burger::Word64ToDouble Burger::g_dNegEpsilon = {0xBCB0000000000000ULL};
-const Burger::Word64ToDouble Burger::g_dQuarterPi = {0x3FE921FB54442D18ULL};
-const Burger::Word64ToDouble Burger::g_dNegQuarterPi = {0xBFE921FB54442D18ULL};
-const Burger::Word64ToDouble Burger::g_dHalfPi = {0x3FF921FB54442D18ULL};
-const Burger::Word64ToDouble Burger::g_dNegHalfPi = {0xBFF921FB54442D18ULL};
-const Burger::Word64ToDouble Burger::g_dPi = {0x400921FB54442D18ULL};
-const Burger::Word64ToDouble Burger::g_dNegPi = {0xC00921FB54442D18ULL};
-const Burger::Word64ToDouble Burger::g_dPi2 = {0x401921FB54442D18ULL};
-const Burger::Word64ToDouble Burger::g_dNegPi2 = {0xC01921FB54442D18ULL};
-const Burger::Word64ToDouble Burger::g_dPi4 = {0x402921FB54442D18ULL};
-const Burger::Word64ToDouble Burger::g_dNegPi4 = {0xC02921FB54442D18ULL};
-const Burger::Word64ToDouble Burger::g_dCosPiDiv6 = {0x3FEBB67AE8584CABULL};
-const Burger::Word64ToDouble Burger::g_dNegCosPiDiv6 = {0xBFEBB67AE8584CABULL};
-const Burger::Word64ToDouble Burger::g_dReciprocalHalfPi = {
+const Burger::uint64_double_t Burger::g_dEpsilon = {0x3CB0000000000000ULL};
+const Burger::uint64_double_t Burger::g_dNegEpsilon = {0xBCB0000000000000ULL};
+const Burger::uint64_double_t Burger::g_dQuarterPi = {0x3FE921FB54442D18ULL};
+const Burger::uint64_double_t Burger::g_dNegQuarterPi = {0xBFE921FB54442D18ULL};
+const Burger::uint64_double_t Burger::g_dHalfPi = {0x3FF921FB54442D18ULL};
+const Burger::uint64_double_t Burger::g_dNegHalfPi = {0xBFF921FB54442D18ULL};
+const Burger::uint64_double_t Burger::g_dPi = {0x400921FB54442D18ULL};
+const Burger::uint64_double_t Burger::g_dNegPi = {0xC00921FB54442D18ULL};
+const Burger::uint64_double_t Burger::g_dPi2 = {0x401921FB54442D18ULL};
+const Burger::uint64_double_t Burger::g_dNegPi2 = {0xC01921FB54442D18ULL};
+const Burger::uint64_double_t Burger::g_dPi4 = {0x402921FB54442D18ULL};
+const Burger::uint64_double_t Burger::g_dNegPi4 = {0xC02921FB54442D18ULL};
+const Burger::uint64_double_t Burger::g_dCosPiDiv6 = {0x3FEBB67AE8584CABULL};
+const Burger::uint64_double_t Burger::g_dNegCosPiDiv6 = {0xBFEBB67AE8584CABULL};
+const Burger::uint64_double_t Burger::g_dReciprocalHalfPi = {
     0x3FE45F306DC9C883ULL};
-const Burger::Word64ToDouble Burger::g_dNegReciprocalHalfPi = {
+const Burger::uint64_double_t Burger::g_dNegReciprocalHalfPi = {
     0xBFE45F306DC9C883ULL};
-const Burger::Word64ToDouble Burger::g_dReciprocalPi = {0x3FD45F306DC9C883ULL};
-const Burger::Word64ToDouble Burger::g_dNegReciprocalPi = {
+const Burger::uint64_double_t Burger::g_dReciprocalPi = {0x3FD45F306DC9C883ULL};
+const Burger::uint64_double_t Burger::g_dNegReciprocalPi = {
     0xBFD45F306DC9C883ULL};
-const Burger::Word64ToDouble Burger::g_dReciprocalPi2 = {0x3FC45F306DC9C883ULL};
-const Burger::Word64ToDouble Burger::g_dNegReciprocalPi2 = {
+const Burger::uint64_double_t Burger::g_dReciprocalPi2 = {0x3FC45F306DC9C883ULL};
+const Burger::uint64_double_t Burger::g_dNegReciprocalPi2 = {
     0xBFC45F306DC9C883ULL};
-const Burger::Word64ToDouble Burger::g_dRadiansToDegrees = {
+const Burger::uint64_double_t Burger::g_dRadiansToDegrees = {
     0x404CA5DC1A63C1F8ULL};
-const Burger::Word64ToDouble Burger::g_dNegRadiansToDegrees = {
+const Burger::uint64_double_t Burger::g_dNegRadiansToDegrees = {
     0xC04CA5DC1A63C1F8ULL};
-const Burger::Word64ToDouble Burger::g_dDegreesToRadians = {
+const Burger::uint64_double_t Burger::g_dDegreesToRadians = {
     0x3F91DF46A2529D39ULL};
-const Burger::Word64ToDouble Burger::g_dNegDegreesToRadians = {
+const Burger::uint64_double_t Burger::g_dNegDegreesToRadians = {
     0xBF91DF46A2529D39ULL};
-const Burger::Word64ToDouble Burger::g_dSqrt2 = {0x3FF6A09E667F3BCDULL};
-const Burger::Word64ToDouble Burger::g_dNegSqrt2 = {0xBFF6A09E667F3BCDULL};
-const Burger::Word64ToDouble Burger::g_dLN2 = {0x3FE62E42FEFA39EFULL};
-const Burger::Word64ToDouble Burger::g_dNegLN2 = {0xBFE62E42FEFA39EFULL};
-const Burger::Word64ToDouble Burger::g_dLN10 = {0x40026BB1BBB55516ULL};
-const Burger::Word64ToDouble Burger::g_dNegLN10 = {0xC0026BB1BBB55516ULL};
+const Burger::uint64_double_t Burger::g_dSqrt2 = {0x3FF6A09E667F3BCDULL};
+const Burger::uint64_double_t Burger::g_dNegSqrt2 = {0xBFF6A09E667F3BCDULL};
+const Burger::uint64_double_t Burger::g_dLN2 = {0x3FE62E42FEFA39EFULL};
+const Burger::uint64_double_t Burger::g_dNegLN2 = {0xBFE62E42FEFA39EFULL};
+const Burger::uint64_double_t Burger::g_dLN10 = {0x40026BB1BBB55516ULL};
+const Burger::uint64_double_t Burger::g_dNegLN10 = {0xC0026BB1BBB55516ULL};
 
-const Burger::Word32ToFloat Burger::g_fOne = {0x3F800000U};
-const Burger::Word32ToFloat Burger::g_fNegOne = {0xBF800000U};
-const Burger::Word32ToFloat Burger::g_fHalf = {0x3F000000U};
-const Burger::Word32ToFloat Burger::g_fNegHalf = {0xBF000000U};
-const Burger::Word32ToFloat Burger::g_fInf = {0x7F800000U};
-const Burger::Word32ToFloat Burger::g_fNegInf = {0xFF800000U};
-const Burger::Word32ToFloat Burger::g_fNan = {0x7FBFFFFFU};
-const Burger::Word32ToFloat Burger::g_fNegNan = {0xFFBFFFFFU};
-const Burger::Word32ToFloat Burger::g_fQNan = {0x7FFFFFFFU};
-const Burger::Word32ToFloat Burger::g_fNegQNan = {0xFFFFFFFFU};
-const Burger::Word32ToFloat Burger::g_fMin = {0x00800000U};
-const Burger::Word32ToFloat Burger::g_fNegMin = {0x80800000U};
-const Burger::Word32ToFloat Burger::g_fMax = {0x7F7FFFFFU};
-const Burger::Word32ToFloat Burger::g_fNegMax = {0xFF7FFFFFU};
-const Burger::Word32ToFloat Burger::g_fMinNoInteger = {0x4B000000};
-const Burger::Word32ToFloat Burger::g_fNegMinNoInteger = {0xCB000000};
-const Burger::Word32ToFloat Burger::g_fEpsilon = {0x34000000U};
-const Burger::Word32ToFloat Burger::g_fNegEpsilon = {0xB4000000U};
-const Burger::Word32ToFloat Burger::g_fQuarterPi = {0x3F490FDB};
-const Burger::Word32ToFloat Burger::g_fNegQuarterPi = {0xBF490FDB};
-const Burger::Word32ToFloat Burger::g_fHalfPi = {0x3FC90FDB};
-const Burger::Word32ToFloat Burger::g_fNegHalfPi = {0xBFC90FDB};
-const Burger::Word32ToFloat Burger::g_fPi = {0x40490FDB};
-const Burger::Word32ToFloat Burger::g_fNegPi = {0xC0490FDB};
-const Burger::Word32ToFloat Burger::g_fPi2 = {0x40C90FDB};
-const Burger::Word32ToFloat Burger::g_fNegPi2 = {0xC0C90FDB};
-const Burger::Word32ToFloat Burger::g_fPi4 = {0x41490FDB};
-const Burger::Word32ToFloat Burger::g_fNegPi4 = {0xC1490FDB};
-const Burger::Word32ToFloat Burger::g_fCosPiDiv6 = {0x3F5DB3D7};
-const Burger::Word32ToFloat Burger::g_fNegCosPiDiv6 = {0xBF5DB3D7};
-const Burger::Word32ToFloat Burger::g_fReciprocalHalfPi = {0x3F22F983};
-const Burger::Word32ToFloat Burger::g_fNegReciprocalHalfPi = {0xBF22F983};
-const Burger::Word32ToFloat Burger::g_fReciprocalPi = {0x3EA2F983};
-const Burger::Word32ToFloat Burger::g_fNegReciprocalPi = {0xBEA2F983};
-const Burger::Word32ToFloat Burger::g_fReciprocalPi2 = {0x3E22F983};
-const Burger::Word32ToFloat Burger::g_fNegReciprocalPi2 = {0xBE22F983};
-const Burger::Word32ToFloat Burger::g_fRadiansToDegrees = {0x42652EE1};
-const Burger::Word32ToFloat Burger::g_fNegRadiansToDegrees = {0xC2652EE1};
-const Burger::Word32ToFloat Burger::g_fDegreesToRadians = {0x3C8EFA35};
-const Burger::Word32ToFloat Burger::g_fNegDegreesToRadians = {0xBC8EFA35};
-const Burger::Word32ToFloat Burger::g_fSqrt2 = {0x3FB504F3};
-const Burger::Word32ToFloat Burger::g_fNegSqrt2 = {0xBFB504F3};
-const Burger::Word32ToFloat Burger::g_fLN2 = {0x3F317218};
-const Burger::Word32ToFloat Burger::g_fNegLN2 = {0xBF317218};
-const Burger::Word32ToFloat Burger::g_fLN10 = {0x40135D8E};
-const Burger::Word32ToFloat Burger::g_fNegLN10 = {0xC0135D8E};
+const Burger::uint32_float_t Burger::g_fOne = {0x3F800000U};
+const Burger::uint32_float_t Burger::g_fNegOne = {0xBF800000U};
+const Burger::uint32_float_t Burger::g_fHalf = {0x3F000000U};
+const Burger::uint32_float_t Burger::g_fNegHalf = {0xBF000000U};
+const Burger::uint32_float_t Burger::g_fInf = {0x7F800000U};
+const Burger::uint32_float_t Burger::g_fNegInf = {0xFF800000U};
+const Burger::uint32_float_t Burger::g_fNan = {0x7FBFFFFFU};
+const Burger::uint32_float_t Burger::g_fNegNan = {0xFFBFFFFFU};
+const Burger::uint32_float_t Burger::g_fQNan = {0x7FFFFFFFU};
+const Burger::uint32_float_t Burger::g_fNegQNan = {0xFFFFFFFFU};
+const Burger::uint32_float_t Burger::g_fMin = {0x00800000U};
+const Burger::uint32_float_t Burger::g_fNegMin = {0x80800000U};
+const Burger::uint32_float_t Burger::g_fMax = {0x7F7FFFFFU};
+const Burger::uint32_float_t Burger::g_fNegMax = {0xFF7FFFFFU};
+const Burger::uint32_float_t Burger::g_fMinNoInteger = {0x4B000000};
+const Burger::uint32_float_t Burger::g_fNegMinNoInteger = {0xCB000000};
+const Burger::uint32_float_t Burger::g_fEpsilon = {0x34000000U};
+const Burger::uint32_float_t Burger::g_fNegEpsilon = {0xB4000000U};
+const Burger::uint32_float_t Burger::g_fQuarterPi = {0x3F490FDB};
+const Burger::uint32_float_t Burger::g_fNegQuarterPi = {0xBF490FDB};
+const Burger::uint32_float_t Burger::g_fHalfPi = {0x3FC90FDB};
+const Burger::uint32_float_t Burger::g_fNegHalfPi = {0xBFC90FDB};
+const Burger::uint32_float_t Burger::g_fPi = {0x40490FDB};
+const Burger::uint32_float_t Burger::g_fNegPi = {0xC0490FDB};
+const Burger::uint32_float_t Burger::g_fPi2 = {0x40C90FDB};
+const Burger::uint32_float_t Burger::g_fNegPi2 = {0xC0C90FDB};
+const Burger::uint32_float_t Burger::g_fPi4 = {0x41490FDB};
+const Burger::uint32_float_t Burger::g_fNegPi4 = {0xC1490FDB};
+const Burger::uint32_float_t Burger::g_fCosPiDiv6 = {0x3F5DB3D7};
+const Burger::uint32_float_t Burger::g_fNegCosPiDiv6 = {0xBF5DB3D7};
+const Burger::uint32_float_t Burger::g_fReciprocalHalfPi = {0x3F22F983};
+const Burger::uint32_float_t Burger::g_fNegReciprocalHalfPi = {0xBF22F983};
+const Burger::uint32_float_t Burger::g_fReciprocalPi = {0x3EA2F983};
+const Burger::uint32_float_t Burger::g_fNegReciprocalPi = {0xBEA2F983};
+const Burger::uint32_float_t Burger::g_fReciprocalPi2 = {0x3E22F983};
+const Burger::uint32_float_t Burger::g_fNegReciprocalPi2 = {0xBE22F983};
+const Burger::uint32_float_t Burger::g_fRadiansToDegrees = {0x42652EE1};
+const Burger::uint32_float_t Burger::g_fNegRadiansToDegrees = {0xC2652EE1};
+const Burger::uint32_float_t Burger::g_fDegreesToRadians = {0x3C8EFA35};
+const Burger::uint32_float_t Burger::g_fNegDegreesToRadians = {0xBC8EFA35};
+const Burger::uint32_float_t Burger::g_fSqrt2 = {0x3FB504F3};
+const Burger::uint32_float_t Burger::g_fNegSqrt2 = {0xBFB504F3};
+const Burger::uint32_float_t Burger::g_fLN2 = {0x3F317218};
+const Burger::uint32_float_t Burger::g_fNegLN2 = {0xBF317218};
+const Burger::uint32_float_t Burger::g_fLN10 = {0x40135D8E};
+const Burger::uint32_float_t Burger::g_fNegLN10 = {0xC0135D8E};
 
 /*! ************************************
 
@@ -1146,7 +934,7 @@ double BURGER_API Burger::Abs(double dInput) BURGER_NOEXCEPT
 // is the reciprocal average / 2
 //
 
-static const Burger::Word32ToFloat g_PPCSqrtGuess[2][256][2] = {
+static const Burger::uint32_float_t g_PPCSqrtGuess[2][256][2] = {
     {{{0x3F353229}, {0x3F34D7D4}}, {{0x3F358C7F}, {0x3F347DD8}},
         {{0x3F35E6A7}, {0x3F342462}}, {{0x3F3640A3}, {0x3F33CB71}},
         {{0x3F369A73}, {0x3F337303}}, {{0x3F36F416}, {0x3F331B17}},
@@ -1430,7 +1218,7 @@ float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 
             // Get the binary form of the sqrt
             // fInputMem is used to keep fInput from being mapped to memory
-            Word32ToFloat fInputMem;
+            uint32_float_t fInputMem;
             fInputMem = fInput;
             uint32_t uInput = fInputMem.GetWord();
 
@@ -1547,7 +1335,7 @@ float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 {
     // Convert to binary
-    Word32ToFloat Convert;
+    uint32_float_t Convert;
     Convert = fInput;
     uint32_t uInput = Convert.GetWord();
 
@@ -1694,7 +1482,7 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 
             // Get the binary form of the sqrt
             // fInputMem is used to keep fInput from being mapped to memory
-            Word64ToDouble dInputMem;
+            uint64_double_t dInputMem;
             dInputMem = dInput;
             uint32_t uInputHi = dInputMem.GetHiWord();
 
@@ -1822,7 +1610,7 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 {
     // Convert to binary
-    Word64ToDouble Converter;
+    uint64_double_t Converter;
     Converter = dInput;
     uint32_t uInputLow = Converter.GetLowWord();
     uint32_t uInputHigh = Converter.GetHiWord();
@@ -3780,7 +3568,7 @@ BURGER_ASM float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
 
 float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
 {
-    Word32ToFloat Converter;
+    uint32_float_t Converter;
     Converter.f = fInput;
 
     // Get the binary form of the input
@@ -3984,7 +3772,7 @@ BURGER_ASM double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
 
 double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
 {
-    Word64ToDouble Converter;
+    uint64_double_t Converter;
     Converter.d = dInput;
 
     // Get the binary form of the input

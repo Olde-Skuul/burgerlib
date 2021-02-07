@@ -379,6 +379,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brstring.obj &
 	$(A)/brstring16.obj &
 	$(A)/brstringfunctions.obj &
+	$(A)/brstructs.obj &
 	$(A)/brtexture.obj &
 	$(A)/brtextureopengl.obj &
 	$(A)/brtick.obj &

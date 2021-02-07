@@ -47,6 +47,38 @@ struct size_type {
 };
 }
 
+template<bool B, class T, class F>
+struct conditional {
+    /** Type for false condition */
+    typedef F type;
+};
+
+template<class T, class F>
+struct conditional<true, T, F> {
+    /** Type for true condition */
+    typedef T type;
+};
+
+#if !defined(BURGER_WATCOM)
+template<bool B, class T = void>
+struct enable_if {
+};
+
+template<class T>
+struct enable_if<true, T> {
+    typedef T type;
+};
+
+template<bool B, class T = void>
+struct disable_if {
+};
+
+template<class T>
+struct disable_if<false, T> {
+    typedef T type;
+};
+#endif
+
 template<class T, T _Value>
 struct integral_constant {
 
@@ -56,7 +88,7 @@ struct integral_constant {
     /** Encapsulated type */
     typedef T value_type;
 
-    /** Instanciated type of this template */
+    /** Instantiated type of this template */
     typedef integral_constant<T, _Value> type;
 
     BURGER_INLINE BURGER_CONSTEXPR operator T() const BURGER_NOEXCEPT
@@ -107,7 +139,7 @@ struct ice_and {
     };
 };
 
-BURGER_EMPTY_TEMPLATE_DECLARATION
+template<>
 struct ice_and<true, true, true, true, true, true, true> {
     enum { value = true };
 };
@@ -123,7 +155,7 @@ struct ice_or {
     };
 };
 
-BURGER_EMPTY_TEMPLATE_DECLARATION
+template<>
 struct ice_or<false, false, false, false, false, false, false> {
     enum { value = false };
 };
@@ -149,7 +181,7 @@ struct ice_not {
     };
 };
 
-BURGER_EMPTY_TEMPLATE_DECLARATION
+template<>
 struct ice_not<true> {
     enum {
         value = false ///< true becomes false
@@ -284,174 +316,174 @@ struct is_volatile<volatile T>: true_type {
 };
 
 template<class T>
-struct is_void: public false_type {
+struct is_void: false_type {
 };
 
 template<>
-struct is_void<void>: public true_type {
+struct is_void<void>: true_type {
 };
 
 template<>
-struct is_void<const void>: public true_type {
+struct is_void<const void>: true_type {
 };
 
 template<>
-struct is_void<volatile void>: public true_type {
+struct is_void<volatile void>: true_type {
 };
 
 template<>
-struct is_void<const volatile void>: public true_type {
+struct is_void<const volatile void>: true_type {
 };
 
 template<class T>
-struct is_floating_point: public false_type {
+struct is_floating_point: false_type {
 };
 
 template<class T>
-struct is_floating_point<volatile const T>: public is_floating_point<T> {
+struct is_floating_point<volatile const T>: is_floating_point<T> {
 };
 
 template<class T>
-struct is_floating_point<const T>: public is_floating_point<T> {
+struct is_floating_point<const T>: is_floating_point<T> {
 };
 
 template<class T>
-struct is_floating_point<volatile T>: public is_floating_point<T> {
+struct is_floating_point<volatile T>: is_floating_point<T> {
 };
 
 template<>
-struct is_floating_point<float>: public true_type {
+struct is_floating_point<float>: true_type {
 };
 
 template<>
-struct is_floating_point<double>: public true_type {
+struct is_floating_point<double>: true_type {
 };
 
 template<>
-struct is_floating_point<long double>: public true_type {
+struct is_floating_point<long double>: true_type {
 };
 
 template<class T>
-struct is_integral: public false_type {
+struct is_integral: false_type {
 };
 
 template<class T>
-struct is_integral<const T>: public is_integral<T> {
+struct is_integral<const T>: is_integral<T> {
 };
 
 template<class T>
-struct is_integral<volatile const T>: public is_integral<T> {
+struct is_integral<volatile const T>: is_integral<T> {
 };
 
 template<class T>
-struct is_integral<volatile T>: public is_integral<T> {
+struct is_integral<volatile T>: is_integral<T> {
 };
 
 template<>
-struct is_integral<char>: public true_type {
+struct is_integral<char>: true_type {
 };
 
 template<>
-struct is_integral<signed char>: public true_type {
+struct is_integral<signed char>: true_type {
 };
 
 template<>
-struct is_integral<unsigned char>: public true_type {
+struct is_integral<unsigned char>: true_type {
 };
 
 template<>
-struct is_integral<short>: public true_type {
+struct is_integral<short>: true_type {
 };
 
 template<>
-struct is_integral<unsigned short>: public true_type {
+struct is_integral<unsigned short>: true_type {
 };
 
 template<>
-struct is_integral<int>: public true_type {
+struct is_integral<int>: true_type {
 };
 
 template<>
-struct is_integral<unsigned int>: public true_type {
+struct is_integral<unsigned int>: true_type {
 };
 
 template<>
-struct is_integral<long>: public true_type {
+struct is_integral<long>: true_type {
 };
 
 template<>
-struct is_integral<unsigned long>: public true_type {
+struct is_integral<unsigned long>: true_type {
 };
 
 template<>
-struct is_integral<long long>: public true_type {
+struct is_integral<long long>: true_type {
 };
 
 template<>
-struct is_integral<unsigned long long>: public true_type {
+struct is_integral<unsigned long long>: true_type {
 };
 
 template<>
-struct is_integral<bool>: public true_type {
+struct is_integral<bool>: true_type {
 };
 
 #if defined(BURGER_HAS_CHAR8_T)
 template<>
-struct is_integral<char8_t>: public true_type {
+struct is_integral<char8_t>: true_type {
 };
 #endif
 
 #if defined(BURGER_HAS_WCHAR_T)
 template<>
-struct is_integral<wchar_t>: public true_type {
+struct is_integral<wchar_t>: true_type {
 };
 #endif
 
 #if defined(BURGER_HAS_CHAR16_T)
 template<>
-struct is_integral<char16_t>: public true_type {
+struct is_integral<char16_t>: true_type {
 };
 
 template<>
-struct is_integral<char32_t>: public true_type {
+struct is_integral<char32_t>: true_type {
 };
 #endif
 
 template<class T>
-struct is_arithmetic: public bool_constant<is_integral<T>::value ||
-                          is_floating_point<T>::value> {
+struct is_arithmetic
+    : bool_constant<is_integral<T>::value || is_floating_point<T>::value> {
 };
 
 template<class T>
-struct is_pointer: public false_type {
+struct is_pointer: false_type {
 };
 
 template<class T>
-struct is_pointer<T*>: public true_type {
+struct is_pointer<T*>: true_type {
 };
 
 template<class T>
-struct is_pointer<T* const>: public true_type {
+struct is_pointer<T* const>: true_type {
 };
 
 template<class T>
-struct is_pointer<T* volatile>: public true_type {
+struct is_pointer<T* volatile>: true_type {
 };
 
 template<class T>
-struct is_pointer<T* const volatile>: public true_type {
+struct is_pointer<T* const volatile>: true_type {
 };
 
 template<class T>
-struct is_pointer<T const>: public is_pointer<T> {
+struct is_pointer<T const>: is_pointer<T> {
 };
 
 template<class T>
-struct is_pointer<T volatile>: public is_pointer<T> {
+struct is_pointer<T volatile>: is_pointer<T> {
 };
 
 template<class T>
-struct is_pointer<T const volatile>: public is_pointer<T> {
+struct is_pointer<T const volatile>: is_pointer<T> {
 };
 
 // Workaround MSVC 2005-2013 bug on edge case for T (*)(X) where the types are
@@ -521,26 +553,49 @@ struct remove_pointer<T* const volatile> {
 #endif
 
 template<class T>
-struct is_lvalue_reference: public false_type {
+struct is_lvalue_reference: false_type {
 };
 
 template<class T>
-struct is_lvalue_reference<T&>: public true_type {
+struct is_lvalue_reference<T&>: true_type {
 };
 
 template<class T>
-struct is_rvalue_reference: public false_type {
+struct is_rvalue_reference: false_type {
 };
 
 #if defined(BURGER_RVALUE_REFERENCES)
 template<class T>
-struct is_rvalue_reference<T&&>: public true_type {
+struct is_rvalue_reference<T&&>: true_type {
 };
 #endif
 
 template<class T>
-struct is_reference: public bool_constant<is_lvalue_reference<T>::value ||
+struct is_reference: bool_constant<is_lvalue_reference<T>::value ||
                          is_rvalue_reference<T>::value> {
+};
+
+#if !defined(DOXYGEN)
+template<class T>
+struct _signed_val_test
+    : bool_constant<static_cast<typename remove_cv<T>::type>(-1) <
+          static_cast<typename remove_cv<T>::type>(0)> {
+};
+#endif
+
+template<class T>
+struct is_signed
+    : bool_constant<is_floating_point<T>::value ||
+          (is_integral<T>::value &&
+              _signed_val_test<typename conditional<is_integral<T>::value, T,
+                  int>::type>::value)> {
+};
+
+template<class T>
+struct is_unsigned
+    : bool_constant<is_integral<T>::value &&
+          !_signed_val_test<typename conditional<is_integral<T>::value, T,
+              int>::type>::value> {
 };
 
 template<typename T>
@@ -745,25 +800,25 @@ BURGER_INLINE BURGER_CONSTEXPR T Max(T A, T B) BURGER_NOEXCEPT
 }
 
 #if defined(BURGER_PPC)
-BURGER_EMPTY_TEMPLATE_DECLARATION
+template<>
 BURGER_INLINE float Min(float fA, float fB)
 {
     return static_cast<float>(__fsel((fA - fB), fB, fA));
 }
 
-BURGER_EMPTY_TEMPLATE_DECLARATION
+template<>
 BURGER_INLINE double Min(double dA, double dB)
 {
     return __fsel((dA - dB), dB, dA);
 }
 
-BURGER_EMPTY_TEMPLATE_DECLARATION
+template<>
 BURGER_INLINE float Max(float fA, float fB)
 {
     return static_cast<float>(__fsel((fA - fB), fA, fB));
 }
 
-BURGER_EMPTY_TEMPLATE_DECLARATION
+template<>
 BURGER_INLINE double Max(double dA, double dB)
 {
     return __fsel((dA - dB), dA, dB);

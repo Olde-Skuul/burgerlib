@@ -601,60 +601,126 @@
 /*! ************************************
 
     \def __has_builtin
-    \brief Clang feature macro.
+    \brief Clang feature macro for __has_builtin.
 
     On non-clang compilers, this compiles to 0.
 
-    \sa BURGER_CLANG, __has_feature, __has_extension, __has_cpp_attribute, or
-        __has_declspec_attribute
+    [Clang documentation on __has_builtin]
+    (https://clang.llvm.org/docs/LanguageExtensions.html#has-builtin)
+
+    \sa BURGER_CLANG
 
 ***************************************/
 
 /*! ************************************
 
     \def __has_feature
-    \brief Clang feature macro.
+    \brief Clang feature macro for __has_feature.
 
     On non-clang compilers, this compiles to 0.
 
-    \sa BURGER_CLANG, __has_builtin, __has_extension, __has_cpp_attribute, or
-        __has_declspec_attribute
+    [Clang documentation on __has_feature]
+    (https://clang.llvm.org/docs/LanguageExtensions.html#has-feature-and-has-extension)
+
+    \sa BURGER_CLANG
 
 ***************************************/
 
 /*! ************************************
 
     \def __has_extension
-    \brief Clang feature macro.
+    \brief Clang feature macro for __has_extension.
 
-    On non-clang compilers, this compiles to 0.
+    On non-clang compilers, this remaps to \ref __has_feature, which could also
+    be 0.
 
-    \sa BURGER_CLANG, __has_builtin, __has_feature, __has_cpp_attribute, or
-        __has_declspec_attribute
+    [Clang documentation on __has_extension]
+    (https://clang.llvm.org/docs/LanguageExtensions.html#has-feature-and-has-extension)
+
+    \sa BURGER_CLANG
 
 ***************************************/
 
 /*! ************************************
 
     \def __has_cpp_attribute
-    \brief Clang feature macro.
+    \brief Clang feature macro for __has_cpp_attribute.
 
     On non-clang compilers, this compiles to 0.
 
-    \sa BURGER_CLANG, __has_builtin, __has_feature, __has_extension, or
-        __has_declspec_attribute
+    [Clang documentation on __has_cpp_attribute]
+    (https://clang.llvm.org/docs/LanguageExtensions.html#has-cpp-attribute)
+
+    \sa BURGER_CLANG
 
 ***************************************/
 
 /*! ************************************
 
     \def __has_declspec_attribute
-    \brief Clang feature macro.
+    \brief Clang feature macro for __has_declspec_attribute.
 
     On non-clang compilers, this compiles to 0.
 
-    \sa BURGER_CLANG, __has_builtin, __has_feature, __has_extension, or
-        __has_cpp_attribute
+    [Clang documentation on __has_declspec_attribute]
+    (https://clang.llvm.org/docs/LanguageExtensions.html#has-declspec-attribute)
+
+    \sa BURGER_CLANG
+
+***************************************/
+
+/*! ************************************
+
+    \def __has_attribute
+    \brief Clang feature macro for __has_attribute.
+
+    On non-clang compilers, this compiles to 0.
+
+    [Clang documentation on __has_attribute]
+    (https://clang.llvm.org/docs/LanguageExtensions.html#has-attribute)
+
+    \sa BURGER_CLANG
+
+***************************************/
+
+/*! ************************************
+
+    \def __has_warning
+    \brief Clang feature macro for __has_warning.
+
+    On non-clang compilers, this compiles to 0.
+
+    [Clang documentation on __has_warning]
+    (https://clang.llvm.org/docs/LanguageExtensions.html#has-warning)
+
+    \sa BURGER_CLANG
+
+***************************************/
+
+/*! ************************************
+
+    \def __has_include
+    \brief Clang feature macro for __has_include.
+
+    On non-clang compilers, this compiles to 0.
+
+    [Clang documentation on __has_include]
+    (https://clang.llvm.org/docs/LanguageExtensions.html#has-include)
+    \sa BURGER_CLANG
+
+***************************************/
+
+/*! ************************************
+
+    \def __has_include_next
+    \brief Clang feature macro for __has_include_next.
+
+    On non-clang compilers, this compiles to 0.
+
+    [Clang documentation on __has_include_next]
+    (https://clang.llvm.org/docs/LanguageExtensions.html#has-include-next)
+
+    \sa BURGER_CLANG
 
 ***************************************/
 
@@ -1854,7 +1920,7 @@ line of processors.
 
     In all cases, the behavior of the C++ inline keyword is what is expected.
 
-    \sa BURGER_NO_INLINE
+    \sa BURGER_NO_INLINE or BURGER_NORETURN
 
 ***************************************/
 
@@ -1872,6 +1938,38 @@ line of processors.
     resolves into nothing.
 
     \sa BURGER_INLINE
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_NORETURN
+    \brief Define to alert the compiler the function does not return.
+
+    Some compilers offer optimizations if it was aware that a function never
+    returns. For functions that do not return, add this macro to the beginning
+    of its definition to take advantage of this compiler feature.
+
+    \sa BURGER_INLINE
+
+***************************************/
+
+/*! ************************************
+
+    \def BURGER_PRINTF_ATTRIBUTE
+    \brief Define to declare \__attribute__((format)).
+
+    Some compilers offer validation for ``printf`` string syntax. If a function
+    accepts ``printf`` style input strings, the input can be validated with this
+    macro.
+
+    [Documentation on the compiler feature]
+    (https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-format-function-attribute)
+
+    \param _index 1 based index to the parameter that has the format string.
+    \param _check 1 based index to the first variable argument.
+
+    \sa BURGER_CLANG or BURGER_GNUC
 
 ***************************************/
 
@@ -2436,8 +2534,8 @@ line of processors.
     \brief Define to disable using namespace Burger;
 
     If this define exists, then code found in burger.h "using namespace Burger;"
-    will be disabled. The default behavior when using burgerlib is to assume the
-    namespace Burger is enabled. For some codebases, there may be name
+    will be disabled. The default behavior when using Burgerlib is to assume the
+    namespace Burger is enabled. For some code bases, there may be name
     collisions and this is to remove the collisions.
 
     \note Define this manually BEFORE the inclusion of burger.h or define it in
@@ -2594,7 +2692,7 @@ line of processors.
 
     Return the pointer to the parent class a member variable resides.
 
-    \param x Pointer to the member variable that needs fixup
+    \param x Pointer to the member variable that needs fix up
     \param __type Name of the class / struct type
     \param __member Name of the member in the type to determine the offset of.
 
@@ -2633,7 +2731,7 @@ line of processors.
 
     Return the const pointer to the parent class a member variable resides.
 
-    \param x Const pointer to the member variable that needs fixup
+    \param x Const pointer to the member variable that needs fix up
     \param __type Name of the class / struct type
     \param __member Name of the member in the type to determine the offset of.
 
@@ -2847,7 +2945,7 @@ line of processors.
     \brief An empty macro parameter.
 
     To trick the preprocessor to accept an empty parameter in a macro, use this
-    macro which inserts a "C" style empty comment to force data seperation so an
+    macro which inserts a "C" style empty comment to force data separation so an
     empty parameter can be passed to a macro.
 
 ***************************************/
@@ -3115,13 +3213,13 @@ line of processors.
             if ((uFlags&eTestFlags::Flag3)!=eTestFlags::None) {
                 printf("Flag3 found\n");
             }
-            if
-((uFlags&(eTestFlags::Flag2|eTestFlags::Flag3))!=eTestFlags::None) {
+            if ((uFlags&(eTestFlags::Flag2|eTestFlags::Flag3))!=
+                eTestFlags::None) {
                 printf("Flag2 or Flag3 found\n");
             }
-            if
-((uFlags&(eTestFlags::Flag2|eTestFlags::Flag3))==(eTestFlags::Flag2|eTestFlags::Flag3))
-{ printf("Flag2 and Flag3 found\n");
+            if ((uFlags&(eTestFlags::Flag2|eTestFlags::Flag3))==
+                (eTestFlags::Flag2|eTestFlags::Flag3)) {
+                printf("Flag2 and Flag3 found\n");
             }
         }
     }
@@ -3271,40 +3369,6 @@ line of processors.
 
     Most compilers support "Substitution Failure Is Not An Error" (SFINAE), for
     those few old compilers that don't support it, this macro doesn't exist.
-
-    \sa BURGER_EMPTY_TEMPLATE_DECLARATION
-
-***************************************/
-
-/*! ************************************
-
-    \def BURGER_EMPTY_TEMPLATE_DECLARATION
-    \brief Declares an empty template parameter list
-
-    Apple's MPW compilers, MrC and SCpp, do not support the C++ term
-    "template <>", but if the term is removed, template overrides can be
-    declared. To help ease the development of template overrides, this macro
-    will remove the template<> keyword to allow code to compile properly on MPW
-    compilers.
-
-    Example of use:
-
-    \code
-    template<class T>
-    T Square(T Value)
-    {
-        return Value*Value;
-    }
-
-    BURGER_EMPTY_TEMPLATE_DECLARATION
-    float Square(float Value)
-    {
-        return Value*Value;
-    }
-
-    \endcode
-
-    \sa BURGER_HAS_SFINAE
 
 ***************************************/
 

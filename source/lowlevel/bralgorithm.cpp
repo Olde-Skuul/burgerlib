@@ -54,8 +54,66 @@
     \brief Type used for templates the require a specific size.
 
     This type resolves to an empty struct that could be used to force a template
-    to only instanciate with a specific data size. The struct itself is not
+    to only instantiate with a specific data size. The struct itself is not
     meant to be used.
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::conditional
+    \brief Select a type based if the conditional is true or false.
+
+    The first parameter is a conditional boolean. This will be evaluated as true or
+    false. The second parameter is the type used if the condition is true and the
+    third parameter is the type used if the condition is false.
+
+    \note This is functionally the same as std::conditional<>
+
+    \tparam B Condition to test for ``true``.
+    \tparam T Type of the result if condition is ``true``.
+    \tparam F Type of the result if condition is ``false``.
+    \sa enable_if
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::enable_if
+    \brief Create typedef type if condition is true.
+
+    The first parameter is a conditional boolean. This will be evaluated as true
+    or false. The second parameter is the type of the resulting typedef.
+
+    If the test is successful, typedef type exists. If not, the typedef does
+    not exist, causing template instantiation failure.
+
+    This is a duplicate of std::enable_if.
+
+    \note: Not supported on Open WATCOM
+
+    \tparam B Condition to test for ``true``.
+    \tparam T Type of the result, void is the default.
+    \sa disable_if
+
+***************************************/
+
+/*! ************************************
+
+    \struct Burger::disable_if
+    \brief Create typedef type if condition is false.
+
+    The first parameter conditional boolean. This will be evaluated as true or
+    false. The second parameter is the type of the resulting typedef.
+
+    If the test failed, typedef type exists. If it succeeded, the typedef does
+    not exist, causing template instantiation failure.
+
+    \note: Not supported on Open WATCOM
+
+    \tparam B Condition to test for ``false``.
+    \tparam T Type of the result, void is the default.
+    \sa enable_if
 
 ***************************************/
 
@@ -100,7 +158,7 @@
     A template to wrap a static bool constant so templates can resolve the value
     at compile time.
 
-    This is an implemtation from C++17.
+    This is an implementation from C++17.
 
     \tparam _Value value to wrap.
 
@@ -622,7 +680,7 @@
     A template to pass to \ref unique_ptr to delete the object with
     std::delete[].
 
-    \note This is explicitly used to maintain compatiblity with compilers that
+    \note This is explicitly used to maintain compatibility with compilers that
     don't support SFINAE.
 
     \tparam T Type of object to delete with std::delete[]
@@ -638,7 +696,7 @@
     A template to pass to \ref unique_ptr to delete the object with
     Burger::Delete.
 
-    Most classes in Burgerlib use the New allocator to use the burgerlib memory
+    Most classes in Burgerlib use the New allocator to use the Burgerlib memory
     manager, as such they need to be released using the Burger::Delete
     function.
 

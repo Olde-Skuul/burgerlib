@@ -4,9 +4,10 @@
 
     Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE
-    for license details. Yes, you can use it in a
-    commercial title without paying anything, just give me a credit.
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
     Please? It's not like I'm asking you for money!
 
 ***************************************/
@@ -62,6 +63,10 @@
 #include "bralgorithm.h"
 #endif
 
+#ifndef __BRSTRUCTS_H__
+#include "brstructs.h"
+#endif
+
 /* BEGIN */
 #define BURGER_PI 3.14159265358979323846264338328    ///< Pi
 #define BURGER_SQRT2 1.41421356237309504880168872421 ///< sqrt(2.0)
@@ -69,76 +74,6 @@
 #define BURGER_LN10 2.3025850929940456840179914547   ///< ln(10.0)
 
 namespace Burger {
-
-typedef uint8_t Float80Bit[10]; ///< 80 bit float (Extended)
-
-struct Word32ToFloat {
-    union {
-        uint32_t w; ///< Value in binary
-        float f;    ///< Value as a 32 bit float
-    };
-    BURGER_INLINE operator float() const BURGER_NOEXCEPT
-    {
-        return f;
-    }
-    BURGER_INLINE Word32ToFloat& operator=(float fInput) BURGER_NOEXCEPT
-    {
-        f = fInput;
-        return *this;
-    }
-    BURGER_INLINE uint32_t GetWord(void) const BURGER_NOEXCEPT
-    {
-        return w;
-    }
-    BURGER_INLINE void SetWord(uint32_t uInput) BURGER_NOEXCEPT
-    {
-        w = uInput;
-    }
-};
-
-struct Word64ToDouble {
-    union {
-        /** Value in binary */
-        uint64_t w;
-        /** Value as a 64 bit float */
-        double d;
-        /** Array of 2 32 bit words that map on the 64 bit value */
-        uint32_t w32[2];
-    };
-    BURGER_INLINE operator double() const BURGER_NOEXCEPT
-    {
-        return d;
-    }
-    BURGER_INLINE Word64ToDouble& operator=(double dInput) BURGER_NOEXCEPT
-    {
-        d = dInput;
-        return *this;
-    }
-    BURGER_INLINE uint64_t GetWord(void) const BURGER_NOEXCEPT
-    {
-        return w;
-    }
-    BURGER_INLINE void SetWord(uint64_t uInput) BURGER_NOEXCEPT
-    {
-        w = uInput;
-    }
-    BURGER_INLINE uint32_t GetLowWord(void) const BURGER_NOEXCEPT
-    {
-        return w32[BURGER_ENDIANINDEX_LOW];
-    }
-    BURGER_INLINE uint32_t GetHiWord(void) const BURGER_NOEXCEPT
-    {
-        return w32[BURGER_ENDIANINDEX_HIGH];
-    }
-    BURGER_INLINE void SetLowWord(uint32_t uInput) BURGER_NOEXCEPT
-    {
-        w32[BURGER_ENDIANINDEX_LOW] = uInput;
-    }
-    BURGER_INLINE void SetHiWord(uint32_t uInput) BURGER_NOEXCEPT
-    {
-        w32[BURGER_ENDIANINDEX_HIGH] = uInput;
-    }
-};
 
 struct Vector_128Float32 {
     union {
@@ -230,203 +165,203 @@ struct Vector_128Word16 {
 };
 
 /** Constant for 1.0 in the double format. */
-extern const Word64ToDouble g_dOne;
+extern const uint64_double_t g_dOne;
 /** Constant for -1.0 in the double format. */
-extern const Word64ToDouble g_dNegOne;
+extern const uint64_double_t g_dNegOne;
 /** Constant for 0.5 in the double format. */
-extern const Word64ToDouble g_dHalf;
+extern const uint64_double_t g_dHalf;
 /** Constant for -0.5 in the double format. */
-extern const Word64ToDouble g_dNegHalf;
+extern const uint64_double_t g_dNegHalf;
 /** Constant for Infinity in the double format. */
-extern const Word64ToDouble g_dInf;
+extern const uint64_double_t g_dInf;
 /** Constant for -Infinity in the double format. */
-extern const Word64ToDouble g_dNegInf;
+extern const uint64_double_t g_dNegInf;
 /** Constant for signaling Not a Number (NaN) in the double format. */
-extern const Word64ToDouble g_dNan;
+extern const uint64_double_t g_dNan;
 /** Constant for negative signaling Not a Number (NaN) in the double format. */
-extern const Word64ToDouble g_dNegNan;
+extern const uint64_double_t g_dNegNan;
 /** Constant for non signaling Not a Number (Nan) in the double format. */
-extern const Word64ToDouble g_dQNan;
+extern const uint64_double_t g_dQNan;
 /** Constant for negative non signaling Not a Number (Nan) in the double format.
  */
-extern const Word64ToDouble g_dNegQNan;
+extern const uint64_double_t g_dNegQNan;
 /** Constant for the smallest number (Non-zero) in the double format. */
-extern const Word64ToDouble g_dMin;
+extern const uint64_double_t g_dMin;
 /** Constant for the negative smallest number (Non-zero) in the double format.
  */
-extern const Word64ToDouble g_dNegMin;
+extern const uint64_double_t g_dNegMin;
 /** Constant for the largest number in the double format. */
-extern const Word64ToDouble g_dMax;
+extern const uint64_double_t g_dMax;
 /** Constant for the negative largest number in the double format. */
-extern const Word64ToDouble g_dNegMax;
+extern const uint64_double_t g_dNegMax;
 /** Constant for the smallest number that cannot have a fraction
  * 4503599627370496.0 */
-extern const Word64ToDouble g_dMinNoInteger;
+extern const uint64_double_t g_dMinNoInteger;
 /** Constant for the negative smallest number that cannot have a fraction
  * -4503599627370496.0 */
-extern const Word64ToDouble g_dNegMinNoInteger;
+extern const uint64_double_t g_dNegMinNoInteger;
 /** Constant for Epsilon in the double format. */
-extern const Word64ToDouble g_dEpsilon;
+extern const uint64_double_t g_dEpsilon;
 /** Constant for negative Epsilon in the double format. */
-extern const Word64ToDouble g_dNegEpsilon;
+extern const uint64_double_t g_dNegEpsilon;
 /** Constant for Pi*0.25 in the double format. */
-extern const Word64ToDouble g_dQuarterPi;
+extern const uint64_double_t g_dQuarterPi;
 /** Constant for -Pi*0.25 in the double format. */
-extern const Word64ToDouble g_dNegQuarterPi;
+extern const uint64_double_t g_dNegQuarterPi;
 /** Constant for Pi*0.5 in the double format. */
-extern const Word64ToDouble g_dHalfPi;
+extern const uint64_double_t g_dHalfPi;
 /** Constant for -Pi*0.5 in the double format. */
-extern const Word64ToDouble g_dNegHalfPi;
+extern const uint64_double_t g_dNegHalfPi;
 /** Constant for Pi in the double format. */
-extern const Word64ToDouble g_dPi;
+extern const uint64_double_t g_dPi;
 /** Constant for -Pi in the double format. */
-extern const Word64ToDouble g_dNegPi;
+extern const uint64_double_t g_dNegPi;
 /** Constant for Pi*2 in the double format. */
-extern const Word64ToDouble g_dPi2;
+extern const uint64_double_t g_dPi2;
 /** Constant for -Pi*2 in the double format. */
-extern const Word64ToDouble g_dNegPi2;
+extern const uint64_double_t g_dNegPi2;
 /** Constant for Pi*4 in the double format. */
-extern const Word64ToDouble g_dPi4;
+extern const uint64_double_t g_dPi4;
 /** Constant for -Pi*4 in the double format. */
-extern const Word64ToDouble g_dNegPi4;
+extern const uint64_double_t g_dNegPi4;
 /** Constant for Cos(Pi/6.0) in the double format */
-extern const Word64ToDouble g_dCosPiDiv6;
+extern const uint64_double_t g_dCosPiDiv6;
 /** Constant for -Cos(Pi/6.0) in the double format */
-extern const Word64ToDouble g_dNegCosPiDiv6;
+extern const uint64_double_t g_dNegCosPiDiv6;
 /** Constant for 1/(Pi*0.5) in the double format. */
-extern const Word64ToDouble g_dReciprocalHalfPi;
+extern const uint64_double_t g_dReciprocalHalfPi;
 /** Constant for -1/(Pi*0.5) in the double format. */
-extern const Word64ToDouble g_dNegReciprocalHalfPi;
+extern const uint64_double_t g_dNegReciprocalHalfPi;
 /** Constant for 1/Pi in the double format. */
-extern const Word64ToDouble g_dReciprocalPi;
+extern const uint64_double_t g_dReciprocalPi;
 /** Constant for -1/Pi in the double format. */
-extern const Word64ToDouble g_dNegReciprocalPi;
+extern const uint64_double_t g_dNegReciprocalPi;
 /** Constant for 1/(Pi*2) in the double format. */
-extern const Word64ToDouble g_dReciprocalPi2;
+extern const uint64_double_t g_dReciprocalPi2;
 /** Constant for -1/(Pi*2) in the double format. */
-extern const Word64ToDouble g_dNegReciprocalPi2;
+extern const uint64_double_t g_dNegReciprocalPi2;
 /** Constant for 180/Pi in the double format. */
-extern const Word64ToDouble g_dRadiansToDegrees;
+extern const uint64_double_t g_dRadiansToDegrees;
 /** Constant for -180/Pi in the double format. */
-extern const Word64ToDouble g_dNegRadiansToDegrees;
+extern const uint64_double_t g_dNegRadiansToDegrees;
 /** Constant for Pi/180 in the double format. */
-extern const Word64ToDouble g_dDegreesToRadians;
+extern const uint64_double_t g_dDegreesToRadians;
 /** Constant for -Pi/180 in the double format. */
-extern const Word64ToDouble g_dNegDegreesToRadians;
+extern const uint64_double_t g_dNegDegreesToRadians;
 /** Constant for sqrt(2) in the double format. */
-extern const Word64ToDouble g_dSqrt2;
+extern const uint64_double_t g_dSqrt2;
 /** Constant for -sqrt(2) in the double format. */
-extern const Word64ToDouble g_dNegSqrt2;
+extern const uint64_double_t g_dNegSqrt2;
 /** Constant for ln(2) in the double format. */
-extern const Word64ToDouble g_dLN2;
+extern const uint64_double_t g_dLN2;
 /** Constant for -ln(2) in the double format. */
-extern const Word64ToDouble g_dNegLN2;
+extern const uint64_double_t g_dNegLN2;
 /** Constant for ln(10) in the double format. */
-extern const Word64ToDouble g_dLN10;
+extern const uint64_double_t g_dLN10;
 /** Constant for -ln(10) in the double format. */
-extern const Word64ToDouble g_dNegLN10;
+extern const uint64_double_t g_dNegLN10;
 
 /** Constant for 1.0f in the float format. */
-extern const Word32ToFloat g_fOne;
+extern const uint32_float_t g_fOne;
 /** Constant for -1.0f in the float format. */
-extern const Word32ToFloat g_fNegOne;
+extern const uint32_float_t g_fNegOne;
 /** Constant for 0.5f in the float format. */
-extern const Word32ToFloat g_fHalf;
+extern const uint32_float_t g_fHalf;
 /** Constant for -0.5f in the float format. */
-extern const Word32ToFloat g_fNegHalf;
+extern const uint32_float_t g_fNegHalf;
 /** Constant for Infinity in the float format. */
-extern const Word32ToFloat g_fInf;
+extern const uint32_float_t g_fInf;
 /** Constant for -Infinity in the float format. */
-extern const Word32ToFloat g_fNegInf;
+extern const uint32_float_t g_fNegInf;
 /** Constant for signaling Not a Number (NaN) in the float format. */
-extern const Word32ToFloat g_fNan;
+extern const uint32_float_t g_fNan;
 /** Constant for negative signaling Not a Number (NaN) in the float format. */
-extern const Word32ToFloat g_fNegNan;
+extern const uint32_float_t g_fNegNan;
 /** Constant for non signaling Not a Number (Nan) in the float format. */
-extern const Word32ToFloat g_fQNan;
+extern const uint32_float_t g_fQNan;
 /** Constant for negative non signaling Not a Number (Nan) in the float format.
  */
-extern const Word32ToFloat g_fNegQNan;
+extern const uint32_float_t g_fNegQNan;
 /** Constant for smallest number (Non-zero) in the float format. */
-extern const Word32ToFloat g_fMin;
+extern const uint32_float_t g_fMin;
 /** Constant for negative smallest number (Non-zero) in the float format. */
-extern const Word32ToFloat g_fNegMin;
+extern const uint32_float_t g_fNegMin;
 /** Constant for largest number in the float format. */
-extern const Word32ToFloat g_fMax;
+extern const uint32_float_t g_fMax;
 /** Constant for negative largest number in the float format. */
-extern const Word32ToFloat g_fNegMax;
+extern const uint32_float_t g_fNegMax;
 /** Constant for the smallest number that cannot have a fraction 8388608.0f */
-extern const Word32ToFloat g_fMinNoInteger;
+extern const uint32_float_t g_fMinNoInteger;
 /** Constant for the negative smallest number that cannot have a fraction
  * -8388608.0f */
-extern const Word32ToFloat g_fNegMinNoInteger;
+extern const uint32_float_t g_fNegMinNoInteger;
 /** Constant for Epsilon in the float format. */
-extern const Word32ToFloat g_fEpsilon;
+extern const uint32_float_t g_fEpsilon;
 /** Constant for negative Epsilon in the float format. */
-extern const Word32ToFloat g_fNegEpsilon;
+extern const uint32_float_t g_fNegEpsilon;
 /** Constant for Pi*0.25f in the float format. */
-extern const Word32ToFloat g_fQuarterPi;
+extern const uint32_float_t g_fQuarterPi;
 /** Constant for -Pi*0.25f in the float format. */
-extern const Word32ToFloat g_fNegQuarterPi;
+extern const uint32_float_t g_fNegQuarterPi;
 /** Constant for Pi*0.5f in the float format. */
-extern const Word32ToFloat g_fHalfPi;
+extern const uint32_float_t g_fHalfPi;
 /** Constant for -Pi*0.5f in the float format. */
-extern const Word32ToFloat g_fNegHalfPi;
+extern const uint32_float_t g_fNegHalfPi;
 /** Constant for Pi in the float format. */
-extern const Word32ToFloat g_fPi;
+extern const uint32_float_t g_fPi;
 /** Constant for -Pi in the float format. */
-extern const Word32ToFloat g_fNegPi;
+extern const uint32_float_t g_fNegPi;
 /** Constant for Pi*2 in the float format. */
-extern const Word32ToFloat g_fPi2;
+extern const uint32_float_t g_fPi2;
 /** Constant for -Pi*2 in the float format. */
-extern const Word32ToFloat g_fNegPi2;
+extern const uint32_float_t g_fNegPi2;
 /** Constant for Pi*4 in the float format. */
-extern const Word32ToFloat g_fPi4;
+extern const uint32_float_t g_fPi4;
 /** Constant for -Pi*4 in the float format. */
-extern const Word32ToFloat g_fNegPi4;
+extern const uint32_float_t g_fNegPi4;
 /** Constant for Cos(Pi/6.0) in the float format */
-extern const Word32ToFloat g_fCosPiDiv6;
+extern const uint32_float_t g_fCosPiDiv6;
 /** Constant for -Cos(Pi/6.0) in the float format */
-extern const Word32ToFloat g_fNegCosPiDiv6;
+extern const uint32_float_t g_fNegCosPiDiv6;
 /** Constant for 1/(Pi*0.5f) in the float format. */
-extern const Word32ToFloat g_fReciprocalHalfPi;
+extern const uint32_float_t g_fReciprocalHalfPi;
 /** Constant for -1/(Pi*0.5f) in the float format. */
-extern const Word32ToFloat g_fNegReciprocalHalfPi;
+extern const uint32_float_t g_fNegReciprocalHalfPi;
 /** Constant for 1/Pi in the float format. */
-extern const Word32ToFloat g_fReciprocalPi;
+extern const uint32_float_t g_fReciprocalPi;
 /** Constant for -1/Pi in the float format. */
-extern const Word32ToFloat g_fNegReciprocalPi;
+extern const uint32_float_t g_fNegReciprocalPi;
 /** Constant for 1/(Pi*2.0f) in the float format. */
-extern const Word32ToFloat g_fReciprocalPi2;
+extern const uint32_float_t g_fReciprocalPi2;
 /** Constant for -1/(Pi*2.0f) in the float format. */
-extern const Word32ToFloat g_fNegReciprocalPi2;
+extern const uint32_float_t g_fNegReciprocalPi2;
 /** Constant for 180/Pi in the float format. */
-extern const Word32ToFloat g_fRadiansToDegrees;
+extern const uint32_float_t g_fRadiansToDegrees;
 /** Constant for -180/Pi in the float format. */
-extern const Word32ToFloat g_fNegRadiansToDegrees;
+extern const uint32_float_t g_fNegRadiansToDegrees;
 /** Constant for Pi/180 in the float format. */
-extern const Word32ToFloat g_fDegreesToRadians;
+extern const uint32_float_t g_fDegreesToRadians;
 /** Constant for -Pi/180 in the float format. */
-extern const Word32ToFloat g_fNegDegreesToRadians;
+extern const uint32_float_t g_fNegDegreesToRadians;
 /** Constant for sqrt(2) in the float format. */
-extern const Word32ToFloat g_fSqrt2;
+extern const uint32_float_t g_fSqrt2;
 /** Constant for -sqrt(2) in the float format. */
-extern const Word32ToFloat g_fNegSqrt2;
+extern const uint32_float_t g_fNegSqrt2;
 /** Constant for ln(2) in the float format. */
-extern const Word32ToFloat g_fLN2;
+extern const uint32_float_t g_fLN2;
 /** Constant for -ln(2) in the float format. */
-extern const Word32ToFloat g_fNegLN2;
+extern const uint32_float_t g_fNegLN2;
 /** Constant for ln(10) in the float format. */
-extern const Word32ToFloat g_fLN10;
+extern const uint32_float_t g_fLN10;
 /** Constant for -ln(10) in the float format. */
-extern const Word32ToFloat g_fNegLN10;
+extern const uint32_float_t g_fNegLN10;
 
 #if defined(BURGER_X86) || defined(DOXYGEN)
 
 /** 8087 control word to round down with 64 bit precision */
 extern const uint16_t g_X86RoundDownFlag;
 /** 1.0f,-1.0f for roundup / rounddown */
-extern const Word32ToFloat g_X86OneAndNegOne[2];
+extern const uint32_float_t g_X86OneAndNegOne[2];
 
 enum e8087Precision {
     PRECISION24 = 0,      ///< Use 24 bit / float precision (DirectX default)

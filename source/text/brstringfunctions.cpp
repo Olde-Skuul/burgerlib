@@ -732,7 +732,7 @@ BURGER_ALIGN(const Word8, Burger::g_ReverseBits[256], 16) = {
 
 ***************************************/
 
-const Word32 Burger::g_TensTable32[10] = {
+const uint32_t Burger::g_TensTable32[10] = {
 	1, // Table to quickly div by a power 10
 	10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
 
@@ -746,7 +746,7 @@ const Word32 Burger::g_TensTable32[10] = {
 
 ***************************************/
 
-const Word64 Burger::g_TensTable64[20] = {
+const uint64_t Burger::g_TensTable64[20] = {
 	1ULL, // Table to quickly div by a power 10
 	10ULL, 100ULL, 1000ULL, 10000ULL, 100000ULL, 1000000ULL, 10000000ULL,
 	100000000ULL, 1000000000ULL, 10000000000ULL, 100000000000ULL,

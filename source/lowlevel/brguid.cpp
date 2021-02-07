@@ -1,13 +1,14 @@
 /***************************************
 
-	Create and work with Windows style GUID structures
+    Create and work with Windows style GUID structures
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -162,17 +163,17 @@ void BURGER_API Burger::GUIDToString(char *pOutput,const GUID *pInput)
 {
 	pOutput = NumberToAsciiHex(pOutput,LittleEndian::Load(&pInput->Data1),LEADINGZEROS|8);
 	pOutput[0] = '-';
-	pOutput = NumberToAsciiHex(pOutput+1,static_cast<Word32>(LittleEndian::Load(&pInput->Data2)),LEADINGZEROS|4);
+	pOutput = NumberToAsciiHex(pOutput+1,LittleEndian::Load(&pInput->Data2),LEADINGZEROS|4);
 	pOutput[0] = '-';
-	pOutput = NumberToAsciiHex(pOutput+1,static_cast<Word32>(LittleEndian::Load(&pInput->Data3)),LEADINGZEROS|4);
+	pOutput = NumberToAsciiHex(pOutput+1,LittleEndian::Load(&pInput->Data3),LEADINGZEROS|4);
 	pOutput[0] = '-';
-	pOutput = NumberToAsciiHex(pOutput+1,static_cast<Word32>(pInput->Data4[0]),LEADINGZEROS|2);
-	pOutput = NumberToAsciiHex(pOutput,static_cast<Word32>(pInput->Data4[1]),LEADINGZEROS|2);
+	pOutput = NumberToAsciiHex(pOutput+1,pInput->Data4[0],LEADINGZEROS|2);
+	pOutput = NumberToAsciiHex(pOutput,pInput->Data4[1],LEADINGZEROS|2);
 	pOutput[0] = '-';
 	++pOutput;
 	Word i = 0;
 	do {
-		pOutput = NumberToAsciiHex(pOutput,static_cast<Word32>(pInput->Data4[i+2]),LEADINGZEROS|2);
+		pOutput = NumberToAsciiHex(pOutput,pInput->Data4[i+2],LEADINGZEROS|2);
 	} while (++i<6);
 	pOutput[0] = 0;			// End the "C" string
 }

@@ -92,8 +92,8 @@ BURGER_ALIGN(extern const char, g_NibbleToAsciiLowercase[16], 16);
 BURGER_ALIGN(extern const Word8, g_AsciiToWord8Table[256], 16);
 BURGER_ALIGN(extern const Word8, g_ReverseBits[256], 16);
 
-extern const Word32 g_TensTable32[10];
-extern const Word64 g_TensTable64[20];
+extern const uint32_t g_TensTable32[10];
+extern const uint64_t g_TensTable64[20];
 extern Word32 BURGER_API BCDToWord(Word32 uInput);
 extern Word32 BURGER_API WordToBCD(Word32 uInput);
 extern Word32 BURGER_API PowerOf2(Word32 uInput);

@@ -1,8 +1,8 @@
 /***************************************
 
-    Unit tests for the Integer Math library
+    Unit tests for the algorithm template library
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
     It is released under an MIT Open Source license. Please see LICENSE for
     license details. Yes, you can use it in a commercial title without paying
@@ -23,10 +23,6 @@
 #if defined(BURGER_WATCOM)
 // Unreachable code
 #pragma warning 13 9
-// Conditional expression is always true
-#pragma warning 367 9
-// Conditional expression is always false
-#pragma warning 368 9
 // No reference to symbol in structure
 #pragma warning 14 9
 #endif
@@ -34,6 +30,10 @@
 #if defined(BURGER_MSVC)
 // Conditional expression is constant
 #pragma warning(disable : 4127)
+// Generates a warning on VC 2003 and earlier
+#if (BURGER_MSVC >= 140000000)
+#pragma warning(disable : 6326)
+#endif
 #endif
 
 struct undefined_struct;
@@ -79,15 +79,15 @@ struct UIntTest64x64_t {
 };
 
 struct FloatTest_t {
-    Burger::Word32ToFloat m_Input1; // Source value 1
-    Burger::Word32ToFloat m_Input2; // Source value 2
-    Burger::Word32ToFloat m_Output; // Expected output
+    Burger::uint32_float_t m_Input1; // Source value 1
+    Burger::uint32_float_t m_Input2; // Source value 2
+    Burger::uint32_float_t m_Output; // Expected output
 };
 
 struct DoubleTest_t {
-    Burger::Word64ToDouble m_Input1; // Source value 1
-    Burger::Word64ToDouble m_Input2; // Source value 2
-    Burger::Word64ToDouble m_Output; // Expected output
+    Burger::uint64_double_t m_Input1; // Source value 1
+    Burger::uint64_double_t m_Input2; // Source value 2
+    Burger::uint64_double_t m_Output; // Expected output
 };
 
 //
@@ -112,8 +112,8 @@ static uint_t BURGER_API TestMinInt32(void) BURGER_NOEXCEPT
     const IntTest32x32_t* pWork = MinTestTableInt32;
     uintptr_t uCount = BURGER_ARRAYSIZE(MinTestTableInt32);
     do {
-        int32_t iReturn = Burger::Min(pWork->m_iInput1, pWork->m_iInput2);
-        uint_t uTest = iReturn != pWork->m_iOutput;
+        const int32_t iReturn = Burger::Min(pWork->m_iInput1, pWork->m_iInput2);
+        const uint_t uTest = iReturn != pWork->m_iOutput;
         uFailure |= uTest;
         ReportFailure(
             "Burger::Min((int32_t)0x%08X,(int32_t)0x%08X) = 0x%08X, expected 0x%08X",
@@ -148,8 +148,8 @@ static uint_t BURGER_API TestMinInt64(void)
     const IntTest64x64_t* pWork = MinTestTableInt64;
     uintptr_t uCount = BURGER_ARRAYSIZE(MinTestTableInt64);
     do {
-        int64_t iReturn = Burger::Min(pWork->m_iInput1, pWork->m_iInput2);
-        uint_t uTest = iReturn != pWork->m_iOutput;
+        const int64_t iReturn = Burger::Min(pWork->m_iInput1, pWork->m_iInput2);
+        const uint_t uTest = iReturn != pWork->m_iOutput;
         uFailure |= uTest;
         if (uTest) {
             Burger::String Text(
@@ -186,8 +186,9 @@ static uint_t BURGER_API TestMinUInt32(void) BURGER_NOEXCEPT
     const UIntTest32x32_t* pWork = MinTestTableUInt32;
     uintptr_t uCount = BURGER_ARRAYSIZE(MinTestTableUInt32);
     do {
-        uint32_t uReturn = Burger::Min(pWork->m_uInput1, pWork->m_uInput2);
-        uint_t uTest = uReturn != pWork->m_uOutput;
+        const uint32_t uReturn =
+            Burger::Min(pWork->m_uInput1, pWork->m_uInput2);
+        const uint_t uTest = uReturn != pWork->m_uOutput;
         uFailure |= uTest;
         ReportFailure(
             "Burger::Min((uint32_t)0x%08X,(uint32_t)0x%08X) = 0x%08X, expected 0x%08X",
@@ -222,8 +223,9 @@ static uint_t BURGER_API TestMinUInt64(void)
     const UIntTest64x64_t* pWork = MinTestTableUInt64;
     uintptr_t uCount = BURGER_ARRAYSIZE(MinTestTableUInt64);
     do {
-        uint64_t uReturn = Burger::Min(pWork->m_uInput1, pWork->m_uInput2);
-        uint_t uTest = uReturn != pWork->m_uOutput;
+        const uint64_t uReturn =
+            Burger::Min(pWork->m_uInput1, pWork->m_uInput2);
+        const uint_t uTest = uReturn != pWork->m_uOutput;
         uFailure |= uTest;
         if (uTest) {
             Burger::String Text(
@@ -261,9 +263,9 @@ static uint_t BURGER_API TestMinFloat(void) BURGER_NOEXCEPT
     const FloatTest_t* pWork = MinTestTableFloat;
     uintptr_t uCount = BURGER_ARRAYSIZE(MinTestTableFloat);
     do {
-        Burger::Word32ToFloat Return;
+        Burger::uint32_float_t Return;
         Return.f = Burger::Min(pWork->m_Input1.f, pWork->m_Input2.f);
-        uint_t uTest = Return.w != pWork->m_Output.w;
+        const uint_t uTest = Return.w != pWork->m_Output.w;
         uFailure |= uTest;
         ReportFailure(
             "Burger::Min((float)0x%08X,(float)0x%08X) = 0x%08X, expected 0x%08X",
@@ -296,8 +298,8 @@ static uint_t BURGER_API TestMaxInt32(void) BURGER_NOEXCEPT
     const IntTest32x32_t* pWork = MaxTestTableInt32;
     uintptr_t uCount = BURGER_ARRAYSIZE(MaxTestTableInt32);
     do {
-        int32_t iReturn = Burger::Max(pWork->m_iInput1, pWork->m_iInput2);
-        uint_t uTest = iReturn != pWork->m_iOutput;
+        const int32_t iReturn = Burger::Max(pWork->m_iInput1, pWork->m_iInput2);
+        const uint_t uTest = iReturn != pWork->m_iOutput;
         uFailure |= uTest;
         ReportFailure(
             "Burger::Max((int32_t)0x%08X,(int32_t)0x%08X) = 0x%08X, expected 0x%08X",
@@ -332,8 +334,8 @@ static uint_t BURGER_API TestMaxInt64(void)
     const IntTest64x64_t* pWork = MaxTestTableInt64;
     uintptr_t uCount = BURGER_ARRAYSIZE(MaxTestTableInt64);
     do {
-        int64_t iReturn = Burger::Max(pWork->m_iInput1, pWork->m_iInput2);
-        uint_t uTest = iReturn != pWork->m_iOutput;
+        const int64_t iReturn = Burger::Max(pWork->m_iInput1, pWork->m_iInput2);
+        const uint_t uTest = iReturn != pWork->m_iOutput;
         uFailure |= uTest;
         if (uTest) {
             Burger::String Text(
@@ -345,6 +347,70 @@ static uint_t BURGER_API TestMaxInt64(void)
     } while (--uCount);
     return uFailure;
 }
+
+/***************************************
+
+    Test enable_if<> and disable_if<>
+
+***************************************/
+
+#if !defined(BURGER_WATCOM)
+// struct test_enable_if_float() returns a bool on success or failure
+
+// If the type does no have a member variable "value", instantiate
+// this class (Failure case)
+template<class T, class E = void>
+struct enable_if_float;
+
+// Invoked on success
+template<class T>
+struct enable_if_float<T,
+    typename Burger::enable_if<Burger::is_floating_point<T>::value>::type>
+    : public Burger::true_type {
+};
+
+// Invoked on failure
+template<class T>
+struct enable_if_float<T,
+    typename Burger::disable_if<Burger::is_floating_point<T>::value>::type>
+    : public Burger::false_type {
+};
+
+static uint_t BURGER_API Test_enable_if(void) BURGER_NOEXCEPT
+{
+    uint_t uFailure = FALSE;
+
+#if !defined(BURGER_68K)
+    // Test if float not detected
+    uint_t uTest = enable_if_float<int>::value;
+    uFailure |= uTest;
+    ReportFailure(
+        "enable_if_float<int>::value = %u", uTest, enable_if_float<int>::value);
+
+    uTest = enable_if_float<long*>::value;
+    uFailure |= uTest;
+    ReportFailure("enable_if_float<long*>::value = %u", uTest,
+        enable_if_float<long*>::value);
+
+    // Test if float detected
+    uTest = !enable_if_float<float>::value;
+    uFailure |= uTest;
+    ReportFailure("enable_if_float<float>::value = %u", uTest,
+        enable_if_float<float>::value);
+
+    uTest = !enable_if_float<double>::value;
+    uFailure |= uTest;
+    ReportFailure("enable_if_float<double>::value = %u", uTest,
+        enable_if_float<double>::value);
+#endif
+    return uFailure;
+}
+#else
+static uint_t BURGER_API Test_enable_if(void) BURGER_NOEXCEPT
+{
+    return FALSE;
+}
+#endif
 
 /***************************************
 
@@ -422,6 +488,31 @@ static uint_t BURGER_API Test_is_same(void) BURGER_NOEXCEPT
     TEST_IS_SAME(int&&, int&&, true)
 #endif
 
+    return uFailure;
+}
+
+/***************************************
+
+    Test conditional<>
+
+***************************************/
+
+#define TEST_IS_CONDITIONAL(input1, input2, input3, input4, result) \
+    if (Burger::is_same<Burger::conditional<input1, input2, input3>::type, \
+            input4>::value != result) { \
+        uFailure |= 1; \
+        ReportFailure("Burger::conditional<" #input1 ", " #input2 ", " #input3 \
+                      ">::type is not " #input4, \
+            1, static_cast<int>(result)); \
+    }
+static uint_t BURGER_API Test_conditional(void) BURGER_NOEXCEPT
+{
+    uint_t uFailure = FALSE;
+
+    TEST_IS_CONDITIONAL(true, char, long, char, true)
+    TEST_IS_CONDITIONAL(false, char, long, long, true)
+    TEST_IS_CONDITIONAL(true, char, long, long, false)
+    TEST_IS_CONDITIONAL(false, char, long, char, false)
     return uFailure;
 }
 
@@ -1061,6 +1152,209 @@ static uint_t BURGER_API Test_is_arithmetic(void) BURGER_NOEXCEPT
 
 /***************************************
 
+    Test is_signed>
+
+***************************************/
+
+static uint_t BURGER_API Test_is_signed(void) BURGER_NOEXCEPT
+{
+    uint_t uFailure = FALSE;
+
+    bool bSignedResult = false;
+    if (static_cast<char>(-1) < 0) {
+        bSignedResult = true;
+    }
+    TEST_IS(is_signed, char, bSignedResult)
+    TEST_IS(is_signed, const char, bSignedResult)
+    TEST_IS(is_signed, volatile char, bSignedResult)
+    TEST_IS(is_signed, const volatile char, bSignedResult)
+
+    TEST_IS(is_signed, bool, false)
+    TEST_IS(is_signed, short, true)
+    TEST_IS(is_signed, int, true)
+    TEST_IS(is_signed, long, true)
+    TEST_IS(is_signed, long long, true)
+
+    TEST_IS(is_signed, unsigned short, false)
+    TEST_IS(is_signed, unsigned int, false)
+    TEST_IS(is_signed, unsigned long, false)
+    TEST_IS(is_signed, unsigned long long, false)
+
+    TEST_IS(is_signed, float, true)
+    TEST_IS(is_signed, double, true)
+    TEST_IS(is_signed, long double, true)
+
+    TEST_IS(is_signed, int*, false)
+    TEST_IS(is_signed, float*, false)
+    TEST_IS(is_signed, double*, false)
+    TEST_IS(is_signed, long double*, false)
+    TEST_IS(is_signed, float&, false)
+    TEST_IS(is_signed, double&, false)
+    TEST_IS(is_signed, long double&, false)
+    TEST_IS(is_signed, double* volatile, false)
+    TEST_IS(is_signed, double* const, false)
+    TEST_IS(is_signed, const float, true)
+    TEST_IS(is_signed, volatile float, true)
+    TEST_IS(is_signed, const volatile float, true)
+    TEST_IS(is_signed, volatile long double&, false)
+
+    TEST_IS(is_signed, int[2], false)
+    TEST_IS(is_signed, call_type1, false)
+    TEST_IS(is_signed, call_type2, false)
+    TEST_IS(is_signed, call_type3, false)
+    TEST_IS(is_signed, call_type4, false)
+    TEST_IS(is_signed, call_type5, false)
+    TEST_IS(is_signed, undefined_struct, false)
+
+#if defined(BURGER_MSVC)
+    TEST_IS(is_signed, __int8, true)
+    TEST_IS(is_signed, __int16, true)
+    TEST_IS(is_signed, __int32, true)
+    TEST_IS(is_signed, __int64, true)
+    TEST_IS(is_signed, unsigned __int8, false)
+    TEST_IS(is_signed, unsigned __int16, false)
+    TEST_IS(is_signed, unsigned __int32, false)
+    TEST_IS(is_signed, unsigned __int64, false)
+#endif
+
+#if defined(BURGER_HAS_WCHAR_T)
+    bSignedResult = false;
+    if (static_cast<wchar_t>(-1) < 0) {
+        bSignedResult = true;
+    }
+    TEST_IS(is_signed, wchar_t, bSignedResult)
+#endif
+
+#if defined(BURGER_HAS_CHAR8_T)
+    bSignedResult = false;
+    if (static_cast<char8_t>(-1) < 0) {
+        bSignedResult = true;
+    }
+    TEST_IS(is_signed, char8_t, bSignedResult)
+#endif
+
+#if defined(BURGER_HAS_CHAR16_T)
+    bSignedResult = false;
+    if (static_cast<char16_t>(-1) < 0) {
+        bSignedResult = true;
+    }
+    TEST_IS(is_signed, char16_t, bSignedResult)
+    TEST_IS(is_signed, char32_t, bSignedResult)
+#endif
+
+#if defined(BURGER_RVALUE_REFERENCES)
+    TEST_IS(is_signed, int&&, false)
+    TEST_IS(is_signed, const int&&, false)
+    TEST_IS(is_signed, volatile int&&, false)
+    TEST_IS(is_signed, volatile const int&&, false)
+#endif
+    return uFailure;
+}
+
+/***************************************
+
+    Test is_unsigned>
+
+***************************************/
+
+static uint_t BURGER_API Test_is_unsigned(void) BURGER_NOEXCEPT
+{
+    uint_t uFailure = FALSE;
+
+    bool bUnsignedResult = true;
+    if (static_cast<char>(-1) < 0) {
+        bUnsignedResult = false;
+    }
+    TEST_IS(is_unsigned, char, bUnsignedResult)
+    TEST_IS(is_unsigned, const char, bUnsignedResult)
+    TEST_IS(is_unsigned, volatile char, bUnsignedResult)
+    TEST_IS(is_unsigned, const volatile char, bUnsignedResult)
+
+    TEST_IS(is_unsigned, bool, true)
+    TEST_IS(is_unsigned, short, false)
+    TEST_IS(is_unsigned, int, false)
+    TEST_IS(is_unsigned, long, false)
+    TEST_IS(is_unsigned, long long, false)
+
+    TEST_IS(is_unsigned, unsigned short, true)
+    TEST_IS(is_unsigned, unsigned int, true)
+    TEST_IS(is_unsigned, unsigned long, true)
+    TEST_IS(is_unsigned, unsigned long long, true)
+
+    TEST_IS(is_unsigned, float, false)
+    TEST_IS(is_unsigned, double, false)
+    TEST_IS(is_unsigned, long double, false)
+
+    TEST_IS(is_unsigned, int*, false)
+    TEST_IS(is_unsigned, float*, false)
+    TEST_IS(is_unsigned, double*, false)
+    TEST_IS(is_unsigned, long double*, false)
+    TEST_IS(is_unsigned, float&, false)
+    TEST_IS(is_unsigned, double&, false)
+    TEST_IS(is_unsigned, long double&, false)
+    TEST_IS(is_unsigned, double* volatile, false)
+    TEST_IS(is_unsigned, double* const, false)
+    TEST_IS(is_unsigned, const float, false)
+    TEST_IS(is_unsigned, volatile float, false)
+    TEST_IS(is_unsigned, const volatile float, false)
+    TEST_IS(is_unsigned, volatile long double&, false)
+
+    TEST_IS(is_unsigned, int[2], false)
+    TEST_IS(is_unsigned, call_type1, false)
+    TEST_IS(is_unsigned, call_type2, false)
+    TEST_IS(is_unsigned, call_type3, false)
+    TEST_IS(is_unsigned, call_type4, false)
+    TEST_IS(is_unsigned, call_type5, false)
+    TEST_IS(is_unsigned, undefined_struct, false)
+
+#if defined(BURGER_MSVC)
+    TEST_IS(is_unsigned, __int8, false)
+    TEST_IS(is_unsigned, __int16, false)
+    TEST_IS(is_unsigned, __int32, false)
+    TEST_IS(is_unsigned, __int64, false)
+    TEST_IS(is_unsigned, unsigned __int8, true)
+    TEST_IS(is_unsigned, unsigned __int16, true)
+    TEST_IS(is_unsigned, unsigned __int32, true)
+    TEST_IS(is_unsigned, unsigned __int64, true)
+#endif
+
+#if defined(BURGER_HAS_WCHAR_T)
+    bUnsignedResult = true;
+    if (static_cast<wchar_t>(-1) < 0) {
+        bUnsignedResult = false;
+    }
+    TEST_IS(is_unsigned, wchar_t, bUnsignedResult)
+#endif
+
+#if defined(BURGER_HAS_CHAR8_T)
+    bUnsignedResult = true;
+    if (static_cast<char8_t>(-1) < 0) {
+        bUnsignedResult = false;
+    }
+    TEST_IS(is_unsigned, char8_t, bUnsignedResult)
+#endif
+
+#if defined(BURGER_HAS_CHAR16_T)
+    bUnsignedResult = true;
+    if (static_cast<char16_t>(-1) < 0) {
+        bUnsignedResult = false;
+    }
+    TEST_IS(is_unsigned, char16_t, bUnsignedResult)
+    TEST_IS(is_unsigned, char32_t, bUnsignedResult)
+#endif
+
+#if defined(BURGER_RVALUE_REFERENCES)
+    TEST_IS(is_unsigned, int&&, false)
+    TEST_IS(is_unsigned, const int&&, false)
+    TEST_IS(is_unsigned, volatile int&&, false)
+    TEST_IS(is_unsigned, volatile const int&&, false)
+#endif
+
+    return uFailure;
+}
+
+/***************************************
+
     Test is_pointer<>
 
 ***************************************/
@@ -1235,7 +1529,11 @@ static uint_t BURGER_API Test_is_rvalue_reference(void) BURGER_NOEXCEPT
 
     TEST_IS(is_rvalue_reference, int[2], false)
     TEST_IS(is_rvalue_reference, int(&)[2], false)
+
+// The xbox 360 compiler has a bug.
+#if !defined(BURGER_XBOX360)
     TEST_IS(is_rvalue_reference, short (&)(short), false)
+#endif
     TEST_IS(is_rvalue_reference, call_type1, false)
     TEST_IS(is_rvalue_reference, call_type2, false)
     TEST_IS(is_rvalue_reference, call_type3, false)
@@ -1340,13 +1638,12 @@ static uint_t BURGER_API Test_is_reference(void) BURGER_NOEXCEPT
 static uint_t BURGER_API Testunique_ptr(void)
 {
     uint_t uFailure = FALSE;
-    uint_t uTest;
 
     {
         IntTest64x64_t* pIntTest = new IntTest64x64_t;
         Burger::unique_ptr<IntTest64x64_t> Test1(pIntTest);
 
-        uTest = Test1.get() != pIntTest;
+        uint_t uTest = Test1.get() != pIntTest;
         uFailure |= uTest;
         ReportFailure("Burger::unique_ptr<IntTest64x64_t>.get()", uTest);
 
@@ -1605,7 +1902,7 @@ static uint_t BURGER_API Testround_up_pointer(void)
     const round_up_test_t* pWork = g_round_up_tests;
     uintptr_t uCount = BURGER_ARRAYSIZE(g_round_up_tests);
     do {
-        double* pReturn = Burger::round_up_pointer(
+        const double* pReturn = Burger::round_up_pointer(
             reinterpret_cast<double*>(pWork->m_uPtr), pWork->m_uAlign);
         uint_t uTest = pReturn != reinterpret_cast<double*>(pWork->m_uResult);
         uFailure |= uTest;
@@ -1617,7 +1914,7 @@ static uint_t BURGER_API Testround_up_pointer(void)
             ReportFailure(Text.GetPtr(), uTest);
         }
 
-        short* pReturn2 = Burger::round_up_pointer(
+        const short* pReturn2 = Burger::round_up_pointer(
             reinterpret_cast<short*>(pWork->m_uPtr), pWork->m_uAlign);
         uTest = pReturn2 != reinterpret_cast<short*>(pWork->m_uResult);
         uFailure |= uTest;
@@ -1637,12 +1934,13 @@ static uint_t BURGER_API Testround_up_pointer(void)
         double a;
         char b;
     };
-    uintptr_t uAlign = sizeof(aligndouble_t) - sizeof(double);
+    const BURGER_CONSTEXPR uintptr_t uAlign =
+        sizeof(aligndouble_t) - sizeof(double);
     do {
-        double* pReturn =
+        const double* pReturn =
             Burger::round_up_pointer(reinterpret_cast<double*>(uCount));
-        uintptr_t uExpected = (uCount + uAlign - 1) & (~(uAlign - 1));
-        uint_t uTest = pReturn != reinterpret_cast<double*>(uExpected);
+        const uintptr_t uExpected = (uCount + uAlign - 1) & (~(uAlign - 1));
+        const uint_t uTest = pReturn != reinterpret_cast<double*>(uExpected);
         uFailure |= uTest;
         if (uTest) {
             Burger::String Text(
@@ -1654,10 +1952,10 @@ static uint_t BURGER_API Testround_up_pointer(void)
 
     uCount = 0;
     do {
-        short* pReturn =
+        const short* pReturn =
             Burger::round_up_pointer(reinterpret_cast<short*>(uCount));
-        uintptr_t uExpected = (uCount + 1) & (~1);
-        uint_t uTest = pReturn != reinterpret_cast<short*>(uExpected);
+        const uintptr_t uExpected = (uCount + 1) & (~1);
+        const uint_t uTest = pReturn != reinterpret_cast<short*>(uExpected);
         uFailure |= uTest;
         if (uTest) {
             Burger::String Text(
@@ -1691,8 +1989,10 @@ uint_t BURGER_API TestBralgorithm(uint_t uVerbose)
     uResult |= TestMaxInt32();
     uResult |= TestMaxInt64();
 
+    uResult |= Test_enable_if();
     uResult |= Test_integral_constant();
     uResult |= Test_is_same();
+    uResult |= Test_conditional();
     uResult |= Test_remove_const();
     uResult |= Test_remove_volatile();
     uResult |= Test_remove_cv();
@@ -1707,6 +2007,8 @@ uint_t BURGER_API TestBralgorithm(uint_t uVerbose)
     uResult |= Test_is_floating_point();
     uResult |= Test_is_integral();
     uResult |= Test_is_arithmetic();
+    uResult |= Test_is_signed();
+    uResult |= Test_is_unsigned();
     uResult |= Test_is_pointer();
     uResult |= Test_is_lvalue_reference();
     uResult |= Test_is_rvalue_reference();

@@ -252,7 +252,7 @@ asm float BURGER_API Burger::SwapEndian::Load(
 
 float BURGER_API Burger::SwapEndian::Load(float fInput) BURGER_NOEXCEPT
 {
-    Word32ToFloat Temp;
+    uint32_float_t Temp;
     Temp.w =
         Load(static_cast<const uint32_t*>(static_cast<const void*>(&fInput)));
     return Temp.f; // Return the float
@@ -328,7 +328,7 @@ asm double BURGER_API Burger::SwapEndian::Load(
 
 double BURGER_API Burger::SwapEndian::Load(double dInput) BURGER_NOEXCEPT
 {
-    Word64ToDouble Temp;
+    uint64_double_t Temp;
 #if defined(BURGER_64BITCPU)
     Temp.w =
         Load(static_cast<const uint64_t*>(static_cast<const void*>(&dInput)));
@@ -632,7 +632,7 @@ asm float BURGER_API Burger::SwapEndian::Load(
 
 float BURGER_API Burger::SwapEndian::Load(const float* pInput) BURGER_NOEXCEPT
 {
-    Word32ToFloat Temp;
+    uint32_float_t Temp;
     Temp.w =
         Load(static_cast<const uint32_t*>(static_cast<const void*>(pInput)));
     return Temp.f; // Return the float
@@ -703,7 +703,7 @@ asm double BURGER_API Burger::SwapEndian::Load(
 
 double BURGER_API Burger::SwapEndian::Load(const double* pInput) BURGER_NOEXCEPT
 {
-    Word64ToDouble Temp;
+    uint64_double_t Temp;
 #if defined(BURGER_64BITCPU)
     Temp.w =
         Load(static_cast<const uint64_t*>(static_cast<const void*>(pInput)));
@@ -3309,7 +3309,7 @@ uint64_t BURGER_API Burger::NativeEndian::LoadAny(
 float BURGER_API Burger::NativeEndian::LoadAny(
     const float* pInput) BURGER_NOEXCEPT
 {
-    Word32ToFloat uTemp;
+    uint32_float_t uTemp;
     uTemp.w =
         LoadAny(static_cast<const uint32_t*>(static_cast<const void*>(pInput)));
     return uTemp.f;
@@ -3338,7 +3338,7 @@ float BURGER_API Burger::NativeEndian::LoadAny(
 double BURGER_API Burger::NativeEndian::LoadAny(
     const double* pInput) BURGER_NOEXCEPT
 {
-    Word64ToDouble uTemp;
+    uint64_double_t uTemp;
     uTemp.w =
         LoadAny(static_cast<const uint64_t*>(static_cast<const void*>(pInput)));
     return uTemp.d;

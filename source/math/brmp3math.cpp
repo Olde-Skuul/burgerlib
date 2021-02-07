@@ -1,13 +1,14 @@
 /***************************************
 
-	Math functions for MP3 support
+    Math functions for MP3 support
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -26,33 +27,33 @@
 
 #if !defined(DOXYGEN)
 
-static const Burger::Word32ToFloat g_MP3Cosine64[16] = {
+static const Burger::uint32_float_t g_MP3Cosine64[16] = {
 	{0x3F002785},{0x3F01668B},{0x3F03F45B},{0x3F07F268},
 	{0x3F0D9838},{0x3F153B3A},{0x3F1F5C6E},{0x3F2CC03D},
 	{0x3F3E99EE},{0x3F56DF9E},{0x3F78FA3B},{0x3F95B035},
 	{0x3FBDF91B},{0x4003B2AF},{0x405A1642},{0x41230A46}
 };
 
-static const Burger::Word32ToFloat g_MP3Cosine32[8] = {
+static const Burger::uint32_float_t g_MP3Cosine32[8] = {
 	{0x3F009E8D},{0x3F05C278},{0x3F11233F},{0x3F25961D},
 	{0x3F49C480},{0x3F87C449},{0x3FDC7926},{0x40A33C9C}
 };
 
-static const Burger::Word32ToFloat g_MP3Cosine16[4] = {
+static const Burger::uint32_float_t g_MP3Cosine16[4] = {
 	{0x3F0281F7},{0x3F19F1BD},{0x3F6664D7},{0x402406CF}
 };
 
-static const Burger::Word32ToFloat g_MP3Cosine8[2] = {
+static const Burger::uint32_float_t g_MP3Cosine8[2] = {
 	{0x3F0A8BD4},{0x3FA73D75}
 };
 
-static const Burger::Word32ToFloat g_MP3Cosine4[1] = {
+static const Burger::uint32_float_t g_MP3Cosine4[1] = {
 	{0x3F3504F3}
 };
 
 #endif
 
-const Burger::Word32ToFloat *Burger::g_pMP3CosinePoints[5] = { g_MP3Cosine64, g_MP3Cosine32, g_MP3Cosine16, g_MP3Cosine8, g_MP3Cosine4 };
+const Burger::uint32_float_t *Burger::g_pMP3CosinePoints[5] = { g_MP3Cosine64, g_MP3Cosine32, g_MP3Cosine16, g_MP3Cosine8, g_MP3Cosine4 };
 
 /*! ************************************
 
@@ -61,7 +62,7 @@ const Burger::Word32ToFloat *Burger::g_pMP3CosinePoints[5] = { g_MP3Cosine64, g_
 
 ***************************************/
 
-const Burger::Word32ToFloat Burger::g_MP3FHTCosines[4][2] = {
+const Burger::uint32_float_t Burger::g_MP3FHTCosines[4][2] = {
 {
 	{0x3F6C835E},{0x3EC3EF15}
 },{
@@ -83,7 +84,7 @@ const Burger::Word32ToFloat Burger::g_MP3FHTCosines[4][2] = {
 	
 ***************************************/
 
-const Burger::Word32ToFloat Burger::g_MP3DCT36Constants[18] = {
+const Burger::uint32_float_t Burger::g_MP3DCT36Constants[18] = {
 	{0x3F800000},{0x3F7C1C5C},{0x3F708FB2},{0x3F5DB3D7},
 	{0x3F441B7D},{0x3F248DBB},{0x3F000000},{0x3EAF1D44},
 	{0x3E31D0D4},
@@ -99,7 +100,7 @@ const Burger::Word32ToFloat Burger::g_MP3DCT36Constants[18] = {
 	
 ***************************************/
 
-const Burger::Word32ToFloat Burger::g_MP3DCT12Constants[3] = {
+const Burger::uint32_float_t Burger::g_MP3DCT12Constants[3] = {
 	{0x3F0483EE},{0x3F3504F3},{0x3FF746EA}
 };
 

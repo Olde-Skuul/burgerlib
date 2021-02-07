@@ -417,6 +417,8 @@
 		<Unit filename="../source/lowlevel/brsnsystems.h" />
 		<Unit filename="../source/lowlevel/brstaticrtti.cpp" />
 		<Unit filename="../source/lowlevel/brstaticrtti.h" />
+		<Unit filename="../source/lowlevel/brstructs.cpp" />
+		<Unit filename="../source/lowlevel/brstructs.h" />
 		<Unit filename="../source/lowlevel/brtick.cpp" />
 		<Unit filename="../source/lowlevel/brtick.h" />
 		<Unit filename="../source/lowlevel/brtimedate.cpp" />
@@ -611,6 +613,8 @@
 		<Unit filename="../unittest/testbrmatrix4d.h" />
 		<Unit filename="../unittest/testbrnetwork.cpp" />
 		<Unit filename="../unittest/testbrnetwork.h" />
+		<Unit filename="../unittest/testbrnumberto.cpp" />
+		<Unit filename="../unittest/testbrnumberto.h" />
 		<Unit filename="../unittest/testbrprintf.cpp" />
 		<Unit filename="../unittest/testbrprintf.h" />
 		<Unit filename="../unittest/testbrstaticrtti.cpp" />

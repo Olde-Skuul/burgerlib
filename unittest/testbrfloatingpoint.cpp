@@ -600,7 +600,7 @@ static uint_t BURGER_API TestSignBitDouble(void) BURGER_NOEXCEPT
 // Test Abs(float)
 //
 
-static const Burger::Word32ToFloat AbsFloatArray[][2] = {
+static const Burger::uint32_float_t AbsFloatArray[][2] = {
     {{0x00000000U}, {0x00000000U}}, // 0.0f,0.0f
     {{0x80000000U}, {0x00000000U}}, // -0.0f,0.0f
     {{0x00000001U}, {0x00000001U}}, // 0.0f,0.0f
@@ -626,11 +626,11 @@ static const Burger::Word32ToFloat AbsFloatArray[][2] = {
 };
 static uint_t BURGER_API TestAbsFloat(void) BURGER_NOEXCEPT
 {
-    const Burger::Word32ToFloat* pWork = AbsFloatArray[0];
+    const Burger::uint32_float_t * pWork = AbsFloatArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(AbsFloatArray);
     uint_t uResult = FALSE;
     do {
-        Burger::Word32ToFloat fTest;
+        Burger::uint32_float_t fTest;
         fTest.f = Burger::Abs(pWork[0]);
         const uint_t uFailure = (fTest.w != pWork[1].w);
         uResult |= uFailure;
@@ -649,7 +649,7 @@ static uint_t BURGER_API TestAbsFloat(void) BURGER_NOEXCEPT
 // Test Abs(double)
 //
 
-static const Burger::Word64ToDouble AbsDoubleArray[][2] = {
+static const Burger::uint64_double_t AbsDoubleArray[][2] = {
     // 0.0,0.0
     {{0x0000000000000000ULL}, {0x0000000000000000ULL}},
     // -0.0,0.0
@@ -689,7 +689,7 @@ static const Burger::Word64ToDouble AbsDoubleArray[][2] = {
 
 static uint_t BURGER_API TestAbsDouble(void) BURGER_NOEXCEPT
 {
-    const Burger::Word64ToDouble* pWork = AbsDoubleArray[0];
+    const Burger::uint64_double_t * pWork = AbsDoubleArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(AbsDoubleArray);
     uint_t uResult = FALSE;
     do {
@@ -709,7 +709,7 @@ static uint_t BURGER_API TestAbsDouble(void) BURGER_NOEXCEPT
 // Test Sign(float)
 //
 
-static const Burger::Word32ToFloat SignFloatArray[][2] = {
+static const Burger::uint32_float_t SignFloatArray[][2] = {
     {{0x00000000U}, {0x00000000U}}, // 0.0f,0.0f
     {{0x80000000U}, {0x00000000U}}, // 0.0f,0.0f
     {{0x00000001U}, {0x3F800000U}}, // 0.0f,1.0f
@@ -730,11 +730,11 @@ static const Burger::Word32ToFloat SignFloatArray[][2] = {
 
 static uint_t BURGER_API TestSignFloat(void) BURGER_NOEXCEPT
 {
-    const Burger::Word32ToFloat* pWork = SignFloatArray[0];
+    const Burger::uint32_float_t * pWork = SignFloatArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(SignFloatArray);
     uint_t uResult = FALSE;
     do {
-        Burger::Word32ToFloat fTest;
+        Burger::uint32_float_t fTest;
         fTest.f = Burger::Sign(pWork[0]);
         const uint_t uFailure = (fTest.w != pWork[1].w);
         uResult |= uFailure;
@@ -754,7 +754,7 @@ static uint_t BURGER_API TestSignFloat(void) BURGER_NOEXCEPT
 // Test Sign(double)
 //
 
-static const Burger::Word64ToDouble SignDoubleArray[][2] = {
+static const Burger::uint64_double_t SignDoubleArray[][2] = {
     {{0x0000000000000000ULL}, {0x0000000000000000ULL}}, // 0.0f,0.0f
     {{0x8000000000000000ULL}, {0x0000000000000000ULL}}, // 0.0f,0.0f
     {{0x0000000000000001ULL}, {0x3FF0000000000000ULL}}, // 0.0f,1.0f
@@ -775,11 +775,11 @@ static const Burger::Word64ToDouble SignDoubleArray[][2] = {
 
 static uint_t BURGER_API TestSignDouble(void) BURGER_NOEXCEPT
 {
-    const Burger::Word64ToDouble* pWork = SignDoubleArray[0];
+    const Burger::uint64_double_t * pWork = SignDoubleArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(SignDoubleArray);
     uint_t uResult = FALSE;
     do {
-        Burger::Word64ToDouble fTest;
+        Burger::uint64_double_t fTest;
         fTest = Burger::Sign(pWork[0]);
         const uint_t uFailure = (fTest.w != pWork[1].w);
         uResult |= uFailure;
@@ -799,7 +799,7 @@ static uint_t BURGER_API TestSignDouble(void) BURGER_NOEXCEPT
 // Test Clamp(float,float,float)
 //
 
-static const Burger::Word32ToFloat ClampFloatArray[][4] = {
+static const Burger::uint32_float_t ClampFloatArray[][4] = {
     // 0.0f,-1.0f,1.0f,0.0f
     {{0x00000000U}, {0xBF800000U}, {0x3F800000U}, {0x00000000U}},
     // 1.0f,-1.0f,1.0f,1.0f
@@ -821,11 +821,11 @@ static const Burger::Word32ToFloat ClampFloatArray[][4] = {
 
 static uint_t BURGER_API TestClampFloat(void) BURGER_NOEXCEPT
 {
-    const Burger::Word32ToFloat* pWork = ClampFloatArray[0];
+    const Burger::uint32_float_t * pWork = ClampFloatArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(ClampFloatArray);
     uint_t uResult = FALSE;
     do {
-        Burger::Word32ToFloat fTest;
+        Burger::uint32_float_t fTest;
         fTest.f = Burger::Clamp(pWork[0], pWork[1], pWork[2]);
         const uint_t uFailure = (fTest.w != pWork[3].w);
         uResult |= uFailure;
@@ -846,7 +846,7 @@ static uint_t BURGER_API TestClampFloat(void) BURGER_NOEXCEPT
 // Test Clamp(double,double,double)
 //
 
-static const Burger::Word64ToDouble ClampDoubleArray[][4] = {
+static const Burger::uint64_double_t ClampDoubleArray[][4] = {
     // 0.0f,-1.0f,1.0f,0.0f
     {{0x0000000000000000ULL}, {0xBFF0000000000000ULL}, {0x3FF0000000000000ULL},
         {0x0000000000000000ULL}},
@@ -877,11 +877,11 @@ static const Burger::Word64ToDouble ClampDoubleArray[][4] = {
 
 static uint_t BURGER_API TestClampDouble(void) BURGER_NOEXCEPT
 {
-    const Burger::Word64ToDouble* pWork = ClampDoubleArray[0];
+    const Burger::uint64_double_t * pWork = ClampDoubleArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(ClampDoubleArray);
     uint_t uResult = FALSE;
     do {
-        Burger::Word64ToDouble fTest;
+        Burger::uint64_double_t fTest;
         fTest = Burger::Clamp(pWork[0], pWork[1], pWork[2]);
         const uint_t uFailure = (fTest.w != pWork[3].w);
         uResult |= uFailure;
@@ -902,7 +902,7 @@ static uint_t BURGER_API TestClampDouble(void) BURGER_NOEXCEPT
 // Test Sqrt(float)
 //
 
-static const Burger::Word32ToFloat SqrtFloatArray[][2] = {
+static const Burger::uint32_float_t SqrtFloatArray[][2] = {
     // 0.0f,0.0f
     {{0x00000000U}, {0x00000000U}},
     // 1.401298464324817e-045,3.743392066509216e-023
@@ -947,7 +947,7 @@ static const Burger::Word32ToFloat SqrtFloatArray[][2] = {
 
 static uint_t BURGER_API TestSqrtFloat(void) BURGER_NOEXCEPT
 {
-    const Burger::Word32ToFloat* pWork = SqrtFloatArray[0];
+    const Burger::uint32_float_t * pWork = SqrtFloatArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(SqrtFloatArray);
     uint_t uResult = FALSE;
     do {
@@ -971,7 +971,7 @@ static uint_t BURGER_API TestSqrtFloat(void) BURGER_NOEXCEPT
 // Test Sqrt(double)
 //
 
-static const Burger::Word64ToDouble SqrtDoubleArray[][2] = {
+static const Burger::uint64_double_t SqrtDoubleArray[][2] = {
     // 0.0f,0.0f
     {{0x0000000000000000ULL}, {0x0000000000000000ULL}},
     // 4.940656458412e-324, 2.2227587494850775e-162
@@ -1012,7 +1012,7 @@ static const Burger::Word64ToDouble SqrtDoubleArray[][2] = {
 
 static uint_t BURGER_API TestSqrtDouble(void) BURGER_NOEXCEPT
 {
-    const Burger::Word64ToDouble* pWork = SqrtDoubleArray[0];
+    const Burger::uint64_double_t * pWork = SqrtDoubleArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(SqrtDoubleArray);
     uint_t uResult = FALSE;
     do {
@@ -1034,7 +1034,7 @@ static uint_t BURGER_API TestSqrtDouble(void) BURGER_NOEXCEPT
 // Test IntToFloat(float *,const int32_t *)
 //
 
-static const Burger::Word32ToFloat IntToFloatArray[][2] = {
+static const Burger::uint32_float_t IntToFloatArray[][2] = {
     {{0x00000000U}, {0x00000000U}}, // 0
     {{0x00000001U}, {0x3F800000U}}, // 1
     {{0xFFFFFFFFU}, {0xBF800000U}}, // -1
@@ -1074,7 +1074,7 @@ static const Burger::Word32ToFloat IntToFloatArray[][2] = {
 
 static uint_t BURGER_API TestIntToFloat(void)
 {
-    const Burger::Word32ToFloat* pWork = IntToFloatArray[0];
+    const Burger::uint32_float_t * pWork = IntToFloatArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(IntToFloatArray);
     uint_t uResult = FALSE;
     do {
@@ -1119,7 +1119,7 @@ static uint_t BURGER_API TestIntToFloat(void)
 // Test FixedToFloat(float *,const Fixed32 *)
 //
 
-static const Burger::Word32ToFloat FixedToFloatArray[][2] = {
+static const Burger::uint32_float_t FixedToFloatArray[][2] = {
     {{0x00000000U}, {0x00000000U}}, // 0
     {{0x00010000U}, {0x3F800000U}}, // 1
     {{0xFFFF0000U}, {0xBF800000U}}, // -1
@@ -1159,7 +1159,7 @@ static const Burger::Word32ToFloat FixedToFloatArray[][2] = {
 
 static uint_t BURGER_API TestFixedToFloat(void) BURGER_NOEXCEPT
 {
-    const Burger::Word32ToFloat* pWork = FixedToFloatArray[0];
+    const Burger::uint32_float_t * pWork = FixedToFloatArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(FixedToFloatArray);
     uint_t uResult = FALSE;
     do {
@@ -1205,7 +1205,7 @@ static uint_t BURGER_API TestFixedToFloat(void) BURGER_NOEXCEPT
 // Test Floor(float)
 //
 
-static const Burger::Word32ToFloat FloorFloatArray[][2] = {
+static const Burger::uint32_float_t FloorFloatArray[][2] = {
     {{0xC07FFFFFU}, {0xC0800000U}}, // -3.999f,-4.0f
     {{0xC0600000U}, {0xC0800000U}}, // -3.5f,-4.0f
     {{0xC05FFFFFU}, {0xC0800000U}}, // -3.499f,-4.0f
@@ -1275,7 +1275,7 @@ static const Burger::Word32ToFloat FloorFloatArray[][2] = {
 
 static uint_t BURGER_API TestFloorFloat(void) BURGER_NOEXCEPT
 {
-    const Burger::Word32ToFloat* pWork = FloorFloatArray[0];
+    const Burger::uint32_float_t * pWork = FloorFloatArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(FloorFloatArray);
     uint_t uResult = FALSE;
     do {
@@ -1297,7 +1297,7 @@ static uint_t BURGER_API TestFloorFloat(void) BURGER_NOEXCEPT
 // Test Floor(double)
 //
 
-static const Burger::Word64ToDouble FloorDoubleArray[][2] = {
+static const Burger::uint64_double_t FloorDoubleArray[][2] = {
     {{0xC00FFFFFFFFFFFFFULL}, {0xC010000000000000ULL}}, // -3.999f,-4.0f
     {{0xC00C000000000000ULL}, {0xC010000000000000ULL}}, // -3.5f,-4.0f
     {{0xC00BFFFFFFFFFFFFULL}, {0xC010000000000000ULL}}, // -3.499f,-4.0f
@@ -1381,7 +1381,7 @@ static const Burger::Word64ToDouble FloorDoubleArray[][2] = {
 
 static uint_t TestFloorDouble(void) BURGER_NOEXCEPT
 {
-    const Burger::Word64ToDouble* pWork = FloorDoubleArray[0];
+    const Burger::uint64_double_t * pWork = FloorDoubleArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(FloorDoubleArray);
     uint_t uResult = FALSE;
     do {
@@ -1401,7 +1401,7 @@ static uint_t TestFloorDouble(void) BURGER_NOEXCEPT
 // Test Ceil(float)
 //
 
-static const Burger::Word32ToFloat CeilFloatArray[][2] = {
+static const Burger::uint32_float_t CeilFloatArray[][2] = {
     {{0xC07FFFFFU}, {0xC0400000U}}, // -3.999f,-3.0f
     {{0xC0600000U}, {0xC0400000U}}, // -3.5f,-3.0f
     {{0xC05FFFFFU}, {0xC0400000U}}, // -3.499f,-3.0f
@@ -1471,7 +1471,7 @@ static const Burger::Word32ToFloat CeilFloatArray[][2] = {
 
 static uint_t TestCeilFloat(void) BURGER_NOEXCEPT
 {
-    const Burger::Word32ToFloat* pWork = CeilFloatArray[0];
+    const Burger::uint32_float_t * pWork = CeilFloatArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(CeilFloatArray);
     uint_t uResult = FALSE;
     do {
@@ -1493,7 +1493,7 @@ static uint_t TestCeilFloat(void) BURGER_NOEXCEPT
 // Test Ceil(double)
 //
 
-static const Burger::Word64ToDouble CeilDoubleArray[][2] = {
+static const Burger::uint64_double_t CeilDoubleArray[][2] = {
     {{0xC00FFFFFFFFFFFFFULL}, {0xC008000000000000ULL}}, // -3.999f,-3.0f
     {{0xC00C000000000000ULL}, {0xC008000000000000ULL}}, // -3.5f,-3.0f
     {{0xC00BFFFFFFFFFFFFULL}, {0xC008000000000000ULL}}, // -3.499f,-3.0f
@@ -1573,7 +1573,7 @@ static const Burger::Word64ToDouble CeilDoubleArray[][2] = {
 
 static uint_t TestCeilDouble(void) BURGER_NOEXCEPT
 {
-    const Burger::Word64ToDouble* pWork = CeilDoubleArray[0];
+    const Burger::uint64_double_t * pWork = CeilDoubleArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(CeilDoubleArray);
     uint_t uResult = FALSE;
     do {
@@ -1593,7 +1593,7 @@ static uint_t TestCeilDouble(void) BURGER_NOEXCEPT
 // Test Round(float)
 //
 
-static const Burger::Word32ToFloat RoundFloatArray[][2] = {
+static const Burger::uint32_float_t RoundFloatArray[][2] = {
     {{0xC07FFFFFU}, {0xC0800000U}}, // -3.999f,-4.0f
     {{0xC0600000U}, {0xC0800000U}}, // -3.5f,-4.0f
     {{0xC05FFFFFU}, {0xC0400000U}}, // -3.499f,-3.0f
@@ -1667,7 +1667,7 @@ static const Burger::Word32ToFloat RoundFloatArray[][2] = {
 
 static uint_t TestRoundFloat(void) BURGER_NOEXCEPT
 {
-    const Burger::Word32ToFloat* pWork = RoundFloatArray[0];
+    const Burger::uint32_float_t * pWork = RoundFloatArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(RoundFloatArray);
     uint_t uResult = FALSE;
     do {
@@ -1689,7 +1689,7 @@ static uint_t TestRoundFloat(void) BURGER_NOEXCEPT
 // Test Round(double)
 //
 
-static const Burger::Word64ToDouble RoundDoubleArray[][2] = {
+static const Burger::uint64_double_t RoundDoubleArray[][2] = {
     {{0xC00FFFFFFFFFFFFFULL}, {0xC010000000000000ULL}}, // -3.999f,-4.0f
     {{0xC00C000000000000ULL}, {0xC010000000000000ULL}}, // -3.5f,-4.0f
     {{0xC00BFFFFFFFFFFFFULL}, {0xC008000000000000ULL}}, // -3.499f,-3.0f
@@ -1769,13 +1769,13 @@ static const Burger::Word64ToDouble RoundDoubleArray[][2] = {
 
 static uint_t TestRoundDouble(void) BURGER_NOEXCEPT
 {
-    const Burger::Word64ToDouble* pWork = RoundDoubleArray[0];
+    const Burger::uint64_double_t * pWork = RoundDoubleArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(RoundDoubleArray);
     uint_t uResult = FALSE;
     do {
         // Note: Use volatile to force the compiler to use 32 bit float
         // precision
-        Burger::Word64ToDouble dTest;
+        Burger::uint64_double_t dTest;
         dTest.d = Burger::Round(pWork[0]);
         const uint_t uFailure = (dTest.d != pWork[1].d);
         uResult |= uFailure;
@@ -1796,7 +1796,7 @@ static uint_t TestRoundDouble(void) BURGER_NOEXCEPT
 // Test RoundToZero(float)
 //
 
-static const Burger::Word32ToFloat RoundToZeroFloatArray[][2] = {
+static const Burger::uint32_float_t RoundToZeroFloatArray[][2] = {
     {{0xC07FFFFFU}, {0xC0400000U}}, // -3.999f,-3.0f
     {{0xC0600000U}, {0xC0400000U}}, // -3.5f,-3.0f
     {{0xC05FFFFFU}, {0xC0400000U}}, // -3.499f,-3.0f
@@ -1852,7 +1852,7 @@ static const Burger::Word32ToFloat RoundToZeroFloatArray[][2] = {
 
 static uint_t TestRoundToZeroFloat(void) BURGER_NOEXCEPT
 {
-    const Burger::Word32ToFloat* pWork = RoundToZeroFloatArray[0];
+    const Burger::uint32_float_t * pWork = RoundToZeroFloatArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(RoundToZeroFloatArray);
     uint_t uResult = FALSE;
     do {
@@ -1875,7 +1875,7 @@ static uint_t TestRoundToZeroFloat(void) BURGER_NOEXCEPT
 // Test RoundToNearest(double)
 //
 
-static const Burger::Word64ToDouble RoundToZeroDoubleArray[][2] = {
+static const Burger::uint64_double_t RoundToZeroDoubleArray[][2] = {
     {{0xC00FFFFFFFFFFFFFULL}, {0xC008000000000000ULL}}, // -3.999f,-3.0f
     {{0xC00C000000000000ULL}, {0xC008000000000000ULL}}, // -3.5f,-3.0f
     {{0xC00BFFFFFFFFFFFFULL}, {0xC008000000000000ULL}}, // -3.499f,-3.0f
@@ -1939,13 +1939,13 @@ static const Burger::Word64ToDouble RoundToZeroDoubleArray[][2] = {
 
 static uint_t TestRoundToZeroDouble(void) BURGER_NOEXCEPT
 {
-    const Burger::Word64ToDouble* pWork = RoundToZeroDoubleArray[0];
+    const Burger::uint64_double_t * pWork = RoundToZeroDoubleArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(RoundToZeroDoubleArray);
     uint_t uResult = FALSE;
     do {
         // Note: Use volatile to force the compiler to use 32 bit float
         // precision
-        Burger::Word64ToDouble dTest;
+        Burger::uint64_double_t dTest;
         dTest.d = Burger::RoundToZero(pWork[0]);
         const uint_t uFailure = (dTest.d != pWork[1].d);
         uResult |= uFailure;
@@ -1966,7 +1966,7 @@ static uint_t TestRoundToZeroDouble(void) BURGER_NOEXCEPT
 // Test ModuloRadians(float)
 //
 
-static const Burger::Word32ToFloat ModuloRadiansFloatArray[][2] = {
+static const Burger::uint32_float_t ModuloRadiansFloatArray[][2] = {
     {{0x40490FDBU}, {0xC0490FDBU}}, // Pi,-Pi
     {{0x3FC90FDBU}, {0x3FC90FDBU}}, // .5Pi,.5Pi
     {{0x40490FDBU}, {0xC0490FDBU}}, // Pi,-Pi
@@ -1986,14 +1986,14 @@ static const Burger::Word32ToFloat ModuloRadiansFloatArray[][2] = {
 
 static uint_t TestModuloRadiansFloat(void) BURGER_NOEXCEPT
 {
-    const Burger::Word32ToFloat* pWork = ModuloRadiansFloatArray[0];
+    const Burger::uint32_float_t * pWork = ModuloRadiansFloatArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(ModuloRadiansFloatArray);
     uint_t uResult = FALSE;
     do {
         const float fOriginal = pWork[0];
         // Note: Use volatile to force the compiler to use 32 bit float
         // precision
-        Burger::Word32ToFloat fTest;
+        Burger::uint32_float_t fTest;
         fTest.f = Burger::ModuloRadians(fOriginal);
         // uint_t uFailure = ((fTest.w^=pWork[1].w)&0x7FFFFFFFU)!=0;
         const uint_t uFailure = (fTest.w != pWork[1].w);
@@ -2015,7 +2015,7 @@ static uint_t TestModuloRadiansFloat(void) BURGER_NOEXCEPT
 // Test ModuloRadians(double)
 //
 
-static const Burger::Word64ToDouble ModuloRadiansDoubleArray[][2] = {
+static const Burger::uint64_double_t ModuloRadiansDoubleArray[][2] = {
     {{0x3FF921FB54442D18ULL}, {0x3FF921FB54442D18ULL}}, // .5Pi,.5Pi
     {{0x400921FB54442D18ULL}, {0xC00921FB54442D18ULL}}, // Pi,-Pi
     {{0x4012D97C7F3321D2ULL}, {0xBFF921FB54442D18ULL}}, // 1.5Pi,-.5Pif
@@ -2036,13 +2036,13 @@ static const Burger::Word64ToDouble ModuloRadiansDoubleArray[][2] = {
 
 static uint_t TestModuloRadiansDouble(void) BURGER_NOEXCEPT
 {
-    const Burger::Word64ToDouble* pWork = ModuloRadiansDoubleArray[0];
+    const Burger::uint64_double_t * pWork = ModuloRadiansDoubleArray[0];
     uintptr_t i = BURGER_ARRAYSIZE(ModuloRadiansDoubleArray);
     uint_t uResult = FALSE;
     do {
         // Note: Use volatile to force the compiler to use 32 bit float
         // precision
-        Burger::Word64ToDouble dTest;
+        Burger::uint64_double_t dTest;
         dTest.d = Burger::ModuloRadians(pWork[0]);
         // uint_t uFailure = ((dTest.w^=pWork[1].w)&0x7FFFFFFFFFFFFFFFULL)!=0;
         const uint_t uFailure = (dTest.w != pWork[1].w);

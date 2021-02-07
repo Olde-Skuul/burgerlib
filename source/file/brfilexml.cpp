@@ -1,13 +1,14 @@
 /***************************************
 
-	Library to handle xml files (XML)
+    Library to handle xml files (XML)
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -910,9 +911,9 @@ Burger::FileXML::Comment::~Comment()
 
 	\brief Parse an XML comment object
 
-	Given a data string that's starting right after the initial <!-- in
-	an XML file, parse out the comment and remove the trailing -->. 
-	Return an error if a --> was not found before the data
+	Given a data string that's starting right after the initial ``<!--`` in
+	an XML file, parse out the comment and remove the trailing ``-->``. 
+	Return an error if a ``-->`` was not found before the data
 	stream was exhausted.
 
 	\note No translation is done to the text at all. It's likely it can contain illegal

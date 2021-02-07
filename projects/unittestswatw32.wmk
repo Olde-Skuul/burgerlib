@@ -410,6 +410,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brstring.obj &
 	$(A)/brstring16.obj &
 	$(A)/brstringfunctions.obj &
+	$(A)/brstructs.obj &
 	$(A)/brtexture.obj &
 	$(A)/brtexturedirectx9.obj &
 	$(A)/brtextureopengl.obj &
@@ -463,6 +464,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/testbrmatrix3d.obj &
 	$(A)/testbrmatrix4d.obj &
 	$(A)/testbrnetwork.obj &
+	$(A)/testbrnumberto.obj &
 	$(A)/testbrprintf.obj &
 	$(A)/testbrstaticrtti.obj &
 	$(A)/testbrstrings.obj &

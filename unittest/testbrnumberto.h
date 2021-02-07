@@ -1,8 +1,8 @@
 /***************************************
 
-    Unit tests for the Endian manager
+	Unit tests for the number to ascii functions
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
     It is released under an MIT Open Source license. Please see LICENSE for
     license details. Yes, you can use it in a commercial title without paying
@@ -12,13 +12,13 @@
 
 ***************************************/
 
-#ifndef __TESTBRENDIAN_H__
-#define __TESTBRENDIAN_H__
+#ifndef __TESTBRNUMBERTO_H__
+#define __TESTBRNUMBERTO_H__
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
 #endif
 
-extern int BURGER_API TestBrendian(uint_t uVerbose) BURGER_NOEXCEPT;
+extern int BURGER_API TestBrnumberto(uint_t uVerbose);
 
 #endif

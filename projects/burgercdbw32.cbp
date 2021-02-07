@@ -412,6 +412,8 @@
 		<Unit filename="../source/lowlevel/brsnsystems.h" />
 		<Unit filename="../source/lowlevel/brstaticrtti.cpp" />
 		<Unit filename="../source/lowlevel/brstaticrtti.h" />
+		<Unit filename="../source/lowlevel/brstructs.cpp" />
+		<Unit filename="../source/lowlevel/brstructs.h" />
 		<Unit filename="../source/lowlevel/brtick.cpp" />
 		<Unit filename="../source/lowlevel/brtick.h" />
 		<Unit filename="../source/lowlevel/brtimedate.cpp" />

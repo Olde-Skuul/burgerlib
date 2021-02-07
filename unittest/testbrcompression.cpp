@@ -157,7 +157,7 @@ static void DumpTheHex(char* pOutput, const Word8* pInput, WordPtr uCount)
 		do {
 			NumberStringHex Hex(
 				static_cast<Word32>(pInput[0]), LEADINGZEROS + 2);
-			StringConcatenate(pOutput, Hex.GetPtr());
+			StringConcatenate(pOutput, Hex.c_str());
 			if (uCount != 1) {
 				StringConcatenate(pOutput, " ");
 			}
@@ -246,7 +246,7 @@ static Word TestILBMDecompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"DecompressILBMRLE::Process(Buffer,0x%s,ILBMCompressed,sizeof(ILBMCompressed)) = %d, expected Decompress::DECOMPRESS_OUTPUTOVERRUN",
-				TRUE, Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(Buffer + uSplit, sizeof(RawData) - uSplit,
@@ -256,7 +256,7 @@ static Word TestILBMDecompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"DecompressILBMRLE::Process(Buffer+0x%s,sizeof(RawData)-0x%s,ILBMCompressed+uBytesProcessed,sizeof(ILBMCompressed)-uBytesProcessed) = %d, expected Decompress::DECOMPRESS_OKAY",
-				TRUE, Hex.GetPtr(), Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		uFailure |= ReportDecompress(Buffer, RawData, sizeof(RawData),
@@ -275,7 +275,7 @@ static Word TestILBMDecompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"DecompressILBMRLE::Process(Buffer,sizeof(RawData),ILBMCompressed,0x%s) = %d, expected Decompress::DECOMPRESS_OUTPUTUNDERRUN",
-				TRUE, Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(Buffer + uBytesProcessed,
@@ -285,7 +285,7 @@ static Word TestILBMDecompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"DecompressILBMRLE::Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,ILBMCompressed+0x%s,sizeof(ILBMCompressed)-0x%s) = %d, expected Decompress::DECOMPRESS_OKAY",
-				TRUE, Hex.GetPtr(), Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		uFailure |= ReportDecompress(Buffer, RawData, sizeof(RawData),
@@ -396,7 +396,7 @@ static Word TestILBMCompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"CompressILBMRLE::Process(RawData,0x%s) = %d, expected Compress::COMPRESS_OKAY",
-				TRUE, Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(RawData + uSplit, sizeof(RawData) - uSplit);
@@ -404,7 +404,7 @@ static Word TestILBMCompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"CompressILBMRLE::Process(RawData+0x%s,sizeof(RawData)-0x%s) = %d, expected Compress::COMPRESS_OKAY",
-				TRUE, Hex.GetPtr(), Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Finalize();
@@ -441,7 +441,7 @@ static Word TestILBMCompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"CompressILBMRLE::Process(RawData+0x%s,1) = %d, expected Compress::COMPRESS_OKAY",
-				TRUE, Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 	} while (++uSplit < sizeof(RawData));
@@ -506,7 +506,7 @@ static Word TestLZSSDecompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"DecompressLZSS::Process(Buffer,0x%s,LZSSCompressed,sizeof(LZSSCompressed)) = %d, expected Decompress::DECOMPRESS_OUTPUTOVERRUN",
-				TRUE, Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(Buffer + uSplit, sizeof(RawData) - uSplit,
@@ -516,7 +516,7 @@ static Word TestLZSSDecompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"DecompressLZSS::Process(Buffer+0x%s,sizeof(RawData)-0x%s,LZSSCompressed+uBytesProcessed,sizeof(LZSSCompressed)-uBytesProcessed) = %d, expected Decompress::DECOMPRESS_OKAY",
-				TRUE, Hex.GetPtr(), Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		uFailure |= ReportDecompress(Buffer, RawData, sizeof(RawData),
@@ -535,7 +535,7 @@ static Word TestLZSSDecompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"DecompressLZSS::Process(Buffer,sizeof(RawData),LZSSCompressed,0x%s) = %d, expected Decompress::DECOMPRESS_OUTPUTUNDERRUN",
-				TRUE, Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(Buffer + uBytesProcessed,
@@ -545,7 +545,7 @@ static Word TestLZSSDecompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"DecompressLZSS::Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,LZSSCompressed+0x%s,sizeof(LZSSCompressed)-0x%s) = %d, expected Decompress::DECOMPRESS_OKAY",
-				TRUE, Hex.GetPtr(), Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		uFailure |= ReportDecompress(Buffer, RawData, sizeof(RawData),
@@ -656,7 +656,7 @@ static Word TestLZSSCompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"CompressLZSS::Process(RawData,0x%s) = %d, expected Compress::COMPRESS_OKAY",
-				TRUE, Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(RawData + uSplit, sizeof(RawData) - uSplit);
@@ -664,7 +664,7 @@ static Word TestLZSSCompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"CompressLZSS::Process(RawData+0x%s,sizeof(RawData)-0x%s) = %d, expected Compress::COMPRESS_OKAY",
-				TRUE, Hex.GetPtr(), Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Finalize();
@@ -700,7 +700,7 @@ static Word TestLZSSCompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"CompressLZSS::Process(RawData+0x%s,1) = %d, expected Compress::COMPRESS_OKAY",
-				TRUE, Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 	} while (++uSplit < sizeof(RawData));
@@ -765,7 +765,7 @@ static Word TestDeflateDecompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"DecompressDeflate::Process(Buffer,0x%s,DeflateCompressed,sizeof(DeflateCompressed)) = %d, expected Decompress::DECOMPRESS_OUTPUTOVERRUN",
-				TRUE, Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(Buffer + uSplit, sizeof(RawData) - uSplit,
@@ -775,7 +775,7 @@ static Word TestDeflateDecompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"DecompressDeflate::Process(Buffer+0x%s,sizeof(RawData)-0x%s,DeflateCompressed+uBytesProcessed,sizeof(DeflateCompressed)-uBytesProcessed) = %d, expected Decompress::DECOMPRESS_OKAY",
-				TRUE, Hex.GetPtr(), Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		uFailure |= ReportDecompress(Buffer, RawData, sizeof(RawData),
@@ -794,7 +794,7 @@ static Word TestDeflateDecompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"DecompressDeflate::Process(Buffer,sizeof(RawData),DeflateCompressed,0x%s) = %d, expected Decompress::DECOMPRESS_OUTPUTUNDERRUN",
-				TRUE, Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(Buffer + uBytesProcessed,
@@ -804,7 +804,7 @@ static Word TestDeflateDecompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"DecompressDeflate::Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,DeflateCompressed+0x%s,sizeof(DeflateCompressed)-0x%s) = %d, expected Decompress::DECOMPRESS_OKAY",
-				TRUE, Hex.GetPtr(), Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		uFailure |= ReportDecompress(Buffer, RawData, sizeof(RawData),
@@ -917,7 +917,7 @@ static Word TestDeflateCompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"CompressDeflate::Process(RawData,0x%s) = %d, expected Compress::COMPRESS_OKAY",
-				TRUE, Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(RawData + uSplit, sizeof(RawData) - uSplit);
@@ -925,7 +925,7 @@ static Word TestDeflateCompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"CompressDeflate::Process(RawData+0x%s,sizeof(RawData)-0x%s) = %d, expected Compress::COMPRESS_OKAY",
-				TRUE, Hex.GetPtr(), Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Finalize();
@@ -962,7 +962,7 @@ static Word TestDeflateCompress(void)
 			NumberStringHex Hex(static_cast<Word32>(uSplit), LEADINGZEROS + 4);
 			ReportFailure(
 				"CompressDeflate::Process(RawData+0x%s,1) = %d, expected Compress::COMPRESS_OKAY",
-				TRUE, Hex.GetPtr(), Error);
+				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 	} while (++uSplit < sizeof(RawData));

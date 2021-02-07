@@ -1,16 +1,17 @@
 /***************************************
 
-	Import an S3M file
+    Import an S3M file
 
-	Documentation is found here
-	http://www.shikadi.net/moddingwiki/S3M_Format
+    Documentation is found here
+    http://www.shikadi.net/moddingwiki/S3M_Format
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 

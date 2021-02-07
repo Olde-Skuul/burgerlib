@@ -29,6 +29,7 @@
 #include "testbrmatrix3d.h"
 #include "testbrmatrix4d.h"
 #include "testbrnetwork.h"
+#include "testbrnumberto.h"
 #include "testbrprintf.h"
 #include "testbrstaticrtti.h"
 #include "testbrstrings.h"
@@ -169,12 +170,14 @@ void BURGER_ANSIAPI Message(const char* pMessage, ...) BURGER_NOEXCEPT
 
 void BURGER_API BlastBuffer(void* pOutput, uintptr_t uSize) BURGER_NOEXCEPT
 {
-    uintptr_t i = 0;
-    do {
-        static_cast<uint8_t*>(pOutput)[0] = g_BlastPattern[i];
-        i = (i + 1) & 15;
-        pOutput = static_cast<uint8_t*>(pOutput) + 1;
-    } while (--uSize);
+    if (pOutput && uSize) {
+        uintptr_t i = 0;
+        do {
+            static_cast<uint8_t *>(pOutput)[0] = g_BlastPattern[i];
+            i = (i + 1) & 15;
+            pOutput = static_cast<uint8_t *>(pOutput) + 1;
+        } while (--uSize);
+    }
 }
 
 /***************************************
@@ -196,8 +199,7 @@ void BURGER_API BlastBuffer(void* pOutput, uintptr_t uSize) BURGER_NOEXCEPT
 uint_t BURGER_API VerifyBuffer(
     const void* pBuffer, uintptr_t uSize, const void* pInput, uintptr_t uSkip) BURGER_NOEXCEPT
 {
-    uintptr_t i = 0; // Index to the BlastPattern
-                   // buffer
+    uintptr_t i = 0; // Index to the BlastPattern buffer
     uint_t uResult = FALSE;
     // Get the offset mark. Note that "negative" numbers become huge positive
     // numbers so the uMark>=uSkip test works for both before and after the skip
@@ -334,6 +336,7 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
         iResult |= TestBrhashes(uVerbose);
         iResult |= TestCharset(uVerbose);
         iResult |= TestBrstrings(uVerbose);
+        iResult |= TestBrnumberto(uVerbose);
         iResult |= TestStdoutHelpers(uVerbose);
         iResult |= TestDateTime(uVerbose);
         iResult |= TestNetwork(uVerbose);
