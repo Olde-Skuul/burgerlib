@@ -1,0 +1,46 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Baseline
+[*]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+tab_width = 4
+trim_trailing_whitespace = true
+#max_line_length = 80
+
+[*.{h,py,cpp,c,a65}]
+indent_style = tab
+insert_final_newline = true
+
+#[*.{h,cpp,c}]
+#indent_brace_style = K&R
+#curly_bracket_next_line = false
+
+# The indent size used in the `package.json` file cannot be changed
+# https://github.com/npm/npm/pull/3180#issuecomment-16336516
+[{*.yml,*.yaml,package.json}]
+indent_style = space
+indent_size = 2
+
+# Make files
+[{Makefile*,*.wmk,*.mk}]
+indent_style = space
+
+# MSBuild
+[*.{csproj,proj,projitems,shproj,fsproj,target,props}]
+indent_style = space
+indent_size = 2
+
+# XML config files
+[*.{config,nuspec,resx,natvis}]
+indent_style = space
+indent_size = 2
+
+# Python files
+[*.py]
+indent_style = space
+indent_size = 4

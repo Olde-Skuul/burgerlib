@@ -1,14 +1,14 @@
 /***************************************
 
-    Unit tests for the printf library
+	Unit tests for the printf library
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -51,83 +51,124 @@
 #include "testbrprintf.h"
 #include "brassert.h"
 #include "brfpinfo.h"
+#include "brmemoryfunctions.h"
 #include "brmetrowerks.h"
 #include "brnumberstring.h"
 #include "brprintf.h"
-#include "brmemoryfunctions.h"
 #include "brstringfunctions.h"
+#include "brstructs.h"
 #include "brtick.h"
 #include "brutf8.h"
 #include "common.h"
 
+#if defined(BURGER_MSVC)
+// Disable conditional expression is constant
+#pragma warning(disable : 4127)
 
-//#define DOFLOATDECOMPTEST
+// Available with Visual Studio 2005 and higher
+#if (BURGER_MSVC >= 140000000)
+// Disable potential comparison of a constant with another constant
+#pragma warning(disable : 6326)
+#endif
+#endif
+
+#if defined(BURGER_WATCOM)
+// Integral constant will be truncated during assignment
+#pragma warning 388 9
+#endif
+
+#define DOFLOATDECOMPTEST
 
 #if defined(BURGER_WINDOWS) || defined(BURGER_XBOX360)
 #define snprintf _snprintf
 #elif defined(BURGER_METROWERKS) && !defined(__MSL__)
 #include <stdarg.h>
-static int snprintf(char *s, uintptr_t uSize, const char *format, ...) {
-    BURGER_UNUSED(uSize);
-    va_list Args;
-    va_start(Args,format);
-    int iResult = vsprintf(s,format,Args);
-    va_end(Args);
-    return iResult;
-
+static int snprintf(char* s, uintptr_t uSize, const char* format, ...)
+{
+	BURGER_UNUSED(uSize);
+	va_list Args;
+	va_start(Args, format);
+	int iResult = vsprintf(s, format, Args);
+	va_end(Args);
+	return iResult;
 }
+#endif
+
+#if defined(BURGER_HAS_WCHAR_T)
+static Burger::SafePrintArgument::eType g_WCharARG =
+	static_cast<wchar_t>(-1) < 0 ? Burger::SafePrintArgument::ARG_INT16 :
+                                   Burger::SafePrintArgument::ARG_UINT16;
+#endif
+
+#if defined(BURGER_HAS_CHAR8_T)
+static Burger::SafePrintArgument::eType g_Char8ARG =
+	static_cast<char8_t>(-1) < 0 ? Burger::SafePrintArgument::ARG_INT8 :
+                                   Burger::SafePrintArgument::ARG_UINT8;
+#endif
+
+#if defined(BURGER_HAS_CHAR16_T)
+static Burger::SafePrintArgument::eType g_Char16ARG =
+	static_cast<char16_t>(-1) < 0 ? Burger::SafePrintArgument::ARG_INT16 :
+                                    Burger::SafePrintArgument::ARG_UINT16;
+static Burger::SafePrintArgument::eType g_Char32ARG =
+	static_cast<char32_t>(-1) < 0 ? Burger::SafePrintArgument::ARG_INT32 :
+                                    Burger::SafePrintArgument::ARG_UINT32;
 #endif
 
 // ======================================================================================
 // Special values for 32-bit floats
-static const Word32 g_FloatSpecialConstants[] = {
-	0x00000000, 0x80000000, // Zero and -Zero
-	0x7F800000, 0xFF800000, // Infinity, -Infinity
+#if 0
+static const uint32_t g_FloatSpecialConstants[] = {
+    0x00000000, 0x80000000, // Zero and -Zero
+    0x7F800000, 0xFF800000, // Infinity, -Infinity
 
-	// Note: Some functions expect signaling NAN values are at index 4
-	0x7F800001, 0xFF800001, // NAN, -NAN (smallest signaling)
-	0x7F80FFFF, 0xFF80FFFF, // NAN, -NAN (signaling)
-	0x7FBFFFFF, 0xFFBFFFFF, // NAN, -NAN (largest signaling)
+    // Note: Some functions expect signaling NAN values are at index 4
+    0x7F800001, 0xFF800001, // NAN, -NAN (smallest signaling)
+    0x7F80FFFF, 0xFF80FFFF, // NAN, -NAN (signaling)
+    0x7FBFFFFF, 0xFFBFFFFF, // NAN, -NAN (largest signaling)
 
-	// Note: Quiet NANs are at index 10
-	0x7FC00000, 0xFFC00000, // NAN, -NAN (smallest quiet NaN, indeterminate NAN)
-	0x7FC00001, 0xFFC00001, // NAN, -NAN (next smallest quiet NaN)
-	0x7FC0F0F0, 0xFFC0F0F0, // NAN, -NAN (quiet)
-	0x7FFFFFFF, 0xFFFFFFFF, // NAN, -NAN (largest)
+    // Note: Quiet NANs are at index 10
+    0x7FC00000, 0xFFC00000, // NAN, -NAN (smallest quiet NaN, indeterminate NAN)
+    0x7FC00001, 0xFFC00001, // NAN, -NAN (next smallest quiet NaN)
+    0x7FC0F0F0, 0xFFC0F0F0, // NAN, -NAN (quiet)
+    0x7FFFFFFF, 0xFFFFFFFF, // NAN, -NAN (largest)
 
-	0x00000001, 0x80000001, // smallest subnormals
-	0x00000002, 0x80000002, // smallest subnormals
-	0x000F0F0F, 0x800F0F0F, // subnormals
-	0x007FFFFF, 0x807FFFFF  // largest subnormals
+    0x00000001, 0x80000001, // smallest subnormals
+    0x00000002, 0x80000002, // smallest subnormals
+    0x000F0F0F, 0x800F0F0F, // subnormals
+    0x007FFFFF, 0x807FFFFF  // largest subnormals
 };
+#endif
 
 // ======================================================================================
 // Special values for 64-bit doubles
-static const Word64 g_DoubleSpecialConstants[] = {
-	0x0000000000000000ULL, 0x8000000000000000ULL, // Zero and -Zero
+#if 0
+static const uint64_t g_DoubleSpecialConstants[] = {
+    0x0000000000000000ULL, 0x8000000000000000ULL, // Zero and -Zero
 
-	0x7FF0000000000000ULL, 0xFFF0000000000000ULL, // Infinity, -Infinity
-	0x7FF0000000000001ULL,
-	0xFFF0000000000001ULL, // NAN, -NAN (smallest signaling)
-	0x7FF0000FFFFFFFFFULL, 0xFFF000FFFFFFFFFFULL, // NAN, -NAN (signaling)
-	0x7FF7FFFFFFFFFFFFULL,
-	0xFFF7FFFFFFFFFFFFULL, // NAN, -NAN (largest signaling)
-	0x7FF8000000000000ULL,
-	0xFFF8000000000000ULL, // NAN, -NAN (smallest quiet NaN, indeterminate NAN)
-	0x7FF8000000000001ULL,
-	0xFFF8000000000001ULL, // NAN, -NAN (next smallest quiet NaN)
-	0x7FF80F0F0F0F0F0FULL, 0xFFF80F0F0F0F0F0FULL, // NAN, -NAN (quiet)
-	0x7FFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL, // NAN, -NAN (largest)
+    0x7FF0000000000000ULL, 0xFFF0000000000000ULL, // Infinity, -Infinity
+    0x7FF0000000000001ULL,
+    0xFFF0000000000001ULL, // NAN, -NAN (smallest signaling)
+    0x7FF0000FFFFFFFFFULL, 0xFFF000FFFFFFFFFFULL, // NAN, -NAN (signaling)
+    0x7FF7FFFFFFFFFFFFULL,
+    0xFFF7FFFFFFFFFFFFULL, // NAN, -NAN (largest signaling)
+    0x7FF8000000000000ULL,
+    0xFFF8000000000000ULL, // NAN, -NAN (smallest quiet NaN, indeterminate NAN)
+    0x7FF8000000000001ULL,
+    0xFFF8000000000001ULL, // NAN, -NAN (next smallest quiet NaN)
+    0x7FF80F0F0F0F0F0FULL, 0xFFF80F0F0F0F0F0FULL, // NAN, -NAN (quiet)
+    0x7FFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL, // NAN, -NAN (largest)
 
-	0x0000000000000001ULL, 0x8000000000000001ULL, // smallest subnormals
-	0x0000000000000002ULL, 0x8000000000000002ULL, // smallest subnormals
-	0x00000000F0F0F0F0ULL, 0x80000000F0F0F0F0ULL, // subnormals
-	0x000FFFFFFFFFFFFFULL, 0x800FFFFFFFFFFFFFULL  // largest subnormals
+    0x0000000000000001ULL, 0x8000000000000001ULL, // smallest subnormals
+    0x0000000000000002ULL, 0x8000000000000002ULL, // smallest subnormals
+    0x00000000F0F0F0F0ULL, 0x80000000F0F0F0F0ULL, // subnormals
+    0x000FFFFFFFFFFFFFULL, 0x800FFFFFFFFFFFFFULL  // largest subnormals
 };
+#endif
 
 struct FloatTestSet_t {
 	float m_fFloatValue;
-	Word m_uMaxPrecision;
+	uint_t m_uMaxPrecision;
 };
 
 static const FloatTestSet_t g_FloatConstants[] = {
@@ -135,12 +176,12 @@ static const FloatTestSet_t g_FloatConstants[] = {
 	{0.00001f, 10}, {0.000001f, 10}, {0.0000001f, 10}, {0.00000001f, 10},
 	{100.0f, 2}, {99.999f, 10}, {9.9999999f, 12}, {1e+12f, 1},
 	{5.09823e+27f, 1}, {4.567324e+3f, 8}, {3.402823466e+38f, 1}, // FLT_MAX
-	{1.175494351e-38f, 17}										 // FLT_MIN
+	{1.175494351e-38f, 17}                                       // FLT_MIN
 };
 
 struct DoubleTestSet_t {
 	double m_doubleVal;
-	Word m_MaxPrecision;
+	uint_t m_MaxPrecision;
 };
 
 static const DoubleTestSet_t g_DoubleConstants[] = {
@@ -173,30 +214,19 @@ static const DoubleTestSet_t g_DoubleConstants[] = {
 };
 
 #if 0
-static const double g_NineTests[] = {
-	9999999999999999999999.0,
+static const double g_NineTests[] = {9999999999999999999999.0,
 
-	99999999999999900000.0,
-	99999999999999990000.0,
-	99999999999999999000.0,
-	99999999999999999900.0,
+    99999999999999900000.0, 99999999999999990000.0, 99999999999999999000.0,
+    99999999999999999900.0,
 
-	0.99999999999999900000,
-	0.99999999999999990000,
-	0.99999999999999999000,
-	0.99999999999999999900,
+    0.99999999999999900000, 0.99999999999999990000, 0.99999999999999999000,
+    0.99999999999999999900,
 
-	9.99999999999999900000,
-	9.99999999999999990000,
-	9.99999999999999999000,
-	9.99999999999999999900,
+    9.99999999999999900000, 9.99999999999999990000, 9.99999999999999999000,
+    9.99999999999999999900,
 
-	99.99999999999999000000,
-	99.99999999999999900000,
-	99.99999999999999990000,
-	99.99999999999999999000,
-	99.99999999999999999900
-};
+    99.99999999999999000000, 99.99999999999999900000, 99.99999999999999990000,
+    99.99999999999999999000, 99.99999999999999999900};
 #endif
 
 /***************************************
@@ -205,29 +235,86 @@ static const double g_NineTests[] = {
 
 ***************************************/
 
-#if defined(DOFLOATDECOMPTEST)
-static void BURGER_API FloatResultOut(const Burger::FPPrintInfo* pFPPrintInfo)
+struct ExpectedFPPrintInfoState_t {
+	uint_t m_uSpecialFormDigits;
+	uint_t m_bHasInteger;
+	uint_t m_uFirstNonZero;
+	uint_t m_uLastNonZero;
+	uint_t m_bHasFraction;
+	uint_t m_uFirstNonZeroFraction;
+	uint_t m_uLastNonZeroFraction;
+	Burger::FPPrintInfo::eResult m_Result;
+};
+
+struct TestDecompDouble_t {
+	Burger::uint64_double_t m_Value;
+	uint_t m_uDigits;
+	ExpectedFPPrintInfoState_t m_State;
+};
+
+struct TestDecompFloat_t {
+	Burger::uint32_float_t m_Value;
+	uint_t m_uDigits;
+	ExpectedFPPrintInfoState_t m_State;
+};
+
+static uint_t BURGER_API FloatResultOut(const Burger::FPPrintInfo* pFPPrintInfo,
+	const ExpectedFPPrintInfoState_t* pExpectedState) BURGER_NOEXCEPT
 {
-	Message("Is Special FP Value (NAN, etc) = %s",
-		(pFPPrintInfo->GetSpecialFormDigits()) ? "Yes" : "No");
-	Message("Integral Digits:    %s  First position = %2u  Last Position = %u",
-		pFPPrintInfo->HasInteger() ? "Yes" : "No ",
+	uint_t uResult = FALSE;
+	uint_t uTest = !(pFPPrintInfo->GetSpecialFormDigits() ==
+		pExpectedState->m_uSpecialFormDigits);
+	uResult |= uTest;
+	ReportFailure("GetSpecialFormDigits() = %u, expected %u", uTest,
+		pFPPrintInfo->GetSpecialFormDigits(),
+		pExpectedState->m_uSpecialFormDigits);
+
+	uTest = !(pFPPrintInfo->HasInteger() == pExpectedState->m_bHasInteger);
+	uResult |= uTest;
+	ReportFailure("HasInteger() = %u, expected %u", uTest,
+		pFPPrintInfo->HasInteger(), pExpectedState->m_bHasInteger);
+
+	uTest = !(pFPPrintInfo->GetFirstNonZeroIntDigitPosition() ==
+		pExpectedState->m_uFirstNonZero);
+	uResult |= uTest;
+	ReportFailure("GetFirstNonZeroIntDigitPosition() = %u, expected %u", uTest,
 		pFPPrintInfo->GetFirstNonZeroIntDigitPosition(),
-		pFPPrintInfo->GetLastNonZeroIntDigitPosition());
-	Message("Fractional Digits:  %s  First position = %2u  Last Position = %u",
-		pFPPrintInfo->HasFractional() ? "Yes" : "No ",
+		pExpectedState->m_uFirstNonZero);
+
+	uTest = !(pFPPrintInfo->GetLastNonZeroIntDigitPosition() ==
+		pExpectedState->m_uLastNonZero);
+	uResult |= uTest;
+	ReportFailure("GetLastNonZeroIntDigitPosition() = %u, expected %u", uTest,
+		pFPPrintInfo->GetLastNonZeroIntDigitPosition(),
+		pExpectedState->m_uLastNonZero);
+
+	uTest = !(pFPPrintInfo->HasFractional() == pExpectedState->m_bHasFraction);
+	uResult |= uTest;
+	ReportFailure("HasFractional() = %u, expected %u", uTest,
+		pFPPrintInfo->HasFractional(), pExpectedState->m_bHasFraction);
+
+	uTest = !(pFPPrintInfo->GetFirstNonZeroFracDigitPosition() ==
+		pExpectedState->m_uFirstNonZeroFraction);
+	uResult |= uTest;
+	ReportFailure("GetFirstNonZeroFracDigitPosition() = %u, expected %u", uTest,
 		pFPPrintInfo->GetFirstNonZeroFracDigitPosition(),
-		pFPPrintInfo->GetLastNonZeroFracDigitPosition());
-	if (pFPPrintInfo->GetResult()
-		== Burger::FPPrintInfo::cResultFloatRoundedUpADigit) {
-		Message("Entire number Rounds Up one whole digit");
-	}
-	if (pFPPrintInfo->GetResult()
-		== Burger::FPPrintInfo::cResultFloatRoundedUpAtEnd) {
-		Message("Last Digits are Rounded Up");
-	}
+		pExpectedState->m_uFirstNonZeroFraction);
+
+	uTest = !(pFPPrintInfo->GetLastNonZeroFracDigitPosition() ==
+		pExpectedState->m_uLastNonZeroFraction);
+	uResult |= uTest;
+	ReportFailure("GetLastNonZeroFracDigitPosition() = %u, expected %u", uTest,
+		pFPPrintInfo->GetLastNonZeroFracDigitPosition(),
+		pExpectedState->m_uLastNonZeroFraction);
+
+	uTest = !(pFPPrintInfo->GetResult() == pExpectedState->m_Result);
+	uResult |= uTest;
+	ReportFailure("GetResult() = %u, expected %u", uTest,
+		static_cast<uint_t>(pFPPrintInfo->GetResult()),
+		static_cast<uint_t>(pExpectedState->m_Result));
+
+	return uResult;
 }
-#endif
 
 /***************************************
 
@@ -235,25 +322,14 @@ static void BURGER_API FloatResultOut(const Burger::FPPrintInfo* pFPPrintInfo)
 
 ***************************************/
 
-#if defined(DOFLOATDECOMPTEST)
-static void BURGER_API FloatDecompTest(
-	float fValue, double dValue, Word uDigits)
+template<class T>
+static uint_t BURGER_API FloatDecompTest(const T* pDecomp) BURGER_NOEXCEPT
 {
-	Burger::FPInfo FloatInfo(fValue);
-	Burger::FPInfo DoubleInfo(dValue);
-
+	const Burger::FPInfo FloatInfo(pDecomp->m_Value.Get());
 	Burger::FPPrintInfo FloatPrintInfo;
-	Burger::FPPrintInfo DoublePrintInfo;
-
-	Message("Analyzing Float %f to %u digits", fValue, uDigits);
-	FloatPrintInfo.AnalyzeFloat(&FloatInfo, uDigits);
-	FloatResultOut(&FloatPrintInfo);
-
-	Message("Analyzing Double %f to %u digits", dValue, uDigits);
-	DoublePrintInfo.AnalyzeFloat(&DoubleInfo, uDigits);
-	FloatResultOut(&DoublePrintInfo);
+	FloatPrintInfo.AnalyzeFloat(&FloatInfo, pDecomp->m_uDigits);
+	return FloatResultOut(&FloatPrintInfo, &pDecomp->m_State);
 }
-#endif
 
 /***************************************
 
@@ -261,37 +337,92 @@ static void BURGER_API FloatDecompTest(
 
 ***************************************/
 
-static void BURGER_API DoFloatDecompTest(void)
+static const TestDecompFloat_t g_DecompFloats[] = {
+	// inf
+	{0x7F800000U, 6,
+		{3, FALSE, 0, 0, FALSE, 0, 0,
+			Burger::FPPrintInfo::kResultPositiveInfinity}},
+	// -inf
+	{0xFF800000U, 6,
+		{4, FALSE, 0, 0, FALSE, 0, 0,
+			Burger::FPPrintInfo::kResultNegativeInfinity}},
+	// 0.123f
+	{0x3DFBE76DU, 6,
+		{0, FALSE, 0, 0, TRUE, 1, 6, Burger::FPPrintInfo::kResultNormalFloat}},
+	// 2000.125f
+	{0x44FA0400U, 3,
+		{0, TRUE, 4, 4, TRUE, 1, 3, Burger::FPPrintInfo::kResultNormalFloat}},
+	// 999.9999f
+	{0x4479FFFEU, 3,
+		{0, TRUE, 4, 4, TRUE, 1, 3,
+			Burger::FPPrintInfo::kResultFloatRoundedUpADigit}}};
+
+static const TestDecompDouble_t g_DecompDoubles[] = {
+	// inf
+	{0x7FF0000000000000ULL, 6,
+		{3, FALSE, 0, 0, FALSE, 0, 0,
+			Burger::FPPrintInfo::kResultPositiveInfinity}},
+	// -inf
+	{0xFFF0000000000000ULL, 6,
+		{4, FALSE, 0, 0, FALSE, 0, 0,
+			Burger::FPPrintInfo::kResultNegativeInfinity}},
+	// 0.0000063240
+	{0x3EDA8657E22DF6CDULL, 6,
+		{0, FALSE, 0, 0, TRUE, 6, 6, Burger::FPPrintInfo::kResultNormalFloat}},
+	// 6324000000.0625
+	{0x41F78F0950010000ULL, 3,
+		{0, TRUE, 7, 10, TRUE, 2, 3,
+			Burger::FPPrintInfo::kResultFloatRoundedUpAtEnd}},
+	// 4320.0635
+	{0x40B0E0104189374CULL, 3,
+		{0, TRUE, 2, 4, TRUE, 2, 3,
+			Burger::FPPrintInfo::kResultFloatRoundedUpAtEnd}}};
+
+static uint_t BURGER_API TestFloatDecomp(void) BURGER_NOEXCEPT
 {
-#if defined(DOFLOATDECOMPTEST)
-	float inf = static_cast<const float*>(
-		static_cast<const void*>(g_FloatSpecialConstants))[2];
-	double dinf = static_cast<const double*>(
-		static_cast<const void*>(g_DoubleSpecialConstants))[2];
-	FloatDecompTest(inf, dinf, 6);
-	FloatDecompTest(0.123f, 0.0000063240, 6);
-	FloatDecompTest(2000.125f, 6324000000.0625, 3);
-	FloatDecompTest(999.9999f, 4320.0635, 3);
-#endif
+	uint_t uFailure = FALSE;
+	const TestDecompFloat_t* pWork = g_DecompFloats;
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_DecompFloats);
+	do {
+		const uint_t uTest = FloatDecompTest(pWork);
+		uFailure |= uTest;
+		if (uTest) {
+			ReportFailure("Failed with float(%g)", uTest, pWork->m_Value.Get());
+		}
+		++pWork;
+	} while (--uCount);
+
+	const TestDecompDouble_t* pWork2 = g_DecompDoubles;
+	uCount = BURGER_ARRAYSIZE(g_DecompDoubles);
+	do {
+		const uint_t uTest = FloatDecompTest(pWork2);
+		uFailure |= uTest;
+		if (uTest) {
+			ReportFailure(
+				"Failed with double(%g)", uTest, pWork2->m_Value.Get());
+		}
+		++pWork2;
+	} while (--uCount);
+	return uFailure;
 }
 
 /***************************************
 
 	Argument detection testing - these routines check to make sure we're marking
-up the m-version function arguments with the same type that the compiler thinks
-it is.
+	up the m-version function arguments with the same type that the compiler
+	thinks it is.
 
 ***************************************/
 
-static Word BURGER_API TestArgType(const Burger::SafePrintArgument* pArg,
-	Burger::SafePrintArgument::eType uType)
+static uint_t BURGER_API TestArgType(const Burger::SafePrintArgument* pArg,
+	const char* pType, Burger::SafePrintArgument::eType uType) BURGER_NOEXCEPT
 {
-	Word uResult = 0;
-	Burger::SafePrintArgument::eType uReported = pArg->GetType();
+	uint_t uResult = 0;
+	const Burger::SafePrintArgument::eType uReported = pArg->GetType();
 	if (uReported != uType) {
 		ReportFailure(
-			"SafePrintArgument record reported its type as %s, expected %s", 1,
-			Burger::SafePrintArgument::GetTypeName(uReported),
+			"SafePrintArgument(%s) reported its type as %s, expected %s", 1,
+			pType, Burger::SafePrintArgument::GetTypeName(uReported),
 			Burger::SafePrintArgument::GetTypeName(uType));
 		uResult = 1;
 	}
@@ -300,32 +431,36 @@ static Word BURGER_API TestArgType(const Burger::SafePrintArgument* pArg,
 
 /***************************************
 
-	Test single byte
+	Test single byte class SafePrintArgument
 
 ***************************************/
 
-static Word BURGER_API ArgTypeUnitTest1ByteTypes(void)
+static uint_t BURGER_API ArgTypeUnitTest1ByteTypes(void) BURGER_NOEXCEPT
 {
-	Word uResult;
 	// 1-byte
-	char c = 12;
-	signed char sc = 12;
-	unsigned char uc = 12;
+	const Burger::SafePrintArgument E1(static_cast<char>(12));
+	uint_t uResult =
+		TestArgType(&E1, "char", Burger::SafePrintArgument::ARG_INT8);
 
-	Burger::SafePrintArgument E1(c);
-	Burger::SafePrintArgument E2(sc);
-	Burger::SafePrintArgument E3(uc);
+	const Burger::SafePrintArgument E2(static_cast<signed char>(12));
+	uResult |=
+		TestArgType(&E2, "signed char", Burger::SafePrintArgument::ARG_INT8);
 
-	uResult = TestArgType(&E1, Burger::SafePrintArgument::ARG_INT8);
-	uResult |= TestArgType(&E2, Burger::SafePrintArgument::ARG_INT8);
-	uResult |= TestArgType(&E3, Burger::SafePrintArgument::ARG_WORD8);
+	const Burger::SafePrintArgument E3(static_cast<unsigned char>(12));
+	uResult |=
+		TestArgType(&E3, "unsigned char", Burger::SafePrintArgument::ARG_UINT8);
 
-	Int8 i8 = 12;
-	Word8 ui8 = 12;
-	Burger::SafePrintArgument E4(i8);
-	Burger::SafePrintArgument E5(ui8);
-	uResult |= TestArgType(&E4, Burger::SafePrintArgument::ARG_INT8);
-	uResult |= TestArgType(&E5, Burger::SafePrintArgument::ARG_WORD8);
+	const Burger::SafePrintArgument E4(static_cast<int8_t>(12));
+	uResult |= TestArgType(&E4, "int8_t", Burger::SafePrintArgument::ARG_INT8);
+
+	const Burger::SafePrintArgument E5(static_cast<uint8_t>(12));
+	uResult |=
+		TestArgType(&E5, "uint8_t", Burger::SafePrintArgument::ARG_UINT8);
+
+#if defined(BURGER_HAS_CHAR8_T)
+	const Burger::SafePrintArgument E6(static_cast<char8_t>('a'));
+	uResult |= TestArgType(&E6, "char8_t", g_Char8ARG);
+#endif
 	return uResult;
 }
 
@@ -335,31 +470,36 @@ static Word BURGER_API ArgTypeUnitTest1ByteTypes(void)
 
 ***************************************/
 
-static Word BURGER_API ArgTypeUnitTest2ByteTypes(void)
+static uint_t BURGER_API ArgTypeUnitTest2ByteTypes(void) BURGER_NOEXCEPT
 {
-	Word uResult;
+	uint_t uResult;
 	short s = 12;
 	unsigned short us = 12;
 
 	Burger::SafePrintArgument E1(s);
 	Burger::SafePrintArgument E2(us);
 
-	uResult = TestArgType(&E1, Burger::SafePrintArgument::ARG_INT16);
-	uResult |= TestArgType(&E2, Burger::SafePrintArgument::ARG_WORD16);
+	uResult = TestArgType(&E1, "short", Burger::SafePrintArgument::ARG_INT16);
+	uResult |= TestArgType(
+		&E2, "unsigned short", Burger::SafePrintArgument::ARG_UINT16);
 
-	Int16 i16 = 12;
-	Word16 ui16 = 12;
+	int16_t i16 = 12;
+	uint16_t ui16 = 12;
 
 	Burger::SafePrintArgument E3(i16);
 	Burger::SafePrintArgument E4(ui16);
 
-	uResult |= TestArgType(&E3, Burger::SafePrintArgument::ARG_INT16);
-	uResult |= TestArgType(&E4, Burger::SafePrintArgument::ARG_WORD16);
+	uResult |=
+		TestArgType(&E3, "int16_t", Burger::SafePrintArgument::ARG_INT16);
+	uResult |=
+		TestArgType(&E4, "uint16_t", Burger::SafePrintArgument::ARG_UINT16);
 
 	// Special test, this must map to unsigned short
+#if defined(BURGER_HAS_WCHAR_T)
 	wchar_t wc = 10;
 	Burger::SafePrintArgument E5(wc);
-	uResult |= TestArgType(&E5, Burger::SafePrintArgument::ARG_WORD16);
+	uResult |= TestArgType(&E5, "wchar_t", g_WCharARG);
+#endif
 	return uResult;
 }
 
@@ -369,25 +509,28 @@ static Word BURGER_API ArgTypeUnitTest2ByteTypes(void)
 
 ***************************************/
 
-static Word BURGER_API ArgTypeUnitTest4ByteTypes(void)
+static uint_t BURGER_API ArgTypeUnitTest4ByteTypes(void) BURGER_NOEXCEPT
 {
-	Word uResult;
+	uint_t uResult;
 
 	// 32-bit types
 	int i = 12;
 	unsigned int ui = 12;
 	Burger::SafePrintArgument E1(i);
 	Burger::SafePrintArgument E2(ui);
-	uResult = TestArgType(&E1, Burger::SafePrintArgument::ARG_INT32);
-	uResult |= TestArgType(&E2, Burger::SafePrintArgument::ARG_WORD32);
+	uResult = TestArgType(&E1, "int", Burger::SafePrintArgument::ARG_INT32);
+	uResult |=
+		TestArgType(&E2, "unsigned int", Burger::SafePrintArgument::ARG_UINT32);
 
-	Int32 i32 = 12;
-	Word32 ui32 = 12;
+	int32_t i32 = 12;
+	uint32_t ui32 = 12;
 	Burger::SafePrintArgument E3(i32);
 	Burger::SafePrintArgument E4(ui32);
 
-	uResult |= TestArgType(&E3, Burger::SafePrintArgument::ARG_INT32);
-	uResult |= TestArgType(&E4, Burger::SafePrintArgument::ARG_WORD32);
+	uResult |=
+		TestArgType(&E3, "int32_t", Burger::SafePrintArgument::ARG_INT32);
+	uResult |=
+		TestArgType(&E4, "uint32_t", Burger::SafePrintArgument::ARG_UINT32);
 
 	long lo = 12;
 	unsigned long ulo = 12;
@@ -396,11 +539,13 @@ static Word BURGER_API ArgTypeUnitTest4ByteTypes(void)
 	Burger::SafePrintArgument E6(ulo);
 
 #if BURGER_SIZEOF_LONG == 8
-	uResult |= TestArgType(&E5, Burger::SafePrintArgument::ARG_INT64);
-	uResult |= TestArgType(&E6, Burger::SafePrintArgument::ARG_WORD64);
+	uResult |= TestArgType(&E5, "long", Burger::SafePrintArgument::ARG_INT64);
+	uResult |= TestArgType(
+		&E6, "unsigned long", Burger::SafePrintArgument::ARG_UINT64);
 #else
-	uResult |= TestArgType(&E5, Burger::SafePrintArgument::ARG_INT32);
-	uResult |= TestArgType(&E6, Burger::SafePrintArgument::ARG_WORD32);
+	uResult |= TestArgType(&E5, "long", Burger::SafePrintArgument::ARG_INT32);
+	uResult |= TestArgType(
+		&E6, "unsigned long", Burger::SafePrintArgument::ARG_UINT32);
 #endif
 	return uResult;
 }
@@ -411,17 +556,18 @@ static Word BURGER_API ArgTypeUnitTest4ByteTypes(void)
 
 ***************************************/
 
-static Word BURGER_API ArgTypeUnitTest8ByteTypes(void)
+static uint_t BURGER_API ArgTypeUnitTest8ByteTypes(void) BURGER_NOEXCEPT
 {
-	Word uResult;
+	uint_t uResult;
 
-	Int64 l = 12;
-	Word64 ul = 12;
+	int64_t l = 12;
+	uint64_t ul = 12;
 	Burger::SafePrintArgument E1(l);
 	Burger::SafePrintArgument E2(ul);
 
-	uResult = TestArgType(&E1, Burger::SafePrintArgument::ARG_INT64);
-	uResult |= TestArgType(&E2, Burger::SafePrintArgument::ARG_WORD64);
+	uResult = TestArgType(&E1, "int64_t", Burger::SafePrintArgument::ARG_INT64);
+	uResult |=
+		TestArgType(&E2, "uint64_t", Burger::SafePrintArgument::ARG_UINT64);
 	return uResult;
 }
 
@@ -431,9 +577,9 @@ static Word BURGER_API ArgTypeUnitTest8ByteTypes(void)
 
 ***************************************/
 
-static Word BURGER_API ArgTypeUnitTestcoreTypes(void)
+static uint_t BURGER_API ArgTypeUnitTestcoreTypes(void) BURGER_NOEXCEPT
 {
-	Word uResult;
+	uint_t uResult;
 	float f = 12.0f;
 	double d = 12.0;
 	bool b = true;
@@ -442,13 +588,14 @@ static Word BURGER_API ArgTypeUnitTestcoreTypes(void)
 	Burger::SafePrintArgument E2(d);
 	Burger::SafePrintArgument E3(b);
 
-	uResult = TestArgType(&E1, Burger::SafePrintArgument::ARG_FLOAT);
-	uResult |= TestArgType(&E2, Burger::SafePrintArgument::ARG_DOUBLE);
-	uResult |= TestArgType(&E3, Burger::SafePrintArgument::ARG_BOOL);
+	uResult = TestArgType(&E1, "float", Burger::SafePrintArgument::ARG_FLOAT);
+	uResult |=
+		TestArgType(&E2, "double", Burger::SafePrintArgument::ARG_DOUBLE);
+	uResult |= TestArgType(&E3, "bool", Burger::SafePrintArgument::ARG_BOOL);
 
-	Word16 h = 12;
+	uint16_t h = 12;
 	Burger::SafePrintArgument E4(h, Burger::SafePrintArgument::ARG_HALF);
-	uResult |= TestArgType(&E4, Burger::SafePrintArgument::ARG_HALF);
+	uResult |= TestArgType(&E4, "half", Burger::SafePrintArgument::ARG_HALF);
 	return uResult;
 }
 
@@ -458,9 +605,9 @@ static Word BURGER_API ArgTypeUnitTestcoreTypes(void)
 
 ***************************************/
 
-static Word BURGER_API ArgTypeUnitTestPointerTypes(void)
+static uint_t BURGER_API ArgTypeUnitTestPointerTypes(void) BURGER_NOEXCEPT
 {
-	Word uResult;
+	uint_t uResult;
 	int i = 12;
 	unsigned int ui = 32982;
 
@@ -477,8 +624,8 @@ static Word BURGER_API ArgTypeUnitTestPointerTypes(void)
 	short s1 = 0x4754;
 	unsigned short us2 = 0xFEFE;
 
-	Int64 ll = 0x1234567812345678LL;
-	Word64 ull = 0x9876543212345678ULL;
+	int64_t ll = 0x1234567812345678LL;
+	uint64_t ull = 0x9876543212345678ULL;
 
 	long l = 0x34567812;
 	unsigned long ul = 0xAEFF0123;
@@ -525,35 +672,47 @@ static Word BURGER_API ArgTypeUnitTestPointerTypes(void)
 	Burger::SafePrintArgument EL(&l);
 	Burger::SafePrintArgument EM(&ul);
 
-	uResult = TestArgType(&E1, Burger::SafePrintArgument::ARG_PCHAR);
-	uResult |= TestArgType(&E2, Burger::SafePrintArgument::ARG_PCHAR);
-	uResult |= TestArgType(&EF, Burger::SafePrintArgument::ARG_PSCHAR);
-	uResult |= TestArgType(&EA, Burger::SafePrintArgument::ARG_PUCHAR);
-	uResult |= TestArgType(&EX, Burger::SafePrintArgument::ARG_PWORD16);
-	uResult |= TestArgType(&EY, Burger::SafePrintArgument::ARG_PWORD16);
+	uResult =
+		TestArgType(&E1, "const char *", Burger::SafePrintArgument::ARG_PCHAR);
+	uResult |= TestArgType(&E2, "char *", Burger::SafePrintArgument::ARG_PCHAR);
+	uResult |= TestArgType(
+		&EF, "signed char *", Burger::SafePrintArgument::ARG_PSCHAR);
+	uResult |= TestArgType(
+		&EA, "unsigned char *", Burger::SafePrintArgument::ARG_PUCHAR);
+	uResult |=
+		TestArgType(&EX, "wchar_t *", Burger::SafePrintArgument::ARG_PUINT16);
+	uResult |= TestArgType(
+		&EY, "L\"Hello World\"", Burger::SafePrintArgument::ARG_PUINT16);
 
-	uResult |= TestArgType(&EB, Burger::SafePrintArgument::ARG_PINT16);
-	uResult |= TestArgType(&EC, Burger::SafePrintArgument::ARG_PWORD16);
+	uResult |= TestArgType(&EB, "short", Burger::SafePrintArgument::ARG_PINT16);
+	uResult |= TestArgType(
+		&EC, "unsigned short", Burger::SafePrintArgument::ARG_PUINT16);
 
-	uResult |= TestArgType(&E3, Burger::SafePrintArgument::ARG_PINT32);
-	uResult |= TestArgType(&ED, Burger::SafePrintArgument::ARG_PWORD32);
+	uResult |= TestArgType(&E3, "int", Burger::SafePrintArgument::ARG_PINT32);
+	uResult |= TestArgType(
+		&ED, "unsigned int", Burger::SafePrintArgument::ARG_PUINT32);
 
 #if BURGER_SIZEOF_LONG == 8
-	uResult |= TestArgType(&EL, Burger::SafePrintArgument::ARG_PINT64);
-	uResult |= TestArgType(&EM, Burger::SafePrintArgument::ARG_PWORD64);
+	uResult |= TestArgType(&EL, "long", Burger::SafePrintArgument::ARG_PINT64);
+	uResult |= TestArgType(
+		&EM, "unsigned long", Burger::SafePrintArgument::ARG_PUINT64);
 #else
-	uResult |= TestArgType(&EL, Burger::SafePrintArgument::ARG_PINT32);
-	uResult |= TestArgType(&EM, Burger::SafePrintArgument::ARG_PWORD32);
+	uResult |= TestArgType(&EL, "long", Burger::SafePrintArgument::ARG_PINT32);
+	uResult |= TestArgType(
+		&EM, "unsigned long", Burger::SafePrintArgument::ARG_PUINT32);
 #endif
 
-	uResult |= TestArgType(&E8, Burger::SafePrintArgument::ARG_PINT64);
-	uResult |= TestArgType(&E9, Burger::SafePrintArgument::ARG_PWORD64);
+	uResult |=
+		TestArgType(&E8, "int64_t *", Burger::SafePrintArgument::ARG_PINT64);
+	uResult |=
+		TestArgType(&E9, "uint64_t *", Burger::SafePrintArgument::ARG_PUINT64);
 
-	uResult |= TestArgType(&E4, Burger::SafePrintArgument::ARG_PFLOAT);
-	uResult |= TestArgType(&E5, Burger::SafePrintArgument::ARG_PDOUBLE);
+	uResult |= TestArgType(&E4, "float", Burger::SafePrintArgument::ARG_PFLOAT);
+	uResult |=
+		TestArgType(&E5, "double", Burger::SafePrintArgument::ARG_PDOUBLE);
 
-	uResult |= TestArgType(&E6, Burger::SafePrintArgument::ARG_PVOID);
-	uResult |= TestArgType(&E7, Burger::SafePrintArgument::ARG_PVOID);
+	uResult |= TestArgType(&E6, "void *", Burger::SafePrintArgument::ARG_PVOID);
+	uResult |= TestArgType(&E7, "void *", Burger::SafePrintArgument::ARG_PVOID);
 	return uResult;
 }
 
@@ -563,9 +722,9 @@ static Word BURGER_API ArgTypeUnitTestPointerTypes(void)
 
 ***************************************/
 
-static Word BURGER_API ArgTypeUnitTestLiterals(void)
+static uint_t BURGER_API ArgTypeUnitTestLiterals(void) BURGER_NOEXCEPT
 {
-	Word uResult;
+	uint_t uResult;
 
 	Burger::SafePrintArgument F1("hello world");
 	Burger::SafePrintArgument F2('1');
@@ -580,18 +739,21 @@ static Word BURGER_API ArgTypeUnitTestLiterals(void)
 	Burger::SafePrintArgument F9(12U);
 	Burger::SafePrintArgument F0(0x1bcdef12U);
 
-	uResult = TestArgType(&F1, Burger::SafePrintArgument::ARG_PCHAR);
-	uResult |= TestArgType(&F2, Burger::SafePrintArgument::ARG_INT8);
-	uResult |= TestArgType(&F3, Burger::SafePrintArgument::ARG_WORD16);
+	uResult = TestArgType(
+		&F1, "\"hello world\"", Burger::SafePrintArgument::ARG_PCHAR);
+	uResult |= TestArgType(&F2, "'1'", Burger::SafePrintArgument::ARG_INT8);
+	uResult |= TestArgType(&F3, "L'a'", Burger::SafePrintArgument::ARG_UINT16);
 
-	uResult |= TestArgType(&F4, Burger::SafePrintArgument::ARG_INT32);
-	uResult |= TestArgType(&F5, Burger::SafePrintArgument::ARG_INT32);
-	uResult |= TestArgType(&F6, Burger::SafePrintArgument::ARG_INT32);
-	uResult |= TestArgType(&F7, Burger::SafePrintArgument::ARG_INT32);
+	uResult |= TestArgType(&F4, "0172", Burger::SafePrintArgument::ARG_INT32);
+	uResult |= TestArgType(&F5, "12", Burger::SafePrintArgument::ARG_INT32);
+	uResult |=
+		TestArgType(&F6, "0x1BCDEF12", Burger::SafePrintArgument::ARG_INT32);
+	uResult |= TestArgType(&F7, "'ABCD'", Burger::SafePrintArgument::ARG_INT32);
 
-	uResult |= TestArgType(&F8, Burger::SafePrintArgument::ARG_WORD32);
-	uResult |= TestArgType(&F9, Burger::SafePrintArgument::ARG_WORD32);
-	uResult |= TestArgType(&F0, Burger::SafePrintArgument::ARG_WORD32);
+	uResult |= TestArgType(&F8, "0172U", Burger::SafePrintArgument::ARG_UINT32);
+	uResult |= TestArgType(&F9, "12U", Burger::SafePrintArgument::ARG_UINT32);
+	uResult |=
+		TestArgType(&F0, "0x1bcdf12U", Burger::SafePrintArgument::ARG_UINT32);
 	return uResult;
 }
 
@@ -601,9 +763,9 @@ static Word BURGER_API ArgTypeUnitTestLiterals(void)
 
 ***************************************/
 
-static Word BURGER_API ArgTypeUnitTestLiterals2(void)
+static uint_t BURGER_API ArgTypeUnitTestLiterals2(void) BURGER_NOEXCEPT
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	Burger::SafePrintArgument G1(0172L);
 	Burger::SafePrintArgument G2(12L);
 	Burger::SafePrintArgument G3(0x1bcdef12L);
@@ -619,28 +781,35 @@ static Word BURGER_API ArgTypeUnitTestLiterals2(void)
 #endif
 
 #if BURGER_SIZEOF_LONG == 8
-	uResult |= TestArgType(&G1, Burger::SafePrintArgument::ARG_INT64);
-	uResult |= TestArgType(&G2, Burger::SafePrintArgument::ARG_INT64);
-	uResult |= TestArgType(&G3, Burger::SafePrintArgument::ARG_INT64);
+	uResult |= TestArgType(&G1, "0172L", Burger::SafePrintArgument::ARG_INT64);
+	uResult |= TestArgType(&G2, "12L", Burger::SafePrintArgument::ARG_INT64);
+	uResult |=
+		TestArgType(&G3, "0x1bcdef12L", Burger::SafePrintArgument::ARG_INT64);
 
-	uResult |= TestArgType(&G4, Burger::SafePrintArgument::ARG_WORD64);
-	uResult |= TestArgType(&G5, Burger::SafePrintArgument::ARG_WORD64);
-	uResult |= TestArgType(&G6, Burger::SafePrintArgument::ARG_WORD64);
+	uResult |=
+		TestArgType(&G4, "0172UL", Burger::SafePrintArgument::ARG_UINT64);
+	uResult |= TestArgType(&G5, "12UL", Burger::SafePrintArgument::ARG_UINT64);
+	uResult |=
+		TestArgType(&G6, "0x1bcdef12UL", Burger::SafePrintArgument::ARG_UINT64);
 #else
-	uResult |= TestArgType(&G1, Burger::SafePrintArgument::ARG_INT32);
-	uResult |= TestArgType(&G2, Burger::SafePrintArgument::ARG_INT32);
-	uResult |= TestArgType(&G3, Burger::SafePrintArgument::ARG_INT32);
+	uResult |= TestArgType(&G1, "0172L", Burger::SafePrintArgument::ARG_INT32);
+	uResult |= TestArgType(&G2, "12L", Burger::SafePrintArgument::ARG_INT32);
+	uResult |=
+		TestArgType(&G3, "0x1bcdef12L", Burger::SafePrintArgument::ARG_INT32);
 
-	uResult |= TestArgType(&G4, Burger::SafePrintArgument::ARG_WORD32);
-	uResult |= TestArgType(&G5, Burger::SafePrintArgument::ARG_WORD32);
-	uResult |= TestArgType(&G6, Burger::SafePrintArgument::ARG_WORD32);
+	uResult |=
+		TestArgType(&G4, "0172UL", Burger::SafePrintArgument::ARG_UINT32);
+	uResult |= TestArgType(&G5, "12UL", Burger::SafePrintArgument::ARG_UINT32);
+	uResult |=
+		TestArgType(&G6, "0x1bcdef12UL", Burger::SafePrintArgument::ARG_UINT32);
 #endif
 
 #if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
-	uResult |= TestArgType(&G7, Burger::SafePrintArgument::ARG_INT64);
-	uResult |= TestArgType(&G8, Burger::SafePrintArgument::ARG_INT64);
-	uResult |= TestArgType(&G9, Burger::SafePrintArgument::ARG_INT64);
-	uResult |= TestArgType(&G0, Burger::SafePrintArgument::ARG_WORD64);
+	uResult |= TestArgType(&G7, "012LL", Burger::SafePrintArgument::ARG_INT64);
+	uResult |= TestArgType(&G8, "12LL", Burger::SafePrintArgument::ARG_INT64);
+	uResult |=
+		TestArgType(&G9, "0x1bcdef12LL", Burger::SafePrintArgument::ARG_INT64);
+	uResult |= TestArgType(&G0, "12ULL", Burger::SafePrintArgument::ARG_UINT64);
 #endif
 	return uResult;
 }
@@ -651,9 +820,9 @@ static Word BURGER_API ArgTypeUnitTestLiterals2(void)
 
 ***************************************/
 
-static Word BURGER_API ArgTypeUnitTestSIMDTypes(void)
+static uint_t BURGER_API ArgTypeUnitTestSIMDTypes(void) BURGER_NOEXCEPT
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 
 #if defined(BURGER_WINDOWS)
 #if defined(BURGER_X86)
@@ -666,7 +835,8 @@ static Word BURGER_API ArgTypeUnitTestSIMDTypes(void)
 #endif
 
 	Burger::SafePrintArgument S64a(simd64);
-	uResult |= TestArgType(&S64a, Burger::SafePrintArgument::ARG_SIMD64);
+	uResult |=
+		TestArgType(&S64a, "__m64", Burger::SafePrintArgument::ARG_SIMD64);
 
 #if defined(BURGER_WATCOM)
 	_m_empty();
@@ -679,70 +849,77 @@ static Word BURGER_API ArgTypeUnitTestSIMDTypes(void)
 #if defined(BURGER_WINDOWS)
 #if defined(BURGER_INTEL) && !defined(BURGER_WATCOM)
 	__m128 simd128;
-#if defined(BURGER_METROWERKS) || (defined(_MSC_VER) && (_MSC_VER<1400))
+#if defined(BURGER_METROWERKS) || (defined(_MSC_VER) && (_MSC_VER < 1400))
 	simd128.m128_f32[0] = 0;
 	simd128.m128_f32[1] = 0;
 	simd128.m128_f32[2] = -1;
 	simd128.m128_f32[3] = -1;
 #elif defined(BURGER_CLANG)
-    simd128[0] = 0;
-    simd128[1] = 0;
-    simd128[2] = -1;
-    simd128[3] = -1;
+	simd128[0] = 0;
+	simd128[1] = 0;
+	simd128[2] = -1;
+	simd128[3] = -1;
 #else
 	simd128.m128_i64[0] = 0;
 	simd128.m128_i64[1] = -1;
 #endif
 	Burger::SafePrintArgument S128(simd128);
-	uResult |= TestArgType(&S128, Burger::SafePrintArgument::ARG_SIMD128);
+	uResult |=
+		TestArgType(&S128, "__m128", Burger::SafePrintArgument::ARG_SIMD128);
 
 	__m128d simd128d;
 #if defined(BURGER_METROWERKS)
 	simd128d.m128_f64[0] = 0.0;
 	simd128d.m128_f64[1] = -123456789.9988776655;
 #elif defined(BURGER_CLANG)
-    simd128d[0] = 0.0;
-    simd128d[1] = -123456789.9988776655;
+	simd128d[0] = 0.0;
+	simd128d[1] = -123456789.9988776655;
 #else
 	simd128d.m128d_f64[0] = 0.0;
 	simd128d.m128d_f64[1] = -123456789.9988776655;
 #endif
 	Burger::SafePrintArgument S128d(simd128d);
-	uResult |= TestArgType(&S128d, Burger::SafePrintArgument::ARG_SIMD128D);
+	uResult |=
+		TestArgType(&S128d, "__m128d", Burger::SafePrintArgument::ARG_SIMD128D);
 
 	__m128i simd128i;
 #if defined(BURGER_METROWERKS)
 	simd128i.m128_u64[0] = 0;
 	simd128i.m128_u64[1] = BURGER_MAXUINT64;
 #elif defined(BURGER_CLANG)
-    simd128i[0] = 0;
-    simd128i[1] = BURGER_MAXUINT64;
+	simd128i[0] = 0;
+	simd128i[1] = BURGER_MAXUINT64;
 #else
 	simd128i.m128i_u64[0] = 0;
 	simd128i.m128i_i64[1] = -1;
 #endif
 	Burger::SafePrintArgument S128i(simd128i);
-	uResult |= TestArgType(&S128i, Burger::SafePrintArgument::ARG_SIMD128I);
+	uResult |=
+		TestArgType(&S128i, "__m128i", Burger::SafePrintArgument::ARG_SIMD128I);
 #endif
 
 #if defined(BURGER_X86)
 	__m64* pS64 = &simd64;
 	Burger::SafePrintArgument P64a(pS64);
-	uResult |= TestArgType(&P64a, Burger::SafePrintArgument::ARG_PSIMD64);
+	uResult |=
+		TestArgType(&P64a, "__m64*", Burger::SafePrintArgument::ARG_PSIMD64);
 #endif
 
 #if defined(BURGER_INTEL) && !defined(BURGER_WATCOM)
 	__m128* pS128 = &simd128;
 	Burger::SafePrintArgument P128(pS128);
-	uResult |= TestArgType(&P128, Burger::SafePrintArgument::ARG_PSIMD128);
+	uResult |=
+		TestArgType(&P128, "__m128*", Burger::SafePrintArgument::ARG_PSIMD128);
 
 	__m128d* pS128d = &simd128d;
 	Burger::SafePrintArgument P128d(pS128d);
-	uResult |= TestArgType(&P128d, Burger::SafePrintArgument::ARG_PSIMD128D);
+	uResult |= TestArgType(
+		&P128d, "__m128d", Burger::SafePrintArgument::ARG_PSIMD128D);
 
 	__m128i* pS128i = &simd128i;
 	Burger::SafePrintArgument P128i(pS128i);
-	uResult |= TestArgType(&P128i, Burger::SafePrintArgument::ARG_PSIMD128I);
+	uResult |= TestArgType(
+		&P128i, "__m128i*", Burger::SafePrintArgument::ARG_PSIMD128I);
 #endif
 #endif
 
@@ -755,11 +932,13 @@ static Word BURGER_API ArgTypeUnitTestSIMDTypes(void)
 
 ***************************************/
 
-static Word BURGER_API TestArgumentDetection(void)
+static uint_t BURGER_API TestArgumentDetection(uint_t uVerbose) BURGER_NOEXCEPT
 {
-	Message("Running tests of argument lookup");
-	Word uResult;
-	uResult = ArgTypeUnitTest1ByteTypes();
+	if (uVerbose & VERBOSE_MSG) {
+		Message("Running tests of argument lookup");
+	}
+
+	uint_t uResult = ArgTypeUnitTest1ByteTypes();
 	uResult |= ArgTypeUnitTest2ByteTypes();
 	uResult |= ArgTypeUnitTest4ByteTypes();
 	uResult |= ArgTypeUnitTest8ByteTypes();
@@ -778,7 +957,7 @@ static Word BURGER_API TestArgumentDetection(void)
 ***************************************/
 
 #if defined(BURGER_WINDOWS) || defined(BURGER_MSVC)
-static Word BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
+static uint_t BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 	int iStartPrecision, int iEndPrecision, const char* pFlagsString,
 	const char* pLocalFormat, const char* pBurgerFormat,
 	const Burger::SafePrintArgument& rStartValue,
@@ -805,12 +984,12 @@ static Word BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 	case Burger::SafePrintArgument::ARG_INT64:
 		uTestType = TESTING_I64;
 		break;
-	case Burger::SafePrintArgument::ARG_WORD8:
-	case Burger::SafePrintArgument::ARG_WORD16:
-	case Burger::SafePrintArgument::ARG_WORD32:
+	case Burger::SafePrintArgument::ARG_UINT8:
+	case Burger::SafePrintArgument::ARG_UINT16:
+	case Burger::SafePrintArgument::ARG_UINT32:
 		uTestType = TESTING_U32;
 		break;
-	case Burger::SafePrintArgument::ARG_WORD64:
+	case Burger::SafePrintArgument::ARG_UINT64:
 		uTestType = TESTING_U64;
 		break;
 	default:
@@ -818,10 +997,10 @@ static Word BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 		return 1; // Failure
 	}
 
-	Int32 i32 = 0;
-	Word32 u32 = 0;
-	Int64 i64 = 0;
-	Word64 u64 = 0;
+	int32_t i32 = 0;
+	uint32_t u32 = 0;
+	int64_t i64 = 0;
+	uint64_t u64 = 0;
 
 	switch (uTestType) {
 	case TESTING_I32:
@@ -845,11 +1024,11 @@ static Word BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 	char BaseString[64];
 	BaseString[0] = '%';
 	Burger::StringCopy(BaseString + 1, sizeof(BaseString) - 1, pFlagsString);
-	Word uResult = 0; // Success
-	Word bContinueTesting;
+	uint_t uResult = 0; // Success
+	uint_t bContinueTesting;
 	do {
-		for (Int32 iWidth = iStartWidth; iWidth <= iEndWidth; iWidth++) {
-			for (Int32 iPrecision = iStartPrecision;
+		for (int32_t iWidth = iStartWidth; iWidth <= iEndWidth; iWidth++) {
+			for (int32_t iPrecision = iStartPrecision;
 				 iPrecision <= iEndPrecision; iPrecision++) {
 
 				// Generate the reference strings (Don't use sprintf, since
@@ -858,7 +1037,7 @@ static Word BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 				char ReferenceFormatString[64]; // Format string
 				char TestFormatString[64];
 				char ReferenceString[128]; // Output buffer (Reference)
-				char TestString[128];	  // Output buffer (Burgerlib)
+				char TestString[128];      // Output buffer (Burgerlib)
 
 				// Initial with the flags
 				Burger::StringCopy(ReferenceFormatString, BaseString);
@@ -895,7 +1074,7 @@ static Word BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 
 				// call the C++ RTL and our formatter
 				int isprintfResult = -1;
-				IntPtr uReturnedLength = 0;
+				intptr_t uReturnedLength = 0;
 				switch (uTestType) {
 				case TESTING_I32:
 					isprintfResult = snprintf(ReferenceString,
@@ -924,10 +1103,11 @@ static Word BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 				}
 
 				// Failed?
-				if ((uReturnedLength != static_cast<IntPtr>(isprintfResult))
-					|| (uReturnedLength
-						   && Burger::StringCompare(ReferenceString, TestString,
-								  static_cast<WordPtr>(uReturnedLength)))) {
+				if ((uReturnedLength !=
+						static_cast<intptr_t>(isprintfResult)) ||
+					(uReturnedLength &&
+						Burger::StringCompare(ReferenceString, TestString,
+							static_cast<uintptr_t>(uReturnedLength)))) {
 					uResult = TRUE;
 					ReportFailure(
 						"Reference %s didn't match Test %s, Ref format was %s, Burger format was %s",
@@ -941,7 +1121,7 @@ static Word BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 		bContinueTesting = FALSE;
 		switch (uTestType) {
 		case TESTING_I32: {
-			Int32 t = i32;
+			int32_t t = i32;
 			i32 += rStepValue.GetInt32();
 			if ((i32 <= rEndValue.m_Data.m_iInt32) && (i32 > t)) {
 				bContinueTesting = TRUE;
@@ -949,7 +1129,7 @@ static Word BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 			break;
 		}
 		case TESTING_U32: {
-			Word32 t = u32;
+			uint32_t t = u32;
 			u32 += rStepValue.GetUInt32();
 			if ((u32 <= rEndValue.m_Data.m_uWord32) && (u32 > t)) {
 				bContinueTesting = TRUE;
@@ -957,7 +1137,7 @@ static Word BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 			break;
 		}
 		case TESTING_I64: {
-			Int64 t = i64;
+			int64_t t = i64;
 			i64 += rStepValue.GetInt64();
 			if ((i64 <= rEndValue.m_Data.m_iInt64) && (i64 > t)) {
 				bContinueTesting = TRUE;
@@ -965,7 +1145,7 @@ static Word BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 			break;
 		}
 		case TESTING_U64: {
-			Word64 t = u64;
+			uint64_t t = u64;
 			u64 += rStepValue.GetUInt64();
 			if ((u64 <= rEndValue.m_Data.m_uWord64) && (u64 > t)) {
 				bContinueTesting = TRUE;
@@ -986,16 +1166,17 @@ static Word BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 
 ***************************************/
 
-static const Int32 g_TestInt32s[] = {INT32_MIN, -2147483647, -1234567890,
+static const int32_t g_TestInt32s[] = {INT32_MIN, -2147483647, -1234567890,
 	-1147483647, -147483647, -47483647 - 7483647, -483647, -83647, -3647, -647,
 	-47, 9, -1, 0, 1, 5, 12, 432, 5439, 48923, 439671, 9876543, 53286473,
 	123456789, 653294098, 1234567890, 2147483646, BURGER_MAXINT};
 
-static const Word32 g_TestWord32s[] = {0, 1, 2, 3, 4, 8, 10, 11, 16, 32, 64, 65,
-	99, 100, 432, 5439, 48923, 439671, 9876543, 53286473, 123456789, 653294098,
-	1234567890, 2147483646, BURGER_MAXINT, BURGER_MAXUINT - 1, BURGER_MAXUINT};
+static const uint32_t g_TestWord32s[] = {0, 1, 2, 3, 4, 8, 10, 11, 16, 32, 64,
+	65, 99, 100, 432, 5439, 48923, 439671, 9876543, 53286473, 123456789,
+	653294098, 1234567890, 2147483646, BURGER_MAXINT, BURGER_MAXUINT - 1,
+	BURGER_MAXUINT};
 
-static const Int64 g_TestInt64s[] = {INT64_MIN, -9223372036854775807LL,
+static const int64_t g_TestInt64s[] = {INT64_MIN, -9223372036854775807LL,
 	-9223372036854775806LL, -922337203685477580LL, -92233720368547758LL,
 	-9223372036854775LL, -922337203685477LL, -92233720368547LL,
 	-92233720368547LL, -9223372036854LL, -922337203685LL, -53578897654LL,
@@ -1007,7 +1188,7 @@ static const Int64 g_TestInt64s[] = {INT64_MIN, -9223372036854775807LL,
 	2147483646876LL, 21474836468234LL, 214748364689105LL, 2147483646854896LL,
 	BURGER_MAXINT64 - 1, BURGER_MAXINT64};
 
-static const Word64 g_TestWord64s[] = {0, 1, 5, 12, 432, 5439, 48923, 439671,
+static const uint64_t g_TestWord64s[] = {0, 1, 5, 12, 432, 5439, 48923, 439671,
 	9876543, 53286473, 123456789, 653294098, 1234567890, 2147483646,
 	BURGER_MAXINT, 21474836468LL, 214748364683LL, 2147483646876LL,
 	21474836468234LL, 214748364689105LL, 2147483646854896LL,
@@ -1029,8 +1210,8 @@ static const char* g_UnsignedHexOctalTestFlags[] =
 struct IntegerTestConfig_t {
 	const char* m_pName;
 	const char** m_ppTestFlags;
-	WordPtr m_uTestFlagCount;
-	Word m_bSigned;
+	uintptr_t m_uTestFlagCount;
+	uint_t m_bSigned;
 
 	const char* m_p32BitConversion1;
 	const char* m_p32BitConversion2;
@@ -1063,13 +1244,14 @@ static const IntegerTestConfig_t UnsignedOctalTests = {"Octal",
 	FALSE, "o", "", -1, 13, -1, 13, "llo", "", "llo", "", -1, 24, -1, 24};
 
 #if defined(BURGER_WINDOWS) || defined(BURGER_MSVC)
-static Word BURGER_API TestIntegerFormat(const IntegerTestConfig_t* pTestConfig)
+static uint_t BURGER_API TestIntegerFormat(
+	const IntegerTestConfig_t* pTestConfig)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	Message("Running tests of %s formatting", pTestConfig->m_pName);
 
 	const char** ppTestFlags = pTestConfig->m_ppTestFlags;
-	WordPtr uTestFlagCount = pTestConfig->m_uTestFlagCount;
+	uintptr_t uTestFlagCount = pTestConfig->m_uTestFlagCount;
 
 	//
 	// Perform the 32 bit tests
@@ -1082,13 +1264,13 @@ static Word BURGER_API TestIntegerFormat(const IntegerTestConfig_t* pTestConfig)
 
 	const char* p32BitConversion1 = pTestConfig->m_p32BitConversion1;
 	const char* p32BitConversion2 = pTestConfig->m_p32BitConversion2;
-	Word bAltFormPresent = (Burger::StringLength(p32BitConversion2) != 0);
+	uint_t bAltFormPresent = (Burger::StringLength(p32BitConversion2) != 0);
 
 	if (pTestConfig->m_bSigned) {
-		for (WordPtr i = 0; i < BURGER_ARRAYSIZE(g_TestInt32s); i++) {
-			Int32 iVal = g_TestInt32s[i];
+		for (uintptr_t i = 0; i < BURGER_ARRAYSIZE(g_TestInt32s); i++) {
+			int32_t iVal = g_TestInt32s[i];
 
-			for (WordPtr f = 0; f < uTestFlagCount; f++) {
+			for (uintptr_t f = 0; f < uTestFlagCount; f++) {
 				const char* pFlags = ppTestFlags[f];
 
 				uResult |= UnitTestFormattingInt(iStartWidth, iEndWidth,
@@ -1106,10 +1288,10 @@ static Word BURGER_API TestIntegerFormat(const IntegerTestConfig_t* pTestConfig)
 			p32BitConversion1, INT32_MIN, INT32_MAX, 10000);
 	} else {
 		// unsigned
-		for (WordPtr i = 0; i < BURGER_ARRAYSIZE(g_TestWord32s); i++) {
-			Word32 iVal = g_TestWord32s[i];
+		for (uintptr_t i = 0; i < BURGER_ARRAYSIZE(g_TestWord32s); i++) {
+			uint32_t iVal = g_TestWord32s[i];
 
-			for (WordPtr f = 0; f < uTestFlagCount; f++) {
+			for (uintptr_t f = 0; f < uTestFlagCount; f++) {
 				const char* pFlags = ppTestFlags[f];
 
 				uResult |= UnitTestFormattingInt(iStartWidth, iEndWidth,
@@ -1123,7 +1305,7 @@ static Word BURGER_API TestIntegerFormat(const IntegerTestConfig_t* pTestConfig)
 			}
 		}
 		uResult |= UnitTestFormattingInt(-1, -1, -1, -1, "", p32BitConversion1,
-			p32BitConversion1, static_cast<Word32>(0), BURGER_MAXUINT, 10000);
+			p32BitConversion1, static_cast<uint32_t>(0), BURGER_MAXUINT, 10000);
 	}
 
 	//
@@ -1144,9 +1326,9 @@ static Word BURGER_API TestIntegerFormat(const IntegerTestConfig_t* pTestConfig)
 	bAltFormPresent = (Burger::StringLength(pAltlocalConversion) != 0);
 
 	if (pTestConfig->m_bSigned) {
-		for (WordPtr i = 0; i < BURGER_ARRAYSIZE(g_TestInt64s); i++) {
-			Int64 iVal = g_TestInt64s[i];
-			for (WordPtr f = 0; f < uTestFlagCount; f++) {
+		for (uintptr_t i = 0; i < BURGER_ARRAYSIZE(g_TestInt64s); i++) {
+			int64_t iVal = g_TestInt64s[i];
+			for (uintptr_t f = 0; f < uTestFlagCount; f++) {
 				const char* pFlags = ppTestFlags[f];
 
 				uResult |= UnitTestFormattingInt(iStartWidth, iEndWidth,
@@ -1161,13 +1343,13 @@ static Word BURGER_API TestIntegerFormat(const IntegerTestConfig_t* pTestConfig)
 		}
 		// Sweep test
 		uResult |= UnitTestFormattingInt(-1, -1, -1, -1, "", pLocalconversion,
-			p32BitConversion1, static_cast<Int64>(0), BURGER_MAXINT64,
+			p32BitConversion1, static_cast<int64_t>(0), BURGER_MAXINT64,
 			9510030001301LL);
 	} else { // unsigned
-		for (WordPtr i = 0; i < BURGER_ARRAYSIZE(g_TestWord64s); i++) {
-			Word64 iVal = g_TestWord64s[i];
+		for (uintptr_t i = 0; i < BURGER_ARRAYSIZE(g_TestWord64s); i++) {
+			uint64_t iVal = g_TestWord64s[i];
 
-			for (WordPtr f = 0; f < uTestFlagCount; f++) {
+			for (uintptr_t f = 0; f < uTestFlagCount; f++) {
 				const char* pFlags = ppTestFlags[f];
 
 				uResult |= UnitTestFormattingInt(iStartWidth, iEndWidth,
@@ -1181,7 +1363,7 @@ static Word BURGER_API TestIntegerFormat(const IntegerTestConfig_t* pTestConfig)
 			}
 		}
 		uResult |= UnitTestFormattingInt(-1, -1, -1, -1, "", pLocalconversion,
-			p32BitConversion1, static_cast<Word64>(0), BURGER_MAXUINT64,
+			p32BitConversion1, static_cast<uint64_t>(0), BURGER_MAXUINT64,
 			9510030001301ULL);
 	}
 	return uResult;
@@ -1194,7 +1376,7 @@ static Word BURGER_API TestIntegerFormat(const IntegerTestConfig_t* pTestConfig)
 
 ***************************************/
 
-static Word BURGER_API UnitTestFormattingChar(int iStartWidth, int iEndWidth,
+static uint_t BURGER_API UnitTestFormattingChar(int iStartWidth, int iEndWidth,
 	const char* pFlags, const char* pLocalFormat,
 	const Burger::SafePrintArgument& rStartChar,
 	const Burger::SafePrintArgument& rEndChar)
@@ -1209,18 +1391,18 @@ static Word BURGER_API UnitTestFormattingChar(int iStartWidth, int iEndWidth,
 	signed char fc = 0;
 	unsigned char uc = 0;
 	unsigned char fuc = 0;
-	Word16 wc = 0;
-	Word16 fwc = 0;
+	uint16_t wc = 0;
+	uint16_t fwc = 0;
 
 	if (rStartChar.GetType() == Burger::SafePrintArgument::ARG_INT8) {
 		uCharType = TYPE_SIGNED_CHAR;
 		c = rStartChar.m_Data.m_iInt8;
 		fc = rEndChar.m_Data.m_iInt8;
-	} else if (rStartChar.GetType() == Burger::SafePrintArgument::ARG_WORD8) {
+	} else if (rStartChar.GetType() == Burger::SafePrintArgument::ARG_UINT8) {
 		uCharType = TYPE_UNSIGNED_CHAR;
 		uc = rStartChar.m_Data.m_uWord8;
 		fuc = rEndChar.m_Data.m_uWord8;
-	} else if (rStartChar.GetType() == Burger::SafePrintArgument::ARG_WORD16) {
+	} else if (rStartChar.GetType() == Burger::SafePrintArgument::ARG_UINT16) {
 		uCharType = TYPE_WCHAR;
 		wc = rStartChar.m_Data.m_uWord16;
 		fwc = rEndChar.m_Data.m_uWord16;
@@ -1233,14 +1415,14 @@ static Word BURGER_API UnitTestFormattingChar(int iStartWidth, int iEndWidth,
 	BaseString[0] = '%';
 	Burger::StringCopy(BaseString + 1, sizeof(BaseString) - 1, pFlags);
 
-	Word uResult = 0;
-	Word bContinueTesting;
+	uint_t uResult = 0;
+	uint_t bContinueTesting;
 	do {
-		for (Int32 iWidth = iStartWidth; iWidth <= iEndWidth; iWidth++) {
+		for (int32_t iWidth = iStartWidth; iWidth <= iEndWidth; iWidth++) {
 			// Get the string to pass to each formatter
 			char TestFormatString[64];
 			char ReferenceString[128]; // Output buffer (Reference)
-			char TestString[128];	  // Output buffer (Burgerlib)
+			char TestString[128];      // Output buffer (Burgerlib)
 			char UTF8Buffer[8];
 
 			// Initial with the flags
@@ -1257,7 +1439,7 @@ static Word BURGER_API UnitTestFormattingChar(int iStartWidth, int iEndWidth,
 
 			// call the C++ RTL and our formatter
 			int isprintfResult = -1;
-			IntPtr uReturnedLength = 0;
+			intptr_t uReturnedLength = 0;
 			switch (uCharType) {
 			case TYPE_SIGNED_CHAR:
 				isprintfResult = snprintf(ReferenceString,
@@ -1287,7 +1469,7 @@ static Word BURGER_API UnitTestFormattingChar(int iStartWidth, int iEndWidth,
 				} else {
 					// Fill the buffer
 					Burger::MemoryFill(
-						ReferenceString, 0x20, static_cast<WordPtr>(iWidth));
+						ReferenceString, 0x20, static_cast<uintptr_t>(iWidth));
 					ReferenceString[iWidth] = 0;
 
 					// Left justify?
@@ -1298,7 +1480,7 @@ static Word BURGER_API UnitTestFormattingChar(int iStartWidth, int iEndWidth,
 					}
 					// Copy in the "char"
 					Burger::MemoryCopy(pStart, UTF8Buffer,
-						static_cast<WordPtr>(isprintfResult));
+						static_cast<uintptr_t>(isprintfResult));
 					isprintfResult = iWidth;
 				}
 				uReturnedLength = Burger::Snprintf(
@@ -1308,11 +1490,10 @@ static Word BURGER_API UnitTestFormattingChar(int iStartWidth, int iEndWidth,
 
 			// count
 
-			if ((uReturnedLength != static_cast<IntPtr>(isprintfResult))
-				|| (uReturnedLength
-					   && Burger::MemoryCompare(ReferenceString, TestString,
-							  static_cast<WordPtr>(uReturnedLength))
-						   != 0)) {
+			if ((uReturnedLength != static_cast<intptr_t>(isprintfResult)) ||
+				(uReturnedLength &&
+					Burger::MemoryCompare(ReferenceString, TestString,
+						static_cast<uintptr_t>(uReturnedLength)) != 0)) {
 				uResult = TRUE;
 				ReportFailure(
 					"Char reference '%s' didn't match Test '%s', Ref format was %s",
@@ -1340,7 +1521,7 @@ static Word BURGER_API UnitTestFormattingChar(int iStartWidth, int iEndWidth,
 			break;
 		}
 		case TYPE_WCHAR: {
-			Word16 t = wc;
+			uint16_t t = wc;
 			++wc;
 			if ((wc <= fwc) && (wc > t)) {
 				bContinueTesting = TRUE;
@@ -1358,7 +1539,7 @@ static Word BURGER_API UnitTestFormattingChar(int iStartWidth, int iEndWidth,
 
 ***************************************/
 
-static Word BURGER_API TestCharFormats(void)
+static uint_t BURGER_API TestCharFormats(void)
 {
 	Message("Running tests of char formatting");
 
@@ -1367,7 +1548,7 @@ static Word BURGER_API TestCharFormats(void)
 	unsigned char u1 = 0x00;
 	unsigned char u2 = 0xff;
 
-	Word uResult = UnitTestFormattingChar(-1, 2, "", "c", s1, s2);
+	uint_t uResult = UnitTestFormattingChar(-1, 2, "", "c", s1, s2);
 	uResult |= UnitTestFormattingChar(-1, 2, "-", "c", s1, s2);
 
 	uResult |= UnitTestFormattingChar(-1, 2, "", "c", u1, u2);
@@ -1381,7 +1562,7 @@ static Word BURGER_API TestCharFormats(void)
 
 	wchar_t pwText[] = L"HELLO WORLD! 1234567asdfg";
 
-	for (WordPtr i = 0; i < BURGER_ARRAYSIZE(pwText); i++) {
+	for (uintptr_t i = 0; i < BURGER_ARRAYSIZE(pwText); i++) {
 		wchar_t wChar = pwText[i];
 		uResult |= UnitTestFormattingChar(-1, 3, "", "lc", wChar, wChar);
 	}
@@ -1395,16 +1576,16 @@ static Word BURGER_API TestCharFormats(void)
 ***************************************/
 
 #if defined(BURGER_WINDOWS) || defined(BURGER_MSVC)
-static Word BURGER_API UnitTestFormattingString(int iStartWidth, int iEndWidth,
-	int iStartPrecision, int iEndPrecision, const char* pFlags, const char* fmt,
-	const Burger::SafePrintArgument& rTheStr)
+static uint_t BURGER_API UnitTestFormattingString(int iStartWidth,
+	int iEndWidth, int iStartPrecision, int iEndPrecision, const char* pFlags,
+	const char* fmt, const Burger::SafePrintArgument& rTheStr)
 {
 	BURGER_ASSERT(rTheStr.IsTextPointer());
 
 	char ReferenceString[128];
 	char TestString[128];
 	char TestFormatString[64];
-	Word uResult = 0;
+	uint_t uResult = 0;
 	for (int iWidth = iStartWidth; iWidth <= iEndWidth; iWidth++) {
 		for (int iPrecision = iStartPrecision; iPrecision <= iEndPrecision;
 			 iPrecision++) {
@@ -1425,18 +1606,17 @@ static Word BURGER_API UnitTestFormattingString(int iStartWidth, int iEndWidth,
 
 			// call the C++ RTL and our formatter
 			int isprintfResult = -1;
-			IntPtr uReturnedLength = 0;
+			intptr_t uReturnedLength = 0;
 
 			isprintfResult = snprintf(ReferenceString, sizeof(ReferenceString),
 				TestFormatString, rTheStr.m_Data.m_pChar);
 			uReturnedLength = Burger::Snprintf(
 				TestString, sizeof(TestString), TestFormatString, rTheStr);
 
-			if ((uReturnedLength != static_cast<IntPtr>(isprintfResult))
-				|| (uReturnedLength
-					   && Burger::StringCompare(ReferenceString, TestString,
-							  static_cast<WordPtr>(uReturnedLength))
-						   != 0)) {
+			if ((uReturnedLength != static_cast<intptr_t>(isprintfResult)) ||
+				(uReturnedLength &&
+					Burger::StringCompare(ReferenceString, TestString,
+						static_cast<uintptr_t>(uReturnedLength)) != 0)) {
 				uResult = TRUE;
 				ReportFailure(
 					"Reference %s didn't match Test %s, Ref format was %s, Burger format was %s",
@@ -1456,7 +1636,7 @@ static Word BURGER_API UnitTestFormattingString(int iStartWidth, int iEndWidth,
 ***************************************/
 
 #if defined(BURGER_WINDOWS) || defined(BURGER_MSVC)
-static Word BURGER_API TestStringFormats(void)
+static uint_t BURGER_API TestStringFormats(void)
 {
 	Message("Running tests of string formatting");
 	const char* pS1 = "HELLO";
@@ -1468,7 +1648,7 @@ static Word BURGER_API TestStringFormats(void)
 	const char* pS3 = NULL;
 	const wchar_t* pWS3 = NULL;
 
-	Word uResult = UnitTestFormattingString(-1, 8, -1, 8, "", "s", pS1);
+	uint_t uResult = UnitTestFormattingString(-1, 8, -1, 8, "", "s", pS1);
 	uResult |= UnitTestFormattingString(-1, 8, -1, 8, "-", "s", pS1);
 
 	uResult |= UnitTestFormattingString(-1, 8, -1, 8, "", "ls", pWS1);
@@ -1504,13 +1684,13 @@ static BinaryTests_t g_BinaryTests[] = {
 	{"%!", "00000000000000000001001000110100"},
 	{"%#!", "00101100010010000000000000000000"}};
 
-static Word BURGER_API TestBinaryFormats(void)
+static uint_t BURGER_API TestBinaryFormats(void)
 {
 	Message("Running tests of binary formatting");
 	char Buffer[128];
-	WordPtr i = BURGER_ARRAYSIZE(g_BinaryTests);
+	uintptr_t i = BURGER_ARRAYSIZE(g_BinaryTests);
 	const BinaryTests_t* pTests = g_BinaryTests;
-	Word uResult = 0;
+	uint_t uResult = 0;
 	do {
 		// Perform the test
 		Burger::Snprintf(Buffer, sizeof(Buffer), pTests->m_pFormat, 0x1234);
@@ -1530,8 +1710,8 @@ static Word BURGER_API TestBinaryFormats(void)
 
 ***************************************/
 
-#if (defined(BURGER_WINDOWS) || defined(BURGER_MSVC)) && 0
-static Word BURGER_API UnitTestFormattingReal(int iStartWidth, int iEndWidth,
+#if (defined(BURGER_WINDOWS) || defined(BURGER_MSVC)) && 1
+static uint_t BURGER_API UnitTestFormattingReal(int iStartWidth, int iEndWidth,
 	int iStartPrecision, int iEndPrecision, const char* pFlags,
 	const char* pFormatString, const Burger::SafePrintArgument& rTheReal)
 {
@@ -1541,7 +1721,7 @@ static Word BURGER_API UnitTestFormattingReal(int iStartWidth, int iEndWidth,
 	char ReferenceString[512];
 	char TestString[512];
 	char TestFormat[256];
-	Word uResult = 0;
+	uint_t uResult = 0;
 	for (int iWidth = iStartWidth; iWidth <= iEndWidth; iWidth++) {
 		for (int iPrecision = iStartPrecision; iPrecision <= iEndPrecision;
 			 iPrecision++) {
@@ -1562,7 +1742,7 @@ static Word BURGER_API UnitTestFormattingReal(int iStartWidth, int iEndWidth,
 
 			// call the C++ RTL and our formatter
 			int isprintfResult = -1;
-			IntPtr uReturnedLength = 0;
+			intptr_t uReturnedLength = 0;
 			switch (uType) {
 			case Burger::SafePrintArgument::ARG_FLOAT: {
 				float fValue = rTheReal.m_Data.m_fFloat;
@@ -1584,10 +1764,10 @@ static Word BURGER_API UnitTestFormattingReal(int iStartWidth, int iEndWidth,
 
 				break;
 			}
-			if ((uReturnedLength != static_cast<IntPtr>(isprintfResult))
-				|| (uReturnedLength
-					   && Burger::StringCompare(ReferenceString, TestString,
-							  static_cast<WordPtr>(uReturnedLength)))) {
+			if ((uReturnedLength != static_cast<intptr_t>(isprintfResult)) ||
+				(uReturnedLength &&
+					Burger::StringCompare(ReferenceString, TestString,
+						static_cast<uintptr_t>(uReturnedLength)))) {
 				uResult = TRUE;
 				ReportFailure(
 					"Reference %s didn't match Test %s, Ref format was %s",
@@ -1599,7 +1779,7 @@ static Word BURGER_API UnitTestFormattingReal(int iStartWidth, int iEndWidth,
 }
 #endif
 
-#if (defined(BURGER_WINDOWS) || defined(BURGER_MSVC)) && 0
+#if (defined(BURGER_WINDOWS) || defined(BURGER_MSVC)) && 1
 static const char* g_FloatTestFlags[] =
 	{ // combinations of -, +, ' ', # and '0'
 		"", "+", " ", "+ ", "#", "#+", "# ", "#+ ", "0", "+0", " 0", "+ 0",
@@ -1608,14 +1788,16 @@ static const char* g_FloatTestFlags[] =
 		"-", "-+", "- ", "-+ ", "-#", "-#+", "-# ", "-#+ ", "-0", "-+0", "- 0",
 		"-+ 0", "-#0", "-#+0", "-# 0", "-#+ 0"};
 
-static Word BURGER_API TestRealFormats(void)
+static uint_t BURGER_API TestRealFormats(void)
 {
 	Message("Running tests of floating point formatting");
 
 	int i;
 	int n;
 
-	Word uResult = 0;
+	uint_t uResult = 0;
+
+#if 0
 	const float* pSpecialFloats = (const float*)g_FloatSpecialConstants;
 	for (i = 0; i < BURGER_ARRAYSIZE(g_FloatSpecialConstants); i++) {
 		float fValue = pSpecialFloats[i];
@@ -1624,7 +1806,7 @@ static Word BURGER_API TestRealFormats(void)
 				-1, 15, -1, 10, g_FloatTestFlags[n], "f", fValue);
 		}
 	}
-
+#endif
 	for (i = 0; i < BURGER_ARRAYSIZE(g_FloatConstants); i++) {
 		float fValue = g_FloatConstants[i].m_fFloatValue;
 		int iMaxPrecision =
@@ -1635,6 +1817,7 @@ static Word BURGER_API TestRealFormats(void)
 		}
 	}
 
+#if 0
 	const double* specialDoubles = (const double*)g_DoubleSpecialConstants;
 
 	for (i = 0; i < BURGER_ARRAYSIZE(g_DoubleSpecialConstants); i++) {
@@ -1645,6 +1828,7 @@ static Word BURGER_API TestRealFormats(void)
 				UnitTestFormattingReal(-1, 20, -1, 18, flags, "f", theDbl);
 		}
 	}
+#endif
 
 	for (i = 0; i < BURGER_ARRAYSIZE(g_DoubleConstants); i++) {
 		for (n = 0; n < BURGER_ARRAYSIZE(g_FloatTestFlags); n++) {
@@ -1660,12 +1844,14 @@ static Word BURGER_API TestRealFormats(void)
 }
 #endif
 
-int BURGER_API TestBrprintf(void)
+int BURGER_API TestBrprintf(uint_t uVerbose)
 {
-	Word uResult;
+	if (uVerbose & VERBOSE_MSG) {
+		Message("Running printf tests");
+	}
 
-	DoFloatDecompTest();
-	uResult = TestArgumentDetection();
+	uint_t uResult = TestFloatDecomp();
+	uResult |= TestArgumentDetection(uVerbose);
 	uResult |= TestBinaryFormats();
 	uResult |= TestCharFormats();
 
@@ -1675,7 +1861,7 @@ int BURGER_API TestBrprintf(void)
 	uResult |= TestIntegerFormat(&UnsignedHexTests);
 	uResult |= TestIntegerFormat(&UnsignedOctalTests);
 	uResult |= TestStringFormats();
-	// uResult |= TestRealFormats();
+	uResult |= TestRealFormats();
 #endif
 
 #if 0
@@ -1705,7 +1891,7 @@ int BURGER_API TestBrprintf(void)
 
 		for ( n = 5 ; n < BURGER_ARRAYSIZE( g_NineTests ); n++ ) {
 			double  nine = g_NineTests[n];
-
+		
 			printf ( "RTL The double %%.f     = '%.f'\n", nine );
 			Burger::Snprintf ( text, sizeof(text), "MGP The double %%.f     = '%.f'\n\n", nine );
 			printf( "%s", text );
@@ -1805,6 +1991,8 @@ int BURGER_API TestBrprintf(void)
 
 	}
 #endif
-
+	if (!uResult && (uVerbose & VERBOSE_MSG)) {
+		Message("Passed all printf tests!");
+	}
 	return static_cast<int>(uResult);
 }
