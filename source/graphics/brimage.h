@@ -1,13 +1,14 @@
 /***************************************
 
-	Graphic file format transport class
+    Graphic file format transport class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -55,67 +56,67 @@ public:
 		PIXELTYPE8888=32			///< 32 bits per pixel in bytes of R:8, G:8, B:8 and A:8 in that order
 	};
 protected:
-	Word8 *m_pImage;		///< Pointer to pixel array
-	Word m_uStride;			///< Number of bytes per scan line (Likely not the same value as m_uWidth)
-	Word m_uWidth;			///< Width of image in pixels
-	Word m_uHeight;			///< Height of image in pixels
-	Word m_uFlags;			///< Internal behavior flags
+	uint8_t *m_pImage;		///< Pointer to pixel array
+	uint_t m_uStride;			///< Number of bytes per scan line (Likely not the same value as m_uWidth)
+	uint_t m_uWidth;			///< Width of image in pixels
+	uint_t m_uHeight;			///< Height of image in pixels
+	uint_t m_uFlags;			///< Internal behavior flags
 	ePixelTypes m_eType;	///< Type of pixel image
 public:
 	Image();
 	~Image();
 	static Image * BURGER_API New(void);
-	static Image * BURGER_API New(Word uWidth,Word uHeight,ePixelTypes eType);
-	static Image * BURGER_API New(Word uWidth,Word uHeight,ePixelTypes eType,Word uMipMaps);
+	static Image * BURGER_API New(uint_t uWidth,uint_t uHeight,ePixelTypes eType);
+	static Image * BURGER_API New(uint_t uWidth,uint_t uHeight,ePixelTypes eType,uint_t uMipMaps);
 	static Image * BURGER_API New(const Image *pInput);
-	void Init(Word uWidth,Word uHeight,ePixelTypes eType,WordPtr uStride,const Word8 *pImage,Word uFlags=0,Word uMipMaps=0);
-	Word Init(Word uWidth,Word uHeight,ePixelTypes eType);
-	Word Init(Word uWidth,Word uHeight,ePixelTypes eType,Word uMipMaps);
-	Word Init(const Image *pInput);
-	Word InitPNG(InputMemoryStream *pInput,RGBAWord8_t *pPalette=NULL);
-	Word InitPNG(const char *pFilename,RGBAWord8_t *pPalette=NULL);
-	Word InitPNG(Filename *pFilename,RGBAWord8_t *pPalette=NULL);
-	Word InitPNG(RezFile *pRezFile,Word uRezNum,RGBAWord8_t *pPalette=NULL);
-	Word InitGIF(InputMemoryStream *pInput,RGBAWord8_t *pPalette=NULL);
-	Word InitGIF(const char *pFilename,RGBAWord8_t *pPalette=NULL);
-	Word InitGIF(Filename *pFilename,RGBAWord8_t *pPalette=NULL);
-	Word InitGIF(RezFile *pRezFile,Word uRezNum,RGBAWord8_t *pPalette=NULL);
-	Word InitTGA(InputMemoryStream *pInput,RGBAWord8_t *pPalette=NULL);
-	Word InitTGA(const char *pFilename,RGBAWord8_t *pPalette=NULL);
-	Word InitTGA(Filename *pFilename,RGBAWord8_t *pPalette=NULL);
-	Word InitTGA(RezFile *pRezFile,Word uRezNum,RGBAWord8_t *pPalette=NULL);
-	Word InitBMP(InputMemoryStream *pInput,RGBAWord8_t *pPalette=NULL);
-	Word InitBMP(const char *pFilename,RGBAWord8_t *pPalette=NULL);
-	Word InitBMP(Filename *pFilename,RGBAWord8_t *pPalette=NULL);
-	Word InitBMP(RezFile *pRezFile,Word uRezNum,RGBAWord8_t *pPalette=NULL);
+	void Init(uint_t uWidth,uint_t uHeight,ePixelTypes eType,uintptr_t uStride,const uint8_t *pImage,uint_t uFlags=0,uint_t uMipMaps=0);
+	uint_t Init(uint_t uWidth,uint_t uHeight,ePixelTypes eType);
+	uint_t Init(uint_t uWidth,uint_t uHeight,ePixelTypes eType,uint_t uMipMaps);
+	uint_t Init(const Image *pInput);
+	uint_t InitPNG(InputMemoryStream *pInput,RGBAWord8_t *pPalette=NULL);
+	uint_t InitPNG(const char *pFilename,RGBAWord8_t *pPalette=NULL);
+	uint_t InitPNG(Filename *pFilename,RGBAWord8_t *pPalette=NULL);
+	uint_t InitPNG(RezFile *pRezFile,uint_t uRezNum,RGBAWord8_t *pPalette=NULL);
+	uint_t InitGIF(InputMemoryStream *pInput,RGBAWord8_t *pPalette=NULL);
+	uint_t InitGIF(const char *pFilename,RGBAWord8_t *pPalette=NULL);
+	uint_t InitGIF(Filename *pFilename,RGBAWord8_t *pPalette=NULL);
+	uint_t InitGIF(RezFile *pRezFile,uint_t uRezNum,RGBAWord8_t *pPalette=NULL);
+	uint_t InitTGA(InputMemoryStream *pInput,RGBAWord8_t *pPalette=NULL);
+	uint_t InitTGA(const char *pFilename,RGBAWord8_t *pPalette=NULL);
+	uint_t InitTGA(Filename *pFilename,RGBAWord8_t *pPalette=NULL);
+	uint_t InitTGA(RezFile *pRezFile,uint_t uRezNum,RGBAWord8_t *pPalette=NULL);
+	uint_t InitBMP(InputMemoryStream *pInput,RGBAWord8_t *pPalette=NULL);
+	uint_t InitBMP(const char *pFilename,RGBAWord8_t *pPalette=NULL);
+	uint_t InitBMP(Filename *pFilename,RGBAWord8_t *pPalette=NULL);
+	uint_t InitBMP(RezFile *pRezFile,uint_t uRezNum,RGBAWord8_t *pPalette=NULL);
 	void Transfer(Image *pInput);
 	void Shutdown(void);
-	BURGER_INLINE const Word8 *GetImage(void) const { return m_pImage; }
-	BURGER_INLINE Word8 *GetImage(void) { return m_pImage; }
-	const Word8 *GetImage(Word uMipMap) const;
-	BURGER_INLINE Word GetWidth(void) const { return m_uWidth; }
-	Word GetWidth(Word uMipMap) const;
-	BURGER_INLINE Word GetHeight(void) const { return m_uHeight; }
-	Word GetHeight(Word uMipMap) const;
-	BURGER_INLINE WordPtr GetStride(void) const { return m_uStride; }
-	WordPtr GetStride(Word uMipMap) const;
+	BURGER_INLINE const uint8_t *GetImage(void) const { return m_pImage; }
+	BURGER_INLINE uint8_t *GetImage(void) { return m_pImage; }
+	const uint8_t *GetImage(uint_t uMipMap) const;
+	BURGER_INLINE uint_t GetWidth(void) const { return m_uWidth; }
+	uint_t GetWidth(uint_t uMipMap) const;
+	BURGER_INLINE uint_t GetHeight(void) const { return m_uHeight; }
+	uint_t GetHeight(uint_t uMipMap) const;
+	BURGER_INLINE uintptr_t GetStride(void) const { return m_uStride; }
+	uintptr_t GetStride(uint_t uMipMap) const;
 	BURGER_INLINE ePixelTypes GetType(void) const { return m_eType; }
-	Word GetMipMapCount(void) const;
-	static Word BURGER_API GetBytesPerPixel(ePixelTypes eType);
-	BURGER_INLINE Word GetBytesPerPixel(void) const { return GetBytesPerPixel(m_eType); }
-	static Word BURGER_API GetBitsPerPixel(ePixelTypes eType);
-	BURGER_INLINE Word GetBitsPerPixel(void) const { return GetBitsPerPixel(m_eType); }
-	static WordPtr BURGER_API GetSuggestedStride(Word uWidth,ePixelTypes eType);
-	WordPtr GetSuggestedStride(void) const;
-	static WordPtr BURGER_API GetSuggestedBufferSize(Word uWidth,Word uHeight,ePixelTypes eType);
-	static WordPtr BURGER_API GetSuggestedBufferSize(Word uWidth,Word uHeight,ePixelTypes eType,Word uMipMapLevels);
-	WordPtr GetSuggestedBufferSize(void) const;
-	WordPtr GetImageSize(Word uMipMap) const;
+	uint_t GetMipMapCount(void) const;
+	static uint_t BURGER_API GetBytesPerPixel(ePixelTypes eType);
+	BURGER_INLINE uint_t GetBytesPerPixel(void) const { return GetBytesPerPixel(m_eType); }
+	static uint_t BURGER_API GetBitsPerPixel(ePixelTypes eType);
+	BURGER_INLINE uint_t GetBitsPerPixel(void) const { return GetBitsPerPixel(m_eType); }
+	static uintptr_t BURGER_API GetSuggestedStride(uint_t uWidth,ePixelTypes eType);
+	uintptr_t GetSuggestedStride(void) const;
+	static uintptr_t BURGER_API GetSuggestedBufferSize(uint_t uWidth,uint_t uHeight,ePixelTypes eType);
+	static uintptr_t BURGER_API GetSuggestedBufferSize(uint_t uWidth,uint_t uHeight,ePixelTypes eType,uint_t uMipMapLevels);
+	uintptr_t GetSuggestedBufferSize(void) const;
+	uintptr_t GetImageSize(uint_t uMipMap) const;
 	const char *ValidateForSave(void) const;
 	void ClearBitmap(void);
-	Word VerticleFlip(void);
-	Word HorizontalFlip(void);
-	Word Store8888(const Image *pInput,const RGBAWord8_t *pPalette);
+	uint_t VerticleFlip(void);
+	uint_t HorizontalFlip(void);
+	uint_t Store8888(const Image *pInput,const RGBAWord8_t *pPalette);
 };
 }
 /* END */

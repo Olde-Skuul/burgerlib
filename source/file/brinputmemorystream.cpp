@@ -1,13 +1,14 @@
 /***************************************
 
-	Simple data stream class for input
+    Simple data stream class for input
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -33,7 +34,7 @@
 	as subsequent calls to this class will return requested data
 	until the data has been exhausted.
 
-	Multibyte data such as \ref Word32 will be assumed to be in Little
+	Multibyte data such as uint32_t will be assumed to be in Little
 	Endian format.
 
 	\sa OutputMemoryStream or InputRezStream
@@ -48,7 +49,7 @@
 	
 ***************************************/
 
-Burger::InputMemoryStream::InputMemoryStream() :
+Burger::InputMemoryStream::InputMemoryStream() BURGER_NOEXCEPT :
 	m_pWork(NULL),
 	m_pEndOfBuffer(NULL),
 	m_pData(NULL),
@@ -71,7 +72,7 @@ Burger::InputMemoryStream::InputMemoryStream() :
 	
 ***************************************/
 
-Burger::InputMemoryStream::InputMemoryStream(const char *pFilename) :
+Burger::InputMemoryStream::InputMemoryStream(const char *pFilename) BURGER_NOEXCEPT :
 	m_pData(NULL)
 {
 	Open(pFilename);
@@ -91,7 +92,7 @@ Burger::InputMemoryStream::InputMemoryStream(const char *pFilename) :
 	
 ***************************************/
 
-Burger::InputMemoryStream::InputMemoryStream(Filename *pFilename) :
+Burger::InputMemoryStream::InputMemoryStream(Filename *pFilename) BURGER_NOEXCEPT :
 	m_pData(NULL)
 {
 	Open(pFilename);
@@ -113,7 +114,7 @@ Burger::InputMemoryStream::InputMemoryStream(Filename *pFilename) :
 	
 ***************************************/
 
-Burger::InputMemoryStream::InputMemoryStream(const void *pBuffer,WordPtr uBufferSize,Word bDontFree) :
+Burger::InputMemoryStream::InputMemoryStream(const void *pBuffer,uintptr_t uBufferSize,uint_t bDontFree) BURGER_NOEXCEPT :
 	m_pData(NULL)
 {
 	Open(pBuffer,uBufferSize,bDontFree);
@@ -144,7 +145,7 @@ Burger::InputMemoryStream::~InputMemoryStream()
 
 ***************************************/
 
-void BURGER_API Burger::InputMemoryStream::Clear(void)
+void BURGER_API Burger::InputMemoryStream::Clear(void) BURGER_NOEXCEPT
 {
 	// Can the buffer be freed?
 	if (m_pData && !m_bDontFree) {
@@ -166,16 +167,16 @@ void BURGER_API Burger::InputMemoryStream::Clear(void)
 	clamped to the end of the data stream.
 
 	\param uOffset Offset in bytes to skip forward
-	\sa GetMark(void) const, SkipBack(WordPtr) or SetMark(WordPtr)
+	\sa GetMark(void) const, SkipBack(uintptr_t) or SetMark(uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::InputMemoryStream::SkipForward(WordPtr uOffset)
+void BURGER_API Burger::InputMemoryStream::SkipForward(uintptr_t uOffset) BURGER_NOEXCEPT
 {
 	// Get the current work pointer
-	const Word8 *pWork = m_pWork;
+	const uint8_t *pWork = m_pWork;
 	// Calculate the remaining number of bytes
-	WordPtr uRemaining = static_cast<WordPtr>(m_pEndOfBuffer-pWork);
+	uintptr_t uRemaining = static_cast<uintptr_t>(m_pEndOfBuffer-pWork);
 	// Overrun?
 	if (uOffset>uRemaining) {
 		// Clamp
@@ -195,16 +196,16 @@ void BURGER_API Burger::InputMemoryStream::SkipForward(WordPtr uOffset)
 	clamped to the start of the data stream.
 
 	\param uOffset Offset in bytes to skip backward
-	\sa GetMark(void) const, SkipForward(WordPtr) or SetMark(WordPtr)
+	\sa GetMark(void) const, SkipForward(uintptr_t) or SetMark(uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::InputMemoryStream::SkipBack(WordPtr uOffset)
+void BURGER_API Burger::InputMemoryStream::SkipBack(uintptr_t uOffset) BURGER_NOEXCEPT
 {
 	// Get the current work pointer
-	const Word8 *pWork = m_pWork;
+	const uint8_t *pWork = m_pWork;
 	// Calculate the number of bytes it can reverse
-	WordPtr uRemaining = static_cast<WordPtr>(pWork-m_pData);
+	uintptr_t uRemaining = static_cast<uintptr_t>(pWork-m_pData);
 	// Overrun?
 	if (uOffset>uRemaining) {
 		// Clamp
@@ -225,11 +226,11 @@ void BURGER_API Burger::InputMemoryStream::SkipBack(WordPtr uOffset)
 		will be clamped to the end if the data
 
 	\param uOffset Offset in bytes to read from
-	\sa GetMark(void) const, SkipBack(WordPtr) or SkipForward(WordPtr)
+	\sa GetMark(void) const, SkipBack(uintptr_t) or SkipForward(uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::InputMemoryStream::SetMark(WordPtr uOffset)
+void BURGER_API Burger::InputMemoryStream::SetMark(uintptr_t uOffset) BURGER_NOEXCEPT
 {
 	// Perform a sanity check
 	if (uOffset>m_uBufferSize) {
@@ -241,7 +242,7 @@ void BURGER_API Burger::InputMemoryStream::SetMark(WordPtr uOffset)
 
 /*! ************************************
 
-	\fn const Word8 * Burger::InputMemoryStream::GetPtr(void) const
+	\fn const uint8_t * Burger::InputMemoryStream::GetPtr(void) const
 	\brief Return the current pointer into the data stream
 
 	Return the current read pointer to the input byte stream.
@@ -253,7 +254,7 @@ void BURGER_API Burger::InputMemoryStream::SetMark(WordPtr uOffset)
 
 /*! ************************************
 
-	\fn WordPtr Burger::InputMemoryStream::GetMark(void) const
+	\fn uintptr_t Burger::InputMemoryStream::GetMark(void) const
 	\brief Return the current offset into the data stream
 
 	Calculate and return the number of bytes from the start of
@@ -266,7 +267,7 @@ void BURGER_API Burger::InputMemoryStream::SetMark(WordPtr uOffset)
 
 /*! ************************************
 
-	\fn WordPtr Burger::InputMemoryStream::GetSize(void) const
+	\fn uintptr_t Burger::InputMemoryStream::GetSize(void) const
 	\brief Return the amount of data stored in the stream
 
 	Calculate and return the number of bytes of valid data
@@ -279,7 +280,7 @@ void BURGER_API Burger::InputMemoryStream::SetMark(WordPtr uOffset)
 
 /*! ************************************
 
-	\fn Word Burger::InputMemoryStream::IsEmpty(void) const
+	\fn uint_t Burger::InputMemoryStream::IsEmpty(void) const
 	\brief Return \ref TRUE if there is no data remaining to parse in the stream
 
 	If there is any data that hasn't been parsed remaining in the data stream, return \ref TRUE,
@@ -291,7 +292,7 @@ void BURGER_API Burger::InputMemoryStream::SetMark(WordPtr uOffset)
 
 /*! ************************************
 
-	\fn WordPtr Burger::InputMemoryStream::BytesRemaining(void) const
+	\fn uintptr_t Burger::InputMemoryStream::BytesRemaining(void) const
 	\brief Return the amount of data remaining to parse in the stream
 
 	If there is any data that hasn't been parsed remaining in the data stream, return
@@ -313,15 +314,15 @@ void BURGER_API Burger::InputMemoryStream::SetMark(WordPtr uOffset)
 
 ***************************************/
 
-Word BURGER_API Burger::InputMemoryStream::Open(const char *pFilename)
+uint_t BURGER_API Burger::InputMemoryStream::Open(const char *pFilename) BURGER_NOEXCEPT
 {
 	Clear();
 
 	void *pInput = FileManager::LoadFile(pFilename,&m_uBufferSize);
 	if (pInput) {
-		m_pWork = static_cast<Word8 *>(pInput);
-		m_pEndOfBuffer = static_cast<Word8 *>(pInput) + m_uBufferSize;
-		m_pData = static_cast<Word8 *>(pInput);
+		m_pWork = static_cast<uint8_t *>(pInput);
+		m_pEndOfBuffer = static_cast<uint8_t *>(pInput) + m_uBufferSize;
+		m_pData = static_cast<uint8_t *>(pInput);
 		return 0;
 	}
 	return 10;
@@ -339,15 +340,15 @@ Word BURGER_API Burger::InputMemoryStream::Open(const char *pFilename)
 
 ***************************************/
 
-Word BURGER_API Burger::InputMemoryStream::Open(Filename *pFilename)
+uint_t BURGER_API Burger::InputMemoryStream::Open(Filename *pFilename) BURGER_NOEXCEPT
 {
 	Clear();
 
 	void *pInput = FileManager::LoadFile(pFilename,&m_uBufferSize);
 	if (pInput) {
-		m_pWork = static_cast<Word8 *>(pInput);
-		m_pEndOfBuffer = static_cast<Word8 *>(pInput) + m_uBufferSize;
-		m_pData = static_cast<Word8 *>(pInput);
+		m_pWork = static_cast<uint8_t *>(pInput);
+		m_pEndOfBuffer = static_cast<uint8_t *>(pInput) + m_uBufferSize;
+		m_pData = static_cast<uint8_t *>(pInput);
 		return 0;
 	}
 	return 10;
@@ -370,12 +371,12 @@ Word BURGER_API Burger::InputMemoryStream::Open(Filename *pFilename)
 	
 ***************************************/
 
-void BURGER_API Burger::InputMemoryStream::Open(const void *pBuffer,WordPtr uBufferSize,Word bDontFree)
+void BURGER_API Burger::InputMemoryStream::Open(const void *pBuffer,uintptr_t uBufferSize,uint_t bDontFree) BURGER_NOEXCEPT
 {
 	Clear();
-	m_pWork = static_cast<const Word8 *>(pBuffer);
-	m_pEndOfBuffer = static_cast<const Word8 *>(pBuffer)+uBufferSize;
-	m_pData = static_cast<const Word8 *>(pBuffer);
+	m_pWork = static_cast<const uint8_t *>(pBuffer);
+	m_pEndOfBuffer = static_cast<const uint8_t *>(pBuffer)+uBufferSize;
+	m_pData = static_cast<const uint8_t *>(pBuffer);
 	m_uBufferSize = uBufferSize;
 	m_bDontFree = bDontFree;
 }
@@ -395,14 +396,14 @@ void BURGER_API Burger::InputMemoryStream::Open(const void *pBuffer,WordPtr uBuf
 	\param pOutput Buffer to receive the "C" style UTF-8 data string. \ref NULL will disable
 		the string copy, however the string will be "parsed" from the input
 	\param uOutputSize Size of the buffer pOutput
-	\sa GetCString(char *,WordPtr) or GetPString(char *,WordPtr)
+	\sa GetCString(char *,uintptr_t) or GetPString(char *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::InputMemoryStream::GetString(char *pOutput,WordPtr uOutputSize)
+void BURGER_API Burger::InputMemoryStream::GetString(char *pOutput,uintptr_t uOutputSize) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		// Is there output?
@@ -414,7 +415,7 @@ void BURGER_API Burger::InputMemoryStream::GetString(char *pOutput,WordPtr uOutp
 		// Parse out the string
 		do {
 			// Get a char from input
-			Word uTemp = pWork[0];
+			uint_t uTemp = pWork[0];
 			++pWork;
 			// Is this a Carriage Return?
 			if (uTemp==13) {
@@ -459,22 +460,22 @@ void BURGER_API Burger::InputMemoryStream::GetString(char *pOutput,WordPtr uOutp
 	The output String will be sized to contain the new string.
 
 	\param pOutput Buffer to receive the "C" style UTF-8 data string.
-	\sa GetCString(char *,WordPtr),GetPString(char *,WordPtr)
+	\sa GetCString(char *,uintptr_t),GetPString(char *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::InputMemoryStream::GetString(String *pOutput)
+void BURGER_API Burger::InputMemoryStream::GetString(String *pOutput) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
 
 	// Set the size of the new string
-	WordPtr uOutputSize = 0;
+	uintptr_t uOutputSize = 0;
 	if (pWork<pEndOfBuffer) {
 		// Parse out the string
 		do {
 			// Get a char from input
-			Word uTemp = pWork[0];
+			uint_t uTemp = pWork[0];
 			++pWork;
 			// Terminate at a NULL
 			if (!uTemp) {
@@ -507,14 +508,14 @@ void BURGER_API Burger::InputMemoryStream::GetString(String *pOutput)
 	\param pOutput Buffer to receive the "C" style UTF-8 data string. \ref NULL will disable
 		the string copy, however the string will be "parsed" from the input
 	\param uOutputSize Size of the buffer pOutput
-	\sa GetPString(char *,WordPtr)
+	\sa GetPString(char *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::InputMemoryStream::GetCString(char *pOutput,WordPtr uOutputSize)
+void BURGER_API Burger::InputMemoryStream::GetCString(char *pOutput,uintptr_t uOutputSize) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		// Is there output?
@@ -526,7 +527,7 @@ void BURGER_API Burger::InputMemoryStream::GetCString(char *pOutput,WordPtr uOut
 		// Parse out the string
 		do {
 			// Get a char from input
-			Word uTemp = pWork[0];
+			uint_t uTemp = pWork[0];
 			++pWork;
 			// Terminate on a NULL
 			if (!uTemp) {
@@ -565,14 +566,14 @@ void BURGER_API Burger::InputMemoryStream::GetCString(char *pOutput,WordPtr uOut
 	\param pOutput Buffer to receive the "C" style UTF-8 data string. \ref NULL will disable
 		the string copy, however the string will be "parsed" from the input
 	\param uOutputSize Size of the buffer pOutput
-	\sa GetCString(char *,WordPtr)
+	\sa GetCString(char *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::InputMemoryStream::GetPString(char *pOutput,WordPtr uOutputSize)
+void BURGER_API Burger::InputMemoryStream::GetPString(char *pOutput,uintptr_t uOutputSize) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
+    const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		// Is there output?
@@ -583,14 +584,14 @@ void BURGER_API Burger::InputMemoryStream::GetPString(char *pOutput,WordPtr uOut
 		}
 
 		// Get the length of the pascal string
-		WordPtr uLength = pWork[0];
+		uintptr_t uLength = pWork[0];
 		++pWork;
 		// Any data?
 		if (uLength && (pWork<pEndOfBuffer)) {
 			// Parse out the string
 			do {
 				// Get a char from input
-				Word uTemp = pWork[0];
+				uint_t uTemp = pWork[0];
 				++pWork;
 				// Any room in the destination buffer?
 				if (uOutputSize) {
@@ -626,9 +627,9 @@ void BURGER_API Burger::InputMemoryStream::GetPString(char *pOutput,WordPtr uOut
 
 uint8_t BURGER_API Burger::InputMemoryStream::GetByte(void) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
-	Word8 uTemp = 0;
+    const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+    const uint8_t *pWork = m_pWork;
+	uint8_t uTemp = 0;
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		uTemp = pWork[0];
@@ -649,15 +650,15 @@ uint8_t BURGER_API Burger::InputMemoryStream::GetByte(void) BURGER_NOEXCEPT
 
 uint16_t BURGER_API Burger::InputMemoryStream::GetShort(void) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
-	Word16 uTemp = 0;
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
+	uint16_t uTemp = 0;
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		if ((pWork+1)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			uTemp = LittleEndian::LoadAny(reinterpret_cast<const Word16 *>(pWork));
+			uTemp = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pWork));
 			pWork+=2;
 		}
 		m_pWork = pWork;
@@ -676,15 +677,15 @@ uint16_t BURGER_API Burger::InputMemoryStream::GetShort(void) BURGER_NOEXCEPT
 
 uint16_t BURGER_API Burger::InputMemoryStream::GetBigShort(void) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
-	Word16 uTemp = 0;
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
+	uint16_t uTemp = 0;
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		if ((pWork+1)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			uTemp = BigEndian::LoadAny(reinterpret_cast<const Word16 *>(pWork));
+			uTemp = BigEndian::LoadAny(reinterpret_cast<const uint16_t *>(pWork));
 			pWork+=2;
 		}
 		m_pWork = pWork;
@@ -703,15 +704,15 @@ uint16_t BURGER_API Burger::InputMemoryStream::GetBigShort(void) BURGER_NOEXCEPT
 
 uint32_t BURGER_API Burger::InputMemoryStream::GetWord32(void) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
-	Word32 uTemp = 0;
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
+	uint32_t uTemp = 0;
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		if ((pWork+3)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			uTemp = LittleEndian::LoadAny(reinterpret_cast<const Word32 *>(pWork));
+			uTemp = LittleEndian::LoadAny(reinterpret_cast<const uint32_t *>(pWork));
 			pWork+=4;
 		}
 		m_pWork = pWork;
@@ -730,15 +731,15 @@ uint32_t BURGER_API Burger::InputMemoryStream::GetWord32(void) BURGER_NOEXCEPT
 
 uint32_t BURGER_API Burger::InputMemoryStream::GetBigWord32(void) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
-	Word32 uTemp = 0;
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
+	uint32_t uTemp = 0;
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		if ((pWork+3)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			uTemp = BigEndian::LoadAny(reinterpret_cast<const Word32 *>(pWork));
+			uTemp = BigEndian::LoadAny(reinterpret_cast<const uint32_t *>(pWork));
 			pWork+=4;
 		}
 		m_pWork = pWork;
@@ -755,17 +756,17 @@ uint32_t BURGER_API Burger::InputMemoryStream::GetBigWord32(void) BURGER_NOEXCEP
 
 ***************************************/
 
-Word64 BURGER_API Burger::InputMemoryStream::GetWord64(void)
+uint64_t BURGER_API Burger::InputMemoryStream::GetWord64(void) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
-	Word64 uTemp = 0;
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
+	uint64_t uTemp = 0;
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		if ((pWork+7)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			uTemp = LittleEndian::LoadAny(reinterpret_cast<const Word64 *>(pWork));
+			uTemp = LittleEndian::LoadAny(reinterpret_cast<const uint64_t *>(pWork));
 			pWork+=8;
 		}
 		m_pWork = pWork;
@@ -782,17 +783,17 @@ Word64 BURGER_API Burger::InputMemoryStream::GetWord64(void)
 
 ***************************************/
 
-Word64 BURGER_API Burger::InputMemoryStream::GetBigWord64(void)
+uint64_t BURGER_API Burger::InputMemoryStream::GetBigWord64(void) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
-	Word64 uTemp = 0;
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
+	uint64_t uTemp = 0;
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		if ((pWork+7)>=pEndOfBuffer) {
 			pWork = pEndOfBuffer;
 		} else {
-			uTemp = BigEndian::LoadAny(reinterpret_cast<const Word64 *>(pWork));
+			uTemp = BigEndian::LoadAny(reinterpret_cast<const uint64_t *>(pWork));
 			pWork+=8;
 		}
 		m_pWork = pWork;
@@ -809,10 +810,10 @@ Word64 BURGER_API Burger::InputMemoryStream::GetBigWord64(void)
 
 ***************************************/
 
-float BURGER_API Burger::InputMemoryStream::GetFloat(void)
+float BURGER_API Burger::InputMemoryStream::GetFloat(void) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
 	float fTemp = 0.0f;
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
@@ -836,10 +837,10 @@ float BURGER_API Burger::InputMemoryStream::GetFloat(void)
 
 ***************************************/
 
-float BURGER_API Burger::InputMemoryStream::GetBigFloat(void)
+float BURGER_API Burger::InputMemoryStream::GetBigFloat(void) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
 	float fTemp = 0.0f;
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
@@ -863,10 +864,10 @@ float BURGER_API Burger::InputMemoryStream::GetBigFloat(void)
 
 ***************************************/
 
-double BURGER_API Burger::InputMemoryStream::GetDouble(void)
+double BURGER_API Burger::InputMemoryStream::GetDouble(void) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
 	double dTemp = 0.0;
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
@@ -890,10 +891,10 @@ double BURGER_API Burger::InputMemoryStream::GetDouble(void)
 
 ***************************************/
 
-double BURGER_API Burger::InputMemoryStream::GetBigDouble(void)
+double BURGER_API Burger::InputMemoryStream::GetBigDouble(void) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
 	double dTemp = 0.0;
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
@@ -918,12 +919,12 @@ double BURGER_API Burger::InputMemoryStream::GetBigDouble(void)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::InputMemoryStream::Get(void *pOutput,WordPtr uOutputSize)
+uintptr_t BURGER_API Burger::InputMemoryStream::Get(void *pOutput,uintptr_t uOutputSize) BURGER_NOEXCEPT
 {
-	WordPtr uResult = 0;
+	uintptr_t uResult = 0;
 	if (pOutput && uOutputSize) {
-		const Word8 *pWork = m_pWork;
-		WordPtr uRemaining = static_cast<WordPtr>(m_pEndOfBuffer-pWork);
+		const uint8_t *pWork = m_pWork;
+		uintptr_t uRemaining = static_cast<uintptr_t>(m_pEndOfBuffer-pWork);
 		if (uRemaining<uOutputSize) {
 			uOutputSize = uRemaining;
 		}
@@ -949,11 +950,11 @@ WordPtr BURGER_API Burger::InputMemoryStream::Get(void *pOutput,WordPtr uOutputS
 
 ***************************************/
 
-Word BURGER_API Burger::InputMemoryStream::Get(RGBWord8_t *pOutput)
+uint_t BURGER_API Burger::InputMemoryStream::Get(RGBWord8_t *pOutput) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
-	Word uResult = TRUE;		// Error!
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
+	uint_t uResult = TRUE;		// Error!
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		if ((pWork+2)>=pEndOfBuffer) {
@@ -987,11 +988,11 @@ Word BURGER_API Burger::InputMemoryStream::Get(RGBWord8_t *pOutput)
 
 ***************************************/
 
-Word BURGER_API Burger::InputMemoryStream::Get(RGBAWord8_t *pOutput)
+uint_t BURGER_API Burger::InputMemoryStream::Get(RGBAWord8_t *pOutput) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
-	Word uResult = TRUE;		// Error!
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
+	uint_t uResult = TRUE;		// Error!
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		if ((pWork+3)>=pEndOfBuffer) {
@@ -1027,11 +1028,11 @@ Word BURGER_API Burger::InputMemoryStream::Get(RGBAWord8_t *pOutput)
 
 ***************************************/
 
-Word BURGER_API Burger::InputMemoryStream::Get(Vector2D_t *pOutput)
+uint_t BURGER_API Burger::InputMemoryStream::Get(Vector2D_t *pOutput) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
-	Word uResult = TRUE;		// Error!
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
+	uint_t uResult = TRUE;		// Error!
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		if ((pWork+7)>=pEndOfBuffer) {
@@ -1062,11 +1063,11 @@ Word BURGER_API Burger::InputMemoryStream::Get(Vector2D_t *pOutput)
 
 ***************************************/
 
-Word BURGER_API Burger::InputMemoryStream::Get(Vector3D_t *pOutput)
+uint_t BURGER_API Burger::InputMemoryStream::Get(Vector3D_t *pOutput) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
-	Word uResult = TRUE;		// Error!
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
+	uint_t uResult = TRUE;		// Error!
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		if ((pWork+11)>=pEndOfBuffer) {
@@ -1099,11 +1100,11 @@ Word BURGER_API Burger::InputMemoryStream::Get(Vector3D_t *pOutput)
 
 ***************************************/
 
-Word BURGER_API Burger::InputMemoryStream::Get(Vector4D_t *pOutput)
+uint_t BURGER_API Burger::InputMemoryStream::Get(Vector4D_t *pOutput) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
-	Word uResult = TRUE;		// Error!
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
+	uint_t uResult = TRUE;		// Error!
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		if ((pWork+15)>=pEndOfBuffer) {
@@ -1135,14 +1136,14 @@ Word BURGER_API Burger::InputMemoryStream::Get(Vector4D_t *pOutput)
 
 ***************************************/
 
-void BURGER_API Burger::InputMemoryStream::ParseBeyondWhiteSpace(void)
+void BURGER_API Burger::InputMemoryStream::ParseBeyondWhiteSpace(void) BURGER_NOEXCEPT
 {
-	const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-	const Word8 *pWork = m_pWork;
+	const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+	const uint8_t *pWork = m_pWork;
 	// Is there any input?
 	if (pWork<pEndOfBuffer) {
 		do {
-			Word uTemp = pWork[0];
+			uint_t uTemp = pWork[0];
 			if ((uTemp!=' ') &&
 				(uTemp!='\t')) {
 				break;
@@ -1165,22 +1166,22 @@ void BURGER_API Burger::InputMemoryStream::ParseBeyondWhiteSpace(void)
 
 ***************************************/
 
-Word BURGER_API Burger::InputMemoryStream::IsStringMatch(const char *pInput)
+uint_t BURGER_API Burger::InputMemoryStream::IsStringMatch(const char *pInput) BURGER_NOEXCEPT
 {
 	// Assume a match on a NULL string
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	if (pInput) {
-		Word uInput = reinterpret_cast<const Word8 *>(pInput)[0];
+		uint_t uInput = reinterpret_cast<const uint8_t *>(pInput)[0];
 		if (uInput) {
 			// No match
 			uResult = FALSE;
-			const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-			const Word8 *pWork = m_pWork;
+			const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+			const uint8_t *pWork = m_pWork;
 			// Is there any input?
 			if (pWork<pEndOfBuffer) {
 				// Get a match character
 				do {
-					Word uTemp1 = pWork[0];
+					uint_t uTemp1 = pWork[0];
 					// No match?
 					if (uTemp1!=uInput) {
 						break;
@@ -1189,7 +1190,7 @@ Word BURGER_API Burger::InputMemoryStream::IsStringMatch(const char *pInput)
 					++pInput;
 					++pWork;
 					// End of the test string?
-					uInput = reinterpret_cast<const Word8 *>(pInput)[0];
+					uInput = reinterpret_cast<const uint8_t *>(pInput)[0];
 					if (!uInput) {
 						// Full match, remove the input and exit
 						uResult = TRUE;
@@ -1216,22 +1217,22 @@ Word BURGER_API Burger::InputMemoryStream::IsStringMatch(const char *pInput)
 
 ***************************************/
 
-Word BURGER_API Burger::InputMemoryStream::IsStringMatchCase(const char *pInput)
+uint_t BURGER_API Burger::InputMemoryStream::IsStringMatchCase(const char *pInput) BURGER_NOEXCEPT
 {
 	// Assume a match on a NULL string
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	if (pInput) {
-		Word uInput = reinterpret_cast<const Word8 *>(pInput)[0];
+		uint_t uInput = reinterpret_cast<const uint8_t *>(pInput)[0];
 		if (uInput) {
 			// No match
 			uResult = FALSE;
-			const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-			const Word8 *pWork = m_pWork;
+			const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+			const uint8_t *pWork = m_pWork;
 			// Is there any input?
 			if (pWork<pEndOfBuffer) {
 				// Get a match character
 				do {
-					Word uTemp1 = pWork[0];
+					uint_t uTemp1 = pWork[0];
 					// No match?
 					if (uTemp1>='A' && uTemp1<='Z') {	// Convert to lower case
 						uTemp1 += 32;
@@ -1246,7 +1247,7 @@ Word BURGER_API Burger::InputMemoryStream::IsStringMatchCase(const char *pInput)
 					++pInput;
 					++pWork;
 					// End of the test string?
-					uInput = reinterpret_cast<const Word8 *>(pInput)[0];
+					uInput = reinterpret_cast<const uint8_t *>(pInput)[0];
 					if (!uInput) {
 						// Full match, remove the input and exit
 						uResult = TRUE;
@@ -1275,15 +1276,15 @@ Word BURGER_API Burger::InputMemoryStream::IsStringMatchCase(const char *pInput)
 
 ***************************************/
 
-Word BURGER_API Burger::InputMemoryStream::IsDataMatch(const Word8 *pInput,WordPtr uLength)
+uint_t BURGER_API Burger::InputMemoryStream::IsDataMatch(const uint8_t *pInput,uintptr_t uLength) BURGER_NOEXCEPT
 {
 	// Assume a match on a NULL string
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	if (uLength) {
 		// No match
 		uResult = FALSE;
-		const Word8 *pEndOfBuffer = m_pEndOfBuffer;
-		const Word8 *pWork = m_pWork;
+		const uint8_t *pEndOfBuffer = m_pEndOfBuffer;
+		const uint8_t *pWork = m_pWork;
 		// Is there any input?
 		if (pWork<pEndOfBuffer) {
 			// Get a match character

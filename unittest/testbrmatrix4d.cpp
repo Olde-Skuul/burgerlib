@@ -25,9 +25,9 @@ using namespace Burger;
 // a term error in the multiplication
 //
 
-static Word BURGER_API TestMultiply(void)
+static uint_t BURGER_API TestMultiply(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	Matrix4D_t Foo1;
 	Matrix4D_t Foo2;
 	Matrix4D_t Bar1;
@@ -36,7 +36,7 @@ static Word BURGER_API TestMultiply(void)
 	Foo2.SetScale(11, 13, 17);
 	Bar1.Multiply(&Foo1, 11, 13, 17);
 	Bar2.Multiply(&Foo1, &Foo2);
-	Word uTest = MemoryCompare(&Bar1, &Bar2, sizeof(Bar1)) != 0;
+	uint_t uTest = MemoryCompare(&Bar1, &Bar2, sizeof(Bar1)) != 0;
 	ReportFailure("Fail " BURGER_STRINGIZE(__LINE__), uTest);
 	uResult |= uTest;
 
@@ -106,9 +106,9 @@ static Word BURGER_API TestMultiply(void)
 // Perform all the tests for the Burgerlib FP Math library
 //
 
-int BURGER_API TestBrmatrix4d(Word uVerbose)
+int BURGER_API TestBrmatrix4d(uint_t uVerbose)
 {
-	Word uResult = FALSE; // Assume no failures
+	uint_t uResult = FALSE; // Assume no failures
 
 	if (uVerbose & VERBOSE_MSG) {
 		Message("Running Matrix4D tests");

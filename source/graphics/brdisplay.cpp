@@ -1,13 +1,14 @@
 /***************************************
 
-	Display base class
+    Display base class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -61,12 +62,12 @@ Burger::Display::Globals_t Burger::Display::g_Globals;
 
 	\enum Burger::Display::eClearBits
 
-	\brief Settings for Clear(Word)
+	\brief Settings for Clear(uint_t)
 
 	Bitfield for which buffers to clear upon the
 	start of rendering a frame buffer
 
-	\sa Clear(Word)
+	\sa Clear(uint_t)
 
 ***************************************/
 
@@ -321,7 +322,7 @@ void BURGER_API Burger::Display::InitDefaults(GameApp *pGameApp)
 
 ***************************************/
 
-void BURGER_API Burger::Display::SetWidthHeight(Word uWidth,Word uHeight)
+void BURGER_API Burger::Display::SetWidthHeight(uint_t uWidth,uint_t uHeight)
 {
 	// Set the initial globals
 	m_uWidth = uWidth;
@@ -355,10 +356,10 @@ void BURGER_API Burger::Display::SetWidthHeight(Word uWidth,Word uHeight)
 	hooks up the Display and the Renderer to the GameApp.
 
 	Variables are initialized, but the display is not activated.
-	Call Init(Word,Word,Word,Word) to activate the display.
+	Call Init(uint_t,uint_t,uint_t,uint_t) to activate the display.
 
 	\param pGameApp Pointer to the game application
-	\sa Init(Word,Word,Word,Word)
+	\sa Init(uint_t,uint_t,uint_t,uint_t)
 
 ***************************************/
 
@@ -387,7 +388,7 @@ Burger::Display::~Display()
 
 /*! ************************************
 
-	\fn Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
+	\fn uint_t Burger::Display::Init(uint_t uWidth,uint_t uHeight,uint_t uDepth,uint_t uFlags)
 	\brief Initialize the display
 
 	Set up the video display hardware to the specified mode and depth.
@@ -407,7 +408,7 @@ Burger::Display::~Display()
 
 #if defined(BURGER_WINDOWS) || !(defined(BURGER_XBOX360) || defined(BURGER_OPENGL)) || defined(DOXYGEN)
 #if !defined(BURGER_WINDOWS) || defined(DOXYGEN)
-Word Burger::Display::Init(Word /* uWidth */,Word /* uHeight */,Word /* uDepth */,Word /* uFlags */)
+uint_t Burger::Display::Init(uint_t /* uWidth */,uint_t /* uHeight */,uint_t /* uDepth */,uint_t /* uFlags */)
 {
 	return 10;
 }
@@ -425,7 +426,7 @@ Word Burger::Display::Init(Word /* uWidth */,Word /* uHeight */,Word /* uDepth *
 	This code does nothing. It's a placeholder for classes that have no
 	need for a shutdown call
 
-	\sa Init(Word,Word,Word,Word)
+	\sa Init(uint_t,uint_t,uint_t,uint_t)
 
 ***************************************/
 
@@ -477,16 +478,16 @@ Burger::VertexBuffer *Burger::Display::CreateVertexBufferObject(void)
 	return new (Alloc(sizeof(VertexBuffer))) VertexBuffer;
 }
 
-void Burger::Display::Resize(Word uWidth,Word uHeight)
+void Burger::Display::Resize(uint_t uWidth,uint_t uHeight)
 {
 	SetWidthHeight(uWidth,uHeight);
 }
 
-void Burger::Display::SetViewport(Word /* uX */,Word /* uY */,Word /* uWidth */,Word /* uHeight */)
+void Burger::Display::SetViewport(uint_t /* uX */,uint_t /* uY */,uint_t /* uWidth */,uint_t /* uHeight */)
 {
 }
 
-void Burger::Display::SetScissorRect(Word /* uX */,Word /* uY */,Word /* uWidth */,Word /* uHeight */)
+void Burger::Display::SetScissorRect(uint_t /* uX */,uint_t /* uY */,uint_t /* uWidth */,uint_t /* uHeight */)
 {
 }
 
@@ -498,11 +499,11 @@ void Burger::Display::SetClearDepth(float /* fDepth */)
 {
 }
 
-void Burger::Display::Clear(Word /* uMask */)
+void Burger::Display::Clear(uint_t /* uMask */)
 {
 }
 
-void Burger::Display::Bind(Texture *pTexture,Word uIndex)
+void Burger::Display::Bind(Texture *pTexture,uint_t uIndex)
 {
 	BURGER_ASSERT(uIndex<BURGER_ARRAYSIZE(m_pBoundTextures));
 	m_pBoundTextures[uIndex] = pTexture;
@@ -512,7 +513,7 @@ void Burger::Display::Bind(Effect * /* pEffect */)
 {
 }
 
-void Burger::Display::SetBlend(Word /* bEnable */)
+void Burger::Display::SetBlend(uint_t /* bEnable */)
 {
 }
 
@@ -520,11 +521,11 @@ void Burger::Display::SetBlendFunction(eSourceBlendFactor /* uSourceFactor */,eD
 {
 }
 
-void Burger::Display::SetLighting(Word /* bEnable */)
+void Burger::Display::SetLighting(uint_t /* bEnable */)
 {
 }
 
-void Burger::Display::SetZWrite(Word /* bEnable */)
+void Burger::Display::SetZWrite(uint_t /* bEnable */)
 {
 }
 
@@ -536,7 +537,7 @@ void Burger::Display::SetCullMode(eCullMode /* uCullMode */)
 {
 }
 
-void Burger::Display::SetScissor(Word /* bEnable */)
+void Burger::Display::SetScissor(uint_t /* bEnable */)
 {
 }
 
@@ -567,7 +568,7 @@ void Burger::Display::DrawElements(ePrimitiveType /* uPrimitiveType */,VertexBuf
 
 ***************************************/
 
-void BURGER_API Burger::Display::Pause(Word bPauseRendering)
+void BURGER_API Burger::Display::Pause(uint_t bPauseRendering)
 {
 	int iPauseRenderingCount = m_iPauseRenderingCount;
 	if (bPauseRendering) {
@@ -626,7 +627,7 @@ Burger::Texture * BURGER_API Burger::Display::CreateTexture(Texture::eWrapping u
 
 ***************************************/
 
-Burger::Texture * BURGER_API Burger::Display::CreateTexture(Word uWidth,Word uHeight,Image::ePixelTypes uPixelType,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+Burger::Texture * BURGER_API Burger::Display::CreateTexture(uint_t uWidth,uint_t uHeight,Image::ePixelTypes uPixelType,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
 {
 	Texture *pTexture = CreateTextureObject();
 	if (pTexture) {
@@ -712,7 +713,7 @@ Burger::Texture * BURGER_API Burger::Display::CreateTexturePNG(Filename *pFilena
 
 ***************************************/
 
-Burger::Texture * BURGER_API Burger::Display::CreateTexturePNG(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+Burger::Texture * BURGER_API Burger::Display::CreateTexturePNG(RezFile *pRezFile,uint_t uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
 {
 	Texture *pTexture = CreateTextureObject();
 	if (pTexture) {
@@ -794,7 +795,7 @@ Burger::Texture * BURGER_API Burger::Display::CreateTextureGIF(Filename *pFilena
 
 ***************************************/
 
-Burger::Texture * BURGER_API Burger::Display::CreateTextureGIF(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+Burger::Texture * BURGER_API Burger::Display::CreateTextureGIF(RezFile *pRezFile,uint_t uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
 {
 	Texture *pTexture = CreateTextureObject();
 	if (pTexture) {
@@ -876,7 +877,7 @@ Burger::Texture * BURGER_API Burger::Display::CreateTextureTGA(Filename *pFilena
 
 ***************************************/
 
-Burger::Texture * BURGER_API Burger::Display::CreateTextureTGA(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+Burger::Texture * BURGER_API Burger::Display::CreateTextureTGA(RezFile *pRezFile,uint_t uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
 {
 	Texture *pTexture = CreateTextureObject();
 	if (pTexture) {
@@ -958,7 +959,7 @@ Burger::Texture * BURGER_API Burger::Display::CreateTextureBMP(Filename *pFilena
 
 ***************************************/
 
-Burger::Texture * BURGER_API Burger::Display::CreateTextureBMP(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
+Burger::Texture * BURGER_API Burger::Display::CreateTextureBMP(RezFile *pRezFile,uint_t uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter)
 {
 	Texture *pTexture = CreateTextureObject();
 	if (pTexture) {
@@ -1006,7 +1007,7 @@ Burger::VertexBuffer * BURGER_API Burger::Display::CreateVertexBuffer(const Vert
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
-Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
+uint_t Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 {
 	pOutput->clear();
 	return 10;
@@ -1027,11 +1028,11 @@ Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 	\param uCount Number of colors to update (256-uStart)
 	\param pPalette Base pointer to the colors to use in the update in the size of uCount*3
 
-	\sa SetPalette(const Word8 *) or SetPalette(void **)
+	\sa SetPalette(const uint8_t *) or SetPalette(void **)
 
 ***************************************/
 
-void BURGER_API Burger::Display::SetPalette(Word uStart,Word uCount,const Word8 *pPalette)
+void BURGER_API Burger::Display::SetPalette(uint_t uStart,uint_t uCount,const uint8_t *pPalette)
 {
 	// Bad?
 	if (pPalette && uStart<256) {
@@ -1101,11 +1102,11 @@ void BURGER_API Burger::Display::SetPalette(Word uStart,Word uCount,const Word8 
 	\param uCount Number of colors to update (256-uStart)
 	\param pPalette Base pointer to an array of RGBAWord8_t colors to use in the update in the size of uCount
 
-	\sa SetPalette(const Word8 *) or SetPalette(void **)
+	\sa SetPalette(const uint8_t *) or SetPalette(void **)
 
 ***************************************/
 
-void BURGER_API Burger::Display::SetPalette(Word uStart,Word uCount,const RGBAWord8_t *pPalette)
+void BURGER_API Burger::Display::SetPalette(uint_t uStart,uint_t uCount,const RGBAWord8_t *pPalette)
 {
 	// Bad?
 	if (pPalette && uStart<256) {
@@ -1155,7 +1156,7 @@ void BURGER_API Burger::Display::SetPalette(Word uStart,Word uCount,const RGBAWo
 		}
 		// If any colors survived the pruning, update them
 		if (uCount) {
-			Word8 *pDest = m_Palette+(uStart*3);
+			uint8_t *pDest = m_Palette+(uStart*3);
 			// Copy up the colors, ignoring the alpha
 			do {
 				pDest[0] = pPalette->m_uRed;
@@ -1187,7 +1188,7 @@ void BURGER_API Burger::Display::SetPalette(Word uStart,Word uCount,const RGBAWo
 ***************************************/
 
 #if (!defined(BURGER_MSDOS)) || defined(DOXYGEN)
-void BURGER_API Burger::Display::SetBorderColor(Word uColor)
+void BURGER_API Burger::Display::SetBorderColor(uint_t uColor)
 {
 	m_uBorderColor = uColor;
 }
@@ -1220,14 +1221,14 @@ void BURGER_API Burger::Display::SetWindowTitle(const char * /* pTitle */)
 
 	Set all 8 bit palette color entries to zero (Black)
 
-	\sa SetPalette(const Word8 *), SetPalette(Word,Word,const Word8 *) or SetPaletteWhite()
+	\sa SetPalette(const uint8_t *), SetPalette(uint_t,uint_t,const uint8_t *) or SetPaletteWhite()
 
 ***************************************/
 
 void BURGER_API Burger::Display::SetPaletteBlack(void)
 {
 	// Perform a compare to the palette to force an update only when changed
-	Word8 TempPalette[sizeof(m_Palette)];
+	uint8_t TempPalette[sizeof(m_Palette)];
 	MemoryClear(m_Palette,sizeof(m_Palette));
 	SetPalette(TempPalette);
 }
@@ -1238,13 +1239,13 @@ void BURGER_API Burger::Display::SetPaletteBlack(void)
 
 	Set all 8 bit palette color entries to 255 (White)
 
-	\sa SetPalette(const Word8 *), SetPalette(Word,Word,const Word8 *) or SetPaletteBlack()
+	\sa SetPalette(const uint8_t *), SetPalette(uint_t,uint_t,const uint8_t *) or SetPaletteBlack()
 
 ***************************************/
 
 void BURGER_API Burger::Display::SetPaletteWhite(void)
 {
-	Word8 TempPalette[sizeof(m_Palette)];
+	uint8_t TempPalette[sizeof(m_Palette)];
 	MemoryFill(TempPalette,255,sizeof(TempPalette));
 	SetPalette(TempPalette);
 }
@@ -1264,7 +1265,7 @@ void BURGER_API Burger::Display::SetPaletteWhite(void)
 
 ***************************************/
 
-void BURGER_API Burger::Display::SetPalette(const Word8 *pPalette)
+void BURGER_API Burger::Display::SetPalette(const uint8_t *pPalette)
 {
 	SetPalette(0,256,pPalette);
 }
@@ -1300,13 +1301,13 @@ void BURGER_API Burger::Display::SetPalette(const RGBAWord8_t *pPalette)
 	The palette is an array of 3 byte triplets of Red,Green, and Blue.
 
 	\param pHandle Base handle to the colors to use in the update in the size of 256*3 (768)
-	\sa SetPalette(const Word8 *)
+	\sa SetPalette(const uint8_t *)
 
 ***************************************/
 
 void BURGER_API Burger::Display::SetPalette(void **pHandle)
 {
-	const Word8 *pPalette = static_cast<const Word8 *>(MemoryManagerHandle::Lock(pHandle));
+	const uint8_t *pPalette = static_cast<const uint8_t *>(MemoryManagerHandle::Lock(pHandle));
 	if (pPalette) {
 		SetPalette(0,256,pPalette);
 		MemoryManagerHandle::Unlock(pHandle);
@@ -1325,13 +1326,13 @@ void BURGER_API Burger::Display::SetPalette(void **pHandle)
 
 	\param pRez Reference to the resource file
 	\param uResID Resource entry the contains the 768 byte palette
-	\sa SetPalette(const Word8 *)
+	\sa SetPalette(const uint8_t *)
 
 ***************************************/
 
-void BURGER_API Burger::Display::SetPalette(RezFile *pRez,Word uResID)
+void BURGER_API Burger::Display::SetPalette(RezFile *pRez,uint_t uResID)
 {
-	const Word8 *pPalette = static_cast<const Word8 *>(pRez->Load(uResID));
+	const uint8_t *pPalette = static_cast<const uint8_t *>(pRez->Load(uResID));
 	if (pPalette) {
 		SetPalette(0,256,pPalette);
 		pRez->Release(uResID);
@@ -1352,13 +1353,13 @@ void BURGER_API Burger::Display::SetPalette(RezFile *pRez,Word uResID)
 	\param uCount Number of colors to update (256-uStart)
 	\param pRez Reference to the resource file
 	\param uResID Resource entry the contains the palette that's uCount*3 bytes in length
-	\sa SetPalette(const Word8 *)
+	\sa SetPalette(const uint8_t *)
 
 ***************************************/
 
-void BURGER_API Burger::Display::SetPalette(Word uStart,Word uCount,RezFile *pRez,Word uResID)
+void BURGER_API Burger::Display::SetPalette(uint_t uStart,uint_t uCount,RezFile *pRez,uint_t uResID)
 {
-	const Word8 *pPalette = static_cast<const Word8 *>(pRez->Load(uResID));
+	const uint8_t *pPalette = static_cast<const uint8_t *>(pRez->Load(uResID));
 	if (pPalette) {
 		SetPalette(uStart,uCount,pPalette);
 		pRez->Release(uResID);
@@ -1392,21 +1393,21 @@ void BURGER_API Burger::Display::SetPalette(Word uStart,Word uCount,RezFile *pRe
 	\param pProc Function pointer to callback or \ref NULL if callbacks are not desired
 	\param pData Data pointer for the callback. Can be \ref NULL.
 
-	\sa FadeTo(RezFile *,Word,,FadeProc,void *), FadeToWhite(), FadeToBlack(), GameApp::Poll(),
+	\sa FadeTo(RezFile *,uint_t,,FadeProc,void *), FadeToWhite(), FadeToBlack(), GameApp::Poll(),
 		m_uPaletteFadeSpeed, m_bPaletteVSync, m_Palette, Tick::Read()
 
 ***************************************/
 
-void BURGER_API Burger::Display::FadeTo(const Word8 *pPalette,FadeProc pProc,void *pData)
+void BURGER_API Burger::Display::FadeTo(const uint8_t *pPalette,FadeProc pProc,void *pData)
 {
 	int DeltaPalette[768];		// Must be SIGNED!
-	Word8 WorkPalette[768];		// Temp palette
+	uint8_t WorkPalette[768];		// Temp palette
 
 	// Same palette?
 	if (MemoryCompare(pPalette,m_Palette,768)) {
 		// Save the palette VSync flag
 		// Since I am fading, I can wait for VSync
-		Word8 bOldVSync = m_bPaletteVSync;
+		uint8_t bOldVSync = m_bPaletteVSync;
 		m_bPaletteVSync = TRUE;
 
 		// Need to first get the deltas for each color component
@@ -1414,11 +1415,11 @@ void BURGER_API Burger::Display::FadeTo(const Word8 *pPalette,FadeProc pProc,voi
 		// I need the difference table to be an array of int's
 
 		{
-			const Word8 *pOriginal = m_Palette;	// Pointer to palette
+			const uint8_t *pOriginal = m_Palette;	// Pointer to palette
 			int *pDelta = DeltaPalette;			// Pointer to delta
 			do {
-				Word a1 = pOriginal[0];			// Get the values
-				Word a2 = pPalette[0];
+				uint_t a1 = pOriginal[0];			// Get the values
+				uint_t a2 = pPalette[0];
 				pDelta[0] = static_cast<int>(a1-a2);		// Calculate the delta
 				++pOriginal;
 				++pPalette;
@@ -1432,12 +1433,12 @@ void BURGER_API Burger::Display::FadeTo(const Word8 *pPalette,FadeProc pProc,voi
 			// Palette scale temp 0.0-1.0
 			Fixed32 fScale;
 			// Initialize the callback constant
-			Word LastCall = 0;
+			uint_t LastCall = 0;
 
 			// Get the time base
-			Word32 uMark = Tick::Read();
+			uint32_t uMark = Tick::Read();
 			// Number of ticks to elapse for 16 steps
-			Word uTotalTicks = 16*m_uPaletteFadeSpeed;
+			uint_t uTotalTicks = 16*m_uPaletteFadeSpeed;
 			do {
 				// Yield CPU time if needed
 				m_pGameApp->Poll();
@@ -1449,7 +1450,7 @@ void BURGER_API Burger::Display::FadeTo(const Word8 *pPalette,FadeProc pProc,voi
 					fScale = 0x10000;		// Cap at 1.0f fixed
 				}
 				fScale=0x10000-fScale;		// Reverse the scale
-				Word8 *pNewPalette = WorkPalette;	// Init palette pointers
+				uint8_t *pNewPalette = WorkPalette;	// Init palette pointers
 				int *pDelta = DeltaPalette;
 				do {
 					// Get a delta
@@ -1458,7 +1459,7 @@ void BURGER_API Burger::Display::FadeTo(const Word8 *pPalette,FadeProc pProc,voi
 					Foo = Foo*fScale;
 					// Div by 16 (Signed) (Result is -255 to 255)
 					Foo = Foo>>16;
-					pNewPalette[0] = static_cast<Word8>(pPalette[0]+Foo);
+					pNewPalette[0] = static_cast<uint8_t>(pPalette[0]+Foo);
 					++pNewPalette;
 					++pPalette;
 					++pDelta;
@@ -1472,7 +1473,7 @@ void BURGER_API Burger::Display::FadeTo(const Word8 *pPalette,FadeProc pProc,voi
 				// Is there a callback?
 				if (pProc) {
 					// 0-16
-					Word uCount = static_cast<Word>(16-(fScale>>12));
+					uint_t uCount = static_cast<uint_t>(16-(fScale>>12));
 					// New value?
 					if (uCount>LastCall) {
 						LastCall = uCount;
@@ -1502,13 +1503,13 @@ void BURGER_API Burger::Display::FadeTo(const Word8 *pPalette,FadeProc pProc,voi
 
 	\param pProc Function pointer to callback or \ref NULL if callbacks are not desired
 	\param pData Data pointer for the callback. Can be \ref NULL.
-	\sa FadeTo(const Word8 *,FadeProc,void *), SetPaletteBlack(), FadeToWhite()
+	\sa FadeTo(const uint8_t *,FadeProc,void *), SetPaletteBlack(), FadeToWhite()
 
 ***************************************/
 
 void BURGER_API Burger::Display::FadeToBlack(FadeProc pProc,void *pData)
 {
-	Word8 TempPalette[sizeof(m_Palette)];
+	uint8_t TempPalette[sizeof(m_Palette)];
 	MemoryClear(TempPalette,sizeof(TempPalette));
 	FadeTo(TempPalette,pProc,pData);
 }
@@ -1523,13 +1524,13 @@ void BURGER_API Burger::Display::FadeToBlack(FadeProc pProc,void *pData)
 	\param pProc Function pointer to callback or \ref NULL if callbacks are not desired
 	\param pData Data pointer for the callback. Can be \ref NULL.
 
-	\sa FadeTo(const Word8 *,FadeProc,void *), SetPaletteWhite(), FadeToBlack()
+	\sa FadeTo(const uint8_t *,FadeProc,void *), SetPaletteWhite(), FadeToBlack()
 
 ***************************************/
 
 void BURGER_API Burger::Display::FadeToWhite(FadeProc pProc,void *pData)
 {
-	Word8 TempPalette[sizeof(m_Palette)];
+	uint8_t TempPalette[sizeof(m_Palette)];
 	MemoryFill(TempPalette,255,sizeof(TempPalette));
 	FadeTo(TempPalette,pProc,pData);
 }
@@ -1546,14 +1547,14 @@ void BURGER_API Burger::Display::FadeToWhite(FadeProc pProc,void *pData)
 	\param pProc Function pointer to callback or \ref NULL if callbacks are not desired
 	\param pData Data pointer for the callback. Can be \ref NULL.
 
-	\sa FadeTo(const Word8 *,FadeProc,void *), FadeToWhite(), FadeToBlack()
+	\sa FadeTo(const uint8_t *,FadeProc,void *), FadeToWhite(), FadeToBlack()
 
 ***************************************/
 
-void BURGER_API Burger::Display::FadeTo(RezFile *pRez,Word uResID,FadeProc pProc,void *pData)
+void BURGER_API Burger::Display::FadeTo(RezFile *pRez,uint_t uResID,FadeProc pProc,void *pData)
 {
 	// Load in the resource file
-	const Word8 *pPalette = static_cast<const Word8 *>(pRez->Load(uResID));
+	const uint8_t *pPalette = static_cast<const uint8_t *>(pRez->Load(uResID));
 	if (pPalette) {
 		FadeTo(pPalette,pProc,pData);
 		// Release the resource data
@@ -1575,14 +1576,14 @@ void BURGER_API Burger::Display::FadeTo(RezFile *pRez,Word uResID,FadeProc pProc
 	\param pProc Function pointer to callback or \ref NULL if callbacks are not desired
 	\param pData Data pointer for the callback. Can be \ref NULL.
 
-	\sa FadeTo(const Word8 *,FadeProc,void *), FadeToWhite(), FadeToBlack()
+	\sa FadeTo(const uint8_t *,FadeProc,void *), FadeToWhite(), FadeToBlack()
 
 ***************************************/
 
 void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pData)
 {
 	// Lock it down
-	const Word8 *pPalette = static_cast<const Word8 *>(MemoryManagerHandle::Lock(pHandle));
+	const uint8_t *pPalette = static_cast<const uint8_t *>(MemoryManagerHandle::Lock(pHandle));
 	if (pPalette) {
 		// Perform the fade
 		FadeTo(pPalette,pProc,pData);
@@ -1593,7 +1594,7 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetDefaultWidth(void)
+	\fn uint_t Burger::Display::GetDefaultWidth(void)
 	\brief Get the width of the default monitor
 
 	This is initialized with the size of the user's
@@ -1608,7 +1609,7 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetDefaultHeight(void)
+	\fn uint_t Burger::Display::GetDefaultHeight(void)
 	\brief Get the height of the default monitor
 
 	This is initialized with the size of the user's
@@ -1623,7 +1624,7 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetDefaultDepth(void)
+	\fn uint_t Burger::Display::GetDefaultDepth(void)
 	\brief Get the pixel depth of the default monitor
 
 	This is initialized with the pixel depth of the user's
@@ -1638,7 +1639,7 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetDefaultHertz(void)
+	\fn uint_t Burger::Display::GetDefaultHertz(void)
 	\brief Get the refresh rate of the default monitor
 
 	This is initialized with the refresh rate of the user's
@@ -1653,7 +1654,7 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetDefaultMonitorCount(void)
+	\fn uint_t Burger::Display::GetDefaultMonitorCount(void)
 	\brief Get the number of active monitors
 
 	This is initialized with the number of monitors used for
@@ -1668,7 +1669,7 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetDefaultTotalWidth(void)
+	\fn uint_t Burger::Display::GetDefaultTotalWidth(void)
 	\brief Get the width of the default monitor
 
 	This is initialized with the size of the user's
@@ -1683,7 +1684,7 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetDefaultTotalHeight(void)
+	\fn uint_t Burger::Display::GetDefaultTotalHeight(void)
 	\brief Get the height of the default monitor
 
 	This is initialized with the size of the user's
@@ -1708,7 +1709,7 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetWidth(void) const
+	\fn uint_t Burger::Display::GetWidth(void) const
 	\brief Get the width in pixels of the display buffer
 
 	\return Width of the display buffer in pixels
@@ -1718,7 +1719,7 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetHeight(void) const
+	\fn uint_t Burger::Display::GetHeight(void) const
 	\brief Get the height in pixels of the display buffer
 
 	\return Height of the display buffer in pixels
@@ -1728,7 +1729,7 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetDepth(void) const
+	\fn uint_t Burger::Display::GetDepth(void) const
 	\brief Get the depth in bits of the display buffer
 
 	The display buffer could be 8 for 8 bit palette, 15 for 5:5:5 RGB, 16
@@ -1741,7 +1742,7 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetFlags(void) const
+	\fn uint_t Burger::Display::GetFlags(void) const
 	\brief Get the flags associated with this Display class instance
 
 	\return Flags containing the current state of the display system
@@ -1751,7 +1752,7 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetDisplayWidth(void) const
+	\fn uint_t Burger::Display::GetDisplayWidth(void) const
 	\brief Get the width in pixels of the display hardware
 
 	This differs from GetWidth() in that this is the
@@ -1765,7 +1766,7 @@ void BURGER_API Burger::Display::FadeTo(void **pHandle,FadeProc pProc,void *pDat
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetDisplayHeight(void) const
+	\fn uint_t Burger::Display::GetDisplayHeight(void) const
 	\brief Get the height in pixels of the display hardware
 
 	This differs from GetHeight() in that this is the
@@ -1848,14 +1849,14 @@ Burger::Display::eAspectRatio BURGER_API Burger::Display::GetAspectRatio(void) c
 
 /*! ************************************
 
-	\fn const Word8 * Burger::Display::GetPalette(void) const
+	\fn const uint8_t * Burger::Display::GetPalette(void) const
 	\brief Get the current palette
 
 	When video is set to an 8 bit mode, a 256 entry color palette is needed
 	for the video display to properly show the graphics. A copy of
 	the palette is maintained in the class that matches what
 	the hardware is currently displaying. For some displays, some
-	colors are considered read only. When calling SetPalette(Word,Word,const Word8 *)
+	colors are considered read only. When calling SetPalette(uint_t,uint_t,const uint8_t *)
 	it's not guaranteed that all colors will be updated due to system
 	reserved colors (For windowed modes). The palette will have
 	the reserved colors in it if this is the case.
@@ -1876,15 +1877,15 @@ Burger::Display::eAspectRatio BURGER_API Burger::Display::GetAspectRatio(void) c
 
 	\note On MSDOS, the EGA value of the border color is 4 bits (0-15).
 
-	\return Value previously set by SetBorderColor(Word) or zero if uninitialized.
+	\return Value previously set by SetBorderColor(uint_t) or zero if uninitialized.
 
-	\sa SetBorderColor(Word)
+	\sa SetBorderColor(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetFadeSpeed(void) const
+	\fn uint_t Burger::Display::GetFadeSpeed(void) const
 	\brief Return the timer constant in Burger::Tick
 
 	When calling the palette fade functions, it will perform the fade evenly until
@@ -1893,13 +1894,13 @@ Burger::Display::eAspectRatio BURGER_API Burger::Display::GetAspectRatio(void) c
 	to Tick::TICKSPERSEC
 
 	\return Return the current tick value for a palette fade
-	\sa SetFadeSpeed(Word)
+	\sa SetFadeSpeed(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::Display::SetFadeSpeed(Word uPaletteFadeSpeed) const
+	\fn void Burger::Display::SetFadeSpeed(uint_t uPaletteFadeSpeed) const
 	\brief Set the timer constant in Burger::Tick
 
 	When calling the palette fade functions, it will perform the fade evenly until
@@ -1915,17 +1916,17 @@ Burger::Display::eAspectRatio BURGER_API Burger::Display::GetAspectRatio(void) c
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetPaletteVSync(void) const
+	\fn uint_t Burger::Display::GetPaletteVSync(void) const
 	\brief Return non-zero if palette updates are synced to vertical blank.
 
 	\return Return non-zero if palette updates are synced to vertical blank.
-	\sa SetPaletteVSync(Word)
+	\sa SetPaletteVSync(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::Display::SetPaletteVSync(Word bPaletteVSync)
+	\fn void Burger::Display::SetPaletteVSync(uint_t bPaletteVSync)
 	\brief Set the flag to enable palette updates
 
 	\param bPaletteVSync \ref TRUE to enable vertical blank syncing, \ref FALSE to disable it

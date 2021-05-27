@@ -1,13 +1,14 @@
 /***************************************
 
-	Vertex buffer class
+    Vertex buffer class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -18,8 +19,8 @@
 BURGER_CREATE_STATICRTTI_PARENT(Burger::VertexBuffer,Burger::DisplayObject);
 #endif
 
-const Word Burger::VertexBuffer::g_ChunkElementSizes[5] = {4,4,4,4,1};
-const Word Burger::VertexBuffer::g_ChunkElementCounts[5] = {1,2,3,4,4};
+const uint_t Burger::VertexBuffer::g_ChunkElementSizes[5] = {4,4,4,4,1};
+const uint_t Burger::VertexBuffer::g_ChunkElementCounts[5] = {1,2,3,4,4};
 
 /*! ************************************
 
@@ -87,18 +88,18 @@ Burger::VertexBuffer::~VertexBuffer()
 
 ***************************************/
 
-Word BURGER_API Burger::VertexBuffer::LoadData(Display *pDisplay,const VertexAoS_t *pDescription)
+uint_t BURGER_API Burger::VertexBuffer::LoadData(Display *pDisplay,const VertexAoS_t *pDescription)
 {
 	// Make sure the buffers are cleared
 	PurgeData();
 
 	// Get the flags
-	Word uFlags = pDescription->m_uFlags;
+	uint_t uFlags = pDescription->m_uFlags;
 
 	// Copy the vertex buffer if needed
 
 	const void *pBuffer;
-	WordPtr uSize = pDescription->m_uVertexArraySize;
+	uintptr_t uSize = pDescription->m_uVertexArraySize;
 	if (!uSize) {
 		// No buffer due to lack of size
 		pBuffer = NULL;
@@ -149,18 +150,18 @@ Word BURGER_API Burger::VertexBuffer::LoadData(Display *pDisplay,const VertexAoS
 		// Convert the index count to 32 bit ints
 		uSize >>= 1U;
 	}
-	m_uElementEntryCount = static_cast<Word>(uSize);
+	m_uElementEntryCount = static_cast<uint_t>(uSize);
 
 	// Determine the buffer description
 
-	Word uStride = 0;			// No stride yet
-	Word uAttributeCount = 0;	// No attributes found
-	const Word *pMembers = pDescription->m_pMembers;
+	uint_t uStride = 0;			// No stride yet
+	uint_t uAttributeCount = 0;	// No attributes found
+	const uint_t *pMembers = pDescription->m_pMembers;
 	if (pMembers) {
-		Word uMember = pMembers[0];
+		uint_t uMember = pMembers[0];
 		if (uMember!=VertexBuffer::USAGE_END) {
 			do {
-				Word uType = (uMember&USAGE_CHUNKMASK)>>USAGE_CHUNKMASKSHIFT;
+				uint_t uType = (uMember&USAGE_CHUNKMASK)>>USAGE_CHUNKMASKSHIFT;
 				if (uType>=BURGER_ARRAYSIZE(g_ChunkElementSizes)) {
 					BURGER_ASSERT(uType>=BURGER_ARRAYSIZE(g_ChunkElementSizes));
 					// Failsafe!!
@@ -181,7 +182,7 @@ Word BURGER_API Burger::VertexBuffer::LoadData(Display *pDisplay,const VertexAoS
 	m_uStride = uStride;
 	// Number of chunks
 	if (uStride) {
-		uStride = static_cast<Word>(m_uVertexArraySize/uStride);
+		uStride = static_cast<uint_t>(m_uVertexArraySize/uStride);
 	}
 	// Number of vertices in the array
 	m_uArrayEntryCount = uStride;
@@ -196,7 +197,7 @@ Word BURGER_API Burger::VertexBuffer::LoadData(Display *pDisplay,const VertexAoS
 		if (!(uFlags&FLAGAOS_DONTCOPY_MEMBERS)) {
 
 			// If pBuffer is NULL, it will act as Alloc()
-			pBuffer = AllocCopy(pBuffer,uAttributeCount*sizeof(Word));
+			pBuffer = AllocCopy(pBuffer,uAttributeCount*sizeof(uint_t));
 			BURGER_ASSERT(pBuffer);
 			if (!pBuffer) {
 				uAttributeCount = 0;
@@ -204,7 +205,7 @@ Word BURGER_API Burger::VertexBuffer::LoadData(Display *pDisplay,const VertexAoS
 		}
 	}
 	// Set the final element buffer and size
-	m_pMembers = static_cast<const Word *>(pBuffer);
+	m_pMembers = static_cast<const uint_t *>(pBuffer);
 	m_uMemberCount = uAttributeCount;
 
 
@@ -214,7 +215,7 @@ Word BURGER_API Burger::VertexBuffer::LoadData(Display *pDisplay,const VertexAoS
 	// If there was a Display record, upload the vertex information 
 	// to VRAM now.
 
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (pDisplay) {
 		uResult = CheckLoad(pDisplay);
 	}
@@ -272,7 +273,7 @@ void BURGER_API Burger::VertexBuffer::PurgeData(void)
 
 ***************************************/
 
-Word Burger::VertexBuffer::CheckLoad(Display *)
+uint_t Burger::VertexBuffer::CheckLoad(Display *)
 {
 	// Always return an error
 	return 10;

@@ -1,13 +1,14 @@
 /***************************************
 
-	Atomic memory
+    Atomic memory
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -67,9 +68,9 @@
 
 ***************************************/
 
-Word32 BURGER_API Burger::AtomicSwap(volatile Word32 *pOutput,Word32 uInput)
+uint32_t BURGER_API Burger::AtomicSwap(volatile uint32_t *pOutput,uint32_t uInput)
 {
-	Word32 uOldValue;
+	uint32_t uOldValue;
 	do {
 		uOldValue = pOutput[0];
 	} while (!OSAtomicCompareAndSwap32Barrier(static_cast<int32_t>(uOldValue),static_cast<int32_t>(uInput),
@@ -90,9 +91,9 @@ Word32 BURGER_API Burger::AtomicSwap(volatile Word32 *pOutput,Word32 uInput)
 
 ***************************************/
 
-Word32 BURGER_API Burger::AtomicPreIncrement(volatile Word32 *pInput)
+uint32_t BURGER_API Burger::AtomicPreIncrement(volatile uint32_t *pInput)
 {
-	return static_cast<Word32>(OSAtomicIncrement32Barrier(static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput))));
+	return static_cast<uint32_t>(OSAtomicIncrement32Barrier(static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput))));
 }
 
 /*! ************************************
@@ -108,9 +109,9 @@ Word32 BURGER_API Burger::AtomicPreIncrement(volatile Word32 *pInput)
 
 ***************************************/
 
-Word32 BURGER_API Burger::AtomicPostIncrement(volatile Word32 *pInput)
+uint32_t BURGER_API Burger::AtomicPostIncrement(volatile uint32_t *pInput)
 {
-	return static_cast<Word32>(OSAtomicIncrement32Barrier(static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput)))-1);
+	return static_cast<uint32_t>(OSAtomicIncrement32Barrier(static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput)))-1);
 }
 
 /*! ************************************
@@ -126,9 +127,9 @@ Word32 BURGER_API Burger::AtomicPostIncrement(volatile Word32 *pInput)
 
 ***************************************/
 
-Word32 BURGER_API Burger::AtomicPreDecrement(volatile Word32 *pInput)
+uint32_t BURGER_API Burger::AtomicPreDecrement(volatile uint32_t *pInput)
 {
-	return static_cast<Word32>(OSAtomicDecrement32Barrier(static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput))));
+	return static_cast<uint32_t>(OSAtomicDecrement32Barrier(static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput))));
 }
 
 /*! ************************************
@@ -144,9 +145,9 @@ Word32 BURGER_API Burger::AtomicPreDecrement(volatile Word32 *pInput)
 
 ***************************************/
 
-Word32 BURGER_API Burger::AtomicPostDecrement(volatile Word32 *pInput)
+uint32_t BURGER_API Burger::AtomicPostDecrement(volatile uint32_t *pInput)
 {
-	return static_cast<Word32>(OSAtomicDecrement32Barrier(static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput)))+1);
+	return static_cast<uint32_t>(OSAtomicDecrement32Barrier(static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput)))+1);
 }
 
 /*! ************************************
@@ -163,9 +164,9 @@ Word32 BURGER_API Burger::AtomicPostDecrement(volatile Word32 *pInput)
 
 ***************************************/
 
-Word32 BURGER_API Burger::AtomicAdd(volatile Word32 *pInput,Word32 uValue)
+uint32_t BURGER_API Burger::AtomicAdd(volatile uint32_t *pInput,uint32_t uValue)
 {
-	return static_cast<Word32>(OSAtomicAdd32Barrier(static_cast<int32_t>(uValue),static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput))));
+	return static_cast<uint32_t>(OSAtomicAdd32Barrier(static_cast<int32_t>(uValue),static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput))));
 }
 
 /*! ************************************
@@ -182,9 +183,9 @@ Word32 BURGER_API Burger::AtomicAdd(volatile Word32 *pInput,Word32 uValue)
 
 ***************************************/
 
-Word32 BURGER_API Burger::AtomicSubtract(volatile Word32 *pInput,Word32 uValue)
+uint32_t BURGER_API Burger::AtomicSubtract(volatile uint32_t *pInput,uint32_t uValue)
 {
-	return static_cast<Word32>(OSAtomicAdd32Barrier(-static_cast<int32_t>(uValue),static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput))));
+	return static_cast<uint32_t>(OSAtomicAdd32Barrier(-static_cast<int32_t>(uValue),static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput))));
 }
 
 /*! ************************************
@@ -203,7 +204,7 @@ Word32 BURGER_API Burger::AtomicSubtract(volatile Word32 *pInput,Word32 uValue)
 
 ***************************************/
 
-Word BURGER_API Burger::AtomicSetIfMatch(volatile Word32 *pInput,Word32 uBefore,Word32 uAfter)
+uint_t BURGER_API Burger::AtomicSetIfMatch(volatile uint32_t *pInput,uint32_t uBefore,uint32_t uAfter)
 {
 	return OSAtomicCompareAndSwap32Barrier(static_cast<int32_t>(uBefore),static_cast<int32_t>(uAfter),
 		static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput)));
@@ -224,9 +225,9 @@ Word BURGER_API Burger::AtomicSetIfMatch(volatile Word32 *pInput,Word32 uBefore,
 ***************************************/
 
 #if defined(BURGER_64BITCPU) || defined(DOXYGEN)
-Word64 BURGER_API Burger::AtomicSwap(volatile Word64 *pOutput,Word64 uInput)
+uint64_t BURGER_API Burger::AtomicSwap(volatile uint64_t *pOutput,uint64_t uInput)
 {
-	Word64 uOldValue;
+	uint64_t uOldValue;
 	do {
 		uOldValue = pOutput[0];
 	} while (!OSAtomicCompareAndSwap64Barrier(static_cast<int64_t>(uOldValue),static_cast<int64_t>(uInput),
@@ -248,9 +249,9 @@ Word64 BURGER_API Burger::AtomicSwap(volatile Word64 *pOutput,Word64 uInput)
 
 ***************************************/
 
-Word64 BURGER_API Burger::AtomicPreIncrement(volatile Word64 *pInput)
+uint64_t BURGER_API Burger::AtomicPreIncrement(volatile uint64_t *pInput)
 {
-	return static_cast<Word64>(OSAtomicIncrement64Barrier(static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput))));
+	return static_cast<uint64_t>(OSAtomicIncrement64Barrier(static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput))));
 }
 
 /*! ************************************
@@ -267,9 +268,9 @@ Word64 BURGER_API Burger::AtomicPreIncrement(volatile Word64 *pInput)
 
 ***************************************/
 
-Word64 BURGER_API Burger::AtomicPostIncrement(volatile Word64 *pInput)
+uint64_t BURGER_API Burger::AtomicPostIncrement(volatile uint64_t *pInput)
 {
-	return static_cast<Word64>(OSAtomicIncrement64Barrier(static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput)))-1);
+	return static_cast<uint64_t>(OSAtomicIncrement64Barrier(static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput)))-1);
 }
 
 /*! ************************************
@@ -286,9 +287,9 @@ Word64 BURGER_API Burger::AtomicPostIncrement(volatile Word64 *pInput)
 
 ***************************************/
 
-Word64 BURGER_API Burger::AtomicPreDecrement(volatile Word64 *pInput)
+uint64_t BURGER_API Burger::AtomicPreDecrement(volatile uint64_t *pInput)
 {
-	return static_cast<Word64>(OSAtomicDecrement64Barrier(static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput))));
+	return static_cast<uint64_t>(OSAtomicDecrement64Barrier(static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput))));
 }
 
 /*! ************************************
@@ -305,9 +306,9 @@ Word64 BURGER_API Burger::AtomicPreDecrement(volatile Word64 *pInput)
 
 ***************************************/
 
-Word64 BURGER_API Burger::AtomicPostDecrement(volatile Word64 *pInput)
+uint64_t BURGER_API Burger::AtomicPostDecrement(volatile uint64_t *pInput)
 {
-	return static_cast<Word64>(OSAtomicDecrement64Barrier(static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput)))+1);
+	return static_cast<uint64_t>(OSAtomicDecrement64Barrier(static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput)))+1);
 }
 
 /*! ************************************
@@ -325,9 +326,9 @@ Word64 BURGER_API Burger::AtomicPostDecrement(volatile Word64 *pInput)
 
 ***************************************/
 
-Word64 BURGER_API Burger::AtomicAdd(volatile Word64 *pInput,Word64 uValue)
+uint64_t BURGER_API Burger::AtomicAdd(volatile uint64_t *pInput,uint64_t uValue)
 {
-	return static_cast<Word64>(OSAtomicAdd64Barrier(static_cast<int64_t>(uValue),static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput))));
+	return static_cast<uint64_t>(OSAtomicAdd64Barrier(static_cast<int64_t>(uValue),static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput))));
 }
 
 /*! ************************************
@@ -345,9 +346,9 @@ Word64 BURGER_API Burger::AtomicAdd(volatile Word64 *pInput,Word64 uValue)
 
 ***************************************/
 
-Word64 BURGER_API Burger::AtomicSubtract(volatile Word64 *pInput,Word64 uValue)
+uint64_t BURGER_API Burger::AtomicSubtract(volatile uint64_t *pInput,uint64_t uValue)
 {
-	return static_cast<Word64>(OSAtomicAdd64Barrier(-static_cast<int64_t>(uValue),static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput))));
+	return static_cast<uint64_t>(OSAtomicAdd64Barrier(-static_cast<int64_t>(uValue),static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput))));
 }
 
 /*! ************************************
@@ -367,7 +368,7 @@ Word64 BURGER_API Burger::AtomicSubtract(volatile Word64 *pInput,Word64 uValue)
 
 ***************************************/
 
-Word BURGER_API Burger::AtomicSetIfMatch(volatile Word64 *pInput,Word64 uBefore,Word64 uAfter)
+uint_t BURGER_API Burger::AtomicSetIfMatch(volatile uint64_t *pInput,uint64_t uBefore,uint64_t uAfter)
 {
 	return OSAtomicCompareAndSwap64Barrier(static_cast<int64_t>(uBefore),static_cast<int64_t>(uAfter),
 		static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput)));
@@ -418,7 +419,7 @@ __asm__(
 
 #else
 
-BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
+BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsCPUIDPresent(void)
 {
 	BURGER_ASM {
 
@@ -460,7 +461,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasRTSC(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasRTSC(void) const
 	\brief Returns non-zero if the RTSC instruction is available
 
 	https://en.wikipedia.org/wiki/Time_Stamp_Counter
@@ -474,7 +475,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasCMOV(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasCMOV(void) const
 	\brief Returns non-zero if the CMOV instructions are available
 
 	https://en.wikipedia.org/wiki/FCMOV
@@ -488,7 +489,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasMMX(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasMMX(void) const
 	\brief Returns non-zero if the MMX instructions are available
 
 	https://en.wikipedia.org/wiki/MMX_(instruction_set)
@@ -502,7 +503,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasSSE(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasSSE(void) const
 	\brief Returns non-zero if SSE instructions are available
 
 	https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions
@@ -516,7 +517,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasSSE2(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasSSE2(void) const
 	\brief Returns non-zero if SSE2 instructions are available
 
 	https://en.wikipedia.org/wiki/SSE2
@@ -530,7 +531,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasSSE3(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasSSE3(void) const
 	\brief Returns non-zero if SSE3 instructions are available
 
 	https://en.wikipedia.org/wiki/SSE3
@@ -544,7 +545,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasSSSE3(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasSSSE3(void) const
 	\brief Returns non-zero if SSSE3 instructions are available
 
 	https://en.wikipedia.org/wiki/SSSE3
@@ -558,7 +559,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasSSE4a(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasSSE4a(void) const
 	\brief Returns non-zero if HasSSE4a instructions are available
 
 	https://en.wikipedia.org/wiki/SSE4#SSE4a
@@ -572,7 +573,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasSSE41(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasSSE41(void) const
 	\brief Returns non-zero if SSE4.1 instructions are available
 
 	https://en.wikipedia.org/wiki/SSE4#SSE4.1
@@ -586,7 +587,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasSSE42(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasSSE42(void) const
 	\brief Returns non-zero if SSE4.2 instructions are available
 
 	https://en.wikipedia.org/wiki/SSE4#SSE4.2
@@ -600,7 +601,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasMOVBE(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasMOVBE(void) const
 	\brief Returns non-zero if the MOVBE instruction is available
 
 	https://www.tptp.cc/mirrors/siyobik.info/instruction/MOVBE.html
@@ -614,7 +615,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasAES(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasAES(void) const
 	\brief Returns non-zero if AES instructions are available
 
 	https://en.wikipedia.org/wiki/AES_instruction_set
@@ -628,7 +629,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasAVX(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasAVX(void) const
 	\brief Returns non-zero if AVX instructions are available
 
 	https://en.wikipedia.org/wiki/Advanced_Vector_Extensions
@@ -642,7 +643,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasCMPXCHG16B(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasCMPXCHG16B(void) const
 	\brief Returns non-zero if the CMPXCHG16B instruction is available
 
 	http://www.felixcloutier.com/x86/CMPXCHG8B:CMPXCHG16B.html
@@ -656,7 +657,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasF16C(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasF16C(void) const
 	\brief Returns non-zero if the F16C data type is supported
 
 	https://en.wikipedia.org/wiki/F16C
@@ -670,7 +671,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasFMA3(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasFMA3(void) const
 	\brief Returns non-zero if FMA3 instructions are available
 
 	https://en.wikipedia.org/wiki/FMA_instruction_set
@@ -684,7 +685,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasFMA4(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasFMA4(void) const
 	\brief Returns non-zero if FMA4 instructions are available
 
 	https://en.wikipedia.org/wiki/FMA_instruction_set#FMA4_instruction_set
@@ -698,7 +699,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasLAHFSAHF(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasLAHFSAHF(void) const
 	\brief Returns non-zero if LAHF and SAHF instructions support long mode
 
 	http://www.tptp.cc/mirrors/siyobik.info/instruction/LAHF.html
@@ -712,7 +713,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasPrefetchW(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasPrefetchW(void) const
 	\brief Returns non-zero if PrefetchW instructions are available
 
 	http://www.felixcloutier.com/x86/PREFETCHW.html
@@ -726,7 +727,7 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::Has3DNOW(void) const
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::Has3DNOW(void) const
 	\brief Returns non-zero if AMD 3DNow! instructions are available
 
 	https://en.wikipedia.org/wiki/3DNow!
@@ -740,8 +741,8 @@ BURGER_DECLSPECNAKED Word BURGER_API Burger::IsCPUIDPresent(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::CPUID_t::HasExtended3DNOW(void) const
-	\brief Returns non-zero if extendeed AMD 3DNow! instructions are available
+	\fn BURGER_INLINE uint_t Burger::CPUID_t::HasExtended3DNOW(void) const
+	\brief Returns non-zero if extended AMD 3DNow! instructions are available
 
 	https://en.wikipedia.org/wiki/3DNow!#3DNow_extensions
 
@@ -807,18 +808,18 @@ static const CPUHashes_t g_CPUHashes[] = {
 // of a request of data that the chip isn't aware of
 //
 
-static Word32 BURGER_API FixCount(Word32 uBase,int iValue)
+static uint32_t BURGER_API FixCount(uint32_t uBase,int iValue)
 {
 	// Invalid if too small
-	if (static_cast<Word32>(iValue)<=uBase) {
+	if (static_cast<uint32_t>(iValue)<=uBase) {
 		iValue = 0;
  	} else {
 		// Invalid if too big
-		if ((static_cast<Word32>(iValue)-uBase)>1024) {
+		if ((static_cast<uint32_t>(iValue)-uBase)>1024) {
 			iValue = 0;
 		}
 	}
-	return static_cast<Word32>(iValue);
+	return static_cast<uint32_t>(iValue);
 }
 
 #endif
@@ -849,7 +850,7 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 	// Highest allowable value
 	//
 
-	Word32 uHighestID = FixCount(0,Results[0]);
+	uint32_t uHighestID = FixCount(0,Results[0]);
 	pOutput->m_uHighestCPUID = uHighestID;
 
 	//
@@ -881,10 +882,10 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 
 	if (uHighestID) {
 		__cpuid(Results,1);
-		pOutput->m_uModel = static_cast<Word32>(Results[0]);
-		pOutput->m_uBrand = static_cast<Word32>(Results[1]);
-		pOutput->m_uCPUID1ECX = static_cast<Word32>(Results[2]);
-		pOutput->m_uCPUID1EDX = static_cast<Word32>(Results[3]);
+		pOutput->m_uModel = static_cast<uint32_t>(Results[0]);
+		pOutput->m_uBrand = static_cast<uint32_t>(Results[1]);
+		pOutput->m_uCPUID1ECX = static_cast<uint32_t>(Results[2]);
+		pOutput->m_uCPUID1EDX = static_cast<uint32_t>(Results[3]);
 
 		// Even more features?
 		if (uHighestID>=7) {
@@ -893,9 +894,9 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 #else
 			__cpuidex(Results,7,0);
 #endif
-			pOutput->m_uCPUID7EBX = static_cast<Word32>(Results[1]);
-			pOutput->m_uCPUID7ECX = static_cast<Word32>(Results[2]);
-			pOutput->m_uCPUID7EDX = static_cast<Word32>(Results[3]);
+			pOutput->m_uCPUID7EBX = static_cast<uint32_t>(Results[1]);
+			pOutput->m_uCPUID7ECX = static_cast<uint32_t>(Results[2]);
+			pOutput->m_uCPUID7EDX = static_cast<uint32_t>(Results[3]);
 		}
 	}
 
@@ -904,7 +905,7 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 	//
 
 	__cpuid(Results,0x80000000U);
-	Word32 uExtendedID = FixCount(0x80000000U,Results[0]);
+	uint32_t uExtendedID = FixCount(0x80000000U,Results[0]);
 	pOutput->m_uHighestCPUIDExtended = uExtendedID;
 
 	//
@@ -913,8 +914,8 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 
 	if (uExtendedID>=0x80000001U) {
 		__cpuid(Results,0x80000001U);
-		pOutput->m_uCPUID80000001ECX = static_cast<Word32>(Results[2]);
-		pOutput->m_uCPUID80000001EDX = static_cast<Word32>(Results[3]);
+		pOutput->m_uCPUID80000001ECX = static_cast<uint32_t>(Results[2]);
+		pOutput->m_uCPUID80000001EDX = static_cast<uint32_t>(Results[3]);
 
 		//
 		// Check if Processor Brand String is available
@@ -944,7 +945,7 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 	//
 
 	__cpuid(Results,0x40000000U);
-	Word32 uHyperVisorID = FixCount(0x40000000U,Results[0]);
+	uint32_t uHyperVisorID = FixCount(0x40000000U,Results[0]);
 	pOutput->m_uHighestCPUIDHyperVisor = uHyperVisorID;
 	if (uHyperVisorID>=0x40000001U) {
 		//
@@ -983,7 +984,7 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 
 #if (defined(BURGER_PPC) && defined(BURGER_MACOSX)) || defined(DOXYGEN)
 
-Word BURGER_API Burger::HasAltiVec(void)
+uint_t BURGER_API Burger::HasAltiVec(void)
 {
 	int selector[2];
 	int gHasAltivec;
@@ -994,24 +995,24 @@ Word BURGER_API Burger::HasAltiVec(void)
 	selector[1] = HW_VECTORUNIT;
 	size_t uLength = sizeof(gHasAltivec);
 	int iError = sysctl(selector,2,&gHasAltivec,&uLength,NULL,0);	// Ask for Altivec
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	if (!iError) {
-		uResult = static_cast<Word>(gHasAltivec);		// Found flag
+		uResult = static_cast<uint_t>(gHasAltivec);		// Found flag
 	}
 	return uResult;
 }
 
 #elif (defined(BURGER_PPC) && defined(BURGER_MAC))
 
-Word BURGER_API Burger::HasAltiVec(void)
+uint_t BURGER_API Burger::HasAltiVec(void)
 {
 	// Carbon/Classic version
 
 	long gestaltAnswer;
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (!Gestalt(gestaltPowerPCProcessorFeatures,&gestaltAnswer)) {
 		// Move the flag to the lowest bit
-		uResult = static_cast<Word>(gestaltAnswer>>gestaltPowerPCHasVectorInstructions)&1U;
+		uResult = static_cast<uint_t>(gestaltAnswer>>gestaltPowerPCHasVectorInstructions)&1U;
 	}
 	return uResult;		// Return zero or non-zero
 }
@@ -1034,7 +1035,7 @@ Word BURGER_API Burger::HasAltiVec(void)
 
 #if (defined(BURGER_PPC) && defined(BURGER_MACOSX)) || defined(DOXYGEN)
 
-Word BURGER_API Burger::HasFSqrt(void)
+uint_t BURGER_API Burger::HasFSqrt(void)
 {
     size_t uLength = 4;
     uint32_t uBuffer = 0;
@@ -1047,15 +1048,15 @@ Word BURGER_API Burger::HasFSqrt(void)
 
 #elif (defined(BURGER_PPC) && defined(BURGER_MAC))
 
-Word BURGER_API Burger::HasFSqrt(void)
+uint_t BURGER_API Burger::HasFSqrt(void)
 {
 	// Carbon/Classic version
 
 	long gestaltAnswer;
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (!Gestalt(gestaltPowerPCProcessorFeatures,&gestaltAnswer)) {
 		// Return the FPU type
-		uResult = static_cast<Word>(gestaltAnswer>>gestaltPowerPCHasSquareRootInstructions)&1;
+		uResult = static_cast<uint_t>(gestaltAnswer>>gestaltPowerPCHasSquareRootInstructions)&1;
 	}
 	return uResult;		// Return zero or non-zero
 }
@@ -1082,15 +1083,15 @@ Word BURGER_API Burger::HasFSqrt(void)
 
 #if (defined(BURGER_MAC) && defined(BURGER_68K)) || defined(DOXYGEN)
 
-Word BURGER_API Burger::HasFPU(void)
+uint_t BURGER_API Burger::HasFPU(void)
 {
 	// Carbon/Classic version
 
 	long gestaltAnswer;
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (!Gestalt(gestaltFPUType,&gestaltAnswer)) {
 		// Return the FPU type
-		uResult = static_cast<Word>(gestaltAnswer);
+		uResult = static_cast<uint_t>(gestaltAnswer);
 	}
 	return uResult;		// Return zero or non-zero
 }

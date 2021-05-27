@@ -1,13 +1,14 @@
 /***************************************
 
-	Display base class
+    Display base class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -23,10 +24,10 @@
 
 ***************************************/
 
-Burger::LWShape_t * BURGER_API Burger::LWShape_t::Load(Burger::RezFile *pRezFile,Word uRezNum)
+Burger::LWShape_t * BURGER_API Burger::LWShape_t::Load(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
-	Word bLoaded;
+	uint_t bLoaded;
 	LWShape_t *Result = static_cast<LWShape_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (Result && bLoaded) {
 		Result->Width = SwapEndian::Load(Result->Width);
@@ -46,10 +47,10 @@ Burger::LWShape_t * BURGER_API Burger::LWShape_t::Load(Burger::RezFile *pRezFile
 
 ***************************************/
 
-void BURGER_API Burger::LWShape_t::Preload(Burger::RezFile *pRezFile,Word uRezNum)
+void BURGER_API Burger::LWShape_t::Preload(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
-	Word bLoaded;
+	uint_t bLoaded;
 	LWShape_t *pResult = static_cast<LWShape_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pResult) {
 		if (bLoaded) {
@@ -71,10 +72,10 @@ void BURGER_API Burger::LWShape_t::Preload(Burger::RezFile *pRezFile,Word uRezNu
 
 ***************************************/
 
-Burger::LWXShape_t * BURGER_API Burger::LWXShape_t::Load(Burger::RezFile *pRezFile,Word uRezNum)
+Burger::LWXShape_t * BURGER_API Burger::LWXShape_t::Load(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
-	Word bLoaded;
+	uint_t bLoaded;
 	LWXShape_t *pResult = static_cast<LWXShape_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pResult && bLoaded) {
 		SwapEndian::Fixup(&pResult->XOffset);
@@ -96,10 +97,10 @@ Burger::LWXShape_t * BURGER_API Burger::LWXShape_t::Load(Burger::RezFile *pRezFi
 
 ***************************************/
 
-void BURGER_API Burger::LWXShape_t::Preload(Burger::RezFile *pRezFile,Word uRezNum)
+void BURGER_API Burger::LWXShape_t::Preload(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
-	Word bLoaded;
+	uint_t bLoaded;
 	LWXShape_t *pResult = static_cast<LWXShape_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pResult) {
 		if (bLoaded) {
@@ -123,10 +124,10 @@ void BURGER_API Burger::LWXShape_t::Preload(Burger::RezFile *pRezFile,Word uRezN
 
 ***************************************/
 
-Burger::Shape8Bit_t * BURGER_API Burger::Shape8Bit_t::Load(Burger::RezFile *pRezFile,Word uRezNum)
+Burger::Shape8Bit_t * BURGER_API Burger::Shape8Bit_t::Load(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
-	Word bLoaded;
+	uint_t bLoaded;
 	Shape8Bit_t *pShape = static_cast<Shape8Bit_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pShape && bLoaded) {
 		SwapEndian::Fixup(&pShape->m_usWidth);
@@ -146,10 +147,10 @@ Burger::Shape8Bit_t * BURGER_API Burger::Shape8Bit_t::Load(Burger::RezFile *pRez
 
 ***************************************/
 
-void BURGER_API Burger::Shape8Bit_t::Preload(Burger::RezFile *pRezFile,Word uRezNum)
+void BURGER_API Burger::Shape8Bit_t::Preload(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
-	Word bLoaded;
+	uint_t bLoaded;
 	Shape8Bit_t *pShape = static_cast<Shape8Bit_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pShape) {
 		if (bLoaded) {
@@ -171,10 +172,10 @@ void BURGER_API Burger::Shape8Bit_t::Preload(Burger::RezFile *pRezFile,Word uRez
 
 ***************************************/
 
-Burger::Shape8BitOffset_t * BURGER_API Burger::Shape8BitOffset_t::Load(Burger::RezFile *pRezFile,Word uRezNum)
+Burger::Shape8BitOffset_t * BURGER_API Burger::Shape8BitOffset_t::Load(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
-	Word bLoaded;
+	uint_t bLoaded;
 	Shape8BitOffset_t *pShape = static_cast<Shape8BitOffset_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pShape && bLoaded) {
 		SwapEndian::Fixup(&pShape->m_sXOffset);
@@ -196,10 +197,10 @@ Burger::Shape8BitOffset_t * BURGER_API Burger::Shape8BitOffset_t::Load(Burger::R
 
 ***************************************/
 
-void BURGER_API Burger::Shape8BitOffset_t::Preload(Burger::RezFile *pRezFile,Word uRezNum)
+void BURGER_API Burger::Shape8BitOffset_t::Preload(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
-	Word bLoaded;
+	uint_t bLoaded;
 	Shape8BitOffset_t *pShape = static_cast<Shape8BitOffset_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pShape) {
 		if (bLoaded) {
@@ -223,20 +224,20 @@ void BURGER_API Burger::Shape8BitOffset_t::Preload(Burger::RezFile *pRezFile,Wor
 
 ***************************************/
 
-Burger::Shape8BitArray_t * BURGER_API Burger::Shape8BitArray_t::Load(Burger::RezFile *pRezFile,Word uRezNum)
+Burger::Shape8BitArray_t * BURGER_API Burger::Shape8BitArray_t::Load(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
-	Word bLoaded;
+	uint_t bLoaded;
 	Shape8BitArray_t *pResult = static_cast<Shape8BitArray_t *>(pRezFile->Load(uRezNum,&bLoaded));	/* Load in the resource */
 	if (pResult && bLoaded) {		/* Just loaded in? */
-		Word32 uCount = SwapEndian::Load(pResult->m_Index);	/* Get the count */
+		uint32_t uCount = SwapEndian::Load(pResult->m_Index);	/* Get the count */
 		if (uCount) {		/* Any entries? */
 			uCount >>=2;	/* Get the TRUE count */
-			Word i = 0;
+			uint_t i = 0;
 			do {
-				Word32 uOffset = SwapEndian::Load(&pResult->m_Index[i]);
+				uint32_t uOffset = SwapEndian::Load(&pResult->m_Index[i]);
 				pResult->m_Index[i] = uOffset;	/* Save the NEW offset */
-				Shape8Bit_t *TempPtr = reinterpret_cast<Shape8Bit_t *>(reinterpret_cast<Word8 *>(pResult)+uOffset);
+				Shape8Bit_t *TempPtr = reinterpret_cast<Shape8Bit_t *>(reinterpret_cast<uint8_t *>(pResult)+uOffset);
 				SwapEndian::Fixup(&TempPtr->m_usWidth);
 				SwapEndian::Fixup(&TempPtr->m_usHeight);
 			} while (++i<uCount);
@@ -256,21 +257,21 @@ Burger::Shape8BitArray_t * BURGER_API Burger::Shape8BitArray_t::Load(Burger::Rez
 
 ***************************************/
 
-void BURGER_API Burger::Shape8BitArray_t::Preload(Burger::RezFile *pRezFile,Word uRezNum)
+void BURGER_API Burger::Shape8BitArray_t::Preload(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
-	Word bLoaded;
+	uint_t bLoaded;
 	Shape8BitArray_t *pResult = static_cast<Shape8BitArray_t *>(pRezFile->Load(uRezNum,&bLoaded));	/* Load in the resource */
 	if (pResult) {
 		if (bLoaded) {		/* Just loaded in? */
-			Word32 uCount = SwapEndian::Load(pResult->m_Index);	/* Get the count */
+			uint32_t uCount = SwapEndian::Load(pResult->m_Index);	/* Get the count */
 			if (uCount) {		/* Any entries? */
 				uCount >>=2;	/* Get the TRUE count */
-				Word i = 0;
+				uint_t i = 0;
 				do {
-					Word32 uOffset = SwapEndian::Load(&pResult->m_Index[i]);
+					uint32_t uOffset = SwapEndian::Load(&pResult->m_Index[i]);
 					pResult->m_Index[i] = uOffset;	/* Save the NEW offset */
-					Shape8Bit_t *TempPtr = reinterpret_cast<Shape8Bit_t *>(reinterpret_cast<Word8 *>(pResult)+uOffset);
+					Shape8Bit_t *TempPtr = reinterpret_cast<Shape8Bit_t *>(reinterpret_cast<uint8_t *>(pResult)+uOffset);
 					SwapEndian::Fixup(&TempPtr->m_usWidth);
 					SwapEndian::Fixup(&TempPtr->m_usHeight);
 				} while (++i<uCount);
@@ -291,20 +292,20 @@ void BURGER_API Burger::Shape8BitArray_t::Preload(Burger::RezFile *pRezFile,Word
 
 ***************************************/
 
-Burger::Shape8BitOffsetArray_t * BURGER_API Burger::Shape8BitOffsetArray_t::Load(Burger::RezFile *pRezFile,Word uRezNum)
+Burger::Shape8BitOffsetArray_t * BURGER_API Burger::Shape8BitOffsetArray_t::Load(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
-	Word bLoaded;
+	uint_t bLoaded;
 	Shape8BitOffsetArray_t *pResult = static_cast<Shape8BitOffsetArray_t *>(pRezFile->Load(uRezNum,&bLoaded));	/* Load in the resource */
 	if (pResult && bLoaded) {		/* Just loaded in? */
-		Word32 uCount = SwapEndian::Load(pResult->m_Index);	/* Get the count */
+		uint32_t uCount = SwapEndian::Load(pResult->m_Index);	/* Get the count */
 		if (uCount) {		/* Any entries? */
 			uCount >>=2;	/* Get the TRUE count */
-			Word i = 0;
+			uint_t i = 0;
 			do {
-				Word32 uOffset = SwapEndian::Load(&pResult->m_Index[i]);
+				uint32_t uOffset = SwapEndian::Load(&pResult->m_Index[i]);
 				pResult->m_Index[i] = uOffset;	/* Save the NEW offset */
-				Shape8BitOffset_t *TempPtr = reinterpret_cast<Shape8BitOffset_t *>(reinterpret_cast<Word8 *>(pResult)+uOffset);
+				Shape8BitOffset_t *TempPtr = reinterpret_cast<Shape8BitOffset_t *>(reinterpret_cast<uint8_t *>(pResult)+uOffset);
 				SwapEndian::Fixup(&TempPtr->m_sXOffset);
 				SwapEndian::Fixup(&TempPtr->m_sYOffset);
 				SwapEndian::Fixup(&TempPtr->m_Shape8Bit.m_usWidth);
@@ -326,21 +327,21 @@ Burger::Shape8BitOffsetArray_t * BURGER_API Burger::Shape8BitOffsetArray_t::Load
 
 ***************************************/
 
-void BURGER_API Burger::Shape8BitOffsetArray_t::Preload(Burger::RezFile *pRezFile,Word uRezNum)
+void BURGER_API Burger::Shape8BitOffsetArray_t::Preload(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
-	Word bLoaded;
+	uint_t bLoaded;
 	Shape8BitOffsetArray_t *pResult = static_cast<Shape8BitOffsetArray_t *>(pRezFile->Load(uRezNum,&bLoaded));	/* Load in the resource */
 	if (pResult) {
 		if (bLoaded) {		/* Just loaded in? */
-			Word32 uCount = SwapEndian::Load(pResult->m_Index);	/* Get the count */
+			uint32_t uCount = SwapEndian::Load(pResult->m_Index);	/* Get the count */
 			if (uCount) {		/* Any entries? */
 				uCount >>=2;	/* Get the TRUE count */
-				Word i = 0;
+				uint_t i = 0;
 				do {
-					Word32 uOffset = SwapEndian::Load(&pResult->m_Index[i]);
+					uint32_t uOffset = SwapEndian::Load(&pResult->m_Index[i]);
 					pResult->m_Index[i] = uOffset;	/* Save the NEW offset */
-					Shape8BitOffset_t *TempPtr = reinterpret_cast<Shape8BitOffset_t *>(reinterpret_cast<Word8 *>(pResult)+uOffset);
+					Shape8BitOffset_t *TempPtr = reinterpret_cast<Shape8BitOffset_t *>(reinterpret_cast<uint8_t *>(pResult)+uOffset);
 					SwapEndian::Fixup(&TempPtr->m_sXOffset);
 					SwapEndian::Fixup(&TempPtr->m_sYOffset);
 					SwapEndian::Fixup(&TempPtr->m_Shape8Bit.m_usWidth);
@@ -365,19 +366,19 @@ void BURGER_API Burger::Shape8BitOffsetArray_t::Preload(Burger::RezFile *pRezFil
 ***************************************/
 
 #if 0
-void * BURGER_API Burger::RezFile::LoadShapeArray(Burger::RezFile *pRezFile,Word uRezNum)
+void * BURGER_API Burger::RezFile::LoadShapeArray(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
 	void *pResult = Load(uRezNum);	/* Load in the resource */
 	if (pResult && m_bResourceLoaded) {		/* Just loaded in? */
-		Word32 uCount = SwapEndian::Load(static_cast<const Word32 *>(pResult));	/* Get the count */
+		uint32_t uCount = SwapEndian::Load(static_cast<const uint32_t *>(pResult));	/* Get the count */
 		if (uCount) {		/* Any entries? */
 			uCount >>=2;	/* Get the TRUE count */
-			Word i = 0;
+			uint_t i = 0;
 			do {
-				Word32 uOffset = SwapEndian::Load(&static_cast<Word32 *>(pResult)[i]);
-				static_cast<Word32 *>(pResult)[i] = uOffset;	/* Save the NEW offset */
-				LWShape_t *TempPtr = reinterpret_cast<LWShape_t *>(static_cast<Word8 *>(pResult)+uOffset);
+				uint32_t uOffset = SwapEndian::Load(&static_cast<uint32_t *>(pResult)[i]);
+				static_cast<uint32_t *>(pResult)[i] = uOffset;	/* Save the NEW offset */
+				LWShape_t *TempPtr = reinterpret_cast<LWShape_t *>(static_cast<uint8_t *>(pResult)+uOffset);
 				SwapEndian::Fixup(&TempPtr->Width);
 				SwapEndian::Fixup(&TempPtr->Height);
 			} while (++i<uCount);
@@ -397,20 +398,20 @@ void * BURGER_API Burger::RezFile::LoadShapeArray(Burger::RezFile *pRezFile,Word
 
 ***************************************/
 
-void BURGER_API Burger::RezFile::PreloadShapeArray(Burger::RezFile *pRezFile,Word uRezNum)
+void BURGER_API Burger::RezFile::PreloadShapeArray(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
 	void *pResult = Load(uRezNum);	/* Load in the resource */
 	if (pResult) {
 		if (m_bResourceLoaded) {		/* Just loaded in? */
-			Word uCount = SwapEndian::Load(static_cast<Word32 *>(pResult));	/* Get the count */
+			uint_t uCount = SwapEndian::Load(static_cast<uint32_t *>(pResult));	/* Get the count */
 			if (uCount) {		/* Any entries? */
 				uCount >>=2;	/* Get the TRUE count */
-				Word i = 0;
+				uint_t i = 0;
 				do {
-					Word32 uOffset = SwapEndian::Load(&static_cast<Word32 *>(pResult)[i]);
-					static_cast<Word32 *>(pResult)[i] = uOffset;	/* Save the NEW offset */
-					LWShape_t *TempPtr = reinterpret_cast<LWShape_t *>(static_cast<Word8 *>(pResult)+uOffset);
+					uint32_t uOffset = SwapEndian::Load(&static_cast<uint32_t *>(pResult)[i]);
+					static_cast<uint32_t *>(pResult)[i] = uOffset;	/* Save the NEW offset */
+					LWShape_t *TempPtr = reinterpret_cast<LWShape_t *>(static_cast<uint8_t *>(pResult)+uOffset);
 					SwapEndian::Fixup(&TempPtr->Width);
 					SwapEndian::Fixup(&TempPtr->Height);
 				} while (++i<uCount);
@@ -431,19 +432,19 @@ void BURGER_API Burger::RezFile::PreloadShapeArray(Burger::RezFile *pRezFile,Wor
 
 ***************************************/
 
-void * BURGER_API Burger::RezFile::LoadXShapeArray(Burger::RezFile *pRezFile,Word uRezNum)
+void * BURGER_API Burger::RezFile::LoadXShapeArray(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
 	void *pResult = Load(uRezNum);	/* Load in the resource */
 	if (pResult && m_bResourceLoaded) {		/* Just loaded in? */
-		Word uCount = SwapEndian::Load(static_cast<Word32 *>(pResult));	/* Get the count */
+		uint_t uCount = SwapEndian::Load(static_cast<uint32_t *>(pResult));	/* Get the count */
 		if (uCount) {		/* Any entries? */
 			uCount >>=2;	/* Get the TRUE count */
-			Word i = 0;
+			uint_t i = 0;
 			do {
-				Word32 uOffset = SwapEndian::Load(static_cast<Word32 *>(pResult)[i]);
-				static_cast<Word32 *>(pResult)[i] = uOffset;	/* Save the NEW offset */
-				LWXShape_t *TempPtr = reinterpret_cast<LWXShape_t *>(static_cast<Word8 *>(pResult)+uOffset);
+				uint32_t uOffset = SwapEndian::Load(static_cast<uint32_t *>(pResult)[i]);
+				static_cast<uint32_t *>(pResult)[i] = uOffset;	/* Save the NEW offset */
+				LWXShape_t *TempPtr = reinterpret_cast<LWXShape_t *>(static_cast<uint8_t *>(pResult)+uOffset);
 				SwapEndian::Fixup(&TempPtr->XOffset);
 				SwapEndian::Fixup(&TempPtr->YOffset);
 				SwapEndian::Fixup(&TempPtr->Shape.Width);
@@ -465,20 +466,20 @@ void * BURGER_API Burger::RezFile::LoadXShapeArray(Burger::RezFile *pRezFile,Wor
 
 ***************************************/
 
-void BURGER_API Burger::RezFile::PreloadXShapeArray(Burger::RezFile *pRezFile,Word uRezNum)
+void BURGER_API Burger::RezFile::PreloadXShapeArray(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
 	void *pResult = Load(uRezNum);	/* Load in the resource */
 	if (pResult) {
 		if (m_bResourceLoaded) {		/* Just loaded in? */
-			Word32 uCount = SwapEndian::Load(static_cast<Word32 *>(pResult));	/* Get the count */
+			uint32_t uCount = SwapEndian::Load(static_cast<uint32_t *>(pResult));	/* Get the count */
 			if (uCount) {		/* Any entries? */
 				uCount >>=2;	/* Get the TRUE count */
-				Word i = 0;
+				uint_t i = 0;
 				do {
-					Word32 uOffset = SwapEndian::Load(static_cast<Word32 *>(pResult)[i]);
-					static_cast<Word32 *>(pResult)[i] = uOffset;	/* Save the NEW offset */
-					LWXShape_t *TempPtr = reinterpret_cast<LWXShape_t *>(static_cast<Word8 *>(pResult)+uOffset);
+					uint32_t uOffset = SwapEndian::Load(static_cast<uint32_t *>(pResult)[i]);
+					static_cast<uint32_t *>(pResult)[i] = uOffset;	/* Save the NEW offset */
+					LWXShape_t *TempPtr = reinterpret_cast<LWXShape_t *>(static_cast<uint8_t *>(pResult)+uOffset);
 					SwapEndian::Fixup(&TempPtr->XOffset);
 					SwapEndian::Fixup(&TempPtr->YOffset);
 					SwapEndian::Fixup(&TempPtr->Shape.Width);
@@ -502,10 +503,10 @@ void BURGER_API Burger::RezFile::PreloadXShapeArray(Burger::RezFile *pRezFile,Wo
 
 ***************************************/
 
-Burger::GfxShape_t * BURGER_API Burger::GfxShape_t::Load(Burger::RezFile *pRezFile,Word uRezNum)
+Burger::GfxShape_t * BURGER_API Burger::GfxShape_t::Load(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
-	Word bLoaded;
+	uint_t bLoaded;
 	GfxShape_t *pResult = static_cast<GfxShape_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pResult && bLoaded) {
 		SwapEndian::Fixup(&pResult->XShape.XOffset);
@@ -527,10 +528,10 @@ Burger::GfxShape_t * BURGER_API Burger::GfxShape_t::Load(Burger::RezFile *pRezFi
 
 ***************************************/
 
-void BURGER_API Burger::GfxShape_t::Preload(Burger::RezFile *pRezFile,Word uRezNum)
+void BURGER_API Burger::GfxShape_t::Preload(Burger::RezFile *pRezFile,uint_t uRezNum)
 {
 #if defined(BURGER_BIGENDIAN)
-	Word bLoaded;
+	uint_t bLoaded;
 	GfxShape_t *pResult = static_cast<GfxShape_t *>(pRezFile->Load(uRezNum,&bLoaded));
 	if (pResult) {
 		if (bLoaded) {

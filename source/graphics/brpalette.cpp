@@ -1,13 +1,14 @@
 /***************************************
 
-	Palette manager class
+    Palette manager class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -103,51 +104,51 @@ const Burger::RGBWord8_t Burger::RGBWord8_t::Yellow = {255,255,0};
 
 /*! ************************************
 
-	\fn Word32 Burger::RGBWord8_t::ToRGB(void) const
+	\fn uint32_t Burger::RGBWord8_t::ToRGB(void) const
 	\brief Convert the color to an RGB 32 bit integer
 
 	Convert the color into a 32 bit integer whereas R<<16+G<<8+B
 	
 	\return A 32 bit integer in native endian with the color in the lower 24 bits
-	\sa FromRGB(Word32) or ToBGR(void) const
+	\sa FromRGB(uint32_t) or ToBGR(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Word32 Burger::RGBWord8_t::ToBGR(void) const
+	\fn uint32_t Burger::RGBWord8_t::ToBGR(void) const
 	\brief Convert the color to a BGR 32 bit integer
 
 	Convert the color into a 32 bit integer whereas B<<16+G<<8+R
 	
 	\return A 32 bit integer in native endian with the color in the lower 24 bits
-	\sa FromBGR(Word32) or ToRGB(void) const
+	\sa FromBGR(uint32_t) or ToRGB(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::RGBWord8_t::FromRGB(Word32 uColor)
+	\fn void Burger::RGBWord8_t::FromRGB(uint32_t uColor)
 	\brief Initialize the color with a 32 bit integer
 
 	Convert the color from a 32 bit integer whereas R<<16+G<<8+B
 	and store the Red, Green and Blue components
 	
 	\param uColor 32 bit color value that is formatted as R<<16+G<<8+B
-	\sa ToRGB(void) const or FromBGR(Word32)
+	\sa ToRGB(void) const or FromBGR(uint32_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::RGBWord8_t::FromBGR(Word32 uColor)
+	\fn void Burger::RGBWord8_t::FromBGR(uint32_t uColor)
 	\brief Initialize the color with a 32 bit integer
 
 	Convert the color from a 32 bit integer whereas B<<16+G<<8+R
 	and store the Red, Green and Blue components
 	
 	\param uColor 32 bit color value that is formatted as B<<16+G<<8+R
-	\sa ToBGR(void) const or FromRGB(Word32)
+	\sa ToBGR(void) const or FromRGB(uint32_t)
 
 ***************************************/
 
@@ -168,9 +169,9 @@ const Burger::RGBWord8_t Burger::RGBWord8_t::Yellow = {255,255,0};
 void BURGER_API Burger::RGBWord8_t::Interpolate(const RGBWord8_t *pFrom,const RGBWord8_t *pTo,float fFactor)
 {
 	Fixed32 lFactor = FLOATTOFIXED(fFactor);
-	m_uRed = static_cast<Word8>(FixedToIntNearest((pFrom->m_uRed-pTo->m_uRed)*lFactor)+pFrom->m_uRed);
-	m_uGreen = static_cast<Word8>(FixedToIntNearest((pFrom->m_uGreen-pTo->m_uGreen)*lFactor)+pFrom->m_uGreen);
-	m_uBlue = static_cast<Word8>(FixedToIntNearest((pFrom->m_uBlue-pTo->m_uBlue)*lFactor)+pFrom->m_uBlue);
+	m_uRed = static_cast<uint8_t>(FixedToIntNearest((pFrom->m_uRed-pTo->m_uRed)*lFactor)+pFrom->m_uRed);
+	m_uGreen = static_cast<uint8_t>(FixedToIntNearest((pFrom->m_uGreen-pTo->m_uGreen)*lFactor)+pFrom->m_uGreen);
+	m_uBlue = static_cast<uint8_t>(FixedToIntNearest((pFrom->m_uBlue-pTo->m_uBlue)*lFactor)+pFrom->m_uBlue);
 }
 
 /*! ************************************
@@ -261,51 +262,51 @@ const Burger::RGBAWord8_t Burger::RGBAWord8_t::Yellow = {255,255,0,255};
 
 /*! ************************************
 
-	\fn Word32 Burger::RGBAWord8_t::ToARGB(void) const
+	\fn uint32_t Burger::RGBAWord8_t::ToARGB(void) const
 	\brief Convert the color to an ARGB 32 bit integer
 
 	Convert the color into a 32 bit integer whereas A<<24+R<<16+G<<8+B
 	
 	\return A 32 bit integer in native endian with the color
-	\sa ToABGR(void) const or FromARGB(Word32)
+	\sa ToABGR(void) const or FromARGB(uint32_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Word32 Burger::RGBAWord8_t::ToABGR(void) const
+	\fn uint32_t Burger::RGBAWord8_t::ToABGR(void) const
 	\brief Convert the color to a ABGR 32 bit integer
 
 	Convert the color into a 32 bit integer whereas A<<24+B<<16+G<<8+R
 	
 	\return A 32 bit integer in native endian with the color
-	\sa ToARGB(void) const or FromABGR(Word32)
+	\sa ToARGB(void) const or FromABGR(uint32_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::RGBAWord8_t::FromARGB(Word32 uColor)
+	\fn void Burger::RGBAWord8_t::FromARGB(uint32_t uColor)
 	\brief Initialize the color with a 32 bit integer
 
 	Convert the color from a 32 bit integer whereas A<<24+R<<16+G<<8+B
 	and store the Alpha, Red, Green and Blue components
 	
 	\param uColor 32 bit color value that is formatted as A<<24+R<<16+G<<8+B
-	\sa ToARGB(void) const or FromABGR(Word32)
+	\sa ToARGB(void) const or FromABGR(uint32_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::RGBAWord8_t::FromABGR(Word32 uColor)
+	\fn void Burger::RGBAWord8_t::FromABGR(uint32_t uColor)
 	\brief Initialize the color with a 32 bit integer
 
 	Convert the color from a 32 bit integer whereas A<<24+B<<16+G<<8+R
 	and store the Alpha, Red, Green and Blue components
 	
 	\param uColor 32 bit color value that is formatted as A<<24+B<<16+G<<8+R
-	\sa ToABGR(void) const or FromARGB(Word32)
+	\sa ToABGR(void) const or FromARGB(uint32_t)
 
 ***************************************/
 
@@ -326,10 +327,10 @@ const Burger::RGBAWord8_t Burger::RGBAWord8_t::Yellow = {255,255,0,255};
 void BURGER_API Burger::RGBAWord8_t::Interpolate(const RGBAWord8_t *pFrom,const RGBAWord8_t *pTo,float fFactor)
 {
 	Fixed32 lFactor = FLOATTOFIXED(fFactor);
-	m_uRed = static_cast<Word8>(FixedToIntNearest((pFrom->m_uRed-pTo->m_uRed)*lFactor)+pFrom->m_uRed);
-	m_uGreen = static_cast<Word8>(FixedToIntNearest((pFrom->m_uGreen-pTo->m_uGreen)*lFactor)+pFrom->m_uGreen);
-	m_uBlue = static_cast<Word8>(FixedToIntNearest((pFrom->m_uBlue-pTo->m_uBlue)*lFactor)+pFrom->m_uBlue);
-	m_uAlpha = static_cast<Word8>(FixedToIntNearest((pFrom->m_uAlpha-pTo->m_uAlpha)*lFactor)+pFrom->m_uAlpha);
+	m_uRed = static_cast<uint8_t>(FixedToIntNearest((pFrom->m_uRed-pTo->m_uRed)*lFactor)+pFrom->m_uRed);
+	m_uGreen = static_cast<uint8_t>(FixedToIntNearest((pFrom->m_uGreen-pTo->m_uGreen)*lFactor)+pFrom->m_uGreen);
+	m_uBlue = static_cast<uint8_t>(FixedToIntNearest((pFrom->m_uBlue-pTo->m_uBlue)*lFactor)+pFrom->m_uBlue);
+	m_uAlpha = static_cast<uint8_t>(FixedToIntNearest((pFrom->m_uAlpha-pTo->m_uAlpha)*lFactor)+pFrom->m_uAlpha);
 }
 
 /*! ************************************
@@ -503,11 +504,11 @@ const Burger::RGBFloat_t Burger::RGBFloat_t::Yellow = {1.0f,1.0f,0};
 	\param pInput2 Pointer to the second color
 	\param fFactor Interpolation value between 0.0f and 1.0f
 	\param bDirection \ref FALSE for Red to Green to Blue, \ref TRUE for Red to Blue to Green
-	\sa HSL_t::Interpolate(const HSL_t*,const HSL_t*,float,Word);
+	\sa HSL_t::Interpolate(const HSL_t*,const HSL_t*,float,uint_t);
 
 ***************************************/
 
-void BURGER_API Burger::RGBFloat_t::HSLInterpolate(const RGBFloat_t *pInput1,const RGBFloat_t *pInput2,float fFactor,Word bDirection)
+void BURGER_API Burger::RGBFloat_t::HSLInterpolate(const RGBFloat_t *pInput1,const RGBFloat_t *pInput2,float fFactor,uint_t bDirection)
 {
 	HSL_t HSL1;
 	HSL_t HSL2;
@@ -684,7 +685,7 @@ const Burger::RGBAFloat_t Burger::RGBAFloat_t::Yellow = {1.0f,1.0f,0,1.0f};
 		
 ***************************************/
 
-void BURGER_API Burger::HSL_t::Interpolate(const HSL_t *pInput1,const HSL_t *pInput2,float fFactor,Word bDirection)
+void BURGER_API Burger::HSL_t::Interpolate(const HSL_t *pInput1,const HSL_t *pInput2,float fFactor,uint_t bDirection)
 {
 	// Interpolate the hue
 
@@ -743,11 +744,11 @@ void BURGER_API Burger::HSL_t::Interpolate(const HSL_t *pInput1,const HSL_t *pIn
 	\param pOutput Pointer to the output buffer.
 	\param uInput 15 bit RGB value in 5:5:5 format.
 
-	\sa FromRGB15(RGBAWord8_t *,Word), FromRGB16(RGBWord8_t *,Word), Renderer::RGB5ToRGB8Table
+	\sa FromRGB15(RGBAWord8_t *,uint_t), FromRGB16(RGBWord8_t *,uint_t), Renderer::RGB5ToRGB8Table
 
 ***************************************/
 
-void BURGER_API Burger::Palette::FromRGB15(RGBWord8_t *pOutput,Word uInput)
+void BURGER_API Burger::Palette::FromRGB15(RGBWord8_t *pOutput,uint_t uInput)
 {
 	pOutput->m_uRed = Renderer::RGB5ToRGB8Table[(uInput>>10U)&0x1FU];	// Red
 	pOutput->m_uGreen = Renderer::RGB5ToRGB8Table[(uInput>>5U)&0x1FU];	// Green
@@ -764,11 +765,11 @@ void BURGER_API Burger::Palette::FromRGB15(RGBWord8_t *pOutput,Word uInput)
 	\param pOutput Pointer to the output buffer.
 	\param uInput 15 bit RGB value in 5:5:5 format.
 
-	\sa FromRGB16(RGBAWord8_t *,Word), FromRGB15(RGBWord8_t *,Word), Renderer::RGB5ToRGB8Table
+	\sa FromRGB16(RGBAWord8_t *,uint_t), FromRGB15(RGBWord8_t *,uint_t), Renderer::RGB5ToRGB8Table
 
 ***************************************/
 
-void BURGER_API Burger::Palette::FromRGB15(RGBAWord8_t *pOutput,Word uInput)
+void BURGER_API Burger::Palette::FromRGB15(RGBAWord8_t *pOutput,uint_t uInput)
 {
 	pOutput->m_uRed = Renderer::RGB5ToRGB8Table[(uInput>>10U)&0x1FU];	// Red
 	pOutput->m_uGreen = Renderer::RGB5ToRGB8Table[(uInput>>5U)&0x1FU];	// Green
@@ -786,16 +787,16 @@ void BURGER_API Burger::Palette::FromRGB15(RGBAWord8_t *pOutput,Word uInput)
 	\param pOutput Pointer to the output buffer.
 	\param uInput 16 bit RGB value in 1:5:5:5 format.
 
-	\sa FromRGB16(RGBAWord8_t *,Word), FromRGB15(RGBWord8_t *,Word), Renderer::RGB5ToRGB8Table
+	\sa FromRGB16(RGBAWord8_t *,uint_t), FromRGB15(RGBWord8_t *,uint_t), Renderer::RGB5ToRGB8Table
 
 ***************************************/
 
-void BURGER_API Burger::Palette::FromRGB1555(RGBAWord8_t *pOutput,Word uInput)
+void BURGER_API Burger::Palette::FromRGB1555(RGBAWord8_t *pOutput,uint_t uInput)
 {
 	pOutput->m_uRed = Renderer::RGB5ToRGB8Table[(uInput>>10U)&0x1FU];	// Red
 	pOutput->m_uGreen = Renderer::RGB5ToRGB8Table[(uInput>>5U)&0x1FU];	// Green
 	pOutput->m_uBlue = Renderer::RGB5ToRGB8Table[uInput&0x1FU];			// Blue
-	pOutput->m_uAlpha = static_cast<Word8>((uInput&0x8000) ? 0xFFU : 0);	// Alpha
+	pOutput->m_uAlpha = static_cast<uint8_t>((uInput&0x8000) ? 0xFFU : 0);	// Alpha
 }
 
 /*! ************************************
@@ -808,11 +809,11 @@ void BURGER_API Burger::Palette::FromRGB1555(RGBAWord8_t *pOutput,Word uInput)
 	\param pOutput Pointer to the output buffer.
 	\param uInput 16 bit RGB value in 5:6:5 format.
 
-	\sa FromRGB15(RGBWord8_t *,Word), FromRGB16(RGBAWord8_t *,Word), Renderer::RGB5ToRGB8Table, Renderer::RGB6ToRGB8Table
+	\sa FromRGB15(RGBWord8_t *,uint_t), FromRGB16(RGBAWord8_t *,uint_t), Renderer::RGB5ToRGB8Table, Renderer::RGB6ToRGB8Table
 
 ***************************************/
 
-void BURGER_API Burger::Palette::FromRGB16(RGBWord8_t *pOutput,Word uInput)
+void BURGER_API Burger::Palette::FromRGB16(RGBWord8_t *pOutput,uint_t uInput)
 {
 	pOutput->m_uRed = Renderer::RGB5ToRGB8Table[(uInput>>11U)&0x1FU];	// Red
 	pOutput->m_uGreen = Renderer::RGB6ToRGB8Table[(uInput>>5U)&0x3FU];	// Green
@@ -829,11 +830,11 @@ void BURGER_API Burger::Palette::FromRGB16(RGBWord8_t *pOutput,Word uInput)
 	\param pOutput Pointer to the output buffer.
 	\param uInput 16 bit RGB value in 5:6:5 format.
 
-	\sa FromRGB15(RGBAWord8_t *,Word), FromRGB16(RGBWord8_t *,Word), Renderer::RGB5ToRGB8Table, Renderer::RGB6ToRGB8Table
+	\sa FromRGB15(RGBAWord8_t *,uint_t), FromRGB16(RGBWord8_t *,uint_t), Renderer::RGB5ToRGB8Table, Renderer::RGB6ToRGB8Table
 
 ***************************************/
 
-void BURGER_API Burger::Palette::FromRGB16(RGBAWord8_t *pOutput,Word uInput)
+void BURGER_API Burger::Palette::FromRGB16(RGBAWord8_t *pOutput,uint_t uInput)
 {
 	pOutput->m_uRed = Renderer::RGB5ToRGB8Table[(uInput>>11U)&0x1FU];	// Red
 	pOutput->m_uGreen = Renderer::RGB6ToRGB8Table[(uInput>>5U)&0x3FU];	// Green
@@ -855,9 +856,9 @@ void BURGER_API Burger::Palette::FromRGB16(RGBAWord8_t *pOutput,Word uInput)
 
 ***************************************/
 
-Word BURGER_API Burger::Palette::ToRGB15(const RGBWord8_t *pInput)
+uint_t BURGER_API Burger::Palette::ToRGB15(const RGBWord8_t *pInput)
 {
-	Word uColor = (pInput->m_uRed<<7U)&0x7C00U;	// Red
+	uint_t uColor = (pInput->m_uRed<<7U)&0x7C00U;	// Red
 	uColor += (pInput->m_uGreen<<2U)&0x03E0U;	// Green
 	uColor += (pInput->m_uBlue>>3U);			// Blue
 	return uColor;
@@ -865,7 +866,7 @@ Word BURGER_API Burger::Palette::ToRGB15(const RGBWord8_t *pInput)
 
 /*! ************************************
 
-	\fn Word Burger::Palette::ToRGB15(const RGBAWord8_t *pInput)
+	\fn uint_t Burger::Palette::ToRGB15(const RGBAWord8_t *pInput)
 	\brief Convert 32 bit color to 15 bit color
 
 	Given a 32 bit RGBA quad stored as an array of bytes
@@ -892,9 +893,9 @@ Word BURGER_API Burger::Palette::ToRGB15(const RGBWord8_t *pInput)
 
 ***************************************/
 
-Word BURGER_API Burger::Palette::ToRGB16(const RGBWord8_t *pInput)
+uint_t BURGER_API Burger::Palette::ToRGB16(const RGBWord8_t *pInput)
 {
-	Word uColor = (pInput->m_uRed<<8U)&0xF800U;	// Red
+	uint_t uColor = (pInput->m_uRed<<8U)&0xF800U;	// Red
 	uColor += (pInput->m_uGreen<<3U)&0x07E0;	// Green
 	uColor += pInput->m_uBlue>>3U;				// Blue
 	return uColor;
@@ -902,7 +903,7 @@ Word BURGER_API Burger::Palette::ToRGB16(const RGBWord8_t *pInput)
 
 /*! ************************************
 
-	\fn Word Burger::Palette::ToRGB16(const RGBAWord8_t *pInput)
+	\fn uint_t Burger::Palette::ToRGB16(const RGBAWord8_t *pInput)
 	\brief Convert 32 bit color to 16 bit color
 
 	Given a 32 bit RGBA quad stored as an array of bytes
@@ -931,13 +932,13 @@ Word BURGER_API Burger::Palette::ToRGB16(const RGBWord8_t *pInput)
 
 	\return 24 bit color value as 15, 16 or 8 bit color
 
-	\sa ToRGB16(), ToRGB15(), FindColorIndex(), ToDisplay(Word,Word,Word,const Display *)
+	\sa ToRGB16(), ToRGB15(), FindColorIndex(), ToDisplay(uint_t,uint_t,uint_t,const Display *)
 
 ***************************************/
 
-Word BURGER_API Burger::Palette::ToDisplay(const RGBWord8_t *pInput,const Display *pDisplay)
+uint_t BURGER_API Burger::Palette::ToDisplay(const RGBWord8_t *pInput,const Display *pDisplay)
 {
-	Word uResult;
+	uint_t uResult;
 	switch (pDisplay->GetDepth()) {
 	default:
 		uResult = 0;
@@ -956,10 +957,10 @@ Word BURGER_API Burger::Palette::ToDisplay(const RGBWord8_t *pInput,const Displa
 		uResult += (pInput->m_uBlue>>3U);
 		break;
 	case 24:
-		uResult = static_cast<Word>((pInput->m_uRed<<16U)+(pInput->m_uGreen<<8U)+pInput->m_uBlue);
+		uResult = static_cast<uint_t>((pInput->m_uRed<<16U)+(pInput->m_uGreen<<8U)+pInput->m_uBlue);
 		break;
 	case 32:
-		uResult = static_cast<Word>((pInput->m_uRed<<16U)+(pInput->m_uGreen<<8U)+pInput->m_uBlue)+0xFF000000U;
+		uResult = static_cast<uint_t>((pInput->m_uRed<<16U)+(pInput->m_uGreen<<8U)+pInput->m_uBlue)+0xFF000000U;
 		break;
 	}
 	return uResult;
@@ -983,13 +984,13 @@ Word BURGER_API Burger::Palette::ToDisplay(const RGBWord8_t *pInput,const Displa
 
 	\return Color value as 8, 15, 16, 24 or 32 bit color
 
-	\sa ToRGB16(), ToRGB15(), FindColorIndex(), ToDisplay(Word32,const Display *)
+	\sa ToRGB16(), ToRGB15(), FindColorIndex(), ToDisplay(uint32_t,const Display *)
 
 ***************************************/
 
-Word BURGER_API Burger::Palette::ToDisplay(Word uRed,Word uGreen,Word uBlue,const Display *pDisplay)
+uint_t BURGER_API Burger::Palette::ToDisplay(uint_t uRed,uint_t uGreen,uint_t uBlue,const Display *pDisplay)
 {
-	Word uResult;
+	uint_t uResult;
 	switch(pDisplay->GetDepth()) {
 	default:
 		uResult = 0;
@@ -1021,7 +1022,7 @@ Word BURGER_API Burger::Palette::ToDisplay(Word uRed,Word uGreen,Word uBlue,cons
 
 	\brief Convert 24 bit packed color to current depth
 
-	Given a red/green/blue Word32 value, convert it to a
+	Given a red/green/blue uint32_t value, convert it to a
 	pixel value of the current depth.
 
 	If the input value has an alpha component, it's ignored
@@ -1036,16 +1037,16 @@ Word BURGER_API Burger::Palette::ToDisplay(Word uRed,Word uGreen,Word uBlue,cons
 
 	\return Color value as 8, 15, 16, 24 or 32 bit color
 
-	\sa ToRGB16(), ToRGB15(), FindColorIndex(), ToDisplay(Word,Word,Word,const Display *)
+	\sa ToRGB16(), ToRGB15(), FindColorIndex(), ToDisplay(uint_t,uint_t,uint_t,const Display *)
 
 ***************************************/
 
-Word BURGER_API Burger::Palette::ToDisplay(Word32 uRGBColor,const Display *pDisplay)
+uint_t BURGER_API Burger::Palette::ToDisplay(uint32_t uRGBColor,const Display *pDisplay)
 {
-	Word uRed = (uRGBColor>>16U)&0xFFU;		// Extract Red/Green/Blue
-	Word uGreen = (uRGBColor>>8U)&0xFFU;
-	Word uBlue = uRGBColor&0xFFU;
-	Word uResult;
+	uint_t uRed = (uRGBColor>>16U)&0xFFU;		// Extract Red/Green/Blue
+	uint_t uGreen = (uRGBColor>>8U)&0xFFU;
+	uint_t uBlue = uRGBColor&0xFFU;
+	uint_t uResult;
 	switch (pDisplay->GetDepth()) {
 	default:
 		uResult = 0;
@@ -1081,7 +1082,7 @@ Word BURGER_API Burger::Palette::ToDisplay(Word32 uRGBColor,const Display *pDisp
 	Given an 8 bit red, green and blue value,
 	return the pixel value that is the most closest match.
 
-	The palette is an array of bytes that is sizeof(Word8)*uCount*3
+	The palette is an array of bytes that is sizeof(uint8_t)*uCount*3
 
 	\param pPalette Pointer to an 8 bit palette to map to (768 bytes)
 	\param uRed Red value (0-255)
@@ -1089,23 +1090,23 @@ Word BURGER_API Burger::Palette::ToDisplay(Word32 uRGBColor,const Display *pDisp
 	\param uBlue Blue value (0-255)
 	\param uCount Number of colors in the palette (The array byte size is this value multiplied by 3)
 	\return Color index that is the closest match. (0-(Count-1))
-	\sa ToDisplay(Word32,const Display *) or ToDisplay(Word,Word,Word,const Display *)
+	\sa ToDisplay(uint32_t,const Display *) or ToDisplay(uint_t,uint_t,uint_t,const Display *)
 
 ***************************************/
 
-Word BURGER_API Burger::Palette::FindColorIndex(const Word8 *pPalette,Word uRed,Word uGreen,Word uBlue,Word uCount)
+uint_t BURGER_API Burger::Palette::FindColorIndex(const uint8_t *pPalette,uint_t uRed,uint_t uGreen,uint_t uBlue,uint_t uCount)
 {
-	Word uClosestIndex = 0;					// Index found
+	uint_t uClosestIndex = 0;					// Index found
 	if (uCount) {
-		Word32 uClosestDist = BURGER_MAXUINT;	// Use a bogus number
+		uint32_t uClosestDist = BURGER_MAXUINT;	// Use a bogus number
 		uRed=uRed+255;						// Adjust so that the negative index is positive
 		uGreen=uGreen+255;
 		uBlue=uBlue+255;
-		Word i = 0;
+		uint_t i = 0;
 		do {
-			Word uTemp = pPalette[0];		// Get the difference
+			uint_t uTemp = pPalette[0];		// Get the difference
 			uTemp = uRed-uTemp;
-			Word uNewDelta = Renderer::ByteSquareTable[uTemp];	// Get the square
+			uint_t uNewDelta = Renderer::ByteSquareTable[uTemp];	// Get the square
 			uTemp = pPalette[1];
 			uTemp = uGreen-uTemp;
 			uTemp = Renderer::ByteSquareTable[uTemp];
@@ -1138,13 +1139,13 @@ Word BURGER_API Burger::Palette::FindColorIndex(const Word8 *pPalette,Word uRed,
 	\param pOutput Pointer to an array of 256 Words
 	\param pInput Pointer to an array of 256 3 byte RGB triplets
 	\param pDisplay Display context to determine the depth and base palette
-	\sa Make8BitLookupTable(Word *,RezFile *,Word,const Display *), ToDisplay(const RGBWord8_t *,const Display *)
+	\sa Make8BitLookupTable(uint_t *,RezFile *,uint_t,const Display *), ToDisplay(const RGBWord8_t *,const Display *)
 
 ***************************************/
 
-void BURGER_API Burger::Palette::Make8BitLookupTable(Word *pOutput,const Word8 *pInput,const Display *pDisplay)
+void BURGER_API Burger::Palette::Make8BitLookupTable(uint_t *pOutput,const uint8_t *pInput,const Display *pDisplay)
 {
-	Word i = 256;
+	uint_t i = 256;
 	do {
 		pOutput[0] = ToDisplay(reinterpret_cast<const RGBWord8_t *>(pInput),pDisplay);	// Convert RGB to native
 		++pOutput;	// Next output pointer
@@ -1165,13 +1166,13 @@ void BURGER_API Burger::Palette::Make8BitLookupTable(Word *pOutput,const Word8 *
 	\param pInput Pointer to the reference of the resource file
 	\param uRezNum Which resource ID to load
 	\param pDisplay Display context to determine the depth and base palette
-	\sa Make8BitLookupTable(Word *,const Word8 *,const Display *), ToDisplay(const RGBWord8_t *,const Display *)
+	\sa Make8BitLookupTable(uint_t *,const uint8_t *,const Display *), ToDisplay(const RGBWord8_t *,const Display *)
 
 ***************************************/
 
-void BURGER_API Burger::Palette::Make8BitLookupTable(Word *pOutput,Burger::RezFile *pInput,Word uRezNum,const Display *pDisplay)
+void BURGER_API Burger::Palette::Make8BitLookupTable(uint_t *pOutput,Burger::RezFile *pInput,uint_t uRezNum,const Display *pDisplay)
 {
-	const Word8 *pPalette = static_cast<const Word8 *>(pInput->Load(uRezNum));	// Load the resource
+	const uint8_t *pPalette = static_cast<const uint8_t *>(pInput->Load(uRezNum));	// Load the resource
 	if (pPalette) {										// Ok?
 		Make8BitLookupTable(pOutput,pPalette,pDisplay);	// Create the table
 		pInput->Release(uRezNum);						// Release the resource
@@ -1195,12 +1196,12 @@ void BURGER_API Burger::Palette::Make8BitLookupTable(Word *pOutput,Burger::RezFi
 
 ***************************************/
 
-void BURGER_API Burger::Palette::MakeRemapLookup(Word8 *pOutput,const Word8 *pNewPalette,const Word8 *pOldPalette)
+void BURGER_API Burger::Palette::MakeRemapLookup(uint8_t *pOutput,const uint8_t *pNewPalette,const uint8_t *pOldPalette)
 {
 	pNewPalette+=3;
-	Word i = 256;
+	uint_t i = 256;
 	do {
-		pOutput[0] = static_cast<Word8>(FindColorIndex(pNewPalette,pOldPalette[0],pOldPalette[1],pOldPalette[2],254)+1);
+		pOutput[0] = static_cast<uint8_t>(FindColorIndex(pNewPalette,pOldPalette[0],pOldPalette[1],pOldPalette[2],254)+1);
 		++pOutput;
 		pOldPalette += 3;
 	} while (--i);		// All 256 colors done?
@@ -1226,15 +1227,15 @@ void BURGER_API Burger::Palette::MakeRemapLookup(Word8 *pOutput,const Word8 *pNe
 
 ***************************************/
 
-void BURGER_API Burger::Palette::MakeRemapLookupMasked(Word8 *pOutput,const Word8 *pNewPalette,const Word8 *pOldPalette)
+void BURGER_API Burger::Palette::MakeRemapLookupMasked(uint8_t *pOutput,const uint8_t *pNewPalette,const uint8_t *pOldPalette)
 {
 	pNewPalette+=3;
 	pOldPalette+=3;		// Skip the first color
-	Word i = 255;
+	uint_t i = 255;
 	pOutput[0] = 0;
 	++pOutput;
 	do {
-		pOutput[0] = static_cast<Word8>(FindColorIndex(pNewPalette,pOldPalette[0],pOldPalette[1],pOldPalette[2],254)+1);
+		pOutput[0] = static_cast<uint8_t>(FindColorIndex(pNewPalette,pOldPalette[0],pOldPalette[1],pOldPalette[2],254)+1);
 		++pOutput;
 		pOldPalette += 3;
 	} while (--i);		// All 256 colors done?
@@ -1260,12 +1261,12 @@ void BURGER_API Burger::Palette::MakeRemapLookupMasked(Word8 *pOutput,const Word
 
 ***************************************/
 
-void BURGER_API Burger::Palette::MakeColorMasks(Word8 *pOutput,Word uMaskIndex)
+void BURGER_API Burger::Palette::MakeColorMasks(uint8_t *pOutput,uint_t uMaskIndex)
 {
-	Word i = 0;
-	Word8 *pMask = pOutput+256;
+	uint_t i = 0;
+	uint8_t *pMask = pOutput+256;
 	do {
-		pOutput[i] = static_cast<Word8>(i);		// Save the or mask
+		pOutput[i] = static_cast<uint8_t>(i);		// Save the or mask
 		pMask[i] = 0;							// Save the and mask
 	} while (++i<256);
 	if (uMaskIndex<256) {						// Used?
@@ -1294,28 +1295,28 @@ void BURGER_API Burger::Palette::MakeColorMasks(Word8 *pOutput,Word uMaskIndex)
 
 ***************************************/
 
-void BURGER_API Burger::Palette::MakeFadeLookup(Word8 *pOutput,const Word8 *pInput,Word uRedAdjust,Word uGreenAdjust,Word uBlueAdjust)
+void BURGER_API Burger::Palette::MakeFadeLookup(uint8_t *pOutput,const uint8_t *pInput,uint_t uRedAdjust,uint_t uGreenAdjust,uint_t uBlueAdjust)
 {
-	Word8 PaletteBuffer[768];		// Local palette
+	uint8_t PaletteBuffer[768];		// Local palette
 
-	Word8 *pWork = PaletteBuffer;	// Create the new table using a temp palette
-	const Word RANGEBITS = 6;		// 6 bits of fraction
+	uint8_t *pWork = PaletteBuffer;	// Create the new table using a temp palette
+	const uint_t RANGEBITS = 6;		// 6 bits of fraction
 	uRedAdjust = uRedAdjust<<RANGEBITS;			// Scale up for fraction
 	uGreenAdjust = uGreenAdjust<<RANGEBITS;
 	uBlueAdjust = uBlueAdjust<<RANGEBITS;
-	const Word PERCENT = 100;		// 1.0 in percentages
+	const uint_t PERCENT = 100;		// 1.0 in percentages
 	uRedAdjust = uRedAdjust/PERCENT;			// Create a fixed point number
 	uGreenAdjust = uGreenAdjust/PERCENT;
 	uBlueAdjust = uBlueAdjust/PERCENT;
-	Word i = 0;						// All 256 colors
+	uint_t i = 0;						// All 256 colors
 	do {
-		Word uTemp = pInput[0];
+		uint_t uTemp = pInput[0];
 		uTemp = uTemp * uRedAdjust;		// Perform the RGB scale
 		uTemp = uTemp >> RANGEBITS;	// Isolate the integer
 		if (uTemp>=256) {			// Too high?
 			uTemp = 255;
 		}
-		pWork[0] = static_cast<Word8>(uTemp);
+		pWork[0] = static_cast<uint8_t>(uTemp);
 
 		uTemp = pInput[1];
 		uTemp = uTemp * uGreenAdjust;
@@ -1323,7 +1324,7 @@ void BURGER_API Burger::Palette::MakeFadeLookup(Word8 *pOutput,const Word8 *pInp
 		if (uTemp>=256) {
 			uTemp = 255;
 		}
-		pWork[1] = static_cast<Word8>(uTemp);
+		pWork[1] = static_cast<uint8_t>(uTemp);
 
 		uTemp = pInput[2];
 		uTemp = uTemp * uBlueAdjust;
@@ -1331,7 +1332,7 @@ void BURGER_API Burger::Palette::MakeFadeLookup(Word8 *pOutput,const Word8 *pInp
 		if (uTemp>=256) {
 			uTemp = 255;
 		}
-		pWork[2] = static_cast<Word8>(uTemp);
+		pWork[2] = static_cast<uint8_t>(uTemp);
 		pInput=pInput+3;
 		pWork=pWork+3;
 	} while (++i<256);
@@ -1342,7 +1343,7 @@ void BURGER_API Burger::Palette::MakeFadeLookup(Word8 *pOutput,const Word8 *pInp
 
 /*! ************************************
 
-	\fn void Burger::CopyPalette(RGBWord8_t *pOutput,const RGBWord8_t *pInput,WordPtr uEntries)
+	\fn void Burger::CopyPalette(RGBWord8_t *pOutput,const RGBWord8_t *pInput,uintptr_t uEntries)
 	\brief Copy an array of RGBWord8_t entries
 
 	Given a pointer to an array of RGBWord8_t color entries, copy the colors into
@@ -1351,7 +1352,7 @@ void BURGER_API Burger::Palette::MakeFadeLookup(Word8 *pOutput,const Word8 *pInp
 	\param pOutput Pointer to the palette to copy to
 	\param pInput Pointer to the palette to copy from
 	\param uEntries Number of color entries in the palette
-	\sa CopyPalette(RGBWord8_t *,const RGBAWord8_t *,WordPtr)
+	\sa CopyPalette(RGBWord8_t *,const RGBAWord8_t *,uintptr_t)
 
 ***************************************/
 
@@ -1365,11 +1366,11 @@ void BURGER_API Burger::Palette::MakeFadeLookup(Word8 *pOutput,const Word8 *pInp
 	\param pOutput Pointer to the palette to copy to
 	\param pInput Pointer to the palette to copy from
 	\param uEntries Number of color entries in the palette
-	\sa CopyPalette(RGBWord8_t *,const RGBWord8_t *,WordPtr)
+	\sa CopyPalette(RGBWord8_t *,const RGBWord8_t *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::CopyPalette(RGBWord8_t *pOutput,const RGBAWord8_t *pInput,WordPtr uEntries)
+void BURGER_API Burger::CopyPalette(RGBWord8_t *pOutput,const RGBAWord8_t *pInput,uintptr_t uEntries)
 {
 	if (uEntries) {
 		do {
@@ -1392,11 +1393,11 @@ void BURGER_API Burger::CopyPalette(RGBWord8_t *pOutput,const RGBAWord8_t *pInpu
 	\param pOutput Pointer to the palette to copy to
 	\param pInput Pointer to the palette to copy from
 	\param uEntries Number of color entries in the palette
-	\sa CopyPalette(RGBAWord8_t *,const RGBAWord8_t *,WordPtr)
+	\sa CopyPalette(RGBAWord8_t *,const RGBAWord8_t *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::CopyPalette(RGBAWord8_t *pOutput,const RGBWord8_t *pInput,WordPtr uEntries)
+void BURGER_API Burger::CopyPalette(RGBAWord8_t *pOutput,const RGBWord8_t *pInput,uintptr_t uEntries)
 {
 	if (uEntries) {
 		do {
@@ -1412,7 +1413,7 @@ void BURGER_API Burger::CopyPalette(RGBAWord8_t *pOutput,const RGBWord8_t *pInpu
 
 /*! ************************************
 
-	\fn void Burger::CopyPalette(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,WordPtr uEntries)
+	\fn void Burger::CopyPalette(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,uintptr_t uEntries)
 	\brief Copy an array of RGBAWord8_t entries from an array of RGBAWord8_t entries
 
 	Given a pointer to an array of RGBAWord8_t color entries, copy the colors into
@@ -1421,7 +1422,7 @@ void BURGER_API Burger::CopyPalette(RGBAWord8_t *pOutput,const RGBWord8_t *pInpu
 	\param pOutput Pointer to the palette to copy to
 	\param pInput Pointer to the palette to copy from
 	\param uEntries Number of color entries in the palette
-	\sa CopyPalette(RGBAWord8_t *,const RGBWord8_t *,WordPtr)
+	\sa CopyPalette(RGBAWord8_t *,const RGBWord8_t *,uintptr_t)
 
 ***************************************/
 
@@ -1441,15 +1442,15 @@ void BURGER_API Burger::CopyPalette(RGBAWord8_t *pOutput,const RGBWord8_t *pInpu
 	\param pOutput Pointer to the palette to copy to
 	\param pInput Pointer to the palette to copy from
 	\param uEntries Number of color entries in the palette
-	\sa CopyPalette444(RGBAWord8_t *,const Word16 *,WordPtr) or Renderer::RGB4ToRGB8Table
+	\sa CopyPalette444(RGBAWord8_t *,const uint16_t *,uintptr_t) or Renderer::RGB4ToRGB8Table
 
 ***************************************/
 
-void BURGER_API Burger::CopyPalette444(RGBWord8_t *pOutput,const Word16 *pInput,WordPtr uEntries)
+void BURGER_API Burger::CopyPalette444(RGBWord8_t *pOutput,const uint16_t *pInput,uintptr_t uEntries)
 {
 	if (uEntries) {
 		do {
-			Word uColor = pInput[0];
+			uint_t uColor = pInput[0];
 			pOutput->m_uRed = Renderer::RGB4ToRGB8Table[(uColor>>8U)&0xFU];
 			pOutput->m_uGreen = Renderer::RGB4ToRGB8Table[(uColor>>4U)&0xFU];
 			pOutput->m_uBlue = Renderer::RGB4ToRGB8Table[uColor&0xFU];
@@ -1475,15 +1476,15 @@ void BURGER_API Burger::CopyPalette444(RGBWord8_t *pOutput,const Word16 *pInput,
 	\param pOutput Pointer to the palette to copy to
 	\param pInput Pointer to the palette to copy from
 	\param uEntries Number of color entries in the palette
-	\sa CopyPalette444(RGBWord8_t *,const Word16 *,WordPtr) or Renderer::RGB4ToRGB8Table
+	\sa CopyPalette444(RGBWord8_t *,const uint16_t *,uintptr_t) or Renderer::RGB4ToRGB8Table
 
 ***************************************/
 
-void BURGER_API Burger::CopyPalette444(RGBAWord8_t *pOutput,const Word16 *pInput,WordPtr uEntries)
+void BURGER_API Burger::CopyPalette444(RGBAWord8_t *pOutput,const uint16_t *pInput,uintptr_t uEntries)
 {
 	if (uEntries) {
 		do {
-			Word uColor = pInput[0];
+			uint_t uColor = pInput[0];
 			pOutput->m_uRed = Renderer::RGB4ToRGB8Table[(uColor>>8U)&0xFU];
 			pOutput->m_uGreen = Renderer::RGB4ToRGB8Table[(uColor>>4U)&0xFU];
 			pOutput->m_uBlue = Renderer::RGB4ToRGB8Table[uColor&0xFU];
@@ -1514,15 +1515,15 @@ void BURGER_API Burger::CopyPalette444(RGBAWord8_t *pOutput,const Word16 *pInput
 	\param pOutput Pointer to the palette to copy to
 	\param pInput Pointer to the palette to copy from
 	\param uEntries Number of color entries in the palette
-	\sa CopyPalette4444(RGBAWord8_t *,const Word16 *,WordPtr) or Renderer::RGB4ToRGB8Table
+	\sa CopyPalette4444(RGBAWord8_t *,const uint16_t *,uintptr_t) or Renderer::RGB4ToRGB8Table
 
 ***************************************/
 
-void BURGER_API Burger::CopyPalette4444(RGBWord8_t *pOutput,const Word16 *pInput,WordPtr uEntries)
+void BURGER_API Burger::CopyPalette4444(RGBWord8_t *pOutput,const uint16_t *pInput,uintptr_t uEntries)
 {
 	if (uEntries) {
 		do {
-			Word uColor = pInput[0];
+			uint_t uColor = pInput[0];
 			pOutput->m_uRed = Renderer::RGB4ToRGB8Table[(uColor>>8U)&0xFU];
 			pOutput->m_uGreen = Renderer::RGB4ToRGB8Table[(uColor>>4U)&0xFU];
 			pOutput->m_uBlue = Renderer::RGB4ToRGB8Table[uColor&0xFU];
@@ -1549,15 +1550,15 @@ void BURGER_API Burger::CopyPalette4444(RGBWord8_t *pOutput,const Word16 *pInput
 	\param pOutput Pointer to the palette to copy to
 	\param pInput Pointer to the palette to copy from
 	\param uEntries Number of color entries in the palette
-	\sa CopyPalette4444(RGBWord8_t *,const Word16 *,WordPtr) or Renderer::RGB4ToRGB8Table
+	\sa CopyPalette4444(RGBWord8_t *,const uint16_t *,uintptr_t) or Renderer::RGB4ToRGB8Table
 
 ***************************************/
 
-void BURGER_API Burger::CopyPalette4444(RGBAWord8_t *pOutput,const Word16 *pInput,WordPtr uEntries)
+void BURGER_API Burger::CopyPalette4444(RGBAWord8_t *pOutput,const uint16_t *pInput,uintptr_t uEntries)
 {
 	if (uEntries) {
 		do {
-			Word uColor = pInput[0];
+			uint_t uColor = pInput[0];
 			pOutput->m_uRed = Renderer::RGB4ToRGB8Table[(uColor>>8U)&0xFU];
 			pOutput->m_uGreen = Renderer::RGB4ToRGB8Table[(uColor>>4U)&0xFU];
 			pOutput->m_uBlue = Renderer::RGB4ToRGB8Table[uColor&0xFU];
@@ -1725,11 +1726,11 @@ void BURGER_API Burger::Convert(RGBFloat_t *pOutput,const HSL_t *pInput)
 	\param pInput Pointer to the color entries to copy from
 	\param uStartIndex Color index of the 256 color output palette to start modification (Maximum 255)
 	\param uPaletteSize Number of color entries to copy (Maximum 256)
-	\sa CopyPalette256(RGBWord8_t *,const RGBAWord8_t *,Word,Word)
+	\sa CopyPalette256(RGBWord8_t *,const RGBAWord8_t *,uint_t,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::CopyPalette256(RGBWord8_t *pOutput,const RGBWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+void BURGER_API Burger::CopyPalette256(RGBWord8_t *pOutput,const RGBWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 {
 	// Invalid start index?
 	if (uStartIndex<256) {
@@ -1762,11 +1763,11 @@ void BURGER_API Burger::CopyPalette256(RGBWord8_t *pOutput,const RGBWord8_t *pIn
 	\param pInput Pointer to the color entries to copy from
 	\param uStartIndex Color index of the 256 color output palette to start modification (Maximum 255)
 	\param uPaletteSize Number of color entries to copy (Maximum 256)
-	\sa CopyPalette256(RGBWord8_t *,const RGBWord8_t *,Word,Word)
+	\sa CopyPalette256(RGBWord8_t *,const RGBWord8_t *,uint_t,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::CopyPalette256(RGBWord8_t *pOutput,const RGBAWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+void BURGER_API Burger::CopyPalette256(RGBWord8_t *pOutput,const RGBAWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 {
 	// Invalid start index?
 	if (uStartIndex<256) {
@@ -1799,11 +1800,11 @@ void BURGER_API Burger::CopyPalette256(RGBWord8_t *pOutput,const RGBAWord8_t *pI
 	\param pInput Pointer to the color entries to copy from
 	\param uStartIndex Color index of the 256 color output palette to start modification (Maximum 255)
 	\param uPaletteSize Number of color entries to copy (Maximum 256)
-	\sa CopyPalette256(RGBAWord8_t *,const RGBAWord8_t *,Word,Word)
+	\sa CopyPalette256(RGBAWord8_t *,const RGBAWord8_t *,uint_t,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::CopyPalette256(RGBAWord8_t *pOutput,const RGBWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+void BURGER_API Burger::CopyPalette256(RGBAWord8_t *pOutput,const RGBWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 {
 	// Invalid start index?
 	if (uStartIndex<256) {
@@ -1834,11 +1835,11 @@ void BURGER_API Burger::CopyPalette256(RGBAWord8_t *pOutput,const RGBWord8_t *pI
 	\param pInput Pointer to the color entries to copy from
 	\param uStartIndex Color index of the 256 color output palette to start modification (Maximum 255)
 	\param uPaletteSize Number of color entries to copy (Maximum 256)
-	\sa CopyPalette256(RGBAWord8_t *,const RGBWord8_t *,Word,Word)
+	\sa CopyPalette256(RGBAWord8_t *,const RGBWord8_t *,uint_t,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::CopyPalette256(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+void BURGER_API Burger::CopyPalette256(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 {
 	// Invalid start index?
 	if (uStartIndex<256) {
@@ -1859,11 +1860,11 @@ void BURGER_API Burger::CopyPalette256(RGBAWord8_t *pOutput,const RGBAWord8_t *p
 
 	\param pOutput Pointer to the palette to set to Black
 	\param uPaletteSize Number of color entries to clear
-	\sa ClearPalette(RGBAWord8_t *,WordPtr)
+	\sa ClearPalette(RGBAWord8_t *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::ClearPalette(RGBWord8_t *pOutput,WordPtr uPaletteSize)
+void BURGER_API Burger::ClearPalette(RGBWord8_t *pOutput,uintptr_t uPaletteSize)
 {
 	// Just set everything to zero
 	MemoryClear(pOutput,sizeof(pOutput[0])*uPaletteSize);
@@ -1877,11 +1878,11 @@ void BURGER_API Burger::ClearPalette(RGBWord8_t *pOutput,WordPtr uPaletteSize)
 
 	\param pOutput Pointer to the palette to set to Black
 	\param uPaletteSize Number of color entries to clear
-	\sa ClearPalette(RGBWord8_t *,WordPtr)
+	\sa ClearPalette(RGBWord8_t *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::ClearPalette(RGBAWord8_t *pOutput,WordPtr uPaletteSize)
+void BURGER_API Burger::ClearPalette(RGBAWord8_t *pOutput,uintptr_t uPaletteSize)
 {
 	if (uPaletteSize) {
 		do {
@@ -1903,16 +1904,16 @@ void BURGER_API Burger::ClearPalette(RGBAWord8_t *pOutput,WordPtr uPaletteSize)
 	\param pOutput Pointer to the palette to fill
 	\param pInput Pointer to the color to fill with
 	\param uPaletteSize Number of color entries to set
-	\sa FillPalette(RGBAWord8_t *,const RGBAWord8_t *,WordPtr)
+	\sa FillPalette(RGBAWord8_t *,const RGBAWord8_t *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::FillPalette(RGBWord8_t *pOutput,const RGBWord8_t *pInput,WordPtr uPaletteSize)
+void BURGER_API Burger::FillPalette(RGBWord8_t *pOutput,const RGBWord8_t *pInput,uintptr_t uPaletteSize)
 {
 	if (uPaletteSize) {
-		Word8 uRed = pInput->m_uRed;
-		Word8 uGreen = pInput->m_uGreen;
-		Word8 uBlue = pInput->m_uBlue;
+		uint8_t uRed = pInput->m_uRed;
+		uint8_t uGreen = pInput->m_uGreen;
+		uint8_t uBlue = pInput->m_uBlue;
 		do {
 			pOutput->m_uRed = uRed;		// Set the color
 			pOutput->m_uGreen = uGreen;
@@ -1931,17 +1932,17 @@ void BURGER_API Burger::FillPalette(RGBWord8_t *pOutput,const RGBWord8_t *pInput
 	\param pOutput Pointer to the palette to fill
 	\param pInput Pointer to the color to fill with
 	\param uPaletteSize Number of color entries to set
-	\sa FillPalette(RGBWord8_t *,const RGBWord8_t *,WordPtr)
+	\sa FillPalette(RGBWord8_t *,const RGBWord8_t *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::FillPalette(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,WordPtr uPaletteSize)
+void BURGER_API Burger::FillPalette(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput,uintptr_t uPaletteSize)
 {
 	if (uPaletteSize) {
-		Word8 uRed = pInput->m_uRed;
-		Word8 uGreen = pInput->m_uGreen;
-		Word8 uBlue = pInput->m_uBlue;
-		Word8 uAlpha = pInput->m_uAlpha;
+		uint8_t uRed = pInput->m_uRed;
+		uint8_t uGreen = pInput->m_uGreen;
+		uint8_t uBlue = pInput->m_uBlue;
+		uint8_t uAlpha = pInput->m_uAlpha;
 		do {
 			pOutput->m_uRed = uRed;		// Set the color
 			pOutput->m_uGreen = uGreen;

@@ -193,24 +193,24 @@ static const char g_SoftwareClasses[] = "Software\\Classes\\";
 // Globals
 //
 
-const Word16 Burger::Globals::g_GameClass[] = {'B', 'u', 'r', 'g', 'e', 'r',
+const uint16_t Burger::Globals::g_GameClass[] = {'B', 'u', 'r', 'g', 'e', 'r',
     'G', 'a', 'm', 'e', 'C', 'l', 'a', 's', 's', 0}; //"BurgerGameClass";
 ATOM Burger::Globals::g_uAtom =
     INVALID_ATOM; ///< Atom assigned to my class (Windows only)
 HWND Burger::Globals::g_hWindow;
-Word32 Burger::Globals::g_uQuickTimeVersion;
-Word8 Burger::Globals::g_bQuickTimeVersionValid;
-Word32 Burger::Globals::g_uDirectXVersion;
-Word8 Burger::Globals::g_bDirectXVersionValid;
+uint32_t Burger::Globals::g_uQuickTimeVersion;
+uint8_t Burger::Globals::g_bQuickTimeVersionValid;
+uint32_t Burger::Globals::g_uDirectXVersion;
+uint8_t Burger::Globals::g_bDirectXVersionValid;
 #if defined(BURGER_WIN32) || defined(DOXYGEN)
-Word8 Burger::Globals::g_bIsWindows64Bit;
+uint8_t Burger::Globals::g_bIsWindows64Bit;
 #endif
 
 #endif // Allow doxygen
 
 /*! ************************************
 
-    \fn const Word16 *Burger::Globals::GetWindowClassName()
+    \fn const uint16_t *Burger::Globals::GetWindowClassName()
     \brief Get the registered class name
 
     When registering a window class for Burgerlib, this is the name
@@ -220,7 +220,7 @@ Word8 Burger::Globals::g_bIsWindows64Bit;
 
     \return Pointer to a wchar_t * compatible pointer
 
-    \sa Globals::RegisterWindowClass(Word)
+    \sa Globals::RegisterWindowClass(uint_t)
 
 ***************************************/
 
@@ -266,16 +266,16 @@ Word8 Burger::Globals::g_bIsWindows64Bit;
 
     \windowsonly
     \return Returns \ref TRUE if the 32 bit application was running in 64 bit
-    Windows \sa GetSystemWow64DirectoryW(Word16 *,Word32)
+    Windows \sa GetSystemWow64DirectoryW(uint16_t *,uint32_t)
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::IsWindows64Bit(void)
+uint_t BURGER_API Burger::Globals::IsWindows64Bit(void)
 {
-    Word bResult = g_bIsWindows64Bit;
+    uint_t bResult = g_bIsWindows64Bit;
     // Was it already tested?
     if (!(bResult & 0x80)) {
-        Word16 Temp[MAX_PATH];
+        uint16_t Temp[MAX_PATH];
         if ((Windows::GetSystemWow64DirectoryW(Temp, BURGER_ARRAYSIZE(Temp)) ==
                 0) &&
             (GetLastError() == ERROR_CALL_NOT_IMPLEMENTED)) {
@@ -285,7 +285,7 @@ Word BURGER_API Burger::Globals::IsWindows64Bit(void)
             bResult = 0x80 | TRUE; // The 32 bit app is running in a 64 bit
                                    // version of Windows
         }
-        g_bIsWindows64Bit = static_cast<Word8>(bResult);
+        g_bIsWindows64Bit = static_cast<uint8_t>(bResult);
     }
     // Return the value minus the other flags
     return bResult & 1U;
@@ -305,10 +305,10 @@ Word BURGER_API Burger::Globals::IsWindows64Bit(void)
 
 ***************************************/
 
-Word64 BURGER_API Burger::Globals::GetFileVersion64(
-    const Word16* pWindowsFilename)
+uint64_t BURGER_API Burger::Globals::GetFileVersion64(
+    const uint16_t* pWindowsFilename)
 {
-    Word64 uResult = 0;
+    uint64_t uResult = 0;
     if (pWindowsFilename) {
         DWORD uNotUsed;
         // Get the size of the data
@@ -325,11 +325,11 @@ Word64 BURGER_API Burger::Globals::GetFileVersion64(
                     VS_FIXEDFILEINFO* pVersion = NULL;
                     // Extract the version value
                     if (Windows::VerQueryValueW(pFileVersionBuffer,
-                            reinterpret_cast<const Word16*>(L"\\"),
+                            reinterpret_cast<const uint16_t*>(L"\\"),
                             (VOID**)&pVersion, &uBufferSize)) {
                         if (pVersion != NULL) {
                             uResult =
-                                (static_cast<Word64>(pVersion->dwFileVersionMS)
+                                (static_cast<uint64_t>(pVersion->dwFileVersionMS)
                                     << 32U) +
                                 pVersion->dwFileVersionLS;
                         }
@@ -356,24 +356,24 @@ Word64 BURGER_API Burger::Globals::GetFileVersion64(
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::GetDirectXVersionViaFileVersions(void)
+uint_t BURGER_API Burger::Globals::GetDirectXVersionViaFileVersions(void)
 {
-    Word16 szPath[MAX_PATH * 2];
+    uint16_t szPath[MAX_PATH * 2];
 
-    Word uResult = 0;
+    uint_t uResult = 0;
     if (GetSystemDirectoryW(reinterpret_cast<LPWSTR>(szPath), MAX_PATH) != 0) {
 
         szPath[MAX_PATH - 1] = 0; // Failsafe
 
         // Switch off the ddraw version
-        WordPtr uLen = StringLength(szPath);
-        Word16* pDest = szPath + uLen;
-        WordPtr uRemaining = sizeof(szPath) - (uLen * sizeof(Word16));
+        uintptr_t uLen = StringLength(szPath);
+        uint16_t* pDest = szPath + uLen;
+        uintptr_t uRemaining = sizeof(szPath) - (uLen * sizeof(uint16_t));
 
         StringCopy(
-            pDest, uRemaining, reinterpret_cast<const Word16*>(L"\\ddraw.dll"));
+            pDest, uRemaining, reinterpret_cast<const uint16_t*>(L"\\ddraw.dll"));
 
-        Word64 uVersionDDraw = GetFileVersion64(szPath);
+        uint64_t uVersionDDraw = GetFileVersion64(szPath);
         if (uVersionDDraw >= 0x000400020000005FULL) { // Win9x version
             // file is >= DX1.0 version, so we must be at least DX1.0
             uResult = 0x0100;
@@ -390,8 +390,8 @@ Word BURGER_API Burger::Globals::GetDirectXVersionViaFileVersions(void)
 
         // Switch off the d3drg8x.dll version
         StringCopy(pDest, uRemaining,
-            reinterpret_cast<const Word16*>(L"\\d3drg8x.dll"));
-        Word64 uVersionD3Drg8x = GetFileVersion64(szPath);
+            reinterpret_cast<const uint16_t*>(L"\\d3drg8x.dll"));
+        uint64_t uVersionD3Drg8x = GetFileVersion64(szPath);
         if (uVersionD3Drg8x >= 0x0004000400000046ULL) { // Win9x version
             // d3drg8x.dll is the DX3.0a version, so we must be DX3.0a or DX3.0b
             // (no redist change)
@@ -419,8 +419,8 @@ Word BURGER_API Burger::Globals::GetDirectXVersionViaFileVersions(void)
 
         // Switch off the dplayx.dll version
         StringCopy(pDest, uRemaining,
-            reinterpret_cast<const Word16*>(L"\\dplayx.dll"));
-        Word64 uVersionDPlayx = GetFileVersion64(szPath);
+            reinterpret_cast<const uint16_t*>(L"\\dplayx.dll"));
+        uint64_t uVersionDPlayx = GetFileVersion64(szPath);
         if (uVersionDPlayx >= 0x0004000600030206ULL) { // Win9x version
             // ddraw.dll is the DX6.1 version, so we must be at least DX6.1a
             uResult = 0x0611;
@@ -434,8 +434,8 @@ Word BURGER_API Burger::Globals::GetDirectXVersionViaFileVersions(void)
 
         // Switch off the dinput version
         StringCopy(pDest, uRemaining,
-            reinterpret_cast<const Word16*>(L"\\dinput.dll"));
-        Word64 uVersionDInput = GetFileVersion64(szPath);
+            reinterpret_cast<const uint16_t*>(L"\\dinput.dll"));
+        uint64_t uVersionDInput = GetFileVersion64(szPath);
         if (uVersionDInput >= 0x00040007000002CC) { // Win9x version
             // ddraw.dll is the DX7.0 version, so we must be at least DX7.0a
             uResult = 0x0701;
@@ -456,8 +456,8 @@ Word BURGER_API Burger::Globals::GetDirectXVersionViaFileVersions(void)
 
         // Switch off the d3d8 version
         StringCopy(
-            pDest, uRemaining, reinterpret_cast<const Word16*>(L"\\d3d8.dll"));
-        Word64 uVersionD3D8 = GetFileVersion64(szPath);
+            pDest, uRemaining, reinterpret_cast<const uint16_t*>(L"\\d3d8.dll"));
+        uint64_t uVersionD3D8 = GetFileVersion64(szPath);
         if ((((uVersionD3D8 & 0xFFFF000000000000ULL) ==
                  0x0004000000000000ULL) &&
                 (uVersionD3D8 >= 0x0004000800010371ULL)) || // Win9x version
@@ -482,8 +482,8 @@ Word BURGER_API Burger::Globals::GetDirectXVersionViaFileVersions(void)
 
         // Switch off the Mpg2splt version
         StringCopy(pDest, uRemaining,
-            reinterpret_cast<const Word16*>(L"\\mpg2splt.ax"));
-        Word64 uVersionMPG2Splt = GetFileVersion64(szPath);
+            reinterpret_cast<const uint16_t*>(L"\\mpg2splt.ax"));
+        uint64_t uVersionMPG2Splt = GetFileVersion64(szPath);
         if (uVersionMPG2Splt >=
             0x0006000300010375ULL) { // Win9x/Win2k/WinXP version
             // quartz.dll is the DX8.1b version, so we must be at least DX8.1b
@@ -492,8 +492,8 @@ Word BURGER_API Burger::Globals::GetDirectXVersionViaFileVersions(void)
 
         // Switch off the dpnet version
         StringCopy(
-            pDest, uRemaining, reinterpret_cast<const Word16*>(L"\\dpnet.dll"));
-        Word64 uVersionDPNet = GetFileVersion64(szPath);
+            pDest, uRemaining, reinterpret_cast<const uint16_t*>(L"\\dpnet.dll"));
+        uint64_t uVersionDPNet = GetFileVersion64(szPath);
         if ((((uVersionDPNet & 0xFFFF000000000000ULL) ==
                  0x0004000000000000ULL) &&
                 (uVersionDPNet >= 0x0004000900000086ULL)) || // Win9x version
@@ -507,8 +507,8 @@ Word BURGER_API Burger::Globals::GetDirectXVersionViaFileVersions(void)
 
         // Switch off the d3d9 version
         StringCopy(
-            pDest, uRemaining, reinterpret_cast<const Word16*>(L"\\d3d9.dll"));
-        Word64 uVersionD3D9 = GetFileVersion64(szPath);
+            pDest, uRemaining, reinterpret_cast<const uint16_t*>(L"\\d3d9.dll"));
+        uint64_t uVersionD3D9 = GetFileVersion64(szPath);
 
         if (uVersionD3D9) {
             // File exists, so it must be at least DX9
@@ -578,7 +578,7 @@ Word BURGER_API Burger::Globals::GetDirectXVersionViaFileVersions(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::GetDirectXVersion(void)
+uint_t BURGER_API Burger::Globals::GetDirectXVersion(void)
 {
     // There is a version number in the registry, however, it is only valid for
     // DirectX versions 1 through 9.0c. The registry key is not valid for
@@ -611,7 +611,7 @@ Word BURGER_API Burger::Globals::GetDirectXVersion(void)
 #if !defined(DOXYGEN)
 struct DeviceGuid_t {
     GUID* m_pGUID;  // Buffer to store the located GUID
-    Word m_uDevNum; // Count down
+    uint_t m_uDevNum; // Count down
 };
 #endif
 
@@ -650,7 +650,7 @@ static int CALLBACK FindDeviceCallback(GUID* pGUID, LPSTR /* pName */,
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::GetVideoGUID(GUID* pOutput, Word uDevNum)
+uint_t BURGER_API Burger::Globals::GetVideoGUID(GUID* pOutput, uint_t uDevNum)
 {
     HRESULT uError = E_FAIL;
     if (pOutput) {
@@ -680,7 +680,7 @@ Word BURGER_API Burger::Globals::GetVideoGUID(GUID* pOutput, Word uDevNum)
             }
         }
     }
-    return static_cast<Word>(uError);
+    return static_cast<uint_t>(uError);
 }
 
 /*! ************************************
@@ -700,20 +700,20 @@ Word BURGER_API Burger::Globals::GetVideoGUID(GUID* pOutput, Word uDevNum)
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::AddGroupToProgramMenu(const char* pGroupName)
+uint_t BURGER_API Burger::Globals::AddGroupToProgramMenu(const char* pGroupName)
 {
     // Get the pidl for the start menu
     // this will be used to initialize the folder browser
 
-    Word uResult = 10;
+    uint_t uResult = 10;
     ITEMIDLIST* pIDListStartMenu; // Item list for the start menu
     if (SHGetSpecialFolderLocation(
-            GetWindow(), CSIDL_PROGRAMS, &pIDListStartMenu) == NOERROR) {
-        Word16 WorkPath[MAX_PATH * 2];
+        GetWindow(), CSIDL_PROGRAMS, &pIDListStartMenu) == NOERROR) {
+        uint16_t WorkPath[MAX_PATH * 2];
         if (SHGetPathFromIDListW(
                 pIDListStartMenu, reinterpret_cast<LPWSTR>(WorkPath))) {
             // Append a directory divider
-            WordPtr uLength = StringLength(WorkPath);
+            uintptr_t uLength = StringLength(WorkPath);
             WorkPath[uLength] = '\\';
             WorkPath[uLength + 1] = 0;
 
@@ -826,7 +826,7 @@ void BURGER_API Burger::Globals::AssociateFileExtensionToExe(
     // With the program ID already requested, generate the app's location for
     // the ID and the sample command line to use if you "drag and drop" a file
     // on the exe.
-    Word16 TempBuffer[MAX_PATH];
+    uint16_t TempBuffer[MAX_PATH];
     // Get the pathname to the currently running application
     if (GetModuleFileNameW(nullptr, reinterpret_cast<LPWSTR>(TempBuffer),
             MAX_PATH) < MAX_PATH) {
@@ -872,7 +872,7 @@ void BURGER_API Burger::Globals::AssociateFileExtensionToExe(
 
 struct MessageLookup_t {
     const char* m_pName; // String of the enum
-    Word m_uEnum;        // Enum value that matched the string
+    uint_t m_uEnum;        // Enum value that matched the string
 };
 
 //
@@ -957,14 +957,14 @@ static const MessageLookup_t g_MessageLookup[] = {CASE(WM_NULL),
 #endif
 
 void BURGER_API Burger::Globals::OutputWindowsMessage(
-    Word uMessage, WordPtr wParam, WordPtr lParam)
+    uint_t uMessage, uintptr_t wParam, uintptr_t lParam)
 {
     // Static global value containing the number of times this function was
     // called
-    static Word uMessageCount = 0;
+    static uint_t uMessageCount = 0;
 
     // Scan the table for a match
-    WordPtr uCount = BURGER_ARRAYSIZE(g_MessageLookup);
+    uintptr_t uCount = BURGER_ARRAYSIZE(g_MessageLookup);
     const MessageLookup_t* pLookup = g_MessageLookup;
     const char* pMessage = NULL;
     do {
@@ -981,7 +981,7 @@ void BURGER_API Burger::Globals::OutputWindowsMessage(
     char HexAsASCII[32];
     if (!pMessage) {
         NumberToAsciiHex(
-            HexAsASCII, static_cast<Word32>(uMessage), LEADINGZEROS | 8);
+            HexAsASCII, static_cast<uint32_t>(uMessage), LEADINGZEROS | 8);
         pMessage = HexAsASCII;
     }
     // Output the message and parameter values. It's not 64 bit clean for the
@@ -989,7 +989,7 @@ void BURGER_API Burger::Globals::OutputWindowsMessage(
     // events are sent to a window from the operating system
 
     Debug::Message("Message %08X is %s with parms %08X, %08X\n", uMessageCount,
-        pMessage, static_cast<Word>(wParam), static_cast<Word>(lParam));
+        pMessage, static_cast<uint_t>(wParam), static_cast<uint_t>(lParam));
     ++uMessageCount;
 }
 
@@ -1022,7 +1022,7 @@ static LRESULT CALLBACK InternalCallBack(
             pThis = static_cast<Burger::GameApp*>(
                 reinterpret_cast<CREATESTRUCT*>(lParam)->lpCreateParams);
             SetWindowLongPtrW(pWindow, GWLP_USERDATA,
-                static_cast<LONG_PTR>(reinterpret_cast<WordPtr>(pThis)));
+                static_cast<LONG_PTR>(reinterpret_cast<uintptr_t>(pThis)));
         }
         // If I didn't get a pThis set, just call the default procedure and exit
         if (!pThis) {
@@ -1036,7 +1036,7 @@ static LRESULT CALLBACK InternalCallBack(
 #if defined(_DEBUG)
     if (Burger::Globals::GetTraceFlag() & Burger::Globals::TRACE_MESSAGES) {
         Burger::Globals::OutputWindowsMessage(
-            uMessage, wParam, static_cast<WordPtr>(lParam));
+            uMessage, wParam, static_cast<uintptr_t>(lParam));
     }
 #endif
 
@@ -1044,12 +1044,12 @@ static LRESULT CALLBACK InternalCallBack(
 
     Burger::GameApp::MainWindowProc pCallBack = pThis->GetCallBack();
     if (pCallBack) {
-        WordPtr uOutput = FALSE; // Assume not handled (In case the callback
+        uintptr_t uOutput = FALSE; // Assume not handled (In case the callback
                                  // doesn't set the variable)
         // If the function returns non-zero, assume it should terminate
         // immediately
-        if (pCallBack(pThis, pWindow, static_cast<Word>(uMessage),
-                static_cast<WordPtr>(wParam), static_cast<WordPtr>(lParam),
+        if (pCallBack(pThis, pWindow, static_cast<uint_t>(uMessage),
+                static_cast<uintptr_t>(wParam), static_cast<uintptr_t>(lParam),
                 &uOutput)) {
             // Return the passed result code
             return static_cast<LRESULT>(uOutput);
@@ -1073,7 +1073,7 @@ static LRESULT CALLBACK InternalCallBack(
         // Only if a video display is present
         Burger::Display* pDisplay = pThis->GetDisplay();
         if (pDisplay) {
-            if (pDisplay->HandleMinMax(pWindow, static_cast<WordPtr>(lParam))) {
+            if (pDisplay->HandleMinMax(pWindow, static_cast<uintptr_t>(lParam))) {
                 return FALSE;
             }
         }
@@ -1104,7 +1104,7 @@ static LRESULT CALLBACK InternalCallBack(
         //
 
     case WM_SETCURSOR:
-        if (pThis->HandleCursor(static_cast<Word>(lParam))) {
+        if (pThis->HandleCursor(static_cast<uint_t>(lParam))) {
             return TRUE; // Handled
         }
         break;
@@ -1197,8 +1197,8 @@ static LRESULT CALLBACK InternalCallBack(
         // If there's a mouse device, set the position
         Burger::Mouse* pMouse = pThis->GetMouse();
         if (pMouse) {
-            Word uMouseX;
-            Word uMouseY;
+            uint_t uMouseX;
+            uint_t uMouseY;
 
             // Mouse wheel events give global coordinates. Go figure
             if ((uMessage == WM_MOUSEWHEEL) || (uMessage == WM_MOUSEHWHEEL)) {
@@ -1208,8 +1208,8 @@ static LRESULT CALLBACK InternalCallBack(
                 TempPoint.x = static_cast<LONG>(GET_X_LPARAM(lParam));
                 TempPoint.y = static_cast<LONG>(GET_Y_LPARAM(lParam));
                 ScreenToClient(pThis->GetWindow(), &TempPoint);
-                uMouseX = static_cast<Word>(TempPoint.x);
-                uMouseY = static_cast<Word>(TempPoint.y);
+                uMouseX = static_cast<uint_t>(TempPoint.x);
+                uMouseY = static_cast<uint_t>(TempPoint.y);
             } else {
                 // They are unsigned values!
                 uMouseX = LOWORD(lParam);
@@ -1243,7 +1243,7 @@ static LRESULT CALLBACK InternalCallBack(
             case WM_XBUTTONDOWN:
             case WM_XBUTTONDBLCLK: {
                 // uBits is 1 or 2, convert to 0x8 or 0x10
-                Word uBits = GET_XBUTTON_WPARAM(wParam);
+                uint_t uBits = GET_XBUTTON_WPARAM(wParam);
                 pMouse->PostMouseDown(uBits << 3U);
             }
                 // XBUTTON events need to return TRUE
@@ -1260,7 +1260,7 @@ static LRESULT CALLBACK InternalCallBack(
                 break;
             case WM_XBUTTONUP: {
                 // uBits is 1 or 2, convert to 0x8 or 0x10
-                Word uBits = GET_XBUTTON_WPARAM(wParam);
+                uint_t uBits = GET_XBUTTON_WPARAM(wParam);
                 pMouse->PostMouseUp(uBits << 3U);
             }
                 // XBUTTON events need to return TRUE
@@ -1312,13 +1312,13 @@ static LRESULT CALLBACK InternalCallBack(
             }
             RECT TempRect;
             GetClientRect(pThis->GetWindow(), &TempRect);
-            pDisplay->Resize(static_cast<Word>(TempRect.right),
-                static_cast<Word>(TempRect.bottom));
+            pDisplay->Resize(static_cast<uint_t>(TempRect.right),
+                static_cast<uint_t>(TempRect.bottom));
             if (pDisplay->GetResizeCallback()) {
                 (pDisplay->GetResizeCallback())(
                     pDisplay->GetResizeCallbackData(),
-                    static_cast<Word>(TempRect.right),
-                    static_cast<Word>(TempRect.bottom));
+                    static_cast<uint_t>(TempRect.right),
+                    static_cast<uint_t>(TempRect.bottom));
             }
             // Alert the mouse subsystem to the new mouse bounds
             Burger::Mouse* pMouse = pThis->GetMouse();
@@ -1450,8 +1450,8 @@ static LRESULT CALLBACK InternalCallBack(
                 }
             }
             pKeyboard->PostWindowsKeyEvent(uEvent,
-                ((static_cast<Word32>(lParam) >> 16U) & 0x7FU) |
-                    ((static_cast<Word32>(lParam) >> 17U) & 0x80U));
+                ((static_cast<uint32_t>(lParam) >> 16U) & 0x7FU) |
+                    ((static_cast<uint32_t>(lParam) >> 17U) & 0x80U));
             return 0;
         }
     } break;
@@ -1518,7 +1518,7 @@ static LRESULT CALLBACK InternalCallBack(
 
 ***************************************/
 
-Word16 BURGER_API Burger::Globals::RegisterWindowClass(Word uIconResID)
+uint16_t BURGER_API Burger::Globals::RegisterWindowClass(uint_t uIconResID)
 {
     ATOM uAtom = g_uAtom;
     if (uAtom == INVALID_ATOM) {
@@ -1576,13 +1576,13 @@ Word16 BURGER_API Burger::Globals::RegisterWindowClass(Word uIconResID)
 
     \brief Release the global Burgerlib Window Class
 
-    When RegisterWindowClass(Word) is called, it will create a global ATOM of
+    When RegisterWindowClass(uint_t) is called, it will create a global ATOM of
     the window class. This function will unregister the class. This function is
     called on shutdown automatically
 
     \windowsonly
 
-    \sa RegisterWindowClass(Word)
+    \sa RegisterWindowClass(uint_t)
 
 ***************************************/
 
@@ -1604,7 +1604,7 @@ void BURGER_API Burger::Globals::UnregisterWindowClass(void)
 
     \windowsonly
 
-    \sa RegisterWindowClass(Word)
+    \sa RegisterWindowClass(uint_t)
 
 ***************************************/
 
@@ -1710,7 +1710,7 @@ int BURGER_API Burger::Globals::ExecuteTool(
     // Only capture if needed
     if (bResult && pOutput) {
         DWORD uBytesRead;
-        Word8 Buffer[1024];
+        uint8_t Buffer[1024];
         for (;;) {
             // Read from the finite pipe
             const BOOL bSuccess = ReadFile(

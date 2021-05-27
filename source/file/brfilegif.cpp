@@ -1,13 +1,14 @@
 /***************************************
 
-	GIF File handler class
+    GIF File handler class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -39,11 +40,11 @@
 
 struct GIFHeader_t {
 	char m_GIFName[6];		// GIF87a in ASCII form or GIF89a
-	Word16 m_uWidth;		// Width of the image in pixels
-	Word16 m_uHeight;		// Height of the image in pixels
-	Word8 m_bDescriptor;	// Bits per pixel descriptor
-	Word8 m_bBackColor;		// Background color
-	Word8 m_bAspectRatio;	// Aspect ratio / PixelAspectRatio = (m_bAspectRatio + 15) / 64;
+	uint16_t m_uWidth;		// Width of the image in pixels
+	uint16_t m_uHeight;		// Height of the image in pixels
+	uint8_t m_bDescriptor;	// Bits per pixel descriptor
+	uint8_t m_bBackColor;		// Background color
+	uint8_t m_bAspectRatio;	// Aspect ratio / PixelAspectRatio = (m_bAspectRatio + 15) / 64;
 };
 
 //
@@ -51,12 +52,12 @@ struct GIFHeader_t {
 //
 
 struct GIFImageDescriptor_t {
-	Word8 m_bSeparator;	// Image Descriptor identifier ','
-	Word16 m_uLeft;		// X position of image on the display
-	Word16 m_uTop;		// Y position of image on the display
-	Word16 m_uWidth;	// Width of the image in pixels
-	Word16 m_uHeight;	// Height of the image in pixels
-	Word8 m_bPacked;	// Image and Color Table Data Information
+	uint8_t m_bSeparator;	// Image Descriptor identifier ','
+	uint16_t m_uLeft;		// X position of image on the display
+	uint16_t m_uTop;		// Y position of image on the display
+	uint16_t m_uWidth;	// Width of the image in pixels
+	uint16_t m_uHeight;	// Height of the image in pixels
+	uint8_t m_bPacked;	// Image and Color Table Data Information
 	Burger::RGBWord8_t m_Palette[256];	// Optional palette that's a power of 2 entries in size
 };
 
@@ -65,27 +66,27 @@ struct GIFImageDescriptor_t {
 //
 
 struct GIFEnd_t {
-	Word8 m_bSeperator;		// ';'
+	uint8_t m_bSeperator;		// ';'
 };
 
 
 struct GIFExtension_t {
-	Word8 m_bSeperator;		// '!'
-	Word8 m_bExtensionCode;	// Extension code
-	Word8 m_bBlockSize;		// Number of bytes in this block
+	uint8_t m_bSeperator;		// '!'
+	uint8_t m_bExtensionCode;	// Extension code
+	uint8_t m_bBlockSize;		// Number of bytes in this block
 };
 
 //
 // Extension Code 249, Blocksize 4
 //
 struct GIFAnimationTimer_t {
-	Word8 m_bSeperator;			// '!'
-	Word8 m_bExtensionCode;		// Extension code 0xF7
-	Word8 m_bBlockSize;			// Number of bytes in this block (4)
-	Word8 m_Packed;				// Bits 0x1 = Use transparency, 0x02 = User, 0x1C = Disposal
-	Word16 m_uDelay;			// Delay time for animation in 1/100ths of a second
-	Word8 m_bTransparentIndex;	// Color index to not draw
-	Word8 m_bBlockTerminator;	// 0
+	uint8_t m_bSeperator;			// '!'
+	uint8_t m_bExtensionCode;		// Extension code 0xF7
+	uint8_t m_bBlockSize;			// Number of bytes in this block (4)
+	uint8_t m_Packed;				// Bits 0x1 = Use transparency, 0x02 = User, 0x1C = Disposal
+	uint16_t m_uDelay;			// Delay time for animation in 1/100ths of a second
+	uint8_t m_bTransparentIndex;	// Color index to not draw
+	uint8_t m_bBlockTerminator;	// 0
 };
 
 //
@@ -93,15 +94,15 @@ struct GIFAnimationTimer_t {
 //
 
 struct GIFNetscape_t {
-	Word8 m_bSeperator;			// '!'
-	Word8 m_bExtensionCode;		// Extension code (0xFF)
-	Word8 m_bBlockSize;			// Number of bytes in this block (11)
+	uint8_t m_bSeperator;			// '!'
+	uint8_t m_bExtensionCode;		// Extension code (0xFF)
+	uint8_t m_bBlockSize;			// Number of bytes in this block (11)
 	char m_Netscape[8];			// "NETSCAPE"
 	char m_Version[3];			// "2.0"
-	Word8 m_bSubBlockSize;		// 3
-	Word8 m_bSubBlockID;		// 1
-	Word16 m_uLoopCount;		// Number of iterations to play the animation (0 = forever)
-	Word8 m_bBlockTerminator;	// 0
+	uint8_t m_bSubBlockSize;		// 3
+	uint8_t m_bSubBlockID;		// 1
+	uint16_t m_uLoopCount;		// Number of iterations to play the animation (0 = forever)
+	uint8_t m_bBlockTerminator;	// 0
 };
 
 #endif
@@ -156,7 +157,7 @@ Burger::GIFEncoder * BURGER_API Burger::GIFEncoder::New(void)
 
 /*! ************************************
 
-	\fn Word Burger::GIFEncoder::GetHashKey(Word uInput)
+	\fn uint_t Burger::GIFEncoder::GetHashKey(uint_t uInput)
 	\brief Create a hash key
 
 	Given a 16 bit value of the current and previous pixel, return a hash
@@ -169,7 +170,7 @@ Burger::GIFEncoder * BURGER_API Burger::GIFEncoder::New(void)
 
 /*! ************************************
 
-	\fn Word Burger::GIFEncoder::GetKey(Word uInput)
+	\fn uint_t Burger::GIFEncoder::GetKey(uint_t uInput)
 	\brief Return the LZW key from a hash
 
 	\param uInput Hash value
@@ -179,7 +180,7 @@ Burger::GIFEncoder * BURGER_API Burger::GIFEncoder::New(void)
 
 /*! ************************************
 
-	\fn Word Burger::GIFEncoder::PutKey(Word uInput)
+	\fn uint_t Burger::GIFEncoder::PutKey(uint_t uInput)
 	\brief Prepare a LZW key to form a key
 
 	\param uInput LZW token
@@ -189,7 +190,7 @@ Burger::GIFEncoder * BURGER_API Burger::GIFEncoder::New(void)
 
 /*! ************************************
 
-	\fn Word Burger::GIFEncoder::GetCode(Word uInput)
+	\fn uint_t Burger::GIFEncoder::GetCode(uint_t uInput)
 	\brief Return the LZW code from a hash
 
 	\param uInput Hash value
@@ -199,7 +200,7 @@ Burger::GIFEncoder * BURGER_API Burger::GIFEncoder::New(void)
 
 /*! ************************************
 
-	\fn Word Burger::GIFEncoder::PutCode(Word uInput)
+	\fn uint_t Burger::GIFEncoder::PutCode(uint_t uInput)
 	\brief Prepare a LZW code to form a key
 
 	\param uInput LZW code
@@ -209,7 +210,7 @@ Burger::GIFEncoder * BURGER_API Burger::GIFEncoder::New(void)
 
 /*! ************************************
 
-	\fn Word Burger::GIFEncoder::GetClearCode(void)
+	\fn uint_t Burger::GIFEncoder::GetClearCode(void)
 	\brief Return the LZW Clear code
 
 	Based on the bit depth, return the code to clear the LZW cache
@@ -220,7 +221,7 @@ Burger::GIFEncoder * BURGER_API Burger::GIFEncoder::New(void)
 
 /*! ************************************
 
-	\fn Word Burger::GIFEncoder::GetEOFCode(void)
+	\fn uint_t Burger::GIFEncoder::GetEOFCode(void)
 	\brief Return the LZW End of File code
 
 	Based on the bit depth, return the code to end decompression of LZW data
@@ -240,7 +241,7 @@ Burger::GIFEncoder * BURGER_API Burger::GIFEncoder::New(void)
 
 ***************************************/
 
-void Burger::GIFEncoder::Init(Burger::OutputMemoryStream *pOutput,Word uDepth)
+void Burger::GIFEncoder::Init(Burger::OutputMemoryStream *pOutput,uint_t uDepth)
 {
 	m_pOutput = pOutput;
 	m_uBytesInBuffer = 0;		// No bytes in the cache
@@ -262,7 +263,7 @@ void Burger::GIFEncoder::Init(Burger::OutputMemoryStream *pOutput,Word uDepth)
 	ClearHash();
 
 	// Store the initial LZW color depth into the output stream
-	pOutput->Append(static_cast<Word8>(uDepth));
+	pOutput->Append(static_cast<uint8_t>(uDepth));
 	// Alert the LZW stream to issue a hash clear code
 	WriteCode(GetClearCode());
 }
@@ -275,8 +276,8 @@ void Burger::GIFEncoder::Init(Burger::OutputMemoryStream *pOutput,Word uDepth)
 
 void Burger::GIFEncoder::ClearHash(void)
 {
-	Word *pWork = m_HashTable;
-	WordPtr uCounter = BURGER_ARRAYSIZE(m_HashTable);
+	uint_t *pWork = m_HashTable;
+	uintptr_t uCounter = BURGER_ARRAYSIZE(m_HashTable);
 	do {
 		pWork[0] = BURGER_MAXUINT;
 		++pWork;
@@ -295,14 +296,14 @@ void Burger::GIFEncoder::ClearHash(void)
 
 ***************************************/
 
-Word Burger::GIFEncoder::LookupHash(Word uInput)
+uint_t Burger::GIFEncoder::LookupHash(uint_t uInput)
 {
 	// Get the initial hash value
-	Word uHashKey = GetHashKey(uInput);
-	Word uResult;
+	uint_t uHashKey = GetHashKey(uInput);
+	uint_t uResult;
 	for (;;) {
 		// Is this a valid entry?
-		Word uKey = GetKey(m_HashTable[uHashKey]);
+		uint_t uKey = GetKey(m_HashTable[uHashKey]);
 		if (uKey == (BURGER_MAXUINT>>cLZBits)) {
 			// Not in the hash
 			uResult = BURGER_MAXUINT;	
@@ -332,9 +333,9 @@ Word Burger::GIFEncoder::LookupHash(Word uInput)
 
 ***************************************/
 
-void Burger::GIFEncoder::AddHashEntry(Word uKey,Word uCode)
+void Burger::GIFEncoder::AddHashEntry(uint_t uKey,uint_t uCode)
 {
-	Word uHashKey = GetHashKey(uKey);
+	uint_t uHashKey = GetHashKey(uKey);
 
 	while (GetKey(m_HashTable[uHashKey]) != (BURGER_MAXUINT>>cLZBits)) {
 		// Keep going while wrapping around
@@ -356,19 +357,19 @@ void Burger::GIFEncoder::AddHashEntry(Word uKey,Word uCode)
 
 ***************************************/
 
-void Burger::GIFEncoder::WriteByte(Word uInput)
+void Burger::GIFEncoder::WriteByte(uint_t uInput)
 {
 	// Is the buffer already full?
-	Word uIndex = m_uBytesInBuffer;
+	uint_t uIndex = m_uBytesInBuffer;
 	if (uIndex == 255U) {
 		// Write the length
-		m_pOutput->Append(static_cast<Word8>(uIndex));
+		m_pOutput->Append(static_cast<uint8_t>(uIndex));
 		// Write the data
 		m_pOutput->Append(m_Buffer,uIndex);
 		// Clear the buffer
 		uIndex = 0;
 	}
-	m_Buffer[uIndex] = static_cast<Word8>(uInput);
+	m_Buffer[uIndex] = static_cast<uint8_t>(uInput);
 	++uIndex;
 	m_uBytesInBuffer = uIndex;
 }
@@ -383,7 +384,7 @@ void Burger::GIFEncoder::WriteByte(Word uInput)
 
 ***************************************/
 
-void Burger::GIFEncoder::WriteCode(Word uCode)
+void Burger::GIFEncoder::WriteCode(uint_t uCode)
 {
 	// Insert bits into the stream
 	m_uShiftData |= (uCode << m_uShiftState);
@@ -439,13 +440,13 @@ void Burger::GIFEncoder::Flush(void)
 		// If there is any data in the byte buffer? 
 		if (m_uBytesInBuffer) {
 			// Flush the byte stream
-			m_pOutput->Append(static_cast<Word8>(m_uBytesInBuffer));
+			m_pOutput->Append(static_cast<uint8_t>(m_uBytesInBuffer));
 			m_pOutput->Append(m_Buffer,m_uBytesInBuffer);
 			m_uBytesInBuffer = 0;
 		}
 
 		// Write out a zero to alert LZW there is no more data
-		m_pOutput->Append(static_cast<Word8>(0));
+		m_pOutput->Append(static_cast<uint8_t>(0));
 		m_eEncodingState = ENCODE_FINAL;
 	}
 }
@@ -462,10 +463,10 @@ void Burger::GIFEncoder::Flush(void)
 
 ***************************************/
 
-void Burger::GIFEncoder::WritePixels(const Word8 *pInput,WordPtr uInputLength)
+void Burger::GIFEncoder::WritePixels(const uint8_t *pInput,uintptr_t uInputLength)
 {
 	if (uInputLength) {
-		Word uCurrentCode = m_uCode;
+		uint_t uCurrentCode = m_uCode;
 		if (uCurrentCode == cStartingCode) {
 			// Initialize the current code value
 			uCurrentCode = pInput[0];
@@ -475,12 +476,12 @@ void Burger::GIFEncoder::WritePixels(const Word8 *pInput,WordPtr uInputLength)
 
 		while (uInputLength) {
 			// Grab a pixel
-			Word uPixel = pInput[0];
+			uint_t uPixel = pInput[0];
 			++pInput;
 			--uInputLength;
 			// Create a hash key based on the current pixel and the previous one
-			Word uKey = (uCurrentCode << 8U) + uPixel;
-			Word uHashCode = LookupHash(uKey);
+			uint_t uKey = (uCurrentCode << 8U) + uPixel;
+			uint_t uHashCode = LookupHash(uKey);
 			if (uHashCode != BURGER_MAXUINT) {
 				// Key is found!
 				uCurrentCode = uHashCode;
@@ -517,7 +518,7 @@ void Burger::GIFEncoder::WritePixels(const Word8 *pInput,WordPtr uInputLength)
 
 ***************************************/
 
-static const Word g_MaskTable[] = {0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x80,0x100,0x200,0x400,0x800,0x1FFF};
+static const uint_t g_MaskTable[] = {0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x80,0x100,0x200,0x400,0x800,0x1FFF};
 
 /*! ************************************
 
@@ -540,15 +541,15 @@ void Burger::GIFDecoder::Init(void)
 {
 	m_uBitBucket = 0;
 	m_uBitCount = 0;
-	m_uChunkCount = 0;
-	WordPtr i = 0;
-	Word8 *pDest = m_LZWArray;
+    m_uChunkCount = 0;
+    uintptr_t i = 0;
+	uint8_t *pDest = m_LZWArray;
 
 	// Note, only the first 256 entries of m_LZWSize
 	// and m_LZWTable need to be initialized
 
 	do {
-		pDest[0] = static_cast<Word8>(i);	// 0-255
+		pDest[0] = static_cast<uint8_t>(i);	// 0-255
 		m_LZWSize[i] = 1;					// All are 1 byte in size
 		m_LZWTable[i] = pDest;				// Init pointers to LZWArray table
 		++pDest;
@@ -563,7 +564,7 @@ void Burger::GIFDecoder::Init(void)
 
 void Burger::GIFDecoder::Reset(void)
 {
-	Word i = 256;				// Generated tokens
+	uint_t i = 256;				// Generated tokens
 	do {
 		m_LZWSize[i] = 0;		// Nothing here!
 		m_LZWTable[i] = NULL;	// No pointers
@@ -579,12 +580,12 @@ void Burger::GIFDecoder::Reset(void)
 
 ***************************************/
 
-Word Burger::GIFDecoder::GetCode(Word uBitsRequested)
+uint_t Burger::GIFDecoder::GetCode(uint_t uBitsRequested)
 {
-	Word uMask = 1;		// Bit or mask
-	Word uResult = 0;	// Init returned value
-	Word uBitBucket = m_uBitBucket;		// Get the bit bucket
-	Word uBitCount = m_uBitCount;		// Get the valid bit count
+	uint_t uMask = 1;		// Bit or mask
+	uint_t uResult = 0;	// Init returned value
+	uint_t uBitBucket = m_uBitBucket;		// Get the bit bucket
+	uint_t uBitCount = m_uBitCount;		// Get the valid bit count
 	do {
 		if (!uBitCount) {					// Empty?
 			uBitCount = m_uChunkCount;		// Any more fresh data?
@@ -656,20 +657,20 @@ Burger::GIFDecoder * BURGER_API Burger::GIFDecoder::New(void)
 
 ***************************************/
 
-const char * Burger::GIFDecoder::Unpack(Word8 *pOutput,WordPtr uOutputLength,InputMemoryStream *pInput)
+const char * Burger::GIFDecoder::Unpack(uint8_t *pOutput,uintptr_t uOutputLength,InputMemoryStream *pInput)
 {
 	m_pInput = pInput;
 	m_uLZWCodeSize = pInput->GetByte();	// Number of bits for code size
 	Init();
 
-	Word uCount;				// Temp index counter
-	const Word8 *pPreviousMark=NULL;	// Pointer from previous loop
-	Word uPreviousCode = static_cast<Word>(-1);
-	Word uNewCode = 256+2;		// Newest token being generated
-	Word uCodeBitSize = m_uLZWCodeSize+1U;
-	Word uCodeMask = g_MaskTable[uCodeBitSize];		// NewCode number to match to increase token bit size
+	uint_t uCount;				// Temp index counter
+	const uint8_t *pPreviousMark=NULL;	// Pointer from previous loop
+	uint_t uPreviousCode = static_cast<uint_t>(-1);
+	uint_t uNewCode = 256+2;		// Newest token being generated
+	uint_t uCodeBitSize = m_uLZWCodeSize+1U;
+	uint_t uCodeMask = g_MaskTable[uCodeBitSize];		// NewCode number to match to increase token bit size
 	do {
-		Word uLZWCode = GetCode(uCodeBitSize);		// Get LZW token
+		uint_t uLZWCode = GetCode(uCodeBitSize);		// Get LZW token
 		if (uLZWCode == 257) {			// End token?
 			break;
 		}
@@ -679,13 +680,13 @@ const char * Burger::GIFDecoder::Unpack(Word8 *pOutput,WordPtr uOutputLength,Inp
 			uNewCode = 256+2;		// Reset next new token
 			uCodeBitSize = m_uLZWCodeSize+1;	// 9 bits again
 			uCodeMask = g_MaskTable[uCodeBitSize];	// Reset the mask
-			uPreviousCode = static_cast<Word>(-1);
+			uPreviousCode = static_cast<uint_t>(-1);
 			pPreviousMark = pOutput;
 			continue;
 		}
 
-		const Word8 *pPreviousOutput = pOutput;
-		const Word8 *pTable = m_LZWTable[uLZWCode];	// Get the string pointer
+		const uint8_t *pPreviousOutput = pOutput;
+		const uint8_t *pTable = m_LZWTable[uLZWCode];	// Get the string pointer
 		if (pTable) {					// Valid pointer?
 			uCount = m_LZWSize[uLZWCode];		// Size of the string
 			uOutputLength -= uCount;						// Remove from failsafe
@@ -694,7 +695,7 @@ const char * Burger::GIFDecoder::Unpack(Word8 *pOutput,WordPtr uOutputLength,Inp
 				++pOutput;
 				++pTable;
 			} while (--uCount);
-			if (uPreviousCode==static_cast<Word>(-1)) {	// First pass?
+			if (uPreviousCode==static_cast<uint_t>(-1)) {	// First pass?
 				// Then don't make a new record
 				uPreviousCode = uLZWCode;			// Set the new previous index
 				pPreviousMark = pPreviousOutput;	// Pointer to this work data
@@ -781,7 +782,7 @@ const char *Burger::FileGIF::ParseHeader(InputMemoryStream *pInput)
 		pInput->Get(ID,6);
 		m_uLogicalWidth = pInput->GetShort();
 		m_uLogicalHeight = pInput->GetShort();
-		Word uDescriptor = pInput->GetByte();
+		uint_t uDescriptor = pInput->GetByte();
 		m_bBackgroundColorIndex = pInput->GetByte();
 		m_bAspectRatio = pInput->GetByte();
 
@@ -808,14 +809,14 @@ const char *Burger::FileGIF::ParseHeader(InputMemoryStream *pInput)
 			// Is there a global palette?
 			if (uDescriptor&0x80) {
 				// Get the number of colors in the palette
-				Word uColorCount = 1U<<((uDescriptor&7U)+1U);
+				uint_t uColorCount = 1U<<((uDescriptor&7U)+1U);
 				RGBAWord8_t *pWork = m_Palette;
-				Word uColorShift = 7U-((uDescriptor>>4U)&7U);
+				uint_t uColorShift = 7U-((uDescriptor>>4U)&7U);
 				m_uColorShift = uColorShift;
 				do {
-					pWork->m_uRed = static_cast<Word8>(pInput->GetByte()<<uColorShift);		// Read in the palette
-					pWork->m_uGreen = static_cast<Word8>(pInput->GetByte()<<uColorShift);
-					pWork->m_uBlue = static_cast<Word8>(pInput->GetByte()<<uColorShift);
+					pWork->m_uRed = static_cast<uint8_t>(pInput->GetByte()<<uColorShift);		// Read in the palette
+					pWork->m_uGreen = static_cast<uint8_t>(pInput->GetByte()<<uColorShift);
+					pWork->m_uBlue = static_cast<uint8_t>(pInput->GetByte()<<uColorShift);
 					pWork->m_uAlpha = 255;
 					++pWork;
 				} while (--uColorCount);
@@ -843,13 +844,13 @@ const char *Burger::FileGIF::ParseExtension(InputMemoryStream *pInput)
 	const char *pBadNews = NULL;
 
 	// Get the type and the byte size of the first packet
-	Word uType = pInput->GetByte();
-	WordPtr uCount = pInput->GetByte();
+	uint_t uType = pInput->GetByte();
+	uintptr_t uCount = pInput->GetByte();
 	if ((uType==0xF9) && (uCount==4)) {
-		Word uFlags = pInput->GetByte();
+		uint_t uFlags = pInput->GetByte();
 		m_uFrameDelay = pInput->GetShort();
 		m_bTransparentColor = pInput->GetByte();
-		m_bTransparentColorEnable = static_cast<Word8>(uFlags&1U);
+		m_bTransparentColorEnable = static_cast<uint8_t>(uFlags&1U);
 		if (pInput->GetByte()!=0) {
 			pBadNews = "Graphic Control Extension has an non zero terminator.";
 		}
@@ -869,8 +870,8 @@ const char *Burger::FileGIF::ParseExtension(InputMemoryStream *pInput)
 				uCount = pInput->GetByte();	// Get the data count
 			} while (uCount);		// Still more data?
 		} else {
-			Word uSubBlock = pInput->GetByte();
-			Word uSubBlockID = pInput->GetByte();
+			uint_t uSubBlock = pInput->GetByte();
+			uint_t uSubBlockID = pInput->GetByte();
 			if ((uSubBlock!=3U) || (uSubBlockID!=1U)) {
 				pBadNews = "Invalid Netscape Looping Application Extension sub block ID.";
 			} else {
@@ -906,27 +907,27 @@ const char * Burger::FileGIF::ParseImage(Image *pOutput,InputMemoryStream *pInpu
 {
 	const char *pBadNews = NULL;
 
-	Word uOriginX = pInput->GetShort();
-	Word uOriginY = pInput->GetShort();
+	uint_t uOriginX = pInput->GetShort();
+	uint_t uOriginY = pInput->GetShort();
 	if (uOriginX|uOriginY) {
 		pBadNews = "Origin of GIF image is not zero.";
 	} else {
-		Word uImageWidth = pInput->GetShort();
-		Word uImageHeight = pInput->GetShort();
+		uint_t uImageWidth = pInput->GetShort();
+		uint_t uImageHeight = pInput->GetShort();
 		if ((uImageWidth!=m_uLogicalWidth) || (uImageHeight!=m_uLogicalHeight)) {
 			pBadNews = "Image parsed is not the same size as total image.";
 		} else {
 			// Local image descriptor
-			Word uDescriptor = pInput->GetByte();
+			uint_t uDescriptor = pInput->GetByte();
 			if (uDescriptor&0x80U) {
 				// Get the number of colors in the palette
-				Word uColorCount = 1U<<((uDescriptor&7U)+1U);
+				uint_t uColorCount = 1U<<((uDescriptor&7U)+1U);
 				RGBAWord8_t *pWork = m_Palette;
-				Word uColorShift = m_uColorShift;
+				uint_t uColorShift = m_uColorShift;
 				do {
-					pWork->m_uRed = static_cast<Word8>(pInput->GetByte()<<uColorShift);		// Read in the palette
-					pWork->m_uGreen = static_cast<Word8>(pInput->GetByte()<<uColorShift);
-					pWork->m_uBlue = static_cast<Word8>(pInput->GetByte()<<uColorShift);
+					pWork->m_uRed = static_cast<uint8_t>(pInput->GetByte()<<uColorShift);		// Read in the palette
+					pWork->m_uGreen = static_cast<uint8_t>(pInput->GetByte()<<uColorShift);
+					pWork->m_uBlue = static_cast<uint8_t>(pInput->GetByte()<<uColorShift);
 					pWork->m_uAlpha = 255;
 					++pWork;
 				} while (--uColorCount);
@@ -940,7 +941,7 @@ const char * Burger::FileGIF::ParseImage(Image *pOutput,InputMemoryStream *pInpu
 	// Header is good, get the bitmap
 
 	if (!pBadNews) {
-		Word uResult = pOutput->Init(m_uLogicalWidth,m_uLogicalHeight,Image::PIXELTYPE8BIT);
+		uint_t uResult = pOutput->Init(m_uLogicalWidth,m_uLogicalHeight,Image::PIXELTYPE8BIT);
 		if (uResult) {
 			pBadNews = "Out of memory.";
 		} else {
@@ -969,14 +970,14 @@ const char * Burger::FileGIF::ParseImage(Image *pOutput,InputMemoryStream *pInpu
 
 ***************************************/
 
-Word Burger::FileGIF::WriteHeader(OutputMemoryStream *pOutput)
+uint_t Burger::FileGIF::WriteHeader(OutputMemoryStream *pOutput)
 {
 	// Always assume GIF89a
-	Word uResult = pOutput->Append("GIF89a");
+	uint_t uResult = pOutput->Append("GIF89a");
 	if (!uResult) {
 		// Store the size of the image
-		uResult |= pOutput->Append(static_cast<Word16>(m_uLogicalWidth));
-		uResult |= pOutput->Append(static_cast<Word16>(m_uLogicalHeight));
+		uResult |= pOutput->Append(static_cast<uint16_t>(m_uLogicalWidth));
+		uResult |= pOutput->Append(static_cast<uint16_t>(m_uLogicalHeight));
 
 		// Flags
 		// 0x80 = Color table exists
@@ -984,14 +985,14 @@ Word Burger::FileGIF::WriteHeader(OutputMemoryStream *pOutput)
 		// 0x10 = Colors are sorted (Not true)
 		// 0x07 = Size of the color table in power of 2 (7 = 2^8, 6 = 2^7, 5 = 2^6...)
 
-		uResult |= pOutput->Append(static_cast<Word8>(0xF7));
-		uResult |= pOutput->Append(static_cast<Word8>(m_bBackgroundColorIndex));
-		uResult |= pOutput->Append(static_cast<Word8>(m_bAspectRatio));
+		uResult |= pOutput->Append(static_cast<uint8_t>(0xF7));
+		uResult |= pOutput->Append(static_cast<uint8_t>(m_bBackgroundColorIndex));
+		uResult |= pOutput->Append(static_cast<uint8_t>(m_bAspectRatio));
 
 		// Write out the initial palette
 
 		const RGBAWord8_t *pPalette = m_Palette;	// First save the palette
-		WordPtr i = 256;
+		uintptr_t i = 256;
 		do {
 			uResult |= pOutput->Append(reinterpret_cast<const RGBWord8_t *>(pPalette));		// Red, Green and Blue
 			++pPalette;
@@ -1013,27 +1014,27 @@ Word Burger::FileGIF::WriteHeader(OutputMemoryStream *pOutput)
 
 ***************************************/
 
-Word Burger::FileGIF::WriteImage(OutputMemoryStream *pOutput,const Image *pInput)
+uint_t Burger::FileGIF::WriteImage(OutputMemoryStream *pOutput,const Image *pInput)
 {
 	// Write out the image descriptor
-	Word uResult = pOutput->Append(',');
+	uint_t uResult = pOutput->Append(',');
 	// Is the stream working?
 	if (!uResult) {
 		// Output a frame
-		//	uResult |= pOutput->Append(static_cast<Word16>(0));
-		//	uResult |= pOutput->Append(static_cast<Word16>(0));
-		uResult |= pOutput->Append(static_cast<Word32>(0));		// Replace the two calls above with a single call
-		uResult |= pOutput->Append(static_cast<Word16>(m_uLogicalWidth));
-		uResult |= pOutput->Append(static_cast<Word16>(m_uLogicalHeight));
+		//	uResult |= pOutput->Append(static_cast<uint16_t>(0));
+		//	uResult |= pOutput->Append(static_cast<uint16_t>(0));
+		uResult |= pOutput->Append(static_cast<uint32_t>(0));		// Replace the two calls above with a single call
+		uResult |= pOutput->Append(static_cast<uint16_t>(m_uLogicalWidth));
+		uResult |= pOutput->Append(static_cast<uint16_t>(m_uLogicalHeight));
 
 		// Has the palette changed?
 		if (!MemoryCompare(m_Palette,m_GlobalPalette,sizeof(m_Palette))) {
-			uResult |= pOutput->Append(static_cast<Word8>(0));
+			uResult |= pOutput->Append(static_cast<uint8_t>(0));
 		} else {
 			// Write out a full 256 entry palette
-			uResult |= pOutput->Append(static_cast<Word8>(0x87));
+			uResult |= pOutput->Append(static_cast<uint8_t>(0x87));
 			RGBAWord8_t *pPalette = m_Palette;
-			WordPtr uColorCount = 256;
+			uintptr_t uColorCount = 256;
 			do {
 				uResult |= pOutput->Append(reinterpret_cast<const RGBWord8_t *>(pPalette));		// Write out the palette
 				++pPalette;
@@ -1044,9 +1045,9 @@ Word Burger::FileGIF::WriteImage(OutputMemoryStream *pOutput,const Image *pInput
 			// Write out the pixel data
 			GIFEncoder *pCompressor = GIFEncoder::New();
 			pCompressor->Init(pOutput,8);
-			const Word8 *pData = pInput->GetImage();
-			Word uTemp = m_uLogicalHeight;
-			Word uWidth = m_uLogicalWidth;
+			const uint8_t *pData = pInput->GetImage();
+			uint_t uTemp = m_uLogicalHeight;
+			uint_t uWidth = m_uLogicalWidth;
 			if (uTemp) {
 				do {
 					pCompressor->WritePixels(pData,uWidth);
@@ -1069,24 +1070,24 @@ Word Burger::FileGIF::WriteImage(OutputMemoryStream *pOutput,const Image *pInput
 
 	\param pOutput Pointer to the output stream
 	\return 0 for no error, non zero on error
-	\sa SetLoopCount(Word) or GetLoopCount(void) const
+	\sa SetLoopCount(uint_t) or GetLoopCount(void) const
 
 ***************************************/
 
-Word Burger::FileGIF::WriteExtensionNetScape20(OutputMemoryStream *pOutput)
+uint_t Burger::FileGIF::WriteExtensionNetScape20(OutputMemoryStream *pOutput)
 {
 	// Write out the image descriptor
-	Word uResult = pOutput->Append('!');
+	uint_t uResult = pOutput->Append('!');
 	// Is the stream working?
 	if (!uResult) {
 		// Output the NetScape 2.0 extension
-		uResult |= pOutput->Append(static_cast<Word8>(255));
-		uResult |= pOutput->Append(static_cast<Word8>(11));
+		uResult |= pOutput->Append(static_cast<uint8_t>(255));
+		uResult |= pOutput->Append(static_cast<uint8_t>(11));
 		uResult |= pOutput->Append("NETSCAPE2.0");
-		uResult |= pOutput->Append(static_cast<Word8>(3));
-		uResult |= pOutput->Append(static_cast<Word8>(1));
-		uResult |= pOutput->Append(static_cast<Word16>(m_uLoopCount));
-		uResult |= pOutput->Append(static_cast<Word8>(0));
+		uResult |= pOutput->Append(static_cast<uint8_t>(3));
+		uResult |= pOutput->Append(static_cast<uint8_t>(1));
+		uResult |= pOutput->Append(static_cast<uint16_t>(m_uLoopCount));
+		uResult |= pOutput->Append(static_cast<uint8_t>(0));
 	}
 	return uResult;
 }
@@ -1105,23 +1106,23 @@ Word Burger::FileGIF::WriteExtensionNetScape20(OutputMemoryStream *pOutput)
 
 ***************************************/
 
-Word Burger::FileGIF::WriteExtensionGraphicControl(OutputMemoryStream *pOutput)
+uint_t Burger::FileGIF::WriteExtensionGraphicControl(OutputMemoryStream *pOutput)
 {
 	// Write out the image descriptor
-	Word uResult = pOutput->Append('!');
+	uint_t uResult = pOutput->Append('!');
 	// Is the stream working?
 	if (!uResult) {
 		// Output the NetScape 2.0 extension
-		uResult |= pOutput->Append(static_cast<Word8>(249));
-		uResult |= pOutput->Append(static_cast<Word8>(4));
-		Word uFlag = 8;
+		uResult |= pOutput->Append(static_cast<uint8_t>(249));
+		uResult |= pOutput->Append(static_cast<uint8_t>(4));
+		uint_t uFlag = 8;
 		if (m_bTransparentColorEnable) {
 			uFlag |= 1;
 		}
-		uResult |= pOutput->Append(static_cast<Word8>(uFlag));
-		uResult |= pOutput->Append(static_cast<Word16>(m_uFrameDelay));
-		uResult |= pOutput->Append(static_cast<Word8>(m_bTransparentColor));
-		uResult |= pOutput->Append(static_cast<Word8>(0));
+		uResult |= pOutput->Append(static_cast<uint8_t>(uFlag));
+		uResult |= pOutput->Append(static_cast<uint16_t>(m_uFrameDelay));
+		uResult |= pOutput->Append(static_cast<uint8_t>(m_bTransparentColor));
+		uResult |= pOutput->Append(static_cast<uint8_t>(0));
 	}
 	return uResult;
 }
@@ -1138,7 +1139,7 @@ Word Burger::FileGIF::WriteExtensionGraphicControl(OutputMemoryStream *pOutput)
 
 ***************************************/
 
-Word Burger::FileGIF::WriteTerminator(OutputMemoryStream *pOutput)
+uint_t Burger::FileGIF::WriteTerminator(OutputMemoryStream *pOutput)
 {
 	// Write out the terminator descriptor
 	return pOutput->Append(';');
@@ -1200,18 +1201,18 @@ Burger::FileGIF * BURGER_API Burger::FileGIF::New(void)
 
 ***************************************/
 
-Word Burger::FileGIF::Load(Image *pOutput,InputMemoryStream *pInput)
+uint_t Burger::FileGIF::Load(Image *pOutput,InputMemoryStream *pInput)
 {
 	// Always parse the GIF header!
 	const char *pBadNews = ParseHeader(pInput);
 
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (!pBadNews) {
 
 		// Loop here until an image is found and parsed
 
 		do {
-			Word uToken = pInput->GetByte();
+			uint_t uToken = pInput->GetByte();
 			// Extension?
 			if (uToken=='!') {
 				pBadNews = ParseExtension(pInput);	// Discard it
@@ -1255,15 +1256,15 @@ Word Burger::FileGIF::Load(Image *pOutput,InputMemoryStream *pInput)
 
 ***************************************/
 
-Word Burger::FileGIF::LoadNextFrame(Image *pOutput,InputMemoryStream *pInput)
+uint_t Burger::FileGIF::LoadNextFrame(Image *pOutput,InputMemoryStream *pInput)
 {
 	const char *pBadNews = NULL;
-	Word uResult = 0;
+	uint_t uResult = 0;
 
 	// Loop here until an image is found and parsed
 
 	do {
-		Word uToken = pInput->GetByte();
+		uint_t uToken = pInput->GetByte();
 		// Extension?
 		if (uToken=='!') {
 			pBadNews = ParseExtension(pInput);	// Discard it
@@ -1300,7 +1301,7 @@ Word Burger::FileGIF::LoadNextFrame(Image *pOutput,InputMemoryStream *pInput)
 	to the GIF file format.
 
 	\note Before calling this function, make sure the color palette
-	for the pixel data is already set with a call to SetPalette(const RGBWord8_t *,Word,Word)
+	for the pixel data is already set with a call to SetPalette(const RGBWord8_t *,uint_t,uint_t)
 
 	\param pOutput Pointer to the output stream to store the file image
 	\param pImage Pointer to a valid Image structure containing the image data
@@ -1309,14 +1310,14 @@ Word Burger::FileGIF::LoadNextFrame(Image *pOutput,InputMemoryStream *pInput)
 
 ***************************************/
 
-Word Burger::FileGIF::Save(OutputMemoryStream *pOutput,const Image *pImage)
+uint_t Burger::FileGIF::Save(OutputMemoryStream *pOutput,const Image *pImage)
 {
 	Image::ePixelTypes eType = pImage->GetType();
-	Word uResult = 10;
+	uint_t uResult = 10;
 	// Only 8 bit formats are supported
 	if (eType==Image::PIXELTYPE8BIT) {
-		Word uWidth = pImage->GetWidth();
-		Word uHeight = pImage->GetHeight();
+		uint_t uWidth = pImage->GetWidth();
+		uint_t uHeight = pImage->GetHeight();
 		if (uWidth && uHeight) {
 			m_uLogicalWidth = uWidth;
 			m_uLogicalHeight = uHeight;
@@ -1361,7 +1362,7 @@ Word Burger::FileGIF::Save(OutputMemoryStream *pOutput,const Image *pImage)
 	output the image data
 
 	\note Before calling this function, make sure the color palette
-	for the pixel data is already set with a call to SetPalette(const RGBWord8_t *,Word,Word).
+	for the pixel data is already set with a call to SetPalette(const RGBWord8_t *,uint_t,uint_t).
 	This palette is used for the global palette that's included in the GIF
 	file header.
 
@@ -1370,22 +1371,22 @@ Word Burger::FileGIF::Save(OutputMemoryStream *pOutput,const Image *pImage)
 	\param uLoopCount Value to store in the GIF file loop count record. 0 = infinite loop
 
 	\return Zero if successful
-	\sa AnimationSaveFrame(OutputMemoryStream *,const Image *,Word) or AnimationSaveFinish(OutputMemoryStream *)
+	\sa AnimationSaveFrame(OutputMemoryStream *,const Image *,uint_t) or AnimationSaveFinish(OutputMemoryStream *)
 
 ***************************************/
 
-Word Burger::FileGIF::AnimationSaveStart(OutputMemoryStream *pOutput,const Image *pImage,Word uLoopCount)
+uint_t Burger::FileGIF::AnimationSaveStart(OutputMemoryStream *pOutput,const Image *pImage,uint_t uLoopCount)
 {
 	Image::ePixelTypes eType = pImage->GetType();
-	Word uResult = 10;
+	uint_t uResult = 10;
 	// Only 8 bit formats are supported
 	if (eType==Image::PIXELTYPE8BIT) {
-		Word uWidth = pImage->GetWidth();
-		Word uHeight = pImage->GetHeight();
+		uint_t uWidth = pImage->GetWidth();
+		uint_t uHeight = pImage->GetHeight();
 		if (uWidth && uHeight) {
 			m_uLogicalWidth = uWidth;
-			m_uLogicalHeight = uHeight;
-			m_uLoopCount = static_cast<Word16>(uLoopCount);
+            m_uLogicalHeight = uHeight;
+            m_uLoopCount = static_cast<uint16_t>(uLoopCount);
 
 			// Output the GIF header
 			uResult = WriteHeader(pOutput);
@@ -1407,14 +1408,14 @@ Word Burger::FileGIF::AnimationSaveStart(OutputMemoryStream *pOutput,const Image
 	\param pImage Pointer to a valid Image structure containing the image data
 	\param uDelay Time delay between frames in 1/100ths of a second (0 = no delay)
 	\return Zero if successful
-	\sa AnimationSaveStart(OutputMemoryStream *,const Image *,Word) or AnimationSaveFinish(OutputMemoryStream *)
+	\sa AnimationSaveStart(OutputMemoryStream *,const Image *,uint_t) or AnimationSaveFinish(OutputMemoryStream *)
 
 ***************************************/
 
-Word Burger::FileGIF::AnimationSaveFrame(OutputMemoryStream *pOutput,const Image *pImage,Word uDelay)
+uint_t Burger::FileGIF::AnimationSaveFrame(OutputMemoryStream *pOutput,const Image *pImage,uint_t uDelay)
 {
-	m_uFrameDelay = static_cast<Word16>(uDelay);
-	Word uResult = WriteExtensionGraphicControl(pOutput);
+	m_uFrameDelay = static_cast<uint16_t>(uDelay);
+	uint_t uResult = WriteExtensionGraphicControl(pOutput);
 	if (!uResult) {
 		uResult = WriteImage(pOutput,pImage);
 	}
@@ -1431,18 +1432,18 @@ Word Burger::FileGIF::AnimationSaveFrame(OutputMemoryStream *pOutput,const Image
 
 	\param pOutput Pointer to the output stream to store the file image
 	\return Zero if successful
-	\sa AnimationSaveStart(OutputMemoryStream *,const Image *,Word) or AnimationSaveFrame(OutputMemoryStream *,const Image *,Word)
+	\sa AnimationSaveStart(OutputMemoryStream *,const Image *,uint_t) or AnimationSaveFrame(OutputMemoryStream *,const Image *,uint_t)
 
 ***************************************/
 
-Word Burger::FileGIF::AnimationSaveFinish(OutputMemoryStream *pOutput)
+uint_t Burger::FileGIF::AnimationSaveFinish(OutputMemoryStream *pOutput)
 {
 	return WriteTerminator(pOutput);
 }
 
 /*! ************************************
 
-	\fn Word Burger::FileGIF::GetAspectRatio(void) const
+	\fn uint_t Burger::FileGIF::GetAspectRatio(void) const
 	\brief Get the file image's pixel aspect ratio
 
 	Factor used to compute an approximation
@@ -1458,64 +1459,64 @@ Word Burger::FileGIF::AnimationSaveFinish(OutputMemoryStream *pOutput)
 	1:4 in increments of 1/64th.
 
 	\return The GIF formatted aspect ratio value
-	\sa SetAspectRatio(Word), GetBackgroundColorIndex(void) const or GetLoopCount(void) const
+	\sa SetAspectRatio(uint_t), GetBackgroundColorIndex(void) const or GetLoopCount(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FileGIF::SetAspectRatio(Word bAspectRatio)
+	\fn void Burger::FileGIF::SetAspectRatio(uint_t bAspectRatio)
 	\brief Set the file image's aspect ratio
 
 	Sets the GIF file header's aspect ratio. Use zero for default.
 	
 	\param bAspectRatio New GIF formatted aspect ratio token
-	\sa GetAspectRatio(void) const, SetBackgroundColorIndex(Word) or SetLoopCount(Word)
+	\sa GetAspectRatio(void) const, SetBackgroundColorIndex(uint_t) or SetLoopCount(uint_t)
 
 ***************************************/
 
 
 /*! ************************************
 
-	\fn Word Burger::FileGIF::GetBackgroundColorIndex(void) const
+	\fn uint_t Burger::FileGIF::GetBackgroundColorIndex(void) const
 	\brief Get the file image's background color index
 
 	Return the GIF file header's background color index. This value is
 	usually set to zero.
 
 	\return The color index to use as the background color
-	\sa SetBackgroundColorIndex(Word), GetAspectRatio(void) const or GetLoopCount(void) const
+	\sa SetBackgroundColorIndex(uint_t), GetAspectRatio(void) const or GetLoopCount(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FileGIF::SetBackgroundColorIndex(Word bBackGroundColorIndex)
+	\fn void Burger::FileGIF::SetBackgroundColorIndex(uint_t bBackGroundColorIndex)
 	\brief Set the file image's background color index
 
 	Sets the GIF file header's background color index
 	
 	\param bBackGroundColorIndex New GIF background color index
-	\sa GetBackgroundColorIndex(void) const, SetAspectRatio(Word) or SetLoopCount(Word)
+	\sa GetBackgroundColorIndex(void) const, SetAspectRatio(uint_t) or SetLoopCount(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Word Burger::FileGIF::GetTransparentColorIndex(void) const
+	\fn uint_t Burger::FileGIF::GetTransparentColorIndex(void) const
 	\brief Get the file image's transparent color index
 
 	Return the GIF file frame's transparent color index. This value is
 	usually set to zero and can change from frame to frame.
 
 	\return The color index to use as the transparent color
-	\sa SetTransparentColorIndex(Word)
+	\sa SetTransparentColorIndex(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FileGIF::SetTransparentColorIndex(Word bTransparentColor)
+	\fn void Burger::FileGIF::SetTransparentColorIndex(uint_t bTransparentColor)
 	\brief Set the file image's transparent color index
 
 	Sets the GIF file frame's transparent color index. It must be set before a frame
@@ -1528,7 +1529,7 @@ Word Burger::FileGIF::AnimationSaveFinish(OutputMemoryStream *pOutput)
 
 /*! ************************************
 
-	\fn Word Burger::FileGIF::GetTransparentColorEnable(void) const
+	\fn uint_t Burger::FileGIF::GetTransparentColorEnable(void) const
 	\brief Return \ref TRUE if the frame has a transparent color index
 
 	Return the GIF file frame's transparent color index enable flat. This value is
@@ -1536,13 +1537,13 @@ Word Burger::FileGIF::AnimationSaveFinish(OutputMemoryStream *pOutput)
 	and can change from frame to frame.
 
 	\return \ref FALSE if there is no transparent color index, \ref TRUE if transparency is enabled
-	\sa SetTransparentColorEnable(Word)
+	\sa SetTransparentColorEnable(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FileGIF::SetTransparentColorEnable(Word bTransparentColorEnable)
+	\fn void Burger::FileGIF::SetTransparentColorEnable(uint_t bTransparentColorEnable)
 	\brief Enable/disable the file image's transparent color index
 
 	Enables or disables the GIF file frame's transparent color index. It must be set before a frame
@@ -1557,7 +1558,7 @@ Word Burger::FileGIF::AnimationSaveFinish(OutputMemoryStream *pOutput)
 
 /*! ************************************
 
-	\fn Word Burger::FileGIF::GetLoopCount(void) const
+	\fn uint_t Burger::FileGIF::GetLoopCount(void) const
 	\brief Get the file image's animation loop count
 
 	GIF files have a special record to contain the number of times
@@ -1566,29 +1567,29 @@ Word Burger::FileGIF::AnimationSaveFinish(OutputMemoryStream *pOutput)
 	meaning this animation should loop forever.
 
 	\return The GIF animation loop count (Zero means forever)
-	\sa SetLoopCount(Word), GetAspectRatio(void) const or GetBackgroundColorIndex(void) const
+	\sa SetLoopCount(uint_t), GetAspectRatio(void) const or GetBackgroundColorIndex(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FileGIF::SetLoopCount(Word uLoopCount)
+	\fn void Burger::FileGIF::SetLoopCount(uint_t uLoopCount)
 	\brief Set the file image's loop count
 
 	Set the GIF animation's loop count. Only used when writing
 	animated gifs
 
-	\note This value is written as a \ref Word16. Any values larger than 65535
+	\note This value is written as a uint16_t. Any values larger than 65535
 	will be truncated.
 	
 	\param uLoopCount New animation loop count
-	\sa GetLoopCount(void) const, SetAspectRatio(Word) or SetBackgroundColorIndex(Word)
+	\sa GetLoopCount(void) const, SetAspectRatio(uint_t) or SetBackgroundColorIndex(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Word Burger::FileGIF::GetFrameDelay(void) const
+	\fn uint_t Burger::FileGIF::GetFrameDelay(void) const
 	\brief Get the current animation frame delay
 
 	Animated GIF files have a delay time in 1/100ths of a second.
@@ -1597,13 +1598,13 @@ Word Burger::FileGIF::AnimationSaveFinish(OutputMemoryStream *pOutput)
 	next frame in the sequence. Zero means no delay.
 
 	\return The time delay before showing the next frame in 1/100ths of a second
-	\sa SetFrameDelay(Word)
+	\sa SetFrameDelay(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FileGIF::SetFrameDelay(Word uFrameDelay)
+	\fn void Burger::FileGIF::SetFrameDelay(uint_t uFrameDelay)
 	\brief Set the animation frame delay.
 
 	Before appending a new frame to an animation, set this value
@@ -1642,7 +1643,7 @@ Word Burger::FileGIF::AnimationSaveFinish(OutputMemoryStream *pOutput)
 
 /*! ************************************
 
-	\fn void Burger::FileGIF::SetPalette(const RGBWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+	\fn void Burger::FileGIF::SetPalette(const RGBWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 	\brief Set the file image's palette (RGB)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -1656,13 +1657,13 @@ Word Burger::FileGIF::AnimationSaveFinish(OutputMemoryStream *pOutput)
 	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
-	\sa SetPalette(const RGBAWord8_t *,Word,Word)
+	\sa SetPalette(const RGBAWord8_t *,uint_t,uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FileGIF::SetPalette(const RGBAWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+	\fn void Burger::FileGIF::SetPalette(const RGBAWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 	\brief Set the file image's palette (RGBA)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -1675,6 +1676,6 @@ Word Burger::FileGIF::AnimationSaveFinish(OutputMemoryStream *pOutput)
 	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
-	\sa SetPalette(const RGBWord8_t *,Word,Word)
+	\sa SetPalette(const RGBWord8_t *,uint_t,uint_t)
 
 ***************************************/

@@ -112,7 +112,7 @@
 ***************************************/
 
 void BURGER_API Burger::Globals::GetQTFolderFromRegistry(
-	const char* pSubKey, const char* pValueName, char* pBuffer, Word32 uSize)
+	const char* pSubKey, const char* pValueName, char* pBuffer, uint32_t uSize)
 {
 	if (uSize) {
 		pBuffer[0] = 0;
@@ -171,11 +171,11 @@ void BURGER_API Burger::Globals::GetQTFolderFromRegistry(
 
 ***************************************/
 
-Word BURGER_API Burger::Globals::GetPathToQuickTimeFolder(
-	char* pBuffer, Word32 uSize, Word32* pReserved)
+uint_t BURGER_API Burger::Globals::GetPathToQuickTimeFolder(
+	char* pBuffer, uint32_t uSize, uint32_t* pReserved)
 {
 	char Temp[1024];
-	Word bResult = FALSE;
+	uint_t bResult = FALSE;
 	// Only execute if there's a valid output buffer
 	if (pBuffer && uSize) {
 
@@ -198,7 +198,7 @@ Word BURGER_API Burger::Globals::GetPathToQuickTimeFolder(
 						hQuickTime, Temp, BURGER_ARRAYSIZE(Temp))) {
 
 					// Remove the string "Quicktime.qts"
-					WordPtr uStrLength = StringLength(Temp);
+					uintptr_t uStrLength = StringLength(Temp);
 					if (uStrLength > 13) {
 						// Copy up the string minus the ending "Quicktime.qts"
 						// Note: This will end the string with a '\'
@@ -287,11 +287,11 @@ Word BURGER_API Burger::Globals::GetPathToQuickTimeFolder(
 
 ***************************************/
 
-Word32 BURGER_API Burger::Globals::GetQTSystemDirectoryA(
-	char* pBuffer, Word32 uSize)
+uint32_t BURGER_API Burger::Globals::GetQTSystemDirectoryA(
+	char* pBuffer, uint32_t uSize)
 {
 	GetPathToQuickTimeFolder(pBuffer, uSize, NULL);
-	return static_cast<Word32>(StringLength(pBuffer));
+	return static_cast<uint32_t>(StringLength(pBuffer));
 }
 
 /*! ************************************
@@ -319,12 +319,12 @@ Word32 BURGER_API Burger::Globals::GetQTSystemDirectoryA(
 
 ***************************************/
 
-Word32 BURGER_API Burger::Globals::GetQTApplicationDirectoryA(
-	char* pBuffer, Word32 uSize)
+uint32_t BURGER_API Burger::Globals::GetQTApplicationDirectoryA(
+	char* pBuffer, uint32_t uSize)
 {
 	GetQTFolderFromRegistry("Software\\Apple Computer, Inc.\\QuickTime",
 		"InstallDir", pBuffer, uSize);
-	return static_cast<Word32>(StringLength(pBuffer));
+	return static_cast<uint32_t>(StringLength(pBuffer));
 }
 
 /*! ************************************
@@ -352,8 +352,8 @@ Word32 BURGER_API Burger::Globals::GetQTApplicationDirectoryA(
 
 ***************************************/
 
-Word32 BURGER_API Burger::Globals::GetQTExtensionDirectoryA(
-	char* pBuffer, Word32 uSize)
+uint32_t BURGER_API Burger::Globals::GetQTExtensionDirectoryA(
+	char* pBuffer, uint32_t uSize)
 {
 	char SystemDirName[256];
 	char QTFolderName[256];
@@ -388,7 +388,7 @@ Word32 BURGER_API Burger::Globals::GetQTExtensionDirectoryA(
 			}
 		}
 	}
-	return static_cast<Word32>(StringLength(pBuffer));
+	return static_cast<uint32_t>(StringLength(pBuffer));
 }
 
 /*! ************************************
@@ -416,8 +416,8 @@ Word32 BURGER_API Burger::Globals::GetQTExtensionDirectoryA(
 
 ***************************************/
 
-Word32 BURGER_API Burger::Globals::GetQTComponentDirectoryA(
-	char* pBuffer, Word32 uSize)
+uint32_t BURGER_API Burger::Globals::GetQTComponentDirectoryA(
+	char* pBuffer, uint32_t uSize)
 {
 	GetQTFolderFromRegistry("Software\\Apple Computer, Inc.\\QuickTime",
 		"QTComponentsDir", pBuffer, uSize);
@@ -432,7 +432,7 @@ Word32 BURGER_API Burger::Globals::GetQTComponentDirectoryA(
 			StringConcatenate(pBuffer, "QuickTime\\");
 		}
 	}
-	return static_cast<Word32>(StringLength(pBuffer));
+	return static_cast<uint32_t>(StringLength(pBuffer));
 }
 
 /*! ************************************
@@ -463,11 +463,11 @@ HINSTANCE BURGER_API Burger::Globals::QTLoadLibrary(const char* pDLLName)
 
 	// Assume no DLL
 	HINSTANCE pResult = NULL;
-	WordPtr uDLLNameLength = StringLength(pDLLName);
+	uintptr_t uDLLNameLength = StringLength(pDLLName);
 
 	// Get the path for Quicktime
 	if (GetPathToQuickTimeFolder(FinalPathname,
-			static_cast<Word32>(
+			static_cast<uint32_t>(
 				BURGER_ARRAYSIZE(FinalPathname) - uDLLNameLength),
 			NULL)) {
 		StringConcatenate(FinalPathname, pDLLName);
@@ -475,7 +475,7 @@ HINSTANCE BURGER_API Burger::Globals::QTLoadLibrary(const char* pDLLName)
 		if (!pResult) {
 			GetLastError();
 			if (GetQTExtensionDirectoryA(FinalPathname,
-					static_cast<Word32>(
+					static_cast<uint32_t>(
 						BURGER_ARRAYSIZE(FinalPathname) - uDLLNameLength))) {
 				StringConcatenate(FinalPathname, pDLLName);
 				pResult = Windows::LoadLibraryA(FinalPathname);
@@ -514,9 +514,9 @@ uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void)
 	if (!g_bQuickTimeVersionValid) {
 		g_bQuickTimeVersionValid = TRUE; // I got the version
 
-		Word uResult = 0; // I assume version 0!
+		uint_t uResult = 0; // I assume version 0!
 		// Get the system directory for Quicktime
-		WordPtr uPathLength =
+		uintptr_t uPathLength =
 			GetSystemDirectoryA(PathName, BURGER_ARRAYSIZE(PathName) - 32);
 		if (uPathLength) {
 

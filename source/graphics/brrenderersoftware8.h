@@ -28,14 +28,14 @@ namespace Burger {
 class RendererSoftware8: public Renderer {
 public:
     RendererSoftware8(void) BURGER_NOEXCEPT;
-    virtual void Draw8BitPixels(int iX, int iY, Word uWidth, Word uHeight,
-        WordPtr uStride, const Word8* pPixels) BURGER_NOEXCEPT BURGER_FINAL;
-    virtual void Draw8BitPixelsMasked(int iX, int iY, Word uWidth, Word uHeight,
-        WordPtr uStride, const Word8* pPixels) BURGER_NOEXCEPT BURGER_FINAL;
+    virtual void Draw8BitPixels(int iX, int iY, uint_t uWidth, uint_t uHeight,
+        uintptr_t uStride, const uint8_t* pPixels) BURGER_NOEXCEPT BURGER_FINAL;
+    virtual void Draw8BitPixelsMasked(int iX, int iY, uint_t uWidth, uint_t uHeight,
+        uintptr_t uStride, const uint8_t* pPixels) BURGER_NOEXCEPT BURGER_FINAL;
     virtual void DrawPixel(
-        int iX, int iY, Word uColorIndex) BURGER_NOEXCEPT BURGER_FINAL;
-    virtual void DrawRect(int iX, int iY, Word uWidth, Word uHeight,
-        Word uColorIndex) BURGER_NOEXCEPT BURGER_FINAL;
+        int iX, int iY, uint_t uColorIndex) BURGER_NOEXCEPT BURGER_FINAL;
+    virtual void DrawRect(int iX, int iY, uint_t uWidth, uint_t uHeight,
+        uint_t uColorIndex) BURGER_NOEXCEPT BURGER_FINAL;
 };
 }
 /* END */

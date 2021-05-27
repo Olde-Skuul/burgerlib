@@ -19,6 +19,6 @@
 #include "brtypes.h"
 #endif
 
-extern int BURGER_API TestBrcompression(Word uVerbose);
+extern int BURGER_API TestBrcompression(uint_t uVerbose);
 
 #endif

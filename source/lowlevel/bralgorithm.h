@@ -59,25 +59,23 @@ struct conditional<true, T, F> {
     typedef T type;
 };
 
-#if !defined(BURGER_WATCOM)
 template<bool B, class T = void>
 struct enable_if {
+    typedef T type;
 };
 
 template<class T>
-struct enable_if<true, T> {
-    typedef T type;
+struct enable_if<false, T> {
 };
 
 template<bool B, class T = void>
 struct disable_if {
+    typedef T type;
 };
 
 template<class T>
-struct disable_if<false, T> {
-    typedef T type;
+struct disable_if<true, T> {
 };
-#endif
 
 template<class T, T _Value>
 struct integral_constant {
@@ -103,7 +101,7 @@ struct integral_constant {
 };
 
 template<bool _Value>
-struct bool_constant: Burger::integral_constant<bool, _Value> {
+struct bool_constant: integral_constant<bool, _Value> {
 };
 
 typedef bool_constant<true> true_type;
@@ -122,7 +120,7 @@ struct alignment_of {
         T val;
         char byte;
     };
-    enum { value = sizeof(pad) - sizeof(T) };
+    enum { value = uint_t(sizeof(pad) - sizeof(T)) };
 };
 
 #endif
@@ -502,9 +500,7 @@ struct remove_pointer_4<T*> {
 
 template<class T, bool b>
 struct remove_pointer_3 {
-    typedef
-        typename remove_pointer_4<typename ::Burger::remove_cv<T>::type>::type
-            type;
+    typedef typename remove_pointer_4<typename remove_cv<T>::type>::type type;
 };
 
 template<class T>
@@ -514,8 +510,7 @@ struct remove_pointer_3<T, false> {
 
 template<class T>
 struct remove_pointer_2 {
-    typedef
-        typename remove_pointer_3<T, ::Burger::is_pointer<T>::value>::type type;
+    typedef typename remove_pointer_3<T, is_pointer<T>::value>::type type;
 };
 
 template<class T>
@@ -564,10 +559,90 @@ template<class T>
 struct is_rvalue_reference: false_type {
 };
 
-#if defined(BURGER_RVALUE_REFERENCES)
+#if defined(BURGER_RVALUE_REFERENCES) && !defined(DOXYGEN)
 template<class T>
 struct is_rvalue_reference<T&&>: true_type {
 };
+
+#if (defined(BURGER_MSVC) && (BURGER_MSVC <= 170000000)) && !defined(DOXYGEN)
+template<class R>
+struct is_rvalue_reference<R(&&)()>: true_type {
+};
+template<class R, class T0>
+struct is_rvalue_reference<R(&&)(T0)>: true_type {
+};
+template<class R, class T0, class T1>
+struct is_rvalue_reference<R(&&)(T0, T1)>: true_type {
+};
+template<class R, class T0, class T1, class T2>
+struct is_rvalue_reference<R(&&)(T0, T1, T2)>: true_type {
+};
+template<class R, class T0, class T1, class T2, class T3>
+struct is_rvalue_reference<R(&&)(T0, T1, T2, T3)>: true_type {
+};
+template<class R, class T0, class T1, class T2, class T3, class T4>
+struct is_rvalue_reference<R(&&)(T0, T1, T2, T3, T4)>: true_type {
+};
+
+template<class R>
+struct is_rvalue_reference<R(&&)(...)>: true_type {
+};
+template<class R, class T0>
+struct is_rvalue_reference<R(&&)(T0, ...)>: true_type {
+};
+template<class R, class T0, class T1>
+struct is_rvalue_reference<R(&&)(T0, T1, ...)>: true_type {
+};
+template<class R, class T0, class T1, class T2>
+struct is_rvalue_reference<R(&&)(T0, T1, T2, ...)>: true_type {
+};
+template<class R, class T0, class T1, class T2, class T3>
+struct is_rvalue_reference<R(&&)(T0, T1, T2, T3, ...)>: true_type {
+};
+template<class R, class T0, class T1, class T2, class T3, class T4>
+struct is_rvalue_reference<R(&&)(T0, T1, T2, T3, T4, ...)>: true_type {
+};
+
+template<class R>
+struct is_rvalue_reference<R (&)()>: false_type {
+};
+template<class R, class T0>
+struct is_rvalue_reference<R (&)(T0)>: false_type {
+};
+template<class R, class T0, class T1>
+struct is_rvalue_reference<R (&)(T0, T1)>: false_type {
+};
+template<class R, class T0, class T1, class T2>
+struct is_rvalue_reference<R (&)(T0, T1, T2)>: false_type {
+};
+template<class R, class T0, class T1, class T2, class T3>
+struct is_rvalue_reference<R (&)(T0, T1, T2, T3, ...)>: false_type {
+};
+template<class R, class T0, class T1, class T2, class T3, class T4>
+struct is_rvalue_reference<R (&)(T0, T1, T2, T3, T4)>: false_type {
+};
+
+template<class R>
+struct is_rvalue_reference<R (&)(...)>: false_type {
+};
+template<class R, class T0>
+struct is_rvalue_reference<R (&)(T0, ...)>: false_type {
+};
+template<class R, class T0, class T1>
+struct is_rvalue_reference<R (&)(T0, T1, ...)>: false_type {
+};
+template<class R, class T0, class T1, class T2>
+struct is_rvalue_reference<R (&)(T0, T1, T2, ...)>: false_type {
+};
+template<class R, class T0, class T1, class T2, class T3>
+struct is_rvalue_reference<R (&)(T0, T1, T2, T3)>: false_type {
+};
+template<class R, class T0, class T1, class T2, class T3, class T4>
+struct is_rvalue_reference<R (&)(T0, T1, T2, T3, T4, ...)>: false_type {
+};
+
+#endif
+
 #endif
 
 template<class T>
@@ -577,9 +652,8 @@ struct is_reference: bool_constant<is_lvalue_reference<T>::value ||
 
 #if !defined(DOXYGEN)
 template<class T>
-struct _signed_val_test
-    : bool_constant<static_cast<typename remove_cv<T>::type>(-1) <
-          static_cast<typename remove_cv<T>::type>(0)> {
+struct _signed_val_test: bool_constant<((typename remove_cv<T>::type) - 1) <
+                             ((typename remove_cv<T>::type)0)> {
 };
 #endif
 
@@ -597,6 +671,790 @@ struct is_unsigned
           !_signed_val_test<typename conditional<is_integral<T>::value, T,
               int>::type>::value> {
 };
+
+#if !defined(DOXYGEN)
+// If more than 24 parameters are needed, reevaluate your life choices.
+namespace type_traits {
+no_type BURGER_ANSIAPI is_function_ptr_tester(...);
+
+template<class R>
+yes_type is_function_ptr_tester(R (*)());
+template<class R, class T0>
+yes_type is_function_ptr_tester(R (*)(T0));
+template<class R, class T0, class T1>
+yes_type is_function_ptr_tester(R (*)(T0, T1));
+template<class R, class T0, class T1, class T2>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2));
+template<class R, class T0, class T1, class T2, class T3>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3));
+template<class R, class T0, class T1, class T2, class T3, class T4>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10>
+yes_type is_function_ptr_tester(
+    R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11>
+yes_type is_function_ptr_tester(
+    R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12>
+yes_type is_function_ptr_tester(
+    R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13>
+yes_type is_function_ptr_tester(
+    R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14>
+yes_type is_function_ptr_tester(
+    R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15>
+yes_type is_function_ptr_tester(R (*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16>
+yes_type is_function_ptr_tester(R (*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16, T17));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16, T17, T18));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16, T17, T18, T19));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22, class T23>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22, class T23, class T24>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24));
+
+#if !defined(BURGER_WATCOM)
+template<class R>
+yes_type is_function_ptr_tester(R (*)(...));
+template<class R, class T0>
+yes_type is_function_ptr_tester(R (*)(T0...));
+template<class R, class T0, class T1>
+yes_type is_function_ptr_tester(R (*)(T0, T1...));
+template<class R, class T0, class T1, class T2>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2...));
+template<class R, class T0, class T1, class T2, class T3>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3...));
+template<class R, class T0, class T1, class T2, class T3, class T4>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9>
+yes_type is_function_ptr_tester(
+    R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10>
+yes_type is_function_ptr_tester(
+    R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11>
+yes_type is_function_ptr_tester(
+    R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12>
+yes_type is_function_ptr_tester(
+    R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13>
+yes_type is_function_ptr_tester(
+    R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14>
+yes_type is_function_ptr_tester(
+    R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15>
+yes_type is_function_ptr_tester(R (*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16, T17...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16, T17, T18...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16, T17, T18, T19...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22, class T23>
+yes_type is_function_ptr_tester(R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9,
+    T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23...));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22, class T23, class T24>
+yes_type is_function_ptr_tester(
+    R (*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15,
+        T16, T17, T18, T19, T20, T21, T22, T23, T24...));
+#endif
+
+#if defined(_MSC_EXTENSIONS)
+template<class R>
+yes_type is_function_ptr_tester(R(__cdecl*)());
+template<class R, class T0>
+yes_type is_function_ptr_tester(R(__cdecl*)(T0));
+template<class R, class T0, class T1>
+yes_type is_function_ptr_tester(R(__cdecl*)(T0, T1));
+template<class R, class T0, class T1, class T2>
+yes_type is_function_ptr_tester(R(__cdecl*)(T0, T1, T2));
+template<class R, class T0, class T1, class T2, class T3>
+yes_type is_function_ptr_tester(R(__cdecl*)(T0, T1, T2, T3));
+template<class R, class T0, class T1, class T2, class T3, class T4>
+yes_type is_function_ptr_tester(R(__cdecl*)(T0, T1, T2, T3, T4));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5>
+yes_type is_function_ptr_tester(R(__cdecl*)(T0, T1, T2, T3, T4, T5));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6>
+yes_type is_function_ptr_tester(R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7>
+yes_type is_function_ptr_tester(R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6, T7));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8>
+yes_type is_function_ptr_tester(
+    R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6, T7, T8));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9>
+yes_type is_function_ptr_tester(
+    R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10>
+yes_type is_function_ptr_tester(
+    R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11>
+yes_type is_function_ptr_tester(
+    R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12>
+yes_type is_function_ptr_tester(
+    R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13>
+yes_type is_function_ptr_tester(
+    R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14>
+yes_type is_function_ptr_tester(R(__cdecl*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15>
+yes_type is_function_ptr_tester(R(__cdecl*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16>
+yes_type is_function_ptr_tester(R(__cdecl*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17>
+yes_type is_function_ptr_tester(R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6, T7, T8,
+    T9, T10, T11, T12, T13, T14, T15, T16, T17));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18>
+yes_type is_function_ptr_tester(R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6, T7, T8,
+    T9, T10, T11, T12, T13, T14, T15, T16, T17, T18));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19>
+yes_type is_function_ptr_tester(R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6, T7, T8,
+    T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20>
+yes_type is_function_ptr_tester(R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6, T7, T8,
+    T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21>
+yes_type is_function_ptr_tester(R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6, T7, T8,
+    T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22>
+yes_type is_function_ptr_tester(R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6, T7, T8,
+    T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22, class T23>
+yes_type is_function_ptr_tester(R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6, T7, T8,
+    T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22, class T23, class T24>
+yes_type is_function_ptr_tester(
+    R(__cdecl*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14,
+        T15, T16, T17, T18, T19, T20, T21, T22, T23, T24));
+
+template<class R>
+yes_type is_function_ptr_tester(R(__stdcall*)());
+template<class R, class T0>
+yes_type is_function_ptr_tester(R(__stdcall*)(T0));
+template<class R, class T0, class T1>
+yes_type is_function_ptr_tester(R(__stdcall*)(T0, T1));
+template<class R, class T0, class T1, class T2>
+yes_type is_function_ptr_tester(R(__stdcall*)(T0, T1, T2));
+template<class R, class T0, class T1, class T2, class T3>
+yes_type is_function_ptr_tester(R(__stdcall*)(T0, T1, T2, T3));
+template<class R, class T0, class T1, class T2, class T3, class T4>
+yes_type is_function_ptr_tester(R(__stdcall*)(T0, T1, T2, T3, T4));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5>
+yes_type is_function_ptr_tester(R(__stdcall*)(T0, T1, T2, T3, T4, T5));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6>
+yes_type is_function_ptr_tester(R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7>
+yes_type is_function_ptr_tester(R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6, T7));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8>
+yes_type is_function_ptr_tester(
+    R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9>
+yes_type is_function_ptr_tester(
+    R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10>
+yes_type is_function_ptr_tester(
+    R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11>
+yes_type is_function_ptr_tester(
+    R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12>
+yes_type is_function_ptr_tester(
+    R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13>
+yes_type is_function_ptr_tester(
+    R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14>
+yes_type is_function_ptr_tester(R(__stdcall*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15>
+yes_type is_function_ptr_tester(R(__stdcall*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16>
+yes_type is_function_ptr_tester(R(__stdcall*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17>
+yes_type is_function_ptr_tester(R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18>
+yes_type is_function_ptr_tester(R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19>
+yes_type is_function_ptr_tester(R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20>
+yes_type is_function_ptr_tester(R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21>
+yes_type is_function_ptr_tester(R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22>
+yes_type is_function_ptr_tester(R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22, class T23>
+yes_type is_function_ptr_tester(
+    R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
+        T14, T15, T16, T17, T18, T19, T20, T21, T22, T23));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22, class T23, class T24>
+yes_type is_function_ptr_tester(
+    R(__stdcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
+        T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24));
+
+#if !defined(_MANAGED)
+template<class R>
+yes_type is_function_ptr_tester(R(__fastcall*)());
+template<class R, class T0>
+yes_type is_function_ptr_tester(R(__fastcall*)(T0));
+template<class R, class T0, class T1>
+yes_type is_function_ptr_tester(R(__fastcall*)(T0, T1));
+template<class R, class T0, class T1, class T2>
+yes_type is_function_ptr_tester(R(__fastcall*)(T0, T1, T2));
+template<class R, class T0, class T1, class T2, class T3>
+yes_type is_function_ptr_tester(R(__fastcall*)(T0, T1, T2, T3));
+template<class R, class T0, class T1, class T2, class T3, class T4>
+yes_type is_function_ptr_tester(R(__fastcall*)(T0, T1, T2, T3, T4));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5>
+yes_type is_function_ptr_tester(R(__fastcall*)(T0, T1, T2, T3, T4, T5));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6>
+yes_type is_function_ptr_tester(R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7>
+yes_type is_function_ptr_tester(R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6, T7));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8>
+yes_type is_function_ptr_tester(
+    R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9>
+yes_type is_function_ptr_tester(
+    R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10>
+yes_type is_function_ptr_tester(
+    R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11>
+yes_type is_function_ptr_tester(
+    R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12>
+yes_type is_function_ptr_tester(
+    R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13>
+yes_type is_function_ptr_tester(
+    R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14>
+yes_type is_function_ptr_tester(R(__fastcall*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15>
+yes_type is_function_ptr_tester(R(__fastcall*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16>
+yes_type is_function_ptr_tester(R(__fastcall*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17>
+yes_type is_function_ptr_tester(R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18>
+yes_type is_function_ptr_tester(R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19>
+yes_type is_function_ptr_tester(R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20>
+yes_type is_function_ptr_tester(R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21>
+yes_type is_function_ptr_tester(R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22>
+yes_type is_function_ptr_tester(R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22, class T23>
+yes_type is_function_ptr_tester(
+    R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
+        T14, T15, T16, T17, T18, T19, T20, T21, T22, T23));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22, class T23, class T24>
+yes_type is_function_ptr_tester(
+    R(__fastcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
+        T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24));
+#endif
+
+#if defined(BURGER_SSE2) && (BURGER_MSVC >= 180000000)
+template<class R>
+yes_type is_function_ptr_tester(R(__vectorcall*)());
+template<class R, class T0>
+yes_type is_function_ptr_tester(R(__vectorcall*)(T0));
+template<class R, class T0, class T1>
+yes_type is_function_ptr_tester(R(__vectorcall*)(T0, T1));
+template<class R, class T0, class T1, class T2>
+yes_type is_function_ptr_tester(R(__vectorcall*)(T0, T1, T2));
+template<class R, class T0, class T1, class T2, class T3>
+yes_type is_function_ptr_tester(R(__vectorcall*)(T0, T1, T2, T3));
+template<class R, class T0, class T1, class T2, class T3, class T4>
+yes_type is_function_ptr_tester(R(__vectorcall*)(T0, T1, T2, T3, T4));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5>
+yes_type is_function_ptr_tester(R(__vectorcall*)(T0, T1, T2, T3, T4, T5));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6>
+yes_type is_function_ptr_tester(R(__vectorcall*)(T0, T1, T2, T3, T4, T5, T6));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7>
+yes_type is_function_ptr_tester(
+    R(__vectorcall*)(T0, T1, T2, T3, T4, T5, T6, T7));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8>
+yes_type is_function_ptr_tester(
+    R(__vectorcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9>
+yes_type is_function_ptr_tester(
+    R(__vectorcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10>
+yes_type is_function_ptr_tester(
+    R(__vectorcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11>
+yes_type is_function_ptr_tester(
+    R(__vectorcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12>
+yes_type is_function_ptr_tester(
+    R(__vectorcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13>
+yes_type is_function_ptr_tester(R(__vectorcall*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14>
+yes_type is_function_ptr_tester(R(__vectorcall*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15>
+yes_type is_function_ptr_tester(R(__vectorcall*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16>
+yes_type is_function_ptr_tester(R(__vectorcall*)(
+    T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17>
+yes_type is_function_ptr_tester(R(__vectorcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18>
+yes_type is_function_ptr_tester(R(__vectorcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19>
+yes_type is_function_ptr_tester(R(__vectorcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20>
+yes_type is_function_ptr_tester(R(__vectorcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21>
+yes_type is_function_ptr_tester(R(__vectorcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22>
+yes_type is_function_ptr_tester(R(__vectorcall*)(T0, T1, T2, T3, T4, T5, T6, T7,
+    T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22, class T23>
+yes_type is_function_ptr_tester(
+    R(__vectorcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
+        T14, T15, T16, T17, T18, T19, T20, T21, T22, T23));
+template<class R, class T0, class T1, class T2, class T3, class T4, class T5,
+    class T6, class T7, class T8, class T9, class T10, class T11, class T12,
+    class T13, class T14, class T15, class T16, class T17, class T18, class T19,
+    class T20, class T21, class T22, class T23, class T24>
+yes_type is_function_ptr_tester(
+    R(__vectorcall*)(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,
+        T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24));
+#endif
+
+#endif
+}
+
+template<typename T>
+struct is_function_impl {
+    static T* t;
+    static const bool value = (sizeof(type_traits::is_function_ptr_tester(t)) ==
+        sizeof(type_traits::yes_type));
+};
+
+template<typename T>
+struct is_function_impl<T&>: false_type {
+};
+
+#if defined(BURGER_RVALUE_REFERENCES)
+template<typename T>
+struct is_function_impl<T&&>: false_type {
+};
+#endif
+#endif
+
+template<class T>
+struct is_function: integral_constant<bool, is_function_impl<T>::value> {
+};
+
+#if (!defined(BURGER_MSVC) || (BURGER_MSVC >= 170000000)) && !defined(DOXYGEN)
+template<class T>
+struct is_function<T&>: public false_type {
+};
+#endif
+
+#if defined(BURGER_RVALUE_REFERENCES) && !defined(DOXYGEN)
+template<class T>
+struct is_function<T&&>: public false_type {
+};
+
+#if defined(BURGER_MSVC) && (BURGER_MSVC <= 170000000) && !defined(DOXYGEN)
+template<class R>
+struct is_function<R(&&)()>: false_type {
+};
+template<class R, class T0>
+struct is_function<R(&&)(T0)>: false_type {
+};
+template<class R, class T0, class T1>
+struct is_function<R(&&)(T0, T1)>: false_type {
+};
+template<class R, class T0, class T1, class T2>
+struct is_function<R(&&)(T0, T1, T2)>: false_type {
+};
+template<class R, class T0, class T1, class T2, class T3>
+struct is_function<R(&&)(T0, T1, T2, T3)>: false_type {
+};
+template<class R, class T0, class T1, class T2, class T3, class T4>
+struct is_function<R(&&)(T0, T1, T2, T3, T4)>: false_type {
+};
+template<class R>
+struct is_function<R(&&)(...)>: false_type {
+};
+template<class R, class T0>
+struct is_function<R(&&)(T0, ...)>: false_type {
+};
+template<class R, class T0, class T1>
+struct is_function<R(&&)(T0, T1, ...)>: false_type {
+};
+template<class R, class T0, class T1, class T2>
+struct is_function<R(&&)(T0, T1, T2, ...)>: false_type {
+};
+template<class R, class T0, class T1, class T2, class T3>
+struct is_function<R(&&)(T0, T1, T2, T3, ...)>: false_type {
+};
+template<class R, class T0, class T1, class T2, class T3, class T4>
+struct is_function<R(&&)(T0, T1, T2, T3, T4, ...)>: false_type {
+};
+#endif
+#endif
+
+#if 0
+template<class T>
+struct make_signed {
+private:
+    // The template argument to make_signed must be an integer or enum type.
+    BURGER_STATIC_ASSERT(is_integral<T>::value /* || is_enum<T>::value */);
+    // The template argument to make_signed must not be the type bool.
+    BURGER_STATIC_ASSERT(!(is_same<typename remove_cv<T>::type, bool>::value));
+
+    typedef typename remove_cv<T>::type t_no_cv;
+    typedef typename conditional<(is_signed<T>::value &&
+                                     is_integral<T>::value &&
+                                     !is_same<t_no_cv, char>::value &&
+                                     !is_same<t_no_cv, wchar_t>::value &&
+                                     !is_same<t_no_cv, bool>::value),
+        T,
+        typename conditional<(is_integral<T>::value &&
+                                 !is_same<t_no_cv, char>::value &&
+                                 !is_same<t_no_cv, wchar_t>::value &&
+                                 !is_same<t_no_cv, bool>::value),
+            typename conditional<is_same<t_no_cv, unsigned char>::value,
+                signed char,
+                typename conditional<is_same<t_no_cv, unsigned short>::value,
+                    signed short,
+                    typename conditional<is_same<t_no_cv, unsigned int>::value,
+                        int,
+                        typename conditional<
+                            is_same<t_no_cv, unsigned long>::value, long,
+                            int64_t>::type>::type>::type>::type,
+            // Not a regular integer type:
+            typename conditional<sizeof(t_no_cv) == sizeof(unsigned char),
+                signed char,
+                typename conditional<sizeof(t_no_cv) == sizeof(unsigned short),
+                    signed short,
+                    typename conditional<
+                        sizeof(t_no_cv) == sizeof(unsigned int), int,
+                        typename conditional<
+                            sizeof(t_no_cv) == sizeof(unsigned long), long,
+                            int64_t>::type>::type>::type>::type>::type>::type
+        base_integer_type;
+
+    // Add back any const qualifier:
+    typedef typename conditional<is_const<T>::value,
+        typename add_const<base_integer_type>::type, base_integer_type>::type
+        const_base_integer_type;
+
+public:
+    // Add back any volatile qualifier:
+    typedef typename conditional<is_volatile<T>::value,
+        typename add_volatile<const_base_integer_type>::type,
+        const_base_integer_type>::type type;
+};
+#endif
 
 template<typename T>
 T* round_up_pointer(

@@ -1,15 +1,16 @@
 /***************************************
 
-	Grid Index iterator
+    Grid Index iterator
 
-	Based on source written by Thatcher Ulrich
+    Based on source written by Thatcher Ulrich
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -37,11 +38,11 @@
 
 ***************************************/
 
-void BURGER_API Burger::ChooseGridSize(Word* pXCellCount,Word* pYCellCount,const Vector4D_t *pBoundingRect,WordPtr uItemCountEstimate,float fGridScale)
+void BURGER_API Burger::ChooseGridSize(uint_t* pXCellCount,uint_t* pYCellCount,const Vector4D_t *pBoundingRect,uintptr_t uItemCountEstimate,float fGridScale)
 {
 	// Set the default
-	Word uXCellCount = 1;
-	Word uYCellCount = 1;
+	uint_t uXCellCount = 1;
+	uint_t uYCellCount = 1;
 	// Any cells?
 	if (uItemCountEstimate) {
 		// Get the area to map
@@ -56,12 +57,12 @@ void BURGER_API Burger::ChooseGridSize(Word* pXCellCount,Word* pYCellCount,const
 			float fSqrt = Sqrt(fEstimate);
 			fWidth = (fWidth * fWidth) * fArea;
 			fHeight = (fHeight * fHeight) * fArea;
-			uXCellCount = static_cast<Word>(static_cast<int>(fWidth * fSqrt));
-			uYCellCount = static_cast<Word>(static_cast<int>(fHeight * fSqrt));
+			uXCellCount = static_cast<uint_t>(static_cast<int>(fWidth * fSqrt));
+			uYCellCount = static_cast<uint_t>(static_cast<int>(fHeight * fSqrt));
 		} else {
 			// No area? Width of height was zero
 			// Convert the scale to the cell count
-			Word uTemp = static_cast<Word>(static_cast<int>(fGridScale*fGridScale*fEstimate));
+			uint_t uTemp = static_cast<uint_t>(static_cast<int>(fGridScale*fGridScale*fEstimate));
 			if (fWidth > 0) {
 				uXCellCount = uTemp;
 			} else {
@@ -69,8 +70,8 @@ void BURGER_API Burger::ChooseGridSize(Word* pXCellCount,Word* pYCellCount,const
 			}
 		}
 		// Force bounds to 1 through 256
-		uXCellCount = Clamp(static_cast<Word32>(uXCellCount),1U,256U);
-		uYCellCount = Clamp(static_cast<Word32>(uYCellCount),1U,256U);
+		uXCellCount = Clamp(static_cast<uint32_t>(uXCellCount),1U,256U);
+		uYCellCount = Clamp(static_cast<uint32_t>(uYCellCount),1U,256U);
 	}
 	pXCellCount[0] = uXCellCount;
 	pYCellCount[0] = uYCellCount;
@@ -101,7 +102,7 @@ void BURGER_API Burger::ChooseGridSize(Word* pXCellCount,Word* pYCellCount,const
 
 /*! ************************************
 
-	\fn Burger::GridIndexPoints::Entry_t Burger::GridIndexPoints::GetCell(Word uX,Word uY) const
+	\fn Burger::GridIndexPoints::Entry_t Burger::GridIndexPoints::GetCell(uint_t uX,uint_t uY) const
 	\brief Get the entry at a location in the grid
 	
 	Retrieve the root entry, if any, at the requested location in the grid
@@ -116,7 +117,7 @@ void BURGER_API Burger::ChooseGridSize(Word* pXCellCount,Word* pYCellCount,const
 
 /*! ************************************
 
-	\fn WordPtr Burger::GridIndexPoints::GetCellIndex(const Vector2D_t *pInput) const
+	\fn uintptr_t Burger::GridIndexPoints::GetCellIndex(const Vector2D_t *pInput) const
 	\brief Get the offset into the grid from a coordinate
 	
 	Given a high precision location in the grid, get the 1 dimensional
@@ -125,7 +126,7 @@ void BURGER_API Burger::ChooseGridSize(Word* pXCellCount,Word* pYCellCount,const
 	\param pInput Pointer to the high resolution location
 	\return One dimensional index into the array
 
-	\sa GetCell(Word,Word) const
+	\sa GetCell(uint_t,uint_t) const
 
 ***************************************/
 
@@ -139,7 +140,7 @@ void BURGER_API Burger::ChooseGridSize(Word* pXCellCount,Word* pYCellCount,const
 	\param pOutput Pointer to store the adjusted location.
 	\param pInput Pointer to the high resolution location
 
-	\sa GetCell(Word,Word) const
+	\sa GetCell(uint_t,uint_t) const
 
 ***************************************/
 
@@ -165,11 +166,11 @@ void BURGER_API Burger::GridIndexPoints::GetContainingCellClamped(Vector2D_t *pO
 	\param uXCells Width of the grid in cells
 	\param uYCells Height of the grid in cells
 
-	\sa GridIndexPoints(const Vector4D_t *,WordPtr,float)
+	\sa GridIndexPoints(const Vector4D_t *,uintptr_t,float)
 
 ***************************************/
 
-Burger::GridIndexPoints::GridIndexPoints(const Vector4D_t *pBounds,Word uXCells,Word uYCells) :
+Burger::GridIndexPoints::GridIndexPoints(const Vector4D_t *pBounds,uint_t uXCells,uint_t uYCells) :
 	m_BoundsRect(pBounds[0]),
 	m_uXCells(uXCells),
 	m_uYCells(uYCells),
@@ -199,11 +200,11 @@ Burger::GridIndexPoints::GridIndexPoints(const Vector4D_t *pBounds,Word uXCells,
 	\param uItemCountEstimate Number of total elements in the grid
 	\param fGridScale Scale value to increase precision on the grid for the bounds rect
 
-	\sa GridIndexPoints(const Vector4D_t *,Word,Word)
+	\sa GridIndexPoints(const Vector4D_t *,uint_t,uint_t)
 
 ***************************************/
 
-Burger::GridIndexPoints::GridIndexPoints(const Vector4D_t *pBounds,WordPtr uItemCountEstimate,float fGridScale) :
+Burger::GridIndexPoints::GridIndexPoints(const Vector4D_t *pBounds,uintptr_t uItemCountEstimate,float fGridScale) :
 	m_BoundsRect(pBounds[0])
 {
 	// Figure out the optimum size
@@ -229,7 +230,7 @@ Burger::GridIndexPoints::GridIndexPoints(const Vector4D_t *pBounds,WordPtr uItem
 Burger::GridIndexPoints::~GridIndexPoints()
 {
 	// Any data in the grid?
-	WordPtr uCount = m_uXCells * m_uYCells;
+	uintptr_t uCount = m_uXCells * m_uYCells;
 	if (uCount) {
 		// Iterate over the grid and dispose of any entries
 		Entry_t **ppEntry = m_ppGrid;
@@ -283,7 +284,7 @@ Burger::GridIndexPoints::~GridIndexPoints()
 
 /*! ************************************
 
-	\fn Word Burger::GridIndexPoints::iterator::at_end(void) const
+	\fn uint_t Burger::GridIndexPoints::iterator::at_end(void) const
 	\brief \ref TRUE if the iterator is at the end of the data
 	
 	\return \ref FALSE if the is more data remaining, \ref TRUE if data is exhausted.
@@ -325,8 +326,8 @@ void BURGER_API Burger::GridIndexPoints::iterator::advance(void)
 	if (!pEntry) {
 		// Done with current cell; go to next cell.
 		++m_uCurrentCellX;
-		while (m_uCurrentCellY <= static_cast<Word>(m_QueryCellsRect.GetBottom())) {
-			while (m_uCurrentCellX <= static_cast<Word>(m_QueryCellsRect.GetRight())) {
+		while (m_uCurrentCellY <= static_cast<uint_t>(m_QueryCellsRect.GetBottom())) {
+			while (m_uCurrentCellX <= static_cast<uint_t>(m_QueryCellsRect.GetRight())) {
 				pEntry = m_pParent->GetCell(m_uCurrentCellX,m_uCurrentCellY);
 				if (pEntry) {
 					// Found a valid cell.
@@ -337,12 +338,12 @@ void BURGER_API Burger::GridIndexPoints::iterator::advance(void)
 			if (pEntry) {
 				break;
 			}
-			m_uCurrentCellX = static_cast<Word>(m_QueryCellsRect.GetLeft());
+			m_uCurrentCellX = static_cast<uint_t>(m_QueryCellsRect.GetLeft());
 			++m_uCurrentCellY;
 		}
 		if (!pEntry) {
-			BURGER_ASSERT(m_uCurrentCellX == static_cast<Word>(m_QueryCellsRect.GetLeft()));
-			BURGER_ASSERT(m_uCurrentCellY == static_cast<Word>(m_QueryCellsRect.GetBottom() + 1));
+			BURGER_ASSERT(m_uCurrentCellX == static_cast<uint_t>(m_QueryCellsRect.GetLeft()));
+			BURGER_ASSERT(m_uCurrentCellY == static_cast<uint_t>(m_QueryCellsRect.GetBottom() + 1));
 			// No more valid cells.
 			BURGER_ASSERT(at_end());
 		}
@@ -405,8 +406,8 @@ Burger::GridIndexPoints::iterator Burger::GridIndexPoints::begin(const Vector4D_
 	BURGER_ASSERT(it.m_QueryCellsRect.GetTop() <= it.m_QueryCellsRect.GetBottom());
 
 	// Find the first cell
-	it.m_uCurrentCellX = static_cast<Word>(it.m_QueryCellsRect.GetLeft());
-	it.m_uCurrentCellY = static_cast<Word>(it.m_QueryCellsRect.GetTop());
+	it.m_uCurrentCellX = static_cast<uint_t>(it.m_QueryCellsRect.GetLeft());
+	it.m_uCurrentCellY = static_cast<uint_t>(it.m_QueryCellsRect.GetTop());
 	it.m_pEntry = GetCell(it.m_uCurrentCellX,it.m_uCurrentCellY);
 
 	// Make sure iterator starts valid.
@@ -442,7 +443,7 @@ Burger::GridIndexPoints::iterator Burger::GridIndexPoints::begin(const Vector4D_
 
 ***************************************/
 
-void BURGER_API Burger::GridIndexPoints::add(const Vector2D_t *pPoint,Word uValue)
+void BURGER_API Burger::GridIndexPoints::add(const Vector2D_t *pPoint,uint_t uValue)
 {
 	Vector2D_t vCellIndex;
 	GetContainingCellClamped(&vCellIndex,pPoint);
@@ -452,7 +453,7 @@ void BURGER_API Burger::GridIndexPoints::add(const Vector2D_t *pPoint,Word uValu
 	pEntry->m_uValue = uValue;
 
 	// Link it into the containing cell.
-	WordPtr uIndex = GetCellIndex(&vCellIndex);
+	uintptr_t uIndex = GetCellIndex(&vCellIndex);
 	pEntry->m_pNext = m_ppGrid[uIndex];
 	m_ppGrid[uIndex] = pEntry;
 }
@@ -465,7 +466,7 @@ void BURGER_API Burger::GridIndexPoints::add(const Vector2D_t *pPoint,Word uValu
 	it and then deletes the memory for the entry.
 
 	\param pEntry Pointer to the Entry_t to dispose of.
-	\sa add(const Vector2D_t *,Word)
+	\sa add(const Vector2D_t *,uint_t)
 
 ***************************************/
 
@@ -475,7 +476,7 @@ void BURGER_API Burger::GridIndexPoints::remove(Entry_t *pEntry)
 
 	Vector2D_t vCellIndex;
 	GetContainingCellClamped(&vCellIndex,&pEntry->m_Point);
-	WordPtr uIndex = GetCellIndex(&vCellIndex);
+	uintptr_t uIndex = GetCellIndex(&vCellIndex);
 
 	// Track the previous pointer for singly linked list removal
 	Entry_t **ppUnlink = &m_ppGrid[uIndex];
@@ -505,11 +506,11 @@ void BURGER_API Burger::GridIndexPoints::remove(Entry_t *pEntry)
 
 	\param pPoint Pointer to the location in the grid to start searching.
 	\param uValue Value to match.
-	\sa add(const Vector2D_t *,Word) or remove(Entry_t *)
+	\sa add(const Vector2D_t *,uint_t) or remove(Entry_t *)
 
 ***************************************/
 
-Burger::GridIndexPoints::iterator Burger::GridIndexPoints::find(const Vector2D_t *pPoint,Word uValue)
+Burger::GridIndexPoints::iterator Burger::GridIndexPoints::find(const Vector2D_t *pPoint,uint_t uValue)
 {
 	Vector4D_t Temp;
 	Temp.SetRect(pPoint);
@@ -568,7 +569,7 @@ Burger::GridIndexPoints::iterator Burger::GridIndexPoints::find(const Vector2D_t
 
 /*! ************************************
 
-	\fn SimpleArray<Entry*>* Burger::GridIndexBox::GetCell(Word uX,Word uY) const
+	\fn SimpleArray<Entry*>* Burger::GridIndexBox::GetCell(uint_t uX,uint_t uY) const
 	\brief Get the entry at a location in the grid
 	
 	Retrieve the root entry, if any, at the requested location in the grid
@@ -591,7 +592,7 @@ Burger::GridIndexPoints::iterator Burger::GridIndexPoints::find(const Vector2D_t
 	\param pOutput Pointer to store the adjusted location.
 	\param pInput Pointer to the high resolution location
 
-	\sa GetCell(Word,Word) const or GetContainingCellsClamped(Vector4D_t *,const Vector4D_t *) const
+	\sa GetCell(uint_t,uint_t) const or GetContainingCellsClamped(Vector4D_t *,const Vector4D_t *) const
 
 ***************************************/
 
@@ -615,7 +616,7 @@ void BURGER_API Burger::GridIndexBox::GetContainingCellClamped(Vector2D_t *pOutp
 	\param pOutput Pointer to store the adjusted rectangle.
 	\param pInput Pointer to the high resolution rectangle
 
-	\sa GetCell(Word,Word) const or GetContainingCellClamped(Vector2D_t *,const Vector2D_t *) const
+	\sa GetCell(uint_t,uint_t) const or GetContainingCellClamped(Vector2D_t *,const Vector2D_t *) const
 
 ***************************************/
 
@@ -637,11 +638,11 @@ void BURGER_API Burger::GridIndexBox::GetContainingCellsClamped(Vector4D_t *pOut
 	\param uXCells Width of the grid in cells
 	\param uYCells Height of the grid in cells
 
-	\sa GridIndexBox(const Vector4D_t *,WordPtr,float)
+	\sa GridIndexBox(const Vector4D_t *,uintptr_t,float)
 
 ***************************************/
 
-Burger::GridIndexBox::GridIndexBox(const Vector4D_t *pBounds,Word uXCells,Word uYCells) :
+Burger::GridIndexBox::GridIndexBox(const Vector4D_t *pBounds,uint_t uXCells,uint_t uYCells) :
 	m_BoundsRect(pBounds[0]),
 	m_uXCells(uXCells),
 	m_uYCells(uYCells),
@@ -672,11 +673,11 @@ Burger::GridIndexBox::GridIndexBox(const Vector4D_t *pBounds,Word uXCells,Word u
 	\param uItemCountEstimate Number of total elements in the grid
 	\param fGridScale Scale value to increase precision on the grid for the bounds rect
 
-	\sa GridIndexBox(const Vector4D_t *,Word,Word)
+	\sa GridIndexBox(const Vector4D_t *,uint_t,uint_t)
 
 ***************************************/
 
-Burger::GridIndexBox::GridIndexBox(const Vector4D_t *pBounds,WordPtr uItemCountEstimate,float fGridScale) :
+Burger::GridIndexBox::GridIndexBox(const Vector4D_t *pBounds,uintptr_t uItemCountEstimate,float fGridScale) :
 	m_BoundsRect(pBounds[0]),
 	m_uQueryCount(0)
 {
@@ -706,12 +707,12 @@ Burger::GridIndexBox::~GridIndexBox()
 	// the duplicates can be purged as
 	// well as the original
 
-	WordPtr uCount = m_uXCells * m_uYCells;
+	uintptr_t uCount = m_uXCells * m_uYCells;
 	if (uCount) {
 		SimpleArray<Entry*> *pArray = m_pGrid;
 		do {
 			// Get the entry array pointer
-			WordPtr uCellCount = pArray->size();
+			uintptr_t uCellCount = pArray->size();
 			if (uCellCount) {
 				do {
 					if (uCellCount) {
@@ -738,7 +739,7 @@ Burger::GridIndexBox::~GridIndexBox()
 
 /*! ************************************
 
-	\fn Word Burger::GridIndexBox::GetQueryCount(void) const
+	\fn uint_t Burger::GridIndexBox::GetQueryCount(void) const
 	\brief Get the number of times begin(const Vector4D_t *) has been called.
 	
 	\return Counter that has the number of times a search was performed.
@@ -772,7 +773,7 @@ Burger::GridIndexBox::~GridIndexBox()
 
 /*! ************************************
 
-	\fn Word Burger::GridIndexBox::iterator::at_end(void) const
+	\fn uint_t Burger::GridIndexBox::iterator::at_end(void) const
 	\brief \ref TRUE if the iterator is at the end of the data
 	
 	\return \ref FALSE if the is more data remaining, \ref TRUE if data is exhausted.
@@ -810,19 +811,19 @@ void BURGER_API Burger::GridIndexBox::iterator::advance(void)
 
 		// Done with current cell; go to next cell.
 		++m_uCurrentCellX;
-		while (m_uCurrentCellY <= static_cast<Word>(m_QueryCellsRect.GetBottom())) {
-			while (m_uCurrentCellX <= static_cast<Word>(m_QueryCellsRect.GetRight())) {
+		while (m_uCurrentCellY <= static_cast<uint_t>(m_QueryCellsRect.GetBottom())) {
+			while (m_uCurrentCellX <= static_cast<uint_t>(m_QueryCellsRect.GetRight())) {
 				if (AdvanceInCell()) {
 					// We're good.
 					return;
 				}
 				++m_uCurrentCellX;
 			}
-			m_uCurrentCellX = static_cast<Word>(m_QueryCellsRect.GetLeft());
+			m_uCurrentCellX = static_cast<uint_t>(m_QueryCellsRect.GetLeft());
 			++m_uCurrentCellY;
 		}
-		BURGER_ASSERT(m_uCurrentCellX == static_cast<Word>(m_QueryCellsRect.GetLeft()));
-		BURGER_ASSERT(m_uCurrentCellY == static_cast<Word>(m_QueryCellsRect.GetBottom() + 1));
+		BURGER_ASSERT(m_uCurrentCellX == static_cast<uint_t>(m_QueryCellsRect.GetLeft()));
+		BURGER_ASSERT(m_uCurrentCellY == static_cast<uint_t>(m_QueryCellsRect.GetBottom() + 1));
 		// No more valid cells.
 		BURGER_ASSERT(at_end());
 	}
@@ -843,9 +844,9 @@ void BURGER_API Burger::GridIndexBox::iterator::advance(void)
 
 ***************************************/
 
-Word BURGER_API Burger::GridIndexBox::iterator::AdvanceInCell(void)
+uint_t BURGER_API Burger::GridIndexBox::iterator::AdvanceInCell(void)
 {
-	Word uQueryCount = m_pParent->GetQueryCount();
+	uint_t uQueryCount = m_pParent->GetQueryCount();
 	SimpleArray<Entry*> *pArray = m_pParent->GetCell(m_uCurrentCellX,m_uCurrentCellY);
 
 	while (++m_uCurrentCellArrayIndex < pArray->size()) {
@@ -908,13 +909,13 @@ Burger::GridIndexBox::iterator Burger::GridIndexBox::begin(const Vector4D_t *pBo
 	if (++m_uQueryCount == 0) {
 		// Query id wrapped around! Clear m_uQueryCount in all entries in our
 		// array, to avoid aliasing from old queries.
-		WordPtr uCount = m_uXCells * m_uYCells;
+		uintptr_t uCount = m_uXCells * m_uYCells;
 		if (uCount) {
 			SimpleArray<Entry*> *pArray = m_pGrid;
 			do {
-				WordPtr uCellCount = pArray->size();
+				uintptr_t uCellCount = pArray->size();
 				if (uCellCount) {
-					WordPtr i = 0;
+					uintptr_t i = 0;
 					do {
 						Entry *pEntry = (*pArray)[i];
 						pEntry->m_uQueryCount = 0;
@@ -940,8 +941,8 @@ Burger::GridIndexBox::iterator Burger::GridIndexBox::begin(const Vector4D_t *pBo
 
 	BURGER_ASSERT(it.m_QueryCellsRect.GetLeft() <= it.m_QueryCellsRect.GetRight());
 	BURGER_ASSERT(it.m_QueryCellsRect.GetTop() <= it.m_QueryCellsRect.GetBottom());
-	it.m_uCurrentCellX = static_cast<Word>(it.m_QueryCellsRect.GetLeft());
-	it.m_uCurrentCellY = static_cast<Word>(it.m_QueryCellsRect.GetTop());
+	it.m_uCurrentCellX = static_cast<uint_t>(it.m_QueryCellsRect.GetLeft());
+	it.m_uCurrentCellY = static_cast<uint_t>(it.m_QueryCellsRect.GetTop());
 	it.advance();	// find first valid entry.
 	return it;
 }
@@ -984,7 +985,7 @@ Burger::GridIndexBox::iterator Burger::GridIndexBox::begin(const Vector4D_t *pBo
 
 ***************************************/
 
-void BURGER_API Burger::GridIndexBox::add(const Vector4D_t *pBounds,Word uValue)
+void BURGER_API Burger::GridIndexBox::add(const Vector4D_t *pBounds,uint_t uValue)
 	// Insert a box, with the given payload, into our index.
 {
 	Entry *pEntry = New<Entry>();
@@ -993,14 +994,14 @@ void BURGER_API Burger::GridIndexBox::add(const Vector4D_t *pBounds,Word uValue)
 
 	Vector4D_t BoundsRect;
 	GetContainingCellsClamped(&BoundsRect,pBounds);
-	Word uLeft = static_cast<Word>(static_cast<int>(BoundsRect.x));
-	Word uTop = static_cast<Word>(static_cast<int>(BoundsRect.y));
-	Word uRight = static_cast<Word>(static_cast<int>(BoundsRect.z));
-	Word uBottom = static_cast<Word>(static_cast<int>(BoundsRect.w));
-	Word bPushed = FALSE;
+	uint_t uLeft = static_cast<uint_t>(static_cast<int>(BoundsRect.x));
+	uint_t uTop = static_cast<uint_t>(static_cast<int>(BoundsRect.y));
+	uint_t uRight = static_cast<uint_t>(static_cast<int>(BoundsRect.z));
+	uint_t uBottom = static_cast<uint_t>(static_cast<int>(BoundsRect.w));
+	uint_t bPushed = FALSE;
 	// Only insert into cells that matter
-	for (Word iy = uTop; iy <= uBottom; iy++) {
-		for (Word ix = uLeft; ix <= uRight; ix++) {
+	for (uint_t iy = uTop; iy <= uBottom; iy++) {
+		for (uint_t ix = uLeft; ix <= uRight; ix++) {
 			SimpleArray<Entry*> *pArray = GetCell(ix,iy);
 			pArray->push_back(pEntry);
 			bPushed = TRUE;
@@ -1020,7 +1021,7 @@ void BURGER_API Burger::GridIndexBox::add(const Vector4D_t *pBounds,Word uValue)
 	it and then deletes the memory for the entry.
 
 	\param pEntry Pointer to the \ref Entry to dispose of.
-	\sa add(const Vector4D_t *,Word)
+	\sa add(const Vector4D_t *,uint_t)
 
 ***************************************/
 
@@ -1030,16 +1031,16 @@ void BURGER_API Burger::GridIndexBox::remove(Entry *pEntry)
 		// Find and remove the entry from all cells that it overlaps with.
 		Vector4D_t BoundsRect;
 		GetContainingCellsClamped(&BoundsRect,&pEntry->m_BoundsRect);
-		Word uLeft = static_cast<Word>(static_cast<int>(BoundsRect.x));
-		Word uTop = static_cast<Word>(static_cast<int>(BoundsRect.y));
-		Word uRight = static_cast<Word>(static_cast<int>(BoundsRect.z));
-		Word uBottom = static_cast<Word>(static_cast<int>(BoundsRect.w));
-		for (Word iy = uTop; iy <= uBottom; iy++) {
-			for (Word ix = uLeft; ix <= uRight; ix++) {
+		uint_t uLeft = static_cast<uint_t>(static_cast<int>(BoundsRect.x));
+		uint_t uTop = static_cast<uint_t>(static_cast<int>(BoundsRect.y));
+		uint_t uRight = static_cast<uint_t>(static_cast<int>(BoundsRect.z));
+		uint_t uBottom = static_cast<uint_t>(static_cast<int>(BoundsRect.w));
+		for (uint_t iy = uTop; iy <= uBottom; iy++) {
+			for (uint_t ix = uLeft; ix <= uRight; ix++) {
 				SimpleArray<Entry*> *pArray = GetCell(ix,iy);
-				WordPtr uCount = pArray->size();
+				uintptr_t uCount = pArray->size();
 				if (uCount) {
-					WordPtr i = 0;
+					uintptr_t i = 0;
 					do {
 						// Find entry, and remove it.
 						if ((*pArray)[i] == pEntry) {
@@ -1065,11 +1066,11 @@ void BURGER_API Burger::GridIndexBox::remove(Entry *pEntry)
 
 	\param pBounds Pointer to the area in the grid to start searching.
 	\param uValue Value to match.
-	\sa FindData(const Vector2D_t *,Word) const
+	\sa FindData(const Vector2D_t *,uint_t) const
 
 ***************************************/
 
-Burger::GridIndexBox::iterator Burger::GridIndexBox::find(const Vector4D_t *pBounds,Word uValue)
+Burger::GridIndexBox::iterator Burger::GridIndexBox::find(const Vector4D_t *pBounds,uint_t uValue)
 {
 	iterator it = begin(pBounds);
 	if (!it.at_end()) {
@@ -1094,18 +1095,18 @@ Burger::GridIndexBox::iterator Burger::GridIndexBox::find(const Vector4D_t *pBou
 
 	\param pPoint Pointer to the point in the grid to search.
 	\param uValue Value to match.
-	\sa find(const Vector4D_t *,Word)
+	\sa find(const Vector4D_t *,uint_t)
 
 ***************************************/
 
-Burger::GridIndexBox::Entry * BURGER_API Burger::GridIndexBox::FindData(const Vector2D_t *pPoint,Word uValue) const
+Burger::GridIndexBox::Entry * BURGER_API Burger::GridIndexBox::FindData(const Vector2D_t *pPoint,uint_t uValue) const
 {
 	Vector2D_t Clamped;
 	GetContainingCellClamped(&Clamped,pPoint);
-	SimpleArray<Entry*> *pCellArray = GetCell(static_cast<Word>(static_cast<int>(Clamped.x)),static_cast<Word>(static_cast<int>(Clamped.y)));
-	WordPtr uCount = pCellArray->size();
+	SimpleArray<Entry*> *pCellArray = GetCell(static_cast<uint_t>(static_cast<int>(Clamped.x)),static_cast<uint_t>(static_cast<int>(Clamped.y)));
+	uintptr_t uCount = pCellArray->size();
 	if (uCount) {
-		WordPtr i = 0;
+		uintptr_t i = 0;
 		do {
 			Entry *pEntry = (*pCellArray)[i];
 			if (pEntry->m_uValue == uValue) {

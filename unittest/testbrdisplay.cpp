@@ -27,14 +27,14 @@
 
 ***************************************/
 
-static Word BURGER_ANSIAPI TestGetVideoModes(void)
+static uint_t BURGER_ANSIAPI TestGetVideoModes(void)
 {
 	Burger::ClassArray<Burger::Display::VideoCardDescription> Modes;
-	Word uFailure = Burger::Display::GetVideoModes(&Modes);
+	uint_t uFailure = Burger::Display::GetVideoModes(&Modes);
 
 	ReportFailure(
 		"Burger::Display::GetVideoModes() didn't return zero.", uFailure);
-	WordPtr uCount = Modes.size();
+	uintptr_t uCount = Modes.size();
 	if (uCount) {
 		const Burger::Display::VideoCardDescription* pWork1 = Modes.GetPtr();
 		do {
@@ -56,7 +56,7 @@ static Word BURGER_ANSIAPI TestGetVideoModes(void)
 				pWork1->m_CurrentResolution.m_iTop,
 				pWork1->m_CurrentResolution.m_iRight,
 				pWork1->m_CurrentResolution.m_iBottom);
-			WordPtr uCount2 = pWork1->m_Array.size();
+			uintptr_t uCount2 = pWork1->m_Array.size();
 			if (uCount2) {
 				const Burger::Display::VideoMode_t* pMode =
 					pWork1->m_Array.GetPtr();
@@ -80,14 +80,14 @@ static Word BURGER_ANSIAPI TestGetVideoModes(void)
 
 ***************************************/
 
-static Word BURGER_ANSIAPI TestGetAudioModes(void)
+static uint_t BURGER_ANSIAPI TestGetAudioModes(void)
 {
 	Burger::ClassArray<Burger::SoundManager::SoundCardDescription> SoundModes;
-	Word uFailure = Burger::SoundManager::GetAudioModes(&SoundModes);
+	uint_t uFailure = Burger::SoundManager::GetAudioModes(&SoundModes);
 
 	ReportFailure(
 		"Burger::SoundManager::GetAudioModes() didn't return zero.", uFailure);
-	WordPtr uCount = SoundModes.size();
+	uintptr_t uCount = SoundModes.size();
 	if (uCount) {
 		const Burger::SoundManager::SoundCardDescription* pWork1 =
 			SoundModes.GetPtr();
@@ -111,7 +111,7 @@ static Word BURGER_ANSIAPI TestGetAudioModes(void)
 
 int BURGER_API TestBrDisplay(void)
 {
-	Word uResult; // Assume no failures
+	uint_t uResult; // Assume no failures
 	Message("Running Display tests");
 	// Test compiler switches
 	uResult = TestGetVideoModes();

@@ -57,7 +57,7 @@ struct _GUID;
 struct tagPOINT;
 struct tagRECT;
 
-struct BurgerCRITICAL_SECTION {
+struct Burger_CRITICAL_SECTION {
     union {
         uint32_t RawEvent[4];
     } Synchronization;

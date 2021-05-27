@@ -27,8 +27,8 @@
 
 /* BEGIN */
 namespace Burger {
-extern void BURGER_API ImportITEffect(Sequencer::Command_t *pOutput,Word uITCommand,Word uITArgument);
-extern Word BURGER_API ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pInput,WordPtr uInputLength);
+extern void BURGER_API ImportITEffect(Sequencer::Command_t *pOutput,uint_t uITCommand,uint_t uITArgument);
+extern uint_t BURGER_API ImportIT(Sequencer::SongPackage *pOutput,const uint8_t *pInput,uintptr_t uInputLength);
 }
 /* END */
 

@@ -62,7 +62,7 @@ typedef RPC_STATUS(RPC_ENTRY* UuidCreateSequentialPtr)(UUID __RPC_FAR* Uuid);
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::UuidCreateSequential(GUID* pOutput)
+uint_t BURGER_API Burger::Windows::UuidCreateSequential(GUID* pOutput)
 {
 	void* pUuidCreateSequential = LoadFunctionIndex(CALL_UuidCreateSequential);
 	RPC_STATUS uResult = RPC_S_CALL_FAILED;
@@ -70,7 +70,7 @@ Word BURGER_API Burger::Windows::UuidCreateSequential(GUID* pOutput)
 		uResult = static_cast<UuidCreateSequentialPtr>(pUuidCreateSequential)(
 			pOutput);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 #endif

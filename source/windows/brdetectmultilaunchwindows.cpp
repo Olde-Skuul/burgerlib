@@ -65,9 +65,9 @@ Burger::DetectMultiLaunch::~DetectMultiLaunch()
 
 ***************************************/
 
-Word Burger::DetectMultiLaunch::IsMultiLaunched(const char *pSignature)
+uint_t Burger::DetectMultiLaunch::IsMultiLaunched(const char *pSignature)
 {
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	// Did I run already?
 	if (m_hInstanceLock==INVALID_HANDLE_VALUE) {
 		String16 NewName(pSignature);

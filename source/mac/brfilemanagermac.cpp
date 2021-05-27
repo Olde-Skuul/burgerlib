@@ -1,15 +1,16 @@
 /***************************************
 
-	Filename Class
+    Filename Class
 
-	Mac OS Version
+    Mac OS Version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -43,8 +44,8 @@
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetVolumeName(
-	Burger::Filename* pOutput, Word uVolumeNum)
+uint_t BURGER_API Burger::FileManager::GetVolumeName(
+	Burger::Filename* pOutput, uint_t uVolumeNum)
 {
 	pOutput->Clear();
 
@@ -61,12 +62,12 @@ Word BURGER_API Burger::FileManager::GetVolumeName(
 	// pb.ref = NULL;							// I don't want the volume's file
 	// reference
 	if (!PBGetVolumeInfoSync(&pb)) { // Got the data?
-		Word uStrLen = Name.length;
+		uint_t uStrLen = Name.length;
 		if (uStrLen) {
 			// Convert Unicode to a CFString
 			char NameUTF8[(256 * 4)
 				+ 4]; // Unicode could be as much as 4 bytes per char
-			WordPtr uLength = UTF8::FromUTF16(
+			uintptr_t uLength = UTF8::FromUTF16(
 				NameUTF8 + 1, sizeof(NameUTF8) - 4, Name.unicode, uStrLen * 2);
 			NameUTF8[0] = ':';
 			NameUTF8[uLength + 1] = ':';
@@ -97,7 +98,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	SetPrefix(PREFIXCURRENT, MyFilename.GetPtr());
 
 	// Get the boot volume name
-	Word uResult = GetVolumeName(&MyFilename, 0);
+	uint_t uResult = GetVolumeName(&MyFilename, 0);
 	if (uResult == File::OKAY) {
 		// Set the initial prefix
 		SetPrefix(PREFIXBOOT, MyFilename.GetPtr());
@@ -159,7 +160,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 ***************************************/
 
-Word Burger::FileManager::GetModificationTime(
+uint_t Burger::FileManager::GetModificationTime(
 	Filename* pFileName, TimeDate_t* pOutput)
 {
 	pOutput->Clear(); // Zap it
@@ -170,7 +171,7 @@ Word Burger::FileManager::GetModificationTime(
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	if (!eError) {
 		FSRefParam Block;
 		FSCatalogInfo MyInfo;
@@ -198,7 +199,7 @@ Word Burger::FileManager::GetModificationTime(
 
 ***************************************/
 
-Word Burger::FileManager::GetCreationTime(
+uint_t Burger::FileManager::GetCreationTime(
 	Filename* pFileName, TimeDate_t* pOutput)
 {
 	pOutput->Clear(); // Zap it
@@ -209,7 +210,7 @@ Word Burger::FileManager::GetCreationTime(
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	if (!eError) {
 		FSRefParam Block;
 		FSCatalogInfo MyInfo;
@@ -240,7 +241,7 @@ Word Burger::FileManager::GetCreationTime(
 
 ***************************************/
 
-Word Burger::FileManager::DoesFileExist(Filename* pFileName)
+uint_t Burger::FileManager::DoesFileExist(Filename* pFileName)
 {
 	// Convert the filename to unicode
 	String16 MyName(pFileName->GetNative());
@@ -248,7 +249,7 @@ Word Burger::FileManager::DoesFileExist(Filename* pFileName)
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	if (!eError) {
 		// If it succeeded, the file must exist
 		uResult = TRUE;
@@ -263,7 +264,7 @@ Word Burger::FileManager::DoesFileExist(Filename* pFileName)
 
 ***************************************/
 
-Word32 Burger::FileManager::GetAuxType(Filename* pFileName)
+uint32_t Burger::FileManager::GetAuxType(Filename* pFileName)
 {
 	// Convert the filename to unicode
 	String16 MyName(pFileName->GetNative());
@@ -271,7 +272,7 @@ Word32 Burger::FileManager::GetAuxType(Filename* pFileName)
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (!eError) {
 		FSRefParam Block;
 		FSCatalogInfo MyInfo;
@@ -298,7 +299,7 @@ Word32 Burger::FileManager::GetAuxType(Filename* pFileName)
 
 ***************************************/
 
-Word32 Burger::FileManager::GetFileType(Filename* pFileName)
+uint32_t Burger::FileManager::GetFileType(Filename* pFileName)
 {
 	// Convert the filename to unicode
 	String16 MyName(pFileName->GetNative());
@@ -306,7 +307,7 @@ Word32 Burger::FileManager::GetFileType(Filename* pFileName)
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (!eError) {
 		FSRefParam Block;
 		FSCatalogInfo MyInfo;
@@ -332,8 +333,8 @@ Word32 Burger::FileManager::GetFileType(Filename* pFileName)
 
 ***************************************/
 
-Word Burger::FileManager::GetFileAndAuxType(
-	Filename* pFileName, Word32* pFileType, Word32* pAuxType)
+uint_t Burger::FileManager::GetFileAndAuxType(
+	Filename* pFileName, uint32_t* pFileType, uint32_t* pAuxType)
 {
 	// Convert the filename to unicode
 	String16 MyName(pFileName->GetNative());
@@ -341,7 +342,7 @@ Word Burger::FileManager::GetFileAndAuxType(
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	if (!eError) {
 		FSRefParam Block;
 		FSCatalogInfo MyInfo;
@@ -371,7 +372,7 @@ Word Burger::FileManager::GetFileAndAuxType(
 
 ***************************************/
 
-Word Burger::FileManager::SetAuxType(Filename* pFileName, Word32 uAuxType)
+uint_t Burger::FileManager::SetAuxType(Filename* pFileName, uint32_t uAuxType)
 {
 	// Convert the filename to unicode
 	String16 MyName(pFileName->GetNative());
@@ -379,7 +380,7 @@ Word Burger::FileManager::SetAuxType(Filename* pFileName, Word32 uAuxType)
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	if (!eError) {
 		FSRefParam Block;
 		FSCatalogInfo MyInfo;
@@ -410,7 +411,7 @@ Word Burger::FileManager::SetAuxType(Filename* pFileName, Word32 uAuxType)
 
 ***************************************/
 
-Word Burger::FileManager::SetFileType(Filename* pFileName, Word32 uFileType)
+uint_t Burger::FileManager::SetFileType(Filename* pFileName, uint32_t uFileType)
 {
 	// Convert the filename to unicode
 	String16 MyName(pFileName->GetNative());
@@ -418,7 +419,7 @@ Word Burger::FileManager::SetFileType(Filename* pFileName, Word32 uFileType)
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	Word uResult = File::FILENOTFOUND;
+	uint_t uResult = File::FILENOTFOUND;
 	if (!eError) {
 		FSRefParam Block;
 		FSCatalogInfo MyInfo;
@@ -449,8 +450,8 @@ Word Burger::FileManager::SetFileType(Filename* pFileName, Word32 uFileType)
 
 ***************************************/
 
-Word Burger::FileManager::SetFileAndAuxType(
-	Filename* pFileName, Word32 uFileType, Word32 uAuxType)
+uint_t Burger::FileManager::SetFileAndAuxType(
+	Filename* pFileName, uint32_t uFileType, uint32_t uAuxType)
 {
 	// Convert the filename to unicode
 	String16 MyName(pFileName->GetNative());
@@ -458,7 +459,7 @@ Word Burger::FileManager::SetFileAndAuxType(
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	if (!eError) {
 		FSRefParam Block;
 		FSCatalogInfo MyInfo;
@@ -491,7 +492,7 @@ Word Burger::FileManager::SetFileAndAuxType(
 
 ***************************************/
 
-Word Burger::FileManager::CreateDirectoryPath(Filename* pFileName)
+uint_t Burger::FileManager::CreateDirectoryPath(Filename* pFileName)
 {
 	char* pColon;
 	do {
@@ -528,7 +529,7 @@ Word Burger::FileManager::CreateDirectoryPath(Filename* pFileName)
 
 ***************************************/
 
-Word Burger::FileManager::DeleteFile(Filename* pFileName)
+uint_t Burger::FileManager::DeleteFile(Filename* pFileName)
 {
 	// Convert the filename to unicode
 	String16 MyName(pFileName->GetNative());
@@ -536,7 +537,7 @@ Word Burger::FileManager::DeleteFile(Filename* pFileName)
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	Word uResult = File::FILENOTFOUND;
+	uint_t uResult = File::FILENOTFOUND;
 	if (!eError) {
 		eError = FSDeleteObject(&MyRef);
 		if (!eError) {
@@ -552,7 +553,7 @@ Word Burger::FileManager::DeleteFile(Filename* pFileName)
 
 ***************************************/
 
-Word Burger::FileManager::RenameFile(Filename* pNewName, Filename* pOldName)
+uint_t Burger::FileManager::RenameFile(Filename* pNewName, Filename* pOldName)
 {
 	// Convert the filename to unicode
 	String16 SourceName(pOldName->GetNative());
@@ -561,7 +562,7 @@ Word Burger::FileManager::RenameFile(Filename* pNewName, Filename* pOldName)
 	OSErr eError =
 		FSMakeFSRefUnicode(pNewName->GetFSRef(), SourceName.GetLength(),
 			SourceName.GetPtr(), kUnicode16BitFormat, &SourceRef);
-	Word uResult = File::FILENOTFOUND;
+	uint_t uResult = File::FILENOTFOUND;
 	if (!eError) {
 		// Convert the filename to unicode
 		String16 DestName(pNewName->GetNative());
@@ -581,7 +582,7 @@ Word Burger::FileManager::RenameFile(Filename* pNewName, Filename* pOldName)
 
 ***************************************/
 
-Word Burger::FileManager::ChangeOSDirectory(Filename* pDirName)
+uint_t Burger::FileManager::ChangeOSDirectory(Filename* pDirName)
 {
 	// Convert the filename to unicode
 	String16 MyName(pDirName->GetNative());
@@ -589,7 +590,7 @@ Word Burger::FileManager::ChangeOSDirectory(Filename* pDirName)
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pDirName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	Word uResult = File::FILENOTFOUND;
+	uint_t uResult = File::FILENOTFOUND;
 	if (!eError) {
 		FSSpec MySpec;
 		FSRefParam Block;
@@ -629,11 +630,11 @@ FILE* BURGER_API Burger::FileManager::OpenFile(
 	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
 	if (eError == fnfErr && pType) {
-		Word uTemp = pType[0];
+		uint_t uTemp = pType[0];
 		if (uTemp) {
-			Word i = 1;
+			uint_t i = 1;
 			do {
-				Word uTest = uTemp & 0xDF;
+				uint_t uTest = uTemp & 0xDF;
 				if ((uTest == 'A') || (uTest == 'W')) {
 					FSCatalogInfo MyInfo;
 					((FileInfo*)(&MyInfo.finderInfo))->fileType = 'BINA';
@@ -692,7 +693,7 @@ FILE* BURGER_API Burger::FileManager::OpenFile(
 
 ***************************************/
 
-static Word CopyFork(short f1, short f2, Word8* pBuffer)
+static uint_t CopyFork(short f1, short f2, uint8_t* pBuffer)
 {
 	SInt64 lFileSize;
 	OSErr eError = FSGetForkSize(f1, &lFileSize);
@@ -700,11 +701,11 @@ static Word CopyFork(short f1, short f2, Word8* pBuffer)
 		if (lFileSize) { /* Shall I copy anything? */
 			SInt64 lOffset = 0;
 			do {
-				Word32 Chunk;
+				uint32_t Chunk;
 				if (lFileSize > 65536) {
 					Chunk = 65536; /* Only copy the chunk */
 				} else {
-					Chunk = static_cast<Word32>(lFileSize);
+					Chunk = static_cast<uint32_t>(lFileSize);
 				}
 				eError =
 					FSReadFork(f1, fsFromStart, lOffset, Chunk, pBuffer, NULL);
@@ -730,11 +731,11 @@ static Word CopyFork(short f1, short f2, Word8* pBuffer)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::CopyFile(
+uint_t BURGER_API Burger::FileManager::CopyFile(
 	Filename* pDestName, Filename* pSourceName)
 {
-	Word uResult = File::IOERROR; /* Assume error */
-	Word8* pBuffer = static_cast<Word8*>(Burger::Alloc(65536));
+	uint_t uResult = File::IOERROR; /* Assume error */
+	uint8_t* pBuffer = static_cast<uint8_t*>(Burger::Alloc(65536));
 	if (pBuffer) {
 		// Convert the filename to unicode
 		String16 SourceName(pSourceName->GetNative());
@@ -845,7 +846,7 @@ Word BURGER_API Burger::FileManager::CopyFile(
 short BURGER_API Burger::FileManager::OpenResourceFile(
 	const char* pFileName, char uPermission)
 {
-	Word8 NameBuffer[256];
+	uint8_t NameBuffer[256];
 	// Create the directories
 	Filename MyFilename(pFileName);
 	CStringToPString(NameBuffer, MyFilename.GetNative());
@@ -869,9 +870,9 @@ HCreateResFile()
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::CreateResourceFIle(const char* pFileName)
+uint_t BURGER_API Burger::FileManager::CreateResourceFIle(const char* pFileName)
 {
-	Word8 NameBuffer[256];
+	uint8_t NameBuffer[256];
 
 	// Create the directories
 	Filename MyFilename(pFileName);

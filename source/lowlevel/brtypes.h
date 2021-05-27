@@ -1,15 +1,15 @@
 /***************************************
 
-    Determine which compiler is being used and create standardized typedefs
-    and macros so generic code can be created cross platform
+	Determine which compiler is being used and create standardized typedefs
+	and macros so generic code can be created cross platform
 
-    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -25,7 +25,7 @@
 
 /***************************************
 
-    Generic simple macros
+	Generic simple macros
 
 ***************************************/
 
@@ -54,7 +54,7 @@
 
 /***************************************
 
-    Test for the flavor of C++, assume it's at least C++89
+	Test for the flavor of C++, assume it's at least C++89
 
 ***************************************/
 
@@ -116,7 +116,7 @@
 
 /***************************************
 
-    Get the compiler's name and version
+	Get the compiler's name and version
 
 ***************************************/
 
@@ -162,6 +162,11 @@
 #undef BURGER_HAS_64_BIT_SUPPORT
 #undef BURGER_HAS_SFINAE
 
+#elif defined(__BORLANDC__)
+#define BURGER_COMPILER_NAME "Borland C++ Compiler"
+#define BURGER_BORLAND __BORLANDC__
+#define BURGER_COMPILER_VERSION BURGER_BORLAND
+
 #elif defined(__DJGPP__)
 #define BURGER_COMPILER_NAME "DJ's GNU Programming Platform"
 #define BURGER_DJGPP ((__DJGPP__ * 100) + __DJGPP_MINOR__)
@@ -178,11 +183,11 @@
 #define BURGER_COMPILER_VERSION BURGER_GHS
 
 #elif defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || \
-    defined(__ECC)
+	defined(__ECC)
 #define BURGER_COMPILER_NAME "Intel Compiler"
 #if defined(__INTEL_COMPILER_UPDATE)
 #define BURGER_INTEL_COMPILER \
-    ((__INTEL_COMPILER * 10) + __INTEL_COMPILER_UPDATE)
+	((__INTEL_COMPILER * 10) + __INTEL_COMPILER_UPDATE)
 #else
 #define BURGER_INTEL_COMPILER (__INTEL_COMPILER * 10)
 #endif
@@ -192,7 +197,7 @@
 #define BURGER_COMPILER_NAME "clang Compiler"
 #if defined(__clang_patchlevel__)
 #define BURGER_CLANG \
-    ((__clang_major__ * 10000) + (__clang_minor__ * 100) + __clang_patchlevel__)
+	((__clang_major__ * 10000) + (__clang_minor__ * 100) + __clang_patchlevel__)
 #else
 #define BURGER_CLANG ((__clang_major__ * 10000) + (__clang_minor__ * 100))
 #endif
@@ -202,7 +207,7 @@
 #define BURGER_COMPILER_NAME "GNUC Compiler"
 #if defined(__GNUC_PATCHLEVEL__)
 #define BURGER_GNUC \
-    ((__GNUC__ * 10000) + (__GNUC_MINOR__ * 100) + __GNUC_PATCHLEVEL__)
+	((__GNUC__ * 10000) + (__GNUC_MINOR__ * 100) + __GNUC_PATCHLEVEL__)
 #else
 #define BURGER_GNUC ((__GNUC__ * 10000) + (__GNUC_MINOR__ * 100))
 #endif
@@ -252,13 +257,15 @@
 #pragma warning 367 9
 // Conditional expression is always false
 #pragma warning 368 9
+// Expression with side effect in sizeof discarded
+#pragma warning 472 9
 // Conditional expression is always false (zero)
 #pragma warning 690 9
 #endif
 
 /***************************************
 
-    Feature detection macros, using the clang paradigm.
+	Feature detection macros, using the clang paradigm.
 
 ***************************************/
 
@@ -300,27 +307,27 @@
 
 /***************************************
 
-    Detect the CPU being compiled for
+	Detect the CPU being compiled for
 
 ***************************************/
 
 #if defined(__386__) || defined(_M_IX86) || defined(__i386__) || \
-    defined(__X86__) || defined(_X86_) || defined(__INTEL__)
+	defined(__X86__) || defined(_X86_) || defined(__INTEL__)
 #define BURGER_X86
 #define BURGER_CPU_NAME "Intel 32 bit 386"
 
 #elif defined(_M_AMD64) || defined(_M_X64) || defined(__x86_64__) || \
-    defined(__amd64__)
+	defined(__amd64__)
 #define BURGER_AMD64
 #define BURGER_CPU_NAME "AMD64 64 bit CPU"
 
 #elif defined(_IA64_) || defined(__ia64__) || defined(_M_IA64) || \
-    defined(__itanium__)
+	defined(__itanium__)
 #define BURGER_ITANIUM
 #define BURGER_CPU_NAME "Intel Itanium 64 bit"
 
 #elif defined(_M_ARM) || defined(__arm__) || defined(__arm) || \
-    defined(_ARM) || defined(__TARGET_ARCH_ARM)
+	defined(_ARM) || defined(__TARGET_ARCH_ARM)
 #define BURGER_ARM32
 #define BURGER_CPU_NAME "ARM 32 bit"
 
@@ -329,9 +336,9 @@
 #define BURGER_CPU_NAME "ARM 64 bit"
 
 #elif defined(__mips__) || defined(__R5900) || defined(__R5900__) || \
-    defined(__MIPS__)
+	defined(__MIPS__)
 #if (_MIPS_SIM == _ABIO32) || (_MIPS_SIM == _ABIN32) || defined(__R5900) || \
-    defined(__R5900__) || defined(__MIPS__)
+	defined(__R5900__) || defined(__MIPS__)
 #define BURGER_MIPS32
 #define BURGER_CPU_NAME "Mips 32 bit"
 #elif _MIPS_SIM == _ABI64
@@ -342,18 +349,18 @@
 #endif
 
 #elif (defined(_XBOX) && defined(_M_PPCBE)) || defined(__ppc64__) || \
-    defined(__powerpc64__) || defined(_ARCH_PPC64)
+	defined(__powerpc64__) || defined(_ARCH_PPC64)
 #define BURGER_POWERPC64
 #define BURGER_CPU_NAME "PowerPC 64 bit"
 
 #elif defined(__POWERPC__) || defined(__ppc__) || defined(__powerpc) || \
-    defined(_MPPC_) || defined(_M_PPC) || defined(__PPCGECKO__) || \
-    defined(__PPCBROADWAY__)
+	defined(_MPPC_) || defined(_M_PPC) || defined(__PPCGECKO__) || \
+	defined(__PPCBROADWAY__)
 #define BURGER_POWERPC
 #define BURGER_CPU_NAME "PowerPC 32 bit"
 
 #elif defined(__MC68K__) || defined(_68K_) || defined(__m68k__) || \
-    defined(mc68000)
+	defined(mc68000)
 #define BURGER_68K
 #define BURGER_CPU_NAME "Motorola 68000"
 
@@ -384,7 +391,7 @@
 
 /***************************************
 
-    Generic CPU class macros
+	Generic CPU class macros
 
 ***************************************/
 
@@ -415,14 +422,14 @@
 
 // 64 bit support?
 #if defined(BURGER_ARM64) || defined(BURGER_POWERPC64) || \
-    defined(BURGER_AMD64) || defined(BURGER_MIPS64) || \
-    defined(BURGER_SPARC64) || defined(BURGER_ITANIUM) || defined(DOXYGEN)
+	defined(BURGER_AMD64) || defined(BURGER_MIPS64) || \
+	defined(BURGER_SPARC64) || defined(BURGER_ITANIUM) || defined(DOXYGEN)
 #define BURGER_64BITCPU
 #endif
 
 /***************************************
 
-    Special CPU extensions
+	Special CPU extensions
 
 ***************************************/
 
@@ -445,7 +452,7 @@
 #endif
 
 #if defined(BURGER_AMD64) || (defined(BURGER_MSVC) && (_M_IX86_FP >= 1)) || \
-    defined(__SSE__) || defined(DOXYGEN)
+	defined(__SSE__) || defined(DOXYGEN)
 #define BURGER_SSE
 #elif defined(BURGER_METROWERKS)
 #if defined(BURGER_INTEL) && __option(sse)
@@ -454,7 +461,7 @@
 #endif
 
 #if defined(BURGER_AMD64) || (defined(BURGER_MSVC) && (_M_IX86_FP >= 2)) || \
-    defined(__SSE2__) || defined(DOXYGEN)
+	defined(__SSE2__) || defined(DOXYGEN)
 #define BURGER_SSE2
 #elif defined(BURGER_METROWERKS)
 #if defined(BURGER_INTEL) && __option(sse2)
@@ -472,7 +479,7 @@
 
 /***************************************
 
-    Determine the operating system
+	Determine the operating system
 
 ***************************************/
 
@@ -502,7 +509,7 @@
 #endif
 
 #elif defined(__NT__) || defined(__WIN32__) || defined(__WINDOWS__) || \
-    defined(__TOS_WIN__) || defined(_WIN32) || defined(_WIN64)
+	defined(__TOS_WIN__) || defined(_WIN32) || defined(_WIN64)
 #if defined(BURGER_64BITCPU)
 #define BURGER_WIN64
 #define BURGER_PLATFORM_NAME "Microsoft Windows 64 bit"
@@ -552,7 +559,7 @@
 #define BURGER_PLATFORM_NAME "Nintendo Gamecube"
 
 #elif defined(RVL) || defined(RVL_SDK) || defined(RVL_OS) || \
-    defined(__PPCBROADWAY__)
+	defined(__PPCBROADWAY__)
 #define BURGER_WII
 #define BURGER_PLATFORM_NAME "Nintendo Wii"
 
@@ -590,7 +597,7 @@
 #endif
 
 #elif defined(__APPLE__) && defined(__MACH__) && \
-    defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__)
+	defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__)
 #define BURGER_IOS
 #define BURGER_PLATFORM_NAME "Apple iOS"
 
@@ -622,38 +629,38 @@
 
 /***************************************
 
-    Determine available APIs from the operating system.
+	Determine available APIs from the operating system.
 
 ***************************************/
 
 // Is OpenGL supported on this platform?
 
 #if (!defined(BURGER_VITA) && \
-    ((defined(BURGER_WINDOWS) && defined(BURGER_INTEL)) || \
-        defined(BURGER_MACOS) || defined(BURGER_IOS) || \
-        defined(BURGER_ANDROID) || defined(BURGER_LINUX))) || \
-    defined(DOXYGEN)
+	((defined(BURGER_WINDOWS) && defined(BURGER_INTEL)) || \
+		defined(BURGER_MACOS) || defined(BURGER_IOS) || \
+		defined(BURGER_ANDROID) || defined(BURGER_LINUX))) || \
+	defined(DOXYGEN)
 #define BURGER_OPENGL
 #endif
 
 // Is OpenGLES supported on this platform?
 
 #if (!defined(BURGER_VITA) && \
-    (defined(BURGER_IOS) || defined(BURGER_ANDROID))) || \
-    defined(DOXYGEN)
+	(defined(BURGER_IOS) || defined(BURGER_ANDROID))) || \
+	defined(DOXYGEN)
 #define BURGER_OPENGLES
 #endif
 
 // Is Vulkan supported on this platform?
 #if (defined(BURGER_ANDROID) || defined(BURGER_WINDOWS) || \
-    defined(BURGER_LINUX))
+	defined(BURGER_LINUX) || defined(BURGER_SWITCH))
 #define BURGER_VULKAN
 #endif
 
 // Networking protocol support
 #if (defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || \
-    defined(BURGER_LINUX)) || \
-    defined(DOXYGEN)
+	defined(BURGER_LINUX)) || \
+	defined(DOXYGEN)
 #define BURGER_TCPIP
 #endif
 
@@ -666,31 +673,31 @@
 #endif
 
 #if (defined(BURGER_WINDOWS) || defined(BURGER_MACOSX) || \
-    defined(BURGER_LINUX)) || \
-    defined(DOXYGEN)
+	defined(BURGER_LINUX)) || \
+	defined(DOXYGEN)
 #define BURGER_STEAM
 #endif
 
 #if (defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
-    defined(BURGER_XBOXONE)) || \
-    defined(DOXYGEN)
+	defined(BURGER_XBOXONE)) || \
+	defined(DOXYGEN)
 #define BURGER_XBOXLIVE
 #endif
 
 #if (defined(BURGER_MACOSX) || defined(BURGER_MSDOS) || \
-    defined(BURGER_LINUX) || defined(BURGER_WINDOWS)) || \
-    defined(DOXYGEN)
+	defined(BURGER_LINUX) || defined(BURGER_WINDOWS)) || \
+	defined(DOXYGEN)
 #define BURGER_CONSOLE
 #endif
 
 /***************************************
 
-    Determine the endian by testing the platform / CPU
+	Determine the endian by testing the platform / CPU
 
 ***************************************/
 
 #if defined(BURGER_68K) || defined(BURGER_PPC) || defined(BURGER_SPARC) || \
-    (defined(BURGER_MIPS) && _MIPSEL)
+	(defined(BURGER_MIPS) && _MIPSEL)
 #define BURGER_BIGENDIAN
 #else
 #define BURGER_LITTLEENDIAN
@@ -708,7 +715,7 @@
 
 /***************************************
 
-    API macros
+	API macros
 
 ***************************************/
 
@@ -718,14 +725,14 @@
 #define BURGER_ANSIAPI __watcall
 
 #elif defined(BURGER_X86) && \
-    (defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER) || \
-        defined(BURGER_MINGW) || (BURGER_METROWERKS >= 0x3200))
+	(defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER) || \
+		defined(BURGER_MINGW) || (BURGER_METROWERKS >= 0x3200))
 #define BURGER_API __fastcall
 #define BURGER_ANSIAPI __cdecl
 #define BURGER_FASTCALLENABLED
 
 #elif defined(BURGER_X86) && \
-    (defined(BURGER_DJGPP) || defined(BURGER_CLANG) || defined(BURGER_GNUC))
+	(defined(BURGER_DJGPP) || defined(BURGER_CLANG) || defined(BURGER_GNUC))
 #define BURGER_API __attribute__((regparm(3)))
 #define BURGER_ANSIAPI __attribute((cdecl))
 #define BURGER_FASTCALLENABLED
@@ -738,15 +745,15 @@
 // Set the inline keyword
 
 #if (BURGER_MSVC >= 120000000) || defined(BURGER_INTEL_COMPILER) || \
-    defined(BURGER_MINGW)
+	defined(BURGER_MINGW)
 #define BURGER_INLINE __forceinline
 
 #elif defined(BURGER_WATCOM) || (BURGER_METROWERKS >= 0x3200) || \
-    defined(BURGER_MSVC)
+	defined(BURGER_MSVC)
 #define BURGER_INLINE __inline
 
 #elif defined(BURGER_DJGPP) || defined(BURGER_CLANG) || \
-    defined(BURGER_GNUC) || defined(BURGER_GHS) || defined(BURGER_SNSYSTEMS)
+	defined(BURGER_GNUC) || defined(BURGER_GHS) || defined(BURGER_SNSYSTEMS)
 #define BURGER_INLINE __inline__ __attribute__((always_inline))
 
 #else
@@ -755,10 +762,10 @@
 
 // Set the no inline keyword
 #if (BURGER_MSVC >= 130000000) || (BURGER_METROWERKS >= 0x3100) || \
-    defined(BURGER_INTEL_COMPILER) || defined(BURGER_MINGW)
+	defined(BURGER_INTEL_COMPILER) || defined(BURGER_MINGW)
 #define BURGER_NO_INLINE __declspec(noinline)
 #elif defined(BURGER_DJGPP) || defined(BURGER_CLANG) || \
-    defined(BURGER_GNUC) || defined(BURGER_GHS)
+	defined(BURGER_GNUC) || defined(BURGER_GHS)
 #define BURGER_NO_INLINE __attribute__((noinline))
 #else
 #define BURGER_NO_INLINE
@@ -778,14 +785,14 @@
 // Attribute printf format
 #if (BURGER_GNUC >= 20300) || __has_attribute(format) || defined(DOXYGEN)
 #define BURGER_PRINTF_ATTRIBUTE(_index, _check) \
-    __attribute__((format(printf, _index, _check)))
+	__attribute__((format(printf, _index, _check)))
 #else
 #define BURGER_PRINTF_ATTRIBUTE(_index, _check)
 #endif
 
 // Asm keyword for inline assembly (If supported)
 #if defined(BURGER_WATCOM) || defined(BURGER_INTEL_COMPILER) || \
-    defined(BURGER_MINGW)
+	defined(BURGER_MINGW)
 #define BURGER_ASM _asm
 #elif defined(BURGER_MSVC)
 #define BURGER_ASM __asm
@@ -796,7 +803,7 @@
 // Pure assembly functions
 
 #if defined(BURGER_METROWERKS) || \
-    ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC))
+	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC))
 #define BURGER_DECLSPECNAKED asm
 #elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_INTEL))
 #define BURGER_DECLSPECNAKED int int not supported
@@ -806,28 +813,28 @@
 
 /***************************************
 
-    Alignment and packing commands
+	Alignment and packing commands
 
 ***************************************/
 
 #if defined(BURGER_CPP11) || __has_feature(cxx_alignas) || \
-    __has_extension(cxx_alignas) || \
-    ((BURGER_GNUC >= 40800) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
-    defined(DOXYGEN)
+	__has_extension(cxx_alignas) || \
+	((BURGER_GNUC >= 40800) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
+	defined(DOXYGEN)
 #define BURGER_ALIGN(__type, __name, __a) alignas(__a) __type __name
 #define BURGER_PREALIGN(__a) alignas(__a)
 #define BURGER_POSTALIGN(__a)
 #elif defined(BURGER_INTEL_COMPILER) || defined(BURGER_MSVC) || \
-    defined(BURGER_PS4) || \
-    (defined(BURGER_METROWERKS) && !defined(BURGER_68K))
+	defined(BURGER_PS4) || \
+	(defined(BURGER_METROWERKS) && !defined(BURGER_68K))
 #define BURGER_ALIGN(__type, __name, __a) __type __declspec(align(__a)) __name
 #define BURGER_PREALIGN(__a) __declspec(align(__a))
 #define BURGER_POSTALIGN(__a)
 #elif defined(BURGER_GNUC) || defined(BURGER_CLANG) || \
-    defined(BURGER_SNSYSTEMS) || defined(BURGER_ARM_COMPILER) || \
-    defined(BURGER_GHS)
+	defined(BURGER_SNSYSTEMS) || defined(BURGER_ARM_COMPILER) || \
+	defined(BURGER_GHS)
 #define BURGER_ALIGN(__type, __name, __a) \
-    __type __name __attribute__((aligned(__a)))
+	__type __name __attribute__((aligned(__a)))
 #define BURGER_PREALIGN(__a)
 #define BURGER_POSTALIGN(__a) __attribute__((aligned(__a)))
 #else
@@ -839,8 +846,8 @@
 
 // Structure packing macro switches
 #if defined(BURGER_MRC) || defined(BURGER_APPLE_SC) || \
-    (defined(BURGER_METROWERKS) && \
-        (defined(BURGER_PPC) || defined(BURGER_68K)))
+	(defined(BURGER_METROWERKS) && \
+		(defined(BURGER_PPC) || defined(BURGER_68K)))
 #define BURGER_STRUCT_ALIGN
 #elif defined(BURGER_PS2) || defined(BURGER_DS)
 #define BURGER_STRUCT_PACK
@@ -850,17 +857,17 @@
 
 /***************************************
 
-    C++11 or higher features
+	C++11 or higher features
 
 ***************************************/
 
 // Test for nullptr support
 
 #if defined(BURGER_CPP11) || __has_feature(cxx_nullptr) || \
-    ((BURGER_GNUC >= 40600) && \
-        (defined(__GXX_EXPERIMENTAL_CXX0X__) && \
-            __GXX_EXPERIMENTAL_CXX0X__)) || \
-    (BURGER_MSVC >= 160000000)
+	((BURGER_GNUC >= 40600) && \
+		(defined(__GXX_EXPERIMENTAL_CXX0X__) && \
+			__GXX_EXPERIMENTAL_CXX0X__)) || \
+	(BURGER_MSVC >= 160000000)
 #else
 #define nullptr 0
 #endif
@@ -868,7 +875,7 @@
 // Test for __underlying_type() support
 
 #if defined(BURGER_CPP11) || __has_feature(underlying_type) || \
-    (BURGER_MSVC >= 170000000) || (BURGER_GNUC >= 40700)
+	(BURGER_MSVC >= 170000000) || (BURGER_GNUC >= 40700)
 #else
 #define __underlying_type(x) int
 #endif
@@ -876,25 +883,25 @@
 // Test for static_assert
 
 #if defined(BURGER_CPP11) || __has_feature(cxx_static_assert) || \
-    defined(__cpp_static_assert) || \
-    ((BURGER_GNUC >= 40300) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
-    (BURGER_MSVC >= 160000000) || defined(DOXYGEN)
+	defined(__cpp_static_assert) || \
+	((BURGER_GNUC >= 40300) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
+	(BURGER_MSVC >= 160000000) || defined(DOXYGEN)
 #define BURGER_STATIC_ASSERT(x) static_assert(x, #x)
 #else
 #define BURGER_STATIC_ASSERT(x) \
-    typedef int ThisIsABogusTypeDef##__LINE__[(x) ? 1 : -1]
+	typedef int ThisIsABogusTypeDef##__LINE__[(x) ? 1 : -1]
 #endif
 
 // Test for constexpr support
 
 #if defined(BURGER_CPP11) || __has_feature(cxx_constexpr) || \
-    defined(__cpp_constexpr) || \
-    (defined(__ICL) && (__INTEL_COMPILER >= 1300) && \
-        defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
-    (!defined(__EDG__) && (BURGER_GNUC >= 40600) && \
-        defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
-    defined(__IBMCPP_CONSTEXPR) || (BURGER_MSVC >= 190000000) || \
-    defined(DOXYGEN)
+	defined(__cpp_constexpr) || \
+	(defined(__ICL) && (__INTEL_COMPILER >= 1300) && \
+		defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
+	(!defined(__EDG__) && (BURGER_GNUC >= 40600) && \
+		defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
+	defined(__IBMCPP_CONSTEXPR) || (BURGER_MSVC >= 190000000) || \
+	defined(DOXYGEN)
 #define BURGER_CONSTEXPR constexpr
 #else
 #define BURGER_CONSTEXPR
@@ -903,8 +910,8 @@
 // Test for noexcept support
 
 #if defined(BURGER_CPP11) || __has_feature(cxx_noexcept) || \
-    ((BURGER_GNUC >= 40600) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
-    (BURGER_MSVC >= 190023026) || defined(DOXYGEN)
+	((BURGER_GNUC >= 40600) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
+	(BURGER_MSVC >= 190023026) || defined(DOXYGEN)
 #define BURGER_NOEXCEPT noexcept
 #else
 #define BURGER_NOEXCEPT
@@ -913,8 +920,8 @@
 // Test for override support
 
 #if defined(BURGER_CPP11) || __has_feature(cxx_override_control) || \
-    (BURGER_CLANG >= 20900) || (BURGER_GNUC >= 40700) || \
-    (BURGER_MSVC >= 140000000) || defined(DOXYGEN)
+	(BURGER_CLANG >= 20900) || (BURGER_GNUC >= 40700) || \
+	(BURGER_MSVC >= 140000000) || defined(DOXYGEN)
 #define BURGER_OVERRIDE override
 #if (BURGER_MSVC >= 140000000) && (BURGER_MSVC < 170000000)
 // Disable warning for override in VS 2005-2010
@@ -927,8 +934,8 @@
 // Test for final support
 
 #if defined(BURGER_CPP11) || __has_feature(cxx_override_control) || \
-    (defined(__GXX_EXPERIMENTAL_CXX0X__) && (BURGER_GNUC >= 40700)) || \
-    (BURGER_MSVC >= 170000000) || defined(DOXYGEN)
+	(defined(__GXX_EXPERIMENTAL_CXX0X__) && (BURGER_GNUC >= 40700)) || \
+	(BURGER_MSVC >= 170000000) || defined(DOXYGEN)
 #define BURGER_FINAL final
 #elif (BURGER_MSVC >= 140000000)
 #define BURGER_FINAL sealed
@@ -941,29 +948,32 @@
 // Test for "= delete" support
 
 #if defined(BURGER_CPP11) || __has_feature(cxx_deleted_functions) || \
-    ((BURGER_GNUC >= 40400) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
-    defined(DOXYGEN)
+	((BURGER_GNUC >= 40400) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
+	defined(DOXYGEN)
 #define BURGER_EQUALS_DELETE = delete
 #define BURGER_EQUALS_DEFAULT = default
+#define BURGER_DEFAULT_CONSTRUCTOR BURGER_NOEXCEPT = default
 #define BURGER_DEFAULT_DESTRUCTOR = default
 #else
 #define BURGER_EQUALS_DELETE
 #define BURGER_EQUALS_DEFAULT
+#define BURGER_DEFAULT_CONSTRUCTOR \
+	BURGER_NOEXCEPT {}
 #define BURGER_DEFAULT_DESTRUCTOR \
-    { \
-    }
+	{ \
+	}
 #endif
 
 // Test for && rvalue support
 #if defined(BURGER_CPP11) || __has_feature(cxx_rvalue_references) || \
-    ((BURGER_GNUC >= 40300) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
-    (BURGER_MSVC >= 160000000) || defined(DOXYGEN)
+	((BURGER_GNUC >= 40300) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
+	(BURGER_MSVC >= 160000000) || defined(DOXYGEN)
 #define BURGER_RVALUE_REFERENCES
 #endif
 
 // Test for address sanitization
 #if __has_feature(address_sanitizer) || (BURGER_GNUC >= 40800) || \
-    defined(DOXYGEN)
+	defined(DOXYGEN)
 #define BURGER_ADDRESS_SANITIZER
 #define BURGER_DISABLE_ASAN __attribute__((no_sanitize_address))
 #else
@@ -979,7 +989,7 @@
 #endif
 
 #if defined(BURGER_CPP17) || __has_cpp_attribute(maybe_unused) || \
-    defined(DOXYGEN)
+	defined(DOXYGEN)
 #define BURGER_MAYBE_UNUSED [[maybe_unused]]
 #elif __has_cpp_attribute(gnu::unused)
 #define BURGER_MAYBE_UNUSED [[gnu::unused]]
@@ -1002,7 +1012,7 @@
 #endif
 
 #if defined(BURGER_CPP17) || __has_cpp_attribute(fallthrough) || \
-    defined(DOXYGEN)
+	defined(DOXYGEN)
 #define BURGER_FALLTHROUGH [[fallthrough]]
 #elif __has_cpp_attribute(clang::fallthrough)
 #define BURGER_FALLTHROUGH [[clang::fallthrough]]
@@ -1024,7 +1034,7 @@
 
 /***************************************
 
-    Helper macros
+	Helper macros
 
 ***************************************/
 
@@ -1046,15 +1056,15 @@
 #endif
 
 #define BURGER_OFFSETOF(__type, __member) \
-    (reinterpret_cast<intptr_t>( \
-         &reinterpret_cast<const __type*>(1)->__member) - \
-        1)
+	(reinterpret_cast<intptr_t>( \
+		 &reinterpret_cast<const __type*>(1)->__member) - \
+		1)
 #define BURGER_GET_BASE_PTR(x, __type, __member) \
-    reinterpret_cast<__type*>( \
-        reinterpret_cast<uint8_t*>(x) - BURGER_OFFSETOF(__type, __member))
+	reinterpret_cast<__type*>( \
+		reinterpret_cast<uint8_t*>(x) - BURGER_OFFSETOF(__type, __member))
 #define BURGER_CONST_GET_BASE_PTR(x, __type, __member) \
-    reinterpret_cast<const __type*>(reinterpret_cast<const uint8_t*>(x) - \
-        BURGER_OFFSETOF(__type, __member))
+	reinterpret_cast<const __type*>(reinterpret_cast<const uint8_t*>(x) - \
+		BURGER_OFFSETOF(__type, __member))
 
 // Unused parameters or variables
 #define BURGER_UNUSED(x) (void)(x)
@@ -1063,15 +1073,15 @@
 #if defined(BURGER_RVALUE_REFERENCES) || defined(DOXYGEN)
 #define BURGER_DISABLE_COPY(x) \
 private: \
-    x(const x&) BURGER_EQUALS_DELETE; \
-    x& operator=(const x&) BURGER_EQUALS_DELETE; \
-    x(x&&) BURGER_EQUALS_DELETE; \
-    x& operator=(x&&) BURGER_EQUALS_DELETE
+	x(const x&) BURGER_EQUALS_DELETE; \
+	x& operator=(const x&) BURGER_EQUALS_DELETE; \
+	x(x&&) BURGER_EQUALS_DELETE; \
+	x& operator=(x&&) BURGER_EQUALS_DELETE
 #else
 #define BURGER_DISABLE_COPY(x) \
 private: \
-    x(const x&) BURGER_EQUALS_DELETE; \
-    x& operator=(const x&) BURGER_EQUALS_DELETE
+	x(const x&) BURGER_EQUALS_DELETE; \
+	x& operator=(const x&) BURGER_EQUALS_DELETE
 #endif
 
 // clang-format off
@@ -1079,37 +1089,52 @@ private: \
 #if defined(BURGER_CPP11) || __has_feature(cxx_strong_enums) || \
     __has_extension(cxx_strong_enums) || __has_feature(objc_fixed_enum) || \
     (BURGER_MSVC >= 170000000) || defined(DOXYGEN)
-#define BURGER_ENUMSTART(x, y) enum class x : y
-#define BURGER_ENUMEND(x) ; typedef x x##Type;
-
+#define BURGER_ENUM_TYPE(x, y) enum x : y
+#define BURGER_ENUM_CLASS_START(x, y) enum class x : y
+#define BURGER_ENUM_CLASS_END(x)
 #else
-#define BURGER_ENUMSTART(x, y) struct x { enum Type
-#define BURGER_ENUMEND(x) ; }; typedef x::Type x##Type;
+#define BURGER_ENUM_TYPE(x, y) enum x
+#define BURGER_ENUM_CLASS_START(x, y) struct x { typedef y type; type m_Member; enum value
+#define BURGER_ENUM_CLASS_END(x) ; \
+x() BURGER_NOEXCEPT {} \
+x(value iInput) BURGER_NOEXCEPT { m_Member = iInput; } \
+x(type input) BURGER_NOEXCEPT { m_Member = input; } \
+BURGER_INLINE x &operator=(value input) BURGER_NOEXCEPT { m_Member = static_cast<type>(input); return *this; } \
+BURGER_INLINE operator type() const BURGER_NOEXCEPT { return static_cast<type>(m_Member); } \
+BURGER_INLINE BURGER_CONSTEXPR bool operator<(const x & rhs) const BURGER_NOEXCEPT { return m_Member < rhs.m_Member; } \
+BURGER_INLINE BURGER_CONSTEXPR bool operator<(value rhs) const BURGER_NOEXCEPT { return m_Member < static_cast<type>(rhs); } \
+BURGER_INLINE BURGER_CONSTEXPR bool operator==(const x & rhs) const BURGER_NOEXCEPT { return m_Member == rhs.m_Member; } \
+BURGER_INLINE BURGER_CONSTEXPR bool operator==(value rhs) const BURGER_NOEXCEPT { return m_Member == static_cast<type>(rhs); } \
+BURGER_INLINE BURGER_CONSTEXPR bool operator!=(const x & rhs) const BURGER_NOEXCEPT { return m_Member != rhs.m_Member; } \
+BURGER_INLINE BURGER_CONSTEXPR bool operator!=(value rhs) const BURGER_NOEXCEPT { return m_Member != static_cast<type>(rhs); } \
+}
 #endif
+#define BURGER_ENUM_MATH(x, y) \
+BURGER_INLINE x& operator|=(x& uInput1, x uInput2) BURGER_NOEXCEPT { \
+    return uInput1 = static_cast<x>(static_cast<y>(uInput1) | static_cast<y>(uInput2)); } \
+BURGER_INLINE x& operator&=(x& uInput1, x uInput2) BURGER_NOEXCEPT { \
+    return uInput1 = static_cast<x>(static_cast<y>(uInput1) & static_cast<y>(uInput2)); } \
+BURGER_INLINE x& operator^=(x& uInput1, x uInput2) BURGER_NOEXCEPT { \
+    return uInput1 = static_cast<x>(static_cast<y>(uInput1) ^ static_cast<y>(uInput2)); } \
+BURGER_INLINE BURGER_CONSTEXPR x operator|(x uInput1, x uInput2) BURGER_NOEXCEPT { \
+    return static_cast<x>(static_cast<y>(uInput1) | static_cast<y>(uInput2)); } \
+BURGER_INLINE BURGER_CONSTEXPR x operator&(x uInput1, x uInput2) BURGER_NOEXCEPT { \
+    return static_cast<x>(static_cast<y>(uInput1) & static_cast<y>(uInput2)); } \
+BURGER_INLINE BURGER_CONSTEXPR x operator^(x uInput1, x uInput2) BURGER_NOEXCEPT { \
+    return static_cast<x>(static_cast<y>(uInput1) ^ static_cast<y>(uInput2)); } \
+BURGER_INLINE BURGER_CONSTEXPR uint_t operator!(x uInput) BURGER_NOEXCEPT { \
+    return !static_cast<y>(uInput); } \
+BURGER_INLINE BURGER_CONSTEXPR x operator~(x uInput) BURGER_NOEXCEPT { \
+    return static_cast<x>(~static_cast<y>(uInput)); }
 
-#define BURGER_ENUMFLAGSEND(x, y) \
-    BURGER_ENUMEND(x) \
-    BURGER_INLINE x##Type& operator|=(x##Type& uInput1, x##Type uInput2) { \
-        return uInput1 = static_cast<x##Type>(static_cast<y>(uInput1) | static_cast<y>(uInput2)); } \
-    BURGER_INLINE x##Type& operator&=(x##Type& uInput1, x##Type uInput2) { \
-        return uInput1 = static_cast<x##Type>(static_cast<y>(uInput1) & static_cast<y>(uInput2)); } \
-    BURGER_INLINE x##Type& operator^=(x##Type& uInput1, x##Type uInput2) { \
-        return uInput1 = static_cast<x##Type>(static_cast<y>(uInput1) ^ static_cast<y>(uInput2)); } \
-    BURGER_INLINE BURGER_CONSTEXPR x##Type operator|(x##Type uInput1, x##Type uInput2) { \
-        return static_cast<x##Type>(static_cast<y>(uInput1) | static_cast<y>(uInput2)); } \
-    BURGER_INLINE BURGER_CONSTEXPR x##Type operator&(x##Type uInput1, x##Type uInput2) { \
-        return static_cast<x##Type>(static_cast<y>(uInput1) & static_cast<y>(uInput2)); } \
-    BURGER_INLINE BURGER_CONSTEXPR x##Type operator^(x##Type uInput1, x##Type uInput2) { \
-        return static_cast<x##Type>(static_cast<y>(uInput1) ^ static_cast<y>(uInput2)); } \
-    BURGER_INLINE BURGER_CONSTEXPR uint_t operator!(x##Type uInput) { \
-        return !static_cast<y>(uInput); } \
-    BURGER_INLINE constexpr x##Type operator~(x##Type uInput) { \
-        return static_cast<x##Type>(~static_cast<y>(uInput)); }
+#define BURGER_ENUM_CLASS_END_MATH(x, y) \
+    BURGER_ENUM_CLASS_END(x); \
+    BURGER_ENUM_MATH(x, y)
 // clang-format on
 
 /***************************************
 
-    Data types
+	Data types
 
 ***************************************/
 
@@ -1157,7 +1182,7 @@ struct ulonglong_t;
 // stdint.h types
 
 #if defined(BURGER_MRC) || defined(BURGER_APPLE_SC) || \
-    (defined(BURGER_MSVC) && (BURGER_MSVC < 160000000))
+	(defined(BURGER_MSVC) && (BURGER_MSVC < 160000000))
 #include <brstdint.h>
 
 #if (BURGER_SIZEOF_INT != 4)
@@ -1194,8 +1219,8 @@ struct ulonglong_t;
 #endif
 
 #if !defined(BURGER_METROWERKS) && \
-    ((BURGER_SIZEOF_LONG == 4) || defined(BURGER_MACOSX) || \
-        defined(BURGER_IOS))
+	((BURGER_SIZEOF_LONG == 4) || defined(BURGER_MACOSX) || \
+		defined(BURGER_IOS))
 #define BURGER_LONG_NOT_IN_STDINT
 #endif
 
@@ -1221,8 +1246,8 @@ typedef uint64_t ulong2uint_t;
 // Are wchar_t, char8_t, char16_t and char32_t native types?
 
 #if defined(BURGER_INTEL_COMPILER) || defined(BURGER_CLANG) || \
-    defined(BURGER_GNUC) || defined(_NATIVE_WCHAR_T_DEFINED) || \
-    defined(BURGER_MINGW) || defined(DOXYGEN)
+	defined(BURGER_GNUC) || defined(_NATIVE_WCHAR_T_DEFINED) || \
+	defined(BURGER_MINGW) || defined(__WCHAR_T_IS_KEYWORD) || defined(DOXYGEN)
 #define BURGER_HAS_WCHAR_T
 #elif defined(BURGER_METROWERKS)
 #if __option(wchar_type)
@@ -1235,9 +1260,9 @@ typedef uint64_t ulong2uint_t;
 #endif
 
 #if defined(BURGER_CPP11) || (__cpp_unicode_characters >= 200704) || \
-    (_HAS_CHAR16_T_LANGUAGE_SUPPORT > 0) || \
-    ((BURGER_GNUC >= 40400) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
-    defined(DOXYGEN)
+	(_HAS_CHAR16_T_LANGUAGE_SUPPORT > 0) || \
+	((BURGER_GNUC >= 40400) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
+	defined(DOXYGEN)
 #define BURGER_HAS_CHAR16_T
 #endif
 
@@ -1246,36 +1271,36 @@ namespace Burger {
 struct ulonglong_t;
 struct longlong_t {
 #if defined(BURGER_BIGENDIAN)
-    int32_t hi;  ///< High 32 bits of the 64 bit integer
-    uint32_t lo; ///< Low 32 bits of the 64 bit integer
+	int32_t hi;  ///< High 32 bits of the 64 bit integer
+	uint32_t lo; ///< Low 32 bits of the 64 bit integer
 #else
-    uint32_t lo; ///< Low 32 bits of the 64 bit integer
-    int32_t hi;  ///< High 32 bits of the 64 bit integer
+	uint32_t lo; ///< Low 32 bits of the 64 bit integer
+	int32_t hi;  ///< High 32 bits of the 64 bit integer
 #endif
-    BURGER_INLINE operator ulonglong_t&() BURGER_NOEXCEPT
-    {
-        return *reinterpret_cast<ulonglong_t*>(this);
-    }
+	BURGER_INLINE operator ulonglong_t&() BURGER_NOEXCEPT
+	{
+		return *reinterpret_cast<ulonglong_t*>(this);
+	}
 };
 
 struct ulonglong_t {
 #if defined(BURGER_BIGENDIAN)
-    uint32_t hi; ///< High 32 bits of the 64 bit integer
-    uint32_t lo; ///< Low 32 bits of the 64 bit integer
+	uint32_t hi; ///< High 32 bits of the 64 bit integer
+	uint32_t lo; ///< Low 32 bits of the 64 bit integer
 #else
-    uint32_t lo; ///< Low 32 bits of the 64 bit integer
-    uint32_t hi; ///< High 32 bits of the 64 bit integer
+	uint32_t lo; ///< Low 32 bits of the 64 bit integer
+	uint32_t hi; ///< High 32 bits of the 64 bit integer
 #endif
-    BURGER_INLINE operator longlong_t&() BURGER_NOEXCEPT
-    {
-        return *reinterpret_cast<longlong_t*>(this);
-    }
+	BURGER_INLINE operator longlong_t&() BURGER_NOEXCEPT
+	{
+		return *reinterpret_cast<longlong_t*>(this);
+	}
 };
 }
 
 /***************************************
 
-    Vector data types and vector intrinsics
+	Vector data types and vector intrinsics
 
 ***************************************/
 
@@ -1297,8 +1322,8 @@ typedef vec_float4 Vector_128;
 typedef __m128 Vector_128;
 
 #elif defined(BURGER_INTEL) && \
-    (defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER) || \
-        defined(BURGER_GNUC) || defined(BURGER_CLANG))
+	(defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER) || \
+		defined(BURGER_GNUC) || defined(BURGER_CLANG))
 #ifndef _INCLUDED_EMM
 #include <emmintrin.h>
 #endif
@@ -1334,8 +1359,8 @@ typedef float32x4_t Vector_128;
 #elif defined(BURGER_WIIU)
 #include <ppc_ghs.h>
 struct Vector_128 {
-    /** Opaque contents to the 128 bit vector register */
-    BURGER_ALIGN(float, m128_f32[4], 16);
+	/** Opaque contents to the 128 bit vector register */
+	BURGER_ALIGN(float, m128_f32[4], 16);
 };
 
 #elif defined(BURGER_MINGW)
@@ -1353,14 +1378,14 @@ typedef __m128 Vector_128;
 #endif
 
 struct Vector_128 {
-    /** Opaque contents to the 128 bit vector register */
-    BURGER_ALIGN(float, m128_f32[4], 16);
+	/** Opaque contents to the 128 bit vector register */
+	BURGER_ALIGN(float, m128_f32[4], 16);
 };
 #endif
 
 /***************************************
 
-    Elements in an array template
+	Elements in an array template
 
 ***************************************/
 
@@ -1375,7 +1400,7 @@ extern const char (*_BurgerArraySize(T (&)[N]))[N];
 
 /***************************************
 
-    In place new
+	In place new
 
 ***************************************/
 

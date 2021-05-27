@@ -25,32 +25,32 @@
 
 /* BEGIN */
 namespace Burger {
-extern Word BURGER_API WriteBig(FILE* fp, Word16 uInput);
-extern Word BURGER_API WriteBig(FILE* fp, Word32 uInput);
-extern Word BURGER_API WriteBig(FILE* fp, Word64 uInput);
-extern Word BURGER_API WriteBig(FILE* fp, float fInput);
-extern Word BURGER_API WriteBig(FILE* fp, double dInput);
-extern Word BURGER_API WriteLittle(FILE* fp, Word16 uInput);
-extern Word BURGER_API WriteLittle(FILE* fp, Word32 uInput);
-extern Word BURGER_API WriteLittle(FILE* fp, Word64 uInput);
-extern Word BURGER_API WriteLittle(FILE* fp, float fInput);
-extern Word BURGER_API WriteLittle(FILE* fp, double dInput);
-extern Word BURGER_API WriteCString(FILE* fp, const char* pInput);
-extern Word16 BURGER_API ReadBigWord16(FILE* fp);
-extern Word32 BURGER_API ReadBigWord32(FILE* fp);
-extern Word64 BURGER_API ReadBigWord64(FILE* fp);
+extern uint_t BURGER_API WriteBig(FILE* fp, uint16_t uInput);
+extern uint_t BURGER_API WriteBig(FILE* fp, uint32_t uInput);
+extern uint_t BURGER_API WriteBig(FILE* fp, uint64_t uInput);
+extern uint_t BURGER_API WriteBig(FILE* fp, float fInput);
+extern uint_t BURGER_API WriteBig(FILE* fp, double dInput);
+extern uint_t BURGER_API WriteLittle(FILE* fp, uint16_t uInput);
+extern uint_t BURGER_API WriteLittle(FILE* fp, uint32_t uInput);
+extern uint_t BURGER_API WriteLittle(FILE* fp, uint64_t uInput);
+extern uint_t BURGER_API WriteLittle(FILE* fp, float fInput);
+extern uint_t BURGER_API WriteLittle(FILE* fp, double dInput);
+extern uint_t BURGER_API WriteCString(FILE* fp, const char* pInput);
+extern uint16_t BURGER_API ReadBigWord16(FILE* fp);
+extern uint32_t BURGER_API ReadBigWord32(FILE* fp);
+extern uint64_t BURGER_API ReadBigWord64(FILE* fp);
 extern float BURGER_API ReadBigFloat(FILE* fp);
 extern double BURGER_API ReadBigDouble(FILE* fp);
-extern Word16 BURGER_API ReadLittleWord16(FILE* fp);
-extern Word32 BURGER_API ReadLittleWord32(FILE* fp);
-extern Word64 BURGER_API ReadLittleWord64(FILE* fp);
+extern uint16_t BURGER_API ReadLittleWord16(FILE* fp);
+extern uint32_t BURGER_API ReadLittleWord32(FILE* fp);
+extern uint64_t BURGER_API ReadLittleWord64(FILE* fp);
 extern float BURGER_API ReadLittleFloat(FILE* fp);
 extern double BURGER_API ReadLittleDouble(FILE* fp);
-extern Word BURGER_API ReadCString(FILE* fp, char* pInput, WordPtr uLength);
-extern WordPtr BURGER_API GetSize(FILE* fp);
-extern Word64 BURGER_API GetSize64(FILE* fp);
-extern Word BURGER_API SaveFile(FILE* fp, const void* pData, WordPtr uLength);
-extern void* BURGER_API LoadFile(FILE* fp, WordPtr* uLength);
+extern uint_t BURGER_API ReadCString(FILE* fp, char* pInput, uintptr_t uLength);
+extern uintptr_t BURGER_API GetSize(FILE* fp);
+extern uint64_t BURGER_API GetSize64(FILE* fp);
+extern uint_t BURGER_API SaveFile(FILE* fp, const void* pData, uintptr_t uLength);
+extern void* BURGER_API LoadFile(FILE* fp, uintptr_t* uLength);
 extern void BURGER_API SetBinaryMode(FILE* fp);
 }
 /* END */

@@ -49,13 +49,13 @@ extern "C" FILE * _MSL_CDECL _wfopen(const wchar_t * _MSL_RESTRICT name, const w
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,Word uVolumeNum)
+uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum)
 {
 	if (pOutput) {
 		pOutput->Clear();
 	}
 
-	Word uResult = File::OUTOFRANGE;		// Assume error
+	uint_t uResult = File::OUTOFRANGE;		// Assume error
 	if (uVolumeNum<32) {
 		uResult = File::FILENOTFOUND;
 		// Only query drives that exist
@@ -78,9 +78,9 @@ Word BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,Word uVolum
 				// Did I want the output name?
 				if (pOutput) {
 					char OutputName[(MAX_PATH*2)+3];
-					UTF8::FromUTF16(OutputName+1,sizeof(OutputName)-3,reinterpret_cast<const Word16*>(OutputNames));
+					UTF8::FromUTF16(OutputName+1,sizeof(OutputName)-3,reinterpret_cast<const uint16_t*>(OutputNames));
 					OutputName[0] = ':';
-					WordPtr uLength = StringLength(OutputName+1);
+					uintptr_t uLength = StringLength(OutputName+1);
 					OutputName[uLength+1] = ':';
 					OutputName[uLength+2] = 0;
 					pOutput->Set(OutputName);
@@ -126,7 +126,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	// Ask windows what's my app's file ID.
 
 	if (GetModuleFileNameW(NULL,reinterpret_cast<LPWSTR>(NameBuffer),MAX_PATH)<MAX_PATH) {
-		String ExePath(reinterpret_cast<Word16 *>(NameBuffer));
+		String ExePath(reinterpret_cast<uint16_t *>(NameBuffer));
 		MyFilename.SetFromNative(ExePath.GetPtr());
 	} else {
 		// Fall back, use the argument list
@@ -141,7 +141,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	HRESULT uResult = SHGetFolderPathW(NULL,CSIDL_SYSTEM,NULL,0,NameBuffer);
 	if ((uResult==S_OK) || (uResult==E_FAIL)) {
 		// Convert to UTF8
-		String MyName1(reinterpret_cast<const Word16*>(NameBuffer));
+		String MyName1(reinterpret_cast<const uint16_t*>(NameBuffer));
 		MyFilename.SetFromNative(MyName1);
 		char *pFilename = MyFilename.GetPtr();
 		char *pEndColon = StringCharacter(pFilename,':');
@@ -155,7 +155,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	uResult = SHGetFolderPathW(NULL,CSIDL_LOCAL_APPDATA,NULL,0,NameBuffer);
 	if ((uResult==S_OK) || (uResult==E_FAIL)) {
 		// Convert to UTF8
-		String MyName2(reinterpret_cast<const Word16*>(NameBuffer));
+		String MyName2(reinterpret_cast<const uint16_t*>(NameBuffer));
 		MyFilename.SetFromNative(MyName2);
 		SetPrefix(FileManager::PREFIXSYSTEM,MyFilename.GetPtr());	// Set the system folder
 	}
@@ -164,7 +164,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	uResult = SHGetFolderPathW(NULL,CSIDL_APPDATA,NULL,0,NameBuffer);
 	if ((uResult==S_OK) || (uResult==E_FAIL)) {
 		// Convert to UTF8
-		String MyName3(reinterpret_cast<const Word16*>(NameBuffer));
+		String MyName3(reinterpret_cast<const uint16_t*>(NameBuffer));
 		MyFilename.SetFromNative(MyName3);
 		SetPrefix(FileManager::PREFIXPREFS,MyFilename.GetPtr());	// Set the system folder
 	}
@@ -178,7 +178,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,TimeDate_t *pOutput)
+uint_t BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,TimeDate_t *pOutput)
 {
 	// Clear out the output
 	pOutput->Clear();	
@@ -188,7 +188,7 @@ Word BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,Tim
 		String16 WideString(pFileName->GetNative());
 		FileHandle = FindFirstFileW(reinterpret_cast<const WCHAR*>(WideString.GetPtr()),&FindData);
 	}
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	if (FileHandle!=INVALID_HANDLE_VALUE) {
 		FindClose(FileHandle);
 		uResult = pOutput->Load(&FindData.ftLastWriteTime);
@@ -204,7 +204,7 @@ Word BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,Tim
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDate_t *pOutput)
+uint_t BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDate_t *pOutput)
 {
 	// Clear out the output
 	pOutput->Clear();	
@@ -214,7 +214,7 @@ Word BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDat
 		String16 WideString(pFileName->GetNative());
 		FileHandle = FindFirstFileW(reinterpret_cast<const WCHAR*>(WideString.GetPtr()),&FindData);
 	}
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	if (FileHandle!=INVALID_HANDLE_VALUE) {
 		FindClose(FileHandle);
 		uResult = pOutput->Load(&FindData.ftCreationTime);
@@ -233,12 +233,12 @@ Word BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDat
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
 {
 	String16 WideString(pFileName->GetNative());
 	// Get file info
 	DWORD uOutput = GetFileAttributesW(reinterpret_cast<const WCHAR *>(WideString.GetPtr()));
-	Word uResult = TRUE;		// File exists
+	uint_t uResult = TRUE;		// File exists
 	if ((uOutput & FILE_ATTRIBUTE_DIRECTORY) /* || (uOutput == -1) */ ) { // -1 means error
 		uResult = FALSE;		// Bad file!
 	}
@@ -252,7 +252,7 @@ Word BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
 
 ***************************************/
 
-static Word BURGER_API DirCreate(const Word16 *pFileName)
+static uint_t BURGER_API DirCreate(const uint16_t *pFileName)
 {
 	SECURITY_ATTRIBUTES MySec;
 	MySec.nLength = sizeof(MySec);		// Must set the size
@@ -266,7 +266,7 @@ static Word BURGER_API DirCreate(const Word16 *pFileName)
 	return FALSE;		// Success!
 }
 
-Word BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
 {
 	String16 NewName(pFileName->GetNative());
 
@@ -274,28 +274,28 @@ Word BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
 	if (!DirCreate(NewName.GetPtr())) {	
 		return FALSE;				// No error
 	}
-	// Ok see if I can create the directory tree
-	Word16 *pNewFilename = NewName.GetPtr();
+    // Ok see if I can create the directory tree
+    uint16_t *pNewFilename = NewName.GetPtr();
 	if (pNewFilename[0]) {			// Is there a filename?
-		Word16 *pWork = pNewFilename;
+		uint16_t *pWork = pNewFilename;
 		if (pWork[0] && pWork[1]==':') {	// Drive name?
 			pWork+=2;				// Skip the drive name
 		}
 		if (pWork[0] == '\\') {		// Accept the first slash
 			++pWork;
 		}
-		Word Err;					// Error code
-		Word Old;
+		uint_t Err;					// Error code
+		uint_t Old;
 		do {
 			// Skip to the next colon
-			pWork = reinterpret_cast<Word16 *>(wcschr(reinterpret_cast<wchar_t *>(pWork),'\\'));
+			pWork = reinterpret_cast<uint16_t *>(wcschr(reinterpret_cast<wchar_t *>(pWork),'\\'));
 			if (!pWork) {			// No colon found?
-				pWork = reinterpret_cast<Word16 *>(wcschr(reinterpret_cast<wchar_t *>(pNewFilename),0));
+				pWork = reinterpret_cast<uint16_t *>(wcschr(reinterpret_cast<wchar_t *>(pNewFilename),0));
 			}
 			Old = pWork[0];		// Get the previous char
 			pWork[0] = 0;		// End the string
 			Err = DirCreate(pNewFilename);			// Create the directory
-			pWork[0] = static_cast<Word16>(Old);		// Restore the string
+			pWork[0] = static_cast<uint16_t>(Old);		// Restore the string
 			++pWork;			// Index past the char
 		} while (Old);			// Still more string?
 		if (!Err) {				// Cool!!
@@ -311,11 +311,11 @@ Word BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
 {
 	String16 MyName(pFileName->GetNative());
 	// Did it fail?
-	Word uResult = FALSE;		// Assume succeed
+	uint_t uResult = FALSE;		// Assume succeed
 	if (!DeleteFileW(reinterpret_cast<const WCHAR *>(MyName.GetPtr()))) {
 		// Try to delete a directory
 		if (!RemoveDirectoryW(reinterpret_cast<const WCHAR *>(MyName.GetPtr()))) {
@@ -331,12 +331,12 @@ Word BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::RenameFile(Filename *pNewName,Filename *pOldName)
+uint_t BURGER_API Burger::FileManager::RenameFile(Filename *pNewName,Filename *pOldName)
 {
 	String16 DestName(pNewName->GetNative());
 	String16 SourceName(pOldName->GetNative());
 	// Did it fail?
-	Word uResult = File::FILENOTFOUND;		// Assume failure
+	uint_t uResult = File::FILENOTFOUND;		// Assume failure
 	if (MoveFileW(reinterpret_cast<const WCHAR *>(SourceName.GetPtr()),
 		reinterpret_cast<const WCHAR *>(DestName.GetPtr()))) {
 		uResult = File::OKAY;		// I failed!
@@ -351,10 +351,10 @@ Word BURGER_API Burger::FileManager::RenameFile(Filename *pNewName,Filename *pOl
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::ChangeOSDirectory(Filename *pDirName)
+uint_t BURGER_API Burger::FileManager::ChangeOSDirectory(Filename *pDirName)
 {
 	String16 MyDirName(pDirName->GetNative());
-	Word uResult = TRUE;	// Assume error
+	uint_t uResult = TRUE;	// Assume error
 	if (SetCurrentDirectoryW(reinterpret_cast<const WCHAR *>(MyDirName.GetPtr()))) {
 		uResult = FALSE;		// Success!
 	}
@@ -380,7 +380,7 @@ FILE * BURGER_API Burger::FileManager::OpenFile(Filename *pFileName,const char *
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::CopyFile(Filename *pDestName,Filename *pSourceName)
+uint_t BURGER_API Burger::FileManager::CopyFile(Filename *pDestName,Filename *pSourceName)
 {
 	String16 DestName(pDestName->GetNative());
 	String16 SrcName(pSourceName->GetNative());
@@ -397,7 +397,7 @@ Word BURGER_API Burger::FileManager::CopyFile(Filename *pDestName,Filename *pSou
 
 ***************************************/
 
-WordPtr BURGER_API Burger::FileManager::QueueHandler(void *pData)
+uintptr_t BURGER_API Burger::FileManager::QueueHandler(void *pData)
 {
 	// Read,Write,Append,Read/Write
 	static const DWORD g_Access[4] = { GENERIC_READ,GENERIC_WRITE,GENERIC_WRITE,GENERIC_READ|GENERIC_WRITE };
@@ -408,7 +408,7 @@ WordPtr BURGER_API Burger::FileManager::QueueHandler(void *pData)
 	OutputDebugStringA("Start filemanager thread\n");
 
 	// No error at this time
-	Word uError = 0;
+	uint_t uError = 0;
 	FileManager *pThis = static_cast<FileManager *>(pData);
 	for (;;) {
 		// Wait until there's a command in the queue

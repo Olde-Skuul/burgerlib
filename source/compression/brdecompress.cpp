@@ -1,13 +1,14 @@
 /***************************************
 
-	Decompression manager
+    Decompression manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -72,7 +73,7 @@ Burger::Decompress::Decompress(void) :
 
 /*! ************************************
 
-	\fn eError Burger::Decompress::Process(void *pOutput,WordPtr uOutputChunkSize,const void *pInput,WordPtr uInputChunkLength)
+	\fn eError Burger::Decompress::Process(void *pOutput,uintptr_t uOutputChunkSize,const void *pInput,uintptr_t uInputChunkLength)
 	\brief Decompress data into the output buffer
 
 	Pass data into the decompressor and store the output into the output buffer.
@@ -97,7 +98,7 @@ Burger::Decompress::Decompress(void) :
 
 /*! ************************************
 
-	\fn WordPtr Burger::Decompress::GetTotalInputSize(void) const
+	\fn uintptr_t Burger::Decompress::GetTotalInputSize(void) const
 	\brief Get the total processed input data in bytes
 
 	Returns the number of input processed since Init() was called.
@@ -110,7 +111,7 @@ Burger::Decompress::Decompress(void) :
 
 /*! ************************************
 
-	\fn WordPtr Burger::Decompress::GetTotalOutputSize(void) const
+	\fn uintptr_t Burger::Decompress::GetTotalOutputSize(void) const
 	\brief Get the total processed output data in bytes
 
 	Returns the number of output processed since Init() was called.
@@ -123,7 +124,7 @@ Burger::Decompress::Decompress(void) :
 
 /*! ************************************
 
-	\fn WordPtr Burger::Decompress::GetProcessedInputSize(void) const
+	\fn uintptr_t Burger::Decompress::GetProcessedInputSize(void) const
 	\brief Get the total processed output data in bytes from the last process pass.
 
 	Returns the number of input processed from the last call to Process().
@@ -136,7 +137,7 @@ Burger::Decompress::Decompress(void) :
 
 /*! ************************************
 
-	\fn WordPtr Burger::Decompress::GetProcessedOutputSize(void) const
+	\fn uintptr_t Burger::Decompress::GetProcessedOutputSize(void) const
 	\brief Get the total processed output data in bytes from the last process pass.
 
 	Returns the number of output processed from the last call to Process().
@@ -150,7 +151,7 @@ Burger::Decompress::Decompress(void) :
 
 /*! ************************************
 
-	\fn Word32 Burger::Decompress::GetSignature(void) const
+	\fn uint32_t Burger::Decompress::GetSignature(void) const
 	\brief Return the signature for this decompressor
 
 	Each decompressor has a unique signature to identify the algorithm used

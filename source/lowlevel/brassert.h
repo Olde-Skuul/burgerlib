@@ -28,7 +28,7 @@
 namespace Burger {
 
 struct Assert_t {
-	typedef int (BURGER_API *CallbackProc)(void *pThis,const char *pCondition,const char *pFilename,Word uLineNumber);
+	typedef int (BURGER_API *CallbackProc)(void *pThis,const char *pCondition,const char *pFilename,uint_t uLineNumber);
 	
 	CallbackProc m_pCallback;		///< Function pointer to the redirected Assert function
 	void *m_pThis;					///< "this" pointer passed to the m_pProcAssert function
@@ -36,10 +36,10 @@ struct Assert_t {
 	static Assert_t g_Instance;		///< Global instance of the Assert redirection
 
 	void BURGER_API SetCallback(CallbackProc pCallback,void *pThis);
-	static int BURGER_API DefaultAssert(void *pThis,const char *pCondition,const char *pFilename,Word uLineNumber);
+	static int BURGER_API DefaultAssert(void *pThis,const char *pCondition,const char *pFilename,uint_t uLineNumber);
 };
 
-extern int BURGER_API Assert(const char *pCondition,const char *pFilename,Word uLineNumber);
+extern int BURGER_API Assert(const char *pCondition,const char *pFilename,uint_t uLineNumber);
 extern void BURGER_API Halt(void);
 
 }

@@ -1,15 +1,16 @@
 /***************************************
 
-	Display base class
+    Display base class
 
-	iOS version
+    iOS version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -52,8 +53,8 @@ void BURGER_API Burger::Display::InitGlobals(void)
 		g_Globals.m_fRetinaScale = fRetinaScale;
 
 		// Get the TRUE display size in pixels
-		Word uDisplayWidth = static_cast<Word>(static_cast<int>(ScreenRect.size.width*fRetinaScale));
-		Word uDisplayHeight = static_cast<Word>(static_cast<int>(ScreenRect.size.height*fRetinaScale));
+		uint_t uDisplayWidth = static_cast<uint_t>(static_cast<int>(ScreenRect.size.width*fRetinaScale));
+		uint_t uDisplayHeight = static_cast<uint_t>(static_cast<int>(ScreenRect.size.height*fRetinaScale));
 
 		// Save the size of the screen
 		g_Globals.m_uDefaultWidth = uDisplayWidth;
@@ -67,7 +68,7 @@ void BURGER_API Burger::Display::InitGlobals(void)
 
 		NSArray *pScreens = [UIScreen screens];
 
-		g_Globals.m_uDefaultMonitorCount = static_cast<Word>([pScreens count]);
+		g_Globals.m_uDefaultMonitorCount = static_cast<uint_t>([pScreens count]);
 		g_Globals.m_bInitialized = TRUE;
 	}
 }
@@ -93,13 +94,13 @@ static void GetResolutions(Burger::Display::VideoCardDescription *pOutput,UIScre
 		CGSize size = [pMode size];
 		// If retina, insert the smaller resolution first
 		if (fRetinaScale!=1.0f) {
-			Entry.m_uWidth = static_cast<Word>(static_cast<int>(size.width/fRetinaScale));
-			Entry.m_uHeight = static_cast<Word>(static_cast<Int>(size.height/fRetinaScale));
+			Entry.m_uWidth = static_cast<uint_t>(static_cast<int_t>(size.width/fRetinaScale));
+			Entry.m_uHeight = static_cast<uint_t>(static_cast<int_t>(size.height/fRetinaScale));
 			pOutput->m_Array.push_back(Entry);
 		}
 		// Pass the native resolution
-		Entry.m_uWidth = static_cast<Word>(static_cast<int>(size.width));
-		Entry.m_uHeight = static_cast<Word>(static_cast<int>(size.height));
+		Entry.m_uWidth = static_cast<uint_t>(static_cast<int_t>(size.width));
+		Entry.m_uHeight = static_cast<uint_t>(static_cast<int_t>(size.height));
 		pOutput->m_Array.push_back(Entry);
 	}
 }
@@ -110,14 +111,14 @@ static void GetResolutions(Burger::Display::VideoCardDescription *pOutput,UIScre
 
 ***************************************/
 
-Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
+uint_t Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 {
 	pOutput->clear();
-	Word uResult = 0;		// Assume success
+	uint_t uResult = 0;		// Assume success
 	// Get the number of displays attached to this mac.
 	// It CAN be zero
 
-	Word uDisplayID = 0;
+	uint_t uDisplayID = 0;
 	for (UIScreen *pScreen in [UIScreen screens]) {
 		VideoCardDescription Entry;
 		Entry.m_uDevNumber = uDisplayID;

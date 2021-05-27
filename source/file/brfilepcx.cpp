@@ -1,13 +1,14 @@
 /***************************************
 
-	PCX File handler class
+    PCX File handler class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -37,17 +38,17 @@
 #if !defined(DOXYGEN)
 
 struct PCXHeader {
-	Word8 m_bManufacturer;		// Must be 10 for PC Paintbrush
-	Word8 m_bVersion;			// 0 = 2.5, 2 = 2.8, 3 = 2.8 with color 5 = 3.0
-	Word8 m_bEncoding;			// 1 = PCX run length encoding
-	Word8 m_bBitsPerPixel;		// Bits per pixel
-	Word16 m_uMinX,m_uMinY,m_uMaxX,m_uMaxY;	// Bounding rect (Inclusive)
-	Word16 m_uXDPI,m_uYDPI;		// DPI (Usually 72)
-	Word8 m_EGAPalette[48];		// Standard EGA Palette (Ignore)
-	Word8 m_bZero1;				// Reserved
-	Word8 m_bBitPlanes;			// Number of bit planes (1)
-	Word16 m_uBytesPerLine;		// Bytes per line
-	Word8 m_Padding[60];		// This struct must be 128 bytes in size
+	uint8_t m_bManufacturer;		// Must be 10 for PC Paintbrush
+	uint8_t m_bVersion;			// 0 = 2.5, 2 = 2.8, 3 = 2.8 with color 5 = 3.0
+	uint8_t m_bEncoding;			// 1 = PCX run length encoding
+	uint8_t m_bBitsPerPixel;		// Bits per pixel
+	uint16_t m_uMinX,m_uMinY,m_uMaxX,m_uMaxY;	// Bounding rect (Inclusive)
+	uint16_t m_uXDPI,m_uYDPI;		// DPI (Usually 72)
+	uint8_t m_EGAPalette[48];		// Standard EGA Palette (Ignore)
+	uint8_t m_bZero1;				// Reserved
+	uint8_t m_bBitPlanes;			// Number of bit planes (1)
+	uint16_t m_uBytesPerLine;		// Bytes per line
+	uint8_t m_Padding[60];		// This struct must be 128 bytes in size
 };
 
 #endif
@@ -75,13 +76,13 @@ struct PCXHeader {
 
 ***************************************/
 
-const char * BURGER_API Burger::FilePCX::DecompressPCX(Word8 *pOutput,WordPtr uOutputLength,InputMemoryStream *pInput)
+const char * BURGER_API Burger::FilePCX::DecompressPCX(uint8_t *pOutput,uintptr_t uOutputLength,InputMemoryStream *pInput)
 {
 	if (uOutputLength) {
 		do {
-			Word uTemp = pInput->GetByte();		// Fetch byte from input stream
+			uint_t uTemp = pInput->GetByte();		// Fetch byte from input stream
 			if (uTemp<0xC0) {					// Unpacked data?
-				pOutput[0] = static_cast<Word8>(uTemp);	// Save byte
+				pOutput[0] = static_cast<uint8_t>(uTemp);	// Save byte
 				++pOutput;
 				--uOutputLength;				// Count down the length
 			} else {
@@ -91,7 +92,7 @@ const char * BURGER_API Burger::FilePCX::DecompressPCX(Word8 *pOutput,WordPtr uO
 						return "PCX decompresser overrun\n";
 					}
 
-					Word8 uFill = pInput->GetByte();		// Get fill byte
+					uint8_t uFill = pInput->GetByte();		// Get fill byte
 					uOutputLength = uOutputLength-uTemp;	// Adjust length
 					do {
 						pOutput[0] = uFill;	// Memory fill
@@ -119,9 +120,9 @@ const char * BURGER_API Burger::FilePCX::DecompressPCX(Word8 *pOutput,WordPtr uO
 
 ***************************************/
 
-void BURGER_API Burger::FilePCX::Merge3Planes(Word8 *pOutput,const Word8 *pInput,WordPtr uWidth)
+void BURGER_API Burger::FilePCX::Merge3Planes(uint8_t *pOutput,const uint8_t *pInput,uintptr_t uWidth)
 {
-	WordPtr i = uWidth;
+	uintptr_t i = uWidth;
 	do {
 		pOutput[0] = pInput[0];
 		pOutput[1] = pInput[uWidth];
@@ -169,22 +170,22 @@ Burger::Image * Burger::FilePCX::Load(InputMemoryStream *pInput)
 	Image *pImage = NULL;
 	// Start with processing the 128 byte header of the PCX file
 
-	Word uBitPlanes=0;
-	Word uBytesPerLine=0;
-	Word uWidth=0;
-	Word uHeight=0;
+	uint_t uBitPlanes=0;
+	uint_t uBytesPerLine=0;
+	uint_t uWidth=0;
+	uint_t uHeight=0;
 
 	if (pInput->BytesRemaining()<128) {
 		pBadNews = "Insufficient data for PCX file header.";
 	} else {
-		Word bManufacturer = pInput->GetByte();
-		Word uVersion = pInput->GetByte();
-		Word uEncoding = pInput->GetByte();
-		Word uBitsPerPixel = pInput->GetByte();
-		Word uMinX = pInput->GetShort();
-		Word uMinY = pInput->GetShort();
-		Word uMaxX = pInput->GetShort();
-		Word uMaxY = pInput->GetShort();
+		uint_t bManufacturer = pInput->GetByte();
+		uint_t uVersion = pInput->GetByte();
+		uint_t uEncoding = pInput->GetByte();
+		uint_t uBitsPerPixel = pInput->GetByte();
+		uint_t uMinX = pInput->GetShort();
+		uint_t uMinY = pInput->GetShort();
+		uint_t uMaxX = pInput->GetShort();
+		uint_t uMaxY = pInput->GetShort();
 		m_uXPixelsPerInch = pInput->GetShort();
 		m_uYPixelsPerInch = pInput->GetShort();
 		pInput->Get(m_EGAPalette,sizeof(m_EGAPalette));
@@ -227,7 +228,7 @@ Burger::Image * Burger::FilePCX::Load(InputMemoryStream *pInput)
 		if (uBitPlanes==1) {
 			pImage = Image::New(uWidth,uHeight,Image::PIXELTYPE8BIT);
 			if (pImage) {
-				Word8 *pDest = pImage->GetImage();
+				uint8_t *pDest = pImage->GetImage();
 				do {
 					pBadNews = DecompressPCX(pDest,uBytesPerLine,pInput);
 					if (pBadNews) {
@@ -244,7 +245,7 @@ Burger::Image * Burger::FilePCX::Load(InputMemoryStream *pInput)
 				// data and find the palette
 
 				if (!pBadNews) {
-					Word uTemp = 8;					// Only scan 8 bytes. I assume I'm screwed if it's beyond this
+					uint_t uTemp = 8;					// Only scan 8 bytes. I assume I'm screwed if it's beyond this
 					do {
 						if (pInput->GetByte()==12) {		// Is the current byte a palette entry?
 							break;
@@ -274,11 +275,11 @@ Burger::Image * Burger::FilePCX::Load(InputMemoryStream *pInput)
 				// Allocate the temp buffer here to reduce the chance
 				// of memory fragmentation
 				// Note: Added 32 to the buffer size to prevent buffer overruns
-				Word8 *pTempBuffer = static_cast<Word8 *>(Alloc(uWidth*3+32));
+				uint8_t *pTempBuffer = static_cast<uint8_t *>(Alloc(uWidth*3+32));
 				if (!pTempBuffer) {
 					pBadNews = "Out of memory.";
 				} else {
-					Word8 *pDest = pImage->GetImage();
+					uint8_t *pDest = pImage->GetImage();
 					do {
 						pBadNews = DecompressPCX(pTempBuffer,uBytesPerLine,pInput);
 						if (pBadNews) {
@@ -316,49 +317,49 @@ Burger::Image * Burger::FilePCX::Load(InputMemoryStream *pInput)
 
 /*! ************************************
 
-	\fn Int32 Burger::FilePCX::GetXPixelsPerInch(void) const
+	\fn int32_t Burger::FilePCX::GetXPixelsPerInch(void) const
 	\brief Get the file image's pixels per meter for X
 
 	Return the pixels per meter constant, usually it's 2835 (2834.6472f)
 
 	\return The pixels per meter constant for the X direction
-	\sa Burger::FilePCX::SetXPixelsPerInch(Word16) or Burger::FilePCX::GetYPixelsPerInch(void) const
+	\sa Burger::FilePCX::SetXPixelsPerInch(uint16_t) or Burger::FilePCX::GetYPixelsPerInch(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FilePCX::SetXPixelsPerInch(Word16 uXPixelsPerInch)
+	\fn void Burger::FilePCX::SetXPixelsPerInch(uint16_t uXPixelsPerInch)
 	\brief Set the file image's pixels per meter for X
 
 	Set the pixels per meter constant
 
 	\param uXPixelsPerInch New pixels per meter constant
-	\sa Burger::FilePCX::DEFAULT_PIXELS_PER_INCH, Burger::FilePCX::GetXPixelsPerInch(void) const or Burger::FilePCX::SetYPixelsPerInch(Word16)
+	\sa Burger::FilePCX::DEFAULT_PIXELS_PER_INCH, Burger::FilePCX::GetXPixelsPerInch(void) const or Burger::FilePCX::SetYPixelsPerInch(uint16_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Int32 Burger::FilePCX::GetYPixelsPerInch(void) const
+	\fn int32_t Burger::FilePCX::GetYPixelsPerInch(void) const
 	\brief Get the file image's pixels per meter for Y
 
 	Return the pixels per meter constant, usually it's 2835 (2834.6472f)
 
 	\return The pixels per meter constant for the Y direction
-	\sa Burger::FilePCX::SetYPixelsPerInch(Word16) or Burger::FilePCX::GetXPixelsPerInch(void) const
+	\sa Burger::FilePCX::SetYPixelsPerInch(uint16_t) or Burger::FilePCX::GetXPixelsPerInch(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FilePCX::SetYPixelsPerInch(Word16 uYPixelsPerInch)
+	\fn void Burger::FilePCX::SetYPixelsPerInch(uint16_t uYPixelsPerInch)
 	\brief Set the file image's pixels per meter for Y
 
 	Set the pixels per meter constant
 
 	\param uYPixelsPerInch New pixels per meter constant
-	\sa Burger::FilePCX::DEFAULT_PIXELS_PER_INCH, Burger::FilePCX::GetYPixelsPerInch(void) const or Burger::FilePCX::SetXPixelsPerInch(Word16)
+	\sa Burger::FilePCX::DEFAULT_PIXELS_PER_INCH, Burger::FilePCX::GetYPixelsPerInch(void) const or Burger::FilePCX::SetXPixelsPerInch(uint16_t)
 
 ***************************************/
 
@@ -392,7 +393,7 @@ Burger::Image * Burger::FilePCX::Load(InputMemoryStream *pInput)
 
 /*! ************************************
 
-	\fn const Word8 *Burger::FilePCX::GetEGAPalette(void) const
+	\fn const uint8_t *Burger::FilePCX::GetEGAPalette(void) const
 	\brief Get the file image's EGA palette
 
 	Obtain a constant pointer to the 48 byte EGA palette (16 colors, 3 bytes per color)
@@ -404,7 +405,7 @@ Burger::Image * Burger::FilePCX::Load(InputMemoryStream *pInput)
 
 /*! ************************************
 
-	\fn Word8 *Burger::FilePCX::GetEGAPalette(void)
+	\fn uint8_t *Burger::FilePCX::GetEGAPalette(void)
 	\brief Get the file image's EGA palette
 
 	Obtain a pointer to the 48 byte EGA palette (16 colors, 3 bytes per color)
@@ -418,7 +419,7 @@ Burger::Image * Burger::FilePCX::Load(InputMemoryStream *pInput)
 
 /*! ************************************
 
-	\fn void Burger::FilePCX::SetPalette(const RGBWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+	\fn void Burger::FilePCX::SetPalette(const RGBWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 	\brief Set the file image's palette (RGB)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -432,13 +433,13 @@ Burger::Image * Burger::FilePCX::Load(InputMemoryStream *pInput)
 	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
-	\sa SetPalette(const RGBAWord8_t *,Word,Word)
+	\sa SetPalette(const RGBAWord8_t *,uint_t,uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FilePCX::SetPalette(const RGBAWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+	\fn void Burger::FilePCX::SetPalette(const RGBAWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 	\brief Set the file image's palette (RGBA)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -451,7 +452,7 @@ Burger::Image * Burger::FilePCX::Load(InputMemoryStream *pInput)
 	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
-	\sa SetPalette(const RGBWord8_t *,Word,Word)
+	\sa SetPalette(const RGBWord8_t *,uint_t,uint_t)
 
 ***************************************/
 

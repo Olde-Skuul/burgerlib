@@ -1,8 +1,8 @@
 /***************************************
 
-	Game Application startup class
+    Game Application startup class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
     It is released under an MIT Open Source license. Please see LICENSE for
     license details. Yes, you can use it in a commercial title without paying
@@ -283,7 +283,7 @@ Burger::GameApp::~GameApp()
 
 /*! ************************************
 
-	\fn void GameApp::AddRoutine(RunQueue::CallbackProc Proc,RunQueue::CallbackProc pShutdown,void *pData,Word uPriority)
+	\fn void GameApp::AddRoutine(RunQueue::CallbackProc Proc,RunQueue::CallbackProc pShutdown,void *pData,uint_t uPriority)
 	\brief Add a RunQueue polling routine
 
 	Given a proc pointer and a pointer to data to pass to the
@@ -549,9 +549,9 @@ Burger::SoundManager * BURGER_API Burger::GameApp::StartupSoundManager(void)
 
 ***************************************/
 
-Word BURGER_API Burger::GameApp::StartupEverything(void)
+uint_t BURGER_API Burger::GameApp::StartupEverything(void)
 {
-	Word uResult = 10;	// Assume error
+	uint_t uResult = 10;	// Assume error
 	if (StartupDisplay() &&
 		StartupKeyboard() &&
 		StartupMouse() &&
@@ -651,7 +651,7 @@ Word BURGER_API Burger::GameApp::StartupEverything(void)
 
 /*! ************************************
 
-	\fn Word Burger::GameApp::GetQuitCode(void) const
+	\fn uint_t Burger::GameApp::GetQuitCode(void) const
 	\brief Get the current return code.
 
 	Accessor to get the current return code that main()
@@ -664,7 +664,7 @@ Word BURGER_API Burger::GameApp::StartupEverything(void)
 
 /*! ************************************
 
-	\fn void Burger::GameApp::SetInBackground(Word bInBackground)
+	\fn void Burger::GameApp::SetInBackground(uint_t bInBackground)
 	\brief Set the state if app should go into pause mode
 
 	On many platforms, applications can be put in the background either
@@ -681,7 +681,7 @@ Word BURGER_API Burger::GameApp::StartupEverything(void)
 
 /*! ************************************
 
-	\fn Word Burger::GameApp::IsInBackground(void) const
+	\fn uint_t Burger::GameApp::IsInBackground(void) const
 	\brief Detect if the app is should go into pause mode
 
 	On many platforms, applications can be put in the background either
@@ -912,7 +912,7 @@ void BURGER_API Burger::GameApp::SetDisplay(Display *pDisplay)
 
 /*! ************************************
 
-	\fn void Burger::GameApp::SetWindowSwitching(Word)
+	\fn void Burger::GameApp::SetWindowSwitching(uint_t)
 	\brief Enable the Alt-Enter key
 
 	Enable the desktop application to switch from full screen to window mode
@@ -925,7 +925,7 @@ void BURGER_API Burger::GameApp::SetDisplay(Display *pDisplay)
 
 /*! ************************************
 
-	\fn Word Burger::GameApp::IsWindowSwitchingAllowed(void) const
+	\fn uint_t Burger::GameApp::IsWindowSwitchingAllowed(void) const
 	\brief Get the flag for video mode switching
 
 	\return \ref TRUE if switching video modes is allowed, \ref FALSE if not
@@ -943,13 +943,13 @@ void BURGER_API Burger::GameApp::SetDisplay(Display *pDisplay)
 
 	\return Zero if no error occurred and the mode was switched, or non-zero
 		if not supported or there was an error in the mode switch.
-	\sa SetWindowSwitching(Word) or IsWindowSwitchingAllowed(void) const
+	\sa SetWindowSwitching(uint_t) or IsWindowSwitchingAllowed(void) const
 
 ***************************************/
 
-Word BURGER_API Burger::GameApp::SwitchVideo(void)
+uint_t BURGER_API Burger::GameApp::SwitchVideo(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	// Is switching allowed?
 	if (m_bAllowWindowSwitching) {
 		// Is there a display class?
@@ -970,7 +970,7 @@ Word BURGER_API Burger::GameApp::SwitchVideo(void)
 
 /*! ************************************
 
-	\fn Word Burger::GameApp::IsMinimized(void) const
+	\fn uint_t Burger::GameApp::IsMinimized(void) const
 	\brief Return \ref TRUE if the application is in the background or minimized
 
 	Determine if the state of the application is for it to be minimized
@@ -983,7 +983,7 @@ Word BURGER_API Burger::GameApp::SwitchVideo(void)
 
 /*! ************************************
 
-	\fn void Burger::GameApp::SetMinimized(Word bMinimized)
+	\fn void Burger::GameApp::SetMinimized(uint_t bMinimized)
 	\brief Sets the application flag for being in the background or minimized
 
 	\param bMinimized \ref TRUE if the app is minimized, \ref FALSE if not
@@ -1005,9 +1005,9 @@ Word BURGER_API Burger::GameApp::SwitchVideo(void)
 
 ***************************************/
 
-Word BURGER_API Burger::GameApp::IsAppFullScreen(void) const
+uint_t BURGER_API Burger::GameApp::IsAppFullScreen(void) const
 {
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	const Display *pDisplay = m_pDisplay;
 	if (pDisplay) {
 		if (pDisplay->GetFlags() & Display::FULLSCREEN) {
@@ -1030,12 +1030,12 @@ Word BURGER_API Burger::GameApp::IsAppFullScreen(void) const
 
 ***************************************/
 
-Word BURGER_API Burger::GameApp::IsResizingAllowed(void) const
+uint_t BURGER_API Burger::GameApp::IsResizingAllowed(void) const
 {
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	const Display *pDisplay = m_pDisplay;
 	if (pDisplay) {
-		Word uFlags = pDisplay->GetFlags();
+		uint_t uFlags = pDisplay->GetFlags();
 		if (!(uFlags & Display::FULLSCREEN) && (uFlags & Display::ALLOWRESIZING)) {
 			// Not full screen and it's marked as allowed
 			uResult = TRUE;
@@ -1046,7 +1046,7 @@ Word BURGER_API Burger::GameApp::IsResizingAllowed(void) const
 
 /*! ************************************
 
-	\fn void Burger::GameApp::SetMouseOnScreen(Word bMouseOnScreen)
+	\fn void Burger::GameApp::SetMouseOnScreen(uint_t bMouseOnScreen)
 	\brief Sets the application flag if a mouse cursor is on the game screen
 
 	\param bMouseOnScreen \ref TRUE if the mouse cursor is on the game screen, \ref FALSE if not
@@ -1056,7 +1056,7 @@ Word BURGER_API Burger::GameApp::IsResizingAllowed(void) const
 
 /*! ************************************
 
-	\fn Word Burger::GameApp::IsMouseOnScreen(void) const
+	\fn uint_t Burger::GameApp::IsMouseOnScreen(void) const
 	\brief Return \ref TRUE if the mouse cursor is on the game screen
 
 	Return if a game drawn mouse cursor should be drawn. Do not draw
@@ -1064,13 +1064,13 @@ Word BURGER_API Burger::GameApp::IsResizingAllowed(void) const
 	is somewhere else on the desktop.
 
 	\return \ref TRUE if the mouse cursor is on the game screen, \ref FALSE if not
-	\sa SetMouseOnScreen(Word)
+	\sa SetMouseOnScreen(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::GameApp::SetWindowSwitchRequested(Word bWindowSwitchRequested)
+	\fn void Burger::GameApp::SetWindowSwitchRequested(uint_t bWindowSwitchRequested)
 	\brief Sets the application flag to toggle between full screen and window mode
 
 	\param bWindowSwitchRequested \ref TRUE if a mode switch is desired, \ref FALSE if not
@@ -1080,7 +1080,7 @@ Word BURGER_API Burger::GameApp::IsResizingAllowed(void) const
 
 /*! ************************************
 
-	\fn Word Burger::GameApp::IsWindowSwitchRequested(void) const
+	\fn uint_t Burger::GameApp::IsWindowSwitchRequested(void) const
 	\brief Return \ref TRUE if there is a pending video mode switch
 
 	The key command ALT-Enter can be issued by another thread, so to
@@ -1089,7 +1089,7 @@ Word BURGER_API Burger::GameApp::IsResizingAllowed(void) const
 	switch is desired.
 
 	\return \ref TRUE if a mode switch is desired, \ref FALSE if not
-	\sa SetWindowSwitchRequested(Word)
+	\sa SetWindowSwitchRequested(uint_t)
 
 ***************************************/
 

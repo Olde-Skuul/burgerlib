@@ -1,13 +1,14 @@
 /***************************************
 
-	DDS File handler class
+    DDS File handler class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -46,14 +47,14 @@
 #define DDS_DXT5 0x35545844		// 'DXT5'
 
 struct DDS_PIXELFORMAT {
-	Word32 m_uSize;
-	Word32 m_uFlags;		// Usually DDPF_RGB for raw and DDS_FOURCC for compressed
-	Word32 m_uFourCC;		// Compression codec
-	Word32 m_uRGBBitCount;
-	Word32 m_uRBitMask;
-	Word32 m_uGBitMask;
-	Word32 m_uBBitMask;
-	Word32 m_uABitMask;
+	uint32_t m_uSize;
+	uint32_t m_uFlags;		// Usually DDPF_RGB for raw and DDS_FOURCC for compressed
+	uint32_t m_uFourCC;		// Compression codec
+	uint32_t m_uRGBBitCount;
+	uint32_t m_uRBitMask;
+	uint32_t m_uGBitMask;
+	uint32_t m_uBBitMask;
+	uint32_t m_uABitMask;
 };
 
 #define DDS_HEADER_FLAGS_TEXTURE 0x00001007U		// DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT 
@@ -63,19 +64,19 @@ struct DDS_PIXELFORMAT {
 #define DDS_HEADER_FLAGS_LINEARSIZE 0x00080000U		// DDSD_LINEARSIZE
 
 struct DDSHeader {			// This is the header for a DDS file
-	Word32 m_uMagic;		// Image identification field 'DDS '
-	Word32 m_uSize;
-	Word32 m_uHeaderFlags;
-	Word32 m_uHeight;
-	Word32 m_uWidth;
-	Word32 m_uPitchOrLinearSize;
-	Word32 m_uDepth;			// only if DDS_HEADER_FLAGS_VOLUME is set in dwHeaderFlags
-	Word32 m_uMipMapCount;
-	Word32 m_uReserved1[11];
+	uint32_t m_uMagic;		// Image identification field 'DDS '
+	uint32_t m_uSize;
+	uint32_t m_uHeaderFlags;
+	uint32_t m_uHeight;
+	uint32_t m_uWidth;
+	uint32_t m_uPitchOrLinearSize;
+	uint32_t m_uDepth;			// only if DDS_HEADER_FLAGS_VOLUME is set in dwHeaderFlags
+	uint32_t m_uMipMapCount;
+	uint32_t m_uReserved1[11];
 	DDS_PIXELFORMAT m_PixelFormat;
-	Word32 m_uSurfaceFlags;
-	Word32 m_uCubemapFlags;
-	Word32 m_uReserved2[3];
+	uint32_t m_uSurfaceFlags;
+	uint32_t m_uCubemapFlags;
+	uint32_t m_uReserved2[3];
 };
 
 #endif
@@ -90,7 +91,7 @@ struct DDSHeader {			// This is the header for a DDS file
 
 Burger::FileDDS::FileDDS()
 {
-	WordPtr uIndex = 0;
+	uintptr_t uIndex = 0;
 	do {
 		m_uReserved[uIndex] = 0;
 	} while (++uIndex<BURGER_ARRAYSIZE(m_uReserved));
@@ -117,49 +118,49 @@ Burger::Image * Burger::FileDDS::Load(InputMemoryStream *pInput)
 {
 	const char *pBadNews = NULL;
 	Image *pImage = NULL;
-	Word32 uWidth = 0;
-	Word32 uHeight = 0;
-	Word32 uDepth = 0;
-	Word32 uPixelFormatFlags = 0;
-	Word32 uMipMapCount = 1;
+	uint32_t uWidth = 0;
+	uint32_t uHeight = 0;
+	uint32_t uDepth = 0;
+	uint32_t uPixelFormatFlags = 0;
+	uint32_t uMipMapCount = 1;
 	Image::ePixelTypes eType = Image::PIXELTYPE8888;
 
 	// Start with processing the 128 byte header of the DDS file
 	if (pInput->BytesRemaining()<128) {
 		pBadNews = "Insufficient data for DDS file header.";
 	} else {
-		Word uMagic = pInput->GetWord32();
+		uint_t uMagic = pInput->GetWord32();
 		if (uMagic!=DDS_MAGIC) {
 			pBadNews = "Invalid DDS header.";
 		} else {
 
 			// Read in the start of the header
 
-			Word32 uSize = pInput->GetWord32();
-			Word32 uHeaderFlags = pInput->GetWord32();
+			uint32_t uSize = pInput->GetWord32();
+			uint32_t uHeaderFlags = pInput->GetWord32();
 			uHeight = pInput->GetWord32();
 			uWidth = pInput->GetWord32();
-			/* Word32 uPitchOrLinearSize = */ pInput->GetWord32();
-			/* Word32 uVolumeDepth = */ pInput->GetWord32();		// Z for 3D textures
+			/* uint32_t uPitchOrLinearSize = */ pInput->GetWord32();
+			/* uint32_t uVolumeDepth = */ pInput->GetWord32();		// Z for 3D textures
 			uMipMapCount = pInput->GetWord32();
-			WordPtr i = 0;
+			uintptr_t i = 0;
 			do {
 				m_uReserved[i] = pInput->GetWord32();
 			} while (++i<BURGER_ARRAYSIZE(m_uReserved));
 			
 			// Read in the Pixel format
-			Word32 uPixelFormatSize = pInput->GetWord32();
+			uint32_t uPixelFormatSize = pInput->GetWord32();
 			uPixelFormatFlags = pInput->GetWord32();
-			Word32 uFourCC = pInput->GetWord32();
+			uint32_t uFourCC = pInput->GetWord32();
 			uDepth = pInput->GetWord32();
-			Word32 uRBitMask = pInput->GetWord32();
-			Word32 uGBitMask = pInput->GetWord32();
-			Word32 uBBitMask = pInput->GetWord32();
-			Word32 uABitMask = pInput->GetWord32();
+			uint32_t uRBitMask = pInput->GetWord32();
+			uint32_t uGBitMask = pInput->GetWord32();
+			uint32_t uBBitMask = pInput->GetWord32();
+			uint32_t uABitMask = pInput->GetWord32();
 
 			// Read in the remainder of the header
-			/* Word32 uSurfaceFlags = */ pInput->GetWord32();
-			/* Word32 uCubemapFlags = */ pInput->GetWord32();
+			/* uint32_t uSurfaceFlags = */ pInput->GetWord32();
+			/* uint32_t uCubemapFlags = */ pInput->GetWord32();
 			// Skip the rest of the reserved data
 			pInput->SkipForward(3*4);
 
@@ -252,20 +253,20 @@ Burger::Image * Burger::FileDDS::Load(InputMemoryStream *pInput)
 		// Get the input buffer
 		pImage = Image::New(uWidth,uHeight,eType,uMipMapCount);
 		if (pImage) {
-			WordPtr uLength = Image::GetSuggestedBufferSize(uWidth,uHeight,eType,uMipMapCount);
-			Word8 *pDest = pImage->GetImage();
+			uintptr_t uLength = Image::GetSuggestedBufferSize(uWidth,uHeight,eType,uMipMapCount);
+			uint8_t *pDest = pImage->GetImage();
 			if (uDepth==8) {
 				// Copy in one shot!
 				pInput->Get(pDest,uLength);
 			} else if (uDepth == 16) {			// 16 bit
-				Word16 uMask;
+				uint16_t uMask;
 				if (eType==Image::PIXELTYPE555) {
 					uMask = 0x7FFF;
 				} else {
 					uMask = 0xFFFFU;
 				}
 				do {
-					reinterpret_cast<Word16 *>(pDest)[0] = static_cast<Word16>(pInput->GetShort()&uMask);	// Save pixel
+					reinterpret_cast<uint16_t *>(pDest)[0] = static_cast<uint16_t>(pInput->GetShort()&uMask);	// Save pixel
 					pDest=pDest+2;
 					uLength-=2;
 				} while (uLength);		// All done?
@@ -280,12 +281,12 @@ Burger::Image * Burger::FileDDS::Load(InputMemoryStream *pInput)
 			} else if (eType==Image::PIXELTYPE8888) {
 
 				// If the file doesn't have an alpha, add one
-				Word uMask = (uPixelFormatFlags&1) ? 0x00 : 0xFFU;
+				uint_t uMask = (uPixelFormatFlags&1) ? 0x00 : 0xFFU;
 				do {
 					pDest[2] = pInput->GetByte();	// Blue
 					pDest[1] = pInput->GetByte();	// Green
 					pDest[0] = pInput->GetByte();	// Red
-					pDest[3] = static_cast<Word8>(pInput->GetByte()|uMask);	// Alpha
+					pDest[3] = static_cast<uint8_t>(pInput->GetByte()|uMask);	// Alpha
 					pDest = pDest+4;
 					uLength -= 4;
 				} while (uLength);				// All done?
@@ -319,15 +320,15 @@ Burger::Image * Burger::FileDDS::Load(InputMemoryStream *pInput)
 
 ***************************************/
 
-Word Burger::FileDDS::Save(OutputMemoryStream *pOutput,const Image *pImage)
+uint_t Burger::FileDDS::Save(OutputMemoryStream *pOutput,const Image *pImage)
 {
-	Word32 uPixelFlags = 0;
-	Word32 uFourCC = 0;
-	Word32 uBitCount = 0;
-	Word32 uRBitMask = 0;
-	Word32 uGBitMask = 0;
-	Word32 uBBitMask = 0;
-	Word32 uABitMask = 0;
+	uint32_t uPixelFlags = 0;
+	uint32_t uFourCC = 0;
+	uint32_t uBitCount = 0;
+	uint32_t uRBitMask = 0;
+	uint32_t uGBitMask = 0;
+	uint32_t uBBitMask = 0;
+	uint32_t uABitMask = 0;
 
 	Image::ePixelTypes eType = pImage->GetType();
 	// Certain formats are supported
@@ -409,23 +410,23 @@ Word Burger::FileDDS::Save(OutputMemoryStream *pOutput,const Image *pImage)
 	default:
 		return 10;
 	}
-	Word32 uWidth = static_cast<Word32>(pImage->GetWidth());
-	Word32 uHeight = static_cast<Word32>(pImage->GetHeight());
-	pOutput->Append(static_cast<Word32>(DDS_MAGIC));	// DDS ID
-	pOutput->Append(static_cast<Word32>(124));			// Size of the structure
-	pOutput->Append(static_cast<Word32>(DDS_HEADER_FLAGS_TEXTURE));	// Texture
+	uint32_t uWidth = static_cast<uint32_t>(pImage->GetWidth());
+	uint32_t uHeight = static_cast<uint32_t>(pImage->GetHeight());
+	pOutput->Append(static_cast<uint32_t>(DDS_MAGIC));	// DDS ID
+	pOutput->Append(static_cast<uint32_t>(124));			// Size of the structure
+	pOutput->Append(static_cast<uint32_t>(DDS_HEADER_FLAGS_TEXTURE));	// Texture
 	pOutput->Append(uWidth);
 	pOutput->Append(uHeight);
-	pOutput->Append(static_cast<Word32>(0));			// PitchOrLinearSize
-	pOutput->Append(static_cast<Word32>(0));			// Z Depth
-	pOutput->Append(static_cast<Word32>(0));			// Mip Map count
+	pOutput->Append(static_cast<uint32_t>(0));			// PitchOrLinearSize
+	pOutput->Append(static_cast<uint32_t>(0));			// Z Depth
+	pOutput->Append(static_cast<uint32_t>(0));			// Mip Map count
 
-	WordPtr i = 0;
+	uintptr_t i = 0;
 	do {
 		pOutput->Append(m_uReserved[i]);
 	} while (++i<BURGER_ARRAYSIZE(m_uReserved));
 
-	pOutput->Append(static_cast<Word32>(32));			// Pixel map format
+	pOutput->Append(static_cast<uint32_t>(32));			// Pixel map format
 	pOutput->Append(uPixelFlags);			// Pixel flags
 	pOutput->Append(uFourCC);				// Texture code
 	pOutput->Append(uBitCount);				// Bit depth
@@ -434,15 +435,15 @@ Word Burger::FileDDS::Save(OutputMemoryStream *pOutput,const Image *pImage)
 	pOutput->Append(uBBitMask);
 	pOutput->Append(uABitMask);
 
-	pOutput->Append(static_cast<Word32>(0));			// Surface flags
-	pOutput->Append(static_cast<Word32>(0));			// Cubemap flags
-	pOutput->Append(static_cast<Word32>(0));			// Reserved
-	pOutput->Append(static_cast<Word32>(0));			// Reserved
-	pOutput->Append(static_cast<Word32>(0));			// Reserved
+	pOutput->Append(static_cast<uint32_t>(0));			// Surface flags
+	pOutput->Append(static_cast<uint32_t>(0));			// Cubemap flags
+	pOutput->Append(static_cast<uint32_t>(0));			// Reserved
+	pOutput->Append(static_cast<uint32_t>(0));			// Reserved
+	pOutput->Append(static_cast<uint32_t>(0));			// Reserved
 
 	if (uWidth && uHeight) {
-		const Word8 *pData = pImage->GetImage();
-		WordPtr uStride = pImage->GetStride();
+		const uint8_t *pData = pImage->GetImage();
+		uintptr_t uStride = pImage->GetStride();
 		switch (eType) {
 		case Image::PIXELTYPE332:
 			do {
@@ -455,13 +456,13 @@ Word Burger::FileDDS::Save(OutputMemoryStream *pOutput,const Image *pImage)
 		case Image::PIXELTYPE565:
 		case Image::PIXELTYPE4444:
 			{
-				Word32 Zero = 0;
-				WordPtr uPad = (0-uWidth*2)&3;
+				uint32_t Zero = 0;
+				uintptr_t uPad = (0-uWidth*2)&3;
 				do {
-					Word uLength = uWidth;
-					const Word8 *pDest = pData;
+					uint_t uLength = uWidth;
+					const uint8_t *pDest = pData;
 					do {
-						pOutput->Append(reinterpret_cast<const Word16 *>(pDest)[0]);	// Pixel
+						pOutput->Append(reinterpret_cast<const uint16_t *>(pDest)[0]);	// Pixel
 						pDest = pDest+2;
 					} while (--uLength);			// All done?
 					pData += uStride;
@@ -471,11 +472,11 @@ Word Burger::FileDDS::Save(OutputMemoryStream *pOutput,const Image *pImage)
 			break;
 		case Image::PIXELTYPE888:
 			{
-				Word32 Zero = 0;
-				WordPtr uPad = (0-uWidth*3)&3;
+				uint32_t Zero = 0;
+				uintptr_t uPad = (0-uWidth*3)&3;
 				do {
-					Word uLength = uWidth;
-					const Word8 *pDest = pData;
+					uint_t uLength = uWidth;
+					const uint8_t *pDest = pData;
 					do {
 						pOutput->Append(pDest[2]);	// Blue
 						pOutput->Append(pDest[1]);	// Green
@@ -490,8 +491,8 @@ Word Burger::FileDDS::Save(OutputMemoryStream *pOutput,const Image *pImage)
 		case Image::PIXELTYPE8888:
 			{
 				do {
-					Word uLength = uWidth;
-					const Word8 *pDest = pData;
+					uint_t uLength = uWidth;
+					const uint8_t *pDest = pData;
 					do {
 						pOutput->Append(pDest[2]);	// Blue
 						pOutput->Append(pDest[1]);	// Green
@@ -512,7 +513,7 @@ Word Burger::FileDDS::Save(OutputMemoryStream *pOutput,const Image *pImage)
 		case Image::PIXELTYPEDXT5:
 			{
 				uHeight = (uHeight+3)>>2;
-				WordPtr uLine = Image::GetSuggestedStride(uWidth,eType);
+				uintptr_t uLine = Image::GetSuggestedStride(uWidth,eType);
 				do {
 					pOutput->Append(pData,uLine);
 					pData += uStride;

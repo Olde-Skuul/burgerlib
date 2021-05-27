@@ -1,13 +1,14 @@
 /***************************************
 
-	LBM File handler class
+    LBM File handler class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -40,37 +41,37 @@
 
 struct MasterHeader {	// Beginning of the file
 	char m_ID[4];		// 'FORM'
-	Word32 m_uLength;	// Size of the file - 8
+	uint32_t m_uLength;	// Size of the file - 8
 	char m_TypeName[4];	// 'ILBM' or 'PBM '
 };
 
 struct ILBMHeader {		// BMHD record
 	char m_ID[4];		// BMHD
-	Word32 m_uLength;	// Size of the record
-	Word16 m_uWidth;	// Size of the final shape
-	Word16 m_uHeight;
-	Word32 Dat1;		// Reserved
-	Word8 m_bPlanes;	// Bits per pixel (8)
-	Word8 Dat2;			// 0
-	Word8 Dat3;			// 1
-	Word8 Dat4;			// 0
-	Word16 Dat5;		// 0,0
-	Word8 Dat6;			// 1
-	Word8 Dat7;			// 1
-	Word16 Width2;		// Another copy of the size
-	Word16 Height2;
+	uint32_t m_uLength;	// Size of the record
+	uint16_t m_uWidth;	// Size of the final shape
+	uint16_t m_uHeight;
+	uint32_t Dat1;		// Reserved
+	uint8_t m_bPlanes;	// Bits per pixel (8)
+	uint8_t Dat2;			// 0
+	uint8_t Dat3;			// 1
+	uint8_t Dat4;			// 0
+	uint16_t Dat5;		// 0,0
+	uint8_t Dat6;			// 1
+	uint8_t Dat7;			// 1
+	uint16_t Width2;		// Another copy of the size
+	uint16_t Height2;
 };
 
 struct ILBMPalette {		// CMAP record
 	char m_ID[4];			// CMAP
-	Word32 m_uLength;		// Size of the record
-	Word8 Palette[768];		// RGB Triplets
+	uint32_t m_uLength;		// Size of the record
+	uint8_t Palette[768];		// RGB Triplets
 };
 
 struct ILBMBody {		// BODY record
 	char m_ID[4];		// BODY
-	Word32 m_uLength;	// Size of the record
-	Word8 Data[1];		// Raw packed data
+	uint32_t m_uLength;	// Size of the record
+	uint8_t Data[1];		// Raw packed data
 };
 
 #endif
@@ -86,18 +87,18 @@ struct ILBMBody {		// BODY record
 
 ***************************************/
 
-const char * BURGER_API Burger::FileLBM::UnpackILBMData(Word8 *pOutput,WordPtr uOutputLength,InputMemoryStream *pInput)
+const char * BURGER_API Burger::FileLBM::UnpackILBMData(uint8_t *pOutput,uintptr_t uOutputLength,InputMemoryStream *pInput)
 {
 	if (uOutputLength) {
 		do {
-			Word uTemp = pInput->GetByte();		// Get the run token
+			uint_t uTemp = pInput->GetByte();		// Get the run token
 			if (uTemp & 0x80U) {				// Run length?
 				uTemp = 0x101U-uTemp;			// Count the run
 				if (uOutputLength<uTemp) {		// Too large?
 					break;
 				}
 				uOutputLength = uOutputLength-uTemp;	// Remove from count
-				Word8 uFill = pInput->GetByte();
+				uint8_t uFill = pInput->GetByte();
 				do {
 					pOutput[0] = uFill;		// Perform the fill
 					++pOutput;
@@ -134,14 +135,14 @@ const char * BURGER_API Burger::FileLBM::UnpackILBMData(Word8 *pOutput,WordPtr u
 
 ***************************************/
 
-const char * BURGER_API Burger::FileLBM::UnpackILBM(Word8 *pOutput,Word uWidth,Word uHeight,Word uDepth,InputMemoryStream *pInput)
+const char * BURGER_API Burger::FileLBM::UnpackILBM(uint8_t *pOutput,uint_t uWidth,uint_t uHeight,uint_t uDepth,InputMemoryStream *pInput)
 {
-	Word uBytesPerPixel = (uDepth+7U)>>3U;
-	Word8 *pTempLineBuffer = static_cast<Word8 *>(Alloc((uWidth+16)*uBytesPerPixel));	// Buffer to deinterleave memory
+	uint_t uBytesPerPixel = (uDepth+7U)>>3U;
+	uint8_t *pTempLineBuffer = static_cast<uint8_t *>(Alloc((uWidth+16)*uBytesPerPixel));	// Buffer to deinterleave memory
 	if (!pTempLineBuffer) {			// Error (How!!)
 		return "Out of memory.";
 	}
-	Word uPlaneStep = ((uWidth+15U)&(~15U))>>3U;		// Number of bytes per plane (Padded to short)
+	uint_t uPlaneStep = ((uWidth+15U)&(~15U))>>3U;		// Number of bytes per plane (Padded to short)
 	uWidth = uWidth*uBytesPerPixel;
 	const char *pBadNews = NULL;
 	do {
@@ -153,13 +154,13 @@ const char * BURGER_API Burger::FileLBM::UnpackILBM(Word8 *pOutput,Word uWidth,W
 
 		// Merge the planes
 		MemoryClear(pOutput,uWidth);	// Clear out the old line
-		Word uPlaneIndex = 0;			// Start at the first bit plane
-		Word uPlaneMask = 1;			// Init dest mask
+		uint_t uPlaneIndex = 0;			// Start at the first bit plane
+		uint_t uPlaneMask = 1;			// Init dest mask
 		do {
-			Word j = uPlaneIndex>>3U;			// Init dest index
-			Word i = uPlaneStep*uPlaneIndex;
-			Word uBitMask = 0;
-			Word uInput = 0;
+			uint_t j = uPlaneIndex>>3U;			// Init dest index
+			uint_t i = uPlaneStep*uPlaneIndex;
+			uint_t uBitMask = 0;
+			uint_t uInput = 0;
 			do {
 				if (!uBitMask) {		// Mask needs to be set?
 					uInput = pTempLineBuffer[i];	// Get a source byte
@@ -167,7 +168,7 @@ const char * BURGER_API Burger::FileLBM::UnpackILBM(Word8 *pOutput,Word uWidth,W
 					uBitMask = 0x80U;	// Reset the mask
 				}
 				if (uBitMask&uInput) {	// Shall I convert it?
-					pOutput[j] |= static_cast<Word8>(uPlaneMask);	// Save it
+					pOutput[j] |= static_cast<uint8_t>(uPlaneMask);	// Save it
 				}
 				uBitMask>>=1U;		// Adjust the mask
 				j+=uBytesPerPixel;
@@ -195,16 +196,16 @@ const char * BURGER_API Burger::FileLBM::UnpackILBM(Word8 *pOutput,Word uWidth,W
 
 ***************************************/
 
-const char * BURGER_API Burger::FileLBM::SeekIffChunk(InputMemoryStream *pInput,Word32 uID,WordPtr uStartOffset)
+const char * BURGER_API Burger::FileLBM::SeekIffChunk(InputMemoryStream *pInput,uint32_t uID,uintptr_t uStartOffset)
 {
 	pInput->SetMark(uStartOffset);
 	// Only run if there's enough data to scan
 	while (pInput->BytesRemaining()>=8) {
-		Word32 uTest = pInput->GetBigWord32();
+		uint32_t uTest = pInput->GetBigWord32();
 		if (uTest==uID) {
 			return NULL;
 		}
-		Word32 uLength = (pInput->GetBigWord32()+1U)&(~1U);	// Align to short
+		uint32_t uLength = (pInput->GetBigWord32()+1U)&(~1U);	// Align to short
 		if (!uLength) {
 			break;
 		}
@@ -246,18 +247,18 @@ Burger::Image * Burger::FileLBM::Load(InputMemoryStream *pInput)
 {
 	const char *pBadNews = NULL;
 	Image *pImage = NULL;
-	//Word32 uFileLength = 0;
-	Word FormType = FALSE;
-	Word uWidth = 0;
-	Word uHeight = 0;
-	Word uDepth = 0;
-	WordPtr uStartOffset = 0;
-	Word32 uID = pInput->GetBigWord32();
+	//uint32_t uFileLength = 0;
+	uint_t FormType = FALSE;
+	uint_t uWidth = 0;
+	uint_t uHeight = 0;
+	uint_t uDepth = 0;
+	uintptr_t uStartOffset = 0;
+	uint32_t uID = pInput->GetBigWord32();
 	if (uID!=FORMASCII) {
 		pBadNews = "No FORM record (Not an LBM or PBM File).";
 	} else {
 		/* uFileLength = */ pInput->GetBigWord32();
-		Word32 uFileID = pInput->GetBigWord32();
+		uint32_t uFileID = pInput->GetBigWord32();
 		if (uFileID != ILBMASCII) {
 			if (uFileID != PBMASCII) {
 				pBadNews = "Not a supported IFF file.";
@@ -304,7 +305,7 @@ Burger::Image * Burger::FileLBM::Load(InputMemoryStream *pInput)
 			pBadNews = SeekIffChunk(pInput,CMAPASCII,uStartOffset);	// Read in the palette
 			if (!pBadNews) {
 				MemoryClear(m_Palette,sizeof(m_Palette));
-				Word32 uPaletteSize = pInput->GetBigWord32()/3U;
+				uint32_t uPaletteSize = pInput->GetBigWord32()/3U;
 				if (uPaletteSize>256) {
 					uPaletteSize = 256;
 				}
@@ -331,7 +332,7 @@ Burger::Image * Burger::FileLBM::Load(InputMemoryStream *pInput)
 			if (FormType) {
 				pImage = Image::New(uWidth,uHeight,Image::PIXELTYPE8BIT);
 				if (pImage) {
-					pBadNews = UnpackILBMData(pImage->GetImage(),(Word32)uWidth*uHeight,pInput);
+					pBadNews = UnpackILBMData(pImage->GetImage(),(uint32_t)uWidth*uHeight,pInput);
 				}
 			} else {
 				if (uDepth==24) {
@@ -382,7 +383,7 @@ Burger::Image * Burger::FileLBM::Load(InputMemoryStream *pInput)
 
 /*! ************************************
 
-	\fn void Burger::FileLBM::SetPalette(const RGBWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+	\fn void Burger::FileLBM::SetPalette(const RGBWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 	\brief Set the file image's palette (RGB)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -396,13 +397,13 @@ Burger::Image * Burger::FileLBM::Load(InputMemoryStream *pInput)
 	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
-	\sa SetPalette(const RGBAWord8_t *,Word,Word)
+	\sa SetPalette(const RGBAWord8_t *,uint_t,uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FileLBM::SetPalette(const RGBAWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+	\fn void Burger::FileLBM::SetPalette(const RGBAWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 	\brief Set the file image's palette (RGBA)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -415,7 +416,7 @@ Burger::Image * Burger::FileLBM::Load(InputMemoryStream *pInput)
 	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
-	\sa SetPalette(const RGBWord8_t *,Word,Word)
+	\sa SetPalette(const RGBWord8_t *,uint_t,uint_t)
 
 ***************************************/
 
@@ -433,21 +434,21 @@ Burger::Image * Burger::FileLBM::Load(InputMemoryStream *pInput)
 
 ***************************************/
 
-const void * BURGER_API Burger::FindAIFFChunk(const void *pInput,WordPtr uLength,Word32 uChunkName)
+const void * BURGER_API Burger::FindAIFFChunk(const void *pInput,uintptr_t uLength,uint32_t uChunkName)
 {
 	// Not enough data?
 	const void *pResult = NULL;
 	if (uLength>=(12+8)) {
-		WordPtr uSkip = 12;		// Initial skip
+		uintptr_t uSkip = 12;		// Initial skip
 		do {
 			// Remove processed bytes
 			uLength-=uSkip;
-			pInput = static_cast<const Word8 *>(pInput)+uSkip;
-			if (BigEndian::LoadAny(static_cast<const Word32 *>(pInput)) == uChunkName) {	// Match?
+			pInput = static_cast<const uint8_t *>(pInput)+uSkip;
+			if (BigEndian::LoadAny(static_cast<const uint32_t *>(pInput)) == uChunkName) {	// Match?
 				pResult = pInput;
 				break;
 			}
-			uSkip = BigEndian::LoadAny(&static_cast<const Word32 *>(pInput)[1]);
+			uSkip = BigEndian::LoadAny(&static_cast<const uint32_t *>(pInput)[1]);
 			uSkip = (uSkip+8U+1U)&(~1U);	// Align to short
 		} while (uSkip<uLength);
 	}
@@ -469,21 +470,21 @@ const void * BURGER_API Burger::FindAIFFChunk(const void *pInput,WordPtr uLength
 
 ***************************************/
 
-const void * BURGER_API Burger::FindRIFFChunk(const void *pInput,WordPtr uLength,Word32 uChunkName)
+const void * BURGER_API Burger::FindRIFFChunk(const void *pInput,uintptr_t uLength,uint32_t uChunkName)
 {
 	// Not enough data?
 	const void *pResult = NULL;
 	if (uLength>=(12+8)) {
-		WordPtr uSkip = 12;		// Initial skip
+		uintptr_t uSkip = 12;		// Initial skip
 		do {
 			// Remove processed bytes
 			uLength-=uSkip;
-			pInput = static_cast<const Word8 *>(pInput)+uSkip;
-			if (BigEndian::LoadAny(static_cast<const Word32 *>(pInput)) == uChunkName) {	// Match?
+			pInput = static_cast<const uint8_t *>(pInput)+uSkip;
+			if (BigEndian::LoadAny(static_cast<const uint32_t *>(pInput)) == uChunkName) {	// Match?
 				pResult = pInput;
 				break;
 			}
-			uSkip = LittleEndian::LoadAny(&static_cast<const Word32 *>(pInput)[1]);
+			uSkip = LittleEndian::LoadAny(&static_cast<const uint32_t *>(pInput)[1]);
 			uSkip = (uSkip+8U+1U)&(~1U);	// Align to short
 		} while (uSkip<uLength);
 	}

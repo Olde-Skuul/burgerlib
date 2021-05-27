@@ -1,14 +1,15 @@
 
 /***************************************
 
-	Compression manager
+    Compression manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -137,7 +138,7 @@ const int Burger::CompressDeflate::g_ExtraDistanceBits[D_CODES] = {
 const int Burger::CompressDeflate::g_ExtraBitLengthBits[BL_CODES] = {
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,7};
 
-const Word8 Burger::CompressDeflate::g_BitLengthOrder[BL_CODES] = {
+const uint8_t Burger::CompressDeflate::g_BitLengthOrder[BL_CODES] = {
 	16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15};
 
 //
@@ -219,7 +220,7 @@ const Burger::CompressDeflate::CodeData_t Burger::CompressDeflate::g_StaticDista
 	{{19},{ 5}}, {{11},{ 5}}, {{27},{ 5}}, {{ 7},{ 5}}, {{23},{ 5}}
 };
 
-const Word8 Burger::CompressDeflate::g_DistanceCodes[DIST_CODE_LEN] = {
+const uint8_t Burger::CompressDeflate::g_DistanceCodes[DIST_CODE_LEN] = {
 	 0,  1,  2,  3,  4,  4,  5,  5,  6,  6,  6,  6,  7,  7,  7,  7,  8,  8,  8,  8,
 	 8,  8,  8,  8,  9,  9,  9,  9,  9,  9,  9,  9, 10, 10, 10, 10, 10, 10, 10, 10,
 	10, 10, 10, 10, 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
@@ -248,7 +249,7 @@ const Word8 Burger::CompressDeflate::g_DistanceCodes[DIST_CODE_LEN] = {
 	29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29
 };
 
-const Word8 Burger::CompressDeflate::g_LengthCodes[MAX_MATCH-MIN_MATCH+1]= {
+const uint8_t Burger::CompressDeflate::g_LengthCodes[MAX_MATCH-MIN_MATCH+1]= {
 	 0,  1,  2,  3,  4,  5,  6,  7,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 12, 12,
 	13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15, 16, 16, 16, 16, 16, 16, 16, 16,
 	17, 17, 17, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 18, 18, 18, 19, 19, 19, 19,
@@ -295,13 +296,13 @@ const Burger::CompressDeflate::StaticTreeDesc_t Burger::CompressDeflate::g_Stati
 
 ***************************************/
 
-void Burger::CompressDeflate::OutputBigEndian16(Word uInput)
+void Burger::CompressDeflate::OutputBigEndian16(uint_t uInput)
 {
-	Word uPending = static_cast<Word>(m_iPending);
-	Word8 *pOutput=&m_PendingBuffer[uPending];
+	uint_t uPending = static_cast<uint_t>(m_iPending);
+	uint8_t *pOutput=&m_PendingBuffer[uPending];
 	m_iPending = static_cast<int>(uPending+2);
-	pOutput[0] = static_cast<Word8>(uInput>>8);
-	pOutput[1] = static_cast<Word8>(uInput);
+	pOutput[0] = static_cast<uint8_t>(uInput>>8);
+	pOutput[1] = static_cast<uint8_t>(uInput);
 }
 
 /*! ************************************
@@ -314,17 +315,17 @@ void Burger::CompressDeflate::OutputBigEndian16(Word uInput)
 
 void Burger::CompressDeflate::BitIndexFlush(void)
 {
-	Word uCount = m_uBitIndexValid;
+	uint_t uCount = m_uBitIndexValid;
 	if (uCount>=8) {
-		Word uPending = static_cast<Word>(m_iPending);
-		Word8 *pOutput=&m_PendingBuffer[uPending];
+		uint_t uPending = static_cast<uint_t>(m_iPending);
+		uint8_t *pOutput=&m_PendingBuffer[uPending];
 		++uPending;
-		Word uBucket = m_uBitIndexBuffer;
-		pOutput[0] = static_cast<Word8>(uBucket);
+		uint_t uBucket = m_uBitIndexBuffer;
+		pOutput[0] = static_cast<uint8_t>(uBucket);
 		uCount -= 8U;
 		uBucket = uBucket>>8U;
 		if (uCount == 8) {			// Clear it out completely?
-			pOutput[1] = static_cast<Word8>(uBucket);
+			pOutput[1] = static_cast<uint8_t>(uBucket);
 			uCount = 0;
 			uBucket = 0;
 			++uPending;
@@ -343,15 +344,15 @@ void Burger::CompressDeflate::BitIndexFlush(void)
 
 void Burger::CompressDeflate::BitIndexFlushToByte(void)
 {
-	Word Count = m_uBitIndexValid;
+	uint_t Count = m_uBitIndexValid;
 	if (Count) {
-		Word uPending = static_cast<Word>(m_iPending);
-		Word8 *pOutput=&m_PendingBuffer[uPending];
+		uint_t uPending = static_cast<uint_t>(m_iPending);
+		uint8_t *pOutput=&m_PendingBuffer[uPending];
 		++uPending;
-		Word uBucket = m_uBitIndexBuffer;
-		pOutput[0] = static_cast<Word8>(uBucket);
+		uint_t uBucket = m_uBitIndexBuffer;
+		pOutput[0] = static_cast<uint8_t>(uBucket);
 		if (Count > 8) {			// Clear it out completely?
-			pOutput[1] = static_cast<Word8>(uBucket>>8);
+			pOutput[1] = static_cast<uint8_t>(uBucket>>8);
 			++uPending;
 		}
 		m_iPending = static_cast<int>(uPending);
@@ -369,19 +370,19 @@ void Burger::CompressDeflate::BitIndexFlushToByte(void)
 
 ***************************************/
 
-void Burger::CompressDeflate::CopyBlock(const Word8 *pInput,WordPtr uInputLength)
+void Burger::CompressDeflate::CopyBlock(const uint8_t *pInput,uintptr_t uInputLength)
 {
 	BitIndexFlushToByte();	// align on byte boundary
 	m_uLastEOBLength = 8;	// enough lookahead for inflate
 
-	Word uPending = static_cast<Word>(m_iPending);
-	Word8 *pOutput=&m_PendingBuffer[uPending];
+	uint_t uPending = static_cast<uint_t>(m_iPending);
+	uint8_t *pOutput=&m_PendingBuffer[uPending];
 	{
-		pOutput[0] = static_cast<Word8>(uInputLength);
-		pOutput[1] = static_cast<Word8>(uInputLength >> 8U);
-		WordPtr uCompliment = ~uInputLength;
-		pOutput[2] = static_cast<Word8>(uCompliment);
-		pOutput[3] = static_cast<Word8>(uCompliment >> 8U);
+		pOutput[0] = static_cast<uint8_t>(uInputLength);
+		pOutput[1] = static_cast<uint8_t>(uInputLength >> 8U);
+		uintptr_t uCompliment = ~uInputLength;
+		pOutput[2] = static_cast<uint8_t>(uCompliment);
+		pOutput[3] = static_cast<uint8_t>(uCompliment >> 8U);
 	}
 	m_iPending = static_cast<int>(uPending+4+uInputLength);
 	// Perform a memory copy for the rest
@@ -408,17 +409,17 @@ void Burger::CompressDeflate::CopyBlock(const Word8 *pInput,WordPtr uInputLength
 
 void Burger::CompressDeflate::SetDataType(void)
 {
-	Word uBinaryFrequency = 0;
+	uint_t uBinaryFrequency = 0;
 	// Count the binary codes
 	const CodeData_t *pTrees = m_DynamicLengthTrees;
-	Word uIndex = 7;
+	uint_t uIndex = 7;
 	do {
 		uBinaryFrequency += pTrees->m_FrequencyCount.m_uFrequency;
 		++pTrees;
 	} while (--uIndex);
 
 	// Count the ASCII codes from 8-127
-	Word uASCIIFrequency = 0;
+	uint_t uASCIIFrequency = 0;
 	uIndex = 128-7;
 	do {
 		uASCIIFrequency += pTrees->m_FrequencyCount.m_uFrequency;
@@ -445,7 +446,7 @@ void Burger::CompressDeflate::SetDataType(void)
 void Burger::CompressDeflate::InitBlock(void)
 {
 	/* Initialize the trees. */
-	Word uIndex = L_CODES;
+	uint_t uIndex = L_CODES;
 	CodeData_t *pTrees = m_DynamicLengthTrees;
 	do {
 		pTrees->m_FrequencyCount.m_uFrequency = 0;
@@ -517,7 +518,7 @@ void Burger::CompressDeflate::PQDownHeap(const CodeData_t *pTree,int k)
 	int *pHeap = m_Heap;
 	int v = pHeap[k];
 	int j = k << 1;		// left son of k
-	Word8 *pDepth = m_Depth;
+	uint8_t *pDepth = m_Depth;
 	if (j <= m_iHeapLength) {
 		do {
 			// Set j to the smallest of the two sons:
@@ -554,19 +555,19 @@ void Burger::CompressDeflate::PQDownHeap(const CodeData_t *pTree,int k)
 
 void Burger::CompressDeflate::CompressBlock(const CodeData_t *pLengthTree,const CodeData_t *pDistanceTree)
 {
-	Word uLiteralIndex = 0;		// running index in l_buf
+	uint_t uLiteralIndex = 0;		// running index in l_buf
 	if (m_uLastLiteral != 0) {
 		do {
-			Word uDistance = m_DataBuffer[uLiteralIndex];
-			Word uLengthCode = m_LiteralBuffer[uLiteralIndex];	// match length or unmatched char (if dist == 0)
+			uint_t uDistance = m_DataBuffer[uLiteralIndex];
+			uint_t uLengthCode = m_LiteralBuffer[uLiteralIndex];	// match length or unmatched char (if dist == 0)
 			++uLiteralIndex;
 			if (!uDistance) {
 				send_code(uLengthCode, pLengthTree);		// send a literal byte
 			} else {
 			// Here, lc is the match length - MIN_MATCH
-				Word uCode = g_LengthCodes[uLengthCode];	// the code to send
+				uint_t uCode = g_LengthCodes[uLengthCode];	// the code to send
 				send_code(uCode+LITERALS+1,pLengthTree);	// send the length code
-				Word uExtra = static_cast<Word>(g_ExtraLengthBits[uCode]);		// number of extra bits to send
+				uint_t uExtra = static_cast<uint_t>(g_ExtraLengthBits[uCode]);		// number of extra bits to send
 				if (uExtra) {
 					uLengthCode -= g_BaseLengths[uCode];
 					SendBits(uLengthCode,uExtra);			// send the extra length bits
@@ -575,7 +576,7 @@ void Burger::CompressDeflate::CompressBlock(const CodeData_t *pLengthTree,const 
 				uCode = (uDistance < 256) ? g_DistanceCodes[uDistance] : g_DistanceCodes[256+(uDistance>>7)];
 
 				send_code(uCode,pDistanceTree);		// send the distance code
-				uExtra = static_cast<Word>(g_ExtraDistanceBits[uCode]);
+				uExtra = static_cast<uint_t>(g_ExtraDistanceBits[uCode]);
 				if (uExtra) {
 					uDistance -= g_BaseDistances[uCode];
 					SendBits(uDistance, uExtra);	// send the extra distance bits
@@ -597,9 +598,9 @@ void Burger::CompressDeflate::CompressBlock(const CodeData_t *pLengthTree,const 
 
 ***************************************/
 
-WordPtr Burger::CompressDeflate::ReadBuffer(Word8 *pOutput,WordPtr uOutputSize)
+uintptr_t Burger::CompressDeflate::ReadBuffer(uint8_t *pOutput,uintptr_t uOutputSize)
 {
-	WordPtr uInputLength = m_uInputLength;
+	uintptr_t uInputLength = m_uInputLength;
 
 	if (uInputLength > uOutputSize) {
 		uInputLength = uOutputSize;
@@ -632,7 +633,7 @@ WordPtr Burger::CompressDeflate::ReadBuffer(Word8 *pOutput,WordPtr uOutputSize)
 void Burger::CompressDeflate::FillWindow(void)
 {
 	do {
-		Word uMore = (c_uWindowSize - m_uLookAhead) - m_uStringStart;
+		uint_t uMore = (c_uWindowSize - m_uLookAhead) - m_uStringStart;
 
 		// If the window is almost full and there is insufficient lookahead,
 		// move the upper half to the lower one to make room in the upper half.
@@ -650,20 +651,20 @@ void Burger::CompressDeflate::FillWindow(void)
 		later. (Using level 0 permanently is not an optimal usage of
 		zlib, so we don't care about this pathological case.)
 		*/
-			Word uLoop = c_uHashSize;		
-			Word16 *pWork = &m_Head[c_uHashSize];
+			uint_t uLoop = c_uHashSize;		
+			uint16_t *pWork = &m_Head[c_uHashSize];
 			do {
 				--pWork;
-				Word uTemp = pWork[0];
-				pWork[0] = static_cast<Word16>((uTemp >= c_uWSize) ? (uTemp-c_uWSize) : 0);
+				uint_t uTemp = pWork[0];
+				pWork[0] = static_cast<uint16_t>((uTemp >= c_uWSize) ? (uTemp-c_uWSize) : 0);
 			} while (--uLoop);
 
 			uLoop = c_uWSize;
 			pWork = &m_Previous[c_uWSize];
 			do {
 				--pWork;
-				Word uTemp = pWork[0];
-				pWork[0] = static_cast<Word16>((uTemp >= c_uWSize) ? (uTemp-c_uWSize) : 0);
+				uint_t uTemp = pWork[0];
+				pWork[0] = static_cast<uint16_t>((uTemp >= c_uWSize) ? (uTemp-c_uWSize) : 0);
 				/* If n is not on any hash chain, prev[n] is garbage but
 				* its value will never be used.
 				*/
@@ -686,8 +687,8 @@ void Burger::CompressDeflate::FillWindow(void)
 		* If there was sliding, more >= WSIZE. So in all cases, more >= 2.
 		*/
 
-		WordPtr uReadCount = ReadBuffer(m_Window + m_uStringStart + m_uLookAhead,uMore);
-		m_uLookAhead += static_cast<Word>(uReadCount);
+		uintptr_t uReadCount = ReadBuffer(m_Window + m_uStringStart + m_uLookAhead,uMore);
+		m_uLookAhead += static_cast<uint_t>(uReadCount);
 
 		// Initialize the hash value now that we have some input:
 		if (m_uLookAhead >= MIN_MATCH) {
@@ -723,7 +724,7 @@ void Burger::CompressDeflate::GenerateBitLengths(const TreeDesc_t *pTreeDescript
 	int h;				/* heap index */
 	int n, m;			/* iterate over the tree elements */
 	int xbits;			/* extra bits */
-	Word16 f;			/* frequency */
+	uint16_t f;			/* frequency */
 	int overflow = 0;	/* number of elements with bit length too large */
 
 	int bits = 0;	// bit length
@@ -743,7 +744,7 @@ void Burger::CompressDeflate::GenerateBitLengths(const TreeDesc_t *pTreeDescript
 			bits = iMaxLength;
 			overflow++;
 		}
-		pDynamicTree[n].m_DataLength.m_uLength = (Word16)bits;
+		pDynamicTree[n].m_DataLength.m_uLength = (uint16_t)bits;
 		/* We overwrite tree[n].dl.dad which is no longer needed */
 
 		if (n > iMaximumCode) {
@@ -755,9 +756,9 @@ void Burger::CompressDeflate::GenerateBitLengths(const TreeDesc_t *pTreeDescript
 			xbits = pExtraBits[n-iExtraBase];
 		}
 		f = pDynamicTree[n].m_FrequencyCount.m_uFrequency;
-		m_uOptimalLength += (Word32)f * (bits + xbits);
+		m_uOptimalLength += (uint32_t)f * (bits + xbits);
 		if (pStaticTree) {
-			m_uStaticLength += (Word32)f * (pStaticTree[n].m_DataLength.m_uLength + xbits);
+			m_uStaticLength += (uint32_t)f * (pStaticTree[n].m_DataLength.m_uLength + xbits);
 		}
 	}
 	if (overflow == 0) {
@@ -789,10 +790,10 @@ void Burger::CompressDeflate::GenerateBitLengths(const TreeDesc_t *pTreeDescript
 		while (n!=0) {
 			m = m_Heap[--h];
 			if (m > iMaximumCode) continue;
-			if (pDynamicTree[m].m_DataLength.m_uLength!=(Word)bits) {
-				m_uOptimalLength += static_cast<Word32>(((long)bits-(long)pDynamicTree[m].m_DataLength.m_uLength)
+			if (pDynamicTree[m].m_DataLength.m_uLength!=(uint_t)bits) {
+				m_uOptimalLength += static_cast<uint32_t>(((long)bits-(long)pDynamicTree[m].m_DataLength.m_uLength)
 														*(long)pDynamicTree[m].m_FrequencyCount.m_uFrequency);
-				pDynamicTree[m].m_DataLength.m_uLength = (Word16)bits;
+				pDynamicTree[m].m_DataLength.m_uLength = (uint16_t)bits;
 			}
 			n--;
 		}
@@ -808,10 +809,10 @@ void Burger::CompressDeflate::GenerateBitLengths(const TreeDesc_t *pTreeDescript
  * OUT assertion: the field code is set for all tree elements of non
  *     zero code length.
  */
-void Burger::CompressDeflate::GenerateCodes(CodeData_t *tree, int max_code, Word16 *bl_count)
+void Burger::CompressDeflate::GenerateCodes(CodeData_t *tree, int max_code, uint16_t *bl_count)
 {
-	Word16 next_code[MAX_BITS+1];	/* next code value for each bit length */
-	Word16 code = 0;				/* running code value */
+	uint16_t next_code[MAX_BITS+1];	/* next code value for each bit length */
+	uint16_t code = 0;				/* running code value */
 	int bits;						/* bit index */
 	int n;							/* code index */
 
@@ -819,7 +820,7 @@ void Burger::CompressDeflate::GenerateCodes(CodeData_t *tree, int max_code, Word
      * without bit reversal.
      */
 	for (bits = 1; bits<=MAX_BITS; bits++) {
-		code = static_cast<Word16>((code+bl_count[bits-1])<<1);
+		code = static_cast<uint16_t>((code+bl_count[bits-1])<<1);
 		next_code[bits] = code;
 	}
     /* Check that the bit counts in bl_count are consistent. The last code
@@ -827,10 +828,10 @@ void Burger::CompressDeflate::GenerateCodes(CodeData_t *tree, int max_code, Word
      */
 
 	for (n = 0; n<=max_code; n++) {
-		Word len = tree[n].m_DataLength.m_uLength;
+		uint_t len = tree[n].m_DataLength.m_uLength;
 		if (len) {
 			/* Now reverse the bits */
-			tree[n].m_FrequencyCount.m_uCode = static_cast<Word16>(BitReverse(static_cast<Word32>(next_code[len]++),len));
+			tree[n].m_FrequencyCount.m_uCode = static_cast<uint16_t>(BitReverse(static_cast<uint32_t>(next_code[len]++),len));
 		}
 	}
 }
@@ -901,10 +902,10 @@ void Burger::CompressDeflate::BuildTree(TreeDesc_t *desc)
         m_Heap[--(m_iHeapMaximum)] = m;
 
         /* Create a new node father of n and m */
-        tree[node].m_FrequencyCount.m_uFrequency = static_cast<Word16>(tree[n].m_FrequencyCount.m_uFrequency + tree[m].m_FrequencyCount.m_uFrequency);
+        tree[node].m_FrequencyCount.m_uFrequency = static_cast<uint16_t>(tree[n].m_FrequencyCount.m_uFrequency + tree[m].m_FrequencyCount.m_uFrequency);
 
-        m_Depth[node] = (Word8) (((m_Depth[n] >= m_Depth[m]) ? m_Depth[n] : m_Depth[m]) + 1);
-        tree[n].m_DataLength.m_uDadBits = tree[m].m_DataLength.m_uDadBits = (Word16)node;
+        m_Depth[node] = (uint8_t) (((m_Depth[n] >= m_Depth[m]) ? m_Depth[n] : m_Depth[m]) + 1);
+        tree[n].m_DataLength.m_uDadBits = tree[m].m_DataLength.m_uDadBits = (uint16_t)node;
         /* and insert the new node in the heap */
         m_Heap[SMALLEST] = node++;
         PQDownHeap(tree, SMALLEST);
@@ -940,14 +941,14 @@ void Burger::CompressDeflate::ScanTree(CodeData_t *tree,int max_code)
     	max_count = 138;
     	min_count = 3;
     }
-    tree[max_code+1].m_DataLength.m_uLength = (Word16)0xffff; /* guard */
+    tree[max_code+1].m_DataLength.m_uLength = (uint16_t)0xffff; /* guard */
 
     for (n = 0; n <= max_code; n++) {
         curlen = nextlen; nextlen = tree[n+1].m_DataLength.m_uLength;
         if (++count < max_count && curlen == nextlen) {
             continue;
         } else if (count < min_count) {
-            m_BitLengthTrees[curlen].m_FrequencyCount.m_uFrequency = static_cast<Word16>(m_BitLengthTrees[curlen].m_FrequencyCount.m_uFrequency+count);
+            m_BitLengthTrees[curlen].m_FrequencyCount.m_uFrequency = static_cast<uint16_t>(m_BitLengthTrees[curlen].m_FrequencyCount.m_uFrequency+count);
         } else if (curlen != 0) {
             if (curlen != prevlen) m_BitLengthTrees[curlen].m_FrequencyCount.m_uFrequency++;
             m_BitLengthTrees[REP_3_6].m_FrequencyCount.m_uFrequency++;
@@ -1001,10 +1002,10 @@ int Burger::CompressDeflate::BuildBitLengthTree(void)
 /* ===========================================================================
  * Send a stored block
  */
-void Burger::CompressDeflate::StoredBlock(const Word8 *buf,Word32 stored_len,int eof)
+void Burger::CompressDeflate::StoredBlock(const uint8_t *buf,uint32_t stored_len,int eof)
 {
-    SendBits(static_cast<Word>((STORED_BLOCK<<1)+eof), 3);  /* send block type */
-    CopyBlock(buf,(Word)stored_len); /* with header */
+    SendBits(static_cast<uint_t>((STORED_BLOCK<<1)+eof), 3);  /* send block type */
+    CopyBlock(buf,(uint_t)stored_len); /* with header */
 }
 
 
@@ -1033,23 +1034,23 @@ void Burger::CompressDeflate::SendTree(CodeData_t *tree, int max_code)
             continue;
         } else if (count < min_count) {
             do {
-            	send_code(static_cast<Word>(curlen),m_BitLengthTrees);
+            	send_code(static_cast<uint_t>(curlen),m_BitLengthTrees);
             } while (--count != 0);
 
         } else if (curlen != 0) {
             if (curlen != prevlen) {
-                send_code(static_cast<Word>(curlen),m_BitLengthTrees); count--;
+                send_code(static_cast<uint_t>(curlen),m_BitLengthTrees); count--;
             }
             send_code(REP_3_6,m_BitLengthTrees);
-            SendBits(static_cast<Word>(count-3), 2);
+            SendBits(static_cast<uint_t>(count-3), 2);
 
         } else if (count <= 10) {
-            send_code(REPZ_3_10,m_BitLengthTrees);
-            SendBits(static_cast<Word>(count-3), 3);
+            send_code(REPZ_3_10, m_BitLengthTrees);
+            SendBits(static_cast<uint_t>(count - 3), 3);
 
         } else {
             send_code(REPZ_11_138,m_BitLengthTrees);
-            SendBits(static_cast<Word>(count-11), 7);
+            SendBits(static_cast<uint_t>(count-11), 7);
         }
         count = 0; prevlen = curlen;
         if (nextlen == 0) {
@@ -1072,9 +1073,9 @@ void Burger::CompressDeflate::SendTree(CodeData_t *tree, int max_code)
  */
 void Burger::CompressDeflate::SendAllTrees(int lcodes,int dcodes,int blcodes)
 {
-	SendBits(static_cast<Word>(lcodes-257),5); /* not +255 as stated in appnote.txt */
-	SendBits(static_cast<Word>(dcodes-1),5);
-	SendBits(static_cast<Word>(blcodes-4),4); /* not -3 as stated in appnote.txt */
+	SendBits(static_cast<uint_t>(lcodes-257),5); /* not +255 as stated in appnote.txt */
+	SendBits(static_cast<uint_t>(dcodes-1),5);
+	SendBits(static_cast<uint_t>(blcodes-4),4); /* not -3 as stated in appnote.txt */
 	int rank;                    /* index in bl_order */
 	for (rank = 0; rank < blcodes; rank++) {
 		SendBits(m_BitLengthTrees[g_BitLengthOrder[rank]].m_DataLength.m_uLength, 3);
@@ -1087,9 +1088,9 @@ void Burger::CompressDeflate::SendAllTrees(int lcodes,int dcodes,int blcodes)
  * Determine the best encoding for the current block: dynamic trees, static
  * trees or store, and output the encoded block to the zip file.
  */
-void Burger::CompressDeflate::FlushBlock(const Word8 *buf,Word32 stored_len,Word bEOF)
+void Burger::CompressDeflate::FlushBlock(const uint8_t *buf,uint32_t stored_len,uint_t bEOF)
 {
-    Word32 opt_lenb, static_lenb; /* opt_len and static_len in bytes */
+    uint32_t opt_lenb, static_lenb; /* opt_len and static_len in bytes */
     int max_blindex = 0;  /* index of last bit length code of non zero freq */
 
     /* Build the Huffman trees unless a stored block is forced */
@@ -1128,7 +1129,7 @@ void Burger::CompressDeflate::FlushBlock(const Word8 *buf,Word32 stored_len,Word
          * successful. If LIT_BUFSIZE <= WSIZE, it is never too late to
          * transform a block into a stored block.
          */
-        StoredBlock(buf,static_cast<Word32>(stored_len),static_cast<int>(bEOF));
+        StoredBlock(buf,static_cast<uint32_t>(stored_len),static_cast<int>(bEOF));
 
     } else if (static_lenb == opt_lenb) {
         SendBits((STATIC_TREES<<1)+bEOF, 3);
@@ -1158,7 +1159,7 @@ void Burger::CompressDeflate::FlushBlock(const Word8 *buf,Word32 stored_len,Word
  */
 void Burger::CompressDeflate::FlushPending(void)
 {
-    Word len = static_cast<Word>(m_iPending);
+    uint_t len = static_cast<uint_t>(m_iPending);
     if (len) {
 		m_Output.Append(m_pPendingOutput,len);
 		m_pPendingOutput  += len;
@@ -1180,28 +1181,28 @@ void Burger::CompressDeflate::FlushPending(void)
  * OUT assertion: the match length is not greater than s->lookahead.
  */
 
-Word Burger::CompressDeflate::LongestMatch(Word cur_match)
+uint_t Burger::CompressDeflate::LongestMatch(uint_t cur_match)
 {
     unsigned chain_length = c_uMaxChainLength;/* max hash chain length */
-    Word8 *scan = m_Window + m_uStringStart; /* current string */
-    Word8 *match;                       /* matched string */
+    uint8_t *scan = m_Window + m_uStringStart; /* current string */
+    uint8_t *match;                       /* matched string */
     int len;                           /* length of current match */
     int best_len = static_cast<int>(m_uPreviousLength);              /* best match length so far */
     int nice_match = c_iNiceMatch;             /* stop if match long enough */
-    Word limit = m_uStringStart > (Word)(c_uWSize-MIN_LOOKAHEAD) ?
-        m_uStringStart - (Word)(c_uWSize-MIN_LOOKAHEAD) : 0;
+    uint_t limit = m_uStringStart > (uint_t)(c_uWSize-MIN_LOOKAHEAD) ?
+        m_uStringStart - (uint_t)(c_uWSize-MIN_LOOKAHEAD) : 0;
     /* Stop when cur_match becomes <= limit. To simplify the code,
      * we prevent matches with the string of window index 0.
      */
-    Word16 *prev = m_Previous;
-    Word wmask = c_uWMask;
+    uint16_t *prev = m_Previous;
+    uint_t wmask = c_uWMask;
 
     /* Compare two bytes at a time. Note: this is not always beneficial.
      * Try with and without -DUNALIGNED_OK to check.
      */
-    Word8 *strend = m_Window + m_uStringStart + MAX_MATCH - 1;
-    Word16 scan_start = *(Word16*)scan;
-    Word16 scan_end   = *(Word16*)(scan+best_len-1);
+    uint8_t *strend = m_Window + m_uStringStart + MAX_MATCH - 1;
+    uint16_t scan_start = *(uint16_t*)scan;
+    uint16_t scan_end   = *(uint16_t*)(scan+best_len-1);
 
 
     /* The code is optimized for HASH_BITS >= 8 and MAX_MATCH-2 multiple of 16.
@@ -1215,7 +1216,7 @@ Word Burger::CompressDeflate::LongestMatch(Word cur_match)
     /* Do not look for matches beyond the end of the input. This is necessary
      * to make deflate deterministic.
      */
-    if ((Word)nice_match > m_uLookAhead) {
+    if ((uint_t)nice_match > m_uLookAhead) {
     	nice_match = static_cast<int>(m_uLookAhead);
 	}
     do {
@@ -1227,8 +1228,8 @@ Word Burger::CompressDeflate::LongestMatch(Word cur_match)
         /* This code assumes sizeof(unsigned short) == 2. Do not use
          * UNALIGNED_OK if your compiler uses a different size.
          */
-        if (*(Word16*)(match+best_len-1) != scan_end ||
-            *(Word16*)match != scan_start) continue;
+        if (*(uint16_t*)(match+best_len-1) != scan_end ||
+            *(uint16_t*)match != scan_start) continue;
 
         /* It is not necessary to compare scan[2] and match[2] since they are
          * always equal when the other bytes match, given that the hash keys
@@ -1241,10 +1242,10 @@ Word Burger::CompressDeflate::LongestMatch(Word cur_match)
          */
         scan++, match++;
         do {
-        } while (*(Word16*)(scan+=2) == *(Word16*)(match+=2) &&
-                 *(Word16*)(scan+=2) == *(Word16*)(match+=2) &&
-                 *(Word16*)(scan+=2) == *(Word16*)(match+=2) &&
-                 *(Word16*)(scan+=2) == *(Word16*)(match+=2) &&
+        } while (*(uint16_t*)(scan+=2) == *(uint16_t*)(match+=2) &&
+                 *(uint16_t*)(scan+=2) == *(uint16_t*)(match+=2) &&
+                 *(uint16_t*)(scan+=2) == *(uint16_t*)(match+=2) &&
+                 *(uint16_t*)(scan+=2) == *(uint16_t*)(match+=2) &&
                  scan < strend);
         /* The funny "do {}" generates better code on most compilers */
 
@@ -1259,12 +1260,12 @@ Word Burger::CompressDeflate::LongestMatch(Word cur_match)
             m_uMatchStart = cur_match;
             best_len = len;
             if (len >= nice_match) break;
-            scan_end = *(Word16*)(scan+best_len-1);
+            scan_end = *(uint16_t*)(scan+best_len-1);
         }
     } while ((cur_match = prev[cur_match & wmask]) > limit
              && --chain_length != 0);
 
-    if ((Word)best_len <= m_uLookAhead) return (Word)best_len;
+    if ((uint_t)best_len <= m_uLookAhead) return (uint_t)best_len;
     return m_uLookAhead;
 }
 
@@ -1275,7 +1276,7 @@ Word Burger::CompressDeflate::LongestMatch(Word cur_match)
  */
 Burger::CompressDeflate::eBlockState Burger::CompressDeflate::DeflateSlow(int flush)
 {
-    Word hash_head = 0;    /* head of hash chain */
+    uint_t hash_head = 0;    /* head of hash chain */
     int bflush;              /* set if current block must be flushed */
 
     /* Process the input block. */
@@ -1329,7 +1330,7 @@ Burger::CompressDeflate::eBlockState Burger::CompressDeflate::DeflateSlow(int fl
          * match is not better, output the previous match:
          */
         if (m_uPreviousLength >= MIN_MATCH && m_uMatchLength <= m_uPreviousLength) {
-            Word max_insert = m_uStringStart + m_uLookAhead - MIN_MATCH;
+            uint_t max_insert = m_uStringStart + m_uLookAhead - MIN_MATCH;
             /* Do not insert strings in hash table beyond this. */
 
             bflush = static_cast<int>(TallyDistance(m_uStringStart -1 - m_uPreviousMatch,m_uPreviousLength - MIN_MATCH));
@@ -1510,7 +1511,7 @@ int Burger::CompressDeflate::DeflateInit(void)
 	m_uLastEOBLength = 0;
 	m_uBitIndexBuffer = 0;
     m_bNoHeader = 0;
-    m_bMethod = (Word8)Z_DEFLATED;
+    m_bMethod = (uint8_t)Z_DEFLATED;
 
     return DeflateReset();
 }
@@ -1534,8 +1535,8 @@ int Burger::CompressDeflate::PerformDeflate(int flush)
 	/* Write the zlib header */
 	if (m_eState == INIT_STATE) {
 
-		Word header = (Z_DEFLATED + ((c_uWBits-8)<<4)) << 8;
-		Word level_flags = (Z_BEST_COMPRESSION-1) >> 1;
+		uint_t header = (Z_DEFLATED + ((c_uWBits-8)<<4)) << 8;
+		uint_t level_flags = (Z_BEST_COMPRESSION-1) >> 1;
 
 		if (level_flags > 3) level_flags = 3;
 		header |= (level_flags << 6);
@@ -1547,8 +1548,8 @@ int Burger::CompressDeflate::PerformDeflate(int flush)
 
 		/* Save the adler32 of the preset dictionary: */
 		if (m_uStringStart != 0) {
-			OutputBigEndian16((Word)(m_uAdler >> 16));
-			OutputBigEndian16((Word)(m_uAdler & 0xffff));
+			OutputBigEndian16((uint_t)(m_uAdler >> 16));
+			OutputBigEndian16((uint_t)(m_uAdler & 0xffff));
 		}
 		m_uAdler = 1U;
 	}
@@ -1611,8 +1612,8 @@ int Burger::CompressDeflate::PerformDeflate(int flush)
 	if (m_bNoHeader) return Z_STREAM_END;
 
 	/* Write the zlib trailer (adler32) */
-	OutputBigEndian16((Word)(m_uAdler >> 16));
-	OutputBigEndian16((Word)(m_uAdler & 0xffff));
+	OutputBigEndian16((uint_t)(m_uAdler >> 16));
+	OutputBigEndian16((uint_t)(m_uAdler & 0xffff));
 	FlushPending();
 	/* If avail_out is zero, the application will call deflate again
 	* to flush the rest.
@@ -1663,7 +1664,7 @@ Burger::Compress::eError Burger::CompressDeflate::Init(void)
 
 ***************************************/
 
-Burger::Compress::eError Burger::CompressDeflate::Process(const void *pInput,WordPtr uInputLength)
+Burger::Compress::eError Burger::CompressDeflate::Process(const void *pInput,uintptr_t uInputLength)
 {
 	if (!m_bInitialized) {
 		if (DeflateInit()!=Z_OK) {
@@ -1672,7 +1673,7 @@ Burger::Compress::eError Burger::CompressDeflate::Process(const void *pInput,Wor
 	}
 	eError Error = COMPRESS_OKAY;
 	if (uInputLength) {
-		m_pInput = static_cast<const Word8*>(pInput);
+		m_pInput = static_cast<const uint8_t*>(pInput);
 		m_uInputLength = uInputLength;
 
 		int err = PerformDeflate(Z_NO_FLUSH);

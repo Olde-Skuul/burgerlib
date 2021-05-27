@@ -1,13 +1,14 @@
 /***************************************
 
-	4 bit font class
+    4 bit font class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -41,43 +42,43 @@ class Font4Bit : public Font {
     BURGER_DISABLE_COPY(Font4Bit);
 protected:
 	union {
-		Word8 Bytes[16];	///< Color of font for 8 bit rendering
-		Word16 Shorts[16];	///< Color of font for 16 bit rendering
-		Word32 Words[16];	///< Color of font for 32 bit rendering
+		uint8_t Bytes[16];	///< Color of font for 8 bit rendering
+		uint16_t Shorts[16];	///< Color of font for 16 bit rendering
+		uint32_t Words[16];	///< Color of font for 32 bit rendering
 	} m_ColorTable;			///< Storage for the color tables for rendering
 	Renderer *m_pRenderer;	///< Software renderer context
 	RezFile *m_pRezFile;	///< Resource file manager
 	void **m_ppData;		///< Handle to the active font
-	WordPtr m_uPixelOffset;	///< Offset to the pixel array
-	Word m_uRezNum;			///< Resource ID of the last font loaded
-	Word m_uInvisibleColor;	///< Color to ignore for drawing
+	uintptr_t m_uPixelOffset;	///< Offset to the pixel array
+	uint_t m_uRezNum;			///< Resource ID of the last font loaded
+	uint_t m_uInvisibleColor;	///< Color to ignore for drawing
 public:
 	struct State_t {
-		Word32 m_ColorTable[16];	///< Colors to render with
+		uint32_t m_ColorTable[16];	///< Colors to render with
 		RezFile *m_pRezFile;		///< Resource file manager
 		int m_iX;					///< X coord
 		int m_iY;					///< Y coord
-		Word m_uRezNum;				///< Resource ID of the last font loaded
-		Word m_uInvisibleColor;		///< Color to ignore for drawing
+		uint_t m_uRezNum;				///< Resource ID of the last font loaded
+		uint_t m_uInvisibleColor;		///< Color to ignore for drawing
 	};
 	struct RGBColorList_t {
-		Word8 m_uCount;			///< Number of entries
+		uint8_t m_uCount;			///< Number of entries
 		RGBWord8_t m_Colors[1];	///< Actual data to set
 	};
 	Font4Bit(Renderer *pRenderer=NULL);
 	virtual ~Font4Bit();
-	Word GetPixelWidth(const char *pInput,WordPtr uLength) BURGER_OVERRIDE;
-	void DrawChar(Word uLetter) BURGER_OVERRIDE;
-	void BURGER_API Init(RezFile *pRezFile,Word uRezNum,const Word8 *pPalette,Renderer *pRenderer=NULL);
+	uint_t GetPixelWidth(const char *pInput,uintptr_t uLength) BURGER_OVERRIDE;
+	void DrawChar(uint_t uLetter) BURGER_OVERRIDE;
+	void BURGER_API Init(RezFile *pRezFile,uint_t uRezNum,const uint8_t *pPalette,Renderer *pRenderer=NULL);
 	void BURGER_API Shutdown(void);
 	void BURGER_API SaveState(State_t *pOutput);
 	void BURGER_API RestoreState(const State_t *pInput);
-	void BURGER_API SetColor(Word uColorIndex,Word uColor);
+	void BURGER_API SetColor(uint_t uColorIndex,uint_t uColor);
 	BURGER_INLINE void UseZero(void) { m_uInvisibleColor = 0x7FFF; }
 	BURGER_INLINE void UseMask(void) { m_uInvisibleColor = 0; }
-	void BURGER_API InstallToPalette(RezFile *pRezFile,Word uRezNum,const Word8 *pPalette);
-	void BURGER_API SetColorRGBListToPalette(const RGBColorList_t *pRGBList,const Word8 *pPalette);
-	void BURGER_API SetToPalette(const Word8 *pPalette);
+	void BURGER_API InstallToPalette(RezFile *pRezFile,uint_t uRezNum,const uint8_t *pPalette);
+	void BURGER_API SetColorRGBListToPalette(const RGBColorList_t *pRGBList,const uint8_t *pPalette);
+	void BURGER_API SetToPalette(const uint8_t *pPalette);
 };
 }
 /* END */

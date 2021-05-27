@@ -57,10 +57,10 @@ typedef DWORD(WINAPI* timeGetTimePtr)(void);
 
 ***************************************/
 
-Word32 BURGER_API Burger::Windows::timeGetTime(void)
+uint32_t BURGER_API Burger::Windows::timeGetTime(void)
 {
 	void* ptimeGetTime = LoadFunctionIndex(CALL_timeGetTime);
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (ptimeGetTime) {
 		uResult = static_cast<timeGetTimePtr>(ptimeGetTime)();
 	}

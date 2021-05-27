@@ -64,8 +64,8 @@ public:
 
 class JoystickCallBack {
 public:
-	Word m_uCount;				// Number of devices found
-	Word m_bXInputFound;		// TRUE if XInput devices should be skipped
+	uint_t m_uCount;				// Number of devices found
+	uint_t m_bXInputFound;		// TRUE if XInput devices should be skipped
 	JoystickFound m_Joysticks[Burger::Joypad::MAXJOYSTICKS];	// Joysticks enumerated
 };
 
@@ -74,9 +74,9 @@ public:
 //
 
 struct JoypadRawData_t {
-	Word32 m_uAxis[Burger::Joypad::MAXAXIS];		///< Axis data from the joypad (0-255)
-	Word32 m_uPOV[Burger::Joypad::MAXPOV];			///< POV data from the joypad (0-65535)
-	Word8 m_bButtons[Burger::Joypad::MAXBUTTONS];	///< Button data (FALSE/TRUE)
+	uint32_t m_uAxis[Burger::Joypad::MAXAXIS];		///< Axis data from the joypad (0-255)
+	uint32_t m_uPOV[Burger::Joypad::MAXPOV];			///< POV data from the joypad (0-65535)
+	uint8_t m_bButtons[Burger::Joypad::MAXBUTTONS];	///< Button data (FALSE/TRUE)
 };
 
 //
@@ -111,15 +111,15 @@ static BOOL CALLBACK EnumJoysticksCallback(const DIDEVICEINSTANCEW* pdidInstance
 
 		// This is a non-XInput device. Add it to my DirectInput list
 
-		Word uIndex = pJoystick->m_uCount;
+		uint_t uIndex = pJoystick->m_uCount;
 		JoystickFound *pFound = &pJoystick->m_Joysticks[uIndex];
 
 		// Get the GUIDs from the device
 		Burger::MemoryCopy(&pFound->m_InstanceGUID,&pdidInstance->guidInstance,sizeof(GUID));
 		Burger::MemoryCopy(&pFound->m_ProductGUID,&pdidInstance->guidProduct,sizeof(GUID));
 		// Convert the names to UTF-8
-		pFound->m_InstanceName.Set(static_cast<const Word16 *>(static_cast<const void *>(pdidInstance->tszInstanceName)));
-		pFound->m_ProductName.Set(static_cast<const Word16 *>(static_cast<const void *>(pdidInstance->tszProductName)));
+		pFound->m_InstanceName.Set(static_cast<const uint16_t *>(static_cast<const void *>(pdidInstance->tszInstanceName)));
+		pFound->m_ProductName.Set(static_cast<const uint16_t *>(static_cast<const void *>(pdidInstance->tszProductName)));
 		++uIndex;
 		pJoystick->m_uCount = uIndex;
 
@@ -137,9 +137,9 @@ static BOOL CALLBACK EnumJoysticksCallback(const DIDEVICEINSTANCEW* pdidInstance
 
 struct ObjectCallBack_t {
 	IDirectInputDevice8W *m_pDevice;	// Pointer to the gamepad device driver
-	Word m_uButtonCount;				// Number of buttons found
-	Word m_uAxisCount;					// Number of axis found
-	Word m_uPOVCount;					// Number of POV found
+	uint_t m_uButtonCount;				// Number of buttons found
+	uint_t m_uAxisCount;					// Number of axis found
+	uint_t m_uPOVCount;					// Number of POV found
 	DIDATAFORMAT Format;				// Data format to create for this game device
 	DIOBJECTDATAFORMAT ObjectFormat[Burger::Joypad::MAXBUTTONS+Burger::Joypad::MAXAXIS+Burger::Joypad::MAXPOV];
 	// GUID of each selected object
@@ -158,9 +158,9 @@ static BOOL CALLBACK EnumObjectsCallback(const DIDEVICEOBJECTINSTANCEW *pObject,
 	ObjectCallBack_t *pCallback = static_cast<ObjectCallBack_t *>(pThis);
 
 	// Get the current object count
-	Word uIndex = pCallback->Format.dwNumObjs;
+	uint_t uIndex = pCallback->Format.dwNumObjs;
 	DIOBJECTDATAFORMAT *pCurrent = &pCallback->ObjectFormat[uIndex];
-	Word bGotOne = FALSE;
+	uint_t bGotOne = FALSE;
 
 	// Count the buttons on this device
 	if (pObject->dwType & DIDFT_BUTTON) {
@@ -187,7 +187,7 @@ static BOOL CALLBACK EnumObjectsCallback(const DIDEVICEOBJECTINSTANCEW *pObject,
 			if (pCallback->m_pDevice->SetProperty(DIPROP_RANGE,&PropertyRange.diph)<0) {
 				return DIENUM_STOP;
 			}
-			pCurrent->dwOfs = BURGER_OFFSETOF(JoypadRawData_t,m_uAxis)+(pCallback->m_uAxisCount*sizeof(Word32));
+			pCurrent->dwOfs = BURGER_OFFSETOF(JoypadRawData_t,m_uAxis)+(pCallback->m_uAxisCount*sizeof(uint32_t));
 			pCurrent->dwType = DIDFT_AXIS | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL;
 			pCurrent->dwFlags = DIDOI_ASPECTPOSITION;
 			++pCallback->m_uAxisCount;
@@ -196,7 +196,7 @@ static BOOL CALLBACK EnumObjectsCallback(const DIDEVICEOBJECTINSTANCEW *pObject,
 	} else
 	if (pObject->dwType & DIDFT_POV) {
 		if (pCallback->m_uPOVCount<Burger::Joypad::MAXPOV) {
-			pCurrent->dwOfs = BURGER_OFFSETOF(JoypadRawData_t,m_uPOV)+(pCallback->m_uPOVCount*sizeof(Word32));
+			pCurrent->dwOfs = BURGER_OFFSETOF(JoypadRawData_t,m_uPOV)+(pCallback->m_uPOVCount*sizeof(uint32_t));
 			pCurrent->dwType = DIDFT_POV | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL;
 			pCurrent->dwFlags = DIDOI_ASPECTPOSITION;
 			++pCallback->m_uPOVCount;
@@ -246,7 +246,7 @@ Burger::Joypad::Joypad(GameApp *pAppInstance) :
 		// XInput was found, define the 4 controllers that it will manage
 		m_bXInputFound = TRUE;
 		m_uDeviceCount = 4;
-		Word uXInputCount = 4;
+		uint_t uXInputCount = 4;
 		do {
 			pJoypadData->m_uButtonCount = 12;		// XInput manages 12 buttons
 			pJoypadData->m_uPOVCount = 1;			// One POV controller
@@ -278,7 +278,7 @@ Burger::Joypad::Joypad(GameApp *pAppInstance) :
 		// Error? Or something found?
 		if ((hResult>=0) && EnumeratedJoysticks.m_uCount) {
 			// Initialize the direct input interface for the keyboard.
-			Word i = 0;
+			uint_t i = 0;
 			JoystickFound *pFound = EnumeratedJoysticks.m_Joysticks;
 			do {
 				IDirectInputDevice8W *pJoystickDeviceLocal = NULL;
@@ -336,9 +336,9 @@ Burger::Joypad::Joypad(GameApp *pAppInstance) :
 
 
 	// Create the digital bounds for all devices
-	Word j = 0;
+	uint_t j = 0;
 	do {
-		Word k = 0;
+		uint_t k = 0;
 		do {
 			SetDigital(j,k);
 		} while (++k<MAXAXIS);
@@ -370,7 +370,7 @@ Burger::Joypad::~Joypad()
 	Windows::XInputEnable(FALSE);
 
 	JoypadData_t *pJoypadData = m_Data;
-	Word i = 0;
+	uint_t i = 0;
 	do {
 		IDirectInputDevice8W *pJoystickDevice = pJoypadData->m_pJoystickDevice;
 		if (pJoystickDevice) {
@@ -400,23 +400,23 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 	// Handle XInput devices first
 
 	if (pThis->m_bXInputFound) {
-		Word uWhich = 0;
+		uint_t uWhich = 0;
 		do {
 			XINPUT_STATE State;
 			// Test if this was an insertion or removal and report it
 			// Get the old and new states
 
-			Word bIsConnected = (Windows::XInputGetState(uWhich,&State) == ERROR_SUCCESS);
-			Word bWasConnected = pJoypadData->m_bConnected;
+			uint_t bIsConnected = (Windows::XInputGetState(uWhich,&State) == ERROR_SUCCESS);
+			uint_t bWasConnected = pJoypadData->m_bConnected;
 
 			// Save off the states as to how they were processed
-			pJoypadData->m_bConnected = static_cast<Word8>(bIsConnected);
-			pJoypadData->m_bRemoved = static_cast<Word8>(bWasConnected & (bIsConnected^1));
-			pJoypadData->m_bInserted = static_cast<Word8>((bWasConnected^1) & bIsConnected);
+			pJoypadData->m_bConnected = static_cast<uint8_t>(bIsConnected);
+			pJoypadData->m_bRemoved = static_cast<uint8_t>(bWasConnected & (bIsConnected^1));
+			pJoypadData->m_bInserted = static_cast<uint8_t>((bWasConnected^1) & bIsConnected);
 
 			if (bIsConnected) {
-				Word32 uButtons;
-				Word uXBoxButtons = State.Gamepad.wButtons;
+				uint32_t uButtons;
+				uint_t uXBoxButtons = State.Gamepad.wButtons;
 
 				// The code is the "right" way to do it, but it has
 				// too many branches. The code that follows assumes
@@ -486,7 +486,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 				// Convert analog directions to digital info
 				const JoypadRange_t *pJoypadRange = pJoypadData->m_uAxisDigitalRanges;
 
-				Word uTemp = static_cast<Word16>(State.Gamepad.sThumbLY)^0x8000U;
+				uint_t uTemp = static_cast<uint16_t>(State.Gamepad.sThumbLY)^0x8000U;
 				pJoypadData->m_uAxis[0] = uTemp;
 				if (uTemp<pJoypadRange[0].m_uMin) {		// Test X axis
 					uButtons += AXIS1MIN;
@@ -496,7 +496,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 				}
 
 				// Test Y axis
-				uTemp = static_cast<Word16>(State.Gamepad.sThumbLX)^0x8000U;
+				uTemp = static_cast<uint16_t>(State.Gamepad.sThumbLX)^0x8000U;
 				pJoypadData->m_uAxis[1] = uTemp;
 				if (uTemp<pJoypadRange[1].m_uMin) {
 					uButtons += AXIS2MIN;
@@ -505,7 +505,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 					uButtons += AXIS2MAX;
 				}
 
-				uTemp = static_cast<Word16>(State.Gamepad.sThumbRY)^0x8000U;
+				uTemp = static_cast<uint16_t>(State.Gamepad.sThumbRY)^0x8000U;
 				pJoypadData->m_uAxis[2] = uTemp;
 				if (uTemp<pJoypadRange[2].m_uMin) {		/* Test X axis */
 					uButtons += AXIS3MIN;
@@ -514,7 +514,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 					uButtons += AXIS3MAX;
 				}
 				// Test Y axis
-				uTemp = static_cast<Word16>(State.Gamepad.sThumbRX)^0x8000U;
+				uTemp = static_cast<uint16_t>(State.Gamepad.sThumbRX)^0x8000U;
 				pJoypadData->m_uAxis[3] = uTemp;
 				if (uTemp<pJoypadRange[3].m_uMin) {
 					uButtons += AXIS4MIN;
@@ -523,11 +523,11 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 					uButtons += AXIS4MAX;
 				}
 
-				pJoypadData->m_uAxis[4] = (static_cast<Word32>(State.Gamepad.bLeftTrigger)<<8U)+State.Gamepad.bLeftTrigger;
-				pJoypadData->m_uAxis[5] = (static_cast<Word32>(State.Gamepad.bRightTrigger)<<8U)+State.Gamepad.bRightTrigger;
+				pJoypadData->m_uAxis[4] = (static_cast<uint32_t>(State.Gamepad.bLeftTrigger)<<8U)+State.Gamepad.bLeftTrigger;
+				pJoypadData->m_uAxis[5] = (static_cast<uint32_t>(State.Gamepad.bRightTrigger)<<8U)+State.Gamepad.bRightTrigger;
 
 				// Store the button states
-				Word32 uCache = (pJoypadData->m_uButtonState ^ uButtons)&uButtons;
+				uint32_t uCache = (pJoypadData->m_uButtonState ^ uButtons)&uButtons;
 				pJoypadData->m_uButtonStatePressed |= uCache;
 				pJoypadData->m_uButtonState = uButtons;
 			}
@@ -538,7 +538,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 	//
 	// Poll all of the DirectInput devices
 
-	Word i = pThis->m_uDirectInputDevices;
+	uint_t i = pThis->m_uDirectInputDevices;
 	if (i) {
 		do {
 			// Only poll if it's initialized
@@ -557,10 +557,10 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 					JoypadRawData_t State;
 					hResult = pJoystickDevice->GetDeviceState(sizeof(State),&State);
 					if (hResult>=0) {
-						Word uButtonCount = pJoypadData->m_uButtonCount;
+						uint_t uButtonCount = pJoypadData->m_uButtonCount;
 						if (uButtonCount) {
-							Word32 uMask = BUTTON1;
-							Word32 uButtons = 0;
+							uint32_t uMask = BUTTON1;
+							uint32_t uButtons = 0;
 							const BYTE *pButton = State.m_bButtons;
 							do {
 								if (pButton[0]) {
@@ -581,7 +581,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 							*/
 
 							// Get the hi-hat value
-							Word uTemp = State.m_uPOV[0];
+							uint_t uTemp = State.m_uPOV[0];
 							// Convert to digital information
 							if (uTemp != INVALIDPOVVALUE) {
 								if ((uTemp > POVANALOGLEFT + POV_SLOP && uTemp <= MAXPOVVALUE) || (uTemp < POVANALOGRIGHT - POV_SLOP)) { /* we will consider the hat to be up if it is anywhere forward of left or right */
@@ -599,9 +599,9 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 							}
 							// Convert analog directions to digital info
 							const JoypadRange_t *pJoypadRange = pJoypadData->m_uAxisDigitalRanges;
-							Word j = 0;
+							uint_t j = 0;
 							do {
-								uTemp = static_cast<Word>(State.m_uAxis[j]);
+								uTemp = static_cast<uint_t>(State.m_uAxis[j]);
 								pJoypadData->m_uAxis[j] = uTemp;
 								if (j<4) {
 									if (uTemp<pJoypadRange[j].m_uMin) {		/* Test X axis */
@@ -614,7 +614,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 							} while (++j<MAXAXIS);
 	
 							// Store the button states
-							Word32 uCache = (pJoypadData->m_uButtonState ^ uButtons)&uButtons;
+							uint32_t uCache = (pJoypadData->m_uButtonState ^ uButtons)&uButtons;
 							pJoypadData->m_uButtonStatePressed |= uCache;
 							pJoypadData->m_uButtonState = uButtons;
 						}
@@ -641,7 +641,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 
 void BURGER_API Burger::Joypad::AcquireDirectInput(void)
 {
-	Word i = m_uDeviceCount;
+	uint_t i = m_uDeviceCount;
 	if (i) {
 		JoypadData_t *pJoypadData = m_Data;
 		do {
@@ -669,7 +669,7 @@ void BURGER_API Burger::Joypad::AcquireDirectInput(void)
 
 void BURGER_API Burger::Joypad::UnacquireDirectInput(void)
 {
-	Word i = m_uDeviceCount;
+	uint_t i = m_uDeviceCount;
 	if (i) {
 		JoypadData_t *pJoypadData = m_Data;
 		do {
@@ -718,19 +718,19 @@ void BURGER_API Burger::Joypad::UnacquireDirectInput(void)
 	
 ***************************************/
 
-Word BURGER_API Burger::XInputStopRumbleOnAllControllers(void)
+uint_t BURGER_API Burger::XInputStopRumbleOnAllControllers(void)
 {
 	// Set the vibration to off
 	XINPUT_VIBRATION MyVibration;
 	MyVibration.wLeftMotorSpeed = 0;
 	MyVibration.wRightMotorSpeed = 0;
 
-	Word32 i = 0;
-	Word uResult = 0;
+	uint32_t i = 0;
+	uint_t uResult = 0;
 	do {
 		// Only abort if XInput is not present, otherwise, issue the
 		// command to every device, regardless of connection state
-		Word uTemp = Windows::XInputSetState(i,&MyVibration);
+		uint_t uTemp = Windows::XInputSetState(i,&MyVibration);
 		if (uTemp==ERROR_CALL_NOT_IMPLEMENTED) {
 			uResult = uTemp;
 			break;
@@ -761,11 +761,11 @@ Word BURGER_API Burger::XInputStopRumbleOnAllControllers(void)
 	
 ***************************************/
 
-Word BURGER_API Burger::XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInputGamePad,eXInputDeadZoneType uDeadZoneType)
+uint_t BURGER_API Burger::XInputGetGamepadState(uint_t uWhich,XInputGamePad_t *pXInputGamePad,eXInputDeadZoneType uDeadZoneType)
 {
-	Word32 uResult;
+	uint32_t uResult;
 	if ((uWhich >= 4) || !pXInputGamePad) {
-		uResult = static_cast<Word32>(E_FAIL);
+		uResult = static_cast<uint32_t>(E_FAIL);
 	} else {
 		// Read in the data from the game pad
 		XINPUT_STATE GamepadState;
@@ -777,13 +777,13 @@ Word BURGER_API Burger::XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInp
 			// Test if this was an insertion or removal and report it
 
 			// Get the old and new states
-			Word bWasConnected = pXInputGamePad->m_bConnected!=0;	// Force boolean for & below
-			Word bIsConnected = (uResult == ERROR_SUCCESS);
+			uint_t bWasConnected = pXInputGamePad->m_bConnected!=0;	// Force boolean for & below
+			uint_t bIsConnected = (uResult == ERROR_SUCCESS);
 
 			// Save off the states as to how they were processed
-			pXInputGamePad->m_bConnected = static_cast<Word8>(bIsConnected);
-			pXInputGamePad->m_bRemoved = static_cast<Word8>(bWasConnected & (bIsConnected^1));
-			pXInputGamePad->m_bInserted = static_cast<Word8>((bWasConnected^1) & bIsConnected);
+			pXInputGamePad->m_bConnected = static_cast<uint8_t>(bIsConnected);
+			pXInputGamePad->m_bRemoved = static_cast<uint8_t>(bWasConnected & (bIsConnected^1));
+			pXInputGamePad->m_bInserted = static_cast<uint8_t>((bWasConnected^1) & bIsConnected);
 
 			// No error from here on out.
 			uResult = 0;
@@ -804,10 +804,10 @@ Word BURGER_API Burger::XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInp
 
 				// Load in the thumbstick values
 				
-				Int32 iThumbLX = GamepadState.Gamepad.sThumbLX;
-				Int32 iThumbLY = GamepadState.Gamepad.sThumbLY;
-				Int32 iThumbRX = GamepadState.Gamepad.sThumbRX;
-				Int32 iThumbRY = GamepadState.Gamepad.sThumbRY;
+				int32_t iThumbLX = GamepadState.Gamepad.sThumbLX;
+				int32_t iThumbLY = GamepadState.Gamepad.sThumbLY;
+				int32_t iThumbRX = GamepadState.Gamepad.sThumbRX;
+				int32_t iThumbRY = GamepadState.Gamepad.sThumbRY;
 				
 				// Do any special processing for the thumb sticks
 
@@ -860,24 +860,24 @@ Word BURGER_API Burger::XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInp
 				pXInputGamePad->m_fThumbRY = static_cast<float>(iThumbRY) * (1.0f/32767.0f);
 
 				// Process the pressed buttons
-				Word32 bButtons = GamepadState.Gamepad.wButtons;
+				uint32_t bButtons = GamepadState.Gamepad.wButtons;
 				// Using the previous buttons, determine the ones "pressed"
 				pXInputGamePad->m_uPressedButtons = (pXInputGamePad->m_uButtons ^ bButtons) & bButtons;
 				pXInputGamePad->m_uButtons = bButtons;
 
 				// Process the left trigger
-				Word uTriggerValue = GamepadState.Gamepad.bLeftTrigger;
-				Word bTriggerIsPressed = (uTriggerValue > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
-				Word bTriggerWasPressed = (pXInputGamePad->m_uLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
-				pXInputGamePad->m_uLeftTrigger = static_cast<Word8>(uTriggerValue);
-				pXInputGamePad->m_bPressedLeftTrigger = static_cast<Word8>(bTriggerIsPressed & (bTriggerWasPressed^1));
+				uint_t uTriggerValue = GamepadState.Gamepad.bLeftTrigger;
+				uint_t bTriggerIsPressed = (uTriggerValue > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+				uint_t bTriggerWasPressed = (pXInputGamePad->m_uLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+				pXInputGamePad->m_uLeftTrigger = static_cast<uint8_t>(uTriggerValue);
+				pXInputGamePad->m_bPressedLeftTrigger = static_cast<uint8_t>(bTriggerIsPressed & (bTriggerWasPressed^1));
 
 				// Process the right trigger
 				uTriggerValue = GamepadState.Gamepad.bRightTrigger;
 				bTriggerIsPressed = (uTriggerValue > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
 				bTriggerWasPressed = (pXInputGamePad->m_uRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
-				pXInputGamePad->m_uRightTrigger = static_cast<Word8>(uTriggerValue);
-				pXInputGamePad->m_bPressedRightTrigger = static_cast<Word8>(bTriggerIsPressed & (bTriggerWasPressed^1));
+				pXInputGamePad->m_uRightTrigger = static_cast<uint8_t>(uTriggerValue);
+				pXInputGamePad->m_bPressedRightTrigger = static_cast<uint8_t>(bTriggerIsPressed & (bTriggerWasPressed^1));
 			}
 		} else {
 			// Zap the buffer if there is no XInput
@@ -909,17 +909,17 @@ Word BURGER_API Burger::XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInp
 	
 ***************************************/
 
-Word BURGER_API Burger::IsDeviceXInput(const GUID *pGuid)
+uint_t BURGER_API Burger::IsDeviceXInput(const GUID *pGuid)
 {
 	// Assume it's not an XInput device
-	Word bResult = FALSE;
+	uint_t bResult = FALSE;
 
 	// Microsoft recommends using WbemLocator for finding devices that are using XInput,
 	// however, this requires Vista or higher
 
 	if (Windows::IsVistaOrGreater()) {
 		// Start up CoInitialize() to allow creating instances
-		Word bCleanupCOM = (CoInitialize(NULL)>=0);
+		uint_t bCleanupCOM = (CoInitialize(NULL)>=0);
 
 		// Create WMI
 		IWbemLocator *pIWbemLocator = NULL;
@@ -963,27 +963,27 @@ Word BURGER_API Burger::IsDeviceXInput(const GUID *pGuid)
 							if ((DevicePointers[uDevice]->Get((const BSTR)(L"DeviceID"),0,&MyVariant,NULL,NULL)>=0) &&
 								(MyVariant.vt == VT_BSTR)) {
 
-								const Word16 *pVariantName = reinterpret_cast<const Word16 *>(MyVariant.bstrVal);
+								const uint16_t *pVariantName = reinterpret_cast<const uint16_t *>(MyVariant.bstrVal);
 								if (pVariantName) {
 									// Check if the device ID contains "IG_". If it does, then it's an XInput device
 									// This information can not be found from DirectInput
 
-									if (StringString(pVariantName,(const Word16 *)L"IG_")) {
+									if (StringString(pVariantName,(const uint16_t *)L"IG_")) {
 
 										// If it does, then get the VID/PID from var.bstrVal
-										Word32 uFoundVendorID = 0;
-										const Word16 *pFound = StringString(pVariantName,(const Word16 *)L"VID_");
+										uint32_t uFoundVendorID = 0;
+										const uint16_t *pFound = StringString(pVariantName,(const uint16_t *)L"VID_");
 										if (pFound) {
 											uFoundVendorID = AsciiHexToInteger(pFound+4,4);
 										}
-										Word32 uFoundPeripheralID = 0;
-										pFound = StringString(pVariantName,(const Word16 *)L"PID_" );
+										uint32_t uFoundPeripheralID = 0;
+										pFound = StringString(pVariantName,(const uint16_t *)L"PID_" );
 										if (pFound) {
 											uFoundPeripheralID = AsciiHexToInteger(pFound+4,4);
 										}
 
 										// Check the Peripheral ID to the one in the GUID
-										Word32 uVIDPID = (uFoundVendorID&0xFFFF) + (uFoundPeripheralID<<16);
+										uint32_t uVIDPID = (uFoundVendorID&0xFFFF) + (uFoundPeripheralID<<16);
 										if (uVIDPID == pGuid->Data1) {
 											// Paydirt!
 											bResult = TRUE;
@@ -1070,12 +1070,12 @@ Word BURGER_API Burger::IsDeviceXInput(const GUID *pGuid)
 
 					// Iterate over the list
 
-					Word16 DeviceName[256];
+					uint16_t DeviceName[256];
 					RID_DEVICE_INFO RawDeviceInfo;
 					RawDeviceInfo.cbSize = sizeof(RawDeviceInfo);
 
 					const RAWINPUTDEVICELIST *pWorkList = pList;
-					Word i = uDeviceCount;
+					uint_t i = uDeviceCount;
 					do {
 
 						// Only test HID devices
@@ -1093,7 +1093,7 @@ Word BURGER_API Burger::IsDeviceXInput(const GUID *pGuid)
 									uSize = BURGER_ARRAYSIZE(DeviceName);
 									if (GetRawInputDeviceInfoW(pWorkList->hDevice,RIDI_DEVICENAME,DeviceName,&uSize)!=BURGER_MAXUINT) {
 										// XInput device?
-										if (StringString(DeviceName,(const Word16 *)L"IG_")) {
+										if (StringString(DeviceName,(const uint16_t *)L"IG_")) {
 											// Gotcha!
 											bResult = TRUE;
 										}

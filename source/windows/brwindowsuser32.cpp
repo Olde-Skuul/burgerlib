@@ -137,7 +137,7 @@ static BOOL WINAPI Win95TrackMouseEvent(TRACKMOUSEEVENT* pEventTrack)
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::TrackMouseEvent(
+uint_t BURGER_API Burger::Windows::TrackMouseEvent(
 	tagTRACKMOUSEEVENT* pEventTrack)
 {
 	void* pTrackMouseEvent = LoadFunctionIndex(CALL_TrackMouseEvent);
@@ -148,7 +148,7 @@ Word BURGER_API Burger::Windows::TrackMouseEvent(
 		pTrackMouseEvent = Win95TrackMouseEvent;
 		g_Globals.m_pWindowsCalls[CALL_TrackMouseEvent] = pTrackMouseEvent;
 	}
-	return static_cast<Word>(
+	return static_cast<uint_t>(
 		static_cast<TrackMouseEventPtr>(pTrackMouseEvent)(pEventTrack));
 }
 
@@ -174,7 +174,7 @@ Word BURGER_API Burger::Windows::TrackMouseEvent(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::GetMonitorInfoA(
+uint_t BURGER_API Burger::Windows::GetMonitorInfoA(
 	HMONITOR__* hMonitor, tagMONITORINFO* pMonitorInfo)
 {
 	void* pGetMonitorInfoA = LoadFunctionIndex(CALL_GetMonitorInfoA);
@@ -198,7 +198,7 @@ Word BURGER_API Burger::Windows::GetMonitorInfoA(
 			uResult = TRUE;
 		}
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -223,7 +223,7 @@ Word BURGER_API Burger::Windows::GetMonitorInfoA(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::GetMonitorInfoW(
+uint_t BURGER_API Burger::Windows::GetMonitorInfoW(
 	HMONITOR__* hMonitor, tagMONITORINFO* pMonitorInfo)
 {
 	void* pGetMonitorInfoW = LoadFunctionIndex(CALL_GetMonitorInfoW);
@@ -249,7 +249,7 @@ Word BURGER_API Burger::Windows::GetMonitorInfoW(
 			uResult = TRUE;
 		}
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -275,7 +275,7 @@ Word BURGER_API Burger::Windows::GetMonitorInfoW(
 ***************************************/
 
 HMONITOR__* BURGER_API Burger::Windows::MonitorFromWindow(
-	HWND__* pWindow, Word uFlags)
+	HWND__* pWindow, uint_t uFlags)
 {
 	void* pMonitorFromWindow = LoadFunctionIndex(CALL_MonitorFromWindow);
 	HMONITOR pResult = ((HMONITOR)0x12340042); // Failure
@@ -310,7 +310,7 @@ HMONITOR__* BURGER_API Burger::Windows::MonitorFromWindow(
 ***************************************/
 
 HMONITOR__* BURGER_API Burger::Windows::MonitorFromRect(
-	const tagRECT* pRect, Word uFlags)
+	const tagRECT* pRect, uint_t uFlags)
 {
 	void* pMonitorFromRect = LoadFunctionIndex(CALL_MonitorFromRect);
 	HMONITOR pResult = ((HMONITOR)0x12340042); // Failure

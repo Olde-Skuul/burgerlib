@@ -39,7 +39,7 @@ Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAc
 	Close();
 	eAccess = static_cast<eFileAccess>(eAccess&3);
 	HANDLE fp = CreateFileA(pFileName->GetNative(),g_Access[eAccess],g_Share[eAccess],NULL,g_Creation[eAccess],FILE_ATTRIBUTE_NORMAL|FILE_FLAG_SEQUENTIAL_SCAN,NULL);
-	Word uResult = FILENOTFOUND;
+	uint_t uResult = FILENOTFOUND;
 	if (fp!=INVALID_HANDLE_VALUE) {
 		m_pFile = fp;
 		uResult = OKAY;
@@ -58,14 +58,14 @@ Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAc
 
 ***************************************/
 
-Word BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 {
-	Word uResult = OKAY;
+	eError uResult = kErrorNone;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		BOOL bCloseResult = CloseHandle(fp);
 		if (!bCloseResult) {
-			uResult = IOERROR;
+			uResult = kErrorIO;
 		}
 		m_pFile = NULL;
 	}
@@ -86,9 +86,9 @@ Word BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::GetSize(void)
+uintptr_t BURGER_API Burger::File::GetSize(void)
 {
-	WordPtr uSize = 0;
+	uintptr_t uSize = 0;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		LARGE_INTEGER uLongSize;
@@ -115,13 +115,13 @@ WordPtr BURGER_API Burger::File::GetSize(void)
 	\param pOutput Pointer to a buffer of data to read from a file
 	\param uSize Number of bytes to read
 	\return Number of bytes read (Can be less than what was requested due to EOF or read errors)
-	\sa Write(const void *,WordPtr)
+	\sa Write(const void *,uintptr_t)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::Read(void *pOutput,WordPtr uSize)
+uintptr_t BURGER_API Burger::File::Read(void *pOutput,uintptr_t uSize)
 {
-	WordPtr uResult = 0;
+	uintptr_t uResult = 0;
 	if (uSize && pOutput) {
 		HANDLE fp = m_pFile;
 		if (fp) {
@@ -150,13 +150,13 @@ WordPtr BURGER_API Burger::File::Read(void *pOutput,WordPtr uSize)
 	\param pInput Pointer to a buffer of data to write to a file
 	\param uSize Number of bytes to write
 	\return Number of bytes written (Can be less than what was requested due to EOF or write errors)
-	\sa Read(void *,WordPtr)
+	\sa Read(void *,uintptr_t)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::Write(const void *pInput,WordPtr uSize) BURGER_NOEXCEPT
+uintptr_t BURGER_API Burger::File::Write(const void *pInput,uintptr_t uSize) BURGER_NOEXCEPT
 {
-	WordPtr uResult = 0;
+	uintptr_t uResult = 0;
 	if (uSize && pInput) {
 		HANDLE fp = m_pFile;
 		if (fp) {
@@ -183,13 +183,13 @@ WordPtr BURGER_API Burger::File::Write(const void *pInput,WordPtr uSize) BURGER_
 	of the file mark for future reads or writes.
 
 	\return Current file mark or zero if an error occurred
-	\sa Write(const void *,WordPtr)
+	\sa Write(const void *,uintptr_t)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::GetMark(void)
+uintptr_t BURGER_API Burger::File::GetMark(void)
 {
-	WordPtr uMark = 0;
+	uintptr_t uMark = 0;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		LARGE_INTEGER uNewPointer;
@@ -221,9 +221,9 @@ WordPtr BURGER_API Burger::File::GetMark(void)
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetMark(WordPtr uMark)
+Burger::eError BURGER_API Burger::File::SetMark(uintptr_t uMark)
 {
-	Word uResult = INVALID_MARK;
+	eError uResult = kErrorNotInitialized;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		LARGE_INTEGER uNewPointer;
@@ -232,7 +232,9 @@ Word BURGER_API Burger::File::SetMark(WordPtr uMark)
 		BOOL bPositionResult = SetFilePointerEx(fp,uNewPointer,NULL,FILE_BEGIN);
 		// If no error, restore the old file mark
 		if (bPositionResult) {
-			uResult = OKAY;
+			uResult = kErrorNone;
+		} else {
+			uResult = kErrorOutOfBounds;
 		}
 	}
 	return uResult;
@@ -249,9 +251,9 @@ Word BURGER_API Burger::File::SetMark(WordPtr uMark)
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetMarkAtEOF(void)
+uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 {
-	Word uResult = INVALID_MARK;
+	uint_t uResult = INVALID_MARK;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		LARGE_INTEGER uNewPointer;
@@ -279,9 +281,9 @@ Word BURGER_API Burger::File::SetMarkAtEOF(void)
 
 ***************************************/
 
-Word BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
+uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 {
-	Word uResult = FILENOTFOUND;
+	uint_t uResult = FILENOTFOUND;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		FILETIME ModificationTime;
@@ -310,9 +312,9 @@ Word BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 
 ***************************************/
 
-Word BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
+uint_t BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 {
-	Word uResult = FILENOTFOUND;
+	uint_t uResult = FILENOTFOUND;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		FILETIME CreationTime;
@@ -340,9 +342,9 @@ Word BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetModificationTime(const TimeDate_t *pInput)
+uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t *pInput)
 {
-	Word uResult = FILENOTFOUND;
+	uint_t uResult = FILENOTFOUND;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		FILETIME ModificationTime;
@@ -369,9 +371,9 @@ Word BURGER_API Burger::File::SetModificationTime(const TimeDate_t *pInput)
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetCreationTime(const TimeDate_t *pInput)
+uint_t BURGER_API Burger::File::SetCreationTime(const TimeDate_t *pInput)
 {
-	Word uResult = FILENOTFOUND;
+	uint_t uResult = FILENOTFOUND;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		FILETIME CreationTime;

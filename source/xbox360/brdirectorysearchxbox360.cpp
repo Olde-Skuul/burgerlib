@@ -26,12 +26,12 @@
 
 ***************************************/
 
-Word Burger::DirectorySearch::Open(Filename *pDirName)
+uint_t Burger::DirectorySearch::Open(Filename *pDirName)
 {
 	// Leave room for 5 extra samples
 	String CopyOfName(pDirName->GetNative(),5);
 	char *pPath = CopyOfName.GetPtr();
-	WordPtr uLength = StringLength(pPath);
+	uintptr_t uLength = StringLength(pPath);
 	// Make sure the directory ends with a slash
 	if (uLength && pPath[uLength-1]!='\\') {
 		pPath[uLength] = '\\';
@@ -42,7 +42,7 @@ Word Burger::DirectorySearch::Open(Filename *pDirName)
 	pPath[uLength+1] = 0;
 	// Open the directory
 	HANDLE hDir = FindFirstFileA(pPath,reinterpret_cast<WIN32_FIND_DATAA *>(m_MyFindW));
-	Word uResult = TRUE;		// Assume I'm in error
+	uint_t uResult = TRUE;		// Assume I'm in error
 	if (hDir != INVALID_HANDLE_VALUE) {
 		m_hDirHandle = hDir;
 		m_bDir = 123;
@@ -59,7 +59,7 @@ Word Burger::DirectorySearch::Open(Filename *pDirName)
 
 ***************************************/
 
-Word Burger::DirectorySearch::GetNextEntry(void)
+uint_t Burger::DirectorySearch::GetNextEntry(void)
 {
 	// Am I scanning a directory?
 	HANDLE hDir = m_hDirHandle;
@@ -72,7 +72,7 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 	// Then read in the NEXT one. If it's over, shut
 	// down and abort on the next pass.
 
-	Word uFlags;
+	uint_t uFlags;
 	for (;;) {
 		// This is only 123 on the first pass. All others, it's TRUE or FALSE
 		if (m_bDir!=123) {

@@ -31,7 +31,7 @@
 
 ***************************************/
 
-Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,WordPtr uMinReserveSize) :
+Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,uint_t uDefaultHandleCount,uintptr_t uMinReserveSize) :
 	m_MemoryManagerHandle(uDefaultMemorySize,uDefaultHandleCount,uMinReserveSize)
 {
 	InitDefaults();

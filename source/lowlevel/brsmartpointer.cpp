@@ -1,13 +1,14 @@
 /***************************************
 
-	Smart pointer template class
+    Smart pointer template class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -69,7 +70,7 @@ Burger::ProxyReferenceCounter * BURGER_API Burger::ProxyReferenceCounter::New(vo
 
 /*! ************************************
 
-	\fn Word Burger::ProxyReferenceCounter::IsParentAlive(void) const
+	\fn uint_t Burger::ProxyReferenceCounter::IsParentAlive(void) const
 	\brief Return \ref TRUE if the parent still exists.
 
 	When this class is created, this flag is set to \ref TRUE. Once
@@ -572,7 +573,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 /*! ************************************
 
-	\fn Word Burger::SmartPointer::operator==(const SmartPointer &rData) const
+	\fn uint_t Burger::SmartPointer::operator==(const SmartPointer &rData) const
 	\brief Test for equality
 
 	Compare the pointers for equality and if equal, return \ref TRUE
@@ -585,7 +586,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 /*! ************************************
 
-	\fn Word Burger::SmartPointer::operator!=(const SmartPointer &rData) const
+	\fn uint_t Burger::SmartPointer::operator!=(const SmartPointer &rData) const
 	\brief Test for inequality
 
 	Compare the pointers for inequality and if not equal, return \ref TRUE
@@ -598,7 +599,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 /*! ************************************
 
-	\fn Word Burger::SmartPointer::operator==(const T* pData) const
+	\fn uint_t Burger::SmartPointer::operator==(const T* pData) const
 	\brief Test for equality
 
 	Compare the pointers for equality and if equal, return \ref TRUE
@@ -611,7 +612,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 /*! ************************************
 
-	\fn Word Burger::SmartPointer::operator!=(const T* pData) const
+	\fn uint_t Burger::SmartPointer::operator!=(const T* pData) const
 	\brief Test for inequality
 
 	Compare the pointers for inequality and if not equal, return \ref TRUE
@@ -810,7 +811,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 /*! ************************************
 
-	\fn Word Burger::WeakPointer::operator==(const T* pData) const
+	\fn uint_t Burger::WeakPointer::operator==(const T* pData) const
 	\brief Test for equality
 
 	Compare the pointers for equality and if equal, return \ref TRUE
@@ -823,7 +824,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 /*! ************************************
 
-	\fn Word Burger::WeakPointer::operator!=(const T* pData) const
+	\fn uint_t Burger::WeakPointer::operator!=(const T* pData) const
 	\brief Test for inequality
 
 	Compare the pointers for inequality and if not equal, return \ref TRUE
@@ -836,7 +837,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 /*! ************************************
 
-	\fn Word Burger::WeakPointer::operator==(const T* pData)
+	\fn uint_t Burger::WeakPointer::operator==(const T* pData)
 	\brief Test for equality
 
 	Compare the pointers for equality and if equal, return \ref TRUE
@@ -849,7 +850,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 /*! ************************************
 
-	\fn Word Burger::WeakPointer::operator!=(const T* pData)
+	\fn uint_t Burger::WeakPointer::operator!=(const T* pData)
 	\brief Test for inequality
 
 	Compare the pointers for inequality and if not equal, return \ref TRUE
@@ -862,7 +863,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 /*! ************************************
 
-	\fn Word Burger::WeakPointer::operator==(const SmartPointer &rData) const
+	\fn uint_t Burger::WeakPointer::operator==(const SmartPointer &rData) const
 	\brief Test for equality
 
 	Compare the pointers for equality and if equal, return \ref TRUE
@@ -875,7 +876,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 /*! ************************************
 
-	\fn Word Burger::WeakPointer::operator!=(const SmartPointer &rData) const
+	\fn uint_t Burger::WeakPointer::operator!=(const SmartPointer &rData) const
 	\brief Test for inequality
 
 	Compare the pointers for inequality and if not equal, return \ref TRUE
@@ -888,7 +889,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 /*! ************************************
 
-	\fn Word Burger::WeakPointer::operator==(const SmartPointer &rData)
+	\fn uint_t Burger::WeakPointer::operator==(const SmartPointer &rData)
 	\brief Test for equality
 
 	Compare the pointers for equality and if equal, return \ref TRUE
@@ -901,7 +902,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 /*! ************************************
 
-	\fn Word Burger::WeakPointer::operator!=(const SmartPointer &rData)
+	\fn uint_t Burger::WeakPointer::operator!=(const SmartPointer &rData)
 	\brief Test for inequality
 
 	Compare the pointers for inequality and if not equal, return \ref TRUE
@@ -914,7 +915,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 /*! ************************************
 
-	\fn Word Burger::WeakPointer::operator==(const WeakPointer &rData) const
+	\fn uint_t Burger::WeakPointer::operator==(const WeakPointer &rData) const
 	\brief Test for equality
 
 	Compare the pointers for equality and if equal, return \ref TRUE
@@ -927,7 +928,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 /*! ************************************
 
-	\fn Word Burger::WeakPointer::operator!=(const WeakPointer &rData) const
+	\fn uint_t Burger::WeakPointer::operator!=(const WeakPointer &rData) const
 	\brief Test for inequality
 
 	Compare the pointers for inequality and if not equal, return \ref TRUE

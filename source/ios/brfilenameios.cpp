@@ -1,13 +1,14 @@
 /***************************************
 
-	iOS version
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    iOS version
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -50,8 +51,8 @@ const char *Burger::Filename::GetNative(void)
 {
 	Expand();		// Resolve prefixes
 
-	const Word8 *pFullPathName = reinterpret_cast<const Word8 *>(m_pFilename);
-	WordPtr uOutputLength = StringLength(reinterpret_cast<const char *>(pFullPathName))+10;
+	const uint8_t *pFullPathName = reinterpret_cast<const uint8_t *>(m_pFilename);
+	uintptr_t uOutputLength = StringLength(reinterpret_cast<const char *>(pFullPathName))+10;
 	char *pOutput = m_NativeFilename;
 	if (uOutputLength>=sizeof(m_NativeFilename)) {
 		pOutput = static_cast<char *>(Alloc(uOutputLength));
@@ -67,13 +68,13 @@ const char *Burger::Filename::GetNative(void)
 	if (pFullPathName[0]==':') {				// First char is ':' for a qualified pathname
 	
 		// Look for the volume name by scanning for the ending colon
-		const Word8 *pFileParsed = reinterpret_cast<Word8*>(StringCharacter(reinterpret_cast<const char *>(pFullPathName)+1,':'));
+		const uint8_t *pFileParsed = reinterpret_cast<uint8_t*>(StringCharacter(reinterpret_cast<const char *>(pFullPathName)+1,':'));
 		if (pFileParsed) {
 			// Is this on the boot volume?
 			// Also test for the special case of :Foo vs :FooBar
-			
-			{
-				Word uIndex = FileManager::GetBootNameSize();
+
+            {
+                uint_t uIndex = FileManager::GetBootNameSize();
 
 				// Test for boot name match
 				if (MemoryCaseCompare(FileManager::GetBootName(),pFullPathName,uIndex)) {
@@ -91,7 +92,7 @@ const char *Burger::Filename::GetNative(void)
 	// Convert the rest of the path
 	// Colons to slashes
 	
-	Word uTemp = pFullPathName[0];
+	uint_t uTemp = pFullPathName[0];
 	if (uTemp) {
 		do {
 			++pFullPathName;
@@ -107,7 +108,7 @@ const char *Burger::Filename::GetNative(void)
 		// A trailing slash assumes more to follow, get rid of it
 		--pOutput;
 		if ((pOutput==m_pNativeFilename) ||		// Only a '/'? (Skip the check then)
-			(reinterpret_cast<Word8*>(pOutput)[0]!='/')) {
+			(reinterpret_cast<uint8_t*>(pOutput)[0]!='/')) {
 			++pOutput;		// Remove trailing slash
 		}
 	}
@@ -135,10 +136,10 @@ void Burger::Filename::SetFromNative(const char *pInput)
 	Clear();	// Clear out the previous string
 
 	// Determine the length of the prefix
-	WordPtr uInputLength = StringLength(pInput);
+	uintptr_t uInputLength = StringLength(pInput);
 	const char *pBaseName;
-	WordPtr uBaseNameLength;
-	if (reinterpret_cast<const Word8 *>(pInput)[0]!='/') {		// Must I prefix with the current directory?
+	uintptr_t uBaseNameLength;
+	if (reinterpret_cast<const uint8_t *>(pInput)[0]!='/') {		// Must I prefix with the current directory?
 		if ((uInputLength>=2) && !MemoryCompare("./",pInput,2)) {		// Dispose of "current directory"
 			pInput+=2;
 			uInputLength-=2;
@@ -159,7 +160,7 @@ void Burger::Filename::SetFromNative(const char *pInput)
 		}
 	}
 
-	WordPtr uOutputLength = uBaseNameLength+uInputLength+10;
+	uintptr_t uOutputLength = uBaseNameLength+uInputLength+10;
 	char *pOutput = m_Filename;
 	if (uOutputLength>=sizeof(m_Filename)) {
 		pOutput = static_cast<char *>(Alloc(uOutputLength));
@@ -174,7 +175,7 @@ void Burger::Filename::SetFromNative(const char *pInput)
 	
 // Now, just copy the rest of the path	
 	
-	Word uTemp = reinterpret_cast<const Word8*>(pInput)[0];
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
 	if (uTemp) {				// Any more?
 		do {
 			++pInput;			// Accept char
@@ -183,14 +184,14 @@ void Burger::Filename::SetFromNative(const char *pInput)
 			}
 			pOutput[0] = uTemp;	// Save char
 			++pOutput;
-			uTemp = reinterpret_cast<const Word8*>(pInput)[0];	// Next char
+			uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];	// Next char
 		} while (uTemp);		// Still more?
 	}
 
 	// The wrap up...
 	// Make sure it's appended with a colon
 
-	if (reinterpret_cast<const Word8*>(pOutput)[-1]!=':') {
+	if (reinterpret_cast<const uint8_t*>(pOutput)[-1]!=':') {
 		pOutput[0] = ':';
 		++pOutput;
 	}

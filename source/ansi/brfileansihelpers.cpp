@@ -58,19 +58,19 @@ extern "C" char __msl_system_has_new_file_apis(void) _MSL_CANT_THROW;
     \param uInput Data to write.
     \return Zero if no error, "errno" on error
 
-    \sa WriteLittle(FILE *,Word16), WriteBig(FILE *,Word32) and WriteBig(FILE
-*,Word64)
+    \sa WriteLittle(FILE *,uint16_t), WriteBig(FILE *,uint32_t) and WriteBig(FILE
+*,uint64_t)
 
 ***************************************/
 
-Word BURGER_API Burger::WriteBig(FILE* fp, Word16 uInput)
+uint_t BURGER_API Burger::WriteBig(FILE* fp, uint16_t uInput)
 {
-    Word16 Value;
+    uint16_t Value;
     // Store as big endian
     BigEndian::Store(&Value, uInput);
-    Word uResult = 0;
+    uint_t uResult = 0;
     if (fwrite(&Value, 1, 2, fp) != 2) { // Save the short word
-        uResult = static_cast<Word>(errno);
+        uResult = static_cast<uint_t>(errno);
     }
     return uResult;
 }
@@ -86,19 +86,19 @@ Word BURGER_API Burger::WriteBig(FILE* fp, Word16 uInput)
     \param uInput Data to write.
     \return Zero if no error, "errno" on error
 
-    \sa WriteLittle(FILE *,Word32), WriteBig(FILE *,Word16) and WriteBig(FILE
-*,Word64)
+    \sa WriteLittle(FILE *,uint32_t), WriteBig(FILE *,uint16_t) and WriteBig(FILE
+*,uint64_t)
 
 ***************************************/
 
-Word BURGER_API Burger::WriteBig(FILE* fp, Word32 uInput)
+uint_t BURGER_API Burger::WriteBig(FILE* fp, uint32_t uInput)
 {
-    Word32 Value;
+    uint32_t Value;
     // Store as big endian
     BigEndian::Store(&Value, uInput);
-    Word uResult = 0;
+    uint_t uResult = 0;
     if (fwrite(&Value, 1, 4, fp) != 4) { // Save the long word
-        uResult = static_cast<Word>(errno);
+        uResult = static_cast<uint_t>(errno);
     }
     return uResult;
 }
@@ -114,19 +114,19 @@ Word BURGER_API Burger::WriteBig(FILE* fp, Word32 uInput)
     \param uInput Data to write.
     \return Zero if no error, "errno" on error
 
-    \sa WriteLittle(FILE *,Word64), WriteBig(FILE *,Word16) and WriteBig(FILE
-*,Word32)
+    \sa WriteLittle(FILE *,uint64_t), WriteBig(FILE *,uint16_t) and WriteBig(FILE
+*,uint32_t)
 
 ***************************************/
 
-Word BURGER_API Burger::WriteBig(FILE* fp, Word64 uInput)
+uint_t BURGER_API Burger::WriteBig(FILE* fp, uint64_t uInput)
 {
-    Word64 Value;
+    uint64_t Value;
     // Store as big endian
     BigEndian::Store(&Value, uInput);
-    Word uResult = 0;
+    uint_t uResult = 0;
     if (fwrite(&Value, 1, 8, fp) != 8) { // Save the 64 bit word
-        uResult = static_cast<Word>(errno);
+        uResult = static_cast<uint_t>(errno);
     }
     return uResult;
 }
@@ -146,14 +146,14 @@ Word BURGER_API Burger::WriteBig(FILE* fp, Word64 uInput)
 
 ***************************************/
 
-Word BURGER_API Burger::WriteBig(FILE* fp, float fInput)
+uint_t BURGER_API Burger::WriteBig(FILE* fp, float fInput)
 {
     float Value;
     // Store as big endian
     BigEndian::Store(&Value, fInput);
-    Word uResult = 0;
+    uint_t uResult = 0;
     if (fwrite(&Value, 1, 4, fp) != 4) { // Save the 32 bit float
-        uResult = static_cast<Word>(errno);
+        uResult = static_cast<uint_t>(errno);
     }
     return uResult;
 }
@@ -173,14 +173,14 @@ Word BURGER_API Burger::WriteBig(FILE* fp, float fInput)
 
 ***************************************/
 
-Word BURGER_API Burger::WriteBig(FILE* fp, double dInput)
+uint_t BURGER_API Burger::WriteBig(FILE* fp, double dInput)
 {
     double Value;
     // Store as big endian
     BigEndian::Store(&Value, dInput);
-    Word uResult = 0;
+    uint_t uResult = 0;
     if (fwrite(&Value, 1, 8, fp) != 8) { // Save the 64 bit float
-        uResult = static_cast<Word>(errno);
+        uResult = static_cast<uint_t>(errno);
     }
     return uResult;
 }
@@ -196,19 +196,19 @@ Word BURGER_API Burger::WriteBig(FILE* fp, double dInput)
     \param uInput Data to write.
     \return Zero if no error, "errno" on error
 
-    \sa WriteBig(FILE *,Word16), WriteLittle(FILE *,Word32) and WriteLittle(FILE
-*,Word64)
+    \sa WriteBig(FILE *,uint16_t), WriteLittle(FILE *,uint32_t) and WriteLittle(FILE
+*,uint64_t)
 
 ***************************************/
 
-Word BURGER_API Burger::WriteLittle(FILE* fp, Word16 uInput)
+uint_t BURGER_API Burger::WriteLittle(FILE* fp, uint16_t uInput)
 {
-    Word16 Value;
+    uint16_t Value;
     // Store as little endian
     LittleEndian::Store(&Value, uInput);
-    Word uResult = 0;
+    uint_t uResult = 0;
     if (fwrite(&Value, 1, 2, fp) != 2) { // Save the short word
-        uResult = static_cast<Word>(errno);
+        uResult = static_cast<uint_t>(errno);
     }
     return uResult;
 }
@@ -224,19 +224,19 @@ Word BURGER_API Burger::WriteLittle(FILE* fp, Word16 uInput)
     \param uInput Data to write.
     \return Zero if no error, "errno" on error
 
-    \sa WriteBig(FILE *,Word32), WriteLittle(FILE *,Word16) and WriteLittle(FILE
-*,Word64)
+    \sa WriteBig(FILE *,uint32_t), WriteLittle(FILE *,uint16_t) and WriteLittle(FILE
+*,uint64_t)
 
 ***************************************/
 
-Word BURGER_API Burger::WriteLittle(FILE* fp, Word32 uInput)
+uint_t BURGER_API Burger::WriteLittle(FILE* fp, uint32_t uInput)
 {
-    Word32 Value;
+    uint32_t Value;
     // Store as little endian
     LittleEndian::Store(&Value, uInput);
-    Word uResult = 0;
+    uint_t uResult = 0;
     if (fwrite(&Value, 1, 4, fp) != 4) { // Save the long word
-        uResult = static_cast<Word>(errno);
+        uResult = static_cast<uint_t>(errno);
     }
     return uResult;
 }
@@ -252,19 +252,19 @@ Word BURGER_API Burger::WriteLittle(FILE* fp, Word32 uInput)
     \param uInput Data to write.
     \return Zero if no error, "errno" on error
 
-    \sa WriteBig(FILE *,Word64), WriteLittle(FILE *,Word16) and WriteLittle(FILE
-*,Word32)
+    \sa WriteBig(FILE *,uint64_t), WriteLittle(FILE *,uint16_t) and WriteLittle(FILE
+*,uint32_t)
 
 ***************************************/
 
-Word BURGER_API Burger::WriteLittle(FILE* fp, Word64 uInput)
+uint_t BURGER_API Burger::WriteLittle(FILE* fp, uint64_t uInput)
 {
-    Word64 Value;
+    uint64_t Value;
     // Store as little endian
     LittleEndian::Store(&Value, uInput);
-    Word uResult = 0;
+    uint_t uResult = 0;
     if (fwrite(&Value, 1, 8, fp) != 8) { // Save the 64 bit word
-        uResult = static_cast<Word>(errno);
+        uResult = static_cast<uint_t>(errno);
     }
     return uResult;
 }
@@ -284,14 +284,14 @@ Word BURGER_API Burger::WriteLittle(FILE* fp, Word64 uInput)
 
 ***************************************/
 
-Word BURGER_API Burger::WriteLittle(FILE* fp, float fInput)
+uint_t BURGER_API Burger::WriteLittle(FILE* fp, float fInput)
 {
     float Value;
     // Store as little endian
     LittleEndian::Store(&Value, fInput);
-    Word uResult = 0;
+    uint_t uResult = 0;
     if (fwrite(&Value, 1, 4, fp) != 4) { // Save the 32 bit float
-        uResult = static_cast<Word>(errno);
+        uResult = static_cast<uint_t>(errno);
     }
     return uResult;
 }
@@ -311,14 +311,14 @@ Word BURGER_API Burger::WriteLittle(FILE* fp, float fInput)
 
 ***************************************/
 
-Word BURGER_API Burger::WriteLittle(FILE* fp, double dInput)
+uint_t BURGER_API Burger::WriteLittle(FILE* fp, double dInput)
 {
     double Value;
     // Store as little endian
     LittleEndian::Store(&Value, dInput);
-    Word uResult = 0;
+    uint_t uResult = 0;
     if (fwrite(&Value, 1, 8, fp) != 8) { // Save the 64 bit float
-        uResult = static_cast<Word>(errno);
+        uResult = static_cast<uint_t>(errno);
     }
     return uResult;
 }
@@ -334,17 +334,17 @@ Word BURGER_API Burger::WriteLittle(FILE* fp, double dInput)
     \param pInput Pointer to a "C" string to write.
     \return Zero if no error, "errno" on error
 
-    \sa ReadCString(FILE *,char *,WordPtr)
+    \sa ReadCString(FILE *,char *,uintptr_t)
 
 ***************************************/
 
-Word BURGER_API Burger::WriteCString(FILE* fp, const char* pInput)
+uint_t BURGER_API Burger::WriteCString(FILE* fp, const char* pInput)
 {
     // Write the string with the terminating zero.
-    Word uResult = 0;
-    WordPtr uLength = StringLength(pInput) + 1;
+    uint_t uResult = 0;
+    uintptr_t uLength = StringLength(pInput) + 1;
     if (fwrite(pInput, 1, uLength, fp) != uLength) {
-        uResult = static_cast<Word>(errno);
+        uResult = static_cast<uint_t>(errno);
     }
     return uResult;
 }
@@ -363,10 +363,10 @@ Word BURGER_API Burger::WriteCString(FILE* fp, const char* pInput)
 
 ***************************************/
 
-Word16 BURGER_API Burger::ReadBigWord16(FILE* fp)
+uint16_t BURGER_API Burger::ReadBigWord16(FILE* fp)
 {
-    Word16 uResult = 0;
-    Word16 Value;
+    uint16_t uResult = 0;
+    uint16_t Value;
     if (fread(&Value, 1, 2, fp) == 2) {
         uResult = BigEndian::Load(&Value);
     }
@@ -387,10 +387,10 @@ Word16 BURGER_API Burger::ReadBigWord16(FILE* fp)
 
 ***************************************/
 
-Word32 BURGER_API Burger::ReadBigWord32(FILE* fp)
+uint32_t BURGER_API Burger::ReadBigWord32(FILE* fp)
 {
-    Word32 uResult = 0;
-    Word32 Value;
+    uint32_t uResult = 0;
+    uint32_t Value;
     if (fread(&Value, 1, 4, fp) == 4) {
         uResult = BigEndian::Load(&Value);
     }
@@ -411,10 +411,10 @@ Word32 BURGER_API Burger::ReadBigWord32(FILE* fp)
 
 ***************************************/
 
-Word64 BURGER_API Burger::ReadBigWord64(FILE* fp)
+uint64_t BURGER_API Burger::ReadBigWord64(FILE* fp)
 {
-    Word64 uResult = 0;
-    Word64 Value;
+    uint64_t uResult = 0;
+    uint64_t Value;
     if (fread(&Value, 1, 8, fp) == 8) {
         uResult = BigEndian::Load(&Value);
     }
@@ -488,10 +488,10 @@ double BURGER_API Burger::ReadBigDouble(FILE* fp)
 
 ***************************************/
 
-Word16 BURGER_API Burger::ReadLittleWord16(FILE* fp)
+uint16_t BURGER_API Burger::ReadLittleWord16(FILE* fp)
 {
-    Word16 uResult = 0;
-    Word16 Value;
+    uint16_t uResult = 0;
+    uint16_t Value;
     if (fread(&Value, 1, 2, fp) == 2) {
         uResult = LittleEndian::Load(&Value);
     }
@@ -513,10 +513,10 @@ Word16 BURGER_API Burger::ReadLittleWord16(FILE* fp)
 
 ***************************************/
 
-Word32 BURGER_API Burger::ReadLittleWord32(FILE* fp)
+uint32_t BURGER_API Burger::ReadLittleWord32(FILE* fp)
 {
-    Word32 uResult = 0;
-    Word32 Value;
+    uint32_t uResult = 0;
+    uint32_t Value;
     if (fread(&Value, 1, 4, fp) == 4) {
         uResult = LittleEndian::Load(&Value);
     }
@@ -538,10 +538,10 @@ Word32 BURGER_API Burger::ReadLittleWord32(FILE* fp)
 
 ***************************************/
 
-Word64 BURGER_API Burger::ReadLittleWord64(FILE* fp)
+uint64_t BURGER_API Burger::ReadLittleWord64(FILE* fp)
 {
-    Word64 uResult = 0;
-    Word64 Value;
+    uint64_t uResult = 0;
+    uint64_t Value;
     if (fread(&Value, 1, 8, fp) == 8) {
         uResult = LittleEndian::Load(&Value);
     }
@@ -619,7 +619,7 @@ double BURGER_API Burger::ReadLittleDouble(FILE* fp)
 
 ***************************************/
 
-Word BURGER_API Burger::ReadCString(FILE* fp, char* pInput, WordPtr uLength)
+uint_t BURGER_API Burger::ReadCString(FILE* fp, char* pInput, uintptr_t uLength)
 {
     // Set the maximum buffer size
     // and remove 1 to make space or the ending zero
@@ -670,22 +670,22 @@ Word BURGER_API Burger::ReadCString(FILE* fp, char* pInput, WordPtr uLength)
 #if defined(BURGER_XBOX360) || defined(BURGER_WINDOWS) || \
     defined(BURGER_MSDOS) || defined(DOXYGEN)
 
-WordPtr BURGER_API Burger::GetSize(FILE* fp)
+uintptr_t BURGER_API Burger::GetSize(FILE* fp)
 {
 #if defined(BURGER_WIN64) || defined(BURGER_XBOX360)
     // 64 bit windows allows a full 64 bit length
-    Int64 lLength = _filelengthi64(fileno(fp)); // 64 bit version
+    int64_t lLength = _filelengthi64(fileno(fp)); // 64 bit version
     if (lLength == -1LL) {                      // Error?
         lLength = 0;
     }
-    return static_cast<WordPtr>(lLength); // I got it.
+    return static_cast<uintptr_t>(lLength); // I got it.
 #else
     // DOS/Windows allows a direct query to the data stream
     long lLength = filelength(fileno(fp)); // Fast version for INTEL
     if (lLength == -1) {                   // Error?
         lLength = 0;
     }
-    return static_cast<Word32>(lLength); // I got it.
+    return static_cast<uint32_t>(lLength); // I got it.
 #endif
 }
 
@@ -699,9 +699,9 @@ WordPtr BURGER_API Burger::GetSize(FILE* fp)
 
 #elif defined(BURGER_MAC) && defined(__MSL__)
 
-WordPtr BURGER_API Burger::GetSize(FILE* fp)
+uintptr_t BURGER_API Burger::GetSize(FILE* fp)
 {
-    WordPtr uResult = 0;
+    uintptr_t uResult = 0;
 
 #if _MSL_USE_OLD_AND_NEW_FILE_APIS
     // Do I support old and new calls?
@@ -720,7 +720,7 @@ WordPtr BURGER_API Burger::GetSize(FILE* fp)
                 --uResult; // -1
             } else {
                 // Return the file size
-                uResult = static_cast<WordPtr>(ParmBlock.positionOffset);
+                uResult = static_cast<uintptr_t>(ParmBlock.positionOffset);
             }
         }
 #endif
@@ -735,7 +735,7 @@ WordPtr BURGER_API Burger::GetSize(FILE* fp)
 
         PBGetEOFSync(&IoBlock);
         if (IoBlock.ioParam.ioResult == noErr) {
-            uResult = reinterpret_cast<WordPtr>(IoBlock.ioParam.ioMisc);
+            uResult = reinterpret_cast<uintptr_t>(IoBlock.ioParam.ioMisc);
         }
 #endif
 #if _MSL_USE_OLD_AND_NEW_FILE_APIS
@@ -750,20 +750,20 @@ WordPtr BURGER_API Burger::GetSize(FILE* fp)
 
 #elif defined(BURGER_MACOSX) || defined(BURGER_IOS)
 
-WordPtr BURGER_API Burger::GetSize(FILE* fp)
+uintptr_t BURGER_API Burger::GetSize(FILE* fp)
 {
     off_t Mark = ftello(fp); // Get the current position
     fseeko(fp, 0, SEEK_END); // Seek to the end of the file
     off_t Length = ftello(fp);
-    WordPtr uResult = 0;
+    uintptr_t uResult = 0;
     if (Length == -1) {
         // If 64 bit, use as is
 #if defined(BURGER_64BITCPU)
-        uResult = static_cast<WordPtr>(Length);
+        uResult = static_cast<uintptr_t>(Length);
 #else
         // If 32 bit, max the value out
-        if (static_cast<Word64>(Length) < 0x100000000ULL) {
-            uResult = static_cast<WordPtr>(Length);
+        if (static_cast<uint64_t>(Length) < 0x100000000ULL) {
+            uResult = static_cast<uintptr_t>(Length);
         } else {
             uResult = 0xFFFFFFFFU;
         }
@@ -779,13 +779,13 @@ WordPtr BURGER_API Burger::GetSize(FILE* fp)
 // Generic operating system version
 //
 
-WordPtr BURGER_API Burger::GetSize(FILE* fp)
+uintptr_t BURGER_API Burger::GetSize(FILE* fp)
 {
     long Mark = ftell(fp);               // Get the current position
     fseek(fp, 0, SEEK_END);              // Seek to the end of the file
     long Length = ftell(fp);             // Where's the EOF?
     fseek(fp, Mark, SEEK_SET);           // Restore the file position
-    return static_cast<WordPtr>(Length); // Return the file size
+    return static_cast<uintptr_t>(Length); // Return the file size
 }
 
 #endif
@@ -811,7 +811,7 @@ WordPtr BURGER_API Burger::GetSize(FILE* fp)
 #if defined(BURGER_XBOX360) || defined(BURGER_WINDOWS) || \
     defined(BURGER_MSDOS) || defined(DOXYGEN)
 
-Word64 BURGER_API Burger::GetSize64(FILE* fp)
+uint64_t BURGER_API Burger::GetSize64(FILE* fp)
 {
 
     // Go directly into MSL's library to get the windows
@@ -820,26 +820,26 @@ Word64 BURGER_API Burger::GetSize64(FILE* fp)
 
 #if defined(BURGER_METROWERKS)
     int ifp = fileno(fp);
-    Word64 lLength = 0;
-    if (static_cast<Word>(ifp) < NUM_HANDLES) {
+    uint64_t lLength = 0;
+    if (static_cast<uint_t>(ifp) < NUM_HANDLES) {
         FileStruct* pStruct = _HandleTable[ifp];
         if (pStruct) {
             HANDLE hHandle = pStruct->handle;
             LARGE_INTEGER uLongSize;
             BOOL bGetSizeResult = GetFileSizeEx(hHandle, &uLongSize);
             if (bGetSizeResult) {
-                lLength = static_cast<Word64>(uLongSize.QuadPart);
+                lLength = static_cast<uint64_t>(uLongSize.QuadPart);
             }
         }
     }
     return lLength; // I got it.
 #else
     // 64 bit windows allows a full 64 bit length
-    Int64 lLength = _filelengthi64(fileno(fp)); // 64 bit version
+    int64_t lLength = _filelengthi64(fileno(fp)); // 64 bit version
     if (lLength == -1LL) {                      // Error?
         lLength = 0;
     }
-    return static_cast<Word64>(lLength); // I got it.
+    return static_cast<uint64_t>(lLength); // I got it.
 #endif
 }
 
@@ -853,9 +853,9 @@ Word64 BURGER_API Burger::GetSize64(FILE* fp)
 
 #elif defined(BURGER_MAC) && defined(__MSL__)
 
-Word64 BURGER_API Burger::GetSize64(FILE* fp)
+uint64_t BURGER_API Burger::GetSize64(FILE* fp)
 {
-    Word64 uResult = 0;
+    uint64_t uResult = 0;
 
 #if _MSL_USE_OLD_AND_NEW_FILE_APIS
     // Do I support old and new calls?
@@ -870,7 +870,7 @@ Word64 BURGER_API Burger::GetSize64(FILE* fp)
         // Did I get it?
         if (ParmBlock.ioResult == noErr) {
             // Return the file size
-            uResult = static_cast<Word64>(ParmBlock.positionOffset);
+            uResult = static_cast<uint64_t>(ParmBlock.positionOffset);
         }
 #endif
 #if _MSL_USE_OLD_AND_NEW_FILE_APIS
@@ -884,7 +884,7 @@ Word64 BURGER_API Burger::GetSize64(FILE* fp)
 
         PBGetEOFSync(&IoBlock);
         if (IoBlock.ioParam.ioResult == noErr) {
-            uResult = reinterpret_cast<Word64>(IoBlock.ioParam.ioMisc);
+            uResult = reinterpret_cast<uint64_t>(IoBlock.ioParam.ioMisc);
         }
 #endif
 #if _MSL_USE_OLD_AND_NEW_FILE_APIS
@@ -899,14 +899,14 @@ Word64 BURGER_API Burger::GetSize64(FILE* fp)
 
 #elif defined(BURGER_MACOSX) || defined(BURGER_IOS)
 
-Word64 BURGER_API Burger::GetSize64(FILE* fp)
+uint64_t BURGER_API Burger::GetSize64(FILE* fp)
 {
     off_t Mark = ftello(fp); // Get the current position
     fseeko(fp, 0, SEEK_END); // Seek to the end of the file
     off_t Length = ftello(fp);
-    Word64 uResult = 0;
+    uint64_t uResult = 0;
     if (Length == -1LL) {
-        uResult = static_cast<Word64>(Length);
+        uResult = static_cast<uint64_t>(Length);
     }
     fseeko(fp, Mark, SEEK_SET);
     return uResult;
@@ -918,13 +918,13 @@ Word64 BURGER_API Burger::GetSize64(FILE* fp)
 // Generic operating system version
 //
 
-Word64 BURGER_API Burger::GetSize64(FILE* fp)
+uint64_t BURGER_API Burger::GetSize64(FILE* fp)
 {
     long Mark = ftell(fp);              // Get the current position
     fseek(fp, 0, SEEK_END);             // Seek to the end of the file
     long Length = ftell(fp);            // Where's the EOF?
     fseek(fp, Mark, SEEK_SET);          // Restore the file position
-    return static_cast<Word64>(Length); // Return the file size
+    return static_cast<uint64_t>(Length); // Return the file size
 }
 
 #endif
@@ -943,15 +943,15 @@ Word64 BURGER_API Burger::GetSize64(FILE* fp)
     \param uLength Number of bytes to write
 
     \return Zero if failure, non-zero on success
-    \sa LoadFile(FILE *,WordPtr *)
+    \sa LoadFile(FILE *,uintptr_t *)
 
 ***************************************/
 
-Word BURGER_API Burger::SaveFile(FILE* fp, const void* pInput, WordPtr uLength)
+uint_t BURGER_API Burger::SaveFile(FILE* fp, const void* pInput, uintptr_t uLength)
 {
-    Word uResult = FALSE; // Assume failure
+    uint_t uResult = FALSE; // Assume failure
     if (fp) {             // Valid file structure?
-        WordPtr uNewLength =
+        uintptr_t uNewLength =
             fwrite(pInput, 1, uLength, fp);      // Write the file contents
         int Err = fclose(fp);                    // Close the file
         if ((uNewLength == uLength) && (!Err)) { // Error?
@@ -975,21 +975,21 @@ Word BURGER_API Burger::SaveFile(FILE* fp, const void* pInput, WordPtr uLength)
 *)
 
     \param fp FILE * to the file to read from
-    \param pLength to a \ref WordPtr to receive the size of the file in bytes.
+    \param pLength to a uintptr_t to receive the size of the file in bytes.
 
     \return \ref NULL if failure, a pointer on success
 
     \note If the file is empty, it's considered a failure and a \ref NULL is
 returned.
 
-    \sa SaveFile(FILE *,const void *,WordPtr)
+    \sa SaveFile(FILE *,const void *,uintptr_t)
 
 ***************************************/
 
-void* BURGER_API Burger::LoadFile(FILE* fp, WordPtr* pLength)
+void* BURGER_API Burger::LoadFile(FILE* fp, uintptr_t* pLength)
 {
     void* pResult = NULL;    // Init result
-    WordPtr uFileLength = 0; // Init length
+    uintptr_t uFileLength = 0; // Init length
 
     if (fp) {                      // Valid file reference?
         uFileLength = GetSize(fp); // Get the file length

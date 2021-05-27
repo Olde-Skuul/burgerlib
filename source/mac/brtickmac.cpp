@@ -1,15 +1,16 @@
 /***************************************
 
-	60Hz timer
+    60Hz timer
 
-	MacOS Carbon specific code
+    MacOS Carbon specific code
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -25,7 +26,7 @@
 #if TARGET_API_MAC_CARBON
 #define LMGetTicks() TickCount()
 #else
-#define LMGetTicks() ((volatile Word32*)0x16A)[0]
+#define LMGetTicks() ((volatile uint32_t*)0x16A)[0]
 #endif
 
 /***************************************
@@ -34,7 +35,7 @@
 
 ***************************************/
 
-Word32 Burger::Tick::Read(void)
+uint32_t Burger::Tick::Read(void) BURGER_NOEXCEPT
 {
 	return LMGetTicks(); /* Call the mac native function */
 }
@@ -55,18 +56,18 @@ Word32 Burger::Tick::Read(void)
 ***************************************/
 
 #if 0
-Word32 BURGER_API ReadTickMicroseconds(void)
+uint32_t BURGER_API ReadTickMicroseconds(void)
 {
 	UnsignedWide wide;
 	Microseconds(&wide);	/* Get the value from MacOS */
 	return wide.lo;			/* Return just the low 32 bits */
 }
 
-Word32 BURGER_API ReadTickMilliseconds(void)
+uint32_t BURGER_API ReadTickMilliseconds(void)
 {
 	unsigned long long wide;
 	Microseconds((UnsignedWide *)&wide);	/* Get the time in microseconds */
-	return (Word32)((wide / 1000ULL));
+	return (uint32_t)((wide / 1000ULL));
 }
 #endif
 
@@ -91,13 +92,13 @@ Word32 BURGER_API ReadTickMilliseconds(void)
 extern void __rt_divu64(void); // A Metrowerks internal function
 
 // clang-format off
-asm Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
+asm uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void)
 {
 	0xA193	// _Microseconds
 	rts		// Get out NOW!
 }
 
-asm Word32 BURGER_API Burger::Tick::ReadMilliseconds(void)
+asm uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void)
 {
 	0xA193				// _Microseconds
 	subq.w #8,a7		// Space for result of divide
@@ -157,14 +158,14 @@ typedef AbsoluteTime (*UpTimeProcPtr)(void);
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern void PollRTC601(Word64* Output);
-extern void PollTBR603(Word64* Output);
+extern void PollRTC601(uint64_t* Output);
+extern void PollTBR603(uint64_t* Output);
 extern void BurgerInitTimers(void);
 #ifdef __cplusplus
 }
 #endif
 
-Word PowerPCTimeMethod;			 /* How shall I read the timer? 0-3 */
+uint_t PowerPCTimeMethod;			 /* How shall I read the timer? 0-3 */
 double PowerPCScale = 1000000.0; /* Standard scale */
 double PowerPCScale2 = 1000.0;   /* Microsecond accuracy */
 UpTimeProcPtr PowerPCUpTime;	 /* UpTime pointer */
@@ -207,7 +208,7 @@ static void* BURGER_API LibRefGetFunctionInLib(
 
 void BurgerInitTimers(void)
 {
-	Word Method;
+	uint_t Method;
 	long result;
 
 	Method = 4; /* Assume Microseconds() */
@@ -238,7 +239,7 @@ void BurgerInitTimers(void)
 	/* Now calculate a scale factor to keep us accurate. */
 
 	if (Method != 4) {
-		Word32 Mark, Mark2;
+		uint32_t Mark, Mark2;
 		unsigned long long usec1, usec2;
 		UnsignedWide wide;
 
@@ -255,10 +256,10 @@ void BurgerInitTimers(void)
 			wide = PowerPCUpTime();
 			usec1 = WideTo64bit(wide);
 		} else if (Method == 2) {
-			PollTBR603((Word64*)&wide);
+			PollTBR603((uint64_t*)&wide);
 			usec1 = WideTo64bit(wide);
 		} else {
-			PollRTC601((Word64*)&wide);
+			PollRTC601((uint64_t*)&wide);
 			usec1 = static_cast<unsigned long long>(RTCToNano(wide));
 		}
 
@@ -274,10 +275,10 @@ void BurgerInitTimers(void)
 			wide = PowerPCUpTime();
 			usec2 = WideTo64bit(wide);
 		} else if (Method == 2) {
-			PollTBR603((Word64*)&wide);
+			PollTBR603((uint64_t*)&wide);
 			usec2 = WideTo64bit(wide);
 		} else {
-			PollRTC601((Word64*)&wide);
+			PollRTC601((uint64_t*)&wide);
 			usec2 = static_cast<unsigned long long>(RTCToNano(wide));
 		}
 
@@ -301,10 +302,10 @@ void BurgerInitTimers(void)
 
 #pragma options opt = off
 
-Word32 Burger::Tick::ReadMicroseconds(void)
+uint32_t Burger::Tick::ReadMicroseconds(void)
 {
 	UnsignedWide wide;
-	Word Temp;
+	uint_t Temp;
 	double Foo;
 
 	/* Initialize globals the first time we are called */
@@ -322,13 +323,13 @@ Word32 Burger::Tick::ReadMicroseconds(void)
 	}
 	if (Temp == 2) {
 		/* On a recent PowerPC, we poll the TBR directly */
-		PollTBR603((Word64*)&wide);
+		PollTBR603((uint64_t*)&wide);
 		Foo = (double)((unsigned long long*)&wide)[0];
 		return (unsigned long long)(Foo * PowerPCScale);
 	}
 	if (Temp == 3) {
 		/* On a 601, we can poll the RTC instead */
-		PollRTC601((Word64*)&wide);
+		PollRTC601((uint64_t*)&wide);
 		return (unsigned long long)(RTCToNano(wide) * PowerPCScale);
 	}
 	/* If all else fails, suffer the mixed mode overhead */
@@ -342,9 +343,9 @@ Word32 Burger::Tick::ReadMicroseconds(void)
 
 ***************************************/
 
-Word32 Burger::Tick::ReadMilliseconds(void)
+uint32_t Burger::Tick::ReadMilliseconds(void)
 {
-	Word Temp;
+	uint_t Temp;
 	double Foo;
 	UnsignedWide wide;
 
@@ -364,13 +365,13 @@ Word32 Burger::Tick::ReadMilliseconds(void)
 	}
 	if (Temp == 2) {
 		/* On a recent PowerPC, we poll the TBR directly */
-		PollTBR603((Word64*)&wide);
+		PollTBR603((uint64_t*)&wide);
 		Foo = (double)((unsigned long long*)&wide)[0];
 		return (unsigned long long)(Foo * PowerPCScale2);
 	}
 	if (Temp == 3) {
 		/* On a 601, we can poll the RTC instead */
-		PollRTC601((Word64*)&wide);
+		PollRTC601((uint64_t*)&wide);
 		return (unsigned long long)(RTCToNano(wide) * PowerPCScale2);
 	}
 	/* If all else fails, suffer the mixed mode overhead */

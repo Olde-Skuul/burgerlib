@@ -88,8 +88,8 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 		fResult = m_fElapsedTime;
 	} else {
 
-		Word64 uMark = scePerfGetTimebaseValue();
-		Word64 uElapsedTime;
+		uint64_t uMark = scePerfGetTimebaseValue();
+		uint64_t uElapsedTime;
 
 		if (uMark<m_uBaseTime) {
 
@@ -130,7 +130,7 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Sleep(Word32 uMilliseconds)
+void BURGER_API Burger::Sleep(uint32_t uMilliseconds)
 {
 	// Zero is illegal for the VITA
 	if (uMilliseconds) {

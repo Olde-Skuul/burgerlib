@@ -1,13 +1,14 @@
 /***************************************
 
-	Compress using ILBM RLE
+    Compress using ILBM RLE
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -35,13 +36,13 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::CompressILBMRLE,Burger::Compress);
 	As such, 128 is not allowed to be encoded.
 
 	\code
-		Word8 uToken = pDataStream[0];
+		uint8_t uToken = pDataStream[0];
 		if (uToken>128) {
-			Word uCount = 257-uToken;
+			uint_t uCount = 257-uToken;
 			MemoryFill(pOutput,pDataStream[1],uCount);
 			pDataStream+=2;
 		} else if (uToken<128) {
-			Word uCount = uToken+1;
+			uint_t uCount = uToken+1;
 			MemoryCopy(pOutput,pDataStream+1,uCount);
 			pDataStream+=uCount+1;
 		} else if (uToken==128) {
@@ -64,7 +65,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::CompressILBMRLE,Burger::Compress);
 	
 ***************************************/
 
-Burger::Compress::eError Burger::CompressILBMRLE::Compact(const Word8 *pInput,WordPtr uInputLength)
+Burger::Compress::eError Burger::CompressILBMRLE::Compact(const uint8_t *pInput,uintptr_t uInputLength)
 {
 	// Assume no data remaining
 	m_uRemaining = 0;
@@ -78,12 +79,12 @@ Burger::Compress::eError Burger::CompressILBMRLE::Compact(const Word8 *pInput,Wo
 				break;
 			}
 			// Check for repeater
-			Word uMatchTest = pInput[0];
+			uint_t uMatchTest = pInput[0];
 			// Is there a run?
 			if (pInput[1] == uMatchTest) {
 
 				// Maximum loops to try
-				WordPtr uMaximumRun = 129-2;
+				uintptr_t uMaximumRun = 129-2;
 				if (uInputLength<129) {
 					uMaximumRun = uInputLength-2;	// 0-127
 					if (!uMaximumRun) {
@@ -92,7 +93,7 @@ Burger::Compress::eError Burger::CompressILBMRLE::Compact(const Word8 *pInput,Wo
 					}
 				}
 
-				WordPtr uRun = 2;
+				uintptr_t uRun = 2;
 				do {
 					// Find end of repeater
 					if (pInput[uRun]!=uMatchTest) {
@@ -110,13 +111,13 @@ Burger::Compress::eError Burger::CompressILBMRLE::Compact(const Word8 *pInput,Wo
 				}
 				// Perform a run length token Run=2-129
 				// Encode 128-255
-				m_Output.Append(static_cast<Word8>(257-uRun));
-				m_Output.Append(static_cast<Word8>(uMatchTest));
+				m_Output.Append(static_cast<uint8_t>(257-uRun));
+				m_Output.Append(static_cast<uint8_t>(uMatchTest));
 				uInputLength-=uRun;
 				pInput = pInput+uRun;
 			} else {
 				// Raw run, minimum size of 2 bytes
-				WordPtr uMaximumRun = 128-2;
+				uintptr_t uMaximumRun = 128-2;
 				if (uInputLength<128) {
 					uMaximumRun = uInputLength-2;
 					if (!uMaximumRun) {
@@ -126,7 +127,7 @@ Burger::Compress::eError Burger::CompressILBMRLE::Compact(const Word8 *pInput,Wo
 				}
 				// Preload the next byte
 				uMatchTest = pInput[1];
-				WordPtr uRun = 2;
+				uintptr_t uRun = 2;
 				do {	
 					// Scan for next repeater
 					if (pInput[uRun]==uMatchTest) {
@@ -147,7 +148,7 @@ Burger::Compress::eError Burger::CompressILBMRLE::Compact(const Word8 *pInput,Wo
 				// Perform a raw data transfer
 				// Run 1-128
 				// Encode 0-127
-				m_Output.Append(static_cast<Word8>(uRun-1));
+				m_Output.Append(static_cast<uint8_t>(uRun-1));
 				m_Output.Append(pInput,uRun);
 				uInputLength-=uRun;
 				pInput = pInput+uRun;
@@ -199,19 +200,19 @@ Burger::Compress::eError Burger::CompressILBMRLE::Init(void)
 
 ***************************************/
 
-Burger::Compress::eError Burger::CompressILBMRLE::Process(const void *pInput,WordPtr uInputLength)
+Burger::Compress::eError Burger::CompressILBMRLE::Process(const void *pInput,uintptr_t uInputLength)
 {
 	eError Error = COMPRESS_OKAY;
 	if (uInputLength) {
-		WordPtr uRemaining;
+		uintptr_t uRemaining;
 
 		// Was there data remaining to be processed from the last call?
-		WordPtr uCacheUsed = m_uCacheUsed;
+		uintptr_t uCacheUsed = m_uCacheUsed;
 		if (uCacheUsed) {
 			do {
 				// Process the cache first
 				// Get the maximum number of bytes that can be appended to the cache
-				WordPtr uInputChunk = sizeof(m_Cache)-uCacheUsed;
+				uintptr_t uInputChunk = sizeof(m_Cache)-uCacheUsed;
 				// Is there enough input to fill the cache?
 				if (uInputLength<uInputChunk) {
 					uInputChunk = uInputLength;
@@ -219,7 +220,7 @@ Burger::Compress::eError Burger::CompressILBMRLE::Process(const void *pInput,Wor
 				// Append the input to the cache
 				MemoryCopy(&m_Cache[uCacheUsed],pInput,uInputChunk);
 				// Bytes to process
-				WordPtr uTotal = uCacheUsed+uInputChunk;
+				uintptr_t uTotal = uCacheUsed+uInputChunk;
 				// Apply compression
 				Error = Compact(m_Cache,uTotal);
 
@@ -228,12 +229,12 @@ Burger::Compress::eError Burger::CompressILBMRLE::Process(const void *pInput,Wor
 				
 				uRemaining = m_uRemaining;
 				// Number of bytes actually processed
-				WordPtr uActual = uTotal-uRemaining;
+				uintptr_t uActual = uTotal-uRemaining;
 
 				if (uActual>=uCacheUsed) {
 					// The cache is flushed. Process the rest
-					WordPtr uRemoved = uActual-uCacheUsed;
-					pInput = static_cast<const Word8 *>(pInput)+uRemoved;
+					uintptr_t uRemoved = uActual-uCacheUsed;
+					pInput = static_cast<const uint8_t *>(pInput)+uRemoved;
 					uInputLength -= uRemoved;
 					m_uCacheUsed = 0;		// Clear the cache
 					break;
@@ -243,7 +244,7 @@ Burger::Compress::eError Burger::CompressILBMRLE::Process(const void *pInput,Wor
 
 				// Accept all parsed input as cached
 
-				pInput = static_cast<const Word8 *>(pInput)+uInputChunk;
+				pInput = static_cast<const uint8_t *>(pInput)+uInputChunk;
 				uInputLength -= uInputChunk;
 
 				// Update the cache
@@ -261,12 +262,12 @@ Burger::Compress::eError Burger::CompressILBMRLE::Process(const void *pInput,Wor
 
 		if (uInputLength) {
 			// Compress the remaining data
-			Error = Compact(static_cast<const Word8 *>(pInput),uInputLength);
+			Error = Compact(static_cast<const uint8_t *>(pInput),uInputLength);
 			// If any data remains. Store in the cache for later processing
 			uRemaining = m_uRemaining;
 			m_uCacheUsed = uRemaining;
 			if (uRemaining) {
-				MemoryCopy(m_Cache,static_cast<const Word8 *>(pInput)+(uInputLength-uRemaining),uRemaining);
+				MemoryCopy(m_Cache,static_cast<const uint8_t *>(pInput)+(uInputLength-uRemaining),uRemaining);
 			}
 		}
 	}
@@ -287,15 +288,15 @@ Burger::Compress::eError Burger::CompressILBMRLE::Process(const void *pInput,Wor
 Burger::Compress::eError Burger::CompressILBMRLE::Finalize(void)
 {
 	// Are there bytes in the cache?
-	WordPtr uCached = m_uCacheUsed;
+	uintptr_t uCached = m_uCacheUsed;
 	if (uCached) {
 		// Handle the single byte as a 1 byte memory copy
 		if ((uCached!=1) &&
 			(m_Cache[0]==m_Cache[1])) {
-			m_Output.Append(static_cast<Word8>(257-uCached));
+			m_Output.Append(static_cast<uint8_t>(257-uCached));
 			m_Output.Append(m_Cache[0]);
 		} else {
-			m_Output.Append(static_cast<Word8>(uCached-1));
+			m_Output.Append(static_cast<uint8_t>(uCached-1));
 			m_Output.Append(m_Cache,uCached);
 		}
 		m_uCacheUsed = 0;

@@ -1,13 +1,14 @@
 /***************************************
 
-	Texture for rendering class
+    Texture for rendering class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -161,7 +162,7 @@ Burger::Texture::~Texture()
 ***************************************/
 
 #if !defined(BURGER_WINDOWS) || defined(DOXYGEN)
-Word Burger::Texture::CheckLoad(Display * /*pDisplay */)
+uint_t Burger::Texture::CheckLoad(Display * /*pDisplay */)
 {
 	m_uDirty = 0;
 	// Error!
@@ -194,11 +195,11 @@ void Burger::Texture::Release(Display * /*pDisplay */)
 
 ***************************************/
 
-Word BURGER_API Burger::Texture::LoadImageMemory(void)
+uint_t BURGER_API Burger::Texture::LoadImageMemory(void)
 {
 	// Get the callback
 	LoaderProc pProc = m_pLoader;
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (pProc) {
 		// Call it if not NULL
 		uResult = pProc(this,LOADER_LOAD);
@@ -248,7 +249,7 @@ void BURGER_API Burger::Texture::ShutdownImageMemory(void)
 	\brief Get a pointer to the contained \ref Image record
 
 	\return Pointer to the contained \ref Image record.
-	\sa GetImage(void) or GetImage(Word) const
+	\sa GetImage(void) or GetImage(uint_t) const
 
 ***************************************/
 
@@ -258,13 +259,13 @@ void BURGER_API Burger::Texture::ShutdownImageMemory(void)
 	\brief Get a pointer to the contained \ref Image record
 
 	\return Pointer to the contained \ref Image record.
-	\sa GetImage(void) const or GetImage(Word) const
+	\sa GetImage(void) const or GetImage(uint_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn const Word8 *Burger::Texture::GetImage(Word uMipMap) const
+	\fn const uint8_t *Burger::Texture::GetImage(uint_t uMipMap) const
 	\brief Get a pointer to the bitmap
 
 	\param uMipMap Mip map level (0 is for the base bitmap)
@@ -276,70 +277,70 @@ void BURGER_API Burger::Texture::ShutdownImageMemory(void)
 
 /*! ************************************
 
-	\fn Word Burger::Texture::GetWidth(void) const
+	\fn uint_t Burger::Texture::GetWidth(void) const
 	\brief Get the width of the texture
 
 	\return Width of the texture in the Image record
 
-	\sa GetHeight(void) const or GetWidth(Word) const
+	\sa GetHeight(void) const or GetWidth(uint_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Word Burger::Texture::GetWidth(Word uMipMap) const
+	\fn uint_t Burger::Texture::GetWidth(uint_t uMipMap) const
 	\brief Get the width of the texture at a mip map level
 
 	\param uMipMap Mip map level to query
 	\return Width of the texture in the Image record at the mip map level
 
-	\sa GetHeight(Word) const or GetWidth(void) const
+	\sa GetHeight(uint_t) const or GetWidth(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Word Burger::Texture::GetHeight(void) const
+	\fn uint_t Burger::Texture::GetHeight(void) const
 	\brief Get the height of the texture
 
 	\return Height of the texture in the Image record
 
-	\sa GetWidth(void) const or GetHeight(Word) const
+	\sa GetWidth(void) const or GetHeight(uint_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Word Burger::Texture::GetHeight(Word uMipMap) const
+	\fn uint_t Burger::Texture::GetHeight(uint_t uMipMap) const
 	\brief Get the height of the texture at a mip map level
 
 	\param uMipMap Mip map level to query
 	\return Height of the texture in the Image record at the mip map level
 
-	\sa GetWidth(Word) const or GetHeight(void) const
+	\sa GetWidth(uint_t) const or GetHeight(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn WordPtr Burger::Texture::GetStride(void) const
+	\fn uintptr_t Burger::Texture::GetStride(void) const
 	\brief Get the byte stride of each scan line of the texture
 
 	\return Byte stride of the texture in the Image record
 
-	\sa GetWidth(void) const or GetStride(Word) const
+	\sa GetWidth(void) const or GetStride(uint_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn WordPtr Burger::Texture::GetStride(Word uMipMap) const
+	\fn uintptr_t Burger::Texture::GetStride(uint_t uMipMap) const
 	\brief Get the byte stride of each scan line of the texture at a mip map level
 
 	\param uMipMap Mip map level to query
 	\return Byte stride of the texture in the Image record at the mip map level
 
-	\sa GetWidth(Word) const or GetStride(void) const
+	\sa GetWidth(uint_t) const or GetStride(void) const
 
 ***************************************/
 
@@ -356,7 +357,7 @@ void BURGER_API Burger::Texture::ShutdownImageMemory(void)
 
 /*! ************************************
 
-	\fn Word Burger::Texture::GetMipMapCount(void) const
+	\fn uint_t Burger::Texture::GetMipMapCount(void) const
 	\brief Get the number of mip map levels
 
 	\return Number of mip maps in the texture (Usually 1)
@@ -527,20 +528,20 @@ void BURGER_API Burger::Texture::ShutdownImageMemory(void)
 	Function to handle the loading and conversion to an Image
 	of a TGA file found in a resource file
 
-	\sa LoadTGA(RezFile *,Word)
+	\sa LoadTGA(RezFile *,uint_t)
 
 ***************************************/
 
 #if !defined(DOXYGEN)
 struct RezFileLoad_t {
 	Burger::RezFile *m_pRezFile;
-	Word m_uRezNum;
+	uint_t m_uRezNum;
 };
 #endif
 
-Word BURGER_API Burger::Texture::CallbackRezFileTGA(Texture *pTexture,eLoader uLoader)
+uint_t BURGER_API Burger::Texture::CallbackRezFileTGA(Texture *pTexture,eLoader uLoader)
 {
-	Word uResult;
+	uint_t uResult;
 	switch (uLoader) {
 	default:
 	case LOADER_LOAD:
@@ -578,11 +579,11 @@ Word BURGER_API Burger::Texture::CallbackRezFileTGA(Texture *pTexture,eLoader uL
 	\note The file is not loaded immediately. It will be loaded
 	after a call to LoadImage(void)
 
-	\sa LoadPNG(RezFile *,Word), LoadBMP(RezFile *,Word) or LoadGIF(RezFile *,Word), 
+	\sa LoadPNG(RezFile *,uint_t), LoadBMP(RezFile *,uint_t) or LoadGIF(RezFile *,uint_t), 
 
 ***************************************/
 
-void BURGER_API Burger::Texture::LoadTGA(RezFile *pRezFile,Word uRezNum)
+void BURGER_API Burger::Texture::LoadTGA(RezFile *pRezFile,uint_t uRezNum)
 {
 	// Get rid of any previous loader
 	ShutdownImageMemory();
@@ -607,9 +608,9 @@ void BURGER_API Burger::Texture::LoadTGA(RezFile *pRezFile,Word uRezNum)
 
 ***************************************/
 
-Word BURGER_API Burger::Texture::CallbackFileTGA(Texture *pTexture,eLoader uLoader)
+uint_t BURGER_API Burger::Texture::CallbackFileTGA(Texture *pTexture,eLoader uLoader)
 {
-	Word uResult;
+	uint_t uResult;
 	switch (uLoader) {
 	default:
 	case LOADER_LOAD:
@@ -669,9 +670,9 @@ void BURGER_API Burger::Texture::LoadTGA(const char *pFilename)
 
 ***************************************/
 
-Word BURGER_API Burger::Texture::CallbackFilenameTGA(Texture *pTexture,eLoader uLoader)
+uint_t BURGER_API Burger::Texture::CallbackFilenameTGA(Texture *pTexture,eLoader uLoader)
 {
-	Word uResult;
+	uint_t uResult;
 	switch (uLoader) {
 	default:
 	case LOADER_LOAD:
@@ -705,7 +706,7 @@ Word BURGER_API Burger::Texture::CallbackFilenameTGA(Texture *pTexture,eLoader u
 	\note The file is not loaded immediately. It will be loaded
 	after a call to LoadImage(void)
 
-	\sa LoadTGA(const char *), LoadTGA(RezFile *,Word)
+	\sa LoadTGA(const char *), LoadTGA(RezFile *,uint_t)
 
 ***************************************/
 
@@ -727,13 +728,13 @@ void BURGER_API Burger::Texture::LoadTGA(Filename *pFilename)
 	Function to handle the loading and conversion to an Image
 	of a PNG file found in a resource file
 
-	\sa LoadPNG(RezFile *,Word)
+	\sa LoadPNG(RezFile *,uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::Texture::CallbackRezFilePNG(Texture *pTexture,eLoader uLoader)
+uint_t BURGER_API Burger::Texture::CallbackRezFilePNG(Texture *pTexture,eLoader uLoader)
 {
-	Word uResult;
+	uint_t uResult;
 	switch (uLoader) {
 	default:
 	case LOADER_LOAD:
@@ -771,11 +772,11 @@ Word BURGER_API Burger::Texture::CallbackRezFilePNG(Texture *pTexture,eLoader uL
 	\note The file is not loaded immediately. It will be loaded
 	after a call to LoadImage(void)
 
-	\sa LoadTGA(RezFile *,Word), LoadBMP(RezFile *,Word) or LoadGIF(RezFile *,Word)
+	\sa LoadTGA(RezFile *,uint_t), LoadBMP(RezFile *,uint_t) or LoadGIF(RezFile *,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::Texture::LoadPNG(RezFile *pRezFile,Word uRezNum)
+void BURGER_API Burger::Texture::LoadPNG(RezFile *pRezFile,uint_t uRezNum)
 {
 	// Get rid of any previous loader
 	ShutdownImageMemory();
@@ -800,9 +801,9 @@ void BURGER_API Burger::Texture::LoadPNG(RezFile *pRezFile,Word uRezNum)
 
 ***************************************/
 
-Word BURGER_API Burger::Texture::CallbackFilePNG(Texture *pTexture,eLoader uLoader)
+uint_t BURGER_API Burger::Texture::CallbackFilePNG(Texture *pTexture,eLoader uLoader)
 {
-	Word uResult;
+	uint_t uResult;
 	switch (uLoader) {
 	default:
 	case LOADER_LOAD:
@@ -861,9 +862,9 @@ void BURGER_API Burger::Texture::LoadPNG(const char *pFilename)
 
 ***************************************/
 
-Word BURGER_API Burger::Texture::CallbackFilenamePNG(Texture *pTexture,eLoader uLoader)
+uint_t BURGER_API Burger::Texture::CallbackFilenamePNG(Texture *pTexture,eLoader uLoader)
 {
-	Word uResult;
+	uint_t uResult;
 	switch (uLoader) {
 	default:
 	case LOADER_LOAD:
@@ -919,13 +920,13 @@ void BURGER_API Burger::Texture::LoadPNG(Filename *pFilename)
 	Function to handle the loading and conversion to an Image
 	of a BMP file found in a resource file
 
-	\sa LoadBMP(RezFile *,Word)
+	\sa LoadBMP(RezFile *,uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::Texture::CallbackRezFileBMP(Texture *pTexture,eLoader uLoader)
+uint_t BURGER_API Burger::Texture::CallbackRezFileBMP(Texture *pTexture,eLoader uLoader)
 {
-	Word uResult;
+	uint_t uResult;
 	switch (uLoader) {
 	default:
 	case LOADER_LOAD:
@@ -963,11 +964,11 @@ Word BURGER_API Burger::Texture::CallbackRezFileBMP(Texture *pTexture,eLoader uL
 	\note The file is not loaded immediately. It will be loaded
 	after a call to LoadImage(void)
 
-	\sa LoadTGA(RezFile *,Word), LoadPNG(RezFile *,Word) or LoadGIF(RezFile *,Word)
+	\sa LoadTGA(RezFile *,uint_t), LoadPNG(RezFile *,uint_t) or LoadGIF(RezFile *,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::Texture::LoadBMP(RezFile *pRezFile,Word uRezNum)
+void BURGER_API Burger::Texture::LoadBMP(RezFile *pRezFile,uint_t uRezNum)
 {
 	// Get rid of any previous loader
 	ShutdownImageMemory();
@@ -992,9 +993,9 @@ void BURGER_API Burger::Texture::LoadBMP(RezFile *pRezFile,Word uRezNum)
 
 ***************************************/
 
-Word BURGER_API Burger::Texture::CallbackFileBMP(Texture *pTexture,eLoader uLoader)
+uint_t BURGER_API Burger::Texture::CallbackFileBMP(Texture *pTexture,eLoader uLoader)
 {
-	Word uResult;
+	uint_t uResult;
 	switch (uLoader) {
 	default:
 	case LOADER_LOAD:
@@ -1053,9 +1054,9 @@ void BURGER_API Burger::Texture::LoadBMP(const char *pFilename)
 
 ***************************************/
 
-Word BURGER_API Burger::Texture::CallbackFilenameBMP(Texture *pTexture,eLoader uLoader)
+uint_t BURGER_API Burger::Texture::CallbackFilenameBMP(Texture *pTexture,eLoader uLoader)
 {
-	Word uResult;
+	uint_t uResult;
 	switch (uLoader) {
 	default:
 	case LOADER_LOAD:
@@ -1111,13 +1112,13 @@ void BURGER_API Burger::Texture::LoadBMP(Filename *pFilename)
 	Function to handle the loading and conversion to an Image
 	of a GIF file found in a resource file
 
-	\sa LoadGIF(RezFile *,Word)
+	\sa LoadGIF(RezFile *,uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::Texture::CallbackRezFileGIF(Texture *pTexture,eLoader uLoader)
+uint_t BURGER_API Burger::Texture::CallbackRezFileGIF(Texture *pTexture,eLoader uLoader)
 {
-	Word uResult;
+	uint_t uResult;
 	switch (uLoader) {
 	default:
 	case LOADER_LOAD:
@@ -1125,7 +1126,7 @@ Word BURGER_API Burger::Texture::CallbackRezFileGIF(Texture *pTexture,eLoader uL
 			// Get the record
 			const RezFileLoad_t *pRezFileLoad = static_cast<const RezFileLoad_t *>(pTexture->m_pUserData);
 			RezFile *pRezFile = pRezFileLoad->m_pRezFile;
-			Word uRezNum = pRezFileLoad->m_uRezNum;
+			uint_t uRezNum = pRezFileLoad->m_uRezNum;
 			// Load the resource file
 			void *pData = pRezFile->Load(uRezNum);
 			// Assume error
@@ -1175,11 +1176,11 @@ Word BURGER_API Burger::Texture::CallbackRezFileGIF(Texture *pTexture,eLoader uL
 	\note The file is not loaded immediately. It will be loaded
 	after a call to LoadImage(void)
 
-	\sa LoadTGA(RezFile *,Word), LoadPNG(RezFile *,Word) or LoadBMP(RezFile *,Word)
+	\sa LoadTGA(RezFile *,uint_t), LoadPNG(RezFile *,uint_t) or LoadBMP(RezFile *,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::Texture::LoadGIF(RezFile *pRezFile,Word uRezNum)
+void BURGER_API Burger::Texture::LoadGIF(RezFile *pRezFile,uint_t uRezNum)
 {
 	// Get rid of any previous loader
 	ShutdownImageMemory();
@@ -1204,15 +1205,15 @@ void BURGER_API Burger::Texture::LoadGIF(RezFile *pRezFile,Word uRezNum)
 
 ***************************************/
 
-Word BURGER_API Burger::Texture::CallbackFileGIF(Texture *pTexture,eLoader uLoader)
+uint_t BURGER_API Burger::Texture::CallbackFileGIF(Texture *pTexture,eLoader uLoader)
 {
-	Word uResult;
+	uint_t uResult;
 	switch (uLoader) {
 	default:
 	case LOADER_LOAD:
 		{
 			// Get the file
-			WordPtr uDataSize;
+			uintptr_t uDataSize;
 			void *pData = FileManager::LoadFile(static_cast<const char *>(pTexture->m_pUserData),&uDataSize);
 			// Assume error
 			uResult = 10;
@@ -1286,15 +1287,15 @@ void BURGER_API Burger::Texture::LoadGIF(const char *pFilename)
 
 ***************************************/
 
-Word BURGER_API Burger::Texture::CallbackFilenameGIF(Texture *pTexture,eLoader uLoader)
+uint_t BURGER_API Burger::Texture::CallbackFilenameGIF(Texture *pTexture,eLoader uLoader)
 {
-	Word uResult;
+	uint_t uResult;
 	switch (uLoader) {
 	default:
 	case LOADER_LOAD:
 		{
 			// Get the file
-			WordPtr uDataSize;
+			uintptr_t uDataSize;
 			void *pData = FileManager::LoadFile(static_cast<Filename *>(pTexture->m_pUserData),&uDataSize);
 			// Assume error
 			uResult = 10;

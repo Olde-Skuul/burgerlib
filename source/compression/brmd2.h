@@ -1,17 +1,18 @@
 /***************************************
 
-	MD2 hash manager
+    MD2 hash manager
 
-	Implemented following the documentation found in
-	http://en.wikipedia.org/wiki/MD2_(cryptography)
-	and http://www.ietf.org/rfc/rfc1319.txt 
+    Implemented following the documentation found in
+    http://en.wikipedia.org/wiki/MD2_(cryptography)
+    and http://www.ietf.org/rfc/rfc1319.txt
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -26,21 +27,21 @@
 namespace Burger {
 
 struct MD2_t {
-	Word8 m_Hash[16];	///< 128 bit hash value in RFC 1319 MD2 format
+	uint8_t m_Hash[16];	///< 128 bit hash value in RFC 1319 MD2 format
 };
 
 struct MD2Hasher_t {
 	MD2_t m_Hash;				///< Calculated hash
-	Word8 m_Checksum[16];		///< Running checksum
-	Word8 m_CacheBuffer[16];	///< Cached input data for multi-pass hashing
-	WordPtr m_uCount;			///< Number of bytes in the cache (0-15)
+	uint8_t m_Checksum[16];		///< Running checksum
+	uint8_t m_CacheBuffer[16];	///< Cached input data for multi-pass hashing
+	uintptr_t m_uCount;			///< Number of bytes in the cache (0-15)
 
 	void BURGER_API Init(void);
-	void BURGER_API Process(const Word8 *pBlock);
-	void BURGER_API Process(const void *pInput,WordPtr uLength);
+	void BURGER_API Process(const uint8_t *pBlock);
+	void BURGER_API Process(const void *pInput,uintptr_t uLength);
 	void BURGER_API Finalize(void);
 };
-extern void BURGER_API Hash(MD2_t *pOutput,const void *pInput,WordPtr uLength);
+extern void BURGER_API Hash(MD2_t *pOutput,const void *pInput,uintptr_t uLength);
 }
 /* END */
 

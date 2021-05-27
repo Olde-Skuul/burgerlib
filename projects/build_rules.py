@@ -2,11 +2,16 @@
 # -*- coding: utf-8 -*-
 
 """
-Configuration file on how to build and clean projects in a specific folder.
+Build rules for the makeprojects suite of build tools.
 
 This file is parsed by the cleanme, buildme, rebuildme and makeprojects
 command line tools to clean, build and generate project files.
+
+When any of these tools are invoked, this file is loaded and parsed to
+determine special rules on how to handle building the code and / or data.
 """
+
+# pylint: disable=unused-argument
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -15,6 +20,19 @@ from burger import copy_file_if_needed, get_windows_host_type, \
     is_codewarrior_mac_allowed, get_sdks_folder
 from makeprojects import PlatformTypes, IDETypes, ProjectTypes, makeprojects, \
     _HLSL_MATCH, _GLSL_MATCH, _X360SL_MATCH, _VITACG_MATCH
+
+# If set to True, ``buildme -r``` will not parse directories in this folder.
+BUILDME_NO_RECURSE = True
+
+# ``buildme``` will build these files and folders first.
+BUILDME_DEPENDENCIES = []
+
+# If set to True, ``cleanme -r``` will not parse directories in this folder.
+CLEANME_NO_RECURSE = True
+
+# ``cleanme`` will clean the listed folders using their rules before cleaning.
+# this folder.
+CLEANME_DEPENDENCIES = []
 
 ## List of Codewarrior library files to move to sdks/windows/burgerlib
 WINDOWS_LIB_FILES = (
@@ -87,6 +105,7 @@ BURGER_LIB_WIIU = (
 ## Nintendo Switch specific code
 BURGER_LIB_SWITCH = (
     '../source/switch',
+    '../source/graphics/vulkan'
 )
 
 ## Microsoft Xbox 360 specific code
@@ -98,7 +117,8 @@ BURGER_LIB_XBOX_360 = (
 ## nVidia Shield specific code
 BURGER_LIB_SHIELD = (
     '../source/shield',
-    '../source/graphics/shadersopengl'
+    '../source/graphics/shadersopengl',
+    '../source/graphics/vulkan'
 )
 
 ## Apple macOS X specific code
@@ -128,13 +148,15 @@ BURGER_LIB_DOS = (
 BURGER_LIB_WINDOWS = (
     '../source/windows',
     '../source/graphics/shadersdx9',
-    '../source/graphics/shadersopengl'
+    '../source/graphics/shadersopengl',
+    '../source/graphics/vulkan'
 )
 
 ## Linux specific code
 BURGER_LIB_LINUX = (
     '../source/linux',
-    '../source/graphics/shadersopengl'
+    '../source/graphics/shadersopengl',
+    '../source/graphics/vulkan'
 )
 
 ## Generated source file
@@ -185,9 +207,9 @@ def do_generate(working_directory):
         working_directory: Directory to place the project files.
     """
 
-    ARG_LISTS_TEST = [
-        ('switch', 'burger', 'library', ['vs2017'])
-    ]
+    #ARG_LISTS_TEST = [
+    #    ('switch', 'burger', 'library', ['vs2017'])
+    #]
 
     for item in ARG_LISTS:
         args = []
@@ -203,16 +225,28 @@ def do_generate(working_directory):
 ########################################
 
 
-def do_postbuild(working_directory):
-    """ Copy the windows version of the CodeWarrior libraries.
+def postbuild(working_directory, configuration):
+    """
+    Issue build commands after all IDE projects have been built.
+
+    This function can assume all other build projects have executed for final
+    deployment or cleanup
+
+    On exit, return 0 for no error, or a non zero error code if there was an
+    error to report.
 
     Args:
-        working_dir: Directory where the scripts to copy are located
+        working_directory
+            Directory this script resides in.
+
+        configuration
+            Configuration to build, ``all`` if no configuration was requested.
 
     Returns:
-        Zero on no error, non-zero on error
+        None if not implemented, otherwise an integer error code.
     """
 
+    # Copy the windows version of the CodeWarrior libraries.
     error = 0
 
     # If the host can run CodeWarrior for Windows (Codewarrior 9.4 Mac or
@@ -426,7 +460,8 @@ def do_project(working_directory, project):
             ])
 
     # Enable OpenGL extensions
-    if platform.is_windows() or platform.is_android() or platform is PlatformTypes.linux:
+    if platform.is_windows() or platform.is_android() or \
+        platform is PlatformTypes.linux:
         vs_props.append(
             '$(VCTargetsPath)\\BuildCustomizations\\glsl.props')
         vs_targets.append(
@@ -550,12 +585,6 @@ def rules(command, working_directory, **kargs):
     # Too many return statements
     # Unused arguments
     # pylint: disable=R0911,W0613
-
-    # Commands
-    if command == 'postbuild':
-        # Perform actions after all IDE based projects
-        # Return non zero integer on error.
-        return do_postbuild(working_directory)
 
     # Commands for makeprojects.
     if command == 'default_project_name':

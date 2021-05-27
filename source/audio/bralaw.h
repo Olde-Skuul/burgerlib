@@ -36,12 +36,12 @@ protected:
 		STATE_INIT,				///< Basic state
 		STATE_CACHEFULL			///< Cache is full, need to output before more input
 	};
-	Word m_uCacheSize;			///< Number of valid bytes in m_uCache
+	uint_t m_uCacheSize;			///< Number of valid bytes in m_uCache
 	eState m_eState;			///< State of the decompression
-	Int16 m_iCache;				///< Temp uncompressed data buffer
+	int16_t m_iCache;				///< Temp uncompressed data buffer
 public:
-	static const Int16 g_Table[256];
-	static const Word32 Signature = 0x616C6177;		///< 'alaw'
+	static const int16_t g_Table[256];
+	static const uint32_t Signature = 0x616C6177;		///< 'alaw'
 	DecompressALaw();
 	eError Reset(void) BURGER_OVERRIDE;
 	eError Process(void *pOutput,uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;

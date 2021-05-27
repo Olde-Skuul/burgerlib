@@ -1,13 +1,14 @@
 /***************************************
 
-	Decompression manager
+    Decompression manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -31,7 +32,7 @@ protected:
     uintptr_t m_uTotalOutput;		///< Total number of bytes processed for output
     uintptr_t m_uInputLength;		///< Number of input bytes processed from the last call to Process()
     uintptr_t m_uOutputLength;	///< Number of output bytes processed from the last call to Process()
-	Word32 m_uSignature;		///< 4 character code to identify this decompresser
+	uint32_t m_uSignature;		///< 4 character code to identify this decompresser
 public:
 	enum eError {
 		DECOMPRESS_OKAY,			///< No errors
@@ -46,7 +47,7 @@ public:
 	BURGER_INLINE uintptr_t GetTotalOutputSize(void) const { return m_uTotalOutput; }
 	BURGER_INLINE uintptr_t GetProcessedInputSize(void) const { return m_uInputLength; }
 	BURGER_INLINE uintptr_t GetProcessedOutputSize(void) const { return m_uOutputLength; }
-	BURGER_INLINE Word32 GetSignature(void) const { return m_uSignature; }
+	BURGER_INLINE uint32_t GetSignature(void) const { return m_uSignature; }
 };
 }
 /* END */

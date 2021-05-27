@@ -1,14 +1,15 @@
 /***************************************
 
-	Filename Class
+    Filename Class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brfilename.h"
@@ -78,7 +79,7 @@
 
 ***************************************/
 
-Burger::Filename::Filename(const char *pFilename) :
+Burger::Filename::Filename(const char *pFilename) BURGER_NOEXCEPT :
 	m_pFilename(m_Filename),m_pNativeFilename(m_NativeFilename)
 #if defined(BURGER_MAC)
 	,m_lDirID(0),m_sVRefNum(0)
@@ -90,7 +91,7 @@ Burger::Filename::Filename(const char *pFilename) :
 		// All initialized in case of an empty input string
 		m_Filename[0] = 0;
 	} else {
-		WordPtr uLength = StringLength(pFilename);
+		uintptr_t uLength = StringLength(pFilename);
 		// 
 		// Can the string fit in the local buffer?
 		if (uLength<sizeof(m_Filename)) {
@@ -129,10 +130,10 @@ Burger::Filename::Filename(const char *pFilename) :
 
 ***************************************/
 
-Burger::Filename::Filename(Filename const &rInput)
+Burger::Filename::Filename(Filename const &rInput) BURGER_NOEXCEPT
 {
 	const char *pFilename = rInput.m_pFilename;
-	WordPtr uLength = StringLength(pFilename);
+	uintptr_t uLength = StringLength(pFilename);
 	char *pNew = m_Filename;
 	 
 	// Can the string fit in the local buffer?
@@ -194,7 +195,7 @@ Burger::Filename & Burger::Filename::operator = (Filename const &rInput)
 	Clear();
 
 	const char *pFilename = rInput.m_pFilename;
-	WordPtr uLength = StringLength(pFilename);
+	uintptr_t uLength = StringLength(pFilename);
 	char *pNew = m_Filename;
 
 	// Can the string fit in the local buffer?
@@ -319,13 +320,13 @@ Burger::Filename::~Filename()
 
 ***************************************/
 
-void BURGER_API Burger::Filename::Set(const char *pInput)
+void BURGER_API Burger::Filename::Set(const char *pInput) BURGER_NOEXCEPT
 {
 	Clear();
 
 	// Was there an input string?
 	if (pInput) {
-		WordPtr uLength = StringLength(pInput);
+		const uintptr_t uLength = StringLength(pInput);
 		// 
 		// Can the string fit in the local buffer?
 		if (uLength<sizeof(m_Filename)) {
@@ -363,7 +364,7 @@ void BURGER_API Burger::Filename::Set(const char *pInput)
 
 ***************************************/
 
-void BURGER_API Burger::Filename::Set(const Word16* pInput)
+void BURGER_API Burger::Filename::Set(const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	// Convert from UTF-16 to UTF-8
 	String Temp(pInput);
@@ -381,7 +382,7 @@ void BURGER_API Burger::Filename::Set(const Word16* pInput)
 
 ***************************************/
 
-void BURGER_API Burger::Filename::Clear(void)
+void BURGER_API Burger::Filename::Clear(void) BURGER_NOEXCEPT
 {
 	// Anything allocated?
 	if (m_pFilename!=m_Filename) {
@@ -414,14 +415,14 @@ void BURGER_API Burger::Filename::Append(const char *pInput)
 {
 	if (pInput) {
 		// Get the length of the string to append
-		WordPtr uInputLength = StringLength(pInput);
+		uintptr_t uInputLength = StringLength(pInput);
 		if (uInputLength) {
 			// Get the original string
 			const char *pFilename = m_pFilename;
-			WordPtr uFilenameLength = StringLength(pFilename);
+			uintptr_t uFilenameLength = StringLength(pFilename);
 			// Size of the proposed final string (And space for the separating colon)
 			// the '2' is for the possible 2 colons that could be inserted into the pathname
-			WordPtr uTotal = uInputLength + uFilenameLength + 2;
+			uintptr_t uTotal = uInputLength + uFilenameLength + 2;
 			// Will it fit in the local buffer?
 			char *pOutput = m_Filename;
 			if (uTotal>=sizeof(m_Filename)) {
@@ -468,11 +469,11 @@ void BURGER_API Burger::Filename::Append(const char *pInput)
 
 ***************************************/
 
-void BURGER_API Burger::Filename::GetFileName(char *pOutput,WordPtr uOutputLength) const
+void BURGER_API Burger::Filename::GetFileName(char *pOutput,uintptr_t uOutputLength) const
 {
 	// Get the length of the path
 	const char *pInput = m_pFilename;
-	WordPtr uLength = StringLength(pInput);
+	uintptr_t uLength = StringLength(pInput);
 	// Anything?
 	if (uLength) {
 		// If there is an ending colon?
@@ -483,7 +484,7 @@ void BURGER_API Burger::Filename::GetFileName(char *pOutput,WordPtr uOutputLengt
 		// More than just the colon?
 		if (uLength) {
 			// Scan backwards until a colon is found, or use the whole string
-			WordPtr uIndex = uLength;
+			uintptr_t uIndex = uLength;
 			do {
 				--uIndex;
 				if (pInput[uIndex]==':') {
@@ -515,11 +516,11 @@ void BURGER_API Burger::Filename::GetFileName(char *pOutput,WordPtr uOutputLengt
 
 ***************************************/
 
-void BURGER_API Burger::Filename::GetFileExtension(char *pOutput,WordPtr uOutputLength) const
+void BURGER_API Burger::Filename::GetFileExtension(char *pOutput,uintptr_t uOutputLength) const
 {
 	// Get the length of the path
 	const char *pInput = m_pFilename;
-	WordPtr uLength = StringLength(pInput);
+	uintptr_t uLength = StringLength(pInput);
 	// Anything?
 	if (uLength) {
 		// If there is an ending colon?
@@ -531,7 +532,7 @@ void BURGER_API Burger::Filename::GetFileExtension(char *pOutput,WordPtr uOutput
 		if (uLength) {
 			// Scan backwards until a period is found, or a colon meaning
 			// no extension exists
-			WordPtr uIndex = uLength;
+			uintptr_t uIndex = uLength;
 			do {
 				--uIndex;
 				if (pInput[uIndex]==':') {
@@ -565,7 +566,7 @@ void BURGER_API Burger::Filename::GetFileExtension(char *pOutput,WordPtr uOutput
 	Given a filename extension, set the filename to this extension
 
 	\param pExtension Pointer to a "C" string that contains the new filename extension
-	\sa Burger::Filename::GetFileExtension(char *,WordPtr) const
+	\sa Burger::Filename::GetFileExtension(char *,uintptr_t) const
 
 ***************************************/
 
@@ -573,7 +574,7 @@ void BURGER_API Burger::Filename::SetFileExtension(const char *pExtension)
 {
 	// Get the length of the path
 	const char *pInput = m_pFilename;
-	WordPtr uLength = StringLength(pInput);
+	uintptr_t uLength = StringLength(pInput);
 	// Anything?
 	if (uLength) {
 		// If there is an ending colon?
@@ -585,7 +586,7 @@ void BURGER_API Burger::Filename::SetFileExtension(const char *pExtension)
 		if (uLength) {
 			// Scan backwards until a period is found, or a colon meaning
 			// no extension exists
-			WordPtr uIndex = uLength;
+			uintptr_t uIndex = uLength;
 			do {
 				--uIndex;
 				if (pInput[uIndex]==':') {
@@ -604,7 +605,7 @@ void BURGER_API Burger::Filename::SetFileExtension(const char *pExtension)
 			// at this point via pInput and uLength
 		}
 	}
-	WordPtr uExtensionLength = 0;
+	uintptr_t uExtensionLength = 0;
 	if (pExtension) {
 		// Don't perform a double period insert
 		if (pExtension[0]=='.') {
@@ -612,7 +613,7 @@ void BURGER_API Burger::Filename::SetFileExtension(const char *pExtension)
 		}
 		uExtensionLength = StringLength(pExtension);
 	}
-	WordPtr uTotal = uLength+1;		// Add for the ending colon
+	uintptr_t uTotal = uLength+1;		// Add for the ending colon
 	if (uExtensionLength) {
 		uTotal += uExtensionLength+1;	/// Add for the '.' separator
 	}
@@ -652,10 +653,10 @@ void BURGER_API Burger::Filename::DirName(void)
 {
 	char *pFilename = m_pFilename;
 	// Get a character from the filename
-	Word uTemp = reinterpret_cast<const Word8*>(pFilename)[0];
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pFilename)[0];
 	// Skip the first colon
 	if (uTemp==':') {
-		uTemp = reinterpret_cast<const Word8*>(pFilename)[1];
+		uTemp = reinterpret_cast<const uint8_t*>(pFilename)[1];
 		++pFilename;
 	}
 	// Is there a string?
@@ -674,7 +675,7 @@ void BURGER_API Burger::Filename::DirName(void)
 				pLastColon = pFilename;
 			}
 			// Fetch a character
-			uTemp = reinterpret_cast<const Word8*>(pFilename)[1];
+			uTemp = reinterpret_cast<const uint8_t*>(pFilename)[1];
 			++pFilename;
 		} while (uTemp);
 		// Do I have a "last colon"?
@@ -699,10 +700,10 @@ void BURGER_API Burger::Filename::DirName(String *pOutput) const
 {
 	const char *pFilename = m_pFilename;
 	// Get a character from the filename
-	Word uTemp = reinterpret_cast<const Word8*>(pFilename)[0];
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pFilename)[0];
 	// Skip the first colon
 	if (uTemp==':') {
-		uTemp = reinterpret_cast<const Word8*>(pFilename)[1];
+		uTemp = reinterpret_cast<const uint8_t*>(pFilename)[1];
 		++pFilename;
 	}
 	const char *pLastColon = NULL;
@@ -721,7 +722,7 @@ void BURGER_API Burger::Filename::DirName(String *pOutput) const
 				pLastColon = pFilename;
 			}
 			// Fetch a character
-			uTemp = reinterpret_cast<const Word8*>(pFilename)[1];
+			uTemp = reinterpret_cast<const uint8_t*>(pFilename)[1];
 			++pFilename;
 		} while (uTemp);
 		++pFilename;
@@ -732,7 +733,7 @@ void BURGER_API Burger::Filename::DirName(String *pOutput) const
 	}
 	pLastColon = m_pFilename;
 	// Truncate the string after the colon
-	pOutput->Set(pLastColon,static_cast<WordPtr>(pFilename-pLastColon));
+	pOutput->Set(pLastColon,static_cast<uintptr_t>(pFilename-pLastColon));
 }
 
 /*! ************************************
@@ -751,10 +752,10 @@ void BURGER_API Burger::Filename::BaseName(String *pOutput) const
 {
 	const char *pFilename = m_pFilename;
 	// Get a character from the filename
-	Word uTemp = reinterpret_cast<const Word8*>(pFilename)[0];
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pFilename)[0];
 	// Skip the first colon
 	if (uTemp==':') {
-		uTemp = reinterpret_cast<const Word8*>(pFilename)[1];
+		uTemp = reinterpret_cast<const uint8_t*>(pFilename)[1];
 		++pFilename;
 	}
 	const char *pLastColon = NULL;
@@ -773,7 +774,7 @@ void BURGER_API Burger::Filename::BaseName(String *pOutput) const
 				pLastColon = pFilename;
 			}
 			// Fetch a character
-			uTemp = reinterpret_cast<const Word8*>(pFilename)[1];
+			uTemp = reinterpret_cast<const uint8_t*>(pFilename)[1];
 			++pFilename;
 		} while (uTemp);
 		++pFilename;
@@ -788,7 +789,7 @@ void BURGER_API Burger::Filename::BaseName(String *pOutput) const
 		pLastColon = m_pFilename;
 	}
 	// Truncate the string after the colon
-	pOutput->Set(pLastColon,static_cast<WordPtr>(pFilename-pLastColon));
+	pOutput->Set(pLastColon,static_cast<uintptr_t>(pFilename-pLastColon));
 }
 
 /*! ************************************
@@ -811,24 +812,24 @@ void BURGER_API Burger::Filename::BaseName(String *pOutput) const
 
 ***************************************/
 
-Word BURGER_API Burger::Filename::IsFullPathname(void) const
+uint_t BURGER_API Burger::Filename::IsFullPathname(void) const
 {
-	Word uResult = FALSE;
-	const char *pFilename = m_pFilename;
-	Word uTemp = reinterpret_cast<const Word8*>(pFilename)[0];
+	uint_t uResult = FALSE;
+    const char *pFilename = m_pFilename;
+    uint_t uTemp = reinterpret_cast<const uint8_t *>(pFilename)[0];
 	if (uTemp==':') {
 		uResult = TRUE;
 	} else if (uTemp=='.') {
-		Word uTestChar2 = reinterpret_cast<const Word8*>(pFilename)[1];
+		uint_t uTestChar2 = reinterpret_cast<const uint8_t*>(pFilename)[1];
 		if ((uTestChar2&0xDF) == 'D') {
 			// Validate the input to only allow the form of
 			// ".D22:" where it starts with ".D", followed by ascii digits, then
 			// terminated with a colon. Any other form is assumed to be a valid filename
 
 			// Must be longer than 2 characters.
-			WordPtr i = 2;
+			uintptr_t i = 2;
 			do {
-				uTestChar2 = reinterpret_cast<const Word8*>(pFilename)[i];
+				uTestChar2 = reinterpret_cast<const uint8_t*>(pFilename)[i];
 				// Find terminating colon
 				if (uTestChar2==':') {
 					// Is it the form ".D:", if not, it's valid
@@ -840,7 +841,7 @@ Word BURGER_API Burger::Filename::IsFullPathname(void) const
 				}
 				++i;
 				// Only ASCII digits are allowed. If a non ASCII is detected, assume filename
-			} while (static_cast<Word>(uTestChar2-'0')<10);
+			} while (static_cast<uint_t>(uTestChar2-'0')<10);
 		}
 	}
 	return uResult;
@@ -862,9 +863,9 @@ Word BURGER_API Burger::Filename::IsFullPathname(void) const
 
 ***************************************/
 
-Word BURGER_API Burger::Filename::IsFilenameOnly(void) const
+uint_t BURGER_API Burger::Filename::IsFilenameOnly(void) const
 {
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	if (!IsFullPathname()) {
 		if (ParsePrefixNumber()==FileManager::PREFIXINVALID) {
 			uResult = TRUE;
@@ -886,19 +887,19 @@ Word BURGER_API Burger::Filename::IsFilenameOnly(void) const
 
 ***************************************/
 
-Word BURGER_API Burger::Filename::ParsePrefixNumber(void) const
+uint_t BURGER_API Burger::Filename::ParsePrefixNumber(void) const
 {
-	Word uPrefixNum = FileManager::PREFIXINVALID;
+	uint_t uPrefixNum = FileManager::PREFIXINVALID;
 	const char *pFilename = m_pFilename;
-	Word uTestChar = reinterpret_cast<const Word8*>(pFilename)[0];
+	uint_t uTestChar = reinterpret_cast<const uint8_t*>(pFilename)[0];
 	if ((uTestChar>='0') && (uTestChar<('9'+1))) {
 		// Is it a number? If it's a valid prefix number followed by a colon
 		// yank it out and set uPrefixNum to the value
 		uTestChar-='0';		// Convert to 0-9
-		WordPtr uIndex = 1;
+		uintptr_t uIndex = 1;
 		do {
 			// I found an ending colon, accept it, maybe
-			Word uTemp = reinterpret_cast<const Word8 *>(pFilename)[uIndex];
+			uint_t uTemp = reinterpret_cast<const uint8_t *>(pFilename)[uIndex];
 			++uIndex;					// Next value
 			if (uTemp==':') {			// End the prefix here?
 				uPrefixNum = uTestChar;	// This is the prefix I want
@@ -948,15 +949,15 @@ Word BURGER_API Burger::Filename::ParsePrefixNumber(void) const
 
 ***************************************/
 
-void BURGER_API Burger::Filename::Expand(const char *pInput)
+void BURGER_API Burger::Filename::Expand(const char *pInput) BURGER_NOEXCEPT
 {
 	Clear();
 
 	// The first thing to do is determine what prefix # this is
 
-	WordPtr uLength;	// Length of the input
+	uintptr_t uLength;	// Length of the input
 	// Prefix found (Or PREFIXMAX if bogus)
-	Word uPrefixNum = FileManager::PREFIXCURRENT;
+	uint_t uPrefixNum = FileManager::PREFIXCURRENT;
 	// Empty input (Assume prefix 8)
 	// Prevent a crash by using a bogus pathname
 	if (!pInput) {			
@@ -964,12 +965,12 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 	} else {
 		uLength = StringLength(pInput);
 		if (uLength) {
-			Word uTestChar = reinterpret_cast<const Word8*>(pInput)[0];
+			uint_t uTestChar = reinterpret_cast<const uint8_t*>(pInput)[0];
 			// Is it a fully qualified pathname?
 			if (uTestChar==':') {
 				uPrefixNum = FileManager::PREFIXMAX;
 			} else if (uLength>=2) {
-				Word uTestChar2 = reinterpret_cast<const Word8 *>(pInput)[1];
+				uint_t uTestChar2 = reinterpret_cast<const uint8_t *>(pInput)[1];
 				// Is this a drive number?
 				if ((uTestChar=='.') && ((uTestChar2&0xDF) == 'D')) {
 					// Validate the input to only allow the form of
@@ -977,10 +978,10 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 					// terminated with a colon. Any other form is assumed to be a valid filename
 
 					// Must be longer than 2 characters.
-					WordPtr i = 2;
+					uintptr_t i = 2;
 					if (i<uLength) {
 						do {
-							uTestChar2 = reinterpret_cast<const Word8*>(pInput)[i];
+							uTestChar2 = reinterpret_cast<const uint8_t*>(pInput)[i];
 							// Find terminating colon
 							if (uTestChar2==':') {
 								// Is it the form ".D:", if not, it's valid
@@ -991,7 +992,7 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 								break;
 							}
 							// Only ASCII digits are allowed. If a non ASCII is detected, assume filename
-							if (static_cast<Word>(uTestChar2-'0')>=10) {
+							if (static_cast<uint_t>(uTestChar2-'0')>=10) {
 								break;
 							}
 						} while (++i<uLength);
@@ -1000,10 +1001,10 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 					// Is it a number? If it's a valid prefix number followed by a colon
 					// yank it out and set uPrefixNum to the value
 					uTestChar-='0';		// Convert to 0-9
-					WordPtr uIndex = 1;
+					uintptr_t uIndex = 1;
 					do {
 						// I found an ending colon, accept it, maybe
-						Word uTemp = reinterpret_cast<const Word8 *>(pInput)[uIndex];
+						uint_t uTemp = reinterpret_cast<const uint8_t *>(pInput)[uIndex];
 						++uIndex;					// Next value
 						if (uTemp==':') {			// End the prefix here?
 							uLength -= uIndex;		// Hack off the number and colon
@@ -1046,7 +1047,7 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 
 	Filename Prefix;
 	const char *pPrefix = NULL;	// Set to NULL to quiet the compiler
-	WordPtr uPrefixLen = 0;		// Assume only a zero byte ("C" end byte) (Empty prefix)
+	uintptr_t uPrefixLen = 0;		// Assume only a zero byte ("C" end byte) (Empty prefix)
 	if (uPrefixNum<FileManager::PREFIXMAX) {
 		FileManager::GetPrefix(&Prefix,uPrefixNum);		// Is there a prefix attached?
 		pPrefix = Prefix.GetPtr();
@@ -1058,14 +1059,14 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 // Note : I assume that a NULL pPrefix is also joined by Index=0
 
 			if (uLength>=2) {
-				Word uTestChar = reinterpret_cast<const Word8 *>(pInput)[0];
+				uint_t uTestChar = reinterpret_cast<const uint8_t *>(pInput)[0];
 				if (uTestChar=='.') {
 					// Lets count the periods before a delimiting colon.
 					// Only the form of "..:..:" is valid. "...Foo" is considered a filename
-					WordPtr uPeriodCount = 0;
-					WordPtr uIndex = 1;
+					uintptr_t uPeriodCount = 0;
+					uintptr_t uIndex = 1;
 					do {
-						uTestChar = reinterpret_cast<const Word8 *>(pInput)[uIndex];
+						uTestChar = reinterpret_cast<const uint8_t *>(pInput)[uIndex];
 						++uIndex;
 						if (uTestChar == '.') {
 							continue;
@@ -1082,7 +1083,7 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 							break;
 						}
 						// If not a period, the test below will kick me out.
-						uTestChar = reinterpret_cast<const Word8 *>(pInput)[0];
+						uTestChar = reinterpret_cast<const uint8_t *>(pInput)[0];
 						uIndex = 1;
 						if (uTestChar != '.') {	// Starts with a period
 							break;
@@ -1090,7 +1091,7 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 					} while (uIndex<uLength);
 					
 					if (uPeriodCount) {
-						WordPtr uPrefixLenCache = uPrefixLen;
+						uintptr_t uPrefixLenCache = uPrefixLen;
 						do {
 							// Popped the entire prefix?
 							if (!uPrefixLen) {
@@ -1099,7 +1100,7 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 								break;
 							}
 							--uPrefixLen;			// Index to the last char
-							const Word8 *pWork = reinterpret_cast<const Word8 *>(pPrefix);
+							const uint8_t *pWork = reinterpret_cast<const uint8_t *>(pPrefix);
 							do {
 								--uPrefixLen;		// Go to previous char
 								if (pWork[uPrefixLen] == ':') {
@@ -1109,7 +1110,7 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 									}
 									break;
 								}
-							} while ((uPrefixLen!=static_cast<WordPtr>(-1)));
+							} while ((uPrefixLen!=static_cast<uintptr_t>(-1)));
 							++uPrefixLen;			// Grab the final colon 
 						} while (--uPeriodCount);					// Discard the period
 
@@ -1117,7 +1118,7 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 						// a single colon, keep the volume name/number
 						if (uPrefixLen<2) {
 							uPrefixLen = 0;			// In case the prefix has no colons
-							WordPtr uTestIndex = 0;
+							uintptr_t uTestIndex = 0;
 							if (pPrefix[0]==':') {	// Skip the volume name colon
 								uTestIndex = 1;
 							}
@@ -1139,7 +1140,7 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 // uPrefixLen = length of the prefix
 
 	char *pOutput = m_Filename;
-	WordPtr uTotal = uPrefixLen+uLength;
+	uintptr_t uTotal = uPrefixLen+uLength;
 	if (uTotal>=(sizeof(m_Filename)-2)) {
 		pOutput = static_cast<char *>(Alloc(uTotal+2));
 		if (!pOutput) {			// No memory? Return nothing
@@ -1162,7 +1163,7 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 	}
 
 	if (uTotal) {						// Is there any text?
-		if (reinterpret_cast<const Word8 *>(pOutput)[uTotal-1] != ':') {	// Trailing colon?
+		if (reinterpret_cast<const uint8_t *>(pOutput)[uTotal-1] != ':') {	// Trailing colon?
 			pOutput[uTotal] = ':';		// End the path with a colon
 			++uTotal;					// +1 to the length
 		}
@@ -1192,7 +1193,7 @@ void BURGER_API Burger::Filename::Expand(const char *pInput)
 
 ***************************************/
 
-void BURGER_API Burger::Filename::Expand(void)
+void BURGER_API Burger::Filename::Expand(void) BURGER_NOEXCEPT
 {
 	// Temp buffer
 	char Buffer[sizeof(m_Filename)];
@@ -1339,7 +1340,7 @@ void BURGER_API Burger::Filename::SetUserPrefsDirectory(void)
 	Burger::ConsoleApp class's built in file name management functions since
 	they take this quirk into account.
 
-	\sa SetFromNative(const Word16 *)
+	\sa SetFromNative(const uint16_t *)
 
 ***************************************/
 
@@ -1369,7 +1370,7 @@ void BURGER_API Burger::Filename::SetFromNative(const char* pInput)
 ***************************************/
 
 #if !defined(BURGER_MAC) || defined(DOXYGEN)
-void BURGER_API Burger::Filename::SetFromNative(const Word16* pInput)
+void BURGER_API Burger::Filename::SetFromNative(const uint16_t* pInput)
 {
 	// Convert to UTF-8
 	String Temp(pInput);

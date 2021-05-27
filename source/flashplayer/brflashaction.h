@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player action buffer
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player action buffer
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #ifndef __BRFLASHACTION_H__
@@ -29,15 +30,15 @@
 /* BEGIN */
 namespace Burger { namespace Flash {
 class SharedBuffer : public ReferenceCounter {
-	SimpleArray<Word8> m_Buffer;		///< Internal data buffer
+	SimpleArray<uint8_t> m_Buffer;		///< Internal data buffer
 	BURGER_RTTI_IN_CLASS();
 public:
 	SharedBuffer();
 	virtual ~SharedBuffer();
-	BURGER_INLINE WordPtr GetDataSize(void) const { return m_Buffer.size();}
-	BURGER_INLINE void Append(Word8 uInput) { m_Buffer.push_back(uInput); }
-	BURGER_INLINE const Word8 *GetData(void) const { return &m_Buffer[0]; }
-	BURGER_INLINE SimpleArray<Word8> *GetBuffer(void) { return &m_Buffer; }
+	BURGER_INLINE uintptr_t GetDataSize(void) const { return m_Buffer.size();}
+	BURGER_INLINE void Append(uint8_t uInput) { m_Buffer.push_back(uInput); }
+	BURGER_INLINE const uint8_t *GetData(void) const { return &m_Buffer[0]; }
+	BURGER_INLINE SimpleArray<uint8_t> *GetBuffer(void) { return &m_Buffer; }
 };
 }}
 /* END */

@@ -1,13 +1,14 @@
 /***************************************
 
-	Incremental tick Manager Class
+    Incremental tick Manager Class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -16,7 +17,7 @@
 #include <time.h>
 #endif
 
-Word32 Burger::Tick::s_LastTick;
+uint32_t Burger::Tick::s_LastTick;
 
 /*! ************************************
 
@@ -52,14 +53,14 @@ Word32 Burger::Tick::s_LastTick;
 
 #if !(defined(BURGER_MSDOS) || defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_BEOS) || defined(BURGER_DS) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 
-Word32 BURGER_API Burger::Tick::Read(void)
+uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
 {
 #if defined(BURGER_LINUX)
-	return static_cast<Word32>((clock()*TICKSPERSEC)/CLOCKS_PER_SEC);
+	return static_cast<uint32_t>((clock()*TICKSPERSEC)/CLOCKS_PER_SEC);
 #elif CLOCKS_PER_SEC==TICKSPERSEC
 	return clock();
 #else
-	return static_cast<Word32>((clock()*TICKSPERSEC)/CLOCKS_PER_SEC);
+	return static_cast<uint32_t>((clock()*TICKSPERSEC)/CLOCKS_PER_SEC);
 #endif
 }
 #endif
@@ -122,15 +123,15 @@ Word32 BURGER_API Burger::Tick::Read(void)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS)) || defined(DOXYGEN)
-void BURGER_API Burger::Tick::Wait(Word uCount)
+void BURGER_API Burger::Tick::Wait(uint_t uCount)
 {
 	//KeyboardKbhit();			// Handle any pending events
-	Word32 uNewTick = Read();	// Read the timer
-	if ((uNewTick-s_LastTick)<static_cast<Word32>(uCount)) {	// Should I wait?
+	uint32_t uNewTick = Read();	// Read the timer
+	if ((uNewTick-s_LastTick)<static_cast<uint32_t>(uCount)) {	// Should I wait?
 		do {
 			//KeyboardKbhit();	// Call the system task if needed
 			uNewTick = Read();	// Read in the current time tick
-		} while ((uNewTick-s_LastTick)<static_cast<Word32>(uCount));	// Time has elapsed?
+		} while ((uNewTick-s_LastTick)<static_cast<uint32_t>(uCount));	// Time has elapsed?
 	}
 	s_LastTick = uNewTick;		// Mark the time
 }
@@ -146,17 +147,17 @@ void BURGER_API Burger::Tick::Wait(Word uCount)
 
 ***************************************/
 
-Word BURGER_API Burger::Tick::WaitEvent(Word uCount)
+uint_t BURGER_API Burger::Tick::WaitEvent(uint_t uCount)
 {
-	Word uTemp;
+	uint_t uTemp;
 
-	Word32 uTimeMark = Read();	// Set the current time mark
+	uint32_t uTimeMark = Read();	// Set the current time mark
 	s_LastTick = uTimeMark;		// Set the global time mark
 
 #if 0		// TODO Fix me
-	Word MouseBits = MouseReadButtons();			// Get the current state of the mouse
+	uint_t MouseBits = MouseReadButtons();			// Get the current state of the mouse
 #endif
-	//Word JoyBits = 0;	//JoystickReadButtons(0);	// Get the current state of the joypad
+	//uint_t JoyBits = 0;	//JoystickReadButtons(0);	// Get the current state of the joypad
 	for (;;) {
 #if 0
 		uTemp = JoystickReadButtons(0);				// Pressed a joypad button?
@@ -178,7 +179,7 @@ Word BURGER_API Burger::Tick::WaitEvent(Word uCount)
 #endif
 		Wait(1);			// Wait 1 tick (Possibly calling an OS taskswitch)
 		if (uCount) {		// Can I timeout?
-			if ((s_LastTick-uTimeMark)>=static_cast<Word32>(uCount)) {	// Count down
+			if ((s_LastTick-uTimeMark)>=static_cast<uint32_t>(uCount)) {	// Count down
 				uTemp = 0;	// Timeout exit
 				break;
 			}
@@ -208,14 +209,14 @@ Word BURGER_API Burger::Tick::WaitEvent(Word uCount)
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_DS) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 
-Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
+uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void)
 {
 #if defined(BURGER_LINUX)
-	return static_cast<Word32>((clock()*1000000)/CLOCKS_PER_SEC);
+	return static_cast<uint32_t>((clock()*1000000)/CLOCKS_PER_SEC);
 #elif CLOCKS_PER_SEC==1000000
-	return static_cast<Word32>(clock());
+	return static_cast<uint32_t>(clock());
 #else
-	return static_cast<Word32>((clock()*1000000)/CLOCKS_PER_SEC);
+	return static_cast<uint32_t>((clock()*1000000)/CLOCKS_PER_SEC);
 #endif
 }
 
@@ -243,14 +244,14 @@ Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_DS) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
 
-Word32 BURGER_API Burger::Tick::ReadMilliseconds(void)
+uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void)
 {
 #if defined(BURGER_LINUX)
-	return static_cast<Word32>((clock()*1000)/CLOCKS_PER_SEC);
+	return static_cast<uint32_t>((clock()*1000)/CLOCKS_PER_SEC);
 #elif CLOCKS_PER_SEC==1000
-	return static_cast<Word32>(clock());
+	return static_cast<uint32_t>(clock());
 #else
-	return static_cast<Word32>((clock()*1000)/CLOCKS_PER_SEC);
+	return static_cast<uint32_t>((clock()*1000)/CLOCKS_PER_SEC);
 #endif
 }
 
@@ -314,7 +315,7 @@ Burger::FloatTimer::FloatTimer() :
 
 /*! ************************************
 
-	\fn Word Burger::FloatTimer::IsPaused(void) const
+	\fn uint_t Burger::FloatTimer::IsPaused(void) const
 	\brief Returns \ref TRUE if the timer is paused
 
 	If the timer was paused with a call to Pause(void), the
@@ -392,8 +393,8 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 	} else {
 		// Generic code
 
-		Word32 uTick = Tick::ReadMicroseconds();
-		Word32 uElapsed = uTick-m_uBaseTime;
+		uint32_t uTick = Tick::ReadMicroseconds();
+		uint32_t uElapsed = uTick-m_uBaseTime;
 		m_uBaseTime = uTick;
 
 		// Convert to seconds
@@ -471,7 +472,7 @@ void BURGER_API Burger::FloatTimer::Unpause(void)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_SHIELD) || defined(BURGER_VITA) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-void BURGER_API Burger::Sleep(Word32 /* uMilliseconds */)
+void BURGER_API Burger::Sleep(uint32_t /* uMilliseconds */)
 {
 }
 #endif

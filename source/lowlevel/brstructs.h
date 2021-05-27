@@ -33,10 +33,14 @@ struct uint32_float_t {
     {
         return f;
     }
-    BURGER_INLINE uint32_float_t & operator=(float fInput) BURGER_NOEXCEPT
+    BURGER_INLINE uint32_float_t& operator=(float fInput) BURGER_NOEXCEPT
     {
         f = fInput;
         return *this;
+    }
+    BURGER_INLINE float Get(void) const BURGER_NOEXCEPT
+    {
+        return f;
     }
     BURGER_INLINE uint32_t GetWord(void) const BURGER_NOEXCEPT
     {
@@ -61,10 +65,14 @@ struct uint64_double_t {
     {
         return d;
     }
-    BURGER_INLINE uint64_double_t & operator=(double dInput) BURGER_NOEXCEPT
+    BURGER_INLINE uint64_double_t& operator=(double dInput) BURGER_NOEXCEPT
     {
         d = dInput;
         return *this;
+    }
+    BURGER_INLINE double Get(void) const BURGER_NOEXCEPT
+    {
+        return d;
     }
     BURGER_INLINE uint64_t GetWord(void) const BURGER_NOEXCEPT
     {

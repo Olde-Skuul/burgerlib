@@ -48,15 +48,15 @@
 
 ***************************************/
 
-void Burger::Dxt1Packet_t::Decompress(RGBAWord8_t *pOutput,WordPtr uStride) const
+void Burger::Dxt1Packet_t::Decompress(RGBAWord8_t *pOutput,uintptr_t uStride) const
 {
 	// Secondly, let's unpack the color (Use RGBA structures to avoid a mul by 3 in indexing)
 	// 4 unique colors
 
 	RGBAWord8_t Colors[4];
 
-	Word uColor1 = LittleEndian::Load(&m_uRGB565Color1);
-	Word uColor2 = LittleEndian::Load(&m_uRGB565Color2);
+	uint_t uColor1 = LittleEndian::Load(&m_uRGB565Color1);
+	uint_t uColor2 = LittleEndian::Load(&m_uRGB565Color2);
 	Palette::FromRGB16(&Colors[0],uColor1);
 	Palette::FromRGB16(&Colors[1],uColor2);
 	
@@ -65,53 +65,53 @@ void Burger::Dxt1Packet_t::Decompress(RGBAWord8_t *pOutput,WordPtr uStride) cons
 	if (uColor1>uColor2) {
 		uColor1 = Colors[0].m_uRed;
 		uColor2 = Colors[1].m_uRed;
-		Colors[2].m_uRed = static_cast<Word8>(((uColor1*2) + (uColor2))/3U);
-		Colors[3].m_uRed = static_cast<Word8>(((uColor1) + (uColor2*2))/3U);
+		Colors[2].m_uRed = static_cast<uint8_t>(((uColor1*2) + (uColor2))/3U);
+		Colors[3].m_uRed = static_cast<uint8_t>(((uColor1) + (uColor2*2))/3U);
 
 		uColor1 = Colors[0].m_uGreen;
 		uColor2 = Colors[1].m_uGreen;
-		Colors[2].m_uGreen = static_cast<Word8>(((uColor1*2) + (uColor2))/3U);
-		Colors[3].m_uGreen = static_cast<Word8>(((uColor1) + (uColor2*2))/3U);
+		Colors[2].m_uGreen = static_cast<uint8_t>(((uColor1*2) + (uColor2))/3U);
+		Colors[3].m_uGreen = static_cast<uint8_t>(((uColor1) + (uColor2*2))/3U);
 
 		uColor1 = Colors[0].m_uBlue;
 		uColor2 = Colors[1].m_uBlue;
-		Colors[2].m_uBlue = static_cast<Word8>(((uColor1*2) + (uColor2))/3U);
-		Colors[3].m_uBlue = static_cast<Word8>(((uColor1) + (uColor2*2))/3U);
+		Colors[2].m_uBlue = static_cast<uint8_t>(((uColor1*2) + (uColor2))/3U);
+		Colors[3].m_uBlue = static_cast<uint8_t>(((uColor1) + (uColor2*2))/3U);
 		// Set the alpha
 		Colors[2].m_uAlpha = 255;
 		Colors[3].m_uAlpha = 255;
 	} else {
 		uColor1 = Colors[0].m_uRed;
 		uColor2 = Colors[1].m_uRed;
-		Colors[2].m_uRed = static_cast<Word8>((uColor1 + uColor2)/2U);
+		Colors[2].m_uRed = static_cast<uint8_t>((uColor1 + uColor2)/2U);
 		Colors[3].m_uRed = 0;
 
 		uColor1 = Colors[0].m_uGreen;
 		uColor2 = Colors[1].m_uGreen;
-		Colors[2].m_uGreen = static_cast<Word8>((uColor1 + uColor2)/2U);
+		Colors[2].m_uGreen = static_cast<uint8_t>((uColor1 + uColor2)/2U);
 		Colors[3].m_uGreen = 0;
 
 		uColor1 = Colors[0].m_uBlue;
 		uColor2 = Colors[1].m_uBlue;
-		Colors[2].m_uBlue = static_cast<Word8>((uColor1 + uColor2)/2U);
+		Colors[2].m_uBlue = static_cast<uint8_t>((uColor1 + uColor2)/2U);
 		Colors[3].m_uBlue = 0;
 		// Set the alpha
 		Colors[2].m_uAlpha = 255;
 		Colors[3].m_uAlpha = 0;
 	}
 	// Color and alpha indexes
-	const Word8 *pColorIndexes = m_uColorIndexes;
+	const uint8_t *pColorIndexes = m_uColorIndexes;
 
 	// The code is going to add this to the pointer, so remove
 	// it from the input stride to undo the pointer addition
 	uStride -= (sizeof(RGBAWord8_t)*4);
 
-	Word i=16/4;			// 16 pixels, 4 pixels per loop
+	uint_t i=16/4;			// 16 pixels, 4 pixels per loop
 	do {
 		// 4 2 bits per pixel indexes
-		Word uIndex = pColorIndexes[0];
+		uint_t uIndex = pColorIndexes[0];
 		++pColorIndexes;
-		Word j=4;		// 4 pixels per loop
+		uint_t j=4;		// 4 pixels per loop
 		do {
 			// Select the pixel to use for drawing
 			const RGBAWord8_t *pSource = &Colors[uIndex&3U];
@@ -121,7 +121,7 @@ void Burger::Dxt1Packet_t::Decompress(RGBAWord8_t *pOutput,WordPtr uStride) cons
 			++pOutput;
 		} while (--j);
 		// 4 pixels (A row) are drawn, skip to the next line
-		pOutput = reinterpret_cast<RGBAWord8_t *>(reinterpret_cast<Word8 *>(pOutput)+uStride);
+		pOutput = reinterpret_cast<RGBAWord8_t *>(reinterpret_cast<uint8_t *>(pOutput)+uStride);
 	} while (--i);
 }
 
@@ -140,16 +140,16 @@ void Burger::Dxt1Packet_t::Decompress(RGBAWord8_t *pOutput,WordPtr uStride) cons
 
 ***************************************/
 
-void Burger::Dxt1Packet_t::Compress(const RGBAWord8_t *pInput,WordPtr uStride)
+void Burger::Dxt1Packet_t::Compress(const RGBAWord8_t *pInput,uintptr_t uStride)
 {
 	// No alpha detected
-	Word Unique[16];
-	Word uUnique = 0;
-	Word uAlpha = FALSE;
-	Word i=4;
+	uint_t Unique[16];
+	uint_t uUnique = 0;
+	uint_t uAlpha = FALSE;
+	uint_t i=4;
 	do {
-		Word uColor = Palette::ToRGB16(pInput);
-		pInput = reinterpret_cast<const RGBAWord8_t *>(reinterpret_cast<const Word8 *>(pInput)+uStride);
+		uint_t uColor = Palette::ToRGB16(pInput);
+		pInput = reinterpret_cast<const RGBAWord8_t *>(reinterpret_cast<const uint8_t *>(pInput)+uStride);
 	} while (--i);
 }
 #endif
@@ -174,14 +174,14 @@ void Burger::Dxt1Packet_t::Compress(const RGBAWord8_t *pInput,WordPtr uStride)
 
 ***************************************/
 
-void BURGER_API Burger::DecompressImage(RGBAWord8_t *pOutput,WordPtr uOutputStride,Word uWidth,Word uHeight,const Dxt1Packet_t *pInput,WordPtr uInputStride)
+void BURGER_API Burger::DecompressImage(RGBAWord8_t *pOutput,uintptr_t uOutputStride,uint_t uWidth,uint_t uHeight,const Dxt1Packet_t *pInput,uintptr_t uInputStride)
 {
 	// Anything to process?
 	if (uWidth && uHeight) {
 		// Process a line of blocks
 		do {
 			// Init the steppers
-			Word uTempWidth = uWidth;
+			uint_t uTempWidth = uWidth;
 			const Dxt1Packet_t *pDXTInput = pInput;
 			RGBAWord8_t *pDest = pOutput;
 			do {
@@ -193,9 +193,9 @@ void BURGER_API Burger::DecompressImage(RGBAWord8_t *pOutput,WordPtr uOutputStri
 					// Write the decompressed pixels to the correct image locations
 					const RGBAWord8_t *pLocal = LocalPixels;
 					RGBAWord8_t *pDest2 = pDest;
-					Word uHeightTemp = uHeight;
+					uint_t uHeightTemp = uHeight;
 					do {
-						Word uTempWidth2 = uTempWidth;
+						uint_t uTempWidth2 = uTempWidth;
 						do {
 							// Copy the pixel value
 							pDest2[0] = pLocal[0];
@@ -204,7 +204,7 @@ void BURGER_API Burger::DecompressImage(RGBAWord8_t *pOutput,WordPtr uOutputStri
 							++pDest2;
 						} while (--uTempWidth2);
 						pLocal = pLocal+(4-uTempWidth);
-						pDest2 = reinterpret_cast<RGBAWord8_t *>(reinterpret_cast<Word8 *>(pDest2)+uOutputStride)-(4-uTempWidth);
+						pDest2 = reinterpret_cast<RGBAWord8_t *>(reinterpret_cast<uint8_t *>(pDest2)+uOutputStride)-(4-uTempWidth);
 					} while (--uHeightTemp);
 					if (uTempWidth<4) {
 						break;
@@ -224,9 +224,9 @@ void BURGER_API Burger::DecompressImage(RGBAWord8_t *pOutput,WordPtr uOutputStri
 			}
 			uHeight -= 4;
 			// Step to the next line of compressed pixels
-			pInput = reinterpret_cast<const Dxt1Packet_t *>(reinterpret_cast<const Word8 *>(pInput)+uInputStride);
+			pInput = reinterpret_cast<const Dxt1Packet_t *>(reinterpret_cast<const uint8_t *>(pInput)+uInputStride);
 			// Step to the next 4 lines
-			pOutput = reinterpret_cast<RGBAWord8_t *>(reinterpret_cast<Word8 *>(pOutput)+(uOutputStride*4));
+			pOutput = reinterpret_cast<RGBAWord8_t *>(reinterpret_cast<uint8_t *>(pOutput)+(uOutputStride*4));
 		} while (uHeight);
 	}
 }

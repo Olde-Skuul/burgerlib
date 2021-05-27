@@ -27,7 +27,7 @@
 	
 ***************************************/
 
-Burger::CriticalSection::CriticalSection()
+Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT
 {
 	m_iLock = sceKernelCreateMutex("BurgerCriticalSection",SCE_KERNEL_MUTEX_ATTR_TH_PRIO|SCE_KERNEL_MUTEX_ATTR_RECURSIVE,0,NULL);
 }
@@ -47,7 +47,7 @@ Burger::CriticalSection::~CriticalSection()
 	
 ***************************************/
 
-void Burger::CriticalSection::Lock()
+void Burger::CriticalSection::Lock() BURGER_NOEXCEPT
 {
 	sceKernelLockMutex(m_iLock,1,NULL);
 }
@@ -58,7 +58,7 @@ void Burger::CriticalSection::Lock()
 	
 ***************************************/
 
-Word Burger::CriticalSection::TryLock()
+uint_t Burger::CriticalSection::TryLock() BURGER_NOEXCEPT
 {
 	return sceKernelTryLockMutex(m_iLock,1)==SCE_OK;
 }
@@ -70,7 +70,7 @@ Word Burger::CriticalSection::TryLock()
 	
 ***************************************/
 
-void Burger::CriticalSection::Unlock()
+void Burger::CriticalSection::Unlock() BURGER_NOEXCEPT
 {
 	sceKernelUnlockMutex(m_iLock,1);
 }
@@ -82,7 +82,7 @@ void Burger::CriticalSection::Unlock()
 	
 ***************************************/
 
-Burger::Semaphore::Semaphore(Word32 uCount) :
+Burger::Semaphore::Semaphore(uint32_t uCount) :
 	m_uCount(uCount)
 {
 	// Initialize the semaphore
@@ -113,10 +113,10 @@ Burger::Semaphore::~Semaphore()
 	
 ***************************************/
 
-Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
+uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
 {
 	// Assume failure
-	Word uResult = 10;
+	uint_t uResult = 10;
 	SceUInt32 uTimeout;
 	if (m_iSemaphore>=SCE_OK) {
 		// No wait?
@@ -157,9 +157,9 @@ Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
 	
 ***************************************/
 
-Word BURGER_API Burger::Semaphore::Release(void)
+uint_t BURGER_API Burger::Semaphore::Release(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_iSemaphore>=SCE_OK) {
 		// Release the count immediately, because it's
 		// possible that another thread, waiting for this semaphore,
@@ -222,9 +222,9 @@ Burger::ConditionVariable::~ConditionVariable()
 
 ***************************************/
 
-Word BURGER_API Burger::ConditionVariable::Signal(void)
+uint_t BURGER_API Burger::ConditionVariable::Signal(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_iConditionVariable>=SCE_OK) {
 		if (sceKernelSignalCond(m_iConditionVariable)==SCE_OK) {
 			uResult = 0;
@@ -239,9 +239,9 @@ Word BURGER_API Burger::ConditionVariable::Signal(void)
 
 ***************************************/
 
-Word BURGER_API Burger::ConditionVariable::Broadcast(void)
+uint_t BURGER_API Burger::ConditionVariable::Broadcast(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_iConditionVariable>=SCE_OK) {
 		if (sceKernelSignalCondAll(m_iConditionVariable)==SCE_OK) {
 			uResult = 0;
@@ -256,9 +256,9 @@ Word BURGER_API Burger::ConditionVariable::Broadcast(void)
 
 ***************************************/
 
-Word BURGER_API Burger::ConditionVariable::Wait(CriticalSection *pCriticalSection,Word uMilliseconds)
+uint_t BURGER_API Burger::ConditionVariable::Wait(CriticalSection *pCriticalSection,uint_t uMilliseconds)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_iConditionVariable>=SCE_OK) {
 		if (uMilliseconds==BURGER_MAXUINT) {
 			if (sceKernelWaitCond(m_iConditionVariable,NULL)==SCE_OK) {
@@ -341,9 +341,9 @@ Burger::Thread::~Thread()
  
 ***************************************/
 
-Word BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
+uint_t BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_iThreadID==-1) {
 		m_pFunction = pFunction;
 		m_pData = pData;
@@ -375,9 +375,9 @@ Word BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
  
 ***************************************/
 
-Word BURGER_API Burger::Thread::Wait(void)
+uint_t BURGER_API Burger::Thread::Wait(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_iThreadID!=-1) {
 		// Wait until the thread completes execution
 		sceKernelWaitThreadEnd(m_iThreadID,NULL,SCE_NULL);
@@ -396,9 +396,9 @@ Word BURGER_API Burger::Thread::Wait(void)
  
 ***************************************/
 
-Word BURGER_API Burger::Thread::Kill(void)
+uint_t BURGER_API Burger::Thread::Kill(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (m_iThreadID!=-1) {
 		sceKernelDeleteThread(m_iThreadID);
 		m_iThreadID = -1;

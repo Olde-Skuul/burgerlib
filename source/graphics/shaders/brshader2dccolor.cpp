@@ -1,14 +1,15 @@
 /***************************************
 
-	Simple 2D shader with color
+    Simple 2D shader with color
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brshader2dccolor.h"
@@ -65,7 +66,7 @@ static const Burger::Display::OpenGLVertexInputs_t g_Inputs[] = {
 	
 ***************************************/
 
-const Word Burger::g_Shader2DCColorMemberDescription[] = {
+const uint_t Burger::g_Shader2DCColorMemberDescription[] = {
 	Burger::VertexBuffer::USAGE_FLOAT2|Burger::VertexBuffer::USAGE_POSITION,0};
 
 /*! ************************************
@@ -88,7 +89,7 @@ const Burger::VertexBuffer::VertexAoS_t Burger::g_Shader2DCColorDefaultVertexBuf
 
 ***************************************/
 
-Burger::Shader2DCColor::Shader2DCColor(Display *pDisplay,const Word * /* pVertexMembers */)
+Burger::Shader2DCColor::Shader2DCColor(Display *pDisplay,const uint_t * /* pVertexMembers */)
 #if defined(BURGER_OPENGL)
 	: m_iEffect2DPosition(0),
 	m_iEffect2DColor(0)
@@ -103,7 +104,7 @@ Burger::Shader2DCColor::Shader2DCColor(Display *pDisplay,const Word * /* pVertex
 
 #if !defined(BURGER_WINDOWS) && !defined(DOXYGEN)
 
-Word Burger::Shader2DCColor::CheckLoad(Display *pDisplay)
+uint_t Burger::Shader2DCColor::CheckLoad(Display *pDisplay)
 {
 #if defined(BURGER_XBOX360)
 	m_pDevice = pDisplay->GetD3DDevice();
@@ -210,13 +211,13 @@ void BURGER_API Burger::Shader2DCColor::SetColor(const Vector4D_t *pColor)
 //
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-Burger::Shader2DCColorDX9::Shader2DCColorDX9(Display *pDisplay,const Word *pVertexMembers) :
+Burger::Shader2DCColorDX9::Shader2DCColorDX9(Display *pDisplay,const uint_t *pVertexMembers) :
 	Shader2DCColor(pDisplay,pVertexMembers)
 {
 	m_ShaderData.m_DX9.m_pDevice = static_cast<DisplayDirectX9 *>(pDisplay)->GetDirect3DDevice9();
 }
 
-Word Burger::Shader2DCColorDX9::CheckLoad(Display *pDisplay)
+uint_t Burger::Shader2DCColorDX9::CheckLoad(Display *pDisplay)
 {
 	m_ShaderData.m_DX9.m_pDevice = static_cast<DisplayDirectX9 *>(pDisplay)->GetDirect3DDevice9();
 	if (!m_ShaderData.m_DX9.m_pVertexShader) {
@@ -268,12 +269,12 @@ void Burger::Shader2DCColorDX9::SetColor(const Vector4D_t *pColor)
 //
 
 #if defined(BURGER_INTEL)
-Burger::Shader2DCColorOpenGL::Shader2DCColorOpenGL(Display *pDisplay,const Word *pVertexMembers) :
+Burger::Shader2DCColorOpenGL::Shader2DCColorOpenGL(Display *pDisplay,const uint_t *pVertexMembers) :
 	Shader2DCColor(pDisplay,pVertexMembers)
 {
 }
 
-Word Burger::Shader2DCColorOpenGL::CheckLoad(Display *pDisplay)
+uint_t Burger::Shader2DCColorOpenGL::CheckLoad(Display *pDisplay)
 {
 	if (!m_ShaderData.m_GL.m_uProgramID) {
 		GLuint uProgram = static_cast<DisplayOpenGL *>(pDisplay)->CompileProgram(g_vs20pos22dgl,0,g_pscclr4gl,0,g_Inputs);

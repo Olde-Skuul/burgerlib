@@ -165,7 +165,7 @@ uint_t BURGER_API Burger::Globals::LaunchURL(const char* pURL)
             ICStop(inst);
         }
     }
-    return static_cast<Word>(err);
+    return static_cast<uint_t>(err);
 }
 
 /*! ************************************

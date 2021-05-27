@@ -2,7 +2,7 @@
 
     String handlers for ISOLatin1 support
 
-    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
     It is released under an MIT Open Source license. Please see LICENSE for
     license details. Yes, you can use it in a commercial title without paying
@@ -277,6 +277,151 @@ BURGER_ALIGN(const uint8_t, Burger::ISOLatin1::ToUTF8Table[128][4], 16) = {
 
 /*! ************************************
 
+    \var const uint16_t Burger::ISOLatin1::ToUTF16Table[128]
+    \brief Table to convert ISOLatin1 to UTF16
+
+    Since no Unicode token is larger than 16 bits, an array of uint16_t values
+    holds the 128 high ascii codes for ISOLatin1 converted to UTF16. All 128
+    codes are present since they are a 1-to-1 mapping to Unicode.
+
+    The character map for ISOLatin1 [looks like this. Click
+    here.](isolatin1.htm)
+
+***************************************/
+
+BURGER_ALIGN(const uint16_t, Burger::ISOLatin1::ToUTF16Table[128], 16) = {
+    0x0080, // 0x80
+    0x0081, // 0x81
+    0x0082, // 0x82
+    0x0083, // 0x83
+    0x0084, // 0x84
+    0x0085, // 0x85
+    0x0086, // 0x86
+    0x0087, // 0x87
+    0x0088, // 0x88
+    0x0089, // 0x89
+    0x008A, // 0x8A
+    0x008B, // 0x8B
+    0x008C, // 0x8C
+    0x008D, // 0x8D
+    0x008E, // 0x8E
+    0x008F, // 0x8F
+    0x0090, // 0x90
+    0x0091, // 0x91
+    0x0092, // 0x92
+    0x0093, // 0x93
+    0x0094, // 0x94
+    0x0095, // 0x95
+    0x0096, // 0x96
+    0x0097, // 0x97
+    0x0098, // 0x98
+    0x0099, // 0x99
+    0x009A, // 0x9A
+    0x009B, // 0x9B
+    0x009C, // 0x9C
+    0x009D, // 0x9D
+    0x009E, // 0x9E
+    0x009F, // 0x9F
+    0x00A0, // 0xA0
+    0x00A1, // 0xA1
+    0x00A2, // 0xA2
+    0x00A3, // 0xA3
+    0x00A4, // 0xA4
+    0x00A5, // 0xA5
+    0x00A6, // 0xA6
+    0x00A7, // 0xA7
+    0x00A8, // 0xA8
+    0x00A9, // 0xA9
+    0x00AA, // 0xAA
+    0x00AB, // 0xAB
+    0x00AC, // 0xAC
+    0x00AD, // 0xAD
+    0x00AE, // 0xAE
+    0x00AF, // 0xAF
+    0x00B0, // 0xB0
+    0x00B1, // 0xB1
+    0x00B2, // 0xB2
+    0x00B3, // 0xB3
+    0x00B4, // 0xB4
+    0x00B5, // 0xB5
+    0x00B6, // 0xB6
+    0x00B7, // 0xB7
+    0x00B8, // 0xB8
+    0x00B9, // 0xB9
+    0x00BA, // 0xBA
+    0x00BB, // 0xBB
+    0x00BC, // 0xBC
+    0x00BD, // 0xBD
+    0x00BE, // 0xBE
+    0x00BF, // 0xBF
+    0x00C0, // 0xC0
+    0x00C1, // 0xC1
+    0x00C2, // 0xC2
+    0x00C3, // 0xC3
+    0x00C4, // 0xC4
+    0x00C5, // 0xC5
+    0x00C6, // 0xC6
+    0x00C7, // 0xC7
+    0x00C8, // 0xC8
+    0x00C9, // 0xC9
+    0x00CA, // 0xCA
+    0x00CB, // 0xCB
+    0x00CC, // 0xCC
+    0x00CD, // 0xCD
+    0x00CE, // 0xCE
+    0x00CF, // 0xCF
+    0x00D0, // 0xD0
+    0x00D1, // 0xD1
+    0x00D2, // 0xD2
+    0x00D3, // 0xD3
+    0x00D4, // 0xD4
+    0x00D5, // 0xD5
+    0x00D6, // 0xD6
+    0x00D7, // 0xD7
+    0x00D8, // 0xD8
+    0x00D9, // 0xD9
+    0x00DA, // 0xDA
+    0x00DB, // 0xDB
+    0x00DC, // 0xDC
+    0x00DD, // 0xDD
+    0x00DE, // 0xDE
+    0x00DF, // 0xDF
+    0x00E0, // 0xE0
+    0x00E1, // 0xE1
+    0x00E2, // 0xE2
+    0x00E3, // 0xE3
+    0x00E4, // 0xE4
+    0x00E5, // 0xE5
+    0x00E6, // 0xE6
+    0x00E7, // 0xE7
+    0x00E8, // 0xE8
+    0x00E9, // 0xE9
+    0x00EA, // 0xEA
+    0x00EB, // 0xEB
+    0x00EC, // 0xEC
+    0x00ED, // 0xED
+    0x00EE, // 0xEE
+    0x00EF, // 0xEF
+    0x00F0, // 0xF0
+    0x00F1, // 0xF1
+    0x00F2, // 0xF2
+    0x00F3, // 0xF3
+    0x00F4, // 0xF4
+    0x00F5, // 0xF5
+    0x00F6, // 0xF6
+    0x00F7, // 0xF7
+    0x00F8, // 0xF8
+    0x00F9, // 0xF9
+    0x00FA, // 0xFA
+    0x00FB, // 0xFB
+    0x00FC, // 0xFC
+    0x00FD, // 0xFD
+    0x00FE, // 0xFE
+    0x00FF  // 0xFF
+};
+
+/*! ************************************
+
     \brief Convert a single UTF8 stream character into a ISOLatin1 8 bit char.
 
     Take up 3 bytes from a UTF8 stream and return the unsigned 8 bit value of
@@ -304,10 +449,11 @@ BURGER_ALIGN(const uint8_t, Burger::ISOLatin1::ToUTF8Table[128][4], 16) = {
 uint_t BURGER_API Burger::ISOLatin1::FromUTF8(
     const char* pInput) BURGER_NOEXCEPT
 {
-    const uint_t uFirst =
-        reinterpret_cast<const uint8_t*>(pInput)[0]; // Get a UTF-8 char
+    // Get a UTF-8 char
+    const uint_t uFirst = reinterpret_cast<const uint8_t*>(pInput)[0];
     if (uFirst < 0x80U) {
-        return uFirst; // Easy!!! I like it!
+        // Easy!!! I like it!
+        return uFirst;
     }
     // Great, it's not low ASCII. Do it the hard way.
     uint_t uCounter = 128; // Number of attempts
@@ -320,13 +466,16 @@ uint_t BURGER_API Burger::ISOLatin1::FromUTF8(
 
     const uint_t uSecond = reinterpret_cast<const uint8_t*>(pInput)[1];
     do {
-        if ((uFirst == pTable[0][0]) && // So far, so good?
-            (uSecond == pTable[0][1])) {
-            return 256 - uCounter; // Return 0x80-0xFF
+        // So far, so good?
+        if ((uFirst == pTable[0][0]) && (uSecond == pTable[0][1])) {
+            // Return 0x80-0xFF
+            return 256U - uCounter;
         }
-        ++pTable; // Next 4 byte entry
+        // Next 4 byte entry
+        ++pTable;
     } while (--uCounter);
-    return static_cast<uint_t>(ISOLatin1::BAD); // Crud
+    // Crud
+    return BAD;
 }
 
 /*! ************************************
@@ -464,7 +613,7 @@ uint_t BURGER_API Burger::ISOLatin1::FromUTF8(char* pOutput,
 
     if (uInputSize) { // Sanity check
         do {
-            uint_t uFirst = reinterpret_cast<const uint8_t*>(pInput)[0];
+            const uint_t uFirst = reinterpret_cast<const uint8_t*>(pInput)[0];
             ++pInput; // Accept it
 
             // Get a char

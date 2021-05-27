@@ -1,13 +1,14 @@
 /***************************************
 
-	Texture for rendering class, OpenGL version
+    Texture for rendering class, OpenGL version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -134,7 +135,7 @@ Burger::TextureOpenGL::~TextureOpenGL()
 
 ***************************************/
 
-Word Burger::TextureOpenGL::CheckLoad(Display * /* pDisplay */)
+uint_t Burger::TextureOpenGL::CheckLoad(Display * /* pDisplay */)
 {
 	// Is a texture object defined?
 	GLuint uID = m_uTextureID;
@@ -151,7 +152,7 @@ Word Burger::TextureOpenGL::CheckLoad(Display * /* pDisplay */)
 	// Bind the texture
 	glBindTexture(GL_TEXTURE_2D,uID);
 
-	Word uResult = 0;
+	uint_t uResult = 0;
 	// Any updating?
 	if (m_uDirty) {
 		if (m_uDirty&DIRTY_IMAGE) {
@@ -180,11 +181,11 @@ Word Burger::TextureOpenGL::CheckLoad(Display * /* pDisplay */)
 					// If the bytes in the image are packed together, then
 					// it's a simple upload, otherwise, do it the hard way
 
-					Word uMipMap = 0;
+					uint_t uMipMap = 0;
 					do {
-						Word uWidth = m_Image.GetWidth(uMipMap);
-						Word uHeight = m_Image.GetHeight(uMipMap);
-						const Word8 *pSource = m_Image.GetImage(uMipMap);
+						uint_t uWidth = m_Image.GetWidth(uMipMap);
+						uint_t uHeight = m_Image.GetHeight(uMipMap);
+						const uint8_t *pSource = m_Image.GetImage(uMipMap);
 						if (uMipMap || (m_Image.GetSuggestedStride()==m_Image.GetStride())) {
 							// Allocate and load image data into texture in one go
 							glTexImage2D(GL_TEXTURE_2D,static_cast<GLint>(uMipMap),static_cast<GLint>(iFormat),static_cast<GLsizei>(uWidth),static_cast<GLsizei>(uHeight),0,iFormat,iType,pSource);
@@ -193,8 +194,8 @@ Word Burger::TextureOpenGL::CheckLoad(Display * /* pDisplay */)
 							glTexImage2D(GL_TEXTURE_2D,0,static_cast<GLint>(iFormat),static_cast<GLsizei>(uWidth),static_cast<GLsizei>(uHeight),0,iFormat,iType,NULL);
 							// Upload one line at a time to support stride
 							if (uHeight) {
-								Word uY=0;
-								WordPtr uStride = m_Image.GetStride(uMipMap);
+								uint_t uY=0;
+								uintptr_t uStride = m_Image.GetStride(uMipMap);
 								do {
 									glTexSubImage2D(GL_TEXTURE_2D,0,0,static_cast<GLsizei>(uY),static_cast<GLsizei>(uWidth),1,iFormat,iType,pSource);
 									pSource += uStride;

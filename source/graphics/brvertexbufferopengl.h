@@ -38,7 +38,7 @@ class VertexBufferOpenGL : public VertexBuffer {
 public:
 	VertexBufferOpenGL();
 	virtual ~VertexBufferOpenGL();
-	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	uint_t CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
 	void Release(Display *pDisplay) BURGER_OVERRIDE;
 };
 #endif

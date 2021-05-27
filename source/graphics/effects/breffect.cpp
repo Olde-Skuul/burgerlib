@@ -1,14 +1,15 @@
 /***************************************
 
-	Base shader effect class
+    Base shader effect class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "breffect.h"
@@ -188,7 +189,7 @@ void Burger::Effect::Release(Display * /* pDisplay */)
 
 /*! ************************************
 
-	\fn Word Burger::Effect::GetProgramID(void) const
+	\fn uint_t Burger::Effect::GetProgramID(void) const
 	\brief Get the OpenGL program ID for the compiled effect
 
 	\return Zero if no effect was compiled, non-zero if CheckLoad() was called

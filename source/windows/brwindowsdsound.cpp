@@ -104,7 +104,7 @@ typedef HRESULT(WINAPI* GetDeviceIDPtr)(LPCGUID pGuidSrc, LPGUID pGuidDest);
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectSoundCreate(
+uint_t BURGER_API Burger::Windows::DirectSoundCreate(
 	const GUID* pGuidDevice, IDirectSound** ppOutput, IUnknown* pOuter)
 {
 	// Clear in case of error
@@ -119,7 +119,7 @@ Word BURGER_API Burger::Windows::DirectSoundCreate(
 		uResult = static_cast<DirectSoundCreatePtr>(pDirectSoundCreate)(
 			pGuidDevice, ppOutput, pOuter);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -143,7 +143,7 @@ Word BURGER_API Burger::Windows::DirectSoundCreate(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectSoundEnumerateA(
+uint_t BURGER_API Burger::Windows::DirectSoundEnumerateA(
 	void* pDSEnumCallback, void* pContext)
 {
 	// Get the function pointer
@@ -154,7 +154,7 @@ Word BURGER_API Burger::Windows::DirectSoundEnumerateA(
 		uResult = static_cast<DirectSoundEnumerateAPtr>(pDirectSoundEnumerateA)(
 			static_cast<LPDSENUMCALLBACKA>(pDSEnumCallback), pContext);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -178,7 +178,7 @@ Word BURGER_API Burger::Windows::DirectSoundEnumerateA(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectSoundEnumerateW(
+uint_t BURGER_API Burger::Windows::DirectSoundEnumerateW(
 	void* pDSEnumCallback, void* pContext)
 {
 	// Get the function pointer
@@ -189,7 +189,7 @@ Word BURGER_API Burger::Windows::DirectSoundEnumerateW(
 		uResult = static_cast<DirectSoundEnumerateWPtr>(pDirectSoundEnumerateW)(
 			static_cast<LPDSENUMCALLBACKW>(pDSEnumCallback), pContext);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -212,7 +212,7 @@ Word BURGER_API Burger::Windows::DirectSoundEnumerateW(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectSoundCaptureCreate(
+uint_t BURGER_API Burger::Windows::DirectSoundCaptureCreate(
 	const GUID* pGuidDevice, IDirectSoundCapture** ppOutput, IUnknown* pOuter)
 {
 	// Clear in case of error
@@ -228,7 +228,7 @@ Word BURGER_API Burger::Windows::DirectSoundCaptureCreate(
 		uResult = static_cast<DirectSoundCaptureCreatePtr>(
 			pDirectSoundCaptureCreate)(pGuidDevice, ppOutput, pOuter);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -252,7 +252,7 @@ Word BURGER_API Burger::Windows::DirectSoundCaptureCreate(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectSoundCaptureEnumerateA(
+uint_t BURGER_API Burger::Windows::DirectSoundCaptureEnumerateA(
 	void* pDSEnumCallback, void* pContext)
 {
 	// Get the function pointer
@@ -264,7 +264,7 @@ Word BURGER_API Burger::Windows::DirectSoundCaptureEnumerateA(
 			pDirectSoundCaptureEnumerateA)(
 			static_cast<LPDSENUMCALLBACKA>(pDSEnumCallback), pContext);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -288,7 +288,7 @@ Word BURGER_API Burger::Windows::DirectSoundCaptureEnumerateA(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectSoundCaptureEnumerateW(
+uint_t BURGER_API Burger::Windows::DirectSoundCaptureEnumerateW(
 	void* pDSEnumCallback, void* pContext)
 {
 	// Get the function pointer
@@ -300,7 +300,7 @@ Word BURGER_API Burger::Windows::DirectSoundCaptureEnumerateW(
 			pDirectSoundCaptureEnumerateW)(
 			static_cast<LPDSENUMCALLBACKW>(pDSEnumCallback), pContext);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -323,7 +323,7 @@ Word BURGER_API Burger::Windows::DirectSoundCaptureEnumerateW(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectSoundCreate8(
+uint_t BURGER_API Burger::Windows::DirectSoundCreate8(
 	const GUID* pGuidDevice, IDirectSound8** ppOutput, IUnknown* pOuter)
 {
 	// Clear in case of error
@@ -338,7 +338,7 @@ Word BURGER_API Burger::Windows::DirectSoundCreate8(
 		uResult = static_cast<DirectSoundCreate8Ptr>(pDirectSoundCreate8)(
 			pGuidDevice, ppOutput, pOuter);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -361,7 +361,7 @@ Word BURGER_API Burger::Windows::DirectSoundCreate8(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectSoundCaptureCreate8(
+uint_t BURGER_API Burger::Windows::DirectSoundCaptureCreate8(
 	const GUID* pGuidDevice, IDirectSoundCapture** ppOutput, IUnknown* pOuter)
 {
 	// Clear in case of error
@@ -377,7 +377,7 @@ Word BURGER_API Burger::Windows::DirectSoundCaptureCreate8(
 		uResult = static_cast<DirectSoundCaptureCreate8Ptr>(
 			pDirectSoundCaptureCreate8)(pGuidDevice, ppOutput, pOuter);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -414,10 +414,10 @@ Word BURGER_API Burger::Windows::DirectSoundCaptureCreate8(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectSoundFullDuplexCreate(
+uint_t BURGER_API Burger::Windows::DirectSoundFullDuplexCreate(
 	const GUID* pGuidCaptureDevice, const GUID* pGuidRenderDevice,
 	const _DSCBUFFERDESC* pDSCBufferDesc, const _DSBUFFERDESC* pDSBufferDesc,
-	HWND__* hWnd, Word32 uLevel, IDirectSoundFullDuplex** ppDSFD,
+	HWND__* hWnd, uint32_t uLevel, IDirectSoundFullDuplex** ppDSFD,
 	IDirectSoundCaptureBuffer8** ppDSCBuffer8,
 	IDirectSoundBuffer8** ppDSBuffer8, IUnknown* pOuter)
 {
@@ -442,7 +442,7 @@ Word BURGER_API Burger::Windows::DirectSoundFullDuplexCreate(
 			pDSCBufferDesc, pDSBufferDesc, hWnd, uLevel, ppDSFD, ppDSCBuffer8,
 			ppDSBuffer8, pOuter);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -465,7 +465,7 @@ Word BURGER_API Burger::Windows::DirectSoundFullDuplexCreate(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::GetDeviceID(
+uint_t BURGER_API Burger::Windows::GetDeviceID(
 	const GUID* pGuidSrc, GUID* pGuidDest)
 {
 	// Get the function pointer
@@ -475,7 +475,7 @@ Word BURGER_API Burger::Windows::GetDeviceID(
 		uResult =
 			static_cast<GetDeviceIDPtr>(pGetDeviceID)(pGuidSrc, pGuidDest);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 #endif

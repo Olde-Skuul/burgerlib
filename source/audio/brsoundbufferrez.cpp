@@ -1,13 +1,14 @@
 /***************************************
 
-	Sound manager buffer from resource
+    Sound manager buffer from resource
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -39,10 +40,10 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::SoundBufferRez,Burger::SoundManager::Buf
 	\brief Default constructor
 
 	This creates an incomplete class, follow up
-	with a call to Set(RezFile *,Word) to 
+	with a call to Set(RezFile *,uint_t) to 
 	have the class access a valid sound file
 
-	\sa SoundBufferRez(RezFile *,Word) or Set(RezFile *,Word)
+	\sa SoundBufferRez(RezFile *,uint_t) or Set(RezFile *,uint_t)
 
 ***************************************/
 
@@ -62,11 +63,11 @@ Burger::SoundBufferRez::SoundBufferRez(void) :
 
 	\param pRezFile Pointer to a RezFile to load data from
 	\param uRezNum Resource number of the sound file
-	\sa SoundBufferRez() or Set(RezFile *,Word)
+	\sa SoundBufferRez() or Set(RezFile *,uint_t)
 
 ***************************************/
 
-Burger::SoundBufferRez::SoundBufferRez(Burger::RezFile *pRezFile,Word uRezNum) :
+Burger::SoundBufferRez::SoundBufferRez(Burger::RezFile *pRezFile,uint_t uRezNum) :
 	Buffer(),
 	m_pRezFile(pRezFile),
 	m_uRezNum(uRezNum)
@@ -92,7 +93,7 @@ Burger::SoundBufferRez::SoundBufferRez(Burger::RezFile *pRezFile,Word uRezNum) :
 uint_t Burger::SoundBufferRez::Upload(SoundManager *pSoundManager)
 {
 	// Assume success
-	Word uResult = 0;
+	uint_t uResult = 0;
 	// Don't upload again if not needed
 	if (!IsUploaded()) {
 
@@ -100,14 +101,14 @@ uint_t Burger::SoundBufferRez::Upload(SoundManager *pSoundManager)
 		uResult = 10;
 		// Load if there's a valid resource
 		RezFile *pRezFile = m_pRezFile;
-		Word uRezNum = m_uRezNum;
+		uint_t uRezNum = m_uRezNum;
 		if (pRezFile && uRezNum) {
 
 			// Load in the data
 			void *pData = pRezFile->Load(uRezNum);
 			if (pData) {
 				// Get the data's size
-				WordPtr uLength = pRezFile->GetSize(uRezNum);
+				uintptr_t uLength = pRezFile->GetSize(uRezNum);
 
 				// Initialize my description with file image
 				uResult = Init(pData,uLength);
@@ -140,7 +141,7 @@ uint_t Burger::SoundBufferRez::Upload(SoundManager *pSoundManager)
 	
 ***************************************/
 
-void Burger::SoundBufferRez::Set(RezFile *pRezFile,Word uRezNum)
+void Burger::SoundBufferRez::Set(RezFile *pRezFile,uint_t uRezNum)
 {
 	// Purge anything if present
 
@@ -178,7 +179,7 @@ Burger::SoundBufferRez * BURGER_API Burger::SoundBufferRez::New(void)
 
 ***************************************/
 
-Burger::SoundBufferRez * BURGER_API Burger::SoundBufferRez::New(RezFile *pRezFile,Word uRezNum)
+Burger::SoundBufferRez * BURGER_API Burger::SoundBufferRez::New(RezFile *pRezFile,uint_t uRezNum)
 {
 	SoundBufferRez *pBuffer = new (Alloc(sizeof(SoundBufferRez))) SoundBufferRez(pRezFile,uRezNum);
 	if (pBuffer) {

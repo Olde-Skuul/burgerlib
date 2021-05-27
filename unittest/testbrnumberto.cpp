@@ -76,6 +76,7 @@ static uint_t BURGER_API TestNumberToAsciiHex(void) BURGER_NOEXCEPT
     Burger::NumberToAsciiHex(Buffer, static_cast<unsigned short>(0));
     Burger::NumberToAsciiHex(Buffer, static_cast<unsigned int>(0));
     Burger::NumberToAsciiHex(Buffer, static_cast<unsigned long>(0));
+    Burger::NumberToAsciiHex(Buffer, static_cast<uintptr_t>(0));
     return uFailure;
 }
 
@@ -212,6 +213,7 @@ static uint_t BURGER_API TestNumberToAsciiHexDigits(void) BURGER_NOEXCEPT
     Burger::NumberToAsciiHex(Buffer, static_cast<unsigned short>(0), 0);
     Burger::NumberToAsciiHex(Buffer, static_cast<unsigned int>(0), 0);
     Burger::NumberToAsciiHex(Buffer, static_cast<unsigned long>(0), 0);
+    Burger::NumberToAsciiHex(Buffer, static_cast<uintptr_t>(0), 0);
     return uFailure;
 }
 
@@ -355,6 +357,7 @@ static uint_t BURGER_API TestNumberToAscii(void) BURGER_NOEXCEPT
     Burger::NumberToAscii(Buffer, static_cast<unsigned short>(0));
     Burger::NumberToAscii(Buffer, static_cast<unsigned int>(0));
     Burger::NumberToAscii(Buffer, static_cast<unsigned long>(0));
+    Burger::NumberToAscii(Buffer, static_cast<uintptr_t>(0));
     Burger::NumberToAscii(Buffer, static_cast<float>(0));
     Burger::NumberToAscii(Buffer, static_cast<double>(0));
 
@@ -366,6 +369,7 @@ static uint_t BURGER_API TestNumberToAscii(void) BURGER_NOEXCEPT
     Burger::NumberToAscii(Buffer, static_cast<unsigned short>(0), 0);
     Burger::NumberToAscii(Buffer, static_cast<unsigned int>(0), 0);
     Burger::NumberToAscii(Buffer, static_cast<unsigned long>(0), 0);
+    Burger::NumberToAscii(Buffer, static_cast<uintptr_t>(0), 0);
     Burger::NumberToAscii(Buffer, static_cast<float>(0), 0);
     Burger::NumberToAscii(Buffer, static_cast<double>(0), 0);
     return uFailure;
@@ -664,7 +668,7 @@ static uint_t BURGER_API TestNumberOctalStringLength(void) BURGER_NOEXCEPT
 // Perform all the tests for the Burgerlib Endian Manager
 //
 
-int BURGER_API TestBrnumberto(uint_t uVerbose)
+int BURGER_API TestBrnumberto(uint_t uVerbose) BURGER_NOEXCEPT
 {
     if (uVerbose & VERBOSE_MSG) {
         Message("Running Number to tests");

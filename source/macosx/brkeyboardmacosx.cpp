@@ -1,16 +1,16 @@
 /***************************************
 
-	Keyboard Manager
+    Keyboard Manager
 
-	MacOSX version
+    MacOSX version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE for
-	license details. Yes, you can use it in a commercial title without paying
-	anything, just give me a credit.
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
 
-	Please? It's not like I'm asking you for money!
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -184,7 +184,7 @@ Burger::Keyboard::Keyboard(GameApp* pAppInstance) :
 	m_uInitialDelay(250), m_uRepeatDelay(33)
 {
 	// Clear my variables
-	MemoryClear(const_cast<Word8*>(m_KeyArray), sizeof(m_KeyArray));
+	MemoryClear(const_cast<uint8_t*>(m_KeyArray), sizeof(m_KeyArray));
 }
 
 /***************************************
@@ -209,7 +209,7 @@ Burger::Keyboard::~Keyboard() {}
 
 void BURGER_API Burger::Keyboard::ProcessEvent(NSEvent* pEvent)
 {
-	Word uScanCode = [pEvent keyCode];
+	uint_t uScanCode = [pEvent keyCode];
 	// It seems that Backslash and Grave can be reversed on Japanese keyboards.
 	// Fix this
 	if ((uScanCode == 10 || uScanCode == 50) &&
@@ -227,8 +227,8 @@ void BURGER_API Burger::Keyboard::ProcessEvent(NSEvent* pEvent)
 			PostKeyUp(NewCode);
 			break;
 		case NSFlagsChanged: {
-			Word uFlags = static_cast<Word>([pEvent modifierFlags]);
-			Word uMask;
+			uint_t uFlags = static_cast<uint_t>([pEvent modifierFlags]);
+			uint_t uMask;
 			switch (NewCode) {
 			case SC_CAPSLOCK:
 				uMask = CAPSLOCKMASK;

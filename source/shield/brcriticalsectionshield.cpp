@@ -29,7 +29,7 @@
 	
 ***************************************/
 
-Burger::CriticalSection::CriticalSection()
+Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT
 {
 	// Safety switch to verify the declaration in brshieldtypes.h matches the real thing
     BURGER_STATIC_ASSERT(sizeof(Burgerpthread_mutex_t)==sizeof(pthread_mutex_t));
@@ -48,7 +48,7 @@ Burger::CriticalSection::~CriticalSection()
 	
 ***************************************/
 
-void Burger::CriticalSection::Lock(void)
+void Burger::CriticalSection::Lock(void) BURGER_NOEXCEPT
 {
 	pthread_mutex_lock(reinterpret_cast<pthread_mutex_t *>(&m_Lock));
 }
@@ -59,7 +59,7 @@ void Burger::CriticalSection::Lock(void)
 	
 ***************************************/
 
-Word Burger::CriticalSection::TryLock(void)
+uint_t Burger::CriticalSection::TryLock(void) BURGER_NOEXCEPT
 {
 	return pthread_mutex_trylock(reinterpret_cast<pthread_mutex_t *>(&m_Lock))!=EBUSY;
 }
@@ -71,7 +71,7 @@ Word Burger::CriticalSection::TryLock(void)
 	
 ***************************************/
 
-void Burger::CriticalSection::Unlock(void)
+void Burger::CriticalSection::Unlock(void) BURGER_NOEXCEPT
 {
 	pthread_mutex_unlock(reinterpret_cast<pthread_mutex_t *>(&m_Lock));
 }
@@ -83,7 +83,7 @@ void Burger::CriticalSection::Unlock(void)
 	
 ***************************************/
 
-Burger::Semaphore::Semaphore(Word32 uCount) :
+Burger::Semaphore::Semaphore(uint32_t uCount) :
 	m_uCount(uCount),
 	m_bInitialized(FALSE)
 {
@@ -117,10 +117,10 @@ Burger::Semaphore::~Semaphore()
 	
 ***************************************/
 
-Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
+uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
 {
 	// Assume failure
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_bInitialized) {
 		// No wait?
 		if (!uMilliseconds) {
@@ -155,7 +155,7 @@ Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
 			// timeout time
 
 			// Split between seconds and MICROseconds
-			Word uSeconds = uMilliseconds/1000U;
+			uint_t uSeconds = uMilliseconds/1000U;
 			uMilliseconds = (uMilliseconds - (uSeconds * 1000U)) * 1000U;
 
 			uMilliseconds += CurrentTime.tv_usec;
@@ -198,9 +198,9 @@ Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
 	
 ***************************************/
 
-Word BURGER_API Burger::Semaphore::Release(void)
+uint_t BURGER_API Burger::Semaphore::Release(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_bInitialized) {
 		// Release the count immediately, because it's
 		// possible that another thread, waiting for this semaphore,
@@ -255,9 +255,9 @@ Burger::ConditionVariable::~ConditionVariable()
 
 ***************************************/
 
-Word BURGER_API Burger::ConditionVariable::Signal(void)
+uint_t BURGER_API Burger::ConditionVariable::Signal(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_bInitialized) {
 		if (!pthread_cond_signal(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable))) {
 			uResult = 0;
@@ -272,9 +272,9 @@ Word BURGER_API Burger::ConditionVariable::Signal(void)
 
 ***************************************/
 
-Word BURGER_API Burger::ConditionVariable::Broadcast(void)
+uint_t BURGER_API Burger::ConditionVariable::Broadcast(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_bInitialized) {
 		if (!pthread_cond_broadcast(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable))) {
 			uResult = 0;
@@ -289,9 +289,9 @@ Word BURGER_API Burger::ConditionVariable::Broadcast(void)
 
 ***************************************/
 
-Word BURGER_API Burger::ConditionVariable::Wait(CriticalSection *pCriticalSection,Word uMilliseconds)
+uint_t BURGER_API Burger::ConditionVariable::Wait(CriticalSection *pCriticalSection,uint_t uMilliseconds)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_bInitialized) {
 		if (uMilliseconds==BURGER_MAXUINT) {
 			if (!pthread_cond_wait(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable),reinterpret_cast<pthread_mutex_t *>(&pCriticalSection->m_Lock))) {
@@ -307,7 +307,7 @@ Word BURGER_API Burger::ConditionVariable::Wait(CriticalSection *pCriticalSectio
 
 			// Determine the time in the future to timeout at
 			struct timespec StopTimeHere;
-			Word uSeconds = uMilliseconds/1000;
+			uint_t uSeconds = uMilliseconds/1000;
 			// Get the remainder in NANOSECONDS
 			uMilliseconds = (uMilliseconds-(uSeconds*1000))*1000000;
 

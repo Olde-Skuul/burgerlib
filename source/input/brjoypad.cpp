@@ -1,13 +1,14 @@
 /***************************************
 
-	Joypad/joystick Manager
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Joypad/joystick Manager
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -80,9 +81,9 @@ Burger::Joypad::~Joypad()
 
 ***************************************/
 
-Word32 BURGER_API Burger::Joypad::ReadButtons(Word uWhich) const
+uint32_t BURGER_API Burger::Joypad::ReadButtons(uint_t uWhich) const
 {
-	Word32 uButtons = 0;
+	uint32_t uButtons = 0;
 	if (uWhich<m_uDeviceCount) {
 		const JoypadData_t *pJoypadData = &m_Data[uWhich];
 		uButtons = pJoypadData->m_uButtonState;
@@ -111,13 +112,13 @@ Word32 BURGER_API Burger::Joypad::ReadButtons(Word uWhich) const
 		and MS-DOS and GS/OS uses direct joystick drivers. MS-DOS and GS/OS must be calibrated
 		for accurate results.
 
-	\sa ReadDelta(), ReadButtons(), Poll(Word)
+	\sa ReadDelta(), ReadButtons(), Poll(uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::Joypad::ReadAbsolute(Word uWhich,Word uAxis) const
+uint_t BURGER_API Burger::Joypad::ReadAbsolute(uint_t uWhich,uint_t uAxis) const
 {
-	Word uResult = CENTERAXISVALUE;
+	uint_t uResult = CENTERAXISVALUE;
 	// Bounds check
 	if (uWhich<m_uDeviceCount) {
 		const JoypadData_t *pJoypadData = &m_Data[uWhich];
@@ -137,20 +138,20 @@ Word BURGER_API Burger::Joypad::ReadAbsolute(Word uWhich,Word uAxis) const
 	the value of the axis at this moment in time. The value returned is -32768
 	to 32767 with -32768 being left/up and 32767 being right/down.
 
-	Since reading a joystick may be slow, the function Poll(Word) will
+	Since reading a joystick may be slow, the function Poll(uint_t) will
 	actually perform the read and keep all the data in a cache so that the
 	subsequent calls will have very little overhead. If you must be certain that
-	data is freshly read, call Poll(Word) before this call to make sure the
+	data is freshly read, call Poll(uint_t) before this call to make sure the
 	data is fresh.
 
 	\param uAxis Analog axis for the joystick
 	\param uWhich Which joystick device to read
 
-	\sa ReadAbsolute(), ReadButtons(), Poll(Word)
+	\sa ReadAbsolute(), ReadButtons(), Poll(uint_t)
 
 ***************************************/
 
-int BURGER_API Burger::Joypad::ReadDelta(Word uWhich,Word uAxis) const
+int BURGER_API Burger::Joypad::ReadDelta(uint_t uWhich,uint_t uAxis) const
 {
 	// Convert absolute value to signed offset
 	return static_cast<int>(ReadAbsolute(uWhich,uAxis))-CENTERAXISVALUE;
@@ -169,9 +170,9 @@ int BURGER_API Burger::Joypad::ReadDelta(Word uWhich,Word uAxis) const
 
 ***************************************/
 
-Word BURGER_API Burger::Joypad::GetAxisCount(Word uWhich) const
+uint_t BURGER_API Burger::Joypad::GetAxisCount(uint_t uWhich) const
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	// Bounds check
 	if (uWhich<m_uDeviceCount) {
 		const JoypadData_t *pJoypadData = &m_Data[uWhich];
@@ -198,7 +199,7 @@ Word BURGER_API Burger::Joypad::GetAxisCount(Word uWhich) const
 
 ***************************************/
 
-void BURGER_API Burger::Joypad::SetDigital(Word uWhich,Word uAxis,Word uPercent)
+void BURGER_API Burger::Joypad::SetDigital(uint_t uWhich,uint_t uAxis,uint_t uPercent)
 {
 	// Bounds check
 	if (uWhich<m_uDeviceCount) {
@@ -207,7 +208,7 @@ void BURGER_API Burger::Joypad::SetDigital(Word uWhich,Word uAxis,Word uPercent)
 			// Save for later
 			pJoypadData->m_uAxisPercents[uAxis] = uPercent;
 			// Get the percentage
-			Word uDistance = (uPercent*(MAXAXISVALUE/2))/100;
+			uint_t uDistance = (uPercent*(MAXAXISVALUE/2))/100;
 			JoypadRange_t *pRange = &pJoypadData->m_uAxisDigitalRanges[uAxis];
 			// Save the lower value
 			pRange->m_uMin = (MAXAXISVALUE/2)-uDistance;

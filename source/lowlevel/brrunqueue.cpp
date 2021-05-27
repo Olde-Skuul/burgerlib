@@ -1,13 +1,14 @@
 /***************************************
 
-	Run Queue execution handler
+    Run Queue execution handler
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -65,7 +66,7 @@
 
 /*! ************************************
 
-	\fn Burger::RunQueue::RunQueueEntry::RunQueueEntry(CallbackProc pCallBack,CallbackProc pShutdownCallback,void *pData,Word uPriority)
+	\fn Burger::RunQueue::RunQueueEntry::RunQueueEntry(CallbackProc pCallBack,CallbackProc pShutdownCallback,void *pData,uint_t uPriority)
 	\brief RunQueueEntry constructor.
 
 	\param pCallBack Pointer to a function that is called when the queue is polled
@@ -104,7 +105,7 @@ Burger::RunQueue::RunQueueEntry::~RunQueueEntry()
 
 /*! ************************************
 
-	\fn Word Burger::RunQueue::RunQueueEntry::GetPriority(void) const
+	\fn uint_t Burger::RunQueue::RunQueueEntry::GetPriority(void) const
 	\brief Get the priority value
 
 	\return The priority of this entry
@@ -160,7 +161,7 @@ Burger::RunQueue::~RunQueue()
 	\note There is a recursion checker, this function will
 	do nothing if it is called by a RunQueue::CallbackProc proc.
 
-	\sa Add(CallbackProc,CallbackProc,void*,Word), Remove(CallbackProc,void*) or RemoveAll(CallbackProc);
+	\sa Add(CallbackProc,CallbackProc,void*,uint_t), Remove(CallbackProc,void*) or RemoveAll(CallbackProc);
 
 ***************************************/
 
@@ -217,7 +218,7 @@ void BURGER_API Burger::RunQueue::Call(void)
 	
 ***************************************/
 
-Burger::RunQueue::RunQueueEntry *BURGER_API Burger::RunQueue::Add(CallbackProc pProc,CallbackProc pShutdown,void *pData,Word uPriority)
+Burger::RunQueue::RunQueueEntry *BURGER_API Burger::RunQueue::Add(CallbackProc pProc,CallbackProc pShutdown,void *pData,uint_t uPriority)
 {
 	// Assume failure
 	RunQueueEntry *pResult = NULL;
@@ -252,7 +253,7 @@ Burger::RunQueue::RunQueueEntry *BURGER_API Burger::RunQueue::Add(CallbackProc p
 	
 	\param pProc Pointer to the function.
 	\return \ref RunQueueEntry pointer if the function pointer was found, \ref NULL if not.
-	\sa Add(CallbackProc,CallbackProc,void*,Word), Clear() or Call().
+	\sa Add(CallbackProc,CallbackProc,void*,uint_t), Clear() or Call().
 
 ***************************************/
 
@@ -284,7 +285,7 @@ Burger::RunQueue::RunQueueEntry * BURGER_API Burger::RunQueue::Find(CallbackProc
 	\param pProc Pointer to the function.
 	\param pData Void pointer to pass to the function if called.
 	\return \ref RunQueueEntry pointer if the Function/Data pair was found, \ref NULL if not.
-	\sa Add(CallbackProc,CallbackProc,void*,Word), Find(CallbackProc) const or Call().
+	\sa Add(CallbackProc,CallbackProc,void*,uint_t), Find(CallbackProc) const or Call().
 
 ***************************************/
 
@@ -320,13 +321,13 @@ Burger::RunQueue::RunQueueEntry * BURGER_API Burger::RunQueue::Find(CallbackProc
 	
 	\param pProc Pointer to the function.
 	\return \ref TRUE if the Function/Data pair was found, \ref FALSE if not.
-	\sa Add(CallbackProc,CallbackProc,void*,Word), Clear() or Call().
+	\sa Add(CallbackProc,CallbackProc,void*,uint_t), Clear() or Call().
 
 ***************************************/
 
-Word BURGER_API Burger::RunQueue::RemoveAll(CallbackProc pProc)
+uint_t BURGER_API Burger::RunQueue::RemoveAll(CallbackProc pProc)
 {
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	RunQueueEntry *pWork = static_cast<RunQueueEntry *>(m_Entries.GetNext());		// Get the master handle
 	if (pWork!=&m_Entries) {							// Is it valid?
 		do {
@@ -358,13 +359,13 @@ Word BURGER_API Burger::RunQueue::RemoveAll(CallbackProc pProc)
 	\param pProc Pointer to the function.
 	\param pData Void pointer to pass to the function if called.
 	\return \ref TRUE if the Function/Data pair was found, \ref FALSE if not.
-	\sa Add(CallbackProc,CallbackProc,void*,Word), Clear() or Call().
+	\sa Add(CallbackProc,CallbackProc,void*,uint_t), Clear() or Call().
 
 ***************************************/
 
-Word BURGER_API Burger::RunQueue::Remove(CallbackProc pProc,void *pData)
+uint_t BURGER_API Burger::RunQueue::Remove(CallbackProc pProc,void *pData)
 {
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	// Get the master handle
 	RunQueueEntry *pWork = static_cast<RunQueueEntry *>(m_Entries.GetNext());		
 	if (pWork!=&m_Entries) {							// Is it valid?
@@ -392,7 +393,7 @@ Word BURGER_API Burger::RunQueue::Remove(CallbackProc pProc,void *pData)
 	
 	\note No functions will be called. Only the list will be destroyed.	
 
-	\sa Add(CallbackProc,CallbackProc,void*,Word) or Remove(CallbackProc,void*).
+	\sa Add(CallbackProc,CallbackProc,void*,uint_t) or Remove(CallbackProc,void*).
 	
 ***************************************/
 

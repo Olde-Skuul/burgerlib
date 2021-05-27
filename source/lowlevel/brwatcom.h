@@ -95,12 +95,12 @@ extern long _InterlockedCompareExchange(long volatile*, long, long);
 #pragma aux _InterlockedCompareExchange parm[edx][ecx][eax] = \
         "lock cmpxchg [edx],ecx" value[eax] modify exact[eax];
 
-extern Int32 BurgerIntMathMul32GetUpper32(Int32 iInputA, Int32 iInputB);
+extern int32_t BurgerIntMathMul32GetUpper32(int32_t iInputA, int32_t iInputB);
 #pragma aux BurgerIntMathMul32GetUpper32 = \
     "imul edx" parm[eax][edx] value[edx] modify exact[eax edx] nomemory;
 
-extern Int32 BurgerIntMathMul32x32To64Div32(
-    Int32 iInputMulA, Int32 iInputMulB, Int32 iInputDiv);
+extern int32_t BurgerIntMathMul32x32To64Div32(
+    int32_t iInputMulA, int32_t iInputMulB, int32_t iInputDiv);
 #pragma aux BurgerIntMathMul32x32To64Div32 = \
     "imul edx" \
     "idiv ebx" parm[eax][edx][ebx] value[eax] modify exact[eax edx];

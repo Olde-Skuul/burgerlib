@@ -1,13 +1,14 @@
 /***************************************
 
-	MSDOS version of Burger::File
+    MSDOS version of Burger::File
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -33,23 +34,23 @@
 
 Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT
 {
-	static const Word16 g_OpenAccess[4] = { 0x00,0x01,0x01,0x02 };
-	static const Word16 g_CreateAction[4] = {1,2+16,1+16,1+16};
+	static const uint16_t g_OpenAccess[4] = { 0x00,0x01,0x01,0x02 };
+	static const uint16_t g_CreateAction[4] = {1,2+16,1+16,1+16};
 	Close();
 	// Copy the filename to "Real" memory
 	StringCopy(static_cast<char *>(GetRealBufferProtectedPtr()),pFileName->GetNative());
 
 	eAccess = static_cast<eFileAccess>(eAccess&3);
 	Regs16 Regs;
-	Word32 uTemp = GetRealBufferPtr();			// Local buffer
-	Word uResult = FILENOTFOUND;
+	uint32_t uTemp = GetRealBufferPtr();			// Local buffer
+	uint_t uResult = FILENOTFOUND;
 	// Are long filenames supported?
 	if (!FileManager::AreLongFilenamesAllowed()) {
 		// Use the old dos commands
 		// Open preexisting file?
 		Regs.ax = g_OpenAccess[eAccess]+0x3D00;
-		Regs.dx = static_cast<Word16>(uTemp);		// Pass the filename buffer
-		Regs.ds = static_cast<Word16>(uTemp>>16);	// Get the segment
+		Regs.dx = static_cast<uint16_t>(uTemp);		// Pass the filename buffer
+		Regs.ds = static_cast<uint16_t>(uTemp>>16);	// Get the segment
 		// Int 0x21,0x3D Open
 		Int86x(0x21,&Regs,&Regs);
 		if (!(Regs.flags&1)) {
@@ -64,8 +65,8 @@ Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAc
 				// Attempt to create the file Int 0x21,0x3C Create
 				Regs.ax = 0x3C00;
 				Regs.cx = 0;
-				Regs.dx = static_cast<Word16>(uTemp);		// Pass the filename buffer
-				Regs.ds = static_cast<Word16>(uTemp>>16);	// Get the segment
+				Regs.dx = static_cast<uint16_t>(uTemp);		// Pass the filename buffer
+				Regs.ds = static_cast<uint16_t>(uTemp>>16);	// Get the segment
 				Int86x(0x21,&Regs,&Regs);
 				if (!(Regs.flags&1)) {
 					// File was created
@@ -79,8 +80,8 @@ Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAc
 		Regs.bx = g_OpenAccess[eAccess]+0x2000;	// 0x2000 = Return error code instead of Int 24h
 		Regs.cx = 0;
 		Regs.dx = g_CreateAction[eAccess];
-		Regs.si = static_cast<Word16>(uTemp);		// Pass the filename buffer
-		Regs.ds = static_cast<Word16>(uTemp>>16);	// Get the segment
+		Regs.si = static_cast<uint16_t>(uTemp);		// Pass the filename buffer
+		Regs.ds = static_cast<uint16_t>(uTemp>>16);	// Get the segment
 		Regs.di = 0;
 		// Int 0x21,0x716C Open
 		Int86x(0x21,&Regs,&Regs);
@@ -93,7 +94,7 @@ Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAc
 			}
 		}
 	}
-	return static_cast<Burger::eError>(uResult);
+	return static_cast<eError>(uResult);
 }
 
 /***************************************
@@ -107,9 +108,9 @@ Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAc
 
 ***************************************/
 
-Word BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 {
-	Word uResult = OKAY;
+	eError uResult = kErrorNone;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		// Int 0x21,0x3E Close
@@ -118,7 +119,7 @@ Word BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 		Regs.bx = fp;
 		Int86x(0x21,&Regs,&Regs);
 		if (Regs.flags&1) {
-			uResult = IOERROR;
+			uResult = kErrorIO;
 		}
 		m_pFile = NULL;
 	}
@@ -139,12 +140,12 @@ Word BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::GetSize(void)
+uintptr_t BURGER_API Burger::File::GetSize(void)
 {
 	Regs16 MyRegs;
 	Regs16 MyRegsStore;
 	Regs16 MyRegsSeek;
-	WordPtr uSize = 0;
+	uintptr_t uSize = 0;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		// Int 0x21,0x4201 Seek/Current
@@ -183,25 +184,25 @@ WordPtr BURGER_API Burger::File::GetSize(void)
 	\param pOutput Pointer to a buffer of data to read from a file
 	\param uSize Number of bytes to read
 	\return Number of bytes read (Can be less than what was requested due to EOF or read errors)
-	\sa Write(const void *,WordPtr)
+	\sa Write(const void *,uintptr_t)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::Read(void *pOutput,WordPtr uSize)
+uintptr_t BURGER_API Burger::File::Read(void *pOutput,uintptr_t uSize)
 {
-	WordPtr uResult = 0;
+	uintptr_t uResult = 0;
 	if (uSize && pOutput) {
 		int fp = reinterpret_cast<int>(m_pFile);
 		if (fp) {
-			Word32 uTemp = GetRealBufferPtr();			// Local buffer
+			uint32_t uTemp = GetRealBufferPtr();			// Local buffer
 			do {
-				Word uChunk = uSize<8192 ? uSize : 8192;
+				uint_t uChunk = uSize<8192 ? uSize : 8192;
 				Regs16 Regs;
 				Regs.ax = 0x3F00;
 				Regs.bx = fp;
-				Regs.cx = static_cast<Word16>(uChunk);
-				Regs.dx = static_cast<Word16>(uTemp);		// Pass the filename buffer
-				Regs.ds = static_cast<Word16>(uTemp>>16);	// Get the segment
+				Regs.cx = static_cast<uint16_t>(uChunk);
+				Regs.dx = static_cast<uint16_t>(uTemp);		// Pass the filename buffer
+				Regs.ds = static_cast<uint16_t>(uTemp>>16);	// Get the segment
 				Int86x(0x21,&Regs,&Regs);
 				if (Regs.flags&1) {
 					break;
@@ -226,25 +227,25 @@ WordPtr BURGER_API Burger::File::Read(void *pOutput,WordPtr uSize)
 	\param pInput Pointer to a buffer of data to write to a file
 	\param uSize Number of bytes to write
 	\return Number of bytes written (Can be less than what was requested due to EOF or write errors)
-	\sa Read(void *,WordPtr)
+	\sa Read(void *,uintptr_t)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::Write(const void *pInput,WordPtr uSize) BURGER_NOEXCEPT
+uintptr_t BURGER_API Burger::File::Write(const void *pInput,uintptr_t uSize) BURGER_NOEXCEPT
 {
-	WordPtr uResult = 0;
+	uintptr_t uResult = 0;
 	if (uSize && pInput) {
 		int fp = reinterpret_cast<int>(m_pFile);
 		if (fp) {
-			Word32 uTemp = GetRealBufferPtr();			// Local buffer
+			uint32_t uTemp = GetRealBufferPtr();			// Local buffer
 			do {
-				Word uChunk = uSize<8192 ? uSize : 8192;
+				uint_t uChunk = uSize<8192 ? uSize : 8192;
 				Regs16 Regs;
 				Regs.ax = 0x4000;
 				Regs.bx = fp;
-				Regs.cx = static_cast<Word16>(uChunk);
-				Regs.dx = static_cast<Word16>(uTemp);		// Pass the filename buffer
-				Regs.ds = static_cast<Word16>(uTemp>>16);	// Get the segment
+				Regs.cx = static_cast<uint16_t>(uChunk);
+				Regs.dx = static_cast<uint16_t>(uTemp);		// Pass the filename buffer
+				Regs.ds = static_cast<uint16_t>(uTemp>>16);	// Get the segment
 				MemoryCopy(GetRealBufferProtectedPtr(),pInput,uChunk);
 				Int86x(0x21,&Regs,&Regs);
 				if (Regs.flags&1) {
@@ -267,14 +268,14 @@ WordPtr BURGER_API Burger::File::Write(const void *pInput,WordPtr uSize) BURGER_
 	of the file mark for future reads or writes.
 
 	\return Current file mark or zero if an error occurred
-	\sa Write(const void *,WordPtr)
+	\sa Write(const void *,uintptr_t)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::GetMark(void)
+uintptr_t BURGER_API Burger::File::GetMark(void)
 {
 	Regs16 MyRegs;
-	WordPtr uMark = 0;
+	uintptr_t uMark = 0;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		// Int 0x21,0x4201 Seek/Current
@@ -303,21 +304,23 @@ WordPtr BURGER_API Burger::File::GetMark(void)
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetMark(WordPtr uMark)
+Burger::eError BURGER_API Burger::File::SetMark(uintptr_t uMark)
 {
-	Word uResult = INVALID_MARK;
+	eError uResult = kErrorNotInitialized;
 	Regs16 MyRegs;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		// Int 0x21,0x4200 Seek/Set
 		MyRegs.ax = 0x4200;
 		MyRegs.bx = fp;
-		MyRegs.cx = static_cast<Word16>(uMark>>16);		// Offset
-		MyRegs.dx = static_cast<Word16>(uMark);
+		MyRegs.cx = static_cast<uint16_t>(uMark>>16);		// Offset
+		MyRegs.dx = static_cast<uint16_t>(uMark);
 		Int86x(0x21,&MyRegs,&MyRegs);
 		if (!(MyRegs.flags&1)) {
 			// Get the file size
-			uResult = OKAY;
+			uResult = kErrorNone;
+		} else {
+			uResult = kErrorOutOfBounds;
 		}
 	}
 	return uResult;
@@ -334,9 +337,9 @@ Word BURGER_API Burger::File::SetMark(WordPtr uMark)
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetMarkAtEOF(void)
+uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 {
-	Word uResult = INVALID_MARK;
+	uint_t uResult = INVALID_MARK;
 	Regs16 MyRegs;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
@@ -366,9 +369,9 @@ Word BURGER_API Burger::File::SetMarkAtEOF(void)
 
 ***************************************/
 
-Word BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
+uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 {
-	Word uResult = FILENOTFOUND;
+	uint_t uResult = FILENOTFOUND;
 	Regs16 Regs;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
@@ -397,7 +400,7 @@ Word BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 
 ***************************************/
 
-Word BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
+uint_t BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 {
 	pOutput->Clear();
 	return NOT_IMPLEMENTED;
@@ -416,18 +419,18 @@ Word BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetModificationTime(const TimeDate_t *pInput)
+uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t *pInput)
 {
-	Word uResult = FILENOTFOUND;
+	uint_t uResult = FILENOTFOUND;
 	Regs16 Regs;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
-		Word32 uTime = pInput->StoreMSDOS();
+		uint32_t uTime = pInput->StoreMSDOS();
 		// Int 0x21,0x5701 Set File date time
 		Regs.ax = 0x5701;
 		Regs.bx = fp;
-		Regs.cx = static_cast<Word16>(uTime);
-		Regs.dx = static_cast<Word16>(uTime>>16);
+		Regs.cx = static_cast<uint16_t>(uTime);
+		Regs.dx = static_cast<uint16_t>(uTime>>16);
 		Int86x(0x21,&Regs,&Regs);
 		if (!(Regs.flags&1)) {
 			uResult = OKAY;
@@ -449,7 +452,7 @@ Word BURGER_API Burger::File::SetModificationTime(const TimeDate_t *pInput)
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetCreationTime(const TimeDate_t * /* pInput */)
+uint_t BURGER_API Burger::File::SetCreationTime(const TimeDate_t * /* pInput */)
 {
 	return NOT_IMPLEMENTED;
 }

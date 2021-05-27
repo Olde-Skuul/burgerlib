@@ -145,7 +145,7 @@ extern "C" const float g_fBurgerMath65536 = 65536.0f;
 
 /*! ************************************
 
-	\fn Word Burger::GetLoWord(Word32 uInput)
+	\fn uint_t Burger::GetLoWord(uint32_t uInput)
 	\brief Retrieves the low-order word from the specified value.
 	
 	Mask off the upper 16 bit of the 32 bit input and set the
@@ -157,13 +157,13 @@ extern "C" const float g_fBurgerMath65536 = 65536.0f;
 	\param uInput The value to be converted.
 	\return The low order 16 bits of uInput.
 	
-	\sa GetHiWord(Word32)
+	\sa GetHiWord(uint32_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Word Burger::GetHiWord(Word32 uInput)
+	\fn uint_t Burger::GetHiWord(uint32_t uInput)
 	\brief Retrieves the low-order word from the specified value.
 	
 	Shift the input 16 bits to the right and set the upper
@@ -175,14 +175,14 @@ extern "C" const float g_fBurgerMath65536 = 65536.0f;
 	\param uInput The value to be converted.
 	\return The high order 16 bits of uInput.
 	
-	\sa GetLoWord(Word32)
+	\sa GetLoWord(uint32_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Fixed32 Burger::IntToFixed(Int32 iInput)
-	\brief Convert an Int32 into a \ref Fixed32 value.
+	\fn Fixed32 Burger::IntToFixed(int32_t iInput)
+	\brief Convert an int32_t into a \ref Fixed32 value.
 
 	Convert an integer into a fixed point number. No bounds
 	checking is performed so values that exceed 32767 or are
@@ -191,13 +191,13 @@ extern "C" const float g_fBurgerMath65536 = 65536.0f;
 	\param iInput Integer to convert
 	\return Result of the conversion without saturation
 
-	\sa IntToFixedSaturate(Int32)
+	\sa IntToFixedSaturate(int32_t)
 		
 ***************************************/
 
 /*! ************************************
 
-	\brief Convert an Int32 into a Fixed32 value with saturation.
+	\brief Convert an int32_t into a Fixed32 value with saturation.
 
 	Convert an integer into a fixed point number. Bounds
 	checking is performed so values that exceed 32767 or are
@@ -210,11 +210,11 @@ extern "C" const float g_fBurgerMath65536 = 65536.0f;
 	\param iInput Integer to convert
 	\return Result of the conversion with saturation
 
-	\sa IntToFixed(Int32)
+	\sa IntToFixed(int32_t)
 
 ***************************************/
 
-Fixed32 BURGER_API Burger::IntToFixedSaturate(Int32 iInput)
+Fixed32 BURGER_API Burger::IntToFixedSaturate(int32_t iInput)
 {
 	Fixed32 iResult;
 	if (iInput>=0x8000) {			// Not too big?
@@ -336,7 +336,7 @@ Fixed32 BURGER_API Burger::IntToFixedSaturate(Int32 iInput)
 
 /*! ************************************
 
-	\fn Int32 Burger::FloatToIntFloor(float fInput)
+	\fn int32_t Burger::FloatToIntFloor(float fInput)
 	\brief Convert a 32 bit float to an integer using floor().
 
 	Convert a single precision floating point number to an integer
@@ -356,13 +356,13 @@ Fixed32 BURGER_API Burger::IntToFixedSaturate(Int32 iInput)
 	\param fInput A valid single precision floating point number.
 	\return Signed integer equivalent value after applying floor() on the floating point number.
 
-	\sa FloatToIntFloor(Int32 *,float), FloatToIntRoundToZero(float), FloatToIntCeil(float), or FloatToIntRound(float)
+	\sa FloatToIntFloor(int32_t *,float), FloatToIntRoundToZero(float), FloatToIntCeil(float), or FloatToIntRound(float)
 
 ***************************************/
 
 #if defined(BURGER_X86) && (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || defined(BURGER_MSVC))
 
-BURGER_DECLSPECNAKED Int32 BURGER_API Burger::FloatToIntFloor(float /* fInput */)
+BURGER_DECLSPECNAKED int32_t BURGER_API Burger::FloatToIntFloor(float /* fInput */)
 {
 BURGER_ASM {
 	fld		dword ptr [esp+4]		// Get the input value
@@ -379,7 +379,7 @@ NoExtra:
 }
 }
 
-BURGER_DECLSPECNAKED void BURGER_API Burger::FloatToIntFloor(Int32 * /* pOutput */,float /* fInput */)
+BURGER_DECLSPECNAKED void BURGER_API Burger::FloatToIntFloor(int32_t * /* pOutput */,float /* fInput */)
 {
 BURGER_ASM {
 	fld		dword ptr [esp+4]		// Get the input value
@@ -412,7 +412,7 @@ NoExtra:
 
 #elif defined(BURGER_AMD64) || (defined(BURGER_INTEL) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))
 
-Int32 BURGER_API Burger::FloatToIntFloor(float fInput)
+int32_t BURGER_API Burger::FloatToIntFloor(float fInput)
 {
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
@@ -427,7 +427,7 @@ Int32 BURGER_API Burger::FloatToIntFloor(float fInput)
 	return _mm_cvtsi128_si32(iVar);
 }
 
-void BURGER_API Burger::FloatToIntFloor(Int32 *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntFloor(int32_t *pOutput,float fInput)
 {
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
@@ -445,7 +445,7 @@ void BURGER_API Burger::FloatToIntFloor(Int32 *pOutput,float fInput)
 
 #elif defined(BURGER_XBOX360) || (defined(BURGER_POWERPC64) && defined(BURGER_MACOSX))
 
-Int32 Burger::FloatToIntFloor(float fInput) 
+int32_t Burger::FloatToIntFloor(float fInput) 
 { 
 	// Convert to the input to an integer
 	double dVar = __fcfid(__fctidz(fInput));
@@ -454,12 +454,12 @@ Int32 Burger::FloatToIntFloor(float fInput)
 	dVar = __fsel(fInput-dVar,dVar,dVar-1.0f);
 
 	// Return as an integer (Load/Hit/Store)
-	Int32 iResult;
+	int32_t iResult;
 	__stfiwx(__fctiw(dVar),0,&iResult);
 	return iResult;
 }
 
-void Burger::FloatToIntFloor(Int32 *pOutput,float fInput) 
+void Burger::FloatToIntFloor(int32_t *pOutput,float fInput) 
 { 
 	// Convert to the input to an integer
 	double dVar = __fcfid(__fctidz(fInput));
@@ -472,7 +472,7 @@ void Burger::FloatToIntFloor(Int32 *pOutput,float fInput)
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM Int32 BURGER_API Burger::FloatToIntFloor(float /* fInput */)
+BURGER_ASM int32_t BURGER_API Burger::FloatToIntFloor(float /* fInput */)
 {
 	lwz		r3,g_fMinNoInteger
 	mffs	fp4						// Save the rounding register
@@ -493,7 +493,7 @@ BURGER_ASM Int32 BURGER_API Burger::FloatToIntFloor(float /* fInput */)
 	blr
 }
 
-BURGER_ASM void BURGER_API Burger::FloatToIntFloor(Int32 * /* pOutput */,float /* fInput */ )
+BURGER_ASM void BURGER_API Burger::FloatToIntFloor(int32_t * /* pOutput */,float /* fInput */ )
 {
 	lwz		r4,g_fMinNoInteger
 	mffs	fp4						// Save the rounding register
@@ -507,14 +507,14 @@ BURGER_ASM void BURGER_API Burger::FloatToIntFloor(Int32 * /* pOutput */,float /
 
 	fsel	fp1,fp1,fp3,fp0			// Which one to use? Positive or negative?
 	mtfsf	255,fp4					// Restore rounding
-	fctiwz	fp1,fp1					// Conver to integer
+	fctiwz	fp1,fp1					// Convert to integer
 	stfiwx	fp1,0,r3				// Store the integer
 	blr
 }
 
 #else
 
-Int32 BURGER_API Burger::FloatToIntFloor(float fInput)
+int32_t BURGER_API Burger::FloatToIntFloor(float fInput)
 {
 	int iVar = static_cast<int>(fInput);			// Convert to int but rounded!
 	float fVar = static_cast<float>(iVar);
@@ -545,11 +545,11 @@ Int32 BURGER_API Burger::FloatToIntFloor(float fInput)
 
 	\param pOutput A valid pointer to a 32-bit integer to receive the result.
 	\param fInput A valid single precision floating point number.
-	\sa FloatToIntFloor(float), FloatToIntRoundToZero(Int32 *,float), FloatToIntCeil(Int32 *,float), or FloatToIntRound(Int32 *,float)
+	\sa FloatToIntFloor(float), FloatToIntRoundToZero(int32_t *,float), FloatToIntCeil(int32_t *,float), or FloatToIntRound(int32_t *,float)
 	
 ***************************************/
 
-void BURGER_API Burger::FloatToIntFloor(Int32 *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntFloor(int32_t *pOutput,float fInput)
 {
 	int iVar = static_cast<int>(fInput);			// Convert to int but rounded!
 	float fVar = static_cast<float>(iVar);
@@ -563,7 +563,7 @@ void BURGER_API Burger::FloatToIntFloor(Int32 *pOutput,float fInput)
 
 /*! ************************************
 
-	\fn Int32 Burger::FloatToIntCeil(float fInput)
+	\fn int32_t Burger::FloatToIntCeil(float fInput)
 	\brief Convert a 32 bit float to an integer using ceil().
 
 	Convert a single precision floating point number to an integer
@@ -583,13 +583,13 @@ void BURGER_API Burger::FloatToIntFloor(Int32 *pOutput,float fInput)
 	\param fInput A valid single precision floating point number.
 	\return Signed integer equivalent value after applying ceil() on the floating point number.
 
-	\sa FloatToIntCeil(Int32 *,float), FloatToIntFloor(float), FloatToIntRoundToZero(float), or FloatToIntRound(float)
+	\sa FloatToIntCeil(int32_t *,float), FloatToIntFloor(float), FloatToIntRoundToZero(float), or FloatToIntRound(float)
 	
 ***************************************/
 
 #if defined(BURGER_X86) && (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || defined(BURGER_MSVC))
 
-BURGER_DECLSPECNAKED Int32 BURGER_API Burger::FloatToIntCeil(float /* fInput */)
+BURGER_DECLSPECNAKED int32_t BURGER_API Burger::FloatToIntCeil(float /* fInput */)
 {
 BURGER_ASM {
 	fld		dword ptr [esp+4]		// Get the input value
@@ -606,7 +606,7 @@ NoExtra:
 }
 }
 
-BURGER_DECLSPECNAKED void BURGER_API Burger::FloatToIntCeil(Int32 * /* pOutput */,float /* fInput */)
+BURGER_DECLSPECNAKED void BURGER_API Burger::FloatToIntCeil(int32_t * /* pOutput */,float /* fInput */)
 {
 BURGER_ASM {
 	fld		dword ptr [esp+4]		// Get the input value
@@ -638,7 +638,7 @@ NoExtra:
 
 #elif defined(BURGER_AMD64) || (defined(BURGER_INTEL) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))
 
-Int32 BURGER_API Burger::FloatToIntCeil(float fInput)
+int32_t BURGER_API Burger::FloatToIntCeil(float fInput)
 {
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
@@ -653,7 +653,7 @@ Int32 BURGER_API Burger::FloatToIntCeil(float fInput)
 	return _mm_cvtsi128_si32(iVar);
 }
 
-void BURGER_API Burger::FloatToIntCeil(Int32 *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntCeil(int32_t *pOutput,float fInput)
 {
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
@@ -671,7 +671,7 @@ void BURGER_API Burger::FloatToIntCeil(Int32 *pOutput,float fInput)
 
 #elif defined(BURGER_XBOX360) || (defined(BURGER_POWERPC64) && defined(BURGER_MACOSX))
 
-Int32 Burger::FloatToIntCeil(float fInput) 
+int32_t Burger::FloatToIntCeil(float fInput) 
 { 
 	// Convert to the input to an integer
 	double dVar = __fcfid(__fctidz(fInput));
@@ -680,12 +680,12 @@ Int32 Burger::FloatToIntCeil(float fInput)
 	dVar = __fsel(dVar-fInput,dVar,dVar+1.0f);
 
 	// Return as an integer (Load/Hit/Store)
-	Int32 iResult;
+	int32_t iResult;
 	__stfiwx(__fctiw(dVar),0,&iResult);
 	return iResult;
 }
 
-void Burger::FloatToIntCeil(Int32 *pOutput,float fInput) 
+void Burger::FloatToIntCeil(int32_t *pOutput,float fInput) 
 { 
 	// Convert to the input to an integer
 	double dVar = __fcfid(__fctidz(fInput));
@@ -698,7 +698,7 @@ void Burger::FloatToIntCeil(Int32 *pOutput,float fInput)
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM Int32 BURGER_API Burger::FloatToIntCeil(float /* fInput */)
+BURGER_ASM int32_t BURGER_API Burger::FloatToIntCeil(float /* fInput */)
 {
 	lwz		r3,g_fMinNoInteger
 	mffs	fp4						// Save the rounding register
@@ -719,7 +719,7 @@ BURGER_ASM Int32 BURGER_API Burger::FloatToIntCeil(float /* fInput */)
 	blr
 }
 
-BURGER_ASM void BURGER_API Burger::FloatToIntCeil(Int32 * /* pOutput */,float /* fInput */ )
+BURGER_ASM void BURGER_API Burger::FloatToIntCeil(int32_t * /* pOutput */,float /* fInput */ )
 {
 	lwz		r4,g_fMinNoInteger
 	mffs	fp4						// Save the rounding register
@@ -740,7 +740,7 @@ BURGER_ASM void BURGER_API Burger::FloatToIntCeil(Int32 * /* pOutput */,float /*
 
 #else
 
-Int32 BURGER_API Burger::FloatToIntCeil(float fInput)
+int32_t BURGER_API Burger::FloatToIntCeil(float fInput)
 {
 	int iVar = static_cast<int>(fInput);			// Convert to an int
 	float fVar = static_cast<float>(iVar);
@@ -770,11 +770,11 @@ Int32 BURGER_API Burger::FloatToIntCeil(float fInput)
 
 	\param pOutput A valid pointer to a 32-bit integer to receive the result.
 	\param fInput A valid single precision floating point number.
-	\sa FloatToIntCeil(float), FloatToIntFloor(Int32 *,float), FloatToIntRoundToZero(Int32 *,float), or FloatToIntRound(Int32 *,float)
+	\sa FloatToIntCeil(float), FloatToIntFloor(int32_t *,float), FloatToIntRoundToZero(int32_t *,float), or FloatToIntRound(int32_t *,float)
 	
 ***************************************/
 
-void BURGER_API Burger::FloatToIntCeil(Int32 *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntCeil(int32_t *pOutput,float fInput)
 {
 	int iVar = static_cast<int>(fInput);			// Convert to an int
 	float fVar = static_cast<float>(iVar);
@@ -808,13 +808,13 @@ void BURGER_API Burger::FloatToIntCeil(Int32 *pOutput,float fInput)
 	\param fInput A valid single precision floating point number.
 	\return Signed integer equivalent value after applying round to nearest on the floating point number.
 
-	\sa FloatToIntRound(Int32 *,float), FloatToIntFloor(float), FloatToIntRoundToZero(float), or FloatToIntCeil(float)
+	\sa FloatToIntRound(int32_t *,float), FloatToIntFloor(float), FloatToIntRoundToZero(float), or FloatToIntCeil(float)
 
 ***************************************/
 
 #if defined(BURGER_X86) && (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || defined(BURGER_MSVC))
 
-BURGER_DECLSPECNAKED Int32 BURGER_API Burger::FloatToIntRound(float /* fInput */)
+BURGER_DECLSPECNAKED int32_t BURGER_API Burger::FloatToIntRound(float /* fInput */)
 {
 BURGER_ASM {
 	mov		eax,dword ptr [esp+4]	// Get the sign bit
@@ -831,7 +831,7 @@ BURGER_ASM {
 }
 }
 
-BURGER_DECLSPECNAKED void BURGER_API Burger::FloatToIntRound(Int32 * /* pOutput */,float /* fInput */)
+BURGER_DECLSPECNAKED void BURGER_API Burger::FloatToIntRound(int32_t * /* pOutput */,float /* fInput */)
 {
 BURGER_ASM {
 
@@ -870,7 +870,7 @@ BURGER_ASM {
 
 #elif defined(BURGER_AMD64) || (defined(BURGER_INTEL) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))
 
-Int32 BURGER_API Burger::FloatToIntRound(float fInput)
+int32_t BURGER_API Burger::FloatToIntRound(float fInput)
 {
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
@@ -910,7 +910,7 @@ Int32 BURGER_API Burger::FloatToIntRound(float fInput)
 	return _mm_cvtsi128_si32(iVar);
 }
 
-void BURGER_API Burger::FloatToIntRound(Int32 *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntRound(int32_t *pOutput,float fInput)
 {
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
@@ -953,7 +953,7 @@ void BURGER_API Burger::FloatToIntRound(Int32 *pOutput,float fInput)
 
 #elif defined(BURGER_XBOX360) || (defined(BURGER_POWERPC64) && defined(BURGER_MACOSX))
 
-Int32 BURGER_API Burger::FloatToIntRound(float fInput)
+int32_t BURGER_API Burger::FloatToIntRound(float fInput)
 {
 	// Get the absolute value
 	double dAbs = fabs(fInput);
@@ -971,12 +971,12 @@ Int32 BURGER_API Burger::FloatToIntRound(float fInput)
 	dVar = __fsel(static_cast<double>(fInput),dVar,-dVar);
 
 	// Return as an integer (Load/Hit/Store)
-	Int32 iResult;
+	int32_t iResult;
 	__stfiwx(__fctiw(dVar),0,&iResult);
 	return iResult;
 }
 
-void BURGER_API Burger::FloatToIntRound(Int32 *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntRound(int32_t *pOutput,float fInput)
 {
 	// Get the absolute value
 	double dAbs = fabs(fInput);
@@ -999,7 +999,7 @@ void BURGER_API Burger::FloatToIntRound(Int32 *pOutput,float fInput)
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM Int32 BURGER_API Burger::FloatToIntRound(float /* fInput */)
+BURGER_ASM int32_t BURGER_API Burger::FloatToIntRound(float /* fInput */)
 {
 	lwz		r3,g_fMinNoInteger
 	fabs	fp0,fp1					// Get the abs value to test
@@ -1025,7 +1025,7 @@ BURGER_ASM Int32 BURGER_API Burger::FloatToIntRound(float /* fInput */)
 	blr
 }
 
-BURGER_ASM void BURGER_API Burger::FloatToIntRound(Int32 * /* pOutput */,float /* fInput */ )
+BURGER_ASM void BURGER_API Burger::FloatToIntRound(int32_t * /* pOutput */,float /* fInput */ )
 {
 	lwz		r4,g_fMinNoInteger
 	fabs	fp0,fp1					// Get the abs value to test
@@ -1051,9 +1051,9 @@ BURGER_ASM void BURGER_API Burger::FloatToIntRound(Int32 * /* pOutput */,float /
 
 #else
 
-Int32 BURGER_API Burger::FloatToIntRound(float fInput)
+int32_t BURGER_API Burger::FloatToIntRound(float fInput)
 {
-	Int32 iVal = static_cast<Int32>(fInput);
+	int32_t iVal = static_cast<int32_t>(fInput);
 	float fVal = static_cast<float>(iVal);
 	float fDiff = Abs(fInput-fVal);
 	if (fDiff>=0.5f) {
@@ -1086,13 +1086,13 @@ Int32 BURGER_API Burger::FloatToIntRound(float fInput)
 
 	\param pOutput A valid pointer to a 32-bit integer to receive the result.
 	\param fInput A valid single precision floating point number.
-	\sa FloatToIntRound(float), FloatToIntFloor(Int32 *,float), FloatToIntRoundToZero(Int32 *,float), or FloatToIntCeil(Int32 *,float)
+	\sa FloatToIntRound(float), FloatToIntFloor(int32_t *,float), FloatToIntRoundToZero(int32_t *,float), or FloatToIntCeil(int32_t *,float)
 	
 ***************************************/
 
-void BURGER_API Burger::FloatToIntRound(Int32 *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntRound(int32_t *pOutput,float fInput)
 {
-	Int32 iVal = static_cast<Int32>(fInput);
+	int32_t iVal = static_cast<int32_t>(fInput);
 	float fVal = static_cast<float>(iVal);
 	float fDiff = Abs(fInput-fVal);
 	if (fDiff>=0.5f) {
@@ -1110,7 +1110,7 @@ void BURGER_API Burger::FloatToIntRound(Int32 *pOutput,float fInput)
 
 /*! ************************************
 
-	\fn Int32 Burger::FloatToIntRoundToZero(float fInput)
+	\fn int32_t Burger::FloatToIntRoundToZero(float fInput)
 	\brief Convert a 32 bit float to an integer using round to zero.
 
 	Convert a single precision floating point number to an integer
@@ -1130,18 +1130,18 @@ void BURGER_API Burger::FloatToIntRound(Int32 *pOutput,float fInput)
 	\param fInput A valid single precision floating point number.
 	\return Signed integer equivalent value after applying round to zero on the floating point number.
 
-	\sa FloatToIntRoundToZero(Int32 *,float), FloatToIntFloor(float), FloatToIntCeil(float), or FloatToIntRound(float)
+	\sa FloatToIntRoundToZero(int32_t *,float), FloatToIntFloor(float), FloatToIntCeil(float), or FloatToIntRound(float)
 
 ***************************************/
 
-Int32 BURGER_API Burger::FloatToIntRoundToZero(float fInput)
+int32_t BURGER_API Burger::FloatToIntRoundToZero(float fInput)
 {
-	return static_cast<Int32>(fInput);		// Round to zero
+	return static_cast<int32_t>(fInput);		// Round to zero
 }
 
 /*! ************************************
 
-	\fn void Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
+	\fn void Burger::FloatToIntRoundToZero(int32_t *pOutput,float fInput)
 	\brief Convert a 32 bit float to an integer using round to zero.
 
 	Convert a single precision floating point number to an integer
@@ -1160,13 +1160,13 @@ Int32 BURGER_API Burger::FloatToIntRoundToZero(float fInput)
 
 	\param pOutput A valid pointer to a 32-bit integer to receive the result.
 	\param fInput A valid single precision floating point number.
-	\sa FloatToIntRoundToZero(float), FloatToIntFloor(Int32 *,float), FloatToIntCeil(Int32 *,float), or FloatToIntRound(Int32 *,float)
+	\sa FloatToIntRoundToZero(float), FloatToIntFloor(int32_t *,float), FloatToIntCeil(int32_t *,float), or FloatToIntRound(int32_t *,float)
 	
 ***************************************/
 
-void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntRoundToZero(int32_t *pOutput,float fInput)
 {
-	pOutput[0] = static_cast<Int32>(fInput);		// Round to zero
+	pOutput[0] = static_cast<int32_t>(fInput);		// Round to zero
 }
 
 
@@ -1286,7 +1286,7 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 
 /*! ************************************
 
-	\fn Int8 Burger::Abs(Int8 iInput)
+	\fn int8_t Burger::Abs(int8_t iInput)
 	\brief Get the absolute value of an integer.
 	
 	Without branching, calculate the absolute value of an integer.
@@ -1294,13 +1294,13 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param iInput Value to get the absolute value of.
 	\return The absolute value of iInput.
 	
-	\sa Abs(Int16), Abs(Int32), Abs(Int64), Abs(float) and Abs(double) 
+	\sa Abs(int16_t), Abs(int32_t), Abs(int64_t), Abs(float) and Abs(double) 
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Int16 Burger::Abs(Int16 iInput)
+	\fn int16_t Burger::Abs(int16_t iInput)
 	\brief Get the absolute value of an integer.
 	
 	Without branching, calculate the absolute value of an integer.
@@ -1308,13 +1308,13 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param iInput Value to get the absolute value of.
 	\return The absolute value of iInput.
 	
-	\sa Abs(Int8), Abs(Int32), Abs(Int64), Abs(float) and Abs(double) 
+	\sa Abs(int8_t), Abs(int32_t), Abs(int64_t), Abs(float) and Abs(double) 
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Int32 Burger::Abs(Int32 iInput)
+	\fn int32_t Burger::Abs(int32_t iInput)
 	\brief Get the absolute value of an integer.
 	
 	Without branching, calculate the absolute value of an integer.
@@ -1322,13 +1322,13 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param iInput Value to get the absolute value of.
 	\return The absolute value of iInput.
 	
-	\sa Abs(Int8), Abs(Int16), Abs(Int64), Abs(float) and Abs(double) 
+	\sa Abs(int8_t), Abs(int16_t), Abs(int64_t), Abs(float) and Abs(double) 
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Int64 Burger::Abs(Int64 iInput)
+	\fn int64_t Burger::Abs(int64_t iInput)
 	\brief Get the absolute value of a 64 bit integer.
 	
 	Without branching, calculate the absolute value of an integer.
@@ -1336,7 +1336,7 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param iInput Value to get the absolute value of.
 	\return The absolute value of iInput.
 	
-	\sa Abs(Int8), Abs(Int16), Abs(Int32), Abs(float) and Abs(double) 
+	\sa Abs(int8_t), Abs(int16_t), Abs(int32_t), Abs(float) and Abs(double) 
 	
 ***************************************/
 
@@ -1344,7 +1344,7 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 
 /*! ************************************
 
-	\fn Int8 Burger::ClampZero(Int8 iInput)
+	\fn int8_t Burger::ClampZero(int8_t iInput)
 	\brief Clamp an integer to 0
 	
 	Without branching, if the integer is less than zero, set it to zero.
@@ -1352,13 +1352,13 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param iInput Value to test for less than zero.
 	\return The zero clamped value of iInput.
 	
-	\sa ClampZero(Int16), ClampZero(Int32) or ClampZero(Int64)
+	\sa ClampZero(int16_t), ClampZero(int32_t) or ClampZero(int64_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Int16 Burger::ClampZero(Int16 iInput)
+	\fn int16_t Burger::ClampZero(int16_t iInput)
 	\brief Clamp an integer to 0
 	
 	Without branching, if the integer is less than zero, set it to zero.
@@ -1366,13 +1366,13 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param iInput Value to test for less than zero.
 	\return The zero clamped value of iInput.
 	
-	\sa ClampZero(Int8), ClampZero(Int32) or ClampZero(Int64)
+	\sa ClampZero(int8_t), ClampZero(int32_t) or ClampZero(int64_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Int32 Burger::ClampZero(Int32 iInput)
+	\fn int32_t Burger::ClampZero(int32_t iInput)
 	\brief Clamp an integer to 0
 	
 	Without branching, if the integer is less than zero, set it to zero.
@@ -1380,13 +1380,13 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param iInput Value to test for less than zero.
 	\return The zero clamped value of iInput.
 	
-	\sa ClampZero(Int8), ClampZero(Int16) or ClampZero(Int64)
+	\sa ClampZero(int8_t), ClampZero(int16_t) or ClampZero(int64_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Int64 Burger::ClampZero(Int64 iInput)
+	\fn int64_t Burger::ClampZero(int64_t iInput)
 	\brief Clamp an integer to 0
 	
 	Without branching, if the integer is less than zero, set it to zero.
@@ -1394,7 +1394,7 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param iInput Value to test for less than zero.
 	\return The zero clamped value of iInput.
 	
-	\sa ClampZero(Int8), ClampZero(Int16) or ClampZero(Int32)
+	\sa ClampZero(int8_t), ClampZero(int16_t) or ClampZero(int32_t)
 	
 ***************************************/
 
@@ -1402,7 +1402,7 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 
 /*! ************************************
 
-	\fn Int8 Burger::Sign(Int8 iInput)
+	\fn int8_t Burger::Sign(int8_t iInput)
 	\brief Get the sign value of an integer.
 	
 	Without branching, calculate the sign value of an integer. If
@@ -1412,13 +1412,13 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param iInput Value to get the sign value of.
 	\return 0, 1 or -1.
 	
-	\sa Sign(Int16), Sign(Int32), Sign(Int64), Sign(float) and Sign(double) 
+	\sa Sign(int16_t), Sign(int32_t), Sign(int64_t), Sign(float) and Sign(double) 
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Int16 Burger::Sign(Int16 iInput)
+	\fn int16_t Burger::Sign(int16_t iInput)
 	\brief Get the sign value of an integer.
 	
 	Without branching, calculate the sign value of an integer. If
@@ -1428,13 +1428,13 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param iInput Value to get the sign value of.
 	\return 0, 1 or -1.
 	
-	\sa Sign(Int8), Sign(Int32), Sign(Int64), Sign(float) and Sign(double) 
+	\sa Sign(int8_t), Sign(int32_t), Sign(int64_t), Sign(float) and Sign(double) 
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Int32 Burger::Sign(Int32 iInput)
+	\fn int32_t Burger::Sign(int32_t iInput)
 	\brief Get the sign value of an integer.
 	
 	Without branching, calculate the sign value of an integer. If
@@ -1444,13 +1444,13 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param iInput Value to get the sign value of.
 	\return 0, 1 or -1.
 	
-	\sa Sign(Int8), Sign(Int16), Sign(Int64), Sign(float) and Sign(double) 
+	\sa Sign(int8_t), Sign(int16_t), Sign(int64_t), Sign(float) and Sign(double) 
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Int64 Burger::Sign(Int64 iInput)
+	\fn int64_t Burger::Sign(int64_t iInput)
 	\brief Get the sign value of a 64 bit integer.
 	
 	Without branching, calculate the sign value of an integer. If
@@ -1460,14 +1460,14 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param iInput Value to get the sign value of.
 	\return 0, 1 or -1.
 	
-	\sa Sign(Int8), Sign(Int16), Sign(Int32), Sign(float) and Sign(double) 
+	\sa Sign(int8_t), Sign(int16_t), Sign(int32_t), Sign(float) and Sign(double) 
 	
 ***************************************/
 
 
 /*! ************************************
 
-	\fn Int32 Burger::Clamp(Int32 iInput,Int32 iMin,Int32 iMax)
+	\fn int32_t Burger::Clamp(int32_t iInput,int32_t iMin,int32_t iMax)
 	\brief Clamp the input between a bounds
 
 	If the input value is less than the minimum, return the minimum
@@ -1481,13 +1481,13 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param iMax Maximum allowed value
 	\return The value clamped between the bounds
 
-	\sa Clamp(Word64,Word64,Word64), Clamp(Int64,Int64,Int64), or Clamp(Word32,Word32,Word32)
+	\sa Clamp(uint64_t,uint64_t,uint64_t), Clamp(int64_t,int64_t,int64_t), or Clamp(uint32_t,uint32_t,uint32_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Int64 Burger::Clamp(Int64 iInput,Int64 iMin,Int64 iMax)
+	\fn int64_t Burger::Clamp(int64_t iInput,int64_t iMin,int64_t iMax)
 	\brief Clamp the input between a bounds
 
 	If the input value is less than the minimum, return the minimum
@@ -1501,13 +1501,13 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param iMax Maximum allowed value
 	\return The value clamped between the bounds
 
-	\sa Clamp(Word32,Word32,Word32), Clamp(Int32,Int32,Int32), or Clamp(Word64,Word64,Word64)
+	\sa Clamp(uint32_t,uint32_t,uint32_t), Clamp(int32_t,int32_t,int32_t), or Clamp(uint64_t,uint64_t,uint64_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Word32 Burger::Clamp(Word32 uInput,Word32 uMin,Word32 uMax)
+	\fn uint32_t Burger::Clamp(uint32_t uInput,uint32_t uMin,uint32_t uMax)
 	\brief Clamp the input between a bounds
 
 	If the input value is less than the minimum, return the minimum
@@ -1521,13 +1521,13 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param uMax Maximum allowed value
 	\return The value clamped between the bounds
 
-	\sa Clamp(Int64,Int64,Int64), Clamp(Word64,Word64,Word64), or Clamp(Int32,Int32,Int32)
+	\sa Clamp(int64_t,int64_t,int64_t), Clamp(uint64_t,uint64_t,uint64_t), or Clamp(int32_t,int32_t,int32_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Word64 Burger::Clamp(Word64 uInput,Word64 uMin,Word64 uMax)
+	\fn uint64_t Burger::Clamp(uint64_t uInput,uint64_t uMin,uint64_t uMax)
 	\brief Clamp the input between a bounds
 
 	If the input value is less than the minimum, return the minimum
@@ -1541,7 +1541,7 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 	\param uMax Maximum allowed value
 	\return The value clamped between the bounds
 
-	\sa Clamp(Int32,Int32,Int32), Clamp(Word32,Word32,Word32), or Clamp(Int64,Int64,Int64)
+	\sa Clamp(int32_t,int32_t,int32_t), Clamp(uint32_t,uint32_t,uint32_t), or Clamp(int64_t,int64_t,int64_t)
 	
 ***************************************/
 
@@ -1570,7 +1570,7 @@ void BURGER_API Burger::FloatToIntRoundToZero(Int32 *pOutput,float fInput)
 #else
 Fixed32 BURGER_API Burger::FixedMultiply(Fixed32 fInput1,Fixed32 fInput2)
 {
-	Int64 iFoo = static_cast<Int64>(fInput1)*static_cast<Int64>(fInput2);
+	int64_t iFoo = static_cast<int64_t>(fInput1)*static_cast<int64_t>(fInput2);
 	return static_cast<Fixed32>(iFoo>>16);
 }
 #endif
@@ -1600,7 +1600,7 @@ Fixed32 BURGER_API Burger::FixedMultiply(Fixed32 fInput1,Fixed32 fInput2)
 #else
 Fixed32 BURGER_API Burger::FixedDivide(Fixed32 fInputNumerator,Fixed32 fInputDenominator)
 {
-	Int64 iFoo = (static_cast<Int64>(fInputNumerator)<<16)/static_cast<Int64>(fInputDenominator);
+	int64_t iFoo = (static_cast<int64_t>(fInputNumerator)<<16)/static_cast<int64_t>(fInputDenominator);
 	return static_cast<Fixed32>(iFoo>>16);
 }
 #endif
@@ -1634,8 +1634,8 @@ Fixed32 BURGER_API Burger::FixedDivide(Fixed32 fInputNumerator,Fixed32 fInputDen
 Fixed32 BURGER_API Burger::FixedReciprocal(Fixed32 fInput)
 {
 	if (fInput!=-1) {
-		if (static_cast<Word32>(fInput)>=2) {		// Prevent a divide by zero
-			Word32 uFoo = static_cast<Word32>(Abs(fInput));
+		if (static_cast<uint32_t>(fInput)>=2) {		// Prevent a divide by zero
+			uint32_t uFoo = static_cast<uint32_t>(Abs(fInput));
 			uFoo = 0x80000000UL/(uFoo>>1);
 			if (fInput<0) {
 				return -static_cast<Fixed32>(uFoo);
@@ -1667,16 +1667,16 @@ Fixed32 BURGER_API Burger::FixedReciprocal(Fixed32 fInput)
 	
 ***************************************/
 
-Word32 BURGER_API Burger::Sqrt(Word32 uInput)
+uint32_t BURGER_API Burger::Sqrt(uint32_t uInput)
 {
 	// Perform the square root
 
 #if 0
-	Word i = 16;
-	Word32 TestValue = 0x40000000;
-	Word32 Result = 0;
+	uint_t i = 16;
+	uint32_t TestValue = 0x40000000;
+	uint32_t Result = 0;
 	do {
-		Word32 ToTest = Result+TestValue;
+		uint32_t ToTest = Result+TestValue;
 		Result>>=1;
 		if (uInput>=ToTest) {
 			Result = Result+TestValue;
@@ -1692,7 +1692,7 @@ Word32 BURGER_API Burger::Sqrt(Word32 uInput)
 	// This version is the function above, but unrolled
 	// for performance
 	
-	Word32 Result = 0;
+	uint32_t Result = 0;
 	if (uInput>=0x40000000) {
 		Result = 0x40000000;
 		uInput -= 0x40000000;
@@ -1700,7 +1700,7 @@ Word32 BURGER_API Burger::Sqrt(Word32 uInput)
 
 	// Here is where the fun begins
 
-	Word32 ToTest = Result + 0x10000000;
+	uint32_t ToTest = Result + 0x10000000;
 	Result>>= 1;
 	if (uInput>=ToTest) {
 		Result =Result+0x10000000;
@@ -1832,20 +1832,20 @@ Word32 BURGER_API Burger::Sqrt(Word32 uInput)
 	for the fraction so if the calculated square root is 1.6, it will
 	return 2.
 	
-	\sa Burger::Sqrt(Word32)
+	\sa Burger::Sqrt(uint32_t)
 
 ***************************************/
 
-Word32 BURGER_API Burger::SqrtFixedToWord32(Fixed32 fInput)
+uint32_t BURGER_API Burger::SqrtFixedToWord32(Fixed32 fInput)
 {
 	// Perform the square root
 	
 	if (fInput<0) {
 		return 0;
 	}
-	Word32 uInput = static_cast<Word32>(fInput);
+	uint32_t uInput = static_cast<uint32_t>(fInput);
 	
-	Word32 Result = 0;
+	uint32_t Result = 0;
 	if (uInput>=0x40000000) {
 		Result = 0x40000000;
 		uInput -= 0x40000000;
@@ -1853,7 +1853,7 @@ Word32 BURGER_API Burger::SqrtFixedToWord32(Fixed32 fInput)
 
 	// Here is where the fun begins
 
-	Word32 ToTest = Result + 0x10000000;
+	uint32_t ToTest = Result + 0x10000000;
 	Result>>= 1;
 	if (uInput>=ToTest) {
 		Result =Result+0x10000000;
@@ -1931,7 +1931,7 @@ Word32 BURGER_API Burger::SqrtFixedToWord32(Fixed32 fInput)
 	\param fInput Value to return the square root of.
 	\return Return the square root as a \ref Fixed32.
 	
-	\sa Burger::Sqrt(Word32), Burger::Sqrt(float), and Burger::Sqrt(double)
+	\sa Burger::Sqrt(uint32_t), Burger::Sqrt(float), and Burger::Sqrt(double)
 
 ***************************************/
 
@@ -1940,11 +1940,11 @@ Fixed32 BURGER_API Burger::Sqrt(Fixed32 fInput)
 	if (fInput<0) {
 		return 0;
 	}
-	Word32 uInput = static_cast<Word32>(fInput);
+	uint32_t uInput = static_cast<uint32_t>(fInput);
 
 	// This is simplified since most are constants
 
-	Word32 Result = 0;
+	uint32_t Result = 0;
 	if (uInput>=0x40000000) {
 		Result = 0x40000000;
 		uInput -= 0x40000000;
@@ -1952,7 +1952,7 @@ Fixed32 BURGER_API Burger::Sqrt(Fixed32 fInput)
 
 	/* Here is where the fun begins */
 
-	Word32 ToTest = Result + 0x10000000;
+	uint32_t ToTest = Result + 0x10000000;
 	Result>>= 1;
 	if (uInput>=ToTest) {
 		Result =Result+0x10000000;
@@ -2131,7 +2131,7 @@ Fixed32 BURGER_API Burger::Sqrt(Fixed32 fInput)
 
 /*! ************************************
 
-	\fn Word32 Burger::RotateLeft(Word32 uInput,Word uShiftCount)
+	\fn uint32_t Burger::RotateLeft(uint32_t uInput,uint_t uShiftCount)
 	\brief Rotate the bits left
 	
 	Using a compiler intrinsic where supported, rotate the bits in
@@ -2141,13 +2141,13 @@ Fixed32 BURGER_API Burger::Sqrt(Fixed32 fInput)
 	\param uShiftCount 0 to 31, number of bits to shift.
 	\return The value with the bits rotated
 	
-	\sa RotateLeft(Word64,Word) or RotateRight(Word32,Word)
+	\sa RotateLeft(uint64_t,uint_t) or RotateRight(uint32_t,uint_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Word32 Burger::RotateRight(Word32 uInput,Word uShiftCount)
+	\fn uint32_t Burger::RotateRight(uint32_t uInput,uint_t uShiftCount)
 	\brief Rotate the bits right
 	
 	Using a compiler intrinsic where supported, rotate the bits in
@@ -2157,13 +2157,13 @@ Fixed32 BURGER_API Burger::Sqrt(Fixed32 fInput)
 	\param uShiftCount 0 to 31, number of bits to shift.
 	\return The value with the bits rotated
 	
-	\sa RotateRight(Word64,Word) or RotateLeft(Word32,Word)
+	\sa RotateRight(uint64_t,uint_t) or RotateLeft(uint32_t,uint_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Word64 Burger::RotateLeft(Word64 uInput,Word uShiftCount)
+	\fn uint64_t Burger::RotateLeft(uint64_t uInput,uint_t uShiftCount)
 	\brief Rotate the bits left
 	
 	Using a compiler intrinsic where supported, rotate the bits in
@@ -2173,13 +2173,13 @@ Fixed32 BURGER_API Burger::Sqrt(Fixed32 fInput)
 	\param uShiftCount 0 to 63, number of bits to shift.
 	\return The value with the bits rotated
 	
-	\sa RotateLeft(Word32,Word) or RotateRight(Word64,Word)
+	\sa RotateLeft(uint32_t,uint_t) or RotateRight(uint64_t,uint_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn Word64 Burger::RotateRight(Word64 uInput,Word uShiftCount)
+	\fn uint64_t Burger::RotateRight(uint64_t uInput,uint_t uShiftCount)
 	\brief Rotate the bits right
 	
 	Using a compiler intrinsic where supported, rotate the bits in
@@ -2189,6 +2189,6 @@ Fixed32 BURGER_API Burger::Sqrt(Fixed32 fInput)
 	\param uShiftCount 0 to 63, number of bits to shift.
 	\return The value with the bits rotated
 	
-	\sa RotateRight(Word32,Word) or RotateLeft(Word64,Word)
+	\sa RotateRight(uint32_t,uint_t) or RotateLeft(uint64_t,uint_t)
 	
 ***************************************/

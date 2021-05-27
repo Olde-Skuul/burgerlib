@@ -43,37 +43,37 @@ extern "C" const float g_fBurgerMath65536;
 #define FIXEDTOINT(x) static_cast<int>((x+((x>>31)&0xFFFF))>>16)
 
 namespace Burger {
-	const Word16 MaxWord16 = 0xFFFFU;					///< Maximum value for \ref Word16 (Minimum is 0)
-	const Word32 MaxWord32 = 0xFFFFFFFFU;				///< Maximum value for \ref Word32 (Minimum is 0)
-	const Word64 MaxWord64 = 0xFFFFFFFFFFFFFFFFULL;		///< Maximum value for \ref Word64 (Minimum is 0)
-	const Int16 MinInt16 = (-0x7FFF)-1;					///< Minimum value for \ref Int16
-	const Int16 MaxInt16 = 0x7FFF;						///< Maximum value for \ref Int16
-	const Int32 MinInt32 = (-0x7FFFFFFF)-1;				///< Minimum value for \ref Int32
-	const Int32 MaxInt32 = 0x7FFFFFFF;					///< Maximum value for \ref Int32
-	const Int64 MinInt64 = (-0x7FFFFFFFFFFFFFFFLL)-1;	///< Minimum value for \ref Int64
-	const Int64 MaxInt64 = 0x7FFFFFFFFFFFFFFFLL;		///< Maximum value for \ref Int64
+	const uint16_t MaxWord16 = 0xFFFFU;					///< Maximum value for uint16_t (Minimum is 0)
+	const uint32_t MaxWord32 = 0xFFFFFFFFU;				///< Maximum value for uint32_t (Minimum is 0)
+	const uint64_t MaxWord64 = 0xFFFFFFFFFFFFFFFFULL;		///< Maximum value for uint64_t (Minimum is 0)
+	const int16_t MinInt16 = (-0x7FFF)-1;					///< Minimum value for int16_t
+	const int16_t MaxInt16 = 0x7FFF;						///< Maximum value for int16_t
+	const int32_t MinInt32 = (-0x7FFFFFFF)-1;				///< Minimum value for int32_t
+	const int32_t MaxInt32 = 0x7FFFFFFF;					///< Maximum value for int32_t
+	const int64_t MinInt64 = (-0x7FFFFFFFFFFFFFFFLL)-1;	///< Minimum value for int64_t
+	const int64_t MaxInt64 = 0x7FFFFFFFFFFFFFFFLL;		///< Maximum value for int64_t
 	const Frac32 MinFrac32 = (-0x7FFFFFFF)-1;			///< Minimum value for \ref Frac32
 	const Frac32 MaxFrac32 = 0x7FFFFFFF;				///< Maximum value for \ref Frac32
 	const Fixed32 MinFixed32 = (-0x7FFFFFFF)-1;			///< Minimum value for \ref Fixed32
 	const Fixed32 MaxFixed32 = 0x7FFFFFFF;				///< Maximum value for \ref Fixed32
 	const Fixed32 PiFixed32 = 0x003243F;				///< Pi in \ref Fixed32 format (3.141... * 65536 = 205887.416)
-	BURGER_INLINE Word GetLoWord(Word32 uInput)	{ return (uInput&0xFFFFU); }
-	BURGER_INLINE Word GetHiWord(Word32 uInput) { return (uInput>>16); }
-	BURGER_INLINE Fixed32 IntToFixed(Int32 iInput) { return static_cast<Fixed32>(iInput<<16); }
-	extern Fixed32 BURGER_API IntToFixedSaturate(Int32 iInput);
-	BURGER_INLINE Int32 FixedToIntFloor(Fixed32 fInput) { return static_cast<Int32>(fInput>>16); }
-	BURGER_INLINE Int32 FixedToInt(Fixed32 fInput) { return static_cast<Int32>((fInput+((fInput>>31)&0xFFFF))>>16); }
-	BURGER_INLINE Int32 FixedToIntCeil(Fixed32 fInput) { return static_cast<Int32>((fInput+0xFFFF)>>16); }
-	BURGER_INLINE Int32 FixedToIntNearest(Fixed32 fInput) { return static_cast<Int32>((fInput+0x8000-(static_cast<Word32>(fInput)>>31U)))>>16; }
+	BURGER_INLINE uint_t GetLoWord(uint32_t uInput)	{ return (uInput&0xFFFFU); }
+	BURGER_INLINE uint_t GetHiWord(uint32_t uInput) { return (uInput>>16); }
+	BURGER_INLINE Fixed32 IntToFixed(int32_t iInput) { return static_cast<Fixed32>(iInput<<16); }
+	extern Fixed32 BURGER_API IntToFixedSaturate(int32_t iInput);
+	BURGER_INLINE int32_t FixedToIntFloor(Fixed32 fInput) { return static_cast<int32_t>(fInput>>16); }
+	BURGER_INLINE int32_t FixedToInt(Fixed32 fInput) { return static_cast<int32_t>((fInput+((fInput>>31)&0xFFFF))>>16); }
+	BURGER_INLINE int32_t FixedToIntCeil(Fixed32 fInput) { return static_cast<int32_t>((fInput+0xFFFF)>>16); }
+	BURGER_INLINE int32_t FixedToIntNearest(Fixed32 fInput) { return static_cast<int32_t>((fInput+0x8000-(static_cast<uint32_t>(fInput)>>31U)))>>16; }
 
-	extern Int32 BURGER_API FloatToIntFloor(float fInput);
-	extern void BURGER_API FloatToIntFloor(Int32 *pOutput,float fInput);
-	extern Int32 BURGER_API FloatToIntCeil(float fInput);
-	extern void BURGER_API FloatToIntCeil(Int32 *pOutput,float fInput);
-	extern Int32 BURGER_API FloatToIntRound(float fInput);
-	extern void BURGER_API FloatToIntRound(Int32 *pOutput,float fInput);
-	extern Int32 BURGER_API FloatToIntRoundToZero(float fInput);
-	extern void BURGER_API FloatToIntRoundToZero(Int32 *pOutput,float fInput);
+	extern int32_t BURGER_API FloatToIntFloor(float fInput);
+	extern void BURGER_API FloatToIntFloor(int32_t *pOutput,float fInput);
+	extern int32_t BURGER_API FloatToIntCeil(float fInput);
+	extern void BURGER_API FloatToIntCeil(int32_t *pOutput,float fInput);
+	extern int32_t BURGER_API FloatToIntRound(float fInput);
+	extern void BURGER_API FloatToIntRound(int32_t *pOutput,float fInput);
+	extern int32_t BURGER_API FloatToIntRoundToZero(float fInput);
+	extern void BURGER_API FloatToIntRoundToZero(int32_t *pOutput,float fInput);
 
 #if defined(BURGER_WATCOM)
 	BURGER_INLINE Fixed32 FloatToFixedFloor(float fInput) { return BurgerFixedMathFromFloatFloor(fInput); }
@@ -169,7 +169,7 @@ namespace Burger {
 	}
 
 #elif defined(BURGER_X86) && defined(BURGER_MSVC)
-	BURGER_INLINE Int32 FloatToFixedFloor(float fInput) {
+	BURGER_INLINE int32_t FloatToFixedFloor(float fInput) {
 		__asm {
 			fld DWORD PTR [fInput]
 			fmul DWORD PTR [g_fBurgerMath65536]
@@ -178,7 +178,7 @@ namespace Burger {
 		}
 		return reinterpret_cast<Fixed32 *>(&fInput)[0]; 
 	}
-	BURGER_INLINE Int32 FloatToFixed(float fInput) { 
+	BURGER_INLINE int32_t FloatToFixed(float fInput) { 
 		__asm {
 			fld DWORD PTR [fInput]
 			fmul DWORD PTR [g_fBurgerMath65536]
@@ -189,7 +189,7 @@ namespace Burger {
 		}
 		return reinterpret_cast<Fixed32 *>(&fInput)[0]; 
 	}
-	BURGER_INLINE Int32 FloatToFixedCeil(float fInput) { 
+	BURGER_INLINE int32_t FloatToFixedCeil(float fInput) { 
 		__asm {
 			fld DWORD PTR [fInput]
 			fmul DWORD PTR [g_fBurgerMath65536]
@@ -198,7 +198,7 @@ namespace Burger {
 		}
 		return reinterpret_cast<Fixed32 *>(&fInput)[0]; 
 	}
-	BURGER_INLINE Int32 FloatToFixedNearest(float fInput) { 
+	BURGER_INLINE int32_t FloatToFixedNearest(float fInput) { 
 		__asm {
 			fld DWORD PTR [fInput]
 			fmul DWORD PTR [g_fBurgerMath65536]
@@ -249,41 +249,41 @@ namespace Burger {
 	BURGER_INLINE Fixed32 FloatToFixed(float fInput) { return static_cast<Fixed32>(FloatToIntRoundToZero(fInput*65536.0f)); }
 	BURGER_INLINE Fixed32 FloatToFixedCeil(float fInput) { return static_cast<Fixed32>(FloatToIntCeil(fInput*65536.0f)); }
 	BURGER_INLINE Fixed32 FloatToFixedNearest(float fInput) { return static_cast<Fixed32>(FloatToIntRound(fInput*65536.0f)); }
-	BURGER_INLINE void FloatToFixedFloor(Fixed32 *pOutput,float fInput) { FloatToIntFloor(reinterpret_cast<Int32*>(pOutput),fInput*65536.0f); }
-	BURGER_INLINE void FloatToFixed(Fixed32 *pOutput,float fInput) { FloatToIntRoundToZero(reinterpret_cast<Int32*>(pOutput),fInput*65536.0f); }
-	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) { FloatToIntCeil(reinterpret_cast<Int32*>(pOutput),fInput*65536.0f); }
-	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) { FloatToIntRound(reinterpret_cast<Int32*>(pOutput),fInput*65536.0f); }
+	BURGER_INLINE void FloatToFixedFloor(Fixed32 *pOutput,float fInput) { FloatToIntFloor(reinterpret_cast<int32_t*>(pOutput),fInput*65536.0f); }
+	BURGER_INLINE void FloatToFixed(Fixed32 *pOutput,float fInput) { FloatToIntRoundToZero(reinterpret_cast<int32_t*>(pOutput),fInput*65536.0f); }
+	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) { FloatToIntCeil(reinterpret_cast<int32_t*>(pOutput),fInput*65536.0f); }
+	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) { FloatToIntRound(reinterpret_cast<int32_t*>(pOutput),fInput*65536.0f); }
 #endif
 
 #if defined(BURGER_ARM) || defined(BURGER_AMD64) || (defined(BURGER_X86) && !defined(BURGER_WINDOWS)) || defined(DOXYGEN)
-	BURGER_INLINE Int8 Abs(Int8 iInput) { if (iInput<0) { iInput=-iInput; } return iInput; }
-	BURGER_INLINE Int16 Abs(Int16 iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=-iInput; } return iInput; }
-	BURGER_INLINE Int32 Abs(Int32 iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=-iInput; } return iInput; }
-	BURGER_INLINE Int64 Abs(Int64 iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=-iInput; } return iInput; }
-	BURGER_INLINE Int8 ClampZero(Int8 iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
-	BURGER_INLINE Int16 ClampZero(Int16 iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
-	BURGER_INLINE Int32 ClampZero(Int32 iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
-	BURGER_INLINE Int64 ClampZero(Int64 iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
+	BURGER_INLINE int8_t Abs(int8_t iInput) { if (iInput<0) { iInput=-iInput; } return iInput; }
+	BURGER_INLINE int16_t Abs(int16_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=-iInput; } return iInput; }
+	BURGER_INLINE int32_t Abs(int32_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=-iInput; } return iInput; }
+	BURGER_INLINE int64_t Abs(int64_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=-iInput; } return iInput; }
+	BURGER_INLINE int8_t ClampZero(int8_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
+	BURGER_INLINE int16_t ClampZero(int16_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
+	BURGER_INLINE int32_t ClampZero(int32_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
+	BURGER_INLINE int64_t ClampZero(int64_t iInput) BURGER_NOEXCEPT { if (iInput<0) { iInput=0; } return iInput; }
 #else
 	BURGER_INLINE int8_t Abs(int8_t iInput) BURGER_NOEXCEPT { const int8_t iMask = static_cast<int8_t>(iInput>>7); return static_cast<int8_t>((iInput^iMask)-iMask); }
 	BURGER_INLINE int16_t Abs(int16_t iInput) BURGER_NOEXCEPT { int16_t iMask = static_cast<int16_t>(iInput>>15); return static_cast<int16_t>((iInput^iMask)-iMask); }
-	BURGER_INLINE Int32 Abs(Int32 iInput) BURGER_NOEXCEPT { Int32 iMask = (iInput>>31); return (iInput^iMask)-iMask; }
-	BURGER_INLINE Int64 Abs(Int64 iInput) BURGER_NOEXCEPT { Int64 iMask = (iInput>>63); return (iInput^iMask)-iMask; }
+	BURGER_INLINE int32_t Abs(int32_t iInput) BURGER_NOEXCEPT { int32_t iMask = (iInput>>31); return (iInput^iMask)-iMask; }
+	BURGER_INLINE int64_t Abs(int64_t iInput) BURGER_NOEXCEPT { int64_t iMask = (iInput>>63); return (iInput^iMask)-iMask; }
 	BURGER_INLINE BURGER_CONSTEXPR int8_t ClampZero(int8_t iInput) BURGER_NOEXCEPT { return static_cast<int8_t>((~(iInput>>7))&iInput); }
 	BURGER_INLINE BURGER_CONSTEXPR int16_t ClampZero(int16_t iInput) BURGER_NOEXCEPT { return static_cast<int16_t>((~(iInput>>15))&iInput); }
-	BURGER_INLINE BURGER_CONSTEXPR Int32 ClampZero(Int32 iInput) BURGER_NOEXCEPT { return (~(iInput>>31))&iInput; }
-	BURGER_INLINE BURGER_CONSTEXPR Int64 ClampZero(Int64 iInput) BURGER_NOEXCEPT { return (~(iInput>>63))&iInput; }
+	BURGER_INLINE BURGER_CONSTEXPR int32_t ClampZero(int32_t iInput) BURGER_NOEXCEPT { return (~(iInput>>31))&iInput; }
+	BURGER_INLINE BURGER_CONSTEXPR int64_t ClampZero(int64_t iInput) BURGER_NOEXCEPT { return (~(iInput>>63))&iInput; }
 #endif
 
 	BURGER_INLINE BURGER_CONSTEXPR int8_t Sign(int8_t iInput) BURGER_NOEXCEPT { return static_cast<int8_t>((iInput>>7) | static_cast<int8_t>(static_cast<uint8_t>(-iInput)>>7U)); }
 	BURGER_INLINE BURGER_CONSTEXPR int16_t Sign(int16_t iInput) BURGER_NOEXCEPT { return static_cast<int16_t>((iInput>>15) | static_cast<int16_t>(static_cast<uint16_t>(-iInput)>>15U)); }
-	BURGER_INLINE BURGER_CONSTEXPR Int32 Sign(Int32 iInput) BURGER_NOEXCEPT { return (iInput>>31) | static_cast<Int32>(static_cast<Word32>(-iInput)>>31U); }
-	BURGER_INLINE BURGER_CONSTEXPR Int64 Sign(Int64 iInput) BURGER_NOEXCEPT { return (iInput>>63) | static_cast<Int64>(static_cast<Word64>(-iInput)>>63U); }
+	BURGER_INLINE BURGER_CONSTEXPR int32_t Sign(int32_t iInput) BURGER_NOEXCEPT { return (iInput>>31) | static_cast<int32_t>(static_cast<uint32_t>(-iInput)>>31U); }
+	BURGER_INLINE BURGER_CONSTEXPR int64_t Sign(int64_t iInput) BURGER_NOEXCEPT { return (iInput>>63) | static_cast<int64_t>(static_cast<uint64_t>(-iInput)>>63U); }
 
-	BURGER_INLINE Int32 Clamp(Int32 iInput,Int32 iMin,Int32 iMax) BURGER_NOEXCEPT { iInput = Max(iInput,iMin); return Min(iInput,iMax); }
-	BURGER_INLINE Int64 Clamp(Int64 iInput,Int64 iMin,Int64 iMax) BURGER_NOEXCEPT { iInput = Max(iInput,iMin); return Min(iInput,iMax); }
-	BURGER_INLINE Word32 Clamp(Word32 uInput,Word32 uMin,Word32 uMax) BURGER_NOEXCEPT { uInput = Max(uInput,uMin); return Min(uInput,uMax); }
-	BURGER_INLINE Word64 Clamp(Word64 uInput,Word64 uMin,Word64 uMax) BURGER_NOEXCEPT { uInput = Max(uInput,uMin); return Min(uInput,uMax); }
+	BURGER_INLINE int32_t Clamp(int32_t iInput,int32_t iMin,int32_t iMax) BURGER_NOEXCEPT { iInput = Max(iInput,iMin); return Min(iInput,iMax); }
+	BURGER_INLINE int64_t Clamp(int64_t iInput,int64_t iMin,int64_t iMax) BURGER_NOEXCEPT { iInput = Max(iInput,iMin); return Min(iInput,iMax); }
+	BURGER_INLINE uint32_t Clamp(uint32_t uInput,uint32_t uMin,uint32_t uMax) BURGER_NOEXCEPT { uInput = Max(uInput,uMin); return Min(uInput,uMax); }
+	BURGER_INLINE uint64_t Clamp(uint64_t uInput,uint64_t uMin,uint64_t uMax) BURGER_NOEXCEPT { uInput = Max(uInput,uMin); return Min(uInput,uMax); }
 
 #if defined(BURGER_WATCOM)
 	BURGER_INLINE Fixed32 FixedMultiply(Fixed32 fInput1,Fixed32 fInput2) { return BurgerFixedMathMultiply(fInput1,fInput2); }
@@ -333,7 +333,7 @@ namespace Burger {
 	BURGER_INLINE Fixed32 FixedReciprocal(Fixed32 fInput) { 
 		if (fInput==-1) {		// Note: Visual C does not like branches in inline asm
 			fInput=0x80000000;
-		} else if (static_cast<Word32>(fInput)<2) {
+		} else if (static_cast<uint32_t>(fInput)<2) {
 			fInput=0x7FFFFFFF;
 		} else {
 			__asm mov ecx,fInput
@@ -345,15 +345,15 @@ namespace Burger {
 		return fInput;
 	}
 #elif defined(BURGER_PPC) || defined(BURGER_64BITCPU) && !defined(DOXYGEN)
-	BURGER_INLINE Fixed32 FixedMultiply(Fixed32 fInput1,Fixed32 fInput2) { return static_cast<Fixed32>(((static_cast<Int64>(fInput1)*static_cast<Int64>(fInput2))>>16)&0xFFFFFFFF); }
-	BURGER_INLINE Fixed32 FixedDivide(Fixed32 fInputNumerator,Fixed32 fInputDenominator) { return static_cast<Fixed32>((static_cast<Int64>(fInputNumerator)<<16)/fInputDenominator); }
+	BURGER_INLINE Fixed32 FixedMultiply(Fixed32 fInput1,Fixed32 fInput2) { return static_cast<Fixed32>(((static_cast<int64_t>(fInput1)*static_cast<int64_t>(fInput2))>>16)&0xFFFFFFFF); }
+	BURGER_INLINE Fixed32 FixedDivide(Fixed32 fInputNumerator,Fixed32 fInputDenominator) { return static_cast<Fixed32>((static_cast<int64_t>(fInputNumerator)<<16)/fInputDenominator); }
 	BURGER_INLINE Fixed32 FixedReciprocal(Fixed32 fInput) { 
 		if (fInput==-1) {
 			fInput = 0x80000000;
-		} else if (static_cast<Word32>(fInput)<2) {
+		} else if (static_cast<uint32_t>(fInput)<2) {
 			fInput = 0x7FFFFFFF;
 		} else {
-			fInput = static_cast<Fixed32>(0x100000000LL/static_cast<Int64>(fInput));
+			fInput = static_cast<Fixed32>(0x100000000LL/static_cast<int64_t>(fInput));
 		}
 		return fInput;
 	}
@@ -363,33 +363,33 @@ namespace Burger {
 	extern Fixed32 BURGER_API FixedReciprocal(Fixed32 fInput);
 #endif
 
-	extern Word32 BURGER_API Sqrt(Word32 uInput);
-	extern Word32 BURGER_API SqrtFixedToWord32(Fixed32 fInput);
+	extern uint32_t BURGER_API Sqrt(uint32_t uInput);
+	extern uint32_t BURGER_API SqrtFixedToWord32(Fixed32 fInput);
 	extern Fixed32 BURGER_API Sqrt(Fixed32 uInput);
 
 #if defined(BURGER_MSVC) || defined(BURGER_WATCOM)
-	BURGER_INLINE Word32 RotateLeft(Word32 uInput,Word uShiftCount) { return static_cast<Word32>(_rotl(uInput,uShiftCount)); }
-	BURGER_INLINE Word32 RotateRight(Word32 uInput,Word uShiftCount) { return static_cast<Word32>(_rotr(uInput,uShiftCount)); }
+	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount) { return static_cast<uint32_t>(_rotl(uInput,uShiftCount)); }
+	BURGER_INLINE uint32_t RotateRight(uint32_t uInput,uint_t uShiftCount) { return static_cast<uint32_t>(_rotr(uInput,uShiftCount)); }
 #elif (defined(BURGER_METROWERKS) && (defined(BURGER_X86) || defined(BURGER_68K)))
-	BURGER_INLINE Word32 RotateLeft(Word32 uInput,Word uShiftCount) { return static_cast<Word32>(__rol(uInput,uShiftCount)); }
-	BURGER_INLINE Word32 RotateRight(Word32 uInput,Word uShiftCount) { return static_cast<Word32>(__ror(uInput,uShiftCount)); }
+	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount) { return static_cast<uint32_t>(__rol(uInput,uShiftCount)); }
+	BURGER_INLINE uint32_t RotateRight(uint32_t uInput,uint_t uShiftCount) { return static_cast<uint32_t>(__ror(uInput,uShiftCount)); }
 #elif (defined(BURGER_METROWERKS) && defined(BURGER_PPC))
-	BURGER_INLINE Word32 RotateLeft(Word32 uInput,Word uShiftCount) { return static_cast<Word32>(__builtin___rotate_left32(uInput,static_cast<int>(uShiftCount))); }
-	BURGER_INLINE Word32 RotateRight(Word32 uInput,Word uShiftCount) { return static_cast<Word32>(__builtin___rotate_right32(uInput,static_cast<int>(uShiftCount))); }
+	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount) { return static_cast<uint32_t>(__builtin___rotate_left32(uInput,static_cast<int>(uShiftCount))); }
+	BURGER_INLINE uint32_t RotateRight(uint32_t uInput,uint_t uShiftCount) { return static_cast<uint32_t>(__builtin___rotate_right32(uInput,static_cast<int>(uShiftCount))); }
 #elif defined(BURGER_VITA)
-	BURGER_INLINE Word32 RotateLeft(Word32 uInput,Word uShiftCount) { return __builtin_rol(uInput,static_cast<Word32>(uShiftCount)); }
-	BURGER_INLINE Word32 RotateRight(Word32 uInput,Word uShiftCount) { return __builtin_ror(uInput,static_cast<Word32>(uShiftCount)); }
+	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount) { return __builtin_rol(uInput,static_cast<uint32_t>(uShiftCount)); }
+	BURGER_INLINE uint32_t RotateRight(uint32_t uInput,uint_t uShiftCount) { return __builtin_ror(uInput,static_cast<uint32_t>(uShiftCount)); }
 #else
-	BURGER_INLINE Word32 RotateLeft(Word32 uInput,Word uShiftCount) { return ((uInput<<uShiftCount) | (uInput>>(32-uShiftCount))); }
-	BURGER_INLINE Word32 RotateRight(Word32 uInput,Word uShiftCount) { return ((uInput>>uShiftCount) | (uInput<<(32-uShiftCount))); }
+	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount) { return ((uInput<<uShiftCount) | (uInput>>(32-uShiftCount))); }
+	BURGER_INLINE uint32_t RotateRight(uint32_t uInput,uint_t uShiftCount) { return ((uInput>>uShiftCount) | (uInput<<(32-uShiftCount))); }
 #endif
 
 #if defined(BURGER_MSVC)
-	BURGER_INLINE Word64 RotateLeft(Word64 uInput,Word uShiftCount) { return _rotl64(uInput,uShiftCount); }
-	BURGER_INLINE Word64 RotateRight(Word64 uInput,Word uShiftCount) { return _rotr64(uInput,uShiftCount); }
+	BURGER_INLINE uint64_t RotateLeft(uint64_t uInput,uint_t uShiftCount) { return _rotl64(uInput,uShiftCount); }
+	BURGER_INLINE uint64_t RotateRight(uint64_t uInput,uint_t uShiftCount) { return _rotr64(uInput,uShiftCount); }
 #else
-	BURGER_INLINE Word64 RotateLeft(Word64 uInput,Word uShiftCount) { return ((uInput<<uShiftCount) | (uInput>>(64-uShiftCount))); }
-	BURGER_INLINE Word64 RotateRight(Word64 uInput,Word uShiftCount) { return ((uInput>>uShiftCount) | (uInput<<(64-uShiftCount))); }
+	BURGER_INLINE uint64_t RotateLeft(uint64_t uInput,uint_t uShiftCount) { return ((uInput<<uShiftCount) | (uInput>>(64-uShiftCount))); }
+	BURGER_INLINE uint64_t RotateRight(uint64_t uInput,uint_t uShiftCount) { return ((uInput>>uShiftCount) | (uInput<<(64-uShiftCount))); }
 #endif
 
 }

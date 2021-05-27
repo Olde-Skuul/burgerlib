@@ -56,11 +56,11 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::DecompressMace6,Burger::DecompressAudio)
 
 ***************************************/
 
-const Int16 Burger::MACEState_t::g_Table4Small[4] = {
+const int16_t Burger::MACEState_t::g_Table4Small[4] = {
 -   18,   140,   140,-   18
 };
 
-const Int16 Burger::MACEState_t::g_Table4Big[512] = {
+const int16_t Burger::MACEState_t::g_Table4Big[512] = {
     64,   216,-  217,-   65,
     67,   226,-  227,-   68,
     70,   236,-  237,-   71,
@@ -197,11 +197,11 @@ const Int16 Burger::MACEState_t::g_Table4Big[512] = {
 
 ***************************************/
 
-const Int16 Burger::MACEState_t::g_Table8Small[8] = {
+const int16_t Burger::MACEState_t::g_Table8Small[8] = {
 -   13,     8,    76,   222,   222,    76,     8,-   13
 };
 
-const Int16 Burger::MACEState_t::g_Table8Big[1024] = {
+const int16_t Burger::MACEState_t::g_Table8Big[1024] = {
     37,   116,   206,   330,-  331,-  207,-  117,-   38,
     39,   121,   216,   346,-  347,-  217,-  122,-   40,
     41,   127,   225,   361,-  362,-  226,-  128,-   42,
@@ -363,11 +363,11 @@ void BURGER_API Burger::MACEState_t::Clear(void)
 
 ***************************************/
 
-Int32 BURGER_API Burger::MACEState_t::CoefficientStep(Word uTableOffset,Word bUse3Bits)
+int32_t BURGER_API Burger::MACEState_t::CoefficientStep(uint_t uTableOffset,uint_t bUse3Bits)
 {
-	Int32 iTemp1;
+	int32_t iTemp1;
 
-	Int32 iTemp2 = m_iTableIndex;									// Get the previous state
+	int32_t iTemp2 = m_iTableIndex;									// Get the previous state
 	if (bUse3Bits) {
 		iTemp1 = g_Table8Big[((iTemp2>>1)&0x3F8)+uTableOffset];		// Save the index to the table
 		iTemp2 = (g_Table8Small[uTableOffset]-(iTemp2>>5))+iTemp2;	// Step to the next table
@@ -421,14 +421,14 @@ Int32 BURGER_API Burger::MACEState_t::CoefficientStep(Word uTableOffset,Word bUs
 
 	\code
 		// Decompress mono
-		Word8 SoundBufferMono[1024*6];
-		Word8 CompressedMono[1024];
+		uint8_t SoundBufferMono[1024*6];
+		uint8_t CompressedMono[1024];
 		Burger::MACEExp1to6(SoundBufferMono,CompressedMono,1024,NULL,NULL,1,1);
 
 		// Decompress stereo
-		Word8 SoundBufferLeft[1024*6];
-		Word8 SoundBufferRight[1024*6];
-		Word8 Compressed[1024*2];
+		uint8_t SoundBufferLeft[1024*6];
+		uint8_t SoundBufferRight[1024*6];
+		uint8_t Compressed[1024*2];
 		Burger::MACEExp1to6(SoundBufferLeft,Compressed,1024,NULL,NULL,2,1);
 		Burger::MACEExp1to6(SoundBufferRight,Compressed,1024,NULL,NULL,2,2);
 	\endcode
@@ -436,7 +436,7 @@ Int32 BURGER_API Burger::MACEState_t::CoefficientStep(Word uTableOffset,Word bUs
 	\note The output buffer must be 6*uPacketCount bytes in size!
 
 	\param pInput Pointer to the compressed data
-	\param pOutput Pointer to the \ref Word8 buffer to receive the decompressed data
+	\param pOutput Pointer to the uint8_t buffer to receive the decompressed data
 	\param uPacketCount Number of compressed packets to decompress
 	\param pInputState Pointer to a running \ref MACEState_t for partial decompression
 	\param pOutputState Pointer to a \ref MACEState_t for the state of the decompression after this call completes
@@ -446,7 +446,7 @@ Int32 BURGER_API Burger::MACEState_t::CoefficientStep(Word uTableOffset,Word bUs
 
 ***************************************/
 
-void BURGER_API Burger::MACEExp1to6(const Word8 *pInput,Word8 *pOutput,WordPtr uPacketCount,MACEState_t *pInputState,MACEState_t *pOutputState,Word uNumChannels,Word uWhichChannel)
+void BURGER_API Burger::MACEExp1to6(const uint8_t *pInput,uint8_t *pOutput,uintptr_t uPacketCount,MACEState_t *pInputState,MACEState_t *pOutputState,uint_t uNumChannels,uint_t uWhichChannel)
 {
 	MACEState_t TempState;	// Temp buffer
 
@@ -469,20 +469,20 @@ void BURGER_API Burger::MACEExp1to6(const Word8 *pInput,Word8 *pOutput,WordPtr u
 
 	if (uPacketCount) {
 		pInput = pInput+(uWhichChannel-1);				// Index to the first byte from channel #
-		Int32 iSample1 = pOutputState->m_iSample1;		// Init the running samples
-		Int32 iSample2 = pOutputState->m_iSample2;
+		int32_t iSample1 = pOutputState->m_iSample1;		// Init the running samples
+		int32_t iSample2 = pOutputState->m_iSample2;
 		do {
-			Word uInputByte = pInput[0];				// Get a compressed byte
+			uint_t uInputByte = pInput[0];				// Get a compressed byte
 
-			Int32 iTempSample = pOutputState->CoefficientStep(uInputByte>>5,TRUE);
-			Int32 iHalfSample = iSample1>>1;			// Half adjust
-			Int32 iTemp = (iTempSample>>3)+((iSample2*3)>>3)+iHalfSample;
+			int32_t iTempSample = pOutputState->CoefficientStep(uInputByte>>5,TRUE);
+			int32_t iHalfSample = iSample1>>1;			// Half adjust
+			int32_t iTemp = (iTempSample>>3)+((iSample2*3)>>3)+iHalfSample;
 			if (iTemp>0x7FFF) {
 				iTemp = 0x7FFF;
 			} else if (iTemp<-0x7FFF) {
 				iTemp = -0x7FFF;
 			}
-			pOutput[0] = static_cast<Word8>((iTemp>>8)^0x80U);
+			pOutput[0] = static_cast<uint8_t>((iTemp>>8)^0x80U);
 
 			iTemp = (iSample2>>3)+((iTempSample*3)>>3)+iHalfSample;
 			if (iTemp>0x7FFF) {
@@ -490,7 +490,7 @@ void BURGER_API Burger::MACEExp1to6(const Word8 *pInput,Word8 *pOutput,WordPtr u
 			} else if (iTemp<-0x7FFF) {
 				iTemp = -0x7fff;
 			}
-			pOutput[1] = static_cast<Word8>((iTemp>>8)^0x80U);
+			pOutput[1] = static_cast<uint8_t>((iTemp>>8)^0x80U);
 
 			iSample2 = iSample1;		// Propagate the samples
 			iSample1 = iTempSample;
@@ -503,7 +503,7 @@ void BURGER_API Burger::MACEExp1to6(const Word8 *pInput,Word8 *pOutput,WordPtr u
 			} else if (iTemp<-0x7FFF) {
 				iTemp = -0x7FFF;
 			}
-			pOutput[2] = static_cast<Word8>((iTemp>>8)^0x80U);
+			pOutput[2] = static_cast<uint8_t>((iTemp>>8)^0x80U);
 
 			iTemp = (iSample2>>3)+((iTempSample*3)>>3)+iHalfSample;
 			if (iTemp>0x7FFF) {
@@ -511,7 +511,7 @@ void BURGER_API Burger::MACEExp1to6(const Word8 *pInput,Word8 *pOutput,WordPtr u
 			} else if (iTemp<-0x7fff) {
 				iTemp = -0x7FFF;
 			}
-			pOutput[3] = static_cast<Word8>((iTemp>>8)^0x80U);
+			pOutput[3] = static_cast<uint8_t>((iTemp>>8)^0x80U);
 
 			iSample2 = iSample1;		// Propagate the samples
 			iSample1 = iTempSample;
@@ -524,7 +524,7 @@ void BURGER_API Burger::MACEExp1to6(const Word8 *pInput,Word8 *pOutput,WordPtr u
 			} else if (iTemp<-0x7FFF) {
 				iTemp = -0x7FFF;
 			}
-			pOutput[4] = static_cast<Word8>((iTemp>>8)^0x80U);
+			pOutput[4] = static_cast<uint8_t>((iTemp>>8)^0x80U);
 
 			iTemp = (iSample2>>3)+((iTempSample*3)>>3)+iHalfSample;
 			if (iTemp>0x7FFF) {
@@ -532,7 +532,7 @@ void BURGER_API Burger::MACEExp1to6(const Word8 *pInput,Word8 *pOutput,WordPtr u
 			} else if (iTemp<-0x7FFF) {
 				iTemp = -0x7FFF;
 			}
-			pOutput[5] = static_cast<Word8>((iTemp>>8)^0x80U);
+			pOutput[5] = static_cast<uint8_t>((iTemp>>8)^0x80U);
 			pOutput+=6;
 
 			// Step the samples
@@ -562,14 +562,14 @@ void BURGER_API Burger::MACEExp1to6(const Word8 *pInput,Word8 *pOutput,WordPtr u
 
 	\code
 		// Decompress mono
-		Word8 SoundBufferMono[1024*6];
-		Word8 CompressedMono[1024*2];
+		uint8_t SoundBufferMono[1024*6];
+		uint8_t CompressedMono[1024*2];
 		Burger::MACEExp1to3(SoundBufferMono,CompressedMono,1024,NULL,NULL,1,1);
 
 		// Decompress stereo
-		Word8 SoundBufferLeft[1024*6];
-		Word8 SoundBufferRight[1024*6];
-		Word8 Compressed[(1024*2)*2];
+		uint8_t SoundBufferLeft[1024*6];
+		uint8_t SoundBufferRight[1024*6];
+		uint8_t Compressed[(1024*2)*2];
 		Burger::MACEExp1to3(SoundBufferLeft,Compressed,1024,NULL,NULL,2,1);
 		Burger::MACEExp1to3(SoundBufferRight,Compressed,1024,NULL,NULL,2,2);
 	\endcode
@@ -577,7 +577,7 @@ void BURGER_API Burger::MACEExp1to6(const Word8 *pInput,Word8 *pOutput,WordPtr u
 	\note The output buffer must be 6*uPacketCount bytes in size!
 
 	\param pInput Pointer to the compressed data
-	\param pOutput Pointer to the \ref Word8 buffer to receive the decompressed data
+	\param pOutput Pointer to the uint8_t buffer to receive the decompressed data
 	\param uPacketCount Number of compressed packets to decompress
 	\param pInputState Pointer to a running \ref MACEState_t for partial decompression
 	\param pOutputState Pointer to a \ref MACEState_t for the state of the decompression after this call completes
@@ -587,7 +587,7 @@ void BURGER_API Burger::MACEExp1to6(const Word8 *pInput,Word8 *pOutput,WordPtr u
 
 ***************************************/
 
-void BURGER_API Burger::MACEExp1to3(const Word8 *pInput,Word8 *pOutput,WordPtr uPacketCount,MACEState_t *pInputState,MACEState_t *pOutputState,Word uNumChannels,Word uWhichChannel)
+void BURGER_API Burger::MACEExp1to3(const uint8_t *pInput,uint8_t *pOutput,uintptr_t uPacketCount,MACEState_t *pInputState,MACEState_t *pOutputState,uint_t uNumChannels,uint_t uWhichChannel)
 {
 	MACEState_t TempState;		// Temp buffer
 
@@ -611,12 +611,12 @@ void BURGER_API Burger::MACEExp1to3(const Word8 *pInput,Word8 *pOutput,WordPtr u
 	if (uPacketCount) {
 		pInput = pInput+((uWhichChannel-1)*2);
 		uNumChannels = uNumChannels*2;			// 2 bytes per packet
-		Int32 iSample1 = pOutputState->m_iSample1;
-		Int32 iSample2 = pOutputState->m_iSample2;
+		int32_t iSample1 = pOutputState->m_iSample1;
+		int32_t iSample2 = pOutputState->m_iSample2;
 		do {
-			Word uInputByte = pInput[0];
-			Word uIndex = uInputByte&7U;
-			Int32 Temp = static_cast<Int32>(((iSample1>>1)&0x3F8)+uIndex);
+			uint_t uInputByte = pInput[0];
+			uint_t uIndex = uInputByte&7U;
+			int32_t Temp = static_cast<int32_t>(((iSample1>>1)&0x3F8)+uIndex);
 			iSample1 = iSample1+MACEState_t::g_Table8Small[uIndex]-(iSample1>>5);
 			if (iSample1<0) {
 				iSample1 = 0;
@@ -627,11 +627,11 @@ void BURGER_API Burger::MACEExp1to3(const Word8 *pInput,Word8 *pOutput,WordPtr u
 			} else if (Temp>0x7FFF) {
 				Temp = 0x7FFF;
 			}
-			pOutput[0] = static_cast<Word8>((Temp>>8)^0x80U);
+			pOutput[0] = static_cast<uint8_t>((Temp>>8)^0x80U);
 			iSample2 = Temp-(Temp>>3);
 
 			uIndex = (uInputByte>>3)&3U;
-			Temp = static_cast<Int32>(((iSample1>>2)&0x1FCU)+uIndex);
+			Temp = static_cast<int32_t>(((iSample1>>2)&0x1FCU)+uIndex);
 			iSample1 = iSample1+MACEState_t::g_Table4Small[uIndex]-(iSample1>>5);
 			if (iSample1<0) {
 				iSample1 = 0;
@@ -642,11 +642,11 @@ void BURGER_API Burger::MACEExp1to3(const Word8 *pInput,Word8 *pOutput,WordPtr u
 			} else if (Temp>0x7FFF) {
 				Temp = 0x7FFF;
 			}
-			pOutput[1] = static_cast<Word8>((Temp>>8)^0x80U);
+			pOutput[1] = static_cast<uint8_t>((Temp>>8)^0x80U);
 			iSample2 = Temp-(Temp>>3);
 
 			uInputByte = uInputByte>>5;
-			Temp = static_cast<Int32>(((iSample1>>1)&0x3F8)+uInputByte);
+			Temp = static_cast<int32_t>(((iSample1>>1)&0x3F8)+uInputByte);
 			iSample1 = iSample1+MACEState_t::g_Table8Small[uInputByte]-(iSample1>>5);
 			if (iSample1<0) {
 				iSample1 = 0;
@@ -657,12 +657,12 @@ void BURGER_API Burger::MACEExp1to3(const Word8 *pInput,Word8 *pOutput,WordPtr u
 			} else if (Temp>0x7fff) {
 				Temp = 0x7fff;
 			}
-			pOutput[2] = static_cast<Word8>((Temp>>8)^0x80U);
+			pOutput[2] = static_cast<uint8_t>((Temp>>8)^0x80U);
 			iSample2 = Temp-(Temp>>3);
 
 			uInputByte = pInput[1];
 			uIndex = uInputByte&7U;
-			Temp = static_cast<Int32>(((iSample1>>1)&0x3F8)+uIndex);
+			Temp = static_cast<int32_t>(((iSample1>>1)&0x3F8)+uIndex);
 			iSample1 = iSample1+MACEState_t::g_Table8Small[uIndex]-(iSample1>>5);
 			if (iSample1<0) {
 				iSample1 = 0;
@@ -673,11 +673,11 @@ void BURGER_API Burger::MACEExp1to3(const Word8 *pInput,Word8 *pOutput,WordPtr u
 			} else if (Temp>0x7FFF) {
 				Temp = 0x7FFF;
 			}
-			pOutput[3] = static_cast<Word8>((Temp>>8)^0x80U);
+			pOutput[3] = static_cast<uint8_t>((Temp>>8)^0x80U);
 			iSample2 = Temp-(Temp>>3);
 
 			uIndex = (uInputByte>>3)&3U;
-			Temp = static_cast<Int32>(((iSample1>>2)&0x1FC)+uIndex);
+			Temp = static_cast<int32_t>(((iSample1>>2)&0x1FC)+uIndex);
 			iSample1 = iSample1+MACEState_t::g_Table4Small[uIndex]-(iSample1>>5);
 			if (iSample1<0) {
 				iSample1 = 0;
@@ -688,11 +688,11 @@ void BURGER_API Burger::MACEExp1to3(const Word8 *pInput,Word8 *pOutput,WordPtr u
 			} else if (Temp>0x7FFF) {
 				Temp = 0x7fff;
 			}
-			pOutput[4] = static_cast<Word8>((Temp>>8)^0x80U);
+			pOutput[4] = static_cast<uint8_t>((Temp>>8)^0x80U);
 			iSample2 = Temp-(Temp>>3);
 
 			uInputByte = uInputByte>>5;
-			Temp = static_cast<Int32>(((iSample1>>1)&0x3F8)+uInputByte);
+			Temp = static_cast<int32_t>(((iSample1>>1)&0x3F8)+uInputByte);
 			iSample1 = iSample1+MACEState_t::g_Table8Small[uInputByte]-(iSample1>>5);
 			if (iSample1<0) {
 				iSample1 = 0;
@@ -703,7 +703,7 @@ void BURGER_API Burger::MACEExp1to3(const Word8 *pInput,Word8 *pOutput,WordPtr u
 			} else if (Temp>0x7fff) {
 				Temp = 0x7fff;
 			}
-			pOutput[5] = static_cast<Word8>((Temp>>8)^0x80U);
+			pOutput[5] = static_cast<uint8_t>((Temp>>8)^0x80U);
 			iSample2 = Temp-(Temp>>3);
 
 			pOutput+=6;						// Next output byte
@@ -796,13 +796,13 @@ Burger::Decompress::eError Burger::DecompressMace3::Process(void *pOutput, uintp
 	//
 
 	eState uState = m_eState;
-	Word bAbort = FALSE;
+	uint_t bAbort = FALSE;
 
 	// Process as many packets as possible
 	// 2 bytes per input packet.
 	// 6 bytes per output packet
-	WordPtr uInputGranularity = 2;
-	WordPtr uOutputGranularity = 6;
+	uintptr_t uInputGranularity = 2;
+	uintptr_t uOutputGranularity = 6;
 	if (m_bStereo) {
 		// Packets are twice as large
 		uInputGranularity<<=1;
@@ -820,7 +820,7 @@ Burger::Decompress::eError Burger::DecompressMace3::Process(void *pOutput, uintp
 			{
 
 				// Determine the number of packets to process
-				WordPtr uPacketCount = Min(uInputChunkLength/uInputGranularity,uOutputChunkLength/uOutputGranularity);
+				uintptr_t uPacketCount = Min(uInputChunkLength/uInputGranularity,uOutputChunkLength/uOutputGranularity);
 
 				// Any intact packets?
 				if (uPacketCount) {
@@ -831,23 +831,23 @@ Burger::Decompress::eError Burger::DecompressMace3::Process(void *pOutput, uintp
 					
 					if (!m_bStereo) {
 						// Mono data is easy, decompress directly into output buffer
-						MACEExp1to3(static_cast<const Word8 *>(pInput),static_cast<Word8 *>(pOutput),uPacketCount,&MaceStateLeft,&MaceStateLeft,1,1);
-						pInput = static_cast<const Word16 *>(pInput)+(uPacketCount*uInputGranularity);
-						pOutput = static_cast<Word16 *>(pOutput)+(uPacketCount*uOutputGranularity);
+						MACEExp1to3(static_cast<const uint8_t *>(pInput),static_cast<uint8_t *>(pOutput),uPacketCount,&MaceStateLeft,&MaceStateLeft,1,1);
+						pInput = static_cast<const uint16_t *>(pInput)+(uPacketCount*uInputGranularity);
+						pOutput = static_cast<uint16_t *>(pOutput)+(uPacketCount*uOutputGranularity);
 					} else {
 
 						// MACE doesn't decompress into interleaved stereo buffers.
 						// Instead, it decompresses into two mono buffers that
 						// need to be recombined into the 
-						Word8 LeftBuffer[512*6];
-						Word8 RightBuffer[512*6];
+						uint8_t LeftBuffer[512*6];
+						uint8_t RightBuffer[512*6];
 						do {
-							WordPtr uChunkCount = Max(uPacketCount,static_cast<WordPtr>(512));
-							MACEExp1to3(static_cast<const Word8 *>(pInput),LeftBuffer,uChunkCount,&MaceStateLeft,&MaceStateLeft,2,1);
-							MACEExp1to3(static_cast<const Word8 *>(pInput),RightBuffer,uChunkCount,&MaceStateRight,&MaceStateRight,2,2);
+							uintptr_t uChunkCount = Max(uPacketCount,static_cast<uintptr_t>(512));
+							MACEExp1to3(static_cast<const uint8_t *>(pInput),LeftBuffer,uChunkCount,&MaceStateLeft,&MaceStateLeft,2,1);
+							MACEExp1to3(static_cast<const uint8_t *>(pInput),RightBuffer,uChunkCount,&MaceStateRight,&MaceStateRight,2,2);
 							CopyStereoInterleaved(pOutput,LeftBuffer,RightBuffer,(uChunkCount*uOutputGranularity)>>1U);
-							pInput = static_cast<const Word16 *>(pInput)+(uChunkCount*uInputGranularity);
-							pOutput = static_cast<Word16 *>(pOutput)+(uChunkCount*uOutputGranularity);
+							pInput = static_cast<const uint16_t *>(pInput)+(uChunkCount*uInputGranularity);
+							pOutput = static_cast<uint16_t *>(pOutput)+(uChunkCount*uOutputGranularity);
 							uPacketCount-=uChunkCount;
 						} while (uPacketCount);
 					}					
@@ -877,20 +877,20 @@ Burger::Decompress::eError Burger::DecompressMace3::Process(void *pOutput, uintp
 
 				// Output 1 or 12 bytes
 
-				WordPtr uCacheSize = m_uCacheSize;
-				WordPtr uSteps = Min(uOutputChunkLength,static_cast<WordPtr>(uCacheSize));
+				uintptr_t uCacheSize = m_uCacheSize;
+				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheSize));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;
 
 				// Start copying where it left off
-				const Word8 *pSrc = &m_Cache[uOutputGranularity-uCacheSize];
+				const uint8_t *pSrc = &m_Cache[uOutputGranularity-uCacheSize];
 
 				// Update the cache size
-				uCacheSize = static_cast<Word>(uCacheSize-uSteps);
+				uCacheSize = static_cast<uint_t>(uCacheSize-uSteps);
 				if (uCacheSize) {
 					// Number of bytes remaining in cache
-					m_uCacheSize = static_cast<Word>(uCacheSize);
+					m_uCacheSize = static_cast<uint_t>(uCacheSize);
 				} else {
 					// Cache will be empty, so switch to normal mode
 					uState = STATE_INIT;
@@ -900,9 +900,9 @@ Burger::Decompress::eError Burger::DecompressMace3::Process(void *pOutput, uintp
 				// Copy out the cache data
 				//
 				do {
-					static_cast<Word8 *>(pOutput)[0] = pSrc[0];
+					static_cast<uint8_t *>(pOutput)[0] = pSrc[0];
 					++pSrc;
-					pOutput = static_cast<Word8 *>(pOutput)+1;
+					pOutput = static_cast<uint8_t *>(pOutput)+1;
 				} while (--uSteps);
 			} else {
 				bAbort = TRUE;
@@ -916,25 +916,25 @@ Burger::Decompress::eError Burger::DecompressMace3::Process(void *pOutput, uintp
 			if (uInputChunkLength) {
 
 				// Get the number of bytes already obtained
-				WordPtr uCacheSize = m_uCacheSize;
+				uintptr_t uCacheSize = m_uCacheSize;
 
 				// How many is needed to fill
-				WordPtr uRemaining = uInputGranularity-uCacheSize;
+				uintptr_t uRemaining = uInputGranularity-uCacheSize;
 
 				// Number of bytes to process
-				WordPtr uChunk = Min(uRemaining,uInputChunkLength);
+				uintptr_t uChunk = Min(uRemaining,uInputChunkLength);
 
 				// Fill in the cache
 				MemoryCopy(&m_Cache[uCacheSize],pInput,uChunk);
 
 				// Consume the input bytes
 
-				pInput = static_cast<const Word8 *>(pInput)+uChunk;
+				pInput = static_cast<const uint8_t *>(pInput)+uChunk;
 				uInputChunkLength-=uChunk;
 
 				// Did the cache fill up?
 				uCacheSize += uChunk;
-				m_uCacheSize = static_cast<Word>(uCacheSize);
+				m_uCacheSize = static_cast<uint_t>(uCacheSize);
 				if (uCacheSize!=uInputGranularity) {
 					bAbort = TRUE;
 				} else {
@@ -950,7 +950,7 @@ Burger::Decompress::eError Burger::DecompressMace3::Process(void *pOutput, uintp
 		case STATE_PROCESSCACHE:
 			{
 				// Copy the compressed data into the intermediate buffer
-				Word8 Buffer[6*2];
+				uint8_t Buffer[6*2];
 				MemoryCopy(Buffer,m_Cache,uInputGranularity);
 
 				if (!m_bStereo) {
@@ -958,23 +958,23 @@ Burger::Decompress::eError Burger::DecompressMace3::Process(void *pOutput, uintp
 					MACEExp1to3(Buffer,m_Cache,1,&MaceStateLeft,&MaceStateLeft,1,1);
 				} else {
 					// Fun, let's generate the two mono buffers and then merge them
-					Word8 TempLeft[6];
-					Word8 TempRight[6];
+					uint8_t TempLeft[6];
+					uint8_t TempRight[6];
 					MACEExp1to3(TempLeft,m_Cache,1,&MaceStateLeft,&MaceStateLeft,2,1);
 					MACEExp1to3(TempRight,m_Cache,1,&MaceStateRight,&MaceStateRight,2,2);
 					CopyStereoInterleaved(m_Cache,TempLeft,TempRight,uOutputGranularity>>1U);
 				}
 			}
 			// Cache is full
-			m_uCacheSize = static_cast<Word>(uOutputGranularity);
+			m_uCacheSize = static_cast<uint_t>(uOutputGranularity);
 			uState = STATE_CACHEFULL;
 			break;
 		}
 	} while (!bAbort);
 
 	// Return the number of bytes actually consumed
-	WordPtr uInputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pInput)-static_cast<const Word8 *>(pOldInput));
-	WordPtr uOutputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pOutput)-static_cast<const Word8 *>(pOldOutput));
+	uintptr_t uInputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pInput)-static_cast<const uint8_t *>(pOldInput));
+	uintptr_t uOutputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pOutput)-static_cast<const uint8_t *>(pOldOutput));
 
 	// Store the amount of data that was processed
 
@@ -1098,13 +1098,13 @@ Burger::Decompress::eError Burger::DecompressMace6::Process(void *pOutput, uintp
 	//
 
 	eState uState = m_eState;
-	Word bAbort = FALSE;
+	uint_t bAbort = FALSE;
 
 	// Process as many packets as possible
 	// 1 bytes per input packet.
 	// 6 bytes per output packet
-	WordPtr uInputGranularity = 1;
-	WordPtr uOutputGranularity = 6;
+	uintptr_t uInputGranularity = 1;
+	uintptr_t uOutputGranularity = 6;
 	if (m_bStereo) {
 		// Packets are twice as large
 		uInputGranularity<<=1;
@@ -1122,7 +1122,7 @@ Burger::Decompress::eError Burger::DecompressMace6::Process(void *pOutput, uintp
 			{
 
 				// Determine the number of packets to process
-				WordPtr uPacketCount = Min(uInputChunkLength/uInputGranularity,uOutputChunkLength/uOutputGranularity);
+				uintptr_t uPacketCount = Min(uInputChunkLength/uInputGranularity,uOutputChunkLength/uOutputGranularity);
 
 				// Any intact packets?
 				if (uPacketCount) {
@@ -1133,23 +1133,23 @@ Burger::Decompress::eError Burger::DecompressMace6::Process(void *pOutput, uintp
 					
 					if (!m_bStereo) {
 						// Mono data is easy, decompress directly into output buffer
-						MACEExp1to6(static_cast<const Word8 *>(pInput),static_cast<Word8 *>(pOutput),uPacketCount,&MaceStateLeft,&MaceStateLeft,1,1);
-						pInput = static_cast<const Word16 *>(pInput)+(uPacketCount*uInputGranularity);
-						pOutput = static_cast<Word16 *>(pOutput)+(uPacketCount*uOutputGranularity);
+						MACEExp1to6(static_cast<const uint8_t *>(pInput),static_cast<uint8_t *>(pOutput),uPacketCount,&MaceStateLeft,&MaceStateLeft,1,1);
+						pInput = static_cast<const uint16_t *>(pInput)+(uPacketCount*uInputGranularity);
+						pOutput = static_cast<uint16_t *>(pOutput)+(uPacketCount*uOutputGranularity);
 					} else {
 
 						// MACE doesn't decompress into interleaved stereo buffers.
 						// Instead, it decompresses into two mono buffers that
 						// need to be recombined into the 
-						Word8 LeftBuffer[512*6];
-						Word8 RightBuffer[512*6];
+						uint8_t LeftBuffer[512*6];
+						uint8_t RightBuffer[512*6];
 						do {
-							WordPtr uChunkCount = Max(uPacketCount,static_cast<WordPtr>(512));
-							MACEExp1to6(static_cast<const Word8 *>(pInput),LeftBuffer,uChunkCount,&MaceStateLeft,&MaceStateLeft,2,1);
-							MACEExp1to6(static_cast<const Word8 *>(pInput),RightBuffer,uChunkCount,&MaceStateRight,&MaceStateRight,2,2);
+							uintptr_t uChunkCount = Max(uPacketCount,static_cast<uintptr_t>(512));
+							MACEExp1to6(static_cast<const uint8_t *>(pInput),LeftBuffer,uChunkCount,&MaceStateLeft,&MaceStateLeft,2,1);
+							MACEExp1to6(static_cast<const uint8_t *>(pInput),RightBuffer,uChunkCount,&MaceStateRight,&MaceStateRight,2,2);
 							CopyStereoInterleaved(pOutput,LeftBuffer,RightBuffer,(uChunkCount*uOutputGranularity)>>1U);
-							pInput = static_cast<const Word16 *>(pInput)+(uChunkCount*uInputGranularity);
-							pOutput = static_cast<Word16 *>(pOutput)+(uChunkCount*uOutputGranularity);
+							pInput = static_cast<const uint16_t *>(pInput)+(uChunkCount*uInputGranularity);
+							pOutput = static_cast<uint16_t *>(pOutput)+(uChunkCount*uOutputGranularity);
 							uPacketCount-=uChunkCount;
 						} while (uPacketCount);
 					}					
@@ -1179,20 +1179,20 @@ Burger::Decompress::eError Burger::DecompressMace6::Process(void *pOutput, uintp
 
 				// Output 1 or 12 bytes
 
-				WordPtr uCacheSize = m_uCacheSize;
-				WordPtr uSteps = Min(uOutputChunkLength,static_cast<WordPtr>(uCacheSize));
+				uintptr_t uCacheSize = m_uCacheSize;
+				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheSize));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;
 
 				// Start copying where it left off
-				const Word8 *pSrc = &m_Cache[uOutputGranularity-uCacheSize];
+				const uint8_t *pSrc = &m_Cache[uOutputGranularity-uCacheSize];
 
 				// Update the cache size
-				uCacheSize = static_cast<Word>(uCacheSize-uSteps);
+				uCacheSize = static_cast<uint_t>(uCacheSize-uSteps);
 				if (uCacheSize) {
 					// Number of bytes remaining in cache
-					m_uCacheSize = static_cast<Word>(uCacheSize);
+					m_uCacheSize = static_cast<uint_t>(uCacheSize);
 				} else {
 					// Cache will be empty, so switch to normal mode
 					uState = STATE_INIT;
@@ -1202,9 +1202,9 @@ Burger::Decompress::eError Burger::DecompressMace6::Process(void *pOutput, uintp
 				// Copy out the cache data
 				//
 				do {
-					static_cast<Word8 *>(pOutput)[0] = pSrc[0];
+					static_cast<uint8_t *>(pOutput)[0] = pSrc[0];
 					++pSrc;
-					pOutput = static_cast<Word8 *>(pOutput)+1;
+					pOutput = static_cast<uint8_t *>(pOutput)+1;
 				} while (--uSteps);
 			} else {
 				bAbort = TRUE;
@@ -1218,25 +1218,25 @@ Burger::Decompress::eError Burger::DecompressMace6::Process(void *pOutput, uintp
 			if (uInputChunkLength) {
 
 				// Get the number of bytes already obtained
-				WordPtr uCacheSize = m_uCacheSize;
+				uintptr_t uCacheSize = m_uCacheSize;
 
 				// How many is needed to fill
-				WordPtr uRemaining = uInputGranularity-uCacheSize;
+				uintptr_t uRemaining = uInputGranularity-uCacheSize;
 
 				// Number of bytes to process
-				WordPtr uChunk = Min(uRemaining,uInputChunkLength);
+				uintptr_t uChunk = Min(uRemaining,uInputChunkLength);
 
 				// Fill in the cache
 				MemoryCopy(&m_Cache[uCacheSize],pInput,uChunk);
 
 				// Consume the input bytes
 
-				pInput = static_cast<const Word8 *>(pInput)+uChunk;
+				pInput = static_cast<const uint8_t *>(pInput)+uChunk;
 				uInputChunkLength-=uChunk;
 
 				// Did the cache fill up?
 				uCacheSize += uChunk;
-				m_uCacheSize = static_cast<Word>(uCacheSize);
+				m_uCacheSize = static_cast<uint_t>(uCacheSize);
 				if (uCacheSize!=uInputGranularity) {
 					bAbort = TRUE;
 				} else {
@@ -1252,7 +1252,7 @@ Burger::Decompress::eError Burger::DecompressMace6::Process(void *pOutput, uintp
 		case STATE_PROCESSCACHE:
 			{
 				// Copy the compressed data into the intermediate buffer
-				Word8 Buffer[6*2];
+				uint8_t Buffer[6*2];
 				MemoryCopy(Buffer,m_Cache,uInputGranularity);
 
 				if (!m_bStereo) {
@@ -1260,23 +1260,23 @@ Burger::Decompress::eError Burger::DecompressMace6::Process(void *pOutput, uintp
 					MACEExp1to6(Buffer,m_Cache,1,&MaceStateLeft,&MaceStateLeft,1,1);
 				} else {
 					// Fun, let's generate the two mono buffers and then merge them
-					Word8 TempLeft[6];
-					Word8 TempRight[6];
+					uint8_t TempLeft[6];
+					uint8_t TempRight[6];
 					MACEExp1to6(TempLeft,m_Cache,1,&MaceStateLeft,&MaceStateLeft,2,1);
 					MACEExp1to6(TempRight,m_Cache,1,&MaceStateRight,&MaceStateRight,2,2);
 					CopyStereoInterleaved(m_Cache,TempLeft,TempRight,uOutputGranularity>>1U);
 				}
 			}
 			// Cache is full
-			m_uCacheSize = static_cast<Word>(uOutputGranularity);
+			m_uCacheSize = static_cast<uint_t>(uOutputGranularity);
 			uState = STATE_CACHEFULL;
 			break;
 		}
 	} while (!bAbort);
 
 	// Return the number of bytes actually consumed
-	WordPtr uInputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pInput)-static_cast<const Word8 *>(pOldInput));
-	WordPtr uOutputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pOutput)-static_cast<const Word8 *>(pOldOutput));
+	uintptr_t uInputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pInput)-static_cast<const uint8_t *>(pOldInput));
+	uintptr_t uOutputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pOutput)-static_cast<const uint8_t *>(pOldOutput));
 
 	// Store the amount of data that was processed
 

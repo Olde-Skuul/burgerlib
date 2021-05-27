@@ -1,14 +1,14 @@
 /***************************************
 
-    Console manager
+	Console manager, Windows XP and higher version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -16,21 +16,27 @@
 
 #if defined(BURGER_WINDOWS)
 #include "brfilemanager.h"
-#include "brutf8.h"
 #include "brglobals.h"
+#include "brstring16.h"
+#include "brutf8.h"
 
 #if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+#if !defined(_WIN32_WINNT)
+#define _WIN32_WINNT 0x0501 // Windows XP
+#endif
+
 #include <windows.h>
+
 #include <conio.h>
 #include <shellapi.h>
 
 // Needed for code that manually grabs the parm list
-extern "C" char **__argv;
+extern "C" char** __argv;
 
-/*! ************************************
+/***************************************
 
 	\brief Base constructor.
 
@@ -42,24 +48,22 @@ extern "C" char **__argv;
 
 ***************************************/
 
-Burger::ConsoleApp::ConsoleApp(int iArgc,const char **ppArgv,Word uFlags) :
-	m_ANSIMemoryManager(),
-	m_bLaunchedFromDesktop(FALSE),
-	m_ppOldArgv(NULL)
+Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv, uint_t uFlags):
+	m_ANSIMemoryManager(), m_bLaunchedFromDesktop(FALSE), m_ppOldArgv(NULL)
 {
 	BURGER_UNUSED(uFlags);
 
 	// In order to support unicode command lines under windows,
 	// the command line needs to be re-processed by calling the
-	// shellapi and manually extracting the commands and 
+	// shellapi and manually extracting the commands and
 	// convert them to UTF-8
 
 	// Get the UTF-16 command line string from windows
-	LPWSTR *pWideArgv = CommandLineToArgvW(GetCommandLineW(),&m_iArgc);
+	LPWSTR* pWideArgv = CommandLineToArgvW(GetCommandLineW(), &m_iArgc);
 	// Get the parameter count
 	iArgc = m_iArgc;
 	// Do I bother?
-	if (iArgc>0) {
+	if (iArgc > 0) {
 		// Allocate a buffer to contain the string pointers and all of
 		// the strings. This allows the pointers to be
 		// manipulated within the list without
@@ -69,27 +73,28 @@ Burger::ConsoleApp::ConsoleApp(int iArgc,const char **ppArgv,Word uFlags) :
 
 		// Determine how much space the strings will take as
 		// UTF8
-		Word16 **ppWork = reinterpret_cast<Word16 **>(pWideArgv);
-		WordPtr uDataSize = 0;
+		uint16_t** ppWork = reinterpret_cast<uint16_t**>(pWideArgv);
+		uintptr_t uDataSize = 0;
 		do {
-			uDataSize += UTF8::FromUTF16(NULL,0,ppWork[0])+1;
+			uDataSize += UTF8::FromUTF16(NULL, 0, ppWork[0]) + 1;
 			++ppWork;
 		} while (--iArgc);
 
 		// Allocate the buffer for a pointer array and the strings
 		iArgc = m_iArgc;
-		ppArgv = static_cast<const char **>(Alloc((sizeof(char *)*iArgc)+uDataSize));
-		
+		ppArgv = static_cast<const char**>(
+			Alloc((sizeof(char*) * iArgc) + uDataSize));
+
 		// Store the pointer for later use and disposal
 		m_ppArgv = ppArgv;
 		// Get the pointer beyond the pointer array
-		char *pDest = reinterpret_cast<char *>(ppArgv)+(sizeof(char *)*iArgc);
-		ppWork = reinterpret_cast<Word16 **>(pWideArgv);
+		char* pDest = reinterpret_cast<char*>(ppArgv) + (sizeof(char*) * iArgc);
+		ppWork = reinterpret_cast<uint16_t**>(pWideArgv);
 
-		// This "hack" is to allow any other code that manually grabs the 
+		// This "hack" is to allow any other code that manually grabs the
 		// parameter list to inherit the UTF8 support
-		m_ppOldArgv = const_cast<const char **>(__argv);
-		__argv = const_cast<char **>(ppArgv);
+		m_ppOldArgv = const_cast<const char**>(__argv);
+		__argv = const_cast<char**>(ppArgv);
 
 		// Convert all the strings
 		do {
@@ -97,10 +102,11 @@ Burger::ConsoleApp::ConsoleApp(int iArgc,const char **ppArgv,Word uFlags) :
 			ppArgv[0] = pDest;
 			++ppArgv;
 			// Convert a string
-			WordPtr uLength = UTF8::FromUTF16(pDest,uDataSize,ppWork[0])+1;
+			uintptr_t uLength =
+				UTF8::FromUTF16(pDest, uDataSize, ppWork[0]) + 1;
 			// Adjust the pointers
 			uDataSize -= uLength;
-			pDest+=uLength;
+			pDest += uLength;
 			++ppWork;
 		} while (--iArgc);
 	} else {
@@ -111,14 +117,14 @@ Burger::ConsoleApp::ConsoleApp(int iArgc,const char **ppArgv,Word uFlags) :
 	LocalFree(pWideArgv);
 
 	// Init the file system
-	FileManager::Init();	
+	FileManager::Init();
 }
 
-/*! ************************************
+/***************************************
 
 	\brief Dispose of any allocated resources
 
-	When a console app is shut down, dispose of 
+	When a console app is shut down, dispose of
 	everything here.
 
 ***************************************/
@@ -129,58 +135,94 @@ Burger::ConsoleApp::~ConsoleApp()
 	FileManager::Shutdown();
 	Free(m_ppArgv);
 	if (m_ppOldArgv) {
-		__argv = const_cast<char **>(m_ppOldArgv);
+		__argv = const_cast<char**>(m_ppOldArgv);
 		m_ppOldArgv = NULL;
 	}
 }
 
-/*! ************************************
+/***************************************
+
+	\brief Was the application launched from the desktop
+
+	Returns \ref TRUE if the console application was launched by double clicking
+	on the icon or \ref FALSE if the application was launched from a command
+	line shell.
+
+	\return \ref TRUE if desktop launched, \ref FALSE if from a shell.
+	\sa Burger::ConsoleApp::GetArgv() const or
+		Burger::ConsoleApp::GetArgc() const
+
+***************************************/
+
+uint_t BURGER_API Burger::ConsoleApp::WasDesktopLaunched(void) BURGER_NOEXCEPT
+{
+	uint_t uResult = m_bLaunchedFromDesktop;
+	if (!uResult) {
+		// By checking the console process list, if only this application was
+		// attached, then it was double clicked from the desktop.
+		DWORD Buffer[2];
+		const DWORD uPIDCount =
+			GetConsoleProcessList(Buffer, BURGER_ARRAYSIZE(Buffer));
+		uResult = uPIDCount < 2;
+		m_bLaunchedFromDesktop = uResult | 0x80U;
+	}
+	return uResult & 1;
+}
+
+/***************************************
 
 	\brief Pause console output if the return code is not zero.
-	
+
 	If the return code is not set to zero, force the text output
 	to remain on the screen if the application was launched
 	from double clicking. If the application was launched
 	from a console, this function does nothing.
-	
+
 ***************************************/
 
-void Burger::ConsoleApp::PauseOnError(void) const
+void Burger::ConsoleApp::PauseOnError(Burger::eError uError)
 {
-	if (m_bLaunchedFromDesktop) {
-		if (Globals::GetErrorCode()) {
-			getch();		// Wait for a keypress before closing the console window
+	if (WasDesktopLaunched()) {
+		if (uError != kErrorNone) {
+			// Wait for a key press before closing the console window
+			getch();
 		}
 	}
 }
 
-/*! ************************************
+/***************************************
 
-	\fn Burger::ConsoleApp::ProcessFilenames(Burger::ConsoleApp::CallbackProc pCallback) 
+	\fn Burger::ConsoleApp::ProcessFilenames(Burger::ConsoleApp::CallbackProc
+		pCallback)
+
 	\brief Handle drag and drop for console apps
-	
+
 	Detect if the application was launched from the Finder
 	or from Explorer. If so, detect if it was because data
 	files were "dropped" on the application for processing.
 	If both cases are true, then call the user supplied function
 	pointer for each file to be processed. The filenames are
 	in Burgerlib format.
-	
+
 	\note This function will set the console return code to
 	1 on entry, so if the processing doesn't take place, it
 	will assume an error has occurred. The processing procedure
 	can set the return code to zero or any other value at will
 	and that's the return code that will be retained.
-	
-	\param pCallback Function pointer to a call that accepts a Burgerlib filename.
-	\return TRUE if the function pointer was called. FALSE if normal processing should occur.
-	
+
+	\param pCallback Function pointer to a call that accepts a Burgerlib
+		filename.
+
+	\return TRUE if the function pointer was called. FALSE if normal
+		processing should occur.
+
 ***************************************/
 
-Word BURGER_API Burger::ConsoleApp::ProcessFilenames(Burger::ConsoleApp::CallbackProc pCallback) 
+uint_t BURGER_API Burger::ConsoleApp::ProcessFilenames(
+	Burger::ConsoleApp::CallbackProc pCallback)
 {
 
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 
 	//
 	// To determine if I am running a user console, or
@@ -189,41 +231,127 @@ Word BURGER_API Burger::ConsoleApp::ProcessFilenames(Burger::ConsoleApp::Callbac
 	// first parameter, then I was invoked
 	// by explorer.
 	//
-		
+
 	// At least 2 parms and the console's title is
 	// a match for the filename?
 
 	if (pCallback) {
-		// Check the startup information. If a window is present, it's a GUI interface
-		STARTUPINFOW StartupInfo;
-		GetStartupInfoW(&StartupInfo);
-		if (StartupInfo.dwFlags & STARTF_USESHOWWINDOW) {
-			m_bLaunchedFromDesktop = TRUE;			// I was directly launched
-			
+		// Check the startup information. If a window is present, it's a GUI
+		// interface
+		if (WasDesktopLaunched()) {
+
 			// Okay, the command line is all about the files
 			// that were dropped on me
-			
-			if (m_iArgc>=2) {
+
+			if (m_iArgc >= 2) {
 				Filename MyFilename;
 				int iIndex = 1;
 				do {
 					// Convert the pathname
 					MyFilename.SetFromNative(m_ppArgv[iIndex]);
-					const char *pNewName = MyFilename.GetPtr();
+					const char* pNewName = MyFilename.GetPtr();
 					if (pNewName[0]) {
-						uResult = TRUE;		// Mark that I called something
+						uResult = TRUE; // Mark that I called something
 						// Call the function
-						int iCode = pCallback(this,pNewName,NULL);
+						const int iCode = pCallback(this, pNewName, nullptr);
 						if (iCode) {
-							Globals::SetErrorCode(static_cast<Burger::eError>(iCode));
+							Globals::SetErrorCode(
+								static_cast<Burger::eError>(iCode));
 							break;
 						}
 					}
-				} while (++iIndex<m_iArgc);
+				} while (++iIndex < m_iArgc);
 			}
 		}
 	}
 	return uResult;
+}
+
+/***************************************
+
+	\brief Set the title of the console window.
+
+	On platforms that present console text output in a desktop window, this
+	function will set the title of that window to the specified UTF-8 string.
+	On platforms that don't support such a string, this function does nothing
+	and returns no error.
+
+	\param pTitle UTF-8 "C" string for new terminal title string.
+
+	\return The current error code. Can be returned to the operating system.
+	\sa WasDesktopLaunched()
+
+***************************************/
+
+Burger::eError BURGER_API Burger::ConsoleApp::SetWindowTitle(const char* pTitle)
+{
+	String16 Converter(pTitle);
+	if (!SetConsoleTitleW(reinterpret_cast<LPCWSTR>(Converter.c_str()))) {
+		GetLastError();
+		return kErrorInvalidParameter;
+	}
+	return kErrorNone;
+}
+
+/***************************************
+
+	\brief Set the size of the console window.
+
+	On platforms that present console text output in a desktop window, this
+	function will resize the window to the specified width and height in text
+	cells. On platforms that don't text window resizing, this function does
+	nothing and returns no error.
+
+	\param uWidth Number of text cells wide of the new window
+	\param uHeight Number of text cells high of the new window
+
+	\return The current error code. Can be returned to the operating system.
+	\sa WasDesktopLaunched()
+
+***************************************/
+
+Burger::eError BURGER_API Burger::ConsoleApp::SetWindowSize(
+	uint_t uWidth, uint_t uHeight)
+{
+	// Sanity check
+	if ((uWidth < 8) || (uHeight < 8)) {
+		return kErrorInvalidParameter;
+	}
+
+	// Windows only supports values up to a signed 16 bit short.
+	// Clamp it.
+	if (uWidth >= 0x7FFF) {
+		uWidth = 0x7FFF;
+	}
+	if (uHeight >= 0x7FFF) {
+		uHeight = 0x7FFF;
+	}
+
+	// Get the handle to the standard output
+	const HANDLE hStdoutHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (hStdoutHandle != INVALID_HANDLE_VALUE) {
+
+		// Set the scroll back buffer to something massive
+		COORD NewWindowSize;
+		NewWindowSize.X = static_cast<SHORT>(uWidth);
+		NewWindowSize.Y = 20000;
+		if (SetConsoleScreenBufferSize(hStdoutHandle, NewWindowSize)) {
+
+			// Set up the bounds rect for the window
+			SMALL_RECT WinRect;
+			WinRect.Left = 0;
+			WinRect.Top = 0;
+			WinRect.Right = static_cast<SHORT>(uWidth - 1);
+			WinRect.Bottom = static_cast<SHORT>(uHeight);
+			if (SetConsoleWindowInfo(hStdoutHandle, TRUE, &WinRect)) {
+				// Success
+				return kErrorNone;
+			}
+		}
+	}
+	// Clear out the error and exit
+	GetLastError();
+	return kErrorInvalidParameter;
 }
 
 #endif

@@ -1,13 +1,14 @@
 /***************************************
 
-	DXT3 compressor and decompresser
+    DXT3 compressor and decompresser
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -44,7 +45,7 @@
 
 ***************************************/
 
-void Burger::Dxt3Packet_t::Decompress(RGBAWord8_t *pOutput,WordPtr uStride) const
+void Burger::Dxt3Packet_t::Decompress(RGBAWord8_t *pOutput,uintptr_t uStride) const
 {
 	// Secondly, let's unpack the color (Use RGBA structures to avoid a mul by 3 in indexing)
 	// 4 unique colors
@@ -56,48 +57,48 @@ void Burger::Dxt3Packet_t::Decompress(RGBAWord8_t *pOutput,WordPtr uStride) cons
 	
 	// Create the two middle colors by scaling
 	
-	Word uColor1 = Colors[0].m_uRed;
-	Word uColor2 = Colors[1].m_uRed;
-	Colors[2].m_uRed = static_cast<Word8>(((uColor1*2U) + (uColor2))/3U);
-	Colors[3].m_uRed = static_cast<Word8>(((uColor1) + (uColor2*2))/3U);
+	uint_t uColor1 = Colors[0].m_uRed;
+	uint_t uColor2 = Colors[1].m_uRed;
+	Colors[2].m_uRed = static_cast<uint8_t>(((uColor1*2U) + (uColor2))/3U);
+	Colors[3].m_uRed = static_cast<uint8_t>(((uColor1) + (uColor2*2))/3U);
 
 	uColor1 = Colors[0].m_uGreen;
 	uColor2 = Colors[1].m_uGreen;
-	Colors[2].m_uGreen = static_cast<Word8>(((uColor1*2U) + (uColor2))/3U);
-	Colors[3].m_uGreen = static_cast<Word8>(((uColor1) + (uColor2*2U))/3U);
+	Colors[2].m_uGreen = static_cast<uint8_t>(((uColor1*2U) + (uColor2))/3U);
+	Colors[3].m_uGreen = static_cast<uint8_t>(((uColor1) + (uColor2*2U))/3U);
 
 	uColor1 = Colors[0].m_uBlue;
 	uColor2 = Colors[1].m_uBlue;
-	Colors[2].m_uBlue = static_cast<Word8>(((uColor1*2U) + (uColor2))/3U);
-	Colors[3].m_uBlue = static_cast<Word8>(((uColor1) + (uColor2*2U))/3U);
+	Colors[2].m_uBlue = static_cast<uint8_t>(((uColor1*2U) + (uColor2))/3U);
+	Colors[3].m_uBlue = static_cast<uint8_t>(((uColor1) + (uColor2*2U))/3U);
 
 	// Color and alpha indexes
-	const Word8 *pColorIndexes = m_uColorIndexes;
-	const Word8 *pAlphaIndexes = m_uAlpha;
+	const uint8_t *pColorIndexes = m_uColorIndexes;
+	const uint8_t *pAlphaIndexes = m_uAlpha;
 
 	// The code is going to add this to the pointer, so remove
 	// it from the input stride to undo the pointer addition
 	uStride -= (sizeof(RGBAWord8_t)*4U);
 
-	Word j=16/4;			// 16 pixels, 4 pixels per loop
+	uint_t j=16/4;			// 16 pixels, 4 pixels per loop
 	do {
 		// 4 2 bits per pixel indexes
-		Word uIndex = pColorIndexes[0];
+		uint_t uIndex = pColorIndexes[0];
 		++pColorIndexes;
-		Word k=4/2;		// 4 pixels per loop
+		uint_t k=4/2;		// 4 pixels per loop
 		do {
 			// Select the pixel to use for drawing
 			const RGBAWord8_t *pSource = &Colors[uIndex&3U];
 			uIndex>>=2U;
 			// Get the 4 bit per pixel alpha
-			Word uAlpha = pAlphaIndexes[0];
+			uint_t uAlpha = pAlphaIndexes[0];
 			++pAlphaIndexes;
 
 			// Get the final color
 			pOutput->m_uRed = pSource->m_uRed;
 			pOutput->m_uGreen = pSource->m_uGreen;
 			pOutput->m_uBlue = pSource->m_uBlue;
-			pOutput->m_uAlpha = static_cast<Word8>((uAlpha&0xFU)|(uAlpha<<4U));
+			pOutput->m_uAlpha = static_cast<uint8_t>((uAlpha&0xFU)|(uAlpha<<4U));
 			++pOutput;
 
 			// Select the pixel to use for drawing
@@ -107,11 +108,11 @@ void Burger::Dxt3Packet_t::Decompress(RGBAWord8_t *pOutput,WordPtr uStride) cons
 			pOutput->m_uRed = pSource->m_uRed;
 			pOutput->m_uGreen = pSource->m_uGreen;
 			pOutput->m_uBlue = pSource->m_uBlue;
-			pOutput->m_uAlpha = static_cast<Word8>((uAlpha>>4U)|(uAlpha&0xF0U));
+			pOutput->m_uAlpha = static_cast<uint8_t>((uAlpha>>4U)|(uAlpha&0xF0U));
 			++pOutput;
 		} while (--k);
 		// 4 pixels (A row) are drawn, skip to the next line
-		pOutput = reinterpret_cast<RGBAWord8_t *>(reinterpret_cast<Word8 *>(pOutput)+uStride);
+		pOutput = reinterpret_cast<RGBAWord8_t *>(reinterpret_cast<uint8_t *>(pOutput)+uStride);
 	} while (--j);
 }
 
@@ -135,14 +136,14 @@ void Burger::Dxt3Packet_t::Decompress(RGBAWord8_t *pOutput,WordPtr uStride) cons
 
 ***************************************/
 
-void BURGER_API Burger::DecompressImage(RGBAWord8_t *pOutput,WordPtr uOutputStride,Word uWidth,Word uHeight,const Dxt3Packet_t *pInput,WordPtr uInputStride)
+void BURGER_API Burger::DecompressImage(RGBAWord8_t *pOutput,uintptr_t uOutputStride,uint_t uWidth,uint_t uHeight,const Dxt3Packet_t *pInput,uintptr_t uInputStride)
 {
 	// Anything to process?
 	if (uWidth && uHeight) {
 		// Process a line of blocks
 		do {
 			// Init the steppers
-			Word uTempWidth = uWidth;
+			uint_t uTempWidth = uWidth;
 			const Dxt3Packet_t *pDXTInput = pInput;
 			RGBAWord8_t *pDest = pOutput;
 			do {
@@ -153,10 +154,10 @@ void BURGER_API Burger::DecompressImage(RGBAWord8_t *pOutput,WordPtr uOutputStri
 					pDXTInput->Decompress(LocalPixels,sizeof(RGBAWord8_t)*4);
 					// Write the decompressed pixels to the correct image locations
 					const RGBAWord8_t *pLocal = LocalPixels;
-					RGBAWord8_t *pDest2 = pDest;
-					Word uHeightTemp = uHeight;
+                    RGBAWord8_t *pDest2 = pDest;
+                    uint_t uHeightTemp = uHeight;
 					do {
-						Word uTempWidth2 = uTempWidth;
+						uint_t uTempWidth2 = uTempWidth;
 						do {
 							// Copy the pixel value
 							pDest2[0] = pLocal[0];
@@ -165,7 +166,7 @@ void BURGER_API Burger::DecompressImage(RGBAWord8_t *pOutput,WordPtr uOutputStri
 							++pDest2;
 						} while (--uTempWidth2);
 						pLocal = pLocal+(4-uTempWidth);
-						pDest2 = reinterpret_cast<RGBAWord8_t *>(reinterpret_cast<Word8 *>(pDest2)+uOutputStride)-(4-uTempWidth);
+						pDest2 = reinterpret_cast<RGBAWord8_t *>(reinterpret_cast<uint8_t *>(pDest2)+uOutputStride)-(4-uTempWidth);
 					} while (--uHeightTemp);
 					if (uTempWidth<4) {
 						break;
@@ -185,9 +186,9 @@ void BURGER_API Burger::DecompressImage(RGBAWord8_t *pOutput,WordPtr uOutputStri
 			}
 			uHeight -= 4;
 			// Step to the next line of compressed pixels
-			pInput = reinterpret_cast<const Dxt3Packet_t *>(reinterpret_cast<const Word8 *>(pInput)+uInputStride);
+			pInput = reinterpret_cast<const Dxt3Packet_t *>(reinterpret_cast<const uint8_t *>(pInput)+uInputStride);
 			// Step to the next 4 lines
-			pOutput = reinterpret_cast<RGBAWord8_t *>(reinterpret_cast<Word8 *>(pOutput)+(uOutputStride*4));
+			pOutput = reinterpret_cast<RGBAWord8_t *>(reinterpret_cast<uint8_t *>(pOutput)+(uOutputStride*4));
 		} while (uHeight);
 	}
 }

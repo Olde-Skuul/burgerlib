@@ -38,15 +38,15 @@
 
 ***************************************/
 
-static Word g_b60HertzTimerStarted = FALSE;
-static Word32 g_u60HertzTick;		// Tick value
-static Word32 g_u60HertzMSTime;		// 1000ms time
-static Word32 g_u60HertzTickFraction;	// 3000/60 time fraction
+static uint_t g_b60HertzTimerStarted = FALSE;
+static uint32_t g_u60HertzTick;		// Tick value
+static uint32_t g_u60HertzMSTime;		// 1000ms time
+static uint32_t g_u60HertzTickFraction;	// 3000/60 time fraction
 
-Word32 BURGER_API Burger::Tick::Read(void)
+uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
 {
-	Word32 uMark = Windows::timeGetTime();
-	Word32 uTick;
+	uint32_t uMark = Windows::timeGetTime();
+	uint32_t uTick;
 	if (!g_b60HertzTimerStarted) {			// Never initialized?
 		g_b60HertzTimerStarted = TRUE;
 		g_u60HertzMSTime = uMark;
@@ -55,7 +55,7 @@ Word32 BURGER_API Burger::Tick::Read(void)
 		uTick = 1;
 	} else {
 		// Get the elapsed time in Millisecond
-		Word32 uElapsed = uMark-g_u60HertzMSTime;
+		uint32_t uElapsed = uMark-g_u60HertzMSTime;
 		uTick = g_u60HertzTick;
 		if (uElapsed) {
 			// Update the time mark
@@ -64,7 +64,7 @@ Word32 BURGER_API Burger::Tick::Read(void)
 			// trying to avoid losing any precision
 
 			// Convert to 3000 ticks per second, so it's evenly divided by 60
-			Word32 uFraction = g_u60HertzTickFraction + (uElapsed*3U);
+			uint32_t uFraction = g_u60HertzTickFraction + (uElapsed*3U);
 
 			// Get the 60hz elapsed time
 			uTick = uTick + (uFraction/(3000U/60U));
@@ -83,16 +83,16 @@ Word32 BURGER_API Burger::Tick::Read(void)
 
 ***************************************/
 
-void BURGER_API Burger::Tick::Wait(Word uCount)
+void BURGER_API Burger::Tick::Wait(uint_t uCount)
 {
 	//KeyboardKbhit();				/* Handle any pending events */
-	Word32 NewTick = Read();	/* Read the timer */
-	if ((NewTick-s_LastTick)<(Word32)uCount) {	/* Should I wait? */
+	uint32_t NewTick = Read();	/* Read the timer */
+	if ((NewTick-s_LastTick)<(uint32_t)uCount) {	/* Should I wait? */
 		do {
 			WaitMessage();		/* Sleep until a tick occurs */
 			//KeyboardKbhit();			/* Call the system task if needed */
 			NewTick = Read();	/* Read in the current time tick */
-		} while ((NewTick-s_LastTick)<(Word32)uCount);	/* Time has elapsed? */
+		} while ((NewTick-s_LastTick)<(uint32_t)uCount);	/* Time has elapsed? */
 	}
 	s_LastTick = NewTick;		/* Mark the time */
 }
@@ -104,10 +104,10 @@ void BURGER_API Burger::Tick::Wait(Word uCount)
 
 ***************************************/
 
-static Word g_bStartedMicroseconds;	/* Got the frequency */
+static uint_t g_bStartedMicroseconds;	/* Got the frequency */
 static double g_dWinTicks = 1.0;	/* Frequency adjust */
 
-Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
+uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void)
 {
 	LARGE_INTEGER Temp;
 	if (!g_bStartedMicroseconds) {		/* Is the divisor initialized? */
@@ -117,7 +117,7 @@ Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
 		}
 	}
 	if (QueryPerformanceCounter(&Temp)) {	/* Get the timer from Win95 */
-		return (Word32)((double)Temp.QuadPart*g_dWinTicks);	/* Save the result */
+		return (uint32_t)((double)Temp.QuadPart*g_dWinTicks);	/* Save the result */
 	}
 	return 0;		/* Just zap it! (Error) */
 }
@@ -128,7 +128,7 @@ Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
 
 ***************************************/
 
-Word32 BURGER_API Burger::Tick::ReadMilliseconds(void)
+uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void)
 {
 	return Windows::timeGetTime();		/* Call windows 95/NT */
 }
@@ -215,9 +215,9 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 		
 		// Blame Microsoft.
 
-		Word64 uElapsedTime;
+		uint64_t uElapsedTime;
 
-		Word64 uMark = static_cast<Word64>(uTick.QuadPart);
+		uint64_t uMark = static_cast<uint64_t>(uTick.QuadPart);
 		if (uMark<m_uBaseTime) {
 
 			// The timer wrapped around.
@@ -257,7 +257,7 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Sleep(Word32 uMilliseconds)
+void BURGER_API Burger::Sleep(uint32_t uMilliseconds)
 {
 	// Sleep until the time expires or something
 	// occurs that could cause the main thread to take notice

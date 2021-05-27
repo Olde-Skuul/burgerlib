@@ -1,14 +1,14 @@
 /***************************************
 
-    Random number generator
+	Random number generator
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -19,36 +19,34 @@
 #include "brtypes.h"
 #endif
 
-#ifndef __BRBASE_H__
-#include "brbase.h"
-#endif
-
 #ifndef __BRRANDOMBASE_H__
 #include "brrandombase.h"
-#endif
-
-#ifndef __BRWATCOM_H__
-#include "brwatcom.h"
 #endif
 
 /* BEGIN */
 namespace Burger {
 
-class Random : public RandomBase {
+class Random: public RandomBase {
 	BURGER_RTTI_IN_CLASS();
+
 protected:
-	Word32 m_Array[17];	///< Array of seed values (Polynomial)
-	Word32 m_uState;	///< Last random number generated
-	Word m_uIndex;		///< First lookup index
+	/** Array of seed values (Polynomial) */
+	uint32_t m_Array[17];
+
+	/** Last random number generated */
+	uint32_t m_uState;
+
+	/** First lookup index */
+	uint_t m_uIndex;
+
 public:
-	Random(Word32 uNewSeed=728056387U);
-	static Random* BURGER_API New(Word32 uNewSeed=0);
-	void SetSeed(Word32 uNewSeed) BURGER_OVERRIDE;
-	Word32 Get(void) BURGER_OVERRIDE;
+	Random(uint32_t uNewSeed = 728056387U) BURGER_NOEXCEPT;
+	static Random* BURGER_API New(uint32_t uNewSeed = 0) BURGER_NOEXCEPT;
+	void SetSeed(uint32_t uNewSeed) BURGER_NOEXCEPT BURGER_OVERRIDE;
+	uint32_t Get(void) BURGER_NOEXCEPT BURGER_OVERRIDE;
 };
 }
 
 /* END */
 
 #endif
-

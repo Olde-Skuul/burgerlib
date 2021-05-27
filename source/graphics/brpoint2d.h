@@ -1,13 +1,14 @@
 /***************************************
 
-	Integer Point handlers
+    Integer Point handlers
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -59,10 +60,10 @@ struct Point2D_t {
 	BURGER_INLINE void SetY(int32_t iY) { m_iY = iY; }
 	BURGER_INLINE void Set(int32_t iX,int32_t iY) { m_iX = iX; m_iY = iY; }
 	BURGER_INLINE void Clear(void) { m_iX = 0; m_iY = 0; }
-	Word Read(FILE *fp);
-	Word Write(FILE *fp) const;
-	Word Read(Burger::File *fp);
-	Word Write(Burger::File *fp) const;
+	uint_t Read(FILE *fp);
+	uint_t Write(FILE *fp) const;
+	uint_t Read(Burger::File *fp);
+	uint_t Write(Burger::File *fp) const;
 #if (defined(BURGER_MACOS)) || defined(DOXYGEN)
 	void Get(Point *pOutput) const;
 	void Set(const Point *pInput);

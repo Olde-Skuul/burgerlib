@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player data stream reader
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player data stream reader
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brflashrgba.h"
@@ -33,13 +34,13 @@
 
 	Sets the color to white (255,255,255,255).
 
-	\sa RGBAWord8(Word8,Word8,Word8,Word8) or RGBAWord8(double)
+	\sa RGBAWord8(uint8_t,uint8_t,uint8_t,uint8_t) or RGBAWord8(double)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::Flash::RGBAWord8::RGBAWord8(Word8 bRed,Word8 bGreen,Word8 bBlue,Word8 bAlpha)
+	\fn Burger::Flash::RGBAWord8::RGBAWord8(uint8_t bRed,uint8_t bGreen,uint8_t bBlue,uint8_t bAlpha)
 	\brief Default constructor
 
 	Sets the color a specific color
@@ -62,7 +63,7 @@
 	is dColor/256 and Blue is dColor and all values are clamped to 8 bit.
 
 	\param dColor Encoded color number
-	\sa Set(double), RGBAWord8(Word8,Word8,Word8,Word8) or RGBAWord8()
+	\sa Set(double), RGBAWord8(uint8_t,uint8_t,uint8_t,uint8_t) or RGBAWord8()
 
 ***************************************/
 
@@ -82,7 +83,7 @@
 
 ***************************************/
 
-void BURGER_API Burger::Flash::RGBAWord8::Read(Stream* pStream,Word uTagType)
+void BURGER_API Burger::Flash::RGBAWord8::Read(Stream* pStream,uint_t uTagType)
 {
 	if (uTagType <= 22) {		// Shape 1 (2) or Shape 2 (22) is RGB
 		ReadRGB(pStream);
@@ -99,7 +100,7 @@ void BURGER_API Burger::Flash::RGBAWord8::Read(Stream* pStream,Word uTagType)
 	input stream.
 
 	\param pStream Pointer to the data stream
-	\sa Read(Stream*,Word) or ReadRGB(Stream*)
+	\sa Read(Stream*,uint_t) or ReadRGB(Stream*)
 
 ***************************************/
 
@@ -119,7 +120,7 @@ void BURGER_API Burger::Flash::RGBAWord8::ReadRGBA(Stream* pStream)
 	input stream. Set Alpha to 255
 
 	\param pStream Pointer to the data stream
-	\sa Read(Stream*,Word) or ReadRGBA(Stream*)
+	\sa Read(Stream*,uint_t) or ReadRGBA(Stream*)
 
 ***************************************/
 
@@ -133,7 +134,7 @@ void BURGER_API Burger::Flash::RGBAWord8::ReadRGB(Stream* pStream)
 
 /*! ************************************
 
-	\fn Burger::Flash::RGBAWord8::Set(Word8 bRed,Word8 bGreen,Word8 bBlue,Word8 bAlpha)
+	\fn Burger::Flash::RGBAWord8::Set(uint8_t bRed,uint8_t bGreen,uint8_t bBlue,uint8_t bAlpha)
 	\brief Sets the color
 
 	Sets the color a specific color
@@ -143,7 +144,7 @@ void BURGER_API Burger::Flash::RGBAWord8::ReadRGB(Stream* pStream)
 	\param bBlue New blue component
 	\param bAlpha New alpha component
 
-	\sa Set(double) or Set(Word32)
+	\sa Set(double) or Set(uint32_t)
 
 ***************************************/
 
@@ -164,11 +165,11 @@ void BURGER_API Burger::Flash::RGBAWord8::ReadRGB(Stream* pStream)
 
 ***************************************/
 
-void BURGER_API Burger::Flash::RGBAWord8::Set(Word32 uColor)
+void BURGER_API Burger::Flash::RGBAWord8::Set(uint32_t uColor)
 {
-	m_uRed = static_cast<Word8>(uColor >> 16U);
-	m_uGreen = static_cast<Word8>(uColor >> 8U);
-	m_uBlue = static_cast<Word8>(uColor);
+	m_uRed = static_cast<uint8_t>(uColor >> 16U);
+	m_uGreen = static_cast<uint8_t>(uColor >> 8U);
+	m_uBlue = static_cast<uint8_t>(uColor);
 	m_uAlpha = 255;
 }
 
@@ -188,7 +189,7 @@ void BURGER_API Burger::Flash::RGBAWord8::Set(Word32 uColor)
 	Blue = uColor&0xFF
 
 	\param dColor 24 bit color encoded into a 64 bit floating point number
-	\sa Set(Word32)
+	\sa Set(uint32_t)
 
 ***************************************/
 
@@ -202,5 +203,5 @@ void BURGER_API Burger::Flash::RGBAWord8::Set(Word32 uColor)
 
 void BURGER_API Burger::Flash::RGBAWord8::Print(void) const
 {
-	Debug::Message("RGBAWord8: %u %u %u %u\n",static_cast<Word>(m_uRed),static_cast<Word>(m_uGreen),static_cast<Word>(m_uBlue),static_cast<Word>(m_uAlpha));
+	Debug::Message("RGBAWord8: %u %u %u %u\n",static_cast<uint_t>(m_uRed),static_cast<uint_t>(m_uGreen),static_cast<uint_t>(m_uBlue),static_cast<uint_t>(m_uAlpha));
 }

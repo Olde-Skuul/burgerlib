@@ -1,13 +1,14 @@
 /***************************************
 
-	Typedefs specific to iOS
+    Typedefs specific to iOS
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -44,20 +45,20 @@ typedef unsigned int Burgertask_t;
 
 #if defined(BURGER_64BITCPU)
 struct Burgerpthread_mutex_t {
-	Word64 m_Opaque[8]; 
+	uint64_t m_Opaque[8]; 
 };
 
 struct Burgerpthread_cond_t {
-	Word64 m_Opaque[6]; 
+	uint64_t m_Opaque[6]; 
 };
 
 #else
 struct Burgerpthread_mutex_t {
-	Word32 m_Opaque[11]; 
+	uint32_t m_Opaque[11]; 
 };
 
 struct Burgerpthread_cond_t { 
-	Word32 m_Opaque[7];
+	uint32_t m_Opaque[7];
 };
 
 #endif

@@ -28,7 +28,7 @@
 struct Wildcard_t {
 	const char* m_pTest;
 	const char* m_pWild;
-	Word m_uResult;
+	uint_t m_uResult;
 };
 
 static const Wildcard_t s_Wildcards[] = {{"foo", "*o", FALSE},
@@ -40,14 +40,14 @@ static const Wildcard_t s_Wildcards[] = {{"foo", "*o", FALSE},
 	{"fo", "*fo?", TRUE}, {"file.txt", "*.txt", FALSE},
 	{"FILE.TXT", "*.txt", FALSE}};
 
-static Word BURGER_API TestWildcard(void)
+static uint_t BURGER_API TestWildcard(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const Wildcard_t* pWork = s_Wildcards;
-	WordPtr uCount = BURGER_ARRAYSIZE(s_Wildcards);
+	uintptr_t uCount = BURGER_ARRAYSIZE(s_Wildcards);
 	do {
-		Word32 uTester = Burger::Wildcardcmp(pWork->m_pTest, pWork->m_pWild);
-		Word uTest = (uTester != pWork->m_uResult);
+		uint32_t uTester = Burger::Wildcardcmp(pWork->m_pTest, pWork->m_pWild);
+		uint_t uTest = (uTester != pWork->m_uResult);
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure("Burger::Wildcardcmp(%s,%s) = %u, expected %u", uTest,
@@ -72,17 +72,17 @@ static const Wildcard_t s_QuotedStrings[] = {{"foo", "foo", 3},
 	{"foo bar", "foo", 3}, {"foo\tbar", "foo", 3}, {"'foo bar'", "foo bar", 9},
 	{"'foo\tbar'", "foo bar", 9}};
 
-static Word BURGER_API TestParseQuotedString(void)
+static uint_t BURGER_API TestParseQuotedString(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const Wildcard_t* pWork = s_QuotedStrings;
-	WordPtr uCount = BURGER_ARRAYSIZE(s_QuotedStrings);
+	uintptr_t uCount = BURGER_ARRAYSIZE(s_QuotedStrings);
 	char Buffer[256];
 	do {
 		char* pTester =
 			Burger::ParseQuotedString(Buffer, sizeof(Buffer), pWork->m_pTest);
 		// Check the end mark
-		Word uTest = (pTester != (pWork->m_pTest + pWork->m_uResult));
+		uint_t uTest = (pTester != (pWork->m_pTest + pWork->m_uResult));
 		// Check the result string
 		uTest |= Burger::StringCompare(Buffer, pWork->m_pWild);
 		uFailure |= uTest;
@@ -125,7 +125,7 @@ static uint_t BURGER_API TestGetEnvironmentString(uint_t uVerbose)
     const char* pTest = Burger::GetEnvironmentString("JAPANESE");
     if (pTest) {
         uint_t uTest =
-            static_cast<Word>(Burger::StringCompare(pTest, SAILORMOON));
+            static_cast<uint_t>(Burger::StringCompare(pTest, SAILORMOON));
         uFailure |= uTest;
         ReportFailure(
             "Burger::GetEnvironmentString(\"JAPANESE\") = \"%s\", expected \"%s\"",
@@ -153,19 +153,19 @@ static const Wildcard_t s_StringStopAts[] = {{nullptr, "*o", 0},
 	{"foo", nullptr, 3}, {"foo", "", 3}, {"", "*", 0}, {"foo", "*o", 1},
 	{"foo", "f*", 0}, {"foo", "*fo*", 0}, {"FILE.TXT", "*.txt", 4}};
 
-static Word TestStringStopAt(void)
+static uint_t TestStringStopAt(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const Wildcard_t* pWork = s_StringStopAts;
-	WordPtr uCount = BURGER_ARRAYSIZE(s_StringStopAts);
+	uintptr_t uCount = BURGER_ARRAYSIZE(s_StringStopAts);
 	do {
-		WordPtr uTester = Burger::StringStopAt(pWork->m_pTest, pWork->m_pWild);
-		Word uTest = (uTester != pWork->m_uResult);
+		uintptr_t uTester = Burger::StringStopAt(pWork->m_pTest, pWork->m_pWild);
+		uint_t uTest = (uTester != pWork->m_uResult);
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure("Burger::StringStopAt(%s,%s) = %u, expected %u",
 				uTest, pWork->m_pTest, pWork->m_pWild,
-				static_cast<Word>(uTester), pWork->m_uResult);
+				static_cast<uint_t>(uTester), pWork->m_uResult);
 		}
 		++pWork;
 	} while (--uCount);
@@ -182,20 +182,20 @@ static const Wildcard_t s_StringSkipOvers[] = {{nullptr, "*o", 0},
 	{"foo", nullptr, 0}, {"foo", "", 0}, {"", "*", 0}, {"foo", "*o", 0},
 	{"foo", "f*", 1}, {"foo", "*fo*", 3}, {"FILE.TXT", "*.txt", 0}};
 
-static Word TestStringSkipOver(void)
+static uint_t TestStringSkipOver(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const Wildcard_t* pWork = s_StringSkipOvers;
-	WordPtr uCount = BURGER_ARRAYSIZE(s_StringSkipOvers);
+	uintptr_t uCount = BURGER_ARRAYSIZE(s_StringSkipOvers);
 	do {
-		WordPtr uTester =
+		uintptr_t uTester =
 			Burger::StringSkipOver(pWork->m_pTest, pWork->m_pWild);
-		Word uTest = (uTester != pWork->m_uResult);
+		uint_t uTest = (uTester != pWork->m_uResult);
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure("Burger::StringSkipOver(%s,%s) = %u, expected %u",
 				uTest, pWork->m_pTest, pWork->m_pWild,
-				static_cast<Word>(uTester), pWork->m_uResult);
+				static_cast<uint_t>(uTester), pWork->m_uResult);
 		}
 		++pWork;
 	} while (--uCount);
@@ -210,17 +210,17 @@ static Word TestStringSkipOver(void)
 
 static const char* s_Tokens[] = {"abc", "foo", "k", "ll", "me"};
 
-static Word TestStringToken(void)
+static uint_t TestStringToken(void)
 {
 	char Test[] = "abc,foo,kill,me";
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const char** ppWork = s_Tokens;
-	WordPtr uCount = BURGER_ARRAYSIZE(s_Tokens);
+	uintptr_t uCount = BURGER_ARRAYSIZE(s_Tokens);
 	char* pTemp = nullptr;
 	const char* pToken =
 		Burger::StringToken(Test,"i,", &pTemp);
 	do {
-		Word uTest;
+		uint_t uTest;
 		if (!pToken) {
 			uTest = TRUE;
 			pToken = "No Token found";
@@ -242,9 +242,9 @@ static Word TestStringToken(void)
 // Perform all the tests for the Burgerlib Endian Manager
 //
 
-int BURGER_API TestBrstrings(Word uVerbose)
+int BURGER_API TestBrstrings(uint_t uVerbose)
 {
-	Word uTotal; // Assume no failures
+	uint_t uTotal; // Assume no failures
 
 	if (uVerbose & VERBOSE_MSG) {
 		Message("Running String tests");

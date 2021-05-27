@@ -46,52 +46,52 @@ Burger::RendererSoftware8::RendererSoftware8(void) BURGER_NOEXCEPT: Renderer()
 
 ***************************************/
 
-void Burger::RendererSoftware8::Draw8BitPixels(int iX, int iY, Word uWidth,
-    Word uHeight, WordPtr uStride, const Word8* pPixels) BURGER_NOEXCEPT
+void Burger::RendererSoftware8::Draw8BitPixels(int iX, int iY, uint_t uWidth,
+    uint_t uHeight, uintptr_t uStride, const uint8_t* pPixels) BURGER_NOEXCEPT
 {
     // Clip the right side
     int iDelta = m_Clip.m_iRight - iX;
     if (iDelta >= 1) {
-        if (static_cast<Word>(iDelta) < uWidth) {
-            uWidth = static_cast<Word>(iDelta);
+        if (static_cast<uint_t>(iDelta) < uWidth) {
+            uWidth = static_cast<uint_t>(iDelta);
         }
         // Clip the bottom
         iDelta = m_Clip.m_iBottom - iY;
         if (iDelta >= 1) {
-            if (static_cast<Word>(iDelta) < uHeight) {
-                uHeight = static_cast<Word>(iDelta);
+            if (static_cast<uint_t>(iDelta) < uHeight) {
+                uHeight = static_cast<uint_t>(iDelta);
             }
             // Clip the top
 
             iDelta = iY - static_cast<int>(m_Clip.m_iTop - uHeight);
             if (iDelta >= 1) {
-                if (static_cast<Word>(iDelta) < uHeight) {
+                if (static_cast<uint_t>(iDelta) < uHeight) {
                     iY = m_Clip.m_iTop;
                     pPixels = pPixels +
-                        (uStride * static_cast<Word>(uHeight - iDelta));
-                    uHeight = static_cast<Word>(iDelta);
+                        (uStride * static_cast<uint_t>(uHeight - iDelta));
+                    uHeight = static_cast<uint_t>(iDelta);
                 }
 
                 // Clip the left side
 
                 iDelta = iX - static_cast<int>(m_Clip.m_iLeft - uWidth);
                 if (iDelta >= 1) {
-                    if (static_cast<Word>(iDelta) < uWidth) {
+                    if (static_cast<uint_t>(iDelta) < uWidth) {
                         iX = m_Clip.m_iLeft;
-                        pPixels = pPixels + static_cast<Word>(uWidth - iDelta);
-                        uWidth = static_cast<Word>(iDelta);
+                        pPixels = pPixels + static_cast<uint_t>(uWidth - iDelta);
+                        uWidth = static_cast<uint_t>(iDelta);
                     }
 
                     // Invalid shape?
                     if (uHeight && uWidth) {
 
                         // Get base address
-                        Word8* pDest = &static_cast<Word8*>(
+                        uint8_t* pDest = &static_cast<uint8_t*>(
                             m_pFrameBuffer)[(m_uStride * iY) + iX];
                         // Precalc the offset
-                        WordPtr uOffset = m_uStride;
+                        uintptr_t uOffset = m_uStride;
                         // Count in longs
-                        Word uLongWidth = uWidth >> 2;
+                        uint_t uLongWidth = uWidth >> 2;
                         if (!uLongWidth) {
                             // Blit 1,2 or 3 byte wide shapes
 
@@ -108,12 +108,12 @@ void Burger::RendererSoftware8::Draw8BitPixels(int iX, int iY, Word uWidth,
                             case 2:
                                 do {
 #if defined(BURGER_INTEL)
-                                    reinterpret_cast<Word16*>(pDest)[0] =
-                                        reinterpret_cast<const Word16*>(
+                                    reinterpret_cast<uint16_t*>(pDest)[0] =
+                                        reinterpret_cast<const uint16_t*>(
                                             pPixels)[0];
 #else
-                                    Word8 a = pPixels[0];
-                                    Word8 b = pPixels[1];
+                                    uint8_t a = pPixels[0];
+                                    uint8_t b = pPixels[1];
                                     pDest[0] = a;
                                     pDest[1] = b;
 #endif
@@ -125,12 +125,12 @@ void Burger::RendererSoftware8::Draw8BitPixels(int iX, int iY, Word uWidth,
                             case 3:
                                 do {
 #if (defined(BURGER_AMD64) || defined(BURGER_X86))
-                                    reinterpret_cast<Word16*>(pDest)[0] =
-                                        reinterpret_cast<const Word16*>(
+                                    reinterpret_cast<uint16_t*>(pDest)[0] =
+                                        reinterpret_cast<const uint16_t*>(
                                             pPixels)[0];
 #else
-                                    Word8 a = pPixels[0];
-                                    Word8 b = pPixels[1];
+                                    uint8_t a = pPixels[0];
+                                    uint8_t b = pPixels[1];
                                     pDest[0] = a;
                                     pDest[1] = b;
 #endif
@@ -145,15 +145,15 @@ void Burger::RendererSoftware8::Draw8BitPixels(int iX, int iY, Word uWidth,
                             uOffset -= uWidth;
                             uWidth &= 3;
                             if (uWidth) {
-                                Word i;
+                                uint_t i;
                                 // Copy longwords and bytes
                                 do {
                                     i = uLongWidth;
                                     do {
-                                        Word32 uTemp =
-                                            reinterpret_cast<const Word32*>(
+                                        uint32_t uTemp =
+                                            reinterpret_cast<const uint32_t*>(
                                                 pPixels)[0];
-                                        reinterpret_cast<Word32*>(pDest)[0] =
+                                        reinterpret_cast<uint32_t*>(pDest)[0] =
                                             uTemp;
                                         pDest = pDest + 4;
                                         pPixels = pPixels + 4;
@@ -170,12 +170,12 @@ void Burger::RendererSoftware8::Draw8BitPixels(int iX, int iY, Word uWidth,
                             } else {
                                 // I only copy 4 byte data!
                                 do {
-                                    Word i = uLongWidth;
+                                    uint_t i = uLongWidth;
                                     do {
-                                        Word32 uTemp =
-                                            reinterpret_cast<const Word32*>(
+                                        uint32_t uTemp =
+                                            reinterpret_cast<const uint32_t*>(
                                                 pPixels)[0];
-                                        reinterpret_cast<Word32*>(pDest)[0] =
+                                        reinterpret_cast<uint32_t*>(pDest)[0] =
                                             uTemp;
                                         pDest = pDest + 4;
                                         pPixels = pPixels + 4;
@@ -199,57 +199,57 @@ void Burger::RendererSoftware8::Draw8BitPixels(int iX, int iY, Word uWidth,
 ***************************************/
 
 void Burger::RendererSoftware8::Draw8BitPixelsMasked(int iX, int iY,
-    Word uWidth, Word uHeight, WordPtr uStride,
-    const Word8* pPixels) BURGER_NOEXCEPT
+    uint_t uWidth, uint_t uHeight, uintptr_t uStride,
+    const uint8_t* pPixels) BURGER_NOEXCEPT
 {
     // Clip the right side
     int iDelta = m_Clip.m_iRight - iX;
     if (iDelta >= 1) {
-        if (static_cast<Word>(iDelta) < uWidth) {
-            uWidth = static_cast<Word>(iDelta);
+        if (static_cast<uint_t>(iDelta) < uWidth) {
+            uWidth = static_cast<uint_t>(iDelta);
         }
         // Clip the bottom
         iDelta = m_Clip.m_iBottom - iY;
         if (iDelta >= 1) {
-            if (static_cast<Word>(iDelta) < uHeight) {
-                uHeight = static_cast<Word>(iDelta);
+            if (static_cast<uint_t>(iDelta) < uHeight) {
+                uHeight = static_cast<uint_t>(iDelta);
             }
             // Clip the top
 
             iDelta = iY - static_cast<int>(m_Clip.m_iTop - uHeight);
             if (iDelta >= 1) {
-                if (static_cast<Word>(iDelta) < uHeight) {
+                if (static_cast<uint_t>(iDelta) < uHeight) {
                     iY = m_Clip.m_iTop;
                     pPixels = pPixels +
-                        (uStride * static_cast<Word>(uHeight - iDelta));
-                    uHeight = static_cast<Word>(iDelta);
+                        (uStride * static_cast<uint_t>(uHeight - iDelta));
+                    uHeight = static_cast<uint_t>(iDelta);
                 }
 
                 // Clip the left side
 
                 iDelta = iX - static_cast<int>(m_Clip.m_iLeft - uWidth);
                 if (iDelta >= 1) {
-                    if (static_cast<Word>(iDelta) < uWidth) {
+                    if (static_cast<uint_t>(iDelta) < uWidth) {
                         iX = m_Clip.m_iLeft;
-                        pPixels = pPixels + static_cast<Word>(uWidth - iDelta);
-                        uWidth = static_cast<Word>(iDelta);
+                        pPixels = pPixels + static_cast<uint_t>(uWidth - iDelta);
+                        uWidth = static_cast<uint_t>(iDelta);
                     }
                     if (uWidth && uHeight) {
                         // Get base address
-                        Word8* pDest = &static_cast<Word8*>(
+                        uint8_t* pDest = &static_cast<uint8_t*>(
                             m_pFrameBuffer)[(m_uStride * iY) + iX];
                         // Precalc the pDest stride
-                        WordPtr uDestStride = m_uStride - uWidth;
+                        uintptr_t uDestStride = m_uStride - uWidth;
                         uStride -= uWidth;
-                        Word uLongWidth = uWidth >> 2;
+                        uint_t uLongWidth = uWidth >> 2;
                         if (!uLongWidth) {
                             // 1-3 bytes wide
                             do {
                                 // Reset the width count
-                                Word i = uWidth;
+                                uint_t i = uWidth;
                                 do {
                                     // Only draw non zero pixels!
-                                    Word8 uTemp1 = pPixels[0];
+                                    uint8_t uTemp1 = pPixels[0];
                                     if (uTemp1) {
                                         pDest[0] = uTemp1;
                                     }
@@ -265,10 +265,10 @@ void Burger::RendererSoftware8::Draw8BitPixelsMasked(int iX, int iY,
                             uWidth = uWidth & 3;
                             do {
                                 // Reset the width count
-                                Word i = uLongWidth;
+                                uint_t i = uLongWidth;
                                 do {
-                                    Word8 uTempA = pPixels[0];
-                                    Word8 uTempB = pPixels[1];
+                                    uint8_t uTempA = pPixels[0];
+                                    uint8_t uTempB = pPixels[1];
                                     if (uTempA) {
                                         pDest[0] = uTempA;
                                     }
@@ -289,7 +289,7 @@ void Burger::RendererSoftware8::Draw8BitPixelsMasked(int iX, int iY,
                                 if (uWidth) {
                                     i = uWidth;
                                     do {
-                                        Word8 uTempC = pPixels[0];
+                                        uint8_t uTempC = pPixels[0];
                                         if (uTempC) {
                                             pDest[0] = uTempC;
                                         }
@@ -318,7 +318,7 @@ void Burger::RendererSoftware8::Draw8BitPixelsMasked(int iX, int iY,
 ***************************************/
 
 void Burger::RendererSoftware8::DrawPixel(
-    int iX, int iY, Word uColorIndex) BURGER_NOEXCEPT
+    int iX, int iY, uint_t uColorIndex) BURGER_NOEXCEPT
 {
     if ((iX >= m_Clip.m_iLeft) && (iY >= m_Clip.m_iTop) &&
         (iX < m_Clip.m_iRight) && (iY < m_Clip.m_iBottom)) { // Plot the pixel
@@ -334,50 +334,50 @@ void Burger::RendererSoftware8::DrawPixel(
 ***************************************/
 
 void Burger::RendererSoftware8::DrawRect(
-    int iX, int iY, Word uWidth, Word uHeight, Word uColorIndex) BURGER_NOEXCEPT
+    int iX, int iY, uint_t uWidth, uint_t uHeight, uint_t uColorIndex) BURGER_NOEXCEPT
 {
     // Clip the right side
     int iDelta = m_Clip.m_iRight - iX;
     if (iDelta >= 1) {
-        if (static_cast<Word>(iDelta) < uWidth) {
-            uWidth = static_cast<Word>(iDelta);
+        if (static_cast<uint_t>(iDelta) < uWidth) {
+            uWidth = static_cast<uint_t>(iDelta);
         }
         // Clip the bottom
         iDelta = m_Clip.m_iBottom - iY;
         if (iDelta >= 1) {
-            if (static_cast<Word>(iDelta) < uHeight) {
-                uHeight = static_cast<Word>(iDelta);
+            if (static_cast<uint_t>(iDelta) < uHeight) {
+                uHeight = static_cast<uint_t>(iDelta);
             }
             // Clip the top
 
             iDelta = iY - static_cast<int>(m_Clip.m_iTop - uHeight);
             if (iDelta >= 1) {
-                if (static_cast<Word>(iDelta) < uHeight) {
+                if (static_cast<uint_t>(iDelta) < uHeight) {
                     iY = m_Clip.m_iTop;
-                    uHeight = static_cast<Word>(iDelta);
+                    uHeight = static_cast<uint_t>(iDelta);
                 }
 
                 // Clip the left side
 
                 iDelta = iX - static_cast<int>(m_Clip.m_iLeft - uWidth);
                 if (iDelta >= 1) {
-                    if (static_cast<Word>(iDelta) < uWidth) {
+                    if (static_cast<uint_t>(iDelta) < uWidth) {
                         iX = m_Clip.m_iLeft;
-                        uWidth = static_cast<Word>(iDelta);
+                        uWidth = static_cast<uint_t>(iDelta);
                     }
                     if (uWidth && uHeight) {
                         // Get the screen pointer
-                        Word8* pDest = &static_cast<Word8*>(
+                        uint8_t* pDest = &static_cast<uint8_t*>(
                             m_pFrameBuffer)[(m_uStride * iY) + iX];
                         // Optimization for memory fill
                         if ((m_uStride == uWidth) && !iX) {
-                            MemoryFill(pDest, static_cast<Word8>(uColorIndex),
+                            MemoryFill(pDest, static_cast<uint8_t>(uColorIndex),
                                 uWidth * uHeight);
                         } else {
                             do {
                                 // Fill memory
                                 MemoryFill(pDest,
-                                    static_cast<Word8>(uColorIndex), uWidth);
+                                    static_cast<uint8_t>(uColorIndex), uWidth);
                                 // Next line down
                                 pDest += m_uStride;
                                 // All done?

@@ -43,7 +43,7 @@ Burger::Joypad::Joypad(GameApp *pAppInstance) :
 	//
 	JoypadData_t *pJoypadData = m_Data;
 
-	Word uXInputCount = MAXJOYSTICKS;
+	uint_t uXInputCount = MAXJOYSTICKS;
 	do {
 		pJoypadData->m_uButtonCount = 12;		// XInput manages 12 buttons
 		pJoypadData->m_uPOVCount = 1;			// One POV controller
@@ -58,9 +58,9 @@ Burger::Joypad::Joypad(GameApp *pAppInstance) :
 
 
 	// Create the digital bounds for all devices
-	Word j = 0;
+	uint_t j = 0;
 	do {
-		Word k = 0;
+		uint_t k = 0;
 		do {
 			SetDigital(j,k);		// Create the digital bounds
 		} while (++k<MAXAXIS);
@@ -101,23 +101,23 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 
 	// Handle XInput devices first
 
-	Word uWhich = 0;
+	uint_t uWhich = 0;
 	do {
 		XINPUT_STATE State;
 		// Test if this was an insertion or removal and report it
 		// Get the old and new states
 
-		Word bIsConnected = (XInputGetState(uWhich,&State) == ERROR_SUCCESS);
-		Word bWasConnected = pJoypadData->m_bConnected;
+		uint_t bIsConnected = (XInputGetState(uWhich,&State) == ERROR_SUCCESS);
+		uint_t bWasConnected = pJoypadData->m_bConnected;
 
 		// Save off the states as to how they were processed
-		pJoypadData->m_bConnected = static_cast<Word8>(bIsConnected);
-		pJoypadData->m_bRemoved = static_cast<Word8>(bWasConnected & (bIsConnected^1));
-		pJoypadData->m_bInserted = static_cast<Word8>((bWasConnected^1) & bIsConnected);
+		pJoypadData->m_bConnected = static_cast<uint8_t>(bIsConnected);
+		pJoypadData->m_bRemoved = static_cast<uint8_t>(bWasConnected & (bIsConnected^1));
+		pJoypadData->m_bInserted = static_cast<uint8_t>((bWasConnected^1) & bIsConnected);
 
 		if (bIsConnected) {
-			Word32 uButtons;
-			Word uXBoxButtons = State.Gamepad.wButtons;
+			uint32_t uButtons;
+			uint_t uXBoxButtons = State.Gamepad.wButtons;
 
 			// The code is the "right" way to do it, but it has
 			// too many branches. The code that follows assumes
@@ -187,7 +187,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 			// Convert analog directions to digital info
 			const JoypadRange_t *pJoypadRange = pJoypadData->m_uAxisDigitalRanges;
 
-			Word uTemp = static_cast<Word16>(State.Gamepad.sThumbLY)^0x8000U;
+			uint_t uTemp = static_cast<uint16_t>(State.Gamepad.sThumbLY)^0x8000U;
 			pJoypadData->m_uAxis[0] = uTemp;
 			if (uTemp<pJoypadRange[0].m_uMin) {		// Test X axis
 				uButtons += AXIS1MIN;
@@ -197,7 +197,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 			}
 
 			// Test Y axis
-			uTemp = static_cast<Word16>(State.Gamepad.sThumbLX)^0x8000U;
+			uTemp = static_cast<uint16_t>(State.Gamepad.sThumbLX)^0x8000U;
 			pJoypadData->m_uAxis[1] = uTemp;
 			if (uTemp<pJoypadRange[1].m_uMin) {
 				uButtons += AXIS2MIN;
@@ -206,7 +206,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 				uButtons += AXIS2MAX;
 			}
 
-			uTemp = static_cast<Word16>(State.Gamepad.sThumbRY)^0x8000U;
+			uTemp = static_cast<uint16_t>(State.Gamepad.sThumbRY)^0x8000U;
 			pJoypadData->m_uAxis[2] = uTemp;
 			if (uTemp<pJoypadRange[2].m_uMin) {		/* Test X axis */
 				uButtons += AXIS3MIN;
@@ -215,7 +215,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 				uButtons += AXIS3MAX;
 			}
 			// Test Y axis
-			uTemp = static_cast<Word16>(State.Gamepad.sThumbRX)^0x8000U;
+			uTemp = static_cast<uint16_t>(State.Gamepad.sThumbRX)^0x8000U;
 			pJoypadData->m_uAxis[3] = uTemp;
 			if (uTemp<pJoypadRange[3].m_uMin) {
 				uButtons += AXIS4MIN;
@@ -224,11 +224,11 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 				uButtons += AXIS4MAX;
 			}
 
-			pJoypadData->m_uAxis[4] = (static_cast<Word32>(State.Gamepad.bLeftTrigger)<<8U)+State.Gamepad.bLeftTrigger;
-			pJoypadData->m_uAxis[5] = (static_cast<Word32>(State.Gamepad.bRightTrigger)<<8U)+State.Gamepad.bRightTrigger;
+			pJoypadData->m_uAxis[4] = (static_cast<uint32_t>(State.Gamepad.bLeftTrigger)<<8U)+State.Gamepad.bLeftTrigger;
+			pJoypadData->m_uAxis[5] = (static_cast<uint32_t>(State.Gamepad.bRightTrigger)<<8U)+State.Gamepad.bRightTrigger;
 
 			// Store the button states
-			Word32 uCache = (pJoypadData->m_uButtonState ^ uButtons)&uButtons;
+			uint32_t uCache = (pJoypadData->m_uButtonState ^ uButtons)&uButtons;
 			pJoypadData->m_uButtonStatePressed |= uCache;
 			pJoypadData->m_uButtonState = uButtons;
 		}
@@ -253,19 +253,19 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
 
 ***************************************/
 
-Word BURGER_API Burger::XInputStopRumbleOnAllControllers(void)
+uint_t BURGER_API Burger::XInputStopRumbleOnAllControllers(void)
 {
 	// Set the vibration to off
 	XINPUT_VIBRATION MyVibration;
 	MyVibration.wLeftMotorSpeed = 0;
 	MyVibration.wRightMotorSpeed = 0;
 
-	Word32 i = 0;
-	Word uResult = 0;
+	uint32_t i = 0;
+	uint_t uResult = 0;
 	do {
 		// Only abort if XInput is not present, otherwise, issue the
 		// command to every device, regardless of connection state
-		Word uTemp = XInputSetState(i,&MyVibration);
+		uint_t uTemp = XInputSetState(i,&MyVibration);
 		if (uTemp==ERROR_CALL_NOT_IMPLEMENTED) {
 			uResult = uTemp;
 			break;
@@ -296,11 +296,11 @@ Word BURGER_API Burger::XInputStopRumbleOnAllControllers(void)
 
 ***************************************/
 
-Word BURGER_API Burger::XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInputGamePad,eXInputDeadZoneType uDeadZoneType)
+uint_t BURGER_API Burger::XInputGetGamepadState(uint_t uWhich,XInputGamePad_t *pXInputGamePad,eXInputDeadZoneType uDeadZoneType)
 {
-	Word32 uResult;
+	uint32_t uResult;
 	if ((uWhich >= 4) || !pXInputGamePad) {
-		uResult = static_cast<Word32>(E_FAIL);
+		uResult = static_cast<uint32_t>(E_FAIL);
 	} else {
 		// Read in the data from the game pad
 		XINPUT_STATE GamepadState;
@@ -312,13 +312,13 @@ Word BURGER_API Burger::XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInp
 			// Test if this was an insertion or removal and report it
 
 			// Get the old and new states
-			Word bWasConnected = pXInputGamePad->m_bConnected!=0;	// Force boolean for & below
-			Word bIsConnected = (uResult == ERROR_SUCCESS);
+			uint_t bWasConnected = pXInputGamePad->m_bConnected!=0;	// Force boolean for & below
+			uint_t bIsConnected = (uResult == ERROR_SUCCESS);
 
 			// Save off the states as to how they were processed
-			pXInputGamePad->m_bConnected = static_cast<Word8>(bIsConnected);
-			pXInputGamePad->m_bRemoved = static_cast<Word8>(bWasConnected & (bIsConnected^1));
-			pXInputGamePad->m_bInserted = static_cast<Word8>((bWasConnected^1) & bIsConnected);
+			pXInputGamePad->m_bConnected = static_cast<uint8_t>(bIsConnected);
+			pXInputGamePad->m_bRemoved = static_cast<uint8_t>(bWasConnected & (bIsConnected^1));
+			pXInputGamePad->m_bInserted = static_cast<uint8_t>((bWasConnected^1) & bIsConnected);
 
 			// No error from here on out.
 			uResult = 0;
@@ -339,10 +339,10 @@ Word BURGER_API Burger::XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInp
 
 				// Load in the thumbstick values
 
-				Int32 iThumbLX = GamepadState.Gamepad.sThumbLX;
-				Int32 iThumbLY = GamepadState.Gamepad.sThumbLY;
-				Int32 iThumbRX = GamepadState.Gamepad.sThumbRX;
-				Int32 iThumbRY = GamepadState.Gamepad.sThumbRY;
+				int32_t iThumbLX = GamepadState.Gamepad.sThumbLX;
+				int32_t iThumbLY = GamepadState.Gamepad.sThumbLY;
+				int32_t iThumbRX = GamepadState.Gamepad.sThumbRX;
+				int32_t iThumbRY = GamepadState.Gamepad.sThumbRY;
 
 				// Do any special processing for the thumb sticks
 
@@ -395,24 +395,24 @@ Word BURGER_API Burger::XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInp
 				pXInputGamePad->m_fThumbRY = static_cast<float>(iThumbRY) * (1.0f/32767.0f);
 
 				// Process the pressed buttons
-				Word32 bButtons = GamepadState.Gamepad.wButtons;
+				uint32_t bButtons = GamepadState.Gamepad.wButtons;
 				// Using the previous buttons, determine the ones "pressed"
 				pXInputGamePad->m_uPressedButtons = (pXInputGamePad->m_uButtons ^ bButtons) & bButtons;
 				pXInputGamePad->m_uButtons = bButtons;
 
 				// Process the left trigger
-				Word uTriggerValue = GamepadState.Gamepad.bLeftTrigger;
-				Word bTriggerIsPressed = (uTriggerValue > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
-				Word bTriggerWasPressed = (pXInputGamePad->m_uLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
-				pXInputGamePad->m_uLeftTrigger = static_cast<Word8>(uTriggerValue);
-				pXInputGamePad->m_bPressedLeftTrigger = static_cast<Word8>(bTriggerIsPressed & (bTriggerWasPressed^1));
+				uint_t uTriggerValue = GamepadState.Gamepad.bLeftTrigger;
+				uint_t bTriggerIsPressed = (uTriggerValue > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+				uint_t bTriggerWasPressed = (pXInputGamePad->m_uLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+				pXInputGamePad->m_uLeftTrigger = static_cast<uint8_t>(uTriggerValue);
+				pXInputGamePad->m_bPressedLeftTrigger = static_cast<uint8_t>(bTriggerIsPressed & (bTriggerWasPressed^1));
 
 				// Process the right trigger
 				uTriggerValue = GamepadState.Gamepad.bRightTrigger;
 				bTriggerIsPressed = (uTriggerValue > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
 				bTriggerWasPressed = (pXInputGamePad->m_uRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
-				pXInputGamePad->m_uRightTrigger = static_cast<Word8>(uTriggerValue);
-				pXInputGamePad->m_bPressedRightTrigger = static_cast<Word8>(bTriggerIsPressed & (bTriggerWasPressed^1));
+				pXInputGamePad->m_uRightTrigger = static_cast<uint8_t>(uTriggerValue);
+				pXInputGamePad->m_bPressedRightTrigger = static_cast<uint8_t>(bTriggerIsPressed & (bTriggerWasPressed^1));
 			}
 		} else {
 			// Zap the buffer if there is no XInput

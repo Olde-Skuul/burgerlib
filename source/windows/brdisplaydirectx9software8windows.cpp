@@ -37,9 +37,9 @@
 
 #if !defined(DOXYGEN)
 #if defined(BURGER_WATCOM)
-#define BYTE static Word8
+#define BYTE static uint8_t
 #else
-#define BYTE static Word8 __declspec(align(16))
+#define BYTE static uint8_t __declspec(align(16))
 #endif
 #include "ps20display8bitdx9.h"
 #undef BYTE
@@ -70,9 +70,9 @@ Burger::DisplayDirectX9Software8::DisplayDirectX9Software8(GameApp *pGameApp) :
 {
 }
 
-Word Burger::DisplayDirectX9Software8::Init(Word uWidth,Word uHeight,Word /* uDepth */,Word uFlags)
+uint_t Burger::DisplayDirectX9Software8::Init(uint_t uWidth,uint_t uHeight,uint_t /* uDepth */,uint_t uFlags)
 {
-	Word uResult = DisplayDirectX9::Init(uWidth,uHeight,32,uFlags);
+	uint_t uResult = DisplayDirectX9::Init(uWidth,uHeight,32,uFlags);
 	if (!uResult) {
 		m_uDepth = 8;
 
@@ -85,7 +85,7 @@ Word Burger::DisplayDirectX9Software8::Init(Word uWidth,Word uHeight,Word /* uDe
 		} else {
 			m_Renderer.SetClip(0,0,static_cast<int>(uWidth),static_cast<int>(uHeight));
 
-			Word8 TempPalette[768];
+			uint8_t TempPalette[768];
 			MemoryClear(TempPalette,sizeof(TempPalette));
 			TempPalette[765]=255;
 			TempPalette[766]=255;
@@ -117,17 +117,17 @@ void Burger::DisplayDirectX9Software8::EndScene(void)
 			HRESULT hResult = m_pPaletteTexture->LockRect(0,&LockedRect,NULL,D3DLOCK_NOSYSLOCK);
 			if (hResult==D3D_OK) {
 				// Fill in all 256 colors for the palette
-				const Word8 *pPalette = m_Palette;
-				Word uCount=256;
-				Word8 *pColors = static_cast<Word8*>(LockedRect.pBits);
+				const uint8_t *pPalette = m_Palette;
+				uint_t uCount=256;
+				uint8_t *pColors = static_cast<uint8_t*>(LockedRect.pBits);
 			
 				// Note, the format is ARGB little endian. So, it's actually
 				// stored as this fake struct
 				//	struct colors {
-				//		Word8 m_bBlue;
-				//		Word8 m_bGreen;
-				//		Word8 m_bRed;
-				//		Word8 m_bAlpha;
+				//		uint8_t m_bBlue;
+				//		uint8_t m_bGreen;
+				//		uint8_t m_bRed;
+				//		uint8_t m_bAlpha;
 				//	};
 
 				do {
@@ -210,7 +210,7 @@ void Burger::DisplayDirectX9Software8::EndScene(void)
 		hResult = m_pBitMapTextureSysMem->LockRect(0,&LockedRect,NULL,0);
 		if (hResult == D3D_OK) {
 			m_Renderer.SetFrameBuffer(LockedRect.pBits);
-			m_Renderer.SetStride(static_cast<WordPtr>(LockedRect.Pitch));
+			m_Renderer.SetStride(static_cast<uintptr_t>(LockedRect.Pitch));
 			m_pBitMapTextureSysMem->UnlockRect(0);
 		}
 	}
@@ -307,7 +307,7 @@ long Burger::DisplayDirectX9Software8::AllocateResources(void)
 				hResult = m_pBitMapTextureSysMem->LockRect(0,&LockedRect,NULL,0);
 				if (hResult == D3D_OK) {
 					m_Renderer.SetFrameBuffer(LockedRect.pBits);
-					m_Renderer.SetStride(static_cast<WordPtr>(LockedRect.Pitch));
+					m_Renderer.SetStride(static_cast<uintptr_t>(LockedRect.Pitch));
 					m_pBitMapTextureSysMem->UnlockRect(0);
 				}
 

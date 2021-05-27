@@ -1,14 +1,15 @@
 /***************************************
 
-	Simple 2D texturing shader
+    Simple 2D texturing shader
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "breffect2d.h"
@@ -67,7 +68,7 @@ static const Burger::Display::OpenGLVertexInputs_t g_Inputs[] = {
 
 ***************************************/
 
-const Word Burger::g_Effect2DMemberDescription[] = {
+const uint_t Burger::g_Effect2DMemberDescription[] = {
 	Burger::VertexBuffer::USAGE_FLOAT2|Burger::VertexBuffer::USAGE_POSITION,
 	Burger::VertexBuffer::USAGE_FLOAT2|Burger::VertexBuffer::USAGE_TEXCOORD,
 	Burger::VertexBuffer::USAGE_END
@@ -93,7 +94,7 @@ const Burger::VertexBuffer::VertexAoS_t Burger::g_Effect2DDefaultVertexBufferDes
 
 ***************************************/
 
-Burger::Effect2D::Effect2D(Display *pDisplay,const Word * /* pVertexMembers */) 
+Burger::Effect2D::Effect2D(Display *pDisplay,const uint_t * /* pVertexMembers */) 
 #if defined(BURGER_OPENGL)
 	: m_iEffect2DPosition(0)
 #endif
@@ -107,7 +108,7 @@ Burger::Effect2D::Effect2D(Display *pDisplay,const Word * /* pVertexMembers */)
 
 #if !defined(BURGER_WINDOWS) && !defined(DOXYGEN)
 
-Word Burger::Effect2D::CheckLoad(Display *pDisplay)
+uint_t Burger::Effect2D::CheckLoad(Display *pDisplay)
 {
 #if defined(BURGER_XBOX360)
 	m_pDevice = pDisplay->GetD3DDevice();
@@ -214,13 +215,13 @@ void BURGER_API Burger::Effect2D::SetPosition(const Vector4D_t *pPosition)
 
 ***************************************/
 
-Burger::Effect2DDX9::Effect2DDX9(Display *pDisplay,const Word *pVertexMembers) :
+Burger::Effect2DDX9::Effect2DDX9(Display *pDisplay,const uint_t *pVertexMembers) :
 	Effect2D(pDisplay,pVertexMembers)
 {
 	m_ShaderData.m_DX9.m_pDevice = static_cast<DisplayDirectX9 *>(pDisplay)->GetDirect3DDevice9();
 }
 
-Word Burger::Effect2DDX9::CheckLoad(Display *pDisplay)
+uint_t Burger::Effect2DDX9::CheckLoad(Display *pDisplay)
 {
 	m_ShaderData.m_DX9.m_pDevice = static_cast<DisplayDirectX9 *>(pDisplay)->GetDirect3DDevice9();
 	if (!m_ShaderData.m_DX9.m_pVertexShader) {
@@ -263,12 +264,12 @@ void Burger::Effect2DDX9::SetPosition(const Vector4D_t *pPosition)
 ***************************************/
 
 #if defined(BURGER_INTEL)
-Burger::Effect2DOpenGL::Effect2DOpenGL(Display *pDisplay,const Word *pVertexMembers) :
+Burger::Effect2DOpenGL::Effect2DOpenGL(Display *pDisplay,const uint_t *pVertexMembers) :
 	Effect2D(pDisplay,pVertexMembers)
 {
 }
 
-Word Burger::Effect2DOpenGL::CheckLoad(Display *pDisplay)
+uint_t Burger::Effect2DOpenGL::CheckLoad(Display *pDisplay)
 {
 	if (!m_ShaderData.m_GL.m_uProgramID) {
 		GLuint uProgram = static_cast<DisplayOpenGL *>(pDisplay)->CompileProgram(g_vs20sprite2dgl,0,g_pstexturegl,0,g_Inputs);

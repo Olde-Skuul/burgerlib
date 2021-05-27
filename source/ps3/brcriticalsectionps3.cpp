@@ -25,7 +25,7 @@
 	
 ***************************************/
 
-Burger::CriticalSection::CriticalSection()
+Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT
 {
 	// Create a First In, First Out, recursive lock
 	// to mimic the PC CRITICAL_SECTION
@@ -49,7 +49,7 @@ Burger::CriticalSection::~CriticalSection()
 	
 ***************************************/
 
-void Burger::CriticalSection::Lock()
+void Burger::CriticalSection::Lock() BURGER_NOEXCEPT
 {
 	sys_lwmutex_lock(reinterpret_cast<sys_lwmutex_t *>(&m_Lock),0);
 }
@@ -60,7 +60,7 @@ void Burger::CriticalSection::Lock()
 	
 ***************************************/
 
-Word Burger::CriticalSection::TryLock()
+uint_t Burger::CriticalSection::TryLock() BURGER_NOEXCEPT
 {
 	return sys_lwmutex_trylock(reinterpret_cast<sys_lwmutex_t *>(&m_Lock))==CELL_OK;
 }
@@ -72,7 +72,7 @@ Word Burger::CriticalSection::TryLock()
 	
 ***************************************/
 
-void Burger::CriticalSection::Unlock()
+void Burger::CriticalSection::Unlock() BURGER_NOEXCEPT
 {
 	sys_lwmutex_unlock(reinterpret_cast<sys_lwmutex_t *>(&m_Lock));
 }

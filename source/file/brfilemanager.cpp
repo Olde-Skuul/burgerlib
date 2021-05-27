@@ -1,13 +1,14 @@
 /***************************************
 
-	File Manager Class
+    File Manager Class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -122,7 +123,7 @@ Burger::FileManager::~FileManager()
 	// Wait until the thread dies
 	m_Thread.Wait();
 	// Release all of my prefixes
-	Word i = PREFIXMAX;
+	uint_t i = PREFIXMAX;
 	const char **pTable = m_pPrefix;
 	do {
 		Free(pTable[0]);	// Release the memory
@@ -226,7 +227,7 @@ void BURGER_API Burger::FileManager::Shutdown(void)
 
 /*! ************************************
 
-	\fn Word BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,Word uVolumeNum)
+	\fn uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum)
 	\brief Return the name of a drive
 	
 	Given a drive number (0-?), return the name of
@@ -247,7 +248,7 @@ void BURGER_API Burger::FileManager::Shutdown(void)
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
 
-Word BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,Word /* uVolumeNum */)
+uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t /* uVolumeNum */)
 {
 	if (pOutput) {
 		pOutput->Clear();	// Clear the output on error
@@ -270,25 +271,25 @@ Word BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,Word /* uVo
 	
 	\note This function will NOT search floppy drives A: and B: on MSDOS
 	and Windows platforms. This is to prevent an annoying error for bad media.
-	\sa Burger::FileManager::GetVolumeName(Burger::Filename *,Word)
+	\sa Burger::FileManager::GetVolumeName(Burger::Filename *,uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetVolumeNumber(const char *pVolumeName)
+uint_t BURGER_API Burger::FileManager::GetVolumeNumber(const char *pVolumeName)
 {
 #if defined(BURGER_MSDOS) || defined(BURGER_WINDOWS)
-	const Word LASTDRIVE=26;
-	Word uDriveNum = 2;		// Start at drive C:
+	const uint_t LASTDRIVE=26;
+	uint_t uDriveNum = 2;		// Start at drive C:
 #else
-	Word uDriveNum = 0;		// Start at drive A:
-	const Word LASTDRIVE=32;
+	uint_t uDriveNum = 0;		// Start at drive A:
+	const uint_t LASTDRIVE=32;
 #endif
 
-	Word uResult = static_cast<Word>(-1);	// Assume failure
+	uint_t uResult = static_cast<uint_t>(-1);	// Assume failure
 	Filename MyFilename;
 	do {
 		// Convert to name
-		Word uError = FileManager::GetVolumeName(&MyFilename,uDriveNum);
+		uint_t uError = FileManager::GetVolumeName(&MyFilename,uDriveNum);
 		if (uError==File::OKAY) {
 			// Compare
 			int iResult = StringCaseCompare(MyFilename.GetPtr(),pVolumeName);
@@ -316,8 +317,8 @@ Word BURGER_API Burger::FileManager::GetVolumeNumber(const char *pVolumeName)
 	"8:" = Default directory<br>
 	"9:" = Application directory
 
-	\sa Burger::FileManager::Init(void), Burger::FileManager::GetPrefix(Burger::Filename *,Word)
-	or Burger::FileManager::SetPrefix(Word,const char *)
+	\sa Burger::FileManager::Init(void), Burger::FileManager::GetPrefix(Burger::Filename *,uint_t)
+	or Burger::FileManager::SetPrefix(uint_t,const char *)
 	
 ***************************************/
 
@@ -341,13 +342,13 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	\param pOutput Pointer to a Burger::Filename class to store the string
 	\param uPrefixNum Index to the requested prefix to obtain
 	\return Zero if no error, non-zero if error
-	\sa Burger::FileManager::SetPrefix(Word,const char *)
+	\sa Burger::FileManager::SetPrefix(uint_t,const char *)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetPrefix(Filename *pOutput,Word uPrefixNum)
+uint_t BURGER_API Burger::FileManager::GetPrefix(Filename *pOutput,uint_t uPrefixNum) BURGER_NOEXCEPT
 {
-	Word uResult;
+	uint_t uResult;
 	if (uPrefixNum<FileManager::PREFIXMAX) {		// Is the prefix number valid?
 		pOutput->Set(g_pFileManager->m_pPrefix[uPrefixNum]);	// Get the prefix string
 		uResult = File::OKAY;
@@ -374,11 +375,11 @@ Word BURGER_API Burger::FileManager::GetPrefix(Filename *pOutput,Word uPrefixNum
 	\param uPrefixNum Index to the requested prefix to obtain
 	\param pPrefixName Pointer to a "C" string of a new BurgerLib pathname
 	\return Zero if no error, non-zero if error (Usually out of memory or out of bounds)
-	\sa Burger::FileManager::GetPrefix(Burger::Filename *,Word)
+	\sa Burger::FileManager::GetPrefix(Burger::Filename *,uint_t)
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::SetPrefix(Word uPrefixNum,const char *pPrefixName)
+uint_t BURGER_API Burger::FileManager::SetPrefix(uint_t uPrefixNum,const char *pPrefixName) BURGER_NOEXCEPT
 {
 	Filename PrefixName(pPrefixName);
 	return SetPrefix(uPrefixNum,&PrefixName);
@@ -400,13 +401,13 @@ Word BURGER_API Burger::FileManager::SetPrefix(Word uPrefixNum,const char *pPref
 	\param uPrefixNum Index to the requested prefix to obtain
 	\param pPrefixName Pointer to a Burger::Filename of a new BurgerLib pathname
 	\return Zero if no error, non-zero if error (Usually out of memory or out of bounds)
-	\sa Burger::FileManager::GetPrefix(Burger::Filename *,Word)
+	\sa Burger::FileManager::GetPrefix(Burger::Filename *,uint_t)
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::SetPrefix(Word uPrefixNum,Filename *pPrefixName)
+uint_t BURGER_API Burger::FileManager::SetPrefix(uint_t uPrefixNum,Filename *pPrefixName) BURGER_NOEXCEPT
 {
-	Word uResult;
+	uint_t uResult;
 	if (uPrefixNum>=FileManager::PREFIXMAX) {		// Is the prefix valid?
 		uResult = File::OUTOFRANGE;
 	} else {
@@ -448,11 +449,11 @@ Word BURGER_API Burger::FileManager::SetPrefix(Word uPrefixNum,Filename *pPrefix
 	":foo:" = ""
 	
 	\param uPrefixNum Index to the prefix to modify.
-	\sa Burger::FileManager::GetPrefix(Burger::Filename *,Word) or Burger::FileManager::SetPrefix(Word,const char *)
+	\sa Burger::FileManager::GetPrefix(Burger::Filename *,uint_t) or Burger::FileManager::SetPrefix(uint_t,const char *)
 	
 ***************************************/
 
-void BURGER_API Burger::FileManager::PopPrefix(Word uPrefixNum)
+void BURGER_API Burger::FileManager::PopPrefix(uint_t uPrefixNum) BURGER_NOEXCEPT
 {
 	Filename TempName;
 	GetPrefix(&TempName,uPrefixNum);	// Get the current prefix
@@ -475,7 +476,7 @@ void BURGER_API Burger::FileManager::PopPrefix(Word uPrefixNum)
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetModificationTime(const char *pFileName,TimeDate_t *pOutput)
+uint_t BURGER_API Burger::FileManager::GetModificationTime(const char *pFileName,TimeDate_t *pOutput)
 {
 	Filename PathName(pFileName);
 	return GetModificationTime(&PathName,pOutput);
@@ -497,7 +498,7 @@ Word BURGER_API Burger::FileManager::GetModificationTime(const char *pFileName,T
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
-Word BURGER_API Burger::FileManager::GetModificationTime(Filename * /* pFileName */,TimeDate_t * /* pOutput */)
+uint_t BURGER_API Burger::FileManager::GetModificationTime(Filename * /* pFileName */,TimeDate_t * /* pOutput */)
 {
 	return TRUE;		// Error!
 }
@@ -518,7 +519,7 @@ Word BURGER_API Burger::FileManager::GetModificationTime(Filename * /* pFileName
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetCreationTime(const char *pFileName,TimeDate_t *pOutput)
+uint_t BURGER_API Burger::FileManager::GetCreationTime(const char *pFileName,TimeDate_t *pOutput)
 {
 	Filename PathName(pFileName);							
 	return GetCreationTime(&PathName,pOutput);
@@ -540,7 +541,7 @@ Word BURGER_API Burger::FileManager::GetCreationTime(const char *pFileName,TimeD
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
-Word BURGER_API Burger::FileManager::GetCreationTime(Filename * /* pFileName */,TimeDate_t * /* pOutput */)
+uint_t BURGER_API Burger::FileManager::GetCreationTime(Filename * /* pFileName */,TimeDate_t * /* pOutput */)
 {
 	return TRUE;		// Error!
 }
@@ -561,7 +562,7 @@ Word BURGER_API Burger::FileManager::GetCreationTime(Filename * /* pFileName */,
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::DoesFileExist(const char *pFileName)
+uint_t BURGER_API Burger::FileManager::DoesFileExist(const char *pFileName)
 {
 	Filename PathName(pFileName);
 	return DoesFileExist(&PathName);
@@ -584,7 +585,7 @@ Word BURGER_API Burger::FileManager::DoesFileExist(const char *pFileName)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
-Word BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
 {
 #if defined(BURGER_DS)
 	pFileName = NULL;
@@ -616,11 +617,11 @@ Word BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
 		file doesn't have extended information. A 32 bit value if the data can be retrieved.
 	\sa Burger::FileManager::GetAuxType(Burger::Filename *),
 		Burger::FileManager::GetFileType(const char *) or
-		Burger::FileManager::GetFileAndAuxType(const char *,Word32 *,Word32 *)
+		Burger::FileManager::GetFileAndAuxType(const char *,uint32_t *,uint32_t *)
 	
 ***************************************/
 
-Word32 BURGER_API Burger::FileManager::GetAuxType(const char *pFileName)
+uint32_t BURGER_API Burger::FileManager::GetAuxType(const char *pFileName)
 {
 	Filename TempName(pFileName);		// Get the true path
 	return GetAuxType(&TempName);	// Call the function
@@ -642,12 +643,12 @@ Word32 BURGER_API Burger::FileManager::GetAuxType(const char *pFileName)
 		file doesn't have extended information. A 32 bit value if the data can be retrieved.
 	\sa Burger::FileManager::GetFileType(const char *), 
 		Burger::FileManager::GetAuxType(const char *) or
-		Burger::FileManager::GetFileAndAuxType(const char *,Word32 *,Word32 *)
+		Burger::FileManager::GetFileAndAuxType(const char *,uint32_t *,uint32_t *)
 
 ***************************************/
 
 #if !(defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-Word32 BURGER_API Burger::FileManager::GetAuxType(Filename * /*pFileName */)
+uint32_t BURGER_API Burger::FileManager::GetAuxType(Filename * /*pFileName */)
 {
 	return 0;		// Don't do anything!
 }
@@ -669,11 +670,11 @@ Word32 BURGER_API Burger::FileManager::GetAuxType(Filename * /*pFileName */)
 		file doesn't have extended information. A 32 bit value if the data can be retrieved.
 	\sa Burger::FileManager::GetFileType(Burger::Filename *), 
 		Burger::FileManager::GetAuxType(const char *) or
-		Burger::FileManager::GetFileAndAuxType(const char *,Word32 *,Word32 *)
+		Burger::FileManager::GetFileAndAuxType(const char *,uint32_t *,uint32_t *)
 
 ***************************************/
 
-Word32 BURGER_API Burger::FileManager::GetFileType(const char *pFileName)
+uint32_t BURGER_API Burger::FileManager::GetFileType(const char *pFileName)
 {
 	Filename TempName(pFileName);		// Get the true path
 	return GetFileType(&TempName);	// Call the function
@@ -695,12 +696,12 @@ Word32 BURGER_API Burger::FileManager::GetFileType(const char *pFileName)
 		file doesn't have extended information. A 32 bit value if the data can be retrieved.
 	\sa Burger::FileManager::GetAuxType(const char *),
 		Burger::FileManager::GetFileType(const char *) or
-		Burger::FileManager::GetFileAndAuxType(const char *,Word32 *,Word32 *)
+		Burger::FileManager::GetFileAndAuxType(const char *,uint32_t *,uint32_t *)
 	
 ***************************************/
 
 #if !(defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-Word32 BURGER_API Burger::FileManager::GetFileType(Filename * /*pFileName*/)
+uint32_t BURGER_API Burger::FileManager::GetFileType(Filename * /*pFileName*/)
 {
 	return 0;		// Don't do anything!
 }
@@ -719,17 +720,17 @@ Word32 BURGER_API Burger::FileManager::GetFileType(Filename * /*pFileName*/)
 	perform store zeros in the result values..
 	
 	\param pFileName Pointer to a "C" string of a BurgerLib pathname,
-	\param pFileType Pointer to a \ref Word32 that will receive the file type code.
-	\param pAuxType Pointer to a \ref Word32 that will receive the file creator code.
+	\param pFileType Pointer to a uint32_t that will receive the file type code.
+	\param pAuxType Pointer to a uint32_t that will receive the file creator code.
 	\return Non-zero if the file doesn't exist, the function isn't implemented of if the 
 		file doesn't have extended information. Zero is returned on successful completion.
-	\sa Burger::FileManager::GetFileAndAuxType(Burger::Filename *,Word32 *,Word32 *),
+	\sa Burger::FileManager::GetFileAndAuxType(Burger::Filename *,uint32_t *,uint32_t *),
 		Burger::FileManager::GetFileType(const char *) or
 		Burger::FileManager::GetAuxType(const char *)
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetFileAndAuxType(const char *pFileName,Word32 *pFileType,Word32 *pAuxType)
+uint_t BURGER_API Burger::FileManager::GetFileAndAuxType(const char *pFileName,uint32_t *pFileType,uint32_t *pAuxType)
 {
 	Filename TempName(pFileName);		// Get the true path
 	return GetFileAndAuxType(&TempName,pFileType,pAuxType);	// Call the function
@@ -748,18 +749,18 @@ Word BURGER_API Burger::FileManager::GetFileAndAuxType(const char *pFileName,Wor
 	perform store zeros in the result values..
 	
 	\param pFileName Pointer to a Burger::Filename of a native OS pathname,
-	\param pFileType Pointer to a \ref Word32 that will receive the file type code.
-	\param pAuxType Pointer to a \ref Word32 that will receive the file creator code.
+	\param pFileType Pointer to a uint32_t that will receive the file type code.
+	\param pAuxType Pointer to a uint32_t that will receive the file creator code.
 	\return Non-zero if the file doesn't exist, the function isn't implemented of if the 
 		file doesn't have extended information. Zero is returned on successful completion.
-	\sa Burger::FileManager::GetFileAndAuxType(Burger::Filename *,Word32 *,Word32 *),
+	\sa Burger::FileManager::GetFileAndAuxType(Burger::Filename *,uint32_t *,uint32_t *),
 		Burger::FileManager::GetFileType(const char *) or
 		Burger::FileManager::GetAuxType(const char *)
 	
 ***************************************/
 
 #if !(defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-Word BURGER_API Burger::FileManager::GetFileAndAuxType(Filename * /* pFileName */,Word32 *pFileType,Word32 *pAuxType)
+uint_t BURGER_API Burger::FileManager::GetFileAndAuxType(Filename * /* pFileName */,uint32_t *pFileType,uint32_t *pAuxType)
 {
 	pFileType[0] = 0;
 	pAuxType[0] = 0;
@@ -781,13 +782,13 @@ Word BURGER_API Burger::FileManager::GetFileAndAuxType(Filename * /* pFileName *
 	\param uAuxType Four byte character code to set.
 	\return Non-zero if the file doesn't exist, the function isn't implemented of if the
 		file doesn't have extended information. Zero if successful.
-	\sa Burger::FileManager::SetAuxType(Burger::Filename *,Word32),
-		Burger::FileManager::SetFileType(const char *,Word32) or
-		Burger::FileManager::SetFileAndAuxType(const char *,Word32,Word32)
+	\sa Burger::FileManager::SetAuxType(Burger::Filename *,uint32_t),
+		Burger::FileManager::SetFileType(const char *,uint32_t) or
+		Burger::FileManager::SetFileAndAuxType(const char *,uint32_t,uint32_t)
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::SetAuxType(const char *pFileName,Word32 uAuxType)
+uint_t BURGER_API Burger::FileManager::SetAuxType(const char *pFileName,uint32_t uAuxType)
 {
 	Filename TempName(pFileName);	// Get the true path
 	return SetAuxType(&TempName,uAuxType);
@@ -807,14 +808,14 @@ Word BURGER_API Burger::FileManager::SetAuxType(const char *pFileName,Word32 uAu
 	\param uAuxType Four byte character code to set.
 	\return Non-zero if the file doesn't exist, the function isn't implemented of if the 
 		file doesn't have extended information. Zero if successful.
-	\sa Burger::FileManager::SetFileType(const char *,Word32), 
-		Burger::FileManager::SetAuxType(const char *,Word32) or
-		Burger::FileManager::SetFileAndAuxType(const char *,Word32,Word32)
+	\sa Burger::FileManager::SetFileType(const char *,uint32_t), 
+		Burger::FileManager::SetAuxType(const char *,uint32_t) or
+		Burger::FileManager::SetFileAndAuxType(const char *,uint32_t,uint32_t)
 
 ***************************************/
 
 #if !(defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-Word BURGER_API Burger::FileManager::SetAuxType(Filename * /*pFileName*/,Word32 /* uAuxType */)
+uint_t BURGER_API Burger::FileManager::SetAuxType(Filename * /*pFileName*/,uint32_t /* uAuxType */)
 {
 	return File::NOT_IMPLEMENTED;
 }
@@ -834,13 +835,13 @@ Word BURGER_API Burger::FileManager::SetAuxType(Filename * /*pFileName*/,Word32 
 	\param uFileType Four byte character code to set.
 	\return Non-zero if the file doesn't exist, the function isn't implemented of if the 
 		file doesn't have extended information. Zero if successful.
-	\sa Burger::FileManager::SetFileType(Burger::Filename *,Word32), 
-		Burger::FileManager::SetAuxType(const char *,Word32) or
-		Burger::FileManager::SetFileAndAuxType(const char *,Word32,Word32)
+	\sa Burger::FileManager::SetFileType(Burger::Filename *,uint32_t), 
+		Burger::FileManager::SetAuxType(const char *,uint32_t) or
+		Burger::FileManager::SetFileAndAuxType(const char *,uint32_t,uint32_t)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::SetFileType(const char *pFileName,Word32 uFileType)
+uint_t BURGER_API Burger::FileManager::SetFileType(const char *pFileName,uint32_t uFileType)
 {
 	Filename TempName(pFileName);	// Get the true path
 	return SetFileType(&TempName,uFileType);
@@ -860,14 +861,14 @@ Word BURGER_API Burger::FileManager::SetFileType(const char *pFileName,Word32 uF
 	\param uFileType Four byte character code to set.
 	\return Non-zero if the file doesn't exist, the function isn't implemented of if the 
 		file doesn't have extended information. Zero if successful.
-	\sa Burger::FileManager::SetFileType(const char *,Word32), 
-		Burger::FileManager::SetAuxType(const char *,Word32) or
-		Burger::FileManager::SetFileAndAuxType(const char *,Word32,Word32)
+	\sa Burger::FileManager::SetFileType(const char *,uint32_t), 
+		Burger::FileManager::SetAuxType(const char *,uint32_t) or
+		Burger::FileManager::SetFileAndAuxType(const char *,uint32_t,uint32_t)
 
 ***************************************/
 
 #if !(defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-Word BURGER_API Burger::FileManager::SetFileType(Filename * /*pFileName*/,Word32 /*uFileType */)
+uint_t BURGER_API Burger::FileManager::SetFileType(Filename * /*pFileName*/,uint32_t /*uFileType */)
 {
 	return File::NOT_IMPLEMENTED;
 }
@@ -885,17 +886,17 @@ Word BURGER_API Burger::FileManager::SetFileType(Filename * /*pFileName*/,Word32
 	On non MacOS platforms, this function will perform nothing..
 	
 	\param pFileName Pointer to a "C" string of a BurgerLib pathname,
-	\param uFileType A \ref Word32 of the new file type code.
-	\param uAuxType A \ref Word32 of the new file creator code.
+	\param uFileType A uint32_t of the new file type code.
+	\param uAuxType A uint32_t of the new file creator code.
 	\return Non-zero if the file doesn't exist, the function isn't implemented of if the 
 		file doesn't have extended information. Zero is returned on successful completion.
-	\sa Burger::FileManager::GetFileAndAuxType(Burger::Filename *,Word32 *,Word32 *),
+	\sa Burger::FileManager::GetFileAndAuxType(Burger::Filename *,uint32_t *,uint32_t *),
 		Burger::FileManager::GetFileType(const char *) or
 		Burger::FileManager::GetAuxType(const char *)
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::SetFileAndAuxType(const char *pFileName,Word32 uFileType,Word32 uAuxType)
+uint_t BURGER_API Burger::FileManager::SetFileAndAuxType(const char *pFileName,uint32_t uFileType,uint32_t uAuxType)
 {
 	Filename TempName(pFileName);	// Get the true path
 	return SetFileAndAuxType(&TempName,uFileType,uAuxType);
@@ -913,18 +914,18 @@ Word BURGER_API Burger::FileManager::SetFileAndAuxType(const char *pFileName,Wor
 	On non MacOS platforms, this function will perform nothing..
 	
 	\param pFileName Pointer to a Burger::Filename of a native OS pathname,
-	\param uFileType A \ref Word32 of the new file type code.
-	\param uAuxType A \ref Word32 of the new file creator code.
+	\param uFileType A uint32_t of the new file type code.
+	\param uAuxType A uint32_t of the new file creator code.
 	\return Non-zero if the file doesn't exist, the function isn't implemented of if the 
 		file doesn't have extended information. Zero is returned on successful completion.
-	\sa Burger::FileManager::GetFileAndAuxType(const char *,Word32 *,Word32 *),
+	\sa Burger::FileManager::GetFileAndAuxType(const char *,uint32_t *,uint32_t *),
 		Burger::FileManager::GetFileType(const char *) or
 		Burger::FileManager::GetAuxType(const char *)
 	
 ***************************************/
 
 #if !(defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-Word BURGER_API Burger::FileManager::SetFileAndAuxType(Filename * /*pFileName*/,Word32 /* uFileType */,Word32 /* uAuxType */)
+uint_t BURGER_API Burger::FileManager::SetFileAndAuxType(Filename * /*pFileName*/,uint32_t /* uFileType */,uint32_t /* uAuxType */)
 {
 	return File::NOT_IMPLEMENTED;
 }
@@ -948,7 +949,7 @@ Word BURGER_API Burger::FileManager::SetFileAndAuxType(Filename * /*pFileName*/,
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::CreateDirectoryPath(const char *pFileName)
+uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(const char *pFileName)
 {
 	Filename PathName(pFileName);					// Convert to native path
 	return CreateDirectoryPath(&PathName);	// Create the path
@@ -974,7 +975,7 @@ Word BURGER_API Burger::FileManager::CreateDirectoryPath(const char *pFileName)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
-Word BURGER_API Burger::FileManager::CreateDirectoryPath(Filename * /* pFileName */ )
+uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Filename * /* pFileName */ )
 {
 	return File::NOT_IMPLEMENTED;		// Always error out
 }
@@ -1000,7 +1001,7 @@ Word BURGER_API Burger::FileManager::CreateDirectoryPath(Filename * /* pFileName
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::CreateDirectoryPathDirName(const char *pFileName)
+uint_t BURGER_API Burger::FileManager::CreateDirectoryPathDirName(const char *pFileName)
 {
 	Filename FileNameCopy(pFileName);
 	FileNameCopy.DirName();
@@ -1027,7 +1028,7 @@ Word BURGER_API Burger::FileManager::CreateDirectoryPathDirName(const char *pFil
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::CreateDirectoryPathDirName(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::CreateDirectoryPathDirName(Filename *pFileName)
 {
 	Filename FileNameCopy(*pFileName);
 	FileNameCopy.DirName();
@@ -1051,7 +1052,7 @@ Word BURGER_API Burger::FileManager::CreateDirectoryPathDirName(Filename *pFileN
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::DeleteFile(const char *pFileName)
+uint_t BURGER_API Burger::FileManager::DeleteFile(const char *pFileName)
 {
 	Filename Dest(pFileName);		// Expand the path to a full filename
 	return DeleteFile(&Dest);		// Copy the file
@@ -1075,12 +1076,12 @@ Word BURGER_API Burger::FileManager::DeleteFile(const char *pFileName)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
-Word BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
 {
 #if defined(BURGER_DS)
 	return File::NOT_IMPLEMENTED;	// Always error out
 #else
-	Word uResult = TRUE;	// Assume error
+	uint_t uResult = TRUE;	// Assume error
 	if (remove(pFileName->GetNative())) {
 		uResult = FALSE;	// No error
 	}
@@ -1105,7 +1106,7 @@ Word BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::RenameFile(const char *pNewName,const char *pOldName)
+uint_t BURGER_API Burger::FileManager::RenameFile(const char *pNewName,const char *pOldName)
 {
 	Filename Dest(pNewName);		// Expand the path to a full filename
 	Filename Src(pOldName);			// Expand the source path
@@ -1129,13 +1130,13 @@ Word BURGER_API Burger::FileManager::RenameFile(const char *pNewName,const char 
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
-Word BURGER_API Burger::FileManager::RenameFile(Filename *pNewName,Filename *pOldName)
+uint_t BURGER_API Burger::FileManager::RenameFile(Filename *pNewName,Filename *pOldName)
 {
 #if defined(BURGER_DS)
 	// Always error out
 	return File::NOT_IMPLEMENTED;
 #else
-	Word uResult = TRUE;		// Assume error
+	uint_t uResult = TRUE;		// Assume error
 	if (rename(pOldName->GetNative(),pNewName->GetNative())) {
 		uResult = FALSE;
 	}
@@ -1163,7 +1164,7 @@ Word BURGER_API Burger::FileManager::RenameFile(Filename *pNewName,Filename *pOl
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::ChangeOSDirectory(const char *pDirName)
+uint_t BURGER_API Burger::FileManager::ChangeOSDirectory(const char *pDirName)
 {
 	Filename DirName(pDirName);				// Expand the path to a full filename
 	return ChangeOSDirectory(&DirName);		// Set the directory here
@@ -1189,7 +1190,7 @@ Word BURGER_API Burger::FileManager::ChangeOSDirectory(const char *pDirName)
 ***************************************/
 
 #if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS)) || defined(DOXYGEN)
-Word BURGER_API Burger::FileManager::ChangeOSDirectory(Filename * /* pDirName */)
+uint_t BURGER_API Burger::FileManager::ChangeOSDirectory(Filename * /* pDirName */)
 {
 	return File::NOT_IMPLEMENTED;	// Error!
 }
@@ -1270,7 +1271,7 @@ FILE * BURGER_API Burger::FileManager::OpenFile(Filename *pFileName,const char *
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::CopyFile(const char *pDestName,const char *pSrcName)
+uint_t BURGER_API Burger::FileManager::CopyFile(const char *pDestName,const char *pSrcName)
 {
 	Filename Dest(pDestName);		// Expand the path to a full filename
 	Filename Src(pSrcName);			// Expand the source path
@@ -1292,26 +1293,26 @@ Word BURGER_API Burger::FileManager::CopyFile(const char *pDestName,const char *
 ***************************************/
 
 #if (!defined(BURGER_WINDOWS) && !defined(BURGER_MACOS) && !defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
-Word BURGER_API Burger::FileManager::CopyFile(Filename *pDestName,Filename *pSourceName)
+uint_t BURGER_API Burger::FileManager::CopyFile(Filename *pDestName,Filename *pSourceName)
 {
 #if defined(BURGER_DS)
 	return TRUE;
 #else
 
-	Word uResult = File::IOERROR;						// Assume error
+	uint_t uResult = File::IOERROR;						// Assume error
 	File fpsrc(pSourceName,File::READONLY);		// Open the source file
-	WordPtr uLength = fpsrc.GetSize();		// Get the size of the source file
+	uintptr_t uLength = fpsrc.GetSize();		// Get the size of the source file
 	if (uLength) {						// Shall I copy anything?
-		WordPtr uMaxChunk = (uLength<0x100000) ? uLength : 0x100000;
-		Word8 *pBuffer = static_cast<Word8 *>(Alloc(uMaxChunk));
+		uintptr_t uMaxChunk = (uLength<0x100000) ? uLength : 0x100000;
+		uint8_t *pBuffer = static_cast<uint8_t *>(Alloc(uMaxChunk));
 		if (pBuffer) {
 			File fpdst(pDestName,File::WRITEONLY);		// Open the dest file
 			do {
-				WordPtr uChunk = uLength;	// Base chunk
+				uintptr_t uChunk = uLength;	// Base chunk
 				if (uChunk>uMaxChunk) {
 					uChunk = uMaxChunk;		// Only copy the chunk
 				}
-				WordPtr uReadSize = fpsrc.Read(pBuffer,uChunk);	// Read data
+				uintptr_t uReadSize = fpsrc.Read(pBuffer,uChunk);	// Read data
 				if (uReadSize!=uChunk) {
 					break;
 				}
@@ -1350,11 +1351,11 @@ Word BURGER_API Burger::FileManager::CopyFile(Filename *pDestName,Filename *pSou
 	\param pInput Pointer to an array of bytes to save
 	\param uLength Number of bytes in the buffer
 	\return \ref TRUE if successful, \ref FALSE on error.
-	\sa Burger::FileManager::SaveFile(Burger::Filename *,const void *,WordPtr)
+	\sa Burger::FileManager::SaveFile(Burger::Filename *,const void *,uintptr_t)
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::SaveFile(const char *pFileName,const void *pInput,WordPtr uLength)
+uint_t BURGER_API Burger::FileManager::SaveFile(const char *pFileName,const void *pInput,uintptr_t uLength)
 {
 	Filename MyName(pFileName);
 	return SaveFile(&MyName,pInput,uLength);
@@ -1374,14 +1375,14 @@ Word BURGER_API Burger::FileManager::SaveFile(const char *pFileName,const void *
 	\param pInput Pointer to an array of bytes to save
 	\param uLength Number of bytes in the buffer
 	\return \ref TRUE if successful, \ref FALSE on error.
-	\sa Burger::FileManager::SaveFile(const char *,const void *,WordPtr)
+	\sa Burger::FileManager::SaveFile(const char *,const void *,uintptr_t)
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::SaveFile(Filename *pFileName,const void *pInput,WordPtr uLength)
+uint_t BURGER_API Burger::FileManager::SaveFile(Filename *pFileName,const void *pInput,uintptr_t uLength)
 {
 	File FileRef;
-	Word uResult = FileRef.Open(pFileName,File::WRITEONLY);
+	uint_t uResult = FileRef.Open(pFileName,File::WRITEONLY);
 	if (uResult!=File::OKAY) {
 		// Try creating the directory
 		CreateDirectoryPathDirName(pFileName);
@@ -1390,7 +1391,7 @@ Word BURGER_API Burger::FileManager::SaveFile(Filename *pFileName,const void *pI
 	}
 	// File opened.
 	if (uResult==File::OKAY) {
-		WordPtr uWritten = FileRef.Write(pInput,uLength);
+		uintptr_t uWritten = FileRef.Write(pInput,uLength);
 		uResult = FileRef.Close();
 		if ((uResult==File::OKAY) && (uWritten==uLength)) {
 			return TRUE;
@@ -1409,7 +1410,7 @@ Word BURGER_API Burger::FileManager::SaveFile(Filename *pFileName,const void *pI
 	This function is a quick and easy way to write a buffer from memory directly
 	to disk (Or any other storage medium).
 	
-	\note This differs from Burger::FileManager::SaveFile(const char *,const void *,WordPtr)
+	\note This differs from Burger::FileManager::SaveFile(const char *,const void *,uintptr_t)
 	in that all "\n" values will be translated to the proper line feeds for the
 	target operating system. Unix and Linux, no change, Windows and MSDos, it's
 	converted to a "\n\r", MacOS and MacOSX it's converted to "\r".
@@ -1418,11 +1419,11 @@ Word BURGER_API Burger::FileManager::SaveFile(Filename *pFileName,const void *pI
 	\param pInput Pointer to an array of bytes to save as a text file.
 	\param uLength Number of bytes in the buffer
 	\return \ref TRUE if successful, \ref FALSE on error.
-	\sa Burger::FileManager::SaveTextFile(Burger::Filename *,const void *,WordPtr)
+	\sa Burger::FileManager::SaveTextFile(Burger::Filename *,const void *,uintptr_t)
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::SaveTextFile(const char *pFileName,const void *pInput,WordPtr uLength)
+uint_t BURGER_API Burger::FileManager::SaveTextFile(const char *pFileName,const void *pInput,uintptr_t uLength)
 {
 	Burger::Filename MyName(pFileName);
 	return SaveTextFile(&MyName,pInput,uLength);
@@ -1438,7 +1439,7 @@ Word BURGER_API Burger::FileManager::SaveTextFile(const char *pFileName,const vo
 	This function is a quick and easy way to write a buffer from memory directly
 	to disk (Or any other storage medium).
 	
-	\note This differs from Burger::FileManager::SaveFile(const Burger::Filename *,const void *,WordPtr)
+	\note This differs from Burger::FileManager::SaveFile(const Burger::Filename *,const void *,uintptr_t)
 	in that all "\n" values will be translated to the proper line feeds for the
 	target operating system. Unix and Linux, no change, Windows and MSDos, it's
 	converted to a "\n\r", MacOS and MacOSX it's converted to "\r".
@@ -1447,11 +1448,11 @@ Word BURGER_API Burger::FileManager::SaveTextFile(const char *pFileName,const vo
 	\param pInput Pointer to an array of bytes to save as a text file.
 	\param uLength Number of bytes in the buffer
 	\return \ref TRUE if successful, \ref FALSE on error.
-	\sa Burger::FileManager::SaveTextFile(const char *,const void *,WordPtr)
+	\sa Burger::FileManager::SaveTextFile(const char *,const void *,uintptr_t)
 	
 ***************************************/
 
-Word BURGER_API Burger::FileManager::SaveTextFile(Filename *pFileName,const void *pInput,WordPtr uLength)
+uint_t BURGER_API Burger::FileManager::SaveTextFile(Filename *pFileName,const void *pInput,uintptr_t uLength)
 {
 	FILE *fp = OpenFile(pFileName,"w");		// Open the file
 	if (fp) {
@@ -1475,13 +1476,13 @@ Word BURGER_API Burger::FileManager::SaveTextFile(Filename *pFileName,const void
 	byte copy of the contents of the file on disk.
 	
 	\param pFileName Pointer to a "C" string of a BurgerLib path.
-	\param pLength Pointer to a \ref WordPtr to receive the size of the buffer. 
+	\param pLength Pointer to a uintptr_t to receive the size of the buffer. 
 	\return \ref NULL if failure, a valid pointer to the buffer on success.
-	\sa Burger::FileManager::LoadFile(Burger::Filename *,WordPtr *)
+	\sa Burger::FileManager::LoadFile(Burger::Filename *,uintptr_t *)
 	
 ***************************************/
 
-void * BURGER_API Burger::FileManager::LoadFile(const char *pFileName,WordPtr *pLength)
+void * BURGER_API Burger::FileManager::LoadFile(const char *pFileName,uintptr_t *pLength) BURGER_NOEXCEPT
 {
 	Filename MyName(pFileName);
 	return LoadFile(&MyName,pLength);
@@ -1502,19 +1503,19 @@ void * BURGER_API Burger::FileManager::LoadFile(const char *pFileName,WordPtr *p
 	byte copy of the contents of the file on disk.
 
 	\param pFileName Pointer to a Burger::Filename of an OS native path.
-	\param pLength Pointer to a \ref WordPtr to receive the size of the buffer. 
+	\param pLength Pointer to a uintptr_t to receive the size of the buffer. 
 	\return \ref NULL if failure, a valid pointer to the buffer on success.
-	\sa Burger::FileManager::LoadFile(const char *,WordPtr *)
+	\sa Burger::FileManager::LoadFile(const char *,uintptr_t *)
 	
 ***************************************/
 
-void * BURGER_API Burger::FileManager::LoadFile(Filename *pFileName,WordPtr *pLength)
+void * BURGER_API Burger::FileManager::LoadFile(Filename *pFileName,uintptr_t *pLength) BURGER_NOEXCEPT
 {
 #if defined(BURGER_DS)
 	return NULL;
 #else
 	File FileRef(pFileName,File::READONLY);
-	WordPtr uNewSize = FileRef.GetSize();
+	uintptr_t uNewSize = FileRef.GetSize();
 	void *pResult = NULL;
 	if (uNewSize) {
 #if defined(_DEBUG)
@@ -1542,13 +1543,13 @@ void * BURGER_API Burger::FileManager::LoadFile(Filename *pFileName,WordPtr *pLe
 #endif
 }
 
-void BURGER_API Burger::FileManager::AddQueue(File *pFile,eIOCommand uIOCommand,void *pBuffer,WordPtr uLength)
+void BURGER_API Burger::FileManager::AddQueue(File *pFile,eIOCommand uIOCommand,void *pBuffer,uintptr_t uLength)
 {
 	WaitUntilQueueHasSpace();
 
 	// Get the pointer to the end of the queue
 
-	Word32 uEnd = m_uQueueEnd;
+	uint32_t uEnd = m_uQueueEnd;
 
 	// Get the pointer to the next entry
 	Queue_t *pQueue = &m_IOQueue[uEnd];

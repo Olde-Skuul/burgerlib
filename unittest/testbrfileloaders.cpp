@@ -43,38 +43,38 @@ using namespace Burger;
 // Unit test for the FileXML class
 //
 
-static Word TestFileXML(void)
+static uint_t TestFileXML(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 #if defined(TESTXML)
 	InputMemoryStream Input;
 	if (!Input.Open("9:..:..:data:test.xml")) {
 		FileXML LoadFile;
-		Word uResult1 = LoadFile.Init(&Input);
+		uint_t uResult1 = LoadFile.Init(&Input);
 		if (!uResult1) {
 			FileXML::Element* pElement = LoadFile.FindElement("Config", TRUE);
 			if (pElement) {
-				Word MySound =
+				uint_t MySound =
 					pElement->ElementGetWord("SoundVolume", 255, 0, 255);
-				Word MyMusic =
+				uint_t MyMusic =
 					pElement->ElementGetWord("MusicVolume", 255, 0, 255);
-				Word PlayerEvents0 =
+				uint_t PlayerEvents0 =
 					pElement->ElementGetWord("TriggerEvent", 0x101, 0, 0xFFFF);
-				Word PlayerEvents1 = pElement->ElementGetWord(
+				uint_t PlayerEvents1 = pElement->ElementGetWord(
 					"SwitchAimEvent", Keyboard::SC_SPACE, 0, 0xFFFF);
-				Word PlayerEvents2 =
+				uint_t PlayerEvents2 =
 					pElement->ElementGetWord("ReloadEvent", 0x0102, 0, 0xFFFF);
-				Word PlayerEvents3 = pElement->ElementGetWord(
+				uint_t PlayerEvents3 = pElement->ElementGetWord(
 					"FireRateEvent", Keyboard::SC_F, 0, 0xFFFF);
-				Word PlayerEvents4 = pElement->ElementGetWord(
+				uint_t PlayerEvents4 = pElement->ElementGetWord(
 					"BreathEvent", Keyboard::SC_B, 0, 0xFFFF);
-				Word DropoffMode =
+				uint_t DropoffMode =
 					pElement->ElementGetWord("DropoffMode", FALSE, 0, 1);
-				Word LowResolutionMode =
+				uint_t LowResolutionMode =
 					pElement->ElementGetWord("LowResolutionMode", FALSE, 0, 1);
 				Fixed32 MouseSpeed = FLOATTOFIXED(pElement->ElementGetFloat(
 					"MouseSpeed", 1.0f, 0.001f, 999999.0f));
-				Word BoolVal = pElement->ElementGetBoolean("Boolean", FALSE);
+				uint_t BoolVal = pElement->ElementGetBoolean("Boolean", FALSE);
 				pElement->ElementSetWord("FireRateEvent", 666);
 				pElement->ElementSetWord("NewRecord", 1234);
 				pElement->ElementSetBoolean("Boolean", TRUE);
@@ -102,36 +102,36 @@ static Word TestFileXML(void)
 // Unit test for the FileINI class
 //
 
-static Word TestFileINI(void)
+static uint_t TestFileINI(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 #if defined(TESTINI)
 	InputMemoryStream Input;
 	if (!Input.Open("9:..:..:data:test.ini")) {
 		FileINI LoadFile;
-		Word uResult1 = LoadFile.Init(&Input);
+		uint_t uResult1 = LoadFile.Init(&Input);
 		if (!uResult1) {
 			FileINI::Section* pSection = LoadFile.FindSection("Config", TRUE);
 			if (pSection) {
-				Word MySound = pSection->GetWord("SoundVolume", 255, 0, 255);
-				Word MyMusic = pSection->GetWord("MusicVolume", 255, 0, 255);
-				Word PlayerEvents0 =
+				uint_t MySound = pSection->GetWord("SoundVolume", 255, 0, 255);
+				uint_t MyMusic = pSection->GetWord("MusicVolume", 255, 0, 255);
+				uint_t PlayerEvents0 =
 					pSection->GetWord("TriggerEvent", 0x101, 0, 0xFFFF);
-				Word PlayerEvents1 = pSection->GetWord(
+				uint_t PlayerEvents1 = pSection->GetWord(
 					"SwitchAimEvent", Keyboard::SC_SPACE, 0, 0xFFFF);
-				Word PlayerEvents2 =
+				uint_t PlayerEvents2 =
 					pSection->GetWord("ReloadEvent", 0x0102, 0, 0xFFFF);
-				Word PlayerEvents3 = pSection->GetWord(
+				uint_t PlayerEvents3 = pSection->GetWord(
 					"FireRateEvent", Keyboard::SC_F, 0, 0xFFFF);
-				Word PlayerEvents4 =
+				uint_t PlayerEvents4 =
 					pSection->GetWord("BreathEvent", Keyboard::SC_B, 0, 0xFFFF);
-				Word DropoffMode =
+				uint_t DropoffMode =
 					pSection->GetWord("DropoffMode", FALSE, 0, 1);
-				Word LowResolutionMode =
+				uint_t LowResolutionMode =
 					pSection->GetWord("LowResolutionMode", FALSE, 0, 1);
 				Fixed32 MouseSpeed = FLOATTOFIXED(
 					pSection->GetFloat("MouseSpeed", 1.0f, 0.001f, 999999.0f));
-				Word BoolVal = pSection->GetBoolean("Boolean", FALSE);
+				uint_t BoolVal = pSection->GetBoolean("Boolean", FALSE);
 				pSection->SetWord("FireRateEvent", 666);
 				pSection->SetWord("NewRecord", 1234);
 			}
@@ -157,9 +157,9 @@ static Word TestFileINI(void)
 // Unit test for the FileAPF class
 //
 
-static Word TestFileAPF(void)
+static uint_t TestFileAPF(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 #if defined(TESTAPF)
 	InputMemoryStream Input;
 	if (!Input.Open("9:..:..:data:titlepage.apf")) {
@@ -183,9 +183,9 @@ static Word TestFileAPF(void)
 // Unit test for the FileGIF class
 //
 
-static Word TestFileGIF(void)
+static uint_t TestFileGIF(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 #if defined(TESTGIF)
 	InputMemoryStream Input;
 	if (!Input.Open("9:..:..:data:test8bitcompressed.gif")) {
@@ -208,9 +208,9 @@ static Word TestFileGIF(void)
 // Unit test for the FilePNG class
 //
 
-static Word TestFilePNG(void)
+static uint_t TestFilePNG(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 #if defined(TESTPNG)
 	InputMemoryStream Input;
 	if (!Input.Open("9:..:..:data:cursor1.png")) {
@@ -237,9 +237,9 @@ static Word TestFilePNG(void)
 
 ***************************************/
 
-Word FileLoaderTest(Word /* uVerbose */)
+uint_t FileLoaderTest(uint_t /* uVerbose */)
 {
-	Word uTotal = 0;
+	uint_t uTotal = 0;
 #if defined(FULLTESTS)
 
 	MemoryManagerGlobalANSI Memory;

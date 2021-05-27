@@ -1,13 +1,14 @@
 /***************************************
 
-	Integer Point handlers
+    Integer Point handlers
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -132,11 +133,11 @@
 
 ***************************************/
 
-Word Burger::Point2D_t::Read(FILE *fp)
+uint_t Burger::Point2D_t::Read(FILE *fp)
 {
-	Int16 Input[2];
+	int16_t Input[2];
 	
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (fread(Input,1,4,fp)==4) {
 		m_iX = LittleEndian::Load(&Input[0]);
 		m_iY = LittleEndian::Load(&Input[1]);
@@ -161,13 +162,13 @@ Word Burger::Point2D_t::Read(FILE *fp)
 
 ***************************************/
 
-Word Burger::Point2D_t::Write(FILE *fp) const
+uint_t Burger::Point2D_t::Write(FILE *fp) const
 {
-	Int16 Output[2];
+	int16_t Output[2];
 	
-	Output[0] = static_cast<Int16>(LittleEndian::Load(&m_iX));
-	Output[1] = static_cast<Int16>(LittleEndian::Load(&m_iY));
-	Word uResult = 10;
+	Output[0] = static_cast<int16_t>(LittleEndian::Load(&m_iX));
+	Output[1] = static_cast<int16_t>(LittleEndian::Load(&m_iY));
+	uint_t uResult = 10;
 	if (fwrite(Output,1,4,fp)==4) {
 		uResult = 0;
 	}
@@ -190,11 +191,11 @@ Word Burger::Point2D_t::Write(FILE *fp) const
 
 ***************************************/
 
-Word Burger::Point2D_t::Read(Burger::File *fp)
+uint_t Burger::Point2D_t::Read(Burger::File *fp)
 {
-	Int16 Input[2];
+	int16_t Input[2];
 	
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (fp->Read(Input,4)==4) {
 		m_iX = LittleEndian::Load(&Input[0]);
 		m_iY = LittleEndian::Load(&Input[1]);
@@ -219,13 +220,13 @@ Word Burger::Point2D_t::Read(Burger::File *fp)
 
 ***************************************/
 
-Word Burger::Point2D_t::Write(Burger::File *fp) const
+uint_t Burger::Point2D_t::Write(Burger::File *fp) const
 {
-	Int16 Output[2];
+	int16_t Output[2];
 	
-	Output[0] = static_cast<Int16>(LittleEndian::Load(&m_iX));
-	Output[1] = static_cast<Int16>(LittleEndian::Load(&m_iY));
-	Word uResult = 10;
+	Output[0] = static_cast<int16_t>(LittleEndian::Load(&m_iX));
+	Output[1] = static_cast<int16_t>(LittleEndian::Load(&m_iY));
+	uint_t uResult = 10;
 	if (fp->Write(Output,4)==4) {
 		uResult = 0;
 	}

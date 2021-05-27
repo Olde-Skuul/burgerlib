@@ -1,14 +1,15 @@
 /***************************************
 
-	iOS version
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    iOS version
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brdirectorysearch.h"
@@ -35,11 +36,11 @@ enum vtype { VNON, VREG, VDIR, VBLK, VCHR, VLNK, VSOCK, VFIFO, VBAD, VSTR, VCPLX
 	
 ***************************************/
 
-Word Burger::DirectorySearch::Open(Burger::Filename *pDirName)
+uint_t Burger::DirectorySearch::Open(Burger::Filename *pDirName)
 {	
 	// Make sure there's nothing pending
 	Close();
-	Word uResult = File::FILENOTFOUND;
+	uint_t uResult = File::FILENOTFOUND;
 	// Open the directory for reading
 	int fp = open(pDirName->GetNative(),O_RDONLY,0);
 	if (fp!=-1) {
@@ -55,16 +56,16 @@ Word Burger::DirectorySearch::Open(Burger::Filename *pDirName)
 	
 ***************************************/
 
-Word Burger::DirectorySearch::GetNextEntry(void)
+uint_t Burger::DirectorySearch::GetNextEntry(void)
 {
 	// Assume no more entries
-	Word uResult = File::OUTOFRANGE;
+	uint_t uResult = File::OUTOFRANGE;
 	int fp = m_fp;
 	if (fp!=-1) {
 		
 		// Structure declaration of data coming from getdirentriesattr()
 		struct FInfoAttrBuf {
-			Word32 length;				// Length of this data structure
+			uint32_t length;				// Length of this data structure
 			attrreference_t name;		// Offset for the filename
 			fsobj_type_t objType;		// VREG for file, VREG for directory
 			struct timespec m_CreationDate;		// Creation date
@@ -126,7 +127,7 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 				if (Entry.m_uFileSize>=0xFFFFFFFFUL) {
 					m_uFileSize = 0xFFFFFFFFUL;
 				} else {
-					m_uFileSize = static_cast<WordPtr>(Entry.m_uFileSize);
+					m_uFileSize = static_cast<uintptr_t>(Entry.m_uFileSize);
 				}
 #endif
 			}
@@ -138,14 +139,14 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 			m_bSystem = FALSE;
 
 			// 0x4000 = kIsInvisible finder flag (Big Endian!!!)
-			m_bHidden = ((m_Name[0]=='.') || ((reinterpret_cast<const Word8 *>(Entry.finderInfo)[8]&0x40U)!=0));
+			m_bHidden = ((m_Name[0]=='.') || ((reinterpret_cast<const uint8_t *>(Entry.finderInfo)[8]&0x40U)!=0));
 
 			// Is the file locked?
 			m_bLocked = (Entry.m_Flags&UF_IMMUTABLE)!=0;
 	
 			// Get the mac specific file type and creator type
-			m_uFileType = reinterpret_cast<Word32 *>(Entry.finderInfo)[0];
-			m_uAuxType = reinterpret_cast<Word32 *>(Entry.finderInfo)[1];
+			m_uFileType = reinterpret_cast<uint32_t *>(Entry.finderInfo)[0];
+			m_uAuxType = reinterpret_cast<uint32_t *>(Entry.finderInfo)[1];
 
 
 			// It's parsed!

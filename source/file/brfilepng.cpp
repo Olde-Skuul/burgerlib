@@ -1,13 +1,14 @@
 /***************************************
 
-	PNG File handler class
+    PNG File handler class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -43,17 +44,17 @@ struct MasterHeader {	// Beginning of the file
 };
 
 struct IHDRHeader {		// IHDR record
-	Word32 m_uLength;	// Size of the record (9)
+	uint32_t m_uLength;	// Size of the record (9)
 	char m_ID[4];		// IHDR
-	Word32 m_uWidth;	// Size of the final shape
-	Word8 m_uDepth;		// Bit depth per color component
-	Word8 m_uColorType;	// Type of color (PNG_*)
-	Word8 m_uCompressionMethod;		// Only zero
-	Word8 m_uFilterMethod;			// Only zero
-	Word8 m_uInterlaceMethod;		// TRUE or FALSE
+	uint32_t m_uWidth;	// Size of the final shape
+	uint8_t m_uDepth;		// Bit depth per color component
+	uint8_t m_uColorType;	// Type of color (PNG_*)
+	uint8_t m_uCompressionMethod;		// Only zero
+	uint8_t m_uFilterMethod;			// Only zero
+	uint8_t m_uInterlaceMethod;		// TRUE or FALSE
 };
 
-static const Word8 g_Signature[8] = { 0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A };
+static const uint8_t g_Signature[8] = { 0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A };
 
 #endif
 
@@ -67,16 +68,16 @@ static const Word8 g_Signature[8] = { 0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A };
 
 ***************************************/
 
-const char * Burger::FilePNG::SeekChunk(InputMemoryStream *pInput,Word32 uID,WordPtr uStartOffset)
+const char * Burger::FilePNG::SeekChunk(InputMemoryStream *pInput,uint32_t uID,uintptr_t uStartOffset)
 {
 	pInput->SetMark(uStartOffset);
 	// Only run if there's enough data to scan
 	while (pInput->BytesRemaining()>=8) {
 		// Get the chunk length and then the ID
-		Word32 uLength = pInput->GetBigWord32();
-		Word32 uPNGID = pInput->GetBigWord32();
+		uint32_t uLength = pInput->GetBigWord32();
+		uint32_t uPNGID = pInput->GetBigWord32();
 		// Force upper case
-		Word32 uTest = uPNGID&0xDFDFDFDFU;
+		uint32_t uTest = uPNGID&0xDFDFDFDFU;
 		if (uTest==uID) {
 			// Found the chunk. Save the start offset and relevant info
 			m_uNextOffset = pInput->GetMark()+uLength+4;
@@ -105,7 +106,7 @@ const char * Burger::FilePNG::SeekChunk(InputMemoryStream *pInput,Word32 uID,Wor
 
 ***************************************/
 
-const char * Burger::FilePNG::SeekPNGChunk(InputMemoryStream *pInput,Word32 uID)
+const char * Burger::FilePNG::SeekPNGChunk(InputMemoryStream *pInput,uint32_t uID)
 {
 	return SeekChunk(pInput,uID,m_uStartOffset);
 }
@@ -119,7 +120,7 @@ const char * Burger::FilePNG::SeekPNGChunk(InputMemoryStream *pInput,Word32 uID)
 
 ***************************************/
 
-const char * Burger::FilePNG::SeekNextPNGChunk(InputMemoryStream *pInput,Word32 uID)
+const char * Burger::FilePNG::SeekNextPNGChunk(InputMemoryStream *pInput,uint32_t uID)
 {
 	return SeekChunk(pInput,uID,m_uNextOffset);
 }
@@ -159,20 +160,20 @@ Burger::FilePNG::FilePNG() :
 
 ***************************************/
 
-Word BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput)
+uint_t BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput)
 {
-	const char *pBadNews = NULL;
-	Word uResult = 10;
-	Word uWidth = 0;
-	Word uHeight = 0;
-	Word uDepth = 0;
-	Word uColorType = 0;
-	Word uCompressionMethod = 0;
-	Word uFilterMethod = 0;
-	Word uInterlaceMethod = 0;
+    const char *pBadNews = NULL;
+    uint_t uResult = 10;
+	uint_t uWidth = 0;
+	uint_t uHeight = 0;
+	uint_t uDepth = 0;
+	uint_t uColorType = 0;
+	uint_t uCompressionMethod = 0;
+	uint_t uFilterMethod = 0;
+	uint_t uInterlaceMethod = 0;
 	Image::ePixelTypes eType = Image::PIXELTYPE8888;
 
-	Word8 ID[8];
+	uint8_t ID[8];
 	pInput->Get(ID,8);
 	if (MemoryCompare(ID,g_Signature,8)) {
 		pBadNews = "No PNG header (Not an PNG File).";
@@ -246,7 +247,7 @@ Word BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput)
 			pBadNews = SeekPNGChunk(pInput,PLTEASCII); // Read in the palette
 			if (!pBadNews) {
 				MemoryClear(m_Palette,sizeof(m_Palette));
-				Word32 uPaletteSize = m_uChunkSize/3U;
+				uint32_t uPaletteSize = m_uChunkSize/3U;
 				if (uPaletteSize>256) {
 					uPaletteSize = 256;
 				}
@@ -275,14 +276,14 @@ Word BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput)
 				// It uses Deflate (ZLIB) compression
 
 				DecompressDeflate *pDecompressor = new (Alloc(sizeof(DecompressDeflate))) DecompressDeflate;
-				const Word8 *pPacked = pInput->GetPtr();
-				WordPtr uPackedSize = m_uChunkSize;
+				const uint8_t *pPacked = pInput->GetPtr();
+				uintptr_t uPackedSize = m_uChunkSize;
 				Decompress::eError Error = Decompress::DECOMPRESS_OKAY;
-				Word8 *pDest = pOutput->GetImage();
+				uint8_t *pDest = pOutput->GetImage();
 				uDepth = (uDepth+7U)>>3U;
 				uWidth = uWidth*uDepth;
 				do {
-					Word8 bType = 0;
+					uint8_t bType = 0;
 
 					// The loops are needed because there could be
 					// sequential multiple IDAT chunks so the decompression
@@ -298,14 +299,14 @@ Word BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput)
 							uPackedSize = m_uChunkSize;
 						}
 						Error = pDecompressor->Process(&bType,1,pPacked,uPackedSize);
-						WordPtr uStep = pDecompressor->GetProcessedInputSize();
+						uintptr_t uStep = pDecompressor->GetProcessedInputSize();
 						pPacked += uStep;
 						uPackedSize -= uStep;
 					} while (pDecompressor->GetProcessedOutputSize()!=1);
 					if (pBadNews) {
 						break;
 					}
-					WordPtr uRemaining = uWidth;
+					uintptr_t uRemaining = uWidth;
 					do {
 						if (!uPackedSize) {
 							pBadNews = SeekNextPNGChunk(pInput,IDATASCII);
@@ -316,7 +317,7 @@ Word BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput)
 							uPackedSize = m_uChunkSize;
 						}
 						Error = pDecompressor->Process(pDest+(uWidth-uRemaining),uRemaining,pPacked,uPackedSize);
-						WordPtr uStep = pDecompressor->GetProcessedInputSize();
+						uintptr_t uStep = pDecompressor->GetProcessedInputSize();
 						pPacked += uStep;
 						uPackedSize -= uStep;
 						uRemaining -= pDecompressor->GetProcessedOutputSize();
@@ -329,53 +330,53 @@ Word BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput)
 					// Add the value from the previous pixel
 					case 1:
 						{
-							Word i = uDepth;
-							const Word8 *pPrevious = pDest-uDepth;
+							uint_t i = uDepth;
+							const uint8_t *pPrevious = pDest-uDepth;
 							do {
-								pDest[i] = static_cast<Word8>(pDest[i]+pPrevious[i]);
+								pDest[i] = static_cast<uint8_t>(pDest[i]+pPrevious[i]);
 							} while (++i<uWidth);
 						}
 						break;
 					// Add the value from the previous scan line
 					case 2:
 						{
-							Word i = 0;
-							const Word8 *pPrevious = pDest-uWidth;
+							uint_t i = 0;
+							const uint8_t *pPrevious = pDest-uWidth;
 							do {
-								pDest[i] = static_cast<Word8>(pDest[i]+pPrevious[i]);
+								pDest[i] = static_cast<uint8_t>(pDest[i]+pPrevious[i]);
 							} while (++i<uWidth);
 						}
 						break;
 					case 3:
 						{
-							Word i = 0;
-							const Word8 *pPrevious = pDest-uWidth;
+							uint_t i = 0;
+							const uint8_t *pPrevious = pDest-uWidth;
 							do {
-								pDest[i] = static_cast<Word8>(pDest[i]+(pPrevious[i]/2));
+								pDest[i] = static_cast<uint8_t>(pDest[i]+(pPrevious[i]/2));
 							} while (++i<uDepth);
 
 							do {
-								pDest[i] = static_cast<Word8>(pDest[i]+((pPrevious[i] + pDest[i-uDepth])/2));
+								pDest[i] = static_cast<uint8_t>(pDest[i]+((pPrevious[i] + pDest[i-uDepth])/2));
 							} while (++i<uWidth);
 						}
 						break;
 					case 4:
 						{
-							Word i = 0;
-							const Word8 *pPrevious = pDest-uWidth;
+							uint_t i = 0;
+							const uint8_t *pPrevious = pDest-uWidth;
 							do {
-								pDest[i] = static_cast<Word8>(pDest[i]+pPrevious[i]);
+								pDest[i] = static_cast<uint8_t>(pDest[i]+pPrevious[i]);
 							} while (++i<uDepth);
 
 							do {
-								Int32 c = pPrevious[i-uDepth];
-								Int32 a = pDest[i-uDepth];
-								Int32 b = pPrevious[i];
-								Int32 p = b - c;
-								Int32 pc = a - c;
+								int32_t c = pPrevious[i-uDepth];
+								int32_t a = pDest[i-uDepth];
+								int32_t b = pPrevious[i];
+								int32_t p = b - c;
+								int32_t pc = a - c;
 
-								Int32 pa = Abs(p);
-								Int32 pb = Abs(pc);
+								int32_t pa = Abs(p);
+								int32_t pb = Abs(pc);
 								pc = Abs(p + pc);
 
 								// Find the best predictor, the least of pa, pb, pc favoring the earlier
@@ -392,7 +393,7 @@ Word BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput)
 								// for the next time round the loop
 								c = b;
 								a += pDest[i];
-								pDest[i] = static_cast<Word8>(a);
+								pDest[i] = static_cast<uint8_t>(a);
 							} while (++i<uWidth);
 						}
 						break;
@@ -443,7 +444,7 @@ Word BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput)
 
 /*! ************************************
 
-	\fn void Burger::FilePNG::SetPalette(const RGBWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+	\fn void Burger::FilePNG::SetPalette(const RGBWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 	\brief Set the file image's palette (RGB)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -457,13 +458,13 @@ Word BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput)
 	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
-	\sa SetPalette(const RGBAWord8_t *,Word,Word)
+	\sa SetPalette(const RGBAWord8_t *,uint_t,uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FilePNG::SetPalette(const RGBAWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+	\fn void Burger::FilePNG::SetPalette(const RGBAWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 	\brief Set the file image's palette (RGBA)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -476,7 +477,7 @@ Word BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput)
 	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
-	\sa SetPalette(const RGBWord8_t *,Word,Word)
+	\sa SetPalette(const RGBWord8_t *,uint_t,uint_t)
 
 ***************************************/
 

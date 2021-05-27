@@ -2,7 +2,7 @@
 
     Number String Manager in hexadecimal
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
     It is released under an MIT Open Source license. Please see LICENSE for
     license details. Yes, you can use it in a commercial title without paying
@@ -20,21 +20,19 @@
     \class Burger::NumberStringHex
     \brief Simple "C" string hexadecimal conversion class.
 
-    To convert a hexadecimal number into a string quickly and without the
-    worry of creating a text buffer to contain the ASCII
-    string, use this class. Once the string is created, you can
-    access via Burger::NumberStringHex::GetPtr() const or const char *
-    accessors.
+    To convert a hexadecimal number into a string quickly and without the worry
+    of creating a text buffer to contain the ASCII string, use this class. Once
+    the string is created, you can access via NumberStringHex::c_str() const or
+    const char * accessors.
 
-    The main benefit of this class is that the string buffer is
-    part of the class instance, so no <i>behind the scenes</i> memory
-    allocation is performed. It's best used with creating a
-    local <i>on the stack</i> instance with the number to be converted
-    as input to the constructor. You then access the string and
-    use it as you wish.
+    The main benefit of this class is that the string buffer is part of the
+    class instance, so no *behind the scenes* memory allocation is performed.
+    It's best used with creating a local *on the stack* instance with the number
+    to be converted as input to the constructor. After which, the program can
+    access the string and use it as needed.
 
-    Most constructors can take an optional format parameter so you
-    can have some control as to how the string is created.
+    Most constructors can take an optional format parameter so the code can have
+    some control as to how the string is created.
 
 
     \code
@@ -42,7 +40,7 @@
     // Cross platform way of printing a 64 bit hex value
     uint64_t uValue = 0x123456789ABCDULL;
     Burger::NumberStringHex Text(uValue);
-    printf("uValue = 0x%s\n",Text.GetPtr());
+    printf("uValue = 0x%s\n",Text.c_str());
 
     // Output is "uValue = 0x000123456789ABCD"
 
@@ -57,220 +55,62 @@
 
     Initialize to an empty string
 
-    \sa NumberStringHex(uint32_t) or NumberStringHex(uint64_t)
+    \sa NumberStringHex(T) or NumberStringHex(T, uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-    \brief Default constructor for an unsigned 32 bit integer.
+    \brief Default constructor for an integral.
+    \fn Burger::NumberStringHex::NumberStringHex(T input)
 
-    Convert the 32 bit unsigned integer into an ASCII hex string
-    and store that string inside the class. The resulting string is
-    from 1 to 8 digits in length.
+    Convert the integral into an ASCII hex string and store that string inside
+    the class. The resulting string is from 1 to 8 digits in length depending on
+    the number of bytes the integral occupies.
 
-    \param uInput Unsigned 32 bit integer to convert to an ASCII hex string.
-    \sa Burger::NumberStringHex::NumberStringHex(uint64_t or
-        Burger::NumberStringHex::NumberStringHex(uint32_t,uint_t)
+    \tparam T input data type, tested with is_integral.
+
+    \param input Integral value to print in HEX to a string.
+    \sa NumberToAsciiHex(char *, T) or
+        NumberStringHex::NumberStringHex(T, uint_t)
 
 ***************************************/
 
-Burger::NumberStringHex::NumberStringHex(uint32_t uInput)
-{
-    NumberToAsciiHex(m_Data, uInput, Burger::LEADINGZEROS);
-}
-
 /*! ************************************
 
-    \brief Default constructor for an unsigned 32 bit integer with formatting.
+    \brief Default constructor for an integral with formatting.
+    \fn Burger::NumberStringHex::NumberStringHex(T input, uint_t uFormat)
 
-    Convert the 32 bit unsigned integer into an ASCII hex string
-    and store that string inside the class. The resulting string is
-    from 1 to 8 digits in length. Formatting will have some influence
-    on the string's length.
+    Convert the integral into an ASCII hex string and store that string inside
+    the class. The resulting string is from 1 to 8 digits in length in length
+    depending on the number of bytes the integral occupies. Formatting will have
+    some influence on the string's length.
 
-    The format parameter is passed directly to
-    Burger::NumberToAsciiHex(char*,uint32_t,uint_t), please see that function's
-    documentation for what values you can pass.
+    The format parameter is passed directly to NumberToAsciiHex(char*,T,uint_t),
+    please see that function's documentation for what values you can pass.
 
-    \param uInput Unsigned 32 bit integer to convert to an ASCII hex string.
+    \tparam T input data type, tested with is_integral.
+
+    \param input Integral value to print in HEX to a string.
     \param uFormat Formatting parameter.
-    \sa Burger::NumberStringHex::NumberStringHex(uint32_t) or
-        Burger::NumberStringHex::NumberStringHex(uint64_t,uint_t)
-        Burger::NumberToAsciiHex(char *,uint32_t,uint_t)
+    \sa NumberToAsciiHex(char *, T, uint_t) or NumberStringHex(T, uint_t)
 
 ***************************************/
 
-Burger::NumberStringHex::NumberStringHex(uint32_t uInput, uint_t uFormat)
-{
-    NumberToAsciiHex(m_Data, uInput, uFormat);
-}
-
 /*! ************************************
 
-    \brief Default constructor for an unsigned 64 bit integer.
-
-    Convert the 64 bit unsigned integer into an ASCII hex string
-    and store that string inside the class. The resulting string is
-    from 1 to 16 digits in length.
-
-    \param uInput Unsigned 64 bit integer to convert to an ASCII hex string.
-    \sa Burger::NumberStringHex::NumberStringHex(uint32_t) or
-        Burger::NumberStringHex::NumberStringHex(uint64_t,uint_t)
-
-***************************************/
-
-Burger::NumberStringHex::NumberStringHex(uint64_t uInput)
-{
-    NumberToAsciiHex(m_Data, uInput, Burger::LEADINGZEROS);
-}
-
-/*! ************************************
-
-    \brief Default constructor for an unsigned 64 bit integer with formatting.
-
-    Convert the 64 bit unsigned integer into an ASCII hex string
-    and store that string inside the class. The resulting string is
-    from 1 to 16 digits in length. Formatting will have some influence
-    on the string's length.
-
-    The format parameter is passed directly to
-    Burger::NumberToAsciiHex(char*,uint64_t,uint_t), please see that
-    function's documentation for what values you can pass.
-
-    \param uInput Unsigned 64 bit integer to convert to ASCII.
-    \param uFormat Formatting parameter.
-    \sa Burger::NumberStringHex::NumberStringHex(uint64_t) or
-        Burger::NumberStringHex::NumberStringHex(uint32_t,uint_t)
-        Burger::NumberToAsciiHex(char *,uint64_t,uint_t)
-
-***************************************/
-
-Burger::NumberStringHex::NumberStringHex(uint64_t uInput, uint_t uFormat)
-{
-    NumberToAsciiHex(m_Data, uInput, uFormat);
-}
-
-/*! ************************************
-
-    \brief Default constructor for a 32 bit float.
-
-    Convert the 32 bit float into an ASCII hex string and store
-    that string inside the class. The resulting string is 8 digits in
-    length.
-
-    \param fInput 32 bit float to convert to an ASCII hex string.
-    \sa Burger::NumberStringHex::NumberStringHex(double) or
-        Burger::NumberToAsciiHex(char *,uint32_t,uint_t)
-
-***************************************/
-
-Burger::NumberStringHex::NumberStringHex(float fInput)
-{
-    NumberToAsciiHex(m_Data,
-        static_cast<const uint32_t *>(static_cast<const void*>(&fInput))[0],
-        Burger::LEADINGZEROS);
-}
-
-/*! ************************************
-
-    \brief Default constructor for a 64 bit float.
-
-    Convert the 64 bit float into an ASCII hex string and store that string
-    inside the class. The resulting string is 16 digits in length.
-
-    \param dInput 64 bit float to convert to ASCII.
-    \sa Burger::NumberStringHex::NumberStringHex(float) or
-        Burger::NumberToAsciiHex(char *,uint32_t,uint_t)
-
-***************************************/
-
-Burger::NumberStringHex::NumberStringHex(double dInput)
-{
-    NumberToAsciiHex(m_Data,
-        static_cast<const uint64_t *>(static_cast<const void*>(&dInput))[0],
-        Burger::LEADINGZEROS);
-}
-
-/*! ************************************
-
-    \brief Copy operator for an unsigned 32 bit integer.
+    \brief Copy operator for an integral.
+    \fn Burger::NumberStringHex::operator=(T input)
 
     Convert the 32 bit unsigned integer into an ASCII string and store that
     string inside the class. The resulting string is 8 digits in length.
 
-    \param uInput Unsigned 32 bit integer to convert to ASCII.
-    \sa Burger::NumberStringHex::NumberStringHex(uint32_t) or
-        Burger::NumberStringHex::NumberStringHex(uint32_t,uint_t)
+    \tparam T input data type, tested with is_integral.
+
+    \param input Integral value to print in HEX to a string.
+    \sa NumberStringHex::NumberStringHex(T)
 
 ***************************************/
-
-Burger::NumberStringHex& Burger::NumberStringHex::operator=(uint32_t uInput)
-{
-    NumberToAsciiHex(m_Data, uInput, Burger::LEADINGZEROS);
-    return *this;
-}
-
-/*! ************************************
-
-    \brief Copy operator for an unsigned 64 bit integer.
-
-    Convert the 64 bit unsigned integer into an ASCII string and store that
-    string inside the class. The resulting string is 16 digits in length.
-
-    \param uInput Unsigned 64 bit integer to convert to ASCII.
-    \sa Burger::NumberStringHex::NumberStringHex(uint64_t) or
-        Burger::NumberStringHex::NumberStringHex(uint64_t,uint_t)
-
-***************************************/
-
-Burger::NumberStringHex& Burger::NumberStringHex::operator=(uint64_t uInput)
-{
-    NumberToAsciiHex(m_Data, uInput, Burger::LEADINGZEROS);
-    return *this;
-}
-
-/*! ************************************
-
-    \brief Copy operator for a 32 bit float.
-
-    Convert the 32 bit float into an ASCII string and store that string inside
-    the class. The resulting string is 8 digits in length.
-
-    \param fInput 32 bit float to convert to ASCII.
-    \sa Burger::NumberStringHex::NumberStringHex(float) or
-        Burger::NumberToAsciiHex(char *,uint32_t,uint_t)
-
-***************************************/
-
-Burger::NumberStringHex& Burger::NumberStringHex::operator=(float fInput)
-{
-    NumberToAsciiHex(m_Data,
-        static_cast<const uint32_t *>(static_cast<const void*>(&fInput))[0],
-        Burger::LEADINGZEROS);
-    return *this;
-}
-
-/*! ************************************
-
-    \brief Copy operator for a 64 bit float.
-
-    Convert the 64 bit float into an ASCII string and store that string inside
-    the class. The resulting string is 8 digits in length.
-
-    \param dInput 64 bit float to convert to ASCII.
-    \sa Burger::NumberStringHex::NumberStringHex(double) or
-        Burger::NumberToAsciiHex(char *,uint64_t,uint_t)
-
-***************************************/
-
-Burger::NumberStringHex& Burger::NumberStringHex::operator=(double dInput)
-{
-    NumberToAsciiHex(m_Data,
-        static_cast<const uint64_t *>(static_cast<const void*>(&dInput))[0],
-        Burger::LEADINGZEROS);
-    return *this;
-}
 
 /*! ************************************
 
@@ -282,7 +122,7 @@ Burger::NumberStringHex& Burger::NumberStringHex::operator=(double dInput)
     without the class knowing about the operation.
 
     \return const char * to the string within. The string is always valid.
-    \sa Burger::NumberStringHex::GetPtr(void) const
+    \sa c_str(void) const
 
 ***************************************/
 
@@ -296,7 +136,7 @@ Burger::NumberStringHex& Burger::NumberStringHex::operator=(double dInput)
     without the class knowing about the operation.
 
     \return const char * to the string within. The string is always valid.
-    \sa operator const char*() const or c_str() const
+    \sa \ref operator const char*() const or c_str() const
 
 ***************************************/
 
@@ -310,7 +150,7 @@ Burger::NumberStringHex& Burger::NumberStringHex::operator=(double dInput)
     without the class knowing about the operation.
 
     \return const char * to the string within. The string is always valid.
-    \sa operator const char*() const or data() const
+    \sa \ref operator const char*() const or data() const
 
 ***************************************/
 

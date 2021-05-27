@@ -27,9 +27,9 @@
 
 ***************************************/
 
-Burger::CriticalSection::CriticalSection()
+Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT
 {
-    BURGER_STATIC_ASSERT(sizeof(CRITICAL_SECTION)==sizeof(BurgerCRITICAL_SECTION));
+    BURGER_STATIC_ASSERT(sizeof(CRITICAL_SECTION)==sizeof(Burger_CRITICAL_SECTION));
 	InitializeCriticalSectionAndSpinCount(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock),1000);
 }
 
@@ -44,7 +44,7 @@ Burger::CriticalSection::~CriticalSection()
 
 ***************************************/
 
-void Burger::CriticalSection::Lock()
+void Burger::CriticalSection::Lock() BURGER_NOEXCEPT
 {
 	EnterCriticalSection(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock));
 }
@@ -55,7 +55,7 @@ void Burger::CriticalSection::Lock()
 
 ***************************************/
 
-Word Burger::CriticalSection::TryLock()
+uint_t Burger::CriticalSection::TryLock() BURGER_NOEXCEPT
 {
 	return TryEnterCriticalSection(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock));
 }
@@ -67,7 +67,7 @@ Word Burger::CriticalSection::TryLock()
 
 ***************************************/
 
-void Burger::CriticalSection::Unlock()
+void Burger::CriticalSection::Unlock() BURGER_NOEXCEPT
 {
 	LeaveCriticalSection(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock));
 }
@@ -79,11 +79,11 @@ void Burger::CriticalSection::Unlock()
 
 ***************************************/
 
-Burger::Semaphore::Semaphore(Word32 uCount) :
+Burger::Semaphore::Semaphore(uint32_t uCount) :
 	m_uCount(uCount)
 {
 	// Get the maximum semaphores
-	Word32 uMax = uCount+32768U;
+	uint32_t uMax = uCount+32768U;
 	// Did it wrap (Overflow?)
 	if (uMax<uCount) {
 		// Use max
@@ -114,10 +114,10 @@ Burger::Semaphore::~Semaphore()
 
 ***************************************/
 
-Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
+uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
 {
 	// Assume failure
-	Word uResult = 10;
+	uint_t uResult = 10;
 	HANDLE hSemaphore = m_pSemaphore;
 	if (hSemaphore) {
 		DWORD dwMilliseconds;
@@ -150,9 +150,9 @@ Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
 
 ***************************************/
 
-Word BURGER_API Burger::Semaphore::Release(void)
+uint_t BURGER_API Burger::Semaphore::Release(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	HANDLE hSemaphore = m_pSemaphore;
 	if (hSemaphore) {
 		// Release the count immediately, because it's
@@ -234,9 +234,9 @@ Burger::Thread::~Thread()
 
 ***************************************/
 
-Word BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
+uint_t BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (!m_pThreadHandle) {
 		m_pFunction = pFunction;
 		m_pData = pData;
@@ -268,9 +268,9 @@ Word BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
 
 ***************************************/
 
-Word BURGER_API Burger::Thread::Wait(void)
+uint_t BURGER_API Burger::Thread::Wait(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_pThreadHandle) {
 		// Wait until the thread completes execution
 		DWORD uError = WaitForSingleObject(m_pThreadHandle,INFINITE);
@@ -296,9 +296,9 @@ Word BURGER_API Burger::Thread::Wait(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Thread::Kill(void)
+uint_t BURGER_API Burger::Thread::Kill(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (m_pThreadHandle) {
 		if (!CloseHandle(m_pThreadHandle)) {
 			uResult = 10;		// Error??

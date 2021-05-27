@@ -1,14 +1,15 @@
 /***************************************
 
-	Decompression manager version of Deflate
+    Decompression manager version of Deflate
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brdecompressdeflate.h"
@@ -74,7 +75,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::DecompressDeflate,Burger::Decompress);
 
 ***************************************/
 
-static const Word g_DeflateMask[17] = {
+static const uint_t g_DeflateMask[17] = {
 	0x0000,0x0001,0x0003,0x0007,0x000F,0x001F,0x003F,0x007F,
 	0x00FF,0x01FF,0x03FF,0x07FF,0x0FFF,0x1FFF,0x3FFF,0x7FFF,
 	0xFFFF
@@ -84,7 +85,7 @@ static const Word g_DeflateMask[17] = {
 
 // Copy lengths for literal codes 257..285
 // see note #13 above about 258
-static const Word g_DeflateCopyLengths[31] = {
+static const uint_t g_DeflateCopyLengths[31] = {
 	3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
 	35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 0, 0
 };
@@ -92,20 +93,20 @@ static const Word g_DeflateCopyLengths[31] = {
 // Extra bits for literal codes 257..285
 // 112==invalid
 
-static const Word g_DeflateExtraBits[31] = {
+static const uint_t g_DeflateExtraBits[31] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2,
 	3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0, 112, 112
 };
 
 // Copy offsets for distance codes 0..29
-static const Word g_DeflateDistanceCodes[30] = {
+static const uint_t g_DeflateDistanceCodes[30] = {
 	1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
 	257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145,
 	8193, 12289, 16385, 24577
 };
 
 // Extra bits for distance codes
-static const Word g_DeflateDistanceExtraBits[30] = {
+static const uint_t g_DeflateDistanceExtraBits[30] = {
 	0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6,
 	7, 7, 8, 8, 9, 9, 10, 10, 11, 11,
 	12, 12, 13, 13
@@ -266,7 +267,7 @@ const Burger::DecompressDeflate::DeflateHuft_t Burger::DecompressDeflate::s_Fixe
 };
 
 // Order of the bit length code lengths
-static const Word g_DeflateBorder[] = {
+static const uint_t g_DeflateBorder[] = {
 	16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15
 };
 
@@ -282,11 +283,11 @@ static const Word g_DeflateBorder[] = {
 int Burger::DecompressDeflate::Flush(int iErrorCode)
 {
 	// Local copies of source and destination pointers
-	Word8 *pOutput = m_pOutput;
-	const Word8 *pWindowRead = m_pWindowRead;
+	uint8_t *pOutput = m_pOutput;
+	const uint8_t *pWindowRead = m_pWindowRead;
 
 	// Compute number of bytes to copy as far as end of window
-	WordPtr uCount = static_cast<WordPtr>((pWindowRead <= m_pWindowWrite ? m_pWindowWrite : &m_WindowBuffer[1<<MAX_WBITS]) - pWindowRead);
+	uintptr_t uCount = static_cast<uintptr_t>((pWindowRead <= m_pWindowWrite ? m_pWindowWrite : &m_WindowBuffer[1<<MAX_WBITS]) - pWindowRead);
 	if (uCount > m_uOutputChunkLength) {
 		uCount = m_uOutputChunkLength;
 	}
@@ -315,7 +316,7 @@ int Burger::DecompressDeflate::Flush(int iErrorCode)
 		}
 
 		// Compute bytes to copy */
-		uCount = static_cast<WordPtr>(m_pWindowWrite - pWindowRead);
+		uCount = static_cast<uintptr_t>(m_pWindowWrite - pWindowRead);
 		if (uCount > m_uOutputChunkLength) {
 			uCount = m_uOutputChunkLength;
 		}
@@ -358,19 +359,19 @@ int Burger::DecompressDeflate::Flush(int iErrorCode)
 
 ***************************************/
 
-int Burger::DecompressDeflate::Fast(Word uBitLength,Word uBitDistance,const DeflateHuft_t *pHuffmanLength,const DeflateHuft_t *pHuffmanDistance)
+int Burger::DecompressDeflate::Fast(uint_t uBitLength,uint_t uBitDistance,const DeflateHuft_t *pHuffmanLength,const DeflateHuft_t *pHuffmanDistance)
 {
 	// load input, output, bit values
-	const Word8 *pInput=m_pInput;
-	WordPtr uInputLength=m_uInputChunkLength;
-	Word32 uBitBucket=m_uBitBucket;
-	Word uBitCount=m_uBitCount;
-	Word8 *pWindowWrite=m_pWindowWrite;
-	WordPtr uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?(m_pWindowRead-pWindowWrite-1):&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+	const uint8_t *pInput=m_pInput;
+	uintptr_t uInputLength=m_uInputChunkLength;
+	uint32_t uBitBucket=m_uBitBucket;
+	uint_t uBitCount=m_uBitCount;
+	uint8_t *pWindowWrite=m_pWindowWrite;
+	uintptr_t uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?(m_pWindowRead-pWindowWrite-1):&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 
 	// initialize masks
-	Word uMaskLength = g_DeflateMask[uBitLength];
-	Word uMaskDistance = g_DeflateMask[uBitDistance];
+	uint_t uMaskLength = g_DeflateMask[uBitLength];
+	uint_t uMaskDistance = g_DeflateMask[uBitDistance];
 
 	int iErrorCode;
 	// do until not enough input or output space for fast loop
@@ -379,18 +380,18 @@ int Burger::DecompressDeflate::Fast(Word uBitLength,Word uBitDistance,const Defl
 		// get literal/length code
 		while (uBitCount<20) {
 			--uInputLength;
-			uBitBucket|=(static_cast<Word32>(pInput[0]))<<uBitCount;
+			uBitBucket|=(static_cast<uint32_t>(pInput[0]))<<uBitCount;
 			++pInput;
 			uBitCount+=8;
 		}
 		// max bits for literal/length code
 		const DeflateHuft_t *pHuffman = pHuffmanLength + (uBitBucket & uMaskLength);
-		Word uExtra = pHuffman->m_bExtraOperation;
+		uint_t uExtra = pHuffman->m_bExtraOperation;
 		if (!uExtra) {
 			// Literal code
 			uBitBucket>>=pHuffman->m_bBitCount;
 			uBitCount-=pHuffman->m_bBitCount;
-			pWindowWrite[0] = static_cast<Word8>(pHuffman->m_uBase);
+			pWindowWrite[0] = static_cast<uint8_t>(pHuffman->m_uBase);
 			++pWindowWrite;
 			--uRemainingWindow;
 			continue;
@@ -402,14 +403,14 @@ int Burger::DecompressDeflate::Fast(Word uBitLength,Word uBitDistance,const Defl
 			if (uExtra & 0x10) {
 				// Get extra bits for length
 				uExtra &= 0xF;
-				WordPtr uBytesToCopy = pHuffman->m_uBase + (uBitBucket & g_DeflateMask[uExtra]);
+				uintptr_t uBytesToCopy = pHuffman->m_uBase + (uBitBucket & g_DeflateMask[uExtra]);
 				uBitBucket>>=uExtra;
 				uBitCount-=uExtra;
 
 				// Decode distance base of block to copy
 				while (uBitCount<15) {
 					--uInputLength;
-					uBitBucket|=static_cast<Word32>(pInput[0])<<uBitCount;
+					uBitBucket|=static_cast<uint32_t>(pInput[0])<<uBitCount;
 					++pInput;
 					uBitCount+=8;
 				}
@@ -424,20 +425,20 @@ int Burger::DecompressDeflate::Fast(Word uBitLength,Word uBitDistance,const Defl
 						uExtra &= 0xF;
 						while (uBitCount<uExtra) {
 							--uInputLength;
-							uBitBucket|=static_cast<Word32>(pInput[0])<<uBitCount;
+							uBitBucket|=static_cast<uint32_t>(pInput[0])<<uBitCount;
 							++pInput;
 							uBitCount+=8;
 						}
 						// get extra bits (up to 13)
-						WordPtr uDistance = pHuffman->m_uBase + (uBitBucket & g_DeflateMask[uExtra]);
+						uintptr_t uDistance = pHuffman->m_uBase + (uBitBucket & g_DeflateMask[uExtra]);
 						uBitBucket>>= uExtra;
 						uBitCount-=uExtra;
 
 						// do the copy
 						uRemainingWindow -= uBytesToCopy;
-						const Word8 *pSourceCopy;
+						const uint8_t *pSourceCopy;
 						// offset before dest
-						if (static_cast<WordPtr>(pWindowWrite - m_WindowBuffer) >= uDistance) {
+						if (static_cast<uintptr_t>(pWindowWrite - m_WindowBuffer) >= uDistance) {
 							// just copy
 							pSourceCopy = pWindowWrite - uDistance;
 							pWindowWrite[0] = pSourceCopy[0];		// minimum count is three,
@@ -448,7 +449,7 @@ int Burger::DecompressDeflate::Fast(Word uBitLength,Word uBitDistance,const Defl
 						} else {
 							// else offset after destination
 							// bytes from offset to end
-							uExtra = static_cast<Word>(uDistance - static_cast<WordPtr>(pWindowWrite - m_WindowBuffer));
+							uExtra = static_cast<uint_t>(uDistance - static_cast<uintptr_t>(pWindowWrite - m_WindowBuffer));
 							pSourceCopy = &m_WindowBuffer[1<<MAX_WBITS] - uExtra;	// pointer to offset
 							if (uBytesToCopy > uExtra) {		// if source crosses,
 								uBytesToCopy -= uExtra;			// copy to end of window
@@ -490,7 +491,7 @@ int Burger::DecompressDeflate::Fast(Word uBitLength,Word uBitDistance,const Defl
 			if (!uExtra) {
 				uBitBucket>>=pHuffman->m_bBitCount;
 				uBitCount-=pHuffman->m_bBitCount;
-				pWindowWrite[0] = static_cast<Word8>(pHuffman->m_uBase);
+				pWindowWrite[0] = static_cast<uint8_t>(pHuffman->m_uBase);
 				++pWindowWrite;
 				--uRemainingWindow;
 				break;
@@ -501,11 +502,11 @@ int Burger::DecompressDeflate::Fast(Word uBitLength,Word uBitDistance,const Defl
 	// Not enough input or output--restore pointers and return
 	iErrorCode = Z_OK;
 ByeBye:;
-	WordPtr uUsed = static_cast<WordPtr>(m_uInputChunkLength-uInputLength);
+	uintptr_t uUsed = static_cast<uintptr_t>(m_uInputChunkLength-uInputLength);
 	uUsed = (uBitCount>>3U) < uUsed ? (uBitCount>>3U) : uUsed;
 	uInputLength+=uUsed;
 	pInput-=uUsed;
-	uBitCount-=static_cast<Word>(uUsed)<<3U;
+	uBitCount-=static_cast<uint_t>(uUsed)<<3U;
 	m_uBitBucket=uBitBucket;
 	m_uBitCount=uBitCount;
 	m_uInputChunkLength=uInputLength;
@@ -526,19 +527,19 @@ ByeBye:;
 int Burger::DecompressDeflate::ProcessCodes(int iErrorCode)
 {
 	// copy input/output information to locals (UPDATE macro restores)
-	const Word8 *pInput=m_pInput;
-	WordPtr uInputLength=m_uInputChunkLength;
-	Word32 uBitBucket=m_uBitBucket;
-	Word uBitCount=m_uBitCount;
-	Word8 *pWindowWrite=m_pWindowWrite;
-	WordPtr uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+	const uint8_t *pInput=m_pInput;
+	uintptr_t uInputLength=m_uInputChunkLength;
+	uint32_t uBitBucket=m_uBitBucket;
+	uint_t uBitCount=m_uBitCount;
+	uint8_t *pWindowWrite=m_pWindowWrite;
+	uintptr_t uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 
 	// Process input and output based on current state
 	for (;;) {
-		Word j;
+		uint_t j;
 		const DeflateHuft_t *pHuffman;	// temporary pointer
-		Word uExtra;					// extra bits or operation
-		const Word8 *pSourceCopy;		// pointer to copy strings from
+		uint_t uExtra;					// extra bits or operation
+		const uint8_t *pSourceCopy;		// pointer to copy strings from
 		switch (m_eCodesMode) {
 		// Starting?
 		case CODES_START:
@@ -555,7 +556,7 @@ int Burger::DecompressDeflate::ProcessCodes(int iErrorCode)
 				uBitBucket=m_uBitBucket;
 				uBitCount=m_uBitCount;
 				pWindowWrite=m_pWindowWrite;
-				uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+				uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 				if (iErrorCode != Z_OK) {
 					m_eCodesMode = (iErrorCode == Z_STREAM_END) ? CODES_WASH : CODES_ABORT;
 					break;
@@ -572,14 +573,14 @@ int Burger::DecompressDeflate::ProcessCodes(int iErrorCode)
 				}
 				iErrorCode=Z_OK;
 				--uInputLength;
-				uBitBucket|=static_cast<Word32>(pInput[0])<<uBitCount;
+				uBitBucket|=static_cast<uint32_t>(pInput[0])<<uBitCount;
 				++pInput;
 				uBitCount+=8;
 			}
-			pHuffman = m_pCodeTree + ((Word)uBitBucket & g_DeflateMask[j]);
+			pHuffman = m_pCodeTree + ((uint_t)uBitBucket & g_DeflateMask[j]);
 			uBitBucket>>=(pHuffman->m_bBitCount);
 			uBitCount-=(pHuffman->m_bBitCount);
-			uExtra = (Word)(pHuffman->m_bExtraOperation);
+			uExtra = (uint_t)(pHuffman->m_bExtraOperation);
 			if (uExtra == 0) {				/* literal */
 				m_uCodeLiteral = pHuffman->m_uBase;
 				m_eCodesMode = CODES_LITERAL;
@@ -611,7 +612,7 @@ int Burger::DecompressDeflate::ProcessCodes(int iErrorCode)
 				}
 				iErrorCode=Z_OK;
 				--uInputLength;
-				uBitBucket|=((Word32)(*pInput++))<<uBitCount;
+				uBitBucket|=((uint32_t)(*pInput++))<<uBitCount;
 				uBitCount+=8;
 			}
 			m_uCodeLength += (uBitBucket & g_DeflateMask[j]);
@@ -628,7 +629,7 @@ int Burger::DecompressDeflate::ProcessCodes(int iErrorCode)
 				}
 				iErrorCode=Z_OK;
 				--uInputLength;
-				uBitBucket|=((Word32)(*pInput++))<<uBitCount;
+				uBitBucket|=((uint32_t)(*pInput++))<<uBitCount;
 				uBitCount+=8;
 			}
 			pHuffman = m_pCodeTree + (uBitBucket & g_DeflateMask[j]);
@@ -658,7 +659,7 @@ int Burger::DecompressDeflate::ProcessCodes(int iErrorCode)
 				}
 				iErrorCode=Z_OK;
 				--uInputLength;
-				uBitBucket|=((Word32)(*pInput++))<<uBitCount;
+				uBitBucket|=((uint32_t)(*pInput++))<<uBitCount;
 				uBitCount+=8;
 			}
 			m_uCodeCopyDistance += (uBitBucket & g_DeflateMask[j]);
@@ -666,23 +667,23 @@ int Burger::DecompressDeflate::ProcessCodes(int iErrorCode)
 			uBitCount-=j;
 			m_eCodesMode = CODES_COPY;
 		case CODES_COPY:			/* o: copying bytes in window, waiting for space */
-			pSourceCopy = (Word)(pWindowWrite - m_WindowBuffer) < m_uCodeCopyDistance ?
+			pSourceCopy = (uint_t)(pWindowWrite - m_WindowBuffer) < m_uCodeCopyDistance ?
 			&m_WindowBuffer[1<<MAX_WBITS] - (m_uCodeCopyDistance - (pWindowWrite - m_WindowBuffer)) :
 				pWindowWrite - m_uCodeCopyDistance;
 			while (m_uCodeLength) {
 				if (!uRemainingWindow) {
 					if((pWindowWrite==&m_WindowBuffer[1<<MAX_WBITS])&&(m_pWindowRead!=m_WindowBuffer)) {
 						pWindowWrite=m_WindowBuffer;
-						uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+						uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 					}
 					if(!uRemainingWindow) {
 						m_pWindowWrite=pWindowWrite;
 						iErrorCode=Flush(iErrorCode);
 						pWindowWrite=m_pWindowWrite;
-						uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+						uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 						if(pWindowWrite==&m_WindowBuffer[1<<MAX_WBITS]&&m_pWindowRead!=m_WindowBuffer){
 							pWindowWrite=m_WindowBuffer;
-							uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+							uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 						}
 						if (!uRemainingWindow) {
 							goto Abort;
@@ -690,7 +691,7 @@ int Burger::DecompressDeflate::ProcessCodes(int iErrorCode)
 					}
 				}
 				iErrorCode=Z_OK;
-				*pWindowWrite++=(Word8)(*pSourceCopy++);
+				*pWindowWrite++=(uint8_t)(*pSourceCopy++);
 				uRemainingWindow--;
 				if (pSourceCopy == &m_WindowBuffer[1<<MAX_WBITS]) {
 					pSourceCopy = m_WindowBuffer;
@@ -703,16 +704,16 @@ int Burger::DecompressDeflate::ProcessCodes(int iErrorCode)
 			if (!uRemainingWindow){
 				if (pWindowWrite==&m_WindowBuffer[1<<MAX_WBITS]&&m_pWindowRead!=m_WindowBuffer){
 					pWindowWrite=m_WindowBuffer;
-					uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+					uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 				}
 				if (!uRemainingWindow){
 					m_pWindowWrite=pWindowWrite;
 					iErrorCode=Flush(iErrorCode);
 					pWindowWrite=m_pWindowWrite;
-					uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+					uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 					if (pWindowWrite==&m_WindowBuffer[1<<MAX_WBITS]&&m_pWindowRead!=m_WindowBuffer){
 						pWindowWrite=m_WindowBuffer;
-						uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+						uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 					}
 					if (!uRemainingWindow) {
 						goto Abort;
@@ -720,7 +721,7 @@ int Burger::DecompressDeflate::ProcessCodes(int iErrorCode)
 				}
 			}
 			iErrorCode=Z_OK;
-			pWindowWrite[0]=static_cast<Word8>(m_uCodeLiteral);
+			pWindowWrite[0]=static_cast<uint8_t>(m_uCodeLiteral);
 			++pWindowWrite;
 			--uRemainingWindow;
 			m_eCodesMode = CODES_START;
@@ -734,7 +735,7 @@ int Burger::DecompressDeflate::ProcessCodes(int iErrorCode)
 			m_pWindowWrite=pWindowWrite;
 			iErrorCode=Flush(iErrorCode);
 			pWindowWrite=m_pWindowWrite;
-			uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+			uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 			if (m_pWindowRead != m_pWindowWrite) {
 				goto Abort;
 			}
@@ -770,7 +771,7 @@ Abort:;
 
 ***************************************/
 
-void Burger::DecompressDeflate::CodesReset(Word bCodeLengthBits,Word bCodeDistanceBits,const DeflateHuft_t *pCodeTreeLength,const DeflateHuft_t *pCodeTreeDistance)
+void Burger::DecompressDeflate::CodesReset(uint_t bCodeLengthBits,uint_t bCodeDistanceBits,const DeflateHuft_t *pCodeTreeLength,const DeflateHuft_t *pCodeTreeDistance)
 {
 	m_eCodesMode = CODES_START;
 	m_uCodeLength = 0;
@@ -781,8 +782,8 @@ void Burger::DecompressDeflate::CodesReset(Word bCodeLengthBits,Word bCodeDistan
 	m_uCodeCopyDistance = 0;
 	m_pCodeTreeLength = pCodeTreeLength;
 	m_pCodeTreeDistance = pCodeTreeDistance;
-	m_bCodeLengthBits = static_cast<Word8>(bCodeLengthBits);
-	m_bCodeDistanceBits = static_cast<Word8>(bCodeDistanceBits);
+	m_bCodeLengthBits = static_cast<uint8_t>(bCodeLengthBits);
+	m_bCodeDistanceBits = static_cast<uint8_t>(bCodeDistanceBits);
 }
 
 
@@ -835,17 +836,17 @@ void Burger::DecompressDeflate::CodesReset(Word bCodeLengthBits,Word bCodeDistan
 
 ***************************************/
 
-int Burger::DecompressDeflate::BuildHuffmanTrees(const Word *pSampleCounts,Word uNumberSamples,Word uMaxSample,const Word *pDefaultLengths,const Word *pDefaultBits,
-	DeflateHuft_t **ppNewTree,Word *pNewTreeSize,DeflateHuft_t *pExistingTree,Word *pHuffmanCount,Word *pWorkArea)
+int Burger::DecompressDeflate::BuildHuffmanTrees(const uint_t *pSampleCounts,uint_t uNumberSamples,uint_t uMaxSample,const uint_t *pDefaultLengths,const uint_t *pDefaultBits,
+	DeflateHuft_t **ppNewTree,uint_t *pNewTreeSize,DeflateHuft_t *pExistingTree,uint_t *pHuffmanCount,uint_t *pWorkArea)
 /* Given a list of code lengths and a maximum table size, make a set of
 	tables to decode that set of codes. Return Z_OK on success, Z_BUF_ERROR
 	if the given code set is incomplete (the tables are still built in this
 	case), Z_DATA_ERROR if the input is invalid (an over-subscribed set of
 	lengths), or Z_MEM_ERROR if not enough memory. */
 {
-	Word Counts[BMAX+1];				/* bit length count table */
+	uint_t Counts[BMAX+1];				/* bit length count table */
 	DeflateHuft_t *HuftPtrs[BMAX];	// table stack
-	Word x[BMAX+1];				/* bit offsets, then code stack */
+	uint_t x[BMAX+1];				/* bit offsets, then code stack */
 	DeflateHuft_t HuftEntry;	// table entry for structure assignment
 
 	/* Generate counts for each bit length */
@@ -865,8 +866,8 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const Word *pSampleCounts,Word 
 	Counts[13] = 0;
 	Counts[14] = 0;
 	Counts[15] = 0;
-	const Word *p = pSampleCounts;
-	Word i = uNumberSamples;
+	const uint_t *p = pSampleCounts;
+	uint_t i = uNumberSamples;
 	do {
 		Counts[p[0]]++;				/* assume all entries <= BMAX */
 		++p;
@@ -880,7 +881,7 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const Word *pSampleCounts,Word 
 
 	/* Find minimum and maximum length, bound *m by those */
 	int l = static_cast<int>(*pNewTreeSize);
-	Word j = 1;
+	uint_t j = 1;
 	do {
 		if (Counts[j]) {
 			break;
@@ -888,7 +889,7 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const Word *pSampleCounts,Word 
 	} while (++j<=BMAX);
 
 	int k = static_cast<int>(j);						/* minimum code length */
-	if ((Word)l < j) {
+	if ((uint_t)l < j) {
 		l = static_cast<int>(j);
 	}
 	i = BMAX;
@@ -898,10 +899,10 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const Word *pSampleCounts,Word 
 		}
 	} while (--i);
 	int g = static_cast<int>(i);						/* maximum code length */
-	if ((Word)l > i) {
+	if ((uint_t)l > i) {
 		l = static_cast<int>(i);
 	}
-	*pNewTreeSize = static_cast<Word>(l);
+	*pNewTreeSize = static_cast<uint_t>(l);
 
 
 	/* Adjust last length count to fill out codes, if needed */
@@ -920,7 +921,7 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const Word *pSampleCounts,Word 
 	/* Generate starting offsets into the value table for each length */
 	x[1] = j = 0;
 	p = Counts + 1;
-	Word *xp = x + 2;
+	uint_t *xp = x + 2;
 	while (--i) {					/* note that i == g from above */
 		xp[0] = (j += p[0]);
 		++p;
@@ -946,12 +947,12 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const Word *pSampleCounts,Word 
 	int w = -l;						/* bits decoded == (l * h) */
 	HuftPtrs[0] = NULL;		/* just to keep compilers happy */
 	DeflateHuft_t *q = NULL;		/* ditto */
-	Word z = 0;						/* ditto */
+	uint_t z = 0;						/* ditto */
 
-	Word f;						/* i repeats in table every f entries */
+	uint_t f;						/* i repeats in table every f entries */
 	/* go through the bit lengths (k already is bits in shortest code) */
 	for (; k <= g; k++) {
-		Word a = Counts[k];
+		uint_t a = Counts[k];
 		while (a--) {
 		/* here i is the Huffman code of length k bits for value *p */
 		/* make tables up to required level */
@@ -960,9 +961,9 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const Word *pSampleCounts,Word 
 				w += l;				/* previous table always l bits */
 
 				/* compute minimum size table less than or equal to l bits */
-				z = static_cast<Word>(g - w);
-				z = z > (Word)l ? l : z;			/* table size upper limit */
-				if ((f = static_cast<Word>(1 << (j = static_cast<Word>(k - w)))) > a + 1) {		/* try a k-w bit table */
+				z = static_cast<uint_t>(g - w);
+				z = z > (uint_t)l ? l : z;			/* table size upper limit */
+				if ((f = static_cast<uint_t>(1 << (j = static_cast<uint_t>(k - w)))) > a + 1) {		/* try a k-w bit table */
 					/* too few codes for k-w bit table */
 					f -= a + 1;				/* deduct codes from patterns left */
 					xp = Counts + k;
@@ -986,10 +987,10 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const Word *pSampleCounts,Word 
 				/* connect to last table, if there is one */
 				if (h) {
 					x[h] = i;				/* save pattern for backing up */
-					HuftEntry.m_bBitCount = (Word8)l;		/* bits to dump before this table */
-					HuftEntry.m_bExtraOperation = (Word8)j;		/* bits in this table */
+					HuftEntry.m_bBitCount = (uint8_t)l;		/* bits to dump before this table */
+					HuftEntry.m_bExtraOperation = (uint8_t)j;		/* bits in this table */
 					j = i >> (w - l);
-					HuftEntry.m_uBase = (Word16)(q - HuftPtrs[h-1] - j);	/* offset to this table */
+					HuftEntry.m_uBase = (uint16_t)(q - HuftPtrs[h-1] - j);	/* offset to this table */
 					HuftPtrs[h-1][j] = HuftEntry;			/* connect to last table */
 				} else {
 					*ppNewTree = q;					/* first table is returned result */
@@ -997,16 +998,16 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const Word *pSampleCounts,Word 
 			}
 
 			/* set up table entry in r */
-			HuftEntry.m_bBitCount = (Word8)(k - w);
+			HuftEntry.m_bBitCount = (uint8_t)(k - w);
 			if (p >= pWorkArea + uNumberSamples) {
 				HuftEntry.m_bExtraOperation = 128 + 64;		/* out of values--invalid code */
 			} else if (*p < uMaxSample) {
-				HuftEntry.m_bExtraOperation = (Word8)(*p < 256 ? 0 : 32 + 64);		/* 256 is end-of-block */
-				HuftEntry.m_uBase = static_cast<Word16>(p[0]);			/* simple code is just the value */
+				HuftEntry.m_bExtraOperation = (uint8_t)(*p < 256 ? 0 : 32 + 64);		/* 256 is end-of-block */
+				HuftEntry.m_uBase = static_cast<uint16_t>(p[0]);			/* simple code is just the value */
 				++p;
 			} else {
-				HuftEntry.m_bExtraOperation = (Word8)(pDefaultBits[*p - uMaxSample] + 16 + 64);/* non-simple--look up in lists */
-				HuftEntry.m_uBase = static_cast<Word16>(pDefaultLengths[p[0] - uMaxSample]);
+				HuftEntry.m_bExtraOperation = (uint8_t)(pDefaultBits[*p - uMaxSample] + 16 + 64);/* non-simple--look up in lists */
+				HuftEntry.m_uBase = static_cast<uint16_t>(pDefaultLengths[p[0] - uMaxSample]);
 				++p;
 			}
 
@@ -1022,7 +1023,7 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const Word *pSampleCounts,Word 
 			i ^= j;
 
 			/* backup over finished tables */
-			Word mask = (1U << w) - 1U;		/* needed on HP, cc -O bug */
+			uint_t mask = (1U << w) - 1U;		/* needed on HP, cc -O bug */
 			while ((i & mask) != x[h]) {
 				h--;					/* don't need to update q */
 				w -= l;
@@ -1045,12 +1046,12 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const Word *pSampleCounts,Word 
 
 ***************************************/
 
-int Burger::DecompressDeflate::TreesBits(const Word *pSampleCounts,Word *pNewTreeSize,DeflateHuft_t **ppNewTree,DeflateHuft_t *pExistingTree)
+int Burger::DecompressDeflate::TreesBits(const uint_t *pSampleCounts,uint_t *pNewTreeSize,DeflateHuft_t **ppNewTree,DeflateHuft_t *pExistingTree)
 {
-	Word WorkArea[19];
+	uint_t WorkArea[19];
 	MemoryClear(&WorkArea,sizeof(WorkArea));
 
-	Word uHuffmanCount = 0;			// Huffmans used in the WorkArea
+	uint_t uHuffmanCount = 0;			// Huffmans used in the WorkArea
 	int iErrorCode = BuildHuffmanTrees(pSampleCounts,19,19,NULL,NULL,ppNewTree,pNewTreeSize,pExistingTree,&uHuffmanCount,WorkArea);
 	if (iErrorCode != Z_DATA_ERROR) {
 		if (iErrorCode == Z_BUF_ERROR || *pNewTreeSize == 0) {
@@ -1077,13 +1078,13 @@ int Burger::DecompressDeflate::TreesBits(const Word *pSampleCounts,Word *pNewTre
 
 ***************************************/
 
-int Burger::DecompressDeflate::TreesDynamic(Word uNumberSamples,Word uNumberDistance,const Word *pSampleCounts,Word *pNewTreeSize,Word *pNewDistanceSize,
+int Burger::DecompressDeflate::TreesDynamic(uint_t uNumberSamples,uint_t uNumberDistance,const uint_t *pSampleCounts,uint_t *pNewTreeSize,uint_t *pNewDistanceSize,
 	DeflateHuft_t **ppNewTree,DeflateHuft_t **ppNewDistance,DeflateHuft_t *pExistingTree)
 {
-	Word WorkArea[288];
+	uint_t WorkArea[288];
 	MemoryClear(&WorkArea,sizeof(WorkArea));
 
-	Word uHuffmanCount = 0;			// Huffmans used in the WorkArea
+	uint_t uHuffmanCount = 0;			// Huffmans used in the WorkArea
 	// build literal/length tree
 	int iErrorCode = BuildHuffmanTrees(pSampleCounts,uNumberSamples,257,g_DeflateCopyLengths,g_DeflateExtraBits,ppNewTree,pNewTreeSize,pExistingTree,&uHuffmanCount,WorkArea);
 	if (iErrorCode != Z_OK || *pNewTreeSize == 0) {
@@ -1187,15 +1188,15 @@ void Burger::DecompressDeflate::BlocksReset(void)
 int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 {
 	/* copy input/output information to locals (UPDATE macro restores) */
-	const Word8 *pInput=m_pInput;
-	WordPtr uInputChunkLength=m_uInputChunkLength;
-	Word32 uBitBucket=m_uBitBucket;
-	Word uBitCount=m_uBitCount;
-	Word8 *pWindowWrite=m_pWindowWrite;
-	WordPtr uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+	const uint8_t *pInput=m_pInput;
+	uintptr_t uInputChunkLength=m_uInputChunkLength;
+	uint32_t uBitBucket=m_uBitBucket;
+	uint_t uBitCount=m_uBitCount;
+	uint8_t *pWindowWrite=m_pWindowWrite;
+	uintptr_t uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 
 	/* process input based on current state */
-	Word t;				/* temporary storage */
+	uint_t t;				/* temporary storage */
 	for (;;) {
 		switch (m_eBlockMode) {
 		case BLOCKMODE_TYPE:
@@ -1205,7 +1206,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 				}
 				iErrorCode = Z_OK;
 				--uInputChunkLength;
-				uBitBucket|=static_cast<Word32>(pInput[0])<<uBitCount;
+				uBitBucket|=static_cast<uint32_t>(pInput[0])<<uBitCount;
 				++pInput;
 				uBitCount+=8;
 			}
@@ -1240,7 +1241,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 				}
 				iErrorCode=Z_OK;
 				--uInputChunkLength;
-				uBitBucket|=static_cast<Word32>(pInput[0])<<uBitCount;
+				uBitBucket|=static_cast<uint32_t>(pInput[0])<<uBitCount;
 				++pInput;
 				uBitCount+=8;
 			}
@@ -1261,16 +1262,16 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 			if (!uRemainingWindow) {
 				if((pWindowWrite==&m_WindowBuffer[1<<MAX_WBITS])&&m_pWindowRead!=m_WindowBuffer) {
 					pWindowWrite=m_WindowBuffer;
-					uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+					uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 				}
 				if (!uRemainingWindow) {
 					m_pWindowWrite=pWindowWrite;
 					iErrorCode=Flush(iErrorCode);
 					pWindowWrite=m_pWindowWrite;
-					uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+					uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 					if(pWindowWrite==&m_WindowBuffer[1<<MAX_WBITS]&&m_pWindowRead!=m_WindowBuffer) {
 						pWindowWrite=m_WindowBuffer;
-						uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+						uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 					}
 					if (!uRemainingWindow) {
 						goto Abort;
@@ -1279,9 +1280,9 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 			}
 			iErrorCode=Z_OK;
 			{
-				WordPtr uCopySize = m_uStoredBytesToCopy;
+				uintptr_t uCopySize = m_uStoredBytesToCopy;
 				if (uCopySize > uInputChunkLength) {
-					uCopySize = static_cast<Word>(uInputChunkLength);
+					uCopySize = static_cast<uint_t>(uInputChunkLength);
 				}
 				if (uCopySize > uRemainingWindow) {
 					uCopySize = uRemainingWindow;
@@ -1305,7 +1306,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 				}
 				iErrorCode=Z_OK;
 				--uInputChunkLength;
-				uBitBucket|=static_cast<Word32>(pInput[0])<<uBitCount;
+				uBitBucket|=static_cast<uint32_t>(pInput[0])<<uBitCount;
 				++pInput;
 				uBitCount+=8;
 			}
@@ -1317,7 +1318,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 				goto Abort;
 			}
 			t = 258 + (t & 0x1f) + ((t >> 5) & 0x1f);
-			if ((m_pTreesLengths = static_cast<Word*>(AllocClear(t*sizeof(Word)))) == NULL) {
+			if ((m_pTreesLengths = static_cast<uint_t*>(AllocClear(t*sizeof(uint_t)))) == NULL) {
  				iErrorCode = Z_MEM_ERROR;
 				goto Abort;
 			}
@@ -1333,11 +1334,11 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 					}
 					iErrorCode=Z_OK;
 					--uInputChunkLength;
-					uBitBucket|=static_cast<Word32>(pInput[0])<<uBitCount;
+					uBitBucket|=static_cast<uint32_t>(pInput[0])<<uBitCount;
 					++pInput;
 					uBitCount+=8;
 				}
-				m_pTreesLengths[g_DeflateBorder[m_uTreesIndex++]] = (Word)uBitBucket & 7;
+				m_pTreesLengths[g_DeflateBorder[m_uTreesIndex++]] = (uint_t)uBitBucket & 7;
 				uBitBucket>>=3;
 				uBitCount-=3;
 			}
@@ -1345,7 +1346,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 				m_pTreesLengths[g_DeflateBorder[m_uTreesIndex++]] = 0;
 			}
 			m_uTreesDepth = 7;
-			t = static_cast<Word>(TreesBits(m_pTreesLengths, &m_uTreesDepth,&m_pTreesHuffman, m_HuffmanTable));
+			t = static_cast<uint_t>(TreesBits(m_pTreesLengths, &m_uTreesDepth,&m_pTreesHuffman, m_HuffmanTable));
 			if (t != Z_OK) {
 				Free(m_pTreesLengths);
 				m_pTreesLengths = 0;
@@ -1367,7 +1368,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 					}
 					iErrorCode=Z_OK;
 					--uInputChunkLength;
-					uBitBucket|=((Word32)(pInput[0]))<<uBitCount;
+					uBitBucket|=((uint32_t)(pInput[0]))<<uBitCount;
 					uBitCount+=8;
 					++pInput;
 				}
@@ -1377,9 +1378,9 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 				if (c < 16) {
 					uBitBucket>>=t;
 					uBitCount-=t;
-					m_pTreesLengths[m_uTreesIndex++] = static_cast<Word>(c);
+					m_pTreesLengths[m_uTreesIndex++] = static_cast<uint_t>(c);
 				} else {	/* c == 16..18 */
-					Word i, j;
+					uint_t i, j;
 					if (c==18) {
 						i = 7;
 						j = 11;
@@ -1393,7 +1394,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 						}
 						iErrorCode=Z_OK;
 						--uInputChunkLength;
-						uBitBucket|=static_cast<Word32>(pInput[0])<<uBitCount;
+						uBitBucket|=static_cast<uint32_t>(pInput[0])<<uBitCount;
 						++pInput;
 						uBitCount+=8;
 					}
@@ -1414,7 +1415,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 					}
 					c = (c == 16) ? static_cast<int>(m_pTreesLengths[i - 1]) : 0;
 					do {
-						m_pTreesLengths[i] = static_cast<Word>(c);
+						m_pTreesLengths[i] = static_cast<uint_t>(c);
 						++i;
 					} while (--j);
 					m_uTreesIndex = i;
@@ -1424,14 +1425,14 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 			{
 				DeflateHuft_t *pCodeTreeLength,*pCodeTreeDistance;
 
-				Word bCodeLengthBits = 9;			/* must be <= 9 for lookahead assumptions */
-				Word bCodeDistanceBits = 6;			/* must be <= 9 for lookahead assumptions */
+				uint_t bCodeLengthBits = 9;			/* must be <= 9 for lookahead assumptions */
+				uint_t bCodeDistanceBits = 6;			/* must be <= 9 for lookahead assumptions */
 				t = m_uTreesTable;
-				t = static_cast<Word>(TreesDynamic(257 + (t & 0x1f), 1 + ((t >> 5) & 0x1f),m_pTreesLengths,&bCodeLengthBits,&bCodeDistanceBits,&pCodeTreeLength,&pCodeTreeDistance,m_HuffmanTable));
+				t = static_cast<uint_t>(TreesDynamic(257 + (t & 0x1f), 1 + ((t >> 5) & 0x1f),m_pTreesLengths,&bCodeLengthBits,&bCodeDistanceBits,&pCodeTreeLength,&pCodeTreeDistance,m_HuffmanTable));
 				Free(m_pTreesLengths);
 				m_pTreesLengths = NULL;
 				if (t != Z_OK) {
-					if (t == (Word)Z_DATA_ERROR) {
+					if (t == (uint_t)Z_DATA_ERROR) {
 						m_eBlockMode = BLOCKMODE_ABORT;
 					}
 					iErrorCode = static_cast<int>(t);
@@ -1456,7 +1457,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 			uBitBucket=m_uBitBucket;
 			uBitCount=m_uBitCount;
 			pWindowWrite=m_pWindowWrite;
-			uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+			uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 			if (!m_bLastBlock) {
 				m_eBlockMode = BLOCKMODE_TYPE;
 				break;
@@ -1466,7 +1467,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 			m_pWindowWrite=pWindowWrite;
 			iErrorCode=Flush(iErrorCode);
 			pWindowWrite=m_pWindowWrite;
-			uRemainingWindow=static_cast<WordPtr>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
+			uRemainingWindow=static_cast<uintptr_t>(pWindowWrite<m_pWindowRead?m_pWindowRead-pWindowWrite-1:&m_WindowBuffer[1<<MAX_WBITS]-pWindowWrite);
 			if (m_pWindowRead != m_pWindowWrite) {
 				goto Abort;
 			}
@@ -1554,7 +1555,7 @@ Burger::Decompress::eError Burger::DecompressDeflate::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength)
+Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
 {
 	m_uInputLength = uInputChunkLength;
 	m_uOutputLength = uOutputChunkLength;
@@ -1563,7 +1564,7 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,Word
 	if (uInputChunkLength) {
 		// Store the output buffer details to the current state
 
-		m_pOutput = static_cast<Word8 *>(pOutput);
+		m_pOutput = static_cast<uint8_t *>(pOutput);
 		m_uOutputChunkLength = uOutputChunkLength;
 
 		// This interruptible code flow is possible because "continue"
@@ -1572,15 +1573,15 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,Word
 		// means perform the loop again
 		iError = Z_BUF_ERROR;		// Assume a buffer error
 		for (;;) {
-			Word uTemp;				// Bit bucket
+			uint_t uTemp;				// Bit bucket
 			switch (m_eState) {
 			case STATE_METHOD:
 				if (!uInputChunkLength) {
 					break;
 				}
 				--uInputChunkLength;
-				uTemp = static_cast<const Word8 *>(pInput)[0];
-				pInput = static_cast<const Word8 *>(pInput)+1;
+				uTemp = static_cast<const uint8_t *>(pInput)[0];
+				pInput = static_cast<const uint8_t *>(pInput)+1;
 				m_uCompressionMethod = uTemp;
 				if (((uTemp & 0xf) != Z_DEFLATED) ||
 					(((uTemp >> 4U) + 8U) > MAX_WBITS)) {
@@ -1597,8 +1598,8 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,Word
 					break;
 				}
 				--uInputChunkLength;
-				uTemp = static_cast<const Word8 *>(pInput)[0];
-				pInput = static_cast<const Word8 *>(pInput)+1;
+				uTemp = static_cast<const uint8_t *>(pInput)[0];
+				pInput = static_cast<const uint8_t *>(pInput)+1;
 				if (((m_uCompressionMethod << 8U) + uTemp) % 31U) {
 					m_eState = STATE_ABORT;
 					iError = Z_DATA_ERROR;
@@ -1617,8 +1618,8 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,Word
 					break;
 				}
 				--uInputChunkLength;
-				m_uChecksumInStream = static_cast<Word32>(static_cast<const Word8 *>(pInput)[0]) << 24U;
-				pInput = static_cast<const Word8 *>(pInput)+1;
+				m_uChecksumInStream = static_cast<uint32_t>(static_cast<const uint8_t *>(pInput)[0]) << 24U;
+				pInput = static_cast<const uint8_t *>(pInput)+1;
 				m_eState = STATE_DICT3;
 				iError=Z_OK;
 			case STATE_DICT3:
@@ -1626,8 +1627,8 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,Word
 					break;
 				}
 				--uInputChunkLength;
-				m_uChecksumInStream += static_cast<Word32>(static_cast<const Word8 *>(pInput)[0]) << 16U;
-				pInput = static_cast<const Word8 *>(pInput)+1;
+				m_uChecksumInStream += static_cast<uint32_t>(static_cast<const uint8_t *>(pInput)[0]) << 16U;
+				pInput = static_cast<const uint8_t *>(pInput)+1;
 				m_eState = STATE_DICT2;
 				iError=Z_OK;
 			case STATE_DICT2:
@@ -1635,8 +1636,8 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,Word
 					break;
 				}
 				--uInputChunkLength;
-				m_uChecksumInStream += static_cast<Word32>(static_cast<const Word8 *>(pInput)[0]) << 8U;
-				pInput = static_cast<const Word8 *>(pInput)+1;
+				m_uChecksumInStream += static_cast<uint32_t>(static_cast<const uint8_t *>(pInput)[0]) << 8U;
+				pInput = static_cast<const uint8_t *>(pInput)+1;
 				m_eState = STATE_DICT1;
 				iError=Z_OK;
 			case STATE_DICT1:
@@ -1644,8 +1645,8 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,Word
 					break;
 				}
 				--uInputChunkLength;
-				m_uChecksumInStream += static_cast<Word32>(static_cast<const Word8 *>(pInput)[0]);
-				pInput = static_cast<const Word8 *>(pInput)+1;
+				m_uChecksumInStream += static_cast<uint32_t>(static_cast<const uint8_t *>(pInput)[0]);
+				pInput = static_cast<const uint8_t *>(pInput)+1;
 				m_eState = STATE_DICT0;
 				iError = Z_NEED_DICT;
 				break;
@@ -1659,7 +1660,7 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,Word
 
 			case STATE_BLOCKS:
 				m_uInputChunkLength = uInputChunkLength;
-				m_pInput = static_cast<const Word8 *>(pInput);
+				m_pInput = static_cast<const uint8_t *>(pInput);
 				iError = ProcessBlocks(iError);
 				uInputChunkLength = m_uInputChunkLength;
 				pInput = m_pInput;
@@ -1672,7 +1673,7 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,Word
 					break;
 				}
 				m_uInputChunkLength = uInputChunkLength;
-				m_pInput = static_cast<const Word8 *>(pInput);
+				m_pInput = static_cast<const uint8_t *>(pInput);
 				m_uChecksumOfChunk = m_uAlder32Checksum;
 				BlocksReset();
 				uInputChunkLength = m_uInputChunkLength;
@@ -1686,8 +1687,8 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,Word
 					break;
 				}
 				--uInputChunkLength;
-				m_uChecksumInStream = static_cast<Word32>(static_cast<const Word8 *>(pInput)[0]) << 24U;
-				pInput = static_cast<const Word8 *>(pInput)+1;
+                m_uChecksumInStream = static_cast<uint32_t>(static_cast<const uint8_t *>(pInput)[0]) << 24U;
+                pInput = static_cast<const uint8_t *>(pInput) + 1;
 				m_eState = STATE_CHECK3;
 				iError=Z_OK;
 			case STATE_CHECK3:
@@ -1695,8 +1696,8 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,Word
 					break;
 				}
 				--uInputChunkLength;
-				m_uChecksumInStream += static_cast<Word32>(static_cast<const Word8 *>(pInput)[0]) << 16U;
-				pInput = static_cast<const Word8 *>(pInput)+1;
+				m_uChecksumInStream += static_cast<uint32_t>(static_cast<const uint8_t *>(pInput)[0]) << 16U;
+				pInput = static_cast<const uint8_t *>(pInput)+1;
 				m_eState = STATE_CHECK2;
 				iError=Z_OK;
 			case STATE_CHECK2:
@@ -1704,8 +1705,8 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,Word
 					break;
 				}
 				--uInputChunkLength;
-				m_uChecksumInStream += static_cast<Word32>(static_cast<const Word8 *>(pInput)[0]) << 8U;
-				pInput = static_cast<const Word8 *>(pInput)+1;
+				m_uChecksumInStream += static_cast<uint32_t>(static_cast<const uint8_t *>(pInput)[0]) << 8U;
+				pInput = static_cast<const uint8_t *>(pInput)+1;
 				m_eState = STATE_CHECK1;
 				iError=Z_OK;
 			case STATE_CHECK1:
@@ -1713,8 +1714,8 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,Word
 					break;
 				}
 				--uInputChunkLength;
-				m_uChecksumInStream += static_cast<Word32>(static_cast<const Word8 *>(pInput)[0]);
-				pInput = static_cast<const Word8 *>(pInput)+1;
+				m_uChecksumInStream += static_cast<uint32_t>(static_cast<const uint8_t *>(pInput)[0]);
+				pInput = static_cast<const uint8_t *>(pInput)+1;
 				
 				// Is there a checksum match?
 
@@ -1784,7 +1785,7 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,Word
 
 ***************************************/
 
-Burger::Decompress::eError BURGER_API Burger::SimpleDecompressDeflate(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength)
+Burger::Decompress::eError BURGER_API Burger::SimpleDecompressDeflate(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
 {
 	DecompressDeflate *pDecompress = New<DecompressDeflate>();
 	pDecompress->DecompressDeflate::Reset();

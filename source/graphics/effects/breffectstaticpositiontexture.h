@@ -1,14 +1,15 @@
 /***************************************
 
-	Static position texturing shader
+    Static position texturing shader
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #ifndef __BREFFECTSTATICPOSITIONTEXTURE_H__
@@ -56,17 +57,17 @@ class EffectPositionTexture : public Effect {
 
 protected:
 #if defined(BURGER_OPENGL) || defined(DOXYGEN)
-	const Word *m_pVertexMembers;	///< (OpenGL only) Pointer to the vertex members
-	Int m_iEffectMatrix;			///< (OpenGL only) Index for the Matrix
+	const uint_t *m_pVertexMembers;	///< (OpenGL only) Pointer to the vertex members
+	int_t m_iEffectMatrix;			///< (OpenGL only) Index for the Matrix
 #endif
 
 public:
-	EffectPositionTexture(Display *pDisplay,const Word *pVertexMembers);
+	EffectPositionTexture(Display *pDisplay,const uint_t *pVertexMembers);
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	virtual void SetProjection(const Matrix4D_t *pMatrix) = 0;
 #else
-	virtual Word CheckLoad(Display *pDisplay);
+	virtual uint_t CheckLoad(Display *pDisplay);
 	void BURGER_API SetProjection(const Matrix4D_t *pMatrix);
 #endif
 };
@@ -76,8 +77,8 @@ class EffectPositionTextureDX9 : public EffectPositionTexture {
     BURGER_DISABLE_COPY(EffectPositionTextureDX9);
 	BURGER_RTTI_IN_CLASS();
 public:
-	EffectPositionTextureDX9(DisplayDirectX9 *pDisplay,const Word *pVertexMembers);
-	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	EffectPositionTextureDX9(DisplayDirectX9 *pDisplay,const uint_t *pVertexMembers);
+	uint_t CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
 	void Release(Display *pDisplay) BURGER_OVERRIDE;
 	void SetProjection(const Matrix4D_t *pMatrix) BURGER_OVERRIDE;
 };
@@ -86,10 +87,10 @@ class EffectPositionTextureOpenGL : public EffectPositionTexture {
     BURGER_DISABLE_COPY(EffectPositionTextureOpenGL);
 	BURGER_RTTI_IN_CLASS();
 protected:
-	Int m_iEffectMatrix;		///< Index for the Matrix
+    int_t m_iEffectMatrix;		///< Index for the Matrix
 public:
-	EffectPositionTextureOpenGL(Display *pDisplay,const Word *pVertexMembers);
-	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	EffectPositionTextureOpenGL(Display *pDisplay,const uint_t *pVertexMembers);
+	uint_t CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
 	void Release(Display *pDisplay) BURGER_OVERRIDE;
 	void SetProjection(const Matrix4D_t *pMatrix) BURGER_OVERRIDE;
 };

@@ -61,11 +61,11 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 		struct timespec uTick;
 		clock_gettime(CLOCK_MONOTONIC,&uTick);
 
-		Word64 uElapsedTime;
-		Word64 uElapsedTimeNano;
+		uint64_t uElapsedTime;
+		uint64_t uElapsedTimeNano;
 
-		Word64 uMark = static_cast<Word64>(uTick.tv_sec);
-		Word64 uMarkNano = static_cast<Word64>(uTick.tv_nsec);
+		uint64_t uMark = static_cast<uint64_t>(uTick.tv_sec);
+		uint64_t uMarkNano = static_cast<uint64_t>(uTick.tv_nsec);
 		if (uMark<m_uBaseTime) {
 
 			// The timer wrapped around.
@@ -114,7 +114,7 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Sleep(Word32 uMilliseconds)
+void BURGER_API Burger::Sleep(uint32_t uMilliseconds)
 {
 	// Old code
 	// usleep(uMilliseconds*1000);

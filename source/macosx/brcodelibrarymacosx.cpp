@@ -1,16 +1,16 @@
 /***************************************
 
-	Code library (DLL) manager
+    Code library (DLL) manager
 
-	MacOSX version
+    MacOSX version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE for
-	license details. Yes, you can use it in a commercial title without paying
-	anything, just give me a credit.
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
 
-	Please? It's not like I'm asking you for money!
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -41,7 +41,7 @@
 
 ***************************************/
 
-Word Burger::CodeLibrary::Init(const char* pFilename)
+uint_t Burger::CodeLibrary::Init(const char* pFilename)
 {
 	// If there was a previous library, release it
 	Shutdown();
@@ -57,7 +57,7 @@ Word Burger::CodeLibrary::Init(const char* pFilename)
 	// Load the library from Linux
 	void* pModule = dlopen(pFilename, RTLD_LAZY);
 	// On success!
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	if (pModule != NULL) {
 		m_pLibInstance = pModule;
 		uResult = TRUE; // Error!

@@ -1,13 +1,14 @@
 /***************************************
 
-	Smart pointer template class
+    Smart pointer template class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -39,12 +40,12 @@ namespace Burger {
 class ProxyReferenceCounter {
     BURGER_DISABLE_COPY(ProxyReferenceCounter);
 private:
-	Word m_uRefCount;				///< Number of weak pointers that are using this object as an anchor
-	Word m_bParentAlive;			///< \ref TRUE if the parent object was deleted
+	uint_t m_uRefCount;				///< Number of weak pointers that are using this object as an anchor
+	uint_t m_bParentAlive;			///< \ref TRUE if the parent object was deleted
 	ProxyReferenceCounter() : m_uRefCount(0),m_bParentAlive(TRUE) {}
 public:
 	static ProxyReferenceCounter * BURGER_API New(void);
-	BURGER_INLINE Word IsParentAlive(void) const { return m_bParentAlive; }
+	BURGER_INLINE uint_t IsParentAlive(void) const { return m_bParentAlive; }
 	BURGER_INLINE void ParentIsDead(void) { m_bParentAlive = FALSE; }
 	BURGER_INLINE void AddRef(void) { ++m_uRefCount; }
 	BURGER_INLINE void Release(void) { if (--m_uRefCount == 0) { Free(this); } }
@@ -54,7 +55,7 @@ class ReferenceCounter : public Base {
     BURGER_DISABLE_COPY(ReferenceCounter);
 	BURGER_RTTI_IN_CLASS();
 private:
-	Word m_uRefCount;					///< Number of smart pointers that are claiming ownership of this object
+	uint_t m_uRefCount;					///< Number of smart pointers that are claiming ownership of this object
 public:
 	ReferenceCounter() BURGER_NOEXCEPT : m_uRefCount(0) { }
 	virtual ~ReferenceCounter();
@@ -127,10 +128,10 @@ public:
 	BURGER_INLINE T& operator*() const { return *m_pData; }
 	BURGER_INLINE operator T*() const { return m_pData; }
 	BURGER_INLINE T* GetPtr() const { return m_pData; }
-	BURGER_INLINE Word operator==(const SmartPointer<T>& rData) const { return m_pData == rData.m_pData; }
-	BURGER_INLINE Word operator!=(const SmartPointer<T>& rData) const { return m_pData != rData.m_pData; }
-	BURGER_INLINE Word operator==(const T* pData) const { return m_pData == pData; }
-	BURGER_INLINE Word operator!=(const T* pData) const { return m_pData != pData; }
+	BURGER_INLINE uint_t operator==(const SmartPointer<T>& rData) const { return m_pData == rData.m_pData; }
+	BURGER_INLINE uint_t operator!=(const SmartPointer<T>& rData) const { return m_pData != rData.m_pData; }
+	BURGER_INLINE uint_t operator==(const T* pData) const { return m_pData == pData; }
+	BURGER_INLINE uint_t operator!=(const T* pData) const { return m_pData != pData; }
 };
 
 template<class T>
@@ -183,16 +184,16 @@ public:
 	BURGER_INLINE T* operator->() const { return Dereference(); }
 	BURGER_INLINE T* GetPtr() const {	return Dereference(); }
 	BURGER_INLINE operator SmartPointer<T>() { return SmartPointer<T>(Dereference()); }
-	BURGER_INLINE Word operator==(const T* pData) const { return Dereference() == pData; }
-	BURGER_INLINE Word operator!=(const T* pData) const { return Dereference() != pData; }
-	BURGER_INLINE Word operator==(const T* pData) { return Dereference() == pData; }
-	BURGER_INLINE Word operator!=(const T* pData) { return Dereference() != pData; }
-	BURGER_INLINE Word operator==(const SmartPointer<T>& rData) const { return Dereference() == rData.GetPtr(); }
-	BURGER_INLINE Word operator!=(const SmartPointer<T>& rData) const { return Dereference() != rData.GetPtr(); }
-	BURGER_INLINE Word operator==(const SmartPointer<T>& rData) { return Dereference() == rData.GetPtr(); }
-	BURGER_INLINE Word operator!=(const SmartPointer<T>& rData) { return Dereference() != rData.GetPtr(); }
-	BURGER_INLINE Word operator==(const WeakPointer<T>& rData) const { return Dereference() == rData.Dereference(); }
-	BURGER_INLINE Word operator!=(const WeakPointer<T>& rData) const { return Dereference() != rData.Dereference(); }
+	BURGER_INLINE uint_t operator==(const T* pData) const { return Dereference() == pData; }
+	BURGER_INLINE uint_t operator!=(const T* pData) const { return Dereference() != pData; }
+	BURGER_INLINE uint_t operator==(const T* pData) { return Dereference() == pData; }
+	BURGER_INLINE uint_t operator!=(const T* pData) { return Dereference() != pData; }
+	BURGER_INLINE uint_t operator==(const SmartPointer<T>& rData) const { return Dereference() == rData.GetPtr(); }
+	BURGER_INLINE uint_t operator!=(const SmartPointer<T>& rData) const { return Dereference() != rData.GetPtr(); }
+	BURGER_INLINE uint_t operator==(const SmartPointer<T>& rData) { return Dereference() == rData.GetPtr(); }
+	BURGER_INLINE uint_t operator!=(const SmartPointer<T>& rData) { return Dereference() != rData.GetPtr(); }
+	BURGER_INLINE uint_t operator==(const WeakPointer<T>& rData) const { return Dereference() == rData.Dereference(); }
+	BURGER_INLINE uint_t operator!=(const WeakPointer<T>& rData) const { return Dereference() != rData.Dereference(); }
 };
 }
 /* END */

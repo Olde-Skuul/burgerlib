@@ -1,13 +1,14 @@
 /***************************************
 
-	Debug manager
+    Debug manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -75,7 +76,7 @@
 	
 ***************************************/
 
-Word BURGER_ANSIAPI Burger::Debug::Fatal(const char *pMessage,...)
+uint_t BURGER_ANSIAPI Burger::Debug::Fatal(const char *pMessage,...)
 {
 	if (!Globals::GetExitFlag()) {
 
@@ -170,7 +171,7 @@ void BURGER_ANSIAPI Burger::Debug::Warning(const char *pMessage,...)
 	the message to the output stream, which is a console or an
 	attached debugger
 
-	\sa Debug::PrintString(const char *), Debug::PrintString(Word32) and Debug::PrintString(Word64)
+	\sa Debug::PrintString(const char *), Debug::PrintString(uint32_t) and Debug::PrintString(uint64_t)
 
 ***************************************/
 
@@ -214,10 +215,10 @@ void BURGER_ANSIAPI Burger::Debug::Message(const char *pMessage,...)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
-void BURGER_API Burger::Debug::PrintString(const char *pString)
+void BURGER_API Burger::Debug::PrintString(const char *pString) BURGER_NOEXCEPT
 {
 	if (pString && !Globals::GetExitFlag()) {
-		WordPtr i = StringLength(pString);
+		uintptr_t i = StringLength(pString);
 		if (i) {
 
 			// MacOS 9/Carbon doesn't have a console,
@@ -239,12 +240,12 @@ void BURGER_API Burger::Debug::PrintString(const char *pString)
 
 /*! ************************************
 
-	\brief Print a Word32 to the debug port
-	\sa Debug::PrintString(Word64)
+	\brief Print a uint32_t to the debug port
+	\sa Debug::PrintString(uint64_t)
 
 ***************************************/
 
-void BURGER_API Burger::Debug::PrintString(Word32 uInput)
+void BURGER_API Burger::Debug::PrintString(uint32_t uInput) BURGER_NOEXCEPT
 {
 	NumberString TempBuffer(uInput);
 	PrintString(TempBuffer);
@@ -252,12 +253,12 @@ void BURGER_API Burger::Debug::PrintString(Word32 uInput)
 
 /*! ************************************
 
-	\brief Print a Word32 to the debug port
-	\sa Debug::PrintString(Word32)
+	\brief Print a uint32_t to the debug port
+	\sa Debug::PrintString(uint32_t)
 
 ***************************************/
 
-void BURGER_API Burger::Debug::PrintString(Word64 uInput)
+void BURGER_API Burger::Debug::PrintString(uint64_t uInput) BURGER_NOEXCEPT
 {
 	NumberString TempBuffer(uInput);
 	PrintString(TempBuffer);
@@ -272,7 +273,7 @@ void BURGER_API Burger::Debug::PrintString(Word64 uInput)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
-Word BURGER_API Burger::Debug::IsDebuggerPresent(void)
+uint_t BURGER_API Burger::Debug::IsDebuggerPresent(void) BURGER_NOEXCEPT
 {
 	return FALSE;
 }
@@ -290,13 +291,13 @@ Word BURGER_API Burger::Debug::IsDebuggerPresent(void)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS)) || defined(DOXYGEN)
-void BURGER_API Burger::Debug::PrintErrorMessage(Word uErrorCode)
+void BURGER_API Burger::Debug::PrintErrorMessage(uint_t uErrorCode)
 {
 	// Print the error string
 	PrintString("Error: 0x");
 
 	// Show the error in hex
-	NumberStringHex TempBuffer(static_cast<Word32>(uErrorCode));
+	NumberStringHex TempBuffer(uErrorCode);
 	PrintString(TempBuffer);
 
 	PrintString("\n");
@@ -353,7 +354,7 @@ void BURGER_API Burger::OkAlertMessage(const char *pMessage,const char *pTitle)
 
 #if !(defined(BURGER_MAC) || defined(BURGER_WINDOWS) || defined(BURGER_BEOS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
 
-Word BURGER_API Burger::OkCancelAlertMessage(const char *pMessage,const char *pTitle)
+uint_t BURGER_API Burger::OkCancelAlertMessage(const char *pMessage,const char *pTitle)
 {
 	Debug::PrintString("Cancel alert message : ");
 	if (pTitle) {

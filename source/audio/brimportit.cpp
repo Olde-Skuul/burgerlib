@@ -25,9 +25,9 @@
 
 struct ITHeader_t {
 #if defined(BURGER_BIGENDIAN)
-	static const Word32 cSignature=0x494D504D;	///< 'IMPM'
+	static const uint32_t cSignature=0x494D504D;	///< 'IMPM'
 #else
-	static const Word32 cSignature=0x4D504D49;	///< 'IMPM'
+	static const uint32_t cSignature=0x4D504D49;	///< 'IMPM'
 #endif
 	enum eFlags {
 		FLAG_STEREO = 0x01,			// On = Stereo, Off = Mono
@@ -44,41 +44,41 @@ struct ITHeader_t {
 		SPECIAL_MIDICONFIG = 0x08	// MIDI configuration embedded
 	};
 
-	Word32 m_Signature;			///< 'IMPM'
+	uint32_t m_Signature;			///< 'IMPM'
 	char m_Name[26];			///< Song name
-	Word16 m_uPatternHilight;	///< Palette/Row highlight info (For editing)
-	Word16 m_uOrderCount;		///< Number of orders in the song
-	Word16 m_uInstrumentCount;	///< Number of instruments in the song
-	Word16 m_uSampleCount;		///< Number of samples in the song
-	Word16 m_uPatternCount;		///< Number of patterns in the song
-	Word16 m_uTrackerVersion;	///< Tracker version
-	Word16 m_uFileVersion;		///< File version
-	Word16 m_uFlags;			///< Flags
-	Word16 m_uSpecialFlags;		///< Special flags
-	Word8 m_bGlobalVolume;		///< Global volume. (0->128) All volumes are adjusted by this
-	Word8 m_bMixVolume;			///< Mix volume (0->128) During mixing, this value controls the magnitude of the wave being mixed.
-	Word8 m_bInitialSpeed;		///< Initial Speed of song.
-	Word8 m_bInitialTempo;		///< Initial Tempo of song
-	Word8 m_bPanSeparation;		///< Panning separation between channels (0->128, 128 is max sep.)
-	Word8 m_bPitchWheelDepth;	///< Pitch wheel depth for MIDI controllers
-	Word16 m_uMessageLength;	///< Size of internal message
-	Word32 m_uMessageOffset;	///< Where is the message
-	Word32 Reserved;			///< Not used
-	Word8 m_bChannelPans[64];	///< Pan data
-	Word8 m_bChannelVolumes[64];	///< Volume data
+	uint16_t m_uPatternHilight;	///< Palette/Row highlight info (For editing)
+	uint16_t m_uOrderCount;		///< Number of orders in the song
+	uint16_t m_uInstrumentCount;	///< Number of instruments in the song
+	uint16_t m_uSampleCount;		///< Number of samples in the song
+	uint16_t m_uPatternCount;		///< Number of patterns in the song
+	uint16_t m_uTrackerVersion;	///< Tracker version
+	uint16_t m_uFileVersion;		///< File version
+	uint16_t m_uFlags;			///< Flags
+	uint16_t m_uSpecialFlags;		///< Special flags
+	uint8_t m_bGlobalVolume;		///< Global volume. (0->128) All volumes are adjusted by this
+	uint8_t m_bMixVolume;			///< Mix volume (0->128) During mixing, this value controls the magnitude of the wave being mixed.
+	uint8_t m_bInitialSpeed;		///< Initial Speed of song.
+	uint8_t m_bInitialTempo;		///< Initial Tempo of song
+	uint8_t m_bPanSeparation;		///< Panning separation between channels (0->128, 128 is max sep.)
+	uint8_t m_bPitchWheelDepth;	///< Pitch wheel depth for MIDI controllers
+	uint16_t m_uMessageLength;	///< Size of internal message
+	uint32_t m_uMessageOffset;	///< Where is the message
+	uint32_t Reserved;			///< Not used
+	uint8_t m_bChannelPans[64];	///< Pan data
+	uint8_t m_bChannelVolumes[64];	///< Volume data
 };
 
 struct ITPatternFormat_t {
-	Word16 m_uLength;		///< Length of the data
-	Word16 m_uRows;			///< Number of rows
-	Word8 Reserved[4];		///< Not used
-	Word8 m_Data[1];			///< Start of the pattern data
+	uint16_t m_uLength;		///< Length of the data
+	uint16_t m_uRows;			///< Number of rows
+	uint8_t Reserved[4];		///< Not used
+	uint8_t m_Data[1];			///< Start of the pattern data
 };
 
 struct ITNode_t {
-	Word8 m_bY;			///< Y for node
-	Word8 m_bTickLow;	///< Low byte tick value
-	Word8 m_bTickHi;	///< High byte tick value
+	uint8_t m_bY;			///< Y for node
+	uint8_t m_bTickLow;	///< Low byte tick value
+	uint8_t m_bTickHi;	///< High byte tick value
 };
 
 struct ITEnvelopeLayout_t {
@@ -88,25 +88,25 @@ struct ITEnvelopeLayout_t {
 		FLAG_SUSTAINLOOP = 0x04,	///< SusLoop on/off, 1 = on, 0 = off
 		FLAG_USEASFILTER = 0x80		///< Use pitch envelope as filter envelope instead.
 	};
-	Word8 m_bFlags;				/// See above
-	Word8 m_bNodeCount;			/// Number of node points
-	Word8 m_bLoopBeginning;		/// Loop beginning
-	Word8 m_bLoopEnding;		/// Loop end
-	Word8 m_bSustainBeginning;	/// Sustain loop beginning
-	Word8 m_bSustainEnding;		/// Sustain loop end
+	uint8_t m_bFlags;				/// See above
+	uint8_t m_bNodeCount;			/// Number of node points
+	uint8_t m_bLoopBeginning;		/// Loop beginning
+	uint8_t m_bLoopEnding;		/// Loop end
+	uint8_t m_bSustainBeginning;	/// Sustain loop beginning
+	uint8_t m_bSustainEnding;		/// Sustain loop end
 	ITNode_t m_Nodes[25];		/// Array of points
 };
 
 struct ITKeyMap_t {
-	Word8 m_bNote;		///< Note to play
-	Word8 m_bSample;	///< Sample to use for the note
+	uint8_t m_bNote;		///< Note to play
+	uint8_t m_bSample;	///< Sample to use for the note
 };
 
 struct ITSampleFormat_t {
 #if defined(BURGER_BIGENDIAN)
-	static const Word32 cSignature=0x494D5053;	///< 'IMPS'
+	static const uint32_t cSignature=0x494D5053;	///< 'IMPS'
 #else
-	static const Word32 cSignature=0x53504D49;	///< 'IMPS'
+	static const uint32_t cSignature=0x53504D49;	///< 'IMPS'
 #endif
 	enum eFlags {
 		FLAG_SAMPLE = 0x01,			/// On = sample associated with header
@@ -126,56 +126,56 @@ struct ITSampleFormat_t {
 		CONVERT_TXWAVE = 0x10,		/// 12 bit TX-Wave data
 		CONVERT_LEFTRIGHTSTEREO = 0x20	/// Prompt for Left/Right/All stereo
 	};
-	Word32 m_Signature;			///< 'IMPS'
+	uint32_t m_Signature;			///< 'IMPS'
 	char m_DOSName[12];			///< Dos filename
-	Word8 Reserved1;			///< Zero (To end the filename)
-	Word8 m_bGlobalVolume;		///< Global volume for the instrument
-	Word8 m_bFlags;				///< Flags
-	Word8 m_bDefaultVolume;		///< Starting volume
+	uint8_t Reserved1;			///< Zero (To end the filename)
+	uint8_t m_bGlobalVolume;		///< Global volume for the instrument
+	uint8_t m_bFlags;				///< Flags
+	uint8_t m_bDefaultVolume;		///< Starting volume
 	char m_Name[26];			///< Name of the sample
-	Word8 m_bConversionFlags;	///< Flags for conversion
-	Word8 m_bDefaultPan;		///< Starting Pan
-	Word32 m_uSampleCount;		///< Size of the sample in samples, not bytes
-	Word32 m_uLoopBegin;		///< Start of loop (no of samples in, not bytes)
-	Word32 m_uLoopEnd;			///< Sample no. AFTER end of loop
-	Word32 m_uC5Speed;			///< Number of bytes a second for C-5 (ranges from 0->9999999)
-	Word32 m_uSustainLoopBegin;	///< Start of sustain loop
-	Word32 m_uSustainLoopEnd;	///< Sample no. AFTER end of sustain loop
-	Word32 m_uSampleOffset;		///< Offset of sample in file.
-	Word8 m_bVibratoSpeed;		///< Vibrato Speed, ranges from 0->64
-	Word8 m_bVibratoDepth;		///< Vibrato Depth, ranges from 0->64
-	Word8 m_bVibratoRate;		///< Vibrato Rate, rate at which vibrato is applied (0->64)
-	Word8 m_bVibratoWaveform;	///< 0=Sine wave, 1=Ramp down, 2=Square wave, 3=Random 
+	uint8_t m_bConversionFlags;	///< Flags for conversion
+	uint8_t m_bDefaultPan;		///< Starting Pan
+	uint32_t m_uSampleCount;		///< Size of the sample in samples, not bytes
+	uint32_t m_uLoopBegin;		///< Start of loop (no of samples in, not bytes)
+	uint32_t m_uLoopEnd;			///< Sample no. AFTER end of loop
+	uint32_t m_uC5Speed;			///< Number of bytes a second for C-5 (ranges from 0->9999999)
+	uint32_t m_uSustainLoopBegin;	///< Start of sustain loop
+	uint32_t m_uSustainLoopEnd;	///< Sample no. AFTER end of sustain loop
+	uint32_t m_uSampleOffset;		///< Offset of sample in file.
+	uint8_t m_bVibratoSpeed;		///< Vibrato Speed, ranges from 0->64
+	uint8_t m_bVibratoDepth;		///< Vibrato Depth, ranges from 0->64
+	uint8_t m_bVibratoRate;		///< Vibrato Rate, rate at which vibrato is applied (0->64)
+	uint8_t m_bVibratoWaveform;	///< 0=Sine wave, 1=Ramp down, 2=Square wave, 3=Random 
 };
 
 struct ITInstrumentFormat_t {
 #if defined(BURGER_BIGENDIAN)
-	static const Word32 cSignature=0x494D5049;	///< 'IMPI'
+	static const uint32_t cSignature=0x494D5049;	///< 'IMPI'
 #else
-	static const Word32 cSignature=0x49504D49;	///< 'IMPI'
+	static const uint32_t cSignature=0x49504D49;	///< 'IMPI'
 #endif
-	Word32 m_Signature;			///< 'IMPI'
+	uint32_t m_Signature;			///< 'IMPI'
 	char m_DOSName[12];			///< Dos filename
-	Word8 Reserved1;			///< Zero (To end the filename)
-	Word8 m_bNewNoteAction;		///< 0 = Cut, 1 = Continue, 2 = Note off, 3 = Note fade
-	Word8 m_bDuplicateCheckType;	///< 0 = Off, 1 = Note, 2 = Sample, 3 = Instrument
-	Word8 m_bDuplicateCheckAction;	///< 0 = Cut, 1 = Note off, 2 = Note of
-	Word16 m_uFadeOut;			///< Ranges between 0 and 128, but the fadeout "Count" is 1024
-	Int8 m_bPitchPanSeperation;	///< Range -32 -> +32
-	Word8 m_bPitchPanCenter;	///< C-0 to B-9 represented as 0->119 inclusive
-	Word8 m_bGlobalVolume;		///< 0->128
-	Word8 m_bDefaultPan;		///< 0->64, 0x80 => Don't use
-	Word8 m_bRandomVolume;		///< Percentage
-	Word8 m_bRandomPanning;		///< Percentage
-	Word16 m_uTrackerVersion;	///< Tracker version used to save the instrument
-	Word8 m_bSampleCount;		///< Number of samples associated with instrument
-	Word8 Reserved2;
+	uint8_t Reserved1;			///< Zero (To end the filename)
+	uint8_t m_bNewNoteAction;		///< 0 = Cut, 1 = Continue, 2 = Note off, 3 = Note fade
+	uint8_t m_bDuplicateCheckType;	///< 0 = Off, 1 = Note, 2 = Sample, 3 = Instrument
+	uint8_t m_bDuplicateCheckAction;	///< 0 = Cut, 1 = Note off, 2 = Note of
+	uint16_t m_uFadeOut;			///< Ranges between 0 and 128, but the fadeout "Count" is 1024
+	int8_t m_bPitchPanSeperation;	///< Range -32 -> +32
+	uint8_t m_bPitchPanCenter;	///< C-0 to B-9 represented as 0->119 inclusive
+	uint8_t m_bGlobalVolume;		///< 0->128
+	uint8_t m_bDefaultPan;		///< 0->64, 0x80 => Don't use
+	uint8_t m_bRandomVolume;		///< Percentage
+	uint8_t m_bRandomPanning;		///< Percentage
+	uint16_t m_uTrackerVersion;	///< Tracker version used to save the instrument
+	uint8_t m_bSampleCount;		///< Number of samples associated with instrument
+	uint8_t Reserved2;
 	char m_Name[26];			///< Instrument name
-	Word8 m_bInitialFilterCutoff;	///< Starting filter cutoff
-	Word8 m_bInitialFilterResonance;	///< Starting filter resonance
-	Word8 m_bMIDIChannel;		///< Which midi channel
-	Word8 m_bMIDIProgram;		///< Which midi program
-	Word16 m_uMIDIBank;			///< MIDI instrument bank
+	uint8_t m_bInitialFilterCutoff;	///< Starting filter cutoff
+	uint8_t m_bInitialFilterResonance;	///< Starting filter resonance
+	uint8_t m_bMIDIChannel;		///< Which midi channel
+	uint8_t m_bMIDIProgram;		///< Which midi program
+	uint16_t m_uMIDIBank;			///< MIDI instrument bank
 	ITKeyMap_t m_KeyMaps[120];	///< Sample/keyboard table
 
 	/// Envelopes for ADSR
@@ -185,28 +185,28 @@ struct ITInstrumentFormat_t {
 };
 
 struct ITOldInsForm	{
-	Word32 m_Signature;			///< 'IMPI'
+	uint32_t m_Signature;			///< 'IMPI'
 	char m_DOSName[12];			///< Dos filename
-	Word8 Reserved1;			///< Zero (To end the filename)
-	Word8 m_bNewNoteAction;		///< 0 = Cut, 1 = Continue, 2 = Note off, 3 = Note fade
-	Word8 m_bDuplicateCheckType;	///< 0 = Off, 1 = Note, 2 = Sample, 3 = Instrument
-	Word8 m_bDuplicateCheckAction;	///< 0 = Cut, 1 = Note off, 2 = Note of
-	Word16 m_uFadeOut;			///< Ranges between 0 and 128, but the fadeout "Count" is 1024
-	Int8 m_bPitchPanSeperation;	///< Range -32 -> +32
-	Word8 m_bPitchPanCenter;	///< C-0 to B-9 represented as 0->119 inclusive
-	Word8 m_bGlobalVolume;		///< 0->128
-	Word8 m_bDefaultPan;		///< 0->64, 0x80 => Don't use
-	Word8 m_bRandomVolume;		///< Percentage
-	Word8 m_bRandomPanning;		///< Percentage
-	Word16 m_uTrackerVersion;	///< Tracker version used to save the instrument
-	Word8 m_bSampleCount;		///< Number of samples associated with instrument
-	Word8 Reserved2;
+	uint8_t Reserved1;			///< Zero (To end the filename)
+	uint8_t m_bNewNoteAction;		///< 0 = Cut, 1 = Continue, 2 = Note off, 3 = Note fade
+	uint8_t m_bDuplicateCheckType;	///< 0 = Off, 1 = Note, 2 = Sample, 3 = Instrument
+	uint8_t m_bDuplicateCheckAction;	///< 0 = Cut, 1 = Note off, 2 = Note of
+	uint16_t m_uFadeOut;			///< Ranges between 0 and 128, but the fadeout "Count" is 1024
+	int8_t m_bPitchPanSeperation;	///< Range -32 -> +32
+	uint8_t m_bPitchPanCenter;	///< C-0 to B-9 represented as 0->119 inclusive
+	uint8_t m_bGlobalVolume;		///< 0->128
+	uint8_t m_bDefaultPan;		///< 0->64, 0x80 => Don't use
+	uint8_t m_bRandomVolume;		///< Percentage
+	uint8_t m_bRandomPanning;		///< Percentage
+	uint16_t m_uTrackerVersion;	///< Tracker version used to save the instrument
+	uint8_t m_bSampleCount;		///< Number of samples associated with instrument
+	uint8_t Reserved2;
 	char m_Name[26];			///< Instrument name
-	Word8 m_bInitialFilterCutoff;	///< Starting filter cutoff
-	Word8 m_bInitialFilterResonance;	///< Starting filter resonance
-	Word8 m_bMIDIChannel;		///< Which midi channel
-	Word8 m_bMIDIProgram;		///< Which midi program
-	Word16 m_uMIDIBank;			///< MIDI instrument bank
+	uint8_t m_bInitialFilterCutoff;	///< Starting filter cutoff
+	uint8_t m_bInitialFilterResonance;	///< Starting filter resonance
+	uint8_t m_bMIDIChannel;		///< Which midi channel
+	uint8_t m_bMIDIProgram;		///< Which midi program
+	uint16_t m_uMIDIBank;			///< MIDI instrument bank
 	ITKeyMap_t m_KeyMaps[120];	///< Sample/keyboard table
 
 	ITKeyMap_t m_VolumeEnvelopes[100];
@@ -224,16 +224,16 @@ struct ITOldInsForm	{
 	\param pOutput Pointer to the command to receive the translated values
 	\param uITCommand IT format effect command
 	\param uITArgument IT format effect argument
-	\sa ImportIT(Sequencer::SongPackage *,const Word8 *,WordPtr)
+	\sa ImportIT(Sequencer::SongPackage *,const uint8_t *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::ImportITEffect(Sequencer::Command_t *pOutput,Word uITCommand,Word uITArgument)
+void BURGER_API Burger::ImportITEffect(Sequencer::Command_t *pOutput,uint_t uITCommand,uint_t uITArgument)
 {
-	Word uITArgument0F = uITArgument&0xFU;
-	Word uITArgumentF0 = uITArgument>>4U;
+	uint_t uITArgument0F = uITArgument&0xFU;
+	uint_t uITArgumentF0 = uITArgument>>4U;
 	Sequencer::Command_t::eEffect uEffectCommand = Sequencer::Command_t::EFFECT_NONE;
-	Word uEffectArgument = 0;
+	uint_t uEffectArgument = 0;
 	
 	// Parse out the command (Converted to ASCII)
 	switch (uITCommand + 0x40) {
@@ -359,7 +359,7 @@ void BURGER_API Burger::ImportITEffect(Sequencer::Command_t *pOutput,Word uITCom
 	}
 	// Save off the effect
 	pOutput->SetEffect(uEffectCommand);
-	pOutput->m_uEffectArgument = static_cast<Word8>(uEffectArgument);
+	pOutput->m_uEffectArgument = static_cast<uint8_t>(uEffectArgument);
 }
 
 /*! ************************************
@@ -372,13 +372,13 @@ void BURGER_API Burger::ImportITEffect(Sequencer::Command_t *pOutput,Word uITCom
 	\param pInput Pointer to the IT file
 	\param uInputLength Length of the input data
 	\return Zero if no error, non-zero if error
-	\sa ImportITEffect(Sequencer::Command_t *,Word,Word)
+	\sa ImportITEffect(Sequencer::Command_t *,uint_t,uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pInput,WordPtr uInputLength)
+uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t *pInput,uintptr_t uInputLength)
 {
-	Word uResult = Sequencer::IMPORT_UNKNOWN;
+	uint_t uResult = Sequencer::IMPORT_UNKNOWN;
 	const ITHeader_t *pITHeader = static_cast<const ITHeader_t*>(static_cast<const void *>(pInput));
 	if ((uInputLength>=192) && 
 		(pITHeader->m_Signature == ITHeader_t::cSignature)) {
@@ -387,42 +387,42 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 		uResult = Sequencer::IMPORT_TRUNCATION;
 
 		// Let's attempt the conversion by consuming the header
-		const Word8 *pWork = pInput+192;
+		const uint8_t *pWork = pInput+192;
 		uInputLength-=192;
 
 		// Set up the pointer to the orders
 
-		Word uOrderCount = LittleEndian::Load(&pITHeader->m_uOrderCount);
+		uint_t uOrderCount = LittleEndian::Load(&pITHeader->m_uOrderCount);
 		if (uInputLength>=uOrderCount) {
 
 			// Mark the data and consume it
-			const Word8 *pOrders = pWork;
+			const uint8_t *pOrders = pWork;
 			pWork += uOrderCount;
 			uInputLength-=uOrderCount;
 
 			// Instruments (Not 32 bit aligned)
-			Word uInstrumentCount = LittleEndian::Load(&pITHeader->m_uInstrumentCount);
+			uint_t uInstrumentCount = LittleEndian::Load(&pITHeader->m_uInstrumentCount);
 			if (uInputLength>=(uInstrumentCount*4)) {
 
 				// Mark the instrument sizes (May not be 32 bit aligned!!)
-				const Word32 *pInstrumentOffsets = static_cast<const Word32 *>(static_cast<const void *>(pWork));
+				const uint32_t *pInstrumentOffsets = static_cast<const uint32_t *>(static_cast<const void *>(pWork));
 				pWork += uInstrumentCount * 4;
 				uInputLength -= uInstrumentCount * 4;
 
 				// Samples (Not 32 bit aligned)
-				Word uSampleCount = LittleEndian::Load(&pITHeader->m_uSampleCount);
+				uint_t uSampleCount = LittleEndian::Load(&pITHeader->m_uSampleCount);
 				if (uInputLength>=(uSampleCount*4)) {
 
 					// Mark the sample sizes (May not be 32 bit aligned!!)
-					const Word32 *pSampleOffsets = static_cast<const Word32 *>(static_cast<const void *>(pWork));
+					const uint32_t *pSampleOffsets = static_cast<const uint32_t *>(static_cast<const void *>(pWork));
 					pWork += uSampleCount * 4;
 					uInputLength -= uSampleCount * 4;
 
 					// Pointers to pattern
-					Word uPatternCount = LittleEndian::Load(&pITHeader->m_uPatternCount);
+					uint_t uPatternCount = LittleEndian::Load(&pITHeader->m_uPatternCount);
 					if (uInputLength>=(uPatternCount*4)) {
 						// Mark the pattern offsets
-						const Word32 *pPatternOffsets = static_cast<const Word32 *>(static_cast<const void *>(pWork));
+						const uint32_t *pPatternOffsets = static_cast<const uint32_t *>(static_cast<const void *>(pWork));
 						//pWork += uPatternCount*4;
 						//uInputLength -= uPatternCount*4;
 
@@ -445,11 +445,11 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 						// Create the pattern pointers
 						//
 
-						Word i;
+						uint_t i;
 						if (uOrderCount) {
 							i = 0;
 							do {
-								Word uOrder = pOrders[i];
+								uint_t uOrder = pOrders[i];
 								if (uOrder >= uPatternCount) {
 									uOrder = 0;
 								}
@@ -482,7 +482,7 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 						// Use the instrument records or sample record
 						//
 
-						Word uHeaderFlags = LittleEndian::Load(&pITHeader->m_uFlags);
+						uint_t uHeaderFlags = LittleEndian::Load(&pITHeader->m_uFlags);
 						if (uHeaderFlags & ITHeader_t::FLAG_USEINSTRUMENTS) {
 							if (uInstrumentCount) {
 								i = 0;
@@ -501,10 +501,10 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 
 									MemoryClear(pInstrData->m_WhichSampleForNote,sizeof(pInstrData->m_WhichSampleForNote));
 
-									Word uMinSamp = 200;
-									Word j = 0;
+									uint_t uMinSamp = 200;
+									uint_t j = 0;
 									do {
-										Word uNewSample = pInstrumentFormat->m_KeyMaps[j].m_bSample;
+										uint_t uNewSample = pInstrumentFormat->m_KeyMaps[j].m_bSample;
 										if (uNewSample) {
 											if (uNewSample>uSampleCount) {
 												uNewSample = uSampleCount;
@@ -517,13 +517,13 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 
 									j = 0;
 									do {
-										Word uNewSample = pInstrumentFormat->m_KeyMaps[j].m_bSample;
+										uint_t uNewSample = pInstrumentFormat->m_KeyMaps[j].m_bSample;
 										if (uNewSample) {
 											if (uNewSample>uSampleCount) {
 												uNewSample = uSampleCount;
 											}
 											if (pInstrumentFormat->m_KeyMaps[j].m_bNote < 96) {
-												pInstrData->m_WhichSampleForNote[pInstrumentFormat->m_KeyMaps[j].m_bNote] = static_cast<Word8>((uNewSample-1) - uMinSamp);
+												pInstrData->m_WhichSampleForNote[pInstrumentFormat->m_KeyMaps[j].m_bNote] = static_cast<uint8_t>((uNewSample-1) - uMinSamp);
 											}
 										}
 									} while (++j<120);
@@ -531,13 +531,13 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 									// Samples conversion
 
 									int prevSamp = -1;
-									Word uMapIndex = 0;
+									uint_t uMapIndex = 0;
 									do {
 										if (pInstrumentFormat->m_KeyMaps[uMapIndex].m_bNote<96) {
 											int newsamp = pInstrumentFormat->m_KeyMaps[uMapIndex].m_bSample;
 											if (newsamp) {
 												--newsamp;
-												if (static_cast<Word>(newsamp)>=uSampleCount) {
+												if (static_cast<uint_t>(newsamp)>=uSampleCount) {
 													newsamp = static_cast<int>(uSampleCount-1);
 												}
 												if (prevSamp != newsamp) {
@@ -591,18 +591,18 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 														}
 
 														if( pSampleDescription->m_uBitsPerSample == 16) {
-															WordPtr uLength = pSampleDescription->m_uSampleSize/2;
+															uintptr_t uLength = pSampleDescription->m_uSampleSize/2;
 															if (uLength) {
 																if (!(pSampleFormat->m_bConversionFlags & ITSampleFormat_t::CONVERT_SIGNED)) {
-																	Word16 *pSampleTemp = static_cast<Word16 *>(pSampleDescription->m_pSample);
+																	uint16_t *pSampleTemp = static_cast<uint16_t *>(pSampleDescription->m_pSample);
 																	do {
-																		pSampleTemp[0] = static_cast<Word16>(LittleEndian::Load(pSampleTemp)^0x8000U);
+																		pSampleTemp[0] = static_cast<uint16_t>(LittleEndian::Load(pSampleTemp)^0x8000U);
 																		++pSampleTemp;
 																	} while (--uLength);
 																}
 #if defined(BURGER_BIGENDIAN)
 																else {
-																	ConvertEndian(static_cast<Word16 *>(pSampleDescription->m_pSample),uLength);
+																	ConvertEndian(static_cast<uint16_t *>(pSampleDescription->m_pSample),uLength);
 																}
 #endif
 															}
@@ -628,7 +628,7 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 										uResult = Sequencer::IMPORT_BADFILE;
 										break;
 									}
-									Word uSampCount = LittleEndian::LoadAny(&pSampleFormat->m_uSampleCount);
+									uint_t uSampCount = LittleEndian::LoadAny(&pSampleFormat->m_uSampleCount);
 									if (uSampCount) {
 										const void *pDigitalSample = pInput+LittleEndian::LoadAny(&pSampleFormat->m_uSampleOffset);
 										pInstrData->m_uNumberSamples = 1;
@@ -672,18 +672,18 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 										}
 
 										if (pSampleDescription->m_uBitsPerSample == 16) {
-											WordPtr uLength = pSampleDescription->m_uSampleSize/2;
+											uintptr_t uLength = pSampleDescription->m_uSampleSize/2;
 											if (uLength) {
 												if (!(pSampleFormat->m_bConversionFlags & ITSampleFormat_t::CONVERT_SIGNED)) {
-													Word16 *pSampleTemp = static_cast<Word16 *>(pSampleDescription->m_pSample);
+													uint16_t *pSampleTemp = static_cast<uint16_t *>(pSampleDescription->m_pSample);
 													do {
-														pSampleTemp[0] = static_cast<Word16>(LittleEndian::Load(pSampleTemp)^0x8000U);
+														pSampleTemp[0] = static_cast<uint16_t>(LittleEndian::Load(pSampleTemp)^0x8000U);
 														++pSampleTemp;
 													} while (--uLength);
 												}
 #if defined(BURGER_BIGENDIAN)
 												else {
-													ConvertEndian(static_cast<Word16 *>(pSampleDescription->m_pSample),uLength);
+													ConvertEndian(static_cast<uint16_t *>(pSampleDescription->m_pSample),uLength);
 												}
 #endif
 											}
@@ -700,26 +700,26 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 						// Scan the tracks to determine the number of channels
 						//
 
-						Word uChannelCount = 0;
+						uint_t uChannelCount = 0;
 
 						for (i = 0; i < uPatternCount ; i++) {
-							Word uPatternOffset = LittleEndian::LoadAny(&pPatternOffsets[i]);
+							uint_t uPatternOffset = LittleEndian::LoadAny(&pPatternOffsets[i]);
 							if (uPatternOffset) {
-								Word8 PreviousVariables[Sequencer::cTrackMaxCount];
+								uint8_t PreviousVariables[Sequencer::cTrackMaxCount];
 								MemoryClear(PreviousVariables,sizeof(PreviousVariables));
 
 								const ITPatternFormat_t *pPatternFormat = static_cast<const ITPatternFormat_t*>(static_cast<const void *>(pInput + uPatternOffset));
-								Word uPatternLength = LittleEndian::LoadAny(&pPatternFormat->m_uLength);
+								uint_t uPatternLength = LittleEndian::LoadAny(&pPatternFormat->m_uLength);
 
 								pWork = pPatternFormat->m_Data;
-								Word8 bMask = 0;
-								Word bNeedChannelToRead = TRUE;
+								uint8_t bMask = 0;
+								uint_t bNeedChannelToRead = TRUE;
 
-								Word uRow = 0;
-								Word uRows = LittleEndian::LoadAny(&pPatternFormat->m_uRows);
-								Word uChannelTemp = 0;
+								uint_t uRow = 0;
+								uint_t uRows = LittleEndian::LoadAny(&pPatternFormat->m_uRows);
+								uint_t uChannelTemp = 0;
 								while (uRow < uRows) {
-									Word8 uTemp = pWork[0];
+									uint8_t uTemp = pWork[0];
 									++pWork;
 									if (!uTemp) {
 										++uRow;
@@ -757,7 +757,7 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 									}
 								}
 
-								if (static_cast<WordPtr>(pWork - pPatternFormat->m_Data) != uPatternLength) {
+								if (static_cast<uintptr_t>(pWork - pPatternFormat->m_Data) != uPatternLength) {
 									uResult = Sequencer::IMPORT_BADFILE;
 									break;
 								}
@@ -770,7 +770,7 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 
 						for( i = 0; i < uPatternCount ; i++) {
 							
-							Word uPatternOffset = LittleEndian::LoadAny(&pPatternOffsets[i]);
+							uint_t uPatternOffset = LittleEndian::LoadAny(&pPatternOffsets[i]);
 							if (!uPatternOffset) {
 								
 								// No Data for this pattern - Clear Pattern
@@ -784,31 +784,31 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 							} else {
 
 								const ITPatternFormat_t *pPatternFormat = static_cast<const ITPatternFormat_t*>(static_cast<const void *>(pInput + uPatternOffset));
-								Word uRows = LittleEndian::LoadAny(&pPatternFormat->m_uRows);
+								uint_t uRows = LittleEndian::LoadAny(&pPatternFormat->m_uRows);
 
 								pOutput->m_pPartitions[i] = Sequencer::PatternData_t::New(uRows,uChannelCount);
 								if (!pOutput->m_pPartitions[i]) {
 									uResult = Sequencer::IMPORT_OUTOFMEMORY;
 									break;
 								}
-								Word8 PreviousVariables[Sequencer::cTrackMaxCount];
-								Word8 PreviousNotes[Sequencer::cTrackMaxCount];
-								Word8 PreviousInstruments[Sequencer::cTrackMaxCount];
-								Word8 PreviousVolumes[Sequencer::cTrackMaxCount];
-								Word8 PreviousArguments[Sequencer::cTrackMaxCount];
-								Word8 PreviousCommands[Sequencer::cTrackMaxCount];
+								uint8_t PreviousVariables[Sequencer::cTrackMaxCount];
+								uint8_t PreviousNotes[Sequencer::cTrackMaxCount];
+								uint8_t PreviousInstruments[Sequencer::cTrackMaxCount];
+								uint8_t PreviousVolumes[Sequencer::cTrackMaxCount];
+								uint8_t PreviousArguments[Sequencer::cTrackMaxCount];
+								uint8_t PreviousCommands[Sequencer::cTrackMaxCount];
 								MemoryClear(PreviousVariables,sizeof(PreviousVariables));
 
-								Word uPatternLength = LittleEndian::LoadAny(&pPatternFormat->m_uLength);
+								uint_t uPatternLength = LittleEndian::LoadAny(&pPatternFormat->m_uLength);
 								pWork = pPatternFormat->m_Data;
-								Word8 bMask = 0;
-								Word bNeedChannelToRead = TRUE;
+								uint8_t bMask = 0;
+								uint_t bNeedChannelToRead = TRUE;
 
-								Word uRow = 0;
-								Word uTempChannel = 0;
+								uint_t uRow = 0;
+								uint_t uTempChannel = 0;
 								Sequencer::Command_t *pCommand = NULL;
 								while (uRow < uRows) {
-									Word8 uTemp = pWork[0];
+									uint8_t uTemp = pWork[0];
 									++pWork;
 
 									if (!uTemp) {
@@ -835,7 +835,7 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 
 										// NOTE
 										if ((bMask & 1) || (bMask & 16)) {
-											Word8 bNote;
+											uint8_t bNote;
 
 											if (bMask & 1) {
 												bNote = pWork[0];
@@ -859,7 +859,7 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 										// Instrument extraction
 										//
 										if ((bMask & 2) || (bMask & 32)) {
-											Word8 uInstrumentTemp;
+											uint8_t uInstrumentTemp;
 
 											if (bMask & 2) {
 												uInstrumentTemp = pWork[0];
@@ -875,7 +875,7 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 
 										// VOLUME
 										if ((bMask & 4) || (bMask & 64)) {
-											Word8 bVolume;
+											uint8_t bVolume;
 
 											if (bMask & 4) {
 												bVolume = pWork[0];
@@ -903,8 +903,8 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 										//
 
 										if ((bMask & 8) || (bMask & 128)) {
-											Word8 uITCommand;
-											Word8 uITArgument;
+											uint8_t uITCommand;
+											uint8_t uITArgument;
 
 											if (bMask & 8) {
 												uITCommand = pWork[0];
@@ -924,7 +924,7 @@ Word BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const Word8 *pI
 									}
 								}
 
-								if (static_cast<WordPtr>(pWork - pPatternFormat->m_Data) != uPatternLength) {
+								if (static_cast<uintptr_t>(pWork - pPatternFormat->m_Data) != uPatternLength) {
 									uResult = Sequencer::IMPORT_BADFILE;
 									break;
 								}

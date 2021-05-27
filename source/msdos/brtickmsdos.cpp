@@ -30,13 +30,13 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-volatile Word32 ReadTickTimeCount;		/* Inc every 1/60th of a second */
+volatile uint32_t ReadTickTimeCount;		/* Inc every 1/60th of a second */
 void (__interrupt __far *OldInt8)();	/* Old INT 8 vector */
 #ifdef __cplusplus
 }
 #endif
-static volatile Word32 TimerDivisor;
-static volatile Word32 TimerCount;
+static volatile uint32_t TimerDivisor;
+static volatile uint32_t TimerCount;
 static Bool Started;				/* True if started */
 static Bool ExitIn;			/* TRUE if atexit() */
 
@@ -92,7 +92,7 @@ static void InstallTick(void)
 	}
 	_dos_setvect(8,MyIrq8);	/* Set to my timer 0 ISR */
 	{
-		Word32 speed;
+		uint32_t speed;
 		speed = (1192030UL/60UL);
 		outp(0x43,0x36);		/* Change timer 0 */
 		outp(0x40,speed);
@@ -114,11 +114,11 @@ extern "C" {
 #endif
 extern void interrupt Timer8Irq(void);	/* Assembly */
 extern void BURGER_API InitTimer8Irq(void);
-extern Word BURGER_API MyIrq8(void);
+extern uint_t BURGER_API MyIrq8(void);
 #ifdef __cplusplus
 }
 #endif
-static Word32 t0OldRealService;	/* Old real mode INT 8 vector */
+static uint32_t t0OldRealService;	/* Old real mode INT 8 vector */
 
 /***************************************
 
@@ -127,7 +127,7 @@ static Word32 t0OldRealService;	/* Old real mode INT 8 vector */
 
 ***************************************/
 
-Word BURGER_API MyIrq8(void)
+uint_t BURGER_API MyIrq8(void)
 {
 	++ReadTickTimeCount;
 	TimerCount+=TimerDivisor;		/* Time for a TRUE irq #8 */
@@ -168,7 +168,7 @@ void BURGER_API UninstallTick(void)
 
 static void BURGER_API InstallTick(void)
 {
-	Word32 speed;
+	uint32_t speed;
 	OldInt8 = static_cast<void (__interrupt __far *)()>(GetProtInt(8));	/* Get old timer 0 ISR */
 	t0OldRealService = GetRealInt(8);
 	InitTimer8Irq();			/* Init the sound IRQ code */
@@ -190,7 +190,7 @@ static void BURGER_API InstallTick(void)
 
 ***************************************/
 
-Word32 BURGER_API Burger::Tick::Read(void)
+uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
 {
 	if (Started) {		/* Do I need to be initialized? */
 		return ReadTickTimeCount;

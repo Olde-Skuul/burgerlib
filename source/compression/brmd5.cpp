@@ -1,17 +1,18 @@
 /***************************************
 
-	MD5 hash manager
+    MD5 hash manager
 
-	Implemented following the documentation found in
-	http://en.wikipedia.org/wiki/MD5
-	and http://tools.ietf.org/html/rfc1321
+    Implemented following the documentation found in
+    http://en.wikipedia.org/wiki/MD5
+    and http://tools.ietf.org/html/rfc1321
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -28,7 +29,7 @@
 	Full documentation on this hash format can be found here
 	http://en.wikipedia.org/wiki/MD5
 
-	\sa Hash(MD5_t *,const void *,WordPtr) and Burger::MD5Hasher_t
+	\sa Hash(MD5_t *,const void *,uintptr_t) and Burger::MD5Hasher_t
 
 ***************************************/
 
@@ -53,7 +54,7 @@
 		MemoryCopy(pOutput,&Context.m_Hash,16);
 	\endcode
 
-	\sa Burger::MD5_t or Hash(MD5_t *,const void *,WordPtr)
+	\sa Burger::MD5_t or Hash(MD5_t *,const void *,uintptr_t)
 
 ***************************************/
 
@@ -63,7 +64,7 @@
 
 	Call this function before any hashing is performed
 
-	\sa Process(const void *,WordPtr) or Finalize(void)
+	\sa Process(const void *,uintptr_t) or Finalize(void)
 
 ***************************************/
 
@@ -71,7 +72,7 @@ void BURGER_API Burger::MD5Hasher_t::Init(void)
 {
 	// Load magic initialization constants.
 
-	Word32 *pHash32 = static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash));
+	uint32_t *pHash32 = static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash));
 
 #if defined(BURGER_LITTLEENDIAN)
 	pHash32[0] = 0x67452301;
@@ -124,40 +125,40 @@ void BURGER_API Burger::MD5Hasher_t::Init(void)
 	will process 64 bytes on input and update the hash and checksum
 
 	\param pBlock Pointer to a buffer of 64 bytes of data to hash
-	\sa Process(const void *,WordPtr), Finalize(void) or Init(void)
+	\sa Process(const void *,uintptr_t), Finalize(void) or Init(void)
 
 ***************************************/
 
-void BURGER_API Burger::MD5Hasher_t::Process(const Word8 *pBlock)
+void BURGER_API Burger::MD5Hasher_t::Process(const uint8_t *pBlock)
 {
 	// Prefetch the 64 bytes into registers (Taking into account data misalignment)
 
-	const Word32 *pBlock32 = static_cast<const Word32 *>(static_cast<const void *>(pBlock));
-	Word32 x0 = LittleEndian::LoadAny(pBlock32);
-	Word32 x1 = LittleEndian::LoadAny(pBlock32+1);
-	Word32 x2 = LittleEndian::LoadAny(pBlock32+2);
-	Word32 x3 = LittleEndian::LoadAny(pBlock32+3);
-	Word32 x4 = LittleEndian::LoadAny(pBlock32+4);
-	Word32 x5 = LittleEndian::LoadAny(pBlock32+5);
-	Word32 x6 = LittleEndian::LoadAny(pBlock32+6);
-	Word32 x7 = LittleEndian::LoadAny(pBlock32+7);
-	Word32 x8 = LittleEndian::LoadAny(pBlock32+8);
-	Word32 x9 = LittleEndian::LoadAny(pBlock32+9);
-	Word32 x10 = LittleEndian::LoadAny(pBlock32+10);
-	Word32 x11 = LittleEndian::LoadAny(pBlock32+11);
-	Word32 x12 = LittleEndian::LoadAny(pBlock32+12);
-	Word32 x13 = LittleEndian::LoadAny(pBlock32+13);
-	Word32 x14 = LittleEndian::LoadAny(pBlock32+14);
-	Word32 x15 = LittleEndian::LoadAny(pBlock32+15);
+	const uint32_t *pBlock32 = static_cast<const uint32_t *>(static_cast<const void *>(pBlock));
+	uint32_t x0 = LittleEndian::LoadAny(pBlock32);
+	uint32_t x1 = LittleEndian::LoadAny(pBlock32+1);
+	uint32_t x2 = LittleEndian::LoadAny(pBlock32+2);
+	uint32_t x3 = LittleEndian::LoadAny(pBlock32+3);
+	uint32_t x4 = LittleEndian::LoadAny(pBlock32+4);
+	uint32_t x5 = LittleEndian::LoadAny(pBlock32+5);
+	uint32_t x6 = LittleEndian::LoadAny(pBlock32+6);
+	uint32_t x7 = LittleEndian::LoadAny(pBlock32+7);
+	uint32_t x8 = LittleEndian::LoadAny(pBlock32+8);
+	uint32_t x9 = LittleEndian::LoadAny(pBlock32+9);
+	uint32_t x10 = LittleEndian::LoadAny(pBlock32+10);
+	uint32_t x11 = LittleEndian::LoadAny(pBlock32+11);
+	uint32_t x12 = LittleEndian::LoadAny(pBlock32+12);
+	uint32_t x13 = LittleEndian::LoadAny(pBlock32+13);
+	uint32_t x14 = LittleEndian::LoadAny(pBlock32+14);
+	uint32_t x15 = LittleEndian::LoadAny(pBlock32+15);
 
 	// Convert endian on big endian machines
-	Word32 *pHash32 = static_cast<Word32 *>(static_cast<void *>(m_Hash.m_Hash));
+	uint32_t *pHash32 = static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash));
 
 	// Make a copy of the hash integers 
-	Word32 a = LittleEndian::Load(pHash32);
-	Word32 b = LittleEndian::Load(pHash32+1);
-	Word32 c = LittleEndian::Load(pHash32+2);
-	Word32 d = LittleEndian::Load(pHash32+3);
+	uint32_t a = LittleEndian::Load(pHash32);
+	uint32_t b = LittleEndian::Load(pHash32+1);
+	uint32_t c = LittleEndian::Load(pHash32+2);
+	uint32_t d = LittleEndian::Load(pHash32+3);
 
 	// Round 1
 	FF(a,b,c,d,x0,SHIFT11,0xd76aa478U);		// 1
@@ -251,19 +252,19 @@ void BURGER_API Burger::MD5Hasher_t::Process(const Word8 *pBlock)
 	
 	\param pInput Pointer to a buffer of data to hash
 	\param uLength Number of bytes to hash
-	\sa Process(const Word8 *), Finalize(void)
+	\sa Process(const uint8_t *), Finalize(void)
 
 ***************************************/
 
-void BURGER_API Burger::MD5Hasher_t::Process(const void *pInput,WordPtr uLength)
+void BURGER_API Burger::MD5Hasher_t::Process(const void *pInput,uintptr_t uLength)
 {
 	// Compute number of bytes mod 64
-	WordPtr index = static_cast<WordPtr>(m_uByteCount) & 0x3FU;
+	uintptr_t index = static_cast<uintptr_t>(m_uByteCount) & 0x3FU;
 
 	// Update number of bits (Perform a 64 bit add)
 	m_uByteCount += uLength;
 
-	WordPtr i = 64 - index;
+	uintptr_t i = 64 - index;
 
 	// Transform as many times as possible.
 
@@ -276,7 +277,7 @@ void BURGER_API Burger::MD5Hasher_t::Process(const void *pInput,WordPtr uLength)
 
 		if ((i+63)<uLength) {
 			do {
-	 			Process(static_cast<const Word8 *>(pInput)+i);
+	 			Process(static_cast<const uint8_t *>(pInput)+i);
 				i += 64;
 			} while ((i+63) < uLength);
 		}
@@ -286,7 +287,7 @@ void BURGER_API Burger::MD5Hasher_t::Process(const void *pInput,WordPtr uLength)
 	}
 
 	// Buffer remaining input
-	MemoryCopy(&m_CacheBuffer[index],static_cast<const Word8 *>(pInput)+i,uLength-i);
+	MemoryCopy(&m_CacheBuffer[index],static_cast<const uint8_t *>(pInput)+i,uLength-i);
 }
 
 /*! ************************************
@@ -297,23 +298,23 @@ void BURGER_API Burger::MD5Hasher_t::Process(const void *pInput,WordPtr uLength)
 	finalize the hash so that the generated checksum can
 	be applied into the hash
 
-	\sa Init(void), Process(const void *,WordPtr)
+	\sa Init(void), Process(const void *,uintptr_t)
 
 ***************************************/
 
 void BURGER_API Burger::MD5Hasher_t::Finalize(void)
 {
-	Word8 Padding[64];		// Pad array, first byte is 0x80, rest 0
+	uint8_t Padding[64];		// Pad array, first byte is 0x80, rest 0
 	Padding[0] = 0x80;
 	MemoryClear(&Padding[1],63);
 
 	// Save number of bits
 
-	Word64 uBitCountLE = LittleEndian::Load(m_uByteCount<<3);
+	uint64_t uBitCountLE = LittleEndian::Load(m_uByteCount<<3);
 
 	// Pad out to 56 mod 64.
 	// Convert to 1-64
-	WordPtr uPadLen = ((55-static_cast<WordPtr>(m_uByteCount))&0x3f)+1;	
+	uintptr_t uPadLen = ((55-static_cast<uintptr_t>(m_uByteCount))&0x3f)+1;	
 	Process(Padding,uPadLen);
 
 	// Append length (before padding)
@@ -334,7 +335,7 @@ void BURGER_API Burger::MD5Hasher_t::Finalize(void)
 
 ***************************************/
 
-void BURGER_API Burger::Hash(MD5_t *pOutput,const void *pInput,WordPtr uLength)
+void BURGER_API Burger::Hash(MD5_t *pOutput,const void *pInput,uintptr_t uLength)
 {
 	MD5Hasher_t Context;
 	// Initialize

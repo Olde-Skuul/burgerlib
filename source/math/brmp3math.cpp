@@ -58,7 +58,7 @@ const Burger::uint32_float_t *Burger::g_pMP3CosinePoints[5] = { g_MP3Cosine64, g
 /*! ************************************
 
 	\brief 4 pairs of FHT cosine/sine values for MP3 encoding
-	\sa MP3FHT(float *,WordPtr)
+	\sa MP3FHT(float *,uintptr_t)
 
 ***************************************/
 
@@ -442,19 +442,19 @@ static const Burger::Vector_128Word32 g_NegXYZW = {0x80000000U,0x00000000U,0x000
 static const Burger::Vector_128Word32 g_XNegYZW = {0x00000000U,0x80000000U,0x00000000U,0x00000000U};
 static const Burger::Vector_128Word32 g_XYNegZNegW = {0x00000000U,0x00000000U,0x80000000U,0x80000000U};
 
-void BURGER_API Burger::MP3FHT(float *pInput,WordPtr uCount)
+void BURGER_API Burger::MP3FHT(float *pInput,uintptr_t uCount)
 {
 	const float *pCosines = &g_MP3FHTCosines[0]->f;
 	const float *pInputEnd = pInput + uCount;
 
 	// Initial stride of 16 entries, then 64, 256, 1024
-	WordPtr uStride = 16>>2;
+	uintptr_t uStride = 16>>2;
 	do {
 		// Create stride values
-		WordPtr uEighthStride = uStride >> 1U;	
-		WordPtr uQuarterStride = uStride;
-		WordPtr uHalfStride = uStride << 1U;	
-		WordPtr u3QuarterStride = uHalfStride + uQuarterStride;
+		uintptr_t uEighthStride = uStride >> 1U;	
+		uintptr_t uQuarterStride = uStride;
+		uintptr_t uHalfStride = uStride << 1U;	
+		uintptr_t u3QuarterStride = uHalfStride + uQuarterStride;
 		uStride = uStride << 2U;
 
 		// Apply the 1st pass of the FFT
@@ -488,7 +488,7 @@ void BURGER_API Burger::MP3FHT(float *pInput,WordPtr uCount)
 		// Apply the 2nd pass of the FFT
 		float fCosine1 = pCosines[0];
 		float fSine1 = pCosines[1];
-		WordPtr uIndex = 1;
+		uintptr_t uIndex = 1;
 		do {
 			float fSine2 = fSine1+fSine1;
 			float fCosine2 = 1.0f - (fSine2 * fSine1);
@@ -585,19 +585,19 @@ void BURGER_API Burger::MP3FHT(float *pInput,WordPtr uCount)
 
 #else
 
-void BURGER_API Burger::MP3FHT(float *pInput,WordPtr uCount)
+void BURGER_API Burger::MP3FHT(float *pInput,uintptr_t uCount)
 {
 	const float *pCosines = &g_MP3FHTCosines[0]->f;
 	const float *pInputEnd = pInput + uCount;
 
 	// Initial stride of 16 entries, then 64, 256, 1024
-	WordPtr uStride = 16>>2;
+	uintptr_t uStride = 16>>2;
 	do {
 		// Create stride values
-		WordPtr uEighthStride = uStride >> 1U;	
-		WordPtr uQuarterStride = uStride;
-		WordPtr uHalfStride = uStride << 1U;	
-		WordPtr u3QuarterStride = uHalfStride + uQuarterStride;
+		uintptr_t uEighthStride = uStride >> 1U;	
+		uintptr_t uQuarterStride = uStride;
+		uintptr_t uHalfStride = uStride << 1U;	
+		uintptr_t u3QuarterStride = uHalfStride + uQuarterStride;
 		uStride = uStride << 2U;
 
 		// Apply the 1st pass of the FFT
@@ -631,7 +631,7 @@ void BURGER_API Burger::MP3FHT(float *pInput,WordPtr uCount)
 		// Apply the 2nd pass of the FFT
 		float fCosine1 = pCosines[0];
 		float fSine1 = pCosines[1];
-		WordPtr uIndex = 1;
+		uintptr_t uIndex = 1;
 		do {
 			float fSine2 = fSine1+fSine1;
 			float fCosine2 = 1.0f - (fSine2 * fSine1);

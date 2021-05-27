@@ -1,13 +1,14 @@
 /***************************************
 
-	Floating point compression
+    Floating point compression
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -20,10 +21,10 @@
 
 /* BEGIN */
 namespace Burger {
-extern float BURGER_API Unpack16ToFloat(Int16 iInput);
-extern Int16 BURGER_API PackFloatTo16(float fInput);
-extern float BURGER_API Unpack16ToFloat(Int16 iInput,Word32 uBaseExponent);
-extern Int16 BURGER_API PackFloatTo16(float fInput,Word32 uBaseExponent);
+extern float BURGER_API Unpack16ToFloat(int16_t iInput);
+extern int16_t BURGER_API PackFloatTo16(float fInput);
+extern float BURGER_API Unpack16ToFloat(int16_t iInput,uint32_t uBaseExponent);
+extern int16_t BURGER_API PackFloatTo16(float fInput,uint32_t uBaseExponent);
 }
 /* END */
 

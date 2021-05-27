@@ -148,12 +148,32 @@ char* BURGER_API Burger::NumberToAsciiHex(
     char* pOutput, uint64_t uInput) BURGER_NOEXCEPT
 {
     // Push the pointer to the highest value byte
+#if defined(BURGER_64BITCPU)
     uint_t uCount = 16;
     do {
         pOutput[0] = g_NibbleToAsciiUppercase[uInput >> 60U];
         uInput = uInput << 4U;
         ++pOutput;
     } while (--uCount);
+#else
+    // For speed, break it up into two 32 bit loops
+    // Metrowerks 68K generated bad code with the
+    // 64 bit code above.
+    uint_t uCount = 8;
+    uint32_t uTemp32 = static_cast<uint32_t>(uInput>>32U);
+    do {
+        pOutput[0] = g_NibbleToAsciiUppercase[uTemp32 >> 28U];
+        uTemp32 = uTemp32 << 4U;
+        ++pOutput;
+    } while (--uCount);
+    uCount = 8;
+    uTemp32 = static_cast<uint32_t>(uInput);
+    do {
+        pOutput[0] = g_NibbleToAsciiUppercase[uTemp32 >> 28U];
+        uTemp32 = uTemp32 << 4U;
+        ++pOutput;
+    } while (--uCount);    
+#endif
     // Insert the zero terminator
     pOutput[0] = static_cast<char>(uCount);
     return pOutput;

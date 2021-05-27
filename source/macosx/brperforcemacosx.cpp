@@ -1,16 +1,16 @@
 /***************************************
 
-	Class to add perforce integration to MacOSX tools
+    Class to add perforce integration to MacOSX tools
 
-	MacOSX version
+    MacOSX version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE for
-	license details. Yes, you can use it in a commercial title without paying
-	anything, just give me a credit.
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
 
-	Please? It's not like I'm asking you for money!
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -54,15 +54,15 @@ Burger::Perforce::~Perforce()
 
 ***************************************/
 
-Word BURGER_API Burger::Perforce::Init(void)
+uint_t BURGER_API Burger::Perforce::Init(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (!m_bFilenameInitialized) {
 		// Let's find the perforce EXE
 
 		// Check for an environment variable with the directory
 		const char* pAppdirectory = GetEnvironmentString("PERFORCE");
-		Word bFilenameInitialized = FALSE;
+		uint_t bFilenameInitialized = FALSE;
 		if (pAppdirectory) {
 			m_PerforceFilename.SetFromNative(pAppdirectory);
 			Free(pAppdirectory);
@@ -143,7 +143,7 @@ Word BURGER_API Burger::Perforce::Init(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Perforce::Shutdown(void)
+uint_t BURGER_API Burger::Perforce::Shutdown(void)
 {
 	m_PerforceFilename.Clear();
 	m_bFilenameInitialized = FALSE;
@@ -156,15 +156,15 @@ Word BURGER_API Burger::Perforce::Shutdown(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Perforce::Edit(const char* pFilename)
+uint_t BURGER_API Burger::Perforce::Edit(const char* pFilename)
 {
-	Word uResult = Init();
+	uint_t uResult = Init();
 	if (!uResult) {
 		Filename Translate(pFilename);
 		String Parameters("-s edit \"", Translate.GetNative(), "\"");
 		OutputMemoryStream Capture;
 		// Issue the command to Perforce
-		uResult = static_cast<Word>(Globals::ExecuteTool(
+		uResult = static_cast<uint_t>(Globals::ExecuteTool(
 			m_PerforceFilename.GetPtr(), Parameters.GetPtr(), &Capture));
 		if (!uResult) {
 			// If the filename was not found (An error)
@@ -186,15 +186,15 @@ Word BURGER_API Burger::Perforce::Edit(const char* pFilename)
 
 ***************************************/
 
-Word BURGER_API Burger::Perforce::RevertIfUnchanged(const char* pFilename)
+uint_t BURGER_API Burger::Perforce::RevertIfUnchanged(const char* pFilename)
 {
-	Word uResult = Init();
+	uint_t uResult = Init();
 	if (!uResult) {
 		Filename Translate(pFilename);
 		String Parameters("-s revert -a \"", Translate.GetNative(), "\"");
 		OutputMemoryStream Capture;
 		// Issue the command to Perforce
-		uResult = static_cast<Word>(Globals::ExecuteTool(
+		uResult = static_cast<uint_t>(Globals::ExecuteTool(
 			m_PerforceFilename.GetPtr(), Parameters.GetPtr(), &Capture));
 		if (!uResult) {
 			// If the filename was not found (An error)

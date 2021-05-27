@@ -1,13 +1,14 @@
 /***************************************
 
-	Mouse Manager
+    Mouse Manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -93,11 +94,11 @@ Burger::Mouse::~Mouse()
 
 ***************************************/
 
-Word BURGER_API Burger::Mouse::PeekMouseEvent(MouseEvent_t *pEvent)
+uint_t BURGER_API Burger::Mouse::PeekMouseEvent(MouseEvent_t *pEvent)
 {
 	m_MouseLock.Lock();
-	Word uIndex = m_uArrayStart;	// Get the starting index
-	Word uResult = FALSE;
+	uint_t uIndex = m_uArrayStart;	// Get the starting index
+	uint_t uResult = FALSE;
 	if (uIndex!=m_uArrayEnd) {		// Anything in the buffer?
 		pEvent[0] = m_MouseEvents[uIndex];
 		uResult = TRUE;
@@ -121,11 +122,11 @@ Word BURGER_API Burger::Mouse::PeekMouseEvent(MouseEvent_t *pEvent)
 
 ***************************************/
 
-Word BURGER_API Burger::Mouse::GetMouseEvent(MouseEvent_t *pEvent)
+uint_t BURGER_API Burger::Mouse::GetMouseEvent(MouseEvent_t *pEvent)
 {
 	m_MouseLock.Lock();
-	Word uIndex = m_uArrayStart;		// Get the starting index
-	Word uResult = FALSE;
+	uint_t uIndex = m_uArrayStart;		// Get the starting index
+	uint_t uResult = FALSE;
 	if (uIndex!=m_uArrayEnd) {			// Anything in the buffer?
 		pEvent[0] = m_MouseEvents[uIndex];
 		m_uArrayStart = (uIndex+1)&(MOUSEBUFFSIZE-1);	// Next event
@@ -150,7 +151,7 @@ Word BURGER_API Burger::Mouse::GetMouseEvent(MouseEvent_t *pEvent)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
-Word BURGER_API Burger::Mouse::IsPresent(void) const
+uint_t BURGER_API Burger::Mouse::IsPresent(void) const
 {
 	return FALSE;
 }
@@ -168,12 +169,12 @@ Word BURGER_API Burger::Mouse::IsPresent(void) const
 
 ***************************************/
 
-Word32 BURGER_API Burger::Mouse::ReadButtons(void)
+uint32_t BURGER_API Burger::Mouse::ReadButtons(void)
 {
 	m_MouseLock.Lock();
 	m_uArrayStart = 0;		// Clear out the events
 	m_uArrayEnd = 0;
-	Word uButtons = m_uButtons;
+	uint_t uButtons = m_uButtons;
 	m_MouseLock.Unlock();
 	return uButtons;
 }
@@ -199,12 +200,12 @@ Word32 BURGER_API Burger::Mouse::ReadButtons(void)
 
 ***************************************/
 
-Word32 BURGER_API Burger::Mouse::ReadButtonDowns(void)
+uint32_t BURGER_API Burger::Mouse::ReadButtonDowns(void)
 {
 	m_MouseLock.Lock();
 	m_uArrayStart = 0;		// Clear out the events
 	m_uArrayEnd = 0;
-	Word uButtons = m_uPressedButtons;
+	uint_t uButtons = m_uPressedButtons;
 	m_uPressedButtons = 0;	// Acknowledge the button events
 	m_MouseLock.Unlock();
 	return uButtons;
@@ -219,11 +220,11 @@ Word32 BURGER_API Burger::Mouse::ReadButtonDowns(void)
 
 	\param pX Pointer to a value to receive the X coordinate of the mouse cursor or \ref NULL if this value is not requested
 	\param pY Pointer to a value to receive the Y coordinate of the mouse cursor or \ref NULL if this value is not requested
-	\sa Read(Int32 *,Int32 *)
+	\sa Read(int32_t *,int32_t *)
 
 ***************************************/
 
-void BURGER_API Burger::Mouse::Read(Word32 *pX,Word32 *pY)
+void BURGER_API Burger::Mouse::Read(uint32_t *pX,uint32_t *pY)
 {
 	m_MouseLock.Lock();
 	m_uArrayStart = 0;		// Clear out the events
@@ -247,11 +248,11 @@ void BURGER_API Burger::Mouse::Read(Word32 *pX,Word32 *pY)
 
 	\param pX Pointer to a value to receive the X coordinate of the mouse delta or \ref NULL if this value is not requested
 	\param pY Pointer to a value to receive the Y coordinate of the mouse delta or \ref NULL if this value is not requested
-	\sa Read(Word32 *,Word32 *)
+	\sa Read(uint32_t *,uint32_t *)
 
 ***************************************/
 
-void BURGER_API Burger::Mouse::Read(Int32 *pX,Int32 *pY)
+void BURGER_API Burger::Mouse::Read(int32_t *pX,int32_t *pY)
 {
 	m_MouseLock.Lock();
 	m_uArrayStart = 0;		// Clear out the events
@@ -280,12 +281,12 @@ void BURGER_API Burger::Mouse::Read(Int32 *pX,Int32 *pY)
 
 ***************************************/
 
-Int32 BURGER_API Burger::Mouse::ReadWheelX(void)
+int32_t BURGER_API Burger::Mouse::ReadWheelX(void)
 {
 	m_MouseLock.Lock();
 	m_uArrayStart = 0;		// Clear out the events
 	m_uArrayEnd = 0;
-	Int32 iResult = m_iMouseWheelX;
+	int32_t iResult = m_iMouseWheelX;
 	m_iMouseWheelX = 0;
 	m_MouseLock.Unlock();
 	return iResult;
@@ -302,12 +303,12 @@ Int32 BURGER_API Burger::Mouse::ReadWheelX(void)
 
 ***************************************/
 
-Int32 BURGER_API Burger::Mouse::ReadWheelY(void)
+int32_t BURGER_API Burger::Mouse::ReadWheelY(void)
 {
 	m_MouseLock.Lock();
 	m_uArrayStart = 0;		// Clear out the events
 	m_uArrayEnd = 0;
-	Int32 iResult = m_iMouseWheelY;
+	int32_t iResult = m_iMouseWheelY;
 	m_iMouseWheelY = 0;
 	m_MouseLock.Unlock();
 	return iResult;
@@ -324,11 +325,11 @@ Int32 BURGER_API Burger::Mouse::ReadWheelY(void)
 
 	\param uBoundsX Width of the screen in pixels
 	\param uBoundsY Height of the screen in pixels
-	\sa PostMousePosition(Word32,Word32,Word32)
+	\sa PostMousePosition(uint32_t,uint32_t,uint32_t)
 
 ***************************************/
 
-void BURGER_API Burger::Mouse::SetRange(Word32 uBoundsX,Word32 uBoundsY)
+void BURGER_API Burger::Mouse::SetRange(uint32_t uBoundsX,uint32_t uBoundsY)
 {
 	m_MouseLock.Lock();
 	m_uArrayStart = 0;		// Clear out the events
@@ -367,11 +368,11 @@ void BURGER_API Burger::Mouse::SetRange(Word32 uBoundsX,Word32 uBoundsY)
 	\param x X coordinate of the mouse cursor in pixels
 	\param y Y coordinate of the mouse cursor in pixels
 	\param uMSTimeStamp Timestamp in Milliseconds, 0 will fill in the value from Tick::ReadMilliseconds()
-	\sa SetRange(Word32,Word32)
+	\sa SetRange(uint32_t,uint32_t)
 
 ***************************************/
 
-void BURGER_API Burger::Mouse::PostMousePosition(Word32 x,Word32 y,Word32 uMSTimeStamp)
+void BURGER_API Burger::Mouse::PostMousePosition(uint32_t x,uint32_t y,uint32_t uMSTimeStamp)
 {
 	MousePositionEvent_t NewEvent;
 	NewEvent.m_uEvent = EVENT_MOUSEPOSITION;
@@ -392,11 +393,11 @@ void BURGER_API Burger::Mouse::PostMousePosition(Word32 x,Word32 y,Word32 uMSTim
 	\param x X coordinate of the mouse cursor in pixels
 	\param y Y coordinate of the mouse cursor in pixels
 	\param uMSTimeStamp Timestamp in Milliseconds, 0 will fill in the value from Tick::ReadMilliseconds()
-	\sa SetRange(Word32,Word32)
+	\sa SetRange(uint32_t,uint32_t)
 
 ***************************************/
 
-void BURGER_API Burger::Mouse::PostMouseMotion(Int32 x,Int32 y,Word32 uMSTimeStamp)
+void BURGER_API Burger::Mouse::PostMouseMotion(int32_t x,int32_t y,uint32_t uMSTimeStamp)
 {
 	MouseMotionEvent_t NewEvent;
 	NewEvent.m_uEvent = EVENT_MOUSEMOVE;
@@ -415,11 +416,11 @@ void BURGER_API Burger::Mouse::PostMouseMotion(Int32 x,Int32 y,Word32 uMSTimeSta
 
 	\param uMouseBits eMouseButtons enumeration of mouse buttons
 	\param uMSTimeStamp Timestamp in Milliseconds, 0 will fill in the value from Tick::ReadMilliseconds()
-	\sa PostMouseUp(Word32,Word32)
+	\sa PostMouseUp(uint32_t,uint32_t)
 
 ***************************************/
 
-void BURGER_API Burger::Mouse::PostMouseDown(Word32 uMouseBits,Word32 uMSTimeStamp)
+void BURGER_API Burger::Mouse::PostMouseDown(uint32_t uMouseBits,uint32_t uMSTimeStamp)
 {
 	MouseButtonEvent_t NewEvent;
 	NewEvent.m_uEvent = EVENT_MOUSEDOWN;
@@ -437,11 +438,11 @@ void BURGER_API Burger::Mouse::PostMouseDown(Word32 uMouseBits,Word32 uMSTimeSta
 
 	\param uMouseBits eMouseButtons enumeration of mouse buttons
 	\param uMSTimeStamp Timestamp in Milliseconds, 0 will fill in the value from Tick::ReadMilliseconds()
-	\sa PostMouseDown(Word32,Word32)
+	\sa PostMouseDown(uint32_t,uint32_t)
 
 ***************************************/
 
-void BURGER_API Burger::Mouse::PostMouseUp(Word32 uMouseBits,Word32 uMSTimeStamp)
+void BURGER_API Burger::Mouse::PostMouseUp(uint32_t uMouseBits,uint32_t uMSTimeStamp)
 {
 	MouseButtonEvent_t NewEvent;
 	NewEvent.m_uEvent = EVENT_MOUSEUP;
@@ -461,11 +462,11 @@ void BURGER_API Burger::Mouse::PostMouseUp(Word32 uMouseBits,Word32 uMSTimeStamp
 	\param iWheelYMovement Motion for the vertical mouse wheel
 	\param iWheelXMovement Motion for the horizontal mouse wheel
 	\param uMSTimeStamp Timestamp in Milliseconds, 0 will fill in the value from Tick::ReadMilliseconds()
-	\sa PostMouseUp(Word32,Word32) or PostMouseDown(Word32,Word32)
+	\sa PostMouseUp(uint32_t,uint32_t) or PostMouseDown(uint32_t,uint32_t)
 
 ***************************************/
 
-void BURGER_API Burger::Mouse::PostMouseWheel(Int32 iWheelXMovement,Int32 iWheelYMovement,Word32 uMSTimeStamp)
+void BURGER_API Burger::Mouse::PostMouseWheel(int32_t iWheelXMovement,int32_t iWheelYMovement,uint32_t uMSTimeStamp)
 {
 	MouseWheelEvent_t NewEvent;
 	NewEvent.m_uEvent = EVENT_MOUSEWHEEL;
@@ -487,13 +488,13 @@ void BURGER_API Burger::Mouse::PostMouseWheel(Int32 iWheelXMovement,Int32 iWheel
 
 ***************************************/
 
-Word BURGER_API Burger::Mouse::PostMouseEvent(const EventHeader_t *pEvent)
+uint_t BURGER_API Burger::Mouse::PostMouseEvent(const EventHeader_t *pEvent)
 {
 	m_MouseLock.Lock();
-	Word uResult = 10;
-	Word uEnd = m_uArrayEnd;
+	uint_t uResult = 10;
+	uint_t uEnd = m_uArrayEnd;
 	// See if there's room in the buffer
-	Word uTemp = (uEnd+1)&(MOUSEBUFFSIZE-1);
+	uint_t uTemp = (uEnd+1)&(MOUSEBUFFSIZE-1);
 	if (uTemp!=m_uArrayStart) {
 		// Didn't wrap, accept it!
 		m_uArrayEnd = uTemp;
@@ -502,7 +503,7 @@ Word BURGER_API Burger::Mouse::PostMouseEvent(const EventHeader_t *pEvent)
 		MouseEvent_t *pNewEvent = &m_MouseEvents[uEnd];
 
 		// Add the proper time stamp
-		Word32 uTime = pEvent->m_uMSTimeStamp;
+		uint32_t uTime = pEvent->m_uMSTimeStamp;
 		if (!uTime) {
 			uTime = Tick::ReadMilliseconds();
 		}
@@ -519,7 +520,7 @@ Word BURGER_API Burger::Mouse::PostMouseEvent(const EventHeader_t *pEvent)
 				// Grab the current location of the mouse for recording
 				pNewEvent->m_Button.m_uX = m_uX;
 				pNewEvent->m_Button.m_uY = m_uY;
-				Word uButtons = static_cast<const MouseButtonEvent_t *>(pEvent)->m_uButtons;
+				uint_t uButtons = static_cast<const MouseButtonEvent_t *>(pEvent)->m_uButtons;
 				pNewEvent->m_Button.m_uButtons = uButtons;
 				if (uMouseEvent==EVENT_MOUSEDOWN) {
 					// Add to the buttons
@@ -537,10 +538,10 @@ Word BURGER_API Burger::Mouse::PostMouseEvent(const EventHeader_t *pEvent)
 				// Given a position, compare to the previous location to derive
 				// the mouse motion for code that requests delta motion
 
-				Word32 uX = static_cast<const MousePositionEvent_t *>(pEvent)->m_uX;
-				Word32 uY = static_cast<const MousePositionEvent_t *>(pEvent)->m_uY;
-				Int32 iX = static_cast<Int32>(uX-m_uX);
-				Int32 iY = static_cast<Int32>(uY-m_uY);
+				uint32_t uX = static_cast<const MousePositionEvent_t *>(pEvent)->m_uX;
+				uint32_t uY = static_cast<const MousePositionEvent_t *>(pEvent)->m_uY;
+				int32_t iX = static_cast<int32_t>(uX-m_uX);
+				int32_t iY = static_cast<int32_t>(uY-m_uY);
 				m_iDeltaX += iX;		// Update the delta motion
 				m_iDeltaY += iY;
 				
@@ -562,12 +563,12 @@ Word BURGER_API Burger::Mouse::PostMouseEvent(const EventHeader_t *pEvent)
 			{
 				// Given delta motion, move the global cursor
 
-				Int32 iX = static_cast<const MouseMotionEvent_t *>(pEvent)->m_iDeltaX;
-				Int32 iY = static_cast<const MouseMotionEvent_t *>(pEvent)->m_iDeltaY;
+				int32_t iX = static_cast<const MouseMotionEvent_t *>(pEvent)->m_iDeltaX;
+				int32_t iY = static_cast<const MouseMotionEvent_t *>(pEvent)->m_iDeltaY;
 				m_iDeltaX += iX;
 				m_iDeltaY += iY;
-				Word32 uX = m_uX;
-				Word32 uY = m_uY;
+				uint32_t uX = m_uX;
+				uint32_t uY = m_uY;
 				uX += iX;
 				uY += iY;
 				// Handle wrap around by checking the delta's signs
@@ -595,8 +596,8 @@ Word BURGER_API Burger::Mouse::PostMouseEvent(const EventHeader_t *pEvent)
 		case EVENT_MOUSEWHEEL:
 			{
 				// Store the mouse wheel event
-				Int32 iX = static_cast<const MouseWheelEvent_t *>(pEvent)->m_iMouseWheelX;
-				Int32 iY = static_cast<const MouseWheelEvent_t *>(pEvent)->m_iMouseWheelY;
+				int32_t iX = static_cast<const MouseWheelEvent_t *>(pEvent)->m_iMouseWheelX;
+				int32_t iY = static_cast<const MouseWheelEvent_t *>(pEvent)->m_iMouseWheelY;
 				m_iMouseWheelX += iX;
 				m_iMouseWheelY += iY;
 				pNewEvent->m_Wheel.m_iMouseWheelX = iX;

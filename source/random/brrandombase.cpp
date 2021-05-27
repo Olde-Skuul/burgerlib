@@ -1,37 +1,37 @@
 /***************************************
 
-    Random number generator base class
+	Random number generator base class
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brrandombase.h"
-#include "brtimedate.h"
-#include "brtick.h"
 #include "brstringfunctions.h"
+#include "brtick.h"
+#include "brtimedate.h"
 
 /*! ************************************
 
 	\class Burger::RandomBase
 	\brief A random number generator base class.
-	
+
 	This class is what all random number generators derive
 	from so that many random number generator algorithms
 	can share common code.
 
 	\note It's permissible to make binary copies of this class.
-	
+
 ***************************************/
 
 #if !defined(DOXYGEN)
-BURGER_CREATE_STATICRTTI_PARENT(Burger::RandomBase,Burger::Base);
+BURGER_CREATE_STATICRTTI_PARENT(Burger::RandomBase, Burger::Base);
 #endif
 
 /*! ************************************
@@ -44,50 +44,45 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::RandomBase,Burger::Base);
 
 ***************************************/
 
-
 /*! ************************************
 
-	\fn void Burger::RandomBase::SetSeed(Word32 uNewSeed)
+	\fn void Burger::RandomBase::SetSeed(uint32_t uNewSeed)
 	\brief Seed the random number generator.
-	
+
 	Set the random number generator to a specific seed.
 	This allows altering the random number flow in a
 	controlled manner.
-	
+
 	\param uNewSeed 32 bit seed value.
 	\sa Get(void) or GetSeed(void) const
 
 ***************************************/
 
-
 /*! ************************************
 
-	\fn Word32 Burger::RandomBase::Get(void)
+	\fn uint32_t Burger::RandomBase::Get(void)
 	\brief Return a 32 bit pseudo random number.
-	
-	Get a pseudo random number using the current algorithm. 
+
+	Get a pseudo random number using the current algorithm.
 	Return a 32 bit unsigned value.
 
 	\return A 32 bit pseudo random number.
-	\sa SetSeed(Word32) or GetWord(Word32)
+	\sa SetSeed(uint32_t) or GetWord(uint32_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Word32 Burger::RandomBase::GetSeed(void) const
+	\fn uint32_t Burger::RandomBase::GetSeed(void) const
 	\brief Return the random number seed.
-	
+
 	Get seed value for this pseudo random number
 	generator.
 
 	\return A 32 bit pseudo random number.
-	\sa SetSeed(Word32)
+	\sa SetSeed(uint32_t)
 
 ***************************************/
-
-
-
 
 /*! ************************************
 
@@ -102,59 +97,58 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::RandomBase,Burger::Base);
 	timer runs at a constant time base but the machine in question
 	does not. As a result. The number of times Get() is
 	called is anyone's guess.
-	
-	\sa SetSeed(Word32) or Get(void).
+
+	\sa SetSeed(uint32_t) or Get(void).
 
 ***************************************/
 
-void BURGER_API Burger::RandomBase::RandomSeed(void)
+void BURGER_API Burger::RandomBase::RandomSeed(void) BURGER_NOEXCEPT
 {
 	// Read the current time to get a seed
 	TimeDate_t Date;
 	Date.GetTime();
-	WordPtr uTimeT;
+	uintptr_t uTimeT;
 	Date.StoreTimeT(&uTimeT);
 
 	// Init the seed with the current time
-	SetSeed(static_cast<Word32>(uTimeT));					
-	Word32 uTickMark = Tick::Read();	// Get a current tick mark
+	SetSeed(static_cast<uint32_t>(uTimeT));
+	// Get a current tick mark
+	const uint32_t uTickMark = Tick::Read(); 
 	do {
-		Get();							// Discard a number from the stream
-	} while (Tick::Read()==uTickMark);	// Same time?
+		// Discard a number from the stream
+		Get();
+	} while (Tick::Read() == uTickMark); // Same time?
 }
 
 /*! ************************************
 
 	\brief Return a 32 bit random number.
-	
-	Get a random number. Return a number between 0
-	through (Range-1) inclusive.
-	
+
+	Get a random number. Return a number between 0 through (Range-1) inclusive.
+
 	\param uRange 0 means return 32 bits as is, anything else
 		means return 0 through (Range-1) inclusive.
 	\return A random number in the specified range.
 
 ***************************************/
 
-uint32_t BURGER_API Burger::RandomBase::GetWord(uint32_t uRange)
+uint32_t BURGER_API Burger::RandomBase::GetWord(uint32_t uRange) BURGER_NOEXCEPT
 {
-    uint32_t uNewVal = Get();
+	uint32_t uNewVal = Get();
 	// Return as is
 	if (uRange) {
-		
-		// A ranged random number is requested,
-		// apply a linear scale
-		
-		if (uRange>0x10000U) {
+
+		// A ranged random number is requested, apply a linear scale
+		if (uRange > 0x10000U) {
+
 			// Do it with a modulo, slow
 			// but accurate
-			uNewVal = uNewVal%uRange;
+			uNewVal = uNewVal % uRange;
 		} else {
-			// Can do it the quick way with fixed
-			// point math
-			
-			uNewVal&=0xFFFFU;		// Make sure they are shorts!
-			uNewVal = ((uNewVal*uRange)>>16U);
+
+			// Can do it the quick way with fixed point math
+			uNewVal &= 0xFFFFU; // Make sure they are shorts!
+			uNewVal = ((uNewVal * uRange) >> 16U);
 		}
 	}
 	return uNewVal;
@@ -163,36 +157,38 @@ uint32_t BURGER_API Burger::RandomBase::GetWord(uint32_t uRange)
 /*! ************************************
 
 	\brief Return a dice roll
-	
-	Given the number of dice and the size of the dice, 
-	"roll" the dice and return the result.
+
+	Given the number of dice and the size of the dice, "roll" the dice and
+	return the result.
 
 	Examples:
 	GetDice(1,4) will yield 1-4 evenly spread
-	GetDice(2,4) will yield 2-8 with 5 having the highest probability based on the curve
+	GetDice(2,4) will yield 2-8 with 5 having the highest probability based on
+		the curve
 
 	If either input value is 0, the result is zero.
-	If the dice roll exceeds a \ref Word32, \ref BURGER_MAXUINT is returned
-	
+	If the dice roll exceeds a uint32_t, \ref BURGER_MAXUINT is returned
+
 	\param uDiceCount Number of dice to roll.
 	\param uDiceSize Number of sides on each die.
 	\return A random number generated by the dice roll.
 
 ***************************************/
 
-uint32_t BURGER_API Burger::RandomBase::GetDice(uint32_t uDiceCount, uint32_t uDiceSize)
+uint32_t BURGER_API Burger::RandomBase::GetDice(
+	uint32_t uDiceCount, uint32_t uDiceSize) BURGER_NOEXCEPT
 {
-    uint32_t uResult = 0;
+	uint32_t uResult = 0;
 	if (uDiceCount && uDiceSize) {
 
-		// Prime the value with the dice count so 
+		// Prime the value with the dice count so
 		// there is no need to do a +1 per iteration
 		uResult = uDiceCount;
 		do {
-            uint32_t uTemp = GetWord(uDiceSize)+uResult;
+			const uint32_t uTemp = GetWord(uDiceSize) + uResult;
 			// Test for overflow
 			// Likely will never happen, but you never know.
-			if (uTemp<uResult) {
+			if (uTemp < uResult) {
 				uResult = BURGER_MAXUINT;
 				break;
 			}
@@ -205,82 +201,89 @@ uint32_t BURGER_API Burger::RandomBase::GetDice(uint32_t uDiceCount, uint32_t uD
 /*! ************************************
 
 	\brief Return a signed value in a specific range.
-	
-	Return a random number between -Range and +Range (Inclusive)
-	and it's a SIGNED value.
-	If Range = 3, then the value returned is -2 to 2 inclusive.
+
+	Return a random number between -Range and +Range (Inclusive) and it's a
+	SIGNED value. If Range = 3, then the value returned is -2 to 2 inclusive.
 	0, and numbers higher than 0x7FFFFFFFU are illegal.
-	
+
 	\param uRange Range from 1 to MAX_INT-1.
 	\return Signed value from -uRange to uRange (Inclusive)
 	\sa Get() and GetFloat().
 
 ***************************************/
 
-int32_t BURGER_API Burger::RandomBase::GetSigned(uint32_t uRange)
+int32_t BURGER_API Burger::RandomBase::GetSigned(
+	uint32_t uRange) BURGER_NOEXCEPT
 {
-	return static_cast<int32_t>(GetWord(uRange<<1U)-uRange);		/* Get the random number */
+	// Get the random number
+	return static_cast<int32_t>(GetWord(uRange << 1U) - uRange);
 }
 
 /*! ************************************
 
 	\brief Return a float from 0.0f to 0.99999f.
-	
-	Returns a random number in the range of 0.0f
-	to 0.999999f. The numbers are spread evenly.
-	
+
+	Returns a random number in the range of 0.0f to 0.999999f. The numbers are
+	spread evenly.
+
 	\return Random float from 0.0 to 0.9999999999f
 	\sa GetSigned(), GetSymmetricFloat() and Get().
 
 ***************************************/
 
-float BURGER_API Burger::RandomBase::GetFloat(void)
+float BURGER_API Burger::RandomBase::GetFloat(void) BURGER_NOEXCEPT
 {
-    int32_t iValue = static_cast<int32_t>(Get())&0x7FFFFFFF;		// Max 32 bit int
+	// Max 32 bit int
+	const int32_t iValue = static_cast<int32_t>(Get()) & 0x7FFFFFFF;
+
 	// Convert to float
-	return static_cast<float>(iValue)*
-		(1.0f/static_cast<float>(0x80000000U));
+	return static_cast<float>(iValue) *
+		(1.0f / static_cast<float>(0x80000000U));
 }
 
 /*! ************************************
 
 	\brief Return a float from 0.0f to fRange.
-	
-	Returns a random number in the range of 0.0f
-	to fRange. The numbers are spread evenly.
-	
+
+	Returns a random number in the range of 0.0f to fRange. The numbers are
+	spread evenly.
+
 	\return Random float from 0.0 to fRange
-	\sa GetFloat(void), GetSigned(Word32), GetSymmetricFloat(float) and GetWord(Word32).
+	\sa GetFloat(void), GetSigned(uint32_t), GetSymmetricFloat(float) and
+		GetWord(uint32_t).
 
 ***************************************/
 
-float BURGER_API Burger::RandomBase::GetFloat(float fRange)
+float BURGER_API Burger::RandomBase::GetFloat(float fRange) BURGER_NOEXCEPT
 {
-    int32_t iValue = static_cast<int32_t>(Get())&0x7FFFFFFF;		// Max 32 bit int
+	// Max 32 bit int
+	const int32_t iValue = static_cast<int32_t>(Get()) & 0x7FFFFFFF;
+
 	// Convert to float
-	return fRange*static_cast<float>(iValue)*
-		(1.0f/static_cast<float>(0x80000000U));
+	return fRange * static_cast<float>(iValue) *
+		(1.0f / static_cast<float>(0x80000000U));
 }
 
 /*! ************************************
 
 	\brief Return a float from -.0.99999f to 0.99999f.
-	
-	Returns a random number in the range of -.0.99999f
-	to 0.999999f. The numbers are spread evenly.
-	
+
+	Returns a random number in the range of -.0.99999f to 0.999999f. The numbers
+	are spread evenly.
+
 	\return Random float from -.0.99999f to 0.9999999999f
 	\sa GetSigned(), GetFloat() and Get().
 
 ***************************************/
 
-float BURGER_API Burger::RandomBase::GetSymmetricFloat(void)
+float BURGER_API Burger::RandomBase::GetSymmetricFloat(void) BURGER_NOEXCEPT
 {
-    int32_t iValue = static_cast<int32_t>(Get());		// Max 32 bit int
+	// Max 32 bit int
+	const int32_t iValue = static_cast<int32_t>(Get());
 	// Convert to float
-	float fValue = static_cast<float>(iValue&0x7FFFFFFF)*
-		(1.0f/static_cast<float>(0x80000000U));
-	if (iValue&0x80000000) {
+	float fValue = static_cast<float>(iValue & 0x7FFFFFFF) *
+		(1.0f / static_cast<float>(0x80000000U));
+	if (iValue & 0x80000000) {
 		fValue *= -1.0f;
 	}
 	return fValue;
@@ -289,23 +292,27 @@ float BURGER_API Burger::RandomBase::GetSymmetricFloat(void)
 /*! ************************************
 
 	\brief Return a float from -fRange to fRange
-	
-	Returns a random number in the range of -fRange
-	to fRange. The numbers are spread evenly.
+
+	Returns a random number in the range of -fRange to fRange. The numbers are
+	spread evenly.
 
 	\return Random float from -fRange to fRange
-	\sa GetSymmetricFloat(void), GetSigned(void), GetFloat(float) and GetWord(Word32).
+	\sa GetSymmetricFloat(void), GetSigned(void), GetFloat(float) and
+		GetWord(uint32_t).
 
 ***************************************/
 
-float BURGER_API Burger::RandomBase::GetSymmetricFloat(float fRange)
+float BURGER_API Burger::RandomBase::GetSymmetricFloat(
+	float fRange) BURGER_NOEXCEPT
 {
-    int32_t iValue = static_cast<int32_t>(Get());		// Max 32 bit int
+	// Max 32 bit int
+	const int32_t iValue = static_cast<int32_t>(Get());
+
 	// Convert to float
-	float fValue = static_cast<float>(iValue&0x7FFFFFFF)*
-		(1.0f/static_cast<float>(0x80000000U));
-	fValue*=fRange;
-	if (iValue&0x80000000) {
+	float fValue = static_cast<float>(iValue & 0x7FFFFFFF) *
+		(1.0f / static_cast<float>(0x80000000U));
+	fValue *= fRange;
+	if (iValue & 0x80000000) {
 		fValue *= -1.0f;
 	}
 	return fValue;
@@ -314,20 +321,22 @@ float BURGER_API Burger::RandomBase::GetSymmetricFloat(float fRange)
 /*! ************************************
 
 	\brief Return a double from 0.0 to 0.999999999.
-	
-	Returns a random number in the range of 0.0
-	to 0.999999. The numbers are spread evenly with 53 bit resolution.
-	
+
+	Returns a random number in the range of 0.0	to 0.999999. The numbers are
+	spread evenly with 53 bit resolution.
+
 	\return Random double from 0.0 to 0.9999999999
 	\sa GetFloat() and Get().
 
 ***************************************/
 
-double BURGER_API Burger::RandomBase::GetDouble(void)
+double BURGER_API Burger::RandomBase::GetDouble(void) BURGER_NOEXCEPT
 {
-    int32_t iUpper=static_cast<int32_t>(Get()>>5U);
-    int32_t iLower=static_cast<int32_t>(Get()>>6U);
+	const int32_t iUpper = static_cast<int32_t>(Get() >> 5U);
+	const int32_t iLower = static_cast<int32_t>(Get() >> 6U);
 
 	// 0x20000000000000 = 9007199254740992.0
-	return ((static_cast<double>(iUpper)*67108864.0)+static_cast<double>(iLower))*(1.0/9007199254740992.0);
+	return ((static_cast<double>(iUpper) * 67108864.0) +
+			   static_cast<double>(iLower)) *
+		(1.0 / 9007199254740992.0);
 }

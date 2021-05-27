@@ -145,7 +145,7 @@ void BURGER_API Burger::DisplayDirectX11::ClearContext(
 
 void BURGER_API Burger::DisplayDirectX11::SetupCursor(void) const
 {
-	Word bIsFullScreen = m_uFlags & FULLSCREEN;
+	uint_t bIsFullScreen = m_uFlags & FULLSCREEN;
 
 	// Clip cursor if requested
 	if (bIsFullScreen && m_bClipCursorWhenFullScreen) {
@@ -174,11 +174,11 @@ void BURGER_API Burger::DisplayDirectX11::SetupCursor(void) const
 	\windowsonly
 	\param uDXGI_FORMAT DXGI_FORMAT value
 	\return Number of bits per pixel, 0 on error
-	\sa GetD3DFORMATColorChannelBits(Word)
+	\sa GetD3DFORMATColorChannelBits(uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::GetDXGI_FORMATColorChannelBits(Word uDXGI_FORMAT)
+uint_t BURGER_API Burger::GetDXGI_FORMATColorChannelBits(uint_t uDXGI_FORMAT)
 {
 	switch (uDXGI_FORMAT) {
 	case DXGI_FORMAT_R32G32B32A32_TYPELESS:

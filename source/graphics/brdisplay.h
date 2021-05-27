@@ -1,13 +1,14 @@
 /***************************************
 
-	Display base class
+    Display base class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -117,9 +118,9 @@ public:
 	};
 
 	enum eClearBits {
-		CLEAR_COLOR = 0x01,			///< Used by Clear(Word) to clear the color buffer
-		CLEAR_DEPTH = 0x02,			///< Used by Clear(Word) to clear the depth buffer
-		CLEAR_STENCIL = 0x04			///< Used by Clear(Word) to clear the stencil buffer
+		CLEAR_COLOR = 0x01,			///< Used by Clear(uint_t) to clear the color buffer
+		CLEAR_DEPTH = 0x02,			///< Used by Clear(uint_t) to clear the depth buffer
+		CLEAR_STENCIL = 0x04			///< Used by Clear(uint_t) to clear the stencil buffer
 	};
 
 	enum eDepthFunction {
@@ -176,15 +177,15 @@ public:
 			VIDEOMODE_HARDWARE = 0x01,		///< Set if hardware acceleration is available
 			VIDEOMODE_REFRESHVALID = 0x02	///< Set if refresh rate is valid
 		};
-		Word m_uWidth;		///< Width of video mode
-		Word m_uHeight;		///< Height of video mode
-		Word m_uDepth;		///< Depth of video mode
-		Word m_uHertz;		///< Video scan rate (0 if not supported)
-		Word m_uFlags;		///< Flags for special features
+		uint_t m_uWidth;		///< Width of video mode
+		uint_t m_uHeight;		///< Height of video mode
+		uint_t m_uDepth;		///< Depth of video mode
+		uint_t m_uHertz;		///< Video scan rate (0 if not supported)
+		uint_t m_uFlags;		///< Flags for special features
 	};
 
 	struct OpenGLVertexInputs_t {
-		Word m_uIndex;				///< VertexBuffer::eUsage OpenGL BindAttribLocation
+		uint_t m_uIndex;				///< VertexBuffer::eUsage OpenGL BindAttribLocation
 		const char *m_pName;		///< Variable name for input in the shader
 	};
 
@@ -193,16 +194,16 @@ public:
 		const void *m_pNormals;			///< Pointer to the vertex normals
 		const void *m_pTexcoords;		///< Pointer to the texture UVs
 		const void *m_pElements;		///< Pointer to the polygon vertex indexes
-		WordPtr m_uPositionSize;		///< Size of the positions in bytes
-		WordPtr m_uNormalSize;			///< Size of the vertex normals in bytes
-		WordPtr m_uTexcoordSize;		///< Size of the texture UVs in bytes
-		WordPtr m_uElementSize;			///< Size of the polygon vertex indexes in bytes
-		Word m_ePositionType;			///< Open GL type of positions (GL_FLOAT)
-		Word m_uPositionElementCount;	///< Number of elements per position (3 or 4)
-		Word m_eNormalType;				///< Open GL type of vertex normal (GL_FLOAT)
-		Word m_uNormalElementCount;		///< Number of elements per vertex normal (3 or 4)
-		Word m_eTexcoordType;			///< Open GL type of texture UVs (GL_FLOAT)
-		Word m_uTexcoordElementCount;	///< Number of elements per uv (2)
+		uintptr_t m_uPositionSize;		///< Size of the positions in bytes
+		uintptr_t m_uNormalSize;			///< Size of the vertex normals in bytes
+		uintptr_t m_uTexcoordSize;		///< Size of the texture UVs in bytes
+		uintptr_t m_uElementSize;			///< Size of the polygon vertex indexes in bytes
+		uint_t m_ePositionType;			///< Open GL type of positions (GL_FLOAT)
+		uint_t m_uPositionElementCount;	///< Number of elements per position (3 or 4)
+		uint_t m_eNormalType;				///< Open GL type of vertex normal (GL_FLOAT)
+		uint_t m_uNormalElementCount;		///< Number of elements per vertex normal (3 or 4)
+		uint_t m_eTexcoordType;			///< Open GL type of texture UVs (GL_FLOAT)
+		uint_t m_uTexcoordElementCount;	///< Number of elements per uv (2)
 	};
 
 	class VideoCardDescription {
@@ -225,38 +226,38 @@ public:
 		String m_MonitorName;					///< Name of the monitor
 		Rect_t m_SystemRect;					///< Location on the desktop
 		Rect_t m_CurrentResolution;				///< Current resolution of the device
-		Word m_uDevNumber;						///< Device number
-		Word m_uFlags;							///< Flags for special features
+		uint_t m_uDevNumber;						///< Device number
+		uint_t m_uFlags;							///< Flags for special features
 		VideoCardDescription();
 		~VideoCardDescription();
 	};
 
-	typedef Word(BURGER_API *FadeProc)(void *pThis, Word uStep);		///< Callback function prototype for palette fading functions
-	typedef void (BURGER_API *ResizeProc)(void *pThis, Word uWidth, Word uHeight);		///< Callback function prototype for window resizing
+	typedef uint_t(BURGER_API *FadeProc)(void *pThis, uint_t uStep);		///< Callback function prototype for palette fading functions
+	typedef void (BURGER_API *ResizeProc)(void *pThis, uint_t uWidth, uint_t uHeight);		///< Callback function prototype for window resizing
 	typedef void (BURGER_API *RenderProc)(void *pThis);					///< Callback function for rendering the scene
 	typedef void (BURGER_API *ReleaseProc)(void *pThis);				///< Callback function for releasing resources on shutdown
 
 protected:
 	struct Globals_t {
-		Word m_uDefaultWidth;			///< Default screen width of the main monitor
-		Word m_uDefaultHeight;			///< Default screen height of the main monitor
-		Word m_uDefaultDepth;			///< Default screen depth of the main monitor
-		Word m_uDefaultHertz;			///< Default screen refresh rate (0 means not applicable)
-		Word m_uDefaultTotalWidth;		///< Default screen width of all monitors
-		Word m_uDefaultTotalHeight;		///< Default screen height of all monitors
-		Word m_uDefaultMonitorCount;	///< Number of monitors attached
+		uint_t m_uDefaultWidth;			///< Default screen width of the main monitor
+		uint_t m_uDefaultHeight;			///< Default screen height of the main monitor
+		uint_t m_uDefaultDepth;			///< Default screen depth of the main monitor
+		uint_t m_uDefaultHertz;			///< Default screen refresh rate (0 means not applicable)
+		uint_t m_uDefaultTotalWidth;		///< Default screen width of all monitors
+		uint_t m_uDefaultTotalHeight;		///< Default screen height of all monitors
+		uint_t m_uDefaultMonitorCount;	///< Number of monitors attached
 
 #if defined(BURGER_XBOX360) || defined(DOXYGEN)
-		Word m_bIsWidescreen;			///< (Xbox 360 Only) \ref TRUE if wide screen display
-		Word m_bIsHiDef;				///< (Xbox 360 Only) \ref TRUE if high definition display
-		Word m_bIsInterlaced;			///< (Xbox 360 Only) \ref TRUE if interlaced display
+		uint_t m_bIsWidescreen;			///< (Xbox 360 Only) \ref TRUE if wide screen display
+		uint_t m_bIsHiDef;				///< (Xbox 360 Only) \ref TRUE if high definition display
+		uint_t m_bIsInterlaced;			///< (Xbox 360 Only) \ref TRUE if interlaced display
 #endif
 
 #if defined(BURGER_IOS) || defined(DOXYGEN)
 		float m_fRetinaScale;			///< (iOS Only) Points to Pixels scale factor for retina displays
 #endif
 
-		Word m_bInitialized;			///< Are the globals set?
+		uint_t m_bInitialized;			///< Are the globals set?
 	};
 	static Globals_t g_Globals;	///< Global values initialized when the first Display class is created
 
@@ -267,14 +268,14 @@ protected:
 // Platform specific data
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	Word32 m_WindowPlacement[11];		///< WINDOWPLACEMENT record
+	uint32_t m_WindowPlacement[11];		///< WINDOWPLACEMENT record
 #endif
 
 #if defined(BURGER_XBOX360) || defined(DOXYGEN)
 	D3DDevice *m_pD3DDevice;	///< (Xbox 360 Only) Direct 3D device
-	Word m_uClearColor;			///< (Xbox 360 Only) 32 bit RGBA color for screen clear
+	uint_t m_uClearColor;			///< (Xbox 360 Only) 32 bit RGBA color for screen clear
 	float m_fClearDepth;		///< (Xbox 360 Only) ZValue to write for screen clear
-	Word m_bWideScreen;			///< (Xbox 360 Only) \ref TRUE if wide screen display is active
+	uint_t m_bWideScreen;			///< (Xbox 360 Only) \ref TRUE if wide screen display is active
 #endif
 
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
@@ -287,21 +288,21 @@ protected:
 
 #if defined(BURGER_IOS) || defined(DOXYGEN)
 	EAGLContext *m_pEAGLContext;			///< (iOS Only) OpenGL Context
-	Word m_uFrontBuffer;					///< (iOS Only) Main render buffer GL name
-	Word m_uColorRenderBuffer;				///< (iOS Only) Color render buffer GL name
-	Word m_uDepthRenderBuffer;				///< (iOS Only) Depth buffer for rendering
+	uint_t m_uFrontBuffer;					///< (iOS Only) Main render buffer GL name
+	uint_t m_uColorRenderBuffer;				///< (iOS Only) Color render buffer GL name
+	uint_t m_uDepthRenderBuffer;				///< (iOS Only) Depth buffer for rendering
 #endif
 
 // Non windows OpenGL Platforms
 #if defined(BURGER_OPENGL) && !defined(BURGER_WINDOWS)
 public:
-	Word *m_pCompressedFormats;				///< Pointer to an array of supported OpenGL compressed textures
+	uint_t *m_pCompressedFormats;				///< Pointer to an array of supported OpenGL compressed textures
 	float m_fOpenGLVersion;					///< Numeric value for the version of OpenGL
 	float m_fShadingLanguageVersion;		///< Numeric value for the version of the Shader compiler
-	Word m_uCompressedFormatCount;			///< Number of supported compressed texture formats
-	Word m_uMaximumVertexAttributes;		///< Maximum number of vertex attributes GL_MAX_VERTEX_ATTRIBS
-	Word m_uMaximumColorAttachments;		///< Maximum number of color frame attachments GL_MAX_COLOR_ATTACHMENTS
-	Word m_uActiveTexture;					///< OpenGL glActiveTexture() shadow value
+	uint_t m_uCompressedFormatCount;			///< Number of supported compressed texture formats
+	uint_t m_uMaximumVertexAttributes;		///< Maximum number of vertex attributes GL_MAX_VERTEX_ATTRIBS
+	uint_t m_uMaximumColorAttachments;		///< Maximum number of color frame attachments GL_MAX_COLOR_ATTACHMENTS
+	uint_t m_uActiveTexture;					///< OpenGL glActiveTexture() shadow value
 protected:
 #endif
 
@@ -318,30 +319,30 @@ protected:
 
 	Texture *m_pBoundTextures[8];	///< Bound textures for the current context
 
-	Word m_uWidth;				///< Width in pixels of the display buffer
-	Word m_uHeight;				///< Height in pixels of the display buffer
-	Word m_uDepth;				///< Depth in bits of the display buffer
-	Word m_uFlags;				///< Flags for describing available features
-	Word m_uDisplayWidth;		///< Width of the display hardware (Can differ from m_uWidth for pixel stretching)
-	Word m_uDisplayHeight;		///< Height of the display hardware (Can differ from m_uHeight for pixel stretching)
-	Word m_uDisplayDepth;		///< Depth of the display hardware (Can differ from m_uDepth for pixel depth change)
+	uint_t m_uWidth;				///< Width in pixels of the display buffer
+	uint_t m_uHeight;				///< Height in pixels of the display buffer
+	uint_t m_uDepth;				///< Depth in bits of the display buffer
+	uint_t m_uFlags;				///< Flags for describing available features
+	uint_t m_uDisplayWidth;		///< Width of the display hardware (Can differ from m_uWidth for pixel stretching)
+	uint_t m_uDisplayHeight;		///< Height of the display hardware (Can differ from m_uHeight for pixel stretching)
+	uint_t m_uDisplayDepth;		///< Depth of the display hardware (Can differ from m_uDepth for pixel depth change)
 	float m_fWidth;				///< Width of the rendering target as a float
 	float m_fHeight;			///< Height of the rendering target as a float
 	float m_fAspectRatioX;		///< Width/Height
 	float m_fAspectRatioY;		///< Height/Width
-	Word m_uBorderColor;		///< Hardware border color (MSDOS / Amiga only)
-	Word m_uPaletteFadeSpeed;	///< Speed in 1/60ths of a second for a palette fade
+	uint_t m_uBorderColor;		///< Hardware border color (MSDOS / Amiga only)
+	uint_t m_uPaletteFadeSpeed;	///< Speed in 1/60ths of a second for a palette fade
 
 	int m_iPauseRenderingCount;	///< Rendering pausing reference count
-	Word8 m_bRenderingPaused;	///< If \ref TRUE, rendering is paused
-	Word8 m_bPaletteDirty;		///< \ref TRUE if the palette buffer was changed
-	Word8 m_bPaletteVSync;		///< \ref TRUE if palette updates sync to video
-	Word8 m_bNotUsed[1];		///< Padding
-	Word8 m_Palette[256*3];		///< Palette of 256 RGB values
+	uint8_t m_bRenderingPaused;	///< If \ref TRUE, rendering is paused
+	uint8_t m_bPaletteDirty;		///< \ref TRUE if the palette buffer was changed
+	uint8_t m_bPaletteVSync;		///< \ref TRUE if palette updates sync to video
+	uint8_t m_bNotUsed[1];		///< Padding
+	uint8_t m_Palette[256*3];		///< Palette of 256 RGB values
 	
 	static void BURGER_API InitGlobals(void);
 	void BURGER_API InitDefaults(GameApp *pGameApp);
-	void BURGER_API SetWidthHeight(Word uWidth,Word uHeight);
+	void BURGER_API SetWidthHeight(uint_t uWidth,uint_t uHeight);
 public:
 	Display(GameApp *pGameApp);
 	virtual ~Display();
@@ -353,33 +354,33 @@ public:
 #else
 #define BURGER_VIRTUAL(a,b,c) virtual a b c = 0;
 #endif
-	BURGER_VIRTUAL(Word,Init,(Word uWidth,Word uHeight,Word uDepth=32,Word uFlags=DEFAULTFLAGS))
+	BURGER_VIRTUAL(uint_t,Init,(uint_t uWidth,uint_t uHeight,uint_t uDepth=32,uint_t uFlags=DEFAULTFLAGS))
 	BURGER_VIRTUAL(void,Shutdown,(void))
 	BURGER_VIRTUAL(void,BeginScene,(void))
 	BURGER_VIRTUAL(void,EndScene,(void))
 	BURGER_VIRTUAL(Texture *,CreateTextureObject,(void))
 	BURGER_VIRTUAL(VertexBuffer *,CreateVertexBufferObject,(void))
-	BURGER_VIRTUAL(void,Resize,(Word uWidth,Word uHeight))
-	BURGER_VIRTUAL(void,SetViewport,(Word uX,Word uY,Word uWidth,Word uHeight))
-	BURGER_VIRTUAL(void,SetScissorRect,(Word uX,Word uY,Word uWidth,Word uHeight))
+	BURGER_VIRTUAL(void,Resize,(uint_t uWidth,uint_t uHeight))
+	BURGER_VIRTUAL(void,SetViewport,(uint_t uX,uint_t uY,uint_t uWidth,uint_t uHeight))
+	BURGER_VIRTUAL(void,SetScissorRect,(uint_t uX,uint_t uY,uint_t uWidth,uint_t uHeight))
 	BURGER_VIRTUAL(void,SetClearColor,(float fRed,float fGreen,float fBlue,float fAlpha))
 	BURGER_VIRTUAL(void,SetClearDepth,(float fDepth))
-	BURGER_VIRTUAL(void,Clear,(Word uMask))
-	BURGER_VIRTUAL(void,Bind,(Texture *pTexture,Word uIndex = 0))
+	BURGER_VIRTUAL(void,Clear,(uint_t uMask))
+	BURGER_VIRTUAL(void,Bind,(Texture *pTexture,uint_t uIndex = 0))
 	BURGER_VIRTUAL(void,Bind,(Effect *pEffect))
-	BURGER_VIRTUAL(void,SetBlend,(Word bEnable))
+	BURGER_VIRTUAL(void,SetBlend,(uint_t bEnable))
 	BURGER_VIRTUAL(void,SetBlendFunction,(eSourceBlendFactor uSourceFactor,eDestinationBlendFactor uDestFactor))
-	BURGER_VIRTUAL(void,SetLighting,(Word bEnable))
-	BURGER_VIRTUAL(void,SetZWrite,(Word bEnable))
+	BURGER_VIRTUAL(void,SetLighting,(uint_t bEnable))
+	BURGER_VIRTUAL(void,SetZWrite,(uint_t bEnable))
 	BURGER_VIRTUAL(void,SetDepthTest,(eDepthFunction uDepthFunction))
 	BURGER_VIRTUAL(void,SetCullMode,(eCullMode uCullMode))
-	BURGER_VIRTUAL(void,SetScissor,(Word bEnable))
+	BURGER_VIRTUAL(void,SetScissor,(uint_t bEnable))
 	BURGER_VIRTUAL(void,DrawPrimitive,(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer))
 	BURGER_VIRTUAL(void,DrawElements,(ePrimitiveType uPrimitiveType,VertexBuffer *pVertexBuffer))
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	BURGER_INLINE tagWINDOWPLACEMENT *GetWindowedPlacement(void) { return static_cast<tagWINDOWPLACEMENT *>(static_cast<void *>(m_WindowPlacement)); }
-	Word BURGER_API HandleMinMax(HWND__ *pWindow,WordPtr lParam);
+	uint_t BURGER_API HandleMinMax(HWND__ *pWindow,uintptr_t lParam);
 	virtual void CheckForWindowSizeChange(void);
 	virtual void CheckForWindowChangingMonitors(void);
 #endif
@@ -389,9 +390,9 @@ public:
 	D3DPixelShader * BURGER_API CreatePixelShader(const void *pPixelShaderBinary) const;
 	BURGER_INLINE D3DDevice *GetD3DDevice(void) const { return m_pD3DDevice; }
 	void BURGER_API InitState(void);
-	BURGER_INLINE Word IsWideScreen(void) { return g_Globals.m_bIsWidescreen; }
-	BURGER_INLINE Word IsHiDef(void) { return g_Globals.m_bIsHiDef; }
-	BURGER_INLINE Word IsInterlaced(void) { return g_Globals.m_bIsInterlaced; }
+	BURGER_INLINE uint_t IsWideScreen(void) { return g_Globals.m_bIsWidescreen; }
+	BURGER_INLINE uint_t IsHiDef(void) { return g_Globals.m_bIsHiDef; }
+	BURGER_INLINE uint_t IsInterlaced(void) { return g_Globals.m_bIsInterlaced; }
 #endif
 
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
@@ -405,94 +406,94 @@ public:
 
 #if defined(BURGER_IOS) || defined(DOXYGEN)
 	BURGER_INLINE EAGLContext *GetGLContext(void) const { return m_pEAGLContext; }
-	BURGER_INLINE Word GetFrontBuffer(void) const { return m_uFrontBuffer; }
-	BURGER_INLINE Word GetColorBuffer(void) const { return m_uColorRenderBuffer; }
-	BURGER_INLINE Word GetDepthBuffer(void) const { return m_uDepthRenderBuffer; }
+	BURGER_INLINE uint_t GetFrontBuffer(void) const { return m_uFrontBuffer; }
+	BURGER_INLINE uint_t GetColorBuffer(void) const { return m_uColorRenderBuffer; }
+	BURGER_INLINE uint_t GetDepthBuffer(void) const { return m_uDepthRenderBuffer; }
 	BURGER_INLINE static float GetRetinaScale(void) { return g_Globals.m_fRetinaScale; }
 #else
-    static BURGER_INLINE Word GetFrontBuffer(void) { return 0; }
+    static BURGER_INLINE uint_t GetFrontBuffer(void) { return 0; }
 #endif
 	
 #if defined(BURGER_OPENGL) && !defined(BURGER_WINDOWS)
 	BURGER_INLINE float GetOpenGLVersion(void) const { return m_fOpenGLVersion; }
 	BURGER_INLINE float GetShadingLanguageVersion(void) const { return m_fShadingLanguageVersion; }
-	BURGER_INLINE Word GetCompressedFormatCount(void) const { return m_uCompressedFormatCount; }
-	BURGER_INLINE const Word *GetCompressedFormats(void) const { return m_pCompressedFormats; }
-	BURGER_INLINE Word GetMaximumVertexAttributes(void) const { return m_uMaximumVertexAttributes; }
+	BURGER_INLINE uint_t GetCompressedFormatCount(void) const { return m_uCompressedFormatCount; }
+	BURGER_INLINE const uint_t *GetCompressedFormats(void) const { return m_pCompressedFormats; }
+	BURGER_INLINE uint_t GetMaximumVertexAttributes(void) const { return m_uMaximumVertexAttributes; }
 	void BURGER_API SetupOpenGL(void);
-	Word BURGER_API CompileShader(Word GLEnum,const char *pShaderCode,WordPtr uShaderCodeLength=0) const;
-	Word BURGER_API CompileProgram(const char *pUnifiedShader,WordPtr uLength,const OpenGLVertexInputs_t *pVertexInputs=NULL,const Word *pMembers=NULL) const;
-	Word BURGER_API CompileProgram(const char *pVertexShader,WordPtr uVSLength,const char *pPixelShader,WordPtr uPSLength,const OpenGLVertexInputs_t *pVertexInputs=NULL,const Word *pMembers=NULL) const;
-	Word BURGER_API CreateVertexArrayObject(const OpenGLVertexBufferObjectDescription_t *pDescription) const;
-	void BURGER_API DeleteVertexArrayObject(Word uVertexArrayObject) const;
-	Word BURGER_API BuildFrameBufferObject(Word uWidth,Word uHeight,Word uGLDepth,Word uGLClamp,Word uGLZDepth=0) const;
-	static void BURGER_API DeleteFrameBufferObjectAttachment(Word uAttachment);
-	void BURGER_API DeleteFrameBufferObject(Word uFrameBufferObject) const;
-	static Word BURGER_API CreateTextureID(const Image *pImage,Word bGenerateMipMap=FALSE);
-	static const char * BURGER_API GetErrorString(Word uGLErrorEnum);
-	static WordPtr BURGER_API GetGLTypeSize(Word uGLTypeEnum);
-	static Word BURGER_API PrintGLError(const char *pErrorLocation);
+	uint_t BURGER_API CompileShader(uint_t GLEnum,const char *pShaderCode,uintptr_t uShaderCodeLength=0) const;
+	uint_t BURGER_API CompileProgram(const char *pUnifiedShader,uintptr_t uLength,const OpenGLVertexInputs_t *pVertexInputs=NULL,const uint_t *pMembers=NULL) const;
+	uint_t BURGER_API CompileProgram(const char *pVertexShader,uintptr_t uVSLength,const char *pPixelShader,uintptr_t uPSLength,const OpenGLVertexInputs_t *pVertexInputs=NULL,const uint_t *pMembers=NULL) const;
+	uint_t BURGER_API CreateVertexArrayObject(const OpenGLVertexBufferObjectDescription_t *pDescription) const;
+	void BURGER_API DeleteVertexArrayObject(uint_t uVertexArrayObject) const;
+	uint_t BURGER_API BuildFrameBufferObject(uint_t uWidth,uint_t uHeight,uint_t uGLDepth,uint_t uGLClamp,uint_t uGLZDepth=0) const;
+	static void BURGER_API DeleteFrameBufferObjectAttachment(uint_t uAttachment);
+	void BURGER_API DeleteFrameBufferObject(uint_t uFrameBufferObject) const;
+	static uint_t BURGER_API CreateTextureID(const Image *pImage,uint_t bGenerateMipMap=FALSE);
+	static const char * BURGER_API GetErrorString(uint_t uGLErrorEnum);
+	static uintptr_t BURGER_API GetGLTypeSize(uint_t uGLTypeEnum);
+	static uint_t BURGER_API PrintGLError(const char *pErrorLocation);
 #endif
 
-	void BURGER_API Pause(Word bPauseRendering);
-	BURGER_INLINE Texture *GetBoundTexture(Word uIndex = 0) const { return m_pBoundTextures[uIndex]; }
+	void BURGER_API Pause(uint_t bPauseRendering);
+	BURGER_INLINE Texture *GetBoundTexture(uint_t uIndex = 0) const { return m_pBoundTextures[uIndex]; }
 	Texture * BURGER_API CreateTexture(Texture::eWrapping uWrapping,Texture::eFilter uFilter);
-	Texture * BURGER_API CreateTexture(Word uWidth,Word uHeight,Image::ePixelTypes uPixelType,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTexture(uint_t uWidth,uint_t uHeight,Image::ePixelTypes uPixelType,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
 	Texture * BURGER_API CreateTexturePNG(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
 	Texture * BURGER_API CreateTexturePNG(Filename *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
-	Texture * BURGER_API CreateTexturePNG(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTexturePNG(RezFile *pRezFile,uint_t uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
 	Texture * BURGER_API CreateTextureGIF(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
 	Texture * BURGER_API CreateTextureGIF(Filename *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
-	Texture * BURGER_API CreateTextureGIF(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTextureGIF(RezFile *pRezFile,uint_t uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
 	Texture * BURGER_API CreateTextureTGA(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
 	Texture * BURGER_API CreateTextureTGA(Filename *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
-	Texture * BURGER_API CreateTextureTGA(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTextureTGA(RezFile *pRezFile,uint_t uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
 	Texture * BURGER_API CreateTextureBMP(const char *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
 	Texture * BURGER_API CreateTextureBMP(Filename *pFilename,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
-	Texture * BURGER_API CreateTextureBMP(RezFile *pRezFile,Word uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
+	Texture * BURGER_API CreateTextureBMP(RezFile *pRezFile,uint_t uRezNum,Texture::eWrapping uWrapping,Texture::eFilter uFilter);
 	VertexBuffer * BURGER_API CreateVertexBuffer(const VertexBuffer::VertexAoS_t *pDescription);
-	static Word BURGER_API GetVideoModes(ClassArray<VideoCardDescription> *pOutput);
-	void BURGER_API SetPalette(Word uStart,Word uCount,const Word8 *pPalette);
-	void BURGER_API SetPalette(Word uStart,Word uCount,const RGBAWord8_t *pPalette);
-	void BURGER_API SetBorderColor(Word uColor);
+	static uint_t BURGER_API GetVideoModes(ClassArray<VideoCardDescription> *pOutput);
+	void BURGER_API SetPalette(uint_t uStart,uint_t uCount,const uint8_t *pPalette);
+	void BURGER_API SetPalette(uint_t uStart,uint_t uCount,const RGBAWord8_t *pPalette);
+	void BURGER_API SetBorderColor(uint_t uColor);
 	void BURGER_API SetWindowTitle(const char *pTitle);
 	void BURGER_API SetPaletteBlack(void);
 	void BURGER_API SetPaletteWhite(void);
-	void BURGER_API SetPalette(const Word8 *pPalette);
+	void BURGER_API SetPalette(const uint8_t *pPalette);
 	void BURGER_API SetPalette(const RGBAWord8_t *pPalette);
 	void BURGER_API SetPalette(void **pHandle);
-	void BURGER_API SetPalette(RezFile *pRez,Word uResID);
-	void BURGER_API SetPalette(Word uStart,Word uCount,RezFile *pRez,Word uResID);
-	void BURGER_API FadeTo(const Word8 *pPalette,FadeProc pProc=NULL,void *pData=NULL);
+	void BURGER_API SetPalette(RezFile *pRez,uint_t uResID);
+	void BURGER_API SetPalette(uint_t uStart,uint_t uCount,RezFile *pRez,uint_t uResID);
+	void BURGER_API FadeTo(const uint8_t *pPalette,FadeProc pProc=NULL,void *pData=NULL);
 	void BURGER_API FadeToBlack(FadeProc pProc=NULL,void *pData=NULL);
 	void BURGER_API FadeToWhite(FadeProc pProc=NULL,void *pData=NULL);
-	void BURGER_API FadeTo(RezFile *pRez,Word uResID,FadeProc pProc=NULL,void *pData=NULL);
+	void BURGER_API FadeTo(RezFile *pRez,uint_t uResID,FadeProc pProc=NULL,void *pData=NULL);
 	void BURGER_API FadeTo(void **pHandle,FadeProc pProc=NULL,void *pData=NULL);
-    static BURGER_INLINE Word GetDefaultWidth(void) { return g_Globals.m_uDefaultWidth; }
-    static BURGER_INLINE Word GetDefaultHeight(void) { return g_Globals.m_uDefaultHeight; }
-    static BURGER_INLINE Word GetDefaultDepth(void) { return g_Globals.m_uDefaultDepth; }
-    static BURGER_INLINE Word GetDefaultHertz(void) { return g_Globals.m_uDefaultHertz; }
-    static BURGER_INLINE Word GetDefaultTotalWidth(void) { return g_Globals.m_uDefaultTotalWidth; }
-    static BURGER_INLINE Word GetDefaultTotalHeight(void) { return g_Globals.m_uDefaultTotalHeight; }
-    static BURGER_INLINE Word GetDefaultMonitorCount(void) { return g_Globals.m_uDefaultMonitorCount; }
+    static BURGER_INLINE uint_t GetDefaultWidth(void) { return g_Globals.m_uDefaultWidth; }
+    static BURGER_INLINE uint_t GetDefaultHeight(void) { return g_Globals.m_uDefaultHeight; }
+    static BURGER_INLINE uint_t GetDefaultDepth(void) { return g_Globals.m_uDefaultDepth; }
+    static BURGER_INLINE uint_t GetDefaultHertz(void) { return g_Globals.m_uDefaultHertz; }
+    static BURGER_INLINE uint_t GetDefaultTotalWidth(void) { return g_Globals.m_uDefaultTotalWidth; }
+    static BURGER_INLINE uint_t GetDefaultTotalHeight(void) { return g_Globals.m_uDefaultTotalHeight; }
+    static BURGER_INLINE uint_t GetDefaultMonitorCount(void) { return g_Globals.m_uDefaultMonitorCount; }
 	BURGER_INLINE GameApp *GetGameApp(void) const { return m_pGameApp; }
-	BURGER_INLINE Word GetWidth(void) const { return m_uWidth; }
-	BURGER_INLINE Word GetHeight(void) const { return m_uHeight; }
-	BURGER_INLINE Word GetDepth(void) const { return m_uDepth; }
-	BURGER_INLINE Word GetFlags(void) const { return m_uFlags; }
-	BURGER_INLINE Word GetDisplayWidth(void) const { return m_uDisplayWidth; }
-	BURGER_INLINE Word GetDisplayHeight(void) const { return m_uDisplayHeight; }
+	BURGER_INLINE uint_t GetWidth(void) const { return m_uWidth; }
+	BURGER_INLINE uint_t GetHeight(void) const { return m_uHeight; }
+	BURGER_INLINE uint_t GetDepth(void) const { return m_uDepth; }
+	BURGER_INLINE uint_t GetFlags(void) const { return m_uFlags; }
+	BURGER_INLINE uint_t GetDisplayWidth(void) const { return m_uDisplayWidth; }
+	BURGER_INLINE uint_t GetDisplayHeight(void) const { return m_uDisplayHeight; }
 	BURGER_INLINE float GetWidthFloat(void) const { return m_fWidth; }
 	BURGER_INLINE float GetHeightFloat(void) const { return m_fHeight; }
 	BURGER_INLINE float GetAspectRatioX(void) const { return m_fAspectRatioX; }
 	BURGER_INLINE float GetAspectRatioY(void) const { return m_fAspectRatioY; }
 	eAspectRatio BURGER_API GetAspectRatio(void) const;
-	BURGER_INLINE const Word8 *GetPalette(void) const { return m_Palette; }
-	BURGER_INLINE Word GetBorderColor(void) const { return m_uBorderColor; }
-	BURGER_INLINE Word GetFadeSpeed(void) const { return m_uPaletteFadeSpeed; }
-	BURGER_INLINE void SetFadeSpeed(Word uPaletteFadeSpeed) { m_uPaletteFadeSpeed = uPaletteFadeSpeed; }
-	BURGER_INLINE Word GetPaletteVSync(void) const { return m_bPaletteVSync; }
-	BURGER_INLINE void SetPaletteVSync(Word bPaletteVSync) { m_bPaletteVSync=(bPaletteVSync!=0); }
+	BURGER_INLINE const uint8_t *GetPalette(void) const { return m_Palette; }
+	BURGER_INLINE uint_t GetBorderColor(void) const { return m_uBorderColor; }
+	BURGER_INLINE uint_t GetFadeSpeed(void) const { return m_uPaletteFadeSpeed; }
+	BURGER_INLINE void SetFadeSpeed(uint_t uPaletteFadeSpeed) { m_uPaletteFadeSpeed = uPaletteFadeSpeed; }
+	BURGER_INLINE uint_t GetPaletteVSync(void) const { return m_bPaletteVSync; }
+	BURGER_INLINE void SetPaletteVSync(uint_t bPaletteVSync) { m_bPaletteVSync=(bPaletteVSync!=0); }
 	BURGER_INLINE void SetResizeCallback(ResizeProc pResize,void *pResizeData) { m_pResize = pResize; m_pResizeData=pResizeData; }
 	BURGER_INLINE ResizeProc GetResizeCallback(void) const { return m_pResize; }
 	BURGER_INLINE void *GetResizeCallbackData(void) const { return m_pResizeData; }

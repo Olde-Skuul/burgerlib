@@ -1,13 +1,14 @@
 /***************************************
 
-	Music Sequencer
+    Music Sequencer
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -17,13 +18,13 @@
 #include "brfilemanager.h"
 
 #if !defined(DOXYGEN)
-//BURGER_CREATE_STATICRTTI_PARENT(Burger::Sequencer,Burger::Base);
+// BURGER_CREATE_STATICRTTI_PARENT(Burger::Sequencer,Burger::Base);
 
 //
 // One octave's worth of pitches in 28.4 fixed point
 //
 
-static const Word g_FrequencyTable[12] = {
+static const uint_t g_FrequencyTable[12] = {
 	1712*16,1616*16,1524*16,1440*16,1356*16,1280*16,
 	1208*16,1140*16,1076*16,1016*16,960*16,907*16
 };
@@ -47,7 +48,7 @@ static const Word g_FrequencyTable[12] = {
 
 ***************************************/
 
-const Int32 Burger::Sequencer::g_VibratoTable[64] = {
+const int32_t Burger::Sequencer::g_VibratoTable[64] = {
 	   0,  50, 100, 149, 196, 241, 284, 325, 362, 396, 426, 452, 473,490,502,510,512,
 	 510, 502, 490, 473, 452, 426, 396, 362, 325, 284, 241, 196, 149,100, 50,  0,-49,
 	 -99,-148,-195,-240,-283,-324,-361,-395,-425,-451,-472,-489,-501,
@@ -156,10 +157,10 @@ void BURGER_API Burger::Sequencer::Command_t::Clear(void)
 
 ***************************************/
 
-Burger::Sequencer::PatternData_t * BURGER_API Burger::Sequencer::PatternData_t::New(Word uRows,Word uChannels)
+Burger::Sequencer::PatternData_t * BURGER_API Burger::Sequencer::PatternData_t::New(uint_t uRows,uint_t uChannels)
 {
 	// Number of entries
-	Word uCount = uRows*uChannels;
+	uint_t uCount = uRows*uChannels;
 	if (!uCount) {
 		// Empty?
 		uRows = 0;
@@ -208,8 +209,8 @@ Burger::Sequencer::PatternData_t * BURGER_API Burger::Sequencer::PatternData_t::
 Burger::Sequencer::Command_t* BURGER_API Burger::Sequencer::PatternData_t::GetCommand(int iRow,int iChannel)
 {
 	// Negative numbers become zero
-	Word uRow = static_cast<Word>(ClampZero(static_cast<int32_t>(iRow)));
-	Word uChannel = static_cast<Word>(ClampZero(static_cast<int32_t>(iChannel)));
+	uint_t uRow = static_cast<uint_t>(ClampZero(static_cast<int32_t>(iRow)));
+	uint_t uChannel = static_cast<uint_t>(ClampZero(static_cast<int32_t>(iChannel)));
 
 	// Out of bounds?
 	if (uRow >= m_uRowCount) {
@@ -311,17 +312,17 @@ Burger::Sequencer::SampleDescription * BURGER_API Burger::Sequencer::SampleDescr
 
 ***************************************/
 
-Word BURGER_API Burger::Sequencer::EnvelopeMarker_t::Interpolate(const EnvelopeMarker_t *pNext,Word uPosition) const
+uint_t BURGER_API Burger::Sequencer::EnvelopeMarker_t::Interpolate(const EnvelopeMarker_t *pNext,uint_t uPosition) const
 {
 	// Is the first entry okay?
-	Word uFirstPosition = m_uPosition;
-	Word uResult = m_uVolume;
+	uint_t uFirstPosition = m_uPosition;
+	uint_t uResult = m_uVolume;
 	if (uPosition >= uFirstPosition) {
 		// Prevent divide by zero
-		Word uSecondPosition = pNext->m_uPosition;
+		uint_t uSecondPosition = pNext->m_uPosition;
 		if (uFirstPosition != uSecondPosition) {
 			// Interpolate (Calculation must be signed for negative value tracking
-			uResult = static_cast<Word>(uResult + ((static_cast<Int>(uPosition-uFirstPosition)*static_cast<Int>(pNext->m_uVolume-uResult)) / static_cast<Int>(uSecondPosition-uFirstPosition)));
+			uResult = static_cast<uint_t>(uResult + ((static_cast<int_t>(uPosition-uFirstPosition)*static_cast<int_t>(pNext->m_uVolume-uResult)) / static_cast<int_t>(uSecondPosition-uFirstPosition)));
 		}
 	}
 	// Return the new volume
@@ -376,7 +377,7 @@ void BURGER_API Burger::Sequencer::InstrData_t::Reset(void)
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::Channel_t::Init(Word uID)
+void BURGER_API Burger::Sequencer::Channel_t::Init(uint_t uID)
 {
 	m_pBeginningOfSample = NULL;
 	m_pEndOfSample = NULL;
@@ -481,16 +482,16 @@ void BURGER_API Burger::Sequencer::Channel_t::Purge(void)
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(Word uCall)
+void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(uint_t uCall)
 {
 	// Get the command
-	Word uVolumeCommand = m_uVolumeCommand;
+	uint_t uVolumeCommand = m_uVolumeCommand;
 
 	// Only execute if there's a command
 	if (uVolumeCommand) {
 
 		// Get the argument
-		Word uVolumeArgument = uVolumeCommand & 0xFU;
+		uint_t uVolumeArgument = uVolumeCommand & 0xFU;
 		switch (uVolumeCommand>>4U) {
 
 		//
@@ -507,7 +508,7 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(Word uCall)
 		//
 		case 0x7:
 			m_uVolume = Min(static_cast<uint32_t>(
-				ClampZero(static_cast<Int32>(m_uVolume+uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
+				ClampZero(static_cast<int32_t>(m_uVolume+uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
 			break;
 
 		//
@@ -517,7 +518,7 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(Word uCall)
 		case 0x8:
 			// Only sub call 1 is supported
 			if (uCall == 1) {
-				m_uVolume = Min(static_cast<Word32>(ClampZero(static_cast<Int32>(m_uVolume-uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
+				m_uVolume = Min(static_cast<uint32_t>(ClampZero(static_cast<int32_t>(m_uVolume-uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
 			}
 			break;
 
@@ -527,7 +528,7 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(Word uCall)
 		case 0x9:
 			// Only sub call 1 is supported
 			if (uCall == 1) {
-				m_uVolume = Min(static_cast<const uint32_t>(ClampZero(static_cast<Int32>(m_uVolume+uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
+				m_uVolume = Min(static_cast<const uint32_t>(ClampZero(static_cast<int32_t>(m_uVolume+uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
 			}
 			break;
 
@@ -543,9 +544,9 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(Word uCall)
 		//
 		case 0xd:
 			if (uVolumeCommand & 0xFU) {
-				m_iPan = static_cast<Int32>(Min(
-					static_cast<Word32>(ClampZero(static_cast<Int32>(m_iPan-(uVolumeArgument/4)))),
-					static_cast<Word32>(cMaxPan)));
+				m_iPan = static_cast<int32_t>(Min(
+					static_cast<uint32_t>(ClampZero(static_cast<int32_t>(m_iPan-(uVolumeArgument/4)))),
+					static_cast<uint32_t>(cMaxPan)));
 			}
 			break;
 		
@@ -554,9 +555,9 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(Word uCall)
 		//
 		case 0xe:
 			if (uVolumeCommand & 0xFU) {
-				m_iPan = static_cast<Int32>(Min(
-					static_cast<Word32>(ClampZero(static_cast<Int32>(m_iPan+(uVolumeArgument/4)))),
-					static_cast<Word32>(cMaxPan)));
+				m_iPan = static_cast<int32_t>(Min(
+					static_cast<uint32_t>(ClampZero(static_cast<int32_t>(m_iPan+(uVolumeArgument/4)))),
+					static_cast<uint32_t>(cMaxPan)));
 			}
 			break;
 
@@ -577,7 +578,7 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(Word uCall)
 	
 ***************************************/
 
-void BURGER_API Burger::Sequencer::Channel_t::ParseSlideVolume(Word uArgument)
+void BURGER_API Burger::Sequencer::Channel_t::ParseSlideVolume(uint_t uArgument)
 {
 	int iTemp = static_cast<int>(uArgument&0x0F);		// Get the low 4 bits
 	uArgument>>=4U;
@@ -586,7 +587,7 @@ void BURGER_API Burger::Sequencer::Channel_t::ParseSlideVolume(Word uArgument)
 		m_iVolumeRate = -iTemp;
 	} else {
 		// Use the upper 4 bits
-		m_iVolumeRate = static_cast<Int32>(uArgument);
+		m_iVolumeRate = static_cast<int32_t>(uArgument);
 	}
 }
 
@@ -604,15 +605,15 @@ void BURGER_API Burger::Sequencer::Channel_t::ParseSlideVolume(Word uArgument)
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::Channel_t::FillBuffers(Int32 *pLeft,Int32 *pRight,WordPtr uCount,Int32 iLeft,Int32 iRight)
+void BURGER_API Burger::Sequencer::Channel_t::FillBuffers(int32_t *pLeft,int32_t *pRight,uintptr_t uCount,int32_t iLeft,int32_t iRight)
 {
 	// Zap the previous pointer for echo
 	m_pEchoSample = NULL;
 	++uCount;
 	do {
 		// Get the pair of samples
-		Int32 iTempLeft = pLeft[0];
-		Int32 iTempRight = pRight[0];
+		int32_t iTempLeft = pLeft[0];
+		int32_t iTempRight = pRight[0];
 			
 		// Add the constants
 		iTempLeft = iTempLeft+iLeft;
@@ -644,16 +645,16 @@ void BURGER_API Burger::Sequencer::Channel_t::FillBuffers(Int32 *pLeft,Int32 *pR
 	
 ***************************************/
 
-void BURGER_API Burger::Sequencer::Channel_t::Tickloop(Int32 *pLeft,Int32 *pRight,WordPtr uCount)
+void BURGER_API Burger::Sequencer::Channel_t::Tickloop(int32_t *pLeft,int32_t *pRight,uintptr_t uCount)
 {
-	Word uTickRemoveSize = m_uTickRemoveSize;
+	uint_t uTickRemoveSize = m_uTickRemoveSize;
 	
 	// Shall I remove something?
 	if (uTickRemoveSize && uCount) {
 
-		Int32 iCurrentLastWord = m_iCurrentLastWordLeft;
-		Word uCurrentLevel = m_uCurrentLevelLeft;
-		WordPtr uTempCount = uCount;
+		int32_t iCurrentLastWord = m_iCurrentLastWordLeft;
+		uint_t uCurrentLevel = m_uCurrentLevelLeft;
+		uintptr_t uTempCount = uCount;
 
 		// Decrement the level?
 		if (m_bLevelDirectionLeft) {
@@ -662,7 +663,7 @@ void BURGER_API Burger::Sequencer::Channel_t::Tickloop(Int32 *pLeft,Int32 *pRigh
 				if (uCurrentLevel) {
 					--uCurrentLevel;
 				}
-				pLeft[0] = pLeft[0]+((iCurrentLastWord * static_cast<Int32>(uCurrentLevel)) / static_cast<Int32>(uTickRemoveSize));
+				pLeft[0] = pLeft[0]+((iCurrentLastWord * static_cast<int32_t>(uCurrentLevel)) / static_cast<int32_t>(uTickRemoveSize));
 				pLeft += 2;
 			} while (--uTempCount);
 			if (!uCurrentLevel) {
@@ -676,7 +677,7 @@ void BURGER_API Burger::Sequencer::Channel_t::Tickloop(Int32 *pLeft,Int32 *pRigh
 				if (uCurrentLevel < uTickRemoveSize) {
 					++uCurrentLevel;
 				}
-				pLeft[0] = pLeft[0]+(((iCurrentLastWord * static_cast<Int32>(uCurrentLevel)) / static_cast<Int32>(uTickRemoveSize)) - iCurrentLastWord);
+				pLeft[0] = pLeft[0]+(((iCurrentLastWord * static_cast<int32_t>(uCurrentLevel)) / static_cast<int32_t>(uTickRemoveSize)) - iCurrentLastWord);
 				pLeft += 2;
 			} while (--uTempCount);
 			if (uCurrentLevel >= uTickRemoveSize) {
@@ -695,7 +696,7 @@ void BURGER_API Burger::Sequencer::Channel_t::Tickloop(Int32 *pLeft,Int32 *pRigh
 				if (uCurrentLevel) {
 					--uCurrentLevel;
 				}
-				pRight[0] = pRight[0]+((iCurrentLastWord * static_cast<Int32>(uCurrentLevel)) / static_cast<Int32>(uTickRemoveSize));
+				pRight[0] = pRight[0]+((iCurrentLastWord * static_cast<int32_t>(uCurrentLevel)) / static_cast<int32_t>(uTickRemoveSize));
 				pRight += 2;
 			} while (--uCount);
 			if (!uCurrentLevel) {
@@ -707,7 +708,7 @@ void BURGER_API Burger::Sequencer::Channel_t::Tickloop(Int32 *pLeft,Int32 *pRigh
 				if (uCurrentLevel < uTickRemoveSize) {
 					++uCurrentLevel;
 				}
-				pRight[0] = pRight[0]+(((iCurrentLastWord * static_cast<Int32>(uCurrentLevel)) / static_cast<Int32>(uTickRemoveSize)) - iCurrentLastWord);
+				pRight[0] = pRight[0]+(((iCurrentLastWord * static_cast<int32_t>(uCurrentLevel)) / static_cast<int32_t>(uTickRemoveSize)) - iCurrentLastWord);
 				pRight += 2;
 			} while (--uCount);
 			if (uCurrentLevel >= uTickRemoveSize) {
@@ -731,10 +732,10 @@ void BURGER_API Burger::Sequencer::Channel_t::Tickloop(Int32 *pLeft,Int32 *pRigh
 	
 ***************************************/
 
-Burger::Sequencer::eNote BURGER_API Burger::Sequencer::AddNoteSaturate(eNote uNote,Int32 iOffset)
+Burger::Sequencer::eNote BURGER_API Burger::Sequencer::AddNoteSaturate(eNote uNote,int32_t iOffset)
 {
 	// Convert less than zero to zero
-	uNote = static_cast<eNote>(ClampZero(iOffset+static_cast<Int32>(uNote)));
+	uNote = static_cast<eNote>(ClampZero(iOffset+static_cast<int32_t>(uNote)));
 
 	if (uNote>=NOTE_MAX) {
 		uNote = NOTE_LAST;
@@ -756,15 +757,15 @@ Burger::Sequencer::eNote BURGER_API Burger::Sequencer::AddNoteSaturate(eNote uNo
 
 ***************************************/
 
-Word BURGER_API Burger::Sequencer::GetNotePeriod(eNote uNote,Word uC2Speed)
+uint_t BURGER_API Burger::Sequencer::GetNotePeriod(eNote uNote,uint_t uC2Speed)
 {
-	Word uResult = 4242;		// Default
+	uint_t uResult = 4242;		// Default
 	if ((uNote != NOTE_UNUSED) &&
 		(uNote != NOTE_OFF) &&
 		uC2Speed) {
 	
-		Word uOctave = uNote/12U;		// Octave
-		Word uIndex = uNote-(uOctave*12U);	// Quick modulo for Note
+		uint_t uOctave = uNote/12U;		// Octave
+		uint_t uIndex = uNote-(uOctave*12U);	// Quick modulo for Note
 
 		uResult = ((cAmigaFrequency * g_FrequencyTable[uIndex]) >> uOctave ) / uC2Speed;
 		if (!uResult) {		// Failsafe
@@ -816,7 +817,7 @@ void BURGER_API Burger::Sequencer::SongPackage::Shutdown(void)
 {
 	m_bMusicUnderModification = TRUE;
 
-	WordPtr i = 0;
+	uintptr_t i = 0;
 	do {
 		Free(m_pPartitions[i]);
 		m_pPartitions[i] = NULL;
@@ -842,7 +843,7 @@ void BURGER_API Burger::Sequencer::SongPackage::Shutdown(void)
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::SongPackage::RemoveInstrument(Word uInstrumentIndex)
+void BURGER_API Burger::Sequencer::SongPackage::RemoveInstrument(uint_t uInstrumentIndex)
 {
 	// Valid instrument index?
 	if (uInstrumentIndex<cInstrumentMaxCount) {
@@ -850,10 +851,10 @@ void BURGER_API Burger::Sequencer::SongPackage::RemoveInstrument(Word uInstrumen
 		InstrData_t *pInstrData = &m_InstrDatas[uInstrumentIndex];
 
 		// How many samples?
-		Word uSampleCount = pInstrData->m_uNumberSamples;
+		uint_t uSampleCount = pInstrData->m_uNumberSamples;
 		if (uSampleCount) {
 			// Dispose of the samples attached to the instrument
-			Word bOldMusicUnderModification = m_bMusicUnderModification;
+			uint_t bOldMusicUnderModification = m_bMusicUnderModification;
 			m_bMusicUnderModification = TRUE;
 			SampleDescription **ppSampleDescription = &m_pSampleDescriptions[uInstrumentIndex * cSampleMaxCount];
 			do {
@@ -961,7 +962,7 @@ Burger::Sequencer::~Sequencer()
 
 ***************************************/
 
-Word BURGER_API Burger::Sequencer::Init(void)
+uint_t BURGER_API Burger::Sequencer::Init(void)
 {
 	Shutdown();
 
@@ -978,7 +979,7 @@ Word BURGER_API Burger::Sequencer::Init(void)
 
 	ClearChannels();
 	m_uAccumBufferSize = 7500;
-	Word uResult = CreateDriverBuffer();
+	uint_t uResult = CreateDriverBuffer();
 	if (!uResult) {
 		// Create the timing
 		m_uChunkSize = (m_uFinalSampleRate * 125) / 50;
@@ -1025,10 +1026,10 @@ void BURGER_API Burger::Sequencer::Shutdown(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Sequencer::AddImporter(ImportProc pImportProc)
+uint_t BURGER_API Burger::Sequencer::AddImporter(ImportProc pImportProc)
 {
-	Word uResult = 10;
-	Word uCount = m_uImporterCount;
+	uint_t uResult = 10;
+	uint_t uCount = m_uImporterCount;
 	// Not full?
 	if (uCount<cMaxPlugIns) {
 		// Add to the list
@@ -1057,13 +1058,13 @@ Word BURGER_API Burger::Sequencer::AddImporter(ImportProc pImportProc)
 
 ***************************************/
 
-Word BURGER_API Burger::Sequencer::ImportSong(SongPackage **ppOutput,const Word8 *pInput,WordPtr uInputLength)
+uint_t BURGER_API Burger::Sequencer::ImportSong(SongPackage **ppOutput,const uint8_t *pInput,uintptr_t uInputLength)
 {
 	// Clear the output pointer
 	ppOutput[0] = NULL;
 
-	Word uResult = 10;
-	Word uCount = m_uImporterCount;
+	uint_t uResult = 10;
+	uint_t uCount = m_uImporterCount;
 	if (uCount) {
 		// Allocate the record
 		SongPackage *pSong = SongPackage::New();
@@ -1107,7 +1108,7 @@ Word BURGER_API Burger::Sequencer::ImportSong(SongPackage **ppOutput,const Word8
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::SetVolume(Word uVolume)
+void BURGER_API Burger::Sequencer::SetVolume(uint_t uVolume)
 {
 	if (uVolume>=256U) {
 		uVolume = 255U;
@@ -1122,15 +1123,15 @@ void BURGER_API Burger::Sequencer::SetVolume(Word uVolume)
 
 ***************************************/
 
-Word BURGER_API Burger::Sequencer::CreateReverbTables(void)
+uint_t BURGER_API Burger::Sequencer::CreateReverbTables(void)
 {
 	// Dispose of any previous tables
 	DisposeReverbTables();
 
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (m_bReverbEnabled) {
 		// Get the buffer size from MS * sample rate
-		WordPtr uBufferSize = (m_uReverbSizeMS * m_uFinalSampleRate) / 1000U;
+		uintptr_t uBufferSize = (m_uReverbSizeMS * m_uFinalSampleRate) / 1000U;
 		m_uReverbDelayBufferSize = uBufferSize;
 		void *pBuffer = NULL;
 		switch (m_eOutputDataType) {
@@ -1178,12 +1179,12 @@ void BURGER_API Burger::Sequencer::DisposeReverbTables(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Sequencer::CreateDriverBuffer(void)
+uint_t BURGER_API Burger::Sequencer::CreateDriverBuffer(void)
 {
 	// Make sure the previous buffer is released
 	DisposeDriverBuffer();
-	// Double for stereo
-	WordPtr uBufferSize = m_uAccumBufferSize*2;
+    // Double for stereo
+    uintptr_t uBufferSize = m_uAccumBufferSize * 2;
 	if ((m_eOutputDataType!=SoundManager::TYPECHAR) && 
 		(m_eOutputDataType!=SoundManager::TYPEBYTE)) {
 		// Double again for shorts
@@ -1193,7 +1194,7 @@ Word BURGER_API Burger::Sequencer::CreateDriverBuffer(void)
 	//
 	// Get the buffer
 	//
-	Word uResult = 10;
+	uint_t uResult = 10;
 	m_pBuffer = Alloc(uBufferSize);
 	if (m_pBuffer) {
 		m_uBufferSize = uBufferSize;
@@ -1221,7 +1222,7 @@ void BURGER_API Burger::Sequencer::DisposeDriverBuffer(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Sequencer::CreateVolumeBuffer(void)
+uint_t BURGER_API Burger::Sequencer::CreateVolumeBuffer(void)
 {
 	// Make sure the previous buffers were cleared out
 	DisposeVolumeBuffer();
@@ -1235,7 +1236,7 @@ Word BURGER_API Burger::Sequencer::CreateVolumeBuffer(void)
 	case SoundManager::TYPEBYTE:
 		pBuffer = AllocClear((m_uAccumBufferSize*4) + (m_uMicroDelayBufferSize*2*4));
 		if (pBuffer) {
-			m_pAccumBuffer16 = static_cast<Int16 *>(pBuffer);
+			m_pAccumBuffer16 = static_cast<int16_t *>(pBuffer);
 		}
 		break;
 
@@ -1244,12 +1245,12 @@ Word BURGER_API Burger::Sequencer::CreateVolumeBuffer(void)
 	case SoundManager::TYPEBSHORT:
 		pBuffer = AllocClear((m_uAccumBufferSize*8) + (m_uMicroDelayBufferSize*2*8));
 		if (pBuffer) {
-			m_pAccumBuffer32 = static_cast<Int32 *>(pBuffer);
+			m_pAccumBuffer32 = static_cast<int32_t *>(pBuffer);
 		}
 		break;
 	}
 	// Was there an error?
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (!pBuffer) {
 		uResult = 10;
 	}
@@ -1280,11 +1281,11 @@ void BURGER_API Burger::Sequencer::DisposeVolumeBuffer(void)
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::ProcessTick(Channel_t *pChannel,Int32 *pLeft,Int32 *pRight)
+void BURGER_API Burger::Sequencer::ProcessTick(Channel_t *pChannel,int32_t *pLeft,int32_t *pRight)
 {
 	// Get the channel volumes
-	Word uVolumeLeft = CalculateVolume(pChannel,0);
-	Word uVolumeRight = CalculateVolume(pChannel,1);
+	uint_t uVolumeLeft = CalculateVolume(pChannel,0);
+	uint_t uVolumeRight = CalculateVolume(pChannel,1);
 
 	// Do the volumes need updating?
 	if ((pChannel->m_pEchoSample != pChannel->m_pBeginningOfSample) ||
@@ -1296,23 +1297,23 @@ void BURGER_API Burger::Sequencer::ProcessTick(Channel_t *pChannel,Int32 *pLeft,
 			pChannel->m_bLevelDirectionRight = TRUE;
 
 			// No overrides?
-			Word bOverride = FALSE;
+			uint_t bOverride = FALSE;
 
 			// Right Channel
 			if ((pChannel->m_uPreviousVolumeLeft != uVolumeLeft) && 
 				(pChannel->m_pEchoSample == pChannel->m_pBeginningOfSample)) {
-					Int iDifference = static_cast<Int>(pChannel->m_uPreviousVolumeLeft - uVolumeLeft);
+					int_t iDifference = static_cast<int_t>(pChannel->m_uPreviousVolumeLeft - uVolumeLeft);
 					if (iDifference > 0) {
 						// Don't divide by zero
 						if (pChannel->m_uPreviousVolumeLeft) {
-							pChannel->m_iLastWordRight -= (pChannel->m_iLastWordRight * static_cast<Int32>(uVolumeLeft)) / static_cast<Int32>(pChannel->m_uPreviousVolumeLeft);
+							pChannel->m_iLastWordRight -= (pChannel->m_iLastWordRight * static_cast<int32_t>(uVolumeLeft)) / static_cast<int32_t>(pChannel->m_uPreviousVolumeLeft);
 						}
 						pChannel->m_uPreviousVolumeLeft	= uVolumeLeft;
 						bOverride = TRUE;
 					} else if (iDifference < 0) {
 						// Don't divide by zero
 						if (pChannel->m_uPreviousVolumeLeft) {
-							pChannel->m_iLastWordRight -= (pChannel->m_iLastWordRight * static_cast<Int32>(uVolumeLeft)) / static_cast<Int32>(pChannel->m_uPreviousVolumeLeft);
+							pChannel->m_iLastWordRight -= (pChannel->m_iLastWordRight * static_cast<int32_t>(uVolumeLeft)) / static_cast<int32_t>(pChannel->m_uPreviousVolumeLeft);
 						}
 						pChannel->m_iLastWordRight = -pChannel->m_iLastWordRight;
 						pChannel->m_uPreviousVolumeLeft = uVolumeLeft;
@@ -1326,18 +1327,18 @@ void BURGER_API Burger::Sequencer::ProcessTick(Channel_t *pChannel,Int32 *pLeft,
 			// Left Channel
 			if ((pChannel->m_uPreviousVolumeRight != uVolumeRight) &&
 				(pChannel->m_pEchoSample == pChannel->m_pBeginningOfSample)) {
-					Int iDifference = static_cast<Int>(pChannel->m_uPreviousVolumeRight - uVolumeRight);
+					int_t iDifference = static_cast<int_t>(pChannel->m_uPreviousVolumeRight - uVolumeRight);
 					if (iDifference > 0) {
 						// Don't divide by zero
 						if (pChannel->m_uPreviousVolumeRight) {
-							pChannel->m_iLastWordLeft -= (pChannel->m_iLastWordLeft * static_cast<Int32>(uVolumeRight)) / static_cast<Int32>(pChannel->m_uPreviousVolumeRight);
+							pChannel->m_iLastWordLeft -= (pChannel->m_iLastWordLeft * static_cast<int32_t>(uVolumeRight)) / static_cast<int32_t>(pChannel->m_uPreviousVolumeRight);
 						}
 						pChannel->m_uPreviousVolumeRight = uVolumeRight;
 						bOverride = TRUE;
 					} else if (iDifference < 0) {
 						// Don't divide by zero
 						if (pChannel->m_uPreviousVolumeRight) {
-							pChannel->m_iLastWordLeft -= (pChannel->m_iLastWordLeft * static_cast<Int32>(uVolumeRight)) / static_cast<Int32>(pChannel->m_uPreviousVolumeRight);
+							pChannel->m_iLastWordLeft -= (pChannel->m_iLastWordLeft * static_cast<int32_t>(uVolumeRight)) / static_cast<int32_t>(pChannel->m_uPreviousVolumeRight);
 						}
 						pChannel->m_iLastWordLeft = -pChannel->m_iLastWordLeft;
 						pChannel->m_uPreviousVolumeRight = uVolumeRight;
@@ -1351,7 +1352,7 @@ void BURGER_API Burger::Sequencer::ProcessTick(Channel_t *pChannel,Int32 *pLeft,
 			if (pChannel->m_iLastWordLeft || 
 				pChannel->m_iLastWordRight || 
 				bOverride) {
-					Word uTickRemoveSize = static_cast<Word>(((80*m_uChunkSize)/m_uFineSpeed)/m_uMasterSpeed);
+					uint_t uTickRemoveSize = static_cast<uint_t>(((80*m_uChunkSize)/m_uFineSpeed)/m_uMasterSpeed);
 					pChannel->m_uTickRemoveSize = uTickRemoveSize;
 					if (pChannel->m_bLevelDirectionRight) {
 						pChannel->m_uCurrentLevelRight = uTickRemoveSize;
@@ -1394,17 +1395,17 @@ void BURGER_API Burger::Sequencer::ProcessTick(Channel_t *pChannel,Int32 *pLeft,
 
 void BURGER_API Burger::Sequencer::DetermineSpeed(void)
 {
-	Word bCommandSpeedFound = FALSE;
-	Word bFineSpeedFound = FALSE;
+	uint_t bCommandSpeedFound = FALSE;
+	uint_t bFineSpeedFound = FALSE;
 	const SongPackage *pSongPackage = m_pSongPackage;
 
-	Word uPatternCount = m_uPartitionPosition+1;
+	uint_t uPatternCount = m_uPartitionPosition+1;
 	do {
-		Word uPatternPosition;
-		Word i = uPatternCount-1;
+		uint_t uPatternPosition;
+		uint_t i = uPatternCount-1;
 		PatternData_t *pPatternData = pSongPackage->m_pPartitions[pSongPackage->m_SongDescription.m_PatternPointers[i]];
 		if (i == static_cast<int>(m_uPartitionPosition)) {
-			uPatternPosition = static_cast<Word>(i);
+			uPatternPosition = static_cast<uint_t>(i);
 			if (uPatternPosition >= pPatternData->m_uRowCount) {
 				--uPatternPosition;
 			}
@@ -1495,11 +1496,11 @@ void BURGER_API Burger::Sequencer::SetChannelCount(void)
 {
 	const SongPackage *pSongPackage = m_pSongPackage;
 	if (pSongPackage) {
-		Word uChannels = pSongPackage->m_SongDescription.m_uChannelCount;
+		uint_t uChannels = pSongPackage->m_SongDescription.m_uChannelCount;
 		if (uChannels != m_uMaxVoices) {
 
-			Word bSongIsPlaying = m_bSongIsPlaying;
-			Word bSequencingInProgress = m_bSequencingInProgress;
+			uint_t bSongIsPlaying = m_bSongIsPlaying;
+			uint_t bSequencingInProgress = m_bSequencingInProgress;
 
 			ClearSequencer();
 			m_uMaxVoices = uChannels;
@@ -1523,15 +1524,15 @@ void BURGER_API Burger::Sequencer::SetChannelCount(void)
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::Sample8To32AddDelay(Channel_t *pChannel,Int32 *pAccumBuffer)
+void BURGER_API Burger::Sequencer::Sample8To32AddDelay(Channel_t *pChannel,int32_t *pAccumBuffer)
 {
-	Word uLeftVolume = CalculateVolume(pChannel,0);
-	Word uRightVolume = CalculateVolume(pChannel,1);
+	uint_t uLeftVolume = CalculateVolume(pChannel,0);
+	uint_t uRightVolume = CalculateVolume(pChannel,1);
 	
 	// Delay offsets in stereo
-	WordPtr uDelayOffset = m_uMicroDelayBufferSize*2;
-	Int32 *pLeft = pAccumBuffer;
-	Int32 *pRight = pAccumBuffer + 1;
+	uintptr_t uDelayOffset = m_uMicroDelayBufferSize*2;
+	int32_t *pLeft = pAccumBuffer;
+	int32_t *pRight = pAccumBuffer + 1;
 	// Even channels are right
 	if (!(pChannel->m_uID&1)) {	
 		pRight = pRight + uDelayOffset;
@@ -1547,29 +1548,29 @@ void BURGER_API Burger::Sequencer::Sample8To32AddDelay(Channel_t *pChannel,Int32
 		pChannel->m_uLoopSize) {
 
 		const char *pCurrent = pChannel->m_pCurrent;
-		Int32 iPreviousOffset = pChannel->m_iPreviousOffset;
-		Int32 iPreviousValue1Left = pChannel->m_iPreviousValue1Left;
-		Int32 iPreviousValue2Left = pChannel->m_iPreviousValue2Left;
+		int32_t iPreviousOffset = pChannel->m_iPreviousOffset;
+		int32_t iPreviousValue1Left = pChannel->m_iPreviousValue1Left;
+		int32_t iPreviousValue2Left = pChannel->m_iPreviousValue2Left;
 
 		// Starting sample
 		int iSampleValue = 0;
-		Word bKillSample = FALSE;
-		WordPtr uAccumBufferSize = m_uAccumBufferSize;
+		uint_t bKillSample = FALSE;
+		uintptr_t uAccumBufferSize = m_uAccumBufferSize;
 		// Delta value
-		Int32 iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
+		int32_t iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
 		// Step value
-		Word uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
+		uint_t uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
 
 		if (pChannel->m_bPingPongReverse && 
 			(pChannel->m_eLoopType == LOOP_PINGPONG)) {
 			// Reverse the step
 			uStepValue = 0-uStepValue;
 		}
-		Int32 iAccumulatorInteger = 0;
+		int32_t iAccumulatorInteger = 0;
 		if (uAccumBufferSize) {
 			do {
-				Int32 iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
-				Int32 iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
+				int32_t iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
+				int32_t iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
 				iAccumulatorInteger = iAccumulatorFraction>>cFixedPointShift;
 
 				if (iPreviousOffset != iAccumulatorInteger) {
@@ -1580,7 +1581,7 @@ void BURGER_API Burger::Sequencer::Sample8To32AddDelay(Channel_t *pChannel,Int32
 						if (((&pCurrent[iAccumulatorInteger+1] >= pChannel->m_pEndOfSample) && !pChannel->m_bPingPongReverse) ||
 							((&pCurrent[iAccumulatorInteger+1] <= (pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning)) && pChannel->m_bPingPongReverse)) {
 							pChannel->m_bPingPongReverse = !pChannel->m_bPingPongReverse;
-							iAccumulatorFraction = static_cast<Int32>(iAccumulatorFraction-uStepValue);
+							iAccumulatorFraction = static_cast<int32_t>(iAccumulatorFraction-uStepValue);
 							uStepValue = 0-uStepValue;
 							iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
 							iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
@@ -1599,7 +1600,7 @@ void BURGER_API Burger::Sequencer::Sample8To32AddDelay(Channel_t *pChannel,Int32
 								iPreviousOffset = iAccumulatorInteger;
 								pCurrent = (pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning)-1;
 							} else {
-								pChannel->FillBuffers(pLeft,pRight,uAccumBufferSize,iSampleValue*static_cast<Int32>(uRightVolume),iSampleValue*static_cast<Int32>(uLeftVolume));
+								pChannel->FillBuffers(pLeft,pRight,uAccumBufferSize,iSampleValue*static_cast<int32_t>(uRightVolume),iSampleValue*static_cast<int32_t>(uLeftVolume));
 								bKillSample = TRUE;
 								break;
 							}
@@ -1610,9 +1611,9 @@ void BURGER_API Burger::Sequencer::Sample8To32AddDelay(Channel_t *pChannel,Int32
 
 				iSampleValue = ((iLeftWeight*iPreviousValue1Left) + (iRightWeight * pCurrent[iAccumulatorInteger+1])) >> cFixedPointShift;
 				iAccumulatorFraction += uStepValue;
-				pLeft[0] += (iSampleValue * static_cast<Int32>(uRightVolume));
+				pLeft[0] += (iSampleValue * static_cast<int32_t>(uRightVolume));
 				pLeft += 2;
-				pRight[0] += (iSampleValue * static_cast<Int32>(uLeftVolume));
+				pRight[0] += (iSampleValue * static_cast<int32_t>(uLeftVolume));
 				pRight += 2;
 			} while (--uAccumBufferSize);
 		}
@@ -1632,8 +1633,8 @@ void BURGER_API Burger::Sequencer::Sample8To32AddDelay(Channel_t *pChannel,Int32
 			pChannel->m_pCurrent = &pCurrent[iAccumulatorFraction>>cFixedPointShift];
 		}
 		pChannel->m_iAccumulatorFraction = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
-		pChannel->m_iLastWordLeft = (iSampleValue * static_cast<Int32>(uRightVolume));
-		pChannel->m_iLastWordRight = (iSampleValue * static_cast<Int32>(uLeftVolume));
+		pChannel->m_iLastWordLeft = (iSampleValue * static_cast<int32_t>(uRightVolume));
+		pChannel->m_iLastWordRight = (iSampleValue * static_cast<int32_t>(uLeftVolume));
 	}
 }
 
@@ -1646,15 +1647,15 @@ void BURGER_API Burger::Sequencer::Sample8To32AddDelay(Channel_t *pChannel,Int32
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::Sample16To32AddDelay(Channel_t *pChannel,Int32 *pAccumBuffer)
+void BURGER_API Burger::Sequencer::Sample16To32AddDelay(Channel_t *pChannel,int32_t *pAccumBuffer)
 {
-	Word uLeftVolume = CalculateVolume(pChannel,0);
-	Word uRightVolume = CalculateVolume(pChannel,1);
+	uint_t uLeftVolume = CalculateVolume(pChannel,0);
+	uint_t uRightVolume = CalculateVolume(pChannel,1);
 
 	// Delay offsets in stereo
-	WordPtr uDelayOffset = m_uMicroDelayBufferSize*2;
-	Int32 *pLeft = pAccumBuffer;
-	Int32 *pRight = pAccumBuffer + 1;
+	uintptr_t uDelayOffset = m_uMicroDelayBufferSize*2;
+	int32_t *pLeft = pAccumBuffer;
+	int32_t *pRight = pAccumBuffer + 1;
 	// Even channels are right
 	if (!(pChannel->m_uID&1)) {	
 		pRight = pRight + uDelayOffset;
@@ -1669,19 +1670,19 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelay(Channel_t *pChannel,Int3
 	if ((pChannel->m_pCurrent < pChannel->m_pEndOfSample) ||
 		pChannel->m_uLoopSize) {
 
-		const Int16 *pCurrent = static_cast<const Int16 *>(static_cast<const void *>(pChannel->m_pCurrent));
-		Int32 iPreviousOffset = pChannel->m_iPreviousOffset;
-		Int32 iPreviousValue3Left = pChannel->m_iPreviousValue3Left;
-		Int32 iPreviousValue4Left = pChannel->m_iPreviousValue4Left;
+		const int16_t *pCurrent = static_cast<const int16_t *>(static_cast<const void *>(pChannel->m_pCurrent));
+		int32_t iPreviousOffset = pChannel->m_iPreviousOffset;
+		int32_t iPreviousValue3Left = pChannel->m_iPreviousValue3Left;
+		int32_t iPreviousValue4Left = pChannel->m_iPreviousValue4Left;
 
 		// Starting sample
 		int iSampleValue = 0;
-		Word bKillSample = FALSE;
-		WordPtr uAccumBufferSize = m_uAccumBufferSize;
+		uint_t bKillSample = FALSE;
+		uintptr_t uAccumBufferSize = m_uAccumBufferSize;
 		// Delta value
-		Int32 iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
+		int32_t iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
 		// Step value
-		Word uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
+		uint_t uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
 
 		if (pChannel->m_bPingPongReverse && 
 			(pChannel->m_eLoopType == LOOP_PINGPONG)) {
@@ -1689,11 +1690,11 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelay(Channel_t *pChannel,Int3
 			uStepValue = 0-uStepValue;
 		}
 
-		Int32 iAccumulatorInteger = 0;
+		int32_t iAccumulatorInteger = 0;
 		if (uAccumBufferSize) {
 			do {
-				Int32 iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
-				Int32 iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
+				int32_t iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
+				int32_t iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
 				iAccumulatorInteger = (iAccumulatorFraction>>cFixedPointShift);
 
 				if (iPreviousOffset != iAccumulatorInteger) {
@@ -1701,10 +1702,10 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelay(Channel_t *pChannel,Int3
 					if ((pChannel->m_eLoopType == LOOP_PINGPONG) &&
 						pChannel->m_uLoopSize) {
 						iPreviousOffset = iAccumulatorInteger;
-						if ((&pCurrent[iAccumulatorInteger+1] >= static_cast<const Int16 *>(static_cast<const void *>(pChannel->m_pEndOfSample)) && !pChannel->m_bPingPongReverse) ||
-							(&pCurrent[iAccumulatorInteger+1] <= static_cast<const Int16 *>(static_cast<const void *>(pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning)) && pChannel->m_bPingPongReverse)) {
+						if ((&pCurrent[iAccumulatorInteger+1] >= static_cast<const int16_t *>(static_cast<const void *>(pChannel->m_pEndOfSample)) && !pChannel->m_bPingPongReverse) ||
+							(&pCurrent[iAccumulatorInteger+1] <= static_cast<const int16_t *>(static_cast<const void *>(pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning)) && pChannel->m_bPingPongReverse)) {
 							pChannel->m_bPingPongReverse = !pChannel->m_bPingPongReverse;
-							iAccumulatorFraction = static_cast<Int32>(iAccumulatorFraction-uStepValue);
+							iAccumulatorFraction = static_cast<int32_t>(iAccumulatorFraction-uStepValue);
 							uStepValue = 0-uStepValue;
 							iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
 							iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
@@ -1715,16 +1716,16 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelay(Channel_t *pChannel,Int3
 						iPreviousValue3Left = iPreviousValue4Left;
 						iPreviousOffset = iAccumulatorInteger;
 
-						if (&pCurrent[iAccumulatorInteger+1] >= static_cast<const Int16 *>(static_cast<const void *>(pChannel->m_pEndOfSample))) {
+						if (&pCurrent[iAccumulatorInteger+1] >= static_cast<const int16_t *>(static_cast<const void *>(pChannel->m_pEndOfSample))) {
 							if (pChannel->m_uLoopSize) {
 								iAccumulatorFraction = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);	
 								iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
 								iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
 								iAccumulatorInteger = iAccumulatorFraction>>cFixedPointShift;
 								iPreviousOffset = iAccumulatorInteger;
-								pCurrent = static_cast<const Int16 *>(static_cast<const void *>(pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning))-1;
+								pCurrent = static_cast<const int16_t *>(static_cast<const void *>(pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning))-1;
 							} else {
-								pChannel->FillBuffers(pLeft,pRight,uAccumBufferSize,(iSampleValue*static_cast<Int32>(uRightVolume))>>8,(iSampleValue*static_cast<Int32>(uLeftVolume))>>8);
+								pChannel->FillBuffers(pLeft,pRight,uAccumBufferSize,(iSampleValue*static_cast<int32_t>(uRightVolume))>>8,(iSampleValue*static_cast<int32_t>(uLeftVolume))>>8);
 								bKillSample = TRUE;
 								break;
 							}
@@ -1735,9 +1736,9 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelay(Channel_t *pChannel,Int3
 
 				iSampleValue = ((iLeftWeight*iPreviousValue3Left) + (iRightWeight * pCurrent[iAccumulatorInteger+1])) >> cFixedPointShift;
 				iAccumulatorFraction += uStepValue;
-				pLeft[0] += (iSampleValue * static_cast<Int32>(uRightVolume)) >> 8;
+				pLeft[0] += (iSampleValue * static_cast<int32_t>(uRightVolume)) >> 8;
 				pLeft += 2;
-				pRight[0] += (iSampleValue * static_cast<Int32>(uLeftVolume)) >> 8;
+				pRight[0] += (iSampleValue * static_cast<int32_t>(uLeftVolume)) >> 8;
 				pRight += 2;
 			} while (--uAccumBufferSize);
 		}
@@ -1757,8 +1758,8 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelay(Channel_t *pChannel,Int3
 			pChannel->m_pCurrent = static_cast<const char *>(static_cast<const void *>(&pCurrent[iAccumulatorFraction>>cFixedPointShift]));
 		}
 		pChannel->m_iAccumulatorFraction = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
-		pChannel->m_iLastWordLeft = (iSampleValue * static_cast<Int32>(uRightVolume)) >> 8;
-		pChannel->m_iLastWordRight = (iSampleValue * static_cast<Int32>(uLeftVolume)) >> 8;
+		pChannel->m_iLastWordLeft = (iSampleValue * static_cast<int32_t>(uRightVolume)) >> 8;
+		pChannel->m_iLastWordRight = (iSampleValue * static_cast<int32_t>(uLeftVolume)) >> 8;
 	}
 }
 
@@ -1771,18 +1772,18 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelay(Channel_t *pChannel,Int3
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::Sample8To16AddDelay(Channel_t *pChannel,Int16 *pAccumBuffer)
+void BURGER_API Burger::Sequencer::Sample8To16AddDelay(Channel_t *pChannel,int16_t *pAccumBuffer)
 {
 	if ((pChannel->m_pCurrent < pChannel->m_pEndOfSample) ||
 		pChannel->m_uLoopSize) {
 
-		Word uLeftVolume = CalculateVolume(pChannel,0);
-		Word uRightVolume = CalculateVolume(pChannel,1);
+		uint_t uLeftVolume = CalculateVolume(pChannel,0);
+		uint_t uRightVolume = CalculateVolume(pChannel,1);
 
 		// Delay offsets in stereo
-		WordPtr uDelayOffset = m_uMicroDelayBufferSize*2;
-		Int16 *pLeft = pAccumBuffer;
-		Int16 *pRight = pAccumBuffer + 1;
+		uintptr_t uDelayOffset = m_uMicroDelayBufferSize*2;
+		int16_t *pLeft = pAccumBuffer;
+		int16_t *pRight = pAccumBuffer + 1;
 		// Even channels are right
 		if (!(pChannel->m_uID&1)) {	
 			pRight = pRight + uDelayOffset;
@@ -1791,16 +1792,16 @@ void BURGER_API Burger::Sequencer::Sample8To16AddDelay(Channel_t *pChannel,Int16
 		}
 
 		const char *pCurrent = pChannel->m_pCurrent;
-		Int32 iPreviousOffset = pChannel->m_iPreviousOffset;
-		Int32 iPreviousValue1Left = pChannel->m_iPreviousValue1Left;
-		Int32 iPreviousValue2Left = pChannel->m_iPreviousValue2Left;
+		int32_t iPreviousOffset = pChannel->m_iPreviousOffset;
+		int32_t iPreviousValue1Left = pChannel->m_iPreviousValue1Left;
+		int32_t iPreviousValue2Left = pChannel->m_iPreviousValue2Left;
 
-		Word bKillSample = FALSE;
-		WordPtr uAccumBufferSize = m_uAccumBufferSize;
+		uint_t bKillSample = FALSE;
+		uintptr_t uAccumBufferSize = m_uAccumBufferSize;
 		// Delta value
-		Int32 iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
+		int32_t iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
 		// Step value
-		Word uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
+		uint_t uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
 
 		if (pChannel->m_bPingPongReverse &&
 			(pChannel->m_eLoopType == LOOP_PINGPONG)) {
@@ -1808,11 +1809,11 @@ void BURGER_API Burger::Sequencer::Sample8To16AddDelay(Channel_t *pChannel,Int16
 			uStepValue = 0-uStepValue;
 		}
 
-		Int32 iAccumulatorInteger=0;
+		int32_t iAccumulatorInteger=0;
 		if (uAccumBufferSize) {	
 			do {
-				Int32 iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
-				Int32 iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
+				int32_t iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
+				int32_t iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
 				iAccumulatorInteger = iAccumulatorFraction>>cFixedPointShift;
 
 				if (iPreviousOffset != iAccumulatorInteger) {
@@ -1823,7 +1824,7 @@ void BURGER_API Burger::Sequencer::Sample8To16AddDelay(Channel_t *pChannel,Int16
 							if ((&pCurrent[iAccumulatorInteger+1] >= pChannel->m_pEndOfSample && !pChannel->m_bPingPongReverse) ||
 								(&pCurrent[iAccumulatorInteger+1] <= pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning && pChannel->m_bPingPongReverse)) {
 								pChannel->m_bPingPongReverse = !pChannel->m_bPingPongReverse;
-								iAccumulatorFraction = static_cast<Int32>(iAccumulatorFraction-uStepValue);
+								iAccumulatorFraction = static_cast<int32_t>(iAccumulatorFraction-uStepValue);
 								uStepValue = 0-uStepValue;
 								iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
 								iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
@@ -1854,9 +1855,9 @@ void BURGER_API Burger::Sequencer::Sample8To16AddDelay(Channel_t *pChannel,Int16
 				int iSampleValue = ((iLeftWeight * iPreviousValue1Left) + (iRightWeight * pCurrent[iAccumulatorInteger+1])) >> cFixedPointShift;
 				iAccumulatorFraction += uStepValue;
 
-				pLeft[0] = static_cast<Int16>(pLeft[0]+((iSampleValue*static_cast<Int32>(uRightVolume))>>8));
+				pLeft[0] = static_cast<int16_t>(pLeft[0]+((iSampleValue*static_cast<int32_t>(uRightVolume))>>8));
 				pLeft += 2;
-				pRight[0] = static_cast<Int16>(pRight[0]+((iSampleValue*static_cast<Int32>(uLeftVolume))>>8));
+				pRight[0] = static_cast<int16_t>(pRight[0]+((iSampleValue*static_cast<int32_t>(uLeftVolume))>>8));
 				pRight += 2;
 			} while (--uAccumBufferSize);
 		}
@@ -1888,18 +1889,18 @@ void BURGER_API Burger::Sequencer::Sample8To16AddDelay(Channel_t *pChannel,Int16
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::Sample16To16AddDelay(Channel_t *pChannel,Int16 *pAccumBuffer)
+void BURGER_API Burger::Sequencer::Sample16To16AddDelay(Channel_t *pChannel,int16_t *pAccumBuffer)
 {
 	if ((pChannel->m_pCurrent < pChannel->m_pEndOfSample) ||
 		pChannel->m_uLoopSize) {
 
-		Word uLeftVolume = CalculateVolume(pChannel,0);
-		Word uRightVolume = CalculateVolume(pChannel,1);
+		uint_t uLeftVolume = CalculateVolume(pChannel,0);
+		uint_t uRightVolume = CalculateVolume(pChannel,1);
 
 		// Delay offsets in stereo
-		WordPtr uDelayOffset = m_uMicroDelayBufferSize*2;
-		Int16 *pLeft = pAccumBuffer;
-		Int16 *pRight = pAccumBuffer + 1;
+		uintptr_t uDelayOffset = m_uMicroDelayBufferSize*2;
+		int16_t *pLeft = pAccumBuffer;
+		int16_t *pRight = pAccumBuffer + 1;
 		// Even channels are right
 		if (!(pChannel->m_uID&1)) {	
 			pRight = pRight + uDelayOffset;
@@ -1908,16 +1909,16 @@ void BURGER_API Burger::Sequencer::Sample16To16AddDelay(Channel_t *pChannel,Int1
 		}
 
 		const char *pCurrent = pChannel->m_pCurrent;
-		Int32 iPreviousOffset = pChannel->m_iPreviousOffset;
-		Int32 iPreviousValue1Left = pChannel->m_iPreviousValue1Left;
-		Int32 iPreviousValue2Left = pChannel->m_iPreviousValue2Left;
+		int32_t iPreviousOffset = pChannel->m_iPreviousOffset;
+		int32_t iPreviousValue1Left = pChannel->m_iPreviousValue1Left;
+		int32_t iPreviousValue2Left = pChannel->m_iPreviousValue2Left;
 
-		Word bKillSample = FALSE;
-		WordPtr uAccumBufferSize = m_uAccumBufferSize;
+		uint_t bKillSample = FALSE;
+		uintptr_t uAccumBufferSize = m_uAccumBufferSize;
 		// Delta value
-		Int32 iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
+		int32_t iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
 		// Step value
-		Word uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
+		uint_t uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
 
 		if (pChannel->m_bPingPongReverse &&
 			(pChannel->m_eLoopType == LOOP_PINGPONG)) {
@@ -1929,11 +1930,11 @@ void BURGER_API Burger::Sequencer::Sample16To16AddDelay(Channel_t *pChannel,Int1
 		++pCurrent;				// Hack for getting the high byte
 #endif
 
-		Int32 iAccumulatorInteger=0;
+		int32_t iAccumulatorInteger=0;
 		if (uAccumBufferSize) {
 			do {
-				Int32 iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
-				Int32 iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
+				int32_t iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
+				int32_t iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
 				iAccumulatorInteger = iAccumulatorFraction>>cFixedPointShift;
 				if (iPreviousOffset != iAccumulatorInteger) {
 					// Switch direction?
@@ -1943,7 +1944,7 @@ void BURGER_API Burger::Sequencer::Sample16To16AddDelay(Channel_t *pChannel,Int1
 						if ((&pCurrent[(iAccumulatorInteger*2)+2] >= pChannel->m_pEndOfSample && !pChannel->m_bPingPongReverse) ||
 							(&pCurrent[(iAccumulatorInteger*2)+2] <= (pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning) && pChannel->m_bPingPongReverse)) {
 							pChannel->m_bPingPongReverse = !pChannel->m_bPingPongReverse;
-							iAccumulatorFraction = static_cast<Int32>(iAccumulatorFraction-uStepValue);
+							iAccumulatorFraction = static_cast<int32_t>(iAccumulatorFraction-uStepValue);
 							uStepValue = 0-uStepValue;
 							iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
 							iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
@@ -1977,9 +1978,9 @@ void BURGER_API Burger::Sequencer::Sample16To16AddDelay(Channel_t *pChannel,Int1
 				int iSampleValue = ((iLeftWeight * iPreviousValue1Left) + (iRightWeight * pCurrent[(iAccumulatorInteger*2)+2])) >> cFixedPointShift;
 				iAccumulatorFraction += uStepValue;
 
-				pLeft[0] = static_cast<Int16>(pLeft[0]+((iSampleValue*static_cast<Int32>(uRightVolume)) >> 8));
+				pLeft[0] = static_cast<int16_t>(pLeft[0]+((iSampleValue*static_cast<int32_t>(uRightVolume)) >> 8));
 				pLeft += 2;
-				pRight[0] = static_cast<Int16>(pRight[0]+((iSampleValue*static_cast<Int32>(uLeftVolume)) >> 8));
+				pRight[0] = static_cast<int16_t>(pRight[0]+((iSampleValue*static_cast<int32_t>(uLeftVolume)) >> 8));
 				pRight += 2;
 			} while (--uAccumBufferSize);
 		}
@@ -2013,15 +2014,15 @@ void BURGER_API Burger::Sequencer::Sample16To16AddDelay(Channel_t *pChannel,Int1
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::Sample8To32AddDelayStereo(Channel_t *pChannel,Int32 *pAccumBuffer)
+void BURGER_API Burger::Sequencer::Sample8To32AddDelayStereo(Channel_t *pChannel,int32_t *pAccumBuffer)
 {
-	Word uLeftVolume = CalculateVolume(pChannel,0);
-	Word uRightVolume = CalculateVolume(pChannel,1);
+	uint_t uLeftVolume = CalculateVolume(pChannel,0);
+	uint_t uRightVolume = CalculateVolume(pChannel,1);
 
 	// Delay offsets in stereo
-	WordPtr uDelayOffset = m_uMicroDelayBufferSize*2;
-	Int32 *pLeft = pAccumBuffer;
-	Int32 *pRight = pAccumBuffer + 1;
+	uintptr_t uDelayOffset = m_uMicroDelayBufferSize*2;
+	int32_t *pLeft = pAccumBuffer;
+	int32_t *pRight = pAccumBuffer + 1;
 	// Even channels are right
 	if (!(pChannel->m_uID&1)) {	
 		pRight = pRight + uDelayOffset;
@@ -2037,21 +2038,21 @@ void BURGER_API Burger::Sequencer::Sample8To32AddDelayStereo(Channel_t *pChannel
 		pChannel->m_uLoopSize) {
 
 		const char *pCurrent = pChannel->m_pCurrent;
-		Int32 iPreviousOffset = pChannel->m_iPreviousOffset;
-		Int32 iPreviousValue1Left = pChannel->m_iPreviousValue1Left;
-		Int32 iPreviousValue1Right = pChannel->m_iPreviousValue1Right;
-		Int32 iPreviousValue2Left = pChannel->m_iPreviousValue2Left;
-		Int32 iPreviousValue2Right = pChannel->m_iPreviousValue2Right;
+		int32_t iPreviousOffset = pChannel->m_iPreviousOffset;
+		int32_t iPreviousValue1Left = pChannel->m_iPreviousValue1Left;
+		int32_t iPreviousValue1Right = pChannel->m_iPreviousValue1Right;
+		int32_t iPreviousValue2Left = pChannel->m_iPreviousValue2Left;
+		int32_t iPreviousValue2Right = pChannel->m_iPreviousValue2Right;
 
 		// Starting samples
 		int iSampleValueRight = 0;
 		int iSampleValueLeft = 0;
-		Word bKillSample = FALSE;
-		WordPtr uAccumBufferSize = m_uAccumBufferSize;
+		uint_t bKillSample = FALSE;
+		uintptr_t uAccumBufferSize = m_uAccumBufferSize;
 		// Delta value
-		Int32 iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
+		int32_t iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
 		// Step value
-		Word uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
+		uint_t uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
 
 		if (pChannel->m_bPingPongReverse &&
 			(pChannel->m_eLoopType == LOOP_PINGPONG)) {
@@ -2059,11 +2060,11 @@ void BURGER_API Burger::Sequencer::Sample8To32AddDelayStereo(Channel_t *pChannel
 			uStepValue = 0-uStepValue;
 		}
 
-		Int32 iAccumulatorInteger=0;
+		int32_t iAccumulatorInteger=0;
 		if (uAccumBufferSize) {
 			do {
-				Int32 iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
-				Int32 iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
+				int32_t iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
+				int32_t iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
 				iAccumulatorInteger = (iAccumulatorFraction>>cFixedPointShift)*2;
 
 				if (iPreviousOffset != iAccumulatorInteger) {
@@ -2074,7 +2075,7 @@ void BURGER_API Burger::Sequencer::Sample8To32AddDelayStereo(Channel_t *pChannel
 						if ((&pCurrent[iAccumulatorInteger+3] >= pChannel->m_pEndOfSample && !pChannel->m_bPingPongReverse) ||
 							(&pCurrent[iAccumulatorInteger+2] <= (pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning) && pChannel->m_bPingPongReverse)) {
 							pChannel->m_bPingPongReverse = !pChannel->m_bPingPongReverse;
-							iAccumulatorFraction = static_cast<Int32>(iAccumulatorFraction-uStepValue);
+							iAccumulatorFraction = static_cast<int32_t>(iAccumulatorFraction-uStepValue);
 							uStepValue = 0-uStepValue;
 							iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
 							iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
@@ -2096,7 +2097,7 @@ void BURGER_API Burger::Sequencer::Sample8To32AddDelayStereo(Channel_t *pChannel
 								iPreviousOffset = iAccumulatorInteger;
 								pCurrent = (pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning) - 2;
 							} else {
-								pChannel->FillBuffers(pLeft,pRight,uAccumBufferSize,iSampleValueLeft*static_cast<Int32>(uRightVolume),iSampleValueRight*static_cast<Int32>(uLeftVolume));
+								pChannel->FillBuffers(pLeft,pRight,uAccumBufferSize,iSampleValueLeft*static_cast<int32_t>(uRightVolume),iSampleValueRight*static_cast<int32_t>(uLeftVolume));
 								bKillSample = TRUE;
 								break;
 							}
@@ -2107,10 +2108,10 @@ void BURGER_API Burger::Sequencer::Sample8To32AddDelayStereo(Channel_t *pChannel
 				}
 
 				iSampleValueLeft = ((iLeftWeight * iPreviousValue1Left) + (iRightWeight * pCurrent[iAccumulatorInteger+2]))>>cFixedPointShift;
-				pLeft[0] += (iSampleValueLeft * static_cast<Int32>(uRightVolume));
+				pLeft[0] += (iSampleValueLeft * static_cast<int32_t>(uRightVolume));
 				pLeft += 2;
 				iSampleValueRight = ((iLeftWeight * iPreviousValue1Right) + (iRightWeight * pCurrent[iAccumulatorInteger+3]))>>cFixedPointShift;
-				pRight[0] += (iSampleValueRight * static_cast<Int32>(uLeftVolume));
+				pRight[0] += (iSampleValueRight * static_cast<int32_t>(uLeftVolume));
 				pRight += 2;
 				iAccumulatorFraction += uStepValue;
 			} while (--uAccumBufferSize);
@@ -2132,8 +2133,8 @@ void BURGER_API Burger::Sequencer::Sample8To32AddDelayStereo(Channel_t *pChannel
 			pChannel->m_pCurrent = &pCurrent[(iAccumulatorFraction>>cFixedPointShift)*2];
 		}
 		pChannel->m_iAccumulatorFraction = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
-		pChannel->m_iLastWordLeft = (iSampleValueLeft * static_cast<Int32>(uRightVolume));
-		pChannel->m_iLastWordRight = (iSampleValueRight * static_cast<Int32>(uLeftVolume));
+		pChannel->m_iLastWordLeft = (iSampleValueLeft * static_cast<int32_t>(uRightVolume));
+		pChannel->m_iLastWordRight = (iSampleValueRight * static_cast<int32_t>(uLeftVolume));
 	}
 }
 
@@ -2146,15 +2147,15 @@ void BURGER_API Burger::Sequencer::Sample8To32AddDelayStereo(Channel_t *pChannel
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::Sample16To32AddDelayStereo(Channel_t *pChannel,Int32 *pAccumBuffer)
+void BURGER_API Burger::Sequencer::Sample16To32AddDelayStereo(Channel_t *pChannel,int32_t *pAccumBuffer)
 {
-	Word uLeftVolume = CalculateVolume(pChannel,0);
-	Word uRightVolume = CalculateVolume(pChannel,1);
+	uint_t uLeftVolume = CalculateVolume(pChannel,0);
+	uint_t uRightVolume = CalculateVolume(pChannel,1);
 
 	// Delay offsets in stereo
-	WordPtr uDelayOffset = m_uMicroDelayBufferSize*2;
-	Int32 *pLeft = pAccumBuffer;
-	Int32 *pRight = pAccumBuffer + 1;
+	uintptr_t uDelayOffset = m_uMicroDelayBufferSize*2;
+	int32_t *pLeft = pAccumBuffer;
+	int32_t *pRight = pAccumBuffer + 1;
 	// Even channels are right
 	if (!(pChannel->m_uID&1)) {	
 		pRight = pRight + uDelayOffset;
@@ -2169,22 +2170,22 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelayStereo(Channel_t *pChanne
 	if ((pChannel->m_pCurrent < pChannel->m_pEndOfSample) ||
 		pChannel->m_uLoopSize) {
 
-		const Int16 *pCurrent = static_cast<const Int16 *>(static_cast<const void *>(pChannel->m_pCurrent));
-		Int32 iPreviousOffset = pChannel->m_iPreviousOffset;
-		Int32 iPreviousValue3Left = pChannel->m_iPreviousValue3Left;
-		Int32 iPreviousValue3Right = pChannel->m_iPreviousValue3Right;
-		Int32 iPreviousValue4Left = pChannel->m_iPreviousValue4Left;
-		Int32 iPreviousValue4Right = pChannel->m_iPreviousValue4Right;
+		const int16_t *pCurrent = static_cast<const int16_t *>(static_cast<const void *>(pChannel->m_pCurrent));
+		int32_t iPreviousOffset = pChannel->m_iPreviousOffset;
+		int32_t iPreviousValue3Left = pChannel->m_iPreviousValue3Left;
+		int32_t iPreviousValue3Right = pChannel->m_iPreviousValue3Right;
+		int32_t iPreviousValue4Left = pChannel->m_iPreviousValue4Left;
+		int32_t iPreviousValue4Right = pChannel->m_iPreviousValue4Right;
 
 		// Starting samples
 		int iSampleValueRight = 0;
 		int iSampleValueLeft = 0;
-		Word bKillSample = FALSE;
-		WordPtr uAccumBufferSize = m_uAccumBufferSize;
+		uint_t bKillSample = FALSE;
+		uintptr_t uAccumBufferSize = m_uAccumBufferSize;
 		// Delta value
-		Int32 iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
+		int32_t iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
 		// Step value
-		Word uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
+		uint_t uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
 
 		if (pChannel->m_bPingPongReverse &&
 			(pChannel->m_eLoopType == LOOP_PINGPONG)) {
@@ -2192,11 +2193,11 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelayStereo(Channel_t *pChanne
 			uStepValue = 0-uStepValue;
 		}
 
-		Int32 iAccumulatorInteger=0;
+		int32_t iAccumulatorInteger=0;
 		if (uAccumBufferSize) {
 			do {
-				Int32 iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
-				Int32 iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
+				int32_t iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
+				int32_t iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
 				iAccumulatorInteger = (iAccumulatorFraction>>cFixedPointShift)*2;
 
 				if (iPreviousOffset != iAccumulatorInteger) {
@@ -2204,10 +2205,10 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelayStereo(Channel_t *pChanne
 					if ((pChannel->m_eLoopType == LOOP_PINGPONG) &&
 						pChannel->m_uLoopSize) {
 						iPreviousOffset = iAccumulatorInteger;
-						if ((&pCurrent[iAccumulatorInteger+3] >= static_cast<const Int16 *>(static_cast<const void *>(pChannel->m_pEndOfSample)) && !pChannel->m_bPingPongReverse) ||
-							(&pCurrent[iAccumulatorInteger+2] <= static_cast<const Int16 *>(static_cast<const void *>(pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning)) && pChannel->m_bPingPongReverse)) {
+						if ((&pCurrent[iAccumulatorInteger+3] >= static_cast<const int16_t *>(static_cast<const void *>(pChannel->m_pEndOfSample)) && !pChannel->m_bPingPongReverse) ||
+							(&pCurrent[iAccumulatorInteger+2] <= static_cast<const int16_t *>(static_cast<const void *>(pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning)) && pChannel->m_bPingPongReverse)) {
 							pChannel->m_bPingPongReverse = !pChannel->m_bPingPongReverse;
-							iAccumulatorFraction = static_cast<Int32>(iAccumulatorFraction-uStepValue);
+							iAccumulatorFraction = static_cast<int32_t>(iAccumulatorFraction-uStepValue);
 							uStepValue = 0-uStepValue;
 							iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
 							iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
@@ -2220,16 +2221,16 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelayStereo(Channel_t *pChanne
 						iPreviousValue3Right = iPreviousValue4Right;
 						iPreviousOffset = iAccumulatorInteger;
 
-						if (&pCurrent[iAccumulatorInteger + 3] >= static_cast<const Int16 *>(static_cast<const void *>(pChannel->m_pEndOfSample))) {
+						if (&pCurrent[iAccumulatorInteger + 3] >= static_cast<const int16_t *>(static_cast<const void *>(pChannel->m_pEndOfSample))) {
 							if (pChannel->m_uLoopSize) {
 								iAccumulatorFraction = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);	
 								iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
 								iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
 								iAccumulatorInteger = (iAccumulatorFraction>>cFixedPointShift)*2;
 								iPreviousOffset = iAccumulatorInteger;
-								pCurrent = static_cast<const Int16 *>(static_cast<const void *>(pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning))-2;
+								pCurrent = static_cast<const int16_t *>(static_cast<const void *>(pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning))-2;
 							} else {
-								pChannel->FillBuffers(pLeft,pRight,uAccumBufferSize,(iSampleValueLeft*static_cast<Int32>(uRightVolume))>>8,(iSampleValueRight*static_cast<Int32>(uLeftVolume))>>8);
+								pChannel->FillBuffers(pLeft,pRight,uAccumBufferSize,(iSampleValueLeft*static_cast<int32_t>(uRightVolume))>>8,(iSampleValueRight*static_cast<int32_t>(uLeftVolume))>>8);
 								bKillSample = TRUE;
 								break;
 							}
@@ -2240,10 +2241,10 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelayStereo(Channel_t *pChanne
 				}
 
 				iSampleValueLeft = ((iLeftWeight * iPreviousValue3Left) + (iRightWeight * pCurrent[iAccumulatorInteger+2])) >> cFixedPointShift;
-				pLeft[0] += (iSampleValueLeft * static_cast<Int32>(uRightVolume)) >> 8;
+				pLeft[0] += (iSampleValueLeft * static_cast<int32_t>(uRightVolume)) >> 8;
 				pLeft += 2;
 				iSampleValueRight = ((iLeftWeight * iPreviousValue3Right) + (iRightWeight * pCurrent[iAccumulatorInteger+3])) >> cFixedPointShift;
-				pRight[0] += (iSampleValueRight * static_cast<Int32>(uLeftVolume)) >> 8;
+				pRight[0] += (iSampleValueRight * static_cast<int32_t>(uLeftVolume)) >> 8;
 				pRight += 2;
 				iAccumulatorFraction += uStepValue;
 			} while (--uAccumBufferSize);
@@ -2265,8 +2266,8 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelayStereo(Channel_t *pChanne
 			pChannel->m_pCurrent = static_cast<const char *>(static_cast<const void *>(pCurrent + (iAccumulatorFraction>>cFixedPointShift)*2));
 		}
 		pChannel->m_iAccumulatorFraction = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
-		pChannel->m_iLastWordLeft = (iSampleValueLeft * static_cast<Int32>(uRightVolume)) >> 8;
-		pChannel->m_iLastWordRight = (iSampleValueRight * static_cast<Int32>(uLeftVolume)) >> 8;
+		pChannel->m_iLastWordLeft = (iSampleValueLeft * static_cast<int32_t>(uRightVolume)) >> 8;
+		pChannel->m_iLastWordRight = (iSampleValueRight * static_cast<int32_t>(uLeftVolume)) >> 8;
 	}
 }
 
@@ -2279,18 +2280,18 @@ void BURGER_API Burger::Sequencer::Sample16To32AddDelayStereo(Channel_t *pChanne
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::Sample8To16AddDelayStereo(Channel_t *pChannel,Int16 *pAccumBuffer)
+void BURGER_API Burger::Sequencer::Sample8To16AddDelayStereo(Channel_t *pChannel,int16_t *pAccumBuffer)
 {
 	if ((pChannel->m_pCurrent < pChannel->m_pEndOfSample) ||
 		pChannel->m_uLoopSize) {
 
-		Word uLeftVolume = CalculateVolume(pChannel,0);
-		Word uRightVolume	= CalculateVolume(pChannel,1);
+		uint_t uLeftVolume = CalculateVolume(pChannel,0);
+		uint_t uRightVolume	= CalculateVolume(pChannel,1);
 
 		// Delay offsets in stereo
-		WordPtr uDelayOffset = m_uMicroDelayBufferSize*2;
-		Int16 *pLeft = pAccumBuffer;
-		Int16 *pRight = pAccumBuffer + 1;
+		uintptr_t uDelayOffset = m_uMicroDelayBufferSize*2;
+		int16_t *pLeft = pAccumBuffer;
+		int16_t *pRight = pAccumBuffer + 1;
 		// Even channels are right
 		if (!(pChannel->m_uID&1)) {	
 			pRight = pRight + uDelayOffset;
@@ -2299,18 +2300,18 @@ void BURGER_API Burger::Sequencer::Sample8To16AddDelayStereo(Channel_t *pChannel
 		}
 
 		const char *pCurrent = pChannel->m_pCurrent;
-		Int32 iPreviousOffset = pChannel->m_iPreviousOffset;
-		Int32 iPreviousValue1Left = pChannel->m_iPreviousValue1Left;
-		Int32 iPreviousValue1Right = pChannel->m_iPreviousValue1Right;
-		Int32 iPreviousValue2Left = pChannel->m_iPreviousValue2Left;
-		Int32 iPreviousValue2Right = pChannel->m_iPreviousValue2Right;
+		int32_t iPreviousOffset = pChannel->m_iPreviousOffset;
+		int32_t iPreviousValue1Left = pChannel->m_iPreviousValue1Left;
+		int32_t iPreviousValue1Right = pChannel->m_iPreviousValue1Right;
+		int32_t iPreviousValue2Left = pChannel->m_iPreviousValue2Left;
+		int32_t iPreviousValue2Right = pChannel->m_iPreviousValue2Right;
 
-		Word bKillSample = FALSE;
-		WordPtr uAccumBufferSize = m_uAccumBufferSize;
+		uint_t bKillSample = FALSE;
+		uintptr_t uAccumBufferSize = m_uAccumBufferSize;
 		// Delta value
-		Int32 iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
+		int32_t iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
 		// Step value
-		Word uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
+		uint_t uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
 
 		if (pChannel->m_bPingPongReverse &&
 			(pChannel->m_eLoopType == LOOP_PINGPONG)) {
@@ -2318,11 +2319,11 @@ void BURGER_API Burger::Sequencer::Sample8To16AddDelayStereo(Channel_t *pChannel
 			uStepValue = 0-uStepValue;
 		}
 
-		Int32 iAccumulatorInteger=0;
+		int32_t iAccumulatorInteger=0;
 		if (uAccumBufferSize) {			
 			do {
-				Int32 iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
-				Int32 iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
+				int32_t iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
+				int32_t iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
 				iAccumulatorInteger = (iAccumulatorFraction>>cFixedPointShift)*2;
 
 				if (iPreviousOffset != iAccumulatorInteger) {
@@ -2333,7 +2334,7 @@ void BURGER_API Burger::Sequencer::Sample8To16AddDelayStereo(Channel_t *pChannel
 						if ((&pCurrent[iAccumulatorInteger+3] >= pChannel->m_pEndOfSample && !pChannel->m_bPingPongReverse) ||
 							(&pCurrent[iAccumulatorInteger+2] <= pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning && pChannel->m_bPingPongReverse)) {
 							pChannel->m_bPingPongReverse = !pChannel->m_bPingPongReverse;
-							iAccumulatorFraction = static_cast<Int32>(iAccumulatorFraction-uStepValue);
+							iAccumulatorFraction = static_cast<int32_t>(iAccumulatorFraction-uStepValue);
 							uStepValue = 0-uStepValue;
 							iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
 							iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
@@ -2365,10 +2366,10 @@ void BURGER_API Burger::Sequencer::Sample8To16AddDelayStereo(Channel_t *pChannel
 				}
 
 				int iSampleValueLeft = ((iLeftWeight*iPreviousValue1Left) + (iRightWeight*pCurrent[iAccumulatorInteger+2])) >> cFixedPointShift;
-				pLeft[0] = static_cast<Int16>(pLeft[0]+((iSampleValueLeft*static_cast<Int32>(uRightVolume))>>8));
+				pLeft[0] = static_cast<int16_t>(pLeft[0]+((iSampleValueLeft*static_cast<int32_t>(uRightVolume))>>8));
 				pLeft += 2;
 				int iSampleValueRight = ((iLeftWeight*iPreviousValue1Right) + (iRightWeight*pCurrent[iAccumulatorInteger+3])) >> cFixedPointShift;
-				pRight[0] = static_cast<Int16>(pRight[0]+((iSampleValueRight*static_cast<Int32>(uLeftVolume))>>8));
+				pRight[0] = static_cast<int16_t>(pRight[0]+((iSampleValueRight*static_cast<int32_t>(uLeftVolume))>>8));
 				pRight += 2;
 
 				iAccumulatorFraction += uStepValue;
@@ -2403,18 +2404,18 @@ void BURGER_API Burger::Sequencer::Sample8To16AddDelayStereo(Channel_t *pChannel
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::Sample16To16AddDelayStereo(Channel_t *pChannel,Int16 *pAccumBuffer)
+void BURGER_API Burger::Sequencer::Sample16To16AddDelayStereo(Channel_t *pChannel,int16_t *pAccumBuffer)
 {
 	if ((pChannel->m_pCurrent < pChannel->m_pEndOfSample) ||
 		pChannel->m_uLoopSize) {
 
-		Word uLeftVolume = CalculateVolume(pChannel,0);
-		Word uRightVolume = CalculateVolume(pChannel,1);
+		uint_t uLeftVolume = CalculateVolume(pChannel,0);
+		uint_t uRightVolume = CalculateVolume(pChannel,1);
 
 		// Delay offsets in stereo
-		WordPtr uDelayOffset = m_uMicroDelayBufferSize*2;
-		Int16 *pLeft = pAccumBuffer;
-		Int16 *pRight = pAccumBuffer + 1;
+		uintptr_t uDelayOffset = m_uMicroDelayBufferSize*2;
+		int16_t *pLeft = pAccumBuffer;
+		int16_t *pRight = pAccumBuffer + 1;
 		// Even channels are right
 		if (!(pChannel->m_uID&1)) {	
 			pRight = pRight + uDelayOffset;
@@ -2423,18 +2424,18 @@ void BURGER_API Burger::Sequencer::Sample16To16AddDelayStereo(Channel_t *pChanne
 		}
 
 		const char *pCurrent = pChannel->m_pCurrent;
-		Int32 iPreviousOffset = pChannel->m_iPreviousOffset;
-		Int32 iPreviousValue1Left = pChannel->m_iPreviousValue1Left;
-		Int32 iPreviousValue1Right = pChannel->m_iPreviousValue1Right;
-		Int32 iPreviousValue2Left = pChannel->m_iPreviousValue2Left;
-		Int32 iPreviousValue2Right = pChannel->m_iPreviousValue2Right;
+		int32_t iPreviousOffset = pChannel->m_iPreviousOffset;
+		int32_t iPreviousValue1Left = pChannel->m_iPreviousValue1Left;
+		int32_t iPreviousValue1Right = pChannel->m_iPreviousValue1Right;
+		int32_t iPreviousValue2Left = pChannel->m_iPreviousValue2Left;
+		int32_t iPreviousValue2Right = pChannel->m_iPreviousValue2Right;
 
-		Word bKillSample = FALSE;
-		WordPtr uAccumBufferSize = m_uAccumBufferSize;
+		uint_t bKillSample = FALSE;
+		uintptr_t uAccumBufferSize = m_uAccumBufferSize;
 		// Delta value
-		Int32 iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
+		int32_t iAccumulatorFraction = pChannel->m_iAccumulatorFraction;
 		// Step value
-		Word uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
+		uint_t uStepValue = (cAmigaClock << cFixedPointShift) / (pChannel->m_uTimePeriod * m_uFinalSampleRate);
 
 		if (pChannel->m_bPingPongReverse && 
 			(pChannel->m_eLoopType == LOOP_PINGPONG)) {
@@ -2445,13 +2446,13 @@ void BURGER_API Burger::Sequencer::Sample16To16AddDelayStereo(Channel_t *pChanne
 #if defined(BURGER_LITTLEENDIAN)
 		++pCurrent;
 #endif
-		Int32 iAccumulatorInteger=0;
-		Int32 iSampleValueLeft = 0;
-		Int32 iSampleValueRight = 0;
+		int32_t iAccumulatorInteger=0;
+		int32_t iSampleValueLeft = 0;
+		int32_t iSampleValueRight = 0;
 		if (uAccumBufferSize) {	
 			do {
-				Int32 iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
-				Int32 iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
+				int32_t iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
+				int32_t iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
 				iAccumulatorInteger = (iAccumulatorFraction>>cFixedPointShift)*2;
 
 				if (iPreviousOffset != iAccumulatorInteger) {
@@ -2462,7 +2463,7 @@ void BURGER_API Burger::Sequencer::Sample16To16AddDelayStereo(Channel_t *pChanne
 						if ((&pCurrent[(iAccumulatorInteger*2)+6] >= pChannel->m_pEndOfSample && !pChannel->m_bPingPongReverse) ||
 							(&pCurrent[(iAccumulatorInteger*2)+4] <= pChannel->m_pBeginningOfSample + pChannel->m_uLoopBeginning && pChannel->m_bPingPongReverse)) {
 							pChannel->m_bPingPongReverse = !pChannel->m_bPingPongReverse;
-							iAccumulatorFraction = static_cast<Int32>(iAccumulatorFraction-uStepValue);
+							iAccumulatorFraction = static_cast<int32_t>(iAccumulatorFraction-uStepValue);
 							uStepValue = 0-uStepValue;
 							iRightWeight = iAccumulatorFraction & ((1 << cFixedPointShift) - 1);
 							iLeftWeight = (1 << cFixedPointShift) - iRightWeight;
@@ -2497,10 +2498,10 @@ void BURGER_API Burger::Sequencer::Sample16To16AddDelayStereo(Channel_t *pChanne
 				}
 
 				iSampleValueLeft = ((iLeftWeight * iPreviousValue1Left) + (iRightWeight * pCurrent[(iAccumulatorInteger*2)+4])) >> cFixedPointShift;
-				pLeft[0] = static_cast<Int16>(pLeft[0] + ((iSampleValueLeft*static_cast<Int32>(uRightVolume))>>8));
+				pLeft[0] = static_cast<int16_t>(pLeft[0] + ((iSampleValueLeft*static_cast<int32_t>(uRightVolume))>>8));
 				pLeft += 2;
 				iSampleValueRight = ((iLeftWeight * iPreviousValue1Right) + (iRightWeight * pCurrent[(iAccumulatorInteger*2)+6])) >> cFixedPointShift;
-				pRight[0] = static_cast<Int16>(pRight[0] + ((iSampleValueRight*static_cast<Int32>(uLeftVolume))>>8));
+				pRight[0] = static_cast<int16_t>(pRight[0] + ((iSampleValueRight*static_cast<int32_t>(uLeftVolume))>>8));
 				pRight += 2;
 				iAccumulatorFraction += uStepValue;
 			} while (--uAccumBufferSize);
@@ -2536,11 +2537,11 @@ void BURGER_API Burger::Sequencer::Sample16To16AddDelayStereo(Channel_t *pChanne
 
 void BURGER_API Burger::Sequencer::MixTo32(void)
 {
-	Word uMaxVoices = m_uMaxVoices;
+	uint_t uMaxVoices = m_uMaxVoices;
 	if (uMaxVoices) {
 		Channel_t *pChannel = m_Channels;
 		do {
-			Int32 *pAccumBuffer = m_pAccumBuffer32;
+			int32_t *pAccumBuffer = m_pAccumBuffer32;
 			if (pChannel->m_bStereo) {
 				if (pChannel->m_uBitsPerSample == 16) {
 					Sample16To32AddDelayStereo(pChannel,pAccumBuffer);
@@ -2560,12 +2561,12 @@ void BURGER_API Burger::Sequencer::MixTo32(void)
 
 	// Copy the final buffer
 	{
-		Int32 *pAccumBuffer = m_pAccumBuffer32;
-		Int16 *pBuffer = static_cast<Int16*>(m_pBuffer);
-		WordPtr uAccumBufferSize = m_uAccumBufferSize*2;
+		int32_t *pAccumBuffer = m_pAccumBuffer32;
+		int16_t *pBuffer = static_cast<int16_t*>(m_pBuffer);
+		uintptr_t uAccumBufferSize = m_uAccumBufferSize*2;
 		if (uAccumBufferSize) {
 			do {
-				Int32 iTemp = pAccumBuffer[0];
+				int32_t iTemp = pAccumBuffer[0];
 				pAccumBuffer[0] = 0;
 				++pAccumBuffer;
 				if (iTemp > 0x7FFF) {
@@ -2573,7 +2574,7 @@ void BURGER_API Burger::Sequencer::MixTo32(void)
 				} else if (iTemp < -0x7FFF) {
 					iTemp = -0x7FFF;
 				}
-				pBuffer[0] = static_cast<Int16>(iTemp);
+				pBuffer[0] = static_cast<int16_t>(iTemp);
 				++pBuffer;
 			} while (--uAccumBufferSize);
 		}
@@ -2588,11 +2589,11 @@ void BURGER_API Burger::Sequencer::MixTo32(void)
 
 void BURGER_API Burger::Sequencer::MixTo16(void)
 {
-	Word uMaxVoices = m_uMaxVoices;
+	uint_t uMaxVoices = m_uMaxVoices;
 	if (uMaxVoices) {
 		Channel_t *pChannel = m_Channels;
 		do {
-			Int16 *pAccumBuffer = m_pAccumBuffer16;
+			int16_t *pAccumBuffer = m_pAccumBuffer16;
 			if (pChannel->m_bStereo) {
 				if (pChannel->m_uBitsPerSample == 16) {
 					Sample16To16AddDelayStereo(pChannel,pAccumBuffer);
@@ -2610,9 +2611,9 @@ void BURGER_API Burger::Sequencer::MixTo16(void)
 		} while (--uMaxVoices);
 	}
 	{
-		Int16 *pAccumBuffer = m_pAccumBuffer16;
-		Word8 *pBuffer = static_cast<Word8 *>(m_pBuffer);
-		WordPtr uAccumBufferSize = m_uAccumBufferSize*2;
+		int16_t *pAccumBuffer = m_pAccumBuffer16;
+		uint8_t *pBuffer = static_cast<uint8_t *>(m_pBuffer);
+		uintptr_t uAccumBufferSize = m_uAccumBufferSize*2;
 		if (uAccumBufferSize) {
 			do {
 				int32_t iTemp = pAccumBuffer[0]+128;
@@ -2620,7 +2621,7 @@ void BURGER_API Burger::Sequencer::MixTo16(void)
 				++pAccumBuffer;
 				iTemp = ClampZero(iTemp);
 				iTemp = Min(iTemp,static_cast<int32_t>(255));
-				pBuffer[0] = static_cast<Word8>(iTemp);
+				pBuffer[0] = static_cast<uint8_t>(iTemp);
 				++pBuffer;
 			} while (--uAccumBufferSize);
 		}
@@ -2635,13 +2636,13 @@ void BURGER_API Burger::Sequencer::MixTo16(void)
 
 void BURGER_API Burger::Sequencer::GenerateSound(void)
 {
-	WordPtr uAccumBufferSize;
+	uintptr_t uAccumBufferSize;
 	switch(m_eOutputDataType) {
 	case SoundManager::TYPECHAR:
 	case SoundManager::TYPEBYTE:
 		MixTo16();
 		uAccumBufferSize = m_uAccumBufferSize*2;
-		m_pBuffer = static_cast<Word8 *>(m_pBuffer)+uAccumBufferSize;
+		m_pBuffer = static_cast<uint8_t *>(m_pBuffer)+uAccumBufferSize;
 		m_pAccumBuffer16 += uAccumBufferSize;
 		break;
 	default:
@@ -2649,7 +2650,7 @@ void BURGER_API Burger::Sequencer::GenerateSound(void)
 	case SoundManager::TYPEBSHORT:
 		MixTo32();
 		uAccumBufferSize = m_uAccumBufferSize*2;
-		m_pBuffer = static_cast<Word8 *>(m_pBuffer)+uAccumBufferSize*2;
+		m_pBuffer = static_cast<uint8_t *>(m_pBuffer)+uAccumBufferSize*2;
 		m_pAccumBuffer32 += uAccumBufferSize;
 		break;
 	}
@@ -2666,7 +2667,7 @@ void BURGER_API Burger::Sequencer::GenerateSound(void)
 
 void BURGER_API Burger::Sequencer::ApplySurround(void)
 {
-	WordPtr uAccumBufferSize = m_uAccumBufferSize;
+	uintptr_t uAccumBufferSize = m_uAccumBufferSize;
 	if (uAccumBufferSize) {
 		switch(m_eOutputDataType) {
 		case SoundManager::TYPECHAR:
@@ -2684,9 +2685,9 @@ void BURGER_API Burger::Sequencer::ApplySurround(void)
 		case SoundManager::TYPELSHORT:
 		case SoundManager::TYPEBSHORT:
 			{
-				Int16 *pBuffer16 = static_cast<Int16*>(m_pBuffer);
+				int16_t *pBuffer16 = static_cast<int16_t*>(m_pBuffer);
 				do {
-					pBuffer16[0] = static_cast<Int16>(-1-pBuffer16[0]);
+					pBuffer16[0] = static_cast<int16_t>(-1-pBuffer16[0]);
 					pBuffer16 += 2;
 				} while (--uAccumBufferSize);
 			}
@@ -2703,7 +2704,7 @@ void BURGER_API Burger::Sequencer::ApplySurround(void)
 
 void BURGER_API Burger::Sequencer::PurgeChannels(void)
 {
-	Word uMaxVoices = m_uMaxVoices;
+	uint_t uMaxVoices = m_uMaxVoices;
 	if (uMaxVoices) {
 		Channel_t *pChannel = m_Channels;
 		do {
@@ -2721,9 +2722,9 @@ void BURGER_API Burger::Sequencer::PurgeChannels(void)
 void BURGER_API Burger::Sequencer::SetUpEffect(Channel_t *pChannel)
 {
 	// Get the command token
-	Word uEffectArgument = pChannel->m_uEffectArgument;
-	Word uEffectCommand = pChannel->m_uEffectCommand;
-	Word uTemp;
+	uint_t uEffectArgument = pChannel->m_uEffectArgument;
+	uint_t uEffectCommand = pChannel->m_uEffectCommand;
+	uint_t uTemp;
 
 	// Any argument?
 	if (!uEffectArgument) {
@@ -2750,18 +2751,18 @@ void BURGER_API Burger::Sequencer::SetUpEffect(Channel_t *pChannel)
 	case Command_t::EFFECT_UPSLIDE:
 	case Command_t::EFFECT_DOWNSLIDE:
 		if (uEffectArgument) {
-			pChannel->m_iSlide = static_cast<Int32>(uEffectArgument);
+			pChannel->m_iSlide = static_cast<int32_t>(uEffectArgument);
 		}
 		break;
 
 	case Command_t::EFFECT_VIBRATO:
 		uTemp = uEffectArgument>>4;
 		if (uTemp) {
-			pChannel->m_iCurrentVibration = static_cast<Int32>(uTemp);
+			pChannel->m_iCurrentVibration = static_cast<int32_t>(uTemp);
 		}
 		uTemp = uEffectArgument&0x0F;
 		if (uTemp) {
-			pChannel->m_iVibratoDepth = static_cast<Int32>(uTemp);
+			pChannel->m_iVibratoDepth = static_cast<int32_t>(uTemp);
 		}
 		pChannel->m_uPreviousTimePeriod = pChannel->m_uTimePeriod;
 		break;
@@ -2773,14 +2774,14 @@ void BURGER_API Burger::Sequencer::SetUpEffect(Channel_t *pChannel)
 			if (pChannel->m_eNote != NOTE_UNUSED) {
 				eNote uNote = static_cast<eNote>(pChannel->m_eNote + (uEffectArgument>>4));
 				if (uNote < NOTE_MAX) {
-					pChannel->m_Arpeggios[1] = static_cast<Int32>(GetNotePeriod(uNote,cAmigaFrequency));
+					pChannel->m_Arpeggios[1] = static_cast<int32_t>(GetNotePeriod(uNote,cAmigaFrequency));
 				}
 				uNote = static_cast<eNote>(pChannel->m_eNote + (uEffectArgument&0x0F));
 				if (uNote < NOTE_MAX) {
-					pChannel->m_Arpeggios[2] = static_cast<Int32>(GetNotePeriod(uNote,cAmigaFrequency));
+					pChannel->m_Arpeggios[2] = static_cast<int32_t>(GetNotePeriod(uNote,cAmigaFrequency));
 				}
 				pChannel->m_uArpeggioIndex = 0;
-				pChannel->m_Arpeggios[0] = static_cast<Int32>(pChannel->m_uTimePeriod);
+				pChannel->m_Arpeggios[0] = static_cast<int32_t>(pChannel->m_uTimePeriod);
 			}
 		}
 		break;
@@ -2839,7 +2840,7 @@ void BURGER_API Burger::Sequencer::SetUpEffect(Channel_t *pChannel)
 		case 11:	// Fine volume slide down
 			uTemp = pChannel->m_uVolume;
 			uTemp -= (uEffectArgument&0x0F);
-			if (static_cast<Int>(uTemp) < 0) {
+			if (static_cast<int_t>(uTemp) < 0) {
 				uTemp = 0;
 			} else if (uTemp > cMaxVolume) {
 				uTemp = cMaxVolume;
@@ -2862,20 +2863,20 @@ void BURGER_API Burger::Sequencer::SetUpEffect(Channel_t *pChannel)
 		break;
 
 	case Command_t::EFFECT_PORTAMENTO:
-		pChannel->m_iPitchRate = static_cast<Int32>(uEffectArgument);
+		pChannel->m_iPitchRate = static_cast<int32_t>(uEffectArgument);
 
 		if (pChannel->m_eNote != NOTE_UNUSED) {
-			pChannel->m_iPitchGoal = static_cast<Int32>(GetNotePeriod(pChannel->m_eNote,pChannel->m_uAmigaFineTune));
+			pChannel->m_iPitchGoal = static_cast<int32_t>(GetNotePeriod(pChannel->m_eNote,pChannel->m_uAmigaFineTune));
 		} else if (!uEffectArgument) {
-			pChannel->m_iPitchGoal = static_cast<Int32>(pChannel->m_uTimePeriod);
+			pChannel->m_iPitchGoal = static_cast<int32_t>(pChannel->m_uTimePeriod);
 		}
 		break;
 
 	case Command_t::EFFECT_PORTASLIDE:
 		if (pChannel->m_eNote != NOTE_UNUSED) {
-			pChannel->m_iPitchGoal = static_cast<Int32>(GetNotePeriod(pChannel->m_eNote,pChannel->m_uAmigaFineTune));
+			pChannel->m_iPitchGoal = static_cast<int32_t>(GetNotePeriod(pChannel->m_eNote,pChannel->m_uAmigaFineTune));
 		} else if (!pChannel->m_iPitchGoal) {
-			pChannel->m_iPitchGoal = static_cast<Int32>(pChannel->m_uTimePeriod);
+			pChannel->m_iPitchGoal = static_cast<int32_t>(pChannel->m_uTimePeriod);
 		}
 		pChannel->ParseSlideVolume(uEffectArgument);
 		break;
@@ -2910,7 +2911,7 @@ void BURGER_API Burger::Sequencer::SetUpEffect(Channel_t *pChannel)
 		if (uEffectArgument > cMaxPan) {
 			uEffectArgument = cMaxPan;
 		}
-		pChannel->m_iPan = static_cast<Int32>(uEffectArgument);
+		pChannel->m_iPan = static_cast<int32_t>(uEffectArgument);
 		break;
 
 	case Command_t::EFFECT_VOLUME:
@@ -2928,7 +2929,7 @@ void BURGER_API Burger::Sequencer::SetUpEffect(Channel_t *pChannel)
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::DoEffect(Channel_t *pChannel,Word uStep)
+void BURGER_API Burger::Sequencer::DoEffect(Channel_t *pChannel,uint_t uStep)
 {
 	switch (pChannel->m_uEffectCommand) {
 		// I surrender
@@ -2939,21 +2940,21 @@ void BURGER_API Burger::Sequencer::DoEffect(Channel_t *pChannel,Word uStep)
 
 	case Command_t::EFFECT_ARPEGGIO:
 		if (pChannel->m_uEffectArgument && pChannel->m_Arpeggios[0]) {
-			Word uArpeggioIndex = pChannel->m_uArpeggioIndex;
+			uint_t uArpeggioIndex = pChannel->m_uArpeggioIndex;
 			// Adjust the index
 			if (++uArpeggioIndex >= cArpeggioMaxCount) {		
 				// Back to the beginning
 				uArpeggioIndex = 0;
 			}
 			pChannel->m_uArpeggioIndex = uArpeggioIndex;
-			pChannel->m_uTimePeriod = static_cast<Word>(pChannel->m_Arpeggios[uArpeggioIndex]);
+			pChannel->m_uTimePeriod = static_cast<uint_t>(pChannel->m_Arpeggios[uArpeggioIndex]);
 		}
 		break;
 
 	case Command_t::EFFECT_SKIP:
 		if (uStep == (m_uCurrentSpeed - 1)) {
 			// Get the partition index
-			Word uPartitionPosition = m_uPartitionPosition;
+			uint_t uPartitionPosition = m_uPartitionPosition;
 			if (m_uPatternPosition) {
 				++uPartitionPosition;
 				m_uPartitionPosition = uPartitionPosition;
@@ -2961,7 +2962,7 @@ void BURGER_API Burger::Sequencer::DoEffect(Channel_t *pChannel,Word uStep)
 				m_uCurrentIDPattern = m_pSongPackage->m_SongDescription.m_PatternPointers[uPartitionPosition];
 			}
 
-			Word uEffectArgument = pChannel->m_uEffectArgument;
+			uint_t uEffectArgument = pChannel->m_uEffectArgument;
 			// Convert from BCD
 			m_uPatternPosition = ((uEffectArgument>>4) * 10) + (uEffectArgument&0x0f);
 
@@ -2986,7 +2987,7 @@ void BURGER_API Burger::Sequencer::DoEffect(Channel_t *pChannel,Word uStep)
 				}
 			}
 
-			Word uEffectArgument = pChannel->m_uEffectArgument;
+			uint_t uEffectArgument = pChannel->m_uEffectArgument;
 			m_uPartitionPosition = uEffectArgument;
 			m_uCurrentIDPattern = m_pSongPackage->m_SongDescription.m_PatternPointers[uEffectArgument];
 
@@ -3020,7 +3021,7 @@ void BURGER_API Burger::Sequencer::DoEffect(Channel_t *pChannel,Word uStep)
 
 	case Command_t::EFFECT_VIBRATO:
 		{
-			Int32 iVibratoOffset = (pChannel->m_iVibratoOffset+pChannel->m_iCurrentVibration)&0x3F;
+			int32_t iVibratoOffset = (pChannel->m_iVibratoOffset+pChannel->m_iCurrentVibration)&0x3F;
 			pChannel->m_iVibratoOffset = iVibratoOffset;
 			iVibratoOffset = (g_VibratoTable[iVibratoOffset] * pChannel->m_iVibratoDepth) / 512;
 			pChannel->m_uTimePeriod = pChannel->m_uPreviousTimePeriod + iVibratoOffset*4;
@@ -3029,8 +3030,8 @@ void BURGER_API Burger::Sequencer::DoEffect(Channel_t *pChannel,Word uStep)
 
 	case Command_t::EFFECT_SLIDEVOLUME:
 		{
-			Word uVolume = pChannel->m_uVolume + pChannel->m_iVolumeRate;
-			if (static_cast<Int32>(uVolume) < 0) {
+			uint_t uVolume = pChannel->m_uVolume + pChannel->m_iVolumeRate;
+			if (static_cast<int32_t>(uVolume) < 0) {
 				uVolume = 0;
 			} else if (uVolume > cMaxVolume) {
 				uVolume = cMaxVolume;
@@ -3041,8 +3042,8 @@ void BURGER_API Burger::Sequencer::DoEffect(Channel_t *pChannel,Word uStep)
 
 	case Command_t::EFFECT_PORTAMENTO:
 		{
-			Int32 iPitchGoal = pChannel->m_iPitchGoal;
-			Int32 iTimePeriod = static_cast<Int32>(pChannel->m_uTimePeriod);
+			int32_t iPitchGoal = pChannel->m_iPitchGoal;
+			int32_t iTimePeriod = static_cast<int32_t>(pChannel->m_uTimePeriod);
 			if (iTimePeriod != iPitchGoal) {
 				if (iTimePeriod < iPitchGoal) {
 					iTimePeriod += pChannel->m_iPitchRate*4;
@@ -3051,7 +3052,7 @@ void BURGER_API Burger::Sequencer::DoEffect(Channel_t *pChannel,Word uStep)
 						pChannel->m_uEffectArgument = 0;
 						iTimePeriod = iPitchGoal;
 					}
-					pChannel->m_uTimePeriod = static_cast<Word>(iTimePeriod);
+					pChannel->m_uTimePeriod = static_cast<uint_t>(iTimePeriod);
 				} else if (iTimePeriod > iPitchGoal) {
 					iTimePeriod -= pChannel->m_iPitchRate*4;
 					if (iTimePeriod < iPitchGoal) {
@@ -3059,7 +3060,7 @@ void BURGER_API Burger::Sequencer::DoEffect(Channel_t *pChannel,Word uStep)
 						pChannel->m_uEffectArgument = 0;
 						iTimePeriod = iPitchGoal;
 					}
-					pChannel->m_uTimePeriod = static_cast<Word>(iTimePeriod);
+					pChannel->m_uTimePeriod = static_cast<uint_t>(iTimePeriod);
 				}
 			}
 		}
@@ -3113,13 +3114,13 @@ void BURGER_API Burger::Sequencer::ProcessFadeOut(Channel_t *pChannel) const
 	if (!pChannel->m_bKeyOn) {
 		SongPackage *pSongPackage = m_pSongPackage;
 		if (pSongPackage) {
-			Int32 iTemp = static_cast<Int32>(pChannel->m_uVolumeFade - pSongPackage->m_InstrDatas[pChannel->m_uCurrentInstrumentID].m_uVolumeFadeSpeed);
+			int32_t iTemp = static_cast<int32_t>(pChannel->m_uVolumeFade - pSongPackage->m_InstrDatas[pChannel->m_uCurrentInstrumentID].m_uVolumeFadeSpeed);
 			if (iTemp < 0) {
 				pChannel->m_uLoopBeginning = 0;
 				pChannel->m_uLoopSize = 0;
 				iTemp = 0;
 			}
-			pChannel->m_uVolumeFade = static_cast<Word32>(iTemp);
+			pChannel->m_uVolumeFade = static_cast<uint32_t>(iTemp);
 		}
 	}
 }
@@ -3145,9 +3146,9 @@ void BURGER_API Burger::Sequencer::ProcessEnvelope(Channel_t *pChannel) const
 			} else {
 
 				// Interpolate from the envelope
-				Word uCurrentVolumeEnvelopeIndex=pChannel->m_uCurrentVolumeEnvelopeIndex;
-				Word uNextVolumeEnvelopeIndex=pChannel->m_uNextVolumeEnvelopeIndex;
-				Word uCurrentVolumePosition=pChannel->m_uCurrentVolumePosition;
+				uint_t uCurrentVolumeEnvelopeIndex=pChannel->m_uCurrentVolumeEnvelopeIndex;
+				uint_t uNextVolumeEnvelopeIndex=pChannel->m_uNextVolumeEnvelopeIndex;
+				uint_t uCurrentVolumePosition=pChannel->m_uCurrentVolumePosition;
 				pChannel->m_uCurrentVolumeFromEnvelope = pInstrData->m_VolumeEnvelope[uCurrentVolumeEnvelopeIndex].Interpolate(&pInstrData->m_VolumeEnvelope[uNextVolumeEnvelopeIndex],uCurrentVolumePosition);
 
 				// If on sustain, stay until key up has been pressed
@@ -3192,7 +3193,7 @@ void BURGER_API Burger::Sequencer::ProcessEnvelope(Channel_t *pChannel) const
 
 void BURGER_API Burger::Sequencer::ProcessPanning(Channel_t *pChannel) const
 {
-	pChannel->m_uCurrentPanFromEnvelope = static_cast<Word>(pChannel->m_iPan);
+	pChannel->m_uCurrentPanFromEnvelope = static_cast<uint_t>(pChannel->m_iPan);
 	const InstrData_t *pInstrData = &m_pSongPackage->m_InstrDatas[pChannel->m_uCurrentInstrumentID];
 	if (pInstrData->m_uPanEnvelopeCount) {
 		if (pInstrData->m_uPanEnvelopeFlags & InstrData_t::ENVELOPE_ON) {
@@ -3201,9 +3202,9 @@ void BURGER_API Burger::Sequencer::ProcessPanning(Channel_t *pChannel) const
 				pChannel->m_uCurrentPanFromEnvelope = pInstrData->m_PanEnvelope[0].m_uVolume;
 				pChannel->m_uCurrentPanPosition = pInstrData->m_PanEnvelope[0].m_uPosition;
 			} else {
-				Word uCurrentPanEnvelopeIndex = pChannel->m_uCurrentPanEnvelopeIndex;
-				Word uNextPanEnvelopeIndex = pChannel->m_uNextPanEnvelopeIndex;
-				Word uCurrentPanPosition = pChannel->m_uCurrentPanPosition;
+				uint_t uCurrentPanEnvelopeIndex = pChannel->m_uCurrentPanEnvelopeIndex;
+				uint_t uNextPanEnvelopeIndex = pChannel->m_uNextPanEnvelopeIndex;
+				uint_t uCurrentPanPosition = pChannel->m_uCurrentPanPosition;
 				pChannel->m_uCurrentPanFromEnvelope = pInstrData->m_PanEnvelope[uCurrentPanEnvelopeIndex].Interpolate(&pInstrData->m_PanEnvelope[uNextPanEnvelopeIndex],uCurrentPanPosition);
 				if (++uCurrentPanPosition >= pInstrData->m_PanEnvelope[uNextPanEnvelopeIndex].m_uPosition) {
 					uCurrentPanEnvelopeIndex=uNextPanEnvelopeIndex;
@@ -3238,7 +3239,7 @@ void BURGER_API Burger::Sequencer::ProcessPanning(Channel_t *pChannel) const
 void BURGER_API Burger::Sequencer::ProcessNote(Channel_t *pChannel,const Command_t *pCommand)
 {
 	Command_t::eEffect uEffect = pCommand->GetEffect();
-	Word uEffectArgument = pCommand->m_uEffectArgument;
+	uint_t uEffectArgument = pCommand->m_uEffectArgument;
 
 	//
 	// Handle extended effects
@@ -3263,7 +3264,7 @@ void BURGER_API Burger::Sequencer::ProcessNote(Channel_t *pChannel,const Command
 	// Process the note command
 	//
 
-	Word uInstrument = pCommand->m_uInstrument;
+	uint_t uInstrument = pCommand->m_uInstrument;
 	eNote uNote = pCommand->GetNote();
 	if (uInstrument ||
 		((uNote != NOTE_UNUSED) && (uNote != NOTE_OFF))) {
@@ -3279,11 +3280,11 @@ void BURGER_API Burger::Sequencer::ProcessNote(Channel_t *pChannel,const Command
 			((uNote != NOTE_UNUSED) && (uNote != NOTE_OFF))) {
 
 			// uInstrument is greater than zero here
-			Word uInstrumentIndex = uInstrument - 1;
+			uint_t uInstrumentIndex = uInstrument - 1;
 			if (uInstrumentIndex >= cInstrumentMaxCount) {
 				uInstrumentIndex = cInstrumentMaxCount-1;
 			}
-			Word uSampleIndex = m_pSongPackage->m_InstrDatas[uInstrumentIndex].m_WhichSampleForNote[uNote];
+			uint_t uSampleIndex = m_pSongPackage->m_InstrDatas[uInstrumentIndex].m_WhichSampleForNote[uNote];
 
 			// Is there a digital sample for this?
 			if (uSampleIndex < m_pSongPackage->m_InstrDatas[uInstrumentIndex].m_uNumberSamples) {
@@ -3301,7 +3302,7 @@ void BURGER_API Burger::Sequencer::ProcessNote(Channel_t *pChannel,const Command
 					const void *pSample = pSampleDescription->m_pSample;
 					pChannel->m_pCurrent = static_cast<const char *>(pSample);
 					pChannel->m_pBeginningOfSample = static_cast<const char *>(pSample);
-					WordPtr uSampleSize = pSampleDescription->m_uSampleSize;
+					uintptr_t uSampleSize = pSampleDescription->m_uSampleSize;
 					pChannel->m_pEndOfSample = static_cast<const char *>(pSample) + uSampleSize;
 					pChannel->m_uSampleSize = uSampleSize;
 					pChannel->m_iAccumulatorFraction = 0;
@@ -3315,8 +3316,8 @@ void BURGER_API Burger::Sequencer::ProcessNote(Channel_t *pChannel,const Command
 					} else {
 						pChannel->m_iPreviousValue2Right = static_cast<const char *>(pSample)[2];
 					}
-					pChannel->m_iPreviousValue4Left = static_cast<const Int16 *>(pSample)[0];
-					pChannel->m_iPreviousValue4Right = static_cast<const Int16 *>(pSample)[1];
+					pChannel->m_iPreviousValue4Left = static_cast<const int16_t *>(pSample)[0];
+					pChannel->m_iPreviousValue4Right = static_cast<const int16_t *>(pSample)[1];
 
 					if (pSampleDescription->m_uLoopLength > 2) {
 						pChannel->m_uLoopBeginning = pSampleDescription->m_uLoopStart;
@@ -3337,7 +3338,7 @@ void BURGER_API Burger::Sequencer::ProcessNote(Channel_t *pChannel,const Command
 					}
 
 					if (uEffect != Command_t::EFFECT_PANNING) {
-						pChannel->m_iPan = static_cast<Int32>(m_pSongPackage->m_SongDescription.m_ChannelPans[pChannel->m_uID]);
+						pChannel->m_iPan = static_cast<int32_t>(m_pSongPackage->m_SongDescription.m_ChannelPans[pChannel->m_uID]);
 						if (pChannel->m_iPan > cMaxPan) {
 							pChannel->m_iPan = cMaxPan;
 						}
@@ -3368,7 +3369,7 @@ void BURGER_API Burger::Sequencer::ProcessNote(Channel_t *pChannel,const Command
 					}
 
 					if (uEffect != Command_t::EFFECT_PANNING) {
-						pChannel->m_iPan = static_cast<Int32>(m_pSongPackage->m_SongDescription.m_ChannelPans[pChannel->m_uID]);
+						pChannel->m_iPan = static_cast<int32_t>(m_pSongPackage->m_SongDescription.m_ChannelPans[pChannel->m_uID]);
 						if (pChannel->m_iPan > cMaxPan) {
 							pChannel->m_iPan = cMaxPan;
 						}
@@ -3384,7 +3385,7 @@ void BURGER_API Burger::Sequencer::ProcessNote(Channel_t *pChannel,const Command
 		if ((uNote != NOTE_UNUSED) &&
 			(uNote != NOTE_OFF)) {
 			const SongPackage *pSongPackage = m_pSongPackage;
-			Word uSampleIndex = pSongPackage->m_InstrDatas[pChannel->m_uCurrentInstrumentID].m_WhichSampleForNote[uNote];
+			uint_t uSampleIndex = pSongPackage->m_InstrDatas[pChannel->m_uCurrentInstrumentID].m_WhichSampleForNote[uNote];
 			if (uSampleIndex < pSongPackage->m_InstrDatas[pChannel->m_uCurrentInstrumentID].m_uNumberSamples) {
 
 				const SampleDescription *pSampleDescription = pSongPackage->m_pSampleDescriptions[pSongPackage->m_InstrDatas[pChannel->m_uCurrentInstrumentID].m_uBaseSampleID + uSampleIndex];
@@ -3395,7 +3396,7 @@ void BURGER_API Burger::Sequencer::ProcessNote(Channel_t *pChannel,const Command
 				if ((uEffect != Command_t::EFFECT_PORTAMENTO) &&
 					(uEffect != Command_t::EFFECT_PORTASLIDE)) {
 					pChannel->m_uTimePeriod = GetNotePeriod(pChannel->m_eNote,pChannel->m_uAmigaFineTune);
-					Word uTimePeriod = (pChannel->m_uTimePeriod*m_uMasterPitch) / 80U;
+					uint_t uTimePeriod = (pChannel->m_uTimePeriod*m_uMasterPitch) / 80U;
 					pChannel->m_uTimePeriod = uTimePeriod;
 					pChannel->m_uPreviousTimePeriod = uTimePeriod;
 				}
@@ -3459,18 +3460,18 @@ void BURGER_API Burger::Sequencer::PerformSequencing(void)
 	// Process notes and then generate the audio data
 	//
 
-	WordPtr uRemaining = m_uAccumBufferSize;
+	uintptr_t uRemaining = m_uAccumBufferSize;
 	if (uRemaining) {
 
 		// Copy these values for later restoration
 		void *pBufferCopy = m_pBuffer;
-		Int32 *pAccumBuffer32Copy = m_pAccumBuffer32;
-		Int16 *pAccumBuffer16Copy = m_pAccumBuffer16;
-		WordPtr uAccumBufferSizeCopy = m_uAccumBufferSize;
+		int32_t *pAccumBuffer32Copy = m_pAccumBuffer32;
+		int16_t *pAccumBuffer16Copy = m_pAccumBuffer16;
+		uintptr_t uAccumBufferSizeCopy = m_uAccumBufferSize;
 
 		do {
-			WordPtr uBytesLeft = m_uBytesToGenerate - m_uBytesGenerated;
-			Word bNoteProcessing;
+			uintptr_t uBytesLeft = m_uBytesToGenerate - m_uBytesGenerated;
+			uint_t bNoteProcessing;
 			if (uBytesLeft > uRemaining) {
 				uBytesLeft = uRemaining;
 				bNoteProcessing = FALSE;
@@ -3501,10 +3502,10 @@ void BURGER_API Burger::Sequencer::PerformSequencing(void)
 			//
 
 			if (m_pSongPackage && m_bSequencingInProgress) {
-				Word uChannelCount = m_pSongPackage->m_SongDescription.m_uChannelCount;
+				uint_t uChannelCount = m_pSongPackage->m_SongDescription.m_uChannelCount;
 				if (uChannelCount) {
 					Channel_t *pChannel = m_Channels;
-					Word uChannel = 0;
+					uint_t uChannel = 0;
 					do {
 						if (pChannel->m_bEffectActive) {
 							ProcessNote(pChannel,m_pSongPackage->m_pPartitions[pChannel->m_uEffectPartitionIndex]->GetCommand(static_cast<int>(pChannel->m_uEffectRowIndex),static_cast<int>(uChannel)));
@@ -3523,10 +3524,10 @@ void BURGER_API Burger::Sequencer::PerformSequencing(void)
 				m_uSpeedCounter = 0;
 				const SongPackage *pSongPackage = m_pSongPackage;
 				if (pSongPackage) {
-					Word uChannelCount = pSongPackage->m_SongDescription.m_uChannelCount;
+					uint_t uChannelCount = pSongPackage->m_SongDescription.m_uChannelCount;
 					if (uChannelCount) {
 						Sequencer::Channel_t *pChannel = m_Channels;
-						Word uChannel = 0;
+						uint_t uChannel = 0;
 						do {
 							if (m_bSequencingInProgress) {
 								ProcessNote(pChannel,pSongPackage->m_pPartitions[m_uCurrentIDPattern]->GetCommand(static_cast<int>(m_uPatternPosition),static_cast<int>(uChannel)));
@@ -3542,7 +3543,7 @@ void BURGER_API Burger::Sequencer::PerformSequencing(void)
 						if (++m_uPatternPosition >= pSongPackage->m_pPartitions[m_uCurrentIDPattern]->m_uRowCount) {
 							m_uPatternPosition = 0;
 
-							Word uPartitionPosition = m_uPartitionPosition+1;
+							uint_t uPartitionPosition = m_uPartitionPosition+1;
 							m_uPartitionPosition = uPartitionPosition;
 							m_uCurrentIDPattern = pSongPackage->m_SongDescription.m_PatternPointers[uPartitionPosition];
 
@@ -3566,7 +3567,7 @@ void BURGER_API Burger::Sequencer::PerformSequencing(void)
 				//
 				const Sequencer::SongPackage *pSongPackage = m_pSongPackage;
 				if (pSongPackage) {
-					Word uMaxVoices = m_uMaxVoices;
+					uint_t uMaxVoices = m_uMaxVoices;
 					if (uMaxVoices) {
 						Sequencer::Channel_t *pChannel = m_Channels;
 						do {
@@ -3597,7 +3598,7 @@ void BURGER_API Burger::Sequencer::PerformSequencing(void)
 				}
 			}
 
-			WordPtr uThisChunk = ((80*m_uChunkSize)/m_uFineSpeed)/m_uMasterSpeed;
+			uintptr_t uThisChunk = ((80*m_uChunkSize)/m_uFineSpeed)/m_uMasterSpeed;
 			m_uBytesToGenerate += uThisChunk;
 		} while (uRemaining);
 
@@ -3651,17 +3652,17 @@ void BURGER_API Burger::Sequencer::PerformSequencing(void)
 		switch (m_eOutputDataType) {
 		case SoundManager::TYPECHAR:
 		case SoundManager::TYPEBYTE:
-			ComputeReverb(static_cast<Word8*>(m_pBuffer),static_cast<const Word8*>(m_pReverbBuffer),m_uAccumBufferSize*2,m_uReverbStrength);
-			MemoryCopy(m_pReverbBuffer,static_cast<const Word8*>(m_pReverbBuffer) + m_uAccumBufferSize*2,(m_uReverbDelayBufferSize-m_uAccumBufferSize)*2);
-			MemoryCopy(static_cast<Word8*>(m_pReverbBuffer) + m_uReverbDelayBufferSize*2 - m_uAccumBufferSize*2,m_pBuffer,m_uAccumBufferSize*2);
+			ComputeReverb(static_cast<uint8_t*>(m_pBuffer),static_cast<const uint8_t*>(m_pReverbBuffer),m_uAccumBufferSize*2,m_uReverbStrength);
+			MemoryCopy(m_pReverbBuffer,static_cast<const uint8_t*>(m_pReverbBuffer) + m_uAccumBufferSize*2,(m_uReverbDelayBufferSize-m_uAccumBufferSize)*2);
+			MemoryCopy(static_cast<uint8_t*>(m_pReverbBuffer) + m_uReverbDelayBufferSize*2 - m_uAccumBufferSize*2,m_pBuffer,m_uAccumBufferSize*2);
 			break;
 
 		default:
 		case SoundManager::TYPELSHORT:
 		case SoundManager::TYPEBSHORT:
-			ComputeReverb(static_cast<Int16*>(m_pBuffer),static_cast<const Int16 *>(m_pReverbBuffer),m_uAccumBufferSize*2,m_uReverbStrength);
-			MemoryCopy(m_pReverbBuffer,static_cast<const Word8*>(m_pReverbBuffer) + m_uAccumBufferSize*4,(m_uReverbDelayBufferSize-m_uAccumBufferSize)*4);
-			MemoryCopy(static_cast<Word8*>(m_pReverbBuffer) + m_uReverbDelayBufferSize*4 - m_uAccumBufferSize*4,m_pBuffer,m_uAccumBufferSize*4);
+			ComputeReverb(static_cast<int16_t*>(m_pBuffer),static_cast<const int16_t *>(m_pReverbBuffer),m_uAccumBufferSize*2,m_uReverbStrength);
+			MemoryCopy(m_pReverbBuffer,static_cast<const uint8_t*>(m_pReverbBuffer) + m_uAccumBufferSize*4,(m_uReverbDelayBufferSize-m_uAccumBufferSize)*4);
+			MemoryCopy(static_cast<uint8_t*>(m_pReverbBuffer) + m_uReverbDelayBufferSize*4 - m_uAccumBufferSize*4,m_pBuffer,m_uAccumBufferSize*4);
 			break;
 		}
 	}
@@ -3674,7 +3675,7 @@ void BURGER_API Burger::Sequencer::PerformSequencing(void)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS)) ||  defined(DOXYGEN)
-Word BURGER_API Burger::Sequencer::PlatformInit(void)
+uint_t BURGER_API Burger::Sequencer::PlatformInit(void)
 {
 	return 0;
 }
@@ -3700,7 +3701,7 @@ void BURGER_API Burger::Sequencer::ClearChannels(void)
 {
 	m_uBytesGenerated = 0;
 	m_uBytesToGenerate = 0;
-	Word i = 0;
+	uint_t i = 0;
 	Channel_t *pChannel = m_Channels;
 	do {
 		pChannel->Init(i);
@@ -3721,14 +3722,14 @@ void BURGER_API Burger::Sequencer::ClearChannels(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Sequencer::CalculateVolume(const Channel_t *pChannel,Word uSpeaker) const
+uint_t BURGER_API Burger::Sequencer::CalculateVolume(const Channel_t *pChannel,uint_t uSpeaker) const
 {
 	//
 	// Ranges in order, 64 * 64 * 32767 / (16*32767) = 256
 	// This way the resulting volume is from 0 to 256
 	//
 	
-	Word uResult = (pChannel->m_uVolume * pChannel->m_uCurrentVolumeFromEnvelope * pChannel->m_uVolumeFade) / (16*32767);
+	uint_t uResult = (pChannel->m_uVolume * pChannel->m_uCurrentVolumeFromEnvelope * pChannel->m_uVolumeFade) / (16*32767);
 
 	if (m_pSongPackage) {
 		//
@@ -3742,7 +3743,7 @@ Word BURGER_API Burger::Sequencer::CalculateVolume(const Channel_t *pChannel,Wor
 	//
 
 	if (uSpeaker<2) {
-		Word uPanAdjust = pChannel->m_uCurrentPanFromEnvelope;
+		uint_t uPanAdjust = pChannel->m_uCurrentPanFromEnvelope;
 		// Right speaker?
 		if (uSpeaker == 1) {
 			// Flip the pan
@@ -3771,9 +3772,9 @@ Word BURGER_API Burger::Sequencer::CalculateVolume(const Channel_t *pChannel,Wor
 
 ***************************************/
 
-Word BURGER_API Burger::Sequencer::SetSong(SongPackage *pSongPackage)
+uint_t BURGER_API Burger::Sequencer::SetSong(SongPackage *pSongPackage)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (pSongPackage) {
 		DisposeSong();
 		m_pSongPackage = pSongPackage;
@@ -3804,9 +3805,9 @@ Word BURGER_API Burger::Sequencer::SetSong(SongPackage *pSongPackage)
 
 ***************************************/
 
-Word BURGER_API Burger::Sequencer::Play(SongPackage *pSongPackage)
+uint_t BURGER_API Burger::Sequencer::Play(SongPackage *pSongPackage)
 {
-	Word uResult = SetSong(pSongPackage);
+	uint_t uResult = SetSong(pSongPackage);
 	if (!uResult) {
 		PrepareSequencer();			// Turn interrupt driver function ON
 		StartSequencing();			// Read the current partition in memory
@@ -3825,10 +3826,10 @@ Word BURGER_API Burger::Sequencer::Play(SongPackage *pSongPackage)
 
 ***************************************/
 
-Word BURGER_API Burger::Sequencer::Play(const void *pInput,WordPtr uInputLength)
+uint_t BURGER_API Burger::Sequencer::Play(const void *pInput,uintptr_t uInputLength)
 {
 	SongPackage *pSongPackage;
-	Word uResult = ImportSong(&pSongPackage,static_cast<const Word8*>(pInput),uInputLength);
+	uint_t uResult = ImportSong(&pSongPackage,static_cast<const uint8_t*>(pInput),uInputLength);
 	if (!uResult) {
 		uResult = Play(pSongPackage);
 	}
@@ -3847,10 +3848,10 @@ Word BURGER_API Burger::Sequencer::Play(const void *pInput,WordPtr uInputLength)
 
 ***************************************/
 
-Word BURGER_API Burger::Sequencer::Play(const char *pFilename)
+uint_t BURGER_API Burger::Sequencer::Play(const char *pFilename)
 {
-	WordPtr uInputLength;
-	Word uResult = 10;
+	uintptr_t uInputLength;
+	uint_t uResult = 10;
 	const void *pInput = FileManager::LoadFile(pFilename,&uInputLength);
 	if (pInput) {
 		uResult = Play(pInput,uInputLength);
@@ -3859,9 +3860,9 @@ Word BURGER_API Burger::Sequencer::Play(const char *pFilename)
 	return uResult;
 }
 
-Word BURGER_API Burger::Sequencer::PlayRez(RezFile *pRezFile,Word uRezNum)
+uint_t BURGER_API Burger::Sequencer::PlayRez(RezFile *pRezFile,uint_t uRezNum)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	const void *pInput = pRezFile->Load(uRezNum);
 	if (pInput) {
 		uResult = Play(pInput,pRezFile->GetSize(uRezNum));
@@ -3878,9 +3879,9 @@ Word BURGER_API Burger::Sequencer::PlayRez(RezFile *pRezFile,Word uRezNum)
 
 ***************************************/
 
-Word BURGER_API Burger::Sequencer::StartSequencing(void)
+uint_t BURGER_API Burger::Sequencer::StartSequencing(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_pSongPackage) {
 		m_bSequencingInProgress = TRUE;
 		uResult = 0;
@@ -3896,9 +3897,9 @@ Word BURGER_API Burger::Sequencer::StartSequencing(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Sequencer::StopSequencing(void)
+uint_t BURGER_API Burger::Sequencer::StopSequencing(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_pSongPackage) {
 		m_bSequencingInProgress = FALSE;
 		uResult = 0;
@@ -3981,7 +3982,7 @@ void BURGER_API Burger::Sequencer::Resume(void)
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::SetMaxVoices(Word uMaxVoices)
+void BURGER_API Burger::Sequencer::SetMaxVoices(uint_t uMaxVoices)
 {
 	uMaxVoices = (uMaxVoices+1)&(~1);
 	if (uMaxVoices<2) {
@@ -4013,7 +4014,7 @@ void BURGER_API Burger::Sequencer::SetOutputDataType(SoundManager::eDataType uOu
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::SetSampleRate(Word uSampleRate)
+void BURGER_API Burger::Sequencer::SetSampleRate(uint_t uSampleRate)
 {
 	if (uSampleRate<5000) {
 		uSampleRate = 5000;
@@ -4031,7 +4032,7 @@ void BURGER_API Burger::Sequencer::SetSampleRate(Word uSampleRate)
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::SetMicroDelayDuration(Word uMicroDelayDuration)
+void BURGER_API Burger::Sequencer::SetMicroDelayDuration(uint_t uMicroDelayDuration)
 {
 	if (uMicroDelayDuration>=1000) {
 		uMicroDelayDuration = 1000;
@@ -4048,7 +4049,7 @@ void BURGER_API Burger::Sequencer::SetMicroDelayDuration(Word uMicroDelayDuratio
 
 ***************************************/
 
-void BURGER_API Burger::Sequencer::SetReverb(Word uReverbSizeMS,Word uReverbStrength)
+void BURGER_API Burger::Sequencer::SetReverb(uint_t uReverbSizeMS,uint_t uReverbStrength)
 {
 	if ((uReverbSizeMS<25) || !uReverbStrength) {
 		m_bReverbEnabled = FALSE;

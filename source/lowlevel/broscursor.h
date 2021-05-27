@@ -77,8 +77,8 @@ private:
     HICON__* m_pCursorImage; ///< Windows only, handle to the cursor image
 #endif
 
-    Word m_bVisibleFlag; ///< \ref TRUE if the cursor is visible
-    Word m_bActiveFlag;  ///< \ref TRUE if a game cursor is loaded
+    uint_t m_bVisibleFlag; ///< \ref TRUE if the cursor is visible
+    uint_t m_bActiveFlag;  ///< \ref TRUE if a game cursor is loaded
     eCursor m_eIDNumber; ///< ID Number of the currently set cursor
 
     static OSCursor g_Global;
@@ -86,19 +86,19 @@ private:
 
 public:
     ~OSCursor();
-    static BURGER_INLINE Word IsVisible(void) BURGER_NOEXCEPT
+    static BURGER_INLINE uint_t IsVisible(void) BURGER_NOEXCEPT
     {
         return g_Global.m_bVisibleFlag;
     }
-    static BURGER_INLINE Word IsActive(void) BURGER_NOEXCEPT
+    static BURGER_INLINE uint_t IsActive(void) BURGER_NOEXCEPT
     {
         return g_Global.m_bActiveFlag;
     }
-    static BURGER_INLINE Word GetImageIDNumber(void) BURGER_NOEXCEPT
+    static BURGER_INLINE uint_t GetImageIDNumber(void) BURGER_NOEXCEPT
     {
         return g_Global.m_eIDNumber;
     }
-    static BURGER_INLINE Word IsThisADesktop(void) BURGER_NOEXCEPT
+    static BURGER_INLINE uint_t IsThisADesktop(void) BURGER_NOEXCEPT
     {
 #if defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || defined(BURGER_LINUX)
         return TRUE;
@@ -108,9 +108,9 @@ public:
     }
     static void BURGER_API SetImageFromIDNumber(eCursor eCursorNumber) BURGER_NOEXCEPT;
     static void BURGER_API SetImage(const OSCursorImage* pImage) BURGER_NOEXCEPT;
-    static Word BURGER_API Show(void) BURGER_NOEXCEPT;
-    static Word BURGER_API Show(Word bVisible) BURGER_NOEXCEPT;
-    static Word BURGER_API Hide(void) BURGER_NOEXCEPT;
+    static uint_t BURGER_API Show(void) BURGER_NOEXCEPT;
+    static uint_t BURGER_API Show(uint_t bVisible) BURGER_NOEXCEPT;
+    static uint_t BURGER_API Hide(void) BURGER_NOEXCEPT;
     static void BURGER_API Init(void) BURGER_NOEXCEPT;
     static void BURGER_API Shutdown(void) BURGER_NOEXCEPT;
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)

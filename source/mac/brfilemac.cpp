@@ -1,13 +1,14 @@
 /***************************************
 
-	MacOS version of Burger::File
+    MacOS version of Burger::File
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -46,7 +47,7 @@ Burger::eError BURGER_API Burger::File::Open(Filename* pFileName, eFileAccess eA
 	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat,
 		reinterpret_cast<FSRef*>(m_FSRef));
-	Word uResult = FILENOTFOUND;
+	uint_t uResult = FILENOTFOUND;
 
 	// Error? File not found?
 	// See if it should be created
@@ -89,14 +90,14 @@ Burger::eError BURGER_API Burger::File::Open(Filename* pFileName, eFileAccess eA
 
 ***************************************/
 
-Word BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 {
-	Word uResult = OKAY;
-	short fp = static_cast<short>(reinterpret_cast<WordPtr>(m_pFile));
+	eError uResult = kErrorNone;
+	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
 		OSErr eClose = FSCloseFork(fp);
 		if (eClose) {
-			uResult = IOERROR;
+			uResult = kErrorIO;
 		}
 		m_pFile = NULL;
 	}
@@ -117,17 +118,17 @@ bytes. \sa Open(const char *, eFileAccess) and Open(Filename *,eFileAccess)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::GetSize(void)
+uintptr_t BURGER_API Burger::File::GetSize(void)
 {
-	WordPtr uSize = 0;
-	short fp = static_cast<short>(reinterpret_cast<WordPtr>(m_pFile));
+	uintptr_t uSize = 0;
+	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
 		SInt64 lFileSize;
 		OSErr eSize = FSGetForkSize(fp, &lFileSize);
 		if (!eSize) {
-			if (static_cast<Word64>(lFileSize)
-				<= static_cast<Word64>(0xFFFFFFFFU)) {
-				uSize = static_cast<WordPtr>(lFileSize);
+			if (static_cast<uint64_t>(lFileSize)
+				<= static_cast<uint64_t>(0xFFFFFFFFU)) {
+				uSize = static_cast<uintptr_t>(lFileSize);
 			} else {
 				uSize = 0xFFFFFFFFU;
 			}
@@ -146,20 +147,20 @@ WordPtr BURGER_API Burger::File::GetSize(void)
 	\param pOutput Pointer to a buffer of data to read from a file
 	\param uSize Number of bytes to read
 	\return Number of bytes read (Can be less than what was requested due to EOF
-or read errors) \sa Write(const void *,WordPtr)
+or read errors) \sa Write(const void *,uintptr_t)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::Read(void* pOutput, WordPtr uSize)
+uintptr_t BURGER_API Burger::File::Read(void* pOutput, uintptr_t uSize)
 {
-	WordPtr uResult = 0;
+	uintptr_t uResult = 0;
 	if (uSize && pOutput) {
-		short fp = static_cast<short>(reinterpret_cast<WordPtr>(m_pFile));
+		short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 		if (fp) {
 			ByteCount lDataRead = 0;
 			OSErr eRead = FSReadFork(
 				fp, fsAtMark, 0, uSize, pOutput, &lDataRead); // Read data
-			uResult = static_cast<WordPtr>(lDataRead);
+			uResult = static_cast<uintptr_t>(lDataRead);
 		}
 	}
 	return uResult;
@@ -175,20 +176,21 @@ WordPtr BURGER_API Burger::File::Read(void* pOutput, WordPtr uSize)
 	\param pInput Pointer to a buffer of data to write to a file
 	\param uSize Number of bytes to write
 	\return Number of bytes written (Can be less than what was requested due to
-EOF or write errors) \sa Read(void *,WordPtr)
+        EOF or write errors)
+    \sa Read(void *,uintptr_t)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::Write(const void* pInput, WordPtr uSize) BURGER_NOEXCEPT
+uintptr_t BURGER_API Burger::File::Write(const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT
 {
-	WordPtr uResult = 0;
+	uintptr_t uResult = 0;
 	if (uSize && pInput) {
-		short fp = static_cast<short>(reinterpret_cast<WordPtr>(m_pFile));
+		short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 		if (fp) {
 			ByteCount lDataWritten = 0;
 			OSErr eWrite = FSWriteFork(
 				fp, fsAtMark, 0, uSize, (void *)pInput, &lDataWritten); // Write data
-			uResult = static_cast<WordPtr>(lDataWritten);
+			uResult = static_cast<uintptr_t>(lDataWritten);
 		}
 	}
 	return uResult;
@@ -202,21 +204,21 @@ WordPtr BURGER_API Burger::File::Write(const void* pInput, WordPtr uSize) BURGER
 	of the file mark for future reads or writes.
 
 	\return Current file mark or zero if an error occurred
-	\sa Write(const void *,WordPtr)
+	\sa Write(const void *,uintptr_t)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::GetMark(void)
+uintptr_t BURGER_API Burger::File::GetMark(void)
 {
-	WordPtr uMark = 0;
-	short fp = static_cast<short>(reinterpret_cast<WordPtr>(m_pFile));
+	uintptr_t uMark = 0;
+	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
 		SInt64 lCurrentMark;
 		OSErr eErr = FSGetForkPosition(fp, &lCurrentMark);
 		if (!eErr) {
-			if (static_cast<Word64>(lCurrentMark)
-				<= static_cast<Word64>(0xFFFFFFFFU)) {
-				uMark = static_cast<WordPtr>(lCurrentMark);
+			if (static_cast<uint64_t>(lCurrentMark)
+				<= static_cast<uint64_t>(0xFFFFFFFFU)) {
+				uMark = static_cast<uintptr_t>(lCurrentMark);
 			} else {
 				uMark = 0xFFFFFFFFU;
 			}
@@ -237,14 +239,16 @@ WordPtr BURGER_API Burger::File::GetMark(void)
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetMark(WordPtr uMark)
+Burger::eError BURGER_API Burger::File::SetMark(uintptr_t uMark)
 {
-	Word uResult = INVALID_MARK;
-	short fp = static_cast<short>(reinterpret_cast<WordPtr>(m_pFile));
+	eError uResult = kErrorNotInitialized;
+	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
 		OSErr eErr = FSSetForkPosition(fp, fsFromStart, uMark);
 		if (!eErr) {
-			uResult = OKAY;
+			uResult = kErrorNone;
+		} else {
+			uResult = kErrorOutOfBounds;
 		}
 	}
 	return uResult;
@@ -261,10 +265,10 @@ Word BURGER_API Burger::File::SetMark(WordPtr uMark)
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetMarkAtEOF(void)
+uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 {
-	Word uResult = INVALID_MARK;
-	short fp = static_cast<short>(reinterpret_cast<WordPtr>(m_pFile));
+	uint_t uResult = INVALID_MARK;
+	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
 		OSErr eErr = FSSetForkPosition(fp, fsFromLEOF, 0);
 		if (!eErr) {
@@ -288,10 +292,10 @@ SetModificationTime()
 
 ***************************************/
 
-Word BURGER_API Burger::File::GetModificationTime(TimeDate_t* pOutput)
+uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t* pOutput)
 {
-	Word uResult = FILENOTFOUND;
-	short fp = static_cast<short>(reinterpret_cast<WordPtr>(m_pFile));
+	uint_t uResult = FILENOTFOUND;
+	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
 		FSRefParam Block;
 		FSCatalogInfo MyInfo;
@@ -324,10 +328,10 @@ other codes for errors \sa GetModificationTime() or SetCreationTime()
 
 ***************************************/
 
-Word BURGER_API Burger::File::GetCreationTime(TimeDate_t* pOutput)
+uint_t BURGER_API Burger::File::GetCreationTime(TimeDate_t* pOutput)
 {
-	Word uResult = FILENOTFOUND;
-	short fp = static_cast<short>(reinterpret_cast<WordPtr>(m_pFile));
+	uint_t uResult = FILENOTFOUND;
+	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
 		FSRefParam Block;
 		FSCatalogInfo MyInfo;
@@ -361,9 +365,9 @@ GetModificationTime()
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetModificationTime(const TimeDate_t* pInput)
+uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t* pInput)
 {
-	Word uResult = FILENOTFOUND;
+	uint_t uResult = FILENOTFOUND;
 #if 0
 	HANDLE fp = m_pFile;
 	if (fp) {
@@ -395,9 +399,9 @@ GetCreationTime()
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetCreationTime(const TimeDate_t* pInput)
+uint_t BURGER_API Burger::File::SetCreationTime(const TimeDate_t* pInput)
 {
-	Word uResult = FILENOTFOUND;
+	uint_t uResult = FILENOTFOUND;
 #if 0
 	HANDLE fp = m_pFile;
 	if (fp) {

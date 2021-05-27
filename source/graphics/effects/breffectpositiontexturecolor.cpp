@@ -1,14 +1,15 @@
 /***************************************
 
-	Position textured color shader
+    Position textured color shader
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "breffectpositiontexturecolor.h"
@@ -55,7 +56,7 @@ static const Burger::Display::OpenGLVertexInputs_t g_Inputs[] = {
 
 ***************************************/
 
-Burger::EffectPositionColorTexture::EffectPositionColorTexture(Display *pDisplay,const Word * /* pVertexMembers */)
+Burger::EffectPositionColorTexture::EffectPositionColorTexture(Display *pDisplay,const uint_t * /* pVertexMembers */)
 #if defined(BURGER_OPENGL)
 	: m_iEffectMatrix(0),
 	m_iEffectColor(0)
@@ -70,7 +71,7 @@ Burger::EffectPositionColorTexture::EffectPositionColorTexture(Display *pDisplay
 
 #if !defined(BURGER_WINDOWS) && !defined(DOXYGEN)
 
-Word Burger::EffectPositionColorTexture::CheckLoad(Display *pDisplay)
+uint_t Burger::EffectPositionColorTexture::CheckLoad(Display *pDisplay)
 {
 #if defined(BURGER_XBOX360)
 	m_pDevice = pDisplay->GetD3DDevice();
@@ -159,13 +160,13 @@ void BURGER_API Burger::EffectPositionColorTexture::SetColor(const Vector4D_t *p
 
 ***************************************/
 
-Burger::EffectPositionColorTextureDX9::EffectPositionColorTextureDX9(Display *pDisplay,const Word *pVertexMembers) :
+Burger::EffectPositionColorTextureDX9::EffectPositionColorTextureDX9(Display *pDisplay,const uint_t *pVertexMembers) :
 	EffectPositionColorTexture(pDisplay,pVertexMembers)
 {
 	m_ShaderData.m_DX9.m_pDevice = static_cast<DisplayDirectX9 *>(pDisplay)->GetDirect3DDevice9();
 }
 
-Word Burger::EffectPositionColorTextureDX9::CheckLoad(Display *pDisplay)
+uint_t Burger::EffectPositionColorTextureDX9::CheckLoad(Display *pDisplay)
 {
 	m_ShaderData.m_DX9.m_pDevice = static_cast<DisplayDirectX9 *>(pDisplay)->GetDirect3DDevice9();
 	if (!m_ShaderData.m_DX9.m_pVertexShader) {
@@ -205,13 +206,13 @@ void Burger::EffectPositionColorTextureDX9::SetColor(const Vector4D_t *pColor)
 ***************************************/
 
 #if defined(BURGER_INTEL)
-Burger::EffectPositionColorTextureOpenGL::EffectPositionColorTextureOpenGL(Display *pDisplay,const Word *pVertexMembers) :
+Burger::EffectPositionColorTextureOpenGL::EffectPositionColorTextureOpenGL(Display *pDisplay,const uint_t *pVertexMembers) :
 	EffectPositionColorTexture(pDisplay,pVertexMembers)
 {
 
 }
 
-Word Burger::EffectPositionColorTextureOpenGL::CheckLoad(Display *pDisplay)
+uint_t Burger::EffectPositionColorTextureOpenGL::CheckLoad(Display *pDisplay)
 {
 	if (!m_ShaderData.m_GL.m_uProgramID) {
 		GLuint uProgram = static_cast<DisplayOpenGL *>(pDisplay)->CompileProgram(g_vsstaticpositiongl,0,g_pstexturecolorgl,0,g_Inputs);

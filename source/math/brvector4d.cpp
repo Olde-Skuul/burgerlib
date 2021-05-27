@@ -1190,38 +1190,38 @@ void BURGER_API Burger::Vector4D_t::QuaternionMulNormalize(const Vector4D_t *pIn
 
 ***************************************/
 
-Word BURGER_API Burger::Vector4D_t::BitwiseEqual(const Vector4D_t *pInput) const
+uint_t BURGER_API Burger::Vector4D_t::BitwiseEqual(const Vector4D_t *pInput) const
 {
 	return (
-		(static_cast<const Word32 *>(static_cast<const void *>(&pInput->x))[0] == static_cast<const Word32 *>(static_cast<const void *>(&x))[0]) &&
-		(static_cast<const Word32 *>(static_cast<const void *>(&pInput->y))[0] == static_cast<const Word32 *>(static_cast<const void *>(&y))[0]) &&
-		(static_cast<const Word32 *>(static_cast<const void *>(&pInput->z))[0] == static_cast<const Word32 *>(static_cast<const void *>(&z))[0]) &&
-		(static_cast<const Word32 *>(static_cast<const void *>(&pInput->w))[0] == static_cast<const Word32 *>(static_cast<const void *>(&w))[0]));
+		(static_cast<const uint32_t *>(static_cast<const void *>(&pInput->x))[0] == static_cast<const uint32_t *>(static_cast<const void *>(&x))[0]) &&
+		(static_cast<const uint32_t *>(static_cast<const void *>(&pInput->y))[0] == static_cast<const uint32_t *>(static_cast<const void *>(&y))[0]) &&
+		(static_cast<const uint32_t *>(static_cast<const void *>(&pInput->z))[0] == static_cast<const uint32_t *>(static_cast<const void *>(&z))[0]) &&
+		(static_cast<const uint32_t *>(static_cast<const void *>(&pInput->w))[0] == static_cast<const uint32_t *>(static_cast<const void *>(&w))[0]));
 }
 
 /*! ************************************
 
-	\fn float & Burger::Vector4D_t::operator[](Word uInput)
+	\fn float & Burger::Vector4D_t::operator[](uint_t uInput)
 	\brief Access the members as an array
 
 	\param uInput 0 for x, 1 for y, 2 for z, 3 for w, any other value is an error
-	\sa operator[](Word) const
+	\sa operator[](uint_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn const float & Burger::Vector4D_t::operator[](Word uInput) const
+	\fn const float & Burger::Vector4D_t::operator[](uint_t uInput) const
 	\brief Access the members as an array
 
 	\param uInput 0 for x, 1 for y, 2 for z, 3 for w, any other value is an error
-	\sa operator[](Word)
+	\sa operator[](uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Word Burger::Vector4D_t::operator==(const Vector4D_t& rInput) const
+	\fn uint_t Burger::Vector4D_t::operator==(const Vector4D_t& rInput) const
 	\brief Compare two Vector4D_t's for equality
 	
 	\param rInput Reference to the Vector4D_t to compare against
@@ -1468,7 +1468,7 @@ Word BURGER_API Burger::Vector4D_t::BitwiseEqual(const Vector4D_t *pInput) const
 
 /*! ************************************
 
-	\fn Word Burger::Vector4D_t::IsInsideRect(float fX,float fY) const
+	\fn uint_t Burger::Vector4D_t::IsInsideRect(float fX,float fY) const
 	\brief Test if a point is inside a rectangle
 
 	Test the x,y coordinate if it inside the
@@ -1483,7 +1483,7 @@ Word BURGER_API Burger::Vector4D_t::BitwiseEqual(const Vector4D_t *pInput) const
 
 /*! ************************************
 
-	\fn Word Burger::Vector4D_t::IsInsideRect(const Vector2D_t *pInput) const
+	\fn uint_t Burger::Vector4D_t::IsInsideRect(const Vector2D_t *pInput) const
 	\brief Test if a point is inside a rectangle
 
 	Test the x,y coordinate in the Vector2D_t if it inside the
@@ -1596,7 +1596,7 @@ void BURGER_API Burger::Vector4D_t::ExpandRect(const Vector4D_t *pInput)
 
 /*! ************************************
 
-	\fn Word Burger::Vector4D_t::operator != (const Vector4D_t& rInput) const
+	\fn uint_t Burger::Vector4D_t::operator != (const Vector4D_t& rInput) const
 	\brief Compare two Vector4D_t's for inequality
 	
 	\param rInput Reference to the Vector4D_t to compare against

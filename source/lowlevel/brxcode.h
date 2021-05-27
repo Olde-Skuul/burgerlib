@@ -99,16 +99,16 @@ BURGER_INLINE double __fcfid(double dA)
 	return dD;
 }
 
-BURGER_INLINE Word32 __cntlzw(Word32 uInput) 
+BURGER_INLINE uint32_t __cntlzw(uint32_t uInput) 
 {
-	Word32 uResult;
+	uint32_t uResult;
 	__asm__("cntlzw %0,%1":"=r"(uResult) : "r"(uInput));
 	return uResult; 
 }
 
-BURGER_INLINE Word64 __cntlzd(Word64 uInput) 
+BURGER_INLINE uint64_t __cntlzd(uint64_t uInput) 
 {
-	Word64 uResult;
+	uint64_t uResult;
 	__asm__("cntlzd %0,%1":"=r"(uResult) : "r"(uInput));
 	return uResult; 
 }

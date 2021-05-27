@@ -103,11 +103,11 @@ struct Vector4D_t {
 	void BURGER_API QuaternionMul(const Vector4D_t *pInput1,const Vector4D_t *pInput2);
 	void BURGER_API QuaternionMulNormalize(const Vector4D_t *pInput);
 	void BURGER_API QuaternionMulNormalize(const Vector4D_t *pInput1,const Vector4D_t *pInput2);
-	Word BURGER_API BitwiseEqual(const Vector4D_t *pInput) const;
-	BURGER_INLINE float & operator[](Word uInput) { return (&x)[uInput]; }
-	BURGER_INLINE const float & operator[](Word uInput) const { return (&x)[uInput]; }
-	BURGER_INLINE Word operator == (const Vector4D_t& rInput) const { return (x == rInput.x) && (y == rInput.y) && (z == rInput.z) && (w == rInput.z); }
-	BURGER_INLINE Word operator != (const Vector4D_t& rInput) const { return (x != rInput.x) || (y != rInput.y) || (z != rInput.z) || (w != rInput.z); }
+	uint_t BURGER_API BitwiseEqual(const Vector4D_t *pInput) const;
+	BURGER_INLINE float & operator[](uint_t uInput) { return (&x)[uInput]; }
+	BURGER_INLINE const float & operator[](uint_t uInput) const { return (&x)[uInput]; }
+	BURGER_INLINE uint_t operator == (const Vector4D_t& rInput) const { return (x == rInput.x) && (y == rInput.y) && (z == rInput.z) && (w == rInput.z); }
+	BURGER_INLINE uint_t operator != (const Vector4D_t& rInput) const { return (x != rInput.x) || (y != rInput.y) || (z != rInput.z) || (w != rInput.z); }
 	BURGER_INLINE operator const float *() const { return &x; }
 	BURGER_INLINE const Vector2D_t *GetTopLeft(void) const { return reinterpret_cast<const Vector2D_t *>(&x); }
 	BURGER_INLINE const Vector2D_t *GetBottomRight(void) const { return reinterpret_cast<const Vector2D_t *>(&z); }
@@ -126,8 +126,8 @@ struct Vector4D_t {
 	BURGER_INLINE void SetTop(float fTop) { y = fTop; }
 	BURGER_INLINE void SetRight(float fRight) { z = fRight; }
 	BURGER_INLINE void SetBottom(float fBottom) { w = fBottom; }
-	BURGER_INLINE Word IsInsideRect(float fX,float fY) const { return ((fX >= x) && (fX <= z) && (fY >= y) && (fY <= w)); }
-	BURGER_INLINE Word IsInsideRect(const Vector2D_t *pInput) const { return ((pInput->x >= x) && (pInput->x <= z) && (pInput->y >= y) && (pInput->y <= w)); }
+	BURGER_INLINE uint_t IsInsideRect(float fX,float fY) const { return ((fX >= x) && (fX <= z) && (fY >= y) && (fY <= w)); }
+	BURGER_INLINE uint_t IsInsideRect(const Vector2D_t *pInput) const { return ((pInput->x >= x) && (pInput->x <= z) && (pInput->y >= y) && (pInput->y <= w)); }
 	void BURGER_API ExpandRect(float fX, float fY);
 	void BURGER_API ExpandRect(const Vector2D_t *pInput);
 	void BURGER_API ExpandRect(const Vector4D_t *pInput);

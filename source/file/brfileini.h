@@ -1,13 +1,14 @@
 /***************************************
 
-	Library to handle windows style configuration files (INI)
+    Library to handle windows style configuration files (INI)
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -93,13 +94,13 @@ public:
 		BURGER_INLINE const char *GetValue(void) const { return m_Value.GetPtr(); }
 		BURGER_INLINE void SetValue(const char *pInput) { m_Value.Set(pInput); }
 		BURGER_INLINE void SetValue(const String *pInput) { m_Value = pInput[0]; }
-		Word BURGER_API GetBoolean(Word bDefault) const;
-		void BURGER_API SetBoolean(Word bValue);
-		Word BURGER_API GetWord(Word uDefault,Word uMin=0,Word uMax=BURGER_MAXUINT) const;
-		void BURGER_API SetWord(Word uValue);
-		void BURGER_API SetWordHex(Word uValue);
-		Int BURGER_API GetInt(Int iDefault,Int iMin=(-BURGER_MAXINT)-1,Int iMax=BURGER_MAXINT) const;
-		void BURGER_API SetInt(Int iValue);
+		uint_t BURGER_API GetBoolean(uint_t bDefault) const;
+		void BURGER_API SetBoolean(uint_t bValue);
+		uint_t BURGER_API GetWord(uint_t uDefault,uint_t uMin=0,uint_t uMax=BURGER_MAXUINT) const;
+		void BURGER_API SetWord(uint_t uValue);
+		void BURGER_API SetWordHex(uint_t uValue);
+		int_t BURGER_API GetInt(int_t iDefault,int_t iMin=(-BURGER_MAXINT)-1,int_t iMax=BURGER_MAXINT) const;
+		void BURGER_API SetInt(int_t iValue);
 		float BURGER_API GetFloat(float fDefault,float fMin,float fMax) const;
 		void BURGER_API SetFloat(float fValue);
 		double BURGER_API GetDouble(double dDefault,double dMin,double dMax) const;
@@ -117,24 +118,24 @@ public:
 		Section();
 		Section(const char *pSection);
 		virtual ~Section();
-		Word BURGER_API Save(OutputMemoryStream *pOutput) const;
+		uint_t BURGER_API Save(OutputMemoryStream *pOutput) const;
 		BURGER_INLINE const char *GetName(void) const { return m_SectionName.GetPtr(); }
 		BURGER_INLINE void SetName(const char *pInput) { m_SectionName.Set(pInput); }
 		BURGER_INLINE void SetName(const String *pInput) { m_SectionName = pInput[0]; }
 		Entry * BURGER_API AddEntry(const char *pKey,const char *pValue);
 		Entry * BURGER_API FindEntry(const char *pKey) const;
-		Entry * BURGER_API FindEntry(const char *pKey,Word bAlwaysCreate);
+		Entry * BURGER_API FindEntry(const char *pKey,uint_t bAlwaysCreate);
 		Comment * BURGER_API AddComment(const char *pComment);
 		const char * BURGER_API GetValue(const char *pKey) const;
 		void BURGER_API SetValue(const char *pKey,const char *pInput);
 		void BURGER_API SetValue(const char *pKey,const String *pInput);
-		Word BURGER_API GetBoolean(const char *pKey,Word bDefault) const;
-		void BURGER_API SetBoolean(const char *pKey,Word bValue);
-		Word BURGER_API GetWord(const char *pKey,Word uDefault,Word uMin=0,Word uMax=BURGER_MAXUINT) const;
-		void BURGER_API SetWord(const char *pKey,Word uValue);
-		void BURGER_API SetWordHex(const char *pKey,Word uValue);
-		Int BURGER_API GetInt(const char *pKey,Int iDefault,Int iMin=(-BURGER_MAXINT)-1,Int iMax=BURGER_MAXINT) const;
-		void BURGER_API SetInt(const char *pKey,Int iValue);
+		uint_t BURGER_API GetBoolean(const char *pKey,uint_t bDefault) const;
+		void BURGER_API SetBoolean(const char *pKey,uint_t bValue);
+		uint_t BURGER_API GetWord(const char *pKey,uint_t uDefault,uint_t uMin=0,uint_t uMax=BURGER_MAXUINT) const;
+		void BURGER_API SetWord(const char *pKey,uint_t uValue);
+		void BURGER_API SetWordHex(const char *pKey,uint_t uValue);
+		int_t BURGER_API GetInt(const char *pKey,int_t iDefault,int_t iMin=(-BURGER_MAXINT)-1,int_t iMax=BURGER_MAXINT) const;
+		void BURGER_API SetInt(const char *pKey,int_t iValue);
 		float BURGER_API GetFloat(const char *pKey,float fDefault,float fMin,float fMax) const;
 		void BURGER_API SetFloat(const char *pKey,float fValue);
 		double BURGER_API GetDouble(const char *pKey,double dDefault,double dMin,double dMax) const;
@@ -151,18 +152,18 @@ public:
 	FileINI();
 	~FileINI();
 	static FileINI * BURGER_API New(void);
-	static FileINI * BURGER_API New(const char *pFilename,Word bAlwaysCreate=FALSE);
-	static FileINI * BURGER_API New(Filename *pFilename,Word bAlwaysCreate=FALSE);
-	static FileINI * BURGER_API New(InputMemoryStream *pInput,Word bAlwaysCreate=FALSE);
-	Word BURGER_API Init(const char *pFilename);
-	Word BURGER_API Init(Filename *pFilename);
-	Word BURGER_API Init(InputMemoryStream *pInput);
+	static FileINI * BURGER_API New(const char *pFilename,uint_t bAlwaysCreate=FALSE);
+	static FileINI * BURGER_API New(Filename *pFilename,uint_t bAlwaysCreate=FALSE);
+	static FileINI * BURGER_API New(InputMemoryStream *pInput,uint_t bAlwaysCreate=FALSE);
+	uint_t BURGER_API Init(const char *pFilename);
+	uint_t BURGER_API Init(Filename *pFilename);
+	uint_t BURGER_API Init(InputMemoryStream *pInput);
 	void BURGER_API Shutdown(void);
-	Word BURGER_API Save(const char *pFilename) const;
-	Word BURGER_API Save(Filename *pFilename) const;
-	Word BURGER_API Save(OutputMemoryStream *pOutput) const;
+	uint_t BURGER_API Save(const char *pFilename) const;
+	uint_t BURGER_API Save(Filename *pFilename) const;
+	uint_t BURGER_API Save(OutputMemoryStream *pOutput) const;
 	Section * BURGER_API AddSection(const char *pSectionName);
-	Section * BURGER_API FindSection(const char *pSectionName,Word bAlwaysCreate=FALSE);
+	Section * BURGER_API FindSection(const char *pSectionName,uint_t bAlwaysCreate=FALSE);
 	void BURGER_API DeleteSection(const char *pSectionName);
 };
 }

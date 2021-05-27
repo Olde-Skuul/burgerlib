@@ -28,10 +28,10 @@ extern "C" {
 #define GUID_DEFINED		// Define used by the windows headers
 #endif
 typedef struct _GUID {
-	Word32 Data1;			///< Initial 32 bits as a little endian Word32
-	Word16 Data2;			///< Next 16 bits as a little endian Word16
-	Word16 Data3;			///< Third value as a 16 bit little endian Word16
-	Word8 Data4[8];			///< Remaining 64 bits as 8 bytes
+	uint32_t Data1;			///< Initial 32 bits as a little endian uint32_t
+	uint16_t Data2;			///< Next 16 bits as a little endian uint16_t
+	uint16_t Data3;			///< Third value as a 16 bit little endian uint16_t
+	uint8_t Data4[8];			///< Remaining 64 bits as 8 bytes
 } GUID;
 #endif
 #ifdef __cplusplus
@@ -41,9 +41,9 @@ namespace Burger {
 extern const GUID g_GUIDZero;		///< Empty GUID
 extern void BURGER_API GUIDInit(GUID *pOutput);
 extern void BURGER_API GUIDToString(char *pOutput,const GUID *pInput);
-extern Word BURGER_API GUIDFromString(GUID *pOutput,const char *pInput);
-extern Word BURGER_API GUIDHash(const GUID *pInput);
-extern Word BURGER_API GUIDIsEqual(const GUID *pInput1,const GUID *pInput2);
+extern uint_t BURGER_API GUIDFromString(GUID *pOutput,const char *pInput);
+extern uint_t BURGER_API GUIDHash(const GUID *pInput);
+extern uint_t BURGER_API GUIDIsEqual(const GUID *pInput1,const GUID *pInput2);
 extern int BURGER_API GUIDCompare(const GUID *pInput1,const GUID *pInput2);
 }
 /* END */

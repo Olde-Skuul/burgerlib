@@ -95,25 +95,25 @@ const char *Burger::Filename::GetNative(void)
 	// First parse either the volume name of a .DXX device number
 	// I hopefully will get a volume number since DOS prefers it
 
-	const Word8 *pPath = reinterpret_cast<Word8 *>(m_pFilename);		// Copy to running pointer
-	Word uDeviceNum = static_cast<Word>(-1);	// Init the default drive number
+	const uint8_t *pPath = reinterpret_cast<uint8_t *>(m_pFilename);		// Copy to running pointer
+	uint_t uDeviceNum = static_cast<uint_t>(-1);	// Init the default drive number
 	if (pPath[0] == ':') {			// Fully qualified pathname?
-		WordPtr uLength = 0;		// Init index to the volume name
-		Word8 uTemp;
+		uintptr_t uLength = 0;		// Init index to the volume name
+		uint8_t uTemp;
 		do {
 			++uLength;				// Parse to the next colon
 			uTemp = pPath[uLength];
 		} while (uTemp!=':' && uTemp);
-		Word8 uTemp2 = pPath[uLength+1];	// Save the next char in cache
+		uint8_t uTemp2 = pPath[uLength+1];	// Save the next char in cache
 		// Ensure the name ends with ':' in the case of ":foobar"
-		const_cast<Word8 *>(pPath)[uLength] = ':';
-		const_cast<Word8 *>(pPath)[uLength+1] = 0;				// Zap the entry
+		const_cast<uint8_t *>(pPath)[uLength] = ':';
+		const_cast<uint8_t *>(pPath)[uLength+1] = 0;				// Zap the entry
 		// Find a volume
 		uDeviceNum = FileManager::GetVolumeNumber(reinterpret_cast<const char *>(pPath));
-		const_cast<Word8 *>(pPath)[uLength] = uTemp;				// Restore char in string
-		const_cast<Word8 *>(pPath)[uLength+1] = uTemp2;
-		if (uDeviceNum == static_cast<Word>(-1)) {		// Can't find the volume?!?
-			uDeviceNum = static_cast<Word>(-2);
+		const_cast<uint8_t *>(pPath)[uLength] = uTemp;				// Restore char in string
+		const_cast<uint8_t *>(pPath)[uLength+1] = uTemp2;
+		if (uDeviceNum == static_cast<uint_t>(-1)) {		// Can't find the volume?!?
+			uDeviceNum = static_cast<uint_t>(-2);
 			++pPath;					// Ignore the leading colon
 		} else {
 			pPath = pPath+uLength;		// Accept the name
@@ -124,9 +124,9 @@ const char *Burger::Filename::GetNative(void)
 		
 	// Is this a "drive letter"? Look for ".d2:"
 	} else if (pPath[0] == '.') {
-		Word uTemp = pPath[1];			// Get the second char
+		uint_t uTemp = pPath[1];			// Get the second char
 		if ((uTemp & 0xDF) =='D') {		// Is it a 'D'?
-			WordPtr uLength = 2;		// Init numeric index
+			uintptr_t uLength = 2;		// Init numeric index
 			uDeviceNum = 0;				// Init drive number
 			do {
 				uTemp = pPath[uLength];	// Get an ASCII char
@@ -135,14 +135,14 @@ const char *Burger::Filename::GetNative(void)
 					// If nothing was parsed, abort
 					if (uLength==3) {
 						uLength = 0;
-						uDeviceNum = static_cast<Word>(-1);
+						uDeviceNum = static_cast<uint_t>(-1);
 					}
 					break;
 				}
 				uTemp-='0';
 				if (uTemp>=10) {		// Numeric value?
 					uLength = 0;		// Abort
-					uDeviceNum = static_cast<Word>(-1);	// Force using the CWD
+					uDeviceNum = static_cast<uint_t>(-1);	// Force using the CWD
 					break;			// Go to phase 2
 				}
 				uDeviceNum = uDeviceNum*10;		// Adjust previous value */
@@ -155,7 +155,7 @@ const char *Burger::Filename::GetNative(void)
 	// Now that I have the drive number, determine the length
 	// of the output buffer and start the conversion
 
-	WordPtr uPathLength = StringLength(reinterpret_cast<const char *>(pPath));
+	uintptr_t uPathLength = StringLength(reinterpret_cast<const char *>(pPath));
 	// Reserve 6 extra bytes for the prefix and/or the trailing / and null
 	char *pOutput = m_NativeFilename;
 
@@ -171,13 +171,13 @@ const char *Burger::Filename::GetNative(void)
 
 	// Insert the prefix, if any, to the output string
 
-	if (uDeviceNum==static_cast<Word>(-2)) {
+	if (uDeviceNum==static_cast<uint_t>(-2)) {
 		// Since I didn't find the volume name, I'll assume it's
 		// a network volume
 		pOutput[0] = '\\';
 		pOutput[1] = '\\';
 		pOutput+=2;
-	} else if (uDeviceNum!=static_cast<Word>(-1)) {
+	} else if (uDeviceNum!=static_cast<uint_t>(-1)) {
 		pOutput[0] = static_cast<char>(uDeviceNum+'A');
 		pOutput[1] = ':';
 		pOutput[2] = '\\';
@@ -186,7 +186,7 @@ const char *Burger::Filename::GetNative(void)
 
 	// Convert the colons to slashes
 	if (uPathLength) {
-		Word uTemp;
+		uint_t uTemp;
 		do {
 			uTemp = pPath[0];
 			++pPath;
@@ -228,7 +228,7 @@ void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void)
 		if (pWBuffer) {
 			uLength = GetCurrentDirectoryW(uLength*2,pWBuffer);
 			if (uLength) {
-				String UTF8(static_cast<const Word16 *>(static_cast<void *>(pWBuffer)));
+				String UTF8(static_cast<const uint16_t *>(static_cast<void *>(pWBuffer)));
 				SetFromNative(UTF8.GetPtr());
 			}
 			Free(pWBuffer);
@@ -305,7 +305,7 @@ void BURGER_API Burger::Filename::SetApplicationDirectory(void)
 
 		if (pWBuffer) {
 			// Convert to UTF8
-			String UTF8(static_cast<const Word16 *>(static_cast<void *>(pWBuffer)));
+			String UTF8(static_cast<const uint16_t *>(static_cast<void *>(pWBuffer)));
 			SetFromNative(UTF8.GetPtr());
 			// Release the buffer
 			if (pWBuffer!=Buffer) {
@@ -336,8 +336,8 @@ void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void)
 	Clear();
 
 	// Try the code for Vista or higher
-	Word16 *pResult = NULL;
-	Word uResult = Windows::SHGetKnownFolderPath(&FOLDERID_LocalAppData,KF_FLAG_DONT_UNEXPAND|KF_FLAG_DONT_VERIFY,NULL,&pResult);
+	uint16_t *pResult = NULL;
+	uint_t uResult = Windows::SHGetKnownFolderPath(&FOLDERID_LocalAppData,KF_FLAG_DONT_UNEXPAND|KF_FLAG_DONT_VERIFY,NULL,&pResult);
 	if (uResult==S_OK) {
 		// All good! Use this!
 		String UTF8(pResult);
@@ -349,10 +349,10 @@ void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void)
 		// Try it for Windows XP instead
 		WCHAR NameBuffer[MAX_PATH];
 		// Application system data folder (Local for Vista and Win7)
-		uResult = static_cast<Word>(SHGetFolderPathW(NULL,CSIDL_LOCAL_APPDATA,NULL,0,NameBuffer));
+		uResult = static_cast<uint_t>(SHGetFolderPathW(NULL,CSIDL_LOCAL_APPDATA,NULL,0,NameBuffer));
 		if ((uResult==S_OK) || (uResult==E_FAIL)) {
 			// Convert to UTF8
-			String MyName2(reinterpret_cast<const Word16*>(NameBuffer));
+			String MyName2(reinterpret_cast<const uint16_t*>(NameBuffer));
 			SetFromNative(MyName2);
 		}
 	}
@@ -377,8 +377,8 @@ void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void)
 void BURGER_API Burger::Filename::SetUserPrefsDirectory(void)
 {
 	Clear();
-	Word16 *pResult = NULL;
-	Word uResult = Windows::SHGetKnownFolderPath(&FOLDERID_RoamingAppData,KF_FLAG_DONT_UNEXPAND|KF_FLAG_DONT_VERIFY,NULL,&pResult);
+	uint16_t *pResult = NULL;
+	uint_t uResult = Windows::SHGetKnownFolderPath(&FOLDERID_RoamingAppData,KF_FLAG_DONT_UNEXPAND|KF_FLAG_DONT_VERIFY,NULL,&pResult);
 	if (uResult==S_OK) {
 		// All good! Use this!
 		String UTF8(pResult);
@@ -390,10 +390,10 @@ void BURGER_API Burger::Filename::SetUserPrefsDirectory(void)
 		// Try it for Windows XP instead
 		WCHAR NameBuffer[MAX_PATH];
 		// Application data folder (Roaming for Vista and Win7)
-		uResult = static_cast<Word>(SHGetFolderPathW(NULL,CSIDL_APPDATA,NULL,0,NameBuffer));
+		uResult = static_cast<uint_t>(SHGetFolderPathW(NULL,CSIDL_APPDATA,NULL,0,NameBuffer));
 		if ((uResult==S_OK) || (uResult==E_FAIL)) {
 			// Convert to UTF8
-			String MyName(reinterpret_cast<const Word16*>(NameBuffer));
+			String MyName(reinterpret_cast<const uint16_t*>(NameBuffer));
 			SetFromNative(MyName);
 		}
 	}
@@ -435,13 +435,13 @@ void BURGER_API Burger::Filename::SetFromNative(const char *pInput)
 	
 	WCHAR InputPath[512];
 	WCHAR *pInputPath;
-	WordPtr uInputLength = UTF16::FromUTF8(reinterpret_cast<Word16 *>(InputPath),sizeof(InputPath),pInput);	
+	uintptr_t uInputLength = UTF16::FromUTF8(reinterpret_cast<uint16_t *>(InputPath),sizeof(InputPath),pInput);	
 	if (uInputLength>=sizeof(InputPath)) {
 		pInputPath = static_cast<WCHAR *>(Alloc(uInputLength+2));
 		if (!pInputPath) {
 			return;
 		}
-		uInputLength = UTF16::FromUTF8(reinterpret_cast<Word16 *>(pInputPath),uInputLength+2,pInput);
+		uInputLength = UTF16::FromUTF8(reinterpret_cast<uint16_t *>(pInputPath),uInputLength+2,pInput);
 	} else {
 		pInputPath = InputPath;
 	}
@@ -451,7 +451,7 @@ void BURGER_API Burger::Filename::SetFromNative(const char *pInput)
 	WCHAR ExpandedPath[512];
 	WCHAR *pExpanded;
 	// Have windows expand it out
-	WordPtr uExpandedLength = GetFullPathNameW(pInputPath,sizeof(ExpandedPath)/2,ExpandedPath,NULL)*2;
+	uintptr_t uExpandedLength = GetFullPathNameW(pInputPath,sizeof(ExpandedPath)/2,ExpandedPath,NULL)*2;
 	if (uExpandedLength>=sizeof(ExpandedPath)) {
 		pExpanded = static_cast<WCHAR *>(Alloc(uExpandedLength+2));
 		if (pExpanded) {
@@ -472,7 +472,7 @@ void BURGER_API Burger::Filename::SetFromNative(const char *pInput)
 	
 	// How long would the string be if it was UTF8?
 	
-	WordPtr uOutputLength = UTF8::FromUTF16(NULL,0,reinterpret_cast<Word16*>(pExpanded))+6;
+	uintptr_t uOutputLength = UTF8::FromUTF16(NULL,0,reinterpret_cast<uint16_t*>(pExpanded))+6;
 	char *pWork = m_Filename;
 	if (uOutputLength>=sizeof(m_Filename)) {
 		pWork = static_cast<char *>(Alloc(uOutputLength));
@@ -494,7 +494,7 @@ void BURGER_API Burger::Filename::SetFromNative(const char *pInput)
 		++pOutput;			// Accept it
 		pSrc+=2;			// Only return 1 colon
 	} else {
-		Word uTemp = static_cast<Word>(pSrc[0]);	// Get the drive letter
+		uint_t uTemp = static_cast<uint_t>(pSrc[0]);	// Get the drive letter
 		if ((uTemp>='a') && (uTemp<('z'+1))) {		// Upper case 
 			uTemp &= 0xDF;
 		}
@@ -505,18 +505,18 @@ void BURGER_API Burger::Filename::SetFromNative(const char *pInput)
 
 		pOutput[0] = '.';	// .D2 for C:
 		pOutput[1] = 'D';
-		pOutput = NumberToAscii(&pOutput[2],static_cast<Word32>(uTemp),NOENDINGNULL);
+		pOutput = NumberToAscii(&pOutput[2],static_cast<uint32_t>(uTemp),NOENDINGNULL);
 		pOutput[0] = ':';	// Append a colon
 		++pOutput;
 	}
 	
 	// Append the filename to output and convert from UTF16 to UTF8
-	UTF8::FromUTF16(pOutput,uOutputLength-(pOutput-pWork),reinterpret_cast<Word16*>(pSrc));
+	UTF8::FromUTF16(pOutput,uOutputLength-(pOutput-pWork),reinterpret_cast<uint16_t*>(pSrc));
 	if (pExpanded!=ExpandedPath) {
 		Free(pExpanded);
 	}
 
-	Word uTemp2 = reinterpret_cast<Word8 *>(pOutput)[0];
+	uint_t uTemp2 = reinterpret_cast<uint8_t *>(pOutput)[0];
 	if (uTemp2) {
 		do {
 			if (uTemp2=='\\') {		// Convert directory holders

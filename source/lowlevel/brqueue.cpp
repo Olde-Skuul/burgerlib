@@ -1,13 +1,14 @@
 /***************************************
 
-	Simple First In First Out queue
+    Simple First In First Out queue
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -179,7 +180,7 @@
 
 /*! ************************************
 
-	\fn WordPtr Burger::Queue::size(void) const
+	\fn uintptr_t Burger::Queue::size(void) const
 	\brief Get the number of entries in the queue
 
 	\return The number of entries remaining in the queue.
@@ -190,7 +191,7 @@
 
 /*! ************************************
 
-	\fn Word Burger::Queue::empty(void) const
+	\fn uint_t Burger::Queue::empty(void) const
 	\brief Returns \ref TRUE if the queue is empty
 
 	\return \ref TRUE if there is no data in the queue.

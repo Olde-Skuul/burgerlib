@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player utility functions
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player utility functions
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brflashutils.h"
@@ -132,14 +133,14 @@ void BURGER_API Burger::Flash::PixelsToTwips(Vector2D_t *pInput)
 	power of two.
 	
 	\param uInput Value to convert
-	\sa PowerOf2(Word32)
+	\sa PowerOf2(uint32_t)
 
 ***************************************/
 
-Word32 BURGER_API Burger::Flash::TextureSizePower2(Word32 uInput)
+uint32_t BURGER_API Burger::Flash::TextureSizePower2(uint32_t uInput)
 {
 	// Convert to the next power of 2
-	Word32 uResult = PowerOf2(uInput);
+	uint32_t uResult = PowerOf2(uInput);
 	// If the ratio of uResult/uInput is greater than 3/5, scale down one shift
 	if ((uInput*5U) < (uResult*3U)) {
 		uResult>>=1;
@@ -160,30 +161,30 @@ Word32 BURGER_API Burger::Flash::TextureSizePower2(Word32 uInput)
 	http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/devnet/swf/pdf/swf-file-format-spec.pdf
 	at page 17.
 	
-	\param pOutput Pointer to store the decoded Word32
+	\param pOutput Pointer to store the decoded uint32_t
 	\param pInput Pointer to the byte stream
 	\return Number of bytes read in from the byte stream (1 through 5)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::Flash::GetEncodedU32Length(Word32 *pOutput,const Word8 *pInput)
+uintptr_t BURGER_API Burger::Flash::GetEncodedU32Length(uint32_t *pOutput,const uint8_t *pInput)
 {
 	// Get the first byte from the stream
-	Word32 uResult = pInput[0];
-	WordPtr uLength = 1;
+	uint32_t uResult = pInput[0];
+	uintptr_t uLength = 1;
 	if (uResult & 0x80) {
 		uLength = 2;
 		// Use an exclusive or to clear off the flag bit
-		uResult = (uResult ^ 0x80) | (static_cast<Word32>(pInput[1]) << 7U);
+		uResult = (uResult ^ 0x80) | (static_cast<uint32_t>(pInput[1]) << 7U);
 		if (uResult & 0x4000) {
 			uLength = 3;
-			uResult = (uResult ^ 0x4000) | (static_cast<Word32>(pInput[2]) << 14U);
+			uResult = (uResult ^ 0x4000) | (static_cast<uint32_t>(pInput[2]) << 14U);
 			if (uResult & 0x200000) {
 				uLength = 4;
-				uResult = (uResult ^ 0x200000) | (static_cast<Word32>(pInput[3]) << 21U);
+				uResult = (uResult ^ 0x200000) | (static_cast<uint32_t>(pInput[3]) << 21U);
 				if (uResult & 0x10000000) {
 					uLength = 5;
-					uResult = (uResult ^ 0x10000000) | (static_cast<Word32>(pInput[4]) << 28U);
+					uResult = (uResult ^ 0x10000000) | (static_cast<uint32_t>(pInput[4]) << 28U);
 				}
 			}
 		}
@@ -253,7 +254,7 @@ static const char *StandardMemberNames[Burger::Flash::ACTION_SCRIPT_STANDARD_MEM
 
 Burger::Flash::eActionScriptStandardMember BURGER_API Burger::Flash::EnumerateStandardMember(const char *pName)
 {
-	WordPtr uCount = BURGER_ARRAYSIZE(StandardMemberNames);
+	uintptr_t uCount = BURGER_ARRAYSIZE(StandardMemberNames);
 	eActionScriptStandardMember eResult = M_INVALID_MEMBER;
 	const char **ppArray = StandardMemberNames;
 	do {
@@ -355,7 +356,7 @@ void BURGER_API Burger::Flash::GetFullURL(Filename *pOutput,const Filename *pDir
 
 /*! ************************************
 
-	\fn Word Burger::Flash::Multiname::IsQName(void) const
+	\fn uint_t Burger::Flash::Multiname::IsQName(void) const
 	\brief Test if the object is a QName
 
 	\return \ref TRUE if the object is QName type.
@@ -468,7 +469,7 @@ void Burger::Flash::BaseExecute::ExecuteState(Flash::CharacterObject* /* pObject
 
 ***************************************/
 
-void Burger::Flash::BaseExecute::ExecuteStateReverse(Flash::CharacterObject *pObject,Word /* uFrame */)
+void Burger::Flash::BaseExecute::ExecuteStateReverse(Flash::CharacterObject *pObject,uint_t /* uFrame */)
 {
 	// Default behavior is apply the generic state change
 	ExecuteState(pObject);
@@ -487,7 +488,7 @@ void Burger::Flash::BaseExecute::ExecuteStateReverse(Flash::CharacterObject *pOb
 
 ***************************************/
 
-Word32 Burger::Flash::BaseExecute::GetDepthIDOfReplaceOrAddTag(void) const 
+uint32_t Burger::Flash::BaseExecute::GetDepthIDOfReplaceOrAddTag(void) const 
 {
 	return BURGER_MAXUINT; 
 }

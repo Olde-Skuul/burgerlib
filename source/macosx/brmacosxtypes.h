@@ -1,14 +1,14 @@
 /***************************************
 
-	Typedefs specific to Mac OSX
+    Typedefs specific to Mac OSX
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE for
-	license details. Yes, you can use it in a commercial title without paying
-	anything, just give me a credit.
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
 
-	Please? It's not like I'm asking you for money!
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -74,21 +74,21 @@ typedef unsigned int Burgertask_t;
 
 #if defined(BURGER_64BITCPU)
 struct Burgerpthread_mutex_t {
-	Word64 m_Opaque[8];
+	uint64_t m_Opaque[8];
 };
 
 struct Burgerpthread_cond_t {
-	Word64 m_Opaque[6];
+	uint64_t m_Opaque[6];
 };
 
 #else
 
 struct Burgerpthread_mutex_t {
-	Word32 m_Opaque[11];
+	uint32_t m_Opaque[11];
 };
 
 struct Burgerpthread_cond_t {
-	Word32 m_Opaque[7];
+	uint32_t m_Opaque[7];
 };
 
 #endif
@@ -118,9 +118,9 @@ private:
 	/** Pointers to resolved windows function calls \macosxonly */
 	void* m_pMacOSXCalls[CALL_COUNT];
 	/** Flags to determine if a DLL was tested for loading \macosxonly */
-	Word8 m_bInstancesTested[DLL_COUNT];
+	uint8_t m_bInstancesTested[DLL_COUNT];
 	/** Flags to determine if a function was tested for loading \macosxonly */
-	Word8 m_bFunctionsTested[CALL_COUNT];
+	uint8_t m_bFunctionsTested[CALL_COUNT];
 
 	static MacOSX g_Globals;
 
@@ -132,7 +132,7 @@ public:
 
 	// macOS 10.10 functions
 	static int BURGER_API getattrlistbulk(int dirfd, attrlist* attrList,
-		void* attrBuf, WordPtr attrBufSize, Word64 options);
+		void* attrBuf, uintptr_t attrBufSize, uint64_t options);
 };
 }
 

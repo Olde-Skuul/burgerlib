@@ -1,13 +1,14 @@
 /***************************************
 
-	Display object manager class
+    Display object manager class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -138,7 +139,7 @@ Burger::DisplayObject::~DisplayObject()
 
 /*! ************************************
 
-	\fn Word Burger::DisplayObject::CheckLoad(Display *pDisplay)
+	\fn uint_t Burger::DisplayObject::CheckLoad(Display *pDisplay)
 	\brief Load data onto the video display card
 
 	Allow the derived class to load a display object from disk

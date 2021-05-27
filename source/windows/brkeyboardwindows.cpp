@@ -386,7 +386,7 @@ static LRESULT CALLBACK DisableWindowsKeysCallback(int iCode,WPARAM wParam,LPARA
 ***************************************/
 
 #if defined(ENABLE_DIRECTINPUT) || defined(DOXYGEN)
-WordPtr BURGER_API Burger::Keyboard::WindowsKeyboardThread(void *pData)
+uintptr_t BURGER_API Burger::Keyboard::WindowsKeyboardThread(void *pData)
 {
 	// Get the pointer to the class instance
 	Keyboard *pThis = static_cast<Keyboard *>(pData);
@@ -425,13 +425,13 @@ WordPtr BURGER_API Burger::Keyboard::WindowsKeyboardThread(void *pData)
 
 			// Was there any data read?
 			if (hResult>=0) {
-				Word i = uCount;
+				uint_t i = uCount;
 				if (i) {
 					if (pThis->m_bRepeatActive) {
 						CancelWaitableTimer(pThis->m_pKeyboardTimerEvent);
 						pThis->m_bRepeatActive = FALSE;
 					}
-					Word bEnableTimer = FALSE;
+					uint_t bEnableTimer = FALSE;
 					const DIDEVICEOBJECTDATA *pObject = KeyboardData;
 					KeyEvent_t NewEvent;
 					do {
@@ -453,7 +453,7 @@ WordPtr BURGER_API Burger::Keyboard::WindowsKeyboardThread(void *pData)
 					if (bEnableTimer && NewEvent.m_uAscii) {
 						// Start the auto-repeat timer
 						LARGE_INTEGER Time;
-						Time.QuadPart = static_cast<Int64>(pThis->m_uInitialDelay)*-10000LL;
+						Time.QuadPart = static_cast<int64_t>(pThis->m_uInitialDelay)*-10000LL;
 						SetWaitableTimer(pThis->m_pKeyboardTimerEvent,&Time,0,NULL,NULL,0);
 						pThis->m_bRepeatActive = TRUE;
 					}
@@ -474,7 +474,7 @@ WordPtr BURGER_API Burger::Keyboard::WindowsKeyboardThread(void *pData)
 
 			// Set the delay to the next key press
 			LARGE_INTEGER Time;
-			Time.QuadPart = static_cast<Int64>(pThis->m_uRepeatDelay)*-10000LL;
+			Time.QuadPart = static_cast<int64_t>(pThis->m_uRepeatDelay)*-10000LL;
 			SetWaitableTimer(pThis->m_pKeyboardTimerEvent,&Time,0,NULL,NULL,0);
 			pThis->m_bRepeatActive = TRUE;
 		}
@@ -511,9 +511,9 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
 	MemoryClear(&m_RepeatEvent,sizeof(m_RepeatEvent));
 
 	// Safety switch to verify the declaration in brwindowstypes.h matches the real thing
-    BURGER_STATIC_ASSERT(sizeof(tagSTICKYKEYS)==sizeof(BurgertagSTICKYKEYS));
-    BURGER_STATIC_ASSERT(sizeof(tagTOGGLEKEYS)==sizeof(BurgertagTOGGLEKEYS));
-    BURGER_STATIC_ASSERT(sizeof(tagFILTERKEYS)==sizeof(BurgertagFILTERKEYS));
+    BURGER_STATIC_ASSERT(sizeof(tagSTICKYKEYS)==sizeof(Burger_tagSTICKYKEYS));
+    BURGER_STATIC_ASSERT(sizeof(tagTOGGLEKEYS)==sizeof(Burger_tagTOGGLEKEYS));
+    BURGER_STATIC_ASSERT(sizeof(tagFILTERKEYS)==sizeof(Burger_tagFILTERKEYS));
 
 	// Save the current sticky/toggle/filter key settings so they can be restored them later
 	m_DefaultStickyKeys.cbSize = sizeof(m_DefaultStickyKeys);
@@ -662,10 +662,10 @@ Burger::Keyboard::~Keyboard()
 
 ***************************************/
 
-Word BURGER_API Burger::Keyboard::DisableWindowsKey(void)
+uint_t BURGER_API Burger::Keyboard::DisableWindowsKey(void)
 {
 	// Assume success
-	Word uResult = 0;
+	uint_t uResult = 0;
 	// Do nothing if already installed
 	if (!m_pPreviousKeyboardHook) {
 		if (!(Globals::GetTraceFlag()&Globals::TRACE_ACTIVEDEBUGGING)) {
@@ -728,7 +728,7 @@ void BURGER_API Burger::Keyboard::EnableWindowsKey(void)
 
 /*! ************************************
 
-	\fn Word Burger::Keyboard::IsDirectInputActive(void) const
+	\fn uint_t Burger::Keyboard::IsDirectInputActive(void) const
 	\brief Is DirectInput active?
 
 	Returns \ref TRUE is keyboard input is managed by DirectInput. This
@@ -755,9 +755,9 @@ void BURGER_API Burger::Keyboard::EnableWindowsKey(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Keyboard::PostWindowsKeyEvent(eEvent uEvent,Word32 uScanCode)
+uint_t BURGER_API Burger::Keyboard::PostWindowsKeyEvent(eEvent uEvent,uint32_t uScanCode)
 {
-	Word bResult = FALSE;
+	uint_t bResult = FALSE;
 	if (!m_bDirectInput8Acquired) {
 		KeyEvent_t NewEvent;
 		bResult = EncodeWindowsScanCode(&NewEvent,uScanCode);
@@ -781,10 +781,10 @@ Word BURGER_API Burger::Keyboard::PostWindowsKeyEvent(eEvent uEvent,Word32 uScan
 
 ***************************************/
 
-Word BURGER_API Burger::Keyboard::EncodeWindowsScanCode(KeyEvent_t *pEvent,Word uWindowsCode) const
+uint_t BURGER_API Burger::Keyboard::EncodeWindowsScanCode(KeyEvent_t *pEvent,uint_t uWindowsCode) const
 {
 	// Look up the scan code
-	Word bResult = 1;		// Assume error
+	uint_t bResult = 1;		// Assume error
 	if (uWindowsCode<BURGER_ARRAYSIZE(g_WindowsToKeyboardeScanCode)) {
 		bResult = EncodeScanCode(pEvent,g_WindowsToKeyboardeScanCode[uWindowsCode]);
 	}
@@ -863,7 +863,7 @@ void BURGER_API Burger::Keyboard::ReadSystemKeyboardDelays(void)
 	DWORD uValue;
 	if (SystemParametersInfo(SPI_GETKEYBOARDDELAY,0,&uValue,0)) {
 		// Save to register
-		Word uTemp = uValue;
+		uint_t uTemp = uValue;
 		if (uTemp>=3) {		// Valid values are 0-3
 			uTemp = 3;		// Max at 3
 		}
@@ -874,7 +874,7 @@ void BURGER_API Burger::Keyboard::ReadSystemKeyboardDelays(void)
 	// This is set in the Keyboard windows control panel
 	if (SystemParametersInfo(SPI_GETKEYBOARDSPEED,0,&uValue,0)) {
 		// Save to register
-		Word uTemp2 = uValue;
+		uint_t uTemp2 = uValue;
 		if (uTemp2>=31) {		// Valid values are 0-31
 			uTemp2 = 31;		// Max at 31
 		}
@@ -887,9 +887,9 @@ void BURGER_API Burger::Keyboard::ReadSystemKeyboardDelays(void)
 
 	// Mask with 0x01 for the toggle state
 	if (GetKeyState(VK_CAPITAL)&0x1) {
-		m_KeyArray[SC_CAPSLOCK] |= static_cast<Word8>(KEYCAPTOGGLE);
+		m_KeyArray[SC_CAPSLOCK] |= static_cast<uint8_t>(KEYCAPTOGGLE);
 	} else {
-		m_KeyArray[SC_CAPSLOCK] &= static_cast<Word8>(~KEYCAPTOGGLE);
+		m_KeyArray[SC_CAPSLOCK] &= static_cast<uint8_t>(~KEYCAPTOGGLE);
 	}
 
 	//
@@ -897,9 +897,9 @@ void BURGER_API Burger::Keyboard::ReadSystemKeyboardDelays(void)
 	//
 
 	if (GetKeyState(VK_NUMLOCK)&0x1) {
-		m_KeyArray[SC_NUMLOCK] |= static_cast<Word8>(KEYCAPTOGGLE);
+		m_KeyArray[SC_NUMLOCK] |= static_cast<uint8_t>(KEYCAPTOGGLE);
 	} else {
-		m_KeyArray[SC_NUMLOCK] &= static_cast<Word8>(~KEYCAPTOGGLE);
+		m_KeyArray[SC_NUMLOCK] &= static_cast<uint8_t>(~KEYCAPTOGGLE);
 	}
 }
 

@@ -17,6 +17,7 @@
 /* DIR: "graphics:" */
 /* DIR: "graphics:effects:" */
 /* DIR: "graphics:shaders:" */
+/* DIR: "graphics:vulkan:" */
 /* DIR: "input:" */
 /* DIR: "ios:" */
 /* DIR: "lowlevel:" */
@@ -36,7 +37,6 @@
 /* DIR: "ps4:" */
 /* DIR: "vita:" */
 /* DIR: "wiiu:" */
-/* OUTPUT: "..:bin:burger.h" */
 
 /* BEGIN */
 /***************************************
@@ -130,6 +130,7 @@
 #include "brutf8.h"
 #include "brutf16.h"
 #include "brutf32.h"
+#include "brfplargeint.h"
 #include "brprintf.h"
 #include "brqueue.h"
 #include "brsmartpointer.h"
@@ -222,6 +223,7 @@
 #include "brdisplaydib.h"
 #include "brdisplaydibsoftware8.h"
 #include "brpalette.h"
+#include "brvulkanerrors.h"
 #include "brdxt1.h"
 #include "brdxt3.h"
 #include "brdxt5.h"
@@ -336,10 +338,5 @@ typedef VertexBuffer VertexBufferDefault;
 #endif
 
 }
-
-#if !defined(BURGER_NO_USING_NAMESPACE)
-using namespace Burger;
-#endif
-
 #endif
 /* END */

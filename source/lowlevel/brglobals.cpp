@@ -1,14 +1,15 @@
 /***************************************
 
-	Global variable manager
+    Global variable manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brglobals.h"
@@ -46,10 +47,10 @@
 
 Burger::Globals Burger::Globals::g_Globals;
 Burger::eError Burger::Globals::g_iErrorCode;
-Word Burger::Globals::g_uTraceFlags;
+uint_t Burger::Globals::g_uTraceFlags;
 char Burger::Globals::g_ErrorMsg[512];
-Word Burger::Globals::g_bBombFlag;
-Word Burger::Globals::g_bExitFlag;
+uint_t Burger::Globals::g_bBombFlag;
+uint_t Burger::Globals::g_bExitFlag;
 
 
 /*! ************************************
@@ -150,13 +151,13 @@ void BURGER_ANSIAPI Burger::Globals::SetErrorMsg(const char *pMessage,...)
 	
 	\return The trace flag mask. Test against the \ref Burger::Debug enumerations.
 
-	\sa Burger::Globals::SetTraceFlag(Word)
+	\sa Burger::Globals::SetTraceFlag(uint_t)
 		
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::Globals::SetTraceFlag(Word);
+	\fn Burger::Globals::SetTraceFlag(uint_t);
 	\brief Set the current debug tracing flag.
 	
 	Several subsystems perform diagnostic logging and this
@@ -193,13 +194,13 @@ void BURGER_ANSIAPI Burger::Globals::SetErrorMsg(const char *pMessage,...)
 		
 	\return \ref TRUE if warnings are treated as errors, \ref FALSE if not. (\ref FALSE is default).
 
-	\sa Burger::Globals::SetErrorBombFlag(Word)
+	\sa Burger::Globals::SetErrorBombFlag(uint_t)
 		
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::Globals::SetErrorBombFlag(Word);
+	\fn Burger::Globals::SetErrorBombFlag(uint_t);
 	\brief Set the current flag to treat warnings as fatal errors.
 	
 	When Burger::Debug::Warning is called, it will test the state of this
@@ -223,13 +224,13 @@ void BURGER_ANSIAPI Burger::Globals::SetErrorMsg(const char *pMessage,...)
 		
 	\return \ref TRUE if shut down is in progress, \ref FALSE if not.
 
-	\sa Burger::Globals::SetExitFlag(Word)
+	\sa Burger::Globals::SetExitFlag(uint_t)
 		
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::Globals::SetExitFlag(Word);
+	\fn Burger::Globals::SetExitFlag(uint_t);
 	\brief Set the current flag if a shut down is in progress.
 	
 	If the application has called Globals::Shutdown(), this flag
@@ -299,10 +300,10 @@ void BURGER_API Burger::Globals::Shutdown(int iError)
 	Currently, Burgerlib is 5.0.3
 
 	\code
-	Word32 uVersion = Globals::Version();
-	Word32 uMajor = (uVersion>>24);
-	Word32 uMinor = (uVersion>>16)&0xFFU;
-	Word32 uPatch = (uVersion&0xFFFFU);
+	uint32_t uVersion = Globals::Version();
+	uint32_t uMajor = (uVersion>>24);
+	uint32_t uMinor = (uVersion>>16)&0xFFU;
+	uint32_t uPatch = (uVersion&0xFFFFU);
 	\endcode
 
 	\return Version in a single 32 bit value
@@ -310,7 +311,7 @@ void BURGER_API Burger::Globals::Shutdown(int iError)
 
 ***************************************/
 
-Word32 BURGER_API Burger::Globals::Version(void)
+uint32_t BURGER_API Burger::Globals::Version(void)
 {
 	return 0x05000003;
 }
@@ -327,7 +328,7 @@ Word32 BURGER_API Burger::Globals::Version(void)
 
 ***************************************/
 
-Word32 BURGER_API Burger::Globals::VersionBuild(void)
+uint32_t BURGER_API Burger::Globals::VersionBuild(void)
 {
 	return P4_CHANGELIST;
 }

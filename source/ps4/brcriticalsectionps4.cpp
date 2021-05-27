@@ -26,7 +26,7 @@
 	
 ***************************************/
 
-Burger::CriticalSection::CriticalSection() : m_Lock(NULL)
+Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT : m_Lock(NULL)
 {
 	// Create a First In, First Out, recursive lock
 	// to mimic the PC CRITICAL_SECTION
@@ -49,7 +49,7 @@ Burger::CriticalSection::~CriticalSection()
 	
 ***************************************/
 
-void Burger::CriticalSection::Lock(void)
+void Burger::CriticalSection::Lock(void) BURGER_NOEXCEPT
 {
 	scePthreadMutexLock(&m_Lock);
 }
@@ -60,7 +60,7 @@ void Burger::CriticalSection::Lock(void)
 	
 ***************************************/
 
-Word Burger::CriticalSection::TryLock(void)
+uint_t Burger::CriticalSection::TryLock(void) BURGER_NOEXCEPT
 {
 	return scePthreadMutexTrylock(&m_Lock)==SCE_OK;
 }
@@ -72,7 +72,7 @@ Word Burger::CriticalSection::TryLock(void)
 	
 ***************************************/
 
-void Burger::CriticalSection::Unlock(void)
+void Burger::CriticalSection::Unlock(void) BURGER_NOEXCEPT
 {
 	scePthreadMutexUnlock(&m_Lock);
 }

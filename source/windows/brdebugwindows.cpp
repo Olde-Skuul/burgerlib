@@ -38,12 +38,12 @@
 
 static Burger::CriticalSectionStatic g_LockString;
 
-void BURGER_API Burger::Debug::PrintString(const char *pString)
+void BURGER_API Burger::Debug::PrintString(const char *pString) BURGER_NOEXCEPT
 {
 	// Allow multiple threads to call me!
 
 	if (pString) {
-		WordPtr i = StringLength(pString);
+		uintptr_t i = StringLength(pString);
 		if (i) {
 			if (!IsDebuggerPresent()) {
 				g_LockString.Lock();
@@ -71,11 +71,11 @@ void BURGER_API Burger::Debug::PrintString(const char *pString)
 
 ***************************************/
 
-Word BURGER_API Burger::Debug::IsDebuggerPresent(void)
+uint_t BURGER_API Burger::Debug::IsDebuggerPresent(void) BURGER_NOEXCEPT
 {
 	// This function in Windows is just an accessor, so optimizing
 	// it is not necessary
-	return static_cast<Word>(::IsDebuggerPresent());
+	return static_cast<uint_t>(::IsDebuggerPresent());
 }
 
 /***************************************
@@ -89,13 +89,13 @@ Word BURGER_API Burger::Debug::IsDebuggerPresent(void)
 
 ***************************************/
 
-void BURGER_API Burger::Debug::PrintErrorMessage(Word uErrorCode)
+void BURGER_API Burger::Debug::PrintErrorMessage(uint_t uErrorCode)
 {
 	// Print the error string
 	PrintString("Windows error: 0x");
 
 	// Show the error in hex
-	NumberStringHex TempBuffer(static_cast<Word32>(uErrorCode));
+	NumberStringHex TempBuffer(uErrorCode);
 	PrintString(TempBuffer);
 
 	// Convert to a windows string in the native language
@@ -129,7 +129,7 @@ void BURGER_API Burger::OkAlertMessage(const char *pMessage,const char *pTitle)
 	// Make sure that the OS cursor is visible otherwise the user will
 	// wonder what's up when the user can't see the cursor to click the button
 
-	Word bVisible = OSCursor::Show();
+	uint_t bVisible = OSCursor::Show();
 	HWND hFrontWindow = GetForegroundWindow();
 	SetForegroundWindow(GetDesktopWindow());
 	
@@ -163,19 +163,19 @@ void BURGER_API Burger::OkAlertMessage(const char *pMessage,const char *pTitle)
 
 ***************************************/
 
-Word BURGER_API Burger::OkCancelAlertMessage(const char *pMessage,const char *pTitle)
+uint_t BURGER_API Burger::OkCancelAlertMessage(const char *pMessage,const char *pTitle)
 {
 	// Make sure that the OS cursor is visible otherwise the user will
 	// wonder what's up when they can't see the cursor to click the button
 
-	Word bVisible = OSCursor::Show();
+	uint_t bVisible = OSCursor::Show();
 	HWND hFrontWindow = GetForegroundWindow();
 	SetForegroundWindow(GetDesktopWindow());
 
 	// Convert UTF-8 to UTF-16
 	String16 Message(pMessage);
 	String16 Title(pTitle);
-	Word bResult = MessageBoxW(GetDesktopWindow(),
+	uint_t bResult = MessageBoxW(GetDesktopWindow(),
 		reinterpret_cast<LPCWSTR>(Message.GetPtr()),
 		reinterpret_cast<LPCWSTR>(Title.GetPtr()),MB_ICONWARNING|MB_OKCANCEL) == IDOK;
 

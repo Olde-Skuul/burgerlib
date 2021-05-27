@@ -1,14 +1,14 @@
 /***************************************
 
-	Global variable manager, MacOSX version
+    Global variable manager, MacOSX version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE for
-	license details. Yes, you can use it in a commercial title without paying
-	anything, just give me a credit.
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
 
-	Please? It's not like I'm asking you for money!
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -362,7 +362,7 @@ void BURGER_API Burger::Globals::StringCopy(String* pOutput, CFStringRef pInput)
 			CFIndex uMaxLength = CFStringGetMaximumSizeForEncoding(
 				uLength, kCFStringEncodingUTF8);
 			// Create the buffer
-			pOutput->SetBufferSize(static_cast<WordPtr>(uMaxLength));
+			pOutput->SetBufferSize(static_cast<uintptr_t>(uMaxLength));
 			// Convert the string and store into the buffer
 			if (!CFStringGetCString(pInput, pOutput->GetPtr(), uMaxLength + 1,
 					kCFStringEncodingUTF8)) {
@@ -427,7 +427,7 @@ void BURGER_API Burger::Globals::GetHIDDeviceName(
 ***************************************/
 
 CFMutableDictionaryRef BURGER_API Burger::Globals::CreateHIDDictionary(
-	Word uPage, Word uUsage)
+	uint_t uPage, uint_t uUsage)
 {
 	CFMutableDictionaryRef pDictionary =
 		CFDictionaryCreateMutable(kCFAllocatorDefault, 0,
@@ -483,7 +483,7 @@ CFMutableDictionaryRef BURGER_API Burger::Globals::CreateHIDDictionary(
 
 ***************************************/
 
-void Burger::Globals::GetDisplayName(String* pOutput, Word uDisplayID)
+void Burger::Globals::GetDisplayName(String* pOutput, uint_t uDisplayID)
 {
 	CFDictionaryRef rInfoDictionary = IODisplayCreateInfoDictionary(
 		CGDisplayIOServicePort(uDisplayID), kIODisplayOnlyPreferredName);
@@ -563,7 +563,7 @@ uint_t BURGER_API Burger::Globals::GetMacOSVersion(void)
 
 	// Get the size of the string
 	int iError = sysctl(selector, 2, NULL, &uLength, NULL, 0);
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (!iError) {
 		//
 		// Space for the string
@@ -583,10 +583,10 @@ uint_t BURGER_API Burger::Globals::GetMacOSVersion(void)
 
 			const char* pBuffer = Buffer.GetPtr();
 			const char* pEnd;
-			Word32 uMajor = AsciiToInteger(pBuffer, &pEnd);
+			uint32_t uMajor = AsciiToInteger(pBuffer, &pEnd);
 			if (pEnd != pBuffer) {
 				pBuffer = pEnd + 1;
-				Word32 uMinor = AsciiToInteger(pBuffer, &pEnd);
+				uint32_t uMinor = AsciiToInteger(pBuffer, &pEnd);
 				if (pEnd != pBuffer) {
 					uResult = 0x1000 + ((uMajor - 4) << 4) + uMinor;
 				}
@@ -610,7 +610,7 @@ uint_t BURGER_API Burger::Globals::LaunchURL(const char* pURL)
 			StringLength(pURL), kCFStringEncodingUTF8, NULL);
 	OSStatus uResult = LSOpenCFURLRef(URLReference, 0);
 	CFRelease(URLReference);
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /***************************************
@@ -668,7 +668,7 @@ uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void)
 	if (!pGlobals->m_bQuickTimeVersionValid) {
 		pGlobals->m_bQuickTimeVersionValid = TRUE; // I got the version
 		SInt32 gestaltAnswer;
-		Word uResult = 0;
+		uint_t uResult = 0;
 		if (!Gestalt(gestaltQuickTimeVersion, &gestaltAnswer)) {
 			uResult = (gestaltAnswer >> 16) & 0xFFFFU; // Major version
 		}

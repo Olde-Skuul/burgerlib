@@ -2,7 +2,7 @@
 
     Number String Manager in hexadecimal
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
     It is released under an MIT Open Source license. Please see LICENSE for
     license details. Yes, you can use it in a commercial title without paying
@@ -23,26 +23,40 @@
 #include "brstringfunctions.h"
 #endif
 
+#ifndef __BRNUMBERTO_H__
+#include "brnumberto.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 class NumberStringHex {
 private:
-    char m_Data[32]; ///< String buffer
+    char m_Data[24]; ///< String buffer
 public:
-    NumberStringHex() BURGER_NOEXCEPT
+    BURGER_INLINE NumberStringHex() BURGER_NOEXCEPT
     {
         m_Data[0] = 0;
     }
-    NumberStringHex(uint32_t uInput);
-    NumberStringHex(uint32_t uInput, uint_t uFormat);
-    NumberStringHex(uint64_t uInput);
-    NumberStringHex(uint64_t uInput, uint_t uFormat);
-    NumberStringHex(float fInput);
-    NumberStringHex(double dInput);
-    NumberStringHex& operator=(uint32_t uInput);
-    NumberStringHex& operator=(uint64_t uInput);
-    NumberStringHex& operator=(float fInput);
-    NumberStringHex& operator=(double dInput);
+
+    template<class T>
+    BURGER_INLINE NumberStringHex(T input) BURGER_NOEXCEPT
+    {
+        NumberToAsciiHex(m_Data, input);
+    }
+
+    template<class T>
+    BURGER_INLINE NumberStringHex(T uInput, uint_t uFormat) BURGER_NOEXCEPT
+    {
+        NumberToAsciiHex(m_Data, uInput, uFormat);
+    }
+
+    template<class T>
+    BURGER_INLINE NumberStringHex& operator=(T input) BURGER_NOEXCEPT
+    {
+        NumberToAsciiHex(m_Data, input);
+        return *this;
+    }
+
     BURGER_INLINE operator const char*() const BURGER_NOEXCEPT
     {
         return m_Data;
@@ -73,7 +87,7 @@ public:
     }
     BURGER_NODISCARD BURGER_INLINE uintptr_t length(void) const BURGER_NOEXCEPT
     {
-        return Burger::StringLength(m_Data);
+        return StringLength(m_Data);
     }
     BURGER_NODISCARD BURGER_INLINE uintptr_t capacity(
         void) const BURGER_NOEXCEPT

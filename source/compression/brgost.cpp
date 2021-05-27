@@ -1,17 +1,18 @@
 /***************************************
 
-	GOST hash manager
+    GOST hash manager
 
-	Implemented following the documentation found in
-	https://en.wikipedia.org/wiki/GOST_(hash_function)
-	and http://tools.ietf.org/html/rfc5831
+    Implemented following the documentation found in
+    https://en.wikipedia.org/wiki/GOST_(hash_function)
+    and http://tools.ietf.org/html/rfc5831
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -32,7 +33,7 @@
 
 ***************************************/
 
-const Word32 Burger::GOSTHasher_t::g_TestParmsSBox[8][16] = {
+const uint32_t Burger::GOSTHasher_t::g_TestParmsSBox[8][16] = {
 	{4,10, 9, 2,13, 8, 0,14, 6,11, 1,12, 7,15, 5, 3},
 	{14,11, 4,12, 6,13,15,10, 2, 3, 8, 1, 0, 7, 5, 9},
 	{5, 8, 1,13,10, 3, 4, 2,14,15,12, 7, 6, 0, 9,11},
@@ -55,7 +56,7 @@ const Word32 Burger::GOSTHasher_t::g_TestParmsSBox[8][16] = {
 
 ***************************************/
 
-const Word32 Burger::GOSTHasher_t::g_SBoxTable[4][256] = {
+const uint32_t Burger::GOSTHasher_t::g_SBoxTable[4][256] = {
 	{0x00072000,0x00075000,0x00074800,0x00071000,0x00076800,0x00074000,0x00070000,0x00077000,
 	0x00073000,0x00075800,0x00070800,0x00076000,0x00073800,0x00077800,0x00072800,0x00071800,
 	0x0005A000,0x0005D000,0x0005C800,0x00059000,0x0005E800,0x0005C000,0x00058000,0x0005F000,
@@ -194,7 +195,7 @@ const Word32 Burger::GOSTHasher_t::g_SBoxTable[4][256] = {
 	Full documentation on this hash format can be found here
 	https://en.wikipedia.org/wiki/GOST_(hash_function)
 
-	\sa Hash(GOST_t *,const void *,WordPtr) and Burger::GOSTHasher_t
+	\sa Hash(GOST_t *,const void *,uintptr_t) and Burger::GOSTHasher_t
 
 ***************************************/
 
@@ -222,7 +223,7 @@ const Word32 Burger::GOSTHasher_t::g_SBoxTable[4][256] = {
 		MemoryCopy(pOutput,&Context.m_Hash,32);
 	\endcode
 
-	\sa Burger::GOST_t or Hash(GOST_t *,const void *,WordPtr)
+	\sa Burger::GOST_t or Hash(GOST_t *,const void *,uintptr_t)
 
 ***************************************/
 
@@ -232,7 +233,7 @@ const Word32 Burger::GOSTHasher_t::g_SBoxTable[4][256] = {
 
 	Call this function before any hashing is performed
 
-	\sa Process(const void *,WordPtr) or Finalize(void)
+	\sa Process(const void *,uintptr_t) or Finalize(void)
 
 ***************************************/
 
@@ -255,7 +256,7 @@ void BURGER_API Burger::GOSTHasher_t::Init(void)
 	will process 32 bytes on input and update the hash and checksum
 
 	\param pBlock Pointer to a buffer of 8 32 bit values in native endian to hash
-	\sa Process(const void *,WordPtr), Finalize(void) or Init(void)
+	\sa Process(const void *,uintptr_t), Finalize(void) or Init(void)
 
 ***************************************/
 
@@ -267,13 +268,13 @@ void BURGER_API Burger::GOSTHasher_t::Init(void)
 	uRight ^= g_SBoxTable[0][uTemp&0xFFU] ^ g_SBoxTable[1][(uTemp>>8U) & 0xFFU] ^ g_SBoxTable[2][(uTemp>>16U) & 0xFFU] ^ g_SBoxTable[3][uTemp>>24U]
 #endif
 
-void BURGER_API Burger::GOSTHasher_t::Process(const Word32 *pBlock)
+void BURGER_API Burger::GOSTHasher_t::Process(const uint32_t *pBlock)
 {
-	Word32 TempHash[8];
-	Word32 TempBlock[8];
+	uint32_t TempHash[8];
+	uint32_t TempBlock[8];
 
 	// Copy to a temp buffer
-	Word i = 0;
+	uint_t i = 0;
 	do {
 		TempHash[i] = m_uNativeHash[i];
 		TempBlock[i] = pBlock[i];
@@ -281,35 +282,35 @@ void BURGER_API Burger::GOSTHasher_t::Process(const Word32 *pBlock)
 
 	// Iterate over the data to generate a sample table
 
-	Word32 Samples[8];
+	uint32_t Samples[8];
 	i = 0;
 	for (;;) {
 
 		// w entries are the xor of the hash and new data
-		Word32 w0 = TempHash[0]^TempBlock[0];
-		Word32 w1 = TempHash[1]^TempBlock[1];
-		Word32 w2 = TempHash[2]^TempBlock[2];
-		Word32 w3 = TempHash[3]^TempBlock[3];
-		Word32 w4 = TempHash[4]^TempBlock[4];
-		Word32 w5 = TempHash[5]^TempBlock[5];
-		Word32 w6 = TempHash[6]^TempBlock[6];
-		Word32 w7 = TempHash[7]^TempBlock[7];
+		uint32_t w0 = TempHash[0]^TempBlock[0];
+		uint32_t w1 = TempHash[1]^TempBlock[1];
+		uint32_t w2 = TempHash[2]^TempBlock[2];
+		uint32_t w3 = TempHash[3]^TempBlock[3];
+		uint32_t w4 = TempHash[4]^TempBlock[4];
+		uint32_t w5 = TempHash[5]^TempBlock[5];
+		uint32_t w6 = TempHash[6]^TempBlock[6];
+		uint32_t w7 = TempHash[7]^TempBlock[7];
 
 		// P-Transformation
 
-		Word32 key0 = (w0&0xFF)|((w2&0xFF)<<8) | ((w4&0xFF)<<16)|(w6<<24);
-		Word32 key1 = ((w0&0xFF00)>>8)|(w2&0xFF00)| ((w4&0xFF00)<<8)|((w6&0xFF00)<<16);
-		Word32 key2 = ((w0&0xFF0000)>>16)|((w2&0xFF0000)>>8) | (w4&0xFF0000)|((w6&0xFF0000)<<8);
-		Word32 key3 = (w0>>24)|((w2&0xFF000000)>>16) | ((w4&0xFF000000)>>8)|(w6&0xFF000000);
-		Word32 key4 = (w1&0xFF)|((w3&0xFF)<<8) | ((w5&0xFF)<<16)|(w7<<24);
-		Word32 key5 = ((w1&0xFF00)>>8)|(w3&0xFF00) | ((w5&0xFF00)<<8)|((w7&0xFF00)<<16);
-		Word32 key6 = ((w1&0xFF0000)>>16)|((w3&0xFF0000)>>8) | (w5&0xFF0000)|((w7&0xFF0000)<<8);
-		Word32 key7 = (w1>>24)|((w3&0xFF000000)>>16) | ((w5&0xFF000000)>>8)|(w7&0xFF000000);
+		uint32_t key0 = (w0&0xFF)|((w2&0xFF)<<8) | ((w4&0xFF)<<16)|(w6<<24);
+		uint32_t key1 = ((w0&0xFF00)>>8)|(w2&0xFF00)| ((w4&0xFF00)<<8)|((w6&0xFF00)<<16);
+		uint32_t key2 = ((w0&0xFF0000)>>16)|((w2&0xFF0000)>>8) | (w4&0xFF0000)|((w6&0xFF0000)<<8);
+		uint32_t key3 = (w0>>24)|((w2&0xFF000000)>>16) | ((w4&0xFF000000)>>8)|(w6&0xFF000000);
+		uint32_t key4 = (w1&0xFF)|((w3&0xFF)<<8) | ((w5&0xFF)<<16)|(w7<<24);
+		uint32_t key5 = ((w1&0xFF00)>>8)|(w3&0xFF00) | ((w5&0xFF00)<<8)|((w7&0xFF00)<<16);
+		uint32_t key6 = ((w1&0xFF0000)>>16)|((w3&0xFF0000)>>8) | (w5&0xFF0000)|((w7&0xFF0000)<<8);
+		uint32_t key7 = (w1>>24)|((w3&0xFF000000)>>16) | ((w5&0xFF000000)>>8)|(w7&0xFF000000);
 
 		// Get the left and right values, and do the hash
-		Word32 uRight = m_uNativeHash[i];
-		Word32 uLeft = m_uNativeHash[i+1];
-		Word32 uTemp;
+		uint32_t uRight = m_uNativeHash[i];
+		uint32_t uLeft = m_uNativeHash[i+1];
+		uint32_t uTemp;
 
 		GOST_ITERATE(key0,key1); 
 		GOST_ITERATE(key2,key3);
@@ -386,26 +387,26 @@ void BURGER_API Burger::GOSTHasher_t::Process(const Word32 *pBlock)
 	// Blend the bits from the Samples with the original block
 
 	{
-		Word32 uTempHash0 = pBlock[0]^Samples[6];
-		Word32 uTempHash1 = pBlock[1]^Samples[7];
-		Word32 uTempHash2 = pBlock[2]^RotateLeft(Samples[0],16)^(Samples[0]&0xffff)^
+		uint32_t uTempHash0 = pBlock[0]^Samples[6];
+		uint32_t uTempHash1 = pBlock[1]^Samples[7];
+		uint32_t uTempHash2 = pBlock[2]^RotateLeft(Samples[0],16)^(Samples[0]&0xffff)^
 			(Samples[1]&0xffff)^(Samples[1]>>16)^
 			(Samples[2]<<16)^Samples[6]^(Samples[6]<<16)^
 			(Samples[7]&0xffff0000)^(Samples[7]>>16);
-		Word32 uTempHash3 = pBlock[3]^(Samples[0]&0xffff)^(Samples[0]<<16)^
+		uint32_t uTempHash3 = pBlock[3]^(Samples[0]&0xffff)^(Samples[0]<<16)^
 			(Samples[1]&0xffff)^RotateLeft(Samples[1],16)^
 			RotateLeft(Samples[2],16)^
 			(Samples[3]<<16)^
 			Samples[6]^RotateLeft(Samples[6],16)^
 			(Samples[7]&0xffff)^RotateLeft(Samples[7],16);
-		Word32 uTempHash4 = pBlock[4]^(Samples[0]&0xffff0000)^RotateLeft(Samples[0],16)^
+		uint32_t uTempHash4 = pBlock[4]^(Samples[0]&0xffff0000)^RotateLeft(Samples[0],16)^
 			(Samples[1]&0xffff0000)^(Samples[1]>>16)^
 			RotateLeft(Samples[2],16)^
 			RotateLeft(Samples[3],16)^
 			(Samples[4]<<16)^
 			RotateLeft(Samples[6],16)^
 			(Samples[7]&0xffff)^RotateLeft(Samples[7],16);
-		Word32 uTempHash5 = pBlock[5]^RotateLeft(Samples[0],16)^(Samples[0]&0xffff0000)^
+		uint32_t uTempHash5 = pBlock[5]^RotateLeft(Samples[0],16)^(Samples[0]&0xffff0000)^
 			(Samples[1]&0xffff)^
 			Samples[2]^(Samples[2]>>16)^
 			RotateLeft(Samples[3],16)^
@@ -413,7 +414,7 @@ void BURGER_API Burger::GOSTHasher_t::Process(const Word32 *pBlock)
 			(Samples[5]<<16)^
 			RotateLeft(Samples[6],16)^
 			(Samples[7]&0xffff0000)^RotateLeft(Samples[7],16);
-		Word32 uTempHash6 = pBlock[6]^Samples[0]^
+		uint32_t uTempHash6 = pBlock[6]^Samples[0]^
 			(Samples[1]>>16)^
 			(Samples[2]<<16)^
 			Samples[3]^(Samples[3]>>16)^
@@ -421,7 +422,7 @@ void BURGER_API Burger::GOSTHasher_t::Process(const Word32 *pBlock)
 			RotateLeft(Samples[5],16)^
 			Samples[6]^RotateLeft(Samples[6],16)^
 			(Samples[7]<<16);
-		Word32 uTempHash7 = pBlock[7]^(Samples[0]&0xffff0000)^(Samples[0]<<16)^
+		uint32_t uTempHash7 = pBlock[7]^(Samples[0]&0xffff0000)^(Samples[0]<<16)^
 			(Samples[1]&0xffff)^(Samples[1]<<16)^
 			(Samples[2]>>16)^
 			(Samples[3]<<16)^
@@ -432,14 +433,14 @@ void BURGER_API Burger::GOSTHasher_t::Process(const Word32 *pBlock)
 
 		/* 16 * 1 round of the LFSR and xor in H */
 
-		Word32 uTempBlock0 = m_uNativeHash[0]^(uTempHash1<<16)^(uTempHash0>>16);
-		Word32 uTempBlock1 = m_uNativeHash[1]^(uTempHash2<<16)^(uTempHash1>>16);
-		Word32 uTempBlock2 = m_uNativeHash[2]^(uTempHash3<<16)^(uTempHash2>>16);
-		Word32 uTempBlock3 = m_uNativeHash[3]^(uTempHash4<<16)^(uTempHash3>>16);
-		Word32 uTempBlock4 = m_uNativeHash[4]^(uTempHash5<<16)^(uTempHash4>>16);
-		Word32 uTempBlock5 = m_uNativeHash[5]^(uTempHash6<<16)^(uTempHash5>>16);
-		Word32 uTempBlock6 = m_uNativeHash[6]^(uTempHash7<<16)^(uTempHash6>>16);
-		Word32 uTempBlock7 = m_uNativeHash[7]^(uTempHash0&0xffff0000)^(uTempHash0<<16)^(uTempHash7>>16)^
+		uint32_t uTempBlock0 = m_uNativeHash[0]^(uTempHash1<<16)^(uTempHash0>>16);
+		uint32_t uTempBlock1 = m_uNativeHash[1]^(uTempHash2<<16)^(uTempHash1>>16);
+		uint32_t uTempBlock2 = m_uNativeHash[2]^(uTempHash3<<16)^(uTempHash2>>16);
+		uint32_t uTempBlock3 = m_uNativeHash[3]^(uTempHash4<<16)^(uTempHash3>>16);
+		uint32_t uTempBlock4 = m_uNativeHash[4]^(uTempHash5<<16)^(uTempHash4>>16);
+		uint32_t uTempBlock5 = m_uNativeHash[5]^(uTempHash6<<16)^(uTempHash5>>16);
+		uint32_t uTempBlock6 = m_uNativeHash[6]^(uTempHash7<<16)^(uTempHash6>>16);
+		uint32_t uTempBlock7 = m_uNativeHash[7]^(uTempHash0&0xffff0000)^(uTempHash0<<16)^(uTempHash7>>16)^
 			(uTempHash1&0xffff0000)^(uTempHash1<<16)^(uTempHash6<<16)^(uTempHash7&0xffff0000);
 
 		// Update the final hash value
@@ -521,23 +522,23 @@ void BURGER_API Burger::GOSTHasher_t::Process(const Word32 *pBlock)
 	the actual function to do the data processing
 
 	\param pBlock Pointer to a buffer of 32 byte values to hash
-	\sa Process(const void *,WordPtr), Finalize(void) or Init(void)
+	\sa Process(const void *,uintptr_t), Finalize(void) or Init(void)
 
 ***************************************/
 
-void BURGER_API Burger::GOSTHasher_t::Process(const Word8 *pBlock)
+void BURGER_API Burger::GOSTHasher_t::Process(const uint8_t *pBlock)
 {
-	Word32 Buffer[8];
+	uint32_t Buffer[8];
 
 	// Adjust the sum
 
-	Word32 uCarry = 0;
-	Word i = 0;
+	uint32_t uCarry = 0;
+	uint_t i = 0;
 	do {
-		Word32 uTemp = LittleEndian::LoadAny(static_cast<const Word32 *>(static_cast<const void *>(pBlock)));
-		pBlock += sizeof(Word32);
+		uint32_t uTemp = LittleEndian::LoadAny(static_cast<const uint32_t *>(static_cast<const void *>(pBlock)));
+		pBlock += sizeof(uint32_t);
 		Buffer[i] = uTemp;
-		Word32 uPrevious = m_uSum[i];
+		uint32_t uPrevious = m_uSum[i];
 		
 		// Add, with carry
 		uCarry = uTemp+uCarry+uPrevious;
@@ -564,19 +565,19 @@ void BURGER_API Burger::GOSTHasher_t::Process(const Word8 *pBlock)
 	
 	\param pInput Pointer to a buffer of data to hash
 	\param uLength Number of bytes to hash
-	\sa Process(const Word8 *), Finalize(void)
+	\sa Process(const uint8_t *), Finalize(void)
 
 ***************************************/
 
-void BURGER_API Burger::GOSTHasher_t::Process(const void *pInput,WordPtr uLength)
+void BURGER_API Burger::GOSTHasher_t::Process(const void *pInput,uintptr_t uLength)
 {
 	// Compute number of bytes mod 32
-	WordPtr uIndex = static_cast<WordPtr>(m_uByteCount) & 0x1FU;
+	uintptr_t uIndex = static_cast<uintptr_t>(m_uByteCount) & 0x1FU;
 
 	// Update number of bits (Perform a 32 bit add)
 	m_uByteCount += uLength;
 
-	WordPtr i = 32 - uIndex;
+	uintptr_t i = 32 - uIndex;
 
 	// Transform as many times as possible.
 
@@ -590,7 +591,7 @@ void BURGER_API Burger::GOSTHasher_t::Process(const void *pInput,WordPtr uLength
 
 		if ((i+31)<uLength) {
 			do {
-	 			Process(static_cast<const Word8 *>(pInput)+i);
+	 			Process(static_cast<const uint8_t *>(pInput)+i);
 				m_uTotalCount += 256;		// Bit count
 				i += 32;
 			} while ((i+31) < uLength);
@@ -601,7 +602,7 @@ void BURGER_API Burger::GOSTHasher_t::Process(const void *pInput,WordPtr uLength
 	}
 
 	// Buffer remaining input
-	MemoryCopy(&m_CacheBuffer[uIndex],static_cast<const Word8 *>(pInput)+i,uLength-i);
+	MemoryCopy(&m_CacheBuffer[uIndex],static_cast<const uint8_t *>(pInput)+i,uLength-i);
 }
 
 /*! ************************************
@@ -612,7 +613,7 @@ void BURGER_API Burger::GOSTHasher_t::Process(const void *pInput,WordPtr uLength
 	finalize the hash so that the generated checksum can
 	be applied into the hash
 
-	\sa Init(void), Process(const void *,WordPtr)
+	\sa Init(void), Process(const void *,uintptr_t)
 
 ***************************************/
 
@@ -620,7 +621,7 @@ void BURGER_API Burger::GOSTHasher_t::Finalize(void)
 {
 	// If there was any remaining data, hash it
 
-	WordPtr uByteCount = static_cast<WordPtr>(m_uByteCount)&0x1FU;
+	uintptr_t uByteCount = static_cast<uintptr_t>(m_uByteCount)&0x1FU;
 	if (uByteCount) {
 		MemoryClear(&m_CacheBuffer[uByteCount],32-uByteCount);
 		Process(m_CacheBuffer);
@@ -629,10 +630,10 @@ void BURGER_API Burger::GOSTHasher_t::Finalize(void)
 
 	// Hash in the data size count and the data sum
 
-	Word32 Temp[8];
+	uint32_t Temp[8];
 	MemoryClear(Temp,sizeof(Temp));
-	Temp[0] = static_cast<Word32>(m_uTotalCount);
-	Temp[1] = static_cast<Word32>(m_uTotalCount>>32);
+	Temp[0] = static_cast<uint32_t>(m_uTotalCount);
+	Temp[1] = static_cast<uint32_t>(m_uTotalCount>>32);
 	Process(Temp);
 	Process(m_uSum);
 
@@ -641,7 +642,7 @@ void BURGER_API Burger::GOSTHasher_t::Finalize(void)
 #if defined(BURGER_LITTLEENDIAN)
 	MemoryCopy(&m_Hash,m_uNativeHash,sizeof(m_Hash));
 #else
-	ConvertEndian(static_cast<Word32 *>(static_cast<void *>(&m_Hash)),m_uNativeHash,BURGER_ARRAYSIZE(m_uNativeHash));
+	ConvertEndian(static_cast<uint32_t *>(static_cast<void *>(&m_Hash)),m_uNativeHash,BURGER_ARRAYSIZE(m_uNativeHash));
 #endif
 }
 
@@ -651,7 +652,7 @@ void BURGER_API Burger::GOSTHasher_t::Finalize(void)
 	
 	Given a buffer of data, generate the GOST hash key
 
-	\param pOutput Pointer to an unitialized GOST_t structure
+	\param pOutput Pointer to an uninitialized GOST_t structure
 	\param pInput Pointer to a buffer of data to hash
 	\param uLength Number of bytes to hash
 
@@ -659,7 +660,7 @@ void BURGER_API Burger::GOSTHasher_t::Finalize(void)
 
 ***************************************/
 
-void BURGER_API Burger::Hash(GOST_t *pOutput,const void *pInput,WordPtr uLength)
+void BURGER_API Burger::Hash(GOST_t *pOutput,const void *pInput,uintptr_t uLength)
 {
 	GOSTHasher_t Context;
 	// Initialize
@@ -689,18 +690,18 @@ void BURGER_API Burger::Hash(GOST_t *pOutput,const void *pInput,WordPtr uLength)
 
 ***************************************/
 
-void BURGER_API Burger::GenerateGOSTTable(Word32 *pOutput,const Word32 pSBoxTable[8][16])
+void BURGER_API Burger::GenerateGOSTTable(uint32_t *pOutput,const uint32_t pSBoxTable[8][16])
 {
 	// Create the Shift Box
 	
-	Word i = 0;
-	Word a = 0;
+	uint_t i = 0;
+	uint_t a = 0;
 	do {
-		Word32 uTemp1 = pSBoxTable[1][a]<<15;
-		Word32 uTemp2 = pSBoxTable[3][a]<<23;
-		Word32 uTemp3 = Burger::RotateLeft(pSBoxTable[5][a],31);
-		Word32 uTemp4 = pSBoxTable[7][a]<<7;
-		Word b = 0;
+		uint32_t uTemp1 = pSBoxTable[1][a]<<15;
+		uint32_t uTemp2 = pSBoxTable[3][a]<<23;
+		uint32_t uTemp3 = Burger::RotateLeft(pSBoxTable[5][a],31);
+		uint32_t uTemp4 = pSBoxTable[7][a]<<7;
+		uint_t b = 0;
 		do {
 			pOutput[i] = uTemp1|(pSBoxTable[0][b]<<11);
 			pOutput[i+256] = uTemp2|(pSBoxTable[2][b]<<19);

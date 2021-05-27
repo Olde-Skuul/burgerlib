@@ -52,8 +52,8 @@ const char *Burger::Filename::GetNative(void)
 	Expand();		// Resolve prefixes
 
 	// Determine the final length
-	const Word8 *pFullPathName = reinterpret_cast<const Word8 *>(m_pFilename);
-	WordPtr uOutputLength = StringLength(reinterpret_cast<const char *>(pFullPathName))+4;
+	const uint8_t *pFullPathName = reinterpret_cast<const uint8_t *>(m_pFilename);
+	uintptr_t uOutputLength = StringLength(reinterpret_cast<const char *>(pFullPathName))+4;
 	char *pOutput = m_NativeFilename;
 	if (uOutputLength>=sizeof(m_NativeFilename)) {
 		pOutput = static_cast<char *>(Alloc(uOutputLength));
@@ -71,10 +71,10 @@ const char *Burger::Filename::GetNative(void)
 		// Discard the leading colon
 		++pFullPathName;
 		// Look for the mount name by scanning for the ending colon
-		const Word8 *pFileParsed = reinterpret_cast<Word8*>(StringCharacter(reinterpret_cast<const char *>(pFullPathName),':'));
+		const uint8_t *pFileParsed = reinterpret_cast<uint8_t*>(StringCharacter(reinterpret_cast<const char *>(pFullPathName),':'));
 		if (pFileParsed) {
 			// Length of the mount name
-			WordPtr uLength = static_cast<WordPtr>(pFileParsed-pFullPathName)+1;
+			uintptr_t uLength = static_cast<uintptr_t>(pFileParsed-pFullPathName)+1;
 			// Copy :app0: to app0:/
 			MemoryCopy(pOutput,pFullPathName,uLength);
 			pOutput[uLength] = '/';
@@ -87,7 +87,7 @@ const char *Burger::Filename::GetNative(void)
 	// Convert the rest of the path
 	// Colons to slashes
 	
-	Word uTemp = pFullPathName[0];
+	uint_t uTemp = pFullPathName[0];
 	if (uTemp) {
 		do {
 			++pFullPathName;
@@ -103,7 +103,7 @@ const char *Burger::Filename::GetNative(void)
 		// A trailing slash assumes more to follow, get rid of it
 		--pOutput;
 		if ((pOutput==m_pNativeFilename) ||		// Only a '/'? (Skip the check then)
-			(reinterpret_cast<Word8*>(pOutput)[0]!='/')) {
+			(reinterpret_cast<uint8_t*>(pOutput)[0]!='/')) {
 			++pOutput;		// Remove trailing slash
 		}
 	}
@@ -131,8 +131,8 @@ void Burger::Filename::SetFromNative(const char *pInput)
 	Clear();	// Clear out the previous string
 
 	// Determine the length of the string buffer
-	WordPtr uInputLength = StringLength(pInput);
-	WordPtr uOutputLength = uInputLength+6;		// Could prepend :app0:, 6 characters
+	uintptr_t uInputLength = StringLength(pInput);
+	uintptr_t uOutputLength = uInputLength+6;		// Could prepend :app0:, 6 characters
 	char *pOutput = m_Filename;
 	if (uOutputLength>=sizeof(m_Filename)) {
 		pOutput = static_cast<char *>(Alloc(uOutputLength));
@@ -158,7 +158,7 @@ void Burger::Filename::SetFromNative(const char *pInput)
 		}
 	} else {
 		// Convert app0:/ to :app0:
-		WordPtr uMountNameSize = static_cast<WordPtr>((pMountName-pInput)+1);
+		uintptr_t uMountNameSize = static_cast<uintptr_t>((pMountName-pInput)+1);
 		pOutput[0] = ':';
 		MemoryCopy(pOutput+1,pInput,uMountNameSize);
 		pOutput += uMountNameSize+1;
@@ -167,10 +167,10 @@ void Burger::Filename::SetFromNative(const char *pInput)
 
 // Now, just copy the rest of the path	
 	
-	Word uTemp = reinterpret_cast<const Word8*>(pInput)[0];
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
 	if (uTemp=='/') {
 		++pInput;
-		uTemp = reinterpret_cast<const Word8*>(pInput)[0];
+		uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
 	}
 	if (uTemp) {				// Any more?
 		do {
@@ -180,14 +180,14 @@ void Burger::Filename::SetFromNative(const char *pInput)
 			}
 			pOutput[0] = uTemp;	// Save char
 			++pOutput;
-			uTemp = reinterpret_cast<const Word8*>(pInput)[0];	// Next char
+			uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];	// Next char
 		} while (uTemp);		// Still more?
 	}
 
 	// The wrap up...
 	// Make sure it's appended with a colon
 
-	if (reinterpret_cast<const Word8*>(pOutput)[-1]!=':') {
+	if (reinterpret_cast<const uint8_t*>(pOutput)[-1]!=':') {
 		pOutput[0] = ':';
 		++pOutput;
 	}

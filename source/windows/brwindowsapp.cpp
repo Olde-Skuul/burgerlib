@@ -190,7 +190,7 @@ extern "C" char ** __argv;
 
 ***************************************/
 
-Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,WordPtr uMinReserveSize) :
+Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,uint_t uDefaultHandleCount,uintptr_t uMinReserveSize) :
 	m_MemoryManagerHandle(uDefaultMemorySize,uDefaultHandleCount,uMinReserveSize),
 //	m_hInstance(NULL),		// Will initialize below
 	m_hWindow(NULL),
@@ -247,8 +247,8 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 
 		// Determine how much space the strings will take as
 		// UTF8
-		Word16 **ppWork = reinterpret_cast<Word16 **>(pWideArgv);
-		WordPtr uDataSize = 0;
+		uint16_t **ppWork = reinterpret_cast<uint16_t **>(pWideArgv);
+		uintptr_t uDataSize = 0;
 		do {
 			uDataSize += UTF8::FromUTF16(NULL,0,ppWork[0])+1;
 			++ppWork;
@@ -262,7 +262,7 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 		m_ppArgv = ppArgv;
 		// Get the pointer beyond the pointer array
 		char *pDest = reinterpret_cast<char *>(ppArgv)+(sizeof(char *)*iArgc);
-		ppWork = reinterpret_cast<Word16 **>(pWideArgv);
+		ppWork = reinterpret_cast<uint16_t **>(pWideArgv);
 
 		// This "hack" is to allow any other code that manually grabs the 
 		// parameter list to inherit the UTF8 support
@@ -275,7 +275,7 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize,Word uDefaultHandleCount,Wor
 			ppArgv[0] = pDest;
 			++ppArgv;
 			// Convert a string
-			WordPtr uLength = UTF8::FromUTF16(pDest,uDataSize,ppWork[0])+1;
+			uintptr_t uLength = UTF8::FromUTF16(pDest,uDataSize,ppWork[0])+1;
 			// Adjust the pointers
 			uDataSize -= uLength;
 			pDest+=uLength;
@@ -428,18 +428,18 @@ Burger::GameApp::~GameApp()
 
 /*! ************************************
 
-	\fn Word Burger::GameApp::GetInSizeMove(void) const
+	\fn uint_t Burger::GameApp::GetInSizeMove(void) const
 	\brief Return \ref TRUE if the window is resizing
 
 	\windowsonly
 	\return \ref TRUE if in resizing, \ref FALSE if not.
-	\sa SetInSizeMove(Word)
+	\sa SetInSizeMove(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::GameApp::SetInSizeMove(Word bInSizeMode)
+	\fn void Burger::GameApp::SetInSizeMove(uint_t bInSizeMode)
 	\brief Set or clear the resizing window flag
 
 	\windowsonly
@@ -467,7 +467,7 @@ Burger::GameApp::~GameApp()
 
 ***************************************/
 
-int BURGER_API Burger::GameApp::InitWindow(const char *pGameName,MainWindowProc pCallBack,Word uIconResID)
+int BURGER_API Burger::GameApp::InitWindow(const char *pGameName,MainWindowProc pCallBack,uint_t uIconResID)
 {
 	m_pCallBack = pCallBack;
 	// Get the default cursor
@@ -547,7 +547,7 @@ int BURGER_API Burger::GameApp::InitWindow(const char *pGameName,MainWindowProc 
 
 ***************************************/
 
-int BURGER_API Burger::GameApp::SetWindowSize(Word uWidth,Word uHeight)
+int BURGER_API Burger::GameApp::SetWindowSize(uint_t uWidth,uint_t uHeight)
 {
 	// Get the application's window
 	HWND pWindow = m_hWindow;
@@ -580,8 +580,8 @@ int BURGER_API Burger::GameApp::SetWindowSize(Word uWidth,Word uHeight)
 
 	// Resize the window to the new rect
 
-	Word uAdjustedWidth = static_cast<Word>(NewWindowRect.right-NewWindowRect.left);
-	Word uAdjustedHeight = static_cast<Word>(NewWindowRect.bottom-NewWindowRect.top);
+	uint_t uAdjustedWidth = static_cast<uint_t>(NewWindowRect.right-NewWindowRect.left);
+	uint_t uAdjustedHeight = static_cast<uint_t>(NewWindowRect.bottom-NewWindowRect.top);
 
 	// Get the center x,y position of the window
 
@@ -625,7 +625,7 @@ int BURGER_API Burger::GameApp::SetWindowSize(Word uWidth,Word uHeight)
 
 ***************************************/
 
-int BURGER_API Burger::GameApp::SetWindowFullScreen(Word uWidth,Word uHeight)
+int BURGER_API Burger::GameApp::SetWindowFullScreen(uint_t uWidth,uint_t uHeight)
 {
 	// Get the application's window
 	HWND pWindow = m_hWindow;
@@ -714,12 +714,12 @@ void BURGER_API Burger::GameApp::RecordWindowLocation(void)
 
 ***************************************/
 
-Word BURGER_API Burger::GameApp::HandleCursor(Word uParam)
+uint_t BURGER_API Burger::GameApp::HandleCursor(uint_t uParam)
 {
 	// Only process if in the client area. Let the OS handle the cursor
 	// elsewhere
-	Word uResult = FALSE;
-	Word uClient = LOWORD(uParam);
+	uint_t uResult = FALSE;
+	uint_t uClient = LOWORD(uParam);
 	switch (uClient) {
 	// In the client area?
 	case HTCLIENT:

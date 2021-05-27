@@ -28,8 +28,8 @@
 
 /* BEGIN */
 namespace Burger {
-extern void BURGER_API ImportS3MEffect(Sequencer::Command_t *pOutput,Word uS3MCommand,Word uS3MArgument);
-extern Word BURGER_API ImportS3M(Sequencer::SongPackage *pOutput,const Word8 *pInput,WordPtr uInputLength);
+extern void BURGER_API ImportS3MEffect(Sequencer::Command_t *pOutput,uint_t uS3MCommand,uint_t uS3MArgument);
+extern uint_t BURGER_API ImportS3M(Sequencer::SongPackage *pOutput,const uint8_t *pInput,uintptr_t uInputLength);
 }
 /* END */
 

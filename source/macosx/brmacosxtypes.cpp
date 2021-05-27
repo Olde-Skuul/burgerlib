@@ -1,14 +1,14 @@
 /***************************************
 
-	Typedefs specific to Mac OSX
+    Typedefs specific to Mac OSX
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE for
-	license details. Yes, you can use it in a commercial title without paying
-	anything, just give me a credit.
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
 
-	Please? It's not like I'm asking you for money!
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -20,7 +20,7 @@
 #include <errno.h>
 
 typedef int (*getattrlistbulkPtr)(int dirfd, attrlist* attrList, void* attrBuf,
-	WordPtr attrBufSize, Word64 options);
+	uintptr_t attrBufSize, uint64_t options);
 
 /// Singleton instance of the macOS global variables
 Burger::MacOSX Burger::MacOSX::g_Globals;
@@ -101,7 +101,7 @@ Burger::MacOSX::~MacOSX()
 	MemoryClear(m_bFunctionsTested, sizeof(m_bFunctionsTested));
 
 	// Finally, release all of the allocated DLLs
-	WordPtr i = 0;
+	uintptr_t i = 0;
 	do {
 		if (m_pInstances[i]) {
 			dlclose(m_pInstances[i]);
@@ -224,7 +224,7 @@ void* BURGER_API Burger::MacOSX::LoadFunctionIndex(eCallIndex eIndex)
 ***************************************/
 
 int BURGER_API Burger::MacOSX::getattrlistbulk(int dirfd, attrlist* attrList,
-	void* attrBuf, WordPtr attrBufSize, Word64 options)
+	void* attrBuf, uintptr_t attrBufSize, uint64_t options)
 {
 	void* pgetattrlistbulk = LoadFunctionIndex(CALL_getattrlistbulk);
 	int iResult = -1; // Failure

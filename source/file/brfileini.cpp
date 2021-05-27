@@ -1,13 +1,14 @@
 /***************************************
 
-	Library to handle windows style configuration files (INI)
+    Library to handle windows style configuration files (INI)
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -401,11 +402,11 @@ Burger::FileINI::Entry::~Entry()
 
 	\param bDefault Value to return on error
 	\return \ref TRUE or \ref FALSE or bDefault
-	\sa SetBoolean(Word) or AsciiToBoolean(const char *,Word)
+	\sa SetBoolean(uint_t) or AsciiToBoolean(const char *,uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::FileINI::Entry::GetBoolean(Word bDefault) const
+uint_t BURGER_API Burger::FileINI::Entry::GetBoolean(uint_t bDefault) const
 {
 	return m_Value.GetBoolean(bDefault);
 }
@@ -419,11 +420,11 @@ Word BURGER_API Burger::FileINI::Entry::GetBoolean(Word bDefault) const
 	store numeric values.
 
 	\param bValue Value to store as a string
-	\sa GetBoolean(Word) const
+	\sa GetBoolean(uint_t) const
 
 ***************************************/
 
-void BURGER_API Burger::FileINI::Entry::SetBoolean(Word bValue)
+void BURGER_API Burger::FileINI::Entry::SetBoolean(uint_t bValue)
 {
 	m_Value.SetTrueFalse(bValue);
 }
@@ -445,11 +446,11 @@ void BURGER_API Burger::FileINI::Entry::SetBoolean(Word bValue)
 	\param uMin Minimum acceptable value
 	\param uMax Maximum acceptable value
 	\return Value in between uMin and uMax or uDefault
-	\sa GetInt(Int,Int,Int) const, SetWord(Word), SetWordHex(Word), or AsciiToWord(const char *,Word,Word,Word)
+	\sa GetInt(int_t,int_t,int_t) const, SetWord(uint_t), SetWordHex(uint_t), or AsciiToWord(const char *,uint_t,uint_t,uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::FileINI::Entry::GetWord(Word uDefault,Word uMin,Word uMax) const
+uint_t BURGER_API Burger::FileINI::Entry::GetWord(uint_t uDefault,uint_t uMin,uint_t uMax) const
 {
 	return AsciiToWord(m_Value.GetPtr(),uDefault,uMin,uMax);
 }
@@ -462,11 +463,11 @@ Word BURGER_API Burger::FileINI::Entry::GetWord(Word uDefault,Word uMin,Word uMa
 	and set the value to this string
 
 	\param uValue Value to store as an unsigned integer string
-	\sa GetWord(Word,Word,Word) const or SetWordHex(Word)
+	\sa GetWord(uint_t,uint_t,uint_t) const or SetWordHex(uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::FileINI::Entry::SetWord(Word uValue)
+void BURGER_API Burger::FileINI::Entry::SetWord(uint_t uValue)
 {
 	m_Value.SetWord(uValue);
 }
@@ -480,11 +481,11 @@ void BURGER_API Burger::FileINI::Entry::SetWord(Word uValue)
 	store this string as the value
 
 	\param uValue Value to store as an unsigned integer hex string
-	\sa GetWord(Word,Word,Word) const or SetWord(Word)
+	\sa GetWord(uint_t,uint_t,uint_t) const or SetWord(uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::FileINI::Entry::SetWordHex(Word uValue)
+void BURGER_API Burger::FileINI::Entry::SetWordHex(uint_t uValue)
 {
 	m_Value.SetWordHex(uValue);
 }
@@ -506,12 +507,12 @@ void BURGER_API Burger::FileINI::Entry::SetWordHex(Word uValue)
 	\param iDefault Value to return on error
 	\param iMin Minimum acceptable value
 	\param iMax Maximum acceptable value
-	\return Value in between iMin and iMax or iDefault
-	\sa GetWord(Word,Word,Word) const, SetInt(Int) or AsciiToInteger(const char *,Int,Int,Int)
+    \return Value in between iMin and iMax or iDefault
+    \sa GetWord(uint_t,uint_t,uint_t) const, SetInt(int_t) or AsciiToInteger(const char *,int_t,int_t,int_t)
 
 ***************************************/
 
-Int BURGER_API Burger::FileINI::Entry::GetInt(Int iDefault,Int iMin,Int iMax) const
+int_t BURGER_API Burger::FileINI::Entry::GetInt(int_t iDefault,int_t iMin,int_t iMax) const
 {
 	return m_Value.GetInt(iDefault,iMin,iMax);
 }
@@ -524,11 +525,11 @@ Int BURGER_API Burger::FileINI::Entry::GetInt(Int iDefault,Int iMin,Int iMax) co
 	and set the value to this string
 
 	\param iValue Value to store as a signed integer string
-	\sa GetInt(Int,Int,Int) const or SetWord(Word)
+	\sa GetInt(int_t,int_t,int_t) const or SetWord(uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::FileINI::Entry::SetInt(Int iValue)
+void BURGER_API Burger::FileINI::Entry::SetInt(int_t iValue)
 {
 	m_Value.SetInt(iValue);
 }
@@ -637,7 +638,7 @@ void BURGER_API Burger::FileINI::Entry::SetDouble(double dValue)
 
 void BURGER_API Burger::FileINI::Entry::GetString(String *pOutput,const char *pDefault) const
 {
-	WordPtr uLength = m_Value.GetLength();
+	uintptr_t uLength = m_Value.GetLength();
 	// No string?
 	if (!uLength) {
 		// Use the default
@@ -682,7 +683,7 @@ void BURGER_API Burger::FileINI::Entry::SetString(const char *pValue)
 		if (pQuote) {
 			do {
 				// Copy up the part that's not quoted
-				m_Value.Append(pValue,static_cast<WordPtr>(pQuote-pValue));
+				m_Value.Append(pValue,static_cast<uintptr_t>(pQuote-pValue));
 				// Insert the double quote
 				m_Value.Append("\"\"",2);
 				// Skip past the quote
@@ -823,9 +824,9 @@ Burger::FileINI::Section::~Section()
 
 ***************************************/
 
-Word BURGER_API Burger::FileINI::Section::Save(OutputMemoryStream *pOutput) const
+uint_t BURGER_API Burger::FileINI::Section::Save(OutputMemoryStream *pOutput) const
 {
-	Word uResult=FALSE;
+	uint_t uResult=FALSE;
 	// Is it nameless?
 	const char *pName = m_SectionName.GetPtr();
 	if (pName[0]) {
@@ -901,7 +902,7 @@ Word BURGER_API Burger::FileINI::Section::Save(OutputMemoryStream *pOutput) cons
 	\param pKey Pointer to a "C" string for the new entry's key
 	\param pValue Pointer to a "C" string for the new entry's value
 	\return Pointer to the new entry or \ref NULL on an out of memory situation
-	\sa FindEntry(const char *,Word) or AddComment(const char *)
+	\sa FindEntry(const char *,uint_t) or AddComment(const char *)
 
 ***************************************/
 
@@ -920,7 +921,7 @@ Burger::FileINI::Entry * BURGER_API Burger::FileINI::Section::AddEntry(const cha
 
 	\param pKey Pointer to a "C" of the key desired
 	\return Pointer to the located entry or \ref NULL if the entry wasn't found
-	\sa FindEntry(const char *,Word)
+	\sa FindEntry(const char *,uint_t)
 
 ***************************************/
 
@@ -954,7 +955,7 @@ Burger::FileINI::Entry * BURGER_API Burger::FileINI::Section::FindEntry(const ch
 
 ***************************************/
 
-Burger::FileINI::Entry * BURGER_API Burger::FileINI::Section::FindEntry(const char *pKey,Word bAlwaysCreate)
+Burger::FileINI::Entry * BURGER_API Burger::FileINI::Section::FindEntry(const char *pKey,uint_t bAlwaysCreate)
 {
 	const Generic *pGeneric = m_Root.GetNext();
 	Entry *pResult = NULL;
@@ -992,7 +993,7 @@ Burger::FileINI::Entry * BURGER_API Burger::FileINI::Section::FindEntry(const ch
 
 	\param pComment Pointer to a "C" string for the new entry's data
 	\return Pointer to the new comment or \ref NULL on an out of memory situation
-	\sa FindEntry(const char *,Word) or AddEntry(const char *,const char *)
+	\sa FindEntry(const char *,uint_t) or AddEntry(const char *,const char *)
 
 ***************************************/
 
@@ -1085,11 +1086,11 @@ void BURGER_API Burger::FileINI::Section::SetValue(const char *pKey,const String
 	\param pKey Pointer to a "C" of the key desired
 	\param bDefault Value to return on error
 	\return \ref TRUE or \ref FALSE or bDefault
-	\sa SetBoolean(const char *,Word)
+	\sa SetBoolean(const char *,uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::FileINI::Section::GetBoolean(const char *pKey,Word bDefault) const
+uint_t BURGER_API Burger::FileINI::Section::GetBoolean(const char *pKey,uint_t bDefault) const
 {
 	const Entry *pEntry = FindEntry(pKey);
 	if (pEntry) {
@@ -1109,11 +1110,11 @@ Word BURGER_API Burger::FileINI::Section::GetBoolean(const char *pKey,Word bDefa
 
 	\param pKey Pointer to a "C" of the key desired
 	\param bValue Zero to store "FALSE" or non zero to store "TRUE"
-	\sa GetBoolean(const char *,Word) const
+	\sa GetBoolean(const char *,uint_t) const
 
 ***************************************/
 
-void BURGER_API Burger::FileINI::Section::SetBoolean(const char *pKey,Word bValue)
+void BURGER_API Burger::FileINI::Section::SetBoolean(const char *pKey,uint_t bValue)
 {
 	Entry *pEntry = FindEntry(pKey,TRUE);
 	if (pEntry) {
@@ -1142,11 +1143,11 @@ void BURGER_API Burger::FileINI::Section::SetBoolean(const char *pKey,Word bValu
 	\param uMin Minimum acceptable value
 	\param uMax Maximum acceptable value
 	\return Value in between uMin and uMax or uDefault
-	\sa SetWord(const char *,Word) or GetInt(const char *,Int,Int,Int) const
+	\sa SetWord(const char *,uint_t) or GetInt(const char *,int_t,int_t,int_t) const
 
 ***************************************/
 
-Word BURGER_API Burger::FileINI::Section::GetWord(const char *pKey,Word uDefault,Word uMin,Word uMax) const
+uint_t BURGER_API Burger::FileINI::Section::GetWord(const char *pKey,uint_t uDefault,uint_t uMin,uint_t uMax) const
 {
 	const Entry *pEntry = FindEntry(pKey);
 	if (pEntry) {
@@ -1166,11 +1167,11 @@ Word BURGER_API Burger::FileINI::Section::GetWord(const char *pKey,Word uDefault
 
 	\param pKey Pointer to a "C" of the key desired
 	\param uValue Value to convert to an unsigned integer UTF-8 string
-	\sa GetWord(const char *,Word,Word,Word) const and SetWordHex(const char *,Word)
+	\sa GetWord(const char *,uint_t,uint_t,uint_t) const and SetWordHex(const char *,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::FileINI::Section::SetWord(const char *pKey,Word uValue)
+void BURGER_API Burger::FileINI::Section::SetWord(const char *pKey,uint_t uValue)
 {
 	Entry *pEntry = FindEntry(pKey,TRUE);
 	if (pEntry) {
@@ -1189,11 +1190,11 @@ void BURGER_API Burger::FileINI::Section::SetWord(const char *pKey,Word uValue)
 
 	\param pKey Pointer to a "C" of the key desired
 	\param uValue Value to convert to a hex string
-	\sa GetWord(const char *,Word,Word,Word) const and SetWord(const char *,Word)
+	\sa GetWord(const char *,uint_t,uint_t,uint_t) const and SetWord(const char *,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::FileINI::Section::SetWordHex(const char *pKey,Word uValue)
+void BURGER_API Burger::FileINI::Section::SetWordHex(const char *pKey,uint_t uValue)
 {
 	Entry *pEntry = FindEntry(pKey,TRUE);
 	if (pEntry) {
@@ -1223,11 +1224,11 @@ void BURGER_API Burger::FileINI::Section::SetWordHex(const char *pKey,Word uValu
 	\param iMin Minimum acceptable value
 	\param iMax Maximum acceptable value
 	\return Value in between iMin and iMax or iDefault
-	\sa SetInt(const char *,Int) or GetWord(const char *,Word,Word,Word) const
+	\sa SetInt(const char *,int_t) or GetWord(const char *,uint_t,uint_t,uint_t) const
 
 ***************************************/
 
-Int BURGER_API Burger::FileINI::Section::GetInt(const char *pKey,Int iDefault,Int iMin,Int iMax) const
+int_t BURGER_API Burger::FileINI::Section::GetInt(const char *pKey,int_t iDefault,int_t iMin,int_t iMax) const
 {
 	Entry *pEntry = FindEntry(pKey);
 	if (pEntry) {
@@ -1248,11 +1249,11 @@ Int BURGER_API Burger::FileINI::Section::GetInt(const char *pKey,Int iDefault,In
 
 	\param pKey Pointer to a "C" of the key desired
 	\param iValue Value to convert to an signed integer UTF-8 string
-	\sa GetInt(const char *,Int,Int,Int) const and SetWord(const char *,Word)
+	\sa GetInt(const char *,int_t,int_t,int_t) const and SetWord(const char *,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::FileINI::Section::SetInt(const char *pKey,Int iValue)
+void BURGER_API Burger::FileINI::Section::SetInt(const char *pKey,int_t iValue)
 {
 	Entry *pEntry = FindEntry(pKey,TRUE);
 	if (pEntry) {
@@ -1517,7 +1518,7 @@ Burger::FileINI::~FileINI()
 	\brief Allocate and initialize a FileINI
 
 	\return A pointer to an empty FileINI structure or \ref NULL if out of memory
-	\sa New(InputMemoryStream *,Word), New(const char *,Word) or New(Filename *,Word)
+	\sa New(InputMemoryStream *,uint_t), New(const char *,uint_t) or New(Filename *,uint_t)
 
 ***************************************/
 
@@ -1538,11 +1539,11 @@ Burger::FileINI * BURGER_API Burger::FileINI::New(void)
 	\param pFilename Pointer to a "C" string of a valid Burgerlib filename
 	\param bAlwaysCreate \ref TRUE if the file can't be opened, return an empty record instead
 	\return A pointer to an empty FileINI structure or \ref NULL if out of memory
-	\sa New(InputMemoryStream *,Word), New(void) or New(Filename *,Word)
+	\sa New(InputMemoryStream *,uint_t), New(void) or New(Filename *,uint_t)
 
 ***************************************/
 
-Burger::FileINI * BURGER_API Burger::FileINI::New(const char *pFilename,Word bAlwaysCreate)
+Burger::FileINI * BURGER_API Burger::FileINI::New(const char *pFilename,uint_t bAlwaysCreate)
 {
 	// Convert to a filename object
 	Filename NewName(pFilename);
@@ -1560,11 +1561,11 @@ Burger::FileINI * BURGER_API Burger::FileINI::New(const char *pFilename,Word bAl
 	\param pFilename Pointer to a Filename record
 	\param bAlwaysCreate \ref TRUE if the file can't be opened, return an empty record instead
 	\return A pointer to an empty FileINI structure or \ref NULL if out of memory
-	\sa New(InputMemoryStream *,Word), New(void) or New(const char *,Word)
+	\sa New(InputMemoryStream *,uint_t), New(void) or New(const char *,uint_t)
 
 ***************************************/
 
-Burger::FileINI * BURGER_API Burger::FileINI::New(Filename *pFilename,Word bAlwaysCreate)
+Burger::FileINI * BURGER_API Burger::FileINI::New(Filename *pFilename,uint_t bAlwaysCreate)
 {
 	InputMemoryStream Stream;
 	FileINI *pResult;
@@ -1592,11 +1593,11 @@ Burger::FileINI * BURGER_API Burger::FileINI::New(Filename *pFilename,Word bAlwa
 	\param pInput Pointer to a InputMemoryStream record that has the text file image
 	\param bAlwaysCreate \ref TRUE if the file can't be opened, return an empty record instead
 	\return A pointer to an empty FileINI structure or \ref NULL if out of memory
-	\sa New(Filename *,Word), New(void) or New(const char *,Word)
+	\sa New(Filename *,uint_t), New(void) or New(const char *,uint_t)
 
 ***************************************/
 
-Burger::FileINI * BURGER_API Burger::FileINI::New(InputMemoryStream *pInput,Word bAlwaysCreate)
+Burger::FileINI * BURGER_API Burger::FileINI::New(InputMemoryStream *pInput,uint_t bAlwaysCreate)
 {
 	FileINI *pResult = New();	// Init the structure
 	if (pResult) {
@@ -1626,7 +1627,7 @@ Burger::FileINI * BURGER_API Burger::FileINI::New(InputMemoryStream *pInput,Word
 
 ***************************************/
 
-Word BURGER_API Burger::FileINI::Init(const char *pFilename)
+uint_t BURGER_API Burger::FileINI::Init(const char *pFilename)
 {
 	// Convert to a filename object
 	Filename NewName(pFilename);
@@ -1646,12 +1647,12 @@ Word BURGER_API Burger::FileINI::Init(const char *pFilename)
 
 ***************************************/
 
-Word BURGER_API Burger::FileINI::Init(Filename *pFilename)
+uint_t BURGER_API Burger::FileINI::Init(Filename *pFilename)
 {
 	// Purge
 	Shutdown();
 	InputMemoryStream Stream;
-	Word uResult = 10;
+	uint_t uResult = 10;
 	// Load into a stream
 	if (!Stream.Open(pFilename)) {
 		// Create the record
@@ -1673,7 +1674,7 @@ Word BURGER_API Burger::FileINI::Init(Filename *pFilename)
 
 ***************************************/
 
-Word BURGER_API Burger::FileINI::Init(InputMemoryStream *pInput)
+uint_t BURGER_API Burger::FileINI::Init(InputMemoryStream *pInput)
 {
 	// Purge
 	Shutdown();
@@ -1682,7 +1683,7 @@ Word BURGER_API Burger::FileINI::Init(InputMemoryStream *pInput)
 	char LineCopy[1024];	// Copy of the line
 	Section *pSection = NULL;
 
-	Word uResult = 0;
+	uint_t uResult = 0;
 	while (pInput->BytesRemaining()) {			// Any input?
 		// Grab a single line of input
 		pInput->GetString(OneLine,sizeof(OneLine));
@@ -1693,7 +1694,7 @@ Word BURGER_API Burger::FileINI::Init(InputMemoryStream *pInput)
 
 		// Let's parse the text (I can mangle it)
 
-		Word uLetter = reinterpret_cast<Word8 *>(LineCopy)[0];
+		uint_t uLetter = reinterpret_cast<uint8_t *>(LineCopy)[0];
 		if (uLetter=='[') {		// [Section]?
 			char *pEnd = StringCharacter(LineCopy,']');	// Section end char?
 			if (pEnd) {
@@ -1768,10 +1769,10 @@ void BURGER_API Burger::FileINI::Shutdown(void)
 
 ***************************************/
 
-Word BURGER_API Burger::FileINI::Save(const char *pFilename) const
+uint_t BURGER_API Burger::FileINI::Save(const char *pFilename) const
 {
 	OutputMemoryStream Output;
-	Word uResult = Save(&Output);
+	uint_t uResult = Save(&Output);
 	if (!uResult) {
 		uResult = Output.SaveFile(pFilename);
 	}
@@ -1791,10 +1792,10 @@ Word BURGER_API Burger::FileINI::Save(const char *pFilename) const
 
 ***************************************/
 
-Word BURGER_API Burger::FileINI::Save(Filename *pFilename) const
+uint_t BURGER_API Burger::FileINI::Save(Filename *pFilename) const
 {
 	OutputMemoryStream Output;
-	Word uResult = Save(&Output);
+	uint_t uResult = Save(&Output);
 	if (!uResult) {
 		uResult = Output.SaveFile(pFilename);
 	}
@@ -1813,9 +1814,9 @@ Word BURGER_API Burger::FileINI::Save(Filename *pFilename) const
 
 ***************************************/
 
-Word BURGER_API Burger::FileINI::Save(OutputMemoryStream *pOutput) const
+uint_t BURGER_API Burger::FileINI::Save(OutputMemoryStream *pOutput) const
 {
-	Word uResult=FALSE;
+	uint_t uResult=FALSE;
 	const Generic *pSection = m_Root.GetNext();
 	if (pSection!=&m_Root) {
 		// Iterate and save the data in all sections
@@ -1840,7 +1841,7 @@ Word BURGER_API Burger::FileINI::Save(OutputMemoryStream *pOutput) const
 	the new Section at the end of the INI file records
 
 	\param pSectionName Pointer to a "C" string of the new section to create
-	\sa FindSection(const char *,Word) or DeleteSection(const char *)
+	\sa FindSection(const char *,uint_t) or DeleteSection(const char *)
 
 ***************************************/
 
@@ -1870,7 +1871,7 @@ Burger::FileINI::Section * BURGER_API Burger::FileINI::AddSection(const char *pS
 
 ***************************************/
 
-Burger::FileINI::Section * BURGER_API Burger::FileINI::FindSection(const char *pSectionName,Word bAlwaysCreate)
+Burger::FileINI::Section * BURGER_API Burger::FileINI::FindSection(const char *pSectionName,uint_t bAlwaysCreate)
 {
 	Generic *pGeneric = m_Root.GetNext();
 	Section *pResult = NULL;
@@ -1901,7 +1902,7 @@ Burger::FileINI::Section * BURGER_API Burger::FileINI::FindSection(const char *p
 	data attached to it.
 
 	\param pSectionName Pointer to a "C" string of the new section to locate
-	\sa FindSection(const char *,Word) or AddSection(const char *)
+	\sa FindSection(const char *,uint_t) or AddSection(const char *)
 
 ***************************************/
 

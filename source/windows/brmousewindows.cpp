@@ -55,7 +55,7 @@
 
 ***************************************/
 
-WordPtr BURGER_API Burger::Mouse::WindowsMouseThread(void *pData)
+uintptr_t BURGER_API Burger::Mouse::WindowsMouseThread(void *pData)
 {
 	// Get the pointer to the class instance
 	Mouse *pThis = static_cast<Mouse *>(pData);
@@ -95,7 +95,7 @@ WordPtr BURGER_API Burger::Mouse::WindowsMouseThread(void *pData)
 
 			// Was there any data read?
 			if (hResult>=0) {
-				Word i = uCount;
+				uint_t i = uCount;
 				if (i) {
 					// Lock the data and update it
 					pThis->m_MouseLock.Lock();
@@ -105,19 +105,19 @@ WordPtr BURGER_API Burger::Mouse::WindowsMouseThread(void *pData)
 						DWORD uDataOffset = pObject->dwOfs;
 						// Data read in
 						DWORD uData = pObject->dwData;
-						Word32 uTimeStamp = Tick::ReadMilliseconds();
+						uint32_t uTimeStamp = Tick::ReadMilliseconds();
 
 						// Mouse X motion event
 						if (uDataOffset==DIMOFS_X) {
 							// Update the mouse delta
-							pThis->PostMouseMotion(static_cast<Int32>(uData),0,uTimeStamp);
+							pThis->PostMouseMotion(static_cast<int32_t>(uData),0,uTimeStamp);
 						// Mouse Y motion event
 						} else if (uDataOffset==DIMOFS_Y) {
 							// Update the mouse delta
-							pThis->PostMouseMotion(0,static_cast<Int32>(uData),uTimeStamp);
+							pThis->PostMouseMotion(0,static_cast<int32_t>(uData),uTimeStamp);
 						// Handle the mouse Z
 						} else if (uDataOffset==DIMOFS_Z) {
-							pThis->PostMouseWheel(0,static_cast<Int32>(uData)/WHEEL_DELTA,uTimeStamp);
+							pThis->PostMouseWheel(0,static_cast<int32_t>(uData)/WHEEL_DELTA,uTimeStamp);
 
 						// Handle the button downs
 						} else if ((uDataOffset>=DIMOFS_BUTTON0) && (uDataOffset<=DIMOFS_BUTTON7)) {
@@ -132,7 +132,7 @@ WordPtr BURGER_API Burger::Mouse::WindowsMouseThread(void *pData)
 									uDataOffset^=1;
 								}
 							}
-							Word uMask = 1U<<uDataOffset;
+							uint_t uMask = 1U<<uDataOffset;
 							// Mouse down?
 							if (uData&0x80) {
 								// Press the button
@@ -294,17 +294,17 @@ Burger::Mouse::~Mouse()
 
 ***************************************/
 
-Word Burger::Mouse::IsPresent(void) const
+uint_t Burger::Mouse::IsPresent(void) const
 {
 	GUID HIDGUID;
 	// Get the HID GUID
 	Windows::HidD_GetHidGuid(&HIDGUID);
 	HDEVINFO hDevInfo = Windows::SetupDiGetClassDevsW(&HIDGUID,NULL,NULL,DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	if (hDevInfo!=INVALID_HANDLE_VALUE) {
 		uResult = TRUE;
 		// Start at the first device
-		Word32 uIndex = 0;
+		uint32_t uIndex = 0;
 		for (;;) {
 			SP_DEVICE_INTERFACE_DATA DeviceInterface;
 			DeviceInterface.cbSize = sizeof(DeviceInterface);
@@ -313,7 +313,7 @@ Word Burger::Mouse::IsPresent(void) const
 				break;
 			}
 			// Query the device name
-			Word8 Buffer[4096];
+			uint8_t Buffer[4096];
 			SP_DEVICE_INTERFACE_DETAIL_DATA_W *pDeviceInterfaceDetailData = reinterpret_cast<SP_DEVICE_INTERFACE_DETAIL_DATA_W *>(Buffer);
 			pDeviceInterfaceDetailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
 			SP_DEVINFO_DATA DeviceInfoData;

@@ -32,7 +32,7 @@ namespace Burger {
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 class DisplayDIB : public Display {
 protected:
-	virtual Word InitContext(void);
+	virtual uint_t InitContext(void);
 	virtual void PostShutdown(void);
 	virtual void PostEndScene(void);
 	HDC__ *m_pWindowDC;				///< Pointer to the window's device context

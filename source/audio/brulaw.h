@@ -1,13 +1,14 @@
 /***************************************
 
-	uLaw decompresser
+    uLaw decompresser
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -35,15 +36,15 @@ protected:
 		STATE_INIT,				///< Basic state
 		STATE_CACHEFULL			///< Cache is full, need to output before more input
 	};
-	Word m_uCacheSize;			///< Number of valid bytes in m_uCache
+	uint_t m_uCacheSize;			///< Number of valid bytes in m_uCache
 	eState m_eState;			///< State of the decompression
-	Int16 m_iCache;				///< Temp uncompressed data buffer
+	int16_t m_iCache;				///< Temp uncompressed data buffer
 public:
-	static const Int16 g_Table[256];
+	static const int16_t g_Table[256];
 #if defined(BURGER_BIGENDIAN)
-	static const Word32 Signature = 0x756C6177;		///< 'ulaw'
+	static const uint32_t Signature = 0x756C6177;		///< 'ulaw'
 #else
-	static const Word32 Signature = 0x77616C75;		///< 'ulaw'
+	static const uint32_t Signature = 0x77616C75;		///< 'ulaw'
 #endif
 	DecompressULaw();
 	eError Reset(void) BURGER_OVERRIDE;

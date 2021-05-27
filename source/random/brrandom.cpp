@@ -1,37 +1,42 @@
 /***************************************
 
-    Random number generator
+	Random number generator
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brrandom.h"
 #include "brglobalmemorymanager.h"
 
+#if defined(BURGER_WATCOM) && !defined(DOXYGEN)
+// Disable 'sizeof' operand contains compiler generated information
+#pragma disable_message(549)
+#endif
+
 /*! ************************************
 
 	\class Burger::Random
 	\brief A simple random number generator.
-	
-	This class will create random numbers that
-	are spread evenly across a 32 bit range.
 
-	This algorithm uses a simple table and iterates over it
-	using an index and bit rotation.
+	This class will create random numbers that are spread evenly across a 32 bit
+	range.
+
+	This algorithm uses a simple table and iterates over it using an index and
+	bit rotation.
 
 	\note It's permissible to make binary copies of this class.
-	
+
 ***************************************/
 
 #if !defined(DOXYGEN)
-BURGER_CREATE_STATICRTTI_PARENT(Burger::Random,Burger::RandomBase);
+BURGER_CREATE_STATICRTTI_PARENT(Burger::Random, Burger::RandomBase);
 #endif
 
 /*! ************************************
@@ -39,11 +44,9 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::Random,Burger::RandomBase);
 	\var const Burger::StaticRTTI Burger::Random::g_StaticRTTI
 	\brief The global description of the class
 
-	This record contains the name of this class and a
-	reference to the parent
+	This record contains the name of this class and a reference to the parent
 
 ***************************************/
-
 
 /***************************************
 
@@ -52,29 +55,24 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::Random,Burger::RandomBase);
 ***************************************/
 
 #if !defined(DOXYGEN)
-static const Word32 g_DefaultArray[17] = {
-	1571187604U,2130556662U,2075648113U,1384553414U,
-	3758113950U,2350400989U,3768155391U,1438658665U,
-	3424562190U,788898928U,107012447U,2497767687U,
-	617416951U,3139554167U,2837196932U,224669655U,
-	4159075602U
-};
+static const uint32_t g_DefaultArray[17] = {1571187604U, 2130556662U,
+	2075648113U, 1384553414U, 3758113950U, 2350400989U, 3768155391U,
+	1438658665U, 3424562190U, 788898928U, 107012447U, 2497767687U, 617416951U,
+	3139554167U, 2837196932U, 224669655U, 4159075602U};
 #endif
-
 
 /*! ************************************
 
 	\brief Static constructor.
-	
-	Initialize the random number generator
-	with a call to SetSeed(Word32).
-	
+
+	Initialize the random number generator with a call to SetSeed(uint32_t).
+
 	\param uNewSeed New seed value
-	\sa SetSeed(Word32).
+	\sa SetSeed(uint32_t).
 
 ***************************************/
 
-Burger::Random::Random(Word32 uNewSeed)
+Burger::Random::Random(uint32_t uNewSeed) BURGER_NOEXCEPT
 {
 	SetSeed(uNewSeed);
 }
@@ -82,19 +80,20 @@ Burger::Random::Random(Word32 uNewSeed)
 /*! ************************************
 
 	\brief Create a new instance of Random.
-	
-	Create a new random number generator instance
-	using the Burgerlib memory manager.
-	
+
+	Create a new random number generator instance using the Burgerlib memory
+	manager.
+
 	\param uNewSeed Seed value for the random number generator
 	\return Pointer to instance, or \ref NULL if out of memory.
-	\sa SetSeed(Word32).
+	\sa SetSeed(uint32_t).
 
 ***************************************/
 
-Burger::Random * BURGER_API Burger::Random::New(Word32 uNewSeed)
+Burger::Random* BURGER_API Burger::Random::New(
+	uint32_t uNewSeed) BURGER_NOEXCEPT
 {
-	Random *pResult = static_cast<Random *>(Alloc(sizeof(Random)));
+	Random* pResult = static_cast<Random*>(Alloc(sizeof(Random)));
 	if (pResult) {
 		new (pResult) Random(uNewSeed);
 	}
@@ -104,60 +103,77 @@ Burger::Random * BURGER_API Burger::Random::New(Word32 uNewSeed)
 /***************************************
 
 	\brief Return a 32 bit random number.
-	
+
 	Get a random number. Return a number between 0
 	through (Range-1) inclusive.
-	
+
 	\return A random number in the specified range.
 
 ***************************************/
 
-Word32 Burger::Random::Get(void)
+uint32_t Burger::Random::Get(void) BURGER_NOEXCEPT
 {
-	Word32 i = m_uIndex;	// Cache indexes
-	Word32 j = i+5;
-	if (j>=17U) {			// Don't exceed the buffer/
-		j-=17U;
+	// Cache indexes
+	uint32_t i = m_uIndex;
+	uint32_t j = i + 5;
+
+	// Don't exceed the buffer
+	if (j >= BURGER_ARRAYSIZE(m_Array)) {
+		j -= static_cast<uint32_t>(BURGER_ARRAYSIZE(m_Array));
 	}
-	Word32 uNewVal = m_Array[i] + m_Array[j];	// Get the delta seed
-	m_Array[i] = uNewVal;	// Save in array
-	uNewVal += m_uState;		// Add to the base seed
-	m_uState = uNewVal;		// Save the seed
+
+	// Get the delta seed
+	uint32_t uNewVal = m_Array[i] + m_Array[j];
+
+	// Save in array
+	m_Array[i] = uNewVal;
+
+	// Add to the base seed
+	uNewVal += m_uState;
+
+	// Save the seed
+	m_uState = uNewVal;
 	--i;
-	if (static_cast<Int32>(i)<0) {	// Advance the indexes
-		i = 16;
+
+	// Advance the indexes
+	if (static_cast<int32_t>(i) < 0) {
+		i = static_cast<uint32_t>(BURGER_ARRAYSIZE(m_Array) - 1);
 	}
-	m_uIndex = i;		// Save in statics
+
+	// Save in statics
+	m_uIndex = i;
 	return uNewVal;
 }
 
 /***************************************
 
 	\brief Seed the random number generator.
-	
-	Set the random number generator to a specific seed.
-	This allows altering the random number flow in a
-	controlled manner.
-	
+
+	Set the random number generator to a specific seed. This allows altering the
+	random number flow in a controlled manner.
+
 	\param uNewSeed 32 bit seed value.
 	\sa Get(void).
 
 ***************************************/
 
-void Burger::Random::SetSeed(Word32 uNewSeed)
+void Burger::Random::SetSeed(uint32_t uNewSeed) BURGER_NOEXCEPT
 {
 	m_uSeed = uNewSeed;
-	WordPtr i = 0;
+	uintptr_t i = 0;
 	do {
 		m_Array[i] = g_DefaultArray[i];
-	} while (++i<BURGER_ARRAYSIZE(m_Array));
+	} while (++i < BURGER_ARRAYSIZE(m_Array));
 
-	m_uState = 0-uNewSeed;
-	Word32 uCount = uNewSeed&0xF;
+	m_uState = 0 - uNewSeed;
+
+	// Blend starting from 0-15
+	uint32_t uCount = uNewSeed & 0xF;
 	m_uIndex = uCount;
-	uCount = ((uNewSeed>>8)&0x1f)+1;
+
+	// 1-32 blends
+	uCount = ((uNewSeed >> 8) & 0x1f) + 1;
 	do {
 		Get();
 	} while (--uCount);
 }
-

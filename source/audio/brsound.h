@@ -1,13 +1,14 @@
 /***************************************
 
-	Sound manager class
+    Sound manager class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -76,30 +77,30 @@ class SoundManager : public Base {
 public:
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-    BURGER_ALIGN(static const Int16, g_DirectSoundVolumes[256], 16);
+    BURGER_ALIGN(static const int16_t, g_DirectSoundVolumes[256], 16);
 #endif
 
     typedef void (BURGER_API* CompletionProc)(void*);	///< Function prototype for sound event callbacks
-	static const Word cMaxVoiceCount = 32;			///< Maximum number of simultaneous tones to mix for output
-	static const Word cMaxVolume = 255;				///< Maximum volume value
-	static const Word cPanLeft = 0x0000;			///< Pan left value
-	static const Word cPanCenter = 0x8000U;			///< Pan center value
-	static const Word cPanRight = 0xFFFFU;			///< Pan right value
-	static const Word cWAVHeaderSize = 0x2C;		///< Size in bytes of a WAV file header
-	static const Word32 cRIFFASCII = 0x52494646U;	///< 'RIFF'
-	static const Word32 cAIFFASCII = 0x41494646U;	///< 'AIFF'
-	static const Word32 cAIFCASCII = 0x41494643U;	///< 'AIFC'
-	static const Word32 cWAVEASCII = 0x57415645U;	///< 'WAVE'
-	static const Word32 cFORMASCII = 0x464F524DU;	///< 'FORM'
-	static const Word32 cDATAASCII = 0x64617461U;	///< 'data'
-	static const Word32 cMAC6ASCII = 0x4D414336U;	///< 'MAC6'
-	static const Word32 cMAC3ASCII = 0x4D414333U;	///< 'MAC3'
-	static const Word32 cOggSASCII = 0x4F676753U;	///< 'OggS'
-	static const Word32 cCOMMASCII = 0x434F4D4DU;	///< 'COMM'
-	static const Word32 cSSNDASCII = 0x53534E44U;	///< 'SSND'
-	static const Word32 calawASCII = 0x616C6177U;	///< 'alaw'
-	static const Word32 culawASCII = 0x756C6177U;	///< 'ulaw'
-	static const Word32 cfl32ASCII = 0x666C3332U;	///< 'fl32'
+	static const uint_t cMaxVoiceCount = 32;			///< Maximum number of simultaneous tones to mix for output
+	static const uint_t cMaxVolume = 255;				///< Maximum volume value
+	static const uint_t cPanLeft = 0x0000;			///< Pan left value
+	static const uint_t cPanCenter = 0x8000U;			///< Pan center value
+	static const uint_t cPanRight = 0xFFFFU;			///< Pan right value
+	static const uint_t cWAVHeaderSize = 0x2C;		///< Size in bytes of a WAV file header
+	static const uint32_t cRIFFASCII = 0x52494646U;	///< 'RIFF'
+	static const uint32_t cAIFFASCII = 0x41494646U;	///< 'AIFF'
+	static const uint32_t cAIFCASCII = 0x41494643U;	///< 'AIFC'
+	static const uint32_t cWAVEASCII = 0x57415645U;	///< 'WAVE'
+	static const uint32_t cFORMASCII = 0x464F524DU;	///< 'FORM'
+	static const uint32_t cDATAASCII = 0x64617461U;	///< 'data'
+	static const uint32_t cMAC6ASCII = 0x4D414336U;	///< 'MAC6'
+	static const uint32_t cMAC3ASCII = 0x4D414333U;	///< 'MAC3'
+	static const uint32_t cOggSASCII = 0x4F676753U;	///< 'OggS'
+	static const uint32_t cCOMMASCII = 0x434F4D4DU;	///< 'COMM'
+	static const uint32_t cSSNDASCII = 0x53534E44U;	///< 'SSND'
+	static const uint32_t calawASCII = 0x616C6177U;	///< 'alaw'
+	static const uint32_t culawASCII = 0x756C6177U;	///< 'ulaw'
+	static const uint32_t cfl32ASCII = 0x666C3332U;	///< 'fl32'
 
 	enum {	
 		FLAGDOUBLEBUFFER=0x4000		///< Double buffered
@@ -145,40 +146,40 @@ public:
 		GUID m_GUID;							///< (Windows only) Device GUID
 #endif
 		String m_DeviceName;					///< Name of the device
-		Word m_uDevNumber;						///< Device number in Burgerlib
-		Word m_b8Bit;							///< Is 8 bit output available?
-		Word m_b16Bit;							///< Is 16 bit output available?
-		Word m_bStereo;							///< Is stereo available?
-		Word m_bHardwareAccelerated;			///< Is hardware acceleration available?
-		Word m_uMinimumSampleRate;				///< Minimum sample rate for audio rendering
-		Word m_uMaximumSampleRate;				///< Maximum sample rate for audio rendering
+		uint_t m_uDevNumber;						///< Device number in Burgerlib
+		uint_t m_b8Bit;							///< Is 8 bit output available?
+		uint_t m_b16Bit;							///< Is 16 bit output available?
+		uint_t m_bStereo;							///< Is stereo available?
+		uint_t m_bHardwareAccelerated;			///< Is hardware acceleration available?
+		uint_t m_uMinimumSampleRate;				///< Minimum sample rate for audio rendering
+		uint_t m_uMaximumSampleRate;				///< Maximum sample rate for audio rendering
 		SoundCardDescription();
 		~SoundCardDescription();
 	};
 
 	struct BufferDescription_t {
-		const Word8 *m_pSoundImage;	///< Pointer to the data
-		WordPtr m_uSoundLength;		///< Length of the data in bytes
-		WordPtr m_uLoopStart;		///< Sample to start from
-		WordPtr m_uLoopEnd;			///< Sample to end the loop (0 for no looping)
-		Word m_uSampleRate;			///< Samples per second to play
+		const uint8_t *m_pSoundImage;	///< Pointer to the data
+		uintptr_t m_uSoundLength;		///< Length of the data in bytes
+		uintptr_t m_uLoopStart;		///< Sample to start from
+		uintptr_t m_uLoopEnd;			///< Sample to end the loop (0 for no looping)
+		uint_t m_uSampleRate;			///< Samples per second to play
 		eDataType m_eDataType;		///< Type of data found
 	};
 
 	class BufferDecoder : public BufferDescription_t {
 	protected:
 		DecompressAudio *m_pDecompresser;	///< Which data conversion function is used
-		WordPtr m_uCompressedLength;		///< Actual size of the compressed data
-		WordPtr m_uSampleCount;				///< Number of samples in the data
+		uintptr_t m_uCompressedLength;		///< Actual size of the compressed data
+		uintptr_t m_uSampleCount;				///< Number of samples in the data
 	public:
 		BufferDecoder();
 		~BufferDecoder();
 		void BURGER_API Clear(void);
-		Word BURGER_API ParseSoundFileImage(const void *pInput,WordPtr uLength);
-		Word BURGER_API Parse(const BufferDescription_t *pInput);
+		uint_t BURGER_API ParseSoundFileImage(const void *pInput,uintptr_t uLength);
+		uint_t BURGER_API Parse(const BufferDescription_t *pInput);
 		BURGER_INLINE DecompressAudio * GetDecompresser(void) const { return m_pDecompresser; }
-		BURGER_INLINE WordPtr GetCompressedSize(void) const { return m_uCompressedLength; }
-		BURGER_INLINE WordPtr GetSampleCount(void) const { return m_uSampleCount; }
+		BURGER_INLINE uintptr_t GetCompressedSize(void) const { return m_uCompressedLength; }
+		BURGER_INLINE uintptr_t GetSampleCount(void) const { return m_uSampleCount; }
 	};
 
 	class Voice;
@@ -194,33 +195,33 @@ public:
 
 #if !(defined(BURGER_WINDOWS)) || defined(DOXYGEN)
 		const void *m_pBufferData;	///< Buffer data
-		WordPtr m_uBufferSize;		///< Size of the buffer
+		uintptr_t m_uBufferSize;		///< Size of the buffer
 #endif
 		BufferDecoder m_Decoder;	///< Description of the sound data
-		Word m_uPan;		///< Pan setting
-		Word m_uVolume;		///< Volume for the buffer
+		uint_t m_uPan;		///< Pan setting
+		uint_t m_uVolume;		///< Volume for the buffer
 		Buffer();
 	public:
 		virtual ~Buffer();
-		Word BURGER_API Init(const void *pSoundFile,WordPtr uLength);
-		Word BURGER_API Init(const BufferDescription_t *pRawData);
+		uint_t BURGER_API Init(const void *pSoundFile,uintptr_t uLength);
+		uint_t BURGER_API Init(const BufferDescription_t *pRawData);
 		virtual void Shutdown(void);
 		virtual uint_t Upload(SoundManager *pSoundManager);
 		BURGER_INLINE BufferDecoder *GetBufferDescription(void) { return &m_Decoder; }
 		BURGER_INLINE const BufferDecoder *GetBufferDescription(void) const { return &m_Decoder; }
-		BURGER_INLINE void SetSampleRate(Word uSampleRate) { m_Decoder.m_uSampleRate = uSampleRate; }
-		BURGER_INLINE Word GetSampleRate(void) const { return m_Decoder.m_uSampleRate; }
-		BURGER_INLINE void SetPan(Word uPan) { m_uPan = uPan; }
-		BURGER_INLINE Word GetPan(void) const { return m_uPan; }
-		BURGER_INLINE void SetVolume(Word uVolume) { m_uVolume = uVolume; }
-		BURGER_INLINE Word GetVolume(void) const { return m_uVolume; }
+		BURGER_INLINE void SetSampleRate(uint_t uSampleRate) { m_Decoder.m_uSampleRate = uSampleRate; }
+		BURGER_INLINE uint_t GetSampleRate(void) const { return m_Decoder.m_uSampleRate; }
+		BURGER_INLINE void SetPan(uint_t uPan) { m_uPan = uPan; }
+		BURGER_INLINE uint_t GetPan(void) const { return m_uPan; }
+		BURGER_INLINE void SetVolume(uint_t uVolume) { m_uVolume = uVolume; }
+		BURGER_INLINE uint_t GetVolume(void) const { return m_uVolume; }
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 		BURGER_INLINE IDirectSoundBuffer8 * GetDirectSoundBuffer8(void) const { return m_pDirectSoundBuffer8; }
-		BURGER_INLINE Word IsUploaded(void) const { return m_pDirectSoundBuffer8!=NULL; }
+		BURGER_INLINE uint_t IsUploaded(void) const { return m_pDirectSoundBuffer8!=NULL; }
 #else
 		BURGER_INLINE const void *GetAudioBuffer(void) const { return m_pBufferData; }
-		BURGER_INLINE WordPtr GetAudioBufferSize(void) const { return m_uBufferSize; }
-		BURGER_INLINE Word IsUploaded(void) const { return m_pBufferData!=NULL; }
+		BURGER_INLINE uintptr_t GetAudioBufferSize(void) const { return m_uBufferSize; }
+		BURGER_INLINE uint_t IsUploaded(void) const { return m_pBufferData!=NULL; }
 #endif
 		static Buffer * BURGER_API New(void);
 	};
@@ -233,7 +234,7 @@ public:
 #endif
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
 		SoundManager *m_pManager;				///< Parent sound manager
-		WordPtr m_uCurrentMark;					///< Mark into the waveform
+		uintptr_t m_uCurrentMark;					///< Mark into the waveform
 	public:
 #if __LP64__
 		static signed int PlayCallback(void *pData,unsigned int *pActionFlags,const AudioTimeStamp *pAudioTimeStamp,unsigned int uBusNumber,unsigned int uNumberFrames,AudioBufferList *pAudioBufferList);
@@ -245,39 +246,39 @@ public:
 		SmartPointer<Buffer> m_pBuffer;	///< Sound buffer connected to
 		CompletionProc m_pCallBack;	///< Completion routine
 		void *m_pCallBackData;		///< Data to pass for completion routine
-		WordPtr	m_uLoopStart;	///< Sample to start from
-		WordPtr m_uLoopEnd;		///< Sample to end the loop (0 for no looping)
-		WordPtr m_uPausedMark;	///< Location of the pause
-		Word m_uSampleRate;		///< Samples per second to play
-		Word m_uPan;			///< Pan setting
-		Word m_uVolume;			///< Volume for the buffer
-		Word8 m_bPlaying;		///< \ref TRUE if the sound is currently playing
-		Word8 m_bPaused;		///< \ref TRUE if the sound was paused
-		Word8 m_bAvailable;		///< \ref TRUE if available for allocation
-		Word8 m_bIsHeld;		///< \ref TRUE if the application is externally controlling this voice
+		uintptr_t	m_uLoopStart;	///< Sample to start from
+		uintptr_t m_uLoopEnd;		///< Sample to end the loop (0 for no looping)
+		uintptr_t m_uPausedMark;	///< Location of the pause
+		uint_t m_uSampleRate;		///< Samples per second to play
+		uint_t m_uPan;			///< Pan setting
+		uint_t m_uVolume;			///< Volume for the buffer
+		uint8_t m_bPlaying;		///< \ref TRUE if the sound is currently playing
+		uint8_t m_bPaused;		///< \ref TRUE if the sound was paused
+		uint8_t m_bAvailable;		///< \ref TRUE if available for allocation
+		uint8_t m_bIsHeld;		///< \ref TRUE if the application is externally controlling this voice
 	public:
 		Voice();
 		~Voice();
-		Word BURGER_API Init(SoundManager *pManager,Buffer *pBuffer);
+		uint_t BURGER_API Init(SoundManager *pManager,Buffer *pBuffer);
 		void BURGER_API Shutdown(void);
 		void BURGER_API Release(void);
-		Word BURGER_API Start(void);
-		Word BURGER_API Stop(void);
-		Word BURGER_API Pause(void);
-		Word BURGER_API Resume(void);
-		Word BURGER_API SetVolume(Word uVolume);
-		BURGER_INLINE Word GetVolume(void) const { return m_uVolume; }
-		Word BURGER_API SetPan(Word uPan);
-		BURGER_INLINE Word GetPan(void) const { return m_uPan; }
-		Word BURGER_API SetSampleRate(Word uSamplesPerSecond);
-		BURGER_INLINE Word GetSampleRate(void) const { return m_uSampleRate; }
+		uint_t BURGER_API Start(void);
+		uint_t BURGER_API Stop(void);
+		uint_t BURGER_API Pause(void);
+		uint_t BURGER_API Resume(void);
+		uint_t BURGER_API SetVolume(uint_t uVolume);
+		BURGER_INLINE uint_t GetVolume(void) const { return m_uVolume; }
+		uint_t BURGER_API SetPan(uint_t uPan);
+		BURGER_INLINE uint_t GetPan(void) const { return m_uPan; }
+		uint_t BURGER_API SetSampleRate(uint_t uSamplesPerSecond);
+		BURGER_INLINE uint_t GetSampleRate(void) const { return m_uSampleRate; }
 		BURGER_INLINE void SetCompletionFunction(CompletionProc pCompletionProc, void *pData=NULL) { m_pCallBack = pCompletionProc; m_pCallBackData = pData; }
 		BURGER_INLINE CompletionProc GetCompletionFunction(void) const { return m_pCallBack; }
 		BURGER_INLINE void *GetCompletionFunctionData(void) const { return m_pCallBackData; }
-		BURGER_INLINE Word IsPlaying(void) const { return m_bPlaying; }
-		BURGER_INLINE Word IsPaused(void) const { return m_bPaused; }
-		BURGER_INLINE Word IsAvailable(void) const { return m_bAvailable; }
-		BURGER_INLINE Word IsHeld(void) const { return m_bIsHeld; }
+		BURGER_INLINE uint_t IsPlaying(void) const { return m_bPlaying; }
+		BURGER_INLINE uint_t IsPaused(void) const { return m_bPaused; }
+		BURGER_INLINE uint_t IsAvailable(void) const { return m_bAvailable; }
+		BURGER_INLINE uint_t IsHeld(void) const { return m_bIsHeld; }
 		BURGER_INLINE void SetHeld(void) { m_bIsHeld = TRUE; }
 		void BURGER_API ReachedEnd(void);
 	};
@@ -294,7 +295,7 @@ protected:
 	IDirectSoundBuffer *m_pDirectSoundBuffer;	///< Primary DirectSoundBuffer (Windows Only)
 	void *m_hCallback;							///< HANDLE of the callback thread (Windows only)
 	unsigned long m_uCallbackID;				///< ID of the callback thread (Windows only)
-	Word m_uBufferAllocationType;				///< Preferred method of allocating audio memory (Windows Only)
+	uint_t m_uBufferAllocationType;				///< Preferred method of allocating audio memory (Windows Only)
 	void *m_hEvents[cMaxVoiceCount];			///< Events for DirectSound completion functions (Windows Only)
 	static unsigned long __stdcall ThreadCallback(void *pThis);
 #endif
@@ -304,39 +305,39 @@ protected:
 	ComponentInstanceRecord *m_pOutputUnit;		///< Audio component instance
 	ComponentInstanceRecord *m_pMixerUnit;	///< Main mixer unit
 	ComponentInstanceRecord *m_pSoundUnits[cMaxVoiceCount];	///< Waveform generator unit
-	Int32 m_iSoundNodes[cMaxVoiceCount];	///< Waveform node
-	Int32 m_iOutputNode;				///< Audio output node index
-	Int32 m_iMixerNode;					///< Mixer node index
-	Word32 m_uDeviceID;		///< Audio device ID
+	int32_t m_iSoundNodes[cMaxVoiceCount];	///< Waveform node
+	int32_t m_iOutputNode;				///< Audio output node index
+	int32_t m_iMixerNode;					///< Mixer node index
+	uint32_t m_uDeviceID;		///< Audio device ID
 #endif
 
 	Voice m_ActiveVoices[cMaxVoiceCount];	///< Array of active sound buffers being played
-	Word m_uMaxVoices;				///< Maximum number of voices supported for mixing
-	Word m_uVolume;					///< Current volume
-	Word m_bStereoAvailable;		///< \ref TRUE if stereo is supported
-	Word m_bMasterVolumeAvailable;	///< \ref TRUE if a master volume is supported
-	Word m_uBufferDepth;			///< Bits per sample the output DAC supports (8 or 16 bit)
-	Word m_uOutputSamplesPerSecond;	///< Maximum sample rate the mixer supports
+	uint_t m_uMaxVoices;				///< Maximum number of voices supported for mixing
+	uint_t m_uVolume;					///< Current volume
+	uint_t m_bStereoAvailable;		///< \ref TRUE if stereo is supported
+	uint_t m_bMasterVolumeAvailable;	///< \ref TRUE if a master volume is supported
+	uint_t m_uBufferDepth;			///< Bits per sample the output DAC supports (8 or 16 bit)
+	uint_t m_uOutputSamplesPerSecond;	///< Maximum sample rate the mixer supports
 
 public:
 	SoundManager(GameApp *pGameApp);
 	virtual ~SoundManager();
 	static SoundManager * BURGER_API New(GameApp *pGameApp);
-	Word BURGER_API Init(void);
+	uint_t BURGER_API Init(void);
 	void BURGER_API Shutdown(void);
-	Word BURGER_API Play(Buffer *pInput,Voice **ppCookie=NULL);
-	Word BURGER_API Stop(void);
-	Word BURGER_API Pause(void);
-	Word BURGER_API Resume(void);
-	void BURGER_API SetMaxVoices(Word uMax);
-	BURGER_INLINE Word GetMaxVoices(void) const { return m_uMaxVoices; }
-	Word BURGER_API GetActiveVoiceCount(void) const;
-	BURGER_INLINE Word IsStereoSupported(void) const { return m_bStereoAvailable; }
-	BURGER_INLINE Word IsVolumeAdjustSupported(void) const { return m_bMasterVolumeAvailable; }
-	void BURGER_API SetVolume(Word uVolume);
-	BURGER_INLINE Word GetVolume(void) const { return m_uVolume; }
-	Buffer * BURGER_API NewBuffer(void *pWaveFile,WordPtr uLength);
-	static Word BURGER_API GetAudioModes(ClassArray<SoundCardDescription> *pOutput);
+	uint_t BURGER_API Play(Buffer *pInput,Voice **ppCookie=NULL);
+	uint_t BURGER_API Stop(void);
+	uint_t BURGER_API Pause(void);
+	uint_t BURGER_API Resume(void);
+	void BURGER_API SetMaxVoices(uint_t uMax);
+	BURGER_INLINE uint_t GetMaxVoices(void) const { return m_uMaxVoices; }
+	uint_t BURGER_API GetActiveVoiceCount(void) const;
+	BURGER_INLINE uint_t IsStereoSupported(void) const { return m_bStereoAvailable; }
+	BURGER_INLINE uint_t IsVolumeAdjustSupported(void) const { return m_bMasterVolumeAvailable; }
+	void BURGER_API SetVolume(uint_t uVolume);
+	BURGER_INLINE uint_t GetVolume(void) const { return m_uVolume; }
+	Buffer * BURGER_API NewBuffer(void *pWaveFile,uintptr_t uLength);
+	static uint_t BURGER_API GetAudioModes(ClassArray<SoundCardDescription> *pOutput);
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	BURGER_INLINE IXAudio2 *GetXAudio2(void) const { return m_pIXAudio2; }
@@ -350,27 +351,27 @@ public:
 	BURGER_INLINE OpaqueAUGraph *GetGraph(void) const { return m_pGraph; }
 	BURGER_INLINE ComponentInstanceRecord *GetAudioUnit(void) const { return m_pOutputUnit; }
 	BURGER_INLINE ComponentInstanceRecord *GetMixerUnit(void) const { return m_pMixerUnit; }
-	BURGER_INLINE Int32 GetMixerNode(void) const { return m_iMixerNode; }
-	BURGER_INLINE Word32 GetDeviceID(void) const { return m_uDeviceID; }
+	BURGER_INLINE int32_t GetMixerNode(void) const { return m_iMixerNode; }
+	BURGER_INLINE uint32_t GetDeviceID(void) const { return m_uDeviceID; }
 #endif
 
 protected:
 	Voice * BURGER_API AllocVoice(void);
 };
 
-extern void BURGER_API CopySoundData(void *pOutput,const void *pInput,WordPtr uLength,SoundManager::eDataType eType);
-extern void BURGER_API ClearSoundData(void *pOutput,WordPtr uLength,SoundManager::eDataType eType);
-extern void BURGER_API CopyStereoInterleaved(void *pOutput,const Word8 *pLeft,const Word8 *pRight,WordPtr uOutputSize);
-extern void BURGER_API CopyStereoInterleaved(void *pOutput,const Word16 *pLeft,const Word16 *pRight,WordPtr uOutputSize);
-extern void BURGER_API ComputeReverb(Word8 *pOutput,const Word8 *pInput,WordPtr uCount,Word uPercentage);
-extern void BURGER_API ComputeReverb(Int16 *pOutput,const Int16 *pInput,WordPtr uCount,Word uPercentage);
+extern void BURGER_API CopySoundData(void *pOutput,const void *pInput,uintptr_t uLength,SoundManager::eDataType eType);
+extern void BURGER_API ClearSoundData(void *pOutput,uintptr_t uLength,SoundManager::eDataType eType);
+extern void BURGER_API CopyStereoInterleaved(void *pOutput,const uint8_t *pLeft,const uint8_t *pRight,uintptr_t uOutputSize);
+extern void BURGER_API CopyStereoInterleaved(void *pOutput,const uint16_t *pLeft,const uint16_t *pRight,uintptr_t uOutputSize);
+extern void BURGER_API ComputeReverb(uint8_t *pOutput,const uint8_t *pInput,uintptr_t uCount,uint_t uPercentage);
+extern void BURGER_API ComputeReverb(int16_t *pOutput,const int16_t *pInput,uintptr_t uCount,uint_t uPercentage);
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-extern Word BURGER_API Upload(IDirectSoundBuffer *pBuffer,WordPtr uOffset,const Word8 *pInput,WordPtr uInputLength);
-extern Word BURGER_API Upload(IDirectSoundBuffer *pBuffer,WordPtr uOffset,SoundManager::BufferDecoder *pBufferDecoder,WordPtr uInputLength);
+extern uint_t BURGER_API Upload(IDirectSoundBuffer *pBuffer,uintptr_t uOffset,const uint8_t *pInput,uintptr_t uInputLength);
+extern uint_t BURGER_API Upload(IDirectSoundBuffer *pBuffer,uintptr_t uOffset,SoundManager::BufferDecoder *pBufferDecoder,uintptr_t uInputLength);
 #endif
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
-extern float BURGER_API AudioDeviceGetMasterVolume(Word32 uDeviceID);
-extern Word BURGER_API AudioDeviceSetMasterVolume(Word32 uDeviceID,float fInput);	
+extern float BURGER_API AudioDeviceGetMasterVolume(uint32_t uDeviceID);
+extern uint_t BURGER_API AudioDeviceSetMasterVolume(uint32_t uDeviceID,float fInput);	
 #endif
 }
 /* END */

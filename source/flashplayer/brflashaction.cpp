@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player action buffer
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player action buffer
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brflashaction.h"
@@ -63,7 +64,7 @@ Burger::Flash::SharedBuffer::~SharedBuffer()
 
 /*! ************************************
 
-	\fn WordPtr Burger::Flash::SharedBuffer::GetDataSize(void) const
+	\fn uintptr_t Burger::Flash::SharedBuffer::GetDataSize(void) const
 	\brief Get the size of the buffer in bytes
 
 	\return The number of bytes in the buffer
@@ -73,7 +74,7 @@ Burger::Flash::SharedBuffer::~SharedBuffer()
 
 /*! ************************************
 
-	\fn void Burger::Flash::SharedBuffer::Append(Word8 uInput)
+	\fn void Burger::Flash::SharedBuffer::Append(uint8_t uInput)
 	\brief Append a byte at the end of the buffer
 
 	\return The number of bytes in the buffer
@@ -83,7 +84,7 @@ Burger::Flash::SharedBuffer::~SharedBuffer()
 
 /*! ************************************
 
-	\fn const Word8 * Burger::Flash::SharedBuffer::GetData(void) const
+	\fn const uint8_t * Burger::Flash::SharedBuffer::GetData(void) const
 	\brief Get the pointer to the buffer
 
 	\return The number of bytes in the buffer
@@ -93,7 +94,7 @@ Burger::Flash::SharedBuffer::~SharedBuffer()
 
 /*! ************************************
 
-	\fn SimpleArray<Word8>* Burger::Flash::SharedBuffer::GetBuffer(void)
+	\fn SimpleArray<uint8_t>* Burger::Flash::SharedBuffer::GetBuffer(void)
 	\brief Get the pointer to the SimpleArray
 
 	\return A pointer to the internal SimpleArray

@@ -77,7 +77,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\ps4;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\ps4;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;__ORBIS2__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -113,7 +113,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\ps4\burgerlib\$(TargetName)$(TargetExt)"</Co
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\ps4;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\ps4;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;__ORBIS2__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -152,7 +152,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\ps4\burgerlib\$(TargetName)$(TargetExt)"</Co
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\network;$(ProjectDir)..\source\ps4;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\ps4;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;__ORBIS2__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -191,7 +191,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\ps4\burgerlib\$(TargetName)$(TargetExt)"</Co
     <ClInclude Include="..\source\audio\brimportxm.h" />
     <ClInclude Include="..\source\audio\brmace.h" />
     <ClInclude Include="..\source\audio\brmicrosoftadpcm.h" />
-    <ClInclude Include="..\source\audio\brmp3.h" />
     <ClInclude Include="..\source\audio\brsequencer.h" />
     <ClInclude Include="..\source\audio\brsound.h" />
     <ClInclude Include="..\source\audio\brsoundbufferrez.h" />
@@ -322,6 +321,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\ps4\burgerlib\$(TargetName)$(TargetExt)"</Co
     <ClInclude Include="..\source\lowlevel\brsmartpointer.h" />
     <ClInclude Include="..\source\lowlevel\brsnsystems.h" />
     <ClInclude Include="..\source\lowlevel\brstaticrtti.h" />
+    <ClInclude Include="..\source\lowlevel\brstructs.h" />
     <ClInclude Include="..\source\lowlevel\brtick.h" />
     <ClInclude Include="..\source\lowlevel\brtimedate.h" />
     <ClInclude Include="..\source\lowlevel\brtypes.h" />
@@ -337,6 +337,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\ps4\burgerlib\$(TargetName)$(TargetExt)"</Co
     <ClInclude Include="..\source\math\brfixedvector4d.h" />
     <ClInclude Include="..\source\math\brfloatingpoint.h" />
     <ClInclude Include="..\source\math\brfpinfo.h" />
+    <ClInclude Include="..\source\math\brfplargeint.h" />
     <ClInclude Include="..\source\math\brmatrix3d.h" />
     <ClInclude Include="..\source\math\brmatrix4d.h" />
     <ClInclude Include="..\source\math\brmp3math.h" />
@@ -346,12 +347,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\ps4\burgerlib\$(TargetName)$(TargetExt)"</Co
     <ClInclude Include="..\source\memory\brglobalmemorymanager.h" />
     <ClInclude Include="..\source\memory\brmemoryhandle.h" />
     <ClInclude Include="..\source\memory\brmemorymanager.h" />
-    <ClInclude Include="..\source\network\brnetendpoint.h" />
-    <ClInclude Include="..\source\network\brnetendpointtcp.h" />
-    <ClInclude Include="..\source\network\brnetmanager.h" />
-    <ClInclude Include="..\source\network\brnetmodule.h" />
-    <ClInclude Include="..\source\network\brnetmoduletcp.h" />
-    <ClInclude Include="..\source\network\brnetplay.h" />
     <ClInclude Include="..\source\ps4\brps4types.h" />
     <ClInclude Include="..\source\random\brmersennetwist.h" />
     <ClInclude Include="..\source\random\brrandom.h" />
@@ -385,7 +380,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\ps4\burgerlib\$(TargetName)$(TargetExt)"</Co
     <ClCompile Include="..\source\audio\brimportxm.cpp" />
     <ClCompile Include="..\source\audio\brmace.cpp" />
     <ClCompile Include="..\source\audio\brmicrosoftadpcm.cpp" />
-    <ClCompile Include="..\source\audio\brmp3.cpp" />
     <ClCompile Include="..\source\audio\brsequencer.cpp" />
     <ClCompile Include="..\source\audio\brsound.cpp" />
     <ClCompile Include="..\source\audio\brsoundbufferrez.cpp" />
@@ -507,6 +501,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\ps4\burgerlib\$(TargetName)$(TargetExt)"</Co
     <ClCompile Include="..\source\lowlevel\brsimplearray.cpp" />
     <ClCompile Include="..\source\lowlevel\brsmartpointer.cpp" />
     <ClCompile Include="..\source\lowlevel\brstaticrtti.cpp" />
+    <ClCompile Include="..\source\lowlevel\brstructs.cpp" />
     <ClCompile Include="..\source\lowlevel\brtick.cpp" />
     <ClCompile Include="..\source\lowlevel\brtimedate.cpp" />
     <ClCompile Include="..\source\lowlevel\brtypes.cpp" />
@@ -519,6 +514,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\ps4\burgerlib\$(TargetName)$(TargetExt)"</Co
     <ClCompile Include="..\source\math\brfixedvector4d.cpp" />
     <ClCompile Include="..\source\math\brfloatingpoint.cpp" />
     <ClCompile Include="..\source\math\brfpinfo.cpp" />
+    <ClCompile Include="..\source\math\brfplargeint.cpp" />
     <ClCompile Include="..\source\math\brmatrix3d.cpp" />
     <ClCompile Include="..\source\math\brmatrix4d.cpp" />
     <ClCompile Include="..\source\math\brmp3math.cpp" />
@@ -529,12 +525,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\ps4\burgerlib\$(TargetName)$(TargetExt)"</Co
     <ClCompile Include="..\source\memory\brglobalmemorymanager.cpp" />
     <ClCompile Include="..\source\memory\brmemoryhandle.cpp" />
     <ClCompile Include="..\source\memory\brmemorymanager.cpp" />
-    <ClCompile Include="..\source\network\brnetendpoint.cpp" />
-    <ClCompile Include="..\source\network\brnetendpointtcp.cpp" />
-    <ClCompile Include="..\source\network\brnetmanager.cpp" />
-    <ClCompile Include="..\source\network\brnetmodule.cpp" />
-    <ClCompile Include="..\source\network\brnetmoduletcp.cpp" />
-    <ClCompile Include="..\source\network\brnetplay.cpp" />
     <ClCompile Include="..\source\ps4\brcriticalsectionps4.cpp" />
     <ClCompile Include="..\source\random\brmersennetwist.cpp" />
     <ClCompile Include="..\source\random\brrandom.cpp" />

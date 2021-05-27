@@ -59,7 +59,7 @@ void user_free(void *ptr)
 
 void *user_calloc(size_t nelem,size_t size)
 {
-	WordPtr uTotal = nelem*size;
+	uintptr_t uTotal = nelem*size;
 	void *pResult = Burger::MemoryManager::AllocSystemMemory(uTotal);
 	if (pResult) {
 		Burger::MemoryClear(pResult,uTotal);
@@ -72,7 +72,7 @@ void *user_realloc(void *ptr,size_t size)
 	void *pResult = Burger::MemoryManager::AllocSystemMemory(size);
 	if (pResult) {
 		if (ptr) {
-			WordPtr uChunk = size;
+			uintptr_t uChunk = size;
 			SceKernelMemBlockInfo Info;
 			Info.size = sizeof(Info);
 			if (sceKernelGetMemBlockInfoByAddr(ptr,&Info)>=SCE_OK) {
@@ -200,7 +200,7 @@ void user_delete_array(void *ptr, const std::nothrow_t& x) throw()
 
 ***************************************/
 
-void * BURGER_API Burger::MemoryManager::AllocSystemMemory(WordPtr uSize)
+void * BURGER_API Burger::MemoryManager::AllocSystemMemory(uintptr_t uSize)
 {
 	void *pData = NULL;
 	if (uSize) {

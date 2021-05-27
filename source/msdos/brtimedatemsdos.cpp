@@ -28,19 +28,19 @@
 
 ***************************************/
 
-void Burger::TimeDate_t::LoadMSDOS(Word32 uMSDOSTime)
+void Burger::TimeDate_t::LoadMSDOS(uint32_t uMSDOSTime)
 {
-	m_bSecond = static_cast<Word8>((uMSDOSTime&0x1F)<<1);	// Get the seconds
+	m_bSecond = static_cast<uint8_t>((uMSDOSTime&0x1F)<<1);	// Get the seconds
 	uMSDOSTime=uMSDOSTime>>5;
-	m_bMinute = static_cast<Word8>(uMSDOSTime&0x3F);		// Get the minute
+	m_bMinute = static_cast<uint8_t>(uMSDOSTime&0x3F);		// Get the minute
 	uMSDOSTime=uMSDOSTime>>6;
-	m_bHour = static_cast<Word8>(uMSDOSTime&0x1F);			// Get the hour
+	m_bHour = static_cast<uint8_t>(uMSDOSTime&0x1F);			// Get the hour
 	uMSDOSTime=uMSDOSTime>>5;
-	m_bDay = static_cast<Word8>(uMSDOSTime&0x1F);			// Get the day
+	m_bDay = static_cast<uint8_t>(uMSDOSTime&0x1F);			// Get the day
 	uMSDOSTime=uMSDOSTime>>5;
-	m_bMonth = static_cast<Word8>(uMSDOSTime&0xF);			// Get the month
+	m_bMonth = static_cast<uint8_t>(uMSDOSTime&0xF);			// Get the month
 	uMSDOSTime=uMSDOSTime>>4;
-	m_uYear = static_cast<Word16>(uMSDOSTime+1980);			// Get the year
+	m_uYear = static_cast<uint16_t>(uMSDOSTime+1980);			// Get the year
 	m_usMilliseconds = 0;
 	m_bDayOfWeek = 0;
 }
@@ -57,9 +57,9 @@ void Burger::TimeDate_t::LoadMSDOS(Word32 uMSDOSTime)
 
 ***************************************/
 
-Word32 Burger::TimeDate_t::StoreMSDOS(void) const
+uint32_t Burger::TimeDate_t::StoreMSDOS(void) const
 {
-    Word32 uMSDOSTime = m_bSecond>>1;       // Seconds are divided by 2
+    uint32_t uMSDOSTime = m_bSecond>>1;       // Seconds are divided by 2
     uMSDOSTime |= m_bMinute<<5;
     uMSDOSTime |= m_bHour<<11;
     uMSDOSTime |= m_bDay<<16;

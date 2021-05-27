@@ -44,12 +44,12 @@ extern "C" FILE * _MSL_CDECL _wfopen(const wchar_t * _MSL_RESTRICT name, const w
 
 ***************************************/
 
-Word Burger::DirectorySearch::Open(Filename *pDirName)
+uint_t Burger::DirectorySearch::Open(Filename *pDirName)
 {
 	// Leave room for 5 extra samples
 	String16 UnicodeName(pDirName->GetNative(),5);
-	Word16 *pPath = UnicodeName.GetPtr();
-	WordPtr uLength = StringLength(pPath);
+	uint16_t *pPath = UnicodeName.GetPtr();
+	uintptr_t uLength = StringLength(pPath);
 	// Make sure the directory ends with a slash
 	if (uLength && pPath[uLength-1]!='\\') {
 		pPath[uLength] = '\\';
@@ -62,7 +62,7 @@ Word Burger::DirectorySearch::Open(Filename *pDirName)
 	pPath[uLength+3] = 0;
 	// Open the directory
 	HANDLE hDir = FindFirstFileW(reinterpret_cast<const WCHAR *>(pPath),reinterpret_cast<WIN32_FIND_DATAW *>(m_MyFindW));
-	Word uResult = TRUE;		// Assume I'm in error
+	uint_t uResult = TRUE;		// Assume I'm in error
 	if (hDir != INVALID_HANDLE_VALUE) {
 		m_hDirHandle = hDir;
 		m_bDir = 123;
@@ -79,7 +79,7 @@ Word Burger::DirectorySearch::Open(Filename *pDirName)
 
 ***************************************/
 
-Word Burger::DirectorySearch::GetNextEntry(void)
+uint_t Burger::DirectorySearch::GetNextEntry(void)
 {
 	// Am I scanning a directory?
 	HANDLE hDir = m_hDirHandle;
@@ -92,7 +92,7 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 	// Then read in the NEXT one. If it's over, shut
 	// down and abort on the next pass.
 
-	Word uFlags;
+	uint_t uFlags;
 	for (;;) {
 		// This is only 123 on the first pass. All others, it's TRUE or FALSE
 		if (m_bDir!=123) {
@@ -104,7 +104,7 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 			}
 		}
 		// Convert to UTF8
-		UTF8::FromUTF16(m_Name,sizeof(m_Name),reinterpret_cast<const Word16 *>(((WIN32_FIND_DATAW *)m_MyFindW)->cFileName));
+		UTF8::FromUTF16(m_Name,sizeof(m_Name),reinterpret_cast<const uint16_t *>(((WIN32_FIND_DATAW *)m_MyFindW)->cFileName));
 		uFlags = ((WIN32_FIND_DATAW *)m_MyFindW)->dwFileAttributes;
 		m_bDir = FALSE;
 		m_bHidden = FALSE;
@@ -138,7 +138,7 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 	}
 #else
 	// 64 bit machines can handle files bigger than 4 gig.
-	WordPtr uLength = (static_cast<WordPtr>(((WIN32_FIND_DATAW *)m_MyFindW)->nFileSizeHigh)<<32ULL)+(((WIN32_FIND_DATAW *)m_MyFindW)->nFileSizeLow);
+	uintptr_t uLength = (static_cast<uintptr_t>(((WIN32_FIND_DATAW *)m_MyFindW)->nFileSizeHigh)<<32ULL)+(((WIN32_FIND_DATAW *)m_MyFindW)->nFileSizeLow);
 	m_uFileSize = uLength;
 #endif
 	return FALSE;

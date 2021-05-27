@@ -161,7 +161,7 @@ Burger::OSCursor::~OSCursor()
 
 /*! ************************************
 
-    \fn Word Burger::OSCursor::IsVisible(void);
+    \fn uint_t Burger::OSCursor::IsVisible(void);
 
     \brief Return the current state of the visible flag
     \return \ref TRUE if the cursor is currently visible, \ref FALSE if not.
@@ -170,7 +170,7 @@ Burger::OSCursor::~OSCursor()
 
 /*! ************************************
 
-    \fn Word Burger::OSCursor::IsActive(void);
+    \fn uint_t Burger::OSCursor::IsActive(void);
 
     \brief Return \ref TRUE if a cursor is visible while the mouse is in the
 client area \return \ref TRUE if a cursor should be visible in the client area
@@ -180,7 +180,7 @@ of the window, \ref FALSE if not.
 
 /*! ************************************
 
-    \fn Word Burger::OSCursor::GetImageIDNumber(void);
+    \fn uint_t Burger::OSCursor::GetImageIDNumber(void);
 
     \brief Return the current cursor shape number
     \return The operating system resource ID of the current cursor.
@@ -189,7 +189,7 @@ of the window, \ref FALSE if not.
 
 /*! ************************************
 
-    \fn Word Burger::OSCursor::IsThisADesktop(void);
+    \fn uint_t Burger::OSCursor::IsThisADesktop(void);
 
     \brief Is there a desktop cursor?
 
@@ -245,9 +245,9 @@ void BURGER_API Burger::OSCursor::SetImage(const OSCursorImage* pImage) BURGER_N
 
 ***************************************/
 
-Word BURGER_API Burger::OSCursor::Show(void) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::OSCursor::Show(void) BURGER_NOEXCEPT
 {
-    Word uResult = g_Global.m_bVisibleFlag;
+    uint_t uResult = g_Global.m_bVisibleFlag;
     // It's visible
     g_Global.m_bVisibleFlag = TRUE;
     return uResult;
@@ -265,9 +265,9 @@ Word BURGER_API Burger::OSCursor::Show(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-Word BURGER_API Burger::OSCursor::Show(Word bVisible) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::OSCursor::Show(uint_t bVisible) BURGER_NOEXCEPT
 {
-    Word uResult = g_Global.m_bVisibleFlag;
+    uint_t uResult = g_Global.m_bVisibleFlag;
     // Set the visibility
     g_Global.m_bVisibleFlag = bVisible;
     return uResult;
@@ -280,9 +280,9 @@ Word BURGER_API Burger::OSCursor::Show(Word bVisible) BURGER_NOEXCEPT
 
 ***************************************/
 
-Word BURGER_API Burger::OSCursor::Hide(void) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::OSCursor::Hide(void) BURGER_NOEXCEPT
 {
-    Word uResult = g_Global.m_bVisibleFlag;
+    uint_t uResult = g_Global.m_bVisibleFlag;
     // It's hidden
     g_Global.m_bVisibleFlag = FALSE;
     return uResult;

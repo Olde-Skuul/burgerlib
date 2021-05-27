@@ -1,13 +1,14 @@
 /***************************************
 
-	vector<T> compatible array template
+    vector<T> compatible array template
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -35,7 +36,7 @@
 
 /*! ************************************
 
-	\fn void Burger::ClassArray::Destroy(T* pData,WordPtr uCount)
+	\fn void Burger::ClassArray::Destroy(T* pData,uintptr_t uCount)
 	\brief Destroy an array of class entries
 	
 	Iterate over an array of class instances and
@@ -43,13 +44,13 @@
 
 	\param pData Pointer to the array of class instances
 	\param uCount Number of entries in the array
-	\sa Init(T*,WordPtr), Init(T*,WordPtr,const T*) or Copy(T*,WordPtr,const T*)
+	\sa Init(T*,uintptr_t), Init(T*,uintptr_t,const T*) or Copy(T*,uintptr_t,const T*)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::ClassArray::Init(T* pData,WordPtr uCount)
+	\fn void Burger::ClassArray::Init(T* pData,uintptr_t uCount)
 	\brief Initialized an array of class entries
 	
 	Iterate over an array of class instances and
@@ -57,13 +58,13 @@
 
 	\param pData Pointer to the array of class instances
 	\param uCount Number of entries in the array
-	\sa Destroy(T*,WordPtr), Init(T*,WordPtr,const T*) or Copy(T*,WordPtr,const T*)
+	\sa Destroy(T*,uintptr_t), Init(T*,uintptr_t,const T*) or Copy(T*,uintptr_t,const T*)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::ClassArray::Init(T* pData,WordPtr uCount,const T*pSource)
+	\fn void Burger::ClassArray::Init(T* pData,uintptr_t uCount,const T*pSource)
 	\brief Initialized an array of class entries with another array
 	
 	Iterate over an array of class instances and
@@ -72,13 +73,13 @@
 	\param pData Pointer to the array of class instances
 	\param uCount Number of entries in the array
 	\param pSource Pointer to the array of class instances to copy from
-	\sa Destroy(T*,WordPtr), Init(T*,WordPtr) or Copy(T*,WordPtr,const T*)
+	\sa Destroy(T*,uintptr_t), Init(T*,uintptr_t) or Copy(T*,uintptr_t,const T*)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::ClassArray::Copy(T* pData,WordPtr uCount,const T*pSource)
+	\fn void Burger::ClassArray::Copy(T* pData,uintptr_t uCount,const T*pSource)
 	\brief Copy an array of class entries with another array
 	
 	Iterate over an array of class instances and
@@ -88,7 +89,7 @@
 	\param pData Pointer to the array of class instances
 	\param uCount Number of entries in the array
 	\param pSource Pointer to the array of class instances to copy from
-	\sa Destroy(T*,WordPtr), Init(T*,WordPtr) or Init(T*,WordPtr,const T*)
+	\sa Destroy(T*,uintptr_t), Init(T*,uintptr_t) or Init(T*,uintptr_t,const T*)
 
 ***************************************/
 
@@ -99,7 +100,7 @@
 
 	Initializes the array to contain no data and have no members.
 
-	\sa ClassArray(WordPtr) or ClassArray(const ClassArray& rData)
+	\sa ClassArray(uintptr_t) or ClassArray(const ClassArray& rData)
 
 ***************************************/
 
@@ -110,13 +111,13 @@
 
 	Initializes the array to contain no data and have no members.
 
-	\sa ClassArray(WordPtr) or ClassArray(const ClassArray&)
+	\sa ClassArray(uintptr_t) or ClassArray(const ClassArray&)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::ClassArray::ClassArray(WordPtr uDefault)
+	\fn Burger::ClassArray::ClassArray(uintptr_t uDefault)
 	\brief Default constructor with a starting array
 
 	Initializes the array to contain uDefault number of members
@@ -140,7 +141,7 @@
 
 	\param rData Reference to a matching ClassArray type
 
-	\sa ClassArray() or ClassArray(WordPtr)
+	\sa ClassArray() or ClassArray(uintptr_t)
 
 ***************************************/
 
@@ -152,7 +153,7 @@
 	Call clear() to iterate over every valid object in the array
 	with the type T destructor and then release the memory.
 
-	\sa ClassArray(), ClassArray(WordPtr) or ClassArray(const ClassArray&)
+	\sa ClassArray(), ClassArray(uintptr_t) or ClassArray(const ClassArray&)
 
 ***************************************/
 
@@ -184,7 +185,7 @@
 
 /*! ************************************
 
-	\fn T & Burger::ClassArray::operator[](WordPtr uIndex)
+	\fn T & Burger::ClassArray::operator[](uintptr_t uIndex)
 	\brief Obtain a reference to an item in the array.
 
 	Index into the array and return a reference to the object.
@@ -195,13 +196,13 @@
 
 	\param uIndex Object number in the array to retrieve a reference to.
 	\return A reference of the object indexed.
-	\sa operator[](WordPtr) const
+	\sa operator[](uintptr_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn const T & Burger::ClassArray::operator[](WordPtr uIndex) const
+	\fn const T & Burger::ClassArray::operator[](uintptr_t uIndex) const
 	\brief Obtain a constant reference to an item in the array.
 
 	Index into the array and return a constant reference to the object.
@@ -212,13 +213,13 @@
 
 	\param uIndex Object number in the array to retrieve a constant reference to.
 	\return A constant reference of the object indexed.
-	\sa operator[](WordPtr)
+	\sa operator[](uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn WordPtr Burger::ClassArray::max_size(void) const
+	\fn uintptr_t Burger::ClassArray::max_size(void) const
 	\brief Return the number of objects the current buffer could hold.
 	 
 	 The buffer size may exceed the number of valid objects, so that if
@@ -232,7 +233,7 @@
 
 /*! ************************************
 
-	\fn WordPtr Burger::ClassArray::size(void) const
+	\fn uintptr_t Burger::ClassArray::size(void) const
 	\brief Return the valid number of objects in the array.
 	
 	This value is less than or equal to the buffer size.
@@ -244,7 +245,7 @@
 
 /*! ************************************
 
-	\fn Word Burger::ClassArray::empty(void) const
+	\fn uint_t Burger::ClassArray::empty(void) const
 	\brief Return \ref TRUE if the array is empty.
 
 	If there is no valid data in the array, return \ref TRUE.
@@ -314,7 +315,7 @@
 	improve performance.
 
 	\param rData A constant reference to an object to copy at the end of the array
-	\sa pop_back(void), insert(WordPtr,const T&), resize(WordPtr) or reserve(WordPtr)
+	\sa pop_back(void), insert(uintptr_t,const T&), resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
@@ -326,7 +327,7 @@
 	Call the destructor on the last object in the array and
 	reduce the array size by one.
 
-	\sa push_back(const T&), remove(WordPtr), resize(WordPtr) or reserve(WordPtr)
+	\sa push_back(const T&), remove(uintptr_t), resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
@@ -338,7 +339,7 @@
 	Call the destructor on every object in the array and
 	then release the array memory.
 
-	\sa resize(WordPtr) or reserve(WordPtr)
+	\sa resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
@@ -353,26 +354,26 @@
 
 	\param rData Reference to a matching ClassArray type
 	\return *this
-	\sa resize(WordPtr) or reserve(WordPtr)
+	\sa resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::ClassArray::remove_at(WordPtr uIndex)
+	\fn void Burger::ClassArray::remove_at(uintptr_t uIndex)
 	\brief Remove an object from the array.
 
 	Call the destructor on the specific object in the array and
 	then compact the array if needed.
 
 	\param uIndex Index into the array of the object to remove.
-	\sa insert_at(WordPtr,const T&), resize(WordPtr) or reserve(WordPtr)
+	\sa insert_at(uintptr_t,const T&), resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::ClassArray::insert_at(WordPtr uIndex,const T& rData)
+	\fn void Burger::ClassArray::insert_at(uintptr_t uIndex,const T& rData)
 	\brief Insert an object into the array.
 
 	Expand the buffer if needed and make a copy of the rData
@@ -380,13 +381,13 @@
 
 	\param uIndex Index into the array for the location of the object to insert.
 	\param rData Reference to the object to copy into the array
-	\sa remove(WordPtr), resize(WordPtr) or reserve(WordPtr)
+	\sa remove(uintptr_t), resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::ClassArray::append(const T *pSourceData,WordPtr uCount)
+	\fn void Burger::ClassArray::append(const T *pSourceData,uintptr_t uCount)
 	\brief Append an array of object to this array.
 
 	Given a base pointer and an object count, iterate over the objects
@@ -395,7 +396,7 @@
 
 	\param pSourceData Pointer to the first element in an array of objects
 	\param uCount Number of elements in the array
-	\sa append(const ClassArray&), insert(WordPtr,const T&), resize(WordPtr) or reserve(WordPtr)
+	\sa append(const ClassArray&), insert(uintptr_t,const T&), resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
@@ -409,13 +410,13 @@
 	will increase the size of the buffer if needed.
 
 	\param rData Reference to a like typed ClassArray to copy from.
-	\sa append(const T *,WordPtr), resize(WordPtr) or reserve(WordPtr)
+	\sa append(const T *,uintptr_t), resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::ClassArray::resize(WordPtr uNewSize)
+	\fn void Burger::ClassArray::resize(uintptr_t uNewSize)
 	\brief Resize the valid entry count of the array.
 
 	If uNewSize is zero, erase all data. If uNewSize increases
@@ -428,13 +429,13 @@
 	is substantially smaller.
 
 	\param uNewSize Number of valid objects the new array will contain.
-	\sa clear(void) or reserve(WordPtr)
+	\sa clear(void) or reserve(uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::ClassArray::reserve(WordPtr uNewBufferSize)
+	\fn void Burger::ClassArray::reserve(uintptr_t uNewBufferSize)
 	\brief Resize the memory used by the array.
 
 	This function sets the size of the master buffer which can exceed
@@ -452,7 +453,7 @@
 	will be adjusted to the match the buffer size.
 
 	\param uNewBufferSize Size in elements of the memory buffer.
-	\sa clear(void) or resize(WordPtr)
+	\sa clear(void) or resize(uintptr_t)
 
 ***************************************/
 
@@ -549,6 +550,6 @@
 	will change the end() value in an index
 
 	\param it Iterator index into an array
-	\sa remove_at(WordPtr)
+	\sa remove_at(uintptr_t)
 
 ***************************************/

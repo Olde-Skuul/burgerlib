@@ -1,13 +1,14 @@
 /***************************************
 
-	Last in, first out, singly linked list queue
+    Last in, first out, singly linked list queue
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -227,13 +228,13 @@ Burger::ForwardLink * BURGER_API Burger::ReverseList(ForwardLink *pRoot)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::LastInFirstOut::Size(void) const
+uintptr_t BURGER_API Burger::LastInFirstOut::Size(void) const
 {
 
 	// Get the first entry
 	const ForwardLink *pWork = m_pRoot;
 
-	WordPtr uCount = 0;
+	uintptr_t uCount = 0;
 	if (pWork) {
 		// Follow the list to get the number of entries
 		do {
@@ -534,10 +535,10 @@ void BURGER_API Burger::MPLastInFirstOut::Clear(void)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::MPLastInFirstOut::Size(void)
+uintptr_t BURGER_API Burger::MPLastInFirstOut::Size(void)
 {
 	m_Lock.Lock();
-	WordPtr uSize = LastInFirstOut::Size();
+	uintptr_t uSize = LastInFirstOut::Size();
 	m_Lock.Unlock();
 	return uSize;
 }

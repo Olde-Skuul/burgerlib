@@ -126,16 +126,16 @@ Burger::SimpleString::SimpleString(const char *pInput1)
 
 Burger::SimpleString::SimpleString(const char *pInput1,const char *pInput2)
 {
-	WordPtr uLength1 = 0;
+	uintptr_t uLength1 = 0;
 	if (pInput1) {
 		uLength1 = StringLength(pInput1);
 	}
-	WordPtr uLength2 = 0;
+	uintptr_t uLength2 = 0;
 	if (pInput2) {
 		uLength2 = StringLength(pInput2);
 	}
 	const char *pOutput = g_EmptyString;		// Empty
-	WordPtr uLength = uLength1+uLength2;
+	uintptr_t uLength = uLength1+uLength2;
 	if (uLength) {
 		char *pTemp = static_cast<char *>(Alloc(uLength+1U));
 		if (pTemp) {
@@ -170,20 +170,20 @@ Burger::SimpleString::SimpleString(const char *pInput1,const char *pInput2)
 
 Burger::SimpleString::SimpleString(const char *pInput1,const char *pInput2,const char *pInput3)
 {
-	WordPtr uLength1 = 0;
+	uintptr_t uLength1 = 0;
 	if (pInput1) {
 		uLength1 = StringLength(pInput1);
 	}
-	WordPtr uLength2 = 0;
+	uintptr_t uLength2 = 0;
 	if (pInput2) {
 		uLength2 = StringLength(pInput2);
 	}
-	WordPtr uLength3 = 0;
+	uintptr_t uLength3 = 0;
 	if (pInput3) {
 		uLength3 = StringLength(pInput3);
 	}
 	const char *pOutput = g_EmptyString;	// Empty
-	WordPtr uLength = uLength1+uLength2+uLength3;
+	uintptr_t uLength = uLength1+uLength2+uLength3;
 	if (uLength) {
 		char *pTemp = static_cast<char *>(Alloc(uLength+1U));
 		if (pTemp) {
@@ -221,24 +221,24 @@ Burger::SimpleString::SimpleString(const char *pInput1,const char *pInput2,const
 
 Burger::SimpleString::SimpleString(const char *pInput1,const char *pInput2,const char *pInput3,const char *pInput4)
 {
-	WordPtr uLength1 = 0;
+	uintptr_t uLength1 = 0;
 	if (pInput1) {
 		uLength1 = StringLength(pInput1);
 	}
-	WordPtr uLength2 = 0;
+	uintptr_t uLength2 = 0;
 	if (pInput2) {
 		uLength2 = StringLength(pInput2);
 	}
-	WordPtr uLength3 = 0;
+	uintptr_t uLength3 = 0;
 	if (pInput3) {
 		uLength3 = StringLength(pInput3);
 	}
-	WordPtr uLength4 = 0;
+	uintptr_t uLength4 = 0;
 	if (pInput4) {
 		uLength4 = StringLength(pInput4);
 	}
 	const char *pOutput = g_EmptyString;	// Empty
-	WordPtr uLength = uLength1+uLength2+uLength3+uLength4;
+	uintptr_t uLength = uLength1+uLength2+uLength3+uLength4;
 	if (uLength) {
 		char *pTemp = static_cast<char *>(Alloc(uLength+1U));
 		if (pTemp) {
@@ -283,28 +283,28 @@ Burger::SimpleString::SimpleString(const char *pInput1,const char *pInput2,const
 
 Burger::SimpleString::SimpleString(const char *pInput1,const char *pInput2,const char *pInput3,const char *pInput4,const char *pInput5)
 {
-	WordPtr uLength1 = 0;
+	uintptr_t uLength1 = 0;
 	if (pInput1) {
 		uLength1 = StringLength(pInput1);
 	}
-	WordPtr uLength2 = 0;
+	uintptr_t uLength2 = 0;
 	if (pInput2) {
 		uLength2 = StringLength(pInput2);
 	}
-	WordPtr uLength3 = 0;
+	uintptr_t uLength3 = 0;
 	if (pInput3) {
 		uLength3 = StringLength(pInput3);
 	}
-	WordPtr uLength4 = 0;
+	uintptr_t uLength4 = 0;
 	if (pInput4) {
 		uLength4 = StringLength(pInput4);
 	}
-	WordPtr uLength5 = 0;
+	uintptr_t uLength5 = 0;
 	if (pInput5) {
 		uLength5 = StringLength(pInput5);
 	}
 	const char *pOutput = g_EmptyString;	// Empty
-	WordPtr uLength = uLength1+uLength2+uLength3+uLength4+uLength5;
+	uintptr_t uLength = uLength1+uLength2+uLength3+uLength4+uLength5;
 	if (uLength) {
 		char *pTemp = static_cast<char *>(Alloc(uLength+1U));
 		if (pTemp) {
@@ -519,7 +519,7 @@ Burger::SimpleString & Burger::SimpleString::operator = (const Burger::SimpleStr
 
 /*! ************************************
 
-	\fn char Burger::SimpleString::operator[](WordPtr uIndex) const
+	\fn char Burger::SimpleString::operator[](uintptr_t uIndex) const
 	\brief Access a character inside of the string.
 	
 	Returns a single character inside the string by using 
@@ -531,13 +531,13 @@ Burger::SimpleString & Burger::SimpleString::operator = (const Burger::SimpleStr
 			
 	\param uIndex Index into the string, 0 to less than Burger::SimpleString::GetLength(void) const.
 	\return Character at the supplied index.
-	\sa Burger::SimpleString::operator[](WordPtr)
+	\sa Burger::SimpleString::operator[](uintptr_t)
 	
 ***************************************/
 
 /*! ************************************
 
-	\fn const char &Burger::SimpleString::operator[](WordPtr uIndex)
+	\fn const char &Burger::SimpleString::operator[](uintptr_t uIndex)
 	\brief Access a character reference inside of the string.
 	
 	Returns a reference to a single character inside the string by using 
@@ -549,7 +549,7 @@ Burger::SimpleString & Burger::SimpleString::operator = (const Burger::SimpleStr
 	
 	\param uIndex Index into the string, 0 to less than Burger::SimpleString::GetLength(void) const.
 	\return Character reference at the supplied index.
-	\sa Burger::SimpleString::operator[](WordPtr) const
+	\sa Burger::SimpleString::operator[](uintptr_t) const
 	
 ***************************************/
 
@@ -577,7 +577,7 @@ void Burger::SimpleString::Clear(void)
 
 /*! ************************************
 
-	\fn Word Burger::SimpleString::IsEmpty(void) const
+	\fn uint_t Burger::SimpleString::IsEmpty(void) const
 	\brief Determine if a string is empty.
 	
 	Return \ref TRUE if the string is only a terminating zero
@@ -591,7 +591,7 @@ void Burger::SimpleString::Clear(void)
 
 /*! ************************************
 
-	\fn WordPtr Burger::SimpleString::GetLength(void) const
+	\fn uintptr_t Burger::SimpleString::GetLength(void) const
 	\brief Return the length of the string in bytes.
 	
 	Return the length (in bytes) of the "C" string contained

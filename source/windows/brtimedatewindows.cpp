@@ -56,23 +56,23 @@ void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-Word Burger::TimeDate_t::Load(const _FILETIME* pFileTime)
+uint_t Burger::TimeDate_t::Load(const _FILETIME* pFileTime)
 {
     Clear();
     FILETIME Local;
-    Word uResult = TRUE;
+    uint_t uResult = TRUE;
     if (FileTimeToLocalFileTime(pFileTime, &Local)) { // Convert to local time
         SYSTEMTIME Temp2;
         if (FileTimeToSystemTime(
                 &Local, &Temp2)) { // Convert the time to sections
-            m_usMilliseconds = static_cast<Word16>(Temp2.wMilliseconds);
-            m_bSecond = static_cast<Word8>(Temp2.wSecond); // Get the seconds
-            m_bMinute = static_cast<Word8>(Temp2.wMinute); // Get the minute
-            m_bHour = static_cast<Word8>(Temp2.wHour);     // Get the hour
-            m_bDay = static_cast<Word8>(Temp2.wDay);       // Get the day
-            m_bDayOfWeek = static_cast<Word8>(Temp2.wDayOfWeek); // Weekday
-            m_bMonth = static_cast<Word8>(Temp2.wMonth); // Get the month
-            m_uYear = static_cast<Word16>(Temp2.wYear);  // Get the year
+            m_usMilliseconds = static_cast<uint16_t>(Temp2.wMilliseconds);
+            m_bSecond = static_cast<uint8_t>(Temp2.wSecond); // Get the seconds
+            m_bMinute = static_cast<uint8_t>(Temp2.wMinute); // Get the minute
+            m_bHour = static_cast<uint8_t>(Temp2.wHour);     // Get the hour
+            m_bDay = static_cast<uint8_t>(Temp2.wDay);       // Get the day
+            m_bDayOfWeek = static_cast<uint8_t>(Temp2.wDayOfWeek); // Weekday
+            m_bMonth = static_cast<uint8_t>(Temp2.wMonth); // Get the month
+            m_uYear = static_cast<uint16_t>(Temp2.wYear);  // Get the year
             uResult = FALSE;
         }
     }
@@ -89,9 +89,9 @@ Word Burger::TimeDate_t::Load(const _FILETIME* pFileTime)
 
 ***************************************/
 
-Word Burger::TimeDate_t::Store(_FILETIME* pFileTime) const
+uint_t Burger::TimeDate_t::Store(_FILETIME* pFileTime) const
 {
-    Word uResult = TRUE;
+    uint_t uResult = TRUE;
     SYSTEMTIME Temp2;
     Temp2.wMilliseconds = m_usMilliseconds;
     Temp2.wSecond = m_bSecond;                // Get the seconds

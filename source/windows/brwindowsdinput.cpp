@@ -75,8 +75,8 @@ typedef HRESULT(WINAPI* DirectInputCreateWPtr)(HINSTANCE hinst, DWORD dwVersion,
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectInputCreateA(HINSTANCE__* hInst,
-	Word32 uVersion, IDirectInputA** ppOutput, IUnknown* pOuter)
+uint_t BURGER_API Burger::Windows::DirectInputCreateA(HINSTANCE__* hInst,
+	uint32_t uVersion, IDirectInputA** ppOutput, IUnknown* pOuter)
 {
 	// Clear in case of error
 	if (ppOutput) {
@@ -90,7 +90,7 @@ Word BURGER_API Burger::Windows::DirectInputCreateA(HINSTANCE__* hInst,
 		uResult = static_cast<DirectInputCreateAPtr>(pDirectInputCreateA)(
 			hInst, uVersion, ppOutput, pOuter);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -113,8 +113,8 @@ Word BURGER_API Burger::Windows::DirectInputCreateA(HINSTANCE__* hInst,
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectInputCreateW(HINSTANCE__* hInst,
-	Word32 uVersion, IDirectInputW** ppOutput, IUnknown* pOuter)
+uint_t BURGER_API Burger::Windows::DirectInputCreateW(HINSTANCE__* hInst,
+	uint32_t uVersion, IDirectInputW** ppOutput, IUnknown* pOuter)
 {
 	// Clear in case of error
 	if (ppOutput) {
@@ -128,7 +128,7 @@ Word BURGER_API Burger::Windows::DirectInputCreateW(HINSTANCE__* hInst,
 		uResult = static_cast<DirectInputCreateWPtr>(pDirectInputCreateW)(
 			hInst, uVersion, ppOutput, pOuter);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 //
@@ -156,8 +156,8 @@ Word BURGER_API Burger::Windows::DirectInputCreateW(HINSTANCE__* hInst,
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectInput8Create(HINSTANCE__* hInst,
-	Word32 uVersion, const GUID& rGUID, void** ppOutput, IUnknown* pOuter)
+uint_t BURGER_API Burger::Windows::DirectInput8Create(HINSTANCE__* hInst,
+	uint32_t uVersion, const GUID& rGUID, void** ppOutput, IUnknown* pOuter)
 {
 	// Clear in case of error
 	if (ppOutput) {
@@ -171,7 +171,7 @@ Word BURGER_API Burger::Windows::DirectInput8Create(HINSTANCE__* hInst,
 		uResult = static_cast<DirectInput8CreatePtr>(pDirectInput8Create)(
 			hInst, uVersion, rGUID, ppOutput, pOuter);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -196,7 +196,7 @@ Word BURGER_API Burger::Windows::DirectInput8Create(HINSTANCE__* hInst,
 ***************************************/
 
 IDirectInputW* BURGER_API Burger::Windows::GetDirectInputSingleton(
-	Word uVersion)
+	uint_t uVersion)
 {
 	// Was there already a DirectInput instance?
 	IDirectInputW* pDirectInputW = g_Globals.m_pDirectInputW;

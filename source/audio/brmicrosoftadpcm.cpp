@@ -1,13 +1,14 @@
 /***************************************
 
-	Microsoft ADPCM decompresser
+    Microsoft ADPCM decompresser
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -37,14 +38,14 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::DecompressMicrosoftADPCM,Burger::Decompr
 //
 
 #if !defined(DOXYGEN)
-static const Int32 g_Table[16+16+7+7] = {
+static const int32_t g_Table[16+16+7+7] = {
 	230, 230, 230, 230, 307, 409, 512, 614,
 	768, 614, 512, 409, 307, 230, 230, 230,
-//static const Int32 g_DeltaCodeTable[16] = {
+//static const int32_t g_DeltaCodeTable[16] = {
 	0,1,2,3,4,5,6,7,-8,-7,-6,-5,-4,-3,-2,-1,
-//static const Int32 g_GainCoef1[7] = {
+//static const int32_t g_GainCoef1[7] = {
 	256, 512, 0, 192, 240, 460,  392,
-//static const Int32 g_GainCoef2[7] = {
+//static const int32_t g_GainCoef2[7] = {
 	0, -256,  0,  64,   0,-208, -232};
 #endif
 
@@ -57,13 +58,13 @@ static const Int32 g_Table[16+16+7+7] = {
 
 ***************************************/
 
-Int32 BURGER_API Burger::ADPCMState_t::Decode(Word uDeltaCode)
+int32_t BURGER_API Burger::ADPCMState_t::Decode(uint_t uDeltaCode)
 {
 	// Compute next Adaptive Scale Factor (ASF)
 
 	uDeltaCode = uDeltaCode&0x0FU;
-	Int32 iIndex = m_iIndex;
-	Int32 iNewIndex = (g_Table[uDeltaCode] * iIndex) >> 8;
+	int32_t iIndex = m_iIndex;
+	int32_t iNewIndex = (g_Table[uDeltaCode] * iIndex) >> 8;
 
 	// Clamp to table size
 	if (iNewIndex < 16) {
@@ -75,8 +76,8 @@ Int32 BURGER_API Burger::ADPCMState_t::Decode(Word uDeltaCode)
 
 	// Predict next sample
 
-	Int32 iPredict = (m_iFirstSample * m_iCoef2);	// Get first coefficient
-	Int32 iSample = m_iSecondSample;					// Copy to temp
+	int32_t iPredict = (m_iFirstSample * m_iCoef2);	// Get first coefficient
+	int32_t iSample = m_iSecondSample;					// Copy to temp
 	m_iFirstSample = iSample;						// Move to first
 	iSample = ((iSample * m_iCoef1)+iPredict) >> 8;
 
@@ -107,7 +108,7 @@ void BURGER_API Burger::DecompressMicrosoftADPCM::SetMonoDecoder(const void *pIn
 	// Reset the decompresser
 
 	// Which base coefficient
-	Word uBase = static_cast<const Word8 *>(pInput)[0];
+	uint_t uBase = static_cast<const uint8_t *>(pInput)[0];
 
 	if (uBase >= 7) {
 		uBase = 6;			// Overflow
@@ -116,9 +117,9 @@ void BURGER_API Burger::DecompressMicrosoftADPCM::SetMonoDecoder(const void *pIn
 	m_Decoders[0].m_iCoef2 = g_Table[uBase+(32+7)];
 
 	// This data is not guaranteed to be 16 bit aligned
-	m_Decoders[0].m_iIndex = LittleEndian::LoadAny(static_cast<const Int16 *>(static_cast<const void *>(static_cast<const Word8 *>(pInput)+1)));
-	m_Decoders[0].m_iSecondSample = LittleEndian::LoadAny(static_cast<const Int16 *>(static_cast<const void *>(static_cast<const Word8 *>(pInput)+3)));
-	m_Decoders[0].m_iFirstSample = LittleEndian::LoadAny(static_cast<const Int16 *>(static_cast<const void *>(static_cast<const Word8 *>(pInput)+5)));
+	m_Decoders[0].m_iIndex = LittleEndian::LoadAny(static_cast<const int16_t *>(static_cast<const void *>(static_cast<const uint8_t *>(pInput)+1)));
+	m_Decoders[0].m_iSecondSample = LittleEndian::LoadAny(static_cast<const int16_t *>(static_cast<const void *>(static_cast<const uint8_t *>(pInput)+3)));
+	m_Decoders[0].m_iFirstSample = LittleEndian::LoadAny(static_cast<const int16_t *>(static_cast<const void *>(static_cast<const uint8_t *>(pInput)+5)));
 }
 
 /*! ************************************
@@ -134,14 +135,14 @@ void BURGER_API Burger::DecompressMicrosoftADPCM::SetMonoDecoder(const void *pIn
 
 void BURGER_API Burger::DecompressMicrosoftADPCM::SetStereoDecoder(const void *pInput)
 {
-	Word uBase = static_cast<const Word8 *>(pInput)[0];	// Left
+	uint_t uBase = static_cast<const uint8_t *>(pInput)[0];	// Left
 	if (uBase >= 7) {
 		uBase = 6;			// Overflow
 	}
 	m_Decoders[0].m_iCoef1 = g_Table[uBase+32];
 	m_Decoders[0].m_iCoef2 = g_Table[uBase+(32+7)];
 
-	uBase = static_cast<const Word8 *>(pInput)[1];	// Right
+	uBase = static_cast<const uint8_t *>(pInput)[1];	// Right
 	if (uBase >= 7) {
 		uBase = 6;			// Overflow
 	}
@@ -149,14 +150,14 @@ void BURGER_API Burger::DecompressMicrosoftADPCM::SetStereoDecoder(const void *p
 	m_Decoders[1].m_iCoef2 = g_Table[uBase+(32+7)];
 
 	
-	m_Decoders[0].m_iIndex = LittleEndian::LoadAny(static_cast<const Int16 *>(pInput)+1);
-	m_Decoders[1].m_iIndex = LittleEndian::LoadAny(static_cast<const Int16 *>(pInput)+2);
+	m_Decoders[0].m_iIndex = LittleEndian::LoadAny(static_cast<const int16_t *>(pInput)+1);
+	m_Decoders[1].m_iIndex = LittleEndian::LoadAny(static_cast<const int16_t *>(pInput)+2);
 
-	m_Decoders[0].m_iSecondSample = LittleEndian::LoadAny(static_cast<const Int16 *>(pInput)+3);
-	m_Decoders[1].m_iSecondSample = LittleEndian::LoadAny(static_cast<const Int16 *>(pInput)+4);
+	m_Decoders[0].m_iSecondSample = LittleEndian::LoadAny(static_cast<const int16_t *>(pInput)+3);
+	m_Decoders[1].m_iSecondSample = LittleEndian::LoadAny(static_cast<const int16_t *>(pInput)+4);
 
-	m_Decoders[0].m_iFirstSample = LittleEndian::LoadAny(static_cast<const Int16 *>(pInput)+5);
-	m_Decoders[1].m_iFirstSample = LittleEndian::LoadAny(static_cast<const Int16 *>(pInput)+6);
+	m_Decoders[0].m_iFirstSample = LittleEndian::LoadAny(static_cast<const int16_t *>(pInput)+5);
+	m_Decoders[1].m_iFirstSample = LittleEndian::LoadAny(static_cast<const int16_t *>(pInput)+6);
 }
 
 /*! ************************************
@@ -176,24 +177,24 @@ void BURGER_API Burger::DecompressMicrosoftADPCM::SetStereoDecoder(const void *p
 
 ***************************************/
 
-Word BURGER_API Burger::DecompressMicrosoftADPCM::ADPCMDecodeBlock(Int16 *pOutput,const Word8 *pInput,WordPtr uInputLength)
+uint_t BURGER_API Burger::DecompressMicrosoftADPCM::ADPCMDecodeBlock(int16_t *pOutput,const uint8_t *pInput,uintptr_t uInputLength)
 {
 	// Pull in the packet and check the header
 
-	Word32 Temp = m_uBlockSize;
+	uint32_t Temp = m_uBlockSize;
 	if (uInputLength<Temp) {
-		Temp = static_cast<Word>(uInputLength);
+		Temp = static_cast<uint_t>(uInputLength);
 	}
 	uInputLength-=Temp;
 	pInput=&pInput[Temp];			// Adjust the source pointer
 
-	Word uSamplesThisBlock;
+	uint_t uSamplesThisBlock;
 	if (Temp < m_uBlockSize) {		// Partial block?
 
 	// If it looks like a valid header is around then try and
 	// work with partial blocks. Specs say it should be null
 	// padded but I guess this is better then trailing quiet.
-		Word uChannels = m_bStereo ? 2U : 1U;
+		uint_t uChannels = m_bStereo ? 2U : 1U;
 		if (Temp < (7 * uChannels)) {
 			return 0;		// No bytes decoded!
 		}
@@ -215,13 +216,13 @@ Word BURGER_API Burger::DecompressMicrosoftADPCM::ADPCMDecodeBlock(Int16 *pOutpu
 			m_Decoders[0].m_iCoef1 = g_Table[Temp+32];
 			m_Decoders[0].m_iCoef2 = g_Table[Temp+(32+7)];
 
-			m_Decoders[0].m_iIndex = LittleEndian::LoadAny(reinterpret_cast<const Int16 *>(pInput+1));
-			m_Decoders[0].m_iSecondSample = LittleEndian::LoadAny(reinterpret_cast<const Int16 *>(pInput+3));
-			m_Decoders[0].m_iFirstSample = LittleEndian::LoadAny(reinterpret_cast<const Int16 *>(pInput+5));
+			m_Decoders[0].m_iIndex = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+1));
+			m_Decoders[0].m_iSecondSample = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+3));
+			m_Decoders[0].m_iFirstSample = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+5));
 
 			/* Decode two samples for the header */
-			pOutput[0] = static_cast<Int16>(m_Decoders[0].m_iFirstSample);
-			pOutput[1] = static_cast<Int16>(m_Decoders[0].m_iSecondSample);
+			pOutput[0] = static_cast<int16_t>(m_Decoders[0].m_iFirstSample);
+			pOutput[1] = static_cast<int16_t>(m_Decoders[0].m_iSecondSample);
 
 			pInput += 7;
 			pOutput += 2;
@@ -229,12 +230,12 @@ Word BURGER_API Burger::DecompressMicrosoftADPCM::ADPCMDecodeBlock(Int16 *pOutpu
 			// Decompress nibbles. Minus 2 included in header
 
 			if (uSamplesThisBlock>2) {
-				Word uRemaining = (uSamplesThisBlock-2)>>1;
+				uint_t uRemaining = (uSamplesThisBlock-2)>>1;
 				do {
 					Temp = pInput[0];
 					++pInput;
-					pOutput[0] = static_cast<Int16>(m_Decoders[0].Decode(Temp>>4));
-					pOutput[1] = static_cast<Int16>(m_Decoders[0].Decode(Temp));
+					pOutput[0] = static_cast<int16_t>(m_Decoders[0].Decode(Temp>>4));
+					pOutput[1] = static_cast<int16_t>(m_Decoders[0].Decode(Temp));
 					pOutput+=2;
 				} while (--uRemaining);
 			}
@@ -261,31 +262,31 @@ Word BURGER_API Burger::DecompressMicrosoftADPCM::ADPCMDecodeBlock(Int16 *pOutpu
 			m_Decoders[1].m_iCoef1 = g_Table[Temp+32];
 			m_Decoders[1].m_iCoef2 = g_Table[Temp+(32+7)];
 
-			m_Decoders[0].m_iIndex = LittleEndian::LoadAny(reinterpret_cast<const Int16 *>(pInput+2));
-			m_Decoders[1].m_iIndex = LittleEndian::LoadAny(reinterpret_cast<const Int16 *>(pInput+4));
+			m_Decoders[0].m_iIndex = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+2));
+			m_Decoders[1].m_iIndex = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+4));
 
-			m_Decoders[0].m_iSecondSample = LittleEndian::LoadAny(reinterpret_cast<const Int16 *>(pInput+6));
-			m_Decoders[1].m_iSecondSample = LittleEndian::LoadAny(reinterpret_cast<const Int16 *>(pInput+8));
+			m_Decoders[0].m_iSecondSample = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+6));
+			m_Decoders[1].m_iSecondSample = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+8));
 
-			m_Decoders[0].m_iFirstSample = LittleEndian::LoadAny(reinterpret_cast<const Int16 *>(pInput+10));
-			m_Decoders[1].m_iFirstSample = LittleEndian::LoadAny(reinterpret_cast<const Int16 *>(pInput+12));
+			m_Decoders[0].m_iFirstSample = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+10));
+			m_Decoders[1].m_iFirstSample = LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+12));
 
 			// Decode two samples for the header
-			pOutput[0] = static_cast<Int16>(m_Decoders[0].m_iFirstSample);
-			pOutput[1] = static_cast<Int16>(m_Decoders[1].m_iFirstSample);
-			pOutput[2] = static_cast<Int16>(m_Decoders[0].m_iSecondSample);
-			pOutput[3] = static_cast<Int16>(m_Decoders[1].m_iSecondSample);
+			pOutput[0] = static_cast<int16_t>(m_Decoders[0].m_iFirstSample);
+			pOutput[1] = static_cast<int16_t>(m_Decoders[1].m_iFirstSample);
+			pOutput[2] = static_cast<int16_t>(m_Decoders[0].m_iSecondSample);
+			pOutput[3] = static_cast<int16_t>(m_Decoders[1].m_iSecondSample);
 			pOutput+=4;
 			pInput+=14;
 			
 			// Decompress nibbles. Minus 2 included in header
 			if (uSamplesThisBlock>2) {
-				Word uRemaining = uSamplesThisBlock-2;
+				uint_t uRemaining = uSamplesThisBlock-2;
 				do {
 					Temp = pInput[0];
 					++pInput;
-					pOutput[0] = static_cast<Int16>(m_Decoders[0].Decode(Temp>>4));
-					pOutput[1] = static_cast<Int16>(m_Decoders[1].Decode(Temp));
+					pOutput[0] = static_cast<int16_t>(m_Decoders[0].Decode(Temp>>4));
+					pOutput[1] = static_cast<int16_t>(m_Decoders[1].Decode(Temp));
 					pOutput+=2;
 				} while (--uRemaining);
 			}
@@ -377,7 +378,7 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 	const void *pInputChunk = NULL;
 	void *pDest = NULL;
 	eState uState = m_eState;
-	Word bAbort = FALSE;
+	uint_t bAbort = FALSE;
 	do {
 		switch (uState) {
 
@@ -404,7 +405,7 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 			}
 			// Consume the input chunk directly
 			pInputChunk = pInput;
-			pInput = static_cast<const Word8 *>(pInput)+7;
+			pInput = static_cast<const uint8_t *>(pInput)+7;
 			uInputChunkLength-=7;
 			uState = STATE_GETDECODERMONO;
 
@@ -425,12 +426,12 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 				pDest = m_Cache;
 			} else {
 				pDest = pOutput;
-				pOutput = static_cast<Word8 *>(pOutput)+4;
+				pOutput = static_cast<uint8_t *>(pOutput)+4;
 				uOutputChunkLength-=4;
 				uState = STATE_WRITESAMPLESMONO;
 			}
-			static_cast<Int16 *>(pDest)[0] = static_cast<Int16>(m_Decoders[0].m_iFirstSample);
-			static_cast<Int16 *>(pDest)[1] = static_cast<Int16>(m_Decoders[0].m_iSecondSample);
+			static_cast<int16_t *>(pDest)[0] = static_cast<int16_t>(m_Decoders[0].m_iFirstSample);
+			static_cast<int16_t *>(pDest)[1] = static_cast<int16_t>(m_Decoders[0].m_iSecondSample);
 			break;
 
 		//
@@ -438,7 +439,7 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 		//
 		case STATE_WRITESAMPLESMONO:
 			{
-				Word uSteps = m_uSamplesPerBlock;
+				uint_t uSteps = m_uSamplesPerBlock;
 				if (uSteps<=2) {
 					// Nothing to do, reset
 					uState = STATE_INITMONO;
@@ -457,7 +458,7 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 				bAbort = TRUE;
 			
 			} else {
-				Word uSamplesRemaining = m_uSamplesRemaining;
+				uint_t uSamplesRemaining = m_uSamplesRemaining;
 
 				//
 				// Quickly process the data in the most common case where
@@ -465,9 +466,9 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 				//
 
 				// Clamp to input
-				Word uCounter = static_cast<Word>(Min(static_cast<WordPtr>(uSamplesRemaining>>1U),uInputChunkLength));
+				uint_t uCounter = static_cast<uint_t>(Min(static_cast<uintptr_t>(uSamplesRemaining>>1U),uInputChunkLength));
 				// Clamp to output
-				uCounter = static_cast<Word>(Min(static_cast<WordPtr>(uCounter),uOutputChunkLength>>2U));
+				uCounter = static_cast<uint_t>(Min(static_cast<uintptr_t>(uCounter),uOutputChunkLength>>2U));
 
 				// Write out the fast chunks
 				if (uCounter) {
@@ -476,11 +477,11 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 					uOutputChunkLength -= uCounter*4;		// Bytes -> 2 shorts
 					uSamplesRemaining -= uCounter*2;		// Bytes -> nibbles
 					do {
-						Word uNibbles = static_cast<const Word8 *>(pInput)[0];
-						pInput = static_cast<const Word8 *>(pInput)+1;
-						static_cast<Int16 *>(pOutput)[0] = static_cast<Int16>(m_Decoders[0].Decode(uNibbles>>4U));
-						static_cast<Int16 *>(pOutput)[1] = static_cast<Int16>(m_Decoders[0].Decode(uNibbles));
-						pOutput = static_cast<Int16 *>(pOutput)+2;
+						uint_t uNibbles = static_cast<const uint8_t *>(pInput)[0];
+						pInput = static_cast<const uint8_t *>(pInput)+1;
+						static_cast<int16_t *>(pOutput)[0] = static_cast<int16_t>(m_Decoders[0].Decode(uNibbles>>4U));
+						static_cast<int16_t *>(pOutput)[1] = static_cast<int16_t>(m_Decoders[0].Decode(uNibbles));
+						pOutput = static_cast<int16_t *>(pOutput)+2;
 					} while (--uCounter);
 					// Processed everything?
 					if (!uSamplesRemaining) {
@@ -504,14 +505,14 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 					// Looks like it's got an output problem. 
 					// Let the output cache deal with it.
 					//
-					Word uNibble = static_cast<const Word8 *>(pInput)[0];
-					pInput = static_cast<const Word8 *>(pInput)+1;
+					uint_t uNibble = static_cast<const uint8_t *>(pInput)[0];
+					pInput = static_cast<const uint8_t *>(pInput)+1;
 					--uInputChunkLength;
 
 					// Write into the cache
 					pDest = m_Cache;
-					static_cast<Int16 *>(pDest)[0] = static_cast<Int16>(m_Decoders[0].Decode(uNibble>>4U));
-					static_cast<Int16 *>(pDest)[1] = static_cast<Int16>(m_Decoders[0].Decode(uNibble));
+					static_cast<int16_t *>(pDest)[0] = static_cast<int16_t>(m_Decoders[0].Decode(uNibble>>4U));
+					static_cast<int16_t *>(pDest)[1] = static_cast<int16_t>(m_Decoders[0].Decode(uNibble));
 
 					// The special case where there's an odd number of samples.
 
@@ -553,7 +554,7 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 			}
 			// Consume the input chunk directly
 			pInputChunk = pInput;
-			pInput = static_cast<const Word8 *>(pInput)+14;
+			pInput = static_cast<const uint8_t *>(pInput)+14;
 			uInputChunkLength-=14;
 			uState = STATE_GETDECODERSTEREO;
 
@@ -574,14 +575,14 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 				pDest = m_Cache;
 			} else {
 				pDest = pOutput;
-				pOutput = static_cast<Word8 *>(pOutput)+8;
+				pOutput = static_cast<uint8_t *>(pOutput)+8;
 				uOutputChunkLength-=8;
 				uState = STATE_WRITESAMPLESSTEREO;
 			}
-			static_cast<Int16 *>(pDest)[0] = static_cast<Int16>(m_Decoders[0].m_iFirstSample);
-			static_cast<Int16 *>(pDest)[1] = static_cast<Int16>(m_Decoders[0].m_iFirstSample);
-			static_cast<Int16 *>(pDest)[2] = static_cast<Int16>(m_Decoders[0].m_iSecondSample);
-			static_cast<Int16 *>(pDest)[3] = static_cast<Int16>(m_Decoders[0].m_iSecondSample);
+			static_cast<int16_t *>(pDest)[0] = static_cast<int16_t>(m_Decoders[0].m_iFirstSample);
+			static_cast<int16_t *>(pDest)[1] = static_cast<int16_t>(m_Decoders[0].m_iFirstSample);
+			static_cast<int16_t *>(pDest)[2] = static_cast<int16_t>(m_Decoders[0].m_iSecondSample);
+			static_cast<int16_t *>(pDest)[3] = static_cast<int16_t>(m_Decoders[0].m_iSecondSample);
 			break;
 			
 		//
@@ -589,7 +590,7 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 		//
 		case STATE_WRITESAMPLESSTEREO:
 			{
-				Word uSteps = m_uSamplesPerBlock;
+				uint_t uSteps = m_uSamplesPerBlock;
 				if (uSteps<=2) {
 					// Nothing to do, reset
 					uState = STATE_INITSTEREO;
@@ -608,7 +609,7 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 				bAbort = TRUE;
 
 			} else {
-				Word uSamplesRemaining = m_uSamplesRemaining;
+				uint_t uSamplesRemaining = m_uSamplesRemaining;
 
 				//
 				// Quickly process the data in the most common case where
@@ -616,9 +617,9 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 				//
 
 				// Clamp to input
-				Word uCounter = static_cast<Word>(Min(static_cast<WordPtr>(uSamplesRemaining),uInputChunkLength));
+				uint_t uCounter = static_cast<uint_t>(Min(static_cast<uintptr_t>(uSamplesRemaining),uInputChunkLength));
 				// Clamp to output
-				uCounter = static_cast<Word>(Min(static_cast<WordPtr>(uCounter),uOutputChunkLength>>2U));
+				uCounter = static_cast<uint_t>(Min(static_cast<uintptr_t>(uCounter),uOutputChunkLength>>2U));
 
 				// Write out the fast chunks
 				if (uCounter) {
@@ -627,13 +628,13 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 					uOutputChunkLength -= uCounter*4;		// Bytes -> 2 shorts
 					uSamplesRemaining -= uCounter;			// Bytes -> 2 nibbles
 					do {
-						Word uNibbles = static_cast<const Word8 *>(pInput)[0];
-						pInput = static_cast<const Word8 *>(pInput)+1;
+						uint_t uNibbles = static_cast<const uint8_t *>(pInput)[0];
+						pInput = static_cast<const uint8_t *>(pInput)+1;
 						// Left
-						static_cast<Int16 *>(pOutput)[0] = static_cast<Int16>(m_Decoders[0].Decode(uNibbles>>4U));
+						static_cast<int16_t *>(pOutput)[0] = static_cast<int16_t>(m_Decoders[0].Decode(uNibbles>>4U));
 						// Right
-						static_cast<Int16 *>(pOutput)[1] = static_cast<Int16>(m_Decoders[1].Decode(uNibbles));
-						pOutput = static_cast<Int16 *>(pOutput)+2;
+						static_cast<int16_t *>(pOutput)[1] = static_cast<int16_t>(m_Decoders[1].Decode(uNibbles));
+						pOutput = static_cast<int16_t *>(pOutput)+2;
 					} while (--uCounter);
 					// Processed everything?
 					if (!uSamplesRemaining) {
@@ -657,14 +658,14 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 					// Looks like it's got an output problem. 
 					// Let the output cache deal with it.
 					//
-					Word uNibble = static_cast<const Word8 *>(pInput)[0];
-					pInput = static_cast<const Word8 *>(pInput)+1;
+					uint_t uNibble = static_cast<const uint8_t *>(pInput)[0];
+					pInput = static_cast<const uint8_t *>(pInput)+1;
 					--uInputChunkLength;
 
 					// Write into the cache
 					pDest = m_Cache;
-					static_cast<Int16 *>(pDest)[0] = static_cast<Int16>(m_Decoders[0].Decode(uNibble>>4U));
-					static_cast<Int16 *>(pDest)[1] = static_cast<Int16>(m_Decoders[1].Decode(uNibble));
+					static_cast<int16_t *>(pDest)[0] = static_cast<int16_t>(m_Decoders[0].Decode(uNibble>>4U));
+					static_cast<int16_t *>(pDest)[1] = static_cast<int16_t>(m_Decoders[1].Decode(uNibble));
 
 					// The special case where there's an odd number of samples.
 
@@ -697,25 +698,25 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 			if (uInputChunkLength) {
 
 				// Get the number of bytes already obtained
-				WordPtr uCacheSize = m_uCacheCount;
+				uintptr_t uCacheSize = m_uCacheCount;
 
 				// How many is needed to fill
-				WordPtr uRemaining = m_uCacheSize-uCacheSize;
+				uintptr_t uRemaining = m_uCacheSize-uCacheSize;
 
 				// Number of bytes to process
-				WordPtr uChunk = Min(uRemaining,uInputChunkLength);
+				uintptr_t uChunk = Min(uRemaining,uInputChunkLength);
 
 				// Fill in the cache
 				MemoryCopy(&m_Cache[uCacheSize],pInput,uChunk);
 
 				// Consume the input bytes
 
-				pInput = static_cast<const Word8 *>(pInput)+uChunk;
+				pInput = static_cast<const uint8_t *>(pInput)+uChunk;
 				uInputChunkLength-=uChunk;
 
 				// Did the cache fill up?
 				uCacheSize += uChunk;
-				m_uCacheCount = static_cast<Word>(uCacheSize);
+				m_uCacheCount = static_cast<uint_t>(uCacheSize);
 				if (uCacheSize==m_uCacheSize) {
 					// Cache is full, send to processing
 					bAbort = FALSE;
@@ -735,8 +736,8 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 
 				// Output data from the cache
 
-				WordPtr uCacheCount = m_uCacheCount;
-				WordPtr uSteps = Min(uOutputChunkLength,static_cast<WordPtr>(uCacheCount));
+				uintptr_t uCacheCount = m_uCacheCount;
+				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheCount));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;
@@ -745,21 +746,21 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 				pInputChunk = &m_Cache[m_uCacheSize-uCacheCount];
 
 				// Update the cache size
-				uCacheCount = static_cast<Word>(uCacheCount-uSteps);
+				uCacheCount = static_cast<uint_t>(uCacheCount-uSteps);
 
 				//
 				// Copy out the cache data
 				//
 				do {
-					static_cast<Word8 *>(pOutput)[0] = static_cast<const Word8*>(pInputChunk)[0];
-					pInputChunk = static_cast<const Word8 *>(pInputChunk)+1;
-					pOutput = static_cast<Word8 *>(pOutput)+1;
+					static_cast<uint8_t *>(pOutput)[0] = static_cast<const uint8_t*>(pInputChunk)[0];
+					pInputChunk = static_cast<const uint8_t *>(pInputChunk)+1;
+					pOutput = static_cast<uint8_t *>(pOutput)+1;
 				} while (--uSteps);
 
 				// Data still in the cache?
 				if (uCacheCount) {
 					// Update and exit
-					m_uCacheCount = static_cast<Word>(uCacheCount);
+					m_uCacheCount = static_cast<uint_t>(uCacheCount);
 				} else {
 					// Cache is empty, so switch to the next state
 					uState = m_eNextState;
@@ -771,8 +772,8 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 	} while (!bAbort);
 
 	// Return the number of bytes actually consumed
-	WordPtr uInputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pInput)-static_cast<const Word8 *>(pOldInput));
-	WordPtr uOutputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pOutput)-static_cast<const Word8 *>(pOldOutput));
+	uintptr_t uInputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pInput)-static_cast<const uint8_t *>(pOldInput));
+	uintptr_t uOutputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pOutput)-static_cast<const uint8_t *>(pOldOutput));
 
 	// Store the amount of data that was processed
 
@@ -815,7 +816,7 @@ Burger::DecompressMicrosoftADPCM * BURGER_API Burger::DecompressMicrosoftADPCM::
 
 /*! ************************************
 
-	\fn void Burger::DecompressMicrosoftADPCM::SetBlockSize(Word uBlockSize)
+	\fn void Burger::DecompressMicrosoftADPCM::SetBlockSize(uint_t uBlockSize)
 	\brief Set the block size for decompressing ADPCM data
 
 	\param uBlockSize Size, in bytes, of each ADPCM block
@@ -824,7 +825,7 @@ Burger::DecompressMicrosoftADPCM * BURGER_API Burger::DecompressMicrosoftADPCM::
 
 /*! ************************************
 
-	\fn void Burger::DecompressMicrosoftADPCM::SetSamplesPerBlock(Word uSamplesPerBlock)
+	\fn void Burger::DecompressMicrosoftADPCM::SetSamplesPerBlock(uint_t uSamplesPerBlock)
 	\brief Set the number of samples in a block of ADPCM data
 
 	When decompressing ADPCM data, it's necessary to have the samples per block

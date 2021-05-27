@@ -42,15 +42,15 @@ protected:
 	IDirect3DTexture9 *m_pPaletteTexture;		///< Texture for the palette
 	IDirect3DVertexBuffer9 *m_pVertexBuffer;	///< Vertex buffer to blit the software buffer to hardware
 	RendererSoftware8 m_Renderer;				///< Software renderer context
-	Word m_bFrontBufferTrueColor;				///< \ref TRUE if the front buffer is true color (Not 8 bit paletted)
-	Word m_uResetAttempts;						///< Number of tries to restore the video display
+	uint_t m_bFrontBufferTrueColor;				///< \ref TRUE if the front buffer is true color (Not 8 bit paletted)
+	uint_t m_uResetAttempts;						///< Number of tries to restore the video display
 	void FillVertexBuffer(void);
 	long AllocateResources(void);
 	void ReleaseResources(void);
 	long ResetLostDevice(void);
 public:
 	DisplayDirectX9Software8(GameApp *pGameApp);
-	Word Init(Word uWidth,Word uHeight,Word uDepth=32,Word uFlags=DEFAULTFLAGS) BURGER_OVERRIDE;
+	uint_t Init(uint_t uWidth,uint_t uHeight,uint_t uDepth=32,uint_t uFlags=DEFAULTFLAGS) BURGER_OVERRIDE;
 	void Shutdown(void) BURGER_OVERRIDE;
 	void BeginScene(void) BURGER_OVERRIDE;
 	void EndScene(void) BURGER_OVERRIDE;

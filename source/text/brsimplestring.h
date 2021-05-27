@@ -43,11 +43,11 @@ public:
 	Burger::SimpleString & operator = (const Burger::SimpleString &rInput);
 	BURGER_INLINE operator const char *() const { return m_pData; }
 	BURGER_INLINE const char *GetPtr(void) const { return m_pData; }
-	BURGER_INLINE char operator[](WordPtr uIndex) const { return m_pData[uIndex]; }
-	BURGER_INLINE const char &operator[](WordPtr uIndex) { return m_pData[uIndex]; }
+	BURGER_INLINE char operator[](uintptr_t uIndex) const { return m_pData[uIndex]; }
+	BURGER_INLINE const char &operator[](uintptr_t uIndex) { return m_pData[uIndex]; }
 	void BURGER_API Clear(void);
-	BURGER_INLINE Word IsEmpty(void) const { return !m_pData[0]; }
-	BURGER_INLINE WordPtr GetLength(void) const { return Burger::StringLength(m_pData); }
+	BURGER_INLINE uint_t IsEmpty(void) const { return !m_pData[0]; }
+	BURGER_INLINE uintptr_t GetLength(void) const { return Burger::StringLength(m_pData); }
 };
 }
 

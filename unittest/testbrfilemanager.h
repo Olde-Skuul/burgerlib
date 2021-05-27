@@ -19,6 +19,6 @@
 #include "brtypes.h"
 #endif
 
-extern Word BURGER_API TestBrFileManager(Word uVerbose);
+extern uint_t BURGER_API TestBrFileManager(uint_t uVerbose);
 
 #endif

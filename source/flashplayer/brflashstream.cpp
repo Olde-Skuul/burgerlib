@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player data stream reader
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player data stream reader
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brflashstream.h"
@@ -88,10 +89,10 @@ Burger::Flash::Stream::~Stream()
 
 	Forces the data stream to align to the next 8 bit boundary.
 	This internal function will clear out and remaining bits left
-	over from a bit stream parse from calls to GetWord(Word) or
-	GetInt(Word)
+	over from a bit stream parse from calls to GetWord(uint_t) or
+	GetInt(uint_t)
 
-	\sa GetWord(Word) or GetInt(Word)
+	\sa GetWord(uint_t) or GetInt(uint_t)
 
 ***************************************/
 
@@ -107,13 +108,13 @@ Burger::Flash::Stream::~Stream()
 
 /*! ************************************
 
-	\fn Word Burger::Flash::Stream::GetBoolean(void)
+	\fn uint_t Burger::Flash::Stream::GetBoolean(void)
 	\brief Get a single bit from the stream.
 
 	Extract a single bit from the stream and return it as a \ref TRUE or \ref FALSE
 
 	\return \ref TRUE or \ref FALSE
-	\sa ByteAlign(void) or GetWord(Word)
+	\sa ByteAlign(void) or GetWord(uint_t)
 
 ***************************************/
 
@@ -130,15 +131,15 @@ Burger::Flash::Stream::~Stream()
 	at page 17.
 
 	\return An unsigned integer decompressed from the byte stream
-	\sa GetWord32(void), GetWord(Word) or GetBoolean(void)
+	\sa GetWord32(void), GetWord(uint_t) or GetBoolean(void)
 
 ***************************************/
 
-Word32 BURGER_API Burger::Flash::Stream::GetEncodedU32(void)
+uint32_t BURGER_API Burger::Flash::Stream::GetEncodedU32(void)
 {
 	m_uBitsRemaining = 0;
 	InputMemoryStream *pStream = m_pStream;
-	Word32 uResult = pStream->GetByte();
+	uint32_t uResult = pStream->GetByte();
 	if (uResult & 0x80) {
 		uResult = (uResult ^ 0x80) | (pStream->GetByte() << 7U);
 		if (uResult & 0x4000) {
@@ -163,17 +164,17 @@ Word32 BURGER_API Burger::Flash::Stream::GetEncodedU32(void)
 
 	\param uBitCount The number of bits to parse (0-32).
 	\return An unsigned integer of the requested number of bits.
-	\sa GetInt(Word), ByteAlign(void) or GetBoolean(void)
+	\sa GetInt(uint_t), ByteAlign(void) or GetBoolean(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Flash::Stream::GetWord(Word uBitCount)
+uint_t BURGER_API Burger::Flash::Stream::GetWord(uint_t uBitCount)
 {
 	BURGER_ASSERT(uBitCount < 33U);
-	Word32 uResult = 0;
+	uint32_t uResult = 0;
 	if (uBitCount) {
-		Word uBitsRemaining = m_uBitsRemaining;
-		Word uBitBucket = m_uBitBucket;
+		uint_t uBitsRemaining = m_uBitsRemaining;
+		uint_t uBitBucket = m_uBitBucket;
 		do {
 			if (uBitsRemaining) {
 				if (uBitCount >= uBitsRemaining) {
@@ -211,13 +212,13 @@ Word BURGER_API Burger::Flash::Stream::GetWord(Word uBitCount)
 
 	\param uBitCount The number of bits to parse (0-32).
 	\return An signed integer of the requested number of bits.
-	\sa GetWord(Word), ByteAlign(void) or GetBoolean(void)
+	\sa GetWord(uint_t), ByteAlign(void) or GetBoolean(void)
 
 ***************************************/
 
-Int	BURGER_API Burger::Flash::Stream::GetInt(Word uBitCount)
+int_t BURGER_API Burger::Flash::Stream::GetInt(uint_t uBitCount)
 {
-	Int	iResult = static_cast<Int32>(GetWord(uBitCount));
+	int_t iResult = static_cast<int32_t>(GetWord(uBitCount));
 	// Sign extend.
 	if (iResult & (1 << (uBitCount - 1))) {
 		iResult |= -1 << uBitCount;
@@ -253,11 +254,11 @@ Int	BURGER_API Burger::Flash::Stream::GetInt(Word uBitCount)
 float BURGER_API Burger::Flash::Stream::GetFloat16(void)
 {
 	m_uBitsRemaining = 0;
-	Word32 uPacked = m_pStream->GetShort();
+	uint32_t uPacked = m_pStream->GetShort();
 	// Get the sign
-	Word32 uFloat = (uPacked & 0x8000U) << 16U;
+	uint32_t uFloat = (uPacked & 0x8000U) << 16U;
 	// Get the exponent
-	Word32 uExponent = uPacked & 0x7C00U;
+	uint32_t uExponent = uPacked & 0x7C00U;
 	if (uExponent) {
 		uFloat |= ((uExponent>>10U) + (127 - 16)) << 23U;
 	}
@@ -295,7 +296,7 @@ float BURGER_API Burger::Flash::Stream::GetFloat16(void)
 
 /*! ************************************
 
-	\fn Word8 Burger::Flash::Stream::GetByte(void)
+	\fn uint8_t Burger::Flash::Stream::GetByte(void)
 	\brief Read an 8 bit unsigned integer
 
 	Parse a single unsigned byte from the byte stream.
@@ -307,7 +308,7 @@ float BURGER_API Burger::Flash::Stream::GetFloat16(void)
 
 /*! ************************************
 
-	\fn Int8 Burger::Flash::Stream::GetInt8(void)
+	\fn int8_t Burger::Flash::Stream::GetInt8(void)
 	\brief Read an 8 bit signed integer
 
 	Parse a single signed byte from the byte stream.
@@ -319,7 +320,7 @@ float BURGER_API Burger::Flash::Stream::GetFloat16(void)
 
 /*! ************************************
 
-	\fn Word16 Burger::Flash::Stream::GetShort(void)
+	\fn uint16_t Burger::Flash::Stream::GetShort(void)
 	\brief Read a 16 bit unsigned integer
 
 	Parse a 16 bit unsigned integer from the byte stream.
@@ -331,7 +332,7 @@ float BURGER_API Burger::Flash::Stream::GetFloat16(void)
 
 /*! ************************************
 
-	\fn Int16 Burger::Flash::Stream::GetInt16(void)
+	\fn int16_t Burger::Flash::Stream::GetInt16(void)
 	\brief Read a 16 bit signed integer
 
 	Parse a 16 bit signed integer from the byte stream.
@@ -343,7 +344,7 @@ float BURGER_API Burger::Flash::Stream::GetFloat16(void)
 
 /*! ************************************
 
-	\fn Word32 Burger::Flash::Stream::GetWord32(void)
+	\fn uint32_t Burger::Flash::Stream::GetWord32(void)
 	\brief Read a 32 bit unsigned integer
 
 	Parse a 32 bit unsigned integer from the byte stream.
@@ -355,7 +356,7 @@ float BURGER_API Burger::Flash::Stream::GetFloat16(void)
 
 /*! ************************************
 
-	\fn Int32 Burger::Flash::Stream::GetInt32(void)
+	\fn int32_t Burger::Flash::Stream::GetInt32(void)
 	\brief Read a 32 bit signed integer
 
 	Parse a 32 bit signed integer from the byte stream.
@@ -367,7 +368,7 @@ float BURGER_API Burger::Flash::Stream::GetFloat16(void)
 
 /*! ************************************
 
-	\fn Int32 Burger::Flash::Stream::GetEncodedInt32(void)
+	\fn int32_t Burger::Flash::Stream::GetEncodedInt32(void)
 	\brief Read a byte compressed 32 bit signed integer
 
 	Call GetEncodedU32(void) and return the value as a signed
@@ -380,7 +381,7 @@ float BURGER_API Burger::Flash::Stream::GetFloat16(void)
 
 /*! ************************************
 
-	\fn Word32 Burger::Flash::Stream::GetEncodedU30(void)
+	\fn uint32_t Burger::Flash::Stream::GetEncodedU30(void)
 	\brief Read a byte compressed 30 bit unsigned integer
 
 	Parse a 30 bit unsigned integer from the byte stream
@@ -404,10 +405,10 @@ float BURGER_API Burger::Flash::Stream::GetFloat16(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Flash::Stream::GetVariableCount(void)
+uint_t BURGER_API Burger::Flash::Stream::GetVariableCount(void)
 {
 	m_uBitsRemaining = 0; 
-	Word uResult = m_pStream->GetByte();
+	uint_t uResult = m_pStream->GetByte();
 	if (uResult == 0xFF) {
 		uResult = m_pStream->GetShort();
 	}
@@ -422,7 +423,7 @@ Word BURGER_API Burger::Flash::Stream::GetVariableCount(void)
 	the resulting string into the output.
 
 	\param pOutput Pointer to a String to store the parsed string data.
-	\sa ReadPString(String *) or ReadString(WordPtr,String *)
+	\sa ReadPString(String *) or ReadString(uintptr_t,String *)
 
 ***************************************/
 
@@ -442,7 +443,7 @@ void BURGER_API Burger::Flash::Stream::ReadString(String *pOutput)
 	set to an empty string.
 
 	\param pOutput Pointer to a String to store the parsed string data.
-	\sa ReadString(String *) or ReadString(WordPtr,String *)
+	\sa ReadString(String *) or ReadString(uintptr_t,String *)
 
 ***************************************/
 
@@ -469,7 +470,7 @@ void BURGER_API Burger::Flash::Stream::ReadPString(String *pOutput)
 
 ***************************************/
 
-void BURGER_API Burger::Flash::Stream::ReadString(WordPtr uLength,String *pOutput)
+void BURGER_API Burger::Flash::Stream::ReadString(uintptr_t uLength,String *pOutput)
 {
 	m_uBitsRemaining = 0;
 	pOutput->SetBufferSize(uLength);
@@ -480,11 +481,11 @@ void BURGER_API Burger::Flash::Stream::ReadString(WordPtr uLength,String *pOutpu
 
 /*! ************************************
 
-	\fn WordPtr Burger::Flash::Stream::GetMark(void) const
+	\fn uintptr_t Burger::Flash::Stream::GetMark(void) const
 	\brief Return the current location of the byte stream.
 
 	\return The location in the stream where parsing is currently at.
-	\sa SetMark(WordPtr)
+	\sa SetMark(uintptr_t)
 
 ***************************************/
 
@@ -500,7 +501,7 @@ void BURGER_API Burger::Flash::Stream::ReadString(WordPtr uLength,String *pOutpu
 
 ***************************************/
 
-void BURGER_API Burger::Flash::Stream::SetMark(WordPtr uMark)
+void BURGER_API Burger::Flash::Stream::SetMark(uintptr_t uMark)
 {
 	m_uBitsRemaining = 0;
 	// If we're in a tag, make sure we're not seeking outside the tag.
@@ -525,7 +526,7 @@ void BURGER_API Burger::Flash::Stream::SetMark(WordPtr uMark)
 
 ***************************************/
 
-WordPtr	BURGER_API Burger::Flash::Stream::GetTagEndPosition(void) const
+uintptr_t	BURGER_API Burger::Flash::Stream::GetTagEndPosition(void) const
 {
 	BURGER_ASSERT(m_TagStack.size() > 0);
 	return m_TagStack.back();
@@ -545,12 +546,12 @@ WordPtr	BURGER_API Burger::Flash::Stream::GetTagEndPosition(void) const
 
 ***************************************/
 
-Word BURGER_API Burger::Flash::Stream::StartTag(void)
+uint_t BURGER_API Burger::Flash::Stream::StartTag(void)
 {
 	m_uBitsRemaining = 0;
-	Word uTagHeader = m_pStream->GetShort();
-	Word uTagType = uTagHeader >> 6U;
-	Word uTagLength = uTagHeader & 0x3FU;
+	uint_t uTagHeader = m_pStream->GetShort();
+	uint_t uTagType = uTagHeader >> 6U;
+	uint_t uTagLength = uTagHeader & 0x3FU;
 	if (uTagLength == 0x3FU) {
 		uTagLength = m_pStream->GetWord32();
 	}
@@ -583,7 +584,7 @@ void BURGER_API Burger::Flash::Stream::CloseTag(void)
 {
 	BURGER_ASSERT(m_TagStack.size() > 0);
 	// Get the last saved file mark
-	WordPtr uEndMark = m_TagStack.back();
+	uintptr_t uEndMark = m_TagStack.back();
 	m_TagStack.pop_back();
 	// Data parse error?
 	if (uEndMark != m_pStream->GetMark()) {

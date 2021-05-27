@@ -1,13 +1,14 @@
 /***************************************
 
-	Font base class
+    Font base class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -78,18 +79,18 @@ Burger::Font::~Font()
 
 	\param pInput Pointer to a UTF8 string. If \ref NULL or an empty string, perform nothing
 	\param uLength Length of the string in bytes
-	\sa GetPixelWidth(const char *,WordPtr)
+	\sa GetPixelWidth(const char *,uintptr_t)
 
 ***************************************/
 
-void Burger::Font::Draw(const char *pInput,WordPtr uLength)
+void Burger::Font::Draw(const char *pInput,uintptr_t uLength)
 {
 	if (uLength) {
 		const char *pEnd = pInput+uLength;
 		do {
-			Word32 uChar = UTF32::FromUTF8(pInput);
+			uint32_t uChar = UTF32::FromUTF8(pInput);
 			// Bad string?
-			if (uChar == static_cast<Word32>(UTF32::BAD)) {
+			if (uChar == static_cast<uint32_t>(UTF32::BAD)) {
 				break;
 			}
 			DrawChar(uChar);						// Draw the character
@@ -110,11 +111,11 @@ void Burger::Font::Draw(const char *pInput,WordPtr uLength)
 
 	\param pInput Pointer to a UTF8 string. If \ref NULL or an empty string, return zero
 	\param uLength Length of the string in bytes
-	\sa Draw(const char *,WordPtr)
+	\sa Draw(const char *,uintptr_t)
 
 ***************************************/
 
-Word Burger::Font::GetPixelWidth(const char * /* pInput */ ,WordPtr /* uLength */)
+uint_t Burger::Font::GetPixelWidth(const char * /* pInput */ ,uintptr_t /* uLength */)
 {
 	return 0;
 }
@@ -126,11 +127,11 @@ Word Burger::Font::GetPixelWidth(const char * /* pInput */ ,WordPtr /* uLength *
 	Given a valid UTF32 code, draw the single character
 
 	\param uLetter UTF32 character code to draw
-	\sa Draw(const char *,WordPtr)
+	\sa Draw(const char *,uintptr_t)
 
 ***************************************/
 
-void Burger::Font::DrawChar(Word /* uLetter */)
+void Burger::Font::DrawChar(uint_t /* uLetter */)
 {
 }
 
@@ -262,14 +263,14 @@ void Burger::Font::DrawChar(Word /* uLetter */)
 
 	\param uLetter UTF32 character code
 	\return Number of pixels wide this character strike
-	\sa GetPixelWidth(const char *,WordPtr)
+	\sa GetPixelWidth(const char *,uintptr_t)
 
 ***************************************/
 
-Word BURGER_API Burger::Font::GetPixelWidthChar(Word uLetter)
+uint_t BURGER_API Burger::Font::GetPixelWidthChar(uint_t uLetter)
 {
 	char Ascii[8];
-	WordPtr uLength = UTF8::FromUTF32(Ascii,uLetter);
+	uintptr_t uLength = UTF8::FromUTF32(Ascii,uLetter);
 	return GetPixelWidth(Ascii,uLength);
 }
 
@@ -281,11 +282,11 @@ Word BURGER_API Burger::Font::GetPixelWidthChar(Word uLetter)
 	needed to render the string
 
 	\param iInput Signed input value to convert into a numeric string
-	\sa GetPixelWidth(const char *,WordPtr)
+	\sa GetPixelWidth(const char *,uintptr_t)
 
 ***************************************/
 
-Word BURGER_API Burger::Font::GetPixelWidthNumber(Int32 iInput)
+uint_t BURGER_API Burger::Font::GetPixelWidthNumber(int32_t iInput)
 {
 	char Ascii[16];
 
@@ -301,11 +302,11 @@ Word BURGER_API Burger::Font::GetPixelWidthNumber(Int32 iInput)
 	needed to render the string
 
 	\param uInput Unsigned input value to convert into a numeric string
-	\sa GetPixelWidth(const char *,WordPtr)
+	\sa GetPixelWidth(const char *,uintptr_t)
 
 ***************************************/
 
-Word BURGER_API Burger::Font::GetPixelWidthNumber(Word32 uInput)
+uint_t BURGER_API Burger::Font::GetPixelWidthNumber(uint32_t uInput)
 {
 	char Ascii[16];
 
@@ -319,11 +320,11 @@ Word BURGER_API Burger::Font::GetPixelWidthNumber(Word32 uInput)
 
 	\param pInput Pointer to a UTF8 "C" string or \ref NULL to get zero
 	\return The string's width in pixels
-	\sa GetPixelWidth(const char *,WordPtr)
+	\sa GetPixelWidth(const char *,uintptr_t)
 
 ***************************************/
 
-Word BURGER_API Burger::Font::GetPixelWidthString(const char *pInput)
+uint_t BURGER_API Burger::Font::GetPixelWidthString(const char *pInput)
 {
 	if (pInput) {
 		return GetPixelWidth(pInput,StringLength(pInput));		// Get the text width
@@ -339,11 +340,11 @@ Word BURGER_API Burger::Font::GetPixelWidthString(const char *pInput)
 	x and y coordinates
 
 	\param iInput Signed input value to convert into a numeric string
-	\sa Draw(const char *,WordPtr)
+	\sa Draw(const char *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::Font::DrawNumber(Int32 iInput)
+void BURGER_API Burger::Font::DrawNumber(int32_t iInput)
 {
 	char Ascii[16];
 
@@ -359,11 +360,11 @@ void BURGER_API Burger::Font::DrawNumber(Int32 iInput)
 	x and y coordinates
 
 	\param uInput Unsigned input value to convert into a numeric string
-	\sa Draw(const char *,WordPtr)
+	\sa Draw(const char *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::Font::DrawNumber(Word32 uInput)
+void BURGER_API Burger::Font::DrawNumber(uint32_t uInput)
 {
 	char Ascii[16];
 
@@ -379,7 +380,7 @@ void BURGER_API Burger::Font::DrawNumber(Word32 uInput)
 	x and y coordinates
 
 	\param pInput Pointer to a valid UTF8 encoded "C" string. \ref NULL performs no action.
-	\sa Draw(const char *,WordPtr)
+	\sa Draw(const char *,uintptr_t)
 
 ***************************************/
 
@@ -401,15 +402,15 @@ void BURGER_API Burger::Font::DrawString(const char *pInput)
 	\param iX X coordinate to center the string on
 	\param iY Y coordinate to draw the string at
 	\param pInput Pointer to a valid "C" string. \ref NULL performs no action.
-	\sa Draw(const char *,WordPtr)
+	\sa Draw(const char *,uintptr_t)
 
 ***************************************/
 
 void BURGER_API Burger::Font::DrawStringCenterX(int iX,int iY,const char *pInput)
 {
 	if (pInput) {				// Failsafe
-		WordPtr uLength = StringLength(pInput);			// Get the string length
-		Word uWidth = GetPixelWidth(pInput,uLength);	// Get the string width
+		uintptr_t uLength = StringLength(pInput);			// Get the string length
+		uint_t uWidth = GetPixelWidth(pInput,uLength);	// Get the string width
 		m_iX = iX - static_cast<int>(uWidth>>1U);
 		m_iY = iY;
 		Draw(pInput,uLength);
@@ -425,7 +426,7 @@ void BURGER_API Burger::Font::DrawStringCenterX(int iX,int iY,const char *pInput
 	\param iX X coordinate to draw at
 	\param iY Y coordinate to draw at
 	\param pInput Pointer to a valid UTF8 encoded "C" string
-	\sa Draw(const char *,WordPtr)
+	\sa Draw(const char *,uintptr_t)
 
 ***************************************/
 
@@ -454,25 +455,25 @@ void BURGER_API Burger::Font::DrawStringAtXY(int iX,int iY,const char *pInput)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::Font::CharsForPixelWidth(const char *pInput,Word uWidth)
+uintptr_t BURGER_API Burger::Font::CharsForPixelWidth(const char *pInput,uint_t uWidth)
 {
-	WordPtr uResult = 0;			// Number of characters that are valid
+	uintptr_t uResult = 0;			// Number of characters that are valid
 	const char *pMark = pInput;		// Save in a temp
 	const char *pWork = pInput;		// Get the current mark
 
 	for (;;) {
-		Word uChar;					// Temp
+		uint_t uChar;					// Temp
 			
 		// Scan to the next space, CR/LF or the end of the string
 		
 		do {
-			uChar = reinterpret_cast<const Word8 *>(pWork)[0];		// Get a character
+			uChar = reinterpret_cast<const uint8_t *>(pWork)[0];		// Get a character
 			++pWork;												// Next char
 		} while (uChar && (uChar!=' ') && (uChar != 13) && (uChar!=10));	// End here?
 		--pWork;
-		WordPtr uTemp = static_cast<WordPtr>(pWork-pMark);			// Number of characters to test for
+		uintptr_t uTemp = static_cast<uintptr_t>(pWork-pMark);			// Number of characters to test for
 
-		Word uPixelWidth = GetPixelWidth(pInput,uResult+uTemp);		// Test the pixel width
+		uint_t uPixelWidth = GetPixelWidth(pInput,uResult+uTemp);		// Test the pixel width
 		if (uPixelWidth>uWidth) {			// Is this too long?
 			if (!uResult) {					// Nothing parsed before
 				uResult = uTemp;			// Accept the line as is... (Bad but it will have to do)
@@ -486,7 +487,7 @@ WordPtr BURGER_API Burger::Font::CharsForPixelWidth(const char *pInput,Word uWid
 		pMark = pWork;						// My new starting point
 		do {
 			++pWork;						// Skip past the space
-			uChar = reinterpret_cast<const Word8 *>(pWork)[0];
+			uChar = reinterpret_cast<const uint8_t *>(pWork)[0];
 		} while (uChar==' ');				// Wait until a non-space
 	}
 	return uResult;							// No data to print

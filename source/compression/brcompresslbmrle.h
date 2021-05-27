@@ -1,13 +1,14 @@
 /***************************************
 
-	Compress using ILBM RLE
+    Compress using ILBM RLE
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -35,12 +36,12 @@ namespace Burger {
 class CompressILBMRLE : public Compress {
 	BURGER_RTTI_IN_CLASS();
 protected:
-	WordPtr m_uCacheUsed;		///< Number of bytes in the cache
-	WordPtr m_uRemaining;		///< Number of bytes unprocessed from the last call to Compact()
-	Word8 m_Cache[128+8];		///< Data cache for resuming compression
-	eError Compact(const Word8 *pInput,WordPtr uInputLength);
+	uintptr_t m_uCacheUsed;		///< Number of bytes in the cache
+	uintptr_t m_uRemaining;		///< Number of bytes unprocessed from the last call to Compact()
+	uint8_t m_Cache[128+8];		///< Data cache for resuming compression
+	eError Compact(const uint8_t *pInput,uintptr_t uInputLength);
 public:
-	static const Word32 Signature = 0x524C4420;		///< 'RLE '
+	static const uint32_t Signature = 0x524C4420;		///< 'RLE '
 	CompressILBMRLE(void);
 	eError Init(void) BURGER_OVERRIDE;
 	eError Process(const void *pInput, uintptr_t uInputLength) BURGER_OVERRIDE;

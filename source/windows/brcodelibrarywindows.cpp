@@ -34,7 +34,7 @@
 
 ***************************************/
 
-Word Burger::CodeLibrary::Init(const char* pFilename)
+uint_t Burger::CodeLibrary::Init(const char* pFilename)
 {
 	// If there was a previous library, release it
 	Shutdown();
@@ -47,7 +47,7 @@ Word Burger::CodeLibrary::Init(const char* pFilename)
 		Pathname.Set(pFilename);
 		pFilename = Pathname.GetNative();
 	}
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	// Convert from UTF8 to UTF16
 	String16 FinalName(pFilename);
 	// Load the library from Windows

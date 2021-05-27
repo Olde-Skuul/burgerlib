@@ -78,9 +78,9 @@ Burger::TextureDirectX9::~TextureDirectX9()
 	}
 }
 
-Word Burger::TextureDirectX9::CheckLoad(Display *pDisplay)
+uint_t Burger::TextureDirectX9::CheckLoad(Display *pDisplay)
 {
-	Word bLoaded = FALSE;
+	uint_t bLoaded = FALSE;
 	IDirect3DTexture9 *pTexture = m_pD3DTexture;
 	IDirect3DDevice9 *pDevice = static_cast<DisplayDirectX9 *>(pDisplay)->GetDirect3DDevice9();
 	if (!pTexture || (m_uDirty&DIRTY_IMAGE)) {
@@ -96,19 +96,19 @@ Word Burger::TextureDirectX9::CheckLoad(Display *pDisplay)
 			pTexture = m_pD3DTexture;
 		}
 		// Copy the images into the DirectX surfaces.
-		for (Word i = 0; i < m_Image.GetMipMapCount(); i++) {
+		for (uint_t i = 0; i < m_Image.GetMipMapCount(); i++) {
 			IDirect3DSurface9 *pD3DSurface;
 			pTexture->GetSurfaceLevel(i,&pD3DSurface);
 			D3DLOCKED_RECT DestRect;
 			pTexture->LockRect(i,&DestRect,NULL,0);
-			WordPtr uBufferSize = m_Image.GetImageSize(i);
-			const Word8 *pImage = m_Image.GetImage(i);
+			uintptr_t uBufferSize = m_Image.GetImageSize(i);
+			const uint8_t *pImage = m_Image.GetImage(i);
 			if (m_Image.GetType()==Image::PIXELTYPE8888) {
 				uBufferSize>>=2U;
 				if (uBufferSize) {
-					Word32 *pDest = static_cast<Word32 *>(DestRect.pBits);
+					uint32_t *pDest = static_cast<uint32_t *>(DestRect.pBits);
 					do {
-						Word32 uPixel = static_cast<Word32>((pImage[0]<<16U) + (pImage[1]<<8U) + (pImage[2]) + (pImage[3]<<24U));
+						uint32_t uPixel = static_cast<uint32_t>((pImage[0]<<16U) + (pImage[1]<<8U) + (pImage[2]) + (pImage[3]<<24U));
 						pDest[0] = uPixel;
 						pImage += 4;
 						++pDest;
@@ -117,9 +117,9 @@ Word Burger::TextureDirectX9::CheckLoad(Display *pDisplay)
 			} else if (m_Image.GetType()==Image::PIXELTYPE888) {
 				uBufferSize = uBufferSize/3;
 				if (uBufferSize) {
-					Word32 *pDest = static_cast<Word32 *>(DestRect.pBits);
+					uint32_t *pDest = static_cast<uint32_t *>(DestRect.pBits);
 					do {
-						Word32 uPixel = static_cast<Word32>((pImage[0]<<16U) + (pImage[1]<<8U) + (pImage[2]) + 0xFF000000U);
+						uint32_t uPixel = static_cast<uint32_t>((pImage[0]<<16U) + (pImage[1]<<8U) + (pImage[2]) + 0xFF000000U);
 						pDest[0] = uPixel;
 						pImage += 3;
 						++pDest;
@@ -127,11 +127,11 @@ Word Burger::TextureDirectX9::CheckLoad(Display *pDisplay)
 				}
 
 			} else {
-				if (static_cast<WordPtr>(DestRect.Pitch)==m_Image.GetStride(i)) {
+				if (static_cast<uintptr_t>(DestRect.Pitch)==m_Image.GetStride(i)) {
 					MemoryCopy(DestRect.pBits,m_Image.GetImage(),uBufferSize);
 				} else {
-					Word uHeight = m_Image.GetHeight(i);
-					Word32 *pDest = static_cast<Word32 *>(DestRect.pBits);
+					uint_t uHeight = m_Image.GetHeight(i);
+					uint32_t *pDest = static_cast<uint32_t *>(DestRect.pBits);
 					do {
 						MemoryCopy(pDest,pImage,m_Image.GetStride());
 						pDest += DestRect.Pitch;
@@ -145,7 +145,7 @@ Word Burger::TextureDirectX9::CheckLoad(Display *pDisplay)
 		}
 		UnloadImageMemory();
 	}
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (pDevice->SetTexture(0,pTexture)<0) {
 		uResult = 10;
 	} else {
@@ -167,9 +167,9 @@ void Burger::TextureDirectX9::Release(Display * /* pDisplay */)
 // Return the D3DFORMAT for the texture type
 //
 
-Word BURGER_API Burger::TextureDirectX9::GetD3DFormat(void) const
+uint_t BURGER_API Burger::TextureDirectX9::GetD3DFormat(void) const
 {
-	Word uResult;
+	uint_t uResult;
 	switch (m_Image.GetType()) {
 	case Image::PIXELTYPEDXT1:
 		uResult = D3DFMT_DXT1;

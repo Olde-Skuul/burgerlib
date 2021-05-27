@@ -1,16 +1,16 @@
 /***************************************
 
-	Debug manager
+    Debug manager
 
-	MacOSX specific version
+    MacOSX specific version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE for
-	license details. Yes, you can use it in a commercial title without paying
-	anything, just give me a credit.
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
 
-	Please? It's not like I'm asking you for money!
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -32,7 +32,7 @@
 // Make it thread safe
 
 static Burger::CriticalSectionStatic g_LockString;
-static Word g_uDebugger = 0;
+static uint_t g_uDebugger = 0;
 
 /***************************************
 
@@ -40,12 +40,12 @@ static Word g_uDebugger = 0;
 
 ***************************************/
 
-void BURGER_API Burger::Debug::PrintString(const char* pString)
+void BURGER_API Burger::Debug::PrintString(const char* pString) BURGER_NOEXCEPT
 {
 	// Allow multiple threads to call me!
 
 	if (pString) {
-		WordPtr i = StringLength(pString);
+		uintptr_t i = StringLength(pString);
 		if (i) {
 			if (!IsDebuggerPresent()) {
 				g_LockString.Lock();
@@ -71,9 +71,9 @@ void BURGER_API Burger::Debug::PrintString(const char* pString)
 
 ***************************************/
 
-Word BURGER_API Burger::Debug::IsDebuggerPresent(void)
+uint_t BURGER_API Burger::Debug::IsDebuggerPresent(void) BURGER_NOEXCEPT
 {
-	Word uResult = g_uDebugger;
+	uint_t uResult = g_uDebugger;
 	// Already tested?
 	if (uResult & (~0x80U)) {
 
@@ -127,7 +127,7 @@ void BURGER_API Burger::OkAlertMessage(const char* pMessage, const char* pTitle)
 {
 	// Make sure that the OS cursor is visible otherwise the user will
 	// wonder what's up when the user can't see the cursor to click the button
-	Word bVisible = OSCursor::Show();
+	uint_t bVisible = OSCursor::Show();
 
 	// Handle all memory allocations
 	NSAutoreleasePool* pMemoryPool = [[NSAutoreleasePool alloc] init];
@@ -180,12 +180,12 @@ void BURGER_API Burger::OkAlertMessage(const char* pMessage, const char* pTitle)
 
 ***************************************/
 
-Word BURGER_API Burger::OkCancelAlertMessage(
+uint_t BURGER_API Burger::OkCancelAlertMessage(
 	const char* pMessage, const char* pTitle)
 {
 	// Make sure that the OS cursor is visible otherwise the user will
 	// wonder what's up when he can't see the cursor to click the button
-	Word bVisible = OSCursor::Show();
+	uint_t bVisible = OSCursor::Show();
 	// Handle all memory allocations
 	NSAutoreleasePool* pMemoryPool = [[NSAutoreleasePool alloc] init];
 
@@ -214,7 +214,7 @@ Word BURGER_API Burger::OkCancelAlertMessage(
 	// Release all of the memory
 	[pMemoryPool release];
 	// Return TRUE if pressed okay
-	Word result = (iResult == NSAlertFirstButtonReturn);
+	uint_t result = (iResult == NSAlertFirstButtonReturn);
 	OSCursor::Show(bVisible);
 	return result;
 }

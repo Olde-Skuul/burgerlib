@@ -1,13 +1,14 @@
 /***************************************
 
-	Autorepeat manager
+    Autorepeat manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -46,7 +47,7 @@
 
 ***************************************/
 
-Burger::AutoRepeat::AutoRepeat(Word32 uButtons,Word32 uInitialTick,Word32 uRepeatTick)
+Burger::AutoRepeat::AutoRepeat(uint32_t uButtons,uint32_t uInitialTick,uint32_t uRepeatTick)
 {
 	// Reset the class
 	m_uFlags = 0;
@@ -82,7 +83,7 @@ Burger::AutoRepeat::AutoRepeat(Word32 uButtons,Word32 uInitialTick,Word32 uRepea
 
 ***************************************/
 
-void Burger::AutoRepeat::Init(Word32 uButtons,Word32 uInitialTick,Word32 uRepeatTick)
+void Burger::AutoRepeat::Init(uint32_t uButtons,uint32_t uInitialTick,uint32_t uRepeatTick)
 {
 	m_uFlags = 0;
 	m_uButtons = uButtons;
@@ -112,10 +113,10 @@ void Burger::AutoRepeat::Init(Word32 uButtons,Word32 uInitialTick,Word32 uRepeat
 
 ***************************************/
 
-Word Burger::AutoRepeat::IsItRepeating(Word32 uButtons)
+uint_t Burger::AutoRepeat::IsItRepeating(uint32_t uButtons)
 {
-	Word32 uNewMark = Tick::Read();		// Get the current time mark
-	Word uFlags = m_uFlags;
+	uint32_t uNewMark = Tick::Read();		// Get the current time mark
+	uint_t uFlags = m_uFlags;
 	if (!(uFlags&INITIALIZED)) {		// Initialized?
 		m_uTimeMark = uNewMark;			// Reset the timer
 		if (m_uButtons & uButtons) {	// Initially held down?
@@ -125,7 +126,7 @@ Word Burger::AutoRepeat::IsItRepeating(Word32 uButtons)
 	}
 
 	// Assume not held down
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	if (!(m_uButtons & uButtons)) {		// Is it held down?
 		// Nope, clear the held down bit
 		uFlags &= ~(WAITFORKEYUP|HELDDOWNBEFORE|SECONDDELAY);
@@ -147,18 +148,18 @@ Word Burger::AutoRepeat::IsItRepeating(Word32 uButtons)
 
 			} else {
 				// Held down for repeating, what's the delay?
-				Word32 uDelay;
+				uint32_t uDelay;
 				if (m_uFlags & SECONDDELAY) {
 					uDelay = m_uRepeatTick;
 				} else {
 					uDelay = m_uInitialTick;
 				}
 				// Has the amount of time elapsed for a new event?
-				if (static_cast<Word32>(uNewMark-m_uTimeMark) >= uDelay) {
+				if (static_cast<uint32_t>(uNewMark-m_uTimeMark) >= uDelay) {
 					// Adjust the mark to "push" the value ahead
 					m_uTimeMark += uDelay;
 					// Hmm still active? Extra long delay due to some wacky event?
-					if (static_cast<Word32>(uNewMark-m_uTimeMark) >= uDelay) {
+					if (static_cast<uint32_t>(uNewMark-m_uTimeMark) >= uDelay) {
 						// Failsafe for wrap around of timer
 						m_uTimeMark = uNewMark;
 					}

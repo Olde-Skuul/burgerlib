@@ -19,6 +19,6 @@
 #include "brtypes.h"
 #endif
 
-extern int BURGER_API TestBrstrings(Word uVerbose);
+extern int BURGER_API TestBrstrings(uint_t uVerbose);
 
 #endif

@@ -53,9 +53,9 @@
 #if !defined(DOXYGEN)
 struct S3MHeader_t {
 #ifdef BURGER_BIGENDIAN
-	static const Word32 cSignature = 0x5343524D;	// 'SCRM'
+	static const uint32_t cSignature = 0x5343524D;	// 'SCRM'
 #else
-	static const Word32 cSignature = 0x4D524353;
+	static const uint32_t cSignature = 0x4D524353;
 #endif
 	enum eFlags {
 		FLAG_VIBRATO = 0x01,				// ST2 vibrato [deprecated]
@@ -69,57 +69,57 @@ struct S3MHeader_t {
 	};
 
 	char m_Name[28];
-	Word8 m_bSignature;				///< Always 0x1A
-	Word8 m_bSongType;				///< Always 0x10 for S3M
-	Word8 m_Reserved1[2];			///< Always 0
-	Word16 m_uOrderCount;			///< Number of entries in the order table, should be even
-	Word16 m_uInstrumentCount;		///< Number of instruments in the song
-	Word16 m_uPatternCount;			///< Number of pattern parapointers in the song
-	Word16 m_uFlags;				///< See eFlags
-	Word16 m_uTrackerVersion;		///< Upper four bits is tracker ID, lower 12 bits is tracker version
-	Word16 m_uSampleType;			///< 1 = Signed samples, else unsigned
-	Word32 m_Signature;				///< "SCRM"
-	Word8 m_bGlobalVolume;			///< Main volume for the song
-	Word8 m_bDefaultSpeed;			///< Frames per row
-	Word8 m_bDefaultTempo;			///< Frames per second
-	Word8 m_bMasterVolume;			///< Bit 7: 1=stereo, 0=mono, Bits 6-0: volume
-	Word8 m_bUltraClickRemoval;		///< Number of channels to use for click removal on real GUS hardware
-	Word8 m_bDefaultPan;				///< 252=read pan values in header, anything else ignores pan values in header
-	Word8 m_Reserved2[8];			///< Unused, some trackers store data here
-	Word16 m_ptrSpecial;			///< Parapointer to additional data, Only valid if m_uFlags & FLAG_PTRSPECIAL is set
-	Word8 m_uChannelSettings[32];	///< See above table about the values stored here
+	uint8_t m_bSignature;				///< Always 0x1A
+	uint8_t m_bSongType;				///< Always 0x10 for S3M
+	uint8_t m_Reserved1[2];			///< Always 0
+	uint16_t m_uOrderCount;			///< Number of entries in the order table, should be even
+	uint16_t m_uInstrumentCount;		///< Number of instruments in the song
+	uint16_t m_uPatternCount;			///< Number of pattern parapointers in the song
+	uint16_t m_uFlags;				///< See eFlags
+	uint16_t m_uTrackerVersion;		///< Upper four bits is tracker ID, lower 12 bits is tracker version
+	uint16_t m_uSampleType;			///< 1 = Signed samples, else unsigned
+	uint32_t m_Signature;				///< "SCRM"
+	uint8_t m_bGlobalVolume;			///< Main volume for the song
+	uint8_t m_bDefaultSpeed;			///< Frames per row
+	uint8_t m_bDefaultTempo;			///< Frames per second
+	uint8_t m_bMasterVolume;			///< Bit 7: 1=stereo, 0=mono, Bits 6-0: volume
+	uint8_t m_bUltraClickRemoval;		///< Number of channels to use for click removal on real GUS hardware
+	uint8_t m_bDefaultPan;				///< 252=read pan values in header, anything else ignores pan values in header
+	uint8_t m_Reserved2[8];			///< Unused, some trackers store data here
+	uint16_t m_ptrSpecial;			///< Parapointer to additional data, Only valid if m_uFlags & FLAG_PTRSPECIAL is set
+	uint8_t m_uChannelSettings[32];	///< See above table about the values stored here
 };
 
 struct S3MPattern_t {
-	Word8 m_uWhat;				///< 0 = End of row, Low 5 bits = channel number	
-	Word8 m_uNote;				///< High nibble = octave, low nibble = note
-	Word8 m_uInstrument;		///< Instrument attached to the command
-	Word8 m_uVolume;			///< Volume command
-	Word8 m_uEffectCommand;		///< Effect command enumeration
-	Word8 m_uEffectArgument;	///< Argument for the above effect command
+	uint8_t m_uWhat;				///< 0 = End of row, Low 5 bits = channel number	
+	uint8_t m_uNote;				///< High nibble = octave, low nibble = note
+	uint8_t m_uInstrument;		///< Instrument attached to the command
+	uint8_t m_uVolume;			///< Volume command
+	uint8_t m_uEffectCommand;		///< Effect command enumeration
+	uint8_t m_uEffectArgument;	///< Argument for the above effect command
 };
 
 struct S3MInstrument_t {
 #ifdef BURGER_BIGENDIAN
-	static const Word32 cSignature = 0x53435253;	// 'SCRS'
+	static const uint32_t cSignature = 0x53435253;	// 'SCRS'
 #else
-	static const Word32 cSignature = 0x53524353;
+	static const uint32_t cSignature = 0x53524353;
 #endif
-	Word8 m_bInstrumentType;		///< 0 = Empty, 1 = PCM
-	Word8 m_DOSName[12];			///< MSDOS filename
-	Word8 m_bParapointerHi;			///< Upper 8 bits of the 24 bit offset to the pattern
-	Word16 m_uParapointerLo;		///< Lower 16 bits of the 24 bit offset to the pattern
-	Word32 m_uSampleLength;			///< Length of the sample in bytes
-	Word32 m_uLoopBegin;			///< Start of a loop in bytes
-	Word32 m_uLoopEnd;				///< End of the loop in bytes
-	Word8 m_bVolume;				///< Volume of the instrument (0-64)
-	Word8 m_Reserved1;
-	Word8 m_bPacked;				///< TRUE if ADPCM
-	Word8 m_bFlags;					///< Flags 1=loop on, 2=stereo (data is length bytes for left channel then length bytes for right channel), 4=16-bit little-endian sample
-	Word32 m_uC2Speed;				///< Sample rate for C2
-	Word8 Reserved2[12];			///< Set to zero
+	uint8_t m_bInstrumentType;		///< 0 = Empty, 1 = PCM
+	uint8_t m_DOSName[12];			///< MSDOS filename
+	uint8_t m_bParapointerHi;			///< Upper 8 bits of the 24 bit offset to the pattern
+	uint16_t m_uParapointerLo;		///< Lower 16 bits of the 24 bit offset to the pattern
+	uint32_t m_uSampleLength;			///< Length of the sample in bytes
+	uint32_t m_uLoopBegin;			///< Start of a loop in bytes
+	uint32_t m_uLoopEnd;				///< End of the loop in bytes
+	uint8_t m_bVolume;				///< Volume of the instrument (0-64)
+	uint8_t m_Reserved1;
+	uint8_t m_bPacked;				///< TRUE if ADPCM
+	uint8_t m_bFlags;					///< Flags 1=loop on, 2=stereo (data is length bytes for left channel then length bytes for right channel), 4=16-bit little-endian sample
+	uint32_t m_uC2Speed;				///< Sample rate for C2
+	uint8_t Reserved2[12];			///< Set to zero
 	char m_Name[28];				///< Sample title, for display to user. Must be null-terminated.
-	Word32 m_Signature;				///< 'SCRS'
+	uint32_t m_Signature;				///< 'SCRS'
 };
 #endif
 
@@ -133,16 +133,16 @@ struct S3MInstrument_t {
 	\param pOutput Pointer to the command to receive the translated values
 	\param uS3MCommand S3M format effect command
 	\param uS3MArgument S3M format effect argument
-	\sa ImportS3M(Sequencer::SongPackage *,const Word8 *,WordPtr)
+	\sa ImportS3M(Sequencer::SongPackage *,const uint8_t *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::ImportS3MEffect(Sequencer::Command_t *pOutput,Word uS3MCommand,Word uS3MArgument)
+void BURGER_API Burger::ImportS3MEffect(Sequencer::Command_t *pOutput,uint_t uS3MCommand,uint_t uS3MArgument)
 {
-	Word uS3MArgument0F = uS3MArgument&0xFU;
-	Word uS3MArgumentF0 = uS3MArgument>>4U;
+	uint_t uS3MArgument0F = uS3MArgument&0xFU;
+	uint_t uS3MArgumentF0 = uS3MArgument>>4U;
 	Sequencer::Command_t::eEffect uEffectCommand = Sequencer::Command_t::EFFECT_NONE;
-	Word uEffectArgument = 0;
+	uint_t uEffectArgument = 0;
 	
 	// Parse out the command (Converted to ASCII)
 	switch(uS3MCommand + 0x40) {
@@ -271,7 +271,7 @@ void BURGER_API Burger::ImportS3MEffect(Sequencer::Command_t *pOutput,Word uS3MC
 	}
 	// Save off the effect
 	pOutput->SetEffect(uEffectCommand);
-	pOutput->m_uEffectArgument = static_cast<Word8>(uEffectArgument);
+	pOutput->m_uEffectArgument = static_cast<uint8_t>(uEffectArgument);
 }
 
 /*! ************************************
@@ -284,13 +284,13 @@ void BURGER_API Burger::ImportS3MEffect(Sequencer::Command_t *pOutput,Word uS3MC
 	\param pInput Pointer to the S3M file
 	\param uInputLength Length of the input data
 	\return Zero if no error, non-zero if error
-	\sa ImportS3MEffect(Sequencer::Command_t *,Word,Word)
+	\sa ImportS3MEffect(Sequencer::Command_t *,uint_t,uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const Word8 *pInput,WordPtr uInputLength)
+uint_t BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const uint8_t *pInput,uintptr_t uInputLength)
 {
-	Word uResult = Sequencer::IMPORT_UNKNOWN;
+	uint_t uResult = Sequencer::IMPORT_UNKNOWN;
 	const S3MHeader_t *pS3MHeader = static_cast<const S3MHeader_t*>(static_cast<const void *>(pInput));
 	if ((uInputLength>=96) && 
 		(pS3MHeader->m_Signature == S3MHeader_t::cSignature)) {
@@ -299,32 +299,32 @@ Word BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const Word8 *p
 		uResult = Sequencer::IMPORT_TRUNCATION;
 
 		// Let's attempt the conversion by consuming the header
-		const Word8 *pWork = pInput+96;
+		const uint8_t *pWork = pInput+96;
 		uInputLength-=96;
 
 		// Set up the pointer to the orders
-		Word uOrderCount = LittleEndian::Load(&pS3MHeader->m_uOrderCount);
+		uint_t uOrderCount = LittleEndian::Load(&pS3MHeader->m_uOrderCount);
 		if (uInputLength>=uOrderCount) {
 
 			// Mark the data and consume it
-			const Word8 *pOrders = pWork;
+			const uint8_t *pOrders = pWork;
 			pWork += uOrderCount;
 			uInputLength-=uOrderCount;
 			
 			// Instruments (16 bit aligned)
-			Word uInstrumentCount = LittleEndian::Load(&pS3MHeader->m_uInstrumentCount);
+			uint_t uInstrumentCount = LittleEndian::Load(&pS3MHeader->m_uInstrumentCount);
 			if (uInputLength>=(uInstrumentCount*2)) {
 
 				// Mark the instrument sizes
-				const Word16 *pInstrumentOffsets = static_cast<const Word16 *>(static_cast<const void *>(pWork));
+				const uint16_t *pInstrumentOffsets = static_cast<const uint16_t *>(static_cast<const void *>(pWork));
 				pWork += uInstrumentCount * 2;
 				uInputLength -= uInstrumentCount * 2;
 
 				// Pointers to pattern
-				Word uPatternCount = LittleEndian::Load(&pS3MHeader->m_uPatternCount);
+				uint_t uPatternCount = LittleEndian::Load(&pS3MHeader->m_uPatternCount);
 				if (uInputLength>=(uPatternCount*2)) {
 					// Mark the pattern offsets
-					const Word16 *pPatternOffsets = static_cast<const Word16 *>(static_cast<const void *>(pWork));
+					const uint16_t *pPatternOffsets = static_cast<const uint16_t *>(static_cast<const void *>(pWork));
 					//pWork += uPatternCount*2;
 					uInputLength -= uPatternCount*2;
 
@@ -339,7 +339,7 @@ Word BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const Word8 *p
 						
 						// Clamp pattern pointers
 						if (uOrderCount>=BURGER_ARRAYSIZE(pOutput->m_SongDescription.m_PatternPointers)) {
-							uOrderCount = static_cast<Word>(BURGER_ARRAYSIZE(pOutput->m_SongDescription.m_PatternPointers));
+							uOrderCount = static_cast<uint_t>(BURGER_ARRAYSIZE(pOutput->m_SongDescription.m_PatternPointers));
 						}
 
 						// Begin the data extraction!
@@ -356,7 +356,7 @@ Word BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const Word8 *p
 						pOutput->m_SongDescription.m_uInstrumentCount = uInstrumentCount;
 
 						// Set default sample IDs
-						Word i = 0;
+						uint_t i = 0;
 						do {
 							pOutput->m_InstrDatas[i].m_uBaseSampleID = (i * Sequencer::cSampleMaxCount);
 						} while (++i < BURGER_ARRAYSIZE(pOutput->m_InstrDatas));
@@ -365,7 +365,7 @@ Word BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const Word8 *p
 						if (uOrderCount) {
 							i = 0;
 							do {
-								Word uOrder = pOrders[i];
+								uint_t uOrder = pOrders[i];
 								if (uOrder>=uPatternCount) {
 									uOrder = 0;
 								}
@@ -388,7 +388,7 @@ Word BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const Word8 *p
 
 						// Determine the number of channels
 
-						Word uChannelCount = 0;
+						uint_t uChannelCount = 0;
 						i = 0;
 						do {
 							// Less than 32 is valid
@@ -402,7 +402,7 @@ Word BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const Word8 *p
 
 						// Process the instruments
 
-						Word uSampleCount = 0;		// No samples found yet
+						uint_t uSampleCount = 0;		// No samples found yet
 
 						if (uInstrumentCount) {
 							i = 0;
@@ -416,7 +416,7 @@ Word BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const Word8 *p
 								if ((pS3MInstruments->m_bInstrumentType == 1) && 
 									(pS3MInstruments->m_bPacked == 0) &&
 									(pS3MInstruments->m_Signature == S3MInstrument_t::cSignature)) {
-										const Word8 *pSample = pInput + ((static_cast<Word>(pS3MInstruments->m_bParapointerHi)<<20U)|(static_cast<Word>(LittleEndian::Load(&pS3MInstruments->m_uParapointerLo))<<4U));
+										const uint8_t *pSample = pInput + ((static_cast<uint_t>(pS3MInstruments->m_bParapointerHi)<<20U)|(static_cast<uint_t>(LittleEndian::Load(&pS3MInstruments->m_uParapointerLo))<<4U));
 										++uSampleCount;
 										pInstrData->m_uNumberSamples = 1;
 										pInstrData->m_uVolumeFadeSpeed = Sequencer::cDefaultVolumeFade;
@@ -458,20 +458,20 @@ Word BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const Word8 *p
 											uResult = Sequencer::IMPORT_OUTOFMEMORY;
 											break;
 										}
-										Word uSampleType = LittleEndian::Load(&pS3MHeader->m_uSampleType);
+										uint_t uSampleType = LittleEndian::Load(&pS3MHeader->m_uSampleType);
 										if (pSampleDescription->m_uBitsPerSample==16) {
-											WordPtr uLength = pSampleDescription->m_uSampleSize/2;
+											uintptr_t uLength = pSampleDescription->m_uSampleSize/2;
 											if (uLength) {
 												if (uSampleType != 1) {
-													Word16 *pSampleTemp = static_cast<Word16 *>(pSampleDescription->m_pSample);
+													uint16_t *pSampleTemp = static_cast<uint16_t *>(pSampleDescription->m_pSample);
 													do {
-														pSampleTemp[0] = static_cast<Word16>(LittleEndian::Load(pSampleTemp)^0x8000U);
+														pSampleTemp[0] = static_cast<uint16_t>(LittleEndian::Load(pSampleTemp)^0x8000U);
 														++pSampleTemp;
 													} while (--uLength);
 												}
 #if defined(BURGER_BIGENDIAN)
 												else {
-													ConvertEndian(static_cast<Word16 *>(pSampleDescription->m_pSample),uLength);
+													ConvertEndian(static_cast<uint16_t *>(pSampleDescription->m_pSample),uLength);
 												}
 #endif
 											}
@@ -501,11 +501,11 @@ Word BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const Word8 *p
 									break;
 								}
 								pOutput->m_pPartitions[i] = pPatternData;
-								Word uPatternOffset = LittleEndian::Load(&pPatternOffsets[i]);
+								uint_t uPatternOffset = LittleEndian::Load(&pPatternOffsets[i]);
 								if (uPatternOffset) {
 									pWork = pInput + (uPatternOffset*16) + 2;
 
-									Word uRowIndex = 0;
+									uint_t uRowIndex = 0;
 									do {
 										//
 										// 0 = End the row
@@ -515,7 +515,7 @@ Word BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const Word8 *p
 										// 0x80 = Command / Argument
 										//
 
-										Word uChannelFlags = pWork[0];
+										uint_t uChannelFlags = pWork[0];
 										++pWork;
 
 										if (!uChannelFlags) {
@@ -523,7 +523,7 @@ Word BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const Word8 *p
 										} else {
 											// Channel
 
-											Word uChannel = uChannelFlags&0x1FU;
+											uint_t uChannel = uChannelFlags&0x1FU;
 											Sequencer::Command_t *pCommand;
 											if (uChannel < uChannelCount) {
 												pCommand = pPatternData->GetCommand(static_cast<int>(uRowIndex),static_cast<int>(uChannel));
@@ -535,12 +535,12 @@ Word BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const Word8 *p
 
 											if (uChannelFlags & 0x20) {
 												if (pCommand) {
-													Word uNoteTemp = pWork[0];
+													uint_t uNoteTemp = pWork[0];
 													uNoteTemp = (((uNoteTemp>>4U)&0xFU)*12U) + (uNoteTemp & 0x0FU);
 													if (uNoteTemp >= Sequencer::NOTE_MAX) {
 														uNoteTemp = 0xFF;
 													}
-													pCommand->m_uNote = static_cast<Word8>(uNoteTemp);
+													pCommand->m_uNote = static_cast<uint8_t>(uNoteTemp);
 													pCommand->m_uInstrument = pWork[1];
 												}
 												pWork += 2;
@@ -550,11 +550,11 @@ Word BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const Word8 *p
 
 											if (uChannelFlags & 0x40) {
 												if (pCommand) {
-													Word uVolume = pWork[0];
+													uint_t uVolume = pWork[0];
 													if (uVolume > 64) {
 														uVolume = 64;
 													}
-													pCommand->m_uVolume = static_cast<Word8>(uVolume+0x10U);
+													pCommand->m_uVolume = static_cast<uint8_t>(uVolume+0x10U);
 												}
 												++pWork;
 											} else {

@@ -1,15 +1,16 @@
 /***************************************
 
-	OpenGL manager class
+    OpenGL manager class
 
-	iOS only
+    iOS only
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -199,7 +200,7 @@ Burger::Display::~Display()
 
 ***************************************/
 
-Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
+uint_t Burger::Display::Init(uint_t uWidth,uint_t uHeight,uint_t uDepth,uint_t uFlags)
 {
 	// Set the new size of the screen
 	uWidth = m_uDisplayWidth;
@@ -318,7 +319,7 @@ void Burger::Display::EndScene(void)
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetFrontBuffer(void) const
+	\fn uint_t Burger::Display::GetFrontBuffer(void) const
 	\brief Front buffer index
 
 	When an OpenGL context is created, a front buffer is declared
@@ -335,7 +336,7 @@ void Burger::Display::EndScene(void)
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetColorBuffer(void) const
+	\fn uint_t Burger::Display::GetColorBuffer(void) const
 	\brief Color buffer index
 
 	When an OpenGL context is created, a color buffer is declared
@@ -350,7 +351,7 @@ void Burger::Display::EndScene(void)
 
 /*! ************************************
 
-	\fn Word Burger::Display::GetDepthBuffer(void) const
+	\fn uint_t Burger::Display::GetDepthBuffer(void) const
 	\brief Depth buffer index
 
 	When an OpenGL context is created, a depth buffer is declared

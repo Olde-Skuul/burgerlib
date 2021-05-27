@@ -102,7 +102,7 @@ struct Matrix3D_t {
 	void BURGER_API TransposeTransform(Vector3D_t *pOutput,const Vector3D_t *pInput) const;
 	void BURGER_API TransposeTransformAdd(Vector3D_t *pInput,const Vector3D_t *pTranslate) const;
 	void BURGER_API TransposeTransformAdd(Vector3D_t *pOutput,const Vector3D_t *pInput,const Vector3D_t *pTranslate) const;
-	Word BURGER_API AffineInverse(const Matrix3D_t *pInput);
+	uint_t BURGER_API AffineInverse(const Matrix3D_t *pInput);
 	void BURGER_API Yaw(float fYaw);
 	void BURGER_API Pitch(float fPitch);
 	void BURGER_API Roll(float fRoll);

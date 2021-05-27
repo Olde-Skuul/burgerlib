@@ -1,14 +1,14 @@
 /***************************************
 
-    Random number generator using Mersenne Twist (MT19937)
+	Random number generator using Mersenne Twist (MT19937)
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -19,10 +19,6 @@
 #include "brtypes.h"
 #endif
 
-#ifndef __BRBASE_H__
-#include "brbase.h"
-#endif
-
 #ifndef __BRRANDOMBASE_H__
 #include "brrandombase.h"
 #endif
@@ -30,22 +26,31 @@
 /* BEGIN */
 namespace Burger {
 
-class RandomMersenneTwist : public RandomBase {
+class RandomMersenneTwist: public RandomBase {
 	BURGER_RTTI_IN_CLASS();
+
 protected:
-	static const Word cElements = 624;	///< Number of elements in the polynomial array
-	static const Word cTapIndex = 397;	///< Tap index into the polynomial array
-	Word32 m_Array[cElements];			///< Array of seed values (Polynomial)
-	Word32 m_uIndex;					///< First lookup index
+	/** Number of elements in the polynomial array */
+	static const uint_t kElements = 624;
+
+	/** Tap index into the polynomial array */
+	static const uint_t kTapIndex = 397;
+
+	/** Array of seed values (Polynomial) */
+	uint32_t m_Array[kElements];
+
+	/** First lookup index */
+	uint32_t m_uIndex;
+
 public:
-	RandomMersenneTwist(Word32 uNewSeed=5489U);
-	static RandomMersenneTwist* BURGER_API New(Word32 uNewSeed=0);
-	void SetSeed(Word32 uNewSeed) BURGER_OVERRIDE;
-	Word32 Get(void) BURGER_OVERRIDE;
+	RandomMersenneTwist(uint32_t uNewSeed = 5489U) BURGER_NOEXCEPT;
+	static RandomMersenneTwist* BURGER_API New(
+		uint32_t uNewSeed = 0) BURGER_NOEXCEPT;
+	void SetSeed(uint32_t uNewSeed) BURGER_NOEXCEPT BURGER_OVERRIDE;
+	uint32_t Get(void) BURGER_NOEXCEPT BURGER_OVERRIDE;
 };
 }
 
 /* END */
 
 #endif
-

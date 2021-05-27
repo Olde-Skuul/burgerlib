@@ -19,6 +19,6 @@
 #include "brtypes.h"
 #endif
 
-extern int BURGER_API TestBrfloatingpoint(Word uVerbose);
+extern int BURGER_API TestBrfloatingpoint(uint_t uVerbose);
 
 #endif

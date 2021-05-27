@@ -66,8 +66,8 @@ typedef HRESULT(WINAPI* SHGetKnownFolderPathPtr)(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::SHGetKnownFolderPath(
-	const GUID* pGuid, Word32 uFlags, void* hHandle, Word16** ppResult)
+uint_t BURGER_API Burger::Windows::SHGetKnownFolderPath(
+	const GUID* pGuid, uint32_t uFlags, void* hHandle, uint16_t** ppResult)
 {
 	void* pSHGetKnownFolderPath = LoadFunctionIndex(CALL_SHGetKnownFolderPath);
 	HRESULT uResult = E_FAIL; // Failure
@@ -75,7 +75,7 @@ Word BURGER_API Burger::Windows::SHGetKnownFolderPath(
 		uResult = static_cast<SHGetKnownFolderPathPtr>(pSHGetKnownFolderPath)(
 			pGuid, uFlags, hHandle, (PWSTR *)ppResult);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 #endif

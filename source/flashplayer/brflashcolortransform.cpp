@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player color transform manager
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player color transform manager
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brflashcolortransform.h"
@@ -117,10 +118,10 @@ void BURGER_API Burger::Flash::ColorTransform::Concatenate(const ColorTransform 
 
 void BURGER_API Burger::Flash::ColorTransform::Transform(RGBAWord8_t *pOutput,const RGBAWord8_t *pInput) const
 {
-	pOutput->m_uRed = static_cast<Word8>(static_cast<int>(Burger::Clamp(static_cast<float>(pInput->m_uRed) * m_fRedMultTerm + m_fRedAddTerm,0.0f,255.0f)));
-	pOutput->m_uGreen = static_cast<Word8>(static_cast<int>(Burger::Clamp(static_cast<float>(pInput->m_uGreen) * m_fGreenMultTerm + m_fGreenAddTerm,0.0f,255.0f)));
-	pOutput->m_uBlue = static_cast<Word8>(static_cast<int>(Burger::Clamp(static_cast<float>(pInput->m_uBlue) * m_fBlueMultTerm + m_fBlueAddTerm,0.0f,255.0f)));
-	pOutput->m_uAlpha = static_cast<Word8>(static_cast<int>(Burger::Clamp(static_cast<float>(pInput->m_uAlpha) * m_fAlphaMultTerm + m_fAlphaAddTerm,0.0f,255.0f)));
+	pOutput->m_uRed = static_cast<uint8_t>(static_cast<int>(Burger::Clamp(static_cast<float>(pInput->m_uRed) * m_fRedMultTerm + m_fRedAddTerm,0.0f,255.0f)));
+	pOutput->m_uGreen = static_cast<uint8_t>(static_cast<int>(Burger::Clamp(static_cast<float>(pInput->m_uGreen) * m_fGreenMultTerm + m_fGreenAddTerm,0.0f,255.0f)));
+	pOutput->m_uBlue = static_cast<uint8_t>(static_cast<int>(Burger::Clamp(static_cast<float>(pInput->m_uBlue) * m_fBlueMultTerm + m_fBlueAddTerm,0.0f,255.0f)));
+	pOutput->m_uAlpha = static_cast<uint8_t>(static_cast<int>(Burger::Clamp(static_cast<float>(pInput->m_uAlpha) * m_fAlphaMultTerm + m_fAlphaAddTerm,0.0f,255.0f)));
 }
 
 /*! ************************************
@@ -140,9 +141,9 @@ void BURGER_API Burger::Flash::ColorTransform::ReadRGB(Stream* pStream)
 	pStream->ByteAlign();
 
 	// Get the flags
-	Word bHasAddTerms = pStream->GetWord(1);
-	Word bHasMultTerms = pStream->GetWord(1);
-	Word uNbits = pStream->GetWord(4);
+	uint_t bHasAddTerms = pStream->GetWord(1);
+	uint_t bHasMultTerms = pStream->GetWord(1);
+	uint_t uNbits = pStream->GetWord(4);
 
 	if (bHasMultTerms) {
 		// 8.8 fixed point
@@ -185,9 +186,9 @@ void BURGER_API Burger::Flash::ColorTransform::ReadRGBA(Stream* pStream)
 	pStream->ByteAlign();
 
 	// Get the flags
-	Word bHasAddTerms = pStream->GetWord(1);
-	Word bHasMultTerms = pStream->GetWord(1);
-	Word uNbits = pStream->GetWord(4);
+	uint_t bHasAddTerms = pStream->GetWord(1);
+	uint_t bHasMultTerms = pStream->GetWord(1);
+	uint_t uNbits = pStream->GetWord(4);
 
 	if (bHasMultTerms) {
 		m_fRedMultTerm = static_cast<float>(pStream->GetInt(uNbits)) * (1.0f/256.0f);

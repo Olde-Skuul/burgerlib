@@ -50,26 +50,26 @@ typedef unsigned long WordAttr;
 
 // Structure declaration of data coming from getdirentriesattr()
 struct FInfoAttrBuf {
-	Word32 m_uLength;				   // Length of this data structure
+	uint32_t m_uLength;				   // Length of this data structure
 	attrreference_t m_Name;			   // Offset for the filename
 	fsobj_type_t m_uObjType;		   // VREG for file, VREG for directory
 	struct timespec m_CreationDate;	// Creation date
 	struct timespec m_ModificatonDate; // Modification date
-	Word32 m_FinderInfo[8];			   // Aux/File type are the first 8 bytes
-	Word32 m_Flags;					   // Hidden and locked flags
+	uint32_t m_FinderInfo[8];			   // Aux/File type are the first 8 bytes
+	uint32_t m_Flags;					   // Hidden and locked flags
 	off_t m_uFileSize;				   // Filesize
 } __attribute__((packed));
 
 struct BulkAttr {
-	Word32 m_uLength;				   // Length of this data structure
+	uint32_t m_uLength;				   // Length of this data structure
 	attribute_set_t m_Returned;		   // Flags for which entries returned
-	Word32 m_uError;				   // Error code for this entry
+	uint32_t m_uError;				   // Error code for this entry
 	attrreference_t m_Name;			   // Offset for the filename
 	fsobj_type_t m_uObjType;		   // VREG for file, VREG for directory
 	struct timespec m_CreationDate;	// Creation date
 	struct timespec m_ModificatonDate; // Modification date
-	Word32 m_FinderInfo[8];			   // Aux/File type are the first 8 bytes
-	Word32 m_Flags;					   // Hidden and locked flags
+	uint32_t m_FinderInfo[8];			   // Aux/File type are the first 8 bytes
+	uint32_t m_Flags;					   // Hidden and locked flags
 	off_t m_uFileSize;				   // Filesize
 } __attribute__((packed));
 #endif
@@ -81,11 +81,11 @@ struct BulkAttr {
 
 ***************************************/
 
-Word Burger::DirectorySearch::Open(Filename* pDirName)
+uint_t Burger::DirectorySearch::Open(Filename* pDirName)
 {
 	// Make sure there's nothing pending
 	Close();
-	Word uResult = File::FILENOTFOUND;
+	uint_t uResult = File::FILENOTFOUND;
 	// Open the directory for reading
 	int fp = open(pDirName->GetNative(), O_RDONLY, 0);
 	if (fp != -1) {
@@ -102,10 +102,10 @@ Word Burger::DirectorySearch::Open(Filename* pDirName)
 
 ***************************************/
 
-Word Burger::DirectorySearch::GetNextEntry(void)
+uint_t Burger::DirectorySearch::GetNextEntry(void)
 {
 	// Assume no more entries
-	Word uResult = File::OUTOFRANGE;
+	uint_t uResult = File::OUTOFRANGE;
 	int fp = m_fp;
 	if (fp != -1 && !m_bDone) {
 
@@ -209,7 +209,7 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 				if (pEntry->m_uFileSize >= 0xFFFFFFFFUL) {
 					m_uFileSize = 0xFFFFFFFFUL;
 				} else {
-					m_uFileSize = static_cast<WordPtr>(pEntry->m_uFileSize);
+					m_uFileSize = static_cast<uintptr_t>(pEntry->m_uFileSize);
 				}
 #endif
 				}
@@ -219,7 +219,7 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 
 				// 0x4000 = kIsInvisible finder flag (Big Endian!!!)
 				m_bHidden = ((m_Name[0] == '.') ||
-					((reinterpret_cast<const Word8*>(pEntry->m_FinderInfo)[8] &
+					((reinterpret_cast<const uint8_t*>(pEntry->m_FinderInfo)[8] &
 						 0x40U) != 0));
 
 				// Is the file locked?
@@ -230,17 +230,17 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 				m_uAuxType = pEntry->m_FinderInfo[1];
 				--m_uEntryCount;
 				m_pEntry =
-					reinterpret_cast<const Word8*>(pEntry) + pEntry->m_uLength;
+					reinterpret_cast<const uint8_t*>(pEntry) + pEntry->m_uLength;
 #if !defined(BURGER_PPC)
 			} else {
 				// Handle 10.10
 				const BulkAttr* pEntry = static_cast<const BulkAttr*>(m_pEntry);
 				// Starting point is after the length
 				const char* pWork = static_cast<const char*>(m_pEntry) +
-					sizeof(Word32) + sizeof(attribute_set_t);
+					sizeof(uint32_t) + sizeof(attribute_set_t);
 
 				if (pEntry->m_Returned.commonattr & ATTR_CMN_ERROR) {
-					pWork += sizeof(Word32);
+					pWork += sizeof(uint32_t);
 				}
 
 				// First, grab the filename
@@ -283,8 +283,8 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 
 				if (pEntry->m_Returned.commonattr & ATTR_CMN_FNDRINFO) {
 					// Get the mac specific file type and creator type
-					m_uFileType = reinterpret_cast<const Word32*>(pWork)[0];
-					m_uAuxType = reinterpret_cast<const Word32*>(pWork)[1];
+					m_uFileType = reinterpret_cast<const uint32_t*>(pWork)[0];
+					m_uAuxType = reinterpret_cast<const uint32_t*>(pWork)[1];
 
 					// 0x4000 = kIsInvisible finder flag (Big Endian!!!)
 					if (pWork[8] & 0x40U) {
@@ -298,9 +298,9 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 
 				if (pEntry->m_Returned.commonattr & ATTR_CMN_FLAGS) {
 					// Is the file locked?
-					m_bLocked = (reinterpret_cast<const Word32*>(pWork)[0] &
+					m_bLocked = (reinterpret_cast<const uint32_t*>(pWork)[0] &
 									UF_IMMUTABLE) != 0;
-					pWork += sizeof(Word32);
+					pWork += sizeof(uint32_t);
 				} else {
 					m_bLocked = FALSE;
 				}
@@ -316,7 +316,7 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 							0xFFFFFFFFUL) {
 							m_uFileSize = 0xFFFFFFFFUL;
 						} else {
-							m_uFileSize = static_cast<Word32>(
+							m_uFileSize = static_cast<uint32_t>(
 								reinterpret_cast<const off_t*>(pWork)[0]);
 						}
 #endif
@@ -327,7 +327,7 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 				// Next entry
 				--m_uEntryCount;
 				m_pEntry =
-					reinterpret_cast<const Word8*>(pEntry) + pEntry->m_uLength;
+					reinterpret_cast<const uint8_t*>(pEntry) + pEntry->m_uLength;
 			}
 #endif
 			// It's parsed!

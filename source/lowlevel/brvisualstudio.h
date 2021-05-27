@@ -313,7 +313,7 @@ BURGER_INLINE void __cpuidex(int a[4], int b, int c)
 #if !__has_builtin(_BitScanForward)
 BURGER_INLINE uint8_t _BitScanForward(unsigned long* Index, unsigned long Mask)
 {
-    Word8 bZero;
+    uint8_t bZero;
     __asm__(
         "bsf %2, %0 \n \
 			setne %1"
@@ -326,7 +326,7 @@ BURGER_INLINE uint8_t _BitScanForward(unsigned long* Index, unsigned long Mask)
 #if !__has_builtin(_BitScanReverse)
 BURGER_INLINE uint8_t _BitScanReverse(unsigned long* Index, unsigned long Mask)
 {
-    Word8 bZero;
+    uint8_t bZero;
     __asm__(
         "bsr %2, %0 \n \
 			setne %1"

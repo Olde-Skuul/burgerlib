@@ -1100,7 +1100,7 @@ static uint_t BURGER_API TestIntToFloat(void)
         uFailure = (fTest != fExpected);
         uResult |= uFailure;
         ReportFailure(
-            "Burger::IntToFloat((float *),(Int)%d) = %.16g / Wanted %.16g",
+            "Burger::IntToFloat((float *),(int_t)%d) = %.16g / Wanted %.16g",
             uFailure, iOriginal, fTest, fExpected);
 
         Burger::IntToFloat(&fTemp, &iOriginal);
@@ -1108,7 +1108,7 @@ static uint_t BURGER_API TestIntToFloat(void)
         uFailure = (fTest != fExpected);
         uResult |= uFailure;
         ReportFailure(
-            "Burger::IntToFloat((float *),(Int *)%d) = %.16g / Wanted %.16g",
+            "Burger::IntToFloat((float *),(int_t *)%d) = %.16g / Wanted %.16g",
             uFailure, iOriginal, fTest, fExpected);
         pWork += 2;
     } while (--i);
@@ -1163,7 +1163,7 @@ static uint_t BURGER_API TestFixedToFloat(void) BURGER_NOEXCEPT
     uintptr_t i = BURGER_ARRAYSIZE(FixedToFloatArray);
     uint_t uResult = FALSE;
     do {
-        int32_t iOriginal = static_cast<Int>(pWork[0].GetWord());
+        int32_t iOriginal = static_cast<int_t>(pWork[0].GetWord());
         const float fExpected = pWork[1];
 
         volatile float fTest = Burger::FixedToFloat(iOriginal);

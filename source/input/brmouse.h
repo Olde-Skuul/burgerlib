@@ -1,14 +1,15 @@
 /***************************************
 
-	Mouse Manager
+    Mouse Manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #ifndef __BRMOUSE_H__
@@ -79,7 +80,7 @@ public:
 	struct DeviceStruct {
 		__IOHIDDevice *m_pDevice;	///< Pointer to the device driver
 		String m_Name;				///< Name of the device driver
-		Word m_bUnplugged;			///< \ref TRUE if this device was unplugged
+		uint_t m_bUnplugged;			///< \ref TRUE if this device was unplugged
 	};
 #endif
 
@@ -96,53 +97,53 @@ protected:
 	CriticalSection m_MouseLock;	///< Lock for multi-threading
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	static WordPtr BURGER_API WindowsMouseThread(void *pData);
+	static uintptr_t BURGER_API WindowsMouseThread(void *pData);
 	IDirectInputDevice8W *m_pMouseDevice;	///< Direct input device (Windows only)
 	void *m_pMouseEvent;			///< Event signal for DirectInput (Windows only)
 	Thread m_MouseThread;			///< Asynchronous thread monitoring DirectInput (Windows only)
-	Word m_bAcquired;				///< \ref TRUE if DirectInput8 is active (Windows only)
-	volatile Word32 m_bQuit;		///< \ref TRUE when the thread is shutting down (Windows only)
+	uint_t m_bAcquired;				///< \ref TRUE if DirectInput8 is active (Windows only)
+	volatile uint32_t m_bQuit;		///< \ref TRUE when the thread is shutting down (Windows only)
 #endif
 
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
 	__IOHIDManager *m_pHIDManager;	///< HID Manager pointer
 	DeviceStruct m_Mice[MAX_MOUSE_DEVICE_COUNT];	///< Array of mice devices
-	Word m_uMiceCount;				///< Number of mice devices found
+	uint_t m_uMiceCount;				///< Number of mice devices found
 #endif
 
-	Word32 m_uX;					///< Current X coordinate of the mouse
-	Word32 m_uY;					///< Current Y coordinate of the mouse
-	Word32 m_uBoundsX;				///< Screen width bounds for the mouse
-	Word32 m_uBoundsY;				///< Screen height bounds for the mouse
-	Int32 m_iDeltaX;				///< Accumulated X motion of the mouse
-	Int32 m_iDeltaY;				///< Accumulated Y motion of the mouse
-	Int32 m_iMouseWheelX;			///< Accumulated X motion of the mouse wheel
-	Int32 m_iMouseWheelY;			///< Accumulated Y motion of the mouse wheel
-	Word32 m_uButtons;				///< Current state of the mouse buttons
-	Word32 m_uPressedButtons;		///< Mouse buttons pressed since last read
-	Word m_bButtonSwap;				///< Switch the left and right buttons for lefties
-	Word m_uArrayStart;				///< Read index for m_KeyEvents
-	Word m_uArrayEnd;				///< Write index for m_KeyEvents
+	uint32_t m_uX;					///< Current X coordinate of the mouse
+	uint32_t m_uY;					///< Current Y coordinate of the mouse
+	uint32_t m_uBoundsX;				///< Screen width bounds for the mouse
+	uint32_t m_uBoundsY;				///< Screen height bounds for the mouse
+	int32_t m_iDeltaX;				///< Accumulated X motion of the mouse
+	int32_t m_iDeltaY;				///< Accumulated Y motion of the mouse
+	int32_t m_iMouseWheelX;			///< Accumulated X motion of the mouse wheel
+	int32_t m_iMouseWheelY;			///< Accumulated Y motion of the mouse wheel
+	uint32_t m_uButtons;				///< Current state of the mouse buttons
+	uint32_t m_uPressedButtons;		///< Mouse buttons pressed since last read
+	uint_t m_bButtonSwap;				///< Switch the left and right buttons for lefties
+	uint_t m_uArrayStart;				///< Read index for m_KeyEvents
+	uint_t m_uArrayEnd;				///< Write index for m_KeyEvents
 	MouseEvent_t m_MouseEvents[MOUSEBUFFSIZE];	///< Circular buffer holding mouse events
 public:
 	Mouse(GameApp *pGameApp);
 	virtual ~Mouse();
-	Word BURGER_API PeekMouseEvent(MouseEvent_t *pEvent);
-	Word BURGER_API GetMouseEvent(MouseEvent_t *pEvent);
-	Word BURGER_API IsPresent(void) const;
-	Word32 BURGER_API ReadButtons(void);
-	Word32 BURGER_API ReadButtonDowns(void);
-	void BURGER_API Read(Word32 *pX,Word32 *pY);
-	void BURGER_API Read(Int32 *pX,Int32 *pY);
-	Int32 BURGER_API ReadWheelX(void);
-	Int32 BURGER_API ReadWheelY(void);
-	void BURGER_API SetRange(Word32 x,Word32 y);
-	void BURGER_API PostMousePosition(Word32 x,Word32 y,Word32 uMSTimeStamp=0);
-	void BURGER_API PostMouseMotion(Int32 x,Int32 y,Word32 uMSTimeStamp=0);
-	void BURGER_API PostMouseDown(Word32 uMouseBits,Word32 uMSTimeStamp=0);
-	void BURGER_API PostMouseUp(Word32 uMouseBits,Word32 uMSTimeStamp=0);
-	void BURGER_API PostMouseWheel(Int32 iWheelXMovement,Int32 iWheelYMovement,Word32 uMSTimeStamp=0);
-	Word BURGER_API PostMouseEvent(const EventHeader_t *pEvent);
+	uint_t BURGER_API PeekMouseEvent(MouseEvent_t *pEvent);
+	uint_t BURGER_API GetMouseEvent(MouseEvent_t *pEvent);
+	uint_t BURGER_API IsPresent(void) const;
+	uint32_t BURGER_API ReadButtons(void);
+	uint32_t BURGER_API ReadButtonDowns(void);
+	void BURGER_API Read(uint32_t *pX,uint32_t *pY);
+	void BURGER_API Read(int32_t *pX,int32_t *pY);
+	int32_t BURGER_API ReadWheelX(void);
+	int32_t BURGER_API ReadWheelY(void);
+	void BURGER_API SetRange(uint32_t x,uint32_t y);
+	void BURGER_API PostMousePosition(uint32_t x,uint32_t y,uint32_t uMSTimeStamp=0);
+	void BURGER_API PostMouseMotion(int32_t x,int32_t y,uint32_t uMSTimeStamp=0);
+	void BURGER_API PostMouseDown(uint32_t uMouseBits,uint32_t uMSTimeStamp=0);
+	void BURGER_API PostMouseUp(uint32_t uMouseBits,uint32_t uMSTimeStamp=0);
+	void BURGER_API PostMouseWheel(int32_t iWheelXMovement,int32_t iWheelYMovement,uint32_t uMSTimeStamp=0);
+	uint_t BURGER_API PostMouseEvent(const EventHeader_t *pEvent);
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	void BURGER_API AcquireDirectInput(void);

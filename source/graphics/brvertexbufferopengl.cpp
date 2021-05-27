@@ -73,9 +73,9 @@ static const GLboolean g_ChunkNormals[5] = {GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE,
 
 #endif
 
-Word Burger::VertexBufferOpenGL::CheckLoad(Display *pDisplay)
+uint_t Burger::VertexBufferOpenGL::CheckLoad(Display *pDisplay)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (m_uFlags & FLAG_VERTEXDIRTY) {
 		VertexBufferOpenGL::Release(pDisplay);
 
@@ -110,18 +110,18 @@ Word Burger::VertexBufferOpenGL::CheckLoad(Display *pDisplay)
 					// Upload vertex data (Or reserve data if m_pVertexArray is NULL)
 					glBufferData(GL_ARRAY_BUFFER,static_cast<GLsizeiptr>(m_uVertexArraySize),m_pVertexArray,uUsage);
 
-					Word uCount = m_uMemberCount;
+					uint_t uCount = m_uMemberCount;
 					if (uCount) {
 
 						// glVertexAttribPointer() requires the stride precalculated,
 						// so do a pass to get the full stride of the vertex data
-						Word i = 0;
-						Word8 *pDest = 0;
-						const Word *pMembers = m_pMembers;
+						uint_t i = 0;
+						uint8_t *pDest = 0;
+						const uint_t *pMembers = m_pMembers;
 						do {
 							// Enable the position attribute for this Vertex Buffer Object
 							glEnableVertexAttribArray(i);
-							Word uType = (pMembers[0]&USAGE_CHUNKMASK)>>USAGE_CHUNKMASKSHIFT;
+							uint_t uType = (pMembers[0]&USAGE_CHUNKMASK)>>USAGE_CHUNKMASKSHIFT;
 
 							// Set up the description of the position array
 							glVertexAttribPointer(i,static_cast<GLint>(g_ChunkElementCounts[uType]),g_GLTypes[uType],g_ChunkNormals[uType],static_cast<GLsizei>(m_uStride),pDest);

@@ -26,11 +26,11 @@
 	
 ***************************************/
 
-Word Burger::DirectorySearch::Open(Burger::Filename *pDirName)
+uint_t Burger::DirectorySearch::Open(Burger::Filename *pDirName)
 {	
 	// Make sure there's nothing pending
 	Close();
-	Word uResult = File::FILENOTFOUND;
+	uint_t uResult = File::FILENOTFOUND;
 	// Open the directory for reading
 	int fp = sceIoDopen(pDirName->GetNative());
 	if (fp>=SCE_OK) {
@@ -46,10 +46,10 @@ Word Burger::DirectorySearch::Open(Burger::Filename *pDirName)
 	
 ***************************************/
 
-Word Burger::DirectorySearch::GetNextEntry(void)
+uint_t Burger::DirectorySearch::GetNextEntry(void)
 {
 	// Assume no more entries
-	Word uResult = File::OUTOFRANGE;
+	uint_t uResult = File::OUTOFRANGE;
 	int fp = m_fp;
 	if (fp>=SCE_OK) {
 		SceIoDirent Entry;
@@ -70,7 +70,7 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 				if (Entry.d_stat.st_size>=0xFFFFFFFFUL) {
 					m_uFileSize = 0xFFFFFFFFUL;
 				} else {
-					m_uFileSize = static_cast<WordPtr>(Entry.d_stat.st_size);
+					m_uFileSize = static_cast<uintptr_t>(Entry.d_stat.st_size);
 				}
 			}
 			// Get the file dates

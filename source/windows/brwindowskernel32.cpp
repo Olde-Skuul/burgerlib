@@ -68,12 +68,12 @@ typedef BOOL(WINAPI* IsDebuggerPresentPtr)(VOID);
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::GetSystemWow64DirectoryA(
-	char* pBuffer, Word32 uSize)
+uint_t BURGER_API Burger::Windows::GetSystemWow64DirectoryA(
+	char* pBuffer, uint32_t uSize)
 {
 	void* pGetSystemWow64DirectoryA =
 		LoadFunctionIndex(CALL_GetSystemWow64DirectoryA);
-	Word uResult = 0; // Failure
+	uint_t uResult = 0; // Failure
 	if (!pGetSystemWow64DirectoryA) {
 		SetLastError(ERROR_CALL_NOT_IMPLEMENTED);
 	} else {
@@ -95,19 +95,19 @@ Word BURGER_API Burger::Windows::GetSystemWow64DirectoryA(
 	\windowsonly
 
 	\param pBuffer A pointer to the buffer to receive the path
-	\param uSize The maximum size of the buffer, in Word16 entries
+	\param uSize The maximum size of the buffer, in uint16_t entries
 
-	\return If the function succeeds, the return value is the length, in Word16
+	\return If the function succeeds, the return value is the length, in uint16_t
 		entries, of the string copied to the buffer
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::GetSystemWow64DirectoryW(
-	Word16* pBuffer, Word32 uSize)
+uint_t BURGER_API Burger::Windows::GetSystemWow64DirectoryW(
+	uint16_t* pBuffer, uint32_t uSize)
 {
 	void* pGetSystemWow64DirectoryW =
 		LoadFunctionIndex(CALL_GetSystemWow64DirectoryW);
-	Word uResult = 0; // Failure
+	uint_t uResult = 0; // Failure
 	if (!pGetSystemWow64DirectoryW) {
 		SetLastError(ERROR_CALL_NOT_IMPLEMENTED);
 	} else {
@@ -133,14 +133,14 @@ Word BURGER_API Burger::Windows::GetSystemWow64DirectoryW(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::IsDebuggerPresent(void)
+uint_t BURGER_API Burger::Windows::IsDebuggerPresent(void)
 {
 	void* pIsDebuggerPresent = LoadFunctionIndex(CALL_IsDebuggerPresent);
 	BOOL uResult = 0; // None
 	if (pIsDebuggerPresent) {
 		uResult = static_cast<IsDebuggerPresentPtr>(pIsDebuggerPresent)();
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 #endif

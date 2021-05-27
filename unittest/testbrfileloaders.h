@@ -19,6 +19,6 @@
 #include "brtypes.h"
 #endif
 
-extern Word FileLoaderTest(Word uVerbose);
+extern uint_t FileLoaderTest(uint_t uVerbose);
 
 #endif

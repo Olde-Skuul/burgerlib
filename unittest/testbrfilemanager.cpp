@@ -79,17 +79,17 @@ static const char g_ShortFileName[] = "Foobar";
 
 ***************************************/
 
-static Word BURGER_API TestFilenameClass(void)
+static uint_t BURGER_API TestFilenameClass(void)
 {
 	// The structure size test
-	Word uFailure = (sizeof(Filename) != 512);
+	uint_t uFailure = (sizeof(Filename) != 512);
 	ReportFailure(
 		"sizeof(Filename) = %d / Wanted (512)", uFailure, sizeof(Filename));
 
 	// Test for default string initialization
 	Filename TestName;
 	const char* pTest = TestName.GetPtr();
-	Word uTest = pTest == NULL;
+	uint_t uTest = pTest == NULL;
 	uFailure |= uTest;
 	ReportFailure("Filename.GetPtr() = %p, expected non NULL)", uTest, pTest);
 
@@ -109,23 +109,23 @@ static Word BURGER_API TestFilenameClass(void)
 
 ***************************************/
 
-static Word BURGER_API TestFilenameSet(void)
+static uint_t BURGER_API TestFilenameSet(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	// This test will start with a large string and then
 	// get smaller.
-	Word i;
+	uint_t i;
 	const char* pWork;
 
 	{
 		Filename TestName;
-		i = static_cast<Word>(sizeof(g_LongFileName));
+		i = static_cast<uint_t>(sizeof(g_LongFileName));
 		pWork = g_LongFileName;
 		do {
 			// Set the string
 			TestName.Set(pWork);
 			const char* pTest = TestName.GetPtr();
-			Word uTest = StringCompare(pWork, pTest) != 0;
+			uint_t uTest = StringCompare(pWork, pTest) != 0;
 			uFailure |= uTest;
 			ReportFailure("Filename.Set(%s) = \"%s\", expected \"\"", uTest,
 				pTest, pWork);
@@ -133,13 +133,13 @@ static Word BURGER_API TestFilenameSet(void)
 		} while (--i);
 	}
 
-	i = static_cast<Word>(sizeof(g_LongFileName));
+	i = static_cast<uint_t>(sizeof(g_LongFileName));
 	pWork = g_LongFileName;
 	do {
 		// Set the string
 		Filename TestName(pWork);
 		const char* pTest = TestName.GetPtr();
-		Word uTest = StringCompare(pWork, pTest) != 0;
+		uint_t uTest = StringCompare(pWork, pTest) != 0;
 		uFailure |= uTest;
 		ReportFailure(
 			"Filename(%s) = \"%s\", expected \"\"", uTest, pTest, pWork);
@@ -148,14 +148,14 @@ static Word BURGER_API TestFilenameSet(void)
 
 	// Do the reverse. Start small, get larger
 	{
-		i = static_cast<Word>(sizeof(g_LongFileName));
+		i = static_cast<uint_t>(sizeof(g_LongFileName));
 		pWork = g_LongFileName + (sizeof(g_LongFileName) - 1);
 		Filename TestName;
 		do {
 			// Set the string
 			TestName.Set(pWork);
 			const char* pTest = TestName.GetPtr();
-			Word uTest = StringCompare(pWork, pTest) != 0;
+			uint_t uTest = StringCompare(pWork, pTest) != 0;
 			uFailure |= uTest;
 			ReportFailure("Filename.Set(%s) = \"%s\", expected \"\"", uTest,
 				pTest, pWork);
@@ -163,13 +163,13 @@ static Word BURGER_API TestFilenameSet(void)
 		} while (--i);
 	}
 
-	i = static_cast<Word>(sizeof(g_LongFileName));
+	i = static_cast<uint_t>(sizeof(g_LongFileName));
 	pWork = g_LongFileName + (sizeof(g_LongFileName) - 1);
 	do {
 		// Set the string
 		Filename TestName(pWork);
 		const char* pTest = TestName.GetPtr();
-		Word uTest = StringCompare(pWork, pTest) != 0;
+		uint_t uTest = StringCompare(pWork, pTest) != 0;
 		uFailure |= uTest;
 		ReportFailure(
 			"Filename(%s) = \"%s\", expected \"\"", uTest, pTest, pWork);
@@ -185,9 +185,9 @@ static Word BURGER_API TestFilenameSet(void)
 
 ***************************************/
 
-static Word BURGER_API TestFilenameClear(void)
+static uint_t BURGER_API TestFilenameClear(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 
 	// Test if clearing resets the buffer pointer
 
@@ -196,7 +196,7 @@ static Word BURGER_API TestFilenameClear(void)
 	const char* pReference = TestName.GetPtr();
 	TestName.Clear();
 	const char* pTest = TestName.GetPtr();
-	Word uTest = pReference != pTest;
+	uint_t uTest = pReference != pTest;
 	uFailure |= uTest;
 	ReportFailure(
 		"Filename::Clear() = %p, expected %p", uTest, pTest, pReference);
@@ -235,9 +235,9 @@ static Word BURGER_API TestFilenameClear(void)
 
 struct IsTests_t {
 	const char* m_pTest;
-	Word m_uFull;
-	Word m_uOnly;
-	Word m_uPrefix;
+	uint_t m_uFull;
+	uint_t m_uOnly;
+	uint_t m_uPrefix;
 };
 
 static const IsTests_t IsFullTests[] = {
@@ -254,17 +254,17 @@ static const IsTests_t IsFullTests[] = {
 	{"@:foo", FALSE, FALSE, FileManager::PREFIXPREFS},
 	{"*:foo", FALSE, FALSE, FileManager::PREFIXBOOT}};
 
-static Word BURGER_API TestFilenameIs(void)
+static uint_t BURGER_API TestFilenameIs(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	Filename TestName;
 
-	Word i = static_cast<Word>(BURGER_ARRAYSIZE(IsFullTests));
+	uint_t i = static_cast<uint_t>(BURGER_ARRAYSIZE(IsFullTests));
 	const IsTests_t* pIsTests = IsFullTests;
 	do {
 		TestName.Set(pIsTests->m_pTest);
-		Word uResult = TestName.IsFullPathname();
-		Word uTest = uResult != pIsTests->m_uFull;
+		uint_t uResult = TestName.IsFullPathname();
+		uint_t uTest = uResult != pIsTests->m_uFull;
 		uFailure |= uTest;
 		ReportFailure("Filename::IsFullPathname(\"%s\") = %d, expected %d",
 			uTest, pIsTests->m_pTest, uResult, pIsTests->m_uFull);
@@ -297,7 +297,7 @@ static void BURGER_API TestShowDirectories(void)
 {
 	Filename Test;
 
-	Word uLong = FileManager::AreLongFilenamesAllowed();
+	uint_t uLong = FileManager::AreLongFilenamesAllowed();
 	Message("FileManager::AreLongFilenamesAllowed() is %u", uLong);
 
 	// Display the directories
@@ -317,14 +317,14 @@ static void BURGER_API TestShowDirectories(void)
 
 ***************************************/
 
-static Word BURGER_API TestGetVolumeName(Word uVerbose)
+static uint_t BURGER_API TestGetVolumeName(uint_t uVerbose)
 {
 	// No automated error check is possible since this will generate different
 	// output depending on the machine this is run on
 
 	if (uVerbose & VERBOSE_FILE) {
 		Filename MyFilename;
-		Word i = 0;
+		uint_t i = 0;
 		do {
 			if (!FileManager::GetVolumeName(&MyFilename, i)) {
 				Message("Drive %d is named \"%s\"", i, MyFilename.GetPtr());
@@ -341,7 +341,7 @@ static Word BURGER_API TestGetVolumeName(Word uVerbose)
 ***************************************/
 
 typedef struct PrefixName_t {
-	Word m_uPrefix;
+	uint_t m_uPrefix;
 	const char* m_pPrefixName;
 } PrefixName_t;
 
@@ -352,7 +352,7 @@ static const PrefixName_t PrefixNameTable[] = {
 	{FileManager::PREFIXPREFS, "PREFIXPREFS"},
 	{FileManager::PREFIXSYSTEM, "PREFIXSYSTEM"}};
 
-static Word BURGER_API TestPrefixes(Word uVerbose)
+static uint_t BURGER_API TestPrefixes(uint_t uVerbose)
 {
 	Filename MyFileName;
 
@@ -360,7 +360,7 @@ static Word BURGER_API TestPrefixes(Word uVerbose)
 	// on new platforms.
 
 	if (uVerbose & VERBOSE_FILE) {
-		Word i = static_cast<Word>(BURGER_ARRAYSIZE(PrefixNameTable));
+		uint_t i = static_cast<uint_t>(BURGER_ARRAYSIZE(PrefixNameTable));
 		const PrefixName_t* pWork = PrefixNameTable;
 		do {
 			FileManager::GetPrefix(&MyFileName, pWork->m_uPrefix);
@@ -372,14 +372,14 @@ static Word BURGER_API TestPrefixes(Word uVerbose)
 
 	// Check if all the other prefixes are empty on startup.
 
-	Word i = 0;
-	Word uFailure = FALSE;
+	uint_t i = 0;
+	uint_t uFailure = FALSE;
 	do {
 		if ((i != FileManager::PREFIXCURRENT)
 			&& (i != FileManager::PREFIXAPPLICATION)) {
 			FileManager::GetPrefix(&MyFileName, i);
 			const char* pTest = MyFileName.GetPtr();
-			Word uTest = pTest[0] != 0;
+			uint_t uTest = pTest[0] != 0;
 			uFailure |= uTest;
 			ReportFailure(
 				"FileManager::GetPrefix(%d) = \"%s\"", uTest, i, pTest);
@@ -406,15 +406,15 @@ static const TestDirName_t TestDirNames[] = {{":foo:bar", ":foo:"},
 	{":one:two:three:four:five:", ":one:two:three:four:"}, {"one", "one"},
 	{"one:two", "one:"}, {"one:two:", "one:"}};
 
-static Word BURGER_API TestFilenameDirName(void)
+static uint_t BURGER_API TestFilenameDirName(void)
 {
-	Word uFailure = 0;
+	uint_t uFailure = 0;
 	const TestDirName_t* pTestDirName = TestDirNames;
-	Word i = static_cast<Word>(BURGER_ARRAYSIZE(TestDirNames));
+	uint_t i = static_cast<uint_t>(BURGER_ARRAYSIZE(TestDirNames));
 	do {
 		Filename Test(pTestDirName->m_pOriginal);
 		Test.DirName();
-		Word uTest =
+		uint_t uTest =
 			StringCompare(Test.GetPtr(), pTestDirName->m_pExpected) != 0;
 		uFailure |= uTest;
 		ReportFailure("DirName \"%s\" to \"%s\" but got \"%s\"", uTest,
@@ -449,15 +449,15 @@ static const TestAppend_t TestAppends[] = {
 	{"one", "one", "one:one:"}, {"one:two", "one:", "one:two:one:"},
 	{"one:two:", "one:", "one:two:one:"}};
 
-static Word BURGER_API TestFilenameAppend(void)
+static uint_t BURGER_API TestFilenameAppend(void)
 {
-	Word uFailure = 0;
+	uint_t uFailure = 0;
 	const TestAppend_t* pTestAppend = TestAppends;
-	Word i = static_cast<Word>(BURGER_ARRAYSIZE(TestAppends));
+	uint_t i = static_cast<uint_t>(BURGER_ARRAYSIZE(TestAppends));
 	do {
 		Filename Test(pTestAppend->m_pOriginal);
 		Test.Append(pTestAppend->m_pAppend);
-		Word uTest =
+		uint_t uTest =
 			StringCompare(Test.GetPtr(), pTestAppend->m_pExpected) != 0;
 		uFailure |= uTest;
 		ReportFailure(
@@ -475,13 +475,13 @@ static Word BURGER_API TestFilenameAppend(void)
 
 ***************************************/
 
-static Word BURGER_API TestExpandFull(const char* pInput)
+static uint_t BURGER_API TestExpandFull(const char* pInput)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 
 	String TempString(pInput);
 	Filename MyFilename(pInput);
-	Word uTest = StringCompare(pInput, MyFilename.GetPtr()) != 0;
+	uint_t uTest = StringCompare(pInput, MyFilename.GetPtr()) != 0;
 	uFailure |= uTest;
 	ReportFailure(
 		"TestExpandFull() Original is \"%s\"", uTest, MyFilename.GetPtr());
@@ -502,14 +502,14 @@ static Word BURGER_API TestExpandFull(const char* pInput)
 
 ***************************************/
 
-static Word BURGER_API TestPrepend(const char* pInput, const Filename* pWorkDir)
+static uint_t BURGER_API TestPrepend(const char* pInput, const Filename* pWorkDir)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 
 	String TempString;
 
 	Filename MyFilename(pInput);
-	Word uTest = StringCompare(pInput, MyFilename.GetPtr()) != 0;
+	uint_t uTest = StringCompare(pInput, MyFilename.GetPtr()) != 0;
 	uFailure |= uTest;
 	ReportFailure(
 		"TestPrepend() Original is \"%s\"", uTest, MyFilename.GetPtr());
@@ -533,18 +533,18 @@ static Word BURGER_API TestPrepend(const char* pInput, const Filename* pWorkDir)
 
 static const char g_PeriodName[] = "........:Help me pfx";
 
-static Word BURGER_API TestPopDir(const Filename* pWorkDir)
+static uint_t BURGER_API TestPopDir(const Filename* pWorkDir)
 {
-	const Word uPeriodCount = 8;
-	Word uFailure = FALSE;
+	const uint_t uPeriodCount = 8;
+	uint_t uFailure = FALSE;
 	String TempString;
 	Filename MyFilename;
-	Word i = uPeriodCount;
+	uint_t i = uPeriodCount;
 	do {
 		TempString.Set((g_PeriodName - 1) + i);
 		MyFilename.Set(TempString);
 
-		Word uTest =
+		uint_t uTest =
 			StringCompare(TempString.GetPtr(), MyFilename.GetPtr()) != 0;
 		uFailure |= uTest;
 		ReportFailure(
@@ -553,7 +553,7 @@ static Word BURGER_API TestPopDir(const Filename* pWorkDir)
 		MyFilename.Expand();
 
 		Filename TempDir(*pWorkDir);
-		Word y = uPeriodCount - i;
+		uint_t y = uPeriodCount - i;
 		if (y) {
 			do {
 				TempDir.DirName();
@@ -576,12 +576,12 @@ static Word BURGER_API TestPopDir(const Filename* pWorkDir)
 
 ***************************************/
 
-static Word BURGER_API TestPrefixDir(const char* pInput, Word uPrefix)
+static uint_t BURGER_API TestPrefixDir(const char* pInput, uint_t uPrefix)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 
 	Filename MyFilename(pInput);
-	Word uTest = StringCompare(pInput, MyFilename.GetPtr()) != 0;
+	uint_t uTest = StringCompare(pInput, MyFilename.GetPtr()) != 0;
 	uFailure |= uTest;
 	ReportFailure(
 		"TestPrefixDir() Original is \"%s\"", uTest, MyFilename.GetPtr());
@@ -604,7 +604,7 @@ static Word BURGER_API TestPrefixDir(const char* pInput, Word uPrefix)
 
 ***************************************/
 
-static Word BURGER_API TestFilenameExpand(void)
+static uint_t BURGER_API TestFilenameExpand(void)
 {
 	// Boot volume name is needed for tests to work on multiple platforms
 	Filename BootVolume;
@@ -617,7 +617,7 @@ static Word BURGER_API TestFilenameExpand(void)
 	FileManager::SetPrefix(
 		FileManager::PREFIXCURRENT, WorkBootDirectory.GetPtr());
 
-	Word uFailure = TestExpandFull(".D2:Help me");
+	uint_t uFailure = TestExpandFull(".D2:Help me");
 	uFailure |= TestExpandFull(":Burger:foo.txt");
 	uFailure |= TestExpandFull(":Burger:a:foo.txt");
 	uFailure |= TestExpandFull(":Burger:9.txt");
@@ -646,9 +646,9 @@ static Word BURGER_API TestFilenameExpand(void)
 
 ***************************************/
 
-static Word BURGER_API TestFile(Word uVerbose)
+static uint_t BURGER_API TestFile(uint_t uVerbose)
 {
-	Word uFailure = 0;
+	uint_t uFailure = 0;
 	TimeDate_t Time;
 #if defined(BURGER_MSDOS)
 	Filename TestName;
@@ -662,7 +662,7 @@ static Word BURGER_API TestFile(Word uVerbose)
 #endif
 	File TestFile(&TestName, File::WRITEONLY);
 
-	Word uTest =
+	uint_t uTest =
 		TestFile.Write("This is a test", sizeof("This is a test") - 1) != 14;
 	uFailure |= uTest;
 	ReportFailure("File::Write", uTest);
@@ -677,7 +677,7 @@ static Word BURGER_API TestFile(Word uVerbose)
 		Time.TimeToStringPM(Output2);
 		Message("File modification time = %s %s",Output,Output2);
 	}
-	WordPtr uSize = TestFile.GetSize();
+	uintptr_t uSize = TestFile.GetSize();
 	uTest = uSize != 14;
 	uFailure |= uTest;
 	ReportFailure("File::GetSize return %d, expected 14", uTest, uSize);
@@ -729,11 +729,11 @@ static void BURGER_API TestDisposeTempFiles(void)
 
 ***************************************/
 
-static Word BURGER_API TestDoesFileExist(void)
+static uint_t BURGER_API TestDoesFileExist(void)
 {
-	Word uReturn = FileManager::DoesFileExist("9:FileNotHere");
-	Word uTest = uReturn != 0;
-	Word uFailure = uTest;
+	uint_t uReturn = FileManager::DoesFileExist("9:FileNotHere");
+	uint_t uTest = uReturn != 0;
+	uint_t uFailure = uTest;
 	ReportFailure(
 		"FileManager::DoesFileExist(\"9:FileNotHere\") = %d", uTest, uReturn);
 
@@ -764,13 +764,13 @@ static Word BURGER_API TestDoesFileExist(void)
 
 ***************************************/
 
-static Word BURGER_API TestLoadSave(void)
+static uint_t BURGER_API TestLoadSave(void)
 {
 	// Save the file
-	Word32 uReturn = FileManager::SaveFile(
+	uint32_t uReturn = FileManager::SaveFile(
 		"9:tempfile" COPYRIGHT ".txt", g_SampleData, sizeof(g_SampleData) - 1);
-	Word uTest = uReturn == 0;
-	Word uFailure = uTest;
+	uint_t uTest = uReturn == 0;
+	uint_t uFailure = uTest;
 	ReportFailure("FileManager::SaveFile(\"9:tempfile" COPYRIGHT
 				  ".txt\",g_SampleData,sizeof(g_SampleData)-1) = %d",
 		uTest, uReturn);
@@ -792,7 +792,7 @@ static Word BURGER_API TestLoadSave(void)
 		uTest);
 
 	// Load the file
-	WordPtr uLength;
+	uintptr_t uLength;
 	void* pReturn =
 		FileManager::LoadFile("9:tempfile" COPYRIGHT ".txt", &uLength);
 	uTest = (uReturn == NULL) || (uLength != (sizeof(g_SampleData) - 1));
@@ -885,14 +885,14 @@ static Word BURGER_API TestLoadSave(void)
 
 ***************************************/
 
-static Word BURGER_API TestGetModificationTime(Word uVerbose)
+static uint_t BURGER_API TestGetModificationTime(uint_t uVerbose)
 {
 	TimeDate_t MyTime;
 	char TempBuffer[128];
 	char TempBuffer2[128];
-	Word32 uReturn = FileManager::GetModificationTime("9:FileNotHere", &MyTime);
-	Word uTest = uReturn == 0;
-	Word uFailure = uTest;
+	uint32_t uReturn = FileManager::GetModificationTime("9:FileNotHere", &MyTime);
+	uint_t uTest = uReturn == 0;
+	uint_t uFailure = uTest;
 	ReportFailure("FileManager::GetModificationTime(\"9:FileNotHere\") = %d",
 		uTest, uReturn);
 
@@ -929,14 +929,14 @@ static Word BURGER_API TestGetModificationTime(Word uVerbose)
 
 ***************************************/
 
-static Word BURGER_API TestGetCreationTime(Word uVerbose)
+static uint_t BURGER_API TestGetCreationTime(uint_t uVerbose)
 {
 	TimeDate_t MyTime;
 	char TempBuffer[128];
 	char TempBuffer2[128];
-	Word32 uReturn = FileManager::GetCreationTime("9:FileNotHere", &MyTime);
-	Word uTest = uReturn == 0;
-	Word uFailure = uTest;
+	uint32_t uReturn = FileManager::GetCreationTime("9:FileNotHere", &MyTime);
+	uint_t uTest = uReturn == 0;
+	uint_t uFailure = uTest;
 	ReportFailure(
 		"FileManager::GetCreationTime(\"9:FileNotHere\") = %d", uTest, uReturn);
 
@@ -971,12 +971,12 @@ static Word BURGER_API TestGetCreationTime(Word uVerbose)
 
 ***************************************/
 
-static Word BURGER_API TestGetFileType(Word uVerbose)
+static uint_t BURGER_API TestGetFileType(uint_t uVerbose)
 {
 #if defined(BURGER_MACOS)
-	Word32 uReturn = FileManager::GetFileType("9:FileNotHere");
-	Word uTest = uReturn != 0;
-	Word uFailure = uTest;
+	uint32_t uReturn = FileManager::GetFileType("9:FileNotHere");
+	uint_t uTest = uReturn != 0;
+	uint_t uFailure = uTest;
 	ReportFailure(
 		"FileManager::GetFileType(\"9:FileNotHere\") = 0x%08X", uTest, uReturn);
 
@@ -1010,12 +1010,12 @@ static Word BURGER_API TestGetFileType(Word uVerbose)
 
 ***************************************/
 
-static Word BURGER_API TestGetAuxType(Word uVerbose)
+static uint_t BURGER_API TestGetAuxType(uint_t uVerbose)
 {
 #if defined(BURGER_MACOS)
-	Word32 uReturn = FileManager::GetAuxType("9:FileNotHere");
-	Word uTest = uReturn != 0;
-	Word uFailure = uTest;
+	uint32_t uReturn = FileManager::GetAuxType("9:FileNotHere");
+	uint_t uTest = uReturn != 0;
+	uint_t uFailure = uTest;
 	ReportFailure(
 		"FileManager::GetAuxType(\"9:FileNotHere\") = 0x%08X", uTest, uReturn);
 
@@ -1049,15 +1049,15 @@ static Word BURGER_API TestGetAuxType(Word uVerbose)
 
 ***************************************/
 
-static Word BURGER_API TestGetFileAndAuxType(Word uVerbose)
+static uint_t BURGER_API TestGetFileAndAuxType(uint_t uVerbose)
 {
 #if defined(BURGER_MACOS)
-	Word32 uFileType;
-	Word32 uAuxType;
-	Word uReturn =
+	uint32_t uFileType;
+	uint32_t uAuxType;
+	uint_t uReturn =
 		FileManager::GetFileAndAuxType("9:FileNotHere", &uFileType, &uAuxType);
-	Word uTest = uReturn == 0;
-	Word uFailure = uTest;
+	uint_t uTest = uReturn == 0;
+	uint_t uFailure = uTest;
 	ReportFailure(
 		"FileManager::GetFileAndAuxType(\"9:FileNotHere\") = %d File = 0x%08X, Aux = 0x%08X",
 		uTest, uReturn, uFileType, uAuxType);
@@ -1098,13 +1098,13 @@ static Word BURGER_API TestGetFileAndAuxType(Word uVerbose)
 
 ***************************************/
 
-static Word BURGER_API TestSetFileType(Word uVerbose)
+static uint_t BURGER_API TestSetFileType(uint_t uVerbose)
 {
 #if defined(BURGER_MACOS)
 	BURGER_UNUSED(uVerbose);
-	Word32 uReturn = FileManager::SetFileType("9:testfile" TM ".txt", 'ABCD');
-	Word uTest = uReturn != 0;
-	Word uFailure = uTest;
+	uint32_t uReturn = FileManager::SetFileType("9:testfile" TM ".txt", 'ABCD');
+	uint_t uTest = uReturn != 0;
+	uint_t uFailure = uTest;
 	ReportFailure("FileManager::SetFileType(\"9:testfile" TM
 				  ".txt\",'ABCD') = %d",
 		uTest, uReturn);
@@ -1144,13 +1144,13 @@ static Word BURGER_API TestSetFileType(Word uVerbose)
 
 ***************************************/
 
-static Word BURGER_API TestSetAuxType(Word uVerbose)
+static uint_t BURGER_API TestSetAuxType(uint_t uVerbose)
 {
 #if defined(BURGER_MACOS)
 	BURGER_UNUSED(uVerbose);
-	Word32 uReturn = FileManager::SetAuxType("9:testfile" TM ".txt", 'ABCD');
-	Word uTest = uReturn != 0;
-	Word uFailure = uTest;
+	uint32_t uReturn = FileManager::SetAuxType("9:testfile" TM ".txt", 'ABCD');
+	uint_t uTest = uReturn != 0;
+	uint_t uFailure = uTest;
 	ReportFailure("FileManager::SetAuxType(\"9:testfile" TM
 				  ".txt\",'ABCD') = %d",
 		uTest, uReturn);
@@ -1190,16 +1190,16 @@ static Word BURGER_API TestSetAuxType(Word uVerbose)
 
 ***************************************/
 
-static Word BURGER_API TestSetFileAndAuxType(Word uVerbose)
+static uint_t BURGER_API TestSetFileAndAuxType(uint_t uVerbose)
 {
 #if defined(BURGER_MACOS)
 	BURGER_UNUSED(uVerbose);
-	Word32 uFileType;
-	Word32 uAuxType;
-	Word32 uReturn =
+	uint32_t uFileType;
+	uint32_t uAuxType;
+	uint32_t uReturn =
 		FileManager::SetFileAndAuxType("9:testfile" TM ".txt", 'ABCD', 'ABCD');
-	Word uTest = uReturn != 0;
-	Word uFailure = uTest;
+	uint_t uTest = uReturn != 0;
+	uint_t uFailure = uTest;
 	ReportFailure("FileManager::SetFileAndAuxType(\"9:testfile" TM
 				  ".txt\",'ABCD','ABCD') = %d",
 		uTest, uReturn);
@@ -1238,7 +1238,7 @@ static Word BURGER_API TestSetFileAndAuxType(Word uVerbose)
 
 struct DirectoryTests_t {
 	const char* m_pName;
-	Word m_uDir;
+	uint_t m_uDir;
 };
 
 static const DirectoryTests_t g_DirectoryFiles[] = {{"apple.txt", FALSE},
@@ -1247,11 +1247,11 @@ static const DirectoryTests_t g_DirectoryFiles[] = {{"apple.txt", FALSE},
 
 static const char g_DirectoryToTest[] = "9:test";
 
-static Word BURGER_API TestDirectorySearch(Word uVerbose)
+static uint_t BURGER_API TestDirectorySearch(uint_t uVerbose)
 {
 	FileManager::CreateDirectoryPath(g_DirectoryToTest);
 	FileManager::SetPrefix(20, g_DirectoryToTest);
-	Word i = 0;
+	uint_t i = 0;
 	const DirectoryTests_t* pDirTests = g_DirectoryFiles;
 	do {
 		Filename TestName("20:");
@@ -1267,9 +1267,9 @@ static Word BURGER_API TestDirectorySearch(Word uVerbose)
 
 	// Test directory traversal
 	DirectorySearch MyDir;
-	Word uTest;
-	Word uFailure = FALSE;
-	Word uReturn;
+	uint_t uTest;
+	uint_t uFailure = FALSE;
+	uint_t uReturn;
 
 #if defined(BURGER_WINDOWS)
 	uTest = sizeof(WIN32_FIND_DATAW) != 592;
@@ -1283,7 +1283,7 @@ static Word BURGER_API TestDirectorySearch(Word uVerbose)
 	uFailure |= uTest;
 	ReportFailure("MyDir.Open(\"%s\") = %d", uTest, g_DirectoryToTest, uReturn);
 
-	Word uEntries = 0;
+	uint_t uEntries = 0;
 	while (!MyDir.GetNextEntry()) {
 		if (uEntries < BURGER_ARRAYSIZE(g_DirectoryFiles)) {
 			uTest =
@@ -1345,9 +1345,9 @@ static Word BURGER_API TestDirectorySearch(Word uVerbose)
 
 ***************************************/
 
-Word BURGER_API TestBrFileManager(Word uVerbose)
+uint_t BURGER_API TestBrFileManager(uint_t uVerbose)
 {
-	Word uTotal = 0;
+	uint_t uTotal = 0;
 	if (uVerbose & VERBOSE_FILE) {
 
 		// Test Filename

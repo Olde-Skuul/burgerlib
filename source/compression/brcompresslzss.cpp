@@ -1,13 +1,14 @@
 /***************************************
 
-	Compress using LZSS
+    Compress using LZSS
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -52,15 +53,15 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::CompressLZSS,Burger::Compress);
 	Prunes an entry from the binary string match tree
 
 	\param uNodeNumber Ring buffer index (0-(CompressLZSS::RINGBUFFERSIZE-1))
-	\sa InsertNode(Word)
+	\sa InsertNode(uint_t)
 
 ***************************************/
 
-void Burger::CompressLZSS::DeleteNode(WordPtr uNodeNumber)
+void Burger::CompressLZSS::DeleteNode(uintptr_t uNodeNumber)
 {
 	// Valid node?
 	if (m_RootBranch[uNodeNumber] != NOTUSED) {
-		WordPtr uClipNum;
+		uintptr_t uClipNum;
 		// Is there a right branch?
 		if (m_RightBranch[uNodeNumber] == NOTUSED) {
 			// Clip just the left branch
@@ -74,7 +75,7 @@ void Burger::CompressLZSS::DeleteNode(WordPtr uNodeNumber)
 
 			// Clip both sides
 			uClipNum = m_LeftBranch[uNodeNumber];
-			WordPtr uRight = m_RightBranch[uClipNum];
+			uintptr_t uRight = m_RightBranch[uClipNum];
 			// Shall I prune the right side of the tree?
 			if (uRight != NOTUSED) {
 				do {
@@ -85,30 +86,30 @@ void Burger::CompressLZSS::DeleteNode(WordPtr uNodeNumber)
 
 				// Remove from the root
 				uRight = m_LeftBranch[uClipNum];
-				WordPtr uTempRoot = m_RootBranch[uClipNum];
-				m_RightBranch[uTempRoot] = static_cast<Word>(uRight);	// Set the new right parent
-				m_RootBranch[uRight] = static_cast<Word>(uTempRoot);	// Set the new root
+				uintptr_t uTempRoot = m_RootBranch[uClipNum];
+				m_RightBranch[uTempRoot] = static_cast<uint_t>(uRight);	// Set the new right parent
+				m_RootBranch[uRight] = static_cast<uint_t>(uTempRoot);	// Set the new root
 
 				uRight = m_LeftBranch[uNodeNumber];
-				m_LeftBranch[uClipNum] = static_cast<Word>(uRight);		// Clip the left
-				m_RootBranch[uRight] = static_cast<Word>(uClipNum);		// Set the left's new parent
+				m_LeftBranch[uClipNum] = static_cast<uint_t>(uRight);		// Clip the left
+				m_RootBranch[uRight] = static_cast<uint_t>(uClipNum);		// Set the left's new parent
 			}
 			// Right side is clipped, finish up
 			uRight = m_RightBranch[uNodeNumber];
-			m_RightBranch[uClipNum] = static_cast<Word>(uRight);		// Attach my tree to the right's end
-			m_RootBranch[uRight] = static_cast<Word>(uClipNum);		// Set the new parent
+			m_RightBranch[uClipNum] = static_cast<uint_t>(uRight);		// Attach my tree to the right's end
+			m_RootBranch[uRight] = static_cast<uint_t>(uClipNum);		// Set the new parent
 		}
 
 		// ClipNum has the branch to remove
-		WordPtr uRoot = m_RootBranch[uNodeNumber];		// Cache a value for speed
+		uintptr_t uRoot = m_RootBranch[uNodeNumber];		// Cache a value for speed
 
 		// Reset the parent
-		m_RootBranch[uClipNum] = static_cast<Word>(uRoot);
+		m_RootBranch[uClipNum] = static_cast<uint_t>(uRoot);
 		m_RootBranch[uNodeNumber] = NOTUSED;	// Zap this tree
-		if (m_RightBranch[uRoot] == static_cast<Word>(uNodeNumber)) {	// Finish up
-			m_RightBranch[uRoot] = static_cast<Word>(uClipNum);		// Trim the right
+		if (m_RightBranch[uRoot] == static_cast<uint_t>(uNodeNumber)) {	// Finish up
+			m_RightBranch[uRoot] = static_cast<uint_t>(uClipNum);		// Trim the right
 		} else {
-			m_LeftBranch[uRoot] = static_cast<Word>(uClipNum);			// Trim the left
+			m_LeftBranch[uRoot] = static_cast<uint_t>(uClipNum);			// Trim the left
 		}
 	}
 }
@@ -130,52 +131,52 @@ void Burger::CompressLZSS::DeleteNode(WordPtr uNodeNumber)
 
 	\param uNodeNumber Ring buffer index (0-(CompressLZSS::RINGBUFFERSIZE-1))
 
-	\sa DeleteNode(Word)
+	\sa DeleteNode(uint_t)
 
 ***************************************/
 
-void Burger::CompressLZSS::InsertNode(WordPtr uNodeNumber)
+void Burger::CompressLZSS::InsertNode(uintptr_t uNodeNumber)
 {
 	// Zap the children nodes now
 	m_RightBranch[uNodeNumber] = NOTUSED;
 	m_LeftBranch[uNodeNumber] = NOTUSED;
 
-	const Word8 *pRingBufferKey = &m_RingBuffer[uNodeNumber];
+	const uint8_t *pRingBufferKey = &m_RingBuffer[uNodeNumber];
 
 	// Get the parent node number via hash table
-	WordPtr uParentNodeNumber = static_cast<WordPtr>(pRingBufferKey[0])+(RINGBUFFERSIZE+1U);
-	WordPtr uMatchSize = 0;		// No match yet
+	uintptr_t uParentNodeNumber = static_cast<uintptr_t>(pRingBufferKey[0])+(RINGBUFFERSIZE+1U);
+	uintptr_t uMatchSize = 0;		// No match yet
 	int iTestValue = 1;		// Assume a right branch initially
 
 	// Stay until a match is found
 	for (;;) {
 
 		// Right branch?
-		WordPtr uNewParent;
+		uintptr_t uNewParent;
 		if (iTestValue >= 0) {
 			// Right branch
 			uNewParent = m_RightBranch[uParentNodeNumber];
 			if (uNewParent == NOTUSED) {
-				m_RightBranch[uParentNodeNumber] = static_cast<Word>(uNodeNumber);		// Set new right branch
-				m_RootBranch[uNodeNumber] = static_cast<Word>(uParentNodeNumber);		// Mark root
-				m_uMatchSize = static_cast<Word>(uMatchSize);
+				m_RightBranch[uParentNodeNumber] = static_cast<uint_t>(uNodeNumber);		// Set new right branch
+				m_RootBranch[uNodeNumber] = static_cast<uint_t>(uParentNodeNumber);		// Mark root
+				m_uMatchSize = static_cast<uint_t>(uMatchSize);
 				return;			// Exit NOW!
 			}
 		} else {
 			// Left branch?
 			uNewParent = m_LeftBranch[uParentNodeNumber];
 			if (uNewParent == NOTUSED) {
-				m_LeftBranch[uParentNodeNumber] = static_cast<Word>(uNodeNumber);		// Mark the new left branch
-				m_RootBranch[uNodeNumber] = static_cast<Word>(uParentNodeNumber);		// Mark root
-				m_uMatchSize = static_cast<Word>(uMatchSize);
+				m_LeftBranch[uParentNodeNumber] = static_cast<uint_t>(uNodeNumber);		// Mark the new left branch
+				m_RootBranch[uNodeNumber] = static_cast<uint_t>(uParentNodeNumber);		// Mark root
+				m_uMatchSize = static_cast<uint_t>(uMatchSize);
 				return;			// Exit NOW!
 			}
 		}
 
 		// New parent node
 		uParentNodeNumber = uNewParent;
-		WordPtr uMatchCount = 1;		// Init string length
-		const Word8 *pString = &m_RingBuffer[uParentNodeNumber];
+		uintptr_t uMatchCount = 1;		// Init string length
+		const uint8_t *pString = &m_RingBuffer[uParentNodeNumber];
 		do {
 			// Perform a signed compare to branch left/right
 			iTestValue = static_cast<int>(pRingBufferKey[uMatchCount]);
@@ -186,33 +187,33 @@ void Burger::CompressLZSS::InsertNode(WordPtr uNodeNumber)
 		} while (++uMatchCount<MAXMATCHLENGTH);
 
 		if (uMatchCount > uMatchSize) {			// Larger match?
-			m_uMatchOffset = static_cast<Word>(uParentNodeNumber);	// Set the mark
-			uMatchSize = static_cast<Word>(uMatchCount);			// Set the length
+			m_uMatchOffset = static_cast<uint_t>(uParentNodeNumber);	// Set the mark
+			uMatchSize = static_cast<uint_t>(uMatchCount);			// Set the length
 			if (uMatchCount >= MAXMATCHLENGTH) {	// Maximum length!
 				break;					// Get out of the main loop!
 			}
 		}
 	}
 
-	m_uMatchSize = static_cast<Word>(uMatchSize);
+	m_uMatchSize = static_cast<uint_t>(uMatchSize);
 	// I have a full match!
 	// Replace the old string with this one since it's newer
 
-	WordPtr uRootNode = m_RootBranch[uParentNodeNumber];
-	WordPtr uLeftNode = m_LeftBranch[uParentNodeNumber];
-	WordPtr uRightNode = m_RightBranch[uParentNodeNumber];
-	m_RootBranch[uNodeNumber] = static_cast<Word>(uRootNode);	// Set the new parent
-	m_LeftBranch[uNodeNumber] = static_cast<Word>(uLeftNode);
-	m_RightBranch[uNodeNumber] = static_cast<Word>(uRightNode);
+	uintptr_t uRootNode = m_RootBranch[uParentNodeNumber];
+	uintptr_t uLeftNode = m_LeftBranch[uParentNodeNumber];
+	uintptr_t uRightNode = m_RightBranch[uParentNodeNumber];
+	m_RootBranch[uNodeNumber] = static_cast<uint_t>(uRootNode);	// Set the new parent
+	m_LeftBranch[uNodeNumber] = static_cast<uint_t>(uLeftNode);
+	m_RightBranch[uNodeNumber] = static_cast<uint_t>(uRightNode);
 
-	m_RootBranch[uLeftNode] = static_cast<Word>(uNodeNumber);
-	m_RootBranch[uRightNode] = static_cast<Word>(uNodeNumber);
+	m_RootBranch[uLeftNode] = static_cast<uint_t>(uNodeNumber);
+	m_RootBranch[uRightNode] = static_cast<uint_t>(uNodeNumber);
 	m_RootBranch[uParentNodeNumber] = NOTUSED;	// Remove Parent
 
-	if (m_RightBranch[uRootNode] == static_cast<Word>(uParentNodeNumber)) {
-		m_RightBranch[uRootNode] = static_cast<Word>(uNodeNumber);
+	if (m_RightBranch[uRootNode] == static_cast<uint_t>(uParentNodeNumber)) {
+		m_RightBranch[uRootNode] = static_cast<uint_t>(uNodeNumber);
 	} else {
-		m_LeftBranch[uRootNode] = static_cast<Word>(uNodeNumber);
+		m_LeftBranch[uRootNode] = static_cast<uint_t>(uNodeNumber);
 	}
 }
 
@@ -238,8 +239,8 @@ void Burger::CompressLZSS::InsertNode(WordPtr uNodeNumber)
 void Burger::CompressLZSS::InitTrees(void)
 {
 	// Initialize the hash
-	WordPtr uCount = 256;
-	Word *pWork = &m_RightBranch[RINGBUFFERSIZE+1];
+	uintptr_t uCount = 256;
+	uint_t *pWork = &m_RightBranch[RINGBUFFERSIZE+1];
 	do {
 		pWork[0] = NOTUSED;		// Zap the hash table
 		++pWork;
@@ -291,7 +292,7 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Init(void)
 
 ***************************************/
 
-Burger::CompressLZSS::eError Burger::CompressLZSS::Process(const void *pInput,WordPtr uInputLength)
+Burger::CompressLZSS::eError Burger::CompressLZSS::Process(const void *pInput,uintptr_t uInputLength)
 {
 	if (uInputLength) {
 
@@ -303,8 +304,8 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Process(const void *pInput,Wo
 				if (!uInputLength) {
 					return COMPRESS_OKAY;
 				}
-				m_RingBuffer[m_uCachedLength+(RINGBUFFERSIZE - MAXMATCHLENGTH)] = static_cast<const Word8 *>(pInput)[0];
-				pInput = static_cast<const Word8 *>(pInput) + 1;
+				m_RingBuffer[m_uCachedLength+(RINGBUFFERSIZE - MAXMATCHLENGTH)] = static_cast<const uint8_t *>(pInput)[0];
+				pInput = static_cast<const uint8_t *>(pInput) + 1;
 				--uInputLength;		// Use input
 			} while (++m_uCachedLength<MAXMATCHLENGTH);
 
@@ -315,8 +316,8 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Process(const void *pInput,Wo
 
 			InsertNode(RINGBUFFERSIZE - MAXMATCHLENGTH);		// Insert it in and get m_uMatchSize
 			m_uBitMaskOffset = m_Output.GetSize();				// Offset is the first byte in the stream
-			m_Output.Append(static_cast<Word8>(1));
-			m_Output.Append(static_cast<Word8>(m_RingBuffer[RINGBUFFERSIZE - MAXMATCHLENGTH]));	// Send uncoded.
+			m_Output.Append(static_cast<uint8_t>(1));
+			m_Output.Append(static_cast<uint8_t>(m_RingBuffer[RINGBUFFERSIZE - MAXMATCHLENGTH]));	// Send uncoded.
 			m_bOrMask = 1U<<1U;			// Initialize for the NEXT bit
 			m_uMatchSize = 1;			// Force 1 byte for future loop
 			m_bBitMask = 1;				// 'send one byte' flag
@@ -340,17 +341,17 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Process(const void *pInput,Wo
 				if (!uInputLength) {
 					return COMPRESS_OKAY;
 				}
-				Word uInputByte = static_cast<const Word8 *>(pInput)[0];		// Get a byte from the input stream
-				pInput = static_cast<const Word8 *>(pInput) + 1;
+				uint_t uInputByte = static_cast<const uint8_t *>(pInput)[0];		// Get a byte from the input stream
+				pInput = static_cast<const uint8_t *>(pInput) + 1;
 				--uInputLength;
 				DeleteNode(m_uSourceIndex);		// Delete old strings and read new bytes
-				m_RingBuffer[m_uSourceIndex] = static_cast<Word8>(uInputByte);
+				m_RingBuffer[m_uSourceIndex] = static_cast<uint8_t>(uInputByte);
 
 				// If the position is near the end of buffer, extend the buffer to make
 				// string comparison easier.
 
 				if (m_uSourceIndex < (MAXMATCHLENGTH-1)) {
-					m_RingBuffer[m_uSourceIndex + RINGBUFFERSIZE] = static_cast<Word8>(uInputByte);
+					m_RingBuffer[m_uSourceIndex + RINGBUFFERSIZE] = static_cast<uint8_t>(uInputByte);
 				}
 
 				// Since this is a ring buffer, increment the position modulo RINGBUFFERSIZE.
@@ -368,7 +369,7 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Process(const void *pInput,Wo
 
 			if (!m_bOrMask) {
 				m_uBitMaskOffset = m_Output.GetSize();
-				m_Output.Append(static_cast<Word8>(0));
+				m_Output.Append(static_cast<uint8_t>(0));
 				m_bOrMask = 1;
 				m_bBitMask = 0;
 			}
@@ -379,16 +380,16 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Process(const void *pInput,Wo
 				// Not long enough match. Send one byte.
 				m_uMatchSize = 1;				// Force 1 byte for future loop
 				m_bBitMask |= m_bOrMask;		// 'send one byte' flag
-				m_Output.Append(static_cast<Word8>(m_RingBuffer[m_uDestIndex]));	// Send uncoded.
+				m_Output.Append(static_cast<uint8_t>(m_RingBuffer[m_uDestIndex]));	// Send uncoded.
 			} else {
 
 				// Send position and length pair. Note MatchSize > MINMATCHLENGTH.
 
-				Word uNewToken = m_uMatchOffset-m_uDestIndex;
+				uint_t uNewToken = m_uMatchOffset-m_uDestIndex;
 				uNewToken = uNewToken&0xFFF;
 				uNewToken = uNewToken|((m_uMatchSize-(MINMATCHLENGTH+1))<<12);
 				// Note: This is put in the stream as little endian!!
-				m_Output.Append(static_cast<Word16>(uNewToken));
+				m_Output.Append(static_cast<uint16_t>(uNewToken));
 			}
 
 			m_bOrMask <<=1;				// Shift mask left one bit.
@@ -449,7 +450,7 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Finalize(void)
 				m_bOrMask = 1;
 				m_bBitMask = 0;
 				m_uBitMaskOffset = m_Output.GetSize();
-				m_Output.Append(static_cast<Word8>(0));
+				m_Output.Append(static_cast<uint8_t>(0));
 			}
 	
 			// Should it be encoded or raw?
@@ -458,16 +459,16 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Finalize(void)
 				// Not long enough match. Send one byte.
 				m_uMatchSize = 1;				// Force 1 byte for future loop
 				m_bBitMask |= m_bOrMask;		// 'send one byte' flag
-				m_Output.Append(static_cast<Word8>(m_RingBuffer[m_uDestIndex]));	// Send uncoded.
+				m_Output.Append(static_cast<uint8_t>(m_RingBuffer[m_uDestIndex]));	// Send uncoded.
 			} else {
 
 				// Send position and length pair. Note MatchSize > MINMATCHLENGTH.
 					
-				Word uNewToken = m_uMatchOffset-m_uDestIndex;
+				uint_t uNewToken = m_uMatchOffset-m_uDestIndex;
 				uNewToken = uNewToken&0xFFF;
 				uNewToken = uNewToken|((m_uMatchSize-(MINMATCHLENGTH+1))<<12);
 				// Note: This is put in the stream as little endian!!
-				m_Output.Append(static_cast<Word16>(uNewToken));
+				m_Output.Append(static_cast<uint16_t>(uNewToken));
 			}
 
 			m_bOrMask <<=1;				// Shift mask left one bit.

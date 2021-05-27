@@ -77,7 +77,7 @@ typedef HRESULT(WINAPI* DirectPlayLobbyCreateAPtr)(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectPlayCreate(
+uint_t BURGER_API Burger::Windows::DirectPlayCreate(
 	GUID* pGuidSrc, IDirectPlay** ppOutput, IUnknown* pOuter)
 {
 	// Get the function pointer
@@ -87,7 +87,7 @@ Word BURGER_API Burger::Windows::DirectPlayCreate(
 		uResult = static_cast<DirectPlayCreatePtr>(pDirectPlayCreate)(
 			pGuidSrc, ppOutput, pOuter);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -113,7 +113,7 @@ Word BURGER_API Burger::Windows::DirectPlayCreate(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::CallDirectPlayEnumerate(
+uint_t BURGER_API Burger::Windows::CallDirectPlayEnumerate(
 	void* pCallback, void* pContext)
 {
 	// Get the function pointer
@@ -123,7 +123,7 @@ Word BURGER_API Burger::Windows::CallDirectPlayEnumerate(
 		uResult = static_cast<DirectPlayEnumerateAPtr>(pDirectPlayEnumerate)(
 			static_cast<LPDPENUMDPCALLBACKA>(pCallback), pContext);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -143,7 +143,7 @@ Word BURGER_API Burger::Windows::CallDirectPlayEnumerate(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectPlayEnumerateA(
+uint_t BURGER_API Burger::Windows::DirectPlayEnumerateA(
 	void* pCallback, void* pContext)
 {
 	// Get the function pointer
@@ -153,7 +153,7 @@ Word BURGER_API Burger::Windows::DirectPlayEnumerateA(
 		uResult = static_cast<DirectPlayEnumerateAPtr>(pDirectPlayEnumerateA)(
 			static_cast<LPDPENUMDPCALLBACKA>(pCallback), pContext);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -172,7 +172,7 @@ Word BURGER_API Burger::Windows::DirectPlayEnumerateA(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectPlayEnumerateW(
+uint_t BURGER_API Burger::Windows::DirectPlayEnumerateW(
 	void* pCallback, void* pContext)
 {
 	// Get the function pointer
@@ -182,7 +182,7 @@ Word BURGER_API Burger::Windows::DirectPlayEnumerateW(
 		uResult = static_cast<DirectPlayEnumerateWPtr>(pDirectPlayEnumerateW)(
 			static_cast<LPDPENUMDPCALLBACK>(pCallback), pContext);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -205,8 +205,8 @@ Word BURGER_API Burger::Windows::DirectPlayEnumerateW(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectPlayLobbyCreateA(GUID* pGuidSrc,
-	IDirectPlayLobby** ppOutput, IUnknown* pOuter, void* pData, Word uDataSize)
+uint_t BURGER_API Burger::Windows::DirectPlayLobbyCreateA(GUID* pGuidSrc,
+	IDirectPlayLobby** ppOutput, IUnknown* pOuter, void* pData, uint_t uDataSize)
 {
 	// Get the function pointer
 	void* pDirectPlayLobbyCreateA =
@@ -217,7 +217,7 @@ Word BURGER_API Burger::Windows::DirectPlayLobbyCreateA(GUID* pGuidSrc,
 			static_cast<DirectPlayLobbyCreateAPtr>(pDirectPlayLobbyCreateA)(
 				pGuidSrc, ppOutput, pOuter, pData, uDataSize);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -241,8 +241,8 @@ Word BURGER_API Burger::Windows::DirectPlayLobbyCreateA(GUID* pGuidSrc,
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectPlayLobbyCreateW(GUID* pGuidSrc,
-	IDirectPlayLobby** ppOutput, IUnknown* pOuter, void* pData, Word uDataSize)
+uint_t BURGER_API Burger::Windows::DirectPlayLobbyCreateW(GUID* pGuidSrc,
+	IDirectPlayLobby** ppOutput, IUnknown* pOuter, void* pData, uint_t uDataSize)
 {
 	// Get the function pointer
 	void* pDirectPlayLobbyCreateW =
@@ -253,7 +253,7 @@ Word BURGER_API Burger::Windows::DirectPlayLobbyCreateW(GUID* pGuidSrc,
 			static_cast<DirectPlayLobbyCreateWPtr>(pDirectPlayLobbyCreateW)(
 				pGuidSrc, ppOutput, pOuter, pData, uDataSize);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 #endif

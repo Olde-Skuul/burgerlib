@@ -1,13 +1,14 @@
 /***************************************
 
-	Texture for rendering class, OpenGL version
+    Texture for rendering class, OpenGL version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -36,16 +37,16 @@ namespace Burger {
 class TextureOpenGL : public Texture {
 	BURGER_RTTI_IN_CLASS();
 protected:
-	Word m_uTextureID;			///< OpenGL Texture ID
+	uint_t m_uTextureID;			///< OpenGL Texture ID
 public:
 	TextureOpenGL();
 	TextureOpenGL(eWrapping uWrapping,eFilter uFilter);
 	virtual ~TextureOpenGL();
-	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	uint_t CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
 	void Release(Display *pDisplay) BURGER_OVERRIDE;
 	static int GetWrapping(eWrapping uWrapping);
 	static int GetFilter(eFilter uFilter);
-	BURGER_INLINE Word GetTextureID(void) const { return m_uTextureID; }
+	BURGER_INLINE uint_t GetTextureID(void) const { return m_uTextureID; }
 };
 #endif
 }

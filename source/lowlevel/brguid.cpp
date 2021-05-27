@@ -74,9 +74,9 @@ const GUID Burger::g_GUIDZero = {0x00000000,0x0000,0x0000,{0x00,0x00,0x00,0x00,0
 	
 ***************************************/
 
-static BURGER_INLINE Word GUIDCharIsHex(Word uInput)
+static BURGER_INLINE uint_t GUIDCharIsHex(uint_t uInput)
 {
-	Word uResult = FALSE;		// Assume it's bad
+	uint_t uResult = FALSE;		// Assume it's bad
 	if (!uInput || (Burger::g_AsciiTestTable[uInput]&Burger::ASCII_HEX)) {
 		uResult = TRUE;		// It's good!
 	}
@@ -90,15 +90,15 @@ static BURGER_INLINE Word GUIDCharIsHex(Word uInput)
 	
 ***************************************/
 
-static Word32 BURGER_API GUIDFromHex(const char **ppInput,Word uDigits)
+static uint32_t BURGER_API GUIDFromHex(const char **ppInput,uint_t uDigits)
 {
 	const char *pInput = ppInput[0];
-	while (!GUIDCharIsHex(reinterpret_cast<const Word8 *>(pInput)[0])) {
+	while (!GUIDCharIsHex(reinterpret_cast<const uint8_t *>(pInput)[0])) {
 		++pInput;
 	}
-	Word32 uValue = 0;				// Init the value
+	uint32_t uValue = 0;				// Init the value
 	do {
-		Word uTemp = reinterpret_cast<const Word8 *>(pInput)[0];
+		uint_t uTemp = reinterpret_cast<const uint8_t *>(pInput)[0];
 		if (!uTemp) {				// End of string???
 			break;					// Abort NOW 
 		}
@@ -141,9 +141,9 @@ void BURGER_API Burger::GUIDInit(GUID *pOutput)
 {
 	// For unsupported platforms, punt
 	pOutput->Data1 = LittleEndian::Load(Tick::ReadMicroseconds());
-	reinterpret_cast<Word32 *>(pOutput)[1] = LittleEndian::Load(Tick::ReadMicroseconds());
-	reinterpret_cast<Word32 *>(pOutput)[2] = LittleEndian::Load(Tick::ReadMicroseconds());
-	reinterpret_cast<Word32 *>(pOutput)[3] = LittleEndian::Load(Tick::ReadMicroseconds());
+	reinterpret_cast<uint32_t *>(pOutput)[1] = LittleEndian::Load(Tick::ReadMicroseconds());
+	reinterpret_cast<uint32_t *>(pOutput)[2] = LittleEndian::Load(Tick::ReadMicroseconds());
+	reinterpret_cast<uint32_t *>(pOutput)[3] = LittleEndian::Load(Tick::ReadMicroseconds());
 }
 #endif
 
@@ -171,7 +171,7 @@ void BURGER_API Burger::GUIDToString(char *pOutput,const GUID *pInput)
 	pOutput = NumberToAsciiHex(pOutput,pInput->Data4[1],LEADINGZEROS|2);
 	pOutput[0] = '-';
 	++pOutput;
-	Word i = 0;
+	uint_t i = 0;
 	do {
 		pOutput = NumberToAsciiHex(pOutput,pInput->Data4[i+2],LEADINGZEROS|2);
 	} while (++i<6);
@@ -191,20 +191,20 @@ void BURGER_API Burger::GUIDToString(char *pOutput,const GUID *pInput)
 
 ***************************************/
 
-Word BURGER_API Burger::GUIDFromString(GUID *pOutput,const char *pInput)
+uint_t BURGER_API Burger::GUIDFromString(GUID *pOutput,const char *pInput)
 {
 	pOutput->Data1 = LittleEndian::Load(GUIDFromHex(&pInput,8));	// Get the timestamp
-	pOutput->Data2 = LittleEndian::Load(static_cast<Word16>(GUIDFromHex(&pInput,4)));	// The shorts
-	pOutput->Data3 = LittleEndian::Load(static_cast<Word16>(GUIDFromHex(&pInput,4)));
-	Word i = 0;
+	pOutput->Data2 = LittleEndian::Load(static_cast<uint16_t>(GUIDFromHex(&pInput,4)));	// The shorts
+	pOutput->Data3 = LittleEndian::Load(static_cast<uint16_t>(GUIDFromHex(&pInput,4)));
+	uint_t i = 0;
 	do {
-		pOutput->Data4[i] = static_cast<Word8>(GUIDFromHex(&pInput,2));	// The last 8 bytes
+		pOutput->Data4[i] = static_cast<uint8_t>(GUIDFromHex(&pInput,2));	// The last 8 bytes
 	} while (++i<8);
 	// Skip over trailing whitespace
-	while (!GUIDCharIsHex(reinterpret_cast<const Word8 *>(pInput)[0])) {
+	while (!GUIDCharIsHex(reinterpret_cast<const uint8_t *>(pInput)[0])) {
 		++pInput;
 	}
-	if (reinterpret_cast<const Word8 *>(pInput)[0]) {
+	if (reinterpret_cast<const uint8_t *>(pInput)[0]) {
 		return TRUE;		// Error
 	}
 	return FALSE;			// It's ok!
@@ -222,11 +222,11 @@ Word BURGER_API Burger::GUIDFromString(GUID *pOutput,const char *pInput)
 	
 ***************************************/
 
-Word BURGER_API Burger::GUIDHash(const GUID *pInput)
+uint_t BURGER_API Burger::GUIDHash(const GUID *pInput)
 {
-	Int iSum = 0;		// Sum of all the entries
-	Int iAccum = 0;		// Accumulation
-	WordPtr uCount = sizeof(GUID);
+	int_t iSum = 0;		// Sum of all the entries
+	int_t iAccum = 0;		// Accumulation
+	uintptr_t uCount = sizeof(GUID);
 	// Using SIGNED math, add all of the byte together
 	do {
 		iSum = iSum + reinterpret_cast<const char *>(pInput)[0];	// Simple add of all 16 bytes
@@ -235,19 +235,19 @@ Word BURGER_API Burger::GUIDHash(const GUID *pInput)
 	} while (--uCount);
 	
 	// Force to 16 bit
-	iAccum = static_cast<Int16>(iAccum);
-	Int iResult = -iAccum % 255;	// Make a modulo to hash it out
+	iAccum = static_cast<int16_t>(iAccum);
+	int_t iResult = -iAccum % 255;	// Make a modulo to hash it out
 	if (iResult < 0) {
 		iResult += 255;				// Force positive
 	}
 	iResult = iResult&0xFF;			// Force to unsigned char
 
-	iAccum = static_cast<Int16>(iAccum-iSum);	// The hash is 16 bit!
-	Int iResult2 = iAccum % 255;	// Make modulo
+	iAccum = static_cast<int16_t>(iAccum-iSum);	// The hash is 16 bit!
+	int_t iResult2 = iAccum % 255;	// Make modulo
 	if (iResult2 < 0) {
 		iResult2 += 255;			// Force positive
 	}
-	return static_cast<Word>(((iResult2&0xFF) << 8) | iResult);		// Return the hash (Only 16 bits)
+	return static_cast<uint_t>(((iResult2&0xFF) << 8) | iResult);		// Return the hash (Only 16 bits)
 }
 
 
@@ -261,12 +261,12 @@ Word BURGER_API Burger::GUIDHash(const GUID *pInput)
 	
 ***************************************/
 
-Word BURGER_API Burger::GUIDIsEqual(const GUID *pInput1, const GUID *pInput2)
+uint_t BURGER_API Burger::GUIDIsEqual(const GUID *pInput1, const GUID *pInput2)
 {
-	return (reinterpret_cast<const Word32 *>(pInput1)[0] == reinterpret_cast<const Word32 *>(pInput2)[0]) &&
-		(reinterpret_cast<const Word32 *>(pInput1)[1] == reinterpret_cast<const Word32 *>(pInput2)[1]) &&
-		(reinterpret_cast<const Word32 *>(pInput1)[2] == reinterpret_cast<const Word32 *>(pInput2)[2]) &&
-		(reinterpret_cast<const Word32 *>(pInput1)[3] == reinterpret_cast<const Word32 *>(pInput2)[3]);
+	return (reinterpret_cast<const uint32_t *>(pInput1)[0] == reinterpret_cast<const uint32_t *>(pInput2)[0]) &&
+		(reinterpret_cast<const uint32_t *>(pInput1)[1] == reinterpret_cast<const uint32_t *>(pInput2)[1]) &&
+		(reinterpret_cast<const uint32_t *>(pInput1)[2] == reinterpret_cast<const uint32_t *>(pInput2)[2]) &&
+		(reinterpret_cast<const uint32_t *>(pInput1)[3] == reinterpret_cast<const uint32_t *>(pInput2)[3]);
 }
 
 /*! ************************************
@@ -287,8 +287,8 @@ Word BURGER_API Burger::GUIDIsEqual(const GUID *pInput1, const GUID *pInput2)
 
 int BURGER_API Burger::GUIDCompare(const GUID *pInput1,const GUID *pInput2)
 {
-	Word32 uTemp1 = LittleEndian::Load(&pInput1->Data1);
-	Word32 uTemp2 = LittleEndian::Load(&pInput2->Data1);
+	uint32_t uTemp1 = LittleEndian::Load(&pInput1->Data1);
+	uint32_t uTemp2 = LittleEndian::Load(&pInput2->Data1);
 	int iResult;
 	if (uTemp1 < uTemp2) {
 		iResult = -1;
@@ -309,7 +309,7 @@ int BURGER_API Burger::GUIDCompare(const GUID *pInput1,const GUID *pInput2)
 			} else if (uTemp1 > uTemp2) {
 				iResult = 1;
 			} else {
-				WordPtr i = 0;
+				uintptr_t i = 0;
 				iResult = 0;
 				do {
 					uTemp1 = pInput1->Data4[i];

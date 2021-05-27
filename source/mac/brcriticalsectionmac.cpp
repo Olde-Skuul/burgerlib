@@ -1,13 +1,14 @@
 /***************************************
 
-	Class to handle critical sections, MacOS version
+    Class to handle critical sections, MacOS version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -22,7 +23,7 @@
 
 ***************************************/
 
-Burger::CriticalSection::CriticalSection()
+Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT
 {
 	OTClearLock(&m_bLock);
 }
@@ -35,7 +36,7 @@ Burger::CriticalSection::~CriticalSection() {}
 
 ***************************************/
 
-void Burger::CriticalSection::Lock()
+void Burger::CriticalSection::Lock() BURGER_NOEXCEPT
 {
 	while (OTAcquireLock(&m_bLock)) {
 	}
@@ -47,7 +48,7 @@ void Burger::CriticalSection::Lock()
 
 ***************************************/
 
-Word Burger::CriticalSection::TryLock()
+uint_t Burger::CriticalSection::TryLock() BURGER_NOEXCEPT
 {
 	return OTAcquireLock(&m_bLock);
 }
@@ -58,7 +59,7 @@ Word Burger::CriticalSection::TryLock()
 
 ***************************************/
 
-void Burger::CriticalSection::Unlock()
+void Burger::CriticalSection::Unlock() BURGER_NOEXCEPT
 {
 	OTClearLock(&m_bLock);
 }

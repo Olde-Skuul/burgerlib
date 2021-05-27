@@ -1,15 +1,16 @@
 /***************************************
 
-	Debug manager
+    Debug manager
 
-	MacOS specific version
+    MacOS specific version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -31,7 +32,7 @@
 
 ***************************************/
 
-static const Word8 g_OkTemplate[] = {0x00, 0x01, // 2 items in the list
+static const uint8_t g_OkTemplate[] = {0x00, 0x01, // 2 items in the list
 	0x00, 0x00, 0x00, 0x00,						 // Nothing
 	0x00, 160, 0x00, 141, 0x00, 180, 0x00,
 	209, // Rect for the OK button Width 68
@@ -64,7 +65,7 @@ void BURGER_API Burger::OkAlertMessage(const char* pMessage, const char* pTitle)
 	DialogRect.right = static_cast<short>(DialogRect.left + 350);
 
 	// Assume no length
-	WordPtr uTitleLen = 0;
+	uintptr_t uTitleLen = 0;
 	if (pTitle) {
 		// Get the length of the title string
 		uTitleLen = StringLength(pTitle);
@@ -75,7 +76,7 @@ void BURGER_API Burger::OkAlertMessage(const char* pMessage, const char* pTitle)
 	CStringToPString(PascalTitle, pTitle);
 
 	// Size of the message
-	Word uMessageLength = StringLength(pMessage);
+	uint_t uMessageLength = StringLength(pMessage);
 	Handle hItemList = NewHandle(
 		static_cast<Size>(sizeof(g_OkTemplate) + 1 + uMessageLength));
 
@@ -86,7 +87,7 @@ void BURGER_API Burger::OkAlertMessage(const char* pMessage, const char* pTitle)
 
 		// Copy the message
 		CStringToPString(
-			reinterpret_cast<Word8*>(*hItemList) + sizeof(g_OkTemplate),
+			reinterpret_cast<uint8_t*>(*hItemList) + sizeof(g_OkTemplate),
 			pMessage);
 
 		short ItemHit; // Junk
@@ -112,7 +113,7 @@ void BURGER_API Burger::OkAlertMessage(const char* pMessage, const char* pTitle)
 
 ***************************************/
 
-static const Word8 g_OkCancelTemplate[] = {0x00, 0x02, // 3 items in the list
+static const uint8_t g_OkCancelTemplate[] = {0x00, 0x02, // 3 items in the list
 	0x00, 0x00, 0x00, 0x00,							   // Nothing
 	0x00, 160, 0x01, 260 - 256, 0x00, 180, 0x01,
 	328 - 256, // Rect for the OK button Width 68
@@ -123,7 +124,7 @@ static const Word8 g_OkCancelTemplate[] = {0x00, 0x02, // 3 items in the list
 	0x00, 20, 0x00, 140, 0x01, 330 - 256, // Width 310
 	0x88};
 
-Word BURGER_API Burger::OkCancelAlertMessage(
+uint_t BURGER_API Burger::OkCancelAlertMessage(
 	const char* pMessage, const char* pTitle)
 {
 
@@ -150,7 +151,7 @@ Word BURGER_API Burger::OkCancelAlertMessage(
 	DialogRect.right = static_cast<short>(DialogRect.left + 350);
 
 	// Assume no length
-	WordPtr uTitleLen = 0;
+	uintptr_t uTitleLen = 0;
 	if (pTitle) {
 		// Get the length of the title string
 		uTitleLen = StringLength(pTitle);
@@ -161,17 +162,17 @@ Word BURGER_API Burger::OkCancelAlertMessage(
 	CStringToPString(PascalTitle, pTitle);
 	
 	// Assume cancel
-	Word bResult = FALSE;
+	uint_t bResult = FALSE;
 
 	// Size of the message
-	WordPtr uMessageLen = StringLength(pMessage);
+	uintptr_t uMessageLen = StringLength(pMessage);
 	Handle hItemList = NewHandle(
 		static_cast<Size>(sizeof(g_OkCancelTemplate) + 1 + uMessageLen));
 	// Ok?
 	if (hItemList) {
 		MemoryCopy(*hItemList, g_OkCancelTemplate,
 			sizeof(g_OkCancelTemplate)); // Copy the template
-		CStringToPString(reinterpret_cast<Word8*>(*hItemList)
+		CStringToPString(reinterpret_cast<uint8_t*>(*hItemList)
 				+ sizeof(g_OkCancelTemplate), pMessage); // Copy the message
 		short ItemHit; // Junk
 		DialogPtr pDialog = NewDialog(0, &DialogRect, PascalTitle, TRUE,

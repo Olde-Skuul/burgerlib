@@ -36,7 +36,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::DecompressALaw,Burger::DecompressAudio);
 
 ***************************************/
 
-const Int16 Burger::DecompressALaw::g_Table[256] = {
+const int16_t Burger::DecompressALaw::g_Table[256] = {
 	-5504, -5248, -6016, -5760, -4480, -4224, -4992, -4736,
 	-7552, -7296, -8064, -7808, -6528, -6272, -7040, -6784,
 	-2752, -2624, -3008, -2880, -2240, -2112, -2496, -2368,
@@ -148,7 +148,7 @@ Burger::Decompress::eError Burger::DecompressALaw::Process(void *pOutput, uintpt
 	//
 
 	eState uState = m_eState;
-	Word bAbort = FALSE;
+	uint_t bAbort = FALSE;
 	do {
 		switch (uState) {
 
@@ -159,19 +159,19 @@ Burger::Decompress::eError Burger::DecompressALaw::Process(void *pOutput, uintpt
 		case STATE_INIT:
 			{
 				// Copy the data while converting the endian
-				WordPtr uPacketCount = Min(uInputChunkLength,uOutputChunkLength>>1U);
+				uintptr_t uPacketCount = Min(uInputChunkLength,uOutputChunkLength>>1U);
 				uInputChunkLength -= uPacketCount;
 				uOutputChunkLength -= uPacketCount*2;
 
-				WordPtr uLength = uPacketCount;
+				uintptr_t uLength = uPacketCount;
 				if (uLength) {
 					// Is it aligned?
-					if (!(reinterpret_cast<WordPtr>(pOutput)&1)) {
+					if (!(reinterpret_cast<uintptr_t>(pOutput)&1)) {
 						do {
 							// Convert to native endian quickly
-							static_cast<Int16 *>(pOutput)[0] = g_Table[static_cast<const Word8 *>(pInput)[0]];
-							pInput = static_cast<const Word8 *>(pInput)+1;
-							pOutput = static_cast<Word16 *>(pOutput)+1;
+							static_cast<int16_t *>(pOutput)[0] = g_Table[static_cast<const uint8_t *>(pInput)[0]];
+							pInput = static_cast<const uint8_t *>(pInput)+1;
+							pOutput = static_cast<uint16_t *>(pOutput)+1;
 						} while (--uLength);
 					} else {
 
@@ -179,9 +179,9 @@ Burger::Decompress::eError Burger::DecompressALaw::Process(void *pOutput, uintpt
 
 						do {
 							// Convert to endian with unaligned data
-							NativeEndian::StoreAny(static_cast<int16_t *>(pOutput),g_Table[static_cast<const Word8 *>(pInput)[0]]);
-							pInput = static_cast<const Word8 *>(pInput)+1;
-							pOutput = static_cast<Word16 *>(pOutput)+1;
+							NativeEndian::StoreAny(static_cast<int16_t *>(pOutput),g_Table[static_cast<const uint8_t *>(pInput)[0]]);
+							pInput = static_cast<const uint8_t *>(pInput)+1;
+							pOutput = static_cast<uint16_t *>(pOutput)+1;
 						} while (--uLength);
 
 					}
@@ -192,8 +192,8 @@ Burger::Decompress::eError Burger::DecompressALaw::Process(void *pOutput, uintpt
 				//
 				if (uInputChunkLength) {
 					// Put it in the cache and go into cache mode
-					m_iCache = g_Table[static_cast<const Word8 *>(pInput)[0]];
-					pInput = static_cast<const Word8 *>(pInput)+1;
+					m_iCache = g_Table[static_cast<const uint8_t *>(pInput)[0]];
+					pInput = static_cast<const uint8_t *>(pInput)+1;
 					--uInputChunkLength;
 					m_uCacheSize = 2;
 					uState = STATE_CACHEFULL;
@@ -212,20 +212,20 @@ Burger::Decompress::eError Burger::DecompressALaw::Process(void *pOutput, uintpt
 
 				// Output 1 or 2 bytes
 
-				WordPtr uCacheSize = m_uCacheSize;
-				WordPtr uSteps = Min(uOutputChunkLength,static_cast<WordPtr>(uCacheSize));
+				uintptr_t uCacheSize = m_uCacheSize;
+				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheSize));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;
 
 				// Start copying where it left off
-				const Word8 *pSrc = &reinterpret_cast<const Word8 *>(&m_iCache)[2-uCacheSize];
+				const uint8_t *pSrc = &reinterpret_cast<const uint8_t *>(&m_iCache)[2-uCacheSize];
 
 				// Update the cache size
-				uCacheSize = static_cast<Word>(uCacheSize-uSteps);
+				uCacheSize = static_cast<uint_t>(uCacheSize-uSteps);
 				if (uCacheSize) {
 					// Number of bytes remaining in cache
-					m_uCacheSize = static_cast<Word>(uCacheSize);
+					m_uCacheSize = static_cast<uint_t>(uCacheSize);
 				} else {
 					// Cache will be empty, so switch to normal mode
 					uState = STATE_INIT;
@@ -235,9 +235,9 @@ Burger::Decompress::eError Burger::DecompressALaw::Process(void *pOutput, uintpt
 				// Copy out the cache data
 				//
 				do {
-					static_cast<Word8 *>(pOutput)[0] = pSrc[0];
+					static_cast<uint8_t *>(pOutput)[0] = pSrc[0];
 					++pSrc;
-					pOutput = static_cast<Word8 *>(pOutput)+1;
+					pOutput = static_cast<uint8_t *>(pOutput)+1;
 				} while (--uSteps);
 			} else {
 				bAbort = TRUE;
@@ -251,8 +251,8 @@ Burger::Decompress::eError Burger::DecompressALaw::Process(void *pOutput, uintpt
 	m_eState = uState;
 
 	// Return the number of bytes actually consumed
-	WordPtr uInputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pInput)-static_cast<const Word8 *>(pOldInput));
-	WordPtr uOutputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pOutput)-static_cast<const Word8 *>(pOldOutput));
+	uintptr_t uInputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pInput)-static_cast<const uint8_t *>(pOldInput));
+	uintptr_t uOutputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pOutput)-static_cast<const uint8_t *>(pOldOutput));
 
 	// Store the amount of data that was processed
 

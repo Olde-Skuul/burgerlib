@@ -1,13 +1,14 @@
 /***************************************
 
-	Linked list of data objects manager
+    Linked list of data objects manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -413,7 +414,7 @@ void Burger::LinkedListObjects::Destroy(void)
 
 /*! ************************************
 	
-	\fn Word Burger::LinkedListObjects::GetCount(void) const
+	\fn uint_t Burger::LinkedListObjects::GetCount(void) const
 	\brief Return the number of Objects in the list
 
 	Return 0 if the list is empty, the count of objects otherwise.
@@ -531,7 +532,7 @@ void *Burger::LinkedListObjects::GetLastData(void) const
 
 ***************************************/
 
-void *Burger::LinkedListObjects::GetData(Word uIndex) const
+void *Burger::LinkedListObjects::GetData(uint_t uIndex) const
 {
 	void *pResult = NULL;
 	if (uIndex<m_uCount) {			// Invalid count?
@@ -562,7 +563,7 @@ void *Burger::LinkedListObjects::GetData(Word uIndex) const
 
 ***************************************/
 
-Burger::LinkedListObjects::Object *Burger::LinkedListObjects::GetObject(Word uIndex) const
+Burger::LinkedListObjects::Object *Burger::LinkedListObjects::GetObject(uint_t uIndex) const
 {
 	Object *pObject = NULL;
 	if (uIndex<m_uCount) {			// Invalid count?
@@ -592,7 +593,7 @@ Burger::LinkedListObjects::Object *Burger::LinkedListObjects::GetObject(void *pD
 {
 	Object *pResult = m_pRoot;	// Get the first entry
 	if (pResult) {				// Should I traverse?
-		Word uCount = m_uCount;
+		uint_t uCount = m_uCount;
 		Object *pObject = pResult;
 		do {
 			if (pObject->GetData()==pData) {
@@ -621,7 +622,7 @@ Burger::LinkedListObjects::Object *Burger::LinkedListObjects::GetStringObject(co
 {
 	Object *pResult = m_pRoot;	// Get the first entry
 	if (pResult) {				// Should I traverse?
-		Word uCount = m_uCount;
+		uint_t uCount = m_uCount;
 		Object *pObject = pResult;
 		do {
 			if (!StringCaseCompare(static_cast<const char *>(pObject->GetData()),pString)) {
@@ -648,12 +649,12 @@ Burger::LinkedListObjects::Object *Burger::LinkedListObjects::GetStringObject(co
 
 ***************************************/
 
-Word Burger::LinkedListObjects::GetStringIndex(const char *pString) const
+uint_t Burger::LinkedListObjects::GetStringIndex(const char *pString) const
 {
-	Word uResult = static_cast<Word>(-1);
+	uint_t uResult = static_cast<uint_t>(-1);
 	Object *pObject = m_pRoot;	// Get the first entry
 	if (pObject) {				// Should I traverse?
-		Word uCount = m_uCount;
+		uint_t uCount = m_uCount;
 		do {
 			if (!StringCaseCompare(static_cast<const char *>(pObject->GetData()),pString)) {
 				uResult = m_uCount-uCount;		// Determine the index number
@@ -868,7 +869,7 @@ Burger::LinkedListObjects::Object *Burger::LinkedListObjects::IterateForward(Pro
 	if (pFirst) {
 		Object *pObject = pFirst;
 		do {
-			Word uResult = pProc(pObject->GetData());	// Call the function
+			uint_t uResult = pProc(pObject->GetData());	// Call the function
 			Object *pNext = pObject->GetNext();			// Get the next entry
 			if (uResult&DELETEOBJECT) {					// Dispose of the entry?
 				DestroyObject(pObject);
@@ -907,7 +908,7 @@ Burger::LinkedListObjects::Object *Burger::LinkedListObjects::IterateReverse(Pro
 		pFirst = pFirst->GetPrevious();
 		Object *pObject = pFirst;
 		do {
-			Word uResult = pProc(pObject->GetData());	// Call the function
+			uint_t uResult = pProc(pObject->GetData());	// Call the function
 			Object *pPrevious = pObject->GetPrevious();			// Get the next entry
 			if (uResult&DELETEOBJECT) {					// Dispose of the entry?
 				DestroyObject(pObject);

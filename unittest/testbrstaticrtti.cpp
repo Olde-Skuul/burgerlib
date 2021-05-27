@@ -64,9 +64,9 @@ BURGER_CREATE_STATICRTTI_PARENT(foo5, foo);
 // Brute force tests
 //
 
-static Word TestRTTI(void)
+static uint_t TestRTTI(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	foo bar;
 	foo2 bar2;
 	foo3 bar3;
@@ -77,7 +77,7 @@ static Word TestRTTI(void)
 	foo* pBar3 = &bar3;
 	foo* pBar4 = &bar4;
 	foo* pBar5 = &bar5;
-	Word uTest;
+	uint_t uTest;
 
 	uTest = StringCompare(pBar->GetClassName(), "foo") != 0;
 	ReportFailure("pBar->GetClassName()!='foo'", uTest);
@@ -203,13 +203,13 @@ static Word TestRTTI(void)
 // Perform all the tests for the Burgerlib Static RTTI
 //
 
-int BURGER_API TestBrstaticrtti(Word uVerbose)
+int BURGER_API TestBrstaticrtti(uint_t uVerbose)
 {
 	if (uVerbose & VERBOSE_MSG) {
 		Message("Running Static RTTI tests");
 	}
 
-	Word uTotal = TestRTTI();
+	uint_t uTotal = TestRTTI();
 
 	if (!uTotal && (uVerbose & VERBOSE_MSG)) {
 		Message("Passed all Static RTTI tests!");

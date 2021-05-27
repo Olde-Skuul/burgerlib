@@ -1,14 +1,15 @@
 /***************************************
 
-	Base shader effect class
+    Base shader effect class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #ifndef __BREFFECT_H__
@@ -60,7 +61,7 @@ protected:
 		} m_DX9;		///< DirectX 9 specific data
 #endif
 		struct {
-			Word m_uProgramID;							///< OpenGL Program ID for the compiled shader
+			uint_t m_uProgramID;							///< OpenGL Program ID for the compiled shader
 		} m_GL;			///< OpenGL specific data
 	} m_ShaderData;		///< Union of vertex/pixel shader data
 #endif
@@ -79,7 +80,7 @@ public:
 #endif
 
 #if defined(BURGER_OPENGL) || defined(DOXYGEN)
-	BURGER_INLINE Word GetProgramID(void) const { return m_ShaderData.m_GL.m_uProgramID; }
+	BURGER_INLINE uint_t GetProgramID(void) const { return m_ShaderData.m_GL.m_uProgramID; }
 #endif
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)

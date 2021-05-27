@@ -1,15 +1,16 @@
 /***************************************
 
-	Filename Class
+    Filename Class
 
-	MacOS version
+    MacOS version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -66,7 +67,7 @@ Burger::Filename::ExpandCache_t \note Only available on MacOS
 
 void BURGER_API Burger::Filename::InitDirectoryCache(void)
 {
-	Word i = BURGER_ARRAYSIZE(m_DirectoryCache);
+	uint_t i = BURGER_ARRAYSIZE(m_DirectoryCache);
 	ExpandCache_t* pWork = m_DirectoryCache;
 	do {
 		pWork->m_pName = NULL;
@@ -89,7 +90,7 @@ Burger::Filename::ExpandCache_t \note Only available on MacOS
 
 void BURGER_API Burger::Filename::PurgeDirectoryCache(void)
 {
-	Word i = BURGER_ARRAYSIZE(m_DirectoryCache);
+	uint_t i = BURGER_ARRAYSIZE(m_DirectoryCache);
 	ExpandCache_t* pWork = m_DirectoryCache;
 	do {
 		Free(pWork->m_pName);
@@ -136,10 +137,10 @@ const char* Burger::Filename::GetNative(void)
 	char* pWork = StringCharacterReverse(pPath, ':');
 	// No match found
 	ExpandCache_t* pBiggestMatch = NULL;
-	Word uBiggestLen = 0;
+	uint_t uBiggestLen = 0;
 
 	// Assume the directory has no length
-	WordPtr uDirLength = 0;
+	uintptr_t uDirLength = 0;
 	char* pFileName = NULL;
 	// If no colon, don't do a scan
 	if (pWork) {
@@ -158,11 +159,11 @@ const char* Burger::Filename::GetNative(void)
 
 		if (pFileName) {
 			// Length of the directory including the ending colon
-			uDirLength = static_cast<WordPtr>(pFileName - pPath) + 1;
+			uDirLength = static_cast<uintptr_t>(pFileName - pPath) + 1;
 			// Not a single char? ":a"?
 			if (uDirLength >= 2) {
 				// Scan against the cache
-				Word i = DIRCACHESIZE;
+				uint_t i = DIRCACHESIZE;
 				ExpandCache_t* pCache = m_DirectoryCache;
 				do {
 					// If there is an entry, check if this directory is a match
@@ -189,7 +190,7 @@ const char* Burger::Filename::GetNative(void)
 								if (pFileName[0] == ':') {
 									++pFileName;
 								}
-								WordPtr uFinalLength = StringLength(pFileName);
+								uintptr_t uFinalLength = StringLength(pFileName);
 
 								// Store the file name
 								char* pNew = m_NativeFilename;
@@ -241,7 +242,7 @@ const char* Burger::Filename::GetNative(void)
 							// working directory
 		long lDirID = 0;
 		// Assume no device found
-		Word uDeviceNum = static_cast<Word>(-1);
+		uint_t uDeviceNum = static_cast<uint_t>(-1);
 		// No directory parsed yet
 
 		// Find the volume by name?
@@ -257,24 +258,24 @@ const char* Burger::Filename::GetNative(void)
 				pEndVolume[1] = 0;
 				uDeviceNum = FileManager::GetVolumeNumber(pPath);
 				pEndVolume[1] = cTemp;
-				if (uDeviceNum != static_cast<Word>(-1)) {
+				if (uDeviceNum != static_cast<uint_t>(-1)) {
 					sVRefNum = static_cast<short>(uDeviceNum);
 					lDirID = fsRtDirID;
-					uDirLength = static_cast<WordPtr>(pEndVolume - pPath) + 1;
+					uDirLength = static_cast<uintptr_t>(pEndVolume - pPath) + 1;
 				}
 			}
 
 			// Find the volume by number?
 		} else if (pPath[0] == '.') {
 			// ".dxx:"?
-			Word uTemp = pPath[1];
+			uint_t uTemp = pPath[1];
 			if (uTemp >= 'a' && uTemp < ('z' + 1)) {
 				uTemp &= 0xDF;
 			}
 			// Is it a 'D'?
 			if (uTemp == 'D') {
 				// Index past the ".D"
-				WordPtr uLength = 2;
+				uintptr_t uLength = 2;
 				// Init drive number
 				uDeviceNum = 0;
 				for (;;) {
@@ -358,13 +359,13 @@ const char* Burger::Filename::GetNative(void)
 	// I may need to purge the oldest entry.
 	//
 
-	uDirLength = static_cast<WordPtr>(pWorkPath - pPath);
+	uDirLength = static_cast<uintptr_t>(pWorkPath - pPath);
 	if (uDirLength >= 3) {
-		Word32 uMark = Tick::Read();
-		Word i = DIRCACHESIZE;
+		uint32_t uMark = Tick::Read();
+		uint_t i = DIRCACHESIZE;
 		ExpandCache_t* pCache = m_DirectoryCache;
 		ExpandCache_t* pEntry = pCache;
-		Word32 uTime = 0;
+		uint32_t uTime = 0;
 		do {
 			if (!pCache->m_pName) { // Empty?
 				pEntry = pCache;
@@ -388,7 +389,7 @@ const char* Burger::Filename::GetNative(void)
 		pPath[uDirLength] = uTemp;
 	}
 
-	WordPtr uNameLength = StringLength(pWorkPath);
+	uintptr_t uNameLength = StringLength(pWorkPath);
 	if (uNameLength < sizeof(m_NativeFilename)) {
 		MemoryCopy(m_NativeFilename, pWorkPath, uNameLength + 1);
 	} else {
@@ -542,10 +543,10 @@ void Burger::Filename::SetFromNative(
 {
 	Clear(); // Clear out the previous string
 
-	Word Temp;			 // Ascii Temp
+	uint_t Temp;			 // Ascii Temp
 	char TempPath[8192]; // Handle to temp buffer
 	char* Output;		 // Running pointer to temp buffer
-	Word Length;		 // Length of finished string
+	uint_t Length;		 // Length of finished string
 
 	Output = TempPath; // Get running pointer
 
@@ -556,7 +557,7 @@ void Burger::Filename::SetFromNative(
 			lDirID = 0;						// Hack to simulate GetVol()
 		}
 		Filename MyFilename;
-		Word uResult = MyFilename.SetFromDirectoryID(
+		uint_t uResult = MyFilename.SetFromDirectoryID(
 			lDirID, sVRefNum);						 /* Get the directory */
 		if (!uResult) {								 /* Did I get a path? */
 			StringCopy(Output, MyFilename.GetPtr()); /* Copy to output */
@@ -585,7 +586,7 @@ void Burger::Filename::SetFromNative(
 	/* The wrap up... */
 	/* Make sure it's appended with a colon */
 
-	Length = static_cast<Word32>(
+	Length = static_cast<uint32_t>(
 		Output - TempPath);				   /* How many bytes is the new path? */
 	if (Length) {						   /* Valid length? */
 		if (TempPath[Length - 1] != ':') { /* Last char a colon? */
@@ -669,7 +670,7 @@ void Burger::Filename::SetFromNative(
 
 ***************************************/
 
-Word BURGER_API Burger::Filename::SetFromDirectoryID(
+uint_t BURGER_API Burger::Filename::SetFromDirectoryID(
 	long lDirID, short sVolRefNum)
 {
 	/*
@@ -694,7 +695,7 @@ Word BURGER_API Burger::Filename::SetFromDirectoryID(
 	CurrentSpec.name[0] = 0;
 
 	// Assume failure
-	Word uResult = File::FILENOTFOUND;
+	uint_t uResult = File::FILENOTFOUND;
 	if (!FSpMakeFSRef(&CurrentSpec, &CurrentRef)) {
 		// Initialize the proposed final string
 		uResult = File::OKAY;
@@ -703,7 +704,7 @@ Word BURGER_API Burger::Filename::SetFromDirectoryID(
 			// Add padding to prevent buffer overruns
 			struct Padded {
 				HFSUniStr255 Uni;
-				Word8 padding[4];
+				uint8_t padding[4];
 			} UnicodeName;
 
 			// Get the name and the parent's File reference

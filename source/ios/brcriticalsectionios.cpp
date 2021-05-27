@@ -1,13 +1,14 @@
 /***************************************
 
-	Class to handle critical sections, iOS version
+    Class to handle critical sections, iOS version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -39,7 +40,7 @@ extern kern_return_t semaphore_destroy(task_t task,semaphore_t semaphore);
 	
 ***************************************/
 
-Burger::CriticalSection::CriticalSection()
+Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT
 {
 	// Verify the the Burgerlib opaque version is the same size as the real one
     BURGER_STATIC_ASSERT(sizeof(Burgerpthread_mutex_t)==sizeof(pthread_mutex_t));
@@ -58,7 +59,7 @@ Burger::CriticalSection::~CriticalSection()
 	
 ***************************************/
 
-void Burger::CriticalSection::Lock()
+void Burger::CriticalSection::Lock() BURGER_NOEXCEPT
 {
 	pthread_mutex_lock(reinterpret_cast<pthread_mutex_t *>(&m_Lock));
 }
@@ -69,7 +70,7 @@ void Burger::CriticalSection::Lock()
 	
 ***************************************/
 
-Word Burger::CriticalSection::TryLock()
+uint_t Burger::CriticalSection::TryLock() BURGER_NOEXCEPT
 {
 	return pthread_mutex_trylock(reinterpret_cast<pthread_mutex_t *>(&m_Lock))!=EBUSY;
 }
@@ -80,7 +81,7 @@ Word Burger::CriticalSection::TryLock()
 	
 ***************************************/
 
-void Burger::CriticalSection::Unlock()
+void Burger::CriticalSection::Unlock() BURGER_NOEXCEPT
 {
 	pthread_mutex_unlock(reinterpret_cast<pthread_mutex_t *>(&m_Lock));
 }
@@ -91,7 +92,7 @@ void Burger::CriticalSection::Unlock()
  
 ***************************************/
 
-Burger::Semaphore::Semaphore(Word32 uCount) :
+Burger::Semaphore::Semaphore(uint32_t uCount) :
 	m_uCount(uCount),
 	m_bInitialized(FALSE)
 {
@@ -128,10 +129,10 @@ Burger::Semaphore::~Semaphore()
  
 ***************************************/
 
-Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
+uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
 {
 	// Assume failure
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_bInitialized) {
 		// Infinite wait?
 		if (uMilliseconds==BURGER_MAXUINT) {
@@ -153,8 +154,8 @@ Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
 			
 			// Data for the timer thread
 			mach_timespec_t TimeoutData;
-			Word uSeconds = uMilliseconds/1000;
-			Word uNanoSeconds = (uMilliseconds-(uSeconds*1000)) * 1000;
+			uint_t uSeconds = uMilliseconds/1000;
+			uint_t uNanoSeconds = (uMilliseconds-(uSeconds*1000)) * 1000;
 			TimeoutData.tv_sec = uSeconds;
 			TimeoutData.tv_nsec = uNanoSeconds;
 			
@@ -186,9 +187,9 @@ Word BURGER_API Burger::Semaphore::TryAcquire(Word uMilliseconds)
  
 ***************************************/
 
-Word BURGER_API Burger::Semaphore::Release(void)
+uint_t BURGER_API Burger::Semaphore::Release(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_bInitialized) {
 		// Release the count immediately, because it's
 		// possible that another thread, waiting for this semaphore,
@@ -243,9 +244,9 @@ Burger::ConditionVariable::~ConditionVariable()
 
 ***************************************/
 
-Word BURGER_API Burger::ConditionVariable::Signal(void)
+uint_t BURGER_API Burger::ConditionVariable::Signal(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_bInitialized) {
 		if (!pthread_cond_signal(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable))) {
 			uResult = 0;
@@ -260,9 +261,9 @@ Word BURGER_API Burger::ConditionVariable::Signal(void)
 
 ***************************************/
 
-Word BURGER_API Burger::ConditionVariable::Broadcast(void)
+uint_t BURGER_API Burger::ConditionVariable::Broadcast(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_bInitialized) {
 		if (!pthread_cond_broadcast(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable))) {
 			uResult = 0;
@@ -277,9 +278,9 @@ Word BURGER_API Burger::ConditionVariable::Broadcast(void)
 
 ***************************************/
 
-Word BURGER_API Burger::ConditionVariable::Wait(CriticalSection *pCriticalSection,Word uMilliseconds)
+uint_t BURGER_API Burger::ConditionVariable::Wait(CriticalSection *pCriticalSection,uint_t uMilliseconds)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_bInitialized) {
 		if (uMilliseconds==BURGER_MAXUINT) {
 			if (!pthread_cond_wait(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable),reinterpret_cast<pthread_mutex_t *>(&pCriticalSection->m_Lock))) {
@@ -295,7 +296,7 @@ Word BURGER_API Burger::ConditionVariable::Wait(CriticalSection *pCriticalSectio
 			
 			// Determine the time in the future to timeout at
 			struct timespec StopTimeHere;
-			Word uSeconds = uMilliseconds/1000;
+			uint_t uSeconds = uMilliseconds/1000;
 			// Get the remainder in NANOSECONDS
 			uMilliseconds = (uMilliseconds-(uSeconds*1000))*1000000;
 			
@@ -392,9 +393,9 @@ Burger::Thread::~Thread()
  
 ***************************************/
 
-Word BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
+uint_t BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (!m_pThreadHandle) {
 		m_pFunction = pFunction;
 		m_pData = pData;
@@ -423,9 +424,9 @@ Word BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
  
 ***************************************/
 
-Word BURGER_API Burger::Thread::Wait(void)
+uint_t BURGER_API Burger::Thread::Wait(void)
 {
-	Word uResult = 10;
+	uint_t uResult = 10;
 	if (m_pThreadHandle) {
 		// Wait until the thread completes execution
 		pthread_join(m_pThreadHandle,0);
@@ -443,9 +444,9 @@ Word BURGER_API Burger::Thread::Wait(void)
  
 ***************************************/
 
-Word BURGER_API Burger::Thread::Kill(void)
+uint_t BURGER_API Burger::Thread::Kill(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (m_pThreadHandle) {
 		pthread_kill(m_pThreadHandle,SIGKILL);
 		uResult = 0;

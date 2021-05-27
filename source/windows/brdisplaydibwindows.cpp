@@ -66,11 +66,11 @@ Burger::DisplayDIB::DisplayDIB(Burger::GameApp *pGameApp) :
 	
 ***************************************/
 
-Word Burger::DisplayDIB::InitContext()
+uint_t Burger::DisplayDIB::InitContext()
 {
 	// Set the new size of the screen
-	Word uWidth = m_uWidth;
-	Word uHeight = m_uHeight;
+	uint_t uWidth = m_uWidth;
+	uint_t uHeight = m_uHeight;
 
 	m_pGameApp->SetWindowSize(uWidth,uHeight);
 

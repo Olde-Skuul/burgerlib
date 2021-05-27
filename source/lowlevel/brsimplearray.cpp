@@ -1,13 +1,14 @@
 /***************************************
 
-	intrinsic<T> compatible array template
+    intrinsic<T> compatible array template
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -29,14 +30,14 @@
 
 /*! ************************************
 
-	\fn Burger::SimpleArrayBase::SimpleArrayBase(WordPtr uChunkSize)
+	\fn Burger::SimpleArrayBase::SimpleArrayBase(uintptr_t uChunkSize)
 	\brief Default constructor.
 
 	Initializes the array to contain no data and have no members
 	and set to a specific chunk size.
 
 	\param uChunkSize Size in bytes of each element in the array
-	\sa SimpleArrayBase(WordPtr,WordPtr) or SimpleArrayBase(const SimpleArrayBase&)
+	\sa SimpleArrayBase(uintptr_t,uintptr_t) or SimpleArrayBase(const SimpleArrayBase&)
 
 ***************************************/
 
@@ -53,11 +54,11 @@
 	\param uDefault Number of members to create the array with. Zero
 		will generate an empty array.
 
-	\sa SimpleArrayBase(WordPtr) or SimpleArrayBase(const SimpleArrayBase&)
+	\sa SimpleArrayBase(uintptr_t) or SimpleArrayBase(const SimpleArrayBase&)
 
 ***************************************/
 
-Burger::SimpleArrayBase::SimpleArrayBase(WordPtr uChunkSize,WordPtr uDefault) :
+Burger::SimpleArrayBase::SimpleArrayBase(uintptr_t uChunkSize,uintptr_t uDefault) :
 	m_uSize(uDefault),
 	m_uBufferSize(uDefault)
 {
@@ -91,17 +92,17 @@ Burger::SimpleArrayBase::SimpleArrayBase(WordPtr uChunkSize,WordPtr uDefault) :
 
 	\param rData Reference to a matching SimpleArrayBase type
 
-	\sa SimpleArrayBase(WordPtr) or SimpleArrayBase(WordPtr,WordPtr)
+	\sa SimpleArrayBase(uintptr_t) or SimpleArrayBase(uintptr_t,uintptr_t)
 
 ***************************************/
 
 Burger::SimpleArrayBase::SimpleArrayBase(const SimpleArrayBase &rData) :
 	m_pData(NULL)
 {
-	WordPtr uCount = rData.m_uSize;
+	uintptr_t uCount = rData.m_uSize;
 	m_uSize = uCount;
 	m_uBufferSize = uCount;
-	WordPtr uChunkSize = rData.m_uChunkSize;
+	uintptr_t uChunkSize = rData.m_uChunkSize;
 	m_uChunkSize = uChunkSize;
 	if (uCount) {
 		m_pData = AllocCopy(rData.m_pData,uChunkSize * uCount);
@@ -120,7 +121,7 @@ Burger::SimpleArrayBase::SimpleArrayBase(const SimpleArrayBase &rData) :
 
 	Releases the memory buffer with a call to Free(const void *)
 
-	\sa SimpleArrayBase(WordPtr), SimpleArrayBase(WordPtr,WordPtr) or SimpleArrayBase(const SimpleArrayBase&)
+	\sa SimpleArrayBase(uintptr_t), SimpleArrayBase(uintptr_t,uintptr_t) or SimpleArrayBase(const SimpleArrayBase&)
 
 ***************************************/
 
@@ -139,7 +140,7 @@ Burger::SimpleArrayBase::~SimpleArrayBase(void)
 
 	\param rData Reference to a matching SimpleArray type
 	\return *this
-	\sa resize(WordPtr) or reserve(WordPtr)
+	\sa resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
@@ -152,8 +153,8 @@ Burger::SimpleArrayBase & Burger::SimpleArrayBase::operator=(const SimpleArrayBa
 		clear();
 		
 		// Get the size to copy
-		WordPtr uCount = rData.m_uSize;
-		WordPtr uChunkSize = rData.m_uChunkSize;
+		uintptr_t uCount = rData.m_uSize;
+		uintptr_t uChunkSize = rData.m_uChunkSize;
 
 		// Chunk size COULD change, bad idea, however, support
 		// it to prevent subtle bugs
@@ -179,7 +180,7 @@ Burger::SimpleArrayBase & Burger::SimpleArrayBase::operator=(const SimpleArrayBa
 
 	Dispose of the array and set the size to zero.
 
-	\sa resize(WordPtr) or reserve(WordPtr)
+	\sa resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
@@ -201,14 +202,14 @@ void BURGER_API Burger::SimpleArrayBase::clear(void)
 	\param uIndex Index into the array of the object to remove.
 	\return Zero on success, or non zero on failure
 
-	\sa resize(WordPtr) or reserve(WordPtr)
+	\sa resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::SimpleArrayBase::remove_at(WordPtr uIndex)
+Burger::eError BURGER_API Burger::SimpleArrayBase::remove_at(uintptr_t uIndex)
 {
 	eError uResult = kErrorInvalidParameter;
-	WordPtr uSize = m_uSize;
+	uintptr_t uSize = m_uSize;
 	if (uIndex < uSize) {
 		if (uSize == 1) {
 			// Nuke it
@@ -217,10 +218,10 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::remove_at(WordPtr uIndex)
 		} else {
 			--uSize;
 			m_uSize = uSize;
-			WordPtr uChunkSize = m_uChunkSize;
+			uintptr_t uChunkSize = m_uChunkSize;
 
 			// Calculate the base pointer to the array
-			Word8 *pMark = static_cast<Word8 *>(m_pData) + (uIndex*uChunkSize);
+			uint8_t *pMark = static_cast<uint8_t *>(m_pData) + (uIndex*uChunkSize);
 
 			// Copy over the single entry
 			MemoryMove(pMark,pMark+uChunkSize,uChunkSize * (uSize - uIndex));
@@ -244,11 +245,11 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::remove_at(WordPtr uIndex)
 	\param uNewSize Number of valid objects the new array will contain.
 	\return Zero on success, or non zero on failure
 
-	\sa clear(void) or reserve(WordPtr)
+	\sa clear(void) or reserve(uintptr_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::SimpleArrayBase::resize(WordPtr uNewSize) 
+Burger::eError BURGER_API Burger::SimpleArrayBase::resize(uintptr_t uNewSize) 
 {
 	eError uResult;
 	if (!uNewSize) {
@@ -284,11 +285,11 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::resize(WordPtr uNewSize)
 	\param uNewBufferSize Size in elements of the memory buffer.
 	\return Zero on success, or non zero on failure
 
-	\sa clear(void) or resize(WordPtr)
+	\sa clear(void) or resize(uintptr_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::SimpleArrayBase::reserve(WordPtr uNewBufferSize)
+Burger::eError BURGER_API Burger::SimpleArrayBase::reserve(uintptr_t uNewBufferSize)
 {
 	eError uResult = kErrorNone;
 
@@ -328,25 +329,25 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::reserve(WordPtr uNewBufferSiz
 	\param uCount Number of elements in the array
 	\return Zero on success, or non zero on failure
 
-	\sa resize(WordPtr) or reserve(WordPtr)
+	\sa resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,WordPtr uCount)
+Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uintptr_t uCount)
 {
 	eError uResult = kErrorNone;
 	// No new entries?
 	if (uCount) {
 
 		// Expand the buffer by the entry count
-		WordPtr uSize = m_uSize;
+		uintptr_t uSize = m_uSize;
 		uResult = resize(uSize + uCount);
 
 		// Success?
 		if (uResult== kErrorNone) {
 			// Copy in the new entries
-			WordPtr uChunkSize = m_uChunkSize;
-			MemoryCopy(static_cast<Word8*>(m_pData)+(uSize*uChunkSize),pData,uCount*uChunkSize);
+			uintptr_t uChunkSize = m_uChunkSize;
+			MemoryCopy(static_cast<uint8_t*>(m_pData)+(uSize*uChunkSize),pData,uCount*uChunkSize);
 		}
 	}
 	return uResult;
@@ -381,7 +382,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 
 	Initializes the array to contain no data and have no members.
 
-	\sa SimpleArray(WordPtr) or SimpleArray(const SimpleArray& rData)
+	\sa SimpleArray(uintptr_t) or SimpleArray(const SimpleArray& rData)
 
 ***************************************/
 
@@ -392,13 +393,13 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 
 	Initializes the array to contain no data and have no members.
 
-	\sa SimpleArray(WordPtr) or SimpleArray(const SimpleArray&)
+	\sa SimpleArray(uintptr_t) or SimpleArray(const SimpleArray&)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::SimpleArray::SimpleArray(WordPtr uDefault)
+	\fn Burger::SimpleArray::SimpleArray(uintptr_t uDefault)
 	\brief Default constructor with a starting array
 
 	Initializes the array to contain uDefault number of uninitialized members.
@@ -441,7 +442,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 
 /*! ************************************
 
-	\fn T & Burger::SimpleArray::operator[](WordPtr uIndex)
+	\fn T & Burger::SimpleArray::operator[](uintptr_t uIndex)
 	\brief Obtain a reference to an item in the array.
 
 	Index into the array and return a reference to the object.
@@ -452,13 +453,13 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 
 	\param uIndex Object number in the array to retrieve a reference to.
 	\return A reference of the object indexed.
-	\sa operator[](WordPtr) const or GetIndexedItem(WordPtr)
+	\sa operator[](uintptr_t) const or GetIndexedItem(uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn const T & Burger::SimpleArray::operator[](WordPtr uIndex) const
+	\fn const T & Burger::SimpleArray::operator[](uintptr_t uIndex) const
 	\brief Obtain a constant reference to an item in the array.
 
 	Index into the array and return a constant reference to the object.
@@ -469,13 +470,13 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 
 	\param uIndex Object number in the array to retrieve a constant reference to.
 	\return A constant reference of the object indexed.
-	\sa operator[](WordPtr) or GetIndexedItem(WordPtr) const
+	\sa operator[](uintptr_t) or GetIndexedItem(uintptr_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn T & Burger::SimpleArray::GetIndexedItem(WordPtr uIndex) 
+	\fn T & Burger::SimpleArray::GetIndexedItem(uintptr_t uIndex) 
 	\brief Obtain a reference to an item in the array.
 
 	Index into the array and return a reference to the object.
@@ -486,13 +487,13 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 
 	\param uIndex Object number in the array to retrieve a reference to.
 	\return A reference of the object indexed.
-	\sa operator[](WordPtr) or GetIndexedItem(WordPtr) const
+	\sa operator[](uintptr_t) or GetIndexedItem(uintptr_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn const T & Burger::SimpleArray::GetIndexedItem(WordPtr uIndex) const
+	\fn const T & Burger::SimpleArray::GetIndexedItem(uintptr_t uIndex) const
 	\brief Obtain a constant reference to an item in the array.
 
 	Index into the array and return a constant reference to the object.
@@ -503,7 +504,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 
 	\param uIndex Object number in the array to retrieve a constant reference to.
 	\return A constant reference of the object indexed.
-	\sa operator[](WordPtr) const or GetIndexedItem(WordPtr)
+	\sa operator[](uintptr_t) const or GetIndexedItem(uintptr_t)
 
 ***************************************/
 
@@ -511,7 +512,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 
 /*! ************************************
 
-	\fn WordPtr Burger::SimpleArray::capacity(void) const
+	\fn uintptr_t Burger::SimpleArray::capacity(void) const
 	\brief Return the number of objects the current buffer could hold.
 	 
 	 The buffer size may exceed the number of valid objects, so that if
@@ -525,7 +526,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 
 /*! ************************************
 
-	\fn WordPtr Burger::SimpleArray::max_size(void)
+	\fn uintptr_t Burger::SimpleArray::max_size(void)
 	\brief Return the maximum number of objects the buffer could ever hold.
 	 
 	Given the maximum possible size of memory in the machine, return the theoretical
@@ -539,7 +540,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 
 /*! ************************************
 
-	\fn WordPtr Burger::SimpleArray::size(void) const
+	\fn uintptr_t Burger::SimpleArray::size(void) const
 	\brief Return the valid number of objects in the array.
 	
 	This value is less than or equal to the buffer size.
@@ -551,7 +552,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 
 /*! ************************************
 
-	\fn Word Burger::SimpleArray::empty(void) const
+	\fn uint_t Burger::SimpleArray::empty(void) const
 	\brief Return \ref TRUE if the array is empty.
 
 	If there is no valid data in the array, return \ref TRUE.
@@ -623,7 +624,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 	\param rData An instance of the object to copy at the end of the array
 	\return Zero on success, or non zero on failure
 
-	\sa pop_back(void), insert_at(WordPtr,T), resize(WordPtr) or reserve(WordPtr)
+	\sa pop_back(void), insert_at(uintptr_t,T), resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
@@ -636,7 +637,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 	reduce the array size by one.
 	\return Zero on success, or non zero on failure
 
-	\sa push_back(T), remove_at(WordPtr), resize(WordPtr) or reserve(WordPtr)
+	\sa push_back(T), remove_at(uintptr_t), resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
@@ -651,13 +652,13 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 
 	\param rData Reference to a matching SimpleArray type
 	\return *this
-	\sa resize(WordPtr) or reserve(WordPtr)
+	\sa resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::eError Burger::SimpleArray::insert_at(WordPtr uIndex,T rData)
+	\fn Burger::eError Burger::SimpleArray::insert_at(uintptr_t uIndex,T rData)
 	\brief Insert an object into the array.
 
 	Expand the buffer if needed and make a copy of the rData
@@ -667,13 +668,13 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 	\param rData Reference to the object to copy into the array
 	\return Zero on success, or non zero on failure
 
-	\sa remove_at(WordPtr), resize(WordPtr) or reserve(WordPtr)
+	\sa remove_at(uintptr_t), resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Word Burger::SimpleArray::remove(T rData)
+	\fn uint_t Burger::SimpleArray::remove(T rData)
 	\brief Find an item and remove it from the array.
 
 	Given an item, scan the array for the first element found
@@ -684,13 +685,13 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 
 	\param rData Copy of the item to remove
 	\return \ref TRUE if an item was removed, \ref FALSE if not
-	\sa append(const SimpleArray&), insert_at(WordPtr,T), resize(WordPtr) or reserve(WordPtr)
+	\sa append(const SimpleArray&), insert_at(uintptr_t,T), resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Word Burger::SimpleArray::contains(T rData) const
+	\fn uint_t Burger::SimpleArray::contains(T rData) const
 	\brief Find an item in the array.
 
 	Given an item, scan the array for an element
@@ -698,13 +699,13 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 
 	\param rData Copy of the item to search for
 	\return \ref TRUE if an item was found, \ref FALSE if not
-	\sa append(const SimpleArray&), insert_at(WordPtr,T), resize(WordPtr) or reserve(WordPtr)
+	\sa append(const SimpleArray&), insert_at(uintptr_t,T), resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::SimpleArray::append(const T *pSourceData,WordPtr uCount)
+	\fn void Burger::SimpleArray::append(const T *pSourceData,uintptr_t uCount)
 	\brief Append an array of object to this array.
 
 	Given a base pointer and an object count, iterate over the objects
@@ -715,7 +716,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 	\param uCount Number of elements in the array
 	\return Zero on success, or non zero on failure
 
-	\sa append(const SimpleArray&), insert_at(WordPtr,T), resize(WordPtr) or reserve(WordPtr)
+	\sa append(const SimpleArray&), insert_at(uintptr_t,T), resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
@@ -731,7 +732,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 	\param rData Reference to a like typed SimpleArray to copy from.
 	\return Zero on success, or non zero on failure
 
-	\sa append(const T *,WordPtr), resize(WordPtr) or reserve(WordPtr)
+	\sa append(const T *,uintptr_t), resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
 
@@ -854,7 +855,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,Word
 	\param it Iterator index into an array
 	\return Zero on success, or non zero on failure
 
-	\sa remove_at(WordPtr)
+	\sa remove_at(uintptr_t)
 
 ***************************************/
 

@@ -1,16 +1,16 @@
 /***************************************
 
-	OpenGL manager class
+    OpenGL manager class
 
-	MacOSX only
+    MacOSX only
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE for
-	license details. Yes, you can use it in a commercial title without paying
-	anything, just give me a credit.
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
 
-	Please? It's not like I'm asking you for money!
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -377,7 +377,7 @@ Burger::Display::~Display() {}
 
 ***************************************/
 
-Word Burger::Display::Init(Word uWidth, Word uHeight, Word uDepth, Word uFlags)
+uint_t Burger::Display::Init(uint_t uWidth, uint_t uHeight, uint_t uDepth, uint_t uFlags)
 {
 	// OpenGL allows all 256 palette colors to work FULLPALETTEALLOWED
 	// Pass the other flags through

@@ -1,13 +1,14 @@
 /***************************************
 
-	MacOS version of Burger::NetworkManager
+    MacOS version of Burger::NetworkManager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -49,15 +50,15 @@ protocol
 
 ***************************************/
 
-Word BURGER_API Burger::NetAddr_t::ToOTAddress(OTAddress* pOutput) const
+uint_t BURGER_API Burger::NetAddr_t::ToOTAddress(OTAddress* pOutput) const
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	switch (m_uType) {
 
 	case TYPE_IPV4:
 		pOutput->fAddressType = AF_INET;
 		reinterpret_cast<InetAddress*>(pOutput)->fPort =
-			BigEndian::Load(static_cast<Word16>(U.IPv4.m_uPort));
+			BigEndian::Load(static_cast<uint16_t>(U.IPv4.m_uPort));
 		reinterpret_cast<InetAddress*>(pOutput)->fHost =
 			BigEndian::Load(U.IPv4.m_uIP);
 		MemoryClear(reinterpret_cast<InetAddress*>(pOutput)->fUnused,
@@ -67,13 +68,13 @@ Word BURGER_API Burger::NetAddr_t::ToOTAddress(OTAddress* pOutput) const
 	case TYPE_APPLETALK:
 		pOutput->fAddressType = AF_ATALK_DDP;
 		reinterpret_cast<DDPAddress*>(pOutput)->fNetwork =
-			BigEndian::Load(static_cast<Word16>(U.APPLETALK.m_uNetwork));
+			BigEndian::Load(static_cast<uint16_t>(U.APPLETALK.m_uNetwork));
 		reinterpret_cast<DDPAddress*>(pOutput)->fNodeID =
-			static_cast<Word8>(U.APPLETALK.m_uNodeID);
+			static_cast<uint8_t>(U.APPLETALK.m_uNodeID);
 		reinterpret_cast<DDPAddress*>(pOutput)->fSocket =
-			static_cast<Word8>(U.APPLETALK.m_uSocket);
+			static_cast<uint8_t>(U.APPLETALK.m_uSocket);
 		reinterpret_cast<DDPAddress*>(pOutput)->fDDPType =
-			static_cast<Word8>(U.APPLETALK.m_uDDPType);
+			static_cast<uint8_t>(U.APPLETALK.m_uDDPType);
 		break;
 
 	// Unknown
@@ -100,9 +101,9 @@ protocol
 
 ***************************************/
 
-Word BURGER_API Burger::NetAddr_t::FromOTAddress(const OTAddress* pInput)
+uint_t BURGER_API Burger::NetAddr_t::FromOTAddress(const OTAddress* pInput)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 
 	switch (pInput->fAddressType) {
 
@@ -110,7 +111,7 @@ Word BURGER_API Burger::NetAddr_t::FromOTAddress(const OTAddress* pInput)
 		m_uType = TYPE_IPV4;
 		U.IPv4.m_uPort = BigEndian::Load(
 			reinterpret_cast<const InetAddress*>(pInput)->fPort);
-		U.IPv4.m_uIP = BigEndian::Load(static_cast<Word32>(
+		U.IPv4.m_uIP = BigEndian::Load(static_cast<uint32_t>(
 			reinterpret_cast<const InetAddress*>(pInput)->fHost));
 		break;
 
@@ -170,7 +171,7 @@ Burger::eError BURGER_API Burger::NetworkManager::Init(void)
 				// Iterate over the protocols to see which ones are
 				// actually available
 
-				Word i = 0;
+				uint_t i = 0;
 				do {
 					if (iGestalt & g_Protocols[i]) {
 						m_uProtocolsFound |= 1U << (i + NetAddr_t::TYPE_IPV4);
@@ -250,7 +251,7 @@ be resolved.
 struct TMyOTInetSvcInfo { // Open Transport Internet services provider info
 	InetSvcRef m_pRef;	// Provider reference
 	void* m_pCookie;	  // Cookie
-	Word m_bComplete;	 // TRUE when asynch operation has completed
+	uint_t m_bComplete;	 // TRUE when asynch operation has completed
 	OTResult m_iResult;   // Result code
 };
 
@@ -280,7 +281,7 @@ static pascal void MyOTInetSvcNotifyProc(
 
 ***************************************/
 
-static Word MyOTInetSvcWait(TMyOTInetSvcInfo* pServiceInfo, clock_t uTime)
+static uint_t MyOTInetSvcWait(TMyOTInetSvcInfo* pServiceInfo, clock_t uTime)
 {
 	if (!pServiceInfo->m_bComplete) { // Not done yet?
 		clock_t uMark = clock();	  // Get timer
@@ -291,7 +292,7 @@ static Word MyOTInetSvcWait(TMyOTInetSvcInfo* pServiceInfo, clock_t uTime)
 		} while (!pServiceInfo->m_bComplete); // Not yet!
 	}
 	// Return the error
-	return static_cast<Word>(pServiceInfo->m_iResult);
+	return static_cast<uint_t>(pServiceInfo->m_iResult);
 }
 
 Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(
@@ -315,7 +316,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(
 			uResult = kErrorNone;
 			if (pColon) {
 				pColon[0] = 0; // Force a null string
-				Word uPort = AsciiToInteger(pColon + 1);
+				uint_t uPort = AsciiToInteger(pColon + 1);
 				if (uPort < 65536U) {
 					pOutput->U.IPv4.m_uPort = uPort;
 				} else {
@@ -327,7 +328,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(
 			if (uResult == kErrorNone) {
 
 				// Try parsing as a string
-				Word32 uIPv4;
+				uint32_t uIPv4;
 
 				// Try 206.55.132.154
 				uResult = StringToIPv4(TempDNS.GetPtr(), &uIPv4);
@@ -408,14 +409,18 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(
 	transport method.
 
 	\param pDestination Pointer to the NetAddr_t that has the destination
-address \param pBuffer Pointer to the data to transmit \param uBufferSize Number
-of bytes to transmit \return Zero if no error, non zero if an error had occurred
-	\sa SendStream(const NetAddr_t *,void *,WordPtr)
+        address
+    \param pBuffer Pointer to the data to transmit
+    \param uBufferSize Number of bytes to transmit
+
+    \return Zero if no error, non zero if an error had occurred
+
+    \sa SendStream(const NetAddr_t *,void *,uintptr_t)
 
 ***************************************/
 
 Burger::eError BURGER_API Burger::NetworkManager::SendPacket(
-	const NetAddr_t* pDestination, const void* pBuffer, WordPtr uBufferSize)
+	const NetAddr_t* pDestination, const void* pBuffer, uintptr_t uBufferSize)
 {
 	eError uResult = kErrorSocketFailure;
 	OSStatus err;
@@ -429,7 +434,7 @@ Burger::eError BURGER_API Burger::NetworkManager::SendPacket(
 		TBind BindOut;
 		BindOut.addr.maxlen = sizeof(Dest);
 		BindOut.addr.len = sizeof(Dest);
-		BindOut.addr.buf = (Word8*)&Dest;
+		BindOut.addr.buf = (uint8_t*)&Dest;
 		BindOut.qlen = 0;
 
 		uResult = kErrorSocketFailure;
@@ -443,7 +448,7 @@ Burger::eError BURGER_API Burger::NetworkManager::SendPacket(
 			pDestination->ToOTAddress((OTAddress*)&Dest);
 			d.addr.len = sizeof(Dest);
 			d.addr.maxlen = sizeof(Dest);
-			d.addr.buf = (Word8*)&Dest;
+			d.addr.buf = (uint8_t*)&Dest;
 
 			d.opt.len = 0;
 			d.opt.maxlen = 0;
@@ -451,7 +456,7 @@ Burger::eError BURGER_API Burger::NetworkManager::SendPacket(
 
 			d.udata.len = uBufferSize;
 			d.udata.maxlen = uBufferSize;
-			d.udata.buf = (Word8*)pBuffer;
+			d.udata.buf = (uint8_t*)pBuffer;
 
 			uResult = kErrorNotReady;
 			err = OTSndUData(uSocket, &d);
@@ -482,12 +487,12 @@ protocol
 	\param pDestination Pointer to the NetAddr_t that has the destination
 address \param pBuffer Pointer to the data to transmit \param uBufferSize Number
 of bytes to transmit \return Zero if no error, non zero if an error had occurred
-	\sa SendPacket(const NetAddr_t *,void *,WordPtr)
+	\sa SendPacket(const NetAddr_t *,void *,uintptr_t)
 
 ***************************************/
 
 Burger::eError BURGER_API Burger::NetworkManager::SendStream(
-	const NetAddr_t* pDestination, const void* pBuffer, WordPtr uBufferSize)
+	const NetAddr_t* pDestination, const void* pBuffer, uintptr_t uBufferSize)
 {
 	eError uResult = kErrorSocketFailure;
 	OSStatus err;
@@ -501,7 +506,7 @@ Burger::eError BURGER_API Burger::NetworkManager::SendStream(
 		TBind BindOut;
 		BindOut.addr.maxlen = sizeof(Dest);
 		BindOut.addr.len = sizeof(Dest);
-		BindOut.addr.buf = (Word8*)&Dest;
+		BindOut.addr.buf = (uint8_t*)&Dest;
 		BindOut.qlen = 0;
 
 		uResult = kErrorAddressNotFound;
@@ -519,7 +524,7 @@ Burger::eError BURGER_API Burger::NetworkManager::SendStream(
 
 				d.addr.len = sizeof(Dest);
 				d.addr.maxlen = sizeof(Dest);
-				d.addr.buf = (Word8*)&Dest;
+				d.addr.buf = (uint8_t*)&Dest;
 
 				d.opt.len = 0;
 				d.opt.maxlen = 0;
@@ -527,7 +532,7 @@ Burger::eError BURGER_API Burger::NetworkManager::SendStream(
 
 				d.udata.len = uBufferSize;
 				d.udata.maxlen = uBufferSize;
-				d.udata.buf = (Word8*)pBuffer;
+				d.udata.buf = (uint8_t*)pBuffer;
 
 				uResult = kErrorSocketFailure;
 				err =
@@ -575,7 +580,7 @@ Burger::eError BURGER_API Burger::NetworkManager::EnumerateLocalAddresses(
 			m_pLocalAddresses = pNetAddr;
 			pNetAddr->m_uType = NetAddr_t::TYPE_IPV4;
 			pNetAddr->U.IPv4.m_uPort = 0;
-			pNetAddr->U.IPv4.m_uIP = BigEndian::Load((Word32)MyInfo.fAddress);
+			pNetAddr->U.IPv4.m_uIP = BigEndian::Load((uint32_t)MyInfo.fAddress);
 			m_uLocalAddressCount = 1;
 			uError = kErrorNone;
 		}

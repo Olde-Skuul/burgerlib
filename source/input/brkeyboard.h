@@ -1,13 +1,14 @@
 /***************************************
 
-	Keyboard Manager
+    Keyboard Manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -44,7 +45,7 @@ class Keyboard : public Base {
     BURGER_DISABLE_COPY(Keyboard);
 	BURGER_RTTI_IN_CLASS();
 public:
-	static const Word cBufferSize=128;		///< Number of keystrokes in keyboard cache
+	static const uint_t cBufferSize=128;		///< Number of keystrokes in keyboard cache
 
 	enum {
 		KEYCAPDOWN=0x01,	///< If \ref TRUE in m_KeyArray, this key is currently held down
@@ -267,18 +268,18 @@ protected:
 	GameApp *m_pAppInstance;			///< Application instances
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	static WordPtr BURGER_API WindowsKeyboardThread(void *pData);
+	static uintptr_t BURGER_API WindowsKeyboardThread(void *pData);
 	IDirectInputDevice8W* m_pKeyboardDevice;	///< DirectInput Device reference (Windows only)
 	void *m_pKeyboardEvent;						///< Event signal for DirectInput (Windows only)
 	void *m_pKeyboardTimerEvent;				///< Keyboard repeat timer event (Windows only)
 	HHOOK__ *m_pPreviousKeyboardHook;			///< Previous keyboard low level hook
 	Thread m_KeyboardThread;					///< Asynchronous thread monitoring DirectInput (Windows only)
-	Word m_bDirectInput8Acquired;				///< \ref TRUE if DirectInput8 is active (Windows only)
-	Word m_bRepeatActive;						///< \ref TRUE if auto repeat time is active (Windows only)
-	volatile Word32 m_bQuit;					///< \ref TRUE when the thread is shutting down (Windows only)
-	BurgertagSTICKYKEYS m_DefaultStickyKeys;	///< Previous settings for Sticky Keys (Windows only)
-	BurgertagTOGGLEKEYS m_DefaultToggleKeys;	///< Previous settings for Toggle Keys (Windows only)
-	BurgertagFILTERKEYS m_DefaultFilterKeys;	///< Previous settings for Filter Keys (Windows only)
+	uint_t m_bDirectInput8Acquired;				///< \ref TRUE if DirectInput8 is active (Windows only)
+	uint_t m_bRepeatActive;						///< \ref TRUE if auto repeat time is active (Windows only)
+	volatile uint32_t m_bQuit;					///< \ref TRUE when the thread is shutting down (Windows only)
+    Burger_tagSTICKYKEYS m_DefaultStickyKeys;	///< Previous settings for Sticky Keys (Windows only)
+    Burger_tagTOGGLEKEYS m_DefaultToggleKeys;	///< Previous settings for Toggle Keys (Windows only)
+    Burger_tagFILTERKEYS m_DefaultFilterKeys;	///< Previous settings for Filter Keys (Windows only)
 #endif
 
 #if defined(BURGER_XBOX360)
@@ -294,11 +295,11 @@ protected:
 	BURGER_INLINE void Unlock(void) {}
 #endif
 
-	Word8 m_KeyArray[SC_MAXENTRY+1];		///< Array with the current state of the keyboard
-	Word m_uArrayStart;						///< Read index for m_KeyEvents
-	Word m_uArrayEnd;						///< Write index for m_KeyEvents
-	Word m_uInitialDelay;					///< Initial delay in ms for autorepeat
-	Word m_uRepeatDelay;					///< Delay between repeating keystrokes
+	uint8_t m_KeyArray[SC_MAXENTRY+1];		///< Array with the current state of the keyboard
+	uint_t m_uArrayStart;						///< Read index for m_KeyEvents
+	uint_t m_uArrayEnd;						///< Write index for m_KeyEvents
+	uint_t m_uInitialDelay;					///< Initial delay in ms for autorepeat
+	uint_t m_uRepeatDelay;					///< Delay between repeating keystrokes
 	KeyEvent_t m_KeyEvents[cBufferSize];	///< Circular buffer holding keyboard events
 	KeyEvent_t m_RepeatEvent;				///< Event to post on a repeat
 
@@ -306,38 +307,38 @@ public:
 	Keyboard(GameApp *pAppInstance);
 	virtual ~Keyboard();
 	BURGER_INLINE GameApp *GetApp(void) const { return m_pAppInstance; }
-	Word BURGER_API PeekKeyEvent(KeyEvent_t *pEvent);
-	Word BURGER_API GetKeyEvent(KeyEvent_t *pEvent);
+	uint_t BURGER_API PeekKeyEvent(KeyEvent_t *pEvent);
+	uint_t BURGER_API GetKeyEvent(KeyEvent_t *pEvent);
 	void BURGER_API ClearKey(eScanCode uScanCode);
 	eScanCode BURGER_API AnyPressed(void) const;
-	Word BURGER_API HasBeenPressed(eScanCode uScanCode) const;
-	Word BURGER_API HasBeenPressedClear(eScanCode uScanCode);
-	Word BURGER_API IsPressed(eScanCode uScanCode) const;
-	Word BURGER_API GetKey(void);
-	Word BURGER_API GetKeyLowerCase(void);
-	Word BURGER_API GetKeyUpperCase(void);
+	uint_t BURGER_API HasBeenPressed(eScanCode uScanCode) const;
+	uint_t BURGER_API HasBeenPressedClear(eScanCode uScanCode);
+	uint_t BURGER_API IsPressed(eScanCode uScanCode) const;
+	uint_t BURGER_API GetKey(void);
+	uint_t BURGER_API GetKeyLowerCase(void);
+	uint_t BURGER_API GetKeyUpperCase(void);
 	void BURGER_API Flush(void);
-	Word BURGER_API Wait(void);
-	Word BURGER_API PostKeyDown(eScanCode uScanCode);
-	Word BURGER_API PostKeyUp(eScanCode uScanCode);
-	Word BURGER_API PostKey(eScanCode uScanCode);
-	Word BURGER_API PostUnicodeDown(Word32 uUnicode);
-	Word BURGER_API PostUnicodeUp(Word32 uUnicode);
-	Word BURGER_API PostUnicode(Word32 uUnicode);
-	Word BURGER_API PostKeyEvent(const KeyEvent_t *pEvent);
-	Word BURGER_API EncodeScanCode(KeyEvent_t *pEvent,eScanCode uScanCode) const;
-	Word BURGER_API EncodeUnicode(KeyEvent_t *pEvent,Word32 uUnicode) const;
-	Word BURGER_API GetCurrentFlags(void) const;
+	uint_t BURGER_API Wait(void);
+	uint_t BURGER_API PostKeyDown(eScanCode uScanCode);
+	uint_t BURGER_API PostKeyUp(eScanCode uScanCode);
+	uint_t BURGER_API PostKey(eScanCode uScanCode);
+	uint_t BURGER_API PostUnicodeDown(uint32_t uUnicode);
+	uint_t BURGER_API PostUnicodeUp(uint32_t uUnicode);
+	uint_t BURGER_API PostUnicode(uint32_t uUnicode);
+	uint_t BURGER_API PostKeyEvent(const KeyEvent_t *pEvent);
+	uint_t BURGER_API EncodeScanCode(KeyEvent_t *pEvent,eScanCode uScanCode) const;
+	uint_t BURGER_API EncodeUnicode(KeyEvent_t *pEvent,uint32_t uUnicode) const;
+	uint_t BURGER_API GetCurrentFlags(void) const;
 	static eScanCode BURGER_API StringToScanCode(const char *pString);
-	static void BURGER_API ScanCodeToString(char *pString,WordPtr uStringSize,eScanCode uScanCode);
+	static void BURGER_API ScanCodeToString(char *pString,uintptr_t uStringSize,eScanCode uScanCode);
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	Word BURGER_API DisableWindowsKey(void);
+	uint_t BURGER_API DisableWindowsKey(void);
 	void BURGER_API EnableWindowsKey(void);
 	BURGER_INLINE HHOOK__ *GetWindowsPreviousKeyboardHook(void) const { return m_pPreviousKeyboardHook; }
-	BURGER_INLINE Word IsDirectInputActive(void) const { return m_bDirectInput8Acquired; }
-	Word BURGER_API PostWindowsKeyEvent(eEvent uEvent,Word32 uScanCode);
-	Word BURGER_API EncodeWindowsScanCode(KeyEvent_t *pEvent,Word uWindowsCode) const;
+	BURGER_INLINE uint_t IsDirectInputActive(void) const { return m_bDirectInput8Acquired; }
+	uint_t BURGER_API PostWindowsKeyEvent(eEvent uEvent,uint32_t uScanCode);
+	uint_t BURGER_API EncodeWindowsScanCode(KeyEvent_t *pEvent,uint_t uWindowsCode) const;
 	void BURGER_API AcquireDirectInput(void);
 	void BURGER_API UnacquireDirectInput(void);
 	void BURGER_API ReadSystemKeyboardDelays(void);

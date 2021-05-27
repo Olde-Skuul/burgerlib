@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player utility functions
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player utility functions
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #ifndef __BRFLASHUTILS_H__
@@ -95,8 +96,8 @@ BURGER_INLINE float TwipsToPixels(float fInput) { return fInput * (1.0f / 20.f);
 BURGER_INLINE float PixelsToTwips(float fInput) { return fInput * 20.f; }
 extern void BURGER_API TwipsToPixels(Vector2D_t *pInput);
 extern void BURGER_API PixelsToTwips(Vector2D_t *pInput);
-extern Word32 BURGER_API TextureSizePower2(Word32 uInput);
-extern WordPtr BURGER_API GetEncodedU32Length(Word32 *pOutput,const Word8 *pInput);
+extern uint32_t BURGER_API TextureSizePower2(uint32_t uInput);
+extern uintptr_t BURGER_API GetEncodedU32Length(uint32_t *pOutput,const uint8_t *pInput);
 extern eActionScriptStandardMember BURGER_API EnumerateStandardMember(const char *pName);
 extern eFileType BURGER_API GetFileType(const char *pFilename);
 extern void BURGER_API GetFullURL(Filename *pOutput,const Filename *pDirectory,const char *pInput);
@@ -117,9 +118,9 @@ public:
 	};
 
 	eKind m_eKind;			///< Type of multiname structures
-	Word32 m_uNS;			///< Namespace index used for QName
-	Word32 m_uNS_Set;		///< Index into a Namespace set used for Multiname
-	Word32 m_uName;			///< Index into the string array for the name used for QName and RTQName
+	uint32_t m_uNS;			///< Namespace index used for QName
+	uint32_t m_uNS_Set;		///< Index into a Namespace set used for Multiname
+	uint32_t m_uName;			///< Index into the string array for the name used for QName and RTQName
 
 	Multiname() : 
 		m_eKind(CONSTANT_UNDEFINED),
@@ -128,7 +129,7 @@ public:
 		m_uName(0)
 	{
 	}
-	BURGER_INLINE Word IsQName(void) const { return m_eKind == CONSTANT_QName; }
+	BURGER_INLINE uint_t IsQName(void) const { return m_eKind == CONSTANT_QName; }
 };
 class Namespace {
 public:
@@ -144,7 +145,7 @@ public:
 	};
 
 	eKind m_eKind;	///< Type of namespace this name represents
-	Word32 m_uName;	///< Index into the string array for the name
+	uint32_t m_uName;	///< Index into the string array for the name
 
 	Namespace() :
 		m_eKind(CONSTANT_Undefined),
@@ -159,8 +160,8 @@ public:
 	virtual ~BaseExecute();
 	virtual void Execute(CharacterObject *pObject);
 	virtual void ExecuteState(CharacterObject *pObject);
-	virtual void ExecuteStateReverse(CharacterObject *pObject,Word uFrame);
-	virtual Word32 GetDepthIDOfReplaceOrAddTag(void) const;
+	virtual void ExecuteStateReverse(CharacterObject *pObject,uint_t uFrame);
+	virtual uint32_t GetDepthIDOfReplaceOrAddTag(void) const;
 };
 }}
 /* END */

@@ -1,13 +1,14 @@
 /***************************************
 
-	Code library (DLL) manager
+    Code library (DLL) manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -42,10 +43,10 @@ class CodeLibrary {
 public:
 	CodeLibrary() : m_pLibInstance(nullptr) {}
 	~CodeLibrary() { Shutdown(); }
-	Word Init(const char *pFilename);
+	uint_t Init(const char *pFilename);
 	void Shutdown(void);
 	void *GetFunction(const char *pFunctionName);
-	BURGER_INLINE Word IsInitialized(void) const { return m_pLibInstance!=nullptr; }
+	BURGER_INLINE uint_t IsInitialized(void) const { return m_pLibInstance!=nullptr; }
 };
 
 #if (defined(BURGER_MACCARBON) || defined(BURGER_MACOSX)) || defined(DOXYGEN)

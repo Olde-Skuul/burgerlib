@@ -1,14 +1,14 @@
 /***************************************
 
-    ANSI Based Memory Manager
+	ANSI Based Memory Manager
 
-    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -16,249 +16,376 @@
 #include "brglobalmemorymanager.h"
 #include <stdlib.h>
 
+#if !defined(DOXYGEN)
+BURGER_CREATE_STATICRTTI_PARENT(Burger::AllocatorANSI, Burger::AllocatorBase);
+#endif
+
 /*! ************************************
 
-    \class Burger::MemoryManagerANSI
-    \brief ANSI Memory Manager
+	\var const Burger::StaticRTTI Burger::AllocatorANSI::g_StaticRTTI
+	\brief The global description of the class
 
-    This class allocates and releases memory using the ANSI malloc(), free() and
-    realloc() calls. No support is present to track memory is supplied by
-    Burgerlib. If memory tracking is desired either use native memory tracking
-    or use \ref MemoryManagerHandle instead.
+	This record contains the name of this class and a reference to the parent
 
 ***************************************/
 
 /*! ************************************
 
-    \brief Constructor for the ANSI memory allocator
+	\fn Burger::AllocatorANSI::AllocatorANSI()
+	\brief Default constructor.
 
-    Initializes the jump table in the base class \ref MemoryManager
+***************************************/
+
+/*! ************************************
+
+	\class Burger::AllocatorANSI
+	\brief ANSI Memory Manager object
+
+	This class allocates and releases memory using the ANSI malloc(), free() and
+	realloc() calls. No support is present to track memory. If memory tracking
+	is desired either use native memory tracking or use \ref AllocatorHandle
+	instead.
+
+	Use this object to instruct functions that allocate memory to use
+	malloc/free as the memory allocation system.
+
+***************************************/
+
+/*! ************************************
+
+	\brief Calls malloc().
+
+	Calls malloc() and returns the pointer allocated. If the requested
+	memory size is zero or the call fails, a nullptr is returned.
+
+	\param uSize Number of byte requested to allocate.
+	\return nullptr on failure or zero bytes allocated, or a valid memory
+		pointer.
+	\sa Realloc() or Free()
+
+***************************************/
+
+void* Burger::AllocatorANSI::Alloc(uintptr_t uSize) const BURGER_NOEXCEPT
+{
+	void* pResult = nullptr;
+	if (uSize) {
+		pResult = malloc(uSize);
+	}
+	return pResult;
+}
+
+/*! ************************************
+
+	\brief Calls free().
+
+	If pInput is nullptr, do nothing. If non-zero, then release the memory
+	back into the free memory pool with a call to free().
+
+	\param pInput nullptr to do no operation or a valid pointer to memory
+		allocated by Alloc() or Realloc().
+	\sa Alloc() or Realloc()
+
+***************************************/
+
+void Burger::AllocatorANSI::Free(const void* pInput) const BURGER_NOEXCEPT
+{
+	if (pInput) {
+		free(const_cast<void*>(pInput));
+	}
+}
+
+/*! ************************************
+
+	\brief Calls realloc().
+
+	Calls realloc() and returns the pointer allocated. If the requested
+	memory size is zero or the call fails, a nullptr is returned.
+
+	If the function fails, the buffer in pInput is untouched, even though the
+	function returned nullptr. However, if the value in uSize is zero, the
+	buffer is freed in all cases with a call to free().
+
+	\note If the requested size is smaller, it's likely that the buffer is
+	truncated and not changed, however this in not guaranteed behavior. If
+	larger, the buffer may be extended, and it too is not guaranteed to be the
+	same pointer value. Assume the input pointer is invalided from here on out
+	and the return value is the new pointer to the buffer.
+
+	\param pInput Pointer to a valid buffer to resize.
+	\param uSize Number of byte requested to allocate.
+	\return nullptr on failure or zero bytes allocated, or a valid memory
+		pointer.
+	\sa Alloc() or Free()
+
+***************************************/
+
+void* Burger::AllocatorANSI::Realloc(
+	const void* pInput, uintptr_t uSize) const BURGER_NOEXCEPT
+{
+	// Assume an error
+	void* pResult = nullptr;
+	// Any bytes requested?
+	if (uSize) {
+		// Was there a valid pointer passed?
+		if (pInput) {
+			// Reallocate the memory
+			pResult = realloc(const_cast<void*>(pInput), uSize);
+		} else {
+			// Allocate fresh, uninitialized memory
+			pResult = malloc(uSize);
+		}
+	} else if (pInput) {
+		// Since I have a pointer, and I don't want to allocated anything, just
+		// delete the pointer
+		free(const_cast<void*>(pInput));
+	}
+	// Return the new memory or nullptr
+	return pResult;
+}
+
+/*! ************************************
+
+	\class Burger::MemoryManagerANSI
+	\brief ANSI Memory Manager
+
+	This class allocates and releases memory using the ANSI malloc(), free() and
+	realloc() calls. No support is present to track memory is supplied by
+	Burgerlib. If memory tracking is desired either use native memory tracking
+	or use \ref MemoryManagerHandle instead.
+
+***************************************/
+
+/*! ************************************
+
+	\brief Constructor for the ANSI memory allocator
+
+	Initializes the jump table in the base class \ref MemoryManager
 
 ***************************************/
 
 Burger::MemoryManagerANSI::MemoryManagerANSI() BURGER_NOEXCEPT
 {
-    m_pAlloc = Alloc;
-    m_pFree = Free;
-    m_pRealloc = Realloc;
-    m_pShutdown = Shutdown;
+	m_pAlloc = Alloc;
+	m_pFree = Free;
+	m_pRealloc = Realloc;
+	m_pShutdown = Shutdown;
 }
 
 /*! ************************************
 
-    \fn void *Burger::MemoryManagerANSI::Alloc(uintptr_t uSize)
-    \brief Allocates memory.
+	\fn void *Burger::MemoryManagerANSI::Alloc(uintptr_t uSize)
+	\brief Allocates memory.
 
-    Calls malloc() and returns the pointer allocated. If the requested
-    memory size is zero or the call fails, a nullptr is returned.
+	Calls malloc() and returns the pointer allocated. If the requested
+	memory size is zero or the call fails, a nullptr is returned.
 
-    \param uSize Number of byte requested to allocate.
-    \return nullptr on failure or zero bytes allocated, or a valid memory
-        pointer.
-    \sa Alloc(MemoryManager *,uintptr_t)
-
-***************************************/
-
-/*! ************************************
-
-    \fn void Burger::MemoryManagerANSI::Free(const void *pInput)
-    \brief Frees memory.
-
-    If pInput is nullptr, do nothing. If non-zero, then release the memory
-    back into the free memory pool.
-
-    \param pInput nullptr to do no operation or a valid pointer to memory
-        allocated by \ref Alloc(uintptr_t) or \ref Realloc(const void*,
-        uintptr_t).
-
-    \sa Free(MemoryManager *,const void *)
+	\param uSize Number of byte requested to allocate.
+	\return nullptr on failure or zero bytes allocated, or a valid memory
+		pointer.
+	\sa Alloc(MemoryManager *,uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-    \fn void *Burger::MemoryManagerANSI::Realloc(const void *pInput,uintptr_t
-        uSize)
-    \brief Reallocates memory.
+	\fn void Burger::MemoryManagerANSI::Free(const void *pInput)
+	\brief Frees memory.
 
-    Calls realloc() and returns the pointer allocated. If the requested
-    memory size is zero or the call fails, a nullptr is returned.
+	If pInput is nullptr, do nothing. If non-zero, then release the memory
+	back into the free memory pool.
 
-    \note If the requested size is smaller, it's likely that the buffer is
-    truncated and not changed, however this in not guaranteed behavior. If
-    larger, the buffer may be extended, and it too it not guaranteed to be the
-    same pointer value. Assume the input pointer is invalided from here on out
-    and the return value is the new pointer to the buffer.
+	\param pInput nullptr to do no operation or a valid pointer to memory
+		allocated by \ref Alloc(uintptr_t) or \ref Realloc(const void*,
+		uintptr_t).
 
-    \param pInput Pointer to a valid buffer to resize.
-    \param uSize Number of byte requested to allocate.
-    \return nullptr on failure or zero bytes allocated, or a valid memory
-        pointer.
-    \sa Realloc(MemoryManager *,const void *,uintptr_t)
+	\sa Free(MemoryManager *,const void *)
 
 ***************************************/
 
 /*! ************************************
 
-    \brief Calls malloc().
+	\fn void *Burger::MemoryManagerANSI::Realloc(const void *pInput,uintptr_t
+		uSize)
+	\brief Reallocates memory.
 
-    Calls malloc() and returns the pointer allocated. If the requested
-    memory size is zero or the call fails, a nullptr is returned.
+	Calls realloc() and returns the pointer allocated. If the requested
+	memory size is zero or the call fails, a nullptr is returned.
 
-    \param pThis Pointer to the current instance.
-    \param uSize Number of byte requested to allocate.
-    \return nullptr on failure or zero bytes allocated, or a valid memory
-        pointer.
-    \sa Alloc(uintptr_t)
+	\note If the requested size is smaller, it's likely that the buffer is
+	truncated and not changed, however this in not guaranteed behavior. If
+	larger, the buffer may be extended, and it too is not guaranteed to be the
+	same pointer value. Assume the input pointer is invalided from here on out
+	and the return value is the new pointer to the buffer.
+
+	\param pInput Pointer to a valid buffer to resize.
+	\param uSize Number of byte requested to allocate.
+	\return nullptr on failure or zero bytes allocated, or a valid memory
+		pointer.
+	\sa Realloc(MemoryManager *,const void *,uintptr_t)
+
+***************************************/
+
+/*! ************************************
+
+	\brief Calls malloc().
+
+	Calls malloc() and returns the pointer allocated. If the requested
+	memory size is zero or the call fails, a nullptr is returned.
+
+	\param pThis Pointer to the current instance.
+	\param uSize Number of byte requested to allocate.
+	\return nullptr on failure or zero bytes allocated, or a valid memory
+		pointer.
+	\sa Alloc(uintptr_t)
 
 ***************************************/
 
 void* BURGER_API Burger::MemoryManagerANSI::Alloc(
-    MemoryManager* /* pThis */, uintptr_t uSize)
+	MemoryManager* /* pThis */, uintptr_t uSize)
 {
-    void* pResult = nullptr;
-    if (uSize) {
-        pResult = malloc(uSize);
-    }
-    return pResult;
+	void* pResult = nullptr;
+	if (uSize) {
+		pResult = malloc(uSize);
+	}
+	return pResult;
 }
 
 /*! ************************************
 
-    \brief Calls free().
+	\brief Calls free().
 
-    If pInput is nullptr, do nothing. If non-zero, then release the memory
-    back into the free memory pool.
+	If pInput is nullptr, do nothing. If non-zero, then release the memory
+	back into the free memory pool.
 
-    \param pThis Pointer to the current instance.
-    \param pInput nullptr to do no operation or a valid pointer to memory
-        allocated by \ref Alloc(MemoryManager*,uintptr_t) or \ref
-        Realloc(MemoryManager*,const void *,uintptr_t).
-    \sa Free(const void *)
+	\param pThis Pointer to the current instance.
+	\param pInput nullptr to do no operation or a valid pointer to memory
+		allocated by \ref Alloc(MemoryManager*,uintptr_t) or \ref
+		Realloc(MemoryManager*,const void *,uintptr_t).
+	\sa Free(const void *)
 
 ***************************************/
 
 void BURGER_API Burger::MemoryManagerANSI::Free(
-    MemoryManager* /* pThis */, const void* pInput)
+	MemoryManager* /* pThis */, const void* pInput)
 {
-    if (pInput) {
-        free(const_cast<void*>(pInput));
-    }
+	if (pInput) {
+		free(const_cast<void*>(pInput));
+	}
 }
 
 /*! ************************************
 
-    \brief Calls realloc().
+	\brief Calls realloc().
 
-    Calls realloc() and returns the pointer allocated. If the requested
-    memory size is zero or the call fails, a nullptr is returned.
+	Calls realloc() and returns the pointer allocated. If the requested
+	memory size is zero or the call fails, a nullptr is returned.
 
-    \note If the requested size is smaller, it's likely that the buffer is
-    truncated and not changed, however this in not guaranteed behavior. If
-    larger, the buffer may be extended, and it too it not guaranteed to be the
-    same pointer value. Assume the input pointer is invalided from here on out
-    and the return value is the new pointer to the buffer.
+	\note If the requested size is smaller, it's likely that the buffer is
+	truncated and not changed, however this in not guaranteed behavior. If
+	larger, the buffer may be extended, and it too it not guaranteed to be the
+	same pointer value. Assume the input pointer is invalided from here on out
+	and the return value is the new pointer to the buffer.
 
-    \param pThis Pointer to the current instance.
-    \param pInput Pointer to a valid buffer to resize.
-    \param uSize Number of byte requested to allocate.
-    \return nullptr on failure or zero bytes allocated, or a valid memory
-        pointer.
-    \sa Realloc(const void *,uintptr_t)
+	\param pThis Pointer to the current instance.
+	\param pInput Pointer to a valid buffer to resize.
+	\param uSize Number of byte requested to allocate.
+	\return nullptr on failure or zero bytes allocated, or a valid memory
+		pointer.
+	\sa Realloc(const void *,uintptr_t)
 
 ***************************************/
 
 void* BURGER_API Burger::MemoryManagerANSI::Realloc(
-    MemoryManager* /* pThis */, const void* pInput, uintptr_t uSize)
+	MemoryManager* /* pThis */, const void* pInput, uintptr_t uSize)
 {
-    // Assume an error
-    void* pResult = nullptr;
-    // Any bytes requested?
-    if (uSize) {
-        // Was there a valid pointer passed?
-        if (pInput) {
-            // Reallocate the memory
-            pResult = realloc(const_cast<void*>(pInput), uSize);
-        } else {
-            // Allocate fresh, uninitialized memory
-            pResult = malloc(uSize);
-        }
-    } else if (pInput) {
-        // Since I have a pointer, and I don't want to allocated anything, just
-        // delete the pointer
-        free(const_cast<void*>(pInput));
-    }
-    // Return the new memory or nullptr
-    return pResult;
+	// Assume an error
+	void* pResult = nullptr;
+	// Any bytes requested?
+	if (uSize) {
+		// Was there a valid pointer passed?
+		if (pInput) {
+			// Reallocate the memory
+			pResult = realloc(const_cast<void*>(pInput), uSize);
+		} else {
+			// Allocate fresh, uninitialized memory
+			pResult = malloc(uSize);
+		}
+	} else if (pInput) {
+		// Since I have a pointer, and I don't want to allocated anything, just
+		// delete the pointer
+		free(const_cast<void*>(pInput));
+	}
+	// Return the new memory or nullptr
+	return pResult;
 }
 
 /*! ************************************
 
-    \class Burger::MemoryManagerGlobalANSI
-    \brief Global ANSI Memory Manager helper class
+	\class Burger::MemoryManagerGlobalANSI
+	\brief Global ANSI Memory Manager helper class
 
-    This class is a helper that attaches a \ref MemoryManagerANSI
-    class to the global memory manager. When this instance shuts down,
-    it will remove itself from the global memory manager and
-    set the global memory manager to the previous one.
+	This class is a helper that attaches a \ref MemoryManagerANSI
+	class to the global memory manager. When this instance shuts down,
+	it will remove itself from the global memory manager and
+	set the global memory manager to the previous one.
 
-    \sa \ref GlobalMemoryManager
+	\sa \ref GlobalMemoryManager
 
 ***************************************/
 
 /*! ************************************
 
-    \brief Attaches a \ref MemoryManagerANSI class to the global memory manager.
+	\brief Attaches a \ref MemoryManagerANSI class to the global memory manager.
 
-    When this class is created, it will automatically attach itself
-    to the global memory manager and save the pointer
-    to the previous instantiation so when this class goes
-    out of scope, the previous memory manager is reinstated
+	When this class is created, it will automatically attach itself
+	to the global memory manager and save the pointer
+	to the previous instantiation so when this class goes
+	out of scope, the previous memory manager is reinstated
 
-    Example..
+	Example..
 
-    \code
+	\code
 
-    void DoSomething()
-    {
-        // Tell Burgerlib to use ANSI memory chunks
-        MemoryManagerGlobalANSI MallocMemory;
-        CallFunctionThatUsesMemory();
-        CallFunctionThatCleansUpMemory();
-        // When going out of scope, HandleBasedMemory is restored
-    }
+	void DoSomething()
+	{
+		// Tell Burgerlib to use ANSI memory chunks
+		MemoryManagerGlobalANSI MallocMemory;
+		CallFunctionThatUsesMemory();
+		CallFunctionThatCleansUpMemory();
+		// When going out of scope, HandleBasedMemory is restored
+	}
 
-    int main(int,char **)
-    {
-        // Use handle based memory
-        Burger::MemoryManagerGlobalHandle HandleBasedMemory;
-        DoSomething();
-        return 0;
-    }
+	int main(int,char **)
+	{
+		// Use handle based memory
+		Burger::MemoryManagerGlobalHandle HandleBasedMemory;
+		DoSomething();
+		return 0;
+	}
 
-    \endcode
+	\endcode
 
 ***************************************/
 
 Burger::MemoryManagerGlobalANSI::MemoryManagerGlobalANSI() BURGER_NOEXCEPT
 {
-    m_pPrevious = GlobalMemoryManager::Init(this);
+	m_pPrevious = GlobalMemoryManager::Init(this);
 }
 
 /*! ************************************
 
-    \brief Releases a \ref MemoryManagerANSI class from the global memory
-        manager.
+	\brief Releases a \ref MemoryManagerANSI class from the global memory
+		manager.
 
-    When this class is released, it will automatically remove itself
-    to the global memory manager and restore the previous memory
-    manager to the global memory manager.
+	When this class is released, it will automatically remove itself
+	to the global memory manager and restore the previous memory
+	manager to the global memory manager.
 
-    \sa MemoryManagerGlobalANSI()
+	\sa MemoryManagerGlobalANSI()
 
 ***************************************/
 
 Burger::MemoryManagerGlobalANSI::~MemoryManagerGlobalANSI()
 {
-    GlobalMemoryManager::Shutdown(m_pPrevious);
+	GlobalMemoryManager::Shutdown(m_pPrevious);
 }

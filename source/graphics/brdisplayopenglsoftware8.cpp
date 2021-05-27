@@ -1,14 +1,15 @@
 /***************************************
 
-	8 Bit software renderer on top of OpenGL
+    8 Bit software renderer on top of OpenGL
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brdisplayopenglsoftware8.h"
@@ -85,16 +86,16 @@ Burger::DisplayOpenGLSoftware8::DisplayOpenGLSoftware8(GameApp *pGameApp) :
 }
 
 
-Word Burger::DisplayOpenGLSoftware8::Init(Word uWidth,Word uHeight,Word /* uDepth */,Word uFlags)
+uint_t Burger::DisplayOpenGLSoftware8::Init(uint_t uWidth,uint_t uHeight,uint_t /* uDepth */,uint_t uFlags)
 {
-	Word uResult = DisplayOpenGL::Init(uWidth,uHeight,32,uFlags);
+	uint_t uResult = DisplayOpenGL::Init(uWidth,uHeight,32,uFlags);
 #if defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)
 	if (!uResult) {
 		uResult = 10;
 		// Calculate the bytes per scan line
 		m_uDepth = 8;
 		// Use DWORD alignment
-		WordPtr uStride = ((m_uWidth*(8>>3))+3)&(~3);
+		uintptr_t uStride = ((m_uWidth*(8>>3))+3)&(~3);
 		m_Renderer.SetClip(0,0,static_cast<int>(uWidth),static_cast<int>(uHeight));
 		m_Renderer.SetStride(uStride);
 
@@ -149,8 +150,8 @@ Word Burger::DisplayOpenGLSoftware8::Init(Word uWidth,Word uHeight,Word /* uDept
 						// Use it! It has to be used now or glUniform1() will fail
 						glUseProgram(uProgram);
 
-						m_uvPositionHandle = static_cast<Word>(glGetAttribLocation(uProgram,"vPosition"));
-						m_uUVHandle = static_cast<Word>(glGetAttribLocation(uProgram,"vTexCoord"));
+                        m_uvPositionHandle = static_cast<uint_t>(glGetAttribLocation(uProgram, "vPosition"));
+						m_uUVHandle = static_cast<uint_t>(glGetAttribLocation(uProgram,"vTexCoord"));
 
 						GLint uIndexTexture = glGetUniformLocation(uProgram,"IndexTexture");
 						glUniform1i(uIndexTexture,0);

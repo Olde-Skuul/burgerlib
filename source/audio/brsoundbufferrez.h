@@ -1,13 +1,14 @@
 /***************************************
 
-	Sound manager buffer from resource
+    Sound manager buffer from resource
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -37,14 +38,14 @@ class SoundBufferRez : public SoundManager::Buffer {
 	BURGER_RTTI_IN_CLASS();
 protected:
 	RezFile *m_pRezFile;			///< Pointer to the resource class that the resource is attached to
-	Word m_uRezNum;					///< Resource number of the sound file
+	uint_t m_uRezNum;					///< Resource number of the sound file
 	SoundBufferRez(void);
-	SoundBufferRez(RezFile *pRezFile,Word uRezNum);
+	SoundBufferRez(RezFile *pRezFile,uint_t uRezNum);
 public:
     uint_t Upload(SoundManager *pSoundManager) BURGER_OVERRIDE;
-	void BURGER_API Set(RezFile *pRezFile,Word uRezNum);
+	void BURGER_API Set(RezFile *pRezFile,uint_t uRezNum);
 	static SoundBufferRez * BURGER_API New(void);
-	static SoundBufferRez * BURGER_API New(RezFile *pRezFile,Word uRezNum);
+	static SoundBufferRez * BURGER_API New(RezFile *pRezFile,uint_t uRezNum);
 };
 }
 /* END */

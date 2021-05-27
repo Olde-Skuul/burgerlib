@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player 2x3 matrix manager
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player 2x3 matrix manager
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brflashmatrix23.h"
@@ -204,7 +205,7 @@ void BURGER_API Burger::Flash::Matrix23::Read(Stream* pStream)
 	// Check if there is a scale
 
 	if (pStream->GetWord(1)) {
-		Word uBitCount = pStream->GetWord(5);
+		uint_t uBitCount = pStream->GetWord(5);
 		m_fScaleX = FIXEDTOFLOAT(pStream->GetInt(uBitCount));
 		m_fScaleY = FIXEDTOFLOAT(pStream->GetInt(uBitCount));
 	} else {
@@ -213,7 +214,7 @@ void BURGER_API Burger::Flash::Matrix23::Read(Stream* pStream)
 	}
 
 	if (pStream->GetWord(1)) {
-		Word uBitCount2 = pStream->GetWord(5);
+		uint_t uBitCount2 = pStream->GetWord(5);
 		m_fRotateSkew1 = FIXEDTOFLOAT(pStream->GetInt(uBitCount2));
 		m_fRotateSkew0 = FIXEDTOFLOAT(pStream->GetInt(uBitCount2));
 	} else {
@@ -221,7 +222,7 @@ void BURGER_API Burger::Flash::Matrix23::Read(Stream* pStream)
 		m_fRotateSkew1 = 0.0f;
 	}
 
-	Word uTranslateBitCount = pStream->GetWord(5);
+	uint_t uTranslateBitCount = pStream->GetWord(5);
 	if (uTranslateBitCount) {
 		m_fTranslateX = static_cast<float>(pStream->GetInt(uTranslateBitCount));
 		m_fTranslateY = static_cast<float>(pStream->GetInt(uTranslateBitCount));
@@ -406,7 +407,7 @@ void BURGER_API BURGER_API Burger::Flash::Matrix23::SetInverse(const Matrix23 *p
 
 ***************************************/
 
-Word BURGER_API Burger::Flash::Matrix23::DoesFlip(void) const
+uint_t BURGER_API Burger::Flash::Matrix23::DoesFlip(void) const
 {
 	float fDeterminate = (m_fScaleX * m_fScaleY) - (m_fRotateSkew0 * m_fRotateSkew1);
 	return (fDeterminate < 0.f);
@@ -524,7 +525,7 @@ void BURGER_API Burger::Flash::Matrix23::Print(void) const
 
 ***************************************/
 
-Word BURGER_API Burger::Flash::Matrix23::operator==(const Matrix23& rInput) const
+uint_t BURGER_API Burger::Flash::Matrix23::operator==(const Matrix23& rInput) const
 {
 	return (m_fScaleX == rInput.m_fScaleX) &&
 		(m_fRotateSkew0 == rInput.m_fRotateSkew0) &&
@@ -544,7 +545,7 @@ Word BURGER_API Burger::Flash::Matrix23::operator==(const Matrix23& rInput) cons
 
 ***************************************/
 
-Word BURGER_API Burger::Flash::Matrix23::operator!=(const Matrix23& rInput) const
+uint_t BURGER_API Burger::Flash::Matrix23::operator!=(const Matrix23& rInput) const
 {
 	return (m_fScaleX != rInput.m_fScaleX) ||
 		(m_fRotateSkew0 != rInput.m_fRotateSkew0) ||

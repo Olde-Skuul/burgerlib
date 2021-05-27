@@ -2,11 +2,16 @@
 # -*- coding: utf-8 -*-
 
 """
-Configuration file on how to build and clean projects in a specific folder.
+Build rules for the makeprojects suite of build tools.
 
 This file is parsed by the cleanme, buildme, rebuildme and makeprojects
 command line tools to clean, build and generate project files.
+
+When any of these tools are invoked, this file is loaded and parsed to
+determine special rules on how to handle building the code and / or data.
 """
+
+# pylint: disable=unused-argument
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -17,6 +22,18 @@ from burger import make_version_header, get_sdks_folder, \
     create_folder_if_needed, run_command, compare_files, \
     copy_file_if_needed
 
+# If set to True, ``buildme -r``` will not parse directories in this folder.
+BUILDME_NO_RECURSE = None
+
+# ``buildme``` will build these files and folders first.
+BUILDME_DEPENDENCIES = []
+
+# If set to True, ``cleanme -r``` will not parse directories in this folder.
+CLEANME_NO_RECURSE = None
+
+# ``cleanme`` will clean the listed folders using their rules before cleaning.
+# this folder.
+CLEANME_DEPENDENCIES = []
 
 # Folders for all the target operating systems supported
 
@@ -68,16 +85,29 @@ SDKS_FOLDER = get_sdks_folder()
 ########################################
 
 
-def do_prebuild(working_directory):
-    """ Generate folders and create version.h
+def prebuild(working_directory, configuration):
+    """
+    Perform actions before building any IDE based projects.
 
-    :Args:
-        working_dir: Directory where the headers to create are located
+    This function is called before any IDE or other script is invoked. This is
+    perfect for creating headers or other data that the other build projects
+    need before being invoked.
+
+    On exit, return 0 for no error, or a non zero error code if there was an
+    error to report.
+
+    Args:
+        working_directory
+            Directory this script resides in.
+
+        configuration
+            Configuration to build, ``all`` if no configuration was requested.
 
     Returns:
-        Zero on no error, non-zero on error
-
+        None if not implemented, otherwise an integer error code.
     """
+
+    # Generate folders and create version.h
 
     # Too many branches
     # pylint: disable=R0912
@@ -101,6 +131,8 @@ def do_prebuild(working_directory):
     headerfilepath = os.path.join(dest_folder, 'burger.h')
     cmd = (
         'makeheader',
+        #'-r',
+        #'-r', '-w',
         os.path.join(working_directory, 'source', 'templateburgerbase.h'),
         headerfilepath)
     print(' '.join(cmd))
@@ -111,16 +143,28 @@ def do_prebuild(working_directory):
 ########################################
 
 
-def do_postbuild(working_directory):
-    """ Copy the headers of burgerlib into their proper folder
+def postbuild(working_directory, configuration):
+    """
+    Issue build commands after all IDE projects have been built.
 
-    :Args:
-        working_dir: Directory where the headers to copy are located
+    This function can assume all other build projects have executed for final
+    deployment or cleanup
+
+    On exit, return 0 for no error, or a non zero error code if there was an
+    error to report.
+
+    Args:
+        working_directory
+            Directory this script resides in.
+
+        configuration
+            Configuration to build, ``all`` if no configuration was requested.
 
     Returns:
-        Zero on no error, non-zero on error
-
+        None if not implemented, otherwise an integer error code.
     """
+
+    # Copy the headers of burgerlib into their proper folder
 
     # Get the location of the super header
     dest_folder = os.path.join(working_directory, 'bin')
@@ -200,55 +244,6 @@ def do_postbuild(working_directory):
 
     return error
 
-########################################
-
-
-def rules(command, working_directory, **kargs):
-    """
-    Main entry point for build_rules.py.
-
-    When ``makeprojects``, ``cleanme``, or ``buildme`` is executed, they will
-    call this function to perform the actions required for build customization.
-
-    The parameter ``working_directory`` is required, and if it has no default
-    parameter, this function will only be called with the folder that this
-    file resides in. If there is a default parameter of ``None``, it will be
-    called with any folder that it is invoked on. If the default parameter is a
-    directory, this function will only be called if that directory is desired.
-
-    The optional parameter of ``root``` alerts the tool if subsequent processing
-    of other ``build_rules.py`` files are needed or if set to have a default
-    parameter of ``True``, processing will end once the calls to this
-    ``rules()`` function are completed.
-
-    Commands are 'build', 'clean', 'prebuild', 'postbuild', 'project',
-    'configurations'
-
-    Arg:
-        command: Command to execute.
-        working_directory: Directory for this function to clean
-        root: If set to True, exit cleaning upon completion of this function
-    Return:
-        Zero on success, non-zero on failure, and a list for 'configurations'
-
-    """
-
-    # Unused arguments
-    # pylint: disable=W0613
-
-    # Perform the action based on the command.
-
-    if command == 'prebuild':
-        # Perform actions before building any IDE based projects
-        # Return non zero integer on error.
-        return do_prebuild(working_directory)
-
-    if command == 'postbuild':
-        # Perform actions after building all IDE based projects
-        # Return non zero integer on error.
-        return do_postbuild(working_directory)
-
-    return 0
 
 ########################################
 
@@ -256,7 +251,7 @@ def rules(command, working_directory, **kargs):
 # If called as a command line and not a class, perform the build
 if __name__ == "__main__":
     WORKING_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
-    ERROR = do_prebuild(WORKING_DIRECTORY)
+    ERROR = prebuild(WORKING_DIRECTORY, 'all')
     if not ERROR:
-        ERROR = do_postbuild(WORKING_DIRECTORY)
+        ERROR = postbuild(WORKING_DIRECTORY, 'all')
     sys.exit(ERROR)

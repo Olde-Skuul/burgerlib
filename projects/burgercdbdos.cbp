@@ -146,7 +146,6 @@
 			<Add directory='&quot;../source/math&quot;' />
 			<Add directory='&quot;../source/memory&quot;' />
 			<Add directory='&quot;../source/msdos&quot;' />
-			<Add directory='&quot;../source/network&quot;' />
 			<Add directory='&quot;../source/random&quot;' />
 			<Add directory='&quot;../source/text&quot;' />
 		</Compiler>
@@ -170,8 +169,6 @@
 		<Unit filename="../source/audio/brmace.h" />
 		<Unit filename="../source/audio/brmicrosoftadpcm.cpp" />
 		<Unit filename="../source/audio/brmicrosoftadpcm.h" />
-		<Unit filename="../source/audio/brmp3.cpp" />
-		<Unit filename="../source/audio/brmp3.h" />
 		<Unit filename="../source/audio/brsequencer.cpp" />
 		<Unit filename="../source/audio/brsequencer.h" />
 		<Unit filename="../source/audio/brsound.cpp" />
@@ -452,6 +449,8 @@
 		<Unit filename="../source/math/brfloatingpoint.h" />
 		<Unit filename="../source/math/brfpinfo.cpp" />
 		<Unit filename="../source/math/brfpinfo.h" />
+		<Unit filename="../source/math/brfplargeint.cpp" />
+		<Unit filename="../source/math/brfplargeint.h" />
 		<Unit filename="../source/math/brmatrix3d.cpp" />
 		<Unit filename="../source/math/brmatrix3d.h" />
 		<Unit filename="../source/math/brmatrix4d.cpp" />
@@ -482,18 +481,6 @@
 		<Unit filename="../source/msdos/brmsdostypes.h" />
 		<Unit filename="../source/msdos/brtickmsdos.cpp" />
 		<Unit filename="../source/msdos/brtimedatemsdos.cpp" />
-		<Unit filename="../source/network/brnetendpoint.cpp" />
-		<Unit filename="../source/network/brnetendpoint.h" />
-		<Unit filename="../source/network/brnetendpointtcp.cpp" />
-		<Unit filename="../source/network/brnetendpointtcp.h" />
-		<Unit filename="../source/network/brnetmanager.cpp" />
-		<Unit filename="../source/network/brnetmanager.h" />
-		<Unit filename="../source/network/brnetmodule.cpp" />
-		<Unit filename="../source/network/brnetmodule.h" />
-		<Unit filename="../source/network/brnetmoduletcp.cpp" />
-		<Unit filename="../source/network/brnetmoduletcp.h" />
-		<Unit filename="../source/network/brnetplay.cpp" />
-		<Unit filename="../source/network/brnetplay.h" />
 		<Unit filename="../source/random/brmersennetwist.cpp" />
 		<Unit filename="../source/random/brmersennetwist.h" />
 		<Unit filename="../source/random/brrandom.cpp" />

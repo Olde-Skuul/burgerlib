@@ -36,13 +36,13 @@
 
 ***************************************/
 
-static Word BURGER_API TestWin1252(void)
+static uint_t BURGER_API TestWin1252(void)
 {
-	Word uFailure = 0;
+	uint_t uFailure = 0;
 
 	// Generate all 8 bit codes
 	char Buffer[256];
-	WordPtr i = 0;
+	uintptr_t i = 0;
 	do {
 		Buffer[i] = static_cast<char>(i + 1);
 	} while (++i < 255);
@@ -50,22 +50,22 @@ static Word BURGER_API TestWin1252(void)
 
 	// Perform the conversions
 	char BufferUTF8[512];
-	WordPtr uUTF8Length =
+	uintptr_t uUTF8Length =
 		Burger::UTF8::FromWin1252(BufferUTF8, sizeof(BufferUTF8), Buffer, 255);
 
 	char BufferWin1252[512];
-	WordPtr uWin1252Length = Burger::Win1252::FromUTF8(
+	uintptr_t uWin1252Length = Burger::Win1252::FromUTF8(
 		BufferWin1252, sizeof(BufferWin1252), BufferUTF8, uUTF8Length);
 
 	// Test the result from the round trip
-	Word uTest = (uWin1252Length != 255);
+	uint_t uTest = (uWin1252Length != 255);
 	uFailure |= uTest;
 	ReportFailure(
 		"Conversion from Win1252 to UTF8 yielded a different size! %u = Expected 255",
-		uTest, static_cast<Word>(uWin1252Length));
+		uTest, static_cast<uint_t>(uWin1252Length));
 
 	uTest =
-		static_cast<Word>(Burger::MemoryCompare(Buffer, BufferWin1252, 255));
+		static_cast<uint_t>(Burger::MemoryCompare(Buffer, BufferWin1252, 255));
 	uFailure |= uTest;
 	ReportFailure(
 		"Conversion from Win1252 to UTF8 yielded a different data!", uTest);
@@ -74,7 +74,7 @@ static Word BURGER_API TestWin1252(void)
 #if defined(BURGER_WINDOWS)
 	// Convert using the Windows calls
 	int iRequiredSize = MultiByteToWideChar(1252, 0, Buffer, 255, 0, 0);
-	Word16 WideBuffer[512];
+	uint16_t WideBuffer[512];
 	int iRequiredSize2 = MultiByteToWideChar(
 		1252, 0, Buffer, 255, (LPWSTR)WideBuffer, iRequiredSize);
 
@@ -86,14 +86,14 @@ static Word BURGER_API TestWin1252(void)
 		iRequiredSize2, Buffer2, iDestSize, nullptr, nullptr);
 
 	// Test the result with what Burgerlib output
-	uTest = (uUTF8Length != static_cast<WordPtr>(iDestSize2));
+	uTest = (uUTF8Length != static_cast<uintptr_t>(iDestSize2));
 	uFailure |= uTest;
 	ReportFailure(
 		"Windows conversion from Win1252 to UTF8 yielded a different size! %u = Expected %u",
-		uTest, static_cast<Word>(iDestSize2),
-		static_cast<Word>(uWin1252Length));
+		uTest, static_cast<uint_t>(iDestSize2),
+		static_cast<uint_t>(uWin1252Length));
 
-	uTest = static_cast<Word>(
+	uTest = static_cast<uint_t>(
 		Burger::MemoryCompare(BufferUTF8, Buffer2, uUTF8Length));
 	uFailure |= uTest;
 	ReportFailure(
@@ -110,13 +110,13 @@ static Word BURGER_API TestWin1252(void)
 
 ***************************************/
 
-static Word BURGER_API TestMacRoman(void)
+static uint_t BURGER_API TestMacRoman(void)
 {
-	Word uFailure = 0;
+	uint_t uFailure = 0;
 
 	// Generate all 8 bit codes
 	char Buffer[256];
-	WordPtr i = 0;
+	uintptr_t i = 0;
 	do {
 		Buffer[i] = static_cast<char>(i + 1);
 	} while (++i < 255);
@@ -124,22 +124,22 @@ static Word BURGER_API TestMacRoman(void)
 
 	// Perform the conversions
 	char BufferUTF8[512];
-	WordPtr uUTF8Length = Burger::UTF8::FromMacRomanUS(
+	uintptr_t uUTF8Length = Burger::UTF8::FromMacRomanUS(
 		BufferUTF8, sizeof(BufferUTF8), Buffer, 255);
 
 	char BufferMacRoman[512];
-	WordPtr uMacRomanLength = Burger::MacRomanUS::FromUTF8(
+	uintptr_t uMacRomanLength = Burger::MacRomanUS::FromUTF8(
 		BufferMacRoman, sizeof(BufferMacRoman), BufferUTF8, uUTF8Length);
 
 	// Test the result from the round trip
-	Word uTest = (uMacRomanLength != 255);
+	uint_t uTest = (uMacRomanLength != 255);
 	uFailure |= uTest;
 	ReportFailure(
 		"Conversion from MacRoman to UTF8 yielded a different size! %u = Expected 255",
-		uTest, static_cast<Word>(uMacRomanLength));
+		uTest, static_cast<uint_t>(uMacRomanLength));
 
 	uTest =
-		static_cast<Word>(Burger::MemoryCompare(Buffer, BufferMacRoman, 255));
+		static_cast<uint_t>(Burger::MemoryCompare(Buffer, BufferMacRoman, 255));
 	uFailure |= uTest;
 	ReportFailure(
 		"Conversion from MacRoman to UTF8 yielded a different data!", uTest);
@@ -152,7 +152,7 @@ static Word BURGER_API TestMacRoman(void)
 
 	// Convert to UTF-8
 	char Buffer2[512];
-	WordPtr uBuffer2Size = 0;
+	uintptr_t uBuffer2Size = 0;
 	if (CFStringGetCString(
 			StringRef, Buffer2, sizeof(Buffer2), kCFStringEncodingUTF8)) {
 		// Success!
@@ -160,14 +160,14 @@ static Word BURGER_API TestMacRoman(void)
 	}
 
 	// Test the result with what Burgerlib output
-	uTest = (uUTF8Length != static_cast<WordPtr>(uBuffer2Size));
+	uTest = (uUTF8Length != static_cast<uintptr_t>(uBuffer2Size));
 	uFailure |= uTest;
 	ReportFailure(
 		"MacOSX conversion from MacRoman to UTF8 yielded a different size! %u = Expected %u",
-		uTest, static_cast<Word>(uBuffer2Size),
-		static_cast<Word>(uMacRomanLength));
+		uTest, static_cast<uint_t>(uBuffer2Size),
+		static_cast<uint_t>(uMacRomanLength));
 
-	uTest = static_cast<Word>(
+	uTest = static_cast<uint_t>(
 		Burger::MemoryCompare(BufferUTF8, Buffer2, uUTF8Length));
 	uFailure |= uTest;
 	ReportFailure(
@@ -184,13 +184,13 @@ static Word BURGER_API TestMacRoman(void)
 
 ***************************************/
 
-static Word BURGER_API TestISOLatin1(void)
+static uint_t BURGER_API TestISOLatin1(void)
 {
-	Word uFailure = 0;
+	uint_t uFailure = 0;
 
 	// Generate all 8 bit codes
 	char Buffer[256];
-	WordPtr i = 0;
+	uintptr_t i = 0;
 	do {
 		Buffer[i] = static_cast<char>(i + 1);
 	} while (++i < 255);
@@ -198,22 +198,22 @@ static Word BURGER_API TestISOLatin1(void)
 
 	// Perform the conversions
 	char BufferUTF8[512];
-	WordPtr uUTF8Length = Burger::UTF8::FromISOLatin1(
+	uintptr_t uUTF8Length = Burger::UTF8::FromISOLatin1(
 		BufferUTF8, sizeof(BufferUTF8), Buffer, 255);
 
 	char BufferISOLatin1[512];
-	WordPtr uISOLatin1Length = Burger::ISOLatin1::FromUTF8(
+	uintptr_t uISOLatin1Length = Burger::ISOLatin1::FromUTF8(
 		BufferISOLatin1, sizeof(BufferISOLatin1), BufferUTF8, uUTF8Length);
 
 	// Test the result from the round trip
-	Word uTest = (uISOLatin1Length != 255);
+	uint_t uTest = (uISOLatin1Length != 255);
 	uFailure |= uTest;
 	ReportFailure(
 		"Conversion from ISOLatin1 to UTF8 yielded a different size! %u = Expected 255",
-		uTest, static_cast<Word>(uISOLatin1Length));
+		uTest, static_cast<uint_t>(uISOLatin1Length));
 
 	uTest =
-		static_cast<Word>(Burger::MemoryCompare(Buffer, BufferISOLatin1, 255));
+		static_cast<uint_t>(Burger::MemoryCompare(Buffer, BufferISOLatin1, 255));
 	uFailure |= uTest;
 	ReportFailure(
 		"Conversion from ISOLatin1 to UTF8 yielded a different data!", uTest);
@@ -222,7 +222,7 @@ static Word BURGER_API TestISOLatin1(void)
 #if defined(BURGER_WINDOWS)
 	// Convert using the Windows calls
 	int iRequiredSize = MultiByteToWideChar(28591, 0, Buffer, 255, 0, 0);
-	Word16 WideBuffer[512];
+	uint16_t WideBuffer[512];
 	int iRequiredSize2 = MultiByteToWideChar(
 		28591, 0, Buffer, 255, (LPWSTR)WideBuffer, iRequiredSize);
 
@@ -234,14 +234,14 @@ static Word BURGER_API TestISOLatin1(void)
 		iRequiredSize2, Buffer2, iDestSize, nullptr, nullptr);
 
 	// Test the result with what Burgerlib output
-	uTest = (uUTF8Length != static_cast<WordPtr>(iDestSize2));
+	uTest = (uUTF8Length != static_cast<uintptr_t>(iDestSize2));
 	uFailure |= uTest;
 	ReportFailure(
 		"Windows conversion from ISOLatin1 to UTF8 yielded a different size! %u = Expected %u",
-		uTest, static_cast<Word>(iDestSize2),
-		static_cast<Word>(uISOLatin1Length));
+		uTest, static_cast<uint_t>(iDestSize2),
+		static_cast<uint_t>(uISOLatin1Length));
 
-	uTest = static_cast<Word>(
+	uTest = static_cast<uint_t>(
 		Burger::MemoryCompare(BufferUTF8, Buffer2, uUTF8Length));
 	uFailure |= uTest;
 	ReportFailure(
@@ -257,9 +257,9 @@ static Word BURGER_API TestISOLatin1(void)
 
 ***************************************/
 
-int BURGER_API TestCharset(Word uVerbose)
+int BURGER_API TestCharset(uint_t uVerbose)
 {
-	Word uFailure = 0;
+	uint_t uFailure = 0;
 
 	if (uVerbose & VERBOSE_MSG) {
 		Message("Testing character set encoders");

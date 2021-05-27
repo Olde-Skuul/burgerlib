@@ -254,7 +254,7 @@ void BURGER_API Burger::DisplayDirectX9::DeviceSettings_t::GetPresentParameters(
 
 /*! ************************************
 
-	\fn Word Burger::DisplayDirectX9::DeviceSettings_t::IsMSAASwapChainCreated(void) const
+	\fn uint_t Burger::DisplayDirectX9::DeviceSettings_t::IsMSAASwapChainCreated(void) const
 	\brief Test if Anti-Aliasing is enabled
 
 	\return \ref TRUE if Anti-aliasing is turned on
@@ -264,7 +264,7 @@ void BURGER_API Burger::DisplayDirectX9::DeviceSettings_t::GetPresentParameters(
 
 /*! ************************************
 
-	\fn Word Burger::DisplayDirectX9::DeviceSettings_t::IsVSyncEnabled(void) const
+	\fn uint_t Burger::DisplayDirectX9::DeviceSettings_t::IsVSyncEnabled(void) const
 	\brief Test if vertical sync is enabled
 
 	\return \ref TRUE if vertical sync is turned on
@@ -348,7 +348,7 @@ void BURGER_API Burger::DisplayDirectX9::DeviceSettings_t::ApplyDefaults(void)
 
 ***************************************/
 
-Burger::DisplayDirectX9::DeviceInfo::DeviceInfo(Word uAdapterOrdinal,Word uDeviceType) :
+Burger::DisplayDirectX9::DeviceInfo::DeviceInfo(uint_t uAdapterOrdinal,uint_t uDeviceType) :
 	m_uAdapterOrdinal(uAdapterOrdinal),
 	m_uDeviceType(uDeviceType),
 	m_BufferFormatList()
@@ -371,7 +371,7 @@ Burger::DisplayDirectX9::DeviceInfo::~DeviceInfo()
 	// Every entry in this list is under this class' control.
 
 	// Dispose of every entry in the list.
-	WordPtr uCount = m_BufferFormatList.size();
+	uintptr_t uCount = m_BufferFormatList.size();
 	if (uCount) {
 		BufferFormatGroup * const *ppBufferFormatGroup = m_BufferFormatList.GetPtr();
 		do {
@@ -383,7 +383,7 @@ Burger::DisplayDirectX9::DeviceInfo::~DeviceInfo()
 
 /*! ************************************
 
-	\fn Word Burger::DisplayDirectX9::DeviceInfo::GetAdapterOrdinal(void) const
+	\fn uint_t Burger::DisplayDirectX9::DeviceInfo::GetAdapterOrdinal(void) const
 	\brief Get the adapter ordinal
 
 	\return The adapter ordinal for which adapter this class is describing.
@@ -392,7 +392,7 @@ Burger::DisplayDirectX9::DeviceInfo::~DeviceInfo()
 
 /*! ************************************
 
-	\fn Word Burger::DisplayDirectX9::DeviceInfo::GetDeviceType(void) const
+	\fn uint_t Burger::DisplayDirectX9::DeviceInfo::GetDeviceType(void) const
 	\brief Get the adapter device type
 
 	\return The adapter device type for which adapter this class is describing.
@@ -413,7 +413,7 @@ Burger::DisplayDirectX9::DeviceInfo::~DeviceInfo()
 
 /*! ************************************
 
-	\fn WordPtr Burger::DisplayDirectX9::DeviceInfo::GetBufferListSize(void) const
+	\fn uintptr_t Burger::DisplayDirectX9::DeviceInfo::GetBufferListSize(void) const
 	\brief Get number of BufferFormatGroup entries stored in this class
 
 	\return The size of the BufferFormatGroup list in entries.
@@ -462,10 +462,10 @@ void BURGER_API Burger::DisplayDirectX9::DeviceInfo::AddToList(BufferFormatGroup
 
 ***************************************/
 
-const Burger::DisplayDirectX9::BufferFormatGroup * BURGER_API Burger::DisplayDirectX9::DeviceInfo::Find(Word uAdapterFormat,Word uBackBufferFormat,Word bWindowed) const
+const Burger::DisplayDirectX9::BufferFormatGroup * BURGER_API Burger::DisplayDirectX9::DeviceInfo::Find(uint_t uAdapterFormat,uint_t uBackBufferFormat,uint_t bWindowed) const
 {
-	const BufferFormatGroup *pResult = NULL;
-	WordPtr uCount = m_BufferFormatList.size();
+    const BufferFormatGroup *pResult = NULL;
+    uintptr_t uCount = m_BufferFormatList.size();
 	if (uCount) {
 		BufferFormatGroup * const *ppList = m_BufferFormatList.GetPtr();
 		do {
@@ -515,7 +515,7 @@ const Burger::DisplayDirectX9::BufferFormatGroup * BURGER_API Burger::DisplayDir
 
 ***************************************/
 
-Burger::DisplayDirectX9::AdapterInfo::AdapterInfo(Word uAdapterOrdinal) :
+Burger::DisplayDirectX9::AdapterInfo::AdapterInfo(uint_t uAdapterOrdinal) :
 	m_DisplayModeList(),
 	m_DeviceInfoList(),
 	m_uAdapterOrdinal(uAdapterOrdinal)
@@ -542,7 +542,7 @@ Burger::DisplayDirectX9::AdapterInfo::~AdapterInfo()
 	// Every entry in this list is under this class' control.
 
 	// Dispose of every entry in the list.
-	WordPtr uCount = m_DeviceInfoList.size();
+	uintptr_t uCount = m_DeviceInfoList.size();
 	if (uCount) {
 		DeviceInfo * const *ppDeviceInfo = m_DeviceInfoList.GetPtr();
 		do {
@@ -564,7 +564,7 @@ Burger::DisplayDirectX9::AdapterInfo::~AdapterInfo()
 
 /*! ************************************
 
-	\fn Word Burger::DisplayDirectX9::AdapterInfo::GetAdapterOrdinal(void) const
+	\fn uint_t Burger::DisplayDirectX9::AdapterInfo::GetAdapterOrdinal(void) const
 	\brief Get ordinal index for the adapter this class describes
 
 	\windowsonly
@@ -574,7 +574,7 @@ Burger::DisplayDirectX9::AdapterInfo::~AdapterInfo()
 
 /*! ************************************
 
-	\fn WordPtr Burger::DisplayDirectX9::AdapterInfo::GetDisplayModeListSize(void) const
+	\fn uintptr_t Burger::DisplayDirectX9::AdapterInfo::GetDisplayModeListSize(void) const
 	\brief Get number of entries in the display mode list
 
 	\windowsonly
@@ -613,7 +613,7 @@ void BURGER_API Burger::DisplayDirectX9::AdapterInfo::AddToList(const DisplayMod
 
 /*! ************************************
 
-	\fn WordPtr Burger::DisplayDirectX9::AdapterInfo::GetDisplayInfoListSize(void) const
+	\fn uintptr_t Burger::DisplayDirectX9::AdapterInfo::GetDisplayInfoListSize(void) const
 	\brief Get number of entries in the display info list
 
 	\windowsonly
@@ -663,11 +663,11 @@ void BURGER_API Burger::DisplayDirectX9::AdapterInfo::AddToList(DeviceInfo *pDis
 
 ***************************************/
 
-const Burger::DisplayDirectX9::DeviceInfo * BURGER_API Burger::DisplayDirectX9::AdapterInfo::Find(Word uDeviceType) const
+const Burger::DisplayDirectX9::DeviceInfo * BURGER_API Burger::DisplayDirectX9::AdapterInfo::Find(uint_t uDeviceType) const
 {
 	// Assume not found.
 	const DeviceInfo* pResult = NULL;
-	WordPtr uCount = m_DeviceInfoList.size();
+	uintptr_t uCount = m_DeviceInfoList.size();
 	if (uCount) {
 		// There are entries.
 		DeviceInfo * const *ppList = m_DeviceInfoList.GetPtr();
@@ -739,7 +739,7 @@ const Burger::DisplayDirectX9::DeviceInfo * BURGER_API Burger::DisplayDirectX9::
 
 ***************************************/
 
-Burger::DisplayDirectX9::BufferFormatGroup::BufferFormatGroup(Word uAdapterOrdinal,Word uDeviceType,Word uAdapterFormat,Word uBackBufferFormat,Word bWindowed) :
+Burger::DisplayDirectX9::BufferFormatGroup::BufferFormatGroup(uint_t uAdapterOrdinal,uint_t uDeviceType,uint_t uAdapterFormat,uint_t uBackBufferFormat,uint_t bWindowed) :
 	m_DepthStencilFormatList(),
 	m_PresentIntervalList(),
 	m_MultiSampleQualityList(),
@@ -807,7 +807,7 @@ Burger::DisplayDirectX9::BufferFormatGroup::~BufferFormatGroup()
 
 /*! ************************************
 
-	\fn Word Burger::DisplayDirectX9::BufferFormatGroup::GetAdapterOrdinal(void) const
+	\fn uint_t Burger::DisplayDirectX9::BufferFormatGroup::GetAdapterOrdinal(void) const
 	\brief Get the adapter ordinal value
 
 	\return The ordinal value index for the display adapter
@@ -816,7 +816,7 @@ Burger::DisplayDirectX9::BufferFormatGroup::~BufferFormatGroup()
 
 /*! ************************************
 
-	\fn Word Burger::DisplayDirectX9::BufferFormatGroup::GetDeviceType(void) const
+	\fn uint_t Burger::DisplayDirectX9::BufferFormatGroup::GetDeviceType(void) const
 	\brief Get the device driver type
 
 	\return The D3DDEVTYPE device type for the buffer group
@@ -825,7 +825,7 @@ Burger::DisplayDirectX9::BufferFormatGroup::~BufferFormatGroup()
 
 /*! ************************************
 
-	\fn Word Burger::DisplayDirectX9::BufferFormatGroup::GetAdapterFormat(void) const
+	\fn uint_t Burger::DisplayDirectX9::BufferFormatGroup::GetAdapterFormat(void) const
 	\brief Get the pixel format of the device adapter
 
 	\return The D3DFORMAT of the pixel type for the adapter screen
@@ -834,7 +834,7 @@ Burger::DisplayDirectX9::BufferFormatGroup::~BufferFormatGroup()
 
 /*! ************************************
 
-	\fn Word Burger::DisplayDirectX9::BufferFormatGroup::GetBackBufferFormat(void) const
+	\fn uint_t Burger::DisplayDirectX9::BufferFormatGroup::GetBackBufferFormat(void) const
 	\brief Get the pixel format of the back buffer for the driver
 
 	\return The D3DFORMAT of the pixel type for the back buffer
@@ -843,7 +843,7 @@ Burger::DisplayDirectX9::BufferFormatGroup::~BufferFormatGroup()
 
 /*! ************************************
 
-	\fn Word Burger::DisplayDirectX9::BufferFormatGroup::IsWindowed(void) const
+	\fn uint_t Burger::DisplayDirectX9::BufferFormatGroup::IsWindowed(void) const
 	\brief \ref TRUE if the driver is for a window, \ref FALSE for full screen.
 
 	\return The boolean value if the buffer is intended for a window or a full screen context.
@@ -852,7 +852,7 @@ Burger::DisplayDirectX9::BufferFormatGroup::~BufferFormatGroup()
 
 /*! ************************************
 
-	\fn WordPtr Burger::DisplayDirectX9::BufferFormatGroup::GetMultiSampleQualityListSize(void) const
+	\fn uintptr_t Burger::DisplayDirectX9::BufferFormatGroup::GetMultiSampleQualityListSize(void) const
 	\brief Number of entries in the multisample quality list.
 
 	\return Zero if the list is empty or the number of entries in the list.
@@ -885,14 +885,14 @@ Burger::DisplayDirectX9::BufferFormatGroup::~BufferFormatGroup()
 
 void BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::CreateConflictList(IDirect3D9 *pDirect3D9)
 {
-	WordPtr uDepthFormatListSize = m_DepthStencilFormatList.size();
-	WordPtr uMultiSampleListSize = m_MultiSampleQualityList.size();
+	uintptr_t uDepthFormatListSize = m_DepthStencilFormatList.size();
+	uintptr_t uMultiSampleListSize = m_MultiSampleQualityList.size();
 	if (uDepthFormatListSize && uMultiSampleListSize) {
-		const Word *pStencils = m_DepthStencilFormatList.GetPtr();
+		const uint_t *pStencils = m_DepthStencilFormatList.GetPtr();
 		do {
 			D3DFORMAT uFormat = static_cast<D3DFORMAT>(pStencils[0]);
 			++pStencils;
-			WordPtr uSampleCount = uMultiSampleListSize;
+			uintptr_t uSampleCount = uMultiSampleListSize;
 			const MSQuality_t *pTypes = m_MultiSampleQualityList.GetPtr();
 			do {
 				D3DMULTISAMPLE_TYPE uType = static_cast<D3DMULTISAMPLE_TYPE>(pTypes->m_uMSType);
@@ -923,12 +923,12 @@ void BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::CreateConflictList(I
 
 ***************************************/
 
-void BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::CreateDepthStencilFormatList(IDirect3D9 *pDirect3D9,const SimpleArray<Word>*pPossibleList)
+void BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::CreateDepthStencilFormatList(IDirect3D9 *pDirect3D9,const SimpleArray<uint_t>*pPossibleList)
 {
-	WordPtr uStencilCount = pPossibleList->size();
+	uintptr_t uStencilCount = pPossibleList->size();
 	if (uStencilCount) {
 		// Get the array pointer
-		const Word *pStencils = pPossibleList->GetPtr();
+		const uint_t *pStencils = pPossibleList->GetPtr();
 		do {
 			// It's a D3DFORMAT
 			D3DFORMAT uDepthFormat = static_cast<D3DFORMAT>(pStencils[0]);
@@ -964,13 +964,13 @@ void BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::CreateDepthStencilFo
 
 ***************************************/
 
-void BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::CreatePresentIntervalList(Word uIntervalFlags,const SimpleArray<Word>*pPossibleList)
+void BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::CreatePresentIntervalList(uint_t uIntervalFlags,const SimpleArray<uint_t>*pPossibleList)
 {
-	WordPtr uPresentCount = pPossibleList->size();
+	uintptr_t uPresentCount = pPossibleList->size();
 	if (uPresentCount) {
-		const Word *pPresents = pPossibleList->GetPtr();
+		const uint_t *pPresents = pPossibleList->GetPtr();
 		do {
-			Word uPresent = pPresents[0];
+			uint_t uPresent = pPresents[0];
 			++pPresents;
 
 			// Some modes are not supported in a window
@@ -1000,11 +1000,11 @@ void BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::CreatePresentInterva
 
 ***************************************/
 
-void BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::CreateMultiSampleTypeList(IDirect3D9 *pDirect3D9,const SimpleArray<Word>*pPossibleList,Word uMaxQuality)
+void BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::CreateMultiSampleTypeList(IDirect3D9 *pDirect3D9,const SimpleArray<uint_t>*pPossibleList,uint_t uMaxQuality)
 {
-	WordPtr uMultiCount = pPossibleList->size();
+	uintptr_t uMultiCount = pPossibleList->size();
 	if (uMultiCount) {
-		const Word *pMultis = pPossibleList->GetPtr();
+		const uint_t *pMultis = pPossibleList->GetPtr();
 		do {
 			DWORD uQuality;
 			D3DMULTISAMPLE_TYPE uSampleType = static_cast<D3DMULTISAMPLE_TYPE>(pMultis[0]);
@@ -1017,7 +1017,7 @@ void BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::CreateMultiSampleTyp
 				// Clamp the quality, for performance reasons.
 				MSQuality_t Temp;
 				Temp.m_uMSType = uSampleType;
-				Temp.m_uMaxQuality = Min(static_cast<Word>(uQuality),uMaxQuality + 1);
+				Temp.m_uMaxQuality = Min(static_cast<uint_t>(uQuality),uMaxQuality + 1);
 				m_MultiSampleQualityList.push_back(Temp);
 			}
 			++pMultis;
@@ -1041,11 +1041,11 @@ void BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::CreateMultiSampleTyp
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::IsConflicted(Word uDSFormat,Word uMSType) const
+uint_t BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::IsConflicted(uint_t uDSFormat,uint_t uMSType) const
 {
 	// No match
-	Word bResult = FALSE;
-	WordPtr uCount = m_DSMSConflictList.size();
+	uint_t bResult = FALSE;
+	uintptr_t uCount = m_DSMSConflictList.size();
 	if (uCount) {
 		const DSMSConflict_t *pConflict = m_DSMSConflictList.GetPtr();
 		do {
@@ -1078,7 +1078,7 @@ Word BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::IsConflicted(Word uD
 
 float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(const DeviceSettings_t *pOptimalDeviceSettings,
 	const _D3DDISPLAYMODE *pAdapterDesktopDisplayMode,
-	WordPtr *pBestModeIndex,WordPtr *pBestMSAAIndex) const
+	uintptr_t *pBestModeIndex,uintptr_t *pBestMSAAIndex) const
 {
 	float fCurRanking = 0.0f;
 
@@ -1109,7 +1109,7 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(const De
 		fCurRanking += 1.0f;
 	} else {
 		// Score based by the bit depths
-		int iDelta = Abs(static_cast<Int32>(GetD3DFORMATColorChannelBits(m_uAdapterFormat) -
+		int iDelta = Abs(static_cast<int32_t>(GetD3DFORMATColorChannelBits(m_uAdapterFormat) -
 			GetD3DFORMATColorChannelBits(pOptimalDeviceSettings->m_uAdapterFormat)));
 		float fScale = Max(0.9f - static_cast<float>(iDelta) * 0.2f,0.0f);
 		fCurRanking += fScale;
@@ -1119,7 +1119,7 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(const De
 	if (!m_bWindowed) {
 		// Slightly prefer when it matches the desktop format or is D3DFMT_X8R8G8B8
 		if (GetD3DFORMATColorChannelBits(pAdapterDesktopDisplayMode->Format) >= 8) {
-			if (m_uAdapterFormat == static_cast<Word>(pAdapterDesktopDisplayMode->Format)) {
+			if (m_uAdapterFormat == static_cast<uint_t>(pAdapterDesktopDisplayMode->Format)) {
 				fCurRanking += 0.1f;
 			}
 		} else {
@@ -1145,12 +1145,12 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(const De
 	}
 
 	// Resolution
-	Word bResolutionFound = FALSE;
-	Word uBest = BURGER_MAXUINT;
-	WordPtr uBestModeIndex = 0;		// Default to the first one
-	WordPtr uModeCount = m_pAdapterInfo->GetDisplayModeListSize();
+	uint_t bResolutionFound = FALSE;
+	uint_t uBest = BURGER_MAXUINT;
+	uintptr_t uBestModeIndex = 0;		// Default to the first one
+	uintptr_t uModeCount = m_pAdapterInfo->GetDisplayModeListSize();
 	if (uModeCount) {
-		WordPtr uIndex = 0;
+		uintptr_t uIndex = 0;
 		const DisplayMode_t *pModes = m_pAdapterInfo->GetDisplayModeList();
 		do {
 			if (pModes->m_uFormat == m_uAdapterFormat) {
@@ -1160,10 +1160,10 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(const De
 					bResolutionFound = TRUE;
 				}
 
-				int iCurrent = Abs(static_cast<Int32>(pModes->m_uWidth - pOptimalDeviceSettings->m_uBackBufferWidth)) + 
-					Abs(static_cast<Int32>(pModes->m_uHeight - pOptimalDeviceSettings->m_uBackBufferHeight));
-				if (static_cast<Word>(iCurrent) < uBest) {
-					uBest = static_cast<Word>(iCurrent);
+				int iCurrent = Abs(static_cast<int32_t>(pModes->m_uWidth - pOptimalDeviceSettings->m_uBackBufferWidth)) + 
+					Abs(static_cast<int32_t>(pModes->m_uHeight - pOptimalDeviceSettings->m_uBackBufferHeight));
+				if (static_cast<uint_t>(iCurrent) < uBest) {
+					uBest = static_cast<uint_t>(iCurrent);
 					uBestModeIndex = uIndex;
 				}
 			}
@@ -1182,7 +1182,7 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(const De
 	if (m_uBackBufferFormat == pOptimalDeviceSettings->m_uBackBufferFormat) {
 		fCurRanking += 1.0f;
 	} else {
-		int iDelta = Abs(static_cast<Int32>(GetD3DFORMATColorChannelBits(m_uBackBufferFormat) -
+		int iDelta = Abs(static_cast<int32_t>(GetD3DFORMATColorChannelBits(m_uBackBufferFormat) -
 			GetD3DFORMATColorChannelBits(pOptimalDeviceSettings->m_uBackBufferFormat)));
 		float fScale = Max(0.9f - static_cast<float>(iDelta) * 0.2f,0.0f);
 		fCurRanking += fScale;
@@ -1197,12 +1197,12 @@ float BURGER_API Burger::DisplayDirectX9::BufferFormatGroup::RankDevice(const De
 
 
 	// Multi-sample
-	Word bMultiSampleFound = FALSE;
-	WordPtr uBestMSAAIndex = 0;
-	WordPtr uSampleCount = m_MultiSampleQualityList.size();
+	uint_t bMultiSampleFound = FALSE;
+	uintptr_t uBestMSAAIndex = 0;
+	uintptr_t uSampleCount = m_MultiSampleQualityList.size();
 	if (uSampleCount) {
 		const MSQuality_t *pQualities = m_MultiSampleQualityList.GetPtr();
-		WordPtr uMSIndex = 0;
+		uintptr_t uMSIndex = 0;
 		do {
 			if ((pQualities[uMSIndex].m_uMSType == pOptimalDeviceSettings->m_uMultiSampleType) &&
 				(pQualities[uMSIndex].m_uMaxQuality > pOptimalDeviceSettings->m_uMultiSampleQuality)) {
@@ -1328,7 +1328,7 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 
 /*! ************************************
 
-	\fn void Burger::DisplayDirectX9::Enumerator::SetRequirePostPixelShaderBlending(Word bRequire)
+	\fn void Burger::DisplayDirectX9::Enumerator::SetRequirePostPixelShaderBlending(uint_t bRequire)
 	\brief Set the flag making shaders a requirement
 
 	If support for post pixel blending is required, call this function with \ref TRUE
@@ -1343,7 +1343,7 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 
 /*! ************************************
 
-	\fn void Burger::DisplayDirectX9::Enumerator::SetResolutionMinMax(Word uMinWidth,Word uMinHeight,Word uMaxWidth,Word uMaxHeight)
+	\fn void Burger::DisplayDirectX9::Enumerator::SetResolutionMinMax(uint_t uMinWidth,uint_t uMinHeight,uint_t uMaxWidth,uint_t uMaxHeight)
 	\brief Set the minimum and maximum acceptable resolutions
 
 	If only certain display resolutions are acceptable, call this function with the minimum
@@ -1360,7 +1360,7 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 
 /*! ************************************
 
-	\fn void Burger::DisplayDirectX9::Enumerator::SetRefreshMinMax(Word uMin,Word uMax)
+	\fn void Burger::DisplayDirectX9::Enumerator::SetRefreshMinMax(uint_t uMin,uint_t uMax)
 	\brief Set the minimum and maximum acceptable refresh rates
 
 	If only certain display refresh rates are acceptable, call this function with the minimum
@@ -1375,7 +1375,7 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 
 /*! ************************************
 
-	\fn void Burger::DisplayDirectX9::Enumerator::SetMultisampleQualityMax(Word uMax)
+	\fn void Burger::DisplayDirectX9::Enumerator::SetMultisampleQualityMax(uint_t uMax)
 	\brief Set the maximum acceptable anti-aliasing quality
 
 	For performance, the maximum anti-aliasing quality can be clamped to a maximum,
@@ -1389,7 +1389,7 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 
 /*! ************************************
 
-	\fn void Burger::DisplayDirectX9::Enumerator::SetSoftwareVertexProcessingFlag(Word bSoftwareVP)
+	\fn void Burger::DisplayDirectX9::Enumerator::SetSoftwareVertexProcessingFlag(uint_t bSoftwareVP)
 	\brief Allow software vertex processed devices
 
 	If this function is called with \ref TRUE, enable the use of software vertex processed
@@ -1397,14 +1397,14 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 
 	\param bSoftwareVP \ref TRUE to enable software vertex processing devices, \ref FALSE to disable.
 
-	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *), SetHardwareVertexProcessingFlag(Word), SetPureHarewareVertexProcessingFlag(Word), or
-	SetMixedVertexProcessingFlag(Word)
+	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *), SetHardwareVertexProcessingFlag(uint_t), SetPureHarewareVertexProcessingFlag(uint_t), or
+	SetMixedVertexProcessingFlag(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::DisplayDirectX9::Enumerator::SetHardwareVertexProcessingFlag(Word bHardwareVP)
+	\fn void Burger::DisplayDirectX9::Enumerator::SetHardwareVertexProcessingFlag(uint_t bHardwareVP)
 	\brief Allow hardware vertex processed devices
 
 	If this function is called with \ref TRUE, enable the use of hardware vertex processed
@@ -1412,14 +1412,14 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 
 	\param bHardwareVP \ref TRUE to enable hardware vertex processing devices, \ref FALSE to disable.
 
-	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *), SetSoftwareVertexProcessingFlag(Word), SetPureHarewareVertexProcessingFlag(Word), or
-	SetMixedVertexProcessingFlag(Word)
+	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *), SetSoftwareVertexProcessingFlag(uint_t), SetPureHarewareVertexProcessingFlag(uint_t), or
+	SetMixedVertexProcessingFlag(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::DisplayDirectX9::Enumerator::SetPureHarewareVertexProcessingFlag(Word bPureHarewareVP)
+	\fn void Burger::DisplayDirectX9::Enumerator::SetPureHarewareVertexProcessingFlag(uint_t bPureHarewareVP)
 	\brief Allow GPU vertex processed devices
 
 	If this function is called with \ref TRUE, enable the use of GPU vertex processed
@@ -1427,14 +1427,14 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 
 	\param bPureHarewareVP \ref TRUE to enable GPU vertex processing devices, \ref FALSE to disable.
 
-	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *), SetSoftwareVertexProcessingFlag(Word), SetHardwareVertexProcessingFlag(Word), or
-	SetMixedVertexProcessingFlag(Word)
+	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *), SetSoftwareVertexProcessingFlag(uint_t), SetHardwareVertexProcessingFlag(uint_t), or
+	SetMixedVertexProcessingFlag(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::DisplayDirectX9::Enumerator::SetMixedVertexProcessingFlag(Word bMixedVP)
+	\fn void Burger::DisplayDirectX9::Enumerator::SetMixedVertexProcessingFlag(uint_t bMixedVP)
 	\brief Allow mixed hardware / software vertex processed devices
 
 	If this function is called with \ref TRUE, enable the use of mixed hardware / software
@@ -1443,14 +1443,14 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 	\param bMixedVP \ref TRUE to enable mixed hardware / software vertex processing 
 		devices, \ref FALSE to disable.
 
-	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *), SetSoftwareVertexProcessingFlag(Word), SetHardwareVertexProcessingFlag(Word), or
-		SetPureHarewareVertexProcessingFlag(Word)
+	\sa Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *), SetSoftwareVertexProcessingFlag(uint_t), SetHardwareVertexProcessingFlag(uint_t), or
+		SetPureHarewareVertexProcessingFlag(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Word Burger::DisplayDirectX9::Enumerator::GetSoftwareVertexProcessingFlag(void) const
+	\fn uint_t Burger::DisplayDirectX9::Enumerator::GetSoftwareVertexProcessingFlag(void) const
 	\brief Was software vertex processed devices allowed?
 
 	\return \ref TRUE if software vertex rendering devices are allowed.
@@ -1462,7 +1462,7 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 
 /*! ************************************
 
-	\fn Word Burger::DisplayDirectX9::Enumerator::GetHardwareVertexProcessingFlag(void) const
+	\fn uint_t Burger::DisplayDirectX9::Enumerator::GetHardwareVertexProcessingFlag(void) const
 	\brief Was hardware vertex processed devices allowed?
 
 	\return \ref TRUE if hardware vertex rendering devices are allowed.
@@ -1474,7 +1474,7 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 
 /*! ************************************
 
-	\fn Word Burger::DisplayDirectX9::Enumerator::GetPureHarewareVertexProcessingFlag(void) const
+	\fn uint_t Burger::DisplayDirectX9::Enumerator::GetPureHarewareVertexProcessingFlag(void) const
 	\brief Was GPU vertex processed devices allowed?
 
 	\return \ref TRUE if GPU vertex rendering devices are allowed.
@@ -1486,7 +1486,7 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 
 /*! ************************************
 
-	\fn Word Burger::DisplayDirectX9::Enumerator::GetMixedVertexProcessingFlag(void) const
+	\fn uint_t Burger::DisplayDirectX9::Enumerator::GetMixedVertexProcessingFlag(void) const
 	\brief Was mixed hardware / software vertex processed devices allowed?
 
 	\return \ref TRUE if mixed hardware / software vertex rendering devices are allowed.
@@ -1498,7 +1498,7 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 
 /*! ************************************
 
-	\fn const SimpleArray<Word>* Burger::DisplayDirectX9::Enumerator::GetPossibleDepthStencilFormatList(void) const
+	\fn const SimpleArray<uint_t>* Burger::DisplayDirectX9::Enumerator::GetPossibleDepthStencilFormatList(void) const
 	\brief Return the list of depth/stencil buffer formats supported
 
 	After Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *) is called, a list of supported depth / stencil
@@ -1515,7 +1515,7 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 
 /*! ************************************
 
-	\fn const SimpleArray<Word>* Burger::DisplayDirectX9::Enumerator::GetPossibleMultisampleTypeList(void) const
+	\fn const SimpleArray<uint_t>* Burger::DisplayDirectX9::Enumerator::GetPossibleMultisampleTypeList(void) const
 	\brief Return the list of multi-sample buffer types available
 
 	After Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *) is called, a list of multi-sample buffer types
@@ -1532,7 +1532,7 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 
 /*! ************************************
 
-	\fn const SimpleArray<Word>* Burger::DisplayDirectX9::Enumerator::GetPossiblePresentIntervalList(void) const
+	\fn const SimpleArray<uint_t>* Burger::DisplayDirectX9::Enumerator::GetPossiblePresentIntervalList(void) const
 	\brief Return the list of presentation flags available
 
 	After Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *) is called, a list of presentation flags
@@ -1568,7 +1568,7 @@ Burger::DisplayDirectX9::Enumerator::~Enumerator()
 void BURGER_API Burger::DisplayDirectX9::Enumerator::ResetPossibleDepthStencilFormats(void)
 {
 	m_DepthStencilPossibleList.resize(6);
-	Word *pData = m_DepthStencilPossibleList.GetPtr();
+	uint_t *pData = m_DepthStencilPossibleList.GetPtr();
 	pData[0] = D3DFMT_D16;			// 16 bit depth
 	pData[1] = D3DFMT_D15S1;		// 1 bit stencil
 	pData[2] = D3DFMT_D24X8;		// 24 bit depth, no stencil
@@ -1594,7 +1594,7 @@ void BURGER_API Burger::DisplayDirectX9::Enumerator::ResetPossibleDepthStencilFo
 void BURGER_API Burger::DisplayDirectX9::Enumerator::ResetPossibleMultisampleTypeList(void)
 {
 	m_MultiSampleTypeList.resize(17);
-	Word *pData = m_MultiSampleTypeList.GetPtr();
+	uint_t *pData = m_MultiSampleTypeList.GetPtr();
 	pData[0] = D3DMULTISAMPLE_NONE;
 	pData[1] = D3DMULTISAMPLE_NONMASKABLE;
 	pData[2] = D3DMULTISAMPLE_2_SAMPLES;
@@ -1631,7 +1631,7 @@ void BURGER_API Burger::DisplayDirectX9::Enumerator::ResetPossibleMultisampleTyp
 void BURGER_API Burger::DisplayDirectX9::Enumerator::ResetPossiblePresentIntervalList(void)
 {
 	m_MultiSampleTypeList.resize(6);
-	Word *pData = m_MultiSampleTypeList.GetPtr();
+	uint_t *pData = m_MultiSampleTypeList.GetPtr();
 	pData[0] = D3DPRESENT_INTERVAL_IMMEDIATE;
 	pData[1] = D3DPRESENT_INTERVAL_DEFAULT;
 	pData[2] = D3DPRESENT_INTERVAL_ONE;
@@ -1642,7 +1642,7 @@ void BURGER_API Burger::DisplayDirectX9::Enumerator::ResetPossiblePresentInterva
 
 /*! ************************************
 
-	\fn Word Burger::DisplayDirectX9::Enumerator::HasEnumerated(void) const
+	\fn uint_t Burger::DisplayDirectX9::Enumerator::HasEnumerated(void) const
 	\brief \ref TRUE if video devices were scanned
 
 	After Enumerate(IDirect3D9 *,IsDeviceOkayProc,void *) is called, this flag is set.
@@ -1673,10 +1673,10 @@ void BURGER_API Burger::DisplayDirectX9::Enumerator::ResetPossiblePresentInterva
 
 ***************************************/
 
-const Burger::DisplayDirectX9::AdapterInfo * BURGER_API Burger::DisplayDirectX9::Enumerator::GetAdapterInfo(Word uAdapterOrdinal) const
+const Burger::DisplayDirectX9::AdapterInfo * BURGER_API Burger::DisplayDirectX9::Enumerator::GetAdapterInfo(uint_t uAdapterOrdinal) const
 {
 	const AdapterInfo* pResult = NULL;
-	WordPtr uCount = m_AdapterInfoList.size();
+	uintptr_t uCount = m_AdapterInfoList.size();
 	if (uCount) {
 		AdapterInfo * const *ppList = m_AdapterInfoList.GetPtr();
 		do {
@@ -1702,7 +1702,7 @@ const Burger::DisplayDirectX9::AdapterInfo * BURGER_API Burger::DisplayDirectX9:
 
 ***************************************/
 
-const Burger::DisplayDirectX9::DeviceInfo * BURGER_API Burger::DisplayDirectX9::Enumerator::GetDeviceInfo(Word uAdapterOrdinal,Word uDeviceType) const
+const Burger::DisplayDirectX9::DeviceInfo * BURGER_API Burger::DisplayDirectX9::Enumerator::GetDeviceInfo(uint_t uAdapterOrdinal,uint_t uDeviceType) const
 {
 	const AdapterInfo* pAdapterInfo = GetAdapterInfo(uAdapterOrdinal);
 	const DeviceInfo* pResult = NULL;
@@ -1730,8 +1730,8 @@ const Burger::DisplayDirectX9::DeviceInfo * BURGER_API Burger::DisplayDirectX9::
 
 ***************************************/
 
-const Burger::DisplayDirectX9::BufferFormatGroup * BURGER_API Burger::DisplayDirectX9::Enumerator::GetBufferFormatGroup(
-	Word uAdapterOrdinal,Word uDeviceType,Word uAdapterFormat,Word uBackBufferFormat,Word bWindowed)
+const Burger::DisplayDirectX9::BufferFormatGroup *BURGER_API Burger::DisplayDirectX9::Enumerator::GetBufferFormatGroup(
+    uint_t uAdapterOrdinal, uint_t uDeviceType, uint_t uAdapterFormat, uint_t uBackBufferFormat, uint_t bWindowed)
 {
 	const DeviceInfo* pDeviceInfo = GetDeviceInfo(uAdapterOrdinal,uDeviceType);
 	const BufferFormatGroup *pResult = NULL;
@@ -1809,7 +1809,7 @@ static int BURGER_ANSIAPI QSortModesFunc(const void *pData1,const void *pData2)
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayDirectX9::Enumerator::Enumerate(IDirect3D9 *pD3D9,IsDeviceOkayProc pIsDeviceOkayFunc,void *pData)
+uint_t BURGER_API Burger::DisplayDirectX9::Enumerator::Enumerate(IDirect3D9 *pD3D9,IsDeviceOkayProc pIsDeviceOkayFunc,void *pData)
 {
 	m_bHasEnumerated = TRUE;
 	m_pD3D = pD3D9;
@@ -1835,9 +1835,9 @@ Word BURGER_API Burger::DisplayDirectX9::Enumerator::Enumerate(IDirect3D9 *pD3D9
 				} else {
 
 					// Clear the list, so enumeration can start
-					SimpleArray<Word> TheD3DFormatList;		// D3DFORMAT list
+					SimpleArray<uint_t> TheD3DFormatList;		// D3DFORMAT list
 
-					Word uPixelIndex = 0;
+					uint_t uPixelIndex = 0;
 					D3DDISPLAYMODE TheMode;
 					do {
 						D3DFORMAT uPixelFormat = g_ValidAdapterFormats[uPixelIndex];
@@ -1912,7 +1912,7 @@ Word BURGER_API Burger::DisplayDirectX9::Enumerator::Enumerate(IDirect3D9 *pD3D9
 void BURGER_API Burger::DisplayDirectX9::Enumerator::ClearAdapterInfoList(void)
 {
 	// Scan the list and dispose of the entries
-	WordPtr uCount = m_AdapterInfoList.size();
+	uintptr_t uCount = m_AdapterInfoList.size();
 	if (uCount) {
 		AdapterInfo * const *ppList = m_AdapterInfoList.GetPtr();
 		do {
@@ -1936,12 +1936,12 @@ void BURGER_API Burger::DisplayDirectX9::Enumerator::ClearAdapterInfoList(void)
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayDirectX9::Enumerator::EnumerateDevices(AdapterInfo* pAdapterInfo,
-	const SimpleArray<Word> *pAdapterFormatList)
+uint_t BURGER_API Burger::DisplayDirectX9::Enumerator::EnumerateDevices(AdapterInfo* pAdapterInfo,
+	const SimpleArray<uint_t> *pAdapterFormatList)
 {
 	HRESULT hr;
 
-	WordPtr uIndex = 0;
+	uintptr_t uIndex = 0;
 	do {
 		D3DCAPS9 TheCaps;
 
@@ -2020,20 +2020,20 @@ Word BURGER_API Burger::DisplayDirectX9::Enumerator::EnumerateDevices(AdapterInf
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayDirectX9::Enumerator::EnumerateBufferFormats(const _D3DCAPS9 *pCaps,const AdapterInfo *pAdapterInfo,
-	DeviceInfo *pDeviceInfo,const SimpleArray<Word> *pAdapterFormatList)
+uint_t BURGER_API Burger::DisplayDirectX9::Enumerator::EnumerateBufferFormats(const _D3DCAPS9 *pCaps,const AdapterInfo *pAdapterInfo,
+	DeviceInfo *pDeviceInfo,const SimpleArray<uint_t> *pAdapterFormatList)
 {
-	WordPtr uFormatCount = pAdapterFormatList->size();
+	uintptr_t uFormatCount = pAdapterFormatList->size();
 	if (uFormatCount) {
-		WordPtr uFormatIndex = 0;
+		uintptr_t uFormatIndex = 0;
 		// See which adapter formats are supported by this device
-		const Word *pFormats = pAdapterFormatList->GetPtr();
+		const uint_t *pFormats = pAdapterFormatList->GetPtr();
 		do {
 			D3DFORMAT uAdapterFormat = static_cast<D3DFORMAT>(pFormats[uFormatIndex]);
-			WordPtr uBackBufferIndex = 0;
+			uintptr_t uBackBufferIndex = 0;
 			do {
 				D3DFORMAT uBackBufferFormat = g_BackBufferFormats[uBackBufferIndex];
-				Word bWindowed = 0;
+				uint_t bWindowed = 0;
 				do { 
 					// If full screen, a valid list of modes is required to work
 					if (!bWindowed && !pAdapterInfo->GetDisplayModeListSize()) {
@@ -2189,7 +2189,7 @@ Burger::DisplayDirectX9::~DisplayDirectX9()
 // Initialize a Direct3D9 context
 //
 
-Word Burger::DisplayDirectX9::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
+uint_t Burger::DisplayDirectX9::Init(uint_t uWidth,uint_t uHeight,uint_t uDepth,uint_t uFlags)
 {
 	// Set the new size of the screen
 
@@ -2224,7 +2224,7 @@ Word Burger::DisplayDirectX9::Init(Word uWidth,Word uHeight,Word uDepth,Word uFl
 
 
 	// Create a DirectX 9 device for this setting
-	Word uResult = ChangeDevice(&TheSettings,FALSE,FALSE);
+	uint_t uResult = ChangeDevice(&TheSettings,FALSE,FALSE);
 	if (!uResult) {
 
 		// Save the states
@@ -2373,8 +2373,8 @@ void Burger::DisplayDirectX9::BeginScene(void)
 					DeviceSettings_t DeviceSettings;
 					MemoryCopy(&DeviceSettings,&m_D3D9Settings,sizeof(DeviceSettings));
 					m_pDirect3D9->GetAdapterDisplayMode(DeviceSettings.m_uAdapterOrdinal,&adapterDesktopDisplayMode);
-					if (DeviceSettings.m_uAdapterFormat != static_cast<Word>(adapterDesktopDisplayMode.Format)) {
-						DeviceSettings.m_uAdapterFormat = static_cast<Word>(adapterDesktopDisplayMode.Format);
+					if (DeviceSettings.m_uAdapterFormat != static_cast<uint_t>(adapterDesktopDisplayMode.Format)) {
+						DeviceSettings.m_uAdapterFormat = static_cast<uint_t>(adapterDesktopDisplayMode.Format);
 
 						hResult = static_cast<HRESULT>(SnapDeviceSettingsToEnumDevice(&DeviceSettings,FALSE));
 						if (hResult<0) { // the call will fail if no valid devices were found
@@ -2467,7 +2467,7 @@ Burger::VertexBuffer *Burger::DisplayDirectX9::CreateVertexBufferObject(void)
 	return new (Alloc(sizeof(VertexBufferDirectX9))) VertexBufferDirectX9;
 }
 
-void Burger::DisplayDirectX9::Resize(Word /* uWidth */,Word /* uHeight */)
+void Burger::DisplayDirectX9::Resize(uint_t /* uWidth */,uint_t /* uHeight */)
 {
 //	if (m_pDirect3DDevice9) {
 //		m_uWidth = uWidth;
@@ -2476,7 +2476,7 @@ void Burger::DisplayDirectX9::Resize(Word /* uWidth */,Word /* uHeight */)
 //	}
 }
 
-void Burger::DisplayDirectX9::SetViewport(Word uX,Word uY,Word uWidth,Word uHeight)
+void Burger::DisplayDirectX9::SetViewport(uint_t uX,uint_t uY,uint_t uWidth,uint_t uHeight)
 {
 	IDirect3DDevice9 *pDevice = m_pDirect3DDevice9;
 	if (pDevice) {
@@ -2490,7 +2490,7 @@ void Burger::DisplayDirectX9::SetViewport(Word uX,Word uY,Word uWidth,Word uHeig
 	}
 }
 
-void Burger::DisplayDirectX9::SetScissorRect(Word uX,Word uY,Word uWidth,Word uHeight)
+void Burger::DisplayDirectX9::SetScissorRect(uint_t uX,uint_t uY,uint_t uWidth,uint_t uHeight)
 {
 	RECT Temp;
 	Temp.left = static_cast<LONG>(uX);
@@ -2510,9 +2510,9 @@ void Burger::DisplayDirectX9::SetClearDepth(float fDepth)
 	m_fClearDepth = fDepth;
 }
 
-void Burger::DisplayDirectX9::Clear(Word uMask)
+void Burger::DisplayDirectX9::Clear(uint_t uMask)
 {
-	Word uDXMask = 0;
+	uint_t uDXMask = 0;
 	if (uMask&CLEAR_COLOR) {
 		uDXMask = D3DCLEAR_TARGET;
 	}
@@ -2525,7 +2525,7 @@ void Burger::DisplayDirectX9::Clear(Word uMask)
 	m_pDirect3DDevice9->Clear(0,NULL,uDXMask,m_uClearColor,m_fClearDepth,0);
 }
 
-void Burger::DisplayDirectX9::Bind(Texture *pTexture,Word uIndex)
+void Burger::DisplayDirectX9::Bind(Texture *pTexture,uint_t uIndex)
 {
 	BURGER_ASSERT(uIndex<BURGER_ARRAYSIZE(m_pBoundTextures));
 	m_pBoundTextures[uIndex] = pTexture;
@@ -2556,7 +2556,7 @@ void Burger::DisplayDirectX9::Bind(Effect *pEffect)
 	}
 }
 
-void Burger::DisplayDirectX9::SetBlend(Word bEnable)
+void Burger::DisplayDirectX9::SetBlend(uint_t bEnable)
 {
 	m_pDirect3DDevice9->SetRenderState(D3DRS_ALPHABLENDENABLE,bEnable!=0);
 }
@@ -2570,12 +2570,12 @@ void Burger::DisplayDirectX9::SetBlendFunction(eSourceBlendFactor uSourceFactor,
 	pDevice->SetRenderState(D3DRS_DESTBLEND,g_DestBlend[uDestFactor]);
 }
 
-void Burger::DisplayDirectX9::SetLighting(Word bEnable)
+void Burger::DisplayDirectX9::SetLighting(uint_t bEnable)
 {
 	m_pDirect3DDevice9->SetRenderState(D3DRS_LIGHTING,bEnable!=0);
 }
 
-void Burger::DisplayDirectX9::SetZWrite(Word bEnable)
+void Burger::DisplayDirectX9::SetZWrite(uint_t bEnable)
 {
 	m_pDirect3DDevice9->SetRenderState(D3DRS_ZWRITEENABLE,bEnable!=0);
 }
@@ -2592,7 +2592,7 @@ void Burger::DisplayDirectX9::SetCullMode(eCullMode uCullMode)
 	m_pDirect3DDevice9->SetRenderState(D3DRS_CULLMODE,g_CullOperation[uCullMode]);
 }
 
-void Burger::DisplayDirectX9::SetScissor(Word bEnable)
+void Burger::DisplayDirectX9::SetScissor(uint_t bEnable)
 {
 	m_pDirect3DDevice9->SetRenderState(D3DRS_SCISSORTESTENABLE,bEnable!=0);
 }
@@ -2603,7 +2603,7 @@ void Burger::DisplayDirectX9::DrawPrimitive(ePrimitiveType uPrimitiveType,Vertex
 	IDirect3DDevice9 *pDevice = m_pDirect3DDevice9;
 	pDevice->SetVertexDeclaration(pVertexBuffer->GetDX9VertexDescription());
 	pDevice->SetStreamSource(0,pVertexBuffer->GetDX9VertexBuffer(),0,pVertexBuffer->GetStride());
-	Word uCount = pVertexBuffer->GetArrayEntryCount();
+	uint_t uCount = pVertexBuffer->GetArrayEntryCount();
 	switch (uPrimitiveType) {
 	case PRIM_POINTS:
 	default:
@@ -2631,7 +2631,7 @@ void Burger::DisplayDirectX9::DrawElements(ePrimitiveType uPrimitiveType,VertexB
 	IDirect3DDevice9 *pDevice = m_pDirect3DDevice9;
 	pDevice->SetVertexDeclaration(pVertexBuffer->GetDX9VertexDescription());
 	pDevice->SetStreamSource(0,pVertexBuffer->GetDX9VertexBuffer(),0,pVertexBuffer->GetStride());
-	Word uCount = pVertexBuffer->GetArrayEntryCount();
+	uint_t uCount = pVertexBuffer->GetArrayEntryCount();
 	switch (uPrimitiveType) {
 	case PRIM_POINTS:
 	default:
@@ -2814,14 +2814,14 @@ void BURGER_API Burger::DisplayDirectX9::InitState(void)
 	
 ***************************************/
 
-Word BURGER_API Burger::DisplayDirectX9::GetAdapterOrdinalFromMonitor(HMONITOR__ *hMonitor,Word *pAdapterOrdinal)
+uint_t BURGER_API Burger::DisplayDirectX9::GetAdapterOrdinalFromMonitor(HMONITOR__ *hMonitor,uint_t *pAdapterOrdinal)
 {
 	UpdateEnumeration(FALSE);
 
 	const SimpleArray<AdapterInfo*>* pAdapterList = m_Enumerator.GetAdapterInfoList();
-	Word uAdapterOrdinal = 0;
-	Word uResult = static_cast<Word>(E_FAIL);
-	WordPtr uCount = pAdapterList->size();
+	uint_t uAdapterOrdinal = 0;
+	uint_t uResult = static_cast<uint_t>(E_FAIL);
+	uintptr_t uCount = pAdapterList->size();
 	if (uCount) {
 		AdapterInfo * const *ppAdapterInfo = pAdapterList->GetPtr();
 		do {
@@ -2856,7 +2856,7 @@ Word BURGER_API Burger::DisplayDirectX9::GetAdapterOrdinalFromMonitor(HMONITOR__
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayDirectX9::GetDesktopResolution(Word uAdapterOrdinal,Word *pWidth,Word *pHeight)
+uint_t BURGER_API Burger::DisplayDirectX9::GetDesktopResolution(uint_t uAdapterOrdinal,uint_t *pWidth,uint_t *pHeight)
 {
 	// Scan devices
 	UpdateEnumeration(FALSE);
@@ -2873,7 +2873,7 @@ Word BURGER_API Burger::DisplayDirectX9::GetDesktopResolution(Word uAdapterOrdin
 	DEVMODEA TempMode;
 	MemoryClear(&TempMode,sizeof(TempMode));
 	TempMode.dmSize = sizeof(TempMode);
-	Word uResult = 0;
+	uint_t uResult = 0;
 
 	if (!EnumDisplaySettingsA(TempDeviceName,ENUM_REGISTRY_SETTINGS,&TempMode)) {
 		// Failed!
@@ -2903,7 +2903,7 @@ Word BURGER_API Burger::DisplayDirectX9::GetDesktopResolution(Word uAdapterOrdin
 
 ***************************************/
 
-void BURGER_API Burger::DisplayDirectX9::UpdateEnumeration(Word bForce)
+void BURGER_API Burger::DisplayDirectX9::UpdateEnumeration(uint_t bForce)
 {
 	if (bForce || !m_Enumerator.HasEnumerated()) {
 		// Make sure the Direct3D9 instance was created
@@ -2952,14 +2952,14 @@ void BURGER_API Burger::DisplayDirectX9::UpdateBackBufferDesc(void)
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayDirectX9::ToggleFullScreen(void)
+uint_t BURGER_API Burger::DisplayDirectX9::ToggleFullScreen(void)
 {
 	// Copy the settings for modification
 	DeviceSettings_t NewSettings;
 	MemoryCopy(&NewSettings,&m_D3D9Settings,sizeof(NewSettings));
 
 	// Toggle full screen / windowed
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (NewSettings.m_bWindowed) {
 		D3DDISPLAYMODE DesktopMode;
 		HRESULT hr = m_pDirect3D9->GetAdapterDisplayMode(m_D3D9Settings.m_uAdapterOrdinal,&DesktopMode);
@@ -2969,7 +2969,7 @@ Word BURGER_API Burger::DisplayDirectX9::ToggleFullScreen(void)
 			NewSettings.m_uBackBufferHeight = DesktopMode.Height;
 			NewSettings.m_uBackBufferFormat = DesktopMode.Format;
 		} else {
-			uResult = static_cast<Word>(hr);
+			uResult = static_cast<uint_t>(hr);
 		}
 	} else {
 		// Get the window size
@@ -2990,7 +2990,7 @@ Word BURGER_API Burger::DisplayDirectX9::ToggleFullScreen(void)
 		uResult = ChangeDevice(&NewSettings,FALSE,FALSE);
 
 		// If uResult == E_ABORT, then the settings were rejected, set things back
-		if (uResult && (uResult != static_cast<Word>(E_ABORT))) {
+		if (uResult && (uResult != static_cast<uint_t>(E_ABORT))) {
 			// Failed creating device, try to switch back.
 			if (ChangeDevice(&BackupSettings,FALSE,FALSE)) {
 				// If this failed, then shutdown
@@ -3013,20 +3013,20 @@ Word BURGER_API Burger::DisplayDirectX9::ToggleFullScreen(void)
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayDirectX9::ToggleREF(void)
+uint_t BURGER_API Burger::DisplayDirectX9::ToggleREF(void)
 {
 	DeviceSettings_t NewSettings;
 	MemoryCopy(&NewSettings,&m_D3D9Settings,sizeof(NewSettings));
 
 	// Toggle between REF & HAL
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (NewSettings.m_uDeviceType == D3DDEVTYPE_HAL) {
 		NewSettings.m_uDeviceType = D3DDEVTYPE_REF;
 	} else if (NewSettings.m_uDeviceType == D3DDEVTYPE_REF) {
 		NewSettings.m_uDeviceType = D3DDEVTYPE_HAL;
 	} else {
 		// Not supported
-		uResult = static_cast<Word>(E_ABORT);
+		uResult = static_cast<uint_t>(E_ABORT);
 	}
 
 	if (!uResult) {
@@ -3044,7 +3044,7 @@ Word BURGER_API Burger::DisplayDirectX9::ToggleREF(void)
 			uResult = ChangeDevice(&NewSettings,FALSE,FALSE);
 
 			// If uResult == E_ABORT, then the settings were rejected, set things back
-			if (uResult && (uResult != static_cast<Word>(E_ABORT))) {
+			if (uResult && (uResult != static_cast<uint_t>(E_ABORT))) {
 				// Failed creating device, try to switch back.
 				if (ChangeDevice(&BackupSettings,FALSE,FALSE)) {
 					// If this failed, then shutdown
@@ -3078,8 +3078,8 @@ void Burger::DisplayDirectX9::CheckForWindowSizeChange(void)
 		GetClientRect(m_D3D9Settings.m_pDeviceWindow,&TheRect);
 
 		// Did it change?
-		if (static_cast<Word>(TheRect.right) != m_D3D9Settings.m_uBackBufferWidth ||
-			static_cast<Word>(TheRect.bottom) != m_D3D9Settings.m_uBackBufferHeight) {
+		if (static_cast<uint_t>(TheRect.right) != m_D3D9Settings.m_uBackBufferWidth ||
+			static_cast<uint_t>(TheRect.bottom) != m_D3D9Settings.m_uBackBufferHeight) {
 
 			// A new window size will require a new backbuffer size size
 			// Tell ChangeDevice and D3D to size according to the HWND's client rect
@@ -3112,7 +3112,7 @@ void Burger::DisplayDirectX9::CheckForWindowChangingMonitors(void)
 		HMONITOR hWindowMonitor = Windows::MonitorFromWindow(m_D3D9Settings.m_pDeviceWindow,MONITOR_DEFAULTTOPRIMARY);
 		if (hWindowMonitor != m_AdapterMonitor) {
 
-			Word uNewAdapterOrdinal;
+			uint_t uNewAdapterOrdinal;
 			if (!GetAdapterOrdinalFromMonitor(hWindowMonitor,&uNewAdapterOrdinal)) {
 				// Find the closest valid device settings with the new ordinal
 				DeviceSettings_t NewSettings;
@@ -3123,10 +3123,10 @@ void Burger::DisplayDirectX9::CheckForWindowChangingMonitors(void)
 
 					// Create a Direct3D device using the new device settings.
 					// If there is an existing device, then it will either reset or recreate the scene.
-					Word hr = ChangeDevice(&NewSettings,FALSE,FALSE);
+					uint_t hr = ChangeDevice(&NewSettings,FALSE,FALSE);
 
 					// If hr == E_ABORT, this means the app rejected the device settings in the ModifySettingsCallback
-					if (hr == static_cast<Word>(E_ABORT)) {
+					if (hr == static_cast<uint_t>(E_ABORT)) {
 						// Turn off this feature since it got rejected
 						m_bAutoChangeAdapter = FALSE;
 					} else if (hr) {
@@ -3152,8 +3152,8 @@ void Burger::DisplayDirectX9::CheckForWindowChangingMonitors(void)
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *pNewSettings,
-	Word bForceEnumeration,Word bClipWindowToSingleAdapter)
+uint_t BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *pNewSettings,
+	uint_t bForceEnumeration,uint_t bClipWindowToSingleAdapter)
 {
 	WINDOWPLACEMENT TempWindowPlacement;
 
@@ -3162,7 +3162,7 @@ Word BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *pN
 	MemoryCopy(&NewSettings,pNewSettings,sizeof(NewSettings));
 
 	// Look for the closest match (Which may modify the settings)
-	Word uResult = SnapDeviceSettingsToEnumDevice(&NewSettings,bForceEnumeration);
+	uint_t uResult = SnapDeviceSettingsToEnumDevice(&NewSettings,bForceEnumeration);
 	if (!uResult) {
 
 		// See if the application has installed a callback to reject devices based
@@ -3172,7 +3172,7 @@ Word BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *pN
 		if (pCallbackModifyDeviceSettings && !m_pDirect3DDevice9) {
 			if (!pCallbackModifyDeviceSettings(&NewSettings,m_pModifyDeviceSettingsData)) {
 				// Use E_ABORT as a signal of rejection
-				uResult = static_cast<Word>(E_ABORT);
+				uResult = static_cast<uint_t>(E_ABORT);
 			} else {
 				// Do any fix up needed.
 				uResult = SnapDeviceSettingsToEnumDevice(&NewSettings,FALSE);
@@ -3196,7 +3196,7 @@ Word BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *pN
 			m_bIgnoreSizeChange = TRUE;
 
 			// Take note if the backbuffer width & height are 0 now as they will change after m_pDirect3DDevice9->Reset()
-			Word bKeepCurrentWindowSize = FALSE;
+			uint_t bKeepCurrentWindowSize = FALSE;
 			if (!m_D3D9Settings.m_uBackBufferWidth &&
 				!m_D3D9Settings.m_uBackBufferHeight) {
 				bKeepCurrentWindowSize = TRUE;
@@ -3234,11 +3234,11 @@ Word BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *pN
 					pWindowPlacement->length = sizeof(WINDOWPLACEMENT);
 					GetWindowPlacement(m_pGameApp->GetWindow(),pWindowPlacement);
 
-					Word bIsTopmost = (GetWindowLongW(m_pGameApp->GetWindow(),GWL_EXSTYLE) & WS_EX_TOPMOST) != 0;
+					uint_t bIsTopmost = (GetWindowLongW(m_pGameApp->GetWindow(),GWL_EXSTYLE) & WS_EX_TOPMOST) != 0;
 					m_bTopmostWhileWindowed = bIsTopmost;
 					LONG uStyle = GetWindowLongW(m_pGameApp->GetWindow(),GWL_STYLE);
 					uStyle &= ~(WS_MAXIMIZE|WS_MINIMIZE);		// remove minimize/maximize style
-					m_uWindowedStyleAtModeChange = static_cast<Word>(uStyle);
+					m_uWindowedStyleAtModeChange = static_cast<uint_t>(uStyle);
 					if (BackupSettings.m_pDeviceWindow) {
 						m_uWindowBackBufferWidthAtModeChange = BackupSettings.m_uBackBufferWidth;
 						m_uWindowBackBufferHeightAtModeChange = BackupSettings.m_uBackBufferHeight;
@@ -3312,11 +3312,11 @@ Word BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *pN
 			// Check to see if the window needs to be resized.
 			// Handle cases where the window is minimized and maximized as well.
 
-			Word bNeedToResize = FALSE;
+			uint_t bNeedToResize = FALSE;
 			if (m_D3D9Settings.m_bWindowed &&		// only resize if in windowed mode
 				!bKeepCurrentWindowSize) {			// only resize if pp.BackbufferWidth/Height were not 0
-				Word uClientWidth;
-				Word uClientHeight;
+				uint_t uClientWidth;
+				uint_t uClientHeight;
 				if (IsIconic(m_pGameApp->GetWindow())) {
 					// Window is currently minimized. To tell if it needs to resize, 
 					// get the client rect of window when its restored the 
@@ -3333,8 +3333,8 @@ Word BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *pN
 						ShowWindow(m_pGameApp->GetWindow(),SW_RESTORE);
 						RECT TheClientRect;
 						GetClientRect(m_pGameApp->GetWindow(),&TheClientRect);
-						uClientWidth = static_cast<Word>(TheClientRect.right - TheClientRect.left);
-						uClientHeight = static_cast<Word>(TheClientRect.bottom - TheClientRect.top);
+						uClientWidth = static_cast<uint_t>(TheClientRect.right - TheClientRect.left);
+						uClientHeight = static_cast<uint_t>(TheClientRect.bottom - TheClientRect.top);
 						ShowWindow(m_pGameApp->GetWindow(),SW_MINIMIZE);
 					} else {
 						// Use wp.rcNormalPosition to get the client rect, but wp.rcNormalPosition 
@@ -3344,15 +3344,15 @@ Word BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *pN
 						AdjustWindowRectEx(&TheFrameRect,m_uWindowedStyleAtModeChange,m_pGameApp->GetMenu() != NULL,static_cast<DWORD>(GetWindowLongPtrW(m_pGameApp->GetWindow(),GWL_EXSTYLE)));
 						LONG iFrameWidth = TheFrameRect.right - TheFrameRect.left;
 						LONG iFrameHeight = TheFrameRect.bottom - TheFrameRect.top;
-						uClientWidth = static_cast<Word>(TempWindowPlacement.rcNormalPosition.right - TempWindowPlacement.rcNormalPosition.left - iFrameWidth);
-						uClientHeight =static_cast<Word>(TempWindowPlacement.rcNormalPosition.bottom - TempWindowPlacement.rcNormalPosition.top - iFrameHeight);
+						uClientWidth = static_cast<uint_t>(TempWindowPlacement.rcNormalPosition.right - TempWindowPlacement.rcNormalPosition.left - iFrameWidth);
+						uClientHeight =static_cast<uint_t>(TempWindowPlacement.rcNormalPosition.bottom - TempWindowPlacement.rcNormalPosition.top - iFrameHeight);
 					}
 				} else {
 					// Window is restored or maximized so just get its client rect
 					RECT rcClient;
 					GetClientRect(m_pGameApp->GetWindow(),&rcClient);
-					uClientWidth = static_cast<Word>(rcClient.right - rcClient.left);
-					uClientHeight = static_cast<Word>(rcClient.bottom - rcClient.top);
+					uClientWidth = static_cast<uint_t>(rcClient.right - rcClient.left);
+					uClientHeight = static_cast<uint_t>(rcClient.bottom - rcClient.top);
 				}
 
 				// Now that we know the client rect, compare it against the back buffer size
@@ -3482,8 +3482,8 @@ Word BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *pN
 				// will put a limit on the smallest/largest window size.
 				RECT rcClient;
 				GetClientRect(m_pGameApp->GetWindow(),&rcClient);
-				Word uClientWidth = static_cast<Word>(rcClient.right - rcClient.left);
-				Word uClientHeight = static_cast<Word>(rcClient.bottom - rcClient.top);
+				uint_t uClientWidth = static_cast<uint_t>(rcClient.right - rcClient.left);
+				uint_t uClientHeight = static_cast<uint_t>(rcClient.bottom - rcClient.top);
 
 				if ((uClientWidth != m_D3D9Settings.m_uBackBufferWidth) ||
 					(uClientHeight != m_D3D9Settings.m_uBackBufferHeight)) {
@@ -3536,7 +3536,7 @@ Word BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *pN
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayDirectX9::Create3DEnvironment(void)
+uint_t BURGER_API Burger::DisplayDirectX9::Create3DEnvironment(void)
 {
 	// Try to create the device with the chosen settings
 	D3DPRESENT_PARAMETERS NewDeviceSettings;
@@ -3637,7 +3637,7 @@ Word BURGER_API Burger::DisplayDirectX9::Create3DEnvironment(void)
 			}
 		}
 	}
-	return static_cast<Word>(hr);
+	return static_cast<uint_t>(hr);
 }
 
 
@@ -3655,7 +3655,7 @@ Word BURGER_API Burger::DisplayDirectX9::Create3DEnvironment(void)
 
 ***************************************/
 
-void BURGER_API Burger::DisplayDirectX9::Cleanup3DEnvironment(Word bClearSettings)
+void BURGER_API Burger::DisplayDirectX9::Cleanup3DEnvironment(uint_t bClearSettings)
 {
 	// Only do work if the device is present
 	if (m_pDirect3DDevice9) {
@@ -3713,7 +3713,7 @@ void BURGER_API Burger::DisplayDirectX9::Cleanup3DEnvironment(Word bClearSetting
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayDirectX9::Reset3DEnvironment(void)
+uint_t BURGER_API Burger::DisplayDirectX9::Reset3DEnvironment(void)
 {
 	// Issue any callbacks needed before reset
 	IssueDeviceLostCallback();
@@ -3747,7 +3747,7 @@ Word BURGER_API Burger::DisplayDirectX9::Reset3DEnvironment(void)
 		m_pDirect3DDevice9->GetRenderTarget(0,&m_pDefaultRenderTarget);
 		InitState();
 	}
-	return static_cast<Word>(hr);
+	return static_cast<uint_t>(hr);
 }
 
 /*! ************************************
@@ -3792,9 +3792,9 @@ void BURGER_API Burger::DisplayDirectX9::IssueDeviceLostCallback(void)
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayDirectX9::IssueDeviceResetCallback(void)
+uint_t BURGER_API Burger::DisplayDirectX9::IssueDeviceResetCallback(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	DeviceCreatedProc pCallbackDeviceReset = m_pDeviceResetFunc;
 	if (pCallbackDeviceReset) {
 		m_bInsideDeviceCallback = TRUE;
@@ -3818,7 +3818,7 @@ Word BURGER_API Burger::DisplayDirectX9::IssueDeviceResetCallback(void)
 
 void BURGER_API Burger::DisplayDirectX9::SetupCursor(void) const
 {
-	Word bIsWindowed = m_D3D9Settings.m_bWindowed;
+	uint_t bIsWindowed = m_D3D9Settings.m_bWindowed;
 	HWND pWindow = m_pGameApp->GetWindow();
 	// Show the cursor again if returning to full screen 
 	IDirect3DDevice9* pD3D9Device = m_pDirect3DDevice9;
@@ -3890,7 +3890,7 @@ void BURGER_API Burger::DisplayDirectX9::ReleaseRenderTargets(void)
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayDirectX9::SnapDeviceSettingsToEnumDevice(DeviceSettings_t *pDeviceSettings,Word bForceEnumeration)
+uint_t BURGER_API Burger::DisplayDirectX9::SnapDeviceSettingsToEnumDevice(DeviceSettings_t *pDeviceSettings,uint_t bForceEnumeration)
 {
 	// If this is in a VM, only allow window mode
 	if (GetSystemMetrics(SM_REMOTESESSION)) {
@@ -3906,10 +3906,10 @@ Word BURGER_API Burger::DisplayDirectX9::SnapDeviceSettingsToEnumDevice(DeviceSe
 
 	// Init to defaults
 	const BufferFormatGroup *pBestFormatGroup = NULL;
-	WordPtr uBestModeIndex = 0;
-	WordPtr uBestMSAAIndex = 0;
+	uintptr_t uBestModeIndex = 0;
+	uintptr_t uBestMSAAIndex = 0;
 
-	WordPtr uAdapterCount = pAdapterList->size();
+	uintptr_t uAdapterCount = pAdapterList->size();
 	if (uAdapterCount) {
 
 		// Rankings are always positive, so -1.0f is "Not initialized"
@@ -3924,7 +3924,7 @@ Word BURGER_API Burger::DisplayDirectX9::SnapDeviceSettingsToEnumDevice(DeviceSe
 			D3DDISPLAYMODE TheDesktopMode;
 			m_pDirect3D9->GetAdapterDisplayMode(pAdapterInfo->GetAdapterOrdinal(),&TheDesktopMode);
 
-			WordPtr uDeviceInfoCount = pAdapterInfo->GetDisplayInfoListSize();
+			uintptr_t uDeviceInfoCount = pAdapterInfo->GetDisplayInfoListSize();
 			if (uDeviceInfoCount) {
 				// Enum all the device types supported by this adapter to find the best device settings
 				DeviceInfo * const *ppDeviceInfo = pAdapterInfo->GetDisplayInfoList();
@@ -3932,7 +3932,7 @@ Word BURGER_API Burger::DisplayDirectX9::SnapDeviceSettingsToEnumDevice(DeviceSe
 					const DeviceInfo* pDeviceInfo = ppDeviceInfo[0];
 					++ppDeviceInfo;
 
-					WordPtr uBufferCount = pDeviceInfo->GetBufferListSize();
+					uintptr_t uBufferCount = pDeviceInfo->GetBufferListSize();
 					if (uBufferCount) {
 
 						// Enum all the device settings combinations. A device settings combination is 
@@ -3947,13 +3947,13 @@ Word BURGER_API Burger::DisplayDirectX9::SnapDeviceSettingsToEnumDevice(DeviceSe
 							// display mode format so skip any that don't match
 							
 							if (pBufferFormatGroup->IsWindowed() &&
-								((pBufferFormatGroup->GetAdapterFormat() != static_cast<Word>(TheDesktopMode.Format)))) {
+								((pBufferFormatGroup->GetAdapterFormat() != static_cast<uint_t>(TheDesktopMode.Format)))) {
 								continue;
 							}
 
 							// Skip any combo that doesn't meet the preserve match options
-							WordPtr uBestMode;
-							WordPtr uBestMSAA;
+							uintptr_t uBestMode;
+							uintptr_t uBestMSAA;
 
 							// Get a ranking number that describes how closely this device combo matches the optimal combo
 							float fCurRanking = pBufferFormatGroup->RankDevice(pDeviceSettings,&TheDesktopMode,&uBestMode,&uBestMSAA);
@@ -3975,7 +3975,7 @@ Word BURGER_API Burger::DisplayDirectX9::SnapDeviceSettingsToEnumDevice(DeviceSe
 
 	// If no best device combination was found then fail
 	if (!pBestFormatGroup) {
-		return static_cast<Word>(E_FAIL);
+		return static_cast<uint_t>(E_FAIL);
 	}
 
 	// Here we go! Update the settings to reflect the actual
@@ -4000,7 +4000,7 @@ Word BURGER_API Burger::DisplayDirectX9::SnapDeviceSettingsToEnumDevice(DeviceSe
 
 	// Anti-Aliasing settings
 	const BufferFormatGroup::MSQuality_t *pQuality = pBestFormatGroup->GetMultiSampleQualityList()+uBestMSAAIndex;
-	Word uMaxQuality = pQuality->m_uMaxQuality;
+	uint_t uMaxQuality = pQuality->m_uMaxQuality;
 	if (uMaxQuality) {
 		--uMaxQuality;
 	}
@@ -4204,11 +4204,11 @@ long BURGER_API Burger::SetDeviceCursor(IDirect3DDevice9* pDirect3DDevice9,HICON
 	\windowsonly
 	\param uD3DFORMAT D3DFORMAT value
 	\return Number of bits per pixel, 0 on error
-	\sa GetD3DFORMATAlphaChannelBits(Word), GetD3DFORMATDepthBits(Word) or GetD3DFORMATStencilBits(Word)
+	\sa GetD3DFORMATAlphaChannelBits(uint_t), GetD3DFORMATDepthBits(uint_t) or GetD3DFORMATStencilBits(uint_t)
 	
 ***************************************/
 
-Word BURGER_API Burger::GetD3DFORMATColorChannelBits(Word uD3DFORMAT)
+uint_t BURGER_API Burger::GetD3DFORMATColorChannelBits(uint_t uD3DFORMAT)
 {
 	switch(uD3DFORMAT) {
 
@@ -4256,11 +4256,11 @@ Word BURGER_API Burger::GetD3DFORMATColorChannelBits(Word uD3DFORMAT)
 	\windowsonly
 	\param uD3DFORMAT D3DFORMAT value
 	\return Number of bits for alpha in a pixel, 0 on error or no alpha
-	\sa GetD3DFORMATColorChannelBits(Word), GetD3DFORMATDepthBits(Word) or GetD3DFORMATStencilBits(Word)
+	\sa GetD3DFORMATColorChannelBits(uint_t), GetD3DFORMATDepthBits(uint_t) or GetD3DFORMATStencilBits(uint_t)
 	
 ***************************************/
 
-Word BURGER_API Burger::GetD3DFORMATAlphaChannelBits(Word uD3DFORMAT)
+uint_t BURGER_API Burger::GetD3DFORMATAlphaChannelBits(uint_t uD3DFORMAT)
 {
 	switch(uD3DFORMAT) {
 	case D3DFMT_A16B16G16R16:
@@ -4305,11 +4305,11 @@ Word BURGER_API Burger::GetD3DFORMATAlphaChannelBits(Word uD3DFORMAT)
 	\windowsonly
 	\param uD3DFORMAT D3DFORMAT value
 	\return Number of bits for depth in a pixel, 0 on error or no depth
-	\sa GetD3DFORMATColorChannelBits(Word), GetD3DFORMATAlphaChannelBits(Word) or GetD3DFORMATStencilBits(Word)
+	\sa GetD3DFORMATColorChannelBits(uint_t), GetD3DFORMATAlphaChannelBits(uint_t) or GetD3DFORMATStencilBits(uint_t)
 	
 ***************************************/
 
-Word BURGER_API Burger::GetD3DFORMATDepthBits(Word uD3DFORMAT)
+uint_t BURGER_API Burger::GetD3DFORMATDepthBits(uint_t uD3DFORMAT)
 {
 	switch(uD3DFORMAT) {
 	case D3DFMT_D32F_LOCKABLE:
@@ -4347,11 +4347,11 @@ Word BURGER_API Burger::GetD3DFORMATDepthBits(Word uD3DFORMAT)
 	\windowsonly
 	\param uD3DFORMAT D3DFORMAT value
 	\return Number of bits for stencil in a pixel, 0 on error or no stencil
-	\sa GetD3DFORMATColorChannelBits(Word), GetD3DFORMATAlphaChannelBits(Word) or GetD3DFORMATDepthBits(Word)
+	\sa GetD3DFORMATColorChannelBits(uint_t), GetD3DFORMATAlphaChannelBits(uint_t) or GetD3DFORMATDepthBits(uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::GetD3DFORMATStencilBits(Word uD3DFORMAT)
+uint_t BURGER_API Burger::GetD3DFORMATStencilBits(uint_t uD3DFORMAT)
 {
 	switch(uD3DFORMAT) {
 	case D3DFMT_D16_LOCKABLE:

@@ -1,14 +1,15 @@
 /***************************************
 
-	Position textured color shader
+    Position textured color shader
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #ifndef __BREFFECTPOSITIONTEXTURECOLOR_H__
@@ -56,17 +57,17 @@ class EffectPositionColorTexture : public Effect {
 
 protected:
 #if defined(BURGER_OPENGL) || defined(DOXYGEN)
-	Int m_iEffectMatrix;		///< (OpenGL only) Index for the Matrix
-	Int m_iEffectColor;			///< (OpenGL only) Index for the color adjustment
+	int_t m_iEffectMatrix;		///< (OpenGL only) Index for the Matrix
+	int_t m_iEffectColor;			///< (OpenGL only) Index for the color adjustment
 #endif
 
 public:
-	EffectPositionColorTexture(Display *pDisplay,const Word *pVertexMembers);
+	EffectPositionColorTexture(Display *pDisplay,const uint_t *pVertexMembers);
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	virtual void SetProjection(const Matrix4D_t *pMatrix) = 0;
 	virtual void SetColor(const Vector4D_t *pColor) = 0;
 #else
-	virtual Word CheckLoad(Display *pDisplay);
+	virtual uint_t CheckLoad(Display *pDisplay);
 	void BURGER_API SetProjection(const Matrix4D_t *pMatrix);
 	void BURGER_API SetColor(const Vector4D_t *pColor);
 #endif
@@ -77,8 +78,8 @@ class EffectPositionColorTextureDX9 : public EffectPositionColorTexture {
     BURGER_DISABLE_COPY(EffectPositionColorTextureDX9);
 	BURGER_RTTI_IN_CLASS();
 public:
-	EffectPositionColorTextureDX9(Display *pDisplay,const Word *pVertexMembers);
-	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	EffectPositionColorTextureDX9(Display *pDisplay,const uint_t *pVertexMembers);
+	uint_t CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
 	void Release(Display *pDisplay) BURGER_OVERRIDE;
 	void SetProjection(const Matrix4D_t *pMatrix) BURGER_OVERRIDE;
 	void SetColor(const Vector4D_t *pColor) BURGER_OVERRIDE;
@@ -88,8 +89,8 @@ class EffectPositionColorTextureOpenGL : public EffectPositionColorTexture {
     BURGER_DISABLE_COPY(EffectPositionColorTextureOpenGL);
 	BURGER_RTTI_IN_CLASS();
 public:
-	EffectPositionColorTextureOpenGL(Display *pDisplay,const Word *pVertexMembers);
-	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	EffectPositionColorTextureOpenGL(Display *pDisplay,const uint_t *pVertexMembers);
+	uint_t CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
 	void Release(Display *pDisplay) BURGER_OVERRIDE;
 	void SetProjection(const Matrix4D_t *pMatrix) BURGER_OVERRIDE;
 	void SetColor(const Vector4D_t *pColor) BURGER_OVERRIDE;

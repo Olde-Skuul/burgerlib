@@ -1,14 +1,15 @@
 /***************************************
 
-	Decompression manager version of Deflate
+    Decompression manager version of Deflate
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #ifndef __BRDECOMPRESSDEFLATE_H__
@@ -79,69 +80,69 @@ protected:
 	};
 
 	struct DeflateHuft_t {
-		Word8 m_bExtraOperation;	///< Number of extra bits or operation
-		Word8 m_bBitCount;			///< Number of bits in this code or subcode
-		Word16 m_uBase;				///< Literal, length base, distance base, or table offset
+		uint8_t m_bExtraOperation;	///< Number of extra bits or operation
+		uint8_t m_bBitCount;			///< Number of bits in this code or subcode
+		uint16_t m_uBase;				///< Literal, length base, distance base, or table offset
 	};
 
-	const Word8 *m_pInput;		///< Packed data pointer
-	Word8 *m_pOutput;			///< Output data pointer
-	const Word8 *m_pWindowRead;	///< Window read pointer
-	Word8 *m_pWindowWrite;		///< Window write pointer
+	const uint8_t *m_pInput;		///< Packed data pointer
+	uint8_t *m_pOutput;			///< Output data pointer
+	const uint8_t *m_pWindowRead;	///< Window read pointer
+	uint8_t *m_pWindowWrite;		///< Window write pointer
 	const DeflateHuft_t *m_pCodeTree;	///< Pointer into tree
 	const DeflateHuft_t *m_pCodeTreeLength;	///< Pointer to literal/length/eob tree
 	const DeflateHuft_t *m_pCodeTreeDistance;	///< Pointer distance tree
-	Word *m_pTreesLengths;			///< Pointer to bit lengths of codes
+	uint_t *m_pTreesLengths;			///< Pointer to bit lengths of codes
 	DeflateHuft_t *m_pTreesHuffman;	///< Pointer to bit length decoding tree
 
-	WordPtr m_uInputChunkLength;	///< Number of packed bytes remaining
-	WordPtr m_uOutputChunkLength;	///< Number of bytes in the output buffer
-	WordPtr m_uStoredBytesToCopy;	///< If STORED, bytes left to copy
+	uintptr_t m_uInputChunkLength;	///< Number of packed bytes remaining
+	uintptr_t m_uOutputChunkLength;	///< Number of bytes in the output buffer
+	uintptr_t m_uStoredBytesToCopy;	///< If STORED, bytes left to copy
 
 	eState m_eState;			///< State of the decompression
 	eBlockMode m_eBlockMode;	///< Current decompression block mode
 	eCodesMode m_eCodesMode;	///< Current inflate_codes mode
-	Word32 m_uChecksumOfChunk;	///< Computed checksum value of decompressed data
-	Word32 m_uChecksumInStream;	///< 32 bit literal pulled from the big endian data stream (Must match DecompressDeflate::m_uChecksumInStream)
-	Word32 m_uAlder32Checksum;	///< Checksum on output
-	Word32 m_uBitBucket;		///< Bit buffer
-	Word m_uCompressionMethod;	///< Compression method type
-	Word m_bLastBlock;			///< TRUE if this block is the last block
-	Word m_uBitCount;			///< Bits in bit buffer
-	Word m_uCodeLength;			///< Length in bits of the last code
-	Word m_uCodeTreeNeed;		///< Bits needed
-	Word m_uCodeLiteral;		///< Literal code fetched
-	Word m_uCodeCopyGet;		///< Bits to get for extra token
-	Word m_uCodeCopyDistance;	///< Distance back to copy from
-	Word m_uTreesTable;			///< Table lengths (14 bits)
-	Word m_uTreesIndex;			///< Index into blends (or border)
-	Word m_uTreesDepth;			///< Bit length tree depth
-	Word8 m_bCodeLengthBits;	///< Length tree bits decoded per branch
-	Word8 m_bCodeDistanceBits;	///< Distance tree bits decoder per branch
+	uint32_t m_uChecksumOfChunk;	///< Computed checksum value of decompressed data
+	uint32_t m_uChecksumInStream;	///< 32 bit literal pulled from the big endian data stream (Must match DecompressDeflate::m_uChecksumInStream)
+	uint32_t m_uAlder32Checksum;	///< Checksum on output
+	uint32_t m_uBitBucket;		///< Bit buffer
+	uint_t m_uCompressionMethod;	///< Compression method type
+	uint_t m_bLastBlock;			///< TRUE if this block is the last block
+	uint_t m_uBitCount;			///< Bits in bit buffer
+	uint_t m_uCodeLength;			///< Length in bits of the last code
+	uint_t m_uCodeTreeNeed;		///< Bits needed
+	uint_t m_uCodeLiteral;		///< Literal code fetched
+	uint_t m_uCodeCopyGet;		///< Bits to get for extra token
+	uint_t m_uCodeCopyDistance;	///< Distance back to copy from
+	uint_t m_uTreesTable;			///< Table lengths (14 bits)
+	uint_t m_uTreesIndex;			///< Index into blends (or border)
+	uint_t m_uTreesDepth;			///< Bit length tree depth
+	uint8_t m_bCodeLengthBits;	///< Length tree bits decoded per branch
+	uint8_t m_bCodeDistanceBits;	///< Distance tree bits decoder per branch
 
-	Word8 m_WindowBuffer[1<<MAX_WBITS];	///< Sliding window
+	uint8_t m_WindowBuffer[1<<MAX_WBITS];	///< Sliding window
 	DeflateHuft_t m_HuffmanTable[MAXTREEDYNAMICSIZE];	///< Single data chunk for tree space
 
 	static const DeflateHuft_t s_FixedTreeLiteral[];
 	static const DeflateHuft_t s_FixedTreeDistance[];
 
 	int Flush(int iErrorCode);
-	int Fast(Word uBitLength,Word uBitDistance,const DeflateHuft_t *pHuffmanLength,const DeflateHuft_t *pHuffmanDistance);
+	int Fast(uint_t uBitLength,uint_t uBitDistance,const DeflateHuft_t *pHuffmanLength,const DeflateHuft_t *pHuffmanDistance);
 	int ProcessCodes(int iErrorCode);
-	void CodesReset(Word bCodeLengthBits,Word bCodeDistanceBits,const DeflateHuft_t *pCodeTreeLength,const DeflateHuft_t *pCodeTreeDistance);
-	static int BuildHuffmanTrees(const Word *pSampleCounts,Word uNumberSamples,Word uMaxSample,const Word *pDefaultLengths,const Word *pDefaultBits,DeflateHuft_t **ppNewTree,Word *pNewTreeSize,DeflateHuft_t *pExistingTree,Word *pHuffmanCount,Word *pWorkArea);
-	static int TreesBits(const Word *pSampleCounts,Word *pNewTreeSize,DeflateHuft_t **ppNewTree,DeflateHuft_t *pExistingTree);
-	static int TreesDynamic(Word uNumberSamples,Word uNumberDistance,const Word *pSampleCounts,Word *pNewTreeSize,Word *pNewDistanceSize,DeflateHuft_t **ppNewTree,DeflateHuft_t **ppNewDistance,DeflateHuft_t *pExistingTree);
+	void CodesReset(uint_t bCodeLengthBits,uint_t bCodeDistanceBits,const DeflateHuft_t *pCodeTreeLength,const DeflateHuft_t *pCodeTreeDistance);
+	static int BuildHuffmanTrees(const uint_t *pSampleCounts,uint_t uNumberSamples,uint_t uMaxSample,const uint_t *pDefaultLengths,const uint_t *pDefaultBits,DeflateHuft_t **ppNewTree,uint_t *pNewTreeSize,DeflateHuft_t *pExistingTree,uint_t *pHuffmanCount,uint_t *pWorkArea);
+	static int TreesBits(const uint_t *pSampleCounts,uint_t *pNewTreeSize,DeflateHuft_t **ppNewTree,DeflateHuft_t *pExistingTree);
+	static int TreesDynamic(uint_t uNumberSamples,uint_t uNumberDistance,const uint_t *pSampleCounts,uint_t *pNewTreeSize,uint_t *pNewDistanceSize,DeflateHuft_t **ppNewTree,DeflateHuft_t **ppNewDistance,DeflateHuft_t *pExistingTree);
 	void BlocksReset(void);
 	int ProcessBlocks(int iErrorCode);
 public:
-	static const Word32 Signature = 0x5A4C4942;		///< 'ZLIB'
+	static const uint32_t Signature = 0x5A4C4942;		///< 'ZLIB'
 	DecompressDeflate();
 	virtual ~DecompressDeflate();
 	eError Reset(void) BURGER_OVERRIDE;
 	eError Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
 };
-extern Decompress::eError BURGER_API SimpleDecompressDeflate(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength);
+extern Decompress::eError BURGER_API SimpleDecompressDeflate(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength);
 }
 /* END */
 

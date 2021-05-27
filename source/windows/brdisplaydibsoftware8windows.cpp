@@ -68,9 +68,9 @@ Burger::DisplayDIBSoftware8::DisplayDIBSoftware8(Burger::GameApp *pGameApp) :
 	
 ***************************************/
 
-Word Burger::DisplayDIBSoftware8::InitContext()
+uint_t Burger::DisplayDIBSoftware8::InitContext()
 {
-	Word uResult = DisplayDIB::InitContext();
+	uint_t uResult = DisplayDIB::InitContext();
 	if (!uResult) {
 		m_uDepth = 8;
 		struct {
@@ -79,7 +79,7 @@ Word Burger::DisplayDIBSoftware8::InitContext()
 		} MyBitMapInfo;
 
 		// First 255 colors are black
-		Word j = 256-1;
+		uint_t j = 256-1;
 		RGBQUAD *pBitMapColors = MyBitMapInfo.h.bmiColors;
 		do {
 			pBitMapColors->rgbRed = 0;
@@ -119,7 +119,7 @@ Word Burger::DisplayDIBSoftware8::InitContext()
 		} WorkPalette;
 		WorkPalette.Header.palVersion = 0x0300;
 		WorkPalette.Header.palNumEntries = 256;
-		Word i = 256-1;
+		uint_t i = 256-1;
 		PALETTEENTRY *pPalEntry = WorkPalette.Header.palPalEntry;
 		do {
 			pPalEntry->peRed = 0;
@@ -178,9 +178,9 @@ void Burger::DisplayDIBSoftware8::PostEndScene(void)
 {
 	if (m_bPaletteDirty) {
 		if (m_pHPalette) {
-			const Word8* pPalette = m_Palette;
+			const uint8_t* pPalette = m_Palette;
 			PALETTEENTRY WinPal[256];
-			Word uTemp = 254;
+			uint_t uTemp = 254;
 			PALETTEENTRY *pWinPal = WinPal;
 			pWinPal->peRed = 0;
 			pWinPal->peGreen = 0;
@@ -209,7 +209,7 @@ void Burger::DisplayDIBSoftware8::PostEndScene(void)
 			uTemp = 256;
 			pWinPal = WinPal;
 			do {
-				Word8 Temp2 = pWinPal->peRed;
+				uint8_t Temp2 = pWinPal->peRed;
 				pWinPal->peRed = pWinPal->peBlue;
 				pWinPal->peBlue = Temp2;
 				++pWinPal;

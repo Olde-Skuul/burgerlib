@@ -30,7 +30,6 @@
 
 ***************************************/
 
-
 /*! ************************************
 
     \struct Burger::uint32_float_t
@@ -86,6 +85,16 @@
 
 /*! ************************************
 
+    \fn Burger::uint32_float_t::Get(void) const
+    \brief Accessor to load the 32 float
+
+    \return Floating point value
+    \sa GetWord(void) const
+
+***************************************/
+
+/*! ************************************
+
     \fn Burger::uint32_float_t::GetWord(void) const
     \brief Accessor to load the 32 bit value in binary
 
@@ -104,7 +113,6 @@
     \sa GetWord(void) const
 
 ***************************************/
-
 
 /*! ************************************
 
@@ -164,6 +172,16 @@
 
     \param dInput 64 bit floating point number to store in the union
     \sa uint64_double_t::operator double() const
+
+***************************************/
+
+/*! ************************************
+
+    \fn Burger::uint64_double_t::Get(void) const
+    \brief Accessor to load the 64 float
+
+    \return Floating point value
+    \sa GetWord(void) const
 
 ***************************************/
 

@@ -2,7 +2,7 @@
 
     String handlers for MacRomanUS support
 
-    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
     It is released under an MIT Open Source license. Please see LICENSE for
     license details. Yes, you can use it in a commercial title without paying
@@ -276,6 +276,152 @@ BURGER_ALIGN(const uint8_t, Burger::MacRomanUS::ToUTF8Table[128][4], 16) = {
 
 /*! ************************************
 
+    \var const uint16_t Burger::MacRomanUS::ToUTF16Table[128]
+    \brief Table to convert MacRomanUS to UTF16
+
+    Since no Unicode token is larger than 16 bits, an array of uint16_t values
+    holds the 128 high ascii codes for MacRomanUS converted to UTF16. All 128
+    codes are present in Unicode except for code 0xF0 which is the closed Apple
+    symbol.
+
+    The character map for MacRomanUS [looks like this. Click
+    here.](macromanus.htm)
+
+***************************************/
+
+BURGER_ALIGN(const uint16_t, Burger::MacRomanUS::ToUTF16Table[128], 16) = {
+    0x00C4, // 0x80
+    0x00C5, // 0x81
+    0x00C7, // 0x82
+    0x00C9, // 0x83
+    0x00D1, // 0x84
+    0x00D6, // 0x85
+    0x00DC, // 0x86
+    0x00E1, // 0x87
+    0x00E0, // 0x88
+    0x00E2, // 0x89
+    0x00E4, // 0x8A
+    0x00E3, // 0x8B
+    0x00E5, // 0x8C
+    0x00E7, // 0x8D
+    0x00E9, // 0x8E
+    0x00E8, // 0x8F
+    0x00EA, // 0x90
+    0x00EB, // 0x91
+    0x00ED, // 0x92
+    0x00EC, // 0x93
+    0x00EE, // 0x94
+    0x00EF, // 0x95
+    0x00F1, // 0x96
+    0x00F3, // 0x97
+    0x00F2, // 0x98
+    0x00F4, // 0x99
+    0x00F6, // 0x9A
+    0x00F5, // 0x9B
+    0x00FA, // 0x9C
+    0x00F9, // 0x9D
+    0x00FB, // 0x9E
+    0x00FC, // 0x9F
+    0x2020, // 0xA0
+    0x00B0, // 0xA1
+    0x00A2, // 0xA2
+    0x00A3, // 0xA3
+    0x00A7, // 0xA4
+    0x2022, // 0xA5
+    0x00B6, // 0xA6
+    0x00DF, // 0xA7
+    0x00AE, // 0xA8
+    0x00A9, // 0xA9
+    0x2122, // 0xAA
+    0x00B4, // 0xAB
+    0x00A8, // 0xAC
+    0x2260, // 0xAD
+    0x00C6, // 0xAE
+    0x00D8, // 0xAF
+    0x221E, // 0xB0
+    0x00B1, // 0xB1
+    0x2264, // 0xB2
+    0x2265, // 0xB3
+    0x00A5, // 0xB4
+    0x00B5, // 0xB5
+    0x2202, // 0xB6
+    0x2211, // 0xB7
+    0x220F, // 0xB8
+    0x03C0, // 0xB9
+    0x222B, // 0xBA
+    0x00AA, // 0xBB
+    0x00BA, // 0xBC
+    0x03A9, // 0xBD
+    0x00E6, // 0xBE
+    0x00F8, // 0xBF
+    0x00BF, // 0xC0
+    0x00A1, // 0xC1
+    0x00AC, // 0xC2
+    0x221A, // 0xC3
+    0x0192, // 0xC4
+    0x2248, // 0xC5
+    0x2206, // 0xC6
+    0x00AB, // 0xC7
+    0x00BB, // 0xC8
+    0x2026, // 0xC9
+    0x00A0, // 0xCA
+    0x00C0, // 0xCB
+    0x00C3, // 0xCC
+    0x00D5, // 0xCD
+    0x0152, // 0xCE
+    0x0153, // 0xCF
+    0x2013, // 0xD0
+    0x2014, // 0xD1
+    0x201C, // 0xD2
+    0x201D, // 0xD3
+    0x2018, // 0xD4
+    0x2019, // 0xD5
+    0x00F7, // 0xD6
+    0x25CA, // 0xD7
+    0x00FF, // 0xD8
+    0x0178, // 0xD9
+    0x2044, // 0xDA
+    0x20AC, // 0xDB
+    0x2039, // 0xDC
+    0x203A, // 0xDD
+    0xFB01, // 0xDE
+    0xFB02, // 0xDF
+    0x2021, // 0xE0
+    0x00B7, // 0xE1
+    0x201A, // 0xE2
+    0x201E, // 0xE3
+    0x2030, // 0xE4
+    0x00C2, // 0xE5
+    0x00CA, // 0xE6
+    0x00C1, // 0xE7
+    0x00CB, // 0xE8
+    0x00C8, // 0xE9
+    0x00CD, // 0xEA
+    0x00CE, // 0xEB
+    0x00CF, // 0xEC
+    0x00CC, // 0xED
+    0x00D3, // 0xEE
+    0x00D4, // 0xEF
+    0xF8FF, // 0xF0
+    0x00D2, // 0xF1
+    0x00DA, // 0xF2
+    0x00DB, // 0xF3
+    0x00D9, // 0xF4
+    0x0131, // 0xF5
+    0x02C6, // 0xF6
+    0x02DC, // 0xF7
+    0x00AF, // 0xF8
+    0x02D8, // 0xF9
+    0x02D9, // 0xFA
+    0x02DA, // 0xFB
+    0x00B8, // 0xFC
+    0x02DD, // 0xFD
+    0x02DB, // 0xFE
+    0x02C7  // 0xFF
+};
+
+/*! ************************************
+
     \brief Convert a single UTF8 stream character into a MacRomanUS 8 bit char.
 
     Take up 3 bytes from a UTF8 stream and return the unsigned 8 bit value of
@@ -306,13 +452,13 @@ uint_t BURGER_API Burger::MacRomanUS::FromUTF8(
     // Get a UTF-8 char
     const uint_t uFirst = reinterpret_cast<const uint8_t*>(pInput)[0];
     if (uFirst < 0x80U) {
-        return uFirst; // Easy!!! I like it!
+        // Easy!!! I like it!
+        return uFirst;
     }
     // Great, it's not low ASCII. Do it the hard way.
     uint_t uCounter = 128; // Number of attempts
 
     // Get the pointer to the translation table
-
     const uint8_t(*pTable)[4] = ToUTF8Table;
 
     // Cache the second char (The table is of 2 or 3 byte tokens only)
@@ -333,7 +479,8 @@ uint_t BURGER_API Burger::MacRomanUS::FromUTF8(
         }
         ++pTable; // Next 4 byte entry
     } while (--uCounter);
-    return static_cast<uint_t>(MacRomanUS::BAD); // Crud
+    // Crud
+    return BAD;
 }
 
 /*! ************************************
@@ -510,7 +657,7 @@ uint_t BURGER_API Burger::MacRomanUS::FromUTF8(char* pOutput,
                 do {
                     if ((uFirst == pTranslateTable2[0][0]) &&
                         (uSecond == pTranslateTable2[0][1])) {
-                        uint_t uTemp = pTranslateTable2[0][2];
+                        const uint_t uTemp = pTranslateTable2[0][2];
                         if (!uTemp) {
                             ++pInput; // Accept it
                             --uInputSize;

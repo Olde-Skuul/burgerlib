@@ -1,13 +1,14 @@
 /***************************************
 
-	Sound decompression classes
+    Sound decompression classes
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -133,7 +134,7 @@ Burger::DecompressAudio::DecompressAudio(SoundManager::eDataType uDataType) :
 
 /*! ************************************
 
-	\fn Word Burger::DecompressAudio::IsStereo(void)
+	\fn uint_t Burger::DecompressAudio::IsStereo(void)
 	\brief Obtain the stereo/mono state of the decompresser
 	
 	\return \ref TRUE if stereo data is being output
@@ -205,8 +206,8 @@ Burger::Decompress::eError Burger::DecompressUnsigned8BitAudio::Reset(void)
 
 Burger::Decompress::eError Burger::DecompressUnsigned8BitAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
-	// Which is smaller? Input or output?
-	WordPtr uCount = Min(uInputChunkLength,uOutputChunkLength);
+    // Which is smaller? Input or output?
+    uintptr_t uCount = Min(uInputChunkLength, uOutputChunkLength);
 
 	// Copy the data
 	MemoryCopy(pOutput,pInput,uCount);
@@ -315,8 +316,8 @@ Burger::Decompress::eError Burger::DecompressSigned8BitAudio::Reset(void)
 Burger::Decompress::eError Burger::DecompressSigned8BitAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 	// Which is smaller? Input or output?
-	WordPtr uCount = Min(uInputChunkLength,uOutputChunkLength);
-	SwapCharsToBytes(static_cast<Word8 *>(pOutput),static_cast<const Word8 *>(pInput),uCount);
+	uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
+	SwapCharsToBytes(static_cast<uint8_t *>(pOutput),static_cast<const uint8_t *>(pInput),uCount);
 
 	// Store the amount of data that was processed
 
@@ -429,15 +430,15 @@ Burger::Decompress::eError Burger::Decompress16BitBEAudio::Process(void *pOutput
 #if defined(BURGER_BIGENDIAN)
 
 	// Which is smaller? Input or output?
-	WordPtr uCount = Min(uInputChunkLength,uOutputChunkLength);
+	uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
 
 	//
 	// If there is no conversion, just upload the data as is.
 	//
 
 	MemoryCopy(pOutput,pInput,uCount);
-	WordPtr uInputConsumed = uCount;
-	WordPtr uOutputConsumed = uCount;
+	uintptr_t uInputConsumed = uCount;
+	uintptr_t uOutputConsumed = uCount;
 #else
 
 	//
@@ -453,7 +454,7 @@ Burger::Decompress::eError Burger::Decompress16BitBEAudio::Process(void *pOutput
 	//
 
 	eState uState = m_eState;
-	Word bAbort = FALSE;
+	uint_t bAbort = FALSE;
 	do {
 		switch (uState) {
 
@@ -464,27 +465,27 @@ Burger::Decompress::eError Burger::Decompress16BitBEAudio::Process(void *pOutput
 		case STATE_INIT:
 			{
 				// Copy the data while converting the endian
-				WordPtr uCount = Min(uInputChunkLength,uOutputChunkLength);
+				uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
 				uInputChunkLength -= uCount;
-				uOutputChunkLength -= uCount&(~static_cast<WordPtr>(1));
+				uOutputChunkLength -= uCount&(~static_cast<uintptr_t>(1));
 
-				WordPtr uLength = uCount>>1;
+				uintptr_t uLength = uCount>>1;
 				if (uLength) {
 					// Is it aligned?
-					if (!((reinterpret_cast<WordPtr>(pInput)|reinterpret_cast<WordPtr>(pOutput))&1)) {
-						ConvertEndian(static_cast<Word16 *>(pOutput),static_cast<const Word16 *>(pInput),uLength);
-						pInput = static_cast<const Word16 *>(pInput)+uLength;
-						pOutput = static_cast<Word16 *>(pOutput)+uLength;
+					if (!((reinterpret_cast<uintptr_t>(pInput)|reinterpret_cast<uintptr_t>(pOutput))&1)) {
+						ConvertEndian(static_cast<uint16_t *>(pOutput),static_cast<const uint16_t *>(pInput),uLength);
+						pInput = static_cast<const uint16_t *>(pInput)+uLength;
+						pOutput = static_cast<uint16_t *>(pOutput)+uLength;
 					} else {
 
 						// You monster.
 
 						do {
 							// Convert to endian with unaligned data
-							static_cast<Word8 *>(pOutput)[0] = static_cast<const Word8 *>(pInput)[1];
-							static_cast<Word8 *>(pOutput)[1] = static_cast<const Word8 *>(pInput)[0];
-							pInput = static_cast<const Word16 *>(pInput)+1;
-							pOutput = static_cast<Word16 *>(pOutput)+1;
+							static_cast<uint8_t *>(pOutput)[0] = static_cast<const uint8_t *>(pInput)[1];
+							static_cast<uint8_t *>(pOutput)[1] = static_cast<const uint8_t *>(pInput)[0];
+							pInput = static_cast<const uint16_t *>(pInput)+1;
+							pOutput = static_cast<uint16_t *>(pOutput)+1;
 						} while (--uLength);
 
 					}
@@ -495,8 +496,8 @@ Burger::Decompress::eError Burger::Decompress16BitBEAudio::Process(void *pOutput
 				//
 				if (uCount&1) {
 					// Put it in the cache and go into cache mode
-					m_Cache[1] = static_cast<const Word8 *>(pInput)[0];
-					pInput = static_cast<const Word8 *>(pInput)+1;
+					m_Cache[1] = static_cast<const uint8_t *>(pInput)[0];
+					pInput = static_cast<const uint8_t *>(pInput)+1;
 					uState = STATE_FILLINGCACHE;
 				}
 			}
@@ -512,20 +513,20 @@ Burger::Decompress::eError Burger::Decompress16BitBEAudio::Process(void *pOutput
 
 				// Output 1 or 2 bytes
 
-				WordPtr uCacheSize = m_uCacheSize;
-				WordPtr uSteps = Min(uOutputChunkLength,static_cast<WordPtr>(uCacheSize));
+				uintptr_t uCacheSize = m_uCacheSize;
+				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheSize));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;
 
 				// Start copying where it left off
-				const Word8 *pSrc = &m_Cache[sizeof(m_Cache)-uCacheSize];
+				const uint8_t *pSrc = &m_Cache[sizeof(m_Cache)-uCacheSize];
 
 				// Update the cache size
-				uCacheSize = static_cast<Word>(uCacheSize-uSteps);
+				uCacheSize = static_cast<uint_t>(uCacheSize-uSteps);
 				if (uCacheSize) {
 					// Number of bytes remaining in cache
-					m_uCacheSize = static_cast<Word>(uCacheSize);
+					m_uCacheSize = static_cast<uint_t>(uCacheSize);
 				} else {
 					// Cache will be empty, so switch to normal mode
 					uState = STATE_INIT;
@@ -535,9 +536,9 @@ Burger::Decompress::eError Burger::Decompress16BitBEAudio::Process(void *pOutput
 				// Copy out the cache data
 				//
 				do {
-					static_cast<Word8 *>(pOutput)[0] = pSrc[0];
+					static_cast<uint8_t *>(pOutput)[0] = pSrc[0];
 					++pSrc;
-					pOutput = static_cast<Word8 *>(pOutput)+1;
+					pOutput = static_cast<uint8_t *>(pOutput)+1;
 				} while (--uSteps);
 			} else {
 				bAbort = TRUE;
@@ -550,11 +551,11 @@ Burger::Decompress::eError Burger::Decompress16BitBEAudio::Process(void *pOutput
 		case STATE_FILLINGCACHE:
 			if (uInputChunkLength) {
 				// Fill in the missing byte (Endian swapped)
-				m_Cache[0] = static_cast<const Word8 *>(pInput)[0];
+				m_Cache[0] = static_cast<const uint8_t *>(pInput)[0];
 
 				// Consume the input byte
 
-				pInput = static_cast<const Word8 *>(pInput)+1;
+				pInput = static_cast<const uint8_t *>(pInput)+1;
 				--uInputChunkLength;
 
 				// Change the state to empty the cache
@@ -571,8 +572,8 @@ Burger::Decompress::eError Burger::Decompress16BitBEAudio::Process(void *pOutput
 	m_eState = uState;
 
 	// Return the number of bytes actually consumed
-	WordPtr uInputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pInput)-static_cast<const Word8 *>(pOldInput));
-	WordPtr uOutputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pOutput)-static_cast<const Word8 *>(pOldOutput));
+	uintptr_t uInputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pInput)-static_cast<const uint8_t *>(pOldInput));
+	uintptr_t uOutputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pOutput)-static_cast<const uint8_t *>(pOldOutput));
 #endif
 
 	// Store the amount of data that was processed
@@ -687,15 +688,15 @@ Burger::Decompress::eError Burger::Decompress16BitLEAudio::Process(void *pOutput
 #if !defined(BURGER_BIGENDIAN)
 
 	// Which is smaller? Input or output?
-	WordPtr uCount = Min(uInputChunkLength,uOutputChunkLength);
+	uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
 
 	//
 	// If there is no conversion, just upload the data as is.
 	//
 
 	MemoryCopy(pOutput,pInput,uCount);
-	WordPtr uInputConsumed = uCount;
-	WordPtr uOutputConsumed = uCount;
+	uintptr_t uInputConsumed = uCount;
+	uintptr_t uOutputConsumed = uCount;
 #else
 
 	//
@@ -711,7 +712,7 @@ Burger::Decompress::eError Burger::Decompress16BitLEAudio::Process(void *pOutput
 	//
 
 	eState uState = m_eState;
-	Word bAbort = FALSE;
+	uint_t bAbort = FALSE;
 	do {
 		switch (uState) {
 
@@ -722,18 +723,18 @@ Burger::Decompress::eError Burger::Decompress16BitLEAudio::Process(void *pOutput
 		case STATE_INIT:
 			{
 				// Copy the data while converting the endian
-				WordPtr uCount = Min(uInputChunkLength,uOutputChunkLength);
+				uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
 				uInputChunkLength -= uCount;
-				uOutputChunkLength -= uCount&(~static_cast<WordPtr>(1));
+				uOutputChunkLength -= uCount&(~static_cast<uintptr_t>(1));
 
-				WordPtr uLength = uCount>>1;
+				uintptr_t uLength = uCount>>1;
 				if (uLength) {
 					// Is it aligned?
-					if (!((reinterpret_cast<WordPtr>(pInput)|reinterpret_cast<WordPtr>(pOutput))&1)) {
+					if (!((reinterpret_cast<uintptr_t>(pInput)|reinterpret_cast<uintptr_t>(pOutput))&1)) {
 						// Convert to native endian quickly
-						ConvertEndian(static_cast<Word16 *>(pOutput),static_cast<const Word16 *>(pInput),uLength);
-						pInput = static_cast<const Word16 *>(pInput)+uLength;
-						pOutput = static_cast<Word16 *>(pOutput)+uLength;
+						ConvertEndian(static_cast<uint16_t *>(pOutput),static_cast<const uint16_t *>(pInput),uLength);
+						pInput = static_cast<const uint16_t *>(pInput)+uLength;
+						pOutput = static_cast<uint16_t *>(pOutput)+uLength;
 
 					} else {
 
@@ -741,10 +742,10 @@ Burger::Decompress::eError Burger::Decompress16BitLEAudio::Process(void *pOutput
 
 						do {
 							// Convert to endian with unaligned data
-							static_cast<Word8 *>(pOutput)[0] = static_cast<const Word8 *>(pInput)[1];
-							static_cast<Word8 *>(pOutput)[1] = static_cast<const Word8 *>(pInput)[0];
-							pInput = static_cast<const Word16 *>(pInput)+1;
-							pOutput = static_cast<Word16 *>(pOutput)+1;
+							static_cast<uint8_t *>(pOutput)[0] = static_cast<const uint8_t *>(pInput)[1];
+							static_cast<uint8_t *>(pOutput)[1] = static_cast<const uint8_t *>(pInput)[0];
+							pInput = static_cast<const uint16_t *>(pInput)+1;
+							pOutput = static_cast<uint16_t *>(pOutput)+1;
 						} while (--uLength);
 
 					}
@@ -755,8 +756,8 @@ Burger::Decompress::eError Burger::Decompress16BitLEAudio::Process(void *pOutput
 				//
 				if (uCount&1) {
 					// Put it in the cache and go into cache mode
-					m_Cache[1] = static_cast<const Word8 *>(pInput)[0];
-					pInput = static_cast<const Word8 *>(pInput)+1;
+					m_Cache[1] = static_cast<const uint8_t *>(pInput)[0];
+					pInput = static_cast<const uint8_t *>(pInput)+1;
 					uState = STATE_FILLINGCACHE;
 				}
 			}
@@ -772,20 +773,20 @@ Burger::Decompress::eError Burger::Decompress16BitLEAudio::Process(void *pOutput
 
 				// Output 1 or 2 bytes
 
-				WordPtr uCacheSize = m_uCacheSize;
-				WordPtr uSteps = Min(uOutputChunkLength,static_cast<WordPtr>(uCacheSize));
+				uintptr_t uCacheSize = m_uCacheSize;
+				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheSize));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;
 
 				// Start copying where it left off
-				const Word8 *pSrc = &m_Cache[sizeof(m_Cache)-uCacheSize];
+				const uint8_t *pSrc = &m_Cache[sizeof(m_Cache)-uCacheSize];
 
 				// Update the cache size
-				uCacheSize = static_cast<Word>(uCacheSize-uSteps);
+				uCacheSize = static_cast<uint_t>(uCacheSize-uSteps);
 				if (uCacheSize) {
 					// Number of bytes remaining in cache
-					m_uCacheSize = static_cast<Word>(uCacheSize);
+					m_uCacheSize = static_cast<uint_t>(uCacheSize);
 				} else {
 					// Cache will be empty, so switch to normal mode
 					uState = STATE_INIT;
@@ -795,9 +796,9 @@ Burger::Decompress::eError Burger::Decompress16BitLEAudio::Process(void *pOutput
 				// Copy out the cache data
 				//
 				do {
-					static_cast<Word8 *>(pOutput)[0] = pSrc[0];
+					static_cast<uint8_t *>(pOutput)[0] = pSrc[0];
 					++pSrc;
-					pOutput = static_cast<Word8 *>(pOutput)+1;
+					pOutput = static_cast<uint8_t *>(pOutput)+1;
 				} while (--uSteps);
 			} else {
 				bAbort = TRUE;
@@ -810,11 +811,11 @@ Burger::Decompress::eError Burger::Decompress16BitLEAudio::Process(void *pOutput
 		case STATE_FILLINGCACHE:
 			if (uInputChunkLength) {
 				// Fill in the missing byte (Endian swapped)
-				m_Cache[0] = static_cast<const Word8 *>(pInput)[0];
+				m_Cache[0] = static_cast<const uint8_t *>(pInput)[0];
 
 				// Consume the input byte
 
-				pInput = static_cast<const Word8 *>(pInput)+1;
+				pInput = static_cast<const uint8_t *>(pInput)+1;
 				--uInputChunkLength;
 
 				// Change the state to empty the cache
@@ -831,8 +832,8 @@ Burger::Decompress::eError Burger::Decompress16BitLEAudio::Process(void *pOutput
 	m_eState = uState;
 
 	// Return the number of bytes actually consumed
-	WordPtr uInputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pInput)-static_cast<const Word8 *>(pOldInput));
-	WordPtr uOutputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pOutput)-static_cast<const Word8 *>(pOldOutput));
+	uintptr_t uInputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pInput)-static_cast<const uint8_t *>(pOldInput));
+	uintptr_t uOutputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pOutput)-static_cast<const uint8_t *>(pOldOutput));
 #endif
 
 	// Store the amount of data that was processed
@@ -946,15 +947,15 @@ Burger::Decompress::eError Burger::Decompress32BitBEAudio::Process(void *pOutput
 #if defined(BURGER_BIGENDIAN)
 
 	// Which is smaller? Input or output?
-	WordPtr uCount = Min(uInputChunkLength,uOutputChunkLength);
+	uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
 
 	//
 	// If there is no conversion, just upload the data as is.
 	//
 
 	MemoryCopy(pOutput,pInput,uCount);
-	WordPtr uInputConsumed = uCount;
-	WordPtr uOutputConsumed = uCount;
+	uintptr_t uInputConsumed = uCount;
+	uintptr_t uOutputConsumed = uCount;
 #else
 
 	//
@@ -970,7 +971,7 @@ Burger::Decompress::eError Burger::Decompress32BitBEAudio::Process(void *pOutput
 	//
 
 	eState uState = m_eState;
-	Word bAbort = FALSE;
+	uint_t bAbort = FALSE;
 	do {
 		switch (uState) {
 
@@ -981,29 +982,29 @@ Burger::Decompress::eError Burger::Decompress32BitBEAudio::Process(void *pOutput
 		case STATE_INIT:
 			{
 				// Copy the data while converting the endian
-				WordPtr uCount = Min(uInputChunkLength,uOutputChunkLength);
-				WordPtr uLength = uCount&(~(3));
+				uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
+				uintptr_t uLength = uCount&(~(3));
 				if (uLength) {
 
 					uInputChunkLength -= uLength;
 					uOutputChunkLength -= uLength;
 					// Is it aligned?
-					if (!((reinterpret_cast<WordPtr>(pInput)|reinterpret_cast<WordPtr>(pOutput))&3)) {
-						ConvertEndian(static_cast<Word32 *>(pOutput),static_cast<const Word32 *>(pInput),uLength>>2U);
-						pInput = static_cast<const Word32 *>(pInput)+uLength;
-						pOutput = static_cast<Word32 *>(pOutput)+uLength;
+					if (!((reinterpret_cast<uintptr_t>(pInput)|reinterpret_cast<uintptr_t>(pOutput))&3)) {
+						ConvertEndian(static_cast<uint32_t *>(pOutput),static_cast<const uint32_t *>(pInput),uLength>>2U);
+						pInput = static_cast<const uint32_t *>(pInput)+uLength;
+						pOutput = static_cast<uint32_t *>(pOutput)+uLength;
 					} else {
 
 						// You monster.
 						uLength = uLength>>2U;
 						do {
 							// Convert to endian with unaligned data
-							static_cast<Word8 *>(pOutput)[0] = static_cast<const Word8 *>(pInput)[3];
-							static_cast<Word8 *>(pOutput)[1] = static_cast<const Word8 *>(pInput)[2];
-							static_cast<Word8 *>(pOutput)[2] = static_cast<const Word8 *>(pInput)[1];
-							static_cast<Word8 *>(pOutput)[3] = static_cast<const Word8 *>(pInput)[0];
-							pInput = static_cast<const Word32 *>(pInput)+1;
-							pOutput = static_cast<Word32 *>(pOutput)+1;
+							static_cast<uint8_t *>(pOutput)[0] = static_cast<const uint8_t *>(pInput)[3];
+							static_cast<uint8_t *>(pOutput)[1] = static_cast<const uint8_t *>(pInput)[2];
+							static_cast<uint8_t *>(pOutput)[2] = static_cast<const uint8_t *>(pInput)[1];
+							static_cast<uint8_t *>(pOutput)[3] = static_cast<const uint8_t *>(pInput)[0];
+							pInput = static_cast<const uint32_t *>(pInput)+1;
+							pOutput = static_cast<uint32_t *>(pOutput)+1;
 						} while (--uLength);
 					}
 				}
@@ -1029,28 +1030,28 @@ Burger::Decompress::eError Burger::Decompress32BitBEAudio::Process(void *pOutput
 			if (uInputChunkLength) {
 
 				// Get the number of bytes already obtained
-				WordPtr uCacheSize = m_uCacheCount;
+				uintptr_t uCacheSize = m_uCacheCount;
 
 				// How many is needed to fill
-				WordPtr uRemaining = sizeof(m_Cache)-uCacheSize;
+				uintptr_t uRemaining = sizeof(m_Cache)-uCacheSize;
 
 				// Number of bytes to process
-				WordPtr uChunk = Min(uRemaining,uInputChunkLength);
+				uintptr_t uChunk = Min(uRemaining,uInputChunkLength);
 
 				// Fill in the cache
 				MemoryCopy(&m_Cache[uCacheSize],pInput,uChunk);
 
 				// Consume the input bytes
 
-				pInput = static_cast<const Word8 *>(pInput)+uChunk;
+				pInput = static_cast<const uint8_t *>(pInput)+uChunk;
 				uInputChunkLength-=uChunk;
 
 				// Did the cache fill up?
 				uCacheSize += uChunk;
-				m_uCacheCount = static_cast<Word>(uCacheSize);
+				m_uCacheCount = static_cast<uint_t>(uCacheSize);
 				if (uCacheSize==sizeof(m_Cache)) {
 					// Perform the endian swap on the cache
-					SwapEndian::Fixup(static_cast<Word32 *>(static_cast<void *>(m_Cache)));
+					SwapEndian::Fixup(static_cast<uint32_t *>(static_cast<void *>(m_Cache)));
 					// Cache is full, send to processing
 					bAbort = FALSE;
 					uState = STATE_CACHEFULL;
@@ -1068,31 +1069,31 @@ Burger::Decompress::eError Burger::Decompress32BitBEAudio::Process(void *pOutput
 
 				// Output data from the cache
 
-				WordPtr uCacheCount = m_uCacheCount;
-				WordPtr uSteps = Min(uOutputChunkLength,static_cast<WordPtr>(uCacheCount));
+				uintptr_t uCacheCount = m_uCacheCount;
+				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheCount));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;
 
 				// Start copying where it left off
-				const Word8 *pInputChunk = &m_Cache[sizeof(m_Cache)-uCacheCount];
+				const uint8_t *pInputChunk = &m_Cache[sizeof(m_Cache)-uCacheCount];
 
 				// Update the cache size
-				uCacheCount = static_cast<Word>(uCacheCount-uSteps);
+				uCacheCount = static_cast<uint_t>(uCacheCount-uSteps);
 
 				//
 				// Copy out the cache data
 				//
 				do {
-					static_cast<Word8 *>(pOutput)[0] = pInputChunk[0];
+					static_cast<uint8_t *>(pOutput)[0] = pInputChunk[0];
 					++pInputChunk;
-					pOutput = static_cast<Word8 *>(pOutput)+1;
+					pOutput = static_cast<uint8_t *>(pOutput)+1;
 				} while (--uSteps);
 
 				// Data still in the cache?
 				if (uCacheCount) {
 					// Update and exit
-					m_uCacheCount = static_cast<Word>(uCacheCount);
+					m_uCacheCount = static_cast<uint_t>(uCacheCount);
 				} else {
 					// Cache is empty, so switch to the next state
 					uState = STATE_INIT;
@@ -1108,8 +1109,8 @@ Burger::Decompress::eError Burger::Decompress32BitBEAudio::Process(void *pOutput
 	m_eState = uState;
 
 	// Return the number of bytes actually consumed
-	WordPtr uInputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pInput)-static_cast<const Word8 *>(pOldInput));
-	WordPtr uOutputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pOutput)-static_cast<const Word8 *>(pOldOutput));
+	uintptr_t uInputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pInput)-static_cast<const uint8_t *>(pOldInput));
+	uintptr_t uOutputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pOutput)-static_cast<const uint8_t *>(pOldOutput));
 #endif
 
 	// Store the amount of data that was processed
@@ -1224,15 +1225,15 @@ Burger::Decompress::eError Burger::Decompress32BitLEAudio::Process(void *pOutput
 #if !defined(BURGER_BIGENDIAN)
 
 	// Which is smaller? Input or output?
-	WordPtr uCount = Min(uInputChunkLength,uOutputChunkLength);
+	uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
 
 	//
 	// If there is no conversion, just upload the data as is.
 	//
 
 	MemoryCopy(pOutput,pInput,uCount);
-	WordPtr uInputConsumed = uCount;
-	WordPtr uOutputConsumed = uCount;
+	uintptr_t uInputConsumed = uCount;
+	uintptr_t uOutputConsumed = uCount;
 #else
 
 	//
@@ -1248,7 +1249,7 @@ Burger::Decompress::eError Burger::Decompress32BitLEAudio::Process(void *pOutput
 	//
 
 	eState uState = m_eState;
-	Word bAbort = FALSE;
+	uint_t bAbort = FALSE;
 	do {
 		switch (uState) {
 
@@ -1259,29 +1260,29 @@ Burger::Decompress::eError Burger::Decompress32BitLEAudio::Process(void *pOutput
 		case STATE_INIT:
 			{
 				// Copy the data while converting the endian
-				WordPtr uCount = Min(uInputChunkLength,uOutputChunkLength);
-				WordPtr uLength = uCount&(~(3));
+				uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
+				uintptr_t uLength = uCount&(~(3));
 				if (uLength) {
 
 					uInputChunkLength -= uLength;
 					uOutputChunkLength -= uLength;
 					// Is it aligned?
-					if (!((reinterpret_cast<WordPtr>(pInput)|reinterpret_cast<WordPtr>(pOutput))&3)) {
-						ConvertEndian(static_cast<Word32 *>(pOutput),static_cast<const Word32 *>(pInput),uLength>>2U);
-						pInput = static_cast<const Word32 *>(pInput)+uLength;
-						pOutput = static_cast<Word32 *>(pOutput)+uLength;
+					if (!((reinterpret_cast<uintptr_t>(pInput)|reinterpret_cast<uintptr_t>(pOutput))&3)) {
+						ConvertEndian(static_cast<uint32_t *>(pOutput),static_cast<const uint32_t *>(pInput),uLength>>2U);
+						pInput = static_cast<const uint32_t *>(pInput)+uLength;
+						pOutput = static_cast<uint32_t *>(pOutput)+uLength;
 					} else {
 
 						// You monster.
 						uLength = uLength>>2U;
 						do {
 							// Convert to endian with unaligned data
-							static_cast<Word8 *>(pOutput)[0] = static_cast<const Word8 *>(pInput)[3];
-							static_cast<Word8 *>(pOutput)[1] = static_cast<const Word8 *>(pInput)[2];
-							static_cast<Word8 *>(pOutput)[2] = static_cast<const Word8 *>(pInput)[1];
-							static_cast<Word8 *>(pOutput)[3] = static_cast<const Word8 *>(pInput)[0];
-							pInput = static_cast<const Word32 *>(pInput)+1;
-							pOutput = static_cast<Word32 *>(pOutput)+1;
+							static_cast<uint8_t *>(pOutput)[0] = static_cast<const uint8_t *>(pInput)[3];
+							static_cast<uint8_t *>(pOutput)[1] = static_cast<const uint8_t *>(pInput)[2];
+							static_cast<uint8_t *>(pOutput)[2] = static_cast<const uint8_t *>(pInput)[1];
+							static_cast<uint8_t *>(pOutput)[3] = static_cast<const uint8_t *>(pInput)[0];
+							pInput = static_cast<const uint32_t *>(pInput)+1;
+							pOutput = static_cast<uint32_t *>(pOutput)+1;
 						} while (--uLength);
 					}
 				}
@@ -1307,28 +1308,28 @@ Burger::Decompress::eError Burger::Decompress32BitLEAudio::Process(void *pOutput
 			if (uInputChunkLength) {
 
 				// Get the number of bytes already obtained
-				WordPtr uCacheSize = m_uCacheCount;
+				uintptr_t uCacheSize = m_uCacheCount;
 
 				// How many is needed to fill
-				WordPtr uRemaining = sizeof(m_Cache)-uCacheSize;
+				uintptr_t uRemaining = sizeof(m_Cache)-uCacheSize;
 
 				// Number of bytes to process
-				WordPtr uChunk = Min(uRemaining,uInputChunkLength);
+				uintptr_t uChunk = Min(uRemaining,uInputChunkLength);
 
 				// Fill in the cache
 				MemoryCopy(&m_Cache[uCacheSize],pInput,uChunk);
 
 				// Consume the input bytes
 
-				pInput = static_cast<const Word8 *>(pInput)+uChunk;
+				pInput = static_cast<const uint8_t *>(pInput)+uChunk;
 				uInputChunkLength-=uChunk;
 
 				// Did the cache fill up?
 				uCacheSize += uChunk;
-				m_uCacheCount = static_cast<Word>(uCacheSize);
+				m_uCacheCount = static_cast<uint_t>(uCacheSize);
 				if (uCacheSize==sizeof(m_Cache)) {
 					// Perform the endian swap on the cache
-					SwapEndian::Fixup(static_cast<Word32 *>(static_cast<void *>(m_Cache)));
+					SwapEndian::Fixup(static_cast<uint32_t *>(static_cast<void *>(m_Cache)));
 					// Cache is full, send to processing
 					bAbort = FALSE;
 					uState = STATE_CACHEFULL;
@@ -1346,31 +1347,31 @@ Burger::Decompress::eError Burger::Decompress32BitLEAudio::Process(void *pOutput
 
 				// Output data from the cache
 
-				WordPtr uCacheCount = m_uCacheCount;
-				WordPtr uSteps = Min(uOutputChunkLength,static_cast<WordPtr>(uCacheCount));
+				uintptr_t uCacheCount = m_uCacheCount;
+				uintptr_t uSteps = Min(uOutputChunkLength,static_cast<uintptr_t>(uCacheCount));
 
 				// Mark the byte(s) as consumed
 				uOutputChunkLength -= uSteps;
 
 				// Start copying where it left off
-				const Word8 *pInputChunk = &m_Cache[sizeof(m_Cache)-uCacheCount];
+				const uint8_t *pInputChunk = &m_Cache[sizeof(m_Cache)-uCacheCount];
 
 				// Update the cache size
-				uCacheCount = static_cast<Word>(uCacheCount-uSteps);
+				uCacheCount = static_cast<uint_t>(uCacheCount-uSteps);
 
 				//
 				// Copy out the cache data
 				//
 				do {
-					static_cast<Word8 *>(pOutput)[0] = pInputChunk[0];
+					static_cast<uint8_t *>(pOutput)[0] = pInputChunk[0];
 					++pInputChunk;
-					pOutput = static_cast<Word8 *>(pOutput)+1;
+					pOutput = static_cast<uint8_t *>(pOutput)+1;
 				} while (--uSteps);
 
 				// Data still in the cache?
 				if (uCacheCount) {
 					// Update and exit
-					m_uCacheCount = static_cast<Word>(uCacheCount);
+					m_uCacheCount = static_cast<uint_t>(uCacheCount);
 				} else {
 					// Cache is empty, so switch to the next state
 					uState = STATE_INIT;
@@ -1386,8 +1387,8 @@ Burger::Decompress::eError Burger::Decompress32BitLEAudio::Process(void *pOutput
 	m_eState = uState;
 
 	// Return the number of bytes actually consumed
-	WordPtr uInputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pInput)-static_cast<const Word8 *>(pOldInput));
-	WordPtr uOutputConsumed = static_cast<WordPtr>(static_cast<const Word8 *>(pOutput)-static_cast<const Word8 *>(pOldOutput));
+	uintptr_t uInputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pInput)-static_cast<const uint8_t *>(pOldInput));
+	uintptr_t uOutputConsumed = static_cast<uintptr_t>(static_cast<const uint8_t *>(pOutput)-static_cast<const uint8_t *>(pOldOutput));
 #endif
 
 	// Store the amount of data that was processed

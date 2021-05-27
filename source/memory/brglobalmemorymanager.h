@@ -1,14 +1,14 @@
 /***************************************
 
-    Global Master Memory Manager
+	Global Master Memory Manager
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -29,38 +29,40 @@ namespace Burger {
 extern void* BURGER_API Alloc(uintptr_t uSize) BURGER_NOEXCEPT;
 extern void* BURGER_API AllocClear(uintptr_t uSize) BURGER_NOEXCEPT;
 extern void BURGER_API Free(const void* pInput) BURGER_NOEXCEPT;
-extern void* BURGER_API Realloc(const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT;
-extern void* BURGER_API AllocCopy(const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT;
+extern void* BURGER_API Realloc(
+	const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT;
+extern void* BURGER_API AllocCopy(
+	const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT;
 
 class GlobalMemoryManager {
 public:
-    static MemoryManager* BURGER_API Init(
-        MemoryManager* pInstance) BURGER_NOEXCEPT;
-    static void BURGER_API Shutdown(
-        MemoryManager* pPrevious = nullptr) BURGER_NOEXCEPT;
-    static BURGER_INLINE MemoryManager* GetInstance(void) BURGER_NOEXCEPT
-    {
-        return g_pInstance;
-    }
+	static MemoryManager* BURGER_API Init(
+		MemoryManager* pInstance) BURGER_NOEXCEPT;
+	static void BURGER_API Shutdown(
+		MemoryManager* pPrevious = nullptr) BURGER_NOEXCEPT;
+	static BURGER_INLINE MemoryManager* GetInstance(void) BURGER_NOEXCEPT
+	{
+		return g_pInstance;
+	}
 
 private:
-    /** Pointer to the currently active memory manager */
-    static MemoryManager* g_pInstance;
+	/** Pointer to the currently active memory manager */
+	static MemoryManager* g_pInstance;
 };
 
 template<class T>
 BURGER_INLINE T* New(void)
 {
-    return new (Burger::Alloc(sizeof(T))) T();
+	return new (Burger::Alloc(sizeof(T))) T();
 }
 
 template<class T>
 void BURGER_API Delete(const T* pInput)
 {
-    if (pInput) {
-        const_cast<T*>(pInput)->~T();
-        Free(pInput);
-    }
+	if (pInput) {
+		const_cast<T*>(pInput)->~T();
+		Free(pInput);
+	}
 }
 }
 

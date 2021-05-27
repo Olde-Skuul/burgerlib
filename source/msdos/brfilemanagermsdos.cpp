@@ -1,14 +1,15 @@
 /***************************************
 
-	File Manager Class
-	MSDOS Target version
+    File Manager Class
+    MSDOS Target version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -26,13 +27,13 @@
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::AreLongFilenamesAllowed(void)
+uint_t BURGER_API Burger::FileManager::AreLongFilenamesAllowed(void)
 {
-	Word uResult = g_pFileManager->m_bAllowed;
+	uint_t uResult = g_pFileManager->m_bAllowed;
 	if (!(uResult&0x80U)) {		// Did I check already?
 		uResult = 0x80U;		// Set the "I checked" flag
 		Regs16 Regs;
-		Word32 uSeg = GetRealBufferPtr();		// Get real memory buffer
+		uint32_t uSeg = GetRealBufferPtr();		// Get real memory buffer
  		if (uSeg) {
 			// Do a dos time to file time request
 			// If the command executes, then
@@ -41,15 +42,15 @@ Word BURGER_API Burger::FileManager::AreLongFilenamesAllowed(void)
 			Regs.bx = 0x0001;
 			Regs.cx = 0x3433;
 			Regs.dx = 0x3433;
-			Regs.es = static_cast<Word16>(uSeg>>16);		// Save the segment
-			Regs.di = static_cast<Word16>(uSeg);
+			Regs.es = static_cast<uint16_t>(uSeg>>16);		// Save the segment
+			Regs.di = static_cast<uint16_t>(uSeg);
 			Int86x(0x21,&Regs,&Regs);					// Call Win95 with an extended call
 			if (!(Regs.flags&1)) {
 				++uResult;								// Extended calls are present, long filenames are OK
 			}
 		}
 		// Store the result in the global so I don't have to do this again
-		g_pFileManager->m_bAllowed = static_cast<Word8>(uResult);
+		g_pFileManager->m_bAllowed = static_cast<uint8_t>(uResult);
 	}
 	return uResult&1U;		// Return the flag, True or false
 }
@@ -62,7 +63,7 @@ Word BURGER_API Burger::FileManager::AreLongFilenamesAllowed(void)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,Word uVolumeNum)
+uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum)
 {
 	if (uVolumeNum>=26) {		// Bad drive number!!
 		return File::OUTOFRANGE;
@@ -71,15 +72,15 @@ Word BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,Word uVolum
 	Regs16 Regs;				// Intel registers
 	Regs.ax = 0x2F00;			// Get DTA address
 	Int86x(0x21,&Regs,&Regs);	// Call DOS
-	Word16 OldOff = Regs.bx;	// Save the old DTA address for later restoration
-	Word16 OldSeg = Regs.es;
+	uint16_t OldOff = Regs.bx;	// Save the old DTA address for later restoration
+	uint16_t OldSeg = Regs.es;
 
-	Word32 uRealBuffer = GetRealBufferPtr();	// Get some real memory
+	uint32_t uRealBuffer = GetRealBufferPtr();	// Get some real memory
 	char *pReal = static_cast<char *>(RealToProtectedPtr(uRealBuffer));	// Convert to true pointer
 
 	Regs.ax = 0x1A00;			// Set the DTA address
-	Regs.dx = static_cast<Word16>(uRealBuffer);
-	Regs.ds = static_cast<Word16>(uRealBuffer>>16);
+	Regs.dx = static_cast<uint16_t>(uRealBuffer);
+	Regs.ds = static_cast<uint16_t>(uRealBuffer>>16);
 	Int86x(0x21,&Regs,&Regs);	// Call DOS
 
 	// Copy the search string for labels
@@ -89,8 +90,8 @@ Word BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,Word uVolum
 
 	Regs.ax = 0x4e00;		// Find first
 	Regs.cx = 0x0008;		// Only look for volume labels
-	Regs.dx = static_cast<Word16>(uRealBuffer+256);	// Pointer to search string
-	Regs.ds = static_cast<Word16>(uRealBuffer>>16);
+	Regs.dx = static_cast<uint16_t>(uRealBuffer+256);	// Pointer to search string
+	Regs.ds = static_cast<uint16_t>(uRealBuffer>>16);
 	Int86x(0x21,&Regs,&Regs);	// Call DOS
 	if (Regs.flags&1) {			// Error (No volume name)
 		pReal[30] = 0;
@@ -166,7 +167,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 ***************************************/
 
-Word32 DoWorkDOSMod(const char *pReferance);
+uint32_t DoWorkDOSMod(const char *pReferance);
 
 #pragma aux DoWorkDOSMod = \
 	"XOR ECX,ECX"		/* Assume bogus time */ \
@@ -192,9 +193,9 @@ Word32 DoWorkDOSMod(const char *pReferance);
 	modify [eax ebx ecx edx]	/* I blast these */ \
 	value [ecx]			/* Return in ECX */
 
-Word BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,TimeDate_t *pOutput)
+uint_t BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,TimeDate_t *pOutput)
 {
-	Word32 Temp;
+	uint32_t Temp;
 
 	if (AreLongFilenamesAllowed()) {		/* Win95? */
 		Regs16 MyRegs;
@@ -214,19 +215,19 @@ Word BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,Tim
 		if (MyRegs.flags&1) {			/* Error? */
 			goto FooBar;
 		}
-		Temp = (Word32)MyRegs.di;		/* Get the date and time */
+		Temp = (uint32_t)MyRegs.di;		/* Get the date and time */
 		Temp = (Temp<<16)|MyRegs.cx;
 #else
 		/* This works on all devices */
-		Word16 Ref;
+		uint16_t Ref;
 		MyRegs.ax = 0x716C;			/* Open with long filenames */
 		MyRegs.bx = 0x0000;			/* Read */
 		MyRegs.cx = 0x0000;
 		MyRegs.dx = 0x0001;			/* Open the file */
 		MyRegs.di = 0x0000;
 		Temp = GetRealBufferPtr();	/* Local buffer */
-		MyRegs.si = static_cast<Word16>(Temp);			/* Pass the filename buffer */
-		MyRegs.ds = static_cast<Word16>(Temp>>16);		/* Get the segment */
+		MyRegs.si = static_cast<uint16_t>(Temp);			/* Pass the filename buffer */
+		MyRegs.ds = static_cast<uint16_t>(Temp>>16);		/* Get the segment */
 		StringCopy(static_cast<char *>(GetRealBufferProtectedPtr()),pFileName->GetNative());
 		Int86x(0x21,&MyRegs,&MyRegs);	/* Call Win95 */
 		if (MyRegs.flags&1) {		/* Error? */
@@ -243,7 +244,7 @@ Word BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,Tim
 		if (Temp&1) {			/* Error getting file time? */
 			goto FooBar;
 		}
-		Temp = (Word32)MyRegs.dx;		/* Get the date and time */
+		Temp = (uint32_t)MyRegs.dx;		/* Get the date and time */
 		Temp = (Temp<<16)|MyRegs.cx;
 #endif
 	} else {
@@ -267,24 +268,24 @@ FooBar:
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDate_t *pOutput)
+uint_t BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDate_t *pOutput)
 {
-	Word32 Temp;
-	Word Result = FALSE;		/* If no dos support then don't return an error */
+	uint32_t Temp;
+	uint_t Result = FALSE;		/* If no dos support then don't return an error */
 	if (AreLongFilenamesAllowed()) {		/* Win95? */
 		Regs16 MyRegs;
 		StringCopy(static_cast<char *>(GetRealBufferProtectedPtr()),pFileName->GetNative());
 		MyRegs.ax = 0x7143;	/* Get file attributes */
 		MyRegs.bx = 8;		/* Get creation date/time */
 		Temp = GetRealBufferPtr();	/* Local buffer */
-		MyRegs.dx = static_cast<Word16>(Temp);		/* Pass the filename buffer */
-		MyRegs.ds = static_cast<Word16>(Temp>>16);	/* Get the segment */
+		MyRegs.dx = static_cast<uint16_t>(Temp);		/* Pass the filename buffer */
+		MyRegs.ds = static_cast<uint16_t>(Temp>>16);	/* Get the segment */
 		Int86x(0x21,&MyRegs,&MyRegs);
 		if (!(MyRegs.flags&1)) {
-			Temp = (Word32)MyRegs.di;		/* Get the date and time */
+			Temp = (uint32_t)MyRegs.di;		/* Get the date and time */
 			Temp = (Temp<<16)|MyRegs.cx;
 			pOutput->LoadMSDOS(Temp);
-			pOutput->m_usMilliseconds = (Word16)MyRegs.si;	/* Get milliseconds */
+			pOutput->m_usMilliseconds = (uint16_t)MyRegs.si;	/* Get milliseconds */
 			return FALSE;
 		}
 		Result = TRUE;		// Error condition
@@ -304,7 +305,7 @@ Word BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDat
 
 ***************************************/
 
-Word32 DoWorkDOSExist(const char *Referance);
+uint32_t DoWorkDOSExist(const char *Referance);
 
 #pragma aux DoWorkDOSExist = \
 	"MOV EAX,04300H"	/* Get file attributes */ \
@@ -316,15 +317,15 @@ Word32 DoWorkDOSExist(const char *Referance);
 	modify [eax ecx edx]	/* I blast these */ \
 	value [ecx]			/* Return in ECX */
 
-Word BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
 {
 	if (AreLongFilenamesAllowed()) {	/* Win95? */
 		Regs16 MyRegs;
 		MyRegs.ax = 0x7143;		/* Get file attributes */
 		MyRegs.bx = 0;			/* Get file attributes only */
-		Word32 Temp = GetRealBufferPtr();	/* Local buffer */
-		MyRegs.dx = static_cast<Word16>(Temp);			/* Pass the filename buffer */
-		MyRegs.ds = static_cast<Word16>(Temp>>16);		/* Get the segment */
+		uint32_t Temp = GetRealBufferPtr();	/* Local buffer */
+		MyRegs.dx = static_cast<uint16_t>(Temp);			/* Pass the filename buffer */
+		MyRegs.ds = static_cast<uint16_t>(Temp>>16);		/* Get the segment */
 		StringCopy(static_cast<char *>(GetRealBufferProtectedPtr()),pFileName->GetNative());
 		Int86x(0x21,&MyRegs,&MyRegs);	/* Call Win95 */
 		if (MyRegs.flags&1 || MyRegs.cx&0x18) {		/* Error? Or directory? */
@@ -344,18 +345,18 @@ Word BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
 {
 	Regs16 Regs;		// Used by DOS
 
-	Word LongOk = AreLongFilenamesAllowed();
-	Word32 RealBuffer = GetRealBufferPtr();	/* Get real memory */
+	uint_t LongOk = AreLongFilenamesAllowed();
+	uint32_t RealBuffer = GetRealBufferPtr();	/* Get real memory */
 	StringCopy(static_cast<char *>(RealToProtectedPtr(RealBuffer)),pFileName->GetNative());	// Copy path
 
 	if (LongOk) {
 		Regs.ax = 0x7141;		// Try it via windows
-		Regs.dx = static_cast<Word16>(RealBuffer);
-		Regs.ds = static_cast<Word16>(RealBuffer>>16);
+		Regs.dx = static_cast<uint16_t>(RealBuffer);
+		Regs.ds = static_cast<uint16_t>(RealBuffer>>16);
 		Regs.cx = 0;			// Normal file
 		Regs.si = 0;			// No wildcards are present
 		Int86x(0x21,&Regs,&Regs);	// Delete the file
@@ -364,8 +365,8 @@ Word BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
 		}
 	}
 	Regs.ax = 0x4100;			// Try it the DOS 5.0 way
-	Regs.dx = static_cast<Word16>(RealBuffer);
-	Regs.ds = static_cast<Word16>(RealBuffer>>16);
+	Regs.dx = static_cast<uint16_t>(RealBuffer);
+	Regs.ds = static_cast<uint16_t>(RealBuffer>>16);
 	Int86x(0x21,&Regs,&Regs);
 	if (Regs.flags&1) {		// Error?
 		return TRUE;		// Oh forget it!!!
@@ -380,31 +381,31 @@ Word BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::ChangeOSDirectory(Filename *pDirName)
+uint_t BURGER_API Burger::FileManager::ChangeOSDirectory(Filename *pDirName)
 {
 	Regs16 Regs;		// Used by DOS
 
 	// Flag for long filenames
-	Word LongOk = AreLongFilenamesAllowed();
-	Word32 RealBuffer = GetRealBufferPtr();	// Get real memory
+	uint_t LongOk = AreLongFilenamesAllowed();
+	uint32_t RealBuffer = GetRealBufferPtr();	// Get real memory
 	// Copy path
 	StringCopy(static_cast<char *>(RealToProtectedPtr(RealBuffer)),pDirName->GetNative());
 
 	if (LongOk) {					// Win95 is present?
 		Regs.ax = 0x713B;			// Try it via windows
-		Regs.dx = static_cast<Word16>(RealBuffer);
-		Regs.ds = static_cast<Word16>(RealBuffer>>16);
+		Regs.dx = static_cast<uint16_t>(RealBuffer);
+		Regs.ds = static_cast<uint16_t>(RealBuffer>>16);
 		Int86x(0x21,&Regs,&Regs);	// Change the directory
 		if (!(Regs.flags&1)) {		// Error?
 			return 0;
 		}
 	}
 	Regs.ax = 0x3B00;		// Try it the DOS 5.0 way
-	Regs.dx = static_cast<Word16>(RealBuffer);
-	Regs.ds = static_cast<Word16>(RealBuffer>>16);
+	Regs.dx = static_cast<uint16_t>(RealBuffer);
+	Regs.ds = static_cast<uint16_t>(RealBuffer>>16);
 	Int86x(0x21,&Regs,&Regs);
 	if (Regs.flags&1) {		// Error?
-		return (Word)-1;	// Oh forget it!!!
+		return (uint_t)-1;	// Oh forget it!!!
 	}
 	return 0;				// Success!!
 }
@@ -416,7 +417,7 @@ Word BURGER_API Burger::FileManager::ChangeOSDirectory(Filename *pDirName)
 
 ***************************************/
 
-Word DoWorkDOSCrDir(const char *Referance);
+uint_t DoWorkDOSCrDir(const char *Referance);
 
 #pragma aux DoWorkDOSCrDir = \
 	"MOV EAX,03900H"	/* Create directory */ \
@@ -439,14 +440,14 @@ Word DoWorkDOSCrDir(const char *Referance);
 	modify [eax ecx edx]	/* I blast these */ \
 	value [eax]			/* Return in EAX */
 
-static Word BURGER_API DirCreate(const char *pFileName)
+static uint_t BURGER_API DirCreate(const char *pFileName)
 {
 	if (Burger::FileManager::AreLongFilenamesAllowed()) {
 		Burger::Regs16 MyRegs;
 		MyRegs.ax = 0x7139;		/* Create long filename version */
-		Word32 Temp = GetRealBufferPtr();
-		MyRegs.dx = static_cast<Word16>(Temp);		/* Save the real memory pointer */
-		MyRegs.ds = static_cast<Word16>(Temp>>16);
+		uint32_t Temp = GetRealBufferPtr();
+		MyRegs.dx = static_cast<uint16_t>(Temp);		/* Save the real memory pointer */
+		MyRegs.ds = static_cast<uint16_t>(Temp>>16);
 		Burger::StringCopy(static_cast<char *>(GetRealBufferProtectedPtr()),pFileName);
 		Int86x(0x21,&MyRegs,&MyRegs);	/* Make the directory */
 		if (!(MyRegs.flags&1)) {
@@ -454,8 +455,8 @@ static Word BURGER_API DirCreate(const char *pFileName)
 		}
 		MyRegs.ax = 0x7143;
 		MyRegs.bx = 0;			/* Get attributes */
-		MyRegs.dx = static_cast<Word16>(Temp);
-		MyRegs.ds = static_cast<Word16>(Temp>>16);
+		MyRegs.dx = static_cast<uint16_t>(Temp);
+		MyRegs.ds = static_cast<uint16_t>(Temp>>16);
 		Int86x(0x21,&MyRegs,&MyRegs);
 		if (!(MyRegs.flags&1) && MyRegs.cx & 0x10) {	/* Directory here? */
 			return FALSE;		/* Directory already present */
@@ -465,7 +466,7 @@ static Word BURGER_API DirCreate(const char *pFileName)
 	return DoWorkDOSCrDir(pFileName);		/* Dos 5.0 or previous */
 }
 
-Word BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
 {
 	char *pPath = const_cast<char *>(pFileName->GetNative());
 	if (!DirCreate(pPath)) {		/* Easy way! */
@@ -481,7 +482,7 @@ Word BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
 			++WorkPtr;
 		}
 		char Old;		/* Marker for a filename */
-		Word Err;		/* Error code */
+		uint_t Err;		/* Error code */
 		do {
 			WorkPtr = StringCharacter(WorkPtr,'\\');		/* Skip to the next colon */
 			if (!WorkPtr) {			/* No colon found? */

@@ -64,7 +64,7 @@ static HRESULT __stdcall ModeCallBack(DDSURFACEDESC2 *pSurface,void *pInput)
 		Burger::Display::VideoMode_t Entry;		// Video mode found
 		Entry.m_uWidth = pSurface->dwWidth;		// Save the pixel width
 		Entry.m_uHeight = pSurface->dwHeight;
-		Word uFlags = Burger::Display::VideoMode_t::VIDEOMODE_HARDWARE;
+		uint_t uFlags = Burger::Display::VideoMode_t::VIDEOMODE_HARDWARE;
 
 		// Was there a refresh rate?
 		
@@ -82,7 +82,7 @@ static HRESULT __stdcall ModeCallBack(DDSURFACEDESC2 *pSurface,void *pInput)
 
 		// Test for 8 bit paletted format
 
-		Word uDepth = 0;
+		uint_t uDepth = 0;
 		if (pSurface->ddpfPixelFormat.dwFlags&DDPF_PALETTEINDEXED8) {
 			if (pSurface->ddpfPixelFormat.dwRGBBitCount==8) {
 				// 8 bit palette
@@ -153,7 +153,7 @@ static HRESULT __stdcall EnumerateVideoDevice(GUID *pGUID,char *pDescription,cha
 			Burger::MemoryCopy(&Entry.m_GUID,pGUID,sizeof(GUID));
 
 			// Set the device enumeration
-			Entry.m_uDevNumber = static_cast<Word>(pOutput->size());
+			Entry.m_uDevNumber = static_cast<uint_t>(pOutput->size());
 			Entry.m_DeviceName = pDescription;		// Copy the name of the video card
 
 			// Get the information for the monitor
@@ -198,7 +198,7 @@ static HRESULT __stdcall EnumerateVideoDevice(GUID *pGUID,char *pDescription,cha
 			}
 
 			// Iterate over the display modes
-			Word bFailed = FALSE;
+			uint_t bFailed = FALSE;
 			if (pDirectDraw7->EnumDisplayModes(DDEDM_REFRESHRATES,0,&Entry,ModeCallBack)!=DD_OK) {
 				// If refresh rates were not permitted, try again without them
 				if (pDirectDraw7->EnumDisplayModes(0,0,&Entry,ModeCallBack) != DD_OK) {	// Oh oh...
@@ -221,10 +221,10 @@ static HRESULT __stdcall EnumerateVideoDevice(GUID *pGUID,char *pDescription,cha
 // Get the list of video modes available
 //
 
-Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
+uint_t Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 {
 	pOutput->clear();
-	Word uResult = 10;
+	uint_t uResult = 10;
 	// Enumerate all devices
 	if (Windows::DirectDrawEnumerateExA(EnumerateVideoDevice,pOutput,DDENUM_ATTACHEDSECONDARYDEVICES|
 		DDENUM_DETACHEDSECONDARYDEVICES|DDENUM_NONDISPLAYDEVICES)==DD_OK) {
@@ -242,17 +242,17 @@ void BURGER_API Burger::Display::InitGlobals(void)
 	if (!g_Globals.m_bInitialized) {
 		// Get the main monitor device context
 		HDC hDC = GetDC(NULL);
-		g_Globals.m_uDefaultWidth = static_cast<Word>(GetDeviceCaps(hDC,HORZRES));
-		g_Globals.m_uDefaultHeight = static_cast<Word>(GetDeviceCaps(hDC,VERTRES));
+		g_Globals.m_uDefaultWidth = static_cast<uint_t>(GetDeviceCaps(hDC,HORZRES));
+		g_Globals.m_uDefaultHeight = static_cast<uint_t>(GetDeviceCaps(hDC,VERTRES));
 
 		// Get the bit depth
-		g_Globals.m_uDefaultDepth = static_cast<Word>(GetDeviceCaps(hDC,PLANES) * GetDeviceCaps(hDC,BITSPIXEL));
+		g_Globals.m_uDefaultDepth = static_cast<uint_t>(GetDeviceCaps(hDC,PLANES) * GetDeviceCaps(hDC,BITSPIXEL));
 
-		g_Globals.m_uDefaultHertz = static_cast<Word>(GetDeviceCaps(hDC,VREFRESH));
+		g_Globals.m_uDefaultHertz = static_cast<uint_t>(GetDeviceCaps(hDC,VREFRESH));
 
-		g_Globals.m_uDefaultTotalWidth = static_cast<Word>(GetSystemMetrics(SM_CXVIRTUALSCREEN)-GetSystemMetrics(SM_XVIRTUALSCREEN));
-		g_Globals.m_uDefaultTotalHeight = static_cast<Word>(GetSystemMetrics(SM_CYVIRTUALSCREEN)-GetSystemMetrics(SM_YVIRTUALSCREEN));
-		g_Globals.m_uDefaultMonitorCount = static_cast<Word>(GetSystemMetrics(SM_CMONITORS));
+		g_Globals.m_uDefaultTotalWidth = static_cast<uint_t>(GetSystemMetrics(SM_CXVIRTUALSCREEN)-GetSystemMetrics(SM_XVIRTUALSCREEN));
+		g_Globals.m_uDefaultTotalHeight = static_cast<uint_t>(GetSystemMetrics(SM_CYVIRTUALSCREEN)-GetSystemMetrics(SM_YVIRTUALSCREEN));
+		g_Globals.m_uDefaultMonitorCount = static_cast<uint_t>(GetSystemMetrics(SM_CMONITORS));
 		ReleaseDC(NULL,hDC);
 		g_Globals.m_bInitialized = TRUE;
 	}
@@ -287,11 +287,11 @@ void BURGER_API Burger::Display::InitGlobals(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Display::HandleMinMax(HWND__ *pWindow,WordPtr lParam)
+uint_t BURGER_API Burger::Display::HandleMinMax(HWND__ *pWindow,uintptr_t lParam)
 {
-	Word bResult = FALSE;
+	uint_t bResult = FALSE;
 	// If full screen or not allowed, disable
-	Word uFlags = m_uFlags;
+	uint_t uFlags = m_uFlags;
 
 	// Check if this resizing should be disabled
 	if ((uFlags & FULLSCREEN) || !(uFlags&ALLOWRESIZING)) {

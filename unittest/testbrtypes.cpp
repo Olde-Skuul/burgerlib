@@ -282,13 +282,13 @@ static uint_t BURGER_API TestStructureAlignment(uint_t uVerbose)
 
     //
     // Test for pointer alignment
-    // Alignment is to match the value found in sizeof(WordPtr)
+    // Alignment is to match the value found in sizeof(uintptr_t)
     // since pointers could be 4 or 8 bytes in size depending on CPU / platform
     //
 
     struct PointerAlign_t {
         int8_t m_0;    // Offset 0
-        int8_t* m_ptr; // Offset 4 or 8 (Align to WordPtr)
+        int8_t* m_ptr; // Offset 4 or 8 (Align to uintptr_t)
     };
 
     uTest = BURGER_OFFSETOF(PointerAlign_t, m_0) != 0;
@@ -296,11 +296,11 @@ static uint_t BURGER_API TestStructureAlignment(uint_t uVerbose)
     ReportFailure("BURGER_OFFSETOF(PointerAlign_t,m_0) is %u instead of 0.",
         uTest, static_cast<uint_t>(BURGER_OFFSETOF(PointerAlign_t, m_0)));
 
-    uTest = BURGER_OFFSETOF(PointerAlign_t, m_ptr) != sizeof(WordPtr);
+    uTest = BURGER_OFFSETOF(PointerAlign_t, m_ptr) != sizeof(uintptr_t);
     uFailure |= uTest;
     ReportFailure("BURGER_OFFSETOF(PointerAlign_t,m_ptr) is %u instead of %u.",
         uTest, static_cast<uint_t>(BURGER_OFFSETOF(PointerAlign_t, m_ptr)),
-        static_cast<uint_t>(sizeof(WordPtr)));
+        static_cast<uint_t>(sizeof(uintptr_t)));
 
 #if defined(BURGER_NO_ALIGN)
     Message("Compiler doesn't support per object alignment");

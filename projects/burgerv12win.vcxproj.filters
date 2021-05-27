@@ -31,9 +31,6 @@
     <ClInclude Include="..\source\audio\brmicrosoftadpcm.h">
       <Filter>source\audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\audio\brmp3.h">
-      <Filter>source\audio</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\audio\brsequencer.h">
       <Filter>source\audio</Filter>
     </ClInclude>
@@ -370,6 +367,9 @@
     <ClInclude Include="..\source\graphics\shadersopengl\generated\vsstaticpositiongl.h">
       <Filter>source\graphics\shadersopengl\generated</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\graphics\vulkan\brvulkanerrors.h">
+      <Filter>source\graphics\vulkan</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\input\brjoypad.h">
       <Filter>source\input</Filter>
     </ClInclude>
@@ -472,6 +472,9 @@
     <ClInclude Include="..\source\lowlevel\brstaticrtti.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brstructs.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtick.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -517,6 +520,9 @@
     <ClInclude Include="..\source\math\brfpinfo.h">
       <Filter>source\math</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\math\brfplargeint.h">
+      <Filter>source\math</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\math\brmatrix3d.h">
       <Filter>source\math</Filter>
     </ClInclude>
@@ -543,24 +549,6 @@
     </ClInclude>
     <ClInclude Include="..\source\memory\brmemorymanager.h">
       <Filter>source\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\network\brnetendpoint.h">
-      <Filter>source\network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\network\brnetendpointtcp.h">
-      <Filter>source\network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\network\brnetmanager.h">
-      <Filter>source\network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\network\brnetmodule.h">
-      <Filter>source\network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\network\brnetmoduletcp.h">
-      <Filter>source\network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\network\brnetplay.h">
-      <Filter>source\network</Filter>
     </ClInclude>
     <ClInclude Include="..\source\random\brmersennetwist.h">
       <Filter>source\random</Filter>
@@ -686,9 +674,6 @@
       <Filter>source\audio</Filter>
     </ClCompile>
     <ClCompile Include="..\source\audio\brmicrosoftadpcm.cpp">
-      <Filter>source\audio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\audio\brmp3.cpp">
       <Filter>source\audio</Filter>
     </ClCompile>
     <ClCompile Include="..\source\audio\brsequencer.cpp">
@@ -961,6 +946,9 @@
     <ClCompile Include="..\source\graphics\shaders\brshader2dcolorvertex.cpp">
       <Filter>source\graphics\shaders</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\graphics\vulkan\brvulkanerrors.cpp">
+      <Filter>source\graphics\vulkan</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\input\brjoypad.cpp">
       <Filter>source\input</Filter>
     </ClCompile>
@@ -1054,6 +1042,9 @@
     <ClCompile Include="..\source\lowlevel\brstaticrtti.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brstructs.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtick.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1090,6 +1081,9 @@
     <ClCompile Include="..\source\math\brfpinfo.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\math\brfplargeint.cpp">
+      <Filter>source\math</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\math\brmatrix3d.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
@@ -1119,24 +1113,6 @@
     </ClCompile>
     <ClCompile Include="..\source\memory\brmemorymanager.cpp">
       <Filter>source\memory</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\network\brnetendpoint.cpp">
-      <Filter>source\network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\network\brnetendpointtcp.cpp">
-      <Filter>source\network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\network\brnetmanager.cpp">
-      <Filter>source\network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\network\brnetmodule.cpp">
-      <Filter>source\network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\network\brnetmoduletcp.cpp">
-      <Filter>source\network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\network\brnetplay.cpp">
-      <Filter>source\network</Filter>
     </ClCompile>
     <ClCompile Include="..\source\random\brmersennetwist.cpp">
       <Filter>source\random</Filter>
@@ -1462,6 +1438,9 @@
     <Filter Include="source\graphics\shadersopengl\generated">
       <UniqueIdentifier>AFFCCB10-3370-38E1-998E-C4A3FC00B9FF</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\graphics\vulkan">
+      <UniqueIdentifier>30D3F3AB-A47B-37ED-8066-08E8A01743FB</UniqueIdentifier>
+    </Filter>
     <Filter Include="source\input">
       <UniqueIdentifier>B5B0D38A-7407-3377-AD5E-3C8BA4B55402</UniqueIdentifier>
     </Filter>
@@ -1473,9 +1452,6 @@
     </Filter>
     <Filter Include="source\memory">
       <UniqueIdentifier>1C2E7C82-9EBA-36F4-9DC9-D6B1D87AA601</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\network">
-      <UniqueIdentifier>80722A2C-F990-372C-94D6-414973DE51AF</UniqueIdentifier>
     </Filter>
     <Filter Include="source\random">
       <UniqueIdentifier>CC91BE24-1E72-3CFE-A19E-7ED534E11607</UniqueIdentifier>

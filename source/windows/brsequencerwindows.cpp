@@ -30,7 +30,7 @@
 #include <mmsystem.h>
 #include <dsound.h>
 
-Word BURGER_API Burger::Sequencer::PlatformInit(void)
+uint_t BURGER_API Burger::Sequencer::PlatformInit(void)
 {
 	m_hCallback = CreateThread(NULL,0,ThreadCallback,this,0,&m_uCallbackID);
 	HRESULT uResult = 10;
@@ -39,7 +39,7 @@ Word BURGER_API Burger::Sequencer::PlatformInit(void)
 		SetThreadPriority(m_hCallback,THREAD_PRIORITY_HIGHEST);
 
 		// Create the events for the 32 voices to track
-		Word i = 0;
+		uint_t i = 0;
 		do {
 			m_hEvents[i] = CreateEventW(NULL,FALSE,FALSE,NULL);
 			if (!m_hEvents[i]) {
@@ -104,7 +104,7 @@ Word BURGER_API Burger::Sequencer::PlatformInit(void)
 		}
 	}
 	// Return error if any
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /***************************************
@@ -140,7 +140,7 @@ void BURGER_API Burger::Sequencer::PlatformShutdown(void)
 	}
 
 	// Release all the pending thread events
-	Word i = cMaxEventCount;
+	uint_t i = cMaxEventCount;
 	void **pEvents = m_hEvents;
 	do {
 		if (pEvents[0]) {
@@ -162,7 +162,7 @@ unsigned long __stdcall Burger::Sequencer::ThreadCallback(void *pThis)
 {
 	MSG WindowsMessage;
 	Sequencer *pSequencer = static_cast<Sequencer*>(pThis);
-	Word bQuit = FALSE;
+	uint_t bQuit = FALSE;
 	do {
 		DWORD uResult = MsgWaitForMultipleObjects(cMaxEventCount,pSequencer->m_hEvents,FALSE,INFINITE,QS_ALLEVENTS);
 		if (uResult == (WAIT_OBJECT_0+cMaxEventCount)) {
@@ -176,7 +176,7 @@ unsigned long __stdcall Burger::Sequencer::ThreadCallback(void *pThis)
 			if (/* uResult >= WAIT_OBJECT_0 && */ uResult < (WAIT_OBJECT_0+cMaxEventCount)) {
 				// Is music playing now?
 
-				Word bSilence = TRUE;
+				uint_t bSilence = TRUE;
 				if (pSequencer->m_bSequencingInProgress) {
 					pSequencer->PerformSequencing();
 					if ((!pSequencer->m_pSongPackage) ||
@@ -187,7 +187,7 @@ unsigned long __stdcall Burger::Sequencer::ThreadCallback(void *pThis)
 				if (bSilence) {
 					ClearSoundData(pSequencer->m_pBuffer,pSequencer->m_uBufferSize,pSequencer->m_eOutputDataType);
 				}
-				Upload(pSequencer->m_pDirectSoundBuffer8,uResult*(pSequencer->m_uBufferSize),static_cast<const Word8*>(pSequencer->m_pBuffer),pSequencer->m_uBufferSize);
+				Upload(pSequencer->m_pDirectSoundBuffer8,uResult*(pSequencer->m_uBufferSize),static_cast<const uint8_t*>(pSequencer->m_pBuffer),pSequencer->m_uBufferSize);
 			}
 		}
 	} while (!bQuit);

@@ -81,7 +81,7 @@ typedef HRESULT(WINAPI* DirectDrawEnumerateExAPtr)(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectDrawCreate(
+uint_t BURGER_API Burger::Windows::DirectDrawCreate(
 	const GUID* pGuid, IDirectDraw** ppOutput, IUnknown* pOuter)
 {
 	// Clear in case of error
@@ -96,7 +96,7 @@ Word BURGER_API Burger::Windows::DirectDrawCreate(
 		uResult = static_cast<DirectDrawCreatePtr>(pDirectDrawCreate)(
 			const_cast<GUID*>(pGuid), ppOutput, pOuter);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -121,7 +121,7 @@ Word BURGER_API Burger::Windows::DirectDrawCreate(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectDrawCreateEx(
+uint_t BURGER_API Burger::Windows::DirectDrawCreateEx(
 	const GUID* pGuid, void** ppOutput, const GUID& rGUID, IUnknown* pOuter)
 {
 	// Clear in case of error
@@ -136,7 +136,7 @@ Word BURGER_API Burger::Windows::DirectDrawCreateEx(
 		uResult = static_cast<DirectDrawCreateExPtr>(pDirectDrawCreateEx)(
 			const_cast<GUID*>(pGuid), ppOutput, rGUID, pOuter);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -160,8 +160,8 @@ Word BURGER_API Burger::Windows::DirectDrawCreateEx(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectDrawCreateClipper(
-	Word32 uFlags, IDirectDrawClipper** ppOutput, IUnknown* pOuter)
+uint_t BURGER_API Burger::Windows::DirectDrawCreateClipper(
+	uint32_t uFlags, IDirectDrawClipper** ppOutput, IUnknown* pOuter)
 {
 	// Clear in case of error
 	if (ppOutput) {
@@ -176,7 +176,7 @@ Word BURGER_API Burger::Windows::DirectDrawCreateClipper(
 		uResult = static_cast<DirectDrawCreateClipperPtr>(
 			pDirectDrawCreateClipper)(uFlags, ppOutput, pOuter);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -200,7 +200,7 @@ Word BURGER_API Burger::Windows::DirectDrawCreateClipper(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectDrawEnumerateA(
+uint_t BURGER_API Burger::Windows::DirectDrawEnumerateA(
 	void* pCallback, void* pContext)
 {
 	// Get the function pointer
@@ -210,7 +210,7 @@ Word BURGER_API Burger::Windows::DirectDrawEnumerateA(
 		uResult = static_cast<DirectDrawEnumerateAPtr>(pDirectDrawEnumerateA)(
 			static_cast<LPDDENUMCALLBACKA>(pCallback), pContext);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -234,7 +234,7 @@ Word BURGER_API Burger::Windows::DirectDrawEnumerateA(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectDrawEnumerateW(
+uint_t BURGER_API Burger::Windows::DirectDrawEnumerateW(
 	void* pCallback, void* pContext)
 {
 	// Get the function pointer
@@ -244,7 +244,7 @@ Word BURGER_API Burger::Windows::DirectDrawEnumerateW(
 		uResult = static_cast<DirectDrawEnumerateWPtr>(pDirectDrawEnumerateW)(
 			static_cast<LPDDENUMCALLBACKW>(pCallback), pContext);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -271,8 +271,8 @@ Word BURGER_API Burger::Windows::DirectDrawEnumerateW(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectDrawEnumerateExA(
-	void* pCallback, void* pContext, Word32 uFlags)
+uint_t BURGER_API Burger::Windows::DirectDrawEnumerateExA(
+	void* pCallback, void* pContext, uint32_t uFlags)
 {
 	// Get the function pointer
 	void* pDirectDrawEnumerateExA =
@@ -283,7 +283,7 @@ Word BURGER_API Burger::Windows::DirectDrawEnumerateExA(
 			static_cast<DirectDrawEnumerateExAPtr>(pDirectDrawEnumerateExA)(
 				static_cast<LPDDENUMCALLBACKEXA>(pCallback), pContext, uFlags);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -313,8 +313,8 @@ Word BURGER_API Burger::Windows::DirectDrawEnumerateExA(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::DirectDrawEnumerateExW(
-	void* pCallback, void* pContext, Word32 uFlags)
+uint_t BURGER_API Burger::Windows::DirectDrawEnumerateExW(
+	void* pCallback, void* pContext, uint32_t uFlags)
 {
 	// Get the function pointer
 	void* pDirectDrawEnumerateExW =
@@ -325,7 +325,7 @@ Word BURGER_API Burger::Windows::DirectDrawEnumerateExW(
 			static_cast<DirectDrawEnumerateExWPtr>(pDirectDrawEnumerateExW)(
 				static_cast<LPDDENUMCALLBACKEXW>(pCallback), pContext, uFlags);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 #endif

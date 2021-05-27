@@ -1,13 +1,14 @@
 /***************************************
 
-	File Class
+    File Class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -45,7 +46,7 @@ public:
 		APPEND=0x02,		///< Open file with write access and set the mark at the end
 		READANDWRITE=0x3	///< Open file for read and write access
 	};
-	enum eError {
+	enum eErrorFile {
 		OKAY=0,				///< No error
 		NOT_IMPLEMENTED=1,	///< Requested task not available on this platform
 		IOERROR=2,			///< Device error
@@ -60,7 +61,7 @@ private:
 	Filename m_Filename;		///< Name of the file that was opened
 	Semaphore m_Semaphore;		///< Semaphore for syncing file operations
 #if defined(BURGER_MAC) || defined(DOXYGEN)
-	Word8 m_FSRef[80];			///< File reference (MacOS Only)
+	uint8_t m_FSRef[80];			///< File reference (MacOS Only)
 #endif
 
 public:
@@ -70,42 +71,42 @@ public:
 	~File();
 	static File * BURGER_API New(const char *pFileName,eFileAccess eAccess=READONLY);
 	static File * BURGER_API New(Filename *pFileName,eFileAccess eAccess=READONLY);
-	BURGER_INLINE Word IsOpened(void) const { return m_pFile!= nullptr; }
-	Burger::eError BURGER_API Open(const char *pFileName,eFileAccess eAccess=READONLY) BURGER_NOEXCEPT;
-    Burger::eError BURGER_API Open(Filename *pFileName,eFileAccess eAccess=READONLY) BURGER_NOEXCEPT;
-	Word BURGER_API OpenAsync(const char *pFileName,eFileAccess eAccess=READONLY);
-	Word BURGER_API OpenAsync(Filename *pFileName,eFileAccess eAccess=READONLY);
-	Word BURGER_API Close(void) BURGER_NOEXCEPT;
-	Word BURGER_API CloseAsync(void);
-	WordPtr BURGER_API GetSize(void);
-	WordPtr BURGER_API Read(void *pOutput,WordPtr uSize);
-	Word BURGER_API ReadAsync(void *pOutput,WordPtr uSize);
-	WordPtr BURGER_API Write(const void *pInput,WordPtr uSize) BURGER_NOEXCEPT;
-	WordPtr BURGER_API GetMark(void);
-	Word BURGER_API SetMark(WordPtr uMark);
-	Word BURGER_API SetMarkAtEOF(void);
-	Word BURGER_API GetModificationTime(TimeDate_t *pOutput);
-	Word BURGER_API GetCreationTime(TimeDate_t *pOutput);
-	Word BURGER_API SetModificationTime(const TimeDate_t *pInput);
-	Word BURGER_API SetCreationTime(const TimeDate_t *pInput);
+	BURGER_INLINE uint_t IsOpened(void) const BURGER_NOEXCEPT { return m_pFile!= nullptr; }
+	eError BURGER_API Open(const char *pFileName,eFileAccess eAccess=READONLY) BURGER_NOEXCEPT;
+    eError BURGER_API Open(Filename *pFileName,eFileAccess eAccess=READONLY) BURGER_NOEXCEPT;
+	uint_t BURGER_API OpenAsync(const char *pFileName,eFileAccess eAccess=READONLY);
+	uint_t BURGER_API OpenAsync(Filename *pFileName,eFileAccess eAccess=READONLY);
+	eError BURGER_API Close(void) BURGER_NOEXCEPT;
+	uint_t BURGER_API CloseAsync(void);
+	uintptr_t BURGER_API GetSize(void);
+	uintptr_t BURGER_API Read(void *pOutput,uintptr_t uSize);
+	uint_t BURGER_API ReadAsync(void *pOutput,uintptr_t uSize);
+	uintptr_t BURGER_API Write(const void *pInput,uintptr_t uSize) BURGER_NOEXCEPT;
+	uintptr_t BURGER_API GetMark(void);
+	eError BURGER_API SetMark(uintptr_t uMark);
+	uint_t BURGER_API SetMarkAtEOF(void);
+	uint_t BURGER_API GetModificationTime(TimeDate_t *pOutput);
+	uint_t BURGER_API GetCreationTime(TimeDate_t *pOutput);
+	uint_t BURGER_API SetModificationTime(const TimeDate_t *pInput);
+	uint_t BURGER_API SetCreationTime(const TimeDate_t *pInput);
 #if (defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-	Word SetAuxType(Word32 uAuxType);
-	Word SetFileType(Word32 uFileType);
-	Word32 GetAuxType(void);
-	Word32 GetFileType(void);
-	Word SetAuxAndFileType(Word32 uAuxType,Word32 uFileType);
+	uint_t SetAuxType(uint32_t uAuxType);
+	uint_t SetFileType(uint32_t uFileType);
+	uint32_t GetAuxType(void);
+	uint32_t GetFileType(void);
+	uint_t SetAuxAndFileType(uint32_t uAuxType,uint32_t uFileType);
 #else
-	BURGER_INLINE Word SetAuxType(Word32 /* uAuxType */) { return NOT_IMPLEMENTED; }
-	BURGER_INLINE Word SetFileType(Word32 /* uFileType */) { return NOT_IMPLEMENTED; }
-	BURGER_INLINE Word32 GetAuxType(void) const { return 0; }
-	BURGER_INLINE Word32 GetFileType(void) const { return 0; }
-	BURGER_INLINE Word SetAuxAndFileType(Word32 /* uAuxType */,Word32 /* uFileType */) { return NOT_IMPLEMENTED; }
+	BURGER_INLINE uint_t SetAuxType(uint32_t /* uAuxType */) { return NOT_IMPLEMENTED; }
+	BURGER_INLINE uint_t SetFileType(uint32_t /* uFileType */) { return NOT_IMPLEMENTED; }
+	BURGER_INLINE uint32_t GetAuxType(void) const { return 0; }
+	BURGER_INLINE uint32_t GetFileType(void) const { return 0; }
+	BURGER_INLINE uint_t SetAuxAndFileType(uint32_t /* uAuxType */,uint32_t /* uFileType */) { return NOT_IMPLEMENTED; }
 #endif
-	Word BURGER_API ReadCString(char *pOutput,WordPtr uLength);
-	Word32 BURGER_API ReadBigWord32(void);
-	Word16 BURGER_API ReadBigWord16(void);
-	Word32 BURGER_API ReadLittleWord32(void);
-	Word16 BURGER_API ReadLittleWord16(void);
+	uint_t BURGER_API ReadCString(char *pOutput,uintptr_t uLength);
+	uint32_t BURGER_API ReadBigWord32(void);
+	uint16_t BURGER_API ReadBigWord16(void);
+	uint32_t BURGER_API ReadLittleWord32(void);
+	uint16_t BURGER_API ReadLittleWord16(void);
 };
 }
 /* END */

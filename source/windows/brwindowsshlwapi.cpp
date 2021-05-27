@@ -67,15 +67,15 @@ typedef BOOL (STDAPICALLTYPE * PathSearchAndQualifyWPtr)(LPCWSTR pszPath,LPWSTR 
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::PathSearchAndQualifyA(
-	const char* pszPath,char* pszBuf,Word32 cchBuf)
+uint_t BURGER_API Burger::Windows::PathSearchAndQualifyA(
+	const char* pszPath,char* pszBuf,uint32_t cchBuf)
 {
 	void* pPathSearchAndQualifyA = LoadFunctionIndex(CALL_PathSearchAndQualifyA);
 	BOOL uResult = FALSE;
 	if (pPathSearchAndQualifyA) {
 		uResult = static_cast<PathSearchAndQualifyAPtr>(pPathSearchAndQualifyA)(pszPath,pszBuf,cchBuf);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -99,15 +99,15 @@ Word BURGER_API Burger::Windows::PathSearchAndQualifyA(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::PathSearchAndQualifyW(
-	const Word16* pszPath,Word16* pszBuf,Word32 cchBuf)
+uint_t BURGER_API Burger::Windows::PathSearchAndQualifyW(
+	const uint16_t* pszPath,uint16_t* pszBuf,uint32_t cchBuf)
 {
 	void* pPathSearchAndQualifyW = LoadFunctionIndex(CALL_PathSearchAndQualifyW);
 	BOOL uResult = FALSE;
 	if (pPathSearchAndQualifyW) {
 		uResult = static_cast<PathSearchAndQualifyWPtr>(pPathSearchAndQualifyW)(reinterpret_cast<LPCWSTR>(pszPath),reinterpret_cast<LPWSTR>(pszBuf),cchBuf);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 #endif

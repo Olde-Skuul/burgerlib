@@ -60,8 +60,8 @@ Burger::FloatTimer::FloatTimer() :
 void BURGER_API Burger::FloatTimer::SetBase(void)
 {
 	// Read the counter
-	Word64 uTemp = __mftb();
-	if (!static_cast<Word32>(uTemp)) {
+	uint64_t uTemp = __mftb();
+	if (!static_cast<uint32_t>(uTemp)) {
 		// Fix for a CPU error. If the lower 32 bits of the
 		// counter is zero, the upper 32 bits has a 4 cycle window
 		// where it's NOT properly incremented. By reading
@@ -96,8 +96,8 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 		// Windows XP or later will always succeed with this call
 
 		// Read the counter
-		Word64 uMark = __mftb();
-		if (!static_cast<Word32>(uMark)) {
+		uint64_t uMark = __mftb();
+		if (!static_cast<uint32_t>(uMark)) {
 			// Fix for a CPU error. If the lower 32 bits of the
 			// counter is zero, the upper 32 bits has a 4 cycle window
 			// where it's NOT properly incremented. By reading
@@ -108,7 +108,7 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 
 		// Get the elapsed time
 
-		Word64 uElapsedTime = uMark-m_uBaseTime;
+		uint64_t uElapsedTime = uMark-m_uBaseTime;
 		m_uBaseTime = uMark;
 
 		// Apply to seconds elapsed
@@ -130,7 +130,7 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Sleep(Word32 uMilliseconds)
+void BURGER_API Burger::Sleep(uint32_t uMilliseconds)
 {
 	// Sleep until the time expires or something
 	// occurs that could cause the main thread to take notice

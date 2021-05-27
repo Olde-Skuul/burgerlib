@@ -1,13 +1,14 @@
 /***************************************
 
-	Decompression manager version of RLE
+    Decompression manager version of RLE
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -79,7 +80,7 @@ Burger::Decompress::eError Burger::DecompressILBMRLE::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressILBMRLE::Process(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength)
+Burger::Decompress::eError Burger::DecompressILBMRLE::Process(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
 {
 	m_uInputLength = uInputChunkLength;
 	m_uOutputLength = uOutputChunkLength;
@@ -92,8 +93,8 @@ Burger::Decompress::eError Burger::DecompressILBMRLE::Process(void *pOutput,Word
 
 		// Restore the state variables
 
-		WordPtr uRunLength = m_uRun;	// Restore the run length
-		Word uFillTemp = m_uFill;		// Fill value
+		uintptr_t uRunLength = m_uRun;	// Restore the run length
+		uint_t uFillTemp = m_uFill;		// Fill value
 
 		if (MyState==STATE_FILLTOKEN) {
 			goto FillToken;
@@ -107,8 +108,8 @@ Burger::Decompress::eError Burger::DecompressILBMRLE::Process(void *pOutput,Word
 
 		do {
 			// Get the run token
-			uRunLength = static_cast<const Word8 *>(pInput)[0];
-			pInput = static_cast<const Word8 *>(pInput)+1;
+			uRunLength = static_cast<const uint8_t *>(pInput)[0];
+			pInput = static_cast<const uint8_t *>(pInput)+1;
 			--uInputChunkLength;
 
 			if (uRunLength>=128) {		// Run length?
@@ -121,8 +122,8 @@ Burger::Decompress::eError Burger::DecompressILBMRLE::Process(void *pOutput,Word
 				}
 FillToken:
 				// Filler value
-				uFillTemp = static_cast<const Word8 *>(pInput)[0];
-				pInput = static_cast<const Word8 *>(pInput)+1;
+				uFillTemp = static_cast<const uint8_t *>(pInput)[0];
+				pInput = static_cast<const uint8_t *>(pInput)+1;
 				--uInputChunkLength;
 
 				// Perform a memory fill
@@ -134,8 +135,8 @@ Fill:
 					m_uFill = uFillTemp;
 					if (uOutputChunkLength) {
 						do {
-							static_cast<Word8 *>(pOutput)[0] = static_cast<Word8>(uFillTemp);
-							pOutput = static_cast<Word8 *>(pOutput)+1;
+							static_cast<uint8_t *>(pOutput)[0] = static_cast<uint8_t>(uFillTemp);
+							pOutput = static_cast<uint8_t *>(pOutput)+1;
 						} while (--uOutputChunkLength);
 					}
 					break;
@@ -143,8 +144,8 @@ Fill:
 				// Perform the memory fill
 				uOutputChunkLength -= uRunLength;
 				do {
-					static_cast<Word8 *>(pOutput)[0] = static_cast<Word8>(uFillTemp);
-					pOutput = static_cast<Word8 *>(pOutput)+1;
+					static_cast<uint8_t *>(pOutput)[0] = static_cast<uint8_t>(uFillTemp);
+					pOutput = static_cast<uint8_t *>(pOutput)+1;
 				} while (--uRunLength);
 
 			} else {
@@ -155,7 +156,7 @@ Run:
 				if ((uOutputChunkLength<uRunLength) ||
 					(uInputChunkLength<uRunLength)) {
 					// Use the smaller run
-					WordPtr uMaxRun = uRunLength;
+					uintptr_t uMaxRun = uRunLength;
 					if (uInputChunkLength<uMaxRun) {
 						uMaxRun = uInputChunkLength;
 					}
@@ -169,9 +170,9 @@ Run:
 					m_uRun = uRunLength-uMaxRun;
 					if (uMaxRun) {
 						do {
-							static_cast<Word8 *>(pOutput)[0] = static_cast<const Word8 *>(pInput)[0];
-							pInput = static_cast<const Word8 *>(pInput)+1;
-							pOutput = static_cast<Word8 *>(pOutput)+1;
+							static_cast<uint8_t *>(pOutput)[0] = static_cast<const uint8_t *>(pInput)[0];
+							pInput = static_cast<const uint8_t *>(pInput)+1;
+							pOutput = static_cast<uint8_t *>(pOutput)+1;
 						} while (--uMaxRun);
 					}
 					break;
@@ -180,9 +181,9 @@ Run:
 				uOutputChunkLength -= uRunLength;
 				uInputChunkLength -= uRunLength;
 				do {
-					static_cast<Word8 *>(pOutput)[0] = static_cast<const Word8 *>(pInput)[0];
-					pInput = static_cast<const Word8 *>(pInput)+1;
-					pOutput = static_cast<Word8 *>(pOutput)+1;
+					static_cast<uint8_t *>(pOutput)[0] = static_cast<const uint8_t *>(pInput)[0];
+					pInput = static_cast<const uint8_t *>(pInput)+1;
+					pOutput = static_cast<uint8_t *>(pOutput)+1;
 				} while (--uRunLength);
 			}
 		} while (uInputChunkLength);	// More?
@@ -224,7 +225,7 @@ Run:
 
 ***************************************/
 
-Burger::Decompress::eError BURGER_API Burger::SimpleDecompressILBMRLE(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength)
+Burger::Decompress::eError BURGER_API Burger::SimpleDecompressILBMRLE(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
 {
 	Burger::DecompressILBMRLE Local;
 	Local.DecompressILBMRLE::Reset();

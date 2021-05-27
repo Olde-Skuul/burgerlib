@@ -1,13 +1,14 @@
 /***************************************
 
-	Linked list of data objects manager
+    Linked list of data objects manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -35,7 +36,7 @@ public:
 		DELETEOBJECT = 2	///< Delete this object and continue iterating
 	};
 
-	typedef Word (BURGER_API *ProcAction)(void *);
+	typedef uint_t (BURGER_API *ProcAction)(void *);
 
 	class Object : private DoublyLinkedList {
 	friend class LinkedListObjects;
@@ -68,22 +69,22 @@ public:
 
 private:
 	Object *m_pRoot;		///< Root linked list entry
-	Word m_uCount;			///< Number of objects in the list
+	uint_t m_uCount;			///< Number of objects in the list
 
 public:
 	LinkedListObjects() : m_pRoot(NULL),m_uCount(0) {}
 	~LinkedListObjects() { Destroy(); }
 	void Destroy(void);
-	BURGER_INLINE Word GetCount(void) const { return m_uCount; }
+	BURGER_INLINE uint_t GetCount(void) const { return m_uCount; }
 	BURGER_INLINE Object *GetFirst(void) const { return m_pRoot; }
 	Object *GetLast(void) const;
 	void *GetFirstData(void) const;
 	void *GetLastData(void) const;
-	void *GetData(Word uIndex) const;
-	Object *GetObject(Word uIndex) const;
+	void *GetData(uint_t uIndex) const;
+	Object *GetObject(uint_t uIndex) const;
 	Object *GetObject(void *pData) const;
 	Object *GetStringObject(const char *pString) const;
-	Word GetStringIndex(const char *pString) const;
+	uint_t GetStringIndex(const char *pString) const;
 	void DestroyObject(Object *pObject);
 	void AppendObject(Object *pObject);
 	void PrependObject(Object *pObject);

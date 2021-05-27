@@ -1,13 +1,14 @@
 /***************************************
 
-	File Class
+    File Class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -182,7 +183,7 @@ Burger::File * BURGER_API Burger::File::New(Filename *pFileName,eFileAccess eAcc
 
 /*! ************************************
 
-	\fn Word Burger::File::IsOpened(void) const
+	\fn uint_t Burger::File::IsOpened(void) const
 	\brief Return \ref TRUE if a file is open
 
 	Test if a file is currently open. If there's an active file, return
@@ -233,7 +234,7 @@ Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAc
 	};
 	Close();
 	FILE *fp = fopen(pFileName->GetNative(),g_OpenFlags[eAccess&3]);
-	Word uResult = FILENOTFOUND;
+	uint_t uResult = FILENOTFOUND;
 	if (fp) {
 		m_pFile = fp;
 		uResult = OKAY;
@@ -252,13 +253,13 @@ Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAc
 
 ***************************************/
 
-Word BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 {
-	Word uResult = OKAY;
+	eError uResult = kErrorNone;
 	FILE *fp = static_cast<FILE *>(m_pFile);
 	if (fp) {
 		if (fclose(static_cast<FILE *>(fp))) {
-			uResult = IOERROR;
+			uResult = kErrorIO;
 		}
 		m_pFile = NULL;
 	}
@@ -279,9 +280,9 @@ Word BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::GetSize(void)
+uintptr_t BURGER_API Burger::File::GetSize(void)
 {
-	WordPtr uSize = 0;
+	uintptr_t uSize = 0;
 	FILE *fp = static_cast<FILE *>(m_pFile);
 	if (fp) {
 		// Save the current file mark
@@ -289,7 +290,7 @@ WordPtr BURGER_API Burger::File::GetSize(void)
 		// Seek to the end of file
 		if (!fseek(fp,0,SEEK_END)) {
 			// Get the file size
-			uSize = static_cast<WordPtr>(ftell(fp));
+			uSize = static_cast<uintptr_t>(ftell(fp));
 		}
 		// If no error, restore the old file mark
 		if (Temp!=-1) {
@@ -309,13 +310,13 @@ WordPtr BURGER_API Burger::File::GetSize(void)
 	\param pOutput Pointer to a buffer of data to read from a file
 	\param uSize Number of bytes to read
 	\return Number of bytes read (Can be less than what was requested due to EOF or read errors)
-	\sa Write(const void *,WordPtr)
+	\sa Write(const void *,uintptr_t)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::Read(void *pOutput,WordPtr uSize)
+uintptr_t BURGER_API Burger::File::Read(void *pOutput,uintptr_t uSize)
 {
-	WordPtr uResult = 0;
+	uintptr_t uResult = 0;
 	if (uSize && pOutput) {
 		FILE *fp = static_cast<FILE *>(m_pFile);
 		if (fp) {
@@ -335,13 +336,13 @@ WordPtr BURGER_API Burger::File::Read(void *pOutput,WordPtr uSize)
 	\param pInput Pointer to a buffer of data to write to a file
 	\param uSize Number of bytes to write
 	\return Number of bytes written (Can be less than what was requested due to EOF or write errors)
-	\sa Read(void *,WordPtr)
+	\sa Read(void *,uintptr_t)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::Write(const void *pInput,WordPtr uSize) BURGER_NOEXCEPT
+uintptr_t BURGER_API Burger::File::Write(const void *pInput,uintptr_t uSize) BURGER_NOEXCEPT
 {
-	WordPtr uResult = 0;
+	uintptr_t uResult = 0;
 	if (uSize && pInput) {
 		FILE *fp = static_cast<FILE *>(m_pFile);
 		if (fp) {
@@ -359,20 +360,20 @@ WordPtr BURGER_API Burger::File::Write(const void *pInput,WordPtr uSize) BURGER_
 	of the file mark for future reads or writes.
 
 	\return Current file mark or zero if an error occurred
-	\sa Write(const void *,WordPtr)
+	\sa Write(const void *,uintptr_t)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::File::GetMark(void)
+uintptr_t BURGER_API Burger::File::GetMark(void)
 {
-	WordPtr uMark = 0;
+	uintptr_t uMark = 0;
 	FILE *fp = static_cast<FILE *>(m_pFile);
 	if (fp) {
 		// Save the current file mark
 		long Temp = ftell(fp);
 		// If no error, restore the old file mark
 		if (Temp!=-1) {
-			uMark = static_cast<WordPtr>(Temp);
+			uMark = static_cast<uintptr_t>(Temp);
 		}
 	}
 	return uMark;
@@ -390,14 +391,16 @@ WordPtr BURGER_API Burger::File::GetMark(void)
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetMark(WordPtr uMark)
+Burger::eError BURGER_API Burger::File::SetMark(uintptr_t uMark)
 {
-	Word uResult = INVALID_MARK;
+	eError uResult = kErrorNotInitialized;
 	FILE *fp = static_cast<FILE *>(m_pFile);
 	if (fp) {
 		// Seek to the end of file
 		if (!fseek(fp,static_cast<long>(uMark),SEEK_SET)) {
-			uResult = OKAY;
+			uResult = kErrorNone;
+		} else {
+			uResult = kErrorOutOfBounds;
 		}
 	}
 	return uResult;
@@ -414,9 +417,9 @@ Word BURGER_API Burger::File::SetMark(WordPtr uMark)
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetMarkAtEOF(void)
+uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 {
-	Word uResult = INVALID_MARK;
+	uint_t uResult = INVALID_MARK;
 	FILE *fp = static_cast<FILE *>(m_pFile);
 	if (fp) {
 		if (!fseek(fp,0,SEEK_END)) {
@@ -439,7 +442,7 @@ Word BURGER_API Burger::File::SetMarkAtEOF(void)
 
 ***************************************/
 
-Word BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
+uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 {
 	pOutput->Clear();
 	return NOT_IMPLEMENTED;
@@ -458,7 +461,7 @@ Word BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 
 ***************************************/
 
-Word BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
+uint_t BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 {
 	pOutput->Clear();
 	return NOT_IMPLEMENTED;
@@ -477,7 +480,7 @@ Word BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetModificationTime(const TimeDate_t * /* pInput */)
+uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t * /* pInput */)
 {
 	return NOT_IMPLEMENTED;
 }
@@ -495,33 +498,33 @@ Word BURGER_API Burger::File::SetModificationTime(const TimeDate_t * /* pInput *
 
 ***************************************/
 
-Word BURGER_API Burger::File::SetCreationTime(const TimeDate_t * /* pInput */)
+uint_t BURGER_API Burger::File::SetCreationTime(const TimeDate_t * /* pInput */)
 {
 	return NOT_IMPLEMENTED;
 }
 #endif
 
-Word BURGER_API Burger::File::OpenAsync(const char *pFileName,eFileAccess eAccess)
+uint_t BURGER_API Burger::File::OpenAsync(const char *pFileName,eFileAccess eAccess)
 {
 	m_Filename.Set(pFileName);
 	FileManager::g_pFileManager->AddQueue(this,FileManager::IOCOMMAND_OPEN,NULL,eAccess);
 	return 0;
 }
 
-Word BURGER_API Burger::File::OpenAsync(Filename *pFileName,eFileAccess eAccess)
+uint_t BURGER_API Burger::File::OpenAsync(Filename *pFileName,eFileAccess eAccess)
 {
 	m_Filename = pFileName[0];
 	FileManager::g_pFileManager->AddQueue(this,FileManager::IOCOMMAND_OPEN,NULL,eAccess);
 	return 0;
 }
 
-Word BURGER_API Burger::File::CloseAsync(void)
+uint_t BURGER_API Burger::File::CloseAsync(void)
 {
 	FileManager::g_pFileManager->AddQueue(this,FileManager::IOCOMMAND_CLOSE,NULL,0);
 	return 0;
 }
 
-Word BURGER_API Burger::File::ReadAsync(void *pOutput,WordPtr uSize)
+uint_t BURGER_API Burger::File::ReadAsync(void *pOutput,uintptr_t uSize)
 {
 	FileManager::g_pFileManager->AddQueue(this,FileManager::IOCOMMAND_READ,pOutput,uSize);
 	return 0;
@@ -530,7 +533,7 @@ Word BURGER_API Burger::File::ReadAsync(void *pOutput,WordPtr uSize)
 
 /*! ************************************
 
-	\fn Burger::File::SetAuxType(Word32 uAuxType)
+	\fn Burger::File::SetAuxType(uint32_t uAuxType)
 	\brief Set the file's auxiliary type
 
 	If a file is open, call the MacOS operating system to set the file's
@@ -549,7 +552,7 @@ Word BURGER_API Burger::File::ReadAsync(void *pOutput,WordPtr uSize)
 
 /*! ************************************
 
-	\fn Burger::File::SetFileType(Word32 uFileType)
+	\fn Burger::File::SetFileType(uint32_t uFileType)
 	\brief Set the file's type code
 
 	If a file is open, call the MacOS operating system to set the file's
@@ -600,7 +603,7 @@ Word BURGER_API Burger::File::ReadAsync(void *pOutput,WordPtr uSize)
 
 /*! ************************************
 
-	\fn Burger::File::SetAuxAndFileType(Word32 uAuxType,Word32 uFileType)
+	\fn Burger::File::SetAuxAndFileType(uint32_t uAuxType,uint32_t uFileType)
 	\brief Set the file's auxiliary and file type
 
 	If a file is open, call the MacOS operating system to set the file's
@@ -636,14 +639,14 @@ Word BURGER_API Burger::File::ReadAsync(void *pOutput,WordPtr uSize)
 
 ***************************************/
 
-Word BURGER_API Burger::File::ReadCString(char *pOutput,WordPtr uLength)
+uint_t BURGER_API Burger::File::ReadCString(char *pOutput,uintptr_t uLength)
 {
 	// Set the maximum buffer size
 	// and remove 1 to make space or the ending zero
 	char *pEnd = (pOutput+uLength)-1;
-	Word uTemp;
+	uint_t uTemp;
 	for (;;) {		// Stay until either zero or EOF
-		Word8 Buffer;
+		uint8_t Buffer;
 		if (Read(&Buffer,1)!=1) {
 			uTemp = 666;	// EOF reached
 			break;
@@ -679,9 +682,9 @@ Word BURGER_API Burger::File::ReadCString(char *pOutput,WordPtr uLength)
 
 ***************************************/
 
-Word32 BURGER_API Burger::File::ReadBigWord32(void)
+uint32_t BURGER_API Burger::File::ReadBigWord32(void)
 {
-	Word32 mValue;
+	uint32_t mValue;
 	Read(&mValue,4);		// Save the long word
 	return BigEndian::Load(&mValue);
 }
@@ -698,9 +701,9 @@ Word32 BURGER_API Burger::File::ReadBigWord32(void)
 
 ***************************************/
 
-Word16 BURGER_API Burger::File::ReadBigWord16(void)
+uint16_t BURGER_API Burger::File::ReadBigWord16(void)
 {
-	Word16 mValue;
+	uint16_t mValue;
 	Read(&mValue,2);		// Save the short word
 	return BigEndian::Load(&mValue);
 }
@@ -717,9 +720,9 @@ Word16 BURGER_API Burger::File::ReadBigWord16(void)
 
 ***************************************/
 
-Word32 BURGER_API Burger::File::ReadLittleWord32(void)
+uint32_t BURGER_API Burger::File::ReadLittleWord32(void)
 {
-	Word32 mValue;
+	uint32_t mValue;
 	Read(&mValue,4);		// Save the long word
 	return LittleEndian::Load(&mValue);
 }
@@ -736,9 +739,9 @@ Word32 BURGER_API Burger::File::ReadLittleWord32(void)
 
 ***************************************/
 
-Word16 BURGER_API Burger::File::ReadLittleWord16(void)
+uint16_t BURGER_API Burger::File::ReadLittleWord16(void)
 {
-	Word16 mValue;
+	uint16_t mValue;
 	Read(&mValue,2);		// Save the long word
 	return LittleEndian::Load(&mValue);
 }

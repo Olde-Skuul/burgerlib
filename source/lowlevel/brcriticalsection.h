@@ -2,13 +2,14 @@
 
 	Class to handle critical sections
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
+
 	Please? It's not like I'm asking you for money!
-	
+
 ***************************************/
 
 #ifndef __BRCRITICALSECTION_H__
@@ -57,158 +58,251 @@
 /* BEGIN */
 namespace Burger {
 class CriticalSection {
-    BURGER_DISABLE_COPY(CriticalSection);
+	BURGER_DISABLE_COPY(CriticalSection);
 #if defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(DOXYGEN)
-	BurgerCRITICAL_SECTION m_Lock;	///< Critical section for OS calls (Windows and Xbox 360 only)
+	/** Critical section for OS calls (Windows and Xbox 360 only) */
+	Burger_CRITICAL_SECTION m_Lock;
 #endif
 
 #if defined(BURGER_PS3) || defined(DOXYGEN)
-	Burgersys_lwmutex_t m_Lock;		///< Critical section for PS3 (PS3 only)
+	/** Critical section for PS3 (PS3 only) */
+	Burgersys_lwmutex_t m_Lock;
 #endif
 
 #if defined(BURGER_PS4) || defined(DOXYGEN)
-	pthread_mutex *m_Lock;		///< Critical section for PS4 (PS4 only)
+	/** Critical section for PS4 (PS4 only) */
+	pthread_mutex* m_Lock;
 #endif
 
-#if (defined(BURGER_SHIELD) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+#if (defined(BURGER_SHIELD) || defined(BURGER_MACOSX) || \
+	defined(BURGER_IOS)) || \
+	defined(DOXYGEN)
 	friend class ConditionVariable;
-	Burgerpthread_mutex_t m_Lock;		///< Critical section for Android/MacOSX/iOS (Android/MacOSX/iOS only)
+
+	/** Critical section for Android/MacOSX/iOS (Android/MacOSX/iOS only) */
+	Burgerpthread_mutex_t m_Lock;
 #endif
 
 #if defined(BURGER_VITA) || defined(DOXYGEN)
-	int m_iLock;				///< Critical section ID for VITA
+	/** Critical section ID for VITA */
+	int m_iLock;
 #endif
 
 #if defined(BURGER_MAC) || defined(DOXYGEN)
-	Word8 m_bLock;				///< Critical section ID for OpenTransport
+	/** Critical section ID for OpenTransport */
+	uint8_t m_bLock;
 #endif
 
 public:
-	CriticalSection();
+	CriticalSection() BURGER_NOEXCEPT;
 	~CriticalSection();
-	void Lock(void);
-	Word TryLock(void);
-	void Unlock(void);
+	void Lock(void) BURGER_NOEXCEPT;
+	uint_t TryLock(void) BURGER_NOEXCEPT;
+	void Unlock(void) BURGER_NOEXCEPT;
 };
 
-class CriticalSectionStatic : public CriticalSection {
-	Word m_bValid;			///< Set to \ref TRUE when constructed
+class CriticalSectionStatic: public CriticalSection {
+	/** Set to \ref TRUE when constructed */
+	uint_t m_bValid;
+
 public:
-	CriticalSectionStatic();
+	CriticalSectionStatic() BURGER_NOEXCEPT;
 	~CriticalSectionStatic();
-	BURGER_INLINE void Lock(void) {	if (m_bValid) { CriticalSection::Lock(); }}
-	BURGER_INLINE Word TryLock(void) { if (m_bValid) { return CriticalSection::TryLock(); } return FALSE; }
-	BURGER_INLINE void Unlock(void) { if (m_bValid) { CriticalSection::Unlock(); }}
+	BURGER_INLINE void Lock(void) BURGER_NOEXCEPT
+	{
+		if (m_bValid) {
+			CriticalSection::Lock();
+		}
+	}
+	BURGER_INLINE uint_t TryLock(void) BURGER_NOEXCEPT
+	{
+		if (m_bValid) {
+			return CriticalSection::TryLock();
+		}
+		return FALSE;
+	}
+	BURGER_INLINE void Unlock(void) BURGER_NOEXCEPT
+	{
+		if (m_bValid) {
+			CriticalSection::Unlock();
+		}
+	}
 };
 
 class CriticalSectionLock {
-    BURGER_DISABLE_COPY(CriticalSectionLock);
-	CriticalSection *m_pCriticalSection;			///< Pointer to the lock held
+	BURGER_DISABLE_COPY(CriticalSectionLock);
+
+	/** Pointer to the lock held */
+	CriticalSection* m_pCriticalSection;
+
 public:
-	CriticalSectionLock(CriticalSection *pCriticalSection) : 
-		m_pCriticalSection(pCriticalSection) { m_pCriticalSection->Lock(); }
-	~CriticalSectionLock() { m_pCriticalSection->Unlock(); }
+	CriticalSectionLock(CriticalSection* pCriticalSection) BURGER_NOEXCEPT
+		: m_pCriticalSection(pCriticalSection)
+	{
+		m_pCriticalSection->Lock();
+	}
+	~CriticalSectionLock()
+	{
+		m_pCriticalSection->Unlock();
+	}
 };
 
 class Semaphore {
 
 #if (defined(BURGER_WINDOWS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
-	void *m_pSemaphore;			///< Semaphore HANDLE (Windows only)
+	/** Semaphore HANDLE (Windows only) */
+	void* m_pSemaphore;
 #endif
 
 #if (defined(BURGER_SHIELD)) || defined(DOXYGEN)
-	Burgersem_t m_Semaphore;	///< Semaphore instance (Android)
-	Word m_bInitialized;		///< \ref TRUE if the semaphore instance successfully initialized
+	/** Semaphore instance (Android) */
+	Burgersem_t m_Semaphore;
+	/** \ref TRUE if the semaphore instance successfully initialized */
+	uint_t m_bInitialized;
 #endif
 
 #if defined(BURGER_VITA) || defined(DOXYGEN)
-	int m_iSemaphore;			///< Semaphore ID for VITA
+	/** Semaphore ID for VITA */
+	int m_iSemaphore;
 #endif
 
 #if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-	Burgersemaphore_t m_Semaphore;	///< Semaphore instance (MacOSX/iOS only)
-	Burgertask_t m_Owner;			///< Task ID of the semaphore owner (MacOSX/iOS only)
-	Word m_bInitialized;			///< \ref TRUE if the semaphore instance successfully initialized
+	/** Semaphore instance (MacOSX/iOS only) */
+	Burgersemaphore_t m_Semaphore;
+	/** Task ID of the semaphore owner (MacOSX/iOS only) */
+	Burgertask_t m_Owner;
+	/** \ref TRUE if the semaphore instance successfully initialized */
+	uint_t m_bInitialized;
 #endif
 
-	volatile Word32 m_uCount;	///< Semaphore count value
+	/** Semaphore count value */
+	volatile uint32_t m_uCount;
+
 public:
-	Semaphore(Word32 uCount=0);
+	Semaphore(uint32_t uCount = 0);
 	~Semaphore();
-	BURGER_INLINE Word Acquire(void) { return TryAcquire(BURGER_MAXUINT); }
-	Word BURGER_API TryAcquire(Word uMilliseconds=0);
-	Word BURGER_API Release(void);
-	BURGER_INLINE Word32 GetValue(void) const { return m_uCount; }
+	BURGER_INLINE uint_t Acquire(void)
+	{
+		return TryAcquire(BURGER_MAXUINT);
+	}
+	uint_t BURGER_API TryAcquire(uint_t uMilliseconds = 0);
+	uint_t BURGER_API Release(void);
+	BURGER_INLINE uint32_t GetValue(void) const BURGER_NOEXCEPT
+	{
+		return m_uCount;
+	}
 };
 
 class ConditionVariable {
 
-#if (defined(BURGER_SHIELD) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-	Burgerpthread_cond_t m_ConditionVariable;	///< Condition variable instance (Android/MacOSX/iOS only)
-	Word m_bInitialized;			///< \ref TRUE if the Condition variable instance successfully initialized (Android/MacOSX/iOS only)
+#if (defined(BURGER_SHIELD) || defined(BURGER_MACOSX) || \
+	defined(BURGER_IOS)) || \
+	defined(DOXYGEN)
+	/** Condition variable instance (Android/MacOSX/iOS only) */
+	Burgerpthread_cond_t m_ConditionVariable;
+	/** \ref TRUE if the Condition variable instance successfully initialized
+	 * (Android/MacOSX/iOS only) */
+	uint_t m_bInitialized;
 #endif
 
 #if (defined(BURGER_VITA)) || defined(DOXYGEN)
-	int m_iConditionVariable;	///< Condition variable instance (Vita only)
-	int m_iMutex;				///< Mutex for the condition variable (Vita only)
+	/** Condition variable instance (Vita only) */
+	int m_iConditionVariable;
+	/** Mutex for the condition variable (Vita only) */
+	int m_iMutex;
 #endif
 
-#if !(defined(BURGER_SHIELD) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-	CriticalSection m_CriticalSection;	///< CriticalSection for this class (Non-specialized platforms)
-	Semaphore m_WaitSemaphore;		///< Binary semaphore for forcing thread to wait for a signal (Non-specialized platforms)
-	Semaphore m_SignalsSemaphore;	///< Binary semaphore for the number of pending signals (Non-specialized platforms)
-	Word32 m_uWaiting;				///< Count of waiting threads (Non-specialized platforms)
-	Word32 m_uSignals;				///< Count of signals to be processed (Non-specialized platforms)
+#if !(defined(BURGER_SHIELD) || defined(BURGER_MACOSX) || \
+	defined(BURGER_IOS)) || \
+	defined(DOXYGEN)
+	/** CriticalSection for this class (Non-specialized platforms) */
+	CriticalSection m_CriticalSection;
+	/** Binary semaphore for forcing thread to wait for a signal
+	 * (Non-specialized platforms) */
+	Semaphore m_WaitSemaphore;
+	/** Binary semaphore for the number of pending signals (Non-specialized
+	 * platforms) */
+	Semaphore m_SignalsSemaphore;
+	/** Count of waiting threads (Non-specialized platforms) */
+	uint32_t m_uWaiting;
+	/** Count of signals to be processed (Non-specialized platforms) */
+	uint32_t m_uSignals;
 #endif
 
 public:
 	ConditionVariable();
 	~ConditionVariable();
-	Word BURGER_API Signal(void);
-	Word BURGER_API Broadcast(void);
-	Word BURGER_API Wait(CriticalSection *pCriticalSection,Word uMilliseconds=BURGER_MAXUINT);
+	uint_t BURGER_API Signal(void);
+	uint_t BURGER_API Broadcast(void);
+	uint_t BURGER_API Wait(CriticalSection* pCriticalSection,
+		uint_t uMilliseconds = BURGER_MAXUINT);
 };
 
 class Thread {
 public:
-	typedef WordPtr (BURGER_API *FunctionPtr)(void *pThis);		///< Thread entry prototype
+	/** Thread entry prototype */
+	typedef uintptr_t(BURGER_API* FunctionPtr)(void* pThis);
+
 private:
-	FunctionPtr m_pFunction;		///< Pointer to the thread
-	void *m_pData;					///< Data pointer for the thread
-	Semaphore *m_pSemaphore;		///< Temp Semaphore for synchronization
+	/** Pointer to the thread */
+	FunctionPtr m_pFunction;
+	/** Data pointer for the thread */
+	void* m_pData;
+	/** Temp Semaphore for synchronization */
+	Semaphore* m_pSemaphore;
 
 #if (defined(BURGER_WINDOWS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
-	void *m_pThreadHandle;			///< HANDLE to the thread (Windows/Xbox 360 only)
-	Word32 m_uThreadID;				///< System ID of the thread (Windows/Xbox 360 only)
+	/** HANDLE to the thread (Windows/Xbox 360 only) */
+	void* m_pThreadHandle;
+	/** System ID of the thread (Windows/Xbox 360 only) */
+	uint32_t m_uThreadID;
 #endif
 
 #if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-	_opaque_pthread_t *m_pThreadHandle;	///< Pointer to the thread data (MacOSX/iOS only)
+	/** Pointer to the thread data (MacOSX/iOS only) */
+	_opaque_pthread_t* m_pThreadHandle;
 #endif
 
 #if (defined(BURGER_VITA)) || defined(DOXYGEN)
-	int m_iThreadID;				///< System ID of the thread (Vita only)
+	/** System ID of the thread (Vita only) */
+	int m_iThreadID;
 #endif
 
-	WordPtr m_uResult;				///< Result code of the thread on exit
+	/** Result code of the thread on exit */
+	uintptr_t m_uResult;
+
 public:
 	Thread();
-	Thread(FunctionPtr pFunction,void *pData);
+	Thread(FunctionPtr pFunction, void* pData);
 	~Thread();
-	Word BURGER_API Start(FunctionPtr pFunction,void *pData);
-	Word BURGER_API Wait(void);
-	Word BURGER_API Kill(void);
-	static void BURGER_API Run(void *pThis);
-	BURGER_INLINE WordPtr GetResult(void) const { return m_uResult; }
+	uint_t BURGER_API Start(FunctionPtr pFunction, void* pData);
+	uint_t BURGER_API Wait(void);
+	uint_t BURGER_API Kill(void);
+	static void BURGER_API Run(void* pThis);
+	BURGER_INLINE uintptr_t GetResult(void) const BURGER_NOEXCEPT
+	{
+		return m_uResult;
+	}
 
-#if (defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-	BURGER_INLINE Word IsInitialized(void) const { return m_pThreadHandle!= nullptr; }
+#if (defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
+	defined(BURGER_MACOSX) || defined(BURGER_IOS)) || \
+	defined(DOXYGEN)
+	BURGER_INLINE uint_t IsInitialized(void) const BURGER_NOEXCEPT
+	{
+		return m_pThreadHandle != nullptr;
+	}
 
 #elif defined(BURGER_VITA)
-	BURGER_INLINE Word IsInitialized(void) const { return m_iThreadID>=0; }
+	BURGER_INLINE uint_t IsInitialized(void) const BURGER_NOEXCEPT
+	{
+		return m_iThreadID >= 0;
+	}
 
-#else 
-	BURGER_INLINE Word IsInitialized(void) const { return FALSE; }
+#else
+	BURGER_INLINE uint_t IsInitialized(void) const BURGER_NOEXCEPT
+	{
+		return FALSE;
+	}
 #endif
 };
 }

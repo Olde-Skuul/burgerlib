@@ -29,11 +29,11 @@
 
 // Private scan code to Burgerlib scan code table
 struct ScanCodeTranslation_t {
-	Word m_uWindowsCode;		// Windows scan code
+	uint_t m_uWindowsCode;		// Windows scan code
 	Burger::Keyboard::eScanCode m_uScanCode;			// Burgerlib scan code
-	Word32 m_uAsciiCode;			// Ascii code
-	Word32 m_uShiftCode;			// Shifted ascii code
-	Word32 m_uControlCode;		// Control ascii code
+	uint32_t m_uAsciiCode;			// Ascii code
+	uint32_t m_uShiftCode;			// Shifted ascii code
+	uint32_t m_uControlCode;		// Control ascii code
 };
 
 // Table, first entry is the Windows code, the second is the code for Burgerlib
@@ -201,11 +201,11 @@ static const ScanCodeTranslation_t TranslationTable[] = {
 
 ***************************************/
 
-static const ScanCodeTranslation_t *ScanCodeTranslate(Word uWindowsCode)
+static const ScanCodeTranslation_t *ScanCodeTranslate(uint_t uWindowsCode)
 {
 	// Get the table address
 	const ScanCodeTranslation_t *pTranslationTable = TranslationTable;
-	Word i = BURGER_ARRAYSIZE(TranslationTable);
+	uint_t i = BURGER_ARRAYSIZE(TranslationTable);
 	const ScanCodeTranslation_t *pResult = NULL;
 	// Iterate over the table
 	do {
@@ -266,9 +266,9 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Keyboard::Poll(void *pData)
 		const ScanCodeTranslation_t *pTranslation = ScanCodeTranslate(KeyStroke.VirtualKey);
 		if (pTranslation) {
 			// Non-zero if it was a key down event
-			Word uPressed = (KeyStroke.Flags&(XINPUT_KEYSTROKE_KEYDOWN|XINPUT_KEYSTROKE_REPEAT))!=0;
+			uint_t uPressed = (KeyStroke.Flags&(XINPUT_KEYSTROKE_KEYDOWN|XINPUT_KEYSTROKE_REPEAT))!=0;
 			// Direct Input keyboard scan code
-			Word uScanCode = pTranslation->m_uScanCode;
+			uint_t uScanCode = pTranslation->m_uScanCode;
 			KeyEvent_t *pNewEvent = &pThis->m_KeyEvents[pThis->m_uArrayEnd];
 			if (!uPressed) {
 				pNewEvent->m_uEvent = EVENT_KEYUP;
@@ -279,14 +279,14 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Keyboard::Poll(void *pData)
 			}
 			// Which player pressed the key?
 			pNewEvent->m_uWhich = KeyStroke.UserIndex;
-			pNewEvent->m_uScanCode = static_cast<Word32>(uScanCode);
+			pNewEvent->m_uScanCode = static_cast<uint32_t>(uScanCode);
 			pNewEvent->m_uFlags = 0;
 			pNewEvent->m_uMSTimeStamp = Tick::ReadMilliseconds();
 
 			if (uPressed) {
 				// Mark as pressed
 				pThis->m_KeyArray[uScanCode] |= (KEYCAPDOWN|KEYCAPPRESSED);
-				Word uAscii = KeyStroke.Unicode;
+				uint_t uAscii = KeyStroke.Unicode;
 				if (!uAscii) {
 					uAscii = pTranslation->m_uAsciiCode;
 					if (uAscii) {
@@ -300,7 +300,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Keyboard::Poll(void *pData)
 					}
 				}
 				// Store the Ascii value
-				pNewEvent->m_uAscii = static_cast<Word32>(uAscii);
+				pNewEvent->m_uAscii = static_cast<uint32_t>(uAscii);
 			} else {
 				// There is no ASCII on key up events
 				pNewEvent->m_uAscii = 0;
@@ -308,7 +308,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Keyboard::Poll(void *pData)
 				pThis->m_KeyArray[uScanCode] &= (~KEYCAPDOWN);
 			}
 			// Accept the key in the circular buffer
-			Word uTemp = (pThis->m_uArrayEnd+1)&(cBufferSize-1);
+			uint_t uTemp = (pThis->m_uArrayEnd+1)&(cBufferSize-1);
 			if (uTemp!=pThis->m_uArrayStart) {
 				// Didn't wrap, accept it!
 				pThis->m_uArrayEnd = uTemp;

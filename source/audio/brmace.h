@@ -30,21 +30,21 @@
 /* BEGIN */
 namespace Burger {
 struct MACEState_t {
-	Int32 m_iSample1;		///< Last running samples
-	Int32 m_iSample2;		///< Second temp sample
-	Int32 m_iLastStep;		///< Mask with 0x8000 for + or - direction
-	Int32 m_iTableIndex;	///< Index to the slope table
-	Int32 m_iLastAmplitude;	///< m_iLastSlope * m_iLastStep
-	Int32 m_iLastSlope;		///< Last Slope value
-	static const Int16 g_Table4Small[4];	///< Base coefficients for 2 bit samples
-	static const Int16 g_Table4Big[512];	///< Log table for 2 bit samples
-	static const Int16 g_Table8Small[8];	///< Base coefficients for 3 bit samples
-	static const Int16 g_Table8Big[1024];	///< Log table for 3 bit samples
+	int32_t m_iSample1;		///< Last running samples
+	int32_t m_iSample2;		///< Second temp sample
+	int32_t m_iLastStep;		///< Mask with 0x8000 for + or - direction
+	int32_t m_iTableIndex;	///< Index to the slope table
+	int32_t m_iLastAmplitude;	///< m_iLastSlope * m_iLastStep
+	int32_t m_iLastSlope;		///< Last Slope value
+	static const int16_t g_Table4Small[4];	///< Base coefficients for 2 bit samples
+	static const int16_t g_Table4Big[512];	///< Log table for 2 bit samples
+	static const int16_t g_Table8Small[8];	///< Base coefficients for 3 bit samples
+	static const int16_t g_Table8Big[1024];	///< Log table for 3 bit samples
 	void BURGER_API Clear(void);
-	Int32 BURGER_API CoefficientStep(Word uTableOffset,Word bUse3Bits);
+	int32_t BURGER_API CoefficientStep(uint_t uTableOffset,uint_t bUse3Bits);
 };
-extern void BURGER_API MACEExp1to6(const Word8 *pInput,Word8 *pOutput,WordPtr uPacketCount,MACEState_t *pInputState,MACEState_t *pOutputState,Word uNumChannels,Word uWhichChannel);
-extern void BURGER_API MACEExp1to3(const Word8 *pInput,Word8 *pOutput,WordPtr uPacketCount,MACEState_t *pInputState,MACEState_t *pOutputState,Word uNumChannels,Word uWhichChannel);
+extern void BURGER_API MACEExp1to6(const uint8_t *pInput,uint8_t *pOutput,uintptr_t uPacketCount,MACEState_t *pInputState,MACEState_t *pOutputState,uint_t uNumChannels,uint_t uWhichChannel);
+extern void BURGER_API MACEExp1to3(const uint8_t *pInput,uint8_t *pOutput,uintptr_t uPacketCount,MACEState_t *pInputState,MACEState_t *pOutputState,uint_t uNumChannels,uint_t uWhichChannel);
 
 class DecompressMace3 : public DecompressAudio {
 	BURGER_RTTI_IN_CLASS();
@@ -57,11 +57,11 @@ protected:
 	};
 	MACEState_t MaceStateLeft;		///< Decompression states for left/right channels
 	MACEState_t MaceStateRight;		///< Decompression states for left/right channels
-	Word m_uCacheSize;				///< Number of valid bytes in m_Cache
+	uint_t m_uCacheSize;				///< Number of valid bytes in m_Cache
 	eState m_eState;				///< State of the decompression
-	Word8 m_Cache[6*2];				///< Temp compressed data buffer
+	uint8_t m_Cache[6*2];				///< Temp compressed data buffer
 public:
-	static const Word32 Signature = 0x4D414333;		///< 'MAC3'
+	static const uint32_t Signature = 0x4D414333;		///< 'MAC3'
 	DecompressMace3();
 	eError Reset(void) BURGER_OVERRIDE;
 	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
@@ -79,11 +79,11 @@ protected:
 	};
 	MACEState_t MaceStateLeft;		///< Decompression states for left/right channels
 	MACEState_t MaceStateRight;		///< Decompression states for left/right channels
-	Word m_uCacheSize;				///< Number of valid bytes in m_Cache
+	uint_t m_uCacheSize;				///< Number of valid bytes in m_Cache
 	eState m_eState;				///< State of the decompression
-	Word8 m_Cache[6*2];				///< Temp compressed data buffer
+	uint8_t m_Cache[6*2];				///< Temp compressed data buffer
 public:
-	static const Word32 Signature = 0x4D414336;		///< 'MAC6'
+	static const uint32_t Signature = 0x4D414336;		///< 'MAC6'
 	DecompressMace6();
 	eError Reset(void) BURGER_OVERRIDE;
 	eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;

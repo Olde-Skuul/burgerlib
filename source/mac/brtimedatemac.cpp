@@ -37,13 +37,13 @@ void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 
     m_uYear = MyDate.year;
     m_usMilliseconds = 0;
-    m_bMonth = static_cast<Word8>(MyDate.month);
-    m_bDay = static_cast<Word8>(MyDate.day);
-    m_bDayOfWeek = static_cast<Word8>(MyDate.dayOfWeek -
+    m_bMonth = static_cast<uint8_t>(MyDate.month);
+    m_bDay = static_cast<uint8_t>(MyDate.day);
+    m_bDayOfWeek = static_cast<uint8_t>(MyDate.dayOfWeek -
         1); // Start the day at zero, since the mac returns 1-7
-    m_bHour = static_cast<Word8>(MyDate.hour);
-    m_bMinute = static_cast<Word8>(MyDate.minute);
-    m_bSecond = static_cast<Word8>(MyDate.second);
+    m_bHour = static_cast<uint8_t>(MyDate.hour);
+    m_bMinute = static_cast<uint8_t>(MyDate.minute);
+    m_bSecond = static_cast<uint8_t>(MyDate.second);
 }
 
 /*! ************************************
@@ -57,10 +57,10 @@ void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-Word Burger::TimeDate_t::Load(const UTCDateTime* pUTCDateTime)
+uint_t Burger::TimeDate_t::Load(const UTCDateTime* pUTCDateTime)
 {
     Clear();
-    Word uResult = TRUE;
+    uint_t uResult = TRUE;
 
 #if !defined(BURGER_68K)
     // Convert to my time zone
@@ -75,15 +75,15 @@ Word Burger::TimeDate_t::Load(const UTCDateTime* pUTCDateTime)
         Convert.hl.lLow = TempTime.lowSeconds;
         LongSecondsToDate(&Convert.c, &LongTimeRec);
 
-        m_uYear = static_cast<Word32>(LongTimeRec.od.oldDate.year);
-        m_usMilliseconds = static_cast<Word16>(
-            (static_cast<Word>(TempTime.fraction) * 1000U) >> 16U);
-        m_bMonth = static_cast<Word8>(LongTimeRec.od.oldDate.month);
-        m_bDay = static_cast<Word8>(LongTimeRec.od.oldDate.day);
-        m_bHour = static_cast<Word8>(LongTimeRec.od.oldDate.hour);
-        m_bMinute = static_cast<Word8>(LongTimeRec.od.oldDate.minute);
-        m_bSecond = static_cast<Word8>(LongTimeRec.od.oldDate.second);
-        m_bDayOfWeek = static_cast<Word8>(LongTimeRec.od.oldDate.dayOfWeek);
+        m_uYear = static_cast<uint32_t>(LongTimeRec.od.oldDate.year);
+        m_usMilliseconds = static_cast<uint16_t>(
+            (static_cast<uint_t>(TempTime.fraction) * 1000U) >> 16U);
+        m_bMonth = static_cast<uint8_t>(LongTimeRec.od.oldDate.month);
+        m_bDay = static_cast<uint8_t>(LongTimeRec.od.oldDate.day);
+        m_bHour = static_cast<uint8_t>(LongTimeRec.od.oldDate.hour);
+        m_bMinute = static_cast<uint8_t>(LongTimeRec.od.oldDate.minute);
+        m_bSecond = static_cast<uint8_t>(LongTimeRec.od.oldDate.second);
+        m_bDayOfWeek = static_cast<uint8_t>(LongTimeRec.od.oldDate.dayOfWeek);
         uResult = FALSE;
     }
 #endif
@@ -103,9 +103,9 @@ Word Burger::TimeDate_t::Load(const UTCDateTime* pUTCDateTime)
 
 ***************************************/
 
-Word Burger::TimeDate_t::Store(UTCDateTime* pUTCDateTime) const
+uint_t Burger::TimeDate_t::Store(UTCDateTime* pUTCDateTime) const
 {
-    Word uResult = TRUE;
+    uint_t uResult = TRUE;
 
     LongDateRec LongTimeRec;
     LongDateCvt Convert;
@@ -154,18 +154,18 @@ Word Burger::TimeDate_t::Store(UTCDateTime* pUTCDateTime) const
 
 ***************************************/
 
-void Burger::TimeDate_t::LoadFileSeconds(Word32 uTime)
+void Burger::TimeDate_t::LoadFileSeconds(uint32_t uTime)
 {
     DateTimeRec Temp2;
     SecondsToDate(uTime, &Temp2);              // Convert to date
-    m_uYear = static_cast<Word32>(Temp2.year); // Get the year
+    m_uYear = static_cast<uint32_t>(Temp2.year); // Get the year
     m_usMilliseconds = 0;                      // MacOS doesn't use milliseconds
-    m_bSecond = static_cast<Word8>(Temp2.second);           // Get the seconds
-    m_bMinute = static_cast<Word8>(Temp2.minute);           // Get the minute
-    m_bHour = static_cast<Word8>(Temp2.hour);               // Get the hour
-    m_bDay = static_cast<Word8>(Temp2.day);                 // Get the day
-    m_bMonth = static_cast<Word8>(Temp2.month);             // Get the month
-    m_bDayOfWeek = static_cast<Word8>(Temp2.dayOfWeek - 1); // Day of the week
+    m_bSecond = static_cast<uint8_t>(Temp2.second);           // Get the seconds
+    m_bMinute = static_cast<uint8_t>(Temp2.minute);           // Get the minute
+    m_bHour = static_cast<uint8_t>(Temp2.hour);               // Get the hour
+    m_bDay = static_cast<uint8_t>(Temp2.day);                 // Get the day
+    m_bMonth = static_cast<uint8_t>(Temp2.month);             // Get the month
+    m_bDayOfWeek = static_cast<uint8_t>(Temp2.dayOfWeek - 1); // Day of the week
 }
 
 /*! ************************************
@@ -179,11 +179,11 @@ void Burger::TimeDate_t::LoadFileSeconds(Word32 uTime)
 
     \return Time in seconds from midnight Jan 1st, 1904
 
-    \sa LoadFileSeconds(Word32) or Store(UTCDateTime *)
+    \sa LoadFileSeconds(uint32_t) or Store(UTCDateTime *)
 
 ***************************************/
 
-Word32 Burger::TimeDate_t::GetFileSeconds(void) const
+uint32_t Burger::TimeDate_t::GetFileSeconds(void) const
 {
     DateTimeRec Temp2;
     Temp2.year = static_cast<short>(m_uYear);     // Get the year

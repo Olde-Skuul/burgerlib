@@ -31,7 +31,7 @@
 
 ***************************************/
 
-Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
+uint_t Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 {
 	pOutput->resize(1);
 

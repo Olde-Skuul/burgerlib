@@ -1,14 +1,15 @@
 /***************************************
 
-	iOS version
+    iOS version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brfilemanager.h"
@@ -52,9 +53,9 @@ extern "C" int *_NSGetArgc();
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,Word uVolumeNum)
+uint_t BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,uint_t uVolumeNum)
 {
-	Word uResult = File::OUTOFRANGE;
+	uint_t uResult = File::OUTOFRANGE;
 	
 	// If running in the emulator, it's really running on top of the MacOSX
 	// file system, so perform the MacOSX handler to obtain volume names
@@ -62,9 +63,9 @@ Word BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,Wor
 	int fp = open("/Volumes",O_RDONLY,0);
 	if (fp!=-1) {
 		int eError;
-		Word bScore = FALSE;
-		Word bFoundRoot = FALSE;
-		Word uEntry = 1;
+		uint_t bScore = FALSE;
+		uint_t bFoundRoot = FALSE;
+		uint_t uEntry = 1;
 		do {
 			// Structure declaration of data coming from getdirentriesattr()
 			struct FInfoAttrBuf {
@@ -146,7 +147,7 @@ Word BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,Wor
 					--pName;
 					// Insert a starting and ending colon
 					pName[0] = ':';
-					WordPtr uIndex = StringLength(pName);
+					uintptr_t uIndex = StringLength(pName);
 					pName[uIndex] = ':';
 					pName[uIndex+1] = 0;
 					// Set the filename
@@ -189,14 +190,14 @@ Word BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,Wor
 void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 {
 	Filename MyFilename;
-	Word uResult = GetVolumeName(&MyFilename,0);		// Get the boot volume name
+	uint_t uResult = GetVolumeName(&MyFilename,0);		// Get the boot volume name
 	if (uResult==File::OKAY) {
 		// Set the initial prefix
 		const char *pBootName = MyFilename.GetPtr();
 		SetPrefix(PREFIXBOOT,pBootName);
 		Free(g_pFileManager->m_pBootName);
-		WordPtr uMax = StringLength(pBootName);
-		g_pFileManager->m_uBootNameSize = static_cast<Word>(uMax);
+		uintptr_t uMax = StringLength(pBootName);
+		g_pFileManager->m_uBootNameSize = static_cast<uint_t>(uMax);
 		g_pFileManager->m_pBootName = StringDuplicate(pBootName);
 	}
 	
@@ -268,7 +269,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
+uint_t BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -295,7 +296,7 @@ Word BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFile
 
 	// No errors?
 
-	Word uResult;
+	uint_t uResult;
 	if (eError<0) {
 		pOutput->Clear();
 		uResult = File::FILENOTFOUND;
@@ -316,7 +317,7 @@ Word BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFile
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
+uint_t BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -343,7 +344,7 @@ Word BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileName
 
 	// No errors?
 
-	Word uResult;
+	uint_t uResult;
 	if (eError<0) {
 		pOutput->Clear();
 		uResult = File::FILENOTFOUND;
@@ -367,9 +368,9 @@ Word BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileName
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::DoesFileExist(Burger::Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DoesFileExist(Burger::Filename *pFileName)
 {
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	struct stat MyStat;
 	int eError = stat(pFileName->GetNative(),&MyStat);
 	if (eError>=0) {
@@ -386,7 +387,7 @@ Word BURGER_API Burger::FileManager::DoesFileExist(Burger::Filename *pFileName)
 
 ***************************************/
 
-Word32 BURGER_API Burger::FileManager::GetFileType(Burger::Filename *pFileName)
+uint32_t BURGER_API Burger::FileManager::GetFileType(Burger::Filename *pFileName)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -413,12 +414,12 @@ Word32 BURGER_API Burger::FileManager::GetFileType(Burger::Filename *pFileName)
 
 	// No errors?
 
-	Word uResult;
+	uint_t uResult;
 	if (eError<0) {
 		uResult = 0;
 	} else {
 		// It's parsed!
-		uResult = reinterpret_cast<Word32 *>(Entry.finderInfo)[0];
+		uResult = reinterpret_cast<uint32_t *>(Entry.finderInfo)[0];
 	}
 	return uResult;
 }
@@ -430,7 +431,7 @@ Word32 BURGER_API Burger::FileManager::GetFileType(Burger::Filename *pFileName)
  
 ***************************************/
 
-Word32 BURGER_API Burger::FileManager::GetAuxType(Burger::Filename *pFileName)
+uint32_t BURGER_API Burger::FileManager::GetAuxType(Burger::Filename *pFileName)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -457,12 +458,12 @@ Word32 BURGER_API Burger::FileManager::GetAuxType(Burger::Filename *pFileName)
 
 	// No errors?
 
-	Word uResult;
+	uint_t uResult;
 	if (eError<0) {
 		uResult = 0;
 	} else {
 		// It's parsed!
-		uResult = reinterpret_cast<Word32 *>(Entry.finderInfo)[1];
+		uResult = reinterpret_cast<uint32_t *>(Entry.finderInfo)[1];
 	}
 	return uResult;
 }
@@ -474,7 +475,7 @@ Word32 BURGER_API Burger::FileManager::GetAuxType(Burger::Filename *pFileName)
  
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetFileAndAuxType(Burger::Filename *pFileName,Word32 *pFileType,Word32 *pAuxType)
+uint_t BURGER_API Burger::FileManager::GetFileAndAuxType(Burger::Filename *pFileName,uint32_t *pFileType,uint32_t *pAuxType)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -501,13 +502,13 @@ Word BURGER_API Burger::FileManager::GetFileAndAuxType(Burger::Filename *pFileNa
 
 	// No errors?
 
-	Word uResult;
+	uint_t uResult;
 	if (eError<0) {
 		uResult = File::FILENOTFOUND;
 	} else {
 		// It's parsed!
-		pFileType[0] = reinterpret_cast<Word32 *>(Entry.finderInfo)[0];
-		pAuxType[0] = reinterpret_cast<Word32 *>(Entry.finderInfo)[1];
+		pFileType[0] = reinterpret_cast<uint32_t *>(Entry.finderInfo)[0];
+		pAuxType[0] = reinterpret_cast<uint32_t *>(Entry.finderInfo)[1];
 		uResult = File::OKAY;
 	}
 	return uResult;
@@ -521,7 +522,7 @@ Word BURGER_API Burger::FileManager::GetFileAndAuxType(Burger::Filename *pFileNa
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::SetFileType(Burger::Filename *pFileName,Word32 uFileType)
+uint_t BURGER_API Burger::FileManager::SetFileType(Burger::Filename *pFileName,uint32_t uFileType)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -548,12 +549,12 @@ Word BURGER_API Burger::FileManager::SetFileType(Burger::Filename *pFileName,Wor
 
 	// No errors?
 
-	Word uResult;
+	uint_t uResult;
 	if (eError<0) {
 		uResult = File::FILENOTFOUND;
 	} else {
 		// It's parsed!
-		reinterpret_cast<Word32 *>(Entry.finderInfo)[0] = uFileType;
+		reinterpret_cast<uint32_t *>(Entry.finderInfo)[0] = uFileType;
 		eError = setattrlist(pFileName->GetNative(),&AttributesList,&Entry.finderInfo,sizeof(Entry.finderInfo),0);
 		if (eError<0) {
 			uResult = File::IOERROR;
@@ -571,7 +572,7 @@ Word BURGER_API Burger::FileManager::SetFileType(Burger::Filename *pFileName,Wor
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::SetAuxType(Burger::Filename *pFileName,Word32 uAuxType)
+uint_t BURGER_API Burger::FileManager::SetAuxType(Burger::Filename *pFileName,uint32_t uAuxType)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -598,12 +599,12 @@ Word BURGER_API Burger::FileManager::SetAuxType(Burger::Filename *pFileName,Word
 
 	// No errors?
 
-	Word uResult;
+	uint_t uResult;
 	if (eError<0) {
 		uResult = File::FILENOTFOUND;
 	} else {
 		// It's parsed!
-		reinterpret_cast<Word32 *>(Entry.finderInfo)[1] = uAuxType;
+		reinterpret_cast<uint32_t *>(Entry.finderInfo)[1] = uAuxType;
 		eError = setattrlist(pFileName->GetNative(),&AttributesList,&Entry.finderInfo,sizeof(Entry.finderInfo),0);
 		if (eError<0) {
 			uResult = File::IOERROR;
@@ -621,7 +622,7 @@ Word BURGER_API Burger::FileManager::SetAuxType(Burger::Filename *pFileName,Word
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::SetFileAndAuxType(Burger::Filename *pFileName,Word32 uFileType,Word32 uAuxType)
+uint_t BURGER_API Burger::FileManager::SetFileAndAuxType(Burger::Filename *pFileName,uint32_t uFileType,uint32_t uAuxType)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -648,13 +649,13 @@ Word BURGER_API Burger::FileManager::SetFileAndAuxType(Burger::Filename *pFileNa
 
 	// No errors?
 
-	Word uResult;
+	uint_t uResult;
 	if (eError<0) {
 		uResult = File::FILENOTFOUND;
 	} else {
 		// It's parsed!
-		reinterpret_cast<Word32 *>(Entry.finderInfo)[0] = uFileType;
-		reinterpret_cast<Word32 *>(Entry.finderInfo)[1] = uAuxType;
+		reinterpret_cast<uint32_t *>(Entry.finderInfo)[0] = uFileType;
+		reinterpret_cast<uint32_t *>(Entry.finderInfo)[1] = uAuxType;
 		eError = setattrlist(pFileName->GetNative(),&AttributesList,&Entry.finderInfo,sizeof(Entry.finderInfo),0);
 		if (eError<0) {
 			uResult = File::IOERROR;
@@ -672,10 +673,10 @@ Word BURGER_API Burger::FileManager::SetFileAndAuxType(Burger::Filename *pFileNa
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFileName)
 {
-	// Assume an eror condition
-	Word uResult = File::IOERROR;
+	// Assume an error condition
+	uint_t uResult = File::IOERROR;
 	// Get the full path
 	const char *pPath = pFileName->GetNative();
 
@@ -752,12 +753,12 @@ Word BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFile
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::ChangeOSDirectory(Burger::Filename *pDirName)
+uint_t BURGER_API Burger::FileManager::ChangeOSDirectory(Burger::Filename *pDirName)
 {
 	if (!chdir(pDirName->GetNative())) {
 		return FALSE;
 	}
-	return (Word)-1;	// Error!
+	return (uint_t)-1;	// Error!
 }
 
 /***************************************
@@ -777,9 +778,9 @@ FILE * BURGER_API Burger::FileManager::OpenFile(Burger::Filename *pFileName,cons
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::CopyFile(Burger::Filename *pDestName,Burger::Filename *pSourceName)
+uint_t BURGER_API Burger::FileManager::CopyFile(Burger::Filename *pDestName,Burger::Filename *pSourceName)
 {
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	NSAutoreleasePool *pPool = [[NSAutoreleasePool alloc] init];
 
 	NSFileManager *pFileManager = [[NSFileManager alloc] init];
@@ -808,7 +809,7 @@ Word BURGER_API Burger::FileManager::CopyFile(Burger::Filename *pDestName,Burger
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName)
 {
 	if (!remove(pFileName->GetNative())) {
 		return FALSE;
@@ -822,7 +823,7 @@ Word BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::RenameFile(Burger::Filename *pNewName,Burger::Filename *pOldName)
+uint_t BURGER_API Burger::FileManager::RenameFile(Burger::Filename *pNewName,Burger::Filename *pOldName)
 {
 	if (!rename(pOldName->GetNative(),pNewName->GetNative())) {
 		return FALSE;

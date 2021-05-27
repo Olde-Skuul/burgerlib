@@ -1,13 +1,14 @@
 /***************************************
 
-	4 bit font class
+    4 bit font class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -24,11 +25,11 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::Font4Bit,Burger::Font);
 
 #if !defined(DOXYGEN)
 struct Font4BitImage_t {
-	Word16 m_usHeight;		// Height of the font in pixels
-	Word16 m_usCount;		// Number of font cells
-	Word16 m_usFirst;		// First ASCII char
-	Word8 m_Widths[1];		// Width table
-	// Word16 m_usOffsets[1];	// Offsets to the font strikes
+	uint16_t m_usHeight;		// Height of the font in pixels
+	uint16_t m_usCount;		// Number of font cells
+	uint16_t m_usFirst;		// First ASCII char
+	uint8_t m_Widths[1];		// Width table
+	// uint16_t m_usOffsets[1];	// Offsets to the font strikes
 	// RGBColorList_t m_DefaultColors;	// Default color list
 };
 #endif
@@ -101,23 +102,23 @@ Burger::Font4Bit::~Font4Bit()
 
 	\param pInput Pointer to a UTF8 string. If \ref NULL or an empty string, return zero
 	\param uLength Length of the string in bytes
-	\sa Draw(const char *,WordPtr)
+	\sa Draw(const char *,uintptr_t)
 
 ***************************************/
 
-Word Burger::Font4Bit::GetPixelWidth(const char *pInput,WordPtr uLength)
+uint_t Burger::Font4Bit::GetPixelWidth(const char *pInput,uintptr_t uLength)
 {
-	Word uResult = 0;				// Assume no width
+	uint_t uResult = 0;				// Assume no width
 	if (pInput && uLength) {
 		void **pHandle = m_ppData;	// Init tables
 		if (pHandle) {				// Data? And valid font?
 			// Pointer to the table
-			const Word8 *pWidths = static_cast<const Font4BitImage_t *>(pHandle[0])->m_Widths;
-			Word uCount = m_uCount;
-			Word uFirst = m_uFirst;
+			const uint8_t *pWidths = static_cast<const Font4BitImage_t *>(pHandle[0])->m_Widths;
+			uint_t uCount = m_uCount;
+			uint_t uFirst = m_uFirst;
 			do {
 				// Get the char
-				Word uTemp = reinterpret_cast<const Word8 *>(pInput)[0]-uFirst;
+				uint_t uTemp = reinterpret_cast<const uint8_t *>(pInput)[0]-uFirst;
 				if (uTemp<uCount) {					// Valid?
 					uResult+=pWidths[uTemp];		// Add to the width
 				}
@@ -140,7 +141,7 @@ Word Burger::Font4Bit::GetPixelWidth(const char *pInput,WordPtr uLength)
 
 ***************************************/
 
-void Burger::Font4Bit::DrawChar(Word uLetter)
+void Burger::Font4Bit::DrawChar(uint_t uLetter)
 {
 	uLetter-=m_uFirst;			// Adjust to first VALID char
 	if (uLetter>=m_uCount) {	// Can't draw this character?
@@ -150,7 +151,7 @@ void Burger::Font4Bit::DrawChar(Word uLetter)
 
 	// Bounds check the X coord
 	// Width of the font strike
-	Word uCharacterWidth = pFont->m_Widths[uLetter];
+	uint_t uCharacterWidth = pFont->m_Widths[uLetter];
 	int iTempX = m_iX;			// Get the X coord
 	int iMaxX = iTempX+static_cast<int>(uCharacterWidth);
 
@@ -166,17 +167,17 @@ void Burger::Font4Bit::DrawChar(Word uLetter)
 	// Bounds check the Y coord
 
 	int iTempY = m_iY;				// Get the Y coord
-	Word uHeight = m_uHeight;		// Get the height of the font char
+	uint_t uHeight = m_uHeight;		// Get the height of the font char
 	int iMaxY = static_cast<int>(uHeight)+iTempY;		// Get the bottommost Y coord
 	// Off the top or bottom?
 	if ((iTempY>=pClip->m_iBottom) || (iMaxY<=pClip->m_iTop)) {
 		return;
 	}
-	Word uByteWidth = (uCharacterWidth+1)>>1;	// Convert to bytes per cel
+	uint_t uByteWidth = (uCharacterWidth+1)>>1;	// Convert to bytes per cel
 	// Calculate the location of the font strike
-	const Word8 *pFontIndexes = &pFont->m_Widths[m_uCount];
-	Word uRGBListOffset = LittleEndian::LoadAny(&reinterpret_cast<const Word16 *>(pFontIndexes)[uLetter]);
-	const Word8 *pStrike = pFontIndexes+uRGBListOffset;
+	const uint8_t *pFontIndexes = &pFont->m_Widths[m_uCount];
+	uint_t uRGBListOffset = LittleEndian::LoadAny(&reinterpret_cast<const uint16_t *>(pFontIndexes)[uLetter]);
+	const uint8_t *pStrike = pFontIndexes+uRGBListOffset;
 
 	// Clip the font data
 	// First clip the Y coord
@@ -184,35 +185,35 @@ void Burger::Font4Bit::DrawChar(Word uLetter)
 	// Clip the top?
 	if (iTempY<pClip->m_iTop) {
 		// Clip the top of the font
-		uHeight = static_cast<Word>(iMaxY-pClip->m_iTop);	// Crop the height (Bottom Y = height)
+		uHeight = static_cast<uint_t>(iMaxY-pClip->m_iTop);	// Crop the height (Bottom Y = height)
 		pStrike = pStrike-((iTempY-pClip->m_iTop)*static_cast<int>(uByteWidth));	// (I'm subtracting a negative number)
 		// Remove the upper pixels
 		iTempY = pClip->m_iTop;		// Zap the top Y coord
 	}
 
 	// Clip the bottom?
-	if (static_cast<Word>(iMaxY)>static_cast<Word>(pClip->m_iBottom)) {
+	if (static_cast<uint_t>(iMaxY)>static_cast<uint_t>(pClip->m_iBottom)) {
 		// Crop the height (iTempY is already >=0)
-		uHeight = static_cast<Word>(pClip->m_iBottom-iTempY);
+		uHeight = static_cast<uint_t>(pClip->m_iBottom-iTempY);
 	}
 
 	// Now, let's clip the X coord
 
 	// I assume I don't need to begin INSIDE the font
 
-	Word uSkipFlags = FALSE;			// Clear flags for 4 bit trimming (1 Skip first 4 bit pixel, 2 skip last 4 bit pixel)
+	uint_t uSkipFlags = FALSE;			// Clear flags for 4 bit trimming (1 Skip first 4 bit pixel, 2 skip last 4 bit pixel)
 	// Off the left side?
 	if (iTempX<pClip->m_iLeft) {			
 		// Rightmost X is the width
-		uCharacterWidth = static_cast<Word>(iMaxX-pClip->m_iLeft);		
+		uCharacterWidth = static_cast<uint_t>(iMaxX-pClip->m_iLeft);		
 		iTempX -= pClip->m_iLeft;
 		uSkipFlags = iTempX&1U;						// Even / Odd
 		pStrike = pStrike - (iTempX>>1)-uSkipFlags;	// Subtracting a negative number
 		iTempX = pClip->m_iLeft;					// Reset the dest X
 	}
 	// Clip to the right
-	if (static_cast<Word>(iMaxX)>static_cast<Word>(pClip->m_iRight)) {
-		uCharacterWidth = static_cast<Word>(pClip->m_iRight-iTempX);
+	if (static_cast<uint_t>(iMaxX)>static_cast<uint_t>(pClip->m_iRight)) {
+		uCharacterWidth = static_cast<uint_t>(pClip->m_iRight-iTempX);
 	}
 
 	// Let's finally draw the font
@@ -224,11 +225,11 @@ void Burger::Font4Bit::DrawChar(Word uLetter)
 	// uSkipFlags = True if I start drawing on odd pixel in font data
 	// uLinePadding = Number of pad bytes after each scan line
 
-	WordPtr uLinePadding;			// Video screen adjust against clipped font width
-	Word uInvisibleColor;			// Color index to ignore
+	uintptr_t uLinePadding;			// Video screen adjust against clipped font width
+	uint_t uInvisibleColor;			// Color index to ignore
 
 	// Draw here!
-	Word8 *pDest = (m_pRenderer->GetStride()*iTempY)+static_cast<Word8*>(m_pRenderer->GetFrameBuffer());
+	uint8_t *pDest = (m_pRenderer->GetStride()*iTempY)+static_cast<uint8_t*>(m_pRenderer->GetFrameBuffer());
 
 	// 8 bit renderer?
 	if (m_pRenderer->GetDepth()<9) {
@@ -261,7 +262,7 @@ void Burger::Font4Bit::DrawChar(Word uLetter)
 			// Skip first character?
 			if (uSkipFlags&1U) {
 				// Get font data
-				Word uStrike = pStrike[0]&0x0FU;
+				uint_t uStrike = pStrike[0]&0x0FU;
 				// Valid?
 				if (uStrike!=uInvisibleColor) {
 					// Store to screen
@@ -274,10 +275,10 @@ void Burger::Font4Bit::DrawChar(Word uLetter)
 			// Any center part?
 			if (uCharacterWidth) {
 				// Save font width in temp
-				Word uLoop = uCharacterWidth;
+				uint_t uLoop = uCharacterWidth;
 				do {
-					Word uStrike2 = pStrike[0];				// Get font data
-					Word uStrike1 = uStrike2>>4U;			// Split it
+					uint_t uStrike2 = pStrike[0];				// Get font data
+					uint_t uStrike1 = uStrike2>>4U;			// Split it
 					uStrike2 = uStrike2&0x0F;
 					if (uInvisibleColor!=uStrike1) {		// Valid?
 						pDest[0] = m_ColorTable.Bytes[uStrike1];	// Store to screen
@@ -291,7 +292,7 @@ void Burger::Font4Bit::DrawChar(Word uLetter)
 			}
 			// Is there a trailing pixel?
 			if (uSkipFlags&2U) {
-				Word uStrike = pStrike[0];	// Get font data
+				uint_t uStrike = pStrike[0];	// Get font data
 				uStrike >>= 4U;
 				if (uStrike!=uInvisibleColor) {	// Valid?
 					pDest[0] = m_ColorTable.Bytes[uStrike];		// Store to screen
@@ -322,34 +323,34 @@ void Burger::Font4Bit::DrawChar(Word uLetter)
 		uInvisibleColor = m_uInvisibleColor;		// Get the mask color
 		do {
 			if (uSkipFlags&1U) {					// Skip first character?
-				Word uStrike = pStrike[0]&0x0FU;	// Get font data
+				uint_t uStrike = pStrike[0]&0x0FU;	// Get font data
 				if (uStrike!=uInvisibleColor) {		// Valid?
-					reinterpret_cast<Word16 *>(pDest)[0] = m_ColorTable.Shorts[uStrike];	// Store to screen
+					reinterpret_cast<uint16_t *>(pDest)[0] = m_ColorTable.Shorts[uStrike];	// Store to screen
 				}
 				pDest+=2;								// Next screen byte
 				++pStrike;								// Next source pixel
 			}
 			if (uCharacterWidth) {						// Any center part?
-				Word uLoop = uCharacterWidth;			// Save font width in temp
+				uint_t uLoop = uCharacterWidth;			// Save font width in temp
 				do {
-					Word uStrike2 = pStrike[0];			// Get font data
-					Word uStrike1 = uStrike2>>4U;		// Split it
+					uint_t uStrike2 = pStrike[0];			// Get font data
+					uint_t uStrike1 = uStrike2>>4U;		// Split it
 					uStrike2 = uStrike2&0x0FU;
 					if (uInvisibleColor!=uStrike1) {	// Valid?
-						reinterpret_cast<Word16 *>(pDest)[0] = m_ColorTable.Shorts[uStrike1];	// Store to screen
+						reinterpret_cast<uint16_t *>(pDest)[0] = m_ColorTable.Shorts[uStrike1];	// Store to screen
 					}
 					if (uInvisibleColor!=uStrike2) {	// Ok?
-						reinterpret_cast<Word16 *>(pDest)[1] = m_ColorTable.Shorts[uStrike2];	// Store to screen
+						reinterpret_cast<uint16_t *>(pDest)[1] = m_ColorTable.Shorts[uStrike2];	// Store to screen
 					}
 					pDest+=4;			// Add the data
 					++pStrike;			// Next source pixel
 				} while (--uLoop);
 			}
 			if (uSkipFlags&2U) {					// Is there a trailing pixel?
-				Word uStrike = pStrike[0];			// Get font data
+				uint_t uStrike = pStrike[0];			// Get font data
 				uStrike >>= 4U;
 				if (uStrike!=uInvisibleColor) {		// Valid?
-					reinterpret_cast<Word16 *>(pDest)[0] = m_ColorTable.Shorts[uStrike];	// Store to screen
+					reinterpret_cast<uint16_t *>(pDest)[0] = m_ColorTable.Shorts[uStrike];	// Store to screen
 				}
 			}
 			pDest+=uLinePadding;		// Adjust the screen pointer
@@ -374,7 +375,7 @@ void Burger::Font4Bit::DrawChar(Word uLetter)
 
 ***************************************/
 
-void BURGER_API Burger::Font4Bit::Init(RezFile *pRezFile,Word uRezNum,const Word8 *pPalette,Renderer *pRenderer)
+void BURGER_API Burger::Font4Bit::Init(RezFile *pRezFile,uint_t uRezNum,const uint8_t *pPalette,Renderer *pRenderer)
 {
 	if (pRenderer) {
 		m_pRenderer = pRenderer;
@@ -395,7 +396,7 @@ void BURGER_API Burger::Font4Bit::Init(RezFile *pRezFile,Word uRezNum,const Word
 
 void BURGER_API Burger::Font4Bit::Shutdown(void)
 {
-	Word uRezNum = m_uRezNum;
+	uint_t uRezNum = m_uRezNum;
 	if (uRezNum) {		// Was a font loaded?
 		// Release the resource
 		m_pRezFile->Release(uRezNum);
@@ -457,20 +458,20 @@ void BURGER_API Burger::Font4Bit::RestoreState(const State_t *pInput)
 
 ***************************************/
 
-void BURGER_API Burger::Font4Bit::SetColor(Word uColorIndex,Word uColor)
+void BURGER_API Burger::Font4Bit::SetColor(uint_t uColorIndex,uint_t uColor)
 {
 	if (uColorIndex<16) {
 		switch (m_pRenderer->GetDepth()) {		// Color mode?
 		case 8:
-			m_ColorTable.Bytes[uColorIndex] = static_cast<Word8>(uColor);	// Set the color
+			m_ColorTable.Bytes[uColorIndex] = static_cast<uint8_t>(uColor);	// Set the color
 			break;
 		case 15:
 		case 16:
-			m_ColorTable.Shorts[uColorIndex] = static_cast<Word16>(uColor);	// Set as 16 bit
+			m_ColorTable.Shorts[uColorIndex] = static_cast<uint16_t>(uColor);	// Set as 16 bit
 			break;
 		case 24:
 		case 32:
-			m_ColorTable.Words[uColorIndex] = static_cast<Word32>(uColor);	// Set as true color
+			m_ColorTable.Words[uColorIndex] = static_cast<uint32_t>(uColor);	// Set as true color
 			break;
 		}
 	}
@@ -503,7 +504,7 @@ void BURGER_API Burger::Font4Bit::SetColor(Word uColorIndex,Word uColor)
 
 ***************************************/
 
-void BURGER_API Burger::Font4Bit::InstallToPalette(Burger::RezFile *pRezFile,Word uRezNum,const Word8 *pPalette)
+void BURGER_API Burger::Font4Bit::InstallToPalette(Burger::RezFile *pRezFile,uint_t uRezNum,const uint8_t *pPalette)
 {
 	if (m_uRezNum!=uRezNum) {		// Already in memory?
 		Shutdown();					// Release the previous font
@@ -519,10 +520,10 @@ void BURGER_API Burger::Font4Bit::InstallToPalette(Burger::RezFile *pRezFile,Wor
 				m_uRezNum = uRezNum;		// Set the new font
 				m_pRezFile = pRezFile;
 				if (pPalette) {				// Normal mode?
-					const Word8 *pFontIndexes = &pFontImage->m_Widths[m_uCount];
+					const uint8_t *pFontIndexes = &pFontImage->m_Widths[m_uCount];
 					// After the indexes, is a default color scheme, index to it and
 					// use it to draw
-					Word uRGBListOffset = LittleEndian::LoadAny(&reinterpret_cast<const Word16 *>(pFontIndexes)[m_uCount]);
+					uint_t uRGBListOffset = LittleEndian::LoadAny(&reinterpret_cast<const uint16_t *>(pFontIndexes)[m_uCount]);
 					SetColorRGBListToPalette(reinterpret_cast<const RGBColorList_t *>(pFontIndexes+uRGBListOffset),pPalette);
 				}
 			}
@@ -539,15 +540,15 @@ void BURGER_API Burger::Font4Bit::InstallToPalette(Burger::RezFile *pRezFile,Wor
 
 ***************************************/
 
-void BURGER_API Burger::Font4Bit::SetColorRGBListToPalette(const RGBColorList_t *pRGBList,const Word8 *pPalette)
+void BURGER_API Burger::Font4Bit::SetColorRGBListToPalette(const RGBColorList_t *pRGBList,const uint8_t *pPalette)
 {
-	Word uCount = pRGBList->m_uCount;	// Get the number of colors
+	uint_t uCount = pRGBList->m_uCount;	// Get the number of colors
 	if (uCount) {						// No colors?!?!?
 		if (uCount>=17) {
 			uCount = 16;				// Failsafe, never use more than 16
 		}
 		const RGBWord8_t *pRGB = pRGBList->m_Colors;		// Point to the tripletts
-		Word i = 0;						// Init color index
+		uint_t i = 0;						// Init color index
 		if (m_pRenderer->GetDepth()<9) {
 			pPalette=pPalette+3;		// Never remap to use color 0
 			do {
@@ -576,14 +577,14 @@ void BURGER_API Burger::Font4Bit::SetColorRGBListToPalette(const RGBColorList_t 
 
 ***************************************/
 
-void BURGER_API Burger::Font4Bit::SetToPalette(const Word8 *pPalette)
+void BURGER_API Burger::Font4Bit::SetToPalette(const uint8_t *pPalette)
 {
 	// Is there a handle?
 	if (m_ppData && pPalette) {
-		const Word8 *pFontIndexes = &static_cast<const Font4BitImage_t *>(m_ppData[0])->m_Widths[m_uCount];
+		const uint8_t *pFontIndexes = &static_cast<const Font4BitImage_t *>(m_ppData[0])->m_Widths[m_uCount];
 		// After the indexes, is a default color scheme, index to it and
 		// use it to draw
-		Word uRGBListOffset = LittleEndian::LoadAny(&reinterpret_cast<const Word16 *>(pFontIndexes)[m_uCount]);
+		uint_t uRGBListOffset = LittleEndian::LoadAny(&reinterpret_cast<const uint16_t *>(pFontIndexes)[m_uCount]);
 		SetColorRGBListToPalette(reinterpret_cast<const RGBColorList_t *>(pFontIndexes+uRGBListOffset),pPalette);
 	}
 }

@@ -1,30 +1,30 @@
 /***************************************
 
-    This is the Burgerlib C++ string class. I will not trigger exceptions on
-    memory errors. However, I do take great care in making sure that the class
-    structure is in a valid state at all times
+	This is the Burgerlib C++ string class. I will not trigger exceptions on
+	memory errors. However, I do take great care in making sure that the class
+	structure is in a valid state at all times
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brstring.h"
-#include "brutf8.h"
-#include "brnumberto.h"
 #include "brmemoryfunctions.h"
+#include "brnumberto.h"
+#include "brutf8.h"
 
 /*! ************************************
 
 	\class Burger::String
-	
+
 	\brief UTF 8 bit string class
-	
+
 	This commonly used string class was designed for performance in mind. Each
 	instance takes 64 bytes to contain data for the string and a pointer
 	to allocated memory if the internal string buffer is too large. Since
@@ -37,9 +37,8 @@
 	which this string class uses internally for data storage.
 
 	\sa Burger::String16
-	
-***************************************/
 
+***************************************/
 
 /*! ************************************
 
@@ -56,32 +55,35 @@
 
 ***************************************/
 
-Burger::String::String(const Burger::String &rInput) BURGER_NOEXCEPT
+Burger::String::String(const Burger::String& rInput) BURGER_NOEXCEPT
 {
-	WordPtr uInputLength = rInput.m_uLength;	// Get the source length
-	char *pWork = m_Raw;
-	const char *pInput = rInput.m_pData;
-	if (uInputLength>=BUFFERSIZE) {				// Buffer big enough?
-		pWork = static_cast<char *>(Alloc(uInputLength+1));
-		if (!pWork) {				// Oh oh...
+	uintptr_t uInputLength = rInput.m_uLength; // Get the source length
+	char* pWork = m_Raw;
+	const char* pInput = rInput.m_pData;
+	if (uInputLength >= kBufferSize) { // Buffer big enough?
+		pWork = static_cast<char*>(Alloc(uInputLength + 1));
+		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
 			pInput = g_EmptyString;
 			uInputLength = 0;
 		}
 	}
-	m_uLength = uInputLength;			// Save the new length
-	m_pData = pWork;					// Set the pointer
-	MemoryCopy(pWork,pInput,uInputLength+1);	// Copy the string and the ending NULL
+	m_uLength = uInputLength; // Save the new length
+	m_pData = pWork;          // Set the pointer
+	MemoryCopy(
+		pWork, pInput, uInputLength + 1); // Copy the string and the ending NULL
 }
 
 /*! ************************************
 
-	\brief Initialize a Burger::String by using a subsection of a different Burger::String
+	\brief Initialize a Burger::String by using a subsection of a different
+		Burger::String
 
-	Given a starting (inclusive) and ending (exclusive) offset, grab the sub string
-	and use it to create a new Burger::String
+	Given a starting (inclusive) and ending (exclusive) offset, grab the sub
+	string and use it to create a new Burger::String
 
-	\note If uEnd is less than or equal to uStart, the resulting string will be empty.
+	\note If uEnd is less than or equal to uStart, the resulting string will be
+		empty.
 
 	\param rInput Burger::String to receive input from
 	\param uStart Offset to the first character to read from
@@ -89,131 +91,135 @@ Burger::String::String(const Burger::String &rInput) BURGER_NOEXCEPT
 
 ***************************************/
 
-Burger::String::String(const Burger::String &rInput,WordPtr uStart,WordPtr uEnd) BURGER_NOEXCEPT
+Burger::String::String(const Burger::String& rInput, uintptr_t uStart,
+	uintptr_t uEnd) BURGER_NOEXCEPT
 {
-	WordPtr uInputLength = rInput.m_uLength;	// Get the source length
-	if (uEnd>uInputLength) {					// Clamp the end of the string
-		uEnd = uInputLength;					// Make sure it fits
+	uintptr_t uInputLength = rInput.m_uLength; // Get the source length
+	if (uEnd > uInputLength) {                 // Clamp the end of the string
+		uEnd = uInputLength;                   // Make sure it fits
 	}
-	const char *pInput = rInput.m_pData;
-	if (uStart>=uEnd) {							// Valid range?
-		uInputLength = 0;						// The result will be empty
+	const char* pInput = rInput.m_pData;
+	if (uStart >= uEnd) { // Valid range?
+		uInputLength = 0; // The result will be empty
 	} else {
-		uInputLength = uEnd-uStart;				// Length of the new string
+		uInputLength = uEnd - uStart; // Length of the new string
 		pInput += uStart;
 	}
-	char *pWork = m_Raw;
-	if (uInputLength>=BUFFERSIZE) {				// Buffer big enough?
-		pWork = static_cast<char *>(Alloc(uInputLength+1));
-		if (!pWork) {				// Oh oh...
+	char* pWork = m_Raw;
+	if (uInputLength >= kBufferSize) { // Buffer big enough?
+		pWork = static_cast<char*>(Alloc(uInputLength + 1));
+		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
-			uInputLength = 0;		// Don't copy anything
+			uInputLength = 0; // Don't copy anything
 		}
 	}
 	// Since I can't assume the string being created ends with a zero, I'll
 	// manually place one in the new string
 	pWork[uInputLength] = 0;
-	m_uLength = uInputLength;			// Save the new length
-	m_pData = pWork;					// Set the pointer
-	MemoryCopy(pWork,pInput,uInputLength);	// Copy the string
+	m_uLength = uInputLength;                // Save the new length
+	m_pData = pWork;                         // Set the pointer
+	MemoryCopy(pWork, pInput, uInputLength); // Copy the string
 }
 
 /*! ************************************
 
 	\brief Initialize with a "C" string
 
-	Initialize the Burger::String with a copy of the passed string. The original string
-	can be discarded after the call returns.
+	Initialize the Burger::String with a copy of the passed string. The original
+	string can be discarded after the call returns.
 
-	\param pInput Pointer to a valid "C" string or \ref NULL to create an empty string
+	\param pInput Pointer to a valid "C" string or \ref NULL to create an empty
+		string
 
 ***************************************/
 
-Burger::String::String(const char *pInput) BURGER_NOEXCEPT
+Burger::String::String(const char* pInput) BURGER_NOEXCEPT
 {
 	if (!pInput) {
 		pInput = g_EmptyString;
 	}
-	WordPtr uInputLength = StringLength(pInput);
-	char *pWork = m_Raw;
-	if (uInputLength>=BUFFERSIZE) {				// Buffer big enough?
-		pWork = static_cast<char *>(Alloc(uInputLength+1));
-		if (!pWork) {				// Oh oh...
+	uintptr_t uInputLength = StringLength(pInput);
+	char* pWork = m_Raw;
+	if (uInputLength >= kBufferSize) { // Buffer big enough?
+		pWork = static_cast<char*>(Alloc(uInputLength + 1));
+		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
 			pInput = g_EmptyString;
-			uInputLength = 0;		// Don't copy anything
+			uInputLength = 0; // Don't copy anything
 		}
 	}
-	m_uLength = uInputLength;			// Save the new length
-	m_pData = pWork;					// Set the pointer
-	MemoryCopy(pWork,pInput,uInputLength+1);	// Copy the string
+	m_uLength = uInputLength;                    // Save the new length
+	m_pData = pWork;                             // Set the pointer
+	MemoryCopy(pWork, pInput, uInputLength + 1); // Copy the string
 }
 
 /*! ************************************
 
 	\brief Initialize with a "C" string with padding
 
-	Initialize the Burger::String with a copy of the passed string. The original string
-	can be discarded after the call returns. 
-	Allocate a buffer that can hold the initialization string + the uPadding number
-	of bytes so the programmer can manually append data to the end of the string
-	with Burger::StringCopy() or equivalent
+	Initialize the Burger::String with a copy of the passed string. The original
+	string can be discarded after the call returns. Allocate a buffer that can
+	hold the initialization string + the uPadding number of bytes so the
+	programmer can manually append data to the end of the string with
+	Burger::StringCopy() or equivalent
 
-	\param pInput Pointer to a valid "C" string or \ref NULL to create an empty string
-	\param uPadding Number of bytes to extend the string buffer. The extra bytes are NOT initialized
+	\param pInput Pointer to a valid "C" string or \ref NULL to create an empty
+		string
+	\param uPadding Number of bytes to extend the string buffer. The extra
+		bytes are NOT initialized
 
 ***************************************/
 
-Burger::String::String(const char *pInput,WordPtr uPadding) BURGER_NOEXCEPT
+Burger::String::String(const char* pInput, uintptr_t uPadding) BURGER_NOEXCEPT
 {
 	if (!pInput) {
 		pInput = g_EmptyString;
 	}
-	WordPtr uInputLength = StringLength(pInput);
-	char *pWork = m_Raw;
-	if ((uInputLength+uPadding)>=BUFFERSIZE) {				// Buffer big enough?
-		pWork = static_cast<char *>(Alloc(uInputLength+uPadding+1));
-		if (!pWork) {				// Oh oh...
+	uintptr_t uInputLength = StringLength(pInput);
+	char* pWork = m_Raw;
+	if ((uInputLength + uPadding) >= kBufferSize) { // Buffer big enough?
+		pWork = static_cast<char*>(Alloc(uInputLength + uPadding + 1));
+		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
 			pInput = g_EmptyString;
-			uInputLength = 0;		// Don't copy anything
+			uInputLength = 0; // Don't copy anything
 		}
 	}
-	m_uLength = uInputLength;			// Save the new length
-	m_pData = pWork;					// Set the pointer
-	MemoryCopy(pWork,pInput,uInputLength+1);	// Copy the string
+	m_uLength = uInputLength;                    // Save the new length
+	m_pData = pWork;                             // Set the pointer
+	MemoryCopy(pWork, pInput, uInputLength + 1); // Copy the string
 }
 
 /*! ************************************
 
 	\brief Initialize with a UTF16 string
 
-	Convert the UTF16 encoded input string into a UFT8 encoded string
-	and initialize this class with the UTF8 version. The input
-	string can be discarded after this call.
+	Convert the UTF16 encoded input string into a UFT8 encoded string and
+	initialize this class with the UTF8 version. The input string can be
+	discarded after this call.
 
 	\param pInput A pointer to a valid UTF16 "C" string
 
 ***************************************/
 
-Burger::String::String(const Word16 *pInput) BURGER_NOEXCEPT
+Burger::String::String(const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	if (!pInput) {
 		pInput = g_EmptyString16;
 	}
-	WordPtr uInputLength = UTF8::FromUTF16(nullptr,0,pInput);
-	char *pWork = m_Raw;
-	if (uInputLength>=BUFFERSIZE) {				// Buffer big enough?
-		pWork = static_cast<char *>(Alloc(uInputLength+1));
-		if (!pWork) {				// Oh oh...
+	uintptr_t uInputLength = UTF8::FromUTF16(nullptr, 0, pInput);
+	char* pWork = m_Raw;
+	if (uInputLength >= kBufferSize) { // Buffer big enough?
+		pWork = static_cast<char*>(Alloc(uInputLength + 1));
+		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
 			pInput = g_EmptyString16;
-			uInputLength = 0;		// Don't copy anything
+			uInputLength = 0; // Don't copy anything
 		}
 	}
-	m_uLength = uInputLength;			// Save the new length
-	m_pData = pWork;					// Set the pointer
-	UTF8::FromUTF16(pWork,uInputLength+1,pInput);	// Copy the string
+	m_uLength = uInputLength;                         // Save the new length
+	m_pData = pWork;                                  // Set the pointer
+	UTF8::FromUTF16(pWork, uInputLength + 1, pInput); // Copy the string
 }
 
 /*! ************************************
@@ -228,35 +234,36 @@ Burger::String::String(const Word16 *pInput) BURGER_NOEXCEPT
 
 ***************************************/
 
-Burger::String::String(const Word32 *pInput) BURGER_NOEXCEPT
+Burger::String::String(const uint32_t* pInput) BURGER_NOEXCEPT
 {
-	Word32 uTemp;
+	uint32_t uTemp;
 	if (!pInput) {
 		uTemp = 0;
 		pInput = &uTemp;
 	}
-	WordPtr uInputLength = UTF8::FromUTF32(nullptr,0,pInput);
-	char *pWork = m_Raw;
-	if (uInputLength>=BUFFERSIZE) {				// Buffer big enough?
-		pWork = static_cast<char *>(Alloc(uInputLength+1));
-		if (!pWork) {				// Oh oh...
+	uintptr_t uInputLength = UTF8::FromUTF32(nullptr, 0, pInput);
+	char* pWork = m_Raw;
+	if (uInputLength >= kBufferSize) { // Buffer big enough?
+		pWork = static_cast<char*>(Alloc(uInputLength + 1));
+		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
 			uTemp = 0;
 			pInput = &uTemp;
-			uInputLength = 0;		// Don't copy anything
+			uInputLength = 0; // Don't copy anything
 		}
 	}
-	m_uLength = uInputLength;			// Save the new length
-	m_pData = pWork;					// Set the pointer
-	UTF8::FromUTF32(pWork,uInputLength+1,pInput);	// Copy the string
+	m_uLength = uInputLength;                         // Save the new length
+	m_pData = pWork;                                  // Set the pointer
+	UTF8::FromUTF32(pWork, uInputLength + 1, pInput); // Copy the string
 }
 
 /*! ************************************
 
-	\brief Initialize a Burger::String by using a subsection of a different "C" string
+	\brief Initialize a Burger::String by using a subsection of a different "C"
+		string
 
-	Copy a range of bytes from a "C" string. This will terminate
-	early if a zero byte is found in the input stream.
+	Copy a range of bytes from a "C" string. This will terminate early if a zero
+	byte is found in the input stream.
 
 	\param pInput A pointer to a valid "C" string
 	\param uStart Offset to the first character to read from
@@ -264,35 +271,36 @@ Burger::String::String(const Word32 *pInput) BURGER_NOEXCEPT
 
 ***************************************/
 
-Burger::String::String(const char *pInput,WordPtr uStart,WordPtr uEnd) BURGER_NOEXCEPT
+Burger::String::String(
+	const char* pInput, uintptr_t uStart, uintptr_t uEnd) BURGER_NOEXCEPT
 {
 	if (!pInput) {
 		pInput = g_EmptyString;
 	}
-	WordPtr uInputLength = StringLength(pInput);	// Get the source length
-	if (uEnd>uInputLength) {					// Clamp the end of the string
-		uEnd = uInputLength;					// Make sure it fits
+	uintptr_t uInputLength = StringLength(pInput); // Get the source length
+	if (uEnd > uInputLength) { // Clamp the end of the string
+		uEnd = uInputLength;   // Make sure it fits
 	}
-	if (uStart>=uEnd) {							// Valid range?
-		uInputLength = 0;						// The result will be empty
+	if (uStart >= uEnd) { // Valid range?
+		uInputLength = 0; // The result will be empty
 	} else {
-		uInputLength = uEnd-uStart;				// Length of the new string
+		uInputLength = uEnd - uStart; // Length of the new string
 		pInput += uStart;
 	}
-	char *pWork = m_Raw;
-	if (uInputLength>=BUFFERSIZE) {				// Buffer big enough?
-		pWork = static_cast<char *>(Alloc(uInputLength+1));
-		if (!pWork) {				// Oh oh...
+	char* pWork = m_Raw;
+	if (uInputLength >= kBufferSize) { // Buffer big enough?
+		pWork = static_cast<char*>(Alloc(uInputLength + 1));
+		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
-			uInputLength = 0;		// Don't copy anything
+			uInputLength = 0; // Don't copy anything
 		}
 	}
 	// Since I can't assume the string being created ends with a zero, I'll
 	// manually place one in the new string
 	pWork[uInputLength] = 0;
-	m_uLength = uInputLength;			// Save the new length
-	m_pData = pWork;					// Set the pointer
-	MemoryCopy(pWork,pInput,uInputLength);	// Copy the string
+	m_uLength = uInputLength;                // Save the new length
+	m_pData = pWork;                         // Set the pointer
+	MemoryCopy(pWork, pInput, uInputLength); // Copy the string
 }
 
 /*! ************************************
@@ -301,9 +309,9 @@ Burger::String::String(const char *pInput,WordPtr uStart,WordPtr uEnd) BURGER_NO
 
 	If the input character is zero, the resulting string will be empty
 
-	\note It is NOT recommended to use "high ASCII" as input such as 
+	\note It is NOT recommended to use "high ASCII" as input such as
 	values 128-255. They are considered prefix codes as per the UTF8 standard
-	and will yield undefined results for code that's expecting a 
+	and will yield undefined results for code that's expecting a
 	valid UTF8 string
 
 	\param cInput Character to convert to a single byte string
@@ -312,15 +320,15 @@ Burger::String::String(const char *pInput,WordPtr uStart,WordPtr uEnd) BURGER_NO
 
 Burger::String::String(char cInput) BURGER_NOEXCEPT
 {
-	char *pWork = m_Raw;
-	pWork[0] = cInput;		// Store the char in the string
+	char* pWork = m_Raw;
+	pWork[0] = cInput; // Store the char in the string
 	pWork[1] = 0;
-	WordPtr uInputLength = 1;
-	if (!cInput) {			// Valid string?
-		uInputLength = 0;	// 1 char long
+	uintptr_t uInputLength = 1;
+	if (!cInput) {        // Valid string?
+		uInputLength = 0; // 1 char long
 	}
-	m_uLength = uInputLength;			// Save the new length
-	m_pData = pWork;					// Set the pointer
+	m_uLength = uInputLength; // Save the new length
+	m_pData = pWork;          // Set the pointer
 }
 
 /*! ************************************
@@ -334,7 +342,7 @@ Burger::String::String(char cInput) BURGER_NOEXCEPT
 
 ***************************************/
 
-Burger::String::String(char cInput,WordPtr uFillSize) BURGER_NOEXCEPT
+Burger::String::String(char cInput, uintptr_t uFillSize) BURGER_NOEXCEPT
 {
 	// Fix a logic error. If the character is null, then the string is empty
 	// by default. Kill the fill length
@@ -342,66 +350,68 @@ Burger::String::String(char cInput,WordPtr uFillSize) BURGER_NOEXCEPT
 	if (!cInput) {
 		uFillSize = 0;
 	}
-	char *pWork = m_Raw;
-	if (uFillSize>=BUFFERSIZE) {	// Buffer big enough?
-		pWork = static_cast<char *>(Alloc(uFillSize+1));
-		if (!pWork) {			// Oh oh...
+	char* pWork = m_Raw;
+	if (uFillSize >= kBufferSize) { // Buffer big enough?
+		pWork = static_cast<char*>(Alloc(uFillSize + 1));
+		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
-			uFillSize = 0;		// Don't copy anything
+			uFillSize = 0; // Don't copy anything
 		}
 	}
-	m_uLength = uFillSize;		// Save the new length
-	m_pData = pWork;			// Set the pointer
+	m_uLength = uFillSize; // Save the new length
+	m_pData = pWork;       // Set the pointer
 	pWork[uFillSize] = 0;
-	MemoryFill(pWork,static_cast<Word8>(cInput),uFillSize);
+	MemoryFill(pWork, static_cast<uint8_t>(cInput), uFillSize);
 }
 
 /*! ************************************
 
 	\brief Initialize a Burger::String with two concatenated "C" strings
 
-	If any input string pointer is \ref NULL, it will be treated as an empty string.
+	If any input string pointer is \ref NULL, it will be treated as an empty
+	string.
 
 	\param pInput1 First string to initialize with
 	\param pInput2 String to append after the first
 
 ***************************************/
 
-Burger::String::String(const char *pInput1,const char *pInput2) BURGER_NOEXCEPT
+Burger::String::String(const char* pInput1, const char* pInput2) BURGER_NOEXCEPT
 {
-	if (!pInput1) {			// Remove all NULLs
+	if (!pInput1) { // Remove all NULLs
 		pInput1 = g_EmptyString;
 	}
 	if (!pInput2) {
 		pInput2 = g_EmptyString;
 	}
-	WordPtr uLen1 = StringLength(pInput1);
-	WordPtr uLen2 = StringLength(pInput2);
-	WordPtr uTotal = uLen1+uLen2;		// Size of the finished string
+	uintptr_t uLen1 = StringLength(pInput1);
+	uintptr_t uLen2 = StringLength(pInput2);
+	uintptr_t uTotal = uLen1 + uLen2; // Size of the finished string
 
-	char *pWork = m_Raw;
-	if (uTotal>=BUFFERSIZE) {	// Buffer big enough?
-		pWork = static_cast<char *>(Alloc(uTotal+1));
-		if (!pWork) {			// Oh oh...
+	char* pWork = m_Raw;
+	if (uTotal >= kBufferSize) { // Buffer big enough?
+		pWork = static_cast<char*>(Alloc(uTotal + 1));
+		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
-			uTotal = 0;			// Don't copy anything
+			uTotal = 0; // Don't copy anything
 			uLen1 = 0;
-			uLen2 = 0;		
-			pInput2 = g_EmptyString;	// Will copy the null character
+			uLen2 = 0;
+			pInput2 = g_EmptyString; // Will copy the null character
 		}
 	}
-	m_uLength = uTotal;		// Save the new length
-	m_pData = pWork;		// Set the pointer
-	MemoryCopy(pWork,pInput1,uLen1);	// Copy the string
-	pWork+=uLen1;
-	MemoryCopy(pWork,pInput2,uLen2+1);	// Copy the next string
+	m_uLength = uTotal;                // Save the new length
+	m_pData = pWork;                   // Set the pointer
+	MemoryCopy(pWork, pInput1, uLen1); // Copy the string
+	pWork += uLen1;
+	MemoryCopy(pWork, pInput2, uLen2 + 1); // Copy the next string
 }
 
 /*! ************************************
 
 	\brief Initialize a Burger::String with three concatenated "C" strings
 
-	If any input string pointer is \ref NULL, it will be treated as an empty string.
+	If any input string pointer is \ref NULL, it will be treated as an empty
+	string.
 
 	\param pInput1 First string to initialize with
 	\param pInput2 String to append after the first
@@ -409,9 +419,10 @@ Burger::String::String(const char *pInput1,const char *pInput2) BURGER_NOEXCEPT
 
 ***************************************/
 
-Burger::String::String(const char *pInput1,const char *pInput2,const char *pInput3) BURGER_NOEXCEPT
+Burger::String::String(const char* pInput1, const char* pInput2,
+	const char* pInput3) BURGER_NOEXCEPT
 {
-	if (!pInput1) {			// Remove all NULLs
+	if (!pInput1) { // Remove all NULLs
 		pInput1 = g_EmptyString;
 	}
 	if (!pInput2) {
@@ -420,37 +431,38 @@ Burger::String::String(const char *pInput1,const char *pInput2,const char *pInpu
 	if (!pInput3) {
 		pInput3 = g_EmptyString;
 	}
-	WordPtr uLen1 = StringLength(pInput1);
-	WordPtr uLen2 = StringLength(pInput2);
-	WordPtr uLen3 = StringLength(pInput3);
-	WordPtr uTotal = uLen1+uLen2+uLen3;		// Size of the finished string
+	uintptr_t uLen1 = StringLength(pInput1);
+	uintptr_t uLen2 = StringLength(pInput2);
+	uintptr_t uLen3 = StringLength(pInput3);
+	uintptr_t uTotal = uLen1 + uLen2 + uLen3; // Size of the finished string
 
-	char *pWork = m_Raw;
-	if (uTotal>=BUFFERSIZE) {	// Buffer big enough?
-		pWork = static_cast<char *>(Alloc(uTotal+1));
-		if (!pWork) {			// Oh oh...
+	char* pWork = m_Raw;
+	if (uTotal >= kBufferSize) { // Buffer big enough?
+		pWork = static_cast<char*>(Alloc(uTotal + 1));
+		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
-			uTotal = 0;			// Don't copy anything
+			uTotal = 0; // Don't copy anything
 			uLen1 = 0;
-			uLen2 = 0;		
-			uLen3 = 0;		
-			pInput3 = g_EmptyString;	// Will copy the null character
+			uLen2 = 0;
+			uLen3 = 0;
+			pInput3 = g_EmptyString; // Will copy the null character
 		}
 	}
-	m_uLength = uTotal;		// Save the new length
-	m_pData = pWork;		// Set the pointer
-	MemoryCopy(pWork,pInput1,uLen1);	// Copy the string
-	pWork+=uLen1;
-	MemoryCopy(pWork,pInput2,uLen2);	// Copy the next string
-	pWork+=uLen2;
-	MemoryCopy(pWork,pInput3,uLen3+1);	// Copy the next string
+	m_uLength = uTotal;                // Save the new length
+	m_pData = pWork;                   // Set the pointer
+	MemoryCopy(pWork, pInput1, uLen1); // Copy the string
+	pWork += uLen1;
+	MemoryCopy(pWork, pInput2, uLen2); // Copy the next string
+	pWork += uLen2;
+	MemoryCopy(pWork, pInput3, uLen3 + 1); // Copy the next string
 }
 
 /*! ************************************
 
 	\brief Initialize a Burger::String with four concatenated "C" strings
 
-	If any input string pointer is \ref NULL, it will be treated as an empty string.
+	If any input string pointer is \ref NULL, it will be treated as an empty
+	string.
 
 	\param pInput1 First string to initialize with
 	\param pInput2 String to append after the first
@@ -459,9 +471,10 @@ Burger::String::String(const char *pInput1,const char *pInput2,const char *pInpu
 
 ***************************************/
 
-Burger::String::String(const char *pInput1,const char *pInput2,const char *pInput3,const char *pInput4) BURGER_NOEXCEPT
+Burger::String::String(const char* pInput1, const char* pInput2,
+	const char* pInput3, const char* pInput4) BURGER_NOEXCEPT
 {
-	if (!pInput1) {			// Remove all NULLs
+	if (!pInput1) { // Remove all NULLs
 		pInput1 = g_EmptyString;
 	}
 	if (!pInput2) {
@@ -473,34 +486,35 @@ Burger::String::String(const char *pInput1,const char *pInput2,const char *pInpu
 	if (!pInput4) {
 		pInput4 = g_EmptyString;
 	}
-	WordPtr uLen1 = StringLength(pInput1);
-	WordPtr uLen2 = StringLength(pInput2);
-	WordPtr uLen3 = StringLength(pInput3);
-	WordPtr uLen4 = StringLength(pInput4);
-	WordPtr uTotal = uLen1+uLen2+uLen3+uLen4;		// Size of the finished string
+	uintptr_t uLen1 = StringLength(pInput1);
+	uintptr_t uLen2 = StringLength(pInput2);
+	uintptr_t uLen3 = StringLength(pInput3);
+	uintptr_t uLen4 = StringLength(pInput4);
+	uintptr_t uTotal =
+		uLen1 + uLen2 + uLen3 + uLen4; // Size of the finished string
 
-	char *pWork = m_Raw;
-	if (uTotal>=BUFFERSIZE) {	// Buffer big enough?
-		pWork = static_cast<char *>(Alloc(uTotal+1));
-		if (!pWork) {			// Oh oh...
+	char* pWork = m_Raw;
+	if (uTotal >= kBufferSize) { // Buffer big enough?
+		pWork = static_cast<char*>(Alloc(uTotal + 1));
+		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
-			uTotal = 0;			// Don't copy anything
+			uTotal = 0; // Don't copy anything
 			uLen1 = 0;
-			uLen2 = 0;		
-			uLen3 = 0;		
-			uLen4 = 0;		
-			pInput4 = g_EmptyString;	// Will copy the null character
+			uLen2 = 0;
+			uLen3 = 0;
+			uLen4 = 0;
+			pInput4 = g_EmptyString; // Will copy the null character
 		}
 	}
-	m_uLength = uTotal;		// Save the new length
-	m_pData = pWork;		// Set the pointer
-	MemoryCopy(pWork,pInput1,uLen1);	// Copy the string
-	pWork+=uLen1;
-	MemoryCopy(pWork,pInput2,uLen2);	// Copy the next string
-	pWork+=uLen2;
-	MemoryCopy(pWork,pInput3,uLen3);	// Copy the next string
-	pWork+=uLen3;
-	MemoryCopy(pWork,pInput4,uLen4+1);	// Copy the next string
+	m_uLength = uTotal;                // Save the new length
+	m_pData = pWork;                   // Set the pointer
+	MemoryCopy(pWork, pInput1, uLen1); // Copy the string
+	pWork += uLen1;
+	MemoryCopy(pWork, pInput2, uLen2); // Copy the next string
+	pWork += uLen2;
+	MemoryCopy(pWork, pInput3, uLen3); // Copy the next string
+	pWork += uLen3;
+	MemoryCopy(pWork, pInput4, uLen4 + 1); // Copy the next string
 }
 
 /*! ************************************
@@ -597,25 +611,26 @@ Burger::String::String(const char *pInput1,const char *pInput2,const char *pInpu
 	\fn Burger::String::~String()
 	\brief Release memory, if any
 
-	Releases any allocated memory for the string. Under most cases, this performs
-	no operation.
+	Releases any allocated memory for the string. Under most cases, this
+	performs no operation.
 
 ***************************************/
-
 
 /*! ************************************
 
 	\brief Copy a "C" string to a Burger::String
 
-	\note This function allows using the tail end of
-	the current string as input
+	\note This function allows using the tail end of the current string as input
 
-	\param pInput Pointer to a UTF8 "C" string. \ref NULL generates an empty string.
+	\param pInput Pointer to a UTF8 "C" string. \ref NULL generates an empty
+		string.
+
 	\return Zero if no error, non zero if memory allocation failed
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::String::Set(const char *pInput) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::String::Set(
+	const char* pInput) BURGER_NOEXCEPT
 {
 	// Assume no error
 	eError uResult = kErrorNone;
@@ -623,22 +638,22 @@ Burger::eError BURGER_API Burger::String::Set(const char *pInput) BURGER_NOEXCEP
 	if (!pInput) {
 		pInput = g_EmptyString;
 	}
-	char *pDest = m_Raw;
-	WordPtr uInputLength = StringLength(pInput);		// Length of the new string
-	if (uInputLength>=BUFFERSIZE) {		// Buffer big enough?
-		pDest = static_cast<char *>(Alloc(uInputLength+1));
-		if (!pDest) {					// Oh oh...
+	char* pDest = m_Raw;
+	uintptr_t uInputLength = StringLength(pInput); // Length of the new string
+	if (uInputLength >= kBufferSize) {              // Buffer big enough?
+		pDest = static_cast<char*>(Alloc(uInputLength + 1));
+		if (!pDest) { // Oh oh...
 			pDest = m_Raw;
-			uInputLength = 0;			// Don't copy anything
-			pInput = g_EmptyString;		// Will copy the null character
-			uResult = kErrorOutOfMemory;	// Error!
+			uInputLength = 0;            // Don't copy anything
+			pInput = g_EmptyString;      // Will copy the null character
+			uResult = kErrorOutOfMemory; // Error!
 		}
 	}
-	char *pOld = m_pData;
-	m_uLength = uInputLength;			// Save the new length
-	m_pData = pDest;					// Set the pointer
-	MemoryMove(pDest,pInput,uInputLength+1);	// Copy the string
-	if (pOld!=m_Raw) {					// Discard previous memory
+	char* pOld = m_pData;
+	m_uLength = uInputLength;                    // Save the new length
+	m_pData = pDest;                             // Set the pointer
+	MemoryMove(pDest, pInput, uInputLength + 1); // Copy the string
+	if (pOld != m_Raw) {                         // Discard previous memory
 		Free(pOld);
 	}
 	// Return error
@@ -653,13 +668,16 @@ Burger::eError BURGER_API Burger::String::Set(const char *pInput) BURGER_NOEXCEP
 	a zero, it will be truncated to that length. If the array does
 	not contain a zero, one will be appended to the resulting string
 
-	\param pInput Pointer to an array of UTF8 characters. \ref NULL generates an empty string.
+	\param pInput Pointer to an array of UTF8 characters. \ref NULL generates an
+		empty string.
 	\param uLength Length of the input data
+
 	\return Zero if no error, non zero if memory allocation failed
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::String::Set(const char *pInput,uintptr_t uLength) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::String::Set(
+	const char* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	// Assume no error
 	eError uResult = kErrorNone;
@@ -668,30 +686,30 @@ Burger::eError BURGER_API Burger::String::Set(const char *pInput,uintptr_t uLeng
 	if (!pInput) {
 		uLength = 0;
 
-	// Determine if the string needs to be truncated
-	
+		// Determine if the string needs to be truncated
+
 	} else if (uLength) {
-		const char *pMark = MemoryCharacter(pInput,uLength,0);
+		const char* pMark = MemoryCharacter(pInput, uLength, 0);
 		if (pMark) {
-			uLength = static_cast<WordPtr>(pMark-pInput);
+			uLength = static_cast<uintptr_t>(pMark - pInput);
 		}
 	}
 
-	char *pDest = m_Raw;
-	if (uLength>=BUFFERSIZE) {		// Buffer big enough?
-		pDest = static_cast<char *>(Alloc(uLength+1));
-		if (!pDest) {					// Oh oh...
+	char* pDest = m_Raw;
+	if (uLength >= kBufferSize) { // Buffer big enough?
+		pDest = static_cast<char*>(Alloc(uLength + 1));
+		if (!pDest) { // Oh oh...
 			pDest = m_Raw;
-			uLength = 0;				// Don't copy anything
-			uResult = kErrorOutOfMemory;	// Error!
+			uLength = 0;                 // Don't copy anything
+			uResult = kErrorOutOfMemory; // Error!
 		}
 	}
-	char *pOld = m_pData;
-	m_uLength = uLength;				// Save the new length
-	m_pData = pDest;					// Set the pointer
-	MemoryMove(pDest,pInput,uLength);	// Copy the string
-	pDest[uLength] = 0;					// Force string termination
-	if (pOld!=m_Raw) {					// Discard previous memory
+	char* pOld = m_pData;
+	m_uLength = uLength;                // Save the new length
+	m_pData = pDest;                    // Set the pointer
+	MemoryMove(pDest, pInput, uLength); // Copy the string
+	pDest[uLength] = 0;                 // Force string termination
+	if (pOld != m_Raw) {                // Discard previous memory
 		Free(pOld);
 	}
 	// Return error
@@ -702,12 +720,15 @@ Burger::eError BURGER_API Burger::String::Set(const char *pInput,uintptr_t uLeng
 
 	\brief Copy a 16 bit "C" string to a Burger::String
 
-	\param pInput Pointer to a UTF16 "C" string. \ref NULL generates an empty string.
+	\param pInput Pointer to a UTF16 "C" string. \ref NULL generates an empty
+		string.
+
 	\return Zero if no error, non zero if memory allocation failed
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::String::Set(const uint16_t *pInput) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::String::Set(
+	const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	// Assume no error
 	eError uResult = kErrorNone;
@@ -715,22 +736,23 @@ Burger::eError BURGER_API Burger::String::Set(const uint16_t *pInput) BURGER_NOE
 	if (!pInput) {
 		pInput = g_EmptyString16;
 	}
-	char *pDest = m_Raw;
-	WordPtr uInputLength = UTF8::FromUTF16(nullptr,0,pInput);		// Length of the new string
-	if (uInputLength>=BUFFERSIZE) {		// Buffer big enough?
-		pDest = static_cast<char *>(Alloc(uInputLength+1));
-		if (!pDest) {					// Oh oh...
+	char* pDest = m_Raw;
+	uintptr_t uInputLength =
+		UTF8::FromUTF16(nullptr, 0, pInput); // Length of the new string
+	if (uInputLength >= kBufferSize) {        // Buffer big enough?
+		pDest = static_cast<char*>(Alloc(uInputLength + 1));
+		if (!pDest) { // Oh oh...
 			pDest = m_Raw;
-			uInputLength = 0;			// Don't copy anything
-			pInput = g_EmptyString16;	// Will copy the null character
-			uResult = kErrorOutOfMemory;	// Error!
+			uInputLength = 0;            // Don't copy anything
+			pInput = g_EmptyString16;    // Will copy the null character
+			uResult = kErrorOutOfMemory; // Error!
 		}
 	}
-	char *pOld = m_pData;
-	m_uLength = uInputLength;			// Save the new length
-	m_pData = pDest;					// Set the pointer
-	UTF8::FromUTF16(pDest,uInputLength+1,pInput);		// Copy the string
-	if (pOld!=m_Raw) {					// Discard previous memory
+	char* pOld = m_pData;
+	m_uLength = uInputLength;                         // Save the new length
+	m_pData = pDest;                                  // Set the pointer
+	UTF8::FromUTF16(pDest, uInputLength + 1, pInput); // Copy the string
+	if (pOld != m_Raw) {                              // Discard previous memory
 		Free(pOld);
 	}
 	// Return error
@@ -741,13 +763,16 @@ Burger::eError BURGER_API Burger::String::Set(const uint16_t *pInput) BURGER_NOE
 
 	\brief Copy a 16 bit "C" string to a Burger::String
 
-	\param pInput Pointer to a UTF16 "C" string. \ref NULL generates an empty string.
+	\param pInput Pointer to a UTF16 "C" string. \ref NULL generates an empty
+		string.
 	\param uLength Length of the UTF16 string in characters (sizeof(buffer)/2)
+
 	\return Zero if no error, non zero if memory allocation failed
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::String::Set(const uint16_t *pInput,uintptr_t uLength) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::String::Set(
+	const uint16_t* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	// Assume no error
 	eError uResult = kErrorNone;
@@ -755,29 +780,29 @@ Burger::eError BURGER_API Burger::String::Set(const uint16_t *pInput,uintptr_t u
 	if (!pInput) {
 		pInput = g_EmptyString16;
 	}
-	char *pDest = m_Raw;
-	WordPtr uInputLength = UTF8::FromUTF16(nullptr,0,pInput,uLength<<1U);		// Length of the new string
-	if (uInputLength>=BUFFERSIZE) {		// Buffer big enough?
-		pDest = static_cast<char *>(Alloc(uInputLength+1));
-		if (!pDest) {					// Oh oh...
+	char* pDest = m_Raw;
+	uintptr_t uInputLength = UTF8::FromUTF16(
+		nullptr, 0, pInput, uLength << 1U); // Length of the new string
+	if (uInputLength >= kBufferSize) {       // Buffer big enough?
+		pDest = static_cast<char*>(Alloc(uInputLength + 1));
+		if (!pDest) { // Oh oh...
 			pDest = m_Raw;
-			uInputLength = 0;			// Don't copy anything
-			pInput = g_EmptyString16;	// Will copy the null character
-			uResult = kErrorOutOfMemory;	// Error!
+			uInputLength = 0;            // Don't copy anything
+			pInput = g_EmptyString16;    // Will copy the null character
+			uResult = kErrorOutOfMemory; // Error!
 		}
 	}
-	char *pOld = m_pData;
-	m_uLength = uInputLength;			// Save the new length
-	m_pData = pDest;					// Set the pointer
-	UTF8::FromUTF16(pDest,uInputLength+1,pInput,uLength<<1U);		// Copy the string
-	if (pOld!=m_Raw) {					// Discard previous memory
+	char* pOld = m_pData;
+	m_uLength = uInputLength; // Save the new length
+	m_pData = pDest;          // Set the pointer
+	UTF8::FromUTF16(
+		pDest, uInputLength + 1, pInput, uLength << 1U); // Copy the string
+	if (pOld != m_Raw) { // Discard previous memory
 		Free(pOld);
 	}
 	// Return error
 	return uResult;
 }
-
-
 
 /*! ************************************
 
@@ -785,54 +810,56 @@ Burger::eError BURGER_API Burger::String::Set(const uint16_t *pInput,uintptr_t u
 
 	Set the buffer to a specific size while retaining the existing string.
 	If the preexisting string is too long for the new buffer, it will be
-	truncated. The buffer size will be padded to reserve one byte for the terminating
-	zero.
+	truncated. The buffer size will be padded to reserve one byte for the
+	terminating zero.
 
-	\note If a buffer of 100 bytes is requested, 101 bytes will be allocated to hold
-	a string up to 100 characters in length with the 101st byte being the terminating
-	zero. The output of Burger::StringLength() is acceptable as input for a new string.
+	\note If a buffer of 100 bytes is requested, 101 bytes will be allocated to
+	hold a string up to 100 characters in length with the 101st byte being the
+	terminating zero. The output of Burger::StringLength() is acceptable as
+	input for a new string.
 
 	\param uSize Number of bytes to set the buffer to
 	\return Zero if no error, error code if the buffer couldn't be resized
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::String::SetBufferSize(uintptr_t uSize) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::String::SetBufferSize(
+	uintptr_t uSize) BURGER_NOEXCEPT
 {
 	// Assume no error
 	eError uResult = kErrorNone;
-	if (uSize!=m_uLength) {
+	if (uSize != m_uLength) {
 		// If no space is requested, clear the buffer
 		if (!uSize) {
 			Clear();
 		} else {
 			// Hold the old buffer
-			char *pWork = m_pData;
+			char* pWork = m_pData;
 			// Get the new buffer
-			char *pDest = m_Raw;
+			char* pDest = m_Raw;
 			// Allocate a new buffer if needed
-			if (uSize>=BUFFERSIZE) {	// Buffer big enough?
-				pDest = static_cast<char *>(Alloc(uSize+1));
-				if (!pDest) {			// Oh oh...
+			if (uSize >= kBufferSize) { // Buffer big enough?
+				pDest = static_cast<char*>(Alloc(uSize + 1));
+				if (!pDest) { // Oh oh...
 					pDest = m_Raw;
-					uSize = 0;			// Don't copy anything
-					uResult = kErrorOutOfMemory;	// Out of memory error!
+					uSize = 0;                   // Don't copy anything
+					uResult = kErrorOutOfMemory; // Out of memory error!
 				}
 			}
 			// Get the size of the string
 			uintptr_t uDestSize = m_uLength;
-			if (uDestSize>=uSize) {
+			if (uDestSize >= uSize) {
 				// Truncate the string
 				uDestSize = uSize;
 			}
-			MemoryCopy(pDest,pWork,uDestSize);
-			pDest[uDestSize] = 0;		// Ensure the buffer is zero terminated
-			if (pWork!=m_Raw) {			// Discard previous memory
+			MemoryCopy(pDest, pWork, uDestSize);
+			pDest[uDestSize] = 0; // Ensure the buffer is zero terminated
+			if (pWork != m_Raw) { // Discard previous memory
 				Free(pWork);
 			}
-			m_pData = pDest;			// Set the pointer
-			m_uLength = uSize;			// Save the new length
-			pDest[uSize] = 0;			// Ensure the terminating zero is present
+			m_pData = pDest;   // Set the pointer
+			m_uLength = uSize; // Save the new length
+			pDest[uSize] = 0;  // Ensure the terminating zero is present
 		}
 	}
 	// Return error
@@ -850,28 +877,28 @@ Burger::eError BURGER_API Burger::String::SetBufferSize(uintptr_t uSize) BURGER_
 
 ***************************************/
 
-Burger::String & Burger::String::operator =(const Burger::String &rInput)
+Burger::String& Burger::String::operator=(const Burger::String& rInput)
 {
-	if (this!=&rInput) {		// Am I copying myself?
-		char *pWork = m_pData;
-		if (pWork!=m_Raw) {		// Discard previous memory
+	if (this != &rInput) { // Am I copying myself?
+		char* pWork = m_pData;
+		if (pWork != m_Raw) { // Discard previous memory
 			Free(pWork);
-			pWork=m_Raw;
+			pWork = m_Raw;
 		}
 
-		WordPtr uInputLength = rInput.m_uLength;	// Length of the new string
-		const char *pInput = rInput.m_pData;		// Copy the new length
-		if (uInputLength>=BUFFERSIZE) {		// Buffer big enough?
-			pWork = static_cast<char *>(Alloc(uInputLength+1));
-			if (!pWork) {					// Oh oh...
+		uintptr_t uInputLength = rInput.m_uLength; // Length of the new string
+		const char* pInput = rInput.m_pData;       // Copy the new length
+		if (uInputLength >= kBufferSize) {          // Buffer big enough?
+			pWork = static_cast<char*>(Alloc(uInputLength + 1));
+			if (!pWork) { // Oh oh...
 				pWork = m_Raw;
-				uInputLength = 0;			// Don't copy anything
-				pInput = g_EmptyString;		// Will copy the null character
+				uInputLength = 0;       // Don't copy anything
+				pInput = g_EmptyString; // Will copy the null character
 			}
 		}
-		m_uLength = uInputLength;			// Save the new length
-		m_pData = pWork;					// Set the pointer
-		MemoryCopy(pWork,pInput,uInputLength+1);	// Copy the string
+		m_uLength = uInputLength;                    // Save the new length
+		m_pData = pWork;                             // Set the pointer
+		MemoryCopy(pWork, pInput, uInputLength + 1); // Copy the string
 	}
 	return *this;
 }
@@ -882,33 +909,35 @@ Burger::String & Burger::String::operator =(const Burger::String &rInput)
 
 	Copy the contents of a UTF8 "C" string into this Burger::String
 
-	\param pInput Pointer to a UTF8 "C" string. \ref NULL generates an empty string.
+	\param pInput Pointer to a UTF8 "C" string. \ref NULL generates an empty
+		string.
+
 	\return A reference to the this pointer
 
 ***************************************/
 
-Burger::String & Burger::String::operator =(const char *pInput) BURGER_NOEXCEPT
+Burger::String& Burger::String::operator=(const char* pInput) BURGER_NOEXCEPT
 {
 	if (!pInput) {
 		pInput = g_EmptyString;
 	}
-	char *pWork = m_pData;
-	if (pWork!=m_Raw) {		// Discard previous memory
+	char* pWork = m_pData;
+	if (pWork != m_Raw) { // Discard previous memory
 		Free(pWork);
 		pWork = m_Raw;
 	}
-	WordPtr uInputLength = StringLength(pInput);		// Length of the new string
-	if (uInputLength>=BUFFERSIZE) {		// Buffer big enough?
-		pWork = static_cast<char *>(Alloc(uInputLength+1));
-		if (!pWork) {					// Oh oh...
+	uintptr_t uInputLength = StringLength(pInput); // Length of the new string
+	if (uInputLength >= kBufferSize) {              // Buffer big enough?
+		pWork = static_cast<char*>(Alloc(uInputLength + 1));
+		if (!pWork) { // Oh oh...
 			pWork = m_Raw;
-			uInputLength = 0;			// Don't copy anything
-			pInput = g_EmptyString;		// Will copy the null character
+			uInputLength = 0;       // Don't copy anything
+			pInput = g_EmptyString; // Will copy the null character
 		}
 	}
-	m_uLength = uInputLength;			// Save the new length
-	m_pData = pWork;					// Set the pointer
-	MemoryMove(pWork,pInput,uInputLength+1);	// Copy the string
+	m_uLength = uInputLength;                    // Save the new length
+	m_pData = pWork;                             // Set the pointer
+	MemoryMove(pWork, pInput, uInputLength + 1); // Copy the string
 	return *this;
 }
 
@@ -916,7 +945,7 @@ Burger::String & Burger::String::operator =(const char *pInput) BURGER_NOEXCEPT
 
 	\brief Assign a single character length string to this Burger::String
 
-	If the input is zero, the string is empty. 
+	If the input is zero, the string is empty.
 
 	\note Since the default encoding is UFT8, input that's greater than
 	127 will yield a possibly invalid string due to UTF8 decoding.
@@ -926,22 +955,22 @@ Burger::String & Burger::String::operator =(const char *pInput) BURGER_NOEXCEPT
 
 ***************************************/
 
-Burger::String & Burger::String::operator =(char cInput)
+Burger::String& Burger::String::operator=(char cInput)
 {
-	char *pWork = m_pData;
-	if (pWork!=m_Raw) {		// Discard previous memory
+	char* pWork = m_pData;
+	if (pWork != m_Raw) { // Discard previous memory
 		Free(pWork);
 		pWork = m_Raw;
 	}
 
-	pWork[0] = cInput;		// Store the char in the string
+	pWork[0] = cInput; // Store the char in the string
 	pWork[1] = 0;
-	WordPtr uInputLength = 1;
-	if (!cInput) {			// Valid string?
-		uInputLength = 0;	// 1 char long
+	uintptr_t uInputLength = 1;
+	if (!cInput) {        // Valid string?
+		uInputLength = 0; // 1 char long
 	}
-	m_uLength = uInputLength;			// Save the new length
-	m_pData = pWork;					// Set the pointer
+	m_uLength = uInputLength; // Save the new length
+	m_pData = pWork;          // Set the pointer
 	return *this;
 }
 
@@ -949,46 +978,46 @@ Burger::String & Burger::String::operator =(char cInput)
 
 	\brief Append a Burger::String to the current string.
 
-	Increase the buffer if needed and append the input string to the existing string.
-	If the input string is empty, no operation is performed.
+	Increase the buffer if needed and append the input string to the existing
+	string. If the input string is empty, no operation is performed.
 
 	\param rInput Reference to string to append
 	\return A reference to the this pointer
 
 ***************************************/
 
-Burger::String & Burger::String::operator +=(const Burger::String &rInput)
+Burger::String& Burger::String::operator+=(const Burger::String& rInput)
 {
-	WordPtr uInputLen2 = rInput.m_uLength;
-	if (uInputLen2) {							// Do I bother?
-		const char *pInput = rInput.m_pData;
-		WordPtr uInputLen1 = m_uLength;			// Get the lengths of the two strings
-		WordPtr uTotal = uInputLen1+uInputLen2;	// New string size
-		char *pWork = m_Raw;
-		if (uTotal>=BUFFERSIZE) {				// Buffer big enough?
-			pWork = static_cast<char *>(Alloc(uTotal+1));
-			if (!pWork) {						// Oh oh...
+	uintptr_t uInputLen2 = rInput.m_uLength;
+	if (uInputLen2) { // Do I bother?
+		const char* pInput = rInput.m_pData;
+		uintptr_t uInputLen1 = m_uLength; // Get the lengths of the two strings
+		uintptr_t uTotal = uInputLen1 + uInputLen2; // New string size
+		char* pWork = m_Raw;
+		if (uTotal >= kBufferSize) { // Buffer big enough?
+			pWork = static_cast<char*>(Alloc(uTotal + 1));
+			if (!pWork) { // Oh oh...
 				pWork = m_Raw;
 				pInput = g_EmptyString;
 				uInputLen1 = 0;
 				uInputLen2 = 0;
-				uTotal = 0;						// Don't copy anything
+				uTotal = 0; // Don't copy anything
 			}
 			// Copy the local string into the new buffer
-			const char *pAppendTo = m_pData;
-			MemoryCopy(pWork,pAppendTo,uInputLen1);
+			const char* pAppendTo = m_pData;
+			MemoryCopy(pWork, pAppendTo, uInputLen1);
 			// Dispose of the old string if needed
-			if (pAppendTo!=m_Raw) {
+			if (pAppendTo != m_Raw) {
 				Free(pAppendTo);
 			}
 		}
-		m_uLength = uTotal;			// Save the new length
-		m_pData = pWork;			// Set the pointer
+		m_uLength = uTotal; // Save the new length
+		m_pData = pWork;    // Set the pointer
 
 		// If the output buffer is local, it is logical to
 		// assume that the original buffer was local.
 		// Perform a simple concatenation and be done with it
-		MemoryCopy(pWork+uInputLen1,pInput,uInputLen2+1);
+		MemoryCopy(pWork + uInputLen1, pInput, uInputLen2 + 1);
 	}
 	return *this;
 }
@@ -997,46 +1026,49 @@ Burger::String & Burger::String::operator +=(const Burger::String &rInput)
 
 	\brief Append a UTF8 "C" string to the current string.
 
-	Increase the buffer if needed and append the input string to the existing string.
-	If the input string is empty, no operation is performed.
+	Increase the buffer if needed and append the input string to the existing
+	string. If the input string is empty, no operation is performed.
 
-	\param pInput Pointer to a UTF8 "C" string to append. \ref NULL performs no operation
+	\param pInput Pointer to a UTF8 "C" string to append. \ref NULL performs no
+		operation
+
 	\return A reference to the this pointer
 
 ***************************************/
 
-Burger::String & Burger::String::operator +=(const char *pInput) BURGER_NOEXCEPT
+Burger::String& Burger::String::operator+=(const char* pInput) BURGER_NOEXCEPT
 {
 	if (pInput) {
-		WordPtr uInputLen2 = StringLength(pInput);
-		if (uInputLen2) {							// Do I bother?
-			WordPtr uInputLen1 = m_uLength;			// Get the lengths of the two strings
-			WordPtr uTotal = uInputLen1+uInputLen2;	// New string size
-			char *pWork = m_Raw;
-			if (uTotal>=BUFFERSIZE) {				// Buffer big enough?
-				pWork = static_cast<char *>(Alloc(uTotal+1));
-				if (!pWork) {						// Oh oh...
+		uintptr_t uInputLen2 = StringLength(pInput);
+		if (uInputLen2) { // Do I bother?
+			uintptr_t uInputLen1 =
+				m_uLength; // Get the lengths of the two strings
+			uintptr_t uTotal = uInputLen1 + uInputLen2; // New string size
+			char* pWork = m_Raw;
+			if (uTotal >= kBufferSize) { // Buffer big enough?
+				pWork = static_cast<char*>(Alloc(uTotal + 1));
+				if (!pWork) { // Oh oh...
 					pWork = m_Raw;
 					pInput = g_EmptyString;
 					uInputLen1 = 0;
 					uInputLen2 = 0;
-					uTotal = 0;						// Don't copy anything
+					uTotal = 0; // Don't copy anything
 				}
 				// Copy the local string into the new buffer
-				const char *pAppendTo = m_pData;
-				MemoryCopy(pWork,pAppendTo,uInputLen1);
+				const char* pAppendTo = m_pData;
+				MemoryCopy(pWork, pAppendTo, uInputLen1);
 				// Dispose of the old string if needed
-				if (pAppendTo!=m_Raw) {
+				if (pAppendTo != m_Raw) {
 					Free(pAppendTo);
 				}
 			}
-			m_uLength = uTotal;			// Save the new length
-			m_pData = pWork;			// Set the pointer
+			m_uLength = uTotal; // Save the new length
+			m_pData = pWork;    // Set the pointer
 
 			// If the output buffer is local, it is logical to
 			// assume that the original buffer was local.
 			// Perform a simple concatenation and be done with it
-			MemoryCopy(pWork+uInputLen1,pInput,uInputLen2+1);
+			MemoryCopy(pWork + uInputLen1, pInput, uInputLen2 + 1);
 		}
 	}
 	return *this;
@@ -1046,39 +1078,39 @@ Burger::String & Burger::String::operator +=(const char *pInput) BURGER_NOEXCEPT
 
 	\brief Append a single character to the current string.
 
-	Increase the buffer if needed and append the input character to the existing string.
-	If the input character is zero, no operation is performed.
+	Increase the buffer if needed and append the input character to the existing
+	string. If the input character is zero, no operation is performed.
 
 	\param cInput Character to append, zero does nothing.
 	\return A reference to the this pointer
 
 ***************************************/
 
-Burger::String & Burger::String::operator +=(char cInput)
+Burger::String& Burger::String::operator+=(char cInput)
 {
 	// Do I bother?
 	if (cInput) {
-		WordPtr uInputLen1 = m_uLength;		// Get the lengths of the two strings
-		WordPtr uTotal = uInputLen1+1;		// New string size
-		char *pWork = m_Raw;
-		if (uTotal>=BUFFERSIZE) {				// Buffer big enough?
-			pWork = static_cast<char *>(Alloc(uTotal+1));
-			if (!pWork) {						// Oh oh...
+		uintptr_t uInputLen1 = m_uLength;  // Get the lengths of the two strings
+		uintptr_t uTotal = uInputLen1 + 1; // New string size
+		char* pWork = m_Raw;
+		if (uTotal >= kBufferSize) { // Buffer big enough?
+			pWork = static_cast<char*>(Alloc(uTotal + 1));
+			if (!pWork) { // Oh oh...
 				pWork = m_Raw;
 				cInput = 0;
 				uInputLen1 = 0;
-				uTotal = 0;						// Don't copy anything
+				uTotal = 0; // Don't copy anything
 			}
-			const char *pAppendTo = m_pData;
+			const char* pAppendTo = m_pData;
 			// Copy the local string into the new buffer
-			MemoryCopy(pWork,pAppendTo,uInputLen1);
+			MemoryCopy(pWork, pAppendTo, uInputLen1);
 			// Dispose of the old string if needed
-			if (pAppendTo!=m_Raw) {
+			if (pAppendTo != m_Raw) {
 				Free(pAppendTo);
 			}
 		}
-		m_uLength = uTotal;			// Save the new length
-		m_pData = pWork;			// Set the pointer
+		m_uLength = uTotal; // Save the new length
+		m_pData = pWork;    // Set the pointer
 		// If the output buffer is local, it is logical to
 		// assume that the original buffer was local.
 		// Perform a simple concatenation and be done with it
@@ -1090,23 +1122,25 @@ Burger::String & Burger::String::operator +=(char cInput)
 
 /*! ************************************
 
-	\fn Burger::String::operator () (WordPtr uStart,WordPtr uEnd) const
+	\fn Burger::String::operator () (uintptr_t uStart,uintptr_t uEnd) const
 	\brief Create a new Burger::String from a substring
 
 	Given the start and end offsets of a string, create a new string with those
 	offsets and return the resulting string
 
 	\param uStart Offset to the starting character of the new string
-	\param uEnd Offset to the character AFTER the last character of the new string
+	\param uEnd Offset to the character AFTER the last character of the new
+		string
+
 	\return A class instance of Burger::String containing the new string.
 
-	\sa Burger::String::String(const Burger::String &,WordPtr,WordPtr)
+	\sa Burger::String::String(const Burger::String &,uintptr_t,uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator () (WordPtr uInput)
+	\fn Burger::String::operator () (uintptr_t uInput)
 	\brief Return the reference to a location in the string
 
 	Given an offset into the string, return the reference to the character.
@@ -1116,13 +1150,13 @@ Burger::String & Burger::String::operator +=(char cInput)
 	\param uInput Offset to the starting character of the new string
 	\return A reference to the character in the string.
 
-	\sa Burger::String::operator [] (WordPtr)
+	\sa Burger::String::operator [] (uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator () (WordPtr uInput) const
+	\fn Burger::String::operator () (uintptr_t uInput) const
 	\brief Return the reference to a location in the string
 
 	Given an offset into the string, return the reference to the character.
@@ -1132,13 +1166,13 @@ Burger::String & Burger::String::operator +=(char cInput)
 	\param uInput Offset to the starting character of the new string
 	\return A constant reference to the character in the string.
 
-	\sa Burger::String::operator [] (WordPtr) const
+	\sa Burger::String::operator [] (uintptr_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator [] (WordPtr uInput)
+	\fn Burger::String::operator [] (uintptr_t uInput)
 	\brief Return the reference to a location in the string
 
 	Given an offset into the string, return the reference to the character.
@@ -1148,13 +1182,13 @@ Burger::String & Burger::String::operator +=(char cInput)
 	\param uInput Offset to the starting character of the new string
 	\return A reference to the character in the string.
 
-	\sa Burger::String::operator () (WordPtr)
+	\sa Burger::String::operator () (uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator [] (WordPtr uInput) const
+	\fn Burger::String::operator [] (uintptr_t uInput) const
 	\brief Return the reference to a location in the string
 
 	Given an offset into the string, return the reference to the character.
@@ -1164,28 +1198,29 @@ Burger::String & Burger::String::operator +=(char cInput)
 	\param uInput Offset to the starting character of the new string
 	\return A constant reference to the character in the string.
 
-	\sa Burger::String::operator () (WordPtr) const
+	\sa Burger::String::operator () (uintptr_t) const
 
 ***************************************/
 
 /*! ************************************
 
 	\brief Return a single character from the string
-	
+
 	If the index is beyond the end if the string, the
 	function will return a zero.
 
 	\param uWhere Index to fetch a character from
-	\return Character found in the string or zero if the index is beyond the end of the string.
+	\return Character found in the string or zero if the index is beyond the end
+		of the string.
 
 ***************************************/
 
-char BURGER_API Burger::String::Get(WordPtr uWhere) const
+char BURGER_API Burger::String::Get(uintptr_t uWhere) const
 {
-	if (uWhere<m_uLength) {			// In bounds?
-		return m_pData[uWhere];		// Fetch it
+	if (uWhere < m_uLength) {   // In bounds?
+		return m_pData[uWhere]; // Fetch it
 	}
-	return 0;						// Return zilch
+	return 0; // Return zilch
 }
 
 /*! ************************************
@@ -1199,10 +1234,10 @@ char BURGER_API Burger::String::Get(WordPtr uWhere) const
 
 ***************************************/
 
-void BURGER_API Burger::String::Put(WordPtr uWhere,char cInput)
+void BURGER_API Burger::String::Put(uintptr_t uWhere, char cInput)
 {
-	if (uWhere<m_uLength) {			// In bounds?
-		m_pData[uWhere] = cInput;	// Store it
+	if (uWhere < m_uLength) {     // In bounds?
+		m_pData[uWhere] = cInput; // Store it
 	}
 }
 
@@ -1217,11 +1252,11 @@ void BURGER_API Burger::String::Put(WordPtr uWhere,char cInput)
 
 ***************************************/
 
-char * BURGER_API Burger::String::StringString(const char *pInput) const
+char* BURGER_API Burger::String::StringString(const char* pInput) const
 {
 	// String to scan for
 	if (pInput) {
-		return Burger::StringString(m_pData,pInput);
+		return Burger::StringString(m_pData, pInput);
 	}
 	return nullptr;
 }
@@ -1253,7 +1288,8 @@ char * BURGER_API Burger::String::StringString(const char *pInput) const
 	\fn Burger::String::Lowercase(void) const
 	\brief Return a lowercase copy of the string
 
-	Make a copy of the string with all of the ASCII uppercase characters converted to lowercase.
+	Make a copy of the string with all of the ASCII uppercase characters
+	converted to lowercase.
 
 	\return New instance of the string class in lower case
 
@@ -1264,7 +1300,8 @@ char * BURGER_API Burger::String::StringString(const char *pInput) const
 	\fn Burger::String::Uppercase(void) const
 	\brief Return an uppercase copy of the string
 
-	Make a copy of the string with all of the ASCII lowercase characters converted to uppercase.
+	Make a copy of the string with all of the ASCII lowercase characters
+	converted to uppercase.
 
 	\return New instance of the string class in upper case
 
@@ -1275,7 +1312,8 @@ char * BURGER_API Burger::String::StringString(const char *pInput) const
 	\fn Burger::String::operator ! () const
 	\brief Return \ref TRUE if the string is empty
 
-	\return \ref TRUE on an empty string, \ref FALSE if there are characters in the string
+	\return \ref TRUE on an empty string, \ref FALSE if there are characters in
+		the string
 
 ***************************************/
 
@@ -1284,7 +1322,8 @@ char * BURGER_API Burger::String::StringString(const char *pInput) const
 	\fn Burger::String::IsValid(void) const
 	\brief Return \ref TRUE if the string has characters
 
-	\return \ref FALSE on an empty string, \ref TRUE if there are characters in the string
+	\return \ref FALSE on an empty string, \ref TRUE if there are characters in
+		the string
 
 ***************************************/
 
@@ -1298,39 +1337,40 @@ char * BURGER_API Burger::String::StringString(const char *pInput) const
 
 void BURGER_API Burger::String::Clear(void) BURGER_NOEXCEPT
 {
-	char *pWork = m_pData;		// Old data pointer
-	m_pData = m_Raw;			// New pointer
-	m_uLength = 0;				// No length
-	m_Raw[0] = 0;				// Kill the string
-	if (pWork!=m_Raw) {			// Dispose of the data
-		Free(pWork);			// Kill the old memory
+	char* pWork = m_pData; // Old data pointer
+	m_pData = m_Raw;       // New pointer
+	m_uLength = 0;         // No length
+	m_Raw[0] = 0;          // Kill the string
+	if (pWork != m_Raw) {  // Dispose of the data
+		Free(pWork);       // Kill the old memory
 	}
 }
 
 /*! ************************************
 
 	\brief Extract the string into a buffer of a specific size
-	
+
 	This will truncate the string if the buffer is too small
 
 	\param pOutput Pointer to a buffer to receive the "C" string
 	\param uOutputSize Size in bytes of the output buffer
 	\return Length of the string in bytes without the terminating zero
 
-	\sa Burger::String::PCopy(Word8 *,WordPtr) const
+	\sa Burger::String::PCopy(uint8_t *,uintptr_t) const
 
 ***************************************/
 
-WordPtr BURGER_API Burger::String::Copy(char *pOutput,WordPtr uOutputSize) const
+uintptr_t BURGER_API Burger::String::Copy(
+	char* pOutput, uintptr_t uOutputSize) const
 {
-	if (uOutputSize) {					// Is there an output buffer?
-		--uOutputSize;					// Max size of the "C" string and the ending null
-		WordPtr uLength = m_uLength;	// Get the size of the current string
-		if (uOutputSize>uLength) {		// Set the maximum
-			uOutputSize = uLength;		// Truncate
+	if (uOutputSize) { // Is there an output buffer?
+		--uOutputSize; // Max size of the "C" string and the ending null
+		uintptr_t uLength = m_uLength; // Get the size of the current string
+		if (uOutputSize > uLength) {   // Set the maximum
+			uOutputSize = uLength;     // Truncate
 		}
-		pOutput[uOutputSize] = 0;		// Zero terminate
-		MemoryCopy(pOutput,m_pData,uOutputSize);	// Copy the string
+		pOutput[uOutputSize] = 0;                  // Zero terminate
+		MemoryCopy(pOutput, m_pData, uOutputSize); // Copy the string
 	}
 	return uOutputSize;
 }
@@ -1338,34 +1378,38 @@ WordPtr BURGER_API Burger::String::Copy(char *pOutput,WordPtr uOutputSize) const
 /*! ************************************
 
 	\brief Extract the string into a Pascal buffer of a specific size
-	
+
 	This will truncate the string if the buffer is too small
 
 	\note Pascal strings have a hard limit of 256 byte (255 characters). If the
 	buffer exceeds this length, it will be truncated
 
 	\note The resulting string will NOT have a terminating zero, so it must
-	manually be converted into a "C". It is not a dual "C" string and Pascal string.
+	manually be converted into a "C". It is not a dual "C" string and Pascal
+	string.
 
 	\param pOutput Buffer of up a maximum of 256 bytes in length
-	\param uOutputSize Size of the buffer in bytes. If the value is greater than 256 it will be truncated to 256.
-	\sa Burger::String::Copy(char *,WordPtr) const
+	\param uOutputSize Size of the buffer in bytes. If the value is greater than
+		256 it will be truncated to 256.
+
+	\sa Burger::String::Copy(char *,uintptr_t) const
 
 ***************************************/
 
-WordPtr BURGER_API Burger::String::PCopy(Word8 *pOutput,WordPtr uOutputSize) const
+uintptr_t BURGER_API Burger::String::PCopy(
+	uint8_t* pOutput, uintptr_t uOutputSize) const
 {
-	if (uOutputSize) {				// Is there an output buffer?
-		if (uOutputSize>256) {		// Pascal strings maximum length
+	if (uOutputSize) {           // Is there an output buffer?
+		if (uOutputSize > 256) { // Pascal strings maximum length
 			uOutputSize = 256;
 		}
-		--uOutputSize;					// Max size of the "C" string
-		WordPtr uLength = m_uLength;	// Get the size of the current string
-		if (uOutputSize>uLength) {		// Set the maximum
-			uOutputSize = uLength;		// Truncate
+		--uOutputSize;                 // Max size of the "C" string
+		uintptr_t uLength = m_uLength; // Get the size of the current string
+		if (uOutputSize > uLength) {   // Set the maximum
+			uOutputSize = uLength;     // Truncate
 		}
-		pOutput[0] = static_cast<Word8>(uOutputSize);		// Pascal length
-		MemoryCopy(pOutput+1,m_pData,uOutputSize);	// Copy the string
+		pOutput[0] = static_cast<uint8_t>(uOutputSize); // Pascal length
+		MemoryCopy(pOutput + 1, m_pData, uOutputSize);  // Copy the string
 	}
 	return uOutputSize;
 }
@@ -1378,150 +1422,160 @@ WordPtr BURGER_API Burger::String::PCopy(Word8 *pOutput,WordPtr uOutputSize) con
 
 	\param uStart Starting index into the string for the section to remove
 	\param uLength Number of bytes to remove from the string
-	\return Number of bytes of remaining string but not including the terminating zero
+
+	\return Number of bytes of remaining string but not including the
+		terminating zero
 
 ***************************************/
 
-WordPtr BURGER_API Burger::String::Remove(WordPtr uStart,WordPtr uLength)
+uintptr_t BURGER_API Burger::String::Remove(uintptr_t uStart, uintptr_t uLength)
 {
-	WordPtr uMyLength = m_uLength;		// Get the string's length
-	if (uStart < uMyLength) {			// Start off the end?
-		char *pWork = &m_pData[uStart];	// Start pointer
+	uintptr_t uMyLength = m_uLength;    // Get the string's length
+	if (uStart < uMyLength) {           // Start off the end?
+		char* pWork = &m_pData[uStart]; // Start pointer
 		// Real maximum number of bytes I can remove
-		WordPtr uRemainingLength = uMyLength - uStart;
-		if (uLength >= uRemainingLength) {	// Truncation?
-			pWork[0] = 0;					// End the string here
-			uMyLength = uStart;				// Return this as the new length
-			m_uLength = uStart;				// Save the new length
+		uintptr_t uRemainingLength = uMyLength - uStart;
+		if (uLength >= uRemainingLength) { // Truncation?
+			pWork[0] = 0;                  // End the string here
+			uMyLength = uStart;            // Return this as the new length
+			m_uLength = uStart;            // Save the new length
 		} else {
-			if (uLength) {					// Am I removing anything?
-				uMyLength -= uLength;		// Adjust the length
+			if (uLength) {            // Am I removing anything?
+				uMyLength -= uLength; // Adjust the length
 				m_uLength = uMyLength;
 				// +1 for the zero terminator
-				uRemainingLength = (uRemainingLength-uLength)+1;		
+				uRemainingLength = (uRemainingLength - uLength) + 1;
 				// I have the loop here so I'm not calling a subroutine
-				do {							
-					pWork[0] = pWork[uLength];	// Copy the string
-					++pWork;					// Next byte
-				} while (--uRemainingLength);	// All done?
+				do {
+					pWork[0] = pWork[uLength]; // Copy the string
+					++pWork;                   // Next byte
+				} while (--uRemainingLength);  // All done?
 			}
 		}
 	}
-	return uMyLength;					// Return the new length
+	return uMyLength; // Return the new length
 }
 
 /*! ************************************
 
 	\brief Insert a string into a current String
 
-	If uStart is beyond the end of the string, it's
-	placed at the end of the string.
-	If Text points to a "C" string that is smaller than
-	MaxLen, then only the length of the "C" string is used
+	If uStart is beyond the end of the string, it's placed at the end of the
+	string.
+
+	If Text points to a "C" string that is smaller than MaxLen, then only the
+	length of the "C" string is used
 
 	\param uStart Index to insert the new characters
 	\param pInput Pointer to the string to insert
 	\param uLength Number of bytes to insert
-	\return Number of bytes of remaining string but not including the terminating zero
+	\return Number of bytes of remaining string but not including the
+		terminating zero
 
 ***************************************/
 
-WordPtr BURGER_API Burger::String::Insert(WordPtr uStart,const char *pInput,WordPtr uLength)
+uintptr_t BURGER_API Burger::String::Insert(
+	uintptr_t uStart, const char* pInput, uintptr_t uLength)
 {
-	WordPtr uMyLength = m_uLength;	// Current string size
-	if (uStart>uMyLength) {			// Is the start at the END of the string?
-		uStart = uMyLength;			// Force appending
+	uintptr_t uMyLength = m_uLength; // Current string size
+	if (uStart > uMyLength) {        // Is the start at the END of the string?
+		uStart = uMyLength;          // Force appending
 	}
 
-	WordPtr uInputLength = StringLength(pInput);	// Maximum insertion
-	if (uLength>uInputLength) {
-		uLength = uInputLength;		// Duh! Don't insert more that I have
+	uintptr_t uInputLength = StringLength(pInput); // Maximum insertion
+	if (uLength > uInputLength) {
+		uLength = uInputLength; // Duh! Don't insert more that I have
 	}
 
-	if (uLength) {					// Am I inserting anything?
-		uInputLength = uMyLength+uLength;	// New string length
-		char *pWork = m_pData;		// Get the source pointer
-		char *pDest;				// Pointer to the new string
-		if (uInputLength<BUFFERSIZE) {	// Still in the main buffer?
-			pDest = m_Raw;			// Use the raw buffer
+	if (uLength) {                          // Am I inserting anything?
+		uInputLength = uMyLength + uLength; // New string length
+		char* pWork = m_pData;              // Get the source pointer
+		char* pDest;                        // Pointer to the new string
+		if (uInputLength < kBufferSize) {    // Still in the main buffer?
+			pDest = m_Raw;                  // Use the raw buffer
 		} else {
 			// Get a copy of the string
-			pDest = static_cast<char *>(Alloc(uInputLength+1));
-			if (!pDest) {			// Oh my god!!!
-				return uMyLength;			// I'm not touching the string!
+			pDest = static_cast<char*>(Alloc(uInputLength + 1));
+			if (!pDest) {         // Oh my god!!!
+				return uMyLength; // I'm not touching the string!
 			}
-			MemoryCopy(pDest,pWork,uMyLength);
+			MemoryCopy(pDest, pWork, uMyLength);
 		}
-		m_uLength = uInputLength;	// Save the new length
-		m_pData = pDest;			// Save the new pointer
+		m_uLength = uInputLength; // Save the new length
+		m_pData = pDest;          // Save the new pointer
 
-		if (pDest==pWork) {			// Same buffer?
-			pDest = pWork+uStart;	// Start here...
-			MemoryMove(pDest+uLength,pDest,(uMyLength-uStart)+1);	// Make room in the center
-			MemoryCopy(pDest,pInput,uLength);	// Copy in the string
+		if (pDest == pWork) {       // Same buffer?
+			pDest = pWork + uStart; // Start here...
+			MemoryMove(pDest + uLength, pDest,
+				(uMyLength - uStart) + 1);      // Make room in the center
+			MemoryCopy(pDest, pInput, uLength); // Copy in the string
 		} else {
-			MemoryCopy(pDest,pWork,uStart);		// Copy the first part
-			pDest+=uStart;
-			MemoryCopy(pDest,pInput,uLength);	// Insert my string
-			pDest+=uLength;
+			MemoryCopy(pDest, pWork, uStart); // Copy the first part
+			pDest += uStart;
+			MemoryCopy(pDest, pInput, uLength); // Insert my string
+			pDest += uLength;
 			// Copy the end and the zero
-			MemoryCopy(pDest,pWork+uStart,(uMyLength-uStart)+1);
+			MemoryCopy(pDest, pWork + uStart, (uMyLength - uStart) + 1);
 		}
 		// Do I dispose of the old one?
-		if (pWork!=m_Raw) {
+		if (pWork != m_Raw) {
 			Free(pWork);
 		}
-		uMyLength = m_uLength;	// Save the new length
+		uMyLength = m_uLength; // Save the new length
 	}
-	return uMyLength;			// Return the new string length
+	return uMyLength; // Return the new string length
 }
 
 /*! ************************************
 
 	\brief Append a UTF8 string buffer to the current string.
 
-	Increase the buffer if needed and append the input string to the existing string.
-	If the input string is empty, no operation is performed.
+	Increase the buffer if needed and append the input string to the existing
+	string. If the input string is empty, no operation is performed.
 
-	\param pInput Pointer to a UTF8 string to append. \ref NULL performs no operation
+	\param pInput Pointer to a UTF8 string to append. \ref NULL performs no
+		operation
 	\param uInputSize Number of bytes to append
-	\return Number of bytes of the resulting string but not including the terminating zero
+
+	\return Number of bytes of the resulting string but not including the
+		terminating zero
 
 ***************************************/
 
-WordPtr BURGER_API Burger::String::Append(const char *pInput,WordPtr uInputSize)
+uintptr_t BURGER_API Burger::String::Append(
+	const char* pInput, uintptr_t uInputSize)
 {
-	WordPtr uTotal = m_uLength;
+	uintptr_t uTotal = m_uLength;
 	// Do I bother?
 	if (pInput && uInputSize) {
-		WordPtr uInputLen1 = uTotal;			// Get the lengths of the two strings
-		uTotal = uTotal+uInputSize;	// New string size
-		char *pWork = m_Raw;
-		if (uTotal>=BUFFERSIZE) {				// Buffer big enough?
-			pWork = static_cast<char *>(Alloc(uTotal+1));
-			if (!pWork) {						// Oh oh...
+		uintptr_t uInputLen1 = uTotal; // Get the lengths of the two strings
+		uTotal = uTotal + uInputSize;  // New string size
+		char* pWork = m_Raw;
+		if (uTotal >= kBufferSize) { // Buffer big enough?
+			pWork = static_cast<char*>(Alloc(uTotal + 1));
+			if (!pWork) { // Oh oh...
 				pWork = m_Raw;
 				pInput = g_EmptyString;
 				uInputLen1 = 0;
 				uInputSize = 0;
-				uTotal = 0;						// Don't copy anything
+				uTotal = 0; // Don't copy anything
 			}
 			// Copy the local string into the new buffer
-			const char *pAppendTo = m_pData;
-			MemoryCopy(pWork,pAppendTo,uInputLen1);
+			const char* pAppendTo = m_pData;
+			MemoryCopy(pWork, pAppendTo, uInputLen1);
 			// Dispose of the old string if needed
-			if (pAppendTo!=m_Raw) {
+			if (pAppendTo != m_Raw) {
 				Free(pAppendTo);
 			}
 		}
-		m_uLength = uTotal;			// Save the new length
-		m_pData = pWork;			// Set the pointer
+		m_uLength = uTotal; // Save the new length
+		m_pData = pWork;    // Set the pointer
 		// If the output buffer is local, it is logical to
 		// assume that the original buffer was local.
 		// Perform a simple concatenation and be done with it
-		MemoryCopy(pWork+uInputLen1,pInput,uInputSize);
+		MemoryCopy(pWork + uInputLen1, pInput, uInputSize);
 		// Zero terminate
-		pWork[uInputLen1+uInputSize] = 0;
+		pWork[uInputLen1 + uInputSize] = 0;
 	}
 	return uTotal;
 }
@@ -1540,32 +1594,33 @@ WordPtr BURGER_API Burger::String::Append(const char *pInput,WordPtr uInputSize)
 
 ***************************************/
 
-Burger::String & BURGER_API Burger::String::Left(WordPtr uNewLength,char cPad)
+Burger::String& BURGER_API Burger::String::Left(uintptr_t uNewLength, char cPad)
 {
-	WordPtr uOldLen = m_uLength;	// Get the current length
-	m_uLength = uNewLength;			// Set the new length
-	char *pWork = m_pData;			// Buffer pointer
-	if (uNewLength > uOldLen) {		// Did it grow?
-		char *pDest;
-		if (uNewLength<BUFFERSIZE) {
-			pDest = m_Raw;			// Used the internal buffer
+	uintptr_t uOldLen = m_uLength; // Get the current length
+	m_uLength = uNewLength;        // Set the new length
+	char* pWork = m_pData;         // Buffer pointer
+	if (uNewLength > uOldLen) {    // Did it grow?
+		char* pDest;
+		if (uNewLength < kBufferSize) {
+			pDest = m_Raw; // Used the internal buffer
 		} else {
 			// Get a new string
-			pDest = static_cast<char *>(Alloc(uNewLength+1));
+			pDest = static_cast<char*>(Alloc(uNewLength + 1));
 			if (!pDest) {
-				m_uLength = 0;		// No memory!!!
+				m_uLength = 0; // No memory!!!
 				m_Raw[0] = 0;
 				m_pData = m_Raw;
 				return *this;
 			}
-			MemoryCopy(pDest,pWork,uOldLen);
+			MemoryCopy(pDest, pWork, uOldLen);
 		}
-		m_pData = pDest;		// Save the new buffer pointer
-		pDest[uNewLength] = 0;	// End it
-		// Fill in the extra 
-		MemoryFill(pDest + uOldLen, static_cast<Word8>(cPad), uNewLength - uOldLen);
+		m_pData = pDest;       // Save the new buffer pointer
+		pDest[uNewLength] = 0; // End it
+		// Fill in the extra
+		MemoryFill(
+			pDest + uOldLen, static_cast<uint8_t>(cPad), uNewLength - uOldLen);
 		// Get rid of the old string?
-		if (pWork!=m_Raw) {	
+		if (pWork != m_Raw) {
 			// Bye bye
 			Free(pWork);
 		}
@@ -1584,53 +1639,55 @@ Burger::String & BURGER_API Burger::String::Left(WordPtr uNewLength,char cPad)
 	grows, fill in the extra space with the pad character.
 	Note: I am padding the string from the "left" side. I.E.
 	the string is moved to the right.
-	
+
 	\param uNewLength Number of bytes the string will occupy
 	\param cPad character to fill the buffer with in case of growth
 	\return Reference to the Burger::String
 
 ***************************************/
 
-Burger::String & BURGER_API Burger::String::Right(WordPtr uNewLength,char cPad)
+Burger::String& BURGER_API Burger::String::Right(
+	uintptr_t uNewLength, char cPad)
 {
-	WordPtr uOldLen = m_uLength;	// Get the current length
-	m_uLength = uNewLength;			// Set the new length
-	char *pWork = m_pData;			// Buffer pointer
-	if (uNewLength > uOldLen) {		// Did it grow?
+	uintptr_t uOldLen = m_uLength; // Get the current length
+	m_uLength = uNewLength;        // Set the new length
+	char* pWork = m_pData;         // Buffer pointer
+	if (uNewLength > uOldLen) {    // Did it grow?
 		char *pDest;
-		if (uNewLength<BUFFERSIZE) {
-			pDest = m_Raw;			// Used the internal buffer
+		if (uNewLength < kBufferSize) {
+			pDest = m_Raw; // Used the internal buffer
 		} else {
-			pDest = static_cast<char *>(Alloc(uNewLength+1));
+			pDest = static_cast<char*>(Alloc(uNewLength + 1));
 			if (!pDest) {
-				m_uLength = 0;		// No memory!!!
+				m_uLength = 0; // No memory!!!
 				m_Raw[0] = 0;
 				m_pData = m_Raw;
 				return *this;
 			}
 			// Copy the old string
-			MemoryCopy(pDest,pWork,uOldLen);
+			MemoryCopy(pDest, pWork, uOldLen);
 		}
-		m_pData = pDest;		// Save the new buffer pointer
+		m_pData = pDest; // Save the new buffer pointer
 		// Copy over the characters from the right
-		MemoryMove(pDest+uNewLength-uOldLen,pDest,uOldLen+1);
+		MemoryMove(pDest + uNewLength - uOldLen, pDest, uOldLen + 1);
 		// Fill in the extra
-		MemoryFill(pDest, static_cast<Word8>(cPad), uNewLength - uOldLen);
+		MemoryFill(pDest, static_cast<uint8_t>(cPad), uNewLength - uOldLen);
 		// Get rid of the old string?
-		if (pWork!=m_Raw) {
+		if (pWork != m_Raw) {
 			// Bye bye
 			Free(pWork);
 		}
 	} else {
 		// Copy over the characters from the right
-		MemoryMove(pWork,pWork+uOldLen-uNewLength,uNewLength+1);
+		MemoryMove(pWork, pWork + uOldLen - uNewLength, uNewLength + 1);
 	}
 	return *this;
 }
 
 /*! ************************************
 
-	\fn BURGER_INLINE int Burger::String::Compare(const Burger::String &rInput) const
+	\fn int Burger::String::Compare(const Burger::String &rInput) const
+
 	\brief Compare the string
 
 	Compare two strings for equality using the rules found in the
@@ -1649,18 +1706,19 @@ Burger::String & BURGER_API Burger::String::Right(WordPtr uNewLength,char cPad)
 	Compare two strings for equality using the rules found in the
 	ANSI function strcmp(). This is a functional equivalent
 
-	\param pInput Pointer to a "C" string to compare against. \ref NULL will perform as if an empty string was passed in.
+	\param pInput Pointer to a "C" string to compare against. \ref NULL will
+		perform as if an empty string was passed in.
 
 	\return 0 if equal, positive if greater and negative if lessor
 
 ***************************************/
 
-int BURGER_API Burger::String::Compare(const char *pInput) const
+int BURGER_API Burger::String::Compare(const char* pInput) const
 {
 	if (!pInput) {
 		pInput = g_EmptyString;
 	}
-	return StringCompare(m_pData,pInput);
+	return StringCompare(m_pData, pInput);
 }
 
 /*! ************************************
@@ -1670,7 +1728,8 @@ int BURGER_API Burger::String::Compare(const char *pInput) const
 	Compare two strings for equality using the rules found in the
 	ANSI function strcmp(). This is a functional equivalent
 
-	\param cInput Character to convert to a string of a single character in length. Zero will perform as if an empty string was passed in.
+	\param cInput Character to convert to a string of a single character in
+		length. Zero will perform as if an empty string was passed in.
 
 	\return 0 if equal, positive if greater and negative if lessor
 
@@ -1681,71 +1740,80 @@ int BURGER_API Burger::String::Compare(char cInput) const
 	char Temp[2];
 	Temp[0] = cInput;
 	Temp[1] = 0;
-	return StringCompare(m_pData,Temp);
+	return StringCompare(m_pData, Temp);
 }
 
 /*! ************************************
 
 	\brief Remove each and every char in the list
 
-	Given a string containing characters, remove the characters found from the current string.
-	Duplicating characters in the input string will reduce performance slightly. The order of
-	the characters is not important.
+	Given a string containing characters, remove the characters found from the
+	current string. Duplicating characters in the input string will reduce
+	performance slightly. The order of the characters is not important.
 
-	\param pInput Pointer to a "C" string containing the characters to remove. \ref NULL performs no action
-	\return Number of bytes of remaining string but not including the terminating zero
+	\param pInput Pointer to a "C" string containing the characters to remove.
+		\ref NULL performs no action
+
+	\return Number of bytes of remaining string but not including the
+		terminating zero
+
 	\sa RemoveChar(char)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::String::RemoveChars(const char *pInput)
+uintptr_t BURGER_API Burger::String::RemoveChars(const char* pInput)
 {
 	if (pInput) {
-		Word uTemp = reinterpret_cast<const Word8 *>(pInput)[0];
+		uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
 		if (uTemp) {
 			do {
-				++pInput;				// Accept the char
-				RemoveChar(static_cast<char>(uTemp));	// Remove this char 
+				++pInput;                             // Accept the char
+				RemoveChar(static_cast<char>(uTemp)); // Remove this char
 				// Next char in the list
-				uTemp = reinterpret_cast<const Word8 *>(pInput)[0];		
-			} while (uTemp);				// Not the end of the list?
+				uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+			} while (uTemp); // Not the end of the list?
 		}
 	}
-	return m_uLength;		// Return the new length
+	return m_uLength; // Return the new length
 }
 
 /*! ************************************
 
 	\brief Remove a specific character from the string
 
-	Find all occurrences of the character and remove them. The string will be 
+	Find all occurrences of the character and remove them. The string will be
 	reduced in size if necessary.
 
-	\param cInput Character to remove from the string. Zero will perform no action
-	\return Number of bytes of remaining string but not including the terminating zero
+	\param cInput Character to remove from the string. Zero will perform no
+		action
+
+	\return Number of bytes of remaining string but not including the
+		terminating zero
+
 	\sa RemoveChars(const char *)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::String::RemoveChar(char cInput)
+uintptr_t BURGER_API Burger::String::RemoveChar(char cInput)
 {
-	WordPtr uLength = m_uLength;
+	uintptr_t uLength = m_uLength;
 	// Should I bother?
 	if (cInput && uLength) {
 		// Get the pointer
-		Word8 *pWork = reinterpret_cast<Word8 *>(m_pData);
-		Word8 *pDest = pWork;
+		uint8_t* pWork = reinterpret_cast<uint8_t*>(m_pData);
+		uint8_t* pDest = pWork;
 		do {
-			Word uTemp = pWork[0];					// Get the char
-			++pWork;								// Accept it
-			if (uTemp!=static_cast<Word8>(cInput)) {
-				pDest[0] = static_cast<Word8>(uTemp);	// Keep this
+			uint_t uTemp = pWork[0]; // Get the char
+			++pWork;                 // Accept it
+			if (uTemp != static_cast<uint8_t>(cInput)) {
+				pDest[0] = static_cast<uint8_t>(uTemp); // Keep this
 				++pDest;
 			}
 		} while (--uLength);
-		pDest[0] = 0;								// Zero terminate
+		pDest[0] = 0; // Zero terminate
 		// Set the new length
-		uLength = static_cast<WordPtr>(pDest-reinterpret_cast<Word8 *>(m_pData));
+		uLength =
+			static_cast<uintptr_t>(pDest - reinterpret_cast<uint8_t*>(m_pData));
 		// Save the new length if needed
 		m_uLength = uLength;
 	}
@@ -1760,36 +1828,39 @@ WordPtr BURGER_API Burger::String::RemoveChar(char cInput)
 	Find all occurrences of '\\r' and '\\r\\n' and replace them with a single
 	'\\n' character. The string will be reduced in size if necessary.
 
-	\return Number of bytes of remaining string but not including the terminating zero
+	\return Number of bytes of remaining string but not including the
+		terminating zero
+
 	\sa RemoveChar(char)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::String::NormalizeLineFeeds(void)
+uintptr_t BURGER_API Burger::String::NormalizeLineFeeds(void)
 {
-	WordPtr uLength = m_uLength;
+	uintptr_t uLength = m_uLength;
 	// Should I bother?
 	if (uLength) {
 		// Get the pointer
-		Word8 *pWork = reinterpret_cast<Word8 *>(m_pData);
-		Word8 *pDest = pWork;
+		uint8_t* pWork = reinterpret_cast<uint8_t*>(m_pData);
+		uint8_t* pDest = pWork;
 		do {
-			Word uTemp = pWork[0];					// Get the char
-			++pWork;								// Accept it
-			if (uTemp=='\r') {						// CR?
+			uint_t uTemp = pWork[0]; // Get the char
+			++pWork;                 // Accept it
+			if (uTemp == '\r') {     // CR?
 				// Is this a CR/LF case?
-				if ((uLength>=2) && (pWork[0]=='\n')) {
-					++pWork;		// Remove the 2nd characters
+				if ((uLength >= 2) && (pWork[0] == '\n')) {
+					++pWork; // Remove the 2nd characters
 					--uLength;
 				}
-				uTemp = '\n';		// Force a LF into the output
+				uTemp = '\n'; // Force a LF into the output
 			}
-			pDest[0] = static_cast<Word8>(uTemp);	// Keep this
+			pDest[0] = static_cast<uint8_t>(uTemp); // Keep this
 			++pDest;
 		} while (--uLength);
-		pDest[0] = 0;								// Zero terminate
+		pDest[0] = 0; // Zero terminate
 		// Set the new length
-		uLength = static_cast<WordPtr>(pDest-reinterpret_cast<Word8 *>(m_pData));
+		uLength =
+			static_cast<uintptr_t>(pDest - reinterpret_cast<uint8_t*>(m_pData));
 		// Save the new length if needed
 		m_uLength = uLength;
 	}
@@ -1799,20 +1870,21 @@ WordPtr BURGER_API Burger::String::NormalizeLineFeeds(void)
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::String::GetBoolean(Word bDefault) const
+	\fn BURGER_INLINE uint_t Burger::String::GetBoolean(uint_t bDefault) const
 	\brief Convert an ASCII string into a boolean.
-	
+
 	Convert the string to a \ref TRUE or a \ref FALSE. If the input is
 	\ref NULL or invalid, return the default value.
 
-	"true" and "yes" are considered \ref TRUE while "false" and "no" are considered
-	\ref FALSE. The comparison is case insensitive.
-	
+	"true" and "yes" are considered \ref TRUE while "false" and "no" are
+	considered \ref FALSE. The comparison is case insensitive.
+
 	\param bDefault Default boolean to return in the event of a parsing error.
-		
+
 	\return \ref TRUE or \ref FALSE
-	
-	\sa AsciiToBoolean(const char *,const char **) or AsciiToBoolean(const char *,Word)
+
+	\sa AsciiToBoolean(const char *,const char **) or AsciiToBoolean(const char
+		*,uint_t)
 
 ***************************************/
 
@@ -1820,66 +1892,66 @@ WordPtr BURGER_API Burger::String::NormalizeLineFeeds(void)
 
 	\brief Set the string to "true" or "false"
 
-	If the input value is zero, set the string to "false",
-	otherwise set the string to "true".
+	If the input value is zero, set the string to "false", otherwise set the
+	string to "true".
 
 	\param bInput Value to store as a string
-	\sa GetBoolean(Word) const or SetYesNo(Word)
+	\sa GetBoolean(uint_t) const or SetYesNo(uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::String::SetTrueFalse(Word bInput)
+void BURGER_API Burger::String::SetTrueFalse(uint_t bInput)
 {
-	const char *pSource;
-	WordPtr uLength;
+	const char* pSource;
+	uintptr_t uLength;
 	// Choose the string
 	if (bInput) {
 		pSource = g_TrueString;
-		uLength = sizeof(g_TrueString)-1;
+		uLength = sizeof(g_TrueString) - 1;
 	} else {
 		pSource = g_FalseString;
-		uLength = sizeof(g_FalseString)-1;
+		uLength = sizeof(g_FalseString) - 1;
 	}
-	SetFast(pSource,uLength);
+	SetFast(pSource, uLength);
 }
 
 /*! ************************************
 
 	\brief Set the string to "true" or "false"
 
-	If the input value is zero, set the string to "false",
-	otherwise set the string to "true".
+	If the input value is zero, set the string to "false", otherwise set the
+	string to "true".
 
 	\param bInput Value to store as a string
-	\sa GetBoolean(Word) const or SetTrueFalse(Word)
+	\sa GetBoolean(uint_t) const or SetTrueFalse(uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::String::SetYesNo(Word bInput)
+void BURGER_API Burger::String::SetYesNo(uint_t bInput)
 {
-	const char *pSource;
-	WordPtr uLength;
+	const char* pSource;
+	uintptr_t uLength;
 	// Choose the string
 	if (bInput) {
 		pSource = g_YesString;
-		uLength = sizeof(g_YesString)-1;
+		uLength = sizeof(g_YesString) - 1;
 	} else {
 		pSource = g_NoString;
-		uLength = sizeof(g_NoString)-1;
+		uLength = sizeof(g_NoString) - 1;
 	}
-	SetFast(pSource,uLength);
+	SetFast(pSource, uLength);
 }
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::String::GetWord(Word uDefault,Word uMin,Word uMax) const
+	\fn BURGER_INLINE uint_t Burger::String::GetWord(uint_t uDefault,uint_t
+uMin,uint_t uMax) const
+
 	\brief Return an unsigned integer value
 
-	Scan the value string as a 32 bit unsigned integer or
-	hex value and if successful, test it against
-	the valid range and return the value clamped
-	to that range. If it's not a number, return the
-	default.
+	Scan the value string as a 32 bit unsigned integer or hex value and if
+	successful, test it against the valid range and return the value clamped to
+	that range. If it's not a number, return the default.
 
 	Hex strings are acceptable input in the form
 	of $1234 and 0x1234
@@ -1888,7 +1960,8 @@ void BURGER_API Burger::String::SetYesNo(Word bInput)
 	\param uMin Minimum acceptable value
 	\param uMax Maximum acceptable value
 	\return Value in between uMin and uMax or uDefault
-	\sa GetInt(Int,Int,Int) const, SetWord(Word), SetWordHex(Word), or AsciiToWord(const char *,Word,Word,Word)
+	\sa GetInt(int_t,int_t,int_t) const, SetWord(uint_t), SetWordHex(uint_t), or
+		AsciiToWord(const char *,uint_t,uint_t,uint_t)
 
 ***************************************/
 
@@ -1896,61 +1969,62 @@ void BURGER_API Burger::String::SetYesNo(Word bInput)
 
 	\brief Set an unsigned integer value
 
-	Convert the input into an unsigned integer UTF-8 string 
-	and set the value to this string
+	Convert the input into an unsigned integer UTF-8 string and set the value to
+	this string
 
 	\param uInput Value to store as an unsigned integer string
-	\sa GetWord(Word,Word,Word) const or SetWordHex(Word)
+	\sa GetWord(uint_t,uint_t,uint_t) const or SetWordHex(uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::String::SetWord(Word uInput)
+void BURGER_API Burger::String::SetWord(uint_t uInput)
 {
 	// Remove any previously allocated buffer
-	char *pDest = m_pData;
-	if (pDest!=m_Raw) {
+	char* pDest = m_pData;
+	if (pDest != m_Raw) {
 		Free(pDest);
 		m_pData = m_Raw;
 	}
-	m_uLength = static_cast<WordPtr>(NumberToAscii(m_Raw,static_cast<Word32>(uInput))-m_Raw);
+	m_uLength = static_cast<uintptr_t>(
+		NumberToAscii(m_Raw, static_cast<uint32_t>(uInput)) - m_Raw);
 }
 
 /*! ************************************
 
 	\brief Set an unsigned integer value as hex
 
-	Convert the input into a "C" style hex
-	string in the format of 0x12345678 and
-	store this string as the value
+	Convert the input into a "C" style hex string in the format of 0x12345678
+	and store this string as the value
 
 	\param uValue Value to store as an unsigned integer hex string
-	\sa GetWord(Word,Word,Word) const or SetWord(Word)
+	\sa GetWord(uint_t,uint_t,uint_t) const or SetWord(uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::String::SetWordHex(Word uValue)
+void BURGER_API Burger::String::SetWordHex(uint_t uValue)
 {
 	// Remove any previously allocated buffer
-	char *pDest = m_pData;
-	if (pDest!=m_Raw) {
+	char* pDest = m_pData;
+	if (pDest != m_Raw) {
 		Free(pDest);
 		m_pData = m_Raw;
 	}
 	m_Raw[0] = '0';
 	m_Raw[1] = 'x';
-	m_uLength = static_cast<WordPtr>(NumberToAsciiHex(m_Raw+2,static_cast<Word32>(uValue),0)-m_Raw);
+	m_uLength = static_cast<uintptr_t>(
+		NumberToAsciiHex(m_Raw + 2, static_cast<uint32_t>(uValue), 0) - m_Raw);
 }
 
 /*! ************************************
 
-	\fn BURGER_INLINE Int Burger::String::GetInt(Int iDefault,Int iMin,Int iMax) const
+	\fn BURGER_INLINE int_t Burger::String::GetInt(int_t iDefault,int_t
+iMin,int_t iMax) const
+
 	\brief Return a signed integer value
 
-	Scan the value string as a 32 bit signed integer or
-	hex value and if successful, test it against
-	the valid range and return the value clamped
-	to that range. If it's not a number, return the
-	default.
+	Scan the value string as a 32 bit signed integer or hex value and if
+	successful, test it against the valid range and return the value clamped to
+	that range. If it's not a number, return the default.
 
 	Hex strings are acceptable input in the form
 	of $1234 and 0x1234. 0xFFFFFFFF will be converted
@@ -1960,7 +2034,9 @@ void BURGER_API Burger::String::SetWordHex(Word uValue)
 	\param iMin Minimum acceptable value
 	\param iMax Maximum acceptable value
 	\return Value in between iMin and iMax or iDefault
-	\sa GetWord(Word,Word,Word) const, SetInt(Int) or AsciiToInteger(const char *,Int,Int,Int)
+	\sa GetWord(uint_t,uint_t,uint_t) const, SetInt(int_t) or
+AsciiToInteger(const char
+		*,int_t,int_t,int_t)
 
 ***************************************/
 
@@ -1968,23 +2044,24 @@ void BURGER_API Burger::String::SetWordHex(Word uValue)
 
 	\brief Set a signed integer value
 
-	Convert the input into an signed integer UTF-8 string 
-	and set the value to this string
+	Convert the input into an signed integer UTF-8 string and set the value to
+	this string
 
 	\param iInput Value to store as a signed integer string
-	\sa GetInt(Int,Int,Int) const or SetWord(Word)
+	\sa GetInt(int_t,int_t,int_t) const or SetWord(uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::String::SetInt(Int iInput)
+void BURGER_API Burger::String::SetInt(int_t iInput)
 {
 	// Remove any previously allocated buffer
-	char *pDest = m_pData;
-	if (pDest!=m_Raw) {
+	char* pDest = m_pData;
+	if (pDest != m_Raw) {
 		Free(pDest);
 		m_pData = m_Raw;
 	}
-	m_uLength = static_cast<WordPtr>(NumberToAscii(m_Raw,static_cast<Int32>(iInput))-m_Raw);
+	m_uLength = static_cast<uintptr_t>(
+		NumberToAscii(m_Raw, static_cast<int32_t>(iInput)) - m_Raw);
 }
 
 /*! ************************************
@@ -1992,48 +2069,51 @@ void BURGER_API Burger::String::SetInt(Int iInput)
 	\fn BURGER_INLINE float Burger::String::GetFloat(float fDefault) const
 	\brief Return a floating point value
 
-	Scan the value string as a 32 bit floating point
-	numeric value and if successful, return it.
-	If it's not a number, return the default.
+	Scan the value string as a 32 bit floating point numeric value and if
+	successful, return it. If it's not a number, return the default.
 
 	If NaN or Inf is detected, it will be converted to a zero
 	to prevent floating point issues.
 
 	\param fDefault Value to return on error
+
 	\return Value or fDefault
-	\sa GetDouble(double) const, SetFloat(float) or AsciiToFloat(const char *,float)
+
+	\sa GetDouble(double) const, SetFloat(float) or AsciiToFloat(const char
+		*,float)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE float Burger::String::GetFloat(float fDefault,float fMin,float fMax) const
+	\fn BURGER_INLINE float Burger::String::GetFloat(float fDefault,float
+		fMin,float fMax) const
+
 	\brief Return a floating point value
 
-	Scan the value string as a 32 bit floating point
-	numeric value and if successful, test it against
-	the valid range and return the value clamped
-	to that range. If it's not a number, return the
-	default.
+	Scan the value string as a 32 bit floating point numeric value and if
+	successful, test it against the valid range and return the value clamped to
+	that range. If it's not a number, return the default.
 
-	If NaN or Inf is detected, it will be converted to a zero
-	to prevent floating point issues.
+	If NaN or Inf is detected, it will be converted to a zero to prevent
+	floating point issues.
 
 	\param fDefault Value to return on error
 	\param fMin Minimum acceptable value
 	\param fMax Maximum acceptable value
 	\return Value in between fMin and fMax or fDefault
-	\sa GetDouble(double,double,double) const, SetFloat(float) or AsciiToFloat(const char *,float,float,float)
+
+	\sa GetDouble(double,double,double) const, SetFloat(float) or
+		AsciiToFloat(const char *,float,float,float)
 
 ***************************************/
-
 
 /*! ************************************
 
 	\brief Set a 32 bit floating point value
 
-	Convert the input into an floating point representation
-	of a UTF-8 string and set the value to this string
+	Convert the input into an floating point representation of a UTF-8 string
+	and set the value to this string
 
 	\param fValue Value to store as a floating point string
 	\sa GetFloat(float,float,float) const or SetDouble(double)
@@ -2043,12 +2123,12 @@ void BURGER_API Burger::String::SetInt(Int iInput)
 void BURGER_API Burger::String::SetFloat(float fValue)
 {
 	// Remove any previously allocated buffer
-	char *pDest = m_pData;
-	if (pDest!=m_Raw) {
+	char* pDest = m_pData;
+	if (pDest != m_Raw) {
 		Free(pDest);
 		m_pData = m_Raw;
 	}
-	m_uLength = static_cast<WordPtr>(NumberToAscii(m_Raw,fValue)-m_Raw);
+	m_uLength = static_cast<uintptr_t>(NumberToAscii(m_Raw, fValue) - m_Raw);
 }
 
 /*! ************************************
@@ -2056,48 +2136,50 @@ void BURGER_API Burger::String::SetFloat(float fValue)
 	\fn BURGER_INLINE double Burger::String::GetDouble(double dDefault) const
 	\brief Return a 64 bit floating point value
 
-	Scan the value string as a 64 bit floating point
-	numeric value and if successful, return it.
-	If it's not a number, return the default.
+	Scan the value string as a 64 bit floating point numeric value and if
+	successful, return it. If it's not a number, return the default.
 
-	If NaN or Inf is detected, it will be converted to a zero
-	to prevent floating point issues.
+	If NaN or Inf is detected, it will be converted to a zero to prevent
+	floating point issues.
 
 	\param dDefault Value to return on error
 	\return Value or dDefault
-	\sa GetFloat(float) const, SetDouble(double) or AsciiToDouble(const char *,double)
+
+	\sa GetFloat(float) const, SetDouble(double) or AsciiToDouble(const char
+		*,double)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE double Burger::String::GetDouble(double dDefault,double dMin,double dMax) const
+	\fn BURGER_INLINE double Burger::String::GetDouble(double dDefault,double
+		dMin,double dMax) const
+
 	\brief Return a 64 bit floating point value
 
-	Scan the value string as a 64 bit floating point
-	numeric value and if successful, test it against
-	the valid range and return the value clamped
-	to that range. If it's not a number, return the
-	default.
+	Scan the value string as a 64 bit floating point numeric value and if
+	successful, test it against the valid range and return the value clamped to
+	that range. If it's not a number, return the default.
 
-	If NaN or Inf is detected, it will be converted to a zero
-	to prevent floating point issues.
+	If NaN or Inf is detected, it will be converted to a zero to prevent
+	floating point issues.
 
 	\param dDefault Value to return on error
 	\param dMin Minimum acceptable value
 	\param dMax Maximum acceptable value
 	\return Value in between dMin and dMax or dDefault
-	\sa GetFloat(float,float,float) const, SetDouble(double) or AsciiToDouble(const char *,double,double,double)
+
+	\sa GetFloat(float,float,float) const, SetDouble(double) or
+		AsciiToDouble(const char *,double,double,double)
 
 ***************************************/
-
 
 /*! ************************************
 
 	\brief Set a 64 bit floating point value
 
-	Convert the input into an floating point representation
-	of a UTF-8 string and set the value to this string
+	Convert the input into an floating point representation of a UTF-8 string
+	and set the value to this string
 
 	\param dValue Value to store as a 64 bit floating point string
 	\sa GetDouble(double,double,double) const or SetFloat(float)
@@ -2107,12 +2189,12 @@ void BURGER_API Burger::String::SetFloat(float fValue)
 void BURGER_API Burger::String::SetDouble(double dValue)
 {
 	// Remove any previously allocated buffer
-	char *pDest = m_pData;
-	if (pDest!=m_Raw) {
+	char* pDest = m_pData;
+	if (pDest != m_Raw) {
 		Free(pDest);
 		m_pData = m_Raw;
 	}
-	m_uLength = static_cast<WordPtr>(NumberToAscii(m_Raw,dValue)-m_Raw);
+	m_uLength = static_cast<uintptr_t>(NumberToAscii(m_Raw, dValue) - m_Raw);
 }
 
 /*! ************************************
@@ -2125,25 +2207,28 @@ void BURGER_API Burger::String::SetDouble(double dValue)
 	some optimizations that cannot be done if either case
 	of the input data were true.
 
-	\note Due to optimizations, some bounds checking is not performed. Do not call
-		this function if the input string could be larger than BUFFERSIZE-1 bytes in length!!!
-	\param pInput Pointer to a UTF8 "C" string that's less than BUFFERSIZE in length. \ref NULL will page fault.
+	\note Due to optimizations, some bounds checking is not performed. Do not
+	call this function if the input string could be larger than BUFFERSIZE-1
+	bytes in length!!!
+
+	\param pInput Pointer to a UTF8 "C" string that's less than BUFFERSIZE in
+		length. \ref NULL will page fault.
 
 ***************************************/
 
-void BURGER_API Burger::String::SetFast(const char *pInput)
+void BURGER_API Burger::String::SetFast(const char* pInput)
 {
 	// Remove any previously allocated buffer
-	char *pDest = m_pData;
-	if (pDest!=m_Raw) {
+	char* pDest = m_pData;
+	if (pDest != m_Raw) {
 		Free(pDest);
 		m_pData = m_Raw;
 	}
 	// Copy the new string
-	WordPtr uLength = StringLength(pInput);
+	uintptr_t uLength = StringLength(pInput);
 	m_uLength = uLength;
 	m_Raw[uLength] = 0;
-	MemoryCopy(m_Raw,pInput,uLength);
+	MemoryCopy(m_Raw, pInput, uLength);
 }
 
 /*! ************************************
@@ -2157,28 +2242,32 @@ void BURGER_API Burger::String::SetFast(const char *pInput)
 	of the input data were true. A zero will be appended to the final
 	string. The input string should not contain a zero.
 
-	\note Due to optimizations, some bounds checking is not performed. Do not call
-		this function if the input string could be larger than BUFFERSIZE-1 bytes in length!!!
-	\param pInput Pointer to a UTF8 "C" string that's less than BUFFERSIZE in length. \ref NULL will page fault.
+	\note Due to optimizations, some bounds checking is not performed. Do not
+	call this function if the input string could be larger than BUFFERSIZE-1
+	bytes in length!!!
+
+	\param pInput Pointer to a UTF8 "C" string that's less than BUFFERSIZE in
+		length. \ref NULL will page fault.
 	\param uLength Number of bytes to copy.
 
 ***************************************/
 
-void BURGER_API Burger::String::SetFast(const char *pInput,WordPtr uLength)
+void BURGER_API Burger::String::SetFast(const char* pInput, uintptr_t uLength)
 {
 	// Remove any previously allocated buffer
-	char *pDest = m_pData;
-	if (pDest!=m_Raw) {
+	char* pDest = m_pData;
+	if (pDest != m_Raw) {
 		Free(pDest);
 		m_pData = m_Raw;
 	}
 	// Copy the new string
 	m_uLength = uLength;
 	m_Raw[uLength] = 0;
-	MemoryCopy(m_Raw,pInput,uLength);
+	MemoryCopy(m_Raw, pInput, uLength);
 }
 
-void BURGER_API Burger::String::InitFormattedString(const char* pFormat,WordPtr uArgCount,const SafePrintArgument **ppArgs)
+void BURGER_API Burger::String::InitFormattedString(
+	const char* pFormat, uintptr_t uArgCount, const SafePrintArgument** ppArgs)
 {
 	// Remove any previously allocated buffer
 	Clear();
@@ -2187,7 +2276,8 @@ void BURGER_API Burger::String::InitFormattedString(const char* pFormat,WordPtr 
 	}
 
 	if (uArgCount && ppArgs) {
-		if (!SprintfUserAlloc(FormattedAllocCallback,this,TRUE,pFormat,uArgCount,ppArgs)) {
+		if (!SprintfUserAlloc(FormattedAllocCallback, this, TRUE, pFormat,
+				uArgCount, ppArgs)) {
 			Clear();
 		}
 	} else {
@@ -2195,96 +2285,124 @@ void BURGER_API Burger::String::InitFormattedString(const char* pFormat,WordPtr 
 	}
 }
 
- Word BURGER_API Burger::String::FormattedAllocCallback(Word bNoErrors,WordPtr uRequestedSize,void **ppOutputBuffer,void *pContext)
+uint_t BURGER_API Burger::String::FormattedAllocCallback(uint_t bNoErrors,
+	uintptr_t uRequestedSize, void** ppOutputBuffer, void* pContext)
 {
 	if (!bNoErrors || !pContext || !uRequestedSize) {
-		return FALSE;	// Abort
+		return FALSE; // Abort
 	}
 	String* theString = static_cast<String*>(pContext);
 	theString->SetBufferSize(uRequestedSize);
 	ppOutputBuffer[0] = theString->m_pData;
-	return TRUE;		// Proceed
+	return TRUE; // Proceed
 }
 
-
 /*! ************************************
 
-	\fn Burger::String::operator == (Burger::String const &rInput1,Burger::String const &rInput2)
+	\fn Burger::String::operator == (Burger::String const &rInput1,
+		Burger::String const &rInput2)
+
 	\brief Return \ref TRUE if the strings are equal (Case sensitive)
+
 	\param rInput1 Burger::String to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the strings are equal
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator == (Burger::String const &rInput1,const char *pInput2)
+	\fn Burger::String::operator == (Burger::String const &rInput1,
+		const char *pInput2)
+
 	\brief Return \ref TRUE if the strings are equal (Case sensitive)
+
 	\param rInput1 Burger::String to test
 	\param pInput2 Pointer to "C" string to test against
+
 	\return \ref TRUE if the strings are equal
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator == (const char *pInput1,Burger::String const &rInput2)
+	\fn Burger::String::operator == (const char *pInput1,
+		Burger::String const &rInput2)
+
 	\brief Return \ref TRUE if the strings are equal (Case sensitive)
+
 	\param pInput1 Pointer to "C" string to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the strings are equal
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator == (Burger::String const &rInput1,char cInput2)
+	\fn Burger::String::operator == (Burger::String const &rInput1,
+		char cInput2)
 	\brief Return \ref TRUE if the strings are equal (Case sensitive)
+
 	\param rInput1 Burger::String to test
 	\param cInput2 Single character as a string to test against
+
 	\return \ref TRUE if the strings are equal
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator == (char cInput1,Burger::String const &rInput2)
+	\fn Burger::String::operator == (char cInput1,
+		Burger::String const &rInput2)
+
 	\brief Return \ref TRUE if the strings are equal (Case sensitive)
-	\param cInput1 Single character as a string to test 
+
+	\param cInput1 Single character as a string to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the strings are equal
 
 ***************************************/
 
-
-
 /*! ************************************
 
-	\fn Burger::String::operator != (Burger::String const &rInput1,Burger::String const &rInput2)
+	\fn Burger::String::operator != (Burger::String const &rInput1,
+		Burger::String const &rInput2)
+
 	\brief Return \ref TRUE if the strings are not equal (Case sensitive)
 	\param rInput1 Burger::String to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the strings are not equal
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator != (Burger::String const &rInput1,const char *pInput2)
+	\fn Burger::String::operator != (Burger::String const &rInput1,
+		const char *pInput2)
+
 	\brief Return \ref TRUE if the strings are not equal (Case sensitive)
+
 	\param rInput1 Burger::String to test
 	\param pInput2 Pointer to "C" string to test against
+
 	\return \ref TRUE if the strings are not equal
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator != (const char *pInput1,Burger::String const &rInput2)
+	\fn Burger::String::operator != (const char *pInput1,
+		Burger::String const &rInput2)
+
 	\brief Return \ref TRUE if the strings are not equal (Case sensitive)
+
 	\param pInput1 Pointer to "C" string to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the strings are not equal
 
 ***************************************/
@@ -2292,9 +2410,12 @@ void BURGER_API Burger::String::InitFormattedString(const char* pFormat,WordPtr 
 /*! ************************************
 
 	\fn Burger::String::operator != (Burger::String const &rInput1,char cInput2)
+
 	\brief Return \ref TRUE if the strings are not equal (Case sensitive)
+
 	\param rInput1 Burger::String to test
 	\param cInput2 Single character as a string to test against
+
 	\return \ref TRUE if the strings are not equal
 
 ***************************************/
@@ -2302,41 +2423,57 @@ void BURGER_API Burger::String::InitFormattedString(const char* pFormat,WordPtr 
 /*! ************************************
 
 	\fn Burger::String::operator != (char cInput1,Burger::String const &rInput2)
+
 	\brief Return \ref TRUE if the strings are not equal (Case sensitive)
-	\param cInput1 Single character as a string to test 
+
+	\param cInput1 Single character as a string to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the strings are not equal
 
 ***************************************/
 
-
-
 /*! ************************************
 
-	\fn Burger::String::operator < (Burger::String const &rInput1,Burger::String const &rInput2)
-	\brief Return \ref TRUE if the first is less than the second (Case sensitive)
+	\fn Burger::String::operator < (Burger::String const &rInput1,
+		Burger::String const &rInput2)
+
+	\brief Return \ref TRUE if the first is less than the second (Case
+		sensitive)
+
 	\param rInput1 Burger::String to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the first is less than the second
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator < (Burger::String const &rInput1,const char *pInput2)
-	\brief Return \ref TRUE if the first is less than the second (Case sensitive)
+	\fn Burger::String::operator < (Burger::String const &rInput1,
+		const char *pInput2)
+
+	\brief Return \ref TRUE if the first is less than the second (Case
+		sensitive)
+
 	\param rInput1 Burger::String to test
 	\param pInput2 Pointer to "C" string to test against
+
 	\return \ref TRUE if the first is less than the second
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator < (const char *pInput1,Burger::String const &rInput2)
-	\brief Return \ref TRUE if the first is less than the second (Case sensitive)
+	\fn Burger::String::operator < (const char *pInput1,
+		Burger::String const &rInput2)
+
+	\brief Return \ref TRUE if the first is less than the second (Case
+		sensitive)
+
 	\param pInput1 Pointer to "C" string to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the first is less than the second
 
 ***************************************/
@@ -2344,9 +2481,13 @@ void BURGER_API Burger::String::InitFormattedString(const char* pFormat,WordPtr 
 /*! ************************************
 
 	\fn Burger::String::operator < (Burger::String const &rInput1,char cInput2)
-	\brief Return \ref TRUE if the first is less than the second (Case sensitive)
+
+	\brief Return \ref TRUE if the first is less than the second (Case
+		sensitive)
+
 	\param rInput1 Burger::String to test
 	\param cInput2 Single character as a string to test against
+
 	\return \ref TRUE if the first is less than the second
 
 ***************************************/
@@ -2354,41 +2495,58 @@ void BURGER_API Burger::String::InitFormattedString(const char* pFormat,WordPtr 
 /*! ************************************
 
 	\fn Burger::String::operator < (char cInput1,Burger::String const &rInput2)
-	\brief Return \ref TRUE if the first is less than the second (Case sensitive)
-	\param cInput1 Single character as a string to test 
+
+	\brief Return \ref TRUE if the first is less than the second (Case
+		sensitive)
+
+	\param cInput1 Single character as a string to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the first is less than the second
 
 ***************************************/
 
-
-
 /*! ************************************
 
-	\fn Burger::String::operator <= (Burger::String const &rInput1,Burger::String const &rInput2)
-	\brief Return \ref TRUE if the first is less than or equal to the second (Case sensitive)
+	\fn Burger::String::operator <= (Burger::String const &rInput1,
+		Burger::String const &rInput2)
+
+	\brief Return \ref TRUE if the first is less than or equal to the second
+		(Case sensitive)
+
 	\param rInput1 Burger::String to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the first is less than or equal to the second
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator <= (Burger::String const &rInput1,const char *pInput2)
-	\brief Return \ref TRUE if the first is less than or equal to the second (Case sensitive)
+	\fn Burger::String::operator <= (Burger::String const &rInput1,
+		const char *pInput2)
+
+	\brief Return \ref TRUE if the first is less than or equal to the second
+		(Case sensitive)
+
 	\param rInput1 Burger::String to test
 	\param pInput2 Pointer to "C" string to test against
+
 	\return \ref TRUE if the first is less than or equal to the second
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator <= (const char *pInput1,Burger::String const &rInput2)
-	\brief Return \ref TRUE if the first is less than or equal to the second (Case sensitive)
+	\fn Burger::String::operator <= (const char *pInput1,
+		Burger::String const &rInput2)
+
+	\brief Return \ref TRUE if the first is less than or equal to the second
+		(Case sensitive)
+
 	\param pInput1 Pointer to "C" string to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the first is less than or equal to the second
 
 ***************************************/
@@ -2396,9 +2554,13 @@ void BURGER_API Burger::String::InitFormattedString(const char* pFormat,WordPtr 
 /*! ************************************
 
 	\fn Burger::String::operator <= (Burger::String const &rInput1,char cInput2)
-	\brief Return \ref TRUE if the first is less than or equal to the second (Case sensitive)
+
+	\brief Return \ref TRUE if the first is less than or equal to the second
+		(Case sensitive)
+
 	\param rInput1 Burger::String to test
 	\param cInput2 Single character as a string to test against
+
 	\return \ref TRUE if the first is less than or equal to the second
 
 ***************************************/
@@ -2406,111 +2568,161 @@ void BURGER_API Burger::String::InitFormattedString(const char* pFormat,WordPtr 
 /*! ************************************
 
 	\fn Burger::String::operator <= (char cInput1,Burger::String const &rInput2)
-	\brief Return \ref TRUE if the first is less than or equal to the second (Case sensitive)
-	\param cInput1 Single character as a string to test 
+
+	\brief Return \ref TRUE if the first is less than or equal to the second
+		(Case sensitive)
+
+	\param cInput1 Single character as a string to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the first is less than or equal to the second
 
 ***************************************/
 
-
 /*! ************************************
 
-	\fn Burger::String::operator > (Burger::String const &rInput1,Burger::String const &rInput2)
-	\brief Return \ref TRUE if the first is greater than the second (Case sensitive)
+	\fn Burger::String::operator > (Burger::String const &rInput1,
+		Burger::String const &rInput2)
+
+	\brief Return \ref TRUE if the first is greater than the second (Case
+		sensitive)
+
 	\param rInput1 Burger::String to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the first is greater than the second
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator > (Burger::String const &rInput1,const char *pInput2)
-	\brief Return \ref TRUE if the first is greater than the second (Case sensitive)
+	\fn Burger::String::operator > (Burger::String const &rInput1,
+		const char *pInput2)
+
+	\brief Return \ref TRUE if the first is greater than the second (Case
+		sensitive)
+
 	\param rInput1 Burger::String to test
 	\param pInput2 Pointer to "C" string to test against
+
 	\return \ref TRUE if the first is greater than the second
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator > (const char *pInput1,Burger::String const &rInput2)
-	\brief Return \ref TRUE if the first is greater than the second (Case sensitive)
+	\fn Burger::String::operator > (const char *pInput1,
+		Burger::String const &rInput2)
+
+	\brief Return \ref TRUE if the first is greater than the second (Case
+		sensitive)
+
 	\param pInput1 Pointer to "C" string to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the first is greater than the second
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator > (Burger::String const &rInput1,char cInput2)
-	\brief Return \ref TRUE if the first is greater than the second (Case sensitive)
+	\fn Burger::String::operator > (Burger::String const &rInput1, char cInput2)
+
+	\brief Return \ref TRUE if the first is greater than the second (Case
+		sensitive)
+
 	\param rInput1 Burger::String to test
 	\param cInput2 Single character as a string to test against
+
 	\return \ref TRUE if the first is greater than the second
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator > (char cInput1,Burger::String const &rInput2)
-	\brief Return \ref TRUE if the first is greater than the second (Case sensitive)
-	\param cInput1 Single character as a string to test 
+	\fn Burger::String::operator > (char cInput1, Burger::String const &rInput2)
+
+	\brief Return \ref TRUE if the first is greater than the second (Case
+		sensitive)
+
+	\param cInput1 Single character as a string to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the first is greater than the second
 
 ***************************************/
 
-
 /*! ************************************
 
-	\fn Burger::String::operator >= (Burger::String const &rInput1,Burger::String const &rInput2)
-	\brief Return \ref TRUE if the first is greater than or equal to the second (Case sensitive)
+	\fn Burger::String::operator >= (Burger::String const &rInput1,
+		Burger::String const &rInput2)
+
+	\brief Return \ref TRUE if the first is greater than or equal to the second
+		(Case sensitive)
+
 	\param rInput1 Burger::String to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the first is greater than or equal to the second
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator >= (Burger::String const &rInput1,const char *pInput2)
-	\brief Return \ref TRUE if the first is greater than or equal to the second (Case sensitive)
+	\fn Burger::String::operator >= (Burger::String const &rInput1,
+		const char *pInput2)
+
+	\brief Return \ref TRUE if the first is greater than or equal to the
+		second (Case sensitive)
+
 	\param rInput1 Burger::String to test
 	\param pInput2 Pointer to "C" string to test against
+
 	\return \ref TRUE if the first is greater than or equal to the second
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator >= (const char *pInput1,Burger::String const &rInput2)
-	\brief Return \ref TRUE if the first is greater than or equal to the second (Case sensitive)
+	\fn Burger::String::operator >= (const char *pInput1,
+		Burger::String const &rInput2)
+
+	\brief Return \ref TRUE if the first is greater than or equal to the second
+		(Case sensitive)
+
 	\param pInput1 Pointer to "C" string to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the first is greater than or equal to the second
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator >= (Burger::String const &rInput1,char cInput2)
-	\brief Return \ref TRUE if the first is greater than or equal to the second (Case sensitive)
+	\fn Burger::String::operator >= (Burger::String const &rInput1,
+		char cInput2)
+
+	\brief Return \ref TRUE if the first is greater than or equal to the second
+		(Case sensitive)
+
 	\param rInput1 Burger::String to test
 	\param cInput2 Single character as a string to test against
+
 	\return \ref TRUE if the first is greater than or equal to the second
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String::operator >= (char cInput1,Burger::String const &rInput2)
-	\brief Return \ref TRUE if the first is greater than or equal to the second (Case sensitive)
-	\param cInput1 Single character as a string to test 
+	\fn Burger::String::operator >= (char cInput1,
+		Burger::String const &rInput2)
+
+	\brief Return \ref TRUE if the first is greater than or equal to the second
+		(Case sensitive)
+
+	\param cInput1 Single character as a string to test
 	\param rInput2 Burger::String to test against
+
 	\return \ref TRUE if the first is greater than or equal to the second
 
 ***************************************/

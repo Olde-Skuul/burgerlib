@@ -1,13 +1,14 @@
 /***************************************
 
-	Decompression manager version of RLE
+    Decompression manager version of RLE
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -33,16 +34,16 @@ protected:
 		STATE_FILL,			///< Data fill in progress
 		STATE_RUN			///< Raw data copy in progress
 	};
-	WordPtr m_uRun;		///< Run in progress
-	Word m_uFill;		///< Last fill value
+	uintptr_t m_uRun;		///< Run in progress
+	uint_t m_uFill;		///< Last fill value
 	eState m_eState;	///< State of the decompression
 public:
-	static const Word32 Signature = 0x524C4420;		///< 'RLE '
+	static const uint32_t Signature = 0x524C4420;		///< 'RLE '
 	DecompressILBMRLE();
 	eError Reset(void) BURGER_OVERRIDE;
 	eError Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength) BURGER_OVERRIDE;
 };
-extern Decompress::eError BURGER_API SimpleDecompressILBMRLE(void *pOutput,WordPtr uOutputChunkLength,const void *pInput,WordPtr uInputChunkLength);
+extern Decompress::eError BURGER_API SimpleDecompressILBMRLE(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength);
 }
 /* END */
 

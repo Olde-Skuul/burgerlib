@@ -87,8 +87,8 @@ typedef DWORD(APIENTRY* GetFileVersionInfoSizeWPtr)(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::VerQueryValueA(
-	const void* pBlock, const char* pSubBlock, void** ppBuffer, Word* pLen)
+uint_t BURGER_API Burger::Windows::VerQueryValueA(
+	const void* pBlock, const char* pSubBlock, void** ppBuffer, uint_t* pLen)
 {
 	void* pVerQueryValueA = LoadFunctionIndex(CALL_VerQueryValueA);
 	BOOL uResult = FALSE; // Failure
@@ -96,7 +96,7 @@ Word BURGER_API Burger::Windows::VerQueryValueA(
 		uResult = static_cast<VerQueryValueAPtr>(pVerQueryValueA)(
 			pBlock, pSubBlock, ppBuffer, pLen);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -121,8 +121,8 @@ Word BURGER_API Burger::Windows::VerQueryValueA(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::VerQueryValueW(
-	const void* pBlock, const Word16* pSubBlock, void** ppBuffer, Word* pLen)
+uint_t BURGER_API Burger::Windows::VerQueryValueW(
+	const void* pBlock, const uint16_t* pSubBlock, void** ppBuffer, uint_t* pLen)
 {
 	void* pVerQueryValueW = LoadFunctionIndex(CALL_VerQueryValueW);
 	BOOL uResult = FALSE; // Failure
@@ -130,7 +130,7 @@ Word BURGER_API Burger::Windows::VerQueryValueW(
 		uResult = static_cast<VerQueryValueWPtr>(pVerQueryValueW)(
 			pBlock, reinterpret_cast<LPCWSTR>(pSubBlock), ppBuffer, pLen);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -154,8 +154,8 @@ Word BURGER_API Burger::Windows::VerQueryValueW(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::GetFileVersionInfoA(
-	const char* ptstrFilename, Word32 dwHandle, Word32 dwLen, void* pData)
+uint_t BURGER_API Burger::Windows::GetFileVersionInfoA(
+	const char* ptstrFilename, uint32_t dwHandle, uint32_t dwLen, void* pData)
 {
 	void* pGetFileVersionInfoA = LoadFunctionIndex(CALL_GetFileVersionInfoA);
 	BOOL uResult = FALSE; // Failure
@@ -163,7 +163,7 @@ Word BURGER_API Burger::Windows::GetFileVersionInfoA(
 		uResult = static_cast<GetFileVersionInfoAPtr>(pGetFileVersionInfoA)(
 			ptstrFilename, dwHandle, dwLen, pData);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -187,8 +187,8 @@ Word BURGER_API Burger::Windows::GetFileVersionInfoA(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::GetFileVersionInfoW(
-	const Word16* ptstrFilename, Word32 dwHandle, Word32 dwLen, void* pData)
+uint_t BURGER_API Burger::Windows::GetFileVersionInfoW(
+	const uint16_t* ptstrFilename, uint32_t dwHandle, uint32_t dwLen, void* pData)
 {
 	void* pGetFileVersionInfoW = LoadFunctionIndex(CALL_GetFileVersionInfoW);
 	BOOL uResult = FALSE; // Failure
@@ -196,7 +196,7 @@ Word BURGER_API Burger::Windows::GetFileVersionInfoW(
 		uResult = static_cast<GetFileVersionInfoWPtr>(pGetFileVersionInfoW)(
 			reinterpret_cast<LPCWSTR>(ptstrFilename), dwHandle, dwLen, pData);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -217,12 +217,12 @@ Word BURGER_API Burger::Windows::GetFileVersionInfoW(
 
 ***************************************/
 
-Word32 BURGER_API Burger::Windows::GetFileVersionInfoSizeA(
+uint32_t BURGER_API Burger::Windows::GetFileVersionInfoSizeA(
 	const char* ptstrFilename, unsigned long* pdwHandle)
 {
 	void* pGetFileVersionInfoSizeA =
 		LoadFunctionIndex(CALL_GetFileVersionInfoSizeA);
-	Word uResult = 0; // Failure
+	uint_t uResult = 0; // Failure
 	if (pGetFileVersionInfoSizeA) {
 		uResult = static_cast<GetFileVersionInfoSizeAPtr>(
 			pGetFileVersionInfoSizeA)(ptstrFilename, pdwHandle);
@@ -248,12 +248,12 @@ Word32 BURGER_API Burger::Windows::GetFileVersionInfoSizeA(
 
 ***************************************/
 
-Word32 BURGER_API Burger::Windows::GetFileVersionInfoSizeW(
-	const Word16* ptstrFilename, unsigned long* pdwHandle)
+uint32_t BURGER_API Burger::Windows::GetFileVersionInfoSizeW(
+	const uint16_t* ptstrFilename, unsigned long* pdwHandle)
 {
 	void* pGetFileVersionInfoSizeW =
 		LoadFunctionIndex(CALL_GetFileVersionInfoSizeW);
-	Word uResult = 0; // Failure
+	uint_t uResult = 0; // Failure
 	if (pGetFileVersionInfoSizeW) {
 		uResult =
 			static_cast<GetFileVersionInfoSizeWPtr>(pGetFileVersionInfoSizeW)(

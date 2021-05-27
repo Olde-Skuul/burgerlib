@@ -34,14 +34,14 @@ void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 	SceDateTime LocalTime;
 
 	if (sceRtcGetCurrentClockLocalTime(&LocalTime)>=SCE_OK) {
-		m_uYear = static_cast<Word>(LocalTime.year);
-		m_bMonth = static_cast<Word8>(LocalTime.month);
-		m_bDay = static_cast<Word8>(LocalTime.day);
-		m_bHour = static_cast<Word8>(LocalTime.hour);
-		m_bMinute = static_cast<Word8>(LocalTime.minute);
-		m_bSecond = static_cast<Word8>(LocalTime.second);
-		m_usMilliseconds = static_cast<Word16>(LocalTime.microsecond/1000);
-		m_bDayOfWeek = static_cast<Word8>(sceRtcGetDayOfWeek(LocalTime.year,LocalTime.month,LocalTime.day));
+		m_uYear = static_cast<uint8_t>(LocalTime.year);
+		m_bMonth = static_cast<uint8_t>(LocalTime.month);
+		m_bDay = static_cast<uint8_t>(LocalTime.day);
+		m_bHour = static_cast<uint8_t>(LocalTime.hour);
+		m_bMinute = static_cast<uint8_t>(LocalTime.minute);
+		m_bSecond = static_cast<uint8_t>(LocalTime.second);
+		m_usMilliseconds = static_cast<uint16_t>(LocalTime.microsecond/1000);
+		m_bDayOfWeek = static_cast<uint8_t>(sceRtcGetDayOfWeek(LocalTime.year,LocalTime.month,LocalTime.day));
 	} else {
 		Clear();
 	}
@@ -57,24 +57,24 @@ void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-Word Burger::TimeDate_t::Load(const SceDateTime *pSceDateTime)
+uint_t Burger::TimeDate_t::Load(const SceDateTime *pSceDateTime)
 {
 	Clear();
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	SceRtcTick TickTime;
 	if (sceRtcGetTick(pSceDateTime,&TickTime)>=SCE_OK) {
 		SceRtcTick LocalTick;
 		if (sceRtcConvertUtcToLocalTime(&TickTime,&LocalTick)>=SCE_OK) {
 			SceDateTime LocalTime;
 			if (sceRtcSetTick(&LocalTime,&LocalTick)>=SCE_OK) {
-				m_usMilliseconds = static_cast<Word16>(LocalTime.microsecond/1000);
-				m_bSecond = static_cast<Word8>(LocalTime.second);		// Get the seconds
-				m_bMinute = static_cast<Word8>(LocalTime.minute);		// Get the minute
-				m_bHour = static_cast<Word8>(LocalTime.hour);			// Get the hour
-				m_bDay = static_cast<Word8>(LocalTime.day);				// Get the day
-				m_bDayOfWeek = static_cast<Word8>(sceRtcGetDayOfWeek(LocalTime.year,LocalTime.month,LocalTime.day));	// Weekday
-				m_bMonth = static_cast<Word8>(LocalTime.month);			// Get the month
-				m_uYear = static_cast<Word16>(LocalTime.year);			// Get the year
+				m_usMilliseconds = static_cast<uint16_t>(LocalTime.microsecond/1000);
+				m_bSecond = static_cast<uint8_t>(LocalTime.second);		// Get the seconds
+				m_bMinute = static_cast<uint8_t>(LocalTime.minute);		// Get the minute
+				m_bHour = static_cast<uint8_t>(LocalTime.hour);			// Get the hour
+				m_bDay = static_cast<uint8_t>(LocalTime.day);				// Get the day
+				m_bDayOfWeek = static_cast<uint8_t>(sceRtcGetDayOfWeek(LocalTime.year,LocalTime.month,LocalTime.day));	// Weekday
+				m_bMonth = static_cast<uint8_t>(LocalTime.month);			// Get the month
+				m_uYear = static_cast<uint16_t>(LocalTime.year);			// Get the year
 				uResult = FALSE;
 			}
 		}
@@ -92,17 +92,17 @@ Word Burger::TimeDate_t::Load(const SceDateTime *pSceDateTime)
 
 ***************************************/
 
-Word Burger::TimeDate_t::Store(SceDateTime *pSceDateTime) const
+uint_t Burger::TimeDate_t::Store(SceDateTime *pSceDateTime) const
 {
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	SceDateTime LocalTime;
-	LocalTime.year = static_cast<Word16>(m_uYear);
-	LocalTime.month = static_cast<Word16>(m_bMonth);
-	LocalTime.day = static_cast<Word16>(m_bDay);
-	LocalTime.hour = static_cast<Word16>(m_bHour);
-	LocalTime.minute = static_cast<Word16>(m_bMinute);
-	LocalTime.second = static_cast<Word16>(m_bSecond);
-	LocalTime.microsecond = static_cast<Word>(m_usMilliseconds)*1000;
+	LocalTime.year = static_cast<uint16_t>(m_uYear);
+	LocalTime.month = static_cast<uint16_t>(m_bMonth);
+	LocalTime.day = static_cast<uint16_t>(m_bDay);
+	LocalTime.hour = static_cast<uint16_t>(m_bHour);
+	LocalTime.minute = static_cast<uint16_t>(m_bMinute);
+	LocalTime.second = static_cast<uint16_t>(m_bSecond);
+	LocalTime.microsecond = static_cast<uint_t>(m_usMilliseconds)*1000;
 	SceRtcTick LocalTick;
 	// Convert to ticks
 	if (sceRtcGetTick(&LocalTime,&LocalTick)>=SCE_OK) {

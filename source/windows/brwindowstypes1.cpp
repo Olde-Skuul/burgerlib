@@ -129,7 +129,7 @@ HINSTANCE BURGER_API Burger::Windows::LoadLibraryA(const char* pInput)
 
 ***************************************/
 
-HINSTANCE BURGER_API Burger::Windows::LoadLibraryW(const Word16* pInput)
+HINSTANCE BURGER_API Burger::Windows::LoadLibraryW(const uint16_t* pInput)
 {
 	// Disable user interactive dialogs
 	UINT uOldMode =
@@ -168,7 +168,7 @@ HINSTANCE BURGER_API Burger::Windows::LoadLibraryW(const Word16* pInput)
 ***************************************/
 
 HINSTANCE BURGER_API Burger::Windows::LoadLibraryExA(
-	const char* pInput, void* hFile, Word32 uFlags)
+	const char* pInput, void* hFile, uint32_t uFlags)
 {
 	// Disable user interactive dialogs
 	UINT uOldMode =
@@ -207,7 +207,7 @@ HINSTANCE BURGER_API Burger::Windows::LoadLibraryExA(
 ***************************************/
 
 HINSTANCE BURGER_API Burger::Windows::LoadLibraryExW(
-	const Word16* pInput, void* hFile, Word32 uFlags)
+	const uint16_t* pInput, void* hFile, uint32_t uFlags)
 {
 	// Disable user interactive dialogs
 	UINT uOldMode =
@@ -277,7 +277,7 @@ Burger::eError BURGER_API Burger::Windows::GetPathFromRegistry(
 				Temp[0]) {
 				// Force the last character to a '\'
 				EndWithWindowsSlashes((char *)Temp);
-				pOutput->SetFromNative((const Word16 *)Temp);
+				pOutput->SetFromNative((const uint16_t *)Temp);
 			}
 		}
 
@@ -307,8 +307,8 @@ Burger::eError BURGER_API Burger::Windows::GetPathFromRegistry(
 
 ***************************************/
 
-void Burger::Windows::ChangeStyle(HWND hWindow, Word32 uAddStyle,
-	Word32 uAddStyleEx, Word32 uSubStyle, Word32 uSubStyleEx)
+void Burger::Windows::ChangeStyle(HWND hWindow, uint32_t uAddStyle,
+	uint32_t uAddStyleEx, uint32_t uSubStyle, uint32_t uSubStyleEx)
 {
 	SetWindowLongW(hWindow, GWL_STYLE,
 		static_cast<LONG>(
@@ -333,18 +333,18 @@ void Burger::Windows::ChangeStyle(HWND hWindow, Word32 uAddStyle,
 	\param pFileToOpen UTF-8 encoded string to convert to use as input for
 		ShellExecuteW()
 
-	\return Returned value from the call to ShellExecuteW(), cast as a \ref
-		WordPtr
+	\return Returned value from the call to ShellExecuteW(), cast as a
+		uintptr_t
 
 ***************************************/
 
-WordPtr BURGER_API Burger::Windows::ShellExecuteOpen(const char* pFileToOpen)
+uintptr_t BURGER_API Burger::Windows::ShellExecuteOpen(const char* pFileToOpen)
 {
 	String16 Data16(pFileToOpen);
 	HINSTANCE uResult = ShellExecuteW(NULL, reinterpret_cast<LPCWSTR>(L"open"),
 		reinterpret_cast<LPCWSTR>(Data16.GetPtr()), nullptr, nullptr,
 		SW_SHOWNORMAL);
-	return reinterpret_cast<WordPtr>(uResult);
+	return reinterpret_cast<uintptr_t>(uResult);
 }
 
 /*! ************************************
@@ -363,10 +363,10 @@ WordPtr BURGER_API Burger::Windows::ShellExecuteOpen(const char* pFileToOpen)
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::LaunchMediaCenter(void)
+uint_t BURGER_API Burger::Windows::LaunchMediaCenter(void)
 {
 	const char* pString = GetEnvironmentString("SystemRoot");
-	Word uResult = 10; // Assume error
+	uint_t uResult = 10; // Assume error
 	if (pString) {
 		Filename MediaCenterName;
 		MediaCenterName.SetFromNative(pString);

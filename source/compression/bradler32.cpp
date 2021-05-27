@@ -1,20 +1,21 @@
 /***************************************
 
-	Adler32 hash manager
+    Adler32 hash manager
 
-	Implemented following the documentation found in
-	http://en.wikipedia.org/wiki/Adler-32
-	and http://tools.ietf.org/html/rfc1950
+    Implemented following the documentation found in
+    http://en.wikipedia.org/wiki/Adler-32
+    and http://tools.ietf.org/html/rfc1950
 
-	This is based on the algorithm provided from Mark Adler
-	in the zlib source archive.
+    This is based on the algorithm provided from Mark Adler
+    in the zlib source archive.
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -49,27 +50,27 @@
 
 	\return 32 bit Alder-32 checksum of the data
 
-	\sa CalcCRC32B(const void *,WordPtr,Word32) or CalcAdler16(const void *,WordPtr,Word32)
+	\sa CalcCRC32B(const void *,uintptr_t,uint32_t) or CalcAdler16(const void *,uintptr_t,uint32_t)
 
 ***************************************/
 
-Word32 BURGER_API Burger::CalcAdler32(const void *pInput,WordPtr uInputLength,Word32 uAdler32)
+uint32_t BURGER_API Burger::CalcAdler32(const void *pInput,uintptr_t uInputLength,uint32_t uAdler32)
 {
 	// Any data to process?
 	if (pInput && uInputLength) {
-		Word32 uAdditive = static_cast<Word16>(uAdler32);	// Get the additive checksum
-		uAdler32 = static_cast<Word16>(uAdler32>>16U);	 	// Get the factorial checksum
+		uint32_t uAdditive = static_cast<uint16_t>(uAdler32);	// Get the additive checksum
+		uAdler32 = static_cast<uint16_t>(uAdler32>>16U);	 	// Get the factorial checksum
 		do {
-			Word uCount = LARGESTBLOCK;						// Assume maximum
+			uint_t uCount = LARGESTBLOCK;						// Assume maximum
 			if (uInputLength<LARGESTBLOCK) {				// Not enough
-				uCount = static_cast<Word>(uInputLength);	// Use the length
+				uCount = static_cast<uint_t>(uInputLength);	// Use the length
 			}
 			// Remove the length
 			uInputLength -= uCount;
 			do {
 				// Add to the additive checksum
-				uAdditive += static_cast<const Word8 *>(pInput)[0];
-				pInput = static_cast<const Word8 *>(pInput)+1;
+				uAdditive += static_cast<const uint8_t *>(pInput)[0];
+				pInput = static_cast<const uint8_t *>(pInput)+1;
 				// Add the checksum to the factorial
 				uAdler32 += uAdditive;
 			} while (--uCount);

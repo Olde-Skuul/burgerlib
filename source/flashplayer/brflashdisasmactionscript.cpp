@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player ActionScript disassembler
-		
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player ActionScript disassembler
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brflashdisasmactionscript.h"
@@ -28,9 +29,9 @@ enum eArgumentFormat {
 	ARGUMENT_STRING,		// String argument
 	ARGUMENT_STRING2,		// Two String argument
 	ARGUMENT_DUMP,			// Memory dump
-	ARGUMENT_UI8,			// Word8
-	ARGUMENT_UI16,			// Word16
-	ARGUMENT_SI16,			// Int16
+	ARGUMENT_UI8,			// uint8_t
+	ARGUMENT_UI16,			// uint16_t
+	ARGUMENT_SI16,			// int16_t
 	ARGUMENT_WAITFORFRAME,	// ActionWaitForFrame
 	ARGUMENT_ACTIONPUSH,	// ActionPush
 	ARGUMENT_CONSTANT_POOL,	// ActionConstantPool
@@ -222,10 +223,10 @@ static const Instruction_t g_Instructions[0xA0] = {
 
 ***************************************/
 
-WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
+uintptr_t BURGER_API Burger::Flash::DisassembleActionScript(const uint8_t* pInput)
 {
 	// Get the action script opcode
-	Word uOpcode = pInput[0];
+	uint_t uOpcode = pInput[0];
 	const Instruction_t *pInstruction;
 	// Off the table?
 	if (uOpcode>=BURGER_ARRAYSIZE(g_Instructions)) {
@@ -234,7 +235,7 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 		// Look it up
 		pInstruction = &g_Instructions[uOpcode];
 	}
-	WordPtr uResult = 1;
+	uintptr_t uResult = 1;
 	// Unknown??
 	if (!pInstruction->m_pName) {
 		// Print this and exit
@@ -252,58 +253,58 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 
 		// A single unsigned 8 bit value
 		case ARGUMENT_UI8:
-			Debug::Message(" Value Word8:%u\n",static_cast<Word>(pInput[3]));
+			Debug::Message(" Value uint8_t:%u\n",static_cast<uint_t>(pInput[3]));
 			uResult = 4;
 			break;
 
 		// A single unsigned 16 bit value
 		case ARGUMENT_UI16:
-			Debug::Message(" Value Word16:%u\n",static_cast<Word>(LittleEndian::LoadAny(reinterpret_cast<const Word16 *>(pInput+3))));
+			Debug::Message(" Value uint16_t:%u\n",static_cast<uint_t>(LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+3))));
 			uResult = 5;
 			break;
 
 		// A single signed 16 bit value
 		case ARGUMENT_SI16:
-			Debug::Message(" Value Int16:%d\n",static_cast<Int>(LittleEndian::LoadAny(reinterpret_cast<const Int16 *>(pInput+3))));
+			Debug::Message(" Value int16_t:%d\n",static_cast<int_t>(LittleEndian::LoadAny(reinterpret_cast<const int16_t *>(pInput+3))));
 			uResult = 5;
 			break;
 
 		// An ascii string
 		case ARGUMENT_STRING:
 			{
-				uResult = LittleEndian::LoadAny(reinterpret_cast<const Word16 *>(pInput+1))+3U;
-				Word8 uTemp = pInput[uResult];
-				const_cast<Word8 *>(pInput)[uResult] = 0;
+				uResult = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+1))+3U;
+				uint8_t uTemp = pInput[uResult];
+				const_cast<uint8_t *>(pInput)[uResult] = 0;
 				Debug::PrintString(" \"");
 				Debug::PrintString(reinterpret_cast<const char *>(pInput+3));
 				Debug::PrintString("\"\n");
-				const_cast<Word8 *>(pInput)[uResult] = uTemp;
+				const_cast<uint8_t *>(pInput)[uResult] = uTemp;
 			}
 			break;
 
 			// Two ascii string
 		case ARGUMENT_STRING2:
 			{
-				uResult = LittleEndian::LoadAny(reinterpret_cast<const Word16 *>(pInput+1))+3U;
-				Word8 uTemp = pInput[uResult];
-				const_cast<Word8 *>(pInput)[uResult] = 0;
+				uResult = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+1))+3U;
+				uint8_t uTemp = pInput[uResult];
+				const_cast<uint8_t *>(pInput)[uResult] = 0;
 				Debug::PrintString(" \"");
 				Debug::PrintString(reinterpret_cast<const char *>(pInput+3));
 				Debug::PrintString("\", \"");
 				Debug::PrintString(reinterpret_cast<const char *>(pInput+4)+StringLength(reinterpret_cast<const char *>(pInput+3)));
 				Debug::PrintString("\"\n");
-				const_cast<Word8 *>(pInput)[uResult] = uTemp;
+				const_cast<uint8_t *>(pInput)[uResult] = uTemp;
 			}
 			break;
 
 			// ActionWaitForFrame 16 bit, 8 bit
 		case ARGUMENT_WAITFORFRAME:
-			Debug::Message(" Frame:%u, Skip:%u\n",static_cast<Word>(LittleEndian::LoadAny(reinterpret_cast<const Word16 *>(pInput+3))),static_cast<Word>(pInput[5]));
+			Debug::Message(" Frame:%u, Skip:%u\n",static_cast<uint_t>(LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+3))),static_cast<uint_t>(pInput[5]));
 			break;
 
 		case ARGUMENT_DUMP:
 			{
-				WordPtr uCount = LittleEndian::LoadAny(reinterpret_cast<const Word16 *>(pInput+1));
+				uintptr_t uCount = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+1));
 				// Pass back the final size
 				uResult = uCount+3;
 				if (uCount) {
@@ -319,12 +320,12 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 
 		case ARGUMENT_ACTIONPUSH:
 			{
-				WordPtr uLength = LittleEndian::LoadAny(reinterpret_cast<const Word16 *>(pInput+1));
+				uintptr_t uLength = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+1));
 				uResult = uLength+3;
 				pInput+=3;
-				const Word8 *pEnd = pInput+uLength;
+				const uint8_t *pEnd = pInput+uLength;
 				while (pInput < pEnd) {
-					Word uPushType = pInput[0];
+					uint_t uPushType = pInput[0];
 					++pInput;
 					switch (uPushType) {
 					case 0:
@@ -352,7 +353,7 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 						++pInput;
 						break;
 					case 5:
-						Debug::Message(" UI8:%u",static_cast<Word>(pInput[0]));
+						Debug::Message(" UI8:%u",static_cast<uint_t>(pInput[0]));
 						++pInput;
 						break;
 					case 6:
@@ -360,7 +361,7 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 						pInput+=8;
 						break;
 					case 7:
-						Debug::Message(" UI32:%u",LittleEndian::LoadAny(reinterpret_cast<const Word32 *>(pInput)));
+						Debug::Message(" UI32:%u",LittleEndian::LoadAny(reinterpret_cast<const uint32_t *>(pInput)));
 						pInput+=4;
 						break;
 					case 8:
@@ -368,7 +369,7 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 						++pInput;
 						break;
 					case 9:
-						Debug::Message(" Constant16:0x%04X",LittleEndian::LoadAny(reinterpret_cast<const Word16 *>(pInput)));
+						Debug::Message(" Constant16:0x%04X",LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput)));
 						pInput+=2;
 						break;
 					}
@@ -378,14 +379,14 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 			break;
 		case ARGUMENT_CONSTANT_POOL:
 			{
-				WordPtr uLength = LittleEndian::LoadAny(reinterpret_cast<const Word16 *>(pInput+1));
+				uintptr_t uLength = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+1));
 				uResult = uLength+3;
 				if (uLength>=2) {
-					WordPtr uCount = LittleEndian::LoadAny(reinterpret_cast<const Word16 *>(pInput+3));
+					uintptr_t uCount = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+3));
 					if (uCount) {
-						Debug::Message(" Constants:%u",static_cast<Word>(uCount));
-						Word8 *pTemp = &const_cast<Word8 *>(pInput)[uResult];
-						Word8 uTemp = pTemp[0];
+						Debug::Message(" Constants:%u",static_cast<uint_t>(uCount));
+						uint8_t *pTemp = &const_cast<uint8_t *>(pInput)[uResult];
+						uint8_t uTemp = pTemp[0];
 						pTemp[0] = 0;
 						pInput+=5;
 						do {
@@ -402,16 +403,16 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 			break;
 		case ARGUMENT_DEFINEFUNCTION2:
 			{
-				WordPtr uLength = LittleEndian::LoadAny(reinterpret_cast<const Word16 *>(pInput+1));
+				uintptr_t uLength = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput+1));
 				uResult = uLength+3;
 				const char *pFunctionName = reinterpret_cast<const char *>(pInput+3);
 				pInput += StringLength(pFunctionName)+4;
-				Word uNumParams = LittleEndian::LoadAny(reinterpret_cast<const Word16 *>(pInput));
-				Word uRegisterCount = pInput[2];
+				uint_t uNumParams = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput));
+				uint_t uRegisterCount = pInput[2];
 				pInput+=3;
-				Debug::Message(" Function name:\"%s\" Argc:%u, RegCount:%u",pFunctionName,static_cast<Word>(uNumParams),static_cast<Word>(uRegisterCount));
+				Debug::Message(" Function name:\"%s\" Argc:%u, RegCount:%u",pFunctionName,static_cast<uint_t>(uNumParams),static_cast<uint_t>(uRegisterCount));
 
-				Word uFlag = pInput[0];
+				uint_t uFlag = pInput[0];
 				if (uFlag&0x80) {
 					Debug::PrintString(" PreloadParentFlag");
 				}
@@ -443,13 +444,13 @@ WordPtr BURGER_API Burger::Flash::DisassembleActionScript(const Word8* pInput)
 				pInput+=2;
 				if (uNumParams) {
 					do {
-						Debug::Message(" Register 0x%02X:\"%s\"",static_cast<Word>(pInput[0]),reinterpret_cast<const char *>(pInput+1));
+						Debug::Message(" Register 0x%02X:\"%s\"",static_cast<uint_t>(pInput[0]),reinterpret_cast<const char *>(pInput+1));
 						pInput += StringLength(reinterpret_cast<const char *>(pInput+1))+2;
 					} while (--uNumParams);
 				}
 
-				uNumParams = LittleEndian::LoadAny(reinterpret_cast<const Word16 *>(pInput));
-				Debug::Message(" Code size %u\n",static_cast<Word>(uNumParams));
+				uNumParams = LittleEndian::LoadAny(reinterpret_cast<const uint16_t *>(pInput));
+				Debug::Message(" Code size %u\n",static_cast<uint_t>(uNumParams));
 			}
 		}
 	}

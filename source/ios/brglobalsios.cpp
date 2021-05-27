@@ -1,13 +1,14 @@
 /***************************************
 
-	Global variable manager, iOS version
+    Global variable manager, iOS version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -29,7 +30,7 @@ uint_t BURGER_API Burger::Globals::LaunchURL(const char *pURL)
 	NSString *pString = [[NSString alloc] initWithCString:pURL encoding:NSUTF8StringEncoding];
 	// Convert to a NSURL
 	NSURL *pNSURL = [[NSURL alloc] initWithString:pString];
-	Word uResult = 10;
+	uint_t uResult = 10;
 	// Open the website
 	if ([[UIApplication sharedApplication] openURL:pNSURL]==YES) {
 		// Success!

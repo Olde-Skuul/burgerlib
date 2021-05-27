@@ -4,11 +4,11 @@
 
     Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE
-    for license details. Yes, you can use it in a
-    commercial title without paying anything, just give me a credit.
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
     Please? It's not like I'm asking you for money!
-    
 
 ***************************************/
 
@@ -58,7 +58,7 @@ static const Burger::Display::OpenGLVertexInputs_t g_Inputs[] = {
 ***************************************/
 
 Burger::EffectPositionTexture::EffectPositionTexture(
-    Display* pDisplay, const Word* pVertexMembers)
+    Display* pDisplay, const uint_t* pVertexMembers)
 #if defined(BURGER_OPENGL)
     :
     m_pVertexMembers(pVertexMembers),
@@ -77,7 +77,7 @@ Burger::EffectPositionTexture::EffectPositionTexture(
 
 #if !defined(BURGER_WINDOWS) && !defined(DOXYGEN)
 
-Word Burger::EffectPositionTexture::CheckLoad(Display* pDisplay)
+uint_t Burger::EffectPositionTexture::CheckLoad(Display* pDisplay)
 {
 #if defined(BURGER_XBOX360)
     m_pDevice = pDisplay->GetD3DDevice();
@@ -153,14 +153,14 @@ void BURGER_API Burger::EffectPositionTexture::SetProjection(
 ***************************************/
 
 Burger::EffectPositionTextureDX9::EffectPositionTextureDX9(
-    DisplayDirectX9* pDisplay, const Word* pVertexMembers) :
+    DisplayDirectX9* pDisplay, const uint_t* pVertexMembers) :
     EffectPositionTexture(pDisplay, pVertexMembers)
 {
     m_ShaderData.m_DX9.m_pDevice =
         static_cast<DisplayDirectX9*>(pDisplay)->GetDirect3DDevice9();
 }
 
-Word Burger::EffectPositionTextureDX9::CheckLoad(Display* pDisplay)
+uint_t Burger::EffectPositionTextureDX9::CheckLoad(Display* pDisplay)
 {
     m_ShaderData.m_DX9.m_pDevice =
         static_cast<DisplayDirectX9*>(pDisplay)->GetDirect3DDevice9();
@@ -203,12 +203,12 @@ void Burger::EffectPositionTextureDX9::SetProjection(const Matrix4D_t* pMatrix)
 #if defined(BURGER_INTEL)
 
 Burger::EffectPositionTextureOpenGL::EffectPositionTextureOpenGL(
-    Display* pDisplay, const Word* pVertexMembers) :
+    Display* pDisplay, const uint_t* pVertexMembers) :
     EffectPositionTexture(pDisplay, pVertexMembers)
 {
 }
 
-Word Burger::EffectPositionTextureOpenGL::CheckLoad(Display* pDisplay)
+uint_t Burger::EffectPositionTextureOpenGL::CheckLoad(Display* pDisplay)
 {
     if (!m_ShaderData.m_GL.m_uProgramID) {
         GLuint uProgram = static_cast<DisplayOpenGL*>(pDisplay)->CompileProgram(

@@ -1,13 +1,14 @@
 /***************************************
 
-	Integer Rect handlers
+    Integer Rect handlers
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -62,20 +63,20 @@ struct Rect_t {
 	void MoveTo(const Point2D_t *pInput);
 	void MoveX(int iX);
 	void MoveY(int iY);
-	Word IsInside(int iX,int iY) const;
-	Word IsInside(const Point2D_t *pPoint) const;
-	Word IsInside(const Rect_t *pRect) const;
+	uint_t IsInside(int iX,int iY) const;
+	uint_t IsInside(const Point2D_t *pPoint) const;
+	uint_t IsInside(const Rect_t *pRect) const;
 	void Sort(void);
 	void SetSorted(int iLeft,int iTop,int iRight,int iBottom);
-	Word IsEmpty(void) const;
-	Word IsNotEmpty(void) const;
-	Word IsEqual(const Rect_t *pInput) const;
-	Word IsNotEqual(const Rect_t *pInput) const;
-	BURGER_INLINE Word operator==(const Rect_t &rInput) const { return IsEqual(&rInput); }
-	BURGER_INLINE Word operator!=(const Rect_t &rInput) const { return IsNotEqual(&rInput); }
+	uint_t IsEmpty(void) const;
+	uint_t IsNotEmpty(void) const;
+	uint_t IsEqual(const Rect_t *pInput) const;
+	uint_t IsNotEqual(const Rect_t *pInput) const;
+	BURGER_INLINE uint_t operator==(const Rect_t &rInput) const { return IsEqual(&rInput); }
+	BURGER_INLINE uint_t operator!=(const Rect_t &rInput) const { return IsNotEqual(&rInput); }
 	void Inset(int iX,int iY);
-	Word IsIntersecting(const Rect_t *pInput) const;
-	Word Intersection(const Rect_t *pInput1,const Rect_t *pInput2);
+	uint_t IsIntersecting(const Rect_t *pInput) const;
+	uint_t Intersection(const Rect_t *pInput1,const Rect_t *pInput2);
 	void Union(const Rect_t *pInput1,const Rect_t *pInput2);
 	void Add(const Point2D_t *pInput);
 	void Add(int iX,int iY);

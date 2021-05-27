@@ -1,13 +1,14 @@
 /***************************************
 
-	Vertex buffer class
+    Vertex buffer class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -89,21 +90,21 @@ public:
 
 	struct VertexAoS_t {
 		const void *m_pVertexArray;	///< Pointer to the vertex data to upload, if \ref NULL don't upload data
-		WordPtr m_uVertexArraySize;	///< Size in bytes of the entire vertex buffer, if 0, don't generate vertex data
+		uintptr_t m_uVertexArraySize;	///< Size in bytes of the entire vertex buffer, if 0, don't generate vertex data
 		const void *m_pElements;	///< Pointer to the element index data to upload, \ref NULL don't upload data
-		WordPtr m_uElementSize;		///< Size in bytes of the entire element buffer, if 0, don't generate an element index array
-		const Word *m_pMembers;		///< Pointer to array of array description enumerations
-		Word m_uFlags;				///< Look at FLAGAOS_* values for description
+		uintptr_t m_uElementSize;		///< Size in bytes of the entire element buffer, if 0, don't generate an element index array
+		const uint_t *m_pMembers;		///< Pointer to array of array description enumerations
+		uint_t m_uFlags;				///< Look at FLAGAOS_* values for description
 	};
 
-	static const Word g_ChunkElementSizes[5];	///< Size of each element for the USAGE_* chunk sizes
-	static const Word g_ChunkElementCounts[5];	///< Number of elements for the USAGE_* chunks
+	static const uint_t g_ChunkElementSizes[5];	///< Size of each element for the USAGE_* chunk sizes
+	static const uint_t g_ChunkElementCounts[5];	///< Number of elements for the USAGE_* chunks
 protected:
 	const void *m_pVertexArray;	///< Pointer to the vertex data to upload, if \ref NULL don't upload data
-	WordPtr m_uVertexArraySize;	///< Size in bytes of the entire vertex buffer, if 0, don't generate vertex data
+	uintptr_t m_uVertexArraySize;	///< Size in bytes of the entire vertex buffer, if 0, don't generate vertex data
 	const void *m_pElements;	///< Pointer to the element index data to upload, \ref NULL don't upload data
-	WordPtr m_uElementSize;		///< Size in bytes of the entire element buffer, if 0, don't generate an element index array
-	const Word *m_pMembers;		///< Pointer to array of array description enumerations
+	uintptr_t m_uElementSize;		///< Size in bytes of the entire element buffer, if 0, don't generate an element index array
+	const uint_t *m_pMembers;		///< Pointer to array of array description enumerations
 
 #if defined(BURGER_XBOX360) || defined(DOXYGEN)
 	D3DVertexBuffer * m_pD3DVertexBuffer;			///< (XBox 360 Only) DirectX vertex buffer
@@ -123,33 +124,33 @@ protected:
 #endif
 
 		struct {
-			Word m_uVertexArrayObjectID;	///< (OpenGL only) Main Vertex Object Array
-			Word m_uElementID;				///< (OpenGL only) ID to the index array
-			Word m_uBufferID;				///< (OpenGL only) ID for the buffer
+			uint_t m_uVertexArrayObjectID;	///< (OpenGL only) Main Vertex Object Array
+			uint_t m_uElementID;				///< (OpenGL only) ID to the index array
+			uint_t m_uBufferID;				///< (OpenGL only) ID for the buffer
 		} m_GL;					///< OpenGL specific data
 
 	} m_Platform;				///< Union of vertex buffer data for the platform
 #endif
 
-	Word m_uStride;				///< Size in bytes of each entry in the vertex array
-	Word m_uArrayEntryCount;	///< Number of entries in the vertex array
-	Word m_uElementEntryCount;	///< Number of entries in the element array
-	Word m_uMemberCount;		///< Number of entries in the member array
-	Word m_uFlags;				///< Flags describing how to treat the data
+	uint_t m_uStride;				///< Size in bytes of each entry in the vertex array
+	uint_t m_uArrayEntryCount;	///< Number of entries in the vertex array
+	uint_t m_uElementEntryCount;	///< Number of entries in the element array
+	uint_t m_uMemberCount;		///< Number of entries in the member array
+	uint_t m_uFlags;				///< Flags describing how to treat the data
 
 public:
 	VertexBuffer();
 	virtual ~VertexBuffer();
 
 #if defined(BURGER_WINDOWS)
-	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE = 0;
+	uint_t CheckLoad(Display *pDisplay) BURGER_OVERRIDE = 0;
 	void Release(Display *pDisplay) BURGER_OVERRIDE = 0;
 #else
-	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	uint_t CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
 	void Release(Display *pDisplay) BURGER_OVERRIDE;
 #endif
 
-	Word BURGER_API LoadData(Display *pDisplay,const VertexAoS_t *pDescription);
+	uint_t BURGER_API LoadData(Display *pDisplay,const VertexAoS_t *pDescription);
 	void BURGER_API PurgeData(void);
 
 #if defined(BURGER_XBOX360) || defined(DOXYGEN)
@@ -165,14 +166,14 @@ public:
 #endif
 
 #if defined(BURGER_OPENGL) || defined(DOXYGEN)
-	BURGER_INLINE Word GetVertexArrayObject(void) const { return m_Platform.m_GL.m_uVertexArrayObjectID; }
-	BURGER_INLINE Word GetElementID(void) const { return m_Platform.m_GL.m_uElementID; }
-	BURGER_INLINE Word GetBufferID(void) const { return m_Platform.m_GL.m_uBufferID; }
+	BURGER_INLINE uint_t GetVertexArrayObject(void) const { return m_Platform.m_GL.m_uVertexArrayObjectID; }
+	BURGER_INLINE uint_t GetElementID(void) const { return m_Platform.m_GL.m_uElementID; }
+	BURGER_INLINE uint_t GetBufferID(void) const { return m_Platform.m_GL.m_uBufferID; }
 #endif
 
-	BURGER_INLINE Word GetStride(void) const { return m_uStride; }
-	BURGER_INLINE Word GetArrayEntryCount(void) const { return m_uArrayEntryCount; }
-	BURGER_INLINE Word GetElementEntryCount(void) const { return m_uElementEntryCount; }
+	BURGER_INLINE uint_t GetStride(void) const { return m_uStride; }
+    BURGER_INLINE uint_t GetArrayEntryCount(void) const { return m_uArrayEntryCount; }
+    BURGER_INLINE uint_t GetElementEntryCount(void) const { return m_uElementEntryCount; }
 };
 }
 /* END */

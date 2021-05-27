@@ -94,6 +94,10 @@ static int snprintf(char* s, uintptr_t uSize, const char* format, ...)
 }
 #endif
 
+static Burger::SafePrintArgument::eType g_CharARG = static_cast<char>(-1) < 0 ?
+    Burger::SafePrintArgument::ARG_INT8 :
+    Burger::SafePrintArgument::ARG_UINT8;
+
 #if defined(BURGER_HAS_WCHAR_T)
 static Burger::SafePrintArgument::eType g_WCharARG =
 	static_cast<wchar_t>(-1) < 0 ? Burger::SafePrintArgument::ARG_INT16 :
@@ -166,6 +170,7 @@ static const uint64_t g_DoubleSpecialConstants[] = {
 };
 #endif
 
+#if defined(BURGER_WINDOWS) && (BURGER_MSVC >= 190000000)
 struct FloatTestSet_t {
 	float m_fFloatValue;
 	uint_t m_uMaxPrecision;
@@ -212,6 +217,7 @@ static const DoubleTestSet_t g_DoubleConstants[] = {
 	{1.7976931348623157e+308, 1}, // DBL_MAX
 	{2.2250738585072014e-308, 25} // DBL_MIN
 };
+#endif
 
 #if 0
 static const double g_NineTests[] = {9999999999999999999999.0,
@@ -437,10 +443,9 @@ static uint_t BURGER_API TestArgType(const Burger::SafePrintArgument* pArg,
 
 static uint_t BURGER_API ArgTypeUnitTest1ByteTypes(void) BURGER_NOEXCEPT
 {
-	// 1-byte
+	// Char is both signed and unsigned
 	const Burger::SafePrintArgument E1(static_cast<char>(12));
-	uint_t uResult =
-		TestArgType(&E1, "char", Burger::SafePrintArgument::ARG_INT8);
+	uint_t uResult = TestArgType(&E1, "char", g_CharARG);
 
 	const Burger::SafePrintArgument E2(static_cast<signed char>(12));
 	uResult |=
@@ -466,108 +471,114 @@ static uint_t BURGER_API ArgTypeUnitTest1ByteTypes(void) BURGER_NOEXCEPT
 
 /***************************************
 
-	Test double byte
+	Test 2 byte class SafePrintArgument
 
 ***************************************/
 
 static uint_t BURGER_API ArgTypeUnitTest2ByteTypes(void) BURGER_NOEXCEPT
 {
-	uint_t uResult;
-	short s = 12;
-	unsigned short us = 12;
+	// short
+	const Burger::SafePrintArgument E1(static_cast<short>(12));
+	uint_t uResult =
+		TestArgType(&E1, "short", Burger::SafePrintArgument::ARG_INT16);
 
-	Burger::SafePrintArgument E1(s);
-	Burger::SafePrintArgument E2(us);
+	const Burger::SafePrintArgument E2(static_cast<signed short>(12));
+	uResult |=
+		TestArgType(&E2, "signed short", Burger::SafePrintArgument::ARG_INT16);
 
-	uResult = TestArgType(&E1, "short", Burger::SafePrintArgument::ARG_INT16);
+	const Burger::SafePrintArgument E3(static_cast<unsigned short>(12));
 	uResult |= TestArgType(
-		&E2, "unsigned short", Burger::SafePrintArgument::ARG_UINT16);
+		&E3, "unsigned short", Burger::SafePrintArgument::ARG_UINT16);
 
-	int16_t i16 = 12;
-	uint16_t ui16 = 12;
-
-	Burger::SafePrintArgument E3(i16);
-	Burger::SafePrintArgument E4(ui16);
-
+	const Burger::SafePrintArgument E4(static_cast<int16_t>(12));
 	uResult |=
-		TestArgType(&E3, "int16_t", Burger::SafePrintArgument::ARG_INT16);
-	uResult |=
-		TestArgType(&E4, "uint16_t", Burger::SafePrintArgument::ARG_UINT16);
+		TestArgType(&E4, "int16_t", Burger::SafePrintArgument::ARG_INT16);
 
-	// Special test, this must map to unsigned short
+	const Burger::SafePrintArgument E5(static_cast<uint16_t>(12));
+	uResult |=
+		TestArgType(&E5, "uint16_t", Burger::SafePrintArgument::ARG_UINT16);
+
+	// Special test, this must map to short
 #if defined(BURGER_HAS_WCHAR_T)
-	wchar_t wc = 10;
-	Burger::SafePrintArgument E5(wc);
-	uResult |= TestArgType(&E5, "wchar_t", g_WCharARG);
+	const Burger::SafePrintArgument E6(static_cast<wchar_t>(10));
+	uResult |= TestArgType(&E6, "wchar_t", g_WCharARG);
+#endif
+
+#if defined(BURGER_HAS_CHAR16_T)
+	const Burger::SafePrintArgument E7(static_cast<char16_t>(10));
+	uResult |= TestArgType(&E7, "char16_t", g_Char16ARG);
 #endif
 	return uResult;
 }
 
 /***************************************
 
-	Test quad byte
+	Test 4 byte class SafePrintArgument
 
 ***************************************/
 
 static uint_t BURGER_API ArgTypeUnitTest4ByteTypes(void) BURGER_NOEXCEPT
 {
-	uint_t uResult;
+	const Burger::SafePrintArgument E1(static_cast<int>(12));
+	uint_t uResult =
+		TestArgType(&E1, "int", Burger::SafePrintArgument::ARG_INT32);
 
-	// 32-bit types
-	int i = 12;
-	unsigned int ui = 12;
-	Burger::SafePrintArgument E1(i);
-	Burger::SafePrintArgument E2(ui);
-	uResult = TestArgType(&E1, "int", Burger::SafePrintArgument::ARG_INT32);
+	const Burger::SafePrintArgument E2(static_cast<signed int>(12));
 	uResult |=
-		TestArgType(&E2, "unsigned int", Burger::SafePrintArgument::ARG_UINT32);
+		TestArgType(&E2, "signed int", Burger::SafePrintArgument::ARG_INT32);
 
-	int32_t i32 = 12;
-	uint32_t ui32 = 12;
-	Burger::SafePrintArgument E3(i32);
-	Burger::SafePrintArgument E4(ui32);
-
+	const Burger::SafePrintArgument E3(static_cast<unsigned int>(12));
 	uResult |=
-		TestArgType(&E3, "int32_t", Burger::SafePrintArgument::ARG_INT32);
+		TestArgType(&E3, "unsigned int", Burger::SafePrintArgument::ARG_UINT32);
+
+	const Burger::SafePrintArgument E4(static_cast<int32_t>(12));
 	uResult |=
-		TestArgType(&E4, "uint32_t", Burger::SafePrintArgument::ARG_UINT32);
+		TestArgType(&E4, "int32_t", Burger::SafePrintArgument::ARG_INT32);
 
-	long lo = 12;
-	unsigned long ulo = 12;
-
-	Burger::SafePrintArgument E5(lo);
-	Burger::SafePrintArgument E6(ulo);
+	const Burger::SafePrintArgument E5(static_cast<uint32_t>(12));
+	uResult |=
+		TestArgType(&E5, "uint32_t", Burger::SafePrintArgument::ARG_UINT32);
 
 #if BURGER_SIZEOF_LONG == 8
-	uResult |= TestArgType(&E5, "long", Burger::SafePrintArgument::ARG_INT64);
+	const Burger::SafePrintArgument E6(static_cast<long>(12));
+	uResult |= TestArgType(&E6, "long", Burger::SafePrintArgument::ARG_INT64);
+
+	const Burger::SafePrintArgument E7(static_cast<unsigned long>(12));
 	uResult |= TestArgType(
-		&E6, "unsigned long", Burger::SafePrintArgument::ARG_UINT64);
+		&E7, "unsigned long", Burger::SafePrintArgument::ARG_UINT64);
 #else
-	uResult |= TestArgType(&E5, "long", Burger::SafePrintArgument::ARG_INT32);
+	const Burger::SafePrintArgument E6(static_cast<long>(12));
+	uResult |= TestArgType(&E6, "long", Burger::SafePrintArgument::ARG_INT32);
+
+	const Burger::SafePrintArgument E7(static_cast<unsigned long>(12));
 	uResult |= TestArgType(
-		&E6, "unsigned long", Burger::SafePrintArgument::ARG_UINT32);
+		&E7, "unsigned long", Burger::SafePrintArgument::ARG_UINT32);
 #endif
+
+#if defined(BURGER_HAS_CHAR16_T)
+	const Burger::SafePrintArgument E8(static_cast<char32_t>(10));
+	uResult |= TestArgType(&E8, "char32_t", g_Char32ARG);
+#endif
+
 	return uResult;
 }
 
 /***************************************
 
-	Test octo byte
+	Test 8 byte class SafePrintArgument
 
 ***************************************/
 
 static uint_t BURGER_API ArgTypeUnitTest8ByteTypes(void) BURGER_NOEXCEPT
 {
-	uint_t uResult;
+	const Burger::SafePrintArgument E1(static_cast<int64_t>(12));
+	uint_t uResult =
+		TestArgType(&E1, "int64_t", Burger::SafePrintArgument::ARG_INT64);
 
-	int64_t l = 12;
-	uint64_t ul = 12;
-	Burger::SafePrintArgument E1(l);
-	Burger::SafePrintArgument E2(ul);
-
-	uResult = TestArgType(&E1, "int64_t", Burger::SafePrintArgument::ARG_INT64);
+	const Burger::SafePrintArgument E2(static_cast<uint64_t>(12));
 	uResult |=
 		TestArgType(&E2, "uint64_t", Burger::SafePrintArgument::ARG_UINT64);
+
 	return uResult;
 }
 
@@ -579,22 +590,19 @@ static uint_t BURGER_API ArgTypeUnitTest8ByteTypes(void) BURGER_NOEXCEPT
 
 static uint_t BURGER_API ArgTypeUnitTestcoreTypes(void) BURGER_NOEXCEPT
 {
-	uint_t uResult;
-	float f = 12.0f;
-	double d = 12.0;
-	bool b = true;
+	const Burger::SafePrintArgument E1(1.0f);
+	uint_t uResult =
+		TestArgType(&E1, "float", Burger::SafePrintArgument::ARG_FLOAT);
 
-	Burger::SafePrintArgument E1(f);
-	Burger::SafePrintArgument E2(d);
-	Burger::SafePrintArgument E3(b);
-
-	uResult = TestArgType(&E1, "float", Burger::SafePrintArgument::ARG_FLOAT);
+	const Burger::SafePrintArgument E2(1.0);
 	uResult |=
 		TestArgType(&E2, "double", Burger::SafePrintArgument::ARG_DOUBLE);
+
+	const Burger::SafePrintArgument E3(true);
 	uResult |= TestArgType(&E3, "bool", Burger::SafePrintArgument::ARG_BOOL);
 
-	uint16_t h = 12;
-	Burger::SafePrintArgument E4(h, Burger::SafePrintArgument::ARG_HALF);
+	const Burger::SafePrintArgument E4(
+		static_cast<uint16_t>(12), Burger::SafePrintArgument::ARG_HALF);
 	uResult |= TestArgType(&E4, "half", Burger::SafePrintArgument::ARG_HALF);
 	return uResult;
 }
@@ -607,111 +615,108 @@ static uint_t BURGER_API ArgTypeUnitTestcoreTypes(void) BURGER_NOEXCEPT
 
 static uint_t BURGER_API ArgTypeUnitTestPointerTypes(void) BURGER_NOEXCEPT
 {
-	uint_t uResult;
-	int i = 12;
-	unsigned int ui = 32982;
+	const char* cp = "hello world";
+	const Burger::SafePrintArgument E1(cp);
+	uint_t uResult =
+		TestArgType(&E1, "const char *", Burger::SafePrintArgument::ARG_PCHAR);
 
 	char c = 12;
-	signed char sc = 37;
-	unsigned char uc = 0xAC;
-
-	wchar_t wc = 0x0000;
-
-	float f = 12.0f;
-	double d = 12.0;
-	bool b = true;
-
-	short s1 = 0x4754;
-	unsigned short us2 = 0xFEFE;
-
-	int64_t ll = 0x1234567812345678LL;
-	uint64_t ull = 0x9876543212345678ULL;
-
-	long l = 0x34567812;
-	unsigned long ul = 0xAEFF0123;
-
-	const char* pc1 = "hello world";
 	char* pc2 = &c;
-
-	const wchar_t* pwc = &wc;
-
-	unsigned char* puc = &uc;
-	signed char* psc = &sc;
-
-	int* pi = &i;
-	unsigned int* pui = &ui;
-	const float* pf = &f;
-	double* pd = &d;
-
-	void* pv = NULL;
-	bool* pb = &b;
-
-	Burger::SafePrintArgument E1(pc1);
-	Burger::SafePrintArgument E2(pc2);
-
-	Burger::SafePrintArgument EA(puc);
-	Burger::SafePrintArgument EB(&s1);
-	Burger::SafePrintArgument EC(&us2);
-	Burger::SafePrintArgument EF(psc);
-
-	Burger::SafePrintArgument EX(pwc);
-	Burger::SafePrintArgument EY(L"HELLO WORLD");
-
-	Burger::SafePrintArgument E3(pi);
-	Burger::SafePrintArgument ED(pui);
-
-	Burger::SafePrintArgument E4(pf);
-	Burger::SafePrintArgument E5(pd);
-
-	Burger::SafePrintArgument E6(pv);
-	Burger::SafePrintArgument E7(pb);
-
-	Burger::SafePrintArgument E8(&ll);
-	Burger::SafePrintArgument E9(&ull);
-
-	Burger::SafePrintArgument EL(&l);
-	Burger::SafePrintArgument EM(&ul);
-
-	uResult =
-		TestArgType(&E1, "const char *", Burger::SafePrintArgument::ARG_PCHAR);
+	const Burger::SafePrintArgument E2(pc2);
 	uResult |= TestArgType(&E2, "char *", Burger::SafePrintArgument::ARG_PCHAR);
+
+	signed char sc = 37;
+	signed char* psc = &sc;
+	const Burger::SafePrintArgument EF(psc);
 	uResult |= TestArgType(
 		&EF, "signed char *", Burger::SafePrintArgument::ARG_PSCHAR);
+
+	unsigned char uc = 0xAC;
+	unsigned char* puc = &uc;
+	const Burger::SafePrintArgument EA(puc);
 	uResult |= TestArgType(
 		&EA, "unsigned char *", Burger::SafePrintArgument::ARG_PUCHAR);
+
+#if defined(BURGER_HAS_WCHAR_T)
+	wchar_t wc = 0x0000;
+	const wchar_t* pwc = &wc;
+	const Burger::SafePrintArgument EX(pwc);
 	uResult |=
 		TestArgType(&EX, "wchar_t *", Burger::SafePrintArgument::ARG_PUINT16);
+
+	const Burger::SafePrintArgument EY(L"HELLO WORLD");
 	uResult |= TestArgType(
 		&EY, "L\"Hello World\"", Burger::SafePrintArgument::ARG_PUINT16);
+#endif
 
+	short s1 = 0x4754;
+	const Burger::SafePrintArgument EB(&s1);
 	uResult |= TestArgType(&EB, "short", Burger::SafePrintArgument::ARG_PINT16);
+
+	unsigned short us2 = 0xFEFE;
+	const Burger::SafePrintArgument EC(&us2);
 	uResult |= TestArgType(
 		&EC, "unsigned short", Burger::SafePrintArgument::ARG_PUINT16);
 
+	int i = 12;
+	int* pi = &i;
+	const Burger::SafePrintArgument E3(pi);
 	uResult |= TestArgType(&E3, "int", Burger::SafePrintArgument::ARG_PINT32);
+
+	unsigned int ui = 32982;
+	unsigned int* pui = &ui;
+	const Burger::SafePrintArgument ED(pui);
 	uResult |= TestArgType(
 		&ED, "unsigned int", Burger::SafePrintArgument::ARG_PUINT32);
 
 #if BURGER_SIZEOF_LONG == 8
+	long l = 0x34567812;
+	const Burger::SafePrintArgument EL(&l);
 	uResult |= TestArgType(&EL, "long", Burger::SafePrintArgument::ARG_PINT64);
+
+	unsigned long ul = 0xAEFF0123;
+	const Burger::SafePrintArgument EM(&ul);
 	uResult |= TestArgType(
 		&EM, "unsigned long", Burger::SafePrintArgument::ARG_PUINT64);
 #else
+	long l = 0x34567812;
+	const Burger::SafePrintArgument EL(&l);
 	uResult |= TestArgType(&EL, "long", Burger::SafePrintArgument::ARG_PINT32);
+
+	unsigned long ul = 0xAEFF0123;
+	const Burger::SafePrintArgument EM(&ul);
 	uResult |= TestArgType(
 		&EM, "unsigned long", Burger::SafePrintArgument::ARG_PUINT32);
 #endif
 
+	int64_t ll = 0x1234567812345678LL;
+	const Burger::SafePrintArgument E8(&ll);
 	uResult |=
 		TestArgType(&E8, "int64_t *", Burger::SafePrintArgument::ARG_PINT64);
+
+	uint64_t ull = 0x9876543212345678ULL;
+	const Burger::SafePrintArgument E9(&ull);
 	uResult |=
 		TestArgType(&E9, "uint64_t *", Burger::SafePrintArgument::ARG_PUINT64);
 
+	float f = 12.0f;
+	const float* pf = &f;
+	const Burger::SafePrintArgument E4(pf);
 	uResult |= TestArgType(&E4, "float", Burger::SafePrintArgument::ARG_PFLOAT);
+
+	double d = 12.0;
+	double* pd = &d;
+	const Burger::SafePrintArgument E5(pd);
 	uResult |=
 		TestArgType(&E5, "double", Burger::SafePrintArgument::ARG_PDOUBLE);
 
+	void* pv = nullptr;
+	const Burger::SafePrintArgument E6(pv);
 	uResult |= TestArgType(&E6, "void *", Burger::SafePrintArgument::ARG_PVOID);
+
+	bool b = true;
+	bool* pb = &b;
+	const Burger::SafePrintArgument E7(pb);
 	uResult |= TestArgType(&E7, "void *", Burger::SafePrintArgument::ARG_PVOID);
 	return uResult;
 }
@@ -724,34 +729,40 @@ static uint_t BURGER_API ArgTypeUnitTestPointerTypes(void) BURGER_NOEXCEPT
 
 static uint_t BURGER_API ArgTypeUnitTestLiterals(void) BURGER_NOEXCEPT
 {
-	uint_t uResult;
-
-	Burger::SafePrintArgument F1("hello world");
-	Burger::SafePrintArgument F2('1');
-	Burger::SafePrintArgument F3(L'a');
-
-	Burger::SafePrintArgument F4(0172);
-	Burger::SafePrintArgument F5(12);
-	Burger::SafePrintArgument F6(0x1BCDEF12);
-	Burger::SafePrintArgument F7('ABCD');
-
-	Burger::SafePrintArgument F8(0172U);
-	Burger::SafePrintArgument F9(12U);
-	Burger::SafePrintArgument F0(0x1bcdef12U);
-
-	uResult = TestArgType(
+	const Burger::SafePrintArgument F1("hello world");
+	uint_t uResult = TestArgType(
 		&F1, "\"hello world\"", Burger::SafePrintArgument::ARG_PCHAR);
-	uResult |= TestArgType(&F2, "'1'", Burger::SafePrintArgument::ARG_INT8);
-	uResult |= TestArgType(&F3, "L'a'", Burger::SafePrintArgument::ARG_UINT16);
 
+	const Burger::SafePrintArgument F2('1');
+	uResult |= TestArgType(&F2, "'1'", Burger::SafePrintArgument::ARG_INT8);
+
+#if defined(BURGER_HAS_WCHAR_T)
+	const Burger::SafePrintArgument F3(L'a');
+	uResult |= TestArgType(&F3, "L'a'", Burger::SafePrintArgument::ARG_UINT16);
+#endif
+
+	const Burger::SafePrintArgument F4(0172);
 	uResult |= TestArgType(&F4, "0172", Burger::SafePrintArgument::ARG_INT32);
+
+	const Burger::SafePrintArgument F5(12);
 	uResult |= TestArgType(&F5, "12", Burger::SafePrintArgument::ARG_INT32);
+
+	const Burger::SafePrintArgument F6(0x1BCDEF12);
 	uResult |=
 		TestArgType(&F6, "0x1BCDEF12", Burger::SafePrintArgument::ARG_INT32);
-	uResult |= TestArgType(&F7, "'ABCD'", Burger::SafePrintArgument::ARG_INT32);
 
+#if !defined(BURGER_WATCOM)
+	const Burger::SafePrintArgument F7('ABCD');
+	uResult |= TestArgType(&F7, "'ABCD'", Burger::SafePrintArgument::ARG_INT32);
+#endif
+
+	const Burger::SafePrintArgument F8(0172U);
 	uResult |= TestArgType(&F8, "0172U", Burger::SafePrintArgument::ARG_UINT32);
+
+	const Burger::SafePrintArgument F9(12U);
 	uResult |= TestArgType(&F9, "12U", Burger::SafePrintArgument::ARG_UINT32);
+
+	const Burger::SafePrintArgument F0(0x1bcdef12U);
 	uResult |=
 		TestArgType(&F0, "0x1bcdf12U", Burger::SafePrintArgument::ARG_UINT32);
 	return uResult;
@@ -765,50 +776,64 @@ static uint_t BURGER_API ArgTypeUnitTestLiterals(void) BURGER_NOEXCEPT
 
 static uint_t BURGER_API ArgTypeUnitTestLiterals2(void) BURGER_NOEXCEPT
 {
-	uint_t uResult = 0;
-	Burger::SafePrintArgument G1(0172L);
-	Burger::SafePrintArgument G2(12L);
-	Burger::SafePrintArgument G3(0x1bcdef12L);
-
-	Burger::SafePrintArgument G4(0172UL);
-	Burger::SafePrintArgument G5(12UL);
-	Burger::SafePrintArgument G6(0x1bcdef12UL);
-#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
-	Burger::SafePrintArgument G7(012LL);
-	Burger::SafePrintArgument G8(12LL);
-	Burger::SafePrintArgument G9(0x1bcdef12LL);
-	Burger::SafePrintArgument G0(12ULL);
-#endif
-
 #if BURGER_SIZEOF_LONG == 8
-	uResult |= TestArgType(&G1, "0172L", Burger::SafePrintArgument::ARG_INT64);
+	const Burger::SafePrintArgument G1(0172L);
+	uint_t uResult =
+		TestArgType(&G1, "0172L", Burger::SafePrintArgument::ARG_INT64);
+
+	const Burger::SafePrintArgument G2(12L);
 	uResult |= TestArgType(&G2, "12L", Burger::SafePrintArgument::ARG_INT64);
+
+	const Burger::SafePrintArgument G3(0x1bcdef12L);
 	uResult |=
 		TestArgType(&G3, "0x1bcdef12L", Burger::SafePrintArgument::ARG_INT64);
 
+	const Burger::SafePrintArgument G4(0172UL);
 	uResult |=
 		TestArgType(&G4, "0172UL", Burger::SafePrintArgument::ARG_UINT64);
+
+	const Burger::SafePrintArgument G5(12UL);
 	uResult |= TestArgType(&G5, "12UL", Burger::SafePrintArgument::ARG_UINT64);
+
+	const Burger::SafePrintArgument G6(0x1bcdef12UL);
 	uResult |=
 		TestArgType(&G6, "0x1bcdef12UL", Burger::SafePrintArgument::ARG_UINT64);
 #else
-	uResult |= TestArgType(&G1, "0172L", Burger::SafePrintArgument::ARG_INT32);
+	const Burger::SafePrintArgument G1(0172L);
+	uint_t uResult =
+		TestArgType(&G1, "0172L", Burger::SafePrintArgument::ARG_INT32);
+
+	const Burger::SafePrintArgument G2(12L);
 	uResult |= TestArgType(&G2, "12L", Burger::SafePrintArgument::ARG_INT32);
+
+	const Burger::SafePrintArgument G3(0x1bcdef12L);
 	uResult |=
 		TestArgType(&G3, "0x1bcdef12L", Burger::SafePrintArgument::ARG_INT32);
 
+	const Burger::SafePrintArgument G4(0172UL);
 	uResult |=
 		TestArgType(&G4, "0172UL", Burger::SafePrintArgument::ARG_UINT32);
+
+	const Burger::SafePrintArgument G5(12UL);
 	uResult |= TestArgType(&G5, "12UL", Burger::SafePrintArgument::ARG_UINT32);
+
+	const Burger::SafePrintArgument G6(0x1bcdef12UL);
 	uResult |=
 		TestArgType(&G6, "0x1bcdef12UL", Burger::SafePrintArgument::ARG_UINT32);
 #endif
 
 #if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
+	const Burger::SafePrintArgument G7(012LL);
 	uResult |= TestArgType(&G7, "012LL", Burger::SafePrintArgument::ARG_INT64);
+
+	const Burger::SafePrintArgument G8(12LL);
 	uResult |= TestArgType(&G8, "12LL", Burger::SafePrintArgument::ARG_INT64);
+
+	const Burger::SafePrintArgument G9(0x1bcdef12LL);
 	uResult |=
 		TestArgType(&G9, "0x1bcdef12LL", Burger::SafePrintArgument::ARG_INT64);
+
+	const Burger::SafePrintArgument G0(12ULL);
 	uResult |= TestArgType(&G0, "12ULL", Burger::SafePrintArgument::ARG_UINT64);
 #endif
 	return uResult;
@@ -956,7 +981,7 @@ static uint_t BURGER_API TestArgumentDetection(uint_t uVerbose) BURGER_NOEXCEPT
 
 ***************************************/
 
-#if defined(BURGER_WINDOWS) || defined(BURGER_MSVC)
+#if defined(BURGER_WINDOWS) && (BURGER_MSVC >= 190000000)
 static uint_t BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 	int iStartPrecision, int iEndPrecision, const char* pFlagsString,
 	const char* pLocalFormat, const char* pBurgerFormat,
@@ -965,7 +990,7 @@ static uint_t BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 	const Burger::SafePrintArgument& rStepValue)
 {
 	// Sanity checks
-	Burger::SafePrintArgument::eType uStartType = rStartValue.GetType();
+	const Burger::SafePrintArgument::eType uStartType = rStartValue.GetType();
 	BURGER_ASSERT(rStartValue.IsInteger());
 	BURGER_ASSERT(
 		(rEndValue.GetType() == uStartType) && rStepValue.IsInteger());
@@ -1025,7 +1050,7 @@ static uint_t BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 	BaseString[0] = '%';
 	Burger::StringCopy(BaseString + 1, sizeof(BaseString) - 1, pFlagsString);
 	uint_t uResult = 0; // Success
-	uint_t bContinueTesting;
+	uint_t bContinueTesting = FALSE;
 	do {
 		for (int32_t iWidth = iStartWidth; iWidth <= iEndWidth; iWidth++) {
 			for (int32_t iPrecision = iStartPrecision;
@@ -1046,23 +1071,23 @@ static uint_t BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 					Burger::NumberString WidthString(iWidth);
 					if (iPrecision >= 0) {
 						// Insert Width.Precision
-						Burger::NumberString PrecisionString(iPrecision);
+						const Burger::NumberString PrecisionString(iPrecision);
 						Burger::StringConcatenate(
-							ReferenceFormatString, WidthString.GetPtr());
+							ReferenceFormatString, WidthString.c_str());
 						Burger::StringConcatenate(ReferenceFormatString, ".");
 						Burger::StringConcatenate(
-							ReferenceFormatString, PrecisionString.GetPtr());
+							ReferenceFormatString, PrecisionString.c_str());
 					} else {
 						// Insert Width alone
 						Burger::StringConcatenate(
-							ReferenceFormatString, WidthString.GetPtr());
+							ReferenceFormatString, WidthString.c_str());
 					}
 				} else if (iPrecision >= 0) {
 					// Insert .Precision
-					Burger::NumberString PrecisionString(iPrecision);
+					const Burger::NumberString PrecisionString(iPrecision);
 					Burger::StringConcatenate(ReferenceFormatString, ".");
 					Burger::StringConcatenate(
-						ReferenceFormatString, PrecisionString.GetPtr());
+						ReferenceFormatString, PrecisionString.c_str());
 				}
 
 				// Copy to the test (Format is the same)
@@ -1121,7 +1146,7 @@ static uint_t BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 		bContinueTesting = FALSE;
 		switch (uTestType) {
 		case TESTING_I32: {
-			int32_t t = i32;
+			const int32_t t = i32;
 			i32 += rStepValue.GetInt32();
 			if ((i32 <= rEndValue.m_Data.m_iInt32) && (i32 > t)) {
 				bContinueTesting = TRUE;
@@ -1129,7 +1154,7 @@ static uint_t BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 			break;
 		}
 		case TESTING_U32: {
-			uint32_t t = u32;
+			const uint32_t t = u32;
 			u32 += rStepValue.GetUInt32();
 			if ((u32 <= rEndValue.m_Data.m_uWord32) && (u32 > t)) {
 				bContinueTesting = TRUE;
@@ -1137,7 +1162,7 @@ static uint_t BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 			break;
 		}
 		case TESTING_I64: {
-			int64_t t = i64;
+			const int64_t t = i64;
 			i64 += rStepValue.GetInt64();
 			if ((i64 <= rEndValue.m_Data.m_iInt64) && (i64 > t)) {
 				bContinueTesting = TRUE;
@@ -1145,7 +1170,7 @@ static uint_t BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 			break;
 		}
 		case TESTING_U64: {
-			uint64_t t = u64;
+			const uint64_t t = u64;
 			u64 += rStepValue.GetUInt64();
 			if ((u64 <= rEndValue.m_Data.m_uWord64) && (u64 > t)) {
 				bContinueTesting = TRUE;
@@ -1166,6 +1191,7 @@ static uint_t BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 
 ***************************************/
 
+#if defined(BURGER_WINDOWS) && (BURGER_MSVC >= 190000000)
 static const int32_t g_TestInt32s[] = {INT32_MIN, -2147483647, -1234567890,
 	-1147483647, -147483647, -47483647 - 7483647, -483647, -83647, -3647, -647,
 	-47, 9, -1, 0, 1, 5, 12, 432, 5439, 48923, 439671, 9876543, 53286473,
@@ -1242,14 +1268,17 @@ static const IntegerTestConfig_t UnsignedHexTests = {"Hex",
 static const IntegerTestConfig_t UnsignedOctalTests = {"Octal",
 	g_UnsignedHexOctalTestFlags, BURGER_ARRAYSIZE(g_UnsignedHexOctalTestFlags),
 	FALSE, "o", "", -1, 13, -1, 13, "llo", "", "llo", "", -1, 24, -1, 24};
+#endif
 
-#if defined(BURGER_WINDOWS) || defined(BURGER_MSVC)
+#if defined(BURGER_WINDOWS) && (BURGER_MSVC >= 190000000)
 static uint_t BURGER_API TestIntegerFormat(
-	const IntegerTestConfig_t* pTestConfig)
+	const IntegerTestConfig_t* pTestConfig, uint_t uVerbose)
 {
 	uint_t uResult = 0;
-	Message("Running tests of %s formatting", pTestConfig->m_pName);
 
+	if (uVerbose & VERBOSE_MSG) {
+		Message("Running tests of %s formatting", pTestConfig->m_pName);
+	}
 	const char** ppTestFlags = pTestConfig->m_ppTestFlags;
 	uintptr_t uTestFlagCount = pTestConfig->m_uTestFlagCount;
 
@@ -1539,9 +1568,11 @@ static uint_t BURGER_API UnitTestFormattingChar(int iStartWidth, int iEndWidth,
 
 ***************************************/
 
-static uint_t BURGER_API TestCharFormats(void)
+static uint_t BURGER_API TestCharFormats(uint_t uVerbose)
 {
-	Message("Running tests of char formatting");
+	if (uVerbose & VERBOSE_MSG) {
+		Message("Running tests of char formatting");
+	}
 
 	char s1 = -128;
 	char s2 = 0x7f;
@@ -1575,7 +1606,7 @@ static uint_t BURGER_API TestCharFormats(void)
 
 ***************************************/
 
-#if defined(BURGER_WINDOWS) || defined(BURGER_MSVC)
+#if defined(BURGER_WINDOWS) && (BURGER_MSVC >= 190000000)
 static uint_t BURGER_API UnitTestFormattingString(int iStartWidth,
 	int iEndWidth, int iStartPrecision, int iEndPrecision, const char* pFlags,
 	const char* fmt, const Burger::SafePrintArgument& rTheStr)
@@ -1635,10 +1666,12 @@ static uint_t BURGER_API UnitTestFormattingString(int iStartWidth,
 
 ***************************************/
 
-#if defined(BURGER_WINDOWS) || defined(BURGER_MSVC)
-static uint_t BURGER_API TestStringFormats(void)
+#if defined(BURGER_WINDOWS) && (BURGER_MSVC >= 190000000)
+static uint_t BURGER_API TestStringFormats(uint_t uVerbose)
 {
-	Message("Running tests of string formatting");
+	if (uVerbose & VERBOSE_MSG) {
+		Message("Running tests of string formatting");
+	}
 	const char* pS1 = "HELLO";
 	const wchar_t* pWS1 = L"HELLO";
 
@@ -1684,9 +1717,11 @@ static BinaryTests_t g_BinaryTests[] = {
 	{"%!", "00000000000000000001001000110100"},
 	{"%#!", "00101100010010000000000000000000"}};
 
-static uint_t BURGER_API TestBinaryFormats(void)
+static uint_t BURGER_API TestBinaryFormats(uint_t uVerbose)
 {
-	Message("Running tests of binary formatting");
+	if (uVerbose & VERBOSE_MSG) {
+		Message("Running tests of binary formatting");
+	}
 	char Buffer[128];
 	uintptr_t i = BURGER_ARRAYSIZE(g_BinaryTests);
 	const BinaryTests_t* pTests = g_BinaryTests;
@@ -1700,6 +1735,7 @@ static uint_t BURGER_API TestBinaryFormats(void)
 				"Binary reference %s didn't match Test %s, Burger format was %s",
 				TRUE, pTests->m_pExpectedResult, Buffer, pTests->m_pFormat);
 		}
+		++pTests;
 	} while (--i);
 	return uResult;
 }
@@ -1710,7 +1746,7 @@ static uint_t BURGER_API TestBinaryFormats(void)
 
 ***************************************/
 
-#if (defined(BURGER_WINDOWS) || defined(BURGER_MSVC)) && 1
+#if defined(BURGER_WINDOWS) && (BURGER_MSVC >= 190000000)
 static uint_t BURGER_API UnitTestFormattingReal(int iStartWidth, int iEndWidth,
 	int iStartPrecision, int iEndPrecision, const char* pFlags,
 	const char* pFormatString, const Burger::SafePrintArgument& rTheReal)
@@ -1779,7 +1815,7 @@ static uint_t BURGER_API UnitTestFormattingReal(int iStartWidth, int iEndWidth,
 }
 #endif
 
-#if (defined(BURGER_WINDOWS) || defined(BURGER_MSVC)) && 1
+#if defined(BURGER_WINDOWS) && (BURGER_MSVC >= 190000000)
 static const char* g_FloatTestFlags[] =
 	{ // combinations of -, +, ' ', # and '0'
 		"", "+", " ", "+ ", "#", "#+", "# ", "#+ ", "0", "+0", " 0", "+ 0",
@@ -1788,10 +1824,11 @@ static const char* g_FloatTestFlags[] =
 		"-", "-+", "- ", "-+ ", "-#", "-#+", "-# ", "-#+ ", "-0", "-+0", "- 0",
 		"-+ 0", "-#0", "-#+0", "-# 0", "-#+ 0"};
 
-static uint_t BURGER_API TestRealFormats(void)
+static uint_t BURGER_API TestRealFormats(uint_t uVerbose)
 {
-	Message("Running tests of floating point formatting");
-
+	if (uVerbose & VERBOSE_MSG) {
+		Message("Running tests of floating point formatting");
+	}
 	int i;
 	int n;
 
@@ -1852,16 +1889,16 @@ int BURGER_API TestBrprintf(uint_t uVerbose)
 
 	uint_t uResult = TestFloatDecomp();
 	uResult |= TestArgumentDetection(uVerbose);
-	uResult |= TestBinaryFormats();
-	uResult |= TestCharFormats();
+	uResult |= TestBinaryFormats(uVerbose);
+	uResult |= TestCharFormats(uVerbose);
 
-#if defined(BURGER_WINDOWS) || defined(BURGER_MSVC)
-	uResult |= TestIntegerFormat(&SignedIntegerTests);
-	uResult |= TestIntegerFormat(&UnsignedIntegerTests);
-	uResult |= TestIntegerFormat(&UnsignedHexTests);
-	uResult |= TestIntegerFormat(&UnsignedOctalTests);
-	uResult |= TestStringFormats();
-	uResult |= TestRealFormats();
+#if defined(BURGER_WINDOWS) && (BURGER_MSVC >= 190000000)
+	uResult |= TestIntegerFormat(&SignedIntegerTests, uVerbose);
+	uResult |= TestIntegerFormat(&UnsignedIntegerTests, uVerbose);
+	uResult |= TestIntegerFormat(&UnsignedHexTests, uVerbose);
+	uResult |= TestIntegerFormat(&UnsignedOctalTests, uVerbose);
+	uResult |= TestStringFormats(uVerbose);
+	uResult |= TestRealFormats(uVerbose);
 #endif
 
 #if 0

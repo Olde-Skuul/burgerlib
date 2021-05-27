@@ -1,15 +1,17 @@
 /***************************************
 
-	HashMap template for mapping a key to data
+    HashMap template for mapping a key to data
 
-	Inspired by an implementation found in gameswf by Thatcher Ulrich <tu@tulrich.com>
+    Inspired by an implementation found in gameswf by Thatcher Ulrich
+<tu@tulrich.com>
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -30,48 +32,48 @@
 
 /* BEGIN */
 namespace Burger {
-extern WordPtr BURGER_API SDBMHashFunctor(const void *pData,WordPtr uDataSize);
-extern WordPtr BURGER_API SDBMHashCaseFunctor(const void *pData,WordPtr uDataSize);
-extern WordPtr BURGER_API DJB2HashAddFunctor(const void *pData,WordPtr uDataSize);
-extern WordPtr BURGER_API DJB2HashAddCaseFunctor(const void *pData,WordPtr uDataSize);
-extern WordPtr BURGER_API DJB2HashXorFunctor(const void *pData,WordPtr uDataSize);
-extern WordPtr BURGER_API DJB2HashXorCaseFunctor(const void *pData,WordPtr uDataSize);
-extern WordPtr BURGER_API DJB2StringHashXorFunctor(const void *pData,WordPtr uDataSize);
-extern WordPtr BURGER_API DJB2StringHashXorCaseFunctor(const void *pData,WordPtr uDataSize);
+extern uintptr_t BURGER_API SDBMHashFunctor(const void *pData,uintptr_t uDataSize);
+extern uintptr_t BURGER_API SDBMHashCaseFunctor(const void *pData,uintptr_t uDataSize);
+extern uintptr_t BURGER_API DJB2HashAddFunctor(const void *pData,uintptr_t uDataSize);
+extern uintptr_t BURGER_API DJB2HashAddCaseFunctor(const void *pData,uintptr_t uDataSize);
+extern uintptr_t BURGER_API DJB2HashXorFunctor(const void *pData,uintptr_t uDataSize);
+extern uintptr_t BURGER_API DJB2HashXorCaseFunctor(const void *pData,uintptr_t uDataSize);
+extern uintptr_t BURGER_API DJB2StringHashXorFunctor(const void *pData,uintptr_t uDataSize);
+extern uintptr_t BURGER_API DJB2StringHashXorCaseFunctor(const void *pData,uintptr_t uDataSize);
 
 class HashMapShared {
 protected:
-	static const WordPtr INVALID_HASH = UINTPTR_MAX;		///< Invalid hash value for marking an Entry as uninitialized
-	static const WordPtr INVALID_INDEX = UINTPTR_MAX;		///< Error value for invalid indexes
-	static const WordPtr END_OF_CHAIN = UINTPTR_MAX;		///< Constant to mark the end of a hash chain
-	static const WordPtr EMPTY_RECORD = UINTPTR_MAX -1;	///< Constant to mark an unused hash record
+	static const uintptr_t INVALID_HASH = UINTPTR_MAX;		///< Invalid hash value for marking an Entry as uninitialized
+	static const uintptr_t INVALID_INDEX = UINTPTR_MAX;		///< Error value for invalid indexes
+	static const uintptr_t END_OF_CHAIN = UINTPTR_MAX;		///< Constant to mark the end of a hash chain
+	static const uintptr_t EMPTY_RECORD = UINTPTR_MAX -1;	///< Constant to mark an unused hash record
 public:
 	struct Entry {
-		WordPtr m_uNextInChain;	///< Next item index in the linked list chain or \ref END_OF_CHAIN to mark the end of a linked list
-		WordPtr m_uHashValue;	///< Computed hash value for this object (\ref INVALID_HASH indicates this entry is not initialized)
-		BURGER_INLINE Word IsEmpty(void) const { return m_uNextInChain == EMPTY_RECORD; }
-		BURGER_INLINE Word IsEndOfChain(void) const { return m_uNextInChain == END_OF_CHAIN; }
-		BURGER_INLINE Word IsHashInvalid(void) const { return m_uHashValue == INVALID_HASH; }
+		uintptr_t m_uNextInChain;	///< Next item index in the linked list chain or \ref END_OF_CHAIN to mark the end of a linked list
+		uintptr_t m_uHashValue;	///< Computed hash value for this object (\ref INVALID_HASH indicates this entry is not initialized)
+		BURGER_INLINE uint_t IsEmpty(void) const { return m_uNextInChain == EMPTY_RECORD; }
+		BURGER_INLINE uint_t IsEndOfChain(void) const { return m_uNextInChain == END_OF_CHAIN; }
+		BURGER_INLINE uint_t IsHashInvalid(void) const { return m_uHashValue == INVALID_HASH; }
 	};
 protected:
-	typedef WordPtr (BURGER_API *HashProc)(const void *pData,WordPtr uDataSize);	///< Function prototype for user supplied hash generator
-	typedef Word (BURGER_API *TestProc)(const void *pA,const void *pB);				///< Function prototype for testing keys
+	typedef uintptr_t (BURGER_API *HashProc)(const void *pData,uintptr_t uDataSize);	///< Function prototype for user supplied hash generator
+	typedef uint_t (BURGER_API *TestProc)(const void *pA,const void *pB);				///< Function prototype for testing keys
 	typedef void (BURGER_API *EntryConstructProc)(Entry *pEntry);					///< Function prototype for destroying entries
 	typedef void (BURGER_API *EntryCopyProc)(Entry *pEntry,const void *pT,const void *pU);	///< Function prototype for destroying entries
 	typedef void (BURGER_API *EntryInvalidateProc)(Entry *pEntry);					///< Function prototype for destroying entries
 	void *m_pEntries;			///< Pointer to the hash table Burger::Alloc(m_uEntrySize*(m_uSizeMask+1))
-	WordPtr m_uEntrySize;		///< Size in bytes of each entry in the table
-	WordPtr m_uFirstSize;		///< Size of the key in bytes
-	WordPtr m_uSecondOffset;	///< Offset in bytes to the start of the data chunk
-	WordPtr m_uEntryCount;		///< Number of valid entries in the hash
-	WordPtr m_uSizeMask;		///< (Power of 2)-1 size mask used for masking indexes for instant table rounding
+	uintptr_t m_uEntrySize;		///< Size in bytes of each entry in the table
+	uintptr_t m_uFirstSize;		///< Size of the key in bytes
+	uintptr_t m_uSecondOffset;	///< Offset in bytes to the start of the data chunk
+	uintptr_t m_uEntryCount;		///< Number of valid entries in the hash
+	uintptr_t m_uSizeMask;		///< (Power of 2)-1 size mask used for masking indexes for instant table rounding
 	HashProc m_pHashFunction;	///< Pointer to the hash function
 	TestProc m_pTestFunction;	///< Pointer to the equality test function
 	EntryConstructProc m_pEntryConstructFunction;		///< Pointer to function to construct Entry data
 	EntryCopyProc m_pEntryCopyFunction;					///< Pointer to function to copy construct Entry data
 	EntryInvalidateProc m_pEntryInvalidationFunction;	///< Pointer to function to destroy data in an Entry
 
-	HashMapShared(WordPtr uEntrySize,WordPtr uFirstSize,WordPtr uSecondOffset,
+	HashMapShared(uintptr_t uEntrySize,uintptr_t uFirstSize,uintptr_t uSecondOffset,
 		TestProc pTestFunction,EntryConstructProc pEntryConstructFunction,
 		EntryCopyProc pEntryCopyFunction,EntryInvalidateProc pEntryInvalidationFunction,
 		HashProc pHashFunction=SDBMHashFunctor) : 
@@ -88,38 +90,38 @@ protected:
 		m_pEntryInvalidationFunction(pEntryInvalidationFunction)
 	{
 	}
-	WordPtr BURGER_API FindIndex(const void *pKey) const;
-	void BURGER_API CreateBuffer(WordPtr uCount,WordPtr uEntrySize);
-	void BURGER_API CreateHashBuffer(WordPtr uNewSize);
-	void BURGER_API Erase(WordPtr uIndex);
+	uintptr_t BURGER_API FindIndex(const void *pKey) const;
+	void BURGER_API CreateBuffer(uintptr_t uCount,uintptr_t uEntrySize);
+	void BURGER_API CreateHashBuffer(uintptr_t uNewSize);
+	void BURGER_API Erase(uintptr_t uIndex);
 	void BURGER_API Erase(const void *pKey);
-	WordPtr BURGER_API FindFirst(void) const;
-	WordPtr BURGER_API ComputeHash(const void *pKey) const;
+	uintptr_t BURGER_API FindFirst(void) const;
+	uintptr_t BURGER_API ComputeHash(const void *pKey) const;
 	void BURGER_API Copy(const HashMapShared *pInput);
 	void BURGER_API Add(const void *pT,const void *pU);
 	const void* BURGER_API GetData(const void *pT) const;
 public:
-	BURGER_INLINE Entry *GetEntry(WordPtr uIndex)
+	BURGER_INLINE Entry *GetEntry(uintptr_t uIndex)
 	{
 		BURGER_ASSERT(m_pEntries && (uIndex <= m_uSizeMask));
-		return reinterpret_cast<Entry *>(static_cast<Word8 *>(m_pEntries) + (uIndex*m_uEntrySize));
+		return reinterpret_cast<Entry *>(static_cast<uint8_t *>(m_pEntries) + (uIndex*m_uEntrySize));
 	}
-	BURGER_INLINE const Entry *GetEntry(WordPtr uIndex) const
+	BURGER_INLINE const Entry *GetEntry(uintptr_t uIndex) const
 	{
 		BURGER_ASSERT(m_pEntries && (uIndex <= m_uSizeMask));
-		return reinterpret_cast<const Entry *>(static_cast<const Word8 *>(m_pEntries) + (uIndex*m_uEntrySize));
+		return reinterpret_cast<const Entry *>(static_cast<const uint8_t *>(m_pEntries) + (uIndex*m_uEntrySize));
 	}
 public:
 	class const_iterator {
 	protected:
 		const HashMapShared* m_pParent;	///< Pointer to the parent class instance
-		WordPtr m_uIndex;				///< Last accessed index
-		const_iterator(const HashMapShared *pParent,WordPtr uIndex) :
+		uintptr_t m_uIndex;				///< Last accessed index
+		const_iterator(const HashMapShared *pParent,uintptr_t uIndex) :
 			m_pParent(pParent),m_uIndex(uIndex) 
 		{
 		}
 	public:
-		BURGER_INLINE Word IsEnd(void) const { return (m_uIndex == INVALID_INDEX); }
+		BURGER_INLINE uint_t IsEnd(void) const { return (m_uIndex == INVALID_INDEX); }
 		BURGER_INLINE const Entry *GetPtr(void) const {
 			const Entry *pEntry = m_pParent->GetEntry(m_uIndex);
 			BURGER_ASSERT(!IsEnd() && !pEntry->IsEmpty() && !pEntry->IsHashInvalid());
@@ -128,20 +130,20 @@ public:
 		BURGER_INLINE const Entry &operator*() const { return GetPtr()[0]; }
 		BURGER_INLINE const Entry *operator->() const { return GetPtr(); }
 		void BURGER_API operator++();
-		BURGER_INLINE Word operator==(const const_iterator& it) const {
+		BURGER_INLINE uint_t operator==(const const_iterator& it) const {
 			return (m_pParent == it.m_pParent) && (m_uIndex == it.m_uIndex);
 		}
-		BURGER_INLINE Word operator!=(const const_iterator& it) const {
+		BURGER_INLINE uint_t operator!=(const const_iterator& it) const {
 			return (m_pParent != it.m_pParent) || (m_uIndex != it.m_uIndex);
 		}
 	};
 	void BURGER_API Clear(void);
-	void BURGER_API Resize(WordPtr uNewSize);
-	void BURGER_API SetCapacity(WordPtr uNewSize);
-	BURGER_INLINE WordPtr GetEntryCount(void) const { return m_uEntryCount; }
-	BURGER_INLINE WordPtr GetSizeMask(void) const { return m_uSizeMask; }
-	BURGER_INLINE Word IsEmpty(void) const { return (m_uEntryCount == 0); }
-	BURGER_INLINE WordPtr GetEntrySize(void) const { return m_uEntrySize; }
+	void BURGER_API Resize(uintptr_t uNewSize);
+	void BURGER_API SetCapacity(uintptr_t uNewSize);
+	BURGER_INLINE uintptr_t GetEntryCount(void) const { return m_uEntryCount; }
+	BURGER_INLINE uintptr_t GetSizeMask(void) const { return m_uSizeMask; }
+	BURGER_INLINE uint_t IsEmpty(void) const { return (m_uEntryCount == 0); }
+	BURGER_INLINE uintptr_t GetEntrySize(void) const { return m_uEntrySize; }
 };
 
 template<class T, class U >
@@ -165,7 +167,7 @@ class HashMap : public HashMapShared {
 		static_cast<Entry *>(pEntry)->first.~T();
 		static_cast<Entry *>(pEntry)->second.~U();
 	}
-	static Word BURGER_API EqualsTest(const void *pA,const void *pB) { return static_cast<const T *>(pA)[0] == static_cast<const T *>(pB)[0]; }
+	static uint_t BURGER_API EqualsTest(const void *pA,const void *pB) { return static_cast<const T *>(pA)[0] == static_cast<const T *>(pB)[0]; }
 public:
 	HashMap(HashProc pHashFunction = SDBMHashFunctor) : 
 		HashMapShared(sizeof(Entry),sizeof(T),BURGER_OFFSETOF(Entry,second),
@@ -173,7 +175,7 @@ public:
 	HashMap(HashProc pHashFunction,TestProc pTestProc) : 
 		HashMapShared(sizeof(Entry),sizeof(T),BURGER_OFFSETOF(Entry,second),
 			pTestProc,Construct,Copy,Invalidate,pHashFunction) { }
-	HashMap(HashProc pHashFunction,WordPtr uDefault) : 
+	HashMap(HashProc pHashFunction,uintptr_t uDefault) : 
 		HashMapShared(sizeof(Entry),sizeof(T),BURGER_OFFSETOF(Entry,second),
 		EqualsTest,Construct,Copy,Invalidate,pHashFunction) { SetCapacity(uDefault); }
 	HashMap(const HashMap<T,U>& rHashMap) :
@@ -192,7 +194,7 @@ public:
 	}
 	U &operator[](const T& rKey)
 	{
-		WordPtr uIndex = HashMapShared::FindIndex(&rKey);
+		uintptr_t uIndex = HashMapShared::FindIndex(&rKey);
 		if (uIndex==INVALID_INDEX) {
 			add(rKey,U());
 			uIndex = HashMapShared::FindIndex(&rKey);
@@ -207,7 +209,7 @@ public:
 	// Set a new or existing value under the key, to the value.
 	void Set(const T &rKey,const U &rValue)
 	{
-		WordPtr	uIndex = HashMapShared::FindIndex(&rKey);
+		uintptr_t uIndex = HashMapShared::FindIndex(&rKey);
 		if (uIndex==INVALID_INDEX) {
 			// Entry under key doesn't exist.
 			Add(&rKey,&rValue);
@@ -218,10 +220,10 @@ public:
 	BURGER_INLINE void add(const T &rKey,const U &rValue) { Add(&rKey,&rValue); }
 	BURGER_INLINE U *GetData(const T& rKey) { return const_cast<U*>(static_cast<const U*>(HashMapShared::GetData(&rKey))); }
 	BURGER_INLINE const U *GetData(const T& rKey) const { return static_cast<const U*>(HashMapShared::GetData(&rKey)); }
-	Word GetData(const T& rKey,U *pOutput) const
+	uint_t GetData(const T& rKey,U *pOutput) const
 	{
 		const U *pResult = static_cast<const U*>(HashMapShared::GetData(&rKey));
-		Word uResult = FALSE;
+		uint_t uResult = FALSE;
 		if (pResult) {
 			pOutput[0] = pResult[0];
 			uResult = TRUE;
@@ -231,7 +233,7 @@ public:
 
 	class iterator;
 	class const_iterator : public HashMapShared::const_iterator {
-		const_iterator(const HashMapShared*pParent,WordPtr uIndex) : HashMapShared::const_iterator(pParent,uIndex) {}
+		const_iterator(const HashMapShared*pParent,uintptr_t uIndex) : HashMapShared::const_iterator(pParent,uIndex) {}
 		friend class HashMap<T,U>;
 		friend class iterator;
 	public:
@@ -240,7 +242,7 @@ public:
 	};
 	class iterator : public const_iterator {
 		friend class HashMap<T,U>;
-		iterator(HashMapShared*pParent,WordPtr uIndex) : const_iterator(pParent,uIndex) {}
+		iterator(HashMapShared*pParent,uintptr_t uIndex) : const_iterator(pParent,uIndex) {}
 	public:
 		BURGER_INLINE Entry &operator*() const { return const_cast<Entry *>(static_cast<const Entry *>(HashMapShared::const_iterator::GetPtr()))[0]; }
 		BURGER_INLINE Entry *operator->() const { return const_cast<Entry *>(static_cast<const Entry *>(HashMapShared::const_iterator::GetPtr())); }
@@ -265,7 +267,7 @@ class HashMapString : public HashMap<String,U > {
 public: HashMapString() : HashMap<String,U >(DJB2StringHashXorFunctor) {}
 };
 
-extern Word BURGER_API HashMapStringCaseTest(const void *pA,const void *pB);
+extern uint_t BURGER_API HashMapStringCaseTest(const void *pA,const void *pB);
 template<class U>
 class HashMapStringCase : public HashMap<String,U > {
 public: HashMapStringCase() : HashMap<String,U >(DJB2StringHashXorCaseFunctor,HashMapStringCaseTest) {}

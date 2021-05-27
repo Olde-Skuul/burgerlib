@@ -1,13 +1,14 @@
 /***************************************
 
-	Floating point compression
+    Floating point compression
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -31,14 +32,14 @@
 	
 	\param iInput 16 bit representation of a floating point number.
 	\return Input decompressed into a true 32 bit float.
-	\sa Burger::PackFloatTo16(float), Burger::Unpack16ToFloat(Int16,Word32) or Burger::PackFloatTo16(float,Word32).
+	\sa Burger::PackFloatTo16(float), Burger::Unpack16ToFloat(int16_t,uint32_t) or Burger::PackFloatTo16(float,uint32_t).
 
 ***************************************/
 
-float BURGER_API Burger::Unpack16ToFloat(Int16 iInput)
+float BURGER_API Burger::Unpack16ToFloat(int16_t iInput)
 {
-	Word32 uInput = static_cast<Word16>(iInput);	// Use a 32 bit register
-	Word32 uTemp = (uInput&0x8000U)<<16U;			// Store the sign in the highest bit (0x80000000)
+	uint32_t uInput = static_cast<uint16_t>(iInput);	// Use a 32 bit register
+	uint32_t uTemp = (uInput&0x8000U)<<16U;			// Store the sign in the highest bit (0x80000000)
 	uInput = (uInput&0x7FFF);
 	if (uInput) {
 		uTemp |= (uInput&0x7FFU)<<((23-11)-11);		// Repeat the 11 bits a second time for better accuracy
@@ -48,7 +49,7 @@ float BURGER_API Burger::Unpack16ToFloat(Int16 iInput)
 	}
 	union {
 		float f;
-		Word32 u;
+		uint32_t u;
 	} Result;
 	Result.u = uTemp;		// Perform the int to float conversion by writing to memory
 	return Result.f;		// Return in a float register
@@ -61,7 +62,7 @@ float BURGER_API Burger::Unpack16ToFloat(Int16 iInput)
 	Apply compression to a floating point number in the range of 0.999999 to -0.999999
 	and create a 16 bit version. The input will be clamped.
 	
-	Use Burger::Unpack16ToFloat(Int16) to reconstruct the number.
+	Use Burger::Unpack16ToFloat(int16_t) to reconstruct the number.
 	
 	Result == 0 if the input was zero or too small to be represented.
 	Result & 0x8000 if the input was negative.
@@ -70,17 +71,17 @@ float BURGER_API Burger::Unpack16ToFloat(Int16 iInput)
 
 	\param fInput Floating point number in the range of 0.999999 to -0.999999
 	\return 16 bit floating point version of the 32 bit number.
-	\sa Burger::Unpack16ToFloat(Int16), Burger::Unpack16ToFloat(Int16,Word32) or Burger::PackFloatTo16(float,Word32).
+	\sa Burger::Unpack16ToFloat(int16_t), Burger::Unpack16ToFloat(int16_t,uint32_t) or Burger::PackFloatTo16(float,uint32_t).
 
 ***************************************/
 
-Int16 BURGER_API Burger::PackFloatTo16(float fInput)
+int16_t BURGER_API Burger::PackFloatTo16(float fInput)
 {
-	Word32 uInput=reinterpret_cast<const Word32 *>(static_cast<const void *>(&fInput))[0];			// Get the bit representation
+	uint32_t uInput=reinterpret_cast<const uint32_t *>(static_cast<const void *>(&fInput))[0];			// Get the bit representation
 
-	Word32 uResult = uInput&0x7FFFFFFFU;	// Get the exponent
+	uint32_t uResult = uInput&0x7FFFFFFFU;	// Get the exponent
 	if (uResult<(127<<23)) {				// Less than 1.0?
-		if (static_cast<Int32>(uResult = (uResult-(111<<23)))>0) {	// >=111? 111-126 are acceptable
+		if (static_cast<int32_t>(uResult = (uResult-(111<<23)))>0) {	// >=111? 111-126 are acceptable
 			uResult = (uResult>>(23-11));	// Hack off the extra mantissa bits to give me the final 16 bit float.
 										// Low 11, mantissa, high 4, (111->0, 126->15)<<11
 		} else {
@@ -90,7 +91,7 @@ Int16 BURGER_API Burger::PackFloatTo16(float fInput)
 		uResult = 0x7FFF;				// 0.999999 (Max)
 	}
 	uResult |= (uInput>>16)&0x8000;			// Apply the sign
-	return static_cast<Int16>(uResult);
+	return static_cast<int16_t>(uResult);
 }
 
 /*! ************************************
@@ -103,7 +104,7 @@ Int16 BURGER_API Burger::PackFloatTo16(float fInput)
 	the value used to compress the value in the first place. This function
 	exists so that floating point compression can scale to different ranges.
 
-	Use Burger::PackFloatTo16(float,Word32) to create the 16 bit value.
+	Use Burger::PackFloatTo16(float,uint32_t) to create the 16 bit value.
 
 	The 16 bits are represented in this manner.
 
@@ -115,14 +116,14 @@ Int16 BURGER_API Burger::PackFloatTo16(float fInput)
 	\param iInput 16 bit representation of a floating point number.
 	\param uBaseExponent Minimum exponent, should match the value used to apply compression (111 is used for a max value of 0.999999).
 	\return Input decompressed into a true 32 bit float.
-	\sa Burger::PackFloatTo16(float), Burger::Unpack16ToFloat(Int16) or Burger::PackFloatTo16(float,Word32).
+	\sa Burger::PackFloatTo16(float), Burger::Unpack16ToFloat(int16_t) or Burger::PackFloatTo16(float,uint32_t).
 
 ***************************************/
 
-float BURGER_API Burger::Unpack16ToFloat(Int16 iInput,Word32 uBaseExponent)
+float BURGER_API Burger::Unpack16ToFloat(int16_t iInput,uint32_t uBaseExponent)
 {
-	Word32 uInput = static_cast<Word16>(iInput);	// Use a 32 bit register
-	Word32 uTemp = (uInput&0x8000U)<<16U;			// Store the sign in the highest bit (0x80000000)
+	uint32_t uInput = static_cast<uint16_t>(iInput);	// Use a 32 bit register
+	uint32_t uTemp = (uInput&0x8000U)<<16U;			// Store the sign in the highest bit (0x80000000)
 	uInput = (uInput&0x7FFF);
 	if (uInput) {
 		uTemp |= (uInput&0x7FFU)<<((23-11)-11);	// Repeat the 11 bits a second time for better accuracy
@@ -132,7 +133,7 @@ float BURGER_API Burger::Unpack16ToFloat(Int16 iInput,Word32 uBaseExponent)
 	}
 	union {
 		float f;
-		Word32 u;
+		uint32_t u;
 	} Result;				// Memory bound variable
 	Result.u = uTemp;		// Perform the int to float conversion by writing to memory
 	return Result.f;		// Return in a float register
@@ -145,7 +146,7 @@ float BURGER_API Burger::Unpack16ToFloat(Int16 iInput,Word32 uBaseExponent)
 	Apply compression to a floating point number in the range of 0.999999 to -0.999999
 	and create a 16 bit version. The input will be clamped.
 	
-	Use Burger::Unpack16ToFloat(Int16,Word32) to reconstruct the number.
+	Use Burger::Unpack16ToFloat(int16_t,uint32_t) to reconstruct the number.
 	
 	Result == 0 if the input was zero or too small to be represented.
 	Result & 0x8000 if the input was negative.
@@ -155,18 +156,18 @@ float BURGER_API Burger::Unpack16ToFloat(Int16 iInput,Word32 uBaseExponent)
 	\param fInput Floating point number in the range of the supplied exponent.
 	\param uBaseExponent Minimum acceptable exponent, (111 is used for a max value of 0.999999).
 	\return 16 bit floating point version of the 32 bit number.
-	\sa Burger::Unpack16ToFloat(Int16), Burger::Unpack16ToFloat(Int16,Word32) or Burger::PackFloatTo16(float).
+	\sa Burger::Unpack16ToFloat(int16_t), Burger::Unpack16ToFloat(int16_t,uint32_t) or Burger::PackFloatTo16(float).
 
 ***************************************/
 
-Int16 BURGER_API Burger::PackFloatTo16(float fInput,Word32 uBaseExponent)
+int16_t BURGER_API Burger::PackFloatTo16(float fInput,uint32_t uBaseExponent)
 {
 	uBaseExponent <<= 23;
-	Word32 uInput=reinterpret_cast<const Word32 *>(static_cast<const void *>(&fInput))[0];			// Get the bit representation
+	uint32_t uInput=reinterpret_cast<const uint32_t *>(static_cast<const void *>(&fInput))[0];			// Get the bit representation
 
-	Word32 uResult = uInput&0x7FFFFFFFU;	// Get the exponent
+	uint32_t uResult = uInput&0x7FFFFFFFU;	// Get the exponent
 	if (uResult<(uBaseExponent+(16U<<23))) {				// Less than 1.0?
-		if (static_cast<Int32>(uResult = (uResult-uBaseExponent))>0) {	// >=111? 111-126 are acceptable
+		if (static_cast<int32_t>(uResult = (uResult-uBaseExponent))>0) {	// >=111? 111-126 are acceptable
 			uResult = (uResult>>(23-11));	// Hack off the extra mantissa bits to give me the final 16 bit float.
 										// Low 11, mantissa, high 4, (111->0, 126->15)<<11
 		} else {
@@ -176,5 +177,5 @@ Int16 BURGER_API Burger::PackFloatTo16(float fInput,Word32 uBaseExponent)
 		uResult = 0x7FFF;				// 0.999999 (Max)
 	}
 	uResult |= (uInput>>16)&0x8000;			// Apply the sign
-	return static_cast<Int16>(uResult);
+	return static_cast<int16_t>(uResult);
 }

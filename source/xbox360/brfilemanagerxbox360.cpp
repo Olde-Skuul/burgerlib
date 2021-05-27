@@ -30,13 +30,13 @@
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,Word uVolumeNum)
+uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum)
 {
 	if (pOutput) {
 		pOutput->Clear();
 	}
 
-	Word uResult = File::OUTOFRANGE;		// Assume error
+	uint_t uResult = File::OUTOFRANGE;		// Assume error
 	if (uVolumeNum<32) {
 		uResult = File::FILENOTFOUND;
 		// Only query drives that exist
@@ -57,7 +57,7 @@ Word BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,Word uVolum
 				char OutputName[(MAX_PATH*2)+3];
 				StringCopy(OutputName+1,sizeof(OutputName)-3,OutputNames);
 				OutputName[0] = ':';
-				WordPtr uLength = StringLength(OutputName+1);
+				uintptr_t uLength = StringLength(OutputName+1);
 				OutputName[uLength+1] = ':';
 				OutputName[uLength+2] = 0;
 				pOutput->Set(OutputName);
@@ -99,13 +99,13 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,TimeDate_t *pOutput)
+uint_t BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,TimeDate_t *pOutput)
 {
 	// Clear out the output
 	pOutput->Clear();
 	WIN32_FIND_DATAA FindData;
 	HANDLE FileHandle = FindFirstFileA(pFileName->GetNative(),&FindData);
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	if (FileHandle!=INVALID_HANDLE_VALUE) {
 		FindClose(FileHandle);
 		uResult = pOutput->Load(&FindData.ftLastWriteTime);
@@ -121,13 +121,13 @@ Word BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,Tim
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDate_t *pOutput)
+uint_t BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDate_t *pOutput)
 {
 	// Clear out the output
 	pOutput->Clear();
 	WIN32_FIND_DATAA FindData;
 	HANDLE FileHandle = FindFirstFileA(pFileName->GetNative(),&FindData);
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	if (FileHandle!=INVALID_HANDLE_VALUE) {
 		FindClose(FileHandle);
 		uResult = pOutput->Load(&FindData.ftCreationTime);
@@ -146,11 +146,11 @@ Word BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDat
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
 {
 	// Get file info
 	DWORD uOutput = GetFileAttributesA(pFileName->GetNative());
-	Word uResult = TRUE;		// File exists
+	uint_t uResult = TRUE;		// File exists
 	if ((uOutput & FILE_ATTRIBUTE_DIRECTORY) /* || (uOutput == -1) */ ) { // -1 means error
 		uResult = FALSE;		// Bad file!
 	}
@@ -164,7 +164,7 @@ Word BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
 
 ***************************************/
 
-static Word BURGER_API DirCreate(const char *pFileName)
+static uint_t BURGER_API DirCreate(const char *pFileName)
 {
 	if (!CreateDirectoryA(pFileName,NULL)) {	// Make the directory
 		if (GetLastError()!=ERROR_ALREADY_EXISTS) {		// Already exist?
@@ -174,7 +174,7 @@ static Word BURGER_API DirCreate(const char *pFileName)
 	return FALSE;		// Success!
 }
 
-Word BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
 {
 	String NewName(pFileName->GetNative());
 
@@ -192,8 +192,8 @@ Word BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
 		if (pWork[0] == '\\') {		// Accept the first slash
 			++pWork;
 		}
-		Word Err;					// Error code
-		Word Old;
+		uint_t Err;					// Error code
+		uint_t Old;
 		do {
 			// Skip to the next colon
 			pWork = StringCharacter(pWork,'\\');
@@ -222,10 +222,10 @@ Word BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
 {
 	// Did it fail?
-	Word uResult = FALSE;		// Assume succeed
+	uint_t uResult = FALSE;		// Assume succeed
 	if (!DeleteFileA(pFileName->GetNative())) {
 		// Try to delete a directory
 		if (!RemoveDirectoryA(pFileName->GetNative())) {
@@ -241,10 +241,10 @@ Word BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::RenameFile(Filename *pNewName,Filename *pOldName)
+uint_t BURGER_API Burger::FileManager::RenameFile(Filename *pNewName,Filename *pOldName)
 {
 	// Did it fail?
-	Word uResult = File::FILENOTFOUND;		// Assume failure
+	uint_t uResult = File::FILENOTFOUND;		// Assume failure
 	if (MoveFileA(pOldName->GetNative(),pNewName->GetNative())) {
 		uResult = File::OKAY;		// I failed!
 	}
@@ -257,7 +257,7 @@ Word BURGER_API Burger::FileManager::RenameFile(Filename *pNewName,Filename *pOl
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::CopyFile(Filename *pDestName,Filename *pSourceName)
+uint_t BURGER_API Burger::FileManager::CopyFile(Filename *pDestName,Filename *pSourceName)
 {
 	if (CopyFileA(pSourceName->GetNative(),pDestName->GetNative(),FALSE)) {
 		return FALSE;

@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player rectangle manager
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player rectangle manager
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brflashrect.h"
@@ -54,7 +55,7 @@
 void BURGER_API Burger::Flash::Rect::Read(Stream* pStream)
 {
 	pStream->ByteAlign();
-	Word uCount = pStream->GetWord(5);
+	uint_t uCount = pStream->GetWord(5);
 	x = static_cast<float>(pStream->GetInt(uCount));	// XMin
 	z = static_cast<float>(pStream->GetInt(uCount));	// XMax
 	y = static_cast<float>(pStream->GetInt(uCount));	// YMIn
@@ -75,7 +76,7 @@ void BURGER_API Burger::Flash::Rect::Read(Stream* pStream)
 
 ***************************************/
 
-Word BURGER_API Burger::Flash::Rect::IsIntersecting(const Vector4D_t *pRect) const
+uint_t BURGER_API Burger::Flash::Rect::IsIntersecting(const Vector4D_t *pRect) const
 {
 	if ((z < pRect->x) ||	// right < left
 		(x > pRect->z) ||	// left > right

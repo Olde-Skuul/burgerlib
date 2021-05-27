@@ -33,7 +33,7 @@
 
 ***************************************/
 
-Word Burger::CodeLibrary::Init(const char *pFilename)
+uint_t Burger::CodeLibrary::Init(const char *pFilename)
 {
 	// If there was a previous library, release it
 	Shutdown();
@@ -49,7 +49,7 @@ Word Burger::CodeLibrary::Init(const char *pFilename)
 	// Load the library from Linux
 	void *pModule = dlopen(pFilename,RTLD_LAZY);
 	// On success!
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	if (pModule!=NULL) {
 		m_pLibInstance = pModule;
 		uResult = TRUE;		// Error!

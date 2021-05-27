@@ -1,13 +1,14 @@
 /***************************************
 
-	Texture for rendering class
+    Texture for rendering class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -58,7 +59,7 @@ public:
 		LOADER_UNLOAD,		///< Command to release the memory in the Image if allowed
 		LOADER_SHUTDOWN		///< Force all memory to be released
 	};
-	typedef Word (BURGER_API *LoaderProc)(Texture *pThis,eLoader uCommand);	///< Function prototype for loading callback
+	typedef uint_t (BURGER_API *LoaderProc)(Texture *pThis,eLoader uCommand);	///< Function prototype for loading callback
 protected:
 	enum eDirtyFlags {
 		DIRTY_WRAPPING_S=0x01,	///< Set if the S value was changed
@@ -76,7 +77,7 @@ protected:
 #endif
 
 #if defined(BURGER_OPENGL) && !defined(BURGER_WINDOWS)
-	Word m_uTextureID;		///< OpenGL Texture ID
+	uint_t m_uTextureID;		///< OpenGL Texture ID
 #endif
 
 	Image m_Image;			///< Description of the texture data
@@ -84,32 +85,32 @@ protected:
 	eWrapping m_eWrappingT;	///< Wrapping setting for the T value
 	eFilter m_eMinFilter;	///< Filter for shrinkage
 	eFilter m_eMagFilter;	///< Filter for expansion
-	Word m_uDirty;			///< Values needed to be updated
+	uint_t m_uDirty;			///< Values needed to be updated
 public:
 	Texture();
 	Texture(eWrapping uWrapping,eFilter uFilter);
 	virtual ~Texture();
 #if defined(BURGER_WINDOWS)
-    Word CheckLoad(Display* pDisplay) BURGER_OVERRIDE = 0;
+    uint_t CheckLoad(Display* pDisplay) BURGER_OVERRIDE = 0;
 	void Release(Display *pDisplay) BURGER_OVERRIDE = 0;
 #else
-	Word CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
+	uint_t CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
 	void Release(Display *pDisplay) BURGER_OVERRIDE;
 #endif
-	Word BURGER_API LoadImageMemory(void);
+	uint_t BURGER_API LoadImageMemory(void);
 	void BURGER_API UnloadImageMemory(void);
 	void BURGER_API ShutdownImageMemory(void);
 	BURGER_INLINE const Image *GetImage(void) const { return &m_Image; }
 	BURGER_INLINE Image *GetImage(void) { return &m_Image; }
-	BURGER_INLINE const Word8 *GetImage(Word uMipMap) const { return m_Image.GetImage(uMipMap); }
-	BURGER_INLINE Word GetWidth(void) const { return m_Image.GetWidth(); }
-	BURGER_INLINE Word GetWidth(Word uMipMap) const { return m_Image.GetWidth(uMipMap); }
-	BURGER_INLINE Word GetHeight(void) const { return m_Image.GetHeight(); }
-	BURGER_INLINE Word GetHeight(Word uMipMap) const { return m_Image.GetHeight(uMipMap); }
-	BURGER_INLINE WordPtr GetStride(void) const { return m_Image.GetStride(); }
-	BURGER_INLINE WordPtr GetStride(Word uMipMap) const { return m_Image.GetStride(uMipMap); }
+	BURGER_INLINE const uint8_t *GetImage(uint_t uMipMap) const { return m_Image.GetImage(uMipMap); }
+	BURGER_INLINE uint_t GetWidth(void) const { return m_Image.GetWidth(); }
+	BURGER_INLINE uint_t GetWidth(uint_t uMipMap) const { return m_Image.GetWidth(uMipMap); }
+	BURGER_INLINE uint_t GetHeight(void) const { return m_Image.GetHeight(); }
+	BURGER_INLINE uint_t GetHeight(uint_t uMipMap) const { return m_Image.GetHeight(uMipMap); }
+	BURGER_INLINE uintptr_t GetStride(void) const { return m_Image.GetStride(); }
+	BURGER_INLINE uintptr_t GetStride(uint_t uMipMap) const { return m_Image.GetStride(uMipMap); }
 	BURGER_INLINE Image::ePixelTypes GetType(void) const { return m_Image.GetType(); }
-	BURGER_INLINE Word GetMipMapCount(void) const { return m_Image.GetMipMapCount(); }
+	BURGER_INLINE uint_t GetMipMapCount(void) const { return m_Image.GetMipMapCount(); }
 	BURGER_INLINE void SetImageDirty(void) { m_uDirty |= DIRTY_IMAGE; }
 	BURGER_INLINE eWrapping GetWrappingS(void) const { return m_eWrappingS; }
 	BURGER_INLINE void SetWrappingS(eWrapping uWrapping) { m_eWrappingS = uWrapping; m_uDirty |= DIRTY_WRAPPING_S; }
@@ -123,43 +124,43 @@ public:
 	BURGER_INLINE void SetFilter(eFilter uFilter) { m_eMinFilter = uFilter; m_eMagFilter = uFilter; m_uDirty |= (DIRTY_MIN|DIRTY_MAG); }
 	BURGER_INLINE LoaderProc GetLoader(void) const { return m_pLoader; }
 	BURGER_INLINE void SetLoader(LoaderProc pCallback) { m_pLoader = pCallback; }
-	void BURGER_API LoadTGA(RezFile *pRezFile,Word uRezNum);
+	void BURGER_API LoadTGA(RezFile *pRezFile,uint_t uRezNum);
 	void BURGER_API LoadTGA(const char *pFilename);
 	void BURGER_API LoadTGA(Filename *pFilename);
-	void BURGER_API LoadPNG(RezFile *pRezFile,Word uRezNum);
+	void BURGER_API LoadPNG(RezFile *pRezFile,uint_t uRezNum);
 	void BURGER_API LoadPNG(const char *pFilename);
 	void BURGER_API LoadPNG(Filename *pFilename);
-	void BURGER_API LoadBMP(RezFile *pRezFile,Word uRezNum);
+	void BURGER_API LoadBMP(RezFile *pRezFile,uint_t uRezNum);
 	void BURGER_API LoadBMP(const char *pFilename);
 	void BURGER_API LoadBMP(Filename *pFilename);
-	void BURGER_API LoadGIF(RezFile *pRezFile,Word uRezNum);
+	void BURGER_API LoadGIF(RezFile *pRezFile,uint_t uRezNum);
 	void BURGER_API LoadGIF(const char *pFilename);
 	void BURGER_API LoadGIF(Filename *pFilename);
 
 #if defined(BURGER_XBOX360)
-	Word BURGER_API GetD3DFormat(void) const;
+	uint_t BURGER_API GetD3DFormat(void) const;
 	BURGER_INLINE D3DTexture *GetTexture(void) const { return m_pD3DTexture; }
 #endif
 
 #if defined(BURGER_OPENGL) && !defined(BURGER_WINDOWS)
 	static int GetWrapping(eWrapping uWrapping);
 	static int GetFilter(eFilter uFilter);
-	BURGER_INLINE Word GetTextureID(void) const { return m_uTextureID; }
+	BURGER_INLINE uint_t GetTextureID(void) const { return m_uTextureID; }
 #endif
 
 private:
-	static Word BURGER_API CallbackRezFileTGA(Texture *pTexture,eLoader uLoader);
-	static Word BURGER_API CallbackFileTGA(Texture *pTexture,eLoader uLoader);
-	static Word BURGER_API CallbackFilenameTGA(Texture *pTexture,eLoader uLoader);
-	static Word BURGER_API CallbackRezFilePNG(Texture *pTexture,eLoader uLoader);
-	static Word BURGER_API CallbackFilePNG(Texture *pTexture,eLoader uLoader);
-	static Word BURGER_API CallbackFilenamePNG(Texture *pTexture,eLoader uLoader);
-	static Word BURGER_API CallbackRezFileBMP(Texture *pTexture,eLoader uLoader);
-	static Word BURGER_API CallbackFileBMP(Texture *pTexture,eLoader uLoader);
-	static Word BURGER_API CallbackFilenameBMP(Texture *pTexture,eLoader uLoader);
-	static Word BURGER_API CallbackRezFileGIF(Texture *pTexture,eLoader uLoader);
-	static Word BURGER_API CallbackFileGIF(Texture *pTexture,eLoader uLoader);
-	static Word BURGER_API CallbackFilenameGIF(Texture *pTexture,eLoader uLoader);
+	static uint_t BURGER_API CallbackRezFileTGA(Texture *pTexture,eLoader uLoader);
+	static uint_t BURGER_API CallbackFileTGA(Texture *pTexture,eLoader uLoader);
+	static uint_t BURGER_API CallbackFilenameTGA(Texture *pTexture,eLoader uLoader);
+	static uint_t BURGER_API CallbackRezFilePNG(Texture *pTexture,eLoader uLoader);
+	static uint_t BURGER_API CallbackFilePNG(Texture *pTexture,eLoader uLoader);
+	static uint_t BURGER_API CallbackFilenamePNG(Texture *pTexture,eLoader uLoader);
+	static uint_t BURGER_API CallbackRezFileBMP(Texture *pTexture,eLoader uLoader);
+	static uint_t BURGER_API CallbackFileBMP(Texture *pTexture,eLoader uLoader);
+	static uint_t BURGER_API CallbackFilenameBMP(Texture *pTexture,eLoader uLoader);
+	static uint_t BURGER_API CallbackRezFileGIF(Texture *pTexture,eLoader uLoader);
+	static uint_t BURGER_API CallbackFileGIF(Texture *pTexture,eLoader uLoader);
+	static uint_t BURGER_API CallbackFilenameGIF(Texture *pTexture,eLoader uLoader);
 };
 }
 /* END */

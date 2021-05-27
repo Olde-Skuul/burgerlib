@@ -1,13 +1,14 @@
 /***************************************
 
-	Compression manager
+    Compression manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -78,7 +79,7 @@ Burger::Compress::~Compress()
 
 /*! ************************************
 
-	\fn Burger::Compress::eError Burger::Compress::Process(const void *pInput,WordPtr uInputLength)
+	\fn Burger::Compress::eError Burger::Compress::Process(const void *pInput,uintptr_t uInputLength)
 	\brief Compress data
 
 	Pass data into the compressor and store the output into the data stream
@@ -124,7 +125,7 @@ Burger::Compress::~Compress()
 
 /*! ************************************
 
-	\fn WordPtr Burger::Compress::GetOutputSize(void) const
+	\fn uintptr_t Burger::Compress::GetOutputSize(void) const
 	\brief Get the output data size in bytes
 
 	After Finalize() has been called, the output data size can be
@@ -138,7 +139,7 @@ Burger::Compress::~Compress()
 
 /*! ************************************
 
-	\fn Word32 Burger::Compress::GetSignature(void) const
+	\fn uint32_t Burger::Compress::GetSignature(void) const
 	\brief Return the signature for this compressor
 
 	Each compressor has a unique signature to identify the algorithm used

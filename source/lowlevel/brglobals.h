@@ -71,24 +71,24 @@ public:
 
 private:
     /** Windows class name "BurgerGameClass" (Windows only) */
-    static const Word16 g_GameClass[];
+    static const uint16_t g_GameClass[];
     /** Atom assigned to my class (Windows only) */
-    static Word16 g_uAtom;
+    static uint16_t g_uAtom;
     /** Main window for the application (Windows only) */
     static HWND__* g_hWindow;
     /** QuickTime's version in 0x0102 (1.2) format. (Windows only) */
-    static Word32 g_uQuickTimeVersion;
+    static uint32_t g_uQuickTimeVersion;
     /** \ref TRUE if Quicktime's version is valid. (Windows only) */
-    static Word8 g_bQuickTimeVersionValid;
+    static uint8_t g_bQuickTimeVersionValid;
     /** DirectX version 0x0900 (9.0) format (Windows only) */
-    static Word32 g_uDirectXVersion;
+    static uint32_t g_uDirectXVersion;
     /* \ref TRUE if DirectX's version is valid (Windows only) */
-    static Word8 g_bDirectXVersionValid;
+    static uint8_t g_bDirectXVersionValid;
 
 #if defined(BURGER_WIN32) || defined(DOXYGEN)
     /** Non-zero if tested, low bit has \ref TRUE or \ref FALSE if the 32 bit
      * app was running under 64 bit windows (Windows only) */
-    static Word8 g_bIsWindows64Bit;
+    static uint8_t g_bIsWindows64Bit;
 
 #endif
 
@@ -110,19 +110,19 @@ private:
     /** Global default error code used by \ref Globals::Shutdown(). */
     static eError g_iErrorCode;
     /** Debug information level */
-    static Word g_uTraceFlags;
+    static uint_t g_uTraceFlags;
     /** Global Buffer containing the last fatal error or warning */
     static char g_ErrorMsg[512];
     /** \ref TRUE if non-fatal errors are treated as fatal */
-    static Word g_bBombFlag;
+    static uint_t g_bBombFlag;
     /** Global \ref TRUE if the app is in the process of shutting down. */
-    static Word g_bExitFlag;
+    static uint_t g_bExitFlag;
     /** Singleton instance of the global variables */
     static Globals g_Globals;
 
 public:
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-    static BURGER_INLINE const Word16* GetWindowClassName(void) BURGER_NOEXCEPT
+    static BURGER_INLINE const uint16_t* GetWindowClassName(void) BURGER_NOEXCEPT
     {
         return g_GameClass;
     }
@@ -136,40 +136,40 @@ public:
     }
 
 #if defined(BURGER_WIN32) || defined(DOXYGEN)
-    static Word BURGER_API IsWindows64Bit(void);
+    static uint_t BURGER_API IsWindows64Bit(void);
 #else
-    static BURGER_INLINE Word IsWindows64Bit(void) BURGER_NOEXCEPT
+    static BURGER_INLINE uint_t IsWindows64Bit(void) BURGER_NOEXCEPT
     {
         return TRUE;
     }
 #endif
 
     static void BURGER_API GetQTFolderFromRegistry(const char* pSubKey,
-        const char* pValueName, char* pBuffer, Word32 uSize);
-    static Word BURGER_API GetPathToQuickTimeFolder(
-        char* pBuffer, Word32 uSize, Word32* pReserved);
-    static Word32 BURGER_API GetQTSystemDirectoryA(char* pBuffer, Word32 uSize);
-    static Word32 BURGER_API GetQTApplicationDirectoryA(
-        char* pBuffer, Word32 uSize);
-    static Word32 BURGER_API GetQTExtensionDirectoryA(
-        char* pBuffer, Word32 uSize);
-    static Word32 BURGER_API GetQTComponentDirectoryA(
-        char* pBuffer, Word32 uSize);
+        const char* pValueName, char* pBuffer, uint32_t uSize);
+    static uint_t BURGER_API GetPathToQuickTimeFolder(
+        char* pBuffer, uint32_t uSize, uint32_t* pReserved);
+    static uint32_t BURGER_API GetQTSystemDirectoryA(char* pBuffer, uint32_t uSize);
+    static uint32_t BURGER_API GetQTApplicationDirectoryA(
+        char* pBuffer, uint32_t uSize);
+    static uint32_t BURGER_API GetQTExtensionDirectoryA(
+        char* pBuffer, uint32_t uSize);
+    static uint32_t BURGER_API GetQTComponentDirectoryA(
+        char* pBuffer, uint32_t uSize);
     static HINSTANCE__* BURGER_API QTLoadLibrary(const char* pDLLName);
 
-    static Word64 BURGER_API GetFileVersion64(const Word16* pWindowsFilename);
-    static Word BURGER_API GetDirectXVersionViaFileVersions(void);
-    static Word BURGER_API GetDirectXVersion(void);
-    static Word BURGER_API GetVideoGUID(GUID* pOutput, Word uDevNum);
-    static Word BURGER_API AddGroupToProgramMenu(const char* pGroupName);
+    static uint64_t BURGER_API GetFileVersion64(const uint16_t* pWindowsFilename);
+    static uint_t BURGER_API GetDirectXVersionViaFileVersions(void);
+    static uint_t BURGER_API GetDirectXVersion(void);
+    static uint_t BURGER_API GetVideoGUID(GUID* pOutput, uint_t uDevNum);
+    static uint_t BURGER_API AddGroupToProgramMenu(const char* pGroupName);
     static int BURGER_API CreateUserRegistryKey(
         const char* pKey, const char* pSubKey, const char* pData);
     static void BURGER_API AssociateFileExtensionToExe(
         const char* pFileExtension, const char* pDescription,
         const char* pProgramID);
     static void BURGER_API OutputWindowsMessage(
-        Word uMessage, WordPtr wParam, WordPtr lParam);
-    static Word16 BURGER_API RegisterWindowClass(Word uIconResID = 0);
+        uint_t uMessage, uintptr_t wParam, uintptr_t lParam);
+    static uint16_t BURGER_API RegisterWindowClass(uint_t uIconResID = 0);
     static void BURGER_API UnregisterWindowClass(void);
     static void BURGER_API PumpMessages(void);
 #endif
@@ -190,12 +190,12 @@ public:
     static void BURGER_API GetHIDDeviceName(
         String* pOutput, __IOHIDDevice* pDevice);
     static __CFDictionary* BURGER_API CreateHIDDictionary(
-        Word uPage, Word uUsage);
-    static void GetDisplayName(String* pOutput, Word uDisplayID);
+        uint_t uPage, uint_t uUsage);
+    static void GetDisplayName(String* pOutput, uint_t uDisplayID);
     static int NumberFromKey(
         const __CFDictionary* pDictionary, const char* pKey);
 #if !defined(DOXYGEN)
-    BURGER_INLINE static Word IsRunningUnderMacOSX(void) BURGER_NOEXCEPT
+    BURGER_INLINE static uint_t IsRunningUnderMacOSX(void) BURGER_NOEXCEPT
     {
         return TRUE;
     }
@@ -247,7 +247,7 @@ public:
     {
         return g_bBombFlag;
     }
-    static BURGER_INLINE Word SetErrorBombFlag(uint_t uNewFlag) BURGER_NOEXCEPT
+    static BURGER_INLINE uint_t SetErrorBombFlag(uint_t uNewFlag) BURGER_NOEXCEPT
     {
         const uint_t uOld = g_bBombFlag;
         g_bBombFlag = uNewFlag;
@@ -263,8 +263,8 @@ public:
     }
     static void BURGER_API Shutdown(void);
     static void BURGER_API Shutdown(int iError);
-    static Word32 BURGER_API Version(void);
-    static Word32 BURGER_API VersionBuild(void);
+    static uint32_t BURGER_API Version(void);
+    static uint32_t BURGER_API VersionBuild(void);
     static uint_t BURGER_API LaunchURL(const char* pURL);
     static int BURGER_API ExecuteTool(const char* pFilename,
         const char* pParameters, OutputMemoryStream* pOutput = nullptr);

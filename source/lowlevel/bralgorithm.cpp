@@ -622,6 +622,19 @@
 
 /*! ************************************
 
+    \struct Burger::is_function
+    \brief Test if a type is a function pointer.
+
+    A template that checks a type if it is a function pointer.
+
+    \tparam T Type to check.
+
+    \sa false_type or true_type
+
+***************************************/
+
+/*! ************************************
+
     \fn Burger::round_up_pointer(T*,uintptr_t uSize)
     \brief Align a pointer.
 

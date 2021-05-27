@@ -19,14 +19,14 @@
 
 struct IPv4StringTest_t {
 	const char* m_pString; // Pointer to string in human readable form
-	Word32 m_uIP;		   // IPv4 IP address
-	Word m_uPort;		   // Port
+	uint32_t m_uIP;		   // IPv4 IP address
+	uint_t m_uPort;		   // Port
 };
 
 struct IPv6StringTest_t {
 	const char* m_pString; // Pointer to string in human readable form
-	Word8 m_IP[16];		   // IPv6 IP address
-	Word m_uPort;		   // Port
+	uint8_t m_IP[16];		   // IPv6 IP address
+	uint_t m_uPort;		   // Port
 };
 
 static const char* g_AddressTypes[] = {
@@ -42,7 +42,7 @@ static void BURGER_API DisplayStats(Burger::NetworkManager* pNet)
 {
 	Message("NetworkManager::GetHostName() = %s", pNet->GetHostName());
 
-	Word uAddressCount = pNet->GetLocalAddressCount();
+	uint_t uAddressCount = pNet->GetLocalAddressCount();
 	if (uAddressCount) {
 		Burger::String TempStringNetAddr;
 		const Burger::NetAddr_t* pNetAddr = pNet->GetLocalAddresses();
@@ -78,14 +78,14 @@ static const IPv4StringTest_t g_IPv4StringTests[] = {
 	{"10.0.1.204:80", 0x0A0001CCU, 80},
 	{"127.0.0.1", 0x7F000001U, BURGER_MAXUINT}};
 
-static Word BURGER_API TestIPv4ToString(void)
+static uint_t BURGER_API TestIPv4ToString(void)
 {
 	Burger::String StringTest;
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const IPv4StringTest_t* pWork = g_IPv4StringTests;
-	WordPtr uCount = BURGER_ARRAYSIZE(g_IPv4StringTests);
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_IPv4StringTests);
 	do {
-		Word uTest = static_cast<Word>(
+		uint_t uTest = static_cast<uint_t>(
 			Burger::IPv4ToString(&StringTest, pWork->m_uIP, pWork->m_uPort));
 		if (!uTest) {
 			uTest = StringTest.Compare(pWork->m_pString) != 0;
@@ -96,9 +96,9 @@ static Word BURGER_API TestIPv4ToString(void)
 			uTest, pWork->m_uIP, pWork->m_uPort, StringTest.GetPtr(),
 			pWork->m_pString);
 		if (!uTest) {
-			Word32 IPv4;
-			Word Port;
-			uTest = static_cast<Word>(
+			uint32_t IPv4;
+			uint_t Port;
+			uTest = static_cast<uint_t>(
 				Burger::StringToIPv4(StringTest.GetPtr(), &IPv4, &Port));
 			if (!uTest) {
 				uTest = (IPv4 != pWork->m_uIP)
@@ -143,14 +143,14 @@ static const IPv6StringTest_t g_IPv6StringTests[] = {
 	{"[::ffff:10.0.1.204]:80",
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xff, 0xff, 10, 0, 1, 204}, 80}};
 
-static Word BURGER_API TestIPv6ToString(void)
+static uint_t BURGER_API TestIPv6ToString(void)
 {
 	Burger::String StringTest;
-	Word uFailure = FALSE;
-	const IPv6StringTest_t* pWork = g_IPv6StringTests;
-	WordPtr uCount = BURGER_ARRAYSIZE(g_IPv6StringTests);
+	uint_t uFailure = FALSE;
+    const IPv6StringTest_t *pWork = g_IPv6StringTests;
+    uintptr_t uCount = BURGER_ARRAYSIZE(g_IPv6StringTests);
 	do {
-		Word uTest = static_cast<Word>(
+		uint_t uTest = static_cast<uint_t>(
 			Burger::IPv6ToString(&StringTest, pWork->m_IP, pWork->m_uPort));
 		if (!uTest) {
 			uTest = StringTest.Compare(pWork->m_pString) != 0;
@@ -161,9 +161,9 @@ static Word BURGER_API TestIPv6ToString(void)
 			uTest, pWork->m_IP[0], pWork->m_uPort, StringTest.GetPtr(),
 			pWork->m_pString);
 		if (!uTest) {
-			Word8 IPv6[16];
-			Word Port;
-			uTest = static_cast<Word>(
+			uint8_t IPv6[16];
+			uint_t Port;
+			uTest = static_cast<uint_t>(
 				Burger::StringToIPv6(StringTest.GetPtr(), IPv6, &Port));
 			if (!uTest) {
 				uTest = (Burger::MemoryCompare(IPv6, pWork->m_IP, 16)
@@ -198,10 +198,10 @@ static void BURGER_API TestIPv4Resolve(Burger::NetworkManager* pNet)
 	Burger::String StringTest;
 
 	const char** pWork = g_TestIPv4Resolve;
-	WordPtr uCount = BURGER_ARRAYSIZE(g_TestIPv4Resolve);
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_TestIPv4Resolve);
 	do {
-		Word uTest =
-			static_cast<Word>(pNet->ResolveIPv4Address(&IPAddress, *pWork));
+		uint_t uTest =
+			static_cast<uint_t>(pNet->ResolveIPv4Address(&IPAddress, *pWork));
 		if (!uTest) {
 			Burger::IPv4ToString(
 				&StringTest, IPAddress.U.IPv4.m_uIP, IPAddress.U.IPv4.m_uPort);
@@ -232,10 +232,10 @@ static void BURGER_API TestIPv6Resolve(Burger::NetworkManager* pNet)
 	Burger::String StringTest;
 
 	const char** pWork = g_TestIPv6Resolve;
-	WordPtr uCount = BURGER_ARRAYSIZE(g_TestIPv6Resolve);
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_TestIPv6Resolve);
 	do {
-		Word uTest =
-			static_cast<Word>(pNet->ResolveIPv6Address(&IPAddress, *pWork));
+		uint_t uTest =
+			static_cast<uint_t>(pNet->ResolveIPv6Address(&IPAddress, *pWork));
 		if (!uTest) {
 			Burger::IPv6ToString(
 				&StringTest, IPAddress.U.IPv6.m_IP, IPAddress.U.IPv6.m_uPort);
@@ -258,7 +258,7 @@ static void BURGER_API TestGetIPv4Address(Burger::NetworkManager* pNet)
 {
 	Burger::NetAddr_t IPAddress;
 	Burger::String StringTest;
-	Word uTest = static_cast<Word>(pNet->GetIPv4Address(&IPAddress));
+	uint_t uTest = static_cast<uint_t>(pNet->GetIPv4Address(&IPAddress));
 	if (!uTest) {
 		Burger::IPv4ToString(&StringTest, IPAddress.U.IPv4.m_uIP);
 		Message("IPv4 address for the host machine is %s", StringTest.GetPtr());
@@ -277,7 +277,7 @@ static void BURGER_API TestGetIPv6Address(Burger::NetworkManager* pNet)
 {
 	Burger::NetAddr_t IPAddress;
 	Burger::String StringTest;
-	Word uTest = static_cast<Word>(pNet->GetIPv6Address(&IPAddress));
+	uint_t uTest = static_cast<uint_t>(pNet->GetIPv6Address(&IPAddress));
 	if (!uTest) {
 		Burger::IPv6ToString(&StringTest, IPAddress.U.IPv6.m_IP);
 		Message("IPv6 address for the host machine is %s", StringTest.GetPtr());
@@ -292,13 +292,13 @@ static void BURGER_API TestGetIPv6Address(Burger::NetworkManager* pNet)
 
 ***************************************/
 
-int BURGER_API TestNetwork(Word uVerbose)
+int BURGER_API TestNetwork(uint_t uVerbose)
 {
 	if (uVerbose & VERBOSE_MSG) {
 		Message("Running Network tests");
 	}
 
-	Word uResult = TestIPv4ToString();
+	uint_t uResult = TestIPv4ToString();
 	uResult |= TestIPv6ToString();
 	if (uVerbose & VERBOSE_NETWORK) {
 		Burger::NetworkManager Net;

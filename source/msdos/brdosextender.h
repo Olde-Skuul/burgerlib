@@ -35,26 +35,26 @@ extern "C" {
 // for all MSDOS targets.
 
 extern void *_x32_zero_base_ptr;		///< Base Pointer to Real memory MSDOS Only
-extern Word16 _x32_zero_base_selector;	///< Segment to Real memory MSDOS Only
+extern uint16_t _x32_zero_base_selector;	///< Segment to Real memory MSDOS Only
 
-BURGER_INLINE Word8 *ZeroBase(void) { return static_cast<Word8 *>(_x32_zero_base_ptr); }
+BURGER_INLINE uint8_t *ZeroBase(void) { return static_cast<uint8_t *>(_x32_zero_base_ptr); }
 
-extern void BURGER_API CallInt10(Word EAX);
-extern Word BURGER_API CallInt14(Word EAX,Word EDX);
-extern Word BURGER_API CallInt17(Word EAX,Word EDX);
-extern Int32 BURGER_API Int86x(Word32 uInterrupt,const Burger::Regs16 *pInput,Burger::Regs16 *pOutput);
-extern void BURGER_API SetBothInts(Word32 uInterrupt,void far *pCode);
-extern void BURGER_API SetProtInt(Word32 uInterrupt,void far *pCode);
-extern void BURGER_API SetRealInt(Word32 uInterrupt,Word32 pCode);
-extern void far * BURGER_API GetProtInt(Word32 uInterrupt);
-extern Word32 BURGER_API GetRealInt(Word32 uInterrupt);
-extern void * BURGER_API MapPhysicalAddress(void *pInput,Word32 uLength);
-extern int BURGER_API CallRealProcX32(Word32 pAddress,const Burger::Regs16 *pInput,Burger::Regs16 *pOutput);
-extern void * BURGER_API RealToProtectedPtr(Word32 pReal);
+extern void BURGER_API CallInt10(uint_t EAX);
+extern uint_t BURGER_API CallInt14(uint_t EAX,uint_t EDX);
+extern uint_t BURGER_API CallInt17(uint_t EAX,uint_t EDX);
+extern int32_t BURGER_API Int86x(uint32_t uInterrupt,const Burger::Regs16 *pInput,Burger::Regs16 *pOutput);
+extern void BURGER_API SetBothInts(uint32_t uInterrupt,void far *pCode);
+extern void BURGER_API SetProtInt(uint32_t uInterrupt,void far *pCode);
+extern void BURGER_API SetRealInt(uint32_t uInterrupt,uint32_t pCode);
+extern void far * BURGER_API GetProtInt(uint32_t uInterrupt);
+extern uint32_t BURGER_API GetRealInt(uint32_t uInterrupt);
+extern void * BURGER_API MapPhysicalAddress(void *pInput,uint32_t uLength);
+extern int BURGER_API CallRealProcX32(uint32_t pAddress,const Burger::Regs16 *pInput,Burger::Regs16 *pOutput);
+extern void * BURGER_API RealToProtectedPtr(uint32_t pReal);
 extern void * BURGER_API GetRealBufferProtectedPtr(void);
-extern Word32 BURGER_API GetRealBufferPtr(void);
-extern Word32 BURGER_API AllocRealMemory(Word32 uSize);
-extern void BURGER_API DeallocRealMemory(Word32 pReal);
+extern uint32_t BURGER_API GetRealBufferPtr(void);
+extern uint32_t BURGER_API AllocRealMemory(uint32_t uSize);
+extern void BURGER_API DeallocRealMemory(uint32_t pReal);
 
 #ifdef __cplusplus
 }

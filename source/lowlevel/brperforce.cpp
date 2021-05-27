@@ -1,13 +1,14 @@
 /***************************************
 
-	Class to add perforce integration to Windows tools
+    Class to add perforce integration to Windows tools
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -54,7 +55,7 @@
 
 /*! ************************************
 
-	\fn Word Burger::Perforce::Init(void)
+	\fn uint_t Burger::Perforce::Init(void)
 	\brief Open a connection to perforce
 
 	Locate the p4 executable file. This call is required before
@@ -71,7 +72,7 @@
 
 /*! ************************************
 
-	\fn Word Burger::Perforce::Shutdown(void)
+	\fn uint_t Burger::Perforce::Shutdown(void)
 	\brief Shut down any pending commands from Perforce and release
 	all resources
 	\return Zero if no error, non-zero if an perforce error had occurred
@@ -82,7 +83,7 @@
 
 /*! ************************************
 
-	\fn Word Burger::Perforce::Edit(const char *pFilename)
+	\fn uint_t Burger::Perforce::Edit(const char *pFilename)
 	\brief Issue an "edit" command to open a file
 	\param pFilename Pointer to a Burgerlib format filename
 	\return Zero if no error, non-zero if an perforce error had occurred
@@ -92,7 +93,7 @@
 
 /*! ************************************
 
-	\fn Word Burger::Perforce::RevertIfUnchanged(const char *pFilename)
+	\fn uint_t Burger::Perforce::RevertIfUnchanged(const char *pFilename)
 	\brief Issue an "revert" command to revert a file if it hasn't changed
 
 	Given a Burgerlib pathname, perform a "p4 -a revert" command on it to

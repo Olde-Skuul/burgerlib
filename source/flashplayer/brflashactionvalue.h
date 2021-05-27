@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player action buffer
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player action buffer
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #ifndef __BRFLASHACTIONVALUE_H__
@@ -81,9 +82,9 @@ private:
 
 	mutable String m_String;	///< String variable
 	double m_dNumber;			///< Numeric value (As double)
-	Word m_bBool;				///< Boolean value
+	uint_t m_bBool;				///< Boolean value
 	eType m_eType;				///< Type of data contained
-	mutable Word m_uFlags;		///< eValueFlag flags
+	mutable uint_t m_uFlags;		///< eValueFlag flags
 public:
 	// constructors
 	ActionScriptValue();
@@ -106,14 +107,14 @@ public:
 	double ToDouble(void) const;
 	int ToInt(void) const { return (int) ToDouble(); };
 	float ToFloat(void) const { return (float) ToDouble(); };
-	Word ToBool(void) const;
+	uint_t ToBool(void) const;
 	ActionScriptFunction* CastToFunction(void) const;
 	ActionScriptObject* CastToObject(void) const;
 	ActionScriptProperty* CastToProperty(void) const;
 	void SetString(const String &rInput);
 	void SetString(const char *pInput);
 	void SetDouble(double dInput);
-	void SetBool(Word bInput);
+	void SetBool(uint_t bInput);
 	void SetInt(int iInput) { SetDouble(static_cast<double>(iInput)); }
 	void SetNaN(void) { SetDouble(g_dNan); }
 	void SetAsObject(ActionScriptObject *pObject);
@@ -128,9 +129,9 @@ public:
 	void SetPropertyTarget(ActionScriptObject *pObject);
 
 	void operator=(const ActionScriptValue &rInput);
-	Word operator==(const ActionScriptValue &rInput) const;
-	Word operator!=(const ActionScriptValue &rInput) const;
-	Word operator<(double dInput) const { return ToDouble() < dInput; }
+	uint_t operator==(const ActionScriptValue &rInput) const;
+	uint_t operator!=(const ActionScriptValue &rInput) const;
+	uint_t operator<(double dInput) const { return ToDouble() < dInput; }
 	void operator+=(double dInput) { SetDouble(ToDouble() + dInput); }
 	void operator-=(double dInput) { SetDouble(ToDouble() - dInput); }
 	void operator*=(double dInput) { SetDouble(ToDouble() * dInput); }
@@ -140,26 +141,26 @@ public:
 	void operator^=(int iInput) { SetInt(int(ToDouble()) ^ iInput); }
 	void shl(int iInput) { SetInt(int(ToDouble()) << iInput); }
 	void asr(int iInput) { SetInt(int(ToDouble()) >> iInput); }
-	void lsr(int iInput) { SetInt(static_cast<int>((Word32(ToDouble()) >> iInput))); }
+	void lsr(int iInput) { SetInt(static_cast<int>((uint32_t(ToDouble()) >> iInput))); }
 
-	Word IsFunction(void) const;
-	BURGER_INLINE Word IsBool(void) const { return m_eType == BOOLEAN; }
-	BURGER_INLINE Word IsString(void) const { return m_eType == STRING; }
-	BURGER_INLINE Word IsNumber(void) const { return m_eType == NUMBER && IsNan(m_dNumber) == false; }
-	BURGER_INLINE Word IsObject(void) const { return m_eType == OBJECT; }
-	BURGER_INLINE Word IsProperty(void) const { return m_eType == PROPERTY; }
-	BURGER_INLINE Word IsNULL(void) const { return m_eType == OBJECT && m_pObject == NULL; }
-	BURGER_INLINE Word IsUndefined(void) const { return m_eType == UNDEFINED; }
+	uint_t IsFunction(void) const;
+	BURGER_INLINE uint_t IsBool(void) const { return m_eType == BOOLEAN; }
+	BURGER_INLINE uint_t IsString(void) const { return m_eType == STRING; }
+	BURGER_INLINE uint_t IsNumber(void) const { return m_eType == NUMBER && IsNan(m_dNumber) == false; }
+	BURGER_INLINE uint_t IsObject(void) const { return m_eType == OBJECT; }
+	BURGER_INLINE uint_t IsProperty(void) const { return m_eType == PROPERTY; }
+	BURGER_INLINE uint_t IsNULL(void) const { return m_eType == OBJECT && m_pObject == NULL; }
+	BURGER_INLINE uint_t IsUndefined(void) const { return m_eType == UNDEFINED; }
 	const char* GetTypeOf(void) const;
-	Word IsInstanceOf(const ActionScriptFunction *pFunction) const;
-	Word FindProperty(const String &rInput,ActionScriptValue *pValue);
-	Word FindPropertyOwner(const String &rInput,ActionScriptValue *pValue);
-	BURGER_INLINE Word IsEnum(void) const { return static_cast<Word>(m_uFlags & DONT_ENUM ? FALSE : TRUE); }
-	BURGER_INLINE Word IsReadOnly(void) const { return static_cast<Word>(m_uFlags & READ_ONLY ? TRUE : FALSE); }
-	BURGER_INLINE Word IsProtected(void) const { return static_cast<Word>(m_uFlags & DONT_DELETE ? TRUE : FALSE); }
-	BURGER_INLINE Word GetFlags(void) const { return m_uFlags; }
-	BURGER_INLINE void SetFlags(Word flags) const { m_uFlags = flags; }
-	static Word CompareEqual(const ActionScriptValue &rInput1,const ActionScriptValue &rInput2);
+	uint_t IsInstanceOf(const ActionScriptFunction *pFunction) const;
+	uint_t FindProperty(const String &rInput,ActionScriptValue *pValue);
+	uint_t FindPropertyOwner(const String &rInput,ActionScriptValue *pValue);
+	BURGER_INLINE uint_t IsEnum(void) const { return static_cast<uint_t>(m_uFlags & DONT_ENUM ? FALSE : TRUE); }
+	BURGER_INLINE uint_t IsReadOnly(void) const { return static_cast<uint_t>(m_uFlags & READ_ONLY ? TRUE : FALSE); }
+	BURGER_INLINE uint_t IsProtected(void) const { return static_cast<uint_t>(m_uFlags & DONT_DELETE ? TRUE : FALSE); }
+	BURGER_INLINE uint_t GetFlags(void) const { return m_uFlags; }
+	BURGER_INLINE void SetFlags(uint_t flags) const { m_uFlags = flags; }
+	static uint_t CompareEqual(const ActionScriptValue &rInput1,const ActionScriptValue &rInput2);
 	static ActionScriptValue RelationalCompareEqual(const ActionScriptValue &rInput1,const ActionScriptValue &rInput2);
 };
 }}

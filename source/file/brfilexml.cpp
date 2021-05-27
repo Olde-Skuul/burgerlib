@@ -91,7 +91,7 @@ Burger::FileXML::Generic::~Generic()
 
 ***************************************/
 
-Word Burger::FileXML::Generic::Parse(InputMemoryStream * /* pInput */)
+uint_t Burger::FileXML::Generic::Parse(InputMemoryStream * /* pInput */)
 {
 	return 0;
 }
@@ -108,7 +108,7 @@ Word Burger::FileXML::Generic::Parse(InputMemoryStream * /* pInput */)
 
 ***************************************/
 
-Word Burger::FileXML::Generic::Save(OutputMemoryStream * /* pOutput */,Word /* uDepth */) const
+uint_t Burger::FileXML::Generic::Save(OutputMemoryStream * /* pOutput */,uint_t /* uDepth */) const
 {
 	return 0;
 }
@@ -325,19 +325,19 @@ Burger::FileXML::Root::~Root()
 	\param bAllowRawText If \ref TRUE, then non-encapsulated text is allowed 
 		to be parsed since an Element is currently being parsed.
 	\return Error code of zero for no error or non-zero on error
-	\sa SaveList(OutputMemoryStream *,Word) const
+	\sa SaveList(OutputMemoryStream *,uint_t) const
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::Root::ParseList(InputMemoryStream *pInput,Word bAllowRawText)
+uint_t BURGER_API Burger::FileXML::Root::ParseList(InputMemoryStream *pInput,uint_t bAllowRawText)
 {
 	// Assume error
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	for (;;) {
 		// Skip the whitespace
 		pInput->ParseBeyondWhiteSpace();
 		// Get a character. It can only be a '<' or a line end mark
-		Word uTemp = pInput->GetByte();
+		uint_t uTemp = pInput->GetByte();
 		if (uTemp=='<') {
 			// Since it's a '<', then process the token
 			Generic *pGeneric;
@@ -402,14 +402,14 @@ Word BURGER_API Burger::FileXML::Root::ParseList(InputMemoryStream *pInput,Word 
 	\param pOutput Pointer to an output stream
 	\param uDepth Number of tabs to output before saving out this record
 	\return Error code of zero for no error or non-zero on error
-	\sa Save(OutputMemoryStream *,Word) const
+	\sa Save(OutputMemoryStream *,uint_t) const
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::Root::SaveList(OutputMemoryStream *pOutput,Word uDepth) const
+uint_t BURGER_API Burger::FileXML::Root::SaveList(OutputMemoryStream *pOutput,uint_t uDepth) const
 {
 	Generic *pGeneric = GetNext();
-	Word uResult = FALSE;		// Assume no error
+	uint_t uResult = FALSE;		// Assume no error
 	if (pGeneric!=this) {
 		do {
 			// Save the contents of all the other entries
@@ -551,7 +551,7 @@ const Burger::FileXML::Element * BURGER_API Burger::FileXML::Root::FindElement(c
 
 ***************************************/
 
-Burger::FileXML::Element * BURGER_API Burger::FileXML::Root::FindElement(const char *pElementName,Word bAlwaysCreate)
+Burger::FileXML::Element * BURGER_API Burger::FileXML::Root::FindElement(const char *pElementName,uint_t bAlwaysCreate)
 {
 	Element *pElement = NULL;
 	Generic *pGeneric = GetNext();
@@ -687,7 +687,7 @@ const Burger::FileXML::Attribute * BURGER_API Burger::FileXML::Root::FindAttribu
 
 ***************************************/
 
-Burger::FileXML::Attribute * BURGER_API Burger::FileXML::Root::FindAttribute(const char *pAttributeName,Word bAlwaysCreate)
+Burger::FileXML::Attribute * BURGER_API Burger::FileXML::Root::FindAttribute(const char *pAttributeName,uint_t bAlwaysCreate)
 {
 	Attribute *pAttribute = NULL;
 	Generic *pGeneric = GetNext();
@@ -797,7 +797,7 @@ const Burger::FileXML::RawText * BURGER_API Burger::FileXML::Root::FindRawText(v
 
 ***************************************/
 
-Burger::FileXML::RawText * BURGER_API Burger::FileXML::Root::FindRawText(Word bAlwaysCreate)
+Burger::FileXML::RawText * BURGER_API Burger::FileXML::Root::FindRawText(uint_t bAlwaysCreate)
 {
 	RawText *pRawText = NULL;
 	Generic *pGeneric = GetNext();
@@ -925,20 +925,20 @@ Burger::FileXML::Comment::~Comment()
 
 ***************************************/
 
-Word Burger::FileXML::Comment::Parse(InputMemoryStream *pInput)
+uint_t Burger::FileXML::Comment::Parse(InputMemoryStream *pInput)
 {
 	// Clear out the old data
 	m_Comment.Clear();
 
 	// Assume error
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	// Capture the start so the length can be determined
-	WordPtr uMark = pInput->GetMark();
-	Word uPrevious1 = 0;		// Test for the --
-	Word uPrevious2 = 0;
+	uintptr_t uMark = pInput->GetMark();
+	uint_t uPrevious1 = 0;		// Test for the --
+	uint_t uPrevious2 = 0;
 	for (;;) {
 		// Fetch a byte
-		Word uTemp = pInput->GetByte();
+		uint_t uTemp = pInput->GetByte();
 		// End of the data?
 		if (!uTemp) {
 			break;
@@ -947,7 +947,7 @@ Word Burger::FileXML::Comment::Parse(InputMemoryStream *pInput)
 		if (uTemp=='>') {
 			// Only if it's preceded by -- will it be considered legal
 			if ((uPrevious1=='-') && (uPrevious2=='-')) {
-				WordPtr uFinalSize = (pInput->GetMark()-uMark)-3;
+				uintptr_t uFinalSize = (pInput->GetMark()-uMark)-3;
 				if (uFinalSize) {
 					pInput->SetMark(uMark);
 					m_Comment.SetBufferSize(uFinalSize);
@@ -983,9 +983,9 @@ Word Burger::FileXML::Comment::Parse(InputMemoryStream *pInput)
 
 ***************************************/
 
-Word Burger::FileXML::Comment::Save(OutputMemoryStream *pOutput,Word uDepth) const
+uint_t Burger::FileXML::Comment::Save(OutputMemoryStream *pOutput,uint_t uDepth) const
 {
-	Word uResult = pOutput->AppendTabs(uDepth);
+	uint_t uResult = pOutput->AppendTabs(uDepth);
 	uResult |= pOutput->Append("<!--");
 	uResult |= pOutput->Append(m_Comment.GetPtr());
 	uResult |= pOutput->Append("-->\n");
@@ -1141,20 +1141,20 @@ Burger::FileXML::CData::~CData()
 
 ***************************************/
 
-Word Burger::FileXML::CData::Parse(InputMemoryStream *pInput)
+uint_t Burger::FileXML::CData::Parse(InputMemoryStream *pInput)
 {
 	// Clear out the old data
 	m_CData.Clear();
 
 	// Assume error
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	// Capture the start so the length can be determined
-	WordPtr uMark = pInput->GetMark();
-	Word uPrevious1 = 0;		// Test for the --
-	Word uPrevious2 = 0;
+	uintptr_t uMark = pInput->GetMark();
+	uint_t uPrevious1 = 0;		// Test for the --
+	uint_t uPrevious2 = 0;
 	for (;;) {
 		// Fetch a byte
-		Word uTemp = pInput->GetByte();
+		uint_t uTemp = pInput->GetByte();
 		// End of the data?
 		if (!uTemp) {
 			break;
@@ -1163,7 +1163,7 @@ Word Burger::FileXML::CData::Parse(InputMemoryStream *pInput)
 		if (uTemp=='>') {
 			// Only if it's preceded by -- will it be considered legal
 			if ((uPrevious1==']') && (uPrevious2==']')) {
-				WordPtr uFinalSize = (pInput->GetMark()-uMark)-3;
+				uintptr_t uFinalSize = (pInput->GetMark()-uMark)-3;
 				if (uFinalSize) {
 					pInput->SetMark(uMark);
 					m_CData.SetBufferSize(uFinalSize);
@@ -1199,9 +1199,9 @@ Word Burger::FileXML::CData::Parse(InputMemoryStream *pInput)
 
 ***************************************/
 
-Word Burger::FileXML::CData::Save(OutputMemoryStream *pOutput,Word uDepth) const
+uint_t Burger::FileXML::CData::Save(OutputMemoryStream *pOutput,uint_t uDepth) const
 {
-	Word uResult = pOutput->AppendTabs(uDepth);
+	uint_t uResult = pOutput->AppendTabs(uDepth);
 	uResult |= pOutput->Append("<![CDATA[");
 	uResult |= pOutput->Append(m_CData.GetPtr());
 	uResult |= pOutput->Append("]]>\n");
@@ -1337,15 +1337,15 @@ Burger::FileXML::Attribute::~Attribute()
 
 ***************************************/
 
-Word Burger::FileXML::Attribute::Parse(InputMemoryStream *pInput)
+uint_t Burger::FileXML::Attribute::Parse(InputMemoryStream *pInput)
 {
-	Word uResult = TRUE;
-	WordPtr uMark = pInput->GetMark();
+	uint_t uResult = TRUE;
+	uintptr_t uMark = pInput->GetMark();
 	// Extract the attribute's name
 	if (!ReadXMLName(&m_Key,pInput)) {
 		pInput->ParseBeyondWhiteSpace();
 		// Locate the required '='
-		Word uTemp = pInput->GetByte();
+		uint_t uTemp = pInput->GetByte();
 		if (uTemp=='=') {
 			pInput->ParseBeyondWhiteSpace();
 			// Read in the attribute data
@@ -1374,9 +1374,9 @@ Word Burger::FileXML::Attribute::Parse(InputMemoryStream *pInput)
 
 ***************************************/
 
-Word Burger::FileXML::Attribute::Save(OutputMemoryStream *pOutput,Word /* uDepth */) const
+uint_t Burger::FileXML::Attribute::Save(OutputMemoryStream *pOutput,uint_t /* uDepth */) const
 {
-	Word uResult = pOutput->Append(m_Key.GetPtr());
+	uint_t uResult = pOutput->Append(m_Key.GetPtr());
 	uResult |= pOutput->Append("=\"");
 	uResult |= SaveXMLString(pOutput,m_Value.GetPtr());
 	uResult |= pOutput->Append('"');
@@ -1456,89 +1456,89 @@ Word Burger::FileXML::Attribute::Save(OutputMemoryStream *pOutput,Word /* uDepth
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::FileXML::Attribute::GetBoolean(Word bDefault) const
+	\fn BURGER_INLINE uint_t Burger::FileXML::Attribute::GetBoolean(uint_t bDefault) const
 	\brief Return a boolean
 
-	Calls String::GetBoolean(Word) on the value text and returns the result.
+	Calls String::GetBoolean(uint_t) on the value text and returns the result.
 
 	\param bDefault Value to return on parse failure
-	\sa SetBoolean(Word)
+	\sa SetBoolean(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::FileXML::Attribute::SetBoolean(Word bValue) const
+	\fn BURGER_INLINE uint_t Burger::FileXML::Attribute::SetBoolean(uint_t bValue) const
 	\brief Return a boolean
 
-	Calls String::SetYesNo(Word) on the value text and returns the result.
+	Calls String::SetYesNo(uint_t) on the value text and returns the result.
 
-	\param bValue Value to pass to String::SetYesNo(Word)
-	\sa SetBoolean(Word)
+	\param bValue Value to pass to String::SetYesNo(uint_t)
+	\sa SetBoolean(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::FileXML::Attribute::GetWord(Word uDefault,Word uMin,Word uMax) const
+	\fn BURGER_INLINE uint_t Burger::FileXML::Attribute::GetWord(uint_t uDefault,uint_t uMin,uint_t uMax) const
 	\brief Return an unsigned integer value.
 
-	Calls String::GetWord(Word,Word,Word) on the value text and returns the result.
+	Calls String::GetWord(uint_t,uint_t,uint_t) on the value text and returns the result.
 
 	\param uDefault Value to return on error
 	\param uMin Minimum acceptable value
 	\param uMax Maximum acceptable value
-	\sa SetWord(Word)
+	\sa SetWord(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE void Burger::FileXML::Attribute::SetWord(Word uValue)
+	\fn BURGER_INLINE void Burger::FileXML::Attribute::SetWord(uint_t uValue)
 	\brief Set an unsigned integer value.
 
-	Calls String::SetWord(Word) on the value text
+	Calls String::SetWord(uint_t) on the value text
 
 	\param uValue Value to store as an unsigned integer string
-	\sa SetWordHex(Word) or GetWord(Word,Word,Word) const
+	\sa SetWordHex(uint_t) or GetWord(uint_t,uint_t,uint_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE void Burger::FileXML::Attribute::SetWordHex(Word uValue)
+	\fn BURGER_INLINE void Burger::FileXML::Attribute::SetWordHex(uint_t uValue)
 	\brief Set an unsigned integer value as hex.
 
-	Calls String::SetWordHex(Word) on the value text
+	Calls String::SetWordHex(uint_t) on the value text
 
 	\param uValue Value to store as an unsigned integer hex string
-	\sa SetWord(Word) or GetWord(Word,Word,Word) const
+	\sa SetWord(uint_t) or GetWord(uint_t,uint_t,uint_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE Int Burger::FileXML::Attribute::GetInt(Int iDefault,Int iMin,Int iMax) const
+	\fn BURGER_INLINE int_t Burger::FileXML::Attribute::GetInt(int_t iDefault,int_t iMin,int_t iMax) const
 	\brief Return a signed integer value.
 
-	Calls String::GetInt(Int,Int,Int) on the value text and returns the result.
+	Calls String::GetInt(int_t,int_t,int_t) on the value text and returns the result.
 
 	\param iDefault Value to return on error
 	\param iMin Minimum acceptable value
 	\param iMax Maximum acceptable value
-	\sa SetInt(Int)
+	\sa SetInt(int_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE void Burger::FileXML::Attribute::SetInt(Int iValue)
+	\fn BURGER_INLINE void Burger::FileXML::Attribute::SetInt(int_t iValue)
 	\brief Set a signed integer value.
 
-	Calls String::SetInt(Int) on the value text
+	Calls String::SetInt(int_t) on the value text
 
 	\param iValue Value to store as an integer string
-	\sa GetInt(Int,Int,Int) const
+	\sa GetInt(int_t,int_t,int_t) const
 
 ***************************************/
 
@@ -1760,7 +1760,7 @@ Burger::FileXML::Declaration::Declaration() :
 
 ***************************************/
 
-Burger::FileXML::Declaration::Declaration(float fVersion,const char *pEncoding,Word bStandalone) :
+Burger::FileXML::Declaration::Declaration(float fVersion,const char *pEncoding,uint_t bStandalone) :
 	Generic(XML_DECLARATION),
 	m_Encoding(pEncoding),
 	m_fVersion(fVersion),
@@ -1790,13 +1790,13 @@ Burger::FileXML::Declaration::~Declaration()
 
 ***************************************/
 
-Word Burger::FileXML::Declaration::Parse(InputMemoryStream *pInput)
+uint_t Burger::FileXML::Declaration::Parse(InputMemoryStream *pInput)
 {
 	m_bStandalone = 2;
 	m_fVersion = 1.0f;
 	m_Encoding.Clear();
 	Attribute TempAttribute;
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	for (;;) {
 		// Look for the net token
 		pInput->ParseBeyondWhiteSpace();
@@ -1833,9 +1833,9 @@ Word Burger::FileXML::Declaration::Parse(InputMemoryStream *pInput)
 
 ***************************************/
 
-Word Burger::FileXML::Declaration::Save(OutputMemoryStream *pOutput,Word uDepth) const
+uint_t Burger::FileXML::Declaration::Save(OutputMemoryStream *pOutput,uint_t uDepth) const
 {
-	Word uResult = pOutput->AppendTabs(uDepth);
+	uint_t uResult = pOutput->AppendTabs(uDepth);
 	uResult |= pOutput->Append("<?xml");
 
 	// If the version is a real floating point number, print it in the form of x.xx
@@ -1938,19 +1938,19 @@ void BURGER_API Burger::FileXML::Declaration::SetVersion(float fInput)
 
 /*! ************************************
 
-	\fn Word Burger::FileXML::Declaration::GetStandalone(void) const
+	\fn uint_t Burger::FileXML::Declaration::GetStandalone(void) const
 	\brief Return the standalone boolean
 
 	The XML default is \ref FALSE.
 
 	\return \ref TRUE if it's standalone or \ref FALSE if not. 
-	\sa SetStandalone(Word) 
+	\sa SetStandalone(uint_t) 
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FileXML::Declaration::SetStandalone(Word bInput)
+	\fn void Burger::FileXML::Declaration::SetStandalone(uint_t bInput)
 	\brief Sets the declaration standalone value
 
 	There's a special value of 2 that will set the standalone value to "false" and
@@ -2001,7 +2001,7 @@ Burger::FileXML::Declaration * BURGER_API Burger::FileXML::Declaration::New(Inpu
 
 ***************************************/
 
-Burger::FileXML::Declaration * BURGER_API Burger::FileXML::Declaration::New(float fVersion,const char *pEncoding,Word bStandalone)
+Burger::FileXML::Declaration * BURGER_API Burger::FileXML::Declaration::New(float fVersion,const char *pEncoding,uint_t bStandalone)
 {
 	return new (Alloc(sizeof(Declaration))) Declaration(fVersion,pEncoding,bStandalone);
 }
@@ -2082,19 +2082,19 @@ Burger::FileXML::RawText::~RawText()
 
 ***************************************/
 
-Word Burger::FileXML::RawText::Parse(InputMemoryStream *pInput)
+uint_t Burger::FileXML::RawText::Parse(InputMemoryStream *pInput)
 {
 	// Clear out the old data
 	m_Text.Clear();
 
 	// Assume error
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	// Capture the start so the length can be determined
-	WordPtr uMark = pInput->GetMark();
-	WordPtr uEndMark = uMark;
+    uintptr_t uMark = pInput->GetMark();
+    uintptr_t uEndMark = uMark;
 	for (;;) {
 		// Fetch a byte
-		Word uTemp = pInput->GetByte();
+		uint_t uTemp = pInput->GetByte();
 		// End of the data?
 		if (!uTemp) {
 			break;
@@ -2104,9 +2104,9 @@ Word Burger::FileXML::RawText::Parse(InputMemoryStream *pInput)
 			// Only if it's preceded by -- will it be considered legal
 			uResult = FALSE;
 			pInput->SkipBack(1);
-			WordPtr uFinalSize = (uEndMark-uMark);
+			uintptr_t uFinalSize = (uEndMark-uMark);
 			if (uFinalSize) {
-				WordPtr uDone = pInput->GetMark();
+				uintptr_t uDone = pInput->GetMark();
 				pInput->SetMark(uMark);
 				m_Text.SetBufferSize(uFinalSize);
 				pInput->Get(m_Text.GetPtr(),uFinalSize);
@@ -2143,9 +2143,9 @@ Word Burger::FileXML::RawText::Parse(InputMemoryStream *pInput)
 
 ***************************************/
 
-Word Burger::FileXML::RawText::Save(OutputMemoryStream *pOutput,Word uDepth) const
+uint_t Burger::FileXML::RawText::Save(OutputMemoryStream *pOutput,uint_t uDepth) const
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	eType Type = GetPrevious()->GetType();
 	if ((Type!=XML_ROOT) && (Type!=XML_TEXT)) {
 		uResult = pOutput->AppendTabs(uDepth);
@@ -2193,89 +2193,89 @@ Word Burger::FileXML::RawText::Save(OutputMemoryStream *pOutput,Word uDepth) con
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::FileXML::RawText::GetBoolean(Word bDefault) const
+	\fn BURGER_INLINE uint_t Burger::FileXML::RawText::GetBoolean(uint_t bDefault) const
 	\brief Return a boolean
 
-	Calls String::GetBoolean(Word) on the text and returns the result.
+	Calls String::GetBoolean(uint_t) on the text and returns the result.
 
 	\param bDefault Value to return on parse failure
-	\sa SetBoolean(Word)
+	\sa SetBoolean(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::FileXML::RawText::SetBoolean(Word bValue) const
+	\fn BURGER_INLINE uint_t Burger::FileXML::RawText::SetBoolean(uint_t bValue) const
 	\brief Return a boolean
 
-	Calls String::SetYesNo(Word) on the text and returns the result.
+	Calls String::SetYesNo(uint_t) on the text and returns the result.
 
-	\param bValue Value to pass to String::SetYesNo(Word)
-	\sa SetBoolean(Word)
+	\param bValue Value to pass to String::SetYesNo(uint_t)
+	\sa SetBoolean(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::FileXML::RawText::GetWord(Word uDefault,Word uMin,Word uMax) const
+	\fn BURGER_INLINE uint_t Burger::FileXML::RawText::GetWord(uint_t uDefault,uint_t uMin,uint_t uMax) const
 	\brief Return an unsigned integer value.
 
-	Calls String::GetWord(Word,Word,Word) on the text and returns the result.
+	Calls String::GetWord(uint_t,uint_t,uint_t) on the text and returns the result.
 
 	\param uDefault Value to return on error
 	\param uMin Minimum acceptable value
 	\param uMax Maximum acceptable value
-	\sa SetWord(Word)
+	\sa SetWord(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE void Burger::FileXML::RawText::SetWord(Word uValue)
+	\fn BURGER_INLINE void Burger::FileXML::RawText::SetWord(uint_t uValue)
 	\brief Set an unsigned integer value.
 
-	Calls String::SetWord(Word) on the text
+	Calls String::SetWord(uint_t) on the text
 
 	\param uValue Value to store as an unsigned integer string
-	\sa SetWordHex(Word) or GetWord(Word,Word,Word) const
+	\sa SetWordHex(uint_t) or GetWord(uint_t,uint_t,uint_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE void Burger::FileXML::RawText::SetWordHex(Word uValue)
+	\fn BURGER_INLINE void Burger::FileXML::RawText::SetWordHex(uint_t uValue)
 	\brief Set an unsigned integer value as hex.
 
-	Calls String::SetWordHex(Word) on the text
+	Calls String::SetWordHex(uint_t) on the text
 
 	\param uValue Value to store as an unsigned integer hex string
-	\sa SetWord(Word) or GetWord(Word,Word,Word) const
+	\sa SetWord(uint_t) or GetWord(uint_t,uint_t,uint_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE Int Burger::FileXML::RawText::GetInt(Int iDefault,Int iMin,Int iMax) const
+	\fn BURGER_INLINE int_t Burger::FileXML::RawText::GetInt(int_t iDefault,int_t iMin,int_t iMax) const
 	\brief Return a signed integer value.
 
-	Calls String::GetInt(Int,Int,Int) on the text and returns the result.
+	Calls String::GetInt(int_t,int_t,int_t) on the text and returns the result.
 
 	\param iDefault Value to return on error
 	\param iMin Minimum acceptable value
 	\param iMax Maximum acceptable value
-	\sa SetInt(Int)
+	\sa SetInt(int_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE void Burger::FileXML::RawText::SetInt(Int iValue)
+	\fn BURGER_INLINE void Burger::FileXML::RawText::SetInt(int_t iValue)
 	\brief Set a signed integer value.
 
-	Calls String::SetInt(Int) on the text
+	Calls String::SetInt(int_t) on the text
 
 	\param iValue Value to store as an integer string
-	\sa GetInt(Int,Int,Int) const
+	\sa GetInt(int_t,int_t,int_t) const
 
 ***************************************/
 
@@ -2470,9 +2470,9 @@ Burger::FileXML::Element::~Element()
 
 ***************************************/
 
-Word Burger::FileXML::Element::Parse(InputMemoryStream *pInput)
+uint_t Burger::FileXML::Element::Parse(InputMemoryStream *pInput)
 {
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	m_Root.DeleteList();
 	m_Attributes.DeleteList();
 
@@ -2534,9 +2534,9 @@ Word Burger::FileXML::Element::Parse(InputMemoryStream *pInput)
 
 ***************************************/
 
-Word Burger::FileXML::Element::Save(OutputMemoryStream *pOutput,Word uDepth) const
+uint_t Burger::FileXML::Element::Save(OutputMemoryStream *pOutput,uint_t uDepth) const
 {
-	Word uResult = pOutput->AppendTabs(uDepth);
+	uint_t uResult = pOutput->AppendTabs(uDepth);
 	uResult |= pOutput->Append("<");
 	uResult |= pOutput->Append(m_Name.GetPtr());
 	// Any attributes?
@@ -2616,7 +2616,7 @@ Word Burger::FileXML::Element::Save(OutputMemoryStream *pOutput,Word uDepth) con
 
 /*! ************************************
 
-	\fn BURGER_INLINE Element *Burger::FileXML::Element::FindElement(const char *pElementName,Word bAlwaysCreate)
+	\fn BURGER_INLINE Element *Burger::FileXML::Element::FindElement(const char *pElementName,uint_t bAlwaysCreate)
 	\brief Find a named XML Element.
 
 	Traverse the linked list for an XML Element record with the matching 
@@ -2643,7 +2643,7 @@ Word Burger::FileXML::Element::Save(OutputMemoryStream *pOutput,Word uDepth) con
 
 	\param pElementName	Pointer to a "C" string to the element to search for.
 	\return Pointer to an XML Element or \ref NULL if out of memory
-	\sa FindElement(const char *,Word) or DeleteElement()
+	\sa FindElement(const char *,uint_t) or DeleteElement()
 
 ***************************************/
 
@@ -2657,7 +2657,7 @@ Word Burger::FileXML::Element::Save(OutputMemoryStream *pOutput,Word uDepth) con
 	If there are multiple records with the same name, the duplicates will remain.
 
 	\param pElementName	Pointer to a "C" string to the element to search for.
-	\sa DeleteElements(const char *), FindElement(const char *,Word) or AddElement(const char *)
+	\sa DeleteElements(const char *), FindElement(const char *,uint_t) or AddElement(const char *)
 
 ***************************************/
 
@@ -2669,13 +2669,13 @@ Word Burger::FileXML::Element::Save(OutputMemoryStream *pOutput,Word uDepth) con
 	Traverse the linked list for the all Element records with the supplied name and dispose of them.
 
 	\param pElementName	Pointer to a "C" string to the element to search for.
-	\sa DeleteElement(const char *), FindElement(const char *,Word) or AddElement(const char *)
+	\sa DeleteElement(const char *), FindElement(const char *,uint_t) or AddElement(const char *)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE Attribute *Burger::FileXML::Element::FindAttribute(const char *pAttributeName,Word bAlwaysCreate)
+	\fn BURGER_INLINE Attribute *Burger::FileXML::Element::FindAttribute(const char *pAttributeName,uint_t bAlwaysCreate)
 	\brief Traverse the linked list and find a specific named Attribute.
 
 	Iterate over the Element's linked list until an Attribute is found. 
@@ -2701,7 +2701,7 @@ Word Burger::FileXML::Element::Save(OutputMemoryStream *pOutput,Word uDepth) con
 	\param pAttributeName Pointer to a "C" string to the Attribute to search for.
 	\param pValue Pointer to a "C" string for the data field for the Attribute. \ref NULL yields an empty string.
 	\return Pointer to an XML Element or \ref NULL if out of memory
-	\sa FindAttribute(const char *,Word) or DeleteAttribute()
+	\sa FindAttribute(const char *,uint_t) or DeleteAttribute()
 
 ***************************************/
 
@@ -2714,7 +2714,7 @@ Word Burger::FileXML::Element::Save(OutputMemoryStream *pOutput,Word uDepth) con
 	and dispose of it.
 
 	\param pAttributeName Pointer to a "C" string to the Attribute to search for.
-	\sa FindAttribute(const char *,Word) or AddAttribute(const char *,const char *)
+	\sa FindAttribute(const char *,uint_t) or AddAttribute(const char *,const char *)
 
 ***************************************/
 
@@ -2763,11 +2763,11 @@ Word Burger::FileXML::Element::Save(OutputMemoryStream *pOutput,Word uDepth) con
 
 	\param bDefault Value to return on error
 	\return \ref TRUE or \ref FALSE or bDefault
-	\sa SetBoolean(Word) or AsciiToBoolean(const char *,Word)
+	\sa SetBoolean(uint_t) or AsciiToBoolean(const char *,uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::Element::GetBoolean(Word bDefault) const
+uint_t BURGER_API Burger::FileXML::Element::GetBoolean(uint_t bDefault) const
 {
 	const RawText *pRawText = m_Root.FindRawText();
 	if (pRawText) {
@@ -2785,11 +2785,11 @@ Word BURGER_API Burger::FileXML::Element::GetBoolean(Word bDefault) const
 	store numeric values.
 
 	\param bValue Value to store as a string
-	\sa GetBoolean(Word) const
+	\sa GetBoolean(uint_t) const
 
 ***************************************/
 
-void BURGER_API Burger::FileXML::Element::SetBoolean(Word bValue)
+void BURGER_API Burger::FileXML::Element::SetBoolean(uint_t bValue)
 {
 	RawText *pRawText = m_Root.FindRawText(TRUE);
 	if (pRawText) {
@@ -2815,11 +2815,11 @@ void BURGER_API Burger::FileXML::Element::SetBoolean(Word bValue)
 	\param uMin Minimum acceptable value
 	\param uMax Maximum acceptable value
 	\return Value in between uMin and uMax or uDefault
-	\sa GetInt(Int,Int,Int) const, SetWord(Word), SetWordHex(Word), or AsciiToWord(const char *,Word,Word,Word)
+	\sa GetInt(int_t,int_t,int_t) const, SetWord(uint_t), SetWordHex(uint_t), or AsciiToWord(const char *,uint_t,uint_t,uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::Element::GetWord(Word uDefault,Word uMin,Word uMax) const
+uint_t BURGER_API Burger::FileXML::Element::GetWord(uint_t uDefault,uint_t uMin,uint_t uMax) const
 {
 	const RawText *pRawText = m_Root.FindRawText();
 	if (pRawText) {
@@ -2836,11 +2836,11 @@ Word BURGER_API Burger::FileXML::Element::GetWord(Word uDefault,Word uMin,Word u
 	and set the value to this string
 
 	\param uValue Value to store as an unsigned integer string
-	\sa GetWord(Word,Word,Word) const or SetWordHex(Word)
+	\sa GetWord(uint_t,uint_t,uint_t) const or SetWordHex(uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::FileXML::Element::SetWord(Word uValue)
+void BURGER_API Burger::FileXML::Element::SetWord(uint_t uValue)
 {
 	RawText *pRawText = m_Root.FindRawText(TRUE);
 	if (pRawText) {
@@ -2857,11 +2857,11 @@ void BURGER_API Burger::FileXML::Element::SetWord(Word uValue)
 	store this string as the value
 
 	\param uValue Value to store as an unsigned integer hex string
-	\sa GetWord(Word,Word,Word) const or SetWord(Word)
+	\sa GetWord(uint_t,uint_t,uint_t) const or SetWord(uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::FileXML::Element::SetWordHex(Word uValue)
+void BURGER_API Burger::FileXML::Element::SetWordHex(uint_t uValue)
 {
 	RawText *pRawText = m_Root.FindRawText(TRUE);
 	if (pRawText) {
@@ -2888,11 +2888,11 @@ void BURGER_API Burger::FileXML::Element::SetWordHex(Word uValue)
 	\param iMin Minimum acceptable value
 	\param iMax Maximum acceptable value
 	\return Value in between iMin and iMax or iDefault
-	\sa GetWord(Word,Word,Word) const, SetInt(Int) or AsciiToInteger(const char *,Int,Int,Int)
+	\sa GetWord(uint_t,uint_t,uint_t) const, SetInt(int_t) or AsciiToInteger(const char *,int_t,int_t,int_t)
 
 ***************************************/
 
-Int BURGER_API Burger::FileXML::Element::GetInt(Int iDefault,Int iMin,Int iMax) const
+int_t BURGER_API Burger::FileXML::Element::GetInt(int_t iDefault,int_t iMin,int_t iMax) const
 {
 	const RawText *pRawText = m_Root.FindRawText();
 	if (pRawText) {
@@ -2909,11 +2909,11 @@ Int BURGER_API Burger::FileXML::Element::GetInt(Int iDefault,Int iMin,Int iMax) 
 	and set the value to this string
 
 	\param iValue Value to store as a signed integer string
-	\sa GetInt(Int,Int,Int) const or SetWord(Word)
+	\sa GetInt(int_t,int_t,int_t) const or SetWord(uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::FileXML::Element::SetInt(Int iValue)
+void BURGER_API Burger::FileXML::Element::SetInt(int_t iValue)
 {
 	RawText *pRawText = m_Root.FindRawText(TRUE);
 	if (pRawText) {
@@ -3135,11 +3135,11 @@ void BURGER_API Burger::FileXML::Element::SetString(const char *pValue)
 	\param pAttributeName "C" string for the name of the Attribute to parse
 	\param bDefault Value to return on error
 	\return \ref TRUE or \ref FALSE or bDefault
-	\sa AttributeSetBoolean(const char *,Word) or AsciiToBoolean(const char *,Word)
+	\sa AttributeSetBoolean(const char *,uint_t) or AsciiToBoolean(const char *,uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::Element::AttributeGetBoolean(const char *pAttributeName,Word bDefault) const
+uint_t BURGER_API Burger::FileXML::Element::AttributeGetBoolean(const char *pAttributeName,uint_t bDefault) const
 {
 	const Attribute *pAttribute = m_Attributes.FindAttribute(pAttributeName);
 	if (pAttribute) {
@@ -3160,11 +3160,11 @@ Word BURGER_API Burger::FileXML::Element::AttributeGetBoolean(const char *pAttri
 
 	\param pAttributeName Pointer to a "C" string with the name of the Attribute
 	\param bValue Value to store as a string
-	\sa AttributeGetBoolean(const char *,Word) const
+	\sa AttributeGetBoolean(const char *,uint_t) const
 
 ***************************************/
 
-void BURGER_API Burger::FileXML::Element::AttributeSetBoolean(const char *pAttributeName,Word bValue)
+void BURGER_API Burger::FileXML::Element::AttributeSetBoolean(const char *pAttributeName,uint_t bValue)
 {
 	Attribute *pAttribute = m_Attributes.FindAttribute(pAttributeName,TRUE);
 	if (pAttribute) {
@@ -3191,12 +3191,12 @@ void BURGER_API Burger::FileXML::Element::AttributeSetBoolean(const char *pAttri
 	\param uMin Minimum acceptable value
 	\param uMax Maximum acceptable value
 	\return Value in between uMin and uMax or uDefault
-	\sa AttributeGetInt(const char *,Int,Int,Int) const, AttributeSetWord(const char *,Word),
-		AttributeSetWordHex(const char *,Word), or AsciiToWord(const char *,Word,Word,Word)
+	\sa AttributeGetInt(const char *,int_t,int_t,int_t) const, AttributeSetWord(const char *,uint_t),
+		AttributeSetWordHex(const char *,uint_t), or AsciiToWord(const char *,uint_t,uint_t,uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::Element::AttributeGetWord(const char *pAttributeName,Word uDefault,Word uMin,Word uMax) const
+uint_t BURGER_API Burger::FileXML::Element::AttributeGetWord(const char *pAttributeName,uint_t uDefault,uint_t uMin,uint_t uMax) const
 {
 	const Attribute *pAttribute = m_Attributes.FindAttribute(pAttributeName);
 	if (pAttribute) {
@@ -3214,11 +3214,11 @@ Word BURGER_API Burger::FileXML::Element::AttributeGetWord(const char *pAttribut
 
 	\param pAttributeName Pointer to a "C" string with the name of the Attribute
 	\param uValue Value to store as an unsigned integer string
-	\sa AttributeGetWord(const char *,Word,Word,Word) const or AttributeSetWordHex(const char *,Word)
+	\sa AttributeGetWord(const char *,uint_t,uint_t,uint_t) const or AttributeSetWordHex(const char *,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::FileXML::Element::AttributeSetWord(const char *pAttributeName,Word uValue)
+void BURGER_API Burger::FileXML::Element::AttributeSetWord(const char *pAttributeName,uint_t uValue)
 {
 	Attribute *pAttribute = m_Attributes.FindAttribute(pAttributeName,TRUE);
 	if (pAttribute) {
@@ -3236,11 +3236,11 @@ void BURGER_API Burger::FileXML::Element::AttributeSetWord(const char *pAttribut
 
 	\param pAttributeName Pointer to a "C" string with the name of the Attribute
 	\param uValue Value to store as an unsigned integer hex string
-	\sa AttributeGetWord(const char *,Word,Word,Word) const or AttributeSetWord(const char *,Word)
+	\sa AttributeGetWord(const char *,uint_t,uint_t,uint_t) const or AttributeSetWord(const char *,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::FileXML::Element::AttributeSetWordHex(const char *pAttributeName,Word uValue)
+void BURGER_API Burger::FileXML::Element::AttributeSetWordHex(const char *pAttributeName,uint_t uValue)
 {
 	Attribute *pAttribute = m_Attributes.FindAttribute(pAttributeName,TRUE);
 	if (pAttribute) {
@@ -3268,11 +3268,11 @@ void BURGER_API Burger::FileXML::Element::AttributeSetWordHex(const char *pAttri
 	\param iMin Minimum acceptable value
 	\param iMax Maximum acceptable value
 	\return Value in between iMin and iMax or iDefault
-	\sa AttributeGetWord(const char *,Word,Word,Word) const, AttributeSetInt(const char *,Int) or AsciiToInteger(const char *,Int,Int,Int)
+	\sa AttributeGetWord(const char *,uint_t,uint_t,uint_t) const, AttributeSetInt(const char *,int_t) or AsciiToInteger(const char *,int_t,int_t,int_t)
 
 ***************************************/
 
-Int BURGER_API Burger::FileXML::Element::AttributeGetInt(const char *pAttributeName,Int iDefault,Int iMin,Int iMax) const
+int_t BURGER_API Burger::FileXML::Element::AttributeGetInt(const char *pAttributeName,int_t iDefault,int_t iMin,int_t iMax) const
 {
 	const Attribute *pAttribute = m_Attributes.FindAttribute(pAttributeName);
 	if (pAttribute) {
@@ -3290,11 +3290,11 @@ Int BURGER_API Burger::FileXML::Element::AttributeGetInt(const char *pAttributeN
 
 	\param pAttributeName Pointer to a "C" string with the name of the Attribute
 	\param iValue Value to store as a signed integer string
-	\sa AttributeGetInt(const char *,Int,Int,Int) const or AttributeSetWord(const char *,Word)
+	\sa AttributeGetInt(const char *,int_t,int_t,int_t) const or AttributeSetWord(const char *,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::FileXML::Element::AttributeSetInt(const char *pAttributeName,Int iValue)
+void BURGER_API Burger::FileXML::Element::AttributeSetInt(const char *pAttributeName,int_t iValue)
 {
 	Attribute *pAttribute = m_Attributes.FindAttribute(pAttributeName,TRUE);
 	if (pAttribute) {
@@ -3525,11 +3525,11 @@ void BURGER_API Burger::FileXML::Element::AttributeSetString(const char *pAttrib
 	\param pElementName "C" string for the name of the Element to parse
 	\param bDefault Value to return on error
 	\return \ref TRUE or \ref FALSE or bDefault
-	\sa ElementSetBoolean(const char *,Word) or AsciiToBoolean(const char *,Word)
+	\sa ElementSetBoolean(const char *,uint_t) or AsciiToBoolean(const char *,uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::Element::ElementGetBoolean(const char *pElementName,Word bDefault) const
+uint_t BURGER_API Burger::FileXML::Element::ElementGetBoolean(const char *pElementName,uint_t bDefault) const
 {
 	const Element *pElement = m_Root.FindElement(pElementName);
 	if (pElement) {
@@ -3551,11 +3551,11 @@ Word BURGER_API Burger::FileXML::Element::ElementGetBoolean(const char *pElement
 
 	\param pElementName Pointer to a "C" string with the name of the Element
 	\param bValue Value to store as a string
-	\sa ElementGetBoolean(const char *,Word) const
+	\sa ElementGetBoolean(const char *,uint_t) const
 
 ***************************************/
 
-void BURGER_API Burger::FileXML::Element::ElementSetBoolean(const char *pElementName,Word bValue)
+void BURGER_API Burger::FileXML::Element::ElementSetBoolean(const char *pElementName,uint_t bValue)
 {
 	Element *pElement = m_Root.FindElement(pElementName,TRUE);
 	if (pElement) {
@@ -3583,11 +3583,11 @@ void BURGER_API Burger::FileXML::Element::ElementSetBoolean(const char *pElement
 	\param uMin Minimum acceptable value
 	\param uMax Maximum acceptable value
 	\return Value in between uMin and uMax or uDefault
-	\sa ElementGetInt(const char *,Int,Int,Int) const, ElementSetWord(const char *,Word), ElementSetWordHex(const char *,Word), or AsciiToWord(const char *,Word,Word,Word)
+	\sa ElementGetInt(const char *,int_t,int_t,int_t) const, ElementSetWord(const char *,uint_t), ElementSetWordHex(const char *,uint_t), or AsciiToWord(const char *,uint_t,uint_t,uint_t)
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::Element::ElementGetWord(const char *pElementName,Word uDefault,Word uMin,Word uMax) const
+uint_t BURGER_API Burger::FileXML::Element::ElementGetWord(const char *pElementName,uint_t uDefault,uint_t uMin,uint_t uMax) const
 {
 	const Element *pElement = m_Root.FindElement(pElementName);
 	if (pElement) {
@@ -3605,11 +3605,11 @@ Word BURGER_API Burger::FileXML::Element::ElementGetWord(const char *pElementNam
 
 	\param pElementName Pointer to a "C" string with the name of the Element
 	\param uValue Value to store as an unsigned integer string
-	\sa ElementGetWord(const char *,Word,Word,Word) const or ElementSetWordHex(const char *,Word)
+	\sa ElementGetWord(const char *,uint_t,uint_t,uint_t) const or ElementSetWordHex(const char *,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::FileXML::Element::ElementSetWord(const char *pElementName,Word uValue)
+void BURGER_API Burger::FileXML::Element::ElementSetWord(const char *pElementName,uint_t uValue)
 {
 	Element *pElement = m_Root.FindElement(pElementName,TRUE);
 	if (pElement) {
@@ -3627,11 +3627,11 @@ void BURGER_API Burger::FileXML::Element::ElementSetWord(const char *pElementNam
 
 	\param pElementName Pointer to a "C" string with the name of the Element
 	\param uValue Value to store as an unsigned integer hex string
-	\sa ElementGetWord(const char *,Word,Word,Word) const or ElementSetWord(const char *,Word)
+	\sa ElementGetWord(const char *,uint_t,uint_t,uint_t) const or ElementSetWord(const char *,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::FileXML::Element::ElementSetWordHex(const char *pElementName,Word uValue)
+void BURGER_API Burger::FileXML::Element::ElementSetWordHex(const char *pElementName,uint_t uValue)
 {
 	Element *pElement = m_Root.FindElement(pElementName,TRUE);
 	if (pElement) {
@@ -3659,11 +3659,11 @@ void BURGER_API Burger::FileXML::Element::ElementSetWordHex(const char *pElement
 	\param iMin Minimum acceptable value
 	\param iMax Maximum acceptable value
 	\return Value in between iMin and iMax or iDefault
-	\sa ElementGetWord(const char *,Word,Word,Word) const, ElementSetInt(const char *,Int) or AsciiToInteger(const char *,Int,Int,Int)
+	\sa ElementGetWord(const char *,uint_t,uint_t,uint_t) const, ElementSetInt(const char *,int_t) or AsciiToInteger(const char *,int_t,int_t,int_t)
 
 ***************************************/
 
-Int BURGER_API Burger::FileXML::Element::ElementGetInt(const char *pElementName,Int iDefault,Int iMin,Int iMax) const
+int_t BURGER_API Burger::FileXML::Element::ElementGetInt(const char *pElementName,int_t iDefault,int_t iMin,int_t iMax) const
 {
 	const Element *pElement = m_Root.FindElement(pElementName);
 	if (pElement) {
@@ -3681,11 +3681,11 @@ Int BURGER_API Burger::FileXML::Element::ElementGetInt(const char *pElementName,
 
 	\param pElementName Pointer to a "C" string with the name of the Element
 	\param iValue Value to store as a signed integer string
-	\sa ElementGetInt(const char *,Int,Int,Int) const or ElementSetWord(const char *,Word)
+	\sa ElementGetInt(const char *,int_t,int_t,int_t) const or ElementSetWord(const char *,uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::FileXML::Element::ElementSetInt(const char *pElementName,Int iValue)
+void BURGER_API Burger::FileXML::Element::ElementSetInt(const char *pElementName,int_t iValue)
 {
 	Element *pElement = m_Root.FindElement(pElementName,TRUE);
 	if (pElement) {
@@ -3980,12 +3980,12 @@ Burger::FileXML::Element * BURGER_API Burger::FileXML::Element::New(const char *
 	if (!FooFile.LoadFile("9:foo.xml")) {
 		FileXML::Element *pElement = FooFile.FindElement("FOOBAR");
 		if (pElement) {
-			Word uData = pElement->ElementGetWord("Data",0,0,255);
+			uint_t uData = pElement->ElementGetWord("Data",0,0,255);
 			const char *pHi = pElement->ElementGetString("Hi","Not found");
-			Word uAttribute = pElement->AttributeGetWord("attribute",0);
+			uint_t uAttribute = pElement->AttributeGetWord("attribute",0);
 		}
 		pElement = LoadFile.FindElement("Data");
-		Word uData2 = pElement->GetWord(0,0,255);
+		uint_t uData2 = pElement->GetWord(0,0,255);
 	}
 	\endcode
 
@@ -4028,7 +4028,7 @@ Burger::FileXML::~FileXML()
 	\brief Allocate and initialize a FileXML
 
 	\return A pointer to an empty FileXML structure or \ref NULL if out of memory
-	\sa New(InputMemoryStream *,Word), New(const char *,Word) or New(Filename *,Word)
+	\sa New(InputMemoryStream *,uint_t), New(const char *,uint_t) or New(Filename *,uint_t)
 
 ***************************************/
 
@@ -4049,11 +4049,11 @@ Burger::FileXML * BURGER_API Burger::FileXML::New(void)
 	\param pFilename Pointer to a "C" string of a valid Burgerlib filename
 	\param bAlwaysCreate \ref TRUE if the file can't be opened, return an empty record instead
 	\return A pointer to an empty FileXML structure or \ref NULL if out of memory
-	\sa New(InputMemoryStream *,Word), New(void) or New(Filename *,Word)
+	\sa New(InputMemoryStream *,uint_t), New(void) or New(Filename *,uint_t)
 
 ***************************************/
 
-Burger::FileXML * BURGER_API Burger::FileXML::New(const char *pFilename,Word bAlwaysCreate)
+Burger::FileXML * BURGER_API Burger::FileXML::New(const char *pFilename,uint_t bAlwaysCreate)
 {
 	// Convert to a filename object
 	Filename NewName(pFilename);
@@ -4071,11 +4071,11 @@ Burger::FileXML * BURGER_API Burger::FileXML::New(const char *pFilename,Word bAl
 	\param pFilename Pointer to a Filename record
 	\param bAlwaysCreate \ref TRUE if the file can't be opened, return an empty record instead
 	\return A pointer to an empty FileXML structure or \ref NULL if out of memory
-	\sa New(InputMemoryStream *,Word), New(void) or New(const char *,Word)
+	\sa New(InputMemoryStream *,uint_t), New(void) or New(const char *,uint_t)
 
 ***************************************/
 
-Burger::FileXML * BURGER_API Burger::FileXML::New(Filename *pFilename,Word bAlwaysCreate)
+Burger::FileXML * BURGER_API Burger::FileXML::New(Filename *pFilename,uint_t bAlwaysCreate)
 {
 	InputMemoryStream Stream;
 	FileXML *pResult;
@@ -4106,11 +4106,11 @@ Burger::FileXML * BURGER_API Burger::FileXML::New(Filename *pFilename,Word bAlwa
 	\param pInput Pointer to a InputMemoryStream record that has the text file image
 	\param bAlwaysCreate \ref TRUE if the file can't be parsed, return an empty record instead
 	\return A pointer to an empty FileXML structure or \ref NULL if out of memory
-	\sa New(Filename *,Word), New(void) or New(const char *,Word)
+	\sa New(Filename *,uint_t), New(void) or New(const char *,uint_t)
 
 ***************************************/
 
-Burger::FileXML * BURGER_API Burger::FileXML::New(InputMemoryStream *pInput,Word bAlwaysCreate)
+Burger::FileXML * BURGER_API Burger::FileXML::New(InputMemoryStream *pInput,uint_t bAlwaysCreate)
 {
 	FileXML *pResult = New();	// Init the structure
 	if (pResult) {
@@ -4140,7 +4140,7 @@ Burger::FileXML * BURGER_API Burger::FileXML::New(InputMemoryStream *pInput,Word
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::Init(const char *pFilename)
+uint_t BURGER_API Burger::FileXML::Init(const char *pFilename)
 {
 	// Convert to a filename object
 	Filename NewName(pFilename);
@@ -4160,12 +4160,12 @@ Word BURGER_API Burger::FileXML::Init(const char *pFilename)
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::Init(Filename *pFilename)
+uint_t BURGER_API Burger::FileXML::Init(Filename *pFilename)
 {
 	// Purge
 	Shutdown();
 	InputMemoryStream Stream;
-	Word uResult = 10;
+	uint_t uResult = 10;
 	// Load into a stream
 	if (!Stream.Open(pFilename)) {
 		// Create the record
@@ -4187,7 +4187,7 @@ Word BURGER_API Burger::FileXML::Init(Filename *pFilename)
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::Init(InputMemoryStream *pInput)
+uint_t BURGER_API Burger::FileXML::Init(InputMemoryStream *pInput)
 {
 	// Purge any data in the file record
 	Shutdown();
@@ -4230,9 +4230,9 @@ void BURGER_API Burger::FileXML::Shutdown(void)
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::Save(OutputMemoryStream *pOutput) const
+uint_t BURGER_API Burger::FileXML::Save(OutputMemoryStream *pOutput) const
 {
-	Word uResult=FALSE;
+	uint_t uResult=FALSE;
 	if (m_bUTF8ByteMark) {
 		uResult = pOutput->Append(UTF8::ByteOrderMark,3);
 	}
@@ -4244,20 +4244,20 @@ Word BURGER_API Burger::FileXML::Save(OutputMemoryStream *pOutput) const
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word Burger::FileXML::GetUTF8ByteMark(void) const
+	\fn BURGER_INLINE uint_t Burger::FileXML::GetUTF8ByteMark(void) const
 	\brief Get the flag for writing a UTF8 byte mark
 
 	If this flag is non-zero, the file read in (Or to be written) had
 	a three byte UTF8 Byte Order Mark.
 
 	\return Zero on if no Byte Order Mark was found or will be written, non zero on if so.
-	\sa SetUTF8ByteMark(Word) or Save(OutputMemoryStream *) const
+	\sa SetUTF8ByteMark(uint_t) or Save(OutputMemoryStream *) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn BURGER_INLINE void Burger::FileXML::SetUTF8ByteMark(Word bUTF8ByteMark)
+	\fn BURGER_INLINE void Burger::FileXML::SetUTF8ByteMark(uint_t bUTF8ByteMark)
 	\brief Set the flag for writing a UTF8 byte mark
 
 	If this flag is non-zero, the file written out will have
@@ -4283,11 +4283,11 @@ Word BURGER_API Burger::FileXML::Save(OutputMemoryStream *pOutput) const
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::ReadXMLName(String *pOutput,InputMemoryStream *pInput)
+uint_t BURGER_API Burger::FileXML::ReadXMLName(String *pOutput,InputMemoryStream *pInput)
 {
-	Word uResult = TRUE;
-	WordPtr uMark = pInput->GetMark();
-	Word uTemp = pInput->GetByte();
+	uint_t uResult = TRUE;
+	uintptr_t uMark = pInput->GetMark();
+	uint_t uTemp = pInput->GetByte();
 	// The first character of a name MUST be an underscore or an ASCII letter (Assume >128 is UTF8)
 	if ((uTemp>=128) ||
 		(g_AsciiTestTable[uTemp]&(ASCII_UPPER|ASCII_LOWER)) ||
@@ -4302,7 +4302,7 @@ Word BURGER_API Burger::FileXML::ReadXMLName(String *pOutput,InputMemoryStream *
 				(uTemp=='.') ||
 				(uTemp==':'));
 		// Get the size of the string parsed
-		WordPtr uSize = (pInput->GetMark()-uMark)-1;
+		uintptr_t uSize = (pInput->GetMark()-uMark)-1;
 		pOutput->SetBufferSize(uSize);
 		pInput->SetMark(uMark);
 		// Copy the string
@@ -4327,20 +4327,20 @@ Word BURGER_API Burger::FileXML::ReadXMLName(String *pOutput,InputMemoryStream *
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::ReadXMLText(String *pOutput,InputMemoryStream *pInput)
+uint_t BURGER_API Burger::FileXML::ReadXMLText(String *pOutput,InputMemoryStream *pInput)
 {
-	Word uResult = TRUE;
-	WordPtr uMark = pInput->GetMark();
+    uint_t uResult = TRUE;
+    uintptr_t uMark = pInput->GetMark();
 
 	// Test if quoted
-	Word uTemp = pInput->GetByte();
+	uint_t uTemp = pInput->GetByte();
 	if ((uTemp=='\'') || (uTemp=='"')) {
-		Word uDelimiter = uTemp;				// Use this for the quote
+		uint_t uDelimiter = uTemp;				// Use this for the quote
 		do {
 			uTemp = pInput->GetByte();			// Get the next character
 			if (uTemp==uDelimiter) {
 				// Get the size of the string parsed
-				WordPtr uSize = (pInput->GetMark()-uMark)-2;
+				uintptr_t uSize = (pInput->GetMark()-uMark)-2;
 				pOutput->SetBufferSize(uSize);
 				pInput->SetMark(uMark+1);
 				// Copy the string
@@ -4360,7 +4360,7 @@ Word BURGER_API Burger::FileXML::ReadXMLText(String *pOutput,InputMemoryStream *
 			!(g_AsciiTestTable[uTemp]&ASCII_SPACE)) {
 			uTemp = pInput->GetByte();
 		}
-		WordPtr uSize = (pInput->GetMark()-uMark)-1;
+		uintptr_t uSize = (pInput->GetMark()-uMark)-1;
 		if (uSize) {
 			pOutput->SetBufferSize(uSize);
 			pInput->SetMark(uMark);
@@ -4402,14 +4402,14 @@ Word BURGER_API Burger::FileXML::ReadXMLText(String *pOutput,InputMemoryStream *
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::SaveXMLString(OutputMemoryStream *pOutput,const char *pInput)
+uint_t BURGER_API Burger::FileXML::SaveXMLString(OutputMemoryStream *pOutput,const char *pInput)
 {
-	Word uResult = 0;		// Assume okay
+	uint_t uResult = 0;		// Assume okay
 	// Work as unsigned.
-	const Word8 *pWork = reinterpret_cast<const Word8 *>(pInput);
+	const uint8_t *pWork = reinterpret_cast<const uint8_t *>(pInput);
 	if (pWork) {
 		do {
-			Word uTemp = pWork[0];
+			uint_t uTemp = pWork[0];
 			if (!uTemp) {
 				break;
 				// Ampersand already inserted?
@@ -4444,7 +4444,7 @@ Word BURGER_API Burger::FileXML::SaveXMLString(OutputMemoryStream *pOutput,const
 				uResult = pOutput->Append("&apos;");
 			} else if (uTemp<32) {
 				uResult = pOutput->Append("&#");
-				uResult |= pOutput->AppendAscii(static_cast<Word32>(uTemp));
+				uResult |= pOutput->AppendAscii(static_cast<uint32_t>(uTemp));
 				uResult |= pOutput->Append(';');
 			} else {
 				uResult = pOutput->Append(static_cast<char>(uTemp));
@@ -4486,18 +4486,18 @@ Word BURGER_API Burger::FileXML::SaveXMLString(OutputMemoryStream *pOutput,const
 
 ***************************************/
 
-Word BURGER_API Burger::FileXML::DecodeXMLString(String *pInput)
+uint_t BURGER_API Burger::FileXML::DecodeXMLString(String *pInput)
 {
-	Word uResult = 0;
-	Word8 *pSource = reinterpret_cast<Word8 *>(pInput->GetPtr());
-	Word uTemp = pSource[0];
+	uint_t uResult = 0;
+	uint8_t *pSource = reinterpret_cast<uint8_t *>(pInput->GetPtr());
+	uint_t uTemp = pSource[0];
 	if (uTemp) {
-		Word8 *pDest = pSource;
+		uint8_t *pDest = pSource;
 		do {
 			++pSource;
 			// Found an entity?
 			if (uTemp=='&') {
-				Word uReplace = 0;
+				uint_t uReplace = 0;
 				// Check the hard coded ones first
 				if (!MemoryCompare("amp",pSource,3)) {
 					uReplace = '&';
@@ -4517,7 +4517,7 @@ Word BURGER_API Burger::FileXML::DecodeXMLString(String *pInput)
 				}
 				// A hard coded match!
 				if (uReplace) {
-					pDest[0] = static_cast<Word8>(uReplace);
+					pDest[0] = static_cast<uint8_t>(uReplace);
 					++pDest;
 					// Remove the trailing ';'
 					if (pSource[0]==';') {
@@ -4528,7 +4528,7 @@ Word BURGER_API Burger::FileXML::DecodeXMLString(String *pInput)
 						uResult = TRUE;		// Parsing error!!!
 					} else {
 						++pSource;	// Accept the '#'
-						Word32 uUTF32;
+						uint32_t uUTF32;
 						const char *pEnd;
 						// Try if it's numerically encoded
 						if (pSource[0]=='x') {
@@ -4538,13 +4538,13 @@ Word BURGER_API Burger::FileXML::DecodeXMLString(String *pInput)
 						// Convert the ascii
 						uUTF32 = AsciiToInteger(reinterpret_cast<const char *>(pSource),&pEnd);
 						// Get the new marker
-						pSource = const_cast<Word8*>(reinterpret_cast<const Word8*>(pEnd));
+						pSource = const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(pEnd));
 						// Removed any trailing ';'
 						if (pSource[0]==';') {
 							++pSource;
 						}
 						// Convert from UTF32 to UFT8
-						WordPtr uChunk = UTF8::FromUTF32(reinterpret_cast<char *>(pDest),uUTF32);
+						uintptr_t uChunk = UTF8::FromUTF32(reinterpret_cast<char *>(pDest),uUTF32);
 						// Invalid conversion (And nulls are not allowed)
 						if (!uChunk || !uUTF32) {
 							// Parse error
@@ -4557,13 +4557,13 @@ Word BURGER_API Burger::FileXML::DecodeXMLString(String *pInput)
 				}
 			} else {
 				// Normal character
-				pDest[0] = static_cast<Word8>(uTemp);
+				pDest[0] = static_cast<uint8_t>(uTemp);
 				++pDest;
 			}
 			uTemp = pSource[0];
 		} while (uTemp);
 		// Done parsing, resize the buffer if needed
-		pInput->SetBufferSize(static_cast<WordPtr>(reinterpret_cast<char*>(pDest)-pInput->GetPtr()));	
+		pInput->SetBufferSize(static_cast<uintptr_t>(reinterpret_cast<char*>(pDest)-pInput->GetPtr()));	
 	}
 	// Return error if any
 	return uResult;
@@ -4583,7 +4583,7 @@ Word BURGER_API Burger::FileXML::DecodeXMLString(String *pInput)
 
 ***************************************/
 
-Burger::FileXML::Declaration *BURGER_API Burger::FileXML::FindDeclaration(Word bAlwaysCreate)
+Burger::FileXML::Declaration *BURGER_API Burger::FileXML::FindDeclaration(uint_t bAlwaysCreate)
 {
 	// Assume nothing found
 	Generic *pGeneric = m_Root.FindType(Generic::XML_DECLARATION);
@@ -4613,7 +4613,7 @@ Burger::FileXML::Declaration *BURGER_API Burger::FileXML::FindDeclaration(Word b
 
 ***************************************/
 
-Burger::FileXML::Declaration * BURGER_API Burger::FileXML::AddDeclaration(float fVersion,const char *pEncoding,Word bStandalone)
+Burger::FileXML::Declaration * BURGER_API Burger::FileXML::AddDeclaration(float fVersion,const char *pEncoding,uint_t bStandalone)
 {
 	Declaration *pDeclaration = FindDeclaration(TRUE);
 	if (pDeclaration) {
@@ -4679,7 +4679,7 @@ Burger::FileXML::Declaration * BURGER_API Burger::FileXML::AddDeclaration(float 
 
 /*! ************************************
 
-	\fn BURGER_INLINE Element * Burger::FileXML::FindElement(const char *pElementName,Word bAlwaysCreate)
+	\fn BURGER_INLINE Element * Burger::FileXML::FindElement(const char *pElementName,uint_t bAlwaysCreate)
 	\brief Find a named XML Element
 	
 	Traverse the linked list for an XML Element record with the matching name
@@ -4706,7 +4706,7 @@ Burger::FileXML::Declaration * BURGER_API Burger::FileXML::AddDeclaration(float 
 	
 	\param pElementName Pointer to a "C" string to the element to search for.
 	\return Pointer to an XML Element or \ref NULL if out of memory
-	\sa FindElement(const char *,Word) or DeleteElement()
+	\sa FindElement(const char *,uint_t) or DeleteElement()
 
 ***************************************/
 
@@ -4720,7 +4720,7 @@ Burger::FileXML::Declaration * BURGER_API Burger::FileXML::AddDeclaration(float 
 	are multiple records with the same name, the duplicates will remain.
 	
 	\param pElementName Pointer to a "C" string to the element to search for.
-	\sa DeleteElements(const char *), FindElement(const char *,Word) or AddElement(const char *)
+	\sa DeleteElements(const char *), FindElement(const char *,uint_t) or AddElement(const char *)
 
 ***************************************/
 
@@ -4733,7 +4733,7 @@ Burger::FileXML::Declaration * BURGER_API Burger::FileXML::AddDeclaration(float 
 	and dispose of them.
 	
 	\param pElementName Pointer to a "C" string to the element to search for.
-	\sa DeleteElement(const char *), FindElement(const char *,Word) or AddElement(const char *)
+	\sa DeleteElement(const char *), FindElement(const char *,uint_t) or AddElement(const char *)
 
 ***************************************/
 

@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player Adobe Virtual Machine Version 2 support
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player Adobe Virtual Machine Version 2 support
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brflashavm2.h"
@@ -209,7 +210,7 @@ Burger::Flash::MetadataInfo::~MetadataInfo()
 void BURGER_API Burger::Flash::MetadataInfo::Read(Stream *pStream)
 {
 	m_uName = pStream->GetEncodedU30();
-	Word uCount = pStream->GetEncodedU30();
+	uint_t uCount = pStream->GetEncodedU30();
 	m_ItemInfoArray.reserve(uCount);
 	if (uCount) {
 		ItemInfo_t *pData = m_ItemInfoArray.GetPtr();

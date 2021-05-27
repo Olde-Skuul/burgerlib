@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player manager
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player manager
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brflashmanager.h"
@@ -247,7 +248,7 @@ void BURGER_API Burger::Flash::Manager::SetCurvePixelError(float fCurvePixelErro
 
 /*! ************************************
 
-	\fn Word Burger::Flash::Manager::GetRealtimeFrameRateFlag(void)
+	\fn uint_t Burger::Flash::Manager::GetRealtimeFrameRateFlag(void)
 	\brief Get the real time frame rate flag.
 
 	If non-zero, the player will call the update logic once or more times
@@ -256,13 +257,13 @@ void BURGER_API Burger::Flash::Manager::SetCurvePixelError(float fCurvePixelErro
 	the logic will work at the requested speed.
 
 	\return Zero if \ref FALSE or non-zero for \ref TRUE
-	\sa SetRealtimeFrameRateFlag(Word)
+	\sa SetRealtimeFrameRateFlag(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::Flash::Manager::SetRealtimeFrameRateFlag(Word bUseRealtimeFrameRateFlag)
+	\fn void Burger::Flash::Manager::SetRealtimeFrameRateFlag(uint_t bUseRealtimeFrameRateFlag)
 	\brief Set the real time frame rate flag.
 
 	If non-zero, the player will call the update logic once or more times
@@ -277,20 +278,20 @@ void BURGER_API Burger::Flash::Manager::SetCurvePixelError(float fCurvePixelErro
 
 /*! ************************************
 
-	\fn Word Burger::Flash::Manager::GetVerboseActionFlag(void)
+	\fn uint_t Burger::Flash::Manager::GetVerboseActionFlag(void)
 	\brief Get the verbose action script debug flag
 
 	If non-zero, the action script interpreter will output logging
 	text to the console for debugging. 
 
 	\return Zero if \ref FALSE or non-zero for \ref TRUE
-	\sa SetVerboseActionFlag(Word)
+	\sa SetVerboseActionFlag(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::Flash::Manager::SetVerboseActionFlag(Word bVerboseActionFlag)
+	\fn void Burger::Flash::Manager::SetVerboseActionFlag(uint_t bVerboseActionFlag)
 	\brief Set the verbose action script debug flag
 
 	If non-zero, the action script interpreter will output logging
@@ -304,20 +305,20 @@ void BURGER_API Burger::Flash::Manager::SetCurvePixelError(float fCurvePixelErro
 
 /*! ************************************
 
-	\fn Word Burger::Flash::Manager::GetVerboseParsingFlag(void)
+	\fn uint_t Burger::Flash::Manager::GetVerboseParsingFlag(void)
 	\brief Get the verbose data parsing debug flag
 
 	If non-zero, internal data parsing will output logging
 	text to the console for debugging. 
 
 	\return Zero if \ref FALSE or non-zero for \ref TRUE
-	\sa SetVerboseParsingFlag(Word)
+	\sa SetVerboseParsingFlag(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::Flash::Manager::SetVerboseParsingFlag(Word m_bVerboseParsingFlag)
+	\fn void Burger::Flash::Manager::SetVerboseParsingFlag(uint_t m_bVerboseParsingFlag)
 	\brief Set the verbose action script debug flag
 
 	If non-zero, internal data parsing will output logging
@@ -331,20 +332,20 @@ void BURGER_API Burger::Flash::Manager::SetCurvePixelError(float fCurvePixelErro
 
 /*! ************************************
 
-	\fn Word Burger::Flash::Manager::GetVerboseBitmapInfoFlag(void)
+	\fn uint_t Burger::Flash::Manager::GetVerboseBitmapInfoFlag(void)
 	\brief Get the bitmap generation debug flag
 
 	If non-zero, bitmap generation will output logging
 	text to the console for debugging. 
 
 	\return Zero if \ref FALSE or non-zero for \ref TRUE
-	\sa SetVerboseBitmapInfoFlag(Word)
+	\sa SetVerboseBitmapInfoFlag(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::Flash::Manager::SetVerboseBitmapInfoFlag(Word bVerboseBitmapInfoFlag)
+	\fn void Burger::Flash::Manager::SetVerboseBitmapInfoFlag(uint_t bVerboseBitmapInfoFlag)
 	\brief Set the bitmap generation debug flag
 
 	If non-zero, bitmap generation parsing will output logging
@@ -358,20 +359,20 @@ void BURGER_API Burger::Flash::Manager::SetCurvePixelError(float fCurvePixelErro
 
 /*! ************************************
 
-	\fn Word Burger::Flash::Manager::GetAllowMultithreadingFlag(void)
+	\fn uint_t Burger::Flash::Manager::GetAllowMultithreadingFlag(void)
 	\brief Get the multithreading flag
 
 	If non-zero, the player will use multiple threads
 	for background processing
 
 	\return Zero if \ref FALSE or non-zero for \ref TRUE
-	\sa SetAllowMultithreadingFlag(Word)
+	\sa SetAllowMultithreadingFlag(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::Flash::Manager::SetAllowMultithreadingFlag(Word bAllowMultithreadingFlag)
+	\fn void Burger::Flash::Manager::SetAllowMultithreadingFlag(uint_t bAllowMultithreadingFlag)
 	\brief Set the multithreading flag
 
 	If non-zero, the player will use multiple CPU threads

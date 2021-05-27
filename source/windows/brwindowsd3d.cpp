@@ -79,7 +79,7 @@ typedef HRESULT(WINAPI* D3DXCreateMatrixStackPtr)(
 
 ***************************************/
 
-IDirect3D9* BURGER_API Burger::Windows::Direct3DCreate9(Word uSDKVersion)
+IDirect3D9* BURGER_API Burger::Windows::Direct3DCreate9(uint_t uSDKVersion)
 {
 	// Get the function pointer
 	void* pDirect3DCreate9 = LoadFunctionIndex(CALL_Direct3DCreate9);
@@ -109,7 +109,7 @@ IDirect3D9* BURGER_API Burger::Windows::Direct3DCreate9(Word uSDKVersion)
 ***************************************/
 
 int BURGER_API Burger::Windows::D3DPERF_BeginEvent(
-	Word32 col, const Word16* wszName)
+	uint32_t col, const uint16_t* wszName)
 {
 	// Get the function pointer
 	void* pD3DPERF_BeginEvent = LoadFunctionIndex(CALL_D3DPERF_BeginEvent);
@@ -161,7 +161,7 @@ int BURGER_API Burger::Windows::D3DPERF_EndEvent(void)
 ***************************************/
 
 void BURGER_API Burger::Windows::D3DPERF_SetMarker(
-	Word32 col, const Word16* wszName)
+	uint32_t col, const uint16_t* wszName)
 {
 	// Get the function pointer
 	void* pD3DPERF_SetMarker = LoadFunctionIndex(CALL_D3DPERF_SetMarker);
@@ -186,7 +186,7 @@ void BURGER_API Burger::Windows::D3DPERF_SetMarker(
 ***************************************/
 
 void BURGER_API Burger::Windows::D3DPERF_SetRegion(
-	Word32 col, const Word16* wszName)
+	uint32_t col, const uint16_t* wszName)
 {
 	// Get the function pointer
 	void* pD3DPERF_SetRegion = LoadFunctionIndex(CALL_D3DPERF_SetRegion);
@@ -237,7 +237,7 @@ int BURGER_API Burger::Windows::D3DPERF_QueryRepeatFrame(void)
 
 ***************************************/
 
-void BURGER_API Burger::Windows::D3DPERF_SetOptions(Word32 dwOptions)
+void BURGER_API Burger::Windows::D3DPERF_SetOptions(uint32_t dwOptions)
 {
 	// Get the function pointer
 	void* pD3DPERF_SetOptions = LoadFunctionIndex(CALL_D3DPERF_SetOptions);
@@ -259,11 +259,11 @@ void BURGER_API Burger::Windows::D3DPERF_SetOptions(Word32 dwOptions)
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::D3DPERF_GetStatus(void)
+uint_t BURGER_API Burger::Windows::D3DPERF_GetStatus(void)
 {
 	// Get the function pointer
 	void* pD3DPERF_GetStatus = LoadFunctionIndex(CALL_D3DPERF_GetStatus);
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (pD3DPERF_GetStatus) {
 		uResult = static_cast<D3DPERF_GetStatusPtr>(pD3DPERF_GetStatus)();
 	}
@@ -290,8 +290,8 @@ Word BURGER_API Burger::Windows::D3DPERF_GetStatus(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::D3DXCreateMatrixStack(
-	Word uFlags, ID3DXMatrixStack** ppStack)
+uint_t BURGER_API Burger::Windows::D3DXCreateMatrixStack(
+	uint_t uFlags, ID3DXMatrixStack** ppStack)
 {
 	// Clear in case of error
 	if (ppStack) {
@@ -306,7 +306,7 @@ Word BURGER_API Burger::Windows::D3DXCreateMatrixStack(
 		uResult = static_cast<D3DXCreateMatrixStackPtr>(pD3DXCreateMatrixStack)(
 			uFlags, ppStack);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 #endif

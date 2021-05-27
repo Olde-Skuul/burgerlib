@@ -1,16 +1,16 @@
 /***************************************
 
-	Sound manager class
+    Sound manager class
 
-	MacOSX version
+    MacOSX version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE for
-	license details. Yes, you can use it in a commercial title without paying
-	anything, just give me a credit.
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
 
-	Please? It's not like I'm asking you for money!
+    Please? It's not like I'm asking you for money!
 
  ***************************************/
 
@@ -228,9 +228,9 @@ signed long Burger::SoundManager::Voice::PlayCallback(void* pData,
 	//
 	AudioBuffer* pAudioBuffer = pAudioBufferList->mBuffers;
 
-	WordPtr uDestLength = pAudioBuffer->mDataByteSize;
+	uintptr_t uDestLength = pAudioBuffer->mDataByteSize;
 	if (uDestLength) {
-		Word8* pDestBuffer = static_cast<Word8*>(pAudioBuffer->mData);
+		uint8_t* pDestBuffer = static_cast<uint8_t*>(pAudioBuffer->mData);
 
 		//
 		// Get the "this" pointer
@@ -255,14 +255,14 @@ signed long Burger::SoundManager::Voice::PlayCallback(void* pData,
 					// Silence?
 					//
 
-					Word bPlaying = pThis->m_bPlaying;
+					uint_t bPlaying = pThis->m_bPlaying;
 					if (bPlaying) {
 
 						//
 						// Was a buffer attached?
 						//
 						const void* pSourceData = pBuffer->GetAudioBuffer();
-						WordPtr uSoundLength = pBuffer->GetAudioBufferSize();
+						uintptr_t uSoundLength = pBuffer->GetAudioBufferSize();
 						if (!pSourceData || !uSoundLength) {
 							//
 							// Use silence
@@ -275,11 +275,11 @@ signed long Burger::SoundManager::Voice::PlayCallback(void* pData,
 							if (pThis->m_uLoopEnd) {
 								uSoundLength = pThis->m_uLoopEnd;
 							}
-							WordPtr uMark = pThis->m_uCurrentMark;
+							uintptr_t uMark = pThis->m_uCurrentMark;
 							do {
 								// Get the chunk to upload
-								WordPtr uRemaining = uSoundLength - uMark;
-								WordPtr uChunk = (uDestLength >= uRemaining) ?
+								uintptr_t uRemaining = uSoundLength - uMark;
+								uintptr_t uChunk = (uDestLength >= uRemaining) ?
 									uRemaining :
 									uDestLength;
 
@@ -287,7 +287,7 @@ signed long Burger::SoundManager::Voice::PlayCallback(void* pData,
 								// Copy from the buffer into the mixer
 								//
 								MemoryCopy(pDestBuffer,
-									static_cast<const Word8*>(pSourceData) +
+									static_cast<const uint8_t*>(pSourceData) +
 										uMark,
 									uChunk);
 								pDestBuffer = pDestBuffer + uChunk;
@@ -313,8 +313,8 @@ signed long Burger::SoundManager::Voice::PlayCallback(void* pData,
 
 											SoundManager* pManager =
 												pThis->m_pManager;
-											Word uIndex =
-												static_cast<Word>(pThis -
+											uint_t uIndex =
+												static_cast<uint_t>(pThis -
 													pManager->m_ActiveVoices);
 
 											//
@@ -401,7 +401,7 @@ Burger::SoundManager::Voice::Voice() :
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Voice::Init(
+uint_t BURGER_API Burger::SoundManager::Voice::Init(
 	SoundManager* pManager, Buffer* pBuffer)
 {
 	m_pManager = pManager;
@@ -441,7 +441,7 @@ Word BURGER_API Burger::SoundManager::Voice::Init(
 
 	AudioFormatFlags uFlags =
 		kAudioFormatFlagsNativeEndian | kLinearPCMFormatFlagIsPacked;
-	Word uBytes;
+	uint_t uBytes;
 	DecompressAudio* pDecompresser = pDecoder->GetDecompresser();
 	switch (pDecompresser->GetDataType()) {
 	default:
@@ -479,7 +479,7 @@ Word BURGER_API Burger::SoundManager::Voice::Init(
 	m_uLoopStart = m_uLoopStart * uChannels;
 	m_uLoopEnd = m_uLoopEnd * uChannels;
 
-	Word uIndex = static_cast<Word>(this - pManager->m_ActiveVoices);
+	uint_t uIndex = static_cast<uint_t>(this - pManager->m_ActiveVoices);
 	OSStatus uResult = AudioUnitSetProperty(pManager->m_pSoundUnits[uIndex],
 		kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0,
 		&StreamDescription, static_cast<UInt32>(sizeof(StreamDescription)));
@@ -499,7 +499,7 @@ Word BURGER_API Burger::SoundManager::Voice::Init(
 				PANFIX(ConvertToAudioUnitPan(m_uPan)), 0);
 		}
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /***************************************
@@ -567,7 +567,7 @@ void BURGER_API Burger::SoundManager::Voice::Release(void)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Voice::Start(void)
+uint_t BURGER_API Burger::SoundManager::Voice::Start(void)
 {
 	OSStatus uResult = 0;
 	if (!m_bPlaying) {
@@ -578,7 +578,7 @@ Word BURGER_API Burger::SoundManager::Voice::Start(void)
 		m_uCurrentMark = m_uLoopStart;
 
 		SoundManager* pManager = m_pManager;
-		Word uIndex = static_cast<Word>(this - pManager->m_ActiveVoices);
+		uint_t uIndex = static_cast<uint_t>(this - pManager->m_ActiveVoices);
 
 		//
 		// Attach the sound sampler to the mixer
@@ -610,12 +610,12 @@ Word BURGER_API Burger::SoundManager::Voice::Start(void)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Voice::Stop(void)
+uint_t BURGER_API Burger::SoundManager::Voice::Stop(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (m_bPlaying || m_bPaused) {
 		SoundManager* pManager = m_pManager;
-		Word uIndex = static_cast<Word>(this - pManager->m_ActiveVoices);
+		uint_t uIndex = static_cast<uint_t>(this - pManager->m_ActiveVoices);
 		//
 		// Disconnect the sound converter from the mixer
 		//
@@ -652,7 +652,7 @@ Word BURGER_API Burger::SoundManager::Voice::Stop(void)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Voice::Pause(void)
+uint_t BURGER_API Burger::SoundManager::Voice::Pause(void)
 {
 	if (m_bPlaying && !m_bPaused) {
 		// Save the playback location
@@ -674,7 +674,7 @@ Word BURGER_API Burger::SoundManager::Voice::Pause(void)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Voice::Resume(void)
+uint_t BURGER_API Burger::SoundManager::Voice::Resume(void)
 {
 	if (!m_bPlaying && m_bPaused) {
 		// Restore the playback location
@@ -697,7 +697,7 @@ Word BURGER_API Burger::SoundManager::Voice::Resume(void)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Voice::SetVolume(Word uVolume)
+uint_t BURGER_API Burger::SoundManager::Voice::SetVolume(uint_t uVolume)
 {
 	OSStatus uResult = 0;
 
@@ -705,7 +705,7 @@ Word BURGER_API Burger::SoundManager::Voice::SetVolume(Word uVolume)
 	// Ensure it's bounds checked
 	//
 
-	uVolume = Min(static_cast<Word32>(uVolume), static_cast<Word32>(255));
+	uVolume = Min(static_cast<uint32_t>(uVolume), static_cast<uint32_t>(255));
 
 	if (m_uVolume != uVolume) {
 		m_uVolume = uVolume;
@@ -714,12 +714,12 @@ Word BURGER_API Burger::SoundManager::Voice::SetVolume(Word uVolume)
 		//
 		float fVolume = ConvertToAudioUnitVolume(uVolume);
 		SoundManager* pManager = m_pManager;
-		Word uIndex = static_cast<Word>(this - pManager->m_ActiveVoices);
+		uint_t uIndex = static_cast<uint_t>(this - pManager->m_ActiveVoices);
 		uResult = AudioUnitSetParameter(pManager->GetMixerUnit(),
 			kMultiChannelMixerParam_Volume, kAudioUnitScope_Input, uIndex,
 			fVolume, 0);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /***************************************
@@ -735,7 +735,7 @@ Word BURGER_API Burger::SoundManager::Voice::SetVolume(Word uVolume)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Voice::SetPan(Word uPan)
+uint_t BURGER_API Burger::SoundManager::Voice::SetPan(uint_t uPan)
 {
 	OSStatus uResult = 0;
 
@@ -743,7 +743,7 @@ Word BURGER_API Burger::SoundManager::Voice::SetPan(Word uPan)
 	// Ensure it's bounds checked
 	//
 
-	uPan = Min(static_cast<Word32>(uPan), static_cast<Word32>(65535));
+	uPan = Min(static_cast<uint32_t>(uPan), static_cast<uint32_t>(65535));
 
 	if (m_uPan != uPan) {
 		m_uPan = uPan;
@@ -752,7 +752,7 @@ Word BURGER_API Burger::SoundManager::Voice::SetPan(Word uPan)
 		//
 		float fPan = PANFIX(ConvertToAudioUnitPan(uPan));
 		SoundManager* pManager = m_pManager;
-		Word uIndex = static_cast<Word>(this - pManager->m_ActiveVoices);
+		uint_t uIndex = static_cast<uint_t>(this - pManager->m_ActiveVoices);
 
 		//
 		// Set the pan
@@ -762,7 +762,7 @@ Word BURGER_API Burger::SoundManager::Voice::SetPan(Word uPan)
 			kMultiChannelMixerParam_Pan, kAudioUnitScope_Input, uIndex, fPan,
 			0);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /***************************************
@@ -777,8 +777,8 @@ Word BURGER_API Burger::SoundManager::Voice::SetPan(Word uPan)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Voice::SetSampleRate(
-	Word uSamplesPerSecond)
+uint_t BURGER_API Burger::SoundManager::Voice::SetSampleRate(
+	uint_t uSamplesPerSecond)
 {
 	OSStatus uResult = 0;
 	//
@@ -791,7 +791,7 @@ Word BURGER_API Burger::SoundManager::Voice::SetSampleRate(
 		m_uSampleRate = uSamplesPerSecond;
 
 		SoundManager* pManager = m_pManager;
-		Word uIndex = static_cast<Word>(this - pManager->m_ActiveVoices);
+		uint_t uIndex = static_cast<uint_t>(this - pManager->m_ActiveVoices);
 
 		//
 		// Convert to a double
@@ -806,7 +806,7 @@ Word BURGER_API Burger::SoundManager::Voice::SetSampleRate(
 			kAudioUnitProperty_SampleRate, kAudioUnitScope_Input, 0, &dRate,
 			static_cast<UInt32>(sizeof(Float64)));
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /***************************************
@@ -855,7 +855,7 @@ Burger::SoundManager::SoundManager(GameApp* pGameApp) :
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Init(void)
+uint_t BURGER_API Burger::SoundManager::Init(void)
 {
 	// Get the device ID of the default audio device
 	AudioDeviceID uDeviceID;
@@ -979,7 +979,7 @@ Word BURGER_API Burger::SoundManager::Init(void)
 
 					AURenderCallbackStruct MyCallback;
 					MyCallback.inputProc = Voice::PlayCallback;
-					WordPtr i = 0;
+					uintptr_t i = 0;
 					do {
 						uResult = AUGraphAddNode(
 							m_pGraph, &g_ConverterComponent, &iTemp);
@@ -1060,7 +1060,7 @@ void BURGER_API Burger::SoundManager::Shutdown(void)
 	//
 	// Make sure every voice is turned off
 	//
-	Word i = cMaxVoiceCount;
+	uint_t i = cMaxVoiceCount;
 	Voice* pWork = m_ActiveVoices;
 	do {
 		// Shut down every voice
@@ -1145,7 +1145,7 @@ void BURGER_API Burger::SoundManager::Shutdown(void)
 
 ***************************************/
 
-void BURGER_API Burger::SoundManager::SetVolume(Word uVolume)
+void BURGER_API Burger::SoundManager::SetVolume(uint_t uVolume)
 {
 	if (uVolume >= 255U) {
 		uVolume = 255;
@@ -1171,7 +1171,7 @@ void BURGER_API Burger::SoundManager::SetVolume(Word uVolume)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::GetAudioModes(
+uint_t BURGER_API Burger::SoundManager::GetAudioModes(
 	ClassArray<SoundCardDescription>* pOutput)
 {
 	// Clear out the list
@@ -1205,8 +1205,8 @@ Word BURGER_API Burger::SoundManager::GetAudioModes(
 
 			// Iterate over the list
 
-			WordPtr i = 0;
-			WordPtr uCount = uSize / static_cast<Word32>(sizeof(AudioDeviceID));
+			uintptr_t i = 0;
+			uintptr_t uCount = uSize / static_cast<uint32_t>(sizeof(AudioDeviceID));
 			do {
 				AudioDeviceID uDeviceID = pDeviceList[i];
 
@@ -1222,7 +1222,7 @@ Word BURGER_API Burger::SoundManager::GetAudioModes(
 				// Get space for the audio buffer list
 				AudioBufferList* pBufferList =
 					static_cast<AudioBufferList*>(Alloc(uSize));
-				Word bOutputDevice = FALSE;
+				uint_t bOutputDevice = FALSE;
 				if (pBufferList) {
 					// Grab the list
 					uResult = AudioObjectGetPropertyData(uDeviceID,
@@ -1301,8 +1301,8 @@ Word BURGER_API Burger::SoundManager::GetAudioModes(
 
 							// Iterate over the table to get the true minimum
 							// and maximum
-							WordPtr uCountRange = uSize /
-								static_cast<Word32>(sizeof(AudioValueRange));
+							uintptr_t uCountRange = uSize /
+								static_cast<uint32_t>(sizeof(AudioValueRange));
 							const AudioValueRange* pRange = pRangeList;
 							Float64 fMin = g_dInf;
 							Float64 fMax = 0.0;
@@ -1312,9 +1312,9 @@ Word BURGER_API Burger::SoundManager::GetAudioModes(
 								++pRange;
 							} while (--uCountRange);
 							Entry.m_uMinimumSampleRate =
-								static_cast<Word>(static_cast<Int>(fMin));
+								static_cast<uint_t>(static_cast<int_t>(fMin));
 							Entry.m_uMaximumSampleRate =
-								static_cast<Word>(static_cast<Int>(fMax));
+								static_cast<uint_t>(static_cast<int_t>(fMax));
 						}
 						Free(pRangeList);
 					}
@@ -1330,7 +1330,7 @@ Word BURGER_API Burger::SoundManager::GetAudioModes(
 			Free(pDeviceList);
 		}
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -1346,11 +1346,11 @@ Word BURGER_API Burger::SoundManager::GetAudioModes(
 	\param uDeviceID ID of the MacOSX audio device
 	\return 0.0 for silence, 1.0f for maximum or a number in between or NaN on
 		error.
-	\sa AudioDeviceSetMasterVolume(Word32,float)
+	\sa AudioDeviceSetMasterVolume(uint32_t,float)
 
 ***************************************/
 
-float BURGER_API Burger::AudioDeviceGetMasterVolume(Word32 uDeviceID)
+float BURGER_API Burger::AudioDeviceGetMasterVolume(uint32_t uDeviceID)
 {
 	UInt32 uSize; // Data size
 	float fTemp;  // Temp float
@@ -1437,12 +1437,12 @@ float BURGER_API Burger::AudioDeviceGetMasterVolume(Word32 uDeviceID)
 	\param uDeviceID ID of the MacOSX audio device
 	\param fInput Volume to set from 0.0f to 1.0f
 	\return Zero if no error, non-zero if error
-	\sa AudioDeviceGetMasterVolume(Word32)
+	\sa AudioDeviceGetMasterVolume(uint32_t)
 
 ***************************************/
 
-Word BURGER_API Burger::AudioDeviceSetMasterVolume(
-	Word32 uDeviceID, float fInput)
+uint_t BURGER_API Burger::AudioDeviceSetMasterVolume(
+	uint32_t uDeviceID, float fInput)
 {
 	float fTemp = fInput; // Temp float
 
@@ -1513,7 +1513,7 @@ Word BURGER_API Burger::AudioDeviceSetMasterVolume(
 			}
 		}
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 #endif

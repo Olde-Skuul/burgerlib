@@ -1,13 +1,14 @@
 /***************************************
 
-	TGA File handler class
+    TGA File handler class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -31,20 +32,20 @@
 
 #if !defined(DOXYGEN)
 struct TGAHeader {				// This is the header for a TGA file
-	Word8 m_bImageIdent;		// Image identification field size in bytes
-	Word8 m_bColorMapType;		// 1 for a color image
-	Word8 m_bImageType;			// Data type present
-	Word8 m_bColorMapOriginLow;	// Index of the first color map entry
-	Word8 m_bColorMapOriginHigh;
-	Word8 m_bColorMapLengthLow;	// Count of color map entries
-	Word8 m_bColorMapLengthHigh;
-	Word8 m_bColorMapEntrySize;	// Size (In bits) for each color entry
-	Word16 m_uXOrigin;			// Lower left x origin of image
-	Word16 m_uYOrigin;			// Lower left y origin of image
-	Word16 m_uWidth;			// Width of the image in pixels
-	Word16 m_uHeight;			// Height of the image in pixels
-	Word8 m_bBitDepth;			// Bits per pixels for the image
-	Word8 m_bDescriptor;		// Image descriptor bits
+	uint8_t m_bImageIdent;		// Image identification field size in bytes
+	uint8_t m_bColorMapType;		// 1 for a color image
+	uint8_t m_bImageType;			// Data type present
+	uint8_t m_bColorMapOriginLow;	// Index of the first color map entry
+	uint8_t m_bColorMapOriginHigh;
+	uint8_t m_bColorMapLengthLow;	// Count of color map entries
+	uint8_t m_bColorMapLengthHigh;
+	uint8_t m_bColorMapEntrySize;	// Size (In bits) for each color entry
+	uint16_t m_uXOrigin;			// Lower left x origin of image
+	uint16_t m_uYOrigin;			// Lower left y origin of image
+	uint16_t m_uWidth;			// Width of the image in pixels
+	uint16_t m_uHeight;			// Height of the image in pixels
+	uint8_t m_bBitDepth;			// Bits per pixels for the image
+	uint8_t m_bDescriptor;		// Image descriptor bits
 };
 
 #endif
@@ -59,17 +60,17 @@ struct TGAHeader {				// This is the header for a TGA file
 
 ***************************************/
 
-void BURGER_API Burger::FileTGA::UnpackPixel8(Word8 *pOutput,WordPtr uOutputLength,InputMemoryStream *pInput)
+void BURGER_API Burger::FileTGA::UnpackPixel8(uint8_t *pOutput,uintptr_t uOutputLength,InputMemoryStream *pInput)
 {
 	do {
-		WordPtr uCount = pInput->GetByte();	// Get the counter
+		uintptr_t uCount = pInput->GetByte();	// Get the counter
 		if (uCount&0x80) {					// Packed?
 			uCount = uCount-0x7F;			// Remove the high bit
 			if (uCount>uOutputLength) {		// Test for buffer overrun
 				uCount = uOutputLength;
 			}
 			uOutputLength = uOutputLength-uCount;
-			Word8 uTemp = pInput->GetByte();	// Get the repeater
+			uint8_t uTemp = pInput->GetByte();	// Get the repeater
 			do {
 				pOutput[0] = uTemp;				// Fill memory
 				++pOutput;
@@ -97,24 +98,24 @@ void BURGER_API Burger::FileTGA::UnpackPixel8(Word8 *pOutput,WordPtr uOutputLeng
 	\brief Decompress 16 bit pixels
 
 	\param pOutput Buffer to accept the decompressed data
-	\param uOutputLength Length of the buffer in Word16 for decompressed data
+	\param uOutputLength Length of the buffer in uint16_t for decompressed data
 	\param pInput Data stream to read compressed data from
 
 ***************************************/
 
-void BURGER_API Burger::FileTGA::UnpackPixel16(Word8 *pOutput,WordPtr uOutputLength,InputMemoryStream *pInput)
+void BURGER_API Burger::FileTGA::UnpackPixel16(uint8_t *pOutput,uintptr_t uOutputLength,InputMemoryStream *pInput)
 {
 	do {
-		WordPtr uCount = pInput->GetByte();	// Get the counter
+		uintptr_t uCount = pInput->GetByte();	// Get the counter
 		if (uCount&0x80) {					// Packed?
 			uCount = uCount-0x7F;			// Remove the high bit
 			if (uCount>uOutputLength) {		// Test for buffer overrun
 				uCount = uOutputLength;
 			}
 			uOutputLength = uOutputLength-uCount;
-			Word16 uTemp = pInput->GetShort();	// Get the repeater
+			uint16_t uTemp = pInput->GetShort();	// Get the repeater
 			do {
-				reinterpret_cast<Word16 *>(pOutput)[0] = uTemp;				// Fill memory
+				reinterpret_cast<uint16_t *>(pOutput)[0] = uTemp;				// Fill memory
 				pOutput+=2;
 			} while (--uCount);
 		} else {
@@ -124,9 +125,9 @@ void BURGER_API Burger::FileTGA::UnpackPixel16(Word8 *pOutput,WordPtr uOutputLen
 				// Fetch the data
 				pInput->Get(pOutput,uOutputLength*2);
 #else
-				WordPtr uTemp = uCount;
+				uintptr_t uTemp = uCount;
 				do {
-					reinterpret_cast<Word16 *>(pOutput)[0] = pInput->GetShort();
+					reinterpret_cast<uint16_t *>(pOutput)[0] = pInput->GetShort();
 					pOutput+=2;
 				} while (--uTemp);
 #endif
@@ -142,7 +143,7 @@ void BURGER_API Burger::FileTGA::UnpackPixel16(Word8 *pOutput,WordPtr uOutputLen
 #else
 				// Swap endian
 				do {
-					reinterpret_cast<Word16 *>(pOutput)[0] = pInput->GetShort();
+					reinterpret_cast<uint16_t *>(pOutput)[0] = pInput->GetShort();
 					pOutput+=2;
 				} while (--uCount);
 #endif
@@ -161,19 +162,19 @@ void BURGER_API Burger::FileTGA::UnpackPixel16(Word8 *pOutput,WordPtr uOutputLen
 
 ***************************************/
 
-void BURGER_API Burger::FileTGA::UnpackPixel24(Word8 *pOutput,WordPtr uOutputLength,InputMemoryStream *pInput)
+void BURGER_API Burger::FileTGA::UnpackPixel24(uint8_t *pOutput,uintptr_t uOutputLength,InputMemoryStream *pInput)
 {
 	do {
-		WordPtr uCount = pInput->GetByte();	// Get the counter
+		uintptr_t uCount = pInput->GetByte();	// Get the counter
 		if (uCount&0x80) {					// Packed?
 			uCount = uCount-0x7F;			// Remove the high bit
 			if (uCount>uOutputLength) {		// Test for buffer overrun
 				uCount = uOutputLength;
 			}
 			uOutputLength = uOutputLength-uCount;
-			Word8 uBlue = pInput->GetByte();	// Get the 24 bit repeater
-			Word8 uGreen = pInput->GetByte();	
-			Word8 uRed = pInput->GetByte();
+			uint8_t uBlue = pInput->GetByte();	// Get the 24 bit repeater
+			uint8_t uGreen = pInput->GetByte();	
+			uint8_t uRed = pInput->GetByte();
 			do {
 				pOutput[0] = uRed;				// Fill memory
 				pOutput[1] = uGreen;
@@ -184,7 +185,7 @@ void BURGER_API Burger::FileTGA::UnpackPixel24(Word8 *pOutput,WordPtr uOutputLen
 			++uCount;								// +1 to the count
 			if (uCount>uOutputLength) {				// Test for buffer overrun
 				// Fetch the data
-				WordPtr uTemp = uOutputLength;
+				uintptr_t uTemp = uOutputLength;
 				do {
 					pOutput[2] = pInput->GetByte();	// Blue
 					pOutput[1] = pInput->GetByte();	// Green
@@ -219,20 +220,20 @@ void BURGER_API Burger::FileTGA::UnpackPixel24(Word8 *pOutput,WordPtr uOutputLen
 
 ***************************************/
 
-void BURGER_API Burger::FileTGA::UnpackPixel32(Word8 *pOutput,WordPtr uOutputLength,InputMemoryStream *pInput)
+void BURGER_API Burger::FileTGA::UnpackPixel32(uint8_t *pOutput,uintptr_t uOutputLength,InputMemoryStream *pInput)
 {
 	do {
-		WordPtr uCount = pInput->GetByte();	// Get the counter
+		uintptr_t uCount = pInput->GetByte();	// Get the counter
 		if (uCount&0x80) {					// Packed?
 			uCount = uCount-0x7F;			// Remove the high bit
 			if (uCount>uOutputLength) {		// Test for buffer overrun
 				uCount = uOutputLength;
 			}
 			uOutputLength = uOutputLength-uCount;
-			Word8 uBlue = pInput->GetByte();	// Get the 24 bit repeater
-			Word8 uGreen = pInput->GetByte();	
-			Word8 uRed = pInput->GetByte();
-			Word8 uAlpha = pInput->GetByte();
+			uint8_t uBlue = pInput->GetByte();	// Get the 24 bit repeater
+			uint8_t uGreen = pInput->GetByte();	
+			uint8_t uRed = pInput->GetByte();
+			uint8_t uAlpha = pInput->GetByte();
 			do {
 				pOutput[0] = uRed;				// Fill memory
 				pOutput[1] = uGreen;
@@ -244,7 +245,7 @@ void BURGER_API Burger::FileTGA::UnpackPixel32(Word8 *pOutput,WordPtr uOutputLen
 			++uCount;								// +1 to the count
 			if (uCount>uOutputLength) {				// Test for buffer overrun
 				// Fetch the data
-				WordPtr uTemp = uOutputLength;
+				uintptr_t uTemp = uOutputLength;
 				do {
 					pOutput[2] = pInput->GetByte();	// Blue
 					pOutput[1] = pInput->GetByte();	// Green
@@ -288,24 +289,24 @@ void BURGER_API Burger::FileTGA::UnpackPixel32(Word8 *pOutput,WordPtr uOutputLen
 
 ***************************************/
 
-Word BURGER_API Burger::FileTGA::Load(Image *pOutput,InputMemoryStream *pInput)
+uint_t BURGER_API Burger::FileTGA::Load(Image *pOutput,InputMemoryStream *pInput)
 {
 	const char *pBadNews = NULL;
-	Word uResult = 10;
+	uint_t uResult = 10;
 	// Start with processing the 18 byte header of the TGA file
 
-	Word uImageIdent = 0;
-	Word uColorMapType = 0;
-	Word uImageType=0;		// Data type present
-	Word uColorMapOrigin=0;	// Index of the first color map entry
-	Word uColorMapLength=0;	// Count of color map entries
-	Word uColorMapEntrySize=0;	// Size (In bits) for each color entry
-	Word uXOrigin;		// Lower left x origin of image
-	Word uYOrigin;		// Lower left y origin of image
-	Word uWidth=0;		// Width of the image in pixels
-	Word uHeight=0;		// Height of the image in pixels
-	Word uBitDepth=0;	// Bits per pixels for the image
-	//Word uDescriptor;	// Image descriptor bits
+	uint_t uImageIdent = 0;
+	uint_t uColorMapType = 0;
+	uint_t uImageType=0;		// Data type present
+	uint_t uColorMapOrigin=0;	// Index of the first color map entry
+	uint_t uColorMapLength=0;	// Count of color map entries
+	uint_t uColorMapEntrySize=0;	// Size (In bits) for each color entry
+	uint_t uXOrigin;		// Lower left x origin of image
+	uint_t uYOrigin;		// Lower left y origin of image
+	uint_t uWidth=0;		// Width of the image in pixels
+	uint_t uHeight=0;		// Height of the image in pixels
+	uint_t uBitDepth=0;	// Bits per pixels for the image
+	//uint_t uDescriptor;	// Image descriptor bits
 
 	if (pInput->BytesRemaining()<18) {
 		pBadNews = "Insufficient data for TGA file header.";
@@ -365,7 +366,7 @@ Word BURGER_API Burger::FileTGA::Load(Image *pOutput,InputMemoryStream *pInput)
 			MemoryClear(m_Palette,sizeof(m_Palette));
 
 			if (uColorMapLength) {			// Any colors used?
-				Word i = uColorMapOrigin;	// Get the starting color
+				uint_t i = uColorMapOrigin;	// Get the starting color
 				if ((i+uColorMapLength)>256) {
 					i = (i+uColorMapLength)-1;		// Get the final color index
 					Debug::Warning("Color index %u cannot be > 255\n",i);
@@ -375,7 +376,7 @@ Word BURGER_API Burger::FileTGA::Load(Image *pOutput,InputMemoryStream *pInput)
 
 				if (uColorMapEntrySize == 16) {
 					do {
-						Word uColor = pInput->GetShort();
+						uint_t uColor = pInput->GetShort();
 						pPalette->m_uRed = Renderer::RGB5ToRGB8Table[(uColor>>10U)&0x1FU];	// Red						
 						pPalette->m_uGreen = Renderer::RGB5ToRGB8Table[(uColor>>5U)&0x1FU];	// Green
 						pPalette->m_uBlue = Renderer::RGB5ToRGB8Table[uColor&0x1FU];	// Blue
@@ -427,7 +428,7 @@ Word BURGER_API Burger::FileTGA::Load(Image *pOutput,InputMemoryStream *pInput)
 			} else {
 				uResult = pOutput->Init(uWidth,uHeight,Image::PIXELTYPE8BIT);
 				if (!uResult) {
-					WordPtr uLength = uWidth*uHeight;
+					uintptr_t uLength = uWidth*uHeight;
 					if (uImageType == TGA_RGBINDEXED) {		// Unpacked indexed data
 						pInput->Get(pOutput->GetImage(),uLength);
 					} else {								// Compressed
@@ -453,13 +454,13 @@ Word BURGER_API Burger::FileTGA::Load(Image *pOutput,InputMemoryStream *pInput)
 			}
 			uResult = pOutput->Init(uWidth,uHeight,eType);
 			if (!uResult) {
-				WordPtr uLength = uWidth*uHeight;
-				Word8 *pDest = pOutput->GetImage();
+				uintptr_t uLength = uWidth*uHeight;
+				uint8_t *pDest = pOutput->GetImage();
 
 				if (uBitDepth == 15) {				// 16 bit
 					if (uImageType == TGA_RGB) {	// Unpacked?
 						do {
-							reinterpret_cast<Word16 *>(pDest)[0] = static_cast<Word16>(pInput->GetShort()&0x7FFF);	// Save pixel
+							reinterpret_cast<uint16_t *>(pDest)[0] = static_cast<uint16_t>(pInput->GetShort()&0x7FFF);	// Save pixel
 							pDest=pDest+2;
 						} while (--uLength);		// All done?
 					} else {
@@ -530,7 +531,7 @@ Word BURGER_API Burger::FileTGA::Load(Image *pOutput,InputMemoryStream *pInput)
 
 /*! ************************************
 
-	\fn void Burger::FileTGA::SetPalette(const RGBWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+	\fn void Burger::FileTGA::SetPalette(const RGBWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 	\brief Set the file image's palette (RGB)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -544,13 +545,13 @@ Word BURGER_API Burger::FileTGA::Load(Image *pOutput,InputMemoryStream *pInput)
 	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
-	\sa SetPalette(const RGBAWord8_t *,Word,Word)
+	\sa SetPalette(const RGBAWord8_t *,uint_t,uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FileTGA::SetPalette(const RGBAWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+	\fn void Burger::FileTGA::SetPalette(const RGBAWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 	\brief Set the file image's palette (RGBA)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -563,7 +564,7 @@ Word BURGER_API Burger::FileTGA::Load(Image *pOutput,InputMemoryStream *pInput)
 	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
-	\sa SetPalette(const RGBWord8_t *,Word,Word)
+	\sa SetPalette(const RGBWord8_t *,uint_t,uint_t)
 
 ***************************************/
 

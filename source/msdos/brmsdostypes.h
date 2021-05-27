@@ -29,16 +29,16 @@
 namespace Burger {
 
 struct Regs16 {
-	Word16 ax;		///< 80x86 ax register
-	Word16 bx;		///< 80x86 bx register
-	Word16 cx;		///< 80x86 cx register
-	Word16 dx;		///< 80x86 dx register
-	Word16 si;		///< 80x86 si register
-	Word16 di;		///< 80x86 di register
-	Word16 bp;		///< 80x86 bp register
-	Word16 ds;		///< 80x86 ds segment register
-	Word16 es;		///< 80x86 es segment register
-	Word16 flags;	///< 80x86 flags register
+	uint16_t ax;		///< 80x86 ax register
+	uint16_t bx;		///< 80x86 bx register
+	uint16_t cx;		///< 80x86 cx register
+	uint16_t dx;		///< 80x86 dx register
+	uint16_t si;		///< 80x86 si register
+	uint16_t di;		///< 80x86 di register
+	uint16_t bp;		///< 80x86 bp register
+	uint16_t ds;		///< 80x86 ds segment register
+	uint16_t es;		///< 80x86 es segment register
+	uint16_t flags;	///< 80x86 flags register
 };
 
 }

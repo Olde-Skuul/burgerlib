@@ -1,13 +1,14 @@
 /***************************************
 
-	File Manager Class
+    File Manager Class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -44,7 +45,7 @@ class File;
 class FileManager {
 	friend class File;
 public:
-	static const Word cMaxQueue = 128;	///< Maximum number of pending IO events (Power of 2)
+	static const uint_t cMaxQueue = 128;	///< Maximum number of pending IO events (Power of 2)
 	enum {
 		PREFIXCURRENT=8,		///< 8: Current working directory at application launch
 		PREFIXAPPLICATION=9,	///< 9: Directory where the application executable resides
@@ -69,7 +70,7 @@ public:
 	struct Queue_t {
 		File *m_pFile;				///< Pointer to the file object that this Queue_t is attached to
 		void *m_pBuffer;			///< Pointer to the I/O buffer or callback pointer
-		WordPtr m_uLength;			///< Value to attach to the command
+		uintptr_t m_uLength;			///< Value to attach to the command
 		eIOCommand m_uIOCommand;	///< IO Command
 	};
 	typedef	void (BURGER_API *ProcCallback)(Queue_t *pQueue);
@@ -79,24 +80,24 @@ private:
 	~FileManager();
 	void BURGER_API FlushIO(void) {}
 	void BURGER_API WaitUntilQueueHasSpace(void) {}
-	void BURGER_API AddQueue(File *pFile,eIOCommand uIOCommand,void *pBuffer,WordPtr uLength);
+	void BURGER_API AddQueue(File *pFile,eIOCommand uIOCommand,void *pBuffer,uintptr_t uLength);
 	void BURGER_API Sync(File *pFile);
-	static WordPtr BURGER_API QueueHandler(void *pData);
+	static uintptr_t BURGER_API QueueHandler(void *pData);
 
 	Semaphore m_PingIOThread;			///< Semaphore to ping the IO thread
 	Semaphore m_IOThreadSync;			///< Semaphore to get a reply from the IO thread for syncing
 	Thread m_Thread;					///< Worker thread record pointer
-	volatile Word32 m_uQueueStart;		///< Index to the queue start
-	volatile Word32 m_uQueueEnd;		///< Index to the end of the queue
+	volatile uint32_t m_uQueueStart;		///< Index to the queue start
+	volatile uint32_t m_uQueueEnd;		///< Index to the end of the queue
 	const char *m_pPrefix[PREFIXMAX];	///< Array of prefix strings
 	Queue_t m_IOQueue[cMaxQueue];		///< Queue of IO events
 
 #if defined(BURGER_MSDOS) || defined(DOXYGEN)
-	Word8 m_bAllowed;					///< True if MSDOS has long filename support (MSDOS Only)
+	uint8_t m_bAllowed;					///< True if MSDOS has long filename support (MSDOS Only)
 #endif
 
 #if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-	Word m_uBootNameSize;	///< Length of the boot volume name (MACOSX or iOS only)
+	uint_t m_uBootNameSize;	///< Length of the boot volume name (MACOSX or iOS only)
 	char *m_pBootName;		///< Boot volume name in the format ":FooBar" (Zero terminated) (MACOSX or iOS only)
 #endif
 
@@ -106,64 +107,64 @@ public:
 	static void BURGER_API Init(void);
 	static void BURGER_API Shutdown(void);
 #if defined(BURGER_MSDOS)
-	static Word BURGER_API AreLongFilenamesAllowed(void);
+	static uint_t BURGER_API AreLongFilenamesAllowed(void);
 #else
-	static BURGER_INLINE Word AreLongFilenamesAllowed(void) { return TRUE; }
+	static BURGER_INLINE uint_t AreLongFilenamesAllowed(void) { return TRUE; }
 #endif
-	static Word BURGER_API GetVolumeName(Filename *pOutput,Word uVolumeNum);
-	static Word BURGER_API GetVolumeNumber(const char *pInput);
+	static uint_t BURGER_API GetVolumeName(Filename *pOutput,uint_t uVolumeNum);
+	static uint_t BURGER_API GetVolumeNumber(const char *pInput);
 	static void BURGER_API DefaultPrefixes(void);
-	static Word BURGER_API GetPrefix(Filename *pOutput,Word uPrefixNum);
-	static Word BURGER_API SetPrefix(Word uPrefixNum,const char *pPrefixName);
-	static Word BURGER_API SetPrefix(Word uPrefixNum,Filename *pPrefixName);
-	static void BURGER_API PopPrefix(Word uPrefixNum);
-	static Word BURGER_API GetModificationTime(const char *pFileName,TimeDate_t *pOutput);
-	static Word BURGER_API GetModificationTime(Filename *pFileName,TimeDate_t *pOutput);
-	static Word BURGER_API GetCreationTime(const char *pFileName,TimeDate_t *pOutput);
-	static Word BURGER_API GetCreationTime(Filename *pFileName,TimeDate_t *pOutput);
-	static Word BURGER_API DoesFileExist(const char *pFileName);
-	static Word BURGER_API DoesFileExist(Filename *pFileName);
-	static Word32 BURGER_API GetAuxType(const char *pFileName);
-	static Word32 BURGER_API GetAuxType(Filename *pFileName);
-	static Word32 BURGER_API GetFileType(const char *pFileName);
-	static Word32 BURGER_API GetFileType(Filename *pFileName);
-	static Word BURGER_API GetFileAndAuxType(const char *pFileName,Word32 *pFileType,Word32 *pAuxType);
-	static Word BURGER_API GetFileAndAuxType(Filename *pFileName,Word32 *pFileType,Word32 *pAuxType);
-	static Word BURGER_API SetAuxType(const char *pFileName,Word32 uAuxType);
-	static Word BURGER_API SetAuxType(Filename *pFileName,Word32 uAuxType);
-	static Word BURGER_API SetFileType(const char *pFileName,Word32 uFileType);
-	static Word BURGER_API SetFileType(Filename *pFileName,Word32 uFileType);
-	static Word BURGER_API SetFileAndAuxType(const char *pFileName,Word32 uFileType,Word32 uAuxType);
-	static Word BURGER_API SetFileAndAuxType(Filename *pFileName,Word32 uFileType,Word32 uAuxType);
-	static Word BURGER_API CreateDirectoryPath(const char *pFileName);
-	static Word BURGER_API CreateDirectoryPath(Filename *pFileName);
-	static Word BURGER_API CreateDirectoryPathDirName(const char *pFileName);
-	static Word BURGER_API CreateDirectoryPathDirName(Filename *pFileName);
-	static Word BURGER_API DeleteFile(const char *pFileName);
-	static Word BURGER_API DeleteFile(Filename *pFileName);
-	static Word BURGER_API RenameFile(const char *pNewName,const char *pOldName);
-	static Word BURGER_API RenameFile(Filename *pNewName,Filename *pOldName);
-	static Word BURGER_API ChangeOSDirectory(const char *pDirName);
-	static Word BURGER_API ChangeOSDirectory(Filename *pDirName);
+	static uint_t BURGER_API GetPrefix(Filename *pOutput,uint_t uPrefixNum) BURGER_NOEXCEPT;
+	static uint_t BURGER_API SetPrefix(uint_t uPrefixNum,const char *pPrefixName) BURGER_NOEXCEPT;
+	static uint_t BURGER_API SetPrefix(uint_t uPrefixNum,Filename *pPrefixName) BURGER_NOEXCEPT;
+	static void BURGER_API PopPrefix(uint_t uPrefixNum) BURGER_NOEXCEPT;
+	static uint_t BURGER_API GetModificationTime(const char *pFileName,TimeDate_t *pOutput);
+	static uint_t BURGER_API GetModificationTime(Filename *pFileName,TimeDate_t *pOutput);
+	static uint_t BURGER_API GetCreationTime(const char *pFileName,TimeDate_t *pOutput);
+	static uint_t BURGER_API GetCreationTime(Filename *pFileName,TimeDate_t *pOutput);
+	static uint_t BURGER_API DoesFileExist(const char *pFileName);
+	static uint_t BURGER_API DoesFileExist(Filename *pFileName);
+	static uint32_t BURGER_API GetAuxType(const char *pFileName);
+	static uint32_t BURGER_API GetAuxType(Filename *pFileName);
+	static uint32_t BURGER_API GetFileType(const char *pFileName);
+	static uint32_t BURGER_API GetFileType(Filename *pFileName);
+	static uint_t BURGER_API GetFileAndAuxType(const char *pFileName,uint32_t *pFileType,uint32_t *pAuxType);
+	static uint_t BURGER_API GetFileAndAuxType(Filename *pFileName,uint32_t *pFileType,uint32_t *pAuxType);
+	static uint_t BURGER_API SetAuxType(const char *pFileName,uint32_t uAuxType);
+	static uint_t BURGER_API SetAuxType(Filename *pFileName,uint32_t uAuxType);
+	static uint_t BURGER_API SetFileType(const char *pFileName,uint32_t uFileType);
+	static uint_t BURGER_API SetFileType(Filename *pFileName,uint32_t uFileType);
+	static uint_t BURGER_API SetFileAndAuxType(const char *pFileName,uint32_t uFileType,uint32_t uAuxType);
+	static uint_t BURGER_API SetFileAndAuxType(Filename *pFileName,uint32_t uFileType,uint32_t uAuxType);
+	static uint_t BURGER_API CreateDirectoryPath(const char *pFileName);
+	static uint_t BURGER_API CreateDirectoryPath(Filename *pFileName);
+	static uint_t BURGER_API CreateDirectoryPathDirName(const char *pFileName);
+	static uint_t BURGER_API CreateDirectoryPathDirName(Filename *pFileName);
+	static uint_t BURGER_API DeleteFile(const char *pFileName);
+	static uint_t BURGER_API DeleteFile(Filename *pFileName);
+	static uint_t BURGER_API RenameFile(const char *pNewName,const char *pOldName);
+	static uint_t BURGER_API RenameFile(Filename *pNewName,Filename *pOldName);
+	static uint_t BURGER_API ChangeOSDirectory(const char *pDirName);
+	static uint_t BURGER_API ChangeOSDirectory(Filename *pDirName);
 	static FILE *BURGER_API OpenFile(const char *pFileName,const char *pType);
 	static FILE *BURGER_API OpenFile(Filename *pFileName,const char *pType);
-	static Word BURGER_API CopyFile(const char *pDestName,const char *pSourceName);
-	static Word BURGER_API CopyFile(Filename *pDestName,Filename *pSourceName);
-	static Word BURGER_API SaveFile(const char *pFileName,const void *pData,WordPtr uLength);
-	static Word BURGER_API SaveFile(Filename *pFileName,const void *pData,WordPtr uLength);
-	static Word BURGER_API SaveTextFile(const char *pFileName,const void *pData,WordPtr uLength);
-	static Word BURGER_API SaveTextFile(Filename *pFileName,const void *pData,WordPtr uLength);
-	static void * BURGER_API LoadFile(const char *pFileName,WordPtr *pLength);
-	static void * BURGER_API LoadFile(Filename *pFileName,WordPtr *pLength);
+	static uint_t BURGER_API CopyFile(const char *pDestName,const char *pSourceName);
+	static uint_t BURGER_API CopyFile(Filename *pDestName,Filename *pSourceName);
+	static uint_t BURGER_API SaveFile(const char *pFileName,const void *pData,uintptr_t uLength);
+	static uint_t BURGER_API SaveFile(Filename *pFileName,const void *pData,uintptr_t uLength);
+	static uint_t BURGER_API SaveTextFile(const char *pFileName,const void *pData,uintptr_t uLength);
+	static uint_t BURGER_API SaveTextFile(Filename *pFileName,const void *pData,uintptr_t uLength);
+	static void *BURGER_API LoadFile(const char *pFileName, uintptr_t *pLength) BURGER_NOEXCEPT;
+	static void *BURGER_API LoadFile(Filename *pFileName, uintptr_t *pLength) BURGER_NOEXCEPT;
 
 #if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-	static BURGER_INLINE const char *GetBootName(void) { return g_pFileManager->m_pBootName; }
-	static BURGER_INLINE Word GetBootNameSize(void) { return g_pFileManager->m_uBootNameSize; }
+	static BURGER_INLINE const char *GetBootName(void) BURGER_NOEXCEPT { return g_pFileManager->m_pBootName; }
+	static BURGER_INLINE uint_t GetBootNameSize(void) BURGER_NOEXCEPT { return g_pFileManager->m_uBootNameSize; }
 #endif
 
 #if defined(BURGER_MAC) || defined(DOXYGEN)
 	static short BURGER_API OpenResourceFile(const char *pFileName,char uPermission);
-	static Word BURGER_API CreateResourceFIle(const char *pFileName);
+	static uint_t BURGER_API CreateResourceFIle(const char *pFileName);
 #endif
 };
 

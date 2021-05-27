@@ -1,13 +1,14 @@
 /***************************************
 
-	Simple First In First Out queue
+    Simple First In First Out queue
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -33,7 +34,7 @@ class Queue {
 	};
 	Element* m_pFirstElement;	///< Pointer to the first element in the linked list
 	Element* m_pLastElement;	///< Pointer to the last element in the linked list
-	WordPtr m_uCount;			///< Number of entries in the linked list
+	uintptr_t m_uCount;			///< Number of entries in the linked list
 public:
 	Queue() : m_pFirstElement(NULL),m_pLastElement(NULL),m_uCount(0) {}
 	~Queue()
@@ -83,8 +84,8 @@ public:
 		}
 		++m_uCount;
 	}
-	BURGER_INLINE WordPtr size(void) const { return m_uCount; }
-	BURGER_INLINE Word empty(void) const { return (m_uCount==0); }
+	BURGER_INLINE uintptr_t size(void) const { return m_uCount; }
+	BURGER_INLINE uint_t empty(void) const { return (m_uCount==0); }
 };
 }
 /* END */

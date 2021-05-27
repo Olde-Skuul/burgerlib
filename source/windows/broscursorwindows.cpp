@@ -173,9 +173,9 @@ void BURGER_API Burger::OSCursor::SetImage(
 
 ***************************************/
 
-Word BURGER_API Burger::OSCursor::Show(void) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::OSCursor::Show(void) BURGER_NOEXCEPT
 {
-    Word uResult = g_Global.m_bVisibleFlag;
+    uint_t uResult = g_Global.m_bVisibleFlag;
     if (!uResult) {
         // It's visible now!
         g_Global.m_bVisibleFlag = TRUE;
@@ -194,10 +194,10 @@ Word BURGER_API Burger::OSCursor::Show(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-Word BURGER_API Burger::OSCursor::Show(Word bVisible) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::OSCursor::Show(uint_t bVisible) BURGER_NOEXCEPT
 {
     bVisible = (bVisible != 0);
-    Word uResult = g_Global.m_bVisibleFlag;
+    uint_t uResult = g_Global.m_bVisibleFlag;
     if (uResult != bVisible) {
         // It's visible now!
         g_Global.m_bVisibleFlag = bVisible;
@@ -223,9 +223,9 @@ Word BURGER_API Burger::OSCursor::Show(Word bVisible) BURGER_NOEXCEPT
 
 ***************************************/
 
-Word BURGER_API Burger::OSCursor::Hide(void) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::OSCursor::Hide(void) BURGER_NOEXCEPT
 {
-    Word uResult = g_Global.m_bVisibleFlag;
+    uint_t uResult = g_Global.m_bVisibleFlag;
     if (uResult) {
         g_Global.m_bVisibleFlag = FALSE;
         int iState;

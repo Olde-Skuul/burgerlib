@@ -1,15 +1,16 @@
 /***************************************
 
-	Incremental tick Manager Class
- 
-	iOS version
+    Incremental tick Manager Class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    iOS version
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -33,15 +34,15 @@
 
 ***************************************/
 
-static Word bStarted60Hz = FALSE;
-static Word32 uTick;
-static Word64 uAnchor60Hz;
-static Word64 uFraction60Hz;
-static Word64 uStep60Hz;
+static uint_t bStarted60Hz = FALSE;
+static uint32_t uTick;
+static uint64_t uAnchor60Hz;
+static uint64_t uFraction60Hz;
+static uint64_t uStep60Hz;
 
-Word32 BURGER_API Burger::Tick::Read(void)
+uint32_t BURGER_API Burger::Tick::Read(void)
 {
-	Word64 uMark = mach_absolute_time();
+	uint64_t uMark = mach_absolute_time();
 	if (!bStarted60Hz) {
 		bStarted60Hz = TRUE;
 		uAnchor60Hz = uMark;
@@ -49,14 +50,14 @@ Word32 BURGER_API Burger::Tick::Read(void)
 		uFraction60Hz = 0;
 		mach_timebase_info_data_t sTimebaseInfo;
 		mach_timebase_info(&sTimebaseInfo);
-		uStep60Hz = (50000000ULL * static_cast<Word64>(sTimebaseInfo.denom)) / static_cast<Word64>(sTimebaseInfo.numer*3);
+		uStep60Hz = (50000000ULL * static_cast<uint64_t>(sTimebaseInfo.denom)) / static_cast<uint64_t>(sTimebaseInfo.numer*3);
 		return 1;
 	}
-	Word64 uElapsed = (uMark-uAnchor60Hz)+uFraction60Hz;
+	uint64_t uElapsed = (uMark-uAnchor60Hz)+uFraction60Hz;
 	uAnchor60Hz = uMark;
-	Word64 uTicks = uElapsed/uStep60Hz;
+	uint64_t uTicks = uElapsed/uStep60Hz;
 	uFraction60Hz = uElapsed-(uTicks*uStep60Hz);
-	uTick = static_cast<Word32>(uTick+uTicks);
+	uTick = static_cast<uint32_t>(uTick+uTicks);
 	return uTick;
 }
 
@@ -66,15 +67,15 @@ Word32 BURGER_API Burger::Tick::Read(void)
 
 ***************************************/
 
-static Word bStarted1MHz = FALSE;
-static Word32 uTick1MHz;
-static Word64 uAnchor1MHz;
-static Word64 uFraction1MHz;
-static Word64 uStep1MHz;
+static uint_t bStarted1MHz = FALSE;
+static uint32_t uTick1MHz;
+static uint64_t uAnchor1MHz;
+static uint64_t uFraction1MHz;
+static uint64_t uStep1MHz;
 
-Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
+uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void)
 {
-	Word64 uMark = mach_absolute_time();
+	uint64_t uMark = mach_absolute_time();
 	if (!bStarted1MHz) {
 		bStarted1MHz = TRUE;
 		uAnchor1MHz = uMark;
@@ -82,14 +83,14 @@ Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
 		uFraction1MHz = 0;
 		mach_timebase_info_data_t sTimebaseInfo;
 		mach_timebase_info(&sTimebaseInfo);
-		uStep1MHz = (1000ULL * static_cast<Word64>(sTimebaseInfo.denom)) / static_cast<Word64>(sTimebaseInfo.numer);
+		uStep1MHz = (1000ULL * static_cast<uint64_t>(sTimebaseInfo.denom)) / static_cast<uint64_t>(sTimebaseInfo.numer);
 		return 1;
 	}
-	Word64 uElapsed = (uMark-uAnchor1MHz)+uFraction1MHz;
+	uint64_t uElapsed = (uMark-uAnchor1MHz)+uFraction1MHz;
 	uAnchor1MHz = uMark;
-	Word64 uTicks = uElapsed/uStep1MHz;
+	uint64_t uTicks = uElapsed/uStep1MHz;
 	uFraction1MHz = uElapsed-(uTicks*uStep1MHz);
-	uTick1MHz = static_cast<Word32>(uTick1MHz+uTicks);
+	uTick1MHz = static_cast<uint32_t>(uTick1MHz+uTicks);
 	return uTick1MHz;
 }
 
@@ -99,15 +100,15 @@ Word32 BURGER_API Burger::Tick::ReadMicroseconds(void)
 
 ***************************************/
 
-static Word bStarted1KHz = FALSE;
-static Word32 uTick1KHz;
-static Word64 uAnchor1KHz;
-static Word64 uFraction1KHz;
-static Word64 uStep1KHz;
+static uint_t bStarted1KHz = FALSE;
+static uint32_t uTick1KHz;
+static uint64_t uAnchor1KHz;
+static uint64_t uFraction1KHz;
+static uint64_t uStep1KHz;
 
-Word32 BURGER_API Burger::Tick::ReadMilliseconds(void)
+uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void)
 {
-	Word64 uMark = mach_absolute_time();
+	uint64_t uMark = mach_absolute_time();
 	if (!bStarted1KHz) {
 		bStarted1KHz = TRUE;
 		uAnchor1KHz = uMark;
@@ -115,14 +116,14 @@ Word32 BURGER_API Burger::Tick::ReadMilliseconds(void)
 		uFraction1KHz = 0;
 		mach_timebase_info_data_t sTimebaseInfo;
 		mach_timebase_info(&sTimebaseInfo);
-		uStep1KHz = (1000000ULL * static_cast<Word64>(sTimebaseInfo.denom)) / static_cast<Word64>(sTimebaseInfo.numer);
+		uStep1KHz = (1000000ULL * static_cast<uint64_t>(sTimebaseInfo.denom)) / static_cast<uint64_t>(sTimebaseInfo.numer);
 		return 1;
 	}
-	Word64 uElapsed = (uMark-uAnchor1KHz)+uFraction1KHz;
+	uint64_t uElapsed = (uMark-uAnchor1KHz)+uFraction1KHz;
 	uAnchor1KHz = uMark;
-	Word64 uTicks = uElapsed/uStep1KHz;
+	uint64_t uTicks = uElapsed/uStep1KHz;
 	uFraction1KHz = uElapsed-(uTicks*uStep1KHz);
-	uTick1KHz = static_cast<Word32>(uTick1KHz+uTicks);
+	uTick1KHz = static_cast<uint32_t>(uTick1KHz+uTicks);
 	return uTick1KHz;
 }
 
@@ -190,8 +191,8 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 		fResult = m_fElapsedTime;
 	} else {
 		
-		Word64 uMark = mach_absolute_time();
-		Word64 uElapsedTime;
+		uint64_t uMark = mach_absolute_time();
+		uint64_t uElapsedTime;
 		
 		if (uMark<m_uBaseTime) {
 			
@@ -231,7 +232,7 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Sleep(Word32 uMilliseconds)
+void BURGER_API Burger::Sleep(uint32_t uMilliseconds)
 {
 	// Sleep until the time expires or something
 	// occurs that could cause the main thread to take notice

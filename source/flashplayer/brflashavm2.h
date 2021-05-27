@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player Adobe Virtual Machine Version 2 support
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player Adobe Virtual Machine Version 2 support
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #ifndef __BRFLASHAVM2_H__
@@ -55,13 +56,13 @@ struct OptionDetail_t {
 		CONSTANT_ExplicitNamespace=0x19,	///< Explicit namespace
 		CONSTANT_StaticProtectedNs=0x1A		///< Static protected namespace
 	};
-	Word32 m_uValue;			///< Index into the constant pool
+	uint32_t m_uValue;			///< Index into the constant pool
 	eKind m_eKind;				///< Type of variable found in the constant pool
 	void BURGER_API Read(Stream *pStream);
 };
 struct ItemInfo_t {
-	Word m_uKey;			///< Key value
-	Word m_uValue;			///< Value attached to the key
+	uint_t m_uKey;			///< Key value
+	uint_t m_uValue;			///< Value attached to the key
 	void BURGER_API Read(Stream* pStream);
 };
 class TraitsInfo : public WeakAndStrongBase {
@@ -85,40 +86,40 @@ public:
 
 	int m_uName;			///< Index to the multiname constant pool
 	eKind m_eKind;			///< Specific kind of data contained in this class
-	Word m_eAttribute;		///< Attributes for how to handle overrides
+	uint_t m_eAttribute;		///< Attributes for how to handle overrides
 
 	// data
 	union {
 		struct {
-			Word m_uSlotID;		///< Position identification for this trait
-			Word m_uTypeName;	///< Index into the multiname array for this item's name
-			Word m_uVIndex;		///< Index into the constant pool for this data
+			uint_t m_uSlotID;		///< Position identification for this trait
+			uint_t m_uTypeName;	///< Index into the multiname array for this item's name
+			uint_t m_uVIndex;		///< Index into the constant pool for this data
 			Flash::OptionDetail_t::eKind m_eKind;	///< Kind of data in the constant pool
 		} trait_slot;			///< Used by eKind \ref Trait_Slot and \ref Trait_Const
 
 		struct {
-			Word m_uSlotID;		///< Position identification for this trait
-			Word m_uClassIndex;	///< Index into the class array
+			uint_t m_uSlotID;		///< Position identification for this trait
+			uint_t m_uClassIndex;	///< Index into the class array
 		} trait_class;			///< Used by eKind \ref Trait_Class
 
 		struct {
-			Word m_uSlotID;		///< Position identification for this trait
-			Word m_uFunction;	///< Index into the function array
+			uint_t m_uSlotID;		///< Position identification for this trait
+			uint_t m_uFunction;	///< Index into the function array
 		} trait_function;		///< Used by eKind \ref Trait_Function
 
 		struct {
-			Word m_uDispatchID;	///< Index into the dispatcher array
-			Word m_uMethodIndex;	///< Index into the method array
+			uint_t m_uDispatchID;	///< Index into the dispatcher array
+			uint_t m_uMethodIndex;	///< Index into the method array
 		} trait_method;			///< Used by eKind \ref Trait_Method, \ref Trait_Getter or \ref Trait_Setter
 	};
-	SimpleArray<Word> m_uMetadataArray;	///< Array of indexes into the metadata array
+	SimpleArray<uint_t> m_uMetadataArray;	///< Array of indexes into the metadata array
 	TraitsInfo();
 	virtual ~TraitsInfo();
 	void BURGER_API Read(Stream *pStream,ABC_Definition *pABCDefinition);
 };
 class MetadataInfo : public WeakAndStrongBase {
 public:
-	Word m_uName;									///< Name index into the string array
+	uint_t m_uName;									///< Name index into the string array
 	SimpleArray<ItemInfo_t> m_ItemInfoArray;		///< Array of key / value pairs
 	MetadataInfo();
 	virtual ~MetadataInfo();
@@ -126,11 +127,11 @@ public:
 };
 class ExceptionInfo : public WeakAndStrongBase {
 public:
-	Word m_uFrom;		///< The starting position in the code field from which the exception is enabled.
-	Word m_uTo;			///< The ending position in the code field after which the exception is disabled.
-	Word m_uTarget;		///< The position in the code field to which control should jump if an exception of type exc_type is encountered
-	Word m_uExceptionType;	///< An index into the string array of the constant pool that identifies the name of the type of exception
-	Word m_uVariableName;	///< This index into the string array of the constant pool defines the name of the variable that is to receive the exception object
+	uint_t m_uFrom;		///< The starting position in the code field from which the exception is enabled.
+	uint_t m_uTo;			///< The ending position in the code field after which the exception is disabled.
+	uint_t m_uTarget;		///< The position in the code field to which control should jump if an exception of type exc_type is encountered
+	uint_t m_uExceptionType;	///< An index into the string array of the constant pool that identifies the name of the type of exception
+	uint_t m_uVariableName;	///< This index into the string array of the constant pool defines the name of the variable that is to receive the exception object
 	ExceptionInfo();
 	virtual ~ExceptionInfo();
 	void BURGER_API Read(Stream* pStream);
@@ -144,13 +145,13 @@ public:
 		CONSTANT_ClassProtectedNs = 0x08	///< The class uses its protected namespace and the m_uProtectedNamespace field is present in the InstanceInfo class.
 	};
 	WeakPointer<ABC_Definition> m_pParentABCDefinition;		///< Parent Adobe Byte Code
-	SimpleArray<Word> m_uInterfaceArray;								///< Array of interface indexes
+	SimpleArray<uint_t> m_uInterfaceArray;								///< Array of interface indexes
 	ClassArray<SmartPointer<TraitsInfo> > m_pTraitArray;				///< Array of instance traits
-	Word m_uName;				///< Name of this instance
-	Word m_uSuperName;			///< Name of the parent class this derives from
-	Word m_uFlags;				///< See \ref eFlags
-	Word m_uProtectedNamespace;	///< If protected, this contains the index to the protected namespace
-	Word m_uInitializationIndex;	///< Index to the initialization function
+	uint_t m_uName;				///< Name of this instance
+	uint_t m_uSuperName;			///< Name of the parent class this derives from
+	uint_t m_uFlags;				///< See \ref eFlags
+	uint_t m_uProtectedNamespace;	///< If protected, this contains the index to the protected namespace
+	uint_t m_uInitializationIndex;	///< Index to the initialization function
 	InstanceInfo();
 	virtual ~InstanceInfo();
 	void BURGER_API Read(Stream *pStream,ABC_Definition *pABCDefinition);
@@ -159,7 +160,7 @@ class ClassInfo : public WeakAndStrongBase {
 public:
 	WeakPointer<ABC_Definition> m_pParentABCDefinition;
 	ClassArray<SmartPointer<TraitsInfo> > m_pTraitArray;
-	Word m_uClassInit;
+	uint_t m_uClassInit;
 	ClassInfo();
 	virtual ~ClassInfo();
 	void BURGER_API Read(Stream* pStream,ABC_Definition *pABCDefinition);
@@ -167,7 +168,7 @@ public:
 class ScriptInfo : public WeakAndStrongBase {
 public:
 	ClassArray<SmartPointer<TraitsInfo> > m_pTraitArray;
-	Word m_uScriptInit;
+	uint_t m_uScriptInit;
 	ScriptInfo();
 	virtual ~ScriptInfo();
 	void BURGER_API Read(Stream* pStream,ABC_Definition *pABCDefinition);

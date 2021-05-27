@@ -86,10 +86,10 @@ typedef HRESULT(WINAPI* CreateDXGIFactory2Ptr)(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::D3D11CreateDevice(IDXGIAdapter* pAdapter,
-	Word DriverType, HINSTANCE__* Software, Word Flags,
-	const Word* pFeatureLevels, Word FeatureLevels, Word SDKVersion,
-	ID3D11Device** ppDevice, Word* pFeatureLevel,
+uint_t BURGER_API Burger::Windows::D3D11CreateDevice(IDXGIAdapter* pAdapter,
+	uint_t DriverType, HINSTANCE__* Software, uint_t Flags,
+	const uint_t* pFeatureLevels, uint_t FeatureLevels, uint_t SDKVersion,
+	ID3D11Device** ppDevice, uint_t* pFeatureLevel,
 	ID3D11DeviceContext** ppImmediateContext)
 {
 	// Get the function pointer
@@ -104,7 +104,7 @@ Word BURGER_API Burger::Windows::D3D11CreateDevice(IDXGIAdapter* pAdapter,
 			static_cast<D3D_FEATURE_LEVEL*>(static_cast<void*>(pFeatureLevel)),
 			ppImmediateContext);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 //
@@ -128,7 +128,7 @@ Word BURGER_API Burger::Windows::D3D11CreateDevice(IDXGIAdapter* pAdapter,
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::CreateDXGIFactory(
+uint_t BURGER_API Burger::Windows::CreateDXGIFactory(
 	const GUID* pGuidFactory, void** ppFactory)
 {
 	// Get the function pointer
@@ -138,7 +138,7 @@ Word BURGER_API Burger::Windows::CreateDXGIFactory(
 		uResult = static_cast<CreateDXGIFactoryPtr>(pCreateDXGIFactory)(
 			pGuidFactory[0], ppFactory);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -158,7 +158,7 @@ Word BURGER_API Burger::Windows::CreateDXGIFactory(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::CreateDXGIFactory1(
+uint_t BURGER_API Burger::Windows::CreateDXGIFactory1(
 	const GUID* pGuidFactory, void** ppFactory)
 {
 	// Get the function pointer
@@ -168,7 +168,7 @@ Word BURGER_API Burger::Windows::CreateDXGIFactory1(
 		uResult = static_cast<CreateDXGIFactory1Ptr>(pCreateDXGIFactory1)(
 			pGuidFactory[0], ppFactory);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -190,8 +190,8 @@ Word BURGER_API Burger::Windows::CreateDXGIFactory1(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::CreateDXGIFactory2(
-	Word uFlags, const GUID* pGuidFactory, void** ppFactory)
+uint_t BURGER_API Burger::Windows::CreateDXGIFactory2(
+	uint_t uFlags, const GUID* pGuidFactory, void** ppFactory)
 {
 	// Get the function pointer
 	void* pCreateDXGIFactory2 = LoadFunctionIndex(CALL_CreateDXGIFactory2);
@@ -200,7 +200,7 @@ Word BURGER_API Burger::Windows::CreateDXGIFactory2(
 		uResult = static_cast<CreateDXGIFactory2Ptr>(pCreateDXGIFactory2)(
 			uFlags, pGuidFactory[0], ppFactory);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 #endif

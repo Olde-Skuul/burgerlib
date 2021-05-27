@@ -48,7 +48,7 @@ static const D3DDECLTYPE g_D3DType[5] = {
 // Update the vertex data to VRAM
 //
 
-Word Burger::VertexBufferDirectX9::CheckLoad(Display *pDisplay)
+uint_t Burger::VertexBufferDirectX9::CheckLoad(Display *pDisplay)
 {
 	HRESULT hResult = D3D_OK;
 	if (m_uFlags & FLAG_VERTEXDIRTY) {
@@ -90,16 +90,16 @@ Word Burger::VertexBufferDirectX9::CheckLoad(Display *pDisplay)
 			D3DVERTEXELEMENT9 *pDest = TempElement;
 
 			// Size of the description
-			const Word *pMembers = m_pMembers;
-			Word uCount = m_uMemberCount;
-			Word uOffset = 0;
+			const uint_t *pMembers = m_pMembers;
+			uint_t uCount = m_uMemberCount;
+			uint_t uOffset = 0;
 			do {
-				Word uMember = pMembers[0];
+				uint_t uMember = pMembers[0];
 				++pMembers;
 
 				pDest->Stream = 0;
 				pDest->Offset = static_cast<WORD>(uOffset);
-				Word uType = (uMember&USAGE_CHUNKMASK)>>USAGE_CHUNKMASKSHIFT;
+				uint_t uType = (uMember&USAGE_CHUNKMASK)>>USAGE_CHUNKMASKSHIFT;
 				uOffset += g_ChunkElementSizes[uType]*g_ChunkElementCounts[uType];
 				pDest->Type = static_cast<BYTE>(g_D3DType[uType]);
 
@@ -162,7 +162,7 @@ Word Burger::VertexBufferDirectX9::CheckLoad(Display *pDisplay)
 		}
 	}
 	// Set the error code to return
-	return static_cast<Word>(hResult);
+	return static_cast<uint_t>(hResult);
 }
 
 void Burger::VertexBufferDirectX9::Release(Display *)

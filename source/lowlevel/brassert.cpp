@@ -56,7 +56,7 @@
 	\note On Release builds with \ref NDEBUG defined, this macro will perform no action and generate no code
 		so the conditional will never be tested
 
-	\param conditional A boolean that evaluates to \ref FALSE to call the assert function \ref Burger::Assert(const char *,const char *,Word)
+	\param conditional A boolean that evaluates to \ref FALSE to call the assert function \ref Burger::Assert(const char *,const char *,uint_t)
 
 	\sa BURGER_ASSERTTEST
 
@@ -68,10 +68,10 @@
 
 	\brief Always test a condition and if it's false, invoke the debugger.
 
-	\param conditional A boolean that evaluates to \ref FALSE to call the assert function \ref Burger::Assert(const char *,const char *,Word)
+	\param conditional A boolean that evaluates to \ref FALSE to call the assert function \ref Burger::Assert(const char *,const char *,uint_t)
 
 	\note This macro will always invoke the conditional and will return the boolean of \ref TRUE or \ref FALSE
-		in Release builds. If it's executing a Debug build, the \ref Burger::Assert(const char *,const char *,Word)
+		in Release builds. If it's executing a Debug build, the \ref Burger::Assert(const char *,const char *,uint_t)
 		function is called if the conditional evaluates to \ref FALSE
 
 	\return The boolean evaluation of the conditional.
@@ -86,9 +86,9 @@
 	\brief Container structure for Assert support
 
 	This global assert structure is used for supporting the
-	ability to redirect an \ref Assert(const char *,const char *,Word) call.
+	ability to redirect an \ref Assert(const char *,const char *,uint_t) call.
 
-	\sa Assert(const char *,const char *,Word)
+	\sa Assert(const char *,const char *,uint_t)
 
 ***************************************/
 
@@ -131,7 +131,7 @@ Burger::Assert_t Burger::Assert_t::g_Instance = {
 
 	\brief Overrides the default Assert function
 
-	The normal behavior for \ref Assert(const char *,const char *,Word) is
+	The normal behavior for \ref Assert(const char *,const char *,uint_t) is
 	to call printf() with the failure condition and then call
 	\ref Debug::Fatal(). This behavior can be overridden by passing
 	a new function pointer via this call.
@@ -176,11 +176,11 @@ void BURGER_API Burger::Assert_t::SetCallback(CallbackProc pCallback,void *pThis
 	\param uLineNumber Line number in the source file that triggered the assert
 	\returns 0 (However, this function should never return)
 
-	\sa Debug::Message(), Debug::Fatal(), and Assert(const char *,const char *,Word)
+	\sa Debug::Message(), Debug::Fatal(), and Assert(const char *,const char *,uint_t)
 
 ***************************************/
 
-int BURGER_API Burger::Assert_t::DefaultAssert(void * /* pThis */,const char *pCondition,const char *pFilename,Word uLineNumber)
+int BURGER_API Burger::Assert_t::DefaultAssert(void * /* pThis */,const char *pCondition,const char *pFilename,uint_t uLineNumber)
 {
 	Debug::Message("Assertion from \"%s\" in file %s at line %u.\n",pCondition,pFilename,uLineNumber);
 	Halt();
@@ -220,7 +220,7 @@ int BURGER_API Burger::Assert_t::DefaultAssert(void * /* pThis */,const char *pC
 
 ***************************************/
 
-int BURGER_API Burger::Assert(const char *pCondition,const char *pFilename,Word uLineNumber)
+int BURGER_API Burger::Assert(const char *pCondition,const char *pFilename,uint_t uLineNumber)
 {
 	const Assert_t *pInstance = &Assert_t::g_Instance;
 	return pInstance->m_pCallback(pInstance->m_pThis,pCondition,pFilename,uLineNumber);

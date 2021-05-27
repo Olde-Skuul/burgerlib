@@ -105,14 +105,14 @@ Burger::eError BURGER_API Burger::NetAddr_t::ToSocketAddr(sockaddr *pOutput) con
 
 	case TYPE_IPV4:
 		pOutput->sa_family = AF_INET;
-		reinterpret_cast<sockaddr_in *>(pOutput)->sin_port = BigEndian::Load(static_cast<Word16>(U.IPv4.m_uPort));
+		reinterpret_cast<sockaddr_in *>(pOutput)->sin_port = BigEndian::Load(static_cast<uint16_t>(U.IPv4.m_uPort));
 		reinterpret_cast<sockaddr_in *>(pOutput)->sin_addr.s_addr = BigEndian::Load(U.IPv4.m_uIP);
 		MemoryClear(reinterpret_cast<sockaddr_in *>(pOutput)->sin_zero,sizeof(reinterpret_cast<sockaddr_in *>(pOutput)->sin_zero));
 		break;
 
 	case TYPE_IPV6:
 		pOutput->sa_family = AF_INET6;
-		reinterpret_cast<sockaddr_in6 *>(pOutput)->sin6_port = BigEndian::Load(static_cast<Word16>(U.IPv6.m_uPort));
+		reinterpret_cast<sockaddr_in6 *>(pOutput)->sin6_port = BigEndian::Load(static_cast<uint16_t>(U.IPv6.m_uPort));
 		reinterpret_cast<sockaddr_in6 *>(pOutput)->sin6_flowinfo = 0;
 		MemoryCopy(reinterpret_cast<sockaddr_in6 *>(pOutput)->sin6_addr.u.Byte,U.IPv6.m_IP,sizeof(reinterpret_cast<sockaddr_in6 *>(pOutput)->sin6_addr.u.Byte));
 		reinterpret_cast<sockaddr_in6 *>(pOutput)->sin6_scope_id = 0;
@@ -120,16 +120,16 @@ Burger::eError BURGER_API Burger::NetAddr_t::ToSocketAddr(sockaddr *pOutput) con
 
 	case TYPE_IPX:
 		pOutput->sa_family = AF_IPX;
-		reinterpret_cast<sockaddr_ipx *>(pOutput)->sa_socket = BigEndian::Load(static_cast<Word16>(U.IPX.m_uSocket));
+		reinterpret_cast<sockaddr_ipx *>(pOutput)->sa_socket = BigEndian::Load(static_cast<uint16_t>(U.IPX.m_uSocket));
 		MemoryCopy(reinterpret_cast<sockaddr_ipx *>(pOutput)->sa_netnum,U.IPX.m_Net,4);
 		MemoryCopy(reinterpret_cast<sockaddr_ipx *>(pOutput)->sa_nodenum,U.IPX.m_Node,6);
 		break;
 
 	case TYPE_APPLETALK:
 		pOutput->sa_family = AF_APPLETALK;
-		reinterpret_cast<sockaddr_at *>(pOutput)->sat_net = BigEndian::Load(static_cast<Word16>(U.APPLETALK.m_uNetwork));
-		reinterpret_cast<sockaddr_at *>(pOutput)->sat_node = static_cast<Word8>(U.APPLETALK.m_uNodeID);
-		reinterpret_cast<sockaddr_at *>(pOutput)->sat_socket = static_cast<Word8>(U.APPLETALK.m_uSocket);
+		reinterpret_cast<sockaddr_at *>(pOutput)->sat_net = BigEndian::Load(static_cast<uint16_t>(U.APPLETALK.m_uNetwork));
+		reinterpret_cast<sockaddr_at *>(pOutput)->sat_node = static_cast<uint8_t>(U.APPLETALK.m_uNodeID);
+		reinterpret_cast<sockaddr_at *>(pOutput)->sat_socket = static_cast<uint8_t>(U.APPLETALK.m_uSocket);
 		break;
 
 	// Unknown
@@ -241,7 +241,7 @@ Burger::eError BURGER_API Burger::NetAddr_t::FromSocketAddr(const sockaddr *pInp
 	case AF_INET:
 		m_uType=TYPE_IPV4;
 		U.IPv4.m_uPort=BigEndian::Load(reinterpret_cast<const sockaddr_in *>(pInput)->sin_port);
-		U.IPv4.m_uIP=BigEndian::Load(static_cast<Word32>(reinterpret_cast<const sockaddr_in *>(pInput)->sin_addr.s_addr));
+		U.IPv4.m_uIP=BigEndian::Load(static_cast<uint32_t>(reinterpret_cast<const sockaddr_in *>(pInput)->sin_addr.s_addr));
 		break;
 
 	case AF_INET6:
@@ -375,7 +375,7 @@ Burger::eError BURGER_API Burger::NetworkManager::Init(void)
 			// Iterate over the protocols to see which ones are 
 			// actually available
 
-			Word i = 0;
+			uint_t i = 0;
 			do {
 				SocketType uSocket = socket(g_Protocols[i],SOCK_DGRAM,g_Protocols[i+1]);
 				if (uSocket!=INVALID_SOCKET) {
@@ -469,7 +469,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(NetAddr_t *
 			uResult = kErrorNone;
 			if (pColon) {
 				pColon[0] = 0;		// Force a null string
-				Word uPort = AsciiToInteger(pColon+1);
+				uint_t uPort = AsciiToInteger(pColon+1);
 				if (uPort<65536) {
 					pOutput->U.IPv4.m_uPort = uPort;
 				} else {
@@ -481,7 +481,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(NetAddr_t *
 			if (uResult== kErrorNone) {
 
 				// Try parsing as a string
-				Word32 uIPv4;
+				uint32_t uIPv4;
 
 				// Try 206.55.132.154
 				uResult = StringToIPv4(TempDNS.GetPtr(),&uIPv4);
@@ -496,7 +496,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(NetAddr_t *
 					addrinfo *pResult = NULL;
 					uResult = static_cast<eError>(getaddrinfo(TempDNS.GetPtr(),NULL,&Hints,&pResult));
 					if (uResult== kErrorNone) {
-						uIPv4 = BigEndian::Load(static_cast<Word32>(reinterpret_cast<sockaddr_in*>(pResult->ai_addr)->sin_addr.s_addr));
+						uIPv4 = BigEndian::Load(static_cast<uint32_t>(reinterpret_cast<sockaddr_in*>(pResult->ai_addr)->sin_addr.s_addr));
 						// Release the addrinfo chain
 						freeaddrinfo(pResult);
 					}
@@ -553,7 +553,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv6Address(NetAddr_t *
 				uResult = kErrorNone;
 				if (pColon) {
 					pColon[0] = 0;		// Force a null string
-					Word uPort = AsciiToInteger(pColon+1);
+					uint_t uPort = AsciiToInteger(pColon+1);
 					if (uPort<65536) {
 						pOutput->U.IPv6.m_uPort = uPort;
 					} else {
@@ -616,11 +616,11 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv6Address(NetAddr_t *
 	\param pBuffer Pointer to the data to transmit
 	\param uBufferSize Number of bytes to transmit
 	\return Zero if no error, non zero if an error had occurred
-	\sa SendStream(const NetAddr_t *,void *,WordPtr)
+	\sa SendStream(const NetAddr_t *,void *,uintptr_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::NetworkManager::SendPacket(const NetAddr_t *pDestination,const void *pBuffer,WordPtr uBufferSize)
+Burger::eError BURGER_API Burger::NetworkManager::SendPacket(const NetAddr_t *pDestination,const void *pBuffer,uintptr_t uBufferSize)
 {
 	eError uResult = kErrorNone;
 
@@ -636,7 +636,7 @@ Burger::eError BURGER_API Burger::NetworkManager::SendPacket(const NetAddr_t *pD
 
 		// Acceptable protocol?
 		NetAddr_t::eAddressType uType = pDestination->m_uType;
-		Word16 uFamily = 0;
+		uint16_t uFamily = 0;
 		int iAddressSize = 0;
 		int iProtocol = IPPROTO_UDP;
 		switch (uType) {
@@ -742,11 +742,11 @@ Burger::eError BURGER_API Burger::NetworkManager::SendPacket(const NetAddr_t *pD
 	\param pBuffer Pointer to the data to transmit
 	\param uBufferSize Number of bytes to transmit
 	\return Zero if no error, non zero if an error had occurred
-	\sa SendPacket(const NetAddr_t *,void *,WordPtr)
+	\sa SendPacket(const NetAddr_t *,void *,uintptr_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::NetworkManager::SendStream(const NetAddr_t *pDestination,const void *pBuffer,WordPtr uBufferSize)
+Burger::eError BURGER_API Burger::NetworkManager::SendStream(const NetAddr_t *pDestination,const void *pBuffer,uintptr_t uBufferSize)
 {
 	eError uResult = kErrorNone;
 
@@ -762,7 +762,7 @@ Burger::eError BURGER_API Burger::NetworkManager::SendStream(const NetAddr_t *pD
 
 		// Acceptable protocol?
 		NetAddr_t::eAddressType uType = pDestination->m_uType;
-		Word16 uFamily = 0;
+		uint16_t uFamily = 0;
 		int iAddressSize = 0;
 		int iProtocol = IPPROTO_TCP;
 		switch (uType) {
@@ -903,7 +903,7 @@ Burger::eError BURGER_API Burger::NetworkManager::EnumerateLocalAddresses(void)
 				
 					// Iterate over the list to get the number of entries that will be generated
 
-					Word uCount = 0;
+					uint_t uCount = 0;
 					const IP_ADAPTER_ADDRESSES *pWork = pAdapterAddresses;
 					do {
 						// Allowable adapters?
@@ -984,7 +984,7 @@ Burger::eError BURGER_API Burger::NetworkManager::EnumerateLocalAddresses(void)
 	\param uSocket SOCKET from windows or socket from BSD socket systems
 
 	\return Zero if no error, non-zero if not supported or an error
-	\sa SocketSetNonBlocking(WordPtr)
+	\sa SocketSetNonBlocking(uintptr_t)
 
 ***************************************/
 

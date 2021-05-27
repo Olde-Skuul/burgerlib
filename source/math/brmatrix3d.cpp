@@ -2997,7 +2997,7 @@ BURGER_DECLSPECNAKED void BURGER_API Burger::Matrix3D_t::TransposeTransformAdd(V
 
 ***************************************/
 
-Word BURGER_API Burger::Matrix3D_t::AffineInverse(const Matrix3D_t *pInput)
+uint_t BURGER_API Burger::Matrix3D_t::AffineInverse(const Matrix3D_t *pInput)
 {
 	// Calculate the determinant of the input matrix and determine
 	// if the the matrix is singular as limited by the float precision

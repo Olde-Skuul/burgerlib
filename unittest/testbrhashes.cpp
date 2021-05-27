@@ -38,16 +38,16 @@
 
 struct HashTest_t {
 	const char* m_pString;
-	Word32 m_Adler16;
-	Word32 m_Adler32;
-	Word32 m_CRC32;
-	Word32 m_CRC32B;
+	uint32_t m_Adler16;
+	uint32_t m_Adler32;
+	uint32_t m_CRC32;
+	uint32_t m_CRC32B;
 	Burger::MD2_t m_HashMD2;
 	Burger::MD4_t m_HashMD4;
 	Burger::MD5_t m_HashMD5;
 	Burger::SHA1_t m_HashSHA1;
 	Burger::GOST_t m_HashGOST;
-	Word16 m_CRC16IBM;
+	uint16_t m_CRC16IBM;
 };
 
 static const HashTest_t g_HashTestTable[] = {
@@ -200,15 +200,15 @@ static const HashTest_t g_HashTestTable[] = {
 // Test CalcAdler16()
 //
 
-static Word TestAdler16(void)
+static uint_t TestAdler16(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const HashTest_t* pWork = g_HashTestTable;
-	WordPtr uCount = BURGER_ARRAYSIZE(g_HashTestTable);
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
-		Word32 uTester = Burger::CalcAdler16(
+		uint32_t uTester = Burger::CalcAdler16(
 			pWork->m_pString, Burger::StringLength(pWork->m_pString));
-		Word uTest = (uTester != pWork->m_Adler16);
+		uint_t uTest = (uTester != pWork->m_Adler16);
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
@@ -224,15 +224,15 @@ static Word TestAdler16(void)
 // Test CalcAdler32()
 //
 
-static Word TestAdler32(void)
+static uint_t TestAdler32(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const HashTest_t* pWork = g_HashTestTable;
-	WordPtr uCount = BURGER_ARRAYSIZE(g_HashTestTable);
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
-		Word32 uTester = Burger::CalcAdler32(
+		uint32_t uTester = Burger::CalcAdler32(
 			pWork->m_pString, Burger::StringLength(pWork->m_pString));
-		Word uTest = (uTester != pWork->m_Adler32);
+		uint_t uTest = (uTester != pWork->m_Adler32);
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
@@ -248,15 +248,15 @@ static Word TestAdler32(void)
 // Test CalcCRC32B()
 //
 
-static Word TestCRC32B(void)
+static uint_t TestCRC32B(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const HashTest_t* pWork = g_HashTestTable;
-	WordPtr uCount = BURGER_ARRAYSIZE(g_HashTestTable);
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
-		Word32 uTester = Burger::CalcCRC32B(
+		uint32_t uTester = Burger::CalcCRC32B(
 			pWork->m_pString, Burger::StringLength(pWork->m_pString));
-		Word uTest = (uTester != pWork->m_CRC32B);
+		uint_t uTest = (uTester != pWork->m_CRC32B);
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
@@ -272,15 +272,15 @@ static Word TestCRC32B(void)
 // Test CalcCRC32()
 //
 
-static Word TestCRC32(void)
+static uint_t TestCRC32(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const HashTest_t* pWork = g_HashTestTable;
-	WordPtr uCount = BURGER_ARRAYSIZE(g_HashTestTable);
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
-		Word32 uTester = Burger::CalcCRC32(
+		uint32_t uTester = Burger::CalcCRC32(
 			pWork->m_pString, Burger::StringLength(pWork->m_pString));
-		Word uTest = (uTester != pWork->m_CRC32);
+		uint_t uTest = (uTester != pWork->m_CRC32);
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure("Burger::CalcCRC32(\"%s\") = 0x%08X, expected 0x%08X",
@@ -295,15 +295,15 @@ static Word TestCRC32(void)
 // Test CalcCRC16IBM()
 //
 
-static Word TestCRC16IBM(void)
+static uint_t TestCRC16IBM(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const HashTest_t* pWork = g_HashTestTable;
-	WordPtr uCount = BURGER_ARRAYSIZE(g_HashTestTable);
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
-		Word16 uTester = Burger::CalcCRC16IBM(
+		uint16_t uTester = Burger::CalcCRC16IBM(
 			pWork->m_pString, Burger::StringLength(pWork->m_pString));
-		Word uTest = (uTester != pWork->m_CRC16IBM);
+		uint_t uTest = (uTester != pWork->m_CRC16IBM);
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
@@ -319,16 +319,16 @@ static Word TestCRC16IBM(void)
 // Test MD2
 //
 
-static Word TestMD2(void)
+static uint_t TestMD2(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const HashTest_t* pWork = g_HashTestTable;
-	WordPtr uCount = BURGER_ARRAYSIZE(g_HashTestTable);
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
 		Burger::MD2_t Tester;
 		Burger::Hash(
 			&Tester, pWork->m_pString, Burger::StringLength(pWork->m_pString));
-		Word uTest = static_cast<Word>(Burger::MemoryCompare(
+		uint_t uTest = static_cast<uint_t>(Burger::MemoryCompare(
 			Tester.m_Hash, pWork->m_HashMD2.m_Hash, sizeof(Tester)));
 		uFailure |= uTest;
 		if (uTest) {
@@ -348,16 +348,16 @@ static Word TestMD2(void)
 // Test MD4
 //
 
-static Word TestMD4(void)
+static uint_t TestMD4(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const HashTest_t* pWork = g_HashTestTable;
-	WordPtr uCount = BURGER_ARRAYSIZE(g_HashTestTable);
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
 		Burger::MD4_t Tester;
-		Burger::Hash(&Tester, (const Word8*)pWork->m_pString,
+		Burger::Hash(&Tester, (const uint8_t*)pWork->m_pString,
 			Burger::StringLength(pWork->m_pString));
-		Word uTest = static_cast<Word>(Burger::MemoryCompare(
+		uint_t uTest = static_cast<uint_t>(Burger::MemoryCompare(
 			Tester.m_Hash, pWork->m_HashMD4.m_Hash, sizeof(Tester)));
 		uFailure |= uTest;
 		if (uTest) {
@@ -377,16 +377,16 @@ static Word TestMD4(void)
 // Test MD5
 //
 
-static Word TestMD5(void)
+static uint_t TestMD5(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const HashTest_t* pWork = g_HashTestTable;
-	WordPtr uCount = BURGER_ARRAYSIZE(g_HashTestTable);
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
 		Burger::MD5_t Tester;
-		Burger::Hash(&Tester, (const Word8*)pWork->m_pString,
+		Burger::Hash(&Tester, (const uint8_t*)pWork->m_pString,
 			Burger::StringLength(pWork->m_pString));
-		Word uTest = static_cast<Word>(Burger::MemoryCompare(
+		uint_t uTest = static_cast<uint_t>(Burger::MemoryCompare(
 			Tester.m_Hash, pWork->m_HashMD5.m_Hash, sizeof(Tester)));
 		uFailure |= uTest;
 		if (uTest) {
@@ -406,16 +406,16 @@ static Word TestMD5(void)
 // Test SHA1
 //
 
-static Word TestSHA1(void)
+static uint_t TestSHA1(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const HashTest_t* pWork = g_HashTestTable;
-	WordPtr uCount = BURGER_ARRAYSIZE(g_HashTestTable);
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
 		Burger::SHA1_t Tester;
-		Burger::Hash(&Tester, (const Word8*)pWork->m_pString,
+		Burger::Hash(&Tester, (const uint8_t*)pWork->m_pString,
 			Burger::StringLength(pWork->m_pString));
-		Word uTest = static_cast<Word>(Burger::MemoryCompare(
+		uint_t uTest = static_cast<uint_t>(Burger::MemoryCompare(
 			Tester.m_Hash, pWork->m_HashSHA1.m_Hash, sizeof(Tester)));
 		uFailure |= uTest;
 		if (uTest) {
@@ -435,16 +435,16 @@ static Word TestSHA1(void)
 // Test GOST
 //
 
-static Word TestGOST(void)
+static uint_t TestGOST(void)
 {
-	Word uFailure = FALSE;
+	uint_t uFailure = FALSE;
 	const HashTest_t* pWork = g_HashTestTable;
-	WordPtr uCount = BURGER_ARRAYSIZE(g_HashTestTable);
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_HashTestTable);
 	do {
 		Burger::GOST_t Tester;
-		Burger::Hash(&Tester, (const Word8*)pWork->m_pString,
+		Burger::Hash(&Tester, (const uint8_t*)pWork->m_pString,
 			Burger::StringLength(pWork->m_pString));
-		Word uTest = static_cast<Word>(Burger::MemoryCompare(
+		uint_t uTest = static_cast<uint_t>(Burger::MemoryCompare(
 			Tester.m_Hash, pWork->m_HashGOST.m_Hash, sizeof(Tester)));
 		uFailure |= uTest;
 		if (uTest) {
@@ -463,13 +463,13 @@ static Word TestGOST(void)
 // Test hash code
 //
 
-int BURGER_API TestBrhashes(Word uVerbose)
+int BURGER_API TestBrhashes(uint_t uVerbose)
 {
 	if (uVerbose & VERBOSE_MSG) {
 		Message("Running Hashing tests");
 	}
 
-	Word uResult = TestAdler16();
+	uint_t uResult = TestAdler16();
 	uResult |= TestAdler32();
 	uResult |= TestCRC32B();
 	uResult |= TestCRC32();

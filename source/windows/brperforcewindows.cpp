@@ -55,14 +55,14 @@ Burger::Perforce::~Perforce()
 	
 ***************************************/
 
-Word BURGER_API Burger::Perforce::Init(void)
+uint_t BURGER_API Burger::Perforce::Init(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (!m_bFilenameInitialized) {
 		// Let's find the perforce EXE
 		// Check for an environment variable with the directory
 		const char *pAppdirectory = GetEnvironmentString("PERFORCE");
-		Word bFilenameInitialized = FALSE;
+		uint_t bFilenameInitialized = FALSE;
 		if (pAppdirectory) {
 			m_PerforceFilename.SetFromNative(pAppdirectory);
 			Free(pAppdirectory);
@@ -90,8 +90,8 @@ Word BURGER_API Burger::Perforce::Init(void)
 		// Fooey. Ask windows if it can find it
 
 		if (!bFilenameInitialized) {
-			Word16 Output[2048];
-			if (Windows::PathSearchAndQualifyW(reinterpret_cast<const Word16 *>(L"p4.exe"),Output,BURGER_ARRAYSIZE(Output))) {
+			uint16_t Output[2048];
+			if (Windows::PathSearchAndQualifyW(reinterpret_cast<const uint16_t *>(L"p4.exe"),Output,BURGER_ARRAYSIZE(Output))) {
 				pAppdirectory = UTF8::FromUTF16(Output);
 				m_PerforceFilename.SetFromNative(pAppdirectory);
 				Free(pAppdirectory);
@@ -114,7 +114,7 @@ Word BURGER_API Burger::Perforce::Init(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Perforce::Shutdown(void)
+uint_t BURGER_API Burger::Perforce::Shutdown(void)
 {
 	m_PerforceFilename.Clear();
 	m_bFilenameInitialized = FALSE;
@@ -127,15 +127,15 @@ Word BURGER_API Burger::Perforce::Shutdown(void)
 
 ***************************************/
 
-Word BURGER_API Burger::Perforce::Edit(const char *pFilename)
+uint_t BURGER_API Burger::Perforce::Edit(const char *pFilename)
 {
-	Word uResult = Init();
+	uint_t uResult = Init();
 	if (!uResult) {
 		Filename Translate(pFilename);
 		String Parameters("-s edit \"",Translate.GetNative(),"\"");
 		OutputMemoryStream Capture;
 		// Issue the command to Perforce
-		uResult = static_cast<Word>(Globals::ExecuteTool(m_PerforceFilename.GetPtr(),Parameters.GetPtr(),&Capture));
+		uResult = static_cast<uint_t>(Globals::ExecuteTool(m_PerforceFilename.GetPtr(),Parameters.GetPtr(),&Capture));
 		if (!uResult) {
 			// If the filename was not found (An error)
 			// it only mentions it in the stderr text. Detect it
@@ -156,15 +156,15 @@ Word BURGER_API Burger::Perforce::Edit(const char *pFilename)
 
 ***************************************/
 
-Word BURGER_API Burger::Perforce::RevertIfUnchanged(const char *pFilename)
+uint_t BURGER_API Burger::Perforce::RevertIfUnchanged(const char *pFilename)
 {
-	Word uResult = Init();
+	uint_t uResult = Init();
 	if (!uResult) {
 		Filename Translate(pFilename);
 		String Parameters("-s revert -a \"",Translate.GetNative(),"\"");
 		OutputMemoryStream Capture;
 		// Issue the command to Perforce
-		uResult = static_cast<Word>(Globals::ExecuteTool(m_PerforceFilename.GetPtr(),Parameters.GetPtr(),&Capture));
+		uResult = static_cast<uint_t>(Globals::ExecuteTool(m_PerforceFilename.GetPtr(),Parameters.GetPtr(),&Capture));
 		if (!uResult) {
 			// If the filename was not found (An error)
 			// it only mentions it in the stderr text. Detect it

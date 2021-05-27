@@ -3,7 +3,7 @@
     Determine which compiler is being used and create standardized typedefs and
     macros so generic code can be created cross platform
 
-    Copyright (c) 1995-2019 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
     It is released under an MIT Open Source license. Please see LICENSE for
     license details. Yes, you can use it in a commercial title without paying
@@ -137,12 +137,15 @@ static void BURGER_API ShowDefaultSigns(uint_t uVerbose) BURGER_NOEXCEPT
         Message("\nInteger value settings");
 
         SHOW_DEFAULT_SIGN(char);
+
 #if defined(BURGER_HAS_CHAR8_T)
         SHOW_DEFAULT_SIGN(char8_t);
 #endif
+
 #if defined(BURGER_HAS_WCHAR_T)
         SHOW_DEFAULT_SIGN(wchar_t);
 #endif
+
 #if defined(BURGER_HAS_CHAR16_T)
         SHOW_DEFAULT_SIGN(char16_t);
         SHOW_DEFAULT_SIGN(char32_t);
@@ -162,16 +165,20 @@ static void BURGER_API ShowIntrinsicSizes(uint_t uVerbose) BURGER_NOEXCEPT
         Message("\nData type sizes");
 
         SHOW_TYPE_SIZE(char);
+
 #if defined(BURGER_HAS_CHAR8_T)
         SHOW_TYPE_SIZE(char8_t);
 #endif
+
 #if defined(BURGER_HAS_WCHAR_T)
         SHOW_TYPE_SIZE(wchar_t);
 #endif
+
 #if defined(BURGER_HAS_CHAR16_T)
         SHOW_TYPE_SIZE(char16_t);
         SHOW_TYPE_SIZE(char32_t);
 #endif
+
         SHOW_TYPE_SIZE(short);
         SHOW_TYPE_SIZE(int);
         SHOW_TYPE_SIZE(long);
@@ -364,6 +371,49 @@ static void BURGER_API ShowCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
         SHOW_MACRO(__WATCOMC__);
         SHOW_MACRO(__ZTC__);
 
+        // Microsoft compiler extensions
+        SHOW_MACRO(_CHAR_UNSIGNED);
+        SHOW_MACRO(__CLR_VER);
+        SHOW_MACRO(_CONTROL_FLOW_GUARD);
+        SHOW_MACRO(_CPPRTTI);
+        SHOW_MACRO(_CPPUNWIND);
+        SHOW_MACRO(_DLL);
+        SHOW_MACRO(_INTEGRAL_MAX_BITS);
+        SHOW_MACRO(__INTELLISENSE__);
+        SHOW_MACRO(_ISO_VOLATILE);
+        SHOW_MACRO(_KERNEL_MODE);
+        SHOW_MACRO(_M_FP_EXCEPT);
+        SHOW_MACRO(_M_FP_FAST);
+        SHOW_MACRO(_M_FP_PRECISE);
+        SHOW_MACRO(_M_FP_STRICT);
+        SHOW_MACRO(_MANAGED);
+        SHOW_MACRO(_MSC_BUILD);
+        SHOW_MACRO(_MSC_EXTENSIONS);
+        SHOW_MACRO(_MSVC_LANG);
+        SHOW_MACRO(__MSVC_RUNTIME_CHECKS);
+        SHOW_MACRO(_MSVC_TRADITIONAL);
+        SHOW_MACRO(_MT);
+        SHOW_MACRO(_NATIVE_WCHAR_T_DEFINED);
+        SHOW_MACRO(_OPENMP);
+        SHOW_MACRO(_PREFAST_);
+        SHOW_MACRO(_VC_NODEFAULTLIB);
+
+        // Watcom C predefined macros
+        SHOW_MACRO(__CHAR_SIGNED__);
+        SHOW_MACRO(__CHEAP_WINDOWS__);
+        SHOW_MACRO(__INLINE_FUNCTIONS__);
+        SHOW_MACRO(NO_EXT_KEYS);
+        SHOW_MACRO(__FLAT__);
+
+		// SN Systems predefined macros
+		SHOW_MACRO(__WCHAR_T_IS_KEYWORD);
+		SHOW_MACRO(_NO_EX);
+		SHOW_MACRO(__EDG_VERSION__);
+		SHOW_MACRO(__BOOL_IS_KEYWORD);
+		SHOW_MACRO(__SIGNED_CHARS__);
+		SHOW_MACRO(__EXCEPTIONS);
+		SHOW_MACRO(__PLACEMENT_DELETE);
+
         // Print known CPU identifiers
 
         // Mips
@@ -411,10 +461,16 @@ static void BURGER_API ShowCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
         SHOW_MACRO(_M_AMD64);
         SHOW_MACRO(_M_X64);
         SHOW_MACRO(__x86_64__);
+        SHOW_MACRO(__ATOM__);
         SHOW_MACRO(__SSE__);
         SHOW_MACRO(__SSE2__);
         SHOW_MACRO(__AVX__);
         SHOW_MACRO(__AVX2__);
+        SHOW_MACRO(__AVX512BW__);
+        SHOW_MACRO(__AVX512CD__);
+        SHOW_MACRO(__AVX512DQ__);
+        SHOW_MACRO(__AVX512F__);
+        SHOW_MACRO(__AVX512VL__);
 
         // Itanium
         SHOW_MACRO(_M_IA64);
@@ -434,6 +490,7 @@ static void BURGER_API ShowCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
         SHOW_MACRO(__arm64__);
         SHOW_MACRO(__aarch64__);
         SHOW_MACRO(__ARM_NEON__);
+        SHOW_MACRO(_M_ARM_FP);
 
         // C++ feature macros, usually found in GNU or clang
 
@@ -587,7 +644,6 @@ static void BURGER_API ShowMacros(uint_t uVerbose) BURGER_NOEXCEPT
         SHOW_MACRO(BURGER_STRUCT_ALIGN);
         SHOW_MACRO(BURGER_STRUCT_PACK);
         SHOW_MACRO(BURGER_FASTCALLENABLED);
-        SHOW_MACRO(BURGER_NO_USING_NAMESPACE);
         SHOW_MACRO(BURGER_OPENGL);
         SHOW_MACRO(BURGER_OPENGLES);
         SHOW_MACRO(BURGER_VULKAN);
@@ -704,12 +760,21 @@ static uint_t BURGER_API TestCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
         SHOW_MACRO(BURGER_CLANG_VERSION);
         SHOW_MACRO(BURGER_CONSTEXPR);
         SHOW_MACRO(BURGER_OVERRIDE);
+        SHOW_MACRO(BURGER_FINAL);
+        SHOW_MACRO(BURGER_NODISCARD);
+        SHOW_MACRO(BURGER_NOEXCEPT);
+        SHOW_MACRO(BURGER_FALLTHROUGH);
+        SHOW_MACRO(BURGER_USED);
+        SHOW_MACRO(BURGER_MAYBE_UNUSED);
+        SHOW_MACRO(BURGER_DISABLE_ASAN);
+        SHOW_MACRO(BURGER_DISABLE_MSAN);
         SHOW_MACRO(nullptr);
-        SHOW_MACRO(BURGER_ENUMSTART(SampleEnum, uint_t));
-        SHOW_MACRO(BURGER_ENUMEND(SampleEnum));
+        SHOW_MACRO(BURGER_ENUM_TYPE(SampleEnum, uint_t));
+        SHOW_MACRO(BURGER_ENUM_CLASS_START(SampleEnum, uint_t));
+        SHOW_MACRO(BURGER_ENUM_CLASS_END(SampleEnum));
 
         // Disable, the macro is huge
-        // SHOW_MACRO(BURGER_ENUMFLAGSEND(SampleEnum, uint_t));
+        // SHOW_MACRO(BURGER_ENUM_CLASS_END_MATH(SampleEnum, uint_t));
 
         SHOW_MACRO(BURGER_STATIC_ASSERT(sizeof(int) == 4));
     }
@@ -1165,6 +1230,159 @@ static uint_t BURGER_API TestPlatformMacros(uint_t uVerbose) BURGER_NOEXCEPT
 
 /***************************************
 
+    Test the platform macros
+
+***************************************/
+
+BURGER_ENUM_TYPE(eTypeTest32, uint32_t) {
+    ALPHA = 1, BETA = 2, GAMMA = 4
+};
+BURGER_ENUM_MATH(eTypeTest32, uint32_t)
+
+BURGER_ENUM_CLASS_START(eEnumClass32, uint32_t) {
+    DELTA = 1, EPSILON = 2, OMEGA = 4
+}
+BURGER_ENUM_CLASS_END(eEnumClass32);
+
+BURGER_ENUM_CLASS_START(eEnumMath32, uint32_t) {
+    DELTA = 1, EPSILON = 2, OMEGA = 4
+}
+BURGER_ENUM_CLASS_END_MATH(eEnumMath32, uint32_t)
+
+static uint_t BURGER_API TestEnumMacros(uint_t uVerbose) BURGER_NOEXCEPT
+{
+    uint_t uFailure = 0;
+    uint_t uTest = 0;
+
+    if (uVerbose & VERBOSE_MSG) {
+        Message("Running Enum Macro tests");
+    }
+
+    // Should not generate compiler warnings, if it does, consider it
+    // a unit test failure.
+
+    // Test BURGER_ENUM_TYPE() and BURGER_ENUM_MATH()
+    eTypeTest32 Foo = BETA | ALPHA;
+    Foo |= GAMMA;
+
+    uTest = Foo != 7;
+    uFailure |= uTest;
+    ReportFailure("eTypeTest32 ALPHA|BETA|GAMMA should be 7, got %u.", uTest,
+        static_cast<uint_t>(Foo));
+
+    Foo = Foo & ~ALPHA;
+    uTest = Foo != 6;
+    uFailure |= uTest;
+    ReportFailure("eTypeTest32 7 & ~ALPHA should be 6, got %u.", uTest,
+        static_cast<uint_t>(Foo));
+
+    Foo &= ~BETA;
+    uTest = Foo != 4;
+    uFailure |= uTest;
+    ReportFailure("eTypeTest32 6 &= ~BETA should be 4, got %u.", uTest,
+        static_cast<uint_t>(Foo));
+
+    Foo = ALPHA ^ Foo;
+    uTest = Foo != 5;
+    uFailure |= uTest;
+    ReportFailure("eTypeTest32 4 = ALPHA ^ Foo should be 5, got %u.", uTest,
+        static_cast<uint_t>(Foo));
+
+    Foo ^= BETA;
+    uTest = Foo != 7;
+    uFailure |= uTest;
+    ReportFailure("eTypeTest32 5 ^= BETA should be 7, got %u.", uTest,
+        static_cast<uint_t>(Foo));
+
+    uTest = !Foo;
+    uFailure |= uTest;
+    ReportFailure("eTypeTest32 !Foo should be true, got %u.", uTest, uTest);
+
+    Foo &= ~(ALPHA | BETA | GAMMA);
+    uTest = !!Foo;
+    uFailure |= uTest;
+    ReportFailure("eTypeTest32 !!Foo should be false, got %u.", uTest, uTest);
+
+    // Test BURGER_ENUM_CLASS_START()
+
+    // Test constructors
+    eEnumClass32 Bar = eEnumClass32::DELTA;
+    eEnumClass32 Bar2;
+
+    // Test if the enum is switchable and assignment operator
+    Bar = eEnumClass32::EPSILON;
+    Bar2 = eEnumClass32::DELTA;
+    switch (Bar) {
+    case eEnumClass32::EPSILON:
+        uTest = FALSE;
+        break;
+    default:
+    case eEnumClass32::DELTA:
+    case eEnumClass32::OMEGA:
+        uTest = TRUE;
+        break;
+    }
+    uFailure |= uTest;
+    ReportFailure("eEnumClass32 switch failed, got %u.", uTest, uTest);
+
+    uTest = Bar < eEnumClass32::DELTA;
+    uFailure |= uTest;
+    ReportFailure("Bar < eEnumClass32::DELTA got %u.", uTest, uTest);
+
+    uTest = Bar <= Bar2;
+    uFailure |= uTest;
+    ReportFailure("Bar <= Bar2 got %u.", uTest, uTest);
+
+    uTest = Bar != eEnumClass32::EPSILON;
+    uFailure |= uTest;
+    ReportFailure("Bar != eEnumClass32::EPSILON got %u.", uTest, uTest);
+
+    uTest = Bar == eEnumClass32::DELTA;
+    uFailure |= uTest;
+    ReportFailure("Bar == eEnumClass32::DELTA got %u.", uTest, uTest);
+
+    // Test BURGER_ENUM_CLASS_END_MATH()
+
+    eEnumMath32 Foobar;
+    eEnumMath32 Barf = eEnumMath32::DELTA;
+    Foobar = eEnumMath32::EPSILON;
+    uTest = Foobar == Barf;
+    uFailure |= uTest;
+    ReportFailure("Foobar == Barf got %u.", uTest, uTest);
+
+    Foobar |= Barf;
+    Foobar |= eEnumMath32::OMEGA;
+    uTest = Barf != eEnumMath32::DELTA;
+    uFailure |= uTest;
+    ReportFailure("Barf != eEnumMath32::DELTA got %u.", uTest, uTest);
+
+    uTest = !(Barf == eEnumMath32::DELTA);
+    uFailure |= uTest;
+    ReportFailure("Barf == eEnumMath32::DELTA got %u.", uTest, uTest);
+
+    uTest = !(Barf != Foobar);
+    uFailure |= uTest;
+    ReportFailure("Barf != eEnumMath32::DELTA got %u.", uTest, uTest);
+
+    Barf = eEnumMath32::EPSILON ^ eEnumMath32::DELTA;
+    uTest = !(Barf == eEnumMath32(eEnumMath32::DELTA | eEnumMath32::EPSILON));
+    uFailure |= uTest;
+    ReportFailure("Barf != 3 got %u.", uTest, uTest);
+
+    Foobar = eEnumMath32::DELTA;
+    Barf &= ~Foobar;
+    uTest = !(Barf == eEnumMath32::EPSILON);
+    uFailure |= uTest;
+    ReportFailure("Barf == eEnumMath32::EPSILON got %u.", uTest, uTest);
+
+    if (!uFailure && (uVerbose & VERBOSE_MSG)) {
+        Message("Passed all Enum Macro tests!");
+    }
+    return uFailure;
+}
+
+/***************************************
+
     Perform the tests for the macros and compiler
     settings
 
@@ -1188,6 +1406,6 @@ int BURGER_API TestMacros(uint_t uVerbose) BURGER_NOEXCEPT
     uFailure |= TestCompilerMacros(uVerbose);
     uFailure |= TestCPUMacros(uVerbose);
     uFailure |= TestPlatformMacros(uVerbose);
-
+    uFailure |= TestEnumMacros(uVerbose);
     return static_cast<int>(uFailure);
 }

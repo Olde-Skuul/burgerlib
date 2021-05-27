@@ -1,15 +1,16 @@
 /***************************************
 
-	XM file importer
+    XM file importer
 
-	Format is found at http://www.fileformat.info/format/xm/corion.htm
+    Format is found at http://www.fileformat.info/format/xm/corion.htm
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -194,7 +195,7 @@
       (The period is interpolated for finer finetune values)
    Frequency = 8363*1712/Period;
 
-   PeriodTab = Array[0..12*8-1] of Word = (
+   PeriodTab = Array[0..12*8-1] of uint_t = (
       907,900,894,887,881,875,868,862,856,850,844,838,832,826,820,814,
       808,802,796,791,785,779,774,768,762,757,752,746,741,736,730,725,
       720,715,709,704,699,694,689,684,678,675,670,665,660,655,651,646,
@@ -285,79 +286,79 @@ struct XMHeader_t {
 	char m_ID[17];					///< "Extended Module: "
 	char m_Name[21];				///< Name of the module
 	char m_TrackerName[20];			///< Tracker name
-	Word16 m_uVersion;				///< Version number, hi-byte major and low-byte minor
-	Word32 m_uHeaderSize;			///< Header size
-	Word16 m_uSongLength;			///< Song length (in patten order table)
-	Word16 m_uRestartPosition;		///< Restart position
-	Word16 m_uChannelCount;			///< Number of channels (2,4,6,8,10,...,32)
-	Word16 m_uPatternCount;			///< Number of patterns (max 256)
-	Word16 m_uInstrumentCount;		///< Number of instruments (max 128)
-	Word16 m_uFlags;				///< Flags: bit 0: 0 = Amiga frequency table (see below) 1 = Linear frequency table
-	Word16 m_uTempo;				///< Default tempo
-	Word16 m_uBeatsPerMinute;		///< Default BPM
-	Word8 m_PatternPointers[256];	///< Pattern order table
+	uint16_t m_uVersion;				///< Version number, hi-byte major and low-byte minor
+	uint32_t m_uHeaderSize;			///< Header size
+	uint16_t m_uSongLength;			///< Song length (in patten order table)
+	uint16_t m_uRestartPosition;		///< Restart position
+	uint16_t m_uChannelCount;			///< Number of channels (2,4,6,8,10,...,32)
+	uint16_t m_uPatternCount;			///< Number of patterns (max 256)
+	uint16_t m_uInstrumentCount;		///< Number of instruments (max 128)
+	uint16_t m_uFlags;				///< Flags: bit 0: 0 = Amiga frequency table (see below) 1 = Linear frequency table
+	uint16_t m_uTempo;				///< Default tempo
+	uint16_t m_uBeatsPerMinute;		///< Default BPM
+	uint8_t m_PatternPointers[256];	///< Pattern order table
 };
 
 struct XMPatHeader_t {
-	Word32 m_uSize;			///< Pattern header length
-	Word8 m_bPacking;		///< Packing type (always 0)
-	Word16 m_uRowCount;		///< Number of rows in pattern (1..256)
-	Word16 m_uPackSize;		///< Packed patterndata size
+	uint32_t m_uSize;			///< Pattern header length
+	uint8_t m_bPacking;		///< Packing type (always 0)
+	uint16_t m_uRowCount;		///< Number of rows in pattern (1..256)
+	uint16_t m_uPackSize;		///< Packed patterndata size
 };
 
 struct XMInstrument_t {
-	Word32 m_uSize;			///< Instrument size
+	uint32_t m_uSize;			///< Instrument size
 	char m_Name[22];		///< Instrument name
-	Word8 m_bType;			///< Instrument type (always 0)
-	Word16 m_uSampleCount;	///< Number of samples in instrument
+	uint8_t m_bType;			///< Instrument type (always 0)
+	uint16_t m_uSampleCount;	///< Number of samples in instrument
 };
 
 struct XMPatch_t {
-	Word8 m_WhichSampleForNote[96];	/// Sample number for all notes
-	Word16 m_VolumeEnvelope[24];	/// Points for volume envelope
-	Word16 m_PanEnvelope[24];		/// Points for panning envelope
-	Word8 m_bVolumeEnvelopeCount;	/// Number of volume points
-	Word8 m_bPanEnvelopeCount;		/// Number of panning points
-	Word8 m_bVolumeSustainIndex;	/// Volume sustain point
-	Word8 m_bVolumeBeginIndex;		/// Volume loop start point
-	Word8 m_bVolumeEndIndex;		/// Volume loop end point
-	Word8 m_bPanSustainIndex;		/// Panning sustain point
-	Word8 m_bPanBeginIndex;			/// Panning loop start point
-	Word8 m_bPanEndIndex;			/// Panning loop end point
-	Word8 m_bVolumeEnvelopeFlags;	/// Volume type: bit 0: On; 1: Sustain; 2: Loop
-	Word8 m_bPanEnvelopeFlags;		/// Panning type: bit 0: On; 1: Sustain; 2: Loop
-	Word8 m_bVibratoFlags;			/// Vibrato type
-	Word8 m_bVibratoSweep;			/// Vibrato sweep
-	Word8 m_bVibratoDepth;			/// Vibrato depth
-	Word8 m_bVibratoSpeed;			/// Vibrato rate
-	Word16 m_uVolumeFade;			/// Volume fadeout
-	Word16 m_Reserved[11];			/// Reserved
+	uint8_t m_WhichSampleForNote[96];	/// Sample number for all notes
+	uint16_t m_VolumeEnvelope[24];	/// Points for volume envelope
+	uint16_t m_PanEnvelope[24];		/// Points for panning envelope
+	uint8_t m_bVolumeEnvelopeCount;	/// Number of volume points
+	uint8_t m_bPanEnvelopeCount;		/// Number of panning points
+	uint8_t m_bVolumeSustainIndex;	/// Volume sustain point
+	uint8_t m_bVolumeBeginIndex;		/// Volume loop start point
+	uint8_t m_bVolumeEndIndex;		/// Volume loop end point
+	uint8_t m_bPanSustainIndex;		/// Panning sustain point
+	uint8_t m_bPanBeginIndex;			/// Panning loop start point
+	uint8_t m_bPanEndIndex;			/// Panning loop end point
+	uint8_t m_bVolumeEnvelopeFlags;	/// Volume type: bit 0: On; 1: Sustain; 2: Loop
+	uint8_t m_bPanEnvelopeFlags;		/// Panning type: bit 0: On; 1: Sustain; 2: Loop
+	uint8_t m_bVibratoFlags;			/// Vibrato type
+	uint8_t m_bVibratoSweep;			/// Vibrato sweep
+	uint8_t m_bVibratoDepth;			/// Vibrato depth
+	uint8_t m_bVibratoSpeed;			/// Vibrato rate
+	uint16_t m_uVolumeFade;			/// Volume fadeout
+	uint16_t m_Reserved[11];			/// Reserved
 };
 
 struct XMSample_t {
-	Word32 m_uLength;		/// Sample length
-	Word32 m_uLoopStart;	/// Sample loop start
-	Word32 m_uLoopLength;	/// Sample loop length
-	Word8 m_bVolume;		/// Volume
+	uint32_t m_uLength;		/// Sample length
+	uint32_t m_uLoopStart;	/// Sample loop start
+	uint32_t m_uLoopLength;	/// Sample loop length
+	uint8_t m_bVolume;		/// Volume
 	char m_bFineTune;		/// Finetune (signed byte -128..+127)
-	Word8 m_bType;			/// Type: Bit 0-1: 0 = No loop, 1 = Forward loop,
+	uint8_t m_bType;			/// Type: Bit 0-1: 0 = No loop, 1 = Forward loop,
 	// 2 = Ping-pong loop;
 	// 4: 16-bit sampledata
-	Word8 m_bPanning;		/// Panning (0-255)
+	uint8_t m_bPanning;		/// Panning (0-255)
 	char m_bRelNote;		/// Relative note number (signed byte)
-	Word8 m_bReserved;		/// Reserved
+	uint8_t m_bReserved;		/// Reserved
 	char m_Name[22];		/// Sample name
 };
 
 struct XMNote_t {
-	Word8 m_uNote;
-	Word8 m_uInstrument;
-	Word8 m_uVolume;
-	Word8 m_uEffectCommand;
-	Word8 m_uEffectArgument;
+	uint8_t m_uNote;
+	uint8_t m_uInstrument;
+	uint8_t m_uVolume;
+	uint8_t m_uEffectCommand;
+	uint8_t m_uEffectArgument;
 };
 
-static const Word g_FineTune[16] = {
+static const uint_t g_FineTune[16] = {
 	7895,7941,7985,8046,8107,8169,8232,8280,
 	8363,8413,8463,8529,8581,8651,8723,8757
 };
@@ -374,23 +375,23 @@ static const Word g_FineTune[16] = {
 	\param pOutput Pointer to the command to receive the translated values
 	\param pInput Pointer to the input stream
 	\return Pointer to the data stream after parsing out a single command
-	\sa ImportXM(Sequencer::SongPackage *,const Word8 *,WordPtr)
+	\sa ImportXM(Sequencer::SongPackage *,const uint8_t *,uintptr_t)
 
 ***************************************/
 
-const Word8 * BURGER_API Burger::ImportXMEffect(Sequencer::Command_t *pOutput,const Word8 *pInput)
+const uint8_t * BURGER_API Burger::ImportXMEffect(Sequencer::Command_t *pOutput,const uint8_t *pInput)
 {
 	//
 	// First step, decompress the note packet from the stream
 	//
 
-	Word uNote;
-	Word uInstrument;
-	Word uVolume;
-	Word uEffectCommand;
-	Word uEffectArgument;
+	uint_t uNote;
+	uint_t uInstrument;
+	uint_t uVolume;
+	uint_t uEffectCommand;
+	uint_t uEffectArgument;
 
-	Word uFlags = pInput[0];
+	uint_t uFlags = pInput[0];
 	if (uFlags&0x80U) {
 		++pInput;
 
@@ -495,12 +496,12 @@ const Word8 * BURGER_API Burger::ImportXMEffect(Sequencer::Command_t *pOutput,co
 
 	//
 	// Store in the output
-	//
-	pOutput->m_uInstrument = static_cast<Word8>(uInstrument);
-	pOutput->m_uNote = static_cast<Word8>(uNote);
-	pOutput->m_uVolume = static_cast<Word8>(uVolume);
-	pOutput->m_uEffectCommand = static_cast<Word8>(uEffectCommand);
-	pOutput->m_uEffectArgument = static_cast<Word8>(uEffectArgument);
+    //
+    pOutput->m_uInstrument = static_cast<uint8_t>(uInstrument);
+	pOutput->m_uNote = static_cast<uint8_t>(uNote);
+	pOutput->m_uVolume = static_cast<uint8_t>(uVolume);
+	pOutput->m_uEffectCommand = static_cast<uint8_t>(uEffectCommand);
+	pOutput->m_uEffectArgument = static_cast<uint8_t>(uEffectArgument);
 
 	// Return the adjusted input pointer
 
@@ -517,13 +518,13 @@ const Word8 * BURGER_API Burger::ImportXMEffect(Sequencer::Command_t *pOutput,co
 	\param pInput Pointer to the XM file
 	\param uInputLength Length of the input data
 	\return Zero if no error, non-zero if error
-	\sa ImportXMEffect(Sequencer::Command_t *,const Word8 *)
+	\sa ImportXMEffect(Sequencer::Command_t *,const uint8_t *)
 
 ***************************************/
 
-Word BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const Word8 *pInput,WordPtr uInputLength)
+uint_t BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const uint8_t *pInput,uintptr_t uInputLength)
 {
-	Word uResult = Sequencer::IMPORT_UNKNOWN;
+	uint_t uResult = Sequencer::IMPORT_UNKNOWN;
 	const XMHeader_t *pXMHeader = static_cast<const XMHeader_t*>(static_cast<const void *>(pInput));
 	if ((uInputLength>=sizeof(XMHeader_t)) &&
 		(!MemoryCompare(pXMHeader->m_ID,"Extended Module: ",17)) &&
@@ -534,7 +535,7 @@ Word BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const Word8 *pI
 
 		// Get the counts
 			
-		Word uInstrumentCount = LittleEndian::Load(&pXMHeader->m_uInstrumentCount);
+		uint_t uInstrumentCount = LittleEndian::Load(&pXMHeader->m_uInstrumentCount);
 		if (uInstrumentCount>Sequencer::cInstrumentMaxCount) {
 			uInstrumentCount = Sequencer::cInstrumentMaxCount;
 		}
@@ -543,8 +544,8 @@ Word BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const Word8 *pI
 
 		pOutput->Shutdown();
 		pOutput->m_SongDescription.SetName(pXMHeader->m_Name);
-		Word uOrderCount = LittleEndian::Load(&pXMHeader->m_uSongLength);
-		Word uPatternCount = LittleEndian::Load(&pXMHeader->m_uPatternCount);
+		uint_t uOrderCount = LittleEndian::Load(&pXMHeader->m_uSongLength);
+		uint_t uPatternCount = LittleEndian::Load(&pXMHeader->m_uPatternCount);
 		pOutput->m_SongDescription.m_uPatternCount = uPatternCount;
 		pOutput->m_SongDescription.m_uPointerCount = uOrderCount;
 		pOutput->m_SongDescription.m_uDefaultSpeed = LittleEndian::Load(&pXMHeader->m_uTempo);
@@ -563,9 +564,9 @@ Word BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const Word8 *pI
 		//
 
 		if (uOrderCount) {
-			Word uIndex = 0;
+			uint_t uIndex = 0;
 			do {
-				Word uPattern = pXMHeader->m_PatternPointers[uIndex];
+				uint_t uPattern = pXMHeader->m_PatternPointers[uIndex];
 				if (uPattern >= uPatternCount) {
 					uPattern = uPatternCount-1;
 				}
@@ -577,7 +578,7 @@ Word BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const Word8 *pI
 		// Initialize the pans and volumes
 		//
 
-		Word i = 0;
+		uint_t i = 0;
 		do {
 			// Use the truth table for setting pans
 			// 1 0 0 1 1 0 0 1 1 0 0 1 1 0
@@ -603,13 +604,13 @@ Word BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const Word8 *pI
 
 		uResult = Sequencer::IMPORT_OKAY;
 		if (uPatternCount) {
-			Word uChannelCount = pOutput->m_SongDescription.m_uChannelCount;
+			uint_t uChannelCount = pOutput->m_SongDescription.m_uChannelCount;
 			i = 0;
 			do {
-				Word uSize = LittleEndian::LoadAny(static_cast<const Word32 *>(static_cast<const void *>(pInput)));	// m_uSize
-//				Word bPacking = pInput[4];		// m_bPacking
-				Word uRowCount = LittleEndian::LoadAny(static_cast<const Word16 *>(static_cast<const void *>(pInput+5)));	// m_uRowCount
-				Word uPackSize = LittleEndian::LoadAny(static_cast<const Word16 *>(static_cast<const void *>(pInput+7)));		// m_uPackSize
+				uint_t uSize = LittleEndian::LoadAny(static_cast<const uint32_t *>(static_cast<const void *>(pInput)));	// m_uSize
+//				uint_t bPacking = pInput[4];		// m_bPacking
+				uint_t uRowCount = LittleEndian::LoadAny(static_cast<const uint16_t *>(static_cast<const void *>(pInput+5)));	// m_uRowCount
+				uint_t uPackSize = LittleEndian::LoadAny(static_cast<const uint16_t *>(static_cast<const void *>(pInput+7)));		// m_uPackSize
 				if (uInputLength<uSize) {
 					uResult = Sequencer::IMPORT_TRUNCATION;
 					break;
@@ -631,15 +632,15 @@ Word BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const Word8 *pI
 					pOutput->m_pPartitions[i] = pPatternData;
 					
 					if (uRowCount && uChannelCount) {
-						const Word8 *pTempInput = pInput;
-						Word uRowIndex = 0;
+						const uint8_t *pTempInput = pInput;
+						uint_t uRowIndex = 0;
 						do {
-							Word uChannel = 0;
+							uint_t uChannel = 0;
 							do {
 								pInput = ImportXMEffect(pPatternData->GetCommand(static_cast<int>(uRowIndex),static_cast<int>(uChannel)),pInput);
 							} while (++uChannel<uChannelCount);
 						} while (++uRowIndex<uRowCount);
-						WordPtr uConsumed = static_cast<WordPtr>(pInput-pTempInput);
+						uintptr_t uConsumed = static_cast<uintptr_t>(pInput-pTempInput);
 						if (uInputLength<uConsumed) {
 							uResult = Sequencer::IMPORT_TRUNCATION;
 							break;
@@ -674,7 +675,7 @@ Word BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const Word8 *pI
 
 			if (uInstrumentCount) {
 				Sequencer::InstrData_t *pInstrData = pOutput->m_InstrDatas;
-				Word uInstrument = 0;
+				uint_t uInstrument = 0;
 				do {
 					//
 					// Is there data?
@@ -684,13 +685,13 @@ Word BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const Word8 *pI
 						break;
 					}
 
-					const Word8 *pTempInput = pInput;
+					const uint8_t *pTempInput = pInput;
 					// XMInstrument_t is not native aligned, manually extract the data
 
-					Word uSize = LittleEndian::LoadAny((Word32 *)pInput);
+					uint_t uSize = LittleEndian::LoadAny((uint32_t *)pInput);
 					pInstrData->SetName(static_cast<const char *>(static_cast<const void *>(pInput+4)));
-					//Word bType = pInput[26];
-					Word uSampleCount = LittleEndian::LoadAny(static_cast<const Word16 *>(static_cast<const void *>(pInput+27)));
+					//uint_t bType = pInput[26];
+					uint_t uSampleCount = LittleEndian::LoadAny(static_cast<const uint16_t *>(static_cast<const void *>(pInput+27)));
 					pInstrData->m_uNumberSamples = uSampleCount;
 					// Consume the structure
 					pInput += 29;
@@ -698,10 +699,10 @@ Word BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const Word8 *pI
 					//
 					// Was there a patch?
 					//
-					Word uSampleSize = 0;
+					uint_t uSampleSize = 0;
 					if (uSampleCount) {
 						// Get the size of the data
-						uSampleSize = LittleEndian::LoadAny(static_cast<const Word32*>(static_cast<const void *>(pInput)));
+						uSampleSize = LittleEndian::LoadAny(static_cast<const uint32_t*>(static_cast<const void *>(pInput)));
 
 						// Get the pointer to the patch
 						const XMPatch_t *pPatch = static_cast<const XMPatch_t *>(static_cast<const void *>(pInput+4));
@@ -728,10 +729,10 @@ Word BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const Word8 *pI
 						pInstrData->m_uVolumeEndIndex = pPatch->m_bVolumeEndIndex;
 
 						if (pInstrData->m_uVolumeBeginIndex >= pInstrData->m_uVolumeEnvelopeCount) {
-							pInstrData->m_uVolumeBeginIndex = static_cast<Word8>(pInstrData->m_uVolumeEnvelopeCount-1U);
+							pInstrData->m_uVolumeBeginIndex = static_cast<uint8_t>(pInstrData->m_uVolumeEnvelopeCount-1U);
 						}
 						if (pInstrData->m_uVolumeEndIndex >= pInstrData->m_uVolumeEnvelopeCount) {
-							pInstrData->m_uVolumeEndIndex = static_cast<Word8>(pInstrData->m_uVolumeEnvelopeCount-1U);
+							pInstrData->m_uVolumeEndIndex = static_cast<uint8_t>(pInstrData->m_uVolumeEnvelopeCount-1U);
 						}
 						pInstrData->m_uVolumeFadeSpeed = LittleEndian::LoadAny(&pPatch->m_uVolumeFade);
 
@@ -752,10 +753,10 @@ Word BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const Word8 *pI
 						pInstrData->m_uPanEndIndex = pPatch->m_bPanEndIndex;
 
 						if (pInstrData->m_uPanBeginIndex >= pInstrData->m_uPanEnvelopeCount) {
-							pInstrData->m_uPanBeginIndex = static_cast<Word8>(pInstrData->m_uPanEnvelopeCount-1);
+							pInstrData->m_uPanBeginIndex = static_cast<uint8_t>(pInstrData->m_uPanEnvelopeCount-1);
 						}
 						if (pInstrData->m_uPanEndIndex >= pInstrData->m_uPanEnvelopeCount) {
-							pInstrData->m_uPanEndIndex = static_cast<Word8>(pInstrData->m_uPanEnvelopeCount-1);
+							pInstrData->m_uPanEndIndex = static_cast<uint8_t>(pInstrData->m_uPanEnvelopeCount-1);
 						}
 					}
 
@@ -775,7 +776,7 @@ Word BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const Word8 *pI
 					//
 
 					if (uSampleCount) {
-						Word uSampleIndex = 0;
+						uint_t uSampleIndex = 0;
 						do {
 							const XMSample_t *pXMSample = static_cast<const XMSample_t *>(static_cast<const void *>(pInput));
 							if (uInputLength<uSampleSize) {
@@ -829,7 +830,7 @@ Word BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const Word8 *pI
 					//
 
 					if (uSampleCount) {
-						Word uSampleIndex = 0;
+						uint_t uSampleIndex = 0;
 						do {
 
 							Sequencer::SampleDescription *pSampleDescription = pOutput->m_pSampleDescriptions[uInstrument*Sequencer::cSampleMaxCount + uSampleIndex];
@@ -846,32 +847,32 @@ Word BURGER_API Burger::ImportXM(Sequencer::SongPackage *pOutput,const Word8 *pI
 								uResult = Sequencer::IMPORT_TRUNCATION;
 								break;
 							}
-							const Word8 *pSource = pInput;
+							const uint8_t *pSource = pInput;
 							pInput += pSampleDescription->m_uSampleSize;
 							uInputLength -= pSampleDescription->m_uSampleSize;
 
 							if (pSampleDescription->m_uBitsPerSample == 16) {				
 								// Delta to Real
-								WordPtr uCounter = pSampleDescription->m_uSampleSize>>1U;
+								uintptr_t uCounter = pSampleDescription->m_uSampleSize>>1U;
 								if (uCounter) {
-									Word uTemp = 0;
+									uint_t uTemp = 0;
 									do {
-										uTemp = LittleEndian::LoadAny(static_cast<const Word16 *>(static_cast<const void *>(pSource))) + uTemp;
-										static_cast<Word16 *>(pDestination)[0] = static_cast<Word16>(uTemp);
+										uTemp = LittleEndian::LoadAny(static_cast<const uint16_t *>(static_cast<const void *>(pSource))) + uTemp;
+										static_cast<uint16_t *>(pDestination)[0] = static_cast<uint16_t>(uTemp);
 										pSource+=2;
-										pDestination=static_cast<Word16 *>(pDestination)+1;
+										pDestination=static_cast<uint16_t *>(pDestination)+1;
 									} while (--uCounter);
 								}
 							} else {
 								// Delta to Real
-								WordPtr uCounter = pSampleDescription->m_uSampleSize;
+								uintptr_t uCounter = pSampleDescription->m_uSampleSize;
 								if (uCounter) {
-									Word uTemp = 0;
+									uint_t uTemp = 0;
 									do {
 										uTemp = pSource[0] + uTemp;
-										static_cast<Word8 *>(pDestination)[0] = static_cast<Word8>(uTemp);
+										static_cast<uint8_t *>(pDestination)[0] = static_cast<uint8_t>(uTemp);
 										++pSource;
-										pDestination=static_cast<Word8 *>(pDestination)+1;
+										pDestination=static_cast<uint8_t *>(pDestination)+1;
 									} while (--uCounter);
 								}
 							}

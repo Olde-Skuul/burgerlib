@@ -1,13 +1,14 @@
 /***************************************
 
-	Base display context class
+    Base display context class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -46,14 +47,14 @@
 
 	\code
 		int Color = 0;		// Value from -255 to 255
-		Word uSquare = Renderer::ByteSquareTable[Color+255];	// Square
+		uint_t uSquare = Renderer::ByteSquareTable[Color+255];	// Square
 	\endcode
 
 	\sa Burger::Palette::FindColorIndex()
 
 ***************************************/
 
-const Word Burger::Renderer::ByteSquareTable[255+256] = {
+const uint_t Burger::Renderer::ByteSquareTable[255+256] = {
 	65025,64516,64009,63504,63001,62500,62001,61504,	// -255 to -248
 	61009,60516,60025,59536,59049,58564,58081,57600,	// -247 to -240
 	57121,56644,56169,55696,55225,54756,54289,53824,	// -239 to -232
@@ -121,25 +122,25 @@ const Word Burger::Renderer::ByteSquareTable[255+256] = {
 
 // Docs in the header
 
-BURGER_ALIGN(const Word8, Burger::Renderer::RGB2ToRGB3Table[4],4) = {0x00,0x02,0x05,0x07};
-BURGER_ALIGN(const Word8, Burger::Renderer::RGB2ToRGB4Table[4],4) = {0x00,0x05,0x0A,0x0F};
-BURGER_ALIGN(const Word8, Burger::Renderer::RGB2ToRGB5Table[4],4) = {0x00,0x0A,0x15,0x1F};
-BURGER_ALIGN(const Word8, Burger::Renderer::RGB2ToRGB6Table[4],4) = {0x00,0x15,0x2A,0x3F};
-BURGER_ALIGN(const Word8, Burger::Renderer::RGB2ToRGB8Table[4],4) = {0x00,0x55,0xAA,0xFF};
-BURGER_ALIGN(const Word8, Burger::Renderer::RGB3ToRGB4Table[8],8) = {0x00,0x02,0x04,0x06,0x09,0x0B,0x0D,0x0F};
-BURGER_ALIGN(const Word8, Burger::Renderer::RGB3ToRGB5Table[8],8) = {0x00,0x04,0x09,0x0D,0x12,0x16,0x1B,0x1F};
-BURGER_ALIGN(const Word8, Burger::Renderer::RGB3ToRGB6Table[8],8) = {0x00,0x09,0x12,0x1B,0x24,0x2D,0x36,0x3F};
-BURGER_ALIGN(const Word8, Burger::Renderer::RGB3ToRGB8Table[8],8) = {0x00,0x24,0x49,0x6D,0x92,0xB6,0xDB,0xFF};
-BURGER_ALIGN(const Word8, Burger::Renderer::RGB4ToRGB5Table[16],16) = {
+BURGER_ALIGN(const uint8_t, Burger::Renderer::RGB2ToRGB3Table[4], 4) = {0x00, 0x02, 0x05, 0x07};
+BURGER_ALIGN(const uint8_t, Burger::Renderer::RGB2ToRGB4Table[4],4) = {0x00,0x05,0x0A,0x0F};
+BURGER_ALIGN(const uint8_t, Burger::Renderer::RGB2ToRGB5Table[4],4) = {0x00,0x0A,0x15,0x1F};
+BURGER_ALIGN(const uint8_t, Burger::Renderer::RGB2ToRGB6Table[4],4) = {0x00,0x15,0x2A,0x3F};
+BURGER_ALIGN(const uint8_t, Burger::Renderer::RGB2ToRGB8Table[4],4) = {0x00,0x55,0xAA,0xFF};
+BURGER_ALIGN(const uint8_t, Burger::Renderer::RGB3ToRGB4Table[8],8) = {0x00,0x02,0x04,0x06,0x09,0x0B,0x0D,0x0F};
+BURGER_ALIGN(const uint8_t, Burger::Renderer::RGB3ToRGB5Table[8],8) = {0x00,0x04,0x09,0x0D,0x12,0x16,0x1B,0x1F};
+BURGER_ALIGN(const uint8_t, Burger::Renderer::RGB3ToRGB6Table[8],8) = {0x00,0x09,0x12,0x1B,0x24,0x2D,0x36,0x3F};
+BURGER_ALIGN(const uint8_t, Burger::Renderer::RGB3ToRGB8Table[8],8) = {0x00,0x24,0x49,0x6D,0x92,0xB6,0xDB,0xFF};
+BURGER_ALIGN(const uint8_t, Burger::Renderer::RGB4ToRGB5Table[16],16) = {
 	0x00,0x02,0x04,0x06,0x08,0x0A,0x0C,0x0E,
 	0x11,0x13,0x15,0x17,0x19,0x1B,0x1D,0x1F};
-BURGER_ALIGN(const Word8, Burger::Renderer::RGB4ToRGB6Table[16],16) = {
+BURGER_ALIGN(const uint8_t, Burger::Renderer::RGB4ToRGB6Table[16],16) = {
 	0x00,0x04,0x08,0x0D,0x11,0x15,0x19,0x1D,
 	0x22,0x26,0x2A,0x2E,0x32,0x37,0x3B,0x3F};
-BURGER_ALIGN(const Word8, Burger::Renderer::RGB4ToRGB8Table[16],16) = {
+BURGER_ALIGN(const uint8_t, Burger::Renderer::RGB4ToRGB8Table[16],16) = {
 	0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,
 	0x88,0x99,0xAA,0xBB,0xCC,0xDD,0xEE,0xFF};
-BURGER_ALIGN(const Word8, Burger::Renderer::RGB5ToRGB6Table[32],16) = {
+BURGER_ALIGN(const uint8_t, Burger::Renderer::RGB5ToRGB6Table[32],16) = {
 	0x00,0x02,0x04,0x06,0x08,0x0A,0x0C,0x0E,
 	0x10,0x12,0x14,0x16,0x18,0x1A,0x1C,0x1E,
 	0x21,0x23,0x25,0x27,0x29,0x2B,0x2D,0x2F,
@@ -156,7 +157,7 @@ BURGER_ALIGN(const Word8, Burger::Renderer::RGB5ToRGB6Table[32],16) = {
 
 ***************************************/
 
-BURGER_ALIGN(const Word8, Burger::Renderer::RGB5ToRGB8Table[32],16) = {
+BURGER_ALIGN(const uint8_t, Burger::Renderer::RGB5ToRGB8Table[32],16) = {
 	0x00,0x08,0x10,0x18,0x21,0x29,0x31,0x39,
 	0x42,0x4A,0x52,0x5A,0x63,0x6B,0x73,0x7B,
 	0x84,0x8C,0x94,0x9C,0xA5,0xAD,0xB5,0xBD,
@@ -173,7 +174,7 @@ BURGER_ALIGN(const Word8, Burger::Renderer::RGB5ToRGB8Table[32],16) = {
 
 ***************************************/
 
-BURGER_ALIGN(const Word8, Burger::Renderer::RGB6ToRGB8Table[64],16) = {
+BURGER_ALIGN(const uint8_t, Burger::Renderer::RGB6ToRGB8Table[64],16) = {
 	0x00,0x04,0x08,0x0C,0x10,0x14,0x18,0x1C,
 	0x20,0x24,0x28,0x2C,0x30,0x34,0x38,0x3C,
 	0x41,0x45,0x49,0x4D,0x51,0x55,0x59,0x5D,
@@ -237,7 +238,7 @@ Burger::Renderer::~Renderer()
 
 ***************************************/
 
-Word Burger::Renderer::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
+uint_t Burger::Renderer::Init(uint_t uWidth,uint_t uHeight,uint_t uDepth,uint_t uFlags)
 {
 	m_uWidth = uWidth;
 	m_uHeight = uHeight;
@@ -306,7 +307,7 @@ void Burger::Renderer::EndScene(void)
 
 ***************************************/
 
-void Burger::Renderer::Draw8BitPixels(int /* iX */,int /* iY */,Word /* uWidth */,Word /* uHeight */,WordPtr /* uStride */,const Word8 * /* pPixels */)
+void Burger::Renderer::Draw8BitPixels(int /* iX */,int /* iY */,uint_t /* uWidth */,uint_t /* uHeight */,uintptr_t /* uStride */,const uint8_t * /* pPixels */)
 {
 }
 
@@ -329,7 +330,7 @@ void Burger::Renderer::Draw8BitPixels(int /* iX */,int /* iY */,Word /* uWidth *
 	
 ***************************************/
 
-void Burger::Renderer::Draw8BitPixelsMasked(int /* iX */,int /* iY */,Word /* uWidth */,Word /* uHeight */,WordPtr /* uStride */,const Word8 * /* pPixels */)
+void Burger::Renderer::Draw8BitPixelsMasked(int /* iX */,int /* iY */,uint_t /* uWidth */,uint_t /* uHeight */,uintptr_t /* uStride */,const uint8_t * /* pPixels */)
 {
 }
 
@@ -349,7 +350,7 @@ void Burger::Renderer::Draw8BitPixelsMasked(int /* iX */,int /* iY */,Word /* uW
 	
 ***************************************/
 
-void Burger::Renderer::DrawPixel(int /* iX */,int /* iY */,Word /* uColorIndex */)
+void Burger::Renderer::DrawPixel(int /* iX */,int /* iY */,uint_t /* uColorIndex */)
 {
 }
 
@@ -368,7 +369,7 @@ void Burger::Renderer::DrawPixel(int /* iX */,int /* iY */,Word /* uColorIndex *
 	
 ***************************************/
 
-void Burger::Renderer::DrawRect(int /* iX */,int /* iY */,Word /* uWidth */,Word /* uHeight */,Word /* uColorIndex */)
+void Burger::Renderer::DrawRect(int /* iX */,int /* iY */,uint_t /* uWidth */,uint_t /* uHeight */,uint_t /* uColorIndex */)
 {
 }
 
@@ -383,7 +384,7 @@ void Burger::Renderer::DrawRect(int /* iX */,int /* iY */,Word /* uWidth */,Word
 
 ***************************************/
 
-void Burger::Renderer::Clear(Word uColorIndex)
+void Burger::Renderer::Clear(uint_t uColorIndex)
 {
 	DrawRect(0,0,m_uWidth,m_uHeight,uColorIndex);
 }
@@ -480,7 +481,7 @@ void Burger::Renderer::UpdateClip(void)
 
 /*! ************************************
 
-	\fn Burger::Renderer::SetStride(WordPtr)
+	\fn Burger::Renderer::SetStride(uintptr_t)
 	\brief Set the width in bytes of the display buffer scan line
 	
 	\note This value is only used in software renderers
@@ -641,7 +642,7 @@ void Burger::Renderer::SetClip(int iLeft,int iTop,int iRight,int iBottom)
 
 ***************************************/
 
-void Burger::Renderer::DrawShape8Bit(int iX,int iY,RezFile *pRezFile,Word uRezNum)
+void Burger::Renderer::DrawShape8Bit(int iX,int iY,RezFile *pRezFile,uint_t uRezNum)
 {
 	// Load the resource
 	const Shape8Bit_t *pShape = Shape8Bit_t::Load(pRezFile,uRezNum);
@@ -663,7 +664,7 @@ void Burger::Renderer::DrawShape8Bit(int iX,int iY,RezFile *pRezFile,Word uRezNu
 
 ***************************************/
 
-void Burger::Renderer::DrawShape8BitCentered(RezFile *pRezFile,Word uRezNum)
+void Burger::Renderer::DrawShape8BitCentered(RezFile *pRezFile,uint_t uRezNum)
 {
 	// Load the resource
 	const Shape8Bit_t *pShape = Shape8Bit_t::Load(pRezFile,uRezNum);	
@@ -691,7 +692,7 @@ void Burger::Renderer::DrawShape8BitCentered(RezFile *pRezFile,Word uRezNum)
 
 ***************************************/
 
-void Burger::Renderer::DrawShape8BitMasked(int iX,int iY,RezFile *pRezFile,Word uRezNum)
+void Burger::Renderer::DrawShape8BitMasked(int iX,int iY,RezFile *pRezFile,uint_t uRezNum)
 {
 	// Load the resource
 	const Shape8Bit_t *pShape = Shape8Bit_t::Load(pRezFile,uRezNum);
@@ -713,7 +714,7 @@ void Burger::Renderer::DrawShape8BitMasked(int iX,int iY,RezFile *pRezFile,Word 
 
 ***************************************/
 
-void Burger::Renderer::DrawShape8BitMaskedCentered(RezFile *pRezFile,Word uRezNum)
+void Burger::Renderer::DrawShape8BitMaskedCentered(RezFile *pRezFile,uint_t uRezNum)
 {
 	// Load the resource
 	const Shape8Bit_t *pShape = Shape8Bit_t::Load(pRezFile,uRezNum);

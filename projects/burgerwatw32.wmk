@@ -84,11 +84,11 @@ SOURCE_DIRS +=;../source/graphics/effects
 SOURCE_DIRS +=;../source/graphics/shaders
 SOURCE_DIRS +=;../source/graphics/shadersdx9/generated
 SOURCE_DIRS +=;../source/graphics/shadersopengl/generated
+SOURCE_DIRS +=;../source/graphics/vulkan
 SOURCE_DIRS +=;../source/input
 SOURCE_DIRS +=;../source/lowlevel
 SOURCE_DIRS +=;../source/math
 SOURCE_DIRS +=;../source/memory
-SOURCE_DIRS +=;../source/network
 SOURCE_DIRS +=;../source/random
 SOURCE_DIRS +=;../source/text
 SOURCE_DIRS +=;../source/windows
@@ -312,6 +312,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brfont.obj &
 	$(A)/brfont4bit.obj &
 	$(A)/brfpinfo.obj &
+	$(A)/brfplargeint.obj &
 	$(A)/brgameapp.obj &
 	$(A)/brglobalmemorymanager.obj &
 	$(A)/brglobals.obj &
@@ -352,15 +353,8 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brmicrosoftadpcm.obj &
 	$(A)/brmouse.obj &
 	$(A)/brmousewindows.obj &
-	$(A)/brmp3.obj &
 	$(A)/brmp3math.obj &
-	$(A)/brnetendpoint.obj &
-	$(A)/brnetendpointtcp.obj &
-	$(A)/brnetmanager.obj &
 	$(A)/brnetmanagerwindows.obj &
-	$(A)/brnetmodule.obj &
-	$(A)/brnetmoduletcp.obj &
-	$(A)/brnetplay.obj &
 	$(A)/brnumberstring.obj &
 	$(A)/brnumberstringhex.obj &
 	$(A)/brnumberto.obj &
@@ -429,6 +423,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brvertexbuffer.obj &
 	$(A)/brvertexbufferdirextx9.obj &
 	$(A)/brvertexbufferopengl.obj &
+	$(A)/brvulkanerrors.obj &
 	$(A)/brwin1252.obj &
 	$(A)/brwindowsapp.obj &
 	$(A)/brwindowsd3d.obj &

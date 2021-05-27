@@ -53,20 +53,20 @@ protected:
     BURGER_DISABLE_COPY(InputMemoryStream);
 
 public:
-    InputMemoryStream();
-    InputMemoryStream(const char* pFilename);
-    InputMemoryStream(Filename* pFilename);
+    InputMemoryStream() BURGER_NOEXCEPT;
+    InputMemoryStream(const char* pFilename) BURGER_NOEXCEPT;
+    InputMemoryStream(Filename* pFilename) BURGER_NOEXCEPT;
     InputMemoryStream(
-        const void* pBuffer, WordPtr uBufferSize, Word bDontFree = FALSE);
+        const void* pBuffer, uintptr_t uBufferSize, uint_t bDontFree = FALSE) BURGER_NOEXCEPT;
     ~InputMemoryStream();
-    Word BURGER_API Open(const char* pFilename);
-    Word BURGER_API Open(Filename* pFilename);
+    uint_t BURGER_API Open(const char* pFilename) BURGER_NOEXCEPT;
+    uint_t BURGER_API Open(Filename* pFilename) BURGER_NOEXCEPT;
     void BURGER_API Open(
-        const void* pBuffer, WordPtr uBufferSize, Word bDontFree = FALSE);
-    void BURGER_API Clear(void);
-    void BURGER_API SkipForward(WordPtr uOffset);
-    void BURGER_API SkipBack(WordPtr uOffset);
-    void BURGER_API SetMark(WordPtr uOffset);
+        const void* pBuffer, uintptr_t uBufferSize, uint_t bDontFree = FALSE) BURGER_NOEXCEPT;
+    void BURGER_API Clear(void) BURGER_NOEXCEPT;
+    void BURGER_API SkipForward(uintptr_t uOffset) BURGER_NOEXCEPT;
+    void BURGER_API SkipBack(uintptr_t uOffset) BURGER_NOEXCEPT;
+    void BURGER_API SetMark(uintptr_t uOffset) BURGER_NOEXCEPT;
 
     BURGER_INLINE const uint8_t* GetPtr(void) const BURGER_NOEXCEPT
     {
@@ -74,7 +74,7 @@ public:
     }
     BURGER_INLINE uintptr_t GetMark(void) const BURGER_NOEXCEPT
     {
-        return static_cast<WordPtr>(m_pWork - m_pData);
+        return static_cast<uintptr_t>(m_pWork - m_pData);
     }
     BURGER_INLINE uintptr_t GetSize(void) const BURGER_NOEXCEPT
     {
@@ -88,39 +88,39 @@ public:
     {
         return static_cast<uintptr_t>(m_pEndOfBuffer - m_pWork);
     }
-    void BURGER_API GetString(char* pOutput, uintptr_t uOutputSize);
-    void BURGER_API GetString(String* pOutput);
-    void BURGER_API GetCString(char* pOutput, uintptr_t uOutputSize);
-    void BURGER_API GetPString(char* pOutput, uintptr_t uOutputSize);
+    void BURGER_API GetString(char* pOutput, uintptr_t uOutputSize) BURGER_NOEXCEPT;
+    void BURGER_API GetString(String* pOutput) BURGER_NOEXCEPT;
+	void BURGER_API GetCString(char *pOutput, uintptr_t uOutputSize) BURGER_NOEXCEPT;
+    void BURGER_API GetPString(char* pOutput, uintptr_t uOutputSize) BURGER_NOEXCEPT;
     uint8_t BURGER_API GetByte(void) BURGER_NOEXCEPT;
     uint16_t BURGER_API GetShort(void) BURGER_NOEXCEPT;
     uint16_t BURGER_API GetBigShort(void) BURGER_NOEXCEPT;
     uint32_t BURGER_API GetWord32(void) BURGER_NOEXCEPT;
     uint32_t BURGER_API GetBigWord32(void) BURGER_NOEXCEPT;
-    uint64_t BURGER_API GetWord64(void);
-    uint64_t BURGER_API GetBigWord64(void);
-    float BURGER_API GetFloat(void);
-    float BURGER_API GetBigFloat(void);
-    double BURGER_API GetDouble(void);
-    double BURGER_API GetBigDouble(void);
-    uintptr_t BURGER_API Get(void* pOutput, uintptr_t uOutputSize);
-    Word BURGER_API Get(RGBWord8_t* pOutput);
-    Word BURGER_API Get(RGBAWord8_t* pOutput);
-    Word BURGER_API Get(Vector2D_t* pOutput);
-    Word BURGER_API Get(Vector3D_t* pOutput);
-    Word BURGER_API Get(Vector4D_t* pOutput);
-    BURGER_INLINE Word Get(RGBFloat_t* pOutput)
+    uint64_t BURGER_API GetWord64(void) BURGER_NOEXCEPT;
+    uint64_t BURGER_API GetBigWord64(void) BURGER_NOEXCEPT;
+    float BURGER_API GetFloat(void) BURGER_NOEXCEPT;
+    float BURGER_API GetBigFloat(void) BURGER_NOEXCEPT;
+    double BURGER_API GetDouble(void) BURGER_NOEXCEPT;
+    double BURGER_API GetBigDouble(void) BURGER_NOEXCEPT;
+    uintptr_t BURGER_API Get(void* pOutput, uintptr_t uOutputSize) BURGER_NOEXCEPT;
+    uint_t BURGER_API Get(RGBWord8_t* pOutput) BURGER_NOEXCEPT;
+    uint_t BURGER_API Get(RGBAWord8_t* pOutput) BURGER_NOEXCEPT;
+    uint_t BURGER_API Get(Vector2D_t* pOutput) BURGER_NOEXCEPT;
+    uint_t BURGER_API Get(Vector3D_t* pOutput) BURGER_NOEXCEPT;
+    uint_t BURGER_API Get(Vector4D_t* pOutput) BURGER_NOEXCEPT;
+    BURGER_INLINE uint_t Get(RGBFloat_t* pOutput) BURGER_NOEXCEPT
     {
         return Get(reinterpret_cast<Vector3D_t*>(pOutput));
     }
-    BURGER_INLINE Word Get(RGBAFloat_t* pOutput)
+    BURGER_INLINE uint_t Get(RGBAFloat_t* pOutput) BURGER_NOEXCEPT
     {
         return Get(reinterpret_cast<Vector4D_t*>(pOutput));
     }
-    void BURGER_API ParseBeyondWhiteSpace(void);
-    Word BURGER_API IsStringMatch(const char* pInput);
-    Word BURGER_API IsStringMatchCase(const char* pInput);
-    Word BURGER_API IsDataMatch(const Word8* pInput, WordPtr uLength);
+    void BURGER_API ParseBeyondWhiteSpace(void) BURGER_NOEXCEPT;
+    uint_t BURGER_API IsStringMatch(const char* pInput) BURGER_NOEXCEPT;
+    uint_t BURGER_API IsStringMatchCase(const char* pInput) BURGER_NOEXCEPT;
+    uint_t BURGER_API IsDataMatch(const uint8_t* pInput, uintptr_t uLength) BURGER_NOEXCEPT;
 };
 }
 /* END */

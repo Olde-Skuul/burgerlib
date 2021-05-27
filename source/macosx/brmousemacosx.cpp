@@ -1,14 +1,14 @@
 /***************************************
 
-	Mouse Manager
+    Mouse Manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE for
-	license details. Yes, you can use it in a commercial title without paying
-	anything, just give me a credit.
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
 
-	Please? It's not like I'm asking you for money!
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -64,7 +64,7 @@ Burger::Mouse::Mouse(GameApp* pGameApp) :
 				m_pHIDManager, nullptr, nullptr);
 
 			// Open all the located devices
-			Word i;
+			uint_t i;
 			DeviceStruct* pRat = m_Mice;
 			for (i = 0; i < m_uMiceCount; i++) {
 				IOHIDDeviceRef pDevice = pRat->m_pDevice;
@@ -111,7 +111,7 @@ Burger::Mouse::~Mouse()
 
 ***************************************/
 
-Word Burger::Mouse::IsPresent(void) const
+uint_t Burger::Mouse::IsPresent(void) const
 {
 	return TRUE;
 }
@@ -149,7 +149,7 @@ void Burger::Mouse::DisconnectionCallback(
 {
 	if (iReturn == kIOReturnSuccess) {
 		Mouse* pMouse = static_cast<Mouse*>(pData);
-		Word uCount = pMouse->m_uMiceCount;
+		uint_t uCount = pMouse->m_uMiceCount;
 		if (uCount) {
 			DeviceStruct* pRat = pMouse->m_Mice;
 			do {
@@ -171,12 +171,12 @@ void Burger::Mouse::InputCallback(
 {
 	if (iReturn == kIOReturnSuccess) {
 		Mouse* pMouse = static_cast<Mouse*>(pData);
-		Word uCount = pMouse->m_uMiceCount;
+		uint_t uCount = pMouse->m_uMiceCount;
 		if (uCount) {
 			IOHIDElementRef pElement = IOHIDValueGetElement(pValue);
 #if 0
 			IOHIDDeviceRef pDevice = IOHIDElementGetDevice(pElement);
-			Word uRatNumber = BURGER_MAXUINT;
+			uint_t uRatNumber = BURGER_MAXUINT;
 			const DeviceStruct *pRat = pMouse->m_Mice;
 			do {
 				if (pRat->m_pDevice == pDevice) {
@@ -188,7 +188,7 @@ void Burger::Mouse::InputCallback(
 			if (uRatNumber==BURGER_MAXUINT) {
 			}
 #endif
-			Word32 uTime = static_cast<Word32>(IOHIDValueGetTimeStamp(pValue));
+			uint32_t uTime = static_cast<uint32_t>(IOHIDValueGetTimeStamp(pValue));
 			CFIndex iValue = IOHIDValueGetIntegerValue(pValue);
 
 			uint32_t uPage = IOHIDElementGetUsagePage(pElement);
@@ -199,15 +199,15 @@ void Burger::Mouse::InputCallback(
 					switch (uUsage) {
 					case kHIDUsage_GD_X:
 						pMouse->PostMouseMotion(
-							static_cast<Int32>(iValue), 0, uTime);
+							static_cast<int32_t>(iValue), 0, uTime);
 						break;
 					case kHIDUsage_GD_Y:
 						pMouse->PostMouseMotion(
-							0, static_cast<Int32>(iValue), uTime);
+							0, static_cast<int32_t>(iValue), uTime);
 						break;
 					case kHIDUsage_GD_Wheel:
 						pMouse->PostMouseWheel(
-							0, static_cast<Int32>(iValue), uTime);
+							0, static_cast<int32_t>(iValue), uTime);
 						break;
 					default:
 						printf("Unknown usage %u\n", uUsage);
@@ -241,7 +241,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Mouse::Poll(void* pData)
 		kCFRunLoopRunHandledSource) {
 	}
 #if 0
-	Word i;
+	uint_t i;
 	Mouse *pMouse = static_cast<Mouse *>(pData);
 	DeviceStruct *pRat = pMouse->m_Mice;
 	for (i = 0; i < pMouse->m_uMiceCount; i++) {

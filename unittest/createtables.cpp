@@ -49,16 +49,16 @@ static void BURGER_API OutputAsHex(
 //
 
 static void BURGER_API OutputArrayAsHex(
-	const char* pName, const float* pInput, WordPtr uLength)
+	const char* pName, const float* pInput, uintptr_t uLength)
 {
 	Message("const Burger::uint32_float_t Burger::%s[%u] = {", pName,
-		static_cast<Word>(uLength));
+		static_cast<uint_t>(uLength));
 
 	Burger::OutputMemoryStream Output;
 	Burger::String TempString;
 
 	Output.Append('\t');
-	Word uCounter = 0;
+	uint_t uCounter = 0;
 	do {
 		// Print as hex
 		OutputAsHex(&Output, pInput[0]);
@@ -85,17 +85,17 @@ static void BURGER_API OutputArrayAsHex(
 //
 
 static void BURGER_API Output2DArrayAsHex(
-	const char* pName, const float* pInput, WordPtr uLength1, WordPtr uLength2)
+	const char* pName, const float* pInput, uintptr_t uLength1, uintptr_t uLength2)
 {
     Message("const Burger::uint32_float_t Burger::%s[%u][%u] = {", pName,
-		static_cast<Word>(uLength1), static_cast<Word>(uLength2));
+		static_cast<uint_t>(uLength1), static_cast<uint_t>(uLength2));
 	Message("{");
 	Burger::OutputMemoryStream Output;
 	Burger::String TempString;
 
-	Word uIndex = 0;
+	uint_t uIndex = 0;
 	do {
-		Word uCounter = 0;
+		uint_t uCounter = 0;
 		Output.Clear();
 		Output.Append('\t');
 		do {
@@ -127,16 +127,16 @@ static void BURGER_API Output2DArrayAsHex(
 //
 
 static void BURGER_API OutputArrayAsUnsigned(
-	const char* pName, const uint32_t* pInput, WordPtr uLength, Word bHex = FALSE)
+	const char* pName, const uint32_t* pInput, uintptr_t uLength, uint_t bHex = FALSE)
 {
-	Message("const Word Burger::%s[%u] = {", pName, static_cast<Word>(uLength));
+	Message("const uint_t Burger::%s[%u] = {", pName, static_cast<uint_t>(uLength));
 
 	Burger::OutputMemoryStream Output;
 	Burger::String TempString;
 
 	Output.Append('\t');
-	Word uCounter = 0;
-	Word uMask = bHex ? 7U : 15U; // Hex numbers group in 8, decimal as 16
+	uint_t uCounter = 0;
+	uint_t uMask = bHex ? 7U : 15U; // Hex numbers group in 8, decimal as 16
 	do {
 		// Print as unsigned
 		if (!bHex) {
@@ -170,17 +170,17 @@ static void BURGER_API OutputArrayAsUnsigned(
 //
 
 static void BURGER_API Output2DArrayAsUnsigned(
-	const char* pName, const uint32_t* pInput, WordPtr uLength1, WordPtr uLength2)
+	const char* pName, const uint32_t* pInput, uintptr_t uLength1, uintptr_t uLength2)
 {
-	Message("const Word Burger::%s[%u][%u] = {", pName,
-		static_cast<Word>(uLength1), static_cast<Word>(uLength2));
+	Message("const uint_t Burger::%s[%u][%u] = {", pName,
+		static_cast<uint_t>(uLength1), static_cast<uint_t>(uLength2));
 	Message("{");
 	Burger::OutputMemoryStream Output;
 	Burger::String TempString;
 
-	Word uIndex = 0;
+	uint_t uIndex = 0;
 	do {
-		Word uCounter = 0;
+		uint_t uCounter = 0;
 		Output.Clear();
 		Output.Append('\t');
 		do {
@@ -212,7 +212,7 @@ static void BURGER_API Output2DArrayAsUnsigned(
 // Negate every other entry in an array of floats
 //
 
-static void BURGER_API PhaseTable(float* pInput, WordPtr uLength)
+static void BURGER_API PhaseTable(float* pInput, uintptr_t uLength)
 {
 	++pInput;
 	uLength >>= 1U;
@@ -239,7 +239,7 @@ static void BURGER_API CreateSinConstants(void)
 	float fInverseTable[20];
 
 	// Process sine constants
-	Word i = 0;
+	uint_t i = 0;
 	double dFactor = 1.0*2.0*3.0;
 	double dStep = 4.0;
 	do {
@@ -273,7 +273,7 @@ static void BURGER_API CreateSinConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{0x");
-		Burger::NumberStringHex Hexit(reinterpret_cast<const Word32 *>(fValueTable)[i]^(((i^1U)&1U)<<31U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const uint32_t *>(fValueTable)[i]^(((i^1U)&1U)<<31U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("}");
 		if (i!=10) {
@@ -296,7 +296,7 @@ static void BURGER_API CreateSinConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{0x");
-		Burger::NumberStringHex Hexit(reinterpret_cast<const Word32 *>(fInverseTable)[i]^(((i^1U)&1U)<<31U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const uint32_t *>(fInverseTable)[i]^(((i^1U)&1U)<<31U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("}");
 		if (i!=10) {
@@ -323,7 +323,7 @@ static void BURGER_API CreateSinConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{0x");
-		Burger::NumberStringHex Hexit(reinterpret_cast<const Word64 *>(dValueTable)[i]^(((static_cast<Word64>(i)^1U)&1U)<<63U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const uint64_t *>(dValueTable)[i]^(((static_cast<uint64_t>(i)^1U)&1U)<<63U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("ULL}");
 		if (i!=10) {
@@ -346,7 +346,7 @@ static void BURGER_API CreateSinConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{0x");
-		Burger::NumberStringHex Hexit(reinterpret_cast<const Word64 *>(dInverseTable)[i]^(((static_cast<Word64>(i)^1U)&1U)<<63U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const uint64_t *>(dInverseTable)[i]^(((static_cast<uint64_t>(i)^1U)&1U)<<63U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("ULL}");
 		if (i!=10) {
@@ -375,7 +375,7 @@ static void BURGER_API CreateCosConstants(void)
 	float fInverseTable[20];
 
 	// Process cosine constants
-	Word i = 0;
+	uint_t i = 0;
 	double dFactor = 1.0*2.0;
 	double dStep = 3.0;
 	do {
@@ -409,7 +409,7 @@ static void BURGER_API CreateCosConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{0x");
-		Burger::NumberStringHex Hexit(reinterpret_cast<const Word32 *>(fValueTable)[i]^(((i^1U)&1U)<<31U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const uint32_t *>(fValueTable)[i]^(((i^1U)&1U)<<31U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("}");
 		if (i!=10) {
@@ -432,7 +432,7 @@ static void BURGER_API CreateCosConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{0x");
-		Burger::NumberStringHex Hexit(reinterpret_cast<const Word32 *>(fInverseTable)[i]^(((i^1U)&1U)<<31U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const uint32_t *>(fInverseTable)[i]^(((i^1U)&1U)<<31U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("}");
 		if (i!=10) {
@@ -459,7 +459,7 @@ static void BURGER_API CreateCosConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{0x");
-		Burger::NumberStringHex Hexit(reinterpret_cast<const Word64 *>(dValueTable)[i]^(((static_cast<Word64>(i)^1U)&1U)<<63U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const uint64_t *>(dValueTable)[i]^(((static_cast<uint64_t>(i)^1U)&1U)<<63U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("ULL}");
 		if (i!=10) {
@@ -482,7 +482,7 @@ static void BURGER_API CreateCosConstants(void)
 			Output.Append('\t');
 		}
 		Output.Append("{0x");
-		Burger::NumberStringHex Hexit(reinterpret_cast<const Word64 *>(dInverseTable)[i]^(((static_cast<Word64>(i)^1U)&1U)<<63U));
+		Burger::NumberStringHex Hexit(reinterpret_cast<const uint64_t *>(dInverseTable)[i]^(((static_cast<uint64_t>(i)^1U)&1U)<<63U));
 		Output.Append(Hexit.GetPtr());
 		Output.Append("ULL}");
 		if (i!=10) {
@@ -569,11 +569,11 @@ static const Factor_t FactorTableCode[9] = {
 // Return TRUE if factoring was successful
 //
 
-static Word BURGER_API SimpleFactor(Burger::OutputMemoryStream *pOutput,const Factor_t *pFactor,float fInput)
+static uint_t BURGER_API SimpleFactor(Burger::OutputMemoryStream *pOutput,const Factor_t *pFactor,float fInput)
 {
-	Word bSuccess = 0;
+	uint_t bSuccess = 0;
 	// Factor the primes!
-	Word i = 0;
+	uint_t i = 0;
 	do {
 		// Divide by a test prime
 		float fTest = fInput/pFactor->m_pValue[0];
@@ -606,9 +606,9 @@ static Word BURGER_API SimpleFactor(Burger::OutputMemoryStream *pOutput,const Fa
 // addition in the middle
 //
 
-static Word BURGER_API Factor(Burger::OutputMemoryStream *pOutput,const char *pName,const Factor_t *pFactor,float fInput,float fPrevious)
+static uint_t BURGER_API Factor(Burger::OutputMemoryStream *pOutput,const char *pName,const Factor_t *pFactor,float fInput,float fPrevious)
 {
-	Word bSuccess=0;
+	uint_t bSuccess=0;
 	pOutput->Append(pName);
 
 	// Already factored?
@@ -629,7 +629,7 @@ static Word BURGER_API Factor(Burger::OutputMemoryStream *pOutput,const char *pN
 
 		// Is the previous number a single prime, or two primes multiplied together?
 
-		Word x = 0;
+		uint_t x = 0;
 		do {
 			if (pFactor[x].m_pValue[0]==fPrevious) {
 				break;
@@ -637,7 +637,7 @@ static Word BURGER_API Factor(Burger::OutputMemoryStream *pOutput,const char *pN
 		} while (++x<9);
 
 		if (x<9) {
-			Word j=0;
+			uint_t j=0;
 			do {
 				if (j!=x) {
 					// Create the possible pair
@@ -666,7 +666,7 @@ static Word BURGER_API Factor(Burger::OutputMemoryStream *pOutput,const char *pN
 				}
 			} while (++j<9);
 		} else {
-			Word j=0;
+			uint_t j=0;
 			do {
 				// Create the possible triplet
 				float fBisect = fPrevious*pFactor[j].m_pValue[0];
@@ -722,7 +722,7 @@ static void BURGER_API CreateEulerRotations(void)
 	Burger::Matrix3D_t Result;
 	Burger::Matrix3D_t TempMatrix;
 
-	Word i = 0;
+	uint_t i = 0;
 	const RotationTypes_t *pRotations = Rotations;
 	do {
 		Burger::OutputMemoryStream Output;
@@ -822,7 +822,7 @@ static void BURGER_API CreateSqrtGuesses(void)
 	// Generate the even roots
 	Burger::String TempString;
 
-	Word uCount = 256;
+	uint_t uCount = 256;
 	double dStep = 0.5;
 	Output.Append('\t');
 	do {
@@ -987,10 +987,10 @@ static void BURGER_API CreateMP3Tables(void)
 	// Create the five cosine tables
 	//
 
-	Word uCounter = 0;
+	uint_t uCounter = 0;
 	do {
-		Word uEntries = 16U >> uCounter;
-		Word uDivisor = 64U >> uCounter;
+		uint_t uEntries = 16U >> uCounter;
+		uint_t uDivisor = 64U >> uCounter;
 
 		double dDivisor = 1.0 / static_cast<double>(static_cast<int>(uDivisor));
 		double dStep = 1.0;
@@ -1050,24 +1050,24 @@ static void BURGER_API CreateMP3Tables(void)
 	//
 
 	// Generate the group tables
-	static const Word8 g_MP2TableValues[3][9] = {
+	static const uint8_t g_MP2TableValues[3][9] = {
 		{1, 0, 2}, {17, 18, 0, 19, 20}, {21, 1, 22, 23, 0, 24, 25, 2, 26}};
-	static const Word8 g_MP2TableSizes[3] = {3, 5, 9};
+	static const uint8_t g_MP2TableSizes[3] = {3, 5, 9};
 	static const char* g_MP2TableNames[3] = {
 		"g_GroupTable3", "g_GroupTable5", "g_GroupTable9"};
 	uCounter = 0;
 	do {
-		Word uTableSize = g_MP2TableSizes[uCounter];
-		Message("const Word8 Burger::DecompressMP3::%s[%u][%u][%u][3] = {",
+		uint_t uTableSize = g_MP2TableSizes[uCounter];
+		Message("const uint8_t Burger::DecompressMP3::%s[%u][%u][%u][3] = {",
 			g_MP2TableNames[uCounter], uTableSize, uTableSize, uTableSize);
 		Message("{");
 
-		Word j = 0;
+		uint_t j = 0;
 		do {
-			Word k = 0;
+			uint_t k = 0;
 			do {
 				Output.Append("\t{");
-				Word l = 0;
+				uint_t l = 0;
 				do {
 					TempString.Printf("{%u,%u,%u}",
 						g_MP2TableValues[uCounter][l],
@@ -1105,7 +1105,7 @@ static void BURGER_API CreateMP3Tables(void)
 		4.0 / 9.0, 8.0 / 9.0};
 
 	pWork = TempFloats;
-	Word uIndex = 0;
+	uint_t uIndex = 0;
 	do {
 		double dScalar = g_MP3MulTable64Raw[uIndex];
 		uCounter = 64;
@@ -1392,11 +1392,11 @@ static void BURGER_API CreateMP3Tables(void)
 		pWord = TempWords;
 
 		// Hash both long and short differences
-		const Word16* pBitCount = pBandInformation->m_uLongDifference;
+		const uint16_t* pBitCount = pBandInformation->m_uLongDifference;
 		uIndex = 0;
-		Word uBitCounter = 0;
+		uint_t uBitCounter = 0;
 		do {
-			Word uTemp = pBitCount[0];
+			uint_t uTemp = pBitCount[0];
 			pWord[0] = uTemp >> 1U;
 			pWord[1] = uBitCounter;
 			pWord[2] = 3;
@@ -1409,9 +1409,9 @@ static void BURGER_API CreateMP3Tables(void)
 		pBitCount = pBandInformation->m_uShortDifference + 3;
 		uIndex = 3;
 		do {
-			Word uTemp = static_cast<Word>(pBitCount[0]) >> 1U;
+			uint_t uTemp = static_cast<uint_t>(pBitCount[0]) >> 1U;
 			++pBitCount;
-			Word uTemp2 = 0;
+			uint_t uTemp2 = 0;
 			do {
 				pWord[0] = uTemp;
 				pWord[1] = uBitCounter
@@ -1424,7 +1424,7 @@ static void BURGER_API CreateMP3Tables(void)
 		} while (++uIndex < 13);
 		TempString.Printf("DecompressMP3::g_MP3BandInfoDiffHash%u", uCounter);
 		OutputArrayAsUnsigned(TempString.GetPtr(), TempWords,
-			static_cast<WordPtr>(pWord - TempWords));
+			static_cast<uintptr_t>(pWord - TempWords));
 
 		// Hash only the short distances
 		pWord = TempWords;
@@ -1432,9 +1432,9 @@ static void BURGER_API CreateMP3Tables(void)
 		uIndex = 0;
 		uBitCounter = 0;
 		do {
-			Word uTemp = static_cast<Word>(pBitCount[0]) >> 1U;
+			uint_t uTemp = static_cast<uint_t>(pBitCount[0]) >> 1U;
 			++pBitCount;
-			Word uTemp2 = 0;
+			uint_t uTemp2 = 0;
 			do {
 				pWord[0] = uTemp;
 				pWord[1] = uBitCounter + uTemp2;
@@ -1448,7 +1448,7 @@ static void BURGER_API CreateMP3Tables(void)
 		TempString.Printf(
 			"DecompressMP3::g_MP3BandInfoShortDiffHash%u", uCounter);
 		OutputArrayAsUnsigned(TempString.GetPtr(), TempWords,
-			static_cast<WordPtr>(pWord - TempWords));
+			static_cast<uintptr_t>(pWord - TempWords));
 
 		// Hash only the long distances
 
@@ -1456,7 +1456,7 @@ static void BURGER_API CreateMP3Tables(void)
 		pBitCount = pBandInformation->m_uLongDifference;
 		uIndex = 0;
 		do {
-			pWord[0] = static_cast<Word>(pBitCount[0]) >> 1U;
+			pWord[0] = static_cast<uint_t>(pBitCount[0]) >> 1U;
 			pWord[1] = uIndex;
 			++pBitCount;
 			pWord += 2;
@@ -1464,7 +1464,7 @@ static void BURGER_API CreateMP3Tables(void)
 		TempString.Printf(
 			"DecompressMP3::g_MP3BandInfoLongDiffHash%u", uCounter);
 		OutputArrayAsUnsigned(TempString.GetPtr(), TempWords,
-			static_cast<WordPtr>(pWord - TempWords));
+			static_cast<uintptr_t>(pWord - TempWords));
 
 	} while (++uCounter < 9);
 
@@ -1477,7 +1477,7 @@ static void BURGER_API CreateMP3Tables(void)
 	do {
 		uIndex = 0;
 		do {
-			Word uTemp = ((Burger::DecompressMP3::g_MP3BandInformation[uCounter]
+			uint_t uTemp = ((Burger::DecompressMP3::g_MP3BandInformation[uCounter]
 								  .m_uLongIndex[uIndex]
 							  + 7U)
 							 / 18U)
@@ -1497,7 +1497,7 @@ static void BURGER_API CreateMP3Tables(void)
 	do {
 		uIndex = 0;
 		do {
-			Word uTemp = static_cast<Word>(
+			uint_t uTemp = static_cast<uint_t>(
 				((static_cast<int>(
 					  Burger::DecompressMP3::g_MP3BandInformation[uCounter]
 						  .m_uShortIndex[uIndex])
@@ -1523,7 +1523,7 @@ static void BURGER_API CreateMP3Tables(void)
 	do {
 		uIndex = 0;
 		do {
-			Word uTemp = 0;
+			uint_t uTemp = 0;
 			do {
 				pWord[0] =
 					uCounter + (uIndex << 3U) + (uTemp << 6U) + (3U << 12U);
@@ -1536,7 +1536,7 @@ static void BURGER_API CreateMP3Tables(void)
 	do {
 		uIndex = 0;
 		do {
-			Word uTemp = 0;
+			uint_t uTemp = 0;
 			do {
 				pWord[0] =
 					uCounter + (uIndex << 3U) + (uTemp << 6U) + (4U << 12U);
@@ -1563,9 +1563,9 @@ static void BURGER_API CreateMP3Tables(void)
 	do {
 		uIndex = 0;
 		do {
-			Word uTemp = 0;
+			uint_t uTemp = 0;
 			do {
-				Word uTemp2 = 0;
+				uint_t uTemp2 = 0;
 				do {
 					pWord[0] = uCounter + (uIndex << 3) + (uTemp << 6)
 						+ (uTemp2 << 9) + (0 << 12);
@@ -1579,7 +1579,7 @@ static void BURGER_API CreateMP3Tables(void)
 	do {
 		uIndex = 0;
 		do {
-			Word uTemp = 0;
+			uint_t uTemp = 0;
 			do {
 				pWord[0] = uCounter + (uIndex << 3) + (uTemp << 6) + (1 << 12);
 				++pWord;
@@ -1735,9 +1735,9 @@ Input.Clear();
 
 using namespace Burger;
 
-static WordPtr BURGER_API Code(void* pInput) BURGER_NOEXCEPT
+static uintptr_t BURGER_API Code(void* pInput) BURGER_NOEXCEPT
 {
-	++static_cast<Word*>(pInput)[0];
+	++static_cast<uint_t*>(pInput)[0];
 	return 12345;
 }
 void BURGER_API CreateTables(void)
@@ -1745,32 +1745,32 @@ void BURGER_API CreateTables(void)
 	ConsoleApp Ack(0, 0);
 	FloatTimer MyFloatTimer;
 	printf("Test Tick::ReadMilliseconds() %u\n",
-		static_cast<Word>(Tick::ReadMilliseconds()));
+		static_cast<uint_t>(Tick::ReadMilliseconds()));
 	printf("Test Tick::ReadMilliseconds() %u\n",
-		static_cast<Word>(Tick::ReadMilliseconds()));
+		static_cast<uint_t>(Tick::ReadMilliseconds()));
 	printf("Test Tick::ReadMilliseconds() %u\n",
-		static_cast<Word>(Tick::ReadMilliseconds()));
+		static_cast<uint_t>(Tick::ReadMilliseconds()));
 	printf("Test Tick::ReadMilliseconds() %u\n",
-		static_cast<Word>(Tick::ReadMilliseconds()));
+		static_cast<uint_t>(Tick::ReadMilliseconds()));
 	printf("Test Tick::ReadMicroseconds() %u\n",
-		static_cast<Word>(Tick::ReadMicroseconds()));
+		static_cast<uint_t>(Tick::ReadMicroseconds()));
 	printf("Test Tick::ReadMicroseconds() %u\n",
-		static_cast<Word>(Tick::ReadMicroseconds()));
+		static_cast<uint_t>(Tick::ReadMicroseconds()));
 	printf("Test Tick::ReadMicroseconds() %u\n",
-		static_cast<Word>(Tick::ReadMicroseconds()));
+		static_cast<uint_t>(Tick::ReadMicroseconds()));
 	printf("Test Tick::ReadMicroseconds() %u\n",
-		static_cast<Word>(Tick::ReadMicroseconds()));
+		static_cast<uint_t>(Tick::ReadMicroseconds()));
 	printf("Test FloatTimer.GetTime() %g\n", MyFloatTimer.GetTime());
 
 	CriticalSection foo;
-	Word uResult = 666;
+	uint_t uResult = 666;
 	Thread bar(Code, &uResult);
 	bar.Wait();
-	printf("Result = %u, %u\n", static_cast<Word>(bar.GetResult()), uResult);
+	printf("Result = %u, %u\n", static_cast<uint_t>(bar.GetResult()), uResult);
 	Thread bar2;
 	bar2.Start(Code, &uResult);
 	bar.Wait();
-	printf("Result = %u, %u\n", static_cast<Word>(bar.GetResult()), uResult);
+	printf("Result = %u, %u\n", static_cast<uint_t>(bar.GetResult()), uResult);
 
 	GUID gfoo = {0x3BBA0080, 0x2421, 0x11CF,
 		{0xA3, 0x1A, 0x00, 0xAA, 0x00, 0xB9, 0x33, 0x56}};

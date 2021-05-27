@@ -1,13 +1,14 @@
 /***************************************
 
-	Run Queue execution handler
+    Run Queue execution handler
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -57,9 +58,9 @@ public:
 		CallbackProc m_pCallBack;	///< Function to call for this entry
 		CallbackProc m_pShutdownCallback;	///< Function to call on deletion
 		void *m_pData;				///< User supplied data pointer to call the function with
-		Word m_uPriority;			///< User supplied priority for inserting a new entry into the list
+		uint_t m_uPriority;			///< User supplied priority for inserting a new entry into the list
 
-		RunQueueEntry(CallbackProc pCallBack,CallbackProc pShutdownCallback,void *pData,Word uPriority) :
+		RunQueueEntry(CallbackProc pCallBack,CallbackProc pShutdownCallback,void *pData,uint_t uPriority) :
 			m_pCallBack(pCallBack),
 			m_pShutdownCallback(pShutdownCallback),
 			m_pData(pData),
@@ -67,22 +68,22 @@ public:
 
 	public:
 		~RunQueueEntry();
-		BURGER_INLINE Word GetPriority(void) const { return m_uPriority; }
+		BURGER_INLINE uint_t GetPriority(void) const { return m_uPriority; }
 	};
 
 private:
 	DoublyLinkedList m_Entries;	///< Head entry of the linked list
-	Word m_Recurse;				///< \ref TRUE if this class is the process of executing.
+	uint_t m_Recurse;				///< \ref TRUE if this class is the process of executing.
 
 public:
 	RunQueue() BURGER_NOEXCEPT : m_Entries(), m_Recurse(FALSE) {}
 	~RunQueue();
 	void BURGER_API Call(void);
-	RunQueueEntry * BURGER_API Add(CallbackProc pProc,CallbackProc pShutdown=NULL,void *pData=NULL,Word uPriority=PRIORITY_MEDIUM);
+	RunQueueEntry * BURGER_API Add(CallbackProc pProc,CallbackProc pShutdown=NULL,void *pData=NULL,uint_t uPriority=PRIORITY_MEDIUM);
 	RunQueueEntry * BURGER_API Find(CallbackProc pProc) const;
 	RunQueueEntry * BURGER_API Find(CallbackProc pProc,void *pData) const;
-	Word BURGER_API RemoveAll(CallbackProc pProc);
-	Word BURGER_API Remove(CallbackProc pProc,void *pData=NULL);
+	uint_t BURGER_API RemoveAll(CallbackProc pProc);
+	uint_t BURGER_API Remove(CallbackProc pProc,void *pData=NULL);
 	void BURGER_API Clear(void);
 };
 

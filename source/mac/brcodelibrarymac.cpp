@@ -33,7 +33,7 @@
 
 ***************************************/
 
-Word Burger::CodeLibrary::Init(const char* pFilename)
+uint_t Burger::CodeLibrary::Init(const char* pFilename)
 {
     Str255 TempName; // Copy of the "C" string as a PASCAL string
     Str255 ErrStr;   // Returned error code if any
@@ -42,7 +42,7 @@ Word Burger::CodeLibrary::Init(const char* pFilename)
 
     /* This code only works for CFM functions */
     Burger::CStringToPString(TempName, pFilename);
-    Word uResult = FALSE;
+    uint_t uResult = FALSE;
     if (!GetSharedLibrary(TempName, kCompiledCFragArch, kLoadCFrag, &ConnID,
             &EntryPtr, ErrStr)) {
         m_pLibInstance = ConnID;

@@ -1,13 +1,14 @@
 /***************************************
 
-	Integer Rect handlers
+    Integer Rect handlers
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -395,7 +396,7 @@ void Burger::Rect_t::MoveY(int iY)
 
 ***************************************/
 
-Word Burger::Rect_t::IsInside(int iX,int iY) const
+uint_t Burger::Rect_t::IsInside(int iX,int iY) const
 {
 	if ((iX >= m_iLeft) && (iX < m_iRight) && (iY >= m_iTop) && (iY < m_iBottom)) {
 		return TRUE;	// No intersection!
@@ -420,7 +421,7 @@ Word Burger::Rect_t::IsInside(int iX,int iY) const
 
 ***************************************/
 
-Word Burger::Rect_t::IsInside(const Point2D_t *pPoint) const
+uint_t Burger::Rect_t::IsInside(const Point2D_t *pPoint) const
 {
 	int iX = pPoint->m_iX;
 	int iY = pPoint->m_iY;
@@ -443,7 +444,7 @@ Word Burger::Rect_t::IsInside(const Point2D_t *pPoint) const
 
 ***************************************/
 
-Word Burger::Rect_t::IsInside(const Rect_t *pInput) const
+uint_t Burger::Rect_t::IsInside(const Rect_t *pInput) const
 {
 	if ((m_iLeft >= pInput->m_iLeft) && (pInput->m_iRight >= m_iRight) &&
 		(m_iTop >= pInput->m_iTop) && (pInput->m_iBottom >= m_iBottom)) {
@@ -534,7 +535,7 @@ void Burger::Rect_t::SetSorted(int iLeft,int iTop,int iRight,int iBottom)
 
 ***************************************/
 
-Word Burger::Rect_t::IsEmpty(void) const
+uint_t Burger::Rect_t::IsEmpty(void) const
 {
 	if ((m_iTop==m_iBottom) || (m_iLeft==m_iRight)) {
 		return TRUE;	// At least one point was too small...
@@ -553,7 +554,7 @@ Word Burger::Rect_t::IsEmpty(void) const
 	
 ***************************************/
 
-Word Burger::Rect_t::IsNotEmpty(void) const
+uint_t Burger::Rect_t::IsNotEmpty(void) const
 {
 	if ((m_iTop==m_iBottom) || (m_iLeft==m_iRight)) {
 		return FALSE;	// It's empty!
@@ -574,7 +575,7 @@ Word Burger::Rect_t::IsNotEmpty(void) const
 
 ***************************************/
 
-Word Burger::Rect_t::IsEqual(const Rect_t *pInput) const
+uint_t Burger::Rect_t::IsEqual(const Rect_t *pInput) const
 {
 	// Perform this branchless
 	
@@ -598,7 +599,7 @@ Word Burger::Rect_t::IsEqual(const Rect_t *pInput) const
 
 ***************************************/
 
-Word Burger::Rect_t::IsNotEqual(const Rect_t *pInput) const
+uint_t Burger::Rect_t::IsNotEqual(const Rect_t *pInput) const
 {
 	// Perform this branchless
 
@@ -688,7 +689,7 @@ void Burger::Rect_t::Inset(int iX,int iY)
 
 ***************************************/
 
-Word Burger::Rect_t::IsIntersecting(const Rect_t *pInput) const
+uint_t Burger::Rect_t::IsIntersecting(const Rect_t *pInput) const
 {
 	if ((m_iLeft < pInput->m_iRight) &&		// Test the left
 		(m_iRight >= pInput->m_iLeft) &&
@@ -715,7 +716,7 @@ Word Burger::Rect_t::IsIntersecting(const Rect_t *pInput) const
 
 ***************************************/
 
-Word Burger::Rect_t::Intersection(const Rect_t *pInput1,const Rect_t *pInput2)
+uint_t Burger::Rect_t::Intersection(const Rect_t *pInput1,const Rect_t *pInput2)
 {
 	int iLeft = pInput1->m_iLeft;	// Get the higher of the two lefts
 	int iTemp = pInput2->m_iLeft;
@@ -741,7 +742,7 @@ Word Burger::Rect_t::Intersection(const Rect_t *pInput1,const Rect_t *pInput2)
 		iBottom = iTemp;
 	}
 
-	Word uResult = TRUE;			// Assume OK
+	uint_t uResult = TRUE;			// Assume OK
 	if ((iLeft >= iRight) || (iTop >= iBottom)) {	// Non-Empty rect?
 		uResult = FALSE;			// This is also FALSE
 		iLeft = 0;		// Force an empty rect
@@ -1302,9 +1303,9 @@ void BURGER_API LBRectToSYSRECT(SYSRECT *Output,const LBRect *Input)
 
 ***************************************/
 
-Word BURGER_API LBRectRead(LBRect *Output,FILE *fp)
+uint_t BURGER_API LBRectRead(LBRect *Output,FILE *fp)
 {
-	Int16 Input[4];
+	int16_t Input[4];
 	
 	if (fread(&Input[0],1,8,fp)==8) {
 		Output->left = Burger::LittleEndian::Load(&Input[0]);
@@ -1322,14 +1323,14 @@ Word BURGER_API LBRectRead(LBRect *Output,FILE *fp)
 
 ***************************************/
 
-Word BURGER_API LBRectWrite(const LBRect *Input,FILE *fp)
+uint_t BURGER_API LBRectWrite(const LBRect *Input,FILE *fp)
 {
-	Int16 Output[4];
+	int16_t Output[4];
 	
-	Output[0] = Burger::LittleEndian::Load(static_cast<Int16>(Input->left));
-	Output[1] = Burger::LittleEndian::Load(static_cast<Int16>(Input->top));
-	Output[2] = Burger::LittleEndian::Load(static_cast<Int16>(Input->right));
-	Output[3] = Burger::LittleEndian::Load(static_cast<Int16>(Input->bottom));
+	Output[0] = Burger::LittleEndian::Load(static_cast<int16_t>(Input->left));
+	Output[1] = Burger::LittleEndian::Load(static_cast<int16_t>(Input->top));
+	Output[2] = Burger::LittleEndian::Load(static_cast<int16_t>(Input->right));
+	Output[3] = Burger::LittleEndian::Load(static_cast<int16_t>(Input->bottom));
 	if (fwrite(&Output[0],1,8,fp)==8) {
 		return FALSE;
 	}
@@ -1431,7 +1432,7 @@ void BURGER_API LBRectListDestroy(LBRectList *Input)
 
 ***************************************/
 
-Word BURGER_API LBRectListRectClip(LBRectList *Input,const LBRect* b,const LBRect* t)
+uint_t BURGER_API LBRectListRectClip(LBRectList *Input,const LBRect* b,const LBRect* t)
 {
 	LBRect temp;		/* First temp rect */
 
@@ -1483,7 +1484,7 @@ static LBRectList Rtemp;	/* This is static so I can keep a buffer around for */
 
 void BURGER_API LBRectListClipOutRect(LBRectList *Input,const LBRect *bound)
 {
-	Word i;				/* Temp */
+	uint_t i;				/* Temp */
 	LBRect **RectHandle;	/* Handle to rect list */
 
 	Rtemp.NumRects = 0;		/* Discard previous contents */
@@ -1517,14 +1518,14 @@ void BURGER_API LBRectListClipOutRect(LBRectList *Input,const LBRect *bound)
 
 /***************************************
 
-	Return a rect list of the differance of rects b and t
+	Return a rect list of the difference of rects b and t
 	Return TRUE if there is an intersection and I modified the LBRectList
 
 ***************************************/
 
 void BURGER_API LBRectListClipOutRectList(LBRectList *Input,const LBRectList *list)
 {
-	Word i;
+	uint_t i;
 
 	i = list->NumRects;		/* Get the rect count */
 	if (i) {				/* Any rects? */
@@ -1571,7 +1572,7 @@ void BURGER_API LBRectListAppendRect(LBRectList *Input,const LBRect *rect)
 
 void BURGER_API LBRectListAppendRectList(LBRectList *Input,const LBRectList *list)
 {
-	Word i;
+	uint_t i;
 
 	i = list->NumRects;		/* Get the number of rects to append */
 	if (i) {

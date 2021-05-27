@@ -53,11 +53,11 @@
 ***************************************/
 
 #if !defined(DOXYGEN)
-static Word ScanVideoModes(DEVMODEW *pOutput,Word uWidth,Word uHeight,Word uDepth)
+static uint_t ScanVideoModes(DEVMODEW *pOutput,uint_t uWidth,uint_t uHeight,uint_t uDepth)
 {
 	Burger::MemoryClear(pOutput,sizeof(DEVMODEW));
 	DWORD uModeNumber=0;
-	Word bFoundOne = FALSE;
+	uint_t bFoundOne = FALSE;
 	for (;;) {
 		DEVMODEW TestMode;
 		Burger::MemoryClear(&TestMode,sizeof(TestMode));	// Clear it out
@@ -121,7 +121,7 @@ Burger::DisplayOpenGL::DisplayOpenGL(Burger::GameApp *pGameApp) :
 
 ***************************************/
 
-Word Burger::DisplayOpenGL::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
+uint_t Burger::DisplayOpenGL::Init(uint_t uWidth,uint_t uHeight,uint_t uDepth,uint_t uFlags)
 {
 	// OpenGL allows all 256 palette colors to work FULLPALETTEALLOWED
 	// Pass the other flags through
@@ -142,10 +142,10 @@ Word Burger::DisplayOpenGL::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlag
 	// it hasn't been set already
 
 	if (!m_uDisplayWidth) {
-		m_uDisplayWidth = static_cast<Word>(GetSystemMetrics(SM_CXSCREEN));
-		m_uDisplayHeight = static_cast<Word>(GetSystemMetrics(SM_CYSCREEN));
+		m_uDisplayWidth = static_cast<uint_t>(GetSystemMetrics(SM_CXSCREEN));
+		m_uDisplayHeight = static_cast<uint_t>(GetSystemMetrics(SM_CYSCREEN));
 		HDC hHDC = GetDC(NULL);
-		m_uDisplayDepth = static_cast<Word>(GetDeviceCaps(hHDC,BITSPIXEL));
+		m_uDisplayDepth = static_cast<uint_t>(GetDeviceCaps(hHDC,BITSPIXEL));
 		ReleaseDC(NULL,hHDC);
 	}
 
@@ -1295,8 +1295,8 @@ void BURGER_API Burger::DisplayOpenGL::WindowsLink(void)
 {
 	const char **ppWork = OpenGLNames;
 	void **ppDest = &OpenGLProcPtrs.glBlendEquationSeparate;
-	//WordPtr uTest = sizeof(OpenGLProcPtrs)/sizeof(void*);
-	Word uCount = BURGER_ARRAYSIZE(OpenGLNames);
+	//uintptr_t uTest = sizeof(OpenGLProcPtrs)/sizeof(void*);
+	uint_t uCount = BURGER_ARRAYSIZE(OpenGLNames);
 	do {
 		ppDest[0] = wglGetProcAddress(ppWork[0]);
 		++ppWork;
@@ -1321,7 +1321,7 @@ void BURGER_API Burger::DisplayOpenGL::WindowsUnlink(void)
 {
 	const char **ppWork = OpenGLNames;
 	void **ppDest = &OpenGLProcPtrs.glBlendEquationSeparate;
-	Word uCount = BURGER_ARRAYSIZE(OpenGLNames);
+	uint_t uCount = BURGER_ARRAYSIZE(OpenGLNames);
 	do {
 		ppDest[0] = NULL;
 		++ppWork;

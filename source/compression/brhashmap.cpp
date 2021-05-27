@@ -1,15 +1,17 @@
 /***************************************
 
-	HashMap template for mapping a key to data
+    HashMap template for mapping a key to data
 
-	Inspired by an implementation found in gameswf by Thatcher Ulrich <tu@tulrich.com>
+    Inspired by an implementation found in gameswf by Thatcher Ulrich
+<tu@tulrich.com>
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -34,7 +36,7 @@
 
 ***************************************/
 
-WordPtr BURGER_API Burger::SDBMHashFunctor(const void *pData,WordPtr uDataSize)
+uintptr_t BURGER_API Burger::SDBMHashFunctor(const void *pData,uintptr_t uDataSize)
 {
 	return SDBMHash(pData,uDataSize);
 }
@@ -53,7 +55,7 @@ WordPtr BURGER_API Burger::SDBMHashFunctor(const void *pData,WordPtr uDataSize)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::SDBMHashCaseFunctor(const void *pData,WordPtr uDataSize)
+uintptr_t BURGER_API Burger::SDBMHashCaseFunctor(const void *pData,uintptr_t uDataSize)
 {
 	return SDBMHashCase(pData,uDataSize);
 }
@@ -72,7 +74,7 @@ WordPtr BURGER_API Burger::SDBMHashCaseFunctor(const void *pData,WordPtr uDataSi
 
 ***************************************/
 
-WordPtr BURGER_API Burger::DJB2HashAddFunctor(const void *pData,WordPtr uDataSize)
+uintptr_t BURGER_API Burger::DJB2HashAddFunctor(const void *pData,uintptr_t uDataSize)
 {
 	return DJB2HashAdd(pData,uDataSize);
 }
@@ -91,7 +93,7 @@ WordPtr BURGER_API Burger::DJB2HashAddFunctor(const void *pData,WordPtr uDataSiz
 
 ***************************************/
 
-WordPtr BURGER_API Burger::DJB2HashAddCaseFunctor(const void *pData,WordPtr uDataSize)
+uintptr_t BURGER_API Burger::DJB2HashAddCaseFunctor(const void *pData,uintptr_t uDataSize)
 {
 	return DJB2HashAddCase(pData,uDataSize);
 }
@@ -110,7 +112,7 @@ WordPtr BURGER_API Burger::DJB2HashAddCaseFunctor(const void *pData,WordPtr uDat
 
 ***************************************/
 
-WordPtr BURGER_API Burger::DJB2HashXorFunctor(const void *pData,WordPtr uDataSize)
+uintptr_t BURGER_API Burger::DJB2HashXorFunctor(const void *pData,uintptr_t uDataSize)
 {
 	return DJB2HashXor(pData,uDataSize);
 }
@@ -129,7 +131,7 @@ WordPtr BURGER_API Burger::DJB2HashXorFunctor(const void *pData,WordPtr uDataSiz
 
 ***************************************/
 
-WordPtr BURGER_API Burger::DJB2HashXorCaseFunctor(const void *pData,WordPtr uDataSize)
+uintptr_t BURGER_API Burger::DJB2HashXorCaseFunctor(const void *pData,uintptr_t uDataSize)
 {
 	return DJB2HashXorCase(pData,uDataSize);
 }
@@ -148,7 +150,7 @@ WordPtr BURGER_API Burger::DJB2HashXorCaseFunctor(const void *pData,WordPtr uDat
 
 ***************************************/
 
-WordPtr BURGER_API Burger::DJB2StringHashXorFunctor(const void *pData,WordPtr /* uDataSize */)
+uintptr_t BURGER_API Burger::DJB2StringHashXorFunctor(const void *pData,uintptr_t /* uDataSize */)
 {
 	return DJB2HashXor(static_cast<const String *>(pData)->GetPtr(),static_cast<const String *>(pData)->GetLength());
 }
@@ -167,7 +169,7 @@ WordPtr BURGER_API Burger::DJB2StringHashXorFunctor(const void *pData,WordPtr /*
 
 ***************************************/
 
-WordPtr BURGER_API Burger::DJB2StringHashXorCaseFunctor(const void *pData,WordPtr /*uDataSize */)
+uintptr_t BURGER_API Burger::DJB2StringHashXorCaseFunctor(const void *pData,uintptr_t /*uDataSize */)
 {
 	return DJB2HashXorCase(static_cast<const String *>(pData)->GetPtr(),static_cast<const String *>(pData)->GetLength());
 }
@@ -203,7 +205,7 @@ WordPtr BURGER_API Burger::DJB2StringHashXorCaseFunctor(const void *pData,WordPt
 
 /*! ************************************
 
-	\fn Word Burger::HashMapShared::Entry::IsEmpty(void) const
+	\fn uint_t Burger::HashMapShared::Entry::IsEmpty(void) const
 	\brief Is the Entry an empty record.
 
 	If the Entry is not used at all, it will return \ref TRUE.
@@ -218,7 +220,7 @@ WordPtr BURGER_API Burger::DJB2StringHashXorCaseFunctor(const void *pData,WordPt
 
 /*! ************************************
 
-	\fn Word Burger::HashMapShared::Entry::IsEndOfChain(void) const
+	\fn uint_t Burger::HashMapShared::Entry::IsEndOfChain(void) const
 	\brief Is the Entry the last Entry of a linked list.
 
 	If the Entry is the last link of the linked list, it will return \ref TRUE.
@@ -232,7 +234,7 @@ WordPtr BURGER_API Burger::DJB2StringHashXorCaseFunctor(const void *pData,WordPt
 
 /*! ************************************
 
-	\fn Word Burger::HashMapShared::Entry::IsHashInvalid(void) const
+	\fn uint_t Burger::HashMapShared::Entry::IsHashInvalid(void) const
 	\brief Is the Entry uninitialized?
 
 	If the Entry doesn't contain valid data, it will return \ref TRUE.
@@ -272,7 +274,7 @@ WordPtr BURGER_API Burger::DJB2StringHashXorCaseFunctor(const void *pData,WordPt
 
 /*! ************************************
 
-	\fn Burger::HashMapShared::HashMapShared(WordPtr uEntrySize,WordPtr uFirstSize,WordPtr uSecondOffset,
+	\fn Burger::HashMapShared::HashMapShared(uintptr_t uEntrySize,uintptr_t uFirstSize,uintptr_t uSecondOffset,
 		TestProc pTestFunction,EntryConstructProc pEntryConstructFunction,
 		EntryCopyProc pEntryCopyFunction,EntryInvalidateProc pEntryInvalidationFunction,HashProc pHashFunction)
 
@@ -309,22 +311,22 @@ WordPtr BURGER_API Burger::DJB2StringHashXorCaseFunctor(const void *pData,WordPt
 
 ***************************************/
 
-WordPtr BURGER_API Burger::HashMapShared::FindIndex(const void *pKey) const
+uintptr_t BURGER_API Burger::HashMapShared::FindIndex(const void *pKey) const
 {
 	// Assume failure
-	WordPtr uResult = INVALID_INDEX;
+	uintptr_t uResult = INVALID_INDEX;
 	const Entry *pEntry = static_cast<const Entry *>(m_pEntries);
 	// No data in the hash?
 	if (pEntry) {
 
 		// Get the hash to look up
-		WordPtr uHash = ComputeHash(pKey);
+		uintptr_t uHash = ComputeHash(pKey);
 		
 		// Mask to the size of the array
-		WordPtr uIndex = uHash & m_uSizeMask;
+		uintptr_t uIndex = uHash & m_uSizeMask;
 		
 		// Get the initial index
-		pEntry = reinterpret_cast<const Entry *>(reinterpret_cast<const Word8 *>(pEntry) + (uIndex*m_uEntrySize));
+		pEntry = reinterpret_cast<const Entry *>(reinterpret_cast<const uint8_t *>(pEntry) + (uIndex*m_uEntrySize));
 		if (!pEntry->IsEmpty()) {
 			// Is this entry occupied by a ROOT linked list entry?
 			if (pEntry->IsHashInvalid() || ((pEntry->m_uHashValue & m_uSizeMask) == uIndex)) {
@@ -375,7 +377,7 @@ WordPtr BURGER_API Burger::HashMapShared::FindIndex(const void *pKey) const
 
 ***************************************/
 
-void BURGER_API Burger::HashMapShared::CreateBuffer(WordPtr uCount,WordPtr uEntrySize)
+void BURGER_API Burger::HashMapShared::CreateBuffer(uintptr_t uCount,uintptr_t uEntrySize)
 {
 	Entry *pEntry = static_cast<Entry*>(Alloc(uEntrySize * uCount));
 	BURGER_ASSERT(pEntry);
@@ -390,7 +392,7 @@ void BURGER_API Burger::HashMapShared::CreateBuffer(WordPtr uCount,WordPtr uEntr
 	do {
 		pEntry->m_uNextInChain = EMPTY_RECORD;
 		pEntry->m_uHashValue = INVALID_HASH;
-		pEntry = reinterpret_cast<Entry*>(reinterpret_cast<Word8 *>(pEntry)+uEntrySize);
+		pEntry = reinterpret_cast<Entry*>(reinterpret_cast<uint8_t *>(pEntry)+uEntrySize);
 	} while (--uCount);
 }
 
@@ -406,11 +408,11 @@ void BURGER_API Burger::HashMapShared::CreateBuffer(WordPtr uCount,WordPtr uEntr
 	\note If the data buffer is already a comparable size, no action will be performed.
 
 	\param uNewSize Number of entries to allocate (Will be rounded up to a power of 2)
-	\sa CreateBuffer(WordPtr,WordPtr) or Clear(void)
+	\sa CreateBuffer(uintptr_t,uintptr_t) or Clear(void)
 
 ***************************************/
 
-void BURGER_API Burger::HashMapShared::CreateHashBuffer(WordPtr uNewSize)
+void BURGER_API Burger::HashMapShared::CreateHashBuffer(uintptr_t uNewSize)
 {
 	// Handle data purging
 	if (!uNewSize) {
@@ -418,7 +420,7 @@ void BURGER_API Burger::HashMapShared::CreateHashBuffer(WordPtr uNewSize)
 	} else {
 
 		// Force new_size to be a power of two.
-		WordPtr uRoundedUp = PowerOf2(uNewSize);
+		uintptr_t uRoundedUp = PowerOf2(uNewSize);
 		BURGER_ASSERT(uRoundedUp >= uNewSize);
 
 		uNewSize = uRoundedUp;
@@ -436,8 +438,8 @@ void BURGER_API Burger::HashMapShared::CreateHashBuffer(WordPtr uNewSize)
 			// Detach the current array of data
 
 			Entry *pOldEntries = static_cast<Entry *>(m_pEntries);
-			WordPtr uCount = m_uSizeMask+1;
-			WordPtr uEntrySize = m_uEntrySize;
+			uintptr_t uCount = m_uSizeMask+1;
+			uintptr_t uEntrySize = m_uEntrySize;
 
 			// Create the new buffer
 			CreateBuffer(uNewSize,uEntrySize);
@@ -448,13 +450,13 @@ void BURGER_API Burger::HashMapShared::CreateHashBuffer(WordPtr uNewSize)
 				do {
 					// Every entry with a valid hash will be added to the new hash
 					if (!pTempEntry->IsHashInvalid()) {
-						Add(pTempEntry+1,reinterpret_cast<const Word8 *>(pTempEntry)+m_uSecondOffset);
+						Add(pTempEntry+1,reinterpret_cast<const uint8_t *>(pTempEntry)+m_uSecondOffset);
 						// Call a disposal function?
 						if (m_pEntryInvalidationFunction) {
 							m_pEntryInvalidationFunction(pTempEntry);
 						}
 					}
-					pTempEntry = reinterpret_cast<Entry*>(reinterpret_cast<Word8 *>(pTempEntry)+uEntrySize);
+					pTempEntry = reinterpret_cast<Entry*>(reinterpret_cast<uint8_t *>(pTempEntry)+uEntrySize);
 				} while (--uCount);
 
 				// Delete our old data buffer.
@@ -482,13 +484,13 @@ void BURGER_API Burger::HashMapShared::CreateHashBuffer(WordPtr uNewSize)
 
 ***************************************/
 
-void BURGER_API Burger::HashMapShared::Erase(WordPtr uIndex)
+void BURGER_API Burger::HashMapShared::Erase(uintptr_t uIndex)
 {
 	BURGER_ASSERT(m_pEntries && (uIndex <= m_uSizeMask));
 	Entry *pEntryToErase = GetEntry(uIndex);
 
 	// Get the root index entry
-	WordPtr uTestIndex = pEntryToErase->m_uHashValue & m_uSizeMask;
+	uintptr_t uTestIndex = pEntryToErase->m_uHashValue & m_uSizeMask;
 
 	// Not a root?
 	if (uIndex != uTestIndex) {
@@ -532,14 +534,14 @@ void BURGER_API Burger::HashMapShared::Erase(WordPtr uIndex)
 	one is found.
 
 	\param pKey Pointer to the key value
-	\sa Erase(WordPtr)
+	\sa Erase(uintptr_t)
 
 ***************************************/
 
 void BURGER_API Burger::HashMapShared::Erase(const void *pKey)
 {
 	// Find the entry
-	WordPtr uIndex = FindIndex(pKey);
+	uintptr_t uIndex = FindIndex(pKey);
 	// Valid?
 	if (uIndex!=INVALID_INDEX) {
 		// Dispose of it
@@ -560,21 +562,21 @@ void BURGER_API Burger::HashMapShared::Erase(const void *pKey)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::HashMapShared::FindFirst(void) const
+uintptr_t BURGER_API Burger::HashMapShared::FindFirst(void) const
 {
 	// Assume failure
-	WordPtr uIndex = INVALID_INDEX;
+	uintptr_t uIndex = INVALID_INDEX;
 	Entry *pEntry = static_cast<Entry *>(m_pEntries);
 	if (pEntry) {
 		// Scan until we hit the first valid entry.
-		WordPtr uCount = m_uSizeMask+1;
-		WordPtr uEntrySize = m_uEntrySize;
+		uintptr_t uCount = m_uSizeMask+1;
+		uintptr_t uEntrySize = m_uEntrySize;
 		do {
 			if (!pEntry->IsHashInvalid()) {
 				uIndex = (m_uSizeMask+1)-uCount;
 				break;
 			}
-			pEntry = reinterpret_cast<Entry*>(reinterpret_cast<Word8 *>(pEntry)+uEntrySize);
+			pEntry = reinterpret_cast<Entry*>(reinterpret_cast<uint8_t *>(pEntry)+uEntrySize);
 		} while (--uCount);
 	}
 	return uIndex;
@@ -596,10 +598,10 @@ WordPtr BURGER_API Burger::HashMapShared::FindFirst(void) const
 
 ***************************************/
 
-WordPtr BURGER_API Burger::HashMapShared::ComputeHash(const void*pKey) const
+uintptr_t BURGER_API Burger::HashMapShared::ComputeHash(const void*pKey) const
 {
 	// Create the hash
-	WordPtr uHash = m_pHashFunction(pKey,m_uFirstSize);
+	uintptr_t uHash = m_pHashFunction(pKey,m_uFirstSize);
 	// Collision with special hash?
 	if (uHash == INVALID_HASH) {
 		// Likely, this value will work in the rare case
@@ -632,9 +634,9 @@ void BURGER_API Burger::HashMapShared::Copy(const HashMapShared *pInput)
 	m_pEntryCopyFunction = pInput->m_pEntryCopyFunction;
 	m_pEntryInvalidationFunction = pInput->m_pEntryInvalidationFunction;
 
-	WordPtr uEntrySize = pInput->m_uEntrySize;
+	uintptr_t uEntrySize = pInput->m_uEntrySize;
 	m_uEntrySize = uEntrySize;
-	WordPtr uCount = pInput->m_uEntryCount;
+	uintptr_t uCount = pInput->m_uEntryCount;
 	if (uCount) {
 		HashMapShared::CreateHashBuffer((uCount * 3) / 2);
 		const Entry *pEntry = static_cast<const Entry *>(pInput->m_pEntries);
@@ -642,9 +644,9 @@ void BURGER_API Burger::HashMapShared::Copy(const HashMapShared *pInput)
 		do {
 			// Every entry with a valid hash will be added to the new hash
 			if (!pEntry->IsHashInvalid()) {
-				Add(pEntry+1,reinterpret_cast<const Word8 *>(pEntry)+m_uSecondOffset);
+				Add(pEntry+1,reinterpret_cast<const uint8_t *>(pEntry)+m_uSecondOffset);
 			}
-			pEntry = reinterpret_cast<const Entry*>(reinterpret_cast<const Word8 *>(pEntry)+uEntrySize);
+			pEntry = reinterpret_cast<const Entry*>(reinterpret_cast<const uint8_t *>(pEntry)+uEntrySize);
 		} while (--uCount);
 	}
 }
@@ -678,8 +680,8 @@ void BURGER_API Burger::HashMapShared::Add(const void *pT,const void *pU)
 	BURGER_ASSERT(m_pEntries);
 	++m_uEntryCount;
 
-	WordPtr uHash = ComputeHash(pT);
-	WordPtr uIndex = uHash & m_uSizeMask;
+	uintptr_t uHash = ComputeHash(pT);
+	uintptr_t uIndex = uHash & m_uSizeMask;
 	Entry *pEntry = GetEntry(uIndex);
 
 	// If the key is empty, this is simplicity itself
@@ -698,7 +700,7 @@ void BURGER_API Burger::HashMapShared::Add(const void *pT,const void *pU)
 	} else {
 		// Find a blank spot and link it in
 		// Only entries with the EMPTY_RECORD index can be used for insertions
-		WordPtr uBlankIndex = uIndex;
+		uintptr_t uBlankIndex = uIndex;
 		Entry *pNewEntry;
 		do {
 			uBlankIndex = (uBlankIndex + 1) & m_uSizeMask;
@@ -712,7 +714,7 @@ void BURGER_API Burger::HashMapShared::Add(const void *pT,const void *pU)
 
 			pNewEntry->m_uHashValue = pEntry->m_uHashValue;
 			pNewEntry->m_uNextInChain = pEntry->m_uNextInChain;
-			m_pEntryCopyFunction(pNewEntry,pEntry+1,reinterpret_cast<const Word8 *>(pEntry)+m_uSecondOffset);
+			m_pEntryCopyFunction(pNewEntry,pEntry+1,reinterpret_cast<const uint8_t *>(pEntry)+m_uSecondOffset);
 
 			// Make the new entry the new parent
 			pEntry->m_uNextInChain = uBlankIndex;
@@ -722,7 +724,7 @@ void BURGER_API Burger::HashMapShared::Add(const void *pT,const void *pU)
 			// which entry is pointing to this one (Very rare case)
 
 			// Start with the parent of the collided entry
-			WordPtr uCollisionIndex = pEntry->m_uHashValue & m_uSizeMask;
+			uintptr_t uCollisionIndex = pEntry->m_uHashValue & m_uSizeMask;
 			for (;;) {
 				Entry *pCollisionEntry = GetEntry(uCollisionIndex);
 				// Found the parent?
@@ -730,7 +732,7 @@ void BURGER_API Burger::HashMapShared::Add(const void *pT,const void *pU)
 					// Copy the collided entry into the new entry
 					pNewEntry->m_uHashValue = pEntry->m_uHashValue;
 					pNewEntry->m_uNextInChain = pEntry->m_uNextInChain;
-					m_pEntryCopyFunction(pNewEntry,pEntry+1,reinterpret_cast<const Word8 *>(pEntry)+m_uSecondOffset);
+					m_pEntryCopyFunction(pNewEntry,pEntry+1,reinterpret_cast<const uint8_t *>(pEntry)+m_uSecondOffset);
 					// Fix up the linked list
 					pCollisionEntry->m_uNextInChain = uBlankIndex;
 					break;
@@ -766,17 +768,17 @@ void BURGER_API Burger::HashMapShared::Add(const void *pT,const void *pU)
 
 const void * Burger::HashMapShared::GetData(const void *pT) const
 {
-	WordPtr uIndex = FindIndex(pT);
+	uintptr_t uIndex = FindIndex(pT);
 	const void *pResult = NULL;
 	if (uIndex!=INVALID_INDEX) {
-		pResult = reinterpret_cast<const Word8 *>(GetEntry(uIndex))+m_uSecondOffset;
+		pResult = reinterpret_cast<const uint8_t *>(GetEntry(uIndex))+m_uSecondOffset;
 	}
 	return pResult;
 }
 
 /*! ************************************
 
-	\fn Burger::HashMapShared::Entry *Burger::HashMapShared::GetEntry(WordPtr uIndex)
+	\fn Burger::HashMapShared::Entry *Burger::HashMapShared::GetEntry(uintptr_t uIndex)
 	\brief Return the pointer to an Entry
 
 	Since the Entry class is of a runtime decided size, this function
@@ -784,13 +786,13 @@ const void * Burger::HashMapShared::GetData(const void *pT) const
 
 	\param uIndex Valid index into the array.
 	\return Pointer to a specific Entry into the array.
-	\sa GetEntry(WordPtr) const
+	\sa GetEntry(uintptr_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn const Burger::HashMapShared::Entry *Burger::HashMapShared::GetEntry(WordPtr uIndex) const
+	\fn const Burger::HashMapShared::Entry *Burger::HashMapShared::GetEntry(uintptr_t uIndex) const
 	\brief Return a constant pointer to an Entry
 
 	Since the Entry class is of a runtime decided size, this function
@@ -798,7 +800,7 @@ const void * Burger::HashMapShared::GetData(const void *pT) const
 
 	\param uIndex Valid index into the array.
 	\return Constant pointer to a specific Entry into the array.
-	\sa GetEntry(WordPtr)
+	\sa GetEntry(uintptr_t)
 
 ***************************************/
 
@@ -821,7 +823,7 @@ const void * Burger::HashMapShared::GetData(const void *pT) const
 
 /*! ************************************
 
-	\fn Burger::HashMapShared::const_iterator::const_iterator(const HashMapShared *pParent,WordPtr uIndex)
+	\fn Burger::HashMapShared::const_iterator::const_iterator(const HashMapShared *pParent,uintptr_t uIndex)
 	\brief Base class constructor
 
 	This class is initialized with a pointer to the parent class and
@@ -836,7 +838,7 @@ const void * Burger::HashMapShared::GetData(const void *pT) const
 
 /*! ************************************
 
-	\fn Word Burger::HashMapShared::const_iterator::IsEnd(void) const
+	\fn uint_t Burger::HashMapShared::const_iterator::IsEnd(void) const
 	\brief Is the iterator at the end of the array?
 
 	\return \ref TRUE if the iterator is not pointing to a valid entry.
@@ -900,14 +902,14 @@ const void * Burger::HashMapShared::GetData(const void *pT) const
 
 void BURGER_API Burger::HashMapShared::const_iterator::operator++()
 {
-	WordPtr uIndex = m_uIndex;
+	uintptr_t uIndex = m_uIndex;
 	if (uIndex!=INVALID_INDEX) {
 		const HashMapShared *pParent = m_pParent;
 		BURGER_ASSERT(pParent);
-		WordPtr uEndMask = pParent->GetSizeMask();
+		uintptr_t uEndMask = pParent->GetSizeMask();
 		// Get the starting pointer
 		const Entry *pEntry = pParent->GetEntry(uIndex);
-		WordPtr uEntrySize = pParent->GetEntrySize();
+		uintptr_t uEntrySize = pParent->GetEntrySize();
 		do {
 			// End of the array?
 			if (++uIndex > uEndMask) {
@@ -916,7 +918,7 @@ void BURGER_API Burger::HashMapShared::const_iterator::operator++()
 				break;
 			}
 			// Increment the pointer
-			pEntry = reinterpret_cast<const Entry*>(reinterpret_cast<const Word8 *>(pEntry)+uEntrySize);
+			pEntry = reinterpret_cast<const Entry*>(reinterpret_cast<const uint8_t *>(pEntry)+uEntrySize);
 			// Exit if valid
 		} while (pEntry->IsHashInvalid());
 		// Update the iterator
@@ -926,7 +928,7 @@ void BURGER_API Burger::HashMapShared::const_iterator::operator++()
 
 /*! ************************************
 
-	\fn Word Burger::HashMapShared::const_iterator::operator==(const const_iterator& it) const
+	\fn uint_t Burger::HashMapShared::const_iterator::operator==(const const_iterator& it) const
 	\brief Test for equality between iterators
 
 	If two iterators point to the same index, return \ref TRUE
@@ -939,7 +941,7 @@ void BURGER_API Burger::HashMapShared::const_iterator::operator++()
 
 /*! ************************************
 
-	\fn Word Burger::HashMapShared::const_iterator::operator!=(const const_iterator& it) const
+	\fn uint_t Burger::HashMapShared::const_iterator::operator!=(const const_iterator& it) const
 	\brief Test for inequality between iterators
 
 	If two iterators point different indexes, return \ref TRUE
@@ -963,7 +965,7 @@ void BURGER_API Burger::HashMapShared::const_iterator::operator++()
 	If the invalidation function is \ref NULL, the main buffer
 	is discarded immediately.
 
-	\sa CreateBuffer(WordPtr,WordPtr)
+	\sa CreateBuffer(uintptr_t,uintptr_t)
 
 ***************************************/
 
@@ -972,13 +974,13 @@ void BURGER_API Burger::HashMapShared::Clear(void)
 	if (m_pEntryInvalidationFunction) {
 		Entry *pEntry = static_cast<Entry *>(m_pEntries);
 		if (pEntry) {
-			WordPtr uCount = m_uSizeMask+1;
-			WordPtr uEntrySize = m_uEntrySize;
+			uintptr_t uCount = m_uSizeMask+1;
+			uintptr_t uEntrySize = m_uEntrySize;
 			do {
 				if (!pEntry->IsHashInvalid()) {
 					m_pEntryInvalidationFunction(pEntry);
 				}
-				pEntry = reinterpret_cast<Entry*>(reinterpret_cast<Word8 *>(pEntry)+uEntrySize);
+				pEntry = reinterpret_cast<Entry*>(reinterpret_cast<uint8_t *>(pEntry)+uEntrySize);
 			} while (--uCount);
 		}
 	}
@@ -996,11 +998,11 @@ void BURGER_API Burger::HashMapShared::Clear(void)
 	a specific size.
 
 	\param uNewSize Number of entries for the new hash buffer
-	\sa SetCapacity(WordPtr)
+	\sa SetCapacity(uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::HashMapShared::Resize(WordPtr uNewSize) 
+void BURGER_API Burger::HashMapShared::Resize(uintptr_t uNewSize) 
 {
 	if (uNewSize < m_uEntryCount) {
 		uNewSize = m_uEntryCount;
@@ -1017,11 +1019,11 @@ void BURGER_API Burger::HashMapShared::Resize(WordPtr uNewSize)
 	memory allocations.
 
 	\param uNewSize Minimum number of entries to size the cache
-	\sa Resize(WordPtr)
+	\sa Resize(uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
+void BURGER_API Burger::HashMapShared::SetCapacity(uintptr_t uNewSize)
 {
 	// Don't delete entries!
 	if (uNewSize < m_uEntryCount) {
@@ -1033,7 +1035,7 @@ void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
 
 /*! ************************************
 
-	\fn WordPtr Burger::HashMapShared::GetEntryCount(void) const
+	\fn uintptr_t Burger::HashMapShared::GetEntryCount(void) const
 	\brief Returns the number of valid entries in the hash
 
 	\return The number of valid entries in the hash.
@@ -1043,7 +1045,7 @@ void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
 
 /*! ************************************
 
-	\fn WordPtr Burger::HashMapShared::GetSizeMask(void) const
+	\fn uintptr_t Burger::HashMapShared::GetSizeMask(void) const
 	\brief Returns the mask used by the hash for rounding.
 
 	When the hash buffer is created, it's set to a size that's
@@ -1064,7 +1066,7 @@ void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
 
 /*! ************************************
 
-	\fn Word Burger::HashMapShared::IsEmpty(void) const
+	\fn uint_t Burger::HashMapShared::IsEmpty(void) const
 	\brief Returns \ref TRUE if the hash is empty
 
 	\return \ref TRUE if the hash is empty, \ref FALSE if not
@@ -1074,7 +1076,7 @@ void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
 
 /*! ************************************
 
-	\fn Word Burger::HashMapShared::GetEntrySize(void) const
+	\fn uint_t Burger::HashMapShared::GetEntrySize(void) const
 	\brief Returns the size of each entry in bytes
 
 	\return The number of bytes each Entry occupies in the hash array.
@@ -1134,7 +1136,7 @@ void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
 
 /*! ************************************
 
-	\fn Burger::HashMap::const_iterator::const_iterator(const HashMapShared *pParent,WordPtr uIndex)
+	\fn Burger::HashMap::const_iterator::const_iterator(const HashMapShared *pParent,uintptr_t uIndex)
 	\brief Standard constructor
 
 	This private function is used to create the const_iterator for returning to
@@ -1250,7 +1252,7 @@ void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
 
 /*! ************************************
 
-	\fn Word Burger::HashMap::EqualsTest(const void *pA,const void *pB)
+	\fn uint_t Burger::HashMap::EqualsTest(const void *pA,const void *pB)
 	\brief Key comparison function.
 	
 	Callback function to test two keys and return \ref TRUE if equal.
@@ -1269,7 +1271,7 @@ void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
 	Create an empty hash and select a hash algorithm.
 	
 	\param pHashFunction Pointer to a hash function
-	\sa HashMap(HashProc,WordPtr) or HashMap(const HashMap &)
+	\sa HashMap(HashProc,uintptr_t) or HashMap(const HashMap &)
 
 ***************************************/
 
@@ -1283,13 +1285,13 @@ void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
 	
 	\param pHashFunction Pointer to a hash function
 	\param pTestProc Pointer to an Entry equality test
-	\sa HashMap(HashProc,WordPtr) or HashMap(const HashMap &)
+	\sa HashMap(HashProc,uintptr_t) or HashMap(const HashMap &)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::HashMap::HashMap(HashProc pHashFunction,WordPtr uDefault)
+	\fn Burger::HashMap::HashMap(HashProc pHashFunction,uintptr_t uDefault)
 	\brief Default constructor with a set number of preallocated entries
 
 	Construct the hash with a minimum number of entries so they don't
@@ -1309,7 +1311,7 @@ void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
 	Make a copy of a hash.
 
 	\param rHashMap Reference to a hash to copy
-	\sa HashMap(HashProc) or HashMap(HashProc,WordPtr)
+	\sa HashMap(HashProc) or HashMap(HashProc,uintptr_t)
 
 ***************************************/
 
@@ -1320,7 +1322,7 @@ void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
 
 	Dispose of all data in the hash
 
-	\sa Clear(), HashMap(HashProc), HashMap(HashProc,WordPtr) or HashMap(const HashMap &)
+	\sa Clear(), HashMap(HashProc), HashMap(HashProc,uintptr_t) or HashMap(const HashMap &)
 
 ***************************************/
 
@@ -1414,7 +1416,7 @@ void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
 
 /*! ************************************
 
-	\fn Word Burger::HashMap::GetData(const T &rKey,U *pOutput) const
+	\fn uint_t Burger::HashMap::GetData(const T &rKey,U *pOutput) const
 	\brief Get a copy of data by looking it up by a hash key
 
 	Scan the hash for data indexed by the key. If found, copy the
@@ -1587,7 +1589,7 @@ void BURGER_API Burger::HashMapShared::SetCapacity(WordPtr uNewSize)
 
 ***************************************/
 
-Word BURGER_API Burger::HashMapStringCaseTest(const void *pA,const void *pB) 
+uint_t BURGER_API Burger::HashMapStringCaseTest(const void *pA,const void *pB) 
 {
 	return StringCaseCompare(static_cast<const String *>(pA)->GetPtr(),static_cast<const String *>(pB)->GetPtr())==0;
 }

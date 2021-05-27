@@ -30,7 +30,7 @@ extern const uint32_float_t g_MP3FHTCosines[4][2];
 extern const uint32_float_t g_MP3DCT36Constants[18];
 extern const uint32_float_t g_MP3DCT12Constants[3];
 extern void BURGER_API MP3DCT64(float *pOutput1,float *pOutput2,const float *pInput);
-extern void BURGER_API MP3FHT(float *pInput,WordPtr uCount);
+extern void BURGER_API MP3FHT(float *pInput,uintptr_t uCount);
 extern void BURGER_API MP3DCT36(float *pSideSamples,float *pHybridOutput,float *pOutput,const float *pPrevious,const float *pBlockType);
 extern void BURGER_API MP3DCT12(float *pSideSamples,float *pHybridOutput,float *pOutput,const float *pPrevious,const float *pBlockType);
 }

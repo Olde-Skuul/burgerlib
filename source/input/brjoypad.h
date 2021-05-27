@@ -1,13 +1,14 @@
 /***************************************
 
-	Joypad/joystick Manager
+    Joypad/joystick Manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -48,19 +49,19 @@ struct XInputGamePad_t {
 	float m_fThumbLY;			///< Left thumbstick Y -1.0f to 1.0f
 	float m_fThumbRX;			///< Right thumbstick X -1.0f to 1.0f
 	float m_fThumbRY;			///< Right thumbstick Y -1.0f to 1.0f
-	Int32 m_iThumbLX;			///< Left thumbstick X -32768 to 32767
-	Int32 m_iThumbLY;			///< Left thumbstick Y -32768 to 32767
-	Int32 m_iThumbRX;			///< Right thumbstick X -32768 to 32767
-	Int32 m_iThumbRY;			///< Right thumbstick Y -32768 to 32767
-	Word32 m_uButtons;			///< Current state of the buttons
-	Word32 m_uPressedButtons;	///< Buttons that were "pressed" during this update
-	Word8 m_uLeftTrigger;		///< Left trigger (0-255)
-	Word8 m_uRightTrigger;		///< Right trigger (0-255)
-	Word8 m_bPressedLeftTrigger;	///< \ref TRUE if the left trigger was "Pressed" this update
-	Word8 m_bPressedRightTrigger;	///< \ref TRUE if the right trigger was "Pressed" this update
-	Word8 m_bConnected;			///< \ref TRUE If the game pad is currently connected
-	Word8 m_bInserted;			///< \ref TRUE if the game pad was inserted during the last update
-	Word8 m_bRemoved;			///< \ref TRUE if the game pad was removed during the last update
+	int32_t m_iThumbLX;			///< Left thumbstick X -32768 to 32767
+	int32_t m_iThumbLY;			///< Left thumbstick Y -32768 to 32767
+	int32_t m_iThumbRX;			///< Right thumbstick X -32768 to 32767
+	int32_t m_iThumbRY;			///< Right thumbstick Y -32768 to 32767
+	uint32_t m_uButtons;			///< Current state of the buttons
+	uint32_t m_uPressedButtons;	///< Buttons that were "pressed" during this update
+	uint8_t m_uLeftTrigger;		///< Left trigger (0-255)
+	uint8_t m_uRightTrigger;		///< Right trigger (0-255)
+	uint8_t m_bPressedLeftTrigger;	///< \ref TRUE if the left trigger was "Pressed" this update
+	uint8_t m_bPressedRightTrigger;	///< \ref TRUE if the right trigger was "Pressed" this update
+	uint8_t m_bConnected;			///< \ref TRUE If the game pad is currently connected
+	uint8_t m_bInserted;			///< \ref TRUE if the game pad was inserted during the last update
+	uint8_t m_bRemoved;			///< \ref TRUE if the game pad was removed during the last update
 };
 
 enum eXInputDeadZoneType {
@@ -69,12 +70,12 @@ enum eXInputDeadZoneType {
 	XINPUTDEADZONE_CENTER		///< Apply an x/y based dead zone
 };
 
-extern Word BURGER_API XInputStopRumbleOnAllControllers(void);
-extern Word BURGER_API XInputGetGamepadState(Word uWhich,XInputGamePad_t *pXInputGamePad,eXInputDeadZoneType uDeadZoneType=XINPUTDEADZONE_NONE);
+extern uint_t BURGER_API XInputStopRumbleOnAllControllers(void);
+extern uint_t BURGER_API XInputGetGamepadState(uint_t uWhich,XInputGamePad_t *pXInputGamePad,eXInputDeadZoneType uDeadZoneType=XINPUTDEADZONE_NONE);
 #endif
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-extern Word BURGER_API IsDeviceXInput(const GUID *pGuid);
+extern uint_t BURGER_API IsDeviceXInput(const GUID *pGuid);
 #endif
 
 class Joypad : public Base {
@@ -137,8 +138,8 @@ public:
 	};
 
 	struct JoypadRange_t {
-		Word m_uMin;					///< Minimum value for a digital \ref TRUE
-		Word m_uMax;					///< Maximum value for a digital \ref TRUE
+		uint_t m_uMin;					///< Minimum value for a digital \ref TRUE
+		uint_t m_uMax;					///< Maximum value for a digital \ref TRUE
 	};
 
 	struct JoypadData_t {
@@ -149,16 +150,16 @@ public:
 		String m_InstanceName;						///< Name of the device instance UTF-8 encoded (WINDOWS only)
 		String m_ProductName;						///< Name of the device UTF-8 encoded (WINDOWS only)
 #endif
-		Word m_bConnected;				///< \ref TRUE If the game pad is currently connected
-		Word m_bInserted;				///< \ref TRUE if the game pad was inserted during the last update
-		Word m_bRemoved;				///< \ref TRUE if the game pad was removed during the last update
-		Word m_uButtonCount;			///< Number of buttons on this joypad
-		Word m_uPOVCount;				///< Number of POV units on this joypad
-		Word m_uAxisCount;				///< Number of Axis units on this joypad
-		Word32 m_uButtonState;			///< Buttons currently pressed
-		Word32 m_uButtonStatePressed;	///< Buttons pressed between reads (Clicked)
-		Word32 m_uAxis[MAXAXIS];		///< Axis data from the joypad (0-255)
-		Word m_uAxisPercents[MAXAXIS];	///< Cache for percentages
+		uint_t m_bConnected;				///< \ref TRUE If the game pad is currently connected
+		uint_t m_bInserted;				///< \ref TRUE if the game pad was inserted during the last update
+		uint_t m_bRemoved;				///< \ref TRUE if the game pad was removed during the last update
+		uint_t m_uButtonCount;			///< Number of buttons on this joypad
+		uint_t m_uPOVCount;				///< Number of POV units on this joypad
+		uint_t m_uAxisCount;				///< Number of Axis units on this joypad
+		uint32_t m_uButtonState;			///< Buttons currently pressed
+		uint32_t m_uButtonStatePressed;	///< Buttons pressed between reads (Clicked)
+		uint32_t m_uAxis[MAXAXIS];		///< Axis data from the joypad (0-255)
+		uint_t m_uAxisPercents[MAXAXIS];	///< Cache for percentages
 		JoypadRange_t m_uAxisDigitalRanges[MAXAXIS];	///< Digital ranges
 	};
 
@@ -170,23 +171,23 @@ private:
 #endif
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	Word m_bDirectInputFound;							///< DirectInput devices found
-	Word m_bXInputFound;								///< XInput devices found
-	Word m_uDirectInputDevices;							///< Number of devices found from DirectInput, not managed by XInput
+	uint_t m_bDirectInputFound;							///< DirectInput devices found
+	uint_t m_bXInputFound;								///< XInput devices found
+	uint_t m_uDirectInputDevices;							///< Number of devices found from DirectInput, not managed by XInput
 #endif
 
 	JoypadData_t m_Data[MAXJOYSTICKS];					///< Current input data from game devices
-	Word m_uDeviceCount;								///< Number of game controller drivers found				
+	uint_t m_uDeviceCount;								///< Number of game controller drivers found				
 
 public:
 	Joypad(GameApp *pAppInstance);
 	virtual ~Joypad();
-	Word32 BURGER_API ReadButtons(Word uWhich) const;
-	Word BURGER_API ReadAbsolute(Word uWhich,Word uAxis) const;
-	int BURGER_API ReadDelta(Word uWhich,Word uAxis) const;
-	Word BURGER_API GetAxisCount(Word uWhich) const;
-	void BURGER_API SetDigital(Word uWhich,Word uAxis,Word uPercent=20);
-	BURGER_INLINE Word GetDeviceCount(void) const { return m_uDeviceCount; }
+	uint32_t BURGER_API ReadButtons(uint_t uWhich) const;
+	uint_t BURGER_API ReadAbsolute(uint_t uWhich,uint_t uAxis) const;
+	int BURGER_API ReadDelta(uint_t uWhich,uint_t uAxis) const;
+	uint_t BURGER_API GetAxisCount(uint_t uWhich) const;
+	void BURGER_API SetDigital(uint_t uWhich,uint_t uAxis,uint_t uPercent=20);
+	BURGER_INLINE uint_t GetDeviceCount(void) const { return m_uDeviceCount; }
 	static RunQueue::eReturnCode BURGER_API Poll(void *pData);
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)

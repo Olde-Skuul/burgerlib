@@ -1,14 +1,14 @@
 /***************************************
 
-	MacOSX application manager
+    MacOSX application manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE for
-	license details. Yes, you can use it in a commercial title without paying
-	anything, just give me a credit.
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
 
-	Please? It's not like I'm asking you for money!
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -84,7 +84,7 @@ extern void FixNSRectOrigin(NSRect* pInput);
 
 @interface BurgerApplicationDelegate : NSObject {
 	Burger::GameApp* m_App;
-	Word m_bStarted;
+	uint_t m_bStarted;
 }
 - (id)initWithGameApp:(Burger::GameApp*)pGameApp;
 @end
@@ -221,18 +221,18 @@ enum ePendingOperation {
 
 #if defined(MAC_OS_X_VERSION_10_6)
 
-static Word s_moveHack;
+static uint_t s_moveHack;
 
 
 @interface BurgerWindowListener : NSResponder <NSWindowDelegate> {
 	Burger::GameApp* m_pParent;
-	Word8 observingVisible;
-	Word8 wasCtrlLeft;
-	Word wasVisible;
-	Word isFullscreenSpace;
-	Word8 inFullscreenTransition;
+	uint8_t observingVisible;
+	uint8_t wasCtrlLeft;
+	uint_t wasVisible;
+	uint_t isFullscreenSpace;
+	uint8_t inFullscreenTransition;
 	ePendingOperation pendingWindowOperation;
-	Word8 isMoving;
+	uint8_t isMoving;
 	int pendingWindowWarpX;
 	int pendingWindowWarpY;
 }
@@ -606,7 +606,7 @@ typedef enum {
 	FixNSRectOrigin(&rect);
 
 	if (s_moveHack) {
-		Word blockMove = ((Burger::Tick::Read() - s_moveHack) < 500);
+		uint_t blockMove = ((Burger::Tick::Read() - s_moveHack) < 500);
 
 		s_moveHack = 0;
 
@@ -1097,8 +1097,8 @@ typedef enum {
 
 ***************************************/
 
-Burger::GameApp::GameApp(WordPtr uDefaultMemorySize, Word uDefaultHandleCount,
-	WordPtr uMinReserveSize) :
+Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize, uint_t uDefaultHandleCount,
+	uintptr_t uMinReserveSize) :
 	m_MemoryManagerHandle(
 		uDefaultMemorySize, uDefaultHandleCount, uMinReserveSize),
 	m_pApplication(NULL), m_pApplicationDelegate(NULL), m_pWindow(NULL),
@@ -1170,7 +1170,7 @@ Burger::GameApp::GameApp(WordPtr uDefaultMemorySize, Word uDefaultHandleCount,
 	Filename Name;
 	FileManager::GetPrefix(&Name, 9);
 	const char* pFileName = Name.GetPtr();
-	WordPtr uLength = StringLength(pFileName);
+	uintptr_t uLength = StringLength(pFileName);
 	if ((uLength > 7) && !StringCompare((pFileName + uLength) - 7, ":MacOS:")) {
 
 		// Secondary test. Does the PkgInfo file exist?
@@ -1243,10 +1243,10 @@ void BURGER_API Burger::GameApp::FocusWindow(void) {}
 
 ***************************************/
 
-Word BURGER_API Burger::GameApp::SetWindowSize(Word uWidth, Word uHeight)
+uint_t BURGER_API Burger::GameApp::SetWindowSize(uint_t uWidth, uint_t uHeight)
 {
 	NSWindow* pWindow = m_pWindow;
-	Word uResult = 1;
+	uint_t uResult = 1;
 	if (pWindow) {
 		CGFloat fWidth = static_cast<CGFloat>(static_cast<int>(uWidth));
 		CGFloat fHeight = static_cast<CGFloat>(static_cast<int>(uHeight));

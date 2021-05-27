@@ -24,7 +24,7 @@
 				FavorSizeOrSpeed="1"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
 				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -92,7 +92,7 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
 				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -160,7 +160,7 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -229,7 +229,7 @@
 				WholeProgramOptimization="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\network;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\random;..\source\text;..\source\windows;..\source\windows\generated;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -366,12 +366,6 @@
 				</File>
 				<File
 					RelativePath="..\source\audio\brmicrosoftadpcm.h">
-				</File>
-				<File
-					RelativePath="..\source\audio\brmp3.cpp">
-				</File>
-				<File
-					RelativePath="..\source\audio\brmp3.h">
 				</File>
 				<File
 					RelativePath="..\source\audio\brsequencer.cpp">
@@ -1560,6 +1554,15 @@
 						</File>
 					</Filter>
 				</Filter>
+				<Filter
+					Name="vulkan">
+					<File
+						RelativePath="..\source\graphics\vulkan\brvulkanerrors.cpp">
+					</File>
+					<File
+						RelativePath="..\source\graphics\vulkan\brvulkanerrors.h">
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="input">
@@ -1762,6 +1765,12 @@
 					RelativePath="..\source\lowlevel\brstaticrtti.h">
 				</File>
 				<File
+					RelativePath="..\source\lowlevel\brstructs.cpp">
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brstructs.h">
+				</File>
+				<File
 					RelativePath="..\source\lowlevel\brtick.cpp">
 				</File>
 				<File
@@ -1846,6 +1855,12 @@
 					RelativePath="..\source\math\brfpinfo.h">
 				</File>
 				<File
+					RelativePath="..\source\math\brfplargeint.cpp">
+				</File>
+				<File
+					RelativePath="..\source\math\brfplargeint.h">
+				</File>
+				<File
 					RelativePath="..\source\math\brmatrix3d.cpp">
 				</File>
 				<File
@@ -1904,45 +1919,6 @@
 				</File>
 				<File
 					RelativePath="..\source\memory\brmemorymanager.h">
-				</File>
-			</Filter>
-			<Filter
-				Name="network">
-				<File
-					RelativePath="..\source\network\brnetendpoint.cpp">
-				</File>
-				<File
-					RelativePath="..\source\network\brnetendpoint.h">
-				</File>
-				<File
-					RelativePath="..\source\network\brnetendpointtcp.cpp">
-				</File>
-				<File
-					RelativePath="..\source\network\brnetendpointtcp.h">
-				</File>
-				<File
-					RelativePath="..\source\network\brnetmanager.cpp">
-				</File>
-				<File
-					RelativePath="..\source\network\brnetmanager.h">
-				</File>
-				<File
-					RelativePath="..\source\network\brnetmodule.cpp">
-				</File>
-				<File
-					RelativePath="..\source\network\brnetmodule.h">
-				</File>
-				<File
-					RelativePath="..\source\network\brnetmoduletcp.cpp">
-				</File>
-				<File
-					RelativePath="..\source\network\brnetmoduletcp.h">
-				</File>
-				<File
-					RelativePath="..\source\network\brnetplay.cpp">
-				</File>
-				<File
-					RelativePath="..\source\network\brnetplay.h">
 				</File>
 			</Filter>
 			<Filter
@@ -2399,6 +2375,12 @@
 			</File>
 			<File
 				RelativePath="..\unittest\testbrnetwork.h">
+			</File>
+			<File
+				RelativePath="..\unittest\testbrnumberto.cpp">
+			</File>
+			<File
+				RelativePath="..\unittest\testbrnumberto.h">
 			</File>
 			<File
 				RelativePath="..\unittest\testbrprintf.cpp">

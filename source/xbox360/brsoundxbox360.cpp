@@ -46,9 +46,9 @@ Burger::SoundManager::SoundManager(GameApp *pGameApp) :
 
 ***************************************/
 
-Word Burger::SoundManager::Init(void)
+uint_t Burger::SoundManager::Init(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	return uResult;
 }
 
@@ -64,7 +64,7 @@ void Burger::SoundManager::Shutdown(void)
 
 
 
-void Burger::SoundManager::SetVolume(Word uVolume)
+void Burger::SoundManager::SetVolume(uint_t uVolume)
 {
 }
 
@@ -83,7 +83,7 @@ void Burger::SoundManager::Buffer::Shutdown(void)
 // Upload to DirectSound
 //
 
-Word Burger::SoundManager::Buffer::Upload(SoundManager *pSoundManager)
+uint_t Burger::SoundManager::Buffer::Upload(SoundManager *pSoundManager)
 {
 	return 10;
 }

@@ -55,11 +55,11 @@ public:
     }
     String16(const String16& rInput);
     String16(
-        const String16& rInput, WordPtr uStart, WordPtr uEnd = UINTPTR_MAX);
+        const String16& rInput, uintptr_t uStart, uintptr_t uEnd = UINTPTR_MAX);
     String16(const char* pInput);
-    String16(const char* pInput, WordPtr uPadding);
-    String16(const Word16* pInput);
-    String16(const Word32* pInput);
+    String16(const char* pInput, uintptr_t uPadding);
+    String16(const uint16_t* pInput);
+    String16(const uint32_t* pInput);
     ~String16()
     {
         if (m_pData != m_Raw) {
@@ -108,7 +108,7 @@ public:
     eError BURGER_API SetBufferSize(uintptr_t uSize) BURGER_NOEXCEPT;
 
     String16& operator=(const String16& rInput);
-    String16& operator=(const Word16* pInput);
+    String16& operator=(const uint16_t* pInput);
     String16& operator=(const char* pInput);
     String16& operator=(char cInput);
     BURGER_INLINE String16 operator()(

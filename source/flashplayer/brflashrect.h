@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player rectangle manager
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player rectangle manager
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #ifndef __BRFLASHRECT_H__
@@ -38,7 +39,7 @@ public:
 		Zero();
 	}
 	void BURGER_API Read(Stream* pStream);
-	Word BURGER_API IsIntersecting(const Vector4D_t *pRect) const;
+	uint_t BURGER_API IsIntersecting(const Vector4D_t *pRect) const;
 	void BURGER_API SetRect(const Matrix23 *pMatrix,const Vector4D_t *pRect);
 	void BURGER_API TwipsToPixels(void);
 	void BURGER_API PixelsToTwips(void);

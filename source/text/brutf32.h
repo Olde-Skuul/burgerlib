@@ -2,7 +2,7 @@
 
     String handlers for UTF32 support
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
     It is released under an MIT Open Source license. Please see LICENSE for
     license details. Yes, you can use it in a commercial title without paying
@@ -23,22 +23,28 @@
 namespace Burger {
 class UTF32 {
 public:
-	enum {BAD=-1,ENDIANMARK=0xFEFF,
+    static const uint32_t BAD = UINT32_MAX;
+    static const uint32_t ENDIANMARK = 0xFEFFU;
 #if defined(BURGER_LITTLEENDIAN)
-	BE=0xFFFE0000,LE=0xFEFF};
+    static const uint32_t BE = 0xFFFE0000U;
+    static const uint32_t LE = 0x0000FEFFU;
 #else
-	BE=0xFEFF,LE=0xFFFE0000};
+    static const uint32_t BE = 0x0000FEFFU;
+    static const uint32_t LE = 0xFFFE0000U;
 #endif
-	static Word BURGER_API IsValid(Word32 uInput);
-	static Word BURGER_API IsValid(const Word32 *pInput);
-	static Word BURGER_API IsValid(const Word32 *pInput,WordPtr uInputSize);
-	static Word32 BURGER_API FromUTF8(const char *pInput);
-	static Word32 BURGER_API FromUTF8(const char **ppInput);
-	static WordPtr BURGER_API FromUTF8(Word32 *pOutput,WordPtr uOutputSize,const char *pInput);
-	static WordPtr BURGER_API FromUTF8(Word32 *pOutput,WordPtr uOutputSize,const char *pInput,WordPtr uInputSize);
+    static uint_t BURGER_API IsValid(uint32_t uInput) BURGER_NOEXCEPT;
+    static uint_t BURGER_API IsValid(const uint32_t* pInput) BURGER_NOEXCEPT;
+    static uint_t BURGER_API IsValid(
+        const uint32_t* pInput, uintptr_t uElementCount) BURGER_NOEXCEPT;
+    static uint32_t BURGER_API FromUTF8(const char* pInput) BURGER_NOEXCEPT;
+    static uint32_t BURGER_API FromUTF8(const char** ppInput) BURGER_NOEXCEPT;
+    static uintptr_t BURGER_API FromUTF8(uint32_t* pOutput,
+        uintptr_t uOutputSize, const char* pInput) BURGER_NOEXCEPT;
+    static uintptr_t BURGER_API FromUTF8(uint32_t* pOutput,
+        uintptr_t uOutputSize, const char* pInput,
+        uintptr_t uInputSize) BURGER_NOEXCEPT;
 };
 }
 /* END */
 
 #endif
-

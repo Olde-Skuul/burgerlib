@@ -49,7 +49,7 @@
 
 /*! ************************************
 
-	\fn BURGER_INLINE Word8 *ZeroBase(void)
+	\fn BURGER_INLINE uint8_t *ZeroBase(void)
 
 	\brief Obtain the base pointer to the real memory
 	
@@ -62,7 +62,7 @@
 
 /*! ************************************
 
-	\fn void BURGER_API CallInt10(Word EAX)
+	\fn void BURGER_API CallInt10(uint_t EAX)
 
 	\brief Call interrupt 10H with AL/AH set to the passed value.
 	
@@ -78,7 +78,7 @@
 
 /*! ************************************
 
-	\fn Word BURGER_API CallInt14(Word EAX,Word EDX)
+	\fn uint_t BURGER_API CallInt14(uint_t EAX,uint_t EDX)
 
 	\brief Call interrupt 14H with AL/AH and DL/DH set to the passed values.
 	
@@ -98,7 +98,7 @@
 
 /*! ************************************
 
-	\fn Word BURGER_API CallInt17(Word EAX,Word EDX)
+	\fn uint_t BURGER_API CallInt17(uint_t EAX,uint_t EDX)
 
 	\brief Call interrupt 17H with AL/AH and DL/DH set to the passed values.
 	
@@ -118,7 +118,7 @@
 
 /*! ************************************
 
-	\fn Int32 BURGER_API Int86x(Word32 uInterrupt,const Burger::Regs16 *pInput,Burger::Regs16 *pOutput)
+	\fn int32_t BURGER_API Int86x(uint32_t uInterrupt,const Burger::Regs16 *pInput,Burger::Regs16 *pOutput)
 
 	\brief Call a MSDOS software interrupt
 	
@@ -142,7 +142,7 @@
 
 /*! ************************************
 
-	\fn void BURGER_API SetBothInts(Word32 uInterrupt,void far *pCode)
+	\fn void BURGER_API SetBothInts(uint32_t uInterrupt,void far *pCode)
 
 	\brief Intercept both the real the protected IRQ vectors
 	
@@ -160,7 +160,7 @@
 
 /*! ************************************
 
-	\fn void BURGER_API SetProtInt(Word32 uInterrupt,void far *pCode)
+	\fn void BURGER_API SetProtInt(uint32_t uInterrupt,void far *pCode)
 
 	\brief Intercept the protected IRQ vector
 	
@@ -178,7 +178,7 @@
 
 /*! ************************************
 
-	\fn void BURGER_API SetRealInt(Word32 uInterrupt,Word32 pCode)
+	\fn void BURGER_API SetRealInt(uint32_t uInterrupt,uint32_t pCode)
 
 	\brief Intercept the real mode IRQ vector
 	
@@ -196,7 +196,7 @@
 
 /*! ************************************
 
-	\fn void far * BURGER_API GetProtInt(Word32 uInterrupt)
+	\fn void far * BURGER_API GetProtInt(uint32_t uInterrupt)
 
 	\brief Call the dos extender to get the current protected mode IRQ vector
 	
@@ -213,7 +213,7 @@
 
 /*! ************************************
 
-	\fn Word32 BURGER_API GetRealInt(Word32 uInterrupt)
+	\fn uint32_t BURGER_API GetRealInt(uint32_t uInterrupt)
 
 	\brief Call the dos extender to get the current real mode IRQ vector
 	
@@ -230,7 +230,7 @@
 
 /*! ************************************
 
-	\fn void * BURGER_API MapPhysicalAddress(void *pInput,Word32 uLength)
+	\fn void * BURGER_API MapPhysicalAddress(void *pInput,uint32_t uLength)
 
 	\brief Map memory from a device into protected mode
 	
@@ -253,7 +253,7 @@
 
 /*! ************************************
 
-	\fn int BURGER_API CallRealProcX32(Word32,const Burger::Regs16 *,Burger::Regs16 *)
+	\fn int BURGER_API CallRealProcX32(uint32_t,const Burger::Regs16 *,Burger::Regs16 *)
 
 	This routine will allow a DOS application to call a real mode procedure
 	routine via the X32 DOS extender.
@@ -274,7 +274,7 @@
 	
 ***************************************/
 
-static void CallMe(Word32 Address);
+static void CallMe(uint32_t Address);
 
 // The code runs at offset 0, the data is at offset 100
 // There are 20 bytes of data. So the buffer needs to be 120 bytes
@@ -289,7 +289,7 @@ static void CallMe(Word32 Address);
 	parm [ebx] \
 	modify [eax ebx ecx edx esi edi]
 
-static const Word8 RealCode[] = {
+static const uint8_t RealCode[] = {
 	0xB8,0x00,0x01,		// MOV AX,0100 (0)
 	0x8E,0xD8,			// MOV DS,AX (3)
 	0xB8,0x00,0x01,		// MOV AX,0100 (5)
@@ -327,51 +327,51 @@ static const Word8 RealCode[] = {
 	0xCB					// RETF (86)
 };
 
-int BURGER_API CallRealProcX32(Word32 pAddress,const Burger::Regs16 *pInput,Burger::Regs16 *pOutput)
+int BURGER_API CallRealProcX32(uint32_t pAddress,const Burger::Regs16 *pInput,Burger::Regs16 *pOutput)
 {
-	Word32 pRealMemory = AllocRealMemory(120);		// Get real memory
+	uint32_t pRealMemory = AllocRealMemory(120);		// Get real memory
 	if (pRealMemory) {
-		Word8 *pFlatMemory = static_cast<Word8 *>(RealToProtectedPtr(pRealMemory));
+		uint8_t *pFlatMemory = static_cast<uint8_t *>(RealToProtectedPtr(pRealMemory));
 		Burger::MemoryCopy(pFlatMemory,RealCode,sizeof(RealCode));
 
 		// Pass the input registers
-		reinterpret_cast<Word16 *>(pFlatMemory+1)[0] = pInput->ds;		
-		reinterpret_cast<Word16 *>(pFlatMemory+6)[0] = pInput->es;
-		reinterpret_cast<Word16 *>(pFlatMemory+11)[0] = pInput->ax;
-		reinterpret_cast<Word16 *>(pFlatMemory+14)[0] = pInput->bx;
-		reinterpret_cast<Word16 *>(pFlatMemory+17)[0] = pInput->cx;
-		reinterpret_cast<Word16 *>(pFlatMemory+20)[0] = pInput->dx;
-		reinterpret_cast<Word16 *>(pFlatMemory+23)[0] = pInput->di;
-		reinterpret_cast<Word16 *>(pFlatMemory+26)[0] = pInput->si;
-		reinterpret_cast<Word16 *>(pFlatMemory+29)[0] = pInput->bp;
-		reinterpret_cast<Word32 *>(pFlatMemory+32)[0] = pAddress;
+		reinterpret_cast<uint16_t *>(pFlatMemory+1)[0] = pInput->ds;		
+		reinterpret_cast<uint16_t *>(pFlatMemory+6)[0] = pInput->es;
+		reinterpret_cast<uint16_t *>(pFlatMemory+11)[0] = pInput->ax;
+		reinterpret_cast<uint16_t *>(pFlatMemory+14)[0] = pInput->bx;
+		reinterpret_cast<uint16_t *>(pFlatMemory+17)[0] = pInput->cx;
+		reinterpret_cast<uint16_t *>(pFlatMemory+20)[0] = pInput->dx;
+		reinterpret_cast<uint16_t *>(pFlatMemory+23)[0] = pInput->di;
+		reinterpret_cast<uint16_t *>(pFlatMemory+26)[0] = pInput->si;
+		reinterpret_cast<uint16_t *>(pFlatMemory+29)[0] = pInput->bp;
+		reinterpret_cast<uint32_t *>(pFlatMemory+32)[0] = pAddress;
 
 		// Set the return data
-		reinterpret_cast<Word16 *>(pFlatMemory+39)[0] = static_cast<Word16>(pRealMemory+100);	
-		reinterpret_cast<Word16 *>(pFlatMemory+44)[0] = static_cast<Word16>(pRealMemory+102);
-		reinterpret_cast<Word16 *>(pFlatMemory+48)[0] = static_cast<Word16>(pRealMemory+104);
-		reinterpret_cast<Word16 *>(pFlatMemory+53)[0] = static_cast<Word16>(pRealMemory+106);
-		reinterpret_cast<Word16 *>(pFlatMemory+58)[0] = static_cast<Word16>(pRealMemory+108);
-		reinterpret_cast<Word16 *>(pFlatMemory+63)[0] = static_cast<Word16>(pRealMemory+110);
-		reinterpret_cast<Word16 *>(pFlatMemory+68)[0] = static_cast<Word16>(pRealMemory+112);
-		reinterpret_cast<Word16 *>(pFlatMemory+73)[0] = static_cast<Word16>(pRealMemory+114);
-		reinterpret_cast<Word16 *>(pFlatMemory+78)[0] = static_cast<Word16>(pRealMemory+116);
-		reinterpret_cast<Word16 *>(pFlatMemory+84)[0] = static_cast<Word16>(pRealMemory+118);
+		reinterpret_cast<uint16_t *>(pFlatMemory+39)[0] = static_cast<uint16_t>(pRealMemory+100);	
+		reinterpret_cast<uint16_t *>(pFlatMemory+44)[0] = static_cast<uint16_t>(pRealMemory+102);
+		reinterpret_cast<uint16_t *>(pFlatMemory+48)[0] = static_cast<uint16_t>(pRealMemory+104);
+		reinterpret_cast<uint16_t *>(pFlatMemory+53)[0] = static_cast<uint16_t>(pRealMemory+106);
+		reinterpret_cast<uint16_t *>(pFlatMemory+58)[0] = static_cast<uint16_t>(pRealMemory+108);
+		reinterpret_cast<uint16_t *>(pFlatMemory+63)[0] = static_cast<uint16_t>(pRealMemory+110);
+		reinterpret_cast<uint16_t *>(pFlatMemory+68)[0] = static_cast<uint16_t>(pRealMemory+112);
+		reinterpret_cast<uint16_t *>(pFlatMemory+73)[0] = static_cast<uint16_t>(pRealMemory+114);
+		reinterpret_cast<uint16_t *>(pFlatMemory+78)[0] = static_cast<uint16_t>(pRealMemory+116);
+		reinterpret_cast<uint16_t *>(pFlatMemory+84)[0] = static_cast<uint16_t>(pRealMemory+118);
 		
 		// Call it via the shim
 		CallMe(pRealMemory);	
 
 		// Get the result
-		pOutput->ds = reinterpret_cast<Word16 *>(pFlatMemory+100)[0];	
-		pOutput->es = reinterpret_cast<Word16 *>(pFlatMemory+102)[0];
-		pOutput->ax = reinterpret_cast<Word16 *>(pFlatMemory+104)[0];
-		pOutput->bx = reinterpret_cast<Word16 *>(pFlatMemory+106)[0];
-		pOutput->cx = reinterpret_cast<Word16 *>(pFlatMemory+108)[0];
-		pOutput->dx = reinterpret_cast<Word16 *>(pFlatMemory+110)[0];
-		pOutput->di = reinterpret_cast<Word16 *>(pFlatMemory+112)[0];
-		pOutput->si = reinterpret_cast<Word16 *>(pFlatMemory+114)[0];
-		pOutput->bp = reinterpret_cast<Word16 *>(pFlatMemory+116)[0];
-		pOutput->flags = reinterpret_cast<Word16 *>(pFlatMemory+118)[0];
+		pOutput->ds = reinterpret_cast<uint16_t *>(pFlatMemory+100)[0];	
+		pOutput->es = reinterpret_cast<uint16_t *>(pFlatMemory+102)[0];
+		pOutput->ax = reinterpret_cast<uint16_t *>(pFlatMemory+104)[0];
+		pOutput->bx = reinterpret_cast<uint16_t *>(pFlatMemory+106)[0];
+		pOutput->cx = reinterpret_cast<uint16_t *>(pFlatMemory+108)[0];
+		pOutput->dx = reinterpret_cast<uint16_t *>(pFlatMemory+110)[0];
+		pOutput->di = reinterpret_cast<uint16_t *>(pFlatMemory+112)[0];
+		pOutput->si = reinterpret_cast<uint16_t *>(pFlatMemory+114)[0];
+		pOutput->bp = reinterpret_cast<uint16_t *>(pFlatMemory+116)[0];
+		pOutput->flags = reinterpret_cast<uint16_t *>(pFlatMemory+118)[0];
 	
 		// Release the memory
 		DeallocRealMemory(pRealMemory);
@@ -401,9 +401,9 @@ int BURGER_API CallRealProcX32(Word32 pAddress,const Burger::Regs16 *pInput,Burg
 
 ***************************************/
 
-void * BURGER_API RealToProtectedPtr(Word32 pReal)
+void * BURGER_API RealToProtectedPtr(uint32_t pReal)
 {
-	Word32 uFlattened = ((pReal>>12)&0xFFFFFFF0U)+static_cast<Word16>(pReal);
+	uint32_t uFlattened = ((pReal>>12)&0xFFFFFFF0U)+static_cast<uint16_t>(pReal);
 #if defined(BURGER_X32)
 	return ZeroBase()+uFlattened;
 #else
@@ -430,7 +430,7 @@ void * BURGER_API RealToProtectedPtr(Word32 pReal)
 void * BURGER_API GetRealBufferProtectedPtr(void)
 {
 	// Get the buffer pointer
-	Word32 pReal = GetRealBufferPtr();
+	uint32_t pReal = GetRealBufferPtr();
 	// Did it allocate?
 	if (pReal) {
 		// Convert to real pointer
@@ -442,7 +442,7 @@ void * BURGER_API GetRealBufferProtectedPtr(void)
 
 /*! ************************************
 
-	\fn Word32 BURGER_API GetRealBufferPtr(void)
+	\fn uint32_t BURGER_API GetRealBufferPtr(void)
 	\brief Return pointer to shared real buffer
 	
 	Allocate an 8K buffer in real memory for use in DOS calls.
@@ -455,7 +455,7 @@ void * BURGER_API GetRealBufferProtectedPtr(void)
 
 ***************************************/
 
-static Word32 pRealBuffer;	// Cached pointer to real memory
+static uint32_t pRealBuffer;	// Cached pointer to real memory
 
 static void ReleaseBuff(void)
 {
@@ -463,10 +463,10 @@ static void ReleaseBuff(void)
 	pRealBuffer = 0;
 }
 
-Word32 BURGER_API GetRealBufferPtr(void)
+uint32_t BURGER_API GetRealBufferPtr(void)
 {
 	// Is the buffer already allocated?
-	Word32 pReal = pRealBuffer;
+	uint32_t pReal = pRealBuffer;
 	if (!pReal) {
 		// Get some REAL memory
 		pReal = AllocRealMemory(8192);
@@ -496,7 +496,7 @@ Word32 BURGER_API GetRealBufferPtr(void)
 	
 ***************************************/
 
-Word32 BURGER_API AllocRealMemory(Word32 uSize)
+uint32_t BURGER_API AllocRealMemory(uint32_t uSize)
 {
 #if defined(BURGER_X32)
 	// Call X32 to allocate memory
@@ -506,7 +506,7 @@ Word32 BURGER_API AllocRealMemory(Word32 uSize)
 	uSize = uSize+15;		// Round to the nearest 16 bytes
 	uSize = uSize>>4;		// Number of paragraphs to allocate
 	Regs.ax = 0x4800;		// DOS allocate memory command
-	Regs.bx = static_cast<Word16>(uSize);	// Number of paragraphs to allocate
+	Regs.bx = static_cast<uint16_t>(uSize);	// Number of paragraphs to allocate
 	Int86x(0x21,&Regs,&Regs);		// Allocate
 	if (Regs.flags&1) {		// Error??
 #if defined(_DEBUG)
@@ -530,7 +530,7 @@ Word32 BURGER_API AllocRealMemory(Word32 uSize)
 	
 ***************************************/
 
-void BURGER_API DeallocRealMemory(Word32 pReal)
+void BURGER_API DeallocRealMemory(uint32_t pReal)
 {
 	if (pReal) {
 #if defined(BURGER_X32)
@@ -541,7 +541,7 @@ void BURGER_API DeallocRealMemory(Word32 pReal)
 
 		pReal = pReal>>16;			// Isolate the segment
 		Regs.ax = 0x4900;			// DOS release memory command
-		Regs.es = static_cast<Word16>(pReal);	// Get the segment
+		Regs.es = static_cast<uint16_t>(pReal);	// Get the segment
 		Int86x(0x21,&Regs,&Regs);	// Release it
 #if defined(_DEBUG)
 		if (Regs.flags&1) {			// Always an error under X32

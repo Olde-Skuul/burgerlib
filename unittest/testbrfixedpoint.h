@@ -19,6 +19,6 @@
 #include "brtypes.h"
 #endif
 
-extern int BURGER_API TestBrfixedpoint(Word uVerbose);
+extern int BURGER_API TestBrfixedpoint(uint_t uVerbose);
 
 #endif

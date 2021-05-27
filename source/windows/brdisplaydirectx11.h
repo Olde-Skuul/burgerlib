@@ -32,18 +32,18 @@ class DisplayDirectX11 : public Display {
 
 public:
 	struct DXGISurfaceDesc_t {
-		Word m_uWidth;		   ///< Width of the surface in pixels
-		Word m_uHeight;		   ///< Height of the surface in pixels
-		Word m_uFormat;		   ///< DXGI_FORMAT enumeration of the pixel format
-		Word m_uSampleCount;   ///< DXGI_SAMPLE_DESC sample count
-		Word m_uSampleQuality; ///< DXGI_SAMPLE_DESC sample quality
+		uint_t m_uWidth;		   ///< Width of the surface in pixels
+		uint_t m_uHeight;		   ///< Height of the surface in pixels
+		uint_t m_uFormat;		   ///< DXGI_FORMAT enumeration of the pixel format
+		uint_t m_uSampleCount;   ///< DXGI_SAMPLE_DESC sample count
+		uint_t m_uSampleQuality; ///< DXGI_SAMPLE_DESC sample quality
 	};
 
 protected:
 	/** TRUE if the cursor is visible in full screen mode */
-	Word m_bShowCursorWhenFullScreen;
+	uint_t m_bShowCursorWhenFullScreen;
 	/** TRUE if the cursor is clipped in full screen mode */
-	Word m_bClipCursorWhenFullScreen;
+	uint_t m_bClipCursorWhenFullScreen;
 
 	void BURGER_API SetupCursor(void) const;
 
@@ -51,7 +51,7 @@ public:
 	static void BURGER_API ClearContext(ID3D11DeviceContext* pDX11Context);
 };
 
-extern Word BURGER_API GetDXGI_FORMATColorChannelBits(Word uDXGI_FORMAT);
+extern uint_t BURGER_API GetDXGI_FORMATColorChannelBits(uint_t uDXGI_FORMAT);
 
 #endif
 }

@@ -73,12 +73,12 @@ const char *Burger::Filename::GetNative(void)
 	// First parse either the volume name of a .DXX device number
 	// I hopefully will get a volume number since DOS prefers it
 
-	const Word8 *pPath = reinterpret_cast<Word8 *>(m_pFilename);		// Copy to running pointer
+	const uint8_t *pPath = reinterpret_cast<uint8_t *>(m_pFilename);		// Copy to running pointer
 
 	// Now that I have the drive number, determine the length
 	// of the output buffer and start the conversion
 
-	WordPtr uPathLength = StringLength(reinterpret_cast<const char *>(pPath));
+	uintptr_t uPathLength = StringLength(reinterpret_cast<const char *>(pPath));
 	// Reserve 6 extra bytes for the prefix and/or the trailing / and null
 	char *pOutput = m_NativeFilename;
 
@@ -99,8 +99,8 @@ const char *Burger::Filename::GetNative(void)
 	}
 
 	if (uPathLength) {
-		Word uTemp;
-		Word uFirst = TRUE;
+		uint_t uTemp;
+		uint_t uFirst = TRUE;
 		do {
 			uTemp = pPath[0];
 			++pPath;
@@ -235,8 +235,8 @@ void Burger::Filename::SetFromNative(const char *pInput)
 
 	// How long would the string be if it was UTF8?
 
-	WordPtr uExpandedLength = StringLength(pInput);
-	WordPtr uOutputLength = uExpandedLength+6;
+	uintptr_t uExpandedLength = StringLength(pInput);
+	uintptr_t uOutputLength = uExpandedLength+6;
 	char *pOutput = m_Filename;
 	if (uOutputLength>=sizeof(m_Filename)) {
 		pOutput = static_cast<char *>(Alloc(uOutputLength));
@@ -254,7 +254,7 @@ void Burger::Filename::SetFromNative(const char *pInput)
 
 	const char *pColon = StringCharacter(pSrc,':');
 	if (pColon) {
-		WordPtr uVolumeNameSize = pColon-pInput;
+		uintptr_t uVolumeNameSize = pColon-pInput;
 		MemoryCopy(pOutput,pSrc,uVolumeNameSize);
 		pOutput+=uVolumeNameSize;
 		pSrc = pColon+1;
@@ -262,7 +262,7 @@ void Burger::Filename::SetFromNative(const char *pInput)
 
 	// Append the rest of the path, and change slashes to colons
 
-	Word uTemp2 = reinterpret_cast<const Word8 *>(pSrc)[0];
+	uint_t uTemp2 = reinterpret_cast<const uint8_t *>(pSrc)[0];
 	++pSrc;
 	if (uTemp2) {
 		do {

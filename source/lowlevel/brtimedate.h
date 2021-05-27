@@ -116,32 +116,32 @@ struct TimeDate_t {
     eError Store(timespec* pTimeSpec) const BURGER_NOEXCEPT;
 
 #if defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(DOXYGEN)
-    Word Load(const _SYSTEMTIME* pSystemTime);
-    Word Store(_SYSTEMTIME* pSystemTime) const;
-    Word Load(const _FILETIME* pFileTime);
-    Word Store(_FILETIME* pFileTime) const;
+    uint_t Load(const _SYSTEMTIME* pSystemTime);
+    uint_t Store(_SYSTEMTIME* pSystemTime) const;
+    uint_t Load(const _FILETIME* pFileTime);
+    uint_t Store(_FILETIME* pFileTime) const;
 #endif
 
 #if defined(BURGER_MSDOS) || defined(DOXYGEN)
-    void LoadMSDOS(Word32 uMSDOSTime);
-    Word32 StoreMSDOS(void) const;
+    void LoadMSDOS(uint32_t uMSDOSTime);
+    uint32_t StoreMSDOS(void) const;
 #endif
 
 #if defined(BURGER_MACOS) || defined(DOXYGEN)
-    Word Load(const UTCDateTime* pUTCDateTime);
-    Word Store(UTCDateTime* pUTCDateTime) const;
-    void LoadFileSeconds(Word32 uTime);
-    Word32 GetFileSeconds(void) const;
+    uint_t Load(const UTCDateTime* pUTCDateTime);
+    uint_t Store(UTCDateTime* pUTCDateTime) const;
+    void LoadFileSeconds(uint32_t uTime);
+    uint32_t GetFileSeconds(void) const;
 #endif
 
 #if defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(DOXYGEN)
-    Word Load(double dNSTimeInterval);
-    Word Store(double* pNSTimeInterval) const;
+    uint_t Load(double dNSTimeInterval);
+    uint_t Store(double* pNSTimeInterval) const;
 #endif
 
 #if defined(BURGER_VITA) || defined(DOXYGEN)
-    Word Load(const SceDateTime* pSceDateTime);
-    Word Store(SceDateTime* pSceDateTime) const;
+    uint_t Load(const SceDateTime* pSceDateTime);
+    uint_t Store(SceDateTime* pSceDateTime) const;
 #endif
 };
 }

@@ -1,13 +1,14 @@
 /***************************************
 
-	BMP File handler class
+    BMP File handler class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -32,26 +33,26 @@
 #if !defined(DOXYGEN)
 struct BMPHeader {
 	char m_ID[2];			// Ascii "BM"
-	Word32 m_uFileSize;		// Length of the file (Forces a 4 Gig limit)
-	Word16 m_uReserved1;	// Reserved, as of 4/6/2014, not used
-	Word16 m_uReserved2;	
-	Word32 m_uHeaderSize;	// Offset to the bitmap bits
+	uint32_t m_uFileSize;		// Length of the file (Forces a 4 Gig limit)
+	uint16_t m_uReserved1;	// Reserved, as of 4/6/2014, not used
+	uint16_t m_uReserved2;	
+	uint32_t m_uHeaderSize;	// Offset to the bitmap bits
 };
 
 // Info of a BMP file (Little endian, 40 bytes)
 
 struct BMPInfo {
-	Word32 InfoSize;		// Size of the info struct
-	Word32 Width;			// Width of the bit map in pixels
-	Word32 Height;			// Height of the bit map in pixels
-	Word16 BitPlanes;		// Number of bit planes (1)
-	Word16 BitDepth;		// Pixel bit depth (8)
-	Word32 biCompression;	// Data compression?
-	Word32 biSizeImage;
-	Word32 biXPelsPerMeter;	// Pixels per meter for printing
-	Word32 biYPelsPerMeter;
-	Word32 biClrUsed;		// Number of colors used
-	Word32 biClrImportant;
+	uint32_t InfoSize;		// Size of the info struct
+	uint32_t Width;			// Width of the bit map in pixels
+	uint32_t Height;			// Height of the bit map in pixels
+	uint16_t BitPlanes;		// Number of bit planes (1)
+	uint16_t BitDepth;		// Pixel bit depth (8)
+	uint32_t biCompression;	// Data compression?
+	uint32_t biSizeImage;
+	uint32_t biXPelsPerMeter;	// Pixels per meter for printing
+	uint32_t biYPelsPerMeter;
+	uint32_t biClrUsed;		// Number of colors used
+	uint32_t biClrImportant;
 };
 #endif
 
@@ -77,11 +78,11 @@ struct BMPInfo {
 
 ***************************************/
 
-void BURGER_API Burger::FileBMP::CompressRLE8(OutputMemoryStream *pOutput,const Word8 *pInput,WordPtr uInputLength,Word bSendEOP)
+void BURGER_API Burger::FileBMP::CompressRLE8(OutputMemoryStream *pOutput,const uint8_t *pInput,uintptr_t uInputLength,uint_t bSendEOP)
 {
-	Word8 TempBuffer[16];	// Word8 array for file writing
-	Word uMaximum;		/* Maximum run length */
-	Word uCount;		/* Current run length */
+	uint8_t TempBuffer[16];	// uint8_t array for file writing
+	uint_t uMaximum;		/* Maximum run length */
+	uint_t uCount;		/* Current run length */
 	
 	// Only compress if there are more than 2 bytes in the queue
 	if (uInputLength>=3) {
@@ -90,9 +91,9 @@ void BURGER_API Burger::FileBMP::CompressRLE8(OutputMemoryStream *pOutput,const 
 			if (uInputLength>255) {
 				uMaximum = 255;			// Maximum run
 			} else {
-				uMaximum = static_cast<Word>(uInputLength);
+				uMaximum = static_cast<uint_t>(uInputLength);
 			}
-			Word uFill = pInput[0];		// Get the first byte
+			uint_t uFill = pInput[0];		// Get the first byte
 			if (pInput[1]==uFill) {		// Try for a run...
 				uCount = 2;				// Assume 2 bytes for fill
 				do {
@@ -100,8 +101,8 @@ void BURGER_API Burger::FileBMP::CompressRLE8(OutputMemoryStream *pOutput,const 
 						break;						// Get out now!
 					}
 				} while (++uCount<uMaximum);
-				TempBuffer[0] = static_cast<Word8>(uCount);	// Save the run length
-				TempBuffer[1] = static_cast<Word8>(uFill);	// Fill byte
+				TempBuffer[0] = static_cast<uint8_t>(uCount);	// Save the run length
+				TempBuffer[1] = static_cast<uint8_t>(uFill);	// Fill byte
 				pOutput->Append(TempBuffer,2);				// Output the run
 			} else {
 				// This is for raw data
@@ -122,11 +123,11 @@ void BURGER_API Burger::FileBMP::CompressRLE8(OutputMemoryStream *pOutput,const 
 				}
 DoIt:
 				TempBuffer[0] = 0;							// Raw token
-				TempBuffer[1] = static_cast<Word8>(uCount);	// Run count
+				TempBuffer[1] = static_cast<uint8_t>(uCount);	// Run count
 				pOutput->Append(TempBuffer,2);
 				pOutput->Append(pInput,uCount);				// Send the raw data
 				if (uCount&1) {
-					pOutput->Append(static_cast<Word8>(0));	// Pad to a short
+					pOutput->Append(static_cast<uint8_t>(0));	// Pad to a short
 				}
 			}
 			uInputLength-=uCount;		// Remove length
@@ -144,7 +145,7 @@ DoIt:
 
 	case 2:
 		uMaximum = pInput[0];	// Fill byte
-		TempBuffer[1] = static_cast<Word8>(uMaximum);
+		TempBuffer[1] = static_cast<uint8_t>(uMaximum);
 		if (uMaximum==pInput[1]) {
 			TempBuffer[0] = 2;			// Create a run of 2 with a fill
 			uCount = 2;
@@ -168,7 +169,7 @@ DoIt:
 	bSendEOP = (bSendEOP==TRUE);	// Line = 1 for EOP (Force Bool)
 	TempBuffer[uCount] = 0;			// END token
 	++uCount;
-	TempBuffer[uCount] = static_cast<Word8>(bSendEOP);	// EOL or EOP (0 or 1)
+	TempBuffer[uCount] = static_cast<uint8_t>(bSendEOP);	// EOL or EOP (0 or 1)
 	++uCount;
 	pOutput->Append(TempBuffer,uCount);
 }
@@ -187,7 +188,7 @@ DoIt:
 		0 : end of line
 		1 : end of data
 		2 : Delta, get two bytes for a pen move code (Not used)
-		3-0xFF absolute run (But Word16 align the source pointer after run)
+		3-0xFF absolute run (But uint16_t align the source pointer after run)
 	\param pOutput Buffer to accept the decompressed data
 	\param uOutputLength Length of the buffer for decompressed data
 	\param pInput Data stream to read compressed data from
@@ -195,13 +196,13 @@ DoIt:
 
 ***************************************/
 
-const char * BURGER_API Burger::FileBMP::DecompressRLE8(Word8 *pOutput,WordPtr uOutputLength,InputMemoryStream *pInput)
+const char * BURGER_API Burger::FileBMP::DecompressRLE8(uint8_t *pOutput,uintptr_t uOutputLength,InputMemoryStream *pInput)
 {
 	const char *pBadNews = NULL;
 	// Any data to parse?
 	if (uOutputLength) {
 		for (;;) {
-			Word uToken = pInput->GetByte();	// Get the token
+			uint_t uToken = pInput->GetByte();	// Get the token
 			if (uToken) {						// Is it a run length?
 				if (uOutputLength<uToken) {		// Too big for the output?
 					// Abort
@@ -209,7 +210,7 @@ const char * BURGER_API Burger::FileBMP::DecompressRLE8(Word8 *pOutput,WordPtr u
 					break;
 				}
 				uOutputLength=uOutputLength-uToken;	// Remove the length
-				Word8 uFill = pInput->GetByte();	// Get the fill byte
+				uint8_t uFill = pInput->GetByte();	// Get the fill byte
 				do {
 					pOutput[0] = uFill;		// Fill the buffer
 					++pOutput;
@@ -284,13 +285,13 @@ Burger::FileBMP::FileBMP() :
 
 ***************************************/
 
-Word BURGER_API Burger::FileBMP::Load(Image *pOutput,InputMemoryStream *pInput)
+uint_t BURGER_API Burger::FileBMP::Load(Image *pOutput,InputMemoryStream *pInput)
 {
-	Word8 ID[4];
+	uint8_t ID[4];
 	const char *pBadNews = NULL;
-	Word uResult = 10;
-	Word32 uHeaderSize = 0;
-	Word32 uInfoSize = 0;
+	uint_t uResult = 10;
+	uint32_t uHeaderSize = 0;
+	uint32_t uInfoSize = 0;
 
 	// Start with processing the 14 byte header of the BMP file
 
@@ -301,7 +302,7 @@ Word BURGER_API Burger::FileBMP::Load(Image *pOutput,InputMemoryStream *pInput)
 		// Read the 14 byte header
 
 		pInput->Get(ID,2);
-		Word32 uFileSize = pInput->GetWord32();
+		uint32_t uFileSize = pInput->GetWord32();
 		m_uReserved1 = pInput->GetShort();
 		m_uReserved2 = pInput->GetShort();
 		uHeaderSize = pInput->GetWord32();
@@ -322,11 +323,11 @@ Word BURGER_API Burger::FileBMP::Load(Image *pOutput,InputMemoryStream *pInput)
 
 	// If no error, process the 40 byte info record
 
-	Word32 uWidth = 0;
-	Word32 uHeight = 0;
-	Word32 uBitPlanes = 0;
-	Word32 uBitDepth = 0;
-	Word32 uCompression = BMP_RGB;
+	uint32_t uWidth = 0;
+	uint32_t uHeight = 0;
+	uint32_t uBitPlanes = 0;
+	uint32_t uBitDepth = 0;
+	uint32_t uCompression = BMP_RGB;
 
 	if (!pBadNews) {
 		// Pull in the 40 byte header
@@ -336,9 +337,9 @@ Word BURGER_API Burger::FileBMP::Load(Image *pOutput,InputMemoryStream *pInput)
 		uBitPlanes = pInput->GetShort();
 		uBitDepth = pInput->GetShort();
 		uCompression = pInput->GetWord32();
-		/* Word32 uSizeImage = */ pInput->GetWord32();
-		m_iXPixelsPerMeter = static_cast<Int32>(pInput->GetWord32());
-		m_iYPixelsPerMeter = static_cast<Int32>(pInput->GetWord32());
+		/* uint32_t uSizeImage = */ pInput->GetWord32();
+		m_iXPixelsPerMeter = static_cast<int32_t>(pInput->GetWord32());
+		m_iYPixelsPerMeter = static_cast<int32_t>(pInput->GetWord32());
 		m_uColorsUsed = pInput->GetWord32();
 		m_uColorsImportant = pInput->GetWord32();
 
@@ -372,7 +373,7 @@ Word BURGER_API Burger::FileBMP::Load(Image *pOutput,InputMemoryStream *pInput)
 			pBadNews = "Insufficient data for BMP palette.";
 		} else {
 			MemoryClear(m_Palette,sizeof(m_Palette));
-			Word i = 256;
+			uint_t i = 256;
 			RGBAWord8_t *pWork = m_Palette;
 			do {
 				pWork->m_uBlue = pInput->GetByte();		// Read in the palette
@@ -407,12 +408,12 @@ Word BURGER_API Burger::FileBMP::Load(Image *pOutput,InputMemoryStream *pInput)
 	// that an Image was allocated and data is ready to be processed
 
 	if (!pBadNews) {
-		WordPtr uStride = pOutput->GetStride();
+		uintptr_t uStride = pOutput->GetStride();
 		// Get the pointer to the BOTTOM scan line to flip
 		// the image
-		Word8 *pData = pOutput->GetImage()+((uHeight-1)*uStride);
+		uint8_t *pData = pOutput->GetImage()+((uHeight-1)*uStride);
 		if (uCompression==BMP_RLE8) {
-			Word i = uHeight;
+			uint_t i = uHeight;
 			do {
 				pBadNews = DecompressRLE8(pData,uWidth,pInput);
 				if (pBadNews) {			// Error?
@@ -421,31 +422,31 @@ Word BURGER_API Burger::FileBMP::Load(Image *pOutput,InputMemoryStream *pInput)
 				pData = pData-uStride;	// Next line up
 			} while (--i);				// All done?
 		} else {
-			Word i = uHeight;
+			uint_t i = uHeight;
 			if (uBitDepth==8) {
-				Word uBMPPadding = (0-uWidth)&3;
+				uint_t uBMPPadding = (0-uWidth)&3;
 				do {
 					pInput->Get(pData,uWidth);	// Copy the line
 					pInput->SkipForward(uBMPPadding);	// Handle padding
 					pData = pData-uStride;		// Next line up
 				} while(--i);
 			} else if (uBitDepth==16) {
-				Word uBMPPadding = (0-(uWidth*2))&3;
+				uint_t uBMPPadding = (0-(uWidth*2))&3;
 				do {
-					Word j = uWidth;		// Pixel count
-					Word8 *pDest = pData;
+					uint_t j = uWidth;		// Pixel count
+					uint8_t *pDest = pData;
 					do {
-						reinterpret_cast<Word16 *>(pDest)[0] = static_cast<Word16>(pInput->GetShort()&0x7FFF);
+						reinterpret_cast<uint16_t *>(pDest)[0] = static_cast<uint16_t>(pInput->GetShort()&0x7FFF);
 						pDest=pDest+2;		// Next pixel
 					} while (--j);			// Count down
 					pInput->SkipForward(uBMPPadding);	// Handle padding
 					pData = pData-uStride;		// Next line up
 				} while(--i);
 			} else if (uBitDepth==24) {
-				Word uBMPPadding = (0-(uWidth*3))&3;
+				uint_t uBMPPadding = (0-(uWidth*3))&3;
 				do {
-					Word j = uWidth;		// Pixel count
-					Word8 *pDest = pData;
+					uint_t j = uWidth;		// Pixel count
+					uint8_t *pDest = pData;
 					do {
 						pDest[2] = pInput->GetByte();	// Blue
 						pDest[1] = pInput->GetByte();	// Green
@@ -458,8 +459,8 @@ Word BURGER_API Burger::FileBMP::Load(Image *pOutput,InputMemoryStream *pInput)
 			} else {
 				// RGBA
 				do {
-					Word j = uWidth;		// Pixel count
-					Word8 *pDest = pData;
+					uint_t j = uWidth;		// Pixel count
+					uint8_t *pDest = pData;
 					do {
 						pDest[2] = pInput->GetByte();	// Blue
 						pDest[1] = pInput->GetByte();	// Green
@@ -502,10 +503,10 @@ Word BURGER_API Burger::FileBMP::Load(Image *pOutput,InputMemoryStream *pInput)
 
 ***************************************/
 
-Word Burger::FileBMP::Save(OutputMemoryStream *pOutput,const Image *pImage,Word bCompress)
+uint_t Burger::FileBMP::Save(OutputMemoryStream *pOutput,const Image *pImage,uint_t bCompress)
 {
 	// Temp buffer
-	Word8 Filler[16];
+	uint8_t Filler[16];
 
 	Image::ePixelTypes eType = pImage->GetType();
 	// Only 24 and 8 bit formats are supported
@@ -520,15 +521,15 @@ Word Burger::FileBMP::Save(OutputMemoryStream *pOutput,const Image *pImage,Word 
 	// Save the signature (14 bytes)
 
 	pOutput->Append("BM");
-	WordPtr uFileLengthMark = pOutput->GetSize();
-	pOutput->Append(static_cast<Word32>(0));		// Write the file length (Change later)
+	uintptr_t uFileLengthMark = pOutput->GetSize();
+	pOutput->Append(static_cast<uint32_t>(0));		// Write the file length (Change later)
 	pOutput->Append(m_uReserved1);		// Write the reserved entries
 	pOutput->Append(m_uReserved2);
 
 	// Save the image description block and maybe the palette
 
-	Word32 uMark = 14+40+1024;
-	Word uDepth = 8;
+	uint32_t uMark = 14+40+1024;
+	uint_t uDepth = 8;
 	if (eType!=Image::PIXELTYPE8BIT) {
 		bCompress = FALSE;	// No compression is allowed!!!
 		uMark = 14+40;		// No palette
@@ -540,36 +541,36 @@ Word Burger::FileBMP::Save(OutputMemoryStream *pOutput,const Image *pImage,Word 
 			uDepth = 16;
 		}
 	}
-	Word uWidth = pImage->GetWidth();
-	Word uHeight = pImage->GetHeight();
-	WordPtr uStride = pImage->GetStride();
+	uint_t uWidth = pImage->GetWidth();
+	uint_t uHeight = pImage->GetHeight();
+	uintptr_t uStride = pImage->GetStride();
 
 	pOutput->Append(uMark);		// Header with palette size
-	pOutput->Append(static_cast<Word32>(40));		// Data info size
-	pOutput->Append(static_cast<Word32>(uWidth));	// Image size
-	pOutput->Append(static_cast<Word32>(uHeight));
-	pOutput->Append(static_cast<Word16>(1));		// Bit planes
-	pOutput->Append(static_cast<Word16>(uDepth));	// Bit depth
-	pOutput->Append(static_cast<Word32>(bCompress ? BMP_RLE8 : BMP_RGB));		// Data type
-	WordPtr uOutputMark = pOutput->GetSize();
-	pOutput->Append(static_cast<Word32>(0));		// Output length
-	pOutput->Append(static_cast<Word32>(m_iXPixelsPerMeter));	// Pixels per meter
-	pOutput->Append(static_cast<Word32>(m_iYPixelsPerMeter));
-	pOutput->Append(static_cast<Word32>(m_uColorsUsed));		// Colors used
-	pOutput->Append(static_cast<Word32>(m_uColorsImportant));	// Colors important
+	pOutput->Append(static_cast<uint32_t>(40));		// Data info size
+	pOutput->Append(static_cast<uint32_t>(uWidth));	// Image size
+	pOutput->Append(static_cast<uint32_t>(uHeight));
+	pOutput->Append(static_cast<uint16_t>(1));		// Bit planes
+	pOutput->Append(static_cast<uint16_t>(uDepth));	// Bit depth
+	pOutput->Append(static_cast<uint32_t>(bCompress ? BMP_RLE8 : BMP_RGB));		// Data type
+	uintptr_t uOutputMark = pOutput->GetSize();
+	pOutput->Append(static_cast<uint32_t>(0));		// Output length
+	pOutput->Append(static_cast<uint32_t>(m_iXPixelsPerMeter));	// Pixels per meter
+	pOutput->Append(static_cast<uint32_t>(m_iYPixelsPerMeter));
+	pOutput->Append(static_cast<uint32_t>(m_uColorsUsed));		// Colors used
+	pOutput->Append(static_cast<uint32_t>(m_uColorsImportant));	// Colors important
 
 	// Output the supported types! 8 Bit, 24 and 32 bit
 
 	MemoryClear(Filler,sizeof(Filler));
-	const Word8 *pData = pImage->GetImage()+((uHeight-1)*uStride);
-	WordPtr uSizeMark;
+	const uint8_t *pData = pImage->GetImage()+((uHeight-1)*uStride);
+	uintptr_t uSizeMark;
 	if (eType==Image::PIXELTYPE8BIT) {
 
 		// 8 bit paletted!
 		// Write out the palette first
 
 		RGBAWord8_t *pPalette = m_Palette;	// First save the palette
-		Word i = 256;
+		uint_t i = 256;
 		do {
 			pOutput->Append(pPalette->m_uBlue);		// Blue
 			pOutput->Append(pPalette->m_uGreen);	// Green
@@ -590,7 +591,7 @@ Word Burger::FileBMP::Save(OutputMemoryStream *pOutput,const Image *pImage,Word 
 		} else {
 
 			// Raw!
-			Word uPadding = (0-uWidth)&3;	// 0,3,2,1
+			uint_t uPadding = (0-uWidth)&3;	// 0,3,2,1
 			do {
 				pOutput->Append(pData,uWidth);	// Save a line to disk 
 				pOutput->Append(Filler,uPadding);	// Filler
@@ -600,10 +601,10 @@ Word Burger::FileBMP::Save(OutputMemoryStream *pOutput,const Image *pImage,Word 
 	} else {
 		uSizeMark = pOutput->GetSize();
 		if (eType==Image::PIXELTYPE888) {
-			Word uPadding = (0-(uWidth*3))&3;	// Padding after each pixel
+			uint_t uPadding = (0-(uWidth*3))&3;	// Padding after each pixel
 			do {
-				Word j = uWidth;		// Get count
-				const Word8 *pWork = pData;
+				uint_t j = uWidth;		// Get count
+				const uint8_t *pWork = pData;
 				do {
 					pOutput->Append(pWork[2]);	// Save out the scan line
 					pOutput->Append(pWork[1]);
@@ -616,8 +617,8 @@ Word Burger::FileBMP::Save(OutputMemoryStream *pOutput,const Image *pImage,Word 
 		} else if (eType==Image::PIXELTYPE8888) {
 			// 8888 format
 			do {
-				Word j = uWidth;		// Get count
-				const Word8 *pWork = pData;
+				uint_t j = uWidth;		// Get count
+				const uint8_t *pWork = pData;
 				do {
 					pOutput->Append(pWork[2]);	// Save out the scan line
 					pOutput->Append(pWork[1]);
@@ -628,13 +629,13 @@ Word Burger::FileBMP::Save(OutputMemoryStream *pOutput,const Image *pImage,Word 
 				pData = pData-uStride;	// Next line up
 			} while (--uHeight);		// All done?	
 		} else {
-			Word uPadding = (0-(uWidth*2))&3;	// Padding after each pixel
+			uint_t uPadding = (0-(uWidth*2))&3;	// Padding after each pixel
 			// 1555 or x555 format
 			do {
-				Word j = uWidth;		// Get count
-				const Word8 *pWork = pData;
+				uint_t j = uWidth;		// Get count
+				const uint8_t *pWork = pData;
 				do {
-					pOutput->Append(static_cast<Word16>(reinterpret_cast<const Word16 *>(pWork)[0]&0x7FFFU));	// Save out the scan line
+					pOutput->Append(static_cast<uint16_t>(reinterpret_cast<const uint16_t *>(pWork)[0]&0x7FFFU));	// Save out the scan line
 					pWork=pWork+2;		// Next triplet
 				} while (--j);			// Next pixel
 				pOutput->Append(Filler,uPadding);	// Filler
@@ -645,23 +646,23 @@ Word Burger::FileBMP::Save(OutputMemoryStream *pOutput,const Image *pImage,Word 
 
 	// Wrap up the file
 
-	WordPtr uTell = pOutput->GetSize();
+	uintptr_t uTell = pOutput->GetSize();
 
 	// Write the length of the total file
 	// +2 is for "BM"
-	Word32 uLittleData = LittleEndian::Load(static_cast<Word32>((uTell-uFileLengthMark)+2));
-	pOutput->Overwrite(&uLittleData,sizeof(Word32),uFileLengthMark);
+	uint32_t uLittleData = LittleEndian::Load(static_cast<uint32_t>((uTell-uFileLengthMark)+2));
+	pOutput->Overwrite(&uLittleData,sizeof(uint32_t),uFileLengthMark);
 
 	// Write the length of the packed data
-	uLittleData = LittleEndian::Load(static_cast<Word32>(uTell-uSizeMark));
-	pOutput->Overwrite(&uLittleData,sizeof(Word32),uOutputMark);
+	uLittleData = LittleEndian::Load(static_cast<uint32_t>(uTell-uSizeMark));
+	pOutput->Overwrite(&uLittleData,sizeof(uint32_t),uOutputMark);
 	return FALSE;
 }
 
 
 /*! ************************************
 
-	\fn Word16 Burger::FileBMP::GetReserved1(void) const
+	\fn uint16_t Burger::FileBMP::GetReserved1(void) const
 	\brief Get the file image's first reserved value
 
 	Return the BMP file header's first reserved 16 bit value in native endian
@@ -670,25 +671,25 @@ Word Burger::FileBMP::Save(OutputMemoryStream *pOutput,const Image *pImage,Word 
 	is not recommended for storing data.
 
 	\return The first 16 bit reserved value.
-	\sa Burger::FileBMP::SetReserved1(Word16) or Burger::FileBMP::GetReserved2(void) const
+	\sa Burger::FileBMP::SetReserved1(uint16_t) or Burger::FileBMP::GetReserved2(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FileBMP::SetReserved1(Word16 uReserved1)
+	\fn void Burger::FileBMP::SetReserved1(uint16_t uReserved1)
 	\brief Set the file image's first reserved value
 
 	Sets the BMP file header's first reserved 16 bit value from native endian
 	
 	\param uReserved1 New first reserved value
-	\sa Burger::FileBMP::GetReserved1(void) const or Burger::FileBMP::SetReserved2(Word16)
+	\sa Burger::FileBMP::GetReserved1(void) const or Burger::FileBMP::SetReserved2(uint16_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Word16 Burger::FileBMP::GetReserved2(void) const
+	\fn uint16_t Burger::FileBMP::GetReserved2(void) const
 	\brief Get the file image's second reserved value
 
 	Return the BMP file header's second reserved 16 bit value in native endian
@@ -697,19 +698,19 @@ Word Burger::FileBMP::Save(OutputMemoryStream *pOutput,const Image *pImage,Word 
 	is not recommended for storing data.
 
 	\return The second 16 bit reserved value.
-	\sa Burger::FileBMP::SetReserved2(Word16) or Burger::FileBMP::GetReserved1(void) const
+	\sa Burger::FileBMP::SetReserved2(uint16_t) or Burger::FileBMP::GetReserved1(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FileBMP::SetReserved2(Word16 uReserved2)
+	\fn void Burger::FileBMP::SetReserved2(uint16_t uReserved2)
 	\brief Set the file image's second reserved value
 
 	Sets the BMP file header's second reserved 16 bit value from native endian
 	
 	\param uReserved2 New second reserved value
-	\sa Burger::FileBMP::GetReserved2(void) const or Burger::FileBMP::SetReserved1(Word16)
+	\sa Burger::FileBMP::GetReserved2(void) const or Burger::FileBMP::SetReserved1(uint16_t)
 
 ***************************************/
 
@@ -717,49 +718,49 @@ Word Burger::FileBMP::Save(OutputMemoryStream *pOutput,const Image *pImage,Word 
 
 /*! ************************************
 
-	\fn Int32 Burger::FileBMP::GetXPixelsPerMeter(void) const
+	\fn int32_t Burger::FileBMP::GetXPixelsPerMeter(void) const
 	\brief Get the file image's pixels per meter for X
 
 	Return the pixels per meter constant, usually it's 2835 (2834.6472f)
 
 	\return The pixels per meter constant for the X direction
-	\sa Burger::FileBMP::SetXPixelsPerMeter(Int32) or Burger::FileBMP::GetYPixelsPerMeter(void) const
+	\sa Burger::FileBMP::SetXPixelsPerMeter(int32_t) or Burger::FileBMP::GetYPixelsPerMeter(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FileBMP::SetXPixelsPerMeter(Int32 iXPixelsPerMeter)
+	\fn void Burger::FileBMP::SetXPixelsPerMeter(int32_t iXPixelsPerMeter)
 	\brief Set the file image's pixels per meter for X
 
 	Set the pixels per meter constant
 
 	\param iXPixelsPerMeter New pixels per meter constant
-	\sa Burger::FileBMP::DEFAULT_PIXELS_PER_METER, Burger::FileBMP::GetXPixelsPerMeter(void) const or Burger::FileBMP::SetYPixelsPerMeter(Int32)
+	\sa Burger::FileBMP::DEFAULT_PIXELS_PER_METER, Burger::FileBMP::GetXPixelsPerMeter(void) const or Burger::FileBMP::SetYPixelsPerMeter(int32_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Int32 Burger::FileBMP::GetYPixelsPerMeter(void) const
+	\fn int32_t Burger::FileBMP::GetYPixelsPerMeter(void) const
 	\brief Get the file image's pixels per meter for Y
 
 	Return the pixels per meter constant, usually it's 2835 (2834.6472f)
 
 	\return The pixels per meter constant for the Y direction
-	\sa Burger::FileBMP::SetYPixelsPerMeter(Int32) or Burger::FileBMP::GetXPixelsPerMeter(void) const
+	\sa Burger::FileBMP::SetYPixelsPerMeter(int32_t) or Burger::FileBMP::GetXPixelsPerMeter(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FileBMP::SetYPixelsPerMeter(Int32 iYPixelsPerMeter)
+	\fn void Burger::FileBMP::SetYPixelsPerMeter(int32_t iYPixelsPerMeter)
 	\brief Set the file image's pixels per meter for Y
 
 	Set the pixels per meter constant
 
 	\param iYPixelsPerMeter New pixels per meter constant
-	\sa Burger::FileBMP::DEFAULT_PIXELS_PER_METER, Burger::FileBMP::GetYPixelsPerMeter(void) const or Burger::FileBMP::SetXPixelsPerMeter(Int32)
+	\sa Burger::FileBMP::DEFAULT_PIXELS_PER_METER, Burger::FileBMP::GetYPixelsPerMeter(void) const or Burger::FileBMP::SetXPixelsPerMeter(int32_t)
 
 ***************************************/
 
@@ -791,7 +792,7 @@ Word Burger::FileBMP::Save(OutputMemoryStream *pOutput,const Image *pImage,Word 
 
 /*! ************************************
 
-	\fn void Burger::FileBMP::SetPalette(const RGBWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+	\fn void Burger::FileBMP::SetPalette(const RGBWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 	\brief Set the file image's palette (RGB)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -805,13 +806,13 @@ Word Burger::FileBMP::Save(OutputMemoryStream *pOutput,const Image *pImage,Word 
 	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
-	\sa SetPalette(const RGBAWord8_t *,Word,Word)
+	\sa SetPalette(const RGBAWord8_t *,uint_t,uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::FileBMP::SetPalette(const RGBAWord8_t *pInput,Word uStartIndex,Word uPaletteSize)
+	\fn void Burger::FileBMP::SetPalette(const RGBAWord8_t *pInput,uint_t uStartIndex,uint_t uPaletteSize)
 	\brief Set the file image's palette (RGBA)
 
 	Given a pointer to a palette, copy the colors into this class
@@ -824,6 +825,6 @@ Word Burger::FileBMP::Save(OutputMemoryStream *pOutput,const Image *pImage,Word 
 	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start modification
 	\param uPaletteSize Number of color entries in the palette (Maximum 256)
-	\sa SetPalette(const RGBWord8_t *,Word,Word)
+	\sa SetPalette(const RGBWord8_t *,uint_t,uint_t)
 
 ***************************************/

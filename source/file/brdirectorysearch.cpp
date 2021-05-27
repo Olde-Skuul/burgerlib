@@ -1,13 +1,14 @@
 /***************************************
 
-	Directory search Class
+    Directory search Class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -28,7 +29,7 @@
 	\code
 	Burger::DirectorySearch MyDir;
 	// Open the directory for traversal
-	Word uError = MyDir.Open("9:Directory");
+	uint_t uError = MyDir.Open("9:Directory");
 	if (!uError) {		// No error?
 		while (!MyDir.GetNextEntry()) {
 			printf("Found \"%s\"!\n",MyDir.m_Name);
@@ -85,7 +86,7 @@ Burger::DirectorySearch::~DirectorySearch()
 
 /*! ************************************
 
-	\fn Word Burger::DirectorySearch::Open(const char *pDirName)
+	\fn uint_t Burger::DirectorySearch::Open(const char *pDirName)
 	\brief Open a directory for scanning
 	\param pDirName Pointer to the "C" string filename in BurgerLib format.
 	\return Zero on success, non-zero on an error or if the directory doesn't exist
@@ -93,7 +94,7 @@ Burger::DirectorySearch::~DirectorySearch()
 
 ***************************************/
 
-Word Burger::DirectorySearch::Open(const char *pDirName)
+uint_t Burger::DirectorySearch::Open(const char *pDirName)
 {
 	Filename TempDir(pDirName);
 	return Open(&TempDir);		// Error!
@@ -101,7 +102,7 @@ Word Burger::DirectorySearch::Open(const char *pDirName)
 
 /*! ************************************
 
-	\fn Word Burger::DirectorySearch::Open(Filename *pDirName)
+	\fn uint_t Burger::DirectorySearch::Open(Filename *pDirName)
 	\brief Open a directory for scanning
 	\param pDirName Pointer to the "C" string filename in BurgerLib format.
 	\return Zero on success, non-zero on an error or if the directory doesn't exist
@@ -110,7 +111,7 @@ Word Burger::DirectorySearch::Open(const char *pDirName)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA) || defined(BURGER_LINUX)) || defined(DOXYGEN)
-Word Burger::DirectorySearch::Open(Filename * /* pDirName */)
+uint_t Burger::DirectorySearch::Open(Filename * /* pDirName */)
 {
 	return TRUE;		// Error!
 }
@@ -131,7 +132,7 @@ Word Burger::DirectorySearch::Open(Filename * /* pDirName */)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA) || defined(BURGER_LINUX)) || defined(DOXYGEN)
-Word Burger::DirectorySearch::GetNextEntry(void)
+uint_t Burger::DirectorySearch::GetNextEntry(void)
 {
 	return TRUE;		// Error!
 }
@@ -162,7 +163,7 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 
 ***************************************/
 
-Word Burger::DirectorySearch::GetNextEntryExtension(const char *pExt)
+uint_t Burger::DirectorySearch::GetNextEntryExtension(const char *pExt)
 {
 	// Anything left to scan?
 	if (!GetNextEntry()) {

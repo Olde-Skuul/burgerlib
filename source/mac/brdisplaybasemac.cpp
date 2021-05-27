@@ -1,15 +1,16 @@
 /***************************************
 
-	Display base class
+    Display base class
 
-	Mac version
+    Mac version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -58,11 +59,11 @@ static void BURGER_API GetModes(
 					// Save the pixel width, height, depth
 					MyEntry.m_uWidth = MyAttr.displayWidth;
 					MyEntry.m_uHeight = MyAttr.displayHeight;
-					Word uDepth = MyAttr.displayBestDepth;
+					uint_t uDepth = MyAttr.displayBestDepth;
 					MyEntry.m_uDepth = uDepth;
 
-					Word uFlags = 0;
-					Word uHertz = static_cast<Word>(MyAttr.frequency) >> 16U;
+					uint_t uFlags = 0;
+					uint_t uHertz = static_cast<uint_t>(MyAttr.frequency) >> 16U;
 					if (uHertz) {
 						uFlags |= Burger::Display::VideoMode_t::
 							VIDEOMODE_REFRESHVALID;
@@ -98,12 +99,12 @@ static void BURGER_API GetModes(
 
 ***************************************/
 
-Word BURGER_API Burger::Display::GetVideoModes(
+uint_t BURGER_API Burger::Display::GetVideoModes(
 	ClassArray<VideoCardDescription>* pOutput)
 {
 	pOutput->clear();
 
-	Word uResult = 0; // Assume success
+	uint_t uResult = 0; // Assume success
 
 	// Only available with DrawSprocket
 #if defined(BURGER_CFM)
@@ -114,7 +115,7 @@ Word BURGER_API Burger::Display::GetVideoModes(
 		// Get the first active device
 		GDHandle ppDevice = GetDeviceList();
 		if (ppDevice) {
-			Word uDevNumber = 0;
+			uint_t uDevNumber = 0;
 			do {
 				// Get the device ID
 				DisplayIDType MyDevID;

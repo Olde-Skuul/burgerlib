@@ -19,6 +19,6 @@
 #include "brtypes.h"
 #endif
 
-extern int BURGER_API TestBrmatrix4d(Word uVerbose);
+extern int BURGER_API TestBrmatrix4d(uint_t uVerbose);
 
 #endif

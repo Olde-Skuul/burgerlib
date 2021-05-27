@@ -54,7 +54,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::DisplayOpenGL,Burger::Display);
 #define CASE(x) { #x,x }
 struct MessageLookup_t {
 	const char *m_pName;
-	Word m_uEnum;
+	uint_t m_uEnum;
 };
 
 // Used by the shader compiler to force a version match
@@ -176,7 +176,7 @@ Burger::DisplayOpenGL::DisplayOpenGL(Burger::GameApp *pGameApp) :
 
 ***************************************/
 
-Word Burger::DisplayOpenGL::Init(Word,Word,Word,Word)
+uint_t Burger::DisplayOpenGL::Init(uint_t,uint_t,uint_t,uint_t)
 {
 	return 10;
 }
@@ -224,18 +224,18 @@ Burger::VertexBuffer *Burger::DisplayOpenGL::CreateVertexBufferObject(void)
 	return new (Alloc(sizeof(VertexBufferOpenGL))) VertexBufferOpenGL;
 }
 
-void Burger::DisplayOpenGL::Resize(Word uWidth,Word uHeight)
+void Burger::DisplayOpenGL::Resize(uint_t uWidth,uint_t uHeight)
 {
 	SetWidthHeight(uWidth,uHeight);
 	SetViewport(0,0,uWidth,uHeight);
 }
 
-void Burger::DisplayOpenGL::SetViewport(Word uX,Word uY,Word uWidth,Word uHeight)
+void Burger::DisplayOpenGL::SetViewport(uint_t uX,uint_t uY,uint_t uWidth,uint_t uHeight)
 {
 	glViewport(static_cast<GLint>(uX),static_cast<GLint>(uY),static_cast<GLsizei>(uWidth),static_cast<GLsizei>(uHeight));
 }
 
-void Burger::DisplayOpenGL::SetScissorRect(Word uX,Word uY,Word uWidth,Word uHeight)
+void Burger::DisplayOpenGL::SetScissorRect(uint_t uX,uint_t uY,uint_t uWidth,uint_t uHeight)
 {
 	// Note: Flip the Y for OpenGL
 	// Also, the starting Y is the BOTTOM of the rect, not the top
@@ -252,7 +252,7 @@ void Burger::DisplayOpenGL::SetClearDepth(float fDepth)
 	glClearDepth(fDepth);
 }
 
-void Burger::DisplayOpenGL::Clear(Word uMask)
+void Burger::DisplayOpenGL::Clear(uint_t uMask)
 {
 	GLbitfield uGLMask = 0;
 	if (uMask&CLEAR_COLOR) {
@@ -267,7 +267,7 @@ void Burger::DisplayOpenGL::Clear(Word uMask)
 	glClear(uGLMask);
 }
 
-void Burger::DisplayOpenGL::Bind(Texture *pTexture,Word uIndex)
+void Burger::DisplayOpenGL::Bind(Texture *pTexture,uint_t uIndex)
 {
 	BURGER_ASSERT(uIndex<BURGER_ARRAYSIZE(m_pBoundTextures));
 	m_pBoundTextures[uIndex] = pTexture;
@@ -300,7 +300,7 @@ void Burger::DisplayOpenGL::Bind(Effect *pEffect)
 #endif
 }
 
-void Burger::DisplayOpenGL::SetBlend(Word bEnable)
+void Burger::DisplayOpenGL::SetBlend(uint_t bEnable)
 {
 	if (bEnable) {
 		glEnable(GL_BLEND);
@@ -317,7 +317,7 @@ void Burger::DisplayOpenGL::SetBlendFunction(eSourceBlendFactor uSourceFactor,eD
 }
 
 
-void Burger::DisplayOpenGL::SetLighting(Word bEnable)
+void Burger::DisplayOpenGL::SetLighting(uint_t bEnable)
 {
 #if !(defined(BURGER_OPENGLES))
 	if (bEnable) {
@@ -328,7 +328,7 @@ void Burger::DisplayOpenGL::SetLighting(Word bEnable)
 #endif
 }
 
-void Burger::DisplayOpenGL::SetZWrite(Word bEnable)
+void Burger::DisplayOpenGL::SetZWrite(uint_t bEnable)
 {
 	glDepthMask(bEnable!=0);
 }
@@ -357,7 +357,7 @@ void Burger::DisplayOpenGL::SetCullMode(eCullMode uCullMode)
 	}
 }
 
-void Burger::DisplayOpenGL::SetScissor(Word bEnable)
+void Burger::DisplayOpenGL::SetScissor(uint_t bEnable)
 {
 	if (bEnable) {
 		glEnable(GL_SCISSOR_TEST);
@@ -416,7 +416,7 @@ void Burger::DisplayOpenGL::DrawElements(ePrimitiveType uPrimitiveType,VertexBuf
 
 /*! ************************************
 
-	\fn Word Burger::DisplayOpenGL::GetCompressedFormatCount(void) const
+	\fn uint_t Burger::DisplayOpenGL::GetCompressedFormatCount(void) const
 	\brief Return the number of supported compressed texture formats
 
 	When OpenGL is started, it's queried for the number of compressed texture
@@ -434,7 +434,7 @@ void Burger::DisplayOpenGL::DrawElements(ePrimitiveType uPrimitiveType,VertexBuf
 
 /*! ************************************
 
-	\fn const Word *Burger::DisplayOpenGL::GetCompressedFormats(void) const
+	\fn const uint_t *Burger::DisplayOpenGL::GetCompressedFormats(void) const
 	\brief Return the pointer to an array of supported compressed texture formats
 
 	When OpenGL is started, it's queried for the number of compressed texture
@@ -552,7 +552,7 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 	// or logfile.txt
 
 	{
-		WordPtr uCount = BURGER_ARRAYSIZE(g_StringIndexes);
+		uintptr_t uCount = BURGER_ARRAYSIZE(g_StringIndexes);
 		const GLStringIndex_t *pWork = g_StringIndexes;
 		do {
 			// Get the string for the enumeration
@@ -605,7 +605,7 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 
 	Free(m_pCompressedFormats);
 	m_pCompressedFormats = NULL;
-	Word uTemp = 0;
+	uint_t uTemp = 0;
 	GLint iTemp = 0;
 	glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS_ARB,&iTemp);
 #if defined(_DEBUG)
@@ -616,15 +616,15 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 		GLint *pBuffer = static_cast<GLint *>(Alloc(sizeof(GLint)*iTemp2));
 		if (pBuffer) {
 			glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS_ARB,pBuffer);
-			uTemp = static_cast<Word>(iTemp);
-			m_pCompressedFormats = reinterpret_cast<Word *>(pBuffer);
+			uTemp = static_cast<uint_t>(iTemp);
+			m_pCompressedFormats = reinterpret_cast<uint_t *>(pBuffer);
 			// Dump the list on debug builds
 #if defined(_DEBUG)
 			char HexString[16];
 			HexString[0] = '0';
 			HexString[1] = 'x';
 			do {
-				Word32 uValue = static_cast<Word32>(pBuffer[0]);
+				uint32_t uValue = static_cast<uint32_t>(pBuffer[0]);
 				const char *pFormatName = HexString;
 				const GLStringIndex_t *pTextureText = g_TextureIndexes;
 				do {
@@ -647,7 +647,7 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 #if defined(USE_GL2)
 	GLint iMaxAttributes = 1;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS,&iMaxAttributes);
-	m_uMaximumVertexAttributes = static_cast<Word>(iMaxAttributes);
+	m_uMaximumVertexAttributes = static_cast<uint_t>(iMaxAttributes);
 #endif
 
 #if defined(_DEBUG)
@@ -657,7 +657,7 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 	// If not supported, preflight with 1 attachment
 	GLint iMaxColorattachments = 1;
 	glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS,&iMaxColorattachments);
-	m_uMaximumColorAttachments = static_cast<Word>(iMaxColorattachments);
+	m_uMaximumColorAttachments = static_cast<uint_t>(iMaxColorattachments);
 
 #if defined(_DEBUG)
 	Debug::Message("m_uMaximumColorAttachments = %u\n",m_uMaximumColorAttachments);
@@ -708,7 +708,7 @@ void BURGER_API Burger::DisplayOpenGL::SetupOpenGL(void)
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayOpenGL::CompileShader(Word GLEnum,const char *pShaderCode,WordPtr uShaderCodeLength) const
+uint_t BURGER_API Burger::DisplayOpenGL::CompileShader(uint_t GLEnum,const char *pShaderCode,uintptr_t uShaderCodeLength) const
 {
 	// Create a blank shader
 	GLuint uShader = 0;
@@ -731,7 +731,7 @@ Word BURGER_API Burger::DisplayOpenGL::CompileShader(Word GLEnum,const char *pSh
 				GLsizei iIndex = 0;
 
 				// Get the actual shader compiler version
-				Int32 iVersion = static_cast<Int32>(GetShadingLanguageVersion()*100.0f);
+				int32_t iVersion = static_cast<int32_t>(GetShadingLanguageVersion()*100.0f);
 
 				// If a version opcode already exists, don't insert one
 
@@ -741,7 +741,7 @@ Word BURGER_API Burger::DisplayOpenGL::CompileShader(Word GLEnum,const char *pSh
 
 					StringCopy(VersionString,g_Version);
 					NumberToAscii(VersionString+9,iVersion);
-					WordPtr uLength = StringLength(VersionString);
+					uintptr_t uLength = StringLength(VersionString);
 					// Append with a \n
 					VersionString[uLength] = '\n';
 					// Set the string in the array
@@ -758,7 +758,7 @@ Word BURGER_API Burger::DisplayOpenGL::CompileShader(Word GLEnum,const char *pSh
 				// needed
 
 				const char *pDefines;
-				WordPtr uDefinesLength;
+				uintptr_t uDefinesLength;
 				switch (GLEnum) {
 				case GL_VERTEX_SHADER:
 					if (iVersion>=140) {
@@ -807,7 +807,7 @@ Word BURGER_API Burger::DisplayOpenGL::CompileShader(Word GLEnum,const char *pSh
 					glGetShaderiv(uShader,GL_INFO_LOG_LENGTH,&iLogLength);
 					if (iLogLength > 1) {
 						// iLogLength includes space for the terminating null at the end of the string
-						GLchar *pLog = static_cast<GLchar*>(Alloc(static_cast<WordPtr>(iLogLength)));
+						GLchar *pLog = static_cast<GLchar*>(Alloc(static_cast<uintptr_t>(iLogLength)));
 						glGetShaderInfoLog(uShader,iLogLength,&iLogLength,pLog);
 
 						// Note: The log could be so long that it could overflow the
@@ -853,12 +853,12 @@ Word BURGER_API Burger::DisplayOpenGL::CompileShader(Word GLEnum,const char *pSh
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pUnifiedShader,WordPtr uLength,const OpenGLVertexInputs_t *pVertexInputs,const Word *pMembers) const
+uint_t BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pUnifiedShader,uintptr_t uLength,const OpenGLVertexInputs_t *pVertexInputs,const uint_t *pMembers) const
 {
 	return CompileProgram(pUnifiedShader,uLength,pUnifiedShader,uLength,pVertexInputs,pMembers);
 }
 
-Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShader,WordPtr uVSLength,const char *pPixelShader,WordPtr uPSLength,const OpenGLVertexInputs_t *pVertexInputs,const Word *pMembers) const
+uint_t BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShader,uintptr_t uVSLength,const char *pPixelShader,uintptr_t uPSLength,const OpenGLVertexInputs_t *pVertexInputs,const uint_t *pMembers) const
 {
 	GLuint uProgram = 0;
 #if defined(USE_GL2)
@@ -867,13 +867,13 @@ Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShader,
 
 		// Create a program object
 		uProgram = glCreateProgram();
-		Word bSuccess = FALSE;		// Assume failure
+		uint_t bSuccess = FALSE;		// Assume failure
 
 		// If any variable names are passed for position, normal or UVs, bind them
 		// for linkage to a vertex buffer object
 
 		if (pVertexInputs) {
-			Word uIndex = pVertexInputs->m_uIndex;
+			uint_t uIndex = pVertexInputs->m_uIndex;
 			if (uIndex!=VertexBuffer::USAGE_END) {
 				if (!pMembers) {
 					GLuint uGLIndex = 0;
@@ -886,8 +886,8 @@ Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShader,
 					GLuint uGLIndex = 0;
 					GLuint uGLIndexUsed;
 					do {
-						const Word *pTempMembers = pMembers;
-						Word uMember = pTempMembers[0];
+						const uint_t *pTempMembers = pMembers;
+						uint_t uMember = pTempMembers[0];
 						uGLIndexUsed = uGLIndex;
 						if (uMember!=VertexBuffer::USAGE_END) {
 							do {
@@ -937,7 +937,7 @@ Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShader,
 					GLint iLogLength;
 					glGetProgramiv(uProgram,GL_INFO_LOG_LENGTH,&iLogLength);
 					if (iLogLength > 1) {
-						GLchar *pErrorLog = static_cast<GLchar*>(Alloc(static_cast<WordPtr>(iLogLength)));
+						GLchar *pErrorLog = static_cast<GLchar*>(Alloc(static_cast<uintptr_t>(iLogLength)));
 						glGetProgramInfoLog(uProgram,iLogLength,&iLogLength,pErrorLog);
 						Debug::PrintString("Program link log:\n");
 						Debug::PrintString(pErrorLog);
@@ -958,7 +958,7 @@ Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShader,
 						glGetProgramiv(uProgram,GL_INFO_LOG_LENGTH,&iLogLength);
 						Debug::PrintString("Failed to validate program\n");
 						if (iLogLength > 1) {
-							GLchar *pErrorLog = static_cast<GLchar*>(Alloc(static_cast<WordPtr>(iLogLength)));
+							GLchar *pErrorLog = static_cast<GLchar*>(Alloc(static_cast<uintptr_t>(iLogLength)));
 							glGetProgramInfoLog(uProgram, iLogLength, &iLogLength,pErrorLog);
 							Debug::PrintString("Program validate log:\n");
 							Debug::PrintString(pErrorLog);
@@ -995,7 +995,7 @@ Word BURGER_API Burger::DisplayOpenGL::CompileProgram(const char *pVertexShader,
 // Create a vertex array object
 //
 
-Word BURGER_API Burger::DisplayOpenGL::CreateVertexArrayObject(const OpenGLVertexBufferObjectDescription_t *pDescription) const
+uint_t BURGER_API Burger::DisplayOpenGL::CreateVertexArrayObject(const OpenGLVertexBufferObjectDescription_t *pDescription) const
 {
 	GLuint uVertexArrayObjectID = 0;
 #if defined(USE_GL2)
@@ -1004,7 +1004,7 @@ Word BURGER_API Burger::DisplayOpenGL::CreateVertexArrayObject(const OpenGLVerte
 		// Create a vertex array object
 		glGenVertexArrays(1,&uVertexArrayObjectID);
 		if (uVertexArrayObjectID) {
-			Word bSuccess = TRUE;		// Assume success!
+			uint_t bSuccess = TRUE;		// Assume success!
 
 			glBindVertexArray(uVertexArrayObjectID);
 			GLuint uBufferID;
@@ -1030,7 +1030,7 @@ Word BURGER_API Burger::DisplayOpenGL::CreateVertexArrayObject(const OpenGLVerte
 					glEnableVertexAttribArray(0);
 
 					// Get the size of the position type so we can set the stride properly
-					WordPtr uPositionTypeSize = GetGLTypeSize(pDescription->m_ePositionType);
+					uintptr_t uPositionTypeSize = GetGLTypeSize(pDescription->m_ePositionType);
 
 					// Set up the description of the position array
 					glVertexAttribPointer(0,
@@ -1060,7 +1060,7 @@ Word BURGER_API Burger::DisplayOpenGL::CreateVertexArrayObject(const OpenGLVerte
 					glEnableVertexAttribArray(1);
 
 					// Get the size of the normal type so we can set the stride properly
-					WordPtr uNormalTypeSize = GetGLTypeSize(pDescription->m_eNormalType);
+					uintptr_t uNormalTypeSize = GetGLTypeSize(pDescription->m_eNormalType);
 
 					// Set up the description of the normal array
 					glVertexAttribPointer(1,
@@ -1090,7 +1090,7 @@ Word BURGER_API Burger::DisplayOpenGL::CreateVertexArrayObject(const OpenGLVerte
 					glEnableVertexAttribArray(2);
 
 					// Get the size of the UV coordinates type so we can set the stride properly
-					WordPtr uUVTypeSize = GetGLTypeSize(pDescription->m_eTexcoordType);
+					uintptr_t uUVTypeSize = GetGLTypeSize(pDescription->m_eTexcoordType);
 
 					// Set up the description of the UV coordinates array
 					glVertexAttribPointer(2,
@@ -1138,7 +1138,7 @@ Word BURGER_API Burger::DisplayOpenGL::CreateVertexArrayObject(const OpenGLVerte
 
 ***************************************/
 
-void BURGER_API Burger::DisplayOpenGL::DeleteVertexArrayObject(Word uVertexArrayObject) const
+void BURGER_API Burger::DisplayOpenGL::DeleteVertexArrayObject(uint_t uVertexArrayObject) const
 {
 #if defined(USE_GL2)
 	if (uVertexArrayObject) {
@@ -1187,7 +1187,7 @@ void BURGER_API Burger::DisplayOpenGL::DeleteVertexArrayObject(Word uVertexArray
 	Given a size in pixels, create a texture of a specific bit depth and clamp
 	type and attach an optional ZBuffer
 
-	This frame buffer can be disposed of with a call to DeleteFrameBufferObject(Word)
+	This frame buffer can be disposed of with a call to DeleteFrameBufferObject(uint_t)
 
 	\param uWidth Width of the new frame buffer in pixels
 	\param uHeight Height of the new frame buffer in pixels
@@ -1195,11 +1195,11 @@ void BURGER_API Burger::DisplayOpenGL::DeleteVertexArrayObject(Word uVertexArray
 	\param uGLClamp OpenGL clamp type for the edge of the frame buffer texture, example GL_CLAMP_TO_EDGE
 	\param uGLZDepth OpenGL type for the depth buffer, if any. Zero will not generate a depth buffer, GL_DEPTH_COMPONENT16 or equivalent will generate one.
 	\return Frame buffer ID or zero on failure
-	\sa DeleteFrameBufferObject(Word) const
+	\sa DeleteFrameBufferObject(uint_t) const
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayOpenGL::BuildFrameBufferObject(Word uWidth,Word uHeight,Word uGLDepth,Word uGLClamp,Word uGLZDepth) const
+uint_t BURGER_API Burger::DisplayOpenGL::BuildFrameBufferObject(uint_t uWidth,uint_t uHeight,uint_t uGLDepth,uint_t uGLClamp,uint_t uGLZDepth) const
 {
 	GLuint uFrontBufferObject = 0;
 #if defined(USE_GL2)
@@ -1269,11 +1269,11 @@ Word BURGER_API Burger::DisplayOpenGL::BuildFrameBufferObject(Word uWidth,Word u
 	and call the appropriate disposal routine
 
 	\param uAttachment OpenGL attachment enumeration
-	\sa DeleteFrameBufferObject(Word) const
+	\sa DeleteFrameBufferObject(uint_t) const
 
 ***************************************/
 
-void BURGER_API Burger::DisplayOpenGL::DeleteFrameBufferObjectAttachment(Word uAttachment)
+void BURGER_API Burger::DisplayOpenGL::DeleteFrameBufferObjectAttachment(uint_t uAttachment)
 {
 #if defined(USE_GL2)
 	GLint iObjectID;
@@ -1304,18 +1304,18 @@ void BURGER_API Burger::DisplayOpenGL::DeleteFrameBufferObjectAttachment(Word uA
 	Given an OpenGL frame buffer, dispose of it and everything attached to it.
 
 	\param uFrameBufferObject OpenGL frame buffer (Zero does nothing)
-	\sa BuildFrameBufferObject(Word,Word,Word,Word,Word) const or DeleteFrameBufferObjectAttachment(Word)
+	\sa BuildFrameBufferObject(uint_t,uint_t,uint_t,uint_t,uint_t) const or DeleteFrameBufferObjectAttachment(uint_t)
 
 ***************************************/
 
-void BURGER_API Burger::DisplayOpenGL::DeleteFrameBufferObject(Word uFrameBufferObject) const
+void BURGER_API Burger::DisplayOpenGL::DeleteFrameBufferObject(uint_t uFrameBufferObject) const
 {
 #if defined(USE_GL2)
 	if (uFrameBufferObject) {
 		glBindFramebuffer(GL_FRAMEBUFFER,uFrameBufferObject);
-		Word uCount = m_uMaximumColorAttachments;
+		uint_t uCount = m_uMaximumColorAttachments;
 		if (uCount) {
-			Word uColorAttachment = GL_COLOR_ATTACHMENT0;
+			uint_t uColorAttachment = GL_COLOR_ATTACHMENT0;
 			do {
 				// For every color buffer attached delete the attachment
 				DeleteFrameBufferObjectAttachment(uColorAttachment);
@@ -1349,7 +1349,7 @@ void BURGER_API Burger::DisplayOpenGL::DeleteFrameBufferObject(Word uFrameBuffer
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayOpenGL::CreateTextureID(const Image *pImage,Word bGenerateMipMap)
+uint_t BURGER_API Burger::DisplayOpenGL::CreateTextureID(const Image *pImage,uint_t bGenerateMipMap)
 {
 	GLuint uTextureID = 0;
 
@@ -1394,11 +1394,11 @@ Word BURGER_API Burger::DisplayOpenGL::CreateTextureID(const Image *pImage,Word 
 			// If the bytes in the image are packed together, then
 			// it's a simple upload, otherwise, do it the hard way
 
-			Word uMipMap = 0;
+			uint_t uMipMap = 0;
 			do {
-				Word uWidth = pImage->GetWidth(uMipMap);
-				Word uHeight = pImage->GetHeight(uMipMap);
-				const Word8 *pSource = pImage->GetImage(uMipMap);
+				uint_t uWidth = pImage->GetWidth(uMipMap);
+				uint_t uHeight = pImage->GetHeight(uMipMap);
+				const uint8_t *pSource = pImage->GetImage(uMipMap);
 
 				if (uMipMap || (pImage->GetSuggestedStride()==pImage->GetStride())) {
 					// Allocate and load image data into texture in one go
@@ -1409,8 +1409,8 @@ Word BURGER_API Burger::DisplayOpenGL::CreateTextureID(const Image *pImage,Word 
 
 					// Upload one line at a time to support stride
 					if (uHeight) {
-						Word uY=0;
-						WordPtr uStride = pImage->GetStride(uMipMap);
+						uint_t uY=0;
+						uintptr_t uStride = pImage->GetStride(uMipMap);
 						do {
 							glTexSubImage2D(GL_TEXTURE_2D,0,0,static_cast<GLsizei>(uY),static_cast<GLsizei>(uWidth),1,iFormat,iType,pSource);
 							pSource += uStride;
@@ -1429,7 +1429,7 @@ Word BURGER_API Burger::DisplayOpenGL::CreateTextureID(const Image *pImage,Word 
 #endif
 		}
 	}
-	return static_cast<Word>(uTextureID);
+	return static_cast<uint_t>(uTextureID);
 }
 
 /*! ************************************
@@ -1462,10 +1462,10 @@ static const MessageLookup_t g_GetErrorString[] = {
 	CASE(GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER)
 };
 
-const char * BURGER_API Burger::DisplayOpenGL::GetErrorString(Word uGLErrorEnum)
+const char * BURGER_API Burger::DisplayOpenGL::GetErrorString(uint_t uGLErrorEnum)
 {
 	const char *pResult = "GL_UNKNOWN_ERROR";
-	WordPtr uCount = BURGER_ARRAYSIZE(g_GetErrorString);
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_GetErrorString);
 	const MessageLookup_t *pLookup = g_GetErrorString;
 	do {
 		if (uGLErrorEnum==pLookup->m_uEnum) {
@@ -1489,9 +1489,9 @@ const char * BURGER_API Burger::DisplayOpenGL::GetErrorString(Word uGLErrorEnum)
 
 ***************************************/
 
-WordPtr BURGER_API Burger::DisplayOpenGL::GetGLTypeSize(Word uGLTypeEnum)
+uintptr_t BURGER_API Burger::DisplayOpenGL::GetGLTypeSize(uint_t uGLTypeEnum)
 {
-	WordPtr uResult;
+	uintptr_t uResult;
 	switch (uGLTypeEnum) {
 	case GL_BYTE:
 		uResult = sizeof(GLbyte);
@@ -1556,13 +1556,13 @@ WordPtr BURGER_API Burger::DisplayOpenGL::GetGLTypeSize(Word uGLTypeEnum)
 
 ***************************************/
 
-Word BURGER_API Burger::DisplayOpenGL::PrintGLError(const char *pErrorLocation)
+uint_t BURGER_API Burger::DisplayOpenGL::PrintGLError(const char *pErrorLocation)
 {
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	GLenum eError = glGetError();
 	if (eError != GL_NO_ERROR) {
 		do {
-			Debug::Message("GLError %s set in location %s\n",GetErrorString(static_cast<Word>(eError)),pErrorLocation);
+			Debug::Message("GLError %s set in location %s\n",GetErrorString(static_cast<uint_t>(eError)),pErrorLocation);
 			eError = glGetError();
 		} while (eError != GL_NO_ERROR);
 		uResult = TRUE;

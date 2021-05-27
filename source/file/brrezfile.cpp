@@ -1,13 +1,14 @@
 /***************************************
 
-	Resource manager
+    Resource manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -20,6 +21,11 @@
 #include "brfileansihelpers.h"
 #include "brglobals.h"
 #include <stdlib.h>
+
+#if defined(BURGER_WATCOM)
+// Converted function has different #pragma from original function
+#pragma warning 601 9
+#endif
 
 /*! ************************************
 
@@ -118,13 +124,13 @@ int BURGER_ANSIAPI Burger::RezFile::QSortNames(const void *pFirst,const void *pS
 	
 ***************************************/
 
-WordPtr BURGER_API Burger::RezFile::GetRezGroupBytes(void) const
+uintptr_t BURGER_API Burger::RezFile::GetRezGroupBytes(void) const
 {
 	// No data needed, yet
-	WordPtr uTotal = 0;
+	uintptr_t uTotal = 0;
 	
 	// Get the number of resource groups
-	Word uGroupCount = m_uGroupCount;
+	uint_t uGroupCount = m_uGroupCount;
 	// Any resource groups?
 	if (uGroupCount) {
 		// Get the pointer to the array of data
@@ -132,7 +138,7 @@ WordPtr BURGER_API Burger::RezFile::GetRezGroupBytes(void) const
 		do {
 			// How many resources are in this group?
 			// Note: Can't be zero
-			Word uCount = pGroups->m_uCount;
+			uint_t uCount = pGroups->m_uCount;
 
 			// Add in the array for the group
 			uTotal += (uCount*sizeof(RezEntry_t))+(sizeof(RezGroup_t)-sizeof(RezEntry_t));
@@ -174,10 +180,10 @@ WordPtr BURGER_API Burger::RezFile::GetRezGroupBytes(void) const
 	
 ***************************************/
 
-void BURGER_API Burger::RezFile::AdjustNamePointers(WordPtr uAdjust)
+void BURGER_API Burger::RezFile::AdjustNamePointers(uintptr_t uAdjust)
 {
 	// Get the number of resource groups
-	Word uGroupCount = m_uGroupCount;
+	uint_t uGroupCount = m_uGroupCount;
 	// Any resource groups?
 	if (uGroupCount) {
 		// Get the pointer to the array of data
@@ -185,7 +191,7 @@ void BURGER_API Burger::RezFile::AdjustNamePointers(WordPtr uAdjust)
 		do {
 			// How many resources are in this group?
 			// Note: Can't be zero
-			Word uCount = pGroups->m_uCount;
+			uint_t uCount = pGroups->m_uCount;
 			
 			// Pointer to the first entry
 			RezEntry_t *pEntry = pGroups->m_Array;
@@ -219,20 +225,20 @@ void BURGER_API Burger::RezFile::AdjustNamePointers(WordPtr uAdjust)
 
 ***************************************/
 
-Burger::RezFile::RezEntry_t * BURGER_API Burger::RezFile::Find(Word uRezNum) const
+Burger::RezFile::RezEntry_t * BURGER_API Burger::RezFile::Find(uint_t uRezNum) const
 {
 	// Nothing to return
 	RezEntry_t *pResult=NULL;
 	// Get the number of resource groups
-	Word uGroupCount = m_uGroupCount;
+	uint_t uGroupCount = m_uGroupCount;
 	// Any present?
 	if (uGroupCount) {
 		// Get the main pointer (Assume valid)
 		RezGroup_t *pGroups = m_pGroups;
 		do {
 			// Get the offset from the base resource number
-			Word uTemp = uRezNum-pGroups->m_uBaseRezNum;
-			Word uCount = pGroups->m_uCount;
+			uint_t uTemp = uRezNum-pGroups->m_uBaseRezNum;
+			uint_t uCount = pGroups->m_uCount;
 			// Is it in range?
 			if (uTemp<uCount) {
 				// Got it! (Most of the time this is one pass)
@@ -265,7 +271,7 @@ Burger::RezFile::RezEntry_t * BURGER_API Burger::RezFile::Find(Word uRezNum) con
 
 ***************************************/
 
-Word BURGER_API Burger::RezFile::FindName(const char *pRezName,Burger::RezFile::FilenameToRezNum_t **ppOutput) const
+uint_t BURGER_API Burger::RezFile::FindName(const char *pRezName,Burger::RezFile::FilenameToRezNum_t **ppOutput) const
 {	
 	// Work Pointer
 	FilenameToRezNum_t *pFoundRezName = NULL;
@@ -276,10 +282,10 @@ Word BURGER_API Burger::RezFile::FindName(const char *pRezName,Burger::RezFile::
 		// If the filename has a prefix "20:FileName.txt"
 		// Then remove the prefix so it can also match
 
-		Word uMinRec = reinterpret_cast<const Word8 *>(pRezName)[0];
+		uint_t uMinRec = reinterpret_cast<const uint8_t *>(pRezName)[0];
 		// Is the first character a number? (Prefix)
 		if ((uMinRec>='0') && (uMinRec<('9'+1))) {
-			// Is there a colon pathname seperator?
+			// Is there a colon pathname separator?
 			const char *pAuxName = StringCharacter(pRezName,':');
 			if (pAuxName) {
 				// Index past it
@@ -291,11 +297,11 @@ Word BURGER_API Burger::RezFile::FindName(const char *pRezName,Burger::RezFile::
 
 		// Make the bounds
 		uMinRec = 0;
-		Word uMaxRec = m_uRezNameCount;
+		uint_t uMaxRec = m_uRezNameCount;
 		int Test;
 		do {
 			// This is the record I'll test (Halfway)
-			Word EntryNum = ((uMaxRec-uMinRec)>>1)+uMinRec;
+			uint_t EntryNum = ((uMaxRec-uMinRec)>>1)+uMinRec;
 			pFoundRezName = &pRezNames[EntryNum];			/* Check this one */
 			// Case insensitive test
 			Test = StringCaseCompare(pFoundRezName->m_pRezName,pRezName);
@@ -346,47 +352,47 @@ Word BURGER_API Burger::RezFile::FindName(const char *pRezName,Burger::RezFile::
 
 ***************************************/
 
-Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(const Word8 *pData,const RootHeader_t *pHeader,Word uSwapFlag,Word32 uStartOffset)
+Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(const uint8_t *pData,const RootHeader_t *pHeader,uint_t uSwapFlag,uint32_t uStartOffset)
 {
 	// Get the number of groups to parse
-	Word uGroupCount = pHeader->m_uGroupCount;
+	uint_t uGroupCount = pHeader->m_uGroupCount;
 	if (uGroupCount) {
 
 		// First pass, determine how much memory will my header need
 
 		// Init my work pointer
-		const Word8 *pWork = pData;
+		const uint8_t *pWork = pData;
 
 		// This is how many bytes I'm going to need
-		WordPtr uNewLength = 0;
+		uintptr_t uNewLength = 0;
 		// Parse the old way?
 		if (uSwapFlag&OLDFORMAT) {
 			do {
-				Word uOldCount;
+				uint_t uOldCount;
 				if (uSwapFlag&SWAPENDIAN) {
-					uOldCount = SwapEndian::Load(reinterpret_cast<const Word32 *>(pWork+8));		/* Fix endian if needed */
+					uOldCount = SwapEndian::Load(reinterpret_cast<const uint32_t *>(pWork+8));		/* Fix endian if needed */
 				} else {
-					uOldCount = reinterpret_cast<const Word32 *>(pWork)[2];		// Get the count
+					uOldCount = reinterpret_cast<const uint32_t *>(pWork)[2];		// Get the count
 				}
 				// Number of bytes needed to store this record
 				uNewLength += (((uOldCount-1)*sizeof(RezEntry_t))+sizeof(RezGroup_t));
 				// Index to the next record
-				pWork = pWork + (sizeof(Word32)*3) + (uOldCount*(sizeof(Word32)*3));
+				pWork = pWork + (sizeof(uint32_t)*3) + (uOldCount*(sizeof(uint32_t)*3));
 			} while (--uGroupCount);
 		} else {
 		// Parse the new way
 			do {
-				Word uNewCount = LittleEndian::Load(&reinterpret_cast<const FileRezGroup_t *>(pWork)->m_uCount);	/* Get the count */
+				uint_t uNewCount = LittleEndian::Load(&reinterpret_cast<const FileRezGroup_t *>(pWork)->m_uCount);	/* Get the count */
 				// Number of bytes needed to store this record
 				uNewLength += (uNewCount*sizeof(RezEntry_t))+(sizeof(RezGroup_t)-sizeof(RezEntry_t));
 				// Next group
-				pWork = pWork + (sizeof(Word32)*2) + (uNewCount*(sizeof(Word32)*4));
+				pWork = pWork + (sizeof(uint32_t)*2) + (uNewCount*(sizeof(uint32_t)*4));
 			} while (--uGroupCount);
 		}
 		// How many bytes until the end of the data
-		WordPtr uAdjust = static_cast<WordPtr>(pWork-pData);
+		uintptr_t uAdjust = static_cast<uintptr_t>(pWork-pData);
 		// Determine the amount of memory the filenames need
-		WordPtr uTextLength = pHeader->m_uMemSize - uAdjust;
+		uintptr_t uTextLength = pHeader->m_uMemSize - uAdjust;
 		uAdjust = uNewLength-uAdjust;
 
 		// Now I have the length I need to make my new header, create it
@@ -403,18 +409,18 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 			if (uSwapFlag&OLDFORMAT) {
 				do {
 					// Old rez files had a type record
-					Word32 uType;
+					uint32_t uType;
 					// Load the type, base and count
 					if (uSwapFlag&SWAPENDIAN) {
-						uType = SwapEndian::Load(reinterpret_cast<const Word32 *>(pWork));
-						pGroup->m_uBaseRezNum = SwapEndian::Load(&reinterpret_cast<const Word32 *>(pWork)[1]);
-						pGroup->m_uCount = SwapEndian::Load(&reinterpret_cast<const Word32 *>(pWork)[2]);
+						uType = SwapEndian::Load(reinterpret_cast<const uint32_t *>(pWork));
+						pGroup->m_uBaseRezNum = SwapEndian::Load(&reinterpret_cast<const uint32_t *>(pWork)[1]);
+						pGroup->m_uCount = SwapEndian::Load(&reinterpret_cast<const uint32_t *>(pWork)[2]);
 					} else {
-						uType = reinterpret_cast<const Word32 *>(pWork)[0];
-						pGroup->m_uBaseRezNum = reinterpret_cast<const Word32 *>(pWork)[1];
-						pGroup->m_uCount = reinterpret_cast<const Word32 *>(pWork)[2];
+						uType = reinterpret_cast<const uint32_t *>(pWork)[0];
+						pGroup->m_uBaseRezNum = reinterpret_cast<const uint32_t *>(pWork)[1];
+						pGroup->m_uCount = reinterpret_cast<const uint32_t *>(pWork)[2];
 					}
-					pWork += sizeof(Word32)*3;
+					pWork += sizeof(uint32_t)*3;
 					// Patch in sound files in Killing Time
 					// Type 5 is now ID+5000
 					if (uType==5) {
@@ -423,29 +429,29 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 
 					// Process each resource entry
 				
-					Word uCount = pGroup->m_uCount;
+					uint_t uCount = pGroup->m_uCount;
 					RezEntry_t *pEntry = pGroup->m_Array;
 					if (uCount) {
 						do {
-							Word uFileOffset;
-							Word uLength;
-							Word uNameOffset;
+							uint_t uFileOffset;
+							uint_t uLength;
+							uint_t uNameOffset;
 							if (uSwapFlag&SWAPENDIAN) {
-								uFileOffset = SwapEndian::Load(&reinterpret_cast<const Word32*>(pWork)[0]);
-								uLength = SwapEndian::Load(&reinterpret_cast<const Word32*>(pWork)[1]);
-								uNameOffset = SwapEndian::Load(&reinterpret_cast<const Word32*>(pWork)[2]);
+								uFileOffset = SwapEndian::Load(&reinterpret_cast<const uint32_t*>(pWork)[0]);
+								uLength = SwapEndian::Load(&reinterpret_cast<const uint32_t*>(pWork)[1]);
+								uNameOffset = SwapEndian::Load(&reinterpret_cast<const uint32_t*>(pWork)[2]);
 							} else {
-								uFileOffset = reinterpret_cast<const Word32*>(pWork)[0];
-								uLength = reinterpret_cast<const Word32*>(pWork)[1];
-								uNameOffset = reinterpret_cast<const Word32*>(pWork)[2];
+								uFileOffset = reinterpret_cast<const uint32_t*>(pWork)[0];
+								uLength = reinterpret_cast<const uint32_t*>(pWork)[1];
+								uNameOffset = reinterpret_cast<const uint32_t*>(pWork)[2];
 							}
 							// Initialize the structure
-							Word uFlags = 0;
+							uint_t uFlags = 0;
 							pEntry->m_ppData = NULL;
 							pEntry->m_pRezName = NULL;
 							pEntry->m_uCompressedLength = uLength;
 							// Skip the 3 32 bit words (Can never change)
-							pWork += sizeof(Word32)*3;
+							pWork += sizeof(uint32_t)*3;
 							// Is there a name?
 							if (uNameOffset) {
 								pEntry->m_pRezName = pAdjusted+uNameOffset;
@@ -479,11 +485,11 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 					// Get the base resource number and the resource count
 					pGroup->m_uBaseRezNum = LittleEndian::Load(&reinterpret_cast<const FileRezGroup_t*>(pWork)->m_uBaseRezNum);
 					pGroup->m_uCount = LittleEndian::Load(&reinterpret_cast<const FileRezGroup_t*>(pWork)->m_uCount);
-					pWork += (sizeof(Word32)*2);
+					pWork += (sizeof(uint32_t)*2);
 				
 					// Process each resource entry
 				
-					Word uNewCount = pGroup->m_uCount;
+					uint_t uNewCount = pGroup->m_uCount;
 					RezEntry_t *pEntry = pGroup->m_Array;
 					if (uNewCount) {
 						do {
@@ -492,10 +498,10 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 							// Adjust the file offset from the start of the file image
 							pEntry->m_uFileOffset = LittleEndian::Load(&reinterpret_cast<const FileRezEntry_t *>(pWork)->m_uFileOffset)+uStartOffset;
 							pEntry->m_uLength = LittleEndian::Load(&reinterpret_cast<const FileRezEntry_t *>(pWork)->m_uLength);
-							Word uNameOffset = LittleEndian::Load(&reinterpret_cast<const FileRezEntry_t *>(pWork)->m_uNameOffset);
+							uint_t uNameOffset = LittleEndian::Load(&reinterpret_cast<const FileRezEntry_t *>(pWork)->m_uNameOffset);
 							pEntry->m_uCompressedLength = LittleEndian::Load(&reinterpret_cast<const FileRezEntry_t *>(pWork)->m_uCompressedLength);
 							// Next 4 longwords (Rigid)
-							pWork += (sizeof(Word32)*4);
+							pWork += (sizeof(uint32_t)*4);
 							if (uNameOffset&ENTRYFLAGSNAMEOFFSETMASK) {
 								pEntry->m_pRezName = pAdjusted+(uNameOffset&ENTRYFLAGSNAMEOFFSETMASK);
 							}
@@ -535,15 +541,15 @@ void BURGER_API Burger::RezFile::ProcessRezNames(void)
 {
 	// Firstly, determine the number of entries that have filenames
 
-	Word uTotal = 0;
+	uint_t uTotal = 0;
 	// Get the group count
-	Word uGroupCount = m_uGroupCount;
+	uint_t uGroupCount = m_uGroupCount;
 	// Any groups?
 	if (uGroupCount) {
 		// Start here
 		const RezGroup_t *pGroups = m_pGroups;
 		do {
-			Word uCount = pGroups->m_uCount;
+			uint_t uCount = pGroups->m_uCount;
 			const RezEntry_t *pEntry = pGroups->m_Array;
 			do {
 				// There's a name here
@@ -586,9 +592,9 @@ void BURGER_API Burger::RezFile::ProcessRezNames(void)
 			// Store here!
 			FilenameToRezNum_t *pDest = pRezNames;
 			do {
-				Word uCount = pGroups->m_uCount;
+				uint_t uCount = pGroups->m_uCount;
 				const RezEntry_t *pEntry = pGroups->m_Array;
-				Word uRezNum = pGroups->m_uBaseRezNum;
+				uint_t uRezNum = pGroups->m_uBaseRezNum;
 				do {
 					// Is there a name here?
 					if (pEntry->m_pRezName) {
@@ -609,14 +615,14 @@ void BURGER_API Burger::RezFile::ProcessRezNames(void)
 				
 			// The hash table MUST be sorted!
 			
-			qsort(pRezNames,uTotal,sizeof(FilenameToRezNum_t),QSortNames);
+			qsort(pRezNames,uTotal,sizeof(FilenameToRezNum_t), QSortNames);
 			return;
 		}
 	}
 	// No data is present. Just delete any previous data
 	Free(m_pRezNames);
 	m_uRezNameCount = 0;
-	m_pRezNames = NULL;
+	m_pRezNames = nullptr;
 }
 
 /*! ************************************
@@ -635,15 +641,15 @@ void BURGER_API Burger::RezFile::ProcessRezNames(void)
 void BURGER_API Burger::RezFile::FixupFilenames(char *pText)
 {
 	RezGroup_t *pNewGroup = m_pGroups;
-	Word uGroupCount = m_uGroupCount;
+	uint_t uGroupCount = m_uGroupCount;
 	do {
 		RezEntry_t *pNewEntry = pNewGroup->m_Array;
-		Word uCount = pNewGroup->m_uCount;
+		uint_t uCount = pNewGroup->m_uCount;
 		do {
 			const char *pNewText = pNewEntry->m_pRezName;
 			if (pNewText) {
 				pNewEntry->m_pRezName = pText;
-				WordPtr uLength = StringLength(pNewText)+1;
+				uintptr_t uLength = StringLength(pNewText)+1;
 				MemoryCopy(pText,pNewText,uLength);
 				pText+=uLength;
 			}
@@ -676,7 +682,7 @@ Burger::RezFile::RezFile(Burger::MemoryManagerHandle *pMemoryManager) :
 	m_pRezNames(NULL),
 	m_bExternalFileEnabled(TRUE)
 {
-	Word i=0;
+	uint_t i=0;
 	do {
 		m_Decompressors[i] = NULL;
 	} while (++i<MAXCODECS);
@@ -715,7 +721,7 @@ Burger::RezFile::~RezFile()
 
 ***************************************/
 
-Burger::RezFile * BURGER_API Burger::RezFile::New(Burger::MemoryManagerHandle *pMemoryManager,const char *pFileName,Word32 uStartOffset)
+Burger::RezFile * BURGER_API Burger::RezFile::New(Burger::MemoryManagerHandle *pMemoryManager,const char *pFileName,uint32_t uStartOffset)
 {
 	// Manually allocate the memory
 	RezFile *pThis = new (Alloc(sizeof(RezFile))) RezFile(pMemoryManager);
@@ -744,7 +750,7 @@ Burger::RezFile * BURGER_API Burger::RezFile::New(Burger::MemoryManagerHandle *p
 
 ***************************************/
 
-Word BURGER_API Burger::RezFile::Init(const char *pFileName,Word32 uStartOffset)
+uint_t BURGER_API Burger::RezFile::Init(const char *pFileName,uint32_t uStartOffset)
 {
 	// If there was a previous file, release it
 	Shutdown();
@@ -763,7 +769,7 @@ Word BURGER_API Burger::RezFile::Init(const char *pFileName,Word32 uStartOffset)
 				// Check the signature
 				if (!MemoryCompare(MyHeader.m_Name,g_RezFileSignature,4)) {
 					// Assume new data format
-					Word uSwapFlag = 0;
+					uint_t uSwapFlag = 0;
 					// Hack test to see if this is an old format file
 					if (MyHeader.m_CodecID[0][3]<32) {
 						uSwapFlag = OLDFORMAT;
@@ -782,7 +788,7 @@ Word BURGER_API Burger::RezFile::Init(const char *pFileName,Word32 uStartOffset)
 					}
 
 					// Allocate memory to load header
-					Word8 *pData = static_cast<Word8 *>(Alloc(MyHeader.m_uMemSize));
+					uint8_t *pData = static_cast<uint8_t *>(Alloc(MyHeader.m_uMemSize));
 					if (pData) {
 						// Read in the file header
 						if (m_File.Read(pData,MyHeader.m_uMemSize)==MyHeader.m_uMemSize) {
@@ -827,13 +833,13 @@ void BURGER_API Burger::RezFile::Shutdown(void)
 
 	// Dispose of any resources in memory
 	// Any valid entries?
-	Word uGroupCount = m_uGroupCount;
+	uint_t uGroupCount = m_uGroupCount;
 	if (uGroupCount) {
 		// Get the pointer locally
 		RezGroup_t *pGroups = m_pGroups;
 		do {
 			RezEntry_t *pEntry = pGroups->m_Array;
-			Word uCount = pGroups->m_uCount;
+			uint_t uCount = pGroups->m_uCount;
 			do {
 				// Dispose of the memory
 				m_pMemoryManager->FreeHandle(pEntry->m_ppData);
@@ -878,13 +884,13 @@ void BURGER_API Burger::RezFile::Shutdown(void)
 void BURGER_API Burger::RezFile::PurgeCache(void)
 {
 	// Get the entry count
-	Word uGroupCount = m_uGroupCount;
+	uint_t uGroupCount = m_uGroupCount;
 	// Any resources available?
 	if (uGroupCount) {
 		RezGroup_t *pGroups = m_pGroups;
 		do {
 			// How many elements?
-			Word uCount = pGroups->m_uCount;
+			uint_t uCount = pGroups->m_uCount;
 			// Index to the data
 			RezEntry_t *pEntry = pGroups->m_Array;
 			if (uCount) {
@@ -920,24 +926,24 @@ void BURGER_API Burger::RezFile::PurgeCache(void)
 
 	\param bEnable \ref TRUE to enable file reading, \ref FALSE to disable
 	\return Previous flag state
-	\sa Word Burger::RezFile::GetExternalFlag(void) const
+	\sa uint_t Burger::RezFile::GetExternalFlag(void) const
 
 ***************************************/
 
-Word BURGER_API Burger::RezFile::SetExternalFlag(Word bEnable)
+uint_t BURGER_API Burger::RezFile::SetExternalFlag(uint_t bEnable)
 {
-	Word uOldFlag = m_bExternalFileEnabled;
+	uint_t uOldFlag = m_bExternalFileEnabled;
 	m_bExternalFileEnabled = bEnable;
 	return uOldFlag;
 }
 
 /*! ************************************
 
-	\fn Word Burger::RezFile::GetExternalFlag(void) const
+	\fn uint_t Burger::RezFile::GetExternalFlag(void) const
 	\brief Return the state of reading external files
 
 	\return Current flag state, \ref TRUE or \ref FALSE
-	\sa Word Burger::RezFile::SetExternalFlag(Word)
+	\sa uint_t Burger::RezFile::SetExternalFlag(uint_t)
 
 ***************************************/
 
@@ -949,7 +955,7 @@ Word BURGER_API Burger::RezFile::SetExternalFlag(Word bEnable)
 
 ***************************************/
 
-void BURGER_API Burger::RezFile::LogDecompressor(Word uCompressID,Burger::Decompress *pProc)
+void BURGER_API Burger::RezFile::LogDecompressor(uint_t uCompressID,Burger::Decompress *pProc)
 {
 	// Allowable?
 	if (--uCompressID<MAXCODECS) {	
@@ -974,11 +980,11 @@ void BURGER_API Burger::RezFile::LogDecompressor(Word uCompressID,Burger::Decomp
 
 	\param pRezName Pointer to a "C" string with the filename to locate in the rez file
 	\return RezFile::INVALIDREZNUM on error or a valid resource number if the resource was found.
-	\sa Word Burger::RezFile::GetName(Word,char *,WordPtr) const
+	\sa uint_t Burger::RezFile::GetName(uint_t,char *,uintptr_t) const
 
 ***************************************/
 
-Word BURGER_API Burger::RezFile::GetRezNum(const char *pRezName) const
+uint_t BURGER_API Burger::RezFile::GetRezNum(const char *pRezName) const
 {
 	FilenameToRezNum_t *pRezNameEntry;		// Pointer to the master name list
 	
@@ -997,17 +1003,17 @@ Word BURGER_API Burger::RezFile::GetRezNum(const char *pRezName) const
 	\param uBufferSize Size, in bytes, of the buffer to receive the filename string
 
 	\return \ref FALSE if no error occurred. Non zero error code if the name wasn't found.
-	\sa Word Burger::RezFile::GetRezNum(const char *) const
+	\sa uint_t Burger::RezFile::GetRezNum(const char *) const
 
 ***************************************/
 
-Word BURGER_API Burger::RezFile::GetName(Word uRezNum,char *pBuffer,WordPtr uBufferSize) const
+uint_t BURGER_API Burger::RezFile::GetName(uint_t uRezNum,char *pBuffer,uintptr_t uBufferSize) const
 {
 	// Valid output buffer?
 	if (pBuffer && uBufferSize) {
 		
 		// Get the entry count
-		Word uGroupCount = m_uGroupCount;
+		uint_t uGroupCount = m_uGroupCount;
 		
 		// Any resources available?
 		if (uGroupCount) {
@@ -1016,7 +1022,7 @@ Word BURGER_API Burger::RezFile::GetName(Word uRezNum,char *pBuffer,WordPtr uBuf
 			const RezGroup_t *pGroups = m_pGroups;
 			do {
 				// Get the offset from base number
-				Word uOffset = uRezNum-pGroups->m_uBaseRezNum;
+				uint_t uOffset = uRezNum-pGroups->m_uBaseRezNum;
 
 				// In this group?
 				if (uOffset<pGroups->m_uCount) {
@@ -1059,10 +1065,10 @@ Word BURGER_API Burger::RezFile::GetName(Word uRezNum,char *pBuffer,WordPtr uBuf
 
 ***************************************/
 
-Word BURGER_API Burger::RezFile::AddName(const char *pRezName)
+uint_t BURGER_API Burger::RezFile::AddName(const char *pRezName)
 {		
 	// Is the resource name present?
-	Word uRezNum = GetRezNum(pRezName);
+	uint_t uRezNum = GetRezNum(pRezName);
 
 	// If it's not present, add it to the dictionary and assign a new number
 	
@@ -1074,7 +1080,7 @@ Word BURGER_API Burger::RezFile::AddName(const char *pRezName)
 	// If the filename has a prefix "20:FileName.txt"
 	// Then remove the prefix
 
-	Word uChar = reinterpret_cast<const Word8 *>(pRezName)[0];
+	uint_t uChar = reinterpret_cast<const uint8_t *>(pRezName)[0];
 	// First char a number?
 	if (uChar>='0' && uChar<('9'+1)) {
 		// Find the ':'
@@ -1088,10 +1094,10 @@ Word BURGER_API Burger::RezFile::AddName(const char *pRezName)
 	// Ok, RezName has the name FileName.txt
 	
 	// Length of the new string to add
-	WordPtr uNewStringLength = StringLength(pRezName)+1;
+	uintptr_t uNewStringLength = StringLength(pRezName)+1;
 
 	// Get the current group data size in bytes, so I can expand from this
-	WordPtr uOldDictionarySize = GetRezGroupBytes();
+	uintptr_t uOldDictionarySize = GetRezGroupBytes();
 
 	// New buffer
 	RezGroup_t *pNewGroup = static_cast<RezGroup_t *>(Alloc(uOldDictionarySize + uNewStringLength + sizeof(RezGroup_t)));
@@ -1102,7 +1108,7 @@ Word BURGER_API Burger::RezFile::AddName(const char *pRezName)
 	// If this is this an empty resource file?
 	// Then it's pretty easy!
 		
-	Word uGroupCount = m_uGroupCount;
+	uint_t uGroupCount = m_uGroupCount;
 	if (!uGroupCount) {
 		// Create a simple single resource group
 		char *pText = reinterpret_cast<char *>(&pNewGroup->m_Array[1]);
@@ -1129,7 +1135,7 @@ Word BURGER_API Burger::RezFile::AddName(const char *pRezName)
 	m_pGroups = pNewGroup;
 	RezGroup_t *pGroupToDelete = pGroup;	// Save for later
 	uRezNum = pGroup->m_uBaseRezNum;	// Get the base number
-	Word uCount = pGroup->m_uCount;
+	uint_t uCount = pGroup->m_uCount;
 
 	// Is the new number at the beginning or the end?
 
@@ -1215,7 +1221,7 @@ Word BURGER_API Burger::RezFile::AddName(const char *pRezName)
 
 ***************************************/
 
-void BURGER_API Burger::RezFile::Remove(Word uRezNum)
+void BURGER_API Burger::RezFile::Remove(uint_t uRezNum)
 {
 	// It there a resource by this number?
 	
@@ -1230,7 +1236,7 @@ void BURGER_API Burger::RezFile::Remove(Word uRezNum)
 	void **ppData = pEntry->m_ppData;
 	if (ppData) {		// Was there memory?
 		pEntry->m_ppData = NULL;		// Mark as GONE
-		Word32 uOffset = pEntry->m_uFlags;
+		uint32_t uOffset = pEntry->m_uFlags;
 		pEntry->m_uFlags = uOffset&(~ENTRYFLAGSREFCOUNT);	/* No references */
 #if defined(_DEBUG)
 		// A single reference is not an error. More than 1 is a problem
@@ -1242,7 +1248,7 @@ void BURGER_API Burger::RezFile::Remove(Word uRezNum)
 	}
 
 	RezGroup_t *pGroupToDelete = m_pGroups;
-	Word uGroupCount = m_uGroupCount;
+	uint_t uGroupCount = m_uGroupCount;
 	// If there is only one entry, surrender
 	if (uGroupCount==1 && pGroupToDelete->m_uCount==1) {
 		Free(pGroupToDelete);
@@ -1271,8 +1277,8 @@ void BURGER_API Burger::RezFile::Remove(Word uRezNum)
 
 	RezGroup_t *pGroup = pGroupToDelete;
 	do {
-		Word uTempRezNum = pGroup->m_uBaseRezNum;
-		Word uCount = pGroup->m_uCount;
+		uint_t uTempRezNum = pGroup->m_uBaseRezNum;
+		uint_t uCount = pGroup->m_uCount;
 		pNewGroup->m_uBaseRezNum = uTempRezNum;
 		pNewGroup->m_uCount = uCount;
 		pEntry = pGroup->m_Array;
@@ -1330,14 +1336,14 @@ void BURGER_API Burger::RezFile::Remove(Word uRezNum)
 	by name
 
 	\param pRezName Pointer to a "C" string of the name of the resource to remove
-	\sa void Burger::RezFile::Remove(Word)
+	\sa void Burger::RezFile::Remove(uint_t)
 
 ***************************************/
 
 void BURGER_API Burger::RezFile::Remove(const char *pRezName)
 {
 	// Can I find this?
-	Word uRezNum = GetRezNum(pRezName);
+	uint_t uRezNum = GetRezNum(pRezName);
 	if (uRezNum != INVALIDREZNUM) {
 		// Remove it!
 		Remove(uRezNum);
@@ -1357,7 +1363,7 @@ void BURGER_API Burger::RezFile::Remove(const char *pRezName)
 
 /*! ************************************
 
-	\fn Word Burger::RezFile::GetNameArraySize(void) const
+	\fn uint_t Burger::RezFile::GetNameArraySize(void) const
 	\brief Return the number of elements returned by Burger::RezFile::GetNameArray(void) const
 	\sa Burger::RezFile::GetNameArray(void) const
 
@@ -1372,7 +1378,7 @@ void BURGER_API Burger::RezFile::Remove(const char *pRezName)
 
 ***************************************/
 
-Word BURGER_API Burger::RezFile::GetLowestRezNum(void) const
+uint_t BURGER_API Burger::RezFile::GetLowestRezNum(void) const
 {
 	const RezGroup_t *pGroups = m_pGroups;
 	if (pGroups) {
@@ -1390,10 +1396,10 @@ Word BURGER_API Burger::RezFile::GetLowestRezNum(void) const
 
 ***************************************/
 
-Word BURGER_API Burger::RezFile::GetHighestRezNum(void) const
+uint_t BURGER_API Burger::RezFile::GetHighestRezNum(void) const
 {
 	// Get the number of resource groups
-	Word uGroupCount = m_uGroupCount;
+	uint_t uGroupCount = m_uGroupCount;
 	// Any resource groups?
 	if (uGroupCount) {
 		// Get the pointer to the array of data
@@ -1416,14 +1422,14 @@ Word BURGER_API Burger::RezFile::GetHighestRezNum(void) const
 
 	\param uRezNum Resource number
 	\return 0 if the resource was not found or the size in bytes of the resource
-	\sa GetCompressedSize(Word) const
+	\sa GetCompressedSize(uint_t) const
 
 ***************************************/
 
-WordPtr BURGER_API Burger::RezFile::GetSize(Word uRezNum) const
+uintptr_t BURGER_API Burger::RezFile::GetSize(uint_t uRezNum) const
 {
 	const RezEntry_t *pEntry = Find(uRezNum);		// Find the resource
-	WordPtr uResult = 0;
+	uintptr_t uResult = 0;
 	if (pEntry) {					// Find the entry
 		uResult = pEntry->m_uLength;
 	}
@@ -1436,14 +1442,14 @@ WordPtr BURGER_API Burger::RezFile::GetSize(Word uRezNum) const
 
 	\param uRezNum Resource number
 	\return 0 if the resource was not found or the size in bytes of the resource
-	\sa GetSize(Word) const
+	\sa GetSize(uint_t) const
 
 ***************************************/
 
-WordPtr BURGER_API Burger::RezFile::GetCompressedSize(Word uRezNum) const
+uintptr_t BURGER_API Burger::RezFile::GetCompressedSize(uint_t uRezNum) const
 {
 	const RezEntry_t *pEntry = Find(uRezNum);		// Find the resource
-	WordPtr uResult = 0;
+	uintptr_t uResult = 0;
 	if (pEntry) {					// Find the entry
 		uResult = pEntry->m_uCompressedLength;
 	}
@@ -1460,22 +1466,22 @@ WordPtr BURGER_API Burger::RezFile::GetCompressedSize(Word uRezNum) const
 	it's \ref TRUE), otherwise return zero for no error if I found it.
 
 	\param ppRez Handle to the memory to check for
-	\param pRezNum Pointer to a \ref Word to receive the valid resource number
+	\param pRezNum Pointer to a uint_t to receive the valid resource number
 	\param pBuffer Pointer to a buffer to hold the name of the resource
 	\param uBufferSize Number of bytes in size for the resource name buffer
 	\return \ref FALSE if found, \ref TRUE if not found
 
 ***************************************/
 
-Word BURGER_API Burger::RezFile::GetIDFromHandle(const void **ppRez,Word *pRezNum,char *pBuffer,WordPtr uBufferSize) const
+uint_t BURGER_API Burger::RezFile::GetIDFromHandle(const void **ppRez,uint_t *pRezNum,char *pBuffer,uintptr_t uBufferSize) const
 {
 	// Valid handle?
 	if (ppRez) {
-		Word uGroupCount = m_uGroupCount;	// Get the entry count
+		uint_t uGroupCount = m_uGroupCount;	// Get the entry count
 		if (uGroupCount) {					// Any resources available?			
 			RezGroup_t *pGroups = m_pGroups;	// Pointer to the data
 			do {
-				Word uCount = pGroups->m_uCount;	// Count of this group's size
+				uint_t uCount = pGroups->m_uCount;	// Count of this group's size
 				RezEntry_t *pEntry = pGroups->m_Array;	// Pointer to the first entry
 		
 				// Check the entries for this handle
@@ -1513,22 +1519,22 @@ Word BURGER_API Burger::RezFile::GetIDFromHandle(const void **ppRez,Word *pRezNu
 	it's \ref TRUE), otherwise return zero for no error if I found it.
 
 	\param pRez Pointer to the memory to check for
-	\param pRezNum Pointer to a \ref Word to receive the valid resource number
+	\param pRezNum Pointer to a uint_t to receive the valid resource number
 	\param pBuffer Pointer to a buffer to hold the name of the resource
 	\param uBufferSize Number of bytes in size for the resource name buffer
 	\return \ref FALSE if found, \ref TRUE if not found
 
 ***************************************/
 
-Word BURGER_API Burger::RezFile::GetIDFromPointer(const void *pRez,Word *pRezNum,char *pBuffer,WordPtr uBufferSize) const
+uint_t BURGER_API Burger::RezFile::GetIDFromPointer(const void *pRez,uint_t *pRezNum,char *pBuffer,uintptr_t uBufferSize) const
 {
 	// Valid pointer?
 	if (pRez) {
-		Word uGroupCount = m_uGroupCount;	// Get the entry count
+		uint_t uGroupCount = m_uGroupCount;	// Get the entry count
 		if (uGroupCount) {					// Any resources available?			
 			RezGroup_t *pGroups = m_pGroups;	// Pointer to the data
 			do {
-				Word uCount = pGroups->m_uCount;	// Count of this group's size
+				uint_t uCount = pGroups->m_uCount;	// Count of this group's size
 				RezEntry_t *pEntry = pGroups->m_Array;	// Pointer to the first entry
 		
 				// Check the entries for this handle
@@ -1563,14 +1569,14 @@ Word BURGER_API Burger::RezFile::GetIDFromPointer(const void *pRez,Word *pRezNum
 	\note The returned handle is NOT locked.
 
 	\param uRezNum Resource number
-	\param pLoadedFlag Pointer to a \ref Word that's
+	\param pLoadedFlag Pointer to a uint_t that's
 		set to \ref TRUE if the data was freshly loaded
 		or \ref FALSE if it's a cached copy
 	\return \ref NULL if the data was not found or a valid handle with the data
 
 ***************************************/
 
-void ** BURGER_API Burger::RezFile::LoadHandle(Word uRezNum,Word *pLoadedFlag)
+void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFlag)
 {		
 	if (pLoadedFlag) {
 		pLoadedFlag[0] = FALSE;		// Assume cached or failed
@@ -1593,9 +1599,9 @@ void ** BURGER_API Burger::RezFile::LoadHandle(Word uRezNum,Word *pLoadedFlag)
 		ppData = NULL;				// Set to zero for future error checking
 	}
 
-	Word32 uFileNameOffset = pEntry->m_uFlags;			// Filename offset
+	uint32_t uFileNameOffset = pEntry->m_uFlags;			// Filename offset
  	pEntry->m_uFlags=uFileNameOffset+ENTRYFLAGSREFADD;	// Increase the reference count
-	Word uHandleFlags = 0;								// ID the handle as the resource manager
+	uint_t uHandleFlags = 0;								// ID the handle as the resource manager
 	if (uFileNameOffset&ENTRYFLAGSHIGHMEMORY) {			// Where to load?
 		uHandleFlags = MemoryManagerHandle::FIXED;		// Place in fixed memory
 	}
@@ -1612,7 +1618,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(Word uRezNum,Word *pLoadedFlag)
 			if (TheFile.Open(pFileName,File::READONLY)==File::OKAY) {
 				// File detected
 				pEntry->m_uFlags |= ENTRYFLAGSFILEFOUND;
-				WordPtr uNewLength = TheFile.GetSize();				// Get the NEW length
+				uintptr_t uNewLength = TheFile.GetSize();				// Get the NEW length
 				if (uNewLength) {
 					ppData = m_pMemoryManager->AllocHandle(uNewLength,uHandleFlags);	// Get memory
 					if (ppData) {										// Got the memory?
@@ -1621,7 +1627,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(Word uRezNum,Word *pLoadedFlag)
 							m_pMemoryManager->FreeHandle(ppData);		// Discard the memory
 							ppData = NULL;				// Can't load it in!
 						} else {
-							pEntry->m_uLength = static_cast<Word32>(uNewLength);	// Save the size
+							pEntry->m_uLength = static_cast<uint32_t>(uNewLength);	// Save the size
 						}
 					}
 				}
@@ -1645,15 +1651,15 @@ void ** BURGER_API Burger::RezFile::LoadHandle(Word uRezNum,Word *pLoadedFlag)
 	}
 
 	// Let's load it in from the .REZ file
-	Word32 uFileOffset = pEntry->m_uFileOffset;			
+	uint32_t uFileOffset = pEntry->m_uFileOffset;			
 	if (!m_File.IsOpened() || !uFileOffset) {						// No resource file found?
 		pEntry->m_uFlags &= (~ENTRYFLAGSREFCOUNT);	// Kill the ref count
 		return NULL;
 	}
 	m_File.SetMark(uFileOffset);						// Seek into the file
 
-	Word32 DataLength = pEntry->m_uLength;				// Preload the length
-	Word32 PackedLength = pEntry->m_uCompressedLength;
+	uint32_t DataLength = pEntry->m_uLength;				// Preload the length
+	uint32_t PackedLength = pEntry->m_uCompressedLength;
 	if (uFileNameOffset&ENTRYFLAGSDECOMPMASK) {			// Is this compressed?
 		// Get the compressor
 		Decompress *pDecompressor = m_Decompressors[((uFileNameOffset>>ENTRYFLAGSDECOMPSHIFT)&3)-1];
@@ -1676,19 +1682,19 @@ void ** BURGER_API Burger::RezFile::LoadHandle(Word uRezNum,Word *pLoadedFlag)
 			return NULL;
 		}
 		m_pMemoryManager->SetID(ppData,uRezNum);		// Set the ID to the handle
-		Word32 BufferSize = (PackedLength<MAXBUFFER) ? PackedLength : MAXBUFFER;
-		Word8 *PackedPtr = static_cast<Word8 *>(Alloc(BufferSize));	// Get Buffer
+		uint32_t BufferSize = (PackedLength<MAXBUFFER) ? PackedLength : MAXBUFFER;
+		uint8_t *PackedPtr = static_cast<uint8_t *>(Alloc(BufferSize));	// Get Buffer
 		if (!PackedPtr) {				// No compressed data buffer?
 			m_pMemoryManager->FreeHandle(ppData);
 			pEntry->m_uFlags &= (~ENTRYFLAGSREFCOUNT);		// Kill the ref count
 			return NULL;
 		}
 		pDecompressor->Reset();
-		WordPtr PackedHeader = DataLength;
-		WordPtr PackedSize = PackedLength;
-		Word8 *pOutput = (Word8 *)m_pMemoryManager->Lock(ppData);
+		uintptr_t PackedHeader = DataLength;
+		uintptr_t PackedSize = PackedLength;
+		uint8_t *pOutput = (uint8_t *)m_pMemoryManager->Lock(ppData);
 		do {		/* Loop for decompression */
-			WordPtr ChunkSize = (BufferSize<PackedSize) ? BufferSize : PackedSize;
+			uintptr_t ChunkSize = (BufferSize<PackedSize) ? BufferSize : PackedSize;
 			if (m_File.Read(PackedPtr,ChunkSize)!=ChunkSize) {
 				m_pMemoryManager->FreeHandle(ppData);
 				pEntry->m_uFlags &= (~ENTRYFLAGSREFCOUNT);		// Kill the ref count
@@ -1762,17 +1768,17 @@ void ** BURGER_API Burger::RezFile::LoadHandle(Word uRezNum,Word *pLoadedFlag)
 	\note The returned handle is NOT locked.
 
 	\param pRezName Resource name
-	\param pLoadedFlag Pointer to a \ref Word that's
+	\param pLoadedFlag Pointer to a uint_t that's
 		set to \ref TRUE if the data was freshly loaded
 		or \ref FALSE if it's a cached copy
 	\return \ref NULL if the data was not found or a valid handle with the data
 
 ***************************************/
 
-void ** BURGER_API Burger::RezFile::LoadHandle(const char *pRezName,Word *pLoadedFlag)
+void ** BURGER_API Burger::RezFile::LoadHandle(const char *pRezName,uint_t *pLoadedFlag)
 {
 	// Get the index number
-	Word uRezNum = GetRezNum(pRezName);
+	uint_t uRezNum = GetRezNum(pRezName);
 	if (uRezNum == INVALIDREZNUM) {
 		uRezNum = AddName(pRezName);	// Try to add it
 		if (uRezNum==INVALIDREZNUM) {	// No good?
@@ -1786,14 +1792,14 @@ void ** BURGER_API Burger::RezFile::LoadHandle(const char *pRezName,Word *pLoade
 
 	\brief Load in a resource
 	\param uRezNum Resource number
-	\param pLoadedFlag Pointer to a \ref Word that's
+	\param pLoadedFlag Pointer to a uint_t that's
 		set to \ref TRUE if the data was freshly loaded
 		or \ref FALSE if it's a cached copy
 	\return \ref NULL if the data was not found or a valid handle with the data
 
 ***************************************/
 
-void * BURGER_API Burger::RezFile::Load(Word uRezNum,Word *pLoadedFlag)
+void * BURGER_API Burger::RezFile::Load(uint_t uRezNum,uint_t *pLoadedFlag)
 {
 	// Load the handle and dereference it
 	return m_pMemoryManager->Lock(LoadHandle(uRezNum,pLoadedFlag));
@@ -1803,14 +1809,14 @@ void * BURGER_API Burger::RezFile::Load(Word uRezNum,Word *pLoadedFlag)
 
 	\brief Load in a resource
 	\param pRezName Resource name
-	\param pLoadedFlag Pointer to a \ref Word that's
+	\param pLoadedFlag Pointer to a uint_t that's
 		set to \ref TRUE if the data was freshly loaded
 		or \ref FALSE if it's a cached copy
 	\return \ref NULL if the data was not found or a valid handle with the data
 
 ***************************************/
 
-void * BURGER_API Burger::RezFile::Load(const char *pRezName,Word *pLoadedFlag)
+void * BURGER_API Burger::RezFile::Load(const char *pRezName,uint_t *pLoadedFlag)
 {
 	// Load the handle and dereference it
 	return m_pMemoryManager->Lock(LoadHandle(pRezName,pLoadedFlag));
@@ -1827,14 +1833,14 @@ void * BURGER_API Burger::RezFile::Load(const char *pRezName,Word *pLoadedFlag)
 
 ***************************************/
 
-Word BURGER_API Burger::RezFile::Read(Word uRezNum,void *pBuffer,WordPtr uBufferSize)
+uint_t BURGER_API Burger::RezFile::Read(uint_t uRezNum,void *pBuffer,uintptr_t uBufferSize)
 {	
 	// Assume failure
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	void **ppData = LoadHandle(uRezNum);	// Load it in
 	if (ppData) {							// Ok?
 		RezEntry_t *pEntry = Find(uRezNum);
-		WordPtr uLength = pEntry->m_uLength;	// How much memory does this take?
+		uintptr_t uLength = pEntry->m_uLength;	// How much memory does this take?
 		if (uBufferSize>=uLength) {			// Is the output buffer big enough?
 			uBufferSize = uLength;			// Use the smaller
 			uResult = FALSE;				// It's ok
@@ -1858,10 +1864,10 @@ Word BURGER_API Burger::RezFile::Read(Word uRezNum,void *pBuffer,WordPtr uBuffer
 
 ***************************************/
 
-Word BURGER_API Burger::RezFile::Read(const char *pRezName,void *pBuffer,WordPtr uBufferSize)
+uint_t BURGER_API Burger::RezFile::Read(const char *pRezName,void *pBuffer,uintptr_t uBufferSize)
 {
 	// Get the index number
-	Word uRezNum = GetRezNum(pRezName);
+	uint_t uRezNum = GetRezNum(pRezName);
 	if (uRezNum == INVALIDREZNUM) {
 		uRezNum = AddName(pRezName);	// Try to add it
 		if (uRezNum==INVALIDREZNUM) {	// No good?
@@ -1882,11 +1888,11 @@ Word BURGER_API Burger::RezFile::Read(const char *pRezName,void *pBuffer,WordPtr
 
 ***************************************/
 
-void BURGER_API Burger::RezFile::Release(Word uRezNum)
+void BURGER_API Burger::RezFile::Release(uint_t uRezNum)
 {
 	RezEntry_t *pEntry = Find(uRezNum);	/* Scan for the resource */
 	if (pEntry) {					/* Is it here? */
-		Word32 uOffset = pEntry->m_uFlags;
+		uint32_t uOffset = pEntry->m_uFlags;
 #if defined(_DEBUG)
 		if (Globals::AreWarningsEnabled() && !(uOffset&ENTRYFLAGSREFCOUNT)) {		/* Should not be zero */
 			Debug::Message("RezFile::Release() : RefCount is zero for resource %u!\n",uRezNum);
@@ -1919,11 +1925,11 @@ void BURGER_API Burger::RezFile::Release(Word uRezNum)
 
 void BURGER_API Burger::RezFile::Release(const char *pRezName)
 {
-	Word uRezNum = GetRezNum(pRezName);	/* Scan for the resource */
+	uint_t uRezNum = GetRezNum(pRezName);	/* Scan for the resource */
 	if (uRezNum!=INVALIDREZNUM) {
 		RezEntry_t *pEntry = Find(uRezNum);
 		if (pEntry) {					/* Is it here? */
-			Word32 uOffset = pEntry->m_uFlags;
+			uint32_t uOffset = pEntry->m_uFlags;
 #if defined(_DEBUG)
 			if (Globals::AreWarningsEnabled() && !(uOffset&ENTRYFLAGSREFCOUNT)) {		/* Should not be zero */
 				Debug::Message("RezFile::Release() : RefCount is zero for resource %s!\n",pRezName);
@@ -1954,14 +1960,14 @@ void BURGER_API Burger::RezFile::Release(const char *pRezName)
 
 ***************************************/
 
-void BURGER_API Burger::RezFile::Kill(Word uRezNum)
+void BURGER_API Burger::RezFile::Kill(uint_t uRezNum)
 {
 	RezEntry_t *pEntry = Find(uRezNum);	/* Scan for the resource */
 	if (pEntry) {
 		void **ppData = pEntry->m_ppData;
 		if (ppData) {		/* Is there a handle? */
 			pEntry->m_ppData = NULL;		/* Mark as GONE */
-			Word32 uOffset = pEntry->m_uFlags;
+			uint32_t uOffset = pEntry->m_uFlags;
 			pEntry->m_uFlags = uOffset&(~ENTRYFLAGSREFCOUNT);	/* No references */
 #if defined(_DEBUG)
 			if (Globals::AreWarningsEnabled() && ((uOffset&ENTRYFLAGSREFCOUNT)>=ENTRYFLAGSREFADD*2)) {
@@ -1985,14 +1991,14 @@ void BURGER_API Burger::RezFile::Kill(Word uRezNum)
 
 void BURGER_API Burger::RezFile::Kill(const char *pRezName)
 {
-	Word uRezNum = GetRezNum(pRezName);
+	uint_t uRezNum = GetRezNum(pRezName);
 	if (uRezNum!=INVALIDREZNUM) {
 		RezEntry_t *pEntry = Find(uRezNum);	/* Scan for the resource */
 		if (pEntry) {
 			void **ppData = pEntry->m_ppData;
 			if (ppData) {		/* Is there a handle? */
 				pEntry->m_ppData = NULL;		/* Mark as GONE */
-				Word32 uOffset = pEntry->m_uFlags;
+				uint32_t uOffset = pEntry->m_uFlags;
 				pEntry->m_uFlags = uOffset & (~ENTRYFLAGSREFCOUNT);	/* No references */
 #if defined(_DEBUG)
 				if (Globals::AreWarningsEnabled() && (uOffset&ENTRYFLAGSREFCOUNT)>=(ENTRYFLAGSREFADD*2)) {
@@ -2007,20 +2013,20 @@ void BURGER_API Burger::RezFile::Kill(const char *pRezName)
 
 /*! ************************************
 
-	\brief Detact the data associated with a resource
+	\brief Detach the data associated with a resource
 
-	Release responsibilty for this resource to the application.
+	Release responsibility for this resource to the application.
 
 	\param uRezNum Resource number
 
 ***************************************/
 
-void BURGER_API Burger::RezFile::Detach(Word uRezNum)
+void BURGER_API Burger::RezFile::Detach(uint_t uRezNum)
 {
 	RezEntry_t *pEntry = Find(uRezNum);
 	if (pEntry) {		/* Scan for the resource */
 		pEntry->m_ppData = NULL;		/* Mark as GONE */
-		Word32 uOffset = pEntry->m_uFlags;
+		uint32_t uOffset = pEntry->m_uFlags;
 		pEntry->m_uFlags = uOffset & (~ENTRYFLAGSREFCOUNT);	/* No references */
 #if defined(_DEBUG)
 		if (Globals::AreWarningsEnabled() && (uOffset&ENTRYFLAGSREFCOUNT)!=ENTRYFLAGSREFADD) {	/* 1 time is ok */
@@ -2032,9 +2038,9 @@ void BURGER_API Burger::RezFile::Detach(Word uRezNum)
 
 /*! ************************************
 
-	\brief Detact the data associated with a resource
+	\brief Detach the data associated with a resource
 
-	Release responsibilty for this resource to the application.
+	Release responsibility for this resource to the application.
 
 	\param pRezName Resource name
 
@@ -2042,12 +2048,12 @@ void BURGER_API Burger::RezFile::Detach(Word uRezNum)
 
 void BURGER_API Burger::RezFile::Detach(const char *pRezName)
 {
-	Word uRezNum = GetRezNum(pRezName);
+	uint_t uRezNum = GetRezNum(pRezName);
 	if (uRezNum!=INVALIDREZNUM) {
 		RezEntry_t *pEntry = Find(uRezNum);
 		if (pEntry) {		/* Scan for the resource */
 			pEntry->m_ppData = NULL;		/* Mark as GONE */
-			Word32 uOffset = pEntry->m_uFlags;
+			uint32_t uOffset = pEntry->m_uFlags;
 			pEntry->m_uFlags = uOffset & (~ENTRYFLAGSREFCOUNT);	/* No references */
 #if defined(_DEBUG)
 			if (Globals::AreWarningsEnabled() && (uOffset&ENTRYFLAGSREFCOUNT)!=ENTRYFLAGSREFADD) {	/* 1 time is ok */
@@ -2069,7 +2075,7 @@ void BURGER_API Burger::RezFile::Detach(const char *pRezName)
 
 ***************************************/
 
-void BURGER_API Burger::RezFile::Preload(Word uRezNum)
+void BURGER_API Burger::RezFile::Preload(uint_t uRezNum)
 {
 	if (LoadHandle(uRezNum)) {	// Get the handle
 		Release(uRezNum);		// Release the resource
@@ -2091,7 +2097,7 @@ void BURGER_API Burger::RezFile::Preload(Word uRezNum)
 
 void BURGER_API Burger::RezFile::Preload(const char *pRezName)
 {
-	Word uRezNum = GetRezNum(pRezName);	// Get the index number
+	uint_t uRezNum = GetRezNum(pRezName);	// Get the index number
 	if (uRezNum == INVALIDREZNUM) {
 		uRezNum = AddName(pRezName);	// Try to add it
 		if (uRezNum==INVALIDREZNUM) {		// No good?
@@ -2126,9 +2132,9 @@ void BURGER_API Burger::RezFile::Preload(const char *pRezName)
 	\brief Default constructor for InputRezStream
 
 	All members are initialized to \ref NULL. Use a call to
-	Open(RezFile *,Word) to allow this class to begin streaming
+	Open(RezFile *,uint_t) to allow this class to begin streaming
 
-	\sa InputRezStream(RezFile *,Word), Open(RezFile *,Word) or Release(void)
+	\sa InputRezStream(RezFile *,uint_t), Open(RezFile *,uint_t) or Release(void)
 
 ***************************************/
 
@@ -2149,11 +2155,11 @@ Burger::InputRezStream::InputRezStream() :
 
 	\param pRezFile Pointer to a valid resource file
 	\param uRezNum Number of the resource to load
-	\sa InputRezStream(), Open(RezFile *,Word) or Release(void)
+	\sa InputRezStream(), Open(RezFile *,uint_t) or Release(void)
 
 ***************************************/
 
-Burger::InputRezStream::InputRezStream(RezFile *pRezFile,Word uRezNum) :
+Burger::InputRezStream::InputRezStream(RezFile *pRezFile,uint_t uRezNum) :
 	InputMemoryStream(),
 	m_pRezFile(NULL),
 	m_uRezNum(0)
@@ -2187,17 +2193,17 @@ Burger::InputRezStream::~InputRezStream()
 	\param pRezFile Pointer to a valid resource file
 	\param uRezNum Number of the resource to load
 	\return Zero on success, non-zero (Error code) on failure
-	\sa InputRezStream(RezFile *,Word) or Release(void)
+	\sa InputRezStream(RezFile *,uint_t) or Release(void)
 
 ***************************************/
 
-Word BURGER_API Burger::InputRezStream::Open(RezFile *pRezFile,Word uRezNum)
+uint_t BURGER_API Burger::InputRezStream::Open(RezFile *pRezFile,uint_t uRezNum)
 {
 	// Release anything already in the class
 	Release();
 
 	// Assume failure
-	Word uResult = 10;
+	uint_t uResult = 10;
 	// Valid pointer?
 	if (pRezFile) {
 		// Load the data
@@ -2205,7 +2211,7 @@ Word BURGER_API Burger::InputRezStream::Open(RezFile *pRezFile,Word uRezNum)
 		// Got it?
 		if (pData) {
 			// Get the length of the data
-			WordPtr uLength = pRezFile->GetSize(uRezNum);
+			uintptr_t uLength = pRezFile->GetSize(uRezNum);
 			if (uLength) {
 				// Set up the stream to this buffer
 				InputMemoryStream::Open(pData,uLength,TRUE);
@@ -2230,7 +2236,7 @@ Word BURGER_API Burger::InputRezStream::Open(RezFile *pRezFile,Word uRezNum)
 	If a resource is held, release it and shut down
 	the parent InputMemorySteam
 
-	\sa Open(RezFile *,Word) or Release(void)
+	\sa Open(RezFile *,uint_t) or Release(void)
 
 ***************************************/
 
@@ -2263,7 +2269,7 @@ void BURGER_API Burger::InputRezStream::Release(void)
 
 /*! ************************************
 
-	\fn Word Burger::InputRezStream::GetRezNum(void) const
+	\fn uint_t Burger::InputRezStream::GetRezNum(void) const
 	\brief Return the cache RezFile entry number
 
 	\sa GetRezFile(void) const

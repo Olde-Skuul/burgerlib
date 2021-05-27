@@ -42,7 +42,7 @@ class DisplayDIBSoftware8 : public DisplayDIB {
 public:
 	DisplayDIBSoftware8(GameApp *pGameApp);
 protected:
-	virtual Word InitContext(void);
+	virtual uint_t InitContext(void);
 	virtual void PostShutdown(void);
 	virtual void PostEndScene(void);
 private:

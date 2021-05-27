@@ -45,11 +45,11 @@
 	Table used for quick Direct sound volume
 	conversion from 0-255 to Decibels
 
-	\sa ConvertToDirectSoundVolume(Word) of ConvertToDirectSoundVolume(float)
+	\sa ConvertToDirectSoundVolume(uint_t) of ConvertToDirectSoundVolume(float)
 
 ***************************************/
 
-BURGER_ALIGN(const Int16, Burger::SoundManager::g_DirectSoundVolumes[256],16) = {
+BURGER_ALIGN(const int16_t, Burger::SoundManager::g_DirectSoundVolumes[256],16) = {
 	-10000, -8000, -7000, -6415, -6000, -5678, -5415, -5192,
 	 -5000, -4830, -4678, -4540, -4415, -4299, -4192, -4093,
 	 -4000, -3912, -3830, -3752, -3678, -3607, -3540, -3476,
@@ -115,7 +115,7 @@ void Burger::SoundManager::Buffer::Shutdown(void)
 
 uint_t Burger::SoundManager::Buffer::Upload(SoundManager *pSoundManager)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	// Not already uploaded?
 	if (!m_pDirectSoundBuffer8) {
 		// Create a direct sound buffer for the sound
@@ -148,7 +148,7 @@ uint_t Burger::SoundManager::Buffer::Upload(SoundManager *pSoundManager)
 		}
 		SampleRecord.cbSize = 0;
 
-		SampleRecord.nBlockAlign = static_cast<Word16>((SampleRecord.wBitsPerSample/8)*SampleRecord.nChannels);
+		SampleRecord.nBlockAlign = static_cast<uint16_t>((SampleRecord.wBitsPerSample/8)*SampleRecord.nChannels);
 		SampleRecord.nAvgBytesPerSec = SampleRecord.nSamplesPerSec*SampleRecord.nBlockAlign;
 
 		DSBUFFERDESC BufferStats;
@@ -163,10 +163,10 @@ uint_t Burger::SoundManager::Buffer::Upload(SoundManager *pSoundManager)
 		//	MemoryCopy(BufferStats.guid3DAlgorithm,Algorithm,sizeof(GUID));
 
 		IDirectSoundBuffer *pIDirectSoundBuffer = NULL;
-		uResult = static_cast<Word>(pSoundManager->m_pDirectSound8Device->CreateSoundBuffer(&BufferStats,&pIDirectSoundBuffer,NULL));
+		uResult = static_cast<uint_t>(pSoundManager->m_pDirectSound8Device->CreateSoundBuffer(&BufferStats,&pIDirectSoundBuffer,NULL));
 		if (uResult==DS_OK) {
 			// Get the DirectSoundBuffer8 pointer
-			uResult = static_cast<Word>(pIDirectSoundBuffer->QueryInterface(IID_IDirectSoundBuffer8,reinterpret_cast<void**>(&m_pDirectSoundBuffer8)));
+			uResult = static_cast<uint_t>(pIDirectSoundBuffer->QueryInterface(IID_IDirectSoundBuffer8,reinterpret_cast<void**>(&m_pDirectSoundBuffer8)));
 			// Release the old pointer
 			pIDirectSoundBuffer->Release();
 			if (uResult==DS_OK) {
@@ -204,7 +204,7 @@ Burger::SoundManager::Voice::Voice() :
 }
 
 
-Word BURGER_API Burger::SoundManager::Voice::Init(SoundManager *pManager,Buffer *pBuffer)
+uint_t BURGER_API Burger::SoundManager::Voice::Init(SoundManager *pManager,Buffer *pBuffer)
 {
 	// Attach to the buffer (Obtain a reference via a smart pointer)
 	m_pBuffer = pBuffer;
@@ -230,7 +230,7 @@ Word BURGER_API Burger::SoundManager::Voice::Init(SoundManager *pManager,Buffer 
 	m_bIsHeld = FALSE;
 
 	// Assume failure
-	Word uResult = 10;
+	uint_t uResult = 10;
 
 	// Is there a buffer?
 	IDirectSoundBuffer8 *pDirectSoundBuffer8 = pBuffer->GetDirectSoundBuffer8();
@@ -241,22 +241,22 @@ Word BURGER_API Burger::SoundManager::Voice::Init(SoundManager *pManager,Buffer 
 		IDirectSound8 *pDevice = pManager->m_pDirectSound8Device;
 		IDirectSoundBuffer *pDirectSoundBuffer;
 
-		uResult = static_cast<Word>(pDevice->DuplicateSoundBuffer(pDirectSoundBuffer8,&pDirectSoundBuffer));
+		uResult = static_cast<uint_t>(pDevice->DuplicateSoundBuffer(pDirectSoundBuffer8,&pDirectSoundBuffer));
 		if (uResult==DS_OK) {
 			// Get DirectSound8
-			uResult = static_cast<Word>(pDirectSoundBuffer->QueryInterface(IID_IDirectSoundBuffer8,reinterpret_cast<void **>(&m_pDirectSoundBuffer8)));
+			uResult = static_cast<uint_t>(pDirectSoundBuffer->QueryInterface(IID_IDirectSoundBuffer8,reinterpret_cast<void **>(&m_pDirectSoundBuffer8)));
 			// Release the old pointer (Not needed anymore)
 			pDirectSoundBuffer->Release();
 
 			if (uResult==DS_OK) {
 				pDirectSoundBuffer8 = m_pDirectSoundBuffer8;
 				// Attach a Notify event
-				uResult = static_cast<Word>(pDirectSoundBuffer8->QueryInterface(IID_IDirectSoundNotify,reinterpret_cast<void **>(&m_pDirectSoundNotify)));
+				uResult = static_cast<uint_t>(pDirectSoundBuffer8->QueryInterface(IID_IDirectSoundNotify,reinterpret_cast<void **>(&m_pDirectSoundNotify)));
 				if (uResult==DS_OK) {
 					DSBPOSITIONNOTIFY Notify;
 					Notify.dwOffset = DSBPN_OFFSETSTOP;
 					Notify.hEventNotify = pManager->m_hEvents[this-pManager->m_ActiveVoices];
-					uResult = static_cast<Word>(m_pDirectSoundNotify->SetNotificationPositions(1,&Notify));
+					uResult = static_cast<uint_t>(m_pDirectSoundNotify->SetNotificationPositions(1,&Notify));
 
 					// Set the speed and other settings
 					pDirectSoundBuffer8->SetVolume(ConvertToDirectSoundVolume(m_uVolume));
@@ -320,14 +320,14 @@ void BURGER_API Burger::SoundManager::Voice::Release(void)
 	m_bIsHeld = FALSE;
 }
 
-Word BURGER_API Burger::SoundManager::Voice::Start(void)
+uint_t BURGER_API Burger::SoundManager::Voice::Start(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (!m_bPlaying) {
 		IDirectSoundBuffer *pDirectSoundBuffer8 = m_pDirectSoundBuffer8;
 		if (pDirectSoundBuffer8) {
 			// Make sure it's at the beginning
-			uResult = static_cast<Word>(pDirectSoundBuffer8->SetCurrentPosition(0));
+			uResult = static_cast<uint_t>(pDirectSoundBuffer8->SetCurrentPosition(0));
 			if (uResult==DS_OK) {
 				// Not looping
 				DWORD uFlags = 0;
@@ -335,7 +335,7 @@ Word BURGER_API Burger::SoundManager::Voice::Start(void)
 					uFlags = DSBPLAY_LOOPING;
 				}
 				// Play
-				uResult = static_cast<Word>(pDirectSoundBuffer8->Play(0,0,uFlags));
+				uResult = static_cast<uint_t>(pDirectSoundBuffer8->Play(0,0,uFlags));
 				if (uResult==DS_OK) {
 					m_bPlaying = TRUE;
 					m_bPaused = FALSE;
@@ -350,13 +350,13 @@ Word BURGER_API Burger::SoundManager::Voice::Start(void)
 // Stop playback
 //
 
-Word BURGER_API Burger::SoundManager::Voice::Stop(void)
+uint_t BURGER_API Burger::SoundManager::Voice::Stop(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (m_bPlaying || m_bPaused) {
 		IDirectSoundBuffer *pDirectSoundBuffer8 = m_pDirectSoundBuffer8;
 		if (pDirectSoundBuffer8) {
-			uResult = static_cast<Word>(pDirectSoundBuffer8->Stop());
+			uResult = static_cast<uint_t>(pDirectSoundBuffer8->Stop());
 			if (uResult==DS_OK) {
 				m_bPlaying = FALSE;
 				m_bPaused = FALSE;
@@ -371,9 +371,9 @@ Word BURGER_API Burger::SoundManager::Voice::Stop(void)
 // Pause playback
 //
 
-Word BURGER_API Burger::SoundManager::Voice::Pause(void)
+uint_t BURGER_API Burger::SoundManager::Voice::Pause(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (m_bPlaying && !m_bPaused) {
 		IDirectSoundBuffer *pDirectSoundBuffer8 = m_pDirectSoundBuffer8;
 		if (pDirectSoundBuffer8) {
@@ -381,9 +381,9 @@ Word BURGER_API Burger::SoundManager::Voice::Pause(void)
 			// Get the location the buffer is at
 			DWORD uPlayCursor;
 			DWORD uWriteCursor;
-			uResult = static_cast<Word>(pDirectSoundBuffer8->GetCurrentPosition(&uPlayCursor,&uWriteCursor));
+			uResult = static_cast<uint_t>(pDirectSoundBuffer8->GetCurrentPosition(&uPlayCursor,&uWriteCursor));
 			if (uResult==DS_OK) {
-				uResult = static_cast<Word>(pDirectSoundBuffer8->Stop());
+				uResult = static_cast<uint_t>(pDirectSoundBuffer8->Stop());
 				if (uResult==DS_OK) {
 					// Save the playback location
 					m_uPausedMark = uPlayCursor;
@@ -400,15 +400,15 @@ Word BURGER_API Burger::SoundManager::Voice::Pause(void)
 // Resume from pause
 //
 
-Word BURGER_API Burger::SoundManager::Voice::Resume(void)
+uint_t BURGER_API Burger::SoundManager::Voice::Resume(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (!m_bPlaying && m_bPaused) {
 		IDirectSoundBuffer *pDirectSoundBuffer8 = m_pDirectSoundBuffer8;
 		if (pDirectSoundBuffer8) {
 
 			// Resume where we left off
-			uResult = static_cast<Word>(pDirectSoundBuffer8->SetCurrentPosition(static_cast<DWORD>(m_uPausedMark)));
+			uResult = static_cast<uint_t>(pDirectSoundBuffer8->SetCurrentPosition(static_cast<DWORD>(m_uPausedMark)));
 			if (uResult==DS_OK) {
 			
 				// Not looping
@@ -417,7 +417,7 @@ Word BURGER_API Burger::SoundManager::Voice::Resume(void)
 					uFlags = DSBPLAY_LOOPING;
 				}
 				// Play
-				uResult = static_cast<Word>(pDirectSoundBuffer8->Play(0,0,uFlags));
+				uResult = static_cast<uint_t>(pDirectSoundBuffer8->Play(0,0,uFlags));
 				if (uResult==DS_OK) {
 					m_bPlaying = TRUE;
 					m_bPaused = FALSE;
@@ -432,14 +432,14 @@ Word BURGER_API Burger::SoundManager::Voice::Resume(void)
 // Set the sound volume
 //
 
-Word BURGER_API Burger::SoundManager::Voice::SetVolume(Word uVolume)
+uint_t BURGER_API Burger::SoundManager::Voice::SetVolume(uint_t uVolume)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (m_uVolume!=uVolume) {
 		m_uVolume = uVolume;			// Get the new volume
 		IDirectSoundBuffer *pDirectSoundBuffer8 = m_pDirectSoundBuffer8;
 		if (pDirectSoundBuffer8) {
-			uResult = static_cast<Word>(pDirectSoundBuffer8->SetVolume(ConvertToDirectSoundVolume(uVolume)));
+			uResult = static_cast<uint_t>(pDirectSoundBuffer8->SetVolume(ConvertToDirectSoundVolume(uVolume)));
 		}
 	}
 	return uResult;
@@ -449,14 +449,14 @@ Word BURGER_API Burger::SoundManager::Voice::SetVolume(Word uVolume)
 // Set the sound pan value
 //
 
-Word BURGER_API Burger::SoundManager::Voice::SetPan(Word uPan)
+uint_t BURGER_API Burger::SoundManager::Voice::SetPan(uint_t uPan)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (m_uPan!=uPan) {
 		m_uPan = uPan;			// Get the pan position value
 		IDirectSoundBuffer *pDirectSoundBuffer8 = m_pDirectSoundBuffer8;
 		if (pDirectSoundBuffer8) {
-			uResult = static_cast<Word>(pDirectSoundBuffer8->SetPan(ConvertToDirectSoundPan(m_uPan)));
+			uResult = static_cast<uint_t>(pDirectSoundBuffer8->SetPan(ConvertToDirectSoundPan(m_uPan)));
 		}
 	}
 	return uResult;
@@ -466,14 +466,14 @@ Word BURGER_API Burger::SoundManager::Voice::SetPan(Word uPan)
 // Set the sound's sample rate
 //
 
-Word BURGER_API Burger::SoundManager::Voice::SetSampleRate(Word uSamplesPerSecond)
+uint_t BURGER_API Burger::SoundManager::Voice::SetSampleRate(uint_t uSamplesPerSecond)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	if (m_uSampleRate!=uSamplesPerSecond) {
 		m_uSampleRate = uSamplesPerSecond;			// Get the pan position value
 		IDirectSoundBuffer *pDirectSoundBuffer8 = m_pDirectSoundBuffer8;
 		if (pDirectSoundBuffer8) {
-			uResult = static_cast<Word>(pDirectSoundBuffer8->SetFrequency(uSamplesPerSecond));
+			uResult = static_cast<uint_t>(pDirectSoundBuffer8->SetFrequency(uSamplesPerSecond));
 		}
 	}
 	return uResult;
@@ -524,7 +524,7 @@ Burger::SoundManager::SoundManager(GameApp *pGameApp) :
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Init(void)
+uint_t BURGER_API Burger::SoundManager::Init(void)
 {
 
 	// First, create the background thread needed to handle asynchronous audio
@@ -540,7 +540,7 @@ Word BURGER_API Burger::SoundManager::Init(void)
 		SetThreadPriority(m_hCallback,THREAD_PRIORITY_HIGHEST);
 
 		// Create the events for the 32 voices to track
-		Word i = 0;
+		uint_t i = 0;
 		do {
 			m_hEvents[i] = CreateEventW(NULL,FALSE,FALSE,NULL);
 			if (!m_hEvents[i]) {
@@ -580,12 +580,12 @@ Word BURGER_API Burger::SoundManager::Init(void)
 
 						// Get the flags to determine stereo and 16 bit compatibility
 
-						Word uFlags = Caps.dwFlags;
-						m_bStereoAvailable = static_cast<Word>((uFlags & DSCAPS_PRIMARYSTEREO)!=0);
-						m_uBufferDepth = static_cast<Word>((uFlags & DSCAPS_PRIMARY16BIT) ? 16 : 8);
+						uint_t uFlags = Caps.dwFlags;
+						m_bStereoAvailable = static_cast<uint_t>((uFlags & DSCAPS_PRIMARYSTEREO)!=0);
+						m_uBufferDepth = static_cast<uint_t>((uFlags & DSCAPS_PRIMARY16BIT) ? 16 : 8);
 
 						// 22050 is the base and widely supported sample rate
-						Word uSampleRate = 22050;
+						uint_t uSampleRate = 22050;
 
 						// If 44100 is supported, use that rate instead.
 						if (uFlags & DSCAPS_CONTINUOUSRATE) {
@@ -662,10 +662,10 @@ Word BURGER_API Burger::SoundManager::Init(void)
 								BufferFormat.wFormatTag = WAVE_FORMAT_PCM;
 
 								// Set for stereo if supported
-								BufferFormat.nChannels = static_cast<Word16>(m_bStereoAvailable ? 2 : 1);
+								BufferFormat.nChannels = static_cast<uint16_t>(m_bStereoAvailable ? 2 : 1);
 								BufferFormat.nSamplesPerSec = m_uOutputSamplesPerSecond;
-								BufferFormat.wBitsPerSample = static_cast<Word16>(m_uBufferDepth);
-								BufferFormat.nBlockAlign = static_cast<Word16>((m_uBufferDepth >> 3U) * BufferFormat.nChannels);
+								BufferFormat.wBitsPerSample = static_cast<uint16_t>(m_uBufferDepth);
+								BufferFormat.nBlockAlign = static_cast<uint16_t>((m_uBufferDepth >> 3U) * BufferFormat.nChannels);
 								BufferFormat.nAvgBytesPerSec = BufferFormat.nSamplesPerSec * BufferFormat.nBlockAlign;
 
 								// Set the new format, but don't die if was unable to take
@@ -712,7 +712,7 @@ Word BURGER_API Burger::SoundManager::Init(void)
 	StringConcatenate(OhGreat,", sound is disabled");
 	OkAlertMessage(OhGreat,"Direct sound error");
 	Globals::SetErrorCode(static_cast<Burger::eError>(uResult));
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /***************************************
@@ -724,7 +724,7 @@ Word BURGER_API Burger::SoundManager::Init(void)
 void BURGER_API Burger::SoundManager::Shutdown(void)
 {
 	Voice *pVoice = m_ActiveVoices;
-	Word i = cMaxVoiceCount;
+	uint_t i = cMaxVoiceCount;
 	do {
 		pVoice->Shutdown();
 		++pVoice;
@@ -781,7 +781,7 @@ void BURGER_API Burger::SoundManager::Shutdown(void)
 }
 
 
-void BURGER_API Burger::SoundManager::SetVolume(Word uVolume)
+void BURGER_API Burger::SoundManager::SetVolume(uint_t uVolume)
 {
 	if (uVolume!=m_uVolume) {
 		m_uVolume = uVolume;
@@ -801,7 +801,7 @@ unsigned long __stdcall Burger::SoundManager::ThreadCallback(void *pThis)
 {
 	MSG WindowsMessage;
 	SoundManager *pSound = static_cast<SoundManager*>(pThis);
-	Word bQuit = FALSE;
+	uint_t bQuit = FALSE;
 	do {
 		DWORD uResult = MsgWaitForMultipleObjects(cMaxVoiceCount,pSound->m_hEvents,FALSE,INFINITE,QS_ALLEVENTS);
 		if (uResult == (WAIT_OBJECT_0+cMaxVoiceCount)) {
@@ -825,7 +825,7 @@ unsigned long __stdcall Burger::SoundManager::ThreadCallback(void *pThis)
 // Get the list of audio modes available
 //
 
-static BOOL CALLBACK EnumerateAudioDevices(GUID *pGUID,const Word16 *pDescription,const Word16 * /* pModule */,void *pInput)
+static BOOL CALLBACK EnumerateAudioDevices(GUID *pGUID,const uint16_t *pDescription,const uint16_t * /* pModule */,void *pInput)
 {
 	// Ignore NULL GUID (Primary)
 	if (pGUID) {
@@ -843,7 +843,7 @@ static BOOL CALLBACK EnumerateAudioDevices(GUID *pGUID,const Word16 *pDescriptio
 			Burger::MemoryCopy(&Entry.m_GUID,pGUID,sizeof(GUID));
 
 			// Get the audio card name
-			Entry.m_uDevNumber = static_cast<Word>(pOutput->size());
+			Entry.m_uDevNumber = static_cast<uint_t>(pOutput->size());
 			Entry.m_DeviceName.Set(pDescription);
 
 			// Is it hardware accelerated?
@@ -897,11 +897,11 @@ static BOOL CALLBACK EnumerateAudioDevices(GUID *pGUID,const Word16 *pDescriptio
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::GetAudioModes(ClassArray<SoundCardDescription> *pOutput)
+uint_t BURGER_API Burger::SoundManager::GetAudioModes(ClassArray<SoundCardDescription> *pOutput)
 {
 	// Erase the old list
 	pOutput->clear();
-	Word uResult = 10;
+	uint_t uResult = 10;
 	// Enumerate all devices
 	if (Windows::DirectSoundEnumerateW(EnumerateAudioDevices,pOutput)==DS_OK) {
 		uResult = 0;
@@ -928,7 +928,7 @@ Word BURGER_API Burger::SoundManager::GetAudioModes(ClassArray<SoundCardDescript
 
 ***************************************/
 
-Word BURGER_API Burger::Upload(IDirectSoundBuffer *pBuffer,WordPtr uOffset,const Word8 *pInput,WordPtr uInputLength)
+uint_t BURGER_API Burger::Upload(IDirectSoundBuffer *pBuffer,uintptr_t uOffset,const uint8_t *pInput,uintptr_t uInputLength)
 {
 	HRESULT uResult = DSERR_INVALIDPARAM;
 
@@ -975,7 +975,7 @@ Word BURGER_API Burger::Upload(IDirectSoundBuffer *pBuffer,WordPtr uOffset,const
 		}
 	}
 	// Return the result
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 
@@ -999,7 +999,7 @@ Word BURGER_API Burger::Upload(IDirectSoundBuffer *pBuffer,WordPtr uOffset,const
 
 ***************************************/
 
-Word BURGER_API Burger::Upload(IDirectSoundBuffer *pBuffer,WordPtr uOffset,SoundManager::BufferDecoder *pBufferDecoder,WordPtr uInputLength)
+uint_t BURGER_API Burger::Upload(IDirectSoundBuffer *pBuffer,uintptr_t uOffset,SoundManager::BufferDecoder *pBufferDecoder,uintptr_t uInputLength)
 {
 	HRESULT uResult = DSERR_INVALIDPARAM;
 
@@ -1034,7 +1034,7 @@ Word BURGER_API Burger::Upload(IDirectSoundBuffer *pBuffer,WordPtr uOffset,Sound
 		// Lock was obtained, upload!
 		if (uResult == DS_OK) {
 			DecompressAudio *pDecompresser = pBufferDecoder->GetDecompresser();
-			WordPtr uMarker = pDecompresser->GetTotalInputSize();
+			uintptr_t uMarker = pDecompresser->GetTotalInputSize();
 
 			// Write the first chunk
 			pDecompresser->Process(pBuffer1,uBufferSize1,pBufferDecoder->m_pSoundImage+uMarker,pBufferDecoder->GetCompressedSize()-uMarker);
@@ -1050,7 +1050,7 @@ Word BURGER_API Burger::Upload(IDirectSoundBuffer *pBuffer,WordPtr uOffset,Sound
 		}
 	}
 	// Return the result
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 #endif

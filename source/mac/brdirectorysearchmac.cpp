@@ -1,13 +1,14 @@
 /***************************************
 
-	MacOS version
+    MacOS version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -26,7 +27,7 @@
 
 ***************************************/
 
-Word Burger::DirectorySearch::Open(Filename* pDirName)
+uint_t Burger::DirectorySearch::Open(Filename* pDirName)
 {
 	// Convert the filename to unicode
 	String16 MyName(pDirName->GetNative());
@@ -34,7 +35,7 @@ Word Burger::DirectorySearch::Open(Filename* pDirName)
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pDirName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	Word uResult = File::FILENOTFOUND;
+	uint_t uResult = File::FILENOTFOUND;
 	if (!eError) {
 		eError = FSOpenIterator(&MyRef, kFSIterateFlat, &m_pIterator);
 		if (!eError) {
@@ -52,7 +53,7 @@ Word Burger::DirectorySearch::Open(Filename* pDirName)
 
 ***************************************/
 
-Word Burger::DirectorySearch::GetNextEntry(void)
+uint_t Burger::DirectorySearch::GetNextEntry(void)
 {
 	ItemCount Count;
 	Boolean bChanged;
@@ -75,7 +76,7 @@ Word Burger::DirectorySearch::GetNextEntry(void)
 			m_uAuxType = 0;
 		} else {
 			m_bDir = FALSE;
-			m_uFileSize = static_cast<WordPtr>(MyRec.dataLogicalSize);
+			m_uFileSize = static_cast<uintptr_t>(MyRec.dataLogicalSize);
 			m_uFileType = ((FileInfo*)(MyRec.finderInfo))->fileType;
 			m_uAuxType = ((FileInfo*)(MyRec.finderInfo))->fileCreator;
 		}

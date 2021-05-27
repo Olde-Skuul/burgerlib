@@ -1,14 +1,15 @@
 /***************************************
 
-	Time Manager Class
-	iOS specific code
+    Time Manager Class
+    iOS specific code
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -33,14 +34,14 @@ void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 	if (pTimeZone) {
 		CFAbsoluteTime dTime = CFAbsoluteTimeGetCurrent();
 		CFGregorianDate TimeRec = CFAbsoluteTimeGetGregorianDate(dTime,pTimeZone);
-		m_uYear = static_cast<Word>(TimeRec.year);
-		m_bMonth = static_cast<Word8>(TimeRec.month);
-		m_bDay = static_cast<Word8>(TimeRec.day);
-		m_bHour = static_cast<Word8>(TimeRec.hour);
-		m_bMinute = static_cast<Word8>(TimeRec.minute);
-		m_bSecond = static_cast<Word8>(TimeRec.second);
-		m_usMilliseconds = static_cast<Word16>((TimeRec.second-static_cast<double>(m_bSecond))* 1000.0);
-		m_bDayOfWeek = static_cast<Word8>(CFAbsoluteTimeGetDayOfWeek(dTime,pTimeZone));
+		m_uYear = static_cast<uint_t>(TimeRec.year);
+		m_bMonth = static_cast<uint8_t>(TimeRec.month);
+		m_bDay = static_cast<uint8_t>(TimeRec.day);
+		m_bHour = static_cast<uint8_t>(TimeRec.hour);
+		m_bMinute = static_cast<uint8_t>(TimeRec.minute);
+		m_bSecond = static_cast<uint8_t>(TimeRec.second);
+		m_usMilliseconds = static_cast<uint16_t>((TimeRec.second-static_cast<double>(m_bSecond))* 1000.0);
+		m_bDayOfWeek = static_cast<uint8_t>(CFAbsoluteTimeGetDayOfWeek(dTime,pTimeZone));
 		CFRelease(pTimeZone);
 	} else {
 		Clear();
@@ -57,20 +58,20 @@ void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-Word Burger::TimeDate_t::Load(double dNSTimeInterval)
+uint_t Burger::TimeDate_t::Load(double dNSTimeInterval)
 {
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	CFTimeZoneRef pTimeZone = CFTimeZoneCopySystem();
 	if (pTimeZone) {
 		CFGregorianDate TimeRec = CFAbsoluteTimeGetGregorianDate(dNSTimeInterval,pTimeZone);
-		m_uYear = static_cast<Word>(TimeRec.year);
-		m_bMonth = static_cast<Word8>(TimeRec.month);
-		m_bDay = static_cast<Word8>(TimeRec.day);
-		m_bHour = static_cast<Word8>(TimeRec.hour);
-		m_bMinute = static_cast<Word8>(TimeRec.minute);
-		m_bSecond = static_cast<Word8>(TimeRec.second);
-		m_usMilliseconds = static_cast<Word16>((TimeRec.second-static_cast<double>(m_bSecond))* 1000.0);
-		m_bDayOfWeek = static_cast<Word8>(CFAbsoluteTimeGetDayOfWeek(dNSTimeInterval,pTimeZone));
+		m_uYear = static_cast<uint_t>(TimeRec.year);
+		m_bMonth = static_cast<uint8_t>(TimeRec.month);
+		m_bDay = static_cast<uint8_t>(TimeRec.day);
+		m_bHour = static_cast<uint8_t>(TimeRec.hour);
+		m_bMinute = static_cast<uint8_t>(TimeRec.minute);
+		m_bSecond = static_cast<uint8_t>(TimeRec.second);
+		m_usMilliseconds = static_cast<uint16_t>((TimeRec.second-static_cast<double>(m_bSecond))* 1000.0);
+		m_bDayOfWeek = static_cast<uint8_t>(CFAbsoluteTimeGetDayOfWeek(dNSTimeInterval,pTimeZone));
 		CFRelease(pTimeZone);
 		uResult = FALSE;
 	}
@@ -87,9 +88,9 @@ Word Burger::TimeDate_t::Load(double dNSTimeInterval)
 
 ***************************************/
 
-Word Burger::TimeDate_t::Store(double *pNSTimeInterval) const
+uint_t Burger::TimeDate_t::Store(double *pNSTimeInterval) const
 {
-	Word uResult = TRUE;
+	uint_t uResult = TRUE;
 	CFTimeZoneRef pTimeZone = CFTimeZoneCopySystem();
 	if (pTimeZone) {
 		CFGregorianDate TimeRec;

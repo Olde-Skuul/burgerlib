@@ -1,13 +1,14 @@
 /***************************************
 
-	Last in, first out, singly linked list queue
+    Last in, first out, singly linked list queue
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -55,9 +56,9 @@ public:
 	LastInFirstOut() : m_pRoot(NULL) {}		
 	LastInFirstOut(ForwardLink *pRoot) : m_pRoot(pRoot) {}
 	BURGER_INLINE void Clear(void) { m_pRoot = NULL; }
-	BURGER_INLINE Word IsEmpty(void) const { return !m_pRoot; }
+	BURGER_INLINE uint_t IsEmpty(void) const { return !m_pRoot; }
 	BURGER_INLINE ForwardLink *GetRoot(void) const { return m_pRoot; }
-	WordPtr BURGER_API Size(void) const;
+	uintptr_t BURGER_API Size(void) const;
 	void BURGER_API AddFirst(ForwardLink *pNewRoot);
 	void BURGER_API AddLast(ForwardLink* pNewTail);
 	ForwardLink * BURGER_API RemoveFirst(void);
@@ -76,8 +77,8 @@ public:
 	MPLastInFirstOut();	
 	MPLastInFirstOut(ForwardLink *pRoot);	
 	void BURGER_API Clear(void);
-	BURGER_INLINE Word IsEmpty(void) const { return !m_pRoot; }
-	WordPtr BURGER_API Size(void);
+	BURGER_INLINE uint_t IsEmpty(void) const { return !m_pRoot; }
+	uintptr_t BURGER_API Size(void);
 	void BURGER_API AddFirst(ForwardLink *pNewRoot);
 	void BURGER_API AddLast(ForwardLink* pNewTail);
 	ForwardLink * BURGER_API RemoveFirst(void);

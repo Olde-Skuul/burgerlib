@@ -59,7 +59,7 @@ void BURGER_API Burger::OkAlertMessage(const char *pMessage,const char *pTitle)
 
 ***************************************/
 
-Word BURGER_API Burger::OkCancelAlertMessage(const char *pMessage,const char *pTitle)
+uint_t BURGER_API Burger::OkCancelAlertMessage(const char *pMessage,const char *pTitle)
 {
 	BAlert *MyAlert = new BAlert(pTitle,pMessage,"Cancel","Ok");
 	return !MyAlert->Go();			// Execute the message

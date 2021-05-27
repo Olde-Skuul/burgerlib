@@ -1,13 +1,14 @@
 /***************************************
 
-	Sound manager class
+    Sound manager class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -29,20 +30,20 @@
 //
 
 struct WavHeader_t {
-	Word8 szRIFF[4];			// ASCII RIFF
-	Word32 dwFormatLength;		// Length of file contents
-	Word8 szWAVE[4];			// ASCII WAVE
-	Word8 szFMT[4];				// ASCII fmt_
-	Word32 dwWaveFormatLength;	// Size of fmt_ struct (16)
-	Word16 wFormatTag;			// Compression type
-	Word16 wChannels;			// Number of sound channels (1,2)
-	Word32 dwSamplesPerSec;		// Sample rate
-	Word32 dwAvgBytesPerSec;	// Bytes per second	
-	Word16 wBlockAlign;			// Data alignment (2)
-	Word16 wBitsPerSample;		// Bits per sample (8,16)
-	Word16 wExtSize;			// Extra data for compressed formats
-	Word16 wSamplesPerBlock;	// Number of samples in each block
-	Word16 wNumCoefs;			// Number of coefs in tables
+	uint8_t szRIFF[4];			// ASCII RIFF
+	uint32_t dwFormatLength;		// Length of file contents
+	uint8_t szWAVE[4];			// ASCII WAVE
+	uint8_t szFMT[4];				// ASCII fmt_
+	uint32_t dwWaveFormatLength;	// Size of fmt_ struct (16)
+	uint16_t wFormatTag;			// Compression type
+	uint16_t wChannels;			// Number of sound channels (1,2)
+	uint32_t dwSamplesPerSec;		// Sample rate
+	uint32_t dwAvgBytesPerSec;	// Bytes per second	
+	uint16_t wBlockAlign;			// Data alignment (2)
+	uint16_t wBitsPerSample;		// Bits per sample (8,16)
+	uint16_t wExtSize;			// Extra data for compressed formats
+	uint16_t wSamplesPerBlock;	// Number of samples in each block
+	uint16_t wNumCoefs;			// Number of coefs in tables
 };
 
 //
@@ -50,9 +51,9 @@ struct WavHeader_t {
 //
 
 struct WavData_t {
-	Word8 m_DataASCII[4];	// ASCII data 
-	Word32 m_uDataLength;	// Size of the data
-	Word8 m_Data[1];		// Array of byte dwDataLength in size
+	uint8_t m_DataASCII[4];	// ASCII data 
+	uint32_t m_uDataLength;	// Size of the data
+	uint8_t m_Data[1];		// Array of byte dwDataLength in size
 };
 
 //
@@ -61,29 +62,29 @@ struct WavData_t {
 
 struct AIFFHeader_t {		// 12 byte header for ALL IFF files
 	char m_FormASCII[4];	// FORM
-	Word32 m_uFileSize;		// Length of the file contents
+	uint32_t m_uFileSize;		// Length of the file contents
 	char m_AIFFASCII[4];	// AIFF
 };
 
 struct AIFFCommon_t {			// COMM chunk
 	char m_CommASCII[4];		// COMM
-	Word32 m_uChunkLength;		// Length of the struct
-	Word16 m_uNumChannels;		// Number of channels (1 or 2)
-	Word16 m_uNumSampleFramesHI;	// Number of SAMPLES, not bytes (16 bit aligned)
-	Word16 m_uNumSampleFramesLO;	
-	Word16 m_uSampleSize;		// 8 or 16 bit
+	uint32_t m_uChunkLength;		// Length of the struct
+	uint16_t m_uNumChannels;		// Number of channels (1 or 2)
+	uint16_t m_uNumSampleFramesHI;	// Number of SAMPLES, not bytes (16 bit aligned)
+	uint16_t m_uNumSampleFramesLO;	
+	uint16_t m_uSampleSize;		// 8 or 16 bit
 	Burger::Float80Bit m_fxSampleRate;	// Extended floating point
 	// AIFC specific data (m_uChunkLength>18)
 	char m_CompressionType[4];	// 4 character code for compression (16 bit aligned)
-	Word8 m_CompressionString[1];	// Pascal string with the name of the compression algorithm
+	uint8_t m_CompressionString[1];	// Pascal string with the name of the compression algorithm
 };
 
 struct AIFFSsnd_t {			// SSND chunk
 	char m_SsndASCII[4];	// SSND
-	Word32 m_uChunkLength;	// Length of the data
-	Word32 m_uOffset;		// Offset to the start
-	Word32 m_uBlockSize;	// Size of each unit
-	Word8 m_Data[1];		// Data
+	uint32_t m_uChunkLength;	// Length of the data
+	uint32_t m_uOffset;		// Offset to the start
+	uint32_t m_uBlockSize;	// Size of each unit
+	uint8_t m_Data[1];		// Data
 };
 
 //
@@ -93,9 +94,9 @@ struct AIFFSsnd_t {			// SSND chunk
 #define VOCHHEADERSIZE 26
 struct VOCHeader_t {		// Voc file header
 	char m_NameASCII[20];	// "Creative Voice File\x1A"
-	Word16 m_uOffset;		// Offset to the header
-	Word16 m_uVersion;		// Version number
-	Word16 m_uChecksum;		// ~(Version - 0x1234)
+	uint16_t m_uOffset;		// Offset to the header
+	uint16_t m_uVersion;		// Version number
+	uint16_t m_uChecksum;		// ~(Version - 0x1234)
 };
 
 struct VOCChunk_t {
@@ -111,10 +112,10 @@ struct VOCChunk_t {
 		CHUNK_EXTENDED=8,
 		CHUNK_STEREO=9
 	};
-	Word8 m_uChunkType;	// Chunk type
-	Word8 m_uLengthLo;	// 3 bytes for the length
-	Word16 m_uLengthHi;	// upper 2 bytes for length
-	BURGER_INLINE WordPtr GetLength(void) const { return (static_cast<Word32>(Burger::LittleEndian::Load(&m_uLengthHi))<<8U)+m_uLengthLo; }
+	uint8_t m_uChunkType;	// Chunk type
+	uint8_t m_uLengthLo;	// 3 bytes for the length
+	uint16_t m_uLengthHi;	// upper 2 bytes for length
+	BURGER_INLINE uintptr_t GetLength(void) const { return (static_cast<uint32_t>(Burger::LittleEndian::Load(&m_uLengthHi))<<8U)+m_uLengthLo; }
 };
 
 struct VOCSoundData1_t : public VOCChunk_t {
@@ -125,10 +126,10 @@ struct VOCSoundData1_t : public VOCChunk_t {
 		TYPE2TO8=3,
 		TYPEMULTIDAC=4
 	};
-	Word8 m_uSampleRate;		// Use the function below to convert to sample rate
-	Word8 m_uCompressionType;	// Type of data
-	Word8 m_Data[1];			// Data
-	BURGER_INLINE Word32 GetSampleRate(void) const { return 1000000U / (256U - m_uSampleRate); }
+	uint8_t m_uSampleRate;		// Use the function below to convert to sample rate
+	uint8_t m_uCompressionType;	// Type of data
+	uint8_t m_Data[1];			// Data
+	BURGER_INLINE uint32_t GetSampleRate(void) const { return 1000000U / (256U - m_uSampleRate); }
 };
 
 struct VOCSoundData9_t : public VOCChunk_t {
@@ -142,12 +143,12 @@ struct VOCSoundData9_t : public VOCChunk_t {
 		TYPEULAW=7,
 		TYPE16TO4ADPCM=8192
 	};
-	Word32 m_uSampleRate;	// Samples per second
-	Word8 m_uBitsPerSample;	// 8 or 16 bits
-	Word8 m_uChannels;		// 1 or 2 channels
-	Word16 m_uCompression;	// A four
-	Word8 m_Reserved[4];	// Padding
-	Word8 m_Data[1];		// Data
+	uint32_t m_uSampleRate;	// Samples per second
+	uint8_t m_uBitsPerSample;	// 8 or 16 bits
+	uint8_t m_uChannels;		// 1 or 2 channels
+	uint16_t m_uCompression;	// A four
+	uint8_t m_Reserved[4];	// Padding
+	uint8_t m_Data[1];		// Data
 };
 
 BURGER_CREATE_STATICRTTI_PARENT(Burger::SoundManager,Burger::Base);
@@ -281,25 +282,25 @@ void BURGER_API Burger::SoundManager::BufferDecoder::Clear(void)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const void *pInput,WordPtr uLength)
+uint_t BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const void *pInput,uintptr_t uLength)
 {
 	// Clear out the struct
 	Clear();
 
 	// Special data for ADPCM
-	Word uSamplesPerBlock = 0;
-	Word uBlockAlign = 0;
+	uint_t uSamplesPerBlock = 0;
+	uint_t uBlockAlign = 0;
 
 	// Assume error
-	Word bResult = TRUE;			
+	uint_t bResult = TRUE;			
 
 	//
 	// Is this a windows .WAV file?
 	//
 
 	if ((uLength >= cWAVHeaderSize) &&
-		(BigEndian::Load(static_cast<const Word32 *>(pInput)) == cRIFFASCII) &&
-		(BigEndian::Load(static_cast<const Word32 *>(pInput)+2) == cWAVEASCII)) {
+		(BigEndian::Load(static_cast<const uint32_t *>(pInput)) == cRIFFASCII) &&
+		(BigEndian::Load(static_cast<const uint32_t *>(pInput)+2) == cWAVEASCII)) {
 
 		// setup a pointer to the wave header
 		// set size of the sample and pointer to the sample
@@ -316,8 +317,8 @@ Word BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const v
 			// Samples per second
 			m_uSampleRate = LittleEndian::Load(&pHeader->dwSamplesPerSec);
 		
-			Word uChannels = LittleEndian::Load(&pHeader->wChannels);
-			Word uWAVFormat = LittleEndian::Load(&pHeader->wFormatTag);
+			uint_t uChannels = LittleEndian::Load(&pHeader->wChannels);
+			uint_t uWAVFormat = LittleEndian::Load(&pHeader->wFormatTag);
 
 			// Each data format needs different handling
 
@@ -347,7 +348,7 @@ Word BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const v
 					uBlockAlign = LittleEndian::Load(&pHeader->wBlockAlign);
 
 					// Number of packets in the data
-					WordPtr uPackets = m_uCompressedLength / uBlockAlign;
+					uintptr_t uPackets = m_uCompressedLength / uBlockAlign;
 
 					// Number of bytes generated from the samples
 					m_uSoundLength = ((uPackets * uSamplesPerBlock) * uChannels);
@@ -405,9 +406,9 @@ Word BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const v
 //
 
 	} else if ((uLength>=12) &&
-		(BigEndian::Load(static_cast<const Word32 *>(pInput)) == cFORMASCII) &&
-		((BigEndian::Load(static_cast<const Word32 *>(pInput)+2) == cAIFFASCII) ||
-		(BigEndian::Load(static_cast<const Word32 *>(pInput)+2) == cAIFCASCII))) {
+		(BigEndian::Load(static_cast<const uint32_t *>(pInput)) == cFORMASCII) &&
+		((BigEndian::Load(static_cast<const uint32_t *>(pInput)+2) == cAIFFASCII) ||
+		(BigEndian::Load(static_cast<const uint32_t *>(pInput)+2) == cAIFCASCII))) {
 
 		// Get the COMM record
 		const AIFFCommon_t *pCommonChunk = static_cast<const AIFFCommon_t *>(FindAIFFChunk(pInput,uLength,cCOMMASCII));
@@ -420,10 +421,10 @@ Word BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const v
 				m_uCompressedLength = BigEndian::Load(&pSoundChunk->m_uChunkLength)-8;
 
 				// Sample rate is stored as a big endian 80 bit float
-				m_uSampleRate = static_cast<Word>(static_cast<int>(BigEndianLoadExtended(pCommonChunk->m_fxSampleRate)));
+				m_uSampleRate = static_cast<uint_t>(static_cast<int>(BigEndianLoadExtended(pCommonChunk->m_fxSampleRate)));
 
 				// 8 bit data?
-				Word uSampleSize = BigEndian::Load(&pCommonChunk->m_uSampleSize);
+				uint_t uSampleSize = BigEndian::Load(&pCommonChunk->m_uSampleSize);
 				if (uSampleSize == 8) {
 					m_eDataType = TYPECHAR;
 				} else if (uSampleSize == 16) {
@@ -435,9 +436,9 @@ Word BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const v
 				m_uSoundLength = m_uCompressedLength;
 
 				// Was the data compressed?
-				if (BigEndian::Load(static_cast<const Word32 *>(pInput)+2) == cAIFCASCII) {
+				if (BigEndian::Load(static_cast<const uint32_t *>(pInput)+2) == cAIFCASCII) {
 					// Mace 6?
-					Word32 uCompressionType = BigEndian::LoadAny(reinterpret_cast<const Word32 *>(static_cast<const void *>(&pCommonChunk->m_CompressionType)));
+					uint32_t uCompressionType = BigEndian::LoadAny(reinterpret_cast<const uint32_t *>(static_cast<const void *>(&pCommonChunk->m_CompressionType)));
 					if (uCompressionType==cMAC6ASCII) {
 						m_eDataType = TYPEMACE6;
 						m_uSoundLength = 6*m_uCompressedLength;
@@ -480,20 +481,20 @@ Word BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const v
 
 	} else if ((uLength>=(sizeof(VOCChunk_t)+VOCHHEADERSIZE)) &&
 		!MemoryCompare(static_cast<const VOCHeader_t*>(pInput)->m_NameASCII,"Creative Voice File\x1A",20) &&
-		LittleEndian::Load(&static_cast<const VOCHeader_t*>(pInput)->m_uVersion) == static_cast<Word16>((~LittleEndian::Load(&static_cast<const VOCHeader_t*>(pInput)->m_uChecksum))+0x1234)) {
+		LittleEndian::Load(&static_cast<const VOCHeader_t*>(pInput)->m_uVersion) == static_cast<uint16_t>((~LittleEndian::Load(&static_cast<const VOCHeader_t*>(pInput)->m_uChecksum))+0x1234)) {
 
 		//
 		// Passed the validations. It's a VOC file
 		//
 
-		const VOCChunk_t *pVOCChunk = reinterpret_cast<const VOCChunk_t *>(static_cast<const Word8 *>(pInput)+LittleEndian::Load(&static_cast<const VOCHeader_t*>(pInput)->m_uOffset));
+		const VOCChunk_t *pVOCChunk = reinterpret_cast<const VOCChunk_t *>(static_cast<const uint8_t *>(pInput)+LittleEndian::Load(&static_cast<const VOCHeader_t*>(pInput)->m_uOffset));
 
-		WordPtr uTempLength = uLength-VOCHHEADERSIZE;
-		Word bContinue;
+		uintptr_t uTempLength = uLength-VOCHHEADERSIZE;
+		uint_t bContinue;
 		do {
 			// Get the size of the current chunk
 
-			WordPtr uChunkSize = pVOCChunk->GetLength();
+			uintptr_t uChunkSize = pVOCChunk->GetLength();
 			bContinue = TRUE;
 			switch (pVOCChunk->m_uChunkType) {
 
@@ -551,7 +552,7 @@ Word BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const v
 				break;
 			}
 			uTempLength-=uChunkSize;
-			pVOCChunk = reinterpret_cast<const VOCChunk_t *>(reinterpret_cast<const Word8 *>(pVOCChunk)+uChunkSize);
+			pVOCChunk = reinterpret_cast<const VOCChunk_t *>(reinterpret_cast<const uint8_t *>(pVOCChunk)+uChunkSize);
 		} while (bContinue);
 
 		
@@ -560,12 +561,12 @@ Word BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const v
 //
 
 	} else if ((uLength>=0x2C) &&
-		(BigEndian::Load(static_cast<const Word32 *>(pInput)) == cOggSASCII)) {
+		(BigEndian::Load(static_cast<const uint32_t *>(pInput)) == cOggSASCII)) {
 		m_eDataType = TYPEOGG;
-		m_pSoundImage = static_cast<const Word8 *>(pInput);
+		m_pSoundImage = static_cast<const uint8_t *>(pInput);
 		m_uSoundLength = UINTPTR_MAX;		// Can't tell unless I scan the whole thing
-		m_uSampleRate = LittleEndian::Load(&static_cast<const Word32 *>(pInput)[0x28/4]);
-		if (static_cast<const Word8 *>(pInput)[0x27]==2) {
+		m_uSampleRate = LittleEndian::Load(&static_cast<const uint32_t *>(pInput)[0x28/4]);
+		if (static_cast<const uint8_t *>(pInput)[0x27]==2) {
 			m_eDataType = static_cast<eDataType>(m_eDataType|TYPESTEREO);
 		}
 		bResult = FALSE;
@@ -630,7 +631,7 @@ Word BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const v
 
 		// Determine the number of SAMPLES from the bytes
 
-		WordPtr uSamples = m_uSoundLength;	// Number of bytes in the data
+		uintptr_t uSamples = m_uSoundLength;	// Number of bytes in the data
 		if (m_eDataType&TYPESTEREO) {
 			uSamples >>= 1U;				// Cut in half for stereo
 			m_pDecompresser->SetStereo();
@@ -660,10 +661,10 @@ Word BURGER_API Burger::SoundManager::BufferDecoder::ParseSoundFileImage(const v
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::BufferDecoder::Parse(const BufferDescription_t *pInput)
+uint_t BURGER_API Burger::SoundManager::BufferDecoder::Parse(const BufferDescription_t *pInput)
 {
 	// Assume error
-	Word bResult = TRUE;
+	uint_t bResult = TRUE;
 
 	Clear();
 	static_cast<BufferDescription_t *>(this)[0] = pInput[0];
@@ -711,7 +712,7 @@ Word BURGER_API Burger::SoundManager::BufferDecoder::Parse(const BufferDescripti
 
 		// Determine the number of SAMPLES from the bytes
 
-		WordPtr uSamples = m_uSoundLength;	// Number of bytes in the data
+		uintptr_t uSamples = m_uSoundLength;	// Number of bytes in the data
 		if (m_eDataType&TYPESTEREO) {
 			uSamples >>= 1U;				// Cut in half for stereo
 		}
@@ -751,7 +752,7 @@ Word BURGER_API Burger::SoundManager::BufferDecoder::Parse(const BufferDescripti
 	\brief Constructor
 
 	Initialize the variables to defaults. Follow
-	up with a call to Init(const void *,WordPtr) or
+	up with a call to Init(const void *,uintptr_t) or
 	Init(const BufferDescription_t *).
 
 	\sa Shutdown()
@@ -805,7 +806,7 @@ Burger::SoundManager::Buffer::~Buffer()
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Buffer::Init(const void *pSoundFile,WordPtr uLength)
+uint_t BURGER_API Burger::SoundManager::Buffer::Init(const void *pSoundFile,uintptr_t uLength)
 {
 	m_uPan = cPanCenter;
 	m_uVolume = cMaxVolume;
@@ -825,11 +826,11 @@ Word BURGER_API Burger::SoundManager::Buffer::Init(const void *pSoundFile,WordPt
 
 	\param pRawData Pointer to the description of the audio data
 	\return Zero if no error, non-zero on error
-	\sa Init(const void *,WordPtr)
+	\sa Init(const void *,uintptr_t)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Buffer::Init(const BufferDescription_t *pRawData)
+uint_t BURGER_API Burger::SoundManager::Buffer::Init(const BufferDescription_t *pRawData)
 {
 	m_uPan = cPanCenter;
 	m_uVolume = cMaxVolume;
@@ -843,7 +844,7 @@ Word BURGER_API Burger::SoundManager::Buffer::Init(const BufferDescription_t *pR
 	Releases all platform specific data and any
 	ownership of audio data passed in.
 
-	\sa Init(const void *,WordPtr) or Init(const void *,WordPtr)
+	\sa Init(const void *,uintptr_t) or Init(const void *,uintptr_t)
 
 ***************************************/
 
@@ -874,12 +875,12 @@ void Burger::SoundManager::Buffer::Shutdown(void)
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
 uint_t Burger::SoundManager::Buffer::Upload(SoundManager * /* pSoundManager */)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	// Not already uploaded?
 	if (!m_pBufferData) {
 		// Create a buffer for the sound
 		
-		WordPtr uBufferSize = m_Decoder.m_uSoundLength;
+		uintptr_t uBufferSize = m_Decoder.m_uSoundLength;
 		void *pBuffer = Alloc(uBufferSize);
 		if (pBuffer) {
 			m_pBufferData = pBuffer;
@@ -935,7 +936,7 @@ Burger::SoundManager::Buffer * BURGER_API Burger::SoundManager::Buffer::New(void
 
 /*! ************************************
 
-	\fn void Burger::SoundManager::Buffer::SetSampleRate(Word uSampleRate)
+	\fn void Burger::SoundManager::Buffer::SetSampleRate(uint_t uSampleRate)
 	\brief Sets the buffer's sample rate
 
 	Sets the default sample rate to playback the audio data.
@@ -947,19 +948,19 @@ Burger::SoundManager::Buffer * BURGER_API Burger::SoundManager::Buffer::New(void
 
 /*! ************************************
 
-	\fn Word Burger::SoundManager::Buffer::GetSampleRate(void) const
+	\fn uint_t Burger::SoundManager::Buffer::GetSampleRate(void) const
 	\brief Gets the buffer's sample rate
 
 	Gets the default sample rate for the audio data.
 
 	\return The buffer's default sample rate
-	\sa SetSampleRate(Word)
+	\sa SetSampleRate(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::SoundManager::Buffer::SetPan(Word uPan)
+	\fn void Burger::SoundManager::Buffer::SetPan(uint_t uPan)
 	\brief Sets the buffer's stereo pan setting
 
 	Sets the default pan setting for audio data playback.
@@ -971,19 +972,19 @@ Burger::SoundManager::Buffer * BURGER_API Burger::SoundManager::Buffer::New(void
 
 /*! ************************************
 
-	\fn Word Burger::SoundManager::Buffer::GetPan(void) const
+	\fn uint_t Burger::SoundManager::Buffer::GetPan(void) const
 	\brief Gets the buffer's stereo pan setting
 
 	Gets the default pan setting for the audio data.
 
 	\return The buffer's default pan setting
-	\sa SetPan(Word)
+	\sa SetPan(uint_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::SoundManager::Buffer::SetVolume(Word uVolume)
+	\fn void Burger::SoundManager::Buffer::SetVolume(uint_t uVolume)
 	\brief Sets the buffer's default volume
 
 	Sets the default volume setting for audio data playback.
@@ -995,13 +996,13 @@ Burger::SoundManager::Buffer * BURGER_API Burger::SoundManager::Buffer::New(void
 
 /*! ************************************
 
-	\fn Word Burger::SoundManager::Buffer::GetVolume(void) const
+	\fn uint_t Burger::SoundManager::Buffer::GetVolume(void) const
 	\brief Gets the buffer's default volume setting
 
 	Gets the default volume setting for the audio data.
 
 	\return The buffer's default volume setting
-	\sa SetVolume(Word)
+	\sa SetVolume(uint_t)
 
 ***************************************/
 
@@ -1100,7 +1101,7 @@ Burger::SoundManager::Voice::~Voice()
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
-Word BURGER_API Burger::SoundManager::Voice::Init(SoundManager *pManager,Buffer *pBuffer)
+uint_t BURGER_API Burger::SoundManager::Voice::Init(SoundManager *pManager,Buffer *pBuffer)
 {
 	BURGER_UNUSED(pManager);
 
@@ -1128,7 +1129,7 @@ Word BURGER_API Burger::SoundManager::Voice::Init(SoundManager *pManager,Buffer 
 	m_bIsHeld = FALSE;
 
 	// Assume failure
-	Word uResult = 10;
+	uint_t uResult = 10;
 	return uResult;
 }
 
@@ -1180,7 +1181,7 @@ void BURGER_API Burger::SoundManager::Voice::Release(void)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Voice::Start(void)
+uint_t BURGER_API Burger::SoundManager::Voice::Start(void)
 {
 	m_bPlaying = FALSE;		// TRUE;
 	m_bPaused = FALSE;
@@ -1198,7 +1199,7 @@ Word BURGER_API Burger::SoundManager::Voice::Start(void)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Voice::Stop(void)
+uint_t BURGER_API Burger::SoundManager::Voice::Stop(void)
 {
 	m_bPlaying = FALSE;
 	m_bPaused = FALSE;
@@ -1217,7 +1218,7 @@ Word BURGER_API Burger::SoundManager::Voice::Stop(void)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Voice::Pause(void)
+uint_t BURGER_API Burger::SoundManager::Voice::Pause(void)
 {
 	m_uPausedMark = 0;
 	m_bPlaying = FALSE;
@@ -1237,7 +1238,7 @@ Word BURGER_API Burger::SoundManager::Voice::Pause(void)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Voice::Resume(void)
+uint_t BURGER_API Burger::SoundManager::Voice::Resume(void)
 {
 	m_bPlaying = FALSE;
 	m_bPaused = FALSE;
@@ -1256,7 +1257,7 @@ Word BURGER_API Burger::SoundManager::Voice::Resume(void)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Voice::SetVolume(Word uVolume)
+uint_t BURGER_API Burger::SoundManager::Voice::SetVolume(uint_t uVolume)
 {
 	m_uVolume = uVolume;
 	return 10;
@@ -1274,7 +1275,7 @@ Word BURGER_API Burger::SoundManager::Voice::SetVolume(Word uVolume)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Voice::SetPan(Word uPan)
+uint_t BURGER_API Burger::SoundManager::Voice::SetPan(uint_t uPan)
 {
 	m_uPan = uPan;
 	return 10;
@@ -1292,7 +1293,7 @@ Word BURGER_API Burger::SoundManager::Voice::SetPan(Word uPan)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Voice::SetSampleRate(Word uSamplesPerSecond)
+uint_t BURGER_API Burger::SoundManager::Voice::SetSampleRate(uint_t uSamplesPerSecond)
 {
 	m_uSampleRate = uSamplesPerSecond;
 	return 10;
@@ -1382,7 +1383,7 @@ Burger::SoundManager * BURGER_API Burger::SoundManager::New(GameApp *pGameApp)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
-Word BURGER_API Burger::SoundManager::Init(void)
+uint_t BURGER_API Burger::SoundManager::Init(void)
 {
 	return 1;
 }
@@ -1406,13 +1407,13 @@ void BURGER_API Burger::SoundManager::Shutdown(void)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Play(Buffer *pBuffer,Voice **ppCookie)
+uint_t BURGER_API Burger::SoundManager::Play(Buffer *pBuffer,Voice **ppCookie)
 {
 	if (ppCookie) {
 		ppCookie[0] = NULL;
 	}
 	
-	Word uResult = pBuffer->Upload(this);
+	uint_t uResult = pBuffer->Upload(this);
 	if (!uResult) {
 		Voice *pVoice = AllocVoice();
 		if (!pVoice) {
@@ -1441,11 +1442,11 @@ Word BURGER_API Burger::SoundManager::Play(Buffer *pBuffer,Voice **ppCookie)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Stop(void)
+uint_t BURGER_API Burger::SoundManager::Stop(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	// Start at the max
-	Word i = cMaxVoiceCount;
+	uint_t i = cMaxVoiceCount;
 	Voice *pWork = m_ActiveVoices;
 	do {
 		// Check for a free slot
@@ -1463,11 +1464,11 @@ Word BURGER_API Burger::SoundManager::Stop(void)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Pause(void)
+uint_t BURGER_API Burger::SoundManager::Pause(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	// Start at the max
-	Word i = cMaxVoiceCount;
+	uint_t i = cMaxVoiceCount;
 	Voice *pWork = m_ActiveVoices;
 	do {
 		// Check for a free slot
@@ -1485,11 +1486,11 @@ Word BURGER_API Burger::SoundManager::Pause(void)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::Resume(void)
+uint_t BURGER_API Burger::SoundManager::Resume(void)
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	// Start at the max
-	Word i = cMaxVoiceCount;
+	uint_t i = cMaxVoiceCount;
 	Voice *pWork = m_ActiveVoices;
 	do {
 		// Check for a free slot
@@ -1508,7 +1509,7 @@ Word BURGER_API Burger::SoundManager::Resume(void)
 
 ***************************************/
 
-void BURGER_API Burger::SoundManager::SetMaxVoices(Word uMax)
+void BURGER_API Burger::SoundManager::SetMaxVoices(uint_t uMax)
 {
 	if (uMax>=cMaxVoiceCount) {
 		uMax = cMaxVoiceCount;
@@ -1525,11 +1526,11 @@ void BURGER_API Burger::SoundManager::SetMaxVoices(Word uMax)
 
 ***************************************/
 
-Word BURGER_API Burger::SoundManager::GetActiveVoiceCount(void) const
+uint_t BURGER_API Burger::SoundManager::GetActiveVoiceCount(void) const
 {
-	Word uResult = 0;
+	uint_t uResult = 0;
 	// Start at the max
-	Word i = cMaxVoiceCount;
+	uint_t i = cMaxVoiceCount;
 	const Voice *pWork = m_ActiveVoices;
 	do {
 		// Check for a free slot
@@ -1550,7 +1551,7 @@ Word BURGER_API Burger::SoundManager::GetActiveVoiceCount(void) const
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
-void BURGER_API Burger::SoundManager::SetVolume(Word uVolume)
+void BURGER_API Burger::SoundManager::SetVolume(uint_t uVolume)
 {
 	m_uVolume = uVolume;
 }
@@ -1562,7 +1563,7 @@ void BURGER_API Burger::SoundManager::SetVolume(Word uVolume)
 
 ***************************************/
 
-Burger::SoundManager::Buffer * BURGER_API Burger::SoundManager::NewBuffer(void *pWaveFile,WordPtr uLength)
+Burger::SoundManager::Buffer * BURGER_API Burger::SoundManager::NewBuffer(void *pWaveFile,uintptr_t uLength)
 {
 	Buffer *pBuffer = Buffer::New();
 	if (pBuffer) {
@@ -1585,7 +1586,7 @@ Burger::SoundManager::Buffer * BURGER_API Burger::SoundManager::NewBuffer(void *
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
-Word BURGER_API Burger::SoundManager::GetAudioModes(ClassArray<SoundCardDescription> *pOutput)
+uint_t BURGER_API Burger::SoundManager::GetAudioModes(ClassArray<SoundCardDescription> *pOutput)
 {
 	pOutput->clear();
 	return 10;
@@ -1606,7 +1607,7 @@ Word BURGER_API Burger::SoundManager::GetAudioModes(ClassArray<SoundCardDescript
 Burger::SoundManager::Voice * BURGER_API Burger::SoundManager::AllocVoice(void)
 {
 	// Start at the max
-	Word i = m_uMaxVoices;
+	uint_t i = m_uMaxVoices;
 	Voice *pResult = NULL;
 	if (i) {
 		Voice *pWork = m_ActiveVoices;
@@ -1644,7 +1645,7 @@ Burger::SoundManager::Voice * BURGER_API Burger::SoundManager::AllocVoice(void)
 
 ***************************************/
 
-void BURGER_API Burger::CopySoundData(void *pOutput,const void *pInput,WordPtr uLength,SoundManager::eDataType eType)
+void BURGER_API Burger::CopySoundData(void *pOutput,const void *pInput,uintptr_t uLength,SoundManager::eDataType eType)
 {
 	if (uLength) {
 		switch (eType) {
@@ -1670,7 +1671,7 @@ void BURGER_API Burger::CopySoundData(void *pOutput,const void *pInput,WordPtr u
 #else
 		case SoundManager::TYPEBSHORT:
 #endif
-			ConvertEndian(static_cast<Word16 *>(pOutput),static_cast<const Word16 *>(pInput),uLength>>1U);
+			ConvertEndian(static_cast<uint16_t *>(pOutput),static_cast<const uint16_t *>(pInput),uLength>>1U);
 			break;
 
 		// Endian swapped floats?
@@ -1679,7 +1680,7 @@ void BURGER_API Burger::CopySoundData(void *pOutput,const void *pInput,WordPtr u
 #else
 		case SoundManager::TYPEBFLOAT:
 #endif
-			ConvertEndian(static_cast<Word32 *>(pOutput),static_cast<const Word32 *>(pInput),uLength>>2U);
+			ConvertEndian(static_cast<uint32_t *>(pOutput),static_cast<const uint32_t *>(pInput),uLength>>2U);
 			break;
 		}
 	}
@@ -1699,7 +1700,7 @@ void BURGER_API Burger::CopySoundData(void *pOutput,const void *pInput,WordPtr u
 
 ***************************************/
 
-void BURGER_API Burger::ClearSoundData(void *pOutput,WordPtr uLength,SoundManager::eDataType eType)
+void BURGER_API Burger::ClearSoundData(void *pOutput,uintptr_t uLength,SoundManager::eDataType eType)
 {
 	switch (eType) {
 	default:
@@ -1725,20 +1726,20 @@ void BURGER_API Burger::ClearSoundData(void *pOutput,WordPtr uLength,SoundManage
 	\param pRight Pointer to the right channel data
 	\param uOutputSize Size in bytes of the left or right channel (Both must be the same size)
 
-	\sa CopyStereoInterleaved(void *,const Word16 *,const Word16 *,WordPtr)
+	\sa CopyStereoInterleaved(void *,const uint16_t *,const uint16_t *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::CopyStereoInterleaved(void *pOutput,const Word8 *pLeft,const Word8 *pRight,WordPtr uOutputSize)
+void BURGER_API Burger::CopyStereoInterleaved(void *pOutput,const uint8_t *pLeft,const uint8_t *pRight,uintptr_t uOutputSize)
 {
 	if (uOutputSize) {
 		do {
-			// Copy a byte from the left and then the right buffers
-			static_cast<Word8 *>(pOutput)[0] = pLeft[0];
-			static_cast<Word8 *>(pOutput)[1] = pRight[0];
+            // Copy a byte from the left and then the right buffers
+            static_cast<uint8_t *>(pOutput)[0] = pLeft[0];
+			static_cast<uint8_t *>(pOutput)[1] = pRight[0];
 
 			// Increment the pointers
-			pOutput = static_cast<Word8 *>(pOutput)+2;
+			pOutput = static_cast<uint8_t *>(pOutput)+2;
 			++pLeft;
 			++pRight;
 		} while (--uOutputSize);
@@ -1757,22 +1758,22 @@ void BURGER_API Burger::CopyStereoInterleaved(void *pOutput,const Word8 *pLeft,c
 	\param pOutput Pointer to receive the interleaved data (Must be uOutputSize*4 bytes in size)
 	\param pLeft Pointer to the left channel data
 	\param pRight Pointer to the right channel data
-	\param uOutputSize Size in entries (Word16) of the left or right channel (Both must be the same size)
+	\param uOutputSize Size in entries (uint16_t) of the left or right channel (Both must be the same size)
 
-	\sa CopyStereoInterleaved(void *,const Word8 *,const Word8 *,WordPtr)
+	\sa CopyStereoInterleaved(void *,const uint8_t *,const uint8_t *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::CopyStereoInterleaved(void *pOutput,const Word16 *pLeft,const Word16 *pRight,WordPtr uOutputSize)
+void BURGER_API Burger::CopyStereoInterleaved(void *pOutput,const uint16_t *pLeft,const uint16_t *pRight,uintptr_t uOutputSize)
 {
 	if (uOutputSize) {
 		do {
 			// Copy a byte from the left and then the right buffers
-			static_cast<Word16 *>(pOutput)[0] = pLeft[0];
-			static_cast<Word16 *>(pOutput)[1] = pRight[0];
+			static_cast<uint16_t *>(pOutput)[0] = pLeft[0];
+			static_cast<uint16_t *>(pOutput)[1] = pRight[0];
 
 			// Increment the pointers
-			pOutput = static_cast<Word16 *>(pOutput)+2;
+			pOutput = static_cast<uint16_t *>(pOutput)+2;
 			++pLeft;
 			++pRight;
 		} while (--uOutputSize);
@@ -1794,7 +1795,7 @@ void BURGER_API Burger::CopyStereoInterleaved(void *pOutput,const Word16 *pLeft,
 
 ***************************************/
 
-void BURGER_API Burger::ComputeReverb(Word8 *pOutput,const Word8 *pInput,WordPtr uCount,Word uPercentage)
+void BURGER_API Burger::ComputeReverb(uint8_t *pOutput,const uint8_t *pInput,uintptr_t uCount,uint_t uPercentage)
 {
 	if (uCount) {
 		// Convert the percentage from 100 to 0.0 to 1.0 in 25.7 fixed point
@@ -1811,7 +1812,7 @@ void BURGER_API Burger::ComputeReverb(Word8 *pOutput,const Word8 *pInput,WordPtr
 			iTemp = Min(iTemp,static_cast<int32_t>(255));
 
 			// Store in the reverb buffer
-			pOutput[0] = static_cast<Word8>(iTemp);
+			pOutput[0] = static_cast<uint8_t>(iTemp);
 			++pOutput;
 		} while (--uCount);
 	}
@@ -1833,7 +1834,7 @@ void BURGER_API Burger::ComputeReverb(Word8 *pOutput,const Word8 *pInput,WordPtr
 
 ***************************************/
 
-void BURGER_API Burger::ComputeReverb(Int16 *pOutput,const Int16 *pInput,WordPtr uCount,Word uPercentage)
+void BURGER_API Burger::ComputeReverb(int16_t *pOutput,const int16_t *pInput,uintptr_t uCount,uint_t uPercentage)
 {
 	if (uCount) {
 		// Convert the percentage from 100 to 0.0 to 1.0 in 25.7 fixed point
@@ -1850,7 +1851,7 @@ void BURGER_API Burger::ComputeReverb(Int16 *pOutput,const Int16 *pInput,WordPtr
 			iTemp = Min(iTemp,static_cast<int32_t>(32767));
 
 			// Store in the reverb buffer
-			pOutput[0] = static_cast<Int16>(iTemp);
+			pOutput[0] = static_cast<int16_t>(iTemp);
 			++pOutput;
 		} while (--uCount);
 	}

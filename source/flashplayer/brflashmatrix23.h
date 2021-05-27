@@ -1,14 +1,15 @@
 /***************************************
 
-	Flash player 2x3 matrix manager
-	
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Flash player 2x3 matrix manager
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-		
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #ifndef __BRFLASHMATRIX23_H__
@@ -52,15 +53,15 @@ public:
 	void BURGER_API TransformByInverse(Vector2D_t* pOutput,const Vector2D_t *pInput) const;
 	void BURGER_API TransformByInverse(Vector4D_t* pBounds) const;
 	void BURGER_API SetInverse(const Matrix23 *pInput);
-	Word BURGER_API DoesFlip(void) const;
+	uint_t BURGER_API DoesFlip(void) const;
 	BURGER_INLINE float GetDeterminant(void) const { return (m_fScaleX * m_fScaleY) - (m_fRotateSkew1 * m_fRotateSkew0); }
 	float BURGER_API GetMaxScale(void) const;
 	float BURGER_API GetXScale(void) const;
 	float BURGER_API GetYScale(void) const;
 	float BURGER_API GetRotation(void) const;
 	void BURGER_API Print(void) const;
-	Word BURGER_API operator==(const Matrix23& rInput) const;
-	Word BURGER_API operator!=(const Matrix23& rInput) const;
+	uint_t BURGER_API operator==(const Matrix23& rInput) const;
+	uint_t BURGER_API operator!=(const Matrix23& rInput) const;
 };
 }}
 /* END */

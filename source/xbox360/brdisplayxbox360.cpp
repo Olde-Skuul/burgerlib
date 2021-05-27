@@ -110,7 +110,7 @@ Burger::Display::~Display()
 // Initialize a Direct3D9 context
 //
 
-Word Burger::Display::Init(Word uWidth,Word uHeight,Word uDepth,Word uFlags)
+uint_t Burger::Display::Init(uint_t uWidth,uint_t uHeight,uint_t uDepth,uint_t uFlags)
 {
 	// Set the new size of the screen
 
@@ -206,7 +206,7 @@ Burger::VertexBuffer *Burger::Display::CreateVertexBufferObject(void)
 	return new (Alloc(sizeof(VertexBuffer))) VertexBuffer;
 }
 
-void Burger::Display::SetViewport(Word uX,Word uY,Word uWidth,Word uHeight)
+void Burger::Display::SetViewport(uint_t uX,uint_t uY,uint_t uWidth,uint_t uHeight)
 {
 	D3DVIEWPORT9 Temp;
 	m_pD3DDevice->GetViewport(&Temp);
@@ -217,7 +217,7 @@ void Burger::Display::SetViewport(Word uX,Word uY,Word uWidth,Word uHeight)
 	m_pD3DDevice->SetViewport(&Temp);
 }
 
-void Burger::Display::SetScissorRect(Word uX,Word uY,Word uWidth,Word uHeight)
+void Burger::Display::SetScissorRect(uint_t uX,uint_t uY,uint_t uWidth,uint_t uHeight)
 {
 	RECT Temp;
 	Temp.left = static_cast<LONG>(uX);
@@ -237,9 +237,9 @@ void Burger::Display::SetClearDepth(float fDepth)
 	m_fClearDepth = fDepth;
 }
 
-void Burger::Display::Clear(Word uMask)
+void Burger::Display::Clear(uint_t uMask)
 {
-	Word uDXMask = 0;
+	uint_t uDXMask = 0;
 	if (uMask&CLEAR_COLOR) {
 		uDXMask = D3DCLEAR_TARGET;
 	}
@@ -252,7 +252,7 @@ void Burger::Display::Clear(Word uMask)
 	m_pD3DDevice->Clear(0,NULL,uDXMask,m_uClearColor,m_fClearDepth,0);
 }
 
-void Burger::Display::Bind(Texture *pTexture,Word uIndex)
+void Burger::Display::Bind(Texture *pTexture,uint_t uIndex)
 {
 	BURGER_ASSERT(uIndex<BURGER_ARRAYSIZE(m_pBoundTextures));
 	m_pBoundTextures[uIndex] = pTexture;
@@ -283,7 +283,7 @@ void Burger::Display::Bind(Effect *pEffect)
 	}
 }
 
-void Burger::Display::SetBlend(Word bEnable)
+void Burger::Display::SetBlend(uint_t bEnable)
 {
 	m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE,bEnable!=0);
 }
@@ -297,12 +297,12 @@ void Burger::Display::SetBlendFunction(eSourceBlendFactor uSourceFactor,eDestina
 	pDevice->SetRenderState(D3DRS_DESTBLEND,g_DestBlend[uDestFactor]);
 }
 
-void Burger::Display::SetLighting(Word /* bEnable */)
+void Burger::Display::SetLighting(uint_t /* bEnable */)
 {
 //	m_pD3DDevice->SetRenderState(D3DRS_LIGHTING,bEnable!=0);
 }
 
-void Burger::Display::SetZWrite(Word bEnable)
+void Burger::Display::SetZWrite(uint_t bEnable)
 {
 	m_pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE,bEnable!=0);
 }
@@ -319,7 +319,7 @@ void Burger::Display::SetCullMode(eCullMode uCullMode)
 	m_pD3DDevice->SetRenderState(D3DRS_CULLMODE,g_CullOperation[uCullMode]);
 }
 
-void Burger::Display::SetScissor(Word bEnable)
+void Burger::Display::SetScissor(uint_t bEnable)
 {
 	m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE,bEnable!=0);
 }
@@ -330,7 +330,7 @@ void Burger::Display::DrawPrimitive(ePrimitiveType uPrimitiveType,VertexBuffer *
 	D3DDevice *pDevice = m_pD3DDevice;
 	pDevice->SetVertexDeclaration(pVertexBuffer->GetD3DVertexDescription());
 	pDevice->SetStreamSource(0,pVertexBuffer->GetD3DVertexBuffer(),0,pVertexBuffer->GetStride());
-	Word uCount = pVertexBuffer->GetArrayEntryCount();
+	uint_t uCount = pVertexBuffer->GetArrayEntryCount();
 	switch (uPrimitiveType) {
 	case PRIM_POINTS:
 	default:
@@ -358,7 +358,7 @@ void Burger::Display::DrawElements(ePrimitiveType uPrimitiveType,VertexBuffer *p
 	D3DDevice *pDevice = m_pD3DDevice;
 	pDevice->SetVertexDeclaration(pVertexBuffer->GetD3DVertexDescription());
 	pDevice->SetStreamSource(0,pVertexBuffer->GetD3DVertexBuffer(),0,pVertexBuffer->GetStride());
-	Word uCount = pVertexBuffer->GetArrayEntryCount();
+	uint_t uCount = pVertexBuffer->GetArrayEntryCount();
 	switch (uPrimitiveType) {
 	case PRIM_POINTS:
 	default:
@@ -439,7 +439,7 @@ void BURGER_API Burger::Display::InitState(void)
 	pDirect3DDevice9->SetRenderState(D3DRS_STENCILFUNC,D3DCMP_ALWAYS);
 	pDirect3DDevice9->SetRenderState(D3DRS_VIEWPORTENABLE,TRUE);
 
-	Word i = 0;
+	uint_t i = 0;
 	do {
 		pDirect3DDevice9->SetSamplerState(i,D3DSAMP_MAGFILTER,D3DTEXF_LINEAR);
 		pDirect3DDevice9->SetSamplerState(i,D3DSAMP_MINFILTER,D3DTEXF_LINEAR);

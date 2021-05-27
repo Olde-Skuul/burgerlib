@@ -1,16 +1,16 @@
 /***************************************
 
-	Display base class
+    Display base class
 
-	MacOSX version
+    MacOSX version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE for
-	license details. Yes, you can use it in a commercial title without paying
-	anything, just give me a credit.
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
 
-	Please? It's not like I'm asking you for money!
+    Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -62,7 +62,7 @@ void BURGER_API Burger::Display::InitGlobals(void)
 	if (!g_Globals.m_bInitialized) {
 		CGDirectDisplayID pMainDisplay = CGMainDisplayID();
 		g_Globals.m_uDefaultWidth =
-			static_cast<Word>(CGDisplayPixelsWide(pMainDisplay));
+			static_cast<uint_t>(CGDisplayPixelsWide(pMainDisplay));
 		g_Globals.m_uDefaultHeight =
 			static_cast<int>(CGDisplayPixelsHigh(pMainDisplay));
 
@@ -72,7 +72,7 @@ void BURGER_API Burger::Display::InitGlobals(void)
 		CGDisplayModeRef pCurrentMode = CGDisplayCopyDisplayMode(pMainDisplay);
 		CFStringRef pPixelEncoding =
 			CGDisplayModeCopyPixelEncoding(pCurrentMode);
-		Word uDepth;
+		uint_t uDepth;
 		if (CFStringCompare(pPixelEncoding, CFSTR(IO32BitDirectPixels),
 				kCFCompareCaseInsensitive) == kCFCompareEqualTo) {
 			uDepth = 32;
@@ -91,7 +91,7 @@ void BURGER_API Burger::Display::InitGlobals(void)
 
 		// Frequency
 		g_Globals.m_uDefaultHertz =
-			static_cast<Word>(CGDisplayModeGetRefreshRate(pCurrentMode));
+			static_cast<uint_t>(CGDisplayModeGetRefreshRate(pCurrentMode));
 		CGDisplayModeRelease(pCurrentMode);
 #else
 
@@ -101,12 +101,12 @@ void BURGER_API Burger::Display::InitGlobals(void)
 			pCurrentMode, kCGDisplayBitsPerPixel);
 		int iValue;
 		CFNumberGetValue(pNumber, kCFNumberIntType, &iValue);
-		g_Globals.m_uDefaultDepth = static_cast<Word>(iValue);
+		g_Globals.m_uDefaultDepth = static_cast<uint_t>(iValue);
 
 		pNumber = (CFNumberRef)CFDictionaryGetValue(
 			pCurrentMode, kCGDisplayRefreshRate);
 		CFNumberGetValue(pNumber, kCFNumberIntType, &iValue);
-		g_Globals.m_uDefaultHertz = static_cast<Word>(iValue);
+		g_Globals.m_uDefaultHertz = static_cast<uint_t>(iValue);
 #endif
 
 		g_Globals.m_uDefaultTotalWidth = g_Globals.m_uDefaultWidth;
@@ -145,22 +145,22 @@ static void GetResolutions(Burger::Display::VideoCardDescription* pOutput)
 		CGDisplayModeRef pDisplayMode = static_cast<CGDisplayModeRef>(
 			const_cast<void*>(CFArrayGetValueAtIndex(pModeList, i)));
 		Burger::Display::VideoMode_t Entry;
-		Word bSkip = FALSE;
+		uint_t bSkip = FALSE;
 		// Width and height are trivial
-		Entry.m_uWidth = static_cast<Word>(CGDisplayModeGetWidth(pDisplayMode));
+		Entry.m_uWidth = static_cast<uint_t>(CGDisplayModeGetWidth(pDisplayMode));
 		Entry.m_uHeight =
-			static_cast<Word>(CGDisplayModeGetHeight(pDisplayMode));
+			static_cast<uint_t>(CGDisplayModeGetHeight(pDisplayMode));
 		Entry.m_uFlags = Burger::Display::VideoMode_t::VIDEOMODE_HARDWARE;
 
 		// Hertz is a value on monitors, however, some LCD screens
 		// have no refresh rate
 		Entry.m_uHertz =
-			static_cast<Word>(CGDisplayModeGetRefreshRate(pDisplayMode));
+			static_cast<uint_t>(CGDisplayModeGetRefreshRate(pDisplayMode));
 		if (!Entry.m_uHertz) {
 			CVTime NominalTime =
 				CVDisplayLinkGetNominalOutputVideoRefreshPeriod(pDisplayLink);
 			if (!(NominalTime.flags & kCVTimeIsIndefinite)) {
-				Entry.m_uHertz = static_cast<Word>(
+				Entry.m_uHertz = static_cast<uint_t>(
 					static_cast<double>(NominalTime.timeScale) /
 					static_cast<double>(NominalTime.timeValue));
 			}
@@ -224,24 +224,24 @@ static void GetResolutions(Burger::Display::VideoCardDescription* pOutput)
 		CFDictionaryRef pDisplayMode = static_cast<CFDictionaryRef>(
 			const_cast<void*>(CFArrayGetValueAtIndex(pModeList, i)));
 		Burger::Display::VideoMode_t Entry;
-		Word bSkip = FALSE;
+		uint_t bSkip = FALSE;
 
 		// Width and height are trivial
-		Entry.m_uWidth = static_cast<Word>(
+		Entry.m_uWidth = static_cast<uint_t>(
 			Burger::Globals::NumberFromKey(pDisplayMode, "Width"));
-		Entry.m_uHeight = static_cast<Word>(
+		Entry.m_uHeight = static_cast<uint_t>(
 			Burger::Globals::NumberFromKey(pDisplayMode, "Height"));
 		Entry.m_uFlags = Burger::Display::VideoMode_t::VIDEOMODE_HARDWARE;
 
 		// Hertz is a value on monitors, however, some LCD screens
 		// have no refresh rate
-		Entry.m_uHertz = static_cast<Word>(
+		Entry.m_uHertz = static_cast<uint_t>(
 			Burger::Globals::NumberFromKey(pDisplayMode, "RefreshRate"));
 		if (!Entry.m_uHertz) {
 			CVTime NominalTime =
 				CVDisplayLinkGetNominalOutputVideoRefreshPeriod(pDisplayLink);
 			if (!(NominalTime.flags & kCVTimeIsIndefinite)) {
-				Entry.m_uHertz = static_cast<Word>(
+				Entry.m_uHertz = static_cast<uint_t>(
 					static_cast<double>(NominalTime.timeScale) /
 					static_cast<double>(NominalTime.timeValue));
 			}
@@ -256,7 +256,7 @@ static void GetResolutions(Burger::Display::VideoCardDescription* pOutput)
 
 		// Get rid of modes that are "faked" or unsafe
 		if (!bSkip) {
-			Word IOFlags = static_cast<Word>(
+			uint_t IOFlags = static_cast<uint_t>(
 				Burger::Globals::NumberFromKey(pDisplayMode, "IOFlags"));
 			if (((IOFlags & (kDisplayModeValidFlag | kDisplayModeSafeFlag)) !=
 					(kDisplayModeValidFlag | kDisplayModeSafeFlag)) ||
@@ -281,12 +281,12 @@ static void GetResolutions(Burger::Display::VideoCardDescription* pOutput)
 
 ***************************************/
 
-Word Burger::Display::GetVideoModes(ClassArray<VideoCardDescription>* pOutput)
+uint_t Burger::Display::GetVideoModes(ClassArray<VideoCardDescription>* pOutput)
 {
 	NSAutoreleasePool* pPool = [[NSAutoreleasePool alloc] init];
 	pOutput->clear();
 
-	Word uResult = 0; // Assume success
+	uint_t uResult = 0; // Assume success
 	uint32_t uDisplayCount;
 
 	// Get the number of displays attached to this mac.

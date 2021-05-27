@@ -55,11 +55,11 @@
 
 Burger::String16::String16(const Burger::String16 &rInput)
 {
-	WordPtr uInputLength = rInput.m_uLength;	// Get the source length
-	Word16 *pWork = m_Raw;
-	const Word16 *pInput = rInput.m_pData;
+	uintptr_t uInputLength = rInput.m_uLength;	// Get the source length
+	uint16_t *pWork = m_Raw;
+	const uint16_t *pInput = rInput.m_pData;
 	if (uInputLength>=BUFFERSIZE) {				// Buffer big enough?
-		pWork = static_cast<Word16 *>(Alloc((uInputLength+1)*sizeof(Word16)));
+		pWork = static_cast<uint16_t *>(Alloc((uInputLength+1)*sizeof(uint16_t)));
 		if (!pWork) {				// Oh oh...
 			pWork = m_Raw;
 			pInput = g_EmptyString16;
@@ -68,7 +68,7 @@ Burger::String16::String16(const Burger::String16 &rInput)
 	}
 	m_uLength = uInputLength;			// Save the new length
 	m_pData = pWork;					// Set the pointer
-	MemoryCopy(pWork,pInput,(uInputLength+1)*sizeof(Word16));	// Copy the string and the ending NULL
+	MemoryCopy(pWork,pInput,(uInputLength+1)*sizeof(uint16_t));	// Copy the string and the ending NULL
 }
 
 /*! ************************************
@@ -86,22 +86,22 @@ Burger::String16::String16(const Burger::String16 &rInput)
 
 ***************************************/
 
-Burger::String16::String16(const Burger::String16 &rInput,WordPtr uStart,WordPtr uEnd)
+Burger::String16::String16(const Burger::String16 &rInput,uintptr_t uStart,uintptr_t uEnd)
 {
-	WordPtr uInputLength = rInput.m_uLength;	// Get the source length
+	uintptr_t uInputLength = rInput.m_uLength;	// Get the source length
 	if (uEnd>uInputLength) {					// Clamp the end of the string
 		uEnd = uInputLength;					// Make sure it fits
 	}
-	const Word16 *pInput = rInput.m_pData;
+	const uint16_t *pInput = rInput.m_pData;
 	if (uStart>=uEnd) {							// Valid range?
 		uInputLength = 0;						// The result will be empty
 	} else {
 		uInputLength = uEnd-uStart;				// Length of the new string
 		pInput += uStart;
 	}
-	Word16 *pWork = m_Raw;
+	uint16_t *pWork = m_Raw;
 	if (uInputLength>=BUFFERSIZE) {				// Buffer big enough?
-		pWork = static_cast<Word16 *>(Alloc((uInputLength+1)*sizeof(Word16)));
+		pWork = static_cast<uint16_t *>(Alloc((uInputLength+1)*sizeof(uint16_t)));
 		if (!pWork) {				// Oh oh...
 			pWork = m_Raw;
 			uInputLength = 0;		// Don't copy anything
@@ -112,7 +112,7 @@ Burger::String16::String16(const Burger::String16 &rInput,WordPtr uStart,WordPtr
 	pWork[uInputLength] = 0;
 	m_uLength = uInputLength;			// Save the new length
 	m_pData = pWork;					// Set the pointer
-	MemoryCopy(pWork,pInput,uInputLength*sizeof(Word16));	// Copy the string
+	MemoryCopy(pWork,pInput,uInputLength*sizeof(uint16_t));	// Copy the string
 }
 
 /*! ************************************
@@ -133,10 +133,10 @@ Burger::String16::String16(const char *pInput)
 	if (!pInput) {
 		pInput = g_EmptyString;
 	}
-	WordPtr uInputLength = UTF16::FromUTF8(NULL,0,pInput)/sizeof(Word16);
-	Word16 *pWork = m_Raw;
+	uintptr_t uInputLength = UTF16::FromUTF8(NULL,0,pInput)/sizeof(uint16_t);
+	uint16_t *pWork = m_Raw;
 	if (uInputLength>=BUFFERSIZE) {				// Buffer big enough?
-		pWork = static_cast<Word16 *>(Burger::Alloc((uInputLength+1)*sizeof(Word16)));
+		pWork = static_cast<uint16_t *>(Burger::Alloc((uInputLength+1)*sizeof(uint16_t)));
 		if (!pWork) {				// Oh oh...
 			pWork = m_Raw;
 			pInput = g_EmptyString;
@@ -145,7 +145,7 @@ Burger::String16::String16(const char *pInput)
 	}
 	m_uLength = uInputLength;			// Save the new length
 	m_pData = pWork;					// Set the pointer
-	UTF16::FromUTF8(pWork,(uInputLength+1)*sizeof(Word16),pInput);	// Copy the string
+	UTF16::FromUTF8(pWork,(uInputLength+1)*sizeof(uint16_t),pInput);	// Copy the string
 }
 
 /*! ************************************
@@ -163,15 +163,15 @@ Burger::String16::String16(const char *pInput)
 
 ***************************************/
 
-Burger::String16::String16(const char *pInput,WordPtr uPadding)
+Burger::String16::String16(const char *pInput,uintptr_t uPadding)
 {
 	if (!pInput) {
 		pInput = g_EmptyString;
 	}
-	WordPtr uInputLength = UTF16::FromUTF8(NULL,0,pInput)/sizeof(Word16);
-	Word16 *pWork = m_Raw;
+	uintptr_t uInputLength = UTF16::FromUTF8(NULL,0,pInput)/sizeof(uint16_t);
+	uint16_t *pWork = m_Raw;
 	if ((uInputLength+uPadding)>=BUFFERSIZE) {				// Buffer big enough?
-		pWork = static_cast<Word16 *>(Alloc((uInputLength+uPadding+1)*sizeof(Word16)));
+		pWork = static_cast<uint16_t *>(Alloc((uInputLength+uPadding+1)*sizeof(uint16_t)));
 		if (!pWork) {				// Oh oh...
 			pWork = m_Raw;
 			pInput = g_EmptyString;
@@ -180,7 +180,7 @@ Burger::String16::String16(const char *pInput,WordPtr uPadding)
 	}
 	m_uLength = uInputLength;			// Save the new length
 	m_pData = pWork;					// Set the pointer
-	UTF16::FromUTF8(pWork,(uInputLength+1)*sizeof(Word16),pInput);	// Copy the string
+	UTF16::FromUTF8(pWork,(uInputLength+1)*sizeof(uint16_t),pInput);	// Copy the string
 }
 
 /*! ************************************
@@ -195,15 +195,15 @@ Burger::String16::String16(const char *pInput,WordPtr uPadding)
 
 ***************************************/
 
-Burger::String16::String16(const Word16 *pInput)
+Burger::String16::String16(const uint16_t *pInput)
 {
 	if (!pInput) {
 		pInput = g_EmptyString16;
 	}
-	WordPtr uInputLength = StringLength(pInput);
-	Word16 *pWork = m_Raw;
+	uintptr_t uInputLength = StringLength(pInput);
+	uint16_t *pWork = m_Raw;
 	if (uInputLength>=BUFFERSIZE) {				// Buffer big enough?
-		pWork = static_cast<Word16 *>(Alloc((uInputLength+1)*sizeof(Word16)));
+		pWork = static_cast<uint16_t *>(Alloc((uInputLength+1)*sizeof(uint16_t)));
 		if (!pWork) {				// Oh oh...
 			pWork = m_Raw;
 			pInput = g_EmptyString16;
@@ -212,7 +212,7 @@ Burger::String16::String16(const Word16 *pInput)
 	}
 	m_uLength = uInputLength;			// Save the new length
 	m_pData = pWork;					// Set the pointer
-	MemoryCopy(pWork,pInput,(uInputLength+1)*sizeof(Word16));	// Copy the string
+	MemoryCopy(pWork,pInput,(uInputLength+1)*sizeof(uint16_t));	// Copy the string
 }
 
 /*! ************************************
@@ -380,7 +380,7 @@ Burger::eError BURGER_API Burger::String16::Set(
     // Buffer big enough?
     if (uInputLength >= BUFFERSIZE) {
         pDest =
-            static_cast<Word16*>(Alloc((uInputLength + 1) * sizeof(Word16)));
+            static_cast<uint16_t*>(Alloc((uInputLength + 1) * sizeof(uint16_t)));
         if (!pDest) { // Oh oh...
             pDest = m_Raw;
             uInputLength = 0;            // Don't copy anything
@@ -412,7 +412,7 @@ Burger::eError BURGER_API Burger::String16::Set(
 
 	\note If a buffer of 100 characters is requested, 202 bytes will be allocated to hold
 	a string up to 100 characters in length with the 101st short being the terminating
-	zero. The output of Burger::StringLength(const Word16 *) is acceptable as input for a new string.
+	zero. The output of Burger::StringLength(const uint16_t *) is acceptable as input for a new string.
 
 	\param uSize Number of characters to set the buffer to
 
@@ -472,16 +472,16 @@ Burger::eError BURGER_API Burger::String16::SetBufferSize(uintptr_t uSize) BURGE
 Burger::String16 & Burger::String16::operator =(const Burger::String16 &rInput)
 {
 	if (this!=&rInput) {		// Am I copying myself?
-		Word16 *pWork = m_pData;
+		uint16_t *pWork = m_pData;
 		if (pWork!=m_Raw) {		// Discard previous memory
 			Free(pWork);
 			pWork = m_Raw;
 		}
 
-		WordPtr uInputLength = rInput.m_uLength;	// Length of the new string
-		const Word16 *pInput = rInput.m_pData;		// Copy the new length
+		uintptr_t uInputLength = rInput.m_uLength;	// Length of the new string
+		const uint16_t *pInput = rInput.m_pData;		// Copy the new length
 		if (uInputLength>=BUFFERSIZE) {		// Buffer big enough?
-			pWork = static_cast<Word16 *>(Alloc((uInputLength+1)*sizeof(Word16)));
+			pWork = static_cast<uint16_t *>(Alloc((uInputLength+1)*sizeof(uint16_t)));
 			if (!pWork) {					// Oh oh...
 				pWork = m_Raw;
 				uInputLength = 0;			// Don't copy anything
@@ -490,7 +490,7 @@ Burger::String16 & Burger::String16::operator =(const Burger::String16 &rInput)
 		}
 		m_uLength = uInputLength;			// Save the new length
 		m_pData = pWork;					// Set the pointer
-		MemoryCopy(pWork,pInput,(uInputLength+1)*sizeof(Word16));	// Copy the string
+		MemoryCopy(pWork,pInput,(uInputLength+1)*sizeof(uint16_t));	// Copy the string
 	}
 	return *this;
 }
@@ -506,7 +506,7 @@ Burger::String16 & Burger::String16::operator =(const Burger::String16 &rInput)
 
 ***************************************/
 
-Burger::String16 & Burger::String16::operator =(const Word16 *pInput)
+Burger::String16 & Burger::String16::operator =(const uint16_t *pInput)
 {
 	Set(pInput);
 	return *this;
@@ -545,7 +545,7 @@ Burger::String16 & Burger::String16::operator =(const char *pInput)
 
 Burger::String16 & Burger::String16::operator =(char cInput)
 {
-	Word16 *pWork = m_pData;
+	uint16_t *pWork = m_pData;
 	if (pWork!=m_Raw) {		// Discard previous memory
 		Free(pWork);
 		pWork = m_Raw;
@@ -553,7 +553,7 @@ Burger::String16 & Burger::String16::operator =(char cInput)
 
 	pWork[0] = cInput;		// Store the char in the string
 	pWork[1] = 0;
-	WordPtr uInputLength = 1;
+	uintptr_t uInputLength = 1;
 	if (!cInput) {			// Valid string?
 		uInputLength = 0;	// 1 char long
 	}
@@ -564,7 +564,7 @@ Burger::String16 & Burger::String16::operator =(char cInput)
 
 /*! ************************************
 
-	\fn Burger::String16::operator () (WordPtr uStart,WordPtr uEnd) const
+	\fn Burger::String16::operator () (uintptr_t uStart,uintptr_t uEnd) const
 	\brief Create a new Burger::String16 from a substring
 
 	Given the start and end offsets of a string, create a new string with those
@@ -574,13 +574,13 @@ Burger::String16 & Burger::String16::operator =(char cInput)
 	\param uEnd Offset to the character AFTER the last character of the new string
 	\return A class instance of Burger::String16 containing the new string.
 
-	\sa Burger::String16::String16(const Burger::String16 &,WordPtr,WordPtr)
+	\sa Burger::String16::String16(const Burger::String16 &,uintptr_t,uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String16::operator () (WordPtr uInput)
+	\fn Burger::String16::operator () (uintptr_t uInput)
 	\brief Return the reference to a location in the string
 
 	Given an offset into the string, return the reference to the character.
@@ -590,13 +590,13 @@ Burger::String16 & Burger::String16::operator =(char cInput)
 	\param uInput Offset to the starting character of the new string
 	\return A reference to the character in the string.
 
-	\sa Burger::String16::operator [] (WordPtr)
+	\sa Burger::String16::operator [] (uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String16::operator () (WordPtr uInput) const
+	\fn Burger::String16::operator () (uintptr_t uInput) const
 	\brief Return the reference to a location in the string
 
 	Given an offset into the string, return the reference to the character.
@@ -606,13 +606,13 @@ Burger::String16 & Burger::String16::operator =(char cInput)
 	\param uInput Offset to the starting character of the new string
 	\return A constant reference to the character in the string.
 
-	\sa Burger::String16::operator [] (WordPtr) const
+	\sa Burger::String16::operator [] (uintptr_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String16::operator [] (WordPtr uInput)
+	\fn Burger::String16::operator [] (uintptr_t uInput)
 	\brief Return the reference to a location in the string
 
 	Given an offset into the string, return the reference to the character.
@@ -622,13 +622,13 @@ Burger::String16 & Burger::String16::operator =(char cInput)
 	\param uInput Offset to the starting character of the new string
 	\return A reference to the character in the string.
 
-	\sa Burger::String16::operator () (WordPtr)
+	\sa Burger::String16::operator () (uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::String16::operator [] (WordPtr uInput) const
+	\fn Burger::String16::operator [] (uintptr_t uInput) const
 	\brief Return the reference to a location in the string
 
 	Given an offset into the string, return the reference to the character.
@@ -638,7 +638,7 @@ Burger::String16 & Burger::String16::operator =(char cInput)
 	\param uInput Offset to the starting character of the new string
 	\return A constant reference to the character in the string.
 
-	\sa Burger::String16::operator () (WordPtr) const
+	\sa Burger::String16::operator () (uintptr_t) const
 
 ***************************************/
 

@@ -100,7 +100,7 @@ typedef BOOL(WINAPI* SetupDiDestroyDeviceInfoListPtr)(HDEVINFO DeviceInfoSet);
 ***************************************/
 
 void* BURGER_API Burger::Windows::SetupDiGetClassDevsA(const GUID* ClassGuid,
-	const char* Enumerator, HWND__* hwndParent, Word32 Flags)
+	const char* Enumerator, HWND__* hwndParent, uint32_t Flags)
 {
 	void* pSetupDiGetClassDevsA = LoadFunctionIndex(CALL_SetupDiGetClassDevsA);
 	void* pResult = INVALID_HANDLE_VALUE; // Failure
@@ -139,7 +139,7 @@ void* BURGER_API Burger::Windows::SetupDiGetClassDevsA(const GUID* ClassGuid,
 ***************************************/
 
 void* BURGER_API Burger::Windows::SetupDiGetClassDevsW(const GUID* ClassGuid,
-	const Word16* Enumerator, HWND__* hwndParent, Word32 Flags)
+	const uint16_t* Enumerator, HWND__* hwndParent, uint32_t Flags)
 {
 	void* pSetupDiGetClassDevsW = LoadFunctionIndex(CALL_SetupDiGetClassDevsW);
 	void* pResult = INVALID_HANDLE_VALUE; // Failure
@@ -171,7 +171,7 @@ void* BURGER_API Burger::Windows::SetupDiGetClassDevsW(const GUID* ClassGuid,
 		the specified interface.
 	\param DeviceInterfaceDetailDataSize The size of the
 		DeviceInterfaceDetailData buffer.
-	\param RequiredSize A pointer to a variable of type Word32 that receives the
+	\param RequiredSize A pointer to a variable of type uint32_t that receives the
 		required size of the DeviceInterfaceDetailData buffer.
 	\param DeviceInfoData A pointer to a buffer that receives information about
 		the device that supports the requested interface.
@@ -180,10 +180,10 @@ void* BURGER_API Burger::Windows::SetupDiGetClassDevsW(const GUID* ClassGuid,
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::SetupDiGetDeviceInterfaceDetailA(
+uint_t BURGER_API Burger::Windows::SetupDiGetDeviceInterfaceDetailA(
 	void* DeviceInfoSet, _SP_DEVICE_INTERFACE_DATA* DeviceInterfaceData,
 	_SP_DEVICE_INTERFACE_DETAIL_DATA_A* DeviceInterfaceDetailData,
-	Word32 DeviceInterfaceDetailDataSize, Word32* RequiredSize,
+	uint32_t DeviceInterfaceDetailDataSize, uint32_t* RequiredSize,
 	_SP_DEVINFO_DATA* DeviceInfoData)
 {
 	void* pSetupDiGetDeviceInterfaceDetailA =
@@ -196,7 +196,7 @@ Word BURGER_API Burger::Windows::SetupDiGetDeviceInterfaceDetailA(
 			DeviceInterfaceDetailDataSize,
 			reinterpret_cast<DWORD*>(RequiredSize), DeviceInfoData);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -220,7 +220,7 @@ Word BURGER_API Burger::Windows::SetupDiGetDeviceInterfaceDetailA(
 		the specified interface.
 	\param DeviceInterfaceDetailDataSize The size of the
 		DeviceInterfaceDetailData buffer.
-	\param RequiredSize A pointer to a variable of type Word32 that receives the
+	\param RequiredSize A pointer to a variable of type uint32_t that receives the
 		required size of the DeviceInterfaceDetailData buffer.
 	\param DeviceInfoData A pointer to a buffer that receives information about
 		the device that supports the requested interface.
@@ -229,10 +229,10 @@ Word BURGER_API Burger::Windows::SetupDiGetDeviceInterfaceDetailA(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::SetupDiGetDeviceInterfaceDetailW(
+uint_t BURGER_API Burger::Windows::SetupDiGetDeviceInterfaceDetailW(
 	void* DeviceInfoSet, _SP_DEVICE_INTERFACE_DATA* DeviceInterfaceData,
 	_SP_DEVICE_INTERFACE_DETAIL_DATA_W* DeviceInterfaceDetailData,
-	Word32 DeviceInterfaceDetailDataSize, Word32* RequiredSize,
+	uint32_t DeviceInterfaceDetailDataSize, uint32_t* RequiredSize,
 	_SP_DEVINFO_DATA* DeviceInfoData)
 {
 	void* pSetupDiGetDeviceInterfaceDetailW =
@@ -245,7 +245,7 @@ Word BURGER_API Burger::Windows::SetupDiGetDeviceInterfaceDetailW(
 			DeviceInterfaceDetailDataSize,
 			reinterpret_cast<DWORD*>(RequiredSize), DeviceInfoData);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -275,9 +275,9 @@ Word BURGER_API Burger::Windows::SetupDiGetDeviceInterfaceDetailW(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::SetupDiEnumDeviceInterfaces(
+uint_t BURGER_API Burger::Windows::SetupDiEnumDeviceInterfaces(
 	void* DeviceInfoSet, _SP_DEVINFO_DATA* DeviceInfoData,
-	const GUID* InterfaceClassGuid, Word32 MemberIndex,
+	const GUID* InterfaceClassGuid, uint32_t MemberIndex,
 	_SP_DEVICE_INTERFACE_DATA* DeviceInterfaceData)
 {
 	void* pSetupDiEnumDeviceInterfaces =
@@ -288,7 +288,7 @@ Word BURGER_API Burger::Windows::SetupDiEnumDeviceInterfaces(
 			pSetupDiEnumDeviceInterfaces)(DeviceInfoSet, DeviceInfoData,
 			InterfaceClassGuid, MemberIndex, DeviceInterfaceData);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 /*! ************************************
@@ -308,7 +308,7 @@ Word BURGER_API Burger::Windows::SetupDiEnumDeviceInterfaces(
 
 ***************************************/
 
-Word BURGER_API Burger::Windows::SetupDiDestroyDeviceInfoList(
+uint_t BURGER_API Burger::Windows::SetupDiDestroyDeviceInfoList(
 	void* DeviceInfoSet)
 {
 	void* pSetupDiDestroyDeviceInfoList =
@@ -318,7 +318,7 @@ Word BURGER_API Burger::Windows::SetupDiDestroyDeviceInfoList(
 		uResult = static_cast<SetupDiDestroyDeviceInfoListPtr>(
 			pSetupDiDestroyDeviceInfoList)(DeviceInfoSet);
 	}
-	return static_cast<Word>(uResult);
+	return static_cast<uint_t>(uResult);
 }
 
 #endif

@@ -39,9 +39,9 @@ static const char *g_VolumeNames[] = {
 	":host0:"
 };
 
-Word BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,Word uVolumeNum)
+uint_t BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,uint_t uVolumeNum)
 {
-	Word uResult;
+	uint_t uResult;
 	if (uVolumeNum<BURGER_ARRAYSIZE(g_VolumeNames)) {
 		pOutput->Set(g_VolumeNames[uVolumeNum]);
 		uResult = File::OKAY;
@@ -67,7 +67,7 @@ Word BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,Wor
 void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 {
 	Filename MyFilename;
-	Word uResult = GetVolumeName(&MyFilename,0);		// Get the boot volume name
+	uint_t uResult = GetVolumeName(&MyFilename,0);		// Get the boot volume name
 	if (uResult==File::OKAY) {
 		// Set the initial prefix
 		SetPrefix(PREFIXBOOT,MyFilename.GetPtr());
@@ -86,7 +86,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
+uint_t BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
 {
 	// Buffer to hold the attributes and the filename
 	SceIoStat Entry;
@@ -99,7 +99,7 @@ Word BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFile
 
 	// No errors?
 
-	Word uResult;
+	uint_t uResult;
 	if (eError<SCE_OK) {
 		pOutput->Clear();
 		uResult = File::FILENOTFOUND;
@@ -120,7 +120,7 @@ Word BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFile
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
+uint_t BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
 {
 	// Buffer to hold the attributes and the filename
 	SceIoStat Entry;
@@ -133,7 +133,7 @@ Word BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileName
 
 	// No errors?
 
-	Word uResult;
+	uint_t uResult;
 	if (eError<SCE_OK) {
 		pOutput->Clear();
 		uResult = File::FILENOTFOUND;
@@ -157,9 +157,9 @@ Word BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileName
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::DoesFileExist(Burger::Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DoesFileExist(Burger::Filename *pFileName)
 {
-	Word uResult = FALSE;
+	uint_t uResult = FALSE;
 	// Buffer to hold the attributes and the filename
 	SceIoStat MyStat;
 
@@ -182,10 +182,10 @@ Word BURGER_API Burger::FileManager::DoesFileExist(Burger::Filename *pFileName)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFileName)
 {
-	// Assume an eror condition
-	Word uResult = File::IOERROR;
+	// Assume an error condition
+	uint_t uResult = File::IOERROR;
 	// Get the full path
 	const char *pPath = pFileName->GetNative();
 
@@ -263,9 +263,9 @@ Word BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFile
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName)
 {
-	Word uResult = FALSE;		// Success
+	uint_t uResult = FALSE;		// Success
 	if (sceIoRemove(pFileName->GetNative())<SCE_OK) {
 		if (sceIoRmdir(pFileName->GetNative())<SCE_OK) {
 			uResult = TRUE;		// Error!
@@ -280,7 +280,7 @@ Word BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName)
 
 ***************************************/
 
-Word BURGER_API Burger::FileManager::RenameFile(Burger::Filename *pNewName,Burger::Filename *pOldName)
+uint_t BURGER_API Burger::FileManager::RenameFile(Burger::Filename *pNewName,Burger::Filename *pOldName)
 {
 	if (sceIoRename(pOldName->GetNative(),pNewName->GetNative())>=SCE_OK) {
 		return FALSE;

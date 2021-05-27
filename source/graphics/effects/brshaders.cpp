@@ -1,14 +1,15 @@
 /***************************************
 
-	Shaders
+    Shaders
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-	It is released under an MIT Open Source license. Please see LICENSE
-	for license details. Yes, you can use it in a
-	commercial title without paying anything, just give me a credit.
-	Please? It's not like I'm asking you for money!
-	
+    It is released under an MIT Open Source license. Please see LICENSE for
+    license details. Yes, you can use it in a commercial title without paying
+    anything, just give me a credit.
+
+    Please? It's not like I'm asking you for money!
+
 ***************************************/
 
 #include "brshaders.h"
@@ -39,9 +40,9 @@ namespace Burger {
 // Crap, WATCOM doesn't support __declspec(align(4))
 
 #if defined(BURGER_WATCOM)
-#define BYTE Word8
+#define BYTE uint8_t
 #else
-#define BYTE __declspec(align(4)) Word8
+#define BYTE __declspec(align(4)) uint8_t
 #endif
 
 // Pixel shaders for DirectX 9
@@ -102,7 +103,7 @@ const char g_glXYWidthHeight[14] = "XYWidthHeight";
 #if defined(BURGER_XBOX360)
 
 // Remap from DWORD to the burgerlib type
-#define DWORD Word32
+#define DWORD uint32_t
 
 // Pixel shaders for DirectX 9 for Xbox
 
