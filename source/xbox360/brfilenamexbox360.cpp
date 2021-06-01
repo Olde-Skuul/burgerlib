@@ -55,7 +55,7 @@
 
 ***************************************/
 
-const char *Burger::Filename::GetNative(void)
+const char *Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 {
 	// First step, expand myself to a fully qualified pathname
 	Expand();
@@ -128,17 +128,16 @@ const char *Burger::Filename::GetNative(void)
 
 	\brief Set the filename to the current working directory
 
-	Query the operating system for the current working directory and
-	set the filename to that directory. The path is converted
-	into UTF8 character encoding and stored in Burgerlib
-	filename format
+	Query the operating system for the current working directory and set the
+	filename to that directory. The path is converted into UTF8 character
+	encoding and stored in Burgerlib filename format
 
-	On platforms where a current working directory doesn't make sense,
-	like an ROM based system, the filename is cleared out.
+	On platforms where a current working directory doesn't make sense, like an
+	ROM based system, the filename is cleared out.
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void)
+void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void) BURGER_NOEXCEPT
 {
 	Set(":D:");
 }
@@ -147,17 +146,16 @@ void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void)
 
 	\brief Set the filename to the application's directory
 
-	Determine the directory where the application resides and set
-	the filename to that directory. The path is converted
-	into UTF8 character encoding and stored in Burgerlib
-	filename format.
+	Determine the directory where the application resides and set the filename
+	to that directory. The path is converted into UTF8 character encoding and
+	stored in Burgerlib filename format.
 
-	On platforms where a current working directory doesn't make sense,
-	like an ROM based system, the filename is cleared out.
+	On platforms where a current working directory doesn't make sense, like an
+	ROM based system, the filename is cleared out.
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetApplicationDirectory(void)
+void BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
 {
 	Set(":D:");
 }
@@ -176,7 +174,7 @@ void BURGER_API Burger::Filename::SetApplicationDirectory(void)
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void)
+void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void) BURGER_NOEXCEPT
 {
 	Set(":D:");
 }
@@ -197,7 +195,7 @@ void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void)
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetUserPrefsDirectory(void)
+void BURGER_API Burger::Filename::SetUserPrefsDirectory(void) BURGER_NOEXCEPT
 {
 	Set(":D:");
 }

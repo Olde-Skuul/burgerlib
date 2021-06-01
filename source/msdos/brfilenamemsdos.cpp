@@ -54,7 +54,7 @@
 
 ***************************************/
 
-const char *Burger::Filename::GetNative(void)
+const char *Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 {
 	// First step, expand to a full pathname without
 	// prefixes
@@ -188,17 +188,16 @@ const char *Burger::Filename::GetNative(void)
 
 	\brief Set the filename to the current working directory
 
-	Query the operating system for the current working directory and
-	set the filename to that directory. The path is converted
-	into UTF8 character encoding and stored in Burgerlib
-	filename format
+	Query the operating system for the current working directory and set the
+	filename to that directory. The path is converted into UTF8 character
+	encoding and stored in Burgerlib filename format
 
-	On platforms where a current working directory doesn't make sense,
-	like an ROM based system, the filename is cleared out.
+	On platforms where a current working directory doesn't make sense, like an
+	ROM based system, the filename is cleared out.
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void)
+void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void) BURGER_NOEXCEPT
 {
 	SetFromNative(getcwd(NULL,0));
 }

@@ -37,11 +37,11 @@ class DirectorySearch {
 public:
 	DirectorySearch();
 	~DirectorySearch();
-	uint_t Open(Filename *pDirName);
-	uint_t Open(const char *pDirName);
-	uint_t GetNextEntry(void);
-	uint_t GetNextEntryExtension(const char *pExt);
-	void Close(void);
+	uint_t Open(Filename *pDirName) BURGER_NOEXCEPT;
+	uint_t Open(const char *pDirName) BURGER_NOEXCEPT;
+	uint_t GetNextEntry(void) BURGER_NOEXCEPT;
+	uint_t GetNextEntryExtension(const char *pExt) BURGER_NOEXCEPT;
+	void Close(void) BURGER_NOEXCEPT;
 
 	uintptr_t m_uFileSize;	///< Size of the file in bytes (64 bits on 64 bit CPU platforms)
 	TimeDate_t m_CreationDate;		///< File creation time

@@ -1646,13 +1646,13 @@ Burger::CompressDeflate::CompressDeflate() :
 
 ***************************************/
 
-Burger::Compress::eError Burger::CompressDeflate::Init(void)
+Burger::eError Burger::CompressDeflate::Init(void)
 {
 	m_Output.Clear();
 	if (DeflateInit()==Z_OK) {
-		return Compress::COMPRESS_OKAY;
+		return kErrorNone;
 	}
-	return Compress::COMPRESS_OUTOFMEMORY;
+	return kErrorOutOfMemory;
 }
 
 /*! ************************************
@@ -1664,21 +1664,21 @@ Burger::Compress::eError Burger::CompressDeflate::Init(void)
 
 ***************************************/
 
-Burger::Compress::eError Burger::CompressDeflate::Process(const void *pInput,uintptr_t uInputLength)
+Burger::eError Burger::CompressDeflate::Process(const void *pInput,uintptr_t uInputLength)
 {
 	if (!m_bInitialized) {
 		if (DeflateInit()!=Z_OK) {
-			return Compress::COMPRESS_OUTOFMEMORY;
+			return kErrorOutOfMemory;
 		}
 	}
-	eError Error = COMPRESS_OKAY;
+	eError Error = kErrorNone;
 	if (uInputLength) {
 		m_pInput = static_cast<const uint8_t*>(pInput);
 		m_uInputLength = uInputLength;
 
 		int err = PerformDeflate(Z_NO_FLUSH);
 		if (err!=Z_OK && err!=Z_STREAM_END) {
-			Error = COMPRESS_OUTOFMEMORY;
+			Error = kErrorOutOfMemory;
 		}
 	}
 	return Error;
@@ -1695,13 +1695,13 @@ Burger::Compress::eError Burger::CompressDeflate::Process(const void *pInput,uin
 
 ***************************************/
 
-Burger::Compress::eError Burger::CompressDeflate::Finalize(void)
+Burger::eError Burger::CompressDeflate::Finalize(void)
 {
 	m_pInput = 0;
 	m_uInputLength = 0;
 	PerformDeflate(Z_FINISH);
 	DeflateEnd();
-	return COMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************

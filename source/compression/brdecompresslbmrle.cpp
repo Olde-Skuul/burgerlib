@@ -52,16 +52,16 @@ Burger::DecompressILBMRLE::DecompressILBMRLE(void) :
 
 	\brief Reset the RLE decompression
 
-	\return Decompress::DECOMPRESS_OKAY (No error is possible)
+	\return kErrorNone (No error is possible)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressILBMRLE::Reset(void)
+Burger::eError Burger::DecompressILBMRLE::Reset(void)
 {
 	m_uTotalOutput = 0;
 	m_uTotalInput = 0;
 	m_eState = STATE_INIT;
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -80,7 +80,7 @@ Burger::Decompress::eError Burger::DecompressILBMRLE::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressILBMRLE::Process(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
+Burger::eError Burger::DecompressILBMRLE::Process(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
 {
 	m_uInputLength = uInputChunkLength;
 	m_uOutputLength = uOutputChunkLength;
@@ -198,15 +198,15 @@ Run:
 
 	// Output buffer not big enough?
 	if (uOutputChunkLength) {
-		return DECOMPRESS_OUTPUTUNDERRUN;
+		return kErrorDataStarvation;
 	}
 
 	// Input data remaining?
 	if (uInputChunkLength || (m_eState!=STATE_INIT)) {
-		return DECOMPRESS_OUTPUTOVERRUN;
+		return kErrorBufferTooSmall;
 	}
 	// Decompression is complete
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -225,7 +225,7 @@ Run:
 
 ***************************************/
 
-Burger::Decompress::eError BURGER_API Burger::SimpleDecompressILBMRLE(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
+Burger::eError BURGER_API Burger::SimpleDecompressILBMRLE(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
 {
 	Burger::DecompressILBMRLE Local;
 	Local.DecompressILBMRLE::Reset();

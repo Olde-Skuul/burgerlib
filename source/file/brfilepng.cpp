@@ -278,7 +278,7 @@ uint_t BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput
 				DecompressDeflate *pDecompressor = new (Alloc(sizeof(DecompressDeflate))) DecompressDeflate;
 				const uint8_t *pPacked = pInput->GetPtr();
 				uintptr_t uPackedSize = m_uChunkSize;
-				Decompress::eError Error = Decompress::DECOMPRESS_OKAY;
+				eError Error = kErrorNone;
 				uint8_t *pDest = pOutput->GetImage();
 				uDepth = (uDepth+7U)>>3U;
 				uWidth = uWidth*uDepth;
@@ -404,7 +404,7 @@ uint_t BURGER_API Burger::FilePNG::Load(Image *pOutput,InputMemoryStream *pInput
 					pDest+=uWidth;
 				} while (--uHeight);
 				Delete(pDecompressor);
-				if (Error!=Decompress::DECOMPRESS_OKAY) {
+				if (Error!=kErrorNone) {
 					pBadNews = "Decompression error.";
 				}
 			}

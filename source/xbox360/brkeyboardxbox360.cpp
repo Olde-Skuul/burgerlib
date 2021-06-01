@@ -308,7 +308,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Keyboard::Poll(void *pData)
 				pThis->m_KeyArray[uScanCode] &= (~KEYCAPDOWN);
 			}
 			// Accept the key in the circular buffer
-			uint_t uTemp = (pThis->m_uArrayEnd+1)&(cBufferSize-1);
+			uint_t uTemp = (pThis->m_uArrayEnd+1)&(kBufferSize-1);
 			if (uTemp!=pThis->m_uArrayStart) {
 				// Didn't wrap, accept it!
 				pThis->m_uArrayEnd = uTemp;

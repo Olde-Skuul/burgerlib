@@ -26,16 +26,16 @@
 	
 ***************************************/
 
-uint_t Burger::DirectorySearch::Open(Burger::Filename *pDirName)
+uint_t Burger::DirectorySearch::Open(Burger::Filename *pDirName) BURGER_NOEXCEPT
 {	
 	// Make sure there's nothing pending
 	Close();
-	uint_t uResult = File::FILENOTFOUND;
+	uint_t uResult = kErrorFileNotFound;
 	// Open the directory for reading
 	int fp = sceIoDopen(pDirName->GetNative());
 	if (fp>=SCE_OK) {
 		m_fp = fp;
-		uResult = File::OKAY;
+		uResult = kErrorNone;
 	}
 	return uResult;
 }
@@ -46,10 +46,10 @@ uint_t Burger::DirectorySearch::Open(Burger::Filename *pDirName)
 	
 ***************************************/
 
-uint_t Burger::DirectorySearch::GetNextEntry(void)
+uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 {
 	// Assume no more entries
-	uint_t uResult = File::OUTOFRANGE;
+	uint_t uResult = kErrorInvalidParameter;
 	int fp = m_fp;
 	if (fp>=SCE_OK) {
 		SceIoDirent Entry;
@@ -87,7 +87,7 @@ uint_t Burger::DirectorySearch::GetNextEntry(void)
 			m_bLocked = !(Entry.d_stat.st_mode&SCE_FWRITE);
 	
 			// It's parsed!
-			uResult = File::OKAY;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -99,7 +99,7 @@ uint_t Burger::DirectorySearch::GetNextEntry(void)
 	
 ***************************************/
 
-void Burger::DirectorySearch::Close(void)
+void Burger::DirectorySearch::Close(void) BURGER_NOEXCEPT
 {
 	int fp = m_fp;
 	if (fp>=SCE_OK) {

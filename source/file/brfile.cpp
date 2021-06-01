@@ -202,7 +202,7 @@ Burger::File * BURGER_API Burger::File::New(Filename *pFileName,eFileAccess eAcc
 
 	\param pFileName Pointer to a "C" string containing a Burgerlib pathname
 	\param eAccess Enumeration on permissions requested on the opened file
-	\return File::OKAY if no error, error code if not.
+	\return kErrorNone if no error, error code if not.
 	\sa Open(Filename *, eFileAccess) and File(const char *,eFileAccess)
 
 ***************************************/
@@ -221,7 +221,7 @@ Burger::eError BURGER_API Burger::File::Open(const char *pFileName,eFileAccess e
 
 	\param pFileName Pointer to a Burger::Filename object
 	\param eAccess Enumeration on permissions requested on the opened file
-	\return File::OKAY if no error, error code if not.
+	\return kErrorNone if no error, error code if not.
 	\sa Open(const char *, eFileAccess) and File(const char *,eFileAccess)
 
 ***************************************/
@@ -234,10 +234,10 @@ Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAc
 	};
 	Close();
 	FILE *fp = fopen(pFileName->GetNative(),g_OpenFlags[eAccess&3]);
-	uint_t uResult = FILENOTFOUND;
+	uint_t uResult = kErrorFileNotFound;
 	if (fp) {
 		m_pFile = fp;
-		uResult = OKAY;
+		uResult = kErrorNone;
 	}
 	return static_cast<Burger::eError>(uResult);
 }
@@ -248,7 +248,7 @@ Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAc
 
 	Close any previously opened file
 
-	\return File::OKAY if no error, error code if not.
+	\return kErrorNone if no error, error code if not.
 	\sa Open(const char *, eFileAccess) and Open(Filename *,eFileAccess)
 
 ***************************************/
@@ -386,7 +386,7 @@ uintptr_t BURGER_API Burger::File::GetMark(void)
 	If a file is open, set the read/write mark at the location passed.
 
 	\param uMark Value to set the new file mark to.
-	\return File::OKAY if successful, File::INVALID_MARK if not.
+	\return kErrorNone if successful, kErrorOutOfBounds if not.
 	\sa GetMark() or SetMarkAtEOF()
 
 ***************************************/
@@ -412,18 +412,18 @@ Burger::eError BURGER_API Burger::File::SetMark(uintptr_t uMark)
 
 	If a file is open, set the read/write mark to the end of the file.
 
-	\return File::OKAY if successful, File::INVALID_MARK if not.
+	\return kErrorNone if successful, kErrorOutOfBounds if not.
 	\sa GetMark() or SetMark()
 
 ***************************************/
 
 uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 {
-	uint_t uResult = INVALID_MARK;
+	uint_t uResult = kErrorOutOfBounds;
 	FILE *fp = static_cast<FILE *>(m_pFile);
 	if (fp) {
 		if (!fseek(fp,0,SEEK_END)) {
-			uResult = OKAY;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -437,7 +437,7 @@ uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 	the file was modified.
 
 	\param pOutput Pointer to a Burger::TimeDate_t to receive the file modification time
-	\return File::OKAY if successful, File::NOT_IMPLEMENTED if not available or other codes for errors
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
 	\sa GetCreationTime() or SetModificationTime()
 
 ***************************************/
@@ -445,7 +445,7 @@ uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 {
 	pOutput->Clear();
-	return NOT_IMPLEMENTED;
+	return kErrorNotSupportedOnThisPlatform;
 }
 
 /*! ************************************
@@ -456,7 +456,7 @@ uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 	the file was created.
 
 	\param pOutput Pointer to a Burger::TimeDate_t to receive the file creation time
-	\return File::OKAY if successful, File::NOT_IMPLEMENTED if not available or other codes for errors
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
 	\sa GetModificationTime() or SetCreationTime()
 
 ***************************************/
@@ -464,7 +464,7 @@ uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 uint_t BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 {
 	pOutput->Clear();
-	return NOT_IMPLEMENTED;
+	return kErrorNotSupportedOnThisPlatform;
 }
 
 /*! ************************************
@@ -475,14 +475,14 @@ uint_t BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 	modification time to the passed value.
 
 	\param pInput Pointer to a Burger::TimeDate_t to use for the new file modification time
-	\return File::OKAY if successful, File::NOT_IMPLEMENTED if not available or other codes for errors
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
 	\sa SetCreationTime() or GetModificationTime()
 
 ***************************************/
 
 uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t * /* pInput */)
 {
-	return NOT_IMPLEMENTED;
+	return kErrorNotSupportedOnThisPlatform;
 }
 
 /*! ************************************
@@ -493,14 +493,14 @@ uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t * /* pInput
 	creation time to the passed value.
 
 	\param pInput Pointer to a Burger::TimeDate_t to use for the new file creation time
-	\return File::OKAY if successful, File::NOT_IMPLEMENTED if not available or other codes for errors
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
 	\sa SetModificationTime() or GetCreationTime()
 
 ***************************************/
 
 uint_t BURGER_API Burger::File::SetCreationTime(const TimeDate_t * /* pInput */)
 {
-	return NOT_IMPLEMENTED;
+	return kErrorNotSupportedOnThisPlatform;
 }
 #endif
 
@@ -542,10 +542,10 @@ uint_t BURGER_API Burger::File::ReadAsync(void *pOutput,uintptr_t uSize)
 	The file's auxiliary type is usually set to the application ID code.
 
 	\note This is a MacOS exclusive feature. If the application is not running
-	on MacOS, it will fail with a code of File::NOT_IMPLEMENTED.
+	on MacOS, it will fail with a code of kErrorNotSupportedOnThisPlatform.
 
 	\param uAuxType Value to set the file's auxiliary type
-	\return File::OKAY if successful, File::NOT_IMPLEMENTED if not available or other codes for errors
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
 	\sa SetAuxAndFileType(), SetFileType() or GetAuxType()
 
 ***************************************/
@@ -559,10 +559,10 @@ uint_t BURGER_API Burger::File::ReadAsync(void *pOutput,uintptr_t uSize)
 	type to the passed value.
 
 	\note This is a MacOS exclusive feature. If the application is not running
-	on MacOS, it will fail with a code of File::NOT_IMPLEMENTED.
+	on MacOS, it will fail with a code of kErrorNotSupportedOnThisPlatform.
 
 	\param uFileType Value to set the file's type
-	\return File::OKAY if successful, File::NOT_IMPLEMENTED if not available or other codes for errors
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
 	\sa SetAuxAndFileType(), SetAuxType() or GetFileType()
 
 ***************************************/
@@ -612,11 +612,11 @@ uint_t BURGER_API Burger::File::ReadAsync(void *pOutput,uintptr_t uSize)
 	The file's auxiliary type is usually set to the application ID code.
 
 	\note This is a MacOS exclusive feature. If the application is not running
-	on MacOS, it will fail with a code of File::NOT_IMPLEMENTED.
+	on MacOS, it will fail with a code of kErrorNotSupportedOnThisPlatform.
 
 	\param uAuxType Value to set the file's auxiliary type
 	\param uFileType Value to set the file's type
-	\return File::OKAY if successful, File::NOT_IMPLEMENTED if not available or other codes for errors
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
 	\sa SetFileType() or SetAuxType()
 
 ***************************************/

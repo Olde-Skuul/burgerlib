@@ -27,7 +27,7 @@
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::Open(Filename* pDirName)
+uint_t Burger::DirectorySearch::Open(Filename* pDirName) BURGER_NOEXCEPT
 {
 	// Convert the filename to unicode
 	String16 MyName(pDirName->GetNative());
@@ -35,11 +35,11 @@ uint_t Burger::DirectorySearch::Open(Filename* pDirName)
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pDirName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	uint_t uResult = File::FILENOTFOUND;
+	uint_t uResult = kErrorFileNotFound;
 	if (!eError) {
 		eError = FSOpenIterator(&MyRef, kFSIterateFlat, &m_pIterator);
 		if (!eError) {
-			uResult = File::OKAY;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -53,7 +53,7 @@ uint_t Burger::DirectorySearch::Open(Filename* pDirName)
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::GetNextEntry(void)
+uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 {
 	ItemCount Count;
 	Boolean bChanged;
@@ -101,7 +101,7 @@ uint_t Burger::DirectorySearch::GetNextEntry(void)
 
 ***************************************/
 
-void Burger::DirectorySearch::Close(void)
+void Burger::DirectorySearch::Close(void) BURGER_NOEXCEPT
 {
 	if (m_pIterator) {
 		FSCloseIterator(m_pIterator);

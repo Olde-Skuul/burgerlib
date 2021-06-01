@@ -26,7 +26,7 @@
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::Open(Filename *pDirName)
+uint_t Burger::DirectorySearch::Open(Filename *pDirName) BURGER_NOEXCEPT
 {
 	// Leave room for 5 extra samples
 	String CopyOfName(pDirName->GetNative(),5);
@@ -59,7 +59,7 @@ uint_t Burger::DirectorySearch::Open(Filename *pDirName)
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::GetNextEntry(void)
+uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 {
 	// Am I scanning a directory?
 	HANDLE hDir = m_hDirHandle;
@@ -124,7 +124,7 @@ uint_t Burger::DirectorySearch::GetNextEntry(void)
 
 ***************************************/
 
-void Burger::DirectorySearch::Close(void)
+void Burger::DirectorySearch::Close(void) BURGER_NOEXCEPT
 {
 	if (m_hDirHandle!=INVALID_HANDLE_VALUE) {
 		FindClose(m_hDirHandle);

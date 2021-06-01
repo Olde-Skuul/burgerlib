@@ -45,7 +45,7 @@
 ***************************************/
 
 uint_t BURGER_API Burger::FileManager::GetVolumeName(
-	Burger::Filename* pOutput, uint_t uVolumeNum)
+	Burger::Filename* pOutput, uint_t uVolumeNum) BURGER_NOEXCEPT
 {
 	pOutput->Clear();
 
@@ -73,10 +73,10 @@ uint_t BURGER_API Burger::FileManager::GetVolumeName(
 			NameUTF8[uLength + 1] = ':';
 			NameUTF8[uLength + 2] = 0;
 			pOutput->Set(NameUTF8);
-			return File::OKAY; // No error!
+			return kErrorNone; // No error!
 		}
 	}
-	return File::OUTOFRANGE;
+	return kErrorInvalidParameter;
 }
 
 /***************************************
@@ -99,7 +99,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 	// Get the boot volume name
 	uint_t uResult = GetVolumeName(&MyFilename, 0);
-	if (uResult == File::OKAY) {
+	if (uResult == kErrorNone) {
 		// Set the initial prefix
 		SetPrefix(PREFIXBOOT, MyFilename.GetPtr());
 	}
@@ -241,7 +241,7 @@ uint_t Burger::FileManager::GetCreationTime(
 
 ***************************************/
 
-uint_t Burger::FileManager::DoesFileExist(Filename* pFileName)
+uint_t Burger::FileManager::DoesFileExist(Filename* pFileName) BURGER_NOEXCEPT
 {
 	// Convert the filename to unicode
 	String16 MyName(pFileName->GetNative());
@@ -419,7 +419,7 @@ uint_t Burger::FileManager::SetFileType(Filename* pFileName, uint32_t uFileType)
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	uint_t uResult = File::FILENOTFOUND;
+	uint_t uResult = kErrorFileNotFound;
 	if (!eError) {
 		FSRefParam Block;
 		FSCatalogInfo MyInfo;
@@ -436,7 +436,7 @@ uint_t Burger::FileManager::SetFileType(Filename* pFileName, uint32_t uFileType)
 				uFileType;
 			eError = PBSetCatalogInfoSync(&Block);
 			if (!eError) {
-				uResult = File::OKAY;
+				uResult = kErrorNone;
 			}
 		}
 	}
@@ -516,11 +516,11 @@ uint_t Burger::FileManager::CreateDirectoryPath(Filename* pFileName)
 				MyName.GetPtr(), kFSCatInfoNone, NULL, NULL, NULL, NULL);
 		// Error?
 		if (eError && (eError != dupFNErr)) {
-			return File::FILENOTFOUND;
+			return kErrorFileNotFound;
 		}
 		// Completed?
 	} while (pColon);
-	return File::OKAY;
+	return kErrorNone;
 }
 
 /***************************************
@@ -529,7 +529,7 @@ uint_t Burger::FileManager::CreateDirectoryPath(Filename* pFileName)
 
 ***************************************/
 
-uint_t Burger::FileManager::DeleteFile(Filename* pFileName)
+uint_t Burger::FileManager::DeleteFile(Filename* pFileName) BURGER_NOEXCEPT
 {
 	// Convert the filename to unicode
 	String16 MyName(pFileName->GetNative());
@@ -537,11 +537,11 @@ uint_t Burger::FileManager::DeleteFile(Filename* pFileName)
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	uint_t uResult = File::FILENOTFOUND;
+	uint_t uResult = kErrorFileNotFound;
 	if (!eError) {
 		eError = FSDeleteObject(&MyRef);
 		if (!eError) {
-			uResult = File::OKAY;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -562,14 +562,14 @@ uint_t Burger::FileManager::RenameFile(Filename* pNewName, Filename* pOldName)
 	OSErr eError =
 		FSMakeFSRefUnicode(pNewName->GetFSRef(), SourceName.GetLength(),
 			SourceName.GetPtr(), kUnicode16BitFormat, &SourceRef);
-	uint_t uResult = File::FILENOTFOUND;
+	uint_t uResult = kErrorFileNotFound;
 	if (!eError) {
 		// Convert the filename to unicode
 		String16 DestName(pNewName->GetNative());
 		OSErr eError = FSRenameUnicode(&SourceRef, DestName.GetLength(),
 			DestName.GetPtr(), kUnicode16BitFormat, NULL);
 		if (!eError) {
-			uResult = File::OKAY;
+			uResult =kErrorNone;
 		}
 	}
 	return uResult;
@@ -590,7 +590,7 @@ uint_t Burger::FileManager::ChangeOSDirectory(Filename* pDirName)
 	// Create a UFT16 FSRef
 	OSErr eError = FSMakeFSRefUnicode(pDirName->GetFSRef(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-	uint_t uResult = File::FILENOTFOUND;
+	uint_t uResult = kErrorFileNotFound;
 	if (!eError) {
 		FSSpec MySpec;
 		FSRefParam Block;
@@ -604,7 +604,7 @@ uint_t Burger::FileManager::ChangeOSDirectory(Filename* pDirName)
 		if (!eError) {
 			eError = HSetVol(MySpec.name, MySpec.vRefNum, MySpec.parID);
 			if (!eError) {
-				uResult = File::OKAY;
+				uResult = kErrorNone;
 			}
 		}
 	}
@@ -734,7 +734,7 @@ static uint_t CopyFork(short f1, short f2, uint8_t* pBuffer)
 uint_t BURGER_API Burger::FileManager::CopyFile(
 	Filename* pDestName, Filename* pSourceName)
 {
-	uint_t uResult = File::IOERROR; /* Assume error */
+	uint_t uResult = kErrorIO; /* Assume error */
 	uint8_t* pBuffer = static_cast<uint8_t*>(Burger::Alloc(65536));
 	if (pBuffer) {
 		// Convert the filename to unicode
@@ -777,10 +777,10 @@ uint_t BURGER_API Burger::FileManager::CopyFile(
 					if (!FSOpenFork(&DestRef, ForkName.length, ForkName.unicode,
 							fsWrPerm, &Destfp)) {
 						if (!CopyFork(Srcfp, Destfp, pBuffer)) {
-							uResult = File::OKAY;
+							uResult = kErrorNone;
 						}
 						if (FSClose(Destfp)) {
-							uResult = File::IOERROR;
+							uResult = kErrorIO;
 						}
 					}
 					FSClose(Srcfp);
@@ -795,10 +795,10 @@ uint_t BURGER_API Burger::FileManager::CopyFile(
 						if (!FSOpenFork(&DestRef, ForkName.length,
 								ForkName.unicode, fsWrPerm, &Destfp)) {
 							if (!CopyFork(Srcfp, Destfp, pBuffer)) {
-								uResult = File::OKAY;
+								uResult = kErrorNone;
 							}
 							if (FSClose(Destfp)) {
-								uResult = File::IOERROR;
+								uResult = kErrorIO;
 							}
 						}
 						FSClose(Srcfp);
@@ -816,7 +816,7 @@ uint_t BURGER_API Burger::FileManager::CopyFile(
 							&DestRef, kFSCatInfoFinderInfo, &MyInfo);
 						if (!eError) {
 							// Data was updated!
-							uResult = File::OKAY;
+							uResult = kErrorNone;
 							;
 						}
 					}

@@ -278,12 +278,12 @@ Burger::CompressLZSS::CompressLZSS() :
 
 ***************************************/
 
-Burger::CompressLZSS::eError Burger::CompressLZSS::Init(void)
+Burger::eError Burger::CompressLZSS::Init(void)
 {
 	// Clear any previous output
 	m_Output.Clear();
 	InitTrees();
-	return COMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /***************************************
@@ -292,7 +292,7 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Init(void)
 
 ***************************************/
 
-Burger::CompressLZSS::eError Burger::CompressLZSS::Process(const void *pInput,uintptr_t uInputLength)
+Burger::eError Burger::CompressLZSS::Process(const void *pInput,uintptr_t uInputLength)
 {
 	if (uInputLength) {
 
@@ -302,7 +302,7 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Process(const void *pInput,ui
 		if (m_uCachedLength<MAXMATCHLENGTH) {
 			do {
 				if (!uInputLength) {
-					return COMPRESS_OKAY;
+					return kErrorNone;
 				}
 				m_RingBuffer[m_uCachedLength+(RINGBUFFERSIZE - MAXMATCHLENGTH)] = static_cast<const uint8_t *>(pInput)[0];
 				pInput = static_cast<const uint8_t *>(pInput) + 1;
@@ -328,7 +328,7 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Process(const void *pInput,ui
 
 			// Any data to handle?
 			if (!uInputLength) {
-				return COMPRESS_OKAY;
+				return kErrorNone;
 			}
 		}
 
@@ -339,7 +339,7 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Process(const void *pInput,ui
 			// since it may have dropped past the RINGBUFFERSIZE offset
 			do {
 				if (!uInputLength) {
-					return COMPRESS_OKAY;
+					return kErrorNone;
 				}
 				uint_t uInputByte = static_cast<const uint8_t *>(pInput)[0];		// Get a byte from the input stream
 				pInput = static_cast<const uint8_t *>(pInput) + 1;
@@ -402,7 +402,7 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Process(const void *pInput,ui
 			m_uMatchIterator = 0;
 		} while (uInputLength);	// until length of string to be processed is zero
 	}
-	return COMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /***************************************
@@ -411,7 +411,7 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Process(const void *pInput,ui
 
 ***************************************/
 
-Burger::CompressLZSS::eError Burger::CompressLZSS::Finalize(void)
+Burger::eError Burger::CompressLZSS::Finalize(void)
 {
 	// Finally, insert the whole string just read. The
 	// global variables MatchSize and MatchOffset are set.
@@ -487,7 +487,7 @@ Burger::CompressLZSS::eError Burger::CompressLZSS::Finalize(void)
 	if (m_bOrMask) {
 		m_Output.Overwrite(&m_bBitMask,1,m_uBitMaskOffset);
 	}
-	return COMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************

@@ -493,7 +493,7 @@ uint_t BURGER_API Burger::Keyboard::GetKeyEvent(KeyEvent_t *pEvent)
 	uint_t bResult = FALSE;
 	if (uIndex!=m_uArrayEnd) {			// Anything in the buffer?
 		pEvent[0] = m_KeyEvents[uIndex];
-		m_uArrayStart = (uIndex+1)&(cBufferSize-1);		// Next key
+		m_uArrayStart = (uIndex+1)&(kBufferSize-1);		// Next key
 		bResult = TRUE;
 	}
 	Unlock();
@@ -976,7 +976,7 @@ uint_t BURGER_API Burger::Keyboard::PostKeyEvent(const KeyEvent_t *pEvent)
 	uint_t bResult = 10;
 	uint_t uEnd = m_uArrayEnd;
 	// See if there's room in the buffer
-	uint_t uTemp = (uEnd+1)&(cBufferSize-1);
+	uint_t uTemp = (uEnd+1)&(kBufferSize-1);
 	if (uTemp!=m_uArrayStart) {
 
 		// Didn't wrap, accept it!

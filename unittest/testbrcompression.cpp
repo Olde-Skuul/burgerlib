@@ -222,11 +222,11 @@ static uint_t TestILBMDecompress(void)
 	DecompressILBMRLE* pTester = New<DecompressILBMRLE>();
 
 	MemoryFill(Buffer, 0xD5, sizeof(Buffer));
-	Decompress::eError Error = pTester->Process(
+	eError Error = pTester->Process(
 		Buffer, sizeof(RawData), ILBMCompressed, sizeof(ILBMCompressed));
-	if (Error != Decompress::DECOMPRESS_OKAY) {
+	if (Error != kErrorNone) {
 		ReportFailure(
-			"DecompressILBMRLE::Process(Buffer,sizeof(RawData),ILBMCompressed,sizeof(ILBMCompressed)) = %d, expected Decompress::DECOMPRESS_OKAY",
+			"DecompressILBMRLE::Process(Buffer,sizeof(RawData),ILBMCompressed,sizeof(ILBMCompressed)) = %d, expected kErrorNone",
 			TRUE, Error);
 		uFailure = TRUE;
 	}
@@ -241,20 +241,20 @@ static uint_t TestILBMDecompress(void)
 		Error = pTester->Process(
 			Buffer, uSplit, ILBMCompressed, sizeof(ILBMCompressed));
 		uintptr_t uBytesProcessed = pTester->GetProcessedInputSize();
-		if (Error != Decompress::DECOMPRESS_OUTPUTOVERRUN) {
+		if (Error != kErrorBufferTooSmall) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"DecompressILBMRLE::Process(Buffer,0x%s,ILBMCompressed,sizeof(ILBMCompressed)) = %d, expected Decompress::DECOMPRESS_OUTPUTOVERRUN",
+				"DecompressILBMRLE::Process(Buffer,0x%s,ILBMCompressed,sizeof(ILBMCompressed)) = %d, expected kErrorBufferTooSmall",
 				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(Buffer + uSplit, sizeof(RawData) - uSplit,
 			ILBMCompressed + uBytesProcessed,
 			sizeof(ILBMCompressed) - uBytesProcessed);
-		if (Error != Decompress::DECOMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"DecompressILBMRLE::Process(Buffer+0x%s,sizeof(RawData)-0x%s,ILBMCompressed+uBytesProcessed,sizeof(ILBMCompressed)-uBytesProcessed) = %d, expected Decompress::DECOMPRESS_OKAY",
+				"DecompressILBMRLE::Process(Buffer+0x%s,sizeof(RawData)-0x%s,ILBMCompressed+uBytesProcessed,sizeof(ILBMCompressed)-uBytesProcessed) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
@@ -270,20 +270,20 @@ static uint_t TestILBMDecompress(void)
 		Error =
 			pTester->Process(Buffer, sizeof(RawData), ILBMCompressed, uSplit);
 		uintptr_t uBytesProcessed = pTester->GetProcessedOutputSize();
-		if (Error != Decompress::DECOMPRESS_OUTPUTUNDERRUN) {
+		if (Error != kErrorDataStarvation) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"DecompressILBMRLE::Process(Buffer,sizeof(RawData),ILBMCompressed,0x%s) = %d, expected Decompress::DECOMPRESS_OUTPUTUNDERRUN",
+				"DecompressILBMRLE::Process(Buffer,sizeof(RawData),ILBMCompressed,0x%s) = %d, expected kErrorDataStarvation",
 				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(Buffer + uBytesProcessed,
 			sizeof(RawData) - uBytesProcessed, ILBMCompressed + uSplit,
 			sizeof(ILBMCompressed) - uSplit);
-		if (Error != Decompress::DECOMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"DecompressILBMRLE::Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,ILBMCompressed+0x%s,sizeof(ILBMCompressed)-0x%s) = %d, expected Decompress::DECOMPRESS_OKAY",
+				"DecompressILBMRLE::Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,ILBMCompressed+0x%s,sizeof(ILBMCompressed)-0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
@@ -299,16 +299,16 @@ static uint_t TestILBMDecompress(void)
 		Error = pTester->Process(Buffer + uSplit, 1, ILBMCompressed + uStepper,
 			sizeof(ILBMCompressed) - uStepper);
 		if (uSplit == (sizeof(RawData) - 1)) {
-			if (Error != Decompress::DECOMPRESS_OKAY) {
+			if (Error != kErrorNone) {
 				ReportFailure(
-					"DecompressILBMRLE::Process(Buffer,1,ILBMCompressed,uStepper) = %d, expected Decompress::DECOMPRESS_OKAY",
+					"DecompressILBMRLE::Process(Buffer,1,ILBMCompressed,uStepper) = %d, expected kErrorNone",
 					TRUE, Error);
 				uFailure = TRUE;
 			}
 		} else {
-			if (Error != Decompress::DECOMPRESS_OUTPUTOVERRUN) {
+			if (Error != kErrorBufferTooSmall) {
 				ReportFailure(
-					"DecompressILBMRLE::Process(Buffer,1,ILBMCompressed,uStepper) = %d, expected Decompress::DECOMPRESS_OUTPUTOVERRUN",
+					"DecompressILBMRLE::Process(Buffer,1,ILBMCompressed,uStepper) = %d, expected kErrorBufferTooSmall",
 					TRUE, Error);
 				uFailure = TRUE;
 			}
@@ -326,16 +326,16 @@ static uint_t TestILBMDecompress(void)
 		Error = pTester->Process(Buffer + uStepper, sizeof(RawData) - uStepper,
 			ILBMCompressed + uSplit, 1);
 		if (uSplit == (sizeof(ILBMCompressed) - 1)) {
-			if (Error != Decompress::DECOMPRESS_OKAY) {
+			if (Error != kErrorNone) {
 				ReportFailure(
-					"DecompressILBMRLE::Process(Buffer,uStepper,ILBMCompressed,1) = %d, expected Decompress::DECOMPRESS_OKAY",
+					"DecompressILBMRLE::Process(Buffer,uStepper,ILBMCompressed,1) = %d, expected kErrorNone",
 					TRUE, Error);
 				uFailure = TRUE;
 			}
 		} else {
-			if (Error != Decompress::DECOMPRESS_OUTPUTUNDERRUN) {
+			if (Error != kErrorDataStarvation) {
 				ReportFailure(
-					"DecompressILBMRLE::Process(Buffer,uStepper,ILBMCompressed,1) = %d, expected Decompress::DECOMPRESS_OUTPUTUNDERRUN",
+					"DecompressILBMRLE::Process(Buffer,uStepper,ILBMCompressed,1) = %d, expected kErrorDataStarvation",
 					TRUE, Error);
 				uFailure = TRUE;
 			}
@@ -359,17 +359,17 @@ static uint_t TestILBMCompress(void)
 	// Perform a simple Compression test and test for buffer overrun
 	CompressILBMRLE* pTester = New<CompressILBMRLE>();
 
-	Compress::eError Error = pTester->Process(RawData, sizeof(RawData));
-	if (Error != Compress::COMPRESS_OKAY) {
+	eError Error = pTester->Process(RawData, sizeof(RawData));
+	if (Error != kErrorNone) {
 		ReportFailure(
-			"CompressILBMRLE::Process(RawData,sizeof(RawData)) = %d, expected Compress::COMPRESS_OKAY",
+			"CompressILBMRLE::Process(RawData,sizeof(RawData)) = %d, expected kErrorNone",
 			TRUE, Error);
 		uFailure = TRUE;
 	}
 	Error = pTester->Finalize();
-	if (Error != Compress::COMPRESS_OKAY) {
+	if (Error != kErrorNone) {
 		ReportFailure(
-			"CompressILBMRLE::Finalize() = %d, expected Compress::COMPRESS_OKAY",
+			"CompressILBMRLE::Finalize() = %d, expected kErrorNone",
 			TRUE, Error);
 		uFailure = TRUE;
 	}
@@ -391,25 +391,25 @@ static uint_t TestILBMCompress(void)
 	do {
 		pTester->Init();
 		Error = pTester->Process(RawData, uSplit);
-		if (Error != Compress::COMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"CompressILBMRLE::Process(RawData,0x%s) = %d, expected Compress::COMPRESS_OKAY",
+				"CompressILBMRLE::Process(RawData,0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(RawData + uSplit, sizeof(RawData) - uSplit);
-		if (Error != Compress::COMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"CompressILBMRLE::Process(RawData+0x%s,sizeof(RawData)-0x%s) = %d, expected Compress::COMPRESS_OKAY",
+				"CompressILBMRLE::Process(RawData+0x%s,sizeof(RawData)-0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Finalize();
-		if (Error != Compress::COMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			ReportFailure(
-				"CompressILBMRLE::Finalize(uSplit %04X) = %d, expected Compress::COMPRESS_OKAY",
+				"CompressILBMRLE::Finalize(uSplit %04X) = %d, expected kErrorNone",
 				TRUE, static_cast<uint32_t>(uSplit), Error);
 			uFailure = TRUE;
 		}
@@ -436,18 +436,18 @@ static uint_t TestILBMCompress(void)
 	pTester->Init();
 	do {
 		Error = pTester->Process(RawData + uSplit, 1);
-		if (Error != Compress::COMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"CompressILBMRLE::Process(RawData+0x%s,1) = %d, expected Compress::COMPRESS_OKAY",
+				"CompressILBMRLE::Process(RawData+0x%s,1) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 	} while (++uSplit < sizeof(RawData));
 	Error = pTester->Finalize();
-	if (Error != Compress::COMPRESS_OKAY) {
+	if (Error != kErrorNone) {
 		ReportFailure(
-			"CompressILBMRLE::Finalize(uSplit %04X) = %d, expected Compress::COMPRESS_OKAY",
+			"CompressILBMRLE::Finalize(uSplit %04X) = %d, expected kErrorNone",
 			TRUE, static_cast<uint32_t>(uSplit), Error);
 		uFailure = TRUE;
 	}
@@ -482,11 +482,11 @@ static uint_t TestLZSSDecompress(void)
 	DecompressLZSS* pTester = New<DecompressLZSS>();
 
 	MemoryFill(Buffer, 0xD5, sizeof(Buffer));
-	Decompress::eError Error = pTester->Process(
+	eError Error = pTester->Process(
 		Buffer, sizeof(RawData), LZSSCompressed, sizeof(LZSSCompressed));
-	if (Error != Decompress::DECOMPRESS_OKAY) {
+	if (Error != kErrorNone) {
 		ReportFailure(
-			"DecompressLZSS::Process(Buffer,sizeof(RawData),LZSSCompressed,sizeof(LZSSCompressed)) = %d, expected Decompress::DECOMPRESS_OKAY",
+			"DecompressLZSS::Process(Buffer,sizeof(RawData),LZSSCompressed,sizeof(LZSSCompressed)) = %d, expected kErrorNone",
 			TRUE, Error);
 		uFailure = TRUE;
 	}
@@ -501,20 +501,20 @@ static uint_t TestLZSSDecompress(void)
 		Error = pTester->Process(
 			Buffer, uSplit, LZSSCompressed, sizeof(LZSSCompressed));
 		uintptr_t uBytesProcessed = pTester->GetProcessedInputSize();
-		if (Error != Decompress::DECOMPRESS_OUTPUTOVERRUN) {
+		if (Error != kErrorBufferTooSmall) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"DecompressLZSS::Process(Buffer,0x%s,LZSSCompressed,sizeof(LZSSCompressed)) = %d, expected Decompress::DECOMPRESS_OUTPUTOVERRUN",
+				"DecompressLZSS::Process(Buffer,0x%s,LZSSCompressed,sizeof(LZSSCompressed)) = %d, expected kErrorBufferTooSmall",
 				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(Buffer + uSplit, sizeof(RawData) - uSplit,
 			LZSSCompressed + uBytesProcessed,
 			sizeof(LZSSCompressed) - uBytesProcessed);
-		if (Error != Decompress::DECOMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"DecompressLZSS::Process(Buffer+0x%s,sizeof(RawData)-0x%s,LZSSCompressed+uBytesProcessed,sizeof(LZSSCompressed)-uBytesProcessed) = %d, expected Decompress::DECOMPRESS_OKAY",
+				"DecompressLZSS::Process(Buffer+0x%s,sizeof(RawData)-0x%s,LZSSCompressed+uBytesProcessed,sizeof(LZSSCompressed)-uBytesProcessed) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
@@ -530,20 +530,20 @@ static uint_t TestLZSSDecompress(void)
 		Error =
 			pTester->Process(Buffer, sizeof(RawData), LZSSCompressed, uSplit);
 		uintptr_t uBytesProcessed = pTester->GetProcessedOutputSize();
-		if (Error != Decompress::DECOMPRESS_OUTPUTUNDERRUN) {
+		if (Error != kErrorDataStarvation) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"DecompressLZSS::Process(Buffer,sizeof(RawData),LZSSCompressed,0x%s) = %d, expected Decompress::DECOMPRESS_OUTPUTUNDERRUN",
+				"DecompressLZSS::Process(Buffer,sizeof(RawData),LZSSCompressed,0x%s) = %d, expected kErrorDataStarvation",
 				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(Buffer + uBytesProcessed,
 			sizeof(RawData) - uBytesProcessed, LZSSCompressed + uSplit,
 			sizeof(LZSSCompressed) - uSplit);
-		if (Error != Decompress::DECOMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"DecompressLZSS::Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,LZSSCompressed+0x%s,sizeof(LZSSCompressed)-0x%s) = %d, expected Decompress::DECOMPRESS_OKAY",
+				"DecompressLZSS::Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,LZSSCompressed+0x%s,sizeof(LZSSCompressed)-0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
@@ -559,16 +559,16 @@ static uint_t TestLZSSDecompress(void)
 		Error = pTester->Process(Buffer + uSplit, 1, LZSSCompressed + uStepper,
 			sizeof(LZSSCompressed) - uStepper);
 		if (uSplit == (sizeof(RawData) - 1)) {
-			if (Error != Decompress::DECOMPRESS_OKAY) {
+			if (Error != kErrorNone) {
 				ReportFailure(
-					"DecompressLZSS::Process(Buffer,1,LZSSCompressed,uStepper) = %d, expected Decompress::DECOMPRESS_OKAY",
+					"DecompressLZSS::Process(Buffer,1,LZSSCompressed,uStepper) = %d, expected kErrorNone",
 					TRUE, Error);
 				uFailure = TRUE;
 			}
 		} else {
-			if (Error != Decompress::DECOMPRESS_OUTPUTOVERRUN) {
+			if (Error != kErrorBufferTooSmall) {
 				ReportFailure(
-					"DecompressLZSS::Process(Buffer,1,LZSSCompressed,uStepper) = %d, expected Decompress::DECOMPRESS_OUTPUTOVERRUN",
+					"DecompressLZSS::Process(Buffer,1,LZSSCompressed,uStepper) = %d, expected kErrorBufferTooSmall",
 					TRUE, Error);
 				uFailure = TRUE;
 			}
@@ -586,16 +586,16 @@ static uint_t TestLZSSDecompress(void)
 		Error = pTester->Process(Buffer + uStepper, sizeof(RawData) - uStepper,
 			LZSSCompressed + uSplit, 1);
 		if (uSplit == (sizeof(LZSSCompressed) - 1)) {
-			if (Error != Decompress::DECOMPRESS_OKAY) {
+			if (Error != kErrorNone) {
 				ReportFailure(
-					"DecompressLZSS::Process(Buffer,uStepper,LZSSCompressed,1) = %d, expected Decompress::DECOMPRESS_OKAY",
+					"DecompressLZSS::Process(Buffer,uStepper,LZSSCompressed,1) = %d, expected kErrorNone",
 					TRUE, Error);
 				uFailure = TRUE;
 			}
 		} else {
-			if (Error != Decompress::DECOMPRESS_OUTPUTUNDERRUN) {
+			if (Error != kErrorDataStarvation) {
 				ReportFailure(
-					"DecompressLZSS::Process(Buffer,uStepper,LZSSCompressed,1) = %d, expected Decompress::DECOMPRESS_OUTPUTUNDERRUN",
+					"DecompressLZSS::Process(Buffer,uStepper,LZSSCompressed,1) = %d, expected kErrorDataStarvation",
 					TRUE, Error);
 				uFailure = TRUE;
 			}
@@ -619,17 +619,17 @@ static uint_t TestLZSSCompress(void)
 	// Perform a simple Compression test and test for buffer overrun
 	CompressLZSS* pTester = New<CompressLZSS>();
 
-	Compress::eError Error = pTester->Process(RawData, sizeof(RawData));
-	if (Error != Compress::COMPRESS_OKAY) {
+	eError Error = pTester->Process(RawData, sizeof(RawData));
+	if (Error != kErrorNone) {
 		ReportFailure(
-			"CompressLZSS::Process(RawData,sizeof(RawData)) = %d, expected Compress::COMPRESS_OKAY",
+			"CompressLZSS::Process(RawData,sizeof(RawData)) = %d, expected kErrorNone",
 			TRUE, Error);
 		uFailure = TRUE;
 	}
 	Error = pTester->Finalize();
-	if (Error != Compress::COMPRESS_OKAY) {
+	if (Error != kErrorNone) {
 		ReportFailure(
-			"CompressLZSS::Finalize() = %d, expected Compress::COMPRESS_OKAY",
+			"CompressLZSS::Finalize() = %d, expected kErrorNone",
 			TRUE, Error);
 		uFailure = TRUE;
 	}
@@ -651,25 +651,25 @@ static uint_t TestLZSSCompress(void)
 	do {
 		pTester->Init();
 		Error = pTester->Process(RawData, uSplit);
-		if (Error != Compress::COMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"CompressLZSS::Process(RawData,0x%s) = %d, expected Compress::COMPRESS_OKAY",
+				"CompressLZSS::Process(RawData,0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(RawData + uSplit, sizeof(RawData) - uSplit);
-		if (Error != Compress::COMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"CompressLZSS::Process(RawData+0x%s,sizeof(RawData)-0x%s) = %d, expected Compress::COMPRESS_OKAY",
+				"CompressLZSS::Process(RawData+0x%s,sizeof(RawData)-0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Finalize();
-		if (Error != Compress::COMPRESS_OKAY) {
+		if (Error !=kErrorNone ) {
 			ReportFailure(
-				"CompressLZSS::Finalize(uSplit %04X) = %d, expected Compress::COMPRESS_OKAY",
+				"CompressLZSS::Finalize(uSplit %04X) = %d, expected kErrorNone",
 				TRUE, static_cast<uint32_t>(uSplit), Error);
 			uFailure = TRUE;
 		}
@@ -695,18 +695,18 @@ static uint_t TestLZSSCompress(void)
 	pTester->Init();
 	do {
 		Error = pTester->Process(RawData + uSplit, 1);
-		if (Error != Compress::COMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"CompressLZSS::Process(RawData+0x%s,1) = %d, expected Compress::COMPRESS_OKAY",
+				"CompressLZSS::Process(RawData+0x%s,1) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 	} while (++uSplit < sizeof(RawData));
 	Error = pTester->Finalize();
-	if (Error != Compress::COMPRESS_OKAY) {
+	if (Error != kErrorNone) {
 		ReportFailure(
-			"CompressLZSS::Finalize(uSplit %04X) = %d, expected Compress::COMPRESS_OKAY",
+			"CompressLZSS::Finalize(uSplit %04X) = %d, expected kErrorNone",
 			TRUE, static_cast<uint32_t>(uSplit), Error);
 		uFailure = TRUE;
 	}
@@ -741,11 +741,11 @@ static uint_t TestDeflateDecompress(void)
 	DecompressDeflate* pTester = New<DecompressDeflate>();
 
 	MemoryFill(Buffer, 0xD5, sizeof(Buffer));
-	Decompress::eError Error = pTester->Process(
+	eError Error = pTester->Process(
 		Buffer, sizeof(RawData), DeflateCompressed, sizeof(DeflateCompressed));
-	if (Error != Decompress::DECOMPRESS_OKAY) {
+	if (Error != kErrorNone) {
 		ReportFailure(
-			"DecompressDeflate::Process(Buffer,sizeof(RawData),DeflateCompressed,sizeof(DeflateCompressed)) = %d, expected Decompress::DECOMPRESS_OKAY",
+			"DecompressDeflate::Process(Buffer,sizeof(RawData),DeflateCompressed,sizeof(DeflateCompressed)) = %d, expected kErrorNone",
 			TRUE, Error);
 		uFailure = TRUE;
 	}
@@ -760,20 +760,20 @@ static uint_t TestDeflateDecompress(void)
 		Error = pTester->Process(
 			Buffer, uSplit, DeflateCompressed, sizeof(DeflateCompressed));
 		uintptr_t uBytesProcessed = pTester->GetProcessedInputSize();
-		if (Error != Decompress::DECOMPRESS_OUTPUTOVERRUN) {
+		if (Error != kErrorBufferTooSmall) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"DecompressDeflate::Process(Buffer,0x%s,DeflateCompressed,sizeof(DeflateCompressed)) = %d, expected Decompress::DECOMPRESS_OUTPUTOVERRUN",
+				"DecompressDeflate::Process(Buffer,0x%s,DeflateCompressed,sizeof(DeflateCompressed)) = %d, expected kErrorBufferTooSmall",
 				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(Buffer + uSplit, sizeof(RawData) - uSplit,
 			DeflateCompressed + uBytesProcessed,
 			sizeof(DeflateCompressed) - uBytesProcessed);
-		if (Error != Decompress::DECOMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"DecompressDeflate::Process(Buffer+0x%s,sizeof(RawData)-0x%s,DeflateCompressed+uBytesProcessed,sizeof(DeflateCompressed)-uBytesProcessed) = %d, expected Decompress::DECOMPRESS_OKAY",
+				"DecompressDeflate::Process(Buffer+0x%s,sizeof(RawData)-0x%s,DeflateCompressed+uBytesProcessed,sizeof(DeflateCompressed)-uBytesProcessed) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
@@ -789,20 +789,20 @@ static uint_t TestDeflateDecompress(void)
 		Error = pTester->Process(
 			Buffer, sizeof(RawData), DeflateCompressed, uSplit);
 		uintptr_t uBytesProcessed = pTester->GetProcessedOutputSize();
-		if (Error != Decompress::DECOMPRESS_OUTPUTUNDERRUN) {
+		if (Error != kErrorDataStarvation) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"DecompressDeflate::Process(Buffer,sizeof(RawData),DeflateCompressed,0x%s) = %d, expected Decompress::DECOMPRESS_OUTPUTUNDERRUN",
+				"DecompressDeflate::Process(Buffer,sizeof(RawData),DeflateCompressed,0x%s) = %d, expected kErrorDataStarvation",
 				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(Buffer + uBytesProcessed,
 			sizeof(RawData) - uBytesProcessed, DeflateCompressed + uSplit,
 			sizeof(DeflateCompressed) - uSplit);
-		if (Error != Decompress::DECOMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"DecompressDeflate::Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,DeflateCompressed+0x%s,sizeof(DeflateCompressed)-0x%s) = %d, expected Decompress::DECOMPRESS_OKAY",
+				"DecompressDeflate::Process(Buffer+uBytesProcessed,sizeof(RawData)-uBytesProcessed,DeflateCompressed+0x%s,sizeof(DeflateCompressed)-0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
@@ -818,16 +818,16 @@ static uint_t TestDeflateDecompress(void)
 		Error = pTester->Process(Buffer + uSplit, 1,
 			DeflateCompressed + uStepper, sizeof(DeflateCompressed) - uStepper);
 		if (uSplit == (sizeof(RawData) - 1)) {
-			if (Error != Decompress::DECOMPRESS_OKAY) {
+			if (Error != kErrorNone) {
 				ReportFailure(
-					"DecompressDeflate::Process(Buffer,1,DeflateCompressed,uStepper) = %d, expected Decompress::DECOMPRESS_OKAY",
+					"DecompressDeflate::Process(Buffer,1,DeflateCompressed,uStepper) = %d, expected kErrorNone",
 					TRUE, Error);
 				uFailure = TRUE;
 			}
 		} else {
-			if (Error != Decompress::DECOMPRESS_OUTPUTOVERRUN) {
+			if (Error != kErrorBufferTooSmall) {
 				ReportFailure(
-					"DecompressDeflate::Process(Buffer,1,DeflateCompressed,uStepper) = %d, expected Decompress::DECOMPRESS_OUTPUTOVERRUN",
+					"DecompressDeflate::Process(Buffer,1,DeflateCompressed,uStepper) = %d, expected kErrorBufferTooSmall",
 					TRUE, Error);
 				uFailure = TRUE;
 			}
@@ -845,16 +845,16 @@ static uint_t TestDeflateDecompress(void)
 		Error = pTester->Process(Buffer + uStepper, sizeof(RawData) - uStepper,
 			DeflateCompressed + uSplit, 1);
 		if (uSplit == (sizeof(DeflateCompressed) - 1)) {
-			if (Error != Decompress::DECOMPRESS_OKAY) {
+			if (Error != kErrorNone) {
 				ReportFailure(
-					"DecompressDeflate::Process(Buffer,uStepper,DeflateCompressed,1) = %d, expected Decompress::DECOMPRESS_OKAY",
+					"DecompressDeflate::Process(Buffer,uStepper,DeflateCompressed,1) = %d, expected kErrorNone",
 					TRUE, Error);
 				uFailure = TRUE;
 			}
 		} else {
-			if (Error != Decompress::DECOMPRESS_OUTPUTUNDERRUN) {
+			if (Error != kErrorDataStarvation) {
 				ReportFailure(
-					"DecompressDeflate::Process(Buffer,uStepper,DeflateCompressed,1) = %d, expected Decompress::DECOMPRESS_OUTPUTUNDERRUN",
+					"DecompressDeflate::Process(Buffer,uStepper,DeflateCompressed,1) = %d, expected kErrorDataStarvation",
 					TRUE, Error);
 				uFailure = TRUE;
 			}
@@ -880,17 +880,17 @@ static uint_t TestDeflateCompress(void)
 	// Perform a simple Compression test and test for buffer overrun
 	CompressDeflate* pTester = New<CompressDeflate>();
 
-	Compress::eError Error = pTester->Process(RawData, sizeof(RawData));
-	if (Error != Compress::COMPRESS_OKAY) {
+	eError Error = pTester->Process(RawData, sizeof(RawData));
+	if (Error != kErrorNone) {
 		ReportFailure(
-			"CompressDeflate::Process(RawData,sizeof(RawData)) = %d, expected Compress::COMPRESS_OKAY",
+			"CompressDeflate::Process(RawData,sizeof(RawData)) = %d, expected kErrorNone",
 			TRUE, Error);
 		uFailure = TRUE;
 	}
 	Error = pTester->Finalize();
-	if (Error != Compress::COMPRESS_OKAY) {
+	if (Error != kErrorNone) {
 		ReportFailure(
-			"CompressDeflate::Finalize() = %d, expected Compress::COMPRESS_OKAY",
+			"CompressDeflate::Finalize() = %d, expected kErrorNone",
 			TRUE, Error);
 		uFailure = TRUE;
 	}
@@ -912,25 +912,25 @@ static uint_t TestDeflateCompress(void)
 	do {
 		pTester->Init();
 		Error = pTester->Process(RawData, uSplit);
-		if (Error != Compress::COMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"CompressDeflate::Process(RawData,0x%s) = %d, expected Compress::COMPRESS_OKAY",
+				"CompressDeflate::Process(RawData,0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Process(RawData + uSplit, sizeof(RawData) - uSplit);
-		if (Error != Compress::COMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"CompressDeflate::Process(RawData+0x%s,sizeof(RawData)-0x%s) = %d, expected Compress::COMPRESS_OKAY",
+				"CompressDeflate::Process(RawData+0x%s,sizeof(RawData)-0x%s) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 		Error = pTester->Finalize();
-		if (Error != Compress::COMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			ReportFailure(
-				"CompressDeflate::Finalize(uSplit %04X) = %d, expected Compress::COMPRESS_OKAY",
+				"CompressDeflate::Finalize(uSplit %04X) = %d, expected kErrorNone",
 				TRUE, static_cast<uint32_t>(uSplit), Error);
 			uFailure = TRUE;
 		}
@@ -957,18 +957,18 @@ static uint_t TestDeflateCompress(void)
 	pTester->Init();
 	do {
 		Error = pTester->Process(RawData + uSplit, 1);
-		if (Error != Compress::COMPRESS_OKAY) {
+		if (Error != kErrorNone) {
 			NumberStringHex Hex(uSplit, LEADINGZEROS + 4);
 			ReportFailure(
-				"CompressDeflate::Process(RawData+0x%s,1) = %d, expected Compress::COMPRESS_OKAY",
+				"CompressDeflate::Process(RawData+0x%s,1) = %d, expected kErrorNone",
 				TRUE, Hex.c_str(), Error);
 			uFailure = TRUE;
 		}
 	} while (++uSplit < sizeof(RawData));
 	Error = pTester->Finalize();
-	if (Error != Compress::COMPRESS_OKAY) {
+	if (Error != kErrorNone) {
 		ReportFailure(
-			"CompressDeflate::Finalize(uSplit %04X) = %d, expected Compress::COMPRESS_OKAY",
+			"CompressDeflate::Finalize(uSplit %04X) = %d, expected kErrorNone",
 			TRUE, static_cast<uint32_t>(uSplit), Error);
 		uFailure = TRUE;
 	}

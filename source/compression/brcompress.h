@@ -35,18 +35,14 @@ protected:
 	OutputMemoryStream m_Output;		///< Main output buffer for compressed data
 	uint32_t m_uSignature;				///< 4 character code to identify this compressor
 public:
-	enum eError {
-		COMPRESS_OKAY,				///< No errors
-		COMPRESS_OUTOFMEMORY		///< Error found in compressed data (Decompression was aborted)
-	};
 	Compress(void);
 	virtual ~Compress();
 	virtual eError Init(void) = 0;
 	virtual eError Process(const void *pInput, uintptr_t uInputLength) = 0;
 	virtual eError Finalize(void) = 0;
-	BURGER_INLINE OutputMemoryStream *GetOutput(void) { return &m_Output; }
-	BURGER_INLINE uintptr_t GetOutputSize(void) const { return m_Output.GetSize(); }
-	BURGER_INLINE uint32_t GetSignature(void) const { return m_uSignature; }
+	BURGER_INLINE OutputMemoryStream *GetOutput(void) BURGER_NOEXCEPT { return &m_Output; }
+	BURGER_INLINE uintptr_t GetOutputSize(void) const BURGER_NOEXCEPT { return m_Output.GetSize(); }
+	BURGER_INLINE uint32_t GetSignature(void) const BURGER_NOEXCEPT { return m_uSignature; }
 };
 }
 /* END */

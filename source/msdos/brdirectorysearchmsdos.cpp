@@ -29,7 +29,7 @@
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::Open(Filename *pName)
+uint_t Burger::DirectorySearch::Open(Filename *pName) BURGER_NOEXCEPT
 {
 	Regs16 MyRegs;
 	uint32_t TempPath = GetRealBufferPtr();
@@ -90,7 +90,7 @@ struct WinDosData_t {
 	char ShortName[13];
 };
 
-uint_t Burger::DirectorySearch::GetNextEntry(void)
+uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 {
 	if (!m_bHandleOk) {
 		return TRUE;
@@ -185,7 +185,7 @@ Again:
 
 ***************************************/
 
-void Burger::DirectorySearch::Close(void)
+void Burger::DirectorySearch::Close(void) BURGER_NOEXCEPT
 {
 	Regs16 MyRegs;
 	if (m_bHandleOk>=10) {		/* This can only be true if an extended directory */

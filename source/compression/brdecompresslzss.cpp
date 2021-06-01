@@ -48,17 +48,17 @@ Burger::DecompressLZSS::DecompressLZSS() :
 
 	\brief Reset the LZSS decompression
 
-	\return Decompress::DECOMPRESS_OKAY (No error is possible)
+	\return kErrorNone (No error is possible)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressLZSS::Reset(void)
+Burger::eError Burger::DecompressLZSS::Reset(void)
 {
 	m_uTotalOutput = 0;
 	m_uTotalInput = 0;
 	m_eState = STATE_INIT;
 	m_uBitBucket = 1;
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -77,7 +77,7 @@ Burger::Decompress::eError Burger::DecompressLZSS::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressLZSS::Process(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
+Burger::eError Burger::DecompressLZSS::Process(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
 {
 	m_uInputLength = uInputChunkLength;
 	m_uOutputLength = uOutputChunkLength;
@@ -251,15 +251,15 @@ Exit:
 	m_uTotalInput += m_uInputLength;
 	// Output buffer not big enough?
 	if (uOutputChunkLength) {
-		return DECOMPRESS_OUTPUTUNDERRUN;
+		return kErrorDataStarvation;
 	}
 
 	// Input data remaining?
 	if (uInputChunkLength || (m_eState==STATE_RUN)) {
-		return DECOMPRESS_OUTPUTOVERRUN;
+		return kErrorBufferTooSmall;
 	}
 	// Decompression is complete
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /***************************************
@@ -270,7 +270,7 @@ Exit:
 
 ***************************************/
 
-Burger::Decompress::eError BURGER_API Burger::SimpleDecompressLZSS(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
+Burger::eError BURGER_API Burger::SimpleDecompressLZSS(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
 {
 	Burger::DecompressLZSS Local;
 	Local.DecompressLZSS::Reset();

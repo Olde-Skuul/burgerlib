@@ -1713,7 +1713,7 @@ Burger::String& BURGER_API Burger::String::Right(
 
 ***************************************/
 
-int BURGER_API Burger::String::Compare(const char* pInput) const
+int BURGER_API Burger::String::Compare(const char* pInput) const BURGER_NOEXCEPT
 {
 	if (!pInput) {
 		pInput = g_EmptyString;
@@ -1735,7 +1735,7 @@ int BURGER_API Burger::String::Compare(const char* pInput) const
 
 ***************************************/
 
-int BURGER_API Burger::String::Compare(char cInput) const
+int BURGER_API Burger::String::Compare(char cInput) const BURGER_NOEXCEPT
 {
 	char Temp[2];
 	Temp[0] = cInput;

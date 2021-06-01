@@ -1526,7 +1526,7 @@ Burger::DecompressDeflate::~DecompressDeflate()
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressDeflate::Reset(void)
+Burger::eError Burger::DecompressDeflate::Reset(void)
 {
 	m_uTotalOutput = 0;
 	m_uTotalInput = 0;
@@ -1536,7 +1536,7 @@ Burger::Decompress::eError Burger::DecompressDeflate::Reset(void)
 	m_eBlockMode = BLOCKMODE_TYPE;
 	m_eState = STATE_METHOD;
 	BlocksReset();
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -1555,7 +1555,7 @@ Burger::Decompress::eError Burger::DecompressDeflate::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
+Burger::eError Burger::DecompressDeflate::Process(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
 {
 	m_uInputLength = uInputChunkLength;
 	m_uOutputLength = uOutputChunkLength;
@@ -1748,24 +1748,24 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,uint
 	m_uTotalInput += m_uInputLength;
 
 	if ((iError!=Z_OK) && (iError!=Z_STREAM_END)) {
-		return DECOMPRESS_BADINPUT;
+		return kErrorDataCorruption;
 	}
 
 	// Output buffer not big enough?
 	if (uOutputChunkLength) {
-		return DECOMPRESS_OUTPUTUNDERRUN;
+		return kErrorDataStarvation;
 	}
 
 	// Input data remaining?
 	if (uInputChunkLength) {
-		return DECOMPRESS_OUTPUTOVERRUN;
+		return kErrorBufferTooSmall;
 	}
 	// Still in checksum?
 	if (m_eState!=STATE_COMPLETE) {
-		return DECOMPRESS_OUTPUTUNDERRUN;
+		return kErrorDataStarvation;
 	}
 	// Decompression is complete
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 
@@ -1785,11 +1785,11 @@ Burger::Decompress::eError Burger::DecompressDeflate::Process(void *pOutput,uint
 
 ***************************************/
 
-Burger::Decompress::eError BURGER_API Burger::SimpleDecompressDeflate(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
+Burger::eError BURGER_API Burger::SimpleDecompressDeflate(void *pOutput,uintptr_t uOutputChunkLength,const void *pInput,uintptr_t uInputChunkLength)
 {
 	DecompressDeflate *pDecompress = New<DecompressDeflate>();
 	pDecompress->DecompressDeflate::Reset();
-	Decompress::eError uError = pDecompress->DecompressDeflate::Process(pOutput,uOutputChunkLength,pInput,uInputChunkLength);
+	eError uError = pDecompress->DecompressDeflate::Process(pOutput,uOutputChunkLength,pInput,uInputChunkLength);
 	Delete(pDecompress);
 	return uError;
 }

@@ -26,7 +26,7 @@
 
 	\param pFileName Pointer to a Burger::Filename object
 	\param eAccess Enumeration on permissions requested on the opened file
-	\return File::OKAY if no error, error code if not.
+	\return kErrorNone if no error, error code if not.
 	\sa Open(const char *, eFileAccess) and File(const char *,eFileAccess)
 
 ***************************************/
@@ -39,10 +39,10 @@ Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAc
 	Close();
 	eAccess = static_cast<eFileAccess>(eAccess&3);
 	HANDLE fp = CreateFileA(pFileName->GetNative(),g_Access[eAccess],g_Share[eAccess],NULL,g_Creation[eAccess],FILE_ATTRIBUTE_NORMAL|FILE_FLAG_SEQUENTIAL_SCAN,NULL);
-	uint_t uResult = FILENOTFOUND;
+	uint_t uResult = kErrorFileNotFound;
 	if (fp!=INVALID_HANDLE_VALUE) {
 		m_pFile = fp;
-		uResult = OKAY;
+		uResult = kErrorNone;
 	}
 	return static_cast<Burger::eError>(uResult);
 }
@@ -53,7 +53,7 @@ Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAc
 
 	Close any previously opened file
 
-	\return File::OKAY if no error, error code if not.
+	\return kErrorNone if no error, error code if not.
 	\sa Open(const char *, eFileAccess) and Open(Filename *,eFileAccess)
 
 ***************************************/
@@ -216,7 +216,7 @@ uintptr_t BURGER_API Burger::File::GetMark(void)
 	If a file is open, set the read/write mark at the location passed.
 
 	\param uMark Value to set the new file mark to.
-	\return File::OKAY if successful, File::INVALID_MARK if not.
+	\return kErrorNone if successful, kErrorOutOfBounds if not.
 	\sa GetMark() or SetMarkAtEOF()
 
 ***************************************/
@@ -246,14 +246,14 @@ Burger::eError BURGER_API Burger::File::SetMark(uintptr_t uMark)
 
 	If a file is open, set the read/write mark to the end of the file.
 
-	\return File::OKAY if successful, File::INVALID_MARK if not.
+	\return kErrorNone if successful, kErrorOutOfBounds if not.
 	\sa GetMark() or SetMark()
 
 ***************************************/
 
 uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 {
-	uint_t uResult = INVALID_MARK;
+	uint_t uResult = kErrorOutOfBounds;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		LARGE_INTEGER uNewPointer;
@@ -262,7 +262,7 @@ uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 		BOOL bPositionResult = SetFilePointerEx(fp,uNewPointer,NULL,FILE_END);
 		// Okay?
 		if (bPositionResult) {
-			uResult = OKAY;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -276,14 +276,14 @@ uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 	the file was modified.
 
 	\param pOutput Pointer to a Burger::TimeDate_t to receive the file modification time
-	\return File::OKAY if successful, File::NOT_IMPLEMENTED if not available or other codes for errors
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
 	\sa GetCreationTime() or SetModificationTime()
 
 ***************************************/
 
 uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 {
-	uint_t uResult = FILENOTFOUND;
+	uint_t uResult = kErrorFileNotFound;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		FILETIME ModificationTime;
@@ -292,7 +292,7 @@ uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 		// Okay?
 		if (bFileInfoResult) {
 			pOutput->Load(&ModificationTime);
-			uResult = OKAY;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -307,14 +307,14 @@ uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 	the file was created.
 
 	\param pOutput Pointer to a Burger::TimeDate_t to receive the file creation time
-	\return File::OKAY if successful, File::NOT_IMPLEMENTED if not available or other codes for errors
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
 	\sa GetModificationTime() or SetCreationTime()
 
 ***************************************/
 
 uint_t BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 {
-	uint_t uResult = FILENOTFOUND;
+	uint_t uResult = kErrorFileNotFound;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		FILETIME CreationTime;
@@ -323,7 +323,7 @@ uint_t BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 		// Okay?
 		if (bFileInfoResult) {
 			pOutput->Load(&CreationTime);
-			uResult = OKAY;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -337,14 +337,14 @@ uint_t BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 	modification time to the passed value.
 
 	\param pInput Pointer to a Burger::TimeDate_t to use for the new file modification time
-	\return File::OKAY if successful, File::NOT_IMPLEMENTED if not available or other codes for errors
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
 	\sa SetCreationTime() or GetModificationTime()
 
 ***************************************/
 
 uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t *pInput)
 {
-	uint_t uResult = FILENOTFOUND;
+	uint_t uResult = kErrorFileNotFound;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		FILETIME ModificationTime;
@@ -352,7 +352,7 @@ uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t *pInput)
 		// Set the file modification time
 		BOOL bFileInfoResult = SetFileTime(fp,NULL,&ModificationTime,NULL);
 		if (bFileInfoResult) {
-			uResult = OKAY;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -366,14 +366,14 @@ uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t *pInput)
 	creation time to the passed value.
 
 	\param pInput Pointer to a Burger::TimeDate_t to use for the new file creation time
-	\return File::OKAY if successful, File::NOT_IMPLEMENTED if not available or other codes for errors
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
 	\sa SetModificationTime() or GetCreationTime()
 
 ***************************************/
 
 uint_t BURGER_API Burger::File::SetCreationTime(const TimeDate_t *pInput)
 {
-	uint_t uResult = FILENOTFOUND;
+	uint_t uResult = kErrorFileNotFound;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		FILETIME CreationTime;
@@ -381,7 +381,7 @@ uint_t BURGER_API Burger::File::SetCreationTime(const TimeDate_t *pInput)
 		// Set the file creation time
 		BOOL bFileInfoResult = SetFileTime(fp,&CreationTime,NULL,NULL);
 		if (bFileInfoResult) {
-			uResult = OKAY;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;

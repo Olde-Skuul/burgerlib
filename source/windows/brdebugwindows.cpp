@@ -48,7 +48,7 @@ void BURGER_API Burger::Debug::PrintString(const char *pString) BURGER_NOEXCEPT
 			if (!IsDebuggerPresent()) {
 				g_LockString.Lock();
 				File MyFile;
-				if (MyFile.Open("9:logfile.txt",File::APPEND)==File::OKAY) {
+				if (MyFile.Open("9:logfile.txt",File::kAppend)==kErrorNone) {
 					MyFile.Write(pString,i);		// Send the string to the log file
 					MyFile.Close();
 				}

@@ -27,7 +27,7 @@
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::AreLongFilenamesAllowed(void)
+uint_t BURGER_API Burger::FileManager::AreLongFilenamesAllowed(void) BURGER_NOEXCEPT
 {
 	uint_t uResult = g_pFileManager->m_bAllowed;
 	if (!(uResult&0x80U)) {		// Did I check already?
@@ -63,10 +63,10 @@ uint_t BURGER_API Burger::FileManager::AreLongFilenamesAllowed(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum)
+uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
 {
 	if (uVolumeNum>=26) {		// Bad drive number!!
-		return File::OUTOFRANGE;
+		return kErrorInvalidParameter;
 	}
 
 	Regs16 Regs;				// Intel registers
@@ -120,7 +120,7 @@ uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uV
 	Regs.ds = OldSeg;
 	Regs.dx = OldOff;
 	Int86x(0x21,&Regs,&Regs);	// Call DOS
-	return File::OKAY;		// Always pass
+	return kErrorNone;		// Always pass
 }
 
 /***************************************
@@ -317,7 +317,7 @@ uint32_t DoWorkDOSExist(const char *Referance);
 	modify [eax ecx edx]	/* I blast these */ \
 	value [ecx]			/* Return in ECX */
 
-uint_t BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName) BURGER_NOEXCEPT
 {
 	if (AreLongFilenamesAllowed()) {	/* Win95? */
 		Regs16 MyRegs;
@@ -345,7 +345,7 @@ uint_t BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName) BURGER_NOEXCEPT
 {
 	Regs16 Regs;		// Used by DOS
 

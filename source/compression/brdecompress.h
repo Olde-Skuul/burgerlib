@@ -23,6 +23,10 @@
 #include "brbase.h"
 #endif
 
+#ifndef __BRERROR_H__
+#include "brerror.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 class Decompress : public Base {
@@ -34,20 +38,14 @@ protected:
     uintptr_t m_uOutputLength;	///< Number of output bytes processed from the last call to Process()
 	uint32_t m_uSignature;		///< 4 character code to identify this decompresser
 public:
-	enum eError {
-		DECOMPRESS_OKAY,			///< No errors
-		DECOMPRESS_OUTPUTUNDERRUN,	///< All input was exhausted before output was satisfied
-		DECOMPRESS_OUTPUTOVERRUN,	///< Input data remained after output was satisfied
-		DECOMPRESS_BADINPUT			///< Error found in compressed data (Decompression was aborted)
-	};
 	Decompress(void);
 	virtual eError Reset(void) = 0;
 	virtual eError Process(void *pOutput, uintptr_t uOutputChunkSize,const void *pInput, uintptr_t uInputChunkLength) = 0;
-	BURGER_INLINE uintptr_t GetTotalInputSize(void) const { return m_uTotalInput; }
-	BURGER_INLINE uintptr_t GetTotalOutputSize(void) const { return m_uTotalOutput; }
-	BURGER_INLINE uintptr_t GetProcessedInputSize(void) const { return m_uInputLength; }
-	BURGER_INLINE uintptr_t GetProcessedOutputSize(void) const { return m_uOutputLength; }
-	BURGER_INLINE uint32_t GetSignature(void) const { return m_uSignature; }
+	BURGER_INLINE uintptr_t GetTotalInputSize(void) const BURGER_NOEXCEPT { return m_uTotalInput; }
+	BURGER_INLINE uintptr_t GetTotalOutputSize(void) const BURGER_NOEXCEPT { return m_uTotalOutput; }
+	BURGER_INLINE uintptr_t GetProcessedInputSize(void) const BURGER_NOEXCEPT { return m_uInputLength; }
+	BURGER_INLINE uintptr_t GetProcessedOutputSize(void) const BURGER_NOEXCEPT { return m_uOutputLength; }
+	BURGER_INLINE uint32_t GetSignature(void) const BURGER_NOEXCEPT { return m_uSignature; }
 };
 }
 /* END */

@@ -757,7 +757,7 @@ uint_t BURGER_API Burger::RezFile::Init(const char *pFileName,uint32_t uStartOff
 
 	if (pFileName) {
 		// Can I open the file?
-		if (m_File.Open(pFileName,File::READONLY)==File::OKAY) {
+		if (m_File.Open(pFileName, File::kReadOnly) == kErrorNone) {
 			// If the data is not at the head, seek
 			if (uStartOffset) {
 				m_File.SetMark(uStartOffset);
@@ -1615,7 +1615,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 			pEntry->m_uFlags |= ENTRYFLAGSTESTED;	// Mark as tested
 			const char *pFileName = pEntry->m_pRezName;
 			File TheFile;
-			if (TheFile.Open(pFileName,File::READONLY)==File::OKAY) {
+			if (TheFile.Open(pFileName,File::kReadOnly)==kErrorNone) {
 				// File detected
 				pEntry->m_uFlags |= ENTRYFLAGSFILEFOUND;
 				uintptr_t uNewLength = TheFile.GetSize();				// Get the NEW length
@@ -1700,7 +1700,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 				pEntry->m_uFlags &= (~ENTRYFLAGSREFCOUNT);		// Kill the ref count
 				return NULL;
 			}
-			if (pDecompressor->Process(pOutput,PackedHeader,PackedPtr,ChunkSize)==Decompress::DECOMPRESS_BADINPUT) {
+			if (pDecompressor->Process(pOutput,PackedHeader,PackedPtr,ChunkSize)==kErrorDataCorruption) {
 				m_pMemoryManager->FreeHandle(ppData);
 				pEntry->m_uFlags &= (~ENTRYFLAGSREFCOUNT);		// Kill the ref count
 				return NULL;

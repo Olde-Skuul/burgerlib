@@ -330,11 +330,11 @@ Burger::DecompressMicrosoftADPCM::DecompressMicrosoftADPCM() :
 
 	\brief Resets the MAC6 decompresser to defaults
 
-	\return \ref DECOMPRESS_OKAY if successful
+	\return \ref kErrorNone if successful
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Reset(void)
+Burger::eError Burger::DecompressMicrosoftADPCM::Reset(void)
 {
 	m_uTotalInput = 0;
 	m_uTotalOutput = 0;
@@ -342,7 +342,7 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Reset(void)
 	m_uCacheCount = 0;
 	m_uCacheSize = 0;
 	// No worries!
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -361,7 +361,7 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
+Burger::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 	//
 	// Handle data "decompression"
@@ -786,15 +786,15 @@ Burger::Decompress::eError Burger::DecompressMicrosoftADPCM::Process(void *pOutp
 
 	// Output buffer not big enough?
 	if (uOutputChunkLength!=uOutputConsumed) {
-		return DECOMPRESS_OUTPUTUNDERRUN;
+		return kErrorDataStarvation;
 	}
 
 	// Input data remaining?
 	if (uInputChunkLength!=uInputConsumed) {
-		return DECOMPRESS_OUTPUTOVERRUN;
+		return kErrorBufferTooSmall;
 	}
 	// Decompression is complete
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 

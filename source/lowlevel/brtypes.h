@@ -1179,7 +1179,7 @@ struct ulonglong_t;
 #define BURGER_SIZEOF_LONG 4
 #endif
 
-// stdint.h types
+// stdint.h types, not found in MRC, SC and Visual Studio 2003-2008
 
 #if defined(BURGER_MRC) || defined(BURGER_APPLE_SC) || \
 	(defined(BURGER_MSVC) && (BURGER_MSVC < 160000000))

@@ -94,7 +94,7 @@ Burger::DirectorySearch::~DirectorySearch()
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::Open(const char *pDirName)
+uint_t Burger::DirectorySearch::Open(const char *pDirName) BURGER_NOEXCEPT
 {
 	Filename TempDir(pDirName);
 	return Open(&TempDir);		// Error!
@@ -111,7 +111,7 @@ uint_t Burger::DirectorySearch::Open(const char *pDirName)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA) || defined(BURGER_LINUX)) || defined(DOXYGEN)
-uint_t Burger::DirectorySearch::Open(Filename * /* pDirName */)
+uint_t Burger::DirectorySearch::Open(Filename * /* pDirName */) BURGER_NOEXCEPT
 {
 	return TRUE;		// Error!
 }
@@ -132,7 +132,7 @@ uint_t Burger::DirectorySearch::Open(Filename * /* pDirName */)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA) || defined(BURGER_LINUX)) || defined(DOXYGEN)
-uint_t Burger::DirectorySearch::GetNextEntry(void)
+uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 {
 	return TRUE;		// Error!
 }
@@ -163,7 +163,7 @@ uint_t Burger::DirectorySearch::GetNextEntry(void)
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::GetNextEntryExtension(const char *pExt)
+uint_t Burger::DirectorySearch::GetNextEntryExtension(const char *pExt) BURGER_NOEXCEPT
 {
 	// Anything left to scan?
 	if (!GetNextEntry()) {
@@ -193,7 +193,7 @@ uint_t Burger::DirectorySearch::GetNextEntryExtension(const char *pExt)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA) || defined(BURGER_LINUX)) || defined(DOXYGEN)
-void Burger::DirectorySearch::Close(void)
+void Burger::DirectorySearch::Close(void) BURGER_NOEXCEPT
 {
 }
 #endif

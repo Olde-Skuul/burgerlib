@@ -45,7 +45,7 @@ class Keyboard : public Base {
     BURGER_DISABLE_COPY(Keyboard);
 	BURGER_RTTI_IN_CLASS();
 public:
-	static const uint_t cBufferSize=128;		///< Number of keystrokes in keyboard cache
+	static const uint_t kBufferSize=128;		///< Number of keystrokes in keyboard cache
 
 	enum {
 		KEYCAPDOWN=0x01,	///< If \ref TRUE in m_KeyArray, this key is currently held down
@@ -300,7 +300,7 @@ protected:
 	uint_t m_uArrayEnd;						///< Write index for m_KeyEvents
 	uint_t m_uInitialDelay;					///< Initial delay in ms for autorepeat
 	uint_t m_uRepeatDelay;					///< Delay between repeating keystrokes
-	KeyEvent_t m_KeyEvents[cBufferSize];	///< Circular buffer holding keyboard events
+	KeyEvent_t m_KeyEvents[kBufferSize];	///< Circular buffer holding keyboard events
 	KeyEvent_t m_RepeatEvent;				///< Event to post on a repeat
 
 public:

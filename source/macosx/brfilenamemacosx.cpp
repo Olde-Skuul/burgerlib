@@ -56,7 +56,7 @@
 
 ***************************************/
 
-const char* Burger::Filename::GetNative(void)
+const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 {
 	Expand(); // Resolve prefixes
 
@@ -143,7 +143,7 @@ const char* Burger::Filename::GetNative(void)
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void)
+void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void) BURGER_NOEXCEPT
 {
 	Clear();
 	char* pTemp = getcwd(NULL, 0); // This covers all versions
@@ -166,7 +166,7 @@ void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void)
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetApplicationDirectory(void)
+void BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
 {
 	Clear();
 	// Get the size of the path to the application
@@ -226,7 +226,7 @@ void BURGER_API Burger::Filename::SetApplicationDirectory(void)
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void)
+void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void) BURGER_NOEXCEPT
 {
 	Clear();
 	glob_t globbuf;
@@ -251,7 +251,7 @@ void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void)
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetUserPrefsDirectory(void)
+void BURGER_API Burger::Filename::SetUserPrefsDirectory(void) BURGER_NOEXCEPT
 {
 	Clear();
 	glob_t globbuf;

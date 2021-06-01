@@ -204,9 +204,9 @@ extern void BURGER_API PStringToCString(char* pOutput, const uint8_t* pInput);
 
 extern char* BURGER_API ParseBeyondWhiteSpace(
 	const char* pInput) BURGER_NOEXCEPT;
-extern char* BURGER_API ParseToDelimiter(const char* pInput);
-extern char* BURGER_API ParseBeyondEOL(const char* pInput);
-extern char* BURGER_API ParseBeyondEOL(const char* pInput, uintptr_t uLength);
+extern char* BURGER_API ParseToDelimiter(const char* pInput) BURGER_NOEXCEPT;
+extern char* BURGER_API ParseBeyondEOL(const char* pInput) BURGER_NOEXCEPT;
+extern char* BURGER_API ParseBeyondEOL(const char* pInput, uintptr_t uLength) BURGER_NOEXCEPT;
 extern char* BURGER_API ParseQuotedString(
 	char* pOutput, uintptr_t uOutputSize, const char* pInput) BURGER_NOEXCEPT;
 extern uintptr_t BURGER_API CopyUpToEOL(char* pOutput, uintptr_t uOutputSize,
@@ -299,10 +299,10 @@ extern uint_t BURGER_API Wildcardcmp(
 	const char* pInput, const char* pWildcard) BURGER_NOEXCEPT;
 extern uint_t BURGER_API HasWildcard(const char* pInput) BURGER_NOEXCEPT;
 
-extern void BURGER_API StringUppercase(char* pInput);
-extern void BURGER_API StringUppercase(char* pOutput, const char* pInput);
-extern void BURGER_API StringLowercase(char* pInput);
-extern void BURGER_API StringLowercase(char* pOutput, const char* pInput);
+extern void BURGER_API StringUppercase(char* pInput) BURGER_NOEXCEPT;
+extern void BURGER_API StringUppercase(char* pOutput, const char* pInput) BURGER_NOEXCEPT;
+extern void BURGER_API StringLowercase(char* pInput) BURGER_NOEXCEPT;
+extern void BURGER_API StringLowercase(char* pOutput, const char* pInput) BURGER_NOEXCEPT;
 
 extern char* BURGER_API StringCharacter(
 	const char* pInput, int iChar) BURGER_NOEXCEPT;

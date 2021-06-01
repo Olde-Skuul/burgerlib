@@ -749,11 +749,11 @@ Burger::DecompressMace3::DecompressMace3() :
 
 	\brief Resets the MAC3 decompresser to defaults
 
-	\return \ref DECOMPRESS_OKAY if successful
+	\return \ref kErrorNone if successful
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressMace3::Reset(void)
+Burger::eError Burger::DecompressMace3::Reset(void)
 {
 	m_uTotalInput = 0;
 	m_uTotalOutput = 0;
@@ -762,7 +762,7 @@ Burger::Decompress::eError Burger::DecompressMace3::Reset(void)
 	m_eState = STATE_INIT;
 	m_uCacheSize = 0;
 	// No worries!
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -781,7 +781,7 @@ Burger::Decompress::eError Burger::DecompressMace3::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressMace3::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
+Burger::eError Burger::DecompressMace3::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 	//
 	// Handle data "decompression"
@@ -987,15 +987,15 @@ Burger::Decompress::eError Burger::DecompressMace3::Process(void *pOutput, uintp
 
 	// Output buffer not big enough?
 	if (uOutputChunkLength!=uOutputConsumed) {
-		return DECOMPRESS_OUTPUTUNDERRUN;
+		return kErrorDataStarvation;
 	}
 
 	// Input data remaining?
 	if (uInputChunkLength!=uInputConsumed) {
-		return DECOMPRESS_OUTPUTOVERRUN;
+		return kErrorBufferTooSmall;
 	}
 	// Decompression is complete
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 
@@ -1051,11 +1051,11 @@ Burger::DecompressMace6::DecompressMace6() :
 
 	\brief Resets the MAC6 decompresser to defaults
 
-	\return \ref DECOMPRESS_OKAY if successful
+	\return \ref kErrorNone if successful
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressMace6::Reset(void)
+Burger::eError Burger::DecompressMace6::Reset(void)
 {
 	m_uTotalInput = 0;
 	m_uTotalOutput = 0;
@@ -1064,7 +1064,7 @@ Burger::Decompress::eError Burger::DecompressMace6::Reset(void)
 	m_eState = STATE_INIT;
 	m_uCacheSize = 0;
 	// No worries!
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -1083,7 +1083,7 @@ Burger::Decompress::eError Burger::DecompressMace6::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressMace6::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
+Burger::eError Burger::DecompressMace6::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 	//
 	// Handle data "decompression"
@@ -1289,15 +1289,15 @@ Burger::Decompress::eError Burger::DecompressMace6::Process(void *pOutput, uintp
 
 	// Output buffer not big enough?
 	if (uOutputChunkLength!=uOutputConsumed) {
-		return DECOMPRESS_OUTPUTUNDERRUN;
+		return kErrorDataStarvation;
 	}
 
 	// Input data remaining?
 	if (uInputChunkLength!=uInputConsumed) {
-		return DECOMPRESS_OUTPUTOVERRUN;
+		return kErrorBufferTooSmall;
 	}
 	// Decompression is complete
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 

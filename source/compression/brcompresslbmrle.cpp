@@ -65,7 +65,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::CompressILBMRLE,Burger::Compress);
 	
 ***************************************/
 
-Burger::Compress::eError Burger::CompressILBMRLE::Compact(const uint8_t *pInput,uintptr_t uInputLength)
+Burger::eError Burger::CompressILBMRLE::Compact(const uint8_t *pInput,uintptr_t uInputLength)
 {
 	// Assume no data remaining
 	m_uRemaining = 0;
@@ -155,7 +155,7 @@ Burger::Compress::eError Burger::CompressILBMRLE::Compact(const uint8_t *pInput,
 			}
 		} while (uInputLength);
 	}
-	return Compress::COMPRESS_OKAY;
+	return kErrorNone;
 }
 
 
@@ -183,12 +183,12 @@ Burger::CompressILBMRLE::CompressILBMRLE() :
 
 ***************************************/
 
-Burger::Compress::eError Burger::CompressILBMRLE::Init(void)
+Burger::eError Burger::CompressILBMRLE::Init(void)
 {
 	m_Output.Clear();
 	m_uRemaining = 0;
 	m_uCacheUsed = 0;
-	return Compress::COMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -200,9 +200,9 @@ Burger::Compress::eError Burger::CompressILBMRLE::Init(void)
 
 ***************************************/
 
-Burger::Compress::eError Burger::CompressILBMRLE::Process(const void *pInput,uintptr_t uInputLength)
+Burger::eError Burger::CompressILBMRLE::Process(const void *pInput,uintptr_t uInputLength)
 {
-	eError Error = COMPRESS_OKAY;
+	eError Error = kErrorNone;
 	if (uInputLength) {
 		uintptr_t uRemaining;
 
@@ -285,7 +285,7 @@ Burger::Compress::eError Burger::CompressILBMRLE::Process(const void *pInput,uin
 
 ***************************************/
 
-Burger::Compress::eError Burger::CompressILBMRLE::Finalize(void)
+Burger::eError Burger::CompressILBMRLE::Finalize(void)
 {
 	// Are there bytes in the cache?
 	uintptr_t uCached = m_uCacheUsed;
@@ -301,7 +301,7 @@ Burger::Compress::eError Burger::CompressILBMRLE::Finalize(void)
 		}
 		m_uCacheUsed = 0;
 	}
-	return COMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************

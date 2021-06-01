@@ -104,18 +104,18 @@ Burger::DecompressALaw::DecompressALaw() :
 
 	\brief Resets the decompresser to defaults
 
-	\return \ref DECOMPRESS_OKAY if successful
+	\return \ref kErrorNone if successful
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressALaw::Reset(void)
+Burger::eError Burger::DecompressALaw::Reset(void)
 {
 	m_uTotalInput = 0;
 	m_uTotalOutput = 0;
 	// No worries!
 	m_uCacheSize = 0;
 	m_eState = STATE_INIT;
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -133,7 +133,7 @@ Burger::Decompress::eError Burger::DecompressALaw::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressALaw::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
+Burger::eError Burger::DecompressALaw::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 	//
 	// Handle data "decompression"
@@ -265,15 +265,15 @@ Burger::Decompress::eError Burger::DecompressALaw::Process(void *pOutput, uintpt
 
 	// Output buffer not big enough?
 	if (uOutputChunkLength!=uOutputConsumed) {
-		return DECOMPRESS_OUTPUTUNDERRUN;
+		return kErrorDataStarvation;
 	}
 
 	// Input data remaining?
 	if (uInputChunkLength!=uInputConsumed) {
-		return DECOMPRESS_OUTPUTOVERRUN;
+		return kErrorBufferTooSmall;
 	}
 	// Decompression is complete
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************

@@ -470,7 +470,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::SaveFile(
 	if (!uResult) {
 		// Try to open the output file
 		File FileRef;
-		uResult = FileRef.Open(pFilename, File::WRITEONLY);
+		uResult = FileRef.Open(pFilename, File::kWriteOnly);
 		// File opened fine?
 		if (!uResult) {
 			// Assume success
@@ -523,7 +523,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::SaveFile(
 	if (!uResult) {
 		// Try to open the output file
 		File FileRef;
-		uResult = FileRef.Open(pFilename, File::WRITEONLY);
+		uResult = FileRef.Open(pFilename, File::kWriteOnly);
 		// File opened fine?
 		if (!uResult) {
 			// Assume success

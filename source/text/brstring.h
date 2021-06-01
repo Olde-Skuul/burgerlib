@@ -246,21 +246,21 @@ public:
 	char BURGER_API Get(uintptr_t uWhere) const;
 	void BURGER_API Put(uintptr_t uWhere, char cInput);
 	char* BURGER_API StringString(const char* pInput) const;
-	BURGER_INLINE String& ToLowercase(void)
+	BURGER_INLINE String& ToLowercase(void) BURGER_NOEXCEPT
 	{
 		Burger::StringLowercase(this->m_pData);
 		return *this;
 	}
-	BURGER_INLINE String& ToUppercase(void)
+	BURGER_INLINE String& ToUppercase(void) BURGER_NOEXCEPT
 	{
 		Burger::StringUppercase(this->m_pData);
 		return *this;
 	}
-	BURGER_INLINE String Lowercase(void) const
+	BURGER_INLINE String Lowercase(void) const BURGER_NOEXCEPT
 	{
 		return String(*this).ToLowercase();
 	}
-	BURGER_INLINE String Uppercase(void) const
+	BURGER_INLINE String Uppercase(void) const BURGER_NOEXCEPT
 	{
 		return String(*this).ToUppercase();
 	}
@@ -284,12 +284,12 @@ public:
 	uintptr_t BURGER_API Append(const char* pInput, uintptr_t uInputSize);
 	String& BURGER_API Left(uintptr_t uNewLength, char cPad = ' ');
 	String& BURGER_API Right(uintptr_t uNewLength, char cPad = ' ');
-	BURGER_INLINE int Compare(const String& rInput) const
+	BURGER_INLINE int Compare(const String& rInput) const BURGER_NOEXCEPT
 	{
-		return StringCompare(m_pData, rInput.GetPtr());
+		return StringCompare(m_pData, rInput.c_str());
 	}
-	int BURGER_API Compare(const char* pInput) const;
-	int BURGER_API Compare(char cInput) const;
+	int BURGER_API Compare(const char* pInput) const BURGER_NOEXCEPT;
+	int BURGER_API Compare(char cInput) const BURGER_NOEXCEPT;
 	uintptr_t BURGER_API RemoveChars(const char* pInput);
 	uintptr_t BURGER_API RemoveChar(char cInput);
 	uintptr_t BURGER_API NormalizeLineFeeds(void);

@@ -1485,7 +1485,7 @@ char* BURGER_API Burger::ParseBeyondWhiteSpace(const char* pInput) BURGER_NOEXCE
 
 ***************************************/
 
-char* BURGER_API Burger::ParseToDelimiter(const char* pInput)
+char* BURGER_API Burger::ParseToDelimiter(const char* pInput) BURGER_NOEXCEPT
 {
     uint_t uTemp; // Temp storage
     do {
@@ -1515,7 +1515,7 @@ char* BURGER_API Burger::ParseToDelimiter(const char* pInput)
 
 ***************************************/
 
-char* BURGER_API Burger::ParseBeyondEOL(const char* pInput)
+char* BURGER_API Burger::ParseBeyondEOL(const char* pInput) BURGER_NOEXCEPT
 {
     uint_t uTemp; // Temp storage
     do {
@@ -1555,7 +1555,7 @@ char* BURGER_API Burger::ParseBeyondEOL(const char* pInput)
 
 ***************************************/
 
-char* BURGER_API Burger::ParseBeyondEOL(const char* pInput, uintptr_t uLength)
+char* BURGER_API Burger::ParseBeyondEOL(const char* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
     uint_t uTemp; // Temp storage
     if (uLength) {
@@ -3968,7 +3968,7 @@ uint_t BURGER_API Burger::HasWildcard(const char* pInput) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::StringUppercase(char* pInput)
+void BURGER_API Burger::StringUppercase(char* pInput) BURGER_NOEXCEPT
 {
     uint_t uTemp = reinterpret_cast<uint8_t*>(pInput)[0]; // Prefetch first char
     if (uTemp) {                                      // End of string?
@@ -3999,7 +3999,7 @@ void BURGER_API Burger::StringUppercase(char* pInput)
 
 ***************************************/
 
-void BURGER_API Burger::StringUppercase(char* pOutput, const char* pInput)
+void BURGER_API Burger::StringUppercase(char* pOutput, const char* pInput) BURGER_NOEXCEPT
 {
     uint_t uTemp =
         reinterpret_cast<const uint8_t*>(pInput)[0]; // Prefetch first char
@@ -4032,7 +4032,7 @@ void BURGER_API Burger::StringUppercase(char* pOutput, const char* pInput)
 
 ***************************************/
 
-void BURGER_API Burger::StringLowercase(char* pInput)
+void BURGER_API Burger::StringLowercase(char* pInput) BURGER_NOEXCEPT
 {
     uint_t uTemp = reinterpret_cast<uint8_t*>(pInput)[0]; // Prefetch first char
     if (uTemp) {                                      // End of string?
@@ -4063,7 +4063,7 @@ void BURGER_API Burger::StringLowercase(char* pInput)
 
 ***************************************/
 
-void BURGER_API Burger::StringLowercase(char* pOutput, const char* pInput)
+void BURGER_API Burger::StringLowercase(char* pOutput, const char* pInput) BURGER_NOEXCEPT
 {
     uint_t uTemp =
         reinterpret_cast<const uint8_t*>(pInput)[0]; // Prefetch first char

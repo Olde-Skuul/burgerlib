@@ -176,16 +176,16 @@ Burger::DecompressUnsigned8BitAudio::DecompressUnsigned8BitAudio() :
 
 	\brief Resets the decompresser to defaults
 
-	\return \ref DECOMPRESS_OKAY if successful
+	\return \ref kErrorNone if successful
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressUnsigned8BitAudio::Reset(void)
+Burger::eError Burger::DecompressUnsigned8BitAudio::Reset(void)
 {
 	m_uTotalInput = 0;
 	m_uTotalOutput = 0;
 	// No worries!
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -204,7 +204,7 @@ Burger::Decompress::eError Burger::DecompressUnsigned8BitAudio::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressUnsigned8BitAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
+Burger::eError Burger::DecompressUnsigned8BitAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
     // Which is smaller? Input or output?
     uintptr_t uCount = Min(uInputChunkLength, uOutputChunkLength);
@@ -223,15 +223,15 @@ Burger::Decompress::eError Burger::DecompressUnsigned8BitAudio::Process(void *pO
 
 	// Output buffer not big enough?
 	if (uOutputChunkLength!=uCount) {
-		return DECOMPRESS_OUTPUTUNDERRUN;
+		return kErrorDataStarvation;
 	}
 
 	// Input data remaining?
 	if (uInputChunkLength!=uCount) {
-		return DECOMPRESS_OUTPUTOVERRUN;
+		return kErrorBufferTooSmall;
 	}
 	// Decompression is complete
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -285,16 +285,16 @@ Burger::DecompressSigned8BitAudio::DecompressSigned8BitAudio() :
 
 	\brief Resets the decompresser to defaults
 
-	\return \ref DECOMPRESS_OKAY if successful
+	\return \ref kErrorNone if successful
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressSigned8BitAudio::Reset(void)
+Burger::eError Burger::DecompressSigned8BitAudio::Reset(void)
 {
 	m_uTotalInput = 0;
 	m_uTotalOutput = 0;
 	// No worries!
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -313,7 +313,7 @@ Burger::Decompress::eError Burger::DecompressSigned8BitAudio::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::DecompressSigned8BitAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
+Burger::eError Burger::DecompressSigned8BitAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 	// Which is smaller? Input or output?
 	uintptr_t uCount = Min(uInputChunkLength,uOutputChunkLength);
@@ -330,15 +330,15 @@ Burger::Decompress::eError Burger::DecompressSigned8BitAudio::Process(void *pOut
 
 	// Output buffer not big enough?
 	if (uOutputChunkLength!=uCount) {
-		return DECOMPRESS_OUTPUTUNDERRUN;
+		return kErrorDataStarvation;
 	}
 
 	// Input data remaining?
 	if (uInputChunkLength!=uCount) {
-		return DECOMPRESS_OUTPUTOVERRUN;
+		return kErrorBufferTooSmall;
 	}
 	// Decompression is complete
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -393,11 +393,11 @@ Burger::Decompress16BitBEAudio::Decompress16BitBEAudio() :
 
 	\brief Resets the decompresser to defaults
 
-	\return \ref DECOMPRESS_OKAY if successful
+	\return \ref kErrorNone if successful
 
 ***************************************/
 
-Burger::Decompress::eError Burger::Decompress16BitBEAudio::Reset(void)
+Burger::eError Burger::Decompress16BitBEAudio::Reset(void)
 {
 	m_uTotalInput = 0;
 	m_uTotalOutput = 0;
@@ -406,7 +406,7 @@ Burger::Decompress::eError Burger::Decompress16BitBEAudio::Reset(void)
 	m_uCacheSize = 0;
 	m_eState = STATE_INIT;
 #endif
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -425,7 +425,7 @@ Burger::Decompress::eError Burger::Decompress16BitBEAudio::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::Decompress16BitBEAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
+Burger::eError Burger::Decompress16BitBEAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 #if defined(BURGER_BIGENDIAN)
 
@@ -587,15 +587,15 @@ Burger::Decompress::eError Burger::Decompress16BitBEAudio::Process(void *pOutput
 
 	// Output buffer not big enough?
 	if (uOutputChunkLength!=uOutputConsumed) {
-		return DECOMPRESS_OUTPUTUNDERRUN;
+		return kErrorDataStarvation;
 	}
 
 	// Input data remaining?
 	if (uInputChunkLength!=uInputConsumed) {
-		return DECOMPRESS_OUTPUTOVERRUN;
+		return kErrorBufferTooSmall;
 	}
 	// Decompression is complete
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -651,11 +651,11 @@ Burger::Decompress16BitLEAudio::Decompress16BitLEAudio() :
 
 	\brief Resets the decompresser to defaults
 
-	\return \ref DECOMPRESS_OKAY if successful
+	\return \ref kErrorNone if successful
 
 ***************************************/
 
-Burger::Decompress::eError Burger::Decompress16BitLEAudio::Reset(void)
+Burger::eError Burger::Decompress16BitLEAudio::Reset(void)
 {
 	m_uTotalInput = 0;
 	m_uTotalOutput = 0;
@@ -664,7 +664,7 @@ Burger::Decompress::eError Burger::Decompress16BitLEAudio::Reset(void)
 	m_uCacheSize = 0;
 	m_eState = STATE_INIT;
 #endif
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -683,7 +683,7 @@ Burger::Decompress::eError Burger::Decompress16BitLEAudio::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::Decompress16BitLEAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
+Burger::eError Burger::Decompress16BitLEAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 #if !defined(BURGER_BIGENDIAN)
 
@@ -847,15 +847,15 @@ Burger::Decompress::eError Burger::Decompress16BitLEAudio::Process(void *pOutput
 
 	// Output buffer not big enough?
 	if (uOutputChunkLength!=uOutputConsumed) {
-		return DECOMPRESS_OUTPUTUNDERRUN;
+		return kErrorDataStarvation;
 	}
 
 	// Input data remaining?
 	if (uInputChunkLength!=uInputConsumed) {
-		return DECOMPRESS_OUTPUTOVERRUN;
+		return kErrorBufferTooSmall;
 	}
 	// Decompression is complete
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -910,11 +910,11 @@ Burger::Decompress32BitBEAudio::Decompress32BitBEAudio() :
 
 	\brief Resets the decompresser to defaults
 
-	\return \ref DECOMPRESS_OKAY if successful
+	\return \ref kErrorNone if successful
 
 ***************************************/
 
-Burger::Decompress::eError Burger::Decompress32BitBEAudio::Reset(void)
+Burger::eError Burger::Decompress32BitBEAudio::Reset(void)
 {
 	m_uTotalInput = 0;
 	m_uTotalOutput = 0;
@@ -923,7 +923,7 @@ Burger::Decompress::eError Burger::Decompress32BitBEAudio::Reset(void)
 	m_uCacheCount = 0;
 	m_eState = STATE_INIT;
 #endif
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -942,7 +942,7 @@ Burger::Decompress::eError Burger::Decompress32BitBEAudio::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::Decompress32BitBEAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
+Burger::eError Burger::Decompress32BitBEAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 #if defined(BURGER_BIGENDIAN)
 
@@ -1124,15 +1124,15 @@ Burger::Decompress::eError Burger::Decompress32BitBEAudio::Process(void *pOutput
 
 	// Output buffer not big enough?
 	if (uOutputChunkLength!=uOutputConsumed) {
-		return DECOMPRESS_OUTPUTUNDERRUN;
+		return kErrorDataStarvation;
 	}
 
 	// Input data remaining?
 	if (uInputChunkLength!=uInputConsumed) {
-		return DECOMPRESS_OUTPUTOVERRUN;
+		return kErrorBufferTooSmall;
 	}
 	// Decompression is complete
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -1188,11 +1188,11 @@ Burger::Decompress32BitLEAudio::Decompress32BitLEAudio() :
 
 	\brief Resets the decompresser to defaults
 
-	\return \ref DECOMPRESS_OKAY if successful
+	\return \ref kErrorNone if successful
 
 ***************************************/
 
-Burger::Decompress::eError Burger::Decompress32BitLEAudio::Reset(void)
+Burger::eError Burger::Decompress32BitLEAudio::Reset(void)
 {
 	m_uTotalInput = 0;
 	m_uTotalOutput = 0;
@@ -1201,7 +1201,7 @@ Burger::Decompress::eError Burger::Decompress32BitLEAudio::Reset(void)
 	m_uCacheCount = 0;
 	m_eState = STATE_INIT;
 #endif
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -1220,7 +1220,7 @@ Burger::Decompress::eError Burger::Decompress32BitLEAudio::Reset(void)
 
 ***************************************/
 
-Burger::Decompress::eError Burger::Decompress32BitLEAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
+Burger::eError Burger::Decompress32BitLEAudio::Process(void *pOutput, uintptr_t uOutputChunkLength,const void *pInput, uintptr_t uInputChunkLength)
 {
 #if !defined(BURGER_BIGENDIAN)
 
@@ -1402,15 +1402,15 @@ Burger::Decompress::eError Burger::Decompress32BitLEAudio::Process(void *pOutput
 
 	// Output buffer not big enough?
 	if (uOutputChunkLength!=uOutputConsumed) {
-		return DECOMPRESS_OUTPUTUNDERRUN;
+		return kErrorDataStarvation;
 	}
 
 	// Input data remaining?
 	if (uInputChunkLength!=uInputConsumed) {
-		return DECOMPRESS_OUTPUTOVERRUN;
+		return kErrorBufferTooSmall;
 	}
 	// Decompression is complete
-	return DECOMPRESS_OKAY;
+	return kErrorNone;
 }
 
 /*! ************************************

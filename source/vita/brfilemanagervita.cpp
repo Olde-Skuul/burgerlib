@@ -39,16 +39,16 @@ static const char *g_VolumeNames[] = {
 	":host0:"
 };
 
-uint_t BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,uint_t uVolumeNum)
+uint_t BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
 {
 	uint_t uResult;
 	if (uVolumeNum<BURGER_ARRAYSIZE(g_VolumeNames)) {
 		pOutput->Set(g_VolumeNames[uVolumeNum]);
-		uResult = File::OKAY;
+		uResult = kErrorNone;
 	} else {
 		// Clear on error
 		pOutput->Clear();
-		uResult = File::OUTOFRANGE;
+		uResult = kErrorInvalidParameter;
 	}
 	return uResult;
 }
@@ -68,7 +68,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 {
 	Filename MyFilename;
 	uint_t uResult = GetVolumeName(&MyFilename,0);		// Get the boot volume name
-	if (uResult==File::OKAY) {
+	if (uResult==kErrorNone) {
 		// Set the initial prefix
 		SetPrefix(PREFIXBOOT,MyFilename.GetPtr());
 	}
@@ -102,12 +102,12 @@ uint_t BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFi
 	uint_t uResult;
 	if (eError<SCE_OK) {
 		pOutput->Clear();
-		uResult = File::FILENOTFOUND;
+		uResult = kErrorFileNotFound;
 	} else {
 		// Get the file dates
 		pOutput->Load(&Entry.st_mtime);
 		// It's parsed!
-		uResult = File::OKAY;
+		uResult = kErrorNone;
 	}
 	return uResult;
 }
@@ -136,12 +136,12 @@ uint_t BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileNa
 	uint_t uResult;
 	if (eError<SCE_OK) {
 		pOutput->Clear();
-		uResult = File::FILENOTFOUND;
+		uResult = kErrorFileNotFound;
 	} else {
 		// Get the file dates
 		pOutput->Load(&Entry.st_ctime);
 		// It's parsed!
-		uResult = File::OKAY;
+		uResult = kErrorNone;
 	}
 	return uResult;
 }
@@ -157,7 +157,7 @@ uint_t BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileNa
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DoesFileExist(Burger::Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DoesFileExist(Burger::Filename *pFileName) BURGER_NOEXCEPT
 {
 	uint_t uResult = FALSE;
 	// Buffer to hold the attributes and the filename
@@ -185,7 +185,7 @@ uint_t BURGER_API Burger::FileManager::DoesFileExist(Burger::Filename *pFileName
 uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFileName)
 {
 	// Assume an error condition
-	uint_t uResult = File::IOERROR;
+	uint_t uResult = kErrorIO;
 	// Get the full path
 	const char *pPath = pFileName->GetNative();
 
@@ -200,7 +200,7 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFi
 		if (SCE_STM_ISDIR(MyStat.st_mode)) {
 			// There already is a directory here by this name.
 			// Exit okay!
-			uResult = File::OKAY;
+			uResult = kErrorNone;
 		}
 
 	} else {
@@ -209,7 +209,7 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFi
 		eError = sceIoMkdir(pPath,SCE_STM_RWU);
 		if (eError>=SCE_OK) {
 			// That was easy!
-			uResult = File::OKAY;
+			uResult = kErrorNone;
 
 		} else {
 
@@ -230,7 +230,7 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFi
 					// Let's iterate! Assume success unless 
 					// an error occurs in this loop.
 
-					uResult = File::OKAY;
+					uResult = kErrorNone;
 					do {
 						// Terminate at the fragment
 						pEnd[0] = 0;
@@ -241,7 +241,7 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFi
 						// Error and it's not because it's already present
 						if (eError<SCE_OK) {
 							// Uh, oh... Perhaps not enough permissions?
-							uResult = File::IOERROR;
+							uResult = kErrorIO;
 							break;
 						}
 						// Skip past this fragment
@@ -263,7 +263,7 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFi
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName) BURGER_NOEXCEPT
 {
 	uint_t uResult = FALSE;		// Success
 	if (sceIoRemove(pFileName->GetNative())<SCE_OK) {

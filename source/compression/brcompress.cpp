@@ -62,7 +62,7 @@ Burger::Compress::~Compress()
 
 /*! ************************************
 
-	\fn Burger::Compress::eError Burger::Compress::Init(void)
+	\fn Burger::eError Burger::Compress::Init(void)
 	\brief Initialize the compression algorithm
 
 	This function will reset the compression algorithm (Which may or may
@@ -79,7 +79,7 @@ Burger::Compress::~Compress()
 
 /*! ************************************
 
-	\fn Burger::Compress::eError Burger::Compress::Process(const void *pInput,uintptr_t uInputLength)
+	\fn Burger::eError Burger::Compress::Process(const void *pInput,uintptr_t uInputLength)
 	\brief Compress data
 
 	Pass data into the compressor and store the output into the data stream
@@ -94,7 +94,7 @@ Burger::Compress::~Compress()
 
 /*! ************************************
 
-	\fn Burger::Compress::eError Burger::Compress::Finalize(void)
+	\fn Burger::eError Burger::Compress::Finalize(void)
 	\brief Finish the compression
 
 	Perform the final data compaction and clean up. After this call is performed,

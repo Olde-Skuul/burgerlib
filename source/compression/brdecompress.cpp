@@ -33,7 +33,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::Decompress,Burger::Base);
 
 /*! ************************************
 
-	\enum Burger::Decompress::eError
+	\enum Burger::eError
 	\brief Decompression error code
 	
 ***************************************/
@@ -79,11 +79,11 @@ Burger::Decompress::Decompress(void) :
 	Pass data into the decompressor and store the output into the output buffer.
 	Bounds checking is performed to ensure there are no buffer overruns or
 	underruns on output. If the input decompressed into the output buffer without
-	any excess, the code Decompress::DECOMPRESS_OKAY (0) is returned. If there wasn't enough
+	any excess, the code kErrorNone (0) is returned. If there wasn't enough
 	input data to satisfy the output then Decompress::DECOMPRESS_INPUTUNDERRUN is returned
-	and if there was input data unprocessed then Decompress::DECOMPRESS_OUTPUTOVERRUN is returned.
+	and if there was input data unprocessed then kErrorBufferTooSmall is returned.
 
-	If Decompress::DECOMPRESS_BADINPUT is returned, there was an unrecoverable error.
+	If kErrorDataCorruption is returned, there was an unrecoverable error.
 
 	\note This is must be implemented by derived class.
 

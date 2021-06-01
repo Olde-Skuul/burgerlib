@@ -53,9 +53,9 @@ extern "C" int *_NSGetArgc();
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,uint_t uVolumeNum)
+uint_t BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
 {
-	uint_t uResult = File::OUTOFRANGE;
+	uint_t uResult = kErrorInvalidParameter;
 	
 	// If running in the emulator, it's really running on top of the MacOSX
 	// file system, so perform the MacOSX handler to obtain volume names
@@ -153,7 +153,7 @@ uint_t BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,u
 					// Set the filename
 					pOutput->Set(pName);
 					// Exit okay!
-					uResult = File::OKAY;
+					uResult = kErrorNone;
 					break;
 				}
 			}
@@ -166,10 +166,10 @@ uint_t BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,u
 		
 	} else if (!uVolumeNum) {
 		pOutput->Set(":iOSDevice:");
-		uResult = File::OKAY;
+		uResult = kErrorNone;
 	}
 	// Clear on error
-	if (uResult!=File::OKAY) {
+	if (uResult!=kErrorNone) {
 		// Kill the string since I have an error
 		pOutput->Clear();
 	}
@@ -191,7 +191,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 {
 	Filename MyFilename;
 	uint_t uResult = GetVolumeName(&MyFilename,0);		// Get the boot volume name
-	if (uResult==File::OKAY) {
+	if (uResult==kErrorNone) {
 		// Set the initial prefix
 		const char *pBootName = MyFilename.GetPtr();
 		SetPrefix(PREFIXBOOT,pBootName);
@@ -299,12 +299,12 @@ uint_t BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFi
 	uint_t uResult;
 	if (eError<0) {
 		pOutput->Clear();
-		uResult = File::FILENOTFOUND;
+		uResult = kErrorFileNotFound;
 	} else {
 		// Get the file dates
 		pOutput->Load(&Entry.m_ModificationDate);
 		// It's parsed!
-		uResult = File::OKAY;
+		uResult = kErrorNone;
 	}
 	return uResult;
 }
@@ -347,12 +347,12 @@ uint_t BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileNa
 	uint_t uResult;
 	if (eError<0) {
 		pOutput->Clear();
-		uResult = File::FILENOTFOUND;
+		uResult = kErrorFileNotFound;
 	} else {
 		// Get the file dates
 		pOutput->Load(&Entry.m_CreationDate);
 		// It's parsed!
-		uResult = File::OKAY;
+		uResult = kErrorNone;
 	}
 	return uResult;
 }
@@ -504,12 +504,12 @@ uint_t BURGER_API Burger::FileManager::GetFileAndAuxType(Burger::Filename *pFile
 
 	uint_t uResult;
 	if (eError<0) {
-		uResult = File::FILENOTFOUND;
+		uResult = kErrorFileNotFound;
 	} else {
 		// It's parsed!
 		pFileType[0] = reinterpret_cast<uint32_t *>(Entry.finderInfo)[0];
 		pAuxType[0] = reinterpret_cast<uint32_t *>(Entry.finderInfo)[1];
-		uResult = File::OKAY;
+		uResult = kErrorNone;
 	}
 	return uResult;
 }
@@ -551,15 +551,15 @@ uint_t BURGER_API Burger::FileManager::SetFileType(Burger::Filename *pFileName,u
 
 	uint_t uResult;
 	if (eError<0) {
-		uResult = File::FILENOTFOUND;
+		uResult = kErrorFileNotFound;
 	} else {
 		// It's parsed!
 		reinterpret_cast<uint32_t *>(Entry.finderInfo)[0] = uFileType;
 		eError = setattrlist(pFileName->GetNative(),&AttributesList,&Entry.finderInfo,sizeof(Entry.finderInfo),0);
 		if (eError<0) {
-			uResult = File::IOERROR;
+			uResult = kErrorIO;
 		} else {
-			uResult = File::OKAY;
+			uResult = kErrorNone
 		}
 	}
 	return uResult;
@@ -601,15 +601,15 @@ uint_t BURGER_API Burger::FileManager::SetAuxType(Burger::Filename *pFileName,ui
 
 	uint_t uResult;
 	if (eError<0) {
-		uResult = File::FILENOTFOUND;
+		uResult = kErrorFileNotFound;
 	} else {
 		// It's parsed!
 		reinterpret_cast<uint32_t *>(Entry.finderInfo)[1] = uAuxType;
 		eError = setattrlist(pFileName->GetNative(),&AttributesList,&Entry.finderInfo,sizeof(Entry.finderInfo),0);
 		if (eError<0) {
-			uResult = File::IOERROR;
+			uResult = kErrorIO;
 		} else {
-			uResult = File::OKAY;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -651,16 +651,16 @@ uint_t BURGER_API Burger::FileManager::SetFileAndAuxType(Burger::Filename *pFile
 
 	uint_t uResult;
 	if (eError<0) {
-		uResult = File::FILENOTFOUND;
+		uResult = kErrorFileNotFound;
 	} else {
 		// It's parsed!
 		reinterpret_cast<uint32_t *>(Entry.finderInfo)[0] = uFileType;
 		reinterpret_cast<uint32_t *>(Entry.finderInfo)[1] = uAuxType;
 		eError = setattrlist(pFileName->GetNative(),&AttributesList,&Entry.finderInfo,sizeof(Entry.finderInfo),0);
 		if (eError<0) {
-			uResult = File::IOERROR;
+			uResult = kErrorIO;
 		} else {
-			uResult = File::OKAY;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -676,7 +676,7 @@ uint_t BURGER_API Burger::FileManager::SetFileAndAuxType(Burger::Filename *pFile
 uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFileName)
 {
 	// Assume an error condition
-	uint_t uResult = File::IOERROR;
+	uint_t uResult = kErrorIO;
 	// Get the full path
 	const char *pPath = pFileName->GetNative();
 
@@ -689,7 +689,7 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFi
 		if (S_ISDIR(MyStat.st_mode)) {
 			// There already is a directory here by this name.
 			// Exit okay!
-			uResult = File::OKAY;
+			uResult = kErrorNone;
 		}
 
 	} else {
@@ -698,7 +698,7 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFi
 		eError = mkdir(pPath,0777);
 		if (eError==0) {
 			// That was easy!
-			uResult = File::OKAY;
+			uResult = kErrorNone;
 
 		} else {
 
@@ -719,7 +719,7 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFi
 					// Let's iterate! Assume success unless 
 					// an error occurs in this loop.
 
-					uResult = File::OKAY;
+					uResult = kErrorNone;
 					do {
 						// Terminate at the fragment
 						pEnd[0] = 0;
@@ -730,7 +730,7 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFi
 						// Error and it's not because it's already present
 						if (eError!=0 && errno != EEXIST) {
 							// Uh, oh... Perhaps not enough permissions?
-							uResult = File::IOERROR;
+							uResult = kErrorIO;
 							break;
 						}
 						// Skip past this fragment
@@ -809,7 +809,7 @@ uint_t BURGER_API Burger::FileManager::CopyFile(Burger::Filename *pDestName,Burg
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName) BURGER_NOEXCEPT
 {
 	if (!remove(pFileName->GetNative())) {
 		return FALSE;

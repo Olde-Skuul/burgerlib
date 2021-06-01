@@ -30,15 +30,15 @@
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum)
+uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
 {
 	if (pOutput) {
 		pOutput->Clear();
 	}
 
-	uint_t uResult = File::OUTOFRANGE;		// Assume error
+	uint_t uResult = kErrorInvalidParameter;		// Assume error
 	if (uVolumeNum<32) {
-		uResult = File::FILENOTFOUND;
+		uResult = kErrorFileNotFound;
 		// Only query drives that exist
 		char OutputNames[MAX_PATH];	// Buffer to copy to + two colons and a terminating zero
 		char InputName[4];				// Drive name template ( "C:\\" )
@@ -51,7 +51,7 @@ uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uV
 		// Get the volume name from windows
 		if (GetVolumeInformationA(InputName,OutputNames,(sizeof(OutputNames)/2),
 			NULL,NULL,NULL,NULL,0)) {
-			uResult = File::OKAY;	// No error!
+			uResult = kErrorNone;	// No error!
 			// Did I want the output name?
 			if (pOutput) {
 				char OutputName[(MAX_PATH*2)+3];
@@ -146,7 +146,7 @@ uint_t BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeD
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName) BURGER_NOEXCEPT
 {
 	// Get file info
 	DWORD uOutput = GetFileAttributesA(pFileName->GetNative());
@@ -222,14 +222,14 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName) BURGER_NOEXCEPT
 {
 	// Did it fail?
 	uint_t uResult = FALSE;		// Assume succeed
 	if (!DeleteFileA(pFileName->GetNative())) {
 		// Try to delete a directory
 		if (!RemoveDirectoryA(pFileName->GetNative())) {
-			uResult = File::FILENOTFOUND;		// I failed!
+			uResult = kErrorFileNotFound;		// I failed!
 		}
 	}
 	return uResult;		// Return the error, if any
@@ -244,9 +244,9 @@ uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
 uint_t BURGER_API Burger::FileManager::RenameFile(Filename *pNewName,Filename *pOldName)
 {
 	// Did it fail?
-	uint_t uResult = File::FILENOTFOUND;		// Assume failure
+	uint_t uResult = kErrorFileNotFound;		// Assume failure
 	if (MoveFileA(pOldName->GetNative(),pNewName->GetNative())) {
-		uResult = File::OKAY;		// I failed!
+		uResult = kErrorNone;		// I failed!
 	}
 	return uResult;		// Return the error, if any
 }

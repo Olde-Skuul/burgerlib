@@ -47,7 +47,7 @@
 
 ***************************************/
 
-const char *Burger::Filename::GetNative(void)
+const char *Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 {
 	Expand();		// Resolve prefixes
 

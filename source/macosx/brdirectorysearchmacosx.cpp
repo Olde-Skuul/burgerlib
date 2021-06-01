@@ -81,16 +81,16 @@ struct BulkAttr {
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::Open(Filename* pDirName)
+uint_t Burger::DirectorySearch::Open(Filename* pDirName) BURGER_NOEXCEPT
 {
 	// Make sure there's nothing pending
 	Close();
-	uint_t uResult = File::FILENOTFOUND;
+	uint_t uResult = kErrorFileNotFound;
 	// Open the directory for reading
 	int fp = open(pDirName->GetNative(), O_RDONLY, 0);
 	if (fp != -1) {
 		m_fp = fp;
-		uResult = File::OKAY;
+		uResult = kErrorNone;
 	}
 	m_bDone = FALSE;
 	return uResult;
@@ -102,10 +102,10 @@ uint_t Burger::DirectorySearch::Open(Filename* pDirName)
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::GetNextEntry(void)
+uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 {
 	// Assume no more entries
-	uint_t uResult = File::OUTOFRANGE;
+	uint_t uResult = kErrorInvalidParameter;
 	int fp = m_fp;
 	if (fp != -1 && !m_bDone) {
 
@@ -331,7 +331,7 @@ uint_t Burger::DirectorySearch::GetNextEntry(void)
 			}
 #endif
 			// It's parsed!
-			uResult = File::OKAY;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -343,7 +343,7 @@ uint_t Burger::DirectorySearch::GetNextEntry(void)
 
 ***************************************/
 
-void Burger::DirectorySearch::Close(void)
+void Burger::DirectorySearch::Close(void) BURGER_NOEXCEPT
 {
 	int fp = m_fp;
 	if (fp != -1) {

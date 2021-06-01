@@ -49,15 +49,15 @@ extern "C" FILE * _MSL_CDECL _wfopen(const wchar_t * _MSL_RESTRICT name, const w
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum)
+uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
 {
 	if (pOutput) {
 		pOutput->Clear();
 	}
 
-	uint_t uResult = File::OUTOFRANGE;		// Assume error
+	uint_t uResult = kErrorInvalidParameter;		// Assume error
 	if (uVolumeNum<32) {
-		uResult = File::FILENOTFOUND;
+		uResult = kErrorFileNotFound;
 		// Only query drives that exist
 		DWORD uDriveMask = GetLogicalDrives();
 		if ((1U<<uVolumeNum)&uDriveMask) {
@@ -74,7 +74,7 @@ uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uV
 			// Get the volume name from windows
 			if (GetVolumeInformationW(InputName,OutputNames,(sizeof(OutputNames)/2),
 				NULL,NULL,NULL,NULL,0)) {
-				uResult = File::OKAY;	// No error!
+				uResult = kErrorNone;	// No error!
 				// Did I want the output name?
 				if (pOutput) {
 					char OutputName[(MAX_PATH*2)+3];
@@ -233,7 +233,7 @@ uint_t BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeD
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName) BURGER_NOEXCEPT
 {
 	String16 WideString(pFileName->GetNative());
 	// Get file info
@@ -311,7 +311,7 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName) BURGER_NOEXCEPT
 {
 	String16 MyName(pFileName->GetNative());
 	// Did it fail?
@@ -319,7 +319,7 @@ uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName)
 	if (!DeleteFileW(reinterpret_cast<const WCHAR *>(MyName.GetPtr()))) {
 		// Try to delete a directory
 		if (!RemoveDirectoryW(reinterpret_cast<const WCHAR *>(MyName.GetPtr()))) {
-			uResult = File::FILENOTFOUND;		// I failed!
+			uResult = kErrorFileNotFound;		// I failed!
 		}
 	}
 	return uResult;		// Return the error, if any
@@ -336,10 +336,10 @@ uint_t BURGER_API Burger::FileManager::RenameFile(Filename *pNewName,Filename *p
 	String16 DestName(pNewName->GetNative());
 	String16 SourceName(pOldName->GetNative());
 	// Did it fail?
-	uint_t uResult = File::FILENOTFOUND;		// Assume failure
+	uint_t uResult = kErrorFileNotFound;		// Assume failure
 	if (MoveFileW(reinterpret_cast<const WCHAR *>(SourceName.GetPtr()),
 		reinterpret_cast<const WCHAR *>(DestName.GetPtr()))) {
-		uResult = File::OKAY;		// I failed!
+		uResult = kErrorNone;		// I failed!
 	}
 	return uResult;		// Return the error, if any
 }
@@ -456,7 +456,7 @@ uintptr_t BURGER_API Burger::FileManager::QueueHandler(void *pData)
 					uError = 0;
 
 					// Was it an append command?
-					if (uAccess==File::APPEND) {
+					if (uAccess==File::kAppend) {
 
 						// Set the file mark to the end of the file
 						LARGE_INTEGER uNewPointer;
@@ -542,7 +542,7 @@ uintptr_t BURGER_API Burger::FileManager::QueueHandler(void *pData)
 		}
 
 		// Acknowledge that the command was consumed
-		pThis->m_uQueueStart = (pThis->m_uQueueStart+1)&(cMaxQueue-1);
+		pThis->m_uQueueStart = (pThis->m_uQueueStart+1)&(kMaxQueue-1);
 	}
 }
 #endif
