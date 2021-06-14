@@ -867,8 +867,8 @@ uint_t BURGER_API Burger::Filename::IsFullPathname(void) const BURGER_NOEXCEPT
 	has a prefix start, it's qualified.
 
 	Filenames of this nature will be automatically assumed to be offset
-	from directory Burger::FileManager::PREFIXCURRENT (the current working
-directory)
+	from directory Burger::FileManager::kPrefixCurrent (the current working
+	directory)
 
 	\return \ref TRUE if the pathname is not qualified, \ref FALSE if not.
 	\sa IsFullPathname() const
@@ -879,7 +879,7 @@ uint_t BURGER_API Burger::Filename::IsFilenameOnly(void) const BURGER_NOEXCEPT
 {
 	uint_t uResult = FALSE;
 	if (!IsFullPathname()) {
-		if (ParsePrefixNumber() == FileManager::PREFIXINVALID) {
+		if (ParsePrefixNumber() == FileManager::kPrefixInvalid) {
 			uResult = TRUE;
 		}
 	}
@@ -894,15 +894,17 @@ uint_t BURGER_API Burger::Filename::IsFilenameOnly(void) const BURGER_NOEXCEPT
 	values, then it's considered prefixed and it will have that directory
 	prefixed when converting it to a fully qualified pathname.
 
-	\return FileManager::PREFIXINVALID if there is no prefix or the prefix
-number if it does. \sa IsFilenameOnly()
+	\return FileManager::kPrefixInvalid if there is no prefix or the prefix
+		number if it does.
+
+	\sa IsFilenameOnly()
 
 ***************************************/
 
 uint_t BURGER_API Burger::Filename::ParsePrefixNumber(
 	void) const BURGER_NOEXCEPT
 {
-	uint_t uPrefixNum = FileManager::PREFIXINVALID;
+	uint_t uPrefixNum = FileManager::kPrefixInvalid;
 	const char* pFilename = m_pFilename;
 	uint_t uTestChar = reinterpret_cast<const uint8_t*>(pFilename)[0];
 	if ((uTestChar >= '0') && (uTestChar < ('9' + 1))) {
@@ -924,15 +926,15 @@ uint_t BURGER_API Burger::Filename::ParsePrefixNumber(
 			}
 			uTestChar = uTestChar * 10;    // Shift up the previous number
 			uTestChar = uTestChar + uTemp; // Total prefix number
-		} while (uTestChar < FileManager::PREFIXMAX); // Test for overflow
+		} while (uTestChar < FileManager::kPrefixCount); // Test for overflow
 	} else if (pFilename[1] == ':') {
 		// Check for the special case prefixes of "$:", "*:" and "@:"
 		if (uTestChar == '$') { // System folder?
-			uPrefixNum = FileManager::PREFIXSYSTEM;
+			uPrefixNum = FileManager::kPrefixSystem;
 		} else if (uTestChar == '*') { // Boot volume?
-			uPrefixNum = FileManager::PREFIXBOOT;
+			uPrefixNum = FileManager::kPrefixBoot;
 		} else if (uTestChar == '@') { // Prefs folder?
-			uPrefixNum = FileManager::PREFIXPREFS;
+			uPrefixNum = FileManager::kPrefixPrefs;
 		}
 	}
 	return uPrefixNum;
@@ -971,8 +973,8 @@ void BURGER_API Burger::Filename::Expand(const char* pInput) BURGER_NOEXCEPT
 	// The first thing to do is determine what prefix # this is
 
 	uintptr_t uLength; // Length of the input
-	// Prefix found (Or PREFIXMAX if bogus)
-	uint_t uPrefixNum = FileManager::PREFIXCURRENT;
+	// Prefix found (Or kPrefixCount if bogus)
+	uint_t uPrefixNum = FileManager::kPrefixCurrent;
 	// Empty input (Assume prefix 8)
 	// Prevent a crash by using a bogus pathname
 	if (!pInput) {
@@ -983,7 +985,7 @@ void BURGER_API Burger::Filename::Expand(const char* pInput) BURGER_NOEXCEPT
 			uint_t uTestChar = reinterpret_cast<const uint8_t*>(pInput)[0];
 			// Is it a fully qualified pathname?
 			if (uTestChar == ':') {
-				uPrefixNum = FileManager::PREFIXMAX;
+				uPrefixNum = FileManager::kPrefixCount;
 			} else if (uLength >= 2) {
 				uint_t uTestChar2 = reinterpret_cast<const uint8_t*>(pInput)[1];
 				// Is this a drive number?
@@ -1004,7 +1006,7 @@ void BURGER_API Burger::Filename::Expand(const char* pInput) BURGER_NOEXCEPT
 								// Is it the form ".D:", if not, it's valid
 								if (i != 2) {
 									// It's valid!!!
-									uPrefixNum = FileManager::PREFIXMAX;
+									uPrefixNum = FileManager::kPrefixCount;
 								}
 								break;
 							}
@@ -1044,21 +1046,21 @@ void BURGER_API Burger::Filename::Expand(const char* pInput) BURGER_NOEXCEPT
 							break;
 						}
 					} while (uTestChar <
-						FileManager::PREFIXMAX); // Test for overflow
+						FileManager::kPrefixCount); // Test for overflow
 				} else if (uTestChar2 == ':') {
 					// Check for the special case prefixes of "$:", "*:" and
 					// "@:"
 					if (uTestChar == '$') { // System folder?
-						uPrefixNum = FileManager::PREFIXSYSTEM;
+						uPrefixNum = FileManager::kPrefixSystem;
 					} else if (uTestChar == '*') { // Boot volume?
-						uPrefixNum = FileManager::PREFIXBOOT;
+						uPrefixNum = FileManager::kPrefixBoot;
 					} else if (uTestChar == '@') { // Prefs folder?
-						uPrefixNum = FileManager::PREFIXPREFS;
+						uPrefixNum = FileManager::kPrefixPrefs;
 					}
 					// If a special prefix was found, or ".:" which means
 					// current directory
 					if ((uTestChar == '.') ||
-						(uPrefixNum != FileManager::PREFIXCURRENT)) {
+						(uPrefixNum != FileManager::kPrefixCurrent)) {
 						uLength -= 2;
 						pInput += 2;
 					}
@@ -1074,7 +1076,7 @@ void BURGER_API Burger::Filename::Expand(const char* pInput) BURGER_NOEXCEPT
 	const char* pPrefix = NULL; // Set to NULL to quiet the compiler
 	uintptr_t uPrefixLen =
 		0; // Assume only a zero byte ("C" end byte) (Empty prefix)
-	if (uPrefixNum < FileManager::PREFIXMAX) {
+	if (uPrefixNum < FileManager::kPrefixCount) {
 		FileManager::GetPrefix(
 			&Prefix, uPrefixNum); // Is there a prefix attached?
 		pPrefix = Prefix.GetPtr();

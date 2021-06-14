@@ -19,6 +19,10 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRERROR_H__
+#include "brerror.h"
+#endif
+
 #ifndef __BRFILENAME_H__
 #include "brfilename.h"
 #endif
@@ -48,45 +52,66 @@ class FileManager {
 public:
 	/** Maximum number of pending IO events(Power of 2) */
 	static const uint_t kMaxQueue = 128;
-	enum {
+
+	/** Predefined pathname prefixes */
+	enum ePrefix {
 		/** 8: Current working directory at application launch */
-		PREFIXCURRENT = 8,
+		kPrefixCurrent = 8,
 		/** 9: Directory where the application executable resides */
-		PREFIXAPPLICATION = 9,
+		kPrefixApplication = 9,
 		/** "*:" Boot volume prefix number */
-		PREFIXBOOT = 32,
+		kPrefixBoot = 32,
 		/** "@:" User preferences folder prefix number */
-		PREFIXPREFS = 33,
+		kPrefixPrefs = 33,
 		/** "$:" System volume folder prefix number */
-		PREFIXSYSTEM = 34,
+		kPrefixSystem = 34,
 		/** Maximum number of pathname prefixes */
-		PREFIXMAX = 35,
+		kPrefixCount = 35,
 		/** Illegal prefix number */
-		PREFIXINVALID = 999
+		kPrefixInvalid = 999
 	};
+
+	/** Asynchronous file I/O commands */
 	enum eIOCommand {
-		IOCOMMAND_INVALID,  ///< Invalid command (Must be zero)
-		IOCOMMAND_OPEN,     ///< Pending open file command
-		IOCOMMAND_CLOSE,    ///< Pending close file command
-		IOCOMMAND_READ,     ///< Pending read file command
-		IOCOMMAND_WRITE,    ///< Pending write file command
-		IOCOMMAND_SEEK,     ///< Pending seek file command
-		IOCOMMAND_SEEKEOF,  ///< Pending seek to end of file command
-		IOCOMMAND_CALLBACK, ///< Pending completion callback command
-		IOCOMMAND_SYNC,     ///< Pending sync command
-		IOCOMMAND_ENDTHREAD ///< Pending end thread command
+		/** Invalid command (Must be zero) */
+		kIOCommandInvalid,
+		/** Pending open file command */
+		kIOCommandOpen,
+		/** Pending close file command */
+		kIOCommandClose,
+		/** Pending read file command */
+		kIOCommandRead,
+		/** Pending write file command */
+		kIOCommandWrite,
+		/** Pending seek file command */
+		kIOCommandSeek,
+		/** Pending seek to end of file command */
+		kIOCommandSeekEOF,
+		/** Pending completion callback command */
+		kIOCommandCallback,
+		/** Pending sync command */
+		kIOCommandSync,
+		/** Pending end thread command */
+		kIOCommandEndThread
 	};
+
+	/** Asynchronous file I/O message */
 	struct Queue_t {
-		File* m_pFile;   ///< Pointer to the file object that this Queue_t is
-						 ///< attached to
-		void* m_pBuffer; ///< Pointer to the I/O buffer or callback pointer
-		uintptr_t m_uLength;     ///< Value to attach to the command
-		eIOCommand m_uIOCommand; ///< IO Command
+		/** Pointer to the file object that this Queue_t is attached to */
+		File* m_pFile;
+		/** Pointer to the I/O buffer or callback pointer */
+		void* m_pBuffer;
+		/** Value to attach to the command */
+		uintptr_t m_uLength;
+		/** IO Command */
+		eIOCommand m_uIOCommand;
 	};
+
+	/** Function prototype for asynchronous I/O callbacks */
 	typedef void(BURGER_API* ProcCallback)(Queue_t* pQueue);
 
 private:
-	FileManager();
+	FileManager() BURGER_NOEXCEPT;
 	~FileManager();
 	void BURGER_API FlushIO(void) BURGER_NOEXCEPT {}
 	void BURGER_API WaitUntilQueueHasSpace(void) BURGER_NOEXCEPT {}
@@ -94,6 +119,10 @@ private:
 		File* pFile, eIOCommand uIOCommand, void* pBuffer, uintptr_t uLength);
 	void BURGER_API Sync(File* pFile);
 	static uintptr_t BURGER_API QueueHandler(void* pData);
+
+#if defined(BURGER_MSDOS) || defined(DOXYGEN)
+	void BURGER_API DetectMSDOSVersion(void) BURGER_NOEXCEPT;
+#endif
 
 	/** Semaphore to ping the IO thread */
 	Semaphore m_PingIOThread;
@@ -105,14 +134,24 @@ private:
 	volatile uint32_t m_uQueueStart;
 	/** Index to the end of the queue */
 	volatile uint32_t m_uQueueEnd;
+
 	/** Array of prefix strings */
-	const char* m_pPrefix[PREFIXMAX];
+	const char* m_pPrefix[kPrefixCount];
+
 	/** Queue of IO events */
 	Queue_t m_IOQueue[kMaxQueue];
 
 #if defined(BURGER_MSDOS) || defined(DOXYGEN)
+	/** Name of the MSDos flavor being run */
+	const char* m_pDOSName;
+	/** MSDOS version (MSDOS Only) */
+	uint16_t m_uMSDOSVersion;
+	/** MSDOS TRUE version (MSDOS Only) */
+	uint16_t m_uMSDOSTrueVersion;
 	/** True if MSDOS has long filename support (MSDOS Only) */
-	uint8_t m_bAllowed;
+	uint8_t m_bLongNamesAllowed;
+	/** OEM number (MSDOS Only) */
+	uint8_t m_uOEMFlavor;
 #endif
 
 #if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
@@ -127,20 +166,25 @@ private:
 	static FileManager* g_pFileManager;
 
 public:
-	static void BURGER_API Init(void);
-	static void BURGER_API Shutdown(void);
-#if defined(BURGER_MSDOS)
+	static eError BURGER_API Init(void);
+	static void BURGER_API Shutdown(void) BURGER_NOEXCEPT;
+#if defined(BURGER_MSDOS) || defined(DOXYGEN)
 	static uint_t BURGER_API AreLongFilenamesAllowed(void) BURGER_NOEXCEPT;
+	static uint_t BURGER_API GetMSDosVersion(void) BURGER_NOEXCEPT;
+	static uint_t BURGER_API GetMSDosTrueVersion(void) BURGER_NOEXCEPT;
+	static const char* BURGER_API GetMSDosName(void) BURGER_NOEXCEPT;
+	static uint_t BURGER_API GetMSDosFlavor(void) BURGER_NOEXCEPT;
 #else
 	static BURGER_INLINE uint_t AreLongFilenamesAllowed(void) BURGER_NOEXCEPT
 	{
 		return TRUE;
 	}
 #endif
-	static uint_t BURGER_API GetVolumeName(
+	static eError BURGER_API GetVolumeName(
 		Filename* pOutput, uint_t uVolumeNum) BURGER_NOEXCEPT;
-	static uint_t BURGER_API GetVolumeNumber(const char* pInput);
-	static void BURGER_API DefaultPrefixes(void);
+	static uint_t BURGER_API GetVolumeNumber(
+		const char* pInput) BURGER_NOEXCEPT;
+	static eError BURGER_API DefaultPrefixes(void);
 	static uint_t BURGER_API GetPrefix(
 		Filename* pOutput, uint_t uPrefixNum) BURGER_NOEXCEPT;
 	static uint_t BURGER_API SetPrefix(

@@ -55,7 +55,7 @@ uint32_t Burger::Tick::s_LastTick;
 
 uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
 {
-#if defined(BURGER_LINUX)
+#if defined(BURGER_LINUX) || defined(BURGER_XBOXONE)
 	return static_cast<uint32_t>((clock()*TICKSPERSEC)/CLOCKS_PER_SEC);
 #elif CLOCKS_PER_SEC==TICKSPERSEC
 	return clock();
@@ -211,7 +211,7 @@ uint_t BURGER_API Burger::Tick::WaitEvent(uint_t uCount)
 
 uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void)
 {
-#if defined(BURGER_LINUX)
+#if defined(BURGER_LINUX) || defined(BURGER_XBOXONE)
 	return static_cast<uint32_t>((clock()*1000000)/CLOCKS_PER_SEC);
 #elif CLOCKS_PER_SEC==1000000
 	return static_cast<uint32_t>(clock());
@@ -246,7 +246,7 @@ uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void)
 
 uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void)
 {
-#if defined(BURGER_LINUX)
+#if defined(BURGER_LINUX) || defined(BURGER_XBOXONE)
 	return static_cast<uint32_t>((clock()*1000)/CLOCKS_PER_SEC);
 #elif CLOCKS_PER_SEC==1000
 	return static_cast<uint32_t>(clock());

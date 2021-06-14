@@ -240,18 +240,18 @@ struct IsTests_t {
 };
 
 static const IsTests_t IsFullTests[] = {
-	{".d3:foo", TRUE, FALSE, FileManager::PREFIXINVALID},
-	{".d31:foo", TRUE, FALSE, FileManager::PREFIXINVALID},
-	{".d:foo", FALSE, TRUE, FileManager::PREFIXINVALID},
-	{":foo:bar", TRUE, FALSE, FileManager::PREFIXINVALID},
-	{".:folder", FALSE, TRUE, FileManager::PREFIXINVALID},
-	{"temp.txt", FALSE, TRUE, FileManager::PREFIXINVALID},
-	{"temp", FALSE, TRUE, FileManager::PREFIXINVALID}, {"8:", FALSE, FALSE, 8},
+	{".d3:foo", TRUE, FALSE, FileManager::kPrefixInvalid},
+	{".d31:foo", TRUE, FALSE, FileManager::kPrefixInvalid},
+	{".d:foo", FALSE, TRUE, FileManager::kPrefixInvalid},
+	{":foo:bar", TRUE, FALSE, FileManager::kPrefixInvalid},
+	{".:folder", FALSE, TRUE, FileManager::kPrefixInvalid},
+	{"temp.txt", FALSE, TRUE, FileManager::kPrefixInvalid},
+	{"temp", FALSE, TRUE, FileManager::kPrefixInvalid}, {"8:", FALSE, FALSE, 8},
 	{"12:this:is:a:path", FALSE, FALSE, 12},
 	{"20:twenty.txt", FALSE, FALSE, 20}, {"8:foo", FALSE, FALSE, 8},
-	{"$:foo", FALSE, FALSE, FileManager::PREFIXSYSTEM},
-	{"@:foo", FALSE, FALSE, FileManager::PREFIXPREFS},
-	{"*:foo", FALSE, FALSE, FileManager::PREFIXBOOT}};
+	{"$:foo", FALSE, FALSE, FileManager::kPrefixSystem},
+	{"@:foo", FALSE, FALSE, FileManager::kPrefixPrefs},
+	{"*:foo", FALSE, FALSE, FileManager::kPrefixBoot}};
 
 static uint_t BURGER_API TestFilenameIs(void) BURGER_NOEXCEPT
 {
@@ -296,8 +296,18 @@ static void BURGER_API TestShowDirectories(void) BURGER_NOEXCEPT
 {
 	Filename Test;
 
-	const uint_t uLong = FileManager::AreLongFilenamesAllowed();
-	Message("FileManager::AreLongFilenamesAllowed() is %u", uLong);
+	// Check if MS/DOS long file names are supported
+#if defined(BURGER_MSDOS)
+	Message("FileManager::AreLongFilenamesAllowed() is %u",
+		FileManager::AreLongFilenamesAllowed());
+	Message("FileManager::GetMSDosVersion() is 0x%04X",
+		FileManager::GetMSDosVersion());
+	Message("FileManager::GetMSDosTrueVersion() is 0x%04X",
+		FileManager::GetMSDosTrueVersion());
+	Message("FileManager::GetMSDosName() is %s", FileManager::GetMSDosName());
+	Message("FileManager::GetMSDosFlavor() is 0x%04X",
+		FileManager::GetMSDosFlavor());
+#endif
 
 	// Display the directories
 	Test.SetSystemWorkingDirectory();
@@ -345,11 +355,11 @@ typedef struct PrefixName_t {
 } PrefixName_t;
 
 static const PrefixName_t PrefixNameTable[] = {
-	{FileManager::PREFIXCURRENT, "PREFIXCURRENT"},
-	{FileManager::PREFIXAPPLICATION, "PREFIXAPPLICATION"},
-	{FileManager::PREFIXBOOT, "PREFIXBOOT"},
-	{FileManager::PREFIXPREFS, "PREFIXPREFS"},
-	{FileManager::PREFIXSYSTEM, "PREFIXSYSTEM"}};
+	{FileManager::kPrefixCurrent, "kPrefixCurrent"},
+	{FileManager::kPrefixApplication, "kPrefixApplication"},
+	{FileManager::kPrefixBoot, "kPrefixBoot"},
+	{FileManager::kPrefixPrefs, "kPrefixPrefs"},
+	{FileManager::kPrefixSystem, "kPrefixSystem"}};
 
 static uint_t BURGER_API TestPrefixes(uint_t uVerbose) BURGER_NOEXCEPT
 {
@@ -374,8 +384,8 @@ static uint_t BURGER_API TestPrefixes(uint_t uVerbose) BURGER_NOEXCEPT
 	uint_t i = 0;
 	uint_t uFailure = FALSE;
 	do {
-		if ((i != FileManager::PREFIXCURRENT) &&
-			(i != FileManager::PREFIXAPPLICATION)) {
+		if ((i != FileManager::kPrefixCurrent) &&
+			(i != FileManager::kPrefixApplication)) {
 			FileManager::GetPrefix(&MyFileName, i);
 			const char* pTest = MyFileName.c_str();
 			const uint_t uTest = pTest[0] != 0;
@@ -383,7 +393,7 @@ static uint_t BURGER_API TestPrefixes(uint_t uVerbose) BURGER_NOEXCEPT
 			ReportFailure(
 				"FileManager::GetPrefix(%d) = \"%s\"", uTest, i, pTest);
 		}
-	} while (++i < FileManager::PREFIXBOOT);
+	} while (++i < FileManager::kPrefixBoot);
 	return uFailure;
 }
 
@@ -610,12 +620,12 @@ static uint_t BURGER_API TestFilenameExpand(void) BURGER_NOEXCEPT
 	Filename BootVolume;
 	Filename WorkBootDirectory;
 	Filename SavedCurrentDir;
-	FileManager::GetPrefix(&BootVolume, FileManager::PREFIXBOOT);
-	FileManager::GetPrefix(&SavedCurrentDir, FileManager::PREFIXCURRENT);
+	FileManager::GetPrefix(&BootVolume, FileManager::kPrefixBoot);
+	FileManager::GetPrefix(&SavedCurrentDir, FileManager::kPrefixCurrent);
 	WorkBootDirectory = BootVolume;
 	WorkBootDirectory.Append("Two:Three:Four:Five");
 	FileManager::SetPrefix(
-		FileManager::PREFIXCURRENT, WorkBootDirectory.c_str());
+		FileManager::kPrefixCurrent, WorkBootDirectory.c_str());
 
 	uint_t uFailure = TestExpandFull(".D2:Help me");
 	uFailure |= TestExpandFull(":Burger:foo.txt");
@@ -627,15 +637,16 @@ static uint_t BURGER_API TestFilenameExpand(void) BURGER_NOEXCEPT
 	uFailure |= TestPrepend(".Help me start", &WorkBootDirectory);
 
 	uFailure |= TestPopDir(&WorkBootDirectory);
-	uFailure |= TestPrefixDir("8:Six:Help me pfx", FileManager::PREFIXCURRENT);
-	uFailure |= TestPrefixDir("8:Help me pfx", FileManager::PREFIXCURRENT);
-	uFailure |= TestPrefixDir("*:Help me pfx", FileManager::PREFIXBOOT);
-	uFailure |= TestPrefixDir("$:Help me pfx", FileManager::PREFIXSYSTEM);
-	uFailure |= TestPrefixDir("@:Help me pfx", FileManager::PREFIXPREFS);
-	uFailure |= TestPrefixDir("9:Help me pfx", FileManager::PREFIXAPPLICATION);
+	uFailure |= TestPrefixDir("8:Six:Help me pfx", FileManager::kPrefixCurrent);
+	uFailure |= TestPrefixDir("8:Help me pfx", FileManager::kPrefixCurrent);
+	uFailure |= TestPrefixDir("*:Help me pfx", FileManager::kPrefixBoot);
+	uFailure |= TestPrefixDir("$:Help me pfx", FileManager::kPrefixSystem);
+	uFailure |= TestPrefixDir("@:Help me pfx", FileManager::kPrefixPrefs);
+	uFailure |= TestPrefixDir("9:Help me pfx", FileManager::kPrefixApplication);
 
 	// Restore the current directory
-	FileManager::SetPrefix(FileManager::PREFIXCURRENT, SavedCurrentDir.c_str());
+	FileManager::SetPrefix(
+		FileManager::kPrefixCurrent, SavedCurrentDir.c_str());
 	return uFailure;
 }
 

@@ -114,6 +114,12 @@ BURGER_LIB_XBOX_360 = (
     '../source/graphics/shadersxbox360'
 )
 
+## Microsoft Xbox ONE specific code
+BURGER_LIB_XBOX_ONE = (
+    '../source/xboxone',
+    '../source/graphics/shadersxboxone'
+)
+
 ## nVidia Shield specific code
 BURGER_LIB_SHIELD = (
     '../source/shield',
@@ -180,6 +186,8 @@ ARG_LISTS = [
     ('vita', 'unittests', 'console', ['vs2015']),
     ('xbox360', 'burger', 'library', ['vs2010']),
     ('xbox360', 'unittests', 'console', ['vs2010']),
+    ('xboxone', 'burger', 'library', ['vs2017']),
+    ('xboxone', 'unittests', 'console', ['vs2017']),    
     ('wiiu', 'burger', 'library', ['vs2013']),
     ('switch', 'burger', 'library', ['vs2017']),
     ('switch', 'unittests', 'app', ['vs2017']),
@@ -425,6 +433,17 @@ def do_project(working_directory, project):
             '../source/graphics/shadersxbox360',
             _X360SL_MATCH)
 
+    if platform is PlatformTypes.xboxone:
+        platform_folder = 'xboxone'
+        source_folders_list.extend(BURGER_LIB_XBOX_ONE)
+        #vs_props.append('$(VCTargetsPath)\\BuildCustomizations\\x360sl.props')
+        #vs_targets.append(
+        #    '$(VCTargetsPath)\\BuildCustomizations\\x360sl.targets')
+        #find_generated_source(
+        #    source_files_list, working_directory,
+        #    '../source/graphics/shadersxbox360',
+        #    _X360SL_MATCH)
+
     # Android
     if platform is PlatformTypes.shield:
         platform_folder = 'shield'
@@ -442,6 +461,10 @@ def do_project(working_directory, project):
     # Add property files for unittests or burgerlib
     if project.name == 'unittests':
         source_folders_list.append('../unittest')
+
+        if platform is PlatformTypes.xboxone:
+            source_files_list.append('../unittest/xboxone/unittestxboxone.appxmanifest')
+
         library_folders_list.append(
             '$(BURGER_SDKS)/{}/burgerlib'.format(platform_folder))
         if platform is PlatformTypes.linux:

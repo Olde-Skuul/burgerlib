@@ -60,17 +60,19 @@ will be used. If not, it will be determined and added to the cache.
 	This function is called by Burger::FileManager::Init(void).
 	It's not meant to be called by applications.
 
+	\note Only available on MacOS
+
 	\sa Burger::Filename::PurgeDirectoryCache(void) or
-Burger::Filename::ExpandCache_t \note Only available on MacOS
+		Burger::Filename::ExpandCache_t
 
 ***************************************/
 
 void BURGER_API Burger::Filename::InitDirectoryCache(void)
 {
-	uint_t i = BURGER_ARRAYSIZE(m_DirectoryCache);
+	uintptr_t i = BURGER_ARRAYSIZE(m_DirectoryCache);
 	ExpandCache_t* pWork = m_DirectoryCache;
 	do {
-		pWork->m_pName = NULL;
+		pWork->m_pName = nullptr;
 		++pWork;
 	} while (--i);
 }
@@ -83,18 +85,20 @@ void BURGER_API Burger::Filename::InitDirectoryCache(void)
 	any internal function that can modify the MacOS directory structure.
 	It's not meant to be called by applications.
 
+	\note Only available on MacOS
+
 	\sa Burger::Filename::InitDirectoryCache(void) or
-Burger::Filename::ExpandCache_t \note Only available on MacOS
+		Burger::Filename::ExpandCache_t 
 
 ***************************************/
 
 void BURGER_API Burger::Filename::PurgeDirectoryCache(void)
 {
-	uint_t i = BURGER_ARRAYSIZE(m_DirectoryCache);
+	uintptr_t i = BURGER_ARRAYSIZE(m_DirectoryCache);
 	ExpandCache_t* pWork = m_DirectoryCache;
 	do {
 		Free(pWork->m_pName);
-		pWork->m_pName = NULL;
+		pWork->m_pName = nullptr;
 		++pWork;
 	} while (--i);
 }

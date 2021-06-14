@@ -484,7 +484,7 @@
 ***************************************/
 
 // Microsoft XBox
-#if defined(_XBOX) || defined(XBOX)
+#if defined(_XBOX) || defined(XBOX) || defined(_XBOX_ONE)
 #if defined(BURGER_X86)
 #define BURGER_XBOX
 #define BURGER_PLATFORM_NAME "Microsoft XBox Classic"

@@ -1,14 +1,14 @@
 /***************************************
 
-    Unit tests for burgerlib
+	Unit tests for burgerlib
 
-    Copyright (c) 1995-2018 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2018 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -19,7 +19,8 @@
 #include "brtypes.h"
 #endif
 
-#if defined(BURGER_WINDOWS) || defined(BURGER_LINUX) || defined(BURGER_MACOSX)
+#if defined(BURGER_WINDOWS) || defined(BURGER_LINUX) || \
+	defined(BURGER_MACOSX) || defined(BURGER_MSDOS)
 #define ALLOWCOMMANDLINE
 #endif
 
@@ -37,11 +38,12 @@
 #define VERBOSE_ALL 0xFFFF
 
 extern void BURGER_ANSIAPI ReportFailure(
-    const char* pTemplate, uint_t uFailure, ...) BURGER_NOEXCEPT;
+	const char* pTemplate, uint_t uFailure, ...) BURGER_NOEXCEPT;
 extern void BURGER_ANSIAPI Message(const char* pMessage, ...) BURGER_NOEXCEPT;
-extern void BURGER_API BlastBuffer(void* pOutput, uintptr_t uSize) BURGER_NOEXCEPT;
-extern uint_t BURGER_API VerifyBuffer(
-    const void* pBuffer, uintptr_t uSize, const void* pInput, uintptr_t uSkip) BURGER_NOEXCEPT;
+extern void BURGER_API BlastBuffer(
+	void* pOutput, uintptr_t uSize) BURGER_NOEXCEPT;
+extern uint_t BURGER_API VerifyBuffer(const void* pBuffer, uintptr_t uSize,
+	const void* pInput, uintptr_t uSkip) BURGER_NOEXCEPT;
 extern int BURGER_ANSIAPI main(int argc, const char** argv);
 
 #endif

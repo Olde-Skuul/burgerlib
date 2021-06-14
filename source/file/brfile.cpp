@@ -507,26 +507,26 @@ uint_t BURGER_API Burger::File::SetCreationTime(const TimeDate_t * /* pInput */)
 uint_t BURGER_API Burger::File::OpenAsync(const char *pFileName,eFileAccess eAccess)
 {
 	m_Filename.Set(pFileName);
-	FileManager::g_pFileManager->AddQueue(this,FileManager::IOCOMMAND_OPEN,NULL,eAccess);
+	FileManager::g_pFileManager->AddQueue(this,FileManager::kIOCommandOpen,nullptr,eAccess);
 	return 0;
 }
 
 uint_t BURGER_API Burger::File::OpenAsync(Filename *pFileName,eFileAccess eAccess)
 {
 	m_Filename = pFileName[0];
-	FileManager::g_pFileManager->AddQueue(this,FileManager::IOCOMMAND_OPEN,NULL,eAccess);
+	FileManager::g_pFileManager->AddQueue(this,FileManager::kIOCommandOpen,nullptr,eAccess);
 	return 0;
 }
 
 uint_t BURGER_API Burger::File::CloseAsync(void)
 {
-	FileManager::g_pFileManager->AddQueue(this,FileManager::IOCOMMAND_CLOSE,NULL,0);
+	FileManager::g_pFileManager->AddQueue(this,FileManager::kIOCommandClose,nullptr,0);
 	return 0;
 }
 
 uint_t BURGER_API Burger::File::ReadAsync(void *pOutput,uintptr_t uSize)
 {
-	FileManager::g_pFileManager->AddQueue(this,FileManager::IOCOMMAND_READ,pOutput,uSize);
+	FileManager::g_pFileManager->AddQueue(this,FileManager::kIOCommandRead,pOutput,uSize);
 	return 0;
 }
 

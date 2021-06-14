@@ -39,9 +39,9 @@ static const char *g_VolumeNames[] = {
 	":host0:"
 };
 
-uint_t BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
 {
-	uint_t uResult;
+	eError uResult;
 	if (uVolumeNum<BURGER_ARRAYSIZE(g_VolumeNames)) {
 		pOutput->Set(g_VolumeNames[uVolumeNum]);
 		uResult = kErrorNone;
@@ -64,18 +64,19 @@ uint_t BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,u
 
 ***************************************/
 
-void BURGER_API Burger::FileManager::DefaultPrefixes(void)
+Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 {
 	Filename MyFilename;
-	uint_t uResult = GetVolumeName(&MyFilename,0);		// Get the boot volume name
+	eError uResult = GetVolumeName(&MyFilename,0);		// Get the boot volume name
 	if (uResult==kErrorNone) {
 		// Set the initial prefix
-		SetPrefix(PREFIXBOOT,MyFilename.GetPtr());
+		SetPrefix(kPrefixBoot,MyFilename.GetPtr());
 	}
-	SetPrefix(PREFIXCURRENT,":app0:");		// Set the standard work prefix
-	SetPrefix(PREFIXAPPLICATION,":app0:");	// Set the standard work prefix
-	SetPrefix(PREFIXSYSTEM,":addcont0:");	// Set the standard work prefix
-	SetPrefix(PREFIXPREFS,":ux0:");			// Set the standard work prefix
+	SetPrefix(kPrefixCurrent,":app0:");		// Set the standard work prefix
+	SetPrefix(kPrefixApplication,":app0:");	// Set the standard work prefix
+	SetPrefix(kPrefixSystem,":addcont0:");	// Set the standard work prefix
+	SetPrefix(kPrefixPrefs,":ux0:");			// Set the standard work prefix
+	return kErrorNone;
 }
 
 /***************************************

@@ -53,9 +53,9 @@ extern "C" int *_NSGetArgc();
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
 {
-	uint_t uResult = kErrorInvalidParameter;
+	eError uResult = kErrorInvalidParameter;
 	
 	// If running in the emulator, it's really running on top of the MacOSX
 	// file system, so perform the MacOSX handler to obtain volume names
@@ -187,14 +187,14 @@ uint_t BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,u
 
 ***************************************/
 
-void BURGER_API Burger::FileManager::DefaultPrefixes(void)
+Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 {
 	Filename MyFilename;
-	uint_t uResult = GetVolumeName(&MyFilename,0);		// Get the boot volume name
+	eError uResult = GetVolumeName(&MyFilename,0);		// Get the boot volume name
 	if (uResult==kErrorNone) {
 		// Set the initial prefix
 		const char *pBootName = MyFilename.GetPtr();
-		SetPrefix(PREFIXBOOT,pBootName);
+		SetPrefix(kPrefixBoot,pBootName);
 		Free(g_pFileManager->m_pBootName);
 		uintptr_t uMax = StringLength(pBootName);
 		g_pFileManager->m_uBootNameSize = static_cast<uint_t>(uMax);
@@ -210,7 +210,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	if (CFStringGetCString(reinterpret_cast<CFStringRef>(NSHomeDirectory()),NameBuffer,sizeof(NameBuffer),kCFStringEncodingUTF8)) {
 		if (NameBuffer[0]) {
 			MyFilename.SetFromNative(NameBuffer);
-			SetPrefix(PREFIXCURRENT,MyFilename.GetPtr());		// Set the standard work prefix
+			SetPrefix(kPrefixCurrent,MyFilename.GetPtr());		// Set the standard work prefix
 		}
 	}
 
@@ -225,7 +225,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	if (!iTest) {
 		MyFilename.SetFromNative(NameBuffer);
 		MyFilename.DirName();
-		SetPrefix(PREFIXAPPLICATION,MyFilename.GetPtr());		// Set the standard work prefix
+		SetPrefix(kPrefixApplication,MyFilename.GetPtr());		// Set the standard work prefix
 	}
 
 	//
@@ -238,7 +238,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 		if (CFStringGetCString(pString,NameBuffer,sizeof(NameBuffer),kCFStringEncodingUTF8)) {
 			if (NameBuffer[0]) {
 				MyFilename.SetFromNative(NameBuffer);
-				SetPrefix(PREFIXPREFS,MyFilename.GetPtr());		// Set the preferences prefix
+				SetPrefix(kPrefixPrefs,MyFilename.GetPtr());		// Set the preferences prefix
 			}
 		}
 	}
@@ -255,10 +255,11 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 				MyFilename.SetFromNative(NameBuffer);
 				MyFilename.DirName();
 				MyFilename.DirName();
-				SetPrefix(PREFIXSYSTEM,MyFilename.GetPtr());		// Set the /System folder
+				SetPrefix(kPrefixSystem,MyFilename.GetPtr());		// Set the /System folder
 			}
 		}
 	}
+	return kErrorNone;
 }
 
 /***************************************

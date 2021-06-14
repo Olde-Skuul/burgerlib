@@ -49,13 +49,13 @@ extern "C" FILE * _MSL_CDECL _wfopen(const wchar_t * _MSL_RESTRICT name, const w
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
 {
 	if (pOutput) {
 		pOutput->Clear();
 	}
 
-	uint_t uResult = kErrorInvalidParameter;		// Assume error
+	eError uResult = kErrorInvalidParameter;		// Assume error
 	if (uVolumeNum<32) {
 		uResult = kErrorFileNotFound;
 		// Only query drives that exist
@@ -115,7 +115,7 @@ extern char **__argv;
 #endif
 #endif
 
-void BURGER_API Burger::FileManager::DefaultPrefixes(void)
+Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 {
 	WCHAR NameBuffer[MAX_PATH];
 	Filename MyFilename;
@@ -148,7 +148,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 		if (pEndColon) {
 			pEndColon[1] = 0;								// ".D3:xxxx" is now ".D3"
 		}
-		SetPrefix(FileManager::PREFIXBOOT,pFilename);	// Set the boot volume
+		SetPrefix(FileManager::kPrefixBoot,pFilename);	// Set the boot volume
 	}
 
 	// Application system data folder (Local for Vista and Win7)
@@ -157,7 +157,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 		// Convert to UTF8
 		String MyName2(reinterpret_cast<const uint16_t*>(NameBuffer));
 		MyFilename.SetFromNative(MyName2);
-		SetPrefix(FileManager::PREFIXSYSTEM,MyFilename.GetPtr());	// Set the system folder
+		SetPrefix(FileManager::kPrefixSystem,MyFilename.GetPtr());	// Set the system folder
 	}
 
 	// Application data folder (Roaming for Vista and Win7)
@@ -166,8 +166,9 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 		// Convert to UTF8
 		String MyName3(reinterpret_cast<const uint16_t*>(NameBuffer));
 		MyFilename.SetFromNative(MyName3);
-		SetPrefix(FileManager::PREFIXPREFS,MyFilename.GetPtr());	// Set the system folder
+		SetPrefix(FileManager::kPrefixPrefs,MyFilename.GetPtr());	// Set the system folder
 	}
+	return kErrorNone;
 }
 
 /***************************************
@@ -424,18 +425,18 @@ uintptr_t BURGER_API Burger::FileManager::QueueHandler(void *pData)
 		switch (pQueue->m_uIOCommand) {
 
 		// Was the thread requested to shut down?
-		case IOCOMMAND_ENDTHREAD:
+		case kIOCommandEndThread:
 			return 0;
 
 		// Issue a callback at this location
-		case IOCOMMAND_CALLBACK:
+		case kIOCommandCallback:
 			pQueue->m_uLength = uError;
 			static_cast<ProcCallback>(pQueue->m_pBuffer)(pQueue);
 			uError = 0;		// Release error
 			break;
 
 		// Open a file
-		case IOCOMMAND_OPEN:
+		case kIOCommandOpen:
 			{
 				pFile = pQueue->m_pFile;
 
@@ -470,7 +471,7 @@ uintptr_t BURGER_API Burger::FileManager::QueueHandler(void *pData)
 			}
 
 		// Close the file
-		case IOCOMMAND_CLOSE:
+		case kIOCommandClose:
 			{
 				pFile = pQueue->m_pFile;
 				// Close the file
@@ -488,7 +489,7 @@ uintptr_t BURGER_API Burger::FileManager::QueueHandler(void *pData)
 			break;
 
 		// Read in data
-		case IOCOMMAND_READ:
+		case kIOCommandRead:
 			{
 				DWORD uRead;
 				pFile = pQueue->m_pFile;
@@ -503,7 +504,7 @@ uintptr_t BURGER_API Burger::FileManager::QueueHandler(void *pData)
 			}
 
 		// Write out data
-		case IOCOMMAND_WRITE:
+		case kIOCommandWrite:
 			{
 				DWORD uWritten;
 				pFile = pQueue->m_pFile;
@@ -518,7 +519,7 @@ uintptr_t BURGER_API Burger::FileManager::QueueHandler(void *pData)
 			}
 
 		// Seek the file
-		case IOCOMMAND_SEEK:
+		case kIOCommandSeek:
 			{
 				pFile = pQueue->m_pFile;
 				uError = 0;
@@ -534,7 +535,7 @@ uintptr_t BURGER_API Burger::FileManager::QueueHandler(void *pData)
 		// Issue a sync command to signal that
 		// this command token was reached
 
-		case IOCOMMAND_SYNC:
+		case kIOCommandSync:
 			pThis->m_IOThreadSync.Release();
 			break;
 

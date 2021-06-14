@@ -30,13 +30,13 @@
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
 {
 	if (pOutput) {
 		pOutput->Clear();
 	}
 
-	uint_t uResult = kErrorInvalidParameter;		// Assume error
+	eError uResult = kErrorInvalidParameter;		// Assume error
 	if (uVolumeNum<32) {
 		uResult = kErrorFileNotFound;
 		// Only query drives that exist
@@ -78,17 +78,18 @@ uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uV
 
 ***************************************/
 
-void BURGER_API Burger::FileManager::DefaultPrefixes(void)
+Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 {
 	Filename MyFilename(":D:");
 
 	SetPrefix(8,&MyFilename);		// Set the standard work prefix
 	SetPrefix(9,&MyFilename);		// Set the application prefix
 	// Set the system folder
-	SetPrefix(FileManager::PREFIXSYSTEM,&MyFilename);
+	SetPrefix(FileManager::kPrefixSystem,&MyFilename);
 	// Boot volume is the same
-	SetPrefix(FileManager::PREFIXBOOT,&MyFilename);
-	SetPrefix(FileManager::PREFIXPREFS,&MyFilename);
+	SetPrefix(FileManager::kPrefixBoot,&MyFilename);
+	SetPrefix(FileManager::kPrefixPrefs,&MyFilename);
+	return kErrorNone;
 }
 
 /***************************************

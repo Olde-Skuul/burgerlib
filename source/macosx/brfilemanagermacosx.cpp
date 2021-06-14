@@ -48,10 +48,10 @@
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetVolumeName(
+Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 	Burger::Filename* pOutput, uint_t uVolumeNum) BURGER_NOEXCEPT
 {
-	uint_t uResult = kErrorInvalidParameter;
+	eError uResult = kErrorInvalidParameter;
 
 	// Open the volume directory
 	DIR* fp = opendir("/Volumes");
@@ -150,14 +150,14 @@ uint_t BURGER_API Burger::FileManager::GetVolumeName(
 
 ***************************************/
 
-void BURGER_API Burger::FileManager::DefaultPrefixes(void)
+Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 {
 	Filename MyFilename;
-	uint_t uResult = GetVolumeName(&MyFilename, 0); // Get the boot volume name
+	eError uResult = GetVolumeName(&MyFilename, 0); // Get the boot volume name
 	if (uResult == kErrorNone) {
 		// Set the initial prefix
 		const char* pBootName = MyFilename.GetPtr();
-		SetPrefix(PREFIXBOOT, pBootName);
+		SetPrefix(kPrefixBoot, pBootName);
 		Free(g_pFileManager->m_pBootName);
 		uintptr_t uMax = StringLength(pBootName);
 		g_pFileManager->m_uBootNameSize = static_cast<uint_t>(uMax);
@@ -168,14 +168,14 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	if (pTemp) {
 		MyFilename.SetFromNative(pTemp);
 		SetPrefix(
-			PREFIXCURRENT, MyFilename.GetPtr()); // Set the standard work prefix
+			kPrefixCurrent, MyFilename.GetPtr()); // Set the standard work prefix
 		free(pTemp);
 	}
 
 	// Get the location of the application binary
 	MyFilename.SetApplicationDirectory();
 	SetPrefix(
-		PREFIXAPPLICATION, MyFilename.GetPtr()); // Set the standard work prefix
+		kPrefixApplication, MyFilename.GetPtr()); // Set the standard work prefix
 
 	char NameBuffer[2048];
 	FSRef MyRef;
@@ -185,7 +185,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 				static_cast<UInt32>(sizeof(NameBuffer)))) {
 			MyFilename.SetFromNative(NameBuffer);
 			// Set the standard work prefix
-			SetPrefix(PREFIXSYSTEM, MyFilename.GetPtr());
+			SetPrefix(kPrefixSystem, MyFilename.GetPtr());
 		}
 	}
 
@@ -195,9 +195,10 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 				static_cast<UInt32>(sizeof(NameBuffer)))) {
 			MyFilename.SetFromNative(NameBuffer);
 			// Set the standard work prefix
-			SetPrefix(PREFIXPREFS, MyFilename.GetPtr());
+			SetPrefix(kPrefixPrefs, MyFilename.GetPtr());
 		}
 	}
+	return kErrorNone;
 }
 
 /***************************************

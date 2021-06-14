@@ -1,126 +1,501 @@
 /***************************************
 
-    File Manager Class
-    MSDOS Target version
+	File Manager Class: MSDOS version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brfilemanager.h"
 
-#if defined(BURGER_MSDOS)
+#if defined(BURGER_MSDOS) || defined(DOXYGEN)
+#include "brdosextender.h"
+#include "brendian.h"
 #include "brfile.h"
 #include "brfilename.h"
-#include "brdosextender.h"
+#include "brmemoryfunctions.h"
 
-/***************************************
+#if !defined(DOXYGEN)
 
-	Returns true if Win95 is present and long filenames
-	are allowed.
+// Addresses in real memory for the Dos Box signature
+#define DOSBOX_SIG_REAL 0xF000E00EU
+#define DOSBOX_SIG2_REAL 0xF000E061
+
+static const char gDosBoxSig[] =
+	"IBM COMPATIBLE 486 BIOS COPYRIGHT The DOSBox Team";
+static const char gDosBoxSig2[] = "DOSBox FakeBIOS";
+
+// Look up table to map known MSDos flavors to a name.
+// It wasn't part of the API since Microsoft / IBM didn't think anyone would
+// clone an operating system. Silly them.
+
+// Entries were found from actual testing and internet searches. Heaven help me.
+
+struct MSDosOEMLookup_t {
+	const uint_t m_uOEMNumber;
+	const char* m_pDOSName;
+};
+
+static const MSDosOEMLookup_t gOEMLookups[] = {{0, "IBM"}, {1, "Compaq"},
+	{2, "MS/DOS"}, {4, "AT&T"}, {5, "Zenith"}, {6, "Hewlett Packard"},
+	{7, "Groupe Bull"}, {8, "Tandon"}, {9, "AST"}, {0xA, "Asem"},
+	{0xB, "Hantarex"}, {0xC, "SystemsLine"}, {0xD, "Packard Bell"},
+	{0xE, "Intercomp"}, {0xF, "Unibit"}, {0x10, "Unidata"},
+	{0x16, "Digital Equipment"}, {0x23, "Olivetti"},
+	{0x28, "Texas Instruments"}, {0x29, "Toshiba"}, {0x33, "Novell 386"},
+	{0x34, "MS Multimedia 386"}, {0x35, "MS Multimedia 386"},
+	{0x4D, "Hewlett Packard"}, {0x5E, "RxDOS"}, {0x66, "PhysTechSoft"},
+	{0x77, "DOSBox"}, {0x78, "Concurrent DOS"}, {0x99, "GenSoft DOS"},
+	{0xEE, "DR-DOS"}, {0xEF, "Novell"}, {0xFD, "FreeDOS"}, {0xFF, "MS/DOS"}};
+#endif
+
+/*! ************************************
+
+	\brief Determine the version of MS/DOS.
+
+	Calls several MS-DOS functions to determine the version and flavor of MS/DOS
+	this application is running. It will also detect DosBox.
+
+	\msdosonly
+
+	\sa Burger::FileManager or BURGER_MSDOS
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::AreLongFilenamesAllowed(void) BURGER_NOEXCEPT
+void BURGER_API Burger::FileManager::DetectMSDOSVersion(void) BURGER_NOEXCEPT
 {
-	uint_t uResult = g_pFileManager->m_bAllowed;
-	if (!(uResult&0x80U)) {		// Did I check already?
-		uResult = 0x80U;		// Set the "I checked" flag
-		Regs16 Regs;
-		uint32_t uSeg = GetRealBufferPtr();		// Get real memory buffer
- 		if (uSeg) {
-			// Do a dos time to file time request
-			// If the command executes, then
-			// I have long filename support.
-			Regs.ax = 0x71A7;					// Ask OS
-			Regs.bx = 0x0001;
-			Regs.cx = 0x3433;
-			Regs.dx = 0x3433;
-			Regs.es = static_cast<uint16_t>(uSeg>>16);		// Save the segment
-			Regs.di = static_cast<uint16_t>(uSeg);
-			Int86x(0x21,&Regs,&Regs);					// Call Win95 with an extended call
-			if (!(Regs.flags&1)) {
-				++uResult;								// Extended calls are present, long filenames are OK
+
+	// Needed for INT 0x21 calls
+
+	Regs16 Regs;
+
+	// Obtain the DOS version number, set bx to prevent alternate resident
+	// programs from intercepting
+	Regs.ax = 0x3000U;
+	Regs.bx = 0x0000U;
+	Int86x(0x21U, &Regs, &Regs);
+
+	// Test is the major version is zero, this happens for DOS 1.0 which
+	// doesn't implement this function. All other DOS versions return the
+	// number in major in al and minor in ah.
+	// http://www.ctyme.com/intr/rb-2711.htm
+	uint16_t uVersion = Regs.ax;
+	uint_t uOEMFlavor;
+	if (!(uVersion & 0xFFU)) {
+		// Geez, this version is old.
+		uVersion = 0x100U;
+		uOEMFlavor = 0;
+	} else {
+		uVersion = BigEndian::Load(uVersion);
+		uOEMFlavor = Regs.bx >> 8U;
+	}
+
+	// FreeDOS doesn't set the minor version (Bug)
+	// Ensure the minor version is stable
+	if (uOEMFlavor == 0xFDU) {
+		uVersion &= 0xFF00U;
+	}
+
+	// Test for DosBox, since it reports as MSDos
+	if (uOEMFlavor == 255U) {
+		// Let's make SURE it's really Microsoft and not DosBox
+		if (!MemoryCompare(RealToProtectedPtr(DOSBOX_SIG_REAL), gDosBoxSig,
+				sizeof(gDosBoxSig) - 1) ||
+			!MemoryCompare(RealToProtectedPtr(DOSBOX_SIG2_REAL), gDosBoxSig2,
+				sizeof(gDosBoxSig2) - 1)) {
+			// It's really DosBox
+			uOEMFlavor = 0x77;
+		}
+	}
+
+	// Save the stated version and the OEM flavor value.
+	m_uMSDOSVersion = uVersion;
+
+	// Determine the REAL version of MS/DOS, since the previous version
+	// could be changed with the command SETVER
+	uint16_t uTrueVersion = uVersion;
+	uint8_t bIsNT = FALSE;
+	if (uVersion >= 0x500U) {
+		// Start with the "Real Version" call
+		// http://www.ctyme.com/intr/rb-2730.htm
+		// Note, ignore the carry flag, because it's broken on some versions
+		// of DOS, the test ah for 0xFF works in all cases.
+		Regs.ax = 0x3306U;
+		Regs.bx = 0x0000U;
+		Int86x(0x21U, &Regs, &Regs);
+
+		// Did the call work? Do several safety checks because no one can
+		// agree on how to implement this function making my life a living
+		// hell.
+		if (((Regs.ax & 0xFFU) != 0xFFU) && (Regs.bx < (100U * 256U)) &&
+			((Regs.bx & 0xFFU) >= 5U)) {
+			uTrueVersion = BigEndian::Load(&Regs.bx);
+
+			// This detects a flavor of windows NT, XP, 2000
+			if ((uTrueVersion & 0xFF) == 50U) {
+				bIsNT = TRUE;
 			}
 		}
-		// Store the result in the global so I don't have to do this again
-		g_pFileManager->m_bAllowed = static_cast<uint8_t>(uResult);
 	}
-	return uResult&1U;		// Return the flag, True or false
+
+	// Let's check for Concurrent DOS
+	// http://www.ctyme.com/intr/rb-2919.htm
+	Regs.ax = 0x4451;
+	Int86x(0x21U, &Regs, &Regs);
+	if (!(Regs.flags & 1U)) {
+		printf("hit\n");
+		switch (static_cast<uint8_t>(Regs.ax)) {
+		case 0x32:
+			uTrueVersion = 0x0302;
+			uOEMFlavor = 0x78; // Concurrent DOS
+			break;
+		case 0x41:
+			uTrueVersion = 0x0401;
+			uOEMFlavor = 0x78; // Concurrent DOS
+			break;
+		case 0x50:
+			uTrueVersion = 0x0500;
+			uOEMFlavor = 0x78; // Concurrent DOS
+			break;
+		case 0x60:
+			uTrueVersion = 0x0600;
+			uOEMFlavor = 0x78; // Concurrent DOS
+			break;
+		case 0x62:
+			uTrueVersion = 0x0602;
+			uOEMFlavor = 0x78; // Concurrent DOS
+			break;
+		case 0x66:
+			uTrueVersion = 0x0501;
+			uOEMFlavor = 0x34; // Multimedia Windows NT
+			break;
+		case 0x67:
+			uTrueVersion = 0x0501;
+			uOEMFlavor = 0x78; // Concurrent DOS
+			break;
+		}
+	}
+
+	// Let's check for DR-DOS and OpenDOS
+	// http://www.ctyme.com/intr/rb-2920.htm
+	Regs.ax = 0x4452;
+	Int86x(0x21U, &Regs, &Regs);
+	if (!(Regs.flags & 1U)) {
+		switch (static_cast<uint8_t>(Regs.ax)) {
+		case 0x41:
+			uTrueVersion = 0x0102;
+			uOEMFlavor = 0xEE; // DR-DOS
+			break;
+		case 0x60:
+			uTrueVersion = 0x0200;
+			uOEMFlavor = 0xEE; // DR-DOS
+			break;
+		case 0x63:
+			uTrueVersion = 0x0329; // 3.41
+			uOEMFlavor = 0xEE;     // DR-DOS
+			break;
+		case 0x64:
+			uTrueVersion = 0x032A; // 3.42
+			uOEMFlavor = 0xEE;     // DR-DOS
+			break;
+		case 0x65:
+			uTrueVersion = 0x0500;
+			uOEMFlavor = 0xEE; // DR-DOS
+			break;
+		case 0x67:
+			uTrueVersion = 0x0600;
+			uOEMFlavor = 0xEE; // DR-DOS
+			break;
+		case 0x71:
+			uTrueVersion = 0x0601;
+			uOEMFlavor = 0xEE; // DR-DOS
+			break;
+		case 0x72:
+			uTrueVersion = 0x0700;
+			uOEMFlavor = 0xEF; // Novell
+			break;
+		case 0x73:
+			uTrueVersion = 0x0701;
+			uOEMFlavor = 0xEE; // DR-DOS / OpenDOS
+			break;
+		default:
+			break;
+		}
+	}
+
+	m_uOEMFlavor = static_cast<uint8_t>(uOEMFlavor);
+	m_uMSDOSTrueVersion = uTrueVersion;
+
+	// Look up the OEM name using the flavor value.
+	uintptr_t i = BURGER_ARRAYSIZE(gOEMLookups);
+	const MSDosOEMLookup_t* pWork = gOEMLookups;
+	const char* pDOSName = "Unknown DOS";
+	do {
+		if (pWork->m_uOEMNumber == uOEMFlavor) {
+			pDOSName = pWork->m_pDOSName;
+			break;
+		}
+		++pWork;
+	} while (--i);
+	m_pDOSName = pDOSName;
+
+	// Test if long file name support is present by calling the DOS time to
+	// FILETIME long name function and seeing if it succeeded. If it does,
+	// then long filename support is present in this version of MS/DOS. Get
+	// real memory buffer
+	// http://www.ctyme.com/intr/rb-3218.htm
+	uint32_t uSeg = GetRealBufferPtr();
+	uint8_t bLongNamesAllowed = FALSE;
+	if (uSeg) {
+
+		// Do a dos time to file time request, if the command executes, then
+		// there is long filename support.
+
+		Regs.ax = 0x71A7; // DOSTIME to FILETIME
+		Regs.bx = 0x0001;
+		Regs.cx = 0x3433; // Fake time
+		Regs.dx = 0x3433;
+
+		// Save the real pointer
+		Regs.es = static_cast<uint16_t>(uSeg >> 16);
+		Regs.di = static_cast<uint16_t>(uSeg);
+
+		Int86x(0x21, &Regs, &Regs);
+		if (!(Regs.flags & 1)) {
+			// Extended calls are present, long filenames are OK
+			bLongNamesAllowed = TRUE;
+		}
+	}
+	// Store the result in the global the test don't have to be done again
+	m_bLongNamesAllowed = bLongNamesAllowed;
 }
 
+/*! ************************************
 
-/***************************************
+	\brief Returns \ref TRUE if long filenames are allowed.
 
-	Given a drive number, return in generic format
-	the drive's name.
+	On most MSDOS file systems, only 8.3 filenames are permitted. Test if
+	support for longer than 8.3 filenames is present and if so, return \ref
+	TRUE, otherwise return \ref FALSE.
+
+	\note This function returns \ref TRUE on all target platforms except \ref
+	BURGER_MSDOS, the MS/DOS target performs a check to see if it's running
+	under Windows 95 or higher or RxDOS and if so, Burgerlib will automatically
+	support long filenames.
+
+	\sa Burger::FileManager or BURGER_MSDOS
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::FileManager::AreLongFilenamesAllowed(
+	void) BURGER_NOEXCEPT
 {
-	if (uVolumeNum>=26) {		// Bad drive number!!
+	// Return the flag, True or false
+	return g_pFileManager->m_bLongNamesAllowed;
+}
+
+/*! ************************************
+
+	\brief Returns SETVER version of MS/DOS
+
+	Returns the version of MS/DOS. This can be overridden by the command SETVER
+	for compatibility. Use the function GetMSDosTrueVersion() to get the true
+	version.
+
+	\msdosonly
+
+	\sa GetMSDosTrueVersion() or GetMSDosName()
+
+***************************************/
+
+uint_t BURGER_API Burger::FileManager::GetMSDosVersion(void) BURGER_NOEXCEPT
+{
+	// Return the version
+	return g_pFileManager->m_uMSDOSVersion;
+}
+
+/*! ************************************
+
+	\brief Returns SETVER version of MS/DOS
+
+	Returns the real version of MS/DOS. This cannot be overridden by the command
+	SETVER.
+
+	\msdosonly
+
+	\sa GetMSDosVersion() or GetMSDosName()
+
+***************************************/
+
+uint_t BURGER_API Burger::FileManager::GetMSDosTrueVersion(void) BURGER_NOEXCEPT
+{
+	// Return the true version
+	return g_pFileManager->m_uMSDOSTrueVersion;
+}
+
+/*! ************************************
+
+	\brief Returns the name of the version of DOS running.
+
+	Returns a string with the name of the type of MS/DOS running. DOSBox is
+	detected and reported as ``DOSBox``.
+
+	Example strings:
+	- IBM
+	- Compaq
+	- MS/DOS
+	- AT&T
+	- Zenith
+	- Hewlett Packard
+	- Groupe Bull
+	- Tandon
+	- AST
+	- Asem
+	- Hantarex
+	- SystemsLine
+	- Packard Bell
+	- Intercomp
+	- Unibit
+	- Unidata
+	- Digital Equipment
+	- Olivetti
+	- Texas Instruments
+	- Toshiba
+	- Novell 386
+	- MS Multimedia 386
+	- RxDOS
+	- PhysTechSoft
+	- DOSBox
+	- Concurrent DOS
+	- GenSoft DOS
+	- DR-DOS
+	- Novell
+
+	\msdosonly
+
+	\sa GetMSDosFlavor()
+
+***************************************/
+
+const char* BURGER_API Burger::FileManager::GetMSDosName(void) BURGER_NOEXCEPT
+{
+	// Return the flag, True or false
+	return g_pFileManager->m_pDOSName;
+}
+
+/*! ************************************
+
+	\brief Returns the OEM flavor of MS/DOS
+
+	Returns the OEM flavor value for MS/DOS to determine the vendor of the
+	version of the OS running.
+
+	\msdosonly
+
+	\sa GetMSDosName()
+
+***************************************/
+
+uint_t BURGER_API Burger::FileManager::GetMSDosFlavor(void) BURGER_NOEXCEPT
+{
+	return g_pFileManager->m_uOEMFlavor;
+}
+
+/***************************************
+
+	\brief Return the name of a drive
+
+	Given a drive number (0-?), return the name of the volume in the format of
+	":Volume name:". The function will guarantee the existence of the colons.
+
+	\note This function should be used with caution. Only mounted drives would
+	return immediately and if the drive has ejectable media may take a while for
+	it to respond to a volume name query.
+
+	\param pOutput A Burger::Filename structure to contain the filename (Can be
+		nullptr)
+
+	\param uVolumeNum A valid drive number from 0-?? with ?? being the
+		maximum number of drives in the system
+
+	\return Zero if no error, non-zero if an error occurred
+
+	\sa Burger::FileManager::GetVolumeNumber(const char *)
+
+***************************************/
+
+Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
+	Filename* pOutput, uint_t uVolumeNum) BURGER_NOEXCEPT
+{
+	// Bad drive number!!
+	if (uVolumeNum >= 26) {
 		return kErrorInvalidParameter;
 	}
 
-	Regs16 Regs;				// Intel registers
-	Regs.ax = 0x2F00;			// Get DTA address
-	Int86x(0x21,&Regs,&Regs);	// Call DOS
-	uint16_t OldOff = Regs.bx;	// Save the old DTA address for later restoration
+	Regs16 Regs;                // Intel registers
+	Regs.ax = 0x2F00;           // Get DTA address
+	Int86x(0x21, &Regs, &Regs); // Call DOS
+	uint16_t OldOff = Regs.bx; // Save the old DTA address for later restoration
 	uint16_t OldSeg = Regs.es;
 
-	uint32_t uRealBuffer = GetRealBufferPtr();	// Get some real memory
-	char *pReal = static_cast<char *>(RealToProtectedPtr(uRealBuffer));	// Convert to true pointer
+	// Get some real memory
+	uint32_t uRealBuffer = GetRealBufferPtr();
+	// Convert to true pointer
+	char* pReal = static_cast<char*>(RealToProtectedPtr(uRealBuffer));
 
-	Regs.ax = 0x1A00;			// Set the DTA address
+	Regs.ax = 0x1A00; // Set the DTA address
 	Regs.dx = static_cast<uint16_t>(uRealBuffer);
-	Regs.ds = static_cast<uint16_t>(uRealBuffer>>16);
-	Int86x(0x21,&Regs,&Regs);	// Call DOS
+	Regs.ds = static_cast<uint16_t>(uRealBuffer >> 16);
+	Int86x(0x21, &Regs, &Regs); // Call DOS
 
 	// Copy the search string for labels
-	StringCopy(pReal+256,"C:\*.*");	
+	StringCopy(pReal + 256, "C:\*.*");
 	// Set the drive letter AFTER the fact
-	pReal[256] = static_cast<char>('A' + uVolumeNum);	
+	pReal[256] = static_cast<char>('A' + uVolumeNum);
 
-	Regs.ax = 0x4e00;		// Find first
-	Regs.cx = 0x0008;		// Only look for volume labels
-	Regs.dx = static_cast<uint16_t>(uRealBuffer+256);	// Pointer to search string
-	Regs.ds = static_cast<uint16_t>(uRealBuffer>>16);
-	Int86x(0x21,&Regs,&Regs);	// Call DOS
-	if (Regs.flags&1) {			// Error (No volume name)
+	Regs.ax = 0x4e00; // Find first
+	Regs.cx = 0x0008; // Only look for volume labels
+	// Pointer to search string
+	Regs.dx = static_cast<uint16_t>(uRealBuffer + 256);
+	Regs.ds = static_cast<uint16_t>(uRealBuffer >> 16);
+	Int86x(0x21, &Regs, &Regs); // Call DOS
+	if (Regs.flags & 1) {       // Error (No volume name)
 		pReal[30] = 0;
 	}
 
 	// Note! The volume name is 30 bytes into the buffer
 
-	pReal[38] = pReal[39];		// Remove the period for an 8.3 filename
+	pReal[38] = pReal[39]; // Remove the period for an 8.3 filename
 	pReal[39] = pReal[40];
 	pReal[40] = pReal[41];
-	pReal[41] = 0;				// Make SURE it's terminated!
-	uRealBuffer = StringLength(pReal+30);	// Size of the string
+	pReal[41] = 0;                          // Make SURE it's terminated!
+	uRealBuffer = StringLength(pReal + 30); // Size of the string
 	if (!uRealBuffer) {
-		StringCopy(pReal+30,"UntitledA");		/* Generic */
+		StringCopy(pReal + 30, "UntitledA"); /* Generic */
 		pReal[38] = static_cast<char>('A' + uVolumeNum);
 		uRealBuffer = 9;
 	}
 	pReal[29] = ':';
-	pReal[uRealBuffer+30] = ':';
-	pReal[uRealBuffer+31] = 0;
+	pReal[uRealBuffer + 30] = ':';
+	pReal[uRealBuffer + 31] = 0;
 	if (pOutput) {
-		pOutput->Set(pReal+29);
+		pOutput->Set(pReal + 29);
 	}
 
-	Regs.ax = 0x1A00;		// Restore the DTA address to the old value
+	// Restore the DTA address to the old value
+	Regs.ax = 0x1A00;
 	Regs.ds = OldSeg;
 	Regs.dx = OldOff;
-	Int86x(0x21,&Regs,&Regs);	// Call DOS
-	return kErrorNone;		// Always pass
+	// Call DOS
+	Int86x(0x21, &Regs, &Regs);
+	// Always pass
+	return kErrorNone;
 }
 
 /***************************************
@@ -138,25 +513,27 @@ uint_t BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uV
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern char **_argv;		/* Used for Intel versions */
+extern char** _argv; /* Used for Intel versions */
 #ifdef __cplusplus
 }
 #endif
 #endif
 
-void BURGER_API Burger::FileManager::DefaultPrefixes(void)
+Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 {
 	Filename MyFilename;
-	MyFilename.SetFromNative("");			// Get the current directory
-	SetPrefix(8,MyFilename.GetPtr());	// Set the standard work prefix
+	MyFilename.SetFromNative("");      // Get the current directory
+	SetPrefix(8, MyFilename.GetPtr()); // Set the standard work prefix
 
 	MyFilename.SetFromNative(_argv[0]);
 	MyFilename.DirName();
-	SetPrefix(9,MyFilename.GetPtr());	// Set the application prefix
+	SetPrefix(9, MyFilename.GetPtr()); // Set the application prefix
 
-	SetPrefix(FileManager::PREFIXBOOT,".D2:");		// Assume C: is the boot volume
-	SetPrefix(FileManager::PREFIXSYSTEM,"*:DOS");	// C:\DOS
-	SetPrefix(FileManager::PREFIXPREFS,"9:");		// Place prefs in the data folder
+	SetPrefix(FileManager::kPrefixBoot, ".D2:"); // Assume C: is the boot volume
+	SetPrefix(FileManager::kPrefixSystem, "*:DOS"); // C:\DOS
+	SetPrefix(
+		FileManager::kPrefixPrefs, "9:"); // Place prefs in the data folder
+	return kErrorNone;
 }
 
 /***************************************
@@ -167,7 +544,9 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 ***************************************/
 
-uint32_t DoWorkDOSMod(const char *pReferance);
+uint32_t DoWorkDOSMod(const char* pReferance);
+
+// clang-format off
 
 #pragma aux DoWorkDOSMod = \
 	"XOR ECX,ECX"		/* Assume bogus time */ \
@@ -193,15 +572,18 @@ uint32_t DoWorkDOSMod(const char *pReferance);
 	modify [eax ebx ecx edx]	/* I blast these */ \
 	value [ecx]			/* Return in ECX */
 
-uint_t BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,TimeDate_t *pOutput)
+// clang-format on
+
+uint_t BURGER_API Burger::FileManager::GetModificationTime(
+	Filename* pFileName, TimeDate_t* pOutput)
 {
 	uint32_t Temp;
 
-	if (AreLongFilenamesAllowed()) {		/* Win95? */
+	if (AreLongFilenamesAllowed()) { /* Win95? */
 		Regs16 MyRegs;
 
-	/* This code does NOT work on CD's or Networks */
-	/* oh crud... */
+		/* This code does NOT work on CD's or Networks */
+		/* oh crud... */
 
 #if 0
 		MyRegs.ax = 0x7143;	/* Get file attributes */
@@ -220,44 +602,46 @@ uint_t BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,T
 #else
 		/* This works on all devices */
 		uint16_t Ref;
-		MyRegs.ax = 0x716C;			/* Open with long filenames */
-		MyRegs.bx = 0x0000;			/* Read */
+		MyRegs.ax = 0x716C; /* Open with long filenames */
+		MyRegs.bx = 0x0000; /* Read */
 		MyRegs.cx = 0x0000;
-		MyRegs.dx = 0x0001;			/* Open the file */
+		MyRegs.dx = 0x0001; /* Open the file */
 		MyRegs.di = 0x0000;
-		Temp = GetRealBufferPtr();	/* Local buffer */
-		MyRegs.si = static_cast<uint16_t>(Temp);			/* Pass the filename buffer */
-		MyRegs.ds = static_cast<uint16_t>(Temp>>16);		/* Get the segment */
-		StringCopy(static_cast<char *>(GetRealBufferProtectedPtr()),pFileName->GetNative());
-		Int86x(0x21,&MyRegs,&MyRegs);	/* Call Win95 */
-		if (MyRegs.flags&1) {		/* Error? */
+		Temp = GetRealBufferPtr();               /* Local buffer */
+		MyRegs.si = static_cast<uint16_t>(Temp); /* Pass the filename buffer */
+		MyRegs.ds = static_cast<uint16_t>(Temp >> 16); /* Get the segment */
+		StringCopy(static_cast<char*>(GetRealBufferProtectedPtr()),
+			pFileName->GetNative());
+		Int86x(0x21, &MyRegs, &MyRegs); /* Call Win95 */
+		if (MyRegs.flags & 1) {         /* Error? */
 			goto FooBar;
 		}
 		Ref = MyRegs.ax;
-		MyRegs.ax = 0x5700;		/* Read access time */
+		MyRegs.ax = 0x5700; /* Read access time */
 		MyRegs.bx = Ref;
-		Int86x(0x21,&MyRegs,&MyRegs);
+		Int86x(0x21, &MyRegs, &MyRegs);
 		Temp = MyRegs.flags;
 		MyRegs.bx = Ref;
-		MyRegs.ax = 0x3E00;		/* Close the file */
-		Int86x(0x21,&MyRegs,&MyRegs);
-		if (Temp&1) {			/* Error getting file time? */
+		MyRegs.ax = 0x3E00; /* Close the file */
+		Int86x(0x21, &MyRegs, &MyRegs);
+		if (Temp & 1) { /* Error getting file time? */
 			goto FooBar;
 		}
-		Temp = (uint32_t)MyRegs.dx;		/* Get the date and time */
-		Temp = (Temp<<16)|MyRegs.cx;
+		Temp = (uint32_t)MyRegs.dx; /* Get the date and time */
+		Temp = (Temp << 16) | MyRegs.cx;
 #endif
 	} else {
-		Temp = DoWorkDOSMod(pFileName->GetNative());	/* Call DOS to perform the action */
+		Temp = DoWorkDOSMod(
+			pFileName->GetNative()); /* Call DOS to perform the action */
 		if (!Temp) {
-			goto FooBar;		/* Error? */
+			goto FooBar; /* Error? */
 		}
 	}
 	pOutput->LoadMSDOS(Temp);
 	return FALSE;
 FooBar:
-	pOutput->Clear();	// Clear it on error
-	return TRUE;		// Error
+	pOutput->Clear(); // Clear it on error
+	return TRUE;      // Error
 }
 
 /***************************************
@@ -268,30 +652,33 @@ FooBar:
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDate_t *pOutput)
+uint_t BURGER_API Burger::FileManager::GetCreationTime(
+	Filename* pFileName, TimeDate_t* pOutput)
 {
 	uint32_t Temp;
-	uint_t Result = FALSE;		/* If no dos support then don't return an error */
-	if (AreLongFilenamesAllowed()) {		/* Win95? */
+	uint_t Result = FALSE; /* If no dos support then don't return an error */
+	if (AreLongFilenamesAllowed()) { /* Win95? */
 		Regs16 MyRegs;
-		StringCopy(static_cast<char *>(GetRealBufferProtectedPtr()),pFileName->GetNative());
-		MyRegs.ax = 0x7143;	/* Get file attributes */
-		MyRegs.bx = 8;		/* Get creation date/time */
-		Temp = GetRealBufferPtr();	/* Local buffer */
-		MyRegs.dx = static_cast<uint16_t>(Temp);		/* Pass the filename buffer */
-		MyRegs.ds = static_cast<uint16_t>(Temp>>16);	/* Get the segment */
-		Int86x(0x21,&MyRegs,&MyRegs);
-		if (!(MyRegs.flags&1)) {
-			Temp = (uint32_t)MyRegs.di;		/* Get the date and time */
-			Temp = (Temp<<16)|MyRegs.cx;
+		StringCopy(static_cast<char*>(GetRealBufferProtectedPtr()),
+			pFileName->GetNative());
+		MyRegs.ax = 0x7143;                      /* Get file attributes */
+		MyRegs.bx = 8;                           /* Get creation date/time */
+		Temp = GetRealBufferPtr();               /* Local buffer */
+		MyRegs.dx = static_cast<uint16_t>(Temp); /* Pass the filename buffer */
+		MyRegs.ds = static_cast<uint16_t>(Temp >> 16); /* Get the segment */
+		Int86x(0x21, &MyRegs, &MyRegs);
+		if (!(MyRegs.flags & 1)) {
+			Temp = (uint32_t)MyRegs.di; /* Get the date and time */
+			Temp = (Temp << 16) | MyRegs.cx;
 			pOutput->LoadMSDOS(Temp);
-			pOutput->m_usMilliseconds = (uint16_t)MyRegs.si;	/* Get milliseconds */
+			pOutput->m_usMilliseconds =
+				(uint16_t)MyRegs.si; /* Get milliseconds */
 			return FALSE;
 		}
-		Result = TRUE;		// Error condition
+		Result = TRUE; // Error condition
 	}
-	pOutput->Clear();	// No DOS support
-	return Result;		// Error!
+	pOutput->Clear(); // No DOS support
+	return Result;    // Error!
 }
 
 /***************************************
@@ -305,8 +692,9 @@ uint_t BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeD
 
 ***************************************/
 
-uint32_t DoWorkDOSExist(const char *Referance);
+uint32_t DoWorkDOSExist(const char* Referance);
 
+// clang-format off
 #pragma aux DoWorkDOSExist = \
 	"MOV EAX,04300H"	/* Get file attributes */ \
 	"INT 021H"			/* Call messy dos */ \
@@ -316,27 +704,31 @@ uint32_t DoWorkDOSExist(const char *Referance);
 	parm [edx]			/* Filename in EDX */ \
 	modify [eax ecx edx]	/* I blast these */ \
 	value [ecx]			/* Return in ECX */
+// clang-format on
 
-uint_t BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::FileManager::DoesFileExist(
+	Filename* pFileName) BURGER_NOEXCEPT
 {
-	if (AreLongFilenamesAllowed()) {	/* Win95? */
+	if (AreLongFilenamesAllowed()) { /* Win95? */
 		Regs16 MyRegs;
-		MyRegs.ax = 0x7143;		/* Get file attributes */
-		MyRegs.bx = 0;			/* Get file attributes only */
-		uint32_t Temp = GetRealBufferPtr();	/* Local buffer */
-		MyRegs.dx = static_cast<uint16_t>(Temp);			/* Pass the filename buffer */
-		MyRegs.ds = static_cast<uint16_t>(Temp>>16);		/* Get the segment */
-		StringCopy(static_cast<char *>(GetRealBufferProtectedPtr()),pFileName->GetNative());
-		Int86x(0x21,&MyRegs,&MyRegs);	/* Call Win95 */
-		if (MyRegs.flags&1 || MyRegs.cx&0x18) {		/* Error? Or directory? */
+		MyRegs.ax = 0x7143;                      /* Get file attributes */
+		MyRegs.bx = 0;                           /* Get file attributes only */
+		uint32_t Temp = GetRealBufferPtr();      /* Local buffer */
+		MyRegs.dx = static_cast<uint16_t>(Temp); /* Pass the filename buffer */
+		MyRegs.ds = static_cast<uint16_t>(Temp >> 16); /* Get the segment */
+		StringCopy(static_cast<char*>(GetRealBufferProtectedPtr()),
+			pFileName->GetNative());
+		Int86x(0x21, &MyRegs, &MyRegs);             /* Call Win95 */
+		if (MyRegs.flags & 1 || MyRegs.cx & 0x18) { /* Error? Or directory? */
 			return FALSE;
 		}
 	} else {
-		if (DoWorkDOSExist(pFileName->GetNative())&0x18) {		/* Call DOS to perform the action */
-			return FALSE;		/* Error? */
+		if (DoWorkDOSExist(pFileName->GetNative()) &
+			0x18) {       /* Call DOS to perform the action */
+			return FALSE; /* Error? */
 		}
 	}
-	return TRUE;		/* File was found */
+	return TRUE; /* File was found */
 }
 
 /***************************************
@@ -345,33 +737,35 @@ uint_t BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName) BURGER
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::FileManager::DeleteFile(
+	Filename* pFileName) BURGER_NOEXCEPT
 {
-	Regs16 Regs;		// Used by DOS
+	Regs16 Regs; // Used by DOS
 
 	uint_t LongOk = AreLongFilenamesAllowed();
-	uint32_t RealBuffer = GetRealBufferPtr();	/* Get real memory */
-	StringCopy(static_cast<char *>(RealToProtectedPtr(RealBuffer)),pFileName->GetNative());	// Copy path
+	uint32_t RealBuffer = GetRealBufferPtr(); /* Get real memory */
+	StringCopy(static_cast<char*>(RealToProtectedPtr(RealBuffer)),
+		pFileName->GetNative()); // Copy path
 
 	if (LongOk) {
-		Regs.ax = 0x7141;		// Try it via windows
+		Regs.ax = 0x7141; // Try it via windows
 		Regs.dx = static_cast<uint16_t>(RealBuffer);
-		Regs.ds = static_cast<uint16_t>(RealBuffer>>16);
-		Regs.cx = 0;			// Normal file
-		Regs.si = 0;			// No wildcards are present
-		Int86x(0x21,&Regs,&Regs);	// Delete the file
-		if (!(Regs.flags&1)) {		// Error?
+		Regs.ds = static_cast<uint16_t>(RealBuffer >> 16);
+		Regs.cx = 0;                // Normal file
+		Regs.si = 0;                // No wildcards are present
+		Int86x(0x21, &Regs, &Regs); // Delete the file
+		if (!(Regs.flags & 1)) {    // Error?
 			return FALSE;
 		}
 	}
-	Regs.ax = 0x4100;			// Try it the DOS 5.0 way
+	Regs.ax = 0x4100; // Try it the DOS 5.0 way
 	Regs.dx = static_cast<uint16_t>(RealBuffer);
-	Regs.ds = static_cast<uint16_t>(RealBuffer>>16);
-	Int86x(0x21,&Regs,&Regs);
-	if (Regs.flags&1) {		// Error?
-		return TRUE;		// Oh forget it!!!
+	Regs.ds = static_cast<uint16_t>(RealBuffer >> 16);
+	Int86x(0x21, &Regs, &Regs);
+	if (Regs.flags & 1) { // Error?
+		return TRUE;      // Oh forget it!!!
 	}
-	return FALSE;		// Success!!
+	return FALSE; // Success!!
 }
 
 /***************************************
@@ -381,33 +775,34 @@ uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName) BURGER_NO
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::ChangeOSDirectory(Filename *pDirName)
+uint_t BURGER_API Burger::FileManager::ChangeOSDirectory(Filename* pDirName)
 {
-	Regs16 Regs;		// Used by DOS
+	Regs16 Regs; // Used by DOS
 
 	// Flag for long filenames
 	uint_t LongOk = AreLongFilenamesAllowed();
-	uint32_t RealBuffer = GetRealBufferPtr();	// Get real memory
+	uint32_t RealBuffer = GetRealBufferPtr(); // Get real memory
 	// Copy path
-	StringCopy(static_cast<char *>(RealToProtectedPtr(RealBuffer)),pDirName->GetNative());
+	StringCopy(static_cast<char*>(RealToProtectedPtr(RealBuffer)),
+		pDirName->GetNative());
 
-	if (LongOk) {					// Win95 is present?
-		Regs.ax = 0x713B;			// Try it via windows
+	if (LongOk) {         // Win95 is present?
+		Regs.ax = 0x713B; // Try it via windows
 		Regs.dx = static_cast<uint16_t>(RealBuffer);
-		Regs.ds = static_cast<uint16_t>(RealBuffer>>16);
-		Int86x(0x21,&Regs,&Regs);	// Change the directory
-		if (!(Regs.flags&1)) {		// Error?
+		Regs.ds = static_cast<uint16_t>(RealBuffer >> 16);
+		Int86x(0x21, &Regs, &Regs); // Change the directory
+		if (!(Regs.flags & 1)) {    // Error?
 			return 0;
 		}
 	}
-	Regs.ax = 0x3B00;		// Try it the DOS 5.0 way
+	Regs.ax = 0x3B00; // Try it the DOS 5.0 way
 	Regs.dx = static_cast<uint16_t>(RealBuffer);
-	Regs.ds = static_cast<uint16_t>(RealBuffer>>16);
-	Int86x(0x21,&Regs,&Regs);
-	if (Regs.flags&1) {		// Error?
-		return (uint_t)-1;	// Oh forget it!!!
+	Regs.ds = static_cast<uint16_t>(RealBuffer >> 16);
+	Int86x(0x21, &Regs, &Regs);
+	if (Regs.flags & 1) {  // Error?
+		return (uint_t)-1; // Oh forget it!!!
 	}
-	return 0;				// Success!!
+	return 0; // Success!!
 }
 
 /***************************************
@@ -417,8 +812,9 @@ uint_t BURGER_API Burger::FileManager::ChangeOSDirectory(Filename *pDirName)
 
 ***************************************/
 
-uint_t DoWorkDOSCrDir(const char *Referance);
+uint_t DoWorkDOSCrDir(const char* Referance);
 
+// clang-format off
 #pragma aux DoWorkDOSCrDir = \
 	"MOV EAX,03900H"	/* Create directory */ \
 	"PUSH EDX"			/* Save the filename pointer */ \
@@ -439,66 +835,70 @@ uint_t DoWorkDOSCrDir(const char *Referance);
 	parm [edx]			/* Filename in EDX */ \
 	modify [eax ecx edx]	/* I blast these */ \
 	value [eax]			/* Return in EAX */
+// clang-format on
 
-static uint_t BURGER_API DirCreate(const char *pFileName)
+static uint_t BURGER_API DirCreate(const char* pFileName)
 {
 	if (Burger::FileManager::AreLongFilenamesAllowed()) {
 		Burger::Regs16 MyRegs;
-		MyRegs.ax = 0x7139;		/* Create long filename version */
+		MyRegs.ax = 0x7139; /* Create long filename version */
 		uint32_t Temp = GetRealBufferPtr();
-		MyRegs.dx = static_cast<uint16_t>(Temp);		/* Save the real memory pointer */
-		MyRegs.ds = static_cast<uint16_t>(Temp>>16);
-		Burger::StringCopy(static_cast<char *>(GetRealBufferProtectedPtr()),pFileName);
-		Int86x(0x21,&MyRegs,&MyRegs);	/* Make the directory */
-		if (!(MyRegs.flags&1)) {
+		MyRegs.dx =
+			static_cast<uint16_t>(Temp); /* Save the real memory pointer */
+		MyRegs.ds = static_cast<uint16_t>(Temp >> 16);
+		Burger::StringCopy(
+			static_cast<char*>(GetRealBufferProtectedPtr()), pFileName);
+		Int86x(0x21, &MyRegs, &MyRegs); /* Make the directory */
+		if (!(MyRegs.flags & 1)) {
 			return FALSE;
 		}
 		MyRegs.ax = 0x7143;
-		MyRegs.bx = 0;			/* Get attributes */
+		MyRegs.bx = 0; /* Get attributes */
 		MyRegs.dx = static_cast<uint16_t>(Temp);
-		MyRegs.ds = static_cast<uint16_t>(Temp>>16);
-		Int86x(0x21,&MyRegs,&MyRegs);
-		if (!(MyRegs.flags&1) && MyRegs.cx & 0x10) {	/* Directory here? */
-			return FALSE;		/* Directory already present */
+		MyRegs.ds = static_cast<uint16_t>(Temp >> 16);
+		Int86x(0x21, &MyRegs, &MyRegs);
+		if (!(MyRegs.flags & 1) && MyRegs.cx & 0x10) { /* Directory here? */
+			return FALSE; /* Directory already present */
 		}
-		return TRUE;		/* Error! */
+		return TRUE; /* Error! */
 	}
-	return DoWorkDOSCrDir(pFileName);		/* Dos 5.0 or previous */
+	return DoWorkDOSCrDir(pFileName); /* Dos 5.0 or previous */
 }
 
-uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Filename* pFileName)
 {
-	char *pPath = const_cast<char *>(pFileName->GetNative());
-	if (!DirCreate(pPath)) {		/* Easy way! */
-		return FALSE;				/* No error */
+	char* pPath = const_cast<char*>(pFileName->GetNative());
+	if (!DirCreate(pPath)) { /* Easy way! */
+		return FALSE;        /* No error */
 	}
 	/* Ok see if I can create the directory tree */
-	if (pPath[0]) {			/* Is there a filename? */
-		const char *WorkPtr = pPath;
-		if (WorkPtr[0] && WorkPtr[1]==':') {	/* Drive name? */
-			WorkPtr+=2;			/* Skip the drive name */
+	if (pPath[0]) { /* Is there a filename? */
+		const char* WorkPtr = pPath;
+		if (WorkPtr[0] && WorkPtr[1] == ':') { /* Drive name? */
+			WorkPtr += 2;                      /* Skip the drive name */
 		}
-		if (WorkPtr[0] == '\\') {		/* Accept the first slash */
+		if (WorkPtr[0] == '\\') { /* Accept the first slash */
 			++WorkPtr;
 		}
-		char Old;		/* Marker for a filename */
-		uint_t Err;		/* Error code */
+		char Old;   /* Marker for a filename */
+		uint_t Err; /* Error code */
 		do {
-			WorkPtr = StringCharacter(WorkPtr,'\\');		/* Skip to the next colon */
-			if (!WorkPtr) {			/* No colon found? */
-				WorkPtr = StringCharacter(pPath,0);
+			WorkPtr =
+				StringCharacter(WorkPtr, '\\'); /* Skip to the next colon */
+			if (!WorkPtr) {                     /* No colon found? */
+				WorkPtr = StringCharacter(pPath, 0);
 			}
-			Old = WorkPtr[0];		/* Get the previous char */
-			((char *)WorkPtr)[0] = 0;		/* End the string */
-			Err = DirCreate(pPath);		/* Create the directory */
-			((char *)WorkPtr)[0] = Old;		/* Restore the string */
-			++WorkPtr;		/* Index past the char */
-		} while (Old);		/* Still more string? */
-		if (!Err) {			/* Cool!! */
-			return FALSE;	/* No error */
+			Old = WorkPtr[0];          /* Get the previous char */
+			((char*)WorkPtr)[0] = 0;   /* End the string */
+			Err = DirCreate(pPath);    /* Create the directory */
+			((char*)WorkPtr)[0] = Old; /* Restore the string */
+			++WorkPtr;                 /* Index past the char */
+		} while (Old);                 /* Still more string? */
+		if (!Err) {                    /* Cool!! */
+			return FALSE;              /* No error */
 		}
 	}
-	return TRUE;		/* Didn't do it! */
+	return TRUE; /* Didn't do it! */
 }
 
 #endif

@@ -321,7 +321,7 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
 	// won't fail
 	bVersion = TRUE;
 #if defined(BURGER_MAC) && defined(__MSL__)
-    MyApp.SetWindowTitle("Burgerlib Unittests");
+	MyApp.SetWindowTitle("Burgerlib Unittests");
 #endif
 #endif
 

@@ -44,7 +44,7 @@
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetVolumeName(
+Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 	Burger::Filename* pOutput, uint_t uVolumeNum) BURGER_NOEXCEPT
 {
 	pOutput->Clear();
@@ -53,11 +53,12 @@ uint_t BURGER_API Burger::FileManager::GetVolumeName(
 	MemoryClear(&pb, sizeof(pb));
 
 	HFSUniStr255 Name;	// Unicode name of the volume returned
-
+    FSVolumeInfo Info;
+    MemoryClear(&Info, sizeof(Info));
 	// pb.ioVRefNum = kFSInvalidVolumeRefNum;	// I only want the name
 	pb.volumeIndex = uVolumeNum + 1; // Drive starts with volume #1
-	// pb.whichInfo = kFSVolInfoNone;			// volumeIndex = Drive #
-	// pb.volumeInfo = NULL;					// I don't want extra data
+	pb.whichInfo = kFSVolInfoDriveInfo;			// volumeIndex = Drive #
+	pb.volumeInfo = &Info;					// I don't want extra data
 	pb.volumeName = &Name; // Name please
 	// pb.ref = NULL;							// I don't want the volume's file
 	// reference
@@ -73,6 +74,7 @@ uint_t BURGER_API Burger::FileManager::GetVolumeName(
 			NameUTF8[uLength + 1] = ':';
 			NameUTF8[uLength + 2] = 0;
 			pOutput->Set(NameUTF8);
+			pOutput->SetVRefNum(static_cast<int16_t>(Info.driveNumber));
 			return kErrorNone; // No error!
 		}
 	}
@@ -90,18 +92,18 @@ uint_t BURGER_API Burger::FileManager::GetVolumeName(
 
 ***************************************/
 
-void BURGER_API Burger::FileManager::DefaultPrefixes(void)
+Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 {
 	// Set the standard work prefix
 	Filename MyFilename;
 	MyFilename.SetFromNative("");
-	SetPrefix(PREFIXCURRENT, MyFilename.GetPtr());
+	SetPrefix(kPrefixCurrent, MyFilename.GetPtr());
 
 	// Get the boot volume name
-	uint_t uResult = GetVolumeName(&MyFilename, 0);
+	eError uResult = GetVolumeName(&MyFilename, 0);
 	if (uResult == kErrorNone) {
 		// Set the initial prefix
-		SetPrefix(PREFIXBOOT, MyFilename.GetPtr());
+		SetPrefix(kPrefixBoot, MyFilename.GetPtr());
 	}
 
 	short MyVRef; // Internal volume references
@@ -111,7 +113,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 			&MyVRef, &MyDirID)) {
 		uResult = MyFilename.SetFromDirectoryID(MyDirID, MyVRef);
 		if (!uResult) {
-			SetPrefix(PREFIXSYSTEM, MyFilename.GetPtr());
+			SetPrefix(kPrefixSystem, MyFilename.GetPtr());
 		}
 	}
 
@@ -121,7 +123,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 		uResult = MyFilename.SetFromDirectoryID(MyDirID, MyVRef);
 		if (!uResult) {
 			// Set the prefs folder
-			SetPrefix(PREFIXPREFS, MyFilename.GetPtr());
+			SetPrefix(kPrefixPrefs, MyFilename.GetPtr());
 		}
 	}
 
@@ -150,6 +152,7 @@ void BURGER_API Burger::FileManager::DefaultPrefixes(void)
 			SetPrefix(9, MyFilename.GetPtr());
 		}
 	}
+	return kErrorNone;
 }
 
 /***************************************
