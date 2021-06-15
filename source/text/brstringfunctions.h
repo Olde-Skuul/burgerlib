@@ -213,7 +213,7 @@ extern uintptr_t BURGER_API CopyUpToEOL(char* pOutput, uintptr_t uOutputSize,
 	const char* pInput, uintptr_t uInputSize);
 
 extern void BURGER_API StripLeadingSpaces(char* pInput);
-extern void BURGER_API StripTrailingSpaces(char* pInput);
+extern void BURGER_API StripTrailingSpaces(char* pInput) BURGER_NOEXCEPT;
 extern void BURGER_API StripLeadingWhiteSpace(char* pInput);
 extern void BURGER_API StripTrailingWhiteSpace(char* pInput) BURGER_NOEXCEPT;
 extern void BURGER_API StripLeadingAndTrailingSpaces(char* pInput);

@@ -56,6 +56,8 @@ enum eError {
 	kErrorFileNotFound,
 	/** Directory to file not found */
 	kErrorPathNotFound,
+	/** Volume not found */
+	kErrorVolumeNotFound,
 	/** Write access was not granted */
 	kErrorWriteProtected,
 	/** No more file descriptors are available */

@@ -21,6 +21,8 @@
 #include "brfilename.h"
 #include "brmemoryfunctions.h"
 
+#include <dos.h>
+
 #if !defined(DOXYGEN)
 
 // Addresses in real memory for the Dos Box signature
@@ -53,6 +55,26 @@ static const MSDosOEMLookup_t gOEMLookups[] = {{0, "IBM"}, {1, "Compaq"},
 	{0x4D, "Hewlett Packard"}, {0x5E, "RxDOS"}, {0x66, "PhysTechSoft"},
 	{0x77, "DOSBox"}, {0x78, "Concurrent DOS"}, {0x99, "GenSoft DOS"},
 	{0xEE, "DR-DOS"}, {0xEF, "Novell"}, {0xFD, "FreeDOS"}, {0xFF, "MS/DOS"}};
+
+/*! ************************************
+
+	\brief Replacement Abort, Retry, Ignore.
+
+	This int 0x24 replacement handler will always return 3 (Fail) instead of
+	asking the user to Abort, Retry, Ignore.
+
+	\msdosonly
+
+	\sa Burger::FileManager or BURGER_MSDOS
+
+***************************************/
+
+static int __far critical_error_handler(
+	unsigned /* deverr */, unsigned /*errcode */, unsigned __far* /* devhdr */)
+{
+	return _HARDERR_FAIL;
+}
+
 #endif
 
 /*! ************************************
@@ -70,6 +92,8 @@ static const MSDosOEMLookup_t gOEMLookups[] = {{0, "IBM"}, {1, "Compaq"},
 
 void BURGER_API Burger::FileManager::DetectMSDOSVersion(void) BURGER_NOEXCEPT
 {
+	// Disable Abort, Retry, Ignore
+	_harderr(critical_error_handler);
 
 	// Needed for INT 0x21 calls
 
@@ -433,68 +457,114 @@ uint_t BURGER_API Burger::FileManager::GetMSDosFlavor(void) BURGER_NOEXCEPT
 Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 	Filename* pOutput, uint_t uVolumeNum) BURGER_NOEXCEPT
 {
+	// Programming note: Int 0x21 0x714E does NOT return volume names.
+
 	// Bad drive number!!
 	if (uVolumeNum >= 26) {
 		return kErrorInvalidParameter;
 	}
 
-	Regs16 Regs;                // Intel registers
-	Regs.ax = 0x2F00;           // Get DTA address
-	Int86x(0x21, &Regs, &Regs); // Call DOS
-	uint16_t OldOff = Regs.bx; // Save the old DTA address for later restoration
-	uint16_t OldSeg = Regs.es;
+	// Offset into the Disk Transfer shared buffer for the input filename
+	const uint32_t kNameOffset = 256;
 
-	// Get some real memory
+	// Get the shared real buffer pointer and convert to protected
 	uint32_t uRealBuffer = GetRealBufferPtr();
-	// Convert to true pointer
-	char* pReal = static_cast<char*>(RealToProtectedPtr(uRealBuffer));
+	char* pRealBuffer = static_cast<char*>(RealToProtectedPtr(uRealBuffer));
 
-	Regs.ax = 0x1A00; // Set the DTA address
+	Regs16 Regs; // Intel registers
+
+	// Check if the drive is enabled before attempting to obtain the label
+	pRealBuffer[kNameOffset] = static_cast<char>('A' + uVolumeNum);
+	pRealBuffer[kNameOffset + 1] = ':';
+	pRealBuffer[kNameOffset + 2] = '\\';
+	pRealBuffer[kNameOffset + 3] = '*';
+	pRealBuffer[kNameOffset + 4] = 0;
+
+	// Use Parse Filename into FCB
+	// http://www.ctyme.com/intr/rb-2685.htm#Table1380
+	Regs.ax = 0x2900;
+	Regs.si = static_cast<uint16_t>(uRealBuffer + kNameOffset);
+	Regs.ds = static_cast<uint16_t>(uRealBuffer >> 16);
+	Regs.di = static_cast<uint16_t>(uRealBuffer);
+	Regs.es = static_cast<uint16_t>(uRealBuffer >> 16);
+	Int86x(0x21, &Regs, &Regs);
+	// The drive letter is invalid. Return bogus name and error out.
+	if ((Regs.ax & 0xFFU) == 0xFFU) {
+		if (pOutput) {
+			StringCopy(pRealBuffer, ":C_DRIVE:");
+			pRealBuffer[1] = static_cast<char>('A' + uVolumeNum);
+			pOutput->Set(pRealBuffer);
+		}
+		return kErrorVolumeNotFound;
+	}
+
+	// Get the Disk Transfer address and make a copy
+	// http://www.ctyme.com/intr/rb-2710.htm
+	Regs.ax = 0x2F00;
+	Int86x(0x21, &Regs, &Regs);
+	uint16_t uOldOffset = Regs.bx;
+	uint16_t uOldSegment = Regs.es;
+
+	// Set the disk transfer address to my buffer
+	// http://www.ctyme.com/intr/rb-2589.htm
+	Regs.ax = 0x1A00;
 	Regs.dx = static_cast<uint16_t>(uRealBuffer);
 	Regs.ds = static_cast<uint16_t>(uRealBuffer >> 16);
-	Int86x(0x21, &Regs, &Regs); // Call DOS
+	Int86x(0x21, &Regs, &Regs);
 
 	// Copy the search string for labels
-	StringCopy(pReal + 256, "C:\*.*");
+	StringCopy(pRealBuffer + kNameOffset, "C:\\*");
 	// Set the drive letter AFTER the fact
-	pReal[256] = static_cast<char>('A' + uVolumeNum);
+	pRealBuffer[kNameOffset] = static_cast<char>('A' + uVolumeNum);
 
-	Regs.ax = 0x4e00; // Find first
-	Regs.cx = 0x0008; // Only look for volume labels
+	// Find first matching file
+	// http://www.ctyme.com/intr/rb-2977.htm
+	Regs.ax = 0x4E00;
+
+	// Only look for volume labels
+	// http://www.ctyme.com/intr/rb-2803.htm
+	Regs.cx = 0x0008;
+
 	// Pointer to search string
-	Regs.dx = static_cast<uint16_t>(uRealBuffer + 256);
-	Regs.ds = static_cast<uint16_t>(uRealBuffer >> 16);
-	Int86x(0x21, &Regs, &Regs); // Call DOS
-	if (Regs.flags & 1) {       // Error (No volume name)
-		pReal[30] = 0;
-	}
-
-	// Note! The volume name is 30 bytes into the buffer
-
-	pReal[38] = pReal[39]; // Remove the period for an 8.3 filename
-	pReal[39] = pReal[40];
-	pReal[40] = pReal[41];
-	pReal[41] = 0;                          // Make SURE it's terminated!
-	uRealBuffer = StringLength(pReal + 30); // Size of the string
-	if (!uRealBuffer) {
-		StringCopy(pReal + 30, "UntitledA"); /* Generic */
-		pReal[38] = static_cast<char>('A' + uVolumeNum);
-		uRealBuffer = 9;
-	}
-	pReal[29] = ':';
-	pReal[uRealBuffer + 30] = ':';
-	pReal[uRealBuffer + 31] = 0;
-	if (pOutput) {
-		pOutput->Set(pReal + 29);
-	}
-
-	// Restore the DTA address to the old value
-	Regs.ax = 0x1A00;
-	Regs.ds = OldSeg;
-	Regs.dx = OldOff;
-	// Call DOS
+	Regs.dx = static_cast<uint16_t>(uRealBuffer + kNameOffset);
+	Regs.ds = static_cast<uint16_t>((uRealBuffer + kNameOffset) >> 16);
 	Int86x(0x21, &Regs, &Regs);
-	// Always pass
+
+	if (Regs.flags & 1) {
+		pRealBuffer[30] = 0;
+	} else {
+		// Note! The volume name is 30 bytes into the buffer
+		// Remove the period for an 8.3 filename
+		pRealBuffer[38] = pRealBuffer[39];
+		pRealBuffer[39] = pRealBuffer[40];
+		pRealBuffer[40] = pRealBuffer[41];
+		// Make SURE it's terminated!
+		pRealBuffer[41] = 0;
+	}
+
+	// Size of the string
+	uintptr_t uLength = StringLength(pRealBuffer + 30);
+	if (!uLength) {
+		// Generic disk name
+		StringCopy(pRealBuffer + 30, "C_DRIVE");
+		pRealBuffer[30] = static_cast<char>('A' + uVolumeNum);
+		uLength = 7;
+	}
+	pRealBuffer[29] = ':';
+	pRealBuffer[uLength + 30] = ':';
+	pRealBuffer[uLength + 31] = 0;
+	if (pOutput) {
+		pOutput->Set(pRealBuffer + 29);
+	}
+
+	// Restore the disk transfer address address to the old value
+	// http://www.ctyme.com/intr/rb-2589.htm
+	Regs.ax = 0x1A00;
+	Regs.dx = uOldOffset;
+	Regs.ds = uOldSegment;
+	Int86x(0x21, &Regs, &Regs);
+
+	// We are done.
 	return kErrorNone;
 }
 

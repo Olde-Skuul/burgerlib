@@ -1845,7 +1845,7 @@ void BURGER_API Burger::StripLeadingSpaces(char* pInput)
 
 ***************************************/
 
-void BURGER_API Burger::StripTrailingSpaces(char* pInput)
+void BURGER_API Burger::StripTrailingSpaces(char* pInput) BURGER_NOEXCEPT
 {
     uint_t Temp = reinterpret_cast<uint8_t*>(pInput)[0]; // Get the first character
     if (Temp) {                                      // Is there a string?

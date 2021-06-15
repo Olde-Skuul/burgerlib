@@ -25,8 +25,24 @@
 
 /***************************************
 
-	Given a drive number, return in generic format
-	the drive's name.
+	\brief Return the name of a drive
+
+	Given a drive number (0-?), return the name of the volume in the format of
+	":Volume name:". The function will guarantee the existence of the colons.
+
+	\note This function should be used with caution. Only mounted drives would
+	return immediately and if the drive has ejectable media may take a while for
+	it to respond to a volume name query.
+
+	\param pOutput A Burger::Filename structure to contain the filename (Can be
+		nullptr)
+
+	\param uVolumeNum A valid drive number from 0-?? with ?? being the
+		maximum number of drives in the system
+
+	\return Zero if no error, non-zero if an error occurred
+
+	\sa Burger::FileManager::GetVolumeNumber(const char *)
 
 ***************************************/
 

@@ -422,7 +422,7 @@ GetRealInt_ ENDP
 ;
 ; This code is a nightmare, it will allow the main program to
 ; read and modify interrupt vectors. However, it must be compatible
-; with DMPI 0.9 so that the user can choose DOS4GW
+; with DPMI 0.9 so that the user can choose DOS4GW
 ;
 
 ;
