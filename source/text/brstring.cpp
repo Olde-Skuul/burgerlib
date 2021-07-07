@@ -18,6 +18,7 @@
 #include "brmemoryfunctions.h"
 #include "brnumberto.h"
 #include "brutf8.h"
+#include "brutf32.h"
 
 /*! ************************************
 
@@ -241,7 +242,7 @@ Burger::String::String(const uint32_t* pInput) BURGER_NOEXCEPT
 		uTemp = 0;
 		pInput = &uTemp;
 	}
-	uintptr_t uInputLength = UTF8::FromUTF32(nullptr, 0, pInput);
+	uintptr_t uInputLength = UTF32::TranslateToUTF8(nullptr, 0, pInput);
 	char* pWork = m_Raw;
 	if (uInputLength >= kBufferSize) { // Buffer big enough?
 		pWork = static_cast<char*>(Alloc(uInputLength + 1));
@@ -254,7 +255,7 @@ Burger::String::String(const uint32_t* pInput) BURGER_NOEXCEPT
 	}
 	m_uLength = uInputLength;                         // Save the new length
 	m_pData = pWork;                                  // Set the pointer
-	UTF8::FromUTF32(pWork, uInputLength + 1, pInput); // Copy the string
+	UTF32::TranslateToUTF8(pWork, uInputLength + 1, pInput); // Copy the string
 }
 
 /*! ************************************

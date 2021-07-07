@@ -1,16 +1,16 @@
 /***************************************
 
-    Filename Class
+	Filename Class
 
-    MacOS version
+	MacOS version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -20,15 +20,14 @@
 #include "brfile.h"
 #include "brfilemanager.h"
 #include "brglobalmemorymanager.h"
+#include "brmemoryfunctions.h"
 #include "brstring.h"
 #include "brstring16.h"
 #include "brtick.h"
-#include "brmemoryfunctions.h"
 #include <Files.h>
 #include <Folders.h>
 #include <Processes.h>
 #include <string.h>
-
 
 Burger::Filename::ExpandCache_t
 	Burger::Filename::m_DirectoryCache[Burger::Filename::DIRCACHESIZE];
@@ -40,13 +39,13 @@ Burger::Filename::ExpandCache_t
 
 	For performance, a cache of the last Burger::FileManager::DIRCACHESIZE MacOS
 	directories are stored with their Directory IDs and volume reference
-numbers. Since these number can ba invalidate when a directory is deleted or
-created, any call to a Burgerlib function that performs that action will also
-purge this cache.
+	numbers. Since these number can ba invalidate when a directory is deleted or
+	created, any call to a Burgerlib function that performs that action will
+	also purge this cache.
 
 	When a Burgerlib path is parsed, a Directory ID and Volume Reference needs
-to be generated. If the directory exists in the cache, the values found here
-will be used. If not, it will be determined and added to the cache.
+	to be generated. If the directory exists in the cache, the values found here
+	will be used. If not, it will be determined and added to the cache.
 
 	\sa Burger::FileManager and Burger::Filename::InitDirectoryCache(void)
 	\note Only available on MacOS
@@ -81,14 +80,14 @@ void BURGER_API Burger::Filename::InitDirectoryCache(void)
 
 	\brief Dispose of my directory cache
 
-	This function is called by Burger::FileManager::Shutdown(void) or
-	any internal function that can modify the MacOS directory structure.
-	It's not meant to be called by applications.
+	This function is called by Burger::FileManager::Shutdown(void) or any
+	internal function that can modify the MacOS directory structure. It's not
+	meant to be called by applications.
 
 	\note Only available on MacOS
 
 	\sa Burger::Filename::InitDirectoryCache(void) or
-		Burger::Filename::ExpandCache_t 
+		Burger::Filename::ExpandCache_t
 
 ***************************************/
 
@@ -107,19 +106,17 @@ void BURGER_API Burger::Filename::PurgeDirectoryCache(void)
 
 	Convert a Burgerlib path to a MacOS path
 
-	MacOS filenames have a 256 character limit. To get around
-	this, Burgerlib will traverse the path to find the Volume
-	Reference number and Directory ID to the deepest entry in
-	the path. This way, in most cases, only the filename itself
-	is stored in the filename buffer.
+	MacOS filenames have a 256 character limit. To get around this, Burgerlib
+	will traverse the path to find the Volume Reference number and Directory ID
+	to the deepest entry in the path. This way, in most cases, only the filename
+	itself is stored in the filename buffer.
 
-	This function initializes the Volume Reference number
-	and Directory ID. Assume that they are valid at the
-	conclusion of this call.
+	This function initializes the Volume Reference number and Directory ID.
+	Assume that they are valid at the conclusion of this call.
 
-	Only available on MacOS. HFS only supports filenames
-	that are 31 characters or less for each component, so avoid
-	using extremely long filename components.
+	Only available on MacOS. HFS only supports filenames that are 31 characters
+	or less for each component, so avoid using extremely long filename
+	components.
 
 ***************************************/
 
@@ -171,8 +168,8 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 				ExpandCache_t* pCache = m_DirectoryCache;
 				do {
 					// If there is an entry, check if this directory is a match
-					if (pCache->m_pName
-						&& pCache->m_uNameLength <= uDirLength) {
+					if (pCache->m_pName &&
+						pCache->m_uNameLength <= uDirLength) {
 
 						// Partial match?
 						if (!MemoryCaseCompare(pCache->m_pName, pPath,
@@ -194,7 +191,8 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 								if (pFileName[0] == ':') {
 									++pFileName;
 								}
-								uintptr_t uFinalLength = StringLength(pFileName);
+								uintptr_t uFinalLength =
+									StringLength(pFileName);
 
 								// Store the file name
 								char* pNew = m_NativeFilename;
@@ -386,7 +384,7 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 		pEntry->m_uHitTick = uMark;
 		// Directories must always end in a colon
 		pEntry->m_uNameLength = uDirLength; // Save the strlen size
-		Free(pEntry->m_pName);				// Copy the string for the cache
+		Free(pEntry->m_pName);              // Copy the string for the cache
 		char uTemp = pPath[uDirLength];
 		pPath[uDirLength] = 0; // Make sure it's zero terminated
 		pEntry->m_pName = StringDuplicate(pPath); // Store the new entry
@@ -419,7 +417,8 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
+	void) BURGER_NOEXCEPT
 {
 	Clear();
 	long lDirID;
@@ -427,6 +426,7 @@ void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void) BURGER_NOEXCEP
 	HGetVol(0, &sVRefNum, &lDirID); // Call OS
 	// Set lDirID to 0 to hack to simulate GetVol()
 	SetFromDirectoryID(0, sVRefNum); // Get the directory
+	return kErrorNone;
 }
 
 /***************************************
@@ -442,7 +442,7 @@ void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void) BURGER_NOEXCEP
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
 {
 	Clear();
 	// Init to my application's serial number
@@ -466,23 +466,23 @@ void BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
 		SetFromDirectoryID(
 			MyProcess.processAppSpec->parID, MyProcess.processAppSpec->vRefNum);
 	}
+	return kErrorNone;
 }
 
 /***************************************
 
 	\brief Set the filename to the local machine preferences directory
 
-	Determine the directory where the user's preferences that are
-	local to the machine is located. The path is converted
-	into UTF8 character encoding and stored in Burgerlib
-	filename format.
+	Determine the directory where the user's preferences that are local to the
+	machine is located. The path is converted into UTF8 character encoding and
+	stored in Burgerlib filename format.
 
-	On platforms where a current working directory doesn't make sense,
-	like an ROM based system, the filename is cleared out.
+	On platforms where a current working directory doesn't make sense, like an
+	ROM based system, the filename is cleared out.
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(void) BURGER_NOEXCEPT
 {
 	Clear();
 	short MyVRef; // Internal volume references
@@ -492,24 +492,24 @@ void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void) BURGER_NOEXCEPT
 			kDontCreateFolder, &MyVRef, &MyDirID)) {
 		SetFromDirectoryID(MyDirID, MyVRef);
 	}
+	return kErrorNone;
 }
 
 /***************************************
 
 	\brief Set the filename to the user's preferences directory
 
-	Determine the directory where the user's preferences that
-	could be shared among all machines the user has an account
-	with is located. The path is converted
-	into UTF8 character encoding and stored in Burgerlib
-	filename format.
+	Determine the directory where the user's preferences that could be shared
+	among all machines the user has an account with is located. The path is
+	converted into UTF8 character encoding and stored in Burgerlib filename
+	format.
 
-	On platforms where a current working directory doesn't make sense,
-	like an ROM based system, the filename is cleared out.
+	On platforms where a current working directory doesn't make sense, like an
+ROM based system, the filename is cleared out.
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetUserPrefsDirectory(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(void) BURGER_NOEXCEPT
 {
 	Clear();
 	short MyVRef; // Internal volume references
@@ -519,19 +519,19 @@ void BURGER_API Burger::Filename::SetUserPrefsDirectory(void) BURGER_NOEXCEPT
 			&MyVRef, &MyDirID)) {
 		SetFromDirectoryID(MyDirID, MyVRef);
 	}
+	return kErrorNone;
 }
 
 /*! ************************************
 
 	\brief Convert a MacOS path to a Burgerlib path
 
-	Given a "C" string to the pathname, a Directory ID
-	and a Volume Reference number, create a full pathname
-	in Burgerlib format.
+	Given a "C" string to the pathname, a Directory ID and a Volume Reference
+	number, create a full pathname in Burgerlib format.
 
-	This function is commonly used when creating a file selection dialog
-	and the input needs to converted into a format that is compatible
-	with most Burgerlib file functions.
+	This function is commonly used when creating a file selection dialog and the
+	input needs to converted into a format that is compatible with most
+	Burgerlib file functions.
 
 	\param pInput Pointer to a "C" string of a MacOS formatted filename
 	\param lDirID Directory ID for the filename
@@ -540,33 +540,33 @@ void BURGER_API Burger::Filename::SetUserPrefsDirectory(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void Burger::Filename::SetFromNative(
-	const char* pInput, long lDirID, short sVRefNum)
+Burger::eError BURGER_API Burger::Filename::SetFromNative(
+	const char* pInput, long lDirID, short sVRefNum) BURGER_NOEXCEPT
 {
 	Clear(); // Clear out the previous string
 
-	uint_t Temp;			 // Ascii Temp
+	uint_t Temp;         // Ascii Temp
 	char TempPath[8192]; // Handle to temp buffer
-	char* Output;		 // Running pointer to temp buffer
-	uint_t Length;		 // Length of finished string
+	char* Output;        // Running pointer to temp buffer
+	uint_t Length;       // Length of finished string
 
 	Output = TempPath; // Get running pointer
 
-	if (!pInput[0]
-		|| pInput[0] == ':') {		// Must I prefix with the current directory?
+	if (!pInput[0] ||
+		pInput[0] == ':') {         // Must I prefix with the current directory?
 		if (!sVRefNum && !lDirID) { // If both are zero then look up default
 			HGetVol(0, &sVRefNum, &lDirID); // Call OS
-			lDirID = 0;						// Hack to simulate GetVol()
+			lDirID = 0;                     // Hack to simulate GetVol()
 		}
 		Filename MyFilename;
-		uint_t uResult = MyFilename.SetFromDirectoryID(
-			lDirID, sVRefNum);						 /* Get the directory */
-		if (!uResult) {								 /* Did I get a path? */
+		eError uResult = MyFilename.SetFromDirectoryID(
+			lDirID, sVRefNum);                       /* Get the directory */
+		if (!uResult) {                              /* Did I get a path? */
 			StringCopy(Output, MyFilename.GetPtr()); /* Copy to output */
 			Output = Output + StringLength(Output);  /* Fix pointer */
 		}
 		if (pInput[0]) { /* Was there a leading colon? */
-			++pInput;	/* Accept the leading colon */
+			++pInput;    /* Accept the leading colon */
 		}
 	} else {
 		Output[0] = ':'; /* Place a leading colon in the output */
@@ -580,24 +580,25 @@ void Burger::Filename::SetFromNative(
 		do {
 			Output[0] = static_cast<char>(Temp); /* Save char */
 			++Output;
-			++pInput;		  /* Accept char */
+			++pInput;         /* Accept char */
 			Temp = pInput[0]; /* Next char */
-		} while (Temp);		  /* Still more? */
+		} while (Temp);       /* Still more? */
 	}
 
 	/* The wrap up... */
 	/* Make sure it's appended with a colon */
 
 	Length = static_cast<uint32_t>(
-		Output - TempPath);				   /* How many bytes is the new path? */
-	if (Length) {						   /* Valid length? */
+		Output - TempPath);                /* How many bytes is the new path? */
+	if (Length) {                          /* Valid length? */
 		if (TempPath[Length - 1] != ':') { /* Last char a colon? */
-			TempPath[Length] = ':';		   /* End with a colon! */
-			++Length;					   /* Increase length! */
+			TempPath[Length] = ':';        /* End with a colon! */
+			++Length;                      /* Increase length! */
 		}
 	}
 	TempPath[Length] = 0;
 	Set(TempPath);
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -606,7 +607,9 @@ void Burger::Filename::SetFromNative(
 	\brief Return the FSRef stored in the class.
 	\return A pointer to the FSRef for this filename
 	\sa Burger::Filename::SetDirID(long) or Burger::Filename::GetVRefNum(void)
-		const \note Only available on MacOS and only valid after a call to \ref
+		const
+
+	\note Only available on MacOS and only valid after a call to \ref
 		Burger::Filename::GetNative()
 
 ***************************************/
@@ -617,7 +620,9 @@ void Burger::Filename::SetFromNative(
 	\brief Return the Directory ID stored in the class.
 	\return The Directory ID for this filename
 	\sa Burger::Filename::SetDirID(long) or Burger::Filename::GetVRefNum(void)
-		const \note Only available on MacOS and only valid after a call to \ref
+		const
+
+	\note Only available on MacOS and only valid after a call to \ref
 		Burger::Filename::GetNative()
 
 ***************************************/
@@ -628,7 +633,9 @@ void Burger::Filename::SetFromNative(
 	\brief Return the Volume Reference number stored in the class.
 	\return The Volume Reference number for this filename.
 	\sa Burger::Filename::SetVRefNum(short) or Burger::Filename::GetDirID(void)
-		const \note Only available on MacOS and only valid after a call to \ref
+		const
+
+	\note Only available on MacOS and only valid after a call to \ref
 		Burger::Filename::GetNative()
 
 ***************************************/
@@ -638,7 +645,9 @@ void Burger::Filename::SetFromNative(
 	\fn Burger::Filename::SetDirID(long)
 	\brief Set the Directory ID in the class.
 	\sa Burger::Filename::GetDirID(void) const or
-		Burger::Filename::SetVRefNum(short) \note Only available on MacOS
+		Burger::Filename::SetVRefNum(short)
+
+	\note Only available on MacOS
 
 ***************************************/
 
@@ -647,7 +656,9 @@ void Burger::Filename::SetFromNative(
 	\fn Burger::Filename::SetVRefNum(short)
 	\brief Set Volume Reference number in the class.
 	\sa Burger::Filename::GetVRefNum(void) const or
-		Burger::Filename::SetDirID(long) \note Only available on MacOS
+		Burger::Filename::SetDirID(long)
+
+	\note Only available on MacOS
 
 ***************************************/
 
@@ -659,11 +670,12 @@ void Burger::Filename::SetFromNative(
 	Burgerlib pathname that is its equivalent.
 
 	What is returned is either \ref NULL for an error condition, pOutput if the
-	user supplied buffer was large enough to contain the requested data or a newly
-	allocated pointer to a larger buffer to hold the requested data.
+	user supplied buffer was large enough to contain the requested data or a
+	newly allocated pointer to a larger buffer to hold the requested data.
 
 	\note If the returned pointer is not the pointer passed in via pOutput,
-		dispose of it with a called to \ref Burger::Free(const void *) when done.
+		dispose of it with a called to \ref Burger::Free(const void *) when
+		done.
 
 	\param lDirID 32-bit directory ID supplied by MacOS
 	\param sVolRefNum 16-bit volume reference number supplied by MacOS
@@ -672,67 +684,79 @@ void Burger::Filename::SetFromNative(
 
 ***************************************/
 
-uint_t BURGER_API Burger::Filename::SetFromDirectoryID(
+Burger::eError BURGER_API Burger::Filename::SetFromDirectoryID(
 	long lDirID, short sVolRefNum)
 {
 	/*
-		Using a Macintosh directory ID and a volume referance number,
-		return the full path that the ID generates.
-		It uses the current values to get the current
-		directory name, then by traversing the directories PARENT entry,
-		follow the tree BACKWARDS back to the root. So it must constantly be
-		prefixing my current data with the newly located PARENT entry until
-		it's gotten to the root entry.
+		Using a Macintosh directory ID and a volume reference number, return the
+		full path that the ID generates.
+
+		It uses the current values to get the current directory name, then by
+		traversing the directories PARENT entry, follow the tree BACKWARDS back
+		to the root. So it must constantly be prefixing my current data with the
+		newly located PARENT entry until it's gotten to the root entry.
 
 		The Mac is brain dead.
 	*/
 
-	Clear();
-	// FIrst step, create an FS Ref from the parent ID and volume reference
-	// number
-	FSRef CurrentRef;
+	// Initialize the proposed final string
+	String FinalPath(":");
+
+	// First step, create an FS Ref from the parent ID and volume reference
+	// number for handling the name assuming a UTF8 file system
+
+	// Make the FSSpec by hand to access the name of the folder
 	FSSpec CurrentSpec;
 	CurrentSpec.parID = lDirID;
 	CurrentSpec.vRefNum = sVolRefNum;
 	CurrentSpec.name[0] = 0;
 
 	// Assume failure
-	uint_t uResult = kErrorFileNotFound;
-	if (!FSpMakeFSRef(&CurrentSpec, &CurrentRef)) {
-		// Initialize the proposed final string
+	eError uResult = kErrorFileNotFound;
+
+	// Attempt to convert to an FSRef, if it works, the OS is 9.0 or higher
+	// and supports UTF8 filenames natively
+	FSRef CurrentRef;
+	OSErr iError = FSpMakeFSRef(&CurrentSpec, &CurrentRef);
+	if (!iError) {
+
 		uResult = kErrorNone;
-		String FinalPath(":");
 		do {
 			// Add padding to prevent buffer overruns
 			struct Padded {
 				HFSUniStr255 Uni;
-				uint8_t padding[4];
+				uint8_t padding[8];
 			} UnicodeName;
 
 			// Get the name and the parent's File reference
 			// Note: Do not use the same reference with .ref
 			// and .parentRef. Some drivers will break if they
 			// are the same.
+
 			FSRefParam Param;
 			FSRef ParentRef;
 			Param.ref = &CurrentRef;
 			Param.whichInfo = kFSCatInfoNone;
-			Param.catInfo = NULL;
+			Param.catInfo = nullptr;
 			Param.spec = &CurrentSpec;
 			Param.parentRef = &ParentRef;
 			Param.outName = &UnicodeName.Uni;
+
+			// Get the UTF16 name and parent directory
 			if (PBGetCatalogInfoSync(&Param)) {
+				// Should not happen, but catch anyway
 				uResult = kErrorIO;
 				break;
 			}
-			
-			// Copy the parent
+
+			// Copy the parent refernece for directory traversal
 			CurrentRef = ParentRef;
 
 			// Convert the name from UTF16 to UTF8
+
 			// Use a trick to insert a leading colon by replacing
-			// the length with a colon (Which conviently happens
-			// to be a short preceeding the Unicode filename)
+			// the length with a colon (Which conveniently happens
+			// to be a short preceding the Unicode filename)
 			// This will remove an extra call to Insert() on
 			// the FinalPath
 
@@ -743,13 +767,43 @@ uint_t BURGER_API Burger::Filename::SetFromDirectoryID(
 			// Convert to UTF8
 			String NameUTF8(UnicodeName.Uni.unicode - 1);
 			// Insert to the final result
-			FinalPath.Insert(0, NameUTF8.GetPtr(), NameUTF8.GetLength());
+			FinalPath.Insert(0, NameUTF8.c_str(), NameUTF8.length());
+
+			// If the root volume is hit, stop traversal
 		} while (CurrentSpec.parID != fsRtParID);
-		// All good?
-		if (uResult == kErrorNone) {
-			Set(FinalPath.GetPtr());
-		}
+
+		// If paramErr was returned, it means the unicode version wasn't
+		// supported. Try the macOS 7.1 version of the code.
+	} else if (iError == paramErr) {
+		uResult = kErrorNone;
+
+		char TempString[80];
+		TempString[0] = ':';
+		do {
+			// Get the filename using Mac US Roman encoding
+			if (FSMakeFSSpec(sVolRefNum, lDirID, "\p", &CurrentSpec)) {
+				uResult = kErrorIO;
+				break;
+			}
+			// Merge into a single string
+			PStringToCString(TempString + 1, CurrentSpec.name);
+
+			// Insert to the final result
+			FinalPath.Insert(0, TempString,
+				static_cast<uintptr_t>(CurrentSpec.name[0]) + 1U);
+
+			// Move up one directory
+			lDirID = CurrentSpec.parID;
+		} while (lDirID != fsRtParID);
 	}
+
+	// All good?
+	if (uResult != kErrorNone) {
+		Clear();
+	} else {
+		Set(FinalPath.c_str());
+	}
+
 	return uResult;
 }
 

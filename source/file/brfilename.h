@@ -105,36 +105,37 @@ public:
 	{
 		return m_pFilename;
 	}
-	void BURGER_API Set(const char* pInput) BURGER_NOEXCEPT;
-	void BURGER_API Set(const uint16_t* pInput) BURGER_NOEXCEPT;
+	eError BURGER_API Set(const char* pInput) BURGER_NOEXCEPT;
+	eError BURGER_API Set(const uint16_t* pInput) BURGER_NOEXCEPT;
 	void BURGER_API Clear(void) BURGER_NOEXCEPT;
-	void BURGER_API Append(const char* pInput);
+	eError BURGER_API Append(const char* pInput);
 	void BURGER_API GetFileName(char* pOutput, uintptr_t uOutputLength) const;
 	void BURGER_API GetFileExtension(
-		char* pOutput, uintptr_t uOutputLength) const;
-	void BURGER_API SetFileExtension(const char* pExtension);
-	void BURGER_API DirName(void);
-	void BURGER_API DirName(String* pOutput) const;
-	void BURGER_API BaseName(String* pOutput) const;
+		char* pOutput, uintptr_t uOutputLength) const BURGER_NOEXCEPT;
+	void BURGER_API SetFileExtension(const char* pExtension) BURGER_NOEXCEPT;
+	eError BURGER_API DirName(void) BURGER_NOEXCEPT;
+	eError BURGER_API DirName(String* pOutput) const BURGER_NOEXCEPT;
+	void BURGER_API BaseName(String* pOutput) const BURGER_NOEXCEPT;
 	uint_t BURGER_API IsFullPathname(void) const BURGER_NOEXCEPT;
 	uint_t BURGER_API IsFilenameOnly(void) const BURGER_NOEXCEPT;
 	uint_t BURGER_API ParsePrefixNumber(void) const BURGER_NOEXCEPT;
-	void BURGER_API Expand(void) BURGER_NOEXCEPT;
-	void BURGER_API Expand(const char* pInput) BURGER_NOEXCEPT;
-	void BURGER_API SetSystemWorkingDirectory(void) BURGER_NOEXCEPT;
-	void BURGER_API SetApplicationDirectory(void) BURGER_NOEXCEPT;
-	void BURGER_API SetMachinePrefsDirectory(void) BURGER_NOEXCEPT;
-	void BURGER_API SetUserPrefsDirectory(void) BURGER_NOEXCEPT;
+	eError BURGER_API Expand(void) BURGER_NOEXCEPT;
+	eError BURGER_API Expand(const char* pInput) BURGER_NOEXCEPT;
+	eError BURGER_API SetSystemWorkingDirectory(void) BURGER_NOEXCEPT;
+	eError BURGER_API SetApplicationDirectory(void) BURGER_NOEXCEPT;
+	eError BURGER_API SetBootVolumeDirectory(void) BURGER_NOEXCEPT;
+	eError BURGER_API SetMachinePrefsDirectory(void) BURGER_NOEXCEPT;
+	eError BURGER_API SetUserPrefsDirectory(void) BURGER_NOEXCEPT;
 	const char* BURGER_API GetNative(void) BURGER_NOEXCEPT;
 
 #if !defined(BURGER_MAC) || defined(DOXYGEN)
-	void BURGER_API SetFromNative(const char* pInput);
-	void BURGER_API SetFromNative(const uint16_t* pInput);
+	eError BURGER_API SetFromNative(const char* pInput) BURGER_NOEXCEPT;
+	eError BURGER_API SetFromNative(const uint16_t* pInput) BURGER_NOEXCEPT;
 #endif
 
 #if defined(BURGER_MAC) || defined(DOXYGEN)
-	void BURGER_API SetFromNative(
-		const char* pInput, long lDirID = 0, short sVRefNum = 0);
+	eError BURGER_API SetFromNative(
+		const char* pInput, long lDirID = 0, short sVRefNum = 0) BURGER_NOEXCEPT;
 	BURGER_INLINE FSRef* GetFSRef(void)
 	{
 		return reinterpret_cast<FSRef*>(m_FSRef);
@@ -155,7 +156,8 @@ public:
 	{
 		m_sVRefNum = sVRefNum;
 	}
-	uint_t BURGER_API SetFromDirectoryID(long lDirID, short sVolRefNum);
+	eError BURGER_API SetFromDirectoryID(
+		long lDirID, short sVolRefNum) BURGER_NOEXCEPT;
 #endif
 
 	static Filename* BURGER_API New(void) BURGER_NOEXCEPT;

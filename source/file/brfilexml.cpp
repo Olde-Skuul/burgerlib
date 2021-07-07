@@ -21,6 +21,7 @@
 #include "brfloatingpoint.h"
 #include "brfixedpoint.h"
 #include "brutf8.h"
+#include "brutf32.h"
 
 #if defined(BURGER_MSVC)
 #pragma warning(disable:4355)		// "this" pointer used in initializer
@@ -4544,7 +4545,7 @@ uint_t BURGER_API Burger::FileXML::DecodeXMLString(String *pInput)
 							++pSource;
 						}
 						// Convert from UTF32 to UFT8
-						uintptr_t uChunk = UTF8::FromUTF32(reinterpret_cast<char *>(pDest),uUTF32);
+						uintptr_t uChunk = UTF32::TranslateToUTF8(reinterpret_cast<char *>(pDest),uUTF32);
 						// Invalid conversion (And nulls are not allowed)
 						if (!uChunk || !uUTF32) {
 							// Parse error

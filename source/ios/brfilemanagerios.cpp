@@ -1,14 +1,14 @@
 /***************************************
 
-    iOS version
+	File Manager Class: iOS version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -206,7 +206,12 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *p
 Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 {
 	Filename MyFilename;
-	eError uResult = GetVolumeName(&MyFilename,0);		// Get the boot volume name
+
+	// Set the standard work prefix
+	eError uResult = MyFilename.SetSystemWorkingDirectory();
+	SetPrefix(kPrefixCurrent, &MyFilename);
+
+	uResult = GetVolumeName(&MyFilename,0);		// Get the boot volume name
 	if (uResult==kErrorNone) {
 		// Set the initial prefix
 		const char *pBootName = MyFilename.GetPtr();
@@ -286,7 +291,7 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -313,7 +318,7 @@ uint_t BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFi
 
 	// No errors?
 
-	uint_t uResult;
+	eError uResult;
 	if (eError<0) {
 		pOutput->Clear();
 		uResult = kErrorFileNotFound;
@@ -334,7 +339,7 @@ uint_t BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFi
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -361,7 +366,7 @@ uint_t BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileNa
 
 	// No errors?
 
-	uint_t uResult;
+	eError uResult;
 	if (eError<0) {
 		pOutput->Clear();
 		uResult = kErrorFileNotFound;
@@ -492,7 +497,7 @@ uint32_t BURGER_API Burger::FileManager::GetAuxType(Burger::Filename *pFileName)
  
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetFileAndAuxType(Burger::Filename *pFileName,uint32_t *pFileType,uint32_t *pAuxType)
+Burger::eError BURGER_API Burger::FileManager::GetFileAndAuxType(Burger::Filename *pFileName,uint32_t *pFileType,uint32_t *pAuxType)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -519,7 +524,7 @@ uint_t BURGER_API Burger::FileManager::GetFileAndAuxType(Burger::Filename *pFile
 
 	// No errors?
 
-	uint_t uResult;
+	eError uResult;
 	if (eError<0) {
 		uResult = kErrorFileNotFound;
 	} else {
@@ -539,7 +544,7 @@ uint_t BURGER_API Burger::FileManager::GetFileAndAuxType(Burger::Filename *pFile
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::SetFileType(Burger::Filename *pFileName,uint32_t uFileType)
+Burger::eError BURGER_API Burger::FileManager::SetFileType(Burger::Filename *pFileName,uint32_t uFileType)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -566,7 +571,7 @@ uint_t BURGER_API Burger::FileManager::SetFileType(Burger::Filename *pFileName,u
 
 	// No errors?
 
-	uint_t uResult;
+	eError uResult;
 	if (eError<0) {
 		uResult = kErrorFileNotFound;
 	} else {
@@ -589,7 +594,7 @@ uint_t BURGER_API Burger::FileManager::SetFileType(Burger::Filename *pFileName,u
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::SetAuxType(Burger::Filename *pFileName,uint32_t uAuxType)
+Burger::eError BURGER_API Burger::FileManager::SetAuxType(Burger::Filename *pFileName,uint32_t uAuxType)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -616,7 +621,7 @@ uint_t BURGER_API Burger::FileManager::SetAuxType(Burger::Filename *pFileName,ui
 
 	// No errors?
 
-	uint_t uResult;
+	eError uResult;
 	if (eError<0) {
 		uResult = kErrorFileNotFound;
 	} else {
@@ -639,7 +644,7 @@ uint_t BURGER_API Burger::FileManager::SetAuxType(Burger::Filename *pFileName,ui
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::SetFileAndAuxType(Burger::Filename *pFileName,uint32_t uFileType,uint32_t uAuxType)
+Burger::eError BURGER_API Burger::FileManager::SetFileAndAuxType(Burger::Filename *pFileName,uint32_t uFileType,uint32_t uAuxType)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -666,7 +671,7 @@ uint_t BURGER_API Burger::FileManager::SetFileAndAuxType(Burger::Filename *pFile
 
 	// No errors?
 
-	uint_t uResult;
+	eError uResult;
 	if (eError<0) {
 		uResult = kErrorFileNotFound;
 	} else {
@@ -690,10 +695,10 @@ uint_t BURGER_API Burger::FileManager::SetFileAndAuxType(Burger::Filename *pFile
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFileName)
+Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFileName)
 {
 	// Assume an error condition
-	uint_t uResult = kErrorIO;
+	eError uResult = kErrorIO;
 	// Get the full path
 	const char *pPath = pFileName->GetNative();
 
@@ -770,12 +775,12 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFi
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::ChangeOSDirectory(Burger::Filename *pDirName)
+Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(Burger::Filename *pDirName)
 {
 	if (!chdir(pDirName->GetNative())) {
-		return FALSE;
+		return kErrorNone;
 	}
-	return (uint_t)-1;	// Error!
+	return kErrorIO;	// Error!
 }
 
 /***************************************
@@ -795,9 +800,9 @@ FILE * BURGER_API Burger::FileManager::OpenFile(Burger::Filename *pFileName,cons
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::CopyFile(Burger::Filename *pDestName,Burger::Filename *pSourceName)
+Burger::eError BURGER_API Burger::FileManager::CopyFile(Burger::Filename *pDestName,Burger::Filename *pSourceName)
 {
-	uint_t uResult = TRUE;
+	eError uResult = kErrorIO;
 	NSAutoreleasePool *pPool = [[NSAutoreleasePool alloc] init];
 
 	NSFileManager *pFileManager = [[NSFileManager alloc] init];
@@ -807,7 +812,7 @@ uint_t BURGER_API Burger::FileManager::CopyFile(Burger::Filename *pDestName,Burg
 			NSString *pDestString = [NSString stringWithUTF8String:pDestName->GetNative()];
 			if (pDestString) {
 				if ([pFileManager copyItemAtPath:pSrcString toPath:pDestString error:NULL]==YES) {
-					uResult = FALSE;
+					uResult = kErrorNone;
 				}
 			}
 		}
@@ -826,12 +831,12 @@ uint_t BURGER_API Burger::FileManager::CopyFile(Burger::Filename *pDestName,Burg
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName) BURGER_NOEXCEPT
 {
 	if (!remove(pFileName->GetNative())) {
-		return FALSE;
+		return kErrorNone;
 	}
-	return TRUE;		/* Oh oh... */
+	return kErrorIO;		/* Oh oh... */
 }
 
 /***************************************
@@ -840,12 +845,12 @@ uint_t BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName) B
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::RenameFile(Burger::Filename *pNewName,Burger::Filename *pOldName)
+Burger::eError BURGER_API Burger::FileManager::RenameFile(Burger::Filename *pNewName,Burger::Filename *pOldName)
 {
 	if (!rename(pOldName->GetNative(),pNewName->GetNative())) {
-		return FALSE;
+		return kErrorNone;
 	}
-	return TRUE;		/* Oh oh... */
+	return kErrorIO;		/* Oh oh... */
 }
 
 #endif

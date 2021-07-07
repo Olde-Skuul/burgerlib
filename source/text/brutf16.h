@@ -24,13 +24,13 @@ namespace Burger {
 class UTF16 {
 public:
     static const uint16_t BAD = UINT16_MAX;
-    static const uint16_t ENDIANMARK = 0xFEFFU;
+    static const uint16_t kEndianMark = 0xFEFFU;
 #if defined(BURGER_LITTLEENDIAN)
-    static const uint16_t BE = 0xFFFEU;
-    static const uint16_t LE = 0xFEFFU;
+    static const uint16_t kBigEndianMark = 0xFFFEU;
+    static const uint16_t kLittleEndianMark = 0xFEFFU;
 #else
-    static const uint16_t BE = 0xFEFFU;
-    static const uint16_t LE = 0xFFFEU;
+    static const uint16_t kBigEndianMark = 0xFEFFU;
+    static const uint16_t kLittleEndianMark = 0xFFFEU;
 #endif
 
     static uint_t BURGER_API IsValid(uint16_t uInput) BURGER_NOEXCEPT;

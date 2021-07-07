@@ -1364,7 +1364,8 @@ line of processors.
 	BURGER_AMD64 or \ref BURGER_X86 for this platform, so no CPU specific code
 	should be written without checking for the CPU type.
 
-	\sa BURGER_POWERPC, BURGER_AMD64, BURGER_X86, BURGER_MACOS or BURGER_MAC
+	\sa BURGER_POWERPC, BURGER_AMD64, BURGER_X86, BURGER_MACOS, BURGER_DARWIN or
+		BURGER_MAC
 
 ***************************************/
 
@@ -1455,13 +1456,25 @@ line of processors.
 
 /*! ************************************
 
+	\def BURGER_DARWIN
+	\brief Define to determine if code is being built on a Darwin platorm.
+
+	If this define exists, then the code is running on macOS X, tvOS, watchOS,
+	or iOS running on top of Darwin.
+
+	\sa BURGER_IOS, or BURGER_MACOSX
+
+***************************************/
+
+/*! ************************************
+
 	\def BURGER_IOS
 	\brief Define to determine if code is being built for Apple iOS devices.
 
 	If this define exists, then you are creating code that runs on Apple iOS
 	devices.
 
-	\sa BURGER_ANDROID, BURGER_ARM32 or BURGER_MACOSX
+	\sa BURGER_ANDROID, BURGER_ARM, BURGER_DARWIN or BURGER_MACOSX
 
 ***************************************/
 

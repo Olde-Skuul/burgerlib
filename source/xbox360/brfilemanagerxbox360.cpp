@@ -1,14 +1,14 @@
 /***************************************
 
-    Xbox 360 version
+	File Manager Class: Xbox 360 version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -16,12 +16,26 @@
 
 #if defined(BURGER_XBOX360)
 #include "brfile.h"
+#include "brmemoryfunctions.h"
+
 #define NOD3D
 #define NONET
 #include <xtl.h>
+
+#include <xbdm.h>
 // Friggin' windows!
 #undef DeleteFile
 #undef CopyFile
+
+#if !defined(DOXYGEN)
+
+//
+// Actual drive volume names
+//
+static const char* gVolumeNames[] = {"DVD", "GAME", "DEVKIT", "HDD", "MU0",
+	"MU1", "MUINT", "INTUSB", "USBMASS0MU", "USBMASS1MU"};
+
+#endif
 
 /***************************************
 
@@ -46,66 +60,62 @@
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::GetVolumeName(Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
+	Filename* pOutput, uint_t uVolumeNum) BURGER_NOEXCEPT
 {
-	if (pOutput) {
+	// Assume invalid drive A-Z
+	eError uResult = kErrorInvalidParameter;
+	if (uVolumeNum < BURGER_ARRAYSIZE(gVolumeNames)) {
+
+		// Check if the drive even exists.
+		uResult = kErrorVolumeNotFound;
+
+		// Drive name template ( "DVD:\\" )
+		uintptr_t uLength = StringLength(gVolumeNames[uVolumeNum]);
+		char InputName[16];
+		MemoryCopy(InputName, gVolumeNames[uVolumeNum], uLength);
+		InputName[uLength] = ':';
+		InputName[uLength + 1] = '\\';
+		InputName[uLength + 2] = 0;
+
+		// Buffer to copy to + two colons and a terminating zero
+		char OutputNames[MAX_PATH];
+
+		// Get the volume name from windows
+		if (GetVolumeInformationA(InputName, OutputNames,
+				BURGER_ARRAYSIZE(OutputNames), nullptr, nullptr, nullptr,
+				nullptr, 0)) {
+			uResult = kErrorNone; // No error!
+			// Did I want the output name?
+			if (pOutput) {
+
+				// Name is ASCII, not UTF8
+				char OutputName[(MAX_PATH * 2) + 3];
+
+				// Prefix the volume name with a colon
+				OutputName[0] = ':';
+
+				// Device disk name
+				MemoryCopy(OutputName + 1, gVolumeNames[uVolumeNum], uLength);
+
+				// End with a colon
+				OutputName[uLength + 1] = ':';
+				OutputName[uLength + 2] = 0;
+				pOutput->Set(OutputName);
+			}
+
+			// No error!
+			uResult = kErrorNone;
+		}
+	}
+
+	// If there was an error, generate a fake drive name anyways.
+	if (uResult && pOutput) {
 		pOutput->Clear();
 	}
 
-	eError uResult = kErrorInvalidParameter;		// Assume error
-	if (uVolumeNum<32) {
-		uResult = kErrorFileNotFound;
-		// Only query drives that exist
-		char OutputNames[MAX_PATH];	// Buffer to copy to + two colons and a terminating zero
-		char InputName[4];				// Drive name template ( "C:\\" )
-
-		InputName[0] = static_cast<char>('A'+uVolumeNum);	// Create "C:\\"
-		InputName[1] = ':';
-		InputName[2] = '\\';
-		InputName[3] = 0;
-
-		// Get the volume name from windows
-		if (GetVolumeInformationA(InputName,OutputNames,(sizeof(OutputNames)/2),
-			NULL,NULL,NULL,NULL,0)) {
-			uResult = kErrorNone;	// No error!
-			// Did I want the output name?
-			if (pOutput) {
-				char OutputName[(MAX_PATH*2)+3];
-				StringCopy(OutputName+1,sizeof(OutputName)-3,OutputNames);
-				OutputName[0] = ':';
-				uintptr_t uLength = StringLength(OutputName+1);
-				OutputName[uLength+1] = ':';
-				OutputName[uLength+2] = 0;
-				pOutput->Set(OutputName);
-			}
-		}
-	}
-	return uResult;			// Return the error
-}
-
-/***************************************
-
-	Set the initial default prefixs for a power up state
-	*: = Boot volume
-	$: = System folder
-	@: = Prefs folder
-	8: = Default directory
-	9: = Application directory
-
-***************************************/
-
-Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
-{
-	Filename MyFilename(":D:");
-
-	SetPrefix(8,&MyFilename);		// Set the standard work prefix
-	SetPrefix(9,&MyFilename);		// Set the application prefix
-	// Set the system folder
-	SetPrefix(FileManager::kPrefixSystem,&MyFilename);
-	// Boot volume is the same
-	SetPrefix(FileManager::kPrefixBoot,&MyFilename);
-	SetPrefix(FileManager::kPrefixPrefs,&MyFilename);
-	return kErrorNone;
+	// Return the error
+	return uResult;
 }
 
 /***************************************
@@ -116,14 +126,15 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
+	Filename* pFileName, TimeDate_t* pOutput)
 {
 	// Clear out the output
 	pOutput->Clear();
 	WIN32_FIND_DATAA FindData;
-	HANDLE FileHandle = FindFirstFileA(pFileName->GetNative(),&FindData);
-	uint_t uResult = TRUE;
-	if (FileHandle!=INVALID_HANDLE_VALUE) {
+	HANDLE FileHandle = FindFirstFileA(pFileName->GetNative(), &FindData);
+	eError uResult = kErrorFileNotFound;
+	if (FileHandle != INVALID_HANDLE_VALUE) {
 		FindClose(FileHandle);
 		uResult = pOutput->Load(&FindData.ftLastWriteTime);
 	}
@@ -138,14 +149,15 @@ uint_t BURGER_API Burger::FileManager::GetModificationTime(Filename *pFileName,T
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
+	Filename* pFileName, TimeDate_t* pOutput)
 {
 	// Clear out the output
 	pOutput->Clear();
 	WIN32_FIND_DATAA FindData;
-	HANDLE FileHandle = FindFirstFileA(pFileName->GetNative(),&FindData);
-	uint_t uResult = TRUE;
-	if (FileHandle!=INVALID_HANDLE_VALUE) {
+	HANDLE FileHandle = FindFirstFileA(pFileName->GetNative(), &FindData);
+	eError uResult = kErrorFileNotFound;
+	if (FileHandle != INVALID_HANDLE_VALUE) {
 		FindClose(FileHandle);
 		uResult = pOutput->Load(&FindData.ftCreationTime);
 	}
@@ -163,13 +175,16 @@ uint_t BURGER_API Burger::FileManager::GetCreationTime(Filename *pFileName,TimeD
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::FileManager::DoesFileExist(
+	Filename* pFileName) BURGER_NOEXCEPT
 {
 	// Get file info
 	DWORD uOutput = GetFileAttributesA(pFileName->GetNative());
-	uint_t uResult = TRUE;		// File exists
-	if ((uOutput & FILE_ATTRIBUTE_DIRECTORY) /* || (uOutput == -1) */ ) { // -1 means error
-		uResult = FALSE;		// Bad file!
+	uint_t uResult = TRUE; // File exists
+	if ((uOutput &
+			FILE_ATTRIBUTE_DIRECTORY) /* || (uOutput == -1) */) { // -1 means
+																  // error
+		uResult = FALSE;                                          // Bad file!
 	}
 	return uResult;
 }
@@ -181,56 +196,56 @@ uint_t BURGER_API Burger::FileManager::DoesFileExist(Filename *pFileName) BURGER
 
 ***************************************/
 
-static uint_t BURGER_API DirCreate(const char *pFileName)
+static uint_t BURGER_API DirCreate(const char* pFileName)
 {
-	if (!CreateDirectoryA(pFileName,NULL)) {	// Make the directory
-		if (GetLastError()!=ERROR_ALREADY_EXISTS) {		// Already exist?
-			return TRUE;		// Error
+	if (!CreateDirectoryA(pFileName, NULL)) {         // Make the directory
+		if (GetLastError() != ERROR_ALREADY_EXISTS) { // Already exist?
+			return TRUE;                              // Error
 		}
 	}
-	return FALSE;		// Success!
+	return FALSE; // Success!
 }
 
-uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
+Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(Filename* pFileName)
 {
 	String NewName(pFileName->GetNative());
 
 	// Easy way!
 	if (!DirCreate(NewName.GetPtr())) {
-		return FALSE;				// No error
+		return kErrorNone; // No error
 	}
 	// Ok see if I can create the directory tree
-	char *pNewFilename = NewName.GetPtr();
-	if (pNewFilename[0]) {			// Is there a filename?
-		char *pWork = pNewFilename;
-		if (pWork[0] && pWork[1]==':') {	// Drive name?
-			pWork+=2;				// Skip the drive name
+	char* pNewFilename = NewName.GetPtr();
+	if (pNewFilename[0]) { // Is there a filename?
+		char* pWork = pNewFilename;
+		if (pWork[0] && pWork[1] == ':') { // Drive name?
+			pWork += 2;                    // Skip the drive name
 		}
-		if (pWork[0] == '\\') {		// Accept the first slash
+		if (pWork[0] == '\\') { // Accept the first slash
 			++pWork;
 		}
-		uint_t Err;					// Error code
+		uint_t Err; // Error code
 		uint_t Old;
 		do {
 			// Skip to the next colon
-			pWork = StringCharacter(pWork,'\\');
-			if (!pWork) {			// No colon found?
-				pWork = pNewFilename+StringLength(pNewFilename);
+			pWork = StringCharacter(pWork, '\\');
+			if (!pWork) { // No colon found?
+				pWork = pNewFilename + StringLength(pNewFilename);
 			}
-			Old = pWork[0];		// Get the previous char
-			pWork[0] = 0;		// End the string
-			Err = DirCreate(pNewFilename);			// Create the directory
+			Old = pWork[0];                // Get the previous char
+			pWork[0] = 0;                  // End the string
+			Err = DirCreate(pNewFilename); // Create the directory
 			if (Err) {
 				break;
 			}
-			pWork[0] = static_cast<char>(Old);		// Restore the string
-			++pWork;			// Index past the char
-		} while (Old);			// Still more string?
-		if (!Err) {				// Cool!!
-			return FALSE;		// No error
+			pWork[0] = static_cast<char>(Old); // Restore the string
+			++pWork;                           // Index past the char
+		} while (Old);                         // Still more string?
+		if (!Err) {                            // Cool!!
+			return kErrorNone;                      // No error
 		}
 	}
-	return TRUE;		/* Didn't do it! */
+	return kErrorIO; /* Didn't do it! */
 }
 
 /***************************************
@@ -239,17 +254,18 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Filename *pFileName)
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::FileManager::DeleteFile(
+	Filename* pFileName) BURGER_NOEXCEPT
 {
 	// Did it fail?
-	uint_t uResult = FALSE;		// Assume succeed
+	eError uResult = kErrorNone; // Assume succeed
 	if (!DeleteFileA(pFileName->GetNative())) {
 		// Try to delete a directory
 		if (!RemoveDirectoryA(pFileName->GetNative())) {
-			uResult = kErrorFileNotFound;		// I failed!
+			uResult = kErrorFileNotFound; // I failed!
 		}
 	}
-	return uResult;		// Return the error, if any
+	return uResult; // Return the error, if any
 }
 
 /***************************************
@@ -258,14 +274,15 @@ uint_t BURGER_API Burger::FileManager::DeleteFile(Filename *pFileName) BURGER_NO
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::RenameFile(Filename *pNewName,Filename *pOldName)
+Burger::eError BURGER_API Burger::FileManager::RenameFile(
+	Filename* pNewName, Filename* pOldName)
 {
 	// Did it fail?
-	uint_t uResult = kErrorFileNotFound;		// Assume failure
-	if (MoveFileA(pOldName->GetNative(),pNewName->GetNative())) {
-		uResult = kErrorNone;		// I failed!
+	eError uResult = kErrorFileNotFound; // Assume failure
+	if (MoveFileA(pOldName->GetNative(), pNewName->GetNative())) {
+		uResult = kErrorNone; // I failed!
 	}
-	return uResult;		// Return the error, if any
+	return uResult; // Return the error, if any
 }
 
 /***************************************
@@ -274,12 +291,13 @@ uint_t BURGER_API Burger::FileManager::RenameFile(Filename *pNewName,Filename *p
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::CopyFile(Filename *pDestName,Filename *pSourceName)
+Burger::eError BURGER_API Burger::FileManager::CopyFile(
+	Filename* pDestName, Filename* pSourceName)
 {
-	if (CopyFileA(pSourceName->GetNative(),pDestName->GetNative(),FALSE)) {
-		return FALSE;
+	if (CopyFileA(pSourceName->GetNative(), pDestName->GetNative(), FALSE)) {
+		return kErrorNone;
 	}
-	return TRUE;
+	return kErrorIO;
 }
 
 #endif

@@ -43,7 +43,7 @@ uint_t Burger::DirectorySearch::Open(Filename *pName) BURGER_NOEXCEPT
 	}
 	StringConcatenate((char *)DataPtr+512,"*.*");
 
-	if (FileManager::AreLongFilenamesAllowed()) {
+	if (FileManager::MSDOS_HasLongFilenames()) {
 		MyRegs.ax = 0x714E;			/* Read first */
 		MyRegs.cx = 0x0010;			/* All directories and files */
 		MyRegs.dx = static_cast<uint16_t>(TempPath+512);
@@ -101,7 +101,7 @@ uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 	uint32_t TempPath = GetRealBufferPtr();
 	uint8_t *DataPtr = static_cast<uint8_t*>(GetRealBufferProtectedPtr());
 Again:
-	if (FileManager::AreLongFilenamesAllowed()) {
+	if (FileManager::MSDOS_HasLongFilenames()) {
 		if (m_bHandleOk==11) {
 			MyRegs.ax = 0x714F;
 			MyRegs.bx = m_sFileHandle;

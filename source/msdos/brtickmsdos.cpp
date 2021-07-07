@@ -67,7 +67,7 @@ static void __interrupt __far MyIrq8(void)
 
 ***************************************/
 
-void UninstallTick(void)
+static void UninstallTick(void)
 {
 	if (OldInt8) {
 		outp(0x43,0x36);			/* Change timer 0 */
@@ -146,7 +146,7 @@ uint_t BURGER_API MyIrq8(void)
 
 ***************************************/
 
-void BURGER_API UninstallTick(void)
+static void UninstallTick(void)
 {
 	if (OldInt8) {
 		outp(0x43,0x36);				/* Change timer 0 */

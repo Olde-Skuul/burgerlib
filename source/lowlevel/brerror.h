@@ -2,7 +2,7 @@
 
 	Error codes.
 
-	Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -49,6 +49,8 @@ enum eError {
 	kErrorOutOfEntries,
 	/** Index is beyond the allowed range */
 	kErrorOutOfBounds,
+	/** Failed unit test */
+	kErrorFailedTest,
 
 	/** File system errors */
 	kErrorFile = 0x7100,

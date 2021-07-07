@@ -322,7 +322,8 @@ to empty. \sa Burger::Filename::Clear()
 
 ***************************************/
 
-void BURGER_API Burger::Filename::Set(const char* pInput) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::Set(
+	const char* pInput) BURGER_NOEXCEPT
 {
 	Clear();
 
@@ -344,6 +345,7 @@ void BURGER_API Burger::Filename::Set(const char* pInput) BURGER_NOEXCEPT
 			}
 		}
 	}
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -366,12 +368,13 @@ void BURGER_API Burger::Filename::Set(const char* pInput) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Filename::Set(const uint16_t* pInput) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::Set(
+	const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	// Convert from UTF-16 to UTF-8
 	String Temp(pInput);
 	// Set the string
-	Set(Temp.GetPtr());
+	return Set(Temp.c_str());
 }
 
 /*! ************************************
@@ -410,15 +413,15 @@ void BURGER_API Burger::Filename::Clear(void) BURGER_NOEXCEPT
 	\brief Append a filename to the end of a path
 
 	Given a filename, append the filename to the end of the path and add a
-trailing colon
+	trailing colon
 
 ***************************************/
 
-void BURGER_API Burger::Filename::Append(const char* pInput)
+Burger::eError BURGER_API Burger::Filename::Append(const char* pInput)
 {
 	if (pInput) {
 		// Get the length of the string to append
-		uintptr_t uInputLength = StringLength(pInput);
+		const uintptr_t uInputLength = StringLength(pInput);
 		if (uInputLength) {
 			// Get the original string
 			const char* pFilename = m_pFilename;
@@ -457,6 +460,7 @@ void BURGER_API Burger::Filename::Append(const char* pInput)
 			m_pFilename = pOutput;
 		}
 	}
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -523,7 +527,7 @@ the path
 ***************************************/
 
 void BURGER_API Burger::Filename::GetFileExtension(
-	char* pOutput, uintptr_t uOutputLength) const
+	char* pOutput, uintptr_t uOutputLength) const BURGER_NOEXCEPT
 {
 	// Get the length of the path
 	const char* pInput = m_pFilename;
@@ -577,7 +581,8 @@ extension \sa Burger::Filename::GetFileExtension(char *,uintptr_t) const
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetFileExtension(const char* pExtension)
+void BURGER_API Burger::Filename::SetFileExtension(
+	const char* pExtension) BURGER_NOEXCEPT
 {
 	// Get the length of the path
 	const char* pInput = m_pFilename;
@@ -656,7 +661,7 @@ void BURGER_API Burger::Filename::SetFileExtension(const char* pExtension)
 
 ***************************************/
 
-void BURGER_API Burger::Filename::DirName(void)
+Burger::eError BURGER_API Burger::Filename::DirName(void) BURGER_NOEXCEPT
 {
 	char* pFilename = m_pFilename;
 	// Get a character from the filename
@@ -691,6 +696,7 @@ void BURGER_API Burger::Filename::DirName(void)
 			pLastColon[1] = 0;
 		}
 	}
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -700,11 +706,12 @@ void BURGER_API Burger::Filename::DirName(void)
 	Given a pathname, remove the filename from the end of the path, leaving
 	only the directory name remaining.
 	\param pOutput Pointer to a valid Burger::String instance to receive the new
-string
+		string
 
 ***************************************/
 
-void BURGER_API Burger::Filename::DirName(String* pOutput) const
+Burger::eError BURGER_API Burger::Filename::DirName(
+	String* pOutput) const BURGER_NOEXCEPT
 {
 	const char* pFilename = m_pFilename;
 	// Get a character from the filename
@@ -742,6 +749,7 @@ void BURGER_API Burger::Filename::DirName(String* pOutput) const
 	pLastColon = m_pFilename;
 	// Truncate the string after the colon
 	pOutput->Set(pLastColon, static_cast<uintptr_t>(pFilename - pLastColon));
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -757,7 +765,8 @@ string
 
 ***************************************/
 
-void BURGER_API Burger::Filename::BaseName(String* pOutput) const
+void BURGER_API Burger::Filename::BaseName(
+	String* pOutput) const BURGER_NOEXCEPT
 {
 	const char* pFilename = m_pFilename;
 	// Get a character from the filename
@@ -966,7 +975,7 @@ PrevDir
 
 ***************************************/
 
-void BURGER_API Burger::Filename::Expand(const char* pInput) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::Expand(const char* pInput) BURGER_NOEXCEPT
 {
 	Clear();
 
@@ -1208,6 +1217,7 @@ void BURGER_API Burger::Filename::Expand(const char* pInput) BURGER_NOEXCEPT
 		}
 	}
 	pOutput[uTotal] = 0; // Add the terminating zero
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -1234,7 +1244,7 @@ PrevDir
 
 ***************************************/
 
-void BURGER_API Burger::Filename::Expand(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::Expand(void) BURGER_NOEXCEPT
 {
 	// Temp buffer
 	char Buffer[sizeof(m_Filename)];
@@ -1250,11 +1260,12 @@ void BURGER_API Burger::Filename::Expand(void) BURGER_NOEXCEPT
 		pInput = Buffer;
 	}
 	// Perform the expand operation using a safe input buffer
-	Expand(pInput);
+	const eError uResult = Expand(pInput);
 	// If the string was allocated, release it
 	if (pInput != Buffer) {
 		Free(pInput);
 	}
+	return uResult;
 }
 
 /*! ************************************
@@ -1290,20 +1301,21 @@ const char* BURGER_API Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 	filename to that directory. The path is converted into UTF8 character
 	encoding and stored in Burgerlib filename format
 
-	On platforms where a current working directory doesn't make sense, like an
+	On platforms where a current working directory doesn't make sense, like a
 	ROM based system, the filename is cleared out.
 
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
-	defined(BURGER_MACOS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_LINUX)) || \
+	defined(BURGER_XBOX360) || defined(BURGER_MACOS) || \
+	defined(BURGER_LINUX) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
 
-void BURGER_API Burger::Filename::SetSystemWorkingDirectory(
+Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 	void) BURGER_NOEXCEPT
 {
 	Clear();
+	return kErrorNotSupportedOnThisPlatform;
 }
 #endif
 
@@ -1315,17 +1327,44 @@ void BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 	to that directory. The path is converted into UTF8 character encoding and
 	stored in Burgerlib filename format.
 
-	On platforms where a current working directory doesn't make sense, like an
+	On platforms where a current working directory doesn't make sense, like a
 	ROM based system, the filename is cleared out.
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || \
-	defined(BURGER_XBOX360) || defined(BURGER_LINUX)) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
+	defined(BURGER_XBOX360) || defined(BURGER_MACOS) || \
+	defined(BURGER_LINUX) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
-void BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(
+	void) BURGER_NOEXCEPT
 {
 	Clear();
+	return kErrorNotSupportedOnThisPlatform;
+}
+#endif
+
+/*! ************************************
+
+	\brief Set the filename to the boot volume directory
+
+	Determine the directory of the drive volume that the operating system was
+	loaded from. The path is converted into UTF8 character encoding and stored
+	in Burgerlib filename format.
+
+	On platforms where a current working directory doesn't make sense, like a
+	ROM based system, the filename is cleared out.
+
+***************************************/
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
+	defined(BURGER_XBOX360)) || \
+	defined(DOXYGEN)
+Burger::eError BURGER_API Burger::Filename::SetBootVolumeDirectory(
+	void) BURGER_NOEXCEPT
+{
+	Clear();
+	return kErrorNotSupportedOnThisPlatform;
 }
 #endif
 
@@ -1337,17 +1376,19 @@ void BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
 	machine is located. The path is converted into UTF8 character encoding and
 	stored in Burgerlib filename format.
 
-	On platforms where a current working directory doesn't make sense, like an
+	On platforms where a current working directory doesn't make sense, like a
 	ROM based system, the filename is cleared out.
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || \
-	defined(BURGER_XBOX360)) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
+	defined(BURGER_XBOX360) || defined(BURGER_MACOS)) || \
 	defined(DOXYGEN)
-void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(
+	void) BURGER_NOEXCEPT
 {
 	Clear();
+	return kErrorNotSupportedOnThisPlatform;
 }
 #endif
 
@@ -1360,17 +1401,19 @@ void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void) BURGER_NOEXCEPT
 	converted into UTF8 character encoding and stored in Burgerlib filename
 	format.
 
-	On platforms where a current working directory doesn't make sense, like an
+	On platforms where a current working directory doesn't make sense, like a
 	ROM based system, the filename is cleared out.
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || \
-	defined(BURGER_XBOX360)) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
+	defined(BURGER_XBOX360) || defined(BURGER_MACOS)) || \
 	defined(DOXYGEN)
-void BURGER_API Burger::Filename::SetUserPrefsDirectory(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(
+	void) BURGER_NOEXCEPT
 {
 	Clear();
+	return kErrorNotSupportedOnThisPlatform;
 }
 #endif
 
@@ -1399,9 +1442,11 @@ void BURGER_API Burger::Filename::SetUserPrefsDirectory(void) BURGER_NOEXCEPT
 	defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || \
 	defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
-void BURGER_API Burger::Filename::SetFromNative(const char* pInput)
+Burger::eError BURGER_API Burger::Filename::SetFromNative(
+	const char* pInput) BURGER_NOEXCEPT
 {
 	Set(pInput);
+	return kErrorNotSupportedOnThisPlatform;
 }
 #endif
 
@@ -1421,12 +1466,13 @@ void BURGER_API Burger::Filename::SetFromNative(const char* pInput)
 ***************************************/
 
 #if !defined(BURGER_MAC) || defined(DOXYGEN)
-void BURGER_API Burger::Filename::SetFromNative(const uint16_t* pInput)
+Burger::eError BURGER_API Burger::Filename::SetFromNative(
+	const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	// Convert to UTF-8
 	String Temp(pInput);
 	// Set the path
-	Set(Temp.c_str());
+	return SetFromNative(Temp.c_str());
 }
 #endif
 

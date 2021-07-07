@@ -67,7 +67,7 @@ typedef HRESULT(WINAPI* SHGetKnownFolderPathPtr)(
 ***************************************/
 
 uint_t BURGER_API Burger::Windows::SHGetKnownFolderPath(
-	const GUID* pGuid, uint32_t uFlags, void* hHandle, uint16_t** ppResult)
+	const GUID* pGuid, uint32_t uFlags, void* hHandle, uint16_t** ppResult) BURGER_NOEXCEPT
 {
 	void* pSHGetKnownFolderPath = LoadFunctionIndex(CALL_SHGetKnownFolderPath);
 	HRESULT uResult = E_FAIL; // Failure

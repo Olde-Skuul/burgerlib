@@ -83,6 +83,14 @@ public:
     {
         return m_pData;
     }
+	BURGER_INLINE const uint16_t *data(void) const BURGER_NOEXCEPT
+	{
+		return m_pData;
+	}
+	BURGER_INLINE uint16_t *data(void) BURGER_NOEXCEPT
+	{
+		return m_pData;
+	}
     BURGER_INLINE operator uint16_t() const BURGER_NOEXCEPT
     {
         return m_pData[0];
@@ -106,6 +114,7 @@ public:
     eError BURGER_API Set(const char* pInput) BURGER_NOEXCEPT;
     eError BURGER_API Set(const uint16_t* pInput) BURGER_NOEXCEPT;
     eError BURGER_API SetBufferSize(uintptr_t uSize) BURGER_NOEXCEPT;
+	eError BURGER_API resize(uintptr_t uSize) BURGER_NOEXCEPT { return SetBufferSize(uSize); }
 
     String16& operator=(const String16& rInput);
     String16& operator=(const uint16_t* pInput);

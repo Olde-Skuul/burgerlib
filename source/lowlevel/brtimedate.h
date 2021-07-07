@@ -116,10 +116,10 @@ struct TimeDate_t {
     eError Store(timespec* pTimeSpec) const BURGER_NOEXCEPT;
 
 #if defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(DOXYGEN)
-    uint_t Load(const _SYSTEMTIME* pSystemTime);
-    uint_t Store(_SYSTEMTIME* pSystemTime) const;
-    uint_t Load(const _FILETIME* pFileTime);
-    uint_t Store(_FILETIME* pFileTime) const;
+    eError Load(const _SYSTEMTIME* pSystemTime);
+    eError Store(_SYSTEMTIME* pSystemTime) const;
+    eError Load(const _FILETIME* pFileTime);
+    eError Store(_FILETIME* pFileTime) const;
 #endif
 
 #if defined(BURGER_MSDOS) || defined(DOXYGEN)

@@ -93,7 +93,7 @@ public:
 	/** Allocator that crosses types.
 	Since this allocator can share pools, this exists and does nothing. */
 	template<class U>
-	allocator(const allocator<U>&){};
+	allocator(const allocator<U>&){}
 
 	/** Returns the address of x.*/
 	BURGER_INLINE pointer address(reference x) BURGER_NOEXCEPT

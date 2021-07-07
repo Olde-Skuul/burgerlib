@@ -627,6 +627,11 @@
 #define BURGER_MACOS
 #endif
 
+// Any form of Apple OS that is based on Darwin
+#if defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(DOXYGEN)
+#define BURGER_DARWIN
+#endif
+
 /***************************************
 
 	Determine available APIs from the operating system.

@@ -35,7 +35,7 @@
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetSystemWorkingDirectory(
+Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 	void) BURGER_NOEXCEPT
 {
 	Clear();
@@ -46,6 +46,7 @@ void BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 		SetFromNative(pTemp);
 		free(pTemp);
 	}
+	return kErrorNone;
 }
 
 /***************************************
@@ -61,12 +62,13 @@ void BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
 {
 	Clear();
 
 	char result[PATH_MAX];
 	readlink("/proc/self/exe", result, PATH_MAX);
 	SetFromNative(result);
+	return kErrorNone;
 }
 #endif

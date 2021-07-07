@@ -126,7 +126,7 @@ const char *Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 		
 ***************************************/
 
-void Burger::Filename::SetFromNative(const char *pInput)
+Burger::eError BURGER_API Burger::Filename::SetFromNative(const char *pInput) BURGER_NOEXCEPT
 {
 	Clear();	// Clear out the previous string
 
@@ -138,7 +138,7 @@ void Burger::Filename::SetFromNative(const char *pInput)
 		pOutput = static_cast<char *>(Alloc(uOutputLength));
 		if (!pOutput) {
 			// We're boned
-			return;
+			return kErrorOutOfMemory;
 		}
 	}
 	m_pFilename = pOutput;
@@ -192,6 +192,7 @@ void Burger::Filename::SetFromNative(const char *pInput)
 		++pOutput;
 	}
 	pOutput[0] = 0;			// End the string with zero
+	return kErrorNone;
 }
 
 

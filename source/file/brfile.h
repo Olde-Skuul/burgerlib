@@ -92,22 +92,22 @@ public:
 	uintptr_t BURGER_API GetMark(void);
 	eError BURGER_API SetMark(uintptr_t uMark);
 	uint_t BURGER_API SetMarkAtEOF(void);
-	uint_t BURGER_API GetModificationTime(TimeDate_t* pOutput);
-	uint_t BURGER_API GetCreationTime(TimeDate_t* pOutput);
+	eError BURGER_API GetModificationTime(TimeDate_t* pOutput);
+	eError BURGER_API GetCreationTime(TimeDate_t* pOutput);
 	uint_t BURGER_API SetModificationTime(const TimeDate_t* pInput);
 	uint_t BURGER_API SetCreationTime(const TimeDate_t* pInput);
 #if (defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-	uint_t SetAuxType(uint32_t uAuxType);
-	uint_t SetFileType(uint32_t uFileType);
+	eError SetAuxType(uint32_t uAuxType);
+	eError SetFileType(uint32_t uFileType);
 	uint32_t GetAuxType(void);
 	uint32_t GetFileType(void);
 	uint_t SetAuxAndFileType(uint32_t uAuxType, uint32_t uFileType);
 #else
-	BURGER_INLINE uint_t SetAuxType(uint32_t /* uAuxType */)
+	BURGER_INLINE eError SetAuxType(uint32_t /* uAuxType */)
 	{
 		return kErrorNotSupportedOnThisPlatform;
 	}
-	BURGER_INLINE uint_t SetFileType(uint32_t /* uFileType */)
+	BURGER_INLINE eError SetFileType(uint32_t /* uFileType */)
 	{
 		return kErrorNotSupportedOnThisPlatform;
 	}

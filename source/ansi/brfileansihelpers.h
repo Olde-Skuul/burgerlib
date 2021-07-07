@@ -19,6 +19,10 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRERROR_H__
+#include "brerror.h"
+#endif
+
 #ifndef _INC_STDIO
 #include <stdio.h>
 #endif
@@ -49,7 +53,7 @@ extern double BURGER_API ReadLittleDouble(FILE* fp);
 extern uint_t BURGER_API ReadCString(FILE* fp, char* pInput, uintptr_t uLength);
 extern uintptr_t BURGER_API GetSize(FILE* fp);
 extern uint64_t BURGER_API GetSize64(FILE* fp);
-extern uint_t BURGER_API SaveFile(FILE* fp, const void* pData, uintptr_t uLength);
+extern eError BURGER_API SaveFile(FILE* fp, const void* pData, uintptr_t uLength);
 extern void* BURGER_API LoadFile(FILE* fp, uintptr_t* uLength);
 extern void BURGER_API SetBinaryMode(FILE* fp);
 }

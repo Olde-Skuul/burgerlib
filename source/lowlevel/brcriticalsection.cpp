@@ -638,10 +638,10 @@ uint_t BURGER_API Burger::Thread::Start(FunctionPtr pFunction, void* pData)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Thread::Wait(void)
+uint_t BURGER_API Burger::Thread::Wait(void) BURGER_NOEXCEPT
 {
-	m_pFunction = NULL;
-	m_pData = NULL;
+	m_pFunction = nullptr;
+	m_pData = nullptr;
 	return 10;
 }
 

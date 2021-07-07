@@ -133,7 +133,7 @@ uint_t BURGER_API Burger::Windows::GetSystemWow64DirectoryW(
 
 ***************************************/
 
-uint_t BURGER_API Burger::Windows::IsDebuggerPresent(void)
+uint_t BURGER_API Burger::Windows::IsDebuggerPresent(void) BURGER_NOEXCEPT
 {
 	void* pIsDebuggerPresent = LoadFunctionIndex(CALL_IsDebuggerPresent);
 	BOOL uResult = 0; // None

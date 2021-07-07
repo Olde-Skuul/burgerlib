@@ -1,8 +1,8 @@
 /***************************************
 
-	String handlers for ISOLatin1 support
+	String handlers for Win437 support
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -12,8 +12,8 @@
 
 ***************************************/
 
-#ifndef __BRISOLATIN1_H__
-#define __BRISOLATIN1_H__
+#ifndef __BRWIN437_H__
+#define __BRWIN437_H__
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
@@ -25,14 +25,13 @@
 
 /* BEGIN */
 namespace Burger {
-class ISOLatin1 : public CodePage {
+class Win437 : public CodePage {
 public:
-
 	BURGER_ALIGN(static const uint8_t, UpperCaseTable[256], 16);
 	BURGER_ALIGN(static const uint8_t, LowerCaseTable[256], 16);
 	BURGER_ALIGN(static const uint8_t, ToUTF8Table[128][4], 16);
 	BURGER_ALIGN(static const uint16_t, ToUTF16Table[128], 16);
-	static uint_t BURGER_API TranslateFromUTF8(const char *pInput) BURGER_NOEXCEPT;
+	static uint_t BURGER_API TranslateFromUTF8(const char* pInput) BURGER_NOEXCEPT;
 	static uint_t BURGER_API TranslateFromUTF8(char* pOutput, uintptr_t uOutputSize,
 		const char* pInput) BURGER_NOEXCEPT;
 	static uint_t BURGER_API TranslateFromUTF8(char* pOutput, uintptr_t uOutputSize,

@@ -143,14 +143,15 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(void) BURGER_NOEXCEPT
 {
 	Clear();
-	char* pTemp = getcwd(NULL, 0); // This covers all versions
+	char* pTemp = getcwd(nullptr, 0); // This covers all versions
 	if (pTemp) {
 		SetFromNative(pTemp);
 		free(pTemp);
 	}
+	return kErrorNone;
 }
 
 /***************************************
@@ -166,7 +167,7 @@ void BURGER_API Burger::Filename::SetSystemWorkingDirectory(void) BURGER_NOEXCEP
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
 {
 	Clear();
 	// Get the size of the path to the application
@@ -211,6 +212,7 @@ void BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
 			Free(pBuffer);
 		}
 	}
+	return kErrorNone;
 }
 
 /***************************************
@@ -226,7 +228,7 @@ void BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(void) BURGER_NOEXCEPT
 {
 	Clear();
 	glob_t globbuf;
@@ -235,6 +237,7 @@ void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void) BURGER_NOEXCEPT
 		SetFromNative(globbuf.gl_pathv[0]);
 		globfree(&globbuf);
 	}
+	return kErrorNone;
 }
 
 /***************************************
@@ -251,7 +254,7 @@ void BURGER_API Burger::Filename::SetMachinePrefsDirectory(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Filename::SetUserPrefsDirectory(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(void) BURGER_NOEXCEPT
 {
 	Clear();
 	glob_t globbuf;
@@ -260,6 +263,7 @@ void BURGER_API Burger::Filename::SetUserPrefsDirectory(void) BURGER_NOEXCEPT
 		SetFromNative(globbuf.gl_pathv[0]);
 		globfree(&globbuf);
 	}
+	return kErrorNone;
 }
 
 /***************************************
@@ -278,7 +282,7 @@ void BURGER_API Burger::Filename::SetUserPrefsDirectory(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void Burger::Filename::SetFromNative(const char* pInput)
+Burger::eError BURGER_API Burger::Filename::SetFromNative(const char* pInput) BURGER_NOEXCEPT
 {
 	Clear(); // Clear out the previous string
 
@@ -314,7 +318,7 @@ void Burger::Filename::SetFromNative(const char* pInput)
 	if (uOutputLength >= sizeof(m_Filename)) {
 		pOutput = static_cast<char*>(Alloc(uOutputLength));
 		if (!pOutput) {
-			return;
+			return kErrorOutOfMemory;
 		}
 	}
 	m_pFilename = pOutput;
@@ -345,6 +349,7 @@ void Burger::Filename::SetFromNative(const char* pInput)
 		++pOutput;
 	}
 	pOutput[0] = 0; // End the string with zero
+	return kErrorNone;
 }
 
 #endif

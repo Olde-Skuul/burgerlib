@@ -41,7 +41,7 @@
 
 /*! ************************************
 
-    \var Burger::UTF16::ENDIANMARK
+    \var Burger::UTF16::kEndianMark
     \brief Byte stream token for native endian.
 
     When writing a text file using UTF16, you may need to write this value as
@@ -54,7 +54,7 @@
 
 /*! ************************************
 
-    \var Burger::UTF16::BE
+    \var Burger::UTF16::kBigEndianMark
     \brief 16 bit Byte Order Mark (BOM) for Big Endian UTF16 data.
 
     If a token was read in the matched this constant, then you must assume that
@@ -65,7 +65,7 @@
 
 /*! ************************************
 
-    \var Burger::UTF16::LE
+    \var Burger::UTF16::kLittleEndianMark
     \brief 16 bit Byte Order Mark (BOM) for Little Endian UTF16 data.
 
     If a token was read in the matched this constant, then you must assume that

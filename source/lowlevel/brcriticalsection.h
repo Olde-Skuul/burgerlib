@@ -276,7 +276,7 @@ public:
 	Thread(FunctionPtr pFunction, void* pData);
 	~Thread();
 	uint_t BURGER_API Start(FunctionPtr pFunction, void* pData);
-	uint_t BURGER_API Wait(void);
+	uint_t BURGER_API Wait(void) BURGER_NOEXCEPT;
 	uint_t BURGER_API Kill(void);
 	static void BURGER_API Run(void* pThis);
 	BURGER_INLINE uintptr_t GetResult(void) const BURGER_NOEXCEPT

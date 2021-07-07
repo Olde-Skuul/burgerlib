@@ -298,15 +298,15 @@ static void BURGER_API TestShowDirectories(void) BURGER_NOEXCEPT
 
 	// Check if MS/DOS long file names are supported
 #if defined(BURGER_MSDOS)
-	Message("FileManager::AreLongFilenamesAllowed() is %u",
-		FileManager::AreLongFilenamesAllowed());
-	Message("FileManager::GetMSDosVersion() is 0x%04X",
-		FileManager::GetMSDosVersion());
-	Message("FileManager::GetMSDosTrueVersion() is 0x%04X",
-		FileManager::GetMSDosTrueVersion());
-	Message("FileManager::GetMSDosName() is %s", FileManager::GetMSDosName());
-	Message("FileManager::GetMSDosFlavor() is 0x%04X",
-		FileManager::GetMSDosFlavor());
+	Message("FileManager::MSDOS_HasLongFilenames() is %u",
+		FileManager::MSDOS_HasLongFilenames());
+	Message("FileManager::MSDOS_GetOSVersion() is 0x%04X",
+		FileManager::MSDOS_GetOSVersion());
+	Message("FileManager::MSDos_GetOSTrueVersion() is 0x%04X",
+		FileManager::MSDos_GetOSTrueVersion());
+	Message("FileManager::MSDOS_GetName() is %s", FileManager::MSDOS_GetName());
+	Message("FileManager::MSDos_GetFlavor() is 0x%04X",
+		FileManager::MSDos_GetFlavor());
 #endif
 
 	// Display the directories
@@ -314,6 +314,8 @@ static void BURGER_API TestShowDirectories(void) BURGER_NOEXCEPT
 	Message("Current working directory is %s", Test.c_str());
 	Test.SetApplicationDirectory();
 	Message("Application directory is %s", Test.c_str());
+	Test.SetBootVolumeDirectory();
+	Message("Boot volume directory is %s", Test.c_str());
 	Test.SetMachinePrefsDirectory();
 	Message("Machine prefs directory is %s", Test.c_str());
 	Test.SetUserPrefsDirectory();
@@ -550,7 +552,7 @@ static uint_t BURGER_API TestPopDir(const Filename* pWorkDir) BURGER_NOEXCEPT
 	Filename MyFilename;
 	uint_t i = uPeriodCount;
 	do {
-		TempString.Set((g_PeriodName - 1) + i);
+		TempString.Set((g_PeriodName + i) - 1);
 		MyFilename.Set(TempString);
 
 		uint_t uTest =
@@ -662,7 +664,7 @@ static uint_t BURGER_API TestFile(uint_t uVerbose) BURGER_NOEXCEPT
 	TimeDate_t Time;
 #if defined(BURGER_MSDOS)
 	Filename TestName;
-	if (FileManager::AreLongFilenamesAllowed()) {
+	if (FileManager::MSDOS_HasLongFilenames()) {
 		TestName.Set("9:" SAILORMOON ".txt");
 	} else {
 		TestName.Set("9:" SAILORMOONSHORT "2.txt");
@@ -776,9 +778,9 @@ static uint_t BURGER_API TestDoesFileExist(void) BURGER_NOEXCEPT
 static uint_t BURGER_API TestLoadSave(void) BURGER_NOEXCEPT
 {
 	// Save the file
-	uint32_t uReturn = FileManager::SaveFile(
+	Burger::eError uReturn = FileManager::SaveFile(
 		"9:tempfile" COPYRIGHT ".txt", g_SampleData, sizeof(g_SampleData) - 1);
-	uint_t uTest = uReturn == 0;
+	uint_t uTest = uReturn == kErrorNone;
 	uint_t uFailure = uTest;
 	ReportFailure("FileManager::SaveFile(\"9:tempfile" COPYRIGHT
 				  ".txt\",g_SampleData,sizeof(g_SampleData)-1) = %d",
@@ -786,15 +788,15 @@ static uint_t BURGER_API TestLoadSave(void) BURGER_NOEXCEPT
 
 	uReturn = FileManager::SaveFile(
 		"9:" SAILORMOON ".txt", g_SampleData, sizeof(g_SampleData) - 1);
-	uTest = uReturn == 0;
+	uTest = uReturn == kErrorNone;
 	uFailure |= uTest;
 	ReportFailure("FileManager::SaveFile(\"9:tempfile" SAILORMOON
 				  ".txt\",g_SampleData,sizeof(g_SampleData)-1) = %d",
 		uTest, uReturn);
 
 	// Determine if the file is present
-	uReturn = FileManager::DoesFileExist("9:tempfile" COPYRIGHT ".txt");
-	uTest = uReturn == 0;
+	uint_t uTrue = FileManager::DoesFileExist("9:tempfile" COPYRIGHT ".txt");
+	uTest = uTrue == 0;
 	uFailure |= uTest;
 	ReportFailure("FileManager::SaveFile(\"9:tempfile" COPYRIGHT
 				  ".txt\",g_SampleData,sizeof(g_SampleData)-1 didn't save!",
@@ -822,15 +824,15 @@ static uint_t BURGER_API TestLoadSave(void) BURGER_NOEXCEPT
 	// Copy the file
 	uReturn = FileManager::CopyFile(
 		"9:tempfile" TM ".txt", "9:tempfile" COPYRIGHT ".txt");
-	uTest = uReturn != 0;
+	uTest = uReturn != kErrorNone;
 	uFailure = uTest;
 	ReportFailure("FileManager::CopyFile(\"9:tempfile" TM
 				  ".txt\",\"9:tempfile" COPYRIGHT ".txt\") = %d",
 		uTest, uReturn);
 
 	// Determine if the file is present
-	uReturn = FileManager::DoesFileExist("9:tempfile" TM ".txt");
-	uTest = uReturn == 0;
+	uTrue = FileManager::DoesFileExist("9:tempfile" TM ".txt");
+	uTest = uTrue == 0;
 	uFailure |= uTest;
 	ReportFailure("FileManager::CopyFile(\"9:tempfile" TM
 				  ".txt\",\"9:tempfile" COPYRIGHT ".txt\") didn't copy!",
@@ -839,15 +841,15 @@ static uint_t BURGER_API TestLoadSave(void) BURGER_NOEXCEPT
 	// Rename the file
 	uReturn = FileManager::RenameFile(
 		"9:tempfile" TM TM ".txt", "9:tempfile" TM ".txt");
-	uTest = uReturn != 0;
+	uTest = uReturn != kErrorNone;
 	uFailure = uTest;
 	ReportFailure("FileManager::RenameFile(\"9:tempfile" TM TM
 				  ".txt\",\"9:tempfile" TM ".txt\") = %d",
 		uTest, uReturn);
 
 	// Determine if the file is present
-	uReturn = FileManager::DoesFileExist("9:tempfile" TM TM ".txt");
-	uTest = uReturn == 0;
+	uTrue = FileManager::DoesFileExist("9:tempfile" TM TM ".txt");
+	uTest = uTrue == 0;
 	uFailure |= uTest;
 	ReportFailure("FileManager::RenameFile(\"9:tempfile" TM TM
 				  ".txt\",\"9:tempfile" TM ".txt\") didn't rename!",
@@ -855,7 +857,7 @@ static uint_t BURGER_API TestLoadSave(void) BURGER_NOEXCEPT
 
 	// Check for fp opening
 	FILE* fp = FileManager::OpenFile("9:tempfile" TM TM ".txt", "rb");
-	uTest = fp == NULL;
+	uTest = fp == nullptr;
 	uFailure |= uTest;
 	ReportFailure(
 		"FileManager::OpenFile(\"9:tempfile" TM TM ".txt\",\"rb\")", uTest);
@@ -865,21 +867,21 @@ static uint_t BURGER_API TestLoadSave(void) BURGER_NOEXCEPT
 
 	// Delete the files
 	uReturn = FileManager::DeleteFile("9:tempfile" COPYRIGHT ".txt");
-	uTest = uReturn != 0;
+	uTest = uReturn != kErrorNone;
 	uFailure |= uTest;
 	ReportFailure("FileManager::DeleteFile(\"9:tempfile" COPYRIGHT
 				  ".txt\") = %d",
 		uTest, uReturn);
 
 	uReturn = FileManager::DeleteFile("9:tempfile" TM TM ".txt");
-	uTest = uReturn != 0;
+	uTest = uReturn != kErrorNone;
 	uFailure |= uTest;
 	ReportFailure("FileManager::DeleteFile(\"9:tempfile" TM TM ".txt\") = %d",
 		uTest, uReturn);
 
 	// This SHOULD fail, because the file is gone. Test for failure case
 	uReturn = FileManager::DeleteFile("9:tempfile" COPYRIGHT ".txt");
-	uTest = uReturn == 0;
+	uTest = uReturn == kErrorNone;
 	uFailure |= uTest;
 	ReportFailure("FileManager::DeleteFile(\"9:tempfile" COPYRIGHT
 				  ".txt\") (Should fail) = %d",
@@ -945,14 +947,15 @@ static uint_t BURGER_API TestGetCreationTime(uint_t uVerbose) BURGER_NOEXCEPT
 	TimeDate_t MyTime;
 	char TempBuffer[128];
 	char TempBuffer2[128];
-	uint32_t uReturn = FileManager::GetCreationTime("9:FileNotHere", &MyTime);
-	uint_t uTest = uReturn == 0;
+	Burger::eError uReturn =
+		FileManager::GetCreationTime("9:FileNotHere", &MyTime);
+	uint_t uTest = uReturn == kErrorNone;
 	uint_t uFailure = uTest;
 	ReportFailure(
 		"FileManager::GetCreationTime(\"9:FileNotHere\") = %d", uTest, uReturn);
 
 	uReturn = FileManager::GetCreationTime("9:testfile.txt", &MyTime);
-	uTest = uReturn != 0;
+	uTest = uReturn != kErrorNone;
 	uFailure |= uTest;
 	ReportFailure("FileManager::GetCreationTime(\"9:testfile.txt\") = %d",
 		uTest, uReturn);
@@ -963,7 +966,7 @@ static uint_t BURGER_API TestGetCreationTime(uint_t uVerbose) BURGER_NOEXCEPT
 	}
 
 	uReturn = FileManager::GetCreationTime("9:testfile" TM ".txt", &MyTime);
-	uTest = uReturn != 0;
+	uTest = uReturn != kErrorNone;
 	uFailure |= uTest;
 	ReportFailure("FileManager::GetCreationTime(\"9:testfile" TM ".txt\") = %d",
 		uTest, uReturn);
@@ -1065,9 +1068,9 @@ static uint_t BURGER_API TestGetFileAndAuxType(uint_t uVerbose) BURGER_NOEXCEPT
 #if defined(BURGER_MACOS)
 	uint32_t uFileType;
 	uint32_t uAuxType;
-	uint_t uReturn =
+	Burger::eError uReturn =
 		FileManager::GetFileAndAuxType("9:FileNotHere", &uFileType, &uAuxType);
-	uint_t uTest = uReturn == 0;
+	uint_t uTest = uReturn == kErrorNone;
 	uint_t uFailure = uTest;
 	ReportFailure(
 		"FileManager::GetFileAndAuxType(\"9:FileNotHere\") = %d File = 0x%08X, Aux = 0x%08X",
@@ -1075,7 +1078,7 @@ static uint_t BURGER_API TestGetFileAndAuxType(uint_t uVerbose) BURGER_NOEXCEPT
 
 	uReturn =
 		FileManager::GetFileAndAuxType("9:testfile.txt", &uFileType, &uAuxType);
-	uTest = uReturn != 0;
+	uTest = uReturn != kErrorNone;
 	uFailure |= uTest;
 	ReportFailure(
 		"FileManager::GetFileAndAuxType(\"9:testfile.txt\") = %d File = 0x%08X, Aux = 0x%08X",
@@ -1087,7 +1090,7 @@ static uint_t BURGER_API TestGetFileAndAuxType(uint_t uVerbose) BURGER_NOEXCEPT
 
 	uReturn = FileManager::GetFileAndAuxType(
 		"9:testfile" TM ".txt", &uFileType, &uAuxType);
-	uTest = uReturn != 0;
+	uTest = uReturn != kErrorNone;
 	uFailure |= uTest;
 	ReportFailure("FileManager::GetFileAndAuxType(\"9:testfile" TM
 				  ".txt\") = %d File = 0x%08X, Aux = 0x%08X",
@@ -1113,34 +1116,34 @@ static uint_t BURGER_API TestSetFileType(uint_t uVerbose) BURGER_NOEXCEPT
 {
 #if defined(BURGER_MACOS)
 	BURGER_UNUSED(uVerbose);
-	uint32_t uReturn = FileManager::SetFileType("9:testfile" TM ".txt", 'ABCD');
-	uint_t uTest = uReturn != 0;
+	eError uReturn = FileManager::SetFileType("9:testfile" TM ".txt", 'ABCD');
+	uint_t uTest = uReturn != kErrorNone;
 	uint_t uFailure = uTest;
 	ReportFailure("FileManager::SetFileType(\"9:testfile" TM
 				  ".txt\",'ABCD') = %d",
 		uTest, uReturn);
 	if (!uTest) {
-		uReturn = FileManager::GetFileType("9:testfile" TM ".txt");
-		uTest = uReturn != 'ABCD';
+		uint32_t uType = FileManager::GetFileType("9:testfile" TM ".txt");
+		uTest = uType != 'ABCD';
 		uFailure |= uTest;
 		ReportFailure("FileManager::SetFileType(\"9:testfile" TM
 					  ".txt\",'ABCD') = got 0x%08X",
-			uTest, uReturn);
+			uTest, uType);
 	}
 
 	uReturn = FileManager::SetFileType("9:testfile" TM ".txt", 'TEXT');
-	uTest = uReturn != 0;
+	uTest = uReturn != kErrorNone;
 	uFailure |= uTest;
 	ReportFailure("FileManager::SetFileType(\"9:testfile" TM
 				  ".txt\",'TEXT') = %d",
 		uTest, uReturn);
 	if (!uTest) {
-		uReturn = FileManager::GetFileType("9:testfile" TM ".txt");
-		uTest = uReturn != 'TEXT';
+		uint32_t uType = FileManager::GetFileType("9:testfile" TM ".txt");
+		uTest = uType != 'TEXT';
 		uFailure |= uTest;
 		ReportFailure("FileManager::SetFileType(\"9:testfile" TM
 					  ".txt\",'TEXT') = got 0x%08X",
-			uTest, uReturn);
+			uTest, uType);
 	}
 	return uFailure;
 #else
@@ -1159,34 +1162,35 @@ static uint_t BURGER_API TestSetAuxType(uint_t uVerbose) BURGER_NOEXCEPT
 {
 #if defined(BURGER_MACOS)
 	BURGER_UNUSED(uVerbose);
-	uint32_t uReturn = FileManager::SetAuxType("9:testfile" TM ".txt", 'ABCD');
-	uint_t uTest = uReturn != 0;
+	Burger::eError uReturn =
+		FileManager::SetAuxType("9:testfile" TM ".txt", 'ABCD');
+	uint_t uTest = uReturn != kErrorNone;
 	uint_t uFailure = uTest;
 	ReportFailure("FileManager::SetAuxType(\"9:testfile" TM
 				  ".txt\",'ABCD') = %d",
 		uTest, uReturn);
 	if (!uTest) {
-		uReturn = FileManager::GetAuxType("9:testfile" TM ".txt");
-		uTest = uReturn != 'ABCD';
+		uint32_t uType = FileManager::GetAuxType("9:testfile" TM ".txt");
+		uTest = uType != 'ABCD';
 		uFailure |= uTest;
 		ReportFailure("FileManager::SetAuxType(\"9:testfile" TM
 					  ".txt\",'ABCD') = got 0x%08X",
-			uTest, uReturn);
+			uTest, uType);
 	}
 
 	uReturn = FileManager::SetAuxType("9:testfile" TM ".txt", 'CWIE');
-	uTest = uReturn != 0;
+	uTest = uReturn != kErrorNone;
 	uFailure |= uTest;
 	ReportFailure("FileManager::SetAuxType(\"9:testfile" TM
 				  ".txt\",'CWIE') = %d",
 		uTest, uReturn);
 	if (!uTest) {
-		uReturn = FileManager::GetAuxType("9:testfile" TM ".txt");
-		uTest = uReturn != 'CWIE';
+		uint32_t uType = FileManager::GetAuxType("9:testfile" TM ".txt");
+		uTest = uType != 'CWIE';
 		uFailure |= uTest;
 		ReportFailure("FileManager::SetAuxType(\"9:testfile" TM
 					  ".txt\",'CWIE') = got 0x%08X",
-			uTest, uReturn);
+			uTest, uType);
 	}
 	return uFailure;
 #else

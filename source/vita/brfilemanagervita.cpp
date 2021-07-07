@@ -1,14 +1,14 @@
 /***************************************
 
-    Playstation Vita version
+	File Manager Class: Playstation Vita version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -43,22 +43,15 @@
 
 ***************************************/
 
-static const char *g_VolumeNames[] = {
-	":app0:",
-	":ux0:",
-	":addcont0:",
-	":addcont1:",
-	":savedata0:",
-	":savedata1:",
-	":photo0:",
-	":music0:",
-	":host0:"
-};
+static const char* g_VolumeNames[] = {
+	":app0:", ":ux0:", ":addcont0:", ":addcont1:", ":savedata0:", ":savedata1:",
+	":photo0:", ":music0:", ":host0:"};
 
-Burger::eError BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
+	Burger::Filename* pOutput, uint_t uVolumeNum) BURGER_NOEXCEPT
 {
 	eError uResult;
-	if (uVolumeNum<BURGER_ARRAYSIZE(g_VolumeNames)) {
+	if (uVolumeNum < BURGER_ARRAYSIZE(g_VolumeNames)) {
 		pOutput->Set(g_VolumeNames[uVolumeNum]);
 		uResult = kErrorNone;
 	} else {
@@ -83,15 +76,55 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *p
 Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 {
 	Filename MyFilename;
-	eError uResult = GetVolumeName(&MyFilename,0);		// Get the boot volume name
-	if (uResult==kErrorNone) {
+	eError uResult = GetVolumeName(&MyFilename, 0); // Get the boot volume name
+	if (uResult == kErrorNone) {
 		// Set the initial prefix
-		SetPrefix(kPrefixBoot,MyFilename.GetPtr());
+		SetPrefix(kPrefixBoot, MyFilename.GetPtr());
 	}
-	SetPrefix(kPrefixCurrent,":app0:");		// Set the standard work prefix
-	SetPrefix(kPrefixApplication,":app0:");	// Set the standard work prefix
-	SetPrefix(kPrefixSystem,":addcont0:");	// Set the standard work prefix
-	SetPrefix(kPrefixPrefs,":ux0:");			// Set the standard work prefix
+	SetPrefix(kPrefixCurrent, ":app0:");     // Set the standard work prefix
+	SetPrefix(kPrefixApplication, ":app0:"); // Set the standard work prefix
+	SetPrefix(kPrefixSystem, ":addcont0:");  // Set the standard work prefix
+	SetPrefix(kPrefixPrefs, ":ux0:");        // Set the standard work prefix
+	return kErrorNone;
+}
+
+/***************************************
+
+	\brief Set the filename to the current working directory
+
+	Query the operating system for the current working directory and set the
+	filename to that directory. The path is converted into UTF8 character
+	encoding and stored in Burgerlib filename format
+
+	On platforms where a current working directory doesn't make sense, like an
+	ROM based system, the filename is cleared out.
+
+***************************************/
+
+Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
+	void) BURGER_NOEXCEPT
+{
+	Set(":app0:");
+	return kErrorNone;
+}
+
+/***************************************
+
+	\brief Set the filename to the application's directory
+
+	Determine the directory where the application resides and set the filename
+	to that directory. The path is converted into UTF8 character encoding and
+	stored in Burgerlib filename format.
+
+	On platforms where a current working directory doesn't make sense, like an
+	ROM based system, the filename is cleared out.
+
+***************************************/
+
+Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(
+	void) BURGER_NOEXCEPT
+{
+	Set(":app0:");
 	return kErrorNone;
 }
 
@@ -103,21 +136,22 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
+	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput)
 {
 	// Buffer to hold the attributes and the filename
 	SceIoStat Entry;
 
 	// Initialize the attributes list
-	MemoryClear(&Entry,sizeof(Entry));
+	MemoryClear(&Entry, sizeof(Entry));
 
 	// Get the directory entry
-	int eError = sceIoGetstat(pFileName->GetNative(),&Entry);
+	int iError = sceIoGetstat(pFileName->GetNative(), &Entry);
 
 	// No errors?
 
-	uint_t uResult;
-	if (eError<SCE_OK) {
+	eError uResult;
+	if (iError < SCE_OK) {
 		pOutput->Clear();
 		uResult = kErrorFileNotFound;
 	} else {
@@ -137,21 +171,22 @@ uint_t BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFi
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
+	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput)
 {
 	// Buffer to hold the attributes and the filename
 	SceIoStat Entry;
 
 	// Initialize the attributes list
-	MemoryClear(&Entry,sizeof(Entry));
+	MemoryClear(&Entry, sizeof(Entry));
 
 	// Get the directory entry
-	int eError = sceIoGetstat(pFileName->GetNative(),&Entry);
+	int iError = sceIoGetstat(pFileName->GetNative(), &Entry);
 
 	// No errors?
 
-	uint_t uResult;
-	if (eError<SCE_OK) {
+	eError uResult;
+	if (iError < SCE_OK) {
 		pOutput->Clear();
 		uResult = kErrorFileNotFound;
 	} else {
@@ -174,18 +209,19 @@ uint_t BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileNa
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DoesFileExist(Burger::Filename *pFileName) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::FileManager::DoesFileExist(
+	Burger::Filename* pFileName) BURGER_NOEXCEPT
 {
 	uint_t uResult = FALSE;
 	// Buffer to hold the attributes and the filename
 	SceIoStat MyStat;
 
 	// Initialize the attributes list
-	MemoryClear(&MyStat,sizeof(MyStat));
+	MemoryClear(&MyStat, sizeof(MyStat));
 
 	// Get the directory entry
-	int eError = sceIoGetstat(pFileName->GetNative(),&MyStat);
-	if (eError>=SCE_OK) {
+	int eError = sceIoGetstat(pFileName->GetNative(), &MyStat);
+	if (eError >= SCE_OK) {
 		// If it succeeded, the file must exist
 		uResult = TRUE;
 	}
@@ -199,20 +235,21 @@ uint_t BURGER_API Burger::FileManager::DoesFileExist(Burger::Filename *pFileName
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFileName)
+Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
+	Burger::Filename* pFileName)
 {
 	// Assume an error condition
-	uint_t uResult = kErrorIO;
+	eError uResult = kErrorIO;
 	// Get the full path
-	const char *pPath = pFileName->GetNative();
+	const char* pPath = pFileName->GetNative();
 
 	// Already here?
 
 	SceIoStat MyStat;
-	MemoryClear(&MyStat,sizeof(MyStat));
+	MemoryClear(&MyStat, sizeof(MyStat));
 
-	int eError = sceIoGetstat(pPath,&MyStat);
-	if (eError>=SCE_OK) {
+	int eError = sceIoGetstat(pPath, &MyStat);
+	if (eError >= SCE_OK) {
 		// Ensure it's a directory for sanity's sake
 		if (SCE_STM_ISDIR(MyStat.st_mode)) {
 			// There already is a directory here by this name.
@@ -223,8 +260,8 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFi
 	} else {
 		// No folder here...
 		// Let's try the easy way
-		eError = sceIoMkdir(pPath,SCE_STM_RWU);
-		if (eError>=SCE_OK) {
+		eError = sceIoMkdir(pPath, SCE_STM_RWU);
+		if (eError >= SCE_OK) {
 			// That was easy!
 			uResult = kErrorNone;
 
@@ -239,12 +276,12 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFi
 				// create it.
 
 				// Skip the leading '/'
-				char *pWork = const_cast<char *>(pPath)+1;
+				char* pWork = const_cast<char*>(pPath) + 1;
 				// Is there a mid fragment?
-				char *pEnd = StringCharacter(pWork,'/');
+				char* pEnd = StringCharacter(pWork, '/');
 				if (pEnd) {
 
-					// Let's iterate! Assume success unless 
+					// Let's iterate! Assume success unless
 					// an error occurs in this loop.
 
 					uResult = kErrorNone;
@@ -252,23 +289,23 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFi
 						// Terminate at the fragment
 						pEnd[0] = 0;
 						// Create the directory (Maybe)
-						eError = sceIoMkdir(pPath,SCE_STM_RWU);
+						eError = sceIoMkdir(pPath, SCE_STM_RWU);
 						// Restore the pathname
 						pEnd[0] = '/';
 						// Error and it's not because it's already present
-						if (eError<SCE_OK) {
+						if (eError < SCE_OK) {
 							// Uh, oh... Perhaps not enough permissions?
 							uResult = kErrorIO;
 							break;
 						}
 						// Skip past this fragment
-						pWork = pEnd+1;
+						pWork = pEnd + 1;
 						// Get to the next fragment
-						pEnd = StringCharacter(pWork,'/');
+						pEnd = StringCharacter(pWork, '/');
 						// All done?
 					} while (pEnd);
 				}
-			}		
+			}
 		}
 	}
 	return uResult;
@@ -280,12 +317,13 @@ uint_t BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFi
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::FileManager::DeleteFile(
+	Burger::Filename* pFileName) BURGER_NOEXCEPT
 {
-	uint_t uResult = FALSE;		// Success
-	if (sceIoRemove(pFileName->GetNative())<SCE_OK) {
-		if (sceIoRmdir(pFileName->GetNative())<SCE_OK) {
-			uResult = TRUE;		// Error!
+	eError uResult = kErrorNone; // Success
+	if (sceIoRemove(pFileName->GetNative()) < SCE_OK) {
+		if (sceIoRmdir(pFileName->GetNative()) < SCE_OK) {
+			uResult = kErrorIO; // Error!
 		}
 	}
 	return uResult;
@@ -297,12 +335,13 @@ uint_t BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName) B
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::RenameFile(Burger::Filename *pNewName,Burger::Filename *pOldName)
+Burger::eError BURGER_API Burger::FileManager::RenameFile(
+	Burger::Filename* pNewName, Burger::Filename* pOldName)
 {
-	if (sceIoRename(pOldName->GetNative(),pNewName->GetNative())>=SCE_OK) {
-		return FALSE;
+	if (sceIoRename(pOldName->GetNative(), pNewName->GetNative()) >= SCE_OK) {
+		return kErrorNone;
 	}
-	return TRUE;		/* Oh oh... */
+	return kErrorIO; /* Oh oh... */
 }
 
 #endif

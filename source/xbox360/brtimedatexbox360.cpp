@@ -53,11 +53,11 @@ void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t Burger::TimeDate_t::Load(const _FILETIME *pFileTime)
+Burger::eError Burger::TimeDate_t::Load(const _FILETIME *pFileTime)
 {
 	Clear();
 	FILETIME Local;
-	uint_t uResult = TRUE;
+	eError uResult = kErrorReadFailure;
 	if (FileTimeToLocalFileTime(pFileTime,&Local)) {	// Convert to local time
 		SYSTEMTIME Temp2;
 		if (FileTimeToSystemTime(&Local,&Temp2)) {	// Convert the time to sections
@@ -69,7 +69,7 @@ uint_t Burger::TimeDate_t::Load(const _FILETIME *pFileTime)
 			m_bDayOfWeek = static_cast<uint8_t>(Temp2.wDayOfWeek);	// Weekday
 			m_bMonth = static_cast<uint8_t>(Temp2.wMonth);		// Get the month
 			m_uYear = static_cast<uint16_t>(Temp2.wYear);			// Get the year
-			uResult = FALSE;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -83,9 +83,9 @@ uint_t Burger::TimeDate_t::Load(const _FILETIME *pFileTime)
 
 ***************************************/
 
-uint_t Burger::TimeDate_t::Store(_FILETIME *pFileTime) const
+Burger::eError Burger::TimeDate_t::Store(_FILETIME *pFileTime) const
 {
-	uint_t uResult = TRUE;
+	eError uResult = kErrorReadFailure;
 	SYSTEMTIME Temp2;
 	Temp2.wMilliseconds = m_usMilliseconds;
 	Temp2.wSecond = m_bSecond;				// Get the seconds
@@ -98,7 +98,7 @@ uint_t Burger::TimeDate_t::Store(_FILETIME *pFileTime) const
 	FILETIME Local;
 	if (SystemTimeToFileTime(&Temp2,&Local)) {	// Convert from sections to timestamp
 		if (LocalFileTimeToFileTime(&Local,pFileTime)) {	// Convert to GMT
-			uResult = FALSE;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;

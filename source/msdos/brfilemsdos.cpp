@@ -45,7 +45,7 @@ Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAc
 	uint32_t uTemp = GetRealBufferPtr();			// Local buffer
 	uint_t uResult = kErrorFileNotFound;
 	// Are long filenames supported?
-	if (!FileManager::AreLongFilenamesAllowed()) {
+	if (!FileManager::MSDOS_HasLongFilenames()) {
 		// Use the old dos commands
 		// Open preexisting file?
 		Regs.ax = g_OpenAccess[eAccess]+0x3D00;
@@ -369,9 +369,9 @@ uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 {
-	uint_t uResult = kErrorFileNotFound;
+	eError uResult = kErrorFileNotFound;
 	Regs16 Regs;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
@@ -400,7 +400,7 @@ uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 {
 	pOutput->Clear();
 	return kErrorNotSupportedOnThisPlatform;

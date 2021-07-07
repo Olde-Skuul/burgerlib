@@ -442,7 +442,7 @@ uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 {
 	pOutput->Clear();
 	return kErrorNotSupportedOnThisPlatform;
@@ -461,7 +461,7 @@ uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 {
 	pOutput->Clear();
 	return kErrorNotSupportedOnThisPlatform;

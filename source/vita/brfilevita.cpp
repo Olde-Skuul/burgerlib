@@ -258,9 +258,9 @@ uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 {
-	uint_t uResult = kErrorFileNotFound;
+	eError uResult = kErrorFileNotFound;
 	int fp = static_cast<int>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp>SCE_OK) {
 		SceIoStat MyStat;
@@ -291,9 +291,9 @@ uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 {
-	uint_t uResult = kErrorFileNotFound;
+	eError uResult = kErrorFileNotFound;
 	int fp = static_cast<int>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp>SCE_OK) {
 		SceIoStat MyStat;

@@ -947,15 +947,15 @@ uint64_t BURGER_API Burger::GetSize64(FILE* fp)
 
 ***************************************/
 
-uint_t BURGER_API Burger::SaveFile(FILE* fp, const void* pInput, uintptr_t uLength)
+Burger::eError BURGER_API Burger::SaveFile(FILE* fp, const void* pInput, uintptr_t uLength)
 {
-    uint_t uResult = FALSE; // Assume failure
+    eError uResult = kErrorWriteFailure; // Assume failure
     if (fp) {             // Valid file structure?
         uintptr_t uNewLength =
             fwrite(pInput, 1, uLength, fp);      // Write the file contents
         int Err = fclose(fp);                    // Close the file
         if ((uNewLength == uLength) && (!Err)) { // Error?
-            uResult = TRUE;                      // It's ok!
+            uResult = kErrorNone;                      // It's ok!
         }
     }
     return uResult;

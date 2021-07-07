@@ -710,11 +710,11 @@ public:
         char* pBuffer, uint32_t uSize);
     static uint_t BURGER_API GetSystemWow64DirectoryW(
         uint16_t* pBuffer, uint32_t uSize);
-    static uint_t BURGER_API IsDebuggerPresent(void);
+    static uint_t BURGER_API IsDebuggerPresent(void) BURGER_NOEXCEPT;
 
     // SHELL32.dll
     static uint_t BURGER_API SHGetKnownFolderPath(
-        const GUID* pGuid, uint32_t uFlags, void* hHandle, uint16_t** ppResult);
+        const GUID* pGuid, uint32_t uFlags, void* hHandle, uint16_t** ppResult) BURGER_NOEXCEPT;
 
     // LoadLibary helper functions
     static HINSTANCE__* BURGER_API LoadLibraryA(const char* pInput);

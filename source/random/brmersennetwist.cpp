@@ -123,7 +123,7 @@ uint32_t Burger::RandomMersenneTwist::Get(void) BURGER_NOEXCEPT
 		do {
 			uResult = (m_Array[uArrayIndex] & 0x80000000U) |
 				(m_Array[uArrayIndex + 1] & 0x7FFFFFFFU);
-			m_Array[uArrayIndex] = m_Array[uArrayIndex +
+			m_Array[uArrayIndex] = m_Array[static_cast<int32_t>(uArrayIndex) +
 									   (static_cast<int_t>(kTapIndex) -
 										   static_cast<int_t>(kElements))] ^
 				(uResult >> 1U) ^ g_MagTable[uResult & 1];

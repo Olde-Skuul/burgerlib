@@ -88,9 +88,9 @@ void Burger::Font::Draw(const char *pInput,uintptr_t uLength)
 	if (uLength) {
 		const char *pEnd = pInput+uLength;
 		do {
-			uint32_t uChar = UTF32::FromUTF8(pInput);
+			const uint32_t uChar = UTF32::TranslateFromUTF8(pInput);
 			// Bad string?
-			if (uChar == static_cast<uint32_t>(UTF32::BAD)) {
+			if (uChar == UTF32::kInvalid) {
 				break;
 			}
 			DrawChar(uChar);						// Draw the character
@@ -270,7 +270,7 @@ void Burger::Font::DrawChar(uint_t /* uLetter */)
 uint_t BURGER_API Burger::Font::GetPixelWidthChar(uint_t uLetter)
 {
 	char Ascii[8];
-	uintptr_t uLength = UTF8::FromUTF32(Ascii,uLetter);
+	const uintptr_t uLength = UTF32::TranslateToUTF8(Ascii,uLetter);
 	return GetPixelWidth(Ascii,uLength);
 }
 

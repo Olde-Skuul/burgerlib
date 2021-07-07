@@ -292,9 +292,9 @@ SetModificationTime()
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t* pOutput)
+Burger::eError BURGER_API Burger::File::GetModificationTime(TimeDate_t* pOutput)
 {
-	uint_t uResult = kErrorFileNotFound;
+	eError uResult = kErrorFileNotFound;
 	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
 		FSRefParam Block;
@@ -332,9 +332,9 @@ uint_t BURGER_API Burger::File::GetModificationTime(TimeDate_t* pOutput)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::GetCreationTime(TimeDate_t* pOutput)
+Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t* pOutput)
 {
-	uint_t uResult = kErrorFileNotFound;
+	eError uResult = kErrorFileNotFound;
 	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
 		FSRefParam Block;

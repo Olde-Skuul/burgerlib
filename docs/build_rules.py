@@ -18,7 +18,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 import sys
 import os
 
-from burger import import_py_script
+from burger import import_py_script, clean_directories, clean_files
 
 # If set to True, ``buildme -r``` will not parse directories in this folder.
 BUILDME_NO_RECURSE = True
@@ -63,10 +63,61 @@ def prebuild(working_directory, configuration):
     root_folder = os.path.dirname(working_directory)
     script = import_py_script(os.path.join(root_folder, 'build_rules.py'))
     if not script:
-        return 10
+        error = 10
+    else:
+        error = script.prebuild(root_folder, 'all')
+    
+    if not error:
+        # Generate the charsets
+        script = import_py_script(os.path.join(working_directory, 'generate_charsets.py'))
+        if not script:
+            error = 10
+        else:
+            error = script.main(working_directory)
 
-    error = script.prebuild(root_folder, 'all')
     return error
+
+########################################
+
+
+def clean(working_directory):
+    """
+    Delete temporary files.
+
+    This function is called by ``cleanme`` to remove temporary files.
+
+    On exit, return 0 for no error, or a non zero error code if there was an
+    error to report.
+
+    Args:
+        working_directory
+            Directory this script resides in.
+
+    Returns:
+        None if not implemented, otherwise an integer error code.
+    """
+
+    clean_directories(working_directory, ('.vscode',
+                                          'appfolder',
+                                          'temp',
+                                          'ipch',
+                                          'bin',
+                                          '.vs',
+                                          '*_Data',
+                                          '* Data',
+                                          '__pycache__'))
+
+    clean_files(working_directory, ('.DS_Store',
+                                    '*.suo',
+                                    '*.user',
+                                    '*.ncb',
+                                    '*.err',
+                                    '*.sdf',
+                                    '*.layout.cbTemp',
+                                    '*.VC.db',
+                                    '*.pyc',
+                                    '*.pyo'))
+
 
 ########################################
 

@@ -375,7 +375,7 @@ uint_t BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
  
 ***************************************/
 
-uint_t BURGER_API Burger::Thread::Wait(void)
+uint_t BURGER_API Burger::Thread::Wait(void) BURGER_NOEXCEPT
 {
 	uint_t uResult = 10;
 	if (m_iThreadID!=-1) {
