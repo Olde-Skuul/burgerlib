@@ -21,6 +21,7 @@ Character sets {#sect_chararacter_sets}
 
 * [ISO Latin 1 character set.](isolatin1.htm)
 * [MacOS Roman US character set.](macromanus.htm)
+* [Windows 437 character set.](windows437.htm)
 * [Windows 1252 character set.](windows1252.htm)
 
 CPU instruction sets {#sect_cpu_docs}

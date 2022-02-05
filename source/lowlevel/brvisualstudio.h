@@ -23,6 +23,7 @@
 //
 // Note: _MSC_VER values for determining specific version.
 //
+// _MSC_VER == 1930 (Visual Studio 2022)
 // _MSC_VER == 1920 (Visual Studio 2019)
 // _MSC_VER == 1910 (Visual Studio 2017)
 // _MSC_VER == 1900 (Visual Studio 2015)

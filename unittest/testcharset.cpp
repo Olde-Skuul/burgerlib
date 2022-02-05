@@ -719,10 +719,10 @@ static uint_t TestUTF32(void) BURGER_NOEXCEPT
 					uTest, TempString32[0], pWork->m_UTF32);
 			}
 		}
-		const uintptr_t uWidth = pWork->m_UTF8[3] ? 4 :
-			pWork->m_UTF8[2]                      ? 3 :
-			pWork->m_UTF8[1]                      ? 2 :
-                                                    1;
+		const uintptr_t uWidth = pWork->m_UTF8[3] ? 4U :
+			pWork->m_UTF8[2]                      ? 3U :
+			pWork->m_UTF8[1]                      ? 2U :
+                                                    1U;
 		uTestX = Burger::UTF32::TranslateFromUTF8(TempString32,
 			BURGER_ARRAYSIZE(TempString32),
 			reinterpret_cast<const char*>(pWork->m_UTF8), uWidth);

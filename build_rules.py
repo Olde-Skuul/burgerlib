@@ -20,7 +20,7 @@ import os
 
 from burger import make_version_header, get_sdks_folder, \
     create_folder_if_needed, run_command, compare_files, \
-    copy_file_if_needed
+    copy_file_if_needed, clean_directories, clean_files
 
 # If set to True, ``buildme -r``` will not parse directories in this folder.
 BUILDME_NO_RECURSE = None
@@ -131,7 +131,7 @@ def prebuild(working_directory, configuration):
     headerfilepath = os.path.join(dest_folder, 'burger.h')
     cmd = (
         'makeheader',
-        #'-r',
+        # '-r',
         #'-r', '-w',
         os.path.join(working_directory, 'source', 'templateburgerbase.h'),
         headerfilepath)
@@ -247,6 +247,47 @@ def postbuild(working_directory, configuration):
 
 ########################################
 
+
+def clean(working_directory):
+    """
+    Delete temporary files.
+
+    This function is called by ``cleanme`` to remove temporary files.
+
+    On exit, return 0 for no error, or a non zero error code if there was an
+    error to report.
+
+    Args:
+        working_directory
+            Directory this script resides in.
+
+    Returns:
+        None if not implemented, otherwise an integer error code.
+    """
+
+    clean_directories(working_directory, ('.vscode',
+                                          'appfolder',
+                                          'temp',
+                                          'ipch',
+                                          'bin',
+                                          '.vs',
+                                          '*_Data',
+                                          '* Data',
+                                          '__pycache__'))
+
+    clean_files(working_directory, ('.DS_Store',
+                                    '*.suo',
+                                    '*.user',
+                                    '*.ncb',
+                                    '*.err',
+                                    '*.sdf',
+                                    '*.layout.cbTemp',
+                                    '*.VC.db',
+                                    '*.pyc',
+                                    '*.pyo'))
+
+
+########################################
 
 # If called as a command line and not a class, perform the build
 if __name__ == "__main__":
