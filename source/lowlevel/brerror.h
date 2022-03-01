@@ -2,7 +2,7 @@
 
 	Error codes.
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -108,9 +108,17 @@ enum eError {
 	kErrorAudio = 0x7300,
 	/** Audio driver failed */
 	kErrorAudioDriverFailure,
+	/** Audio data format is not supported by the driver */
+	kErrorAudioFormatNotSupported,
 
 	/** Network errors */
 	kErrorNetwork = 0x7400,
+	/** User cancelled */
+	kErrorCancelled,
+	/** Operation was refused */
+	kErrorRefused,
+	/** Network hardware or software failure */
+	kErrorNetworkFailure,
 	/** Data required for stream was not available in time */
 	kErrorDataStarvation,
 	/** Network socket failure */
@@ -128,6 +136,16 @@ enum eError {
 	kErrorColorDepthNotSupported,
 	/** Requested display resolution is not available on current hardware */
 	kErrorResolutionNotSupported,
+	/** GPU hardware fault */
+	kErrorGPUFailure,
+	/** Shader didn't compile */
+	kErrorShaderCompile,
+	/** Shader has a bad include */
+	kErrorShaderIncludeMissing,
+	/** Out of video memory */
+	kErrorOutOfVideoMemory,
+	/** Palette upload failure */
+	kErrorPalette,
 
 	/** Thread and process errors */
 	kErrorThread = 0x7600,
