@@ -4,7 +4,7 @@
 
     Windows version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
     It is released under an MIT Open Source license. Please see LICENSE for
     license details. Yes, you can use it in a commercial title without paying
@@ -490,7 +490,7 @@ uintptr_t BURGER_API Burger::Keyboard::WindowsKeyboardThread(void *pData)
 
 ***************************************/
 
-Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
+Burger::Keyboard::Keyboard(GameApp *pAppInstance) BURGER_NOEXCEPT :
 	m_pAppInstance(pAppInstance),
 	m_pKeyboardDevice(NULL),
 	m_pKeyboardEvent(NULL),
@@ -662,7 +662,7 @@ Burger::Keyboard::~Keyboard()
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::DisableWindowsKey(void)
+uint_t BURGER_API Burger::Keyboard::DisableWindowsKey(void) BURGER_NOEXCEPT
 {
 	// Assume success
 	uint_t uResult = 0;
@@ -704,7 +704,7 @@ uint_t BURGER_API Burger::Keyboard::DisableWindowsKey(void)
 
 ***************************************/
 
-void BURGER_API Burger::Keyboard::EnableWindowsKey(void)
+void BURGER_API Burger::Keyboard::EnableWindowsKey(void) BURGER_NOEXCEPT
 {
 	if (m_pPreviousKeyboardHook) {
 		UnhookWindowsHookEx(m_pPreviousKeyboardHook);
@@ -755,7 +755,7 @@ void BURGER_API Burger::Keyboard::EnableWindowsKey(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::PostWindowsKeyEvent(eEvent uEvent,uint32_t uScanCode)
+uint_t BURGER_API Burger::Keyboard::PostWindowsKeyEvent(eEvent uEvent,uint32_t uScanCode) BURGER_NOEXCEPT
 {
 	uint_t bResult = FALSE;
 	if (!m_bDirectInput8Acquired) {
@@ -781,7 +781,7 @@ uint_t BURGER_API Burger::Keyboard::PostWindowsKeyEvent(eEvent uEvent,uint32_t u
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::EncodeWindowsScanCode(KeyEvent_t *pEvent,uint_t uWindowsCode) const
+uint_t BURGER_API Burger::Keyboard::EncodeWindowsScanCode(KeyEvent_t *pEvent,uint_t uWindowsCode) const BURGER_NOEXCEPT
 {
 	// Look up the scan code
 	uint_t bResult = 1;		// Assume error
@@ -802,7 +802,7 @@ uint_t BURGER_API Burger::Keyboard::EncodeWindowsScanCode(KeyEvent_t *pEvent,uin
 
 ***************************************/
 
-void BURGER_API Burger::Keyboard::AcquireDirectInput(void)
+void BURGER_API Burger::Keyboard::AcquireDirectInput(void) BURGER_NOEXCEPT
 {
 #if defined(ENABLE_DIRECTINPUT)
 	IDirectInputDevice8W *pKeyboardDevice = m_pKeyboardDevice;
@@ -826,7 +826,7 @@ void BURGER_API Burger::Keyboard::AcquireDirectInput(void)
 
 ***************************************/
 
-void BURGER_API Burger::Keyboard::UnacquireDirectInput(void)
+void BURGER_API Burger::Keyboard::UnacquireDirectInput(void) BURGER_NOEXCEPT
 {
 	// Release DirectInput
 #if defined(ENABLE_DIRECTINPUT)
@@ -855,7 +855,7 @@ void BURGER_API Burger::Keyboard::UnacquireDirectInput(void)
 
 ***************************************/
 
-void BURGER_API Burger::Keyboard::ReadSystemKeyboardDelays(void)
+void BURGER_API Burger::Keyboard::ReadSystemKeyboardDelays(void) BURGER_NOEXCEPT
 {
 	// Get the initial keyboard delay to mimic the user's desired response
 	// This is set in the Keyboard windows control panel
@@ -919,7 +919,7 @@ void BURGER_API Burger::Keyboard::ReadSystemKeyboardDelays(void)
 
 ***************************************/
 
-void BURGER_API Burger::Keyboard::DisableAccessibilityShortcutKeys(void) const
+void BURGER_API Burger::Keyboard::DisableAccessibilityShortcutKeys(void) const BURGER_NOEXCEPT
 {
 	// Disable StickyKeys/etc shortcuts but if the accessibility feature is on, 
 	// then leave the settings alone as its probably being usefully used
@@ -965,7 +965,7 @@ void BURGER_API Burger::Keyboard::DisableAccessibilityShortcutKeys(void) const
 
 ***************************************/
 
-void BURGER_API Burger::Keyboard::RestoreAccessibilityShortcutKeys(void)
+void BURGER_API Burger::Keyboard::RestoreAccessibilityShortcutKeys(void) BURGER_NOEXCEPT
 {
 	SystemParametersInfoW(SPI_SETSTICKYKEYS,sizeof(m_DefaultStickyKeys),&m_DefaultStickyKeys,0);
 	SystemParametersInfoW(SPI_SETTOGGLEKEYS,sizeof(m_DefaultToggleKeys),&m_DefaultToggleKeys,0);

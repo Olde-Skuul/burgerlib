@@ -2,7 +2,7 @@
 
 	Unit tests for the algorithm template library
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -598,8 +598,8 @@ static uint_t BURGER_API Test_remove_const(void) BURGER_NOEXCEPT
 
 	CHECK_ADD_REMOVE(remove_const, *, *)
 	CHECK_ADD_REMOVE(remove_const, * const, *)
-	CHECK_ADD_REMOVE(remove_const, *volatile, *volatile)
-	CHECK_ADD_REMOVE(remove_const, * const volatile, *volatile)
+	CHECK_ADD_REMOVE(remove_const, * volatile, * volatile)
+	CHECK_ADD_REMOVE(remove_const, * const volatile, * volatile)
 	CHECK_ADD_REMOVE(remove_const, const*, const*)
 	CHECK_ADD_REMOVE(remove_const, volatile*, volatile*)
 	CHECK_ADD_REMOVE(remove_const, const* const, const*)
@@ -633,7 +633,7 @@ static uint_t BURGER_API Test_remove_volatile(void) BURGER_NOEXCEPT
 
 	CHECK_ADD_REMOVE(remove_volatile, *, *)
 	CHECK_ADD_REMOVE(remove_volatile, * const, * const)
-	CHECK_ADD_REMOVE(remove_volatile, *volatile, *)
+	CHECK_ADD_REMOVE(remove_volatile, * volatile, *)
 	CHECK_ADD_REMOVE(remove_volatile, * const volatile, * const)
 	CHECK_ADD_REMOVE(remove_volatile, const*, const*)
 	CHECK_ADD_REMOVE(remove_volatile, volatile*, volatile*)
@@ -667,7 +667,7 @@ static uint_t BURGER_API Test_remove_cv(void) BURGER_NOEXCEPT
 
 	CHECK_ADD_REMOVE(remove_cv, *, *)
 	CHECK_ADD_REMOVE(remove_cv, * const, *)
-	CHECK_ADD_REMOVE(remove_cv, *volatile, *)
+	CHECK_ADD_REMOVE(remove_cv, * volatile, *)
 	CHECK_ADD_REMOVE(remove_cv, * const volatile, *)
 	CHECK_ADD_REMOVE(remove_cv, const*, const*)
 	CHECK_ADD_REMOVE(remove_cv, volatile*, volatile*)
@@ -736,9 +736,9 @@ static uint_t BURGER_API Test_add_volatile(void) BURGER_NOEXCEPT
 	CHECK_ADD_REMOVE(add_volatile, &, &)
 	CHECK_ADD_REMOVE(add_volatile, const&, const&)
 	CHECK_ADD_REMOVE(add_volatile, volatile&, volatile&)
-	CHECK_ADD_REMOVE(add_volatile, *, *volatile)
+	CHECK_ADD_REMOVE(add_volatile, *, * volatile)
 	CHECK_ADD_REMOVE(add_volatile, const*, const* volatile)
-	CHECK_ADD_REMOVE(add_volatile, volatile*, volatile * volatile)
+	CHECK_ADD_REMOVE(add_volatile, volatile*, volatile* volatile)
 
 #if !defined(BURGER_WATCOM)
 	CHECK_ADD_REMOVE(add_volatile, [2], volatile[2])
@@ -773,9 +773,9 @@ static uint_t BURGER_API Test_add_cv(void) BURGER_NOEXCEPT
 	CHECK_ADD_REMOVE(add_cv, &, &)
 	CHECK_ADD_REMOVE(add_cv, const&, const&)
 	CHECK_ADD_REMOVE(add_cv, volatile&, volatile&)
-	CHECK_ADD_REMOVE(add_cv, *, *volatile const)
+	CHECK_ADD_REMOVE(add_cv, *, * volatile const)
 	CHECK_ADD_REMOVE(add_cv, const*, const* volatile const)
-	CHECK_ADD_REMOVE(add_cv, volatile*, volatile * volatile const)
+	CHECK_ADD_REMOVE(add_cv, volatile*, volatile* volatile const)
 
 #if !defined(BURGER_WATCOM)
 	CHECK_ADD_REMOVE(add_cv, [2], volatile const[2])
@@ -942,7 +942,7 @@ static uint_t BURGER_API Test_is_volatile(void) BURGER_NOEXCEPT
 	TEST_IS(is_volatile, IntTest64x64_t*, false)
 	TEST_IS(is_volatile, volatile IntTest64x64_t, true)
 	TEST_IS(is_volatile, volatile IntTest64x64_t*, false)
-	TEST_IS(is_volatile, volatile IntTest64x64_t * volatile, true)
+	TEST_IS(is_volatile, volatile IntTest64x64_t* volatile, true)
 
 #if defined(BURGER_RVALUE_REFERENCES)
 	TEST_IS(is_volatile, int&&, false)
@@ -2064,7 +2064,7 @@ static const round_up_test_t g_round_up_tests[] = {{0, 2, 0}, {1, 2, 2},
 	{2, 2, 2}, {0, 1, 0}, {1, 1, 1}, {2, 1, 2}, {1, 8, 8},
 	{9834893, 4, 9834896}};
 
-static uint_t BURGER_API Testround_up_pointer(void)
+static uint_t BURGER_API Testround_up_pointer(void) BURGER_NOEXCEPT
 {
 	uint_t uFailure = FALSE;
 	const round_up_test_t* pWork = g_round_up_tests;
@@ -2138,6 +2138,139 @@ static uint_t BURGER_API Testround_up_pointer(void)
 
 /***************************************
 
+	Test move()
+
+***************************************/
+
+class Mover {
+public:
+	// Flags to denote which function was called
+	uint_t m_bConstructed;
+	uint_t m_bCopyConstructor;
+	uint_t m_bMoveConstructor;
+	uint_t m_bCopyOperator;
+	uint_t m_bMoveOperator;
+
+	Mover() BURGER_NOEXCEPT: m_bConstructed(TRUE),
+							 m_bCopyConstructor(FALSE),
+							 m_bMoveConstructor(FALSE),
+							 m_bCopyOperator(FALSE),
+							 m_bMoveOperator(FALSE)
+	{
+	}
+
+	Mover(const Mover&) BURGER_NOEXCEPT: m_bConstructed(FALSE),
+										 m_bCopyConstructor(TRUE),
+										 m_bMoveConstructor(FALSE),
+										 m_bCopyOperator(FALSE),
+										 m_bMoveOperator(FALSE)
+	{
+	}
+
+	Mover& operator=(const Mover&) BURGER_NOEXCEPT
+	{
+		m_bConstructed = FALSE;
+		m_bCopyConstructor = FALSE;
+		m_bMoveConstructor = FALSE;
+		m_bCopyOperator = TRUE;
+		m_bMoveOperator = FALSE;
+		return *this;
+	}
+
+#if defined(BURGER_RVALUE_REFERENCES)
+	Mover(Mover&&) BURGER_NOEXCEPT: m_bConstructed(FALSE),
+									m_bCopyConstructor(FALSE),
+									m_bMoveConstructor(TRUE),
+									m_bCopyOperator(FALSE),
+									m_bMoveOperator(FALSE)
+	{
+	}
+
+	Mover& operator=(Mover&&) BURGER_NOEXCEPT
+	{
+		m_bConstructed = FALSE;
+		m_bCopyConstructor = FALSE;
+		m_bMoveConstructor = FALSE;
+		m_bCopyOperator = FALSE;
+		m_bMoveOperator = TRUE;
+		return *this;
+	}
+#endif
+
+	// Reset the variables
+	void Clear(void) BURGER_NOEXCEPT
+	{
+		m_bConstructed = FALSE;
+		m_bCopyConstructor = FALSE;
+		m_bMoveConstructor = FALSE;
+		m_bCopyOperator = FALSE;
+		m_bMoveOperator = FALSE;
+	}
+};
+
+static uint_t BURGER_API Test_move(void) BURGER_NOEXCEPT
+{
+	uint_t uFailure = FALSE;
+
+	// Check the default constructor
+	Mover TestObject;
+	uint_t uTest = !TestObject.m_bConstructed;
+	uFailure |= uTest;
+	ReportFailure("Mover() failed ", uTest);
+
+	// Check the copy constructor
+	Mover Test2(TestObject);
+	uTest = !Test2.m_bCopyConstructor;
+	uFailure |= uTest;
+	ReportFailure("Mover(const &) failed ", uTest);
+
+	// Check the copy operator
+	Test2 = TestObject;
+	uTest = !Test2.m_bCopyOperator;
+	uFailure |= uTest;
+	ReportFailure("Mover::operator = (const &) failed ", uTest);
+
+#if defined(BURGER_RVALUE_REFERENCES)
+	// Check the move constructor
+	Mover TestMove(static_cast<Mover&&>(TestObject));
+	uTest = !TestMove.m_bMoveConstructor;
+	uFailure |= uTest;
+	ReportFailure("Mover(&&) failed ", uTest);
+
+	// Check the move operator
+	TestMove = static_cast<Mover&&>(TestObject);
+	uTest = !TestMove.m_bMoveOperator;
+	uFailure |= uTest;
+	ReportFailure("Mover::operator = (&&) failed ", uTest);
+#endif
+
+	// At this point, the constructors work, so now test Burger::move()
+
+	// Test a move constructor
+	Mover TestMove1(Burger::move(TestObject));
+#if !defined(BURGER_RVALUE_REFERENCES)
+	uTest = !TestMove1.m_bCopyConstructor;
+#else
+	uTest = !TestMove1.m_bMoveConstructor;
+#endif
+	uFailure |= uTest;
+	ReportFailure("Burger::move() Constructor failed ", uTest);
+
+	// Test a move operator
+	TestMove1 = Burger::move(TestObject);
+#if !defined(BURGER_RVALUE_REFERENCES)
+	uTest = !TestMove1.m_bCopyOperator;
+#else
+	uTest = !TestMove1.m_bMoveOperator;
+#endif
+	uFailure |= uTest;
+	ReportFailure("Burger::move() operator failed ", uTest);
+
+	return uFailure;
+}
+
+/***************************************
+
 	Test algorithms
 
 ***************************************/
@@ -2189,6 +2322,7 @@ uint_t BURGER_API TestBralgorithm(uint_t uVerbose)
 	uResult |= Test_ice_ne();
 	uResult |= Test_ice_not();
 	uResult |= Testround_up_pointer();
+	uResult |= Test_move();
 
 	if (!uResult && (uVerbose & VERBOSE_MSG)) {
 		Message("Passed all Algorithm tests!");

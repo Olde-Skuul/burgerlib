@@ -2,7 +2,7 @@
 
     Keyboard Manager
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
     It is released under an MIT Open Source license. Please see LICENSE for
     license details. Yes, you can use it in a commercial title without paying
@@ -288,11 +288,11 @@ protected:
 
 #if (defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
 	CriticalSection m_KeyboardLock;			///< Lock for multi-threading (MacOSX and Windows only)
-	BURGER_INLINE void Lock(void) { m_KeyboardLock.Lock(); }
-	BURGER_INLINE void Unlock(void) { m_KeyboardLock.Unlock(); }
+	BURGER_INLINE void Lock(void) BURGER_NOEXCEPT { m_KeyboardLock.Lock(); }
+	BURGER_INLINE void Unlock(void) BURGER_NOEXCEPT { m_KeyboardLock.Unlock(); }
 #else
-	BURGER_INLINE void Lock(void) {}
-	BURGER_INLINE void Unlock(void) {}
+	BURGER_INLINE void Lock(void) BURGER_NOEXCEPT {}
+	BURGER_INLINE void Unlock(void) BURGER_NOEXCEPT {}
 #endif
 
 	uint8_t m_KeyArray[SC_MAXENTRY+1];		///< Array with the current state of the keyboard
@@ -304,46 +304,46 @@ protected:
 	KeyEvent_t m_RepeatEvent;				///< Event to post on a repeat
 
 public:
-	Keyboard(GameApp *pAppInstance);
+	Keyboard(GameApp *pAppInstance) BURGER_NOEXCEPT;
 	virtual ~Keyboard();
 	BURGER_INLINE GameApp *GetApp(void) const { return m_pAppInstance; }
-	uint_t BURGER_API PeekKeyEvent(KeyEvent_t *pEvent);
-	uint_t BURGER_API GetKeyEvent(KeyEvent_t *pEvent);
-	void BURGER_API ClearKey(eScanCode uScanCode);
-	eScanCode BURGER_API AnyPressed(void) const;
-	uint_t BURGER_API HasBeenPressed(eScanCode uScanCode) const;
-	uint_t BURGER_API HasBeenPressedClear(eScanCode uScanCode);
-	uint_t BURGER_API IsPressed(eScanCode uScanCode) const;
-	uint_t BURGER_API GetKey(void);
-	uint_t BURGER_API GetKeyLowerCase(void);
-	uint_t BURGER_API GetKeyUpperCase(void);
-	void BURGER_API Flush(void);
-	uint_t BURGER_API Wait(void);
-	uint_t BURGER_API PostKeyDown(eScanCode uScanCode);
-	uint_t BURGER_API PostKeyUp(eScanCode uScanCode);
-	uint_t BURGER_API PostKey(eScanCode uScanCode);
-	uint_t BURGER_API PostUnicodeDown(uint32_t uUnicode);
-	uint_t BURGER_API PostUnicodeUp(uint32_t uUnicode);
-	uint_t BURGER_API PostUnicode(uint32_t uUnicode);
-	uint_t BURGER_API PostKeyEvent(const KeyEvent_t *pEvent);
-	uint_t BURGER_API EncodeScanCode(KeyEvent_t *pEvent,eScanCode uScanCode) const;
-	uint_t BURGER_API EncodeUnicode(KeyEvent_t *pEvent,uint32_t uUnicode) const;
-	uint_t BURGER_API GetCurrentFlags(void) const;
-	static eScanCode BURGER_API StringToScanCode(const char *pString);
-	static void BURGER_API ScanCodeToString(char *pString,uintptr_t uStringSize,eScanCode uScanCode);
+	uint_t BURGER_API PeekKeyEvent(KeyEvent_t *pEvent) BURGER_NOEXCEPT;
+	uint_t BURGER_API GetKeyEvent(KeyEvent_t *pEvent) BURGER_NOEXCEPT;
+	void BURGER_API ClearKey(eScanCode uScanCode) BURGER_NOEXCEPT;
+	eScanCode BURGER_API AnyPressed(void) const BURGER_NOEXCEPT;
+	uint_t BURGER_API HasBeenPressed(eScanCode uScanCode) const BURGER_NOEXCEPT;
+	uint_t BURGER_API HasBeenPressedClear(eScanCode uScanCode) BURGER_NOEXCEPT;
+	uint_t BURGER_API IsPressed(eScanCode uScanCode) const BURGER_NOEXCEPT;
+	uint_t BURGER_API GetKey(void) BURGER_NOEXCEPT;
+	uint_t BURGER_API GetKeyLowerCase(void) BURGER_NOEXCEPT;
+	uint_t BURGER_API GetKeyUpperCase(void) BURGER_NOEXCEPT;
+	void BURGER_API Flush(void) BURGER_NOEXCEPT;
+	uint_t BURGER_API Wait(void) BURGER_NOEXCEPT;
+	uint_t BURGER_API PostKeyDown(eScanCode uScanCode) BURGER_NOEXCEPT;
+	uint_t BURGER_API PostKeyUp(eScanCode uScanCode) BURGER_NOEXCEPT;
+	uint_t BURGER_API PostKey(eScanCode uScanCode) BURGER_NOEXCEPT;
+	uint_t BURGER_API PostUnicodeDown(uint32_t uUnicode) BURGER_NOEXCEPT;
+	uint_t BURGER_API PostUnicodeUp(uint32_t uUnicode) BURGER_NOEXCEPT;
+	uint_t BURGER_API PostUnicode(uint32_t uUnicode) BURGER_NOEXCEPT;
+	uint_t BURGER_API PostKeyEvent(const KeyEvent_t *pEvent) BURGER_NOEXCEPT;
+	uint_t BURGER_API EncodeScanCode(KeyEvent_t *pEvent,eScanCode uScanCode) const BURGER_NOEXCEPT;
+	uint_t BURGER_API EncodeUnicode(KeyEvent_t *pEvent,uint32_t uUnicode) const BURGER_NOEXCEPT;
+	uint_t BURGER_API GetCurrentFlags(void) const BURGER_NOEXCEPT;
+	static eScanCode BURGER_API StringToScanCode(const char *pString) BURGER_NOEXCEPT;
+	static void BURGER_API ScanCodeToString(char *pString,uintptr_t uStringSize,eScanCode uScanCode) BURGER_NOEXCEPT;
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	uint_t BURGER_API DisableWindowsKey(void);
-	void BURGER_API EnableWindowsKey(void);
-	BURGER_INLINE HHOOK__ *GetWindowsPreviousKeyboardHook(void) const { return m_pPreviousKeyboardHook; }
-	BURGER_INLINE uint_t IsDirectInputActive(void) const { return m_bDirectInput8Acquired; }
-	uint_t BURGER_API PostWindowsKeyEvent(eEvent uEvent,uint32_t uScanCode);
-	uint_t BURGER_API EncodeWindowsScanCode(KeyEvent_t *pEvent,uint_t uWindowsCode) const;
-	void BURGER_API AcquireDirectInput(void);
-	void BURGER_API UnacquireDirectInput(void);
-	void BURGER_API ReadSystemKeyboardDelays(void);
-	void BURGER_API DisableAccessibilityShortcutKeys(void) const;
-	void BURGER_API RestoreAccessibilityShortcutKeys(void);
+	uint_t BURGER_API DisableWindowsKey(void) BURGER_NOEXCEPT;
+	void BURGER_API EnableWindowsKey(void) BURGER_NOEXCEPT;
+	BURGER_INLINE HHOOK__ *GetWindowsPreviousKeyboardHook(void) const BURGER_NOEXCEPT { return m_pPreviousKeyboardHook; }
+	BURGER_INLINE uint_t IsDirectInputActive(void) const BURGER_NOEXCEPT { return m_bDirectInput8Acquired; }
+	uint_t BURGER_API PostWindowsKeyEvent(eEvent uEvent,uint32_t uScanCode) BURGER_NOEXCEPT;
+	uint_t BURGER_API EncodeWindowsScanCode(KeyEvent_t *pEvent,uint_t uWindowsCode) const BURGER_NOEXCEPT;
+	void BURGER_API AcquireDirectInput(void) BURGER_NOEXCEPT;
+	void BURGER_API UnacquireDirectInput(void) BURGER_NOEXCEPT;
+	void BURGER_API ReadSystemKeyboardDelays(void) BURGER_NOEXCEPT;
+	void BURGER_API DisableAccessibilityShortcutKeys(void) const BURGER_NOEXCEPT;
+	void BURGER_API RestoreAccessibilityShortcutKeys(void) BURGER_NOEXCEPT;
 #endif
 
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)

@@ -73,17 +73,17 @@ protected:
 	uint_t m_uDepth;			///< Depth in bits of the display buffer
 	uint_t m_uFlags;			///< Flags for describing available features
 public:
-	BURGER_INLINE Display *GetDisplay(void) const { return m_pDisplay; }
-	BURGER_INLINE void SetDisplay(Display *pDisplay) { m_pDisplay = pDisplay; }
-	BURGER_INLINE void *GetFrameBuffer(void) const { return m_pFrameBuffer; }
-	BURGER_INLINE void SetFrameBuffer(void *pFrameBuffer) { m_pFrameBuffer = pFrameBuffer; }
-	BURGER_INLINE uintptr_t GetStride(void) const { return m_uStride; }
-	BURGER_INLINE void SetStride(uintptr_t uStride) { m_uStride = uStride; }
-	BURGER_INLINE uint_t GetWidth(void) const { return m_uWidth; }
-	BURGER_INLINE uint_t GetHeight(void) const { return m_uHeight; }
-	BURGER_INLINE uint_t GetDepth(void) const { return m_uDepth; }
-	BURGER_INLINE uint_t GetFlags(void) const { return m_uFlags; }
-	BURGER_INLINE const Rect_t *GetClip(void) const { return &m_Clip; }
+	BURGER_INLINE Display *GetDisplay(void) const BURGER_NOEXCEPT { return m_pDisplay; }
+	BURGER_INLINE void SetDisplay(Display *pDisplay) BURGER_NOEXCEPT  { m_pDisplay = pDisplay; }
+	BURGER_INLINE void *GetFrameBuffer(void) const BURGER_NOEXCEPT  { return m_pFrameBuffer; }
+	BURGER_INLINE void SetFrameBuffer(void *pFrameBuffer) BURGER_NOEXCEPT { m_pFrameBuffer = pFrameBuffer; }
+	BURGER_INLINE uintptr_t GetStride(void) const BURGER_NOEXCEPT { return m_uStride; }
+	BURGER_INLINE void SetStride(uintptr_t uStride) BURGER_NOEXCEPT { m_uStride = uStride; }
+	BURGER_INLINE uint_t GetWidth(void) const BURGER_NOEXCEPT { return m_uWidth; }
+	BURGER_INLINE uint_t GetHeight(void) const BURGER_NOEXCEPT { return m_uHeight; }
+	BURGER_INLINE uint_t GetDepth(void) const BURGER_NOEXCEPT { return m_uDepth; }
+	BURGER_INLINE uint_t GetFlags(void) const BURGER_NOEXCEPT { return m_uFlags; }
+	BURGER_INLINE const Rect_t *GetClip(void) const BURGER_NOEXCEPT { return &m_Clip; }
 	void GetClip(Rect_t *pOutput) const;
 	void SetClip(const Rect_t *pInput);
 	void SetClip(int iLeft,int iTop,int iRight,int iBottom);

@@ -92,13 +92,13 @@ uint32_t BURGER_API ReadTickMilliseconds(void)
 extern void __rt_divu64(void); // A Metrowerks internal function
 
 // clang-format off
-asm uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void)
+asm uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void) BURGER_NOEXCEPT
 {
 	0xA193	// _Microseconds
 	rts		// Get out NOW!
 }
 
-asm uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void)
+asm uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void) BURGER_NOEXCEPT
 {
 	0xA193				// _Microseconds
 	subq.w #8,a7		// Space for result of divide
@@ -302,7 +302,7 @@ void BurgerInitTimers(void)
 
 #pragma options opt = off
 
-uint32_t Burger::Tick::ReadMicroseconds(void)
+uint32_t Burger::Tick::ReadMicroseconds(void) BURGER_NOEXCEPT
 {
 	UnsignedWide wide;
 	uint_t Temp;
@@ -343,7 +343,7 @@ uint32_t Burger::Tick::ReadMicroseconds(void)
 
 ***************************************/
 
-uint32_t Burger::Tick::ReadMilliseconds(void)
+uint32_t Burger::Tick::ReadMilliseconds(void) BURGER_NOEXCEPT
 {
 	uint_t Temp;
 	double Foo;

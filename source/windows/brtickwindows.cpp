@@ -1,14 +1,14 @@
 /***************************************
 
-    Incremental tick Manager Class
+	Incremental tick Manager Class
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -25,9 +25,7 @@
 
 /***************************************
 
-	I create a thread that gets CPU time about 60 times
-	a second, but since I can't rely on this I then
-	use GetTickCount() to get the TRUE elapsed time
+	Use timeGetTime() as the master timer.
 
 ***************************************/
 
@@ -39,15 +37,16 @@
 ***************************************/
 
 static uint_t g_b60HertzTimerStarted = FALSE;
-static uint32_t g_u60HertzTick;		// Tick value
-static uint32_t g_u60HertzMSTime;		// 1000ms time
-static uint32_t g_u60HertzTickFraction;	// 3000/60 time fraction
+static uint32_t g_u60HertzTick;         // Tick value
+static uint32_t g_u60HertzMSTime;       // 1000ms time
+static uint32_t g_u60HertzTickFraction; // 3000/60 time fraction
 
 uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
 {
-	uint32_t uMark = Windows::timeGetTime();
+	const uint32_t uMark = Windows::timeGetTime();
 	uint32_t uTick;
-	if (!g_b60HertzTimerStarted) {			// Never initialized?
+	// Never initialized?
+	if (!g_b60HertzTimerStarted) {
 		g_b60HertzTimerStarted = TRUE;
 		g_u60HertzMSTime = uMark;
 		g_u60HertzTickFraction = 0;
@@ -55,22 +54,22 @@ uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
 		uTick = 1;
 	} else {
 		// Get the elapsed time in Millisecond
-		uint32_t uElapsed = uMark-g_u60HertzMSTime;
+		const uint32_t uElapsed = uMark - g_u60HertzMSTime;
 		uTick = g_u60HertzTick;
 		if (uElapsed) {
 			// Update the time mark
 			g_u60HertzMSTime = uMark;
-			// Convert 1000 ticks per second to 60 while 
+			// Convert 1000 ticks per second to 60 while
 			// trying to avoid losing any precision
 
 			// Convert to 3000 ticks per second, so it's evenly divided by 60
-			uint32_t uFraction = g_u60HertzTickFraction + (uElapsed*3U);
+			const uint32_t uFraction = g_u60HertzTickFraction + (uElapsed * 3U);
 
 			// Get the 60hz elapsed time
-			uTick = uTick + (uFraction/(3000U/60U));
+			uTick = uTick + (uFraction / (3000U / 60U));
 
 			// Keep the fraction
-			g_u60HertzTickFraction = uFraction % (3000U/60U);
+			g_u60HertzTickFraction = uFraction % (3000U / 60U);
 			g_u60HertzTick = uTick;
 		}
 	}
@@ -83,20 +82,27 @@ uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Tick::Wait(uint_t uCount)
+void BURGER_API Burger::Tick::Wait(uint_t uCount) BURGER_NOEXCEPT
 {
-	//KeyboardKbhit();				/* Handle any pending events */
-	uint32_t NewTick = Read();	/* Read the timer */
-	if ((NewTick-s_LastTick)<(uint32_t)uCount) {	/* Should I wait? */
+	// Handle any pending events
+	// KeyboardKbhit();
+	// Read the timer
+	uint32_t uNewTick = Read();
+	// Should I wait?
+	if ((uNewTick - g_uLastTick) < static_cast<uint32_t>(uCount)) {
 		do {
-			WaitMessage();		/* Sleep until a tick occurs */
-			//KeyboardKbhit();			/* Call the system task if needed */
-			NewTick = Read();	/* Read in the current time tick */
-		} while ((NewTick-s_LastTick)<(uint32_t)uCount);	/* Time has elapsed? */
+			// Sleep until a tick occurs
+			WaitMessage();
+			// Call the system task if needed
+			// KeyboardKbhit();
+			// Read in the current time tick
+			uNewTick = Read();
+			// Time has elapsed?
+		} while ((uNewTick - g_uLastTick) < static_cast<uint32_t>(uCount));
 	}
-	s_LastTick = NewTick;		/* Mark the time */
+	// Mark the time
+	g_uLastTick = uNewTick;
 }
-
 
 /***************************************
 
@@ -104,22 +110,30 @@ void BURGER_API Burger::Tick::Wait(uint_t uCount)
 
 ***************************************/
 
-static uint_t g_bStartedMicroseconds;	/* Got the frequency */
-static double g_dWinTicks = 1.0;	/* Frequency adjust */
+static uint_t g_bStartedMicroseconds; /* Got the frequency */
+static double g_dWinTicks = 1.0;      /* Frequency adjust */
 
-uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void)
+uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void) BURGER_NOEXCEPT
 {
 	LARGE_INTEGER Temp;
-	if (!g_bStartedMicroseconds) {		/* Is the divisor initialized? */
+	// Is the divisor initialized?
+	if (!g_bStartedMicroseconds) {
 		g_bStartedMicroseconds = TRUE;
-		if (QueryPerformanceFrequency(&Temp)) {	/* Get the constants */
-			g_dWinTicks = 1000000.0/(double)Temp.QuadPart;	/* Timer change */
+		// Get the constants
+		if (QueryPerformanceFrequency(&Temp)) {
+			// Timer change
+			g_dWinTicks = 1000000.0 / static_cast<double>(Temp.QuadPart);
 		}
 	}
-	if (QueryPerformanceCounter(&Temp)) {	/* Get the timer from Win95 */
-		return (uint32_t)((double)Temp.QuadPart*g_dWinTicks);	/* Save the result */
+
+	// Get the timer from Win95
+	if (QueryPerformanceCounter(&Temp)) {
+		// Save the result
+		return static_cast<uint32_t>(
+			static_cast<double>(Temp.QuadPart) * g_dWinTicks);
 	}
-	return 0;		/* Just zap it! (Error) */
+	// Just zap it! (Error)
+	return 0;
 }
 
 /***************************************
@@ -128,15 +142,16 @@ uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void)
 
 ***************************************/
 
-uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void)
+uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void) BURGER_NOEXCEPT
 {
-	return Windows::timeGetTime();		/* Call windows 95/NT */
+	// Call windows 95/NT
+	return Windows::timeGetTime();
 }
 
 /***************************************
 
 	\brief Constructor floating point timer
-	
+
 	Reads in the default data needed to maintain the timer
 	and sets the elapsed time to 0.0f
 
@@ -144,18 +159,17 @@ uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void)
 
 ***************************************/
 
-Burger::FloatTimer::FloatTimer() :
-	m_bPaused(FALSE)
+Burger::FloatTimer::FloatTimer() BURGER_NOEXCEPT: m_bPaused(FALSE)
 {
 	// Get the frequency of the high precision timer
 
-	// No need to test for error, since BurgerLib requires Windows XP or higher, this function
-	// is guaranteed to succeed
+	// No need to test for error, since BurgerLib requires Windows XP or higher,
+	// this function is guaranteed to succeed
 
 	LARGE_INTEGER uFrequency;
 	QueryPerformanceFrequency(&uFrequency);
 	m_dReciprocalFrequency = 1.0 / static_cast<double>(uFrequency.QuadPart);
-	
+
 	// Initialize the timer
 	Reset();
 }
@@ -171,9 +185,10 @@ Burger::FloatTimer::FloatTimer() :
 
 ***************************************/
 
-void BURGER_API Burger::FloatTimer::SetBase(void)
+void BURGER_API Burger::FloatTimer::SetBase(void) BURGER_NOEXCEPT
 {
-	QueryPerformanceCounter(static_cast<LARGE_INTEGER *>(static_cast<void *>(&m_uBaseTime)));
+	QueryPerformanceCounter(
+		static_cast<LARGE_INTEGER*>(static_cast<void*>(&m_uBaseTime)));
 }
 
 /*! ************************************
@@ -212,13 +227,13 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 		// to assume the timer started at zero, and it's also not
 		// a good idea to assume the timer is fully 64 bit, a sanity
 		// check for wrap around is in order.
-		
+
 		// Blame Microsoft.
 
 		uint64_t uElapsedTime;
 
 		uint64_t uMark = static_cast<uint64_t>(uTick.QuadPart);
-		if (uMark<m_uBaseTime) {
+		if (uMark < m_uBaseTime) {
 
 			// The timer wrapped around.
 
@@ -226,15 +241,16 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 			uElapsedTime = uMark;
 
 			// Discard the time that was "wrapped" because without any knowledge
-			// exactly where it considered a wrap around point (It can't be assumed
-			// that the wrap around point was on a power of 2), this excess time
-			// will be dropped on the floor. Since the amount of lost time is usually less
-			// than a second (1/60th of a second is typical), it's an acceptable compromise
-			// especially at the rarity of the wrap around case.
+			// exactly where it considered a wrap around point (It can't be
+			// assumed that the wrap around point was on a power of 2), this
+			// excess time will be dropped on the floor. Since the amount of
+			// lost time is usually less than a second (1/60th of a second is
+			// typical), it's an acceptable compromise especially at the rarity
+			// of the wrap around case.
 
 		} else {
 			// 99.99999% of the time, this is the code executed
-			uElapsedTime = uMark-m_uBaseTime;
+			uElapsedTime = uMark - m_uBaseTime;
 		}
 		m_uBaseTime = uMark;
 
@@ -244,12 +260,12 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 
 		// Convert from integer to float, using a high precision integer
 		// as the source to get around floating point imprecision.
-		fResult = static_cast<float>(static_cast<double>(uElapsedTime) * m_dReciprocalFrequency);
+		fResult = static_cast<float>(
+			static_cast<double>(uElapsedTime) * m_dReciprocalFrequency);
 		m_fElapsedTime = fResult;
 	}
 	return fResult;
 }
-
 
 /***************************************
 
@@ -257,12 +273,12 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Sleep(uint32_t uMilliseconds)
+void BURGER_API Burger::Sleep(uint32_t uMilliseconds) BURGER_NOEXCEPT
 {
 	// Sleep until the time expires or something
 	// occurs that could cause the main thread to take notice
 	// like a I/O service routine
-	::SleepEx(uMilliseconds,TRUE);
+	::SleepEx(uMilliseconds, TRUE);
 }
 
 #endif

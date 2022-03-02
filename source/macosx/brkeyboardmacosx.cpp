@@ -179,7 +179,7 @@ static const Burger::Keyboard::eScanCode g_MacOSXToKeyboardeScanCode[0xF0] = {
 
 ***************************************/
 
-Burger::Keyboard::Keyboard(GameApp* pAppInstance) :
+Burger::Keyboard::Keyboard(GameApp* pAppInstance) BURGER_NOEXCEPT :
 	m_pAppInstance(pAppInstance), m_uArrayStart(0), m_uArrayEnd(0),
 	m_uInitialDelay(250), m_uRepeatDelay(33)
 {

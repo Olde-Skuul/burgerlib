@@ -1,16 +1,16 @@
 /***************************************
 
-    Incremental tick Manager Class
+	Incremental tick Manager Class
 
-    MacOSX version
+	MacOSX version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -73,7 +73,7 @@ static uint64_t uAnchor1MHz;
 static uint64_t uFraction1MHz;
 static uint64_t uStep1MHz;
 
-uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void)
+uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void) BURGER_NOEXCEPT
 {
 	uint64_t uMark = mach_absolute_time();
 	if (!bStarted1MHz) {
@@ -107,7 +107,7 @@ static uint64_t uAnchor1KHz;
 static uint64_t uFraction1KHz;
 static uint64_t uStep1KHz;
 
-uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void)
+uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void) BURGER_NOEXCEPT
 {
 	uint64_t uMark = mach_absolute_time();
 	if (!bStarted1KHz) {
@@ -140,7 +140,7 @@ uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void)
 
 ***************************************/
 
-Burger::FloatTimer::FloatTimer() : m_bPaused(FALSE)
+Burger::FloatTimer::FloatTimer() BURGER_NOEXCEPT : m_bPaused(FALSE)
 {
 	// Get the frequency of the high precision timer
 
@@ -167,7 +167,7 @@ Burger::FloatTimer::FloatTimer() : m_bPaused(FALSE)
 
 ***************************************/
 
-void BURGER_API Burger::FloatTimer::SetBase(void)
+void BURGER_API Burger::FloatTimer::SetBase(void) BURGER_NOEXCEPT
 {
 	m_uBaseTime = mach_absolute_time();
 }
@@ -236,7 +236,7 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Sleep(uint32_t uMilliseconds)
+void BURGER_API Burger::Sleep(uint32_t uMilliseconds) BURGER_NOEXCEPT
 {
 	// Sleep until the time expires or something
 	// occurs that could cause the main thread to take notice

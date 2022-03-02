@@ -1,14 +1,14 @@
 /***************************************
 
-    Incremental tick Manager Class, Playstation Vita version
+	Incremental tick Manager Class, Playstation Vita version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -19,7 +19,7 @@
 #include <libperf.h>
 
 //
-// It's come to my attention that using libperf in 
+// It's come to my attention that using libperf in
 // shipping code is a TRC violation. Disabled the code
 // until a need for high precision timing
 // comes up where I need to spend time implementing
@@ -39,7 +39,7 @@
 
 ***************************************/
 
-Burger::FloatTimer::FloatTimer() :
+Burger::FloatTimer::FloatTimer() BURGER_NOEXCEPT:
 	m_bPaused(FALSE)
 {
 	// Get the frequency of the high precision timer
@@ -62,7 +62,7 @@ Burger::FloatTimer::FloatTimer() :
 
 ***************************************/
 
-void BURGER_API Burger::FloatTimer::SetBase(void)
+void BURGER_API Burger::FloatTimer::SetBase(void) BURGER_NOEXCEPT
 {
 	m_uBaseTime = scePerfGetTimebaseValue();
 }
@@ -130,12 +130,12 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Sleep(uint32_t uMilliseconds)
+void BURGER_API Burger::Sleep(uint32_t uMilliseconds) BURGER_NOEXCEPT
 {
 	// Zero is illegal for the VITA
 	if (uMilliseconds) {
 		// Convert to microseconds
-		sceKernelDelayThread(uMilliseconds*1000);
+		sceKernelDelayThread(uMilliseconds * 1000);
 	}
 }
 

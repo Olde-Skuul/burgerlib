@@ -12,6 +12,7 @@ determine special rules on how to handle building the code and / or data.
 """
 
 # pylint: disable=unused-argument
+# pylint: disable=consider-using-f-string
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -189,7 +190,7 @@ ARG_LISTS = [
     ('xbox360', 'burger', 'library', ['vs2010']),
     ('xbox360', 'unittests', 'console', ['vs2010']),
     ('xboxone', 'burger', 'library', ['vs2017']),
-    ('xboxone', 'unittests', 'console', ['vs2017']),    
+    ('xboxone', 'unittests', 'console', ['vs2017']),
     ('wiiu', 'burger', 'library', ['vs2013']),
     ('switch', 'burger', 'library', ['vs2017']),
     ('switch', 'unittests', 'app', ['vs2017']),
@@ -465,7 +466,8 @@ def do_project(working_directory, project):
         source_folders_list.append('../unittest')
 
         if platform is PlatformTypes.xboxone:
-            source_files_list.append('../unittest/xboxone/unittestxboxone.appxmanifest')
+            source_files_list.append(
+                '../unittest/xboxone/unittestxboxone.appxmanifest')
 
         library_folders_list.append(
             '$(BURGER_SDKS)/{}/burgerlib'.format(platform_folder))

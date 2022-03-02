@@ -1,14 +1,14 @@
 /***************************************
 
-    Incremental tick Manager Class
+	Incremental tick Manager Class
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -30,8 +30,7 @@
 
 ***************************************/
 
-Burger::FloatTimer::FloatTimer() :
-	m_bPaused(FALSE)
+Burger::FloatTimer::FloatTimer() BURGER_NOEXCEPT: m_bPaused(FALSE)
 {
 	// QueryPerformanceFrequency() returns 50,000,000 however,
 	// that's not really accurate. The real frequency is anywhere
@@ -57,7 +56,7 @@ Burger::FloatTimer::FloatTimer() :
 
 ***************************************/
 
-void BURGER_API Burger::FloatTimer::SetBase(void)
+void BURGER_API Burger::FloatTimer::SetBase(void) BURGER_NOEXCEPT
 {
 	// Read the counter
 	uint64_t uTemp = __mftb();
@@ -108,7 +107,7 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 
 		// Get the elapsed time
 
-		uint64_t uElapsedTime = uMark-m_uBaseTime;
+		uint64_t uElapsedTime = uMark - m_uBaseTime;
 		m_uBaseTime = uMark;
 
 		// Apply to seconds elapsed
@@ -117,12 +116,12 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 
 		// Convert from integer to float, using a high precision integer
 		// as the source to get around floating point imprecision.
-		fResult = static_cast<float>(static_cast<double>(uElapsedTime) * m_dReciprocalFrequency);
+		fResult = static_cast<float>(
+			static_cast<double>(uElapsedTime) * m_dReciprocalFrequency);
 		m_fElapsedTime = fResult;
 	}
 	return fResult;
 }
-
 
 /***************************************
 
@@ -130,12 +129,12 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Sleep(uint32_t uMilliseconds)
+void BURGER_API Burger::Sleep(uint32_t uMilliseconds) BURGER_NOEXCEPT
 {
 	// Sleep until the time expires or something
 	// occurs that could cause the main thread to take notice
 	// like a I/O service routine
-	::SleepEx(uMilliseconds,TRUE);
+	::SleepEx(uMilliseconds, TRUE);
 }
 
 #endif

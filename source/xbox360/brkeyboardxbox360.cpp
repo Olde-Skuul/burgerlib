@@ -226,7 +226,7 @@ static const ScanCodeTranslation_t *ScanCodeTranslate(uint_t uWindowsCode)
 
 ***************************************/
 
-Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
+Burger::Keyboard::Keyboard(GameApp *pAppInstance) BURGER_NOEXCEPT :
 	m_pAppInstance(pAppInstance),
 	m_uArrayStart(0),
 	m_uArrayEnd(0),

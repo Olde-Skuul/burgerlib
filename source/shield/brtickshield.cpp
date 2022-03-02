@@ -1,14 +1,14 @@
 /***************************************
 
-    Incremental tick Manager Class, Android version
+	Incremental tick Manager Class, Android version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -16,7 +16,6 @@
 
 #if defined(BURGER_ANDROID)
 #include <time.h>
-
 
 /***************************************
 
@@ -29,10 +28,10 @@
 
 ***************************************/
 
-void BURGER_API Burger::FloatTimer::SetBase(void)
+void BURGER_API Burger::FloatTimer::SetBase(void) BURGER_NOEXCEPT
 {
 	struct timespec uTime;
-	clock_gettime(CLOCK_MONOTONIC,&uTime);
+	clock_gettime(CLOCK_MONOTONIC, &uTime);
 	m_uBaseTime = uTime.tv_sec;
 	m_uBaseTimeNano = uTime.tv_nsec;
 }
@@ -59,14 +58,14 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 	} else {
 
 		struct timespec uTick;
-		clock_gettime(CLOCK_MONOTONIC,&uTick);
+		clock_gettime(CLOCK_MONOTONIC, &uTick);
 
 		uint64_t uElapsedTime;
 		uint64_t uElapsedTimeNano;
 
 		uint64_t uMark = static_cast<uint64_t>(uTick.tv_sec);
 		uint64_t uMarkNano = static_cast<uint64_t>(uTick.tv_nsec);
-		if (uMark<m_uBaseTime) {
+		if (uMark < m_uBaseTime) {
 
 			// The timer wrapped around.
 
@@ -74,16 +73,17 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 			uElapsedTime = uMark;
 			uElapsedTimeNano = uMarkNano;
 			// Discard the time that was "wrapped" because without any knowledge
-			// exactly where it considered a wrap around point (It can't be assumed
-			// that the wrap around point was on a power of 2), this excess time
-			// will be dropped on the floor. Since the amount of lost time is usually less
-			// than a second (1/60th of a second is typical), it's an acceptable compromise
-			// especially at the rarity of the wrap around case.
+			// exactly where it considered a wrap around point (It can't be
+			// assumed that the wrap around point was on a power of 2), this
+			// excess time will be dropped on the floor. Since the amount of
+			// lost time is usually less than a second (1/60th of a second is
+			// typical), it's an acceptable compromise especially at the rarity
+			// of the wrap around case.
 
 		} else {
 			// 99.99999% of the time, this is the code executed
-			uElapsedTime = uMark-m_uBaseTime;
-			uElapsedTimeNano = uMarkNano-m_uBaseTimeNano;
+			uElapsedTime = uMark - m_uBaseTime;
+			uElapsedTimeNano = uMarkNano - m_uBaseTimeNano;
 		}
 		m_uBaseTime = uMark;
 		m_uBaseTimeNano = uMarkNano;
@@ -93,16 +93,17 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 		uElapsedTimeNano += m_uElapsedTimeNano;
 
 		// Handle wrap around
-		if (uElapsedTimeNano>=1000000000) {
+		if (uElapsedTimeNano >= 1000000000) {
 			++uElapsedTime;
-			uElapsedTimeNano-=1000000000;
+			uElapsedTimeNano -= 1000000000;
 		}
 		m_uElapsedTime = uElapsedTime;
 		m_uElapsedTimeNano = uElapsedTimeNano;
 
 		// Convert from integer to float, using a high precision integer
 		// as the source to get around floating point imprecision.
-		fResult = static_cast<float>(static_cast<double>(uElapsedTime) + (static_cast<double>(uElapsedTimeNano)*0.000000001));
+		fResult = static_cast<float>(static_cast<double>(uElapsedTime) +
+			(static_cast<double>(uElapsedTimeNano) * 0.000000001));
 		m_fElapsedTime = fResult;
 	}
 	return fResult;
@@ -114,7 +115,7 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Sleep(uint32_t uMilliseconds)
+void BURGER_API Burger::Sleep(uint32_t uMilliseconds) BURGER_NOEXCEPT
 {
 	// Old code
 	// usleep(uMilliseconds*1000);
@@ -125,10 +126,10 @@ void BURGER_API Burger::Sleep(uint32_t uMilliseconds)
 
 	timespec SleepTime;
 	// Seconds to sleep
-	SleepTime.tv_sec = uMilliseconds/1000U;
+	SleepTime.tv_sec = uMilliseconds / 1000U;
 	// Nanoseconds to sleep
-	SleepTime.tv_nsec = (uMilliseconds-(SleepTime.tv_sec*1000U))*1000000U;
-	nanosleep(&SleepTime,NULL);
+	SleepTime.tv_nsec = (uMilliseconds - (SleepTime.tv_sec * 1000U)) * 1000000U;
+	nanosleep(&SleepTime, NULL);
 }
 
 #endif

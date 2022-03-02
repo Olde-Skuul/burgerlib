@@ -61,13 +61,15 @@ struct VERTEXSTRUCT {
 
 Burger::DisplayDirectX9Software8::DisplayDirectX9Software8(GameApp *pGameApp) :
 	DisplayDirectX9(pGameApp),
-	m_pPixelShader8Bit(NULL),
-	m_pBitMapTextureSysMem(NULL),
-	m_pBitMapTexture(NULL),
-	m_pPaletteTexture(NULL),
-	m_pVertexBuffer(NULL),
+	m_pPixelShader8Bit(nullptr),
+	m_pBitMapTextureSysMem(nullptr),
+	m_pBitMapTexture(nullptr),
+	m_pPaletteTexture(nullptr),
+	m_pVertexBuffer(nullptr),
 	m_bFrontBufferTrueColor(FALSE)
 {
+	m_pRenderer = &m_Renderer;
+	m_Renderer.SetDisplay(this);
 }
 
 uint_t Burger::DisplayDirectX9Software8::Init(uint_t uWidth,uint_t uHeight,uint_t /* uDepth */,uint_t uFlags)
@@ -83,8 +85,7 @@ uint_t Burger::DisplayDirectX9Software8::Init(uint_t uWidth,uint_t uHeight,uint_
 		if (AllocateResources()!=D3D_OK) {
 			uResult = 10;
 		} else {
-			m_Renderer.SetClip(0,0,static_cast<int>(uWidth),static_cast<int>(uHeight));
-
+			m_Renderer.Init(uWidth,uHeight,8,0);
 			uint8_t TempPalette[768];
 			MemoryClear(TempPalette,sizeof(TempPalette));
 			TempPalette[765]=255;
@@ -114,7 +115,7 @@ void Burger::DisplayDirectX9Software8::EndScene(void)
 		if (m_pPaletteTexture) {
 			D3DLOCKED_RECT LockedRect;
 			// Don't worry about a system wide lock
-			HRESULT hResult = m_pPaletteTexture->LockRect(0,&LockedRect,NULL,D3DLOCK_NOSYSLOCK);
+			const HRESULT hResult = m_pPaletteTexture->LockRect(0,&LockedRect, nullptr,D3DLOCK_NOSYSLOCK);
 			if (hResult==D3D_OK) {
 				// Fill in all 256 colors for the palette
 				const uint8_t *pPalette = m_Palette;
@@ -170,14 +171,14 @@ void Burger::DisplayDirectX9Software8::EndScene(void)
 			}
 		}
 
-		m_pBitMapTextureSysMem->AddDirtyRect(NULL);
+		m_pBitMapTextureSysMem->AddDirtyRect(nullptr);
 		pDirect3DDevice9->UpdateTexture(m_pBitMapTextureSysMem,m_pBitMapTexture);
 
 		// Render the scene to the display
 		hResult = pDirect3DDevice9->BeginScene();
 		if (hResult==D3D_OK) {
 			pDirect3DDevice9->SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
-			pDirect3DDevice9->SetVertexShader(NULL);
+			pDirect3DDevice9->SetVertexShader(nullptr);
 			pDirect3DDevice9->SetStreamSource(0,m_pVertexBuffer,0,sizeof(VERTEXSTRUCT));
 
 			// The shader needs the palette and the 8 bit bitmap
@@ -207,7 +208,7 @@ void Burger::DisplayDirectX9Software8::EndScene(void)
 
 		// Required to prevent a race condition when rendering this texture
 		D3DLOCKED_RECT LockedRect;
-		hResult = m_pBitMapTextureSysMem->LockRect(0,&LockedRect,NULL,0);
+		hResult = m_pBitMapTextureSysMem->LockRect(0,&LockedRect,nullptr,0);
 		if (hResult == D3D_OK) {
 			m_Renderer.SetFrameBuffer(LockedRect.pBits);
 			m_Renderer.SetStride(static_cast<uintptr_t>(LockedRect.Pitch));
@@ -295,16 +296,16 @@ long Burger::DisplayDirectX9Software8::AllocateResources(void)
 	if (hResult == D3D_OK) {
 		// Create the back buffer for 8 bit graphics
 
-		hResult = m_pDirect3DDevice9->CreateTexture(m_uWidth,m_uHeight,1,0,D3DFMT_A8,D3DPOOL_DEFAULT,&m_pBitMapTexture,NULL);
+		hResult = m_pDirect3DDevice9->CreateTexture(m_uWidth,m_uHeight,1,0,D3DFMT_A8,D3DPOOL_DEFAULT,&m_pBitMapTexture,nullptr);
 		if (hResult == D3D_OK) {
 
 			// Create the back buffer for 8 bit graphics
 
-			hResult = m_pDirect3DDevice9->CreateTexture(m_uWidth,m_uHeight,1,0,D3DFMT_A8,D3DPOOL_SYSTEMMEM,&m_pBitMapTextureSysMem,NULL);
+			hResult = m_pDirect3DDevice9->CreateTexture(m_uWidth,m_uHeight,1,0,D3DFMT_A8,D3DPOOL_SYSTEMMEM,&m_pBitMapTextureSysMem, nullptr);
 			if (hResult == D3D_OK) {
 						// Lock the offscreen buffer again without the system lock
 				D3DLOCKED_RECT LockedRect;
-				hResult = m_pBitMapTextureSysMem->LockRect(0,&LockedRect,NULL,0);
+				hResult = m_pBitMapTextureSysMem->LockRect(0,&LockedRect, nullptr,0);
 				if (hResult == D3D_OK) {
 					m_Renderer.SetFrameBuffer(LockedRect.pBits);
 					m_Renderer.SetStride(static_cast<uintptr_t>(LockedRect.Pitch));
@@ -313,12 +314,12 @@ long Burger::DisplayDirectX9Software8::AllocateResources(void)
 
 				// Create the one dimensional palette
 
-				hResult = m_pDirect3DDevice9->CreateTexture(256,1,1,0,D3DFMT_X8R8G8B8,D3DPOOL_MANAGED,&m_pPaletteTexture,NULL);
+				hResult = m_pDirect3DDevice9->CreateTexture(256,1,1,0,D3DFMT_X8R8G8B8,D3DPOOL_MANAGED,&m_pPaletteTexture, nullptr);
 				if (hResult == D3D_OK) {
 
 					// Create the vertex buffer for software rendering
 
-					hResult = m_pDirect3DDevice9->CreateVertexBuffer(sizeof(VERTEXSTRUCT)*4,D3DUSAGE_WRITEONLY,D3DFVF_XYZ|D3DFVF_TEX1,D3DPOOL_DEFAULT,&m_pVertexBuffer,NULL);
+					hResult = m_pDirect3DDevice9->CreateVertexBuffer(sizeof(VERTEXSTRUCT)*4,D3DUSAGE_WRITEONLY,D3DFVF_XYZ|D3DFVF_TEX1,D3DPOOL_DEFAULT,&m_pVertexBuffer, nullptr);
 				}
 			}
 		}

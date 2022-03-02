@@ -501,7 +501,7 @@ uint_t BURGER_API Burger::Windows::TestVersion(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-HINSTANCE BURGER_API Burger::Windows::LoadLibraryIndex(eDLLIndex eIndex)
+HINSTANCE BURGER_API Burger::Windows::LoadLibraryIndex(eDLLIndex eIndex) BURGER_NOEXCEPT
 {
     HINSTANCE hResult = nullptr;
     // Valid index?
@@ -581,7 +581,7 @@ HINSTANCE BURGER_API Burger::Windows::LoadLibraryIndex(eDLLIndex eIndex)
 
 ***************************************/
 
-void* BURGER_API Burger::Windows::LoadFunctionIndex(eCallIndex eIndex)
+void* BURGER_API Burger::Windows::LoadFunctionIndex(eCallIndex eIndex) BURGER_NOEXCEPT
 {
     void* pResult = nullptr;
     // Valid index?

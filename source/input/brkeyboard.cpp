@@ -2,7 +2,7 @@
 
     Keyboard Manager
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+    Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
     It is released under an MIT Open Source license. Please see LICENSE for
     license details. Yes, you can use it in a commercial title without paying
@@ -405,7 +405,7 @@ static const ScanCodeToAscii_t g_ScanCodeTranslation[Burger::Keyboard::SC_EXTRA+
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
-Burger::Keyboard::Keyboard(GameApp *pAppInstance) :
+Burger::Keyboard::Keyboard(GameApp *pAppInstance) BURGER_NOEXCEPT :
 	m_pAppInstance(pAppInstance),
 	m_uArrayStart(0),
 	m_uArrayEnd(0),
@@ -457,7 +457,7 @@ Burger::Keyboard::~Keyboard()
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::PeekKeyEvent(KeyEvent_t *pEvent)
+uint_t BURGER_API Burger::Keyboard::PeekKeyEvent(KeyEvent_t *pEvent) BURGER_NOEXCEPT
 {
 	Lock();
 	uint_t uIndex = m_uArrayStart;	// Get the starting index
@@ -486,7 +486,7 @@ uint_t BURGER_API Burger::Keyboard::PeekKeyEvent(KeyEvent_t *pEvent)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::GetKeyEvent(KeyEvent_t *pEvent)
+uint_t BURGER_API Burger::Keyboard::GetKeyEvent(KeyEvent_t *pEvent) BURGER_NOEXCEPT
 {
 	Lock();
 	uint_t uIndex = m_uArrayStart;		// Get the starting index
@@ -534,7 +534,7 @@ uint_t BURGER_API Burger::Keyboard::GetKeyEvent(KeyEvent_t *pEvent)
 
 ***************************************/
 
-void BURGER_API Burger::Keyboard::ClearKey(eScanCode uScanCode)
+void BURGER_API Burger::Keyboard::ClearKey(eScanCode uScanCode) BURGER_NOEXCEPT
 {
 	if ((uScanCode!=SC_INVALID) && 
 		(static_cast<uint_t>(uScanCode)<static_cast<uint_t>(SC_MAXENTRY+1))) {
@@ -568,7 +568,7 @@ void BURGER_API Burger::Keyboard::ClearKey(eScanCode uScanCode)
 
 #endif
 
-Burger::Keyboard::eScanCode BURGER_API Burger::Keyboard::AnyPressed(void) const
+Burger::Keyboard::eScanCode BURGER_API Burger::Keyboard::AnyPressed(void) const BURGER_NOEXCEPT
 {
     // Init the pointer
     const uint8_t *pWork = m_KeyArray;
@@ -612,7 +612,7 @@ Burger::Keyboard::eScanCode BURGER_API Burger::Keyboard::AnyPressed(void) const
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::HasBeenPressed(eScanCode uScanCode) const
+uint_t BURGER_API Burger::Keyboard::HasBeenPressed(eScanCode uScanCode) const BURGER_NOEXCEPT
 {
 	uint_t bResult = FALSE;
 	if ((uScanCode!=SC_INVALID) && 
@@ -636,7 +636,7 @@ uint_t BURGER_API Burger::Keyboard::HasBeenPressed(eScanCode uScanCode) const
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::HasBeenPressedClear(eScanCode uScanCode)
+uint_t BURGER_API Burger::Keyboard::HasBeenPressedClear(eScanCode uScanCode) BURGER_NOEXCEPT
 {
 	uint_t bResult = FALSE;
 	if ((uScanCode!=SC_INVALID) && 
@@ -662,7 +662,7 @@ uint_t BURGER_API Burger::Keyboard::HasBeenPressedClear(eScanCode uScanCode)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::IsPressed(eScanCode uScanCode) const
+uint_t BURGER_API Burger::Keyboard::IsPressed(eScanCode uScanCode) const BURGER_NOEXCEPT
 {
 	uint_t bResult = FALSE;
 	if ((uScanCode!=SC_INVALID) && 
@@ -684,7 +684,7 @@ uint_t BURGER_API Burger::Keyboard::IsPressed(eScanCode uScanCode) const
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::GetKey(void)
+uint_t BURGER_API Burger::Keyboard::GetKey(void) BURGER_NOEXCEPT
 {
 	KeyEvent_t NewEvent;
 	// Get the event
@@ -717,7 +717,7 @@ uint_t BURGER_API Burger::Keyboard::GetKey(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::GetKeyLowerCase(void)
+uint_t BURGER_API Burger::Keyboard::GetKeyLowerCase(void) BURGER_NOEXCEPT
 {
 	return ToLower(GetKey());	// Key pending?
 }
@@ -733,7 +733,7 @@ uint_t BURGER_API Burger::Keyboard::GetKeyLowerCase(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::GetKeyUpperCase(void)
+uint_t BURGER_API Burger::Keyboard::GetKeyUpperCase(void) BURGER_NOEXCEPT
 {
 	return ToUpper(GetKey());
 }
@@ -747,7 +747,7 @@ uint_t BURGER_API Burger::Keyboard::GetKeyUpperCase(void)
 
 ***************************************/
 
-void BURGER_API Burger::Keyboard::Flush(void)
+void BURGER_API Burger::Keyboard::Flush(void) BURGER_NOEXCEPT
 {
 	KeyEvent_t NewEvent;
 
@@ -781,7 +781,7 @@ void BURGER_API Burger::Keyboard::Flush(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::Wait(void)
+uint_t BURGER_API Burger::Keyboard::Wait(void) BURGER_NOEXCEPT
 {
 	KeyEvent_t NewEvent;
 	// Key pending?
@@ -810,7 +810,7 @@ uint_t BURGER_API Burger::Keyboard::Wait(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::PostKeyDown(eScanCode uScanCode)
+uint_t BURGER_API Burger::Keyboard::PostKeyDown(eScanCode uScanCode) BURGER_NOEXCEPT
 {
 	KeyEvent_t NewEvent;
 	uint_t bResult = EncodeScanCode(&NewEvent,uScanCode);
@@ -835,7 +835,7 @@ uint_t BURGER_API Burger::Keyboard::PostKeyDown(eScanCode uScanCode)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::PostKeyUp(eScanCode uScanCode)
+uint_t BURGER_API Burger::Keyboard::PostKeyUp(eScanCode uScanCode) BURGER_NOEXCEPT
 {
 	KeyEvent_t NewEvent;
 	uint_t bResult = EncodeScanCode(&NewEvent,uScanCode);
@@ -860,7 +860,7 @@ uint_t BURGER_API Burger::Keyboard::PostKeyUp(eScanCode uScanCode)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::PostKey(eScanCode uScanCode)
+uint_t BURGER_API Burger::Keyboard::PostKey(eScanCode uScanCode) BURGER_NOEXCEPT
 {
 	KeyEvent_t NewEvent;
 	uint_t bResult = EncodeScanCode(&NewEvent,uScanCode);
@@ -891,7 +891,7 @@ uint_t BURGER_API Burger::Keyboard::PostKey(eScanCode uScanCode)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::PostUnicodeDown(uint32_t uUnicode)
+uint_t BURGER_API Burger::Keyboard::PostUnicodeDown(uint32_t uUnicode) BURGER_NOEXCEPT
 {
 	KeyEvent_t NewEvent;
 	uint_t bResult = EncodeUnicode(&NewEvent,uUnicode);
@@ -916,7 +916,7 @@ uint_t BURGER_API Burger::Keyboard::PostUnicodeDown(uint32_t uUnicode)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::PostUnicodeUp(uint32_t uUnicode)
+uint_t BURGER_API Burger::Keyboard::PostUnicodeUp(uint32_t uUnicode) BURGER_NOEXCEPT
 {
 	KeyEvent_t NewEvent;
 	uint_t bResult = EncodeUnicode(&NewEvent,uUnicode);
@@ -941,7 +941,7 @@ uint_t BURGER_API Burger::Keyboard::PostUnicodeUp(uint32_t uUnicode)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::PostUnicode(uint32_t uUnicode)
+uint_t BURGER_API Burger::Keyboard::PostUnicode(uint32_t uUnicode) BURGER_NOEXCEPT
 {
 	KeyEvent_t NewEvent;
 	uint_t bResult = EncodeUnicode(&NewEvent,uUnicode);
@@ -969,7 +969,7 @@ uint_t BURGER_API Burger::Keyboard::PostUnicode(uint32_t uUnicode)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::PostKeyEvent(const KeyEvent_t *pEvent)
+uint_t BURGER_API Burger::Keyboard::PostKeyEvent(const KeyEvent_t *pEvent) BURGER_NOEXCEPT
 {
 	Lock();
 
@@ -1051,7 +1051,7 @@ uint_t BURGER_API Burger::Keyboard::PostKeyEvent(const KeyEvent_t *pEvent)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::EncodeScanCode(KeyEvent_t *pEvent,eScanCode uScanCode) const
+uint_t BURGER_API Burger::Keyboard::EncodeScanCode(KeyEvent_t *pEvent,eScanCode uScanCode) const BURGER_NOEXCEPT
 {
 	// Look up the scan code
 	uint_t uResult = 10;
@@ -1108,7 +1108,7 @@ uint_t BURGER_API Burger::Keyboard::EncodeScanCode(KeyEvent_t *pEvent,eScanCode 
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::EncodeUnicode(KeyEvent_t *pEvent,uint32_t uUnicode) const
+uint_t BURGER_API Burger::Keyboard::EncodeUnicode(KeyEvent_t *pEvent,uint32_t uUnicode) const BURGER_NOEXCEPT
 {
 	// Make sure the code is valid
 	uint_t uResult = 10;
@@ -1169,7 +1169,7 @@ uint_t BURGER_API Burger::Keyboard::EncodeUnicode(KeyEvent_t *pEvent,uint32_t uU
 
 ***************************************/
 
-uint_t BURGER_API Burger::Keyboard::GetCurrentFlags(void) const
+uint_t BURGER_API Burger::Keyboard::GetCurrentFlags(void) const BURGER_NOEXCEPT
 {
 	uint_t uFlags = 0;
 	if ((m_KeyArray[SC_LEFTALT]&KEYCAPDOWN) || (m_KeyArray[SC_RIGHTALT]&KEYCAPDOWN)) {
@@ -1211,7 +1211,7 @@ uint_t BURGER_API Burger::Keyboard::GetCurrentFlags(void) const
 
 ***************************************/
 
-Burger::Keyboard::eScanCode BURGER_API Burger::Keyboard::StringToScanCode(const char *pString)
+Burger::Keyboard::eScanCode BURGER_API Burger::Keyboard::StringToScanCode(const char *pString) BURGER_NOEXCEPT
 {
 	const ScanEntry_t *pEntry = g_ScanCodeNames;		// Pointer to the array
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_ScanCodeNames);
@@ -1243,7 +1243,7 @@ Burger::Keyboard::eScanCode BURGER_API Burger::Keyboard::StringToScanCode(const 
 
 ***************************************/
 
-void BURGER_API Burger::Keyboard::ScanCodeToString(char *pString,uintptr_t uStringSize,eScanCode uScanCode)
+void BURGER_API Burger::Keyboard::ScanCodeToString(char *pString,uintptr_t uStringSize,eScanCode uScanCode) BURGER_NOEXCEPT
 {
 	if (uStringSize) {
 		const ScanEntry_t *pEntry = g_ScanCodeNames;

@@ -1,23 +1,25 @@
 /***************************************
 
-    Incremental tick Manager Class
+	Incremental tick Manager Class
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brtick.h"
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_DS) || defined(BURGER_MACOSX) || defined(BURGER_IOS))
+
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_DS) || \
+	defined(BURGER_MACOSX) || defined(BURGER_IOS))
 #include <time.h>
 #endif
 
-uint32_t Burger::Tick::s_LastTick;
+uint32_t Burger::Tick::g_uLastTick;
 
 /*! ************************************
 
@@ -28,13 +30,15 @@ uint32_t Burger::Tick::s_LastTick;
 	a background interrupt, it will increment 60 times a second. This is global
 	and shared by all threads. The timer cannot stop.
 
-	The value can be zero for 1/60th of a second, so do not assume that a zero is an uninitialized
-	state.
+	The value can be zero for 1/60th of a second, so do not assume that a zero
+	is an uninitialized state.
 
-	\sa Burger::Tick::Read()
+	\note: The timer will wrap around 2 years. Do not assume it will not wrap
+		around.
+
+	\sa Read() or \ref FloatTimer
 
 ***************************************/
-
 
 /*! ************************************
 
@@ -43,24 +47,27 @@ uint32_t Burger::Tick::s_LastTick;
 	Upon application start up, a 60 hertz timer is created and via
 	a background interrupt, it will increment 60 times a second.
 
-	The value can be zero for 1/60th of a second, so do not assume that a zero is an uninitialized
-	state.
+	The value can be zero for 1/60th of a second, so do not assume that a zero
+	is an uninitialized state.
 
 	\return 32 bit time value that increments 60 times a second
-	\sa Burger::Tick::ResetLastTick()
+	\sa ResetLastTick()
 
 ***************************************/
 
-#if !(defined(BURGER_MSDOS) || defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_BEOS) || defined(BURGER_DS) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+#if !(defined(BURGER_MSDOS) || defined(BURGER_WINDOWS) || \
+	defined(BURGER_MAC) || defined(BURGER_BEOS) || defined(BURGER_DS) || \
+	defined(BURGER_MACOSX) || defined(BURGER_IOS)) || \
+	defined(DOXYGEN)
 
 uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
 {
 #if defined(BURGER_LINUX) || defined(BURGER_XBOXONE)
-	return static_cast<uint32_t>((clock()*TICKSPERSEC)/CLOCKS_PER_SEC);
-#elif CLOCKS_PER_SEC==TICKSPERSEC
+	return static_cast<uint32_t>((clock() * TICKSPERSEC) / CLOCKS_PER_SEC);
+#elif CLOCKS_PER_SEC == TICKSPERSEC
 	return clock();
 #else
-	return static_cast<uint32_t>((clock()*TICKSPERSEC)/CLOCKS_PER_SEC);
+	return static_cast<uint32_t>((clock() * TICKSPERSEC) / CLOCKS_PER_SEC);
 #endif
 }
 #endif
@@ -75,7 +82,7 @@ uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
 	a time delay.
 
 	\return 32 bit time value that increments 60 times a second
-	\sa Burger::Tick::Read() or Burger::Tick::GetLastTick()
+	\sa Read() or GetLastTick()
 
 ***************************************/
 
@@ -84,15 +91,14 @@ uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
 	\fn Burger::Tick::GetLastTick(void)
 	\brief Get the 60 hertz timer sync value
 
-	When Burger::Tick::Wait(), Burger::Tick::WaitEvent() and Burger::Tick::ResetLastTick()
-	are called, an internal sync value is updated. This function returns
-	that value.
+	When Wait(), WaitEvent() and ResetLastTick() are called, an internal sync
+	value is updated. This function returns that value.
 
-	\note This value will only change if any of the above calls are made. Otherwise
-	the value will remain unchanging.
+	\note This value will only change if any of the above calls are made.
+		Otherwise the value will remain unchanging.
 
 	\return 32 bit sync time value
-	\sa Burger::Tick::Wait(), Burger::Tick::WaitEvent() or Burger::Tick::ResetLastTick()
+	\sa Wait(), WaitEvent() or ResetLastTick()
 
 ***************************************/
 
@@ -104,7 +110,7 @@ uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
 	Sync to the current tick mark and sleep the application until
 	the next time the timer increments.
 
-	\sa Burger::Tick::Wait(), Burger::Tick::WaitEvent() or Burger::Tick::ResetLastTick()
+	\sa Wait(), WaitEvent() or ResetLastTick()
 
 ***************************************/
 
@@ -118,22 +124,29 @@ uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
 	\note If zero is passed, this function does not issue a delay
 
 	\param uCount Number of 1/60ths of a second to sleep.
-	\sa Burger::Tick::WaitOneTick(), Burger::Tick::WaitEvent() or Burger::Tick::ResetLastTick()
+	\sa WaitOneTick(), WaitEvent() or ResetLastTick()
 
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS)) || defined(DOXYGEN)
-void BURGER_API Burger::Tick::Wait(uint_t uCount)
+void BURGER_API Burger::Tick::Wait(uint_t uCount) BURGER_NOEXCEPT
 {
-	//KeyboardKbhit();			// Handle any pending events
-	uint32_t uNewTick = Read();	// Read the timer
-	if ((uNewTick-s_LastTick)<static_cast<uint32_t>(uCount)) {	// Should I wait?
+
+	// Read the timer
+	uint32_t uNewTick = Read();
+
+	// Should I wait?
+	if ((uNewTick - g_uLastTick) < static_cast<uint32_t>(uCount)) {
 		do {
-			//KeyboardKbhit();	// Call the system task if needed
-			uNewTick = Read();	// Read in the current time tick
-		} while ((uNewTick-s_LastTick)<static_cast<uint32_t>(uCount));	// Time has elapsed?
+			// Read in the current time tick
+			uNewTick = Read();
+
+			// Time has elapsed?
+		} while ((uNewTick - g_uLastTick) < static_cast<uint32_t>(uCount));
 	}
-	s_LastTick = uNewTick;		// Mark the time
+
+	// Mark the time
+	g_uLastTick = uNewTick;
 }
 #endif
 
@@ -141,26 +154,36 @@ void BURGER_API Burger::Tick::Wait(uint_t uCount)
 
 	\brief Sleep until a timeout or until a user input event
 
-	\param uCount Number of 1/60ths of a second to sleep for a timeout. Zero is no timeout.
-	\return \ref TRUE if an input event caused the function to end, \ref FALSE if it timed out
-	\sa Burger::Tick::WaitOneTick(), Burger::Tick::Wait() or Burger::Tick::ResetLastTick()
+	\param uCount Number of 1/60ths of a second to sleep for a timeout. Zero is
+		no timeout.
+
+	\return \ref TRUE if an input event caused the function to end, \ref
+		FALSE if it timed out
+
+	\sa WaitOneTick(), Wait() or ResetLastTick()
 
 ***************************************/
 
-uint_t BURGER_API Burger::Tick::WaitEvent(uint_t uCount)
+uint_t BURGER_API Burger::Tick::WaitEvent(uint_t uCount) BURGER_NOEXCEPT
 {
 	uint_t uTemp;
 
-	uint32_t uTimeMark = Read();	// Set the current time mark
-	s_LastTick = uTimeMark;		// Set the global time mark
+	// Set the current time mark
+	const uint32_t uTimeMark = Read();
 
-#if 0		// TODO Fix me
-	uint_t MouseBits = MouseReadButtons();			// Get the current state of the mouse
+	// Set the global time mark
+	g_uLastTick = uTimeMark;
+
+#if 0 // TODO Fix me
+	// Get the current state of the mouse
+	uint_t MouseBits = MouseReadButtons();
 #endif
-	//uint_t JoyBits = 0;	//JoystickReadButtons(0);	// Get the current state of the joypad
+	// uint_t JoyBits = 0;	//JoystickReadButtons(0);	// Get the current state
+	// of the joypad
 	for (;;) {
 #if 0
-		uTemp = JoystickReadButtons(0);				// Pressed a joypad button?
+		// Pressed a joypad button?
+		uTemp = JoystickReadButtons(0);			
 		if (((uTemp^JoyBits)&Temp) & (PadButton1|PadButton2|PadButton3|PadButton4|PadButton5|PadButton6)) {
 			uTemp = 1;					// Joypad event
 			break;
@@ -177,10 +200,11 @@ uint_t BURGER_API Burger::Tick::WaitEvent(uint_t uCount)
 			break;					// Return the key event
 		}
 #endif
-		Wait(1);			// Wait 1 tick (Possibly calling an OS taskswitch)
-		if (uCount) {		// Can I timeout?
-			if ((s_LastTick-uTimeMark)>=static_cast<uint32_t>(uCount)) {	// Count down
-				uTemp = 0;	// Timeout exit
+		Wait(1);      // Wait 1 tick (Possibly calling an OS taskswitch)
+		if (uCount) { // Can I timeout?
+			if ((g_uLastTick - uTimeMark) >=
+				static_cast<uint32_t>(uCount)) { // Count down
+				uTemp = 0;                       // Timeout exit
 				break;
 			}
 		}
@@ -195,33 +219,35 @@ uint_t BURGER_API Burger::Tick::WaitEvent(uint_t uCount)
 	Upon application start up, a 1Mhz hertz timer is created and via
 	a hardward timer, it will increment 1Mhz times a second.
 
-	The value can be zero for 1/1,000,000th of a second, so do not assume that a zero is an uninitialized
-	state.
+	The value can be zero for 1/1,000,000th of a second, so do not assume that a
+	zero is an uninitialized state.
 
-	\note Due to hardware limitations, do NOT assume this timer is accurate to 1/1,000,000th of
-	a second. The granularity could be much courser, however, it will be incrementing at
-	a rate to remain in sync to 1,000,000 ticks a second.
+	\note Due to hardware limitations, do NOT assume this timer is accurate to
+		1/1,000,000th of a second. The granularity could be much courser,
+		however, it will be incrementing at a rate to remain in sync to
+		1,000,000 ticks a second.
 
 	\return 32 bit time value that increments at 1Mhz
-	\sa Burger::Tick::Read() or Burger::Tick::ReadMilliseconds()
+	\sa Read() or ReadMilliseconds()
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_DS) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_DS) || \
+	defined(BURGER_MACOSX) || defined(BURGER_IOS)) || \
+	defined(DOXYGEN)
 
-uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void)
+uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void) BURGER_NOEXCEPT
 {
 #if defined(BURGER_LINUX) || defined(BURGER_XBOXONE)
-	return static_cast<uint32_t>((clock()*1000000)/CLOCKS_PER_SEC);
-#elif CLOCKS_PER_SEC==1000000
+	return static_cast<uint32_t>((clock() * 1000000) / CLOCKS_PER_SEC);
+#elif CLOCKS_PER_SEC == 1000000
 	return static_cast<uint32_t>(clock());
 #else
-	return static_cast<uint32_t>((clock()*1000000)/CLOCKS_PER_SEC);
+	return static_cast<uint32_t>((clock() * 1000000) / CLOCKS_PER_SEC);
 #endif
 }
 
 #endif
-
 
 /*! ************************************
 
@@ -230,36 +256,35 @@ uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void)
 	Upon application start up, a 1Khz hertz timer is created and via
 	a hardware timer, it will increment 1Mhz times a second.
 
-	The value can be zero for 1/1,000th of a second, so do not assume that a zero is an uninitialized
-	state.
+	The value can be zero for 1/1,000th of a second, so do not assume that a
+	zero is an uninitialized state.
 
-	\note Due to hardware limitations, do NOT assume this timer is accurate to 1/1,000th of
-	a second. The granularity could be much courser, however, it will be incrementing at
-	a rate to remain in sync to 1,000 ticks a second.
+	\note Due to hardware limitations, do NOT assume this timer is accurate to
+		1/1,000th of a second. The granularity could be much courser, however,
+		it will be incrementing at a rate to remain in sync to 1,000 ticks a
+		second.
 
 	\return 32 bit time value that increments at 1Khz
-	\sa Burger::Tick::Read() or Burger::Tick::ReadMicroseconds()
+	\sa Read() or ReadMicroseconds()
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_DS) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_DS) || \
+	defined(BURGER_MACOSX) || defined(BURGER_IOS)) || \
+	defined(DOXYGEN)
 
-uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void)
+uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void) BURGER_NOEXCEPT
 {
 #if defined(BURGER_LINUX) || defined(BURGER_XBOXONE)
-	return static_cast<uint32_t>((clock()*1000)/CLOCKS_PER_SEC);
-#elif CLOCKS_PER_SEC==1000
+	return static_cast<uint32_t>((clock() * 1000) / CLOCKS_PER_SEC);
+#elif CLOCKS_PER_SEC == 1000
 	return static_cast<uint32_t>(clock());
 #else
-	return static_cast<uint32_t>((clock()*1000)/CLOCKS_PER_SEC);
+	return static_cast<uint32_t>((clock() * 1000) / CLOCKS_PER_SEC);
 #endif
 }
 
 #endif
-
-
-
-
 
 /*! ************************************
 
@@ -276,7 +301,6 @@ uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void)
 
 ***************************************/
 
-
 /*! ************************************
 
 	\brief Constructor for the floating point timer
@@ -288,9 +312,10 @@ uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void)
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-Burger::FloatTimer::FloatTimer() :
-	m_bPaused(FALSE)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
+	defined(BURGER_MACOSX) || defined(BURGER_IOS)) || \
+	defined(DOXYGEN)
+Burger::FloatTimer::FloatTimer() BURGER_NOEXCEPT: m_bPaused(FALSE)
 {
 	// Initialize the timer
 	Reset();
@@ -328,7 +353,6 @@ Burger::FloatTimer::FloatTimer() :
 
 ***************************************/
 
-
 /*! ************************************
 
 	\brief Reset the timer
@@ -340,8 +364,11 @@ Burger::FloatTimer::FloatTimer() :
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-void BURGER_API Burger::FloatTimer::SetBase(void)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
+	defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || \
+	defined(BURGER_IOS)) || \
+	defined(DOXYGEN)
+void BURGER_API Burger::FloatTimer::SetBase(void) BURGER_NOEXCEPT
 {
 	// Generic version
 	m_uBaseTime = Tick::ReadMicroseconds();
@@ -358,12 +385,13 @@ void BURGER_API Burger::FloatTimer::SetBase(void)
 
 ***************************************/
 
-void BURGER_API Burger::FloatTimer::Reset(void)
+void BURGER_API Burger::FloatTimer::Reset(void) BURGER_NOEXCEPT
 {
-	SetBase();		// Set the platform specific time values
+	SetBase(); // Set the platform specific time values
 	m_fElapsedTime = 0.0f;
-#if defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)
-	m_uElapsedTime = 0;		// Clear the high precision value
+#if defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
+	defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)
+	m_uElapsedTime = 0; // Clear the high precision value
 #endif
 #if defined(BURGER_ANDROID)
 	m_uElapsedTimeNano = 0;
@@ -382,7 +410,10 @@ void BURGER_API Burger::FloatTimer::Reset(void)
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
+	defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || \
+	defined(BURGER_IOS)) || \
+	defined(DOXYGEN)
 float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 {
 	float fResult;
@@ -394,11 +425,11 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 		// Generic code
 
 		uint32_t uTick = Tick::ReadMicroseconds();
-		uint32_t uElapsed = uTick-m_uBaseTime;
+		uint32_t uElapsed = uTick - m_uBaseTime;
 		m_uBaseTime = uTick;
 
 		// Convert to seconds
-		fResult = static_cast<float>(uElapsed)*(1.0f/1000000.0f);
+		fResult = static_cast<float>(uElapsed) * (1.0f / 1000000.0f);
 		fResult += m_fElapsedTime;
 		m_fElapsedTime = fResult;
 	}
@@ -419,7 +450,7 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::FloatTimer::Pause(void)
+void BURGER_API Burger::FloatTimer::Pause(void) BURGER_NOEXCEPT
 {
 	if (!m_bPaused) {
 		// Accumulate the time up to this moment
@@ -442,7 +473,7 @@ void BURGER_API Burger::FloatTimer::Pause(void)
 
 ***************************************/
 
-void BURGER_API Burger::FloatTimer::Unpause(void)
+void BURGER_API Burger::FloatTimer::Unpause(void) BURGER_NOEXCEPT
 {
 	if (m_bPaused) {
 		// Mark as running
@@ -471,8 +502,9 @@ void BURGER_API Burger::FloatTimer::Unpause(void)
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(BURGER_SHIELD) || defined(BURGER_VITA) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-void BURGER_API Burger::Sleep(uint32_t /* uMilliseconds */)
-{
-}
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
+	defined(BURGER_SHIELD) || defined(BURGER_VITA) || \
+	defined(BURGER_MACOSX) || defined(BURGER_IOS)) || \
+	defined(DOXYGEN)
+void BURGER_API Burger::Sleep(uint32_t /* uMilliseconds */) BURGER_NOEXCEPT {}
 #endif
