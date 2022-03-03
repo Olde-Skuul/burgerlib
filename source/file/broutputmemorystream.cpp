@@ -192,6 +192,7 @@ Burger::OutputMemoryStream& Burger::OutputMemoryStream::operator=(
 	C++11 or higher
 
 ***************************************/
+
 Burger::OutputMemoryStream::OutputMemoryStream(
 	OutputMemoryStream&& rInput) BURGER_NOEXCEPT
 {
@@ -199,7 +200,7 @@ Burger::OutputMemoryStream::OutputMemoryStream(
 	m_pRoot = rInput.m_pRoot;
 	m_pCurrent = rInput.m_pCurrent;
 	m_uIndex = rInput.m_uIndex;
-	m_uFileSize = m_uFileSize;
+	m_uFileSize = rInput.m_uFileSize;
 	m_uError = rInput.m_uError;
 
 	// Zap the data donor
@@ -218,6 +219,7 @@ Burger::OutputMemoryStream::OutputMemoryStream(
 	C++11 or higher
 
 ***************************************/
+
 Burger::OutputMemoryStream& Burger::OutputMemoryStream::operator=(
 	OutputMemoryStream&& rInput) BURGER_NOEXCEPT
 {
@@ -229,7 +231,7 @@ Burger::OutputMemoryStream& Burger::OutputMemoryStream::operator=(
 		m_pRoot = rInput.m_pRoot;
 		m_pCurrent = rInput.m_pCurrent;
 		m_uIndex = rInput.m_uIndex;
-		m_uFileSize = m_uFileSize;
+		m_uFileSize = rInput.m_uFileSize;
 		m_uError = rInput.m_uError;
 
 		// Zap the data donor

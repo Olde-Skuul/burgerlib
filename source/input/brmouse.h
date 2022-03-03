@@ -155,7 +155,7 @@ public:
 	static void EnumerationCallback(void *pData,int iReturn,void *pSender,__IOHIDDevice *pDevice);
 	static void DisconnectionCallback(void *pData,int iReturn,void *pSender);
 	static void InputCallback(void *pData,int iReturn,void *pSender,__IOHIDValue *pValue);
-	static RunQueue::eReturnCode BURGER_API Poll(void *pData);
+	static RunQueue::eReturnCode BURGER_API Poll(void *pData) BURGER_NOEXCEPT;
 #endif
 
 };

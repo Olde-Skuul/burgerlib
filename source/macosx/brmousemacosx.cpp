@@ -235,7 +235,7 @@ void Burger::Mouse::InputCallback(
 	}
 }
 
-Burger::RunQueue::eReturnCode BURGER_API Burger::Mouse::Poll(void* pData)
+Burger::RunQueue::eReturnCode BURGER_API Burger::Mouse::Poll(void* pData) BURGER_NOEXCEPT
 {
 	while (CFRunLoopRunInMode(g_BurgerMouse, 0, TRUE) ==
 		kCFRunLoopRunHandledSource) {

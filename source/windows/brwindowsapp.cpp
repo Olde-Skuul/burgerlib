@@ -822,7 +822,7 @@ void BURGER_API Burger::GameApp::KillInputFocus(void)
 
 ***************************************/
 
-Burger::RunQueue::eReturnCode BURGER_API Burger::GameApp::Poll(void * /* pSelf */)
+Burger::RunQueue::eReturnCode BURGER_API Burger::GameApp::Poll(void * /* pSelf */) BURGER_NOEXCEPT
 {
 	MSG TempMessage;
 	while (PeekMessageW(&TempMessage,nullptr,0,0,PM_REMOVE)) {

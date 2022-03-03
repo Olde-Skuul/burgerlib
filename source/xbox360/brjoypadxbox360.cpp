@@ -91,7 +91,7 @@ Burger::Joypad::~Joypad()
 
 ***************************************/
 
-Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData)
+Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData) BURGER_NOEXCEPT
 {
 	Joypad *pThis = static_cast<Joypad *>(pData);
 

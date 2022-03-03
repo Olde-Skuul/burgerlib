@@ -546,7 +546,7 @@ BURGER_DECLSPECNAKED float BURGER_API Burger::Vector3D_t::Dot(const Vector3D_t *
 
     \param pInput Valid pointer to a Vector3D_t structure to perform a cross
         product against
-    \return Cross product of the two vectors
+
     \sa Cross(const Vector3D_t *,const Vector3D_t *)
 
 ***************************************/
@@ -580,7 +580,7 @@ void BURGER_API Burger::Vector3D_t::Cross(
     \param pInput2 Valid pointer to a Vector3D_t structure to perform a cross
         product against
 
-    \return Cross product of the two vectors \sa Cross(const Vector3D_t *)
+	\sa Cross(const Vector3D_t *)
 
 ***************************************/
 // clang-format on

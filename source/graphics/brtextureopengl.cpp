@@ -224,7 +224,7 @@ uint_t Burger::TextureOpenGL::CheckLoad(Display * /* pDisplay */)
 		}
 		if (m_uDirty&DIRTY_MIN) {
 			int iParm = GetFilter(m_eMinFilter);
-			if ((iParm==GL_LINEAR) /* && (m_Image.GetMipMapCount()>=2) */) {
+			if (iParm==GL_LINEAR /* && (m_Image.GetMipMapCount()>=2) */) {
 				iParm = GL_LINEAR_MIPMAP_NEAREST;
 			}
 			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,static_cast<GLint>(iParm));

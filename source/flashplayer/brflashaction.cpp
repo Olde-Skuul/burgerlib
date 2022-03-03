@@ -77,7 +77,6 @@ Burger::Flash::SharedBuffer::~SharedBuffer()
 	\fn void Burger::Flash::SharedBuffer::Append(uint8_t uInput)
 	\brief Append a byte at the end of the buffer
 
-	\return The number of bytes in the buffer
 	\sa GetData(void) const or GetBuffer(void)
 
 ***************************************/

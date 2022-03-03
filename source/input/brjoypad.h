@@ -188,7 +188,7 @@ public:
 	uint_t BURGER_API GetAxisCount(uint_t uWhich) const;
 	void BURGER_API SetDigital(uint_t uWhich,uint_t uAxis,uint_t uPercent=20);
 	BURGER_INLINE uint_t GetDeviceCount(void) const { return m_uDeviceCount; }
-	static RunQueue::eReturnCode BURGER_API Poll(void *pData);
+	static RunQueue::eReturnCode BURGER_API Poll(void *pData) BURGER_NOEXCEPT;
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	void BURGER_API AcquireDirectInput(void);

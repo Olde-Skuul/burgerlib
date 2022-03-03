@@ -575,7 +575,6 @@ uint_t BURGER_API Burger::Flash::Stream::StartTag(void)
 	if there's a file mark mismatch, which is useful in debugging
 	flash files.
 
-	\return Current tag ID (A 10 bit unsigned number)
 	\sa OpenTag(void) or GetTagEndPosition(void) const
 
 ***************************************/

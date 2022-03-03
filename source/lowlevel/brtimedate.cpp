@@ -50,8 +50,6 @@ struct timespec {
 
     Initialize all entries to zero. This is considered an error state.
 
-    \return All entries are equal to zero.
-
 ***************************************/
 
 void Burger::TimeDate_t::Clear(void) BURGER_NOEXCEPT
@@ -67,8 +65,6 @@ void Burger::TimeDate_t::Clear(void) BURGER_NOEXCEPT
 
     A query is made to the target platform and the structure is filled in with
     the current date and time.
-
-    \return The structure is set to the current localized time.
 
 ***************************************/
 

@@ -575,7 +575,7 @@ void BURGER_API Burger::GameApp::SetViewController(UIViewController *pViewContro
 
 ***************************************/
 
-Burger::RunQueue::eReturnCode BURGER_API Burger::GameApp::Poll(void * /* pSelf */)
+Burger::RunQueue::eReturnCode BURGER_API Burger::GameApp::Poll(void * /* pSelf */) BURGER_NOEXCEPT
 {
 	const CFTimeInterval fInterval = 0.000002;
 

@@ -32,8 +32,6 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::Joypad,Burger::Base);
 	may change. This is due to the fact that users could plug in a joystick at
 	any time.
 
-	\return The number of joysticks found or 0 in m_uDeviceCount if an error occurs.
-
 	\note Win95/98/NT uses the multimedia manager to read the joystick. MacOS uses InputSprocket
 		and MS-DOS and GS/OS uses direct joystick drivers. MS-DOS and GS/OS must be calibrated
 		for accurate results.

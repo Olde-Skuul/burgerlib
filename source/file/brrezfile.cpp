@@ -176,7 +176,6 @@ uintptr_t BURGER_API Burger::RezFile::GetRezGroupBytes(void) const
 	and the in memory image
 
 	\param uAdjust Number of bytes to add to all of the string offsets
-	\return The number of bytes the RezGroup_t data is occupying.
 	
 ***************************************/
 

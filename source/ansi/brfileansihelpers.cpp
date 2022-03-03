@@ -971,8 +971,8 @@ Burger::eError BURGER_API Burger::SaveFile(FILE* fp, const void* pInput, uintptr
     at the end of the function. The passed fp pointer is considered invalid
     and closed after this call is issued.
 
-    Dispose of the memory returned with a call to \ref Burger::Free(const void
-*)
+    Dispose of the memory returned with a call to
+	\ref Burger::Free(const void *)
 
     \param fp FILE * to the file to read from
     \param pLength to a uintptr_t to receive the size of the file in bytes.
@@ -980,7 +980,7 @@ Burger::eError BURGER_API Burger::SaveFile(FILE* fp, const void* pInput, uintptr
     \return \ref NULL if failure, a pointer on success
 
     \note If the file is empty, it's considered a failure and a \ref NULL is
-returned.
+		returned.
 
     \sa SaveFile(FILE *,const void *,uintptr_t)
 

@@ -1,14 +1,14 @@
 /***************************************
 
-    Assert redirection class
+	Assert redirection class
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -28,39 +28,65 @@
 namespace Burger {
 
 struct Assert_t {
-	typedef int (BURGER_API *CallbackProc)(void *pThis,const char *pCondition,const char *pFilename,uint_t uLineNumber);
-	
-	CallbackProc m_pCallback;		///< Function pointer to the redirected Assert function
-	void *m_pThis;					///< "this" pointer passed to the m_pProcAssert function
+	typedef int(BURGER_API* CallbackProc)(void* pThis, const char* pCondition,
+		const char* pFilename, uint_t uLineNumber);
 
-	static Assert_t g_Instance;		///< Global instance of the Assert redirection
+	/** Function pointer to the redirected Assert function */
+	CallbackProc m_pCallback;
+	/** "this" pointer passed to the m_pProcAssert function */
+	void* m_pThis;
 
-	void BURGER_API SetCallback(CallbackProc pCallback,void *pThis);
-	static int BURGER_API DefaultAssert(void *pThis,const char *pCondition,const char *pFilename,uint_t uLineNumber);
+	/** Global instance of the Assert redirection */
+	static Assert_t g_Instance;
+
+	void BURGER_API SetCallback(
+		CallbackProc pCallback, void* pThis) BURGER_NOEXCEPT;
+	static int BURGER_API DefaultAssert(void* pThis, const char* pCondition,
+		const char* pFilename, uint_t uLineNumber) BURGER_NOEXCEPT;
 };
 
-extern int BURGER_API Assert(const char *pCondition,const char *pFilename,uint_t uLineNumber);
-extern void BURGER_API Halt(void);
+extern int BURGER_API Assert(const char* pCondition, const char* pFilename,
+	uint_t uLineNumber) BURGER_NOEXCEPT;
+extern void BURGER_API Halt(void) BURGER_NOEXCEPT;
 
 }
 
-#if defined(BURGER_WATCOM) && !defined(DOXYGEN)
-
 // Use WatcomAssertNothing() as a null function to shut up Watcom's warnings
-#if defined(_DEBUG)
-#define BURGER_ASSERT(conditional) ((conditional) ? WatcomAssertNothing() : static_cast<void>(::Burger::Assert(#conditional,__FILE__,__LINE__)))
-#define BURGER_ASSERTTEST(conditional) ((conditional) ? TRUE : ::Burger::Assert(#conditional,__FILE__,__LINE__))
-#else
-#define BURGER_ASSERT(conditional) WatcomAssertNothing()
-#define BURGER_ASSERTTEST(conditional) ((conditional) ? TRUE : FALSE)
-#endif
+// Clang requires a pragma to get rid of a compiler warning triggered by
+// constant folding
 
-#elif defined(_DEBUG) || defined(DOXYGEN)
-#define BURGER_ASSERT(conditional) ((conditional) ? static_cast<void>(NULL) : static_cast<void>(::Burger::Assert(#conditional,__FILE__,__LINE__)))
-#define BURGER_ASSERTTEST(conditional) ((conditional) ? TRUE : ::Burger::Assert(#conditional,__FILE__,__LINE__))
+#if defined(_DEBUG) || defined(DOXYGEN)
+
+#if defined(BURGER_WATCOM) && !defined(DOXYGEN)
+#define BURGER_ASSERT(conditional) \
+	((conditional) ? WatcomAssertNothing() : \
+                     static_cast<void>( \
+						 ::Burger::Assert(#conditional, __FILE__, __LINE__)))
+#elif defined(BURGER_CLANG) && !defined(DOXYGEN)
+#define BURGER_ASSERT(conditional) \
+	_Pragma("clang diagnostic push") _Pragma( \
+		"clang diagnostic ignored \"-Wtautological-compare\"")((conditional) ? \
+            static_cast<void>(0) : \
+            static_cast<void>(::Burger::Assert(#conditional, __FILE__, \
+				__LINE__))) _Pragma("clang diagnostic pop")
 #else
-#define BURGER_ASSERT(conditional) static_cast<void>(NULL)
+#define BURGER_ASSERT(conditional) \
+	((conditional) ? static_cast<void>(0) : \
+                     static_cast<void>( \
+						 ::Burger::Assert(#conditional, __FILE__, __LINE__)))
+#endif
+#define BURGER_ASSERTTEST(conditional) \
+	((conditional) ? TRUE : ::Burger::Assert(#conditional, __FILE__, __LINE__))
+
+#else
+
+#if defined(BURGER_WATCOM)
+#define BURGER_ASSERT(conditional) WatcomAssertNothing()
+#else
+#define BURGER_ASSERT(conditional) static_cast<void>(0)
+#endif
 #define BURGER_ASSERTTEST(conditional) ((conditional) ? TRUE : FALSE)
+
 #endif
 
 /* END */

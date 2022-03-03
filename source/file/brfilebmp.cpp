@@ -59,7 +59,7 @@ struct BMPInfo {
 /*! ************************************
 
 	\brief Take a line of 8 bit pixel data and compress is using the RLE8
-format.
+		format.
 
 	The format itself sucks eggs.
 
@@ -73,9 +73,10 @@ format.
 	parameter bSendEOP must be set to \ref TRUE when it's to be sent
 
 	\param pOutput Pointer to the memory stream to output the compressed bytes
-into \param pInput Pointer to a scan line of pixels \param uInputLength Number
-of input bytes to process \param bSendEOP \ref TRUE when sending the last scan
-line
+		into
+	\param pInput Pointer to a scan line of pixels
+	\param uInputLength Number of input bytes to process
+	\param bSendEOP \ref TRUE when sending the last scan line
 
 ***************************************/
 
@@ -194,9 +195,11 @@ void BURGER_API Burger::FileBMP::CompressRLE8(OutputMemoryStream* pOutput,
 		1 : end of data
 		2 : Delta, get two bytes for a pen move code (Not used)
 		3-0xFF absolute run (But uint16_t align the source pointer after run)
+
 	\param pOutput Buffer to accept the decompressed data
 	\param uOutputLength Length of the buffer for decompressed data
 	\param pInput Data stream to read compressed data from
+
 	\return \ref NULL if success or a pointer to a string describing the error
 
 ***************************************/
@@ -506,8 +509,8 @@ uint_t BURGER_API Burger::FileBMP::Load(
 	file.
 
 	8, 15, 24 and 32 bit images are written out without alteration. 16 bit
-formats will have any alpha data from them stripped, this is a limitation of the
-BMP file format
+	formats will have any alpha data from them stripped, this is a limitation of
+	the BMP file format
 
 	\note The BMP file format only supports compression on 8 bit paletted
 	images. For all other image formats, the bCompress parameter is ignored.
@@ -672,7 +675,7 @@ uint_t Burger::FileBMP::Save(
 
 	// Wrap up the file
 
-	uintptr_t uTell = pOutput->GetSize();
+	const uintptr_t uTell = pOutput->GetSize();
 
 	// Write the length of the total file
 	// +2 is for "BM"
@@ -694,11 +697,11 @@ uint_t Burger::FileBMP::Save(
 	Return the BMP file header's first reserved 16 bit value in native endian
 
 	\note This value is usually zero. It's only to contain application specific
-data and is not recommended for storing data.
+		data and is not recommended for storing data.
 
 	\return The first 16 bit reserved value.
 	\sa Burger::FileBMP::SetReserved1(uint16_t) or
-Burger::FileBMP::GetReserved2(void) const
+		Burger::FileBMP::GetReserved2(void) const
 
 ***************************************/
 
@@ -711,7 +714,7 @@ Burger::FileBMP::GetReserved2(void) const
 
 	\param uReserved1 New first reserved value
 	\sa Burger::FileBMP::GetReserved1(void) const or
-Burger::FileBMP::SetReserved2(uint16_t)
+		Burger::FileBMP::SetReserved2(uint16_t)
 
 ***************************************/
 
@@ -723,11 +726,11 @@ Burger::FileBMP::SetReserved2(uint16_t)
 	Return the BMP file header's second reserved 16 bit value in native endian
 
 	\note This value is usually zero. It's only to contain application specific
-data and is not recommended for storing data.
+		data and is not recommended for storing data.
 
 	\return The second 16 bit reserved value.
 	\sa Burger::FileBMP::SetReserved2(uint16_t) or
-Burger::FileBMP::GetReserved1(void) const
+		Burger::FileBMP::GetReserved1(void) const
 
 ***************************************/
 
@@ -740,7 +743,7 @@ Burger::FileBMP::GetReserved1(void) const
 
 	\param uReserved2 New second reserved value
 	\sa Burger::FileBMP::GetReserved2(void) const or
-Burger::FileBMP::SetReserved1(uint16_t)
+		Burger::FileBMP::SetReserved1(uint16_t)
 
 ***************************************/
 
@@ -753,7 +756,7 @@ Burger::FileBMP::SetReserved1(uint16_t)
 
 	\return The pixels per meter constant for the X direction
 	\sa Burger::FileBMP::SetXPixelsPerMeter(int32_t) or
-Burger::FileBMP::GetYPixelsPerMeter(void) const
+		Burger::FileBMP::GetYPixelsPerMeter(void) const
 
 ***************************************/
 
@@ -766,8 +769,8 @@ Burger::FileBMP::GetYPixelsPerMeter(void) const
 
 	\param iXPixelsPerMeter New pixels per meter constant
 	\sa Burger::FileBMP::DEFAULT_PIXELS_PER_METER,
-Burger::FileBMP::GetXPixelsPerMeter(void) const or
-Burger::FileBMP::SetYPixelsPerMeter(int32_t)
+		Burger::FileBMP::GetXPixelsPerMeter(void) const or
+		Burger::FileBMP::SetYPixelsPerMeter(int32_t)
 
 ***************************************/
 
@@ -780,21 +783,22 @@ Burger::FileBMP::SetYPixelsPerMeter(int32_t)
 
 	\return The pixels per meter constant for the Y direction
 	\sa Burger::FileBMP::SetYPixelsPerMeter(int32_t) or
-Burger::FileBMP::GetXPixelsPerMeter(void) const
+		Burger::FileBMP::GetXPixelsPerMeter(void) const
 
 ***************************************/
 
 /*! ************************************
 
 	\fn void Burger::FileBMP::SetYPixelsPerMeter(int32_t iYPixelsPerMeter)
+
 	\brief Set the file image's pixels per meter for Y
 
 	Set the pixels per meter constant
 
 	\param iYPixelsPerMeter New pixels per meter constant
 	\sa Burger::FileBMP::DEFAULT_PIXELS_PER_METER,
-Burger::FileBMP::GetYPixelsPerMeter(void) const or
-Burger::FileBMP::SetXPixelsPerMeter(int32_t)
+		Burger::FileBMP::GetYPixelsPerMeter(void) const or
+		Burger::FileBMP::SetXPixelsPerMeter(int32_t)
 
 ***************************************/
 
@@ -804,7 +808,7 @@ Burger::FileBMP::SetXPixelsPerMeter(int32_t)
 	\brief Get the file image's palette
 
 	Obtain a constant pointer to the 256 entry RGBA color palette found in the
-BMP file
+	BMP file
 
 	\return Constant pointer to the 256 entry RGBAWord8_t palette
 	\sa Burger::FileBMP::GetPalette(void)
@@ -826,7 +830,9 @@ BMP file
 /*! ************************************
 
 	\fn void Burger::FileBMP::SetPalette(const RGBWord8_t *pInput,uint_t
-uStartIndex,uint_t uPaletteSize) \brief Set the file image's palette (RGB)
+		uStartIndex,uint_t uPaletteSize)
+
+	\brief Set the file image's palette (RGB)
 
 	Given a pointer to a palette, copy the colors into this class
 	for writing to an 8 bit BMP file. Since the Alpha is missing from the
@@ -838,15 +844,20 @@ uStartIndex,uint_t uPaletteSize) \brief Set the file image's palette (RGB)
 
 	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start
-modification \param uPaletteSize Number of color entries in the palette (Maximum
-256) \sa SetPalette(const RGBAWord8_t *,uint_t,uint_t)
+		modification
+
+	\param uPaletteSize Number of color entries in the palette (Maximum 256)
+
+	\sa SetPalette(const RGBAWord8_t *,uint_t,uint_t)
 
 ***************************************/
 
 /*! ************************************
 
 	\fn void Burger::FileBMP::SetPalette(const RGBAWord8_t *pInput,uint_t
-uStartIndex,uint_t uPaletteSize) \brief Set the file image's palette (RGBA)
+		uStartIndex,uint_t uPaletteSize)
+
+	\brief Set the file image's palette (RGBA)
 
 	Given a pointer to a palette, copy the colors into this class
 	for writing to an 8 bit BMP file.
@@ -857,7 +868,9 @@ uStartIndex,uint_t uPaletteSize) \brief Set the file image's palette (RGBA)
 
 	\param pInput Pointer to the palette to copy
 	\param uStartIndex Color index of the 256 color internal palette to start
-modification \param uPaletteSize Number of color entries in the palette (Maximum
-256) \sa SetPalette(const RGBWord8_t *,uint_t,uint_t)
+		modification
+	\param uPaletteSize Number of color entries in the palette (Maximum 256)
+
+	\sa SetPalette(const RGBWord8_t *,uint_t,uint_t)
 
 ***************************************/

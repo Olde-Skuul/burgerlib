@@ -1706,10 +1706,17 @@ Burger::FileXML::Attribute *BURGER_API Burger::FileXML::Attribute::Update(Root *
 	// Delete the record?
 	if (!pKey || !pKey[0] || !pValue) {
 		Delete(this);
-		return NULL;
+		return nullptr;
 	}
+#if defined(BURGER_CLANG)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wtautological-compare"
+#endif
 	// Not allocated already?
-	if (this==NULL) {
+	if (this==nullptr) {
+#if defined(BURGER_CLANG)
+#pragma clang diagnostic pop
+#endif
 		// Create the new attribute
 		Attribute *pAttribute = Attribute::New(pKey,pValue);
 		if (pAttribute && pRoot) {
@@ -4632,7 +4639,6 @@ Burger::FileXML::Declaration * BURGER_API Burger::FileXML::AddDeclaration(float 
 	
 	Traverse the linked list for a XML declaration(s) and dispose of them.
 	
-	\return Pointer to an XML declaration or \ref NULL if not found
 	\sa FindDeclaration() or AddDeclaration()
 
 ***************************************/
