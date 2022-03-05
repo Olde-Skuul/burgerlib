@@ -1,22 +1,22 @@
 /***************************************
 
-    Integer Rect handlers
+	Integer 2 dimensional Rect handlers
 
-    Mac OS specific code
+	Mac OS specific code
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brrect.h"
 
-#if defined(BURGER_MAC)
+#if defined(BURGER_MAC) || defined(DOXYGEN)
 #include <MacTypes.h>
 
 /*! ************************************
@@ -24,7 +24,7 @@
 	\brief Convert a Rect_t into a MacOS Rect structure.
 
 	Converts the contents of a Rect_t into a MacOS/Quicktime
-	for Windows Rect structure. Since it's converting an int into a short,
+	for Windows Rect structure. Since it's converting an int32_t into a short,
 	data loss could occur if the values exceed 32767 or are less than -32768.
 
 	\param pOutput Pointer to an uninitialized MacOS Rect structure.
@@ -33,7 +33,7 @@
 
 ***************************************/
 
-void Burger::Rect_t::Get(Rect* pOutput) const
+void Burger::Rect_t::Get(Rect* pOutput) const BURGER_NOEXCEPT
 {
 	pOutput->top = static_cast<short>(m_iTop);
 	pOutput->left = static_cast<short>(m_iLeft);
@@ -55,7 +55,7 @@ void Burger::Rect_t::Get(Rect* pOutput) const
 
 ***************************************/
 
-void Burger::Rect_t::Set(const Rect* pInput)
+void Burger::Rect_t::Set(const Rect* pInput) BURGER_NOEXCEPT
 {
 	m_iLeft = pInput->left;
 	m_iTop = pInput->top;

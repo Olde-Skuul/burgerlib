@@ -67,7 +67,7 @@ public:
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	virtual void SetProjection(const Matrix4D_t *pMatrix) = 0;
 #else
-	virtual uint_t CheckLoad(Display *pDisplay);
+	virtual uint_t CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
 	void BURGER_API SetProjection(const Matrix4D_t *pMatrix);
 #endif
 };

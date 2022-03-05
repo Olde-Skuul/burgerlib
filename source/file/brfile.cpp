@@ -314,7 +314,7 @@ uintptr_t BURGER_API Burger::File::GetSize(void)
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::File::Read(void *pOutput,uintptr_t uSize)
+uintptr_t BURGER_API Burger::File::Read(void *pOutput,uintptr_t uSize) BURGER_NOEXCEPT
 {
 	uintptr_t uResult = 0;
 	if (uSize && pOutput) {

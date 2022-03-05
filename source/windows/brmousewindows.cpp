@@ -346,7 +346,7 @@ uint_t Burger::Mouse::IsPresent(void) const
 
 ***************************************/
 
-void Burger::Mouse::AcquireDirectInput(void)
+void Burger::Mouse::AcquireDirectInput(void) BURGER_NOEXCEPT
 {
 	IDirectInputDevice8W *pMouseDevice = m_pMouseDevice;
 	if (pMouseDevice) {
@@ -368,7 +368,7 @@ void Burger::Mouse::AcquireDirectInput(void)
 
 ***************************************/
 
-void Burger::Mouse::UnacquireDirectInput(void)
+void Burger::Mouse::UnacquireDirectInput(void) BURGER_NOEXCEPT
 {
 	IDirectInputDevice8W *pMouseDevice = m_pMouseDevice;
 	if (pMouseDevice) {
@@ -387,7 +387,7 @@ void Burger::Mouse::UnacquireDirectInput(void)
 
 ***************************************/
 
-void BURGER_API Burger::Mouse::ReadSystemMouseValues(void)
+void BURGER_API Burger::Mouse::ReadSystemMouseValues(void) BURGER_NOEXCEPT
 {
 	// Get the initial keyboard delay to mimic the user's desired response
 	// This is set in the Keyboard windows control panel

@@ -85,7 +85,7 @@ public:
 	eError BURGER_API Close(void) BURGER_NOEXCEPT;
 	uint_t BURGER_API CloseAsync(void);
 	uintptr_t BURGER_API GetSize(void);
-	uintptr_t BURGER_API Read(void* pOutput, uintptr_t uSize);
+	uintptr_t BURGER_API Read(void* pOutput, uintptr_t uSize) BURGER_NOEXCEPT;
 	uint_t BURGER_API ReadAsync(void* pOutput, uintptr_t uSize);
 	uintptr_t BURGER_API Write(
 		const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT;

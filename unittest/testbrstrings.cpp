@@ -1,14 +1,14 @@
 /***************************************
 
-    Unit tests for the miscellaneous functions
+	Unit tests for the miscellaneous functions
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -40,14 +40,15 @@ static const Wildcard_t s_Wildcards[] = {{"foo", "*o", FALSE},
 	{"fo", "*fo?", TRUE}, {"file.txt", "*.txt", FALSE},
 	{"FILE.TXT", "*.txt", FALSE}};
 
-static uint_t BURGER_API TestWildcard(void)
+static uint_t BURGER_API TestWildcard(void) BURGER_NOEXCEPT
 {
 	uint_t uFailure = FALSE;
 	const Wildcard_t* pWork = s_Wildcards;
 	uintptr_t uCount = BURGER_ARRAYSIZE(s_Wildcards);
 	do {
-		uint32_t uTester = Burger::Wildcardcmp(pWork->m_pTest, pWork->m_pWild);
-		uint_t uTest = (uTester != pWork->m_uResult);
+		const uint32_t uTester =
+			Burger::Wildcardcmp(pWork->m_pTest, pWork->m_pWild);
+		const uint_t uTest = (uTester != pWork->m_uResult);
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure("Burger::Wildcardcmp(%s,%s) = %u, expected %u", uTest,
@@ -72,7 +73,7 @@ static const Wildcard_t s_QuotedStrings[] = {{"foo", "foo", 3},
 	{"foo bar", "foo", 3}, {"foo\tbar", "foo", 3}, {"'foo bar'", "foo bar", 9},
 	{"'foo\tbar'", "foo bar", 9}};
 
-static uint_t BURGER_API TestParseQuotedString(void)
+static uint_t BURGER_API TestParseQuotedString(void) BURGER_NOEXCEPT
 {
 	uint_t uFailure = FALSE;
 	const Wildcard_t* pWork = s_QuotedStrings;
@@ -118,28 +119,29 @@ static uint_t BURGER_API TestParseQuotedString(void)
 	"\xA6\xE5\xA3\xAB\xE3\x82\xBB\xE3\x83\xBC\xE3\x83\xA9\xE3\x83\xBC" \
 	"\xE3\x83\xA0\xE3\x83\xBC\xE3\x83\xB3"
 
-static uint_t BURGER_API TestGetEnvironmentString(uint_t uVerbose)
+static uint_t BURGER_API TestGetEnvironmentString(
+	uint_t uVerbose) BURGER_NOEXCEPT
 {
 #if defined(BURGER_LINUX) || defined(BURGER_MACOSX) || defined(BURGER_WINDOWS)
-    uint_t uFailure = 0;
-    const char* pTest = Burger::GetEnvironmentString("JAPANESE");
-    if (pTest) {
-        uint_t uTest =
-            static_cast<uint_t>(Burger::StringCompare(pTest, SAILORMOON));
-        uFailure |= uTest;
-        ReportFailure(
-            "Burger::GetEnvironmentString(\"JAPANESE\") = \"%s\", expected \"%s\"",
-            uTest, pTest, pTest, SAILORMOON);
-        Burger::Free(pTest);
-    } else {
-        if (uVerbose & VERBOSE_MSG) {
-            Message("JAPANESE environment variable not found");
-        }
-    }
-    return uFailure;
+	uint_t uFailure = 0;
+	const char* pTest = Burger::GetEnvironmentString("JAPANESE");
+	if (pTest) {
+		const uint_t uTest =
+			static_cast<uint_t>(Burger::StringCompare(pTest, SAILORMOON));
+		uFailure |= uTest;
+		ReportFailure(
+			"Burger::GetEnvironmentString(\"JAPANESE\") = \"%s\", expected \"%s\"",
+			uTest, pTest, pTest, SAILORMOON);
+		Burger::Free(pTest);
+	} else {
+		if (uVerbose & VERBOSE_MSG) {
+			Message("JAPANESE environment variable not found");
+		}
+	}
+	return uFailure;
 #else
-    BURGER_UNUSED(uVerbose);
-    return 0;
+	BURGER_UNUSED(uVerbose);
+	return 0;
 #endif
 }
 
@@ -153,14 +155,15 @@ static const Wildcard_t s_StringStopAts[] = {{nullptr, "*o", 0},
 	{"foo", nullptr, 3}, {"foo", "", 3}, {"", "*", 0}, {"foo", "*o", 1},
 	{"foo", "f*", 0}, {"foo", "*fo*", 0}, {"FILE.TXT", "*.txt", 4}};
 
-static uint_t TestStringStopAt(void)
+static uint_t TestStringStopAt(void) BURGER_NOEXCEPT
 {
 	uint_t uFailure = FALSE;
 	const Wildcard_t* pWork = s_StringStopAts;
 	uintptr_t uCount = BURGER_ARRAYSIZE(s_StringStopAts);
 	do {
-		uintptr_t uTester = Burger::StringStopAt(pWork->m_pTest, pWork->m_pWild);
-		uint_t uTest = (uTester != pWork->m_uResult);
+		const uintptr_t uTester =
+			Burger::StringStopAt(pWork->m_pTest, pWork->m_pWild);
+		const uint_t uTest = (uTester != pWork->m_uResult);
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure("Burger::StringStopAt(%s,%s) = %u, expected %u",
@@ -182,15 +185,15 @@ static const Wildcard_t s_StringSkipOvers[] = {{nullptr, "*o", 0},
 	{"foo", nullptr, 0}, {"foo", "", 0}, {"", "*", 0}, {"foo", "*o", 0},
 	{"foo", "f*", 1}, {"foo", "*fo*", 3}, {"FILE.TXT", "*.txt", 0}};
 
-static uint_t TestStringSkipOver(void)
+static uint_t TestStringSkipOver(void) BURGER_NOEXCEPT
 {
 	uint_t uFailure = FALSE;
 	const Wildcard_t* pWork = s_StringSkipOvers;
 	uintptr_t uCount = BURGER_ARRAYSIZE(s_StringSkipOvers);
 	do {
-		uintptr_t uTester =
+		const uintptr_t uTester =
 			Burger::StringSkipOver(pWork->m_pTest, pWork->m_pWild);
-		uint_t uTest = (uTester != pWork->m_uResult);
+		const uint_t uTest = (uTester != pWork->m_uResult);
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure("Burger::StringSkipOver(%s,%s) = %u, expected %u",
@@ -210,15 +213,14 @@ static uint_t TestStringSkipOver(void)
 
 static const char* s_Tokens[] = {"abc", "foo", "k", "ll", "me"};
 
-static uint_t TestStringToken(void)
+static uint_t TestStringToken(void) BURGER_NOEXCEPT
 {
 	char Test[] = "abc,foo,kill,me";
 	uint_t uFailure = FALSE;
 	const char** ppWork = s_Tokens;
 	uintptr_t uCount = BURGER_ARRAYSIZE(s_Tokens);
 	char* pTemp = nullptr;
-	const char* pToken =
-		Burger::StringToken(Test,"i,", &pTemp);
+	const char* pToken = Burger::StringToken(Test, "i,", &pTemp);
 	do {
 		uint_t uTest;
 		if (!pToken) {
@@ -229,8 +231,8 @@ static uint_t TestStringToken(void)
 		}
 		uFailure |= uTest;
 		if (uTest) {
-			ReportFailure("Burger::StringToken() = %s, expected %s",
-				uTest, pToken,ppWork[0]);
+			ReportFailure("Burger::StringToken() = %s, expected %s", uTest,
+				pToken, ppWork[0]);
 		}
 		++ppWork;
 		pToken = Burger::StringToken(nullptr, "i,", &pTemp);
@@ -242,7 +244,7 @@ static uint_t TestStringToken(void)
 // Perform all the tests for the Burgerlib Endian Manager
 //
 
-int BURGER_API TestBrstrings(uint_t uVerbose)
+int BURGER_API TestBrstrings(uint_t uVerbose) BURGER_NOEXCEPT
 {
 	uint_t uTotal; // Assume no failures
 
@@ -250,33 +252,33 @@ int BURGER_API TestBrstrings(uint_t uVerbose)
 		Message("Running String tests");
 	}
 
-    // Test compiler switches
-    uTotal = TestWildcard();
-    uTotal |= TestParseQuotedString();
-    uTotal |= TestGetEnvironmentString(uVerbose);
-    uTotal |= TestStringStopAt();
-    uTotal |= TestStringSkipOver();
-    uTotal |= TestStringToken();
+	// Test compiler switches
+	uTotal = TestWildcard();
+	uTotal |= TestParseQuotedString();
+	uTotal |= TestGetEnvironmentString(uVerbose);
+	uTotal |= TestStringStopAt();
+	uTotal |= TestStringSkipOver();
+	uTotal |= TestStringToken();
 
-    if (uVerbose & VERBOSE_MSG) {
-        Burger::String TempString;
+	if (uVerbose & VERBOSE_MSG) {
+		Burger::String TempString;
 
-        Burger::GetUserLoginName(&TempString);
-        Message("GetUserLoginName() returned \"%s\"", TempString.c_str());
+		Burger::GetUserLoginName(&TempString);
+		Message("GetUserLoginName() returned \"%s\"", TempString.c_str());
 
-        Burger::GetUserRealName(&TempString);
-        Message("GetUserRealName() returned \"%s\"", TempString.c_str());
-        
-        Burger::GetMachineName(&TempString);
-        Message("GetMachineName() returned \"%s\"", TempString.c_str());
+		Burger::GetUserRealName(&TempString);
+		Message("GetUserRealName() returned \"%s\"", TempString.c_str());
+
+		Burger::GetMachineName(&TempString);
+		Message("GetMachineName() returned \"%s\"", TempString.c_str());
 
 #if defined(BURGER_MACOS)
-        Burger::GetMacModelIdentifier(&TempString);
-        Message("GetMacModelIdentifier() returned \"%s\"", TempString.GetPtr());
+		Burger::GetMacModelIdentifier(&TempString);
+		Message("GetMacModelIdentifier() returned \"%s\"", TempString.c_str());
 #endif
-    }
+	}
 
-    if (!uTotal && (uVerbose & VERBOSE_MSG)) {
+	if (!uTotal && (uVerbose & VERBOSE_MSG)) {
 		Message("Passed all String tests!");
 	}
 

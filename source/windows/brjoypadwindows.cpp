@@ -639,7 +639,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(void *pData) BURGE
 	
 ***************************************/
 
-void BURGER_API Burger::Joypad::AcquireDirectInput(void)
+void BURGER_API Burger::Joypad::AcquireDirectInput(void) BURGER_NOEXCEPT
 {
 	uint_t i = m_uDeviceCount;
 	if (i) {
@@ -667,7 +667,7 @@ void BURGER_API Burger::Joypad::AcquireDirectInput(void)
 	
 ***************************************/
 
-void BURGER_API Burger::Joypad::UnacquireDirectInput(void)
+void BURGER_API Burger::Joypad::UnacquireDirectInput(void) BURGER_NOEXCEPT
 {
 	uint_t i = m_uDeviceCount;
 	if (i) {

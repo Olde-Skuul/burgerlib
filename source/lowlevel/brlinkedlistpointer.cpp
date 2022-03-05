@@ -1,14 +1,14 @@
 /***************************************
 
-    Linked list of data objects manager
+	Linked list of data objects manager
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -20,14 +20,94 @@
 	\class Burger::LinkedListPointer
 	\brief Double linked list with pointer class
 
-	This derived class from DoublyLinkedList adds an application
-	supplied pointer so the linked list objects point to
-	parent data. It's intended to be a simple extension to
-	a linked list class.
+	This derived class from DoublyLinkedList adds an application supplied
+	pointer so the linked list objects point to parent data. It's intended to be
+	a simple extension to a linked list class.
 
 	If more robustness is needed, consider using \ref LinkedListObjects instead
 
-	\sa LinkedListObjects
+	\sa LinkedListObjects or DoublyLinkedList
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::LinkedListPointer::LinkedListPointer()
+	\brief Initializer for a LinkedListPointer
+
+	Set the links to point to itself. The object is not attached to another
+	list. The data is set to nullptr.
+
+	\sa ~DoublyLinkedList() or LinkedListPointer(void *)
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::LinkedListPointer::LinkedListPointer(void *)
+	\brief Initializer for a LinkedListPointer with default data.
+
+	Set the links to point to itself. The object is not attached to another
+	list. The data is set to to the input value.
+
+	\param pData Pointer to initialize the pointer with.
+
+	\sa ~DoublyLinkedList() or LinkedListPointer()
+
+***************************************/
+
+/*! ************************************
+
+	\fn const LinkedListPointer * Burger::LinkedListPointer::GetNext(void) const
+	\brief Get the next pointer in the list
+
+	Return the pointer to the next object in the list. Since the list is
+	circular, it's the caller's responsibility to ensure that the start and end
+	are detected properly
+
+	\return Pointer to the next LinkedListPointer object in the chain
+	\sa GetPrevious(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn const LinkedListPointer * Burger::LinkedListPointer::GetPrevious(
+		void) const
+
+	\brief Get the previous pointer in the list
+
+	Return the pointer to the previous object in the list. Since the list is
+	circular, it's the caller's responsibility to ensure that the
+	start and end are detected properly
+
+	\return Pointer to the previous LinkedListPointer object in the chain
+	\sa GetNext(void) const
+
+***************************************/
+
+/*! ************************************
+
+	\fn void * Burger::LinkedListPointer::GetData(void) const
+	\brief Get the pointer stored in this node.
+
+	Return the pointer stored in this node.
+
+	\return Pointer stored in this node.
+	\sa SetData(void *)
+
+***************************************/
+
+/*! ************************************
+
+	\fn void Burger::LinkedListPointer::SetData(void *)
+	\brief Set the pointer to store in this node.
+
+	Change the pointer stored in this node with the new pointer. The previous
+	pointer is discarded.
+
+	\param pInput Pointer to store in this node.
+	\sa GetData(void) const
 
 ***************************************/
 
@@ -35,19 +115,17 @@
 
 	\brief Create a new LinkedListPointer instance
 
-	Allocate memory using Burger::Alloc() and 
-	initialize a LinkedListPointer with it.
+	Allocate memory using Burger::Alloc() and initialize a LinkedListPointer
+	with it.
 
-	\return \ref NULL if out of memory
-	\sa Delete(const LinkedListPointer *)
+	\return \ref nullptr if out of memory
+	\sa Delete(const T *)
 
 ***************************************/
 
-Burger::LinkedListPointer * BURGER_API Burger::LinkedListPointer::New(void *pInput)
+Burger::LinkedListPointer* BURGER_API Burger::LinkedListPointer::New(
+	void* pInput) BURGER_NOEXCEPT
 {
 	// Manually allocate the memory
-	LinkedListPointer *pThis = new (Alloc(sizeof(LinkedListPointer))) LinkedListPointer(pInput);
-	// Sorry Charlie!
-	return pThis;
+	return new (Alloc(sizeof(LinkedListPointer))) LinkedListPointer(pInput);
 }
-

@@ -128,7 +128,7 @@ Burger::String16::String16(const Burger::String16 &rInput,uintptr_t uStart,uintp
 
 ***************************************/
 
-Burger::String16::String16(const char *pInput)
+Burger::String16::String16(const char *pInput) BURGER_NOEXCEPT
 {
 	if (!pInput) {
 		pInput = g_EmptyString;

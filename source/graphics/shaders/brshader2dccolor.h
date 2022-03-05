@@ -70,7 +70,7 @@ public:
 	virtual void SetColor(float fRed,float fGreen,float fBlue,float fAlpha) = 0;
 	virtual void SetColor(const Vector4D_t *pColor) = 0;
 #else
-	virtual uint_t CheckLoad(Display *pDisplay);
+	virtual uint_t CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
 	void BURGER_API SetPosition(float fX,float fY,float fWidth,float fHeight);
 	void BURGER_API SetPosition(const Vector4D_t *pPosition);
 	void BURGER_API SetColor(float fRed,float fGreen,float fBlue,float fAlpha);

@@ -191,8 +191,8 @@ public:
 	static RunQueue::eReturnCode BURGER_API Poll(void *pData) BURGER_NOEXCEPT;
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	void BURGER_API AcquireDirectInput(void);
-	void BURGER_API UnacquireDirectInput(void);
+	void BURGER_API AcquireDirectInput(void) BURGER_NOEXCEPT;
+	void BURGER_API UnacquireDirectInput(void) BURGER_NOEXCEPT;
 #endif
 
 };

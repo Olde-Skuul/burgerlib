@@ -57,7 +57,7 @@ BURGER_INLINE T* New(void)
 }
 
 template<class T>
-void BURGER_API Delete(const T* pInput)
+void BURGER_API Delete(const T* pInput) BURGER_NOEXCEPT
 {
 	if (pInput) {
 		const_cast<T*>(pInput)->~T();

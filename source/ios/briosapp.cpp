@@ -1,14 +1,14 @@
 /***************************************
 
-    iOS application manager
+	iOS application manager
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -16,15 +16,15 @@
 #if defined(BURGER_IOS) || defined(DOXYGEN)
 #include "brfilemanager.h"
 #include "brfilename.h"
-#include "brstringfunctions.h"
 #include "brfloatingpoint.h"
 #include "brglobals.h"
+#include "brstringfunctions.h"
 
 #import <UIKit/UIKit.h>
 
 // Static application instance
 
-Burger::GameApp *Burger::GameApp::g_piOSApp;
+Burger::GameApp* Burger::GameApp::g_piOSApp;
 
 #if !defined(DOXYGEN)
 
@@ -32,7 +32,7 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 // Main app launch delegate
 //
 
-@interface BurgerUIKitDelegate : NSObject<UIApplicationDelegate> {
+@interface BurgerUIKitDelegate: NSObject <UIApplicationDelegate> {
 }
 @end
 
@@ -41,10 +41,11 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 // until the application begins.
 //
 
-@interface BurgerLaunchViewController : UIViewController {
-	UIImageView *m_pSplashImageView;	///< View that will hold the image to display on launch
-	UIImage *m_pPortraitImage;			///< Image when the device is in portrait mode
-	UIImage *m_pLandscapeImage;			///< Image when the device is in landscape mode
+@interface BurgerLaunchViewController: UIViewController {
+	UIImageView* m_pSplashImageView; ///< View that will hold the image to
+									 ///< display on launch
+	UIImage* m_pPortraitImage;  ///< Image when the device is in portrait mode
+	UIImage* m_pLandscapeImage; ///< Image when the device is in landscape mode
 }
 
 - (void)updateSplashImage:(UIInterfaceOrientation)interfaceOrientation;
@@ -68,28 +69,33 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 
 	//
 	// Get the window to show the image
-	UIImageView *pSplashImageView = [[UIImageView alloc] init];
+	UIImageView* pSplashImageView = [[UIImageView alloc] init];
 	m_pSplashImageView = pSplashImageView;
 	[self setView:pSplashImageView];
 
 	// Get the size of the screen
 	CGSize ScreenSize = [UIScreen mainScreen].bounds.size;
 	// Use the larger to get the portrait height
-	float fPortraitHeight = Burger::Max(ScreenSize.width,ScreenSize.height);
+	float fPortraitHeight = Burger::Max(ScreenSize.width, ScreenSize.height);
 
 	// Get the larger size portrait image if available
-	UIImage *pPortraitImage = [UIImage imageNamed:[NSString stringWithFormat:@"Default-%dh.png",(int)fPortraitHeight]];
+	UIImage* pPortraitImage =
+		[UIImage imageNamed:[NSString stringWithFormat:@"Default-%dh.png",
+									  (int)fPortraitHeight]];
 	if (!pPortraitImage) {
 		// Use the default image
 		pPortraitImage = [UIImage imageNamed:@"Default.png"];
 	}
 
 	// Do the same for the landscape mode
-	UIImage *pLandscapeImage = [UIImage imageNamed:@"Default-Landscape.png"];
+	UIImage* pLandscapeImage = [UIImage imageNamed:@"Default-Landscape.png"];
 	// No landscape?
 	if (!pLandscapeImage && pPortraitImage) {
 		// Create a landscape image from the portrait image
-		pLandscapeImage = [[UIImage alloc] initWithCGImage:pPortraitImage.CGImage scale:1.0f orientation: UIImageOrientationRight];
+		pLandscapeImage =
+			[[UIImage alloc] initWithCGImage:pPortraitImage.CGImage
+									   scale:1.0f
+								 orientation:UIImageOrientationRight];
 	}
 	// Store the pointers (Can be NULL)
 	m_pPortraitImage = pPortraitImage;
@@ -102,7 +108,8 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 		[pLandscapeImage retain];
 	}
 	// Select the image to display
-	[self updateSplashImage:[[UIApplication sharedApplication] statusBarOrientation]];
+	[self updateSplashImage:[[UIApplication sharedApplication]
+								statusBarOrientation]];
 	return self;
 }
 
@@ -112,7 +119,7 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 
 ***************************************/
 
-- (void) dealloc
+- (void)dealloc
 {
 	// Release the view
 	[self setView:nil];
@@ -147,7 +154,8 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 	// Allow all directions on an iPad, but don't allow upside down
 	// on iPhones due to issues with taking a call.
 
-	if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+	if ([[UIDevice currentDevice] userInterfaceIdiom] ==
+		UIUserInterfaceIdiomPhone) {
 		uResult &= ~UIInterfaceOrientationMaskPortraitUpsideDown;
 	}
 	return uResult;
@@ -164,7 +172,7 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 	// Call the function only because it MIGHT be overridden
 	NSUInteger uMark = [self supportedInterfaceOrientations];
 	// Mask it
-	return (uMark & (1U << orient))!=0;
+	return (uMark & (1U << orient)) != 0;
 }
 
 /***************************************
@@ -173,7 +181,9 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 
 ***************************************/
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+- (void)willAnimateRotationToInterfaceOrientation:
+			(UIInterfaceOrientation)interfaceOrientation
+										 duration:(NSTimeInterval)duration
 {
 	// No animation, just do it
 #pragma unused(duration)
@@ -188,7 +198,7 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 
 - (void)updateSplashImage:(UIInterfaceOrientation)interfaceOrientation
 {
-	UIImage *pImage;
+	UIImage* pImage;
 
 	if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
 		pImage = m_pLandscapeImage;
@@ -243,23 +253,28 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 
 ***************************************/
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+- (BOOL)application:(UIApplication*)application
+	didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
 #pragma unused(application)
 #pragma unused(launchOptions)
 
-	Burger::GameApp *pApp = Burger::GameApp::GetApp();
+	Burger::GameApp* pApp = Burger::GameApp::GetApp();
 
 	// Retain the launch image
-	UIWindow *pWindow = pApp->CreateWindow();
-	UIViewController *pLaunchViewController = [[BurgerLaunchViewController alloc] init];
-	pApp->SetViewController(pLaunchViewController,pLaunchViewController.view);
+	UIWindow* pWindow = pApp->CreateWindow();
+	UIViewController* pLaunchViewController =
+		[[BurgerLaunchViewController alloc] init];
+	pApp->SetViewController(pLaunchViewController, pLaunchViewController.view);
 	[pWindow makeKeyAndVisible];
 
 	// Ensure the filemanager is pointing to the bundle folder
-	[[NSFileManager defaultManager] changeCurrentDirectoryPath: [[NSBundle mainBundle] resourcePath]];
+	[[NSFileManager defaultManager]
+		changeCurrentDirectoryPath:[[NSBundle mainBundle] resourcePath]];
 
-	[self performSelector:@selector(postFinishLaunch) withObject:nil afterDelay:0.0];
+	[self performSelector:@selector(postFinishLaunch)
+			   withObject:nil
+			   afterDelay:0.0];
 	return YES;
 }
 
@@ -269,7 +284,7 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 
 ***************************************/
 
-- (void)applicationWillTerminate:(UIApplication *)application
+- (void)applicationWillTerminate:(UIApplication*)application
 {
 #pragma unused(application)
 	// Tell the application to exit
@@ -282,7 +297,7 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 
 ***************************************/
 
-- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application
+- (void)applicationDidReceiveMemoryWarning:(UIApplication*)application
 {
 #pragma unused(application)
 }
@@ -293,7 +308,7 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 
 ***************************************/
 
-- (void) applicationWillResignActive:(UIApplication*)application
+- (void)applicationWillResignActive:(UIApplication*)application
 {
 #pragma unused(application)
 }
@@ -304,7 +319,7 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 
 ***************************************/
 
-- (void) applicationDidEnterBackground:(UIApplication*)application
+- (void)applicationDidEnterBackground:(UIApplication*)application
 {
 #pragma unused(application)
 }
@@ -315,7 +330,7 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 
 ***************************************/
 
-- (void) applicationWillEnterForeground:(UIApplication*)application
+- (void)applicationWillEnterForeground:(UIApplication*)application
 {
 #pragma unused(application)
 }
@@ -326,7 +341,7 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 
 ***************************************/
 
-- (void) applicationDidBecomeActive:(UIApplication*)application
+- (void)applicationDidBecomeActive:(UIApplication*)application
 {
 #pragma unused(application)
 }
@@ -337,7 +352,10 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 
 ***************************************/
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+- (BOOL)application:(UIApplication*)application
+			  openURL:(NSURL*)url
+	sourceApplication:(NSString*)sourceApplication
+		   annotation:(id)annotation
 {
 #pragma unused(application)
 #pragma unused(url)
@@ -349,7 +367,7 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 @end
 #endif
 
-/*! ************************************
+/***************************************
 
 	\brief Base constructor.
 
@@ -357,23 +375,25 @@ Burger::GameApp *Burger::GameApp::g_piOSApp;
 
 ***************************************/
 
-Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,uint_t uDefaultHandleCount,uintptr_t uMinReserveSize) :
-	m_MemoryManagerHandle(uDefaultMemorySize,uDefaultHandleCount,uMinReserveSize),
-	m_pWindow(NULL),
-	m_pViewController(NULL),
-	m_pView(NULL)
+Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,
+	uint_t uDefaultHandleCount, uintptr_t uMinReserveSize) BURGER_NOEXCEPT
+	: m_MemoryManagerHandle(
+		  uDefaultMemorySize, uDefaultHandleCount, uMinReserveSize),
+	  m_pWindow(nullptr),
+	  m_pViewController(nullptr),
+	  m_pView(nullptr)
 {
 	InitDefaults();
 	g_piOSApp = this;
 
 	// Add the iOS callback function
-	m_RunQueue.Add(Poll,NULL,this,RunQueue::PRIORITY_FIRST);
+	m_RunQueue.Add(Poll, nullptr, this, RunQueue::PRIORITY_FIRST);
 
 	// Init the file system
 	FileManager::Init();
 }
 
-/*! ************************************
+/***************************************
 
 	\brief Dispose of any allocated resources
 
@@ -384,7 +404,7 @@ Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,uint_t uDefaultHandleCount
 
 Burger::GameApp::~GameApp()
 {
-	RemoveRoutine(Poll,this);
+	RemoveRoutine(Poll, this);
 	ReleaseWindow();
 	// Release the file system
 	FileManager::Shutdown();
@@ -400,12 +420,13 @@ Burger::GameApp::~GameApp()
 
 ***************************************/
 
-int BURGER_API Burger::GameApp::Run(void)
+int BURGER_API Burger::GameApp::Run(void) BURGER_NOEXCEPT
 {
 	// Prevent leaks by making a global autorelease pool
-	NSAutoreleasePool * pPool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool* pPool = [[NSAutoreleasePool alloc] init];
 	// Use the delegate above
-	int iResult = UIApplicationMain(GetArgc(),const_cast<char **>(GetArgv()),nil,@"BurgerUIKitDelegate");
+	int iResult = UIApplicationMain(
+		GetArgc(), const_cast<char**>(GetArgv()), nil, @"BurgerUIKitDelegate");
 	// Application is done, release all memory
 	[pPool release];
 	return iResult;
@@ -437,10 +458,11 @@ int BURGER_API Burger::GameApp::Run(void)
 
 ***************************************/
 
-UIWindow * BURGER_API Burger::GameApp::CreateWindow(void)
+UIWindow* BURGER_API Burger::GameApp::CreateWindow(void) BURGER_NOEXCEPT
 {
 	ReleaseWindow();
-	UIWindow *pWindow = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+	UIWindow* pWindow =
+		[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	m_pWindow = pWindow;
 	return pWindow;
 }
@@ -454,14 +476,13 @@ UIWindow * BURGER_API Burger::GameApp::CreateWindow(void)
 
 ***************************************/
 
-void BURGER_API Burger::GameApp::ReleaseWindow(void)
+void BURGER_API Burger::GameApp::ReleaseWindow(void) BURGER_NOEXCEPT
 {
-	SetViewController(NULL,NULL);
+	SetViewController(NULL, NULL);
 	// Clean up, we're leaving
 	[m_pWindow release];
 	m_pWindow = NULL;
 }
-
 
 /*! ************************************
 
@@ -485,7 +506,8 @@ void BURGER_API Burger::GameApp::ReleaseWindow(void)
 	this is the currently active view pointer
 
 	\return Pointer to the current UIView.
-	\sa GetViewController(void) const or SetViewController(UIViewController *,UIView*)
+	\sa GetViewController(void) const or SetViewController(
+		UIViewController *, UIView*)
 
 ***************************************/
 
@@ -497,24 +519,27 @@ void BURGER_API Burger::GameApp::ReleaseWindow(void)
 	the entire screen. This function will attach (If different)
 	a UIViewController and / or UIView to it.
 
-	\param pViewController Pointer to a UIViewController or \ref NULL to detach any previous controller
+	\param pViewController Pointer to a UIViewController or \ref NULL to detach
+		any previous controller
 	\param pView Pointer to a UIView or \ref NULL to detach any previous view
+
 	\sa GetViewController(void) const or GetView(void) const
 
 ***************************************/
 
-void BURGER_API Burger::GameApp::SetViewController(UIViewController *pViewController,UIView *pView)
+void BURGER_API Burger::GameApp::SetViewController(
+	UIViewController* pViewController, UIView* pView) BURGER_NOEXCEPT
 {
-	UIViewController *pOldViewController = m_pViewController;
-	UIView *pOldView = m_pView;
+	UIViewController* pOldViewController = m_pViewController;
+	UIView* pOldView = m_pView;
 	m_pView = pView;
 	m_pViewController = pViewController;
 
 	// Is the controller the same?
 
-	if (pViewController==pOldViewController) {
+	if (pViewController == pOldViewController) {
 		// Did the view change?
-		if (pView!=pOldView) {
+		if (pView != pOldView) {
 			// Update the view
 			[pOldViewController setView:pView];
 			[pView retain];
@@ -524,7 +549,7 @@ void BURGER_API Burger::GameApp::SetViewController(UIViewController *pViewContro
 	} else {
 		// Release the controller if it's the one attached to the
 		// main window
-		UIWindow *pWindow = m_pWindow;
+		UIWindow* pWindow = m_pWindow;
 		if (pWindow) {
 			pWindow.rootViewController = nil;
 		}
@@ -553,10 +578,9 @@ void BURGER_API Burger::GameApp::SetViewController(UIViewController *pViewContro
 	\fn GameApp *Burger::GameApp::GetApp(void)
 	\brief Return the pointer to the global application instance
 
-	iOS applications only exist in a single instance, to simplify
-	internal code, the instance is reflected in a singleton
-	and the pointer to it is stored in a global which
-	is accessed through this function.
+	iOS applications only exist in a single instance, to simplify internal code,
+	the instance is reflected in a singleton and the pointer to it is stored in
+	a global which is accessed through this function.
 
 	\return Pointer to the singleton GameApp instance
 
@@ -567,15 +591,15 @@ void BURGER_API Burger::GameApp::SetViewController(UIViewController *pViewContro
 	\brief Process iOS events
 
 	Internal function that will call CFRunLoopRunInMode(kCFRunLoopDefaultMode)
-	and CFRunLoopRunInMode(UITrackingRunLoopMode) to yield time to
-	other apps
+	and CFRunLoopRunInMode(UITrackingRunLoopMode) to yield time to other apps
 
 	\param pSelf "this" pointer to the GameApp class
 	\return RunQueue::OKAY since this function never shuts down on its own
 
 ***************************************/
 
-Burger::RunQueue::eReturnCode BURGER_API Burger::GameApp::Poll(void * /* pSelf */) BURGER_NOEXCEPT
+Burger::RunQueue::eReturnCode BURGER_API Burger::GameApp::Poll(
+	void* /* pSelf */) BURGER_NOEXCEPT
 {
 	const CFTimeInterval fInterval = 0.000002;
 
@@ -583,13 +607,14 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::GameApp::Poll(void * /* pSelf *
 
 	SInt32 iResult;
 	do {
-		iResult = CFRunLoopRunInMode(kCFRunLoopDefaultMode,fInterval,TRUE);
+		iResult = CFRunLoopRunInMode(kCFRunLoopDefaultMode, fInterval, TRUE);
 	} while (iResult == kCFRunLoopRunHandledSource);
 
 	// Needed to allow UIScrollView to work
 
 	do {
-		iResult = CFRunLoopRunInMode((CFStringRef)UITrackingRunLoopMode,fInterval,TRUE);
+		iResult = CFRunLoopRunInMode(
+			(CFStringRef)UITrackingRunLoopMode, fInterval, TRUE);
 	} while (iResult == kCFRunLoopRunHandledSource);
 
 	return RunQueue::OKAY;

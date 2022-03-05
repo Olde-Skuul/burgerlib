@@ -73,7 +73,7 @@ public:
 	virtual void SetPosition(float fX,float fY,float fWidth,float fHeight) = 0;
 	virtual void SetPosition(const Vector4D_t *pPosition) = 0;
 #else
-	virtual uint_t CheckLoad(Display *pDisplay);
+	virtual uint_t CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
 	void BURGER_API SetPosition(float fX,float fY,float fWidth,float fHeight);
 	void BURGER_API SetPosition(const Vector4D_t *pPosition);
 #endif

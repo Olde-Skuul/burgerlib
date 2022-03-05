@@ -166,7 +166,7 @@ private:
 	static FileManager* g_pFileManager;
 
 public:
-	static eError BURGER_API Init(void);
+	static eError BURGER_API Init(void) BURGER_NOEXCEPT;
 	static void BURGER_API Shutdown(void) BURGER_NOEXCEPT;
 
 #if defined(BURGER_MSDOS) || defined(DOXYGEN)

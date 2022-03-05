@@ -67,7 +67,7 @@ public:
 	virtual void SetProjection(const Matrix4D_t *pMatrix) = 0;
 	virtual void SetColor(const Vector4D_t *pColor) = 0;
 #else
-	virtual uint_t CheckLoad(Display *pDisplay);
+	virtual uint_t CheckLoad(Display *pDisplay) BURGER_OVERRIDE;
 	void BURGER_API SetProjection(const Matrix4D_t *pMatrix);
 	void BURGER_API SetColor(const Vector4D_t *pColor);
 #endif

@@ -56,7 +56,7 @@ public:
     String16(const String16& rInput);
     String16(
         const String16& rInput, uintptr_t uStart, uintptr_t uEnd = UINTPTR_MAX);
-    String16(const char* pInput);
+    String16(const char* pInput) BURGER_NOEXCEPT;
     String16(const char* pInput, uintptr_t uPadding);
     String16(const uint16_t* pInput);
     String16(const uint32_t* pInput);

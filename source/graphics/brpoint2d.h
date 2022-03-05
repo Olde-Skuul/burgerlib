@@ -1,14 +1,14 @@
 /***************************************
 
-    Integer Point handlers
+	Integer 2 dimensional Point handlers
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -17,6 +17,10 @@
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
+#endif
+
+#ifndef __BRERROR_H__
+#include "brerror.h"
 #endif
 
 #if defined(BURGER_MAC) && !defined(__BRMACTYPES_H__)
@@ -50,39 +54,72 @@
 /* BEGIN */
 namespace Burger {
 struct Point2D_t {
-	int32_t	m_iX;		///< X coordinate of the point
-	int32_t m_iY;		///< Y coordinate of the point
-	BURGER_INLINE int32_t GetX(void) const { return m_iX; }
-	BURGER_INLINE int32_t GetY(void) const { return m_iY; }
-	BURGER_INLINE int32_t *GetXPtr(void) { return &m_iX; }
-	BURGER_INLINE int32_t *GetYPtr(void) { return &m_iY; }
-	BURGER_INLINE void SetX(int32_t iX) { m_iX = iX; }
-	BURGER_INLINE void SetY(int32_t iY) { m_iY = iY; }
-	BURGER_INLINE void Set(int32_t iX,int32_t iY) { m_iX = iX; m_iY = iY; }
-	BURGER_INLINE void Clear(void) { m_iX = 0; m_iY = 0; }
-	uint_t Read(FILE *fp);
-	uint_t Write(FILE *fp) const;
-	uint_t Read(Burger::File *fp);
-	uint_t Write(Burger::File *fp) const;
+	/** X coordinate of the point */
+	int32_t m_iX;
+	/** Y coordinate of the point */
+	int32_t m_iY;
+
+	BURGER_INLINE int32_t GetX(void) const BURGER_NOEXCEPT
+	{
+		return m_iX;
+	}
+	BURGER_INLINE int32_t GetY(void) const BURGER_NOEXCEPT
+	{
+		return m_iY;
+	}
+	BURGER_INLINE int32_t* GetXPtr(void) BURGER_NOEXCEPT
+	{
+		return &m_iX;
+	}
+	BURGER_INLINE int32_t* GetYPtr(void) BURGER_NOEXCEPT
+	{
+		return &m_iY;
+	}
+	BURGER_INLINE void SetX(int32_t iX) BURGER_NOEXCEPT
+	{
+		m_iX = iX;
+	}
+	BURGER_INLINE void SetY(int32_t iY) BURGER_NOEXCEPT
+	{
+		m_iY = iY;
+	}
+	BURGER_INLINE void Set(int32_t iX, int32_t iY) BURGER_NOEXCEPT
+	{
+		m_iX = iX;
+		m_iY = iY;
+	}
+	BURGER_INLINE void Clear(void) BURGER_NOEXCEPT
+	{
+		m_iX = 0;
+		m_iY = 0;
+	}
+	eError Read(FILE* fp) BURGER_NOEXCEPT;
+	eError Write(FILE* fp) const BURGER_NOEXCEPT;
+	eError Read(Burger::File* fp) BURGER_NOEXCEPT;
+	eError Write(Burger::File* fp) const BURGER_NOEXCEPT;
+
 #if (defined(BURGER_MACOS)) || defined(DOXYGEN)
-	void Get(Point *pOutput) const;
-	void Set(const Point *pInput);
+	void Get(Point* pOutput) const BURGER_NOEXCEPT;
+	void Set(const Point* pInput) BURGER_NOEXCEPT;
 #endif
+
 #if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-	void Get(CGPoint *pOutput) const;
-	void Set(const CGPoint *pInput);
+	void Get(CGPoint* pOutput) const BURGER_NOEXCEPT;
+	void Set(const CGPoint* pInput) BURGER_NOEXCEPT;
+
 #if (!defined(BURGER_64BITCPU) && defined(BURGER_MACOSX)) || defined(DOXYGEN)
-	void Get(_NSPoint *pOutput) const;
-	void Set(const _NSPoint *pInput);
+	void Get(_NSPoint* pOutput) const BURGER_NOEXCEPT;
+	void Set(const _NSPoint* pInput) BURGER_NOEXCEPT;
 #endif
+
 #endif
+
 #if (defined(BURGER_WINDOWS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
-	void Get(tagPOINT *pOutput) const;
-	void Set(const tagPOINT *pInput);
+	void Get(tagPOINT* pOutput) const BURGER_NOEXCEPT;
+	void Set(const tagPOINT* pInput) BURGER_NOEXCEPT;
 #endif
 };
 }
 /* END */
 
 #endif
-

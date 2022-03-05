@@ -146,9 +146,9 @@ public:
 	uint_t BURGER_API PostMouseEvent(const EventHeader_t *pEvent);
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	void BURGER_API AcquireDirectInput(void);
-	void BURGER_API UnacquireDirectInput(void);
-	void BURGER_API ReadSystemMouseValues(void);
+	void BURGER_API AcquireDirectInput(void) BURGER_NOEXCEPT;
+	void BURGER_API UnacquireDirectInput(void) BURGER_NOEXCEPT;
+	void BURGER_API ReadSystemMouseValues(void) BURGER_NOEXCEPT;
 #endif
 
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)

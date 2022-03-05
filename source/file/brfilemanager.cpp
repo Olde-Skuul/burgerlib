@@ -158,7 +158,7 @@ Burger::FileManager::~FileManager()
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::Init(void)
+Burger::eError BURGER_API Burger::FileManager::Init(void) BURGER_NOEXCEPT
 {
 	eError uError = kErrorNone;
 	FileManager* pThis = g_pFileManager;

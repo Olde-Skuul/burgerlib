@@ -1,16 +1,16 @@
 /***************************************
 
-    Integer Rect handlers
+	Integer 2 dimensional Rect handlers
 
-    Xbox 360 specific code
+	Xbox 360 specific code
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 2004-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -21,7 +21,7 @@
 #define NONET
 #include <xtl.h>
 
-/*! ************************************
+/***************************************
 
 	\brief Convert a Rect_t into a Windows RECT structure.
 
@@ -32,7 +32,7 @@
 
 ***************************************/
 
-void Burger::Rect_t::Get(tagRECT *pOutput) const
+void Burger::Rect_t::Get(tagRECT* pOutput) const BURGER_NOEXCEPT
 {
 	pOutput->top = static_cast<LONG>(m_iTop);
 	pOutput->left = static_cast<LONG>(m_iLeft);
@@ -40,24 +40,23 @@ void Burger::Rect_t::Get(tagRECT *pOutput) const
 	pOutput->right = static_cast<LONG>(m_iRight);
 }
 
-/*! ************************************
+/***************************************
 
 	\brief Convert a Windows RECT structure into a Rect_t
 
-	Converts the contents of a Windows RECT structure
-	into a Rect_t.
+	Converts the contents of a Windows RECT structure into a Rect_t.
 
 	\param pInput Pointer to a valid Windows RECT structure.
 	\note This function is Windows or Xbox 360 only.
 
 ***************************************/
 
-void Burger::Rect_t::Set(const tagRECT *pInput)
+void Burger::Rect_t::Set(const tagRECT* pInput) BURGER_NOEXCEPT
 {
-	m_iLeft = static_cast<int>(pInput->left);
-	m_iTop = static_cast<int>(pInput->top);
-	m_iRight = static_cast<int>(pInput->right);
-	m_iBottom = static_cast<int>(pInput->bottom);
+	m_iLeft = static_cast<int32_t>(pInput->left);
+	m_iTop = static_cast<int32_t>(pInput->top);
+	m_iRight = static_cast<int32_t>(pInput->right);
+	m_iBottom = static_cast<int32_t>(pInput->bottom);
 }
 
 #endif

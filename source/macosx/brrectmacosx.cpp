@@ -1,39 +1,39 @@
 /***************************************
 
-    Integer Rect handlers
+	Integer 2 dimensional Rect handlers
 
-    Mac OSX specific code
+	Mac OSX specific code
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brrect.h"
 
-#if defined(BURGER_MACOSX)
+#if defined(BURGER_MACOSX) || defined(DOXYGEN)
 #include <Carbon/Carbon.h>
 
-/*! ************************************
+/***************************************
 
 	\brief Convert a Rect_t into a MacOS Rect structure.
 
-	Converts the contents of a Rect_t into a MacOS/Quicktime for Windows Rect
-	structure. Since it's converting an int into a short, data loss could occur
-	if the values exceed 32767 or are less than -32768.
+	Converts the contents of a Rect_t into a MacOS/Quicktime
+	for Windows Rect structure. Since it's converting an int32_t into a short,
+	data loss could occur if the values exceed 32767 or are less than -32768.
 
 	\param pOutput Pointer to an uninitialized MacOS Rect structure.
 	\note This function is MacOS or Windows using Quicktime
-		only.
+	only.
 
 ***************************************/
 
-void Burger::Rect_t::Get(Rect* pOutput) const
+void Burger::Rect_t::Get(Rect* pOutput) const BURGER_NOEXCEPT
 {
 	pOutput->top = static_cast<short>(m_iTop);
 	pOutput->left = static_cast<short>(m_iLeft);
@@ -41,20 +41,21 @@ void Burger::Rect_t::Get(Rect* pOutput) const
 	pOutput->right = static_cast<short>(m_iRight);
 }
 
-/*! ************************************
+/***************************************
 
 	\brief Convert a MacOS Rect structure into a Rect_t
 
-	Converts the contents of a MacOS/Quicktime for Windows Rect structure into a
-	Rect_t. Since it's converting a short to an int, no data loss will occur.
+	Converts the contents of a MacOS/Quicktime for Windows Rect structure
+	into a Rect_t. Since it's converting a short to an int, no
+	data loss will occur.
 
 	\param pInput Pointer to a valid MacOS Rect structure.
 	\note This function is MacOS or Windows using Quicktime
-		only.
+	only.
 
 ***************************************/
 
-void Burger::Rect_t::Set(const Rect* pInput)
+void Burger::Rect_t::Set(const Rect* pInput) BURGER_NOEXCEPT
 {
 	m_iLeft = pInput->left;
 	m_iTop = pInput->top;
@@ -74,7 +75,7 @@ void Burger::Rect_t::Set(const Rect* pInput)
 
 ***************************************/
 
-void Burger::Rect_t::Get(CGRect* pOutput) const
+void Burger::Rect_t::Get(CGRect* pOutput) const BURGER_NOEXCEPT
 {
 	pOutput->origin.x = static_cast<CGFloat>(m_iLeft);
 	pOutput->origin.y = static_cast<CGFloat>(m_iTop);
@@ -94,12 +95,12 @@ void Burger::Rect_t::Get(CGRect* pOutput) const
 
 ***************************************/
 
-void Burger::Rect_t::Set(const CGRect* pInput)
+void Burger::Rect_t::Set(const CGRect* pInput) BURGER_NOEXCEPT
 {
-	m_iLeft = static_cast<int>(pInput->origin.x);
-	m_iTop = static_cast<int>(pInput->origin.y);
-	m_iRight = static_cast<int>(pInput->origin.x + pInput->size.width);
-	m_iBottom = static_cast<int>(pInput->origin.y + pInput->size.height);
+	m_iLeft = static_cast<int32_t>(pInput->origin.x);
+	m_iTop = static_cast<int32_t>(pInput->origin.y);
+	m_iRight = static_cast<int32_t>(pInput->origin.x + pInput->size.width);
+	m_iBottom = static_cast<int32_t>(pInput->origin.y + pInput->size.height);
 }
 
 /*! ************************************
@@ -114,9 +115,9 @@ void Burger::Rect_t::Set(const CGRect* pInput)
 
 ***************************************/
 
-#if (!defined(BURGER_64BITCPU)) || defined(DOXYGEN)
+#if !defined(BURGER_64BITCPU) || defined(DOXYGEN)
 
-void Burger::Rect_t::Get(_NSRect* pOutput) const
+void Burger::Rect_t::Get(_NSRect* pOutput) const BURGER_NOEXCEPT
 {
 	pOutput->origin.x = static_cast<CGFloat>(m_iLeft);
 	pOutput->origin.y = static_cast<CGFloat>(m_iTop);
@@ -137,12 +138,12 @@ void Burger::Rect_t::Get(_NSRect* pOutput) const
 
 ***************************************/
 
-void Burger::Rect_t::Set(const _NSRect* pInput)
+void Burger::Rect_t::Set(const _NSRect* pInput) BURGER_NOEXCEPT
 {
-	m_iLeft = static_cast<int>(pInput->origin.x);
-	m_iTop = static_cast<int>(pInput->origin.y);
-	m_iRight = static_cast<int>(pInput->size.width - pInput->origin.x);
-	m_iBottom = static_cast<int>(pInput->size.height - pInput->origin.y);
+	m_iLeft = static_cast<int32_t>(pInput->origin.x);
+	m_iTop = static_cast<int32_t>(pInput->origin.y);
+	m_iRight = static_cast<int32_t>(pInput->size.width - pInput->origin.x);
+	m_iBottom = static_cast<int32_t>(pInput->size.height - pInput->origin.y);
 }
 
 #endif

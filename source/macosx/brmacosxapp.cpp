@@ -1,14 +1,14 @@
 /***************************************
 
-    MacOSX application manager
+	MacOSX application manager
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -44,7 +44,7 @@ extern void FixNSRectOrigin(NSRect* pInput);
 
 ***************************************/
 
-@interface BurgerApplication : NSApplication {
+@interface BurgerApplication: NSApplication {
 	Burger::GameApp* m_App; ///< Parent app
 }
 - (void)terminate:(id)sender;
@@ -82,7 +82,7 @@ extern void FixNSRectOrigin(NSRect* pInput);
 
 ***************************************/
 
-@interface BurgerApplicationDelegate : NSObject {
+@interface BurgerApplicationDelegate: NSObject {
 	Burger::GameApp* m_App;
 	uint_t m_bStarted;
 }
@@ -93,7 +93,7 @@ extern void FixNSRectOrigin(NSRect* pInput);
 // Initialize
 //
 
-@implementation BurgerApplicationDelegate : NSObject
+@implementation BurgerApplicationDelegate: NSObject
 
 //
 // Initialization function
@@ -156,13 +156,13 @@ extern void FixNSRectOrigin(NSRect* pInput);
 
 ***************************************/
 
-@interface BurgerWindow : NSWindow
+@interface BurgerWindow: NSWindow
 - (BOOL)canBecomeKeyWindow;
 - (BOOL)canBecomeMainWindow;
 - (void)sendEvent:(NSEvent*)event;
 @end
 
-@implementation BurgerWindow : NSWindow
+@implementation BurgerWindow: NSWindow
 
 //
 // Burgerlib windows can always be a key window
@@ -223,8 +223,7 @@ enum ePendingOperation {
 
 static uint_t s_moveHack;
 
-
-@interface BurgerWindowListener : NSResponder <NSWindowDelegate> {
+@interface BurgerWindowListener: NSResponder <NSWindowDelegate> {
 	Burger::GameApp* m_pParent;
 	uint8_t observingVisible;
 	uint8_t wasCtrlLeft;
@@ -1089,7 +1088,7 @@ typedef enum {
 
 #endif
 
-/*! ************************************
+/***************************************
 
 	\brief Base constructor.
 
@@ -1097,12 +1096,15 @@ typedef enum {
 
 ***************************************/
 
-Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize, uint_t uDefaultHandleCount,
-	uintptr_t uMinReserveSize) :
-	m_MemoryManagerHandle(
-		uDefaultMemorySize, uDefaultHandleCount, uMinReserveSize),
-	m_pApplication(NULL), m_pApplicationDelegate(NULL), m_pWindow(NULL),
-	m_pListener(NULL), m_bCenterWindow(TRUE)
+Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,
+	uint_t uDefaultHandleCount, uintptr_t uMinReserveSize) BURGER_NOEXCEPT
+	: m_MemoryManagerHandle(
+		  uDefaultMemorySize, uDefaultHandleCount, uMinReserveSize),
+	  m_pApplication(nullptr),
+	  m_pApplicationDelegate(nullptr),
+	  m_pWindow(nullptr),
+	  m_pListener(nullptr),
+	  m_bCenterWindow(nullptr)
 {
 	InitDefaults();
 	//
@@ -1196,7 +1198,7 @@ Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize, uint_t uDefaultHandleCoun
 	[pPool release];
 }
 
-/*! ************************************
+/***************************************
 
 	\brief Dispose of any allocated resources
 
@@ -1224,7 +1226,7 @@ Burger::GameApp::~GameApp()
 
 ***************************************/
 
-void BURGER_API Burger::GameApp::FocusWindow(void) {}
+void BURGER_API Burger::GameApp::FocusWindow(void) BURGER_NOEXCEPT {}
 
 /***************************************
 
@@ -1243,7 +1245,8 @@ void BURGER_API Burger::GameApp::FocusWindow(void) {}
 
 ***************************************/
 
-uint_t BURGER_API Burger::GameApp::SetWindowSize(uint_t uWidth, uint_t uHeight)
+uint_t BURGER_API Burger::GameApp::SetWindowSize(
+	uint_t uWidth, uint_t uHeight) BURGER_NOEXCEPT
 {
 	NSWindow* pWindow = m_pWindow;
 	uint_t uResult = 1;
@@ -1287,7 +1290,8 @@ uint_t BURGER_API Burger::GameApp::SetWindowSize(uint_t uWidth, uint_t uHeight)
 
 ***************************************/
 
-Burger::RunQueue::eReturnCode BURGER_API Burger::GameApp::EventPoll(void* pData)
+Burger::RunQueue::eReturnCode BURGER_API Burger::GameApp::EventPoll(
+	void* pData) BURGER_NOEXCEPT
 {
 	GameApp* pApp = static_cast<GameApp*>(pData);
 	NSAutoreleasePool* pReleasePool = [[NSAutoreleasePool alloc] init];
