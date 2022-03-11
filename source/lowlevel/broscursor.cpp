@@ -138,11 +138,11 @@ Burger::OSCursor Burger::OSCursor::g_Global;
 
 Burger::OSCursor::OSCursor() BURGER_NOEXCEPT:
 #if defined(BURGER_MAC)
-    m_pCursorImage(NULL),
+    m_pCursorImage(nullptr),
 #endif
-    m_eIDNumber(CURSOR_NONE),
     m_bVisibleFlag(TRUE),
-    m_bActiveFlag(FALSE)
+    m_bActiveFlag(FALSE),
+	m_eIDNumber(CURSOR_NONE)
 {
 }
 

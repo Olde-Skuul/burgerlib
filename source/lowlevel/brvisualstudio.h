@@ -1,15 +1,15 @@
 /***************************************
 
-    Intrinsics and subroutines exclusive to the Microsoft Visual Studio
-    compilers
+	Intrinsics and subroutines exclusive to the Microsoft Visual Studio
+	compilers
 
-    Copyright (c) 1995-2019 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -72,7 +72,7 @@ extern void __cpuid(int[4], int);
 #else
 BURGER_INLINE void __cpuid(int a[4], int b)
 {
-    // clang-format off
+	// clang-format off
     BURGER_ASM {
     // Get the pointer to the destination buffer
     mov esi,a 
@@ -84,7 +84,7 @@ BURGER_INLINE void __cpuid(int a[4], int b)
     mov[esi + 8],ecx
     mov[esi + 12],edx
     }
-    // clang-format on
+	// clang-format on
 }
 
 #endif
@@ -97,20 +97,20 @@ extern void __cpuidex(int[4], int, int);
 #if defined(BURGER_X86)
 BURGER_INLINE void __cpuidex(int a[4], int b, int c)
 {
-    // clang-format off
+	// clang-format off
     BURGER_ASM {
     // Get the pointer to the destination buffer
     mov esi,a 
-    mov eax,b  // Command byte
-    mov ecx,c  // Get the sub command
-    cpuid       // Invoke CPUID
+    mov eax,b	// Command byte
+    mov ecx,c	// Get the sub command
+    cpuid		// Invoke CPUID
     // Store the result in the same order as Visual C
     mov[esi],eax
     mov[esi + 4],ebx
     mov[esi + 8],ecx
     mov[esi + 12],edx
     }
-    // clang-format on
+	// clang-format on
 }
 #endif
 #endif
@@ -134,7 +134,7 @@ long _InterlockedExchangeAdd(long volatile*, long);
 long _InterlockedCompareExchange(long volatile*, long, long);
 #endif
 #pragma intrinsic(_InterlockedExchange, _InterlockedExchangeAdd, \
-    _InterlockedCompareExchange)
+	_InterlockedCompareExchange)
 
 long __cdecl _InterlockedIncrement(long volatile*);
 long __cdecl _InterlockedDecrement(long volatile*);
@@ -147,8 +147,8 @@ __int64 _InterlockedDecrement64(__int64 volatile*);
 __int64 _InterlockedExchangeAdd64(__int64 volatile*, __int64);
 __int64 _InterlockedCompareExchange64(__int64 volatile*, __int64, __int64);
 #pragma intrinsic(_InterlockedExchange64, _InterlockedIncrement64, \
-    _InterlockedDecrement64, _InterlockedExchangeAdd64, \
-    _InterlockedCompareExchange64)
+	_InterlockedDecrement64, _InterlockedExchangeAdd64, \
+	_InterlockedCompareExchange64)
 
 unsigned char _BitScanForward64(unsigned long* Index, unsigned __int64 Mask);
 unsigned char _BitScanReverse64(unsigned long* Index, unsigned __int64 Mask);
@@ -162,72 +162,72 @@ unsigned char _BitScanReverse64(unsigned long* Index, unsigned __int64 Mask);
 #if defined(BURGER_AMD64) && (BURGER_MSVC < 150000000)
 BURGER_INLINE float _mm_cvtss_f32(__m128 vInput)
 {
-    return vInput.m128_f32[0];
+	return vInput.m128_f32[0];
 }
 
 BURGER_INLINE double _mm_cvtsd_f64(__m128d vInput)
 {
-    return vInput.m128d_f64[0];
+	return vInput.m128d_f64[0];
 }
 
 BURGER_INLINE __m128 _mm_castpd_ps(__m128d vInput)
 {
-    union {
-        __m128d a;
-        __m128 b;
-    } x;
-    x.a = vInput;
-    return x.b;
+	union {
+		__m128d a;
+		__m128 b;
+	} x;
+	x.a = vInput;
+	return x.b;
 }
 
 BURGER_INLINE __m128i _mm_castpd_si128(__m128d vInput)
 {
-    union {
-        __m128d a;
-        __m128i b;
-    } x;
-    x.a = vInput;
-    return x.b;
+	union {
+		__m128d a;
+		__m128i b;
+	} x;
+	x.a = vInput;
+	return x.b;
 }
 
 BURGER_INLINE __m128d _mm_castps_pd(__m128 vInput)
 {
-    union {
-        __m128 a;
-        __m128d b;
-    } x;
-    x.a = vInput;
-    return x.b;
+	union {
+		__m128 a;
+		__m128d b;
+	} x;
+	x.a = vInput;
+	return x.b;
 }
 
 BURGER_INLINE __m128i _mm_castps_si128(__m128 vInput)
 {
-    union {
-        __m128 a;
-        __m128i b;
-    } x;
-    x.a = vInput;
-    return x.b;
+	union {
+		__m128 a;
+		__m128i b;
+	} x;
+	x.a = vInput;
+	return x.b;
 }
 
 BURGER_INLINE __m128 _mm_castsi128_ps(__m128i vInput)
 {
-    union {
-        __m128i a;
-        __m128 b;
-    } x;
-    x.a = vInput;
-    return x.b;
+	union {
+		__m128i a;
+		__m128 b;
+	} x;
+	x.a = vInput;
+	return x.b;
 }
 
 BURGER_INLINE __m128d _mm_castsi128_pd(__m128i vInput)
 {
-    union {
-        __m128i a;
-        __m128d b;
-    } x;
-    x.a = vInput;
-    return x.b;
+	union {
+		__m128i a;
+		__m128d b;
+	} x;
+	x.a = vInput;
+	return x.b;
 }
 
 #endif
@@ -245,68 +245,68 @@ BURGER_INLINE __m128d _mm_castsi128_pd(__m128i vInput)
 
 BURGER_INLINE void __cpuid(int a[4], int b)
 {
-    __asm__ __volatile__(
-        "pushl	%%ebx\n"
-        "cpuid\n"
-        "movl	%%ebx,%1\n"
-        "popl	%%ebx"
-        : "=a"((a)[0]), "=r"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
-        : "0"(b));
+	__asm__ __volatile__(
+		"pushl	%%ebx\n"
+		"cpuid\n"
+		"movl	%%ebx,%1\n"
+		"popl	%%ebx"
+		: "=a"((a)[0]), "=r"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
+		: "0"(b));
 }
 
 BURGER_INLINE void __cpuidex(int a[4], int b, int c)
 {
-    __asm__ __volatile__(
-        "pushl	%%ebx\n"
-        "cpuid\n"
-        "movl	%%ebx,%1\n"
-        "popl	%%ebx"
-        : "=a"((a)[0]), "=r"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
-        : "0"(b), "2"(c));
+	__asm__ __volatile__(
+		"pushl	%%ebx\n"
+		"cpuid\n"
+		"movl	%%ebx,%1\n"
+		"popl	%%ebx"
+		: "=a"((a)[0]), "=r"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
+		: "0"(b), "2"(c));
 }
 
 #elif defined(BURGER_AMD64) && defined(__PIC__)
 
 extern "C" {
-    BURGER_INLINE void __cpuid(int a[4], int b)
-    {
-        __asm__ __volatile__(
-            "pushq	%%rbx\n"
-            "cpuid\n"
-            "movl	%%ebx,%1\n"
-            "popq	%%rbx"
-            : "=a"((a)[0]), "=r"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
-            : "0"(b));
-    }
+BURGER_INLINE void __cpuid(int a[4], int b)
+{
+	__asm__ __volatile__(
+		"pushq	%%rbx\n"
+		"cpuid\n"
+		"movl	%%ebx,%1\n"
+		"popq	%%rbx"
+		: "=a"((a)[0]), "=r"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
+		: "0"(b));
+}
 
-    BURGER_INLINE void __cpuidex(int a[4], int b, int c)
-    {
-        __asm__ __volatile__(
-            "pushq	%%rbx\n"
-            "cpuid\n"
-            "movl	%%ebx,%1\n"
-            "popq	%%rbx"
-            : "=a"((a)[0]), "=r"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
-            : "0"(b), "2"(c));
-    }
+BURGER_INLINE void __cpuidex(int a[4], int b, int c)
+{
+	__asm__ __volatile__(
+		"pushq	%%rbx\n"
+		"cpuid\n"
+		"movl	%%ebx,%1\n"
+		"popq	%%rbx"
+		: "=a"((a)[0]), "=r"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
+		: "0"(b), "2"(c));
+}
 }
 
 #else
 
 BURGER_INLINE void __cpuid(int a[4], int b)
 {
-    __asm__ __volatile__(
-        "cpuid"
-        : "=a"((a)[0]), "=b"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
-        : "0"(b));
+	__asm__ __volatile__(
+		"cpuid"
+		: "=a"((a)[0]), "=b"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
+		: "0"(b));
 }
 
 BURGER_INLINE void __cpuidex(int a[4], int b, int c)
 {
-    __asm__ __volatile__(
-        "cpuid"
-        : "=a"((a)[0]), "=b"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
-        : "0"(b), "2"(c));
+	__asm__ __volatile__(
+		"cpuid"
+		: "=a"((a)[0]), "=b"((a)[1]), "=c"((a)[2]), "=d"((a)[3])
+		: "0"(b), "2"(c));
 }
 
 #endif
@@ -314,26 +314,26 @@ BURGER_INLINE void __cpuidex(int a[4], int b, int c)
 #if !__has_builtin(_BitScanForward)
 BURGER_INLINE uint8_t _BitScanForward(unsigned long* Index, unsigned long Mask)
 {
-    uint8_t bZero;
-    __asm__(
-        "bsf %2, %0 \n \
+	uint8_t bZero;
+	__asm__(
+		"bsf %2, %0 \n \
 			setne %1"
-        : "=r"(*Index), "=q"(bZero)
-        : "mr"(Mask));
-    return bZero;
+		: "=r"(*Index), "=q"(bZero)
+		: "mr"(Mask));
+	return bZero;
 }
 #endif
 
 #if !__has_builtin(_BitScanReverse)
 BURGER_INLINE uint8_t _BitScanReverse(unsigned long* Index, unsigned long Mask)
 {
-    uint8_t bZero;
-    __asm__(
-        "bsr %2, %0 \n \
+	uint8_t bZero;
+	__asm__(
+		"bsr %2, %0 \n \
 			setne %1"
-        : "=r"(*Index), "=q"(bZero)
-        : "mr"(Mask));
-    return bZero;
+		: "=r"(*Index), "=q"(bZero)
+		: "mr"(Mask));
+	return bZero;
 }
 #endif
 

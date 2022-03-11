@@ -2,7 +2,7 @@
 
 	Root base class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -213,7 +213,7 @@ Burger::CriticalSectionStatic::~CriticalSectionStatic()
 	Locks the critical section upon construction. Will release it when the class
 	is destructed.
 
-	\note \ref NULL pointers are NOT allowed!!
+	\note \ref nullptr pointers are NOT allowed!!
 
 	\param pCriticalSection Pointer to a valid CriticalSectionLock
 	\sa Burger::CriticalSectionLock and ~CriticalSectionLock()
@@ -271,7 +271,9 @@ Burger::CriticalSectionStatic::~CriticalSectionStatic()
 
 ***************************************/
 
-Burger::Semaphore::Semaphore(uint32_t uCount): m_uCount(uCount) {}
+Burger::Semaphore::Semaphore(uint32_t uCount) BURGER_NOEXCEPT: m_uCount(uCount)
+{
+}
 
 /*! ************************************
 
@@ -322,9 +324,10 @@ Burger::Semaphore::~Semaphore() {}
 
 ***************************************/
 
-uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t /* uMilliseconds */)
+Burger::eError BURGER_API Burger::Semaphore::TryAcquire(
+	uint_t /* uMilliseconds */) BURGER_NOEXCEPT
 {
-	return 10;
+	return kErrorNotSupportedOnThisPlatform;
 }
 
 /*! ************************************
@@ -339,9 +342,9 @@ uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t /* uMilliseconds */)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Semaphore::Release(void)
+Burger::eError BURGER_API Burger::Semaphore::Release(void) BURGER_NOEXCEPT
 {
-	return 10;
+	return kErrorNotSupportedOnThisPlatform;
 }
 
 /*! ************************************
@@ -386,12 +389,12 @@ uint_t BURGER_API Burger::Semaphore::Release(void)
 #if !(defined(BURGER_SHIELD) || defined(BURGER_VITA) || \
 	defined(BURGER_MACOSX) || defined(BURGER_IOS)) || \
 	defined(DOXYGEN)
-Burger::ConditionVariable::ConditionVariable():
-	m_CriticalSection(),
-	m_WaitSemaphore(0),
-	m_SignalsSemaphore(0),
-	m_uWaiting(0),
-	m_uSignals(0)
+Burger::ConditionVariable::ConditionVariable() BURGER_NOEXCEPT
+	: m_CriticalSection(),
+	  m_WaitSemaphore(0),
+	  m_SignalsSemaphore(0),
+	  m_uWaiting(0),
+	  m_uSignals(0)
 {
 }
 
@@ -421,7 +424,8 @@ Burger::ConditionVariable::~ConditionVariable()
 
 ***************************************/
 
-uint_t BURGER_API Burger::ConditionVariable::Signal(void)
+Burger::eError BURGER_API Burger::ConditionVariable::Signal(
+	void) BURGER_NOEXCEPT
 {
 	m_CriticalSection.Lock();
 	// Is there anyone waiting for a signal?
@@ -438,7 +442,7 @@ uint_t BURGER_API Burger::ConditionVariable::Signal(void)
 		// No one was waiting, discard
 		m_CriticalSection.Unlock();
 	}
-	return 0;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -454,7 +458,8 @@ uint_t BURGER_API Burger::ConditionVariable::Signal(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::ConditionVariable::Broadcast(void)
+Burger::eError BURGER_API Burger::ConditionVariable::Broadcast(
+	void) BURGER_NOEXCEPT
 {
 	// Lock internal data
 	m_CriticalSection.Lock();
@@ -485,7 +490,7 @@ uint_t BURGER_API Burger::ConditionVariable::Broadcast(void)
 		// Get out, nothing to see here
 		m_CriticalSection.Unlock();
 	}
-	return 0;
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -501,8 +506,8 @@ uint_t BURGER_API Burger::ConditionVariable::Broadcast(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::ConditionVariable::Wait(
-	CriticalSection* pCriticalSection, uint_t uMilliseconds)
+Burger::eError BURGER_API Burger::ConditionVariable::Wait(
+	CriticalSection* pCriticalSection, uint_t uMilliseconds) BURGER_NOEXCEPT
 {
 	// A thread is waiting
 	m_CriticalSection.Lock();
@@ -512,14 +517,14 @@ uint_t BURGER_API Burger::ConditionVariable::Wait(
 	// Unlock the thread's lock
 	pCriticalSection->Unlock();
 	// Wait for a signal (With timeout)
-	uint_t uResult = m_WaitSemaphore.TryAcquire(uMilliseconds);
+	const eError uResult = m_WaitSemaphore.TryAcquire(uMilliseconds);
 
 	// It returned!
 	m_CriticalSection.Lock();
 	// Was there a signal from Signal() or Broadcast()?
 	if (m_uSignals) {
 		// Was there a timeout?
-		if (uResult == 1) {
+		if (uResult == kErrorTimeout) {
 			// Force an obtaining of a resource
 			m_WaitSemaphore.Acquire();
 		}
@@ -563,8 +568,10 @@ uint_t BURGER_API Burger::ConditionVariable::Wait(
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
 	defined(BURGER_VITA) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || \
 	defined(DOXYGEN)
-Burger::Thread::Thread():
-	m_pFunction(NULL), m_pData(NULL), m_pSemaphore(NULL), m_uResult(0)
+Burger::Thread::Thread() BURGER_NOEXCEPT: m_pFunction(nullptr),
+										  m_pData(nullptr),
+										  m_pSemaphore(nullptr),
+										  m_uResult(0)
 {
 }
 
@@ -583,8 +590,11 @@ Burger::Thread::Thread():
 
 ***************************************/
 
-Burger::Thread::Thread(FunctionPtr pFunction, void* pData):
-	m_pFunction(pFunction), m_pData(pData), m_pSemaphore(NULL), m_uResult(0)
+Burger::Thread::Thread(FunctionPtr pFunction, void* pData) BURGER_NOEXCEPT
+	: m_pFunction(pFunction),
+	  m_pData(pData),
+	  m_pSemaphore(nullptr),
+	  m_uResult(0)
 {
 	// Runt the code
 	Run(this);
@@ -617,12 +627,13 @@ Burger::Thread::~Thread()
 
 ***************************************/
 
-uint_t BURGER_API Burger::Thread::Start(FunctionPtr pFunction, void* pData)
+Burger::eError BURGER_API Burger::Thread::Start(
+	FunctionPtr pFunction, void* pData) BURGER_NOEXCEPT
 {
 	m_pFunction = pFunction;
 	m_pData = pData;
 	Run(this);
-	return 10;
+	return kErrorNotSupportedOnThisPlatform;
 }
 
 /*! ************************************
@@ -638,11 +649,11 @@ uint_t BURGER_API Burger::Thread::Start(FunctionPtr pFunction, void* pData)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Thread::Wait(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Thread::Wait(void) BURGER_NOEXCEPT
 {
 	m_pFunction = nullptr;
 	m_pData = nullptr;
-	return 10;
+	return kErrorNotSupportedOnThisPlatform;
 }
 
 /*! ************************************
@@ -663,11 +674,11 @@ uint_t BURGER_API Burger::Thread::Wait(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t BURGER_API Burger::Thread::Kill(void)
+Burger::eError BURGER_API Burger::Thread::Kill(void) BURGER_NOEXCEPT
 {
-	m_pFunction = NULL;
-	m_pData = NULL;
-	return 10;
+	m_pFunction = nullptr;
+	m_pData = nullptr;
+	return kErrorNotSupportedOnThisPlatform;
 }
 
 /*! ************************************
@@ -687,7 +698,7 @@ uint_t BURGER_API Burger::Thread::Kill(void)
 
 ***************************************/
 
-void BURGER_API Burger::Thread::Run(void* pThis)
+void BURGER_API Burger::Thread::Run(void* pThis) BURGER_NOEXCEPT
 {
 	Thread* pThread = static_cast<Thread*>(pThis);
 	pThread->m_uResult = pThread->m_pFunction(pThread->m_pData);

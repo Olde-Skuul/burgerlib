@@ -51,6 +51,8 @@ public:
 	class Attribute;
 	class RawText;
 	class Generic : public Base {
+		BURGER_DISABLE_COPY(Generic);
+
 	public:
 		enum eType {
 			XML_ROOT,			///< Only used for root objects.
@@ -288,6 +290,7 @@ public:
 		static Element * BURGER_API New(const char *pName);
 	};
 
+	BURGER_DISABLE_COPY(FileXML);
 private:
 	Root m_Root;				///< Root entry for a list of XML objects
 	uint_t m_bUTF8ByteMark;		///< TRUE if the UTF-8 byte mark should be emitted on write

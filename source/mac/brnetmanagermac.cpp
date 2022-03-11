@@ -50,7 +50,7 @@ protocol
 
 ***************************************/
 
-uint_t BURGER_API Burger::NetAddr_t::ToOTAddress(OTAddress* pOutput) const
+uint_t BURGER_API Burger::NetAddr_t::ToOTAddress(OTAddress* pOutput) const BURGER_NOEXCEPT
 {
 	uint_t uResult = 0;
 	switch (m_uType) {
@@ -101,7 +101,7 @@ protocol
 
 ***************************************/
 
-uint_t BURGER_API Burger::NetAddr_t::FromOTAddress(const OTAddress* pInput)
+uint_t BURGER_API Burger::NetAddr_t::FromOTAddress(const OTAddress* pInput) BURGER_NOEXCEPT
 {
 	uint_t uResult = 0;
 
@@ -147,7 +147,7 @@ uint_t BURGER_API Burger::NetAddr_t::FromOTAddress(const OTAddress* pInput)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::NetworkManager::Init(void)
+Burger::eError BURGER_API Burger::NetworkManager::Init(void) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNone;
 
@@ -202,7 +202,7 @@ Burger::eError BURGER_API Burger::NetworkManager::Init(void)
 
 ***************************************/
 
-void BURGER_API Burger::NetworkManager::Shutdown(void)
+void BURGER_API Burger::NetworkManager::Shutdown(void) BURGER_NOEXCEPT
 {
 	if (m_uStarted) {
 		if (!--m_uStarted) {
@@ -262,7 +262,7 @@ struct TMyOTInetSvcInfo { // Open Transport Internet services provider info
 ***************************************/
 
 static pascal void MyOTInetSvcNotifyProc(
-	void* pServiceInfo, OTEventCode uCode, OTResult iResult, void* pCookie)
+	void* pServiceInfo, OTEventCode uCode, OTResult iResult, void* pCookie) BURGER_NOEXCEPT
 {
 	switch (uCode) {
 	case T_OPENCOMPLETE:
@@ -281,7 +281,7 @@ static pascal void MyOTInetSvcNotifyProc(
 
 ***************************************/
 
-static uint_t MyOTInetSvcWait(TMyOTInetSvcInfo* pServiceInfo, clock_t uTime)
+static uint_t MyOTInetSvcWait(TMyOTInetSvcInfo* pServiceInfo, clock_t uTime) BURGER_NOEXCEPT
 {
 	if (!pServiceInfo->m_bComplete) { // Not done yet?
 		clock_t uMark = clock();	  // Get timer
@@ -420,7 +420,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(
 ***************************************/
 
 Burger::eError BURGER_API Burger::NetworkManager::SendPacket(
-	const NetAddr_t* pDestination, const void* pBuffer, uintptr_t uBufferSize)
+	const NetAddr_t* pDestination, const void* pBuffer, uintptr_t uBufferSize) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorSocketFailure;
 	OSStatus err;
@@ -492,7 +492,7 @@ of bytes to transmit \return Zero if no error, non zero if an error had occurred
 ***************************************/
 
 Burger::eError BURGER_API Burger::NetworkManager::SendStream(
-	const NetAddr_t* pDestination, const void* pBuffer, uintptr_t uBufferSize)
+	const NetAddr_t* pDestination, const void* pBuffer, uintptr_t uBufferSize) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorSocketFailure;
 	OSStatus err;
@@ -563,7 +563,7 @@ Burger::eError BURGER_API Burger::NetworkManager::SendStream(
 ***************************************/
 
 Burger::eError BURGER_API Burger::NetworkManager::EnumerateLocalAddresses(
-	void)
+	void) BURGER_NOEXCEPT
 {
 	// Release any previous list
 	m_uLocalAddressCount = 0;

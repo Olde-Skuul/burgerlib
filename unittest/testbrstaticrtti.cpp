@@ -2,13 +2,13 @@
 
 	Unit tests for the Static RTTI library
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -16,7 +16,6 @@
 #include "brstaticrtti.h"
 #include "brstringfunctions.h"
 #include "common.h"
-
 
 using namespace Burger;
 
@@ -30,25 +29,25 @@ public:
 	virtual ~foo() {}
 	BURGER_RTTI_IN_BASE_CLASS();
 };
-class foo2 : public foo {
+class foo2: public foo {
 public:
 	foo2() {}
 	virtual ~foo2() {}
 	BURGER_RTTI_IN_CLASS();
 };
-class foo3 : public foo2 {
+class foo3: public foo2 {
 public:
 	foo3() {}
 	virtual ~foo3() {}
 	BURGER_RTTI_IN_CLASS();
 };
-class foo4 : public foo2 {
+class foo4: public foo2 {
 public:
 	foo4() {}
 	virtual ~foo4() {}
 	BURGER_RTTI_IN_CLASS();
 };
-class foo5 : public foo {
+class foo5: public foo {
 public:
 	foo5() {}
 	virtual ~foo5() {}
@@ -64,7 +63,7 @@ BURGER_CREATE_STATICRTTI_PARENT(foo5, foo);
 // Brute force tests
 //
 
-static uint_t TestRTTI(void)
+static uint_t TestRTTI(void) BURGER_NOEXCEPT
 {
 	uint_t uResult = 0;
 	foo bar;
@@ -203,7 +202,7 @@ static uint_t TestRTTI(void)
 // Perform all the tests for the Burgerlib Static RTTI
 //
 
-int BURGER_API TestBrstaticrtti(uint_t uVerbose)
+int BURGER_API TestBrstaticrtti(uint_t uVerbose) BURGER_NOEXCEPT
 {
 	if (uVerbose & VERBOSE_MSG) {
 		Message("Running Static RTTI tests");

@@ -993,7 +993,7 @@ uint64_t BURGER_API Burger::PowerOf2(uint64_t uInput) BURGER_NOEXCEPT
 
 	On windows platforms, memory pointers cannot point to any location less than
 	65536, so any pointer less than 65536 is considered broken. All other
-	platforms will only consider \ref NULL as an invalid pointer.
+	platforms will only consider \ref nullptr as an invalid pointer.
 
 	No attempt is made to check if the memory points to a specific data type of
 	if the application has permission to access the memory.
@@ -1013,7 +1013,7 @@ uint64_t BURGER_API Burger::PowerOf2(uint64_t uInput) BURGER_NOEXCEPT
 
 	On windows platforms, memory pointers cannot point to any location less than
 	65536, so any pointer less than 65536 is considered broken. All other
-	platforms will only consider \ref NULL as an invalid pointer.
+	platforms will only consider \ref nullptr as an invalid pointer.
 
 	No attempt is made to check if the memory points to a specific data type of
 	if the application has permission to access the memory.
@@ -1029,7 +1029,7 @@ uint64_t BURGER_API Burger::PowerOf2(uint64_t uInput) BURGER_NOEXCEPT
 /*! ************************************
 
 	\fn uint_t Burger::IsStringEmpty(const char *pInput)
-	\brief Test if a UTF-8 string pointer points to a \ref NULL string.
+	\brief Test if a UTF-8 string pointer points to a \ref nullptr string.
 
 	Test if the pointer is in a valid address range and if so, test if the first
 	byte is a non zero character. If both tests pass, return \ref TRUE.
@@ -1045,7 +1045,7 @@ uint64_t BURGER_API Burger::PowerOf2(uint64_t uInput) BURGER_NOEXCEPT
 /*! ************************************
 
 	\fn uint_t Burger::IsStringEmpty(const uint16_t *pInput)
-	\brief Test if a UTF-16 string pointer points to a \ref NULL string.
+	\brief Test if a UTF-16 string pointer points to a \ref nullptr string.
 
 	Test if the pointer is in a valid address range and if so, test if the first
 	byte is a non zero character. If both tests pass, return \ref TRUE.
@@ -1219,7 +1219,8 @@ BitReverse32:
 uint32_t BURGER_API Burger::BitReverse(
 	uint32_t uInput, uint_t uBitLength) BURGER_NOEXCEPT
 {
-	uint32_t uResult = 0; // Initialize the result
+	// Initialize the result
+	uint32_t uResult = 0;
 	do {
 		uResult = uResult + uResult;
 		uResult += (uInput & 1U);
@@ -1362,8 +1363,9 @@ uint_t BURGER_API Burger::BitSetCount(uint64_t uInput) BURGER_NOEXCEPT
 	will cause undefined behavior.
 
 	\param pOutput Pointer to a buffer (max 256 bytes) to receive the new
-		string. \ref NULL will page fault.
-	\param pInput Pointer to the "C" string to copy. \ref NULL will page fault.
+		string. \ref nullptr will page fault.
+	\param pInput Pointer to the "C" string to copy. \ref nullptr will page
+fault.
 
 	\sa Burger::PStringToCString(char *,const uint8_t*);
 
@@ -1386,7 +1388,7 @@ void BURGER_API Burger::CStringToPString(
 			// Grab the next character to prevent an overwrite if the source
 			// and destination buffers are the same
 
-			uint_t uTemp2 = reinterpret_cast<const uint8_t*>(pInput)[0];
+			const uint_t uTemp2 = reinterpret_cast<const uint8_t*>(pInput)[0];
 			++pInput;
 			pWork[0] =
 				static_cast<uint8_t>(uTemp1); // Save to destination string
@@ -1418,8 +1420,8 @@ void BURGER_API Burger::CStringToPString(
 	pointing to the exact same buffer. Overlap will cause undefined behavior.
 
 	\param pOutput Pointer to a buffer (max 256 bytes) to receive the new
-		string. \ref NULL will page fault.
-	\param pInput Pointer to the Pascal string to copy. \ref NULL will page
+		string. \ref nullptr will page fault.
+	\param pInput Pointer to the Pascal string to copy. \ref nullptr will page
 		fault.
 
 	\sa Burger::CStringToPString(uint8_t *,const char *);
@@ -1433,10 +1435,14 @@ void BURGER_API Burger::PStringToCString(
 	if (uCount) {
 		++pInput;
 		do {
-			reinterpret_cast<uint8_t*>(pOutput)[0] = pInput[0]; // Copy a byte
+			// Copy a byte
+			reinterpret_cast<uint8_t*>(pOutput)[0] = pInput[0];
 			++pInput;
 			++pOutput;
-		} while (--uCount); // Count down
+
+			// Count down
+		} while (--uCount);
+
 		// Note, it's here because a zero length
 		// Pascal string is by default, null terminated
 		pOutput[0] = 0; // Terminating zero
@@ -1450,8 +1456,11 @@ void BURGER_API Burger::PStringToCString(
 	Skip over any space (32) or tab (9) character and return the pointer to the
 	first character that doesn't match.
 
-	\param pInput Pointer to a "C" string to parse. \ref NULL will page fault.
-	\return Pointer to the first non-white space character .
+	\param pInput Pointer to a "C" string to parse. \ref nullptr will page
+		fault.
+
+	\return Pointer to the first non-white space character.
+
 	\sa Burger::ParseToDelimiter(const char *pInput)
 
 ***************************************/
@@ -1461,8 +1470,8 @@ char* BURGER_API Burger::ParseBeyondWhiteSpace(
 {
 	uint_t uTemp; // Temp storage
 	do {
-		uTemp =
-			reinterpret_cast<const uint8_t*>(pInput)[0]; // Get a byte of input
+		// Get a byte of input
+		uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
 		++pInput;
 	} while ((uTemp == 32) || (uTemp == 9)); // Space or TAB?
 	return const_cast<char*>(--pInput);      // Return the result pointer
@@ -1477,7 +1486,8 @@ char* BURGER_API Burger::ParseBeyondWhiteSpace(
 	point where the requested character is. Useful in
 	parsing a token and finding the end of it.
 
-	\param pInput Pointer to a "C" string to parse. \ref NULL will page fault.
+	\param pInput Pointer to a "C" string to parse. \ref nullptr will page
+		fault.
 
 	\return Pointer to a TAB, Space, CR, LF or zero.
 	\sa Burger::ParseBeyondWhiteSpace(const char *)
@@ -1509,7 +1519,9 @@ char* BURGER_API Burger::ParseToDelimiter(const char* pInput) BURGER_NOEXCEPT
 	"\n" (10) or a "\r" (13). In the case of a CR/LF combination, found in PC
 	style text files, return the pointer beyond the pair.
 
-	\param pInput Pointer to a "C" string to parse. \ref NULL will page fault.
+	\param pInput Pointer to a "C" string to parse. \ref nullptr will page
+		fault.
+
 	\return Pointer to the zero, or EOL character.
 
 ***************************************/
@@ -1552,7 +1564,7 @@ char* BURGER_API Burger::ParseBeyondEOL(const char* pInput) BURGER_NOEXCEPT
 	"\n" (10) or a "\r" (13). In the case of a CR/LF combination, found in PC
 	style text files, return the pointer beyond the pair.
 
-	\param pInput Pointer to a string to parse. \ref NULL will page fault.
+	\param pInput Pointer to a string to parse. \ref nullptr will page fault.
 	\param uLength Length of the string buffer.
 	\return Pointer to the zero, or EOL character.
 
@@ -1626,11 +1638,11 @@ char* BURGER_API Burger::ParseBeyondEOL(
 
 	\endcode
 
-	\param pOutput Pointer to the output string. \ref NULL is acceptable if
+	\param pOutput Pointer to the output string. \ref nullptr is acceptable if
 		uOutputSize is zero.
 	\param uOutputSize Size of the output string buffer in bytes.
 	\param pInput Pointer to a "C" string that has a '"' as the first
-		character. \ref NULL will page fault.
+		character. \ref nullptr will page fault.
 
 	\return Pointer to the character that ended parsing. +1 beyond '"', or at
 		CR, at LF or at zero.
@@ -1699,7 +1711,7 @@ char* BURGER_API Burger::ParseQuotedString(
 
 /*! ************************************
 
-	\brief Read a stream of text chars until a \ref NULL, LF, CR or CR/LF is
+	\brief Read a stream of text chars until a \ref nullptr, LF, CR or CR/LF is
 		found.
 
 	Copy from the input stream of text characters until either a zero, a LF
@@ -1709,8 +1721,8 @@ char* BURGER_API Burger::ParseQuotedString(
 	The value returned is the number of bytes that was processed. This number is
 	how many bytes from the original input was used.
 
-	\param pOutput Pointer to the output buffer (Can be \ref NULL if uOutputSize
-		is zero).
+	\param pOutput Pointer to the output buffer (Can be \ref nullptr if
+		uOutputSize is zero).
 	\param uOutputSize Size in bytes of the output buffer.
 	\param pInput Pointer to the input buffer.
 	\param uInputSize Size in bytes of the maximum number of bytes to process.
@@ -1740,7 +1752,7 @@ uintptr_t BURGER_API Burger::CopyUpToEOL(char* pOutput, uintptr_t uOutputSize,
 			// Grab a char from the input stream
 			const uint_t Temp = pWork[0];
 
-			if (!Temp) { // Do NOT accept NULL's
+			if (!Temp) { // Do NOT accept nullptr's
 				break;
 			}
 			++pWork;          // Accept the char
@@ -1795,7 +1807,7 @@ uintptr_t BURGER_API Burger::CopyUpToEOL(char* pOutput, uintptr_t uOutputSize,
 	&quot;Foo&nbsp;&nbsp;&nbsp;&quot;.
 
 	\param pInput Pointer to the "C" string to remove beginning spaces from.
-		\ref NULL will page fault.
+		\ref nullptr will page fault.
 
 	\sa Burger::StripLeadingWhiteSpace(char *), Burger::StripTrailingSpaces(char
 		*), Burger::StripLeading(char *,const char *).
@@ -1816,11 +1828,12 @@ void BURGER_API Burger::StripLeadingSpaces(char* pInput) BURGER_NOEXCEPT
 
 		if (uTemp) { // End of the string?
 			do {
-				pTemp[0] = static_cast<char>(
-					uTemp); // Now, copy the string to the beginning of
-				++pTemp;    // the buffer
-				uTemp = reinterpret_cast<uint8_t*>(
-					pInput)[0]; // Accept the next char
+				// Now, copy the string to the beginning of the buffer
+				pTemp[0] = static_cast<char>(uTemp);
+				++pTemp;
+
+				// Accept the next char
+				uTemp = reinterpret_cast<uint8_t*>(pInput)[0];
 				++pInput;
 			} while (uTemp); // Did I copy the ending zero?
 		}
@@ -1846,7 +1859,7 @@ void BURGER_API Burger::StripLeadingSpaces(char* pInput) BURGER_NOEXCEPT
 	&quot;&nbsp;&nbsp;&nbsp;Foo&quot;.
 
 	\param pInput Pointer to the "C" string to remove ending spaces from. \ref
-		NULL will page fault.
+		nullptr will page fault.
 
 	\sa Burger::StripTrailingWhiteSpace(char *), Burger::StripLeadingSpaces(char
 		*), Burger::StripTrailing(char *).
@@ -1886,7 +1899,7 @@ void BURGER_API Burger::StripTrailingSpaces(char* pInput) BURGER_NOEXCEPT
 	&quot;Foo&nbsp;\\t&nbsp;&quot;.
 
 	\param pInput Pointer to the "C" string to remove beginning whitespace from.
-		\ref NULL will page fault.
+		\ref nullptr will page fault.
 
 	\sa Burger::StripLeadingSpaces(char *), Burger::StripTrailingSpaces(char *),
 		Burger::StripLeading(char *,const char *)
@@ -1895,16 +1908,18 @@ void BURGER_API Burger::StripTrailingSpaces(char* pInput) BURGER_NOEXCEPT
 
 void BURGER_API Burger::StripLeadingWhiteSpace(char* pInput) BURGER_NOEXCEPT
 {
+	// Is there a leading whitespace?
 	uint_t uTemp = reinterpret_cast<uint8_t*>(pInput)[0];
-	if ((uTemp == ' ') || (uTemp == '\t')) { // Is there a leading whitespace?
+	if ((uTemp == ' ') || (uTemp == '\t')) {
 		char* pTemp = pInput; // Save the starting point of the string
 		++pInput;             // Accept the char
 		do {
-			uTemp =
-				reinterpret_cast<uint8_t*>(pInput)[0]; // Fetch the next char
+			// Fetch the next char
+			uTemp = reinterpret_cast<uint8_t*>(pInput)[0];
 			++pInput;
-		} while ((uTemp == ' ') ||
-			(uTemp == '\t')); // Look for the end of the whitespace
+
+			// Look for the end of the whitespace
+		} while ((uTemp == ' ') || (uTemp == '\t'));
 
 		if (uTemp) { // End of the string?
 			do {
@@ -1939,7 +1954,7 @@ void BURGER_API Burger::StripLeadingWhiteSpace(char* pInput) BURGER_NOEXCEPT
 	&quot;&nbsp;\\t&nbsp;Foo&quot;.
 
 	\param pInput Pointer to the "C" string to remove ending spaces and tabs
-		from. \ref NULL will page fault.
+		from. \ref nullptr will page fault.
 
 	\sa Burger::StripTrailingSpaces(char *), Burger::StripLeadingSpaces(char *),
 		Burger::StripTrailing(char *,const char*)
@@ -1948,10 +1963,10 @@ void BURGER_API Burger::StripLeadingWhiteSpace(char* pInput) BURGER_NOEXCEPT
 
 void BURGER_API Burger::StripTrailingWhiteSpace(char* pInput) BURGER_NOEXCEPT
 {
-	uint_t uTemp =
-		reinterpret_cast<uint8_t*>(pInput)[0]; // Get the first character
-	if (uTemp) {                               // Is there a string?
-		char* pTemp = pInput;                  // Init the zap pointer
+	// Get the first character
+	uint_t uTemp = reinterpret_cast<uint8_t*>(pInput)[0];
+	if (uTemp) {              // Is there a string?
+		char* pTemp = pInput; // Init the zap pointer
 		do {
 			++pInput;                                // Accept the char
 			if ((uTemp != ' ') && (uTemp != '\t')) { // Not whitespace?
@@ -1980,7 +1995,7 @@ void BURGER_API Burger::StripTrailingWhiteSpace(char* pInput) BURGER_NOEXCEPT
 	&quot;&nbsp;&nbsp;&nbsp;Foo&nbsp;&nbsp;&nbsp;&quot; becomes "Foo".
 
 	\param pInput Pointer to the "C" string to remove beginning and ending
-		spaces from. \ref NULL will page fault.
+		spaces from. \ref nullptr will page fault.
 
 	\sa Burger::StripTrailingSpaces(char *), Burger::StripLeadingSpaces(char *),
 		Burger::StripLeadingAndTrailingWhiteSpace(char *).
@@ -2004,14 +2019,15 @@ void BURGER_API Burger::StripLeadingAndTrailingSpaces(
 	if (uTemp) {            // End of the string?
 		char* pTemp = pEnd; // Begin storing here
 		do {
-			pTemp[0] = static_cast<char>(
-				uTemp);         // Now, copy the string to the beginning of
-			++pTemp;            // the buffer
-			if (uTemp != ' ') { // Is this a forbidden last char?
+			// Now, copy the string to the beginning of the buffer
+			pTemp[0] = static_cast<char>(uTemp);
+			++pTemp;
+			// Is this a forbidden last char?
+			if (uTemp != ' ') {
 				pEnd = pTemp;
 			}
-			uTemp =
-				reinterpret_cast<uint8_t*>(pInput)[0]; // Accept the next char
+			// Accept the next char
+			uTemp = reinterpret_cast<uint8_t*>(pInput)[0];
 			++pInput;
 		} while (uTemp); // No more string?
 	}
@@ -2035,7 +2051,7 @@ void BURGER_API Burger::StripLeadingAndTrailingSpaces(
 	&quot;&nbsp;\\t&nbsp;Foo&nbsp;\\t&nbsp;&quot; becomes "Foo".
 
 	\param pInput Pointer to the "C" string to remove beginning and ending
-		whitespace from. \ref NULL will page fault.
+		whitespace from. \ref nullptr will page fault.
 
 	\sa Burger::StripTrailingWhiteSpace(char *),
 		Burger::StripLeadingWhiteSpace(char *),
@@ -2051,25 +2067,28 @@ void BURGER_API Burger::StripLeadingAndTrailingWhiteSpace(
 	++pInput;                                // Accept the char
 	if ((uTemp == ' ') || (uTemp == '\t')) { // Is there a leading space?
 		do {
-			uTemp =
-				reinterpret_cast<uint8_t*>(pInput)[0]; // Fetch the next char
+			// Fetch the next char
+			uTemp = reinterpret_cast<uint8_t*>(pInput)[0];
 			++pInput;
-		} while ((uTemp == ' ') ||
-			(uTemp == '\t')); // Look for the end of the spaces
+
+			// Look for the end of the spaces
+		} while ((uTemp == ' ') || (uTemp == '\t'));
 	}
 
 	if (uTemp) {            // End of the string?
 		char* pTemp = pEnd; // Begin storing here
 		do {
-			pTemp[0] = static_cast<char>(
-				uTemp); // Now, copy the string to the beginning of
-			++pTemp;    // the buffer
-			if ((uTemp != ' ') &&
-				(uTemp != '\t')) { // Is this a forbidden last char?
+			// Now, copy the string to the beginning of the buffer
+			pTemp[0] = static_cast<char>(uTemp);
+			++pTemp;
+
+			// Is this a forbidden last char?
+			if ((uTemp != ' ') && (uTemp != '\t')) {
 				pEnd = pTemp;
 			}
-			uTemp =
-				reinterpret_cast<uint8_t*>(pInput)[0]; // Accept the next char
+
+			// Accept the next char
+			uTemp = reinterpret_cast<uint8_t*>(pInput)[0];
 			++pInput;
 		} while (uTemp); // No more string?
 	}
@@ -2086,9 +2105,10 @@ void BURGER_API Burger::StripLeadingAndTrailingWhiteSpace(
 
 	\note This code is case sensitive.
 
-	\param pInput Pointer to the "C" string to purge. \ref NULL will page fault.
+	\param pInput Pointer to the "C" string to purge. \ref nullptr will page
+		fault.
 	\param pList Pointer to the "C" string that contains the characters to
-		remove. Do not pass a \ref NULL pointer.
+		remove. Do not pass a \ref nullptr pointer.
 
 	\sa Burger::StripAllButList(char*,const char*),
 		Burger::StripLeadingSpaces(char*), Burger::StripTrailingSpaces(char*)
@@ -2134,9 +2154,10 @@ void BURGER_API Burger::StripAllFromList(
 
 	\note This code is case sensitive.
 
-	\param pInput Pointer to the "C" string to purge. \ref NULL will page fault.
-	\param pList Pointer to the "C" string that contains the valid characters to
-		allow.
+	\param pInput Pointer to the "C" string to purge. \ref nullptr will page
+		fault.
+	\param pList Pointer to the "C" string that contains the valid characters
+		to allow.
 
 	\sa Burger::StripAllFromList(char *,const char *),
 		Burger::StripLeadingSpaces(char *), Burger::StripTrailingSpaces(char *)
@@ -2148,10 +2169,12 @@ void BURGER_API Burger::StripAllButList(
 {
 	if (reinterpret_cast<uint8_t*>(pInput)[0]) { // Any input
 		char* pTemp = pInput;                    // Destination pointer
-		if (reinterpret_cast<const uint8_t*>(
-				pList)[0]) { // Is there a keep pointer?
-			uint_t uTemp =
-				reinterpret_cast<uint8_t*>(pInput)[0]; // Grab an input char
+
+		// Is there a keep pointer?
+		if (reinterpret_cast<const uint8_t*>(pList)[0]) {
+
+			// Grab an input char
+			uint_t uTemp = reinterpret_cast<uint8_t*>(pInput)[0];
 			do {
 				++pInput;
 				uint_t uTemp2 = reinterpret_cast<const uint8_t*>(pList)[0];
@@ -2166,8 +2189,8 @@ void BURGER_API Burger::StripAllButList(
 					}
 					uTemp2 = pTempList[0];
 				} while (uTemp2); // Any more?
-				uTemp =
-					reinterpret_cast<uint8_t*>(pInput)[0]; // Grab an input char
+				// Grab an input char
+				uTemp = reinterpret_cast<uint8_t*>(pInput)[0];
 			} while (uTemp);
 		}
 		pTemp[0] = 0; // Terminate the string
@@ -2186,9 +2209,9 @@ void BURGER_API Burger::StripAllButList(
 	\note This code is case sensitive.
 
 	\param pInput Pointer to the "C" string to remove ending characters from. Do
-		not pass a \ref NULL pointer.
+		not pass a \ref nullptr pointer.
 	\param pList Pointer to the "C" string that contains the characters to
-		remove. Do not pass a \ref NULL pointer.
+		remove. Do not pass a \ref nullptr pointer.
 
 	\sa Burger::StripAllButList(char *,const char *),
 		Burger::StripLeadingSpaces(char *) or Burger::StripTrailingSpaces(char
@@ -2243,9 +2266,9 @@ void BURGER_API Burger::StripTrailing(
 	\note This code is case sensitive.
 
 	\param pInput Pointer to the "C" string to remove beginning characters from.
-		Do not pass a \ref NULL pointer.
+		Do not pass a \ref nullptr pointer.
 	\param pList Pointer to the "C" string that contains the characters to
-		remove. Do not pass a \ref NULL pointer.
+		remove. Do not pass a \ref nullptr pointer.
 
 	\sa Burger::StripLeadingWhiteSpace(char *), Burger::StripTrailingSpaces(char
 		*), Burger::StripLeading(char *,const char *)
@@ -2272,8 +2295,9 @@ void BURGER_API Burger::StripLeading(
 				if (!uTemp) { // End of string?
 					break;
 				}
-				pListTemp = reinterpret_cast<const uint8_t*>(
-					pList - 1); // Reset the list pointer
+
+				// Reset the list pointer
+				pListTemp = reinterpret_cast<const uint8_t*>(pList - 1);
 			}
 			uTest = pListTemp[1];
 			++pListTemp;
@@ -2293,7 +2317,9 @@ void BURGER_API Burger::StripLeading(
 	it's zeroed out, effectively removing it. This function is a convenience
 	routine used to get rid of a trailing ':' or '/' mark from a directory path.
 
-	\param pInput Pointer to the "C" string to scan. \ref NULL will page fault.
+	\param pInput Pointer to the "C" string to scan. \ref nullptr will page
+		fault.
+
 	\param uRemove character to test the last char with (Range 0-255).
 	\sa Burger::ForceTrailingChar(char *,uint_t)
 
@@ -2324,7 +2350,9 @@ void BURGER_API Burger::RemoveTrailingChar(
 	caller's responsibility to ensure that the string buffer is large enough to
 	accept a string that grows by 1 byte.
 
-	\param pInput Pointer to the "C" string to scan. \ref NULL will page fault.
+	\param pInput Pointer to the "C" string to scan. \ref nullptr will page
+		fault.
+
 	\param uLast 8 bit character to test the last char with.
 	\sa Burger::RemoveTrailingChar(char *,uint_t)
 
@@ -2348,8 +2376,8 @@ void BURGER_API Burger::ForceTrailingChar(
 	Burgerlib uses colons as directory separators. This function will take
 	Unix ('\') and Windows ('/') style slashes and convert them into colons.
 
-	\param pInput Pointer to the "C" string to perform the fix up on. \ref NULL
-		will page fault.
+	\param pInput Pointer to the "C" string to perform the fix up on. \ref
+		nullptr will page fault.
 
 	\sa SlashesToColons(char *,const char *), SlashesToWindowsSlashes(char *) or
 		SlashesToLinuxSlashes(char *)
@@ -2378,7 +2406,7 @@ void BURGER_API Burger::SlashesToColons(char* pInput) BURGER_NOEXCEPT
 	Unix ('\') and Windows ('/') style slashes and convert them into colons.
 
 	\param pOutput Pointer to a buffer large enough to contain the new string
-	\param pInput Pointer to the "C" string to perform the fix up. \ref NULL
+	\param pInput Pointer to the "C" string to perform the fix up. \ref nullptr
 		will page fault.
 
 	\sa SlashesToColons(char *), SlashesToWindowsSlashes(char
@@ -2389,9 +2417,9 @@ void BURGER_API Burger::SlashesToColons(char* pInput) BURGER_NOEXCEPT
 void BURGER_API Burger::SlashesToColons(
 	char* pOutput, const char* pInput) BURGER_NOEXCEPT
 {
-	uint_t uTemp =
-		reinterpret_cast<const uint8_t*>(pInput)[0]; // Get the first char
-	if (uTemp) {                                     // Do I bother?
+	// Get the first char
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+	if (uTemp) { // Do I bother?
 		do {
 			if ((uTemp == '\\') || (uTemp == '/')) { // Is it a slash?
 				uTemp = ':';                         // It's a colon now
@@ -2412,8 +2440,8 @@ void BURGER_API Burger::SlashesToColons(
 	Windows uses backslashes as directory separators. This function will take
 	Linux style slashes and convert them into Windows slashes.
 
-	\param pInput Pointer to the "C" string to perform the fix up on. \ref NULL
-		will page fault.
+	\param pInput Pointer to the "C" string to perform the fix up on.
+		\ref nullptr will page fault.
 
 	\sa SlashesToWindowsSlashes(char *,const char *),
 		SlashesToColons(char *) or SlashesToLinuxSlashes(char *)
@@ -2444,7 +2472,7 @@ void BURGER_API Burger::SlashesToWindowsSlashes(char* pInput) BURGER_NOEXCEPT
 	\param pOutput Pointer to a buffer large enough to hold the converted "C"
 		string.
 	\param pInput Pointer to the "C" string to perform the fix up on. \ref
-		NULL will page fault.
+		nullptr will page fault.
 
 	\sa SlashesToWindowsSlashes(char *), SlashesToColons(char
 		*,const char *) or SlashesToLinuxSlashes(char *,const char *)
@@ -2478,8 +2506,8 @@ void BURGER_API Burger::SlashesToWindowsSlashes(
 	append a '\' character to the end of the string if a slash wasn't already
 	there.
 
-	\param pInput Pointer to the "C" string to perform the fix up on. \ref NULL
-		will page fault.
+	\param pInput Pointer to the "C" string to perform the fix up on. \ref
+		nullptr will page fault.
 	\sa EndWithWindowsSlashes(char *,const char *)
 
 ***************************************/
@@ -2522,7 +2550,7 @@ void BURGER_API Burger::EndWithWindowsSlashes(char* pInput) BURGER_NOEXCEPT
 	\param pOutput Pointer to a buffer large enough to hold the converted "C"
 		string.
 	\param pInput Pointer to the "C" string to perform the fix up on. \ref
-		NULL will page fault.
+		nullptr will page fault.
 
 	\sa EndWithWindowsSlashes(char *)
 
@@ -2561,9 +2589,9 @@ void BURGER_API Burger::EndWithWindowsSlashes(
 	Linux and MacOSX uses forward slashes as directory separators. This function
 	will take Windows slashes and convert them into Linux style slashes.
 
-	\param pInput Pointer to the "C" string to perform the fix up on. \ref NULL
-		will page fault.
-	\sa SlashesToLinuxSlashes(char *,const char *),SlashesToColons(char *) or
+	\param pInput Pointer to the "C" string to perform the fix up on. \ref
+		nullptr will page fault.
+	\sa SlashesToLinuxSlashes(char *, const char *), SlashesToColons(char *) or
 		SlashesToWindowsSlashes(char *)
 
 ***************************************/
@@ -2592,7 +2620,7 @@ void BURGER_API Burger::SlashesToLinuxSlashes(char* pInput) BURGER_NOEXCEPT
 	\param pOutput Pointer to a buffer large enough to hold the converted "C"
 		string.
 	\param pInput Pointer to the "C" string to perform the fix up on. \ref
-		NULL will page fault.
+		nullptr will page fault.
 
 	\sa SlashesToLinuxSlashes(char *),SlashesToColons(char *,const char *) or
 		SlashesToWindowsSlashes(char *,const char *)
@@ -2626,8 +2654,8 @@ void BURGER_API Burger::SlashesToLinuxSlashes(
 	append a '/' character to the end of the string if a slash wasn't already
 	there.
 
-	\param pInput Pointer to the "C" string to perform the fix up on. \ref NULL
-		will page fault.
+	\param pInput Pointer to the "C" string to perform the fix up on. \ref
+		nullptr will page fault.
 
 	\sa EndWithLinuxSlashes(char *,const char *)
 
@@ -2671,7 +2699,7 @@ void BURGER_API Burger::EndWithLinuxSlashes(char* pInput) BURGER_NOEXCEPT
 	\param pOutput Pointer to a buffer large enough to hold the converted "C"
 		string.
 	\param pInput Pointer to the "C" string to perform the fix up on. \ref
-		NULL will page fault.
+		nullptr will page fault.
 
 	\sa EndWithLinuxSlashes(char *)
 
@@ -2709,8 +2737,8 @@ void BURGER_API Burger::EndWithLinuxSlashes(
 
 	Convert any character that matches the uFrom value into the uTo value.
 
-	\param pInput Pointer to the "C" string to perform the fix up on. \ref NULL
-		will page fault.
+	\param pInput Pointer to the "C" string to perform the fix up on. \ref
+		nullptr will page fault.
 	\param uFrom Value to compare with.
 	\param uTo Value to replace matching values with.
 
@@ -2742,7 +2770,7 @@ void BURGER_API Burger::Replace(
 	\param pOutput Pointer to a buffer large enough to hold the converted "C"
 		string.
 	\param pInput Pointer to the "C" string to perform the fix up on. \ref
-		NULL will page fault.
+		nullptr will page fault.
 	\param uFrom Value to compare with.
 	\param uTo Value to replace matching values with.
 
@@ -2785,7 +2813,9 @@ void BURGER_API Burger::Replace(
 	The pointer returned is a pointer within the string. You do not need to
 	release the memory in any way.
 
-	\param pInput Pointer to the "C" string to scan. \ref NULL will page fault.
+	\param pInput Pointer to the "C" string to scan. \ref nullptr will page
+		fault.
+
 	\return A pointer to the filename extension of terminating zero.
 
 	\sa Burger::SetFileExtension(char *,const char *).
@@ -2835,15 +2865,15 @@ char* BURGER_API Burger::GetFileExtension(const char* pInput) BURGER_NOEXCEPT
 	new extension. This routine will not check for buffer overruns.
 
 	Examples: "Foo.txt" + "gif" = "Foo.gif", "Foo" + "gif" = "Foo.gif",
-	"Foo.txt" + \ref NULL = "Foo", "Foo.bin" + ".txt" = "Foo.txt".
+	"Foo.txt" + \ref nullptr = "Foo", "Foo.bin" + ".txt" = "Foo.txt".
 
-	\param pInput Pointer to the "C" string to scan. \ref NULL will page fault.
-		This will be modified with the new file extension. NewExtension =
+	\param pInput Pointer to the "C" string to scan. \ref nullptr will page
+		fault. This will be modified with the new file extension. NewExtension =
 		Pointer to a "C" string with the extension to apply.
 
 	\param pNewExtension Pointer to a "C" string that represents the new
-		extension. A \ref NULL or empty string will have the existing extension
-		stripped.
+		extension. A \ref nullptr or empty string will have the existing
+		extension stripped.
 
 	\sa Burger::GetFileExtension(const char *).
 
@@ -3011,11 +3041,13 @@ uintptr_t BURGER_API Burger::StringLength(const char* pInput) BURGER_NOEXCEPT
 	// Get the address and see if it is already aligned
 	uintptr_t uCount = reinterpret_cast<uintptr_t>(pInput) & 3;
 	if (uCount) { // Nope, perform a phony first fetch
-		pWork = pWork -
-			uCount;   // Adjust the start pointer to align by 4 (Backwards)
+
+		// Adjust the start pointer to align by 4 (Backwards)
+		pWork = pWork - uCount;
 		uCount <<= 3; // 1,2,3 -> 8,16,24
-		uSample = reinterpret_cast<const uint32_t*>(
-			pWork)[0]; // Get the first longword
+
+		// Get the first longword
+		uSample = reinterpret_cast<const uint32_t*>(pWork)[0];
 		pWork += 4;
 		// Make 0xFFFFFF00, 0xFFFF0000 or 0xFF000000 for 1,2,3 (little)
 #if defined(BURGER_LITTLEENDIAN)
@@ -3028,8 +3060,9 @@ uintptr_t BURGER_API Burger::StringLength(const char* pInput) BURGER_NOEXCEPT
 		uSample |= (~uAddTemp);
 
 		// Let's get to work.
-		uAddTemp =
-			uSample + 0xFEFEFEFFU;    // Do the vector addition for 0x01-0x80
+
+		// Do the vector addition for 0x01-0x80
+		uAddTemp = uSample + 0xFEFEFEFFU;
 		uAddTemp &= (~uSample);       // Perform the xor test for 0x80-0xFF
 		if (uAddTemp & 0x80808080U) { // All bytes are non-zero, loop
 			goto Skip1;               // If TRUE then a transition occurred
@@ -3038,15 +3071,19 @@ uintptr_t BURGER_API Burger::StringLength(const char* pInput) BURGER_NOEXCEPT
 
 	// This is the main loop
 	do {
-		uSample =
-			reinterpret_cast<const uint32_t*>(pWork)[0]; // Fetch the longword
-		pWork += 4;                                      // Accept the 4 bytes
-		uAddTemp =
-			uSample + 0xFEFEFEFFU;       // Do the vector addition for 0x01-0x80
-		uAddTemp &= (~uSample);          // Perform the xor test for 0x80-0xFF
-	} while (!(uAddTemp & 0x80808080U)); // All bytes are non-zero, loop
+		// Fetch the longword
+		uSample = reinterpret_cast<const uint32_t*>(pWork)[0];
+		// Accept the 4 bytes
+		pWork += 4;
+		// Do the vector addition for 0x01-0x80
+		uAddTemp = uSample + 0xFEFEFEFFU;
+		// Perform the xor test for 0x80-0xFF
+		uAddTemp &= (~uSample);
+		// All bytes are non-zero, loop
+	} while (!(uAddTemp & 0x80808080U));
 Skip1:;
 	uCount = static_cast<uintptr_t>(pWork - pInput);
+
 #if defined(BURGER_LITTLEENDIAN)
 	if (!(uSample & 0xFF)) { // Was the first byte the zero one?
 		return uCount - 4;   // Adjust result and exit
@@ -3370,11 +3407,11 @@ void BURGER_API Burger::StringCopy(uint16_t* pOutput, uintptr_t uOutputSize,
 	string. You must eventually dispose of the string with a call to
 	Burger::StringDelete(const char *).
 
-	\param pInput Pointer to the "C" string to copy. A \ref NULL pointer will
+	\param pInput Pointer to the "C" string to copy. A \ref nullptr pointer will
 		page fault.
 
-	\return A pointer to the copy of the string. Or \ref NULL if a memory error
-		occurs.
+	\return A pointer to the copy of the string. Or \ref nullptr if a memory
+		error occurs.
 
 	\sa Burger::StringDuplicate(const char *,uintptr_t) or
 		Burger::StringDelete(const char *).
@@ -3402,11 +3439,11 @@ char* BURGER_API Burger::StringDuplicate(const char* pInput) BURGER_NOEXCEPT
 		fault.
 	\param uPadding Number of bytes to extend the buffer.
 
-	\return A pointer to the copy of the string. Or \ref NULL if a memory error
-		occurred.
+	\return A pointer to the copy of the string. Or \ref nullptr if a memory
+		error occurred.
 
-	\sa Burger::StringDuplicate(const char *) or Burger::StringDelete(const char
-		*)
+	\sa Burger::StringDuplicate(const char *) or Burger::StringDelete(
+		const char *)
 
 ***************************************/
 
@@ -3419,7 +3456,7 @@ char* BURGER_API Burger::StringDuplicate(
 	if (pResult) {
 		MemoryCopy(pResult, pInput, uLength); // Copy the string
 	}
-	return pResult; // Return the string or NULL on error
+	return pResult; // Return the string or nullptr on error
 }
 
 /*! ************************************
@@ -3430,8 +3467,8 @@ char* BURGER_API Burger::StringDuplicate(
 	Burger::StringDuplicate(const char *,uintptr_t) then you must dispose of it
 	with this function.
 
-	\param pInput Pointer to the "C" string to delete. A \ref NULL pointer will
-		do nothing and is okay to pass.
+	\param pInput Pointer to the "C" string to delete. A \ref nullptr pointer
+		will do nothing and is okay to pass.
 
 	\sa Burger::StringDuplicate(const char *) or Burger::StringDuplicate(const
 		char *,uintptr_t)
@@ -3742,9 +3779,9 @@ int BURGER_API Burger::StringCompare(const uint16_t* pInput1,
 	const uint16_t* pInput2, uintptr_t uMaxLength) BURGER_NOEXCEPT
 {
 	int iTemp = 0;
-	uint_t uTemp1;
 	uMaxLength <<= 1;
 	if (uMaxLength) {
+		uint_t uTemp1;
 		do {
 			// First byte
 			uTemp1 = pInput1[0];
@@ -3842,8 +3879,8 @@ int BURGER_API Burger::StringCaseCompare(const char* pInput1,
 	const char* pInput2, uintptr_t uMaxLength) BURGER_NOEXCEPT
 {
 	int iTemp = 0;
-	uint_t uTemp1;
 	if (uMaxLength) {
+		uint_t uTemp1;
 		do {
 			// First byte
 			uTemp1 = reinterpret_cast<const uint8_t*>(pInput1)[0];
@@ -3885,10 +3922,10 @@ int BURGER_API Burger::StringCaseCompare(const char* pInput1,
 
 	\note Comparisons are case insensitive.
 
-	\param pInput Pointer to a "C" string to compare against. \ref NULL will
+	\param pInput Pointer to a "C" string to compare against. \ref nullptr will
 		page fault.
 	\param pWildcard Pointer to a "C" string that has wild card information.
-		\ref NULL will page fault.
+		\ref nullptr will page fault.
 
 	\return \ref FALSE if the string matches according to the wild card rules,
 		\ref TRUE if not.
@@ -3972,7 +4009,7 @@ uint_t BURGER_API Burger::Wildcardcmp(
 	To determine if a string contains a '*' or a '?' wild card character, call
 	this function and it will return \ref TRUE if so.
 
-	\param pInput Pointer to a "C" string to test. \ref NULL will return \ref
+	\param pInput Pointer to a "C" string to test. \ref nullptr will return \ref
 		FALSE
 
 	\return \ref TRUE if the string contains wild card characters, \ref FALSE if
@@ -4020,8 +4057,10 @@ uint_t BURGER_API Burger::HasWildcard(const char* pInput) BURGER_NOEXCEPT
 
 void BURGER_API Burger::StringUppercase(char* pInput) BURGER_NOEXCEPT
 {
-	uint_t uTemp = reinterpret_cast<uint8_t*>(pInput)[0]; // Prefetch first char
-	if (uTemp) {                                          // End of string?
+	// Prefetch first char
+	uint_t uTemp = reinterpret_cast<uint8_t*>(pInput)[0];
+	// End of string?
+	if (uTemp) {
 		do {
 			if ((uTemp - 'a') < 26) { // Is it 'a' to 'z' inclusive?
 				uTemp = uTemp - 32;
@@ -4122,9 +4161,10 @@ void BURGER_API Burger::StringLowercase(char* pInput) BURGER_NOEXCEPT
 void BURGER_API Burger::StringLowercase(
 	char* pOutput, const char* pInput) BURGER_NOEXCEPT
 {
-	uint_t uTemp =
-		reinterpret_cast<const uint8_t*>(pInput)[0]; // Prefetch first char
-	if (uTemp) {                                     // End of string?
+	// Prefetch first char
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+	// End of string?
+	if (uTemp) {
 		do {
 			if ((uTemp - 'A') < 26) { // Is it 'A' to 'Z' inclusive?
 				uTemp = uTemp + 32;   // Convert to lower case
@@ -4137,7 +4177,9 @@ void BURGER_API Burger::StringLowercase(
 			++pInput;
 		} while (uTemp); // Still more?
 	}
-	pOutput[0] = static_cast<char>(uTemp); // Store zero terminator
+
+	// Store zero terminator
+	pOutput[0] = static_cast<char>(uTemp);
 }
 
 /*! ************************************
@@ -4145,13 +4187,13 @@ void BURGER_API Burger::StringLowercase(
 	\brief Scan for the first occurrence of a specific character
 
 	Returns a pointer to the first occurrence of the character iChar in the
-	string pInput or \ref NULL if the character was not found
+	string pInput or \ref nullptr if the character was not found
 
 	\param pInput Pointer to a "C" string to scan
 	\param iChar Character to scan for
 
 	\return Pointer inside the input string to the first matching character or
-		\ref NULL if not found
+		\ref nullptr if not found
 
 	\sa Burger::StringCharacter(const uint16_t *,uint_t) and
 		Burger::StringCharacterReverse(const char *,int)
@@ -4190,13 +4232,13 @@ char* BURGER_API Burger::StringCharacter(
 	\brief Scan for the first occurrence of a specific character
 
 	Returns a pointer to the first occurrence of the character uChar in the
-	string pInput or \ref NULL if the character was not found
+	string pInput or \ref nullptr if the character was not found
 
 	\param pInput Pointer to a "C" string to scan
 	\param uChar Character to scan for
 
 	\return Pointer inside the input string to the first matching character or
-		\ref NULL if not found
+		\ref nullptr if not found
 
 	\sa Burger::StringCharacter(const char *,int) and
 		Burger::StringCharacterReverse(const uint16_t *,uint_t)
@@ -4235,13 +4277,13 @@ uint16_t* BURGER_API Burger::StringCharacter(
 	\brief Scan for the last occurrence of a specific character
 
 	Returns a pointer to the last occurrence of the character iChar in the
-	string pInput or \ref NULL if the character was not found
+	string pInput or \ref nullptr if the character was not found
 
 	\param pInput Pointer to a "C" string to scan
 	\param iChar Character to scan for
 
 	\return Pointer inside the input string to the last matching character or
-		\ref NULL if not found
+		\ref nullptr if not found
 
 	\sa Burger::StringCharacterReverse(const uint16_t *,uint_t),
 		Burger::MemoryCharacterReverse(const char *,uintptr_t,int) and
@@ -4283,13 +4325,13 @@ char* BURGER_API Burger::StringCharacterReverse(
 	\brief Scan for the last occurrence of a specific character
 
 	Returns a pointer to the last occurrence of the character uChar in the
-	string pInput or \ref NULL if the character was not found
+	string pInput or \ref nullptr if the character was not found
 
 	\param pInput Pointer to a "C" string to scan
 	\param uChar Character to scan for
 
 	\return Pointer inside the input string to the last matching character or
-		\ref NULL if not found
+		\ref nullptr if not found
 
 	\sa Burger::StringCharacterReverse(const char *,int),
 		Burger::MemoryCharacterReverse(const uint16_t *,uintptr_t,uint_t) and
@@ -4584,15 +4626,15 @@ uintptr_t BURGER_API Burger::StringStopAt(
 
 	\brief Locate a substring
 
-	Returns a pointer to the first occurrence of pTest in pInput, or a \ref NULL
-	pointer if pTest is not part of pInput.
+	Returns a pointer to the first occurrence of pTest in pInput, or a \ref
+	nullptr pointer if pTest is not part of pInput.
 
 	The matching process does not include the terminating null-characters, but
 	it stops there.
 
 	\param pInput Pointer to the string to scan
 	\param pTest Pointer to the substring to look for
-	\return \ref NULL if substring was not found or the pointer to the first
+	\return \ref nullptr if substring was not found or the pointer to the first
 		matching string
 
 	\sa Burger::StringCaseString(const char *,const char *)
@@ -4632,8 +4674,8 @@ char* BURGER_API Burger::StringString(
 
 	\brief Locate a substring (UTF-16 version)
 
-	Returns a pointer to the first occurrence of pTest in pInput, or a \ref NULL
-	pointer if pTest is not part of pInput.
+	Returns a pointer to the first occurrence of pTest in pInput, or a \ref
+	nullptr pointer if pTest is not part of pInput.
 
 	The matching process does not include the terminating null-characters, but
 	it stops there.
@@ -4641,7 +4683,7 @@ char* BURGER_API Burger::StringString(
 	\param pInput Pointer to the string to scan
 	\param pTest Pointer to the substring to look for
 
-	\return \ref NULL if substring was not found or the pointer to the first
+	\return \ref nullptr if substring was not found or the pointer to the first
 		matching string
 
 	\sa Burger::StringCaseString(const uint16_t *,const uint16_t *)
@@ -4681,8 +4723,8 @@ uint16_t* BURGER_API Burger::StringString(
 
 	\brief Locate a substring, case insensitive
 
-	Returns a pointer to the first occurrence of pTest in pInput, or a \ref NULL
-	pointer if pTest is not part of pInput.
+	Returns a pointer to the first occurrence of pTest in pInput, or a \ref
+	nullptr pointer if pTest is not part of pInput.
 
 	The case insensitive matching process does not include the terminating
 	null-characters, but it stops there.
@@ -4690,7 +4732,7 @@ uint16_t* BURGER_API Burger::StringString(
 	\param pInput Pointer to the string to scan
 	\param pTest Pointer to the substring to look for
 
-	\return \ref NULL if substring was not found or the pointer to the first
+	\return \ref nullptr if substring was not found or the pointer to the first
 		matching string
 
 	\sa Burger::StringString(const char *,const char *)
@@ -4736,8 +4778,8 @@ char* BURGER_API Burger::StringCaseString(
 
 	\brief Locate a substring, case insensitive (UTF-16 version)
 
-	Returns a pointer to the first occurrence of pTest in pInput, or a \ref NULL
-	pointer if pTest is not part of pInput.
+	Returns a pointer to the first occurrence of pTest in pInput, or a \ref
+	nullptr pointer if pTest is not part of pInput.
 
 	The case insensitive matching process does not include the terminating
 	null-characters, but it stops there.
@@ -4745,7 +4787,7 @@ char* BURGER_API Burger::StringCaseString(
 	\param pInput Pointer to the string to scan
 	\param pTest Pointer to the substring to look for
 
-	\return \ref NULL if substring was not found or the pointer to the first
+	\return \ref nullptr if substring was not found or the pointer to the first
 		matching string
 
 	\sa Burger::StringString(const uint16_t *,const uint16_t *)
@@ -4805,7 +4847,7 @@ uint16_t* BURGER_API Burger::StringCaseString(
 	\param pDelimiters Pointer to the string of delimiters to scan
 	\param ppSave Pointer to a char * to save the state
 
-	\return \ref NULL if not more tokens are remaining, or a pointer to the
+	\return \ref nullptr if not more tokens are remaining, or a pointer to the
 	first character of the token found which is zero terminated at the delimiter
 	value.
 
@@ -4861,7 +4903,7 @@ char* BURGER_API Burger::StringToken(
 	\param pDelimiters Pointer to the string of delimiters to scan
 	\param ppSave Pointer to a char * to save the state
 
-	\return \ref NULL if not more tokens are remaining, or a pointer to the
+	\return \ref nullptr if not more tokens are remaining, or a pointer to the
 	first character of the token found which is zero terminated at the delimiter
 	value.
 

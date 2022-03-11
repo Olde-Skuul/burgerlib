@@ -1,16 +1,16 @@
 /***************************************
 
-    Debug manager
+	Debug manager
 
-    MacOSX specific version
+	MacOSX specific version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -19,8 +19,9 @@
 #if defined(BURGER_MACOSX)
 #include "brcriticalsection.h"
 #include "brfile.h"
-#include "broscursor.h"
 #include "brmemoryfunctions.h"
+#include "broscursor.h"
+
 #import <AppKit/NSAlert.h>
 #import <AppKit/NSApplication.h>
 #import <Foundation/NSAutoreleasePool.h>
@@ -29,16 +30,23 @@
 #include <sys/sysctl.h>
 #include <unistd.h>
 
+/***************************************
+
+	\brief Print a string to a file or debugger.
+
+	Given a "C" string, stream the data to a text file, or if a debugger is
+	attached, to the debugger console.
+
+	No parsing is done on the string, it's written as is.
+
+	\param pString Pointer to a "C" string to print.
+
+***************************************/
+
 // Make it thread safe
 
 static Burger::CriticalSectionStatic g_LockString;
 static uint_t g_uDebugger = 0;
-
-/***************************************
-
-	Print to debugger or file
-
-***************************************/
 
 void BURGER_API Burger::Debug::PrintString(const char* pString) BURGER_NOEXCEPT
 {
@@ -48,15 +56,17 @@ void BURGER_API Burger::Debug::PrintString(const char* pString) BURGER_NOEXCEPT
 		uintptr_t i = StringLength(pString);
 		if (i) {
 			if (!IsDebuggerPresent()) {
+				// Send the string to the log file
 				g_LockString.Lock();
 				File MyFile;
 				if (MyFile.Open("9:logfile.txt", File::kAppend) == kErrorNone) {
-					MyFile.Write(pString, i); // Send the string to the log file
+					MyFile.Write(pString, i);
 					MyFile.Close();
 				}
 			} else {
+				// Output to the debugger window
 				g_LockString.Lock();
-				fwrite(pString, 1, i, stdout); // Output to the debugger window
+				fwrite(pString, 1, i, stdout);
 			}
 			g_LockString.Unlock();
 		}
@@ -75,7 +85,7 @@ uint_t BURGER_API Burger::Debug::IsDebuggerPresent(void) BURGER_NOEXCEPT
 {
 	uint_t uResult = g_uDebugger;
 	// Already tested?
-	if (uResult & (~0x80U)) {
+	if (!(uResult & 0x80U)) {
 
 		// Set up for querying the kernel about this process
 
@@ -83,7 +93,7 @@ uint_t BURGER_API Burger::Debug::IsDebuggerPresent(void) BURGER_NOEXCEPT
 		ManagementInfobase[0] = CTL_KERN;  // Query the kernel
 		ManagementInfobase[1] = KERN_PROC; // Asking for a kinfo_proc structure
 		ManagementInfobase[2] = KERN_PROC_PID; // This process ID
-		ManagementInfobase[3] = getpid();	  // Here's the application's ID
+		ManagementInfobase[3] = getpid();      // Here's the application's ID
 
 		// Prepare the output structure
 
@@ -94,7 +104,7 @@ uint_t BURGER_API Burger::Debug::IsDebuggerPresent(void) BURGER_NOEXCEPT
 		// Call BSD for the state of the process
 		int iResult = sysctl(ManagementInfobase,
 			static_cast<u_int>(BURGER_ARRAYSIZE(ManagementInfobase)), &Output,
-			&uOutputSize, NULL, 0);
+			&uOutputSize, nullptr, 0);
 		uResult = 0x80U;
 		if (!iResult) {
 			// Test for tracing (Debugging)
@@ -117,13 +127,15 @@ uint_t BURGER_API Burger::Debug::IsDebuggerPresent(void) BURGER_NOEXCEPT
 	On platforms that do not support pop up dialogs, the messages are logged
 
 	\param pMessage Message to print in the center of the dialog box
-	\param pTitle Pointer to "C" string or \ref NULL for a message in the title
-		bar
-	\sa OkCancelAlertMessage() or Debug::String(const char *)
+	\param pTitle Pointer to "C" string or \ref nullptr for a message in the
+		title bar
+
+	\sa OkCancelAlertMessage() or Debug::PrintString(const char *)
 
 ***************************************/
 
-void BURGER_API Burger::OkAlertMessage(const char* pMessage, const char* pTitle)
+void BURGER_API Burger::OkAlertMessage(
+	const char* pMessage, const char* pTitle) BURGER_NOEXCEPT
 {
 	// Make sure that the OS cursor is visible otherwise the user will
 	// wonder what's up when the user can't see the cursor to click the button
@@ -161,7 +173,7 @@ void BURGER_API Burger::OkAlertMessage(const char* pMessage, const char* pTitle)
 /***************************************
 
 	\brief Display a dialog to alert the user of a possible error condition or
-	message.
+		message.
 
 	On platforms that support pop up dialogs, display a dialog that has two
 	buttons, one for "Okay" and another for "Cancel"
@@ -173,10 +185,11 @@ void BURGER_API Burger::OkAlertMessage(const char* pMessage, const char* pTitle)
 		that can be answered with Okay or Cancel
 	\param pTitle Pointer to "C" string or \ref NULL for a message in the title
 		bar
+
 	\return \ref TRUE if the user pressed "Okay" or \ref FALSE if pressed
 		"Cancel"
 
-	\sa OkAlertMessage() or Debug::String(const char *)
+	\sa OkAlertMessage() or Debug::PrintString(const char *)
 
 ***************************************/
 

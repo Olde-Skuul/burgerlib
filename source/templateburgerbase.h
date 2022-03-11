@@ -1,6 +1,6 @@
 /***************************************
 
-    What follows are commands for the directories to find the included headers
+	What follows are commands for the directories to find the included headers
 
 ***************************************/
 
@@ -9,6 +9,7 @@
 #endif
 
 /* DIR: "ansi:" */
+/* DIR: "android:" */
 /* DIR: "audio:" */
 /* DIR: "commandline:" */
 /* DIR: "compression:" */
@@ -41,19 +42,19 @@
 /* BEGIN */
 /***************************************
 
-    Burgerlib base header
+	Burgerlib base header
 
-    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
-    Documentation can be found at http://www.burgerbecky.com/burgerlib/docs
+	Documentation can be found at http://www.burgerbecky.com/burgerlib/docs
 
-    Comments, suggestions, bug fixes, email me at becky@burgerbecky.com
+	Comments, suggestions, bug fixes, email me at becky@burgerbecky.com
 
 ***************************************/
 
@@ -100,6 +101,7 @@
 #include "brlinuxtypes.h"
 #include "brps3types.h"
 #include "brps4types.h"
+#include "brandroidtypes.h"
 #include "brshieldtypes.h"
 #include "brvitatypes.h"
 #include "brwiiutypes.h"

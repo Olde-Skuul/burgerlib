@@ -1,16 +1,16 @@
 /***************************************
 
-    Code library (DLL) manager
+	Code library (DLL) manager
 
-    Windows version
+	Windows version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -34,7 +34,7 @@
 
 ***************************************/
 
-uint_t Burger::CodeLibrary::Init(const char* pFilename)
+uint_t Burger::CodeLibrary::Init(const char* pFilename) BURGER_NOEXCEPT
 {
 	// If there was a previous library, release it
 	Shutdown();
@@ -51,9 +51,9 @@ uint_t Burger::CodeLibrary::Init(const char* pFilename)
 	// Convert from UTF8 to UTF16
 	String16 FinalName(pFilename);
 	// Load the library from Windows
-	HMODULE hModule = Windows::LoadLibraryW(FinalName.GetPtr());
+	HMODULE hModule = Windows::LoadLibraryW(FinalName.c_str());
 	// On success!
-	if (hModule != NULL) {
+	if (hModule != nullptr) {
 		m_pLibInstance = hModule;
 		uResult = TRUE;
 	}
@@ -66,12 +66,12 @@ uint_t Burger::CodeLibrary::Init(const char* pFilename)
 
 ***************************************/
 
-void Burger::CodeLibrary::Shutdown(void)
+void Burger::CodeLibrary::Shutdown(void) BURGER_NOEXCEPT
 {
 	// Release the windows lib
 	if (m_pLibInstance) {
 		FreeLibrary(static_cast<HINSTANCE>(m_pLibInstance));
-		m_pLibInstance = NULL;
+		m_pLibInstance = nullptr;
 	}
 }
 
@@ -82,9 +82,10 @@ void Burger::CodeLibrary::Shutdown(void)
 
 ***************************************/
 
-void* Burger::CodeLibrary::GetFunction(const char* pFunctionName)
+void* Burger::CodeLibrary::GetFunction(
+	const char* pFunctionName) BURGER_NOEXCEPT
 {
-	void* pFunction = NULL;
+	void* pFunction = nullptr;
 	if (pFunctionName && m_pLibInstance) {
 		pFunction = GetProcAddress(
 			static_cast<HINSTANCE>(m_pLibInstance), pFunctionName);

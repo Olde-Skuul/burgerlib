@@ -405,6 +405,16 @@
 	If this define exists, then you are creating code with the [Open Watcom
 		compiler](http://www.openwatcom.com "Open Watcom Project")
 
+	## Known issues with the Watcom Compiler version 1.9.
+
+	1. Multicharacter ASCII such as ``'RSRC'`` or ``'ABCD'`` are not supported.
+		Any use of this data type will have the compiler generate an ASCII
+		character of the first letter found and ignore the rest and assume a
+		data type of ``char``.
+	2. Templates are not fully supported. So several high level templates are
+		not available. Look to the documentation of the Burgerlib templates to
+		determine if it is supported on Watcom.
+
 	\sa BURGER_INTEL_COMPILER, BURGER_METROWERKS, BURGER_MSVC and BURGER_X86
 
 ***************************************/
@@ -419,6 +429,9 @@
 	(https://staticky.com/mirrors/ftp.apple.com/developer/Tool_Chest/Core_Mac_OS_Tools/MPW_Website_Downloads/
 	"MrC Compiler download page")
 
+	## Known issues with the Apple MrC compiler.
+
+	1. Templates are poorly supported. Do not use templates.
 
 	\sa BURGER_GNUC, BURGER_METROWERKS, BURGER_APPLE_SC and BURGER_POWERPC
 
@@ -434,6 +447,10 @@
 	compiler]
 	(https://staticky.com/mirrors/ftp.apple.com/developer/Tool_Chest/Core_Mac_OS_Tools/MPW_Website_Downloads/
 	"Apple SC Compiler download page")
+
+	## Known issues with the Apple SC compiler.
+
+	1. Templates are poorly supported. Do not use templates.
 
 	\sa BURGER_GNUC, BURGER_METROWERKS, BURGER_MRC and BURGER_68K
 

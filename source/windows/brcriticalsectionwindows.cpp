@@ -1,14 +1,14 @@
 /***************************************
 
-    Class to handle critical sections
+	Class to handle critical sections
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -21,7 +21,7 @@
 // InitializeCriticalSectionAndSpinCount() is minimum XP
 
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0501				// Windows XP
+#define _WIN32_WINNT 0x0501 // Windows XP
 #endif
 
 #if !defined(WIN32_LEAN_AND_MEAN)
@@ -34,79 +34,82 @@
 
 	Initialize the spin count to 1000 since this
 	class is usually used for quick data locks
-	
+
 ***************************************/
 
 Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT
 {
-	// Safety switch to verify the declaration in brwindowstypes.h matches the real thing
-    BURGER_STATIC_ASSERT(sizeof(CRITICAL_SECTION)==sizeof(Burger_CRITICAL_SECTION));
+	// Safety switch to verify the declaration in brwindowstypes.h matches the
+	// real thing
+	BURGER_STATIC_ASSERT(
+		sizeof(CRITICAL_SECTION) == sizeof(Burger_CRITICAL_SECTION));
 
-	InitializeCriticalSectionAndSpinCount(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock),1000);
+	InitializeCriticalSectionAndSpinCount(
+		reinterpret_cast<CRITICAL_SECTION*>(&m_Lock), 1000);
 }
 
 Burger::CriticalSection::~CriticalSection()
 {
-	DeleteCriticalSection(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock));
+	DeleteCriticalSection(reinterpret_cast<CRITICAL_SECTION*>(&m_Lock));
 }
 
 /***************************************
 
 	Lock the CriticalSection
-	
+
 ***************************************/
 
 void Burger::CriticalSection::Lock(void) BURGER_NOEXCEPT
 {
-	EnterCriticalSection(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock));
+	EnterCriticalSection(reinterpret_cast<CRITICAL_SECTION*>(&m_Lock));
 }
 
 /***************************************
 
 	Try to lock the CriticalSection
-	
+
 ***************************************/
 
 uint_t Burger::CriticalSection::TryLock(void) BURGER_NOEXCEPT
 {
-	return static_cast<uint_t>(TryEnterCriticalSection(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock)));
+	return static_cast<uint_t>(
+		TryEnterCriticalSection(reinterpret_cast<CRITICAL_SECTION*>(&m_Lock)));
 }
 
 /***************************************
 
 	Unlock the CriticalSection
-	
+
 ***************************************/
 
 void Burger::CriticalSection::Unlock(void) BURGER_NOEXCEPT
 {
-	LeaveCriticalSection(reinterpret_cast<CRITICAL_SECTION *>(&m_Lock));
+	LeaveCriticalSection(reinterpret_cast<CRITICAL_SECTION*>(&m_Lock));
 }
-
 
 /***************************************
 
 	Initialize the semaphore
-	
+
 ***************************************/
 
-Burger::Semaphore::Semaphore(uint32_t uCount) :
-	m_uCount(uCount)
+Burger::Semaphore::Semaphore(uint32_t uCount) BURGER_NOEXCEPT: m_uCount(uCount)
 {
 	// Get the maximum semaphores
-	uint32_t uMax = uCount+32768U;
+	uint32_t uMax = uCount + 32768U;
 	// Did it wrap (Overflow?)
-	if (uMax<uCount) {
+	if (uMax < uCount) {
 		// Use max
 		uMax = BURGER_MAXUINT;
 	}
-	m_pSemaphore = CreateSemaphoreW(nullptr,static_cast<LONG>(uCount),static_cast<LONG>(uMax), nullptr);
+	m_pSemaphore = CreateSemaphoreW(
+		nullptr, static_cast<LONG>(uCount), static_cast<LONG>(uMax), nullptr);
 }
 
 /***************************************
 
 	Release the semaphore
-	
+
 ***************************************/
 
 Burger::Semaphore::~Semaphore()
@@ -122,34 +125,35 @@ Burger::Semaphore::~Semaphore()
 /***************************************
 
 	Attempt to acquire the semaphore
-	
+
 ***************************************/
 
-uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
+Burger::eError BURGER_API Burger::Semaphore::TryAcquire(
+	uint_t uMilliseconds) BURGER_NOEXCEPT
 {
 	// Assume failure
-	uint_t uResult = 10;
+	eError uResult = kErrorCantLock;
 	HANDLE hSemaphore = m_pSemaphore;
 	if (hSemaphore) {
 		DWORD dwMilliseconds;
-#if INFINITE==BURGER_MAXUINT
+#if INFINITE == BURGER_MAXUINT
 		dwMilliseconds = static_cast<DWORD>(uMilliseconds);
 #else
-		if (uMilliseconds==BURGER_MAXUINT) {
+		if (uMilliseconds == BURGER_MAXUINT) {
 			dwMilliseconds = INFINITE;
 		} else {
 			dwMilliseconds = static_cast<DWORD>(uMilliseconds);
 		}
 #endif
 		// Acquire a lock
-		DWORD uWait = WaitForSingleObject(hSemaphore,dwMilliseconds);
-		if (uWait==WAIT_OBJECT_0) {
+		DWORD uWait = WaitForSingleObject(hSemaphore, dwMilliseconds);
+		if (uWait == WAIT_OBJECT_0) {
 			// Got the lock. Decrement the count
 			AtomicPreDecrement(&m_uCount);
-			uResult = 0;
-		} else if (uWait==WAIT_TIMEOUT) {
+			uResult = kErrorNone;
+		} else if (uWait == WAIT_TIMEOUT) {
 			// Timeout gets a special error
-			uResult = 1;
+			uResult = kErrorTimeout;
 		}
 	}
 	return uResult;
@@ -158,12 +162,12 @@ uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
 /***************************************
 
 	Release the semaphore
-	
+
 ***************************************/
 
-uint_t BURGER_API Burger::Semaphore::Release(void)
+Burger::eError BURGER_API Burger::Semaphore::Release(void) BURGER_NOEXCEPT
 {
-	uint_t uResult = 10;
+	eError uResult = kErrorCantUnlock;
 	HANDLE hSemaphore = m_pSemaphore;
 	if (hSemaphore) {
 		// Release the count immediately, because it's
@@ -171,12 +175,12 @@ uint_t BURGER_API Burger::Semaphore::Release(void)
 		// can execute before the call to ReleaseSemaphore()
 		// returns
 		AtomicPreIncrement(&m_uCount);
-		if (ReleaseSemaphore(hSemaphore,1, nullptr)==FALSE) {
+		if (ReleaseSemaphore(hSemaphore, 1, nullptr) == FALSE) {
 			// Error!!! Undo the AtomicPreIncrement()
 			AtomicPreDecrement(&m_uCount);
 		} else {
 			// A-Okay!
-			uResult = 0;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -186,10 +190,10 @@ uint_t BURGER_API Burger::Semaphore::Release(void)
 
 	This code fragment calls the Run function that has
 	permission to access the members
-	
+
 ***************************************/
 
-static DWORD WINAPI Dispatcher(LPVOID pThis)
+static DWORD WINAPI Dispatcher(LPVOID pThis) BURGER_NOEXCEPT
 {
 	Burger::Thread::Run(pThis);
 	return 0;
@@ -198,40 +202,39 @@ static DWORD WINAPI Dispatcher(LPVOID pThis)
 /***************************************
 
 	Initialize a thread to a dormant state
-	
+
 ***************************************/
 
-Burger::Thread::Thread() :
-	m_pFunction(nullptr),
-	m_pData(nullptr),
-	m_pSemaphore(nullptr),
-	m_pThreadHandle(nullptr),
-	m_uThreadID(0),
-	m_uResult(BURGER_MAXUINT)
+Burger::Thread::Thread() BURGER_NOEXCEPT: m_pFunction(nullptr),
+										  m_pData(nullptr),
+										  m_pSemaphore(nullptr),
+										  m_pThreadHandle(nullptr),
+										  m_uThreadID(0),
+										  m_uResult(BURGER_MAXUINT)
 {
 }
 
 /***************************************
 
 	Initialize a thread and begin execution
-	
+
 ***************************************/
 
-Burger::Thread::Thread(FunctionPtr pThread,void *pData) :
-	m_pFunction(nullptr),
-	m_pData(nullptr),
-	m_pSemaphore(nullptr),
-	m_pThreadHandle(nullptr),
-	m_uThreadID(0),
-	m_uResult(BURGER_MAXUINT)
+Burger::Thread::Thread(FunctionPtr pThread, void* pData) BURGER_NOEXCEPT
+	: m_pFunction(nullptr),
+	  m_pData(nullptr),
+	  m_pSemaphore(nullptr),
+	  m_pThreadHandle(nullptr),
+	  m_uThreadID(0),
+	  m_uResult(BURGER_MAXUINT)
 {
-	Start(pThread,pData);
+	Start(pThread, pData);
 }
 
 /***************************************
 
 	Release resources
-	
+
 ***************************************/
 
 Burger::Thread::~Thread()
@@ -242,12 +245,13 @@ Burger::Thread::~Thread()
 /***************************************
 
 	Launch a new thread if one isn't already started
-	
+
 ***************************************/
 
-uint_t BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
+Burger::eError BURGER_API Burger::Thread::Start(
+	FunctionPtr pFunction, void* pData) BURGER_NOEXCEPT
 {
-	uint_t uResult = 10;
+	eError uResult = kErrorThreadNotStarted;
 	if (!m_pThreadHandle) {
 		m_pFunction = pFunction;
 		m_pData = pData;
@@ -256,7 +260,7 @@ uint_t BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
 		m_pSemaphore = &Temp;
 		DWORD uID;
 		// Start the thread
-		HANDLE hThread = CreateThread(nullptr,0,Dispatcher,this,0,&uID);
+		HANDLE hThread = CreateThread(nullptr, 0, Dispatcher, this, 0, &uID);
 		if (hThread) {
 			// Ensure these are set up
 			m_uThreadID = uID;
@@ -267,35 +271,34 @@ uint_t BURGER_API Burger::Thread::Start(FunctionPtr pFunction,void *pData)
 			m_pSemaphore = nullptr;
 
 			// All good!
-			uResult = 0;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
 }
 
-
 /***************************************
 
 	Wait until the thread has completed execution
-	
+
 ***************************************/
 
-uint_t BURGER_API Burger::Thread::Wait(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Thread::Wait(void) BURGER_NOEXCEPT
 {
-	uint_t uResult = 10;
+	eError uResult = kErrorThreadNotStarted;
 	if (m_pThreadHandle) {
 		// Wait until the thread completes execution
-		DWORD uError = WaitForSingleObject(m_pThreadHandle,INFINITE);
+		const DWORD uError = WaitForSingleObject(m_pThreadHandle, INFINITE);
 		// Close it down!
 		CloseHandle(m_pThreadHandle);
 		// Allow restarting
 		m_uThreadID = 0;
 		m_pThreadHandle = nullptr;
 		// Shutdown fine?
-		if (uError==WAIT_OBJECT_0) {
-			uResult = 0;
-		} else if (uError==WAIT_TIMEOUT) {
-			uResult = 1;		// Timeout!
+		if (uError == WAIT_OBJECT_0) {
+			uResult = kErrorNone;
+		} else if (uError == WAIT_TIMEOUT) {
+			uResult = kErrorTimeout; // Timeout!
 		}
 	}
 	return uResult;
@@ -305,15 +308,15 @@ uint_t BURGER_API Burger::Thread::Wait(void) BURGER_NOEXCEPT
 
 	Invoke the nuclear option to kill a thread
 	NOT RECOMMENDED!
-	
+
 ***************************************/
 
-uint_t BURGER_API Burger::Thread::Kill(void)
+Burger::eError BURGER_API Burger::Thread::Kill(void) BURGER_NOEXCEPT
 {
-	uint_t uResult = 0;
+	eError uResult = kErrorNone;
 	if (m_pThreadHandle) {
-		if (!TerminateThread(m_pThreadHandle,BURGER_MAXUINT)) {
-			uResult = 10;		// Error??
+		if (!TerminateThread(m_pThreadHandle, BURGER_MAXUINT)) {
+			uResult = kErrorThreadCantStop; // Error??
 		} else {
 			// Release everything
 			uResult = Wait();
@@ -326,16 +329,15 @@ uint_t BURGER_API Burger::Thread::Kill(void)
 
 	Synchronize and then execute the thread and save
 	the result if any
-	
+
 ***************************************/
 
-void BURGER_API Burger::Thread::Run(void *pThis)
+void BURGER_API Burger::Thread::Run(void* pThis) BURGER_NOEXCEPT
 {
-	Thread *pThread = static_cast<Thread *>(pThis);
+	Thread* pThread = static_cast<Thread*>(pThis);
 	pThread->m_uThreadID = GetCurrentThreadId();
 	pThread->m_pSemaphore->Release();
 	pThread->m_uResult = pThread->m_pFunction(pThread->m_pData);
 }
 
 #endif
-

@@ -102,13 +102,13 @@ void BURGER_ANSIAPI ReportFailure(
 		if (pTemplate) {              // No message, no error!
 			va_start(Args, uFailure); // Start parm passing
 			TempString[6] = ' ';
+			// Create the message
 #if defined(USESECURE)
 			uEndMark = vsnprintf(TempString + 7, sizeof(TempString) - 9,
 						   pTemplate, Args) +
-				7U; // Create the message
+				7U;
 #else
-			uEndMark = vsprintf(TempString + 7, pTemplate, Args) +
-				7U; // Create the message
+			uEndMark = vsprintf(TempString + 7, pTemplate, Args) + 7U;
 #endif
 			va_end(Args); // End parm passing
 		} else {
@@ -137,14 +137,15 @@ void BURGER_ANSIAPI Message(const char* pMessage, ...) BURGER_NOEXCEPT
 		va_list Args;
 		char TempString[2048];
 		uintptr_t uEndMark;
-		va_start(Args, pMessage); // Start parm passing
+
+		// Start parm passing
+		va_start(Args, pMessage);
+		// Create the message
 #if defined(USESECURE)
 		uEndMark =
-			vsnprintf(TempString, sizeof(TempString) - 2, pMessage, Args) +
-			0U; // Create the message
+			vsnprintf(TempString, sizeof(TempString) - 2, pMessage, Args) + 0U;
 #else
-		uEndMark =
-			vsprintf(TempString, pMessage, Args) + 0U; // Create the message
+		uEndMark = vsprintf(TempString, pMessage, Args) + 0U;
 #endif
 		va_end(Args); // End parm passing
 		TempString[uEndMark] = '\n';
@@ -327,8 +328,9 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
 
 	// Display the compiler used to build this tool
 	Message("Built with " BURGER_COMPILER_NAME " / " BURGER_STDCPP_NAME
-			" / Version %d / " BURGER_CPU_NAME " / " BURGER_PLATFORM_NAME,
-		BURGER_COMPILER_VERSION);
+			" / Version %d 0x%08X / " BURGER_CPU_NAME
+			" / " BURGER_PLATFORM_NAME,
+		BURGER_COMPILER_VERSION, BURGER_COMPILER_VERSION);
 
 	if (uVerbose & VERBOSE_DOTESTS) {
 		if (bVersion) {

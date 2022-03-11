@@ -1,15 +1,15 @@
 /***************************************
 
-    Intrinsics and subroutines exclusive to the Freescale and Metrowerks
-    compilers
+	Intrinsics and subroutines exclusive to the Freescale and Metrowerks
+	compilers
 
-    Copyright (c) 1995-2019 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -41,60 +41,60 @@ __attribute__((const));
 extern double __builtin_sqrt(double) __attribute__((nothrow))
 __attribute__((const));
 extern unsigned int __builtin___count_leading_zero32(unsigned int)
-    __attribute__((nothrow)) __attribute__((const));
+	__attribute__((nothrow)) __attribute__((const));
 extern unsigned int __builtin___count_trailing_zero32(unsigned int)
-    __attribute__((nothrow)) __attribute__((const));
+	__attribute__((nothrow)) __attribute__((const));
 extern unsigned int __builtin___count_leading_zero64(unsigned long long)
-    __attribute__((nothrow)) __attribute__((const));
+	__attribute__((nothrow)) __attribute__((const));
 extern unsigned int __builtin___count_trailing_zero64(unsigned long long)
-    __attribute__((nothrow)) __attribute__((const));
+	__attribute__((nothrow)) __attribute__((const));
 // extern unsigned int __builtin___count_bits32(unsigned long long)
 // __attribute__((nothrow)) __attribute__((const)); extern unsigned int
 // __builtin___count_bits64(unsigned long long) __attribute__((nothrow))
 // __attribute__((const));
 
 BURGER_INLINE long _InterlockedExchange(
-    register long volatile* pOutput, register long lValue)
+	register long volatile* pOutput, register long lValue)
 {
-    __asm lock xchg lValue, [pOutput];
-    return lValue;
+	__asm lock xchg lValue, [pOutput];
+	return lValue;
 }
 
 BURGER_INLINE long _InterlockedIncrement(register long volatile* pOutput)
 {
-    register long lTemp = 1;
-    __asm lock xadd[pOutput], lTemp;
-    return lTemp + 1;
+	register long lTemp = 1;
+	__asm lock xadd[pOutput], lTemp;
+	return lTemp + 1;
 }
 
 BURGER_INLINE long _InterlockedDecrement(register long volatile* pOutput)
 {
-    register long lTemp = -1;
-    __asm lock xadd[pOutput], lTemp;
-    return lTemp - 1;
+	register long lTemp = -1;
+	__asm lock xadd[pOutput], lTemp;
+	return lTemp - 1;
 }
 
 BURGER_INLINE long _InterlockedExchangeAdd(
-    register long volatile* pOutput, register long lValue)
+	register long volatile* pOutput, register long lValue)
 {
-    __asm lock xadd[pOutput], lValue;
-    return lValue;
+	__asm lock xadd[pOutput], lValue;
+	return lValue;
 }
 
 BURGER_INLINE long _InterlockedCompareExchange(register long volatile* pOutput,
-    register long lAfter, register long lBefore)
+	register long lAfter, register long lBefore)
 {
-    __asm {
+	__asm {
 		mov eax,lBefore
 		lock xadd [pOutput],lAfter
 		mov lBefore,eax
-    }
-    return lBefore;
+	}
+	return lBefore;
 }
 
 BURGER_INLINE void __cpuid(int a[4], int b)
 {
-    // clang-format off
+	// clang-format off
     BURGER_ASM {
     // Get the pointer to the destination buffer    
     mov esi,a 
@@ -106,12 +106,12 @@ BURGER_INLINE void __cpuid(int a[4], int b)
     mov[esi + 8],ecx 
     mov[esi + 12],edx
     }
-    // clang-format on
+	// clang-format on
 }
 
 BURGER_INLINE void __cpuidex(int a[4], int b, int c)
 {
-    // clang-format off
+	// clang-format off
     BURGER_ASM {
     // Get the pointer to the destination buffer    
     mov esi,a 
@@ -124,13 +124,13 @@ BURGER_INLINE void __cpuidex(int a[4], int b, int c)
     mov[esi + 8],ecx
     mov[esi + 12],edx
     }
-    // clang-format on
+	// clang-format on
 }
 
 BURGER_INLINE uint32_t _BitScanForward(
-    register unsigned long* Index, register unsigned long Mask)
+	register unsigned long* Index, register unsigned long Mask)
 {
-    // clang-format off
+	// clang-format off
     BURGER_ASM {
     mov eax, Mask
     mov ebx, Index 

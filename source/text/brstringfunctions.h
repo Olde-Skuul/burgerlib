@@ -54,8 +54,10 @@ BURGER_ENUM_TYPE(eASCIITypeFlag, uint8_t) {
 
 struct FourCharacterCode_t {
 	union {
-		char c[4];  ///< Array of 4 characters for the code
-		uint32_t w; ///< Value in binary
+		/** Array of 4 characters for the code */
+		char c[4];
+		/** Value in binary */
+		uint32_t w;
 	};
 	BURGER_INLINE operator const char*() const BURGER_NOEXCEPT
 	{
@@ -144,11 +146,11 @@ BURGER_INLINE uint_t IsPointerValid(const void* pInput) BURGER_NOEXCEPT
 	return (reinterpret_cast<uintptr_t>(pInput) >= 0x10000U);
 }
 #else
-BURGER_INLINE uint_t IsPointerInvalid(const void* pInput)
+BURGER_INLINE uint_t IsPointerInvalid(const void* pInput) BURGER_NOEXCEPT
 {
 	return (pInput == nullptr);
 }
-BURGER_INLINE uint_t IsPointerValid(const void* pInput)
+BURGER_INLINE uint_t IsPointerValid(const void* pInput) BURGER_NOEXCEPT
 {
 	return (pInput != nullptr);
 }

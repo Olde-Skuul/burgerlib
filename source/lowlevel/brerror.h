@@ -154,7 +154,15 @@ enum eError {
 	/** Enumeration operation is in progress */
 	kErrorEnumerationInProgress,
 	/** Enumeration operation isn't running */
-	kErrorNotEnumerating
+	kErrorNotEnumerating,
+	/** Thread lock failure */
+	kErrorCantLock,
+	/** Thread unlock failure */
+	kErrorCantUnlock,
+	/** Thread couldn't start */
+	kErrorThreadNotStarted,
+	/** Thread won't stop */
+	kErrorThreadCantStop
 };
 
 }

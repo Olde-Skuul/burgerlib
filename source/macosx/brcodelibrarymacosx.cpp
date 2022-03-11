@@ -1,16 +1,16 @@
 /***************************************
 
-    Code library (DLL) manager
+	Code library (DLL) manager
 
-    MacOSX version
+	MacOSX version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -41,13 +41,13 @@
 
 ***************************************/
 
-uint_t Burger::CodeLibrary::Init(const char* pFilename)
+uint_t Burger::CodeLibrary::Init(const char* pFilename) BURGER_NOEXCEPT
 {
 	// If there was a previous library, release it
 	Shutdown();
 
 	Filename Pathname;
-	// Is this a burgerlib pathname?
+	// Is this a Burgerlib pathname?
 	// Test by checking for a colon
 	if (StringCharacter(pFilename, ':')) {
 		// Convert to a native windows pathname
@@ -58,7 +58,7 @@ uint_t Burger::CodeLibrary::Init(const char* pFilename)
 	void* pModule = dlopen(pFilename, RTLD_LAZY);
 	// On success!
 	uint_t uResult = FALSE;
-	if (pModule != NULL) {
+	if (pModule != nullptr) {
 		m_pLibInstance = pModule;
 		uResult = TRUE; // Error!
 	}
@@ -71,12 +71,12 @@ uint_t Burger::CodeLibrary::Init(const char* pFilename)
 
 ***************************************/
 
-void Burger::CodeLibrary::Shutdown(void)
+void Burger::CodeLibrary::Shutdown(void) BURGER_NOEXCEPT
 {
 	// Release the Android lib
 	if (m_pLibInstance) {
 		dlclose(m_pLibInstance);
-		m_pLibInstance = NULL;
+		m_pLibInstance = nullptr;
 	}
 }
 
@@ -87,9 +87,10 @@ void Burger::CodeLibrary::Shutdown(void)
 
 ***************************************/
 
-void* Burger::CodeLibrary::GetFunction(const char* pFunctionName)
+void* Burger::CodeLibrary::GetFunction(
+	const char* pFunctionName) BURGER_NOEXCEPT
 {
-	void* pFunction = NULL;
+	void* pFunction = nullptr;
 	if (pFunctionName && m_pLibInstance) {
 		pFunction = dlsym(m_pLibInstance, pFunctionName);
 	}
@@ -102,7 +103,7 @@ void* Burger::CodeLibrary::GetFunction(const char* pFunctionName)
 
 ***************************************/
 
-Burger::CodeFramework::CodeFramework() : m_pBundle(NULL) {}
+Burger::CodeFramework::CodeFramework() BURGER_NOEXCEPT: m_pBundle(nullptr) {}
 
 /***************************************
 
@@ -130,7 +131,8 @@ Burger::CodeFramework::~CodeFramework()
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::CodeFramework::Init(const char* pName)
+Burger::eError BURGER_API Burger::CodeFramework::Init(
+	const char* pName) BURGER_NOEXCEPT
 {
 	// Release any previous instance
 	Shutdown();
@@ -189,11 +191,11 @@ Burger::eError BURGER_API Burger::CodeFramework::Init(const char* pName)
 
 ***************************************/
 
-void BURGER_API Burger::CodeFramework::Shutdown(void)
+void BURGER_API Burger::CodeFramework::Shutdown(void) BURGER_NOEXCEPT
 {
 	if (m_pBundle) {
 		CFRelease(m_pBundle);
-		m_pBundle = NULL;
+		m_pBundle = nullptr;
 	}
 }
 
@@ -210,10 +212,11 @@ void BURGER_API Burger::CodeFramework::Shutdown(void)
 
 ***************************************/
 
-void* BURGER_API Burger::CodeFramework::GetFunction(const char* pFunctionName)
+void* BURGER_API Burger::CodeFramework::GetFunction(
+	const char* pFunctionName) BURGER_NOEXCEPT
 {
 	// Assume failure
-	void* pResult = NULL;
+	void* pResult = nullptr;
 
 	// Is the lib valid?
 	if (m_pBundle) {

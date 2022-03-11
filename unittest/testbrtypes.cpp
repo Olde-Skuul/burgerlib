@@ -3,7 +3,7 @@
 	Determine which compiler is being used and create standardized typedefs and
 	macros so generic code can be created cross platform
 
-	Copyright (c) 1995-2019 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -55,7 +55,7 @@
 
 ***************************************/
 
-static uint_t BURGER_API TestDataChunkSize(uint_t uVerbose)
+static uint_t BURGER_API TestDataChunkSize(uint_t uVerbose) BURGER_NOEXCEPT
 {
 	if (uVerbose & VERBOSE_MSG) {
 		Message("Running data chunk size test tests");
@@ -171,7 +171,7 @@ static uint_t BURGER_API TestDataChunkSize(uint_t uVerbose)
 
 ***************************************/
 
-static uint_t BURGER_API TestStructureAlignment(uint_t uVerbose)
+static uint_t BURGER_API TestStructureAlignment(uint_t uVerbose) BURGER_NOEXCEPT
 {
 
 	//
@@ -414,7 +414,7 @@ static uint_t BURGER_API TestStructureAlignment(uint_t uVerbose)
 
 ***************************************/
 
-static void BURGER_API ShowCPUFeatures(uint_t uVerbose)
+static void BURGER_API ShowCPUFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 {
 	// Test for an FPU
 	if (uVerbose & VERBOSE_MSG) {
@@ -588,7 +588,7 @@ static void BURGER_API ShowCPUFeatures(uint_t uVerbose)
 
 ***************************************/
 
-static void BURGER_API ShowPlatformFeatures(uint_t uVerbose)
+static void BURGER_API ShowPlatformFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 {
 	uint_t uTest = 0;
 
@@ -775,7 +775,7 @@ static void BURGER_API ShowPlatformFeatures(uint_t uVerbose)
 
 ***************************************/
 
-int BURGER_API TestBrtypes(uint_t uVerbose)
+int BURGER_API TestBrtypes(uint_t uVerbose) BURGER_NOEXCEPT
 {
 	if (uVerbose & VERBOSE_MSG) {
 		Message("Testing Burger Macros");

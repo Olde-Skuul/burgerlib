@@ -1,14 +1,14 @@
 /***************************************
 
-    Class to handle critical sections
+	Class to handle critical sections
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -23,18 +23,18 @@
 
 	Initialize the spin count to 1000 since this
 	class is usually used for quick data locks
-	
+
 ***************************************/
 
-Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT : m_Lock(NULL)
+Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT: m_Lock(nullptr)
 {
 	// Create a First In, First Out, recursive lock
 	// to mimic the PC CRITICAL_SECTION
 
 	ScePthreadMutexattr LockAttributes;
 	scePthreadMutexattrInit(&LockAttributes);
-	scePthreadMutexattrSettype(&LockAttributes,SCE_PTHREAD_MUTEX_RECURSIVE);
-	scePthreadMutexInit(&m_Lock,&LockAttributes,NULL);
+	scePthreadMutexattrSettype(&LockAttributes, SCE_PTHREAD_MUTEX_RECURSIVE);
+	scePthreadMutexInit(&m_Lock, &LockAttributes, nullptr);
 	scePthreadMutexattrDestroy(&LockAttributes);
 }
 
@@ -46,7 +46,7 @@ Burger::CriticalSection::~CriticalSection()
 /***************************************
 
 	Lock the Mutex
-	
+
 ***************************************/
 
 void Burger::CriticalSection::Lock(void) BURGER_NOEXCEPT
@@ -57,24 +57,23 @@ void Burger::CriticalSection::Lock(void) BURGER_NOEXCEPT
 /***************************************
 
 	Try to lock the Mutex
-	
+
 ***************************************/
 
 uint_t Burger::CriticalSection::TryLock(void) BURGER_NOEXCEPT
 {
-	return scePthreadMutexTrylock(&m_Lock)==SCE_OK;
+	return scePthreadMutexTrylock(&m_Lock) == SCE_OK;
 }
-
 
 /***************************************
 
 	Unlock the Mutex
-	
+
 ***************************************/
 
 void Burger::CriticalSection::Unlock(void) BURGER_NOEXCEPT
 {
 	scePthreadMutexUnlock(&m_Lock);
 }
-	
+
 #endif

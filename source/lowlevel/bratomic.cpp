@@ -91,7 +91,7 @@ uint32_t BURGER_API Burger::AtomicSwap(volatile uint32_t *pOutput,uint32_t uInpu
 
 ***************************************/
 
-uint32_t BURGER_API Burger::AtomicPreIncrement(volatile uint32_t *pInput)
+uint32_t BURGER_API Burger::AtomicPreIncrement(volatile uint32_t *pInput) BURGER_NOEXCEPT
 {
 	return static_cast<uint32_t>(OSAtomicIncrement32Barrier(static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput))));
 }
@@ -127,7 +127,7 @@ uint32_t BURGER_API Burger::AtomicPostIncrement(volatile uint32_t *pInput)
 
 ***************************************/
 
-uint32_t BURGER_API Burger::AtomicPreDecrement(volatile uint32_t *pInput)
+uint32_t BURGER_API Burger::AtomicPreDecrement(volatile uint32_t *pInput) BURGER_NOEXCEPT
 {
 	return static_cast<uint32_t>(OSAtomicDecrement32Barrier(static_cast<volatile int32_t *>(static_cast<volatile void *>(pInput))));
 }
@@ -249,7 +249,7 @@ uint64_t BURGER_API Burger::AtomicSwap(volatile uint64_t *pOutput,uint64_t uInpu
 
 ***************************************/
 
-uint64_t BURGER_API Burger::AtomicPreIncrement(volatile uint64_t *pInput)
+uint64_t BURGER_API Burger::AtomicPreIncrement(volatile uint64_t *pInput) BURGER_NOEXCEPT
 {
 	return static_cast<uint64_t>(OSAtomicIncrement64Barrier(static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput))));
 }
@@ -287,7 +287,7 @@ uint64_t BURGER_API Burger::AtomicPostIncrement(volatile uint64_t *pInput)
 
 ***************************************/
 
-uint64_t BURGER_API Burger::AtomicPreDecrement(volatile uint64_t *pInput)
+uint64_t BURGER_API Burger::AtomicPreDecrement(volatile uint64_t *pInput) BURGER_NOEXCEPT
 {
 	return static_cast<uint64_t>(OSAtomicDecrement64Barrier(static_cast<volatile int64_t *>(static_cast<volatile void *>(pInput))));
 }

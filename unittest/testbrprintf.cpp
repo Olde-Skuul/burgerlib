@@ -751,9 +751,15 @@ static uint_t BURGER_API ArgTypeUnitTestLiterals(void) BURGER_NOEXCEPT
 	uResult |=
 		TestArgType(&F6, "0x1BCDEF12", Burger::SafePrintArgument::ARG_INT32);
 
+	// Watcom doesn't support 'ABCD'
 #if !defined(BURGER_WATCOM)
 	const Burger::SafePrintArgument F7('ABCD');
+#if defined(BURGER_METROWERKS) && defined(BURGER_68K)
+	uResult |=
+		TestArgType(&F7, "'ABCD'", Burger::SafePrintArgument::ARG_UINT32);
+#else
 	uResult |= TestArgType(&F7, "'ABCD'", Burger::SafePrintArgument::ARG_INT32);
+#endif
 #endif
 
 	const Burger::SafePrintArgument F8(0172U);

@@ -48,6 +48,7 @@ namespace Burger {
 class FileINI {
 public:
 	class Generic : public Base {
+		BURGER_DISABLE_COPY(Generic);
 	public:
 		enum eType {
 			LINEENTRY_ROOT,			///< Only used for root objects.
@@ -146,6 +147,7 @@ public:
 		static Section * BURGER_API New(const char *pSection);
 	};
 
+	BURGER_DISABLE_COPY(FileINI);
 private:
 	Generic m_Root;				///< Root entry for a list of sections
 public:

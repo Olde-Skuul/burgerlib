@@ -1,14 +1,14 @@
 /***************************************
 
-    Code library (DLL) manager
+	Code library (DLL) manager
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -38,36 +38,48 @@
 /* BEGIN */
 namespace Burger {
 class CodeLibrary {
-    BURGER_DISABLE_COPY(CodeLibrary);
-	void *m_pLibInstance;			///< Instance of the code library
+	BURGER_DISABLE_COPY(CodeLibrary);
+
+	/** Instance of the code library */
+	void* m_pLibInstance;
+
 public:
-	CodeLibrary() : m_pLibInstance(nullptr) {}
-	~CodeLibrary() { Shutdown(); }
-	uint_t Init(const char *pFilename);
-	void Shutdown(void);
-	void *GetFunction(const char *pFunctionName);
-	BURGER_INLINE uint_t IsInitialized(void) const { return m_pLibInstance!=nullptr; }
+	CodeLibrary() BURGER_NOEXCEPT: m_pLibInstance(nullptr) {}
+	~CodeLibrary()
+	{
+		Shutdown();
+	}
+	uint_t Init(const char* pFilename) BURGER_NOEXCEPT;
+	void Shutdown(void) BURGER_NOEXCEPT;
+	void* GetFunction(const char* pFunctionName) BURGER_NOEXCEPT;
+	BURGER_INLINE uint_t IsInitialized(void) const BURGER_NOEXCEPT
+	{
+		return m_pLibInstance != nullptr;
+	}
 };
 
 #if (defined(BURGER_MACCARBON) || defined(BURGER_MACOSX)) || defined(DOXYGEN)
 
 class CodeFramework {
-    BURGER_DISABLE_COPY(CodeFramework);
-	__CFBundle *m_pBundle;			///< Instance of the framework bundle
+	BURGER_DISABLE_COPY(CodeFramework);
+
+	/** Instance of the framework bundle */
+	__CFBundle* m_pBundle;
+
 public:
-	CodeFramework();
+	CodeFramework() BURGER_NOEXCEPT;
 	~CodeFramework();
-	eError BURGER_API Init(const char *pName);
-	void BURGER_API Shutdown(void);
-	void * BURGER_API GetFunction(const char *pFunctionName);
+	eError BURGER_API Init(const char* pName) BURGER_NOEXCEPT;
+	void BURGER_API Shutdown(void) BURGER_NOEXCEPT;
+	void* BURGER_API GetFunction(const char* pFunctionName) BURGER_NOEXCEPT;
 };
 
 #endif
 
 #if defined(BURGER_MACCARBON) || defined(DOXYGEN)
-extern CodeLibrary* BURGER_API GetInterfaceLib(void);
-extern CodeLibrary* BURGER_API GetDriverLoaderLib(void);
-extern CodeLibrary* BURGER_API GetNameRegistryLib(void);
+extern CodeLibrary* BURGER_API GetInterfaceLib(void) BURGER_NOEXCEPT;
+extern CodeLibrary* BURGER_API GetDriverLoaderLib(void) BURGER_NOEXCEPT;
+extern CodeLibrary* BURGER_API GetNameRegistryLib(void) BURGER_NOEXCEPT;
 #endif
 }
 

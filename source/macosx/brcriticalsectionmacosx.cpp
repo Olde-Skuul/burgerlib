@@ -1,14 +1,14 @@
 /***************************************
 
-    Class to handle critical sections, MacOSX version
+	Class to handle critical sections, MacOSX version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -35,10 +35,10 @@
 Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT
 {
 	// Verify the the Burgerlib opaque version is the same size as the real one
-    BURGER_STATIC_ASSERT(
+	BURGER_STATIC_ASSERT(
 		sizeof(Burgerpthread_mutex_t) == sizeof(pthread_mutex_t));
 
-	pthread_mutex_init(reinterpret_cast<pthread_mutex_t*>(&m_Lock), NULL);
+	pthread_mutex_init(reinterpret_cast<pthread_mutex_t*>(&m_Lock), nullptr);
 }
 
 Burger::CriticalSection::~CriticalSection()
@@ -86,13 +86,13 @@ void Burger::CriticalSection::Unlock() BURGER_NOEXCEPT
 
 ***************************************/
 
-Burger::Semaphore::Semaphore(uint32_t uCount) :
-	m_uCount(uCount), m_bInitialized(FALSE)
+Burger::Semaphore::Semaphore(uint32_t uCount) BURGER_NOEXCEPT
+	: m_uCount(uCount),
+	  m_bInitialized(FALSE)
 {
 	// Safety switch to verify the declaration in brshieldtypes.h matches the
 	// real thing
-    BURGER_STATIC_ASSERT(
-		sizeof(Burgersemaphore_t) == sizeof(semaphore_t));
+	BURGER_STATIC_ASSERT(sizeof(Burgersemaphore_t) == sizeof(semaphore_t));
 
 	// Initialize the semaphore
 	task_t tOwner = mach_task_self();
@@ -124,10 +124,11 @@ Burger::Semaphore::~Semaphore()
 
 ***************************************/
 
-uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
+Burger::eError BURGER_API Burger::Semaphore::TryAcquire(
+	uint_t uMilliseconds) BURGER_NOEXCEPT
 {
 	// Assume failure
-	uint_t uResult = 10;
+	eError uResult = kErrorCantLock;
 	if (m_bInitialized) {
 		// Infinite wait?
 		if (uMilliseconds == BURGER_MAXUINT) {
@@ -139,7 +140,7 @@ uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
 				// Got it?
 				if (iSemResult == KERN_SUCCESS) {
 					// Exit now
-					uResult = 0;
+					uResult = kErrorNone;
 					break;
 				}
 				// If the error was because of a system interrupt, try again
@@ -159,11 +160,11 @@ uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
 
 				kError = semaphore_timedwait(m_Semaphore, TimeoutData);
 				if (kError == KERN_SUCCESS) {
-					uResult = 0;
+					uResult = kErrorNone;
 					break;
 				}
 				if (kError == KERN_OPERATION_TIMED_OUT) {
-					uResult = 1;
+					uResult = kErrorTimeout;
 					break;
 				}
 			} while (kError == KERN_ABORTED);
@@ -182,9 +183,9 @@ uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Semaphore::Release(void)
+Burger::eError BURGER_API Burger::Semaphore::Release(void) BURGER_NOEXCEPT
 {
-	uint_t uResult = 10;
+	eError uResult = kErrorCantUnlock;
 	if (m_bInitialized) {
 		// Release the count immediately, because it's
 		// possible that another thread, waiting for this semaphore,
@@ -196,7 +197,7 @@ uint_t BURGER_API Burger::Semaphore::Release(void)
 			AtomicPreDecrement(&m_uCount);
 		} else {
 			// A-Okay!
-			uResult = 0;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -208,15 +209,16 @@ uint_t BURGER_API Burger::Semaphore::Release(void)
 
 ***************************************/
 
-Burger::ConditionVariable::ConditionVariable() : m_bInitialized(FALSE)
+Burger::ConditionVariable::ConditionVariable() BURGER_NOEXCEPT
+	: m_bInitialized(FALSE)
 {
 	// Safety switch to verify the declaration in brshieldtypes.h matches the
 	// real thing
-    BURGER_STATIC_ASSERT(
+	BURGER_STATIC_ASSERT(
 		sizeof(Burgerpthread_cond_t) == sizeof(pthread_cond_t));
 
 	if (!pthread_cond_init(
-			reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable), NULL)) {
+			reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable), nullptr)) {
 		m_bInitialized = TRUE;
 	}
 }
@@ -242,13 +244,14 @@ Burger::ConditionVariable::~ConditionVariable()
 
 ***************************************/
 
-uint_t BURGER_API Burger::ConditionVariable::Signal(void)
+Burger::eError BURGER_API Burger::ConditionVariable::Signal(
+	void) BURGER_NOEXCEPT
 {
-	uint_t uResult = 10;
+	eError uResult = kErrorNotInitialized;
 	if (m_bInitialized) {
 		if (!pthread_cond_signal(
 				reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable))) {
-			uResult = 0;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -260,13 +263,14 @@ uint_t BURGER_API Burger::ConditionVariable::Signal(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::ConditionVariable::Broadcast(void)
+Burger::eError BURGER_API Burger::ConditionVariable::Broadcast(
+	void) BURGER_NOEXCEPT
 {
-	uint_t uResult = 10;
+	eError uResult = kErrorNotInitialized;
 	if (m_bInitialized) {
 		if (!pthread_cond_broadcast(
 				reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable))) {
-			uResult = 0;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -278,17 +282,17 @@ uint_t BURGER_API Burger::ConditionVariable::Broadcast(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::ConditionVariable::Wait(
-	CriticalSection* pCriticalSection, uint_t uMilliseconds)
+Burger::eError BURGER_API Burger::ConditionVariable::Wait(
+	CriticalSection* pCriticalSection, uint_t uMilliseconds) BURGER_NOEXCEPT
 {
-	uint_t uResult = 10;
+	eError uResult = kErrorNotInitialized;
 	if (m_bInitialized) {
 		if (uMilliseconds == BURGER_MAXUINT) {
 			if (!pthread_cond_wait(
 					reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable),
 					reinterpret_cast< ::pthread_mutex_t*>(
 						&pCriticalSection->m_Lock))) {
-				uResult = 0;
+				uResult = kErrorNone;
 			}
 		} else {
 
@@ -296,7 +300,7 @@ uint_t BURGER_API Burger::ConditionVariable::Wait(
 
 			// Get the current time
 			timeval CurrentTime;
-			gettimeofday(&CurrentTime, NULL);
+			gettimeofday(&CurrentTime, nullptr);
 
 			// Determine the time in the future to timeout at
 			struct timespec StopTimeHere;
@@ -327,11 +331,11 @@ uint_t BURGER_API Burger::ConditionVariable::Wait(
 
 			// W00t! We're good!
 			if (!iResult) {
-				uResult = 0;
+				uResult = kErrorNone;
 
 				// Time out?
 			} else if (iResult == ETIMEDOUT) {
-				uResult = 1;
+				uResult = kErrorTimeout;
 			}
 			// Otherwise, leave uResult as an error
 		}
@@ -346,10 +350,10 @@ uint_t BURGER_API Burger::ConditionVariable::Wait(
 
 ***************************************/
 
-static void* Dispatcher(void* pThis)
+static void* Dispatcher(void* pThis) BURGER_NOEXCEPT
 {
 	Burger::Thread::Run(pThis);
-	return NULL;
+	return nullptr;
 }
 
 /***************************************
@@ -358,11 +362,13 @@ static void* Dispatcher(void* pThis)
 
 ***************************************/
 
-Burger::Thread::Thread() :
-	m_pFunction(NULL), m_pData(NULL), m_pSemaphore(NULL), m_pThreadHandle(NULL),
-	m_uResult(BURGER_MAXUINT)
+Burger::Thread::Thread() BURGER_NOEXCEPT: m_pFunction(nullptr),
+										  m_pData(nullptr),
+										  m_pSemaphore(nullptr),
+										  m_pThreadHandle(nullptr),
+										  m_uResult(BURGER_MAXUINT)
 {
-    BURGER_STATIC_ASSERT(sizeof(pthread_t) == sizeof(m_pThreadHandle));
+	BURGER_STATIC_ASSERT(sizeof(pthread_t) == sizeof(m_pThreadHandle));
 }
 
 /***************************************
@@ -371,9 +377,12 @@ Burger::Thread::Thread() :
 
 ***************************************/
 
-Burger::Thread::Thread(FunctionPtr pThread, void* pData) :
-	m_pFunction(NULL), m_pData(NULL), m_pSemaphore(NULL), m_pThreadHandle(NULL),
-	m_uResult(BURGER_MAXUINT)
+Burger::Thread::Thread(FunctionPtr pThread, void* pData) BURGER_NOEXCEPT
+	: m_pFunction(nullptr),
+	  m_pData(nullptr),
+	  m_pSemaphore(nullptr),
+	  m_pThreadHandle(nullptr),
+	  m_uResult(BURGER_MAXUINT)
 {
 	Start(pThread, pData);
 }
@@ -395,9 +404,10 @@ Burger::Thread::~Thread()
 
 ***************************************/
 
-uint_t BURGER_API Burger::Thread::Start(FunctionPtr pFunction, void* pData)
+Burger::eError BURGER_API Burger::Thread::Start(
+	FunctionPtr pFunction, void* pData) BURGER_NOEXCEPT
 {
-	uint_t uResult = 10;
+	eError uResult = kErrorThreadNotStarted;
 	if (!m_pThreadHandle) {
 		m_pFunction = pFunction;
 		m_pData = pData;
@@ -412,9 +422,9 @@ uint_t BURGER_API Burger::Thread::Start(FunctionPtr pFunction, void* pData)
 				// Wait until the thread has started
 				Temp.Acquire();
 				// Kill the dangling pointer
-				m_pSemaphore = NULL;
+				m_pSemaphore = nullptr;
 				// All good!
-				uResult = 0;
+				uResult = kErrorNone;
 			}
 		}
 	}
@@ -427,15 +437,15 @@ uint_t BURGER_API Burger::Thread::Start(FunctionPtr pFunction, void* pData)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Thread::Wait(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Thread::Wait(void) BURGER_NOEXCEPT
 {
-	uint_t uResult = 10;
+	eError uResult = kErrorThreadNotStarted;
 	if (m_pThreadHandle) {
 		// Wait until the thread completes execution
 		pthread_join(m_pThreadHandle, 0);
 		// Allow restarting
-		m_pThreadHandle = NULL;
-		uResult = 0;
+		m_pThreadHandle = nullptr;
+		uResult = kErrorNone;
 	}
 	return uResult;
 }
@@ -447,12 +457,12 @@ uint_t BURGER_API Burger::Thread::Wait(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t BURGER_API Burger::Thread::Kill(void)
+Burger::eError BURGER_API Burger::Thread::Kill(void) BURGER_NOEXCEPT
 {
-	uint_t uResult = 0;
+	eError uResult = kErrorThreadNotStarted;
 	if (m_pThreadHandle) {
 		pthread_kill(m_pThreadHandle, SIGKILL);
-		uResult = 0;
+		uResult = kErrorNone;
 	}
 	return uResult;
 }
@@ -463,7 +473,7 @@ uint_t BURGER_API Burger::Thread::Kill(void)
 
 ***************************************/
 
-void BURGER_API Burger::Thread::Run(void* pThis)
+void BURGER_API Burger::Thread::Run(void* pThis) BURGER_NOEXCEPT
 {
 	Thread* pThread = static_cast<Thread*>(pThis);
 	pThread->m_pSemaphore->Release();

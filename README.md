@@ -21,6 +21,7 @@ Sections of interest:
 * \ref page_what_is_burgerlib
 * \ref page_building
 * \ref page_using_burgerlib
+* \ref page_compiler_issues
 * \ref page_defines
 * \ref page_platform_types
 * \ref page_white_papers

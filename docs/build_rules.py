@@ -17,6 +17,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import sys
 import os
+import stat
 
 from burger import import_py_script, clean_directories, clean_files
 
@@ -66,16 +67,88 @@ def prebuild(working_directory, configuration):
         error = 10
     else:
         error = script.prebuild(root_folder, 'all')
-    
+
     if not error:
         # Generate the charsets
-        script = import_py_script(os.path.join(working_directory, 'generate_charsets.py'))
+        script = import_py_script(os.path.join(working_directory,
+            'generate_charsets.py'))
         if not script:
             error = 10
         else:
             error = script.main(working_directory)
 
     return error
+
+########################################
+
+
+def postbuild(working_directory, configuration):
+    """
+    Perform actions after building doxygen.
+
+    This function is called after doxygen and will clean up files there retained
+    their ``read only`` attribute. There is a bug in doxygen that once it
+    copies such a file, it can't overwrite it on subsequent executions of
+    doxgyen.
+
+    On exit, return 0 for no error, or a non zero error code if there was an
+    error to report.
+
+    Args:
+        working_directory
+            Directory this script resides in.
+
+        configuration
+            Configuration to build, ``all`` if no configuration was requested.
+
+    Returns:
+        None if not implemented, otherwise an integer error code.
+    """
+
+    # Get the directory where the cleanup must occur
+    html_dir = os.path.join(working_directory, 'temp', 'burgerlibdoxygen')
+
+    file_list = (
+        "docs.css",
+        "burger.png",
+        "oldeskuul.png",
+        "sourceforge.jpg",
+        "twitter.jpg",
+        "facebook.png",
+        "linkedin.png",
+        "github.png",
+        "burgerbackground.png",
+        "spec-gif89a.txt",
+        "swf-file-format-spec.pdf",
+        "avm2overview.pdf",
+        "qtff-2001.pdf",
+        "mpeg-2_audio_is.pdf",
+        "11172-3.pdf",
+        "aiff-1.3.pdf",
+        "aiff-c.9.26.91.pdf",
+        "creative voice file format.txt",
+        "3dnow.pdf",
+        "avx.pdf",
+        "m68000prm.pdf",
+        "powerpc-cwg.pdf",
+        "qt6apiref.pdf",
+        "qt4reference-extract.pdf",
+        "MacintoshToolboxEssentials.pdf",
+        "Sound_Manager.pdf",
+        "macos_sound-extract.pdf",
+        "mp3_theory.pdf",
+        "lfsr04.pdf",
+        "is138181.pdf",
+        "is138182.pdf"
+    )
+
+    # Allow writing on these files.
+    for item in file_list:
+        try:
+            os.chmod(os.path.join(html_dir, item), stat.S_IWRITE)
+        except FileNotFoundError:
+            break
+    return 0
 
 ########################################
 

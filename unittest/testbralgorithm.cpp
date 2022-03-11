@@ -1696,6 +1696,13 @@ typedef int function8_t(int, double) noexcept(true);
 
 static uint_t BURGER_API Test_is_function(void) BURGER_NOEXCEPT
 {
+	// Metrowerks earlier than 7.0 cannot handle is_function<>
+#if defined(BURGER_METROWERKS) && (BURGER_METROWERKS < 0x2500)
+	Message("Metrowerks version %08X doesn't support is_function<>",
+		BURGER_METROWERKS);
+	return FALSE;
+#else
+
 	uint_t uFailure = FALSE;
 
 	TEST_IS(is_function, char, false)
@@ -1795,6 +1802,7 @@ static uint_t BURGER_API Test_is_function(void) BURGER_NOEXCEPT
 #endif
 #endif
 	return uFailure;
+#endif
 }
 
 /***************************************

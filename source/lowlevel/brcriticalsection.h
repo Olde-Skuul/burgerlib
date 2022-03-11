@@ -2,7 +2,7 @@
 
 	Class to handle critical sections
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -17,6 +17,10 @@
 
 #ifndef __BRTYPES_H__
 #include "brtypes.h"
+#endif
+
+#ifndef __BRERROR_H__
+#include "brerror.h"
 #endif
 
 #if defined(BURGER_WINDOWS) && !defined(__BRWINDOWSTYPES_H__)
@@ -35,8 +39,8 @@
 #include "brps4types.h"
 #endif
 
-#if defined(BURGER_SHIELD) && !defined(__BRSHIELDTYPES_H__)
-#include "brshieldtypes.h"
+#if defined(BURGER_ANDROID) && !defined(__BRANDROIDTYPES_H__)
+#include "brandroidtypes.h"
 #endif
 
 #if defined(BURGER_VITA) && !defined(__BRVITATYPES_H__)
@@ -58,7 +62,10 @@
 /* BEGIN */
 namespace Burger {
 class CriticalSection {
+
 	BURGER_DISABLE_COPY(CriticalSection);
+
+protected:
 #if defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(DOXYGEN)
 	/** Critical section for OS calls (Windows and Xbox 360 only) */
 	Burger_CRITICAL_SECTION m_Lock;
@@ -74,7 +81,7 @@ class CriticalSection {
 	pthread_mutex* m_Lock;
 #endif
 
-#if (defined(BURGER_SHIELD) || defined(BURGER_MACOSX) || \
+#if (defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || \
 	defined(BURGER_IOS)) || \
 	defined(DOXYGEN)
 	friend class ConditionVariable;
@@ -102,6 +109,9 @@ public:
 };
 
 class CriticalSectionStatic: public CriticalSection {
+	BURGER_DISABLE_COPY(CriticalSectionStatic);
+
+protected:
 	/** Set to \ref TRUE when constructed */
 	uint_t m_bValid;
 
@@ -149,12 +159,15 @@ public:
 
 class Semaphore {
 
+	BURGER_DISABLE_COPY(Semaphore);
+
+protected:
 #if (defined(BURGER_WINDOWS) || defined(BURGER_XBOX360)) || defined(DOXYGEN)
 	/** Semaphore HANDLE (Windows only) */
 	void* m_pSemaphore;
 #endif
 
-#if (defined(BURGER_SHIELD)) || defined(DOXYGEN)
+#if defined(BURGER_ANDROID) || defined(DOXYGEN)
 	/** Semaphore instance (Android) */
 	Burgersem_t m_Semaphore;
 	/** \ref TRUE if the semaphore instance successfully initialized */
@@ -179,14 +192,14 @@ class Semaphore {
 	volatile uint32_t m_uCount;
 
 public:
-	Semaphore(uint32_t uCount = 0);
+	Semaphore(uint32_t uCount = 0) BURGER_NOEXCEPT;
 	~Semaphore();
-	BURGER_INLINE uint_t Acquire(void)
+	BURGER_INLINE eError Acquire(void) BURGER_NOEXCEPT
 	{
 		return TryAcquire(BURGER_MAXUINT);
 	}
-	uint_t BURGER_API TryAcquire(uint_t uMilliseconds = 0);
-	uint_t BURGER_API Release(void);
+	eError BURGER_API TryAcquire(uint_t uMilliseconds = 0) BURGER_NOEXCEPT;
+	eError BURGER_API Release(void) BURGER_NOEXCEPT;
 	BURGER_INLINE uint32_t GetValue(void) const BURGER_NOEXCEPT
 	{
 		return m_uCount;
@@ -195,7 +208,10 @@ public:
 
 class ConditionVariable {
 
-#if (defined(BURGER_SHIELD) || defined(BURGER_MACOSX) || \
+	BURGER_DISABLE_COPY(ConditionVariable);
+
+protected:
+#if (defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || \
 	defined(BURGER_IOS)) || \
 	defined(DOXYGEN)
 	/** Condition variable instance (Android/MacOSX/iOS only) */
@@ -205,14 +221,14 @@ class ConditionVariable {
 	uint_t m_bInitialized;
 #endif
 
-#if (defined(BURGER_VITA)) || defined(DOXYGEN)
+#if defined(BURGER_VITA) || defined(DOXYGEN)
 	/** Condition variable instance (Vita only) */
 	int m_iConditionVariable;
 	/** Mutex for the condition variable (Vita only) */
 	int m_iMutex;
 #endif
 
-#if !(defined(BURGER_SHIELD) || defined(BURGER_MACOSX) || \
+#if !(defined(BURGER_ANDROID) || defined(BURGER_MACOSX) || \
 	defined(BURGER_IOS)) || \
 	defined(DOXYGEN)
 	/** CriticalSection for this class (Non-specialized platforms) */
@@ -230,15 +246,17 @@ class ConditionVariable {
 #endif
 
 public:
-	ConditionVariable();
+	ConditionVariable() BURGER_NOEXCEPT;
 	~ConditionVariable();
-	uint_t BURGER_API Signal(void);
-	uint_t BURGER_API Broadcast(void);
-	uint_t BURGER_API Wait(CriticalSection* pCriticalSection,
-		uint_t uMilliseconds = BURGER_MAXUINT);
+	eError BURGER_API Signal(void) BURGER_NOEXCEPT;
+	eError BURGER_API Broadcast(void) BURGER_NOEXCEPT;
+	eError BURGER_API Wait(CriticalSection* pCriticalSection,
+		uint_t uMilliseconds = BURGER_MAXUINT) BURGER_NOEXCEPT;
 };
 
 class Thread {
+	BURGER_DISABLE_COPY(Thread);
+
 public:
 	/** Thread entry prototype */
 	typedef uintptr_t(BURGER_API* FunctionPtr)(void* pThis);
@@ -263,7 +281,7 @@ private:
 	_opaque_pthread_t* m_pThreadHandle;
 #endif
 
-#if (defined(BURGER_VITA)) || defined(DOXYGEN)
+#if defined(BURGER_VITA) || defined(DOXYGEN)
 	/** System ID of the thread (Vita only) */
 	int m_iThreadID;
 #endif
@@ -272,13 +290,13 @@ private:
 	uintptr_t m_uResult;
 
 public:
-	Thread();
-	Thread(FunctionPtr pFunction, void* pData);
+	Thread() BURGER_NOEXCEPT;
+	Thread(FunctionPtr pFunction, void* pData) BURGER_NOEXCEPT;
 	~Thread();
-	uint_t BURGER_API Start(FunctionPtr pFunction, void* pData);
-	uint_t BURGER_API Wait(void) BURGER_NOEXCEPT;
-	uint_t BURGER_API Kill(void);
-	static void BURGER_API Run(void* pThis);
+	eError BURGER_API Start(FunctionPtr pFunction, void* pData) BURGER_NOEXCEPT;
+	eError BURGER_API Wait(void) BURGER_NOEXCEPT;
+	eError BURGER_API Kill(void) BURGER_NOEXCEPT;
+	static void BURGER_API Run(void* pThis) BURGER_NOEXCEPT;
 	BURGER_INLINE uintptr_t GetResult(void) const BURGER_NOEXCEPT
 	{
 		return m_uResult;

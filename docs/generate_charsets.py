@@ -6,14 +6,15 @@ Generate the charset tables for Burgerlib documentation.
 """
 
 # pylint: disable=unused-argument
+# pylint: disable=consider-using-f-string
 
 from __future__ import absolute_import, print_function, unicode_literals
 
 import sys
 import os
 
-from burger import create_folder_if_needed, save_text_file_if_newer, is_string, \
-    escape_xml_cdata
+from burger import create_folder_if_needed, save_text_file_if_newer, \
+    is_string, escape_xml_cdata
 
 #
 # Unicode descriptions for all valid characters
@@ -427,7 +428,7 @@ UNICODE_DESCRIPTIONS = {
     0x2591: "LIGHT SHADE",
     0x2592: "MEDIUM SHADE",
     0x2593: "DARK SHADE",
-    0x25A0: "BLACK SQUARE",    
+    0x25A0: "BLACK SQUARE",
     0x25CA: "LOZENGE",
 
     0xF8A0: "SMALL NUMBER ONE-F8A0",
@@ -990,15 +991,20 @@ def create_header(lines, table):
     """
     Create the HTML header and HEAD record
     """
-    lines.append('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"')
+    lines.append('<!DOCTYPE HTML PUBLIC '
+        '"-//W3C//DTD HTML 4.01 Transitional//EN"')
     lines.append('   "http://www.w3.org/TR/html4/loose.dtd">')
     lines.append('<html lang="en-US">')
     lines.append('<head>')
     lines.append('<title>' + table[0] + ' Unicode table</title>')
     lines.append('<meta name="Author" content="Rebecca Heineman">')
-    lines.append('<meta name="description" content="' + table[0] + ' Unicode table">')
-    lines.append('<meta name="keywords" content="burgerlib, xbox, ps3, ps2, wii, ds, ipod, mac, vista, xp, c, c++, assembly, arm, ppc, intel, amd, nvidia, ati, sony, microsoft, nintendo, sega">')
-    lines.append('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">')
+    lines.append('<meta name="description" content="' + table[0] +
+        ' Unicode table">')
+    lines.append('<meta name="keywords" content="burgerlib, xbox, ps3, ps2, '
+        'wii, ds, ipod, mac, vista, xp, c, c++, assembly, arm, ppc, intel, '
+        'amd, nvidia, ati, sony, microsoft, nintendo, sega">')
+    lines.append('<meta http-equiv="Content-Type" content="text/html; '
+        'charset=utf-8">')
     lines.append('</head>')
 
 ########################################
@@ -1011,16 +1017,22 @@ def create_top(lines, table):
 
     lines.append('<body bgcolor="#FFFFFF">')
     lines.append('<center><h1>' + table[0] + ' Unicode table</h1></center>')
-    lines.append('<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="This is the Unicode mapping of ' + table[0] + '">')
+    lines.append('<table width="100%" border="1" cellspacing="0" '
+        'cellpadding="2" summary="This is the Unicode mapping of ' +
+        table[0] + '">')
     lines.append('<tr bgcolor="#555555">')
     lines.append('<td></td>')
     for i in range(16):
-        lines.append('<th><font color="white">' + '%02X' % i + '</font></th>')
+        lines.append('<th><font color="white">' + '%02X' % i +
+        '</font></th>')
     lines.append('<td></td>')
     lines.append('</tr>')
 
 
 def create_bottom(lines, table):
+    """
+    Create the bottom row of the table
+    """
     lines.append('<tr bgcolor="#555555">')
     lines.append('<td></td>')
     for i in range(16):
@@ -1030,6 +1042,10 @@ def create_bottom(lines, table):
 
 
 def create_entry(lines, utf32):
+    """
+    Generate the HTML for a single table cell
+    """
+
     hexstring = '%04X' % utf32
     description = UNICODE_DESCRIPTIONS.get(utf32, None)
     if description:
@@ -1045,27 +1061,35 @@ def create_entry(lines, utf32):
         desc = 'NULL'
 
     if len(desc) == 1:
-        entry = '<td align="center" title="{}"><font size="+2">{}</font><br><font size="-2">{}</font></td>'.format(title, escape_xml_cdata(desc), hexstring)
+        entry = ('<td align="center" title="{}"><font size="+2">{}</font><br>'
+            '<font size="-2">{}</font></td>').format(
+            title, escape_xml_cdata(desc), hexstring)
     else:
-        entry = '<td align="center" title="{}">{}<br><font size="-2">{}</font></td>'.format(title, desc, hexstring)
+        entry = ('<td align="center" title="{}">{}<br><font size="-2">'
+            '{}</font></td>').format(title, desc, hexstring)
     lines.append(entry)
 
 
 def create_table(lines, table):
+    """
+    Create an HTML table of all the characters in this charset
+    """
     create_top(lines, table)
     for i in range(16):
         if (i % 2) == 0:
             lines.append('<tr>')
         else:
             lines.append('<tr bgcolor="#dddddd">')
-        lines.append('<th bgcolor="#555555"><font color="white">' + '%X0' % i + '</font></th>')
+        lines.append('<th bgcolor="#555555"><font color="white">' +
+            '%X0' % i + '</font></th>')
         for j in range(16):
             index = (i * 16) + j
             if index < 128:
                 create_entry(lines, index)
             else:
                 create_entry(lines, table[2][index - 128])
-        lines.append('<th bgcolor="#555555"><font color="white">' + '%X0' % i + '</font></th>')
+        lines.append('<th bgcolor="#555555"><font color="white">' +
+            '%X0' % i + '</font></th>')
         lines.append('</tr>')
 
     create_bottom(lines, table)

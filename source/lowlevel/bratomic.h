@@ -143,7 +143,7 @@ BURGER_INLINE uint32_t AtomicSwap(volatile uint32_t *pOutput,uint32_t uInput)
 	return uTemp; 
 }
 
-BURGER_INLINE uint32_t AtomicPreIncrement(volatile uint32_t *pInput) 
+BURGER_INLINE uint32_t AtomicPreIncrement(volatile uint32_t *pInput) BURGER_NOEXCEPT
 {
 	uint32_t uTemp; 
 	do {
@@ -161,7 +161,7 @@ BURGER_INLINE uint32_t AtomicPostIncrement(volatile uint32_t *pInput)
 	return uTemp; 
 }
 
-BURGER_INLINE uint32_t AtomicPreDecrement(volatile uint32_t *pInput)
+BURGER_INLINE uint32_t AtomicPreDecrement(volatile uint32_t *pInput) BURGER_NOEXCEPT
 {
 	uint32_t uTemp; 
 	do {
@@ -219,7 +219,7 @@ BURGER_INLINE uint32_t AtomicSwap(volatile uint64_t *pOutput,uint64_t uInput)
 	return uTemp; 
 }
 
-BURGER_INLINE uint32_t AtomicPreIncrement(volatile uint64_t *pInput)
+BURGER_INLINE uint32_t AtomicPreIncrement(volatile uint64_t *pInput) BURGER_NOEXCEPT
 {
 	uint64_t uTemp; 
 	do {
@@ -237,7 +237,7 @@ BURGER_INLINE uint32_t AtomicPostIncrement(volatile uint64_t *pInput)
 	return uTemp; 
 }
 
-BURGER_INLINE uint32_t AtomicPreDecrement(volatile uint64_t *pInput) 
+BURGER_INLINE uint32_t AtomicPreDecrement(volatile uint64_t *pInput) BURGER_NOEXCEPT
 {
 	uint64_t uTemp; 
 	do {
@@ -299,7 +299,7 @@ loop:	lwarx	uResult,0,pOutput
 	return uResult; 
 }
 	
-BURGER_INLINE uint32_t AtomicPreIncrement(register volatile uint32_t *pInput) 
+BURGER_INLINE uint32_t AtomicPreIncrement(register volatile uint32_t *pInput) BURGER_NOEXCEPT
 {
 	register uint32_t uResult;
 	asm {
@@ -324,7 +324,7 @@ loop:	lwarx	uResult,0,pInput
 	return uResult;
 }
 	
-BURGER_INLINE uint32_t AtomicPreDecrement(register volatile uint32_t *pInput)
+BURGER_INLINE uint32_t AtomicPreDecrement(register volatile uint32_t *pInput) BURGER_NOEXCEPT
 {
 	register uint32_t uResult;
 	asm {
@@ -400,7 +400,7 @@ BURGER_INLINE uint32_t AtomicSwap(volatile uint32_t *pOutput,uint32_t uInput)
 	return uTemp; 
 }
 
-BURGER_INLINE uint32_t AtomicPreIncrement(volatile uint32_t *pInput) 
+BURGER_INLINE uint32_t AtomicPreIncrement(volatile uint32_t *pInput) BURGER_NOEXCEPT
 {
 	uint32_t uTemp; 
 	do {
@@ -420,7 +420,7 @@ BURGER_INLINE uint32_t AtomicPostIncrement(volatile uint32_t *pInput)
 	return uTemp;
 }
 
-BURGER_INLINE uint32_t AtomicPreDecrement(volatile uint32_t *pInput)
+BURGER_INLINE uint32_t AtomicPreDecrement(volatile uint32_t *pInput) BURGER_NOEXCEPT
 {
 	uint32_t uTemp;
 	do {
@@ -478,9 +478,9 @@ BURGER_INLINE uint_t AtomicSetIfMatch(volatile uint32_t *pInput, uint32_t uBefor
 #elif defined(BURGER_MSVC) || ((defined(BURGER_WATCOM) || defined(BURGER_METROWERKS)) && defined(BURGER_X86))
 
 BURGER_INLINE uint32_t AtomicSwap(volatile uint32_t *pOutput,uint32_t uInput) { return static_cast<uint32_t>(_InterlockedExchange(reinterpret_cast<volatile long *>(pOutput),static_cast<long>(uInput)));}
-BURGER_INLINE uint32_t AtomicPreIncrement(volatile uint32_t *pInput) { return static_cast<uint32_t>(_InterlockedIncrement(reinterpret_cast<volatile long *>(pInput))); }
+BURGER_INLINE uint32_t AtomicPreIncrement(volatile uint32_t *pInput) BURGER_NOEXCEPT { return static_cast<uint32_t>(_InterlockedIncrement(reinterpret_cast<volatile long *>(pInput))); }
 BURGER_INLINE uint32_t AtomicPostIncrement(volatile uint32_t *pInput) { return static_cast<uint32_t>(_InterlockedIncrement(reinterpret_cast<volatile long *>(pInput))-1); }
-BURGER_INLINE uint32_t AtomicPreDecrement(volatile uint32_t *pInput) { return static_cast<uint32_t>(_InterlockedDecrement(reinterpret_cast<volatile long *>(pInput))); }
+BURGER_INLINE uint32_t AtomicPreDecrement(volatile uint32_t *pInput) BURGER_NOEXCEPT { return static_cast<uint32_t>(_InterlockedDecrement(reinterpret_cast<volatile long *>(pInput))); }
 BURGER_INLINE uint32_t AtomicPostDecrement(volatile uint32_t *pInput) { return static_cast<uint32_t>(_InterlockedDecrement(reinterpret_cast<volatile long *>(pInput))+1); }
 BURGER_INLINE uint32_t AtomicAdd(volatile uint32_t *pInput,uint32_t uValue) { return static_cast<uint32_t>(_InterlockedExchangeAdd(reinterpret_cast<volatile long *>(pInput),static_cast<long>(uValue))); }
 BURGER_INLINE uint32_t AtomicSubtract(volatile uint32_t *pInput,uint32_t uValue) { return static_cast<uint32_t>(_InterlockedExchangeAdd(reinterpret_cast<volatile long *>(pInput),-static_cast<long>(uValue))); }
@@ -488,9 +488,9 @@ BURGER_INLINE uint_t AtomicSetIfMatch(volatile uint32_t *pInput,uint32_t uBefore
 	
 #if defined(BURGER_64BITCPU)
 BURGER_INLINE uint64_t AtomicSwap(volatile uint64_t *pOutput,uint64_t uInput) { return _InterlockedExchange64(reinterpret_cast<volatile __int64 *>(pOutput),uInput); }
-BURGER_INLINE uint64_t AtomicPreIncrement(volatile uint64_t *pInput) { return _InterlockedIncrement64(reinterpret_cast<volatile __int64 *>(pInput)); }
+BURGER_INLINE uint64_t AtomicPreIncrement(volatile uint64_t *pInput) BURGER_NOEXCEPT { return _InterlockedIncrement64(reinterpret_cast<volatile __int64 *>(pInput)); }
 BURGER_INLINE uint64_t AtomicPostIncrement(volatile uint64_t *pInput) { return _InterlockedIncrement64(reinterpret_cast<volatile __int64 *>(pInput))-1; }
-BURGER_INLINE uint64_t AtomicPreDecrement(volatile uint64_t *pInput) { return _InterlockedDecrement64(reinterpret_cast<volatile __int64 *>(pInput)); }
+BURGER_INLINE uint64_t AtomicPreDecrement(volatile uint64_t *pInput) BURGER_NOEXCEPT { return _InterlockedDecrement64(reinterpret_cast<volatile __int64 *>(pInput)); }
 BURGER_INLINE uint64_t AtomicPostDecrement(volatile uint64_t *pInput) { return _InterlockedDecrement64(reinterpret_cast<volatile __int64 *>(pInput))+1; }
 BURGER_INLINE uint64_t AtomicAdd(volatile uint32_t *pInput,uint64_t uValue) { return _InterlockedExchangeAdd64(reinterpret_cast<volatile __int64 *>(pInput),uValue); }
 BURGER_INLINE uint64_t AtomicSubtract(volatile uint64_t *pInput,uint64_t uValue) { return _InterlockedExchangeAdd64(reinterpret_cast<volatile __int64 *>(pInput),0-uValue); }
@@ -501,12 +501,12 @@ BURGER_INLINE uint_t AtomicSetIfMatch(volatile uint64_t *pInput,uint64_t uBefore
 #elif (BURGER_GNUC > 40100)
 
 BURGER_INLINE uint32_t AtomicSwap(volatile uint32_t *pOutput,uint32_t uInput) { uint32_t uTemp; do { uTemp = pOutput[0]; } while(__sync_val_compare_and_swap(pOutput,uTemp,uInput)!=uTemp); return uTemp;}
-BURGER_INLINE uint32_t AtomicPreIncrement(volatile uint32_t *pInput) { return __sync_add_and_fetch(pInput,1); }
+BURGER_INLINE uint32_t AtomicPreIncrement(volatile uint32_t *pInput) BURGER_NOEXCEPT { return __sync_add_and_fetch(pInput,1); }
 BURGER_INLINE uint32_t AtomicPostIncrement(volatile uint32_t *pInput) { return __sync_fetch_and_add(pInput,1); }
 #if defined(BURGER_PPC) && defined(BURGER_MACOSX)	// Hack to get around a compiler crash for Xcode 3.1.4 for PowerPC!!!
-BURGER_INLINE uint32_t AtomicPreDecrement(volatile uint32_t *pInput) { return __sync_add_and_fetch(pInput,0xFFFFFFFFU); }
+BURGER_INLINE uint32_t AtomicPreDecrement(volatile uint32_t *pInput) BURGER_NOEXCEPT { return __sync_add_and_fetch(pInput,0xFFFFFFFFU); }
 #else
-BURGER_INLINE uint32_t AtomicPreDecrement(volatile uint32_t *pInput) { return __sync_sub_and_fetch(pInput,1); }
+BURGER_INLINE uint32_t AtomicPreDecrement(volatile uint32_t *pInput) BURGER_NOEXCEPT { return __sync_sub_and_fetch(pInput,1); }
 #endif
 BURGER_INLINE uint32_t AtomicPostDecrement(volatile uint32_t *pInput) { return __sync_fetch_and_sub(pInput,1); }
 BURGER_INLINE uint32_t AtomicAdd(volatile uint32_t *pInput,uint32_t uValue) { return __sync_fetch_and_add(pInput,uValue); }
@@ -514,9 +514,9 @@ BURGER_INLINE uint32_t AtomicSubtract(volatile uint32_t *pInput,uint32_t uValue)
 BURGER_INLINE uint_t AtomicSetIfMatch(volatile uint32_t *pInput,uint32_t uBefore,uint32_t uAfter) { return __sync_bool_compare_and_swap(pInput,uAfter,uBefore); }
 
 BURGER_INLINE uint64_t AtomicSwap(volatile uint64_t *pOutput,uint64_t uInput) { uint64_t uTemp; do { uTemp = pOutput[0]; } while(__sync_val_compare_and_swap(pOutput,uTemp,uInput)!=uTemp); return uTemp;}
-BURGER_INLINE uint64_t AtomicPreIncrement(volatile uint64_t *pInput) { return __sync_add_and_fetch(pInput,1); }
+BURGER_INLINE uint64_t AtomicPreIncrement(volatile uint64_t *pInput) BURGER_NOEXCEPT { return __sync_add_and_fetch(pInput,1); }
 BURGER_INLINE uint64_t AtomicPostIncrement(volatile uint64_t *pInput) { return __sync_fetch_and_add(pInput,1); }
-BURGER_INLINE uint64_t AtomicPreDecrement(volatile uint64_t *pInput) { return __sync_sub_and_fetch(pInput,1); }
+BURGER_INLINE uint64_t AtomicPreDecrement(volatile uint64_t *pInput) BURGER_NOEXCEPT { return __sync_sub_and_fetch(pInput,1); }
 BURGER_INLINE uint64_t AtomicPostDecrement(volatile uint64_t *pInput) { return __sync_fetch_and_sub(pInput,1); }
 BURGER_INLINE uint64_t AtomicAdd(volatile uint64_t *pInput,uint64_t uValue) { return __sync_fetch_and_add(pInput,uValue); }
 BURGER_INLINE uint64_t AtomicSubtract(volatile uint64_t *pInput,uint64_t uValue) { return __sync_fetch_and_sub(pInput,uValue); }
@@ -525,9 +525,9 @@ BURGER_INLINE uint_t AtomicSetIfMatch(volatile uint64_t *pInput,uint64_t uBefore
 #elif (defined(BURGER_GNUC) && (BURGER_GNUC <= 40100) && defined(BURGER_MACOSX)) || defined(DOXYGEN)
 	
 uint32_t BURGER_API AtomicSwap(volatile uint32_t *pOutput,uint32_t uInput);
-uint32_t BURGER_API AtomicPreIncrement(volatile uint32_t *pInput);
+uint32_t BURGER_API AtomicPreIncrement(volatile uint32_t *pInput)BURGER_NOEXCEPT;
 uint32_t BURGER_API AtomicPostIncrement(volatile uint32_t *pInput);
-uint32_t BURGER_API AtomicPreDecrement(volatile uint32_t *pInput);
+uint32_t BURGER_API AtomicPreDecrement(volatile uint32_t *pInput) BURGER_NOEXCEPT;
 uint32_t BURGER_API AtomicPostDecrement(volatile uint32_t *pInput);
 uint32_t BURGER_API AtomicAdd(volatile uint32_t *pInput,uint32_t uValue);
 uint32_t BURGER_API AtomicSubtract(volatile uint32_t *pInput,uint32_t uValue);
@@ -535,9 +535,9 @@ uint_t BURGER_API AtomicSetIfMatch(volatile uint32_t *pInput,uint32_t uBefore,ui
 
 #if defined(BURGER_64BITCPU) || defined(DOXYGEN)
 uint64_t BURGER_API AtomicSwap(volatile uint64_t *pOutput,uint64_t uInput);
-uint64_t BURGER_API AtomicPreIncrement(volatile uint64_t *pInput);
+uint64_t BURGER_API AtomicPreIncrement(volatile uint64_t *pInput)BURGER_NOEXCEPT;
 uint64_t BURGER_API AtomicPostIncrement(volatile uint64_t *pInput);
-uint64_t BURGER_API AtomicPreDecrement(volatile uint64_t *pInput);
+uint64_t BURGER_API AtomicPreDecrement(volatile uint64_t *pInput) BURGER_NOEXCEPT;
 uint64_t BURGER_API AtomicPostDecrement(volatile uint64_t *pInput);
 uint64_t BURGER_API AtomicAdd(volatile uint64_t *pInput,uint64_t uValue);
 uint64_t BURGER_API AtomicSubtract(volatile uint64_t *pInput,uint64_t uValue);
@@ -547,9 +547,9 @@ uint_t BURGER_API AtomicSetIfMatch(volatile uint64_t *pInput,uint64_t uBefore,ui
 #else
 	
 BURGER_INLINE uint32_t AtomicSwap(volatile uint32_t *pOutput,uint32_t uInput) { uint32_t uTemp = pOutput[0]; pOutput[0] = uInput; return uTemp; }
-BURGER_INLINE uint32_t AtomicPreIncrement(volatile uint32_t *pInput) { uint32_t uTemp = pInput[0]+1; pInput[0] = uTemp; return uTemp; }
+BURGER_INLINE uint32_t AtomicPreIncrement(volatile uint32_t *pInput) BURGER_NOEXCEPT { uint32_t uTemp = pInput[0]+1; pInput[0] = uTemp; return uTemp; }
 BURGER_INLINE uint32_t AtomicPostIncrement(volatile uint32_t *pInput) { uint32_t uTemp = pInput[0]; pInput[0] = uTemp+1; return uTemp; }
-BURGER_INLINE uint32_t AtomicPreDecrement(volatile uint32_t *pInput) { uint32_t uTemp = pInput[0]-1; pInput[0] = uTemp; return uTemp; }
+BURGER_INLINE uint32_t AtomicPreDecrement(volatile uint32_t *pInput) BURGER_NOEXCEPT { uint32_t uTemp = pInput[0]-1; pInput[0] = uTemp; return uTemp; }
 BURGER_INLINE uint32_t AtomicPostDecrement(volatile uint32_t *pInput) { uint32_t uTemp = pInput[0]; pInput[0] = uTemp-1; return uTemp; }
 BURGER_INLINE uint32_t AtomicAdd(volatile uint32_t *pInput,uint32_t uValue) { uint32_t uTemp = pInput[0]; pInput[0] = uTemp+uValue; return uTemp; }
 BURGER_INLINE uint32_t AtomicSubtract(volatile uint32_t *pInput,uint32_t uValue) { uint32_t uTemp = pInput[0]; pInput[0] = uTemp-uValue; return uTemp; }
@@ -557,9 +557,9 @@ BURGER_INLINE uint_t AtomicSetIfMatch(volatile uint32_t *pInput,uint32_t uBefore
 
 #if defined(BURGER_64BITCPU)
 BURGER_INLINE uint64_t AtomicSwap(volatile uint64_t *pOutput,uint64_t uInput) { uint64_t uTemp = pOutput[0]; pOutput[0] = uInput; return uTemp; }
-BURGER_INLINE uint64_t AtomicPreIncrement(volatile uint64_t *pInput) { uint64_t uTemp = pInput[0]+1; pInput[0] = uTemp; return uTemp; }
+BURGER_INLINE uint64_t AtomicPreIncrement(volatile uint64_t *pInput) BURGER_NOEXCEPT { uint64_t uTemp = pInput[0]+1; pInput[0] = uTemp; return uTemp; }
 BURGER_INLINE uint64_t AtomicPostIncrement(volatile uint64_t *pInput) { uint64_t uTemp = pInput[0]; pInput[0] = uTemp+1; return uTemp; }
-BURGER_INLINE uint64_t AtomicPreDecrement(volatile uint64_t *pInput) { uint64_t uTemp = pInput[0]-1; pInput[0] = uTemp; return uTemp; }
+BURGER_INLINE uint64_t AtomicPreDecrement(volatile uint64_t *pInput) BURGER_NOEXCEPT { uint64_t uTemp = pInput[0]-1; pInput[0] = uTemp; return uTemp; }
 BURGER_INLINE uint64_t AtomicPostDecrement(volatile uint64_t *pInput) { uint64_t uTemp = pInput[0]; pInput[0] = uTemp-1; return uTemp; }
 BURGER_INLINE uint64_t AtomicAdd(volatile uint64_t *pInput,uint64_t uValue) { uint64_t uTemp = pInput[0]; pInput[0] = uTemp+uValue; return uTemp; }
 BURGER_INLINE uint64_t AtomicSubtract(volatile uint64_t *pInput,uint64_t uValue) { uint64_t uTemp = pInput[0]; pInput[0] = uTemp-uValue; return uTemp; }

@@ -98,7 +98,7 @@ static const int g_Protocols[8] = {AF_INET, IPPROTO_UDP, AF_INET6, IPPROTO_UDP,
 ***************************************/
 
 Burger::eError BURGER_API Burger::NetAddr_t::ToSocketAddr(
-	sockaddr* pOutput) const
+	sockaddr* pOutput) const BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNone;
 	switch (m_uType) {
@@ -177,7 +177,7 @@ Burger::eError BURGER_API Burger::NetAddr_t::ToSocketAddr(
 ***************************************/
 
 Burger::eError BURGER_API Burger::NetAddr_t::FromSocketAddr(
-	const sockaddr* pInput)
+	const sockaddr* pInput) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNone;
 	switch (pInput->sa_family) {
@@ -239,7 +239,7 @@ Burger::eError BURGER_API Burger::NetAddr_t::FromSocketAddr(
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::NetworkManager::Init(void)
+Burger::eError BURGER_API Burger::NetworkManager::Init(void) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNone;
 
@@ -289,7 +289,7 @@ Burger::eError BURGER_API Burger::NetworkManager::Init(void)
 
 ***************************************/
 
-void BURGER_API Burger::NetworkManager::Shutdown(void)
+void BURGER_API Burger::NetworkManager::Shutdown(void) BURGER_NOEXCEPT
 {
 	// Release when counted down to zero
 	if (m_uStarted) {
@@ -321,7 +321,7 @@ void BURGER_API Burger::NetworkManager::Shutdown(void)
 ***************************************/
 
 Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(
-	NetAddr_t* pOutput, const char* pDNSName)
+	NetAddr_t* pOutput, const char* pDNSName) BURGER_NOEXCEPT
 {
 	// Clear the output
 	MemoryClear(pOutput, sizeof(*pOutput));
@@ -405,7 +405,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(
 ***************************************/
 
 Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv6Address(
-	NetAddr_t* pOutput, const char* pDNSName)
+	NetAddr_t* pOutput, const char* pDNSName) BURGER_NOEXCEPT
 {
 	// Clear the output
 	MemoryClear(pOutput, sizeof(*pOutput));
@@ -502,7 +502,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv6Address(
 ***************************************/
 
 Burger::eError BURGER_API Burger::NetworkManager::SendPacket(
-	const NetAddr_t* pDestination, const void* pBuffer, uintptr_t uBufferSize)
+	const NetAddr_t* pDestination, const void* pBuffer, uintptr_t uBufferSize) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNone;
 
@@ -640,7 +640,7 @@ Burger::eError BURGER_API Burger::NetworkManager::SendPacket(
 ***************************************/
 
 Burger::eError BURGER_API Burger::NetworkManager::SendStream(
-	const NetAddr_t* pDestination, const void* pBuffer, uintptr_t uBufferSize)
+	const NetAddr_t* pDestination, const void* pBuffer, uintptr_t uBufferSize) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNone;
 
@@ -767,7 +767,7 @@ Burger::eError BURGER_API Burger::NetworkManager::SendStream(
 ***************************************/
 
 Burger::eError BURGER_API Burger::NetworkManager::EnumerateLocalAddresses(
-	void)
+	void) BURGER_NOEXCEPT
 {
 	// Release any previous list
 	m_uLocalAddressCount = 0;
@@ -876,7 +876,7 @@ Burger::eError BURGER_API Burger::NetworkManager::EnumerateLocalAddresses(
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::SocketSetBlocking(SocketType iSocket)
+Burger::eError BURGER_API Burger::SocketSetBlocking(SocketType iSocket) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNone;
 
@@ -911,7 +911,7 @@ Burger::eError BURGER_API Burger::SocketSetBlocking(SocketType iSocket)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::SocketSetNonBlocking(SocketType iSocket)
+Burger::eError BURGER_API Burger::SocketSetNonBlocking(SocketType iSocket) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNone;
 
@@ -946,7 +946,7 @@ Burger::eError BURGER_API Burger::SocketSetNonBlocking(SocketType iSocket)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::SocketTestForReading(SocketType uSocket)
+Burger::eError BURGER_API Burger::SocketTestForReading(SocketType uSocket) BURGER_NOEXCEPT
 {
 	char Buffer[4];
 

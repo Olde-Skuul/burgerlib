@@ -67,8 +67,8 @@
 #include "brmacosxtypes.h"
 #endif
 
-#if defined(BURGER_SHIELD) && !defined(__BRSHIELDTYPES_H__)
-#include "brshieldtypes.h"
+#if defined(BURGER_ANDROID) && !defined(__BRANDROIDTYPES_H__)
+#include "brandroidtypes.h"
 #endif
 
 #if defined(BURGER_XBOX360) && !defined(__BRXBOX360TYPES_H__)

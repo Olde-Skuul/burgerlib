@@ -1,97 +1,98 @@
 /***************************************
 
-    Class to handle critical sections, Android version
+	Class to handle critical sections, Android version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 2021-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brcriticalsection.h"
 
 #if defined(BURGER_ANDROID)
-#include "brstringfunctions.h"
 #include "brassert.h"
 #include "bratomic.h"
-#include <pthread.h>
+#include "brstringfunctions.h"
 #include <errno.h>
+#include <pthread.h>
 #include <semaphore.h>
 
 /***************************************
 
 	Initialize the spin count to 1000 since this
 	class is usually used for quick data locks
-	
+
 ***************************************/
 
 Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT
 {
-	// Safety switch to verify the declaration in brshieldtypes.h matches the real thing
-    BURGER_STATIC_ASSERT(sizeof(Burgerpthread_mutex_t)==sizeof(pthread_mutex_t));
+	// Safety switch to verify the declaration in brshieldtypes.h matches the
+	// real thing
+	BURGER_STATIC_ASSERT(
+		sizeof(Burgerpthread_mutex_t) == sizeof(pthread_mutex_t));
 
-	pthread_mutex_init(reinterpret_cast<pthread_mutex_t *>(&m_Lock),NULL);
+	pthread_mutex_init(reinterpret_cast<pthread_mutex_t*>(&m_Lock), nullptr);
 }
 
 Burger::CriticalSection::~CriticalSection()
 {
-	pthread_mutex_destroy(reinterpret_cast<pthread_mutex_t *>(&m_Lock));
+	pthread_mutex_destroy(reinterpret_cast<pthread_mutex_t*>(&m_Lock));
 }
 
 /***************************************
 
 	Lock the Mutex
-	
+
 ***************************************/
 
 void Burger::CriticalSection::Lock(void) BURGER_NOEXCEPT
 {
-	pthread_mutex_lock(reinterpret_cast<pthread_mutex_t *>(&m_Lock));
+	pthread_mutex_lock(reinterpret_cast<pthread_mutex_t*>(&m_Lock));
 }
 
 /***************************************
 
 	Try to lock the Mutex
-	
+
 ***************************************/
 
 uint_t Burger::CriticalSection::TryLock(void) BURGER_NOEXCEPT
 {
-	return pthread_mutex_trylock(reinterpret_cast<pthread_mutex_t *>(&m_Lock))!=EBUSY;
+	return pthread_mutex_trylock(reinterpret_cast<pthread_mutex_t*>(&m_Lock)) !=
+		EBUSY;
 }
-
 
 /***************************************
 
 	Unlock the Mutex
-	
+
 ***************************************/
 
 void Burger::CriticalSection::Unlock(void) BURGER_NOEXCEPT
 {
-	pthread_mutex_unlock(reinterpret_cast<pthread_mutex_t *>(&m_Lock));
+	pthread_mutex_unlock(reinterpret_cast<pthread_mutex_t*>(&m_Lock));
 }
-
 
 /***************************************
 
 	Initialize the semaphore
-	
+
 ***************************************/
 
-Burger::Semaphore::Semaphore(uint32_t uCount) :
-	m_uCount(uCount),
-	m_bInitialized(FALSE)
+Burger::Semaphore::Semaphore(uint32_t uCount):
+	m_bInitialized(FALSE), m_uCount(uCount)
 {
-	// Safety switch to verify the declaration in brshieldtypes.h matches the real thing
-    BURGER_STATIC_ASSERT(sizeof(Burgersem_t)==sizeof(sem_t));
+	// Safety switch to verify the declaration in brshieldtypes.h matches the
+	// real thing
+	BURGER_STATIC_ASSERT(sizeof(Burgersem_t) == sizeof(sem_t));
 
 	// Initialize the semaphore
-	if (!sem_init(reinterpret_cast<sem_t *>(&m_Semaphore),0,uCount)) {
+	if (!sem_init(reinterpret_cast<sem_t*>(&m_Semaphore), 0, uCount)) {
 		m_bInitialized = TRUE;
 	}
 }
@@ -99,13 +100,13 @@ Burger::Semaphore::Semaphore(uint32_t uCount) :
 /***************************************
 
 	Release the semaphore
-	
+
 ***************************************/
 
 Burger::Semaphore::~Semaphore()
 {
 	if (m_bInitialized) {
-		sem_destroy(reinterpret_cast<sem_t *>(&m_Semaphore));
+		sem_destroy(reinterpret_cast<sem_t*>(&m_Semaphore));
 		m_bInitialized = FALSE;
 	}
 	m_uCount = 0;
@@ -114,31 +115,31 @@ Burger::Semaphore::~Semaphore()
 /***************************************
 
 	Attempt to acquire the semaphore
-	
+
 ***************************************/
 
-uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
+Burger::eError BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
 {
 	// Assume failure
-	uint_t uResult = 10;
+	eError uResult = kErrorCantLock;
 	if (m_bInitialized) {
 		// No wait?
 		if (!uMilliseconds) {
 			// Use the fast function
-			if (!sem_trywait(reinterpret_cast<sem_t *>(&m_Semaphore))) {
+			if (!sem_trywait(reinterpret_cast<sem_t*>(&m_Semaphore))) {
 				// Got it!
-				uResult = 0;
+				uResult = kErrorNone;
 			}
-		} else if (uMilliseconds==BURGER_MAXUINT) {
+		} else if (uMilliseconds == BURGER_MAXUINT) {
 
 			// Use the special function for halt until acquired
 			int iSemResult;
 			do {
-				iSemResult = sem_wait(reinterpret_cast<sem_t *>(&m_Semaphore));
+				iSemResult = sem_wait(reinterpret_cast<sem_t*>(&m_Semaphore));
 				// Got it?
 				if (!iSemResult) {
 					// Exit now
-					uResult = 0;
+					uResult = kErrorNone;
 					break;
 				}
 				// If the error was because of a system interrupt, try again
@@ -149,20 +150,20 @@ uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
 
 			timeval CurrentTime;
 			// Get the current time
-			gettimeofday(&CurrentTime,NULL);
+			gettimeofday(&CurrentTime, nullptr);
 
 			// Add the timeout to the current time to get the
 			// timeout time
 
 			// Split between seconds and MICROseconds
-			uint_t uSeconds = uMilliseconds/1000U;
+			uint_t uSeconds = uMilliseconds / 1000U;
 			uMilliseconds = (uMilliseconds - (uSeconds * 1000U)) * 1000U;
 
 			uMilliseconds += CurrentTime.tv_usec;
 			uSeconds += CurrentTime.tv_sec;
 			// Handle wrap around
-			if (uMilliseconds>=1000000U) {
-				uMilliseconds-=1000000U;
+			if (uMilliseconds >= 1000000U) {
+				uMilliseconds -= 1000000U;
 				++uSeconds;
 			}
 
@@ -176,12 +177,13 @@ uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
 			// Wait for the semaphore
 			int iTest;
 			do {
-				iTest = sem_timedwait(reinterpret_cast<sem_t *>(&m_Semaphore),&TimeSpecTimeOut);
+				iTest = sem_timedwait(
+					reinterpret_cast<sem_t*>(&m_Semaphore), &TimeSpecTimeOut);
 				// Loop only on interrupts
 			} while ((iTest == -1) && (errno == EINTR));
 			// Success?
 			if (!iTest) {
-				uResult = 0;
+				uResult = kErrorNone;
 			}
 		}
 		// If the lock was acquired, decrement the count
@@ -195,24 +197,24 @@ uint_t BURGER_API Burger::Semaphore::TryAcquire(uint_t uMilliseconds)
 /***************************************
 
 	Release the semaphore
-	
+
 ***************************************/
 
-uint_t BURGER_API Burger::Semaphore::Release(void)
+Burger::eError BURGER_API Burger::Semaphore::Release(void)
 {
-	uint_t uResult = 10;
+	eError uResult = kErrorCantUnlock;
 	if (m_bInitialized) {
 		// Release the count immediately, because it's
 		// possible that another thread, waiting for this semaphore,
 		// can execute before the call to ReleaseSemaphore()
 		// returns
 		AtomicPreIncrement(&m_uCount);
-		if (sem_post(reinterpret_cast<sem_t *>(&m_Semaphore))) {
+		if (sem_post(reinterpret_cast<sem_t*>(&m_Semaphore))) {
 			// Error!!! Undo the AtomicPreIncrement()
 			AtomicPreDecrement(&m_uCount);
 		} else {
 			// A-Okay!
-			uResult = 0;
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -224,13 +226,15 @@ uint_t BURGER_API Burger::Semaphore::Release(void)
 
 ***************************************/
 
-Burger::ConditionVariable::ConditionVariable() :
-	m_bInitialized(FALSE)
+Burger::ConditionVariable::ConditionVariable(): m_bInitialized(FALSE)
 {
-	// Safety switch to verify the declaration in brshieldtypes.h matches the real thing
-    BURGER_STATIC_ASSERT(sizeof(Burgerpthread_cond_t)==sizeof(pthread_cond_t));
+	// Safety switch to verify the declaration in brshieldtypes.h matches the
+	// real thing
+	BURGER_STATIC_ASSERT(
+		sizeof(Burgerpthread_cond_t) == sizeof(pthread_cond_t));
 
-	if (!pthread_cond_init(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable),NULL)) {
+	if (!pthread_cond_init(
+			reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable), nullptr)) {
 		m_bInitialized = TRUE;
 	}
 }
@@ -244,7 +248,8 @@ Burger::ConditionVariable::ConditionVariable() :
 Burger::ConditionVariable::~ConditionVariable()
 {
 	if (m_bInitialized) {
-		pthread_cond_destroy(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable));
+		pthread_cond_destroy(
+			reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable));
 		m_bInitialized = FALSE;
 	}
 }
@@ -255,12 +260,13 @@ Burger::ConditionVariable::~ConditionVariable()
 
 ***************************************/
 
-uint_t BURGER_API Burger::ConditionVariable::Signal(void)
+Burger::eError BURGER_API Burger::ConditionVariable::Signal(void)
 {
-	uint_t uResult = 10;
+	eError uResult = kErrorThreadNotStarted;
 	if (m_bInitialized) {
-		if (!pthread_cond_signal(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable))) {
-			uResult = 0;
+		if (!pthread_cond_signal(
+				reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable))) {
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -272,12 +278,13 @@ uint_t BURGER_API Burger::ConditionVariable::Signal(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::ConditionVariable::Broadcast(void)
+Burger::eError BURGER_API Burger::ConditionVariable::Broadcast(void)
 {
-	uint_t uResult = 10;
+	eError uResult = kErrorThreadNotStarted;
 	if (m_bInitialized) {
-		if (!pthread_cond_broadcast(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable))) {
-			uResult = 0;
+		if (!pthread_cond_broadcast(
+				reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable))) {
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -289,13 +296,17 @@ uint_t BURGER_API Burger::ConditionVariable::Broadcast(void)
 
 ***************************************/
 
-uint_t BURGER_API Burger::ConditionVariable::Wait(CriticalSection *pCriticalSection,uint_t uMilliseconds)
+Burger::eError BURGER_API Burger::ConditionVariable::Wait(
+	CriticalSection* pCriticalSection, uint_t uMilliseconds)
 {
-	uint_t uResult = 10;
+	eError uResult = kErrorThreadNotStarted;
 	if (m_bInitialized) {
-		if (uMilliseconds==BURGER_MAXUINT) {
-			if (!pthread_cond_wait(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable),reinterpret_cast<pthread_mutex_t *>(&pCriticalSection->m_Lock))) {
-				uResult = 0;
+		if (uMilliseconds == BURGER_MAXUINT) {
+			if (!pthread_cond_wait(
+					reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable),
+					reinterpret_cast<pthread_mutex_t*>(
+						&pCriticalSection->m_Lock))) {
+				uResult = kErrorNone;
 			}
 		} else {
 
@@ -303,20 +314,20 @@ uint_t BURGER_API Burger::ConditionVariable::Wait(CriticalSection *pCriticalSect
 
 			// Get the current time
 			timeval CurrentTime;
-			gettimeofday(&CurrentTime,NULL);
+			gettimeofday(&CurrentTime, nullptr);
 
 			// Determine the time in the future to timeout at
 			struct timespec StopTimeHere;
-			uint_t uSeconds = uMilliseconds/1000;
+			uint_t uSeconds = uMilliseconds / 1000;
 			// Get the remainder in NANOSECONDS
-			uMilliseconds = (uMilliseconds-(uSeconds*1000))*1000000;
+			uMilliseconds = (uMilliseconds - (uSeconds * 1000)) * 1000000;
 
 			// Add to the current time
 			uMilliseconds += CurrentTime.tv_usec;
 			uSeconds += CurrentTime.tv_sec;
 			// Handle wrap around
-			if (uMilliseconds>=1000000000) {
-				uMilliseconds-=1000000000;
+			if (uMilliseconds >= 1000000000) {
+				uMilliseconds -= 1000000000;
 				++uSeconds;
 			}
 			StopTimeHere.tv_sec = uSeconds;
@@ -324,17 +335,21 @@ uint_t BURGER_API Burger::ConditionVariable::Wait(CriticalSection *pCriticalSect
 			int iResult;
 			do {
 				// Send the signal and possibly time out
-				iResult = pthread_cond_timedwait(reinterpret_cast<pthread_cond_t *>(&m_ConditionVariable),reinterpret_cast<pthread_mutex_t *>(&pCriticalSection->m_Lock), &StopTimeHere);
+				iResult = pthread_cond_timedwait(
+					reinterpret_cast<pthread_cond_t*>(&m_ConditionVariable),
+					reinterpret_cast<pthread_mutex_t*>(
+						&pCriticalSection->m_Lock),
+					&StopTimeHere);
 				// Interrupted?
 			} while (iResult == EINTR);
-			
+
 			// W00t! We're good!
 			if (!iResult) {
-				uResult = 0;
+				uResult = kErrorNone;
 
-			// Time out?
+				// Time out?
 			} else if (iResult == ETIMEDOUT) {
-				uResult = 1;
+				uResult = kErrorTimeout;
 			}
 			// Otherwise, leave uResult as an error
 		}

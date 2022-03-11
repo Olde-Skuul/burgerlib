@@ -360,7 +360,7 @@ Burger::eError BURGER_API Burger::NetAddr_t::FromSocketAddr(const sockaddr *pInp
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::NetworkManager::Init(void)
+Burger::eError BURGER_API Burger::NetworkManager::Init(void) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNone;
 
@@ -415,7 +415,7 @@ Burger::eError BURGER_API Burger::NetworkManager::Init(void)
 
 ***************************************/
 
-void BURGER_API Burger::NetworkManager::Shutdown(void)
+void BURGER_API Burger::NetworkManager::Shutdown(void) BURGER_NOEXCEPT
 {
 	// Release WinSock2 when counted down to zero
 	if (m_uStarted) {
@@ -449,7 +449,7 @@ void BURGER_API Burger::NetworkManager::Shutdown(void)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(NetAddr_t *pOutput,const char *pDNSName)
+Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(NetAddr_t *pOutput,const char *pDNSName) BURGER_NOEXCEPT
 {
 	// Clear the output
 	MemoryClear(pOutput,sizeof(*pOutput));
@@ -529,7 +529,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(NetAddr_t *
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv6Address(NetAddr_t *pOutput,const char *pDNSName)
+Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv6Address(NetAddr_t *pOutput,const char *pDNSName) BURGER_NOEXCEPT
 {
 	// Clear the output
 	MemoryClear(pOutput,sizeof(*pOutput));
@@ -620,7 +620,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv6Address(NetAddr_t *
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::NetworkManager::SendPacket(const NetAddr_t *pDestination,const void *pBuffer,uintptr_t uBufferSize)
+Burger::eError BURGER_API Burger::NetworkManager::SendPacket(const NetAddr_t *pDestination,const void *pBuffer,uintptr_t uBufferSize) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNone;
 
@@ -746,7 +746,7 @@ Burger::eError BURGER_API Burger::NetworkManager::SendPacket(const NetAddr_t *pD
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::NetworkManager::SendStream(const NetAddr_t *pDestination,const void *pBuffer,uintptr_t uBufferSize)
+Burger::eError BURGER_API Burger::NetworkManager::SendStream(const NetAddr_t *pDestination,const void *pBuffer,uintptr_t uBufferSize) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNone;
 
@@ -868,7 +868,7 @@ Burger::eError BURGER_API Burger::NetworkManager::SendStream(const NetAddr_t *pD
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::NetworkManager::EnumerateLocalAddresses(void)
+Burger::eError BURGER_API Burger::NetworkManager::EnumerateLocalAddresses(void) BURGER_NOEXCEPT
 {
 	// Release any previous list
 	m_uLocalAddressCount = 0;
@@ -988,7 +988,7 @@ Burger::eError BURGER_API Burger::NetworkManager::EnumerateLocalAddresses(void)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::SocketSetBlocking(SocketType uSocket)
+Burger::eError BURGER_API Burger::SocketSetBlocking(SocketType uSocket) BURGER_NOEXCEPT
 {
 	// Turn off "Non-blocking" mode
 	u_long uData = FALSE;
@@ -1008,7 +1008,7 @@ Burger::eError BURGER_API Burger::SocketSetBlocking(SocketType uSocket)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::SocketSetNonBlocking(SocketType uSocket)
+Burger::eError BURGER_API Burger::SocketSetNonBlocking(SocketType uSocket) BURGER_NOEXCEPT
 {
 	// Turn on "Non-blocking" mode
 	u_long uData = TRUE;
@@ -1029,7 +1029,7 @@ Burger::eError BURGER_API Burger::SocketSetNonBlocking(SocketType uSocket)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::SocketTestForReading(SocketType uSocket)
+Burger::eError BURGER_API Burger::SocketTestForReading(SocketType uSocket) BURGER_NOEXCEPT
 {
 	char Buffer[4];
 

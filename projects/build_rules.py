@@ -121,13 +121,6 @@ BURGER_LIB_XBOX_ONE = (
     '../source/graphics/shadersxboxone'
 )
 
-## nVidia Shield specific code
-BURGER_LIB_SHIELD = (
-    '../source/shield',
-    '../source/graphics/shadersopengl',
-    '../source/graphics/vulkan'
-)
-
 ## Apple macOS X specific code
 BURGER_LIB_MACOSX = (
     '../source/macosx',
@@ -155,6 +148,18 @@ BURGER_LIB_DOS = (
 BURGER_LIB_WINDOWS = (
     '../source/windows',
     '../source/graphics/shadersdx9',
+    '../source/graphics/shadersopengl',
+    '../source/graphics/vulkan'
+)
+
+## nVidia Shield specific code
+BURGER_LIB_SHIELD = (
+    '../source/shield',
+)
+
+## Android specific code
+BURGER_LIB_ANDROID = (
+    '../source/android',
     '../source/graphics/shadersopengl',
     '../source/graphics/vulkan'
 )
@@ -195,6 +200,7 @@ ARG_LISTS = [
     ('switch', 'burger', 'library', ['vs2017']),
     ('switch', 'unittests', 'app', ['vs2017']),
     ('shield', 'burger', 'library', ['vs2015']),
+    ('android', 'burger', 'library', ['vs2022']),
     ('msdos', 'burger', 'library', ['watcom']),
     ('msdos4gw', 'unittests', 'console', ['watcom']),
     ('macosx', 'burger', 'library', ['xcode3', 'xcode5']),
@@ -448,7 +454,13 @@ def do_project(working_directory, project):
         #    _X360SL_MATCH)
 
     # Android
+    if platform.is_android():
+        platform_folder = 'android'
+        source_folders_list.extend(BURGER_LIB_ANDROID)
+
     if platform is PlatformTypes.shield:
+        # Override for Shield, even though it's an Android
+        # platform
         platform_folder = 'shield'
         source_folders_list.extend(BURGER_LIB_SHIELD)
 

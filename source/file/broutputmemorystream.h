@@ -34,10 +34,11 @@
 /* BEGIN */
 namespace Burger {
 class OutputMemoryStream {
+public:
 	/** Size of each data chunk */
 	static const uintptr_t kChunkSize =
 		0x40000U - (sizeof(uint8_t*) + sizeof(uintptr_t));
-
+private:
 	struct Chunk_t {
 		Chunk_t* m_pNext;             ///< Pointer to the next chunk
 		uintptr_t m_uMark;            ///< Base file mark for this chunk

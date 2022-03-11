@@ -50,7 +50,7 @@ extern uintptr_t BURGER_API DJB2StringHashXorCaseFunctor(
 	const void* pData, uintptr_t uDataSize) BURGER_NOEXCEPT;
 
 class HashMapShared {
-protected:
+public:
 	/** Invalid hash value for marking an Entry as uninitialized */
 	static const uintptr_t INVALID_HASH = UINTPTR_MAX;
 	/** Error value for invalid indexes */
@@ -60,7 +60,6 @@ protected:
 	/** Constant to mark an unused hash record */
 	static const uintptr_t EMPTY_RECORD = UINTPTR_MAX - 1;
 
-public:
 	struct Entry {
 		/** Next item index in the linked list chain or \ref END_OF_CHAIN to
 		 * mark the end of a linked list */

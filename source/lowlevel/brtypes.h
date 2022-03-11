@@ -1356,6 +1356,10 @@ typedef __m128 Vector_128;
 typedef __m128 Vector_128;
 
 #elif defined(BURGER_ANDROID)
+#ifndef __ARM_FP16_H
+#include <arm_fp16.h>
+#endif
+
 #ifndef __ARM_NEON_H
 #include <arm_neon.h>
 #endif
