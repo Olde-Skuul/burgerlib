@@ -2,7 +2,7 @@
 
 	Unit tests for the Floating Point Math library
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -1128,13 +1128,13 @@ static const Burger::uint32_float_t IntToFloatArray[][2] = {
 	{{0xFEFFFFF5U}, {0xCB800006U}}  // -16777227
 };
 
-static uint_t BURGER_API TestIntToFloat(void)
+static uint_t BURGER_API TestIntToFloat(void) BURGER_NOEXCEPT
 {
 	const Burger::uint32_float_t* pWork = IntToFloatArray[0];
 	uintptr_t i = BURGER_ARRAYSIZE(IntToFloatArray);
 	uint_t uResult = FALSE;
 	do {
-		int32_t iOriginal = static_cast<int_t>(pWork[0].GetWord());
+		const int32_t iOriginal = static_cast<int_t>(pWork[0].GetWord());
 		const float fExpected = pWork[1];
 
 		volatile float fTest = Burger::IntToFloat(iOriginal);
@@ -1912,7 +1912,7 @@ static uint_t TestRoundToZeroFloat(void) BURGER_NOEXCEPT
 	uintptr_t i = BURGER_ARRAYSIZE(RoundToZeroFloatArray);
 	uint_t uResult = FALSE;
 	do {
-		float fOriginal = pWork[0];
+		const float fOriginal = pWork[0];
 		// Note: Use volatile to force the compiler to use 32 bit float
 		// precision
 		volatile float fTest = Burger::RoundToZero(fOriginal);
@@ -2212,7 +2212,7 @@ static uint_t TestCosDouble(void) BURGER_NOEXCEPT
 // Perform all the tests for the Burgerlib FP Math library
 //
 
-int BURGER_API TestBrfloatingpoint(uint_t uVerbose)
+int BURGER_API TestBrfloatingpoint(uint_t uVerbose) BURGER_NOEXCEPT
 {
 #if defined(BURGER_68K)
 	if (uVerbose & VERBOSE_MSG) {

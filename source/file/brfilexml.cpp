@@ -929,7 +929,7 @@ Burger::FileXML::Comment::~Comment()
 uint_t Burger::FileXML::Comment::Parse(InputMemoryStream *pInput)
 {
 	// Clear out the old data
-	m_Comment.Clear();
+	m_Comment.clear();
 
 	// Assume error
 	uint_t uResult = TRUE;
@@ -1145,17 +1145,17 @@ Burger::FileXML::CData::~CData()
 uint_t Burger::FileXML::CData::Parse(InputMemoryStream *pInput)
 {
 	// Clear out the old data
-	m_CData.Clear();
+	m_CData.clear();
 
 	// Assume error
 	uint_t uResult = TRUE;
 	// Capture the start so the length can be determined
-	uintptr_t uMark = pInput->GetMark();
+	const uintptr_t uMark = pInput->GetMark();
 	uint_t uPrevious1 = 0;		// Test for the --
 	uint_t uPrevious2 = 0;
 	for (;;) {
 		// Fetch a byte
-		uint_t uTemp = pInput->GetByte();
+		const uint_t uTemp = pInput->GetByte();
 		// End of the data?
 		if (!uTemp) {
 			break;
@@ -1358,8 +1358,8 @@ uint_t Burger::FileXML::Attribute::Parse(InputMemoryStream *pInput)
 	// On failure, clear this data and restore the stream
 	if (uResult) {
 		pInput->SetMark(uMark);
-		m_Key.Clear();
-		m_Value.Clear();
+		m_Key.clear();
+		m_Value.clear();
 	}
 	return uResult;
 }
@@ -1802,7 +1802,7 @@ uint_t Burger::FileXML::Declaration::Parse(InputMemoryStream *pInput)
 {
 	m_bStandalone = 2;
 	m_fVersion = 1.0f;
-	m_Encoding.Clear();
+	m_Encoding.clear();
 	Attribute TempAttribute;
 	uint_t uResult = TRUE;
 	for (;;) {
@@ -2093,7 +2093,7 @@ Burger::FileXML::RawText::~RawText()
 uint_t Burger::FileXML::RawText::Parse(InputMemoryStream *pInput)
 {
 	// Clear out the old data
-	m_Text.Clear();
+	m_Text.clear();
 
 	// Assume error
 	uint_t uResult = TRUE;
@@ -4319,7 +4319,7 @@ uint_t BURGER_API Burger::FileXML::ReadXMLName(String *pOutput,InputMemoryStream
 		uResult = 0;
 	} else {
 		pInput->SetMark(uMark);
-		pOutput->Clear();
+		pOutput->clear();
 	}
 	return uResult;
 }
@@ -4380,7 +4380,7 @@ uint_t BURGER_API Burger::FileXML::ReadXMLText(String *pOutput,InputMemoryStream
 	}
 	if (uResult) {
 		pInput->SetMark(uMark);
-		pOutput->Clear();
+		pOutput->clear();
 	}
 	return uResult;
 }

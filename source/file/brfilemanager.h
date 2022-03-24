@@ -2,7 +2,7 @@
 
 	File Manager Class
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -33,6 +33,10 @@
 
 #ifndef __BRCRITICALSECTION_H__
 #include "brcriticalsection.h"
+#endif
+
+#ifndef __BRARRAY_H__
+#include "brarray.h"
 #endif
 
 #if defined(BURGER_MAC) && !defined(__BRMACTYPES_H__)
@@ -117,19 +121,20 @@ private:
 	void BURGER_API WaitUntilQueueHasSpace(void) BURGER_NOEXCEPT {}
 	void BURGER_API AddQueue(File* pFile, eIOCommand uIOCommand, void* pBuffer,
 		uintptr_t uLength) BURGER_NOEXCEPT;
-	void BURGER_API Sync(File* pFile);
-	static uintptr_t BURGER_API QueueHandler(void* pData);
+	void BURGER_API Sync(File* pFile) BURGER_NOEXCEPT;
+	static uintptr_t BURGER_API QueueHandler(void* pData) BURGER_NOEXCEPT;
 
-#if defined(BURGER_MSDOS) || defined(DOXYGEN)
-	void BURGER_API DetectMSDOSVersion(void) BURGER_NOEXCEPT;
-#endif
+	void BURGER_API PlatformSetup(void) BURGER_NOEXCEPT;
+	void BURGER_API PlatformShutdown(void) BURGER_NOEXCEPT;
 
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	/** Semaphore to ping the IO thread */
 	Semaphore m_PingIOThread;
 	/** Semaphore to get a reply from the IO thread for syncing */
 	Semaphore m_IOThreadSync;
 	/** Worker thread record pointer */
 	Thread m_Thread;
+#endif
 	/** Index to the queue start */
 	volatile uint32_t m_uQueueStart;
 	/** Index to the end of the queue */
@@ -154,12 +159,28 @@ private:
 	uint8_t m_uOEMFlavor;
 #endif
 
-#if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-	/** Length of the boot volume name (MACOSX or iOS only) */
+#if defined(BURGER_DARWIN) || defined(DOXYGEN)
+	/** Length of the boot volume name (Darwin only) */
 	uint_t m_uBootNameSize;
-	/** Boot volume name in the format ":FooBar" (Zero terminated) (MACOSX or
-	 * iOS only) */
+	/** Boot volume name in the format ":FooBar" (Zero terminated) (Darwin only)
+	 */
 	char* m_pBootName;
+#endif
+
+#if (defined(BURGER_UNIX) && !defined(BURGER_DARWIN)) || defined(DOXYGEN)
+	/** Pointer to the /proc pathname or nullptr is no permission exists to
+	 * access it */
+	String m_ProcPath;
+	/** Pointer to the /etc/mtab file */
+	String m_EtcMtab;
+	/** Volume prefix for paths */
+	String m_VolumePrefix;
+	/** Array of strings of file system types */
+	ClassArray<String> m_FSTypes;
+	/** Array of strings from fstab */
+	ClassArray<String> m_FSTabs;
+	/** Array of string of mounted volume paths */
+	ClassArray<String> m_VolumePaths;
 #endif
 
 	/** Global instance of the file manager */
@@ -175,7 +196,8 @@ public:
 	static uint_t BURGER_API MSDos_GetOSTrueVersion(void) BURGER_NOEXCEPT;
 	static const char* BURGER_API MSDOS_GetName(void) BURGER_NOEXCEPT;
 	static uint_t BURGER_API MSDos_GetFlavor(void) BURGER_NOEXCEPT;
-	static eError BURGER_API MSDos_Expand8_3Filename(String* pInput) BURGER_NOEXCEPT;
+	static eError BURGER_API MSDos_Expand8_3Filename(
+		String* pInput) BURGER_NOEXCEPT;
 	static eError BURGER_API MSDos_ConvertTo8_3Filename(
 		String* pInput) BURGER_NOEXCEPT;
 #endif
@@ -189,6 +211,7 @@ public:
 		return TRUE;
 #endif
 	}
+
 	static eError BURGER_API GetVolumeName(
 		Filename* pOutput, uint_t uVolumeNum) BURGER_NOEXCEPT;
 	static uint_t BURGER_API GetVolumeNumber(
@@ -277,9 +300,26 @@ public:
 		const char* pFileName, char uPermission);
 	static uint_t BURGER_API CreateResourceFIle(const char* pFileName);
 #endif
+#if (defined(BURGER_UNIX) && !defined(BURGER_DARWIN)) || defined(DOXYGEN)
+	static const char* BURGER_API UnixFindProcFolder(void) BURGER_NOEXCEPT;
+	static void BURGER_API UnixFind_etc_mtab(
+		String& rOutput, const char* pProcPath) BURGER_NOEXCEPT;
+	static void BURGER_API UnixParseFSTypes(
+		ClassArray<String>& rFSTypes, const char* pProcPath) BURGER_NOEXCEPT;
+	static void BURGER_API UnixParseFStab(
+		ClassArray<String>& rFSTabs) BURGER_NOEXCEPT;
+	static void BURGER_API UnixParseMTab(ClassArray<String>& rVolumePaths,
+		const char* pEtcMtab,
+		const ClassArray<String>& rFSTypes) BURGER_NOEXCEPT;
+#endif
+#if defined(BURGER_UNIX) || defined(DOXYGEN)
+	static void BURGER_API UnixFindVolumesFolder(String& rOutput);
+#endif
 };
 
 class FileManagerSimple {
+	BURGER_DISABLE_COPY(FileManagerSimple);
+
 public:
 	FileManagerSimple() BURGER_NOEXCEPT
 	{

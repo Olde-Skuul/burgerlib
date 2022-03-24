@@ -1327,7 +1327,7 @@ void BURGER_API Burger::Matrix3D_t::TransposeSetFromQuaternion(const Vector4D_t 
 
 ***************************************/
 
-void BURGER_API Burger::Matrix3D_t::SetScale(float fX,float fY,float fZ)
+void BURGER_API Burger::Matrix3D_t::SetScale(float fX,float fY,float fZ) BURGER_NOEXCEPT
 {
 	x.x = fX;
 	x.y = 0.0f;
@@ -1907,7 +1907,7 @@ void BURGER_API Burger::Matrix3D_t::Multiply(const Matrix3D_t *pInput)
 
 ***************************************/
 
-void BURGER_API Burger::Matrix3D_t::Multiply(const Matrix3D_t *pInput1,const Matrix3D_t *pInput2)
+void BURGER_API Burger::Matrix3D_t::Multiply(const Matrix3D_t *pInput1,const Matrix3D_t *pInput2) BURGER_NOEXCEPT
 {
 	x.x=(pInput1->x.x*pInput2->x.x)+(pInput1->y.x*pInput2->x.y)+(pInput1->z.x*pInput2->x.z);
 	x.y=(pInput1->x.y*pInput2->x.x)+(pInput1->y.y*pInput2->x.y)+(pInput1->z.y*pInput2->x.z);
@@ -1929,7 +1929,7 @@ void BURGER_API Burger::Matrix3D_t::Multiply(const Matrix3D_t *pInput1,const Mat
 
 // Floating point will rot your brain on the Pentium
 
-BURGER_DECLSPECNAKED void BURGER_API Burger::Matrix3D_t::Multiply(const Matrix3D_t *pInput1,const Matrix3D_t *pInput2)
+BURGER_DECLSPECNAKED void BURGER_API Burger::Matrix3D_t::Multiply(const Matrix3D_t *pInput1,const Matrix3D_t *pInput2) BURGER_NOEXCEPT
 {
 	BURGER_ASM {
 
@@ -2271,7 +2271,7 @@ void BURGER_API Burger::Matrix3D_t::Multiply(float fScaleX,float fScaleY,float f
 
 ***************************************/
 
-void BURGER_API Burger::Matrix3D_t::Multiply(const Matrix3D_t *pInput,float fScaleX,float fScaleY,float fScaleZ)
+void BURGER_API Burger::Matrix3D_t::Multiply(const Matrix3D_t *pInput,float fScaleX,float fScaleY,float fScaleZ) BURGER_NOEXCEPT
 {
 	x.x = pInput->x.x * fScaleX;
 	x.y = pInput->x.y * fScaleX;
@@ -2371,7 +2371,7 @@ void BURGER_API Burger::Matrix3D_t::TransposeMultiply(float fScaleX,float fScale
 
 ***************************************/
 
-void BURGER_API Burger::Matrix3D_t::TransposeMultiply(const Matrix3D_t *pInput,float fScaleX,float fScaleY,float fScaleZ)
+void BURGER_API Burger::Matrix3D_t::TransposeMultiply(const Matrix3D_t *pInput,float fScaleX,float fScaleY,float fScaleZ) BURGER_NOEXCEPT
 {
 	x.x = pInput->x.x * fScaleX;
 	x.y = pInput->x.y * fScaleY;

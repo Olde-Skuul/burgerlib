@@ -2,7 +2,7 @@
 
 	Unit tests for the Floating Point Math library
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -19,6 +19,6 @@
 #include "brtypes.h"
 #endif
 
-extern int BURGER_API TestBrfloatingpoint(uint_t uVerbose);
+extern int BURGER_API TestBrfloatingpoint(uint_t uVerbose) BURGER_NOEXCEPT;
 
 #endif

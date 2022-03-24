@@ -1104,7 +1104,7 @@ Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,
 	  m_pApplicationDelegate(nullptr),
 	  m_pWindow(nullptr),
 	  m_pListener(nullptr),
-	  m_bCenterWindow(nullptr)
+	  m_bCenterWindow(FALSE)
 {
 	InitDefaults();
 	//

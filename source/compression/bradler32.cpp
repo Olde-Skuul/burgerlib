@@ -1,21 +1,21 @@
 /***************************************
 
-    Adler32 hash manager
+	Adler32 hash manager
 
-    Implemented following the documentation found in
-    http://en.wikipedia.org/wiki/Adler-32
-    and http://tools.ietf.org/html/rfc1950
+	Implemented following the documentation found in
+	http://en.wikipedia.org/wiki/Adler-32
+	and http://tools.ietf.org/html/rfc1950
 
-    This is based on the algorithm provided from Mark Adler
-    in the zlib source archive.
+	This is based on the algorithm provided from Mark Adler
+	in the zlib source archive.
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -26,8 +26,12 @@
 // will not be the same as found in deflate/inflate gzip
 // archives. This is a bad thing.
 
-#define LARGESTPRIME 65521U // The largest prime smaller than 65536
-#define LARGESTBLOCK 5552U	// This is the largest n such that 255n(n+1)/2 + (n+1)(BASE-1) <= 2^32-1
+// The largest prime smaller than 65536
+#define LARGESTPRIME 65521U
+
+// This is the largest n such that 255n(n+1)/2 + (n+1)(BASE-1) <= 2^32-1
+#define LARGESTBLOCK 5552U
+
 #endif
 
 /*! ************************************
@@ -38,46 +42,63 @@
 	http://en.wikipedia.org/wiki/Adler-32
 	and http://tools.ietf.org/html/rfc1950
 
-	The lower 16 bits is a simple additive checksum with
-	a starting value of 1.
+	The lower 16 bits is a simple additive checksum with a starting value of 1.
 
-	The upper 16 bits is a factorial additive checksum based on the
-	additive checksum with a starting value of 0
+	The upper 16 bits is a factorial additive checksum based on the additive
+	checksum with a starting value of 0
 
 	\param pInput Pointer to a buffer to be checksummed
 	\param uInputLength Number of bytes in the buffer to be checksummed
-	\param uAdler32 Alder-32 from previous calculations or one if a new checksum is desired
+	\param uAdler32 Alder-32 from previous calculations or one if a new checksum
+		is desired
 
 	\return 32 bit Alder-32 checksum of the data
 
-	\sa CalcCRC32B(const void *,uintptr_t,uint32_t) or CalcAdler16(const void *,uintptr_t,uint32_t)
+	\sa CalcCRC32B(const void *, uintptr_t, uint32_t) or CalcAdler16(
+		const void *, uintptr_t, uint32_t)
 
 ***************************************/
 
-uint32_t BURGER_API Burger::CalcAdler32(const void *pInput,uintptr_t uInputLength,uint32_t uAdler32)
+uint32_t BURGER_API Burger::CalcAdler32(const void* pInput,
+	uintptr_t uInputLength, uint32_t uAdler32) BURGER_NOEXCEPT
 {
 	// Any data to process?
 	if (pInput && uInputLength) {
-		uint32_t uAdditive = static_cast<uint16_t>(uAdler32);	// Get the additive checksum
-		uAdler32 = static_cast<uint16_t>(uAdler32>>16U);	 	// Get the factorial checksum
+
+		// Get the additive checksum
+		uint32_t uAdditive = static_cast<uint16_t>(uAdler32);
+		// Get the factorial checksum
+		uAdler32 = static_cast<uint16_t>(uAdler32 >> 16U);
+
 		do {
-			uint_t uCount = LARGESTBLOCK;						// Assume maximum
-			if (uInputLength<LARGESTBLOCK) {				// Not enough
-				uCount = static_cast<uint_t>(uInputLength);	// Use the length
+			// Assume maximum
+			uint_t uCount = LARGESTBLOCK;
+
+			// Not enough
+			if (uInputLength < LARGESTBLOCK) {
+				// Use the length
+				uCount = static_cast<uint_t>(uInputLength);
 			}
+
 			// Remove the length
 			uInputLength -= uCount;
 			do {
 				// Add to the additive checksum
-				uAdditive += static_cast<const uint8_t *>(pInput)[0];
-				pInput = static_cast<const uint8_t *>(pInput)+1;
+				uAdditive += static_cast<const uint8_t*>(pInput)[0];
+				pInput = static_cast<const uint8_t*>(pInput) + 1;
 				// Add the checksum to the factorial
 				uAdler32 += uAdditive;
 			} while (--uCount);
-			uAdditive %= LARGESTPRIME;	// Force to fit in a short
-			uAdler32 %= LARGESTPRIME;	// Force to fit in a short
-		} while (uInputLength);			// All done?
-		uAdler32 = (uAdler32<<16U)+uAdditive;	// Blend
+
+			// Force to fit in a short
+			uAdditive %= LARGESTPRIME;
+			uAdler32 %= LARGESTPRIME;
+
+			// All done?
+		} while (uInputLength);
+
+		// Blend
+		uAdler32 = (uAdler32 << 16U) + uAdditive;
 	}
 	// Return the result
 	return uAdler32;

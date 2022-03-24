@@ -698,7 +698,7 @@ void BURGER_API Burger::FileINI::Entry::SetString(const char *pValue)
 		m_Value += '"';
 	} else {
 		// End now
-		m_Value.Clear();
+		m_Value.clear();
 	}
 }
 

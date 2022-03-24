@@ -2,7 +2,7 @@
 
 	File Manager Class: iOS version
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -15,20 +15,22 @@
 #include "brfilemanager.h"
 
 #if defined(BURGER_IOS) || defined(DOXYGEN)
+#include "brerror.h"
 #include "brfile.h"
-#include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include "brstring.h"
-#include <stdlib.h>
-#include <fcntl.h>
-#include <sys/attr.h>
-#include <sys/stat.h>
-#include <sys/errno.h>
-#include <unistd.h>
-#include <mach-o/dyld.h>
-#include <Foundation/NSString.h>
-#include <Foundation/NSFileManager.h>
-#include <Foundation/NSAutoreleasePool.h>
+#include "brstringfunctions.h"
 #include <CoreFoundation/CFString.h>
+#include <Foundation/NSAutoreleasePool.h>
+#include <Foundation/NSFileManager.h>
+#include <Foundation/NSString.h>
+#include <fcntl.h>
+#include <mach-o/dyld.h>
+#include <stdlib.h>
+#include <sys/attr.h>
+#include <sys/errno.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #undef Free
 
 #if !defined(DOXYGEN)
@@ -36,14 +38,26 @@
 // vnode is missing, so include the values directly
 //
 // #include <sys/vnode.h>
-enum vtype { VNON, VREG, VDIR, VBLK, VCHR, VLNK, VSOCK, VFIFO, VBAD, VSTR, VCPLX };
+enum vtype {
+	VNON,
+	VREG,
+	VDIR,
+	VBLK,
+	VCHR,
+	VLNK,
+	VSOCK,
+	VFIFO,
+	VBAD,
+	VSTR,
+	VCPLX
+};
 
 //
 // crt_externs.h is missing, so include the values directly
 //
 
-extern "C" char ***_NSGetArgv();
-extern "C" int *_NSGetArgc();
+extern "C" char*** _NSGetArgv();
+extern "C" int* _NSGetArgc();
 #endif
 
 /***************************************
@@ -69,15 +83,16 @@ extern "C" int *_NSGetArgc();
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *pOutput,uint_t uVolumeNum) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
+	Burger::Filename* pOutput, uint_t uVolumeNum) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorInvalidParameter;
-	
+
 	// If running in the emulator, it's really running on top of the MacOSX
 	// file system, so perform the MacOSX handler to obtain volume names
-	
-	int fp = open("/Volumes",O_RDONLY,0);
-	if (fp!=-1) {
+
+	int fp = open("/Volumes", O_RDONLY, 0);
+	if (fp != -1) {
 		int eError;
 		uint_t bScore = FALSE;
 		uint_t bFoundRoot = FALSE;
@@ -85,10 +100,10 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *p
 		do {
 			// Structure declaration of data coming from getdirentriesattr()
 			struct FInfoAttrBuf {
-				u_int32_t length;				// Length of this data structure
-				attrreference_t name;		// Offset for the filename
-				fsobj_type_t objType;		// VREG for file, VREG for directory
-				char m_Name[256*4];
+				u_int32_t length;     // Length of this data structure
+				attrreference_t name; // Offset for the filename
+				fsobj_type_t objType; // VREG for file, VREG for directory
+				char m_Name[256 * 4];
 			};
 
 			// Attributes requested
@@ -97,53 +112,59 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *p
 			FInfoAttrBuf Entry;
 
 			// Initialize the attributes list
-			MemoryClear(&AttributesList,sizeof(AttributesList));
+			MemoryClear(&AttributesList, sizeof(AttributesList));
 			// "sizeof" for the structure
 			AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;
-			// Let's get the name, type of file, creation time, modification time, finder information and hidden/locked flags
+			// Let's get the name, type of file, creation time, modification
+			// time, finder information and hidden/locked flags
 
 			// Note: If these flags are changed, the FInfoAttrBuf MUST be
 			// adjusted to reflect the request or weird stuff will happen
 			AttributesList.commonattr = ATTR_CMN_NAME | ATTR_CMN_OBJTYPE;
-		
-		// For some dumb reason, SDK 10.5 insists this is declared unsigned int on 64 bit CPUs
+
+			// For some dumb reason, SDK 10.5 insists this is declared unsigned
+			// int on 64 bit CPUs
 #if defined(BURGER_64BITCPU)
 			unsigned int uCount = 1;
 			unsigned int uJunkBase;
 			unsigned int uNewState;
 #else
-			unsigned long uCount = 1;			// Load only a single directory entry
+			unsigned long uCount = 1; // Load only a single directory entry
 			unsigned long uJunkBase;
 			unsigned long uNewState;
 #endif
 
 			// Get the directory entry
-			eError = getdirentriesattr(fp,&AttributesList,&Entry,sizeof(Entry),&uCount,&uJunkBase,&uNewState,0);
+			eError = getdirentriesattr(fp, &AttributesList, &Entry,
+				sizeof(Entry), &uCount, &uJunkBase, &uNewState, 0);
 
 			// No errors and an entry was returned?
-			// Note: eError is 0 if more data is pending, 1 if this is the last entry.
-			// uCount is zero when no entry is loaded
+			// Note: eError is 0 if more data is pending, 1 if this is the last
+			// entry. uCount is zero when no entry is loaded
 
-			if (eError>=0 && uCount) {
+			if (eError >= 0 && uCount) {
 
 				// Get the pointer to the volume name
-				char *pName = (reinterpret_cast<char *>(&Entry.name)+Entry.name.attr_dataoffset);
+				char* pName = (reinterpret_cast<char*>(&Entry.name) +
+					Entry.name.attr_dataoffset);
 
 				// Special case for the root volume, it's a special link
-				if (!bFoundRoot && Entry.objType==VLNK) {
+				if (!bFoundRoot && Entry.objType == VLNK) {
 
-					// Read in the link to see if it's pointing to the home folder
+					// Read in the link to see if it's pointing to the home
+					// folder
 
 					char LinkBuffer[128];
-					String Linkname("/Volumes/",pName);
-					ssize_t uLinkDataSize = readlink(Linkname.GetPtr(),LinkBuffer,sizeof(LinkBuffer));
-					if (uLinkDataSize==1 && LinkBuffer[0]=='/') {
+					String Linkname("/Volumes/", pName);
+					ssize_t uLinkDataSize = readlink(
+						Linkname.GetPtr(), LinkBuffer, sizeof(LinkBuffer));
+					if (uLinkDataSize == 1 && LinkBuffer[0] == '/') {
 
 						// This is the boot volume
 						bFoundRoot = TRUE;
 						// Is the user looking for the boot volume?
 						if (!uVolumeNum) {
-							bScore=TRUE;
+							bScore = TRUE;
 						}
 					} else {
 						// Pretend it's a normal mounted volume
@@ -151,9 +172,9 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *p
 					}
 				}
 				// Normal volume (Enumate them)
-				if (Entry.objType==VDIR) {
-					if (uVolumeNum==uEntry) {
-						bScore=TRUE;
+				if (Entry.objType == VDIR) {
+					if (uVolumeNum == uEntry) {
+						bScore = TRUE;
 					}
 					++uEntry;
 				}
@@ -165,7 +186,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *p
 					pName[0] = ':';
 					uintptr_t uIndex = StringLength(pName);
 					pName[uIndex] = ':';
-					pName[uIndex+1] = 0;
+					pName[uIndex + 1] = 0;
 					// Set the filename
 					pOutput->Set(pName);
 					// Exit okay!
@@ -173,19 +194,19 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(Burger::Filename *p
 					break;
 				}
 			}
-		} while (eError==0);
+		} while (eError == 0);
 		// Close the directory
 		close(fp);
-		
-	// Assume this is running on a mobile device.
-	// Fake a single volume named :iOSDevice:
-		
+
+		// Assume this is running on a mobile device.
+		// Fake a single volume named :iOSDevice:
+
 	} else if (!uVolumeNum) {
 		pOutput->Set(":iOSDevice:");
 		uResult = kErrorNone;
 	}
 	// Clear on error
-	if (uResult!=kErrorNone) {
+	if (uResult != kErrorNone) {
 		// Kill the string since I have an error
 		pOutput->Clear();
 	}
@@ -211,27 +232,29 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	eError uResult = MyFilename.SetSystemWorkingDirectory();
 	SetPrefix(kPrefixCurrent, &MyFilename);
 
-	uResult = GetVolumeName(&MyFilename,0);		// Get the boot volume name
-	if (uResult==kErrorNone) {
+	uResult = GetVolumeName(&MyFilename, 0); // Get the boot volume name
+	if (uResult == kErrorNone) {
 		// Set the initial prefix
-		const char *pBootName = MyFilename.GetPtr();
-		SetPrefix(kPrefixBoot,pBootName);
+		const char* pBootName = MyFilename.GetPtr();
+		SetPrefix(kPrefixBoot, pBootName);
 		Free(g_pFileManager->m_pBootName);
 		uintptr_t uMax = StringLength(pBootName);
 		g_pFileManager->m_uBootNameSize = static_cast<uint_t>(uMax);
 		g_pFileManager->m_pBootName = StringDuplicate(pBootName);
 	}
-	
+
 	//
 	// iOS has no "Current directory", so pull the directory the
 	// *.app file resides in
 	//
-	
+
 	char NameBuffer[2048];
-	if (CFStringGetCString(reinterpret_cast<CFStringRef>(NSHomeDirectory()),NameBuffer,sizeof(NameBuffer),kCFStringEncodingUTF8)) {
+	if (CFStringGetCString(reinterpret_cast<CFStringRef>(NSHomeDirectory()),
+			NameBuffer, sizeof(NameBuffer), kCFStringEncodingUTF8)) {
 		if (NameBuffer[0]) {
 			MyFilename.SetFromNative(NameBuffer);
-			SetPrefix(kPrefixCurrent,MyFilename.GetPtr());		// Set the standard work prefix
+			SetPrefix(kPrefixCurrent,
+				MyFilename.GetPtr()); // Set the standard work prefix
 		}
 	}
 
@@ -239,27 +262,33 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	// The parameters have the app filename. Pop the name
 	// and the directory where all the data resides is determined
 	//
-	
+
 	// Get the location of the application binary
 	uint32_t uSize = sizeof(NameBuffer);
-	int iTest = _NSGetExecutablePath(NameBuffer,&uSize);
+	int iTest = _NSGetExecutablePath(NameBuffer, &uSize);
 	if (!iTest) {
 		MyFilename.SetFromNative(NameBuffer);
 		MyFilename.DirName();
-		SetPrefix(kPrefixApplication,MyFilename.GetPtr());		// Set the standard work prefix
+		SetPrefix(kPrefixApplication,
+			MyFilename.GetPtr()); // Set the standard work prefix
 	}
 
 	//
 	// Get the directory where the preferences should be stored
 	//
-	
-	CFArrayRef pArray = reinterpret_cast<CFArrayRef>(NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,NSUserDomainMask,YES));
-	if (CFArrayGetCount(pArray)>=1) {
-		CFStringRef pString = static_cast<CFStringRef>(CFArrayGetValueAtIndex(pArray,0));
-		if (CFStringGetCString(pString,NameBuffer,sizeof(NameBuffer),kCFStringEncodingUTF8)) {
+
+	CFArrayRef pArray =
+		reinterpret_cast<CFArrayRef>(NSSearchPathForDirectoriesInDomains(
+			NSApplicationSupportDirectory, NSUserDomainMask, YES));
+	if (CFArrayGetCount(pArray) >= 1) {
+		CFStringRef pString =
+			static_cast<CFStringRef>(CFArrayGetValueAtIndex(pArray, 0));
+		if (CFStringGetCString(pString, NameBuffer, sizeof(NameBuffer),
+				kCFStringEncodingUTF8)) {
 			if (NameBuffer[0]) {
 				MyFilename.SetFromNative(NameBuffer);
-				SetPrefix(kPrefixPrefs,MyFilename.GetPtr());		// Set the preferences prefix
+				SetPrefix(kPrefixPrefs,
+					MyFilename.GetPtr()); // Set the preferences prefix
 			}
 		}
 	}
@@ -267,16 +296,20 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	//
 	// Get the /System folder
 	//
-	
-	pArray = reinterpret_cast<CFArrayRef>(NSSearchPathForDirectoriesInDomains(NSCoreServiceDirectory,NSSystemDomainMask,YES));
-	if (CFArrayGetCount(pArray)>=1) {
-		CFStringRef pString = static_cast<CFStringRef>(CFArrayGetValueAtIndex(pArray,0));
-		if (CFStringGetCString(pString,NameBuffer,sizeof(NameBuffer),kCFStringEncodingUTF8)) {
+
+	pArray = reinterpret_cast<CFArrayRef>(NSSearchPathForDirectoriesInDomains(
+		NSCoreServiceDirectory, NSSystemDomainMask, YES));
+	if (CFArrayGetCount(pArray) >= 1) {
+		CFStringRef pString =
+			static_cast<CFStringRef>(CFArrayGetValueAtIndex(pArray, 0));
+		if (CFStringGetCString(pString, NameBuffer, sizeof(NameBuffer),
+				kCFStringEncodingUTF8)) {
 			if (NameBuffer[0]) {
 				MyFilename.SetFromNative(NameBuffer);
 				MyFilename.DirName();
 				MyFilename.DirName();
-				SetPrefix(kPrefixSystem,MyFilename.GetPtr());		// Set the /System folder
+				SetPrefix(kPrefixSystem,
+					MyFilename.GetPtr()); // Set the /System folder
 			}
 		}
 	}
@@ -291,12 +324,13 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::GetModificationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
+	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
-		unsigned long length;		// Length of this data structure
-		struct timespec m_ModificationDate;		// Creation date
+		unsigned long length;               // Length of this data structure
+		struct timespec m_ModificationDate; // Creation date
 	};
 
 	// Attributes requested
@@ -305,7 +339,7 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(Burger::Filen
 	FInfoAttrBuf Entry;
 
 	// Initialize the attributes list
-	MemoryClear(&AttributesList,sizeof(AttributesList));
+	MemoryClear(&AttributesList, sizeof(AttributesList));
 	// "sizeof" for the structure
 	AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;
 
@@ -314,12 +348,13 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(Burger::Filen
 	AttributesList.commonattr = ATTR_CMN_MODTIME;
 
 	// Get the directory entry
-	int eError = getattrlist(pFileName->GetNative(),&AttributesList,&Entry,sizeof(Entry),0);
+	int eError = getattrlist(
+		pFileName->GetNative(), &AttributesList, &Entry, sizeof(Entry), 0);
 
 	// No errors?
 
-	eError uResult;
-	if (eError<0) {
+	Burger::eError uResult;
+	if (eError < 0) {
 		pOutput->Clear();
 		uResult = kErrorFileNotFound;
 	} else {
@@ -339,12 +374,13 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(Burger::Filen
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename *pFileName,Burger::TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
+	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
-		unsigned long length;		// Length of this data structure
-		struct timespec m_CreationDate;		// Creation date
+		unsigned long length;           // Length of this data structure
+		struct timespec m_CreationDate; // Creation date
 	};
 
 	// Attributes requested
@@ -353,7 +389,7 @@ Burger::eError BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename 
 	FInfoAttrBuf Entry;
 
 	// Initialize the attributes list
-	MemoryClear(&AttributesList,sizeof(AttributesList));
+	MemoryClear(&AttributesList, sizeof(AttributesList));
 	// "sizeof" for the structure
 	AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;
 
@@ -362,12 +398,13 @@ Burger::eError BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename 
 	AttributesList.commonattr = ATTR_CMN_CRTIME;
 
 	// Get the directory entry
-	int eError = getattrlist(pFileName->GetNative(),&AttributesList,&Entry,sizeof(Entry),0);
+	int eError = getattrlist(
+		pFileName->GetNative(), &AttributesList, &Entry, sizeof(Entry), 0);
 
 	// No errors?
 
-	eError uResult;
-	if (eError<0) {
+	Burger::eError uResult;
+	if (eError < 0) {
 		pOutput->Clear();
 		uResult = kErrorFileNotFound;
 	} else {
@@ -390,12 +427,13 @@ Burger::eError BURGER_API Burger::FileManager::GetCreationTime(Burger::Filename 
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DoesFileExist(Burger::Filename *pFileName)
+uint_t BURGER_API Burger::FileManager::DoesFileExist(
+	Burger::Filename* pFileName)
 {
 	uint_t uResult = FALSE;
 	struct stat MyStat;
-	int eError = stat(pFileName->GetNative(),&MyStat);
-	if (eError>=0) {
+	int eError = stat(pFileName->GetNative(), &MyStat);
+	if (eError >= 0) {
 		// If it succeeded, the file must exist
 		uResult = TRUE;
 	}
@@ -409,12 +447,13 @@ uint_t BURGER_API Burger::FileManager::DoesFileExist(Burger::Filename *pFileName
 
 ***************************************/
 
-uint32_t BURGER_API Burger::FileManager::GetFileType(Burger::Filename *pFileName)
+uint32_t BURGER_API Burger::FileManager::GetFileType(
+	Burger::Filename* pFileName)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
-		unsigned long length;		// Length of this data structure
-		char finderInfo[32];		// Aux/File type are the first 8 bytes
+		unsigned long length; // Length of this data structure
+		char finderInfo[32];  // Aux/File type are the first 8 bytes
 	};
 
 	// Attributes requested
@@ -423,7 +462,7 @@ uint32_t BURGER_API Burger::FileManager::GetFileType(Burger::Filename *pFileName
 	FInfoAttrBuf Entry;
 
 	// Initialize the attributes list
-	MemoryClear(&AttributesList,sizeof(AttributesList));
+	MemoryClear(&AttributesList, sizeof(AttributesList));
 	// "sizeof" for the structure
 	AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;
 
@@ -432,33 +471,34 @@ uint32_t BURGER_API Burger::FileManager::GetFileType(Burger::Filename *pFileName
 	AttributesList.commonattr = ATTR_CMN_FNDRINFO;
 
 	// Get the directory entry
-	int eError = getattrlist(pFileName->GetNative(),&AttributesList,&Entry,sizeof(Entry),0);
+	int eError = getattrlist(
+		pFileName->GetNative(), &AttributesList, &Entry, sizeof(Entry), 0);
 
 	// No errors?
 
 	uint_t uResult;
-	if (eError<0) {
+	if (eError < 0) {
 		uResult = 0;
 	} else {
 		// It's parsed!
-		uResult = reinterpret_cast<uint32_t *>(Entry.finderInfo)[0];
+		uResult = reinterpret_cast<uint32_t*>(Entry.finderInfo)[0];
 	}
 	return uResult;
 }
 
 /***************************************
- 
+
 	Get a file's Auxtype
 	Only valid for GSOS and MacOS
- 
+
 ***************************************/
 
-uint32_t BURGER_API Burger::FileManager::GetAuxType(Burger::Filename *pFileName)
+uint32_t BURGER_API Burger::FileManager::GetAuxType(Burger::Filename* pFileName)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
-		unsigned long length;		// Length of this data structure
-		char finderInfo[32];		// Aux/File type are the first 8 bytes
+		unsigned long length; // Length of this data structure
+		char finderInfo[32];  // Aux/File type are the first 8 bytes
 	};
 
 	// Attributes requested
@@ -467,7 +507,7 @@ uint32_t BURGER_API Burger::FileManager::GetAuxType(Burger::Filename *pFileName)
 	FInfoAttrBuf Entry;
 
 	// Initialize the attributes list
-	MemoryClear(&AttributesList,sizeof(AttributesList));
+	MemoryClear(&AttributesList, sizeof(AttributesList));
 	// "sizeof" for the structure
 	AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;
 
@@ -476,33 +516,35 @@ uint32_t BURGER_API Burger::FileManager::GetAuxType(Burger::Filename *pFileName)
 	AttributesList.commonattr = ATTR_CMN_FNDRINFO;
 
 	// Get the directory entry
-	int eError = getattrlist(pFileName->GetNative(),&AttributesList,&Entry,sizeof(Entry),0);
+	int eError = getattrlist(
+		pFileName->GetNative(), &AttributesList, &Entry, sizeof(Entry), 0);
 
 	// No errors?
 
 	uint_t uResult;
-	if (eError<0) {
+	if (eError < 0) {
 		uResult = 0;
 	} else {
 		// It's parsed!
-		uResult = reinterpret_cast<uint32_t *>(Entry.finderInfo)[1];
+		uResult = reinterpret_cast<uint32_t*>(Entry.finderInfo)[1];
 	}
 	return uResult;
 }
 
 /***************************************
- 
+
 	Get a file's Auxtype and FileType
 	Only valid for GSOS and MacOS
- 
+
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::GetFileAndAuxType(Burger::Filename *pFileName,uint32_t *pFileType,uint32_t *pAuxType)
+Burger::eError BURGER_API Burger::FileManager::GetFileAndAuxType(
+	Burger::Filename* pFileName, uint32_t* pFileType, uint32_t* pAuxType)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
-		unsigned long length;		// Length of this data structure
-		char finderInfo[32];		// Aux/File type are the first 8 bytes
+		unsigned long length; // Length of this data structure
+		char finderInfo[32];  // Aux/File type are the first 8 bytes
 	};
 
 	// Attributes requested
@@ -511,7 +553,7 @@ Burger::eError BURGER_API Burger::FileManager::GetFileAndAuxType(Burger::Filenam
 	FInfoAttrBuf Entry;
 
 	// Initialize the attributes list
-	MemoryClear(&AttributesList,sizeof(AttributesList));
+	MemoryClear(&AttributesList, sizeof(AttributesList));
 	// "sizeof" for the structure
 	AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;
 
@@ -520,22 +562,22 @@ Burger::eError BURGER_API Burger::FileManager::GetFileAndAuxType(Burger::Filenam
 	AttributesList.commonattr = ATTR_CMN_FNDRINFO;
 
 	// Get the directory entry
-	int eError = getattrlist(pFileName->GetNative(),&AttributesList,&Entry,sizeof(Entry),0);
+	int eError = getattrlist(
+		pFileName->GetNative(), &AttributesList, &Entry, sizeof(Entry), 0);
 
 	// No errors?
 
-	eError uResult;
-	if (eError<0) {
+	Burger::eError uResult;
+	if (eError < 0) {
 		uResult = kErrorFileNotFound;
 	} else {
 		// It's parsed!
-		pFileType[0] = reinterpret_cast<uint32_t *>(Entry.finderInfo)[0];
-		pAuxType[0] = reinterpret_cast<uint32_t *>(Entry.finderInfo)[1];
+		pFileType[0] = reinterpret_cast<uint32_t*>(Entry.finderInfo)[0];
+		pAuxType[0] = reinterpret_cast<uint32_t*>(Entry.finderInfo)[1];
 		uResult = kErrorNone;
 	}
 	return uResult;
 }
-
 
 /***************************************
 
@@ -544,12 +586,13 @@ Burger::eError BURGER_API Burger::FileManager::GetFileAndAuxType(Burger::Filenam
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::SetFileType(Burger::Filename *pFileName,uint32_t uFileType)
+Burger::eError BURGER_API Burger::FileManager::SetFileType(
+	Burger::Filename* pFileName, uint32_t uFileType)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
-		unsigned long length;		// Length of this data structure
-		char finderInfo[32];		// Aux/File type are the first 8 bytes
+		unsigned long length; // Length of this data structure
+		char finderInfo[32];  // Aux/File type are the first 8 bytes
 	};
 
 	// Attributes requested
@@ -558,7 +601,7 @@ Burger::eError BURGER_API Burger::FileManager::SetFileType(Burger::Filename *pFi
 	FInfoAttrBuf Entry;
 
 	// Initialize the attributes list
-	MemoryClear(&AttributesList,sizeof(AttributesList));
+	MemoryClear(&AttributesList, sizeof(AttributesList));
 	// "sizeof" for the structure
 	AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;
 
@@ -567,21 +610,23 @@ Burger::eError BURGER_API Burger::FileManager::SetFileType(Burger::Filename *pFi
 	AttributesList.commonattr = ATTR_CMN_FNDRINFO;
 
 	// Get the directory entry
-	int eError = getattrlist(pFileName->GetNative(),&AttributesList,&Entry,sizeof(Entry),0);
+	int eError = getattrlist(
+		pFileName->GetNative(), &AttributesList, &Entry, sizeof(Entry), 0);
 
 	// No errors?
 
-	eError uResult;
-	if (eError<0) {
+	Burger::eError uResult;
+	if (eError < 0) {
 		uResult = kErrorFileNotFound;
 	} else {
 		// It's parsed!
-		reinterpret_cast<uint32_t *>(Entry.finderInfo)[0] = uFileType;
-		eError = setattrlist(pFileName->GetNative(),&AttributesList,&Entry.finderInfo,sizeof(Entry.finderInfo),0);
-		if (eError<0) {
+		reinterpret_cast<uint32_t*>(Entry.finderInfo)[0] = uFileType;
+		eError = setattrlist(pFileName->GetNative(), &AttributesList,
+			&Entry.finderInfo, sizeof(Entry.finderInfo), 0);
+		if (eError < 0) {
 			uResult = kErrorIO;
 		} else {
-			uResult = kErrorNone
+			uResult = kErrorNone;
 		}
 	}
 	return uResult;
@@ -594,12 +639,13 @@ Burger::eError BURGER_API Burger::FileManager::SetFileType(Burger::Filename *pFi
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::SetAuxType(Burger::Filename *pFileName,uint32_t uAuxType)
+Burger::eError BURGER_API Burger::FileManager::SetAuxType(
+	Burger::Filename* pFileName, uint32_t uAuxType)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
-		unsigned long length;		// Length of this data structure
-		char finderInfo[32];		// Aux/File type are the first 8 bytes
+		unsigned long length; // Length of this data structure
+		char finderInfo[32];  // Aux/File type are the first 8 bytes
 	};
 
 	// Attributes requested
@@ -608,7 +654,7 @@ Burger::eError BURGER_API Burger::FileManager::SetAuxType(Burger::Filename *pFil
 	FInfoAttrBuf Entry;
 
 	// Initialize the attributes list
-	MemoryClear(&AttributesList,sizeof(AttributesList));
+	MemoryClear(&AttributesList, sizeof(AttributesList));
 	// "sizeof" for the structure
 	AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;
 
@@ -617,18 +663,20 @@ Burger::eError BURGER_API Burger::FileManager::SetAuxType(Burger::Filename *pFil
 	AttributesList.commonattr = ATTR_CMN_FNDRINFO;
 
 	// Get the directory entry
-	int eError = getattrlist(pFileName->GetNative(),&AttributesList,&Entry,sizeof(Entry),0);
+	int eError = getattrlist(
+		pFileName->GetNative(), &AttributesList, &Entry, sizeof(Entry), 0);
 
 	// No errors?
 
-	eError uResult;
-	if (eError<0) {
+	Burger::eError uResult;
+	if (eError < 0) {
 		uResult = kErrorFileNotFound;
 	} else {
 		// It's parsed!
-		reinterpret_cast<uint32_t *>(Entry.finderInfo)[1] = uAuxType;
-		eError = setattrlist(pFileName->GetNative(),&AttributesList,&Entry.finderInfo,sizeof(Entry.finderInfo),0);
-		if (eError<0) {
+		reinterpret_cast<uint32_t*>(Entry.finderInfo)[1] = uAuxType;
+		eError = setattrlist(pFileName->GetNative(), &AttributesList,
+			&Entry.finderInfo, sizeof(Entry.finderInfo), 0);
+		if (eError < 0) {
 			uResult = kErrorIO;
 		} else {
 			uResult = kErrorNone;
@@ -644,12 +692,13 @@ Burger::eError BURGER_API Burger::FileManager::SetAuxType(Burger::Filename *pFil
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::SetFileAndAuxType(Burger::Filename *pFileName,uint32_t uFileType,uint32_t uAuxType)
+Burger::eError BURGER_API Burger::FileManager::SetFileAndAuxType(
+	Burger::Filename* pFileName, uint32_t uFileType, uint32_t uAuxType)
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
-		unsigned long length;		// Length of this data structure
-		char finderInfo[32];		// Aux/File type are the first 8 bytes
+		unsigned long length; // Length of this data structure
+		char finderInfo[32];  // Aux/File type are the first 8 bytes
 	};
 
 	// Attributes requested
@@ -658,7 +707,7 @@ Burger::eError BURGER_API Burger::FileManager::SetFileAndAuxType(Burger::Filenam
 	FInfoAttrBuf Entry;
 
 	// Initialize the attributes list
-	MemoryClear(&AttributesList,sizeof(AttributesList));
+	MemoryClear(&AttributesList, sizeof(AttributesList));
 	// "sizeof" for the structure
 	AttributesList.bitmapcount = ATTR_BIT_MAP_COUNT;
 
@@ -667,19 +716,21 @@ Burger::eError BURGER_API Burger::FileManager::SetFileAndAuxType(Burger::Filenam
 	AttributesList.commonattr = ATTR_CMN_FNDRINFO;
 
 	// Get the directory entry
-	int eError = getattrlist(pFileName->GetNative(),&AttributesList,&Entry,sizeof(Entry),0);
+	int eError = getattrlist(
+		pFileName->GetNative(), &AttributesList, &Entry, sizeof(Entry), 0);
 
 	// No errors?
 
-	eError uResult;
-	if (eError<0) {
+	Burger::eError uResult;
+	if (eError < 0) {
 		uResult = kErrorFileNotFound;
 	} else {
 		// It's parsed!
-		reinterpret_cast<uint32_t *>(Entry.finderInfo)[0] = uFileType;
-		reinterpret_cast<uint32_t *>(Entry.finderInfo)[1] = uAuxType;
-		eError = setattrlist(pFileName->GetNative(),&AttributesList,&Entry.finderInfo,sizeof(Entry.finderInfo),0);
-		if (eError<0) {
+		reinterpret_cast<uint32_t*>(Entry.finderInfo)[0] = uFileType;
+		reinterpret_cast<uint32_t*>(Entry.finderInfo)[1] = uAuxType;
+		eError = setattrlist(pFileName->GetNative(), &AttributesList,
+			&Entry.finderInfo, sizeof(Entry.finderInfo), 0);
+		if (eError < 0) {
 			uResult = kErrorIO;
 		} else {
 			uResult = kErrorNone;
@@ -695,18 +746,19 @@ Burger::eError BURGER_API Burger::FileManager::SetFileAndAuxType(Burger::Filenam
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filename *pFileName)
+Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
+	Burger::Filename* pFileName)
 {
 	// Assume an error condition
 	eError uResult = kErrorIO;
 	// Get the full path
-	const char *pPath = pFileName->GetNative();
+	const char* pPath = pFileName->GetNative();
 
 	// Already here?
 
 	struct stat MyStat;
-	int eError = stat(pPath,&MyStat);
-	if (eError==0) {
+	int eError = stat(pPath, &MyStat);
+	if (eError == 0) {
 		// Ensure it's a directory for sanity's sake
 		if (S_ISDIR(MyStat.st_mode)) {
 			// There already is a directory here by this name.
@@ -717,8 +769,8 @@ Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filen
 	} else {
 		// No folder here...
 		// Let's try the easy way
-		eError = mkdir(pPath,0777);
-		if (eError==0) {
+		eError = mkdir(pPath, 0777);
+		if (eError == 0) {
 			// That was easy!
 			uResult = kErrorNone;
 
@@ -733,12 +785,12 @@ Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filen
 				// create it.
 
 				// Skip the leading '/'
-				char *pWork = const_cast<char *>(pPath)+1;
+				char* pWork = const_cast<char*>(pPath) + 1;
 				// Is there a mid fragment?
-				char *pEnd = StringCharacter(pWork,'/');
+				char* pEnd = StringCharacter(pWork, '/');
 				if (pEnd) {
 
-					// Let's iterate! Assume success unless 
+					// Let's iterate! Assume success unless
 					// an error occurs in this loop.
 
 					uResult = kErrorNone;
@@ -746,23 +798,23 @@ Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filen
 						// Terminate at the fragment
 						pEnd[0] = 0;
 						// Create the directory (Maybe)
-						eError = mkdir(pPath,0777);
+						eError = mkdir(pPath, 0777);
 						// Restore the pathname
 						pEnd[0] = '/';
 						// Error and it's not because it's already present
-						if (eError!=0 && errno != EEXIST) {
+						if (eError != 0 && errno != EEXIST) {
 							// Uh, oh... Perhaps not enough permissions?
 							uResult = kErrorIO;
 							break;
 						}
 						// Skip past this fragment
-						pWork = pEnd+1;
+						pWork = pEnd + 1;
 						// Get to the next fragement
-						pEnd = StringCharacter(pWork,'/');
+						pEnd = StringCharacter(pWork, '/');
 						// All done?
 					} while (pEnd);
 				}
-			}		
+			}
 		}
 	}
 	return uResult;
@@ -775,12 +827,13 @@ Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(Burger::Filen
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(Burger::Filename *pDirName)
+Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(
+	Burger::Filename* pDirName)
 {
 	if (!chdir(pDirName->GetNative())) {
 		return kErrorNone;
 	}
-	return kErrorIO;	// Error!
+	return kErrorIO; // Error!
 }
 
 /***************************************
@@ -789,9 +842,10 @@ Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(Burger::Filenam
 
 ***************************************/
 
-FILE * BURGER_API Burger::FileManager::OpenFile(Burger::Filename *pFileName,const char *pType)
+FILE* BURGER_API Burger::FileManager::OpenFile(
+	Burger::Filename* pFileName, const char* pType)
 {
-	return fopen(pFileName->GetNative(),pType);		/* Do it the MacOSX way */
+	return fopen(pFileName->GetNative(), pType); /* Do it the MacOSX way */
 }
 
 /***************************************
@@ -800,18 +854,23 @@ FILE * BURGER_API Burger::FileManager::OpenFile(Burger::Filename *pFileName,cons
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::CopyFile(Burger::Filename *pDestName,Burger::Filename *pSourceName)
+Burger::eError BURGER_API Burger::FileManager::CopyFile(
+	Burger::Filename* pDestName, Burger::Filename* pSourceName)
 {
 	eError uResult = kErrorIO;
-	NSAutoreleasePool *pPool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool* pPool = [[NSAutoreleasePool alloc] init];
 
-	NSFileManager *pFileManager = [[NSFileManager alloc] init];
+	NSFileManager* pFileManager = [[NSFileManager alloc] init];
 	if (pFileManager) {
-		NSString *pSrcString = [NSString stringWithUTF8String:pSourceName->GetNative()];
+		NSString* pSrcString =
+			[NSString stringWithUTF8String:pSourceName->GetNative()];
 		if (pSrcString) {
-			NSString *pDestString = [NSString stringWithUTF8String:pDestName->GetNative()];
+			NSString* pDestString =
+				[NSString stringWithUTF8String:pDestName->GetNative()];
 			if (pDestString) {
-				if ([pFileManager copyItemAtPath:pSrcString toPath:pDestString error:NULL]==YES) {
+				if ([pFileManager copyItemAtPath:pSrcString
+										  toPath:pDestString
+										   error:NULL] == YES) {
 					uResult = kErrorNone;
 				}
 			}
@@ -831,12 +890,13 @@ Burger::eError BURGER_API Burger::FileManager::CopyFile(Burger::Filename *pDestN
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFileName) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::FileManager::DeleteFile(
+	Burger::Filename* pFileName) BURGER_NOEXCEPT
 {
 	if (!remove(pFileName->GetNative())) {
 		return kErrorNone;
 	}
-	return kErrorIO;		/* Oh oh... */
+	return kErrorIO; /* Oh oh... */
 }
 
 /***************************************
@@ -845,12 +905,13 @@ Burger::eError BURGER_API Burger::FileManager::DeleteFile(Burger::Filename *pFil
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::RenameFile(Burger::Filename *pNewName,Burger::Filename *pOldName)
+Burger::eError BURGER_API Burger::FileManager::RenameFile(
+	Burger::Filename* pNewName, Burger::Filename* pOldName)
 {
-	if (!rename(pOldName->GetNative(),pNewName->GetNative())) {
+	if (!rename(pOldName->GetNative(), pNewName->GetNative())) {
 		return kErrorNone;
 	}
-	return kErrorIO;		/* Oh oh... */
+	return kErrorIO; /* Oh oh... */
 }
 
 #endif

@@ -424,7 +424,7 @@ Burger::eError BURGER_API Burger::String16::SetBufferSize(uintptr_t uSize) BURGE
 	if (uSize!=m_uLength) {
 		// If no space is requested, clear the buffer
 		if (!uSize) {
-			Clear();
+			clear();
 		} else {
 			// Hold the old buffer
 			uint16_t *pWork = m_pData;
@@ -668,7 +668,7 @@ Burger::String16 & Burger::String16::operator =(char cInput)
 
 ***************************************/
 
-void Burger::String16::Clear(void) BURGER_NOEXCEPT
+void Burger::String16::clear(void) BURGER_NOEXCEPT
 {
 	uint16_t *pWork = m_pData;	// Old data pointer
 	m_pData = m_Raw;			// New pointer

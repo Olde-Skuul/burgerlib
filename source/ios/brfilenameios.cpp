@@ -17,6 +17,7 @@
 #if defined(BURGER_IOS) || defined(DOXYGEN)
 #include "brglobalmemorymanager.h"
 #include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include "brfilemanager.h"
 
 /***************************************

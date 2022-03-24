@@ -17,6 +17,7 @@
 #if defined(BURGER_IOS) || defined(DOXYGEN)
 #include "brfile.h"
 #include "brstringfunctions.h"
+#include "brmemoryfunctions.h"
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/stat.h>

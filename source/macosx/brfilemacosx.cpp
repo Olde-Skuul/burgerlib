@@ -321,7 +321,7 @@ Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t* pOutput)
 	int fp = static_cast<int>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
 		// Is fstat64 supported?
-#if _POSIX_VERSION >= 200112L
+#if _POSIX_VERSION >= 200112L && !__DARWIN_ONLY_64_BIT_INO_T
 		struct stat64 MyStat;
 		int iError = fstat64(fp, &MyStat);
 		if (iError != -1) {

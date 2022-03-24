@@ -2,7 +2,7 @@
 
 	File Manager Class: MacOS version
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -347,7 +347,7 @@ uint32_t Burger::FileManager::GetAuxType(Filename* pFileName)
 		Block.spec = NULL;
 		Block.parentRef = NULL;
 		Block.outName = NULL;
-		iError= PBGetCatalogInfoSync(&Block);
+		iError = PBGetCatalogInfoSync(&Block);
 		if (!iError) {
 			// If it succeeded, the file must exist
 			uResult =
@@ -437,7 +437,8 @@ Burger::eError Burger::FileManager::GetFileAndAuxType(
 
 ***************************************/
 
-Burger::eError Burger::FileManager::SetAuxType(Filename* pFileName, uint32_t uAuxType)
+Burger::eError Burger::FileManager::SetAuxType(
+	Filename* pFileName, uint32_t uAuxType)
 {
 	// Convert the filename to unicode
 	String16 MyName(pFileName->GetNative());
@@ -476,7 +477,8 @@ Burger::eError Burger::FileManager::SetAuxType(Filename* pFileName, uint32_t uAu
 
 ***************************************/
 
-Burger::eError Burger::FileManager::SetFileType(Filename* pFileName, uint32_t uFileType)
+Burger::eError Burger::FileManager::SetFileType(
+	Filename* pFileName, uint32_t uFileType)
 {
 	// Convert the filename to unicode
 	String16 MyName(pFileName->GetNative());
@@ -594,7 +596,8 @@ Burger::eError Burger::FileManager::CreateDirectoryPath(Filename* pFileName)
 
 ***************************************/
 
-Burger::eError Burger::FileManager::DeleteFile(Filename* pFileName) BURGER_NOEXCEPT
+Burger::eError Burger::FileManager::DeleteFile(
+	Filename* pFileName) BURGER_NOEXCEPT
 {
 	// Convert the filename to unicode
 	String16 MyName(pFileName->GetNative());
@@ -618,7 +621,8 @@ Burger::eError Burger::FileManager::DeleteFile(Filename* pFileName) BURGER_NOEXC
 
 ***************************************/
 
-Burger::eError Burger::FileManager::RenameFile(Filename* pNewName, Filename* pOldName)
+Burger::eError Burger::FileManager::RenameFile(
+	Filename* pNewName, Filename* pOldName)
 {
 	// Convert the filename to unicode
 	String16 SourceName(pOldName->GetNative());
@@ -874,8 +878,8 @@ Burger::eError BURGER_API Burger::FileManager::CopyFile(
 				if (!uResult) {
 					// uResult = TRUE;
 					FSCatalogInfo MyInfo;
-					iError = FSGetCatalogInfo(&SrcRef,
-						kFSCatInfoFinderInfo, &MyInfo, NULL, NULL, NULL);
+					iError = FSGetCatalogInfo(&SrcRef, kFSCatInfoFinderInfo,
+						&MyInfo, NULL, NULL, NULL);
 					if (!iError) {
 						iError = FSSetCatalogInfo(
 							&DestRef, kFSCatInfoFinderInfo, &MyInfo);

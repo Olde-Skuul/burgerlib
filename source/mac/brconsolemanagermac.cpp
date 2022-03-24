@@ -47,7 +47,7 @@
 
 ***************************************/
 
-Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv, uint_t uFlags):
+Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv, uint_t uFlags) BURGER_NOEXCEPT:
 	m_ANSIMemoryManager(), m_bLaunchedFromDesktop(FALSE)
 {
 	BURGER_UNUSED(uFlags);

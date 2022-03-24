@@ -13,6 +13,7 @@
 /* DIR: "audio:" */
 /* DIR: "commandline:" */
 /* DIR: "compression:" */
+/* DIR: "darwin:" */
 /* DIR: "file:" */
 /* DIR: "flashplayer:" */
 /* DIR: "graphics:" */
@@ -28,6 +29,7 @@
 /* DIR: "shield:" */
 /* DIR: "random:" */
 /* DIR: "text:" */
+/* DIR: "unix:" */
 /* DIR: "windows:" */
 /* DIR: "xbox360:" */
 /* DIR: "macosx:" */
@@ -94,6 +96,7 @@
 #include "brguid.h"
 #include "brwindowstypes.h"
 #include "brxbox360types.h"
+#include "brdarwintypes.h"
 #include "brmacosxtypes.h"
 #include "brmactypes.h"
 #include "briostypes.h"
@@ -156,6 +159,7 @@
 #include "brunpackbytes.h"
 #include "brstring.h"
 #include "brstring16.h"
+#include "brunixtypes.h"
 #include "brglobals.h"
 #include "brosstringfunctions.h"
 #include "brhashmap.h"

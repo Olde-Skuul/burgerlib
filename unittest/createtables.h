@@ -1,14 +1,14 @@
 /***************************************
 
-    Functions to create the generated source code for Burgerlib
+	Functions to create the generated source code for Burgerlib
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -19,6 +19,6 @@
 #include "brtypes.h"
 #endif
 
-extern void BURGER_API CreateTables(void);
-extern void BURGER_API WriteDataTables(void);
+extern void BURGER_API CreateTables(void) BURGER_NOEXCEPT;
+extern void BURGER_API WriteDataTables(void) BURGER_NOEXCEPT;
 #endif

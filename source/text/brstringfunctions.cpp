@@ -192,6 +192,19 @@ const char Burger::g_LFString[2] = {'\n', 0};
 
 /*! ************************************
 
+	\brief " \t\r\n"
+
+	This is used for StringToken(char *, const char *, char **) to parse tokens
+	using default white space.
+
+	\sa g_TokenDelimiters16
+
+***************************************/
+
+const char Burger::g_TokenDelimiters[5] = {' ', '\t', '\r', '\n', 0};
+
+/*! ************************************
+
 	\brief "true"
 
 	This string is hard coded to have the string "true".
@@ -302,6 +315,19 @@ const uint16_t Burger::g_CRString16[2] = {'\r', 0};
 ***************************************/
 
 const uint16_t Burger::g_LFString16[2] = {'\n', 0};
+
+/*! ************************************
+
+	\brief " \t\r\n" in UTF16
+
+	This is used for StringToken(uint16_t *, const uint16_t *, uint16_t **) to
+	parse tokens using default white space.
+
+	\sa g_TokenDelimiters
+
+***************************************/
+
+const uint16_t Burger::g_TokenDelimiters16[5] = {' ', '\t', '\r', '\n', 0};
 
 /*! ************************************
 
@@ -852,7 +878,12 @@ uint32_t BURGER_API Burger::PowerOf2(uint32_t uInput) BURGER_NOEXCEPT
 {
 	--uInput;
 	// Count leading zeros (Reverse the count)
-	uint32_t uReverseCount = 32U - __builtin_clz(uInput);
+	uint32_t uReverseCount = __builtin_clz(uInput);
+	// Arm cannot shift 32 bits, it will be treated as a nop
+	if (!uReverseCount) {
+		return uReverseCount;
+	}
+	uReverseCount = 32U - uReverseCount;
 	// Test for 0
 	uint32_t uMask = ((0 - uInput) | uInput) >> 31U;
 	// Add in 1 in case ofuReverseCount == 32
@@ -4851,7 +4882,8 @@ uint16_t* BURGER_API Burger::StringCaseString(
 	first character of the token found which is zero terminated at the delimiter
 	value.
 
-	\sa Burger::StringToken(uint16_t *,const uint16_t *, uint16_t **)
+	\sa Burger::StringToken(uint16_t *,const uint16_t *, uint16_t **),
+		\ref g_TokenDelimiters
 
 ***************************************/
 
@@ -4907,7 +4939,8 @@ char* BURGER_API Burger::StringToken(
 	first character of the token found which is zero terminated at the delimiter
 	value.
 
-	\sa Burger::StringToken(char *,const char *, char **)
+	\sa Burger::StringToken(char *,const char *, char **),
+		\ref g_TokenDelimiters16
 
 ***************************************/
 

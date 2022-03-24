@@ -1,14 +1,14 @@
 /***************************************
 
-    Unit tests for the File Manager library
+	Unit tests for the File Manager library
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -43,7 +43,7 @@ using namespace Burger;
 // Unit test for the FileXML class
 //
 
-static uint_t TestFileXML(void)
+static uint_t TestFileXML(void) BURGER_NOEXCEPT
 {
 	uint_t uResult = 0;
 #if defined(TESTXML)
@@ -102,7 +102,7 @@ static uint_t TestFileXML(void)
 // Unit test for the FileINI class
 //
 
-static uint_t TestFileINI(void)
+static uint_t TestFileINI(void) BURGER_NOEXCEPT
 {
 	uint_t uResult = 0;
 #if defined(TESTINI)
@@ -157,7 +157,7 @@ static uint_t TestFileINI(void)
 // Unit test for the FileAPF class
 //
 
-static uint_t TestFileAPF(void)
+static uint_t TestFileAPF(void) BURGER_NOEXCEPT
 {
 	uint_t uResult = 0;
 #if defined(TESTAPF)
@@ -183,7 +183,7 @@ static uint_t TestFileAPF(void)
 // Unit test for the FileGIF class
 //
 
-static uint_t TestFileGIF(void)
+static uint_t TestFileGIF(void) BURGER_NOEXCEPT
 {
 	uint_t uResult = 0;
 #if defined(TESTGIF)
@@ -208,7 +208,7 @@ static uint_t TestFileGIF(void)
 // Unit test for the FilePNG class
 //
 
-static uint_t TestFilePNG(void)
+static uint_t TestFilePNG(void) BURGER_NOEXCEPT
 {
 	uint_t uResult = 0;
 #if defined(TESTPNG)
@@ -237,7 +237,7 @@ static uint_t TestFilePNG(void)
 
 ***************************************/
 
-uint_t FileLoaderTest(uint_t /* uVerbose */)
+uint_t FileLoaderTest(uint_t /* uVerbose */) BURGER_NOEXCEPT
 {
 	uint_t uTotal = 0;
 #if defined(FULLTESTS)

@@ -1,6 +1,7 @@
 /***************************************
 
 	Operating system string functions
+	Unix version
 
 	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
@@ -14,7 +15,16 @@
 
 #include "brosstringfunctions.h"
 
-/*! ************************************
+#if defined(BURGER_UNIX) && !defined(DOXYGEN)
+#include "brstring.h"
+#include "brstring16.h"
+
+#include <limits.h>
+#include <pwd.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+/***************************************
 
 	\brief Retrieves the login name of the user associated with the current
 		thread.
@@ -35,18 +45,24 @@
 
 ***************************************/
 
-#if !( \
-	defined(BURGER_MAC) || defined(BURGER_WINDOWS) || defined(BURGER_UNIX)) || \
-	defined(DOXYGEN)
 Burger::eError BURGER_API Burger::GetUserLoginName(
 	String* pOutput) BURGER_NOEXCEPT
 {
-	pOutput->Set("User");
-	return kErrorNotSupportedOnThisPlatform;
+	eError uResult = kErrorItemNotFound;
+	// Get the user information
+	struct passwd* pPasswd = getpwuid(getuid());
+	if (pPasswd) {
+		// Set the string
+		uResult = pOutput->Set(pPasswd->pw_name);
+	}
+	if (uResult) {
+		// The name wasn't present, use the default
+		pOutput->Set("User");
+	}
+	return uResult;
 }
-#endif
 
-/*! ************************************
+/***************************************
 
 	\brief Get the real name of the current user.
 
@@ -67,18 +83,46 @@ Burger::eError BURGER_API Burger::GetUserLoginName(
 
 ***************************************/
 
-#if !( \
-	defined(BURGER_MAC) || defined(BURGER_WINDOWS) || defined(BURGER_UNIX)) || \
-	defined(DOXYGEN)
 Burger::eError BURGER_API Burger::GetUserRealName(
 	String* pOutput) BURGER_NOEXCEPT
 {
-	pOutput->Set("User");
-	return kErrorNotSupportedOnThisPlatform;
+
+	eError uResult = kErrorItemNotFound;
+	// Get the user information
+	struct passwd* pPasswd = getpwuid(getuid());
+
+	// Get the comment which would have the name
+	// Test if value or garbage
+	if (pPasswd->pw_gecos) {
+
+		// Only use the first part of a comma delimited string.
+		const char* pEnd = StringCharacter(pPasswd->pw_gecos, ',');
+		uintptr_t uLength;
+		if (pEnd) {
+			uLength = pEnd - pPasswd->pw_gecos;
+		} else {
+			// Use the entire string
+			uLength = StringLength(pPasswd->pw_gecos);
+		}
+		// Only use it if there is a string
+		if (uLength) {
+			uResult = pOutput->Set(pPasswd->pw_gecos, uLength);
+		}
+	}
+	if (uResult) {
+		// Get the user folder name
+		uResult = pOutput->Set(pPasswd->pw_name);
+		if (uResult) {
+			pOutput->Set("User");
+		}
+	}
+	return uResult;
 }
+
 #endif
 
-/*! ************************************
+
+/***************************************
 
 	\brief Get the name the user has called the computer.
 
@@ -97,20 +141,29 @@ Burger::eError BURGER_API Burger::GetUserRealName(
 	\note On MacOS 9, the machine name is found in the OS string number -16413
 		from the system resource file.
 
-	\note On Android, for security reasons, it may return ``localhost``
-
 	\sa GetUserLoginName(String *) or NetworkManager::GetHostName()
 
 ***************************************/
 
-#if !( \
-	defined(BURGER_MAC) || defined(BURGER_WINDOWS) || defined(BURGER_UNIX)) || \
-	defined(DOXYGEN)
+// Darwin handles this differently
+
+#if !defined(BURGER_DARWIN)
 Burger::eError BURGER_API Burger::GetMachineName(
 	String* pOutput) BURGER_NOEXCEPT
 {
-	pOutput->Set("Computer");
-	return kErrorNotSupportedOnThisPlatform;
+	// Assume error
+	eError uResult = kErrorItemNotFound;
+
+	char TempBuffer[HOST_NAME_MAX];
+	if (!gethostname(TempBuffer, sizeof(TempBuffer))) {
+		uResult = pOutput->Set(TempBuffer);
+	}
+	// If that didn't work, punt.
+	if (uResult) {
+		pOutput->Set("Computer");
+	}
+
+	return uResult;
 }
 
 #endif

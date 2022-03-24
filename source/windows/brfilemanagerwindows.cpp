@@ -2,7 +2,7 @@
 
 	File Manager Class: Windows version
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -252,7 +252,8 @@ static uint_t BURGER_API DirCreate(const uint16_t* pFileName)
 	return FALSE; // Success!
 }
 
-Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(Filename* pFileName)
+Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
+	Filename* pFileName)
 {
 	String16 NewName(pFileName->GetNative());
 
@@ -287,7 +288,7 @@ Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(Filename* pFi
 			++pWork;                               // Index past the char
 		} while (Old);                             // Still more string?
 		if (!Err) {                                // Cool!!
-			return kErrorNone;                          // No error
+			return kErrorNone;                     // No error
 		}
 	}
 	return kErrorIO; /* Didn't do it! */
@@ -342,7 +343,8 @@ Burger::eError BURGER_API Burger::FileManager::RenameFile(
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(Filename* pDirName)
+Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(
+	Filename* pDirName)
 {
 	String16 MyDirName(pDirName->GetNative());
 	eError uResult = kErrorIO; // Assume error
@@ -394,7 +396,8 @@ Burger::eError BURGER_API Burger::FileManager::CopyFile(
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::FileManager::QueueHandler(void* pData)
+uintptr_t BURGER_API Burger::FileManager::QueueHandler(
+	void* pData) BURGER_NOEXCEPT
 {
 	// Read,Write,Append,Read/Write
 	static const DWORD g_Access[4] = {GENERIC_READ, GENERIC_WRITE,

@@ -1,14 +1,14 @@
 /***************************************
 
-    Functions to create the generated source code for Burgerlib
+	Functions to create the generated source code for Burgerlib
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -21,24 +21,23 @@
 #include "brfilemanager.h"
 #include "brfloatingpoint.h"
 #include "brmatrix3d.h"
+#include "brmemoryfunctions.h"
 #include "brmp3.h"
 #include "brnumberstring.h"
 #include "brnumberstringhex.h"
-#include "brmemoryfunctions.h"
 #include <math.h>
-
 
 //
 // Convert a float into an entry for uint32_float_t
 //
 
 static void BURGER_API OutputAsHex(
-	Burger::OutputMemoryStream* pOutput, float fInput)
+	Burger::OutputMemoryStream* pOutput, float fInput) BURGER_NOEXCEPT
 {
 	Burger::uint32_float_t Converter;
 	Converter.f = fInput;
 	// Print the value in hex
-	Burger::NumberStringHex Hexit(Converter.w);
+	const Burger::NumberStringHex Hexit(Converter.w);
 	pOutput->Append("{0x");
 	pOutput->Append(Hexit.c_str());
 	pOutput->Append("}");
@@ -49,7 +48,7 @@ static void BURGER_API OutputAsHex(
 //
 
 static void BURGER_API OutputArrayAsHex(
-	const char* pName, const float* pInput, uintptr_t uLength)
+	const char* pName, const float* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	Message("const Burger::uint32_float_t Burger::%s[%u] = {", pName,
 		static_cast<uint_t>(uLength));
@@ -84,10 +83,10 @@ static void BURGER_API OutputArrayAsHex(
 // Convert a 2 dimensional array of floats into a string output
 //
 
-static void BURGER_API Output2DArrayAsHex(
-	const char* pName, const float* pInput, uintptr_t uLength1, uintptr_t uLength2)
+static void BURGER_API Output2DArrayAsHex(const char* pName,
+	const float* pInput, uintptr_t uLength1, uintptr_t uLength2) BURGER_NOEXCEPT
 {
-    Message("const Burger::uint32_float_t Burger::%s[%u][%u] = {", pName,
+	Message("const Burger::uint32_float_t Burger::%s[%u][%u] = {", pName,
 		static_cast<uint_t>(uLength1), static_cast<uint_t>(uLength2));
 	Message("{");
 	Burger::OutputMemoryStream Output;
@@ -126,24 +125,27 @@ static void BURGER_API Output2DArrayAsHex(
 // Convert an array of unsigned integers into a string output
 //
 
-static void BURGER_API OutputArrayAsUnsigned(
-	const char* pName, const uint32_t* pInput, uintptr_t uLength, uint_t bHex = FALSE)
+static void BURGER_API OutputArrayAsUnsigned(const char* pName,
+	const uint32_t* pInput, uintptr_t uLength,
+	uint_t bHex = FALSE) BURGER_NOEXCEPT
 {
-	Message("const uint_t Burger::%s[%u] = {", pName, static_cast<uint_t>(uLength));
+	Message(
+		"const uint_t Burger::%s[%u] = {", pName, static_cast<uint_t>(uLength));
 
 	Burger::OutputMemoryStream Output;
 	Burger::String TempString;
 
 	Output.Append('\t');
 	uint_t uCounter = 0;
-	uint_t uMask = bHex ? 7U : 15U; // Hex numbers group in 8, decimal as 16
+	const uint_t uMask =
+		bHex ? 7U : 15U; // Hex numbers group in 8, decimal as 16
 	do {
 		// Print as unsigned
 		if (!bHex) {
-			Burger::NumberString Num(pInput[0]);
-			Output.Append(Num.GetPtr());
+			const Burger::NumberString Num(pInput[0]);
+			Output.Append(Num.c_str());
 		} else {
-			Burger::NumberStringHex Num(pInput[0]);
+			const Burger::NumberStringHex Num(pInput[0]);
 			Output.Append("0x");
 			Output.Append(Num.c_str());
 		}
@@ -169,8 +171,9 @@ static void BURGER_API OutputArrayAsUnsigned(
 // Convert a 2 dimensional array of floats into a string output
 //
 
-static void BURGER_API Output2DArrayAsUnsigned(
-	const char* pName, const uint32_t* pInput, uintptr_t uLength1, uintptr_t uLength2)
+static void BURGER_API Output2DArrayAsUnsigned(const char* pName,
+	const uint32_t* pInput, uintptr_t uLength1,
+	uintptr_t uLength2) BURGER_NOEXCEPT
 {
 	Message("const uint_t Burger::%s[%u][%u] = {", pName,
 		static_cast<uint_t>(uLength1), static_cast<uint_t>(uLength2));
@@ -184,14 +187,14 @@ static void BURGER_API Output2DArrayAsUnsigned(
 		Output.Clear();
 		Output.Append('\t');
 		do {
-			Burger::NumberString Num(pInput[0]);
-			Output.Append(Num.GetPtr());
+			const Burger::NumberString Num(pInput[0]);
+			Output.Append(Num.c_str());
 			if ((uCounter & 15) == 15 || (uCounter == (uLength2 - 1))) {
 				if (uCounter != (uLength2 - 1)) {
 					Output.Append(',');
 				}
 				Output.Save(&TempString);
-				Message(TempString.GetPtr());
+				Message(TempString.c_str());
 				Output.Clear();
 				if (uCounter != (uLength2 - 1)) {
 					Output.Append('\t');
@@ -212,7 +215,8 @@ static void BURGER_API Output2DArrayAsUnsigned(
 // Negate every other entry in an array of floats
 //
 
-static void BURGER_API PhaseTable(float* pInput, uintptr_t uLength)
+static void BURGER_API PhaseTable(
+	float* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	++pInput;
 	uLength >>= 1U;
@@ -228,7 +232,7 @@ static void BURGER_API PhaseTable(float* pInput, uintptr_t uLength)
 // to binary for the Sin() and Cos() function constants
 //
 
-static void BURGER_API CreateSinConstants(void)
+static void BURGER_API CreateSinConstants(void) BURGER_NOEXCEPT
 {
 #if defined(BURGER_X86)
 	Burger::Set8087Precision(Burger::PRECISION64);
@@ -364,7 +368,7 @@ static void BURGER_API CreateSinConstants(void)
 	Message(TheString.GetPtr());
 }
 
-static void BURGER_API CreateCosConstants(void)
+static void BURGER_API CreateCosConstants(void) BURGER_NOEXCEPT
 {
 #if defined(BURGER_X86)
 	Burger::Set8087Precision(Burger::PRECISION64);
@@ -569,7 +573,7 @@ static const Factor_t FactorTableCode[9] = {
 // Return TRUE if factoring was successful
 //
 
-static uint_t BURGER_API SimpleFactor(Burger::OutputMemoryStream *pOutput,const Factor_t *pFactor,float fInput)
+static uint_t BURGER_API SimpleFactor(Burger::OutputMemoryStream *pOutput,const Factor_t *pFactor,float fInput) BURGER_NOEXCEPT
 {
 	uint_t bSuccess = 0;
 	// Factor the primes!
@@ -606,7 +610,7 @@ static uint_t BURGER_API SimpleFactor(Burger::OutputMemoryStream *pOutput,const 
 // addition in the middle
 //
 
-static uint_t BURGER_API Factor(Burger::OutputMemoryStream *pOutput,const char *pName,const Factor_t *pFactor,float fInput,float fPrevious)
+static uint_t BURGER_API Factor(Burger::OutputMemoryStream *pOutput,const char *pName,const Factor_t *pFactor,float fInput,float fPrevious) BURGER_NOEXCEPT
 {
 	uint_t bSuccess=0;
 	pOutput->Append(pName);
@@ -717,7 +721,7 @@ static const RotationTypes_t Rotations[6] = {
 	{"ZXY",{&g_Roll3D,&g_Pitch3D,&g_Yaw3D}}
 };
 
-static void BURGER_API CreateEulerRotations(void)
+static void BURGER_API CreateEulerRotations(void) BURGER_NOEXCEPT
 {
 	Burger::Matrix3D_t Result;
 	Burger::Matrix3D_t TempMatrix;
@@ -813,7 +817,7 @@ static void BURGER_API CreateEulerRotations(void)
 
 ***************************************/
 
-static void BURGER_API CreateSqrtGuesses(void)
+static void BURGER_API CreateSqrtGuesses(void) BURGER_NOEXCEPT
 {
 	Message("static const Burger::uint32_float_t g_PPCSqrtGuess[2][256][2] = {{");
 
@@ -976,7 +980,7 @@ static const double g_dSynthWindow[257] = {0.000000000, -0.000015259,
 	1.089782715, 1.101211548, 1.111373901, 1.120223999, 1.127746582,
 	1.133926392, 1.138763428, 1.142211914, 1.144287109, 1.144989014};
 
-static void BURGER_API CreateMP3Tables(void)
+static void BURGER_API CreateMP3Tables(void) BURGER_NOEXCEPT
 {
 	Burger::OutputMemoryStream Output;
 	Burger::String TempString;
@@ -990,9 +994,10 @@ static void BURGER_API CreateMP3Tables(void)
 	uint_t uCounter = 0;
 	do {
 		uint_t uEntries = 16U >> uCounter;
-		uint_t uDivisor = 64U >> uCounter;
+		const uint_t uDivisor = 64U >> uCounter;
 
-		double dDivisor = 1.0 / static_cast<double>(static_cast<int>(uDivisor));
+		const double dDivisor =
+			1.0 / static_cast<double>(static_cast<int>(uDivisor));
 		double dStep = 1.0;
 		pWork = TempFloats;
 		do {
@@ -1214,8 +1219,9 @@ static void BURGER_API CreateMP3Tables(void)
 	uCounter = 36;
 	dStepPow = 1.0;
 	do {
-		pWork[0] = static_cast<float>((0.5 * sin((BURGER_PI / 72.0) * dStepPow))
-			/ cos((BURGER_PI * (dStepPow + 18.0)) / 72.0));
+		pWork[0] =
+			static_cast<float>((0.5 * sin((BURGER_PI / 72.0) * dStepPow)) /
+				cos((BURGER_PI * (dStepPow + 18.0)) / 72.0));
 		++pWork;
 		dStepPow = dStepPow + 2.0;
 	} while (--uCounter);
@@ -1229,8 +1235,9 @@ static void BURGER_API CreateMP3Tables(void)
 	uCounter = 18;
 	dStepPow = 1.0;
 	do {
-		pWork[0] = static_cast<float>((0.5 * sin((BURGER_PI / 72.0) * dStepPow))
-			/ cos((BURGER_PI * (dStepPow + 18.0)) / 72.0));
+		pWork[0] =
+			static_cast<float>((0.5 * sin((BURGER_PI / 72.0) * dStepPow)) /
+				cos((BURGER_PI * (dStepPow + 18.0)) / 72.0));
 		++pWork;
 		dStepPow = dStepPow + 2.0;
 	} while (--uCounter);
@@ -1246,8 +1253,9 @@ static void BURGER_API CreateMP3Tables(void)
 	uCounter = 6;
 	dStepPow = 13.0;
 	do {
-		pWork[0] = static_cast<float>((0.5 * sin((BURGER_PI / 24.0) * dStepPow))
-			/ cos((BURGER_PI * (dStepPow + 54.0)) / 72.0));
+		pWork[0] =
+			static_cast<float>((0.5 * sin((BURGER_PI / 24.0) * dStepPow)) /
+				cos((BURGER_PI * (dStepPow + 54.0)) / 72.0));
 		++pWork;
 		dStepPow = dStepPow + 2.0;
 	} while (--uCounter);
@@ -1266,8 +1274,9 @@ static void BURGER_API CreateMP3Tables(void)
 	uCounter = 12;
 	dStepPow = 1.0;
 	do {
-		pWork[0] = static_cast<float>((0.5 * sin((BURGER_PI / 24.0) * dStepPow))
-			/ cos((BURGER_PI * (dStepPow + 6.0)) / 24.0));
+		pWork[0] =
+			static_cast<float>((0.5 * sin((BURGER_PI / 24.0) * dStepPow)) /
+				cos((BURGER_PI * (dStepPow + 6.0)) / 24.0));
 		++pWork;
 		dStepPow = dStepPow + 2.0;
 	} while (--uCounter);
@@ -1287,8 +1296,9 @@ static void BURGER_API CreateMP3Tables(void)
 	uCounter = 6;
 	dStepPow = 1.0;
 	do {
-		pWork[0] = static_cast<float>((0.5 * sin((BURGER_PI / 24.0) * dStepPow))
-			/ cos((BURGER_PI * (dStepPow + 30.0)) / 72.0));
+		pWork[0] =
+			static_cast<float>((0.5 * sin((BURGER_PI / 24.0) * dStepPow)) /
+				cos((BURGER_PI * (dStepPow + 30.0)) / 72.0));
 		++pWork;
 		dStepPow = dStepPow + 2.0;
 	} while (--uCounter);
@@ -1304,8 +1314,9 @@ static void BURGER_API CreateMP3Tables(void)
 	uCounter = 18;
 	dStepPow = 37.0;
 	do {
-		pWork[0] = static_cast<float>((0.5 * sin((BURGER_PI / 72.0) * dStepPow))
-			/ cos((BURGER_PI * (dStepPow + 18)) / 72.0));
+		pWork[0] =
+			static_cast<float>((0.5 * sin((BURGER_PI / 72.0) * dStepPow)) /
+				cos((BURGER_PI * (dStepPow + 18)) / 72.0));
 		++pWork;
 		dStepPow = dStepPow + 2.0;
 	} while (--uCounter);
@@ -1414,8 +1425,8 @@ static void BURGER_API CreateMP3Tables(void)
 			uint_t uTemp2 = 0;
 			do {
 				pWord[0] = uTemp;
-				pWord[1] = uBitCounter
-					+ uTemp2; // Add in the long offset (Since that's the base)
+				pWord[1] = uBitCounter +
+					uTemp2; // Add in the long offset (Since that's the base)
 				pWord[2] = uTemp2;
 				pWord[3] = uIndex;
 				pWord += 4;
@@ -1477,11 +1488,12 @@ static void BURGER_API CreateMP3Tables(void)
 	do {
 		uIndex = 0;
 		do {
-			uint_t uTemp = ((Burger::DecompressMP3::g_MP3BandInformation[uCounter]
-								  .m_uLongIndex[uIndex]
-							  + 7U)
-							 / 18U)
-				+ 1U;
+			uint_t uTemp =
+				((Burger::DecompressMP3::g_MP3BandInformation[uCounter]
+						 .m_uLongIndex[uIndex] +
+					 7U) /
+					18U) +
+				1U;
 			if (uTemp > Burger::DecompressMP3::cSubBandLimit) {
 				uTemp = Burger::DecompressMP3::cSubBandLimit;
 			}
@@ -1500,10 +1512,10 @@ static void BURGER_API CreateMP3Tables(void)
 			uint_t uTemp = static_cast<uint_t>(
 				((static_cast<int>(
 					  Burger::DecompressMP3::g_MP3BandInformation[uCounter]
-						  .m_uShortIndex[uIndex])
-					 - 1)
-					/ 18)
-				+ 1);
+						  .m_uShortIndex[uIndex]) -
+					 1) /
+					18) +
+				1);
 			if (uTemp > Burger::DecompressMP3::cSubBandLimit) {
 				uTemp = Burger::DecompressMP3::cSubBandLimit;
 			}
@@ -1567,8 +1579,8 @@ static void BURGER_API CreateMP3Tables(void)
 			do {
 				uint_t uTemp2 = 0;
 				do {
-					pWord[0] = uCounter + (uIndex << 3) + (uTemp << 6)
-						+ (uTemp2 << 9) + (0 << 12);
+					pWord[0] = uCounter + (uIndex << 3) + (uTemp << 6) +
+						(uTemp2 << 9) + (0 << 12);
 					++pWord;
 				} while (++uTemp2 < 4);
 			} while (++uTemp < 4);
@@ -1607,9 +1619,9 @@ static void BURGER_API CreateMP3Tables(void)
 	pWork = TempFloats;
 	dStepPow = .5;
 	do {
-		pWork[0] = static_cast<float>(0.42
-			- (cos((BURGER_PI / 512.0) * dStepPow) * 0.5)
-			+ (cos((BURGER_PI / 256.0) * dStepPow) * 0.08));
+		pWork[0] = static_cast<float>(0.42 -
+			(cos((BURGER_PI / 512.0) * dStepPow) * 0.5) +
+			(cos((BURGER_PI / 256.0) * dStepPow) * 0.08));
 		++pWork;
 		dStepPow += 1.0;
 	} while (--uCounter);
@@ -1635,7 +1647,7 @@ static void BURGER_API CreateMP3Tables(void)
 // Output the data tables for constants
 //
 
-void BURGER_API WriteDataTables(void)
+void BURGER_API WriteDataTables(void) BURGER_NOEXCEPT
 {
 #if 0
 	CreateSinConstants();
@@ -1732,7 +1744,6 @@ Input.Clear();
 #include "brtick.h"
 #include <stdio.h>
 
-
 using namespace Burger;
 
 static uintptr_t BURGER_API Code(void* pInput) BURGER_NOEXCEPT
@@ -1740,7 +1751,7 @@ static uintptr_t BURGER_API Code(void* pInput) BURGER_NOEXCEPT
 	++static_cast<uint_t*>(pInput)[0];
 	return 12345;
 }
-void BURGER_API CreateTables(void)
+void BURGER_API CreateTables(void) BURGER_NOEXCEPT
 {
 	ConsoleApp Ack(0, 0);
 	FloatTimer MyFloatTimer;

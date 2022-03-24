@@ -1,31 +1,31 @@
 /***************************************
 
-    SHA-1 hash manager
+	SHA-1 hash manager
 
-    Implemented following the documentation found in
-    http://en.wikipedia.org/wiki/SHA-1
-    and http://tools.ietf.org/html/rfc3174
+	Implemented following the documentation found in
+	http://en.wikipedia.org/wiki/SHA-1
+	and http://tools.ietf.org/html/rfc3174
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brsha1.h"
 #include "brendian.h"
-#include "brmemoryfunctions.h"
 #include "brfixedpoint.h"
+#include "brmemoryfunctions.h"
 
 /*! ************************************
 
 	\struct Burger::SHA1_t
 	\brief 20 byte array to contain a SHA-1 hash
-	
+
 	Full documentation on this hash format can be found here
 	http://en.wikipedia.org/wiki/SHA-1
 
@@ -68,11 +68,12 @@
 
 ***************************************/
 
-void BURGER_API Burger::SHA1Hasher_t::Init(void)
+void BURGER_API Burger::SHA1Hasher_t::Init(void) BURGER_NOEXCEPT
 {
 	// Load magic initialization constants.
 
-	uint32_t *pHash32 = static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash));
+	uint32_t* pHash32 =
+		static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash));
 
 #if !defined(BURGER_LITTLEENDIAN)
 	pHash32[0] = 0x67452301;
@@ -94,135 +95,191 @@ void BURGER_API Burger::SHA1Hasher_t::Init(void)
 
 	\brief Process a single 64 byte block of data
 
-	MD5 data is processed in 64 byte chunks. This function
-	will process 64 bytes on input and update the hash and checksum
+	MD5 data is processed in 64 byte chunks. This function will process 64 bytes
+	on input and update the hash and checksum
 
 	\param pBlock Pointer to a buffer of 64 bytes of data to hash
 	\sa Process(const void *,uintptr_t), Finalize(void) or Init(void)
 
 ***************************************/
 
-void BURGER_API Burger::SHA1Hasher_t::Process(const uint8_t *pBlock)
+void BURGER_API Burger::SHA1Hasher_t::Process(
+	const uint8_t* pBlock) BURGER_NOEXCEPT
 {
 	uint32_t DataBlock[16];
 	uintptr_t i = 0;
-	const uint32_t *pBlock32 = static_cast<const uint32_t *>(static_cast<const void *>(pBlock));
+	const uint32_t* pBlock32 =
+		static_cast<const uint32_t*>(static_cast<const void*>(pBlock));
 	do {
-		DataBlock[i] = BigEndian::LoadAny(pBlock32+i);
-	} while (++i<16);
+		DataBlock[i] = BigEndian::LoadAny(pBlock32 + i);
+	} while (++i < 16);
 
-	// Make a copy of the hash integers 
-	uint32_t a = BigEndian::Load(static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash+0)));
-	uint32_t b = BigEndian::Load(static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash+4)));
-	uint32_t c = BigEndian::Load(static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash+8)));
-	uint32_t d = BigEndian::Load(static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash+12)));
-	uint32_t e = BigEndian::Load(static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash+16)));
+	// Make a copy of the hash integers
+	uint32_t a = BigEndian::Load(
+		static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 0)));
+	uint32_t b = BigEndian::Load(
+		static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 4)));
+	uint32_t c = BigEndian::Load(
+		static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 8)));
+	uint32_t d = BigEndian::Load(
+		static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 12)));
+	uint32_t e = BigEndian::Load(
+		static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 16)));
 
 #if !defined(DOXYGEN)
-#define blk(i) (DataBlock[i&15] = RotateLeft(DataBlock[(i+13)&15] ^ DataBlock[(i+8)&15] ^ DataBlock[(i+2)&15] ^ DataBlock[i&15],1))
+#define blk(i) \
+	(DataBlock[i & 15] = \
+			RotateLeft(DataBlock[(i + 13) & 15] ^ DataBlock[(i + 8) & 15] ^ \
+					DataBlock[(i + 2) & 15] ^ DataBlock[i & 15], \
+				1))
 
 	// (R0+R1), R2, R3, R4 are the different operations used in SHA1
-#define R0(v,w,x,y,z,i) z += RotateLeft(v,5); z+= 0x5a827999; z+= DataBlock[i]; z+= (((x^y)&w)^y); w=RotateLeft(w,30)
-#define R1(v,w,x,y,z,i) z += RotateLeft(v,5); z+= 0x5a827999; z+= blk(i); z+= (((x^y)&w)^y); w=RotateLeft(w,30)
-#define R2(v,w,x,y,z,i) z += RotateLeft(v,5); z+= 0x6ed9eba1; z+= blk(i); z+= (w^x^y); w=RotateLeft(w,30)
-#define R3(v,w,x,y,z,i) z += RotateLeft(v,5); z+= 0x8f1bbcdc; z+= blk(i); z+= (((w|x)&y)|(w&x)); w=RotateLeft(w,30)
-#define R4(v,w,x,y,z,i) z += RotateLeft(v,5); z+= 0xca62c1d6; z+= blk(i); z+= (w^x^y); w=RotateLeft(w,30)
+#define R0(v, w, x, y, z, i) \
+	z += RotateLeft(v, 5); \
+	z += 0x5a827999; \
+	z += DataBlock[i]; \
+	z += (((x ^ y) & w) ^ y); \
+	w = RotateLeft(w, 30)
+#define R1(v, w, x, y, z, i) \
+	z += RotateLeft(v, 5); \
+	z += 0x5a827999; \
+	z += blk(i); \
+	z += (((x ^ y) & w) ^ y); \
+	w = RotateLeft(w, 30)
+#define R2(v, w, x, y, z, i) \
+	z += RotateLeft(v, 5); \
+	z += 0x6ed9eba1; \
+	z += blk(i); \
+	z += (w ^ x ^ y); \
+	w = RotateLeft(w, 30)
+#define R3(v, w, x, y, z, i) \
+	z += RotateLeft(v, 5); \
+	z += 0x8f1bbcdc; \
+	z += blk(i); \
+	z += (((w | x) & y) | (w & x)); \
+	w = RotateLeft(w, 30)
+#define R4(v, w, x, y, z, i) \
+	z += RotateLeft(v, 5); \
+	z += 0xca62c1d6; \
+	z += blk(i); \
+	z += (w ^ x ^ y); \
+	w = RotateLeft(w, 30)
 #endif
 
 	// 4 rounds of 20 operations each. Loop unrolled.
-	R0(a,b,c,d,e, 0);
-	R0(e,a,b,c,d, 1);
-	R0(d,e,a,b,c, 2);
-	R0(c,d,e,a,b, 3);
-	R0(b,c,d,e,a, 4);
-	R0(a,b,c,d,e, 5);
-	R0(e,a,b,c,d, 6);
-	R0(d,e,a,b,c, 7);
-	R0(c,d,e,a,b, 8);
-	R0(b,c,d,e,a, 9);
-	R0(a,b,c,d,e,10);
-	R0(e,a,b,c,d,11);
-	R0(d,e,a,b,c,12);
-	R0(c,d,e,a,b,13);
-	R0(b,c,d,e,a,14);
-	R0(a,b,c,d,e,15);
+	R0(a, b, c, d, e, 0);
+	R0(e, a, b, c, d, 1);
+	R0(d, e, a, b, c, 2);
+	R0(c, d, e, a, b, 3);
+	R0(b, c, d, e, a, 4);
+	R0(a, b, c, d, e, 5);
+	R0(e, a, b, c, d, 6);
+	R0(d, e, a, b, c, 7);
+	R0(c, d, e, a, b, 8);
+	R0(b, c, d, e, a, 9);
+	R0(a, b, c, d, e, 10);
+	R0(e, a, b, c, d, 11);
+	R0(d, e, a, b, c, 12);
+	R0(c, d, e, a, b, 13);
+	R0(b, c, d, e, a, 14);
+	R0(a, b, c, d, e, 15);
 
-	R1(e,a,b,c,d,16);
-	R1(d,e,a,b,c,17);
-	R1(c,d,e,a,b,18);
-	R1(b,c,d,e,a,19);
+	R1(e, a, b, c, d, 16);
+	R1(d, e, a, b, c, 17);
+	R1(c, d, e, a, b, 18);
+	R1(b, c, d, e, a, 19);
 
-	R2(a,b,c,d,e,20);
-	R2(e,a,b,c,d,21);
-	R2(d,e,a,b,c,22);
-	R2(c,d,e,a,b,23);
-	R2(b,c,d,e,a,24);
-	R2(a,b,c,d,e,25);
-	R2(e,a,b,c,d,26);
-	R2(d,e,a,b,c,27);
-	R2(c,d,e,a,b,28);
-	R2(b,c,d,e,a,29);
-	R2(a,b,c,d,e,30);
-	R2(e,a,b,c,d,31);
-	R2(d,e,a,b,c,32);
-	R2(c,d,e,a,b,33);
-	R2(b,c,d,e,a,34);
-	R2(a,b,c,d,e,35);
-	R2(e,a,b,c,d,36);
-	R2(d,e,a,b,c,37);
-	R2(c,d,e,a,b,38);
-	R2(b,c,d,e,a,39);
+	R2(a, b, c, d, e, 20);
+	R2(e, a, b, c, d, 21);
+	R2(d, e, a, b, c, 22);
+	R2(c, d, e, a, b, 23);
+	R2(b, c, d, e, a, 24);
+	R2(a, b, c, d, e, 25);
+	R2(e, a, b, c, d, 26);
+	R2(d, e, a, b, c, 27);
+	R2(c, d, e, a, b, 28);
+	R2(b, c, d, e, a, 29);
+	R2(a, b, c, d, e, 30);
+	R2(e, a, b, c, d, 31);
+	R2(d, e, a, b, c, 32);
+	R2(c, d, e, a, b, 33);
+	R2(b, c, d, e, a, 34);
+	R2(a, b, c, d, e, 35);
+	R2(e, a, b, c, d, 36);
+	R2(d, e, a, b, c, 37);
+	R2(c, d, e, a, b, 38);
+	R2(b, c, d, e, a, 39);
 
-	R3(a,b,c,d,e,40);
-	R3(e,a,b,c,d,41);
-	R3(d,e,a,b,c,42);
-	R3(c,d,e,a,b,43);
-	R3(b,c,d,e,a,44);
-	R3(a,b,c,d,e,45);
-	R3(e,a,b,c,d,46);
-	R3(d,e,a,b,c,47);
-	R3(c,d,e,a,b,48);
-	R3(b,c,d,e,a,49);
-	R3(a,b,c,d,e,50);
-	R3(e,a,b,c,d,51);
-	R3(d,e,a,b,c,52);
-	R3(c,d,e,a,b,53);
-	R3(b,c,d,e,a,54);
-	R3(a,b,c,d,e,55);
-	R3(e,a,b,c,d,56);
-	R3(d,e,a,b,c,57);
-	R3(c,d,e,a,b,58);
-	R3(b,c,d,e,a,59);
+	R3(a, b, c, d, e, 40);
+	R3(e, a, b, c, d, 41);
+	R3(d, e, a, b, c, 42);
+	R3(c, d, e, a, b, 43);
+	R3(b, c, d, e, a, 44);
+	R3(a, b, c, d, e, 45);
+	R3(e, a, b, c, d, 46);
+	R3(d, e, a, b, c, 47);
+	R3(c, d, e, a, b, 48);
+	R3(b, c, d, e, a, 49);
+	R3(a, b, c, d, e, 50);
+	R3(e, a, b, c, d, 51);
+	R3(d, e, a, b, c, 52);
+	R3(c, d, e, a, b, 53);
+	R3(b, c, d, e, a, 54);
+	R3(a, b, c, d, e, 55);
+	R3(e, a, b, c, d, 56);
+	R3(d, e, a, b, c, 57);
+	R3(c, d, e, a, b, 58);
+	R3(b, c, d, e, a, 59);
 
-	R4(a,b,c,d,e,60);
-	R4(e,a,b,c,d,61);
-	R4(d,e,a,b,c,62);
-	R4(c,d,e,a,b,63);
-	R4(b,c,d,e,a,64);
-	R4(a,b,c,d,e,65);
-	R4(e,a,b,c,d,66);
-	R4(d,e,a,b,c,67);
-	R4(c,d,e,a,b,68);
-	R4(b,c,d,e,a,69);
-	R4(a,b,c,d,e,70);
-	R4(e,a,b,c,d,71);
-	R4(d,e,a,b,c,72);
-	R4(c,d,e,a,b,73);
-	R4(b,c,d,e,a,74);
-	R4(a,b,c,d,e,75);
-	R4(e,a,b,c,d,76);
-	R4(d,e,a,b,c,77);
-	R4(c,d,e,a,b,78);
-	R4(b,c,d,e,a,79);
+	R4(a, b, c, d, e, 60);
+	R4(e, a, b, c, d, 61);
+	R4(d, e, a, b, c, 62);
+	R4(c, d, e, a, b, 63);
+	R4(b, c, d, e, a, 64);
+	R4(a, b, c, d, e, 65);
+	R4(e, a, b, c, d, 66);
+	R4(d, e, a, b, c, 67);
+	R4(c, d, e, a, b, 68);
+	R4(b, c, d, e, a, 69);
+	R4(a, b, c, d, e, 70);
+	R4(e, a, b, c, d, 71);
+	R4(d, e, a, b, c, 72);
+	R4(c, d, e, a, b, 73);
+	R4(b, c, d, e, a, 74);
+	R4(a, b, c, d, e, 75);
+	R4(e, a, b, c, d, 76);
+	R4(d, e, a, b, c, 77);
+	R4(c, d, e, a, b, 78);
+	R4(b, c, d, e, a, 79);
 
 	// Add in the adjusted hash (Store in big endian format)
 
 	{
-		BigEndian::Store(static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash+0)),BigEndian::Load(static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash+0)))+a);
-		BigEndian::Store(static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash+4)),BigEndian::Load(static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash+4)))+b);
-		BigEndian::Store(static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash+8)),BigEndian::Load(static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash+8)))+c);
-		BigEndian::Store(static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash+12)),BigEndian::Load(static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash+12)))+d);
-		BigEndian::Store(static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash+16)),BigEndian::Load(static_cast<uint32_t *>(static_cast<void *>(m_Hash.m_Hash+16)))+e);
+		BigEndian::Store(
+			static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 0)),
+			BigEndian::Load(
+				static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 0))) +
+				a);
+		BigEndian::Store(
+			static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 4)),
+			BigEndian::Load(
+				static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 4))) +
+				b);
+		BigEndian::Store(
+			static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 8)),
+			BigEndian::Load(
+				static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 8))) +
+				c);
+		BigEndian::Store(
+			static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 12)),
+			BigEndian::Load(static_cast<uint32_t*>(
+				static_cast<void*>(m_Hash.m_Hash + 12))) +
+				d);
+		BigEndian::Store(
+			static_cast<uint32_t*>(static_cast<void*>(m_Hash.m_Hash + 16)),
+			BigEndian::Load(static_cast<uint32_t*>(
+				static_cast<void*>(m_Hash.m_Hash + 16))) +
+				e);
 	}
 }
 
@@ -230,18 +287,18 @@ void BURGER_API Burger::SHA1Hasher_t::Process(const uint8_t *pBlock)
 
 	\brief Process an arbitrary number of input bytes
 
-	Process input data into the hash. If data chunks are not 
-	a multiple of 64 bytes, the excess will be cached and 
-	a future call will continue the hashing where it left
-	off.
-	
+	Process input data into the hash. If data chunks are not a multiple of 64
+	bytes, the excess will be cached and a future call will continue the hashing
+	where it left off.
+
 	\param pInput Pointer to a buffer of data to hash
 	\param uLength Number of bytes to hash
 	\sa Process(const uint8_t *), Finalize(void)
 
 ***************************************/
 
-void BURGER_API Burger::SHA1Hasher_t::Process(const void *pInput,uintptr_t uLength)
+void BURGER_API Burger::SHA1Hasher_t::Process(
+	const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	// Compute number of bytes mod 64
 	uintptr_t index = static_cast<uintptr_t>(m_uByteCount) & 0x3FU;
@@ -253,18 +310,18 @@ void BURGER_API Burger::SHA1Hasher_t::Process(const void *pInput,uintptr_t uLeng
 
 	// Transform as many times as possible.
 
-	if (uLength >= i) {		// Should I copy or pack?
+	if (uLength >= i) { // Should I copy or pack?
 
-		MemoryCopy(&m_CacheBuffer[index],pInput,i);
+		MemoryCopy(&m_CacheBuffer[index], pInput, i);
 		Process(m_CacheBuffer);
 
 		// Perform the checksum directly on the memory buffers
 
-		if ((i+63)<uLength) {
+		if ((i + 63) < uLength) {
 			do {
-	 			Process(static_cast<const uint8_t *>(pInput)+i);
+				Process(static_cast<const uint8_t*>(pInput) + i);
 				i += 64;
-			} while ((i+63) < uLength);
+			} while ((i + 63) < uLength);
 		}
 		index = 0;
 	} else {
@@ -272,44 +329,46 @@ void BURGER_API Burger::SHA1Hasher_t::Process(const void *pInput,uintptr_t uLeng
 	}
 
 	// Buffer remaining input
-	MemoryCopy(&m_CacheBuffer[index],static_cast<const uint8_t *>(pInput)+i,uLength-i);
+	MemoryCopy(&m_CacheBuffer[index], static_cast<const uint8_t*>(pInput) + i,
+		uLength - i);
 }
 
 /*! ************************************
 
 	\brief Finalize the hashing
 
-	When multi-pass hashing is performed, this call is necessary to
-	finalize the hash so that the generated checksum can
-	be applied into the hash
+	When multi-pass hashing is performed, this call is necessary to finalize the
+	hash so that the generated checksum can be applied into the hash
 
 	\sa Init(void), Process(const void *,uintptr_t)
 
 ***************************************/
 
-void BURGER_API Burger::SHA1Hasher_t::Finalize(void)
+void BURGER_API Burger::SHA1Hasher_t::Finalize(void) BURGER_NOEXCEPT
 {
-	uint8_t Padding[64];		// Pad array, first byte is 0x80, rest 0
+	// Pad array, first byte is 0x80, rest 0
+	uint8_t Padding[64];
 	Padding[0] = 0x80;
-	MemoryClear(&Padding[1],63);
+	MemoryClear(&Padding[1], 63);
 
 	// Save number of bits
 
-	uint64_t uBitCountBE = BigEndian::Load(m_uByteCount<<3);
+	const uint64_t uBitCountBE = BigEndian::Load(m_uByteCount << 3);
 
 	// Pad out to 56 mod 64.
 	// Convert to 1-64
-	uintptr_t uPadLen = ((55-static_cast<uintptr_t>(m_uByteCount))&0x3f)+1;	
-	Process(Padding,uPadLen);
+	const uintptr_t uPadLen =
+		((55 - static_cast<uintptr_t>(m_uByteCount)) & 0x3f) + 1;
+	Process(Padding, uPadLen);
 
 	// Append length (before padding)
-	Process(&uBitCountBE,8);
+	Process(&uBitCountBE, 8);
 }
 
 /*! ************************************
 
 	\brief Quickly create a SHA-1 key
-	
+
 	Given a buffer of data, generate the SHA-1 hash key
 
 	\param pOutput Pointer to an uninitialized SHA1_t structure
@@ -320,15 +379,16 @@ void BURGER_API Burger::SHA1Hasher_t::Finalize(void)
 
 ***************************************/
 
-void BURGER_API Burger::Hash(SHA1_t *pOutput,const void *pInput,uintptr_t uLength)
+void BURGER_API Burger::Hash(
+	SHA1_t* pOutput, const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	SHA1Hasher_t Context;
 	// Initialize
 	Context.Init();
 	// Process all of the data
-	Context.Process(pInput,uLength);
+	Context.Process(pInput, uLength);
 	// Wrap up the processing
 	Context.Finalize();
 	// Return the resulting hash
-	MemoryCopy(pOutput,&Context.m_Hash,20);
+	MemoryCopy(pOutput, &Context.m_Hash, 20);
 }

@@ -172,7 +172,7 @@ void BURGER_API Burger::Globals::GetQTFolderFromRegistry(
 ***************************************/
 
 uint_t BURGER_API Burger::Globals::GetPathToQuickTimeFolder(
-	char* pBuffer, uint32_t uSize, uint32_t* pReserved)
+	char* pBuffer, uint32_t uSize, uint32_t* pReserved) BURGER_NOEXCEPT
 {
 	char Temp[1024];
 	uint_t bResult = FALSE;
@@ -288,9 +288,9 @@ uint_t BURGER_API Burger::Globals::GetPathToQuickTimeFolder(
 ***************************************/
 
 uint32_t BURGER_API Burger::Globals::GetQTSystemDirectoryA(
-	char* pBuffer, uint32_t uSize)
+	char* pBuffer, uint32_t uSize) BURGER_NOEXCEPT
 {
-	GetPathToQuickTimeFolder(pBuffer, uSize, NULL);
+	GetPathToQuickTimeFolder(pBuffer, uSize, nullptr);
 	return static_cast<uint32_t>(StringLength(pBuffer));
 }
 
@@ -320,7 +320,7 @@ uint32_t BURGER_API Burger::Globals::GetQTSystemDirectoryA(
 ***************************************/
 
 uint32_t BURGER_API Burger::Globals::GetQTApplicationDirectoryA(
-	char* pBuffer, uint32_t uSize)
+	char* pBuffer, uint32_t uSize) BURGER_NOEXCEPT
 {
 	GetQTFolderFromRegistry("Software\\Apple Computer, Inc.\\QuickTime",
 		"InstallDir", pBuffer, uSize);
@@ -353,7 +353,7 @@ uint32_t BURGER_API Burger::Globals::GetQTApplicationDirectoryA(
 ***************************************/
 
 uint32_t BURGER_API Burger::Globals::GetQTExtensionDirectoryA(
-	char* pBuffer, uint32_t uSize)
+	char* pBuffer, uint32_t uSize) BURGER_NOEXCEPT
 {
 	char SystemDirName[256];
 	char QTFolderName[256];
@@ -417,7 +417,7 @@ uint32_t BURGER_API Burger::Globals::GetQTExtensionDirectoryA(
 ***************************************/
 
 uint32_t BURGER_API Burger::Globals::GetQTComponentDirectoryA(
-	char* pBuffer, uint32_t uSize)
+	char* pBuffer, uint32_t uSize) BURGER_NOEXCEPT
 {
 	GetQTFolderFromRegistry("Software\\Apple Computer, Inc.\\QuickTime",
 		"QTComponentsDir", pBuffer, uSize);
@@ -457,13 +457,13 @@ uint32_t BURGER_API Burger::Globals::GetQTComponentDirectoryA(
 
 ***************************************/
 
-HINSTANCE BURGER_API Burger::Globals::QTLoadLibrary(const char* pDLLName)
+HINSTANCE BURGER_API Burger::Globals::QTLoadLibrary(const char* pDLLName) BURGER_NOEXCEPT
 {
 	char FinalPathname[1024];
 
 	// Assume no DLL
 	HINSTANCE pResult = NULL;
-	uintptr_t uDLLNameLength = StringLength(pDLLName);
+	const uintptr_t uDLLNameLength = StringLength(pDLLName);
 
 	// Get the path for Quicktime
 	if (GetPathToQuickTimeFolder(FinalPathname,
@@ -507,7 +507,7 @@ HINSTANCE BURGER_API Burger::Globals::QTLoadLibrary(const char* pDLLName)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void)
+uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void) BURGER_NOEXCEPT
 {
 	char PathName[1024 + 32];
 

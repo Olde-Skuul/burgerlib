@@ -756,8 +756,8 @@ static uint_t BURGER_API TestCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
 		SHOW_MACRO(BURGER_CPP14);
 		SHOW_MACRO(BURGER_CPP17);
 		SHOW_MACRO(BURGER_CPP20);
-		SHOW_MACRO(BURGER_GNUC_VERSION);
-		SHOW_MACRO(BURGER_CLANG_VERSION);
+		SHOW_MACRO(BURGER_COMPILER_VERSION);
+		SHOW_MACRO(BURGER_COMPILER_NAME);
 		SHOW_MACRO(BURGER_CONSTEXPR);
 		SHOW_MACRO(BURGER_OVERRIDE);
 		SHOW_MACRO(BURGER_FINAL);
@@ -1076,6 +1076,7 @@ static uint_t BURGER_API TestPlatformMacros(uint_t uVerbose) BURGER_NOEXCEPT
 		SHOW_MACRO(TARGET_API_MAC_CARBON);
 		SHOW_MACRO(BURGER_CFM);
 		SHOW_MACRO(BURGER_DARWIN);
+		SHOW_MACRO(BURGER_UNIX);
 	}
 
 	//
@@ -1310,6 +1311,7 @@ static uint_t BURGER_API TestEnumMacros(uint_t uVerbose) BURGER_NOEXCEPT
 	eEnumClass32 Bar = eEnumClass32::DELTA;
 	eEnumClass32 Bar2;
 
+#if !defined(BURGER_MACOSX)
 	// Test if the enum is switchable and assignment operator
 	Bar = eEnumClass32::EPSILON;
 	Bar2 = eEnumClass32::DELTA;
@@ -1325,7 +1327,8 @@ static uint_t BURGER_API TestEnumMacros(uint_t uVerbose) BURGER_NOEXCEPT
 	}
 	uFailure |= uTest;
 	ReportFailure("eEnumClass32 switch failed, got %u.", uTest, uTest);
-
+#endif
+    
 	uTest = Bar < eEnumClass32::DELTA;
 	uFailure |= uTest;
 	ReportFailure("Bar < eEnumClass32::DELTA got %u.", uTest, uTest);

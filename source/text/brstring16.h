@@ -99,6 +99,10 @@ public:
     {
         return m_uLength;
     }
+	BURGER_INLINE uint_t empty(void) const BURGER_NOEXCEPT
+	{
+		return !m_uLength;
+	}
     BURGER_INLINE uintptr_t GetLength(void) const BURGER_NOEXCEPT
     {
         return m_uLength;
@@ -165,7 +169,7 @@ public:
     {
         return (m_uLength != 0);
     }
-    void Clear(void) BURGER_NOEXCEPT;
+    void clear(void) BURGER_NOEXCEPT;
 };
 }
 /* END */

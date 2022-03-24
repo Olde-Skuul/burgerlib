@@ -23,7 +23,7 @@
 
 ***************************************/
 
-void BURGER_API Burger::GUIDInit(GUID* pOutput)
+void BURGER_API Burger::GUIDInit(GUID* pOutput)BURGER_NOEXCEPT
 {
     Windows::UuidCreateSequential(pOutput);
 }

@@ -832,7 +832,7 @@ Burger::eError BURGER_API Burger::String::SetBufferSize(
 	if (uSize != m_uLength) {
 		// If no space is requested, clear the buffer
 		if (!uSize) {
-			Clear();
+			clear();
 		} else {
 			// Hold the old buffer
 			char* pWork = m_pData;
@@ -1336,7 +1336,7 @@ char* BURGER_API Burger::String::StringString(const char* pInput) const
 
 ***************************************/
 
-void BURGER_API Burger::String::Clear(void) BURGER_NOEXCEPT
+void BURGER_API Burger::String::clear(void) BURGER_NOEXCEPT
 {
 	char* pWork = m_pData; // Old data pointer
 	m_pData = m_Raw;       // New pointer
@@ -2271,7 +2271,7 @@ void BURGER_API Burger::String::InitFormattedString(
 	const char* pFormat, uintptr_t uArgCount, const SafePrintArgument** ppArgs)
 {
 	// Remove any previously allocated buffer
-	Clear();
+	clear();
 	if ((pFormat == nullptr) || (*pFormat == 0x00)) {
 		return;
 	}
@@ -2279,7 +2279,7 @@ void BURGER_API Burger::String::InitFormattedString(
 	if (uArgCount && ppArgs) {
 		if (!SprintfUserAlloc(FormattedAllocCallback, this, TRUE, pFormat,
 				uArgCount, ppArgs)) {
-			Clear();
+			clear();
 		}
 	} else {
 		Set(pFormat);

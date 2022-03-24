@@ -1,28 +1,27 @@
 /***************************************
 
-    intrinsic<T> compatible array template
+	intrinsic<T> compatible array template
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brsimplearray.h"
-#include "brmemoryfunctions.h"
 #include "brdebug.h"
+#include "brmemoryfunctions.h"
 
 /*! ************************************
 
 	\class Burger::SimpleArrayBase
 	\brief Base class for SimpleArray
 
-	This class will perform most work for the
-	SimpleArray template class
+	This class will perform most work for the SimpleArray template class
 
 	\sa SimpleArray or ClassArray
 
@@ -33,11 +32,12 @@
 	\fn Burger::SimpleArrayBase::SimpleArrayBase(uintptr_t uChunkSize)
 	\brief Default constructor.
 
-	Initializes the array to contain no data and have no members
-	and set to a specific chunk size.
+	Initializes the array to contain no data and have no members and set to a
+	specific chunk size.
 
 	\param uChunkSize Size in bytes of each element in the array
-	\sa SimpleArrayBase(uintptr_t,uintptr_t) or SimpleArrayBase(const SimpleArrayBase&)
+	\sa SimpleArrayBase(uintptr_t,uintptr_t) or
+		SimpleArrayBase(const SimpleArrayBase&)
 
 ***************************************/
 
@@ -47,20 +47,20 @@
 
 	Initializes the array to contain uDefault number of uninitialized members.
 
-	\note If the initial buffer allocation fails, the array size will
-	be set to zero.
+	\note If the initial buffer allocation fails, the array size will be set to
+		zero.
 
 	\param uChunkSize Size of each data chunk
-	\param uDefault Number of members to create the array with. Zero
-		will generate an empty array.
+	\param uDefault Number of members to create the array with. Zero will
+		generate an empty array.
 
 	\sa SimpleArrayBase(uintptr_t) or SimpleArrayBase(const SimpleArrayBase&)
 
 ***************************************/
 
-Burger::SimpleArrayBase::SimpleArrayBase(uintptr_t uChunkSize,uintptr_t uDefault) :
-	m_uSize(uDefault),
-	m_uBufferSize(uDefault)
+Burger::SimpleArrayBase::SimpleArrayBase(uintptr_t uChunkSize,
+	uintptr_t uDefault) BURGER_NOEXCEPT: m_uSize(uDefault),
+										 m_uBufferSize(uDefault)
 {
 	// Minimum chunk size of 1 byte per entry
 	if (!uChunkSize) {
@@ -69,7 +69,7 @@ Burger::SimpleArrayBase::SimpleArrayBase(uintptr_t uChunkSize,uintptr_t uDefault
 	m_uChunkSize = uChunkSize;
 
 	// Anything?
-	void *pData = NULL;
+	void* pData = nullptr;
 	if (uDefault) {
 		// Get the default buffer and die if failed in debug
 		pData = Alloc(uChunkSize * uDefault);
@@ -87,8 +87,7 @@ Burger::SimpleArrayBase::SimpleArrayBase(uintptr_t uChunkSize,uintptr_t uDefault
 
 	\brief Default constructor for making a copy of another SimpleArrayBase
 
-	Initializes the array to contain a copy of
-	another SimpleArrayBase.
+	Initializes the array to contain a copy of another SimpleArrayBase.
 
 	\param rData Reference to a matching SimpleArrayBase type
 
@@ -96,20 +95,21 @@ Burger::SimpleArrayBase::SimpleArrayBase(uintptr_t uChunkSize,uintptr_t uDefault
 
 ***************************************/
 
-Burger::SimpleArrayBase::SimpleArrayBase(const SimpleArrayBase &rData) :
-	m_pData(NULL)
+Burger::SimpleArrayBase::SimpleArrayBase(
+	const SimpleArrayBase& rData) BURGER_NOEXCEPT: m_pData(nullptr)
 {
-	uintptr_t uCount = rData.m_uSize;
+	const uintptr_t uCount = rData.m_uSize;
 	m_uSize = uCount;
 	m_uBufferSize = uCount;
-	uintptr_t uChunkSize = rData.m_uChunkSize;
+	const uintptr_t uChunkSize = rData.m_uChunkSize;
 	m_uChunkSize = uChunkSize;
 	if (uCount) {
-		m_pData = AllocCopy(rData.m_pData,uChunkSize * uCount);
+		m_pData = AllocCopy(rData.m_pData, uChunkSize * uCount);
 		if (!m_pData) {
 			m_uBufferSize = 0;
 			m_uSize = 0;
-			Debug::Fatal("SimpleArrayBase(const SimpleArrayBase &) allocation failure");
+			Debug::Fatal(
+				"SimpleArrayBase(const SimpleArrayBase &) allocation failure");
 		}
 	}
 }
@@ -121,7 +121,8 @@ Burger::SimpleArrayBase::SimpleArrayBase(const SimpleArrayBase &rData) :
 
 	Releases the memory buffer with a call to Free(const void *)
 
-	\sa SimpleArrayBase(uintptr_t), SimpleArrayBase(uintptr_t,uintptr_t) or SimpleArrayBase(const SimpleArrayBase&)
+	\sa SimpleArrayBase(uintptr_t), SimpleArrayBase(uintptr_t,uintptr_t) or
+		SimpleArrayBase(const SimpleArrayBase&)
 
 ***************************************/
 
@@ -134,9 +135,8 @@ Burger::SimpleArrayBase::~SimpleArrayBase(void)
 
 	\brief Copy an array into this one
 
-	If the copy is not itself, call clear() to erase the
-	contents of this class and make a duplicate
-	of every entry in the rData class into this one.
+	If the copy is not itself, call clear() to erase the contents of this class
+	and make a duplicate of every entry in the rData class into this one.
 
 	\param rData Reference to a matching SimpleArray type
 	\return *this
@@ -144,17 +144,18 @@ Burger::SimpleArrayBase::~SimpleArrayBase(void)
 
 ***************************************/
 
-Burger::SimpleArrayBase & Burger::SimpleArrayBase::operator=(const SimpleArrayBase &rData) 
+Burger::SimpleArrayBase& Burger::SimpleArrayBase::operator=(
+	const SimpleArrayBase& rData) BURGER_NOEXCEPT
 {
 	// Copying over itself?
-	if (&rData!=this) {
-		
+	if (&rData != this) {
+
 		// Dispose of the contents
 		clear();
-		
+
 		// Get the size to copy
-		uintptr_t uCount = rData.m_uSize;
-		uintptr_t uChunkSize = rData.m_uChunkSize;
+		const uintptr_t uCount = rData.m_uSize;
+		const uintptr_t uChunkSize = rData.m_uChunkSize;
 
 		// Chunk size COULD change, bad idea, however, support
 		// it to prevent subtle bugs
@@ -163,11 +164,12 @@ Burger::SimpleArrayBase & Burger::SimpleArrayBase::operator=(const SimpleArrayBa
 			// Set the new size
 			m_uSize = uCount;
 			m_uBufferSize = uCount;
-			m_pData = AllocCopy(rData.m_pData,uChunkSize * uCount);
+			m_pData = AllocCopy(rData.m_pData, uChunkSize * uCount);
 			if (!m_pData) {
 				m_uSize = 0;
 				m_uBufferSize = 0;
-				Debug::Fatal("SimpleArrayBase::operator=(const SimpleArrayBase &) allocation failure");
+				Debug::Fatal(
+					"SimpleArrayBase::operator=(const SimpleArrayBase &) allocation failure");
 			}
 		}
 	}
@@ -184,10 +186,10 @@ Burger::SimpleArrayBase & Burger::SimpleArrayBase::operator=(const SimpleArrayBa
 
 ***************************************/
 
-void BURGER_API Burger::SimpleArrayBase::clear(void) 
+void BURGER_API Burger::SimpleArrayBase::clear(void) BURGER_NOEXCEPT
 {
 	Free(m_pData);
-	m_pData = NULL;
+	m_pData = nullptr;
 	m_uBufferSize = 0;
 	m_uSize = 0;
 }
@@ -196,8 +198,8 @@ void BURGER_API Burger::SimpleArrayBase::clear(void)
 
 	\brief Remove an object from the array.
 
-	Call the destructor on the specific object in the array and
-	then compact the array if needed.
+	Call the destructor on the specific object in the array and then compact the
+	array if needed.
 
 	\param uIndex Index into the array of the object to remove.
 	\return Zero on success, or non zero on failure
@@ -206,7 +208,8 @@ void BURGER_API Burger::SimpleArrayBase::clear(void)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::SimpleArrayBase::remove_at(uintptr_t uIndex)
+Burger::eError BURGER_API Burger::SimpleArrayBase::remove_at(
+	uintptr_t uIndex) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorInvalidParameter;
 	uintptr_t uSize = m_uSize;
@@ -218,13 +221,15 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::remove_at(uintptr_t uIndex)
 		} else {
 			--uSize;
 			m_uSize = uSize;
-			uintptr_t uChunkSize = m_uChunkSize;
+			const uintptr_t uChunkSize = m_uChunkSize;
 
 			// Calculate the base pointer to the array
-			uint8_t *pMark = static_cast<uint8_t *>(m_pData) + (uIndex*uChunkSize);
+			uint8_t* pMark =
+				static_cast<uint8_t*>(m_pData) + (uIndex * uChunkSize);
 
 			// Copy over the single entry
-			MemoryMove(pMark,pMark+uChunkSize,uChunkSize * (uSize - uIndex));
+			MemoryMove(
+				pMark, pMark + uChunkSize, uChunkSize * (uSize - uIndex));
 		}
 		uResult = kErrorNone;
 	}
@@ -249,7 +254,8 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::remove_at(uintptr_t uIndex)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::SimpleArrayBase::resize(uintptr_t uNewSize) 
+Burger::eError BURGER_API Burger::SimpleArrayBase::resize(
+	uintptr_t uNewSize) BURGER_NOEXCEPT
 {
 	eError uResult;
 	if (!uNewSize) {
@@ -258,7 +264,7 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::resize(uintptr_t uNewSize)
 
 	} else {
 		uResult = reserve(uNewSize);
-		if (uResult== kErrorNone) {
+		if (uResult == kErrorNone) {
 			// If no error, set the new size
 			m_uSize = uNewSize;
 		}
@@ -289,7 +295,8 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::resize(uintptr_t uNewSize)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::SimpleArrayBase::reserve(uintptr_t uNewBufferSize)
+Burger::eError BURGER_API Burger::SimpleArrayBase::reserve(
+	uintptr_t uNewBufferSize) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNone;
 
@@ -300,10 +307,10 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::reserve(uintptr_t uNewBufferS
 	} else {
 
 		// If the reservation size truncates the buffer, update the size
-		if (m_uSize>uNewBufferSize) {
+		if (m_uSize > uNewBufferSize) {
 			m_uSize = uNewBufferSize;
 		}
-		void *pData = Realloc(m_pData,m_uChunkSize * uNewBufferSize);
+		void* pData = Realloc(m_pData, m_uChunkSize * uNewBufferSize);
 
 		// If a bad pointer, return the error
 		if (!pData) {
@@ -321,9 +328,9 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::reserve(uintptr_t uNewBufferS
 
 	\brief Append an array of object to this array.
 
-	Given a base pointer and an object count, iterate over the objects
-	and copy them to the end of this array. This function
-	will increase the size of the buffer if needed.
+	Given a base pointer and an object count, iterate over the objects and copy
+	them to the end of this array. This function will increase the size of the
+	buffer if needed.
 
 	\param pData Pointer to the first element in an array of objects
 	\param uCount Number of elements in the array
@@ -333,43 +340,41 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::reserve(uintptr_t uNewBufferS
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uintptr_t uCount)
+Burger::eError BURGER_API Burger::SimpleArrayBase::append(
+	const void* pData, uintptr_t uCount) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNone;
 	// No new entries?
 	if (uCount) {
 
 		// Expand the buffer by the entry count
-		uintptr_t uSize = m_uSize;
+		const uintptr_t uSize = m_uSize;
 		uResult = resize(uSize + uCount);
 
 		// Success?
-		if (uResult== kErrorNone) {
+		if (uResult == kErrorNone) {
 			// Copy in the new entries
-			uintptr_t uChunkSize = m_uChunkSize;
-			MemoryCopy(static_cast<uint8_t*>(m_pData)+(uSize*uChunkSize),pData,uCount*uChunkSize);
+			const uintptr_t uChunkSize = m_uChunkSize;
+			MemoryCopy(static_cast<uint8_t*>(m_pData) + (uSize * uChunkSize),
+				pData, uCount * uChunkSize);
 		}
 	}
 	return uResult;
 }
-
 
 /*! ************************************
 
 	\class Burger::SimpleArray
 	\brief Template for creating arrays of intrinsic objects
 
-	This template class will
-	dynamically allocate memory as needed. Since
-	it's assuming the data is of intrinsic values, no
-	initialization or shutdown is performed on the elements.
-	If this behavior is desired, use the ClassArray template
-	instead.
+	This template class will dynamically allocate memory as needed. Since
+	it's assuming the data is of intrinsic values, no initialization or shutdown
+	is performed on the elements. If this behavior is desired, use the
+	ClassArray template instead.
 
-	While it uses function names that match the
-	class vector<T>, this is a lightweight version
-	which doesn't match 100% due to implementation
-	for performance.
+	While it uses function names that match the class vector<T>, this is a
+	lightweight version which doesn't match 100% due to implementation for
+	performance.
 
 	\sa ClassArray
 
@@ -416,8 +421,8 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	\fn T * Burger::SimpleArray::GetPtr(void)
 	\brief Obtain a pointer to the array.
 
-	Allow direct access to the base pointer to the array. This
-	can be \ref NULL if the array is empty.
+	Allow direct access to the base pointer to the array. This can be \ref
+	nullptr if the array is empty.
 
 	\return A pointer to the array.
 	\sa GetPtr(void) const or front(void)
@@ -429,16 +434,39 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	\fn const T * Burger::SimpleArray::GetPtr(void) const
 	\brief Obtain a constant pointer to the array.
 
-	Allow direct access to the base pointer to the array. This
-	can be \ref NULL if the array is empty.
+	Allow direct access to the base pointer to the array. This can be \ref
+	nullptr if the array is empty.
 
 	\return A constant pointer to the array.
 	\sa GetPtr(void) or front(void) const
 
 ***************************************/
 
+/*! ************************************
 
+	\fn T * Burger::SimpleArray::data(void)
+	\brief Obtain a pointer to the array.
 
+	Allow direct access to the base pointer to the array. This can be \ref
+	nullptr if the array is empty.
+
+	\return A pointer to the array.
+	\sa data(void) const or front(void)
+
+***************************************/
+
+/*! ************************************
+
+	\fn const T * Burger::SimpleArray::data(void) const
+	\brief Obtain a constant pointer to the array.
+
+	Allow direct access to the base pointer to the array. This can be \ref
+	nullptr if the array is empty.
+
+	\return A constant pointer to the array.
+	\sa data(void) or front(void) const
+
+***************************************/
 
 /*! ************************************
 
@@ -447,9 +475,8 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 
 	Index into the array and return a reference to the object.
 
-	\note In \ref _DEBUG builds, this will \ref BURGER_ASSERT()
-	if the uIndex value exceeds the size of the number of valid
-	entries in the array.
+	\note In \ref _DEBUG builds, this will \ref BURGER_ASSERT() if the uIndex
+		value exceeds the size of the number of valid entries in the array.
 
 	\param uIndex Object number in the array to retrieve a reference to.
 	\return A reference of the object indexed.
@@ -468,15 +495,18 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	if the uIndex value exceeds the size of the number of valid
 	entries in the array.
 
-	\param uIndex Object number in the array to retrieve a constant reference to.
+	\param uIndex Object number in the array to retrieve a constant reference
+		to.
+
 	\return A constant reference of the object indexed.
+
 	\sa operator[](uintptr_t) or GetIndexedItem(uintptr_t) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn T & Burger::SimpleArray::GetIndexedItem(uintptr_t uIndex) 
+	\fn T & Burger::SimpleArray::GetIndexedItem(uintptr_t uIndex)
 	\brief Obtain a reference to an item in the array.
 
 	Index into the array and return a reference to the object.
@@ -486,7 +516,9 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	entries in the array.
 
 	\param uIndex Object number in the array to retrieve a reference to.
+
 	\return A reference of the object indexed.
+
 	\sa operator[](uintptr_t) or GetIndexedItem(uintptr_t) const
 
 ***************************************/
@@ -502,22 +534,23 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	if the uIndex value exceeds the size of the number of valid
 	entries in the array.
 
-	\param uIndex Object number in the array to retrieve a constant reference to.
+	\param uIndex Object number in the array to retrieve a constant reference
+		to.
+
 	\return A constant reference of the object indexed.
+
 	\sa operator[](uintptr_t) const or GetIndexedItem(uintptr_t)
 
 ***************************************/
-
-
 
 /*! ************************************
 
 	\fn uintptr_t Burger::SimpleArray::capacity(void) const
 	\brief Return the number of objects the current buffer could hold.
-	 
-	 The buffer size may exceed the number of valid objects, so that if
-	 the array grew, memory allocations won't be needed. This
-	 function will return the size of the true buffer.
+
+	The buffer size may exceed the number of valid objects, so that if the array
+	grew, memory allocations won't be needed. This function will return the size
+	of the true buffer.
 
 	\return Number of objects the currently allocated buffer can hold.
 	\sa size(void) const
@@ -528,21 +561,20 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 
 	\fn uintptr_t Burger::SimpleArray::max_size(void)
 	\brief Return the maximum number of objects the buffer could ever hold.
-	 
-	Given the maximum possible size of memory in the machine, return the theoretical
-	maximum number of objects the buffer could hold.
+
+	Given the maximum possible size of memory in the machine, return the
+	theoretical maximum number of objects the buffer could hold.
 
 	\return Number of objects the buffer could possibly hold.
 	\sa capacity(void) const
 
 ***************************************/
 
-
 /*! ************************************
 
 	\fn uintptr_t Burger::SimpleArray::size(void) const
 	\brief Return the valid number of objects in the array.
-	
+
 	This value is less than or equal to the buffer size.
 
 	\return Number of valid objects in the array.
@@ -557,7 +589,9 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 
 	If there is no valid data in the array, return \ref TRUE.
 
-	\return \ref TRUE if the valid object count is zero, \ref FALSE if there are valid objects
+	\return \ref TRUE if the valid object count is zero, \ref FALSE if there are
+		valid objects
+
 	\sa size(void) const
 
 ***************************************/
@@ -615,16 +649,16 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	\fn Burger::eError Burger::SimpleArray::push_back(T rData)
 	\brief Append an object to the end of the array.
 
-	Make a copy of the object at the end of the array. If there
-	is no room for the new object, increase the size of
-	the buffer to make room. Buffer size increases are made
-	in groups to reduce memory allocation calls to
-	improve performance.
+	Make a copy of the object at the end of the array. If there is no room for
+	the new object, increase the size of the buffer to make room. Buffer size
+	increases are made in groups to reduce memory allocation calls to improve
+	performance.
 
 	\param rData An instance of the object to copy at the end of the array
 	\return Zero on success, or non zero on failure
 
-	\sa pop_back(void), insert_at(uintptr_t,T), resize(uintptr_t) or reserve(uintptr_t)
+	\sa pop_back(void), insert_at(uintptr_t,T), resize(uintptr_t) or
+		reserve(uintptr_t)
 
 ***************************************/
 
@@ -633,11 +667,13 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	\fn Burger::eError Burger::SimpleArray::pop_back(void)
 	\brief Remove an object from the end of the array.
 
-	Call the destructor on the last object in the array and
-	reduce the array size by one.
+	Call the destructor on the last object in the array and reduce the array
+	size by one.
+
 	\return Zero on success, or non zero on failure
 
-	\sa push_back(T), remove_at(uintptr_t), resize(uintptr_t) or reserve(uintptr_t)
+	\sa push_back(T), remove_at(uintptr_t), resize(uintptr_t) or
+		reserve(uintptr_t)
 
 ***************************************/
 
@@ -646,12 +682,13 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	\fn SimpleArray & Burger::SimpleArray::operator=(const SimpleArray &rData)
 	\brief Copy an array into this one
 
-	If the copy is not itself, call clear() to erase the
-	contents of this class and make a duplicate
-	of every entry in the rData class into this one.
+	If the copy is not itself, call clear() to erase the contents of this class
+	and make a duplicate of every entry in the rData class into this one.
 
 	\param rData Reference to a matching SimpleArray type
+
 	\return *this
+
 	\sa resize(uintptr_t) or reserve(uintptr_t)
 
 ***************************************/
@@ -661,8 +698,8 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	\fn Burger::eError Burger::SimpleArray::insert_at(uintptr_t uIndex,T rData)
 	\brief Insert an object into the array.
 
-	Expand the buffer if needed and make a copy of the rData
-	object into the array at the index uIndex.
+	Expand the buffer if needed and make a copy of the rData object into the
+	array at the index uIndex.
 
 	\param uIndex Index into the array for the location of the object to insert.
 	\param rData Reference to the object to copy into the array
@@ -677,15 +714,18 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	\fn uint_t Burger::SimpleArray::remove(T rData)
 	\brief Find an item and remove it from the array.
 
-	Given an item, scan the array for the first element found
-	and then remove the item.
+	Given an item, scan the array for the first element found and then remove
+	the item.
 
-	\note If there are multiple copies of the item in the array,
-	this function only removes the first occurrence, not all copies.
+	\note If there are multiple copies of the item in the array, this function
+		only removes the first occurrence, not all copies.
 
 	\param rData Copy of the item to remove
+
 	\return \ref TRUE if an item was removed, \ref FALSE if not
-	\sa append(const SimpleArray&), insert_at(uintptr_t,T), resize(uintptr_t) or reserve(uintptr_t)
+
+	\sa append(const SimpleArray&), insert_at(uintptr_t,T), resize(uintptr_t) or
+		reserve(uintptr_t)
 
 ***************************************/
 
@@ -694,12 +734,12 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	\fn uint_t Burger::SimpleArray::contains(T rData) const
 	\brief Find an item in the array.
 
-	Given an item, scan the array for an element
-	that matches the value.
+	Given an item, scan the array for an element that matches the value.
 
 	\param rData Copy of the item to search for
 	\return \ref TRUE if an item was found, \ref FALSE if not
-	\sa append(const SimpleArray&), insert_at(uintptr_t,T), resize(uintptr_t) or reserve(uintptr_t)
+	\sa append(const SimpleArray&), insert_at(uintptr_t,T), resize(uintptr_t) or
+		reserve(uintptr_t)
 
 ***************************************/
 
@@ -708,15 +748,18 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	\fn void Burger::SimpleArray::append(const T *pSourceData,uintptr_t uCount)
 	\brief Append an array of object to this array.
 
-	Given a base pointer and an object count, iterate over the objects
-	and copy them to the end of this array. This function
-	will increase the size of the buffer if needed.
+	Given a base pointer and an object count, iterate over the objects and copy
+	them to the end of this array. This function will increase the size of the
+	buffer if needed.
 
 	\param pSourceData Pointer to the first element in an array of objects
+
 	\param uCount Number of elements in the array
+
 	\return Zero on success, or non zero on failure
 
-	\sa append(const SimpleArray&), insert_at(uintptr_t,T), resize(uintptr_t) or reserve(uintptr_t)
+	\sa append(const SimpleArray&), insert_at(uintptr_t,T), resize(uintptr_t) or
+		reserve(uintptr_t)
 
 ***************************************/
 
@@ -725,9 +768,9 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	\fn void Burger::SimpleArray::append(const SimpleArray& rData)
 	\brief Append an array to this array.
 
-	Given another array, iterate over the objects contained within
-	and copy them to the end of this array. This function
-	will increase the size of the buffer if needed.
+	Given another array, iterate over the objects contained within and copy them
+	to the end of this array. This function will increase the size of the buffer
+	if needed.
 
 	\param rData Reference to a like typed SimpleArray to copy from.
 	\return Zero on success, or non zero on failure
@@ -763,9 +806,8 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	\typedef Burger::SimpleArray::value_type
 	\brief STL compatible type declaration
 
-	Type declarator to use in functions in &lt;algorithm&gt;. It's
-	used to create variables of T by using this typedef
-	in the class.
+	Type declarator to use in functions in &lt;algorithm&gt;. It's used to
+	create variables of T by using this typedef in the class.
 
 	\sa iterator or const_iterator
 
@@ -795,10 +837,10 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 
 ***************************************/
 
-
 /*! ************************************
 
-	\fn Burger::SimpleArray::const_iterator Burger::SimpleArray::begin(void) const
+	\fn Burger::SimpleArray::const_iterator Burger::SimpleArray::begin(
+		void) const
 	\brief Constant iterator for the start of the array.
 
 	STL compatible constant iterator for the start of the array.
@@ -822,7 +864,8 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 
 /*! ************************************
 
-	\fn Burger::SimpleArray::const_iterator Burger::SimpleArray::cbegin(void) const
+	\fn Burger::SimpleArray::const_iterator Burger::SimpleArray::cbegin(
+		void) const
 	\brief Constant iterator for the start of the array.
 
 	STL compatible constant iterator for the start of the array.
@@ -834,7 +877,8 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 
 /*! ************************************
 
-	\fn Burger::SimpleArray::const_iterator Burger::SimpleArray::cend(void) const
+	\fn Burger::SimpleArray::const_iterator Burger::SimpleArray::cend(
+		void) const
 	\brief Constant iterator for the end of the array.
 
 	STL compatible constant iterator for the end of the array.
@@ -849,8 +893,8 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	\fn Burger::eError Burger::SimpleArray::erase(const_iterator it)
 	\brief Remove an entry from the array using an iterator as the index
 
-	Using an iterator index, delete an entry in the array. Note, this
-	will change the end() value in an index
+	Using an iterator index, delete an entry in the array. Note, this will
+	change the end() value in an index
 
 	\param it Iterator index into an array
 	\return Zero on success, or non zero on failure
@@ -858,5 +902,3 @@ Burger::eError BURGER_API Burger::SimpleArrayBase::append(const void *pData,uint
 	\sa remove_at(uintptr_t)
 
 ***************************************/
-
-

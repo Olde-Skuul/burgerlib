@@ -61,7 +61,7 @@ public:
 	/** Callback for printing instructions */
 	typedef void(BURGER_API* UsageProc)(ConsoleApp* pThis);
 
-	ConsoleApp(int iArgc, const char** ppArgv, uint_t uFlags = 0);
+	ConsoleApp(int iArgc, const char** ppArgv, uint_t uFlags = 0) BURGER_NOEXCEPT;
 	virtual ~ConsoleApp();
 	BURGER_INLINE void SetArgv(const char** ppArgv) BURGER_NOEXCEPT
 	{

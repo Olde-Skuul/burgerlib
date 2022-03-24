@@ -159,13 +159,13 @@ static uint_t BURGER_API TestIPv6ToString(void) BURGER_NOEXCEPT
 		uFailure |= uTest;
 		ReportFailure(
 			"Burger::IPv6ToString(&StringTest,0x%08X,%u) = \"%s\", expected \"%s\"",
-			uTest, pWork->m_IP[0], pWork->m_uPort, StringTest.GetPtr(),
+			uTest, pWork->m_IP[0], pWork->m_uPort, StringTest.c_str(),
 			pWork->m_pString);
 		if (!uTest) {
 			uint8_t IPv6[16];
 			uint_t Port;
 			uTest = static_cast<uint_t>(
-				Burger::StringToIPv6(StringTest.GetPtr(), IPv6, &Port));
+				Burger::StringToIPv6(StringTest.c_str(), IPv6, &Port));
 			if (!uTest) {
 				uTest = (Burger::MemoryCompare(IPv6, pWork->m_IP, 16) ||
 					((pWork->m_uPort != BURGER_MAXUINT) &&
@@ -174,7 +174,7 @@ static uint_t BURGER_API TestIPv6ToString(void) BURGER_NOEXCEPT
 			uFailure |= uTest;
 			ReportFailure(
 				"Burger::StringToIPv6(\"%s\") = 0x%08X,%u, expected 0x%08X,%u",
-				uTest, StringTest.GetPtr(), IPv6[0], Port, pWork->m_IP[0],
+				uTest, StringTest.c_str(), IPv6[0], Port, pWork->m_IP[0],
 				pWork->m_uPort);
 		}
 		++pWork;
@@ -207,7 +207,7 @@ static void BURGER_API TestIPv4Resolve(
 		if (!uTest) {
 			Burger::IPv4ToString(
 				&StringTest, IPAddress.U.IPv4.m_uIP, IPAddress.U.IPv4.m_uPort);
-			Message("IPv4 %s resolved to IP %s", *pWork, StringTest.GetPtr());
+			Message("IPv4 %s resolved to IP %s", *pWork, StringTest.c_str());
 
 		} else {
 			ReportFailure("NetworkManager::ResolveIPv4Address(\"%s\") failed",
@@ -242,7 +242,7 @@ static void BURGER_API TestIPv6Resolve(
 		if (!uTest) {
 			Burger::IPv6ToString(
 				&StringTest, IPAddress.U.IPv6.m_IP, IPAddress.U.IPv6.m_uPort);
-			Message("IPv6 %s resolved to IP %s", *pWork, StringTest.GetPtr());
+			Message("IPv6 %s resolved to IP %s", *pWork, StringTest.c_str());
 		} else {
 			ReportFailure("NetworkManager::ResolveIPv6Address(\"%s\") failed",
 				uTest, *pWork);
@@ -265,7 +265,7 @@ static void BURGER_API TestGetIPv4Address(
 	const uint_t uTest = static_cast<uint_t>(pNet->GetIPv4Address(&IPAddress));
 	if (!uTest) {
 		Burger::IPv4ToString(&StringTest, IPAddress.U.IPv4.m_uIP);
-		Message("IPv4 address for the host machine is %s", StringTest.GetPtr());
+		Message("IPv4 address for the host machine is %s", StringTest.c_str());
 	} else {
 		ReportFailure("NetworkManager::GetIPv4Address() failed", uTest);
 	}
@@ -285,7 +285,7 @@ static void BURGER_API TestGetIPv6Address(
 	const uint_t uTest = static_cast<uint_t>(pNet->GetIPv6Address(&IPAddress));
 	if (!uTest) {
 		Burger::IPv6ToString(&StringTest, IPAddress.U.IPv6.m_IP);
-		Message("IPv6 address for the host machine is %s", StringTest.GetPtr());
+		Message("IPv6 address for the host machine is %s", StringTest.c_str());
 	} else {
 		ReportFailure("NetworkManager::GetIPv6Address() failed", uTest);
 	}
@@ -332,7 +332,7 @@ int BURGER_API TestNetwork(uint_t uVerbose) BURGER_NOEXCEPT
 			Message("Sent 1 %u",Net.SendStream(&NetAddress,"Maccy UDP6 Burger",18));
 			Burger::String StringTest;
 			Burger::IPv4ToString(&StringTest,NetAddress.U.IPv4.m_uIP,NetAddress.U.IPv4.m_uPort);
-			Message("IPv4 address for the host machine is %s",StringTest.GetPtr());
+			Message("IPv4 address for the host machine is %s",StringTest.c_str());
 #endif
 		} else {
 			uResult |= 10;

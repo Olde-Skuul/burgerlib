@@ -44,7 +44,7 @@
 namespace Burger {
 
 #define MAKE_BURGER_STRING_FORMATTED_CONSTRUCTOR(N) \
-	String(const char* pFmt, BURGER_SP_ARG##N): m_pData(m_Raw), m_uLength(0) \
+	String(const char* pFmt, BURGER_SP_ARG##N) BURGER_NOEXCEPT: m_pData(m_Raw), m_uLength(0) \
 	{ \
 		m_Raw[0] = 0; \
 		const Burger::SafePrintArgument* args[N] = {BURGER_SP_INITARG##N}; \
@@ -52,14 +52,14 @@ namespace Burger {
 	}
 
 #define MAKE_BURGER_STRING_PRINTF(N) \
-	void BURGER_INLINE Printf(const char* pFmt, BURGER_SP_ARG##N) \
+	void BURGER_INLINE Printf(const char* pFmt, BURGER_SP_ARG##N) BURGER_NOEXCEPT \
 	{ \
 		const Burger::SafePrintArgument* args[N] = {BURGER_SP_INITARG##N}; \
 		InitFormattedString(pFmt, N, args); \
 	}
 
 #define MAKE_BURGER_STRING_PRINTF_STRREF(N) \
-	void BURGER_INLINE Printf(const String& sFmt, BURGER_SP_ARG##N) \
+	void BURGER_INLINE Printf(const String& sFmt, BURGER_SP_ARG##N) BURGER_NOEXCEPT \
 	{ \
 		const Burger::SafePrintArgument* args[N] = {BURGER_SP_INITARG##N}; \
 		InitFormattedString(sFmt.GetPtr(), N, args); \
@@ -186,6 +186,10 @@ public:
 	{
 		return m_uLength;
 	}
+	BURGER_INLINE uint_t empty(void) const BURGER_NOEXCEPT
+	{
+		return !m_uLength;
+	}
 	BURGER_INLINE uintptr_t GetLength(void) const BURGER_NOEXCEPT
 	{
 		return m_uLength;
@@ -277,7 +281,7 @@ public:
 	{
 		return (m_uLength != 0);
 	}
-	void BURGER_API Clear(void) BURGER_NOEXCEPT;
+	void BURGER_API clear(void) BURGER_NOEXCEPT;
 	uintptr_t BURGER_API Copy(
 		char* pOutput, uintptr_t uOutputSize = UINTPTR_MAX) const;
 	uintptr_t BURGER_API PCopy(

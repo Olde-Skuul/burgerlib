@@ -149,6 +149,7 @@ Burger::GameApp* Burger::GameApp::g_piOSApp;
 
 - (NSUInteger)supportedInterfaceOrientations
 {
+#if defined(__IPHONE_6_0)
 	NSUInteger uResult = UIInterfaceOrientationMaskAll;
 
 	// Allow all directions on an iPad, but don't allow upside down
@@ -158,6 +159,9 @@ Burger::GameApp* Burger::GameApp::g_piOSApp;
 		UIUserInterfaceIdiomPhone) {
 		uResult &= ~UIInterfaceOrientationMaskPortraitUpsideDown;
 	}
+#else
+	NSUInteger uResult = 0;
+#endif
 	return uResult;
 }
 
@@ -242,7 +246,7 @@ Burger::GameApp* Burger::GameApp::g_piOSApp;
 - (void)postFinishLaunch
 {
 	// Run the application and capture the exit code
-	Burger::Globals::SetErrorCode(CodeEntry(Burger::GameApp::GetApp()));
+	Burger::Globals::SetErrorCode(static_cast<Burger::eError>(CodeEntry(Burger::GameApp::GetApp())));
 	// Dispose of the window
 	Burger::GameApp::GetApp()->ReleaseWindow();
 }

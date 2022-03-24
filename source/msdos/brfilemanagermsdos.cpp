@@ -2,7 +2,7 @@
 
 	File Manager Class: MSDOS version
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -77,20 +77,28 @@ static int __far critical_error_handler(
 
 #endif
 
-/*! ************************************
+/***************************************
 
-	\brief Determine the version of MS/DOS.
+	\brief Handle platform specific startup code
 
-	Calls several MS-DOS functions to determine the version and flavor of MS/DOS
-	this application is running. It will also detect DosBox.
+	Calls system functions to determine the version, state and several platform
+	specific variables to allow the FileManager to run better by pre-caching
+	relevant data.
 
-	\msdosonly
+	For MS-DOS, it will determine the version and flavor of MS/DOS this
+	application is running. It will also detect DosBox.
+
+	For Linux, it will scan all the mounted volumes for quick access to shared
+	volumes.
+
+	For Android and consoles, it will check if there are mounted SD Cards or
+	other external data storage devices so the application can be aware of them.
 
 	\sa Burger::FileManager or BURGER_MSDOS
 
 ***************************************/
 
-void BURGER_API Burger::FileManager::DetectMSDOSVersion(void) BURGER_NOEXCEPT
+void BURGER_API Burger::FileManager::PlatformSetup(void) BURGER_NOEXCEPT
 {
 	// Disable Abort, Retry, Ignore
 	_harderr(critical_error_handler);
@@ -357,7 +365,8 @@ uint_t BURGER_API Burger::FileManager::MSDOS_GetOSVersion(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::MSDos_GetOSTrueVersion(void) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::FileManager::MSDos_GetOSTrueVersion(
+	void) BURGER_NOEXCEPT
 {
 	// Return the true version
 	return g_pFileManager->m_uMSDOSTrueVersion;
@@ -784,8 +793,8 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
 	pOutput->LoadMSDOS(Temp);
 	return kErrorNone;
 FooBar:
-	pOutput->Clear(); // Clear it on error
-	return kErrorWriteFailure;      // Error
+	pOutput->Clear();          // Clear it on error
+	return kErrorWriteFailure; // Error
 }
 
 /***************************************
@@ -800,7 +809,8 @@ Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
 	Filename* pFileName, TimeDate_t* pOutput)
 {
 	uint32_t Temp;
-	eError Result = kErrorNone; /* If no dos support then don't return an error */
+	eError Result =
+		kErrorNone; /* If no dos support then don't return an error */
 	if (MSDOS_HasLongFilenames()) { /* Win95? */
 		Regs16 MyRegs;
 		StringCopy(static_cast<char*>(GetRealBufferProtectedPtr()),
@@ -907,7 +917,7 @@ Burger::eError BURGER_API Burger::FileManager::DeleteFile(
 	Regs.ds = static_cast<uint16_t>(RealBuffer >> 16);
 	Int86x(0x21, &Regs, &Regs);
 	if (Regs.flags & 1) { // Error?
-		return kErrorIO;      // Oh forget it!!!
+		return kErrorIO;  // Oh forget it!!!
 	}
 	return kErrorNone; // Success!!
 }
@@ -919,7 +929,8 @@ Burger::eError BURGER_API Burger::FileManager::DeleteFile(
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(Filename* pDirName)
+Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(
+	Filename* pDirName)
 {
 	Regs16 Regs; // Used by DOS
 
@@ -943,8 +954,8 @@ Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(Filename* pDirN
 	Regs.dx = static_cast<uint16_t>(RealBuffer);
 	Regs.ds = static_cast<uint16_t>(RealBuffer >> 16);
 	Int86x(0x21, &Regs, &Regs);
-	if (Regs.flags & 1) {  // Error?
-		return kErrorIO; // Oh forget it!!!
+	if (Regs.flags & 1) { // Error?
+		return kErrorIO;  // Oh forget it!!!
 	}
 	return kErrorNone; // Success!!
 }
@@ -1009,11 +1020,12 @@ static uint_t BURGER_API DirCreate(const char* pFileName)
 	return DoWorkDOSCrDir(pFileName); /* Dos 5.0 or previous */
 }
 
-Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(Filename* pFileName)
+Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
+	Filename* pFileName)
 {
 	char* pPath = const_cast<char*>(pFileName->GetNative());
 	if (!DirCreate(pPath)) { /* Easy way! */
-		return kErrorNone;        /* No error */
+		return kErrorNone;   /* No error */
 	}
 	/* Ok see if I can create the directory tree */
 	if (pPath[0]) { /* Is there a filename? */
@@ -1039,7 +1051,7 @@ Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(Filename* pFi
 			++WorkPtr;                 /* Index past the char */
 		} while (Old);                 /* Still more string? */
 		if (!Err) {                    /* Cool!! */
-			return kErrorNone;              /* No error */
+			return kErrorNone;         /* No error */
 		}
 	}
 	return kErrorIO; /* Didn't do it! */

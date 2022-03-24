@@ -1822,6 +1822,18 @@ line of processors.
 
 /*! ************************************
 
+	\def BURGER_UNIX
+	\brief Define to determine if code is being built on a unix platorm.
+
+	If this define exists, then the code is running on macOS X, tvOS, watchOS,
+	iOS, Android, or Linux so the Unix/BSD APIs are available.
+
+	\sa BURGER_LINUX, BURGER_ANDROID, BURGER_IOS, or BURGER_MACOSX
+
+***************************************/
+
+/*! ************************************
+
 	\def BURGER_PLATFORM_NAME
 	\brief String with the operating system's name.
 

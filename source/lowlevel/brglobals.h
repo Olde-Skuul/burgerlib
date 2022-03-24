@@ -110,47 +110,6 @@ private:
 	uint8_t m_bQuickTimeVersionValid;
 #endif
 
-#if defined(BURGER_LINUX) || defined(DOXYGEN)
-public:
-	struct Uname_t {
-		/** Operating system name */
-		String m_sysnam;
-		/** Name within network */
-		String m_nodename;
-		/** OS release string */
-		String m_release;
-		/** OS version string */
-		String m_version;
-		/** Hardware identifier */
-		String m_machine;
-		/** (Optional) NIS or YP domain name */
-		String m_domainname;
-	};
-
-	enum eLinuxFlavor {
-		/** Unknown flavor of Linux */
-		kLinuxUnknown,
-		/** Native Linux distribution */
-		kLinuxNative,
-		/** Linux running under MSYS2 */
-		kLinuxMSYS2,
-		/** Linux running under Windows Subsystem for Linux */
-		kLinuxWSL,
-		/** Linux running under Cygwin */
-		kLinuxCygwin
-	};
-
-private:
-	/** Cached uname information */
-	Uname_t m_uname;
-
-	/** Flavor of Linux found */
-	eLinuxFlavor m_uLinuxFlavor;
-
-	/** \ref TRUE if uname is valid. (Linux only) */
-	uint8_t m_bLinuxUnameTested;
-#endif
-
 private:
 	/** Global default error code used by \ref Globals::Shutdown(). */
 	static eError g_iErrorCode;
@@ -193,16 +152,17 @@ public:
 	static void BURGER_API GetQTFolderFromRegistry(const char* pSubKey,
 		const char* pValueName, char* pBuffer, uint32_t uSize);
 	static uint_t BURGER_API GetPathToQuickTimeFolder(
-		char* pBuffer, uint32_t uSize, uint32_t* pReserved);
+		char* pBuffer, uint32_t uSize, uint32_t* pReserved) BURGER_NOEXCEPT;
 	static uint32_t BURGER_API GetQTSystemDirectoryA(
-		char* pBuffer, uint32_t uSize);
+		char* pBuffer, uint32_t uSize) BURGER_NOEXCEPT;
 	static uint32_t BURGER_API GetQTApplicationDirectoryA(
-		char* pBuffer, uint32_t uSize);
+		char* pBuffer, uint32_t uSize) BURGER_NOEXCEPT;
 	static uint32_t BURGER_API GetQTExtensionDirectoryA(
-		char* pBuffer, uint32_t uSize);
+		char* pBuffer, uint32_t uSize) BURGER_NOEXCEPT;
 	static uint32_t BURGER_API GetQTComponentDirectoryA(
-		char* pBuffer, uint32_t uSize);
-	static HINSTANCE__* BURGER_API QTLoadLibrary(const char* pDLLName);
+		char* pBuffer, uint32_t uSize) BURGER_NOEXCEPT;
+	static HINSTANCE__* BURGER_API QTLoadLibrary(
+		const char* pDLLName) BURGER_NOEXCEPT;
 
 	static uint64_t BURGER_API GetFileVersion64(
 		const uint16_t* pWindowsFilename);
@@ -263,12 +223,7 @@ public:
 #endif
 
 #if defined(BURGER_MACOS) || defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	static uint_t BURGER_API GetQuickTimeVersion(void);
-#endif
-
-#if defined(BURGER_LINUX) || defined(DOXYGEN)
-	static const Uname_t* GetUname(void) BURGER_NOEXCEPT;
-	static eLinuxFlavor GetLinuxFlavor(void) BURGER_NOEXCEPT;
+	static uint_t BURGER_API GetQuickTimeVersion(void) BURGER_NOEXCEPT;
 #endif
 
 	static BURGER_INLINE eError GetErrorCode(void) BURGER_NOEXCEPT
@@ -333,7 +288,11 @@ extern uint_t BURGER_API IsElevated(void) BURGER_NOEXCEPT;
 #else
 BURGER_INLINE uint_t IsElevated(void) BURGER_NOEXCEPT
 {
+#if defined(BURGER_MACOS) || defined(BURGER_MSDOS)
 	return TRUE;
+#else
+	return FALSE;
+#endif
 }
 #endif
 }

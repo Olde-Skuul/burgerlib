@@ -179,7 +179,7 @@ static const IntTest64x64_t MinTestTableInt64[] = {
 	{0x3FFFFFFFFFFFFFFFLL, -0x4100000000000000LL, -0x4100000000000000LL},
 	{-0x0000000000000001LL, 0x0000000000000001LL, -0x0000000000000001LL}};
 
-static uint_t BURGER_API TestMinInt64(void)
+static uint_t BURGER_API TestMinInt64(void) BURGER_NOEXCEPT
 {
 	uint_t uFailure = FALSE;
 	const IntTest64x64_t* pWork = MinTestTableInt64;
@@ -254,7 +254,7 @@ static const UIntTest64x64_t MinTestTableUInt64[] = {
 	{0x3FFFFFFFFFFFFFFFULL, 0xBF00000000000000ULL, 0x3FFFFFFFFFFFFFFFULL},
 	{0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0x0000000000000001ULL}};
 
-static uint_t BURGER_API TestMinUInt64(void)
+static uint_t BURGER_API TestMinUInt64(void) BURGER_NOEXCEPT
 {
 	uint_t uFailure = FALSE;
 	const UIntTest64x64_t* pWork = MinTestTableUInt64;
@@ -365,7 +365,7 @@ static const IntTest64x64_t MaxTestTableInt64[] = {
 	{0x3FFFFFFFFFFFFFFFLL, -0x4100000000000000LL, 0x3FFFFFFFFFFFFFFFLL},
 	{-0x0000000000000001LL, 0x0000000000000001LL, 0x0000000000000001LL}};
 
-static uint_t BURGER_API TestMaxInt64(void)
+static uint_t BURGER_API TestMaxInt64(void) BURGER_NOEXCEPT
 {
 	uint_t uFailure = FALSE;
 	const IntTest64x64_t* pWork = MaxTestTableInt64;
@@ -1811,7 +1811,7 @@ static uint_t BURGER_API Test_is_function(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-static uint_t BURGER_API Testunique_ptr(void)
+static uint_t BURGER_API Testunique_ptr(void) BURGER_NOEXCEPT
 {
 	uint_t uFailure = FALSE;
 
@@ -2137,7 +2137,7 @@ static uint_t BURGER_API Testround_up_pointer(void) BURGER_NOEXCEPT
 			Burger::String Text(
 				"Burger::round_up_pointer((double *)0x%016llX) = 0x%016llX, expected 0x%016llX",
 				pWork->m_uPtr, reinterpret_cast<uintptr_t>(pReturn), uExpected);
-			ReportFailure(Text.GetPtr(), uTest);
+			ReportFailure(Text.c_str(), uTest);
 		}
 	} while (++uCount < 17);
 
@@ -2283,7 +2283,7 @@ static uint_t BURGER_API Test_move(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t BURGER_API TestBralgorithm(uint_t uVerbose)
+uint_t BURGER_API TestBralgorithm(uint_t uVerbose) BURGER_NOEXCEPT
 {
 	if (uVerbose & VERBOSE_MSG) {
 		Message("Running Algorithm tests");

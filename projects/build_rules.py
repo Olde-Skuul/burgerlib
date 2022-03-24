@@ -92,6 +92,11 @@ BURGER_LIB_PS4 = (
     '../source/ps4',
 )
 
+## PS5 specific code
+BURGER_LIB_PS5 = (
+    '../source/ps5',
+)
+
 ## PS Vita specific code
 BURGER_LIB_VITA = (
     '../source/vita',
@@ -137,6 +142,16 @@ BURGER_LIB_MAC = (
 BURGER_LIB_IOS = (
     '../source/ios',
     '../source/graphics/shadersopengl'
+)
+
+## Darwin specific code
+BURGER_LIB_DARWIN = (
+    '../source/darwin',
+)
+
+## Unix specific code
+BURGER_LIB_UNIX = (
+    '../source/unix',
 )
 
 ## Microsoft MSDos specific code
@@ -203,9 +218,9 @@ ARG_LISTS = [
     ('android', 'burger', 'library', ['vs2022']),
     ('msdos', 'burger', 'library', ['watcom']),
     ('msdos4gw', 'unittests', 'console', ['watcom']),
-    ('macosx', 'burger', 'library', ['xcode3', 'xcode5']),
-    ('macosx', 'unittests', 'console', ['xcode3', 'xcode5']),
-    ('ios', 'burger', 'library', ['xcode5']),
+    ('macosx', 'burger', 'library', ['xcode3', 'xcode5', 'xcode13']),
+    ('macosx', 'unittests', 'console', ['xcode3', 'xcode5', 'xcode13']),
+    ('ios', 'burger', 'library', ['xcode3', 'xcode5']),
     ('linux', 'burger', 'library', ['make']),
     ('linux', 'unittests', 'console', ['make']),
     ('msdos', 'burger', 'library', ['codeblocks']),
@@ -408,6 +423,9 @@ def do_project(working_directory, project):
         platform_folder = 'mac'
         source_folders_list.extend(BURGER_LIB_MAC)
 
+    if platform.is_darwin():
+        source_folders_list.extend(BURGER_LIB_DARWIN)
+
     # Sony platforms
     if platform is PlatformTypes.ps3:
         platform_folder = 'ps3'
@@ -472,6 +490,10 @@ def do_project(working_directory, project):
     if platform is PlatformTypes.switch:
         platform_folder = 'switch'
         source_folders_list.extend(BURGER_LIB_SWITCH)
+
+    if platform.is_darwin() or platform.is_android() or \
+        platform is PlatformTypes.linux:
+        source_folders_list.extend(BURGER_LIB_UNIX)
 
     # Add property files for unittests or burgerlib
     if project.name == 'unittests':

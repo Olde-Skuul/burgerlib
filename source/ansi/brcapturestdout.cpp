@@ -330,7 +330,7 @@ Burger::eError BURGER_API Burger::CaptureStdout::Shutdown(void) BURGER_NOEXCEPT
 Burger::eError BURGER_API Burger::CaptureStdout::GetCapture(
     String* pOutput) BURGER_NOEXCEPT
 {
-    pOutput->Clear();
+    pOutput->clear();
     eError uError = kErrorNotReady;
     if (m_bActive) {
 

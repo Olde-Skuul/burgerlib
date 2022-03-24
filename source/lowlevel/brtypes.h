@@ -3,7 +3,7 @@
 	Determine which compiler is being used and create standardized typedefs
 	and macros so generic code can be created cross platform
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -597,7 +597,8 @@
 #endif
 
 #elif defined(__APPLE__) && defined(__MACH__) && \
-	defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__)
+	(defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__) || \
+		defined(__IPHONE_OS_VERSION_MIN_REQUIRED))
 #define BURGER_IOS
 #define BURGER_PLATFORM_NAME "Apple iOS"
 
@@ -630,6 +631,12 @@
 // Any form of Apple OS that is based on Darwin
 #if defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(DOXYGEN)
 #define BURGER_DARWIN
+#endif
+
+// Any operating system that supports Unix / Posix functions
+#if defined(BURGER_DARWIN) || defined(BURGER_LINUX) || \
+	defined(BURGER_ANDROID) || defined(DOXYGEN)
+#define BURGER_UNIX
 #endif
 
 /***************************************

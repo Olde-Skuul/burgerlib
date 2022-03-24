@@ -44,7 +44,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::ConsoleApp, Burger::Base);
 ***************************************/
 
 #if (!defined(BURGER_WINDOWS) && !defined(BURGER_MAC)) || defined(DOXYGEN)
-Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv, uint_t uFlags):
+Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv, uint_t uFlags) BURGER_NOEXCEPT:
 	m_ANSIMemoryManager(), m_bLaunchedFromDesktop(FALSE)
 {
 	BURGER_UNUSED(uFlags);
@@ -242,10 +242,10 @@ int BURGER_API Burger::ConsoleApp::InputAndOutput(
 		if (iArgc == 3) {
 			// Second parameter?
 			SecondName.SetFromNative(ppArgv[2]);
-			pOutputFile = SecondName.GetPtr();
+			pOutputFile = SecondName.c_str();
 		}
 		// Call the function and exit
-		iResult = pCallback(this, FirstName.GetPtr(), pOutputFile);
+		iResult = pCallback(this, FirstName.c_str(), pOutputFile);
 	}
 	Globals::SetErrorCode(static_cast<Burger::eError>(iResult));
 	return iResult; // Exit

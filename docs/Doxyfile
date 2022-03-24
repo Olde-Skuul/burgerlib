@@ -266,10 +266,17 @@ ALIASES                = "windowsonly=@note This is only available on Windows\n"
                          "xboxoneonly=@note This is only available on Xbox ONE\n" \
                          "ps3only=@note This is only available on Playstation 3\n" \
                          "ps4only=@note This is only available on Playstation 4\n" \
+                         "ps5only=@note This is only available on Playstation 5\n" \
+                         "switchonly=@note This is only available on Nintendo Switch\n" \
+                         "stadiaonly=@note This is only available on Google Stadia\n" \
                          "macosxonly=@note This is only available on Mac OSX\n" \
                          "maconly=@note This is only available on Mac OS 9 or Carbon\n" \
                          "iosonly=@note This is only available on iOS\n" \
-                         "msdosonly=@note This is only available on MS/DOS\n"
+                         "msdosonly=@note This is only available on MS/DOS\n" \
+                         "linuxonly=@note This is only available on Linux platforms\n" \
+                         "androidonly=@note This is only available on Android platforms\n" \
+                         "unixonly=@note This is only available on unix/posix compatible platforms\n" \
+                         "darwinonly=@note This is only available on Apple Darwin based platforms\n"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For

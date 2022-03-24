@@ -27,6 +27,7 @@
 #include "brgl.h"
 #include "brglext.h"
 #import <UIKit/UIKit.h>
+#include <QuartzCore/CAEAGLLayer.h>
 
 #if !defined(DOXYGEN)
 

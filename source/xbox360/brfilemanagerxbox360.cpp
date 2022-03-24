@@ -2,7 +2,7 @@
 
 	File Manager Class: Xbox 360 version
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -206,7 +206,8 @@ static uint_t BURGER_API DirCreate(const char* pFileName)
 	return FALSE; // Success!
 }
 
-Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(Filename* pFileName)
+Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
+	Filename* pFileName)
 {
 	String NewName(pFileName->GetNative());
 
@@ -242,7 +243,7 @@ Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(Filename* pFi
 			++pWork;                           // Index past the char
 		} while (Old);                         // Still more string?
 		if (!Err) {                            // Cool!!
-			return kErrorNone;                      // No error
+			return kErrorNone;                 // No error
 		}
 	}
 	return kErrorIO; /* Didn't do it! */

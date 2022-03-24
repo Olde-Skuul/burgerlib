@@ -74,7 +74,7 @@ const GUID Burger::g_GUIDZero = {0x00000000,0x0000,0x0000,{0x00,0x00,0x00,0x00,0
 	
 ***************************************/
 
-static BURGER_INLINE uint_t GUIDCharIsHex(uint_t uInput)
+static BURGER_INLINE uint_t GUIDCharIsHex(uint_t uInput) BURGER_NOEXCEPT
 {
 	uint_t uResult = FALSE;		// Assume it's bad
 	if (!uInput || (Burger::g_AsciiTestTable[uInput]&Burger::ASCII_HEX)) {
@@ -90,7 +90,7 @@ static BURGER_INLINE uint_t GUIDCharIsHex(uint_t uInput)
 	
 ***************************************/
 
-static uint32_t BURGER_API GUIDFromHex(const char **ppInput,uint_t uDigits)
+static uint32_t BURGER_API GUIDFromHex(const char **ppInput,uint_t uDigits) BURGER_NOEXCEPT
 {
 	const char *pInput = ppInput[0];
 	while (!GUIDCharIsHex(reinterpret_cast<const uint8_t *>(pInput)[0])) {
@@ -137,7 +137,7 @@ static uint32_t BURGER_API GUIDFromHex(const char **ppInput,uint_t uDigits)
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
-void BURGER_API Burger::GUIDInit(GUID *pOutput)
+void BURGER_API Burger::GUIDInit(GUID *pOutput) BURGER_NOEXCEPT
 {
 	// For unsupported platforms, punt
 	pOutput->Data1 = LittleEndian::Load(Tick::ReadMicroseconds());
@@ -159,7 +159,7 @@ void BURGER_API Burger::GUIDInit(GUID *pOutput)
 
 ***************************************/
 
-void BURGER_API Burger::GUIDToString(char *pOutput,const GUID *pInput)
+void BURGER_API Burger::GUIDToString(char *pOutput,const GUID *pInput) BURGER_NOEXCEPT
 {
 	pOutput = NumberToAsciiHex(pOutput,LittleEndian::Load(&pInput->Data1),LEADINGZEROS|8);
 	pOutput[0] = '-';
@@ -191,7 +191,7 @@ void BURGER_API Burger::GUIDToString(char *pOutput,const GUID *pInput)
 
 ***************************************/
 
-uint_t BURGER_API Burger::GUIDFromString(GUID *pOutput,const char *pInput)
+uint_t BURGER_API Burger::GUIDFromString(GUID *pOutput,const char *pInput) BURGER_NOEXCEPT
 {
 	pOutput->Data1 = LittleEndian::Load(GUIDFromHex(&pInput,8));	// Get the timestamp
 	pOutput->Data2 = LittleEndian::Load(static_cast<uint16_t>(GUIDFromHex(&pInput,4)));	// The shorts
@@ -222,7 +222,7 @@ uint_t BURGER_API Burger::GUIDFromString(GUID *pOutput,const char *pInput)
 	
 ***************************************/
 
-uint_t BURGER_API Burger::GUIDHash(const GUID *pInput)
+uint_t BURGER_API Burger::GUIDHash(const GUID *pInput) BURGER_NOEXCEPT
 {
 	int_t iSum = 0;		// Sum of all the entries
 	int_t iAccum = 0;		// Accumulation
@@ -261,7 +261,7 @@ uint_t BURGER_API Burger::GUIDHash(const GUID *pInput)
 	
 ***************************************/
 
-uint_t BURGER_API Burger::GUIDIsEqual(const GUID *pInput1, const GUID *pInput2)
+uint_t BURGER_API Burger::GUIDIsEqual(const GUID *pInput1, const GUID *pInput2) BURGER_NOEXCEPT
 {
 	return (reinterpret_cast<const uint32_t *>(pInput1)[0] == reinterpret_cast<const uint32_t *>(pInput2)[0]) &&
 		(reinterpret_cast<const uint32_t *>(pInput1)[1] == reinterpret_cast<const uint32_t *>(pInput2)[1]) &&
@@ -285,7 +285,7 @@ uint_t BURGER_API Burger::GUIDIsEqual(const GUID *pInput1, const GUID *pInput2)
 
 ***************************************/
 
-int BURGER_API Burger::GUIDCompare(const GUID *pInput1,const GUID *pInput2)
+int BURGER_API Burger::GUIDCompare(const GUID *pInput1,const GUID *pInput2) BURGER_NOEXCEPT
 {
 	uint32_t uTemp1 = LittleEndian::Load(&pInput1->Data1);
 	uint32_t uTemp2 = LittleEndian::Load(&pInput2->Data1);

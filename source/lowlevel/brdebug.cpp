@@ -313,7 +313,7 @@ uint_t BURGER_API Burger::Debug::IsDebuggerPresent(void) BURGER_NOEXCEPT
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS)) || defined(DOXYGEN)
-void BURGER_API Burger::Debug::PrintErrorMessage(uint_t uErrorCode)
+void BURGER_API Burger::Debug::PrintErrorMessage(uint_t uErrorCode) BURGER_NOEXCEPT
 {
 	// Print the error string
 	PrintString("Error: 0x");

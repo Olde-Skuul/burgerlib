@@ -214,7 +214,7 @@ extern "C" const float g_fBurgerMath65536 = 65536.0f;
 
 ***************************************/
 
-Fixed32 BURGER_API Burger::IntToFixedSaturate(int32_t iInput)
+Fixed32 BURGER_API Burger::IntToFixedSaturate(int32_t iInput) BURGER_NOEXCEPT
 {
 	Fixed32 iResult;
 	if (iInput>=0x8000) {			// Not too big?
@@ -362,7 +362,7 @@ Fixed32 BURGER_API Burger::IntToFixedSaturate(int32_t iInput)
 
 #if defined(BURGER_X86) && (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || defined(BURGER_MSVC))
 
-BURGER_DECLSPECNAKED int32_t BURGER_API Burger::FloatToIntFloor(float /* fInput */)
+BURGER_DECLSPECNAKED int32_t BURGER_API Burger::FloatToIntFloor(float /* fInput */) BURGER_NOEXCEPT
 {
 BURGER_ASM {
 	fld		dword ptr [esp+4]		// Get the input value
@@ -379,7 +379,7 @@ NoExtra:
 }
 }
 
-BURGER_DECLSPECNAKED void BURGER_API Burger::FloatToIntFloor(int32_t * /* pOutput */,float /* fInput */)
+BURGER_DECLSPECNAKED void BURGER_API Burger::FloatToIntFloor(int32_t * /* pOutput */,float /* fInput */) BURGER_NOEXCEPT
 {
 BURGER_ASM {
 	fld		dword ptr [esp+4]		// Get the input value
@@ -412,7 +412,7 @@ NoExtra:
 
 #elif defined(BURGER_AMD64) || (defined(BURGER_INTEL) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))
 
-int32_t BURGER_API Burger::FloatToIntFloor(float fInput)
+int32_t BURGER_API Burger::FloatToIntFloor(float fInput) BURGER_NOEXCEPT
 {
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
@@ -427,7 +427,7 @@ int32_t BURGER_API Burger::FloatToIntFloor(float fInput)
 	return _mm_cvtsi128_si32(iVar);
 }
 
-void BURGER_API Burger::FloatToIntFloor(int32_t *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntFloor(int32_t *pOutput,float fInput) BURGER_NOEXCEPT
 {
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
@@ -445,7 +445,7 @@ void BURGER_API Burger::FloatToIntFloor(int32_t *pOutput,float fInput)
 
 #elif defined(BURGER_XBOX360) || (defined(BURGER_POWERPC64) && defined(BURGER_MACOSX))
 
-int32_t Burger::FloatToIntFloor(float fInput) 
+int32_t Burger::FloatToIntFloor(float fInput) BURGER_NOEXCEPT
 { 
 	// Convert to the input to an integer
 	double dVar = __fcfid(__fctidz(fInput));
@@ -459,7 +459,7 @@ int32_t Burger::FloatToIntFloor(float fInput)
 	return iResult;
 }
 
-void Burger::FloatToIntFloor(int32_t *pOutput,float fInput) 
+void Burger::FloatToIntFloor(int32_t *pOutput,float fInput) BURGER_NOEXCEPT
 { 
 	// Convert to the input to an integer
 	double dVar = __fcfid(__fctidz(fInput));
@@ -472,7 +472,7 @@ void Burger::FloatToIntFloor(int32_t *pOutput,float fInput)
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM int32_t BURGER_API Burger::FloatToIntFloor(float /* fInput */)
+BURGER_ASM int32_t BURGER_API Burger::FloatToIntFloor(float /* fInput */) BURGER_NOEXCEPT
 {
 	lwz		r3,g_fMinNoInteger
 	mffs	fp4						// Save the rounding register
@@ -493,7 +493,7 @@ BURGER_ASM int32_t BURGER_API Burger::FloatToIntFloor(float /* fInput */)
 	blr
 }
 
-BURGER_ASM void BURGER_API Burger::FloatToIntFloor(int32_t * /* pOutput */,float /* fInput */ )
+BURGER_ASM void BURGER_API Burger::FloatToIntFloor(int32_t * /* pOutput */,float /* fInput */ ) BURGER_NOEXCEPT
 {
 	lwz		r4,g_fMinNoInteger
 	mffs	fp4						// Save the rounding register
@@ -514,7 +514,7 @@ BURGER_ASM void BURGER_API Burger::FloatToIntFloor(int32_t * /* pOutput */,float
 
 #else
 
-int32_t BURGER_API Burger::FloatToIntFloor(float fInput)
+int32_t BURGER_API Burger::FloatToIntFloor(float fInput) BURGER_NOEXCEPT
 {
 	int iVar = static_cast<int>(fInput);			// Convert to int but rounded!
 	float fVar = static_cast<float>(iVar);
@@ -549,7 +549,7 @@ int32_t BURGER_API Burger::FloatToIntFloor(float fInput)
 	
 ***************************************/
 
-void BURGER_API Burger::FloatToIntFloor(int32_t *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntFloor(int32_t *pOutput,float fInput) BURGER_NOEXCEPT
 {
 	int iVar = static_cast<int>(fInput);			// Convert to int but rounded!
 	float fVar = static_cast<float>(iVar);
@@ -589,7 +589,7 @@ void BURGER_API Burger::FloatToIntFloor(int32_t *pOutput,float fInput)
 
 #if defined(BURGER_X86) && (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || defined(BURGER_MSVC))
 
-BURGER_DECLSPECNAKED int32_t BURGER_API Burger::FloatToIntCeil(float /* fInput */)
+BURGER_DECLSPECNAKED int32_t BURGER_API Burger::FloatToIntCeil(float /* fInput */) BURGER_NOEXCEPT
 {
 BURGER_ASM {
 	fld		dword ptr [esp+4]		// Get the input value
@@ -606,7 +606,7 @@ NoExtra:
 }
 }
 
-BURGER_DECLSPECNAKED void BURGER_API Burger::FloatToIntCeil(int32_t * /* pOutput */,float /* fInput */)
+BURGER_DECLSPECNAKED void BURGER_API Burger::FloatToIntCeil(int32_t * /* pOutput */,float /* fInput */) BURGER_NOEXCEPT
 {
 BURGER_ASM {
 	fld		dword ptr [esp+4]		// Get the input value
@@ -638,7 +638,7 @@ NoExtra:
 
 #elif defined(BURGER_AMD64) || (defined(BURGER_INTEL) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))
 
-int32_t BURGER_API Burger::FloatToIntCeil(float fInput)
+int32_t BURGER_API Burger::FloatToIntCeil(float fInput) BURGER_NOEXCEPT
 {
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
@@ -653,7 +653,7 @@ int32_t BURGER_API Burger::FloatToIntCeil(float fInput)
 	return _mm_cvtsi128_si32(iVar);
 }
 
-void BURGER_API Burger::FloatToIntCeil(int32_t *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntCeil(int32_t *pOutput,float fInput) BURGER_NOEXCEPT
 {
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
@@ -671,7 +671,7 @@ void BURGER_API Burger::FloatToIntCeil(int32_t *pOutput,float fInput)
 
 #elif defined(BURGER_XBOX360) || (defined(BURGER_POWERPC64) && defined(BURGER_MACOSX))
 
-int32_t Burger::FloatToIntCeil(float fInput) 
+int32_t Burger::FloatToIntCeil(float fInput)  BURGER_NOEXCEPT
 { 
 	// Convert to the input to an integer
 	double dVar = __fcfid(__fctidz(fInput));
@@ -685,7 +685,7 @@ int32_t Burger::FloatToIntCeil(float fInput)
 	return iResult;
 }
 
-void Burger::FloatToIntCeil(int32_t *pOutput,float fInput) 
+void Burger::FloatToIntCeil(int32_t *pOutput,float fInput) BURGER_NOEXCEPT
 { 
 	// Convert to the input to an integer
 	double dVar = __fcfid(__fctidz(fInput));
@@ -698,7 +698,7 @@ void Burger::FloatToIntCeil(int32_t *pOutput,float fInput)
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM int32_t BURGER_API Burger::FloatToIntCeil(float /* fInput */)
+BURGER_ASM int32_t BURGER_API Burger::FloatToIntCeil(float /* fInput */) BURGER_NOEXCEPT
 {
 	lwz		r3,g_fMinNoInteger
 	mffs	fp4						// Save the rounding register
@@ -719,7 +719,7 @@ BURGER_ASM int32_t BURGER_API Burger::FloatToIntCeil(float /* fInput */)
 	blr
 }
 
-BURGER_ASM void BURGER_API Burger::FloatToIntCeil(int32_t * /* pOutput */,float /* fInput */ )
+BURGER_ASM void BURGER_API Burger::FloatToIntCeil(int32_t * /* pOutput */,float /* fInput */ ) BURGER_NOEXCEPT
 {
 	lwz		r4,g_fMinNoInteger
 	mffs	fp4						// Save the rounding register
@@ -740,7 +740,7 @@ BURGER_ASM void BURGER_API Burger::FloatToIntCeil(int32_t * /* pOutput */,float 
 
 #else
 
-int32_t BURGER_API Burger::FloatToIntCeil(float fInput)
+int32_t BURGER_API Burger::FloatToIntCeil(float fInput) BURGER_NOEXCEPT
 {
 	int iVar = static_cast<int>(fInput);			// Convert to an int
 	float fVar = static_cast<float>(iVar);
@@ -774,7 +774,7 @@ int32_t BURGER_API Burger::FloatToIntCeil(float fInput)
 	
 ***************************************/
 
-void BURGER_API Burger::FloatToIntCeil(int32_t *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntCeil(int32_t *pOutput,float fInput) BURGER_NOEXCEPT
 {
 	int iVar = static_cast<int>(fInput);			// Convert to an int
 	float fVar = static_cast<float>(iVar);
@@ -814,7 +814,7 @@ void BURGER_API Burger::FloatToIntCeil(int32_t *pOutput,float fInput)
 
 #if defined(BURGER_X86) && (defined(BURGER_WATCOM) || defined(BURGER_METROWERKS) || defined(BURGER_MSVC))
 
-BURGER_DECLSPECNAKED int32_t BURGER_API Burger::FloatToIntRound(float /* fInput */)
+BURGER_DECLSPECNAKED int32_t BURGER_API Burger::FloatToIntRound(float /* fInput */) BURGER_NOEXCEPT
 {
 BURGER_ASM {
 	mov		eax,dword ptr [esp+4]	// Get the sign bit
@@ -831,7 +831,7 @@ BURGER_ASM {
 }
 }
 
-BURGER_DECLSPECNAKED void BURGER_API Burger::FloatToIntRound(int32_t * /* pOutput */,float /* fInput */)
+BURGER_DECLSPECNAKED void BURGER_API Burger::FloatToIntRound(int32_t * /* pOutput */,float /* fInput */) BURGER_NOEXCEPT
 {
 BURGER_ASM {
 
@@ -870,7 +870,7 @@ BURGER_ASM {
 
 #elif defined(BURGER_AMD64) || (defined(BURGER_INTEL) && (defined(BURGER_MACOSX) || defined(BURGER_IOS)))
 
-int32_t BURGER_API Burger::FloatToIntRound(float fInput)
+int32_t BURGER_API Burger::FloatToIntRound(float fInput) BURGER_NOEXCEPT
 {
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
@@ -910,7 +910,7 @@ int32_t BURGER_API Burger::FloatToIntRound(float fInput)
 	return _mm_cvtsi128_si32(iVar);
 }
 
-void BURGER_API Burger::FloatToIntRound(int32_t *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntRound(int32_t *pOutput,float fInput) BURGER_NOEXCEPT
 {
 	// Convert to SSE register
 	__m128 vInput = _mm_set_ss(fInput);
@@ -953,7 +953,7 @@ void BURGER_API Burger::FloatToIntRound(int32_t *pOutput,float fInput)
 
 #elif defined(BURGER_XBOX360) || (defined(BURGER_POWERPC64) && defined(BURGER_MACOSX))
 
-int32_t BURGER_API Burger::FloatToIntRound(float fInput)
+int32_t BURGER_API Burger::FloatToIntRound(float fInput) BURGER_NOEXCEPT
 {
 	// Get the absolute value
 	double dAbs = fabs(fInput);
@@ -976,7 +976,7 @@ int32_t BURGER_API Burger::FloatToIntRound(float fInput)
 	return iResult;
 }
 
-void BURGER_API Burger::FloatToIntRound(int32_t *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntRound(int32_t *pOutput,float fInput) BURGER_NOEXCEPT
 {
 	// Get the absolute value
 	double dAbs = fabs(fInput);
@@ -999,7 +999,7 @@ void BURGER_API Burger::FloatToIntRound(int32_t *pOutput,float fInput)
 
 #elif defined(BURGER_PPC) && defined(BURGER_METROWERKS)
 
-BURGER_ASM int32_t BURGER_API Burger::FloatToIntRound(float /* fInput */)
+BURGER_ASM int32_t BURGER_API Burger::FloatToIntRound(float /* fInput */) BURGER_NOEXCEPT
 {
 	lwz		r3,g_fMinNoInteger
 	fabs	fp0,fp1					// Get the abs value to test
@@ -1025,7 +1025,7 @@ BURGER_ASM int32_t BURGER_API Burger::FloatToIntRound(float /* fInput */)
 	blr
 }
 
-BURGER_ASM void BURGER_API Burger::FloatToIntRound(int32_t * /* pOutput */,float /* fInput */ )
+BURGER_ASM void BURGER_API Burger::FloatToIntRound(int32_t * /* pOutput */,float /* fInput */ ) BURGER_NOEXCEPT
 {
 	lwz		r4,g_fMinNoInteger
 	fabs	fp0,fp1					// Get the abs value to test
@@ -1051,7 +1051,7 @@ BURGER_ASM void BURGER_API Burger::FloatToIntRound(int32_t * /* pOutput */,float
 
 #else
 
-int32_t BURGER_API Burger::FloatToIntRound(float fInput)
+int32_t BURGER_API Burger::FloatToIntRound(float fInput) BURGER_NOEXCEPT
 {
 	int32_t iVal = static_cast<int32_t>(fInput);
 	float fVal = static_cast<float>(iVal);
@@ -1090,7 +1090,7 @@ int32_t BURGER_API Burger::FloatToIntRound(float fInput)
 	
 ***************************************/
 
-void BURGER_API Burger::FloatToIntRound(int32_t *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntRound(int32_t *pOutput,float fInput) BURGER_NOEXCEPT
 {
 	int32_t iVal = static_cast<int32_t>(fInput);
 	float fVal = static_cast<float>(iVal);
@@ -1134,7 +1134,7 @@ void BURGER_API Burger::FloatToIntRound(int32_t *pOutput,float fInput)
 
 ***************************************/
 
-int32_t BURGER_API Burger::FloatToIntRoundToZero(float fInput)
+int32_t BURGER_API Burger::FloatToIntRoundToZero(float fInput) BURGER_NOEXCEPT
 {
 	return static_cast<int32_t>(fInput);		// Round to zero
 }
@@ -1164,7 +1164,7 @@ int32_t BURGER_API Burger::FloatToIntRoundToZero(float fInput)
 	
 ***************************************/
 
-void BURGER_API Burger::FloatToIntRoundToZero(int32_t *pOutput,float fInput)
+void BURGER_API Burger::FloatToIntRoundToZero(int32_t *pOutput,float fInput) BURGER_NOEXCEPT
 {
 	pOutput[0] = static_cast<int32_t>(fInput);		// Round to zero
 }

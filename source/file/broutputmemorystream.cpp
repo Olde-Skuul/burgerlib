@@ -572,7 +572,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::Save(
 	String* pOutput) const BURGER_NOEXCEPT
 {
 	// SetBufferSize() retains the text, disable it by clearing first
-	pOutput->Clear();
+	pOutput->clear();
 	// Are we in a good state?
 	eError uResult = m_uError;
 	if (!uResult) {

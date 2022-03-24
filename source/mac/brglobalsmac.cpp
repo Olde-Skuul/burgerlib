@@ -122,7 +122,7 @@ void BURGER_API Burger::Globals::StringCopy(String* pOutput, CFStringRef pInput)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void)
+uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void) BURGER_NOEXCEPT
 {
     // Get the pointer to the singleton
     Globals* pGlobals = &g_Globals;

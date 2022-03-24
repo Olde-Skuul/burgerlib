@@ -28,99 +28,6 @@
 
 /***************************************
 
-	\brief Retrieves the login name of the user associated with the current
-		thread.
-
-	On systems that use user logins, return the login name of the account
-	associated with the current thread. If the platform doesn't support multiple
-	user accounts, it will return "User" and the error code \ref
-	kErrorNotSupportedOnThisPlatform.
-
-	\param pOutput Pointer to a \ref String to receive the name in UTF-8
-		encoding
-	 \return Zero on no error, or non zero on failure.
-
-	 \note On platforms where networking or user level access isn't available,
-		it will return \ref kErrorNotSupportedOnThisPlatform as an error code.
-
-	\sa GetUserRealName(String *) or GetMachineName(String *)
-
-***************************************/
-
-Burger::eError BURGER_API Burger::GetUserLoginName(
-	String* pOutput) BURGER_NOEXCEPT
-{
-	eError uResult = kErrorItemNotFound;
-	// Get the user information
-	struct passwd* pPasswd = getpwuid(getuid());
-	if (pPasswd) {
-		uResult = pOutput->Set(pPasswd->pw_name);
-	}
-	if (uResult) {
-		// The name wasn't present, use the default
-		pOutput->Set("User");
-	}
-	return uResult;
-}
-
-/***************************************
-
-	\brief Get the real name of the current user.
-
-	When someone has logged onto a computer, that person can associate a real
-	name to the login user account. This routine will retrieve real name of the
-	user. If for some reason a user name can't be found or the operating system
-	doesn't support user logins, the name "User" will be returned.
-
-	\param pOutput Pointer to a \ref String to receive the real name in UTF-8
-		encoding
-	\return Zero on no error, or non zero on failure.
-
-	 \note On platforms where networking or user level access isn't available,
-		it will always return \ref kErrorNotSupportedOnThisPlatform as an error
-		code.
-
-	\sa GetUserLoginName(String *) or GetMachineName(String *)
-
-***************************************/
-
-Burger::eError BURGER_API Burger::GetUserRealName(
-	String* pOutput) BURGER_NOEXCEPT
-{
-	eError uResult = kErrorGeneric;
-	// Get the user information
-	struct passwd* pPasswd = getpwuid(getuid());
-
-	// Get the comment which would have the name
-	// Test if value or garbage
-	if (pPasswd->pw_gecos) {
-
-		// Only use the first part of a comma delimited string.
-		const char* pEnd = StringCharacter(pPasswd->pw_gecos, ',');
-		uintptr_t uLength;
-		if (pEnd) {
-			uLength = pEnd - pPasswd->pw_gecos;
-		} else {
-			// Use the entire string
-			uLength = StringLength(pPasswd->pw_gecos);
-		}
-		// Only use it if there is a string
-		if (uLength) {
-			uResult = pOutput->Set(pPasswd->pw_gecos, uLength);
-		}
-	}
-	if (uResult) {
-		// Get the user folder name
-		uResult = pOutput->Set(pPasswd->pw_name);
-		if (uResult) {
-			pOutput->Set("User");
-		}
-	}
-	return uResult;
-}
-
-/***************************************
-
 	\brief Get the name the user has called the computer.
 
 	Some computer owners have the option to give their computer a whimsical
@@ -148,7 +55,7 @@ Burger::eError BURGER_API Burger::GetMachineName(
 	eError uResult = kErrorItemNotFound;
 
 	// Return the computer name
-	CFStringRef pStringRef = SCDynamicStoreCopyComputerName(0, 0);
+	CFStringRef pStringRef = SCDynamicStoreCopyComputerName(nullptr, nullptr);
 
 	if (pStringRef) {
 		Globals::StringCopy(pOutput, pStringRef);

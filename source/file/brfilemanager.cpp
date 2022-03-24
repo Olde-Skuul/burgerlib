@@ -2,7 +2,7 @@
 
 	File Manager Class
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -91,12 +91,8 @@ Burger::FileManager* Burger::FileManager::g_pFileManager;
 
 ***************************************/
 
-Burger::FileManager::FileManager() BURGER_NOEXCEPT: m_PingIOThread(),
-													m_IOThreadSync(),
-													m_Thread(),
-													m_uQueueStart(0),
+Burger::FileManager::FileManager() BURGER_NOEXCEPT: m_uQueueStart(0),
 													m_uQueueEnd(0)
-
 #if defined(BURGER_MSDOS)
 	,
 													m_pDOSName(nullptr),
@@ -105,8 +101,7 @@ Burger::FileManager::FileManager() BURGER_NOEXCEPT: m_PingIOThread(),
 													m_bLongNamesAllowed(FALSE),
 													m_uOEMFlavor(0)
 #endif
-
-#if defined(BURGER_MACOSX) || defined(BURGER_IOS)
+#if defined(BURGER_DARWIN)
 	,
 													m_uBootNameSize(0),
 													m_pBootName(nullptr)
@@ -117,11 +112,6 @@ Burger::FileManager::FileManager() BURGER_NOEXCEPT: m_PingIOThread(),
 #if 0
 	// Start up the worker thread
 	m_Thread.Start(QueueHandler,this);
-#endif
-
-	// Set the MSDOS variables
-#if defined(BURGER_MSDOS)
-	DetectMSDOSVersion();
 #endif
 }
 
@@ -136,15 +126,60 @@ Burger::FileManager::~FileManager()
 	// Send a message to kill the thread
 	AddQueue(nullptr, kIOCommandEndThread, nullptr, 0);
 
+#if 0
 	// Wait until the thread dies
 	m_Thread.Wait();
+#endif
 
 #if defined(BURGER_MACOSX) || defined(BURGER_IOS)
 	Free(m_pBootName);
 	m_pBootName = nullptr;
 	m_uBootNameSize = 0;
 #endif
+	PlatformShutdown();
 }
+
+/*! ************************************
+
+	\brief Handle platform specific startup code
+
+	Calls system functions to determine the version, state and several platform
+	specific variables to allow the FileManager to run better by pre-caching
+	relevant data.
+
+	For MS-DOS, it will determine the version and flavor of MS/DOS this
+	application is running. It will also detect DosBox.
+
+	For Linux, it will scan all the mounted volumes for quick access to shared
+	volumes.
+
+	For Android and consoles, it will check if there are mounted SD Cards or
+	other external data storage devices so the application can be aware of them.
+
+	\sa PlatformShutdown(), Burger::FileManager
+
+***************************************/
+
+#if !(defined(BURGER_MSDOS) || defined(BURGER_LINUX) || \
+	defined(BURGER_ANDROID)) || \
+	defined(DOXYGEN)
+void BURGER_API Burger::FileManager::PlatformSetup(void) BURGER_NOEXCEPT {}
+#endif
+
+/*! ************************************
+
+	\brief Handle platform specific shutdown code
+
+	Calls system functions to release cached values obtained from the platform's
+	operating system.
+
+	\sa PlatformSetup(), Burger::FileManager
+
+***************************************/
+
+#if !(defined(BURGER_LINUX) || defined(BURGER_ANDROID)) || defined(DOXYGEN)
+void BURGER_API Burger::FileManager::PlatformShutdown(void) BURGER_NOEXCEPT {}
+#endif
 
 /*! ************************************
 
@@ -165,6 +200,9 @@ Burger::eError BURGER_API Burger::FileManager::Init(void) BURGER_NOEXCEPT
 	if (!pThis) {
 		pThis = new (Alloc(sizeof(FileManager))) FileManager;
 		g_pFileManager = pThis;
+
+		// Set the platform specific variables
+		pThis->PlatformSetup();
 
 #if defined(BURGER_MAC)
 		// Init the directory cache (MacOS)
@@ -262,7 +300,7 @@ void BURGER_API Burger::FileManager::Shutdown(void) BURGER_NOEXCEPT
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
-	defined(BURGER_LINUX) || defined(BURGER_MACOS) || defined(BURGER_IOS) || \
+	defined(BURGER_UNIX) || defined(BURGER_MACOS) || defined(BURGER_IOS) || \
 	defined(BURGER_XBOX360) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
 
@@ -583,8 +621,8 @@ Burger::eError BURGER_API Burger::FileManager::PopPrefix(
 	uint_t uPrefixNum) BURGER_NOEXCEPT
 {
 	Filename TempName;
-	GetPrefix(&TempName, uPrefixNum); // Get the current prefix
-	TempName.DirName();               // Remove a directory
+	GetPrefix(&TempName, uPrefixNum);        // Get the current prefix
+	TempName.DirName();                      // Remove a directory
 	return SetPrefix(uPrefixNum, &TempName); // Store the prefix
 }
 
@@ -767,7 +805,7 @@ uint_t BURGER_API Burger::FileManager::DoesFileExist(
 		return FALSE; // Bad file!
 	}
 	fclose(fp);
-	return TRUE;           // File exists
+	return TRUE;               // File exists
 #endif
 }
 #endif
@@ -1417,7 +1455,8 @@ Burger::eError BURGER_API Burger::FileManager::RenameFile(
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(const char* pDirName)
+Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(
+	const char* pDirName)
 {
 	Filename DirName(pDirName);         // Expand the path to a full filename
 	return ChangeOSDirectory(&DirName); // Set the directory here
@@ -1863,9 +1902,10 @@ void BURGER_API Burger::FileManager::AddQueue(File* pFile,
 	pQueue->m_pBuffer = pBuffer;
 	pQueue->m_uLength = uLength;
 	m_uQueueEnd = (uEnd + 1) & (kMaxQueue - 1);
-
+#if defined(BURGER_WINDOWS)
 	// Send a message to the thread to execute
 	m_PingIOThread.Release();
+#endif
 }
 
 /*! ************************************

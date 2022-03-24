@@ -1466,7 +1466,7 @@ static uint_t BURGER_API UnitTestFormattingChar(int iStartWidth, int iEndWidth,
 				Burger::NumberString WidthString(iWidth);
 				// Insert Width alone
 				Burger::StringConcatenate(
-					TestFormatString, WidthString.GetPtr());
+					TestFormatString, WidthString.c_str());
 			}
 
 			// Append the ANSI format

@@ -65,7 +65,7 @@ struct Matrix3D_t {
 	void BURGER_API TransposeSetZYX(float fYaw,float fPitch,float fRoll);
 	void BURGER_API TransposeSetZXY(float fYaw,float fPitch,float fRoll);
 	void BURGER_API TransposeSetFromQuaternion(const Vector4D_t *pInput);
-	void BURGER_API SetScale(float fX,float fY,float fZ);
+	void BURGER_API SetScale(float fX,float fY,float fZ) BURGER_NOEXCEPT;
 	void BURGER_API Transpose(void);
 	void BURGER_API Transpose(const Matrix3D_t *pInput);
 	void BURGER_API GetXRow(Vector3D_t *pOutput) const;
@@ -87,13 +87,13 @@ struct Matrix3D_t {
 	BURGER_INLINE void SetZColumn(const Vector3D_t *pInput) { x.z = pInput->x; y.z = pInput->y; z.z = pInput->z; }
 	BURGER_INLINE void SetZColumn(float fX,float fY,float fZ) { x.z = fX; y.z = fY; z.z = fZ; }
 	void BURGER_API Multiply(const Matrix3D_t *pInput);
-	void BURGER_API Multiply(const Matrix3D_t *pInput1,const Matrix3D_t *pInput2);
+	void BURGER_API Multiply(const Matrix3D_t *pInput1,const Matrix3D_t *pInput2) BURGER_NOEXCEPT;
 	void BURGER_API Multiply(float fScale);
 	void BURGER_API Multiply(const Matrix3D_t *pInput,float fScale);
 	void BURGER_API Multiply(float fScaleX,float fScaleY,float fScaleZ);
-	void BURGER_API Multiply(const Matrix3D_t *pInput,float fScaleX,float fScaleY,float fScaleZ);
+	void BURGER_API Multiply(const Matrix3D_t *pInput,float fScaleX,float fScaleY,float fScaleZ) BURGER_NOEXCEPT;
 	void BURGER_API TransposeMultiply(float fScaleX,float fScaleY,float fScaleZ);
-	void BURGER_API TransposeMultiply(const Matrix3D_t *pInput,float fScaleX,float fScaleY,float fScaleZ);
+	void BURGER_API TransposeMultiply(const Matrix3D_t *pInput,float fScaleX,float fScaleY,float fScaleZ)BURGER_NOEXCEPT;
 	void BURGER_API Transform(Vector3D_t *pInput) const;
 	void BURGER_API Transform(Vector3D_t *pOutput,const Vector3D_t *pInput) const;
 	void BURGER_API TransformAdd(Vector3D_t *pInput,const Vector3D_t *pTranslate) const;

@@ -1,14 +1,14 @@
 /***************************************
 
-    Typedefs specific to the Xbox 360
+	Typedefs specific to the Xbox 360
 
-    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -58,12 +58,12 @@ struct tagPOINT;
 struct tagRECT;
 
 struct Burger_CRITICAL_SECTION {
-    union {
-        uint32_t RawEvent[4];
-    } Synchronization;
-    uint32_t LockCount;
-    uint32_t RecursionCount;
-    void* OwningThread;
+	union {
+		uint32_t RawEvent[4];
+	} Synchronization;
+	uint32_t LockCount;
+	uint32_t RecursionCount;
+	void* OwningThread;
 };
 
 #endif

@@ -72,9 +72,9 @@ class ClassArray {
 	}
 
 public:
-	ClassArray(): m_pData(NULL), m_uSize(0), m_uBufferSize(0) {}
+	ClassArray(): m_pData(nullptr), m_uSize(0), m_uBufferSize(0) {}
 	ClassArray(uintptr_t uDefault):
-		m_pData(NULL), m_uSize(uDefault), m_uBufferSize(uDefault)
+		m_pData(nullptr), m_uSize(uDefault), m_uBufferSize(uDefault)
 	{
 		// Anything?
 		if (uDefault) {
@@ -86,7 +86,7 @@ public:
 		}
 	}
 	ClassArray(const ClassArray<T>& rData):
-		m_pData(NULL), m_uSize(rData.size()), m_uBufferSize(rData.size())
+		m_pData(nullptr), m_uSize(rData.size()), m_uBufferSize(rData.size())
 	{
 		uintptr_t uCount = m_uSize;
 		// Empty?
@@ -105,6 +105,14 @@ public:
 		return m_pData;
 	}
 	BURGER_INLINE const T* GetPtr(void) const
+	{
+		return m_pData;
+	}
+	BURGER_INLINE T* data(void)
+	{
+		return m_pData;
+	}
+	BURGER_INLINE const T* data(void) const
 	{
 		return m_pData;
 	}

@@ -57,36 +57,36 @@ namespace Burger {
 	const Fixed32 MinFixed32 = (-0x7FFFFFFF)-1;			///< Minimum value for \ref Fixed32
 	const Fixed32 MaxFixed32 = 0x7FFFFFFF;				///< Maximum value for \ref Fixed32
 	const Fixed32 PiFixed32 = 0x003243F;				///< Pi in \ref Fixed32 format (3.141... * 65536 = 205887.416)
-	BURGER_INLINE uint_t GetLoWord(uint32_t uInput)	{ return (uInput&0xFFFFU); }
-	BURGER_INLINE uint_t GetHiWord(uint32_t uInput) { return (uInput>>16); }
-	BURGER_INLINE Fixed32 IntToFixed(int32_t iInput) { return static_cast<Fixed32>(iInput<<16); }
-	extern Fixed32 BURGER_API IntToFixedSaturate(int32_t iInput);
-	BURGER_INLINE int32_t FixedToIntFloor(Fixed32 fInput) { return static_cast<int32_t>(fInput>>16); }
-	BURGER_INLINE int32_t FixedToInt(Fixed32 fInput) { return static_cast<int32_t>((fInput+((fInput>>31)&0xFFFF))>>16); }
-	BURGER_INLINE int32_t FixedToIntCeil(Fixed32 fInput) { return static_cast<int32_t>((fInput+0xFFFF)>>16); }
-	BURGER_INLINE int32_t FixedToIntNearest(Fixed32 fInput) { return static_cast<int32_t>((fInput+0x8000-(static_cast<uint32_t>(fInput)>>31U)))>>16; }
+	BURGER_INLINE uint_t GetLoWord(uint32_t uInput)	BURGER_NOEXCEPT { return (uInput&0xFFFFU); }
+	BURGER_INLINE uint_t GetHiWord(uint32_t uInput) BURGER_NOEXCEPT { return (uInput>>16); }
+	BURGER_INLINE Fixed32 IntToFixed(int32_t iInput)BURGER_NOEXCEPT { return static_cast<Fixed32>(iInput<<16); }
+	extern Fixed32 BURGER_API IntToFixedSaturate(int32_t iInput) BURGER_NOEXCEPT;
+	BURGER_INLINE int32_t FixedToIntFloor(Fixed32 fInput) BURGER_NOEXCEPT { return static_cast<int32_t>(fInput>>16); }
+	BURGER_INLINE int32_t FixedToInt(Fixed32 fInput) BURGER_NOEXCEPT { return static_cast<int32_t>((fInput+((fInput>>31)&0xFFFF))>>16); }
+	BURGER_INLINE int32_t FixedToIntCeil(Fixed32 fInput)BURGER_NOEXCEPT { return static_cast<int32_t>((fInput+0xFFFF)>>16); }
+	BURGER_INLINE int32_t FixedToIntNearest(Fixed32 fInput)BURGER_NOEXCEPT { return static_cast<int32_t>((fInput+0x8000-(static_cast<uint32_t>(fInput)>>31U)))>>16; }
 
-	extern int32_t BURGER_API FloatToIntFloor(float fInput);
-	extern void BURGER_API FloatToIntFloor(int32_t *pOutput,float fInput);
-	extern int32_t BURGER_API FloatToIntCeil(float fInput);
-	extern void BURGER_API FloatToIntCeil(int32_t *pOutput,float fInput);
-	extern int32_t BURGER_API FloatToIntRound(float fInput);
-	extern void BURGER_API FloatToIntRound(int32_t *pOutput,float fInput);
-	extern int32_t BURGER_API FloatToIntRoundToZero(float fInput);
-	extern void BURGER_API FloatToIntRoundToZero(int32_t *pOutput,float fInput);
+	extern int32_t BURGER_API FloatToIntFloor(float fInput)BURGER_NOEXCEPT;
+	extern void BURGER_API FloatToIntFloor(int32_t *pOutput,float fInput)BURGER_NOEXCEPT;
+	extern int32_t BURGER_API FloatToIntCeil(float fInput)BURGER_NOEXCEPT;
+	extern void BURGER_API FloatToIntCeil(int32_t *pOutput,float fInput)BURGER_NOEXCEPT;
+	extern int32_t BURGER_API FloatToIntRound(float fInput) BURGER_NOEXCEPT;
+	extern void BURGER_API FloatToIntRound(int32_t *pOutput,float fInput) BURGER_NOEXCEPT;
+	extern int32_t BURGER_API FloatToIntRoundToZero(float fInput) BURGER_NOEXCEPT;
+	extern void BURGER_API FloatToIntRoundToZero(int32_t *pOutput,float fInput) BURGER_NOEXCEPT;
 
 #if defined(BURGER_WATCOM)
-	BURGER_INLINE Fixed32 FloatToFixedFloor(float fInput) { return BurgerFixedMathFromFloatFloor(fInput); }
-	BURGER_INLINE Fixed32 FloatToFixed(float fInput) { return BurgerFixedMathFromFloat(fInput); }
-	BURGER_INLINE Fixed32 FloatToFixedCeil(float fInput) { return BurgerFixedMathFromFloatCeil(fInput); }
+	BURGER_INLINE Fixed32 FloatToFixedFloor(float fInput) BURGER_NOEXCEPT { return BurgerFixedMathFromFloatFloor(fInput); }
+	BURGER_INLINE Fixed32 FloatToFixed(float fInput) BURGER_NOEXCEPT { return BurgerFixedMathFromFloat(fInput); }
+	BURGER_INLINE Fixed32 FloatToFixedCeil(float fInput) BURGER_NOEXCEPT { return BurgerFixedMathFromFloatCeil(fInput); }
 	BURGER_INLINE Fixed32 FloatToFixedNearest(float fInput) { return BurgerFixedMathFromFloatNearest(fInput); }
-	BURGER_INLINE void FloatToFixedFloor(Fixed32 *pOutput,float fInput) { BurgerFixedMathFromFloatFloor2(pOutput,fInput); }
-	BURGER_INLINE void FloatToFixed(Fixed32 *pOutput,float fInput) { BurgerFixedMathFromFloat2(pOutput,fInput); }
-	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) { BurgerFixedMathFromFloatCeil2(pOutput,fInput); }
-	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) { BurgerFixedMathFromFloatNearest2(pOutput,fInput); }
+	BURGER_INLINE void FloatToFixedFloor(Fixed32 *pOutput,float fInput) BURGER_NOEXCEPT { BurgerFixedMathFromFloatFloor2(pOutput,fInput); }
+	BURGER_INLINE void FloatToFixed(Fixed32 *pOutput,float fInput) BURGER_NOEXCEPT { BurgerFixedMathFromFloat2(pOutput,fInput); }
+	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) BURGER_NOEXCEPT { BurgerFixedMathFromFloatCeil2(pOutput,fInput); }
+	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) BURGER_NOEXCEPT { BurgerFixedMathFromFloatNearest2(pOutput,fInput); }
 #elif defined(BURGER_X86) && defined(BURGER_METROWERKS)
 
-	BURGER_INLINE Fixed32 FloatToFixedFloor(float fInput) { 
+	BURGER_INLINE Fixed32 FloatToFixedFloor(float fInput) BURGER_NOEXCEPT {
 		asm {
 			fld DWORD PTR fInput
 			fmul DWORD PTR [g_fBurgerMath65536]
@@ -96,7 +96,7 @@ namespace Burger {
 		return reinterpret_cast<Fixed32 *>(&fInput)[0];
 	}
 
-	BURGER_INLINE Fixed32 FloatToFixed(float fInput) {
+	BURGER_INLINE Fixed32 FloatToFixed(float fInput)BURGER_NOEXCEPT {
 		asm {
 			fld DWORD PTR fInput
 			fmul DWORD PTR [g_fBurgerMath65536]
@@ -108,7 +108,7 @@ namespace Burger {
 		return reinterpret_cast<Fixed32 *>(&fInput)[0]; 
 	}
 
-	BURGER_INLINE Fixed32 FloatToFixedCeil(float fInput) { 
+	BURGER_INLINE Fixed32 FloatToFixedCeil(float fInput) BURGER_NOEXCEPT {
 		asm {
 			fld DWORD PTR fInput
 			fmul DWORD PTR [g_fBurgerMath65536]
@@ -127,7 +127,7 @@ namespace Burger {
 		return reinterpret_cast<Fixed32 *>(&fInput)[0]; 
 	}
 
-	BURGER_INLINE void FloatToFixedFloor(Fixed32 *pOutput,float fInput) {
+	BURGER_INLINE void FloatToFixedFloor(Fixed32 *pOutput,float fInput) BURGER_NOEXCEPT {
 		asm {
 			mov ecx,pOutput
 			fld DWORD PTR fInput
@@ -137,7 +137,7 @@ namespace Burger {
 		}
 	}
 
-	BURGER_INLINE void FloatToFixed(Fixed32 *pOutput,float fInput) { 
+	BURGER_INLINE void FloatToFixed(Fixed32 *pOutput,float fInput) BURGER_NOEXCEPT {
 		asm {
 			mov ecx,pOutput
 			fld DWORD PTR fInput
@@ -149,7 +149,7 @@ namespace Burger {
 		}
 	}
 
-	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) {
+	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) BURGER_NOEXCEPT {
 		asm {
 			mov ecx,pOutput
 			fld DWORD PTR fInput
@@ -159,7 +159,7 @@ namespace Burger {
 		}
 	}
 
-	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) {
+	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) BURGER_NOEXCEPT {
 		asm {
 			mov ecx,pOutput
 			fld DWORD PTR fInput
@@ -169,7 +169,7 @@ namespace Burger {
 	}
 
 #elif defined(BURGER_X86) && defined(BURGER_MSVC)
-	BURGER_INLINE int32_t FloatToFixedFloor(float fInput) {
+	BURGER_INLINE int32_t FloatToFixedFloor(float fInput)BURGER_NOEXCEPT {
 		__asm {
 			fld DWORD PTR [fInput]
 			fmul DWORD PTR [g_fBurgerMath65536]
@@ -178,7 +178,7 @@ namespace Burger {
 		}
 		return reinterpret_cast<Fixed32 *>(&fInput)[0]; 
 	}
-	BURGER_INLINE int32_t FloatToFixed(float fInput) { 
+	BURGER_INLINE int32_t FloatToFixed(float fInput) BURGER_NOEXCEPT {
 		__asm {
 			fld DWORD PTR [fInput]
 			fmul DWORD PTR [g_fBurgerMath65536]
@@ -189,7 +189,7 @@ namespace Burger {
 		}
 		return reinterpret_cast<Fixed32 *>(&fInput)[0]; 
 	}
-	BURGER_INLINE int32_t FloatToFixedCeil(float fInput) { 
+	BURGER_INLINE int32_t FloatToFixedCeil(float fInput) BURGER_NOEXCEPT {
 		__asm {
 			fld DWORD PTR [fInput]
 			fmul DWORD PTR [g_fBurgerMath65536]
@@ -206,7 +206,7 @@ namespace Burger {
 		}
 		return reinterpret_cast<Fixed32 *>(&fInput)[0]; 
 	}
-	BURGER_INLINE void FloatToFixedFloor(Fixed32 *pOutput,float fInput) { 
+	BURGER_INLINE void FloatToFixedFloor(Fixed32 *pOutput,float fInput) BURGER_NOEXCEPT {
 		__asm {
 			mov ecx,pOutput
 			fld DWORD PTR [fInput]
@@ -215,7 +215,7 @@ namespace Burger {
 			fistp DWORD PTR [ecx] 
 		}
 	}
-	BURGER_INLINE void FloatToFixed(Fixed32 *pOutput,float fInput) { 
+	BURGER_INLINE void FloatToFixed(Fixed32 *pOutput,float fInput) BURGER_NOEXCEPT {
 		__asm {
 			mov ecx,pOutput
 			fld DWORD PTR [fInput]
@@ -226,7 +226,7 @@ namespace Burger {
 			fistp DWORD PTR [ecx] 
 		}
 	}
-	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) {
+	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) BURGER_NOEXCEPT {
 		__asm {
 			mov ecx,pOutput
 			fld DWORD PTR [fInput]
@@ -235,7 +235,7 @@ namespace Burger {
 			fistp DWORD PTR [ecx] 
 		}
 	}
-	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) { 
+	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) BURGER_NOEXCEPT  {
 		__asm {
 			mov ecx,pOutput
 			fld DWORD PTR [fInput]
@@ -245,14 +245,14 @@ namespace Burger {
 	}
 
 #else
-	BURGER_INLINE Fixed32 FloatToFixedFloor(float fInput) { return static_cast<Fixed32>(FloatToIntFloor(fInput*65536.0f)); }
-	BURGER_INLINE Fixed32 FloatToFixed(float fInput) { return static_cast<Fixed32>(FloatToIntRoundToZero(fInput*65536.0f)); }
-	BURGER_INLINE Fixed32 FloatToFixedCeil(float fInput) { return static_cast<Fixed32>(FloatToIntCeil(fInput*65536.0f)); }
-	BURGER_INLINE Fixed32 FloatToFixedNearest(float fInput) { return static_cast<Fixed32>(FloatToIntRound(fInput*65536.0f)); }
-	BURGER_INLINE void FloatToFixedFloor(Fixed32 *pOutput,float fInput) { FloatToIntFloor(reinterpret_cast<int32_t*>(pOutput),fInput*65536.0f); }
-	BURGER_INLINE void FloatToFixed(Fixed32 *pOutput,float fInput) { FloatToIntRoundToZero(reinterpret_cast<int32_t*>(pOutput),fInput*65536.0f); }
-	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) { FloatToIntCeil(reinterpret_cast<int32_t*>(pOutput),fInput*65536.0f); }
-	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) { FloatToIntRound(reinterpret_cast<int32_t*>(pOutput),fInput*65536.0f); }
+	BURGER_INLINE Fixed32 FloatToFixedFloor(float fInput) BURGER_NOEXCEPT { return static_cast<Fixed32>(FloatToIntFloor(fInput*65536.0f)); }
+	BURGER_INLINE Fixed32 FloatToFixed(float fInput) BURGER_NOEXCEPT { return static_cast<Fixed32>(FloatToIntRoundToZero(fInput*65536.0f)); }
+	BURGER_INLINE Fixed32 FloatToFixedCeil(float fInput)BURGER_NOEXCEPT { return static_cast<Fixed32>(FloatToIntCeil(fInput*65536.0f)); }
+	BURGER_INLINE Fixed32 FloatToFixedNearest(float fInput) BURGER_NOEXCEPT { return static_cast<Fixed32>(FloatToIntRound(fInput*65536.0f)); }
+	BURGER_INLINE void FloatToFixedFloor(Fixed32 *pOutput,float fInput) BURGER_NOEXCEPT { FloatToIntFloor(reinterpret_cast<int32_t*>(pOutput),fInput*65536.0f); }
+	BURGER_INLINE void FloatToFixed(Fixed32 *pOutput,float fInput)BURGER_NOEXCEPT { FloatToIntRoundToZero(reinterpret_cast<int32_t*>(pOutput),fInput*65536.0f); }
+	BURGER_INLINE void FloatToFixedCeil(Fixed32 *pOutput,float fInput) BURGER_NOEXCEPT { FloatToIntCeil(reinterpret_cast<int32_t*>(pOutput),fInput*65536.0f); }
+	BURGER_INLINE void FloatToFixedNearest(Fixed32 *pOutput,float fInput) BURGER_NOEXCEPT { FloatToIntRound(reinterpret_cast<int32_t*>(pOutput),fInput*65536.0f); }
 #endif
 
 #if defined(BURGER_ARM) || defined(BURGER_AMD64) || (defined(BURGER_X86) && !defined(BURGER_WINDOWS)) || defined(DOXYGEN)
@@ -368,28 +368,28 @@ namespace Burger {
 	extern Fixed32 BURGER_API Sqrt(Fixed32 uInput);
 
 #if defined(BURGER_MSVC) || defined(BURGER_WATCOM)
-	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount) { return static_cast<uint32_t>(_rotl(uInput,uShiftCount)); }
-	BURGER_INLINE uint32_t RotateRight(uint32_t uInput,uint_t uShiftCount) { return static_cast<uint32_t>(_rotr(uInput,uShiftCount)); }
+	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount) BURGER_NOEXCEPT { return static_cast<uint32_t>(_rotl(uInput,uShiftCount)); }
+	BURGER_INLINE uint32_t RotateRight(uint32_t uInput,uint_t uShiftCount) BURGER_NOEXCEPT { return static_cast<uint32_t>(_rotr(uInput,uShiftCount)); }
 #elif (defined(BURGER_METROWERKS) && (defined(BURGER_X86) || defined(BURGER_68K)))
-	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount) { return static_cast<uint32_t>(__rol(uInput,uShiftCount)); }
-	BURGER_INLINE uint32_t RotateRight(uint32_t uInput,uint_t uShiftCount) { return static_cast<uint32_t>(__ror(uInput,uShiftCount)); }
+	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount)BURGER_NOEXCEPT { return static_cast<uint32_t>(__rol(uInput,uShiftCount)); }
+	BURGER_INLINE uint32_t RotateRight(uint32_t uInput,uint_t uShiftCount) BURGER_NOEXCEPT { return static_cast<uint32_t>(__ror(uInput,uShiftCount)); }
 #elif (defined(BURGER_METROWERKS) && defined(BURGER_PPC))
-	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount) { return static_cast<uint32_t>(__builtin___rotate_left32(uInput,static_cast<int>(uShiftCount))); }
-	BURGER_INLINE uint32_t RotateRight(uint32_t uInput,uint_t uShiftCount) { return static_cast<uint32_t>(__builtin___rotate_right32(uInput,static_cast<int>(uShiftCount))); }
+	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount)BURGER_NOEXCEPT { return static_cast<uint32_t>(__builtin___rotate_left32(uInput,static_cast<int>(uShiftCount))); }
+	BURGER_INLINE uint32_t RotateRight(uint32_t uInput,uint_t uShiftCount)BURGER_NOEXCEPT { return static_cast<uint32_t>(__builtin___rotate_right32(uInput,static_cast<int>(uShiftCount))); }
 #elif defined(BURGER_VITA)
-	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount) { return __builtin_rol(uInput,static_cast<uint32_t>(uShiftCount)); }
-	BURGER_INLINE uint32_t RotateRight(uint32_t uInput,uint_t uShiftCount) { return __builtin_ror(uInput,static_cast<uint32_t>(uShiftCount)); }
+	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount) BURGER_NOEXCEPT { return __builtin_rol(uInput,static_cast<uint32_t>(uShiftCount)); }
+	BURGER_INLINE uint32_t RotateRight(uint32_t uInput,uint_t uShiftCount) BURGER_NOEXCEPT { return __builtin_ror(uInput,static_cast<uint32_t>(uShiftCount)); }
 #else
-	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount) { return ((uInput<<uShiftCount) | (uInput>>(32-uShiftCount))); }
-	BURGER_INLINE uint32_t RotateRight(uint32_t uInput,uint_t uShiftCount) { return ((uInput>>uShiftCount) | (uInput<<(32-uShiftCount))); }
+	BURGER_INLINE uint32_t RotateLeft(uint32_t uInput,uint_t uShiftCount) BURGER_NOEXCEPT { return ((uInput<<uShiftCount) | (uInput>>(32-uShiftCount))); }
+	BURGER_INLINE uint32_t RotateRight(uint32_t uInput,uint_t uShiftCount)BURGER_NOEXCEPT { return ((uInput>>uShiftCount) | (uInput<<(32-uShiftCount))); }
 #endif
 
 #if defined(BURGER_MSVC)
-	BURGER_INLINE uint64_t RotateLeft(uint64_t uInput,uint_t uShiftCount) { return _rotl64(uInput,uShiftCount); }
-	BURGER_INLINE uint64_t RotateRight(uint64_t uInput,uint_t uShiftCount) { return _rotr64(uInput,uShiftCount); }
+	BURGER_INLINE uint64_t RotateLeft(uint64_t uInput,uint_t uShiftCount) BURGER_NOEXCEPT { return _rotl64(uInput,uShiftCount); }
+	BURGER_INLINE uint64_t RotateRight(uint64_t uInput,uint_t uShiftCount) BURGER_NOEXCEPT { return _rotr64(uInput,uShiftCount); }
 #else
-	BURGER_INLINE uint64_t RotateLeft(uint64_t uInput,uint_t uShiftCount) { return ((uInput<<uShiftCount) | (uInput>>(64-uShiftCount))); }
-	BURGER_INLINE uint64_t RotateRight(uint64_t uInput,uint_t uShiftCount) { return ((uInput>>uShiftCount) | (uInput<<(64-uShiftCount))); }
+	BURGER_INLINE uint64_t RotateLeft(uint64_t uInput,uint_t uShiftCount)BURGER_NOEXCEPT { return ((uInput<<uShiftCount) | (uInput>>(64-uShiftCount))); }
+	BURGER_INLINE uint64_t RotateRight(uint64_t uInput,uint_t uShiftCount) BURGER_NOEXCEPT { return ((uInput>>uShiftCount) | (uInput<<(64-uShiftCount))); }
 #endif
 
 }

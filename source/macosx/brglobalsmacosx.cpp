@@ -355,7 +355,7 @@ void BURGER_API Burger::Globals::StringCopy(String* pOutput, CFStringRef pInput)
 		CFIndex uLength = CFStringGetLength(pInput);
 		if (!uLength) {
 			// If it's empty, leave now
-			pOutput->Clear();
+			pOutput->clear();
 		} else {
 			// Determine the maximum buffer that would be needed for conversion
 			// to UTF-8
@@ -367,7 +367,7 @@ void BURGER_API Burger::Globals::StringCopy(String* pOutput, CFStringRef pInput)
 			if (!CFStringGetCString(pInput, pOutput->GetPtr(), uMaxLength + 1,
 					kCFStringEncodingUTF8)) {
 				// Lovely, failure
-				pOutput->Clear();
+				pOutput->clear();
 			} else {
 				// Truncate the string to fit the final string
 				// Note: Due to the manual copy, don't assume
@@ -662,7 +662,7 @@ int BURGER_API Burger::Globals::ExecuteTool(
 
 ***************************************/
 
-uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void)
+uint_t BURGER_API Burger::Globals::GetQuickTimeVersion(void) BURGER_NOEXCEPT
 {
 	Globals* pGlobals = &g_Globals; // Get the pointer to the singleton
 	if (!pGlobals->m_bQuickTimeVersionValid) {

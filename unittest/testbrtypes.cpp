@@ -19,6 +19,11 @@
 #include "brfloatingpoint.h"
 #include "brglobals.h"
 #include "common.h"
+
+#if defined(BURGER_UNIX)
+#include "brunixtypes.h"
+#endif
+
 #include <stdio.h>
 
 #if defined(BURGER_STRUCT_ALIGN)
@@ -685,39 +690,32 @@ static void BURGER_API ShowPlatformFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 	}
 #endif
 
-#if defined(BURGER_LINUX) || defined(BURGER_WINDOWS) || defined(BURGER_MACOSX)
 	if (uVerbose & VERBOSE_MSG) {
-		// Is Elevated privliges?
+		// Is Elevated privileges?
 		uTest = Burger::IsElevated();
 		Message("Burger::IsElevated() = %u", uTest);
 	}
-#endif
 
-#if defined(BURGER_LINUX)
+#if defined(BURGER_UNIX)
 	if (uVerbose & VERBOSE_MSG) {
 		// Has uname?
-		const Burger::Globals::Uname_t* pUname = Burger::Globals::GetUname();
+		Burger::Uname TheUname;
+		TheUname.Init();
+		Message("Burger::Uname.m_sysnam = %s", TheUname.m_sysnam.c_str());
+		Message("Burger::Uname.m_nodename = %s", TheUname.m_nodename.c_str());
+		Message("Burger::Uname.m_release = %s", TheUname.m_release.c_str());
+		Message("Burger::Uname.m_version = %s", TheUname.m_version.c_str());
+		Message("Burger::Uname.m_machine = %s", TheUname.m_machine.c_str());
 		Message(
-			"Burger::Globals::Uname_t.m_sysnam = %s", pUname->m_sysnam.c_str());
-		Message("Burger::Globals::Uname_t.m_nodename = %s",
-			pUname->m_nodename.c_str());
-		Message("Burger::Globals::Uname_t.m_release = %s",
-			pUname->m_release.c_str());
-		Message("Burger::Globals::Uname_t.m_version = %s",
-			pUname->m_version.c_str());
-		Message("Burger::Globals::Uname_t.m_machine = %s",
-			pUname->m_machine.c_str());
-		Message("Burger::Globals::Uname_t.m_domainname = %s",
-			pUname->m_domainname.c_str());
+			"Burger::Uname.m_domainname = %s", TheUname.m_domainname.c_str());
 
-		static const char* gLinuxFlavors[] = {"kLinuxUnknown", "kLinuxNative",
-			"kLinuxMSYS2", "kLinuxWSL", "kLinuxCygwin"};
+		static const char* gUnixFlavors[] = {"kUnixUnknown", "kUnixNative",
+			"kUnixMSYS2", "kUnixWSL", "kUnixCygwin", "kUnixMacOSX", "kUnixiOS",
+			"kUnixAndroid", "kUnixStadia"};
 
 		// Get the Linux flavor
-		const Burger::Globals::eLinuxFlavor uFlavor =
-			Burger::Globals::GetLinuxFlavor();
-		Message(
-			"Burger::Globals::GetLinuxFlavor() = %s", gLinuxFlavors[uFlavor]);
+		const Burger::eUnixFlavor uFlavor = Burger::UnixGetFlavor();
+		Message("Burger::UnixGetFlavor() = %s", gUnixFlavors[uFlavor]);
 	}
 #endif
 

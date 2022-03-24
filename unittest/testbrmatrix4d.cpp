@@ -113,9 +113,7 @@ int BURGER_API TestBrmatrix4d(uint_t uVerbose) BURGER_NOEXCEPT
 		Message("Running Matrix4D tests");
 	}
 
-#if !defined(BURGER_68K)
 	uResult = TestMultiply();
-#endif
 
 	if (!uResult && (uVerbose & VERBOSE_MSG)) {
 		Message("Passed all Matrix4D tests!");

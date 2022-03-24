@@ -1,14 +1,14 @@
 /***************************************
 
-    Unit tests for the Date/Time manager
+	Unit tests for the display manager
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -27,7 +27,7 @@
 
 ***************************************/
 
-static uint_t BURGER_ANSIAPI TestGetVideoModes(void)
+static uint_t BURGER_ANSIAPI TestGetVideoModes(void) BURGER_NOEXCEPT
 {
 	Burger::ClassArray<Burger::Display::VideoCardDescription> Modes;
 	uint_t uFailure = Burger::Display::GetVideoModes(&Modes);
@@ -80,7 +80,7 @@ static uint_t BURGER_ANSIAPI TestGetVideoModes(void)
 
 ***************************************/
 
-static uint_t BURGER_ANSIAPI TestGetAudioModes(void)
+static uint_t BURGER_ANSIAPI TestGetAudioModes(void) BURGER_NOEXCEPT
 {
 	Burger::ClassArray<Burger::SoundManager::SoundCardDescription> SoundModes;
 	uint_t uFailure = Burger::SoundManager::GetAudioModes(&SoundModes);
@@ -92,7 +92,7 @@ static uint_t BURGER_ANSIAPI TestGetAudioModes(void)
 		const Burger::SoundManager::SoundCardDescription* pWork1 =
 			SoundModes.GetPtr();
 		do {
-			Message("Device = %s", pWork1->m_DeviceName.GetPtr());
+			Message("Device = %s", pWork1->m_DeviceName.c_str());
 			Message(
 				"Device number = %u, Hardware = %u, Min Rate %u, Max Rate %u,\n"
 				"8 Bit = %u, 16 bit = %u, Stereo = %u",
@@ -109,7 +109,7 @@ static uint_t BURGER_ANSIAPI TestGetAudioModes(void)
 // Perform all the tests for the Burgerlib Endian Manager
 //
 
-int BURGER_API TestBrDisplay(void)
+int BURGER_API TestBrDisplay(void) BURGER_NOEXCEPT
 {
 	uint_t uResult; // Assume no failures
 	Message("Running Display tests");
@@ -132,7 +132,7 @@ int BURGER_API TestBrDisplay(void)
 	"\xA6\xE5\xA3\xAB\xE3\x82\xBB\xE3\x83\xBC\xE3\x83\xA9\xE3\x83\xBC" \
 	"\xE3\x83\xA0\xE3\x83\xBC\xE3\x83\xB3"
 
-int BURGER_API TestBrDialogs(void)
+int BURGER_API TestBrDialogs(void) BURGER_NOEXCEPT
 {
 	Burger::OkAlertMessage("OkAlertMessage test", SAILORMOON);
 	Burger::OkCancelAlertMessage(

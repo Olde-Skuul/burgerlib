@@ -23,7 +23,7 @@
 
 ***************************************/
 
-void BURGER_API Burger::GUIDInit(GUID* pOutput)
+void BURGER_API Burger::GUIDInit(GUID* pOutput)BURGER_NOEXCEPT
 {
 	CFUUIDRef rUUID = CFUUIDCreate(kCFAllocatorDefault);
 	reinterpret_cast<CFUUIDBytes*>(pOutput)[0] = CFUUIDGetUUIDBytes(rUUID);

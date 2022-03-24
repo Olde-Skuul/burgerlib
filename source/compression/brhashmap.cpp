@@ -162,7 +162,7 @@ uintptr_t BURGER_API Burger::DJB2HashXorCaseFunctor(
 uintptr_t BURGER_API Burger::DJB2StringHashXorFunctor(
 	const void* pData, uintptr_t /* uDataSize */) BURGER_NOEXCEPT
 {
-	return DJB2HashXor(static_cast<const String*>(pData)->GetPtr(),
+	return DJB2HashXor(static_cast<const String*>(pData)->c_str(),
 		static_cast<const String*>(pData)->GetLength());
 }
 
@@ -184,7 +184,7 @@ uintptr_t BURGER_API Burger::DJB2StringHashXorFunctor(
 uintptr_t BURGER_API Burger::DJB2StringHashXorCaseFunctor(
 	const void* pData, uintptr_t /*uDataSize */) BURGER_NOEXCEPT
 {
-	return DJB2HashXorCase(static_cast<const String*>(pData)->GetPtr(),
+	return DJB2HashXorCase(static_cast<const String*>(pData)->c_str(),
 		static_cast<const String*>(pData)->GetLength());
 }
 

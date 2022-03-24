@@ -39,12 +39,12 @@ typedef struct _GUID {
 #endif
 namespace Burger {
 extern const GUID g_GUIDZero;		///< Empty GUID
-extern void BURGER_API GUIDInit(GUID *pOutput);
-extern void BURGER_API GUIDToString(char *pOutput,const GUID *pInput);
-extern uint_t BURGER_API GUIDFromString(GUID *pOutput,const char *pInput);
-extern uint_t BURGER_API GUIDHash(const GUID *pInput);
-extern uint_t BURGER_API GUIDIsEqual(const GUID *pInput1,const GUID *pInput2);
-extern int BURGER_API GUIDCompare(const GUID *pInput1,const GUID *pInput2);
+extern void BURGER_API GUIDInit(GUID *pOutput)BURGER_NOEXCEPT;
+extern void BURGER_API GUIDToString(char *pOutput,const GUID *pInput)BURGER_NOEXCEPT;
+extern uint_t BURGER_API GUIDFromString(GUID *pOutput,const char *pInput)BURGER_NOEXCEPT;
+extern uint_t BURGER_API GUIDHash(const GUID *pInput)BURGER_NOEXCEPT;
+extern uint_t BURGER_API GUIDIsEqual(const GUID *pInput1,const GUID *pInput2)BURGER_NOEXCEPT;
+extern int BURGER_API GUIDCompare(const GUID *pInput1,const GUID *pInput2)BURGER_NOEXCEPT;
 }
 /* END */
 
