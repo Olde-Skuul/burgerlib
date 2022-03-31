@@ -952,7 +952,7 @@ uint_t Burger::FileXML::Comment::Parse(InputMemoryStream *pInput)
 				if (uFinalSize) {
 					pInput->SetMark(uMark);
 					m_Comment.SetBufferSize(uFinalSize);
-					pInput->Get(m_Comment.GetPtr(),uFinalSize);
+					pInput->Get(m_Comment.c_str(),uFinalSize);
 					m_Comment.NormalizeLineFeeds();
 					pInput->SkipForward(3);		// Skip past the -->
 				}
@@ -988,7 +988,7 @@ uint_t Burger::FileXML::Comment::Save(OutputMemoryStream *pOutput,uint_t uDepth)
 {
 	uint_t uResult = pOutput->AppendTabs(uDepth);
 	uResult |= pOutput->Append("<!--");
-	uResult |= pOutput->Append(m_Comment.GetPtr());
+	uResult |= pOutput->Append(m_Comment.c_str());
 	uResult |= pOutput->Append("-->\n");
 	return uResult;
 }
@@ -1168,7 +1168,7 @@ uint_t Burger::FileXML::CData::Parse(InputMemoryStream *pInput)
 				if (uFinalSize) {
 					pInput->SetMark(uMark);
 					m_CData.SetBufferSize(uFinalSize);
-					pInput->Get(m_CData.GetPtr(),uFinalSize);
+					pInput->Get(m_CData.c_str(),uFinalSize);
 					m_CData.NormalizeLineFeeds();
 					pInput->SkipForward(3);
 				}
@@ -1204,7 +1204,7 @@ uint_t Burger::FileXML::CData::Save(OutputMemoryStream *pOutput,uint_t uDepth) c
 {
 	uint_t uResult = pOutput->AppendTabs(uDepth);
 	uResult |= pOutput->Append("<![CDATA[");
-	uResult |= pOutput->Append(m_CData.GetPtr());
+	uResult |= pOutput->Append(m_CData.c_str());
 	uResult |= pOutput->Append("]]>\n");
 	return uResult;
 }
@@ -1377,9 +1377,9 @@ uint_t Burger::FileXML::Attribute::Parse(InputMemoryStream *pInput)
 
 uint_t Burger::FileXML::Attribute::Save(OutputMemoryStream *pOutput,uint_t /* uDepth */) const
 {
-	uint_t uResult = pOutput->Append(m_Key.GetPtr());
+	uint_t uResult = pOutput->Append(m_Key.c_str());
 	uResult |= pOutput->Append("=\"");
-	uResult |= SaveXMLString(pOutput,m_Value.GetPtr());
+	uResult |= SaveXMLString(pOutput,m_Value.c_str());
 	uResult |= pOutput->Append('"');
 	// If the next item in the linked list is not a root object, then append a space
 	if (GetNext()->GetType()!=XML_ROOT) {
@@ -1861,9 +1861,9 @@ uint_t Burger::FileXML::Declaration::Save(OutputMemoryStream *pOutput,uint_t uDe
 	}
 
 	// If there is a string, output the encoding
-	if (m_Encoding.GetLength()) {
+	if (m_Encoding.length()) {
 		uResult |= pOutput->Append(" encoding=\"");
-		uResult |= SaveXMLString(pOutput,m_Encoding.GetPtr());
+		uResult |= SaveXMLString(pOutput,m_Encoding.c_str());
 		uResult |= pOutput->Append('"');
 	}
 
@@ -2117,7 +2117,7 @@ uint_t Burger::FileXML::RawText::Parse(InputMemoryStream *pInput)
 				uintptr_t uDone = pInput->GetMark();
 				pInput->SetMark(uMark);
 				m_Text.SetBufferSize(uFinalSize);
-				pInput->Get(m_Text.GetPtr(),uFinalSize);
+				pInput->Get(m_Text.c_str(),uFinalSize);
 				uResult = DecodeXMLString(&m_Text);
 				m_Text.NormalizeLineFeeds();
 				pInput->SetMark(uDone);
@@ -2158,7 +2158,7 @@ uint_t Burger::FileXML::RawText::Save(OutputMemoryStream *pOutput,uint_t uDepth)
 	if ((Type!=XML_ROOT) && (Type!=XML_TEXT)) {
 		uResult = pOutput->AppendTabs(uDepth);
 	}
-	uResult |= SaveXMLString(pOutput,m_Text.GetPtr());
+	uResult |= SaveXMLString(pOutput,m_Text.c_str());
 	Type = GetNext()->GetType();
 	if ((Type!=XML_ROOT) && (Type!=XML_TEXT)) {
 		uResult |= pOutput->Append("\n");
@@ -2507,7 +2507,7 @@ uint_t Burger::FileXML::Element::Parse(InputMemoryStream *pInput)
 					String EndName;
 					// Verify that the ending tag is a match to the start tag.
 					if (!ReadXMLName(&EndName,pInput)) {
-						if (!StringCaseCompare(m_Name.GetPtr(),EndName.GetPtr())) {
+						if (!StringCaseCompare(m_Name.c_str(),EndName.c_str())) {
 							pInput->ParseBeyondWhiteSpace();
 							// Properly closed?
 							if (pInput->IsStringMatch(">")) {
@@ -2546,7 +2546,7 @@ uint_t Burger::FileXML::Element::Save(OutputMemoryStream *pOutput,uint_t uDepth)
 {
 	uint_t uResult = pOutput->AppendTabs(uDepth);
 	uResult |= pOutput->Append("<");
-	uResult |= pOutput->Append(m_Name.GetPtr());
+	uResult |= pOutput->Append(m_Name.c_str());
 	// Any attributes?
 	if (m_Attributes.GetNext()!=&m_Attributes) {
 		uResult |= pOutput->Append(' ');
@@ -2572,7 +2572,7 @@ uint_t Burger::FileXML::Element::Save(OutputMemoryStream *pOutput,uint_t uDepth)
 		}
 		// Output the closing element </foo>
 		uResult |= pOutput->Append("</");
-		uResult |= pOutput->Append(m_Name.GetPtr());
+		uResult |= pOutput->Append(m_Name.c_str());
 		uResult |= pOutput->Append(">\n");
 	} else {
 		// End the tag now <foo />
@@ -4314,7 +4314,7 @@ uint_t BURGER_API Burger::FileXML::ReadXMLName(String *pOutput,InputMemoryStream
 		pOutput->SetBufferSize(uSize);
 		pInput->SetMark(uMark);
 		// Copy the string
-		pInput->Get(pOutput->GetPtr(),uSize);
+		pInput->Get(pOutput->c_str(),uSize);
 		// No error
 		uResult = 0;
 	} else {
@@ -4352,7 +4352,7 @@ uint_t BURGER_API Burger::FileXML::ReadXMLText(String *pOutput,InputMemoryStream
 				pOutput->SetBufferSize(uSize);
 				pInput->SetMark(uMark+1);
 				// Copy the string
-				pInput->Get(pOutput->GetPtr(),uSize);
+				pInput->Get(pOutput->c_str(),uSize);
 				pInput->SkipForward(1);
 				// No error
 				uResult = 0;
@@ -4373,7 +4373,7 @@ uint_t BURGER_API Burger::FileXML::ReadXMLText(String *pOutput,InputMemoryStream
 			pOutput->SetBufferSize(uSize);
 			pInput->SetMark(uMark);
 			// Copy the string
-			pInput->Get(pOutput->GetPtr(),uSize);
+			pInput->Get(pOutput->c_str(),uSize);
 			// No error
 			uResult = 0;
 		}
@@ -4497,7 +4497,7 @@ uint_t BURGER_API Burger::FileXML::SaveXMLString(OutputMemoryStream *pOutput,con
 uint_t BURGER_API Burger::FileXML::DecodeXMLString(String *pInput)
 {
 	uint_t uResult = 0;
-	uint8_t *pSource = reinterpret_cast<uint8_t *>(pInput->GetPtr());
+	uint8_t *pSource = reinterpret_cast<uint8_t *>(pInput->c_str());
 	uint_t uTemp = pSource[0];
 	if (uTemp) {
 		uint8_t *pDest = pSource;
@@ -4571,7 +4571,7 @@ uint_t BURGER_API Burger::FileXML::DecodeXMLString(String *pInput)
 			uTemp = pSource[0];
 		} while (uTemp);
 		// Done parsing, resize the buffer if needed
-		pInput->SetBufferSize(static_cast<uintptr_t>(reinterpret_cast<char*>(pDest)-pInput->GetPtr()));	
+		pInput->SetBufferSize(static_cast<uintptr_t>(reinterpret_cast<char*>(pDest)-pInput->c_str()));
 	}
 	// Return error if any
 	return uResult;

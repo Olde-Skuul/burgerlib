@@ -213,6 +213,8 @@ static void BURGER_API ShowCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
 		SHOW_MACRO(__cplusplus);
 		SHOW_MACRO(__cplusplus_cli);
 		SHOW_MACRO(__embedded_cplusplus);
+		SHOW_MACRO(__COUNTER__);
+		SHOW_MACRO(__LINE__);
 
 		// Unix
 		SHOW_MACRO(unix);
@@ -394,6 +396,7 @@ static void BURGER_API ShowCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
 		SHOW_MACRO(_MSVC_TRADITIONAL);
 		SHOW_MACRO(_MT);
 		SHOW_MACRO(_NATIVE_WCHAR_T_DEFINED);
+		SHOW_MACRO(_WCHAR_T_DEFINED);
 		SHOW_MACRO(_OPENMP);
 		SHOW_MACRO(_PREFAST_);
 		SHOW_MACRO(_VC_NODEFAULTLIB);
@@ -659,7 +662,7 @@ static void BURGER_API ShowMacros(uint_t uVerbose) BURGER_NOEXCEPT
 static uint_t BURGER_API TestEndianMacros(uint_t uVerbose) BURGER_NOEXCEPT
 {
 	union {
-		uint32_t m_uWord32;  // 32 bit integer to store
+		uint32_t m_uInt32;   // 32 bit integer to store
 		uint8_t m_uBytes[4]; // Byte array to test the endian with
 	} EndianTest;
 
@@ -681,7 +684,7 @@ static uint_t BURGER_API TestEndianMacros(uint_t uVerbose) BURGER_NOEXCEPT
 	// Test the endian ACTUALLY matches
 	//
 
-	EndianTest.m_uWord32 = 0x12345678U;
+	EndianTest.m_uInt32 = 0x12345678U;
 	uint_t uTest;
 
 #if defined(BURGER_BIGENDIAN)
@@ -759,19 +762,26 @@ static uint_t BURGER_API TestCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
 		SHOW_MACRO(BURGER_COMPILER_VERSION);
 		SHOW_MACRO(BURGER_COMPILER_NAME);
 		SHOW_MACRO(BURGER_CONSTEXPR);
+		SHOW_MACRO(BURGER_NOEXCEPT);
 		SHOW_MACRO(BURGER_OVERRIDE);
 		SHOW_MACRO(BURGER_FINAL);
-		SHOW_MACRO(BURGER_NODISCARD);
-		SHOW_MACRO(BURGER_NOEXCEPT);
-		SHOW_MACRO(BURGER_FALLTHROUGH);
-		SHOW_MACRO(BURGER_USED);
-		SHOW_MACRO(BURGER_MAYBE_UNUSED);
+		SHOW_MACRO(BURGER_RVALUE_REFERENCES);
 		SHOW_MACRO(BURGER_DISABLE_ASAN);
 		SHOW_MACRO(BURGER_DISABLE_MSAN);
+		SHOW_MACRO(BURGER_MAYBE_UNUSED);
+		SHOW_MACRO(BURGER_NODISCARD);
+		SHOW_MACRO(BURGER_FALLTHROUGH);
+		SHOW_MACRO(BURGER_USED);
+		SHOW_MACRO(BURGER_NO_INLINE);
+		SHOW_MACRO(BURGER_NORETURN);
+		SHOW_MACRO(BURGER_PRINTF_ATTRIBUTE);
 		SHOW_MACRO(nullptr);
 		SHOW_MACRO(BURGER_ENUM_TYPE(SampleEnum, uint_t));
 		SHOW_MACRO(BURGER_ENUM_CLASS_START(SampleEnum, uint_t));
 		SHOW_MACRO(BURGER_ENUM_CLASS_END(SampleEnum));
+		SHOW_MACRO(BURGER_HAS_WCHAR_T);
+		SHOW_MACRO(BURGER_HAS_CHAR8_T);
+		SHOW_MACRO(BURGER_HAS_CHAR16_T);
 
 		// Disable, the macro is huge
 		// SHOW_MACRO(BURGER_ENUM_CLASS_END_MATH(SampleEnum, uint_t));
@@ -1328,7 +1338,7 @@ static uint_t BURGER_API TestEnumMacros(uint_t uVerbose) BURGER_NOEXCEPT
 	uFailure |= uTest;
 	ReportFailure("eEnumClass32 switch failed, got %u.", uTest, uTest);
 #endif
-    
+
 	uTest = Bar < eEnumClass32::DELTA;
 	uFailure |= uTest;
 	ReportFailure("Bar < eEnumClass32::DELTA got %u.", uTest, uTest);

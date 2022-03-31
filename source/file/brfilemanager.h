@@ -202,15 +202,19 @@ public:
 		String* pInput) BURGER_NOEXCEPT;
 #endif
 
-	static BURGER_INLINE uint_t IsUTF8FileSystem(void) BURGER_NOEXCEPT
+#if defined(BURGER_MAC) || defined(DOXYGEN)
+	static BURGER_API uint_t IsUTF8FileSystem(void) BURGER_NOEXCEPT;
+#else
+	static BURGER_INLINE BURGER_CONSTEXPR uint_t IsUTF8FileSystem(
+		void) BURGER_NOEXCEPT
 	{
-#if defined(BURGER_MSDOS) || defined(BURGER_XBOX) || \
-	defined(BURGER_XBOX360) || defined(BURGER_MAC)
+#if defined(BURGER_MSDOS) || defined(BURGER_XBOX) || defined(BURGER_XBOX360)
 		return FALSE;
 #else
 		return TRUE;
 #endif
 	}
+#endif
 
 	static eError BURGER_API GetVolumeName(
 		Filename* pOutput, uint_t uVolumeNum) BURGER_NOEXCEPT;

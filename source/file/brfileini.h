@@ -75,7 +75,7 @@ public:
 		Comment();
 		Comment(const char *pComment);
 		virtual ~Comment();
-		BURGER_INLINE const char *GetText(void) const { return m_Comment.GetPtr(); }
+		BURGER_INLINE const char *GetText(void) const { return m_Comment.c_str(); }
 		BURGER_INLINE void SetText(const char *pInput) { m_Comment.Set(pInput); }
 		BURGER_INLINE void SetText(const String *pInput) { m_Comment = pInput[0]; }
 		static Comment * BURGER_API New(void);
@@ -89,10 +89,10 @@ public:
 		Entry();
 		Entry(const char *pKey,const char *pValue);
 		virtual ~Entry();
-		BURGER_INLINE const char *GetKey(void) const { return m_Key.GetPtr(); }
+		BURGER_INLINE const char *GetKey(void) const { return m_Key.c_str(); }
 		BURGER_INLINE void SetKey(const char *pInput) { m_Key.Set(pInput); }
 		BURGER_INLINE void SetKey(const String *pInput) { m_Key = pInput[0]; }
-		BURGER_INLINE const char *GetValue(void) const { return m_Value.GetPtr(); }
+		BURGER_INLINE const char *GetValue(void) const { return m_Value.c_str(); }
 		BURGER_INLINE void SetValue(const char *pInput) { m_Value.Set(pInput); }
 		BURGER_INLINE void SetValue(const String *pInput) { m_Value = pInput[0]; }
 		uint_t BURGER_API GetBoolean(uint_t bDefault) const;
@@ -120,7 +120,7 @@ public:
 		Section(const char *pSection);
 		virtual ~Section();
 		uint_t BURGER_API Save(OutputMemoryStream *pOutput) const;
-		BURGER_INLINE const char *GetName(void) const { return m_SectionName.GetPtr(); }
+		BURGER_INLINE const char *GetName(void) const { return m_SectionName.c_str(); }
 		BURGER_INLINE void SetName(const char *pInput) { m_SectionName.Set(pInput); }
 		BURGER_INLINE void SetName(const String *pInput) { m_SectionName = pInput[0]; }
 		Entry * BURGER_API AddEntry(const char *pKey,const char *pValue);

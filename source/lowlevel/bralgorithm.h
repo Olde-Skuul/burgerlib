@@ -195,16 +195,12 @@ struct ice_not<true> {
 #endif
 
 template<typename T, typename U>
-struct is_same {
-	/** If this instantiated, the types are not the same */
-	static const bool value = false;
+struct is_same: false_type {
 };
 
 #if defined(BURGER_HAS_SFINAE) && !defined(DOXYGEN)
 template<typename T>
-struct is_same<T, T> {
-	/** If this instantiated, the types are the same */
-	static const bool value = true;
+struct is_same<T, T>: true_type {
 };
 #endif
 
@@ -701,9 +697,11 @@ struct is_reference: bool_constant<is_lvalue_reference<T>::value ||
 };
 
 #if !defined(DOXYGEN)
+// Use C cast, Metrowerks fails with static_cast<>
 template<class T>
-struct _signed_val_test: bool_constant<((typename remove_cv<T>::type) - 1) <
-							 ((typename remove_cv<T>::type)0)> {
+struct _signed_val_test
+	: bool_constant<((typename remove_cv<T>::type)-1) <
+		  ((typename remove_cv<T>::type)0)> {
 };
 #endif
 
@@ -1452,60 +1450,6 @@ struct is_function<R(&&)(T0, T1, T2, T3, T4, ...)>: false_type {
 #endif
 #endif
 
-#if 0
-template<class T>
-struct make_signed {
-private:
-    // The template argument to make_signed must be an integer or enum type.
-    BURGER_STATIC_ASSERT(is_integral<T>::value /* || is_enum<T>::value */);
-    // The template argument to make_signed must not be the type bool.
-    BURGER_STATIC_ASSERT(!(is_same<typename remove_cv<T>::type, bool>::value));
-
-    typedef typename remove_cv<T>::type t_no_cv;
-    typedef typename conditional<(is_signed<T>::value &&
-                                     is_integral<T>::value &&
-                                     !is_same<t_no_cv, char>::value &&
-                                     !is_same<t_no_cv, wchar_t>::value &&
-                                     !is_same<t_no_cv, bool>::value),
-        T,
-        typename conditional<(is_integral<T>::value &&
-                                 !is_same<t_no_cv, char>::value &&
-                                 !is_same<t_no_cv, wchar_t>::value &&
-                                 !is_same<t_no_cv, bool>::value),
-            typename conditional<is_same<t_no_cv, unsigned char>::value,
-                signed char,
-                typename conditional<is_same<t_no_cv, unsigned short>::value,
-                    signed short,
-                    typename conditional<is_same<t_no_cv, unsigned int>::value,
-                        int,
-                        typename conditional<
-                            is_same<t_no_cv, unsigned long>::value, long,
-                            int64_t>::type>::type>::type>::type,
-            // Not a regular integer type:
-            typename conditional<sizeof(t_no_cv) == sizeof(unsigned char),
-                signed char,
-                typename conditional<sizeof(t_no_cv) == sizeof(unsigned short),
-                    signed short,
-                    typename conditional<
-                        sizeof(t_no_cv) == sizeof(unsigned int), int,
-                        typename conditional<
-                            sizeof(t_no_cv) == sizeof(unsigned long), long,
-                            int64_t>::type>::type>::type>::type>::type>::type
-        base_integer_type;
-
-    // Add back any const qualifier:
-    typedef typename conditional<is_const<T>::value,
-        typename add_const<base_integer_type>::type, base_integer_type>::type
-        const_base_integer_type;
-
-public:
-    // Add back any volatile qualifier:
-    typedef typename conditional<is_volatile<T>::value,
-        typename add_volatile<const_base_integer_type>::type,
-        const_base_integer_type>::type type;
-};
-#endif
-
 template<typename T>
 T* round_up_pointer(
 	T* pInput, uintptr_t uSize = alignment_of<T>::value) BURGER_NOEXCEPT
@@ -1513,6 +1457,12 @@ T* round_up_pointer(
 	return reinterpret_cast<T*>(
 		(reinterpret_cast<uintptr_t>(pInput) + (uSize - 1)) & (~(uSize - 1)));
 }
+
+template<bool B, class T, T _True, T _False>
+struct select_value {
+	/** Encapsulated value */
+	static BURGER_CONSTEXPR const T value = (B) ? _True : _False;
+};
 
 // Default deleter for std::delete
 template<class T>

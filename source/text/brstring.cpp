@@ -580,35 +580,6 @@ Burger::String::String(const char* pInput1, const char* pInput2,
 
 /*! ************************************
 
-	\fn Burger::String::GetLength(void) const
-	\brief Return the length of the "C" string
-
-	\return The length in bytes of the UTF8 "C" string
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::String::GetPtr()
-	\brief Return the pointer to the string
-
-	Helper to access the pointer to the UTF8 ASCII string
-	\return Pointer to the UTF8 "C" string.
-
-***************************************/
-
-/*! ************************************
-
-	\fn Burger::String::GetPtr() const
-	\brief Return the const pointer to the string
-
-	Helper to access the const pointer to the UTF8 ASCII string
-	\return Pointer to the const UTF8 "C" string.
-
-***************************************/
-
-/*! ************************************
-
 	\fn Burger::String::~String()
 	\brief Release memory, if any
 
@@ -2268,7 +2239,7 @@ void BURGER_API Burger::String::SetFast(const char* pInput, uintptr_t uLength)
 }
 
 void BURGER_API Burger::String::InitFormattedString(
-	const char* pFormat, uintptr_t uArgCount, const SafePrintArgument** ppArgs)
+	const char* pFormat, uintptr_t uArgCount, const ArgumentType** ppArgs)
 {
 	// Remove any previously allocated buffer
 	clear();

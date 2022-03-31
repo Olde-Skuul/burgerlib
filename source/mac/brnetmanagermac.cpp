@@ -312,7 +312,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(
 			// Was there a port #?
 
 			// Scan for the ending colon
-			char* pColon = StringCharacterReverse(TempDNS.GetPtr(), ':');
+			char* pColon = StringCharacterReverse(TempDNS.c_str(), ':');
 			uResult = kErrorNone;
 			if (pColon) {
 				pColon[0] = 0; // Force a null string
@@ -331,7 +331,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(
 				uint32_t uIPv4;
 
 				// Try 206.55.132.154
-				uResult = StringToIPv4(TempDNS.GetPtr(), &uIPv4);
+				uResult = StringToIPv4(TempDNS.c_str(), &uIPv4);
 				if (uResult != kErrorNone) {
 
 					// It's a real DNS name, resolve it.
@@ -368,7 +368,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(
 							// Resolve DNS
 							uResult = static_cast<eError>(
 								OTInetStringToAddress(svcInfo.m_pRef,
-									TempDNS.GetPtr(), &hInfoOT));
+									TempDNS.c_str(), &hInfoOT));
 
 							if (uResult == kErrorNone) {
 								// Timeout?

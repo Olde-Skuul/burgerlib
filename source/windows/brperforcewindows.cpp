@@ -135,12 +135,12 @@ uint_t BURGER_API Burger::Perforce::Edit(const char *pFilename)
 		String Parameters("-s edit \"",Translate.GetNative(),"\"");
 		OutputMemoryStream Capture;
 		// Issue the command to Perforce
-		uResult = static_cast<uint_t>(Globals::ExecuteTool(m_PerforceFilename.GetPtr(),Parameters.GetPtr(),&Capture));
+		uResult = static_cast<uint_t>(Globals::ExecuteTool(m_PerforceFilename.c_str(),Parameters.c_str(),&Capture));
 		if (!uResult) {
 			// If the filename was not found (An error)
 			// it only mentions it in the stderr text. Detect it
 			Capture.Save(&Parameters);
-			const char *pHit = StringString(Parameters.GetPtr(),"error:");
+			const char *pHit = StringString(Parameters.c_str(),"error:");
 			if (pHit) {
 				// An error had occurred!
 				uResult = 10;
@@ -164,12 +164,12 @@ uint_t BURGER_API Burger::Perforce::RevertIfUnchanged(const char *pFilename)
 		String Parameters("-s revert -a \"",Translate.GetNative(),"\"");
 		OutputMemoryStream Capture;
 		// Issue the command to Perforce
-		uResult = static_cast<uint_t>(Globals::ExecuteTool(m_PerforceFilename.GetPtr(),Parameters.GetPtr(),&Capture));
+		uResult = static_cast<uint_t>(Globals::ExecuteTool(m_PerforceFilename.c_str(),Parameters.c_str(),&Capture));
 		if (!uResult) {
 			// If the filename was not found (An error)
 			// it only mentions it in the stderr text. Detect it
 			Capture.Save(&Parameters);
-			const char *pHit = StringString(Parameters.GetPtr(),"error:");
+			const char *pHit = StringString(Parameters.c_str(),"error:");
 			if (pHit) {
 				// An error had occurred!
 				uResult = 10;

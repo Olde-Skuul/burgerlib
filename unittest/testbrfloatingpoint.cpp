@@ -14,6 +14,7 @@
 
 #include "testbrfloatingpoint.h"
 #include "brfloatingpoint.h"
+#include "brfpinfo.h"
 #include "brnumberstringhex.h"
 #include "common.h"
 #include <math.h>
@@ -384,11 +385,20 @@ static uint_t BURGER_API TestIsNanFloat(void) BURGER_NOEXCEPT
 		const float fOriginal = reinterpret_cast<const float*>(pWork)[0];
 		const uint_t uExpected = (pWork[1] & NANTEST) != 0;
 		pWork += 2;
-		const uint_t uTest = Burger::IsNan(fOriginal);
-		const uint_t uFailure = (uTest != uExpected);
+		uint_t uTest = Burger::IsNan(fOriginal);
+		uint_t uFailure = (uTest != uExpected);
 		uResult |= uFailure;
 		ReportFailure("Burger::IsNan((float)%.16g) = %u / Wanted %u", uFailure,
 			fOriginal, uTest, uExpected);
+
+		// Test FPInfo
+		const Burger::FPInfo FPTest(fOriginal);
+		uTest = FPTest.IsNAN();
+		uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure("Burger::FPInfo::IsNAN((float)%.16g) = %u / Wanted %u",
+			uFailure, fOriginal, uTest, uExpected);
+
 	} while (--i);
 	return uResult;
 }
@@ -442,11 +452,19 @@ static uint_t BURGER_API TestIsNanDouble(void) BURGER_NOEXCEPT
 		const double dOriginal = val64.d;
 		const uint_t uExpected = (pWork->uFlags & NANTEST) != 0;
 		++pWork;
-		const uint_t uTest = Burger::IsNan(dOriginal);
-		const uint_t uFailure = (uTest != uExpected);
+		uint_t uTest = Burger::IsNan(dOriginal);
+		uint_t uFailure = (uTest != uExpected);
 		uResult |= uFailure;
 		ReportFailure("Burger::IsNan((double)%.16g) = %u / Wanted %u", uFailure,
 			dOriginal, uTest, uExpected);
+
+		// Test FPInfo
+		const Burger::FPInfo FPTest(dOriginal);
+		uTest = FPTest.IsNAN();
+		uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure("Burger::FPInfo::IsNAN((double)%.16g) = %u / Wanted %u",
+			uFailure, dOriginal, uTest, uExpected);
 	} while (--i);
 	return uResult;
 }
@@ -469,11 +487,21 @@ static uint_t BURGER_API TestIsInfFloat(void) BURGER_NOEXCEPT
 		const float fOriginal = val32.f;
 		const uint_t uExpected = (pWork[1] & INFTEST) != 0;
 		pWork += 2;
-		const uint_t uTest = Burger::IsInf(fOriginal);
-		const uint_t uFailure = (uTest != uExpected);
+		uint_t uTest = Burger::IsInf(fOriginal);
+		uint_t uFailure = (uTest != uExpected);
 		uResult |= uFailure;
 		ReportFailure("Burger::IsInf((float)%.16g) = %u / Wanted %u", uFailure,
 			fOriginal, uTest, uExpected);
+
+		// Test FPInfo
+		const Burger::FPInfo FPTest(fOriginal);
+		uTest = FPTest.IsInfinity();
+		uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure(
+			"Burger::FPInfo::IsInfinity((float)%.16g) = %u / Wanted %u",
+			uFailure, fOriginal, uTest, uExpected);
+
 	} while (--i);
 	return uResult;
 }
@@ -496,11 +524,20 @@ static uint_t BURGER_API TestIsInfDouble(void) BURGER_NOEXCEPT
 		const double dOriginal = val64.d;
 		const uint_t uExpected = (pWork->uFlags & INFTEST) != 0;
 		++pWork;
-		const uint_t uTest = Burger::IsInf(dOriginal);
-		const uint_t uFailure = (uTest != uExpected);
+		uint_t uTest = Burger::IsInf(dOriginal);
+		uint_t uFailure = (uTest != uExpected);
 		uResult |= uFailure;
 		ReportFailure("Burger::IsInf((double)%.16g) = %u / Wanted %u", uFailure,
 			dOriginal, uTest, uExpected);
+
+		// Test FPInfo
+		const Burger::FPInfo FPTest(dOriginal);
+		uTest = FPTest.IsInfinity();
+		uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure(
+			"Burger::FPInfo::IsInfinity((double)%.16g) = %u / Wanted %u",
+			uFailure, dOriginal, uTest, uExpected);
 	} while (--i);
 	return uResult;
 }
@@ -518,10 +555,18 @@ static uint_t BURGER_API TestIsFiniteFloat(void) BURGER_NOEXCEPT
 		const float fOriginal = reinterpret_cast<const float*>(pWork)[0];
 		const uint_t uExpected = (pWork[1] & FINITETEST) != 0;
 		pWork += 2;
-		const uint_t uTest = Burger::IsFinite(fOriginal);
-		const uint_t uFailure = (uTest != uExpected);
+		uint_t uTest = Burger::IsFinite(fOriginal);
+		uint_t uFailure = (uTest != uExpected);
 		uResult |= uFailure;
 		ReportFailure("Burger::IsFinite((float)%.16g) = %u / Wanted %u",
+			uFailure, fOriginal, uTest, uExpected);
+
+		// Test FPInfo
+		const Burger::FPInfo FPTest(fOriginal);
+		uTest = FPTest.IsFinite();
+		uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure("Burger::FPInfo::IsFinite((float)%.16g) = %u / Wanted %u",
 			uFailure, fOriginal, uTest, uExpected);
 	} while (--i);
 	return uResult;
@@ -545,10 +590,19 @@ static uint_t BURGER_API TestIsFiniteDouble(void) BURGER_NOEXCEPT
 		const double dOriginal = val64.d;
 		const uint_t uExpected = (pWork->uFlags & FINITETEST) != 0;
 		++pWork;
-		const uint_t uTest = Burger::IsFinite(dOriginal);
-		const uint_t uFailure = (uTest != uExpected);
+		uint_t uTest = Burger::IsFinite(dOriginal);
+		uint_t uFailure = (uTest != uExpected);
 		uResult |= uFailure;
 		ReportFailure("Burger::IsFinite((double)%.16g) = %u / Wanted %u",
+			uFailure, dOriginal, uTest, uExpected);
+
+		// Test FPInfo
+		const Burger::FPInfo FPTest(dOriginal);
+		uTest = FPTest.IsFinite();
+		uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure(
+			"Burger::FPInfo::IsFinite((double)%.16g) = %u / Wanted %u",
 			uFailure, dOriginal, uTest, uExpected);
 	} while (--i);
 	return uResult;
@@ -616,10 +670,19 @@ static uint_t BURGER_API TestSignBitFloat(void) BURGER_NOEXCEPT
 		const float fOriginal = reinterpret_cast<const float*>(pWork)[0];
 		const uint_t uExpected = (pWork[1] & SIGNTEST) != 0;
 		pWork += 2;
-		const uint_t uTest = Burger::SignBit(fOriginal);
-		const uint_t uFailure = (uTest != uExpected);
+		uint_t uTest = Burger::SignBit(fOriginal);
+		uint_t uFailure = (uTest != uExpected);
 		uResult |= uFailure;
 		ReportFailure("Burger::SignBit((float)%.16g) = %u / Wanted %u",
+			uFailure, fOriginal, uTest, uExpected);
+
+		// Test FPInfo
+		const Burger::FPInfo FPTest(fOriginal);
+		uTest = FPTest.IsNegative();
+		uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure(
+			"Burger::FPInfo::IsNegative((float)%.16g) = %u / Wanted %u",
 			uFailure, fOriginal, uTest, uExpected);
 	} while (--i);
 	return uResult;
@@ -643,10 +706,19 @@ static uint_t BURGER_API TestSignBitDouble(void) BURGER_NOEXCEPT
 		const double dOriginal = val64.d;
 		const uint_t uExpected = (pWork->uFlags & SIGNTEST) != 0;
 		++pWork;
-		const uint_t uTest = Burger::SignBit(dOriginal);
-		const uint_t uFailure = (uTest != uExpected);
+		uint_t uTest = Burger::SignBit(dOriginal);
+		uint_t uFailure = (uTest != uExpected);
 		uResult |= uFailure;
 		ReportFailure("Burger::SignBit((double)%.16g) = %u / Wanted %u",
+			uFailure, dOriginal, uTest, uExpected);
+
+		// Test FPInfo
+		const Burger::FPInfo FPTest(dOriginal);
+		uTest = FPTest.IsNegative();
+		uFailure = (uTest != uExpected);
+		uResult |= uFailure;
+		ReportFailure(
+			"Burger::FPInfo::IsNegative((double)%.16g) = %u / Wanted %u",
 			uFailure, dOriginal, uTest, uExpected);
 	} while (--i);
 	return uResult;

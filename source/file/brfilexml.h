@@ -115,7 +115,7 @@ public:
 		virtual ~Comment();
 		virtual uint_t Parse(InputMemoryStream *pInput);
 		virtual uint_t Save(OutputMemoryStream *pOutput,uint_t uDepth) const;
-		BURGER_INLINE const char *GetText(void) const { return m_Comment.GetPtr(); }
+		BURGER_INLINE const char *GetText(void) const { return m_Comment.c_str(); }
 		BURGER_INLINE void SetText(const char *pInput) { m_Comment.Set(pInput); }
 		BURGER_INLINE void SetText(const String *pInput) { m_Comment = pInput[0]; }
 		static Comment * BURGER_API New(InputMemoryStream *pInput);
@@ -130,7 +130,7 @@ public:
 		virtual ~CData();
 		virtual uint_t Parse(InputMemoryStream *pInput);
 		virtual uint_t Save(OutputMemoryStream *pOutput,uint_t uDepth) const;
-		BURGER_INLINE const char *GetText(void) const { return m_CData.GetPtr(); }
+		BURGER_INLINE const char *GetText(void) const { return m_CData.c_str(); }
 		BURGER_INLINE void SetText(const char *pInput) { m_CData.Set(pInput); }
 		BURGER_INLINE void SetText(const String *pInput) { m_CData = pInput[0]; }
 		static CData * BURGER_API New(InputMemoryStream *pInput);
@@ -145,10 +145,10 @@ public:
 		virtual ~Attribute();
 		virtual uint_t Parse(InputMemoryStream *pInput);
 		virtual uint_t Save(OutputMemoryStream *pOutput,uint_t uDepth) const;
-		BURGER_INLINE const char *GetKey(void) const { return m_Key.GetPtr(); }
+		BURGER_INLINE const char *GetKey(void) const { return m_Key.c_str(); }
 		BURGER_INLINE void SetKey(const char *pInput) { m_Key.Set(pInput); }
 		BURGER_INLINE void SetKey(const String *pInput) { m_Key = pInput[0]; }
-		BURGER_INLINE const char *GetValue(void) const { return m_Value.GetPtr(); }
+		BURGER_INLINE const char *GetValue(void) const { return m_Value.c_str(); }
 		BURGER_INLINE void SetValue(const char *pInput) { m_Value.Set(pInput); }
 		BURGER_INLINE void SetValue(const String *pInput) { m_Value = pInput[0]; }
 		BURGER_INLINE uint_t GetBoolean(uint_t bDefault) const { return m_Value.GetBoolean(bDefault); }
@@ -181,7 +181,7 @@ public:
 		virtual uint_t Save(OutputMemoryStream *pOutput,uint_t uDepth) const;
 		BURGER_INLINE float GetVersion(void) const { return m_fVersion; }
 		void BURGER_API SetVersion(float fInput=1.0f);
-		BURGER_INLINE const char *GetEncoding(void) const { return m_Encoding.GetPtr(); }
+		BURGER_INLINE const char *GetEncoding(void) const { return m_Encoding.c_str(); }
 		BURGER_INLINE void SetEncoding(const char *pInput) { m_Encoding.Set(pInput); }
 		BURGER_INLINE void SetEncoding(const String *pInput) { m_Encoding = pInput[0]; }
 		uint_t BURGER_INLINE GetStandalone(void) const { return m_bStandalone==1;}
@@ -198,7 +198,7 @@ public:
 		virtual ~RawText();
 		virtual uint_t Parse(InputMemoryStream *pInput);
 		virtual uint_t Save(OutputMemoryStream *pOutput,uint_t uDepth) const;
-		BURGER_INLINE const char *GetText(void) const { return m_Text.GetPtr(); }
+		BURGER_INLINE const char *GetText(void) const { return m_Text.c_str(); }
 		BURGER_INLINE void SetText(const char *pInput) { m_Text.Set(pInput); }
 		BURGER_INLINE void SetText(const String *pInput) { m_Text = pInput[0]; }
 		BURGER_INLINE uint_t GetBoolean(uint_t bDefault) const { return m_Text.GetBoolean(bDefault); }
@@ -238,7 +238,7 @@ public:
 		BURGER_INLINE Attribute * FindAttribute(const char *pAttributeName,uint_t bAlwaysCreate=FALSE) { return m_Attributes.FindAttribute(pAttributeName,bAlwaysCreate); }
 		BURGER_INLINE Attribute * AddAttribute(const char *pAttributeName,const char *pValue=NULL) { return m_Attributes.AddAttribute(pAttributeName,pValue); }
 		BURGER_INLINE void DeleteAttribute(const char *pAttributeName) { return m_Attributes.DeleteAttribute(pAttributeName); }
-		BURGER_INLINE const char *GetName(void) const { return m_Name.GetPtr(); }
+		BURGER_INLINE const char *GetName(void) const { return m_Name.c_str(); }
 		BURGER_INLINE void SetName(const char *pInput) { m_Name.Set(pInput); }
 		BURGER_INLINE void SetName(const String *pInput) { m_Name = pInput[0]; }
 		uint_t BURGER_API GetBoolean(uint_t bDefault) const;

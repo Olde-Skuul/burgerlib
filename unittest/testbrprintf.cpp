@@ -94,53 +94,57 @@ static int snprintf(char* s, uintptr_t uSize, const char* format, ...)
 }
 #endif
 
-static Burger::SafePrintArgument::eType g_CharARG = static_cast<char>(-1) < 0 ?
-    Burger::SafePrintArgument::ARG_INT8 :
-    Burger::SafePrintArgument::ARG_UINT8;
+// Char is always 1 byte in size
+static Burger::eArgumentType g_CharARG = static_cast<char>(-1) < 0 ?
+    Burger::kArgumentTypeInt8 :
+    Burger::kArgumentTypeUInt8;
 
+// wchar_t can be 16 or 32 bits in size
 #if defined(BURGER_HAS_WCHAR_T)
-static Burger::SafePrintArgument::eType g_WCharARG =
-	static_cast<wchar_t>(-1) < 0 ? Burger::SafePrintArgument::ARG_INT16 :
-                                   Burger::SafePrintArgument::ARG_UINT16;
+static Burger::eArgumentType g_WCharARG = static_cast<wchar_t>(-1) < 0 ?
+    (sizeof(wchar_t) == 2) ? Burger::kArgumentTypeInt16 :
+                             Burger::kArgumentTypeInt32 :
+	(sizeof(wchar_t) == 2) ? Burger::kArgumentTypeUInt16 :
+                             Burger::kArgumentTypeUInt32;
 #endif
 
 #if defined(BURGER_HAS_CHAR8_T)
-static Burger::SafePrintArgument::eType g_Char8ARG =
-	static_cast<char8_t>(-1) < 0 ? Burger::SafePrintArgument::ARG_INT8 :
-                                   Burger::SafePrintArgument::ARG_UINT8;
+static Burger::eArgumentType g_Char8ARG = static_cast<char8_t>(-1) < 0 ?
+    Burger::kArgumentTypeInt8 :
+    Burger::kArgumentTypeUInt8;
 #endif
 
 #if defined(BURGER_HAS_CHAR16_T)
-static Burger::SafePrintArgument::eType g_Char16ARG =
-	static_cast<char16_t>(-1) < 0 ? Burger::SafePrintArgument::ARG_INT16 :
-                                    Burger::SafePrintArgument::ARG_UINT16;
-static Burger::SafePrintArgument::eType g_Char32ARG =
-	static_cast<char32_t>(-1) < 0 ? Burger::SafePrintArgument::ARG_INT32 :
-                                    Burger::SafePrintArgument::ARG_UINT32;
+static Burger::eArgumentType g_Char16ARG = static_cast<char16_t>(-1) < 0 ?
+    Burger::kArgumentTypeInt16 :
+    Burger::kArgumentTypeUInt16;
+static Burger::eArgumentType g_Char32ARG = static_cast<char32_t>(-1) < 0 ?
+    Burger::kArgumentTypeInt32 :
+    Burger::kArgumentTypeUInt32;
 #endif
 
 // ======================================================================================
 // Special values for 32-bit floats
-#if 0
+#if 1
 static const uint32_t g_FloatSpecialConstants[] = {
-    0x00000000, 0x80000000, // Zero and -Zero
-    0x7F800000, 0xFF800000, // Infinity, -Infinity
+	0x00000000, 0x80000000, // Zero and -Zero
+	0x7F800000, 0xFF800000, // Infinity, -Infinity
 
-    // Note: Some functions expect signaling NAN values are at index 4
-    0x7F800001, 0xFF800001, // NAN, -NAN (smallest signaling)
-    0x7F80FFFF, 0xFF80FFFF, // NAN, -NAN (signaling)
-    0x7FBFFFFF, 0xFFBFFFFF, // NAN, -NAN (largest signaling)
+	// Note: Some functions expect signaling NAN values are at index 4
+	0x7F800001, 0xFF800001, // NAN, -NAN (smallest signaling)
+	0x7F80FFFF, 0xFF80FFFF, // NAN, -NAN (signaling)
+	0x7FBFFFFF, 0xFFBFFFFF, // NAN, -NAN (largest signaling)
 
-    // Note: Quiet NANs are at index 10
-    0x7FC00000, 0xFFC00000, // NAN, -NAN (smallest quiet NaN, indeterminate NAN)
-    0x7FC00001, 0xFFC00001, // NAN, -NAN (next smallest quiet NaN)
-    0x7FC0F0F0, 0xFFC0F0F0, // NAN, -NAN (quiet)
-    0x7FFFFFFF, 0xFFFFFFFF, // NAN, -NAN (largest)
+	// Note: Quiet NANs are at index 10
+	0x7FC00000, 0xFFC00000, // NAN, -NAN (smallest quiet NaN, indeterminate NAN)
+	0x7FC00001, 0xFFC00001, // NAN, -NAN (next smallest quiet NaN)
+	0x7FC0F0F0, 0xFFC0F0F0, // NAN, -NAN (quiet)
+	0x7FFFFFFF, 0xFFFFFFFF, // NAN, -NAN (largest)
 
-    0x00000001, 0x80000001, // smallest subnormals
-    0x00000002, 0x80000002, // smallest subnormals
-    0x000F0F0F, 0x800F0F0F, // subnormals
-    0x007FFFFF, 0x807FFFFF  // largest subnormals
+	0x00000001, 0x80000001, // smallest subnormals
+	0x00000002, 0x80000002, // smallest subnormals
+	0x000F0F0F, 0x800F0F0F, // subnormals
+	0x007FFFFF, 0x807FFFFF  // largest subnormals
 };
 #endif
 
@@ -219,20 +223,20 @@ static const DoubleTestSet_t g_DoubleConstants[] = {
 };
 #endif
 
-#if 0
+#if 1
 static const double g_NineTests[] = {9999999999999999999999.0,
 
-    99999999999999900000.0, 99999999999999990000.0, 99999999999999999000.0,
-    99999999999999999900.0,
+	99999999999999900000.0, 99999999999999990000.0, 99999999999999999000.0,
+	99999999999999999900.0,
 
-    0.99999999999999900000, 0.99999999999999990000, 0.99999999999999999000,
-    0.99999999999999999900,
+	0.99999999999999900000, 0.99999999999999990000, 0.99999999999999999000,
+	0.99999999999999999900,
 
-    9.99999999999999900000, 9.99999999999999990000, 9.99999999999999999000,
-    9.99999999999999999900,
+	9.99999999999999900000, 9.99999999999999990000, 9.99999999999999999000,
+	9.99999999999999999900,
 
-    99.99999999999999000000, 99.99999999999999900000, 99.99999999999999990000,
-    99.99999999999999999000, 99.99999999999999999900};
+	99.99999999999999000000, 99.99999999999999900000, 99.99999999999999990000,
+	99.99999999999999999000, 99.99999999999999999900};
 #endif
 
 /***************************************
@@ -420,16 +424,15 @@ static uint_t BURGER_API TestFloatDecomp(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-static uint_t BURGER_API TestArgType(const Burger::SafePrintArgument* pArg,
-	const char* pType, Burger::SafePrintArgument::eType uType) BURGER_NOEXCEPT
+static uint_t BURGER_API TestArgType(const Burger::ArgumentType* pArg,
+	const char* pType, Burger::eArgumentType uType) BURGER_NOEXCEPT
 {
 	uint_t uResult = 0;
-	const Burger::SafePrintArgument::eType uReported = pArg->GetType();
+	const Burger::eArgumentType uReported = pArg->GetType();
 	if (uReported != uType) {
-		ReportFailure(
-			"SafePrintArgument(%s) reported its type as %s, expected %s", 1,
-			pType, Burger::SafePrintArgument::GetTypeName(uReported),
-			Burger::SafePrintArgument::GetTypeName(uType));
+		ReportFailure("ArgumentType(%s) reported its type as %s, expected %s",
+			1, pType, Burger::ArgumentType::GetTypeName(uReported),
+			Burger::ArgumentType::GetTypeName(uType));
 		uResult = 1;
 	}
 	return uResult;
@@ -437,33 +440,30 @@ static uint_t BURGER_API TestArgType(const Burger::SafePrintArgument* pArg,
 
 /***************************************
 
-	Test single byte class SafePrintArgument
+	Test single byte class ArgumentType
 
 ***************************************/
 
 static uint_t BURGER_API ArgTypeUnitTest1ByteTypes(void) BURGER_NOEXCEPT
 {
 	// Char is both signed and unsigned
-	const Burger::SafePrintArgument E1(static_cast<char>(12));
+	const Burger::ArgumentType E1(static_cast<char>(12));
 	uint_t uResult = TestArgType(&E1, "char", g_CharARG);
 
-	const Burger::SafePrintArgument E2(static_cast<signed char>(12));
-	uResult |=
-		TestArgType(&E2, "signed char", Burger::SafePrintArgument::ARG_INT8);
+	const Burger::ArgumentType E2(static_cast<signed char>(12));
+	uResult |= TestArgType(&E2, "signed char", Burger::kArgumentTypeInt8);
 
-	const Burger::SafePrintArgument E3(static_cast<unsigned char>(12));
-	uResult |=
-		TestArgType(&E3, "unsigned char", Burger::SafePrintArgument::ARG_UINT8);
+	const Burger::ArgumentType E3(static_cast<unsigned char>(12));
+	uResult |= TestArgType(&E3, "unsigned char", Burger::kArgumentTypeUInt8);
 
-	const Burger::SafePrintArgument E4(static_cast<int8_t>(12));
-	uResult |= TestArgType(&E4, "int8_t", Burger::SafePrintArgument::ARG_INT8);
+	const Burger::ArgumentType E4(static_cast<int8_t>(12));
+	uResult |= TestArgType(&E4, "int8_t", Burger::kArgumentTypeInt8);
 
-	const Burger::SafePrintArgument E5(static_cast<uint8_t>(12));
-	uResult |=
-		TestArgType(&E5, "uint8_t", Burger::SafePrintArgument::ARG_UINT8);
+	const Burger::ArgumentType E5(static_cast<uint8_t>(12));
+	uResult |= TestArgType(&E5, "uint8_t", Burger::kArgumentTypeUInt8);
 
 #if defined(BURGER_HAS_CHAR8_T)
-	const Burger::SafePrintArgument E6(static_cast<char8_t>('a'));
+	const Burger::ArgumentType E6(static_cast<char8_t>('a'));
 	uResult |= TestArgType(&E6, "char8_t", g_Char8ARG);
 #endif
 	return uResult;
@@ -471,41 +471,36 @@ static uint_t BURGER_API ArgTypeUnitTest1ByteTypes(void) BURGER_NOEXCEPT
 
 /***************************************
 
-	Test 2 byte class SafePrintArgument
+	Test 2 byte class ArgumentType
 
 ***************************************/
 
 static uint_t BURGER_API ArgTypeUnitTest2ByteTypes(void) BURGER_NOEXCEPT
 {
 	// short
-	const Burger::SafePrintArgument E1(static_cast<short>(12));
-	uint_t uResult =
-		TestArgType(&E1, "short", Burger::SafePrintArgument::ARG_INT16);
+	const Burger::ArgumentType E1(static_cast<short>(12));
+	uint_t uResult = TestArgType(&E1, "short", Burger::kArgumentTypeInt16);
 
-	const Burger::SafePrintArgument E2(static_cast<signed short>(12));
-	uResult |=
-		TestArgType(&E2, "signed short", Burger::SafePrintArgument::ARG_INT16);
+	const Burger::ArgumentType E2(static_cast<signed short>(12));
+	uResult |= TestArgType(&E2, "signed short", Burger::kArgumentTypeInt16);
 
-	const Burger::SafePrintArgument E3(static_cast<unsigned short>(12));
-	uResult |= TestArgType(
-		&E3, "unsigned short", Burger::SafePrintArgument::ARG_UINT16);
+	const Burger::ArgumentType E3(static_cast<unsigned short>(12));
+	uResult |= TestArgType(&E3, "unsigned short", Burger::kArgumentTypeUInt16);
 
-	const Burger::SafePrintArgument E4(static_cast<int16_t>(12));
-	uResult |=
-		TestArgType(&E4, "int16_t", Burger::SafePrintArgument::ARG_INT16);
+	const Burger::ArgumentType E4(static_cast<int16_t>(12));
+	uResult |= TestArgType(&E4, "int16_t", Burger::kArgumentTypeInt16);
 
-	const Burger::SafePrintArgument E5(static_cast<uint16_t>(12));
-	uResult |=
-		TestArgType(&E5, "uint16_t", Burger::SafePrintArgument::ARG_UINT16);
+	const Burger::ArgumentType E5(static_cast<uint16_t>(12));
+	uResult |= TestArgType(&E5, "uint16_t", Burger::kArgumentTypeUInt16);
 
 	// Special test, this must map to short
 #if defined(BURGER_HAS_WCHAR_T)
-	const Burger::SafePrintArgument E6(static_cast<wchar_t>(10));
+	const Burger::ArgumentType E6(static_cast<wchar_t>(10));
 	uResult |= TestArgType(&E6, "wchar_t", g_WCharARG);
 #endif
 
 #if defined(BURGER_HAS_CHAR16_T)
-	const Burger::SafePrintArgument E7(static_cast<char16_t>(10));
+	const Burger::ArgumentType E7(static_cast<char16_t>(10));
 	uResult |= TestArgType(&E7, "char16_t", g_Char16ARG);
 #endif
 	return uResult;
@@ -513,50 +508,43 @@ static uint_t BURGER_API ArgTypeUnitTest2ByteTypes(void) BURGER_NOEXCEPT
 
 /***************************************
 
-	Test 4 byte class SafePrintArgument
+	Test 4 byte class ArgumentType
 
 ***************************************/
 
 static uint_t BURGER_API ArgTypeUnitTest4ByteTypes(void) BURGER_NOEXCEPT
 {
-	const Burger::SafePrintArgument E1(static_cast<int>(12));
-	uint_t uResult =
-		TestArgType(&E1, "int", Burger::SafePrintArgument::ARG_INT32);
+	const Burger::ArgumentType E1(static_cast<int>(12));
+	uint_t uResult = TestArgType(&E1, "int", Burger::kArgumentTypeInt32);
 
-	const Burger::SafePrintArgument E2(static_cast<signed int>(12));
-	uResult |=
-		TestArgType(&E2, "signed int", Burger::SafePrintArgument::ARG_INT32);
+	const Burger::ArgumentType E2(static_cast<signed int>(12));
+	uResult |= TestArgType(&E2, "signed int", Burger::kArgumentTypeInt32);
 
-	const Burger::SafePrintArgument E3(static_cast<unsigned int>(12));
-	uResult |=
-		TestArgType(&E3, "unsigned int", Burger::SafePrintArgument::ARG_UINT32);
+	const Burger::ArgumentType E3(static_cast<unsigned int>(12));
+	uResult |= TestArgType(&E3, "unsigned int", Burger::kArgumentTypeUInt32);
 
-	const Burger::SafePrintArgument E4(static_cast<int32_t>(12));
-	uResult |=
-		TestArgType(&E4, "int32_t", Burger::SafePrintArgument::ARG_INT32);
+	const Burger::ArgumentType E4(static_cast<int32_t>(12));
+	uResult |= TestArgType(&E4, "int32_t", Burger::kArgumentTypeInt32);
 
-	const Burger::SafePrintArgument E5(static_cast<uint32_t>(12));
-	uResult |=
-		TestArgType(&E5, "uint32_t", Burger::SafePrintArgument::ARG_UINT32);
+	const Burger::ArgumentType E5(static_cast<uint32_t>(12));
+	uResult |= TestArgType(&E5, "uint32_t", Burger::kArgumentTypeUInt32);
 
 #if BURGER_SIZEOF_LONG == 8
-	const Burger::SafePrintArgument E6(static_cast<long>(12));
-	uResult |= TestArgType(&E6, "long", Burger::SafePrintArgument::ARG_INT64);
+	const Burger::ArgumentType E6(static_cast<long>(12));
+	uResult |= TestArgType(&E6, "long", Burger::kArgumentTypeInt64);
 
-	const Burger::SafePrintArgument E7(static_cast<unsigned long>(12));
-	uResult |= TestArgType(
-		&E7, "unsigned long", Burger::SafePrintArgument::ARG_UINT64);
+	const Burger::ArgumentType E7(static_cast<unsigned long>(12));
+	uResult |= TestArgType(&E7, "unsigned long", Burger::kArgumentTypeUInt64);
 #else
-	const Burger::SafePrintArgument E6(static_cast<long>(12));
-	uResult |= TestArgType(&E6, "long", Burger::SafePrintArgument::ARG_INT32);
+	const Burger::ArgumentType E6(static_cast<long>(12));
+	uResult |= TestArgType(&E6, "long", Burger::kArgumentTypeInt32);
 
-	const Burger::SafePrintArgument E7(static_cast<unsigned long>(12));
-	uResult |= TestArgType(
-		&E7, "unsigned long", Burger::SafePrintArgument::ARG_UINT32);
+	const Burger::ArgumentType E7(static_cast<unsigned long>(12));
+	uResult |= TestArgType(&E7, "unsigned long", Burger::kArgumentTypeUInt32);
 #endif
 
 #if defined(BURGER_HAS_CHAR16_T)
-	const Burger::SafePrintArgument E8(static_cast<char32_t>(10));
+	const Burger::ArgumentType E8(static_cast<char32_t>(10));
 	uResult |= TestArgType(&E8, "char32_t", g_Char32ARG);
 #endif
 
@@ -565,19 +553,17 @@ static uint_t BURGER_API ArgTypeUnitTest4ByteTypes(void) BURGER_NOEXCEPT
 
 /***************************************
 
-	Test 8 byte class SafePrintArgument
+	Test 8 byte class ArgumentType
 
 ***************************************/
 
 static uint_t BURGER_API ArgTypeUnitTest8ByteTypes(void) BURGER_NOEXCEPT
 {
-	const Burger::SafePrintArgument E1(static_cast<int64_t>(12));
-	uint_t uResult =
-		TestArgType(&E1, "int64_t", Burger::SafePrintArgument::ARG_INT64);
+	const Burger::ArgumentType E1(static_cast<int64_t>(12));
+	uint_t uResult = TestArgType(&E1, "int64_t", Burger::kArgumentTypeInt64);
 
-	const Burger::SafePrintArgument E2(static_cast<uint64_t>(12));
-	uResult |=
-		TestArgType(&E2, "uint64_t", Burger::SafePrintArgument::ARG_UINT64);
+	const Burger::ArgumentType E2(static_cast<uint64_t>(12));
+	uResult |= TestArgType(&E2, "uint64_t", Burger::kArgumentTypeUInt64);
 
 	return uResult;
 }
@@ -590,20 +576,18 @@ static uint_t BURGER_API ArgTypeUnitTest8ByteTypes(void) BURGER_NOEXCEPT
 
 static uint_t BURGER_API ArgTypeUnitTestcoreTypes(void) BURGER_NOEXCEPT
 {
-	const Burger::SafePrintArgument E1(1.0f);
-	uint_t uResult =
-		TestArgType(&E1, "float", Burger::SafePrintArgument::ARG_FLOAT);
+	const Burger::ArgumentType E1(1.0f);
+	uint_t uResult = TestArgType(&E1, "float", Burger::kArgumentTypeFloat32);
 
-	const Burger::SafePrintArgument E2(1.0);
-	uResult |=
-		TestArgType(&E2, "double", Burger::SafePrintArgument::ARG_DOUBLE);
+	const Burger::ArgumentType E2(1.0);
+	uResult |= TestArgType(&E2, "double", Burger::kArgumentTypeFloat64);
 
-	const Burger::SafePrintArgument E3(true);
-	uResult |= TestArgType(&E3, "bool", Burger::SafePrintArgument::ARG_BOOL);
+	const Burger::ArgumentType E3(true);
+	uResult |= TestArgType(&E3, "bool", Burger::kArgumentTypeBool);
 
-	const Burger::SafePrintArgument E4(
-		static_cast<uint16_t>(12), Burger::SafePrintArgument::ARG_HALF);
-	uResult |= TestArgType(&E4, "half", Burger::SafePrintArgument::ARG_HALF);
+	const Burger::ArgumentType E4(
+		static_cast<uint16_t>(12), Burger::kArgumentTypeFloat16);
+	uResult |= TestArgType(&E4, "half", Burger::kArgumentTypeFloat16);
 	return uResult;
 }
 
@@ -616,108 +600,102 @@ static uint_t BURGER_API ArgTypeUnitTestcoreTypes(void) BURGER_NOEXCEPT
 static uint_t BURGER_API ArgTypeUnitTestPointerTypes(void) BURGER_NOEXCEPT
 {
 	const char* cp = "hello world";
-	const Burger::SafePrintArgument E1(cp);
+	const Burger::ArgumentType E1(cp);
 	uint_t uResult =
-		TestArgType(&E1, "const char *", Burger::SafePrintArgument::ARG_PCHAR);
+		TestArgType(&E1, "const char *", Burger::kArgumentTypeCharPtr);
 
 	char c = 12;
 	char* pc2 = &c;
-	const Burger::SafePrintArgument E2(pc2);
-	uResult |= TestArgType(&E2, "char *", Burger::SafePrintArgument::ARG_PCHAR);
+	const Burger::ArgumentType E2(pc2);
+	uResult |= TestArgType(&E2, "char *", Burger::kArgumentTypeCharPtr);
 
 	signed char sc = 37;
 	signed char* psc = &sc;
-	const Burger::SafePrintArgument EF(psc);
-	uResult |= TestArgType(
-		&EF, "signed char *", Burger::SafePrintArgument::ARG_PSCHAR);
+	const Burger::ArgumentType EF(psc);
+	uResult |= TestArgType(&EF, "signed char *", Burger::kArgumentTypeInt8Ptr);
 
 	unsigned char uc = 0xAC;
 	unsigned char* puc = &uc;
-	const Burger::SafePrintArgument EA(puc);
-	uResult |= TestArgType(
-		&EA, "unsigned char *", Burger::SafePrintArgument::ARG_PUCHAR);
+	const Burger::ArgumentType EA(puc);
+	uResult |=
+		TestArgType(&EA, "unsigned char *", Burger::kArgumentTypeUInt8Ptr);
 
 #if defined(BURGER_HAS_WCHAR_T)
 	wchar_t wc = 0x0000;
 	const wchar_t* pwc = &wc;
-	const Burger::SafePrintArgument EX(pwc);
-	uResult |=
-		TestArgType(&EX, "wchar_t *", Burger::SafePrintArgument::ARG_PUINT16);
+	const Burger::ArgumentType EX(pwc);
+	uResult |= TestArgType(&EX, "wchar_t *", Burger::kArgumentTypeUInt16Ptr);
 
-	const Burger::SafePrintArgument EY(L"HELLO WORLD");
-	uResult |= TestArgType(
-		&EY, "L\"Hello World\"", Burger::SafePrintArgument::ARG_PUINT16);
+	const Burger::ArgumentType EY(L"Hello World");
+	uResult |=
+		TestArgType(&EY, "L\"Hello World\"", Burger::kArgumentTypeUInt16Ptr);
 #endif
 
 	short s1 = 0x4754;
-	const Burger::SafePrintArgument EB(&s1);
-	uResult |= TestArgType(&EB, "short", Burger::SafePrintArgument::ARG_PINT16);
+	const Burger::ArgumentType EB(&s1);
+	uResult |= TestArgType(&EB, "short", Burger::kArgumentTypeInt16Ptr);
 
 	unsigned short us2 = 0xFEFE;
-	const Burger::SafePrintArgument EC(&us2);
-	uResult |= TestArgType(
-		&EC, "unsigned short", Burger::SafePrintArgument::ARG_PUINT16);
+	const Burger::ArgumentType EC(&us2);
+	uResult |=
+		TestArgType(&EC, "unsigned short", Burger::kArgumentTypeUInt16Ptr);
 
 	int i = 12;
 	int* pi = &i;
-	const Burger::SafePrintArgument E3(pi);
-	uResult |= TestArgType(&E3, "int", Burger::SafePrintArgument::ARG_PINT32);
+	const Burger::ArgumentType E3(pi);
+	uResult |= TestArgType(&E3, "int", Burger::kArgumentTypeInt32Ptr);
 
 	unsigned int ui = 32982;
 	unsigned int* pui = &ui;
-	const Burger::SafePrintArgument ED(pui);
-	uResult |= TestArgType(
-		&ED, "unsigned int", Burger::SafePrintArgument::ARG_PUINT32);
+	const Burger::ArgumentType ED(pui);
+	uResult |= TestArgType(&ED, "unsigned int", Burger::kArgumentTypeUInt32Ptr);
 
 #if BURGER_SIZEOF_LONG == 8
 	long l = 0x34567812;
-	const Burger::SafePrintArgument EL(&l);
-	uResult |= TestArgType(&EL, "long", Burger::SafePrintArgument::ARG_PINT64);
+	const Burger::ArgumentType EL(&l);
+	uResult |= TestArgType(&EL, "long", Burger::kArgumentTypeInt64Ptr);
 
 	unsigned long ul = 0xAEFF0123;
-	const Burger::SafePrintArgument EM(&ul);
-	uResult |= TestArgType(
-		&EM, "unsigned long", Burger::SafePrintArgument::ARG_PUINT64);
+	const Burger::ArgumentType EM(&ul);
+	uResult |=
+		TestArgType(&EM, "unsigned long", Burger::kArgumentTypeUInt64Ptr);
 #else
 	long l = 0x34567812;
-	const Burger::SafePrintArgument EL(&l);
-	uResult |= TestArgType(&EL, "long", Burger::SafePrintArgument::ARG_PINT32);
+	const Burger::ArgumentType EL(&l);
+	uResult |= TestArgType(&EL, "long", Burger::kArgumentTypeInt32Ptr);
 
 	unsigned long ul = 0xAEFF0123;
-	const Burger::SafePrintArgument EM(&ul);
-	uResult |= TestArgType(
-		&EM, "unsigned long", Burger::SafePrintArgument::ARG_PUINT32);
+	const Burger::ArgumentType EM(&ul);
+	uResult |=
+		TestArgType(&EM, "unsigned long", Burger::kArgumentTypeUInt32Ptr);
 #endif
 
 	int64_t ll = 0x1234567812345678LL;
-	const Burger::SafePrintArgument E8(&ll);
-	uResult |=
-		TestArgType(&E8, "int64_t *", Burger::SafePrintArgument::ARG_PINT64);
+	const Burger::ArgumentType E8(&ll);
+	uResult |= TestArgType(&E8, "int64_t *", Burger::kArgumentTypeInt64Ptr);
 
 	uint64_t ull = 0x9876543212345678ULL;
-	const Burger::SafePrintArgument E9(&ull);
-	uResult |=
-		TestArgType(&E9, "uint64_t *", Burger::SafePrintArgument::ARG_PUINT64);
+	const Burger::ArgumentType E9(&ull);
+	uResult |= TestArgType(&E9, "uint64_t *", Burger::kArgumentTypeUInt64Ptr);
 
 	float f = 12.0f;
 	const float* pf = &f;
-	const Burger::SafePrintArgument E4(pf);
-	uResult |= TestArgType(&E4, "float", Burger::SafePrintArgument::ARG_PFLOAT);
+	const Burger::ArgumentType E4(pf);
+	uResult |= TestArgType(&E4, "float", Burger::kArgumentTypeFloat32Ptr);
 
 	double d = 12.0;
 	double* pd = &d;
-	const Burger::SafePrintArgument E5(pd);
-	uResult |=
-		TestArgType(&E5, "double", Burger::SafePrintArgument::ARG_PDOUBLE);
+	const Burger::ArgumentType E5(pd);
+	uResult |= TestArgType(&E5, "double", Burger::kArgumentTypeFloat64Ptr);
 
 	void* pv = nullptr;
-	const Burger::SafePrintArgument E6(pv);
-	uResult |= TestArgType(&E6, "void *", Burger::SafePrintArgument::ARG_PVOID);
+	const Burger::ArgumentType E6(pv);
+	uResult |= TestArgType(&E6, "void *", Burger::kArgumentTypeVoidPtr);
 
 	bool b = true;
 	bool* pb = &b;
-	const Burger::SafePrintArgument E7(pb);
-	uResult |= TestArgType(&E7, "void *", Burger::SafePrintArgument::ARG_PVOID);
+	const Burger::ArgumentType E7(pb);
+	uResult |= TestArgType(&E7, "bool *", Burger::kArgumentTypeBoolPtr);
 	return uResult;
 }
 
@@ -729,48 +707,45 @@ static uint_t BURGER_API ArgTypeUnitTestPointerTypes(void) BURGER_NOEXCEPT
 
 static uint_t BURGER_API ArgTypeUnitTestLiterals(void) BURGER_NOEXCEPT
 {
-	const Burger::SafePrintArgument F1("hello world");
-	uint_t uResult = TestArgType(
-		&F1, "\"hello world\"", Burger::SafePrintArgument::ARG_PCHAR);
+	const Burger::ArgumentType F1("hello world");
+	uint_t uResult =
+		TestArgType(&F1, "\"hello world\"", Burger::kArgumentTypeCharPtr);
 
-	const Burger::SafePrintArgument F2('1');
-	uResult |= TestArgType(&F2, "'1'", Burger::SafePrintArgument::ARG_INT8);
+	const Burger::ArgumentType F2('1');
+	uResult |= TestArgType(&F2, "'1'", Burger::kArgumentTypeInt8);
 
 #if defined(BURGER_HAS_WCHAR_T)
-	const Burger::SafePrintArgument F3(L'a');
-	uResult |= TestArgType(&F3, "L'a'", Burger::SafePrintArgument::ARG_UINT16);
+	const Burger::ArgumentType F3(L'a');
+	uResult |= TestArgType(&F3, "L'a'", g_WCharARG);
 #endif
 
-	const Burger::SafePrintArgument F4(0172);
-	uResult |= TestArgType(&F4, "0172", Burger::SafePrintArgument::ARG_INT32);
+	const Burger::ArgumentType F4(0172);
+	uResult |= TestArgType(&F4, "0172", Burger::kArgumentTypeInt32);
 
-	const Burger::SafePrintArgument F5(12);
-	uResult |= TestArgType(&F5, "12", Burger::SafePrintArgument::ARG_INT32);
+	const Burger::ArgumentType F5(12);
+	uResult |= TestArgType(&F5, "12", Burger::kArgumentTypeInt32);
 
-	const Burger::SafePrintArgument F6(0x1BCDEF12);
-	uResult |=
-		TestArgType(&F6, "0x1BCDEF12", Burger::SafePrintArgument::ARG_INT32);
+	const Burger::ArgumentType F6(0x1BCDEF12);
+	uResult |= TestArgType(&F6, "0x1BCDEF12", Burger::kArgumentTypeInt32);
 
 	// Watcom doesn't support 'ABCD'
 #if !defined(BURGER_WATCOM)
-	const Burger::SafePrintArgument F7('ABCD');
+	const Burger::ArgumentType F7('ABCD');
 #if defined(BURGER_METROWERKS) && defined(BURGER_68K)
-	uResult |=
-		TestArgType(&F7, "'ABCD'", Burger::SafePrintArgument::ARG_UINT32);
+	uResult |= TestArgType(&F7, "'ABCD'", Burger::kArgumentTypeUInt32);
 #else
-	uResult |= TestArgType(&F7, "'ABCD'", Burger::SafePrintArgument::ARG_INT32);
+	uResult |= TestArgType(&F7, "'ABCD'", Burger::kArgumentTypeInt32);
 #endif
 #endif
 
-	const Burger::SafePrintArgument F8(0172U);
-	uResult |= TestArgType(&F8, "0172U", Burger::SafePrintArgument::ARG_UINT32);
+	const Burger::ArgumentType F8(0172U);
+	uResult |= TestArgType(&F8, "0172U", Burger::kArgumentTypeUInt32);
 
-	const Burger::SafePrintArgument F9(12U);
-	uResult |= TestArgType(&F9, "12U", Burger::SafePrintArgument::ARG_UINT32);
+	const Burger::ArgumentType F9(12U);
+	uResult |= TestArgType(&F9, "12U", Burger::kArgumentTypeUInt32);
 
-	const Burger::SafePrintArgument F0(0x1bcdef12U);
-	uResult |=
-		TestArgType(&F0, "0x1bcdf12U", Burger::SafePrintArgument::ARG_UINT32);
+	const Burger::ArgumentType F0(0x1bcdef12U);
+	uResult |= TestArgType(&F0, "0x1bcdf12U", Burger::kArgumentTypeUInt32);
 	return uResult;
 }
 
@@ -783,64 +758,55 @@ static uint_t BURGER_API ArgTypeUnitTestLiterals(void) BURGER_NOEXCEPT
 static uint_t BURGER_API ArgTypeUnitTestLiterals2(void) BURGER_NOEXCEPT
 {
 #if BURGER_SIZEOF_LONG == 8
-	const Burger::SafePrintArgument G1(0172L);
-	uint_t uResult =
-		TestArgType(&G1, "0172L", Burger::SafePrintArgument::ARG_INT64);
+	const Burger::ArgumentType G1(0172L);
+	uint_t uResult = TestArgType(&G1, "0172L", Burger::kArgumentTypeInt64);
 
-	const Burger::SafePrintArgument G2(12L);
-	uResult |= TestArgType(&G2, "12L", Burger::SafePrintArgument::ARG_INT64);
+	const Burger::ArgumentType G2(12L);
+	uResult |= TestArgType(&G2, "12L", Burger::kArgumentTypeInt64);
 
-	const Burger::SafePrintArgument G3(0x1bcdef12L);
-	uResult |=
-		TestArgType(&G3, "0x1bcdef12L", Burger::SafePrintArgument::ARG_INT64);
+	const Burger::ArgumentType G3(0x1bcdef12L);
+	uResult |= TestArgType(&G3, "0x1bcdef12L", Burger::kArgumentTypeInt64);
 
-	const Burger::SafePrintArgument G4(0172UL);
-	uResult |=
-		TestArgType(&G4, "0172UL", Burger::SafePrintArgument::ARG_UINT64);
+	const Burger::ArgumentType G4(0172UL);
+	uResult |= TestArgType(&G4, "0172UL", Burger::kArgumentTypeUInt64);
 
-	const Burger::SafePrintArgument G5(12UL);
-	uResult |= TestArgType(&G5, "12UL", Burger::SafePrintArgument::ARG_UINT64);
+	const Burger::ArgumentType G5(12UL);
+	uResult |= TestArgType(&G5, "12UL", Burger::kArgumentTypeUInt64);
 
-	const Burger::SafePrintArgument G6(0x1bcdef12UL);
-	uResult |=
-		TestArgType(&G6, "0x1bcdef12UL", Burger::SafePrintArgument::ARG_UINT64);
+	const Burger::ArgumentType G6(0x1bcdef12UL);
+	uResult |= TestArgType(&G6, "0x1bcdef12UL", Burger::kArgumentTypeUInt64);
 #else
-	const Burger::SafePrintArgument G1(0172L);
-	uint_t uResult =
-		TestArgType(&G1, "0172L", Burger::SafePrintArgument::ARG_INT32);
+	const Burger::ArgumentType G1(0172L);
+	uint_t uResult = TestArgType(&G1, "0172L", Burger::kArgumentTypeInt32);
 
-	const Burger::SafePrintArgument G2(12L);
-	uResult |= TestArgType(&G2, "12L", Burger::SafePrintArgument::ARG_INT32);
+	const Burger::ArgumentType G2(12L);
+	uResult |= TestArgType(&G2, "12L", Burger::kArgumentTypeInt32);
 
-	const Burger::SafePrintArgument G3(0x1bcdef12L);
-	uResult |=
-		TestArgType(&G3, "0x1bcdef12L", Burger::SafePrintArgument::ARG_INT32);
+	const Burger::ArgumentType G3(0x1bcdef12L);
+	uResult |= TestArgType(&G3, "0x1bcdef12L", Burger::kArgumentTypeInt32);
 
-	const Burger::SafePrintArgument G4(0172UL);
-	uResult |=
-		TestArgType(&G4, "0172UL", Burger::SafePrintArgument::ARG_UINT32);
+	const Burger::ArgumentType G4(0172UL);
+	uResult |= TestArgType(&G4, "0172UL", Burger::kArgumentTypeUInt32);
 
-	const Burger::SafePrintArgument G5(12UL);
-	uResult |= TestArgType(&G5, "12UL", Burger::SafePrintArgument::ARG_UINT32);
+	const Burger::ArgumentType G5(12UL);
+	uResult |= TestArgType(&G5, "12UL", Burger::kArgumentTypeUInt32);
 
-	const Burger::SafePrintArgument G6(0x1bcdef12UL);
-	uResult |=
-		TestArgType(&G6, "0x1bcdef12UL", Burger::SafePrintArgument::ARG_UINT32);
+	const Burger::ArgumentType G6(0x1bcdef12UL);
+	uResult |= TestArgType(&G6, "0x1bcdef12UL", Burger::kArgumentTypeUInt32);
 #endif
 
 #if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
-	const Burger::SafePrintArgument G7(012LL);
-	uResult |= TestArgType(&G7, "012LL", Burger::SafePrintArgument::ARG_INT64);
+	const Burger::ArgumentType G7(012LL);
+	uResult |= TestArgType(&G7, "012LL", Burger::kArgumentTypeInt64);
 
-	const Burger::SafePrintArgument G8(12LL);
-	uResult |= TestArgType(&G8, "12LL", Burger::SafePrintArgument::ARG_INT64);
+	const Burger::ArgumentType G8(12LL);
+	uResult |= TestArgType(&G8, "12LL", Burger::kArgumentTypeInt64);
 
-	const Burger::SafePrintArgument G9(0x1bcdef12LL);
-	uResult |=
-		TestArgType(&G9, "0x1bcdef12LL", Burger::SafePrintArgument::ARG_INT64);
+	const Burger::ArgumentType G9(0x1bcdef12LL);
+	uResult |= TestArgType(&G9, "0x1bcdef12LL", Burger::kArgumentTypeInt64);
 
-	const Burger::SafePrintArgument G0(12ULL);
-	uResult |= TestArgType(&G0, "12ULL", Burger::SafePrintArgument::ARG_UINT64);
+	const Burger::ArgumentType G0(12ULL);
+	uResult |= TestArgType(&G0, "12ULL", Burger::kArgumentTypeUInt64);
 #endif
 	return uResult;
 }
@@ -855,19 +821,16 @@ static uint_t BURGER_API ArgTypeUnitTestSIMDTypes(void) BURGER_NOEXCEPT
 {
 	uint_t uResult = 0;
 
-#if defined(BURGER_WINDOWS)
 #if defined(BURGER_X86)
-	__m64 simd64;
 
-#if defined(BURGER_WATCOM)
-	simd64._64[0] = 0xFF00FF00AA22AA22;
-#else
-	simd64.m64_u64 = 0xFF00FF00AA22AA22;
-#endif
+	__m64 simd64 = {0x7F00FF00AA22AA22LL};
 
-	Burger::SafePrintArgument S64a(simd64);
-	uResult |=
-		TestArgType(&S64a, "__m64", Burger::SafePrintArgument::ARG_SIMD64);
+	Burger::ArgumentType S64a(simd64);
+	uResult |= TestArgType(&S64a, "__m64", Burger::kArgumentTypeVector2);
+
+	__m64* pS64 = &simd64;
+	Burger::ArgumentType P64a(pS64);
+	uResult |= TestArgType(&P64a, "__m64*", Burger::kArgumentTypeVector2Ptr);
 
 #if defined(BURGER_WATCOM)
 	_m_empty();
@@ -875,83 +838,35 @@ static uint_t BURGER_API ArgTypeUnitTestSIMDTypes(void) BURGER_NOEXCEPT
 	_mm_empty();
 #endif
 #endif
-#endif
-
-#if defined(BURGER_WINDOWS)
-#if defined(BURGER_INTEL) && !defined(BURGER_WATCOM)
-	__m128 simd128;
-#if defined(BURGER_METROWERKS) || (defined(_MSC_VER) && (_MSC_VER < 1400))
-	simd128.m128_f32[0] = 0;
-	simd128.m128_f32[1] = 0;
-	simd128.m128_f32[2] = -1;
-	simd128.m128_f32[3] = -1;
-#elif defined(BURGER_CLANG)
-	simd128[0] = 0;
-	simd128[1] = 0;
-	simd128[2] = -1;
-	simd128[3] = -1;
-#else
-	simd128.m128_i64[0] = 0;
-	simd128.m128_i64[1] = -1;
-#endif
-	Burger::SafePrintArgument S128(simd128);
-	uResult |=
-		TestArgType(&S128, "__m128", Burger::SafePrintArgument::ARG_SIMD128);
-
-	__m128d simd128d;
-#if defined(BURGER_METROWERKS)
-	simd128d.m128_f64[0] = 0.0;
-	simd128d.m128_f64[1] = -123456789.9988776655;
-#elif defined(BURGER_CLANG)
-	simd128d[0] = 0.0;
-	simd128d[1] = -123456789.9988776655;
-#else
-	simd128d.m128d_f64[0] = 0.0;
-	simd128d.m128d_f64[1] = -123456789.9988776655;
-#endif
-	Burger::SafePrintArgument S128d(simd128d);
-	uResult |=
-		TestArgType(&S128d, "__m128d", Burger::SafePrintArgument::ARG_SIMD128D);
-
-	__m128i simd128i;
-#if defined(BURGER_METROWERKS)
-	simd128i.m128_u64[0] = 0;
-	simd128i.m128_u64[1] = BURGER_MAXUINT64;
-#elif defined(BURGER_CLANG)
-	simd128i[0] = 0;
-	simd128i[1] = BURGER_MAXUINT64;
-#else
-	simd128i.m128i_u64[0] = 0;
-	simd128i.m128i_i64[1] = -1;
-#endif
-	Burger::SafePrintArgument S128i(simd128i);
-	uResult |=
-		TestArgType(&S128i, "__m128i", Burger::SafePrintArgument::ARG_SIMD128I);
-#endif
-
-#if defined(BURGER_X86)
-	__m64* pS64 = &simd64;
-	Burger::SafePrintArgument P64a(pS64);
-	uResult |=
-		TestArgType(&P64a, "__m64*", Burger::SafePrintArgument::ARG_PSIMD64);
-#endif
 
 #if defined(BURGER_INTEL) && !defined(BURGER_WATCOM)
+	__m128 simd128 = {0.0f, 0.0f, -1.0f, -1.0f};
+
+	Burger::ArgumentType S128(simd128);
+	uResult |= TestArgType(&S128, "__m128", Burger::kArgumentTypeVector4);
+
+	__m128d simd128d = {0.0, -123456789.9988776655};
+
+	Burger::ArgumentType S128d(simd128d);
+	uResult |= TestArgType(&S128d, "__m128d", Burger::kArgumentTypeVector4Dbl);
+
+	__m128i simd128i = _mm_set_epi32(0, 0, -1, -1);
+	Burger::ArgumentType S128i(simd128i);
+	uResult |= TestArgType(&S128i, "__m128i", Burger::kArgumentTypeVector4Int);
+
 	__m128* pS128 = &simd128;
-	Burger::SafePrintArgument P128(pS128);
-	uResult |=
-		TestArgType(&P128, "__m128*", Burger::SafePrintArgument::ARG_PSIMD128);
+	Burger::ArgumentType P128(pS128);
+	uResult |= TestArgType(&P128, "__m128*", Burger::kArgumentTypeVector4Ptr);
 
 	__m128d* pS128d = &simd128d;
-	Burger::SafePrintArgument P128d(pS128d);
-	uResult |= TestArgType(
-		&P128d, "__m128d", Burger::SafePrintArgument::ARG_PSIMD128D);
+	Burger::ArgumentType P128d(pS128d);
+	uResult |=
+		TestArgType(&P128d, "__m128d", Burger::kArgumentTypeVector4DblPtr);
 
 	__m128i* pS128i = &simd128i;
-	Burger::SafePrintArgument P128i(pS128i);
-	uResult |= TestArgType(
-		&P128i, "__m128i*", Burger::SafePrintArgument::ARG_PSIMD128I);
-#endif
+	Burger::ArgumentType P128i(pS128i);
+	uResult |=
+		TestArgType(&P128i, "__m128i*", Burger::kArgumentTypeVector4IntPtr);
 #endif
 
 	return uResult;
@@ -959,7 +874,7 @@ static uint_t BURGER_API ArgTypeUnitTestSIMDTypes(void) BURGER_NOEXCEPT
 
 /***************************************
 
-	Test SafePrintArgument
+	Test ArgumentType
 
 ***************************************/
 
@@ -991,12 +906,12 @@ static uint_t BURGER_API TestArgumentDetection(uint_t uVerbose) BURGER_NOEXCEPT
 static uint_t BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 	int iStartPrecision, int iEndPrecision, const char* pFlagsString,
 	const char* pLocalFormat, const char* pBurgerFormat,
-	const Burger::SafePrintArgument& rStartValue,
-	const Burger::SafePrintArgument& rEndValue,
-	const Burger::SafePrintArgument& rStepValue)
+	const Burger::ArgumentType& rStartValue,
+	const Burger::ArgumentType& rEndValue,
+	const Burger::ArgumentType& rStepValue)
 {
 	// Sanity checks
-	const Burger::SafePrintArgument::eType uStartType = rStartValue.GetType();
+	const Burger::eArgumentType uStartType = rStartValue.GetType();
 	BURGER_ASSERT(rStartValue.IsInteger());
 	BURGER_ASSERT(
 		(rEndValue.GetType() == uStartType) && rStepValue.IsInteger());
@@ -1007,20 +922,20 @@ static uint_t BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 	eTestType uTestType = TESTING_I32;
 
 	switch (uStartType) {
-	case Burger::SafePrintArgument::ARG_INT8:
-	case Burger::SafePrintArgument::ARG_INT16:
-	case Burger::SafePrintArgument::ARG_INT32:
+	case Burger::kArgumentTypeInt8:
+	case Burger::kArgumentTypeInt16:
+	case Burger::kArgumentTypeInt32:
 		uTestType = TESTING_I32;
 		break;
-	case Burger::SafePrintArgument::ARG_INT64:
+	case Burger::kArgumentTypeInt64:
 		uTestType = TESTING_I64;
 		break;
-	case Burger::SafePrintArgument::ARG_UINT8:
-	case Burger::SafePrintArgument::ARG_UINT16:
-	case Burger::SafePrintArgument::ARG_UINT32:
+	case Burger::kArgumentTypeUInt8:
+	case Burger::kArgumentTypeUInt16:
+	case Burger::kArgumentTypeUInt32:
 		uTestType = TESTING_U32;
 		break;
-	case Burger::SafePrintArgument::ARG_UINT64:
+	case Burger::kArgumentTypeUInt64:
 		uTestType = TESTING_U64;
 		break;
 	default:
@@ -1162,7 +1077,7 @@ static uint_t BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 		case TESTING_U32: {
 			const uint32_t t = u32;
 			u32 += rStepValue.GetUInt32();
-			if ((u32 <= rEndValue.m_Data.m_uWord32) && (u32 > t)) {
+			if ((u32 <= rEndValue.m_Data.m_uInt32) && (u32 > t)) {
 				bContinueTesting = TRUE;
 			}
 			break;
@@ -1178,7 +1093,7 @@ static uint_t BURGER_API UnitTestFormattingInt(int iStartWidth, int iEndWidth,
 		case TESTING_U64: {
 			const uint64_t t = u64;
 			u64 += rStepValue.GetUInt64();
-			if ((u64 <= rEndValue.m_Data.m_uWord64) && (u64 > t)) {
+			if ((u64 <= rEndValue.m_Data.m_uInt64) && (u64 > t)) {
 				bContinueTesting = TRUE;
 			}
 			break;
@@ -1413,8 +1328,8 @@ static uint_t BURGER_API TestIntegerFormat(
 
 static uint_t BURGER_API UnitTestFormattingChar(int iStartWidth, int iEndWidth,
 	const char* pFlags, const char* pLocalFormat,
-	const Burger::SafePrintArgument& rStartChar,
-	const Burger::SafePrintArgument& rEndChar)
+	const Burger::ArgumentType& rStartChar,
+	const Burger::ArgumentType& rEndChar)
 {
 	BURGER_ASSERT(rStartChar.IsCharacter() && rEndChar.IsCharacter());
 	BURGER_ASSERT(rStartChar.GetType() == rEndChar.GetType());
@@ -1429,18 +1344,18 @@ static uint_t BURGER_API UnitTestFormattingChar(int iStartWidth, int iEndWidth,
 	uint16_t wc = 0;
 	uint16_t fwc = 0;
 
-	if (rStartChar.GetType() == Burger::SafePrintArgument::ARG_INT8) {
+	if (rStartChar.GetType() == Burger::kArgumentTypeInt8) {
 		uCharType = TYPE_SIGNED_CHAR;
 		c = rStartChar.m_Data.m_iInt8;
 		fc = rEndChar.m_Data.m_iInt8;
-	} else if (rStartChar.GetType() == Burger::SafePrintArgument::ARG_UINT8) {
+	} else if (rStartChar.GetType() == Burger::kArgumentTypeUInt8) {
 		uCharType = TYPE_UNSIGNED_CHAR;
-		uc = rStartChar.m_Data.m_uWord8;
-		fuc = rEndChar.m_Data.m_uWord8;
-	} else if (rStartChar.GetType() == Burger::SafePrintArgument::ARG_UINT16) {
+		uc = rStartChar.m_Data.m_uInt8;
+		fuc = rEndChar.m_Data.m_uInt8;
+	} else if (rStartChar.GetType() == Burger::kArgumentTypeUInt16) {
 		uCharType = TYPE_WCHAR;
-		wc = rStartChar.m_Data.m_uWord16;
-		fwc = rEndChar.m_Data.m_uWord16;
+		wc = rStartChar.m_Data.m_uInt16;
+		fwc = rEndChar.m_Data.m_uInt16;
 	} else {
 		BURGER_ASSERT(FALSE);
 		return 1; // Failure
@@ -1615,7 +1530,7 @@ static uint_t BURGER_API TestCharFormats(uint_t uVerbose)
 #if defined(BURGER_WINDOWS) && (BURGER_MSVC >= 190000000)
 static uint_t BURGER_API UnitTestFormattingString(int iStartWidth,
 	int iEndWidth, int iStartPrecision, int iEndPrecision, const char* pFlags,
-	const char* fmt, const Burger::SafePrintArgument& rTheStr)
+	const char* fmt, const Burger::ArgumentType& rTheStr)
 {
 	BURGER_ASSERT(rTheStr.IsTextPointer());
 
@@ -1755,9 +1670,9 @@ static uint_t BURGER_API TestBinaryFormats(uint_t uVerbose)
 #if defined(BURGER_WINDOWS) && (BURGER_MSVC >= 190000000)
 static uint_t BURGER_API UnitTestFormattingReal(int iStartWidth, int iEndWidth,
 	int iStartPrecision, int iEndPrecision, const char* pFlags,
-	const char* pFormatString, const Burger::SafePrintArgument& rTheReal)
+	const char* pFormatString, const Burger::ArgumentType& rTheReal)
 {
-	Burger::SafePrintArgument::eType uType = rTheReal.GetType();
+	Burger::eArgumentType uType = rTheReal.GetType();
 	BURGER_ASSERT(rTheReal.IsReal());
 
 	char ReferenceString[512];
@@ -1786,7 +1701,7 @@ static uint_t BURGER_API UnitTestFormattingReal(int iStartWidth, int iEndWidth,
 			int isprintfResult = -1;
 			intptr_t uReturnedLength = 0;
 			switch (uType) {
-			case Burger::SafePrintArgument::ARG_FLOAT: {
+			case Burger::kArgumentTypeFloat32: {
 				float fValue = rTheReal.m_Data.m_fFloat;
 				isprintfResult = snprintf(ReferenceString,
 					sizeof(ReferenceString), TestFormat, fValue);
@@ -1794,7 +1709,7 @@ static uint_t BURGER_API UnitTestFormattingReal(int iStartWidth, int iEndWidth,
 					TestString, sizeof(TestString), TestFormat, fValue);
 				break;
 			}
-			case Burger::SafePrintArgument::ARG_DOUBLE: {
+			case Burger::kArgumentTypeFloat64: {
 				isprintfResult =
 					snprintf(ReferenceString, sizeof(ReferenceString),
 						TestFormat, rTheReal.m_Data.m_dDouble);
@@ -1896,9 +1811,9 @@ int BURGER_API TestBrprintf(uint_t uVerbose)
 	uint_t uResult = TestFloatDecomp();
 	uResult |= TestArgumentDetection(uVerbose);
 	uResult |= TestBinaryFormats(uVerbose);
-	uResult |= TestCharFormats(uVerbose);
 
 #if defined(BURGER_WINDOWS) && (BURGER_MSVC >= 190000000)
+	uResult |= TestCharFormats(uVerbose);
 	uResult |= TestIntegerFormat(&SignedIntegerTests, uVerbose);
 	uResult |= TestIntegerFormat(&UnsignedIntegerTests, uVerbose);
 	uResult |= TestIntegerFormat(&UnsignedHexTests, uVerbose);
@@ -1929,9 +1844,6 @@ int BURGER_API TestBrprintf(uint_t uVerbose)
 	{
 		char text[4096];
 
-		char* name = setlocale( LC_ALL, "" );
-		//struct lconv * lc = localeconv();
-
 		for ( n = 5 ; n < BURGER_ARRAYSIZE( g_NineTests ); n++ ) {
 			double  nine = g_NineTests[n];
 		
@@ -1939,19 +1851,13 @@ int BURGER_API TestBrprintf(uint_t uVerbose)
 			Burger::Snprintf ( text, sizeof(text), "MGP The double %%.f     = '%.f'\n\n", nine );
 			printf( "%s", text );
 
-			Burger::FPPrintInfo::SetClip(17);
 			printf ( "RTL The double %%.20f   = '%.20f'\n", nine );
 			Burger::Snprintf ( text, sizeof(text), "MGP The double %%.20f   = '%.20f'\n\n", nine );
 			printf( "%s", text );
 
-			Burger::FPPrintInfo::SetClip(17);
 			Burger::Snprintf ( text, sizeof(text), "MGP#The double %%.20f   = '%.20f'\n\n", nine );
 			printf( "%s", text );
-
-			Burger::FPPrintInfo::SetClip(17);
 		}
-
-		printf ( "locale name ='%s'\n ", name );
 
 		printf( "('%%+e',  0.0f )= '%+e'\n", 0.0f );
 		printf( "('%%+e',  1.0f )= '%+e'\n", 1.0f );

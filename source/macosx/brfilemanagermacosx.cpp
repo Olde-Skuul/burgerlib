@@ -198,7 +198,7 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	uResult = GetVolumeName(&MyFilename, 0); // Get the boot volume name
 	if (uResult == kErrorNone) {
 		// Set the initial prefix
-		const char* pBootName = MyFilename.GetPtr();
+		const char* pBootName = MyFilename.c_str();
 		SetPrefix(kPrefixBoot, pBootName);
 		Free(g_pFileManager->m_pBootName);
 		uintptr_t uMax = StringLength(pBootName);
@@ -210,14 +210,14 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	if (pTemp) {
 		MyFilename.SetFromNative(pTemp);
 		SetPrefix(kPrefixCurrent,
-			MyFilename.GetPtr()); // Set the standard work prefix
+			MyFilename.c_str()); // Set the standard work prefix
 		free(pTemp);
 	}
 
 	// Get the location of the application binary
 	MyFilename.SetApplicationDirectory();
 	SetPrefix(kPrefixApplication,
-		MyFilename.GetPtr()); // Set the standard work prefix
+		MyFilename.c_str()); // Set the standard work prefix
 
 	char NameBuffer[2048];
 	FSRef MyRef;
@@ -227,7 +227,7 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 				static_cast<UInt32>(sizeof(NameBuffer)))) {
 			MyFilename.SetFromNative(NameBuffer);
 			// Set the standard work prefix
-			SetPrefix(kPrefixSystem, MyFilename.GetPtr());
+			SetPrefix(kPrefixSystem, MyFilename.c_str());
 		}
 	}
 
@@ -237,7 +237,7 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 				static_cast<UInt32>(sizeof(NameBuffer)))) {
 			MyFilename.SetFromNative(NameBuffer);
 			// Set the standard work prefix
-			SetPrefix(kPrefixPrefs, MyFilename.GetPtr());
+			SetPrefix(kPrefixPrefs, MyFilename.c_str());
 		}
 	}
 	return kErrorNone;

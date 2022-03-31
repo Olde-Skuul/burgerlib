@@ -192,7 +192,7 @@ static uint_t BURGER_API TestMinInt64(void) BURGER_NOEXCEPT
 			Burger::String Text(
 				"Burger::Min((int64_t)0x%016llX,(int64_t)0x%016llX) = 0x%016llX, expected 0x%016llX",
 				pWork->m_iInput1, pWork->m_iInput2, iReturn, pWork->m_iOutput);
-			ReportFailure(Text.GetPtr(), uTest);
+			ReportFailure(Text.c_str(), uTest);
 		}
 		++pWork;
 	} while (--uCount);
@@ -268,7 +268,7 @@ static uint_t BURGER_API TestMinUInt64(void) BURGER_NOEXCEPT
 			Burger::String Text(
 				"Burger::Min((int64_t)0x%016llX,(int64_t)0x%016llX) = 0x%016llX, expected 0x%016llX",
 				pWork->m_uInput1, pWork->m_uInput2, uReturn, pWork->m_uOutput);
-			ReportFailure(Text.GetPtr(), uTest);
+			ReportFailure(Text.c_str(), uTest);
 		}
 		++pWork;
 	} while (--uCount);
@@ -378,7 +378,7 @@ static uint_t BURGER_API TestMaxInt64(void) BURGER_NOEXCEPT
 			Burger::String Text(
 				"Burger::Max((int64_t)0x%016llX,(int64_t)0x%016llX) = 0x%016llX, expected 0x%016llX",
 				pWork->m_iInput1, pWork->m_iInput2, iReturn, pWork->m_iOutput);
-			ReportFailure(Text.GetPtr(), uTest);
+			ReportFailure(Text.c_str(), uTest);
 		}
 		++pWork;
 	} while (--uCount);
@@ -2087,7 +2087,7 @@ static uint_t BURGER_API Testround_up_pointer(void) BURGER_NOEXCEPT
 				"Burger::round_up_pointer((double *)0x%016llX,0x%016llX) = 0x%016llX, expected 0x%016llX",
 				pWork->m_uPtr, pWork->m_uAlign,
 				reinterpret_cast<uintptr_t>(pReturn), pWork->m_uResult);
-			ReportFailure(Text.GetPtr(), uTest);
+			ReportFailure(Text.c_str(), uTest);
 		}
 
 		const short* pReturn2 = Burger::round_up_pointer(
@@ -2099,7 +2099,7 @@ static uint_t BURGER_API Testround_up_pointer(void) BURGER_NOEXCEPT
 				"Burger::round_up_pointer((short *)0x%016llX,0x%016llX) = 0x%016llX, expected 0x%016llX",
 				pWork->m_uPtr, pWork->m_uAlign,
 				reinterpret_cast<uintptr_t>(pReturn2), pWork->m_uResult);
-			ReportFailure(Text.GetPtr(), uTest);
+			ReportFailure(Text.c_str(), uTest);
 		}
 
 		++pWork;
@@ -2122,7 +2122,7 @@ static uint_t BURGER_API Testround_up_pointer(void) BURGER_NOEXCEPT
 			Burger::String Text(
 				"Burger::round_up_pointer((double *)0x%016llX) = 0x%016llX, expected 0x%016llX",
 				pWork->m_uPtr, reinterpret_cast<uintptr_t>(pReturn), uExpected);
-			ReportFailure(Text.GetPtr(), uTest);
+			ReportFailure(Text.c_str(), uTest);
 		}
 	} while (++uCount < 17);
 
@@ -2140,6 +2140,43 @@ static uint_t BURGER_API Testround_up_pointer(void) BURGER_NOEXCEPT
 			ReportFailure(Text.c_str(), uTest);
 		}
 	} while (++uCount < 17);
+
+	return uFailure;
+}
+
+/***************************************
+
+	Test select_value()
+
+***************************************/
+
+static uint_t BURGER_API Testselect_value(void) BURGER_NOEXCEPT
+{
+	uint_t uFailure = FALSE;
+	uint_t uTest;
+
+	uTest = Burger::select_value<Burger::is_signed<int>::value, uint_t, 2,
+				5>::value != 2;
+	uFailure |= uTest;
+	ReportFailure(
+		"select_value<Burger::is_signed<int>::value, uint_t, 2, 5>", uTest);
+
+	uTest = Burger::select_value<Burger::is_signed<unsigned int>::value, uint_t,
+				2, 5>::value != 5;
+	uFailure |= uTest;
+	ReportFailure(
+		"Burger::select_value<Burger::is_signed<unsigned int>::value, uint_t, 2, 5>",
+		uTest);
+
+	// Should be a int8_t, so no compiler warning
+	// A compiler warning here is considered a unit test failure
+	int8_t iTest = Burger::select_value<Burger::is_signed<unsigned int>::value,
+		int8_t, 6, 1>::value;
+	uTest = iTest != 1;
+	uFailure |= uTest;
+	ReportFailure(
+		"Burger::select_value<Burger::is_signed<unsigned int>::value, int8_t, 6, 1>",
+		uTest);
 
 	return uFailure;
 }
@@ -2330,6 +2367,7 @@ uint_t BURGER_API TestBralgorithm(uint_t uVerbose) BURGER_NOEXCEPT
 	uResult |= Test_ice_ne();
 	uResult |= Test_ice_not();
 	uResult |= Testround_up_pointer();
+	uResult |= Testselect_value();
 	uResult |= Test_move();
 
 	if (!uResult && (uVerbose & VERBOSE_MSG)) {

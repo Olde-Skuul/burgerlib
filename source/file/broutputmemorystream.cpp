@@ -581,7 +581,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::Save(
 		uResult = pOutput->SetBufferSize(uRemaining);
 		if (!uResult) {
 			// Get the buffer pointer
-			char* pWork = pOutput->GetPtr();
+			char* pWork = pOutput->c_str();
 			if (uRemaining) {
 				const Chunk_t* pChunk = m_pRoot;
 				do {

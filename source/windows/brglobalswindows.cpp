@@ -723,7 +723,7 @@ uint_t BURGER_API Burger::Globals::AddGroupToProgramMenu(const char* pGroupName)
             // Convert to UTF8 for Burgerlib
             String UTF8(WorkPath);
             Filename TempPath;
-            TempPath.SetFromNative(UTF8.GetPtr());
+            TempPath.SetFromNative(UTF8.c_str());
             if (!FileManager::CreateDirectoryPath(
                     &TempPath)) { // Create the directory
                 // Notify the shell that this folder was updated
@@ -815,12 +815,12 @@ void BURGER_API Burger::Globals::AssociateFileExtensionToExe(
         // Create the key for the file extension itself. .foo -> Unique program
         // ID
         String ClassExtension(g_SoftwareClasses, pFileExtension);
-        CreateUserRegistryKey(ClassExtension.GetPtr(), nullptr, pProgramID);
+        CreateUserRegistryKey(ClassExtension.c_str(), nullptr, pProgramID);
     }
     {
         // Create the key for the unique program ID, with the file's description
         String ClassExtension(g_SoftwareClasses, pProgramID);
-        CreateUserRegistryKey(ClassExtension.GetPtr(), nullptr, pDescription);
+        CreateUserRegistryKey(ClassExtension.c_str(), nullptr, pDescription);
     }
 
     // With the program ID already requested, generate the app's location for
@@ -835,16 +835,16 @@ void BURGER_API Burger::Globals::AssociateFileExtensionToExe(
             // Create the key and command to launch on double click
             String ClassShellOpen(
                 g_SoftwareClasses, pProgramID, "\\shell\\open\\command");
-            String Command("\"", ExePath.GetPtr(), "\" \"%1\"");
+            String Command("\"", ExePath.c_str(), "\" \"%1\"");
             CreateUserRegistryKey(
-                ClassShellOpen.GetPtr(), nullptr, Command.GetPtr());
+                ClassShellOpen.c_str(), nullptr, Command.c_str());
         }
         {
             // Create the key and reference to the icon for the data file
             String ClassIcon(g_SoftwareClasses, pProgramID, "\\DefaultIcon");
-            String Command2("\"", ExePath.GetPtr(), "\",1");
+            String Command2("\"", ExePath.c_str(), "\",1");
             CreateUserRegistryKey(
-                ClassIcon.GetPtr(), nullptr, Command2.GetPtr());
+                ClassIcon.c_str(), nullptr, Command2.c_str());
         }
     }
 }

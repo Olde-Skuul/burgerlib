@@ -81,7 +81,7 @@ void BURGER_API Burger::Globals::StringCopy(String* pOutput, CFStringRef pInput)
         CFIndex uLength = CFStringGetLength(pInput);
         if (!uLength) {
             // If it's empty, leave now
-            pOutput->Clear();
+            pOutput->clear();
         } else {
             // Determine the maximum buffer that would be needed for conversion
             // to UTF-8
@@ -89,17 +89,17 @@ void BURGER_API Burger::Globals::StringCopy(String* pOutput, CFStringRef pInput)
                 uLength, kCFStringEncodingUTF8);
             // Create the buffer
             pOutput->SetBufferSize(static_cast<uintptr_t>(uMaxLength));
-            // Convert the string and store into the buffer
-            if (!CFStringGetCString(pInput, pOutput->GetPtr(), uMaxLength + 1,
+			// Convert the string and store into the buffer
+			if (!CFStringGetCString(pInput, pOutput->c_str(), uMaxLength + 1,
                     kCFStringEncodingUTF8)) {
                 // Lovely, failure
-                pOutput->Clear();
+                pOutput->clear();
             } else {
                 // Truncate the string to fit the final string
                 // Note: Due to the manual copy, don't assume
                 // pOutput->GetLength() returns a valid value. Once
                 // SetBufferSize() completes, the length is correct
-                pOutput->SetBufferSize(StringLength(pOutput->GetPtr()));
+                pOutput->SetBufferSize(StringLength(pOutput->c_str()));
             }
         }
     }

@@ -475,7 +475,7 @@ void BURGER_API Burger::Flash::Stream::ReadString(uintptr_t uLength,String *pOut
 	m_uBitsRemaining = 0;
 	pOutput->SetBufferSize(uLength);
 	if (uLength) {
-		m_pStream->Get(pOutput->GetPtr(),uLength);
+		m_pStream->Get(pOutput->c_str(),uLength);
 	}
 }
 

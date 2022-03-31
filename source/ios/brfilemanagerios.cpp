@@ -94,8 +94,12 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 	int fp = open("/Volumes", O_RDONLY, 0);
 	if (fp != -1) {
 		int eError;
-		uint_t bScore = FALSE;
+		
+		// Volume not found, nor the boot volume
+		uint_t bFoundIt = FALSE;
 		uint_t bFoundRoot = FALSE;
+
+		// Start with #1 (Boot volume is special cased)		
 		uint_t uEntry = 1;
 		do {
 			// Structure declaration of data coming from getdirentriesattr()
@@ -157,14 +161,14 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 					char LinkBuffer[128];
 					String Linkname("/Volumes/", pName);
 					ssize_t uLinkDataSize = readlink(
-						Linkname.GetPtr(), LinkBuffer, sizeof(LinkBuffer));
+						Linkname.c_str(), LinkBuffer, sizeof(LinkBuffer));
 					if (uLinkDataSize == 1 && LinkBuffer[0] == '/') {
 
 						// This is the boot volume
 						bFoundRoot = TRUE;
 						// Is the user looking for the boot volume?
 						if (!uVolumeNum) {
-							bScore = TRUE;
+							bFoundIt = TRUE;
 						}
 					} else {
 						// Pretend it's a normal mounted volume
@@ -174,13 +178,13 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 				// Normal volume (Enumate them)
 				if (Entry.objType == VDIR) {
 					if (uVolumeNum == uEntry) {
-						bScore = TRUE;
+						bFoundIt = TRUE;
 					}
 					++uEntry;
 				}
 				// Matched a volume!
 
-				if (bScore) {
+				if (bFoundIt) {
 					--pName;
 					// Insert a starting and ending colon
 					pName[0] = ':';
@@ -235,7 +239,7 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	uResult = GetVolumeName(&MyFilename, 0); // Get the boot volume name
 	if (uResult == kErrorNone) {
 		// Set the initial prefix
-		const char* pBootName = MyFilename.GetPtr();
+		const char* pBootName = MyFilename.c_str();
 		SetPrefix(kPrefixBoot, pBootName);
 		Free(g_pFileManager->m_pBootName);
 		uintptr_t uMax = StringLength(pBootName);
@@ -254,7 +258,7 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 		if (NameBuffer[0]) {
 			MyFilename.SetFromNative(NameBuffer);
 			SetPrefix(kPrefixCurrent,
-				MyFilename.GetPtr()); // Set the standard work prefix
+				MyFilename.c_str()); // Set the standard work prefix
 		}
 	}
 
@@ -270,7 +274,7 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 		MyFilename.SetFromNative(NameBuffer);
 		MyFilename.DirName();
 		SetPrefix(kPrefixApplication,
-			MyFilename.GetPtr()); // Set the standard work prefix
+			MyFilename.c_str()); // Set the standard work prefix
 	}
 
 	//
@@ -288,7 +292,7 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 			if (NameBuffer[0]) {
 				MyFilename.SetFromNative(NameBuffer);
 				SetPrefix(kPrefixPrefs,
-					MyFilename.GetPtr()); // Set the preferences prefix
+					MyFilename.c_str()); // Set the preferences prefix
 			}
 		}
 	}
@@ -309,7 +313,7 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 				MyFilename.DirName();
 				MyFilename.DirName();
 				SetPrefix(kPrefixSystem,
-					MyFilename.GetPtr()); // Set the /System folder
+					MyFilename.c_str()); // Set the /System folder
 			}
 		}
 	}

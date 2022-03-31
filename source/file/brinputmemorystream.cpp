@@ -490,7 +490,7 @@ void BURGER_API Burger::InputMemoryStream::GetString(String *pOutput) BURGER_NOE
 	if (uOutputSize) {
 		// Copy the string into the new buffer
 		// SetBufferSize() sets the null terminator
-		MemoryCopy(pOutput->GetPtr(),m_pWork,uOutputSize);
+		MemoryCopy(pOutput->c_str(),m_pWork,uOutputSize);
 	}
 	m_pWork = pWork;		// Consume the input
 }

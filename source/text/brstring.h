@@ -47,22 +47,22 @@ namespace Burger {
 	String(const char* pFmt, BURGER_SP_ARG##N) BURGER_NOEXCEPT: m_pData(m_Raw), m_uLength(0) \
 	{ \
 		m_Raw[0] = 0; \
-		const Burger::SafePrintArgument* args[N] = {BURGER_SP_INITARG##N}; \
+		const Burger::ArgumentType* args[N] = {BURGER_SP_INITARG##N}; \
 		InitFormattedString(pFmt, N, args); \
 	}
 
 #define MAKE_BURGER_STRING_PRINTF(N) \
 	void BURGER_INLINE Printf(const char* pFmt, BURGER_SP_ARG##N) BURGER_NOEXCEPT \
 	{ \
-		const Burger::SafePrintArgument* args[N] = {BURGER_SP_INITARG##N}; \
+		const Burger::ArgumentType* args[N] = {BURGER_SP_INITARG##N}; \
 		InitFormattedString(pFmt, N, args); \
 	}
 
 #define MAKE_BURGER_STRING_PRINTF_STRREF(N) \
 	void BURGER_INLINE Printf(const String& sFmt, BURGER_SP_ARG##N) BURGER_NOEXCEPT \
 	{ \
-		const Burger::SafePrintArgument* args[N] = {BURGER_SP_INITARG##N}; \
-		InitFormattedString(sFmt.GetPtr(), N, args); \
+		const Burger::ArgumentType* args[N] = {BURGER_SP_INITARG##N}; \
+		InitFormattedString(sFmt.c_str(), N, args); \
 	}
 
 class String {
@@ -186,22 +186,15 @@ public:
 	{
 		return m_uLength;
 	}
+	BURGER_INLINE uintptr_t size(void) const BURGER_NOEXCEPT
+	{
+		return m_uLength;
+	}
 	BURGER_INLINE uint_t empty(void) const BURGER_NOEXCEPT
 	{
 		return !m_uLength;
 	}
-	BURGER_INLINE uintptr_t GetLength(void) const BURGER_NOEXCEPT
-	{
-		return m_uLength;
-	}
-	BURGER_INLINE char* GetPtr(void) BURGER_NOEXCEPT
-	{
-		return m_pData;
-	}
-	BURGER_INLINE const char* GetPtr(void) const BURGER_NOEXCEPT
-	{
-		return m_pData;
-	}
+
 	eError BURGER_API Set(const char* pInput) BURGER_NOEXCEPT;
 	eError BURGER_API Set(
 		const char* pInput, uintptr_t uLength) BURGER_NOEXCEPT;
@@ -489,7 +482,7 @@ public:
 
 private:
 	void BURGER_API InitFormattedString(const char* pFormat,
-		uintptr_t uArgCount, const SafePrintArgument** ppArgs);
+		uintptr_t uArgCount, const ArgumentType** ppArgs);
 	static uint_t BURGER_API FormattedAllocCallback(uint_t bError,
 		uintptr_t uRequestedSize, void** ppOutputBuffer, void* pContext);
 };

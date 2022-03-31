@@ -608,7 +608,7 @@ struct UTF8_UTF32_t {
 	uint32_t m_UTF32;  // UTF32 version
 };
 
-static const UTF8_UTF32_t gIsValidTest32[] = {
+static const UTF8_UTF32_t gIsValidTest[] = {
 	{{0x00, 0x00, 0x00, 0x00}, 0x000000U}, // Zero
 	{{0x72, 0x00, 0x00, 0x00}, 0x000072U}, // Capital R
 	{{0x7F, 0x00, 0x00, 0x00}, 0x00007FU}, // Last 8 bit character
@@ -641,8 +641,8 @@ static const UTF8_UTF32_t gIsValidTest32[] = {
 
 static uint_t TestUTF32(void) BURGER_NOEXCEPT
 {
-	const UTF8_UTF32_t* pWork = gIsValidTest32;
-	uintptr_t uCounter = BURGER_ARRAYSIZE(gIsValidTest32);
+	const UTF8_UTF32_t* pWork = gIsValidTest;
+	uintptr_t uCounter = BURGER_ARRAYSIZE(gIsValidTest);
 	uint_t uResult = FALSE;
 	uint_t uMatch = TRUE;
 
@@ -765,16 +765,14 @@ static uint_t TestUTF32(void) BURGER_NOEXCEPT
 
 		TempString32[0] = pWork->m_UTF32;
 		TempString32[1] = 0;
-		uTestX = Burger::UTF32::TranslateToUTF8(
-			TestUTF8, BURGER_ARRAYSIZE(TestUTF8), TempString32);
+		uTestX = Burger::UTF32::TranslateToUTF8(TestUTF8, BURGER_ARRAYSIZE(TestUTF8), TempString32);
 		if (uMatch && pWork->m_UTF32) {
 			uTest = uTestX != uWidth;
 		} else {
 			uTest = uTestX != 0;
 		}
 		uResult |= uTest;
-		ReportFailure(
-			"Burger::UTF32::TranslateToUTF8(TestUTF8, BURGER_ARRAYSIZE(TestUTF8), %08X) = %08X!",
+		ReportFailure("Burger::UTF32::TranslateToUTF8(TestUTF8, BURGER_ARRAYSIZE(TestUTF8), %08X) = %08X!",
 			uTest, pWork->m_UTF32, static_cast<uint_t>(uTestX));
 		if (uTestX) {
 			uTest = Burger::MemoryCompare(pWork->m_UTF8, TestUTF8, uWidth) != 0;
@@ -784,16 +782,14 @@ static uint_t TestUTF32(void) BURGER_NOEXCEPT
 				uTest, pWork->m_UTF32);
 		}
 
-		uTestX = Burger::UTF32::TranslateToUTF8(
-			TestUTF8, BURGER_ARRAYSIZE(TestUTF8), TempString32, 1);
+		uTestX = Burger::UTF32::TranslateToUTF8(TestUTF8, BURGER_ARRAYSIZE(TestUTF8), TempString32, 1);
 		if (uMatch) {
 			uTest = uTestX != uWidth;
 		} else {
 			uTest = uTestX != 0;
 		}
 		uResult |= uTest;
-		ReportFailure(
-			"Burger::UTF32::TranslateToUTF8(TestUTF8, BURGER_ARRAYSIZE(TestUTF8), 1, %08X) = %08X!",
+		ReportFailure("Burger::UTF32::TranslateToUTF8(TestUTF8, BURGER_ARRAYSIZE(TestUTF8), 1, %08X) = %08X!",
 			uTest, pWork->m_UTF32, static_cast<uint_t>(uTestX));
 		if (uTestX) {
 			uTest = Burger::MemoryCompare(pWork->m_UTF8, TestUTF8, uWidth) != 0;

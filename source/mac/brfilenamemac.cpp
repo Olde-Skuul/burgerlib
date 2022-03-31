@@ -4,7 +4,7 @@
 
 	MacOS version
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -24,21 +24,22 @@
 #include "brstring.h"
 #include "brstring16.h"
 #include "brtick.h"
+#include "brutf8.h"
 #include <Files.h>
 #include <Folders.h>
 #include <Processes.h>
 #include <string.h>
 
 Burger::Filename::ExpandCache_t
-	Burger::Filename::m_DirectoryCache[Burger::Filename::DIRCACHESIZE];
+	Burger::Filename::m_DirectoryCache[Burger::Filename::kDirectoryCacheSize];
 
 /*! ************************************
 
 	\struct Burger::Filename::ExpandCache_t
 	\brief Structure to contain a directory cache entry
 
-	For performance, a cache of the last Burger::FileManager::DIRCACHESIZE MacOS
-	directories are stored with their Directory IDs and volume reference
+	For performance, a cache of the last Burger::Filename::kDirectoryCacheSize
+	MacOS directories are stored with their Directory IDs and volume reference
 	numbers. Since these number can ba invalidate when a directory is deleted or
 	created, any call to a Burgerlib function that performs that action will
 	also purge this cache.
@@ -74,6 +75,9 @@ void BURGER_API Burger::Filename::InitDirectoryCache(void)
 		pWork->m_pName = nullptr;
 		++pWork;
 	} while (--i);
+
+	// Sanity check for the FSRef record
+	BURGER_STATIC_ASSERT(sizeof(pWork->m_FSRef) >= sizeof(FSSpec));
 }
 
 /*! ************************************
@@ -164,7 +168,7 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 			// Not a single char? ":a"?
 			if (uDirLength >= 2) {
 				// Scan against the cache
-				uint_t i = DIRCACHESIZE;
+				uint_t i = kDirectoryCacheSize;
 				ExpandCache_t* pCache = m_DirectoryCache;
 				do {
 					// If there is an entry, check if this directory is a match
@@ -364,7 +368,7 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 	uDirLength = static_cast<uintptr_t>(pWorkPath - pPath);
 	if (uDirLength >= 3) {
 		uint32_t uMark = Tick::Read();
-		uint_t i = DIRCACHESIZE;
+		uint_t i = kDirectoryCacheSize;
 		ExpandCache_t* pCache = m_DirectoryCache;
 		ExpandCache_t* pEntry = pCache;
 		uint32_t uTime = 0;
@@ -442,7 +446,8 @@ Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(
+	void) BURGER_NOEXCEPT
 {
 	Clear();
 	// Init to my application's serial number
@@ -482,17 +487,33 @@ Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(
+	void) BURGER_NOEXCEPT
 {
 	Clear();
-	short MyVRef; // Internal volume references
-	long MyDirID; // Internal drive ID
-	// Get the system folder
-	if (!FindFolder(kOnSystemDisk, kSystemPreferencesFolderType,
+
+	eError uResult = kErrorNone;
+
+	// Internal volume references
+	short MyVRef;
+	// Internal drive ID
+	long MyDirID;
+
+	// Get the system preferences folder (NacOSX First)
+	if (FindFolder(kOnSystemDisk, kSystemPreferencesFolderType,
 			kDontCreateFolder, &MyVRef, &MyDirID)) {
-		SetFromDirectoryID(MyDirID, MyVRef);
+		// Try the macos 7-9 folder instead
+		if (FindFolder(kOnSystemDisk, kSystemFolderType, kDontCreateFolder,
+				&MyVRef, &MyDirID)) {
+			uResult = kErrorNotADirectory;
+		}
 	}
-	return kErrorNone;
+
+	if (!uResult) {
+		// Convert to burgerlib path
+		uResult = SetFromDirectoryID(MyDirID, MyVRef);
+	}
+	return uResult;
 }
 
 /***************************************
@@ -505,11 +526,12 @@ Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(void) BURGE
 	format.
 
 	On platforms where a current working directory doesn't make sense, like an
-ROM based system, the filename is cleared out.
+	ROM based system, the filename is cleared out.
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(
+	void) BURGER_NOEXCEPT
 {
 	Clear();
 	short MyVRef; // Internal volume references
@@ -562,7 +584,7 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 		eError uResult = MyFilename.SetFromDirectoryID(
 			lDirID, sVRefNum);                       /* Get the directory */
 		if (!uResult) {                              /* Did I get a path? */
-			StringCopy(Output, MyFilename.GetPtr()); /* Copy to output */
+			StringCopy(Output, MyFilename.c_str()); /* Copy to output */
 			Output = Output + StringLength(Output);  /* Fix pointer */
 		}
 		if (pInput[0]) { /* Was there a leading colon? */
@@ -777,6 +799,7 @@ Burger::eError BURGER_API Burger::Filename::SetFromDirectoryID(
 	} else if (iError == paramErr) {
 		uResult = kErrorNone;
 
+		// Since this is a HFS volume, filenames are limited to 64 characters
 		char TempString[80];
 		TempString[0] = ':';
 		do {
@@ -785,12 +808,17 @@ Burger::eError BURGER_API Burger::Filename::SetFromDirectoryID(
 				uResult = kErrorIO;
 				break;
 			}
-			// Merge into a single string
+			// Merge into a single "C" string
 			PStringToCString(TempString + 1, CurrentSpec.name);
 
+			// Convert from macRoman to UTF8
+			// TM can take 3 characters, so 64*3 = 192. 200 will do.
+			char UTF8Buffer[200];
+			uintptr_t uNewLength = UTF8::FromMacRomanUS(UTF8Buffer,
+				sizeof(UTF8Buffer), TempString, CurrentSpec.name[0] + 1U);
+
 			// Insert to the final result
-			FinalPath.Insert(0, TempString,
-				static_cast<uintptr_t>(CurrentSpec.name[0]) + 1U);
+			FinalPath.Insert(0, UTF8Buffer, uNewLength);
 
 			// Move up one directory
 			lDirID = CurrentSpec.parID;

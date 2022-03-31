@@ -33,6 +33,8 @@ enum eError {
 	kErrorGeneric = 0x7000,
 	/** Input parameter is invalid. */
 	kErrorInvalidParameter,
+	/** Invalid argument in function call */
+	kErrorInvalidArgument,
 	/** Class or subsystem not initialized */
 	kErrorNotInitialized,
 	/** Command not supported */
@@ -51,6 +53,8 @@ enum eError {
 	kErrorOutOfBounds,
 	/** Failed unit test */
 	kErrorFailedTest,
+	/** Data was found more than once */
+	kErrorDuplicateEntries,
 
 	/** File system errors */
 	kErrorFile = 0x7100,
@@ -165,6 +169,8 @@ enum eError {
 	kErrorThreadCantStop
 };
 
+extern uintptr_t BURGER_API GetErrorString(
+	char* pOutput, uintptr_t uOutputSize, eError uError) BURGER_NOEXCEPT;
 }
 /* END */
 

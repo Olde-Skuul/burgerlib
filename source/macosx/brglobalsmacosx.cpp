@@ -364,16 +364,16 @@ void BURGER_API Burger::Globals::StringCopy(String* pOutput, CFStringRef pInput)
 			// Create the buffer
 			pOutput->SetBufferSize(static_cast<uintptr_t>(uMaxLength));
 			// Convert the string and store into the buffer
-			if (!CFStringGetCString(pInput, pOutput->GetPtr(), uMaxLength + 1,
+			if (!CFStringGetCString(pInput, pOutput->c_str(), uMaxLength + 1,
 					kCFStringEncodingUTF8)) {
 				// Lovely, failure
 				pOutput->clear();
 			} else {
 				// Truncate the string to fit the final string
 				// Note: Due to the manual copy, don't assume
-				// pOutput->GetLength() returns a valid value. Once
+				// pOutput->length() returns a valid value. Once
 				// SetBufferSize() completes, the length is correct
-				pOutput->SetBufferSize(StringLength(pOutput->GetPtr()));
+				pOutput->SetBufferSize(StringLength(pOutput->c_str()));
 			}
 		}
 	}
@@ -571,9 +571,9 @@ uint_t BURGER_API Burger::Globals::GetMacOSVersion(void)
 		String Buffer;
 		Buffer.SetBufferSize(uLength);
 		// Make sure the buffer was allocated
-		if (Buffer.GetLength() == uLength) {
+		if (Buffer.length() == uLength) {
 			// Get the string
-			iError = sysctl(selector, 2, Buffer.GetPtr(), &uLength, NULL, 0);
+			iError = sysctl(selector, 2, Buffer.c_str(), &uLength, NULL, 0);
 
 			//
 			// String is in the format of 9.8.0 where
@@ -581,7 +581,7 @@ uint_t BURGER_API Burger::Globals::GetMacOSVersion(void)
 			// 8 is the patch version. 9.8.0 translates
 			// to 1058 (10.5.8)
 
-			const char* pBuffer = Buffer.GetPtr();
+			const char* pBuffer = Buffer.c_str();
 			const char* pEnd;
 			uint32_t uMajor = AsciiToInteger(pBuffer, &pEnd);
 			if (pEnd != pBuffer) {
@@ -629,7 +629,7 @@ int BURGER_API Burger::Globals::ExecuteTool(
 	// Assume an error
 	int iResult = 10;
 	// Call the program
-	FILE* pPipe = popen(CommandLine.GetPtr(), "r");
+	FILE* pPipe = popen(CommandLine.c_str(), "r");
 	if (pPipe) {
 		// Get the output
 		while (!feof(pPipe)) {

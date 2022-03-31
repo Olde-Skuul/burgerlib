@@ -1171,7 +1171,7 @@ Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,
 
 	Filename Name;
 	FileManager::GetPrefix(&Name, 9);
-	const char* pFileName = Name.GetPtr();
+	const char* pFileName = Name.c_str();
 	uintptr_t uLength = StringLength(pFileName);
 	if ((uLength > 7) && !StringCompare((pFileName + uLength) - 7, ":MacOS:")) {
 

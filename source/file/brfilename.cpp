@@ -2,7 +2,7 @@
 
 	Filename Class
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -21,26 +21,22 @@
 	\class Burger::Filename
 	\brief File name container
 
-	This container class is a high speed conversion method
-	to convert a BurgerLib formatted filename into a
-	filename suitable for use with the native file system.
+	This container class is a high speed conversion method to convert a
+	BurgerLib formatted filename into a filename suitable for use with the
+	native file system.
 
-	Some operating systems require more information than
-	just the filename. Due to this, it's highly recommended
-	that a Burgerlib path is generated, then a call to
-	GetNative() is invoked
-	to do the proper conversion and generate the extra
-	data. Currently, only the MacOS Carbon and Classic
-	targets require this extra data, however for future
-	compatibility or performance upgrades, don't assume
-	that creating a filename by hand will be a cross platform
+	Some operating systems require more information than just the filename. Due
+	to this, it's highly recommended that a Burgerlib path is generated, then a
+	call to GetNative() is invoked to do the proper conversion and generate the
+	extra data. Currently, only the MacOS Carbon and Classic targets require
+	this extra data, however for future compatibility or performance upgrades,
+	don't assume that creating a filename by hand will be a cross platform
 	solution.
 
-	When writing code intended for a single platform, it's
-	encouraged to load and store the extra data. Also,
-	you can use the SetFromNative()
-	call to convert a native filename into BurgerLib
-	format without having to do anything special.
+	When writing code intended for a single platform, it's encouraged to load
+	and store the extra data. Also, you can use the SetFromNative() call to
+	convert a native filename into BurgerLib format without having to do
+	anything special.
 
 	\note This class will occupy 512 bytes per instance. No more, no less.
 
@@ -53,8 +49,8 @@
 	\fn Burger::Filename::Filename()
 	\brief Default constructor
 
-	Simple inline initializer, Designed for high speed and
-	does not call any other function
+	Simple inline initializer, Designed for high speed and does not call any
+	other function
 
 	\sa Burger::Filename::Set(const char *) or Burger::Filename::~Filename()
 
@@ -64,18 +60,19 @@
 
 	\brief Initialize the pathname to the input string
 
-	Given a string passed by pInput, set the contained string to match.
-	In a majority of cases, no memory is allocated. If in the
-	rare case the string is of a large length, it will allocate a
-	buffer and store the string within the allocated memory and ignore
-	the internal buffer..
+	Given a string passed by pInput, set the contained string to match. In a
+	majority of cases, no memory is allocated. If in the rare case the string is
+	of a large length, it will allocate a buffer and store the string within the
+	allocated memory and ignore the internal buffer..
 
-	\note This function does not alter the string in any way. It is stored
-	in the internal buffer as is. It also will
-	not modify any platform specific variables.
+	\note This function does not alter the string in any way. It is stored in
+		the internal buffer as is. It also will not modify any platform specific
+		variables.
 
-	\param pFilename Pointer to a valid "C" string or \ref NULL to force the
-class to empty. \sa Clear() and Set()
+	\param pFilename Pointer to a valid "C" string or \ref nullptr to force the
+		class to empty.
+
+	\sa Clear() and Set()
 
 ***************************************/
 
@@ -94,7 +91,7 @@ Burger::Filename::Filename(const char* pFilename) BURGER_NOEXCEPT
 		// All initialized in case of an empty input string
 		m_Filename[0] = 0;
 	} else {
-		uintptr_t uLength = StringLength(pFilename);
+		const uintptr_t uLength = StringLength(pFilename);
 		//
 		// Can the string fit in the local buffer?
 		if (uLength < sizeof(m_Filename)) {
@@ -119,9 +116,9 @@ Burger::Filename::Filename(const char* pFilename) BURGER_NOEXCEPT
 	\brief Initialize the pathname from another pathname
 
 	Given a Burger::Filename passed by reference, set the contained string to
-match. In a majority of cases, no memory is allocated. If in the rare case the
-string is of a large length, it will allocate a buffer and store the string
-within the allocated memory and ignore the internal buffer..
+	match. In a majority of cases, no memory is allocated. If in the rare case
+	the string is of a large length, it will allocate a buffer and store the
+	string within the allocated memory and ignore the internal buffer..
 
 	\note This function does not alter the string in any way. It is stored
 	in the internal buffer as is. It also will
@@ -249,8 +246,8 @@ Burger::Filename& Burger::Filename::operator=(Filename const& rInput)
 
 	\brief Release any memory allocated
 
-	If in the course of setting a pathname to an excessive length,
-	release any extra allocated memory. In most cases, this does nothing.
+	If in the course of setting a pathname to an excessive length, release any
+	extra allocated memory. In most cases, this does nothing.
 
 	\note Can call \ref Burger::Free() in some cases
 
@@ -268,17 +265,16 @@ Burger::Filename::~Filename()
 
 /*! ************************************
 
-	\fn Burger::Filename::GetPtr(void) const
+	\fn Burger::Filename::c_str(void) const
 	\brief Retrieve a pointer to the Burgerlib filename.
 
 	Return a pointer to a valid const "C" string,
 
-	String may be an empty string if it wasn't set
-	via a previous call. This function will never
-	return a \ref NULL pointer.
+	String may be an empty string if it wasn't set via a previous call. This
+	function will never return a \ref NULL pointer.
 
-	\return A pointer to an unmodifiable "C" string.
-	Make no attempt to write to it,
+	\return A pointer to an unmodifiable "C" string. Make no attempt to write to
+		it.
 
 	\sa Filename::Set(const char *) or Filename::GetPtr(void)
 
@@ -286,18 +282,16 @@ Burger::Filename::~Filename()
 
 /*! ************************************
 
-	\fn Burger::Filename::GetPtr(void)
+	\fn Burger::Filename::c_str(void)
 	\brief Retrieve a pointer to the filename.
 
 	Return a pointer to a valid "C" string,
 
-	String may be an empty string if it wasn't set
-	via a previous call. This function will never
-	return a \ref NULL pointer.
+	String may be an empty string if it wasn't set via a previous call. This
+	function will never return a \ref NULL pointer.
 
-	\return A pointer to an modifiable "C" string.
-	Make no attempt to write into the string since
-	it may interfere with the operation of the class.
+	\return A pointer to an modifiable "C" string. Make no attempt to write into
+		the string since it may interfere with the operation of the class.
 
 	\sa Set(const char *) or Filename::GetPtr(void) const
 
@@ -307,18 +301,19 @@ Burger::Filename::~Filename()
 
 	\brief Sets the pathname to the input string
 
-	Given a string passed by pInput, set the contained string to match.
-	In a majority of cases, no memory is allocated. If in the
-	rare case the string is of a large length, it will allocate a
-	buffer and store the string within the allocated memory and ignore
-	the internal buffer..
+	Given a string passed by pInput, set the contained string to match. In a
+	majority of cases, no memory is allocated. If in the rare case the string is
+	of a large length, it will allocate a buffer and store the string within the
+	allocated memory and ignore the internal buffer..
 
-	\note This function does not alter the string in any way. It is stored
-	in the internal buffer as is. It also will
-	not modify any platform specific variables.
+	\note This function does not alter the string in any way. It is stored in
+		the internal buffer as is. It also will not modify any platform specific
+		variables.
 
 	\param pInput Pointer to a valid "C" string or \ref NULL to force the class
-to empty. \sa Burger::Filename::Clear()
+		to empty.
+
+	\sa Burger::Filename::Clear()
 
 ***************************************/
 
@@ -381,9 +376,9 @@ Burger::eError BURGER_API Burger::Filename::Set(
 
 	\brief Set the filename to an empty string.
 
-	If in the course of setting a pathname to an excessive length,
-	release any extra allocated memory. In most cases, this simply
-	resets the cached buffer to an empty string.
+	If in the course of setting a pathname to an excessive length, release any
+	extra allocated memory. In most cases, this simply resets the cached buffer
+	to an empty string.
 
 ***************************************/
 
@@ -469,8 +464,8 @@ Burger::eError BURGER_API Burger::Filename::Append(const char* pInput)
 
 	Given a pathname, return the filename at the end of the path
 
-	\note If the filename is too big to fit in the output buffer, it
-	will be truncated.
+	\note If the filename is too big to fit in the output buffer, it will be
+		truncated.
 
 	\param pOutput Buffer to receive the filename at the end of the path
 	\param uOutputLength Size of the buffer to obtain the filename.
@@ -516,10 +511,10 @@ void BURGER_API Burger::Filename::GetFileName(
 	\brief Obtain the filename extension
 
 	Given a pathname, return the file extension for the filename at the end of
-the path
+	the path
 
 	\note If the filename extension is too big to fit in the output buffer, it
-	will be truncated.
+		will be truncated.
 
 	\param pOutput Buffer to receive the filename at the end of the path
 	\param uOutputLength Size of the buffer to obtain the filename.
@@ -577,7 +572,9 @@ void BURGER_API Burger::Filename::GetFileExtension(
 	Given a filename extension, set the filename to this extension
 
 	\param pExtension Pointer to a "C" string that contains the new filename
-extension \sa Burger::Filename::GetFileExtension(char *,uintptr_t) const
+		extension
+
+	\sa Burger::Filename::GetFileExtension(char *,uintptr_t) const
 
 ***************************************/
 
@@ -703,8 +700,9 @@ Burger::eError BURGER_API Burger::Filename::DirName(void) BURGER_NOEXCEPT
 
 	\brief Extract the directory from a pathname
 
-	Given a pathname, remove the filename from the end of the path, leaving
-	only the directory name remaining.
+	Given a pathname, remove the filename from the end of the path, leaving only
+	the directory name remaining.
+
 	\param pOutput Pointer to a valid Burger::String instance to receive the new
 		string
 
@@ -757,11 +755,11 @@ Burger::eError BURGER_API Burger::Filename::DirName(
 	\brief Extract the base name from a pathname
 
 	Given a pathname, remove the directory from the beginning of the path,
-leaving only the file name remaining. The resulting filename will not have
+	leaving only the file name remaining. The resulting filename will not have
 	leading or trailing colons
 
 	\param pOutput Pointer to a valid Burger::String instance to receive the new
-string
+		string
 
 ***************************************/
 
@@ -871,12 +869,12 @@ uint_t BURGER_API Burger::Filename::IsFullPathname(void) const BURGER_NOEXCEPT
 
 	\brief Determine if a filename has no prefix and is not fully qualified
 
-	There are two ways a pathname not qualified, firstly if
-	the pathname is a full pathname, it's qualified. If the pathname
-	has a prefix start, it's qualified.
+	There are two ways a pathname not qualified, firstly if the pathname is a
+	full pathname, it's qualified. If the pathname has a prefix start, it's
+	qualified.
 
-	Filenames of this nature will be automatically assumed to be offset
-	from directory Burger::FileManager::kPrefixCurrent (the current working
+	Filenames of this nature will be automatically assumed to be offset from
+	directory Burger::FileManager::kPrefixCurrent (the current working
 	directory)
 
 	\return \ref TRUE if the pathname is not qualified, \ref FALSE if not.
@@ -957,17 +955,18 @@ uint_t BURGER_API Burger::Filename::ParsePrefixNumber(
 	into a FULL pathname native to the Burgerlib file system.
 
 	Directory delimiters are colons only.
+
 	If the path starts with a colon, then it is a full pathname starting with a
-volume name. If the path starts with ".D2:" then it is a full pathname starting
-with a drive number. If the path starts with a "$:","*:" or "@:" then use
-special prefix numbers 32-34 If the path starts with 0: through 31: then use
-prefix 0-31. Otherwise prefix the pathname with the contents of prefix 8
-("Default")
+	volume name. If the path starts with ".D2:" then it is a full pathname
+	starting with a drive number. If the path starts with a "$:","*:" or "@:"
+	then use special prefix numbers 32-34 If the path starts with 0: through 31:
+	then use prefix 0-31. Otherwise prefix the pathname with the contents of
+	prefix 8 ("Default")
 
 	If the path after the prefix is removed is a period then POP the number of
 	directories from the pathname for each period present after the first.
 	Example "..:PrevDir:File:" will go down one directory and up the directory
-PrevDir
+	PrevDir
 
 	All returned pathnames will have a trailing colon
 
@@ -975,7 +974,8 @@ PrevDir
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::Filename::Expand(const char* pInput) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::Expand(
+	const char* pInput) BURGER_NOEXCEPT
 {
 	Clear();
 
@@ -1088,7 +1088,7 @@ Burger::eError BURGER_API Burger::Filename::Expand(const char* pInput) BURGER_NO
 	if (uPrefixNum < FileManager::kPrefixCount) {
 		FileManager::GetPrefix(
 			&Prefix, uPrefixNum); // Is there a prefix attached?
-		pPrefix = Prefix.GetPtr();
+		pPrefix = Prefix.c_str();
 		if (pPrefix[0]) { // Nope...
 			uPrefixLen =
 				StringLength(pPrefix); // How many bytes for the prefix?
@@ -1228,17 +1228,18 @@ Burger::eError BURGER_API Burger::Filename::Expand(const char* pInput) BURGER_NO
 	into a FULL pathname native to the Burgerlib file system.
 
 	Directory delimiters are colons only.
+
 	If the path starts with a colon, then it is a full pathname starting with a
-volume name. If the path starts with ".D2:" then it is a full pathname starting
-with a drive number. If the path starts with a "$:","*:" or "@:" then use
-special prefix numbers 32-34 If the path starts with 0: through 31: then use
-prefix 0-31. Otherwise prefix the pathname with the contents of prefix 8
-("Default")
+	volume name. If the path starts with ".D2:" then it is a full pathname
+	starting with a drive number. If the path starts with a "$:","*:" or "@:"
+	then use special prefix numbers 32-34 If the path starts with 0: through 31:
+	then use prefix 0-31. Otherwise prefix the pathname with the contents of
+	prefix 8 ("Default")
 
 	If the path after the prefix is removed is a period then POP the number of
 	directories from the pathname for each period present after the first.
 	Example "..:PrevDir:File:" will go down one directory and up the directory
-PrevDir
+	PrevDir
 
 	All returned pathnames will have a trailing colon
 
@@ -1277,9 +1278,9 @@ Burger::eError BURGER_API Burger::Filename::Expand(void) BURGER_NOEXCEPT
 	for a specific platform is being written and the native path is required.
 
 	\note If this function is invoked on a MacOS target, a Volume Reference
-number and Directory ID are generated and can be accessed via calls to
-Burger::Filename::GetDirID(void) const and Burger::Filename::GetVRefNum(void)
-const
+		number and Directory ID are generated and can be accessed via calls to
+		Burger::Filename::GetDirID(void) const and
+		Burger::Filename::GetVRefNum(void) const
 
 ***************************************/
 
@@ -1363,8 +1364,7 @@ Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(
 Burger::eError BURGER_API Burger::Filename::SetBootVolumeDirectory(
 	void) BURGER_NOEXCEPT
 {
-	Clear();
-	return kErrorNotSupportedOnThisPlatform;
+	return FileManager::GetVolumeName(this, 0);
 }
 #endif
 

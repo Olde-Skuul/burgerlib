@@ -61,7 +61,7 @@ extern const Burger::Float80Bit Pi280bit = {
 const uint16_t Burger::g_X86RoundDownFlag =
     0x0F7F; // 8087 control word to round down with 64 bit precision
 const Burger::uint32_float_t Burger::g_X86OneAndNegOne[2] = {
-    0x3F000000U, 0xBF000000U};
+	{0x3F000000U}, {0xBF000000U}};
 
 #endif
 

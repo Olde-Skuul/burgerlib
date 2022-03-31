@@ -336,7 +336,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(
 		// Was there a port #?
 
 		// Scan for the ending colon
-		char* pColon = StringCharacterReverse(TempDNS.GetPtr(), ':');
+		char* pColon = StringCharacterReverse(TempDNS.c_str(), ':');
 		uResult = kErrorNone;
 		if (pColon) {
 			pColon[0] = 0; // Force a null string
@@ -355,7 +355,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(
 			uint32_t uIPv4;
 
 			// Try 206.55.132.154
-			uResult = StringToIPv4(TempDNS.GetPtr(), &uIPv4);
+			uResult = StringToIPv4(TempDNS.c_str(), &uIPv4);
 			if (uResult != kErrorNone) {
 
 				// Try www.oldeskuul.com
@@ -366,7 +366,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(
 
 				addrinfo* pResult = NULL;
 				uResult = static_cast<eError>(
-					getaddrinfo(TempDNS.GetPtr(), NULL, &Hints, &pResult));
+					getaddrinfo(TempDNS.c_str(), NULL, &Hints, &pResult));
 				if (uResult == kErrorNone) {
 					uIPv4 = BigEndian::Load(static_cast<uint32_t>(
 						reinterpret_cast<sockaddr_in*>(pResult->ai_addr)
@@ -420,12 +420,12 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv6Address(
 		// Try as a numeric value
 
 		uResult = StringToIPv6(
-			TempDNS.GetPtr(), pOutput->U.IPv6.m_IP, &pOutput->U.IPv6.m_uPort);
+			TempDNS.c_str(), pOutput->U.IPv6.m_IP, &pOutput->U.IPv6.m_uPort);
 		if (uResult != kErrorNone) {
 
 			// Try as a DNS entry
 
-			char* pColon = StringCharacterReverse(TempDNS.GetPtr(), ':');
+			char* pColon = StringCharacterReverse(TempDNS.c_str(), ':');
 			uResult = kErrorNone;
 			if (pColon) {
 				pColon[0] = 0; // Force a null string
@@ -448,7 +448,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv6Address(
 
 				addrinfo* pResult = NULL;
 				uResult = static_cast<eError>(
-					getaddrinfo(TempDNS.GetPtr(), NULL, &Hints, &pResult));
+					getaddrinfo(TempDNS.c_str(), NULL, &Hints, &pResult));
 				if (uResult == kErrorNone) {
 					uResult = kErrorInvalidParameter;
 					const addrinfo* pWork = pResult;
@@ -786,7 +786,7 @@ Burger::eError BURGER_API Burger::NetworkManager::EnumerateLocalAddresses(
 	Hints.ai_socktype = SOCK_DGRAM; // Prevent address duplication
 
 	addrinfo* pResult = NULL;
-	int iResult = getaddrinfo(m_HostName.GetPtr(), NULL, &Hints, &pResult);
+	int iResult = getaddrinfo(m_HostName.c_str(), NULL, &Hints, &pResult);
 	if (!iResult) {
 
 		// Iterate over the list to get the number of entries that will be

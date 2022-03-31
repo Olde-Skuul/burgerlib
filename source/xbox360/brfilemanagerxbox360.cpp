@@ -212,11 +212,11 @@ Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
 	String NewName(pFileName->GetNative());
 
 	// Easy way!
-	if (!DirCreate(NewName.GetPtr())) {
+	if (!DirCreate(NewName.c_str())) {
 		return kErrorNone; // No error
 	}
 	// Ok see if I can create the directory tree
-	char* pNewFilename = NewName.GetPtr();
+	char* pNewFilename = NewName.c_str();
 	if (pNewFilename[0]) { // Is there a filename?
 		char* pWork = pNewFilename;
 		if (pWork[0] && pWork[1] == ':') { // Drive name?

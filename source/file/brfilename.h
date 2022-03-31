@@ -2,7 +2,7 @@
 
 	Filename Class
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -55,8 +55,9 @@ class Filename {
 		(sizeof(char*) + sizeof(long) + sizeof(short))];
 	/** Local buffer containing the native filename */
 	char m_NativeFilename[kBufferSize - (sizeof(char*) + 80)];
+
 	/** Number of cache entries (MacOS 9 only) */
-	static const uint_t DIRCACHESIZE = 8;
+	static const uint_t kDirectoryCacheSize = 8;
 
 	struct ExpandCache_t {
 		const char* m_pName;  ///< Pointer to the original directory name
@@ -66,7 +67,7 @@ class Filename {
 	};
 
 	/** Directory cache (MAC Classic/Carbon Only) */
-	static ExpandCache_t m_DirectoryCache[DIRCACHESIZE];
+	static ExpandCache_t m_DirectoryCache[kDirectoryCacheSize];
 
 public:
 	static void BURGER_API InitDirectoryCache(void);
@@ -89,14 +90,6 @@ public:
 	Filename(Filename const& rInput) BURGER_NOEXCEPT;
 	Filename& operator=(Filename const& rInput);
 	~Filename();
-	BURGER_INLINE const char* GetPtr(void) const BURGER_NOEXCEPT
-	{
-		return m_pFilename;
-	}
-	BURGER_INLINE char* GetPtr(void) BURGER_NOEXCEPT
-	{
-		return m_pFilename;
-	}
 	BURGER_INLINE const char* c_str(void) const BURGER_NOEXCEPT
 	{
 		return m_pFilename;

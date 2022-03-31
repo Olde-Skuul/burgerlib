@@ -249,6 +249,14 @@ const char Burger::g_NoString[3] = {'n', 'o', 0};
 
 /*! ************************************
 
+	\brief String to print when a \ref NULL pointer is found
+
+***************************************/
+
+const char Burger::g_NullString[7] = {'(', 'n', 'u', 'l', 'l', ')', 0};
+
+/*! ************************************
+
 	\brief Days of the week
 
 	An array of seven strings for the seven days of the week. Each string is
@@ -271,6 +279,15 @@ const char* Burger::g_WeekDays[7] = {"Sunday", "Monday", "Tuesday", "Wednesday",
 const char* Burger::g_Months[12] = {"January", "February", "March", "April",
 	"May", "June", "July", "August", "September", "October", "November",
 	"December"};
+
+/*! ************************************
+
+	\brief Strings to print for a boolean
+
+***************************************/
+
+const char* Burger::g_pBoolStrings[2] = {
+	Burger::g_FalseString, Burger::g_TrueString};
 
 /*! ************************************
 

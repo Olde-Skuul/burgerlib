@@ -49,7 +49,7 @@ public:
     int Action(int argc, const char** argv) BURGER_OVERRIDE;
     BURGER_INLINE const char* GetValue(void) const BURGER_NOEXCEPT
     {
-        return m_Value.GetPtr();
+        return m_Value.c_str();
     }
 };
 }

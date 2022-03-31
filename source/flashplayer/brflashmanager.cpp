@@ -433,7 +433,7 @@ Burger::CodeLibrary *Burger::Flash::Manager::LoadCodeLibrary(const String *pName
 		// Not found, create a library object
 		pResult = New<CodeLibrary>();
 		if (pResult) {
-			if (pResult->Init(pName->GetPtr())) {
+			if (pResult->Init(pName->c_str())) {
 				Delete(pResult);
 				pResult = NULL;
 			} else {

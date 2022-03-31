@@ -132,7 +132,7 @@ void Burger::Mouse::EnumerationCallback(
 			pRat->m_pDevice = pDevice;
 			Globals::GetHIDDeviceName(&pRat->m_Name, pDevice);
 			// Only named mice are accepted
-			if (pRat->m_Name.GetLength()) {
+			if (pRat->m_Name.length()) {
 				pRat->m_bUnplugged = FALSE;
 				++pMouse->m_uMiceCount;
 			}

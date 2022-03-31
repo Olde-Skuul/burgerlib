@@ -452,7 +452,7 @@ void BURGER_API Burger::FileINI::Entry::SetBoolean(uint_t bValue)
 
 uint_t BURGER_API Burger::FileINI::Entry::GetWord(uint_t uDefault,uint_t uMin,uint_t uMax) const
 {
-	return AsciiToWord(m_Value.GetPtr(),uDefault,uMin,uMax);
+	return AsciiToWord(m_Value.c_str(),uDefault,uMin,uMax);
 }
 
 /*! ************************************
@@ -638,7 +638,7 @@ void BURGER_API Burger::FileINI::Entry::SetDouble(double dValue)
 
 void BURGER_API Burger::FileINI::Entry::GetString(String *pOutput,const char *pDefault) const
 {
-	uintptr_t uLength = m_Value.GetLength();
+	uintptr_t uLength = m_Value.length();
 	// No string?
 	if (!uLength) {
 		// Use the default
@@ -650,7 +650,7 @@ void BURGER_API Burger::FileINI::Entry::GetString(String *pOutput,const char *pD
 		if (uLength>=sizeof(Buffer)) {
 			pBuffer = static_cast<char *>(Alloc(uLength+1));
 		}
-		ParseQuotedString(pBuffer,uLength+1,m_Value.GetPtr());
+		ParseQuotedString(pBuffer,uLength+1,m_Value.c_str());
 		pOutput->Set(pBuffer);
 		if (pBuffer!=Buffer) {
 			Free(pBuffer);
@@ -828,7 +828,7 @@ uint_t BURGER_API Burger::FileINI::Section::Save(OutputMemoryStream *pOutput) co
 {
 	uint_t uResult=FALSE;
 	// Is it nameless?
-	const char *pName = m_SectionName.GetPtr();
+	const char *pName = m_SectionName.c_str();
 	if (pName[0]) {
 		// Output the section name
 		pOutput->Append('[');

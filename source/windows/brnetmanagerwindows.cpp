@@ -465,7 +465,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(NetAddr_t *
 			// Was there a port #?
 
 			// Scan for the ending colon
-			char *pColon = StringCharacterReverse(TempDNS.GetPtr(),':');
+			char *pColon = StringCharacterReverse(TempDNS.c_str(),':');
 			uResult = kErrorNone;
 			if (pColon) {
 				pColon[0] = 0;		// Force a null string
@@ -484,7 +484,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(NetAddr_t *
 				uint32_t uIPv4;
 
 				// Try 206.55.132.154
-				uResult = StringToIPv4(TempDNS.GetPtr(),&uIPv4);
+				uResult = StringToIPv4(TempDNS.c_str(),&uIPv4);
 				if (uResult!= kErrorNone) {
 
 					// Try www.oldeskuul.com
@@ -494,7 +494,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv4Address(NetAddr_t *
 					//Hints.ai_socktype = SOCK_STREAM;
 
 					addrinfo *pResult = NULL;
-					uResult = static_cast<eError>(getaddrinfo(TempDNS.GetPtr(),NULL,&Hints,&pResult));
+					uResult = static_cast<eError>(getaddrinfo(TempDNS.c_str(),NULL,&Hints,&pResult));
 					if (uResult== kErrorNone) {
 						uIPv4 = BigEndian::Load(static_cast<uint32_t>(reinterpret_cast<sockaddr_in*>(pResult->ai_addr)->sin_addr.s_addr));
 						// Release the addrinfo chain
@@ -544,12 +544,12 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv6Address(NetAddr_t *
 
 			// Try as a numeric value
 
-			uResult = StringToIPv6(TempDNS.GetPtr(),pOutput->U.IPv6.m_IP,&pOutput->U.IPv6.m_uPort);
+			uResult = StringToIPv6(TempDNS.c_str(),pOutput->U.IPv6.m_IP,&pOutput->U.IPv6.m_uPort);
 			if (uResult!= kErrorNone) {
 				
 				// Try as a DNS entry
 
-				char *pColon = StringCharacterReverse(TempDNS.GetPtr(),':');
+				char *pColon = StringCharacterReverse(TempDNS.c_str(),':');
 				uResult = kErrorNone;
 				if (pColon) {
 					pColon[0] = 0;		// Force a null string
@@ -571,7 +571,7 @@ Burger::eError BURGER_API Burger::NetworkManager::ResolveIPv6Address(NetAddr_t *
 					//Hints.ai_socktype = SOCK_STREAM;
 
 					addrinfo *pResult = NULL;
-					uResult = static_cast<eError>(getaddrinfo(TempDNS.GetPtr(),NULL,&Hints,&pResult));
+					uResult = static_cast<eError>(getaddrinfo(TempDNS.c_str(),NULL,&Hints,&pResult));
 					if (uResult== kErrorNone) {
 						uResult = kErrorInvalidParameter;
 						const addrinfo *pWork = pResult;

@@ -259,6 +259,8 @@
 #pragma warning 368 9
 // Expression with side effect in sizeof discarded
 #pragma warning 472 9
+// Disable "assuming unary 'operator &' not overloaded for type" warning
+#pragma warning 666 9
 // Conditional expression is always false (zero)
 #pragma warning 690 9
 #endif
@@ -1257,14 +1259,15 @@ typedef uint64_t ulong2uint_t;
 
 // Are wchar_t, char8_t, char16_t and char32_t native types?
 
-#if defined(BURGER_INTEL_COMPILER) || defined(BURGER_CLANG) || \
-	defined(BURGER_GNUC) || defined(_NATIVE_WCHAR_T_DEFINED) || \
-	defined(BURGER_MINGW) || defined(__WCHAR_T_IS_KEYWORD) || defined(DOXYGEN)
-#define BURGER_HAS_WCHAR_T
-#elif defined(BURGER_METROWERKS)
+#if defined(BURGER_METROWERKS)
 #if __option(wchar_type)
 #define BURGER_HAS_WCHAR_T
 #endif
+#elif defined(BURGER_INTEL_COMPILER) || defined(BURGER_CLANG) || \
+	defined(BURGER_GNUC) || defined(_WCHAR_T_DEFINED) || \
+	defined(_NATIVE_WCHAR_T_DEFINED) || defined(BURGER_MINGW) || \
+	defined(__WCHAR_T_IS_KEYWORD) || defined(DOXYGEN)
+#define BURGER_HAS_WCHAR_T
 #endif
 
 #if defined(__cpp_char8_t) || defined(DOXYGEN)

@@ -18,6 +18,7 @@
 #include "brdebug.h"
 #include "brfile.h"
 #include "brglobalmemorymanager.h"
+#include "brglobals.h"
 #include "brmemoryfunctions.h"
 #include "brstring16.h"
 #include "brtick.h"
@@ -34,6 +35,32 @@
 #define _MSL_USE_NEW_FILE_APIS 1
 #include <FSp_fopen.h>
 #endif
+
+/*! ************************************
+
+	\brief Test if the file system supports UTF8 pathnames.
+
+	Returns \ref TRUE if the filesystem has native Unicode filenames. On legacy
+	or some game consoles, only the ASCII character set is supported.
+
+	Mac OS classic is special because if the application is running under
+	MacOS 8.1 or higher, Unicode is supported, if it's earlier, only character
+	codes that exist in Mac Roman US are used.
+
+	\note While MacOS 8.1 supports Unicode, it's only available with HFS+
+		volumes
+
+	\return \ref TRUE if Unicode is supported.
+
+	\sa MSDOS_HasLongFilenames()
+
+***************************************/
+
+uint_t BURGER_API Burger::FileManager::IsUTF8FileSystem(void)
+{
+	// MacOS 9 or higher supports the HFSStr calls.
+	return Globals::GetMacOSVersion() >= 0x810;
+}
 
 /***************************************
 
@@ -136,85 +163,6 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 		pOutput->Clear();
 	}
 	return uResult;
-}
-
-/***************************************
-
-	Set the initial default prefixs for a power up state
-	*: = Boot volume
-	$: = System folder
-	@: = Prefs folder
-	8: = Default directory
-	9: = Application directory
-
-***************************************/
-
-Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
-{
-	// Set the standard work prefix
-	Filename MyFilename;
-
-	// Set the standard work prefix
-	eError uResult = MyFilename.SetSystemWorkingDirectory();
-	SetPrefix(kPrefixCurrent, &MyFilename);
-
-	MyFilename.SetFromNative("");
-	SetPrefix(kPrefixCurrent, MyFilename.c_str());
-
-	// Get the boot volume name
-	uResult = GetVolumeName(&MyFilename, 0);
-	if (uResult == kErrorNone) {
-		// Set the initial prefix
-		SetPrefix(kPrefixBoot, MyFilename.c_str());
-	}
-
-	short MyVRef; // Internal volume references
-	long MyDirID; // Internal drive ID
-	// Get the system folder
-	if (!FindFolder(kOnSystemDisk, kSystemFolderType, kDontCreateFolder,
-			&MyVRef, &MyDirID)) {
-		uResult = MyFilename.SetFromDirectoryID(MyDirID, MyVRef);
-		if (!uResult) {
-			SetPrefix(kPrefixSystem, MyFilename.c_str());
-		}
-	}
-
-	// Where are the user preferences stored?
-	if (!FindFolder(kOnSystemDisk, kPreferencesFolderType, kDontCreateFolder,
-			&MyVRef, &MyDirID)) {
-		uResult = MyFilename.SetFromDirectoryID(MyDirID, MyVRef);
-		if (!uResult) {
-			// Set the prefs folder
-			SetPrefix(kPrefixPrefs, MyFilename.c_str());
-		}
-	}
-
-	// Init to my application's serial number
-	ProcessSerialNumber MyNumber;
-	MyNumber.lowLongOfPSN = kCurrentProcess;
-	MyNumber.highLongOfPSN = 0;
-
-	// FSSpec of the current app
-	FSSpec MySpec;
-	MemoryClear(&MySpec, sizeof(MySpec));
-
-	// My input process
-	ProcessInfoRec MyProcess;
-	MemoryClear(&MyProcess, sizeof(MyProcess));
-	MyProcess.processInfoLength = sizeof(MyProcess);
-	// MyProcess.processName = 0;			// I don't want the name
-	MyProcess.processAppSpec = &MySpec; // Get the FSSpec
-
-	// Locate the application
-	if (!GetProcessInformation(&MyNumber, &MyProcess)) {
-		uResult = MyFilename.SetFromDirectoryID(
-			MyProcess.processAppSpec->parID, MyProcess.processAppSpec->vRefNum);
-		if (!uResult) {
-			// Application's directory pathname
-			SetPrefix(9, MyFilename.c_str());
-		}
-	}
-	return kErrorNone;
 }
 
 /***************************************
@@ -746,7 +694,7 @@ FILE* BURGER_API Burger::FileManager::OpenFile(
 		} else {
 			iError = HSetVol(0, pFileName->GetVRefNum(), pFileName->GetDirID());
 			if (iError == noErr) {
-				fp = fopen(pFileName->GetPtr(), pType);
+				fp = fopen(pFileName->c_str(), pType);
 			}
 			HSetVol(Name, sSavedVol, lDirID);
 		}

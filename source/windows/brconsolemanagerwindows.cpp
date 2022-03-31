@@ -249,7 +249,7 @@ uint_t BURGER_API Burger::ConsoleApp::ProcessFilenames(
 				do {
 					// Convert the pathname
 					MyFilename.SetFromNative(m_ppArgv[iIndex]);
-					const char* pNewName = MyFilename.GetPtr();
+					const char* pNewName = MyFilename.c_str();
 					if (pNewName[0]) {
 						uResult = TRUE; // Mark that I called something
 						// Call the function

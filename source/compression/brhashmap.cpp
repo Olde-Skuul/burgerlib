@@ -163,7 +163,7 @@ uintptr_t BURGER_API Burger::DJB2StringHashXorFunctor(
 	const void* pData, uintptr_t /* uDataSize */) BURGER_NOEXCEPT
 {
 	return DJB2HashXor(static_cast<const String*>(pData)->c_str(),
-		static_cast<const String*>(pData)->GetLength());
+		static_cast<const String*>(pData)->length());
 }
 
 /*! ************************************
@@ -185,7 +185,7 @@ uintptr_t BURGER_API Burger::DJB2StringHashXorCaseFunctor(
 	const void* pData, uintptr_t /*uDataSize */) BURGER_NOEXCEPT
 {
 	return DJB2HashXorCase(static_cast<const String*>(pData)->c_str(),
-		static_cast<const String*>(pData)->GetLength());
+		static_cast<const String*>(pData)->length());
 }
 
 /*! ************************************
@@ -1651,8 +1651,8 @@ void BURGER_API Burger::HashMapShared::SetCapacity(
 uint_t BURGER_API Burger::HashMapStringCaseTest(
 	const void* pA, const void* pB) BURGER_NOEXCEPT
 {
-	return StringCaseCompare(static_cast<const String*>(pA)->GetPtr(),
-			   static_cast<const String*>(pB)->GetPtr()) == 0;
+	return StringCaseCompare(static_cast<const String*>(pA)->c_str(),
+			   static_cast<const String*>(pB)->c_str()) == 0;
 }
 
 /*! ************************************

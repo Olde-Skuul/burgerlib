@@ -709,6 +709,31 @@
 
 /*! ************************************
 
+	\struct Burger::select_value
+	\brief Select one of two arbitrary values.
+
+	A template that sets a constexpr const member variable ``value`` with either
+	the true or false entry based on the value passed in the first term.
+
+	\code
+	// Returns 6
+	uint32_t x = Burger::select_value<Burger::is_signed<int>::value, uint32_t,
+		6, 9>::value;
+
+	// Returns 9
+	int8_t y = Burger::select_value<Burger::is_signed<unsigned int>::value,
+		int8_t, 6, 9>::value;
+
+	\endcode
+	\param B Bool to determine whether to return the _True or _False value.
+	\tparam T Type of the return value, must be a non floating point data type.
+	\param _True Value to return if B is true.
+	\param _False Value to return if B is false.
+
+***************************************/
+
+/*! ************************************
+
 	\struct Burger::default_delete
 	\brief Delete an object using delete
 

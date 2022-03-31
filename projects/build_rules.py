@@ -18,7 +18,8 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import os
 from burger import copy_file_if_needed, get_windows_host_type, \
-    is_codewarrior_mac_allowed, get_sdks_folder
+    is_codewarrior_mac_allowed, get_sdks_folder, clean_directories, \
+    clean_files
 from makeprojects import PlatformTypes, IDETypes, ProjectTypes, makeprojects, \
     _HLSL_MATCH, _GLSL_MATCH, _X360SL_MATCH, _VITACG_MATCH
 
@@ -227,6 +228,47 @@ ARG_LISTS = [
     ('windows', 'burger', 'library', ['codeblocks']),
     ('windows', 'unittests', 'console', ['codeblocks'])
 ]
+
+########################################
+
+
+def clean(working_directory):
+    """
+    Delete temporary files.
+
+    This function is called by ``cleanme`` to remove temporary files.
+
+    On exit, return 0 for no error, or a non zero error code if there was an
+    error to report.
+
+    Args:
+        working_directory
+            Directory this script resides in.
+
+    Returns:
+        None if not implemented, otherwise an integer error code.
+    """
+
+    clean_directories(working_directory, ('.vscode',
+                                          'appfolder',
+                                          'temp',
+                                          'ipch',
+                                          'bin',
+                                          '.vs',
+                                          '*_Data',
+                                          '* Data',
+                                          '__pycache__'))
+
+    clean_files(working_directory, ('.DS_Store',
+                                    '*.suo',
+                                    '*.user',
+                                    '*.ncb',
+                                    '*.err',
+                                    '*.sdf',
+                                    '*.layout.cbTemp',
+                                    '*.VC.db',
+                                    '*.pyc',
+                                    '*.pyo'))
 
 ########################################
 

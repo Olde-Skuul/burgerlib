@@ -44,8 +44,8 @@ static uint_t BURGER_ANSIAPI TestGetVideoModes(void) BURGER_NOEXCEPT
 			Burger::GUIDToString(GUIDString, &pWork1->m_GUID);
 			Message("GUID = %s", GUIDString);
 #endif
-			Message("Device = %s", pWork1->m_DeviceName.GetPtr());
-			Message("Monitor = %s", pWork1->m_MonitorName.GetPtr());
+			Message("Device = %s", pWork1->m_DeviceName.c_str());
+			Message("Monitor = %s", pWork1->m_MonitorName.c_str());
 			Message("Device number = %u, Flags = %u", pWork1->m_uDevNumber,
 				pWork1->m_uFlags);
 			Message("SystemRect = %d,%d,%d,%d", pWork1->m_SystemRect.m_iLeft,

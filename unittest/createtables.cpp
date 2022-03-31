@@ -66,7 +66,7 @@ static void BURGER_API OutputArrayAsHex(
 				Output.Append(',');
 			}
 			Output.Save(&TempString);
-			Message(TempString.GetPtr());
+			Message(TempString.c_str());
 			Output.Clear();
 			if (uCounter != (uLength - 1)) {
 				Output.Append('\t');
@@ -104,7 +104,7 @@ static void BURGER_API Output2DArrayAsHex(const char* pName,
 					Output.Append(',');
 				}
 				Output.Save(&TempString);
-				Message(TempString.GetPtr());
+				Message(TempString.c_str());
 				Output.Clear();
 				if (uCounter != (uLength2 - 1)) {
 					Output.Append('\t');
@@ -154,7 +154,7 @@ static void BURGER_API OutputArrayAsUnsigned(const char* pName,
 				Output.Append(',');
 			}
 			Output.Save(&TempString);
-			Message(TempString.GetPtr());
+			Message(TempString.c_str());
 			Output.Clear();
 			if (uCounter != (uLength - 1)) {
 				Output.Append('\t');
@@ -1010,7 +1010,7 @@ static void BURGER_API CreateMP3Tables(void) BURGER_NOEXCEPT
 		} while (--uEntries);
 
 		TempString.Printf("DecompressMP3::g_MP3Cosine%u", uDivisor);
-		OutputArrayAsHex(TempString.GetPtr(), TempFloats, 16U >> uCounter);
+		OutputArrayAsHex(TempString.c_str(), TempFloats, 16U >> uCounter);
 	} while (++uCounter < 5);
 
 	// Buffer to scatter fill
@@ -1078,7 +1078,7 @@ static void BURGER_API CreateMP3Tables(void) BURGER_NOEXCEPT
 						g_MP2TableValues[uCounter][l],
 						g_MP2TableValues[uCounter][k],
 						g_MP2TableValues[uCounter][j]);
-					Output.Append(TempString.GetPtr());
+					Output.Append(TempString.c_str());
 					if (l != (uTableSize - 1)) {
 						Output.Append(',');
 					}
@@ -1088,7 +1088,7 @@ static void BURGER_API CreateMP3Tables(void) BURGER_NOEXCEPT
 					Output.Append(',');
 				}
 				Output.Save(&TempString);
-				Message(TempString.GetPtr());
+				Message(TempString.c_str());
 				Output.Clear();
 			} while (++k < uTableSize);
 
@@ -1434,7 +1434,7 @@ static void BURGER_API CreateMP3Tables(void) BURGER_NOEXCEPT
 			uBitCounter += uTemp * 6;
 		} while (++uIndex < 13);
 		TempString.Printf("DecompressMP3::g_MP3BandInfoDiffHash%u", uCounter);
-		OutputArrayAsUnsigned(TempString.GetPtr(), TempWords,
+		OutputArrayAsUnsigned(TempString.c_str(), TempWords,
 			static_cast<uintptr_t>(pWord - TempWords));
 
 		// Hash only the short distances
@@ -1458,7 +1458,7 @@ static void BURGER_API CreateMP3Tables(void) BURGER_NOEXCEPT
 
 		TempString.Printf(
 			"DecompressMP3::g_MP3BandInfoShortDiffHash%u", uCounter);
-		OutputArrayAsUnsigned(TempString.GetPtr(), TempWords,
+		OutputArrayAsUnsigned(TempString.c_str(), TempWords,
 			static_cast<uintptr_t>(pWord - TempWords));
 
 		// Hash only the long distances
@@ -1474,7 +1474,7 @@ static void BURGER_API CreateMP3Tables(void) BURGER_NOEXCEPT
 		} while (++uIndex < 22U);
 		TempString.Printf(
 			"DecompressMP3::g_MP3BandInfoLongDiffHash%u", uCounter);
-		OutputArrayAsUnsigned(TempString.GetPtr(), TempWords,
+		OutputArrayAsUnsigned(TempString.c_str(), TempWords,
 			static_cast<uintptr_t>(pWord - TempWords));
 
 	} while (++uCounter < 9);

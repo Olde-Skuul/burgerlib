@@ -79,7 +79,7 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	eError uResult = GetVolumeName(&MyFilename, 0); // Get the boot volume name
 	if (uResult == kErrorNone) {
 		// Set the initial prefix
-		SetPrefix(kPrefixBoot, MyFilename.GetPtr());
+		SetPrefix(kPrefixBoot, MyFilename.c_str());
 	}
 	SetPrefix(kPrefixCurrent, ":app0:");     // Set the standard work prefix
 	SetPrefix(kPrefixApplication, ":app0:"); // Set the standard work prefix

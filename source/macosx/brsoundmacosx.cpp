@@ -1274,9 +1274,9 @@ uint_t BURGER_API Burger::SoundManager::GetAudioModes(
 				CFRelease(pCFString);
 
 				// Some devices have whitespace, remove it
-				StripLeadingAndTrailingSpaces(Entry.m_DeviceName.GetPtr());
+				StripLeadingAndTrailingSpaces(Entry.m_DeviceName.c_str());
 				Entry.m_DeviceName.SetBufferSize(
-					StringLength(Entry.m_DeviceName.GetPtr()));
+					StringLength(Entry.m_DeviceName.c_str()));
 
 				// Mac OSX performs the translation in software
 				Entry.m_b8Bit = TRUE;

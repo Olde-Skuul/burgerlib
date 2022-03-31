@@ -1369,6 +1369,10 @@ uint_t BURGER_API TestBrFileManager(uint_t uVerbose) BURGER_NOEXCEPT
 			Message("Running Filename tests");
 		}
 
+		// Supports UTF8 filenames?
+		const uint_t uTest = FileManager::IsUTF8FileSystem();
+		Message("FileManager::IsUTF8FileSystem() = %u", uTest);
+
 		// Verify Filename
 		uTotal |= TestFilenameClass();
 		uTotal |= TestFilenameSet();

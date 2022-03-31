@@ -260,24 +260,6 @@ void BURGER_API Burger::FileManager::Shutdown(void) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FileManager::IsUTF8FileSystem(void)
-	\brief Test if the file system supports UTF8 pathnames.
-
-	Returns \ref TRUE if the filesystem has native Unicode filenames. On legacy
-	or some game consoles, only the ASCII character set is supported.
-
-	Mac OS classic is special because if the application is running under
-	MacOS 9.0 or higher, Unicode is supported, if it's earlier, only character
-	codes that exist in Mac Roman US are used.
-
-	\return \ref TRUE if Unicode is supported.
-
-	\sa MSDOS_HasLongFilenames()
-
-***************************************/
-
-/*! ************************************
-
 	\brief Return the name of a drive
 
 	Given a drive number (0-?), return the name of the volume in the format of
@@ -397,7 +379,8 @@ uint_t BURGER_API Burger::FileManager::GetVolumeNumber(
 
 ***************************************/
 
-#if !(defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_VITA)) || \
+#if !( \
+	defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
 
 Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(

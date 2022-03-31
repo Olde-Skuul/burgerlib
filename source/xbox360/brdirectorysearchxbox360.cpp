@@ -30,7 +30,7 @@ uint_t Burger::DirectorySearch::Open(Filename *pDirName) BURGER_NOEXCEPT
 {
 	// Leave room for 5 extra samples
 	String CopyOfName(pDirName->GetNative(),5);
-	char *pPath = CopyOfName.GetPtr();
+	char *pPath = CopyOfName.c_str();
 	uintptr_t uLength = StringLength(pPath);
 	// Make sure the directory ends with a slash
 	if (uLength && pPath[uLength-1]!='\\') {

@@ -2315,6 +2315,11 @@ line of processors.
 	\note This macro will always invoke the conditional in all builds. The
 	conditional must be one that is resolved at compile time.
 
+	\note If this macro is used in a template, it can only be used once if an
+		old GNUC compiler (4.2 or earlier) is used because the compiler doesn't
+		change the __LINE__ number which can cause issues. If the compiler
+		supports the static_assert keyword, this is not a problem.
+
 	\param x A boolean that evaluates to \ref FALSE to force a compile time
 		error
 
