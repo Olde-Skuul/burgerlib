@@ -192,7 +192,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 					pName[uIndex] = ':';
 					pName[uIndex + 1] = 0;
 					// Set the filename
-					pOutput->Set(pName);
+					pOutput->assign(pName);
 					// Exit okay!
 					uResult = kErrorNone;
 					break;
@@ -206,13 +206,13 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 		// Fake a single volume named :iOSDevice:
 
 	} else if (!uVolumeNum) {
-		pOutput->Set(":iOSDevice:");
+		pOutput->assign(":iOSDevice:");
 		uResult = kErrorNone;
 	}
 	// Clear on error
 	if (uResult != kErrorNone) {
 		// Kill the string since I have an error
-		pOutput->Clear();
+		pOutput->clear();
 	}
 	return uResult;
 }
@@ -236,46 +236,35 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	eError uResult = MyFilename.SetSystemWorkingDirectory();
 	SetPrefix(kPrefixCurrent, &MyFilename);
 
-	uResult = GetVolumeName(&MyFilename, 0); // Get the boot volume name
-	if (uResult == kErrorNone) {
-		// Set the initial prefix
-		const char* pBootName = MyFilename.c_str();
-		SetPrefix(kPrefixBoot, pBootName);
-		Free(g_pFileManager->m_pBootName);
-		uintptr_t uMax = StringLength(pBootName);
-		g_pFileManager->m_uBootNameSize = static_cast<uint_t>(uMax);
-		g_pFileManager->m_pBootName = StringDuplicate(pBootName);
+	// Set the application directory
+	eError uTempResult = MyFilename.SetApplicationDirectory();
+	SetPrefix(kPrefixApplication, &MyFilename);
+	if (uTempResult) {
+		uResult = uTempResult;
+	}
+	
+	// Set the boot volume
+	uTempResult = MyFilename.SetBootVolumeDirectory();
+	SetPrefix(kPrefixBoot, &MyFilename);
+	if (uTempResult) {
+		uResult = uTempResult;
 	}
 
-	//
-	// iOS has no "Current directory", so pull the directory the
-	// *.app file resides in
-	//
+	// Set the application
+	uTempResult = MyFilename.SetMachinePrefsDirectory();
+	SetPrefix(kPrefixSystem, &MyFilename);
+	if (uTempResult) {
+		uResult = uTempResult;
+	}
+
+	// Set the application's preferences location
+	uTempResult = MyFilename.SetUserPrefsDirectory();
+	SetPrefix(kPrefixPrefs, &MyFilename);
+	if (uTempResult) {
+		uResult = uTempResult;
+	}
 
 	char NameBuffer[2048];
-	if (CFStringGetCString(reinterpret_cast<CFStringRef>(NSHomeDirectory()),
-			NameBuffer, sizeof(NameBuffer), kCFStringEncodingUTF8)) {
-		if (NameBuffer[0]) {
-			MyFilename.SetFromNative(NameBuffer);
-			SetPrefix(kPrefixCurrent,
-				MyFilename.c_str()); // Set the standard work prefix
-		}
-	}
-
-	//
-	// The parameters have the app filename. Pop the name
-	// and the directory where all the data resides is determined
-	//
-
-	// Get the location of the application binary
-	uint32_t uSize = sizeof(NameBuffer);
-	int iTest = _NSGetExecutablePath(NameBuffer, &uSize);
-	if (!iTest) {
-		MyFilename.SetFromNative(NameBuffer);
-		MyFilename.DirName();
-		SetPrefix(kPrefixApplication,
-			MyFilename.c_str()); // Set the standard work prefix
-	}
 
 	//
 	// Get the directory where the preferences should be stored
@@ -310,8 +299,8 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 				kCFStringEncodingUTF8)) {
 			if (NameBuffer[0]) {
 				MyFilename.SetFromNative(NameBuffer);
-				MyFilename.DirName();
-				MyFilename.DirName();
+				MyFilename.dirname();
+				MyFilename.dirname();
 				SetPrefix(kPrefixSystem,
 					MyFilename.c_str()); // Set the /System folder
 			}
@@ -329,7 +318,7 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
-	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput)
+	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -379,7 +368,7 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
-	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput)
+	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -751,7 +740,7 @@ Burger::eError BURGER_API Burger::FileManager::SetFileAndAuxType(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
-	Burger::Filename* pFileName)
+	Burger::Filename* pFileName) BURGER_NOEXCEPT
 {
 	// Assume an error condition
 	eError uResult = kErrorIO;
@@ -847,7 +836,7 @@ Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(
 ***************************************/
 
 FILE* BURGER_API Burger::FileManager::OpenFile(
-	Burger::Filename* pFileName, const char* pType)
+	Burger::Filename* pFileName, const char* pType) BURGER_NOEXCEPT
 {
 	return fopen(pFileName->GetNative(), pType); /* Do it the MacOSX way */
 }
@@ -859,7 +848,7 @@ FILE* BURGER_API Burger::FileManager::OpenFile(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::CopyFile(
-	Burger::Filename* pDestName, Burger::Filename* pSourceName)
+	Burger::Filename* pDestName, Burger::Filename* pSourceName) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorIO;
 	NSAutoreleasePool* pPool = [[NSAutoreleasePool alloc] init];
@@ -910,7 +899,7 @@ Burger::eError BURGER_API Burger::FileManager::DeleteFile(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::RenameFile(
-	Burger::Filename* pNewName, Burger::Filename* pOldName)
+	Burger::Filename* pNewName, Burger::Filename* pOldName) BURGER_NOEXCEPT
 {
 	if (!rename(pOldName->GetNative(), pNewName->GetNative())) {
 		return kErrorNone;

@@ -374,7 +374,7 @@ uint_t BURGER_API Burger::Windows::LaunchMediaCenter(void)
 		Free(pString);
 
 		// Append the filename of the media center
-		MediaCenterName.Append("ehome:ehshell.exe");
+		MediaCenterName.join("ehome:ehshell.exe");
 
 		// See if the file exists
 		if (FileManager::DoesFileExist(&MediaCenterName)) {

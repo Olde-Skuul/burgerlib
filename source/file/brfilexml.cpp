@@ -948,10 +948,10 @@ uint_t Burger::FileXML::Comment::Parse(InputMemoryStream *pInput)
 		if (uTemp=='>') {
 			// Only if it's preceded by -- will it be considered legal
 			if ((uPrevious1=='-') && (uPrevious2=='-')) {
-				uintptr_t uFinalSize = (pInput->GetMark()-uMark)-3;
+				const uintptr_t uFinalSize = (pInput->GetMark()-uMark)-3;
 				if (uFinalSize) {
 					pInput->SetMark(uMark);
-					m_Comment.SetBufferSize(uFinalSize);
+					m_Comment.resize(uFinalSize);
 					pInput->Get(m_Comment.c_str(),uFinalSize);
 					m_Comment.NormalizeLineFeeds();
 					pInput->SkipForward(3);		// Skip past the -->
@@ -1164,10 +1164,10 @@ uint_t Burger::FileXML::CData::Parse(InputMemoryStream *pInput)
 		if (uTemp=='>') {
 			// Only if it's preceded by -- will it be considered legal
 			if ((uPrevious1==']') && (uPrevious2==']')) {
-				uintptr_t uFinalSize = (pInput->GetMark()-uMark)-3;
+				const uintptr_t uFinalSize = (pInput->GetMark()-uMark)-3;
 				if (uFinalSize) {
 					pInput->SetMark(uMark);
-					m_CData.SetBufferSize(uFinalSize);
+					m_CData.resize(uFinalSize);
 					pInput->Get(m_CData.c_str(),uFinalSize);
 					m_CData.NormalizeLineFeeds();
 					pInput->SkipForward(3);
@@ -2112,11 +2112,11 @@ uint_t Burger::FileXML::RawText::Parse(InputMemoryStream *pInput)
 			// Only if it's preceded by -- will it be considered legal
 			uResult = FALSE;
 			pInput->SkipBack(1);
-			uintptr_t uFinalSize = (uEndMark-uMark);
+			const uintptr_t uFinalSize = (uEndMark-uMark);
 			if (uFinalSize) {
-				uintptr_t uDone = pInput->GetMark();
+				const uintptr_t uDone = pInput->GetMark();
 				pInput->SetMark(uMark);
-				m_Text.SetBufferSize(uFinalSize);
+				m_Text.resize(uFinalSize);
 				pInput->Get(m_Text.c_str(),uFinalSize);
 				uResult = DecodeXMLString(&m_Text);
 				m_Text.NormalizeLineFeeds();
@@ -4311,7 +4311,7 @@ uint_t BURGER_API Burger::FileXML::ReadXMLName(String *pOutput,InputMemoryStream
 				(uTemp==':'));
 		// Get the size of the string parsed
 		uintptr_t uSize = (pInput->GetMark()-uMark)-1;
-		pOutput->SetBufferSize(uSize);
+		pOutput->resize(uSize);
 		pInput->SetMark(uMark);
 		// Copy the string
 		pInput->Get(pOutput->c_str(),uSize);
@@ -4349,7 +4349,7 @@ uint_t BURGER_API Burger::FileXML::ReadXMLText(String *pOutput,InputMemoryStream
 			if (uTemp==uDelimiter) {
 				// Get the size of the string parsed
 				uintptr_t uSize = (pInput->GetMark()-uMark)-2;
-				pOutput->SetBufferSize(uSize);
+				pOutput->resize(uSize);
 				pInput->SetMark(uMark+1);
 				// Copy the string
 				pInput->Get(pOutput->c_str(),uSize);
@@ -4370,7 +4370,7 @@ uint_t BURGER_API Burger::FileXML::ReadXMLText(String *pOutput,InputMemoryStream
 		}
 		uintptr_t uSize = (pInput->GetMark()-uMark)-1;
 		if (uSize) {
-			pOutput->SetBufferSize(uSize);
+			pOutput->resize(uSize);
 			pInput->SetMark(uMark);
 			// Copy the string
 			pInput->Get(pOutput->c_str(),uSize);
@@ -4552,7 +4552,7 @@ uint_t BURGER_API Burger::FileXML::DecodeXMLString(String *pInput)
 							++pSource;
 						}
 						// Convert from UTF32 to UFT8
-						uintptr_t uChunk = UTF32::TranslateToUTF8(reinterpret_cast<char *>(pDest),uUTF32);
+						uintptr_t uChunk = UTF8::FromUTF32(reinterpret_cast<char *>(pDest),uUTF32);
 						// Invalid conversion (And nulls are not allowed)
 						if (!uChunk || !uUTF32) {
 							// Parse error
@@ -4571,7 +4571,7 @@ uint_t BURGER_API Burger::FileXML::DecodeXMLString(String *pInput)
 			uTemp = pSource[0];
 		} while (uTemp);
 		// Done parsing, resize the buffer if needed
-		pInput->SetBufferSize(static_cast<uintptr_t>(reinterpret_cast<char*>(pDest)-pInput->c_str()));
+		pInput->resize(static_cast<uintptr_t>(reinterpret_cast<char*>(pDest)-pInput->c_str()));
 	}
 	// Return error if any
 	return uResult;

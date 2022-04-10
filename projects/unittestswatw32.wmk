@@ -217,6 +217,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/bradler32.obj &
 	$(A)/bralaw.obj &
 	$(A)/bralgorithm.obj &
+	$(A)/brargumenttype.obj &
 	$(A)/brarray.obj &
 	$(A)/brasciito.obj &
 	$(A)/brassert.obj &
@@ -226,6 +227,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brcapturestdout.obj &
 	$(A)/brcodelibrary.obj &
 	$(A)/brcodelibrarywindows.obj &
+	$(A)/brcodepage.obj &
 	$(A)/brcommandparameter.obj &
 	$(A)/brcommandparameterbooltrue.obj &
 	$(A)/brcommandparameterstring.obj &
@@ -314,6 +316,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brfont4bit.obj &
 	$(A)/brfpinfo.obj &
 	$(A)/brfplargeint.obj &
+	$(A)/brfpprintinfo.obj &
 	$(A)/brgameapp.obj &
 	$(A)/brglobalmemorymanager.obj &
 	$(A)/brglobals.obj &
@@ -426,6 +429,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brvertexbufferopengl.obj &
 	$(A)/brvulkanerrors.obj &
 	$(A)/brwin1252.obj &
+	$(A)/brwin437.obj &
 	$(A)/brwindowsapp.obj &
 	$(A)/brwindowsd3d.obj &
 	$(A)/brwindowsd3d11.obj &

@@ -107,7 +107,7 @@ uint_t Burger::TimeDate_t::Store(UTCDateTime* pUTCDateTime) const
 
 ***************************************/
 
-uint_t Burger::TimeDate_t::Load(double dNSTimeInterval)
+uint_t Burger::TimeDate_t::Load(double dNSTimeInterval) BURGER_NOEXCEPT
 {
 	uint_t uResult = TRUE;
 	CFTimeZoneRef pTimeZone = CFTimeZoneCopySystem();
@@ -143,7 +143,7 @@ uint_t Burger::TimeDate_t::Load(double dNSTimeInterval)
 
 ***************************************/
 
-uint_t Burger::TimeDate_t::Store(double* pNSTimeInterval) const
+uint_t Burger::TimeDate_t::Store(double* pNSTimeInterval) const BURGER_NOEXCEPT
 {
 	uint_t uResult = TRUE;
 	CFTimeZoneRef pTimeZone = CFTimeZoneCopySystem();

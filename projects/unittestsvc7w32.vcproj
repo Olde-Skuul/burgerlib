@@ -1594,6 +1594,12 @@
 					RelativePath="..\source\lowlevel\bralgorithm.h">
 				</File>
 				<File
+					RelativePath="..\source\lowlevel\brargumenttype.cpp">
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brargumenttype.h">
+				</File>
+				<File
 					RelativePath="..\source\lowlevel\brarray.cpp">
 				</File>
 				<File
@@ -1861,6 +1867,12 @@
 					RelativePath="..\source\math\brfplargeint.h">
 				</File>
 				<File
+					RelativePath="..\source\math\brfpprintinfo.cpp">
+				</File>
+				<File
+					RelativePath="..\source\math\brfpprintinfo.h">
+				</File>
+				<File
 					RelativePath="..\source\math\brmatrix3d.cpp">
 				</File>
 				<File
@@ -1949,6 +1961,12 @@
 				</File>
 				<File
 					RelativePath="..\source\text\brasciito.h">
+				</File>
+				<File
+					RelativePath="..\source\text\brcodepage.cpp">
+				</File>
+				<File
+					RelativePath="..\source\text\brcodepage.h">
 				</File>
 				<File
 					RelativePath="..\source\text\brisolatin1.cpp">
@@ -2051,6 +2069,12 @@
 				</File>
 				<File
 					RelativePath="..\source\text\brwin1252.h">
+				</File>
+				<File
+					RelativePath="..\source\text\brwin437.cpp">
+				</File>
+				<File
+					RelativePath="..\source\text\brwin437.h">
 				</File>
 			</Filter>
 			<Filter

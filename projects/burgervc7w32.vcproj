@@ -48,9 +48,7 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Copying $(TargetFileName) to $(BURGER_SDKS)\windows\burgerlib\"
-				CommandLine="mkdir &quot;$(BURGER_SDKS)\windows\burgerlib\&quot; 2&gt;nul&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;copy /Y &quot;$(TargetPath)&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -110,9 +108,7 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Copying $(TargetFileName) to $(BURGER_SDKS)\windows\burgerlib\"
-				CommandLine="mkdir &quot;$(BURGER_SDKS)\windows\burgerlib\&quot; 2&gt;nul&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;copy /Y &quot;$(TargetPath)&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -172,9 +168,7 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Copying $(TargetFileName) to $(BURGER_SDKS)\windows\burgerlib\"
-				CommandLine="mkdir &quot;$(BURGER_SDKS)\windows\burgerlib\&quot; 2&gt;nul&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;copy /Y &quot;$(TargetPath)&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -236,9 +230,7 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Copying $(TargetFileName) to $(BURGER_SDKS)\windows\burgerlib\"
-				CommandLine="mkdir &quot;$(BURGER_SDKS)\windows\burgerlib\&quot; 2&gt;nul&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;copy /Y &quot;$(TargetPath)&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName)$(TargetExt)&quot;&#10;cmd /c p4 edit &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;&#10;cmd /c p4 revert -a &quot;$(BURGER_SDKS)\windows\burgerlib\$(TargetName).pdb&quot;"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -1573,6 +1565,12 @@
 					RelativePath="..\source\lowlevel\bralgorithm.h">
 				</File>
 				<File
+					RelativePath="..\source\lowlevel\brargumenttype.cpp">
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brargumenttype.h">
+				</File>
+				<File
 					RelativePath="..\source\lowlevel\brarray.cpp">
 				</File>
 				<File
@@ -1840,6 +1838,12 @@
 					RelativePath="..\source\math\brfplargeint.h">
 				</File>
 				<File
+					RelativePath="..\source\math\brfpprintinfo.cpp">
+				</File>
+				<File
+					RelativePath="..\source\math\brfpprintinfo.h">
+				</File>
+				<File
 					RelativePath="..\source\math\brmatrix3d.cpp">
 				</File>
 				<File
@@ -1928,6 +1932,12 @@
 				</File>
 				<File
 					RelativePath="..\source\text\brasciito.h">
+				</File>
+				<File
+					RelativePath="..\source\text\brcodepage.cpp">
+				</File>
+				<File
+					RelativePath="..\source\text\brcodepage.h">
 				</File>
 				<File
 					RelativePath="..\source\text\brisolatin1.cpp">
@@ -2030,6 +2040,12 @@
 				</File>
 				<File
 					RelativePath="..\source\text\brwin1252.h">
+				</File>
+				<File
+					RelativePath="..\source\text\brwin437.cpp">
+				</File>
+				<File
+					RelativePath="..\source\text\brwin437.h">
 				</File>
 			</Filter>
 			<Filter

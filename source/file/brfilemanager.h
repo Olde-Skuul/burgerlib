@@ -161,7 +161,7 @@ private:
 
 #if defined(BURGER_DARWIN) || defined(DOXYGEN)
 	/** Length of the boot volume name (Darwin only) */
-	uint_t m_uBootNameSize;
+	uintptr_t m_uBootNameSize;
 	/** Boot volume name in the format ":FooBar" (Zero terminated) (Darwin only)
 	 */
 	char* m_pBootName;
@@ -223,19 +223,21 @@ public:
 	static eError BURGER_API DefaultPrefixes(void) BURGER_NOEXCEPT;
 	static eError BURGER_API GetPrefix(
 		Filename* pOutput, uint_t uPrefixNum) BURGER_NOEXCEPT;
+	static eError BURGER_API GetPrefix(
+		String* pOutput, uint_t uPrefixNum) BURGER_NOEXCEPT;
 	static eError BURGER_API SetPrefix(
 		uint_t uPrefixNum, const char* pPrefixName) BURGER_NOEXCEPT;
 	static eError BURGER_API SetPrefix(
 		uint_t uPrefixNum, const Filename* pPrefixName) BURGER_NOEXCEPT;
 	static eError BURGER_API PopPrefix(uint_t uPrefixNum) BURGER_NOEXCEPT;
 	static eError BURGER_API GetModificationTime(
-		const char* pFileName, TimeDate_t* pOutput);
+		const char* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT;
 	static eError BURGER_API GetModificationTime(
-		Filename* pFileName, TimeDate_t* pOutput);
+		Filename* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT;
 	static eError BURGER_API GetCreationTime(
-		const char* pFileName, TimeDate_t* pOutput);
+		const char* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT;
 	static eError BURGER_API GetCreationTime(
-		Filename* pFileName, TimeDate_t* pOutput);
+		Filename* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT;
 	static uint_t BURGER_API DoesFileExist(
 		const char* pFileName) BURGER_NOEXCEPT;
 	static uint_t BURGER_API DoesFileExist(Filename* pFileName) BURGER_NOEXCEPT;
@@ -258,42 +260,47 @@ public:
 		const char* pFileName, uint32_t uFileType, uint32_t uAuxType);
 	static eError BURGER_API SetFileAndAuxType(
 		Filename* pFileName, uint32_t uFileType, uint32_t uAuxType);
-	static eError BURGER_API CreateDirectoryPath(const char* pFileName);
-	static eError BURGER_API CreateDirectoryPath(Filename* pFileName);
+	static eError BURGER_API CreateDirectoryPath(
+		const char* pFileName) BURGER_NOEXCEPT;
+	static eError BURGER_API CreateDirectoryPath(
+		Filename* pFileName) BURGER_NOEXCEPT;
 	static eError BURGER_API CreateDirectoryPathDirName(const char* pFileName);
 	static eError BURGER_API CreateDirectoryPathDirName(Filename* pFileName);
 	static eError BURGER_API DeleteFile(const char* pFileName) BURGER_NOEXCEPT;
 	static eError BURGER_API DeleteFile(Filename* pFileName) BURGER_NOEXCEPT;
 	static eError BURGER_API RenameFile(
-		const char* pNewName, const char* pOldName);
-	static eError BURGER_API RenameFile(Filename* pNewName, Filename* pOldName);
+		const char* pNewName, const char* pOldName) BURGER_NOEXCEPT;
+	static eError BURGER_API RenameFile(
+		Filename* pNewName, Filename* pOldName) BURGER_NOEXCEPT;
 	static eError BURGER_API ChangeOSDirectory(const char* pDirName);
 	static eError BURGER_API ChangeOSDirectory(Filename* pDirName);
-	static FILE* BURGER_API OpenFile(const char* pFileName, const char* pType);
-	static FILE* BURGER_API OpenFile(Filename* pFileName, const char* pType);
+	static FILE* BURGER_API OpenFile(
+		const char* pFileName, const char* pType) BURGER_NOEXCEPT;
+	static FILE* BURGER_API OpenFile(
+		Filename* pFileName, const char* pType) BURGER_NOEXCEPT;
 	static eError BURGER_API CopyFile(
-		const char* pDestName, const char* pSourceName);
+		const char* pDestName, const char* pSourceName) BURGER_NOEXCEPT;
 	static eError BURGER_API CopyFile(
-		Filename* pDestName, Filename* pSourceName);
-	static eError BURGER_API SaveFile(
-		const char* pFileName, const void* pData, uintptr_t uLength);
-	static eError BURGER_API SaveFile(
-		Filename* pFileName, const void* pData, uintptr_t uLength);
-	static eError BURGER_API SaveTextFile(
-		const char* pFileName, const void* pData, uintptr_t uLength);
-	static eError BURGER_API SaveTextFile(
-		Filename* pFileName, const void* pData, uintptr_t uLength);
+		Filename* pDestName, Filename* pSourceName) BURGER_NOEXCEPT;
+	static eError BURGER_API SaveFile(const char* pFileName, const void* pData,
+		uintptr_t uLength) BURGER_NOEXCEPT;
+	static eError BURGER_API SaveFile(Filename* pFileName, const void* pData,
+		uintptr_t uLength) BURGER_NOEXCEPT;
+	static eError BURGER_API SaveTextFile(const char* pFileName,
+		const void* pData, uintptr_t uLength) BURGER_NOEXCEPT;
+	static eError BURGER_API SaveTextFile(Filename* pFileName,
+		const void* pData, uintptr_t uLength) BURGER_NOEXCEPT;
 	static void* BURGER_API LoadFile(
 		const char* pFileName, uintptr_t* pLength) BURGER_NOEXCEPT;
 	static void* BURGER_API LoadFile(
 		Filename* pFileName, uintptr_t* pLength) BURGER_NOEXCEPT;
 
-#if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) || defined(DOXYGEN)
+#if defined(BURGER_DARWIN) || defined(DOXYGEN)
 	static BURGER_INLINE const char* GetBootName(void) BURGER_NOEXCEPT
 	{
 		return g_pFileManager->m_pBootName;
 	}
-	static BURGER_INLINE uint_t GetBootNameSize(void) BURGER_NOEXCEPT
+	static BURGER_INLINE uintptr_t GetBootNameSize(void) BURGER_NOEXCEPT
 	{
 		return g_pFileManager->m_uBootNameSize;
 	}
@@ -304,6 +311,7 @@ public:
 		const char* pFileName, char uPermission);
 	static uint_t BURGER_API CreateResourceFIle(const char* pFileName);
 #endif
+
 #if (defined(BURGER_UNIX) && !defined(BURGER_DARWIN)) || defined(DOXYGEN)
 	static const char* BURGER_API UnixFindProcFolder(void) BURGER_NOEXCEPT;
 	static void BURGER_API UnixFind_etc_mtab(

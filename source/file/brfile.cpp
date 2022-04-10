@@ -41,8 +41,8 @@
 
 ***************************************/
 
-Burger::File::File() :
-	m_pFile(NULL),
+Burger::File::File() BURGER_NOEXCEPT :
+	m_pFile(nullptr),
 	m_uPosition(0),
 	m_Filename(),
 	m_Semaphore()
@@ -66,8 +66,8 @@ Burger::File::File() :
 
 ***************************************/
 
-Burger::File::File(const char *pFileName,eFileAccess eAccess) :
-	m_pFile(NULL),
+Burger::File::File(const char *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT :
+	m_pFile(nullptr),
 	m_uPosition(0),
 	m_Filename(pFileName),
 	m_Semaphore()
@@ -92,8 +92,8 @@ Burger::File::File(const char *pFileName,eFileAccess eAccess) :
 
 ***************************************/
 
-Burger::File::File(Filename *pFileName,eFileAccess eAccess) :
-	m_pFile(NULL),
+Burger::File::File(Filename *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT :
+	m_pFile(nullptr),
 	m_uPosition(0),
 	m_Filename(pFileName[0]),
 	m_Semaphore()
@@ -133,7 +133,7 @@ Burger::File::~File()
 
 ***************************************/
 
-Burger::File * BURGER_API Burger::File::New(const char *pFileName,eFileAccess eAccess)
+Burger::File * BURGER_API Burger::File::New(const char *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT
 {
 	// Manually allocate the memory
 	File *pThis = new (Alloc(sizeof(File))) File();
@@ -164,7 +164,7 @@ Burger::File * BURGER_API Burger::File::New(const char *pFileName,eFileAccess eA
 
 ***************************************/
 
-Burger::File * BURGER_API Burger::File::New(Filename *pFileName,eFileAccess eAccess)
+Burger::File * BURGER_API Burger::File::New(Filename *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT
 {
 	// Manually allocate the memory
 	File *pThis = new (Alloc(sizeof(File))) File();
@@ -226,7 +226,7 @@ Burger::eError BURGER_API Burger::File::Open(const char *pFileName,eFileAccess e
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_DARWIN) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
 Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT
 {
 	static const char *g_OpenFlags[4] = {
@@ -280,7 +280,7 @@ Burger::eError BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::File::GetSize(void)
+uintptr_t BURGER_API Burger::File::GetSize(void) BURGER_NOEXCEPT
 {
 	uintptr_t uSize = 0;
 	FILE *fp = static_cast<FILE *>(m_pFile);
@@ -442,7 +442,7 @@ uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput) BURGER_NOEXCEPT
 {
 	pOutput->Clear();
 	return kErrorNotSupportedOnThisPlatform;
@@ -506,7 +506,7 @@ uint_t BURGER_API Burger::File::SetCreationTime(const TimeDate_t * /* pInput */)
 
 uint_t BURGER_API Burger::File::OpenAsync(const char *pFileName,eFileAccess eAccess)
 {
-	m_Filename.Set(pFileName);
+	m_Filename.assign(pFileName);
 	FileManager::g_pFileManager->AddQueue(this,FileManager::kIOCommandOpen,nullptr,eAccess);
 	return 0;
 }

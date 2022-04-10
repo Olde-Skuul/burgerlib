@@ -642,7 +642,7 @@ void BURGER_API Burger::FileINI::Entry::GetString(String *pOutput,const char *pD
 	// No string?
 	if (!uLength) {
 		// Use the default
-		pOutput->Set(pDefault);
+		pOutput->assign(pDefault);
 	} else {
 		char Buffer[128];
 		char *pBuffer = Buffer;
@@ -651,7 +651,7 @@ void BURGER_API Burger::FileINI::Entry::GetString(String *pOutput,const char *pD
 			pBuffer = static_cast<char *>(Alloc(uLength+1));
 		}
 		ParseQuotedString(pBuffer,uLength+1,m_Value.c_str());
-		pOutput->Set(pBuffer);
+		pOutput->assign(pBuffer);
 		if (pBuffer!=Buffer) {
 			Free(pBuffer);
 		}
@@ -683,9 +683,9 @@ void BURGER_API Burger::FileINI::Entry::SetString(const char *pValue)
 		if (pQuote) {
 			do {
 				// Copy up the part that's not quoted
-				m_Value.Append(pValue,static_cast<uintptr_t>(pQuote-pValue));
+				m_Value.append(pValue,static_cast<uintptr_t>(pQuote-pValue));
 				// Insert the double quote
-				m_Value.Append("\"\"",2);
+				m_Value.append("\"\"",2);
 				// Skip past the quote
 				pValue = pQuote+1;
 				// Keep looking
@@ -1401,7 +1401,7 @@ void BURGER_API Burger::FileINI::Section::GetString(String *pOutput,const char *
 	if (pEntry) {
 		pEntry->GetString(pOutput,pDefault);
 	} else {
-		pOutput->Set(pDefault);
+		pOutput->assign(pDefault);
 	}
 }
 

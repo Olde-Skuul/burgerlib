@@ -1,30 +1,30 @@
 /***************************************
 
-    Code library (DLL) manager
+	Code library (DLL) manager
 
-    nVidia SHIELD version (Android)
+	nVidia SHIELD version (Android)
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brcodelibrary.h"
 
 #if defined(BURGER_ANDROID)
-#include "brstringfunctions.h"
 #include "brfilename.h"
+#include "brstringfunctions.h"
 #include <dlfcn.h>
 
 /***************************************
 
 	Attempt to load in a shared library or DLL using
-	the standard paths. Return NULL if it fails
+	the standard paths. Return nullptr if it fails
 	Please note, in Linux/Android, passing in just the
 	DLL name without a full path will allow
 	the SYSTEM DLL's to be loaded, so, to
@@ -33,7 +33,7 @@
 
 ***************************************/
 
-uint_t Burger::CodeLibrary::Init(const char *pFilename)
+uint_t Burger::CodeLibrary::Init(const char* pFilename)
 {
 	// If there was a previous library, release it
 	Shutdown();
@@ -41,18 +41,18 @@ uint_t Burger::CodeLibrary::Init(const char *pFilename)
 	Filename Pathname;
 	// Is this a burgerlib pathname?
 	// Test by checking for a colon
-	if (StringCharacter(pFilename,':')) {
+	if (StringCharacter(pFilename, ':')) {
 		// Convert to a native windows pathname
-		Pathname.Set(pFilename);
+		Pathname.assign(pFilename);
 		pFilename = Pathname.GetNative();
 	}
 	// Load the library from Linux
-	void *pModule = dlopen(pFilename,RTLD_LAZY);
+	void* pModule = dlopen(pFilename, RTLD_LAZY);
 	// On success!
 	uint_t uResult = FALSE;
-	if (pModule!=NULL) {
+	if (pModule != nullptr) {
 		m_pLibInstance = pModule;
-		uResult = TRUE;		// Error!
+		uResult = TRUE; // Error!
 	}
 	return uResult;
 }
@@ -79,11 +79,11 @@ void Burger::CodeLibrary::Shutdown(void)
 
 ***************************************/
 
-void * Burger::CodeLibrary::GetFunction(const char *pFunctionName)
+void* Burger::CodeLibrary::GetFunction(const char* pFunctionName)
 {
-	void *pFunction = NULL;
+	void* pFunction = NULL;
 	if (pFunctionName && m_pLibInstance) {
-		pFunction = dlsym(m_pLibInstance,pFunctionName);
+		pFunction = dlsym(m_pLibInstance, pFunctionName);
 	}
 	return pFunction;
 }

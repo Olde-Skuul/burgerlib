@@ -77,7 +77,7 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 	// I hopefully will get a volume number since DOS prefers it
 
 	const uint8_t* pPath =
-		reinterpret_cast<uint8_t*>(m_pFilename); // Copy to running pointer
+		reinterpret_cast<uint8_t*>(m_Filename.c_str()); // Copy to running pointer
 
 	// Now that I have the drive number, determine the length
 	// of the output buffer and start the conversion
@@ -92,7 +92,7 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 			pOutput = m_NativeFilename;
 			uPathLength = 0; // I'm so boned
 		} else {
-			m_pNativeFilename = pOutput; // This is my buffer
+			m_NativeFilename.assign(pOutput); // This is my buffer
 		}
 	}
 
@@ -125,7 +125,7 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 		}
 	}
 	pOutput[0] = 0; // Terminate the "C" string
-	return m_pNativeFilename;
+	return m_NativeFilename.c_str();
 }
 
 /***************************************
@@ -144,7 +144,7 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 	void) BURGER_NOEXCEPT
 {
-	Set(":GAME:");
+	assign(":GAME:");
 	return kErrorNone;
 }
 
@@ -164,7 +164,7 @@ Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(
 	void) BURGER_NOEXCEPT
 {
-	Set(":GAME:");
+	assign(":GAME:");
 	return kErrorNone;
 }
 
@@ -184,7 +184,7 @@ Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(
 Burger::eError BURGER_API Burger::Filename::SetBootVolumeDirectory(
 	void) BURGER_NOEXCEPT
 {
-	Set(":GAME:");
+	assign(":GAME:");
 	return kErrorNone;
 }
 
@@ -205,7 +205,7 @@ Burger::eError BURGER_API Burger::Filename::SetBootVolumeDirectory(
 Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(
 	void) BURGER_NOEXCEPT
 {
-	Set(":GAME:");
+	assign(":GAME:");
 	return kErrorNone;
 }
 
@@ -227,7 +227,7 @@ Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(
 Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(
 	void) BURGER_NOEXCEPT
 {
-	Set(":GAME:");
+	assign(":GAME:");
 	return kErrorNone;
 }
 
@@ -256,7 +256,7 @@ Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(
 Burger::eError BURGER_API Burger::Filename::SetFromNative(
 	const char* pInput) BURGER_NOEXCEPT
 {
-	Clear();
+	clear();
 
 	if (!pInput || !pInput[0]) { // No directory at all?
 		pInput = "D:\\";         // Just get the current directory
@@ -273,7 +273,7 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 			return kErrorOutOfMemory;
 		}
 	}
-	m_pFilename = pOutput;
+	m_Filename.assign(pOutput);
 	const char* pSrc = pInput;
 
 	pOutput[0] = ':';

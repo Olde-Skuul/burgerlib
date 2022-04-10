@@ -162,7 +162,7 @@ class Localization {
 		/** Swedish spoken in Finland */
 		kSwedishFinland = kSwedish + 0x100,
 
-		/** Bokmål Norway (Official written language of Norway) */
+		/** BokmÃ¥l Norway (Official written language of Norway) */
 		kNorwegianBokmal = kNorwegian + 0x100,
 		/** Nynorsk Norway (New Norwegian) */
 		kNorwegianNynorsk = kNorwegian + 0x200

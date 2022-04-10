@@ -2,7 +2,7 @@
 
 	String handlers for UTF8 support
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -54,9 +54,9 @@
 	\brief Conversion routines to support the UTF8 format.
 
 	UTF8 is a format that allows [Unicode](http://www.unicode.org)
-	data to be stored in a standard "C" string with little modification to
-	most existing string managers. All Burgerlib functions accept UTF8 strings
-	so that they can properly present international characters in a consistent
+	data to be stored in a standard "C" string with little modification to most
+	existing string managers. All Burgerlib functions accept UTF8 strings so
+	that they can properly present international characters in a consistent
 	manner across numerous target platforms.
 
 ***************************************/
@@ -85,39 +85,54 @@
 ***************************************/
 
 BURGER_ALIGN(const uint8_t, Burger::UTF8::TokenSizeTable[256], 16) = {
+	// 0x00
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-	0x01, 0x01, 0x01, 0x01, // 0x00
+	0x01, 0x01, 0x01, 0x01,
+	// 0x10
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-	0x01, 0x01, 0x01, 0x01, // 0x10
+	0x01, 0x01, 0x01, 0x01,
+	// 0x20
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-	0x01, 0x01, 0x01, 0x01, // 0x20
+	0x01, 0x01, 0x01, 0x01,
+	// 0x30
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-	0x01, 0x01, 0x01, 0x01, // 0x30
+	0x01, 0x01, 0x01, 0x01,
+	// 0x40
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-	0x01, 0x01, 0x01, 0x01, // 0x40
+	0x01, 0x01, 0x01, 0x01,
+	// 0x50
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-	0x01, 0x01, 0x01, 0x01, // 0x50
+	0x01, 0x01, 0x01, 0x01,
+	// 0x60
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-	0x01, 0x01, 0x01, 0x01, // 0x60
+	0x01, 0x01, 0x01, 0x01,
+	// 0x70
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-	0x01, 0x01, 0x01, 0x01, // 0x70
+	0x01, 0x01, 0x01, 0x01,
+	// 0x80
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-	0x01, 0x01, 0x01, 0x01, // 0x80
+	0x01, 0x01, 0x01, 0x01,
+	// 0x90
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-	0x01, 0x01, 0x01, 0x01, // 0x90
+	0x01, 0x01, 0x01, 0x01,
+	// 0xA0
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-	0x01, 0x01, 0x01, 0x01, // 0xA0
+	0x01, 0x01, 0x01, 0x01,
+	// 0xB0
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-	0x01, 0x01, 0x01, 0x01, // 0xB0
+	0x01, 0x01, 0x01, 0x01,
+	// 0xC0
 	0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
-	0x02, 0x02, 0x02, 0x02, // 0xC0
+	0x02, 0x02, 0x02, 0x02,
+	// 0xD0
 	0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
-	0x02, 0x02, 0x02, 0x02, // 0xD0
+	0x02, 0x02, 0x02, 0x02,
+	// 0xE0
 	0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
-	0x03, 0x03, 0x03, 0x03, // 0xE0
+	0x03, 0x03, 0x03, 0x03,
+	// 0xF0
 	0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04,
-	0x04, 0x04, 0x04, 0x04 // 0xF0
-};
+	0x04, 0x04, 0x04, 0x04};
 
 /*! ************************************
 
@@ -163,6 +178,8 @@ uint_t BURGER_API Burger::UTF8::IsValidSingle(
 
 	// UTF8?
 	if (uFirst >= 0x80U) {
+
+		// For fake gotos.
 		for (;;) {
 
 			// UTF8 prefix codes start at 0xC0, 0x80-0xBF are invalid
@@ -193,7 +210,7 @@ uint_t BURGER_API Burger::UTF8::IsValidSingle(
 					// Is byte #3 valid?
 					uint_t uTemp =
 						reinterpret_cast<const uint8_t*>(pInput)[2] ^ 0x80U;
-					if (uTemp < 0x40) {
+					if (uTemp < 0x40U) {
 						if (uFirst < 0xF0U) {
 							// 0x000-0x7FF and 0xD800-0xDFFF are invalid
 							// Not 0x0000-0x07FF?
@@ -207,7 +224,7 @@ uint_t BURGER_API Burger::UTF8::IsValidSingle(
 							// 0x80-0xBF / 0x80-0xBF / 0x80-0xBF
 
 							// 0xF5 will make 0x140000, this is out of bounds.
-						} else if (uFirst < 0xF5) {
+						} else if (uFirst < 0xF5U) {
 
 							// Is byte #4 valid?
 							uTemp =
@@ -293,7 +310,7 @@ uint_t BURGER_API Burger::UTF8::IsValid(const char* pInput) BURGER_NOEXCEPT
 		// Is byte #3 valid?
 		uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0] ^ 0x80U;
 		++pInput;
-		if (uTemp >= 0x40) {
+		if (uTemp >= 0x40U) {
 			break;
 		}
 
@@ -315,14 +332,14 @@ uint_t BURGER_API Burger::UTF8::IsValid(const char* pInput) BURGER_NOEXCEPT
 		// 0x80-0xBF
 
 		// 0xF5 will make 0x140000, this is out of bounds.
-		if (uFirst >= 0xF5) {
+		if (uFirst >= 0xF5U) {
 			break;
 		}
 
 		// Is byte #4 valid?
 		uTemp = reinterpret_cast<const uint8_t*>(pInput)[0] ^ 0x80U;
 		++pInput;
-		if (uTemp >= 0x40) {
+		if (uTemp >= 0x40U) {
 			break;
 		}
 		// Is 0x000000-0x010000?
@@ -413,7 +430,7 @@ uint_t BURGER_API Burger::UTF8::IsValid(
 		}
 		uTemp = reinterpret_cast<const uint8_t*>(pInput)[0] ^ 0x80U;
 		++pInput;
-		if (uTemp >= 0x40) {
+		if (uTemp >= 0x40U) {
 			break;
 		}
 
@@ -435,7 +452,7 @@ uint_t BURGER_API Burger::UTF8::IsValid(
 		// 0x80-0xBF
 
 		// 0xF5 will make 0x140000, this is out of bounds.
-		if (uFirst >= 0xF5) {
+		if (uFirst >= 0xF5U) {
 			break;
 		}
 
@@ -446,13 +463,13 @@ uint_t BURGER_API Burger::UTF8::IsValid(
 		uTemp = reinterpret_cast<const uint8_t*>(pInput)[0] ^ 0x80U;
 		++pInput;
 		// Is 0x000000-0x010000?
-		if (((uFirst == 0xF0) && (uSecond < 0x10U)) ||
+		if (((uFirst == 0xF0U) && (uSecond < 0x10U)) ||
 			// Is 0x110000-0x13FFFF?
-			((uFirst == 0xF4) && (uSecond >= 0x10U))) {
+			((uFirst == 0xF4U) && (uSecond >= 0x10U))) {
 			break;
 		}
-	} while (uTemp < 0x40);
-	// This is a bad UTF8 string (\ref NULL point)
+	} while (uTemp < 0x40U);
+	// This is a bad UTF8 string (nullptr point)
 	return FALSE;
 }
 
@@ -497,13 +514,141 @@ const char* BURGER_API Burger::UTF8::NextToken(
 
 /*! ************************************
 
+	\brief Determine the size of the UTF8 stream for a MacRomanUS char
+
+	Take the unsigned 8 bit value of the MacRomanUS character and return the
+	number of UTF8 bytes it will occupy. The answer is either 1, 2 or 3 bytes.
+	If the input is greater than 0xFF, the returned value is zero.
+
+	\param uInput MacRomanUS encoded 8 bit character
+
+	\return The number of bytes needed to UTF8 encode. 1, 2, 3 or 0 if uInput is
+		>=256.
+
+	\sa GetMacRomanUSSize(const char*) or GetMacRomanUSSize(
+		const char*, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetMacRomanUSSize(
+	uint_t uInput) BURGER_NOEXCEPT
+{
+	uintptr_t uResult;
+	// ASCII?
+	if (uInput >= 0x80U) {
+		// Still valid?
+		if (uInput >= 0x100U) {
+			// 0x0100+ is bogus
+			uResult = 0U;
+		} else {
+			// The MacRomanUS table only has 2 or 3 byte tokens
+			const uint8_t* pTable = MacRomanUS::ToUTF8Table[uInput - 0x80U];
+			uResult = 2U;
+			// Is there a third character?
+			if (pTable[2]) {
+				uResult = 3U;
+			}
+		}
+	} else {
+		// 0x00 - 0x7F is literal ASCII
+		uResult = 1U;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Determine the size of the UTF8 stream for a MacRomanUS "C" string.
+
+	Take a "C" string, encoded with MacRomanUS, and determine the length in
+	bytes this string would require if encoded in UTF8.
+
+	\param pInput Pointer to a "C" string encoded in MacRomanUS
+
+	\return The number of bytes the string would require if converted.
+
+	\sa GetMacRomanUSSize(uint_t uInput) or GetMacRomanUSSize(
+		const char *, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetMacRomanUSSize(
+	const char* pInput) BURGER_NOEXCEPT
+{
+	uintptr_t uResult = 0;
+
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+	if (uTemp) {
+		do {
+			// ASCII?
+			if (uTemp >= 0x80U) {
+				// The MacRomanUS table only has 2 or 3 byte tokens
+				const uint8_t* pTable = MacRomanUS::ToUTF8Table[uTemp - 0x80U];
+				uResult += 2U;
+				// Is there a third character?
+				if (pTable[2]) {
+					++uResult;
+				}
+			} else {
+				// 0x00 - 0x7F is literal ASCII
+				++uResult;
+			}
+			++pInput;
+			uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+		} while (uTemp);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Determine the size of the UTF8 stream for a MacRomanUS buffer.
+
+	Take a buffer, encoded with MacRomanUS, and determine the length in bytes
+	this buffer would require if encoded in UTF8.
+
+	\param pInput Pointer to a buffer encoded in MacRomanUS
+	\param uInputSize Number of bytes in the buffer
+
+	\return The number of bytes the buffer would require if converted.
+
+	\sa GetMacRomanUSSize(uint_t uInput) or GetMacRomanUSSize(
+		const char *, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetMacRomanUSSize(
+	const char* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT
+{
+	uintptr_t uResult = 0;
+	if (uInputSize) {
+		do {
+			uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+			// ASCII?
+			if (uTemp >= 0x80U) {
+				// The MacRomanUS table only has 2 or 3 byte tokens
+				const uint8_t* pTable = MacRomanUS::ToUTF8Table[uTemp - 0x80U];
+				uResult += 2U;
+				// Is there a third character?
+				if (pTable[2]) {
+					++uResult;
+				}
+			} else {
+				// 0x00 - 0x7F is literal ASCII
+				++uResult;
+			}
+			++pInput;
+		} while (--uInputSize);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
 	\brief Convert a MacRomanUS 8 bit char into a UTF8 stream.
 
 	Take the unsigned 8 bit value of the MacRomanUS character and convert it to
-	a 1,2 or 3 byte UTF8 stream.
-
-	\note This function will write a *zero* after the stream so you can
-	assume that it's a valid "C" string.
+	a 1, 2 or 3 byte UTF8 stream. Only the UTF8 characters are written.
 
 	\param pOutput Pointer to UTF8 buffer that's a minimum 4 bytes in size,
 	``nullptr`` will page fault.
@@ -517,34 +662,36 @@ const char* BURGER_API Burger::UTF8::NextToken(
 uintptr_t BURGER_API Burger::UTF8::FromMacRomanUS(
 	char* pOutput, uint_t uInput) BURGER_NOEXCEPT
 {
+	uintptr_t uSize;
 	// ASCII?
-	if (uInput < 0x80U) {
-		pOutput[0] = static_cast<char>(uInput);
-		pOutput[1] = 0;
-		return 1;
-	}
+	if (uInput >= 0x80U) {
 
-	// Still valid?
-	if (uInput < 0x100U) {
+		// Still valid?
+		if (uInput >= 0x100U) {
+			// 0x0100+ is bogus
+			uSize = 0U;
+		} else {
+			// The MacRomanUS table only has 2 or 3 byte tokens
+			const uint8_t* pSrc = MacRomanUS::ToUTF8Table[uInput - 0x80U];
+			reinterpret_cast<uint8_t*>(pOutput)[0] = pSrc[0];
+			reinterpret_cast<uint8_t*>(pOutput)[1] = pSrc[1];
 
-		// The MacRomanUS table only has 2 or 3 byte tokens
-		const uint8_t* pSrc = MacRomanUS::ToUTF8Table[uInput - 0x80U];
-		reinterpret_cast<uint8_t*>(pOutput)[0] = pSrc[0];
-		reinterpret_cast<uint8_t*>(pOutput)[1] = pSrc[1];
-
-		// Temp = zero or char
-		uint_t uTemp = pSrc[2];
-		reinterpret_cast<uint8_t*>(pOutput)[2] = static_cast<uint8_t>(uTemp);
-		if (uTemp) {
-			// It's a char
-			pOutput[3] = 0;
-			return 3;
+			// Temp = zero or char
+			uint_t uTemp = pSrc[2];
+			uSize = 2U;
+			if (uTemp) {
+				// It's 3 bytes in size
+				reinterpret_cast<uint8_t*>(pOutput)[2] =
+					static_cast<uint8_t>(uTemp);
+				uSize = 3U;
+			}
 		}
-		return 2;
+	} else {
+		// 0x00 - 0x7F is literal ASCII
+		pOutput[0] = static_cast<char>(uInput);
+		uSize = 1U;
 	}
-	// No good
-	pOutput[0] = 0;
-	return 0;
+	return uSize;
 }
 
 /*! ************************************
@@ -745,10 +892,140 @@ uintptr_t BURGER_API Burger::UTF8::FromMacRomanUS(char* pOutput,
 
 /*! ************************************
 
+	\brief Determine the size of the UTF8 stream for a Win1252 char
+
+	Take the unsigned 8 bit value of the Win1252 character and return the
+	number of UTF8 bytes it will occupy. The answer is either 1, 2 or 3 bytes.
+	If the input is greater than 0xFF, the returned value is zero.
+
+	\param uInput Win1252 encoded 8 bit character
+
+	\return The number of bytes needed to UTF8 encode. 1, 2, 3 or 0 if uInput is
+		>=256.
+
+	\sa GetWin1252Size(const char*) or GetWin1252Size(
+		const char*, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetWin1252Size(uint_t uInput) BURGER_NOEXCEPT
+{
+	uintptr_t uResult;
+	// ASCII?
+	if (uInput >= 0x80U) {
+		// Still valid?
+		if (uInput >= 0x100U) {
+			// 0x0100+ is bogus
+			uResult = 0U;
+		} else {
+			// The Win1252 table only has 2 or 3 byte tokens
+			const uint8_t* pTable = Win1252::ToUTF8Table[uInput - 0x80U];
+			uResult = 2U;
+			// Is there a third character?
+			if (pTable[2]) {
+				uResult = 3U;
+			}
+		}
+	} else {
+		// 0x00 - 0x7F is literal ASCII
+		uResult = 1U;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Determine the size of the UTF8 stream for a Win1252 "C" string.
+
+	Take a "C" string, encoded with Win1252, and determine the length in
+	bytes this string would require if encoded in UTF8.
+
+	\param pInput Pointer to a "C" string encoded in Win1252
+
+	\return The number of bytes the string would require if converted.
+
+	\sa GetWin1252Size(uint_t uInput) or GetWin1252Size(
+		const char *, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetWin1252Size(
+	const char* pInput) BURGER_NOEXCEPT
+{
+	uintptr_t uResult = 0;
+
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+	if (uTemp) {
+		do {
+			// ASCII?
+			if (uTemp >= 0x80U) {
+				// The Win1252 table only has 2 or 3 byte tokens
+				const uint8_t* pTable = Win1252::ToUTF8Table[uTemp - 0x80U];
+				uResult += 2U;
+				// Is there a third character?
+				if (pTable[2]) {
+					++uResult;
+				}
+			} else {
+				// 0x00 - 0x7F is literal ASCII
+				++uResult;
+			}
+			++pInput;
+			uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+		} while (uTemp);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Determine the size of the UTF8 stream for a Win1252 buffer.
+
+	Take a buffer, encoded with Win1252, and determine the length in bytes
+	this buffer would require if encoded in UTF8.
+
+	\param pInput Pointer to a buffer encoded in Win1252
+	\param uInputSize Number of bytes in the buffer
+
+	\return The number of bytes the buffer would require if converted.
+
+	\sa GetWin1252Size(uint_t uInput) or GetWin1252Size(
+		const char *, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetWin1252Size(
+	const char* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT
+{
+	uintptr_t uResult = 0;
+	if (uInputSize) {
+		do {
+			uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+			// ASCII?
+			if (uTemp >= 0x80U) {
+				// The Win1252 table only has 2 or 3 byte tokens
+				const uint8_t* pTable = Win1252::ToUTF8Table[uTemp - 0x80U];
+				uResult += 2U;
+				// Is there a third character?
+				if (pTable[2]) {
+					++uResult;
+				}
+			} else {
+				// 0x00 - 0x7F is literal ASCII
+				++uResult;
+			}
+			++pInput;
+		} while (--uInputSize);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
 	\brief Convert a Win1252 8 bit char into a UTF8 stream.
 
 	Take the unsigned 8 bit value of the Win1252 character and convert it to
-	a 1,2 or 3 byte UTF8 stream.
+	a 1, 2 or 3 byte UTF8 stream.
 
 	\note This function will write a *zero* after the stream so you can
 	assume that it's a valid "C" string.
@@ -765,30 +1042,36 @@ uintptr_t BURGER_API Burger::UTF8::FromMacRomanUS(char* pOutput,
 uintptr_t BURGER_API Burger::UTF8::FromWin1252(
 	char* pOutput, uint_t uInput) BURGER_NOEXCEPT
 {
+	uintptr_t uSize;
 	// ASCII?
-	if (uInput < 0x80U) {
-		pOutput[0] = static_cast<char>(uInput);
-		pOutput[1] = 0;
-		return 1;
-	}
+	if (uInput >= 0x80U) {
 
-	// Still valid?
-	if (uInput < 0x100U) {
+		// Still valid?
+		if (uInput >= 0x100U) {
+			// 0x0100+ is bogus
+			uSize = 0U;
+		} else {
+			// The Win1252 table only has 2 or 3 byte tokens
+			const uint8_t* pSrc = Win1252::ToUTF8Table[uInput - 0x80U];
+			reinterpret_cast<uint8_t*>(pOutput)[0] = pSrc[0];
+			reinterpret_cast<uint8_t*>(pOutput)[1] = pSrc[1];
 
-		// The Win1252 table only has 2 or 3 byte tokens
-		const uint8_t* pSrc = Win1252::ToUTF8Table[uInput - 0x80U];
-		reinterpret_cast<uint8_t*>(pOutput)[0] = pSrc[0];
-		reinterpret_cast<uint8_t*>(pOutput)[1] = pSrc[1];
-		uint_t uTemp = pSrc[2];
-		reinterpret_cast<uint8_t*>(pOutput)[2] = static_cast<uint8_t>(uTemp);
-		if (uTemp) {
-			pOutput[3] = 0;
-			return 3;
+			// Temp = zero or char
+			uint_t uTemp = pSrc[2];
+			uSize = 2U;
+			if (uTemp) {
+				// It's 3 bytes in size
+				reinterpret_cast<uint8_t*>(pOutput)[2] =
+					static_cast<uint8_t>(uTemp);
+				uSize = 3U;
+			}
 		}
-		return 2;
+	} else {
+		// 0x00 - 0x7F is literal ASCII
+		pOutput[0] = static_cast<char>(uInput);
+		uSize = 1U;
 	}
-	pOutput[0] = 0;
-	return 0;
+	return uSize;
 }
 
 /*! ************************************
@@ -994,6 +1277,136 @@ uintptr_t BURGER_API Burger::UTF8::FromWin1252(char* pOutput,
 
 /*! ************************************
 
+	\brief Determine the size of the UTF8 stream for a Win437 char
+
+	Take the unsigned 8 bit value of the Win437 character and return the
+	number of UTF8 bytes it will occupy. The answer is either 1, 2 or 3 bytes.
+	If the input is greater than 0xFF, the returned value is zero.
+
+	\param uInput Win437 encoded 8 bit character
+
+	\return The number of bytes needed to UTF8 encode. 1, 2, 3 or 0 if uInput is
+		>=256.
+
+	\sa GetWin437Size(const char*) or GetWin437Size(
+		const char*, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetWin437Size(uint_t uInput) BURGER_NOEXCEPT
+{
+	uintptr_t uResult;
+	// ASCII?
+	if (uInput >= 0x80U) {
+		// Still valid?
+		if (uInput >= 0x100U) {
+			// 0x0100+ is bogus
+			uResult = 0U;
+		} else {
+			// The Win1252 table only has 2 or 3 byte tokens
+			const uint8_t* pTable = Win437::ToUTF8Table[uInput - 0x80U];
+			uResult = 2U;
+			// Is there a third character?
+			if (pTable[2]) {
+				uResult = 3U;
+			}
+		}
+	} else {
+		// 0x00 - 0x7F is literal ASCII
+		uResult = 1U;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Determine the size of the UTF8 stream for a Win437 "C" string.
+
+	Take a "C" string, encoded with Win437, and determine the length in
+	bytes this string would require if encoded in UTF8.
+
+	\param pInput Pointer to a "C" string encoded in Win437
+
+	\return The number of bytes the string would require if converted.
+
+	\sa GetWin437Size(uint_t uInput) or GetWin437Size(
+		const char *, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetWin437Size(
+	const char* pInput) BURGER_NOEXCEPT
+{
+	uintptr_t uResult = 0;
+
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+	if (uTemp) {
+		do {
+			// ASCII?
+			if (uTemp >= 0x80U) {
+				// The Win1252 table only has 2 or 3 byte tokens
+				const uint8_t* pTable = Win437::ToUTF8Table[uTemp - 0x80U];
+				uResult += 2U;
+				// Is there a third character?
+				if (pTable[2]) {
+					++uResult;
+				}
+			} else {
+				// 0x00 - 0x7F is literal ASCII
+				++uResult;
+			}
+			++pInput;
+			uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+		} while (uTemp);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Determine the size of the UTF8 stream for a Win437 buffer.
+
+	Take a buffer, encoded with Win437, and determine the length in bytes
+	this buffer would require if encoded in UTF8.
+
+	\param pInput Pointer to a buffer encoded in Win437
+	\param uInputSize Number of bytes in the buffer
+
+	\return The number of bytes the buffer would require if converted.
+
+	\sa GetWin437Size(uint_t uInput) or GetWin437Size(
+		const char *, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetWin437Size(
+	const char* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT
+{
+	uintptr_t uResult = 0;
+	if (uInputSize) {
+		do {
+			uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+			// ASCII?
+			if (uTemp >= 0x80U) {
+				// The Win1252 table only has 2 or 3 byte tokens
+				const uint8_t* pTable = Win437::ToUTF8Table[uTemp - 0x80U];
+				uResult += 2U;
+				// Is there a third character?
+				if (pTable[2]) {
+					++uResult;
+				}
+			} else {
+				// 0x00 - 0x7F is literal ASCII
+				++uResult;
+			}
+			++pInput;
+		} while (--uInputSize);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
 	\brief Convert a Win437 8 bit char into a UTF8 stream.
 
 	Take the unsigned 8 bit value of the Win437 character and convert it to
@@ -1014,30 +1427,36 @@ uintptr_t BURGER_API Burger::UTF8::FromWin1252(char* pOutput,
 uintptr_t BURGER_API Burger::UTF8::FromWin437(
 	char* pOutput, uint_t uInput) BURGER_NOEXCEPT
 {
+	uintptr_t uSize;
 	// ASCII?
-	if (uInput < 0x80U) {
-		pOutput[0] = static_cast<char>(uInput);
-		pOutput[1] = 0;
-		return 1;
-	}
+	if (uInput >= 0x80U) {
 
-	// Still valid?
-	if (uInput < 0x100U) {
+		// Still valid?
+		if (uInput >= 0x100U) {
+			// 0x0100+ is bogus
+			uSize = 0U;
+		} else {
+			// The Win437 table only has 2 or 3 byte tokens
+			const uint8_t* pSrc = Win437::ToUTF8Table[uInput - 0x80U];
+			reinterpret_cast<uint8_t*>(pOutput)[0] = pSrc[0];
+			reinterpret_cast<uint8_t*>(pOutput)[1] = pSrc[1];
 
-		// The Win437 table only has 2 or 3 byte tokens
-		const uint8_t* pSrc = Win437::ToUTF8Table[uInput - 0x80U];
-		reinterpret_cast<uint8_t*>(pOutput)[0] = pSrc[0];
-		reinterpret_cast<uint8_t*>(pOutput)[1] = pSrc[1];
-		uint_t uTemp = pSrc[2];
-		reinterpret_cast<uint8_t*>(pOutput)[2] = static_cast<uint8_t>(uTemp);
-		if (uTemp) {
-			pOutput[3] = 0;
-			return 3;
+			// Temp = zero or char
+			uint_t uTemp = pSrc[2];
+			uSize = 2U;
+			if (uTemp) {
+				// It's 3 bytes in size
+				reinterpret_cast<uint8_t*>(pOutput)[2] =
+					static_cast<uint8_t>(uTemp);
+				uSize = 3U;
+			}
 		}
-		return 2;
+	} else {
+		// 0x00 - 0x7F is literal ASCII
+		pOutput[0] = static_cast<char>(uInput);
+		uSize = 1U;
 	}
-	pOutput[0] = 0;
-	return 0;
+	return uSize;
 }
 
 /*! ************************************
@@ -1243,6 +1662,119 @@ uintptr_t BURGER_API Burger::UTF8::FromWin437(char* pOutput,
 
 /*! ************************************
 
+	\brief Determine the size of the UTF8 stream for a ISOLatin1 char
+
+	Take the unsigned 8 bit value of the ISOLatin1 character and return the
+	number of UTF8 bytes it will occupy. The answer is either 1 or 2 bytes.
+	If the input is greater than 0xFF, the returned value is zero.
+
+	\param uInput ISOLatin1 encoded 8 bit character
+
+	\return The number of bytes needed to UTF8 encode. 1, 2 or 0 if uInput is
+		>=256.
+
+	\sa GetISOLatin1Size(const char*) or GetISOLatin1Size(
+		const char*, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetISOLatin1Size(
+	uint_t uInput) BURGER_NOEXCEPT
+{
+	uintptr_t uResult;
+	// ASCII?
+	if (uInput >= 0x80U) {
+		// Still valid?
+		if (uInput >= 0x100U) {
+			// 0x0100+ is bogus
+			uResult = 0U;
+		} else {
+			uResult = 2U;
+		}
+	} else {
+		// 0x00 - 0x7F is literal ASCII
+		uResult = 1U;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Determine the size of the UTF8 stream for a ISOLatin1 "C" string.
+
+	Take a "C" string, encoded with ISOLatin1, and determine the length in
+	bytes this string would require if encoded in UTF8.
+
+	\param pInput Pointer to a "C" string encoded in ISOLatin1
+
+	\return The number of bytes the string would require if converted.
+
+	\sa GetISOLatin1Size(uint_t uInput) or GetISOLatin1Size(
+		const char *, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetISOLatin1Size(
+	const char* pInput) BURGER_NOEXCEPT
+{
+	uintptr_t uResult = 0;
+
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+	if (uTemp) {
+		do {
+			// ASCII?
+			if (uTemp >= 0x80U) {
+				uResult += 2U;
+			} else {
+				// 0x00 - 0x7F is literal ASCII
+				++uResult;
+			}
+			++pInput;
+			uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+		} while (uTemp);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Determine the size of the UTF8 stream for a ISOLatin1 buffer.
+
+	Take a buffer, encoded with ISOLatin1, and determine the length in bytes
+	this buffer would require if encoded in UTF8.
+
+	\param pInput Pointer to a buffer encoded in ISOLatin1
+	\param uInputSize Number of bytes in the buffer
+
+	\return The number of bytes the buffer would require if converted.
+
+	\sa GetISOLatin1Size(uint_t uInput) or GetISOLatin1Size(
+		const char *, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetISOLatin1Size(
+	const char* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT
+{
+	uintptr_t uResult = 0;
+	if (uInputSize) {
+		do {
+			uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+			// ASCII?
+			if (uTemp >= 0x80U) {
+				uResult += 2U;
+			} else {
+				// 0x00 - 0x7F is literal ASCII
+				++uResult;
+			}
+			++pInput;
+		} while (--uInputSize);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
 	\brief Convert a ISOLatin1 8 bit char into a UTF8 stream.
 
 	Take the unsigned 8 bit value of the ISOLatin1 character and convert it to
@@ -1263,25 +1795,27 @@ uintptr_t BURGER_API Burger::UTF8::FromWin437(char* pOutput,
 uintptr_t BURGER_API Burger::UTF8::FromISOLatin1(
 	char* pOutput, uint_t uInput) BURGER_NOEXCEPT
 {
+	uintptr_t uSize;
 	// ASCII?
-	if (uInput < 0x80U) {
+	if (uInput >= 0x80U) {
+
+		// Still valid?
+		if (uInput >= 0x100U) {
+			// 0x0100+ is bogus
+			uSize = 0U;
+		} else {
+			// The ISOLatin1 table only has 2 byte tokens
+			const uint8_t* pSrc = ISOLatin1::ToUTF8Table[uInput - 0x80U];
+			reinterpret_cast<uint8_t*>(pOutput)[0] = pSrc[0];
+			reinterpret_cast<uint8_t*>(pOutput)[1] = pSrc[1];
+			uSize = 2U;
+		}
+	} else {
+		// 0x00 - 0x7F is literal ASCII
 		pOutput[0] = static_cast<char>(uInput);
-		pOutput[1] = 0;
-		return 1;
+		uSize = 1U;
 	}
-
-	// Still valid?
-	if (uInput < 0x100U) {
-
-		// The ISOLatin1 table only has 2 byte tokens
-		const uint8_t* pSrc = ISOLatin1::ToUTF8Table[uInput - 0x80U];
-		reinterpret_cast<uint8_t*>(pOutput)[0] = pSrc[0];
-		reinterpret_cast<uint8_t*>(pOutput)[1] = pSrc[1];
-		pOutput[2] = 0;
-		return 2;
-	}
-	pOutput[0] = 0;
-	return 0;
+	return uSize;
 }
 
 /*! ************************************
@@ -1467,6 +2001,178 @@ uintptr_t BURGER_API Burger::UTF8::FromISOLatin1(char* pOutput,
 
 /*! ************************************
 
+	\brief Determine the size of the UTF8 stream from a char
+
+	Take the unsigned 8 bit value of the supplied character lookup table and
+	return the number of UTF8 bytes it will occupy. The answer is either 1, 2, 3
+	or 4 bytes. If the input is greater than 0xFF, the returned value is zero.
+
+	\param pTranslateTable Pointer to a 128x4 array to use as a UTF8 conversion
+		table.
+	\param uInput Table encoded 8 bit character
+
+	\return The number of bytes needed to UTF8 encode. 1, 2, 3, 4 or 0 if uInput
+		is >=256.
+
+	\sa GetGenericSize(const uint8_t [128][4], const char*) or GetGenericSize(
+		const uint8_t [128][4], const char*, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetGenericSize(
+	const uint8_t pTranslateTable[128][4], uint_t uInput) BURGER_NOEXCEPT
+{
+	uintptr_t uResult;
+	// ASCII?
+	if (uInput >= 0x80U) {
+		// Still valid?
+		if (uInput >= 0x100U) {
+			// 0x0100+ is bogus
+			uResult = 0U;
+		} else {
+			// Scan the table if there is a translation
+			const uint8_t* pTable = pTranslateTable[uInput - 0x80U];
+
+			// Table marked as invalid entry?
+			uResult = 0U;
+			if (pTable[0]) {
+				uResult = 1U;
+				if (pTable[1]) {
+					uResult = 2U;
+					// Is there a third character?
+					if (pTable[2]) {
+						uResult = 3U;
+						// Forth character?
+						if (pTable[3]) {
+							uResult = 4U;
+						}
+					}
+				}
+			}
+		}
+	} else {
+		// 0x00 - 0x7F is literal ASCII
+		uResult = 1U;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Determine the size of the UTF8 stream for a Win1252 "C" string.
+
+	Take a "C" string, encoded with Win1252, and determine the length in
+	bytes this string would require if encoded in UTF8.
+
+	\param pTranslateTable Pointer to a 128x4 array to use as a UTF8 conversion
+		table.
+	\param pInput Pointer to a "C" string encoded in Win1252
+
+	\return The number of bytes the string would require if converted.
+
+	\sa GetGenericSize(const uint8_t [128][4], uint_t uInput) or GetGenericSize(
+		const uint8_t [128][4], const char *, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetGenericSize(
+	const uint8_t pTranslateTable[128][4], const char* pInput) BURGER_NOEXCEPT
+{
+	uintptr_t uResult = 0;
+
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+	if (uTemp) {
+		do {
+			// ASCII?
+			if (uTemp >= 0x80U) {
+				// Scan the table if there is a translation
+				const uint8_t* pTable = pTranslateTable[uTemp - 0x80U];
+
+				// Table marked as invalid entry?
+				if (pTable[0]) {
+					++uResult;
+					if (pTable[1]) {
+						++uResult;
+						// Is there a third character?
+						if (pTable[2]) {
+							++uResult;
+							// Forth character?
+							if (pTable[3]) {
+								++uResult;
+							}
+						}
+					}
+				}
+			} else {
+				// 0x00 - 0x7F is literal ASCII
+				++uResult;
+			}
+			++pInput;
+			uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+		} while (uTemp);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Determine the size of the UTF8 stream for a Win1252 buffer.
+
+	Take a buffer, encoded with Win1252, and determine the length in bytes
+	this buffer would require if encoded in UTF8.
+
+
+	\param pTranslateTable Pointer to a 128x4 array to use as a UTF8 conversion
+		table.
+	\param pInput Pointer to a buffer encoded in Win1252
+	\param uInputSize Number of bytes in the buffer
+
+	\return The number of bytes the buffer would require if converted.
+
+	\sa GetGenericSize(const uint8_t [128][4], uint_t uInput) or GetGenericSize(
+		const uint8_t [128][4], const char *, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetGenericSize(
+	const uint8_t pTranslateTable[128][4], const char* pInput,
+	uintptr_t uInputSize) BURGER_NOEXCEPT
+{
+	uintptr_t uResult = 0;
+	if (uInputSize) {
+		do {
+			uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+			// ASCII?
+			if (uTemp >= 0x80U) {
+				// The Win1252 table only has 2 or 3 byte tokens
+				const uint8_t* pTable = pTranslateTable[uTemp - 0x80U];
+				// Table marked as invalid entry?
+				if (pTable[0]) {
+					++uResult;
+					if (pTable[1]) {
+						++uResult;
+						// Is there a third character?
+						if (pTable[2]) {
+							++uResult;
+							// Forth character?
+							if (pTable[3]) {
+								++uResult;
+							}
+						}
+					}
+				}
+			} else {
+				// 0x00 - 0x7F is literal ASCII
+				++uResult;
+			}
+			++pInput;
+		} while (--uInputSize);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
 	\brief Convert a generic 8 bit char into a UTF8 stream.
 
 	Take the unsigned 8 bit value of the generic character and convert it to
@@ -1506,27 +2212,28 @@ uintptr_t BURGER_API Burger::UTF8::FromGeneric(char* pOutput,
 			// I need to get the size from the table
 			const uint8_t* pSrc = pTranslateTable[uInput - 0x80U];
 			uint_t uTemp = pSrc[0];
-			reinterpret_cast<uint8_t*>(pOutput)[0] =
-				static_cast<uint8_t>(uTemp);
 			if (uTemp) {
-				uResult = 1;
-				uTemp = pSrc[1];
-				reinterpret_cast<uint8_t*>(pOutput)[1] =
+				reinterpret_cast<uint8_t*>(pOutput)[0] =
 					static_cast<uint8_t>(uTemp);
+				uResult = 1;
+
+				uTemp = pSrc[1];
 				if (uTemp) {
-					uResult = 2;
-					uTemp = pSrc[2];
-					reinterpret_cast<uint8_t*>(pOutput)[2] =
+					reinterpret_cast<uint8_t*>(pOutput)[1] =
 						static_cast<uint8_t>(uTemp);
+					uResult = 2;
+
+					uTemp = pSrc[2];
 					if (uTemp) {
-						uResult = 3;
-						uTemp = pSrc[3];
-						reinterpret_cast<uint8_t*>(pOutput)[3] =
+						reinterpret_cast<uint8_t*>(pOutput)[2] =
 							static_cast<uint8_t>(uTemp);
+						uResult = 3;
+
+						uTemp = pSrc[3];
 						if (uTemp) {
+							reinterpret_cast<uint8_t*>(pOutput)[3] =
+								static_cast<uint8_t>(uTemp);
 							uResult = 4;
-							// I must create the trailing zero manually
-							pOutput[4] = 0;
 						}
 					}
 				}
@@ -1534,7 +2241,6 @@ uintptr_t BURGER_API Burger::UTF8::FromGeneric(char* pOutput,
 		}
 	} else {
 		pOutput[0] = static_cast<char>(uInput);
-		pOutput[1] = 0;
 		uResult = 1;
 	}
 	return uResult;
@@ -1777,6 +2483,156 @@ uintptr_t BURGER_API Burger::UTF8::FromGeneric(char* pOutput,
 
 /*! ************************************
 
+	\brief Determine the size of the UTF8 stream for a UTF16 value
+
+	Take the unsigned 16 bit value of the UTF16 character and return the
+	number of UTF8 bytes it will occupy. The answer is either 1, 2 or 3 bytes.
+	If the input is greater than 0xFF, the returned value is zero.
+
+	\param uInput UTF16 encoded 8 bit character
+
+	\return The number of bytes needed to UTF8 encode. 1, 2, 3 or 0 if uInput is
+		>=256.
+
+	\sa GetUTF16Size(const uint16_t*) or GetUTF16Size(
+		const uint16_t*, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetUTF16Size(uint_t uInput) BURGER_NOEXCEPT
+{
+	uintptr_t uResult;
+	// ASCII?
+	if (uInput >= 0x80U) {
+		// 0x80-0x7FF (11 bit encoding) ?
+		if (uInput < 0x800U) {
+			uResult = 2U;
+		} else if ((uInput >= 0xD800U) && (uInput < 0xE000U)) {
+			// 0xD800-0xDFFF or >=0x110000 are bad.
+			uResult = 0U;
+		} else {
+			// 24 bit encoding
+			uResult = 3U;
+		}
+	} else {
+		// 0x00 - 0x7F is literal ASCII
+		uResult = 1U;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Determine the size of the UTF8 stream for a UTF16 "C" string.
+
+	Take a "C" string, encoded with UTF16, and determine the length in
+	bytes this string would require if encoded in UTF8.
+
+	\param pInput Pointer to a "C" string encoded in UTF16
+
+	\return The number of bytes the string would require if converted.
+
+	\sa GetUTF16Size(uint_t uInput) or GetUTF16Size(
+		const uint16_t*, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetUTF16Size(
+	const uint16_t* pInput) BURGER_NOEXCEPT
+{
+	uintptr_t uResult = 0;
+
+	uint_t uTemp = pInput[0];
+	if (uTemp) {
+		do {
+			++pInput;
+			// ASCII?
+			if (uTemp >= 0x80U) {
+				// 0x80-0x7FF (11 bit encoding) ?
+				if (uTemp < 0x800U) {
+					uResult += 2U;
+				} else if ((uTemp < 0xD800U) || (uTemp >= 0xE000U)) {
+					// 24 bit encoding
+					uResult += 3U;
+					// Valid start token?
+				} else if (uTemp < 0xDC00U) {
+					// Special case for 21 bit encoding? (0x10000-0x10FFFF)
+					// Get the second token
+					const uint_t uTemp2 = pInput[0] ^ 0xDC00U;
+					// Valid?
+					if (uTemp2 < 0x400U) {
+						// Accept the second char and assume 32 bit encoding
+						++pInput;
+						uResult += 4U;
+					}
+				}
+			} else {
+				// 0x00 - 0x7F is literal ASCII
+				++uResult;
+			}
+			uTemp = pInput[0];
+		} while (uTemp);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Determine the size of the UTF8 stream for a UTF16 buffer.
+
+	Take a buffer, encoded with UTF16, and determine the length in bytes
+	this buffer would require if encoded in UTF8.
+
+	\param pInput Pointer to a buffer encoded in UTF16
+	\param uInputSize Number of elements in the buffer
+
+	\return The number of bytes the buffer would require if converted.
+
+	\sa GetUTF16Size(uint_t uInput) or GetUTF16Size(
+		const uint16_t *, uintptr_t)
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::GetUTF16Size(
+	const uint16_t* pInput, uintptr_t uInputSize) BURGER_NOEXCEPT
+{
+	uintptr_t uResult = 0;
+
+	if (uInputSize) {
+		do {
+			uint_t uTemp = pInput[0];
+			++pInput;
+			// ASCII?
+			if (uTemp >= 0x80U) {
+				// 0x80-0x7FF (11 bit encoding) ?
+				if (uTemp < 0x800U) {
+					uResult += 2U;
+				} else if ((uTemp < 0xD800U) || (uTemp >= 0xE000U)) {
+					// 24 bit encoding
+					uResult += 3U;
+					// Valid start token?
+				} else if (uTemp < 0xDC00U) {
+					// Special case for 21 bit encoding? (0x10000-0x10FFFF)
+					// Get the second token
+					const uint_t uTemp2 = pInput[0] ^ 0xDC00U;
+					// Valid?
+					if (uTemp2 < 0x400U) {
+						// Accept the second char and assume 32 bit encoding
+						++pInput;
+						uResult += 4U;
+					}
+				}
+			} else {
+				// 0x00 - 0x7F is literal ASCII
+				++uResult;
+			}
+		} while (--uInputSize);
+	}
+	return uResult;
+}
+
+/*! ************************************
+
 	\brief Convert a UTF16 char into a UTF8 stream.
 
 	Take the unsigned 16 bit value of the UTF16 character and convert it to
@@ -1785,15 +2641,14 @@ uintptr_t BURGER_API Burger::UTF8::FromGeneric(char* pOutput,
 	\note This will NOT parse word pairs. It will return a 0 and not process the
 	value if it's 0xD800-0xDFFF which is an escape token for UTF16.
 
-	\note This function will write a *zero* after the stream so you can assume
-		that it's a valid "C" string.
-
 	\param pOutput Pointer to UTF8 buffer that's a minimum 4 bytes in size,
 		``nullptr`` will page fault.
 	\param uInput UTF16 encoded 16 bit character
 
 	\return The number of bytes written to the stream. 1, 2, 3 or 0 if uInput is
 		>=0xD800 and <=0xDFFF.
+
+	\sa FromUTF16(char *,uintptr_t, const uint16_t *)
 
 ***************************************/
 
@@ -1805,7 +2660,6 @@ uintptr_t BURGER_API Burger::UTF8::FromUTF16(
 	// ASCII?
 	if (uTemp < 0x80U) {
 		pOutput[0] = static_cast<char>(uTemp);
-		pOutput[1] = 0;
 		return 1;
 	}
 
@@ -1815,11 +2669,9 @@ uintptr_t BURGER_API Burger::UTF8::FromUTF16(
 		pOutput[0] = static_cast<char>((uTemp >> 6) | 0xC0U);
 		// Encode the lower 6 bits
 		pOutput[1] = static_cast<char>((uTemp & 0x3FU) | 0x80U);
-		pOutput[2] = 0;
 		return 2;
 	}
 	if ((uTemp >= 0xD800U) && (uTemp < 0xE000U)) {
-		pOutput[0] = 0;
 		// 0xD800-0xDFFF or >=0x110000 are bad.
 		return 0;
 	}
@@ -1827,7 +2679,6 @@ uintptr_t BURGER_API Burger::UTF8::FromUTF16(
 	pOutput[0] = static_cast<char>((uTemp >> 12U) | 0xE0U);
 	pOutput[1] = static_cast<char>(((uTemp >> 6U) & 0x3FU) | 0x80U);
 	pOutput[2] = static_cast<char>((uTemp & 0x3FU) | 0x80U);
-	pOutput[3] = 0;
 	return 3;
 }
 
@@ -2002,7 +2853,7 @@ uintptr_t BURGER_API Burger::UTF8::FromUTF16(char* pOutput,
 	\param uOutputSize Size of the output buffer in bytes.
 	\param pInput UTF16 encoded uint16_t array, ``nullptr`` is okay if
 		uInputSize is zero.
-	\param uInputSize Size of the input uint16_t array in bytes
+	\param uInputSize Size of the input uint16_t array in elements
 
 	\return Byte count of the potential output. It is valid, even if the output
 		buffer wasn't large enough to contain everything.
@@ -2026,7 +2877,6 @@ uintptr_t BURGER_API Burger::UTF8::FromUTF16(char* pOutput,
 
 	// Let's convert the string
 	// Convert to shorts
-	uInputSize >>= 1;
 	if (uInputSize) {
 		do {
 			// Get the next 16 bits
@@ -2147,11 +2997,404 @@ uintptr_t BURGER_API Burger::UTF8::FromUTF16(char* pOutput,
 
 char* BURGER_API Burger::UTF8::FromUTF16(const uint16_t* pInput) BURGER_NOEXCEPT
 {
-	const uintptr_t uInputLength = FromUTF16(nullptr, 0, pInput);
+	const uintptr_t uInputLength = GetUTF16Size(pInput);
 	char* pWork = static_cast<char*>(Alloc(uInputLength + 1));
 	if (pWork) {
 		// Copy the string
 		FromUTF16(pWork, uInputLength + 1, pInput);
+	}
+	return pWork;
+}
+
+/*! ************************************
+
+	\brief Convert a UTF32 value into a UTF8 stream.
+
+	Given a valid UTF32 value (0-0xD7FF / 0xE000-0x10FFFF), encode it into a
+	valid UTF8 stream. If the value is invalid, it will NOT be encoded.
+
+	The output buffer must have at least 5 bytes available.
+
+	\note The function will zero terminate the stream. The zero isn't counted on
+		the data length.
+
+	\param pOutput Pointer to a char buffer of a minimum of 5 bytes in size,
+		``nullptr`` is invalid.
+	\param uInput UTF32 encoded character value.
+
+	\return Number of bytes used to store the UTF8 stream, zero if the value
+		can't be encoded.
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::FromUTF32(
+	char* pOutput, uint32_t uInput) BURGER_NOEXCEPT
+{
+	// Not ASCII?
+	uintptr_t uResult;
+	if (uInput >= 0x80U) {
+		// 0x80-0x7FF (11 bit encoding)?
+		if (uInput < 0x800U) {
+			// Encode the upper 6 bits
+			pOutput[0] = static_cast<char>((uInput >> 6U) | 0xC0U);
+			// Encode the lower 6 bits
+			pOutput[1] = static_cast<char>((uInput & 0x3FU) | 0x80U);
+			pOutput[2] = 0;
+			uResult = 2;
+
+		} else if (((uInput >= 0xD800U) && (uInput < 0xE000U)) ||
+			(uInput >= 0x110000U)) {
+			pOutput[0] = 0;
+			uResult = 0;
+			// 0xD800-0xDFFF or >=0x110000 are bad.
+			// 16 bit encoding?
+		} else if (uInput < 0x10000U) {
+			pOutput[0] = static_cast<char>((uInput >> 12U) | 0xE0U);
+			pOutput[1] = static_cast<char>(((uInput >> 6U) & 0x3FU) | 0x80U);
+			pOutput[2] = static_cast<char>((uInput & 0x3FU) | 0x80U);
+			pOutput[3] = 0;
+			uResult = 3;
+			// 21 bit encoding
+		} else {
+			pOutput[0] = static_cast<char>((uInput >> 18U) | 0xF0U);
+			pOutput[1] = static_cast<char>(((uInput >> 12U) & 0x3FU) | 0x80U);
+			pOutput[2] = static_cast<char>(((uInput >> 6U) & 0x3FU) | 0x80U);
+			pOutput[3] = static_cast<char>((uInput & 0x3FU) | 0x80U);
+			pOutput[4] = 0;
+			uResult = 4;
+		}
+	} else {
+
+		// This is the most common case, save it and exit.
+		// Easy!
+		pOutput[0] = static_cast<char>(uInput);
+		pOutput[1] = 0;
+		uResult = 1;
+	}
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Convert a UTF32 "C" string into a UTF8 stream.
+
+	Take a "C" string that is using UTF32 encoding and convert it to a UTF8
+	encoded "C" string. The function will return the size of the string after
+	encoding. This size is valid, even if it exceeded the output buffer size.
+	The output pointer and size can be ``nullptr`` to have this routine
+	calculate the size of the possible output so the application can allocate a
+	buffer large enough to hold it.
+
+	\note This function will ensure that the string is always zero terminated,
+	even if truncation is necessary to get it to fit in the output buffer. Under
+	no circumstances will the output buffer be overrun.
+
+	\note If invalid UTF32 values are found, they will be skipped.
+
+	\param pOutput Pointer to UTF8 buffer to receive the converted string,
+		``nullptr`` is okay if uOutputSize is zero, otherwise it will page
+		fault.
+	\param uOutputSize Size of the output buffer in bytes.
+	\param pInput UTF32 encoded "C" string, ``nullptr`` will page fault.
+
+	\return Byte count of the potential output. It is valid, even if the output
+		buffer wasn't large enough to contain everything.
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::FromUTF32(char* pOutput,
+	uintptr_t uOutputSize, const uint32_t* pInput) BURGER_NOEXCEPT
+{
+	// Make a copy, since pOutput is needed for determining size
+	uint8_t* pWorkPtr = reinterpret_cast<uint8_t*>(pOutput);
+
+	// This is the end of the valid buffer
+	uint8_t* pEndPtr = pWorkPtr + uOutputSize;
+
+	// If nonzero, then I append a 0 to the string.
+	if (uOutputSize) {
+		--pEndPtr;
+	}
+
+	// Let's convert the string
+	uint32_t uTemp = pInput[0];
+	++pInput;
+
+	// Can I start the loop?
+	if (uTemp) {
+		do {
+
+			// Get an ASCII char?
+			if (uTemp < 0x80U) {
+				// Write out the value, if possible
+				if (pWorkPtr < pEndPtr) {
+					pWorkPtr[0] = static_cast<uint8_t>(uTemp);
+				}
+				++pWorkPtr;
+
+				// 0x80-0x7FF (11 bit encoding)?
+			} else if (uTemp < 0x800U) {
+
+				// Write out the value, if possible
+				if (pWorkPtr < pEndPtr) {
+					// Encode the upper 6 bits
+					pWorkPtr[0] = static_cast<uint8_t>((uTemp >> 6) | 0xC0U);
+				}
+				++pWorkPtr;
+
+				if (pWorkPtr < pEndPtr) {
+					// Encode the lower 6 bits
+					pWorkPtr[0] = static_cast<uint8_t>((uTemp & 0x3FU) | 0x80U);
+				}
+				++pWorkPtr;
+
+			} else if (((uTemp < 0xD800U) || (uTemp >= 0xE000U)) &&
+				(uTemp < 0x110000U)) {
+				if (uTemp < 0x10000U) {
+
+					// 16 bit encoding? (0x800-0xFFFF)
+					if (pWorkPtr < pEndPtr) {
+						pWorkPtr[0] =
+							static_cast<uint8_t>((uTemp >> 12U) | 0xE0U);
+					}
+					++pWorkPtr;
+
+					if (pWorkPtr < pEndPtr) {
+						pWorkPtr[0] = static_cast<uint8_t>(
+							((uTemp >> 6U) & 0x3FU) | 0x80U);
+					}
+					++pWorkPtr;
+
+					if (pWorkPtr < pEndPtr) {
+						pWorkPtr[0] =
+							static_cast<uint8_t>((uTemp & 0x3FU) | 0x80U);
+					}
+					++pWorkPtr;
+				} else {
+					// Special case for 21 bit encoding? (0x10000-0x10FFFF)
+
+					if (pWorkPtr < pEndPtr) {
+						// Top 3 bits
+						pWorkPtr[0] =
+							static_cast<uint8_t>((uTemp >> 18U) | 0xF0U);
+					}
+					++pWorkPtr;
+
+					// Next 6 bits
+					if (pWorkPtr < pEndPtr) {
+						pWorkPtr[0] = static_cast<uint8_t>(
+							((uTemp >> 12U) & 0x3FU) | 0x80U);
+					}
+					++pWorkPtr;
+
+					// Next 6 bits from uTemp
+					if (pWorkPtr < pEndPtr) {
+						pWorkPtr[0] = static_cast<uint8_t>(
+							((uTemp >> 6U) & 0x3FU) | 0x80U);
+					}
+					++pWorkPtr;
+
+					// The last 6 bits from uTemp
+					if (pWorkPtr < pEndPtr) {
+						pWorkPtr[0] =
+							static_cast<uint8_t>((uTemp & 0x3FU) | 0x80U);
+					}
+					++pWorkPtr;
+					// All 21 are encoded now
+				}
+			}
+			// Get the next 32 bits
+			uTemp = pInput[0];
+			++pInput;
+		} while (uTemp);
+	}
+	// Can I add a trailing zero?
+	if (uOutputSize) {
+		if (pWorkPtr < pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		// Write it, but don't add it to the strlen()
+		pEndPtr[0] = 0;
+	}
+
+	// Return the equivalent of strlen()
+	return static_cast<uintptr_t>(reinterpret_cast<char*>(pWorkPtr) - pOutput);
+}
+
+/*! ************************************
+
+	\brief Convert a UTF32 uint32_t array into a UTF8 stream.
+
+	Take a uint32_t array that is using UTF32 encoding and convert it to a UTF8
+	encoded "C" string. The function will return the size of the string after
+	encoding. This size is valid, even if it exceeded the output buffer size.
+	The output pointer and size can be ``nullptr`` to have this routine
+	calculate the size of the possible output so the application can allocate a
+	buffer large enough to hold it.
+
+	\note This function will ensure that the string is always zero terminated,
+	even if truncation is necessary to get it to fit in the output buffer. Under
+	no circumstances will the output buffer be overrun.
+
+	\note Zeros can be encoded into the stream. This function will not early out
+	if a zero was parsed. Zeros will be placed in the UTF8 stream as is.
+
+	\param pOutput Pointer to UTF8 buffer to receive the converted string,
+		``nullptr`` is okay if uOutputSize is zero, otherwise a page fault will
+		occur.
+	\param uOutputSize Size of the output buffer in bytes.
+	\param pInput UTF32 encoded uint32_t array, ``nullptr`` is okay if
+		uInputSize is zero.
+	\param uInputSize Size of the input uint32_t array in bytes
+
+	\return Byte count of the potential output. It is valid, even if the output
+		buffer wasn't large enough to contain everything.
+
+***************************************/
+
+uintptr_t BURGER_API Burger::UTF8::FromUTF32(char* pOutput,
+	uintptr_t uOutputSize, const uint32_t* pInput,
+	uintptr_t uInputSize) BURGER_NOEXCEPT
+{
+	// Make a copy, since pOutput is needed for determining size
+	uint8_t* pWorkPtr = reinterpret_cast<uint8_t*>(pOutput);
+
+	// This is the end of the valid buffer
+	uint8_t* pEndPtr = pWorkPtr + uOutputSize;
+
+	// Valid for anything?
+	if (uOutputSize) {
+		// Make room for the zero
+		--pEndPtr;
+	}
+
+	// Let's convert the string
+	// Convert to uint32_t's
+	if (uInputSize) {
+		do {
+			// Get the next 32 bits
+			const uint32_t uTemp = pInput[0];
+			++pInput;
+
+			// ASCII?
+			if (uTemp < 0x80U) {
+				// Write out the value, if possible
+				if (pWorkPtr < pEndPtr) {
+					pWorkPtr[0] = static_cast<uint8_t>(uTemp);
+				}
+				++pWorkPtr;
+
+				// 0x80-0x7FF (11 bit encoding) ?
+			} else if (uTemp < 0x800U) {
+				if (pWorkPtr < pEndPtr) {
+					// Encode the upper 6 bits
+					pWorkPtr[0] = static_cast<uint8_t>((uTemp >> 6) | 0xC0U);
+				}
+				++pWorkPtr;
+
+				if (pWorkPtr < pEndPtr) {
+					// Encode the lower 6 bits
+					pWorkPtr[0] = static_cast<uint8_t>((uTemp & 0x3FU) | 0x80U);
+				}
+				++pWorkPtr;
+
+			} else if (((uTemp < 0xD800U) || (uTemp >= 0xE000U)) &&
+				(uTemp < 0x110000U)) {
+				if (uTemp < 0x10000U) {
+					// 16 bit encoding? (0x800-0xFFFF)
+					if (pWorkPtr < pEndPtr) {
+						pWorkPtr[0] =
+							static_cast<uint8_t>((uTemp >> 12U) | 0xE0U);
+					}
+					++pWorkPtr;
+
+					if (pWorkPtr < pEndPtr) {
+						pWorkPtr[0] = static_cast<uint8_t>(
+							((uTemp >> 6U) & 0x3FU) | 0x80U);
+					}
+					++pWorkPtr;
+
+					if (pWorkPtr < pEndPtr) {
+						pWorkPtr[0] =
+							static_cast<uint8_t>((uTemp & 0x3FU) | 0x80U);
+					}
+					++pWorkPtr;
+
+					// Valid start token?
+				} else {
+					// Special case for 21 bit encoding? (0x10000-0x10FFFF)
+					if (pWorkPtr < pEndPtr) {
+						// Top 3 bits
+						pWorkPtr[0] =
+							static_cast<uint8_t>((uTemp >> 18U) | 0xF0U);
+					}
+					++pWorkPtr;
+
+					// Next 6 bits
+					if (pWorkPtr < pEndPtr) {
+						pWorkPtr[0] = static_cast<uint8_t>(
+							((uTemp >> 12U) & 0x3FU) | 0x80U);
+					}
+					++pWorkPtr;
+
+					// Next 6 bits from uTemp
+					if (pWorkPtr < pEndPtr) {
+						pWorkPtr[0] = static_cast<uint8_t>(
+							((uTemp >> 6U) & 0x3FU) | 0x80U);
+					}
+					++pWorkPtr;
+
+					// The last 6 bits from uTemp
+					if (pWorkPtr < pEndPtr) {
+						pWorkPtr[0] =
+							static_cast<uint8_t>((uTemp & 0x3FU) | 0x80U);
+					}
+					++pWorkPtr;
+					// All 21 are encoded now
+				}
+			}
+		} while (--uInputSize);
+	}
+
+	// Can I add a trailing zero?
+	if (uOutputSize) {
+		if (pWorkPtr < pEndPtr) {
+			pEndPtr = pWorkPtr;
+		}
+		// Write it, but don't add it to the strlen()
+		pEndPtr[0] = 0;
+	}
+
+	// Return the equivalent of strlen()
+	return static_cast<uintptr_t>(reinterpret_cast<char*>(pWorkPtr) - pOutput);
+}
+
+/*! ************************************
+
+	\brief Convert a UTF32 "C" string into an allocated UTF8 "C" string.
+
+	Take a "C" string that is using UTF32 encoding and convert it to a UTF8
+	encoded "C" string. The function will allocate a buffer large enough to
+	store the string. When the string isn't needed anymore, release the memory
+	with a call to Burger::Free(const void *)
+
+	\note If invalid UTF32 codes are found, they will be skipped.
+
+	\param pInput UTF32 encoded "C" string, ``nullptr`` will page fault.
+	\return A valid pointer to a UTF-8 version of the "C" string. ``nullptr`` if
+		memory allocation failure.
+
+	\sa Burger::Free(const void *)
+
+***************************************/
+
+char* BURGER_API Burger::UTF8::FromUTF32(const uint32_t* pInput) BURGER_NOEXCEPT
+{
+	const uintptr_t uInputLength = FromUTF32(nullptr, 0, pInput);
+	char* pWork = static_cast<char*>(Alloc(uInputLength + 1));
+	if (pWork) {
+		// Copy the string
+		FromUTF32(pWork, uInputLength + 1, pInput);
 	}
 	return pWork;
 }
@@ -2173,8 +3416,8 @@ char* BURGER_API Burger::UTF8::FromUTF16(const uint16_t* pInput) BURGER_NOEXCEPT
 		table.
 
 	\return The unsigned 8 bit character code (0x00-0xFF) or
-Burger::UTF8::kInvalid if the UTF8 value wasn't low ASCII and couldn't be found
-in the table.
+		Burger::UTF8::kInvalid if the UTF8 value wasn't low ASCII and couldn't
+		be found in the table.
 
 ***************************************/
 

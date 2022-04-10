@@ -486,7 +486,7 @@ void BURGER_API Burger::InputMemoryStream::GetString(String *pOutput) BURGER_NOE
 		} while (pWork<pEndOfBuffer);
 	}
 	// Set the output string size
-	pOutput->SetBufferSize(uOutputSize);
+	pOutput->resize(uOutputSize);
 	if (uOutputSize) {
 		// Copy the string into the new buffer
 		// SetBufferSize() sets the null terminator

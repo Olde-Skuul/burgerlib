@@ -84,7 +84,7 @@ Burger::eError BURGER_API Burger::GetOSString(
 
 	// Did I get a string?
 	if (ppString && ppString[0][0]) {
-		uResult = pOutput->Set(
+		uResult = pOutput->assign(
 			static_cast<const char*>(static_cast<const void*>(&ppString[0][1])),
 			ppString[0][0]);
 	}
@@ -135,7 +135,7 @@ Burger::eError BURGER_API Burger::GetOSIndString(
 
 	// Did I get a name?
 	if (resStr[0]) {
-		uResult = pOutput->Set(
+		uResult = pOutput->assign(
 			static_cast<const char*>(static_cast<const void*>(&resStr[1])),
 			resStr[0]);
 	}
@@ -185,7 +185,7 @@ Burger::eError BURGER_API Burger::GetUserLoginName(
 				CFStringRef pStringRef = pNSUserName();
 				if (pStringRef) {
 
-					Globals::StringCopy(pOutput, pStringRef);
+					StringCopy(pOutput, pStringRef);
 
 					// Dispose of the string ref
 					CFRelease(pStringRef);
@@ -197,13 +197,13 @@ Burger::eError BURGER_API Burger::GetUserLoginName(
 	if (uResult) {
 		// Get the user folder name
 		if (uResult) {
-			pOutput->Set("User");
+			pOutput->assign("User");
 		}
 	}
 	return uResult;
 
 #else
-	pOutput->Set("User");
+	pOutput->assign("User");
 	return kErrorNotSupportedOnThisPlatform;
 #endif
 }
@@ -258,7 +258,7 @@ Burger::eError BURGER_API Burger::GetUserRealName(
 				CFStringRef pStringRef = pNSFullUserName();
 				if (pStringRef) {
 
-					Globals::StringCopy(pOutput, pStringRef);
+					StringCopy(pOutput, pStringRef);
 
 					// Dispose of the string ref
 					CFRelease(pStringRef);
@@ -271,7 +271,7 @@ Burger::eError BURGER_API Burger::GetUserRealName(
 
 	if (uResult) {
 		// The name wasn't present, use the default
-		pOutput->Set("User");
+		pOutput->assign("User");
 	}
 
 	return uResult;
@@ -330,7 +330,7 @@ Burger::eError BURGER_API Burger::GetMachineName(
 				// Return the computer name
 				CFStringRef pStringRef = pSCDynamicStoreCopyComputerName(0, 0);
 				if (pStringRef) {
-					Globals::StringCopy(pOutput, pStringRef);
+					StringCopy(pOutput, pStringRef);
 
 					// Dispose of the string ref
 					CFRelease(pStringRef);
@@ -343,7 +343,7 @@ Burger::eError BURGER_API Burger::GetMachineName(
 
 	if (uResult) {
 		// The name wasn't present, use the default
-		pOutput->Set("Computer");
+		pOutput->assign("Computer");
 	}
 
 	return uResult;
@@ -375,8 +375,9 @@ Burger::eError BURGER_API Burger::GetMacModelIdentifier(
 
 			// Did I get a name?
 			if (reinterpret_cast<uint8_t*>(lResponse)[0]) {
-				uResult = pOutput->Set(reinterpret_cast<char*>(lResponse + 1),
-					reinterpret_cast<uint8_t*>(lResponse)[0]);
+				uResult =
+					pOutput->assign(reinterpret_cast<char*>(lResponse + 1),
+						reinterpret_cast<uint8_t*>(lResponse)[0]);
 			}
 		} else if (!Gestalt(gestaltMachineType, &lResponse)) {
 
@@ -400,7 +401,7 @@ Burger::eError BURGER_API Burger::GetMacModelIdentifier(
 				err = RegistryPropertyGetSize(
 					&uRegEntryID, "compatible", &uLength);
 				if (err == noErr) {
-					uResult = pOutput->SetBufferSize(uLength);
+					uResult = pOutput->resize(uLength);
 					if (!uResult) {
 						err = RegistryPropertyGet(&uRegEntryID, "compatible",
 							pOutput->c_str(), &uLength);
@@ -461,7 +462,7 @@ Burger::eError BURGER_API Burger::GetMacModelIdentifier(
 					err = RegistryPropertyGetSize(
 						&uRegEntryID, "compatible", &uLength);
 					if (err == noErr) {
-						uResult = pOutput->SetBufferSize(uLength);
+						uResult = pOutput->resize(uLength);
 						if (!uResult) {
 							err = RegistryPropertyGet(&uRegEntryID,
 								"compatible", pOutput->c_str(), &uLength);
@@ -548,7 +549,7 @@ Burger::eError BURGER_API Burger::GetMacModelIdentifier(
 								const char* pData =
 									reinterpret_cast<const char*>(
 										CFDataGetBytePtr(pDataRef));
-								uResult = pOutput->Set(pData, uLength);
+								uResult = pOutput->assign(pData, uLength);
 
 								// Release the data and exit
 								CFRelease(pDataRef);
@@ -566,9 +567,62 @@ Burger::eError BURGER_API Burger::GetMacModelIdentifier(
 #endif
 	if (uResult) {
 		// The name wasn't present, use the default
-		pOutput->Set("Macintosh");
+		pOutput->assign("Macintosh");
 	}
 	return uResult;
 }
+
+/***************************************
+
+	\brief Convert an NSString to a Burger::String (MacOSX and Carbon Only)
+
+	Given a valid const NSString, convert the string into UTF8 encoding and
+	store the result into an output \ref String.
+
+	\macosxonly
+	\param pOutput Pointer to a String class instance to recieve the string
+	\param pInput Pointer to a constant NSString or CFString to convert
+
+***************************************/
+
+#if defined(BURGER_MACCARBON)
+void BURGER_API Burger::StringCopy(String* pOutput, CFStringRef pInput)
+{
+	// Try the easy way the just yank a "C" string pointer out directly
+	const char* pResult = CFStringGetCStringPtr(pInput, kCFStringEncodingUTF8);
+	if (pResult) {
+		// Piece of cake!
+		pOutput->assign(pResult);
+	} else {
+		// Crap, it's not encoded in UTF8 (Likely UTF-16)
+
+		// Get the length of the string in UTF16 characters
+		CFIndex uLength = CFStringGetLength(pInput);
+		if (!uLength) {
+			// If it's empty, leave now
+			pOutput->clear();
+		} else {
+			// Determine the maximum buffer that would be needed for conversion
+			// to UTF-8
+			CFIndex uMaxLength = CFStringGetMaximumSizeForEncoding(
+				uLength, kCFStringEncodingUTF8);
+			// Create the buffer
+			pOutput->reserve(static_cast<uintptr_t>(uMaxLength) + 2);
+			// Convert the string and store into the buffer
+			if (!CFStringGetCString(pInput, pOutput->c_str(), uMaxLength + 1,
+					kCFStringEncodingUTF8)) {
+				// Lovely, failure
+				pOutput->clear();
+			} else {
+				// Truncate the string to fit the final string
+				// Note: Due to the manual copy, don't assume
+				// pOutput->GetLength() returns a valid value. Once
+				// SetBufferSize() completes, the length is correct
+				pOutput->resize(StringLength(pOutput->c_str()));
+			}
+		}
+	}
+}
+#endif
 
 #endif

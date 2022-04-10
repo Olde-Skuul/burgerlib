@@ -2,7 +2,7 @@
 
 	Filename Class
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -21,6 +21,7 @@
 #include "brnumberto.h"
 #include <direct.h>
 #include <dos.h>
+#include <stdlib.h>
 
 #if defined(BURGER_WATCOM)
 #ifdef __cplusplus
@@ -42,16 +43,16 @@ extern char** _argv;
 
 	Directory delimiters are colons only.
 	If the path starts with a colon, then it is a full pathname starting with a
-volume name. If the path starts with ".D2:" then it is a full pathname starting
-with a drive number. If the path starts with a "$:","*:" or "@:" then use
-special prefix numbers 32-34 If the path starts with 0: through 31: then use
-prefix 0-31. Otherwise prepend the pathname with the contents of prefix 8
-("Default")
+	volume name. If the path starts with ".D2:" then it is a full pathname
+	starting with a drive number. If the path starts with a "$:","*:" or "@:"
+	then use special prefix numbers 32-34 If the path starts with 0: through 31:
+	then use prefix 0-31. Otherwise prepend the pathname with the contents of
+	prefix 8 ("Default")
 
 	If the path after the prefix is removed is a period then POP the number of
 	directories from the pathname for each period present after the first.
 	Example "..:PrevDir:File:" will go down one directory and up the directory
-PrevDir
+	PrevDir
 
 	All returned pathnames will NOT have a trailing "\", they will
 	take the form of c:\\foo\\bar\\file.txt or similar
@@ -59,7 +60,7 @@ PrevDir
 	Examples:<br>
 	If drive C: is named "boot" then ":boot:foo:bar.txt" = "c:\foo\bar.txt"<br>
 	If there is no drive named "boot" then ":boot:foo:bar.txt" =
-"\\boot\foo\bar.txt"<br>
+		"\\boot\foo\bar.txt"<br>
 	".D2:foo:bar.txt" = "c:\foo\bar.txt"<br>
 	".D4:foo:bar.txt" = "e:\foo\bar.txt"<br>
 	"@:game:data.dat" = "c:\users\<Current user>\appdata\roaming\game\data.dat"
@@ -71,135 +72,152 @@ PrevDir
 
 const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 {
-	// First step, expand to a full pathname without
-	// prefixes
-
+	// First step, expand myself to a fully qualified pathname
 	Expand();
+	if (!m_bNativeValid) {
 
-	/***************************************
+		// DOS version and Win 95 version
+		// I prefer for all paths intended for DOS use a generic drive specifier
+		// before the working directory. The problem is that Volume LABEL are
+		// very difficult to parse and slow to access.
 
-		DOS version and Win 95 version
-		I prefer for all paths intended for DOS use
-		a generic drive specifier before the working directory.
-		The problem is that Volume LABEL are very difficult to parse
-		and slow to access.
+		// First parse either the volume name of a .DXX device number
+		// I hopefully will get a volume number since DOS prefers it
 
-	***************************************/
+		// Copy to running pointer
+		const uint8_t* pPath = reinterpret_cast<uint8_t*>(m_Filename.c_str());
 
-	// First parse either the volume name of a .DXX device number
-	// I hopefully will get a volume number since DOS prefers it
+		// Init the default drive number
+		uint_t uDeviceNum = BURGER_MAXUINT;
 
-	const uint8_t* pPath =
-		reinterpret_cast<uint8_t*>(m_pFilename); // Copy to running pointer
-	uint_t uDeviceNum =
-		static_cast<uint_t>(-1); // Init the default drive number
-	if (pPath[0] == ':') {       // Fully qualified pathname?
-		uintptr_t uLength = 0;   // Init index to the volume name
-		uint8_t uTemp;
-		do {
-			++uLength; // Parse to the next colon
-			uTemp = pPath[uLength];
-		} while (uTemp != ':' && uTemp);
-		uint8_t uTemp2 = pPath[uLength + 1]; // Save the next char in cache
-		// Ensure the name ends with ':' in the case of ":foobar"
-		const_cast<uint8_t*>(pPath)[uLength] = ':';
-		const_cast<uint8_t*>(pPath)[uLength + 1] = 0; // Zap the entry
-		// Find a volume
-		uDeviceNum =
-			FileManager::GetVolumeNumber(reinterpret_cast<const char*>(pPath));
-		const_cast<uint8_t*>(pPath)[uLength] = uTemp; // Restore char in string
-		const_cast<uint8_t*>(pPath)[uLength + 1] = uTemp2;
-		if (uDeviceNum == static_cast<uint_t>(-1)) { // Can't find the volume?!?
-			uDeviceNum = static_cast<uint_t>(-2);
-			++pPath; // Ignore the leading colon
-		} else {
-			pPath = pPath + uLength; // Accept the name
-			if (uTemp) { // Remove the colon if it had one at the end
-				++pPath;
-			}
-		}
+		// Fully qualified pathname?
+		if (pPath[0] == ':') {
 
-		// Is this a "drive letter"? Look for ".d2:"
-	} else if (pPath[0] == '.') {
-		uint_t uTemp = pPath[1];     // Get the second char
-		if ((uTemp & 0xDF) == 'D') { // Is it a 'D'?
-			uintptr_t uLength = 2;   // Init numeric index
-			uDeviceNum = 0;          // Init drive number
+			// Init index to the volume name
+			uintptr_t uLength = 0;
+			uint8_t uTemp;
 			do {
-				uTemp = pPath[uLength]; // Get an ASCII char
+				// Parse to the next colon
 				++uLength;
-				if (uTemp == ':') { // Proper end of string?
-					// If nothing was parsed, abort
-					if (uLength == 3) {
-						uLength = 0;
-						uDeviceNum = static_cast<uint_t>(-1);
-					}
-					break;
+				uTemp = pPath[uLength];
+			} while (uTemp != ':' && uTemp);
+
+			// Ensure the name ends with ':' in the case of ":foobar"
+			String VolumeName(m_Filename, 0, uLength + 1);
+
+			// Find a volume
+			uDeviceNum = FileManager::GetVolumeNumber(VolumeName);
+
+			// Can't find the volume?!?
+			if (uDeviceNum == BURGER_MAXUINT) {
+				// Ignore the leading colon
+				uDeviceNum = BURGER_MAXUINT - 1;
+				++pPath;
+			} else {
+				// Accept the name
+				pPath = pPath + uLength;
+
+				// Remove the colon if it had one at the end
+				if (uTemp) {
+					++pPath;
 				}
-				uTemp -= '0';
-				if (uTemp >= 10) {                        // Numeric value?
-					uLength = 0;                          // Abort
-					uDeviceNum = static_cast<uint_t>(-1); // Force using the CWD
-					break;                                // Go to phase 2
-				}
-				uDeviceNum = uDeviceNum * 10;    // Adjust previous value */
-				uDeviceNum = uDeviceNum + uTemp; // Make full decimal result */
-			} while (uDeviceNum < 26);           // Loop until done */
-			pPath = pPath + uLength;             // Discard accepted input
-		}
-	}
-
-	// Now that I have the drive number, determine the length
-	// of the output buffer and start the conversion
-
-	uintptr_t uPathLength = StringLength(reinterpret_cast<const char*>(pPath));
-	// Reserve 6 extra bytes for the prefix and/or the trailing / and null
-	char* pOutput = m_NativeFilename;
-
-	if (uPathLength >= (sizeof(m_NativeFilename) - 6)) {
-		pOutput = static_cast<char*>(Alloc(uPathLength + 6));
-		if (!pOutput) {
-			pOutput = m_NativeFilename;
-			uPathLength = 0; // I'm so boned
-		} else {
-			m_pNativeFilename = pOutput; // This is my buffer
-		}
-	}
-
-	// Insert the prefix, if any, to the output string
-
-	if (uDeviceNum == static_cast<uint_t>(-2)) {
-		// Since I didn't find the volume name, I'll assume it's
-		// a network volume
-		pOutput[0] = '\\';
-		pOutput[1] = '\\';
-		pOutput += 2;
-	} else if (uDeviceNum != static_cast<uint_t>(-1)) {
-		pOutput[0] = static_cast<char>(uDeviceNum + 'A');
-		pOutput[1] = ':';
-		pOutput[2] = '\\';
-		pOutput += 3;
-	}
-
-	// Convert the colons to slashes
-	if (uPathLength) {
-		uint_t uTemp;
-		do {
-			uTemp = pPath[0];
-			++pPath;
-			if (uTemp == ':') {
-				uTemp = '\\';
 			}
-			pOutput[0] = static_cast<char>(uTemp);
-			++pOutput;
-		} while (--uPathLength);
-		// Remove trailing slash
-		if (uTemp == '\\') {
-			--pOutput;
+
+			// Is this a "drive letter"? Look for ".d2:"
+		} else if (pPath[0] == '.') {
+
+			// Get the second char
+			uint_t uTemp = pPath[1];
+
+			// Is it a 'D'?
+			if ((uTemp & 0xDF) == 'D') {
+
+				// Init numeric index
+				uintptr_t uLength = 2;
+
+				// Init drive number
+				uDeviceNum = 0;
+				do {
+					// Get an ASCII char
+					uTemp = pPath[uLength];
+					++uLength;
+
+					// Proper end of string?
+					if (uTemp == ':') {
+						// If nothing was parsed, abort
+						if (uLength == 3) {
+							uLength = 0;
+							uDeviceNum = BURGER_MAXUINT;
+						}
+						break;
+					}
+					uTemp -= '0';
+
+					// Numeric value?
+					if (uTemp >= 10) {
+						// Abort
+						uLength = 0;
+						// Force using the CWD
+						uDeviceNum = BURGER_MAXUINT;
+						break; // Go to phase 2
+					}
+
+					// Adjust previous value
+					uDeviceNum = uDeviceNum * 10;
+
+					// Make full decimal result
+					uDeviceNum = uDeviceNum + uTemp;
+					// Loop until done
+				} while (uDeviceNum < 26);
+
+				// Discard accepted input
+				pPath = pPath + uLength;
+			}
 		}
+
+		// Now that I have the drive number, determine the length
+		// of the output buffer and start the conversion
+
+		uintptr_t uPathLength =
+			StringLength(reinterpret_cast<const char*>(pPath));
+
+		// Reserve 6 extra bytes for the prefix and/or the trailing / and null
+
+		m_NativeFilename.reserve(uPathLength + 6);
+		m_NativeFilename.clear();
+
+		// Insert the prefix, if any, to the output string
+
+		if (uDeviceNum == (BURGER_MAXUINT - 1)) {
+			// Since I didn't find the volume name, I'll assume it's
+			// a network volume
+			m_NativeFilename.push_back('\\');
+			m_NativeFilename.push_back('\\');
+		} else if (uDeviceNum != BURGER_MAXUINT) {
+			m_NativeFilename.push_back(static_cast<char>(uDeviceNum + 'A'));
+			m_NativeFilename.push_back(':');
+			m_NativeFilename.push_back('\\');
+		}
+
+		// Convert the colons to slashes
+		if (uPathLength) {
+			uint_t uTemp;
+			do {
+				uTemp = pPath[0];
+				++pPath;
+				if (uTemp == ':') {
+					uTemp = '\\';
+				}
+				m_NativeFilename.push_back(static_cast<char>(uTemp));
+			} while (--uPathLength);
+			// Remove trailing slash
+			if (m_NativeFilename.ends_with('\\')) {
+				m_NativeFilename.pop_back();
+			}
+		}
+		m_bNativeValid = TRUE;
 	}
-	pOutput[0] = 0; // Terminate the "C" string
-	return m_pNativeFilename;
+	return m_NativeFilename.c_str();
 }
 
 /***************************************
@@ -218,12 +236,18 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 	void) BURGER_NOEXCEPT
 {
-	String WorkingDir(getcwd(nullptr, 0));
+	char* pWorkingDirectory = getcwd(nullptr, 0);
+	String WorkingDir(pWorkingDirectory);
+	if (pWorkingDirectory) {
+		free(pWorkingDirectory);
+	}
 
 	// Convert from 8.3 to long, if supported.
 	eError uResult = FileManager::MSDos_Expand8_3Filename(&WorkingDir);
 	if (!uResult) {
-		uResult = SetFromNative(WorkingDir.c_str());
+		String UTF8;
+		UTF8.assign_win437(WorkingDir.c_str());
+		uResult = SetFromNative(UTF8.c_str());
 	}
 	return uResult;
 }
@@ -256,7 +280,9 @@ Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(
 	// Convert from 8.3 to long, if supported.
 	eError uResult = FileManager::MSDos_Expand8_3Filename(&ProgramName);
 	if (!uResult) {
-		uResult = SetFromNative(ProgramName.c_str());
+		String UTF8;
+		UTF8.assign_win437(ProgramName.c_str());
+		uResult = SetFromNative(UTF8.c_str());
 	}
 	return uResult;
 }
@@ -302,7 +328,7 @@ Burger::eError BURGER_API Burger::Filename::SetBootVolumeDirectory(
 	// Convert to .D<DriveNumber>:
 	NumberString BootDrive(uBootDrive);
 	String Drive(".D", BootDrive.c_str(), ":");
-	return Set(Drive.c_str());
+	return assign(Drive.c_str());
 }
 
 /***************************************
@@ -328,10 +354,10 @@ Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(
 
 		// Test if C:\DOS\COMMAND.COM exists
 		Filename Temp(*this);
-		Temp.Append("DOS:COMMAND.COM");
+		Temp.join("DOS:COMMAND.COM");
 		if (FileManager::DoesFileExist(&Temp)) {
 			// It exists, append DOS to the directory
-			uResult = Append("DOS");
+			uResult = join("DOS");
 		}
 	}
 	return uResult;
@@ -386,115 +412,138 @@ Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(
 Burger::eError BURGER_API Burger::Filename::SetFromNative(
 	const char* pInput) BURGER_NOEXCEPT
 {
-	Clear();
+	// Used for DOS calls
+	Regs16 Regs;
 
-	Regs16 Regs; // Used for DOS calls
-
-	// Parse out the C: (Drive number)
-	// Assume no drive is found
-	uint_t uDriveNum = static_cast<uint_t>(-1);
-
-	// Get the possible drive letter
-	uintptr_t uInputLength = Burger::StringLength(pInput);
-	if (uInputLength >= 2) {
-		uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
-		uTemp = (uTemp & 0xDF) - 'A'; // Upper case
-		// Could this be a drive letter?
-		if ((uTemp < 26) &&
-			(reinterpret_cast<const uint8_t*>(pInput)[1] == ':')) {
-			uDriveNum = uTemp;
-			pInput += 2;       // Accept the drive letter
-			uInputLength -= 2; // Shrink the input string
-		}
+	if (!pInput || !pInput[0]) { // No directory at all?
+		// Just get the current directory
+		pInput = "";
 	}
 
-	// If not a network name, (//), query MSDOS for the current drive
+	// Convert to UTF8 and use it instead
+	m_NativeFilename.assign_win437(pInput);
+	pInput = m_NativeFilename.c_str();
+	uintptr_t uInputLength = m_NativeFilename.length();
 
-	if (uDriveNum == static_cast<uint_t>(-1)) {
-		if ((uInputLength < 2) ||
-			(reinterpret_cast<const uint8_t*>(pInput)[0] != '\\') ||
-			(reinterpret_cast<const uint8_t*>(pInput)[1] != '\\')) {
+	// Adjust the native path to a full path
+
+	// Assume no drive is found
+	uint_t uDriveNum = BURGER_MAXUINT;
+
+	// Check if a network name, (\\\\), query MSDOS for the current drive
+
+	if ((uInputLength >= 2) &&
+		(reinterpret_cast<const uint8_t*>(pInput)[0] == '\\') &&
+		(reinterpret_cast<const uint8_t*>(pInput)[1] == '\\')) {
+		// Parse past the volume slashes
+		pInput += 1;
+		uInputLength -= 1;
+	} else {
+		// Extract a drive letter
+		if (uInputLength >= 2) {
+			uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+
+			// Upper case
+			uTemp = (uTemp & 0xDF) - 'A';
+
+			// Could this be a drive letter?
+			if ((uTemp < 26) &&
+				(reinterpret_cast<const uint8_t*>(pInput)[1] == ':')) {
+				uDriveNum = uTemp;
+				// Accept the drive letter
+				pInput += 2;
+				// Shrink the input string
+				uInputLength -= 2;
+			}
+		}
+
+		// No drive letter found? Find and insert it.
+		if (uDriveNum == BURGER_MAXUINT) {
 			// Get the default drive number
 			_dos_getdrive(&uDriveNum);
 			--uDriveNum;
-		} else {
-			pInput += 2;
-			uInputLength -= 2; // Parse past the volume slashes
+			char DriveLetterPrefix[2] = {
+				static_cast<char>('A' + uDriveNum), ':'};
+			m_NativeFilename.insert(0, DriveLetterPrefix, 2);
+			pInput = m_NativeFilename.c_str() + 2;
 		}
-	}
 
-	uintptr_t uWorkingDirectoryLength = 0;
-	const uint8_t* pWorkingDirectory = NULL;
+		// Check if there is working directory
+		// Obtain the current working directory for the current drive
 
-	// Obtain the current working directory for the current drive
+		if (!uInputLength ||
+			(reinterpret_cast<const uint8_t*>(pInput)[0] != '\\')) {
 
-	if (uInputLength && (uDriveNum != static_cast<uint_t>(-1))) {
-		if (reinterpret_cast<const uint8_t*>(pInput)[0] != '\\') {
-			Regs.dx = static_cast<uint16_t>(uDriveNum + 1); // Requested drive
-			uint32_t DosBuffer = GetRealBufferPtr(); // Get real memory buffer
-			Regs.ds =
-				static_cast<uint16_t>(DosBuffer >> 16U); // Pass to Dos call
+			// Requested drive
+			Regs.dx = static_cast<uint16_t>(uDriveNum + 1);
+
+			// Get real memory buffer
+			uint32_t DosBuffer = GetRealBufferPtr();
+			// Pass to Dos call
+			Regs.ds = static_cast<uint16_t>(DosBuffer >> 16U);
 			Regs.si = static_cast<uint16_t>(DosBuffer & 0xFFFFU);
-			Regs.ax = 0x7147;               // First try long version
-			Int86x(0x21, &Regs, &Regs);     // Call DOS
-			if (Regs.flags & 1) {           // Carry set??
-				Regs.ax = 0x4700;           // Try DOS 2.0 version
-				Int86x(0x21, &Regs, &Regs); // Get the working directory
+
+			// First try long version
+			Regs.ax = 0x7147;
+			// Call DOS
+			Int86x(0x21, &Regs, &Regs);
+			// Carry set??
+			if (Regs.flags & 1) {
+				// Try DOS 2.0 version
+				Regs.ax = 0x4700;
+				// Get the working directory
+				Int86x(0x21, &Regs, &Regs);
 			}
+
 			// If carry is clear, then one of the preceding calls succeeded
 			if (!(Regs.flags & 1)) {
-				// Convert to my pointer
-				pWorkingDirectory =
-					static_cast<uint8_t*>(RealToProtectedPtr(DosBuffer));
-				uWorkingDirectoryLength = Burger::StringLength(
-					reinterpret_cast<const char*>(pWorkingDirectory));
+				// Insert the delimiting directory slash
+				m_NativeFilename.insert(2, "\\", 1);
+
+				// Get the pointer to the current directory
+				const char* pWorkingDirectory =
+					static_cast<char*>(RealToProtectedPtr(DosBuffer));
+				uintptr_t uWorkingDirectoryLength =
+					StringLength(pWorkingDirectory);
+
+				// Is there a directory?
+				if (uWorkingDirectoryLength) {
+					// Insert it, and add another slash.
+					m_NativeFilename.insert(
+						2, pWorkingDirectory, uWorkingDirectoryLength);
+					m_NativeFilename.insert(2, "\\", 1);
+				}
+
+				// Skip past the drive letter and colon
+				pInput = m_NativeFilename.c_str() + 2;
+				uInputLength = m_NativeFilename.length() - 2;
 			}
-		} else {
-			--uInputLength;
-			++pInput;
 		}
 	}
 
-	// At this point, uWorkingDirectoryLength and uInputLength
-	// contain the approximate length of the final string.
-	// Let's make a buffer to store it!
-	// 7 for .D26: and a trailing colon and ending null
+	// At this point, uInputLength contains the approximate length of the final
+	// string. Let's make a buffer to store it! 7 for .D26: and a trailing colon
+	// and ending null
 
-	uintptr_t uOutputLength = uWorkingDirectoryLength + uInputLength + 7;
-	char* pWork = m_Filename;
-	if (uOutputLength >= sizeof(m_Filename)) {
-		pWork = static_cast<char*>(Alloc(uOutputLength));
-		if (!pWork) {
-			return kErrorOutOfMemory;
-		}
+	eError uResult = m_Filename.reserve(uInputLength + 7);
+	if (uResult) {
+		return uResult;
 	}
-	m_pFilename = pWork;
 
 	// Now if the path starts with a '\' then I assume it's fully qualified
 	// otherwise, I must insert the working directory for the drive
 	// I assume that DriveNum has the current requested drive number
 
-	if (uDriveNum != static_cast<uint_t>(-1)) {
-		pWork[0] = '.'; // .D2 for C:
-		pWork[1] = 'D';
-		pWork =
-			Burger::NumberToAscii(&pWork[2], static_cast<uint32_t>(uDriveNum));
-	}
-	pWork[0] = ':'; // Append a colon
-	++pWork;
-
-	if (uWorkingDirectoryLength) {
-		do {
-			uint_t uTemp = pWorkingDirectory[0];
-			++pWorkingDirectory;
-			if (uTemp == '\\') { // Convert directory holders
-				uTemp = ':';     // To generic paths
-			}
-			pWork[0] = static_cast<char>(uTemp); // Save char
-			++pWork;
-		} while (--uWorkingDirectoryLength);
+	m_Filename.clear();
+	if (uDriveNum != BURGER_MAXUINT) {
+		// .D2 for C:
+		m_Filename.push_back('.');
+		m_Filename.push_back('D');
+		NumberString DriveNumber(static_cast<uint32_t>(uDriveNum));
+		m_Filename.append(DriveNumber);
 	}
 
+	// Append the rest of the filename
 	if (uInputLength) {
 		do {
 			uint_t uTemp = reinterpret_cast<const char*>(pInput)[0];
@@ -502,19 +551,13 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 			if (uTemp == '\\') { // Convert directory holders
 				uTemp = ':';     // To generic paths
 			}
-			pWork[0] = static_cast<char>(uTemp); // Save char
-			++pWork;
+			// Save char
+			m_Filename.push_back(static_cast<char>(uTemp));
 		} while (--uInputLength);
 	}
-
 	// The wrap up...
 	// Make sure it's appended with a colon
-
-	if (pWork[-1] != ':') {
-		pWork[0] = ':';
-		++pWork;
-	}
-	pWork[0] = 0; // Final null for "C" string
-	return kErrorNone;
+	m_bNativeValid = TRUE;
+	return end_with_colon();
 }
 #endif

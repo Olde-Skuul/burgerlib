@@ -57,7 +57,7 @@ void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t Burger::TimeDate_t::Load(const UTCDateTime* pUTCDateTime)
+uint_t Burger::TimeDate_t::Load(const UTCDateTime* pUTCDateTime) BURGER_NOEXCEPT
 {
     Clear();
     uint_t uResult = TRUE;
@@ -103,7 +103,7 @@ uint_t Burger::TimeDate_t::Load(const UTCDateTime* pUTCDateTime)
 
 ***************************************/
 
-uint_t Burger::TimeDate_t::Store(UTCDateTime* pUTCDateTime) const
+uint_t Burger::TimeDate_t::Store(UTCDateTime* pUTCDateTime) const BURGER_NOEXCEPT
 {
     uint_t uResult = TRUE;
 
@@ -154,7 +154,7 @@ uint_t Burger::TimeDate_t::Store(UTCDateTime* pUTCDateTime) const
 
 ***************************************/
 
-void Burger::TimeDate_t::LoadFileSeconds(uint32_t uTime)
+void Burger::TimeDate_t::LoadFileSeconds(uint32_t uTime) BURGER_NOEXCEPT
 {
     DateTimeRec Temp2;
     SecondsToDate(uTime, &Temp2);              // Convert to date
@@ -183,7 +183,7 @@ void Burger::TimeDate_t::LoadFileSeconds(uint32_t uTime)
 
 ***************************************/
 
-uint32_t Burger::TimeDate_t::GetFileSeconds(void) const
+uint32_t Burger::TimeDate_t::GetFileSeconds(void) const BURGER_NOEXCEPT
 {
     DateTimeRec Temp2;
     Temp2.year = static_cast<short>(m_uYear);     // Get the year

@@ -15,9 +15,15 @@
 #include "testbrstrings.h"
 #include "brglobalmemorymanager.h"
 #include "brglobals.h"
+#include "brmemoryfunctions.h"
 #include "brosstringfunctions.h"
 #include "brstringfunctions.h"
 #include "common.h"
+
+static char gLargeString[] =
+	"This is a 100 character string "
+	"This is a 100 character string "
+	"This is a 100 character string woopie";
 
 /***************************************
 
@@ -105,6 +111,145 @@ static uint_t BURGER_API TestParseQuotedString(void) BURGER_NOEXCEPT
 
 		++pWork;
 	} while (--uCount);
+	return uFailure;
+}
+
+/***************************************
+
+	Test String() constructors
+
+***************************************/
+
+static uint_t BURGER_API TestStringConstructors(void) BURGER_NOEXCEPT
+{
+	uint_t uFailure = 0;
+	Burger::String EmptyString;
+
+	// Make sure it's empty
+	uint_t uTest =
+		!EmptyString.empty() || EmptyString.c_str()[0] || EmptyString.length();
+	uFailure |= uTest;
+	ReportFailure("String() = Did not yield an empty string", uTest);
+
+	Burger::String ShortString("Shorty");
+	uTest = ShortString.empty() || ShortString.length() != 6 ||
+		Burger::StringCompare("Shorty", ShortString.c_str());
+	uFailure |= uTest;
+	ReportFailure("String(\"Shorty\") = Did not match \"Shorty\"", uTest);
+
+	Burger::String LongString(gLargeString);
+	uTest = LongString.empty() ||
+		LongString.length() != (sizeof(gLargeString) - 1) ||
+		Burger::StringCompare(gLargeString, LongString.c_str());
+	uFailure |= uTest;
+	ReportFailure("String(\"%s\") = Did not match \"%s\"", uTest, gLargeString,
+		gLargeString);
+
+	// Test clear with large string
+	LongString.clear();
+	uTest = !LongString.empty() || LongString.c_str()[0] || LongString.length();
+	uFailure |= uTest;
+	ReportFailure("String::clear() = Did not yield an empty string", uTest);
+
+	Burger::String DualString(gLargeString, gLargeString);
+	uTest = DualString.empty() ||
+		DualString.length() != ((sizeof(gLargeString) - 1) * 2) ||
+		Burger::MemoryCompare(
+			gLargeString, DualString.c_str(), sizeof(gLargeString) - 1) ||
+		Burger::StringCompare(
+			gLargeString, DualString.c_str() + (sizeof(gLargeString) - 1));
+	uFailure |= uTest;
+	ReportFailure("String(\"%s\",\"%s\") = Did not match", uTest, gLargeString,
+		gLargeString);
+
+	return uFailure;
+}
+
+/***************************************
+
+	Test String::append()
+
+***************************************/
+
+static uint_t BURGER_API TestStringAppend(void) BURGER_NOEXCEPT
+{
+	uint_t uFailure = 0;
+	Burger::String Sample(gLargeString);
+
+	Sample.push_back('a');
+	Sample.push_back('b');
+	Sample.push_back('c');
+	uint_t uTest = Sample.length() != (sizeof(gLargeString) + 2) ||
+		Burger::StringCompare(
+			Sample.c_str() + (sizeof(gLargeString) - 1), "abc");
+	uFailure |= uTest;
+	ReportFailure("String::push_back() failure = %s", uTest, Sample.c_str());
+
+	Sample.append("unit test");
+	uTest = Sample.length() != (sizeof(gLargeString) + 2 + 9) ||
+		Burger::StringCompare(
+			Sample.c_str() + ((sizeof(gLargeString) - 1) + 3), "unit test");
+	uFailure |= uTest;
+	ReportFailure(
+		"String::append(const char *) failure = %s", uTest, Sample.c_str());
+
+	return uFailure;
+}
+
+/***************************************
+
+	Test String::find()
+
+***************************************/
+
+static uint_t BURGER_API TestStringFind(void) BURGER_NOEXCEPT
+{
+	uint_t uFailure = 0;
+
+	Burger::String str("There are two needles in this haystack with needles.");
+	const Burger::String str2("needle");
+
+	uintptr_t uResult = str.find('y');
+	uint_t uTest = uResult != 32;
+	uFailure |= uTest;
+	ReportFailure("String::find('y') failure = %u, should be 32", uTest,
+		static_cast<uint_t>(uResult));
+
+	uResult = str.find(str2);
+	uTest = uResult != 14;
+	uFailure |= uTest;
+	ReportFailure("String::find(str2) failure = %u, should be 14", uTest,
+		static_cast<uint_t>(uResult));
+
+	uResult = str.find("needles are small", uResult + 1, 6);
+	uTest = uResult != 44;
+	uFailure |= uTest;
+	ReportFailure(
+		"String::find(needles are small, 6) failure = %u, should be 44", uTest,
+		static_cast<uint_t>(uResult));
+
+	uResult = str.find("haystack");
+	uTest = uResult != 30;
+	uFailure |= uTest;
+	ReportFailure("String::find(haystack) failure = %u, should be 30", uTest,
+		static_cast<uint_t>(uResult));
+
+	uResult = str.find('.');
+	uTest = uResult != 51;
+	uFailure |= uTest;
+	ReportFailure("String::find('.') failure = %u, should be 51", uTest,
+		static_cast<uint_t>(uResult));
+
+	// Test if it works with Remove()
+	str.Remove(str.find(str2), str2.length());
+	uTest = Burger::StringCompare(str.c_str(),
+				"There are two s in this haystack with needles.") != 0;
+	uFailure |= uTest;
+	ReportFailure(
+		"str.Remove(str.find(str2), str2.length()) failure = %s, should be "
+		"\"There are two s in this haystack with needles.\"",
+		uTest, str.c_str());
+
 	return uFailure;
 }
 
@@ -255,6 +400,9 @@ int BURGER_API TestBrstrings(uint_t uVerbose) BURGER_NOEXCEPT
 	// Test compiler switches
 	uTotal = TestWildcard();
 	uTotal |= TestParseQuotedString();
+	uTotal |= TestStringConstructors();
+	uTotal |= TestStringAppend();
+	uTotal |= TestStringFind();
 	uTotal |= TestGetEnvironmentString(uVerbose);
 	uTotal |= TestStringStopAt();
 	uTotal |= TestStringSkipOver();

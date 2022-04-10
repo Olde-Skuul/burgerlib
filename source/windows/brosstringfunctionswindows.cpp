@@ -76,7 +76,7 @@ Burger::eError BURGER_API Burger::GetUserLoginName(
             static_cast<WCHAR*>(AllocClear(sizeof(WCHAR) * (uBufferSize + 1)));
         if (pBuffer) {
             if (GetUserNameW(pBuffer, &uBufferSize)) {
-                uResult = pOutput->Set(static_cast<const uint16_t*>(
+                uResult = pOutput->assign(static_cast<const uint16_t*>(
                     static_cast<const void*>(pBuffer)));
             }
             Free(pBuffer);
@@ -84,7 +84,7 @@ Burger::eError BURGER_API Burger::GetUserLoginName(
     }
 
     if (uResult) {
-        pOutput->Set("User");
+        pOutput->assign("User");
     }
 
     return uResult;
@@ -133,7 +133,7 @@ Burger::eError BURGER_API Burger::GetUserRealName(
             // Try getting the real user's name
             if (GetUserNameExW(NameDisplay,
                     reinterpret_cast<LPWSTR>(Temp.c_str()), &uBufferSize)) {
-                uResult = pOutput->Set(Temp.c_str());
+                uResult = pOutput->assign(Temp.c_str());
             }
         }
     }
@@ -188,7 +188,7 @@ Burger::eError BURGER_API Burger::GetMachineName(
         // Was there a comment?
         if (pInfo->sv101_comment && pInfo->sv101_comment[0]) {
             // Return the comment
-            uResult = pOutput->Set(
+            uResult = pOutput->assign(
                 reinterpret_cast<const uint16_t*>(pInfo->sv101_comment));
         }
     }
@@ -203,7 +203,7 @@ Burger::eError BURGER_API Burger::GetMachineName(
                 AllocClear(sizeof(WCHAR) * (uBufferSize + 1)));
             if (GetComputerNameExW(
                     ComputerNameDnsHostname, pBuffer, &uBufferSize)) {
-                uResult = pOutput->Set(static_cast<const uint16_t*>(
+                uResult = pOutput->assign(static_cast<const uint16_t*>(
                     static_cast<const void*>(pBuffer)));
             }
             Free(pBuffer);
@@ -211,7 +211,7 @@ Burger::eError BURGER_API Burger::GetMachineName(
 
         // If that didn't work, punt.
         if (uResult) {
-            pOutput->Set("Computer");
+            pOutput->assign("Computer");
         }
     }
     return uResult;

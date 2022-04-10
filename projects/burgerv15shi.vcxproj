@@ -328,7 +328,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\android;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;$(ProjectDir)..\source\unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DISABLE_IMPORTGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -348,13 +348,6 @@
       <OptimizeReferences>false</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\shield\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\shield\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM-Android-NVIDIA'">
     <ClCompile>
@@ -365,7 +358,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\android;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;$(ProjectDir)..\source\unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DISABLE_IMPORTGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -385,13 +378,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <OptimizeReferences>false</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\shield\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\shield\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AArch64-Android-NVIDIA'">
     <ClCompile>
@@ -402,7 +388,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\android;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;$(ProjectDir)..\source\unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DISABLE_IMPORTGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -422,13 +408,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <OptimizeReferences>false</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\shield\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\shield\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86-Android-NVIDIA'">
     <ClCompile>
@@ -439,7 +418,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\android;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;$(ProjectDir)..\source\unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DISABLE_IMPORTGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -461,13 +440,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <OptimizeReferences>false</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\shield\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\shield\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64-Android-NVIDIA'">
     <ClCompile>
@@ -478,7 +450,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\android;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;$(ProjectDir)..\source\unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DISABLE_IMPORTGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -500,13 +472,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <OptimizeReferences>false</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\shield\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\shield\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Internal|Tegra-Android'">
     <ClCompile>
@@ -517,7 +482,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\android;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;$(ProjectDir)..\source\unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DISABLE_IMPORTGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -538,13 +503,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\shield\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\shield\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Internal|ARM-Android-NVIDIA'">
     <ClCompile>
@@ -555,7 +513,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\android;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;$(ProjectDir)..\source\unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DISABLE_IMPORTGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -576,13 +534,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\shield\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\shield\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Internal|AArch64-Android-NVIDIA'">
     <ClCompile>
@@ -593,7 +544,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\android;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;$(ProjectDir)..\source\unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DISABLE_IMPORTGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -614,13 +565,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\shield\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\shield\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Internal|x86-Android-NVIDIA'">
     <ClCompile>
@@ -631,7 +575,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\android;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;$(ProjectDir)..\source\unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DISABLE_IMPORTGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -654,13 +598,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\shield\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\shield\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Internal|x64-Android-NVIDIA'">
     <ClCompile>
@@ -671,7 +608,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\android;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;$(ProjectDir)..\source\unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DISABLE_IMPORTGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -694,13 +631,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\shield\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\shield\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
     <ClCompile>
@@ -713,7 +643,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\android;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;$(ProjectDir)..\source\unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;DISABLE_IMPORTGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -737,13 +667,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\shield\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\shield\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM-Android-NVIDIA'">
     <ClCompile>
@@ -756,7 +679,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\android;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;$(ProjectDir)..\source\unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;DISABLE_IMPORTGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -780,13 +703,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\shield\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\shield\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|AArch64-Android-NVIDIA'">
     <ClCompile>
@@ -799,7 +715,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\android;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;$(ProjectDir)..\source\unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;DISABLE_IMPORTGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -823,13 +739,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\shield\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\shield\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86-Android-NVIDIA'">
     <ClCompile>
@@ -842,7 +751,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\android;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;$(ProjectDir)..\source\unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;DISABLE_IMPORTGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -868,13 +777,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\shield\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\shield\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64-Android-NVIDIA'">
     <ClCompile>
@@ -887,7 +789,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\android;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\shield;$(ProjectDir)..\source\text;$(ProjectDir)..\source\unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;DISABLE_IMPORTGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -913,15 +815,9 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\shield\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\shield\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\source\android\brandroidtypes.h" />
     <ClInclude Include="..\source\ansi\brcapturestdout.h" />
     <ClInclude Include="..\source\ansi\brfileansihelpers.h" />
     <ClInclude Include="..\source\ansi\brmemoryansi.h" />
@@ -1041,6 +937,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
     <ClInclude Include="..\source\input\brkeyboard.h" />
     <ClInclude Include="..\source\input\brmouse.h" />
     <ClInclude Include="..\source\lowlevel\bralgorithm.h" />
+    <ClInclude Include="..\source\lowlevel\brargumenttype.h" />
     <ClInclude Include="..\source\lowlevel\brarray.h" />
     <ClInclude Include="..\source\lowlevel\brassert.h" />
     <ClInclude Include="..\source\lowlevel\bratomic.h" />
@@ -1088,6 +985,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
     <ClInclude Include="..\source\math\brfloatingpoint.h" />
     <ClInclude Include="..\source\math\brfpinfo.h" />
     <ClInclude Include="..\source\math\brfplargeint.h" />
+    <ClInclude Include="..\source\math\brfpprintinfo.h" />
     <ClInclude Include="..\source\math\brmatrix3d.h" />
     <ClInclude Include="..\source\math\brmatrix4d.h" />
     <ClInclude Include="..\source\math\brmp3math.h" />
@@ -1103,6 +1001,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
     <ClInclude Include="..\source\shield\brshieldtypes.h" />
     <ClInclude Include="..\source\templateburgerbase.h" />
     <ClInclude Include="..\source\text\brasciito.h" />
+    <ClInclude Include="..\source\text\brcodepage.h" />
     <ClInclude Include="..\source\text\brisolatin1.h" />
     <ClInclude Include="..\source\text\brlocalization.h" />
     <ClInclude Include="..\source\text\brmacromanus.h" />
@@ -1120,6 +1019,12 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
     <ClInclude Include="..\source\text\brutf32.h" />
     <ClInclude Include="..\source\text\brutf8.h" />
     <ClInclude Include="..\source\text\brwin1252.h" />
+    <ClInclude Include="..\source\text\brwin437.h" />
+    <ClInclude Include="..\source\unix\brunixtypes.h" />
+    <ClCompile Include="..\source\android\brcodelibraryandroid.cpp" />
+    <ClCompile Include="..\source\android\brcriticalsectionandroid.cpp" />
+    <ClCompile Include="..\source\android\brdebugandroid.cpp" />
+    <ClCompile Include="..\source\android\brtickandroid.cpp" />
     <ClCompile Include="..\source\ansi\brcapturestdout.cpp" />
     <ClCompile Include="..\source\ansi\brfileansihelpers.cpp" />
     <ClCompile Include="..\source\ansi\brmemoryansi.cpp" />
@@ -1225,6 +1130,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
     <ClCompile Include="..\source\input\brkeyboard.cpp" />
     <ClCompile Include="..\source\input\brmouse.cpp" />
     <ClCompile Include="..\source\lowlevel\bralgorithm.cpp" />
+    <ClCompile Include="..\source\lowlevel\brargumenttype.cpp" />
     <ClCompile Include="..\source\lowlevel\brarray.cpp" />
     <ClCompile Include="..\source\lowlevel\brassert.cpp" />
     <ClCompile Include="..\source\lowlevel\bratomic.cpp" />
@@ -1266,6 +1172,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
     <ClCompile Include="..\source\math\brfloatingpoint.cpp" />
     <ClCompile Include="..\source\math\brfpinfo.cpp" />
     <ClCompile Include="..\source\math\brfplargeint.cpp" />
+    <ClCompile Include="..\source\math\brfpprintinfo.cpp" />
     <ClCompile Include="..\source\math\brmatrix3d.cpp" />
     <ClCompile Include="..\source\math\brmatrix4d.cpp" />
     <ClCompile Include="..\source\math\brmp3math.cpp" />
@@ -1279,10 +1186,8 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
     <ClCompile Include="..\source\random\brmersennetwist.cpp" />
     <ClCompile Include="..\source\random\brrandom.cpp" />
     <ClCompile Include="..\source\random\brrandombase.cpp" />
-    <ClCompile Include="..\source\shield\brcodelibraryshield.cpp" />
-    <ClCompile Include="..\source\shield\brcriticalsectionshield.cpp" />
-    <ClCompile Include="..\source\shield\brtickshield.cpp" />
     <ClCompile Include="..\source\text\brasciito.cpp" />
+    <ClCompile Include="..\source\text\brcodepage.cpp" />
     <ClCompile Include="..\source\text\brisolatin1.cpp" />
     <ClCompile Include="..\source\text\brlocalization.cpp" />
     <ClCompile Include="..\source\text\brmacromanus.cpp" />
@@ -1300,6 +1205,11 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\shield\burgerlib\$(TargetName)$(TargetExt)"<
     <ClCompile Include="..\source\text\brutf32.cpp" />
     <ClCompile Include="..\source\text\brutf8.cpp" />
     <ClCompile Include="..\source\text\brwin1252.cpp" />
+    <ClCompile Include="..\source\text\brwin437.cpp" />
+    <ClCompile Include="..\source\unix\brfilemanagerunix.cpp" />
+    <ClCompile Include="..\source\unix\brfilenameunix.cpp" />
+    <ClCompile Include="..\source\unix\brosstringfunctionsunix.cpp" />
+    <ClCompile Include="..\source\unix\brunixtypes.cpp" />
     <GLSL Include="..\source\graphics\shadersopengl\pscclr4gl.glsl">
       <ObjectFileName>%(RootDir)%(Directory)Generated\%(FileName).h</ObjectFileName>
     </GLSL>

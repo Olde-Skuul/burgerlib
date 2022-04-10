@@ -118,7 +118,7 @@ bytes. \sa Open(const char *, eFileAccess) and Open(Filename *,eFileAccess)
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::File::GetSize(void)
+uintptr_t BURGER_API Burger::File::GetSize(void) BURGER_NOEXCEPT
 {
 	uintptr_t uSize = 0;
 	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
@@ -292,7 +292,7 @@ SetModificationTime()
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::File::GetModificationTime(TimeDate_t* pOutput)
+Burger::eError BURGER_API Burger::File::GetModificationTime(TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorFileNotFound;
 	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));

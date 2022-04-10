@@ -92,6 +92,7 @@
 #include "brmetrowerks.h"
 #include "brsnsystems.h"
 #include "brassert.h"
+#include "brlocalization.h"
 #include "brdebug.h"
 #include "brguid.h"
 #include "brwindowstypes.h"

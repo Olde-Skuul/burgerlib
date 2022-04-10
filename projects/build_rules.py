@@ -13,21 +13,31 @@ determine special rules on how to handle building the code and / or data.
 
 # pylint: disable=unused-argument
 # pylint: disable=consider-using-f-string
+# pylint: disable=global-statement
 
 from __future__ import absolute_import, print_function, unicode_literals
 
 import os
 from burger import copy_file_if_needed, get_windows_host_type, \
     is_codewarrior_mac_allowed, get_sdks_folder, clean_directories, \
-    clean_files
+    clean_files, is_under_git_control
 from makeprojects import PlatformTypes, IDETypes, ProjectTypes, makeprojects, \
     _HLSL_MATCH, _GLSL_MATCH, _X360SL_MATCH, _VITACG_MATCH
+
+# Check if git is around
+_GIT_FOUND = None
 
 # If set to True, ``buildme -r``` will not parse directories in this folder.
 BUILDME_NO_RECURSE = True
 
 # ``buildme``` will build these files and folders first.
 BUILDME_DEPENDENCIES = []
+
+# Process any child directory with the clean() function if True.
+CLEANME_GENERIC = False
+
+# ``cleanme`` will process build_rules.py in the parent folder if True.
+CLEANME_CONTINUE = False
 
 # If set to True, ``cleanme -r``` will not parse directories in this folder.
 CLEANME_NO_RECURSE = True
@@ -231,6 +241,19 @@ ARG_LISTS = [
 
 ########################################
 
+def is_git(working_directory):
+    """
+    Detect if perforce or git is source control
+    """
+
+    global _GIT_FOUND
+
+    if _GIT_FOUND is None:
+        _GIT_FOUND = is_under_git_control(working_directory)
+    return _GIT_FOUND
+
+########################################
+
 
 def clean(working_directory):
     """
@@ -320,6 +343,10 @@ def postbuild(working_directory, configuration):
         None if not implemented, otherwise an integer error code.
     """
 
+    # Only process if perforce is source control
+    if is_git(working_directory):
+        return 0
+
     # Copy the windows version of the CodeWarrior libraries.
     error = 0
 
@@ -397,6 +424,8 @@ def do_project(working_directory, project):
     # Too many branches
     # Too many statements
     # pylint: disable=R0912,R0915
+
+    project.solution.perforce = not is_git(working_directory)
 
     platform = project.platform
     ide = project.solution.ide
@@ -551,8 +580,9 @@ def do_project(working_directory, project):
             project.libraries_list.append('GL')
 
     else:
-        project.deploy_folder = \
-            '$(BURGER_SDKS)/{}/burgerlib'.format(platform_folder)
+        if not is_git(working_directory):
+            project.deploy_folder = \
+                '$(BURGER_SDKS)/{}/burgerlib'.format(platform_folder)
 
     if platform.is_windows():
         if ide.is_codewarrior() or project.name == 'unittests':

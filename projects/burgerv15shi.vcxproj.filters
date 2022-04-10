@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <ClInclude Include="..\source\android\brandroidtypes.h">
+      <Filter>source\android</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\ansi\brcapturestdout.h">
       <Filter>source\ansi</Filter>
     </ClInclude>
@@ -358,6 +361,9 @@
     <ClInclude Include="..\source\lowlevel\bralgorithm.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brargumenttype.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brarray.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -499,6 +505,9 @@
     <ClInclude Include="..\source\math\brfplargeint.h">
       <Filter>source\math</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\math\brfpprintinfo.h">
+      <Filter>source\math</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\math\brmatrix3d.h">
       <Filter>source\math</Filter>
     </ClInclude>
@@ -542,6 +551,9 @@
       <Filter>source</Filter>
     </ClInclude>
     <ClInclude Include="..\source\text\brasciito.h">
+      <Filter>source\text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\text\brcodepage.h">
       <Filter>source\text</Filter>
     </ClInclude>
     <ClInclude Include="..\source\text\brisolatin1.h">
@@ -595,6 +607,24 @@
     <ClInclude Include="..\source\text\brwin1252.h">
       <Filter>source\text</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\text\brwin437.h">
+      <Filter>source\text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\unix\brunixtypes.h">
+      <Filter>source\unix</Filter>
+    </ClInclude>
+    <ClCompile Include="..\source\android\brcodelibraryandroid.cpp">
+      <Filter>source\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\android\brcriticalsectionandroid.cpp">
+      <Filter>source\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\android\brdebugandroid.cpp">
+      <Filter>source\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\android\brtickandroid.cpp">
+      <Filter>source\android</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\ansi\brcapturestdout.cpp">
       <Filter>source\ansi</Filter>
     </ClCompile>
@@ -910,6 +940,9 @@
     <ClCompile Include="..\source\lowlevel\bralgorithm.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brargumenttype.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brarray.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1033,6 +1066,9 @@
     <ClCompile Include="..\source\math\brfplargeint.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\math\brfpprintinfo.cpp">
+      <Filter>source\math</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\math\brmatrix3d.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
@@ -1072,16 +1108,10 @@
     <ClCompile Include="..\source\random\brrandombase.cpp">
       <Filter>source\random</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\shield\brcodelibraryshield.cpp">
-      <Filter>source\shield</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\shield\brcriticalsectionshield.cpp">
-      <Filter>source\shield</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\shield\brtickshield.cpp">
-      <Filter>source\shield</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\text\brasciito.cpp">
+      <Filter>source\text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\text\brcodepage.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
     <ClCompile Include="..\source\text\brisolatin1.cpp">
@@ -1135,6 +1165,21 @@
     <ClCompile Include="..\source\text\brwin1252.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\text\brwin437.cpp">
+      <Filter>source\text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\unix\brfilemanagerunix.cpp">
+      <Filter>source\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\unix\brfilenameunix.cpp">
+      <Filter>source\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\unix\brosstringfunctionsunix.cpp">
+      <Filter>source\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\unix\brunixtypes.cpp">
+      <Filter>source\unix</Filter>
+    </ClCompile>
     <GLSL Include="..\source\graphics\shadersopengl\pscclr4gl.glsl">
       <Filter>source\graphics\shadersopengl</Filter>
     </GLSL>
@@ -1161,6 +1206,9 @@
     </GLSL>
     <Filter Include="source">
       <UniqueIdentifier>208CE673-D953-3CAB-9943-B55B81BDEBDD</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\android">
+      <UniqueIdentifier>2020E981-69E3-339C-847D-DC3566B00A47</UniqueIdentifier>
     </Filter>
     <Filter Include="source\ansi">
       <UniqueIdentifier>DA27A323-7CB9-3D8D-9188-0C199ADFED3C</UniqueIdentifier>
@@ -1221,6 +1269,9 @@
     </Filter>
     <Filter Include="source\text">
       <UniqueIdentifier>48B9A7FA-7A4B-3059-933F-D0816967BC90</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\unix">
+      <UniqueIdentifier>775447BE-0263-383C-B172-61539DFD0E1E</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

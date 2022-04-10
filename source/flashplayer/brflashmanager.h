@@ -79,7 +79,7 @@ public:
 	void BURGER_API SetRootObject(RootObject *pObject);
 	BURGER_INLINE Random *GetRandomGenerator(void) { return &m_Random; }
 	BURGER_INLINE Filename *GetDataDirectory(void) { return &m_BaseDirectory; }
-	BURGER_INLINE void SetDataDirectory(const char *pDirectory) { m_BaseDirectory.Set(pDirectory); }
+	BURGER_INLINE void SetDataDirectory(const char *pDirectory) { m_BaseDirectory.assign(pDirectory); }
 	BURGER_INLINE float GetLODBias(void) const { return m_fTextureLODBias; }
 	void BURGER_API SetLODBias(float fTextureLODBias=-1.2f);
 	BURGER_INLINE float GetCurvePixelError(void) const { return m_fCurvePixelError; }

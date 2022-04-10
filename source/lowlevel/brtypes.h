@@ -903,7 +903,7 @@
 #define BURGER_STATIC_ASSERT(x) static_assert(x, #x)
 #else
 #define BURGER_STATIC_ASSERT(x) \
-	typedef int ThisIsABogusTypeDef##__LINE__[(x) ? 1 : -1]
+	typedef int BURGER_JOIN2(ThisIsABogusTypeDef, __LINE__)[(x) ? 1 : -1]
 #endif
 
 // Test for constexpr support
@@ -1519,6 +1519,11 @@ typedef intptr_t IntPtr;
 #define BURGER_MAXINTPTR INTPTR_MAX
 
 /* END */
+
+#if defined(BURGER_MSVC)
+// 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
+#pragma warning(disable : 4091)
+#endif
 
 #if (BURGER_MSVC >= 192000000)
 #pragma warning(disable : 26429 26446 26472 26481 26482 26485 26490)

@@ -17,6 +17,7 @@
 #include "brfilename.h"
 #include "broutputmemorystream.h"
 #include "brstring.h"
+#include "brosstringfunctions.h"
 #import <AppKit/NSApplication.h>
 #import <AppKit/NSEvent.h>
 #import <AppKit/NSHelpManager.h>
@@ -330,57 +331,6 @@ void BURGER_API Burger::Globals::CreateDefaultMenus(void)
 
 /*! ************************************
 
-	\brief Convert an NSString to a Burger::String (MacOSX and Carbon Only)
-
-	Given a valid const NSString, convert the string into UTF8 encoding and
-	store the result into an output \ref String.
-
-	\macosxonly
-	\param pOutput Pointer to a String class instance to recieve the string
-	\param pInput Pointer to a constant NSString or CFString to convert
-
-***************************************/
-
-void BURGER_API Burger::Globals::StringCopy(String* pOutput, CFStringRef pInput)
-{
-	// Try the easy way the just yank a "C" string pointer out directly
-	const char* pResult = CFStringGetCStringPtr(pInput, kCFStringEncodingUTF8);
-	if (pResult) {
-		// Piece of cake!
-		pOutput->Set(pResult);
-	} else {
-		// Crap, it's not encoded in UTF8 (Likely UTF-16)
-
-		// Get the length of the string in UTF16 characters
-		CFIndex uLength = CFStringGetLength(pInput);
-		if (!uLength) {
-			// If it's empty, leave now
-			pOutput->clear();
-		} else {
-			// Determine the maximum buffer that would be needed for conversion
-			// to UTF-8
-			CFIndex uMaxLength = CFStringGetMaximumSizeForEncoding(
-				uLength, kCFStringEncodingUTF8);
-			// Create the buffer
-			pOutput->SetBufferSize(static_cast<uintptr_t>(uMaxLength));
-			// Convert the string and store into the buffer
-			if (!CFStringGetCString(pInput, pOutput->c_str(), uMaxLength + 1,
-					kCFStringEncodingUTF8)) {
-				// Lovely, failure
-				pOutput->clear();
-			} else {
-				// Truncate the string to fit the final string
-				// Note: Due to the manual copy, don't assume
-				// pOutput->length() returns a valid value. Once
-				// SetBufferSize() completes, the length is correct
-				pOutput->SetBufferSize(StringLength(pOutput->c_str()));
-			}
-		}
-	}
-}
-
-/*! ************************************
-
 	\brief Obtain the name of an HID device (MacOSX Only)
 
 	Given an IOHIDDeviceRef, query for a device name, and if none is found, a
@@ -404,7 +354,7 @@ void BURGER_API Burger::Globals::GetHIDDeviceName(
 	}
 	if (!pCFString) {
 		// What???? Surrender
-		pOutput->Set("Unknown device");
+		pOutput->assign("Unknown device");
 	} else {
 		StringCopy(pOutput, pCFString);
 		// Note: We "got" the string, so releasing isn't needed
@@ -496,7 +446,7 @@ void Burger::Globals::GetDisplayName(String* pOutput, uint_t uDisplayID)
 		!CFDictionaryGetValueIfPresent(rNameList, CFSTR("en_US"),
 			reinterpret_cast<const void**>(&rMonitorName))) {
 		// Name not present? Possible it's a mac without a monitor or display
-		pOutput->Set("Inactive");
+		pOutput->assign("Inactive");
 	} else {
 		StringCopy(pOutput, rMonitorName);
 	}
@@ -569,7 +519,7 @@ uint_t BURGER_API Burger::Globals::GetMacOSVersion(void)
 		// Space for the string
 		//
 		String Buffer;
-		Buffer.SetBufferSize(uLength);
+		Buffer.resize(uLength);
 		// Make sure the buffer was allocated
 		if (Buffer.length() == uLength) {
 			// Get the string

@@ -118,8 +118,8 @@ static BOOL CALLBACK EnumJoysticksCallback(const DIDEVICEINSTANCEW* pdidInstance
 		Burger::MemoryCopy(&pFound->m_InstanceGUID,&pdidInstance->guidInstance,sizeof(GUID));
 		Burger::MemoryCopy(&pFound->m_ProductGUID,&pdidInstance->guidProduct,sizeof(GUID));
 		// Convert the names to UTF-8
-		pFound->m_InstanceName.Set(static_cast<const uint16_t *>(static_cast<const void *>(pdidInstance->tszInstanceName)));
-		pFound->m_ProductName.Set(static_cast<const uint16_t *>(static_cast<const void *>(pdidInstance->tszProductName)));
+		pFound->m_InstanceName.assign(static_cast<const uint16_t *>(static_cast<const void *>(pdidInstance->tszInstanceName)));
+		pFound->m_ProductName.assign(static_cast<const uint16_t *>(static_cast<const void *>(pdidInstance->tszProductName)));
 		++uIndex;
 		pJoystick->m_uCount = uIndex;
 
@@ -251,8 +251,8 @@ Burger::Joypad::Joypad(GameApp *pAppInstance) :
 			pJoypadData->m_uButtonCount = 12;		// XInput manages 12 buttons
 			pJoypadData->m_uPOVCount = 1;			// One POV controller
 			pJoypadData->m_uAxisCount = 6;			// Two thumbsticks and two triggers
-			pJoypadData->m_InstanceName.Set("Gamepad for Xbox 360 (Controller)");
-			pJoypadData->m_ProductName.Set("Gamepad for Xbox 360 (Controller)");
+			pJoypadData->m_InstanceName.assign("Gamepad for Xbox 360 (Controller)");
+			pJoypadData->m_ProductName.assign("Gamepad for Xbox 360 (Controller)");
 			//pJoypadData->m_bConnected = FALSE;
 			++pJoypadData;
 		} while (--uXInputCount);

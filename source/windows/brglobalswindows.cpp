@@ -721,14 +721,13 @@ uint_t BURGER_API Burger::Globals::AddGroupToProgramMenu(const char* pGroupName)
             String16 GroupName(pGroupName);
             StringConcatenate(WorkPath, sizeof(WorkPath), GroupName.GetPtr());
             // Convert to UTF8 for Burgerlib
-            String UTF8(WorkPath);
             Filename TempPath;
-            TempPath.SetFromNative(UTF8.c_str());
+            TempPath.SetFromNative(WorkPath);
             if (!FileManager::CreateDirectoryPath(
                     &TempPath)) { // Create the directory
                 // Notify the shell that this folder was updated
                 // Use SHCNF_PATHW since WorkPath is UTF16
-                SHChangeNotify(SHCNE_MKDIR, SHCNF_PATHW, WorkPath, NULL);
+                SHChangeNotify(SHCNE_MKDIR, SHCNF_PATHW, WorkPath, nullptr);
             }
             uResult = 0; // Success!
         }
@@ -1759,7 +1758,7 @@ const char* BURGER_API Burger::GetEnvironmentString(
                     reinterpret_cast<LPWSTR>(Output.c_str()), uLength + 1);
                 // Convert to UTF8
                 String Final;
-                if (!Final.Set(Output.c_str())) {
+                if (!Final.assign(Output.c_str())) {
 
                     // Return a copy
                     pValue = StringDuplicate(Final.c_str());

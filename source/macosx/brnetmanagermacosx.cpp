@@ -266,7 +266,7 @@ Burger::eError BURGER_API Burger::NetworkManager::Init(void) BURGER_NOEXCEPT
 		// https://msdn.microsoft.com/en-us/library/windows/desktop/ms738527(v=vs.85).aspx
 		char TempHostName[512];
 		if (!gethostname(TempHostName, sizeof(TempHostName))) {
-			m_HostName.Set(TempHostName);
+			m_HostName.assign(TempHostName);
 		}
 
 		// Obtain the local addresses

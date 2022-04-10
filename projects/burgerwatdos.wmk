@@ -210,6 +210,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/bradler32.obj &
 	$(A)/bralaw.obj &
 	$(A)/bralgorithm.obj &
+	$(A)/brargumenttype.obj &
 	$(A)/brarray.obj &
 	$(A)/brasciito.obj &
 	$(A)/brassert.obj &
@@ -218,6 +219,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brbase.obj &
 	$(A)/brcapturestdout.obj &
 	$(A)/brcodelibrary.obj &
+	$(A)/brcodepage.obj &
 	$(A)/brcommandparameter.obj &
 	$(A)/brcommandparameterbooltrue.obj &
 	$(A)/brcommandparameterstring.obj &
@@ -296,6 +298,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brfont4bit.obj &
 	$(A)/brfpinfo.obj &
 	$(A)/brfplargeint.obj &
+	$(A)/brfpprintinfo.obj &
 	$(A)/brgameapp.obj &
 	$(A)/brglobalmemorymanager.obj &
 	$(A)/brglobals.obj &
@@ -390,7 +393,8 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brvector4d.obj &
 	$(A)/brvertexbuffer.obj &
 	$(A)/brvertexbufferopengl.obj &
-	$(A)/brwin1252.obj
+	$(A)/brwin1252.obj &
+	$(A)/brwin437.obj
 
 #
 # List the names of all of the final binaries to build
@@ -475,46 +479,28 @@ A = $(BASE_TEMP_DIR)wat4gwdbg
 $(DESTINATION_DIR)\$(PROJECT_NAME)wat4gwdbg.lib: $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
-	@p4 edit "$(BURGER_SDKS)\dos\burgerlib\$^."
-	@copy /y "$^@" "$(BURGER_SDKS)\dos\burgerlib\$^."
-	@p4 revert -a "$(BURGER_SDKS)\dos\burgerlib\$^."
 
 A = $(BASE_TEMP_DIR)watx32dbg
 $(DESTINATION_DIR)\$(PROJECT_NAME)watx32dbg.lib: $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
-	@p4 edit "$(BURGER_SDKS)\dos\burgerlib\$^."
-	@copy /y "$^@" "$(BURGER_SDKS)\dos\burgerlib\$^."
-	@p4 revert -a "$(BURGER_SDKS)\dos\burgerlib\$^."
 
 A = $(BASE_TEMP_DIR)wat4gwint
 $(DESTINATION_DIR)\$(PROJECT_NAME)wat4gwint.lib: $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
-	@p4 edit "$(BURGER_SDKS)\dos\burgerlib\$^."
-	@copy /y "$^@" "$(BURGER_SDKS)\dos\burgerlib\$^."
-	@p4 revert -a "$(BURGER_SDKS)\dos\burgerlib\$^."
 
 A = $(BASE_TEMP_DIR)watx32int
 $(DESTINATION_DIR)\$(PROJECT_NAME)watx32int.lib: $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
-	@p4 edit "$(BURGER_SDKS)\dos\burgerlib\$^."
-	@copy /y "$^@" "$(BURGER_SDKS)\dos\burgerlib\$^."
-	@p4 revert -a "$(BURGER_SDKS)\dos\burgerlib\$^."
 
 A = $(BASE_TEMP_DIR)wat4gwrel
 $(DESTINATION_DIR)\$(PROJECT_NAME)wat4gwrel.lib: $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
-	@p4 edit "$(BURGER_SDKS)\dos\burgerlib\$^."
-	@copy /y "$^@" "$(BURGER_SDKS)\dos\burgerlib\$^."
-	@p4 revert -a "$(BURGER_SDKS)\dos\burgerlib\$^."
 
 A = $(BASE_TEMP_DIR)watx32rel
 $(DESTINATION_DIR)\$(PROJECT_NAME)watx32rel.lib: $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
-	@p4 edit "$(BURGER_SDKS)\dos\burgerlib\$^."
-	@copy /y "$^@" "$(BURGER_SDKS)\dos\burgerlib\$^."
-	@p4 revert -a "$(BURGER_SDKS)\dos\burgerlib\$^."

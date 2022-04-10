@@ -4694,26 +4694,101 @@ char* BURGER_API Burger::StringString(
 {
 	// Get the first character
 	uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
-	if (uTemp) { // Do I even bother?
+
+	// Do I even bother?
+	if (uTemp) {
 		do {
 			uintptr_t i = 0; // Init the index
 			uint_t uTemp2;
 			do {
 				// Get the first char of the test string
 				uTemp2 = reinterpret_cast<const uint8_t*>(pTest)[i];
-				if (!uTemp2) {                        // Match?
-					return const_cast<char*>(pInput); // I matched here!
+
+				// Match?
+				if (!uTemp2) {
+
+					// I matched here!
+					return const_cast<char*>(pInput);
 				}
 				// Get the source string
 				uTemp = reinterpret_cast<const uint8_t*>(pInput)[i];
-				++i;                   // Ack the char
-			} while (uTemp == uTemp2); // Match?
-			++pInput;                  // Next main string char
+
+				// Ack the char
+				++i;
+
+				// Match?
+			} while (uTemp == uTemp2);
+
+			// Next main string char
+			++pInput;
 			// Next entry
 			uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
 			// Source string still ok?
 		} while (uTemp);
 	}
+
+	// No string match
+	return nullptr;
+}
+
+/*! ************************************
+
+	\brief Locate a substring
+
+	Returns a pointer to the first occurrence of pTest in pInput, or a \ref
+	nullptr pointer if pTest is not part of pInput.
+
+	The matching process does not include the terminating null-characters, but
+	it stops there.
+
+	\param pInput Pointer to the string to scan
+	\param pTest Pointer to the substring to look for
+	\param uTestLength Number of elements in the string to match
+
+	\return \ref nullptr if substring was not found or the pointer to the first
+		matching string
+
+	\sa StringString(const char *,const char *)
+
+***************************************/
+
+char* BURGER_API Burger::StringString(const char* pInput, const char* pTest,
+	uintptr_t uTestLength) BURGER_NOEXCEPT
+{
+	// Get the first character
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+
+	// Do I even bother?
+	if (uTemp) {
+		do {
+			uintptr_t i = 0; // Init the index
+			uint_t uTemp2;
+			do {
+
+				// Reached the end of the match string?
+				if (i >= uTestLength) {
+					// I matched here!
+					return const_cast<char*>(pInput);
+				}
+				// Get the first char of the test string
+				uTemp2 = reinterpret_cast<const uint8_t*>(pTest)[i];
+				// Get the source string
+				uTemp = reinterpret_cast<const uint8_t*>(pInput)[i];
+
+				// Ack the char
+				++i;
+
+				// Match?
+			} while (uTemp == uTemp2);
+
+			// Next main string char
+			++pInput;
+			// Next entry
+			uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+			// Source string still ok?
+		} while (uTemp);
+	}
+
 	// No string match
 	return nullptr;
 }

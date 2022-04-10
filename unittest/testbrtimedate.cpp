@@ -44,6 +44,49 @@ static uint_t BURGER_API TestBurgerTimeDateClear(void) BURGER_NOEXCEPT
 	return uFailure;
 }
 
+/***************************************
+
+	Test creating the day of the week
+
+***************************************/
+
+static uint_t BURGER_API TestBurgerTimeCalcDayOfWeek(void) BURGER_NOEXCEPT
+{
+	Burger::TimeDate_t Test;
+
+	Test.m_bMonth = 10;
+	Test.m_bDay = 30;
+	Test.m_uYear = 1963;
+	uint_t uResult = Test.CalcDayOfWeek();
+	uint_t uTest = uResult != 3;
+	uint_t uFailure = uTest;
+	ReportFailure(
+		"Burger::TimeDate_t::CalcDayOfWeek(10-30-1963) didn't return Wednesday, got %u.",
+		uFailure, uResult);
+
+	Test.m_bMonth = 4;
+	Test.m_bDay = 7;
+	Test.m_uYear = 2022;
+	uResult = Test.CalcDayOfWeek();
+	uTest = uResult != 4;
+	uFailure = uTest;
+	ReportFailure(
+		"Burger::TimeDate_t::CalcDayOfWeek(4-7-2022) didn't return Thursday, got %u.",
+		uFailure, uResult);
+
+	Test.m_bMonth = 8;
+	Test.m_bDay = 29;
+	Test.m_uYear = 1997;
+	uResult = Test.CalcDayOfWeek();
+	uTest = uResult != 5;
+	uFailure = uTest;
+	ReportFailure(
+		"Burger::TimeDate_t::CalcDayOfWeek(8-29-1997) didn't return Friday, got %u.",
+		uFailure, uResult);
+
+	return uFailure;
+}
+
 //
 // Perform all the tests for the Burgerlib Time Manager
 //
@@ -55,7 +98,8 @@ int BURGER_API TestDateTime(uint_t uVerbose) BURGER_NOEXCEPT
 	}
 
 	// Test compiler switches
-	const uint_t uResult = TestBurgerTimeDateClear();
+	uint_t uResult = TestBurgerTimeDateClear();
+	uResult |= TestBurgerTimeCalcDayOfWeek();
 
 	if (!uResult && (uVerbose & VERBOSE_TIME)) {
 		char Buffer[256];

@@ -30,31 +30,22 @@
 /* BEGIN */
 namespace Burger {
 class Filename {
-	/** Size of the filename buffer(Maximum) */
-	static const uint_t kBufferSize = 256;
 
 	/** Pointer to the burgerlib filename */
-	char* m_pFilename;
+	String m_Filename;
 	/** Pointer to the native filename */
-	char* m_pNativeFilename;
+	String m_NativeFilename;
 
-#if !defined(BURGER_MAC) && !defined(DOXYGEN)
-	/** Local buffer containing the filename (If it can fit in this buffer) */
-	char m_Filename[kBufferSize - (sizeof(char*))];
-	/** Local buffer containing the native filename */
-	char m_NativeFilename[kBufferSize - (sizeof(char*))];
-#else
+	/** TRUE if the native path is valid */
+	uint_t m_bNativeValid;
+
+#if defined(BURGER_MAC) || defined(DOXYGEN)
 	/** Opaque FSRef used by (MacOS 9 only) */
 	uint8_t m_FSRef[80];
 	/** Directory reference (MacOS 9 Only) */
 	long m_lDirID;
 	/** Volume reference used by copy and rename (MacOS 9 Only) */
 	short m_sVRefNum;
-	/** Local buffer containing the filename (If it can fit in this buffer) */
-	char m_Filename[kBufferSize -
-		(sizeof(char*) + sizeof(long) + sizeof(short))];
-	/** Local buffer containing the native filename */
-	char m_NativeFilename[kBufferSize - (sizeof(char*) + 80)];
 
 	/** Number of cache entries (MacOS 9 only) */
 	static const uint_t kDirectoryCacheSize = 8;
@@ -73,42 +64,50 @@ public:
 	static void BURGER_API InitDirectoryCache(void);
 	static void BURGER_API PurgeDirectoryCache(void);
 #endif
+protected:
+	eError BURGER_API end_with_colon(void) BURGER_NOEXCEPT;
 
 public:
-	Filename() BURGER_NOEXCEPT: m_pFilename(m_Filename),
-								m_pNativeFilename(m_NativeFilename)
+	Filename() BURGER_NOEXCEPT: m_bNativeValid(FALSE)
 #if defined(BURGER_MAC)
 		,
 								m_lDirID(0),
 								m_sVRefNum(0)
 #endif
 	{
-		m_Filename[0] = 0;
-		m_NativeFilename[0] = 0;
 	}
 	Filename(const char* pFilename) BURGER_NOEXCEPT;
 	Filename(Filename const& rInput) BURGER_NOEXCEPT;
-	Filename& operator=(Filename const& rInput);
+	Filename& operator=(Filename const& rInput) BURGER_NOEXCEPT;
+#if defined(BURGER_RVALUE_REFERENCES) || defined(DOXYGEN)
+	Filename(Filename&& rInput) BURGER_NOEXCEPT;
+	Filename& operator=(Filename&& rInput) BURGER_NOEXCEPT;
+#endif
 	~Filename();
 	BURGER_INLINE const char* c_str(void) const BURGER_NOEXCEPT
 	{
-		return m_pFilename;
+		return m_Filename.c_str();
 	}
 	BURGER_INLINE char* c_str(void) BURGER_NOEXCEPT
 	{
-		return m_pFilename;
+		return m_Filename.c_str();
 	}
-	eError BURGER_API Set(const char* pInput) BURGER_NOEXCEPT;
-	eError BURGER_API Set(const uint16_t* pInput) BURGER_NOEXCEPT;
-	void BURGER_API Clear(void) BURGER_NOEXCEPT;
-	eError BURGER_API Append(const char* pInput);
-	void BURGER_API GetFileName(char* pOutput, uintptr_t uOutputLength) const;
-	void BURGER_API GetFileExtension(
+	eError BURGER_API assign(const char* pInput) BURGER_NOEXCEPT;
+	eError BURGER_API assign(const uint16_t* pInput) BURGER_NOEXCEPT;
+	void BURGER_API clear(void) BURGER_NOEXCEPT;
+	eError BURGER_API join(const char* pInput) BURGER_NOEXCEPT;
+	eError BURGER_API join(
+		const char* pInput, uintptr_t uInputLength) BURGER_NOEXCEPT;
+	void BURGER_API get_basename(
 		char* pOutput, uintptr_t uOutputLength) const BURGER_NOEXCEPT;
-	void BURGER_API SetFileExtension(const char* pExtension) BURGER_NOEXCEPT;
-	eError BURGER_API DirName(void) BURGER_NOEXCEPT;
-	eError BURGER_API DirName(String* pOutput) const BURGER_NOEXCEPT;
-	void BURGER_API BaseName(String* pOutput) const BURGER_NOEXCEPT;
+	void BURGER_API get_basename(String* pOutput) const BURGER_NOEXCEPT;
+	void BURGER_API get_file_extension(
+		char* pOutput, uintptr_t uOutputLength) const BURGER_NOEXCEPT;
+	eError BURGER_API set_file_extension(
+		const char* pExtension) BURGER_NOEXCEPT;
+	eError BURGER_API dirname(void) BURGER_NOEXCEPT;
+	eError BURGER_API get_dirname(String* pOutput) const BURGER_NOEXCEPT;
+
 	uint_t BURGER_API IsFullPathname(void) const BURGER_NOEXCEPT;
 	uint_t BURGER_API IsFilenameOnly(void) const BURGER_NOEXCEPT;
 	uint_t BURGER_API ParsePrefixNumber(void) const BURGER_NOEXCEPT;
@@ -127,25 +126,25 @@ public:
 #endif
 
 #if defined(BURGER_MAC) || defined(DOXYGEN)
-	eError BURGER_API SetFromNative(
-		const char* pInput, long lDirID = 0, short sVRefNum = 0) BURGER_NOEXCEPT;
-	BURGER_INLINE FSRef* GetFSRef(void)
+	eError BURGER_API SetFromNative(const char* pInput, long lDirID = 0,
+		short sVRefNum = 0) BURGER_NOEXCEPT;
+	BURGER_INLINE FSRef* GetFSRef(void) BURGER_NOEXCEPT
 	{
 		return reinterpret_cast<FSRef*>(m_FSRef);
 	}
-	BURGER_INLINE long GetDirID(void) const
+	BURGER_INLINE long GetDirID(void) const BURGER_NOEXCEPT
 	{
 		return m_lDirID;
 	}
-	BURGER_INLINE short GetVRefNum(void) const
+	BURGER_INLINE short GetVRefNum(void) const BURGER_NOEXCEPT
 	{
 		return m_sVRefNum;
 	}
-	BURGER_INLINE void SetDirID(long lDirID)
+	BURGER_INLINE void SetDirID(long lDirID) BURGER_NOEXCEPT
 	{
 		m_lDirID = lDirID;
 	}
-	BURGER_INLINE void SetVRefNum(short sVRefNum)
+	BURGER_INLINE void SetVRefNum(short sVRefNum) BURGER_NOEXCEPT
 	{
 		m_sVRefNum = sVRefNum;
 	}

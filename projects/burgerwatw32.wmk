@@ -216,6 +216,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/bradler32.obj &
 	$(A)/bralaw.obj &
 	$(A)/bralgorithm.obj &
+	$(A)/brargumenttype.obj &
 	$(A)/brarray.obj &
 	$(A)/brasciito.obj &
 	$(A)/brassert.obj &
@@ -225,6 +226,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brcapturestdout.obj &
 	$(A)/brcodelibrary.obj &
 	$(A)/brcodelibrarywindows.obj &
+	$(A)/brcodepage.obj &
 	$(A)/brcommandparameter.obj &
 	$(A)/brcommandparameterbooltrue.obj &
 	$(A)/brcommandparameterstring.obj &
@@ -313,6 +315,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brfont4bit.obj &
 	$(A)/brfpinfo.obj &
 	$(A)/brfplargeint.obj &
+	$(A)/brfpprintinfo.obj &
 	$(A)/brgameapp.obj &
 	$(A)/brglobalmemorymanager.obj &
 	$(A)/brglobals.obj &
@@ -425,6 +428,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brvertexbufferopengl.obj &
 	$(A)/brvulkanerrors.obj &
 	$(A)/brwin1252.obj &
+	$(A)/brwin437.obj &
 	$(A)/brwindowsapp.obj &
 	$(A)/brwindowsd3d.obj &
 	$(A)/brwindowsd3d11.obj &
@@ -504,22 +508,13 @@ A = $(BASE_TEMP_DIR)watw32dbg
 $(DESTINATION_DIR)\$(PROJECT_NAME)watw32dbg.lib: $+$(OBJS)$- burgerwatw32.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
-	@p4 edit "$(BURGER_SDKS)\windows\burgerlib\$^."
-	@copy /y "$^@" "$(BURGER_SDKS)\windows\burgerlib\$^."
-	@p4 revert -a "$(BURGER_SDKS)\windows\burgerlib\$^."
 
 A = $(BASE_TEMP_DIR)watw32int
 $(DESTINATION_DIR)\$(PROJECT_NAME)watw32int.lib: $+$(OBJS)$- burgerwatw32.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
-	@p4 edit "$(BURGER_SDKS)\windows\burgerlib\$^."
-	@copy /y "$^@" "$(BURGER_SDKS)\windows\burgerlib\$^."
-	@p4 revert -a "$(BURGER_SDKS)\windows\burgerlib\$^."
 
 A = $(BASE_TEMP_DIR)watw32rel
 $(DESTINATION_DIR)\$(PROJECT_NAME)watw32rel.lib: $+$(OBJS)$- burgerwatw32.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
-	@p4 edit "$(BURGER_SDKS)\windows\burgerlib\$^."
-	@copy /y "$^@" "$(BURGER_SDKS)\windows\burgerlib\$^."
-	@p4 revert -a "$(BURGER_SDKS)\windows\burgerlib\$^."

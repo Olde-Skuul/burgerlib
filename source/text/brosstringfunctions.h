@@ -23,6 +23,14 @@
 #include "brstring.h"
 #endif
 
+#if defined(BURGER_DARWIN) && !defined(__BRDARWINTYPES_H__)
+#include "brdarwintypes.h"
+#endif
+
+#if defined(BURGER_MAC) && !defined(__BRMACTYPES_H__)
+#include "brmactypes.h"
+#endif
+
 /* BEGIN */
 namespace Burger {
 
@@ -41,6 +49,10 @@ extern eError BURGER_API GetOSIndString(
 extern eError BURGER_API GetMacModelIdentifier(String* pOutput) BURGER_NOEXCEPT;
 #endif
 
+#if (defined(BURGER_MACCARBON) || defined(BURGER_DARWIN)) || defined(DOXYGEN)
+extern void BURGER_API StringCopy(
+	String* pOutput, const __CFString* pInput) BURGER_NOEXCEPT;
+#endif
 }
 /* END */
 

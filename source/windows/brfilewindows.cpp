@@ -100,7 +100,7 @@ Burger::eError  BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::File::GetSize(void)
+uintptr_t BURGER_API Burger::File::GetSize(void) BURGER_NOEXCEPT
 {
 	uintptr_t uSize = 0;
 	HANDLE fp = m_pFile;
@@ -342,14 +342,14 @@ uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorFileNotFound;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		FILETIME ModificationTime;
 		// Get the file modification time
-		BOOL bFileInfoResult = GetFileTime(fp,NULL,&ModificationTime,NULL);
+		BOOL bFileInfoResult = GetFileTime(fp,nullptr,&ModificationTime, nullptr);
 		// Okay?
 		if (bFileInfoResult) {
 			pOutput->Load(&ModificationTime);

@@ -31,7 +31,7 @@
 #include "brguid.h"
 #endif
 
-#ifndef _BRSTRING_H__
+#ifndef __BRSTRING_H__
 #include "brstring.h"
 #endif
 
@@ -213,13 +213,6 @@ public:
 
 #if defined(BURGER_MACOS) || defined(DOXYGEN)
 	static uint_t BURGER_API GetMacOSVersion(void);
-#endif
-
-#if ((defined(BURGER_MAC) && TARGET_API_MAC_CARBON) || \
-	defined(BURGER_MACOSX)) || \
-	defined(DOXYGEN)
-	static void BURGER_API StringCopy(
-		String* pOutput, const __CFString* pInput);
 #endif
 
 #if defined(BURGER_MACOS) || defined(BURGER_WINDOWS) || defined(DOXYGEN)

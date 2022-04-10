@@ -399,6 +399,7 @@ uint_t BURGER_API Burger::AtomicSetIfMatch(volatile uint64_t *pInput,uint64_t uB
 #if (defined(BURGER_X86) && !defined(BURGER_XBOX)) || defined(DOXYGEN)
 
 #if defined(BURGER_GNUC) || defined(BURGER_CLANG)
+// clang-format off
 __asm__(
 "	.align	4,0x90\n"
 "	.globl __ZN6Burger14IsCPUIDPresentEv\n"
@@ -419,7 +420,7 @@ __asm__(
 
 #else
 
-BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsCPUIDPresent(void)
+BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsCPUIDPresent(void) BURGER_NOEXCEPT
 {
 	BURGER_ASM {
 
@@ -443,6 +444,7 @@ BURGER_DECLSPECNAKED uint_t BURGER_API Burger::IsCPUIDPresent(void)
 }
 #endif
 #endif
+// clang-format on
 
 /*! ************************************
 
@@ -808,7 +810,7 @@ static const CPUHashes_t g_CPUHashes[] = {
 // of a request of data that the chip isn't aware of
 //
 
-static uint32_t BURGER_API FixCount(uint32_t uBase,int iValue)
+static uint32_t BURGER_API FixCount(uint32_t uBase,int iValue) BURGER_NOEXCEPT
 {
 	// Invalid if too small
 	if (static_cast<uint32_t>(iValue)<=uBase) {
@@ -824,7 +826,7 @@ static uint32_t BURGER_API FixCount(uint32_t uBase,int iValue)
 
 #endif
 
-void BURGER_API Burger::CPUID(CPUID_t *pOutput)
+void BURGER_API Burger::CPUID(CPUID_t *pOutput) BURGER_NOEXCEPT
 {
 	//
 	// Clear out the result
@@ -984,7 +986,7 @@ void BURGER_API Burger::CPUID(CPUID_t *pOutput)
 
 #if (defined(BURGER_PPC) && defined(BURGER_MACOSX)) || defined(DOXYGEN)
 
-uint_t BURGER_API Burger::HasAltiVec(void)
+uint_t BURGER_API Burger::HasAltiVec(void) BURGER_NOEXCEPT
 {
 	int selector[2];
 	int gHasAltivec;
@@ -1004,7 +1006,7 @@ uint_t BURGER_API Burger::HasAltiVec(void)
 
 #elif (defined(BURGER_PPC) && defined(BURGER_MAC))
 
-uint_t BURGER_API Burger::HasAltiVec(void)
+uint_t BURGER_API Burger::HasAltiVec(void) BURGER_NOEXCEPT
 {
 	// Carbon/Classic version
 
@@ -1035,7 +1037,7 @@ uint_t BURGER_API Burger::HasAltiVec(void)
 
 #if (defined(BURGER_PPC) && defined(BURGER_MACOSX)) || defined(DOXYGEN)
 
-uint_t BURGER_API Burger::HasFSqrt(void)
+uint_t BURGER_API Burger::HasFSqrt(void) BURGER_NOEXCEPT
 {
     size_t uLength = 4;
     uint32_t uBuffer = 0;
@@ -1048,7 +1050,7 @@ uint_t BURGER_API Burger::HasFSqrt(void)
 
 #elif (defined(BURGER_PPC) && defined(BURGER_MAC))
 
-uint_t BURGER_API Burger::HasFSqrt(void)
+uint_t BURGER_API Burger::HasFSqrt(void) BURGER_NOEXCEPT
 {
 	// Carbon/Classic version
 
@@ -1083,7 +1085,7 @@ uint_t BURGER_API Burger::HasFSqrt(void)
 
 #if (defined(BURGER_MAC) && defined(BURGER_68K)) || defined(DOXYGEN)
 
-uint_t BURGER_API Burger::HasFPU(void)
+uint_t BURGER_API Burger::HasFPU(void) BURGER_NOEXCEPT
 {
 	// Carbon/Classic version
 

@@ -297,7 +297,7 @@ uint16_t BURGER_API Burger::UTF16::TranslateFromUTF8(
 	\param uOutputSize Size of the output buffer in bytes.
 	\param pInput UTF16 encoded "C"string, ``nullptr`` will page fault.
 
-	\return The number of bytes of the potential output without the trailing
+	\return The number of elements of the potential output without the trailing
 	uint16_t zero. It is valid, even if the output buffer wasn't large enough to
 	contain everything.
 
@@ -438,9 +438,8 @@ uintptr_t BURGER_API Burger::UTF16::TranslateFromUTF8(uint16_t* pOutput,
 		pEndPtr[0] = 0;
 	}
 
-	// Return the equivalent of strlen()
-	return static_cast<uintptr_t>(reinterpret_cast<uint8_t*>(pWorkPtr) -
-		reinterpret_cast<uint8_t*>(pOutput));
+	// Return number of characters
+	return static_cast<uintptr_t>(pWorkPtr - pOutput);
 }
 
 /*! ************************************
@@ -611,6 +610,5 @@ uintptr_t BURGER_API Burger::UTF16::TranslateFromUTF8(uint16_t* pOutput,
 	}
 
 	// Return the equivalent of strlen()
-	return static_cast<uintptr_t>(reinterpret_cast<uint8_t*>(pWorkPtr) -
-		reinterpret_cast<uint8_t*>(pOutput));
+	return static_cast<uintptr_t>(pWorkPtr - pOutput);
 }

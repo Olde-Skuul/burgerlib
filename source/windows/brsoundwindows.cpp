@@ -844,7 +844,7 @@ static BOOL CALLBACK EnumerateAudioDevices(GUID *pGUID,const uint16_t *pDescript
 
 			// Get the audio card name
 			Entry.m_uDevNumber = static_cast<uint_t>(pOutput->size());
-			Entry.m_DeviceName.Set(pDescription);
+			Entry.m_DeviceName.assign(pDescription);
 
 			// Is it hardware accelerated?
 			DSCAPS HardwareCaps;

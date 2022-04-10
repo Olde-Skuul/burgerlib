@@ -58,7 +58,7 @@ Burger::eError BURGER_API Burger::GetMachineName(
 	CFStringRef pStringRef = SCDynamicStoreCopyComputerName(nullptr, nullptr);
 
 	if (pStringRef) {
-		Globals::StringCopy(pOutput, pStringRef);
+		StringCopy(pOutput, pStringRef);
 
 		// Dispose of the string ref
 		CFRelease(pStringRef);
@@ -67,7 +67,7 @@ Burger::eError BURGER_API Burger::GetMachineName(
 	}
 	if (uResult != kErrorNone) {
 		// The name wasn't present, use the default
-		pOutput->Set("Computer");
+		pOutput->assign("Computer");
 	}
 	return uResult;
 }
@@ -127,7 +127,7 @@ Burger::eError BURGER_API Burger::GetMacModelIdentifier(
 							static_cast<uintptr_t>(CFDataGetLength(pDataRef));
 						const char* pData = reinterpret_cast<const char*>(
 							CFDataGetBytePtr(pDataRef));
-						uResult = pOutput->Set(pData, uLength);
+						uResult = pOutput->assign(pData, uLength);
 
 						// Release the data and exit
 						CFRelease(pDataRef);

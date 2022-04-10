@@ -52,11 +52,11 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 {
 	eError uResult;
 	if (uVolumeNum < BURGER_ARRAYSIZE(g_VolumeNames)) {
-		pOutput->Set(g_VolumeNames[uVolumeNum]);
+		pOutput->assign(g_VolumeNames[uVolumeNum]);
 		uResult = kErrorNone;
 	} else {
 		// Clear on error
-		pOutput->Clear();
+		pOutput->clear();
 		uResult = kErrorInvalidParameter;
 	}
 	return uResult;
@@ -104,7 +104,7 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 	void) BURGER_NOEXCEPT
 {
-	Set(":app0:");
+	assign(":app0:");
 	return kErrorNone;
 }
 
@@ -124,7 +124,7 @@ Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(
 	void) BURGER_NOEXCEPT
 {
-	Set(":app0:");
+	assign(":app0:");
 	return kErrorNone;
 }
 
@@ -137,7 +137,7 @@ Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
-	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput)
+	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	// Buffer to hold the attributes and the filename
 	SceIoStat Entry;
@@ -172,7 +172,7 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
-	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput)
+	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	// Buffer to hold the attributes and the filename
 	SceIoStat Entry;
@@ -236,7 +236,7 @@ uint_t BURGER_API Burger::FileManager::DoesFileExist(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
-	Burger::Filename* pFileName)
+	Burger::Filename* pFileName) BURGER_NOEXCEPT
 {
 	// Assume an error condition
 	eError uResult = kErrorIO;
@@ -336,7 +336,7 @@ Burger::eError BURGER_API Burger::FileManager::DeleteFile(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::RenameFile(
-	Burger::Filename* pNewName, Burger::Filename* pOldName)
+	Burger::Filename* pNewName, Burger::Filename* pOldName) BURGER_NOEXCEPT
 {
 	if (sceIoRename(pOldName->GetNative(), pNewName->GetNative()) >= SCE_OK) {
 		return kErrorNone;

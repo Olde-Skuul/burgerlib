@@ -4,7 +4,7 @@
 //
 //   fxc ..\source\graphics\shadersxbox360\pstexturecolor360.x360sl /nologo
 //    /FhD:\oldeskuul\libs\burgerlib\source\graphics\shadersxbox360\Generated\pstexturecolor360.h
-//    /XFdD:\oldeskuul\libs\burgerlib\projects\temp\burgerv10x36cod\pstexturecolor360.updb
+//    /XFdD:\oldeskuul\libs\burgerlib\projects\temp\unittestsv10x36cod\pstexturecolor360.updb
 //    /Vng_pstexturecolor360 /Tps_2_0
 //
 //

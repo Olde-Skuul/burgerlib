@@ -578,7 +578,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::Save(
 	if (!uResult) {
 		// Ensure the buffer is ready
 		uintptr_t uRemaining = m_uFileSize;
-		uResult = pOutput->SetBufferSize(uRemaining);
+		uResult = pOutput->resize(uRemaining);
 		if (!uResult) {
 			// Get the buffer pointer
 			char* pWork = pOutput->c_str();

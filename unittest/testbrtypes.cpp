@@ -52,6 +52,11 @@
 #pragma warning(disable : 4003)
 // Disable structure was padded due to __declspec(align())
 #pragma warning(disable : 4324)
+// VC 2005 or higher
+#if (BURGER_MSVC >= 140000000)
+// Disable Potential comparison of a comparison of a constant with another constant
+#pragma warning(disable : 6326)
+#endif
 #endif
 
 /***************************************

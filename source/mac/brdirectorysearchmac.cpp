@@ -89,7 +89,7 @@ uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 		m_CreationDate.Load(&MyRec.createDate);
 		m_ModificatonDate.Load(&MyRec.contentModDate);
 		Burger::UTF8::FromUTF16(m_Name, sizeof(m_Name), uName.unicode,
-			uName.length * 2U); /* Copy the filename */
+			uName.length); /* Copy the filename */
 		return FALSE;
 	}
 	return TRUE; // All done!

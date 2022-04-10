@@ -456,7 +456,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 	// Linux has no name for the boot volume, so create one.
 	if (!uVolumeNum) {
 		if (pOutput) {
-			pOutput->Set(":boot_volume:");
+			pOutput->assign(":boot_volume:");
 		}
 		return kErrorNone;
 	}
@@ -521,7 +521,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 							TempBuffer[uIndex + 2] = 0;
 
 							// Set the filename
-							pOutput->Set(TempBuffer);
+							pOutput->assign(TempBuffer);
 						}
 						// Exit okay!
 						uResult = kErrorNone;
@@ -539,7 +539,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 	// Clear on error
 	if ((uResult != kErrorNone) && pOutput) {
 		// Kill the string since I have an error
-		pOutput->Clear();
+		pOutput->clear();
 	}
 	return uResult;
 }

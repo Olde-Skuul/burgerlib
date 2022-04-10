@@ -52,17 +52,11 @@ const char *Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 {
 	Expand();		// Resolve prefixes
 
-	const uint8_t *pFullPathName = reinterpret_cast<const uint8_t *>(m_pFilename);
+	const uint8_t *pFullPathName = reinterpret_cast<const uint8_t *>(m_Filename.c_str());
 	uintptr_t uOutputLength = StringLength(reinterpret_cast<const char *>(pFullPathName))+10;
-	char *pOutput = m_NativeFilename;
-	if (uOutputLength>=sizeof(m_NativeFilename)) {
-		pOutput = static_cast<char *>(Alloc(uOutputLength));
-		if (!pOutput) {
-			m_NativeFilename[0] = 0;
-			return m_NativeFilename;
-		}
-	}
-	m_pNativeFilename = pOutput;
+	m_NativeFilename.resize(uOutputLength);
+
+	char *pOutput = m_NativeFilename.data();
 	
 	// Now, is this a fully qualified name?
 	
@@ -75,7 +69,7 @@ const char *Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 			// Also test for the special case of :Foo vs :FooBar
 
             {
-                uint_t uIndex = FileManager::GetBootNameSize();
+                uintptr_t uIndex = FileManager::GetBootNameSize();
 
 				// Test for boot name match
 				if (MemoryCaseCompare(FileManager::GetBootName(),pFullPathName,uIndex)) {
@@ -108,13 +102,13 @@ const char *Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 		
 		// A trailing slash assumes more to follow, get rid of it
 		--pOutput;
-		if ((pOutput==m_pNativeFilename) ||		// Only a '/'? (Skip the check then)
+		if ((pOutput==m_NativeFilename.c_str()) ||		// Only a '/'? (Skip the check then)
 			(reinterpret_cast<uint8_t*>(pOutput)[0]!='/')) {
 			++pOutput;		// Remove trailing slash
 		}
 	}
 	pOutput[0] = 0;			// Terminate the "C" string
-	return m_pNativeFilename;
+	return m_NativeFilename.c_str();
 }
 
 /***************************************
@@ -134,7 +128,7 @@ const char *Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 
 Burger::eError BURGER_API Burger::Filename::SetFromNative(const char *pInput) BURGER_NOEXCEPT
 {
-	Clear();	// Clear out the previous string
+	clear();	// Clear out the previous string
 
 	// Determine the length of the prefix
 	uintptr_t uInputLength = StringLength(pInput);
@@ -169,7 +163,7 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(const char *pInput) BU
 			return kErrorOutOfMemory;
 		}
 	}
-	m_pFilename = pOutput;
+	m_Filename.assign(pOutput);
 	
 	MemoryCopy(pOutput,pBaseName,uBaseNameLength);
 	pOutput+=uBaseNameLength;

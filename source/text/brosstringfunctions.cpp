@@ -41,7 +41,7 @@
 Burger::eError BURGER_API Burger::GetUserLoginName(
 	String* pOutput) BURGER_NOEXCEPT
 {
-	pOutput->Set("User");
+	pOutput->assign("User");
 	return kErrorNotSupportedOnThisPlatform;
 }
 #endif
@@ -73,7 +73,7 @@ Burger::eError BURGER_API Burger::GetUserLoginName(
 Burger::eError BURGER_API Burger::GetUserRealName(
 	String* pOutput) BURGER_NOEXCEPT
 {
-	pOutput->Set("User");
+	pOutput->assign("User");
 	return kErrorNotSupportedOnThisPlatform;
 }
 #endif
@@ -109,7 +109,7 @@ Burger::eError BURGER_API Burger::GetUserRealName(
 Burger::eError BURGER_API Burger::GetMachineName(
 	String* pOutput) BURGER_NOEXCEPT
 {
-	pOutput->Set("Computer");
+	pOutput->assign("Computer");
 	return kErrorNotSupportedOnThisPlatform;
 }
 

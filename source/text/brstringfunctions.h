@@ -124,11 +124,12 @@ extern uint32_t BURGER_API PowerOf2(uint32_t uInput) BURGER_NOEXCEPT;
 extern uint64_t BURGER_API PowerOf2(uint64_t uInput) BURGER_NOEXCEPT;
 
 template<class T>
-BURGER_INLINE uint_t PowerOf2(T input) BURGER_NOEXCEPT
+BURGER_INLINE T PowerOf2(T input) BURGER_NOEXCEPT
 {
 	BURGER_STATIC_ASSERT(is_unsigned<T>::value);
-	return PowerOf2(static_cast<
-		typename conditional<sizeof(T) <= 4, uint32_t, uint64_t>::type>(input));
+	return static_cast<T>(PowerOf2(static_cast<
+		typename conditional<sizeof(T) <= 4, uint32_t, uint64_t>::type>(
+		input)));
 }
 
 BURGER_INLINE BURGER_CONSTEXPR uint32_t ToLower(uint32_t uInput) BURGER_NOEXCEPT
@@ -348,6 +349,8 @@ extern uintptr_t BURGER_API StringStopAt(
 
 extern char* BURGER_API StringString(
 	const char* pInput, const char* pTest) BURGER_NOEXCEPT;
+extern char* BURGER_API StringString(const char* pInput, const char* pTest,
+	uintptr_t uTestLength) BURGER_NOEXCEPT;
 extern uint16_t* BURGER_API StringString(
 	const uint16_t* pInput, const uint16_t* pTest) BURGER_NOEXCEPT;
 extern char* BURGER_API StringCaseString(

@@ -53,11 +53,11 @@ Burger::eError BURGER_API Burger::GetUserLoginName(
 	struct passwd* pPasswd = getpwuid(getuid());
 	if (pPasswd) {
 		// Set the string
-		uResult = pOutput->Set(pPasswd->pw_name);
+		uResult = pOutput->assign(pPasswd->pw_name);
 	}
 	if (uResult) {
 		// The name wasn't present, use the default
-		pOutput->Set("User");
+		pOutput->assign("User");
 	}
 	return uResult;
 }
@@ -106,14 +106,14 @@ Burger::eError BURGER_API Burger::GetUserRealName(
 		}
 		// Only use it if there is a string
 		if (uLength) {
-			uResult = pOutput->Set(pPasswd->pw_gecos, uLength);
+			uResult = pOutput->assign(pPasswd->pw_gecos, uLength);
 		}
 	}
 	if (uResult) {
 		// Get the user folder name
-		uResult = pOutput->Set(pPasswd->pw_name);
+		uResult = pOutput->assign(pPasswd->pw_name);
 		if (uResult) {
-			pOutput->Set("User");
+			pOutput->assign("User");
 		}
 	}
 	return uResult;
@@ -156,11 +156,11 @@ Burger::eError BURGER_API Burger::GetMachineName(
 
 	char TempBuffer[HOST_NAME_MAX];
 	if (!gethostname(TempBuffer, sizeof(TempBuffer))) {
-		uResult = pOutput->Set(TempBuffer);
+		uResult = pOutput->assign(TempBuffer);
 	}
 	// If that didn't work, punt.
 	if (uResult) {
-		pOutput->Set("Computer");
+		pOutput->assign("Computer");
 	}
 
 	return uResult;

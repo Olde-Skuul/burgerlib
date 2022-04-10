@@ -21,6 +21,7 @@
 #include "brstring16.h"
 #include "brutf16.h"
 #include "brutf8.h"
+#include "brnumberstring.h"
 
 #if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
@@ -86,131 +87,150 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 {
 	// First step, expand myself to a fully qualified pathname
 	Expand();
+	if (!m_bNativeValid) {
 
-	/***************************************
+		// DOS version and Win 95 version
+		// I prefer for all paths intended for DOS use a generic drive specifier
+		// before the working directory. The problem is that Volume LABEL are
+		// very difficult to parse and slow to access.
 
-		DOS version and Win 95 version
-		I prefer for all paths intended for DOS use
-		a generic drive specifier before the working directory.
-		The problem is that Volume LABEL are very difficult to parse
-		and slow to access.
+		// First parse either the volume name of a .DXX device number
+		// I hopefully will get a volume number since DOS prefers it
 
-	***************************************/
+		// Copy to running pointer
+		const uint8_t* pPath = reinterpret_cast<uint8_t*>(m_Filename.c_str());
 
-	// First parse either the volume name of a .DXX device number
-	// I hopefully will get a volume number since DOS prefers it
+		// Init the default drive number
+		uint_t uDeviceNum = BURGER_MAXUINT;
 
-	const uint8_t* pPath =
-		reinterpret_cast<uint8_t*>(m_pFilename); // Copy to running pointer
-	uint_t uDeviceNum =
-		static_cast<uint_t>(-1); // Init the default drive number
-	if (pPath[0] == ':') {       // Fully qualified pathname?
-		uintptr_t uLength = 0;   // Init index to the volume name
-		uint8_t uTemp;
-		do {
-			++uLength; // Parse to the next colon
-			uTemp = pPath[uLength];
-		} while (uTemp != ':' && uTemp);
-		uint8_t uTemp2 = pPath[uLength + 1]; // Save the next char in cache
-		// Ensure the name ends with ':' in the case of ":foobar"
-		const_cast<uint8_t*>(pPath)[uLength] = ':';
-		const_cast<uint8_t*>(pPath)[uLength + 1] = 0; // Zap the entry
-		// Find a volume
-		uDeviceNum =
-			FileManager::GetVolumeNumber(reinterpret_cast<const char*>(pPath));
-		const_cast<uint8_t*>(pPath)[uLength] = uTemp; // Restore char in string
-		const_cast<uint8_t*>(pPath)[uLength + 1] = uTemp2;
-		if (uDeviceNum == static_cast<uint_t>(-1)) { // Can't find the volume?!?
-			uDeviceNum = static_cast<uint_t>(-2);
-			++pPath; // Ignore the leading colon
-		} else {
-			pPath = pPath + uLength; // Accept the name
-			if (uTemp) { // Remove the colon if it had one at the end
-				++pPath;
-			}
-		}
+		// Fully qualified pathname?
+		if (pPath[0] == ':') {
 
-		// Is this a "drive letter"? Look for ".d2:"
-	} else if (pPath[0] == '.') {
-		uint_t uTemp = pPath[1];     // Get the second char
-		if ((uTemp & 0xDF) == 'D') { // Is it a 'D'?
-			uintptr_t uLength = 2;   // Init numeric index
-			uDeviceNum = 0;          // Init drive number
+			// Init index to the volume name
+			uintptr_t uLength = 0;
+			uint8_t uTemp;
 			do {
-				uTemp = pPath[uLength]; // Get an ASCII char
+				// Parse to the next colon
 				++uLength;
-				if (uTemp == ':') { // Proper end of string?
-					// If nothing was parsed, abort
-					if (uLength == 3) {
-						uLength = 0;
-						uDeviceNum = static_cast<uint_t>(-1);
-					}
-					break;
+				uTemp = pPath[uLength];
+			} while (uTemp != ':' && uTemp);
+
+			// Ensure the name ends with ':' in the case of ":foobar"
+			String VolumeName(m_Filename, 0, uLength + 1);
+
+			// Find a volume
+			uDeviceNum = FileManager::GetVolumeNumber(VolumeName);
+
+			// Can't find the volume?!?
+			if (uDeviceNum == BURGER_MAXUINT) {
+				// Ignore the leading colon
+				uDeviceNum = BURGER_MAXUINT - 1;
+				++pPath;
+			} else {
+				// Accept the name
+				pPath = pPath + uLength;
+
+				// Remove the colon if it had one at the end
+				if (uTemp) {
+					++pPath;
 				}
-				uTemp -= '0';
-				if (uTemp >= 10) {                        // Numeric value?
-					uLength = 0;                          // Abort
-					uDeviceNum = static_cast<uint_t>(-1); // Force using the CWD
-					break;                                // Go to phase 2
-				}
-				uDeviceNum = uDeviceNum * 10;    // Adjust previous value */
-				uDeviceNum = uDeviceNum + uTemp; // Make full decimal result */
-			} while (uDeviceNum < 26);           // Loop until done */
-			pPath = pPath + uLength;             // Discard accepted input
-		}
-	}
-
-	// Now that I have the drive number, determine the length
-	// of the output buffer and start the conversion
-
-	uintptr_t uPathLength = StringLength(reinterpret_cast<const char*>(pPath));
-	// Reserve 6 extra bytes for the prefix and/or the trailing / and null
-	char* pOutput = m_NativeFilename;
-
-	if (uPathLength >= (sizeof(m_NativeFilename) - 6)) {
-		pOutput = static_cast<char*>(Alloc(uPathLength + 6));
-		if (!pOutput) {
-			pOutput = m_NativeFilename;
-			uPathLength = 0; // I'm so boned
-		} else {
-			m_pNativeFilename = pOutput; // This is my buffer
-		}
-	}
-
-	// Insert the prefix, if any, to the output string
-
-	if (uDeviceNum == static_cast<uint_t>(-2)) {
-		// Since I didn't find the volume name, I'll assume it's
-		// a network volume
-		pOutput[0] = '\\';
-		pOutput[1] = '\\';
-		pOutput += 2;
-	} else if (uDeviceNum != static_cast<uint_t>(-1)) {
-		pOutput[0] = static_cast<char>(uDeviceNum + 'A');
-		pOutput[1] = ':';
-		pOutput[2] = '\\';
-		pOutput += 3;
-	}
-
-	// Convert the colons to slashes
-	if (uPathLength) {
-		uint_t uTemp;
-		do {
-			uTemp = pPath[0];
-			++pPath;
-			if (uTemp == ':') {
-				uTemp = '\\';
 			}
-			pOutput[0] = static_cast<char>(uTemp);
-			++pOutput;
-		} while (--uPathLength);
-		// Remove trailing slash
-		if (uTemp == '\\') {
-			--pOutput;
+
+			// Is this a "drive letter"? Look for ".d2:"
+		} else if (pPath[0] == '.') {
+
+			// Get the second char
+			uint_t uTemp = pPath[1];
+
+			// Is it a 'D'?
+			if ((uTemp & 0xDF) == 'D') {
+
+				// Init numeric index
+				uintptr_t uLength = 2;
+
+				// Init drive number
+				uDeviceNum = 0;
+				do {
+					// Get an ASCII char
+					uTemp = pPath[uLength];
+					++uLength;
+
+					// Proper end of string?
+					if (uTemp == ':') {
+						// If nothing was parsed, abort
+						if (uLength == 3) {
+							uLength = 0;
+							uDeviceNum = BURGER_MAXUINT;
+						}
+						break;
+					}
+					uTemp -= '0';
+
+					// Numeric value?
+					if (uTemp >= 10) {
+						// Abort
+						uLength = 0;
+						// Force using the CWD
+						uDeviceNum = BURGER_MAXUINT;
+						break; // Go to phase 2
+					}
+
+					// Adjust previous value
+					uDeviceNum = uDeviceNum * 10;
+
+					// Make full decimal result
+					uDeviceNum = uDeviceNum + uTemp;
+					// Loop until done
+				} while (uDeviceNum < 26);
+
+				// Discard accepted input
+				pPath = pPath + uLength;
+			}
 		}
+
+		// Now that I have the drive number, determine the length
+		// of the output buffer and start the conversion
+
+		uintptr_t uPathLength =
+			StringLength(reinterpret_cast<const char*>(pPath));
+
+		// Reserve 6 extra bytes for the prefix and/or the trailing / and null
+
+		m_NativeFilename.reserve(uPathLength + 6);
+		m_NativeFilename.clear();
+		
+		// Insert the prefix, if any, to the output string
+
+		if (uDeviceNum == (BURGER_MAXUINT - 1)) {
+			// Since I didn't find the volume name, I'll assume it's
+			// a network volume
+			m_NativeFilename.push_back('\\');
+			m_NativeFilename.push_back('\\');
+		} else if (uDeviceNum != BURGER_MAXUINT) {
+			m_NativeFilename.push_back(static_cast<char>(uDeviceNum + 'A'));
+			m_NativeFilename.push_back(':');
+			m_NativeFilename.push_back('\\');
+		}
+
+		// Convert the colons to slashes
+		if (uPathLength) {
+			uint_t uTemp;
+			do {
+				uTemp = pPath[0];
+				++pPath;
+				if (uTemp == ':') {
+					uTemp = '\\';
+				}
+				m_NativeFilename.push_back(static_cast<char>(uTemp));
+			} while (--uPathLength);
+			// Remove trailing slash
+			if (m_NativeFilename.ends_with('\\')) {
+				m_NativeFilename.pop_back();
+			}
+		}
+		m_bNativeValid = TRUE;
 	}
-	pOutput[0] = 0; // Terminate the "C" string
-	return m_pNativeFilename;
+	return m_NativeFilename.c_str();
 }
 
 /***************************************
@@ -249,14 +269,13 @@ Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 					reinterpret_cast<LPWSTR>(Temp16.data())) == (uLength - 1)) {
 
 				// Convert from UTF16 to UTF8
-				String UTF8(Temp16.c_str());
-				uResult = SetFromNative(UTF8.c_str());
+				uResult = SetFromNative(Temp16.c_str());
 			}
 		}
 	}
 
 	if (uResult) {
-		Clear();
+		clear();
 	}
 	return uResult;
 }
@@ -342,8 +361,7 @@ Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(
 			}
 
 			// Convert to UTF8
-			String UTF8(pWBuffer);
-			SetFromNative(UTF8.c_str());
+			SetFromNative(pWBuffer);
 
 			// Release the buffer (If allocated)
 			if (pWBuffer != Buffer) {
@@ -354,7 +372,7 @@ Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(
 	}
 
 	if (uResult) {
-		Clear();
+		clear();
 	}
 	return uResult;
 }
@@ -402,14 +420,13 @@ Burger::eError BURGER_API Burger::Filename::SetBootVolumeDirectory(
 				}
 
 				// Convert from UTF16 to UTF8, using the modified string
-				String UTF8(Temp16.c_str());
-				uResult = SetFromNative(UTF8.c_str());
+				uResult = SetFromNative(Temp16.c_str());
 			}
 		}
 	}
 
 	if (uResult) {
-		Clear();
+		clear();
 	}
 	return uResult;
 }
@@ -438,8 +455,7 @@ Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(
 		KF_FLAG_DONT_UNEXPAND | KF_FLAG_DONT_VERIFY, nullptr, &pResult);
 	if (hResult == S_OK) {
 		// All good! Use this pathname!
-		String UTF8(pResult);
-		uResult = SetFromNative(UTF8.c_str());
+		uResult = SetFromNative(pResult);
 		// Release the pointer
 		CoTaskMemFree(pResult);
 
@@ -452,13 +468,12 @@ Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(
 			nullptr, CSIDL_LOCAL_APPDATA, nullptr, 0, NameBuffer));
 		if ((hResult == S_OK) || (hResult == E_FAIL)) {
 			// Convert to UTF8
-			String MyName2(reinterpret_cast<const uint16_t*>(NameBuffer));
-			uResult = SetFromNative(MyName2);
+			uResult = SetFromNative(reinterpret_cast<const uint16_t*>(NameBuffer));
 		}
 	}
 
 	if (uResult) {
-		Clear();
+		clear();
 	}
 	return uResult;
 }
@@ -488,8 +503,7 @@ Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(
 		KF_FLAG_DONT_UNEXPAND | KF_FLAG_DONT_VERIFY, nullptr, &pResult);
 	if (hResult == S_OK) {
 		// All good! Use this pathname!
-		String UTF8(pResult);
-		uResult = SetFromNative(UTF8.c_str());
+		uResult = SetFromNative(pResult);
 		// Release the pointer
 		CoTaskMemFree(pResult);
 	} else {
@@ -501,12 +515,11 @@ Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(
 			SHGetFolderPathW(nullptr, CSIDL_APPDATA, nullptr, 0, NameBuffer));
 		if ((hResult == S_OK) || (hResult == E_FAIL)) {
 			// Convert to UTF8
-			String MyName(reinterpret_cast<const uint16_t*>(NameBuffer));
-			uResult = SetFromNative(MyName);
+			uResult = SetFromNative(reinterpret_cast<const uint16_t *>(NameBuffer));
 		}
 	}
 	if (uResult) {
-		Clear();
+		clear();
 	}
 	return uResult;
 }
@@ -536,8 +549,6 @@ Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(
 Burger::eError BURGER_API Burger::Filename::SetFromNative(
 	const char* pInput) BURGER_NOEXCEPT
 {
-	Clear();
-
 	if (!pInput || !pInput[0]) { // No directory at all?
 		pInput = ".";            // Just get the current directory
 	}
@@ -548,13 +559,15 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 	WCHAR* pInputPath;
 	uintptr_t uInputLength = UTF16::TranslateFromUTF8(
 		reinterpret_cast<uint16_t*>(InputPath), sizeof(InputPath), pInput);
-	if (uInputLength >= sizeof(InputPath)) {
-		pInputPath = static_cast<WCHAR*>(Alloc(uInputLength + 2));
+	if (uInputLength >= BURGER_ARRAYSIZE(InputPath)) {
+		pInputPath =
+			static_cast<WCHAR*>(Alloc((uInputLength + 2) * sizeof(WCHAR)));
 		if (!pInputPath) {
 			return kErrorOutOfMemory;
 		}
-		uInputLength = UTF16::TranslateFromUTF8(
-			reinterpret_cast<uint16_t*>(pInputPath), uInputLength + 2, pInput);
+		uInputLength =
+			UTF16::TranslateFromUTF8(reinterpret_cast<uint16_t*>(pInputPath),
+				(uInputLength + 2) * sizeof(WCHAR), pInput);
 	} else {
 		pInputPath = InputPath;
 	}
@@ -564,15 +577,15 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 	WCHAR ExpandedPath[512];
 	WCHAR* pExpanded;
 	// Have windows expand it out
-	uintptr_t uExpandedLength =
-		GetFullPathNameW(
-			pInputPath, sizeof(ExpandedPath) / 2, ExpandedPath, NULL) *
-		2;
-	if (uExpandedLength >= sizeof(ExpandedPath)) {
-		pExpanded = static_cast<WCHAR*>(Alloc(uExpandedLength + 2));
+	uintptr_t uExpandedLength = GetFullPathNameW(
+		pInputPath, BURGER_ARRAYSIZE(ExpandedPath), ExpandedPath, nullptr);
+
+	if (uExpandedLength >= BURGER_ARRAYSIZE(ExpandedPath)) {
+		pExpanded =
+			static_cast<WCHAR*>(Alloc((uExpandedLength + 2) * sizeof(WCHAR)));
 		if (pExpanded) {
 			uExpandedLength = GetFullPathNameW(pInputPath,
-				static_cast<DWORD>((uExpandedLength + 2) / 2), pExpanded, NULL);
+				static_cast<DWORD>(uExpandedLength + 2), pExpanded, nullptr);
 		}
 	} else {
 		pExpanded = ExpandedPath;
@@ -582,38 +595,36 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 	if (pInputPath != InputPath) {
 		Free(pInputPath);
 	}
+
 	// Was there a memory error above?
 	if (!pExpanded) {
-		return kErrorOutOfMemory; // Fudge
+		// Fudge
+		return kErrorOutOfMemory;
 	}
+	m_NativeFilename.assign(reinterpret_cast<const uint16_t *>(pExpanded));
 
 	// How long would the string be if it was UTF8?
 
-	uintptr_t uOutputLength =
-		UTF8::FromUTF16(NULL, 0, reinterpret_cast<uint16_t*>(pExpanded)) + 6;
-	char* pWork = m_Filename;
-	if (uOutputLength >= sizeof(m_Filename)) {
-		pWork = static_cast<char*>(Alloc(uOutputLength));
-		if (!pWork) {
-			if (pExpanded != ExpandedPath) {
-				Free(pExpanded);
-			}
-			return kErrorNone;
-		}
+	const uintptr_t uOutputLength =
+		UTF8::GetUTF16Size(reinterpret_cast<uint16_t*>(pExpanded));
+	eError uResult = m_Filename.reserve(uOutputLength + 6);
+	if (uResult) {
+		return uResult;
 	}
-	m_pFilename = pWork;
 
 	WCHAR* pSrc = pExpanded;
-	char* pOutput = pWork;
 
 	// Network name?
-	if ((uExpandedLength >= (2 * 2)) && pSrc[0] == '\\' && pSrc[1] == '\\') {
-		pOutput[0] = ':'; // Leading colon
-		++pOutput;        // Accept it
-		pSrc += 2;        // Only return 1 colon
+	if ((uExpandedLength >= 2) && (pSrc[0] == '\\') && (pSrc[1] == '\\')) {
+		// Leading colon
+		m_Filename.assign(':');
+		// Only return 1 colon
+		pSrc += 2;                
 	} else {
-		uint_t uTemp = static_cast<uint_t>(pSrc[0]); // Get the drive letter
-		if ((uTemp >= 'a') && (uTemp < ('z' + 1))) { // Upper case
+		// Get the drive letter
+		uint_t uTemp = static_cast<uint_t>(pSrc[0]);
+		// Upper case
+		if ((uTemp >= 'a') && (uTemp < ('z' + 1))) { 
 			uTemp &= 0xDF;
 		}
 		uTemp = uTemp - 'A';
@@ -621,41 +632,40 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 
 		// At this point I have the drive number, create the drive number prefix
 
-		pOutput[0] = '.'; // .D2 for C:
-		pOutput[1] = 'D';
-		pOutput = NumberToAscii(
-			&pOutput[2], static_cast<uint32_t>(uTemp), NOENDINGNULL);
-		pOutput[0] = ':'; // Append a colon
-		++pOutput;
+		m_Filename.assign('.'); // .D2 for C:
+		m_Filename.push_back('D');
+		NumberString DriveNumber(static_cast<uint32_t>(uTemp));
+		m_Filename.append(DriveNumber);
+
+		// Append a colon
+		m_Filename.push_back(':');
 	}
 
 	// Append the filename to output and convert from UTF16 to UTF8
-	UTF8::FromUTF16(pOutput, uOutputLength - (pOutput - pWork),
-		reinterpret_cast<uint16_t*>(pSrc));
+	m_Filename.append(reinterpret_cast<uint16_t*>(pSrc));
+
 	if (pExpanded != ExpandedPath) {
 		Free(pExpanded);
 	}
 
-	uint_t uTemp2 = reinterpret_cast<uint8_t*>(pOutput)[0];
+	uint8_t* pSlasher = reinterpret_cast<uint8_t *>(m_Filename.c_str());
+	uint_t uTemp2 = pSlasher[0];
 	if (uTemp2) {
 		do {
 			if (uTemp2 == '\\') { // Convert directory holders
 				uTemp2 = ':';     // To generic paths
 			}
-			pOutput[0] = static_cast<char>(uTemp2); // Save char
-			++pOutput;
-			uTemp2 = pOutput[0]; // Next char
+			// Save char
+			pSlasher[0] = static_cast<uint8_t>(uTemp2);
+			++pSlasher;
+			uTemp2 = pSlasher[0]; // Next char
 		} while (uTemp2);        // Still more?
 	}
 
 	// The wrap up...
 	// Make sure it's appended with a colon
-
-	if (pOutput[-1] != ':') { // Last char a colon?
-		pOutput[0] = ':';     // End with a colon!
-		pOutput[1] = 0;
-	}
-	return kErrorNone;
+	m_bNativeValid = TRUE;
+	return end_with_colon();
 }
 
 #endif

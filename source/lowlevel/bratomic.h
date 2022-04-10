@@ -39,13 +39,13 @@
 namespace Burger {
 
 #if (defined(BURGER_AMD64) || defined(BURGER_XBOX)) && !defined(DOXYGEN)
-BURGER_INLINE uint_t IsCPUIDPresent(void) { return TRUE; }
+BURGER_INLINE uint_t IsCPUIDPresent(void) BURGER_NOEXCEPT { return TRUE; }
 
 #elif defined(BURGER_X86) || defined(DOXYGEN)
-extern uint_t BURGER_API IsCPUIDPresent(void);
+extern uint_t BURGER_API IsCPUIDPresent(void) BURGER_NOEXCEPT;
 
 #else
-BURGER_INLINE uint_t IsCPUIDPresent(void) { return FALSE; }
+BURGER_INLINE uint_t IsCPUIDPresent(void) BURGER_NOEXCEPT { return FALSE; }
 #endif
 
 struct CPUID_t {
@@ -109,25 +109,25 @@ struct CPUID_t {
 	BURGER_INLINE uint_t HasExtended3DNOW(void) const BURGER_NOEXCEPT { return (m_uCPUType==CPU_AMD)&&(m_uCPUID80000001EDX&0x40000000U); }
 };
 
-extern void BURGER_API CPUID(CPUID_t *pOutput);
+extern void BURGER_API CPUID(CPUID_t *pOutput) BURGER_NOEXCEPT;
 
 #if defined(BURGER_PS3) || defined(BURGER_XBOX360)
-BURGER_INLINE uint_t HasAltiVec(void) { return TRUE; }
-BURGER_INLINE uint_t HasFSqrt(void) { return TRUE; }
+BURGER_INLINE uint_t HasAltiVec(void) BURGER_NOEXCEPT { return TRUE; }
+BURGER_INLINE uint_t HasFSqrt(void) BURGER_NOEXCEPT { return TRUE; }
 
 #elif (defined(BURGER_PPC) && defined(BURGER_MACOS)) || defined(DOXYGEN)
-extern uint_t BURGER_API HasAltiVec(void);
-extern uint_t BURGER_API HasFSqrt(void);
+extern uint_t BURGER_API HasAltiVec(void) BURGER_NOEXCEPT;
+extern uint_t BURGER_API HasFSqrt(void) BURGER_NOEXCEPT;
 
 #else
-BURGER_INLINE uint_t HasAltiVec(void) { return FALSE; }
-BURGER_INLINE uint_t HasFSqrt(void) { return FALSE; }
+BURGER_INLINE uint_t HasAltiVec(void) BURGER_NOEXCEPT { return FALSE; }
+BURGER_INLINE uint_t HasFSqrt(void) BURGER_NOEXCEPT { return FALSE; }
 #endif
 
 #if (defined(BURGER_MAC) && defined(BURGER_68K)) || defined(DOXYGEN)
-extern uint_t BURGER_API HasFPU(void);
+extern uint_t BURGER_API HasFPU(void) BURGER_NOEXCEPT;
 #else
-BURGER_INLINE uint_t HasFPU(void) { return TRUE; }
+BURGER_INLINE uint_t HasFPU(void) BURGER_NOEXCEPT { return TRUE; }
 #endif
 
 // PS3 specific atomics

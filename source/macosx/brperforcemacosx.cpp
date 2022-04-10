@@ -66,7 +66,7 @@ uint_t BURGER_API Burger::Perforce::Init(void)
 		if (pAppdirectory) {
 			m_PerforceFilename.SetFromNative(pAppdirectory);
 			Free(pAppdirectory);
-			m_PerforceFilename.Append("p4");
+			m_PerforceFilename.join("p4");
 			// Is there an exec here?
 			if (FileManager::DoesFileExist(&m_PerforceFilename)) {
 				bFilenameInitialized = TRUE;
@@ -81,7 +81,7 @@ uint_t BURGER_API Burger::Perforce::Init(void)
 			if (pAppdirectory) {
 				m_PerforceFilename.SetFromNative(pAppdirectory);
 				Free(pAppdirectory);
-				m_PerforceFilename.Append("macosx:bin:p4");
+				m_PerforceFilename.join("macosx:bin:p4");
 				if (FileManager::DoesFileExist(&m_PerforceFilename)) {
 					bFilenameInitialized = TRUE;
 				}
@@ -109,7 +109,7 @@ uint_t BURGER_API Burger::Perforce::Init(void)
 					}
 					// Is p4 here?
 					m_PerforceFilename.SetFromNative(pWork);
-					m_PerforceFilename.Append("p4");
+					m_PerforceFilename.join("p4");
 					if (FileManager::DoesFileExist(&m_PerforceFilename)) {
 						// We have a winner!
 						bFilenameInitialized = TRUE;
@@ -145,7 +145,7 @@ uint_t BURGER_API Burger::Perforce::Init(void)
 
 uint_t BURGER_API Burger::Perforce::Shutdown(void)
 {
-	m_PerforceFilename.Clear();
+	m_PerforceFilename.clear();
 	m_bFilenameInitialized = FALSE;
 	return 0;
 }

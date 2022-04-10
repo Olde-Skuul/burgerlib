@@ -131,7 +131,13 @@ typedef uint32_t uintptr_t;
 #define SIG_ATOMIC_MAX INT32_MAX
 
 #define WCHAR_MIN 0
+
+#if defined(BURGER_MSVC) && (BURGER_MSVC < 140000000)
+// Visual Studio 2003 defines it this way
+#define WCHAR_MAX ((wchar_t)-1)
+#else
 #define WCHAR_MAX 0xffff
+#endif
 
 #define WINT_MIN 0x0000
 #define WINT_MAX 0xFFFF

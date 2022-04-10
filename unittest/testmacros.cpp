@@ -213,6 +213,7 @@ static void BURGER_API ShowCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
 		SHOW_MACRO(__cplusplus);
 		SHOW_MACRO(__cplusplus_cli);
 		SHOW_MACRO(__embedded_cplusplus);
+		SHOW_MACRO(__OBJC__);
 		SHOW_MACRO(__COUNTER__);
 		SHOW_MACRO(__LINE__);
 

@@ -126,7 +126,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 					// End with a colon
 					OutputName[uLength + 1] = ':';
 					OutputName[uLength + 2] = 0;
-					pOutput->Set(OutputName);
+					pOutput->assign(OutputName);
 				}
 
 				// No error!
@@ -140,7 +140,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 
 	// If there was an error, generate a fake drive name anyways.
 	if (uResult && pOutput) {
-		pOutput->Clear();
+		pOutput->clear();
 	}
 
 	// Return the error
@@ -156,7 +156,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
-	Filename* pFileName, TimeDate_t* pOutput)
+	Filename* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	// Clear out the output
 	pOutput->Clear();
@@ -184,7 +184,7 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
-	Filename* pFileName, TimeDate_t* pOutput)
+	Filename* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	// Clear out the output
 	pOutput->Clear();
@@ -237,7 +237,7 @@ uint_t BURGER_API Burger::FileManager::DoesFileExist(
 
 ***************************************/
 
-static uint_t BURGER_API DirCreate(const uint16_t* pFileName)
+static uint_t BURGER_API DirCreate(const uint16_t* pFileName) BURGER_NOEXCEPT
 {
 	SECURITY_ATTRIBUTES MySec;
 	MySec.nLength = sizeof(MySec);  // Must set the size
@@ -253,7 +253,7 @@ static uint_t BURGER_API DirCreate(const uint16_t* pFileName)
 }
 
 Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
-	Filename* pFileName)
+	Filename* pFileName) BURGER_NOEXCEPT
 {
 	String16 NewName(pFileName->GetNative());
 
@@ -306,14 +306,16 @@ Burger::eError BURGER_API Burger::FileManager::DeleteFile(
 	String16 MyName(pFileName->GetNative());
 	// Did it fail?
 	eError uResult = kErrorNone; // Assume succeed
-	if (!DeleteFileW(reinterpret_cast<const WCHAR*>(MyName.GetPtr()))) {
+	if (!DeleteFileW(reinterpret_cast<const WCHAR*>(MyName.c_str()))) {
 		// Try to delete a directory
 		if (!RemoveDirectoryW(
-				reinterpret_cast<const WCHAR*>(MyName.GetPtr()))) {
-			uResult = kErrorFileNotFound; // I failed!
+				reinterpret_cast<const WCHAR*>(MyName.c_str()))) {
+			// I failed!
+			uResult = kErrorFileNotFound;
 		}
 	}
-	return uResult; // Return the error, if any
+	// Return the error, if any
+	return uResult; 
 }
 
 /***************************************
@@ -323,7 +325,7 @@ Burger::eError BURGER_API Burger::FileManager::DeleteFile(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::RenameFile(
-	Filename* pNewName, Filename* pOldName)
+	Filename* pNewName, Filename* pOldName) BURGER_NOEXCEPT
 {
 	String16 DestName(pNewName->GetNative());
 	String16 SourceName(pOldName->GetNative());
@@ -362,7 +364,7 @@ Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(
 ***************************************/
 
 FILE* BURGER_API Burger::FileManager::OpenFile(
-	Filename* pFileName, const char* pType)
+	Filename* pFileName, const char* pType) BURGER_NOEXCEPT
 {
 	String16 FinalName(pFileName->GetNative());
 	String16 FinalType(pType);
@@ -378,13 +380,13 @@ FILE* BURGER_API Burger::FileManager::OpenFile(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::CopyFile(
-	Filename* pDestName, Filename* pSourceName)
+	Filename* pDestName, Filename* pSourceName) BURGER_NOEXCEPT
 {
 	String16 DestName(pDestName->GetNative());
 	String16 SrcName(pSourceName->GetNative());
 
-	if (CopyFileW(reinterpret_cast<const WCHAR*>(SrcName.GetPtr()),
-			reinterpret_cast<const WCHAR*>(DestName.GetPtr()), FALSE)) {
+	if (CopyFileW(reinterpret_cast<const WCHAR*>(SrcName.c_str()),
+			reinterpret_cast<const WCHAR*>(DestName.c_str()), FALSE)) {
 		return kErrorNone;
 	}
 	return kErrorIO;

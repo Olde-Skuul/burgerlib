@@ -243,6 +243,7 @@ struct ArgumentType_Dispatch {
 	}
 };
 
+#if !defined(DOXYGEN)
 // Handlers for all intrinsic integer types based on supported sizes
 template<typename T>
 struct ArgumentType_Dispatch<T, 1, true, false> {
@@ -252,7 +253,7 @@ struct ArgumentType_Dispatch<T, 1, true, false> {
 		pThis->m_Data.m_uInt8 = static_cast<uint8_t>(Input);
 		pThis->m_eType = select_value<is_signed<T>::value, eArgumentType,
 			kArgumentTypeInt8, kArgumentTypeUInt8>::value;
-	};
+	}
 };
 
 template<typename T>
@@ -263,7 +264,7 @@ struct ArgumentType_Dispatch<T, 2, true, false> {
 		pThis->m_Data.m_uInt16 = static_cast<uint16_t>(Input);
 		pThis->m_eType = select_value<is_signed<T>::value, eArgumentType,
 			kArgumentTypeInt16, kArgumentTypeUInt16>::value;
-	};
+	}
 };
 
 template<typename T>
@@ -274,7 +275,7 @@ struct ArgumentType_Dispatch<T, 4, true, false> {
 		pThis->m_Data.m_uInt32 = static_cast<uint32_t>(Input);
 		pThis->m_eType = select_value<is_signed<T>::value, eArgumentType,
 			kArgumentTypeInt32, kArgumentTypeUInt32>::value;
-	};
+	}
 };
 
 template<typename T>
@@ -285,7 +286,7 @@ struct ArgumentType_Dispatch<T, 8, true, false> {
 		pThis->m_Data.m_uInt64 = static_cast<uint64_t>(Input);
 		pThis->m_eType = select_value<is_signed<T>::value, eArgumentType,
 			kArgumentTypeInt64, kArgumentTypeUInt64>::value;
-	};
+	}
 };
 
 // Special cases for integrals and floats
@@ -296,7 +297,7 @@ struct ArgumentType_Dispatch<float, sizeof(float), false, false> {
 	{
 		pThis->m_Data.m_fFloat = fInput;
 		pThis->m_eType = kArgumentTypeFloat32;
-	};
+	}
 };
 
 template<>
@@ -306,7 +307,7 @@ struct ArgumentType_Dispatch<double, sizeof(double), false, false> {
 	{
 		pThis->m_Data.m_dDouble = dInput;
 		pThis->m_eType = kArgumentTypeFloat64;
-	};
+	}
 };
 
 template<>
@@ -316,8 +317,9 @@ struct ArgumentType_Dispatch<bool, sizeof(bool), true, false> {
 	{
 		pThis->m_Data.m_bBool = bInput;
 		pThis->m_eType = kArgumentTypeBool;
-	};
+	}
 };
+#endif
 
 // Handlers for all intrinsic integer types based on supported sizes using a
 // pointer
@@ -336,6 +338,7 @@ struct ArgumentType_DispatchPtr {
 	}
 };
 
+#if !defined(DOXYGEN)
 template<typename T>
 struct ArgumentType_DispatchPtr<T, 1, true> {
 	BURGER_INLINE void operator()(
@@ -346,7 +349,7 @@ struct ArgumentType_DispatchPtr<T, 1, true> {
 			select_value<is_signed<typename remove_pointer<T>::type>::value,
 				eArgumentType, kArgumentTypeInt8Ptr,
 				kArgumentTypeUInt8Ptr>::value;
-	};
+	}
 };
 
 template<typename T>
@@ -359,7 +362,7 @@ struct ArgumentType_DispatchPtr<T, 2, true> {
 			select_value<is_signed<typename remove_pointer<T>::type>::value,
 				eArgumentType, kArgumentTypeInt16Ptr,
 				kArgumentTypeUInt16Ptr>::value;
-	};
+	}
 };
 
 template<typename T>
@@ -372,7 +375,7 @@ struct ArgumentType_DispatchPtr<T, 4, true> {
 			select_value<is_signed<typename remove_pointer<T>::type>::value,
 				eArgumentType, kArgumentTypeInt32Ptr,
 				kArgumentTypeUInt32Ptr>::value;
-	};
+	}
 };
 
 template<typename T>
@@ -385,7 +388,7 @@ struct ArgumentType_DispatchPtr<T, 8, true> {
 			select_value<is_signed<typename remove_pointer<T>::type>::value,
 				eArgumentType, kArgumentTypeInt64Ptr,
 				kArgumentTypeUInt64Ptr>::value;
-	};
+	}
 };
 
 // Special cases for integrals and floats
@@ -396,7 +399,7 @@ struct ArgumentType_DispatchPtr<const char*, sizeof(char), true> {
 	{
 		pThis->m_Data.m_pChar = pInput;
 		pThis->m_eType = kArgumentTypeCharPtr;
-	};
+	}
 };
 
 template<>
@@ -406,7 +409,7 @@ struct ArgumentType_DispatchPtr<const float*, sizeof(float), false> {
 	{
 		pThis->m_Data.m_pFloat = pInput;
 		pThis->m_eType = kArgumentTypeFloat32Ptr;
-	};
+	}
 };
 
 template<>
@@ -416,7 +419,7 @@ struct ArgumentType_DispatchPtr<const double*, sizeof(double), false> {
 	{
 		pThis->m_Data.m_pDouble = pInput;
 		pThis->m_eType = kArgumentTypeFloat64Ptr;
-	};
+	}
 };
 
 template<>
@@ -426,7 +429,7 @@ struct ArgumentType_DispatchPtr<const bool*, sizeof(bool), true> {
 	{
 		pThis->m_Data.m_pBool = pInput;
 		pThis->m_eType = kArgumentTypeBoolPtr;
-	};
+	}
 };
 
 // Forward to the pointer type handler
@@ -444,8 +447,9 @@ struct ArgumentType_Dispatch<T, sizeof(void*), false, true> {
 		ArgumentType_DispatchPtr<const typename remove_cv<real_type>::type*,
 			sizeof(real_type), is_integral<real_type>::value>()(
 			pThis, (const typename remove_cv<real_type>::type*)pInput);
-	};
+	}
 };
+#endif
 
 class ArgumentType: public ArgumentType_t {
 public:
@@ -459,7 +463,7 @@ public:
 	{
 		ArgumentType_Dispatch<T, sizeof(T), is_integral<T>::value,
 			is_pointer<T>::value>()(this, Input);
-	};
+	}
 
 	// Specialized constructors for all supported non integral types
 	BURGER_INLINE ArgumentType(
@@ -467,19 +471,19 @@ public:
 	{
 		m_Data.m_fHalf = fInput;
 		m_eType = uType;
-	};
+	}
 
 	// Special case for Burgerlib strings
 	BURGER_INLINE ArgumentType(const String* pString) BURGER_NOEXCEPT
 	{
 		m_Data.m_pString = pString;
 		m_eType = kArgumentTypeBurgerStringPtr;
-	};
+	}
 	BURGER_INLINE ArgumentType(const String& rString) BURGER_NOEXCEPT
 	{
 		m_Data.m_pString = &rString;
 		m_eType = kArgumentTypeBurgerStringPtr;
-	};
+	}
 
 // MMX registers, these functions must be literal constructors because
 // if they were done as templates, CodeWarrior for Intel will crash.
@@ -488,17 +492,17 @@ public:
 	{
 		m_Data.m_MMX = ((const uint64_t*)&Input)[0];
 		m_eType = kArgumentTypeVector2;
-	};
+	}
 	BURGER_INLINE ArgumentType(__m64* pInput) BURGER_NOEXCEPT
 	{
 		m_Data.m_pVector = pInput;
 		m_eType = kArgumentTypeVector2Ptr;
-	};
+	}
 	BURGER_INLINE ArgumentType(const __m64* pInput) BURGER_NOEXCEPT
 	{
 		m_Data.m_pVector = pInput;
 		m_eType = kArgumentTypeVector2Ptr;
-	};
+	}
 #endif
 
 		// SSE registers
@@ -567,41 +571,40 @@ public:
 
 	BURGER_INLINE uint_t IsNumeric(void) const BURGER_NOEXCEPT
 	{
-		return (
-			(m_eType >= kArgumentTypeInt8) && (m_eType <= kArgumentTypeBool));
+		return (m_eType >= kArgumentTypeInt8) && (m_eType <= kArgumentTypeBool);
 	}
 	BURGER_INLINE uint_t IsInteger(void) const BURGER_NOEXCEPT
 	{
-		return ((m_eType >= kArgumentTypeFirstInt) &&
-			(m_eType <= kArgumentTypeLastInt));
+		return (m_eType >= kArgumentTypeFirstInt) &&
+			(m_eType <= kArgumentTypeLastInt);
 	}
 	BURGER_INLINE uint_t IsSigned(void) const BURGER_NOEXCEPT
 	{
-		return ((m_eType >= kArgumentTypeFirstSigned) &&
-			(m_eType <= kArgumentTypeLastSigned));
+		return (m_eType >= kArgumentTypeFirstSigned) &&
+			(m_eType <= kArgumentTypeLastSigned);
 	}
 	BURGER_INLINE uint_t IsUnsigned(void) const BURGER_NOEXCEPT
 	{
-		return ((m_eType >= kArgumentTypeFirstUnsigned) &&
-			(m_eType <= kArgumentTypeLastUnsigned));
+		return (m_eType >= kArgumentTypeFirstUnsigned) &&
+			(m_eType <= kArgumentTypeLastUnsigned);
 	}
 	BURGER_INLINE uint_t IsBoolean(void) const BURGER_NOEXCEPT
 	{
-		return (m_eType == kArgumentTypeBool);
+		return (m_eType == kArgumentTypeBool) ||
+			(m_eType == kArgumentTypeBoolPtr);
 	}
 	BURGER_INLINE uint_t IsReal(void) const BURGER_NOEXCEPT
 	{
-		return ((m_eType >= kArgumentTypeFirstFloat) &&
-			(m_eType <= kArgumentTypeLastFloat));
+		return (m_eType >= kArgumentTypeFirstFloat) &&
+			(m_eType <= kArgumentTypeLastFloat);
 	}
 
 	uint_t BURGER_API IsNegative(void) const BURGER_NOEXCEPT;
 	uint_t BURGER_API IsZero(void) const BURGER_NOEXCEPT;
 	BURGER_INLINE uint_t IsCharacter(void) const BURGER_NOEXCEPT
 	{
-		return ((m_eType == kArgumentTypeInt8) ||
-			(m_eType == kArgumentTypeUInt8) ||
-			(m_eType == kArgumentTypeUInt16));
+		return (m_eType >= kArgumentTypeInt8) &&
+			(m_eType <= kArgumentTypeUInt32) && (m_eType != kArgumentTypeInt64);
 	}
 	BURGER_INLINE uint_t IsTextPointer(void) const BURGER_NOEXCEPT
 	{
@@ -611,22 +614,22 @@ public:
 	}
 	BURGER_INLINE uint_t IsPointer(void) const BURGER_NOEXCEPT
 	{
-		return ((m_eType >= kArgumentTypeFirstPointer) &&
-			(m_eType <= kArgumentTypeLastPointer));
+		return (m_eType >= kArgumentTypeFirstPointer) &&
+			(m_eType <= kArgumentTypeLastPointer);
 	}
 	BURGER_INLINE uint_t Is64Bit(void) const BURGER_NOEXCEPT
 	{
-		return (GetDataLengthInBytes() == 8);
+		return GetDataLengthInBytes() == 8;
 	}
 	BURGER_INLINE uint_t IsSIMD(void) const BURGER_NOEXCEPT
 	{
-		return ((m_eType >= kArgumentTypeFirstVector) &&
-			(m_eType <= kArgumentTypeLastVector));
+		return (m_eType >= kArgumentTypeFirstVector) &&
+			(m_eType <= kArgumentTypeLastVector);
 	}
 	BURGER_INLINE uint_t IsSIMDPointer(void) const BURGER_NOEXCEPT
 	{
-		return ((m_eType >= kArgumentTypeFirstVectorPointer) &&
-			(m_eType <= kArgumentTypeLastVectorPointer));
+		return (m_eType >= kArgumentTypeFirstVectorPointer) &&
+			(m_eType <= kArgumentTypeLastVectorPointer);
 	}
 	uintptr_t BURGER_API GetDataLengthInBytes(void) const BURGER_NOEXCEPT;
 	const void* BURGER_API GetDataAddress(void) const BURGER_NOEXCEPT;
@@ -653,6 +656,7 @@ public:
 	const void* BURGER_API GetPointer(void) const BURGER_NOEXCEPT;
 	const char* BURGER_API GetText(void) const BURGER_NOEXCEPT;
 	uintptr_t BURGER_API GetTextLength(void) const BURGER_NOEXCEPT;
+	uintptr_t BURGER_API GetUTF8(char* pOutput) const BURGER_NOEXCEPT;
 };
 }
 /* END */

@@ -49,14 +49,6 @@ public:
 	static uintptr_t BURGER_API TranslateFromUTF8(uint32_t* pOutput,
 		uintptr_t uOutputSize, const char* pInput,
 		uintptr_t uInputSize) BURGER_NOEXCEPT;
-
-	static uintptr_t BURGER_API TranslateToUTF8(
-		char* pOutput, uint32_t uInput) BURGER_NOEXCEPT;
-	static uintptr_t BURGER_API TranslateToUTF8(char* pOutput,
-		uintptr_t uOutputSize, const uint32_t* pInput) BURGER_NOEXCEPT;
-	static uintptr_t BURGER_API TranslateToUTF8(char* pOutput,
-		uintptr_t uOutputSize, const uint32_t* pInput,
-		uintptr_t uInputSize) BURGER_NOEXCEPT;
 };
 }
 /* END */

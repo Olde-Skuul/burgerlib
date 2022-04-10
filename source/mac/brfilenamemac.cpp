@@ -129,7 +129,7 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 	FSSpec CurrentSpec;
 
 	Expand(); // Resolve prefixes
-	char* pPath = m_pFilename;
+	char* pPath = m_Filename.c_str();
 
 	// Since the MacOS is so slow in creating FSSpecs on 603 machines
 	// I have to use a directory cache to see if have already determined
@@ -199,14 +199,8 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 									StringLength(pFileName);
 
 								// Store the file name
-								char* pNew = m_NativeFilename;
-								if (uFinalLength < sizeof(m_NativeFilename)) {
-									MemoryCopy(
-										pNew, pFileName, uFinalLength + 1);
-								} else {
-									pNew = StringDuplicate(pFileName);
-								}
-								m_pNativeFilename = pNew;
+								m_NativeFilename.resize(uFinalLength+1);
+								char* pNew = m_NativeFilename.data();
 
 								// Kill the trailing colon
 								if (uFinalLength) {
@@ -396,16 +390,13 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 	}
 
 	uintptr_t uNameLength = StringLength(pWorkPath);
-	if (uNameLength < sizeof(m_NativeFilename)) {
-		MemoryCopy(m_NativeFilename, pWorkPath, uNameLength + 1);
-	} else {
-		m_pNativeFilename = StringDuplicate(pWorkPath);
-	}
+	m_NativeFilename = pWorkPath;
+
 	// Get rid of the trailing colon
 	if (uNameLength) {
-		m_pNativeFilename[uNameLength - 1] = 0;
+		m_NativeFilename.pop_back();
 	}
-	return m_pNativeFilename;
+	return m_NativeFilename.c_str();
 }
 
 /***************************************
@@ -424,7 +415,7 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 	void) BURGER_NOEXCEPT
 {
-	Clear();
+	clear();
 	long lDirID;
 	short sVRefNum;
 	HGetVol(0, &sVRefNum, &lDirID); // Call OS
@@ -449,7 +440,7 @@ Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(
 	void) BURGER_NOEXCEPT
 {
-	Clear();
+	clear();
 	// Init to my application's serial number
 	ProcessSerialNumber MyNumber;
 	MyNumber.lowLongOfPSN = kCurrentProcess;
@@ -490,7 +481,7 @@ Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(
 Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(
 	void) BURGER_NOEXCEPT
 {
-	Clear();
+	clear();
 
 	eError uResult = kErrorNone;
 
@@ -533,7 +524,7 @@ Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(
 Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(
 	void) BURGER_NOEXCEPT
 {
-	Clear();
+	clear();
 	short MyVRef; // Internal volume references
 	long MyDirID; // Internal drive ID
 	// Where are the user preferences stored?
@@ -565,7 +556,7 @@ Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(
 Burger::eError BURGER_API Burger::Filename::SetFromNative(
 	const char* pInput, long lDirID, short sVRefNum) BURGER_NOEXCEPT
 {
-	Clear(); // Clear out the previous string
+	clear(); // Clear out the previous string
 
 	uint_t Temp;         // Ascii Temp
 	char TempPath[8192]; // Handle to temp buffer
@@ -619,7 +610,7 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 		}
 	}
 	TempPath[Length] = 0;
-	Set(TempPath);
+	assign(TempPath);
 	return kErrorNone;
 }
 
@@ -789,7 +780,7 @@ Burger::eError BURGER_API Burger::Filename::SetFromDirectoryID(
 			// Convert to UTF8
 			String NameUTF8(UnicodeName.Uni.unicode - 1);
 			// Insert to the final result
-			FinalPath.Insert(0, NameUTF8.c_str(), NameUTF8.length());
+			FinalPath.insert(0, NameUTF8.c_str(), NameUTF8.length());
 
 			// If the root volume is hit, stop traversal
 		} while (CurrentSpec.parID != fsRtParID);
@@ -818,7 +809,7 @@ Burger::eError BURGER_API Burger::Filename::SetFromDirectoryID(
 				sizeof(UTF8Buffer), TempString, CurrentSpec.name[0] + 1U);
 
 			// Insert to the final result
-			FinalPath.Insert(0, UTF8Buffer, uNewLength);
+			FinalPath.insert(0, UTF8Buffer, uNewLength);
 
 			// Move up one directory
 			lDirID = CurrentSpec.parID;
@@ -827,9 +818,9 @@ Burger::eError BURGER_API Burger::Filename::SetFromDirectoryID(
 
 	// All good?
 	if (uResult != kErrorNone) {
-		Clear();
+		clear();
 	} else {
-		Set(FinalPath.c_str());
+		assign(FinalPath.c_str());
 	}
 
 	return uResult;

@@ -116,11 +116,11 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 				// Unicode could be as much as 4 bytes per char
 				char NameUTF8[(256 * 4) + 4];
 				uintptr_t uLength = UTF8::FromUTF16(NameUTF8 + 1,
-					sizeof(NameUTF8) - 4, Name.unicode, uStrLen * 2);
+					sizeof(NameUTF8) - 4, Name.unicode, uStrLen);
 				NameUTF8[0] = ':';
 				NameUTF8[uLength + 1] = ':';
 				NameUTF8[uLength + 2] = 0;
-				pOutput->Set(NameUTF8);
+				pOutput->assign(NameUTF8);
 				pOutput->SetVRefNum(static_cast<int16_t>(Info.driveNumber));
 				pOutput->SetDirID(0);
 			}
@@ -148,7 +148,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 				NameMacRomanUS[0] = ':';
 				NameMacRomanUS[uLength7 + 1] = ':';
 				NameMacRomanUS[uLength7 + 2] = 0;
-				pOutput->Set(NameMacRomanUS);
+				pOutput->assign(NameMacRomanUS);
 				pOutput->SetVRefNum(static_cast<int16_t>(hpb.ioVRefNum));
 				pOutput->SetDirID(0);
 			}
@@ -160,7 +160,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 	// Clear on error
 	if ((uResult != kErrorNone) && pOutput) {
 		// Kill the string since I have an error
-		pOutput->Clear();
+		pOutput->clear();
 	}
 	return uResult;
 }
@@ -174,7 +174,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 ***************************************/
 
 Burger::eError Burger::FileManager::GetModificationTime(
-	Filename* pFileName, TimeDate_t* pOutput)
+	Filename* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	pOutput->Clear(); // Zap it
 
@@ -213,7 +213,7 @@ Burger::eError Burger::FileManager::GetModificationTime(
 ***************************************/
 
 Burger::eError Burger::FileManager::GetCreationTime(
-	Filename* pFileName, TimeDate_t* pOutput)
+	Filename* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	pOutput->Clear(); // Zap it
 
@@ -507,7 +507,7 @@ Burger::eError Burger::FileManager::SetFileAndAuxType(
 
 ***************************************/
 
-Burger::eError Burger::FileManager::CreateDirectoryPath(Filename* pFileName)
+Burger::eError Burger::FileManager::CreateDirectoryPath(Filename* pFileName) BURGER_NOEXCEPT
 {
 	char* pColon;
 	do {
@@ -635,7 +635,7 @@ Burger::eError Burger::FileManager::ChangeOSDirectory(Filename* pDirName)
 ***************************************/
 
 FILE* BURGER_API Burger::FileManager::OpenFile(
-	Filename* pFileName, const char* pType)
+	Filename* pFileName, const char* pType) BURGER_NOEXCEPT
 {
 	// If MSL, there's a call for that ;)
 	FILE* fp = NULL;
@@ -749,7 +749,7 @@ static uint_t CopyFork(short f1, short f2, uint8_t* pBuffer)
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::CopyFile(
-	Filename* pDestName, Filename* pSourceName)
+	Filename* pDestName, Filename* pSourceName) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorIO; /* Assume error */
 	uint8_t* pBuffer = static_cast<uint8_t*>(Burger::Alloc(65536));

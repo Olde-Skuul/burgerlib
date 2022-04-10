@@ -76,7 +76,7 @@ Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv, uint_t uFlags) BU
 		uint16_t** ppWork = reinterpret_cast<uint16_t**>(pWideArgv);
 		uintptr_t uDataSize = 0;
 		do {
-			uDataSize += UTF8::FromUTF16(NULL, 0, ppWork[0]) + 1;
+			uDataSize += UTF8::GetUTF16Size(ppWork[0]) + 1;
 			++ppWork;
 		} while (--iArgc);
 

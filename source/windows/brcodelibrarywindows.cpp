@@ -44,7 +44,7 @@ uint_t Burger::CodeLibrary::Init(const char* pFilename) BURGER_NOEXCEPT
 	// Test by checking for a colon
 	if (StringCharacter(pFilename, ':')) {
 		// Convert to a native windows pathname
-		Pathname.Set(pFilename);
+		Pathname.assign(pFilename);
 		pFilename = Pathname.GetNative();
 	}
 	uint_t uResult = FALSE;

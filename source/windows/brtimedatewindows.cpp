@@ -56,7 +56,7 @@ void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-Burger::eError Burger::TimeDate_t::Load(const _FILETIME* pFileTime)
+Burger::eError Burger::TimeDate_t::Load(const _FILETIME* pFileTime) BURGER_NOEXCEPT
 {
     Clear();
     FILETIME Local;
@@ -89,7 +89,7 @@ Burger::eError Burger::TimeDate_t::Load(const _FILETIME* pFileTime)
 
 ***************************************/
 
-Burger::eError Burger::TimeDate_t::Store(_FILETIME* pFileTime) const
+Burger::eError Burger::TimeDate_t::Store(_FILETIME* pFileTime) const BURGER_NOEXCEPT
 {
     eError uResult = kErrorWriteFailure;
     SYSTEMTIME Temp2;

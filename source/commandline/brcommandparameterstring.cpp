@@ -83,7 +83,7 @@ int Burger::CommandParameterString::Action(int argc, const char** argv)
     if (!argc) {
         return -1;
     }
-    m_Value.Set(argv[0]);
+    m_Value.assign(argv[0]);
     return 2;
 }
 

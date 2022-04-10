@@ -33,18 +33,6 @@ public:
 	static uint_t BURGER_API TranslateFromUTF8(char* pOutput,
 		uintptr_t uOutputSize, const char* pInput, uintptr_t uInputSize,
 		const uint8_t pTranslateTable[128][4]) BURGER_NOEXCEPT;
-
-#if 0
-
-	static uintptr_t BURGER_API FromGeneric(char *pOutput,
-		const uint8_t pTranslateTable[128][4], uint_t uInput) BURGER_NOEXCEPT;
-	static uintptr_t BURGER_API FromGeneric(char *pOutput,
-		uintptr_t uOutputSize, const uint8_t pTranslateTable[128][4],
-		const char *pInput) BURGER_NOEXCEPT;
-	static uintptr_t BURGER_API FromGeneric(char *pOutput,
-		uintptr_t uOutputSize, const uint8_t pTranslateTable[128][4],
-		const char *pInput, uintptr_t uInputSize) BURGER_NOEXCEPT;
-#endif
 };
 }
 /* END */

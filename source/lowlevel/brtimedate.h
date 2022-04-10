@@ -1,14 +1,14 @@
 /***************************************
 
-    Time Manager Class
+	Time Manager Class
 
-    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -60,88 +60,89 @@ struct timespec;
 namespace Burger {
 
 struct TimeDate_t {
-    uint32_t m_uYear;          ///< Year "2009"
-    uint16_t m_usMilliseconds; ///< 0-999
-    uint8_t m_bMonth;          ///< 1-12
-    uint8_t m_bDay;            ///< 1-31
-    uint8_t m_bDayOfWeek;      ///< 0-6
-    uint8_t m_bHour;           ///< 0-23
-    uint8_t m_bMinute;         ///< 0-59
-    uint8_t m_bSecond;         ///< 0-59
+	uint32_t m_uYear;          ///< Year "2009"
+	uint16_t m_usMilliseconds; ///< 0-999
+	uint8_t m_bMonth;          ///< 1-12
+	uint8_t m_bDay;            ///< 1-31
+	uint8_t m_bDayOfWeek;      ///< 0-6
+	uint8_t m_bHour;           ///< 0-23
+	uint8_t m_bMinute;         ///< 0-59
+	uint8_t m_bSecond;         ///< 0-59
 
-    void Clear(void) BURGER_NOEXCEPT;
-    void GetTime(void) BURGER_NOEXCEPT;
-    void TimeToString(char* pOutput) const BURGER_NOEXCEPT;
-    void TimeToStringPM(char* pOutput) const BURGER_NOEXCEPT;
-    void DateToString(char* pOutput) const BURGER_NOEXCEPT;
-    void DateToStringVerbose(char* pOutput) const BURGER_NOEXCEPT;
-    eError Read(InputMemoryStream* pInput) BURGER_NOEXCEPT;
-    eError Write(OutputMemoryStream* pOutput) const BURGER_NOEXCEPT;
-    int Compare(const TimeDate_t* pInput) const BURGER_NOEXCEPT;
+	void Clear(void) BURGER_NOEXCEPT;
+	void GetTime(void) BURGER_NOEXCEPT;
+	void TimeToString(char* pOutput) const BURGER_NOEXCEPT;
+	void TimeToStringPM(char* pOutput) const BURGER_NOEXCEPT;
+	void DateToString(char* pOutput) const BURGER_NOEXCEPT;
+	void DateToStringVerbose(char* pOutput) const BURGER_NOEXCEPT;
+	eError Read(InputMemoryStream* pInput) BURGER_NOEXCEPT;
+	eError Write(OutputMemoryStream* pOutput) const BURGER_NOEXCEPT;
+	int Compare(const TimeDate_t* pInput) const BURGER_NOEXCEPT;
+	uint_t CalcDayOfWeek(void) BURGER_NOEXCEPT;
 
-    BURGER_INLINE friend uint_t operator==(
-        const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
-    {
-        return rInput1.Compare(&rInput2) == 0;
-    }
-    BURGER_INLINE friend uint_t operator!=(
-        const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
-    {
-        return rInput1.Compare(&rInput2) != 0;
-    }
-    BURGER_INLINE friend uint_t operator>(
-        const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
-    {
-        return rInput1.Compare(&rInput2) > 0;
-    }
-    BURGER_INLINE friend uint_t operator>=(
-        const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
-    {
-        return rInput1.Compare(&rInput2) >= 0;
-    }
-    BURGER_INLINE friend uint_t operator<(
-        const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
-    {
-        return rInput1.Compare(&rInput2) < 0;
-    }
-    BURGER_INLINE friend uint_t operator<=(
-        const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
-    {
-        return rInput1.Compare(&rInput2) <= 0;
-    }
+	BURGER_INLINE friend uint_t operator==(
+		const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
+	{
+		return rInput1.Compare(&rInput2) == 0;
+	}
+	BURGER_INLINE friend uint_t operator!=(
+		const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
+	{
+		return rInput1.Compare(&rInput2) != 0;
+	}
+	BURGER_INLINE friend uint_t operator>(
+		const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
+	{
+		return rInput1.Compare(&rInput2) > 0;
+	}
+	BURGER_INLINE friend uint_t operator>=(
+		const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
+	{
+		return rInput1.Compare(&rInput2) >= 0;
+	}
+	BURGER_INLINE friend uint_t operator<(
+		const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
+	{
+		return rInput1.Compare(&rInput2) < 0;
+	}
+	BURGER_INLINE friend uint_t operator<=(
+		const TimeDate_t& rInput1, const TimeDate_t& rInput2) BURGER_NOEXCEPT
+	{
+		return rInput1.Compare(&rInput2) <= 0;
+	}
 
-    eError LoadTimeT(uintptr_t uTimeT) BURGER_NOEXCEPT;
-    eError StoreTimeT(uintptr_t* pTimeT) const BURGER_NOEXCEPT;
-    eError Load(const timespec* pTimeSpec) BURGER_NOEXCEPT;
-    eError Store(timespec* pTimeSpec) const BURGER_NOEXCEPT;
+	eError LoadTimeT(uintptr_t uTimeT) BURGER_NOEXCEPT;
+	eError StoreTimeT(uintptr_t* pTimeT) const BURGER_NOEXCEPT;
+	eError Load(const timespec* pTimeSpec) BURGER_NOEXCEPT;
+	eError Store(timespec* pTimeSpec) const BURGER_NOEXCEPT;
 
 #if defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(DOXYGEN)
-    eError Load(const _SYSTEMTIME* pSystemTime);
-    eError Store(_SYSTEMTIME* pSystemTime) const;
-    eError Load(const _FILETIME* pFileTime);
-    eError Store(_FILETIME* pFileTime) const;
+	eError Load(const _SYSTEMTIME* pSystemTime) BURGER_NOEXCEPT;
+	eError Store(_SYSTEMTIME* pSystemTime) const BURGER_NOEXCEPT;
+	eError Load(const _FILETIME* pFileTime) BURGER_NOEXCEPT;
+	eError Store(_FILETIME* pFileTime) const BURGER_NOEXCEPT;
 #endif
 
 #if defined(BURGER_MSDOS) || defined(DOXYGEN)
-    void LoadMSDOS(uint32_t uMSDOSTime);
-    uint32_t StoreMSDOS(void) const;
+	void LoadMSDOS(uint32_t uMSDOSTime) BURGER_NOEXCEPT;
+	uint32_t StoreMSDOS(void) const BURGER_NOEXCEPT;
 #endif
 
 #if defined(BURGER_MACOS) || defined(DOXYGEN)
-    uint_t Load(const UTCDateTime* pUTCDateTime);
-    uint_t Store(UTCDateTime* pUTCDateTime) const;
-    void LoadFileSeconds(uint32_t uTime);
-    uint32_t GetFileSeconds(void) const;
+	uint_t Load(const UTCDateTime* pUTCDateTime) BURGER_NOEXCEPT;
+	uint_t Store(UTCDateTime* pUTCDateTime) const BURGER_NOEXCEPT;
+	void LoadFileSeconds(uint32_t uTime) BURGER_NOEXCEPT;
+	uint32_t GetFileSeconds(void) const BURGER_NOEXCEPT;
 #endif
 
 #if defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(DOXYGEN)
-    uint_t Load(double dNSTimeInterval);
-    uint_t Store(double* pNSTimeInterval) const;
+	uint_t Load(double dNSTimeInterval) BURGER_NOEXCEPT;
+	uint_t Store(double* pNSTimeInterval) const BURGER_NOEXCEPT;
 #endif
 
 #if defined(BURGER_VITA) || defined(DOXYGEN)
-    uint_t Load(const SceDateTime* pSceDateTime);
-    uint_t Store(SceDateTime* pSceDateTime) const;
+	uint_t Load(const SceDateTime* pSceDateTime) BURGER_NOEXCEPT;
+	uint_t Store(SceDateTime* pSceDateTime) const BURGER_NOEXCEPT;
 #endif
 };
 }

@@ -179,7 +179,7 @@ Burger::eError BURGER_API Burger::NetworkManager::Init(void) BURGER_NOEXCEPT
 				} while (++i < BURGER_ARRAYSIZE(g_Protocols));
 
 				// Obtain the host name
-				m_HostName.Set("localhost");
+				m_HostName.assign("localhost");
 
 				// Obtain the local addresses
 				EnumerateLocalAddresses();

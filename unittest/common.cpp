@@ -225,7 +225,7 @@ uint_t BURGER_API VerifyBuffer(const void* pBuffer, uintptr_t uSize,
 //
 // Test everything
 //
-
+#include "brfilename.h"
 int BURGER_ANSIAPI main(int argc, const char** argv)
 {
 	uint_t uVerbose = VERBOSE_ALL;

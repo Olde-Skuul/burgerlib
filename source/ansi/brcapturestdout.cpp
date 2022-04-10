@@ -359,7 +359,7 @@ Burger::eError BURGER_API Burger::CaptureStdout::GetCapture(
                 break;
             }
             // Add it to the string
-            pOutput->Append(Buffer, static_cast<uint_t>(iBytesRead));
+            pOutput->append(Buffer, static_cast<uint_t>(iBytesRead));
             // Not a full read?
             if (iBytesRead != sizeof(Buffer)) {
                 break;

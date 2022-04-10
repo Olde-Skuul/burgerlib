@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.645
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unittests", "unittestsv17one.vcxproj", "{FC20FF10-3D50-3842-A706-37FFC81A1633}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Durango = Debug|Durango
+		Internal|Durango = Internal|Durango
+		Release|Durango = Release|Durango
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC20FF10-3D50-3842-A706-37FFC81A1633}.Debug|Durango.ActiveCfg = Debug|Durango
+		{FC20FF10-3D50-3842-A706-37FFC81A1633}.Debug|Durango.Build.0 = Debug|Durango
+		{FC20FF10-3D50-3842-A706-37FFC81A1633}.Internal|Durango.ActiveCfg = Internal|Durango
+		{FC20FF10-3D50-3842-A706-37FFC81A1633}.Internal|Durango.Build.0 = Internal|Durango
+		{FC20FF10-3D50-3842-A706-37FFC81A1633}.Release|Durango.ActiveCfg = Release|Durango
+		{FC20FF10-3D50-3842-A706-37FFC81A1633}.Release|Durango.Build.0 = Release|Durango
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DD9C6A72-2C1C-45F2-9450-8BE7001FEE33}
+	EndGlobalSection
+EndGlobal

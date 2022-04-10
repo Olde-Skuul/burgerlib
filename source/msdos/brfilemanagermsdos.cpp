@@ -20,6 +20,7 @@
 #include "brfile.h"
 #include "brfilename.h"
 #include "brmemoryfunctions.h"
+#include "brwin437.h"
 
 #include <dos.h>
 
@@ -181,7 +182,6 @@ void BURGER_API Burger::FileManager::PlatformSetup(void) BURGER_NOEXCEPT
 	Regs.ax = 0x4451;
 	Int86x(0x21U, &Regs, &Regs);
 	if (!(Regs.flags & 1U)) {
-		printf("hit\n");
 		switch (static_cast<uint8_t>(Regs.ax)) {
 		case 0x32:
 			uTrueVersion = 0x0302;
@@ -489,7 +489,7 @@ Burger::eError BURGER_API Burger::FileManager::MSDos_Expand8_3Filename(
 		// Was the conversion successful?
 		if (!(Regs.flags & 0x1U)) {
 			// Update the string to the long version.
-			uResult = pInput->Set(pRealBuffer + kNameOffset);
+			uResult = pInput->assign(pRealBuffer + kNameOffset);
 		}
 	}
 	return uResult;
@@ -544,7 +544,7 @@ Burger::eError BURGER_API Burger::FileManager::MSDos_ConvertTo8_3Filename(
 		// Was the conversion successful?
 		if (!(Regs.flags & 0x1U)) {
 			// Update the string to the 8.3 version.
-			uResult = pInput->Set(pRealBuffer + kNameOffset);
+			uResult = pInput->assign(pRealBuffer + kNameOffset);
 		}
 	}
 	return uResult;
@@ -581,7 +581,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 	// Bad drive number!!
 	if (uVolumeNum >= 26) {
 		if (pOutput) {
-			pOutput->Clear();
+			pOutput->clear();
 		}
 		return kErrorInvalidParameter;
 	}
@@ -611,10 +611,53 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 	Regs.es = static_cast<uint16_t>(uRealBuffer >> 16);
 	Int86x(0x21, &Regs, &Regs);
 
+	uint_t bAbort = FALSE;
+
 	// The drive letter is invalid. Return bogus name and error out.
 	if ((Regs.ax & 0xFFU) == 0xFFU) {
+		bAbort = TRUE;
+	}
+
+	// Special case, if a non-existant floppy drive is accessed, then it's
+	// possible MSDos 6.22 and others will crash when queried for a volume name.
+	// To prevent the crash, check for if a floppy device is present and abort
+	// if one is not found.
+
+	// DOS Box doesn't have this issue, so skip the check
+	else if ((MSDos_GetFlavor() != 0x77) && (uVolumeNum < 2)) {
+
+		// Query the BIOS if there are floppy drives present.
+		// http://www.ctyme.com/intr/rb-0575.htm
+		Regs.ax = 0x0000;
+		Int86x(0x11, &Regs, &Regs);
+
+		// If no floppies, don't allow drive 0 or 1
+		if (!(Regs.ax & 1)) {
+			bAbort = TRUE;
+		} else {
+			// Get the drive count 0-3 and check against volume number
+			if (((Regs.ax >> 6U) & 0x3U) < uVolumeNum) {
+				bAbort = TRUE;
+
+			} else if (uVolumeNum == 1) {
+				// Just because it reported 2 drives, is it really?
+				// Check if drive B: is a phantom drive.
+
+				// http://www.ctyme.com/intr/rb-2907.htm
+				Regs.ax = 0x440E;
+				Regs.bx = static_cast<uint16_t>(uVolumeNum + 1);
+				Int86x(0x21, &Regs, &Regs);
+				if ((Regs.flags & 1) || !(Regs.ax & 0xFFU)) {
+					bAbort = TRUE;
+				}
+			}
+		}
+	}
+
+	// If the drive was found missing, abort
+	if (bAbort) {
 		if (pOutput) {
-			pOutput->Clear();
+			pOutput->clear();
 		}
 		return kErrorVolumeNotFound;
 	}
@@ -675,7 +718,9 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 	pRealBuffer[uLength + 30] = ':';
 	pRealBuffer[uLength + 31] = 0;
 	if (pOutput) {
-		pOutput->Set(pRealBuffer + 29);
+		String Temp;
+		Temp.assign_win437(pRealBuffer + 29);
+		pOutput->assign(Temp.c_str());
 	}
 
 	// Restore the disk transfer address address to the old value
@@ -728,7 +773,7 @@ uint32_t DoWorkDOSMod(const char* pReferance);
 // clang-format on
 
 Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
-	Filename* pFileName, TimeDate_t* pOutput)
+	Filename* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	uint32_t Temp;
 
@@ -747,11 +792,11 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
 		MyRegs.ds = (Temp>>16);		/* Get the segment */
 		StringCopy(GetRealBufferProtectedPtr(),pFileName->GetNative());
 		Int86x(0x21,&MyRegs,&MyRegs);	/* Call Win95 */
-		if (MyRegs.flags&1) {			/* Error? */
+		if (MyRegs.flags & 1) {			/* Error? */
 			goto FooBar;
 		}
 		Temp = (uint32_t)MyRegs.di;		/* Get the date and time */
-		Temp = (Temp<<16)|MyRegs.cx;
+		Temp = (Temp << 16) | MyRegs.cx;
 #else
 		/* This works on all devices */
 		uint16_t Ref;
@@ -760,11 +805,19 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
 		MyRegs.cx = 0x0000;
 		MyRegs.dx = 0x0001; /* Open the file */
 		MyRegs.di = 0x0000;
-		Temp = GetRealBufferPtr();               /* Local buffer */
-		MyRegs.si = static_cast<uint16_t>(Temp); /* Pass the filename buffer */
-		MyRegs.ds = static_cast<uint16_t>(Temp >> 16); /* Get the segment */
-		StringCopy(static_cast<char*>(GetRealBufferProtectedPtr()),
+
+		/* Local buffer */
+		Temp = GetRealBufferPtr();
+
+		/* Pass the filename buffer */
+		MyRegs.si = static_cast<uint16_t>(Temp);
+		/* Get the segment */
+		MyRegs.ds = static_cast<uint16_t>(Temp >> 16);
+
+		Win437::TranslateFromUTF8(
+			static_cast<char*>(GetRealBufferProtectedPtr()), 512,
 			pFileName->GetNative());
+
 		Int86x(0x21, &MyRegs, &MyRegs); /* Call Win95 */
 		if (MyRegs.flags & 1) {         /* Error? */
 			goto FooBar;
@@ -784,8 +837,12 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
 		Temp = (Temp << 16) | MyRegs.cx;
 #endif
 	} else {
-		Temp = DoWorkDOSMod(
-			pFileName->GetNative()); /* Call DOS to perform the action */
+		/* Call DOS to perform the action */
+		Win437::TranslateFromUTF8(
+			static_cast<char*>(GetRealBufferProtectedPtr()), 512,
+			pFileName->GetNative());
+
+		Temp = DoWorkDOSMod(static_cast<char*>(GetRealBufferProtectedPtr()));
 		if (!Temp) {
 			goto FooBar; /* Error? */
 		}
@@ -806,14 +863,17 @@ FooBar:
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
-	Filename* pFileName, TimeDate_t* pOutput)
+	Filename* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
+	// If no dos support then don't return an error
 	uint32_t Temp;
-	eError Result =
-		kErrorNone; /* If no dos support then don't return an error */
-	if (MSDOS_HasLongFilenames()) { /* Win95? */
+	eError uResult = kErrorNone;
+
+	// Win95?
+	if (MSDOS_HasLongFilenames()) {
 		Regs16 MyRegs;
-		StringCopy(static_cast<char*>(GetRealBufferProtectedPtr()),
+		Win437::TranslateFromUTF8(
+			static_cast<char*>(GetRealBufferProtectedPtr()), 512,
 			pFileName->GetNative());
 		MyRegs.ax = 0x7143;                      /* Get file attributes */
 		MyRegs.bx = 8;                           /* Get creation date/time */
@@ -829,10 +889,14 @@ Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
 				(uint16_t)MyRegs.si; /* Get milliseconds */
 			return kErrorNone;
 		}
-		Result = kErrorReadFailure; // Error condition
+		uResult = kErrorReadFailure; // Error condition
+	} else {
+		if (!DoesFileExist(pFileName)) {
+			uResult = kErrorFileNotFound;
+		}
 	}
 	pOutput->Clear(); // No DOS support
-	return Result;    // Error!
+	return uResult;   // Error!
 }
 
 /***************************************
@@ -870,16 +934,22 @@ uint_t BURGER_API Burger::FileManager::DoesFileExist(
 		uint32_t Temp = GetRealBufferPtr();      /* Local buffer */
 		MyRegs.dx = static_cast<uint16_t>(Temp); /* Pass the filename buffer */
 		MyRegs.ds = static_cast<uint16_t>(Temp >> 16); /* Get the segment */
-		StringCopy(static_cast<char*>(GetRealBufferProtectedPtr()),
+		Win437::TranslateFromUTF8(
+			static_cast<char*>(GetRealBufferProtectedPtr()), 512,
 			pFileName->GetNative());
 		Int86x(0x21, &MyRegs, &MyRegs);             /* Call Win95 */
 		if (MyRegs.flags & 1 || MyRegs.cx & 0x18) { /* Error? Or directory? */
 			return FALSE;
 		}
 	} else {
-		if (DoWorkDOSExist(pFileName->GetNative()) &
-			0x18) {       /* Call DOS to perform the action */
-			return FALSE; /* Error? */
+		Win437::TranslateFromUTF8(
+			static_cast<char*>(GetRealBufferProtectedPtr()), 512,
+			pFileName->GetNative());
+		/* Call DOS to perform the action */
+		if (DoWorkDOSExist(static_cast<char*>(GetRealBufferProtectedPtr())) &
+			0x18) {
+			/* Error? */
+			return FALSE;
 		}
 	}
 	return TRUE; /* File was found */
@@ -894,15 +964,21 @@ uint_t BURGER_API Burger::FileManager::DoesFileExist(
 Burger::eError BURGER_API Burger::FileManager::DeleteFile(
 	Filename* pFileName) BURGER_NOEXCEPT
 {
-	Regs16 Regs; // Used by DOS
+	// Used by DOS
+	Regs16 Regs;
 
-	uint_t LongOk = MSDOS_HasLongFilenames();
-	uint32_t RealBuffer = GetRealBufferPtr(); /* Get real memory */
-	StringCopy(static_cast<char*>(RealToProtectedPtr(RealBuffer)),
-		pFileName->GetNative()); // Copy path
+	// Get real memory
+	uint32_t RealBuffer = GetRealBufferPtr();
 
-	if (LongOk) {
-		Regs.ax = 0x7141; // Try it via windows
+	// Copy path
+	Win437::TranslateFromUTF8(
+		static_cast<char*>(RealToProtectedPtr(RealBuffer)), 512,
+		pFileName->GetNative());
+
+	if (MSDOS_HasLongFilenames()) {
+		// Try it via windows
+		// http://www.ctyme.com/intr/rb-3200.htm
+		Regs.ax = 0x7141;
 		Regs.dx = static_cast<uint16_t>(RealBuffer);
 		Regs.ds = static_cast<uint16_t>(RealBuffer >> 16);
 		Regs.cx = 0;                // Normal file
@@ -911,15 +987,40 @@ Burger::eError BURGER_API Burger::FileManager::DeleteFile(
 		if (!(Regs.flags & 1)) {    // Error?
 			return kErrorNone;
 		}
+
+		// http://www.ctyme.com/intr/rb-3198.htm
+		Regs.ax = 0x713A;
+		Regs.dx = static_cast<uint16_t>(RealBuffer);
+		Regs.ds = static_cast<uint16_t>(RealBuffer >> 16);
+		Int86x(0x21, &Regs, &Regs); // Delete the directory
+		if (!(Regs.flags & 1)) {    // Error?
+			return kErrorNone;
+		}
+		return kErrorFileNotFound;
 	}
+
+	// http://www.ctyme.com/intr/rb-2797.htm
 	Regs.ax = 0x4100; // Try it the DOS 5.0 way
 	Regs.dx = static_cast<uint16_t>(RealBuffer);
 	Regs.ds = static_cast<uint16_t>(RealBuffer >> 16);
 	Int86x(0x21, &Regs, &Regs);
-	if (Regs.flags & 1) { // Error?
-		return kErrorIO;  // Oh forget it!!!
+
+	// Error?
+	if (Regs.flags & 1) {
+
+		// Try deleting as a directory
+		// http://www.ctyme.com/intr/rb-2776.htm
+		Regs.ax = 0x3A00;
+		Regs.dx = static_cast<uint16_t>(RealBuffer);
+		Regs.ds = static_cast<uint16_t>(RealBuffer >> 16);
+		Int86x(0x21, &Regs, &Regs);
+		if (Regs.flags & 1) {
+			// Oh forget it!!!
+			return kErrorFileNotFound;
+		}
 	}
-	return kErrorNone; // Success!!
+	// Success!!
+	return kErrorNone; 
 }
 
 /***************************************
@@ -938,7 +1039,8 @@ Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(
 	uint_t LongOk = MSDOS_HasLongFilenames();
 	uint32_t RealBuffer = GetRealBufferPtr(); // Get real memory
 	// Copy path
-	StringCopy(static_cast<char*>(RealToProtectedPtr(RealBuffer)),
+	Win437::TranslateFromUTF8(
+		static_cast<char*>(RealToProtectedPtr(RealBuffer)), 512,
 		pDirName->GetNative());
 
 	if (LongOk) {         // Win95 is present?
@@ -992,7 +1094,7 @@ uint_t DoWorkDOSCrDir(const char* Referance);
 	value [eax]			/* Return in EAX */
 // clang-format on
 
-static uint_t BURGER_API DirCreate(const char* pFileName)
+static uint_t BURGER_API DirCreate(const char* pFileName) BURGER_NOEXCEPT
 {
 	if (Burger::FileManager::MSDOS_HasLongFilenames()) {
 		Burger::Regs16 MyRegs;
@@ -1001,8 +1103,8 @@ static uint_t BURGER_API DirCreate(const char* pFileName)
 		MyRegs.dx =
 			static_cast<uint16_t>(Temp); /* Save the real memory pointer */
 		MyRegs.ds = static_cast<uint16_t>(Temp >> 16);
-		Burger::StringCopy(
-			static_cast<char*>(GetRealBufferProtectedPtr()), pFileName);
+		Burger::Win437::TranslateFromUTF8(
+			static_cast<char*>(GetRealBufferProtectedPtr()), 512, pFileName);
 		Int86x(0x21, &MyRegs, &MyRegs); /* Make the directory */
 		if (!(MyRegs.flags & 1)) {
 			return FALSE;
@@ -1017,12 +1119,16 @@ static uint_t BURGER_API DirCreate(const char* pFileName)
 		}
 		return TRUE; /* Error! */
 	}
-	return DoWorkDOSCrDir(pFileName); /* Dos 5.0 or previous */
+	Burger::Win437::TranslateFromUTF8(
+		static_cast<char*>(GetRealBufferProtectedPtr()), 512, pFileName);
+	// Dos 5.0 or previous
+	return DoWorkDOSCrDir(static_cast<char*>(GetRealBufferProtectedPtr()));
 }
 
 Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
-	Filename* pFileName)
+	Filename* pFileName) BURGER_NOEXCEPT
 {
+
 	char* pPath = const_cast<char*>(pFileName->GetNative());
 	if (!DirCreate(pPath)) { /* Easy way! */
 		return kErrorNone;   /* No error */

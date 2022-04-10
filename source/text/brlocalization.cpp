@@ -23,7 +23,7 @@
 
 /*! ************************************
 
-	\brief Default constructor.
+	\brief Default constructor
 
 ***************************************/
 

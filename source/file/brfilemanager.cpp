@@ -131,11 +131,6 @@ Burger::FileManager::~FileManager()
 	m_Thread.Wait();
 #endif
 
-#if defined(BURGER_MACOSX) || defined(BURGER_IOS)
-	Free(m_pBootName);
-	m_pBootName = nullptr;
-	m_uBootNameSize = 0;
-#endif
 	PlatformShutdown();
 }
 
@@ -161,7 +156,7 @@ Burger::FileManager::~FileManager()
 ***************************************/
 
 #if !(defined(BURGER_MSDOS) || defined(BURGER_LINUX) || \
-	defined(BURGER_ANDROID)) || \
+	defined(BURGER_ANDROID) || defined(BURGER_DARWIN)) || \
 	defined(DOXYGEN)
 void BURGER_API Burger::FileManager::PlatformSetup(void) BURGER_NOEXCEPT {}
 #endif
@@ -177,7 +172,9 @@ void BURGER_API Burger::FileManager::PlatformSetup(void) BURGER_NOEXCEPT {}
 
 ***************************************/
 
-#if !(defined(BURGER_LINUX) || defined(BURGER_ANDROID)) || defined(DOXYGEN)
+#if !(defined(BURGER_LINUX) || defined(BURGER_ANDROID) || \
+	defined(BURGER_DARWIN)) || \
+	defined(DOXYGEN)
 void BURGER_API Burger::FileManager::PlatformShutdown(void) BURGER_NOEXCEPT {}
 #endif
 
@@ -291,7 +288,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 {
 	// Clear the output on error
 	if (pOutput) {
-		pOutput->Clear();
+		pOutput->clear();
 	}
 	// Error!
 	return kErrorNotSupportedOnThisPlatform;
@@ -332,7 +329,7 @@ uint_t BURGER_API Burger::FileManager::GetVolumeNumber(
 #endif
 
 	// Assume failure
-	uint_t uResult = static_cast<uint_t>(-1);
+	uint_t uResult = BURGER_MAXUINT;
 	Filename TempFilename;
 	do {
 		// Convert to name
@@ -380,7 +377,7 @@ uint_t BURGER_API Burger::FileManager::GetVolumeNumber(
 ***************************************/
 
 #if !( \
-	defined(BURGER_MACOSX) || defined(BURGER_IOS) || defined(BURGER_VITA)) || \
+	defined(BURGER_IOS) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
 
 Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(
@@ -448,13 +445,50 @@ Burger::eError BURGER_API Burger::FileManager::GetPrefix(
 	if (uPrefixNum >= FileManager::kPrefixCount) {
 
 		// No, clear out the output and return an error
-		pOutput->Clear();
+		pOutput->clear();
 		uResult = kErrorInvalidParameter;
 
 	} else {
 
 		// Get the prefix string
-		uResult = pOutput->Set(g_pFileManager->m_Prefixes[uPrefixNum].c_str());
+		uResult =
+			pOutput->assign(g_pFileManager->m_Prefixes[uPrefixNum].c_str());
+	}
+
+	// Return the error code
+	return uResult;
+}
+
+/*! ************************************
+
+	\brief Return the contents of a prefix
+
+	Given a prefix number, fill in a \ref String structure with a copy
+	of the prefix pathname. The string could be an empty string in the case of
+	an unused or nullptr prefix.
+
+	\param pOutput Pointer to a String class to store the string
+	\param uPrefixNum Index to the requested prefix to obtain
+	\return Zero if no error, non-zero if error
+	\sa GetPrefix(Filename *,uint_t)
+
+***************************************/
+
+Burger::eError BURGER_API Burger::FileManager::GetPrefix(
+	String* pOutput, uint_t uPrefixNum) BURGER_NOEXCEPT
+{
+	eError uResult;
+	// Is the prefix number valid?
+	if (uPrefixNum >= FileManager::kPrefixCount) {
+
+		// No, clear out the output and return an error
+		pOutput->clear();
+		uResult = kErrorInvalidParameter;
+
+	} else {
+
+		// Get the prefix string
+		uResult = pOutput->assign(g_pFileManager->m_Prefixes[uPrefixNum]);
 	}
 
 	// Return the error code
@@ -494,23 +528,20 @@ Burger::eError BURGER_API Burger::FileManager::SetPrefix(
 
 		// Assume success, since only out of memory could fail this function.
 		uResult = kErrorNone;
-
+		Filename Temp;
 		// Assume the new prefix is nothing
 		const char* pNewPrefix = nullptr;
 		// Valid input prefix?
 		if (pPrefixName && pPrefixName[0]) {
 
 			// Convert to full pathname using a temporary filename record
-			Filename Temp;
+
 			uResult = Temp.Expand(pPrefixName);
 			if (!uResult) {
 				pPrefixName = Temp.c_str();
 				if (pPrefixName[0]) { // Blank string?
 					// Allocate memory for new prefix
-					pNewPrefix = StringDuplicate(pPrefixName);
-					if (!pNewPrefix) {
-						uResult = kErrorOutOfMemory;
-					}
+					pNewPrefix = pPrefixName;
 				}
 			}
 		}
@@ -555,6 +586,7 @@ Burger::eError BURGER_API Burger::FileManager::SetPrefix(
 	} else {
 		uResult = kErrorNone;
 		// Zap the prefix
+		Filename Temp;
 		const char* pTemp = nullptr;
 		// Valid prefix?
 		if (pPrefixName) {
@@ -562,12 +594,11 @@ Burger::eError BURGER_API Burger::FileManager::SetPrefix(
 			if (pPath[0]) {
 
 				// Convert to full pathname
-				Filename Temp;
 				Temp.Expand(pPrefixName->c_str());
 				pPath = Temp.c_str();
 				if (pPath[0]) { // Blank string?
 					// Allocate memory for new prefix
-					pTemp = StringDuplicate(pPath);
+					pTemp = pPath;
 				}
 			}
 		}
@@ -605,7 +636,7 @@ Burger::eError BURGER_API Burger::FileManager::PopPrefix(
 {
 	Filename TempName;
 	GetPrefix(&TempName, uPrefixNum);        // Get the current prefix
-	TempName.DirName();                      // Remove a directory
+	TempName.dirname();                      // Remove a directory
 	return SetPrefix(uPrefixNum, &TempName); // Store the prefix
 }
 
@@ -629,7 +660,7 @@ Burger::eError BURGER_API Burger::FileManager::PopPrefix(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
-	const char* pFileName, TimeDate_t* pOutput)
+	const char* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	Filename PathName(pFileName);
 	return GetModificationTime(&PathName, pOutput);
@@ -661,7 +692,7 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
 	defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
 Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
-	Filename* /* pFileName */, TimeDate_t* /* pOutput */)
+	Filename* /* pFileName */, TimeDate_t* /* pOutput */) BURGER_NOEXCEPT
 {
 	return kErrorNotSupportedOnThisPlatform; // Error!
 }
@@ -687,7 +718,7 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
-	const char* pFileName, TimeDate_t* pOutput)
+	const char* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	Filename PathName(pFileName);
 	return GetCreationTime(&PathName, pOutput);
@@ -719,7 +750,7 @@ Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
 	defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
 Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
-	Filename* /* pFileName */, TimeDate_t* /* pOutput */)
+	Filename* /* pFileName */, TimeDate_t* /* pOutput */) BURGER_NOEXCEPT
 {
 	return kErrorNotSupportedOnThisPlatform; // Error!
 }
@@ -1187,7 +1218,7 @@ Burger::eError BURGER_API Burger::FileManager::SetFileAndAuxType(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
-	const char* pFileName)
+	const char* pFileName) BURGER_NOEXCEPT
 {
 	Filename PathName(pFileName);          // Convert to native path
 	return CreateDirectoryPath(&PathName); // Create the path
@@ -1220,7 +1251,7 @@ Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
 	defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
 Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
-	Filename* /* pFileName */)
+	Filename* /* pFileName */) BURGER_NOEXCEPT
 {
 	return kErrorNotSupportedOnThisPlatform; // Always error out
 }
@@ -1251,7 +1282,7 @@ Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPathDirName(
 	const char* pFileName)
 {
 	Filename FileNameCopy(pFileName);
-	FileNameCopy.DirName();
+	FileNameCopy.dirname();
 	return CreateDirectoryPath(&FileNameCopy);
 }
 
@@ -1280,7 +1311,7 @@ Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPathDirName(
 	Filename* pFileName)
 {
 	Filename FileNameCopy(*pFileName);
-	FileNameCopy.DirName();
+	FileNameCopy.dirname();
 	return CreateDirectoryPath(&FileNameCopy);
 }
 
@@ -1371,7 +1402,7 @@ Burger::eError BURGER_API Burger::FileManager::DeleteFile(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::RenameFile(
-	const char* pNewName, const char* pOldName)
+	const char* pNewName, const char* pOldName) BURGER_NOEXCEPT
 {
 	Filename Dest(pNewName);        // Expand the path to a full filename
 	Filename Src(pOldName);         // Expand the source path
@@ -1402,14 +1433,14 @@ Burger::eError BURGER_API Burger::FileManager::RenameFile(
 	defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
 Burger::eError BURGER_API Burger::FileManager::RenameFile(
-	Filename* pNewName, Filename* pOldName)
+	Filename* pNewName, Filename* pOldName) BURGER_NOEXCEPT
 {
 #if defined(BURGER_DS)
 	// Always error out
 	return kErrorNotSupportedOnThisPlatform;
 #else
 	eError uResult = kErrorIO; // Assume error
-	if (rename(pOldName->GetNative(), pNewName->GetNative())) {
+	if (!rename(pOldName->GetNative(), pNewName->GetNative())) {
 		uResult = kErrorNone;
 	}
 	return uResult;
@@ -1503,7 +1534,7 @@ Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(
 ***************************************/
 
 FILE* BURGER_API Burger::FileManager::OpenFile(
-	const char* pFileName, const char* pType)
+	const char* pFileName, const char* pType) BURGER_NOEXCEPT
 {
 	Filename TempPath(pFileName); // Expand the path to a full filename
 	return OpenFile(&TempPath, pType);
@@ -1539,7 +1570,7 @@ FILE* BURGER_API Burger::FileManager::OpenFile(
 	!defined(BURGER_IOS)) || \
 	defined(DOXYGEN)
 FILE* BURGER_API Burger::FileManager::OpenFile(
-	Filename* pFileName, const char* pType)
+	Filename* pFileName, const char* pType) BURGER_NOEXCEPT
 {
 #if defined(BURGER_DS)
 	return NULL;
@@ -1568,7 +1599,7 @@ FILE* BURGER_API Burger::FileManager::OpenFile(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::CopyFile(
-	const char* pDestName, const char* pSrcName)
+	const char* pDestName, const char* pSrcName) BURGER_NOEXCEPT
 {
 	Filename Dest(pDestName);     // Expand the path to a full filename
 	Filename Src(pSrcName);       // Expand the source path
@@ -1597,7 +1628,7 @@ Burger::eError BURGER_API Burger::FileManager::CopyFile(
 	!defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || \
 	defined(DOXYGEN)
 Burger::eError BURGER_API Burger::FileManager::CopyFile(
-	Filename* pDestName, Filename* pSourceName)
+	Filename* pDestName, Filename* pSourceName) BURGER_NOEXCEPT
 {
 #if defined(BURGER_DS)
 	return kErrorNotSupportedOnThisPlatform;
@@ -1661,8 +1692,8 @@ Burger::eError BURGER_API Burger::FileManager::CopyFile(
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::SaveFile(
-	const char* pFileName, const void* pInput, uintptr_t uLength)
+Burger::eError BURGER_API Burger::FileManager::SaveFile(const char* pFileName,
+	const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	Filename MyName(pFileName);
 	return SaveFile(&MyName, pInput, uLength);
@@ -1689,7 +1720,7 @@ Burger::eError BURGER_API Burger::FileManager::SaveFile(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::SaveFile(
-	Filename* pFileName, const void* pInput, uintptr_t uLength)
+	Filename* pFileName, const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	File FileRef;
 	eError uResult = FileRef.Open(pFileName, File::kWriteOnly);
@@ -1738,7 +1769,8 @@ Burger::eError BURGER_API Burger::FileManager::SaveFile(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::SaveTextFile(
-	const char* pFileName, const void* pInput, uintptr_t uLength)
+	const char* pFileName, const void* pInput,
+	uintptr_t uLength) BURGER_NOEXCEPT
 {
 	Burger::Filename MyName(pFileName);
 	return SaveTextFile(&MyName, pInput, uLength);
@@ -1771,7 +1803,7 @@ Burger::eError BURGER_API Burger::FileManager::SaveTextFile(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::SaveTextFile(
-	Filename* pFileName, const void* pInput, uintptr_t uLength)
+	Filename* pFileName, const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	FILE* fp = OpenFile(pFileName, "w"); // Open the file
 	if (fp) {

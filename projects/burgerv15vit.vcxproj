@@ -97,13 +97,6 @@
       <OptimizeReferences>false</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\vita\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\vita\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Internal|PSVita'">
     <ClCompile>
@@ -133,13 +126,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"</C
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\vita\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\vita\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|PSVita'">
     <ClCompile>
@@ -171,13 +157,6 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"</C
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent>
-      <Message>Copying $(TargetFileName) to $(BURGER_SDKS)\vita\burgerlib\</Message>
-      <Command>mkdir "$(BURGER_SDKS)\vita\burgerlib\" 2&gt;nul
-cmd /c p4 edit "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"
-copy /Y "$(TargetPath)" "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"
-cmd /c p4 revert -a "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\source\ansi\brcapturestdout.h" />
@@ -294,6 +273,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"</C
     <ClInclude Include="..\source\input\brkeyboard.h" />
     <ClInclude Include="..\source\input\brmouse.h" />
     <ClInclude Include="..\source\lowlevel\bralgorithm.h" />
+    <ClInclude Include="..\source\lowlevel\brargumenttype.h" />
     <ClInclude Include="..\source\lowlevel\brarray.h" />
     <ClInclude Include="..\source\lowlevel\brassert.h" />
     <ClInclude Include="..\source\lowlevel\bratomic.h" />
@@ -341,6 +321,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"</C
     <ClInclude Include="..\source\math\brfloatingpoint.h" />
     <ClInclude Include="..\source\math\brfpinfo.h" />
     <ClInclude Include="..\source\math\brfplargeint.h" />
+    <ClInclude Include="..\source\math\brfpprintinfo.h" />
     <ClInclude Include="..\source\math\brmatrix3d.h" />
     <ClInclude Include="..\source\math\brmatrix4d.h" />
     <ClInclude Include="..\source\math\brmp3math.h" />
@@ -355,6 +336,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"</C
     <ClInclude Include="..\source\random\brrandombase.h" />
     <ClInclude Include="..\source\templateburgerbase.h" />
     <ClInclude Include="..\source\text\brasciito.h" />
+    <ClInclude Include="..\source\text\brcodepage.h" />
     <ClInclude Include="..\source\text\brisolatin1.h" />
     <ClInclude Include="..\source\text\brlocalization.h" />
     <ClInclude Include="..\source\text\brmacromanus.h" />
@@ -372,6 +354,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"</C
     <ClInclude Include="..\source\text\brutf32.h" />
     <ClInclude Include="..\source\text\brutf8.h" />
     <ClInclude Include="..\source\text\brwin1252.h" />
+    <ClInclude Include="..\source\text\brwin437.h" />
     <ClInclude Include="..\source\vita\brvitamemory.h" />
     <ClInclude Include="..\source\vita\brvitatypes.h" />
     <ClCompile Include="..\source\ansi\brcapturestdout.cpp" />
@@ -478,6 +461,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"</C
     <ClCompile Include="..\source\input\brkeyboard.cpp" />
     <ClCompile Include="..\source\input\brmouse.cpp" />
     <ClCompile Include="..\source\lowlevel\bralgorithm.cpp" />
+    <ClCompile Include="..\source\lowlevel\brargumenttype.cpp" />
     <ClCompile Include="..\source\lowlevel\brarray.cpp" />
     <ClCompile Include="..\source\lowlevel\brassert.cpp" />
     <ClCompile Include="..\source\lowlevel\bratomic.cpp" />
@@ -519,6 +503,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"</C
     <ClCompile Include="..\source\math\brfloatingpoint.cpp" />
     <ClCompile Include="..\source\math\brfpinfo.cpp" />
     <ClCompile Include="..\source\math\brfplargeint.cpp" />
+    <ClCompile Include="..\source\math\brfpprintinfo.cpp" />
     <ClCompile Include="..\source\math\brmatrix3d.cpp" />
     <ClCompile Include="..\source\math\brmatrix4d.cpp" />
     <ClCompile Include="..\source\math\brmp3math.cpp" />
@@ -533,6 +518,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"</C
     <ClCompile Include="..\source\random\brrandom.cpp" />
     <ClCompile Include="..\source\random\brrandombase.cpp" />
     <ClCompile Include="..\source\text\brasciito.cpp" />
+    <ClCompile Include="..\source\text\brcodepage.cpp" />
     <ClCompile Include="..\source\text\brisolatin1.cpp" />
     <ClCompile Include="..\source\text\brlocalization.cpp" />
     <ClCompile Include="..\source\text\brmacromanus.cpp" />
@@ -550,6 +536,7 @@ cmd /c p4 revert -a "$(BURGER_SDKS)\vita\burgerlib\$(TargetName)$(TargetExt)"</C
     <ClCompile Include="..\source\text\brutf32.cpp" />
     <ClCompile Include="..\source\text\brutf8.cpp" />
     <ClCompile Include="..\source\text\brwin1252.cpp" />
+    <ClCompile Include="..\source\text\brwin437.cpp" />
     <ClCompile Include="..\source\vita\brcriticalsectionvita.cpp" />
     <ClCompile Include="..\source\vita\brdirectorysearchvita.cpp" />
     <ClCompile Include="..\source\vita\brfilemanagervita.cpp" />

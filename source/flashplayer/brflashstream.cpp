@@ -452,7 +452,7 @@ void BURGER_API Burger::Flash::Stream::ReadPString(String *pOutput)
 	m_uBitsRemaining = 0;
 	char Buffer[256];
 	m_pStream->GetPString(Buffer,sizeof(Buffer));
-	pOutput->Set(Buffer);
+	pOutput->assign(Buffer);
 }
 
 /*! ************************************
@@ -473,7 +473,7 @@ void BURGER_API Burger::Flash::Stream::ReadPString(String *pOutput)
 void BURGER_API Burger::Flash::Stream::ReadString(uintptr_t uLength,String *pOutput)
 {
 	m_uBitsRemaining = 0;
-	pOutput->SetBufferSize(uLength);
+	pOutput->resize(uLength);
 	if (uLength) {
 		m_pStream->Get(pOutput->c_str(),uLength);
 	}

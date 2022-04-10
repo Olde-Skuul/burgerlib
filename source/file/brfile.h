@@ -62,14 +62,14 @@ private:
 #endif
 
 public:
-	File();
-	File(const char* pFileName, eFileAccess eAccess = kReadOnly);
-	File(Filename* pFileName, eFileAccess eAccess = kReadOnly);
+	File() BURGER_NOEXCEPT;
+	File(const char* pFileName, eFileAccess eAccess = kReadOnly) BURGER_NOEXCEPT;
+	File(Filename* pFileName, eFileAccess eAccess = kReadOnly) BURGER_NOEXCEPT;
 	~File();
 	static File* BURGER_API New(
-		const char* pFileName, eFileAccess eAccess = kReadOnly);
+		const char* pFileName, eFileAccess eAccess = kReadOnly) BURGER_NOEXCEPT;
 	static File* BURGER_API New(
-		Filename* pFileName, eFileAccess eAccess = kReadOnly);
+		Filename* pFileName, eFileAccess eAccess = kReadOnly) BURGER_NOEXCEPT;
 	BURGER_INLINE uint_t IsOpened(void) const BURGER_NOEXCEPT
 	{
 		return m_pFile != nullptr;
@@ -84,7 +84,7 @@ public:
 		Filename* pFileName, eFileAccess eAccess = kReadOnly);
 	eError BURGER_API Close(void) BURGER_NOEXCEPT;
 	uint_t BURGER_API CloseAsync(void);
-	uintptr_t BURGER_API GetSize(void);
+	uintptr_t BURGER_API GetSize(void) BURGER_NOEXCEPT;
 	uintptr_t BURGER_API Read(void* pOutput, uintptr_t uSize) BURGER_NOEXCEPT;
 	uint_t BURGER_API ReadAsync(void* pOutput, uintptr_t uSize);
 	uintptr_t BURGER_API Write(
@@ -92,7 +92,7 @@ public:
 	uintptr_t BURGER_API GetMark(void);
 	eError BURGER_API SetMark(uintptr_t uMark);
 	uint_t BURGER_API SetMarkAtEOF(void);
-	eError BURGER_API GetModificationTime(TimeDate_t* pOutput);
+	eError BURGER_API GetModificationTime(TimeDate_t* pOutput) BURGER_NOEXCEPT;
 	eError BURGER_API GetCreationTime(TimeDate_t* pOutput);
 	uint_t BURGER_API SetModificationTime(const TimeDate_t* pInput);
 	uint_t BURGER_API SetCreationTime(const TimeDate_t* pInput);
@@ -103,24 +103,24 @@ public:
 	uint32_t GetFileType(void);
 	uint_t SetAuxAndFileType(uint32_t uAuxType, uint32_t uFileType);
 #else
-	BURGER_INLINE eError SetAuxType(uint32_t /* uAuxType */)
+	BURGER_INLINE eError SetAuxType(uint32_t /* uAuxType */) BURGER_NOEXCEPT
 	{
 		return kErrorNotSupportedOnThisPlatform;
 	}
-	BURGER_INLINE eError SetFileType(uint32_t /* uFileType */)
+	BURGER_INLINE eError SetFileType(uint32_t /* uFileType */) BURGER_NOEXCEPT
 	{
 		return kErrorNotSupportedOnThisPlatform;
 	}
-	BURGER_INLINE uint32_t GetAuxType(void) const
+	BURGER_INLINE uint32_t GetAuxType(void) const BURGER_NOEXCEPT
 	{
 		return 0;
 	}
-	BURGER_INLINE uint32_t GetFileType(void) const
+	BURGER_INLINE uint32_t GetFileType(void) const BURGER_NOEXCEPT
 	{
 		return 0;
 	}
 	BURGER_INLINE uint_t SetAuxAndFileType(
-		uint32_t /* uAuxType */, uint32_t /* uFileType */)
+		uint32_t /* uAuxType */, uint32_t /* uFileType */) BURGER_NOEXCEPT
 	{
 		return kErrorNotSupportedOnThisPlatform;
 	}

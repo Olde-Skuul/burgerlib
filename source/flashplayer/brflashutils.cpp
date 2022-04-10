@@ -321,11 +321,11 @@ void BURGER_API Burger::Flash::GetFullURL(Filename *pOutput,const Filename *pDir
 	if ((pInput[1] == ':') ||
 		(pInput[0] == '/') ||
 		(!StringCaseCompare(pInput,"http://",7))) {
-			pOutput->Set(pInput);
+			pOutput->assign(pInput);
 			// path like c:\my.swf or /home/my.swf or URL is absolute
 	} else {
 		pOutput[0] = pDirectory[0];
-		pOutput->Append(pInput);
+		pOutput->join(pInput);
 	}
 }
 

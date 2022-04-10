@@ -45,8 +45,8 @@ uint_t Burger::Display::GetVideoModes(ClassArray<VideoCardDescription> *pOutput)
 
 	VideoCardDescription *pEntry = pOutput->GetPtr();
 	// Use generic names for the details
-	pEntry->m_DeviceName.Set("XBox 360");
-	pEntry->m_MonitorName.Set("Monitor");
+	pEntry->m_DeviceName.assign("XBox 360");
+	pEntry->m_MonitorName.assign("Monitor");
 	pEntry->m_SystemRect.Set(0,0,VideoMode.dwDisplayWidth,VideoMode.dwDisplayHeight);
 	pEntry->m_CurrentResolution.Set(0,0,VideoMode.dwDisplayWidth,VideoMode.dwDisplayHeight);
 	pEntry->m_uDevNumber = 0;

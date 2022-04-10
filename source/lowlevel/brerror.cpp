@@ -15,7 +15,7 @@
 #include "brerror.h"
 #include "brstringfunctions.h"
 
-#if defined(BURGER_MSVC)
+#if defined(BURGER_MSVC) && (BURGER_MSVC >= 140000000)
 // Prefer 'enum class' over 'enum' (Enum.3)
 #pragma warning(disable : 26812)
 #endif

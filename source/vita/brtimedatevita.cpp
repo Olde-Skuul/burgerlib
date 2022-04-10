@@ -57,7 +57,7 @@ void Burger::TimeDate_t::GetTime(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t Burger::TimeDate_t::Load(const SceDateTime *pSceDateTime)
+uint_t Burger::TimeDate_t::Load(const SceDateTime *pSceDateTime) BURGER_NOEXCEPT
 {
 	Clear();
 	uint_t uResult = TRUE;
@@ -92,7 +92,7 @@ uint_t Burger::TimeDate_t::Load(const SceDateTime *pSceDateTime)
 
 ***************************************/
 
-uint_t Burger::TimeDate_t::Store(SceDateTime *pSceDateTime) const
+uint_t Burger::TimeDate_t::Store(SceDateTime *pSceDateTime) const BURGER_NOEXCEPT
 {
 	uint_t uResult = TRUE;
 	SceDateTime LocalTime;

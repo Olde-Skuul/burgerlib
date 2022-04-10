@@ -1,14 +1,14 @@
 /***************************************
 
-    MacOS version
+	MacOS version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -17,7 +17,12 @@
 #if defined(BURGER_MACOSX) || defined(DOXYGEN)
 #include "brfilemanager.h"
 #include "brglobalmemorymanager.h"
+#include "brglobals.h"
 #include "brmemoryfunctions.h"
+#include <CoreFoundation/CFArray.h>
+#include <CoreFoundation/CFString.h>
+#include <Foundation/NSAutoreleasePool.h>
+#include <Foundation/NSPathUtilities.h>
 #include <glob.h>
 #include <libgen.h>
 #include <mach-o/dyld.h>
@@ -52,218 +57,74 @@
 	If home drive is named "boot" then ":boot:foo:bar.txt" = "/foo/bar.txt"<br>
 	If the home drive is not named "boot" then ":boot:foo:bar.txt" =
 		"/Volumes/boot/foo/bar.txt"<br>
-	"@:game:data.dat" = "/Users/<Current user>/Library/Preferences/game/data.dat"
+	"@:game:data.dat" =
+	"/Users/<Current user>/Library/Preferences/game/data.dat"
 
 ***************************************/
 
 const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 {
 	Expand(); // Resolve prefixes
+	if (!m_bNativeValid) {
 
-	const uint8_t* pFullPathName = reinterpret_cast<const uint8_t*>(m_pFilename);
-	uintptr_t uOutputLength =
-		StringLength(reinterpret_cast<const char*>(pFullPathName)) + 10;
-	char* pOutput = m_NativeFilename;
-	if (uOutputLength >= sizeof(m_NativeFilename)) {
-		pOutput = static_cast<char*>(Alloc(uOutputLength));
-		if (!pOutput) {
-			m_NativeFilename[0] = 0;
-			return m_NativeFilename;
-		}
-	}
-	m_pNativeFilename = pOutput;
+		m_NativeFilename.reserve(m_Filename.length() + 10);
+		m_NativeFilename.clear();
 
-	// Now, is this a fully qualified name?
+		// Now, is this a fully qualified name?
+		const uint8_t* pFullPathName =
+			reinterpret_cast<const uint8_t*>(m_Filename.c_str());
 
-	if (pFullPathName[0] == ':') { // First char is ':' for a qualified pathname
+		// First char is ':' for a qualified pathname
+		if (pFullPathName[0] == ':') {
 
-		// Look for the volume name by scanning for the ending colon
-		const uint8_t* pFileParsed = reinterpret_cast<uint8_t*>(StringCharacter(
-			reinterpret_cast<const char*>(pFullPathName) + 1, ':'));
-		if (pFileParsed) {
-			// Is this on the boot volume?
-			// Also test for the special case of :Foo vs :FooBar
+			// Look for the volume name by scanning for the ending colon
+			const uint8_t* pFileParsed =
+				reinterpret_cast<uint8_t*>(StringCharacter(
+					reinterpret_cast<const char*>(pFullPathName) + 1, ':'));
+			if (pFileParsed) {
+				// Is this on the boot volume?
+				// Also test for the special case of :Foo vs :FooBar
 
-			{
-				uint_t uIndex = FileManager::GetBootNameSize();
+				uintptr_t uIndex = FileManager::GetBootNameSize();
 
 				// Test for boot name match
 				if (MemoryCaseCompare(
 						FileManager::GetBootName(), pFullPathName, uIndex)) {
-					StringCopy(pOutput,
-						"/Volumes"); // Look in the mounted volumes folder
-					pOutput += 8;	// At the end of /Volumes
+					// Look in the mounted volumes folder
+					m_NativeFilename.assign("/Volumes");
+
 				} else {
-					// If the volume requested is the boot volume, remove the
-					// name and use the leading "/" for the root prefix.
+					// If the volume requested is the boot volume, remove
+					// the name and use the leading "/" for the root prefix.
 					pFullPathName += (uIndex - 1);
 				}
 			}
 		}
-	}
 
-	// Convert the rest of the path
-	// Colons to slashes
+		// Convert the rest of the path
+		// Colons to slashes
 
-	uint_t uTemp = pFullPathName[0];
-	if (uTemp) {
-		do {
-			++pFullPathName;
-			if (uTemp == ':') {
-				uTemp = '/'; // Unix style
-			}
-
-			pOutput[0] = uTemp;
-			++pOutput;
-			uTemp = pFullPathName[0];
-		} while (uTemp);
-
-		// A trailing slash assumes more to follow, get rid of it
-		--pOutput;
-		if ((pOutput ==
-				m_pNativeFilename) || // Only a '/'? (Skip the check then)
-			(reinterpret_cast<uint8_t*>(pOutput)[0] != '/')) {
-			++pOutput; // Remove trailing slash
-		}
-	}
-	pOutput[0] = 0; // Terminate the "C" string
-	return m_pNativeFilename;
-}
-
-/***************************************
-
-	\brief Set the filename to the current working directory
-
-	Query the operating system for the current working directory and set the
-	filename to that directory. The path is converted into UTF8 character
-	encoding and stored in Burgerlib filename format
-
-	On platforms where a current working directory doesn't make sense, like an
-	ROM based system, the filename is cleared out.
-
-***************************************/
-
-Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(void) BURGER_NOEXCEPT
-{
-	Clear();
-	char* pTemp = getcwd(nullptr, 0); // This covers all versions
-	if (pTemp) {
-		SetFromNative(pTemp);
-		free(pTemp);
-	}
-	return kErrorNone;
-}
-
-/***************************************
-
-	\brief Set the filename to the application's directory
-
-	Determine the directory where the application resides and set the filename
-	to that directory. The path is converted into UTF8 character encoding and
-	stored in Burgerlib filename format.
-
-	On platforms where a current working directory doesn't make sense, like an
-	ROM based system, the filename is cleared out.
-
-***************************************/
-
-Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
-{
-	Clear();
-	// Get the size of the path to the application
-	uint32_t uSize = 0;
-	int iTest = _NSGetExecutablePath(NULL, &uSize);
-	// Got the length?
-	if (iTest == -1) {
-		// Allocate the buffer
-		char* pBuffer = static_cast<char*>(Alloc(uSize + 1));
-		if (pBuffer) {
-			// Try again
-			iTest = _NSGetExecutablePath(pBuffer, &uSize);
-			if (!iTest) {
-
-				// Pop the executable name
-				char* pDirBuffer = dirname(pBuffer);
-
-				// realpath() on older versions of OSX before 10.6
-				// cannot have the 2nd parameter set to NULL. This
-				// bites.
-
-				// Get the maximum length of the path
-				long path_max = pathconf(pDirBuffer, _PC_PATH_MAX);
-				if (path_max <= 0) {
-					path_max = 4096; // Failsafe
+		uint_t uTemp = pFullPathName[0];
+		if (uTemp) {
+			do {
+				++pFullPathName;
+				if (uTemp == ':') {
+					uTemp = '/'; // Unix style
 				}
 
-				// Allocate a generous buffer
-				char* pRealPath = static_cast<char*>(Alloc(path_max * 2));
+				m_NativeFilename.push_back(static_cast<char>(uTemp));
+				uTemp = pFullPathName[0];
+			} while (uTemp);
 
-				// Did it parse?
-				if (realpath(pDirBuffer, pRealPath)) {
-					pDirBuffer = pRealPath;
-				}
-				// Convert to burgerlib
-				SetFromNative(pDirBuffer);
-
-				// Release the expanded buffer
-				Free(pRealPath);
+			// A trailing slash assumes more to follow, get rid of it
+			if (m_NativeFilename.ends_with('/')) {
+				m_NativeFilename.pop_back();
 			}
-			// Clean up
-			Free(pBuffer);
 		}
+
+		m_bNativeValid = TRUE;
 	}
-	return kErrorNone;
-}
-
-/***************************************
-
-	\brief Set the filename to the local machine preferences directory
-
-	Determine the directory where the user's preferences that are local to the
-	machine is located. The path is converted into UTF8 character encoding and
-	stored in Burgerlib filename format.
-
-	On platforms where a current working directory doesn't make sense, like an
-	ROM based system, the filename is cleared out.
-
-***************************************/
-
-Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(void) BURGER_NOEXCEPT
-{
-	Clear();
-	glob_t globbuf;
-	if (!glob("~/Library/Application Support", GLOB_TILDE, NULL, &globbuf)) {
-		// Convert the string
-		SetFromNative(globbuf.gl_pathv[0]);
-		globfree(&globbuf);
-	}
-	return kErrorNone;
-}
-
-/***************************************
-
-	\brief Set the filename to the user's preferences directory
-
-	Determine the directory where the user's preferences that could be shared
-	among all machines the user has an account with is located. The path is
-	converted into UTF8 character encoding and stored in Burgerlib filename
-	format.
-
-	On platforms where a current working directory doesn't make sense, like an
-	ROM based system, the filename is cleared out.
-
-***************************************/
-
-Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(void) BURGER_NOEXCEPT
-{
-	Clear();
-	glob_t globbuf;
-	if (!glob("~/Library/Preferences", GLOB_TILDE, NULL, &globbuf)) {
-		// Convert the string
-		SetFromNative(globbuf.gl_pathv[0]);
-		globfree(&globbuf);
-	}
-	return kErrorNone;
+	return m_NativeFilename.c_str();
 }
 
 /***************************************
@@ -278,30 +139,38 @@ Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(void) BURGER_N
 	Examples:<br>
 	If home drive is named "boot" then "/foo/bar.txt" = ":boot:foo:bar.txt"<br>
 	If the first name is "/Volumes" then "/Volumes/boot/foo/bar.txt" =
-":boot:foo:bar.txt"<br>
+	":boot:foo:bar.txt"<br>
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::Filename::SetFromNative(const char* pInput) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::SetFromNative(
+	const char* pInput) BURGER_NOEXCEPT
 {
-	Clear(); // Clear out the previous string
+	if (!pInput || !pInput[0]) { // No directory at all?
+		pInput = "./";           // Just get the current directory
+	}
+
+	m_NativeFilename.assign(pInput);
 
 	// Determine the length of the prefix
 	uintptr_t uInputLength = StringLength(pInput);
 	const char* pBaseName;
 	uintptr_t uBaseNameLength;
-	if (reinterpret_cast<const uint8_t*>(pInput)[0] !=
-		'/') { // Must I prefix with the current directory?
-		if ((uInputLength >= 2) &&
-			!MemoryCompare("./", pInput, 2)) { // Dispose of "current directory"
+
+	// Must I prefix with the current directory?
+	if (reinterpret_cast<const uint8_t*>(pInput)[0] != '/') {
+		// Dispose of "current directory"
+		if ((uInputLength >= 2) && !MemoryCompare("./", pInput, 2)) {
 			pInput += 2;
 			uInputLength -= 2;
 		}
 		pBaseName = "8:";
 		uBaseNameLength = 2;
 	} else {
+
+		// Place a leading colon in the output
 		if ((uInputLength > 9) && !MemoryCompare(pInput, "/Volumes/", 9)) {
-			pBaseName = ":"; // Place a leading colon in the output
+			pBaseName = ":";
 			uBaseNameLength = 1;
 			pInput += 9;
 			uInputLength -= 9;
@@ -313,43 +182,36 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(const char* pInput) BU
 		}
 	}
 
-	uintptr_t uOutputLength = uBaseNameLength + uInputLength + 10;
-	char* pOutput = m_Filename;
-	if (uOutputLength >= sizeof(m_Filename)) {
-		pOutput = static_cast<char*>(Alloc(uOutputLength));
-		if (!pOutput) {
-			return kErrorOutOfMemory;
-		}
+	// Allocate the space
+	eError uResult = m_Filename.reserve(uBaseNameLength + uInputLength + 6);
+	if (uResult) {
+		return uResult;
 	}
-	m_pFilename = pOutput;
 
-	MemoryCopy(pOutput, pBaseName, uBaseNameLength);
-	pOutput += uBaseNameLength;
+	m_Filename.assign(pBaseName, uBaseNameLength);
 
 	// Now, just copy the rest of the path
 
 	uint_t uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
 	if (uTemp) { // Any more?
 		do {
-			++pInput; // Accept char
+			// Accept char
+			++pInput;
 			if (uTemp == '/') {
 				uTemp = ':';
 			}
-			pOutput[0] = uTemp; // Save char
-			++pOutput;
-			uTemp = reinterpret_cast<const uint8_t*>(pInput)[0]; // Next char
-		} while (uTemp);									   // Still more?
+			// Save char
+			m_Filename.push_back(static_cast<char>(uTemp));
+			// Next char
+			uTemp = reinterpret_cast<const uint8_t*>(pInput)[0];
+			// Still more?
+		} while (uTemp);
 	}
 
 	// The wrap up...
 	// Make sure it's appended with a colon
-
-	if (reinterpret_cast<const uint8_t*>(pOutput)[-1] != ':') {
-		pOutput[0] = ':';
-		++pOutput;
-	}
-	pOutput[0] = 0; // End the string with zero
-	return kErrorNone;
+	m_bNativeValid = TRUE;
+	return end_with_colon();
 }
 
 #endif

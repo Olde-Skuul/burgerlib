@@ -157,7 +157,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 					TempBuffer[uIndex + 2] = 0;
 
 					// Set the filename
-					pOutput->Set(TempBuffer);
+					pOutput->assign(TempBuffer);
 				}
 				// Exit okay!
 				uResult = kErrorNone;
@@ -172,75 +172,9 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 	// Clear on error
 	if ((uResult != kErrorNone) && pOutput) {
 		// Kill the string since I have an error
-		pOutput->Clear();
+		pOutput->clear();
 	}
 	return uResult;
-}
-
-/***************************************
-
-	Set the initial default prefixs for a power up state
-	*: = Boot volume
-	$: = System folder
-	@: = Prefs folder
-	8: = Default directory
-	9: = Application directory
-
-***************************************/
-
-Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
-{
-	Filename MyFilename;
-	// Set the standard work prefix
-	eError uResult = MyFilename.SetSystemWorkingDirectory();
-	SetPrefix(kPrefixCurrent, &MyFilename);
-
-	uResult = GetVolumeName(&MyFilename, 0); // Get the boot volume name
-	if (uResult == kErrorNone) {
-		// Set the initial prefix
-		const char* pBootName = MyFilename.c_str();
-		SetPrefix(kPrefixBoot, pBootName);
-		Free(g_pFileManager->m_pBootName);
-		uintptr_t uMax = StringLength(pBootName);
-		g_pFileManager->m_uBootNameSize = static_cast<uint_t>(uMax);
-		g_pFileManager->m_pBootName = StringDuplicate(pBootName);
-	}
-
-	char* pTemp = getcwd(nullptr, 0); // This covers all versions
-	if (pTemp) {
-		MyFilename.SetFromNative(pTemp);
-		SetPrefix(kPrefixCurrent,
-			MyFilename.c_str()); // Set the standard work prefix
-		free(pTemp);
-	}
-
-	// Get the location of the application binary
-	MyFilename.SetApplicationDirectory();
-	SetPrefix(kPrefixApplication,
-		MyFilename.c_str()); // Set the standard work prefix
-
-	char NameBuffer[2048];
-	FSRef MyRef;
-	if (!FSFindFolder(
-			kOnSystemDisk, kSystemFolderType, kDontCreateFolder, &MyRef)) {
-		if (!FSRefMakePath(&MyRef, reinterpret_cast<uint8_t*>(NameBuffer),
-				static_cast<UInt32>(sizeof(NameBuffer)))) {
-			MyFilename.SetFromNative(NameBuffer);
-			// Set the standard work prefix
-			SetPrefix(kPrefixSystem, MyFilename.c_str());
-		}
-	}
-
-	if (!FSFindFolder(
-			kOnSystemDisk, kPreferencesFolderType, kDontCreateFolder, &MyRef)) {
-		if (!FSRefMakePath(&MyRef, reinterpret_cast<uint8_t*>(NameBuffer),
-				static_cast<UInt32>(sizeof(NameBuffer)))) {
-			MyFilename.SetFromNative(NameBuffer);
-			// Set the standard work prefix
-			SetPrefix(kPrefixPrefs, MyFilename.c_str());
-		}
-	}
-	return kErrorNone;
 }
 
 /***************************************
@@ -251,7 +185,7 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
-	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput)
+	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -302,7 +236,7 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
-	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput)
+	Burger::Filename* pFileName, Burger::TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	// Structure declaration of data coming from getdirentriesattr()
 	struct FInfoAttrBuf {
@@ -675,7 +609,7 @@ Burger::eError BURGER_API Burger::FileManager::SetFileAndAuxType(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
-	Burger::Filename* pFileName)
+	Burger::Filename* pFileName) BURGER_NOEXCEPT
 {
 	// Assume an eror condition
 	eError uResult = kErrorIO;
@@ -771,7 +705,7 @@ Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(
 ***************************************/
 
 FILE* BURGER_API Burger::FileManager::OpenFile(
-	Burger::Filename* pFileName, const char* pType)
+	Burger::Filename* pFileName, const char* pType) BURGER_NOEXCEPT
 {
 	return fopen(pFileName->GetNative(), pType); /* Do it the MacOSX way */
 }
@@ -783,7 +717,7 @@ FILE* BURGER_API Burger::FileManager::OpenFile(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::CopyFile(
-	Burger::Filename* pDestName, Burger::Filename* pSourceName)
+	Burger::Filename* pDestName, Burger::Filename* pSourceName) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorIO;
 	NSAutoreleasePool* pPool = [[NSAutoreleasePool alloc] init];
@@ -842,7 +776,7 @@ Burger::eError BURGER_API Burger::FileManager::DeleteFile(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::RenameFile(
-	Burger::Filename* pNewName, Burger::Filename* pOldName)
+	Burger::Filename* pNewName, Burger::Filename* pOldName) BURGER_NOEXCEPT
 {
 	if (!rename(pOldName->GetNative(), pNewName->GetNative())) {
 		return kErrorNone;

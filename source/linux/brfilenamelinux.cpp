@@ -24,33 +24,6 @@
 
 /***************************************
 
-	\brief Set the filename to the current working directory
-
-	Query the operating system for the current working directory and set the
-	filename to that directory. The path is converted into UTF8 character
-	encoding and stored in Burgerlib filename format
-
-	On platforms where a current working directory doesn't make sense, like an
-	ROM based system, the filename is cleared out.
-
-***************************************/
-
-Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
-	void) BURGER_NOEXCEPT
-{
-	Clear();
-
-	// Get the current working directory from Linux
-	char* pTemp = getcwd(nullptr, 0);
-	if (pTemp) {
-		SetFromNative(pTemp);
-		free(pTemp);
-	}
-	return kErrorNone;
-}
-
-/***************************************
-
 	\brief Set the filename to the application's directory
 
 	Determine the directory where the application resides and set the filename
@@ -64,7 +37,7 @@ Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 
 Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(void) BURGER_NOEXCEPT
 {
-	Clear();
+	clear();
 
 	char result[PATH_MAX];
 	readlink("/proc/self/exe", result, PATH_MAX);

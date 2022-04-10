@@ -133,7 +133,7 @@ Burger::String16::String16(const char *pInput) BURGER_NOEXCEPT
 	if (!pInput) {
 		pInput = g_EmptyString;
 	}
-	uintptr_t uInputLength = UTF16::TranslateFromUTF8(nullptr,0,pInput)/sizeof(uint16_t);
+	uintptr_t uInputLength = UTF16::TranslateFromUTF8(nullptr,0,pInput);
 	uint16_t *pWork = m_Raw;
 	if (uInputLength>=BUFFERSIZE) {				// Buffer big enough?
 		pWork = static_cast<uint16_t *>(Burger::Alloc((uInputLength+1)*sizeof(uint16_t)));
@@ -168,7 +168,7 @@ Burger::String16::String16(const char *pInput,uintptr_t uPadding)
 	if (!pInput) {
 		pInput = g_EmptyString;
 	}
-	uintptr_t uInputLength = UTF16::TranslateFromUTF8(NULL,0,pInput)/sizeof(uint16_t);
+	uintptr_t uInputLength = UTF16::TranslateFromUTF8(NULL,0,pInput);
 	uint16_t *pWork = m_Raw;
 	if ((uInputLength+uPadding)>=BUFFERSIZE) {				// Buffer big enough?
 		pWork = static_cast<uint16_t *>(Alloc((uInputLength+uPadding+1)*sizeof(uint16_t)));
@@ -376,7 +376,7 @@ Burger::eError BURGER_API Burger::String16::Set(
     }
     uint16_t* pDest = m_Raw;
     // Length of the new string
-    uintptr_t uInputLength = UTF16::TranslateFromUTF8(nullptr, 0, pInput);
+    uintptr_t uInputLength = UTF16::TranslateFromUTF8(nullptr, 0, pInput) * sizeof(uint16_t);
     // Buffer big enough?
     if (uInputLength >= BUFFERSIZE) {
         pDest =

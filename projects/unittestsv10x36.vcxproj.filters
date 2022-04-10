@@ -355,6 +355,9 @@
     <ClInclude Include="..\source\lowlevel\bralgorithm.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brargumenttype.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brarray.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -496,6 +499,9 @@
     <ClInclude Include="..\source\math\brfplargeint.h">
       <Filter>source\math</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\math\brfpprintinfo.h">
+      <Filter>source\math</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\math\brmatrix3d.h">
       <Filter>source\math</Filter>
     </ClInclude>
@@ -536,6 +542,9 @@
       <Filter>source</Filter>
     </ClInclude>
     <ClInclude Include="..\source\text\brasciito.h">
+      <Filter>source\text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\text\brcodepage.h">
       <Filter>source\text</Filter>
     </ClInclude>
     <ClInclude Include="..\source\text\brisolatin1.h">
@@ -587,6 +596,9 @@
       <Filter>source\text</Filter>
     </ClInclude>
     <ClInclude Include="..\source\text\brwin1252.h">
+      <Filter>source\text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\text\brwin437.h">
       <Filter>source\text</Filter>
     </ClInclude>
     <ClInclude Include="..\source\xbox360\brstartup.h">
@@ -973,6 +985,9 @@
     <ClCompile Include="..\source\lowlevel\bralgorithm.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brargumenttype.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brarray.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1096,6 +1111,9 @@
     <ClCompile Include="..\source\math\brfplargeint.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\math\brfpprintinfo.cpp">
+      <Filter>source\math</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\math\brmatrix3d.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
@@ -1136,6 +1154,9 @@
       <Filter>source\random</Filter>
     </ClCompile>
     <ClCompile Include="..\source\text\brasciito.cpp">
+      <Filter>source\text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\text\brcodepage.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
     <ClCompile Include="..\source\text\brisolatin1.cpp">
@@ -1187,6 +1208,9 @@
       <Filter>source\text</Filter>
     </ClCompile>
     <ClCompile Include="..\source\text\brwin1252.cpp">
+      <Filter>source\text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\text\brwin437.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
     <ClCompile Include="..\source\xbox360\brcriticalsectionxbox360.cpp">

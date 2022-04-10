@@ -1,15 +1,15 @@
 /***************************************
 
-    File Manager Class
-    MSDOS Target version
+	File Manager Class
+	MSDOS Target version
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -20,7 +20,40 @@
 #include "brfilemanager.h"
 #include "brfilename.h"
 #include "brmemoryfunctions.h"
+#include "brutf8.h"
+#include "brwin437.h"
 #include <dos.h>
+
+#if !defined(DOXYGEN)
+
+// DTA for long filenames
+struct WinDosData_t {
+	uint32_t m_uAttrib;
+	uint32_t m_CreationTimeLow;
+	uint32_t m_CreationTimeHigh;
+	uint32_t m_AccessTimeLow;
+	uint32_t m_AccessTimeHigh;
+	uint32_t m_WriteTimeLow;
+	uint32_t m_WriteTimeHigh;
+	uint32_t m_uSizeLow;
+	uint32_t m_uSizeHigh;
+	uint32_t m_ReservedLow;
+	uint32_t m_ReservedHigh;
+	char m_FileName[260];
+	char m_ShortName[14];
+};
+
+// DTA for DOS 2.0 (Vintage)
+struct DosData_t {
+	uint8_t m_Reserved[21];
+	uint8_t m_uAttrib;
+	uint16_t m_WriteTimeLow;
+	uint16_t m_WriteTimeHigh;
+	uint16_t m_uSizeLow;
+	uint16_t m_uSizeHigh;
+	char m_FileName[13];
+};
+#endif
 
 /***************************************
 
@@ -29,153 +62,235 @@
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::Open(Filename *pName) BURGER_NOEXCEPT
+uint_t Burger::DirectorySearch::Open(Filename* pName) BURGER_NOEXCEPT
 {
-	Regs16 MyRegs;
-	uint32_t TempPath = GetRealBufferPtr();
-	uint8_t *DataPtr = static_cast<uint8_t *>(GetRealBufferProtectedPtr());
+	// Assume failure
+	m_bHandleOk = 0;
 
-	const char *pPath = pName->GetNative();
-	StringCopy((char *)DataPtr+512,pPath);
-	uintptr_t i = StringLength(pPath);
-	if (i && pPath[i-1]!='\\') {
-		StringConcatenate((char *)DataPtr+512,"\\");
+	Regs16 Regs;
+
+	// Get the DOS buffers
+	uint32_t uRealBuffer = GetRealBufferPtr();
+	char* pProtected = static_cast<char*>(GetRealBufferProtectedPtr());
+
+	// Get the real pathname and convert to DOS encoding
+	const char* pPath = pName->GetNative();
+	uintptr_t i = Win437::TranslateFromUTF8(pProtected + 512, 512, pPath);
+
+	if (i && reinterpret_cast<const uint8_t*>(pPath)[i - 1] != '\\') {
+		StringConcatenate(pProtected + 512, "\\");
 	}
-	StringConcatenate((char *)DataPtr+512,"*.*");
+	StringConcatenate(pProtected + 512, "*.*");
 
+	// If under Windows 95 or higher, use the long filename form.
 	if (FileManager::MSDOS_HasLongFilenames()) {
-		MyRegs.ax = 0x714E;			/* Read first */
-		MyRegs.cx = 0x0010;			/* All directories and files */
-		MyRegs.dx = static_cast<uint16_t>(TempPath+512);
-		MyRegs.ds = static_cast<uint16_t>(TempPath>>16);
-		MyRegs.di = static_cast<uint16_t>(TempPath);
-		MyRegs.es = static_cast<uint16_t>(TempPath>>16);
-		MyRegs.si = 1;				/* Return DOS time */
-		Int86x(0x21,&MyRegs,&MyRegs);
-		if (!(MyRegs.flags&1)) {
+
+		// http://www.ctyme.com/intr/rb-3203.htm
+		Regs.ax = 0x714E;
+		// All directories and files
+		Regs.cx = 0x0010;
+		Regs.dx = static_cast<uint16_t>(uRealBuffer + 512);
+		Regs.ds = static_cast<uint16_t>(uRealBuffer >> 16);
+		Regs.di = static_cast<uint16_t>(uRealBuffer);
+		Regs.es = static_cast<uint16_t>(uRealBuffer >> 16);
+
+		// Return DOS time
+		Regs.si = 1;
+		Int86x(0x21, &Regs, &Regs);
+		if (!(Regs.flags & 1)) {
 			m_bHandleOk = 10;
-			m_sFileHandle = MyRegs.ax;
+			m_sFileHandle = Regs.ax;
 			return FALSE;
 		}
 		return TRUE;
 	}
-	if (!_dos_findfirst((char *)DataPtr+512,0x10,(struct find_t *)m_MyFindT)) {
+
+	// Use the old method
+
+	// Get the Disk Transfer address and make a copy
+	// http://www.ctyme.com/intr/rb-2710.htm
+	Regs.ax = 0x2F00;
+	Int86x(0x21, &Regs, &Regs);
+	uint16_t uOldOffset = Regs.bx;
+	uint16_t uOldSegment = Regs.es;
+
+	// Set the disk transfer address to my buffer
+	// http://www.ctyme.com/intr/rb-2589.htm
+	Regs.ax = 0x1A00;
+	Regs.dx = static_cast<uint16_t>(uRealBuffer);
+	Regs.ds = static_cast<uint16_t>(uRealBuffer >> 16);
+	Int86x(0x21, &Regs, &Regs);
+
+	// Open the file
+	// http://www.ctyme.com/intr/rb-2977.htm
+	Regs.ax = 0x4E00;
+	// All directories and files
+	Regs.cx = 0x0010;
+	Regs.dx = static_cast<uint16_t>(uRealBuffer + 512);
+	Regs.ds = static_cast<uint16_t>(uRealBuffer >> 16);
+	Int86x(0x21, &Regs, &Regs);
+
+	uint_t uResult = TRUE;
+	if (!(Regs.flags & 1)) {
 		m_bHandleOk = 1;
-		return FALSE;
+		uResult = FALSE;
 	}
-	return TRUE;
+
+	// Restore the disk transfer address address to the old value
+	// http://www.ctyme.com/intr/rb-2589.htm
+	Regs.ax = 0x1A00;
+	Regs.dx = uOldOffset;
+	Regs.ds = uOldSegment;
+	Int86x(0x21, &Regs, &Regs);
+
+	return uResult;
 }
 
 /***************************************
 
 	Get the next directory entry
-	Return FALSE if the entry is valid, TRUE if
-	an error occurs.
+
+	Return FALSE if the entry is valid, TRUE if an error occurs.
 
 ***************************************/
 
-struct WinDosData_t {
-	uint32_t Attrib;
-	uint32_t CreateLo;
-	uint32_t CreateHi;
-	uint32_t AccessLo;
-	uint32_t AccessHi;
-	uint32_t WriteLo;
-	uint32_t WriteHi;
-	uint32_t SizeLo;
-	uint32_t SizeHi;
-	uint32_t ReservedLo;
-	uint32_t ReservedHi;
-	char FileName[260];
-	char ShortName[13];
-};
-
 uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 {
+	// Not opened?
 	if (!m_bHandleOk) {
 		return TRUE;
 	}
-	Regs16 MyRegs;
-	uint_t Flags;
 
-	uint32_t TempPath = GetRealBufferPtr();
-	uint8_t *DataPtr = static_cast<uint8_t*>(GetRealBufferProtectedPtr());
-Again:
-	if (FileManager::MSDOS_HasLongFilenames()) {
-		if (m_bHandleOk==11) {
-			MyRegs.ax = 0x714F;
-			MyRegs.bx = m_sFileHandle;
-			MyRegs.di = static_cast<uint16_t>(TempPath);
-			MyRegs.es = static_cast<uint16_t>(TempPath>>16);
-			MyRegs.si = 1;			/* Return DOS time */
-			Int86x(0x21,&MyRegs,&MyRegs);
-			if (MyRegs.flags&1) {
-				Close();
+	Regs16 Regs;
+	uint_t uFlags;
+
+	uint32_t uRealBuffer = GetRealBufferPtr();
+	uint8_t* pProtected = static_cast<uint8_t*>(GetRealBufferProtectedPtr());
+	for (;;) {
+
+		// Is this using the Windows 95 or higher code?
+		if (m_bHandleOk >= 10) {
+
+			// The open command already filled in the data, so it's already
+			// ready.
+
+			// Second call?
+			if (m_bHandleOk == 11) {
+
+				// Read the next entry
+				// http://www.ctyme.com/intr/rb-3204.htm
+				Regs.ax = 0x714F;
+				Regs.bx = m_sFileHandle;
+				Regs.di = static_cast<uint16_t>(uRealBuffer);
+				Regs.es = static_cast<uint16_t>(uRealBuffer >> 16);
+
+				// Return DOS time
+				Regs.si = 1;
+				Int86x(0x21, &Regs, &Regs);
+				if (Regs.flags & 1) {
+					// Close immediately
+					Close();
+					return TRUE;
+				}
+			}
+
+			// Entry is ready for parsing.
+			m_bHandleOk = 11;
+
+			const WinDosData_t* pWinDOS =
+				reinterpret_cast<const WinDosData_t*>(pProtected);
+
+			// Convert to UTF8
+			UTF8::FromWin437(m_Name, sizeof(m_Name), pWinDOS->m_FileName);
+
+			// If it's the directory entries, skip them
+			uFlags = pWinDOS->m_uAttrib;
+			if (uFlags & 0x10) {
+				if (!StringCompare(".", m_Name) ||
+					!StringCompare("..", m_Name)) {
+					continue;
+				}
+			}
+
+			m_CreationDate.LoadMSDOS(pWinDOS->m_CreationTimeLow);
+			m_ModificatonDate.LoadMSDOS(pWinDOS->m_WriteTimeLow);
+			if (pWinDOS->m_uSizeHigh) {
+				m_uFileSize = 0xFFFFFFFFUL;
+			} else {
+				m_uFileSize = pWinDOS->m_uSizeLow;
+			}
+			break;
+		}
+
+		// Vintage? DOS 2.0
+		if (m_bHandleOk == 2) {
+			// Get the Disk Transfer address and make a copy
+			// http://www.ctyme.com/intr/rb-2710.htm
+			Regs.ax = 0x2F00;
+			Int86x(0x21, &Regs, &Regs);
+			uint16_t uOldOffset = Regs.bx;
+			uint16_t uOldSegment = Regs.es;
+
+			// Set the disk transfer address to my buffer
+			// http://www.ctyme.com/intr/rb-2589.htm
+			Regs.ax = 0x1A00;
+			Regs.dx = static_cast<uint16_t>(uRealBuffer);
+			Regs.ds = static_cast<uint16_t>(uRealBuffer >> 16);
+			Int86x(0x21, &Regs, &Regs);
+
+			// Find next matching file
+			// http://www.ctyme.com/intr/rb-2979.htm
+			Regs.ax = 0x4F00;
+			Regs.dx = static_cast<uint16_t>(uRealBuffer + 512);
+			Regs.ds = static_cast<uint16_t>(uRealBuffer >> 16);
+			Int86x(0x21, &Regs, &Regs);
+
+			uint_t uResult = TRUE;
+			if (!(Regs.flags & 1)) {
+				uResult = FALSE;
+			}
+			// Restore the disk transfer address address to the old value
+			// http://www.ctyme.com/intr/rb-2589.htm
+			Regs.ax = 0x1A00;
+			Regs.dx = uOldOffset;
+			Regs.ds = uOldSegment;
+			Int86x(0x21, &Regs, &Regs);
+
+			if (uResult) {
+				m_bHandleOk = 0;
 				return TRUE;
 			}
 		}
-		m_bHandleOk = 11;
-		StringCopy(m_Name,((WinDosData_t *)DataPtr)->FileName);
-		m_bDir = FALSE;
-		m_bHidden = FALSE;
-		m_bSystem = FALSE;
-		m_bLocked = FALSE;
-		Flags = ((WinDosData_t *)DataPtr)->Attrib;
-		if (Flags & 0x10) {
-			m_bDir = TRUE;
-			if (!StringCompare(".",m_Name) || !StringCompare("..",m_Name)) {
-				goto Again;
+
+		m_bHandleOk = 2;
+
+		const DosData_t* pDOSData =
+			reinterpret_cast<const DosData_t*>(pProtected);
+
+		// Convert to UTF8
+		UTF8::FromWin437(m_Name, sizeof(m_Name), pDOSData->m_FileName);
+
+		// If it's the directory entries, skip them
+		uFlags = pDOSData->m_uAttrib;
+		if (uFlags & 0x10) {
+			if (!StringCompare(".", m_Name) || !StringCompare("..", m_Name)) {
+				continue;
 			}
 		}
-		if (Flags & 0x01) {
-			m_bLocked = TRUE;
-		}
-		if (Flags & 0x02) {
-			m_bHidden = TRUE;
-		}
-		if (Flags & 0x04) {
-			m_bSystem = TRUE;
-		}
-		m_CreationDate.LoadMSDOS(((WinDosData_t *)DataPtr)->CreateLo);
-		m_ModificatonDate.LoadMSDOS(((WinDosData_t *)DataPtr)->WriteLo);
-		if (((WinDosData_t *)DataPtr)->SizeHi) {
-			m_uFileSize = 0xFFFFFFFFUL;
-		} else {
-			m_uFileSize = ((WinDosData_t *)DataPtr)->SizeLo;
-		}
-		return FALSE;
-	}
-	if (m_bHandleOk==2) {
-		if (_dos_findnext((struct find_t *)m_MyFindT)) {
-			return TRUE;
-		}
-	}
-	m_bHandleOk = 2;
-	StringCopy(m_Name,((struct find_t *)m_MyFindT)->name);
 
-	m_bDir = FALSE;
-	m_bHidden = FALSE;
-	m_bSystem = FALSE;
-	m_bLocked = FALSE;
-	Flags = ((struct find_t *)m_MyFindT)->attrib;
-	if (Flags & 0x10) {
-		m_bDir = TRUE;
-		if (!StringCompare(".",m_Name) || !StringCompare("..",m_Name)) {
-			goto Again;
-		}
+		m_CreationDate.LoadMSDOS(
+			reinterpret_cast<const uint32_t*>(&pDOSData->m_WriteTimeLow)[0]);
+		MemoryCopy(&m_ModificatonDate, &m_CreationDate, sizeof(TimeDate_t));
+		m_uFileSize = pDOSData->m_uSizeLow +
+			(static_cast<uint32_t>(pDOSData->m_uSizeHigh) << 16);
+		break;
 	}
-	if (Flags & 0x01) {
-		m_bLocked = TRUE;
-	}
-	if (Flags & 0x02) {
-		m_bHidden = TRUE;
-	}
-	if (Flags & 0x04) {
-		m_bSystem = TRUE;
-	}
-	m_CreationDate.LoadMSDOS(((uint32_t *)&((struct find_t *)m_MyFindT)->wr_time)[0]);
-	MemoryCopy(&m_ModificatonDate,&m_CreationDate,sizeof(TimeDate_t));
-	m_uFileSize = ((struct find_t *)m_MyFindT)->size;
+
+	// Set the attributes and exit without an error
+	m_bLocked = static_cast<uint8_t>(uFlags & 0x01);
+	m_bHidden = static_cast<uint8_t>((uFlags & 0x02) >> 1U);
+	m_bSystem = static_cast<uint8_t>((uFlags & 0x04) >> 2U);
+	m_bDir = static_cast<uint8_t>((uFlags & 0x10) >> 4U);
 	return FALSE;
 }
 
@@ -187,16 +302,20 @@ Again:
 
 void Burger::DirectorySearch::Close(void) BURGER_NOEXCEPT
 {
-	Regs16 MyRegs;
-	if (m_bHandleOk>=10) {		/* This can only be true if an extended directory */
+	// Note: DOS 2.0 doesn't "close" the directory.
+
+	// This can only be true if an extended directory
+	if (m_bHandleOk >= 10) {
+
+		// Properly close the directory
+		// http://www.ctyme.com/intr/rb-3211.htm
+		Regs16 MyRegs;
 		MyRegs.ax = 0x71A1;
 		MyRegs.bx = m_sFileHandle;
-		Int86x(0x21,&MyRegs,&MyRegs);
-		m_bHandleOk = FALSE;
-	} else if (m_bHandleOk) {	/* Dos mode? */
-		_dos_findclose((struct find_t *)m_MyFindT);
-		m_bHandleOk = FALSE;
+		Int86x(0x21, &MyRegs, &MyRegs);
+		m_sFileHandle = 0;
 	}
+	m_bHandleOk = 0;
 }
 
 #endif

@@ -101,7 +101,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 				// End with a colon
 				OutputName[uLength + 1] = ':';
 				OutputName[uLength + 2] = 0;
-				pOutput->Set(OutputName);
+				pOutput->assign(OutputName);
 			}
 
 			// No error!
@@ -111,7 +111,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 
 	// If there was an error, generate a fake drive name anyways.
 	if (uResult && pOutput) {
-		pOutput->Clear();
+		pOutput->clear();
 	}
 
 	// Return the error
@@ -127,7 +127,7 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
-	Filename* pFileName, TimeDate_t* pOutput)
+	Filename* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	// Clear out the output
 	pOutput->Clear();
@@ -150,7 +150,7 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
-	Filename* pFileName, TimeDate_t* pOutput)
+	Filename* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	// Clear out the output
 	pOutput->Clear();
@@ -196,7 +196,7 @@ uint_t BURGER_API Burger::FileManager::DoesFileExist(
 
 ***************************************/
 
-static uint_t BURGER_API DirCreate(const char* pFileName)
+static uint_t BURGER_API DirCreate(const char* pFileName) BURGER_NOEXCEPT
 {
 	if (!CreateDirectoryA(pFileName, NULL)) {         // Make the directory
 		if (GetLastError() != ERROR_ALREADY_EXISTS) { // Already exist?
@@ -207,7 +207,7 @@ static uint_t BURGER_API DirCreate(const char* pFileName)
 }
 
 Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
-	Filename* pFileName)
+	Filename* pFileName) BURGER_NOEXCEPT
 {
 	String NewName(pFileName->GetNative());
 
@@ -276,7 +276,7 @@ Burger::eError BURGER_API Burger::FileManager::DeleteFile(
 ***************************************/
 
 Burger::eError BURGER_API Burger::FileManager::RenameFile(
-	Filename* pNewName, Filename* pOldName)
+	Filename* pNewName, Filename* pOldName) BURGER_NOEXCEPT
 {
 	// Did it fail?
 	eError uResult = kErrorFileNotFound; // Assume failure

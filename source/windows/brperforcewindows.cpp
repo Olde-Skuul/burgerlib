@@ -66,7 +66,7 @@ uint_t BURGER_API Burger::Perforce::Init(void)
 		if (pAppdirectory) {
 			m_PerforceFilename.SetFromNative(pAppdirectory);
 			Free(pAppdirectory);
-			m_PerforceFilename.Append("p4.exe");
+			m_PerforceFilename.join("p4.exe");
 			// Is there an exec here?
 			if (FileManager::DoesFileExist(&m_PerforceFilename)) {
 				bFilenameInitialized = TRUE;
@@ -80,7 +80,7 @@ uint_t BURGER_API Burger::Perforce::Init(void)
 			if (pAppdirectory) {
 				m_PerforceFilename.SetFromNative(pAppdirectory);
 				Free(pAppdirectory);
-				m_PerforceFilename.Append("Perforce:p4.exe");
+				m_PerforceFilename.join("Perforce:p4.exe");
 				if (FileManager::DoesFileExist(&m_PerforceFilename)) {
 					bFilenameInitialized = TRUE;
 				}
@@ -92,9 +92,7 @@ uint_t BURGER_API Burger::Perforce::Init(void)
 		if (!bFilenameInitialized) {
 			uint16_t Output[2048];
 			if (Windows::PathSearchAndQualifyW(reinterpret_cast<const uint16_t *>(L"p4.exe"),Output,BURGER_ARRAYSIZE(Output))) {
-				pAppdirectory = UTF8::FromUTF16(Output);
-				m_PerforceFilename.SetFromNative(pAppdirectory);
-				Free(pAppdirectory);
+				m_PerforceFilename.SetFromNative(Output);
 				if (FileManager::DoesFileExist(&m_PerforceFilename)) {
 					bFilenameInitialized = TRUE;
 				}
@@ -116,7 +114,7 @@ uint_t BURGER_API Burger::Perforce::Init(void)
 
 uint_t BURGER_API Burger::Perforce::Shutdown(void)
 {
-	m_PerforceFilename.Clear();
+	m_PerforceFilename.clear();
 	m_bFilenameInitialized = FALSE;
 	return 0;
 }

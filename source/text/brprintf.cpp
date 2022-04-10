@@ -62,6 +62,7 @@
 #include "brmemoryfunctions.h"
 #include "brnumberto.h"
 #include "brstring.h"
+#include "brutf32.h"
 #include "brutf8.h"
 
 /*! ************************************
@@ -696,12 +697,20 @@ void BURGER_API Burger::SafePrint::ParamInfo_t::GetFormattedOutputLength(
 		// Char is one character, 'nuff said
 	} else if (uConversionSpecifier == CONVSPEC_CHAR) {
 		if (IsFlagSet(CONVFLAG_INTERPRET_LONG) &&
-			(pArg->GetType() == kArgumentTypeUInt16)) {
+			((pArg->GetType() == kArgumentTypeUInt16) ||
+				(pArg->GetType() == kArgumentTypeInt16) ||
+				(pArg->GetType() == kArgumentTypeUInt32) ||
+				(pArg->GetType() == kArgumentTypeInt32))) {
 			// Convert wide character to UTF-8
 			char TempBufferUTF8[8];
 			// The buffer is discard, only the length is of interest
-			uCharsCounted = UTF8::FromUTF16(
-				TempBufferUTF8, static_cast<uint16_t>(pArg->GetUInt32()));
+			if (pArg->GetDataLengthInBytes() == 2) {
+				uCharsCounted = UTF8::GetUTF16Size(
+					static_cast<uint16_t>(pArg->GetUInt32()));
+			} else {
+				uCharsCounted = UTF8::FromUTF32(
+					TempBufferUTF8, static_cast<uint32_t>(pArg->GetUInt32()));
+			}
 		} else {
 			uCharsCounted = 1;
 		}
@@ -1680,8 +1689,7 @@ zeros
 ***************************************/
 
 uintptr_t BURGER_API Burger::SafePrint::ParamInfo_t::FormatChar(
-	char* pOutBuffer,
-	const Burger::ArgumentType* pArg) const BURGER_NOEXCEPT
+	char* pOutBuffer, const Burger::ArgumentType* pArg) const BURGER_NOEXCEPT
 {
 	// sanity checks
 	BURGER_ASSERT(pArg->IsCharacter());
@@ -1699,7 +1707,8 @@ uintptr_t BURGER_API Burger::SafePrint::ParamInfo_t::FormatChar(
 	// do we need to convert a wide char or a regular char?
 	if (IsFlagSet(CONVFLAG_INTERPRET_LONG)) {
 		// skip the wchar_t conversion if we already determined it's invalid
-		if (GetFormattedLength()) {
+		uintptr_t uMaxLength = GetFormattedLength();
+		if (uMaxLength) {
 
 			// The function FromUTF16 adds a terminating zero, this is not
 			// desired. So, parse into a temp buffer and then copy
@@ -1707,8 +1716,16 @@ uintptr_t BURGER_API Burger::SafePrint::ParamInfo_t::FormatChar(
 			// overrun by the terminating zero.
 
 			char TempBufferUTF8[8];
-			uCharsWritten = UTF8::FromUTF16(
-				TempBufferUTF8, static_cast<uint16_t>(pArg->GetUInt32()));
+			if (pArg->GetDataLengthInBytes() == 2) {
+				uCharsWritten = UTF8::FromUTF16(
+					TempBufferUTF8, static_cast<uint16_t>(pArg->GetUInt32()));
+			} else {
+				uCharsWritten = Burger::UTF8::FromUTF32(
+					TempBufferUTF8, static_cast<uint32_t>(pArg->GetUInt32()));
+			}
+			if (uCharsWritten > uMaxLength) {
+				uCharsWritten = uMaxLength;
+			}
 			if (uCharsWritten) {
 				uintptr_t i = 0;
 				do {
@@ -2517,8 +2534,8 @@ uint_t BURGER_API Burger::SafePrint::ProcessResults_t::WriteBufferToFile(
 
 uintptr_t BURGER_API
 Burger::SafePrint::ProcessResults_t::GenerateFormattedOutputToFile(FILE* fp,
-	uintptr_t uArgCount, const ArgumentType** ppArgs,
-	uintptr_t uParamInfoCount, const ParamInfo_t* pParamInfos) BURGER_NOEXCEPT
+	uintptr_t uArgCount, const ArgumentType** ppArgs, uintptr_t uParamInfoCount,
+	const ParamInfo_t* pParamInfos) BURGER_NOEXCEPT
 {
 	BURGER_UNUSED(uArgCount);
 	uintptr_t uCharCount = 0;
@@ -2654,8 +2671,8 @@ Burger::SafePrint::ProcessResults_t::GenerateFormattedOutputToFile(FILE* fp,
 
 uint_t BURGER_API Burger::SafePrint::ProcessResults_t::FormatPreProcess(
 	eParseOptions uOptions, const char* pFormat, uintptr_t uFormatLength,
-	uintptr_t uArgCount, const ArgumentType** ppArgs,
-	uintptr_t uParamInfoCount, ParamInfo_t* pParamInfos) BURGER_NOEXCEPT
+	uintptr_t uArgCount, const ArgumentType** ppArgs, uintptr_t uParamInfoCount,
+	ParamInfo_t* pParamInfos) BURGER_NOEXCEPT
 {
 	// Initialize return values
 
@@ -3518,8 +3535,8 @@ const uint32_t Burger::SafePrint::g_ValidFlagsForConversion[14] = {
 
 ***************************************/
 
-const uint32_t Burger::SafePrint::g_ValidOutputDisplayTypesStrict
-	[kArgumentTypeCount] = {
+const uint32_t
+	Burger::SafePrint::g_ValidOutputDisplayTypesStrict[kArgumentTypeCount] = {
 		0, // ARG_INVALID
 		CONVSPECFLAG_BINARY_NUMBER | CONVSPECFLAG_DECIMAL_INT |
 			CONVSPECFLAG_CHARACTER, // ARG_INT8
@@ -3593,8 +3610,8 @@ const uint32_t Burger::SafePrint::g_ValidOutputDisplayTypesStrict
 
 ***************************************/
 
-const uint32_t Burger::SafePrint::g_ValidOutputDisplayTypesRelaxed
-	[kArgumentTypeCount] = {
+const uint32_t
+	Burger::SafePrint::g_ValidOutputDisplayTypesRelaxed[kArgumentTypeCount] = {
 		0, // ARG_INVALID
 		CONVSPECFLAG_DECIMAL_UNSIGNEDINT | CONVSPECFLAG_OCTAL |
 			CONVSPECFLAG_HEX | CONVSPECFLAG_BOOL_TEXT, // ARG_INT8

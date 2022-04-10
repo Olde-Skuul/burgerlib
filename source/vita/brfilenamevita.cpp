@@ -52,18 +52,18 @@ const char *Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 	Expand();		// Resolve prefixes
 
 	// Determine the final length
-	const uint8_t *pFullPathName = reinterpret_cast<const uint8_t *>(m_pFilename);
+	const uint8_t *pFullPathName = reinterpret_cast<const uint8_t *>(m_Filename.c_str());
 	uintptr_t uOutputLength = StringLength(reinterpret_cast<const char *>(pFullPathName))+4;
 	char *pOutput = m_NativeFilename;
 	if (uOutputLength>=sizeof(m_NativeFilename)) {
 		pOutput = static_cast<char *>(Alloc(uOutputLength));
 		if (!pOutput) {
 			// Out of memory failure case
-			m_NativeFilename[0] = 0;
-			return m_NativeFilename;
+			m_NativeFilename.clear();
+			return m_NativeFilename.c_str();
 		}
 	}
-	m_pNativeFilename = pOutput;
+	m_NativeFilename.assign(pOutput);
 	
 	// Now, is this a fully qualified name?
 	
@@ -102,13 +102,13 @@ const char *Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 		
 		// A trailing slash assumes more to follow, get rid of it
 		--pOutput;
-		if ((pOutput==m_pNativeFilename) ||		// Only a '/'? (Skip the check then)
+		if ((pOutput==m_NativeFilename.c_str()) ||		// Only a '/'? (Skip the check then)
 			(reinterpret_cast<uint8_t*>(pOutput)[0]!='/')) {
 			++pOutput;		// Remove trailing slash
 		}
 	}
 	pOutput[0] = 0;			// Terminate the "C" string
-	return m_pNativeFilename;
+	return m_NativeFilename.c_str();
 }
 
 /***************************************
@@ -128,7 +128,7 @@ const char *Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 
 Burger::eError BURGER_API Burger::Filename::SetFromNative(const char *pInput) BURGER_NOEXCEPT
 {
-	Clear();	// Clear out the previous string
+	clear();	// Clear out the previous string
 
 	// Determine the length of the string buffer
 	uintptr_t uInputLength = StringLength(pInput);
@@ -141,7 +141,7 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(const char *pInput) BU
 			return kErrorOutOfMemory;
 		}
 	}
-	m_pFilename = pOutput;
+	m_Filename.assign(pOutput);
 
 	// Convert mount names to drive names
 
