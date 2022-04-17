@@ -43,6 +43,22 @@ typedef io_object_t io_service_t;
 typedef io_object_t io_registry_entry_t;
 #endif
 
+// NameRegistry.h doesn't define these in Carbon
+#if defined(BURGER_MACCARBON)
+extern "C" {
+extern OSStatus RegistryEntryIDInit(RegEntryID* id);
+extern OSStatus RegistryCStrEntryLookup(const RegEntryID* searchPointID,
+	const RegCStrPathName* pathName, RegEntryID* foundEntry);
+extern OSStatus RegistryPropertyGetSize(const RegEntryID* entryID,
+	const RegPropertyName* propertyName, RegPropertyValueSize* propertySize);
+extern OSStatus RegistryPropertyGet(const RegEntryID* entryID,
+	const RegPropertyName* propertyName, void* propertyValue,
+	RegPropertyValueSize* propertySize);
+extern OSStatus RegistryEntryIDDispose(RegEntryID* id);
+}
+#endif
+
+
 #if defined(BURGER_MAC) || defined(DOXYGEN)
 
 /*! ************************************
@@ -349,6 +365,101 @@ Burger::eError BURGER_API Burger::GetMachineName(
 	return uResult;
 }
 
+#if (defined(BURGER_MACCLASSIC) || \
+	(defined(BURGER_CFM) && defined(BURGER_68K))) && \
+	!defined(DOXYGEN)
+
+/***************************************
+
+	Return the name of the mac model (Classic)
+
+	Implement GetMacModelIdentifier() for macOS 7.1-9.2.2 for all 68K platforms
+	and PowerPC Classic.
+
+	\param pOutput Pointer to a \ref String to receive the name in UTF-8
+		encoding
+
+	\return Zero on no error, or non zero on failure.
+
+***************************************/
+
+static Burger::eError BURGER_API GetMacModelIdentifierClassic(
+	Burger::String* pOutput)
+{
+	Burger::eError uResult = Burger::kErrorItemNotFound;
+	long lResponse = 0;
+	if (!Gestalt(gestaltUserVisibleMachineName, &lResponse)) {
+
+		// Did I get a name?
+		if (reinterpret_cast<uint8_t*>(lResponse)[0]) {
+			uResult = pOutput->assign(reinterpret_cast<char*>(lResponse + 1),
+				reinterpret_cast<uint8_t*>(lResponse)[0]);
+		}
+	} else if (!Gestalt(gestaltMachineType, &lResponse)) {
+
+		// Get the machine name string from the system resource
+		uResult = Burger::GetOSIndString(
+			pOutput, kMachineNameStrID, static_cast<short>(lResponse));
+		// This string sometimes has extra spaces, remove them
+        Burger::StripLeadingAndTrailingSpaces(pOutput->c_str());
+        pOutput->resize(Burger::StringLength(pOutput->c_str()));
+	}
+	return uResult;
+}
+#endif
+
+
+#if !(defined(BURGER_CFM) && defined(BURGER_68K)) && !defined(DOXYGEN)
+
+/***************************************
+ 
+	Return the name of the mac model (Classic)
+ 
+	Implement GetMacModelIdentifier() for macOS 7.1-9.2.2 for all 68K platforms
+	and PowerPC Classic.
+ 
+	\param pOutput Pointer to a \ref String to receive the name in UTF-8
+		encoding
+ 
+	\return Zero on no error, or non zero on failure.
+ 
+***************************************/
+
+static Burger::eError BURGER_API GetMacModelIdentifierNameRegistry(Burger::String* pOutput)
+{
+	Burger::eError uResult = Burger::kErrorItemNotFound;
+
+	// Registry dictionary object
+	RegEntryID uRegEntryID;
+	OSStatus uStatus = RegistryEntryIDInit(&uRegEntryID);
+	if (uStatus == noErr) {
+		// Find the namespace name
+		uStatus = RegistryCStrEntryLookup(
+									  nullptr, "Devices:device-tree", &uRegEntryID);
+		if (uStatus == noErr) {
+			
+			// Get the size of the data, if it exists
+			RegPropertyValueSize uLength;
+			uStatus = RegistryPropertyGetSize(
+										  &uRegEntryID, "compatible", &uLength);
+			if (uStatus == noErr) {
+				uResult = pOutput->resize(uLength);
+				if (!uResult) {
+					uStatus = RegistryPropertyGet(&uRegEntryID, "compatible",
+											  pOutput->c_str(), &uLength);
+					if (uStatus != noErr) {
+						uResult = Burger::kErrorItemNotFound;
+					}
+				}
+			}
+		}
+		// Dispose of the RegEntryID
+		RegistryEntryIDDispose(&uRegEntryID);
+	}
+	return uResult;
+}
+#endif
+
 /***************************************
 
 	Return the name of the mac model.
@@ -368,115 +479,30 @@ Burger::eError BURGER_API Burger::GetMacModelIdentifier(
 	String* pOutput) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorItemNotFound;
-#if defined(BURGER_MACCLASSIC)
+#if defined(BURGER_CFM) && defined(BURGER_68K)
+	// 68K CFM cannot access the Registry API since CFM only runs on 7.1 - 8.1
+	// so don't bother. Do the classic version only
+	uResult = GetMacModelIdentifierClassic(pOutput);
+
+#elif defined(BURGER_MACCLASSIC)
+	// For 68k classic, it can run on 9 through emulation, so the registry is
+	// accessible.
 	long lResponse = 0;
 	if (Gestalt(gestaltNameRegistryVersion, &lResponse)) {
-		if (!Gestalt(gestaltUserVisibleMachineName, &lResponse)) {
-
-			// Did I get a name?
-			if (reinterpret_cast<uint8_t*>(lResponse)[0]) {
-				uResult =
-					pOutput->assign(reinterpret_cast<char*>(lResponse + 1),
-						reinterpret_cast<uint8_t*>(lResponse)[0]);
-			}
-		} else if (!Gestalt(gestaltMachineType, &lResponse)) {
-
-			// Get the machine name string from the system resource
-			GetOSIndString(
-				pOutput, kMachineNameStrID, static_cast<short>(lResponse));
-		}
+		// Not here? Do it the old way
+		uResult = GetMacModelIdentifierClassic(pOutput);
 	} else {
-
-		// Registry dictionary object
-		RegEntryID uRegEntryID;
-		OSStatus err = RegistryEntryIDInit(&uRegEntryID);
-		if (err == noErr) {
-			// Find the namespace name
-			err = RegistryCStrEntryLookup(
-				nullptr, "Devices:device-tree", &uRegEntryID);
-			if (err == noErr) {
-
-				// Get the size of the data, if it exists
-				RegPropertyValueSize uLength;
-				err = RegistryPropertyGetSize(
-					&uRegEntryID, "compatible", &uLength);
-				if (err == noErr) {
-					uResult = pOutput->resize(uLength);
-					if (!uResult) {
-						err = RegistryPropertyGet(&uRegEntryID, "compatible",
-							pOutput->c_str(), &uLength);
-						if (err != noErr) {
-							uResult = kErrorItemNotFound;
-						}
-					}
-				}
-			}
-			// Dispose of the RegEntryID
-			RegistryEntryIDDispose(&uRegEntryID);
-		}
+	    // Use the registry
+        uResult = GetMacModelIdentifierNameRegistry(pOutput);
 	}
 #else
-	// Carbon
+	// Carbon, which is a pain in the rear since the library is not present.
 	if (Globals::GetMacOSVersion() < 0x1000U) {
 		// Manually handle the Classic code
-		CodeLibrary* pNameRegistryLib = GetNameRegistryLib();
-		if (pNameRegistryLib) {
-
-			OSStatus (*RegistryEntryIDInit)(RegEntryID*) =
-				static_cast<OSStatus (*)(RegEntryID*)>(
-					pNameRegistryLib->GetFunction("RegistryEntryIDInit"));
-
-			OSStatus (*RegistryCStrEntryLookup)(
-				const RegEntryID*, const RegCStrPathName*, RegEntryID*) =
-				static_cast<OSStatus (*)(
-					const RegEntryID*, const RegCStrPathName*, RegEntryID*)>(
-					pNameRegistryLib->GetFunction("RegistryCStrEntryLookup"));
-
-			OSStatus (*RegistryPropertyGet)(const RegEntryID*,
-				const RegPropertyName*, void*, RegPropertyValueSize*) =
-				static_cast<OSStatus (*)(const RegEntryID*,
-					const RegPropertyName*, void*, RegPropertyValueSize*)>(
-					pNameRegistryLib->GetFunction("RegistryPropertyGet"));
-
-			OSStatus (*RegistryPropertyGetSize)(const RegEntryID*,
-				const RegPropertyName*, RegPropertyValueSize*) =
-				static_cast<OSStatus (*)(const RegEntryID*,
-					const RegPropertyName*, RegPropertyValueSize*)>(
-					pNameRegistryLib->GetFunction("RegistryPropertyGetSize"));
-
-			OSStatus (*RegistryEntryIDDispose)(RegEntryID*) =
-				static_cast<OSStatus (*)(RegEntryID*)>(
-					pNameRegistryLib->GetFunction("RegistryEntryIDDispose"));
-
-			// Registry dictionary object
-			RegEntryID uRegEntryID;
-			OSStatus err = RegistryEntryIDInit(&uRegEntryID);
-			if (err == noErr) {
-				// Find the namespace name
-				err = RegistryCStrEntryLookup(
-					nullptr, "Devices:device-tree", &uRegEntryID);
-				if (err == noErr) {
-
-					// Get the size of the data, if it exists
-					RegPropertyValueSize uLength;
-					err = RegistryPropertyGetSize(
-						&uRegEntryID, "compatible", &uLength);
-					if (err == noErr) {
-						uResult = pOutput->resize(uLength);
-						if (!uResult) {
-							err = RegistryPropertyGet(&uRegEntryID,
-								"compatible", pOutput->c_str(), &uLength);
-							if (err != noErr) {
-								uResult = kErrorItemNotFound;
-							}
-						}
-					}
-				}
-				// Dispose of the RegEntryID
-				RegistryEntryIDDispose(&uRegEntryID);
-			}
-		}
+		 uResult = GetMacModelIdentifierNameRegistry(pOutput);
 	} else {
+	
+	    // Use the IOKit framework directly
 		CodeFramework LibRef;
 		if (!LibRef.Init("IOKit.framework")) {
 
@@ -607,7 +633,7 @@ void BURGER_API Burger::StringCopy(String* pOutput, CFStringRef pInput)
 			CFIndex uMaxLength = CFStringGetMaximumSizeForEncoding(
 				uLength, kCFStringEncodingUTF8);
 			// Create the buffer
-			pOutput->reserve(static_cast<uintptr_t>(uMaxLength) + 2);
+			pOutput->resize(static_cast<uintptr_t>(uMaxLength) + 2);
 			// Convert the string and store into the buffer
 			if (!CFStringGetCString(pInput, pOutput->c_str(), uMaxLength + 1,
 					kCFStringEncodingUTF8)) {

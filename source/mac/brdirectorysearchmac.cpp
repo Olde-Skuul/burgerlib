@@ -33,7 +33,7 @@ uint_t Burger::DirectorySearch::Open(Filename* pDirName) BURGER_NOEXCEPT
 	String16 MyName(pDirName->GetNative());
 	FSRef MyRef;
 	// Create a UFT16 FSRef
-	OSErr eError = FSMakeFSRefUnicode(pDirName->GetFSRef(), MyName.GetLength(),
+	OSErr eError = FSMakeFSRefUnicode(pDirName->GetFSRefOld(), MyName.GetLength(),
 		MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
 	uint_t uResult = kErrorFileNotFound;
 	if (!eError) {

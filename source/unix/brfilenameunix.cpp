@@ -19,8 +19,10 @@
 #include <unistd.h>
 
 #if defined(BURGER_IOS)
-#include <Foundation/NSPathUtilities.h>
+#include "brosstringfunctions.h"
+
 #include <CoreFoundation/CFString.h>
+#include <Foundation/NSPathUtilities.h>
 #endif
 
 /***************************************
@@ -44,14 +46,13 @@ Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 	// iOS has no "Current directory", so pull the directory the *.app file
 	// resides in
 #if defined(BURGER_IOS)
-	char NameBuffer[2048];
-	if (CFStringGetCString(reinterpret_cast<CFStringRef>(NSHomeDirectory()),
-			NameBuffer, sizeof(NameBuffer), kCFStringEncodingUTF8)) {
-		if (NameBuffer[0]) {
-			SetFromNative(NameBuffer);
-		}
+	// NSHomeDirectory() requires a scoped autorelease
+	String Temp;
+	BURGER_SCOPED_AUTORELEASE;
+	StringCopy(&Temp, reinterpret_cast<CFStringRef>(NSHomeDirectory()));
+	if (!Temp.empty()) {
+		SetFromNative(Temp.c_str());
 	}
-
 #else
 	// Get the current working directory from posix
 	char* pTemp = getcwd(nullptr, 0);

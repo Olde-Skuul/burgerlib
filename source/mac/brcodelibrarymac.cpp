@@ -35,13 +35,18 @@
 
 uint_t Burger::CodeLibrary::Init(const char* pFilename) BURGER_NOEXCEPT
 {
-	Str255 TempName; // Copy of the "C" string as a PASCAL string
-	Str255 ErrStr;   // Returned error code if any
-	Ptr EntryPtr;    // Pointer to the fragment entry
+	// Copy of the "C" string as a PASCAL string
+	Str255 TempName;
+
+	// Returned error code if any
+	Str255 ErrStr;
+
+	// Pointer to the fragment entry
+	Ptr EntryPtr;
 	CFragConnectionID ConnID;
 
-	/* This code only works for CFM functions */
-	Burger::CStringToPString(TempName, pFilename);
+	// This code only works for CFM functions
+	CStringToPString(TempName, pFilename);
 	uint_t uResult = FALSE;
 	if (!GetSharedLibrary(TempName, kCompiledCFragArch, kLoadCFrag, &ConnID,
 			&EntryPtr, ErrStr)) {
@@ -61,7 +66,7 @@ void Burger::CodeLibrary::Shutdown(void) BURGER_NOEXCEPT
 {
 	if (m_pLibInstance) {
 		CloseConnection(reinterpret_cast<CFragConnectionID*>(&m_pLibInstance));
-		m_pLibInstance = NULL;
+		m_pLibInstance = nullptr;
 	}
 }
 
@@ -75,16 +80,19 @@ void Burger::CodeLibrary::Shutdown(void) BURGER_NOEXCEPT
 void* Burger::CodeLibrary::GetFunction(
 	const char* pFunctionName) BURGER_NOEXCEPT
 {
-	Str255 TempName; // Copy of the "C" string as a PASCAL string
-	Ptr ProcPtr;     // Pointer to the function
+	// Copy of the "C" string as a PASCAL string
+	Str255 TempName;
+
+	// Pointer to the function
+	Ptr pProcPtr;
 	void* pFunction = nullptr;
 
 	// This code only works for CFM functions
 	if (pFunctionName && m_pLibInstance) {
-		Burger::CStringToPString(TempName, pFunctionName);
+		CStringToPString(TempName, pFunctionName);
 		if (!FindSymbol(static_cast<OpaqueCFragConnectionID*>(m_pLibInstance),
-				TempName, &ProcPtr, 0)) {
-			pFunction = ProcPtr;
+				TempName, &pProcPtr, nullptr)) {
+			pFunction = pProcPtr;
 		}
 	}
 	return pFunction;
@@ -250,6 +258,10 @@ void* BURGER_API Burger::CodeFramework::GetFunction(
 	// Return 0 or the pointer
 	return pResult;
 }
+
+#endif
+
+#if defined(BURGER_POWERPC) || defined(DOXYGEN)
 
 /*! ************************************
 

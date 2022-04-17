@@ -145,7 +145,7 @@ Burger::String16::String16(const char *pInput) BURGER_NOEXCEPT
 	}
 	m_uLength = uInputLength;			// Save the new length
 	m_pData = pWork;					// Set the pointer
-	UTF16::TranslateFromUTF8(pWork,(uInputLength+1)*sizeof(uint16_t),pInput);	// Copy the string
+	UTF16::TranslateFromUTF8(pWork,uInputLength+1,pInput);	// Copy the string
 }
 
 /*! ************************************
@@ -180,7 +180,7 @@ Burger::String16::String16(const char *pInput,uintptr_t uPadding)
 	}
 	m_uLength = uInputLength;			// Save the new length
 	m_pData = pWork;					// Set the pointer
-	UTF16::TranslateFromUTF8(pWork,(uInputLength+1)*sizeof(uint16_t),pInput);	// Copy the string
+	UTF16::TranslateFromUTF8(pWork,uInputLength+1,pInput);	// Copy the string
 }
 
 /*! ************************************
@@ -376,7 +376,7 @@ Burger::eError BURGER_API Burger::String16::Set(
     }
     uint16_t* pDest = m_Raw;
     // Length of the new string
-    uintptr_t uInputLength = UTF16::TranslateFromUTF8(nullptr, 0, pInput) * sizeof(uint16_t);
+    uintptr_t uInputLength = UTF16::TranslateFromUTF8(nullptr, 0, pInput);
     // Buffer big enough?
     if (uInputLength >= BUFFERSIZE) {
         pDest =
@@ -388,11 +388,11 @@ Burger::eError BURGER_API Burger::String16::Set(
             uResult = kErrorOutOfMemory; // Error!
         }
     }
-    uint16_t* pOld = m_pData;
+    const uint16_t* pOld = m_pData;
     m_uLength = uInputLength; // Save the new length
     m_pData = pDest;          // Set the pointer
     // Copy the string
-    UTF16::TranslateFromUTF8(pDest, uInputLength + sizeof(uint16_t), pInput);
+    UTF16::TranslateFromUTF8(pDest, uInputLength + 1, pInput);
     // Discard previous memory
     if (pOld != m_Raw) {
         Free(pOld);

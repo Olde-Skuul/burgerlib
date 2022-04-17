@@ -266,6 +266,9 @@ uintptr_t BURGER_API Burger::GetErrorString(
 	case kErrorThreadCantStop:
 		pErrorMessage = "Thread won't stop";
 		break;
+	case kErrorThreadNotFound:
+		pErrorMessage = "Invalid thread ID";
+		break;
 
 	default:
 		pErrorMessage = "Unknown error";

@@ -94,12 +94,12 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 	int fp = open("/Volumes", O_RDONLY, 0);
 	if (fp != -1) {
 		int eError;
-		
+
 		// Volume not found, nor the boot volume
 		uint_t bFoundIt = FALSE;
 		uint_t bFoundRoot = FALSE;
 
-		// Start with #1 (Boot volume is special cased)		
+		// Start with #1 (Boot volume is special cased)
 		uint_t uEntry = 1;
 		do {
 			// Structure declaration of data coming from getdirentriesattr()
@@ -215,98 +215,6 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 		pOutput->clear();
 	}
 	return uResult;
-}
-
-/***************************************
-
-	Set the initial default prefixs for a power up state
-	*: = Boot volume
-	$: = System folder
-	@: = Prefs folder
-	8: = Default directory
-	9: = Application directory
-
-***************************************/
-
-Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
-{
-	Filename MyFilename;
-
-	// Set the standard work prefix
-	eError uResult = MyFilename.SetSystemWorkingDirectory();
-	SetPrefix(kPrefixCurrent, &MyFilename);
-
-	// Set the application directory
-	eError uTempResult = MyFilename.SetApplicationDirectory();
-	SetPrefix(kPrefixApplication, &MyFilename);
-	if (uTempResult) {
-		uResult = uTempResult;
-	}
-	
-	// Set the boot volume
-	uTempResult = MyFilename.SetBootVolumeDirectory();
-	SetPrefix(kPrefixBoot, &MyFilename);
-	if (uTempResult) {
-		uResult = uTempResult;
-	}
-
-	// Set the application
-	uTempResult = MyFilename.SetMachinePrefsDirectory();
-	SetPrefix(kPrefixSystem, &MyFilename);
-	if (uTempResult) {
-		uResult = uTempResult;
-	}
-
-	// Set the application's preferences location
-	uTempResult = MyFilename.SetUserPrefsDirectory();
-	SetPrefix(kPrefixPrefs, &MyFilename);
-	if (uTempResult) {
-		uResult = uTempResult;
-	}
-
-	char NameBuffer[2048];
-
-	//
-	// Get the directory where the preferences should be stored
-	//
-
-	CFArrayRef pArray =
-		reinterpret_cast<CFArrayRef>(NSSearchPathForDirectoriesInDomains(
-			NSApplicationSupportDirectory, NSUserDomainMask, YES));
-	if (CFArrayGetCount(pArray) >= 1) {
-		CFStringRef pString =
-			static_cast<CFStringRef>(CFArrayGetValueAtIndex(pArray, 0));
-		if (CFStringGetCString(pString, NameBuffer, sizeof(NameBuffer),
-				kCFStringEncodingUTF8)) {
-			if (NameBuffer[0]) {
-				MyFilename.SetFromNative(NameBuffer);
-				SetPrefix(kPrefixPrefs,
-					MyFilename.c_str()); // Set the preferences prefix
-			}
-		}
-	}
-
-	//
-	// Get the /System folder
-	//
-
-	pArray = reinterpret_cast<CFArrayRef>(NSSearchPathForDirectoriesInDomains(
-		NSCoreServiceDirectory, NSSystemDomainMask, YES));
-	if (CFArrayGetCount(pArray) >= 1) {
-		CFStringRef pString =
-			static_cast<CFStringRef>(CFArrayGetValueAtIndex(pArray, 0));
-		if (CFStringGetCString(pString, NameBuffer, sizeof(NameBuffer),
-				kCFStringEncodingUTF8)) {
-			if (NameBuffer[0]) {
-				MyFilename.SetFromNative(NameBuffer);
-				MyFilename.dirname();
-				MyFilename.dirname();
-				SetPrefix(kPrefixSystem,
-					MyFilename.c_str()); // Set the /System folder
-			}
-		}
-	}
-	return kErrorNone;
 }
 
 /***************************************

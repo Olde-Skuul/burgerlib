@@ -51,10 +51,18 @@ class Filename {
 	static const uint_t kDirectoryCacheSize = 8;
 
 	struct ExpandCache_t {
-		const char* m_pName;  ///< Pointer to the original directory name
-		uint32_t m_uHitTick;  ///< Last time hit (For purging)
-		uint_t m_uNameLength; ///< Length of the string
-		uint8_t m_FSRef[80];  ///< Opaque FSRef
+		/** Pointer to the original directory name */
+		const char* m_pName;
+		/**  Last time hit (For purging) */
+		uint32_t m_uHitTick;
+		/** Length of the string */
+		uint_t m_uNameLength;
+		/** Opaque FSRef */
+		uint8_t m_FSRef[80];
+		/** Directory reference (MacOS 9 Only) */
+		long m_lDirID;
+		/** Volume reference used by copy and rename (MacOS 9 Only) */
+		short m_sVRefNum;
 	};
 
 	/** Directory cache (MAC Classic/Carbon Only) */
@@ -128,10 +136,14 @@ public:
 #if defined(BURGER_MAC) || defined(DOXYGEN)
 	eError BURGER_API SetFromNative(const char* pInput, long lDirID = 0,
 		short sVRefNum = 0) BURGER_NOEXCEPT;
-	BURGER_INLINE FSRef* GetFSRef(void) BURGER_NOEXCEPT
+	eError BURGER_API GetFSSpec(FSSpec* pFSSpec) BURGER_NOEXCEPT;
+
+	BURGER_INLINE FSRef* GetFSRefOld(void) BURGER_NOEXCEPT
 	{
 		return reinterpret_cast<FSRef*>(m_FSRef);
 	}
+	FSRef* BURGER_API GetFSRef(void) BURGER_NOEXCEPT;
+	eError BURGER_API GetFinalFSRef(FSRef* pFSRef) BURGER_NOEXCEPT;
 	BURGER_INLINE long GetDirID(void) const BURGER_NOEXCEPT
 	{
 		return m_lDirID;
@@ -150,6 +162,14 @@ public:
 	}
 	eError BURGER_API SetFromDirectoryID(
 		long lDirID, short sVolRefNum) BURGER_NOEXCEPT;
+	eError BURGER_API SetFromDirectoryIDClassic(void) BURGER_NOEXCEPT;
+	eError BURGER_API GetNativeClassic(
+		const char* pInput, long lDirID, short sVolRefNum) BURGER_NOEXCEPT;
+#if !(defined(BURGER_CFM) && defined(BURGER_68K)) || defined(DOXYGEN)
+	eError BURGER_API SetFromDirectoryIDCarbon(void) BURGER_NOEXCEPT;
+	eError BURGER_API GetNativeCarbon(
+		const char* pInput, long lDirID, short sVolRefNum) BURGER_NOEXCEPT;
+#endif
 #endif
 
 	static Filename* BURGER_API New(void) BURGER_NOEXCEPT;

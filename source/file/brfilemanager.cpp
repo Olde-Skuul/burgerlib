@@ -376,9 +376,7 @@ uint_t BURGER_API Burger::FileManager::GetVolumeNumber(
 
 ***************************************/
 
-#if !( \
-	defined(BURGER_IOS) || defined(BURGER_VITA)) || \
-	defined(DOXYGEN)
+#if !defined(BURGER_VITA) || defined(DOXYGEN)
 
 Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(
 	void) BURGER_NOEXCEPT

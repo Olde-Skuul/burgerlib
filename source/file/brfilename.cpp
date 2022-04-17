@@ -1076,8 +1076,8 @@ Burger::eError BURGER_API Burger::Filename::Expand(void) BURGER_NOEXCEPT
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
-	defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_VITA)) || \
+	defined(BURGER_MAC) || defined(BURGER_DARWIN) || \
+	defined(BURGER_XBOX360) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
 const char* BURGER_API Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 {
@@ -1238,8 +1238,8 @@ Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
-	defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_VITA)) || \
+	defined(BURGER_MAC) || defined(BURGER_DARWIN) || \
+	defined(BURGER_XBOX360) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
 Burger::eError BURGER_API Burger::Filename::SetFromNative(
 	const char* pInput) BURGER_NOEXCEPT

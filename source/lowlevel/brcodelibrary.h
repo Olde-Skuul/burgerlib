@@ -76,7 +76,7 @@ public:
 
 #endif
 
-#if defined(BURGER_MACCARBON) || defined(DOXYGEN)
+#if defined(BURGER_POWERPC) || defined(DOXYGEN)
 extern CodeLibrary* BURGER_API GetInterfaceLib(void) BURGER_NOEXCEPT;
 extern CodeLibrary* BURGER_API GetDriverLoaderLib(void) BURGER_NOEXCEPT;
 extern CodeLibrary* BURGER_API GetNameRegistryLib(void) BURGER_NOEXCEPT;

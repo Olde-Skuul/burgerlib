@@ -294,7 +294,7 @@ uint16_t BURGER_API Burger::UTF16::TranslateFromUTF8(
 
 	\param pOutput Pointer to UTF8 buffer to receive the converted string,
 	``nullptr`` is okay if uOutputSize is zero, otherwise it will page fault.
-	\param uOutputSize Size of the output buffer in bytes.
+	\param uOutputSize Size of the output buffer in elements.
 	\param pInput UTF16 encoded "C"string, ``nullptr`` will page fault.
 
 	\return The number of elements of the potential output without the trailing
@@ -308,8 +308,6 @@ uintptr_t BURGER_API Burger::UTF16::TranslateFromUTF8(uint16_t* pOutput,
 {
 	uint16_t* pWorkPtr = pOutput;
 
-	// Use shorts
-	uOutputSize >>= 1;
 	// If nonzero, then I append a 0 to the string.
 	const uintptr_t uAddZero = uOutputSize;
 
@@ -463,7 +461,7 @@ uintptr_t BURGER_API Burger::UTF16::TranslateFromUTF8(uint16_t* pOutput,
 	\param pOutput Pointer to a uint16_t buffer to receive the UTF16 string,
 		``nullptr`` is okay if uOutputSize is zero, otherwise a page fault will
 		occur.
-	\param uOutputSize Size of the output buffer in bytes.
+	\param uOutputSize Size of the output buffer in elements.
 	\param pInput UTF8 encoded byte array, ``nullptr`` is okay if uInputSize is
 		zero.
 	\param uInputSize Size of the input byte array.
@@ -478,9 +476,6 @@ uintptr_t BURGER_API Burger::UTF16::TranslateFromUTF8(uint16_t* pOutput,
 	uintptr_t uInputSize) BURGER_NOEXCEPT
 {
 	uint16_t* pWorkPtr = pOutput;
-
-	// Convert to shorts
-	uOutputSize >>= 1;
 
 	// Can I save a zero?
 	const uintptr_t uAddZero = uOutputSize;

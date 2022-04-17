@@ -166,7 +166,9 @@ enum eError {
 	/** Thread couldn't start */
 	kErrorThreadNotStarted,
 	/** Thread won't stop */
-	kErrorThreadCantStop
+	kErrorThreadCantStop,
+	/** Thread not found */
+	kErrorThreadNotFound
 };
 
 extern uintptr_t BURGER_API GetErrorString(

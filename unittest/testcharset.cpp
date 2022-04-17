@@ -1075,7 +1075,7 @@ static uint_t BURGER_API TestUTF16IsValid(void) BURGER_NOEXCEPT
 			uintptr_t uTestX1;
 			if (pWork->m_UTF16[0]) {
 				uTestX1 = Burger::UTF16::TranslateFromUTF8(
-					TempString16, sizeof(TempString16), TempString);
+					TempString16, BURGER_ARRAYSIZE(TempString16), TempString);
 				// Test for the proper length
 
 				uTest = uTestX1 != uWidth16;
@@ -1091,20 +1091,20 @@ static uint_t BURGER_API TestUTF16IsValid(void) BURGER_NOEXCEPT
 					}
 					uResult |= uTest;
 					ReportFailure(
-						"Burger::UTF16::TranslateFromUTF8(TempString16, sizeof(TempString16), TempString) %04X%04X %04X%04X!",
+						"Burger::UTF16::TranslateFromUTF8(TempString16, BURGER_ARRAYSIZE(TempString16), TempString) %04X%04X %04X%04X!",
 						uTest, TempString16[0], TempString16[1],
 						pWork->m_UTF16[0], pWork->m_UTF16[1]);
 				}
 			}
 
 			uTestX1 = Burger::UTF16::TranslateFromUTF8(TempString16,
-				sizeof(TempString16),
+				BURGER_ARRAYSIZE(TempString16),
 				reinterpret_cast<const char*>(pWork->m_UTF8), uWidth);
 			// 0, invalid, 1 or 2 elements if valid
 			uTest = uTestX1 != uWidth16;
 			uResult |= uTest;
 			ReportFailure(
-				"Burger::UTF16::TranslateFromUTF8(TempString16, sizeof(TempString16), TempString, uWidth) %u != 1 %04X%04X!",
+				"Burger::UTF16::TranslateFromUTF8(TempString16, BURGER_ARRAYSIZE(TempString16), TempString, uWidth) %u != 1 %04X%04X!",
 				uTest, static_cast<uint_t>(uTestX1), pWork->m_UTF16[0],
 				pWork->m_UTF16[1]);
 
@@ -1115,7 +1115,7 @@ static uint_t BURGER_API TestUTF16IsValid(void) BURGER_NOEXCEPT
 				}
 				uResult |= uTest;
 				ReportFailure(
-					"Burger::UTF16::TranslateFromUTF8(TempString16, sizeof(TempString16), TempString, uWidth) %04X%04X %04X%04X!",
+					"Burger::UTF16::TranslateFromUTF8(TempString16, BURGER_ARRAYSIZE(TempString16), TempString, uWidth) %04X%04X %04X%04X!",
 					uTest, TempString16[0], TempString16[1], pWork->m_UTF16[0],
 					pWork->m_UTF16[1]);
 			}
@@ -1264,7 +1264,7 @@ static uint_t BURGER_API TestUTF16(void) BURGER_NOEXCEPT
 
 	// Temp buffer, use a larger one in case of test failure
 	const uintptr_t uUTF16Length = Burger::UTF16::TranslateFromUTF8(
-		BufferUTF16, sizeof(BufferUTF16), BufferUTF8, uUTF8Length);
+		BufferUTF16, BURGER_ARRAYSIZE(BufferUTF16), BufferUTF8, uUTF8Length);
 
 	// Test the result from the round trip
 	uTest = (uUTF16Length != 255);

@@ -558,7 +558,7 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 	WCHAR InputPath[512];
 	WCHAR* pInputPath;
 	uintptr_t uInputLength = UTF16::TranslateFromUTF8(
-		reinterpret_cast<uint16_t*>(InputPath), sizeof(InputPath), pInput);
+		reinterpret_cast<uint16_t*>(InputPath), BURGER_ARRAYSIZE(InputPath), pInput);
 	if (uInputLength >= BURGER_ARRAYSIZE(InputPath)) {
 		pInputPath =
 			static_cast<WCHAR*>(Alloc((uInputLength + 2) * sizeof(WCHAR)));
@@ -567,7 +567,7 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 		}
 		uInputLength =
 			UTF16::TranslateFromUTF8(reinterpret_cast<uint16_t*>(pInputPath),
-				(uInputLength + 2) * sizeof(WCHAR), pInput);
+				uInputLength + 2, pInput);
 	} else {
 		pInputPath = InputPath;
 	}

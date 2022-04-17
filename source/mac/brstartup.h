@@ -93,7 +93,7 @@ static int ValidateMacSystem(void)
     // Check for Sound Manager 3.0 or later
 
 #if defined(BURGER_POWERPC)
-        if (Burger::Globals::GetDrawSprocketVersion() < 0x175) {
+        if (Burger::Mac::GetDrawSprocketVersion() < 0x175) {
         pErrorText = "Requires DrawSprocket 1.7.5 or later to run";
     } else
 

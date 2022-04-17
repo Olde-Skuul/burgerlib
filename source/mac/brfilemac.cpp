@@ -1,14 +1,14 @@
 /***************************************
 
-    MacOS version of Burger::File
+	MacOS version of Burger::File
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -30,22 +30,23 @@
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::File::Open(Filename* pFileName, eFileAccess eAccess) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::File::Open(
+	Filename* pFileName, eFileAccess eAccess) BURGER_NOEXCEPT
 {
 	Close();
 	eAccess = static_cast<eFileAccess>(eAccess & 3);
 
 	static const SInt8 g_Permissions[4] = {
 		fsRdPerm, fsWrPerm, fsWrPerm, fsRdWrPerm};
-	
+
 	HFSUniStr255 ForkName;
 	FSGetDataForkName(&ForkName);
-	
+
 	// Convert the filename to unicode
 	String16 MyName(pFileName->GetNative());
 	// Create a UFT16 FSRef
-	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRef(), MyName.GetLength(),
-		MyName.GetPtr(), kUnicode16BitFormat,
+	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRefOld(),
+		MyName.GetLength(), MyName.GetPtr(), kUnicode16BitFormat,
 		reinterpret_cast<FSRef*>(m_FSRef));
 	uint_t uResult = kErrorFileNotFound;
 
@@ -53,16 +54,12 @@ Burger::eError BURGER_API Burger::File::Open(Filename* pFileName, eFileAccess eA
 	// See if it should be created
 	if ((eAccess != kReadOnly) && ((eError == fnfErr) || (eError == nsvErr))) {
 		FSCatalogInfo MyInfo;
-		((FileInfo*)(&MyInfo.finderInfo))->fileType = 'BINA';
-		((FileInfo*)(&MyInfo.finderInfo))->fileCreator = '????';
-		((FileInfo*)(&MyInfo.finderInfo))->finderFlags = 0;
-		((FileInfo*)(&MyInfo.finderInfo))->location.h = 0;
-		((FileInfo*)(&MyInfo.finderInfo))->location.v = 0;
-		((FileInfo*)(&MyInfo.finderInfo))->reservedField = 0;
+		InitFileInfo(reinterpret_cast<FileInfo*>(&MyInfo.finderInfo));
 		MyInfo.textEncodingHint = kUnicode16BitFormat;
-		eError = FSCreateFileUnicode(pFileName->GetFSRef(), MyName.GetLength(),
-			MyName.GetPtr(), kFSCatInfoTextEncoding + kFSCatInfoFinderInfo,
-			&MyInfo, reinterpret_cast<FSRef*>(m_FSRef), NULL);
+		eError =
+			FSCreateFileUnicode(pFileName->GetFSRefOld(), MyName.GetLength(),
+				MyName.GetPtr(), kFSCatInfoTextEncoding + kFSCatInfoFinderInfo,
+				&MyInfo, reinterpret_cast<FSRef*>(m_FSRef), NULL);
 	}
 	if (!eError) {
 		short fp;
@@ -114,7 +111,9 @@ Burger::eError BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 	\note The return value is 32 bits wide on a 32 bit operating system, 64 bits
 		wide on 64 bit operating systems
 	\return 0 if error or an empty file. Non-zero is the size of the file in
-bytes. \sa Open(const char *, eFileAccess) and Open(Filename *,eFileAccess)
+		bytes.
+
+	\sa Open(const char *, eFileAccess) and Open(Filename *,eFileAccess)
 
 ***************************************/
 
@@ -126,8 +125,8 @@ uintptr_t BURGER_API Burger::File::GetSize(void) BURGER_NOEXCEPT
 		SInt64 lFileSize;
 		OSErr eSize = FSGetForkSize(fp, &lFileSize);
 		if (!eSize) {
-			if (static_cast<uint64_t>(lFileSize)
-				<= static_cast<uint64_t>(0xFFFFFFFFU)) {
+			if (static_cast<uint64_t>(lFileSize) <=
+				static_cast<uint64_t>(0xFFFFFFFFU)) {
 				uSize = static_cast<uintptr_t>(lFileSize);
 			} else {
 				uSize = 0xFFFFFFFFU;
@@ -147,7 +146,9 @@ uintptr_t BURGER_API Burger::File::GetSize(void) BURGER_NOEXCEPT
 	\param pOutput Pointer to a buffer of data to read from a file
 	\param uSize Number of bytes to read
 	\return Number of bytes read (Can be less than what was requested due to EOF
-or read errors) \sa Write(const void *,uintptr_t)
+		or read errors)
+
+	\sa Write(const void *,uintptr_t)
 
 ***************************************/
 
@@ -176,20 +177,21 @@ uintptr_t BURGER_API Burger::File::Read(void* pOutput, uintptr_t uSize)
 	\param pInput Pointer to a buffer of data to write to a file
 	\param uSize Number of bytes to write
 	\return Number of bytes written (Can be less than what was requested due to
-        EOF or write errors)
-    \sa Read(void *,uintptr_t)
+		EOF or write errors)
+	\sa Read(void *,uintptr_t)
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::File::Write(const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT
+uintptr_t BURGER_API Burger::File::Write(
+	const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT
 {
 	uintptr_t uResult = 0;
 	if (uSize && pInput) {
 		short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 		if (fp) {
 			ByteCount lDataWritten = 0;
-			OSErr eWrite = FSWriteFork(
-				fp, fsAtMark, 0, uSize, (void *)pInput, &lDataWritten); // Write data
+			OSErr eWrite = FSWriteFork(fp, fsAtMark, 0, uSize, (void*)pInput,
+				&lDataWritten); // Write data
 			uResult = static_cast<uintptr_t>(lDataWritten);
 		}
 	}
@@ -216,8 +218,8 @@ uintptr_t BURGER_API Burger::File::GetMark(void)
 		SInt64 lCurrentMark;
 		OSErr eErr = FSGetForkPosition(fp, &lCurrentMark);
 		if (!eErr) {
-			if (static_cast<uint64_t>(lCurrentMark)
-				<= static_cast<uint64_t>(0xFFFFFFFFU)) {
+			if (static_cast<uint64_t>(lCurrentMark) <=
+				static_cast<uint64_t>(0xFFFFFFFFU)) {
 				uMark = static_cast<uintptr_t>(lCurrentMark);
 			} else {
 				uMark = 0xFFFFFFFFU;
@@ -286,25 +288,26 @@ uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 	the file was modified.
 
 	\param pOutput Pointer to a Burger::TimeDate_t to receive the file
-modification time \return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not
-available or other codes for errors \sa GetCreationTime() or
-SetModificationTime()
+		modification time
+
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not
+		available or other codes for errors
+
+	\sa GetCreationTime() or SetModificationTime()
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::File::GetModificationTime(TimeDate_t* pOutput) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::File::GetModificationTime(
+	TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorFileNotFound;
 	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
 		FSRefParam Block;
+		InitFSRefParam(
+			&Block, reinterpret_cast<FSRef*>(m_FSRef), kFSCatInfoContentMod);
 		FSCatalogInfo MyInfo;
-		Block.ref = reinterpret_cast<FSRef*>(m_FSRef);
-		Block.whichInfo = kFSCatInfoContentMod;
 		Block.catInfo = &MyInfo;
-		Block.spec = NULL;
-		Block.parentRef = NULL;
-		Block.outName = NULL;
 		OSErr eError = PBGetCatalogInfoSync(&Block);
 		if (!eError) {
 			// If it succeeded, the file must exist
@@ -325,8 +328,8 @@ Burger::eError BURGER_API Burger::File::GetModificationTime(TimeDate_t* pOutput)
 	\param pOutput Pointer to a Burger::TimeDate_t to receive the file creation
 		time
 
-	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or
-		other codes for errors
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not
+		available or other codes for errors
 
 	\sa GetModificationTime() or SetCreationTime()
 
@@ -338,13 +341,10 @@ Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t* pOutput)
 	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
 		FSRefParam Block;
+		InitFSRefParam(
+			&Block, reinterpret_cast<FSRef*>(m_FSRef), kFSCatInfoContentMod);
 		FSCatalogInfo MyInfo;
-		Block.ref = reinterpret_cast<FSRef*>(m_FSRef);
-		Block.whichInfo = kFSCatInfoContentMod;
 		Block.catInfo = &MyInfo;
-		Block.spec = NULL;
-		Block.parentRef = NULL;
-		Block.outName = NULL;
 		OSErr eError = PBGetCatalogInfoSync(&Block);
 		if (!eError) {
 			// If it succeeded, the file must exist
