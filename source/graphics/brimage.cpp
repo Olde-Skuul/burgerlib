@@ -253,7 +253,7 @@ void Burger::Image::Init(uint_t uWidth,uint_t uHeight,ePixelTypes eType,uintptr_
 	m_uStride = static_cast<uint_t>(uStride);
 	m_uWidth = uWidth;
 	m_uHeight = uHeight;
-	uFlags &= (~FLAGS_MIPMAPMASK);
+	uFlags &= static_cast<uint_t>(~FLAGS_MIPMAPMASK);
 	if (uMipMaps>16) {
 		uMipMaps = 16;
 	}
@@ -982,7 +982,7 @@ void Burger::Image::Shutdown(void)
 	}
 	m_pImage = NULL;
 	m_uStride = 0;
-	m_uFlags &= (~FLAGS_MIPMAPMASK);
+	m_uFlags &= static_cast<uint_t>(~FLAGS_MIPMAPMASK);
 }
 
 /*! ************************************

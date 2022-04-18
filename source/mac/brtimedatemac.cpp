@@ -86,6 +86,8 @@ uint_t Burger::TimeDate_t::Load(const UTCDateTime* pUTCDateTime) BURGER_NOEXCEPT
         m_bDayOfWeek = static_cast<uint8_t>(LongTimeRec.od.oldDate.dayOfWeek);
         uResult = FALSE;
     }
+#else
+	BURGER_UNUSED(pUTCDateTime);
 #endif
     return uResult;
 }

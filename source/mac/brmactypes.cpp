@@ -22,6 +22,7 @@
 #include "brstringfunctions.h"
 #include <Devices.h>
 #include <DrawSprocket.h>
+#include <FSM.h>
 #include <Folders.h>
 #include <Gestalt.h>
 #include <HFSVolumes.h>
@@ -2510,6 +2511,89 @@ int BURGER_API Burger::GetVolumeInfo(
 
 /*! ************************************
 
+	\brief Obtain information about an extended volume.
+
+	Given a volume reference number, and a volume name, fill in a XVolumeParam
+	record with information about the volume. The ioNamePtr entry is zeroed out
+	so retrieving a volume name is not possible with this call.
+
+	\maconly
+
+	\param sVRefNum Volume reference number
+	\param pVolumename Pointer to a Pascal volume name
+	\param pXVolumeParam Pointer to an uninitialized XVolumeParam buffer
+
+	\return Zero if no error, or mac error code
+
+***************************************/
+
+int BURGER_API Burger::GetVolumeInfo(short svRefNum, const uint8_t* pVolumename,
+	XVolumeParam* pXVolumeParam) BURGER_NOEXCEPT
+{
+	Str255 TempName;
+	int iMacError;
+
+	// Sanity check
+	if (pXVolumeParam) {
+		// Use API version 0
+		pXVolumeParam->ioVRefNum = svRefNum;
+		pXVolumeParam->ioXVersion = 0;
+
+		if (!pVolumename) {
+
+			// Use the volume number only
+			pXVolumeParam->ioNamePtr = nullptr;
+			pXVolumeParam->ioVolIndex = 0;
+
+		} else {
+
+			// Use the volume name and number
+			// Copy the volume name to a temp buffer since it will be modified
+
+			MemoryCopy(TempName, pVolumename, pVolumename[0] + 1U);
+			pXVolumeParam->ioNamePtr = reinterpret_cast<StringPtr>(TempName);
+			pXVolumeParam->ioVolIndex = -1;
+		}
+
+		// Carbon always has the API, but other targets, not so much. Preflight
+		// it.
+#if !defined(BURGER_MACCARBON)
+
+		// Is PBXGetVolInfo() available?
+		long lGestalt;
+
+		if (Gestalt(gestaltFSAttr, &lGestalt) ||
+			!(lGestalt & (1L << gestaltFSSupports2TBVols))) {
+
+			// The volume is Olde Skuul. Use the older API
+			iMacError = PBHGetVInfoSync((HParmBlkPtr)pXVolumeParam);
+			if (!iMacError) {
+				// Do a quick conversion for the number of bytes in the volume
+				pXVolumeParam->ioVTotalBytes =
+					static_cast<uint64_t>(pXVolumeParam->ioVNmAlBlks) *
+					static_cast<uint64_t>(pXVolumeParam->ioVAlBlkSiz);
+				pXVolumeParam->ioVFreeBytes =
+					static_cast<uint64_t>(pXVolumeParam->ioVFrBlk) *
+					static_cast<uint64_t>(pXVolumeParam->ioVAlBlkSiz);
+			}
+		} else
+#endif
+		{
+			// The new API exists, use it
+			iMacError = DoPBXGetVolInfoSync(pXVolumeParam);
+		}
+
+		// Zap the temp buffer pointer to prevent dangling pointers
+		pXVolumeParam->ioNamePtr = nullptr;
+
+	} else {
+		iMacError = paramErr;
+	}
+	return iMacError;
+}
+
+/*! ************************************
+
 	\brief Find the real volume reference number.
 
 	Given a volume reference number, get its information and determine if it is
@@ -2690,7 +2774,7 @@ int BURGER_API Burger::GetDesktopFileName(
 	\param svRefNum Volume reference number of the file to check
 	\param lDirID Directory ID of the file to check
 	\param pFileName Pointer to a "C" string of the filename to check
-	\param pComment Pointer to a 256 byte buffer to receive the Pascal
+	\param pComment Pointer to a 256 byte buffer to receive the "C" string
 		comment
 
 	\return Zero if no error, or mac error code
@@ -2698,8 +2782,11 @@ int BURGER_API Burger::GetDesktopFileName(
 ***************************************/
 
 int BURGER_API Burger::GetCommentFromDesktopFile(short svRefNum, long lDirID,
-	const char* pFileName, uint8_t* pComment) BURGER_NOEXCEPT
+	const char* pFileName, char* pComment) BURGER_NOEXCEPT
 {
+	// Init the output, just in case
+	pComment[0] = 0;
+
 	// Obtain the file's comment resource ID
 	short sCommentID;
 	int iMacError = GetCommentID(svRefNum, lDirID, pFileName, &sCommentID);
@@ -2758,8 +2845,7 @@ int BURGER_API Burger::GetCommentFromDesktopFile(short svRefNum, long lDirID,
 							iMacError = afpItemNotFound;
 						} else {
 							// Copy the data (Pascal string)
-							MemoryCopy(pComment, *hComment,
-								static_cast<uintptr_t>(*hComment[0] + 1));
+							PStringToCString(pComment, *hComment);
 						}
 
 						// Restore the resource file chain and close the Desktop
@@ -2773,5 +2859,607 @@ int BURGER_API Burger::GetCommentFromDesktopFile(short svRefNum, long lDirID,
 	}
 	return iMacError;
 }
+
+/*! ************************************
+
+	\brief Open the desktop manager database.
+
+	Given a volume reference number, open the finder database and return a
+	reference to the open file.
+
+	\maconly
+
+	\param pVolumeName Pointer to a Pascal string of the volume name
+	\param svRefNum Volume reference number of the file to check
+	\param pRefNum Pointer to variable to receive the open file reference
+	\param pbDatabaseCreated Pointer to receive boolean if the database was
+		created, can be \ref nullptr
+
+	\return Zero if no error, or mac error code
+
+***************************************/
+
+int BURGER_API Burger::DesktopOpen(const uint8_t* pVolumeName, short svRefNum,
+	short* pRefNum, uint_t* pbDatabaseCreated)
+{
+	// Does the volume support the Desktop Manager?
+	GetVolParmsInfoBuffer MyGetVolParmsInfoBuffer;
+	uint32_t uInfoBufferSize = sizeof(MyGetVolParmsInfoBuffer);
+	int iMacError = HGetVolParms(
+		pVolumeName, svRefNum, &MyGetVolParmsInfoBuffer, &uInfoBufferSize);
+
+	// There shouldn't be an error, but you never know
+	if (!iMacError) {
+
+		// Does the volume support the Desktop Manager?
+		if (!DoesItHaveDesktopMgr(&MyGetVolParmsInfoBuffer)) {
+
+			// No, so force an error for "Not Supported"
+			iMacError = paramErr;
+
+		} else {
+
+			// Open or create the database
+			DTPBRec dtpb;
+			dtpb.ioNamePtr = (StringPtr)pVolumeName;
+			dtpb.ioVRefNum = svRefNum;
+			iMacError = PBDTOpenInform(&dtpb);
+
+			// Check if the database was created which means that there is no
+			// need to copy data since it's a clean slate.
+			uint_t bDatabaseCreated = !(dtpb.ioTagInfo & 1L);
+
+			// Wait, was there a "Not supported" error? Docs say to call
+			// PDBTGetPath() in this case, go figure.
+			if (iMacError == paramErr) {
+
+				// Try again with PBDTGetPath()
+				iMacError = PBDTGetPath(&dtpb);
+
+				// Database creation is unknown with the above call, so assume
+				// it's always existed
+				bDatabaseCreated = FALSE;
+			}
+			// Only return if requested
+			if (pbDatabaseCreated) {
+				*pbDatabaseCreated = bDatabaseCreated;
+			}
+
+			// Always return (There's no point in calling without returning
+			// this)
+			*pRefNum = dtpb.ioDTRefNum;
+		}
+	}
+	return iMacError;
+}
+
+/*! ************************************
+
+	\brief Get a comment from the Desktop Manager
+
+	Given a file's volume, directory and filename, check the desktop manager if
+	the database is active and query it for any associated comment. If the
+	desktop database is not supported, check for the "Desktop" file found on
+	many network shares and query it for the comment.
+
+	If there are no errors and there was a comment, the ``pOutput`` buffer will
+	have a "C" string of the comment. It will be set to an empty string on error
+	or if there was no comment found.
+
+	\maconly
+
+	\param svRefNum Volume reference number of the file to check
+	\param lDirID Parent ID of the file to check
+	\param pFilename Pointer to a Pascal string for the filename to check
+	\param pOutput Pointer to a 256 byte buffer to receive the comment "C"
+		string
+
+	\return Zero if no error, or mac error code
+
+	\sa DesktopSetComment(short, long, const uint8_t*, const char*)
+
+***************************************/
+
+int BURGER_API Burger::DesktopGetComment(short svRefNum, long lDirID,
+	const uint8_t* pFilename, char* pOutput) BURGER_NOEXCEPT
+{
+	// Guarantee the comment is initialized on exit
+	pOutput[0] = 0;
+
+	// See if a Desktop Manager is present
+	uint_t bDatabaseCreated;
+	short sDesktopRefNum;
+	int iMacError =
+		DesktopOpen(pFilename, svRefNum, &sDesktopRefNum, &bDatabaseCreated);
+	if (!iMacError) {
+		// Woo hoo! Use this API
+
+		// Only care if the database was preexisting. If it was created, assume
+		// it can't have any data of interest
+		if (!bDatabaseCreated) {
+			DTPBRec pb;
+
+			// Set up for the read
+			pb.ioDTRefNum = sDesktopRefNum;
+			pb.ioNamePtr =
+				reinterpret_cast<StringPtr>(const_cast<uint8_t*>(pFilename));
+			pb.ioDirID = lDirID;
+			pb.ioDTBuffer = reinterpret_cast<Ptr>(pOutput);
+
+			// Note: The docs claim comments are a max of 200 characters.
+
+			// THEY LIE!!
+
+			// Use a full 256 byte buffer, or you will regret it.
+			// Also, HFS ignores ioDTReqCount and assumes 255, so just live with
+			// it.
+
+			pb.ioDTReqCount = 255;
+			iMacError = PBDTGetCommentSync(&pb);
+			if (!iMacError) {
+				// Terminate the "C" string
+				pOutput[pb.ioDTActCount] = 0;
+			} else {
+				// Ensure it's clear
+				pOutput[0] = 0;
+			}
+		}
+	} else {
+		// Get the record from the desktop file
+		char Temp[256];
+		PStringToCString(Temp, pFilename);
+		iMacError = GetCommentFromDesktopFile(svRefNum, lDirID, Temp, pOutput);
+		if (iMacError) {
+			// Standardize the error
+			iMacError = afpItemNotFound;
+		}
+	}
+	return iMacError;
+}
+
+/*! ************************************
+
+	\brief Get a comment from the Desktop Manager
+
+	Given a file's volume, directory and filename, check the desktop manager if
+	the database is active and set the comment to the given file. If the
+	desktop database is not supported, no transfer is performed.
+
+	Comments are limited to a maximum of 200 characters. If the comment string
+	is longer than 200 characters, it will be truncated.
+
+	\maconly
+
+	\param svRefNum Volume reference number of the file to set the comment
+	\param lDirID Parent ID of the file
+	\param pFilename Pointer to a Pascal string for the filename of the file
+	\param pComment Pointer to a "C" string to set as a comment.
+
+	\return Zero if no error, or mac error code
+
+	\sa DesktopGetComment(short, long, const uint8_t*, char*)
+
+***************************************/
+
+int BURGER_API Burger::DesktopSetComment(short svRefNum, long lDirID,
+	const uint8_t* pFilename, const char* pComment) BURGER_NOEXCEPT
+{
+	// Try to open the Desktop manager
+	short sDesktopRefNum;
+	int iMacError = DesktopOpen(pFilename, svRefNum, &sDesktopRefNum, nullptr);
+	if (!iMacError) {
+
+		// Try saving the data to the newly created file
+		DTPBRec pb;
+		pb.ioDTRefNum = sDesktopRefNum;
+		pb.ioNamePtr =
+			reinterpret_cast<StringPtr>(const_cast<uint8_t*>(pFilename));
+		pb.ioDirID = lDirID;
+		pb.ioDTBuffer = reinterpret_cast<Ptr>(const_cast<char*>(pComment));
+
+		// Make sure the comment is a maximum of 200 characters, because some
+		// file systems don't check and it's good to at least TRY to follow the
+		// documentation of the Desktop Manager
+		uintptr_t uStringLength = StringLength(pComment);
+		if (uStringLength > 200U) {
+			uStringLength = 200U;
+		}
+		pb.ioDTReqCount = static_cast<long>(uStringLength);
+		iMacError = PBDTSetCommentSync(&pb);
+	}
+	return iMacError;
+}
+
+/*! ************************************
+
+	\brief Copy a comment from one file to another
+
+	Given the volume, directory ID and filename for a source and destination
+	file, read in the Desktop Manager comment associated with the source file
+	and write a copy of the comment found onto the destination file.
+
+	While this code can read comments from both the Desktop Manager and the
+	``Desktop`` resource file, it is limited to only writing to systems with a
+	Desktop Manager. If the destination file resides on a different volume as
+	the source and the destination uses a "Desktop" resource file, this call
+	will always fail. However, if the source and destination reside on the same
+	volume that uses a ``Desktop`` file, this call is moot because the resource
+	string already exists in the destination file's resource fork if the
+	destination file is a copy of the source file.
+
+	\maconly
+
+	\param svRefNumSource Volume reference number of the source file
+	\param lDirIDSource Parent ID of the source file
+	\param pFilenameSource Pointer to a Pascal string for the source file
+	\param svRefNumDest Volume reference number of the destination file
+	\param lDirIDDest Parent ID of the destination file
+	\param pFilenameDest Pointer to a Pascal string for the destination file
+
+	\return Zero if no error, or mac error code
+
+	\sa DesktopGetComment(short, long, const uint8_t*, char*) or
+		DesktopSetComment(short, long, const uint8_t*, const char*)
+
+***************************************/
+
+int BURGER_API Burger::DesktopCopyComment(short svRefNumSource,
+	long lDirIDSource, const uint8_t* pFilenameSource, short svRefNumDest,
+	long lDirIDDest, const uint8_t* pFilenameDest) BURGER_NOEXCEPT
+{
+	// Buffer for the comment string
+	char CommentBuffer[256];
+
+	// Read in the comment from the source
+	int iMacError = DesktopGetComment(
+		svRefNumSource, lDirIDSource, pFilenameSource, CommentBuffer);
+
+	// No error, and is there a comment?
+	if (!iMacError && CommentBuffer[0]) {
+		// Save the comment
+		// Note: DesktopSetComment() only writes to Desktop Manager volumes
+		iMacError = DesktopSetComment(
+			svRefNumDest, lDirIDDest, pFilenameDest, CommentBuffer);
+	}
+	return iMacError;
+}
+
+/*! ************************************
+
+	\brief Copy file manager metadata from one file to another.
+
+	Given the volume, directory ID and filename for a source and destination
+	file, read in the file manager metadata, such as the file creator type, file
+	type, and finder location information. If ``pFilenameDest`` is non-zero, the
+	lock bit will also be copied.
+
+	\maconly
+
+	\param svRefNumSource Volume reference number of the source file
+	\param lDirIDSource Parent ID of the source file
+	\param pFilenameSource Pointer to a Pascal string for the source file
+	\param svRefNumDest Volume reference number of the destination file
+	\param lDirIDDest Parent ID of the destination file
+	\param pFilenameDest Pointer to a Pascal string for the destination file
+	\param bCopyLockBit Boolean to enable the copying of the lock status
+
+	\return Zero if no error, or mac error code
+
+***************************************/
+
+int BURGER_API Burger::CopyFileMgrAttributes(short svRefNumSource,
+	long lDirIDSource, const uint8_t* pFilenameSource, short svRefNumDest,
+	long lDirIDDest, const uint8_t* pFilenameDest,
+	uint_t bCopyLockBit) BURGER_NOEXCEPT
+{
+	// Parameter buffers, they are shared by design
+	union {
+		CInfoPBRec m_CInfo;
+		HParamBlockRec m_HParam;
+	} pb;
+
+	Str255 Temp;
+
+	// Set up for the source file
+	pb.m_CInfo.hFileInfo.ioVRefNum = svRefNumSource;
+	pb.m_CInfo.hFileInfo.ioDirID = lDirIDSource;
+
+	// File sharing driver needs a valid ioNamePtr because it hates me
+	if (!pFilenameSource || !pFilenameSource[0]) {
+
+		// A directory? Use a phone buffer and instruct GetCatInfo to use the
+		// directory ID only
+		Temp[0] = 0;
+		pb.m_CInfo.hFileInfo.ioNamePtr = Temp;
+		pb.m_CInfo.hFileInfo.ioFDirIndex = -1;
+	} else {
+
+		// File? Use the directory and filename
+		pb.m_CInfo.hFileInfo.ioNamePtr =
+			reinterpret_cast<StringPtr>(const_cast<uint8_t*>(pFilenameSource));
+		pb.m_CInfo.hFileInfo.ioFDirIndex = 0;
+	}
+
+	// Read in the finder meta data
+	int iMacError = PBGetCatInfoSync(&pb.m_CInfo);
+	if (!iMacError) {
+
+		// Save the directory state for later
+		uint_t bObjectIsDirectory = static_cast<uint_t>(
+			pb.m_CInfo.hFileInfo.ioFlAttrib & kioFlAttribDirMask);
+
+		// Set up for the destination file
+		pb.m_CInfo.hFileInfo.ioVRefNum = svRefNumDest;
+		pb.m_CInfo.hFileInfo.ioDirID = lDirIDDest;
+		if (pFilenameDest && !pFilenameDest[0]) {
+			pb.m_CInfo.hFileInfo.ioNamePtr = nullptr;
+		} else {
+			pb.m_CInfo.hFileInfo.ioNamePtr = reinterpret_cast<StringPtr>(
+				const_cast<uint8_t*>(pFilenameDest));
+		}
+
+		// Clear the "Has been initialized" bit so the OS can consider this a
+		// fresh file and then save the metadata
+		pb.m_CInfo.hFileInfo.ioFlFndrInfo.fdFlags = static_cast<uint16_t>(
+			pb.m_CInfo.hFileInfo.ioFlFndrInfo.fdFlags & ~kHasBeenInited);
+		iMacError = PBSetCatInfoSync(&pb.m_CInfo);
+
+		// Should the lock be transferred? (Only if no previous error)
+		if (!iMacError && bCopyLockBit &&
+			(pb.m_CInfo.hFileInfo.ioFlAttrib & kioFlAttribLockedMask)) {
+
+			// Lock the file (Or directory)
+			pb.m_HParam.fileParam.ioFVersNum = 0;
+			iMacError = PBHSetFLockSync(&pb.m_HParam);
+
+			// If the destination is a directory, ignore errors
+			if (iMacError && bObjectIsDirectory) {
+				iMacError = noErr;
+			}
+		}
+	}
+	return iMacError;
+}
+
+/*! ************************************
+
+	\brief Extract a filename at the end of a path.
+
+	Scan a Pascal filename string and extract the last component which should be
+	the filename. If the string passed in is a volume path, such as
+	":Macintosh HD:", it will intentionally fail.
+
+	Do not pass the same pointer for both input and output.
+
+	\maconly
+
+	\param pOutput Pointer to a 256 byte Pascal string buffer
+	\param pInput Pointer to the Pascal filename path
+
+	\return Zero if no error, or mac error code
+
+***************************************/
+
+int BURGER_API Burger::GetFilenameFromPathname(
+	uint8_t* pOutput, const uint8_t* pInput) BURGER_NOEXCEPT
+{
+	// Initialize the output
+	pOutput[0] = 0;
+
+	int iMacError;
+
+	// It's a directory, abort
+	if (!pInput) {
+		iMacError = notAFileErr;
+
+	} else {
+
+		// Empty string is a directory again
+		uint_t uIndex = pInput[0];
+		if (!uIndex) {
+			iMacError = notAFileErr;
+
+		} else {
+			// Ignore trailing colons
+			if (pInput[uIndex] == ':') {
+				--uIndex;
+			}
+
+			// Check for a double colon, which is bad.
+			if (pInput[uIndex] == ':') {
+				iMacError = notAFileErr;
+			} else {
+
+				// Save the length of the string (Minus the ending colon)
+				uint_t uIndexEnd = uIndex;
+
+				// Reverse search for a colon
+				while (uIndex && (pInput[uIndex] != ':')) {
+					--uIndex;
+				}
+
+				// Check for ":Macintosh HD:" which is a volume name, not a
+				// filename
+				if (uIndex || (pInput[pInput[0]] != ':')) {
+					// Get the length of the filename
+					uIndexEnd -= uIndex;
+
+					// Sanity check
+					if (uIndexEnd > 255U) {
+						uIndexEnd = 255U;
+					}
+
+					// Create the Pascal filename output
+					pOutput[0] = static_cast<uint8_t>(uIndexEnd);
+					MemoryCopy(&pOutput[1], &pInput[uIndex + 1], uIndexEnd);
+
+					// We're good!
+					iMacError = noErr;
+				}
+			}
+		}
+	}
+	return iMacError;
+}
+
+/*! ************************************
+
+	\brief Copy a file using PBHCopyFileSync()
+
+	Use the Mac OS call PBHCopyFileSync() to copy a file from one place to
+	another on the same voluem. This call will fail if either the source and
+	destination volumes are different or if the volume doesn't support file
+	copying.
+
+	Network drives almost always implement this API
+
+	\maconly
+
+	\param svRefNumSource Volume reference number of the source file
+	\param lDirIDSource Parent ID of the source file
+	\param pFilenameSource Pointer to a Pascal string for the source file
+	\param svRefNumDest Volume reference number of the destination file
+	\param lDirIDDest Parent ID of the destination file
+	\param pFilenameDest Pointer to a Pascal string for the destination file
+	\param pCopyname Pointer to a Pascal string for a replacement name for the
+		destination file.
+
+	\return Zero if no error, or mac error code
+
+***************************************/
+
+int BURGER_API Burger::HCopyFile(short svRefNumSource, long lDirIDSource,
+	const uint8_t* pFilenameSource, short svRefNumDest, long lDirIDDest,
+	const uint8_t* pFilenameDest, const uint8_t* pCopyname)
+{
+	HParamBlockRec pb;
+
+	pb.copyParam.ioVRefNum = svRefNumSource;
+	pb.copyParam.ioDirID = lDirIDSource;
+	pb.copyParam.ioNamePtr =
+		reinterpret_cast<StringPtr>(const_cast<uint8_t*>(pFilenameSource));
+	pb.copyParam.ioDstVRefNum = svRefNumDest;
+	pb.copyParam.ioNewDirID = lDirIDDest;
+	pb.copyParam.ioNewName =
+		reinterpret_cast<StringPtr>(const_cast<uint8_t*>(pFilenameDest));
+	pb.copyParam.ioCopyName =
+		reinterpret_cast<StringPtr>(const_cast<uint8_t*>(pCopyname));
+
+	// Copy the file
+	return PBHCopyFileSync(&pb);
+}
+
+/***************************************
+
+	\brief Call the 68000 version of PBXGetVolInfoSync()
+
+	Locate the 68000 trap for PBXGetVolInfoSync() and dispatch to it so
+	access to PBXGetVolInfoSync() is allowed.
+
+	\maconly
+
+	\param pXVolumeParam Pointer to a XVolumeParam record
+
+	\return Zero if no error, or mac error code
+
+***************************************/
+
+#if !defined(BURGER_MACCARBON) && defined(BURGER_CFM) && !defined(DOXYGEN)
+static pascal OSErr PBXGetVolInfoSyncGlue(XVolumeParam* pXVolumeParam)
+{
+
+	// 68000 trap address for FSDIspatch
+	static UniversalProcPtr g_pDispatchTrapAddress = nullptr;
+
+	// Initialized?
+	if (!g_pDispatchTrapAddress) {
+		// Grab it, only need to do once
+		g_pDispatchTrapAddress = NGetTrapAddress(_FSDispatch, OSTrap);
+	}
+
+	// The 68000 code uses A0 for input and returns the result in D0
+	// The function prototype is a match for this glue code
+	enum {
+		uppFSDispatchProcInfo = kRegisterBased |
+			REGISTER_RESULT_LOCATION(kRegisterD0) |
+			RESULT_SIZE(SIZE_CODE(sizeof(OSErr))) |
+			REGISTER_ROUTINE_PARAMETER(
+				1, kRegisterD0, SIZE_CODE(sizeof(long))) // Selector
+			| REGISTER_ROUTINE_PARAMETER(
+				  2, kRegisterD1, SIZE_CODE(sizeof(long))) // Trap
+			| REGISTER_ROUTINE_PARAMETER(
+				  3, kRegisterA0, SIZE_CODE(sizeof(XVolumeParam*)))
+	};
+
+	// Call the class 68000 trap code (From PPC or 68K) and hope for the best!
+	return static_cast<OSErr>(CallOSTrapUniversalProc(g_pDispatchTrapAddress,
+		uppFSDispatchProcInfo, kFSMXGetVolInfo, _FSDispatch, pXVolumeParam));
+}
+#endif
+
+/*! ************************************
+
+	\brief Call PBXGetVolInfoSync() on all targets
+
+	On 68K CFM and PPC non-carbon targets, the symbol PBXGetVolInfoSync() was
+	not properly exposed in InterfaceLib until MacOS 8.5. So, for those poor
+	unforunate souls running on MacOS 7.1 - 8.1 have to use a peice of glue
+	code that jumps to 68000 via the trap manager.
+
+	For Carbon PPC and 68K classic apps, this function directly calls
+	PBXGetVolInfoSync()
+
+	\maconly
+
+	\param pXVolumeParam Pointer to a XVolumeParam record
+
+	\return Zero if no error, or mac error code
+
+***************************************/
+
+int BURGER_API Burger::DoPBXGetVolInfoSync(
+	XVolumeParam* pXVolumeParam) BURGER_NOEXCEPT
+{
+	// PPC Carbon and 68K classic work just fine.
+	// PPC Classic and 68K CFM are screwed (InterfaceLib issue)
+#if defined(BURGER_MACCARBON) || !defined(BURGER_CFM)
+
+	// Just call the real thing!
+	return PBXGetVolInfoSync(pXVolumeParam);
+#else
+
+	// Invoke this function to do the actual work
+	typedef pascal OSErr (*PBXGetVolInfoProcPtr)(XVolumeParamPtr paramBlock);
+	static PBXGetVolInfoProcPtr g_pPBXGetVolInfoSync = nullptr;
+
+	// Is the pointer valid?
+	if (!g_pPBXGetVolInfoSync) {
+
+		// See if InterfaceLib is around.
+		// Since this code can work with 7.5, the pointers must all be valid or
+		// GetSharedLibrary() will crash. Only MyConnectionID matters
+		Str255 ErrorMessage;
+		Ptr pMainAddress;
+		CFragConnectionID MyConnectionID;
+		int iMacError = GetSharedLibrary("\pInterfaceLib", kCompiledCFragArch,
+			kLoadCFrag, &MyConnectionID, &pMainAddress, ErrorMessage);
+		if (!iMacError) {
+
+			// Since InterfaceLib was found, see if the function exists
+			iMacError = FindSymbol(MyConnectionID, "\pPBXGetVolInfoSync",
+				(Ptr*)&g_pPBXGetVolInfoSync, nullptr);
+		}
+
+		// If there was any error, punt to a 68000 bridge
+		if (iMacError) {
+			g_pPBXGetVolInfoSync = PBXGetVolInfoSyncGlue;
+		}
+	}
+
+	// Call either the real thing or some hacky glue
+	return (*g_pPBXGetVolInfoSync)(pXVolumeParam);
+#endif
+}
+
 
 #endif

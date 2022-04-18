@@ -270,7 +270,7 @@ ALIASES                = "windowsonly=@note This is only available on Windows\n"
                          "switchonly=@note This is only available on Nintendo Switch\n" \
                          "stadiaonly=@note This is only available on Google Stadia\n" \
                          "macosxonly=@note This is only available on Mac OSX\n" \
-                         "maconly=@note This is only available on Mac OS 9 or Carbon\n" \
+                         "maconly=@note This is only available on Mac OS 7.5-9.9.2 or Carbon\n" \
                          "iosonly=@note This is only available on iOS\n" \
                          "msdosonly=@note This is only available on MS/DOS\n" \
                          "linuxonly=@note This is only available on Linux platforms\n" \

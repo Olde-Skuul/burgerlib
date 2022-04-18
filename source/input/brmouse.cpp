@@ -569,8 +569,8 @@ uint_t BURGER_API Burger::Mouse::PostMouseEvent(const EventHeader_t *pEvent)
 				m_iDeltaY += iY;
 				uint32_t uX = m_uX;
 				uint32_t uY = m_uY;
-				uX += iX;
-				uY += iY;
+				uX += static_cast<uint32_t>(iX);
+				uY += static_cast<uint32_t>(iY);
 				// Handle wrap around by checking the delta's signs
 				if (uX>=m_uBoundsX) {
 					if (iX<0) {

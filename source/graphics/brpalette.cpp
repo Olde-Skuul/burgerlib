@@ -860,7 +860,7 @@ uint_t BURGER_API Burger::Palette::ToRGB15(const RGBWord8_t *pInput)
 {
 	uint_t uColor = (pInput->m_uRed<<7U)&0x7C00U;	// Red
 	uColor += (pInput->m_uGreen<<2U)&0x03E0U;	// Green
-	uColor += (pInput->m_uBlue>>3U);			// Blue
+	uColor += static_cast<uint_t>(pInput->m_uBlue>>3U);			// Blue
 	return uColor;
 }
 
@@ -896,8 +896,8 @@ uint_t BURGER_API Burger::Palette::ToRGB15(const RGBWord8_t *pInput)
 uint_t BURGER_API Burger::Palette::ToRGB16(const RGBWord8_t *pInput)
 {
 	uint_t uColor = (pInput->m_uRed<<8U)&0xF800U;	// Red
-	uColor += (pInput->m_uGreen<<3U)&0x07E0;	// Green
-	uColor += pInput->m_uBlue>>3U;				// Blue
+	uColor += (pInput->m_uGreen<<3U)&0x07E0U;	// Green
+	uColor += static_cast<uint_t>(pInput->m_uBlue>>3U);				// Blue
 	return uColor;
 }
 
@@ -949,12 +949,12 @@ uint_t BURGER_API Burger::Palette::ToDisplay(const RGBWord8_t *pInput,const Disp
 	case 15:
 		uResult = (pInput->m_uRed<<7U)&0x7C00U;		// Red
 		uResult += (pInput->m_uGreen<<2U)&0x03E0U;	// Green
-		uResult += (pInput->m_uBlue)>>3U;			// Blue
+		uResult += static_cast<uint_t>((pInput->m_uBlue)>>3U);			// Blue
 		break;
 	case 16:
 		uResult = (pInput->m_uRed<<8U)&0xF800U;
 		uResult += (pInput->m_uGreen<<3U)&0x7E0U;
-		uResult += (pInput->m_uBlue>>3U);
+		uResult += static_cast<uint_t>(pInput->m_uBlue>>3U);
 		break;
 	case 24:
 		uResult = static_cast<uint_t>((pInput->m_uRed<<16U)+(pInput->m_uGreen<<8U)+pInput->m_uBlue);

@@ -291,6 +291,8 @@ extern int BURGER_API HGetVolParms(const uint8_t* pVolumeName, short sVRefNum,
 	uint32_t* pParmsLength) BURGER_NOEXCEPT;
 extern int BURGER_API GetVolumeInfo(
 	short sVRefNum, HParamBlockRec* pHParamBlockRec) BURGER_NOEXCEPT;
+extern int BURGER_API GetVolumeInfo(short svRefNum, const uint8_t* pVolumename,
+	XVolumeParam* pXVolumeParam) BURGER_NOEXCEPT;
 extern int BURGER_API DetermineVRefNum(
 	short svRefNum, short* pRealVRefNum) BURGER_NOEXCEPT;
 extern int BURGER_API CheckVolLock(short svRefNum) BURGER_NOEXCEPT;
@@ -299,7 +301,27 @@ extern int BURGER_API GetFileLocation(short iFileRefNum, short* pVRefNum,
 extern int BURGER_API GetDesktopFileName(
 	short svRefNum, uint8_t* pDesktopName) BURGER_NOEXCEPT;
 extern int BURGER_API GetCommentFromDesktopFile(short svRefNum, long lDirID,
-	const char* pFileName, uint8_t* pComment) BURGER_NOEXCEPT;
+	const char* pFileName, char* pComment) BURGER_NOEXCEPT;
+extern int BURGER_API DesktopOpen(const uint8_t* pVolumeName, short vRefNum,
+	short* pRefNum, uint_t* pbDatabaseCreated) BURGER_NOEXCEPT;
+extern int BURGER_API DesktopGetComment(short svRefNum, long lDirID,
+	const uint8_t* pFilename, char* pOutput) BURGER_NOEXCEPT;
+extern int BURGER_API DesktopSetComment(short svRefNum, long lDirID,
+	const uint8_t* pFilename, const char* pComment) BURGER_NOEXCEPT;
+extern int BURGER_API DesktopCopyComment(short svRefNumSource,
+	long lDirIDSource, const uint8_t* pFilenameSource, short svRefNumDest,
+	long lDirIDDest, const uint8_t* pFilenameDest) BURGER_NOEXCEPT;
+extern int BURGER_API CopyFileMgrAttributes(short svRefNumSource,
+	long lDirIDSource, const uint8_t* pFilenameSource, short svRefNumDest,
+	long lDirIDDest, const uint8_t* pFilenameDest,
+	uint_t bCopyLockBit = TRUE) BURGER_NOEXCEPT;
+extern int BURGER_API GetFilenameFromPathname(
+	uint8_t* pOutput, const uint8_t* pInput) BURGER_NOEXCEPT;
+extern int BURGER_API HCopyFile(short svRefNumSource, long lDirIDSource,
+	const uint8_t* pFilenameSource, short svRefNumDest, long lDirIDDest,
+	const uint8_t* pFilenameDest, const uint8_t* pCopyname) BURGER_NOEXCEPT;
+extern int BURGER_API DoPBXGetVolInfoSync(
+	XVolumeParam* pXVolumeParam) BURGER_NOEXCEPT;
 }
 
 #if defined(BURGER_MACCLASSIC) && !ACCESSOR_CALLS_ARE_FUNCTIONS

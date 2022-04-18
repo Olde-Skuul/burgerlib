@@ -537,7 +537,7 @@ void BURGER_API Burger::Keyboard::ClearKey(eScanCode uScanCode) BURGER_NOEXCEPT
 		(static_cast<uint_t>(uScanCode) <
 			static_cast<uint_t>(SC_MAXENTRY + 1))) {
 		// Remove the keyboard pressed event
-		m_KeyArray[uScanCode] &= (~KEYCAPPRESSED);
+		m_KeyArray[uScanCode] &= static_cast<uint8_t>(~KEYCAPPRESSED);
 	}
 }
 
@@ -1042,7 +1042,7 @@ uint_t BURGER_API Burger::Keyboard::PostKeyEvent(
 				}
 			} else {
 				// Mark as pressed
-				m_KeyArray[uScanCode] &= (~KEYCAPDOWN);
+				m_KeyArray[uScanCode] &= static_cast<uint8_t>(~KEYCAPDOWN);
 
 				// DirectInput for Windows has a timer to simulate autorepeat
 #if defined(ENABLE_DIRECTINPUT)

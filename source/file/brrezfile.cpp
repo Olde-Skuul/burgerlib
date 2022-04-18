@@ -463,7 +463,7 @@ Burger::RezFile::RezGroup_t * BURGER_API Burger::RezFile::ParseRezFileHeader(con
 							// Is the data compressed?
 							if (uFileOffset&REZOFFSETDECOMPMASK) {
 								uFlags |= ((uFileOffset&REZOFFSETDECOMPMASK)>>(REZOFFSETDECOMPSHIFT-ENTRYFLAGSDECOMPSHIFT));
-								uFileOffset&=(~REZOFFSETDECOMPMASK);
+								uFileOffset&=static_cast<uint_t>(~REZOFFSETDECOMPMASK);
 								uLength = 0;
 							}
 							pEntry->m_uLength = uLength;
