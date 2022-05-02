@@ -2,7 +2,7 @@
 
 	File Class
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -38,6 +38,7 @@
 /* BEGIN */
 namespace Burger {
 class File {
+	BURGER_DISABLE_COPY(File);
 	friend class FileManager;
 
 public:
@@ -53,17 +54,21 @@ public:
 	};
 
 private:
-	void* m_pFile;         ///< Open file reference
-	uintptr_t m_uPosition; ///< Seek position
-	Filename m_Filename;   ///< Name of the file that was opened
-	Semaphore m_Semaphore; ///< Semaphore for syncing file operations
+	/** Open file reference */
+	void* m_pFile;
+
+	/** Name of the file that was opened */
+	Filename m_Filename;
+
 #if defined(BURGER_MAC) || defined(DOXYGEN)
-	uint8_t m_FSRef[80]; ///< File reference (MacOS Only)
+	/** True if using MacOS 9 or higher APIs (MacOS Only) */
+	uint_t m_bUsingFSRef;
 #endif
 
 public:
 	File() BURGER_NOEXCEPT;
-	File(const char* pFileName, eFileAccess eAccess = kReadOnly) BURGER_NOEXCEPT;
+	File(
+		const char* pFileName, eFileAccess eAccess = kReadOnly) BURGER_NOEXCEPT;
 	File(Filename* pFileName, eFileAccess eAccess = kReadOnly) BURGER_NOEXCEPT;
 	~File();
 	static File* BURGER_API New(
@@ -79,29 +84,31 @@ public:
 	eError BURGER_API Open(
 		Filename* pFileName, eFileAccess eAccess = kReadOnly) BURGER_NOEXCEPT;
 	uint_t BURGER_API OpenAsync(
-		const char* pFileName, eFileAccess eAccess = kReadOnly);
+		const char* pFileName, eFileAccess eAccess = kReadOnly) BURGER_NOEXCEPT;
 	uint_t BURGER_API OpenAsync(
-		Filename* pFileName, eFileAccess eAccess = kReadOnly);
+		Filename* pFileName, eFileAccess eAccess = kReadOnly) BURGER_NOEXCEPT;
 	eError BURGER_API Close(void) BURGER_NOEXCEPT;
-	uint_t BURGER_API CloseAsync(void);
-	uintptr_t BURGER_API GetSize(void) BURGER_NOEXCEPT;
+	uint_t BURGER_API CloseAsync(void) BURGER_NOEXCEPT;
+	uint64_t BURGER_API GetSize(void) BURGER_NOEXCEPT;
 	uintptr_t BURGER_API Read(void* pOutput, uintptr_t uSize) BURGER_NOEXCEPT;
-	uint_t BURGER_API ReadAsync(void* pOutput, uintptr_t uSize);
+	uint_t BURGER_API ReadAsync(void* pOutput, uintptr_t uSize) BURGER_NOEXCEPT;
 	uintptr_t BURGER_API Write(
 		const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT;
-	uintptr_t BURGER_API GetMark(void);
-	eError BURGER_API SetMark(uintptr_t uMark);
-	uint_t BURGER_API SetMarkAtEOF(void);
+	uint64_t BURGER_API GetMark(void) BURGER_NOEXCEPT;
+	eError BURGER_API SetMark(uint64_t uMark) BURGER_NOEXCEPT;
+	eError BURGER_API SetMarkAtEOF(void) BURGER_NOEXCEPT;
 	eError BURGER_API GetModificationTime(TimeDate_t* pOutput) BURGER_NOEXCEPT;
-	eError BURGER_API GetCreationTime(TimeDate_t* pOutput);
-	uint_t BURGER_API SetModificationTime(const TimeDate_t* pInput);
-	uint_t BURGER_API SetCreationTime(const TimeDate_t* pInput);
+	eError BURGER_API GetCreationTime(TimeDate_t* pOutput) BURGER_NOEXCEPT;
+	eError BURGER_API SetModificationTime(
+		const TimeDate_t* pInput) BURGER_NOEXCEPT;
+	eError BURGER_API SetCreationTime(const TimeDate_t* pInput) BURGER_NOEXCEPT;
 #if (defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-	eError SetAuxType(uint32_t uAuxType);
-	eError SetFileType(uint32_t uFileType);
-	uint32_t GetAuxType(void);
-	uint32_t GetFileType(void);
-	uint_t SetAuxAndFileType(uint32_t uAuxType, uint32_t uFileType);
+	eError SetAuxType(uint32_t uAuxType) BURGER_NOEXCEPT;
+	eError SetFileType(uint32_t uFileType) BURGER_NOEXCEPT;
+	uint32_t GetAuxType(void) BURGER_NOEXCEPT;
+	uint32_t GetFileType(void) BURGER_NOEXCEPT;
+	eError SetAuxAndFileType(
+		uint32_t uAuxType, uint32_t uFileType) BURGER_NOEXCEPT;
 #else
 	BURGER_INLINE eError SetAuxType(uint32_t /* uAuxType */) BURGER_NOEXCEPT
 	{
@@ -125,11 +132,12 @@ public:
 		return kErrorNotSupportedOnThisPlatform;
 	}
 #endif
-	uint_t BURGER_API ReadCString(char* pOutput, uintptr_t uLength);
-	uint32_t BURGER_API ReadBigWord32(void);
-	uint16_t BURGER_API ReadBigWord16(void);
-	uint32_t BURGER_API ReadLittleWord32(void);
-	uint16_t BURGER_API ReadLittleWord16(void);
+	eError BURGER_API ReadCString(
+		char* pOutput, uintptr_t uLength) BURGER_NOEXCEPT;
+	uint32_t BURGER_API ReadBigWord32(void) BURGER_NOEXCEPT;
+	uint16_t BURGER_API ReadBigWord16(void) BURGER_NOEXCEPT;
+	uint32_t BURGER_API ReadLittleWord32(void) BURGER_NOEXCEPT;
+	uint16_t BURGER_API ReadLittleWord16(void) BURGER_NOEXCEPT;
 };
 }
 /* END */

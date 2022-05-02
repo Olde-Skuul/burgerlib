@@ -1867,11 +1867,14 @@ void* BURGER_API Burger::FileManager::LoadFile(
 	Filename* pFileName, uintptr_t* pLength) BURGER_NOEXCEPT
 {
 #if defined(BURGER_DS)
-	return NULL;
+	return nullptr;
 #else
 	File FileRef(pFileName, File::kReadOnly);
-	uintptr_t uNewSize = FileRef.GetSize();
-	void* pResult = NULL;
+	uint64_t uNewSize = FileRef.GetSize();
+	if (uNewSize>UINTPTR_MAX) {
+		return nullptr;
+	}
+	void* pResult = nullptr;
 	if (uNewSize) {
 #if defined(_DEBUG)
 		if (Globals::GetTraceFlag() & Globals::TRACE_FILELOAD) {
@@ -1880,9 +1883,9 @@ void* BURGER_API Burger::FileManager::LoadFile(
 			Debug::PrintString(".\n");
 		}
 #endif
-		pResult = Alloc(uNewSize);
+		pResult = Alloc(static_cast<uintptr_t>(uNewSize));
 		if (pResult) {
-			if (FileRef.Read(pResult, uNewSize) != uNewSize) {
+			if (FileRef.Read(pResult, static_cast<uintptr_t>(uNewSize)) != uNewSize) {
 				Free(pResult);
 				pResult = NULL;
 				uNewSize = 0;
@@ -1892,7 +1895,7 @@ void* BURGER_API Burger::FileManager::LoadFile(
 	FileRef.Close();
 	// Return the file length and allocated memory pointer
 	if (pLength) {
-		pLength[0] = uNewSize;
+		pLength[0] = static_cast<uintptr_t>(uNewSize);
 	}
 	return pResult;
 #endif

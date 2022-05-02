@@ -26,7 +26,7 @@
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::Open(Filename *pDirName) BURGER_NOEXCEPT
+Burger::eError Burger::DirectorySearch::Open(Filename *pDirName) BURGER_NOEXCEPT
 {
 	// Leave room for 5 extra samples
 	String CopyOfName(pDirName->GetNative(),5);
@@ -42,11 +42,11 @@ uint_t Burger::DirectorySearch::Open(Filename *pDirName) BURGER_NOEXCEPT
 	pPath[uLength+1] = 0;
 	// Open the directory
 	HANDLE hDir = FindFirstFileA(pPath,reinterpret_cast<WIN32_FIND_DATAA *>(m_MyFindW));
-	uint_t uResult = TRUE;		// Assume I'm in error
+	eError uResult = kErrorFileNotFound;		// Assume I'm in error
 	if (hDir != INVALID_HANDLE_VALUE) {
 		m_hDirHandle = hDir;
 		m_bDir = 123;
-		uResult = FALSE;			// It's all good!
+		uResult = kErrorNone;			// It's all good!
 	}
 	return uResult;
 }
@@ -59,12 +59,12 @@ uint_t Burger::DirectorySearch::Open(Filename *pDirName) BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
+Burger::eError Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 {
 	// Am I scanning a directory?
 	HANDLE hDir = m_hDirHandle;
 	if (hDir==INVALID_HANDLE_VALUE) {
-		return TRUE;
+		return kErrorNotADirectory;
 	}
 
 	// Here's the fun part. Since opening causes a data read,
@@ -80,7 +80,7 @@ uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 				// Release the directory
 				FindClose(hDir);
 				m_hDirHandle = INVALID_HANDLE_VALUE;
-				return TRUE;		// I'm so gone
+				return kErrorNotEnumerating;		// I'm so gone
 			}
 		}
 		// Convert to UTF8
@@ -115,7 +115,7 @@ uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 	} else {
 		m_uFileSize = ((WIN32_FIND_DATAA *)m_MyFindW)->nFileSizeLow;
 	}
-	return FALSE;
+	return kErrorNone;
 }
 
 /***************************************

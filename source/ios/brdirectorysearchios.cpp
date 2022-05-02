@@ -37,11 +37,11 @@ enum vtype { VNON, VREG, VDIR, VBLK, VCHR, VLNK, VSOCK, VFIFO, VBAD, VSTR, VCPLX
 	
 ***************************************/
 
-uint_t Burger::DirectorySearch::Open(Burger::Filename *pDirName) BURGER_NOEXCEPT
+Burger::eError Burger::DirectorySearch::Open(Burger::Filename *pDirName) BURGER_NOEXCEPT
 {	
 	// Make sure there's nothing pending
 	Close();
-	uint_t uResult = kErrorFileNotFound;
+	eError uResult = kErrorFileNotFound;
 	// Open the directory for reading
 	int fp = open(pDirName->GetNative(),O_RDONLY,0);
 	if (fp!=-1) {
@@ -57,10 +57,10 @@ uint_t Burger::DirectorySearch::Open(Burger::Filename *pDirName) BURGER_NOEXCEPT
 	
 ***************************************/
 
-uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
+Burger::eError Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 {
 	// Assume no more entries
-	uint_t uResult = kErrorInvalidParameter;
+	eError uResult = kErrorInvalidParameter;
 	int fp = m_fp;
 	if (fp!=-1) {
 		

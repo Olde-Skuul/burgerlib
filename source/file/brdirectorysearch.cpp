@@ -1,18 +1,19 @@
 /***************************************
 
-    Directory search Class
+	Directory search Class
 
-    Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brdirectorysearch.h"
+#include "brmemoryfunctions.h"
 
 /*! ************************************
 
@@ -20,9 +21,9 @@
 	\brief Directory contents iteration class.
 
 	To open and traverse a directory is this classes' main purpose.
-	Given a BurgerLib formatted pathname, open the directory
-	and iterate over it until all the names of the files contained
-	are presented to the application for use.
+	Given a BurgerLib formatted pathname, open the directory and iterate over it
+	until all the names of the files contained are presented to the application
+	for use.
 
 	Using it is very simple...
 
@@ -38,25 +39,35 @@
 	}
 	\endcode
 
-	\sa class Burger::FileManager
 	\note All filenames are encoded using UTF8! Do not assume native encoding
+
+	\sa class FileManager
 
 ***************************************/
 
 /*! ************************************
 
-	\brief Initialize a Burger::DirectorySearch class
+	\brief Initialize a DirectorySearch class
 
 	Simple initialization function.
 
-	\sa Burger::DirectorySearch::Open(const char *)
+	\sa Open(const char *)
 
 ***************************************/
 
-Burger::DirectorySearch::DirectorySearch()
+Burger::DirectorySearch::DirectorySearch() BURGER_NOEXCEPT: m_uFileSize(0),
+															m_bDir(FALSE),
+															m_bSystem(FALSE),
+															m_bHidden(FALSE),
+															m_bLocked(FALSE)
 {
+	m_CreationDate.Clear();
+	m_ModificatonDate.Clear();
+	MemoryClear(m_Name, sizeof(m_Name));
 #if defined(BURGER_MAC)
-	m_pIterator = NULL;		// I do not own an iterator object, yet
+	// I do not own an iterator object, yet
+	m_pIterator = nullptr;
+	m_pLocal = nullptr;
 #elif defined(BURGER_MACOSX)
 	m_fp = -1;
 	m_uEntryCount = 0;
@@ -65,9 +76,12 @@ Burger::DirectorySearch::DirectorySearch()
 #elif defined(BURGER_IOS) || defined(BURGER_VITA) || defined(BURGER_LINUX)
 	m_fp = -1;
 #elif defined(BURGER_MSDOS)
-	m_bHandleOk = 0;		// No file open yet
+	// No file open yet
+	m_bHandleOk = 0;
 #elif defined(BURGER_WINDOWS) || defined(BURGER_XBOX360)
-	m_hDirHandle = reinterpret_cast<void *>(-1LL);	//INVALID_HANDLE_VALUE;
+	// INVALID_HANDLE_VALUE;
+	m_hDirHandle = reinterpret_cast<void*>(-1LL);
+	MemoryClear(m_MyFindW, sizeof(m_MyFindW));
 #endif
 }
 
@@ -75,7 +89,7 @@ Burger::DirectorySearch::DirectorySearch()
 
 	\brief Closes any open directory.
 
-	\sa Burger::DirectorySearch::Close(void)
+	\sa Close(void)
 
 ***************************************/
 
@@ -86,69 +100,84 @@ Burger::DirectorySearch::~DirectorySearch()
 
 /*! ************************************
 
-	\fn uint_t Burger::DirectorySearch::Open(const char *pDirName)
 	\brief Open a directory for scanning
+
 	\param pDirName Pointer to the "C" string filename in BurgerLib format.
-	\return Zero on success, non-zero on an error or if the directory doesn't exist
-	\sa Burger::DirectorySearch::Close(void) or Burger::DirectorySearch::GetNextEntry(void)
+
+	\return Zero on success, non-zero on an error or if the directory doesn't
+		exist
+
+	\sa Close(void) or GetNextEntry(void)
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::Open(const char *pDirName) BURGER_NOEXCEPT
+Burger::eError Burger::DirectorySearch::Open(
+	const char* pDirName) BURGER_NOEXCEPT
 {
 	Filename TempDir(pDirName);
-	return Open(&TempDir);		// Error!
+	return Open(&TempDir);
 }
 
 /*! ************************************
 
-	\fn uint_t Burger::DirectorySearch::Open(Filename *pDirName)
 	\brief Open a directory for scanning
 	\param pDirName Pointer to the "C" string filename in BurgerLib format.
-	\return Zero on success, non-zero on an error or if the directory doesn't exist
-	\sa Burger::DirectorySearch::Close(void) or Burger::DirectorySearch::GetNextEntry(void)
+	\return Zero on success, non-zero on an error or if the directory doesn't
+		exist
+
+	\sa Close(void) or GetNextEntry(void)
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA) || defined(BURGER_LINUX)) || defined(DOXYGEN)
-uint_t Burger::DirectorySearch::Open(Filename * /* pDirName */) BURGER_NOEXCEPT
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
+	defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || \
+	defined(BURGER_VITA) || defined(BURGER_LINUX)) || \
+	defined(DOXYGEN)
+Burger::eError Burger::DirectorySearch::Open(
+	Filename* /* pDirName */) BURGER_NOEXCEPT
 {
-	return TRUE;		// Error!
+	// Error!
+	return kErrorNotSupportedOnThisPlatform;
 }
 #endif
-
 
 /*! ************************************
 
 	\brief Iterate on a directory and return the next found filename.
 
-	Reads the current directory opened previously by a call to
-	\ref Burger::DirectorySearch::Open(const char *) and initializes all
-	of the internal public variables with information of the file that was found.
+	Reads the current directory opened previously by a call to \ref Open(
+	const char *) and initializes all of the internal public variables with
+	information of the file that was found.
 
-	\return Zero on success, non-zero on an error or if the directory wasn't opened or if the end of the directory was reached
-	\sa Burger::DirectorySearch::Close(void) or Burger::DirectorySearch::GetNextEntryExtension(const char *)
+	\return Zero on success, non-zero on an error or if the directory wasn't
+		opened or if the end of the directory was reached
+
+	\sa Close(void) or GetNextEntryExtension(const char *)
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA) || defined(BURGER_LINUX)) || defined(DOXYGEN)
-uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
+	defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || \
+	defined(BURGER_VITA) || defined(BURGER_LINUX)) || \
+	defined(DOXYGEN)
+Burger::eError Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 {
-	return TRUE;		// Error!
+	// Error!
+	return kErrorNotSupportedOnThisPlatform;
 }
 #endif
 
 /*! ************************************
 
-	\brief Iterate on a directory and return the next found filename.that matches a specific file extension
+	\brief Iterate on a directory and return the next found filename that
+		matches a specific file extension
 
 	Reads the current directory opened previously by a call to
-	\ref Burger::DirectorySearch::Open(const char *) and initializes all
-	of the internal public variables with information of the file that was found.
+	\ref Open(const char *) and initializes all of the internal public variables
+	with information of the file that was found.
 
-	This differs from \ref Burger::DirectorySearch::GetNextEntry(void) in that
-	only files that end with a specific file extension are returned. This is
-	a case insensitive search.
+	This differs from \ref GetNextEntry(void) in that only files that end with a
+	specific file extension are returned. This is a case insensitive search.
 
 	\code
 	while (!MyDir.GetNextEntryExtension("txt")) {
@@ -157,43 +186,52 @@ uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 	\endcode
 
 	\param pExt Pointer to a "C" string of the file extension being scanned for.
-	\return Zero on success, non-zero on an error or if the directory wasn't opened or if the end of the directory was reached
-	\sa Burger::DirectorySearch::Close(void) or Burger::DirectorySearch::GetNextEntry(void)
-	\note Only filenames are returned. All directory filenames are skipped, even if their names match the extension.
+	\return Zero on success, non-zero on an error or if the directory wasn't
+		opened or if the end of the directory was reached
+
+	\sa Close(void) or GetNextEntry(void)
+
+	\note Only filenames are returned. All directory filenames are skipped, even
+		if their names match the extension.
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::GetNextEntryExtension(const char *pExt) BURGER_NOEXCEPT
+Burger::eError Burger::DirectorySearch::GetNextEntryExtension(
+	const char* pExt) BURGER_NOEXCEPT
 {
 	// Anything left to scan?
-	if (!GetNextEntry()) {
+	eError uResult = GetNextEntry();
+	if (!uResult) {
 		do {
 			// Non-directory files
 			if (!m_bDir && m_uFileSize) {
 				// Get the file extension
-				const char *pTest = GetFileExtension(m_Name);
+				const char* pTest = GetFileExtension(m_Name);
 				if (pTest) {
 					// Match the extension?
-					if (!StringCaseCompare(pTest,pExt)) {
-						return FALSE;			// I got a match!
+					if (!StringCaseCompare(pTest, pExt)) {
+						// I got a match!
+						return kErrorNone;
 					}
 				}
 			}
-		} while (!GetNextEntry());
+			uResult = GetNextEntry();
+		} while (!uResult);
 	}
-	return TRUE;
+	return uResult;
 }
 
 /*! ************************************
 
 	\brief Closes any open directory.
 
-	\sa Burger::DirectorySearch::~DirectorySearch(void)
+	\sa ~DirectorySearch()
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA) || defined(BURGER_LINUX)) || defined(DOXYGEN)
-void Burger::DirectorySearch::Close(void) BURGER_NOEXCEPT
-{
-}
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
+	defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || \
+	defined(BURGER_VITA) || defined(BURGER_LINUX)) || \
+	defined(DOXYGEN)
+void Burger::DirectorySearch::Close(void) BURGER_NOEXCEPT {}
 #endif

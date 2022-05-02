@@ -26,11 +26,11 @@
 	
 ***************************************/
 
-uint_t Burger::DirectorySearch::Open(Burger::Filename *pDirName) BURGER_NOEXCEPT
+Burger::eError Burger::DirectorySearch::Open(Burger::Filename *pDirName) BURGER_NOEXCEPT
 {	
 	// Make sure there's nothing pending
 	Close();
-	uint_t uResult = kErrorFileNotFound;
+	eError uResult = kErrorFileNotFound;
 	// Open the directory for reading
 	int fp = sceIoDopen(pDirName->GetNative());
 	if (fp>=SCE_OK) {
@@ -46,10 +46,10 @@ uint_t Burger::DirectorySearch::Open(Burger::Filename *pDirName) BURGER_NOEXCEPT
 	
 ***************************************/
 
-uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
+Burger::eError Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 {
 	// Assume no more entries
-	uint_t uResult = kErrorInvalidParameter;
+	eError uResult = kErrorInvalidParameter;
 	int fp = m_fp;
 	if (fp>=SCE_OK) {
 		SceIoDirent Entry;

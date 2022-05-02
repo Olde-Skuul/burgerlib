@@ -60,7 +60,7 @@
 uint_t BURGER_API Burger::FileManager::IsUTF8FileSystem(void)
 {
 	// MacOS 9 or higher supports the HFSStr calls.
-	return Globals::GetMacOSVersion() >= 0x810;
+	return Globals::GetMacOSVersion() >= 0x1000;
 }
 
 /***************************************
@@ -192,36 +192,37 @@ Burger::eError Burger::FileManager::GetModificationTime(
 	// Zap it
 	pOutput->Clear();
 
-	eError uResult = kErrorNotSupportedOnThisPlatform;
-	const char* pNative = pFileName->GetNative();
-	if (pNative) {
-		uResult = kErrorFileNotFound;
+	eError uResult;
+	int iMacError;
 
-		// Carbon version first
+	// Carbon version first
 #if !(defined(BURGER_CFM) && defined(BURGER_68K))
-		// Use the Carbon version?
-		FSRef MyRef;
-		if (!pFileName->GetFinalFSRef(&MyRef)) {
-			FSRefParam Block;
-			InitFSRefParam(&Block, &MyRef, kFSCatInfoContentMod);
+	// Use the Carbon version?
+	FSRef* pFSRef = pFileName->GetFSRef();
+	if (pFSRef) {
+		uResult = kErrorFileNotFound;
+		const char* pNative = pFileName->GetNative();
+		if (!pNative[0]) {
 			FSCatalogInfo MyInfo;
-			Block.catInfo = &MyInfo;
-			OSErr iError = PBGetCatalogInfoSync(&Block);
-			if (!iError) {
+			iMacError = DoGetCatInfo(&MyInfo, pFSRef, kFSCatInfoContentMod);
+			if (!iMacError) {
 				// If it succeeded, the file must exist
 				pOutput->Load(&MyInfo.contentModDate);
-				uResult = kErrorNone;
 			}
-		} else
+			uResult = MacConvertError(iMacError);
+		}
+	} else
 #endif
-		{
-			CInfoPBRec InfoPBRec;
-			int iMacError = DoGetCatInfo(&InfoPBRec, pFileName->GetVRefNum(),
-				pFileName->GetDirID(), pNative);
+	{
+		CInfoPBRec InfoPBRec;
+		FSSpec MySpec;
+		uResult = pFileName->GetFSSpec(&MySpec);
+		if (!uResult) {
+			iMacError = DoGetCatInfo(&InfoPBRec, &MySpec);
 			if (!iMacError) {
 				pOutput->LoadFileSeconds(InfoPBRec.hFileInfo.ioFlMdDat);
-				uResult = kErrorNone;
 			}
+			uResult = MacConvertError(iMacError);
 		}
 	}
 
@@ -243,36 +244,37 @@ Burger::eError Burger::FileManager::GetCreationTime(
 	// Zap it
 	pOutput->Clear();
 
-	eError uResult = kErrorNotSupportedOnThisPlatform;
-	const char* pNative = pFileName->GetNative();
-	if (pNative) {
-		uResult = kErrorFileNotFound;
+	eError uResult;
+	int iMacError;
 
-		// Carbon version first
+	// Carbon version first
 #if !(defined(BURGER_CFM) && defined(BURGER_68K))
-		// Use the Carbon version?
-		FSRef MyRef;
-		if (!pFileName->GetFinalFSRef(&MyRef)) {
-			FSRefParam Block;
-			InitFSRefParam(&Block, &MyRef, kFSCatInfoCreateDate);
+	// Use the Carbon version?
+	FSRef* pFSRef = pFileName->GetFSRef();
+	if (pFSRef) {
+		uResult = kErrorFileNotFound;
+		const char* pNative = pFileName->GetNative();
+		if (!pNative[0]) {
 			FSCatalogInfo MyInfo;
-			Block.catInfo = &MyInfo;
-			OSErr iError = PBGetCatalogInfoSync(&Block);
-			if (!iError) {
+			iMacError = DoGetCatInfo(&MyInfo, pFSRef, kFSCatInfoCreateDate);
+			if (!iMacError) {
 				// If it succeeded, the file must exist
 				pOutput->Load(&MyInfo.createDate);
-				uResult = kErrorNone;
 			}
-		} else
+			uResult = MacConvertError(iMacError);
+		}
+	} else
 #endif
-		{
-			CInfoPBRec InfoPBRec;
-			int iMacError = DoGetCatInfo(&InfoPBRec, pFileName->GetVRefNum(),
-				pFileName->GetDirID(), pNative);
+	{
+		CInfoPBRec InfoPBRec;
+		FSSpec MySpec;
+		uResult = pFileName->GetFSSpec(&MySpec);
+		if (!uResult) {
+			iMacError = DoGetCatInfo(&InfoPBRec, &MySpec);
 			if (!iMacError) {
 				pOutput->LoadFileSeconds(InfoPBRec.hFileInfo.ioFlCrDat);
-				uResult = kErrorNone;
 			}
+			uResult = MacConvertError(iMacError);
 		}
 	}
 
@@ -294,21 +296,25 @@ Burger::eError Burger::FileManager::GetCreationTime(
 uint_t Burger::FileManager::DoesFileExist(Filename* pFileName) BURGER_NOEXCEPT
 {
 	uint_t uResult = FALSE;
-	const char* pNative = pFileName->GetNative();
-	if (pNative) {
+	int iMacError;
 
-		// Carbon version first
+	// Carbon version first
 #if !(defined(BURGER_CFM) && defined(BURGER_68K))
-		FSRef MyRef;
-		if (!pFileName->GetFinalFSRef(&MyRef)) {
+	FSRef* pFSRef = pFileName->GetFSRef();
+	if (pFSRef) {
+		const char* pNative = pFileName->GetNative();
+		if (!pNative[0]) {
 			// If it succeeded, the file must exist
 			uResult = TRUE;
-		} else
+		}
+	} else
 #endif
-		{
-			CInfoPBRec InfoPBRec;
-			int iMacError = DoGetCatInfo(&InfoPBRec, pFileName->GetVRefNum(),
-				pFileName->GetDirID(), pNative);
+	{
+		CInfoPBRec InfoPBRec;
+		FSSpec MySpec;
+		uResult = pFileName->GetFSSpec(&MySpec);
+		if (!uResult) {
+			iMacError = DoGetCatInfo(&InfoPBRec, &MySpec);
 			if (!iMacError) {
 				uResult = TRUE;
 			}
@@ -329,30 +335,30 @@ uint_t Burger::FileManager::DoesFileExist(Filename* pFileName) BURGER_NOEXCEPT
 uint32_t Burger::FileManager::GetAuxType(Filename* pFileName)
 {
 	uint32_t uResult = 0;
-	const char* pNative = pFileName->GetNative();
-	if (pNative) {
+	int iMacError;
 
-		// Carbon version first
+	// Carbon version first
 #if !(defined(BURGER_CFM) && defined(BURGER_68K))
-		// Use the Carbon version?
-		FSRef MyRef;
-		if (!pFileName->GetFinalFSRef(&MyRef)) {
-			FSRefParam Block;
-			InitFSRefParam(&Block, &MyRef, kFSCatInfoFinderInfo);
+	// Use the Carbon version?
+	FSRef* pFSRef = pFileName->GetFSRef();
+	if (pFSRef) {
+		const char* pNative = pFileName->GetNative();
+		if (!pNative[0]) {
 			FSCatalogInfo MyInfo;
-			Block.catInfo = &MyInfo;
-			OSErr iError = PBGetCatalogInfoSync(&Block);
-			if (!iError) {
+			iMacError = DoGetCatInfo(&MyInfo, pFSRef, kFSCatInfoFinderInfo);
+			if (!iMacError) {
 				// If it succeeded, the file must exist
 				uResult = reinterpret_cast<const FileInfo*>(&MyInfo.finderInfo)
 							  ->fileCreator;
 			}
-		} else
+		}
+	} else
 #endif
-		{
-			CInfoPBRec InfoPBRec;
-			int iMacError = DoGetCatInfo(&InfoPBRec, pFileName->GetVRefNum(),
-				pFileName->GetDirID(), pNative);
+	{
+		CInfoPBRec InfoPBRec;
+		FSSpec MySpec;
+		if (!pFileName->GetFSSpec(&MySpec)) {
+			iMacError = DoGetCatInfo(&InfoPBRec, &MySpec);
 			if (!iMacError) {
 				// Only files have creator types
 				if (!(InfoPBRec.dirInfo.ioFlAttrib & kioFlAttribDirMask)) {
@@ -376,30 +382,30 @@ uint32_t Burger::FileManager::GetAuxType(Filename* pFileName)
 uint32_t Burger::FileManager::GetFileType(Filename* pFileName)
 {
 	uint32_t uResult = 0;
-	const char* pNative = pFileName->GetNative();
-	if (pNative) {
+	int iMacError;
 
-		// Carbon version first
+	// Carbon version first
 #if !(defined(BURGER_CFM) && defined(BURGER_68K))
-		// Use the Carbon version?
-		FSRef MyRef;
-		if (!pFileName->GetFinalFSRef(&MyRef)) {
-			FSRefParam Block;
-			InitFSRefParam(&Block, &MyRef, kFSCatInfoFinderInfo);
+	// Use the Carbon version?
+	FSRef* pFSRef = pFileName->GetFSRef();
+	if (pFSRef) {
+		const char* pNative = pFileName->GetNative();
+		if (!pNative[0]) {
 			FSCatalogInfo MyInfo;
-			Block.catInfo = &MyInfo;
-			OSErr iError = PBGetCatalogInfoSync(&Block);
-			if (!iError) {
+			iMacError = DoGetCatInfo(&MyInfo, pFSRef, kFSCatInfoFinderInfo);
+			if (!iMacError) {
 				// If it succeeded, the file must exist
 				uResult = reinterpret_cast<const FileInfo*>(&MyInfo.finderInfo)
 							  ->fileType;
 			}
-		} else
+		}
+	} else
 #endif
-		{
-			CInfoPBRec InfoPBRec;
-			int iMacError = DoGetCatInfo(&InfoPBRec, pFileName->GetVRefNum(),
-				pFileName->GetDirID(), pNative);
+	{
+		CInfoPBRec InfoPBRec;
+		FSSpec MySpec;
+		if (!pFileName->GetFSSpec(&MySpec)) {
+			iMacError = DoGetCatInfo(&InfoPBRec, &MySpec);
 			if (!iMacError) {
 				// Only files have creator types
 				if (!(InfoPBRec.dirInfo.ioFlAttrib & kioFlAttribDirMask)) {
@@ -424,21 +430,20 @@ Burger::eError Burger::FileManager::GetFileAndAuxType(
 {
 	*pFileType = 0;
 	*pAuxType = 0;
-	eError uResult = kErrorFileNotFound;
-	const char* pNative = pFileName->GetNative();
-	if (pNative) {
+	eError uResult;
+	int iMacError;
 
-		// Carbon version first
+	// Carbon version first
 #if !(defined(BURGER_CFM) && defined(BURGER_68K))
-		// Use the Carbon version?
-		FSRef MyRef;
-		if (!pFileName->GetFinalFSRef(&MyRef)) {
-			FSRefParam Block;
-			InitFSRefParam(&Block, &MyRef, kFSCatInfoFinderInfo);
+	// Use the Carbon version?
+	FSRef* pFSRef = pFileName->GetFSRef();
+	if (pFSRef) {
+		uResult = kErrorFileNotFound;
+		const char* pNative = pFileName->GetNative();
+		if (!pNative[0]) {
 			FSCatalogInfo MyInfo;
-			Block.catInfo = &MyInfo;
-			OSErr iError = PBGetCatalogInfoSync(&Block);
-			if (!iError) {
+			iMacError = DoGetCatInfo(&MyInfo, pFSRef, kFSCatInfoFinderInfo);
+			if (!iMacError) {
 				// If it succeeded, the file must exist
 				*pFileType =
 					reinterpret_cast<const FileInfo*>(&MyInfo.finderInfo)
@@ -446,22 +451,25 @@ Burger::eError Burger::FileManager::GetFileAndAuxType(
 				*pAuxType =
 					reinterpret_cast<const FileInfo*>(&MyInfo.finderInfo)
 						->fileCreator;
-				uResult = kErrorNone;
 			}
-		} else
+			uResult = MacConvertError(iMacError);
+		}
+	} else
 #endif
-		{
-			CInfoPBRec InfoPBRec;
-			int iMacError = DoGetCatInfo(&InfoPBRec, pFileName->GetVRefNum(),
-				pFileName->GetDirID(), pNative);
+	{
+		CInfoPBRec InfoPBRec;
+		FSSpec MySpec;
+		uResult = pFileName->GetFSSpec(&MySpec);
+		if (!uResult) {
+			iMacError = DoGetCatInfo(&InfoPBRec, &MySpec);
 			if (!iMacError) {
 				// Only files have creator types
 				if (!(InfoPBRec.dirInfo.ioFlAttrib & kioFlAttribDirMask)) {
 					*pFileType = InfoPBRec.hFileInfo.ioFlFndrInfo.fdType;
 					*pAuxType = InfoPBRec.hFileInfo.ioFlFndrInfo.fdCreator;
-					uResult = kErrorNone;
 				}
 			}
+			uResult = MacConvertError(iMacError);
 		}
 	}
 
@@ -479,38 +487,39 @@ Burger::eError Burger::FileManager::GetFileAndAuxType(
 Burger::eError Burger::FileManager::SetAuxType(
 	Filename* pFileName, uint32_t uAuxType)
 {
-	eError uResult = kErrorFileNotFound;
-	const char* pNative = pFileName->GetNative();
-	if (pNative) {
+	eError uResult;
+	int iMacError;
 
-		// Carbon version first
+	// Carbon version first
 #if !(defined(BURGER_CFM) && defined(BURGER_68K))
-		// Use the Carbon version?
-		FSRef MyRef;
-		if (!pFileName->GetFinalFSRef(&MyRef)) {
+	// Use the Carbon version?
+	FSRef* pFSRef = pFileName->GetFSRef();
+	if (pFSRef) {
+		uResult = kErrorFileNotFound;
+		const char* pNative = pFileName->GetNative();
+		if (!pNative[0]) {
 			FSRefParam Block;
-			InitFSRefParam(&Block, &MyRef, kFSCatInfoFinderInfo);
 			FSCatalogInfo MyInfo;
-			Block.catInfo = &MyInfo;
-			OSErr iError = PBGetCatalogInfoSync(&Block);
-			if (!iError) {
+			iMacError =
+				DoGetCatInfo(&MyInfo, &Block, pFSRef, kFSCatInfoFinderInfo);
+			if (!iMacError) {
 				// If it succeeded, modify data
 				reinterpret_cast<FileInfo*>(&MyInfo.finderInfo)->fileCreator =
 					uAuxType;
-				iError = PBSetCatalogInfoSync(&Block);
-				if (!iError) {
-					uResult = kErrorNone;
-				}
+				iMacError = PBSetCatalogInfoSync(&Block);
 			}
-		} else
+			uResult = MacConvertError(iMacError);
+		}
+	} else
 #endif
-		{
-			CInfoPBRec InfoPBRec;
-
+	{
+		CInfoPBRec InfoPBRec;
+		FSSpec MySpec;
+		uResult = pFileName->GetFSSpec(&MySpec);
+		if (!uResult) {
 			// Use a local name buffer for reading and writing to the file
-			uint8_t TempBuffer[257];
-			int iMacError = DoGetCatInfo(&InfoPBRec, TempBuffer,
-				pFileName->GetVRefNum(), pFileName->GetDirID(), pNative);
+			uint8_t TempBuffer[256];
+			iMacError = DoGetCatInfo(&InfoPBRec, TempBuffer, &MySpec);
 
 			// No error? File was found
 			if (!iMacError) {
@@ -532,6 +541,7 @@ Burger::eError Burger::FileManager::SetAuxType(
 					}
 				}
 			}
+			uResult = MacConvertError(iMacError);
 		}
 	}
 
@@ -550,37 +560,38 @@ Burger::eError Burger::FileManager::SetFileType(
 	Filename* pFileName, uint32_t uFileType)
 {
 	eError uResult = kErrorFileNotFound;
-	const char* pNative = pFileName->GetNative();
-	if (pNative) {
+	int iMacError;
 
-		// Carbon version first
+	// Carbon version first
 #if !(defined(BURGER_CFM) && defined(BURGER_68K))
-		// Use the Carbon version?
-		FSRef MyRef;
-		if (!pFileName->GetFinalFSRef(&MyRef)) {
+	// Use the Carbon version?
+	FSRef* pFSRef = pFileName->GetFSRef();
+	if (pFSRef) {
+		uResult = kErrorFileNotFound;
+		const char* pNative = pFileName->GetNative();
+		if (!pNative[0]) {
 			FSRefParam Block;
-			InitFSRefParam(&Block, &MyRef, kFSCatInfoFinderInfo);
 			FSCatalogInfo MyInfo;
-			Block.catInfo = &MyInfo;
-			OSErr iError = PBGetCatalogInfoSync(&Block);
-			if (!iError) {
+			iMacError =
+				DoGetCatInfo(&MyInfo, &Block, pFSRef, kFSCatInfoFinderInfo);
+			if (!iMacError) {
 				// If it succeeded, modify data
 				reinterpret_cast<FileInfo*>(&MyInfo.finderInfo)->fileType =
 					uFileType;
-				iError = PBSetCatalogInfoSync(&Block);
-				if (!iError) {
-					uResult = kErrorNone;
-				}
+				iMacError = PBSetCatalogInfoSync(&Block);
 			}
-		} else
+			uResult = MacConvertError(iMacError);
+		}
+	} else
 #endif
-		{
-			CInfoPBRec InfoPBRec;
-
+	{
+		CInfoPBRec InfoPBRec;
+		FSSpec MySpec;
+		uResult = pFileName->GetFSSpec(&MySpec);
+		if (!uResult) {
 			// Use a local name buffer for reading and writing to the file
-			uint8_t TempBuffer[257];
-			int iMacError = DoGetCatInfo(&InfoPBRec, TempBuffer,
-				pFileName->GetVRefNum(), pFileName->GetDirID(), pNative);
+			uint8_t TempBuffer[256];
+			iMacError = DoGetCatInfo(&InfoPBRec, TempBuffer, &MySpec);
 
 			// No error? File was found
 			if (!iMacError) {
@@ -596,12 +607,9 @@ Burger::eError Burger::FileManager::SetFileType(
 
 					// Save out the new state
 					iMacError = PBSetCatInfoSync(&InfoPBRec);
-
-					if (!iMacError) {
-						uResult = kErrorNone;
-					}
 				}
 			}
+			uResult = MacConvertError(iMacError);
 		}
 	}
 
@@ -619,40 +627,42 @@ Burger::eError Burger::FileManager::SetFileType(
 Burger::eError Burger::FileManager::SetFileAndAuxType(
 	Filename* pFileName, uint32_t uFileType, uint32_t uAuxType)
 {
-	eError uResult = kErrorFileNotFound;
-	const char* pNative = pFileName->GetNative();
-	if (pNative) {
+	eError uResult;
+	int iMacError;
 
-		// Carbon version first
+	// Carbon version first
 #if !(defined(BURGER_CFM) && defined(BURGER_68K))
-		// Use the Carbon version?
-		FSRef MyRef;
-		if (!pFileName->GetFinalFSRef(&MyRef)) {
+	// Use the Carbon version?
+	FSRef* pFSRef = pFileName->GetFSRef();
+	if (pFSRef) {
+		uResult = kErrorFileNotFound;
+		const char* pNative = pFileName->GetNative();
+		if (!pNative[0]) {
 			FSRefParam Block;
-			InitFSRefParam(&Block, &MyRef, kFSCatInfoFinderInfo);
 			FSCatalogInfo MyInfo;
-			Block.catInfo = &MyInfo;
-			OSErr iError = PBGetCatalogInfoSync(&Block);
-			if (!iError) {
+			iMacError =
+				DoGetCatInfo(&MyInfo, &Block, pFSRef, kFSCatInfoFinderInfo);
+
+			if (!iMacError) {
 				// If it succeeded, modify data
 				reinterpret_cast<FileInfo*>(&MyInfo.finderInfo)->fileType =
 					uFileType;
 				reinterpret_cast<FileInfo*>(&MyInfo.finderInfo)->fileCreator =
 					uAuxType;
-				iError = PBSetCatalogInfoSync(&Block);
-				if (!iError) {
-					uResult = kErrorNone;
-				}
+				iMacError = PBSetCatalogInfoSync(&Block);
 			}
-		} else
+			uResult = MacConvertError(iMacError);
+		}
+	} else
 #endif
-		{
-			CInfoPBRec InfoPBRec;
-
+	{
+		CInfoPBRec InfoPBRec;
+		FSSpec MySpec;
+		uResult = pFileName->GetFSSpec(&MySpec);
+		if (!uResult) {
 			// Use a local name buffer for reading and writing to the file
-			uint8_t TempBuffer[257];
-			int iMacError = DoGetCatInfo(&InfoPBRec, TempBuffer,
-				pFileName->GetVRefNum(), pFileName->GetDirID(), pNative);
+			uint8_t TempBuffer[256];
+			iMacError = DoGetCatInfo(&InfoPBRec, TempBuffer, &MySpec);
 
 			// No error? File was found
 			if (!iMacError) {
@@ -669,12 +679,9 @@ Burger::eError Burger::FileManager::SetFileAndAuxType(
 
 					// Save out the new state
 					iMacError = PBSetCatInfoSync(&InfoPBRec);
-
-					if (!iMacError) {
-						uResult = kErrorNone;
-					}
 				}
 			}
+			uResult = MacConvertError(iMacError);
 		}
 	}
 
@@ -821,10 +828,12 @@ Burger::eError Burger::FileManager::DeleteFile(
 
 		// Carbon version first
 #if !(defined(BURGER_CFM) && defined(BURGER_68K))
-		FSRef MyRef;
-		uResult = pFileName->GetFinalFSRef(&MyRef);
-		if (!uResult) {
-			iMacError = FSDeleteObject(&MyRef);
+		FSRef* pFSRef = pFileName->GetFSRef();
+		if (pFSRef) {
+			if (!pNative[0]) {
+				uResult = kErrorNone;
+				iMacError = FSDeleteObject(pFSRef);
+			}
 		} else
 #endif
 		{
@@ -838,13 +847,7 @@ Burger::eError Burger::FileManager::DeleteFile(
 	}
 
 	if (!uResult && iMacError) {
-		if (iMacError == fnfErr) {
-			uResult = kErrorFileNotFound;
-		} else if (iMacError == fLckdErr) {
-			uResult = kErrorAccessDenied;
-		} else {
-			uResult = kErrorIO;
-		}
+		uResult = MacConvertError(iMacError);
 	}
 	return uResult;
 }
@@ -859,46 +862,38 @@ Burger::eError Burger::FileManager::RenameFile(
 	Filename* pNewName, Filename* pOldName)
 {
 	eError uResult = kErrorFileNotFound;
-	const char* pNative = pOldName->GetNative();
-	if (pNative) {
-
-		// Carbon version first
+	int iMacError;
+	
+	// Carbon version first
 #if !(defined(BURGER_CFM) && defined(BURGER_68K))
-		FSRef* pFSRef = pOldName->GetFSRef();
-		if (pFSRef) {
-
-			// Convert the filename to unicode
-			String16 SourceName(pNative);
-			FSRef SourceRef;
-			// Create a UFT16 FSRef
-			OSErr iError = FSMakeFSRefUnicode(pFSRef, SourceName.GetLength(),
-				SourceName.GetPtr(), kUnicode16BitFormat, &SourceRef);
-			if (!iError) {
+	FSRef* pFSRef = pOldName->GetFSRef();
+	if (pFSRef) {
+		const char *pNative = pOldName->GetNative();
+		if (!pNative[0]) {
+			uResult = kErrorFileExists;
+			pNative = pNewName->GetNative();
+			if (pNative[0]) {
 				// Convert the filename to unicode
-				String16 DestName(pNewName->GetNative());
-				iError = FSRenameUnicode(&SourceRef, DestName.length(),
+				String16 DestName(pNative);
+				iMacError = FSRenameUnicode(pFSRef, DestName.length(),
 					DestName.c_str(), kUnicode16BitFormat, nullptr);
-				if (!iError) {
-					uResult = kErrorNone;
-				}
+				uResult = MacConvertError(iMacError);
 			}
-		} else
+		}
+	} else
 #endif
-		{
-			// Get the source file FSSpec
-			FSSpec MySpec;
-			uResult = pOldName->GetFSSpec(&MySpec);
-			if (!uResult) {
-				// Create the new name
-				FSSpec NewSpec;
-				pNewName->GetFSSpec(&NewSpec);
+	{
+		// Get the source file FSSpec
+		FSSpec MySpec;
+		uResult = pOldName->GetFSSpec(&MySpec);
+		if (!uResult) {
+			// Create the new name
+			FSSpec NewSpec;
+			pNewName->GetFSSpec(&NewSpec);
 
-				// Rename the file if possible
-				OSErr iMacError = FSpRename(&MySpec, NewSpec.name);
-				if (!iMacError) {
-					uResult = kErrorNone;
-				}
-			}
+			// Rename the file if possible
+			iMacError = FSpRename(&MySpec, NewSpec.name);
+			uResult = MacConvertError(iMacError);
 		}
 	}
 	return uResult;
@@ -944,71 +939,67 @@ Burger::eError Burger::FileManager::ChangeOSDirectory(Filename* pDirName)
 FILE* BURGER_API Burger::FileManager::OpenFile(
 	Filename* pFileName, const char* pType) BURGER_NOEXCEPT
 {
+	int iMacError;
 	// If MSL, there's a call for that ;)
 	FILE* fp = nullptr;
 	if (pType) {
 
-		const char* pNative = pFileName->GetNative();
-		if (pNative) {
-
-			// Carbon version first
+		// Carbon version first
 #if !defined(BURGER_68K) && defined(__MSL__)
-			FSRef* pFSRef = pFileName->GetFSRef();
-			if (pFSRef) {
+		FSRef* pFSRef = pFileName->GetFSRef();
+		if (pFSRef) {
+			iMacError = noErr;
+			FSRef TempRef;
+			
+			// Check if the FSRef is complete
+			const char* pNative = pFileName->GetNative();
+			if (pNative[0]) {
+				iMacError = fnfErr;
+				uint_t uTemp = pType[0];
+				if (uTemp) {
+					String16 MyName(pNative);
+					uint_t i = 1;
+					do {
+						uint_t uTest = uTemp & 0xDF;
+						if ((uTest == 'A') || (uTest == 'W')) {
+							FSCatalogInfo MyInfo;
+							InitFileInfo(reinterpret_cast<FileInfo*>(&MyInfo.finderInfo));
+							MyInfo.textEncodingHint = kUnicode16BitFormat;
 
-				// Convert the filename to unicode
-				String16 MyName(pFileName->GetNative());
-				FSRef MyRef;
-				// Create a UFT16 FSRef
-				OSErr iError = FSMakeFSRefUnicode(pFSRef, MyName.GetLength(),
-					MyName.GetPtr(), kUnicode16BitFormat, &MyRef);
-				if (iError == fnfErr) {
-					uint_t uTemp = pType[0];
-					if (uTemp) {
-						uint_t i = 1;
-						do {
-							uint_t uTest = uTemp & 0xDF;
-							if ((uTest == 'A') || (uTest == 'W')) {
-								FSCatalogInfo MyInfo;
-								InitFileInfo(reinterpret_cast<FileInfo*>(
-									&MyInfo.finderInfo));
-								MyInfo.textEncodingHint = kUnicode16BitFormat;
-
-								iError = FSCreateFileUnicode(pFSRef,
-									MyName.length(), MyName.c_str(),
-									kFSCatInfoTextEncoding +
-										kFSCatInfoFinderInfo,
-									&MyInfo, &MyRef, nullptr);
-								break;
-							}
-							uTemp = pType[i];
-							++i;
-						} while (uTemp);
-					}
+							iMacError = FSCreateFileUnicode(pFSRef,
+								MyName.length(), MyName.c_str(),
+								kFSCatInfoTextEncoding +
+									kFSCatInfoFinderInfo,
+								&MyInfo, &TempRef, nullptr);
+							pFSRef = &TempRef;
+							break;
+						}
+						uTemp = pType[i];
+						++i;
+					} while (uTemp);
 				}
-				if (!iError) {
-					// Open using standard fopen using FSRef
-					fp = FSRef_fopen(&MyRef, pType);
-				}
-			} else
+			}
+			if (!iMacError) {
+				// Open using standard fopen using FSRef
+				fp = FSRef_fopen(pFSRef, pType);
+			}
+		} else
 #endif
-			// All other versions use the old style
-			{
-				short sSavedVol;
-				long lDirID;
-				OSErr err = HGetVol(0, &sSavedVol, &lDirID);
-				if (err == noErr) {
-					FSSpec MySpec;
-					pFileName->GetFSSpec(&MySpec);
-					err = HSetVol(0, MySpec.vRefNum, MySpec.parID);
-					if (err == noErr) {
-						char CName[256];
-						PStringToCString(CName, MySpec.name);
-
-						fp = fopen(CName, pType);
-					}
-					HSetVol(0, sSavedVol, lDirID);
+		// All other versions use the old style
+		{
+			short sSavedVol;
+			long lDirID;
+			iMacError = HGetVol(0, &sSavedVol, &lDirID);
+			if (!iMacError) {
+				FSSpec MySpec;
+				pFileName->GetFSSpec(&MySpec);
+				iMacError = HSetVol(0, MySpec.vRefNum, MySpec.parID);
+				if (!iMacError) {
+					char CName[256];
+					PStringToCString(CName, MySpec.name);
+					fp = fopen(CName, pType);
 				}
+				HSetVol(0, sSavedVol, lDirID);
 			}
 		}
 	}
@@ -1034,7 +1025,8 @@ static int BURGER_API CopyForkCarbon(HFSUniStr255* pForkName, FSRef* pSource,
 		iMacError = FSOpenFork(
 			pDest, pForkName->length, pForkName->unicode, fsWrPerm, &Destfp);
 		if (!iMacError) {
-			iMacError = Burger::CopyFork(Srcfp, Destfp, pBuffer, uBufferSize);
+			iMacError =
+				Burger::CopyForkClassic(Destfp, Srcfp, pBuffer, uBufferSize);
 			FSClose(Destfp);
 		}
 		FSClose(Srcfp);
@@ -1052,151 +1044,33 @@ static int BURGER_API CopyForkCarbon(HFSUniStr255* pForkName, FSRef* pSource,
 Burger::eError BURGER_API Burger::FileManager::CopyFile(
 	Filename* pDestName, Filename* pSourceName) BURGER_NOEXCEPT
 {
+	FSSpec SourceSpec;
 
-	// Is there a source file and Dest was parsable?
-	const char* pSourceNative = pSourceName->GetNative();
-	const char* pDestNative = pDestName->GetNative();
-	if (!pSourceNative || !pDestNative) {
-		return kErrorFileNotFound;
-	}
-
-	String Buffer;
-	// Use a string as a buffer
-	eError uResult = Buffer.reserve(0x40000 - 1U);
-	if (uResult) {
-		uResult = Buffer.reserve(0x10000 - 1U);
-		if (uResult) {
-			uResult = Buffer.reserve(0x1000 - 1U);
-		}
-	}
-
-	// Error? Then low memory issue
+	// Get the source FSSpec
+	eError uResult = pSourceName->GetFSSpec(&SourceSpec);
 	if (!uResult) {
-		// Save the buffers for later
-		uint8_t* pBuffer = reinterpret_cast<uint8_t*>(Buffer.c_str());
-		uintptr_t uBufferSize = Buffer.length() + 1;
+		// Destination is tricky. Break it into the directory and then the file
+		String Basename;
+		pDestName->get_basename(&Basename);
+		String Dirname;
+		pDestName->get_dirname(&Dirname);
 
-		uResult = kErrorFileNotFound;
+		// Is there a destination directory?
+		Filename TempDest(Dirname.c_str());
+		FSSpec DestSpec;
+		uResult = TempDest.GetFSSpec(&DestSpec);
+		if (!uResult) {
+			uint8_t DestName[256];
+			CStringToPString(DestName, Basename.c_str());
 
-#if !(defined(BURGER_CFM) && defined(BURGER_68K))
-		// Carbon version
-		FSRef SrcRef;
-		if (!pSourceName->GetFinalFSRef(&SrcRef)) {
-			FSRef DestRef;
-			uResult = pDestName->GetFinalFSRef(&DestRef);
-
-			// Not present? Create it instead.
-			if (uResult == kErrorFileNotFound) {
-				FSCatalogInfo MyInfo;
-				InitFileInfo(reinterpret_cast<FileInfo*>(&MyInfo.finderInfo));
-				MyInfo.textEncodingHint = kUnicode16BitFormat;
-				String16 DestName(pDestNative);
-				uResult = (eError)FSCreateFileUnicode(pDestName->GetFSRef(),
-					DestName.length(), DestName.c_str(),
-					kFSCatInfoTextEncoding + kFSCatInfoFinderInfo, &MyInfo,
-					&DestRef, nullptr);
-			}
-			if (!uResult) {
-				// Made it this far? Copy the file.
-
-				HFSUniStr255 ForkName;
-
-				// Copy the data fork
-				FSGetDataForkName(&ForkName);
-				uResult = kErrorNone;
-				if (CopyForkCarbon(
-						&ForkName, &SrcRef, &DestRef, pBuffer, uBufferSize)) {
-					uResult = kErrorIO;
-				}
-
-				// If ok, then copy the resource fork
-				if (!uResult) {
-					FSGetResourceForkName(&ForkName);
-					if (CopyForkCarbon(&ForkName, &SrcRef, &DestRef, pBuffer,
-							uBufferSize)) {
-						uResult = kErrorIO;
-					}
-				}
-				// If still ok, then copy the finder's data
-				if (!uResult) {
-					FSCatalogInfo MyInfo;
-					int iError = FSGetCatalogInfo(&SrcRef, kFSCatInfoFinderInfo,
-						&MyInfo, nullptr, nullptr, nullptr);
-					if (!iError) {
-						iError = FSSetCatalogInfo(
-							&DestRef, kFSCatInfoFinderInfo, &MyInfo);
-						if (!iError) {
-							// Data was updated!
-							uResult = kErrorNone;
-						}
-					}
-				}
-			}
-		} //else
-#endif
-#if 0
-		{
-			// Carbon version
-			FSSpec SrcSpec;
-			if (!pSourceName->GetFSSpec(&SrcSpec)) {
-				FSSpec DestSpec;
-				uResult = pDestName->GetFSSpec(&DestSpec);
-
-				// Not present? Create it instead.
-				if (uResult == kErrorFileNotFound) {
-					FSCatalogInfo MyInfo;
-					InitFileInfo(
-						reinterpret_cast<FileInfo*>(&MyInfo.finderInfo));
-					MyInfo.textEncodingHint = kUnicode16BitFormat;
-					String16 DestName(pDestNative);
-					uResult = (eError)FSCreateFileUnicode(pDestName->GetFSRef(),
-						DestName.length(), DestName.c_str(),
-						kFSCatInfoTextEncoding + kFSCatInfoFinderInfo, &MyInfo,
-						&DestRef, nullptr);
-				}
-				if (!uResult) {
-					// Made it this far? Copy the file.
-
-					HFSUniStr255 ForkName;
-
-					// Copy the data fork
-					FSGetDataForkName(&ForkName);
-					uResult = kErrorNone;
-					if (CopyForkCarbon(&ForkName, &SrcRef, &DestRef, pBuffer,
-							uBufferSize)) {
-						uResult = kErrorIO;
-					}
-
-					// If ok, then copy the resource fork
-					if (!uResult) {
-						FSGetResourceForkName(&ForkName);
-						if (CopyForkCarbon(&ForkName, &SrcRef, &DestRef,
-								pBuffer, uBufferSize)) {
-							uResult = kErrorIO;
-						}
-					}
-					// If still ok, then copy the finder's data
-					if (!uResult) {
-						FSCatalogInfo MyInfo;
-						int iError =
-							FSGetCatalogInfo(&SrcRef, kFSCatInfoFinderInfo,
-								&MyInfo, nullptr, nullptr, nullptr);
-						if (!iError) {
-							iError = FSSetCatalogInfo(
-								&DestRef, kFSCatInfoFinderInfo, &MyInfo);
-							if (!iError) {
-								// Data was updated!
-								uResult = kErrorNone;
-							}
-						}
-					}
-				}
+			// Use the Mac OS low level library to perform the actual copy
+			int iMacError =
+				FileCopy(&SourceSpec, &DestSpec, DestName, nullptr, 0, FALSE);
+			if (iMacError) {
+				uResult = kErrorFileNotFound;
 			}
 		}
-#endif
 	}
-
-	// Return the end result
 	return uResult;
 }
 

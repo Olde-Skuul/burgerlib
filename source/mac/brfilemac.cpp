@@ -15,6 +15,7 @@
 #include "brfile.h"
 #if defined(BURGER_MAC)
 #include "brstring16.h"
+#include <Devices.h>
 #include <Files.h>
 
 /***************************************
@@ -33,47 +34,111 @@
 Burger::eError BURGER_API Burger::File::Open(
 	Filename* pFileName, eFileAccess eAccess) BURGER_NOEXCEPT
 {
+	// Ignore any errors.
 	Close();
+
+	// Update the filename
+	m_Filename = *pFileName;
+
+	// Ensure the file access is in bounds
 	eAccess = static_cast<eFileAccess>(eAccess & 3);
 
-	static const SInt8 g_Permissions[4] = {
-		fsRdPerm, fsWrPerm, fsWrPerm, fsRdWrPerm};
+	// Map the access to macOS
+	static const SInt8 g_Permissions[4] = {fsRdPerm | fsWrDenyPerm,
+		fsWrPerm | fsRdDenyPerm,
+		fsWrPerm | fsRdDenyPerm, fsRdWrPerm};
 
-	HFSUniStr255 ForkName;
-	FSGetDataForkName(&ForkName);
+	// Assume file not found
+	eError uResult = kErrorNone;
+	int iMacError;
+	short fp;
 
-	// Convert the filename to unicode
-	String16 MyName(pFileName->GetNative());
-	// Create a UFT16 FSRef
-	OSErr eError = FSMakeFSRefUnicode(pFileName->GetFSRefOld(),
-		MyName.GetLength(), MyName.GetPtr(), kUnicode16BitFormat,
-		reinterpret_cast<FSRef*>(m_FSRef));
-	uint_t uResult = kErrorFileNotFound;
+#if !(defined(BURGER_CFM) && defined(BURGER_68K))
+	// Try to use MacOS 9 or higher to create the file
+	const char* pNative = m_Filename.GetNative();
 
-	// Error? File not found?
-	// See if it should be created
-	if ((eAccess != kReadOnly) && ((eError == fnfErr) || (eError == nsvErr))) {
-		FSCatalogInfo MyInfo;
-		InitFileInfo(reinterpret_cast<FileInfo*>(&MyInfo.finderInfo));
-		MyInfo.textEncodingHint = kUnicode16BitFormat;
-		eError =
-			FSCreateFileUnicode(pFileName->GetFSRefOld(), MyName.GetLength(),
-				MyName.GetPtr(), kFSCatInfoTextEncoding + kFSCatInfoFinderInfo,
-				&MyInfo, reinterpret_cast<FSRef*>(m_FSRef), NULL);
-	}
-	if (!eError) {
-		short fp;
-		eError = FSOpenFork(reinterpret_cast<FSRef*>(m_FSRef), ForkName.length,
-			ForkName.unicode, g_Permissions[eAccess], &fp);
-		if (!eError) {
-			m_pFile = reinterpret_cast<void*>(fp);
-			uResult = kErrorNone;
-			if (eAccess == kAppend) {
-				uResult = SetMarkAtEOF();
+	// Test if the MacOS 9 APIs are present
+	FSRef* pFSRef = m_Filename.GetFSRef();
+	if (pFSRef) {
+		// Do it the MacOS 9 way
+		FSRef MyRef;
+
+		// Incomplete FSRef?
+		if (pNative[0]) {
+			// Error? File not found?
+			// See if it should be created
+			if (eAccess != kReadOnly) {
+
+				String16 MyName(pNative);
+				FSCatalogInfo MyInfo;
+				InitFileInfo(reinterpret_cast<FileInfo*>(&MyInfo.finderInfo));
+				MyInfo.textEncodingHint = kUnicode16BitFormat;
+				uResult = MacConvertError(
+					FSCreateFileUnicode(pFSRef, MyName.length(), MyName.c_str(),
+						kFSCatInfoTextEncoding + kFSCatInfoFinderInfo, &MyInfo,
+						&MyRef, nullptr));
+
+				// Success, open the file using the new FSRef
+				if (!uResult) {
+					pFSRef = &MyRef;
+				}
 			}
 		}
+
+		// No errors so far?
+		if (!uResult) {
+
+			iMacError = FSOpenFork(pFSRef, 0, nullptr, static_cast<SInt8>(g_Permissions[eAccess]&3), &fp);
+			if (!iMacError) {
+				m_pFile = reinterpret_cast<void*>(fp);
+				m_bUsingFSRef = TRUE;
+				if (eAccess == kAppend) {
+					uResult = SetMarkAtEOF();
+				}
+			}
+			return MacConvertError(iMacError);
+		}
 	}
-	return static_cast<Burger::eError>(uResult);
+#endif
+
+	// Do it the classic way
+
+	// Get the FSSpec for the new file
+	FSSpec MySpec;
+	m_Filename.GetFSSpec(&MySpec);
+
+	// Try to open it
+	iMacError = OpenAware(&MySpec, g_Permissions[eAccess], &fp);
+
+	// No file? If so, see if needs to be created.
+	if ((eAccess != kReadOnly) && (iMacError == fnfErr)) {
+
+		// Create the file (No data of any kind)
+		iMacError = CreateEmptyFile(&MySpec);
+		if (!iMacError) {
+
+			// Try opening it again.
+			iMacError = OpenAware(&MySpec, g_Permissions[eAccess], &fp);
+		}
+	}
+
+	// Assume access is denied
+	uResult = kErrorAccessDenied;
+	if (!iMacError) {
+
+		// The file was opened fine, capture it and mark as old style
+		m_pFile = reinterpret_cast<void*>(fp);
+		m_bUsingFSRef = FALSE;
+		uResult = kErrorNone;
+
+		// If appending, set the file mark at the end
+		if (eAccess == kAppend) {
+
+			// Error?
+			uResult = SetMarkAtEOF();
+		}
+	}
+	return uResult;
 }
 
 /***************************************
@@ -90,13 +155,26 @@ Burger::eError BURGER_API Burger::File::Open(
 Burger::eError BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNone;
+	OSErr iMacError;
 	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
-		OSErr eClose = FSCloseFork(fp);
-		if (eClose) {
+
+#if !(defined(BURGER_CFM) && defined(BURGER_68K))
+		// Was it opened with the new way?
+		if (m_bUsingFSRef) {
+			iMacError = FSCloseFork(fp);
+		} else
+#endif
+		{
+			// It was opened the old way.
+			iMacError = FSClose(fp);
+		}
+		// Record the error
+		if (iMacError) {
 			uResult = kErrorIO;
 		}
-		m_pFile = NULL;
+		// Clear out the file reference
+		m_pFile = nullptr;
 	}
 	return uResult;
 }
@@ -117,19 +195,29 @@ Burger::eError BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::File::GetSize(void) BURGER_NOEXCEPT
+uint64_t BURGER_API Burger::File::GetSize(void) BURGER_NOEXCEPT
 {
-	uintptr_t uSize = 0;
+	int iMacError;
+	uint64_t uSize = 0;
 	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
-		SInt64 lFileSize;
-		OSErr eSize = FSGetForkSize(fp, &lFileSize);
-		if (!eSize) {
-			if (static_cast<uint64_t>(lFileSize) <=
-				static_cast<uint64_t>(0xFFFFFFFFU)) {
-				uSize = static_cast<uintptr_t>(lFileSize);
-			} else {
-				uSize = 0xFFFFFFFFU;
+#if !(defined(BURGER_CFM) && defined(BURGER_68K))
+		// Was it opened with the new way?
+		if (m_bUsingFSRef) {
+			SInt64 lFileSize;
+			iMacError = FSGetForkSize(fp, &lFileSize);
+			if (!iMacError) {
+				uSize = static_cast<uint64_t>(lFileSize);
+			}
+		} else
+#endif
+		{
+			// Do it the old fashioned way
+			ParamBlockRec PBR;
+			PBR.ioParam.ioRefNum = fp;
+			iMacError = PBGetEOFSync(&PBR);
+			if (!iMacError) {
+				uSize = reinterpret_cast<uint64_t>(PBR.ioParam.ioMisc);
 			}
 		}
 	}
@@ -156,12 +244,28 @@ uintptr_t BURGER_API Burger::File::Read(void* pOutput, uintptr_t uSize)
 {
 	uintptr_t uResult = 0;
 	if (uSize && pOutput) {
+		int iMacError;
 		short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 		if (fp) {
-			ByteCount lDataRead = 0;
-			OSErr eRead = FSReadFork(
-				fp, fsAtMark, 0, uSize, pOutput, &lDataRead); // Read data
-			uResult = static_cast<uintptr_t>(lDataRead);
+#if !(defined(BURGER_CFM) && defined(BURGER_68K))
+			// Was it opened with the new way?
+			if (m_bUsingFSRef) {
+				// Read data from the open fork
+				ByteCount lDataRead = 0;
+				iMacError =
+					FSReadFork(fp, fsAtMark, 0, uSize, pOutput, &lDataRead);
+				uResult = static_cast<uintptr_t>(lDataRead);
+			} else
+#endif
+			{
+				ParamBlockRec PBR;
+				PBR.ioParam.ioRefNum = fp;
+				PBR.ioParam.ioBuffer = static_cast<Ptr>(pOutput);
+				PBR.ioParam.ioReqCount = static_cast<long>(uSize);
+				PBR.ioParam.ioPosMode = fsAtMark;
+				iMacError = PBReadSync(&PBR);
+				uResult = static_cast<uintptr_t>(PBR.ioParam.ioActCount);
+			}
 		}
 	}
 	return uResult;
@@ -187,12 +291,29 @@ uintptr_t BURGER_API Burger::File::Write(
 {
 	uintptr_t uResult = 0;
 	if (uSize && pInput) {
+		int iMacError;
 		short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 		if (fp) {
-			ByteCount lDataWritten = 0;
-			OSErr eWrite = FSWriteFork(fp, fsAtMark, 0, uSize, (void*)pInput,
-				&lDataWritten); // Write data
-			uResult = static_cast<uintptr_t>(lDataWritten);
+#if !(defined(BURGER_CFM) && defined(BURGER_68K))
+			// Was it opened with the new way?
+			if (m_bUsingFSRef) {
+				// Write data to the open fork
+				ByteCount lDataWritten = 0;
+				iMacError = FSWriteFork(fp, fsAtMark, 0, uSize,
+					const_cast<void*>(pInput), &lDataWritten);
+				uResult = static_cast<uintptr_t>(lDataWritten);
+			} else
+#endif
+			{
+				ParamBlockRec PBR;
+				PBR.ioParam.ioRefNum = fp;
+				PBR.ioParam.ioBuffer =
+					static_cast<Ptr>(const_cast<void*>(pInput));
+				PBR.ioParam.ioReqCount = static_cast<long>(uSize);
+				PBR.ioParam.ioPosMode = fsAtMark;
+				iMacError = PBWriteSync(&PBR);
+				uResult = static_cast<uintptr_t>(PBR.ioParam.ioActCount);
+			}
 		}
 	}
 	return uResult;
@@ -210,19 +331,29 @@ uintptr_t BURGER_API Burger::File::Write(
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::File::GetMark(void)
+uint64_t BURGER_API Burger::File::GetMark(void) BURGER_NOEXCEPT
 {
-	uintptr_t uMark = 0;
+	uint64_t uMark = 0;
+	int iMacError;
 	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
-		SInt64 lCurrentMark;
-		OSErr eErr = FSGetForkPosition(fp, &lCurrentMark);
-		if (!eErr) {
-			if (static_cast<uint64_t>(lCurrentMark) <=
-				static_cast<uint64_t>(0xFFFFFFFFU)) {
-				uMark = static_cast<uintptr_t>(lCurrentMark);
-			} else {
-				uMark = 0xFFFFFFFFU;
+#if !(defined(BURGER_CFM) && defined(BURGER_68K))
+		// Was it opened with the new way?
+		if (m_bUsingFSRef) {
+			SInt64 lCurrentMark;
+			iMacError = FSGetForkPosition(fp, &lCurrentMark);
+			if (!iMacError) {
+				uMark = static_cast<uint64_t>(lCurrentMark);
+			}
+		} else
+#endif
+		{
+			// Do it the old fashioned way
+			ParamBlockRec PBR;
+			PBR.ioParam.ioRefNum = fp;
+			iMacError = PBGetFPosSync(&PBR);
+			if (!iMacError) {
+				uMark = static_cast<uint32_t>(PBR.ioParam.ioPosOffset);
 			}
 		}
 	}
@@ -241,16 +372,37 @@ uintptr_t BURGER_API Burger::File::GetMark(void)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::File::SetMark(uintptr_t uMark)
+Burger::eError BURGER_API Burger::File::SetMark(uint64_t uMark) BURGER_NOEXCEPT
 {
+	int iMacError;
 	eError uResult = kErrorNotInitialized;
 	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
-		OSErr eErr = FSSetForkPosition(fp, fsFromStart, uMark);
-		if (!eErr) {
-			uResult = kErrorNone;
-		} else {
+#if !(defined(BURGER_CFM) && defined(BURGER_68K))
+		// Was it opened with the new way?
+		if (m_bUsingFSRef) {
+			iMacError =
+				FSSetForkPosition(fp, fsFromStart, static_cast<SInt64>(uMark));
+			if (!iMacError) {
+				uResult = kErrorNone;
+			} else {
+				uResult = kErrorOutOfBounds;
+			}
+		} else
+#endif
+		{
+			// Do it the old fashioned way
 			uResult = kErrorOutOfBounds;
+			if (uMark <= 0xFFFFFFFFU) {
+				ParamBlockRec PBR;
+				PBR.ioParam.ioRefNum = fp;
+				PBR.ioParam.ioPosMode = fsFromStart;
+				PBR.ioParam.ioPosOffset = static_cast<long>(uMark);
+				iMacError = PBSetFPosSync(&PBR);
+				if (!iMacError) {
+					uResult = kErrorNone;
+				}
+			}
 		}
 	}
 	return uResult;
@@ -267,14 +419,32 @@ Burger::eError BURGER_API Burger::File::SetMark(uintptr_t uMark)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
+Burger::eError BURGER_API Burger::File::SetMarkAtEOF(void) BURGER_NOEXCEPT
 {
-	uint_t uResult = kErrorOutOfBounds;
+	int iMacError;
+	eError uResult = kErrorOutOfBounds;
 	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
-		OSErr eErr = FSSetForkPosition(fp, fsFromLEOF, 0);
-		if (!eErr) {
-			uResult = kErrorNone;
+#if !(defined(BURGER_CFM) && defined(BURGER_68K))
+		// Was it opened with the new way?
+		if (m_bUsingFSRef) {
+			iMacError = FSSetForkPosition(fp, fsFromLEOF, 0);
+			if (!iMacError) {
+				uResult = kErrorNone;
+			}
+		} else
+#endif
+		{
+			// Do it the old fashioned way
+			uResult = kErrorOutOfBounds;
+			ParamBlockRec PBR;
+			PBR.ioParam.ioRefNum = fp;
+			PBR.ioParam.ioPosMode = fsFromLEOF;
+			PBR.ioParam.ioPosOffset = 0;
+			iMacError = PBSetFPosSync(&PBR);
+			if (!iMacError) {
+				uResult = kErrorNone;
+			}
 		}
 	}
 	return uResult;
@@ -300,19 +470,42 @@ uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 Burger::eError BURGER_API Burger::File::GetModificationTime(
 	TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
+	int iMacError;
 	eError uResult = kErrorFileNotFound;
 	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
-		FSRefParam Block;
-		InitFSRefParam(
-			&Block, reinterpret_cast<FSRef*>(m_FSRef), kFSCatInfoContentMod);
-		FSCatalogInfo MyInfo;
-		Block.catInfo = &MyInfo;
-		OSErr eError = PBGetCatalogInfoSync(&Block);
-		if (!eError) {
-			// If it succeeded, the file must exist
-			pOutput->Load(&MyInfo.contentModDate);
-			uResult = kErrorNone;
+#if !(defined(BURGER_CFM) && defined(BURGER_68K))
+		// Was it opened with the new way?
+		if (m_bUsingFSRef) {
+			FSRef MyRef;
+			iMacError = GetFileLocation(&MyRef, fp);
+			if (!iMacError) {
+				FSCatalogInfo MyInfo;
+				iMacError = DoGetCatInfo(&MyInfo, &MyRef, kFSCatInfoContentMod);
+				if (!iMacError) {
+					// If it succeeded, the file must exist
+					pOutput->Load(&MyInfo.contentModDate);
+					uResult = kErrorNone;
+				}
+			}
+		} else
+#endif
+		{
+			FSSpec MySpec;
+			iMacError = GetFileLocation(&MySpec, fp);
+			if (!iMacError) {
+				CInfoPBRec InfoPBRec;
+				InfoPBRec.dirInfo.ioVRefNum = MySpec.vRefNum;
+				InfoPBRec.dirInfo.ioDrDirID = MySpec.parID;
+				InfoPBRec.dirInfo.ioNamePtr = MySpec.name;
+				InfoPBRec.dirInfo.ioFDirIndex = 0;
+
+				iMacError = PBGetCatInfoSync(&InfoPBRec);
+				if (!iMacError) {
+					pOutput->LoadFileSeconds(InfoPBRec.hFileInfo.ioFlMdDat);
+					uResult = kErrorNone;
+				}
+			}
 		}
 	}
 	return uResult;
@@ -335,21 +528,45 @@ Burger::eError BURGER_API Burger::File::GetModificationTime(
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t* pOutput)
+Burger::eError BURGER_API Burger::File::GetCreationTime(
+	TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
+	int iMacError;
 	eError uResult = kErrorFileNotFound;
 	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
-		FSRefParam Block;
-		InitFSRefParam(
-			&Block, reinterpret_cast<FSRef*>(m_FSRef), kFSCatInfoContentMod);
-		FSCatalogInfo MyInfo;
-		Block.catInfo = &MyInfo;
-		OSErr eError = PBGetCatalogInfoSync(&Block);
-		if (!eError) {
-			// If it succeeded, the file must exist
-			pOutput->Load(&MyInfo.createDate);
-			uResult = kErrorNone;
+#if !(defined(BURGER_CFM) && defined(BURGER_68K))
+		// Was it opened with the new way?
+		if (m_bUsingFSRef) {
+			FSRef MyRef;
+			iMacError = GetFileLocation(&MyRef, fp);
+			if (!iMacError) {
+				FSCatalogInfo MyInfo;
+				iMacError = DoGetCatInfo(&MyInfo, &MyRef, kFSCatInfoCreateDate);
+				if (!iMacError) {
+					// If it succeeded, the file must exist
+					pOutput->Load(&MyInfo.createDate);
+					uResult = kErrorNone;
+				}
+			}
+		} else
+#endif
+		{
+			FSSpec MySpec;
+			iMacError = GetFileLocation(&MySpec, fp);
+			if (!iMacError) {
+				CInfoPBRec InfoPBRec;
+				InfoPBRec.dirInfo.ioVRefNum = MySpec.vRefNum;
+				InfoPBRec.dirInfo.ioDrDirID = MySpec.parID;
+				InfoPBRec.dirInfo.ioNamePtr = MySpec.name;
+				InfoPBRec.dirInfo.ioFDirIndex = 0;
+
+				iMacError = PBGetCatInfoSync(&InfoPBRec);
+				if (!iMacError) {
+					pOutput->LoadFileSeconds(InfoPBRec.hFileInfo.ioFlCrDat);
+					uResult = kErrorNone;
+				}
+			}
 		}
 	}
 	return uResult;
@@ -372,23 +589,54 @@ Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t* pOutput)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t* pInput)
+Burger::eError BURGER_API Burger::File::SetModificationTime(
+	const TimeDate_t* pInput) BURGER_NOEXCEPT
 {
-	uint_t uResult = kErrorFileNotFound;
-#if 0
-	HANDLE fp = m_pFile;
+	int iMacError;
+	eError uResult = kErrorFileNotFound;
+	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
-		FILETIME ModificationTime;
-		pInput->Store(&ModificationTime);
-		// Set the file modification time
-		BOOL bFileInfoResult = SetFileTime(fp,NULL,&ModificationTime,NULL);
-		if (bFileInfoResult) {
-			uResult = kErrorNone;
+#if !(defined(BURGER_CFM) && defined(BURGER_68K))
+		// Was it opened with the new way?
+		if (m_bUsingFSRef) {
+			FSRef MyRef;
+			iMacError = GetFileLocation(&MyRef, fp);
+			if (!iMacError) {
+				FSRefParam Block;
+				FSCatalogInfo MyInfo;
+				iMacError =
+					DoGetCatInfo(&MyInfo, &Block, &MyRef, kFSCatInfoContentMod);
+				if (!iMacError) {
+					// If it succeeded, the file must exist
+					pInput->Store(&MyInfo.contentModDate);
+					iMacError = PBSetCatalogInfoSync(&Block);
+					uResult = kErrorNone;
+				}
+			}
+		} else
+#endif
+		{
+			FSSpec MySpec;
+			iMacError = GetFileLocation(&MySpec, fp);
+			if (!iMacError) {
+				CInfoPBRec InfoPBRec;
+				InfoPBRec.dirInfo.ioVRefNum = MySpec.vRefNum;
+				InfoPBRec.dirInfo.ioDrDirID = MySpec.parID;
+				InfoPBRec.dirInfo.ioNamePtr = MySpec.name;
+				InfoPBRec.dirInfo.ioFDirIndex = 0;
+
+				iMacError = PBGetCatInfoSync(&InfoPBRec);
+				if (!iMacError) {
+					InfoPBRec.hFileInfo.ioFlMdDat = pInput->GetFileSeconds();
+					InfoPBRec.dirInfo.ioDrDirID = MySpec.parID;
+					iMacError = PBSetCatInfoSync(&InfoPBRec);
+					if (!iMacError) {
+						uResult = kErrorNone;
+					}
+				}
+			}
 		}
 	}
-#else
-	BURGER_UNUSED(pInput);
-#endif
 	return uResult;
 }
 
@@ -409,23 +657,54 @@ uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t* pInput)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::SetCreationTime(const TimeDate_t* pInput)
+Burger::eError BURGER_API Burger::File::SetCreationTime(
+	const TimeDate_t* pInput) BURGER_NOEXCEPT
 {
-	uint_t uResult = kErrorFileNotFound;
-#if 0
-	HANDLE fp = m_pFile;
+	int iMacError;
+	eError uResult = kErrorFileNotFound;
+	short fp = static_cast<short>(reinterpret_cast<uintptr_t>(m_pFile));
 	if (fp) {
-		FILETIME CreationTime;
-		pInput->Store(&CreationTime);
-		// Set the file creation time
-		BOOL bFileInfoResult = SetFileTime(fp,&CreationTime,NULL,NULL);
-		if (bFileInfoResult) {
-			uResult = kErrorNone;
+#if !(defined(BURGER_CFM) && defined(BURGER_68K))
+		// Was it opened with the new way?
+		if (m_bUsingFSRef) {
+			FSRef MyRef;
+			iMacError = GetFileLocation(&MyRef, fp);
+			if (!iMacError) {
+				FSRefParam Block;
+				FSCatalogInfo MyInfo;
+				iMacError =
+					DoGetCatInfo(&MyInfo, &Block, &MyRef, kFSCatInfoCreateDate);
+				if (!iMacError) {
+					// If it succeeded, the file must exist
+					pInput->Store(&MyInfo.createDate);
+					iMacError = PBSetCatalogInfoSync(&Block);
+					uResult = kErrorNone;
+				}
+			}
+		} else
+#endif
+		{
+			FSSpec MySpec;
+			iMacError = GetFileLocation(&MySpec, fp);
+			if (!iMacError) {
+				CInfoPBRec InfoPBRec;
+				InfoPBRec.dirInfo.ioVRefNum = MySpec.vRefNum;
+				InfoPBRec.dirInfo.ioDrDirID = MySpec.parID;
+				InfoPBRec.dirInfo.ioNamePtr = MySpec.name;
+				InfoPBRec.dirInfo.ioFDirIndex = 0;
+
+				iMacError = PBGetCatInfoSync(&InfoPBRec);
+				if (!iMacError) {
+					InfoPBRec.hFileInfo.ioFlCrDat = pInput->GetFileSeconds();
+					InfoPBRec.dirInfo.ioDrDirID = MySpec.parID;
+					iMacError = PBSetCatInfoSync(&InfoPBRec);
+					if (!iMacError) {
+						uResult = kErrorNone;
+					}
+				}
+			}
 		}
 	}
-#else
-	BURGER_UNUSED(pInput);
-#endif
 	return uResult;
 }
 

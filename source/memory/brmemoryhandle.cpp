@@ -1521,7 +1521,7 @@ void BURGER_API Burger::MemoryManagerHandle::Unlock(
 {
 	if (ppInput) {
 		// Clear the lock flag
-		reinterpret_cast<Handle_t*>(ppInput)->m_uFlags &= (~LOCKED);
+		reinterpret_cast<Handle_t*>(ppInput)->m_uFlags &= static_cast<uint_t>(~LOCKED);
 	}
 }
 
@@ -1608,7 +1608,7 @@ uint_t BURGER_API Burger::MemoryManagerHandle::GetLockedState(
 void BURGER_API Burger::MemoryManagerHandle::SetLockedState(
 	void** ppInput, uint_t uFlag) BURGER_NOEXCEPT
 {
-	uFlag &= (~(PURGABLE | LOCKED));
+	uFlag &= static_cast<uint_t>(~(PURGABLE | LOCKED));
 	Handle_t* pHandle = reinterpret_cast<Handle_t*>(ppInput);
 	pHandle->m_uFlags = (pHandle->m_uFlags & (~(PURGABLE | LOCKED))) | uFlag;
 
@@ -1660,7 +1660,8 @@ void BURGER_API Burger::MemoryManagerHandle::Purge(void** ppInput) BURGER_NOEXCE
 			m_MemPurgeCallBack(m_pMemPurge, StagePurge); // I will purge now!
 		}
 		m_Lock.Lock();
-		pHandle->m_uFlags &= (~LOCKED); // Force unlocked
+		// Force unlocked
+		pHandle->m_uFlags &= static_cast<uint_t>(~LOCKED);
 
 		// Unlink from the purge list
 

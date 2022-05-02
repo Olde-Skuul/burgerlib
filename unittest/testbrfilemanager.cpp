@@ -830,7 +830,7 @@ static uint_t BURGER_API TestFile(uint_t uVerbose) BURGER_NOEXCEPT
 		Time.TimeToStringPM(Output2);
 		Message("File modification time = %s %s", Output, Output2);
 	}
-	const uintptr_t uSize = TestFile.GetSize();
+	const uint64_t uSize = TestFile.GetSize();
 	uTest = uSize != 14;
 	uFailure |= uTest;
 	ReportFailure("File::GetSize return %u, expected 14", uTest,

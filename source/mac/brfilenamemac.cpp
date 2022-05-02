@@ -127,11 +127,11 @@ void BURGER_API Burger::Filename::PurgeDirectoryCache(void)
 
 const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 {
-	// Resolve prefixes
-	Expand();
-
 	// If already parsed, skip the conversion.
 	if (!m_bNativeValid) {
+
+		// Resolve prefixes
+		Expand();
 
 		// Mac filenames are always short, so no need to reserve space
 		m_NativeFilename.clear();
@@ -793,7 +793,7 @@ Burger::eError BURGER_API Burger::Filename::GetFSSpec(
 	MemoryClear(pFSSpec, sizeof(FSSpec));
 
 	// Make sure the path has been processed
-	GetNative();
+	const char* pNative = GetNative();
 
 	// Was the filename unparsable?
 	eError uResult = kErrorNotInitialized;
@@ -803,13 +803,25 @@ Burger::eError BURGER_API Burger::Filename::GetFSSpec(
 #if !(defined(BURGER_CFM) && defined(BURGER_68K))
 		// So, it's parsed as a FSRef, convert back to a FSSpec
 		if (m_bNativeValid == 2) {
-			FSRef MyRef;
-			uResult = kErrorFileNotFound;
-			if (!GetFinalFSRef(&MyRef)) {
 
-				// Do the conversion
+			// Check if the FSRef is to an existing file
+			uResult = kErrorFileNotFound;
+
+			// Is this an incomplete FSRef?
+			if (pNative[0]) {
+				// Manually complete it
+				pFSSpec->parID = m_lDirID;
+				pFSSpec->vRefNum = m_sVRefNum;
+				char TempString[64];
+				MacRomanUS::TranslateFromUTF8(
+					TempString, sizeof(TempString), pNative);
+				CStringToPString(pFSSpec->name, TempString);
+			} else {
+
+				// Do the conversion from a complete FSRef to a FSSpec
 				FSRefParam Block;
-				InitFSRefParam(&Block, &MyRef, kFSCatInfoNone);
+				InitFSRefParam(
+					&Block, reinterpret_cast<FSRef*>(m_FSRef), kFSCatInfoNone);
 				Block.spec = pFSSpec;
 				OSErr iError = PBGetCatalogInfoSync(&Block);
 				if (!iError) {
@@ -823,7 +835,7 @@ Burger::eError BURGER_API Burger::Filename::GetFSSpec(
 			// Convert from UTF8 to Mac Roman
 			char NameBuffer[64];
 			MacRomanUS::TranslateFromUTF8(
-				NameBuffer, sizeof(NameBuffer), GetNative());
+				NameBuffer, sizeof(NameBuffer), pNative);
 
 			// Set the values of the FSSpec
 			pFSSpec->vRefNum = m_sVRefNum;
@@ -847,7 +859,7 @@ Burger::eError BURGER_API Burger::Filename::GetFSSpec(
 
 	\return Pointer to an FSRef or \ref nullptr if not supported.
 
-	\sa GetFSSpec(FSSpec*) or GetFinalFSRef(FSRef *)
+	\sa GetFSSpec(FSSpec*)
 
 ***************************************/
 
@@ -858,53 +870,6 @@ FSRef* BURGER_API BURGER_API Burger::Filename::GetFSRef(void) BURGER_NOEXCEPT
 		return reinterpret_cast<FSRef*>(m_FSRef);
 	}
 	return nullptr;
-}
-
-/*! ************************************
-
-	\brief Create an FSRef including the final object name.
-
-	GetFSRef() returns the reference to the parent directory. This function will
-	append the filename to the FSRef so it directly points to the object
-	requested.
-
-	\note Available on MacOS 7.1 and higher, except 68K CFM
-
-	\param pFSRef Pointer to an uninitialized FSRef to receive the final FSRef.
-
-	\return Zero if no error.
-
-	\sa GetFSRef(void)
-
-***************************************/
-
-Burger::eError BURGER_API Burger::Filename::GetFinalFSRef(
-	FSRef* pFSRef) BURGER_NOEXCEPT
-{
-	// 68K CFM doesn't support FSRef
-#if !(defined(BURGER_CFM) && defined(BURGER_68K))
-	// Found it
-	FSRef* pInternalFSRef = GetFSRef();
-	eError uResult = kErrorFileNotFound;
-	if (pInternalFSRef) {
-
-		// Convert the filename to unicode
-		String16 TempName(GetNative());
-
-		// Create a UFT16 FSRef
-		OSErr iError = FSMakeFSRefUnicode(pInternalFSRef, TempName.length(),
-			TempName.c_str(), kUnicode16BitFormat, pFSRef);
-		if (!iError) {
-			// No error
-			uResult = kErrorNone;
-		}
-	}
-	return uResult;
-#else
-	BURGER_UNUSED(pFSRef);
-	// Only generate FSRef on platforms that support it
-	return kErrorNotSupportedOnThisPlatform;
-#endif
 }
 
 /*! ************************************
@@ -1229,6 +1194,19 @@ Burger::eError BURGER_API Burger::Filename::SetFromDirectoryIDCarbon(
 	create the values needed to create an FSSpec that best represents the
 	pathname.
 
+	If the FSSpec can be parsed all the way down to the final entry,
+	m_NativeFilename will be set to an empty string. If not, it means the file
+	or directory at the end of the chain does not exist and will need to be
+	created or otherwise handled due to it not being present on the file system.
+
+	m_NativeFilename always contains the name of the file, since FSSpec records
+	only need to parse parent ID and volume ID information.
+
+	The Directory ID and volume reference number will be properly set if the
+	pathname is legitimate. If the pathname is to an existing directory, the
+	directory ID will be of the directory itself. If the path is to a file, the
+	directory id is for the directory that contains the file.
+
 	\maconly
 
 	\param pInput Pointer to the "C" of the pathname WITHOUT the root volume or
@@ -1245,27 +1223,23 @@ Burger::eError BURGER_API Burger::Filename::GetNativeClassic(
 {
 	// Clear the output
 	m_NativeFilename.clear();
+
+	// Assume no error
 	eError uResult = kErrorNone;
+
+	int iMacError;
 
 	// Anything to traverse?
 	if (pInput) {
 		String TempString;
+
 		while (pInput[0]) {
-			// Find the colon at the end of the string
+			// Delimit the string using colons
 			const char* pEnd = StringCharacter(pInput, ':');
 
-			// No colon end? Assume it's a filename
+			// No colon end? Point to the terminating zero
 			if (!pEnd) {
-				m_NativeFilename.assign(pInput);
-				break;
-			}
-
-			// Nothing beyond the end colon? Assume filename
-			if (!pEnd[1]) {
-				// Get the filename without the ending colon
-				m_NativeFilename.assign(
-					pInput, static_cast<uintptr_t>(pEnd - pInput));
-				break;
+				pEnd = pInput + StringLength(pInput);
 			}
 
 			// Create a string from the directory name
@@ -1274,29 +1248,38 @@ Burger::eError BURGER_API Burger::Filename::GetNativeClassic(
 			// Traverse the directory
 			long lNewDirID;
 			uint_t bDirectory;
-			int iResult = GetDirectoryID(sVolRefNum, lDirID, TempString.c_str(),
-				&lNewDirID, &bDirectory);
+			uint8_t Temp[256 + 1];
+			uintptr_t uLength = MacRomanUS::TranslateFromUTF8(
+				reinterpret_cast<char*>(Temp + 1), 256, TempString.c_str());
+			Temp[0] = static_cast<uint8_t>(uLength);
+
+			iMacError = GetDirectoryID(
+				sVolRefNum, lDirID, Temp, &lNewDirID, &bDirectory);
 
 			// Issue in the traversal?
-			if (iResult) {
+			if (!bDirectory || (iMacError == fnfErr)) {
 				// File not found is acceptable.
-				if (iResult == fnfErr) {
-					m_NativeFilename.assign(pInput);
-					break;
+				m_NativeFilename.assign(pInput);
+				// If there is a terminating colon, remove it.
+				if (m_NativeFilename.ends_with(':')) {
+					m_NativeFilename.pop_back();
 				}
-				uResult = kErrorIO;
 				break;
 			}
 
-			// It wasn't a directory
-			if (!bDirectory) {
-				uResult = kErrorNotADirectory;
+			// Some other error occured
+			if (iMacError) {
+				uResult = MacConvertError(iMacError);
 				break;
 			}
 
 			// Since this worked, skip to the next folder
 			lDirID = lNewDirID;
 
+			// Already end of string?
+			if (!pEnd[0]) {
+				break;
+			}
 			// Accept the entry
 			pInput = pEnd + 1;
 		}
@@ -1304,11 +1287,11 @@ Burger::eError BURGER_API Burger::Filename::GetNativeClassic(
 
 	// If no issues parsing, assume it's okay
 	if (!uResult) {
-		m_lDirID = lDirID;
-		m_sVRefNum = sVolRefNum;
-
 		// Mark as an FSSpec
 		m_bNativeValid = 1;
+
+		m_lDirID = lDirID;
+		m_sVRefNum = sVolRefNum;
 	}
 	return uResult;
 }
@@ -1320,6 +1303,16 @@ Burger::eError BURGER_API Burger::Filename::GetNativeClassic(
 	Given a volume and root directory, traverse a Burgerlib style pathname and
 	create the values needed to create an FSSpec that best represents the
 	pathname.
+
+	If the FSRef can be parsed all the way down to the final entry,
+	m_NativeFilename will be set to an empty string. If not, it means the file
+	or directory at the end of the chain does not exist and will need to be
+	created or otherwise handled due to it not being present on the file system.
+
+	The Directory ID and volume reference number will be properly set if the
+	pathname is legitimate. If the pathname is to an existing directory, the
+	directory ID will be of the directory itself. If the path is to a file, the
+	directory id is for the directory that contains the file.
 
 	\maconly
 
@@ -1338,7 +1331,6 @@ Burger::eError BURGER_API Burger::Filename::GetNativeCarbon(
 {
 	// Clear the output
 	m_NativeFilename.clear();
-	eError uResult = kErrorNone;
 
 	// Create an initial FSRef
 	FSSpec CurrentSpec;
@@ -1346,34 +1338,30 @@ Burger::eError BURGER_API Burger::Filename::GetNativeCarbon(
 	CurrentSpec.parID = lDirID;
 	CurrentSpec.name[0] = 0;
 
-	OSErr iError =
+	int iMacError =
 		FSpMakeFSRef(&CurrentSpec, reinterpret_cast<FSRef*>(m_FSRef));
 
-	if (iError == paramErr) {
+	eError uResult;
+	if (iMacError == paramErr) {
 		// MacOS 7.1-8.6 will generate this error
 		uResult = kErrorNotSupportedOnThisPlatform;
 
-	} else if (iError) {
-		uResult = kErrorNotADirectory;
+	} else if (iMacError) {
+		// Other error
+		uResult = MacConvertError(iMacError);
+
 	} else if (pInput) {
 		String16 Name16;
 		String TempString;
 
+		uResult = kErrorNone;
 		while (pInput[0]) {
-			// Find the colon at the end of the string
+			// Delimit the string using colons
 			const char* pEnd = StringCharacter(pInput, ':');
 
-			// No colon end? Assume filename
+			// No colon end? Point to the terminating zero
 			if (!pEnd) {
-				m_NativeFilename.assign(pInput);
-				break;
-			}
-			// Nothing beyond the end colon? Assume filename
-			if (!pEnd[1]) {
-				// Get the filename without the ending colon
-				m_NativeFilename.assign(
-					pInput, static_cast<uintptr_t>(pEnd - pInput));
-				break;
+				pEnd = pInput + StringLength(pInput);
 			}
 
 			// Create a string from the directory name
@@ -1384,22 +1372,31 @@ Burger::eError BURGER_API Burger::Filename::GetNativeCarbon(
 
 			// Follow the FSRef chain using Unicode
 			FSRef TempRef;
-			iError = FSMakeFSRefUnicode(reinterpret_cast<FSRef*>(m_FSRef),
+			iMacError = FSMakeFSRefUnicode(reinterpret_cast<FSRef*>(m_FSRef),
 				Name16.length(), Name16.c_str(), kUnicode16BitFormat, &TempRef);
 
 			// If there was an error, abort
-			if (iError) {
+			if (iMacError) {
 				// File not found is acceptable.
-				if (iError == fnfErr) {
+				if (iMacError == fnfErr) {
 					m_NativeFilename.assign(pInput);
+					// If there is a terminating colon, remove it.
+					if (m_NativeFilename.ends_with(':')) {
+						m_NativeFilename.pop_back();
+					}
 					break;
 				}
-				uResult = kErrorIO;
+				uResult = MacConvertError(iMacError);
 				break;
 			}
 			// Since this worked, skip to the next
 			MemoryCopy(m_FSRef, &TempRef, sizeof(TempRef));
-			// Accept the entry
+
+			// Already end of string?
+			if (!pEnd[0]) {
+				break;
+			}
+			// Accept the entry and skip the colon
 			pInput = pEnd + 1;
 		}
 	}
@@ -1408,6 +1405,29 @@ Burger::eError BURGER_API Burger::Filename::GetNativeCarbon(
 	if (!uResult) {
 		// Mark as an FSRef
 		m_bNativeValid = 2;
+
+		// Finishing touch, obtain the volume reference number and the directory
+		// ID for the FSRef and store them in the constants
+		FSRefParam Block;
+		InitFSRefParam(&Block, reinterpret_cast<FSRef*>(m_FSRef),
+			kFSCatInfoNodeFlags | kFSCatInfoVolume | kFSCatInfoParentDirID |
+				kFSCatInfoNodeID);
+
+		FSCatalogInfo MyInfo;
+		Block.catInfo = &MyInfo;
+		iMacError = PBGetCatalogInfoSync(&Block);
+
+		// No error?
+		if (!iMacError) {
+			// If this is a directory, use the actual ID
+			if (MyInfo.nodeFlags & kFSNodeIsDirectoryMask) {
+				m_lDirID = static_cast<long>(MyInfo.nodeID);
+			} else {
+				// For files, set the parent directory ID
+				m_lDirID = static_cast<long>(MyInfo.parentDirID);
+			}
+			m_sVRefNum = MyInfo.volume;
+		}
 	}
 	return uResult;
 }

@@ -143,7 +143,6 @@ public:
 		return reinterpret_cast<FSRef*>(m_FSRef);
 	}
 	FSRef* BURGER_API GetFSRef(void) BURGER_NOEXCEPT;
-	eError BURGER_API GetFinalFSRef(FSRef* pFSRef) BURGER_NOEXCEPT;
 	BURGER_INLINE long GetDirID(void) const BURGER_NOEXCEPT
 	{
 		return m_lDirID;

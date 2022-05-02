@@ -91,7 +91,7 @@ static uint_t BURGER_API TestParseQuotedString(void) BURGER_NOEXCEPT
 		// Check the end mark
 		uint_t uTest = (pTester != (pWork->m_pTest + pWork->m_uResult));
 		// Check the result string
-		uTest |= Burger::StringCompare(Buffer, pWork->m_pWild);
+		uTest |= static_cast<uint_t>(Burger::StringCompare(Buffer, pWork->m_pWild));
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(

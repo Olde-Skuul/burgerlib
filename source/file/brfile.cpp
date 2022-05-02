@@ -1,20 +1,20 @@
 /***************************************
 
-    File Class
+	File Class
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brfile.h"
-#include "brfilemanager.h"
 #include "brendian.h"
+#include "brfilemanager.h"
 #include "brmemoryfunctions.h"
 #include <stdio.h>
 
@@ -37,19 +37,18 @@
 	so all file access functions will fail until
 	Open() is called and it succeeds
 
-	\sa Open(const char *,eFileAccess), Open(Filename *,eFileAccess), Close(), ~File()
+	\sa Open(const char *,eFileAccess), Open(Filename *,eFileAccess), Close(),
+		~File()
 
 ***************************************/
 
-Burger::File::File() BURGER_NOEXCEPT :
-	m_pFile(nullptr),
-	m_uPosition(0),
-	m_Filename(),
-	m_Semaphore()
-{
+Burger::File::File() BURGER_NOEXCEPT: m_pFile(nullptr),
+									  m_Filename()
 #if defined(BURGER_MAC)
-	MemoryClear(m_FSRef,sizeof(m_FSRef));
+	,
+									  m_bUsingFSRef(FALSE)
 #endif
+{
 }
 
 /*! ************************************
@@ -66,16 +65,15 @@ Burger::File::File() BURGER_NOEXCEPT :
 
 ***************************************/
 
-Burger::File::File(const char *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT :
-	m_pFile(nullptr),
-	m_uPosition(0),
-	m_Filename(pFileName),
-	m_Semaphore()
-{
+Burger::File::File(const char* pFileName, eFileAccess eAccess) BURGER_NOEXCEPT
+	: m_pFile(nullptr),
+	  m_Filename(pFileName)
 #if defined(BURGER_MAC)
-	MemoryClear(m_FSRef,sizeof(m_FSRef));
+	,
+	  m_bUsingFSRef(FALSE)
 #endif
-	Open(pFileName,eAccess);
+{
+	Open(pFileName, eAccess);
 }
 
 /*! ************************************
@@ -92,16 +90,15 @@ Burger::File::File(const char *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT :
 
 ***************************************/
 
-Burger::File::File(Filename *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT :
-	m_pFile(nullptr),
-	m_uPosition(0),
-	m_Filename(pFileName[0]),
-	m_Semaphore()
-{
+Burger::File::File(Filename* pFileName, eFileAccess eAccess) BURGER_NOEXCEPT
+	: m_pFile(nullptr),
+	  m_Filename(pFileName[0])
 #if defined(BURGER_MAC)
-	MemoryClear(m_FSRef,sizeof(m_FSRef));
+	,
+	  m_bUsingFSRef(FALSE)
 #endif
-	Open(pFileName,eAccess);
+{
+	Open(pFileName, eAccess);
 }
 
 /*! ************************************
@@ -123,7 +120,7 @@ Burger::File::~File()
 
 	\brief Create a new File instance
 
-	Allocate memory using Burger::Alloc() and 
+	Allocate memory using Burger::Alloc() and
 	initialize a File with it.
 
 	\param pFileName Pointer to a "C" string containing a Burgerlib pathname
@@ -133,13 +130,14 @@ Burger::File::~File()
 
 ***************************************/
 
-Burger::File * BURGER_API Burger::File::New(const char *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT
+Burger::File* BURGER_API Burger::File::New(
+	const char* pFileName, eFileAccess eAccess) BURGER_NOEXCEPT
 {
 	// Manually allocate the memory
-	File *pThis = new (Alloc(sizeof(File))) File();
+	File* pThis = new (Alloc(sizeof(File))) File();
 	if (pThis) {
-	// Load up the data
-		if (pThis->Open(pFileName,eAccess)==kErrorNone) {
+		// Load up the data
+		if (pThis->Open(pFileName, eAccess) == kErrorNone) {
 			// We're good!
 			return pThis;
 		}
@@ -154,7 +152,7 @@ Burger::File * BURGER_API Burger::File::New(const char *pFileName,eFileAccess eA
 
 	\brief Create a new File instance
 
-	Allocate memory using Burger::Alloc() and 
+	Allocate memory using Burger::Alloc() and
 	initialize a File with it.
 
 	\param pFileName Pointer to a Burger::Filename object
@@ -164,13 +162,14 @@ Burger::File * BURGER_API Burger::File::New(const char *pFileName,eFileAccess eA
 
 ***************************************/
 
-Burger::File * BURGER_API Burger::File::New(Filename *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT
+Burger::File* BURGER_API Burger::File::New(
+	Filename* pFileName, eFileAccess eAccess) BURGER_NOEXCEPT
 {
 	// Manually allocate the memory
-	File *pThis = new (Alloc(sizeof(File))) File();
+	File* pThis = new (Alloc(sizeof(File))) File();
 	if (pThis) {
-	// Load up the data
-		if (pThis->Open(pFileName,eAccess)==kErrorNone) {
+		// Load up the data
+		if (pThis->Open(pFileName, eAccess) == kErrorNone) {
 			// We're good!
 			return pThis;
 		}
@@ -207,10 +206,11 @@ Burger::File * BURGER_API Burger::File::New(Filename *pFileName,eFileAccess eAcc
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::File::Open(const char *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::File::Open(
+	const char* pFileName, eFileAccess eAccess) BURGER_NOEXCEPT
 {
 	Filename MyFilename(pFileName);
-	return Open(&MyFilename,eAccess);
+	return Open(&MyFilename, eAccess);
 }
 
 /*! ************************************
@@ -226,14 +226,16 @@ Burger::eError BURGER_API Burger::File::Open(const char *pFileName,eFileAccess e
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || defined(BURGER_MACOS) || defined(BURGER_DARWIN) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || defined(DOXYGEN)
-Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAccess) BURGER_NOEXCEPT
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
+	defined(BURGER_MACOS) || defined(BURGER_DARWIN) || \
+	defined(BURGER_XBOX360) || defined(BURGER_VITA)) || \
+	defined(DOXYGEN)
+Burger::eError BURGER_API Burger::File::Open(
+	Filename* pFileName, eFileAccess eAccess) BURGER_NOEXCEPT
 {
-	static const char *g_OpenFlags[4] = {
-		"rb","wb","ab","r+b"
-	};
+	static const char* g_OpenFlags[4] = {"rb", "wb", "ab", "r+b"};
 	Close();
-	FILE *fp = fopen(pFileName->GetNative(),g_OpenFlags[eAccess&3]);
+	FILE* fp = fopen(pFileName->GetNative(), g_OpenFlags[eAccess & 3]);
 	uint_t uResult = kErrorFileNotFound;
 	if (fp) {
 		m_pFile = fp;
@@ -256,12 +258,12 @@ Burger::eError BURGER_API Burger::File::Open(Filename *pFileName,eFileAccess eAc
 Burger::eError BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNone;
-	FILE *fp = static_cast<FILE *>(m_pFile);
+	FILE* fp = static_cast<FILE*>(m_pFile);
 	if (fp) {
-		if (fclose(static_cast<FILE *>(fp))) {
+		if (fclose(static_cast<FILE*>(fp))) {
 			uResult = kErrorIO;
 		}
-		m_pFile = NULL;
+		m_pFile = nullptr;
 	}
 	return uResult;
 }
@@ -275,26 +277,29 @@ Burger::eError BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 
 	\note The return value is 32 bits wide on a 32 bit operating system, 64 bits
 		wide on 64 bit operating systems
-	\return 0 if error or an empty file. Non-zero is the size of the file in bytes. 
+
+	\return 0 if error or an empty file. Non-zero is the size of the file in
+		bytes.
+
 	\sa Open(const char *, eFileAccess) and Open(Filename *,eFileAccess)
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::File::GetSize(void) BURGER_NOEXCEPT
+uint64_t BURGER_API Burger::File::GetSize(void) BURGER_NOEXCEPT
 {
-	uintptr_t uSize = 0;
-	FILE *fp = static_cast<FILE *>(m_pFile);
+	uint64_t uSize = 0;
+	FILE* fp = static_cast<FILE*>(m_pFile);
 	if (fp) {
 		// Save the current file mark
 		long Temp = ftell(fp);
 		// Seek to the end of file
-		if (!fseek(fp,0,SEEK_END)) {
+		if (!fseek(fp, 0, SEEK_END)) {
 			// Get the file size
-			uSize = static_cast<uintptr_t>(ftell(fp));
+			uSize = static_cast<uint64_t>(ftell(fp));
 		}
 		// If no error, restore the old file mark
-		if (Temp!=-1) {
-			fseek(fp,Temp,SEEK_SET);
+		if (Temp != -1) {
+			fseek(fp, Temp, SEEK_SET);
 		}
 	}
 	return uSize;
@@ -309,18 +314,21 @@ uintptr_t BURGER_API Burger::File::GetSize(void) BURGER_NOEXCEPT
 
 	\param pOutput Pointer to a buffer of data to read from a file
 	\param uSize Number of bytes to read
-	\return Number of bytes read (Can be less than what was requested due to EOF or read errors)
+	\return Number of bytes read (Can be less than what was requested due to EOF
+		or read errors)
+
 	\sa Write(const void *,uintptr_t)
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::File::Read(void *pOutput,uintptr_t uSize) BURGER_NOEXCEPT
+uintptr_t BURGER_API Burger::File::Read(
+	void* pOutput, uintptr_t uSize) BURGER_NOEXCEPT
 {
 	uintptr_t uResult = 0;
 	if (uSize && pOutput) {
-		FILE *fp = static_cast<FILE *>(m_pFile);
+		FILE* fp = static_cast<FILE*>(m_pFile);
 		if (fp) {
-			uResult = fread(pOutput,1,uSize,fp);
+			uResult = fread(pOutput, 1, uSize, fp);
 		}
 	}
 	return uResult;
@@ -335,18 +343,22 @@ uintptr_t BURGER_API Burger::File::Read(void *pOutput,uintptr_t uSize) BURGER_NO
 
 	\param pInput Pointer to a buffer of data to write to a file
 	\param uSize Number of bytes to write
-	\return Number of bytes written (Can be less than what was requested due to EOF or write errors)
+
+	\return Number of bytes written (Can be less than what was requested due to
+		EOF or write errors)
+
 	\sa Read(void *,uintptr_t)
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::File::Write(const void *pInput,uintptr_t uSize) BURGER_NOEXCEPT
+uintptr_t BURGER_API Burger::File::Write(
+	const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT
 {
 	uintptr_t uResult = 0;
 	if (uSize && pInput) {
-		FILE *fp = static_cast<FILE *>(m_pFile);
+		FILE* fp = static_cast<FILE*>(m_pFile);
 		if (fp) {
-			uResult = fwrite(pInput,1,uSize,fp);
+			uResult = fwrite(pInput, 1, uSize, fp);
 		}
 	}
 	return uResult;
@@ -364,16 +376,16 @@ uintptr_t BURGER_API Burger::File::Write(const void *pInput,uintptr_t uSize) BUR
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::File::GetMark(void)
+uint64_t BURGER_API Burger::File::GetMark(void) BURGER_NOEXCEPT
 {
-	uintptr_t uMark = 0;
-	FILE *fp = static_cast<FILE *>(m_pFile);
+	uint64_t uMark = 0;
+	FILE* fp = static_cast<FILE*>(m_pFile);
 	if (fp) {
 		// Save the current file mark
 		long Temp = ftell(fp);
 		// If no error, restore the old file mark
-		if (Temp!=-1) {
-			uMark = static_cast<uintptr_t>(Temp);
+		if (Temp != -1) {
+			uMark = static_cast<uint64_t>(Temp);
 		}
 	}
 	return uMark;
@@ -391,13 +403,13 @@ uintptr_t BURGER_API Burger::File::GetMark(void)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::File::SetMark(uintptr_t uMark)
+Burger::eError BURGER_API Burger::File::SetMark(uint64_t uMark) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNotInitialized;
-	FILE *fp = static_cast<FILE *>(m_pFile);
+	FILE* fp = static_cast<FILE*>(m_pFile);
 	if (fp) {
 		// Seek to the end of file
-		if (!fseek(fp,static_cast<long>(uMark),SEEK_SET)) {
+		if (!fseek(fp, static_cast<long>(uMark), SEEK_SET)) {
 			uResult = kErrorNone;
 		} else {
 			uResult = kErrorOutOfBounds;
@@ -417,12 +429,12 @@ Burger::eError BURGER_API Burger::File::SetMark(uintptr_t uMark)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
+Burger::eError BURGER_API Burger::File::SetMarkAtEOF(void) BURGER_NOEXCEPT
 {
-	uint_t uResult = kErrorOutOfBounds;
-	FILE *fp = static_cast<FILE *>(m_pFile);
+	eError uResult = kErrorOutOfBounds;
+	FILE* fp = static_cast<FILE*>(m_pFile);
 	if (fp) {
-		if (!fseek(fp,0,SEEK_END)) {
+		if (!fseek(fp, 0, SEEK_END)) {
 			uResult = kErrorNone;
 		}
 	}
@@ -436,13 +448,18 @@ uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
 	If a file is open, query the operating system for the last time
 	the file was modified.
 
-	\param pOutput Pointer to a Burger::TimeDate_t to receive the file modification time
-	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
-	\sa GetCreationTime() or SetModificationTime()
+	\param pOutput Pointer to a Burger::TimeDate_t to receive the file
+		modification time
+
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not
+		available or other codes for errors
+
+	\sa SetCreationTime() or SetModificationTime()
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::File::GetModificationTime(
+	TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	pOutput->Clear();
 	return kErrorNotSupportedOnThisPlatform;
@@ -452,16 +469,21 @@ Burger::eError BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 
 	\brief Get the time the file was created
 
-	If a file is open, query the operating system for the time
-	the file was created.
+	If a file is open, query the operating system for the time the file was
+	created.
 
-	\param pOutput Pointer to a Burger::TimeDate_t to receive the file creation time
-	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
+	\param pOutput Pointer to a Burger::TimeDate_t to receive the file creation
+		time
+
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not
+		available or other codes for errors
+
 	\sa GetModificationTime() or SetCreationTime()
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::File::GetCreationTime(
+	TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	pOutput->Clear();
 	return kErrorNotSupportedOnThisPlatform;
@@ -474,13 +496,18 @@ Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 	If a file is open, call the operating system to set the file
 	modification time to the passed value.
 
-	\param pInput Pointer to a Burger::TimeDate_t to use for the new file modification time
-	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
+	\param pInput Pointer to a Burger::TimeDate_t to use for the new file
+		modification time
+
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not
+		available or other codes for errors
+
 	\sa SetCreationTime() or GetModificationTime()
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t * /* pInput */)
+Burger::eError BURGER_API Burger::File::SetModificationTime(
+	const TimeDate_t* /* pInput */) BURGER_NOEXCEPT
 {
 	return kErrorNotSupportedOnThisPlatform;
 }
@@ -492,44 +519,55 @@ uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t * /* pInput
 	If a file is open, call the operating system to set the file
 	creation time to the passed value.
 
-	\param pInput Pointer to a Burger::TimeDate_t to use for the new file creation time
-	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
+	\param pInput Pointer to a Burger::TimeDate_t to use for the new file
+		creation time
+
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform
+		if not available or other codes for errors
+
 	\sa SetModificationTime() or GetCreationTime()
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::SetCreationTime(const TimeDate_t * /* pInput */)
+Burger::eError BURGER_API Burger::File::SetCreationTime(
+	const TimeDate_t* /* pInput */) BURGER_NOEXCEPT
 {
 	return kErrorNotSupportedOnThisPlatform;
 }
 #endif
 
-uint_t BURGER_API Burger::File::OpenAsync(const char *pFileName,eFileAccess eAccess)
+uint_t BURGER_API Burger::File::OpenAsync(
+	const char* pFileName, eFileAccess eAccess) BURGER_NOEXCEPT
 {
 	m_Filename.assign(pFileName);
-	FileManager::g_pFileManager->AddQueue(this,FileManager::kIOCommandOpen,nullptr,eAccess);
+	FileManager::g_pFileManager->AddQueue(
+		this, FileManager::kIOCommandOpen, nullptr, eAccess);
 	return 0;
 }
 
-uint_t BURGER_API Burger::File::OpenAsync(Filename *pFileName,eFileAccess eAccess)
+uint_t BURGER_API Burger::File::OpenAsync(
+	Filename* pFileName, eFileAccess eAccess) BURGER_NOEXCEPT
 {
 	m_Filename = pFileName[0];
-	FileManager::g_pFileManager->AddQueue(this,FileManager::kIOCommandOpen,nullptr,eAccess);
+	FileManager::g_pFileManager->AddQueue(
+		this, FileManager::kIOCommandOpen, nullptr, eAccess);
 	return 0;
 }
 
-uint_t BURGER_API Burger::File::CloseAsync(void)
+uint_t BURGER_API Burger::File::CloseAsync(void) BURGER_NOEXCEPT
 {
-	FileManager::g_pFileManager->AddQueue(this,FileManager::kIOCommandClose,nullptr,0);
+	FileManager::g_pFileManager->AddQueue(
+		this, FileManager::kIOCommandClose, nullptr, 0);
 	return 0;
 }
 
-uint_t BURGER_API Burger::File::ReadAsync(void *pOutput,uintptr_t uSize)
+uint_t BURGER_API Burger::File::ReadAsync(
+	void* pOutput, uintptr_t uSize) BURGER_NOEXCEPT
 {
-	FileManager::g_pFileManager->AddQueue(this,FileManager::kIOCommandRead,pOutput,uSize);
+	FileManager::g_pFileManager->AddQueue(
+		this, FileManager::kIOCommandRead, pOutput, uSize);
 	return 0;
 }
-
 
 /*! ************************************
 
@@ -545,7 +583,10 @@ uint_t BURGER_API Burger::File::ReadAsync(void *pOutput,uintptr_t uSize)
 	on MacOS, it will fail with a code of kErrorNotSupportedOnThisPlatform.
 
 	\param uAuxType Value to set the file's auxiliary type
-	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
+
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not
+		available or other codes for errors
+
 	\sa SetAuxAndFileType(), SetFileType() or GetAuxType()
 
 ***************************************/
@@ -562,7 +603,9 @@ uint_t BURGER_API Burger::File::ReadAsync(void *pOutput,uintptr_t uSize)
 	on MacOS, it will fail with a code of kErrorNotSupportedOnThisPlatform.
 
 	\param uFileType Value to set the file's type
-	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not
+		available or other codes for errors
+
 	\sa SetAuxAndFileType(), SetAuxType() or GetFileType()
 
 ***************************************/
@@ -616,7 +659,9 @@ uint_t BURGER_API Burger::File::ReadAsync(void *pOutput,uintptr_t uSize)
 
 	\param uAuxType Value to set the file's auxiliary type
 	\param uFileType Value to set the file's type
-	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not available or other codes for errors
+	\return kErrorNone if successful, kErrorNotSupportedOnThisPlatform if not
+		available or other codes for errors
+
 	\sa SetFileType() or SetAuxType()
 
 ***************************************/
@@ -627,47 +672,61 @@ uint_t BURGER_API Burger::File::ReadAsync(void *pOutput,uintptr_t uSize)
 
 	Read a "C" string with a terminating zero
 	from the file stream. If the string read is larger than the buffer,
-	it is truncated. The buffer will have an ending zero on valid 
+	it is truncated. The buffer will have an ending zero on valid
 	read or a trucated read. If uLength was zero, then pInput can be \ref NULL
 
 	\param pOutput Pointer to a "C" string to write.
 	\param uLength Size of the buffer (To prevent overruns)
 
-	\return \ref TRUE if the string was read, \ref FALSE, hit EOF
+	\return Zero if the string was read, \ref kErrorEndOfFile hit EOF
 
 	\sa Burger::WriteCString(FILE *,const char *)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::ReadCString(char *pOutput,uintptr_t uLength)
+Burger::eError BURGER_API Burger::File::ReadCString(
+	char* pOutput, uintptr_t uLength) BURGER_NOEXCEPT
 {
 	// Set the maximum buffer size
 	// and remove 1 to make space or the ending zero
-	char *pEnd = (pOutput+uLength)-1;
+	const char* pEnd = (pOutput + uLength) - 1;
 	uint_t uTemp;
-	for (;;) {		// Stay until either zero or EOF
+
+	// Stay until either zero or EOF
+	for (;;) {
 		uint8_t Buffer;
-		if (Read(&Buffer,1)!=1) {
-			uTemp = 666;	// EOF reached
+		if (Read(&Buffer, 1) != 1) {
+			// EOF reached
+			uTemp = 666;
 			break;
 		}
+
+		// Exit due to end of string?
 		uTemp = Buffer;
-		if (!uTemp) {		// Exit due to end of string?
+		if (!uTemp) {
 			break;
 		}
 		// Can I store it?
-		if (pOutput<pEnd) {
+		if (pOutput < pEnd) {
+			// Inc the input pointer
 			pOutput[0] = static_cast<char>(uTemp);
-			++pOutput;		// Inc the input pointer
+			++pOutput;
 		}
 	}
-	if (uLength) {		// Any space in buffer?
-		pOutput[0] = 0;	// Add ending zero
+
+	// Any space in buffer?
+	if (uLength) {
+		// Add ending zero
+		pOutput[0] = 0;
 	}
-	if (uTemp) {		// EOF?
-		return FALSE;	// Hit the EOF.
+
+	// Hit the EOF.
+	if (uTemp) {
+		return kErrorEndOfFile;
 	}
-	return TRUE;	// Hit the end of string (More data may be present)
+
+	// Hit the end of string (More data may be present)
+	return kErrorNone;
 }
 
 /*! ************************************
@@ -682,10 +741,11 @@ uint_t BURGER_API Burger::File::ReadCString(char *pOutput,uintptr_t uLength)
 
 ***************************************/
 
-uint32_t BURGER_API Burger::File::ReadBigWord32(void)
+uint32_t BURGER_API Burger::File::ReadBigWord32(void) BURGER_NOEXCEPT
 {
+	// Save the long word
 	uint32_t mValue;
-	Read(&mValue,4);		// Save the long word
+	Read(&mValue, 4);
 	return BigEndian::Load(&mValue);
 }
 
@@ -701,10 +761,11 @@ uint32_t BURGER_API Burger::File::ReadBigWord32(void)
 
 ***************************************/
 
-uint16_t BURGER_API Burger::File::ReadBigWord16(void)
+uint16_t BURGER_API Burger::File::ReadBigWord16(void) BURGER_NOEXCEPT
 {
+	// Save the short word
 	uint16_t mValue;
-	Read(&mValue,2);		// Save the short word
+	Read(&mValue, 2);
 	return BigEndian::Load(&mValue);
 }
 
@@ -720,10 +781,11 @@ uint16_t BURGER_API Burger::File::ReadBigWord16(void)
 
 ***************************************/
 
-uint32_t BURGER_API Burger::File::ReadLittleWord32(void)
+uint32_t BURGER_API Burger::File::ReadLittleWord32(void) BURGER_NOEXCEPT
 {
+	// Save the long word
 	uint32_t mValue;
-	Read(&mValue,4);		// Save the long word
+	Read(&mValue, 4);
 	return LittleEndian::Load(&mValue);
 }
 
@@ -739,9 +801,10 @@ uint32_t BURGER_API Burger::File::ReadLittleWord32(void)
 
 ***************************************/
 
-uint16_t BURGER_API Burger::File::ReadLittleWord16(void)
+uint16_t BURGER_API Burger::File::ReadLittleWord16(void) BURGER_NOEXCEPT
 {
+	// Save the long word
 	uint16_t mValue;
-	Read(&mValue,2);		// Save the long word
+	Read(&mValue, 2);
 	return LittleEndian::Load(&mValue);
 }

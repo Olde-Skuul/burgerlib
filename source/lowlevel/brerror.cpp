@@ -154,6 +154,12 @@ uintptr_t BURGER_API Burger::GetErrorString(
 	case kErrorIO:
 		pErrorMessage = "IO Error";
 		break;
+	case kErrorEndOfFile:
+		pErrorMessage = "Reached the end of file";
+		break;
+	case kErrorIsLocked:
+		pErrorMessage = "File object is currently locked";
+		break;
 
 	case kErrorMemory:
 		pErrorMessage = "Memory system failure";

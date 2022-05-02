@@ -163,12 +163,12 @@ Burger::eError BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::File::GetSize(void) BURGER_NOEXCEPT
+uint64_t BURGER_API Burger::File::GetSize(void) BURGER_NOEXCEPT
 {
 	Regs16 MyRegs;
 	Regs16 MyRegsStore;
 	Regs16 MyRegsSeek;
-	uintptr_t uSize = 0;
+	uint64_t uSize = 0;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		// Int 0x21,0x4201 Seek/Current
@@ -304,10 +304,10 @@ uintptr_t BURGER_API Burger::File::Write(
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::File::GetMark(void)
+uint64_t BURGER_API Burger::File::GetMark(void) BURGER_NOEXCEPT
 {
 	Regs16 MyRegs;
-	uintptr_t uMark = 0;
+	uint64_t uMark = 0;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		// Int 0x21,0x4201 Seek/Current
@@ -336,7 +336,7 @@ uintptr_t BURGER_API Burger::File::GetMark(void)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::File::SetMark(uintptr_t uMark)
+Burger::eError BURGER_API Burger::File::SetMark(uint64_t uMark) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNotInitialized;
 	Regs16 MyRegs;
@@ -369,9 +369,9 @@ Burger::eError BURGER_API Burger::File::SetMark(uintptr_t uMark)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
+Burger::eError BURGER_API Burger::File::SetMarkAtEOF(void) BURGER_NOEXCEPT
 {
-	uint_t uResult = kErrorOutOfBounds;
+	eError uResult = kErrorOutOfBounds;
 	Regs16 MyRegs;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
@@ -441,7 +441,7 @@ Burger::eError BURGER_API Burger::File::GetModificationTime(
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t* pOutput)
+Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	pOutput->Clear();
 	return kErrorNotSupportedOnThisPlatform;
@@ -464,9 +464,9 @@ Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t* pOutput)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t* pInput)
+Burger::eError BURGER_API Burger::File::SetModificationTime(const TimeDate_t* pInput) BURGER_NOEXCEPT
 {
-	uint_t uResult = kErrorFileNotFound;
+	eError uResult = kErrorFileNotFound;
 	Regs16 Regs;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
@@ -501,7 +501,7 @@ uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t* pInput)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::SetCreationTime(const TimeDate_t* /* pInput */)
+Burger::eError BURGER_API Burger::File::SetCreationTime(const TimeDate_t* /* pInput */) BURGER_NOEXCEPT
 {
 	return kErrorNotSupportedOnThisPlatform;
 }

@@ -92,6 +92,10 @@ enum eError {
 	kErrorResourceNotFound,
 	/** IO Error */
 	kErrorIO,
+	/** End of file */
+	kErrorEndOfFile,
+	/** File object is locked */
+	kErrorIsLocked,
 
 	/** Memory system errors */
 	kErrorMemory = 0x7200,
@@ -173,6 +177,10 @@ enum eError {
 
 extern uintptr_t BURGER_API GetErrorString(
 	char* pOutput, uintptr_t uOutputSize, eError uError) BURGER_NOEXCEPT;
+
+#if defined(BURGER_MAC) || defined(DOXYGEN)
+extern eError BURGER_API MacConvertError(int iMacError) BURGER_NOEXCEPT;
+#endif
 }
 /* END */
 

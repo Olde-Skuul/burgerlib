@@ -62,7 +62,7 @@ struct DosData_t {
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::Open(Filename* pName) BURGER_NOEXCEPT
+Burger::eError Burger::DirectorySearch::Open(Filename* pName) BURGER_NOEXCEPT
 {
 	// Assume failure
 	m_bHandleOk = 0;
@@ -100,9 +100,9 @@ uint_t Burger::DirectorySearch::Open(Filename* pName) BURGER_NOEXCEPT
 		if (!(Regs.flags & 1)) {
 			m_bHandleOk = 10;
 			m_sFileHandle = Regs.ax;
-			return FALSE;
+			return kErrorNone;
 		}
-		return TRUE;
+		return kErrorAccessDenied;
 	}
 
 	// Use the old method
@@ -130,10 +130,10 @@ uint_t Burger::DirectorySearch::Open(Filename* pName) BURGER_NOEXCEPT
 	Regs.ds = static_cast<uint16_t>(uRealBuffer >> 16);
 	Int86x(0x21, &Regs, &Regs);
 
-	uint_t uResult = TRUE;
+	eError uResult = kErrorAccessDenied;
 	if (!(Regs.flags & 1)) {
 		m_bHandleOk = 1;
-		uResult = FALSE;
+		uResult = kErrorNone;
 	}
 
 	// Restore the disk transfer address address to the old value
@@ -154,11 +154,11 @@ uint_t Burger::DirectorySearch::Open(Filename* pName) BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
+Burger::eError Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 {
 	// Not opened?
 	if (!m_bHandleOk) {
-		return TRUE;
+		return kErrorNotEnumerating;
 	}
 
 	Regs16 Regs;
@@ -190,7 +190,7 @@ uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 				if (Regs.flags & 1) {
 					// Close immediately
 					Close();
-					return TRUE;
+					return kErrorNotEnumerating;
 				}
 			}
 
@@ -258,7 +258,7 @@ uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 
 			if (uResult) {
 				m_bHandleOk = 0;
-				return TRUE;
+				return kErrorNotEnumerating;
 			}
 		}
 
@@ -291,7 +291,7 @@ uint_t Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 	m_bHidden = static_cast<uint8_t>((uFlags & 0x02) >> 1U);
 	m_bSystem = static_cast<uint8_t>((uFlags & 0x04) >> 2U);
 	m_bDir = static_cast<uint8_t>((uFlags & 0x10) >> 4U);
-	return FALSE;
+	return kErrorNone;
 }
 
 /***************************************

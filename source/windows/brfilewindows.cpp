@@ -100,25 +100,15 @@ Burger::eError  BURGER_API Burger::File::Close(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::File::GetSize(void) BURGER_NOEXCEPT
+uint64_t BURGER_API Burger::File::GetSize(void) BURGER_NOEXCEPT
 {
-	uintptr_t uSize = 0;
+	uint64_t uSize = 0;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		LARGE_INTEGER uLongSize;
-		BOOL bGetSizeResult = GetFileSizeEx(fp,&uLongSize);
+		const BOOL bGetSizeResult = GetFileSizeEx(fp,&uLongSize);
 		if (bGetSizeResult) {
-#if defined(BURGER_64BITCPU)
-			// 64 bit CPUs can handle really large files
-			uSize = uLongSize.QuadPart;
-#else
-			// 32 bit CPUs can overflow
-			if (uLongSize.HighPart) {
-				uSize = 0xFFFFFFFFUL;
-			} else {
-				uSize = uLongSize.LowPart;
-			}
-#endif
+			uSize = static_cast<uint64_t>(uLongSize.QuadPart);
 		}
 	}
 	return uSize;
@@ -244,27 +234,19 @@ uintptr_t BURGER_API Burger::File::Write(const void *pInput,uintptr_t uSize) BUR
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::File::GetMark(void)
+uint64_t BURGER_API Burger::File::GetMark(void) BURGER_NOEXCEPT
 {
-	uintptr_t uMark = 0;
+	uint64_t uMark = 0;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		LARGE_INTEGER uNewPointer;
 		LARGE_INTEGER uOldPointer;
 		uNewPointer.QuadPart = 0;
 		// Get the current file mark
-		BOOL bPositionResult = SetFilePointerEx(fp,uNewPointer,&uOldPointer,FILE_CURRENT);
+		const BOOL bPositionResult = SetFilePointerEx(fp,uNewPointer,&uOldPointer,FILE_CURRENT);
 		// If no error, restore the old file mark
 		if (bPositionResult) {
-#if defined(BURGER_64BITCPU)
-			uMark = uOldPointer.QuadPart;
-#else
-			if (uOldPointer.HighPart) {
-				uMark = 0xFFFFFFFFUL;
-			} else {
-				uMark = uOldPointer.LowPart;
-			}
-#endif
+			uMark = static_cast<uint64_t>(uOldPointer.QuadPart);
 		}
 	}
 	return uMark;
@@ -282,13 +264,13 @@ uintptr_t BURGER_API Burger::File::GetMark(void)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::File::SetMark(uintptr_t uMark)
+Burger::eError BURGER_API Burger::File::SetMark(uint64_t uMark) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNotInitialized;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		LARGE_INTEGER uNewPointer;
-		uNewPointer.QuadPart = uMark;
+		uNewPointer.QuadPart = static_cast<LONGLONG>(uMark);
 		// Get the current file mark
 		const BOOL bPositionResult = SetFilePointerEx(fp,uNewPointer,NULL,FILE_BEGIN);
 		// If no error, restore the old file mark
@@ -312,15 +294,15 @@ Burger::eError BURGER_API Burger::File::SetMark(uintptr_t uMark)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::SetMarkAtEOF(void)
+Burger::eError BURGER_API Burger::File::SetMarkAtEOF(void) BURGER_NOEXCEPT
 {
-	uint_t uResult = kErrorOutOfBounds;
+	eError uResult = kErrorOutOfBounds;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		LARGE_INTEGER uNewPointer;
 		uNewPointer.QuadPart = 0;
 		// Set the file mark to the end of the file
-		BOOL bPositionResult = SetFilePointerEx(fp,uNewPointer,NULL,FILE_END);
+		const BOOL bPositionResult = SetFilePointerEx(fp,uNewPointer,nullptr,FILE_END);
 		// Okay?
 		if (bPositionResult) {
 			uResult = kErrorNone;
@@ -373,7 +355,7 @@ Burger::eError BURGER_API Burger::File::GetModificationTime(TimeDate_t *pOutput)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
+Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorFileNotFound;
 	HANDLE fp = m_pFile;
@@ -403,15 +385,15 @@ Burger::eError BURGER_API Burger::File::GetCreationTime(TimeDate_t *pOutput)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t *pInput)
+Burger::eError BURGER_API Burger::File::SetModificationTime(const TimeDate_t *pInput) BURGER_NOEXCEPT
 {
-	uint_t uResult = kErrorFileNotFound;
+	eError uResult = kErrorFileNotFound;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		FILETIME ModificationTime;
 		pInput->Store(&ModificationTime);
 		// Set the file modification time
-		BOOL bFileInfoResult = SetFileTime(fp,NULL,&ModificationTime,NULL);
+		const BOOL bFileInfoResult = SetFileTime(fp,NULL,&ModificationTime,NULL);
 		if (bFileInfoResult) {
 			uResult = kErrorNone;
 		}
@@ -432,15 +414,15 @@ uint_t BURGER_API Burger::File::SetModificationTime(const TimeDate_t *pInput)
 
 ***************************************/
 
-uint_t BURGER_API Burger::File::SetCreationTime(const TimeDate_t *pInput)
+Burger::eError BURGER_API Burger::File::SetCreationTime(const TimeDate_t *pInput) BURGER_NOEXCEPT
 {
-	uint_t uResult = kErrorFileNotFound;
+	eError uResult = kErrorFileNotFound;
 	HANDLE fp = m_pFile;
 	if (fp) {
 		FILETIME CreationTime;
 		pInput->Store(&CreationTime);
 		// Set the file creation time
-		BOOL bFileInfoResult = SetFileTime(fp,&CreationTime,NULL,NULL);
+		const BOOL bFileInfoResult = SetFileTime(fp,&CreationTime,NULL,NULL);
 		if (bFileInfoResult) {
 			uResult = kErrorNone;
 		}

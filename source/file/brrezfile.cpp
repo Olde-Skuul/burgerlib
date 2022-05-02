@@ -1617,16 +1617,16 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 			if (TheFile.Open(pFileName,File::kReadOnly)==kErrorNone) {
 				// File detected
 				pEntry->m_uFlags |= ENTRYFLAGSFILEFOUND;
-				uintptr_t uNewLength = TheFile.GetSize();				// Get the NEW length
+				const uint32_t uNewLength = static_cast<uint32_t>(TheFile.GetSize());				// Get the NEW length
 				if (uNewLength) {
 					ppData = m_pMemoryManager->AllocHandle(uNewLength,uHandleFlags);	// Get memory
 					if (ppData) {										// Got the memory?
 						m_pMemoryManager->SetID(ppData,uRezNum);		// Set the ID to the handle
 						if (TheFile.Read(m_pMemoryManager->Lock(ppData),uNewLength)!=uNewLength) {
 							m_pMemoryManager->FreeHandle(ppData);		// Discard the memory
-							ppData = NULL;				// Can't load it in!
+							ppData = nullptr;				// Can't load it in!
 						} else {
-							pEntry->m_uLength = static_cast<uint32_t>(uNewLength);	// Save the size
+							pEntry->m_uLength = uNewLength;	// Save the size
 						}
 					}
 				}
