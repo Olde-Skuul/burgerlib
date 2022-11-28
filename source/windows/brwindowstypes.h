@@ -544,19 +544,19 @@ public:
 		IUnknown* pOuter = nullptr);
 	static IDirectInputW* BURGER_API GetDirectInputSingleton(
 		uint_t uVersion = 0x700);
-	static IDirectInput8W* BURGER_API GetDirectInput8Singleton(void);
+	static IDirectInput8W* BURGER_API GetDirectInput8Singleton(void) BURGER_NOEXCEPT;
 
 	// XINPUT1_4.dll or XINPUT1_3.dll
 	static uint32_t BURGER_API XInputGetState(
-		uint32_t dwUserIndex, _XINPUT_STATE* pState);
+		uint32_t dwUserIndex, _XINPUT_STATE* pState) BURGER_NOEXCEPT;
 	static uint32_t BURGER_API XInputSetState(
-		uint32_t dwUserIndex, _XINPUT_VIBRATION* pVibration);
+		uint32_t dwUserIndex, _XINPUT_VIBRATION* pVibration) BURGER_NOEXCEPT;
 	static uint32_t BURGER_API XInputGetCapabilities(uint32_t dwUserIndex,
 		uint32_t dwFlags, _XINPUT_CAPABILITIES* pCapabilities);
 	static uint32_t BURGER_API XInputGetDSoundAudioDeviceGuids(
 		uint32_t dwUserIndex, GUID* pDSoundRenderGuid,
 		GUID* pDSoundCaptureGuid);
-	static void BURGER_API XInputEnable(uint_t bEnable);
+	static void BURGER_API XInputEnable(uint_t bEnable) BURGER_NOEXCEPT;
 	static uint32_t BURGER_API XInputGetAudioDeviceIds(uint32_t dwUserIndex,
 		uint16_t* pRenderDeviceId, uint_t* pRenderCount,
 		uint16_t* pCaptureDeviceId, uint_t* pCaptureCount);

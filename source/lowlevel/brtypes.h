@@ -533,6 +533,10 @@
 #define BURGER_PS4
 #define BURGER_PLATFORM_NAME "Sony Playstation 4"
 
+#elif defined(__PROSPERO__)
+#define BURGER_PS5
+#define BURGER_PLATFORM_NAME "Sony Playstation 5"
+
 #elif defined(SN_TARGET_PSP) || defined(SN_TARGET_PSP_PRX)
 #define BURGER_PSP
 #define BURGER_PLATFORM_NAME "Sony Playstation Portable"
@@ -972,7 +976,9 @@
 #define BURGER_EQUALS_DELETE
 #define BURGER_EQUALS_DEFAULT
 #define BURGER_DEFAULT_CONSTRUCTOR \
-	BURGER_NOEXCEPT {}
+	BURGER_NOEXCEPT \
+	{ \
+	}
 #define BURGER_DEFAULT_DESTRUCTOR \
 	{ \
 	}

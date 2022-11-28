@@ -1,14 +1,14 @@
 /***************************************
 
-    Smart pointer template class
+	Smart pointer template class
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -38,55 +38,102 @@
 /* BEGIN */
 namespace Burger {
 class ProxyReferenceCounter {
-    BURGER_DISABLE_COPY(ProxyReferenceCounter);
+	BURGER_DISABLE_COPY(ProxyReferenceCounter);
+
 private:
-	uint_t m_uRefCount;				///< Number of weak pointers that are using this object as an anchor
-	uint_t m_bParentAlive;			///< \ref TRUE if the parent object was deleted
-	ProxyReferenceCounter() : m_uRefCount(0),m_bParentAlive(TRUE) {}
+	/** Number of weak pointers that are using this object as an anchor */
+	uint_t m_uRefCount;
+	/** \ref TRUE if the parent object was deleted */
+	uint_t m_bParentAlive;
+
+	ProxyReferenceCounter() BURGER_NOEXCEPT: m_uRefCount(0),
+											 m_bParentAlive(TRUE)
+	{
+	}
+
 public:
-	static ProxyReferenceCounter * BURGER_API New(void);
-	BURGER_INLINE uint_t IsParentAlive(void) const { return m_bParentAlive; }
-	BURGER_INLINE void ParentIsDead(void) { m_bParentAlive = FALSE; }
-	BURGER_INLINE void AddRef(void) { ++m_uRefCount; }
-	BURGER_INLINE void Release(void) { if (--m_uRefCount == 0) { Free(this); } }
+	static ProxyReferenceCounter* BURGER_API New(void) BURGER_NOEXCEPT;
+	BURGER_INLINE uint_t IsParentAlive(void) const BURGER_NOEXCEPT
+	{
+		return m_bParentAlive;
+	}
+	BURGER_INLINE void ParentIsDead(void) BURGER_NOEXCEPT
+	{
+		m_bParentAlive = FALSE;
+	}
+	BURGER_INLINE void AddRef(void) BURGER_NOEXCEPT
+	{
+		++m_uRefCount;
+	}
+	BURGER_INLINE void Release(void) BURGER_NOEXCEPT
+	{
+		if (--m_uRefCount == 0) {
+			Free(this);
+		}
+	}
 };
 
-class ReferenceCounter : public Base {
-    BURGER_DISABLE_COPY(ReferenceCounter);
+class ReferenceCounter: public Base {
+	BURGER_DISABLE_COPY(ReferenceCounter);
 	BURGER_RTTI_IN_CLASS();
+
 private:
-	uint_t m_uRefCount;					///< Number of smart pointers that are claiming ownership of this object
+	/** Number of smart pointers that are claiming ownership of this object */
+	uint_t m_uRefCount;
+
 public:
-	ReferenceCounter() BURGER_NOEXCEPT : m_uRefCount(0) { }
+	ReferenceCounter() BURGER_NOEXCEPT: m_uRefCount(0) {}
 	virtual ~ReferenceCounter();
-	BURGER_INLINE void AddRef(void) BURGER_NOEXCEPT { ++m_uRefCount; }
-	BURGER_INLINE void Release(void) BURGER_NOEXCEPT { if (--m_uRefCount == 0) { Delete(this); } }
+	BURGER_INLINE void AddRef(void) BURGER_NOEXCEPT
+	{
+		++m_uRefCount;
+	}
+	BURGER_INLINE void Release(void) BURGER_NOEXCEPT
+	{
+		if (--m_uRefCount == 0) {
+			Delete(this);
+		}
+	}
 };
 
 class WeakPointerAnchor {
+	/** Pointer to reference counter common object */
 	mutable ProxyReferenceCounter* m_pReferenceCounter;
+
 public:
-	WeakPointerAnchor() BURGER_NOEXCEPT : m_pReferenceCounter(nullptr) {}
+	WeakPointerAnchor() BURGER_NOEXCEPT: m_pReferenceCounter(nullptr) {}
 	~WeakPointerAnchor();
-	ProxyReferenceCounter* GetProxyReferenceCounter(void) const;
+	ProxyReferenceCounter* GetProxyReferenceCounter(void) const BURGER_NOEXCEPT;
 };
 
 #define BURGER_ALLOW_WEAK_POINTERS() \
-public: BURGER_INLINE ProxyReferenceCounter* GetProxyReferenceCounter(void) const { return m_WeakPointerAnchor.GetProxyReferenceCounter(); } \
-private: WeakPointerAnchor m_WeakPointerAnchor
+public: \
+	BURGER_INLINE ProxyReferenceCounter* GetProxyReferenceCounter(void) \
+		const BURGER_NOEXCEPT \
+	{ \
+		return m_WeakPointerAnchor.GetProxyReferenceCounter(); \
+	} \
+\
+private: \
+	WeakPointerAnchor m_WeakPointerAnchor
 
-class WeakAndStrongBase : public ReferenceCounter {
+class WeakAndStrongBase: public ReferenceCounter { 
 	BURGER_ALLOW_WEAK_POINTERS();
 	BURGER_RTTI_IN_CLASS();
 };
 
 template<class T>
 class SmartPointer {
-	T* m_pData;			///< Private copy of the pointer this class is tracking
-	BURGER_INLINE void Replace(T* pData) {
+
+	/** Private copy of the pointer this class is tracking */
+	T* m_pData;
+
+	BURGER_INLINE void Replace(T* pData) BURGER_NOEXCEPT
+	{
 		T* pOld = m_pData;
 		if (pData != pOld) {
-			// Increment the new one first (To prevent accidental circular deletion)
+			// Increment the new one first (To prevent accidental circular
+			// deletion)
 			if (pData) {
 				pData->AddRef();
 			}
@@ -98,102 +145,198 @@ class SmartPointer {
 			m_pData = pData;
 		}
 	}
+
 public:
-	SmartPointer(T* pData) : m_pData(pData)
+	SmartPointer(T* pData) BURGER_NOEXCEPT: m_pData(pData)
 	{
 		// Add a reference to own
 		if (pData) {
 			pData->AddRef();
 		}
 	}
-	SmartPointer() : m_pData(NULL) {}
-	SmartPointer(const SmartPointer<T>& rData) : m_pData(rData.m_pData)
+	SmartPointer() BURGER_NOEXCEPT: m_pData(nullptr) {}
+	SmartPointer(const SmartPointer<T>& rData) BURGER_NOEXCEPT
+		: m_pData(rData.m_pData)
 	{
 		// Add a reference to own
 		if (m_pData) {
 			m_pData->AddRef();
 		}
 	}
-	~SmartPointer() {
+	~SmartPointer()
+	{
 		// Release if one is owned
 		if (m_pData) {
 			m_pData->Release();
-			m_pData = NULL;
+			m_pData = nullptr;
 		}
 	}
 
-	BURGER_INLINE void operator=(const SmartPointer<T>& rData) { Replace(rData.m_pData); }
-	BURGER_INLINE void operator=(T* pData) { Replace(pData); }
-	BURGER_INLINE T* operator->() const { return m_pData; }
-	BURGER_INLINE T& operator*() const { return *m_pData; }
-	BURGER_INLINE operator T*() const { return m_pData; }
-	BURGER_INLINE T* GetPtr() const { return m_pData; }
-	BURGER_INLINE uint_t operator==(const SmartPointer<T>& rData) const { return m_pData == rData.m_pData; }
-	BURGER_INLINE uint_t operator!=(const SmartPointer<T>& rData) const { return m_pData != rData.m_pData; }
-	BURGER_INLINE uint_t operator==(const T* pData) const { return m_pData == pData; }
-	BURGER_INLINE uint_t operator!=(const T* pData) const { return m_pData != pData; }
+	BURGER_INLINE void operator=(const SmartPointer<T>& rData) BURGER_NOEXCEPT
+	{
+		Replace(rData.m_pData);
+	}
+	BURGER_INLINE void operator=(T* pData) BURGER_NOEXCEPT
+	{
+		Replace(pData);
+	}
+	BURGER_INLINE T* operator->() const BURGER_NOEXCEPT
+	{
+		return m_pData;
+	}
+	BURGER_INLINE T& operator*() const BURGER_NOEXCEPT
+	{
+		return *m_pData;
+	}
+	BURGER_INLINE operator T*() const BURGER_NOEXCEPT
+	{
+		return m_pData;
+	}
+	BURGER_INLINE T* GetPtr() const BURGER_NOEXCEPT
+	{
+		return m_pData;
+	}
+	BURGER_INLINE uint_t operator==(
+		const SmartPointer<T>& rData) const BURGER_NOEXCEPT
+	{
+		return m_pData == rData.m_pData;
+	}
+	BURGER_INLINE uint_t operator!=(
+		const SmartPointer<T>& rData) const BURGER_NOEXCEPT
+	{
+		return m_pData != rData.m_pData;
+	}
+	BURGER_INLINE uint_t operator==(const T* pData) const BURGER_NOEXCEPT
+	{
+		return m_pData == pData;
+	}
+	BURGER_INLINE uint_t operator!=(const T* pData) const BURGER_NOEXCEPT
+	{
+		return m_pData != pData;
+	}
 };
 
 template<class T>
 class WeakPointer {
-	mutable T* m_pData;			///< Pointer to the object being tracked
-	mutable SmartPointer<ProxyReferenceCounter> m_pProxy;	///< Pointer to the object the tracked object will notify if it's deleted
-	BURGER_INLINE T* Dereference(void) const
+
+	/** Pointer to the object being tracked */
+	mutable T* m_pData;
+
+	/** Pointer to the object the tracked object will notify if it's deleted */
+	mutable SmartPointer<ProxyReferenceCounter> m_pProxy;
+
+	BURGER_INLINE T* Dereference(void) const BURGER_NOEXCEPT
 	{
 		T* pData = m_pData;
 		if (pData) {
 			// If the parent was deleted, remove the shared proxy reference
 			if (!m_pProxy->IsParentAlive()) {
-				pData = NULL;
-				m_pProxy = NULL;
-				m_pData = NULL;
+				pData = nullptr;
+				m_pProxy = nullptr;
+				m_pData = nullptr;
 			}
 		}
 		return pData;
 	}
+
 public:
-	WeakPointer() : m_pData(NULL),m_pProxy() { }
-	WeakPointer(T* pData) : m_pData(pData),m_pProxy() {
+	WeakPointer() BURGER_NOEXCEPT: m_pData(nullptr), m_pProxy() {}
+	WeakPointer(T* pData) BURGER_NOEXCEPT: m_pData(pData), m_pProxy()
+	{
 		if (pData) {
 			m_pProxy = pData->GetProxyReferenceCounter();
 		}
 	}
-	WeakPointer(const WeakPointer<T>& rData) : m_pData(rData.GetPtr()),m_pProxy() {
+	WeakPointer(const WeakPointer<T>& rData) BURGER_NOEXCEPT
+		: m_pData(rData.GetPtr()),
+		  m_pProxy()
+	{
 		if (m_pData) {
 			m_pProxy = m_pData->GetProxyReferenceCounter();
 		}
 	}
-	WeakPointer(const SmartPointer<T>& rData) : m_pData(rData.GetPtr()),m_pProxy() {
+	WeakPointer(const SmartPointer<T>& rData) BURGER_NOEXCEPT
+		: m_pData(rData.GetPtr()),
+		  m_pProxy()
+	{
 		if (m_pData) {
 			m_pProxy = m_pData->GetProxyReferenceCounter();
 		}
 	}
 	~WeakPointer() {}
-	BURGER_INLINE void operator=(T* pData)
+	BURGER_INLINE void operator=(T* pData) BURGER_NOEXCEPT
 	{
 		m_pData = pData;
-		ProxyReferenceCounter *pProxy;
+		ProxyReferenceCounter* pProxy;
 		if (!pData) {
-			pProxy = NULL;
+			pProxy = nullptr;
 		} else {
 			pProxy = pData->GetProxyReferenceCounter();
 		}
 		m_pProxy = pProxy;
 	}
-	BURGER_INLINE void operator=(const SmartPointer<T>& rData) { operator=(rData.GetPtr()); }
-	BURGER_INLINE T* operator->() const { return Dereference(); }
-	BURGER_INLINE T* GetPtr() const {	return Dereference(); }
-	BURGER_INLINE operator SmartPointer<T>() { return SmartPointer<T>(Dereference()); }
-	BURGER_INLINE uint_t operator==(const T* pData) const { return Dereference() == pData; }
-	BURGER_INLINE uint_t operator!=(const T* pData) const { return Dereference() != pData; }
-	BURGER_INLINE uint_t operator==(const T* pData) { return Dereference() == pData; }
-	BURGER_INLINE uint_t operator!=(const T* pData) { return Dereference() != pData; }
-	BURGER_INLINE uint_t operator==(const SmartPointer<T>& rData) const { return Dereference() == rData.GetPtr(); }
-	BURGER_INLINE uint_t operator!=(const SmartPointer<T>& rData) const { return Dereference() != rData.GetPtr(); }
-	BURGER_INLINE uint_t operator==(const SmartPointer<T>& rData) { return Dereference() == rData.GetPtr(); }
-	BURGER_INLINE uint_t operator!=(const SmartPointer<T>& rData) { return Dereference() != rData.GetPtr(); }
-	BURGER_INLINE uint_t operator==(const WeakPointer<T>& rData) const { return Dereference() == rData.Dereference(); }
-	BURGER_INLINE uint_t operator!=(const WeakPointer<T>& rData) const { return Dereference() != rData.Dereference(); }
+	BURGER_INLINE void operator=(const SmartPointer<T>& rData) BURGER_NOEXCEPT
+	{
+		operator=(rData.GetPtr());
+	}
+	BURGER_INLINE T* operator->() const BURGER_NOEXCEPT
+	{
+		return Dereference();
+	}
+	BURGER_INLINE T* GetPtr() const BURGER_NOEXCEPT
+	{
+		return Dereference();
+	}
+	BURGER_INLINE operator SmartPointer<T>() BURGER_NOEXCEPT
+	{
+		return SmartPointer<T>(Dereference());
+	}
+	BURGER_INLINE uint_t operator==(const T* pData) const BURGER_NOEXCEPT
+	{
+		return Dereference() == pData;
+	}
+	BURGER_INLINE uint_t operator!=(const T* pData) const BURGER_NOEXCEPT
+	{
+		return Dereference() != pData;
+	}
+	BURGER_INLINE uint_t operator==(const T* pData) BURGER_NOEXCEPT
+	{
+		return Dereference() == pData;
+	}
+	BURGER_INLINE uint_t operator!=(const T* pData) BURGER_NOEXCEPT
+	{
+		return Dereference() != pData;
+	}
+	BURGER_INLINE uint_t operator==(
+		const SmartPointer<T>& rData) const BURGER_NOEXCEPT
+	{
+		return Dereference() == rData.GetPtr();
+	}
+	BURGER_INLINE uint_t operator!=(
+		const SmartPointer<T>& rData) const BURGER_NOEXCEPT
+	{
+		return Dereference() != rData.GetPtr();
+	}
+	BURGER_INLINE uint_t operator==(
+		const SmartPointer<T>& rData) BURGER_NOEXCEPT
+	{
+		return Dereference() == rData.GetPtr();
+	}
+	BURGER_INLINE uint_t operator!=(
+		const SmartPointer<T>& rData) BURGER_NOEXCEPT
+	{
+		return Dereference() != rData.GetPtr();
+	}
+	BURGER_INLINE uint_t operator==(
+		const WeakPointer<T>& rData) const BURGER_NOEXCEPT
+	{
+		return Dereference() == rData.Dereference();
+	}
+	BURGER_INLINE uint_t operator!=(
+		const WeakPointer<T>& rData) const BURGER_NOEXCEPT
+	{
+		return Dereference() != rData.Dereference();
+	}
 };
 }
 /* END */

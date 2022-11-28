@@ -260,7 +260,7 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
 		&DisplayTests, &FileTests, &CompressTests};
 
 	iResult = CommandParameter::Process(MyApp.GetArgc(), MyApp.GetArgv(),
-		MyParms, sizeof(MyParms) / sizeof(MyParms[0]),
+		MyParms, BURGER_ARRAYSIZE(MyParms),
 		"Usage: unittests\n\n"
 		"This program tests Burgerlib\n");
 

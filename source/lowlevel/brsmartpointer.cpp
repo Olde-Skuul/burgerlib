@@ -1,14 +1,14 @@
 /***************************************
 
-    Smart pointer template class
+	Smart pointer template class
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -45,14 +45,15 @@
 	and return the pointer.
 
 	\return A pointer to a new instance of the ProxyReferenceCounter class
-		or \ref NULL on failure
+		or \ref nullptr on failure
 
 ***************************************/
 
-Burger::ProxyReferenceCounter * BURGER_API Burger::ProxyReferenceCounter::New(void)
+Burger::ProxyReferenceCounter* BURGER_API Burger::ProxyReferenceCounter::New(
+	void) BURGER_NOEXCEPT
 {
 	// In place new
-	return new(Alloc(sizeof(ProxyReferenceCounter))) ProxyReferenceCounter;
+	return new (Alloc(sizeof(ProxyReferenceCounter))) ProxyReferenceCounter;
 }
 
 /*! ************************************
@@ -114,17 +115,15 @@ Burger::ProxyReferenceCounter * BURGER_API Burger::ProxyReferenceCounter::New(vo
 	\brief Decrease the reference count by 1
 
 	Give up ownership of this object by calling this function.
-	Once the reference count reaches zero, the object will immediately self destruct.
-	Call AddRef() to take ownership of this object.
+	Once the reference count reaches zero, the object will immediately self
+	destruct. Call AddRef() to take ownership of this object.
 
 	\sa AddRef()
 
 ***************************************/
 
-
-
 #if !defined(DOXYGEN)
-BURGER_CREATE_STATICRTTI_PARENT(Burger::ReferenceCounter,Burger::Base);
+BURGER_CREATE_STATICRTTI_PARENT(Burger::ReferenceCounter, Burger::Base);
 #endif
 
 /*! ************************************
@@ -146,20 +145,18 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::ReferenceCounter,Burger::Base);
 
 	\fn Burger::ReferenceCounter::ReferenceCounter()
 	\brief Sets the reference count to zero
-	
+
 ***************************************/
 
 /*! ************************************
 
 	\brief Destructor.
-	
+
 	Does absolutely nothing
-	
+
 ***************************************/
 
-Burger::ReferenceCounter::~ReferenceCounter()
-{
-}
+Burger::ReferenceCounter::~ReferenceCounter() {}
 
 /*! ************************************
 
@@ -180,8 +177,8 @@ Burger::ReferenceCounter::~ReferenceCounter()
 	\brief Decrease the reference count by 1
 
 	Give up ownership of this object by calling this function.
-	Once the reference count reaches zero, the object will immediately self destruct.
-	Call AddRef() to take ownership of this object.
+	Once the reference count reaches zero, the object will immediately self
+	destruct. Call AddRef() to take ownership of this object.
 
 	\sa AddRef()
 
@@ -197,9 +194,6 @@ Burger::ReferenceCounter::~ReferenceCounter()
 
 ***************************************/
 
-
-
-
 /*! ************************************
 
 	\class Burger::WeakPointerAnchor
@@ -208,9 +202,10 @@ Burger::ReferenceCounter::~ReferenceCounter()
 	When using a WeakPointer, it needs to be able to keep track of
 	an object's status in case the object is deleted. To handle
 	this, a reference counted object will create by this sub
-	class if one is requested. Once created, ProxyReferenceCounter::AddRef() is called
-	on it to ensure it's instantiation until the parent object
-	is deleted, in which the object will have ProxyReferenceCounter::Release() called.
+	class if one is requested. Once created, ProxyReferenceCounter::AddRef() is
+	called on it to ensure it's instantiation until the parent object is
+	deleted, in which the object will have ProxyReferenceCounter::Release()
+	called.
 
 	If there are no WeakPointer objects pointing to the ProxyReferenceCounter
 	object, it will also self destruct, otherwise, it will
@@ -229,8 +224,8 @@ Burger::ReferenceCounter::~ReferenceCounter()
 /*! ************************************
 
 	\fn Burger::WeakPointerAnchor::WeakPointerAnchor()
-	\brief Sets the pointer to the proxy to \ref NULL
-	
+	\brief Sets the pointer to the proxy to \ref nullptr
+
 ***************************************/
 
 /*! ************************************
@@ -241,16 +236,16 @@ Burger::ReferenceCounter::~ReferenceCounter()
 	to it that the parent has self destructed and then
 	call ProxyReferenceCounter::Release() to give up
 	ownership of the ProxyReferenceCounter object.
-	
+
 ***************************************/
 
 Burger::WeakPointerAnchor::~WeakPointerAnchor()
 {
-	ProxyReferenceCounter *pReference = m_pReferenceCounter;
+	ProxyReferenceCounter* pReference = m_pReferenceCounter;
 	if (pReference) {
 		pReference->ParentIsDead();
 		pReference->Release();
-		m_pReferenceCounter = NULL;
+		m_pReferenceCounter = nullptr;
 	}
 }
 
@@ -258,23 +253,24 @@ Burger::WeakPointerAnchor::~WeakPointerAnchor()
 
 	\brief Returns the owned ProxyReferenceCounter object.
 
-	If a ProxyReferenceCounter object exists, return
-	the pointer, otherwise, create the object and
-	return the pointer while taking ownership of it.
+	If a ProxyReferenceCounter object exists, return the pointer, otherwise,
+	create the object and return the pointer while taking ownership of it.
 
-	There will be only one shared ProxyReferenceCounter
-	object created for each instantiation of this sub
-	class.
+	There will be only one shared ProxyReferenceCounter object created for each
+	instantiation of this sub class.
 
-	\return Pointer to a valid ProxyReferenceCounter object or \ref NULL on failure
+	\return Pointer to a valid ProxyReferenceCounter object or \ref nullptr
+		on failure
+
 	\sa BURGER_ALLOW_WEAK_POINTERS()
 
 ***************************************/
 
-Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCounter(void) const
+Burger::ProxyReferenceCounter*
+Burger::WeakPointerAnchor::GetProxyReferenceCounter(void) const BURGER_NOEXCEPT
 {
-	ProxyReferenceCounter *pResult = m_pReferenceCounter;
-	if (pResult == NULL) {
+	ProxyReferenceCounter* pResult = m_pReferenceCounter;
+	if (pResult == nullptr) {
 		pResult = ProxyReferenceCounter::New();
 		m_pReferenceCounter = pResult;
 		pResult->AddRef();
@@ -291,7 +287,7 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 	that returns a valid Burger::ProxyReferenceCounter for tracking. This
 	macro will insert the function and a Burger::WeakPointerAnchor
 	member variable to support this functionality.
-		
+
 	\code
 	class SharedObject {
 		// Allow WeakPointer to work
@@ -307,18 +303,17 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 			SharedObject shared;
 			pShared = &shared;
 		}
-		if (pShared.GetPtr()==NULL) {
+		if (pShared.GetPtr()==nullptr) {
 			printf("shared is out of scope!!");
 		}
 	}
 	\endcode
 
 	\note This macro will set the class setting to "private"
-	\sa Burger::WeakPointerAnchor, Burger::ProxyReferenceCounter or Burger::WeakPointer
+	\sa Burger::WeakPointerAnchor, Burger::ProxyReferenceCounter or
+		Burger::WeakPointer
 
 ***************************************/
-
-
 
 /*! ************************************
 
@@ -336,7 +331,9 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 
 /*! ************************************
 
-	\fn Burger::ProxyReferenceCounter * Burger::WeakAndStrongBase::GetProxyReferenceCounter(void) const
+	\fn Burger::ProxyReferenceCounter* \
+		Burger::WeakAndStrongBase::GetProxyReferenceCounter(void) const
+
 	\brief Function used by WeakPointer
 
 	This function is inserted by \ref BURGER_ALLOW_WEAK_POINTERS()
@@ -359,7 +356,8 @@ Burger::ProxyReferenceCounter* Burger::WeakPointerAnchor::GetProxyReferenceCount
 ***************************************/
 
 #if !defined(DOXYGEN)
-BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCounter);
+BURGER_CREATE_STATICRTTI_PARENT(
+	Burger::WeakAndStrongBase, Burger::ReferenceCounter);
 #endif
 
 /*! ************************************
@@ -371,7 +369,6 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 	reference to the parent
 
 ***************************************/
-
 
 /*! ************************************
 
@@ -397,7 +394,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	// Deletes the object by calling Release()
 	// which auto destructs the object
-	g_pShared = NULL;
+	g_pShared = nullptr;
 
 	\endcode
 
@@ -410,11 +407,11 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	This private function will test if the pointer is different
 	to what is already contained in the class and if so, it will
-	Release() the old data (If not \ref NULL) and call
-	AddRef() to the new data (If not \ref NULL) and store
+	Release() the old data (If not \ref nullptr) and call
+	AddRef() to the new data (If not \ref nullptr) and store
 	the pointer to the new data in the class.
 
-	\param pData Pointer to an instance of the class T or \ref NULL
+	\param pData Pointer to an instance of the class T or \ref nullptr
 	\sa operator=(T*) or operator= (const SmartPointer &)
 
 ***************************************/
@@ -424,10 +421,10 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 	\fn Burger::SmartPointer::SmartPointer(T* pData)
 	\brief Initialize a smart pointer
 
-	Call AddRef() to the pointer if it's not \ref NULL 
+	Call AddRef() to the pointer if it's not \ref nullptr
 	and store the pointer inside the class for tracking.
 
-	\param pData Pointer to an instance of the class T or \ref NULL
+	\param pData Pointer to an instance of the class T or \ref nullptr
 	\sa SmartPointer() or SmartPointer(const SmartPointer &)
 
 ***************************************/
@@ -435,7 +432,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 /*! ************************************
 
 	\fn Burger::SmartPointer::SmartPointer()
-	\brief Initialize a smart pointer to \ref NULL
+	\brief Initialize a smart pointer to \ref nullptr
 
 	Initialize to power up default.
 
@@ -448,7 +445,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 	\fn Burger::SmartPointer::SmartPointer(const SmartPointer &rData)
 	\brief Copy a smart pointer
 
-	Call AddRef() to the pointer if it's not \ref NULL 
+	Call AddRef() to the pointer if it's not \ref nullptr
 	and store a copy of the pointer inside the class for tracking.
 
 	\param rData Reference to an instance to another SmartPointer
@@ -461,8 +458,8 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 	\fn Burger::SmartPointer::~SmartPointer()
 	\brief Release a reference to a smart pointer
 
-	If the pointer contained is not \ref NULL, call Release() on it.
-	The internal pointer is then set to\ref NULL to ensure 
+	If the pointer contained is not \ref nullptr, call Release() on it.
+	The internal pointer is then set to\ref nullptr to ensure
 	there are no dangling pointers
 
 	\sa SmartPointer(T*) or SmartPointer(const SmartPointer &)
@@ -476,8 +473,8 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	Test if the pointer is different
 	to what is already contained in the class and if so, it will
-	Release() the old data (If not \ref NULL) and call
-	AddRef() to the new data (If not \ref NULL) and store
+	Release() the old data (If not \ref nullptr) and call
+	AddRef() to the new data (If not \ref nullptr) and store
 	the pointer to the new data in the class.
 
 	\param rData Reference to an instance of another SmartPointer
@@ -492,11 +489,11 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	Test if the pointer is different
 	to what is already contained in the class and if so, it will
-	Release() the old data (If not \ref NULL) and call
-	AddRef() to the new data (If not \ref NULL) and store
+	Release() the old data (If not \ref nullptr) and call
+	AddRef() to the new data (If not \ref nullptr) and store
 	the pointer to the new data in the class.
 
-	\param pData Pointer to an instance of the class T or \ref NULL
+	\param pData Pointer to an instance of the class T or \ref nullptr
 	\sa operator=(const SmartPointer &)
 
 ***************************************/
@@ -507,10 +504,10 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 	\brief Get the current pointer
 
 	Return an untracked copy of the pointer. The
-	pointer can be \ref NULL if there is no pointer
+	pointer can be \ref nullptr if there is no pointer
 	being tracked.
 
-	\return \ref NULL or a pointer to an instance of a T class
+	\return \ref nullptr or a pointer to an instance of a T class
 	\sa GetPtr()
 
 ***************************************/
@@ -521,10 +518,10 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 	\brief Get the current pointer
 
 	Return an untracked copy of the pointer. The
-	pointer can be \ref NULL if there is no pointer
+	pointer can be \ref nullptr if there is no pointer
 	being tracked.
 
-	\return \ref NULL or a pointer to an instance of a T class
+	\return \ref nullptr or a pointer to an instance of a T class
 	\sa GetPtr() const or operator->()
 
 ***************************************/
@@ -535,10 +532,10 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 	\brief Get the current reference
 
 	Return an untracked reference of the object. The
-	reference can be \ref NULL if there is no pointer
+	reference can be \ref nullptr if there is no pointer
 	being tracked.
 
-	\return \ref NULL or a reference to an instance of a T class
+	\return \ref nullptr or a reference to an instance of a T class
 	\sa SmartPointer::operator T*() const, GetPtr() const or operator->()
 
 ***************************************/
@@ -549,10 +546,10 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 	\brief Get the current pointer
 
 	Return an untracked copy of the pointer. The
-	pointer can be \ref NULL if there is no pointer
+	pointer can be \ref nullptr if there is no pointer
 	being tracked.
 
-	\return \ref NULL or a pointer to an instance of a T class
+	\return \ref nullptr or a pointer to an instance of a T class
 	\sa GetPtr() const or operator->()
 
 ***************************************/
@@ -563,10 +560,10 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 	\brief Get the current pointer
 
 	Return an untracked copy of the pointer. The
-	pointer can be \ref NULL if there is no pointer
+	pointer can be \ref nullptr if there is no pointer
 	being tracked.
 
-	\return \ref NULL or a pointer to an instance of a T class
+	\return \ref nullptr or a pointer to an instance of a T class
 	\sa operator->() or SmartPointer::operator T*() const
 
 ***************************************/
@@ -604,7 +601,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	Compare the pointers for equality and if equal, return \ref TRUE
 
-	\param pData Pointer to an instance of the class T or \ref NULL
+	\param pData Pointer to an instance of the class T or \ref nullptr
 	\return \ref TRUE if equal, \ref FALSE if not
 	\sa operator!=(const T*) const or operator==(const SmartPointer &) const
 
@@ -617,14 +614,11 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	Compare the pointers for inequality and if not equal, return \ref TRUE
 
-	\param pData Pointer to an instance of the class T or \ref NULL
+	\param pData Pointer to an instance of the class T or \ref nullptr
 	\return \ref TRUE if not equal, \ref FALSE if equal
 	\sa operator==(const T*) const or operator!=(const SmartPointer&) const
 
 ***************************************/
-
-
-
 
 /*! ************************************
 
@@ -650,11 +644,11 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 		{
 			SharedObject shared;
 			pShared = &shared;
-			if (pShared.GetPtr()!=NULL) {
+			if (pShared.GetPtr()!=nullptr) {
 				printf("shared is in scope!!");
 			}
 		}
-		if (pShared.GetPtr()==NULL) {
+		if (pShared.GetPtr()==nullptr) {
 			printf("shared is out of scope!!");
 		}
 	}
@@ -668,11 +662,12 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 /*! ************************************
 
 	\fn Burger::WeakPointer::WeakPointer()
-	\brief Initialize a weak pointer to \ref NULL
+	\brief Initialize a weak pointer to \ref nullptr
 
 	Initialize to power up default.
 
-	\sa WeakPointer::WeakPointer(T*) or WeakPointer::WeakPointer(const WeakPointer &)
+	\sa WeakPointer::WeakPointer(T*) or
+		WeakPointer::WeakPointer(const WeakPointer &)
 
 ***************************************/
 
@@ -685,8 +680,9 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 	and call ProxyReferenceCounter::AddRef() on it. Store the pointer inside the
 	class for tracking.
 
-	\param pData Pointer to an instance of the class T or \ref NULL
-	\sa WeakPointer::WeakPointer() or WeakPointer::WeakPointer(const WeakPointer &)
+	\param pData Pointer to an instance of the class T or \ref nullptr
+	\sa WeakPointer::WeakPointer() or
+		WeakPointer::WeakPointer(const WeakPointer &)
 
 ***************************************/
 
@@ -718,18 +714,18 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 ***************************************/
 
-
 /*! ************************************
 
 	\fn Burger::WeakPointer::~WeakPointer()
 	\brief Release a reference to a weak pointer
 
 	If the ProxyReferenceCounter pointer contained
-	is not \ref NULL, call ProxyReferenceCounter::Release() on it.
-	The internal pointer is then set to\ref NULL to ensure 
+	is not \ref nullptr, call ProxyReferenceCounter::Release() on it.
+	The internal pointer is then set to \ref nullptr to ensure
 	there are no dangling pointers
 
-	\sa WeakPointer::WeakPointer(T*) or WeakPointer::WeakPointer(const WeakPointer &)
+	\sa WeakPointer::WeakPointer(T*) or
+		WeakPointer::WeakPointer(const WeakPointer &)
 
 ***************************************/
 
@@ -744,7 +740,7 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 	being tracked, call ProxyReferenceCounter::Release() on
 	it.
 
-	\param pData Pointer to an instance of the class T or \ref NULL
+	\param pData Pointer to an instance of the class T or \ref nullptr
 	\sa WeakPointer::operator=(const SmartPointer &)
 
 ***************************************/
@@ -756,9 +752,8 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	Obtain the pointer to the object's ProxyReferenceCounter
 	and call ProxyReferenceCounter::AddRef() on it. Store the pointer inside the
-	class for tracking. If there was an object previously
-	being tracked, call ProxyReferenceCounter::Release() on
-	it.
+	class for tracking. If there was an object previously being tracked, call
+	ProxyReferenceCounter::Release() on it.
 
 	\param rData Reference to an instance of another SmartPointer
 	\sa WeakPointer::operator=(T*)
@@ -770,11 +765,10 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 	\fn T* Burger::WeakPointer::operator->() const
 	\brief Get the current pointer
 
-	Return an untracked copy of the pointer. The
-	pointer can be \ref NULL if the object being
-	track was destroyed.
+	Return an untracked copy of the pointer. The pointer can be \ref nullptr if
+	the object being track was destroyed.
 
-	\return \ref NULL or a pointer to an instance of a T class
+	\return \ref nullptr or a pointer to an instance of a T class
 	\sa WeakPointer::GetPtr()
 
 ***************************************/
@@ -784,11 +778,10 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 	\fn T* Burger::WeakPointer::GetPtr() const
 	\brief Get the current pointer
 
-	Return an untracked copy of the pointer. The
-	pointer can be \ref NULL if the object being
-	track was destroyed.
+	Return an untracked copy of the pointer. The pointer can be \ref nullptr if
+	the object being track was destroyed.
 
-	\return \ref NULL or a pointer to an instance of a T class
+	\return \ref nullptr or a pointer to an instance of a T class
 	\sa WeakPointer::operator->()
 
 ***************************************/
@@ -798,13 +791,14 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 	\fn Burger::WeakPointer::operator SmartPointer<T>()
 	\brief Award shared ownership of an object
 
-	Obtain the pointer to the object or \ref NULL
+	Obtain the pointer to the object or \ref nullptr
 	if the object was destroyed and create a SmartPointer
 	with a reference to the object. If the object exists,
 	the SmartPointer will call AddRef() on it or
-	the SmartPointer will contain a \ref NULL
+	the SmartPointer will contain a \ref nullptr
 
-	\return A SmartPointer for the shared instance of a T class (Which may be \ref NULL)
+	\return A SmartPointer for the shared instance of a T class (Which may be
+		\ref nullptr )
 	\sa WeakPointer::WeakPointer(const SmartPointer &)
 
 ***************************************/
@@ -816,9 +810,10 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	Compare the pointers for equality and if equal, return \ref TRUE
 
-	\param pData Pointer to an instance of the class T or \ref NULL
+	\param pData Pointer to an instance of the class T or \ref nullptr
 	\return \ref TRUE if equal, \ref FALSE if not
-	\sa WeakPointer::operator!=(const T*) const or WeakPointer::operator==(const WeakPointer &) const
+	\sa WeakPointer::operator!=(const T*) const or
+		WeakPointer::operator==(const WeakPointer &) const
 
 ***************************************/
 
@@ -829,9 +824,10 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	Compare the pointers for inequality and if not equal, return \ref TRUE
 
-	\param pData Pointer to an instance of the class T or \ref NULL
+	\param pData Pointer to an instance of the class T or \ref nullptr
 	\return \ref TRUE if not equal, \ref FALSE if equal
-	\sa WeakPointer::operator==(const T*) const or WeakPointer::operator!=(const WeakPointer&) const
+	\sa WeakPointer::operator==(const T*) const or
+		WeakPointer::operator!=(const WeakPointer&) const
 
 ***************************************/
 
@@ -842,9 +838,10 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	Compare the pointers for equality and if equal, return \ref TRUE
 
-	\param pData Pointer to an instance of the class T or \ref NULL
+	\param pData Pointer to an instance of the class T or \ref nullptr
 	\return \ref TRUE if equal, \ref FALSE if not
-	\sa WeakPointer::operator!=(const T*) or WeakPointer::operator==(const WeakPointer &) const
+	\sa WeakPointer::operator!=(const T*) or
+		WeakPointer::operator==(const WeakPointer &) const
 
 ***************************************/
 
@@ -855,9 +852,10 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	Compare the pointers for inequality and if not equal, return \ref TRUE
 
-	\param pData Pointer to an instance of the class T or \ref NULL
+	\param pData Pointer to an instance of the class T or \ref nullptr
 	\return \ref TRUE if not equal, \ref FALSE if equal
-	\sa WeakPointer::operator==(const T*) or WeakPointer::operator!=(const WeakPointer&) const
+	\sa WeakPointer::operator==(const T*) or
+		WeakPointer::operator!=(const WeakPointer&) const
 
 ***************************************/
 
@@ -870,7 +868,8 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	\param rData Reference to an instance of another SmartPointer
 	\return \ref TRUE if equal, \ref FALSE if not
-	\sa WeakPointer::operator!=(const SmartPointer &) const or WeakPointer::operator==(const T*) const
+	\sa WeakPointer::operator!=(const SmartPointer &) const or
+		WeakPointer::operator==(const T*) const
 
 ***************************************/
 
@@ -883,7 +882,8 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	\param rData Reference to an instance of another SmartPointer
 	\return \ref TRUE if not equal, \ref FALSE if equal
-	\sa WeakPointer::operator==(const SmartPointer &) const or WeakPointer::operator!=(const T*) const
+	\sa WeakPointer::operator==(const SmartPointer &) const or
+		WeakPointer::operator!=(const T*) const
 
 ***************************************/
 
@@ -896,7 +896,8 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	\param rData Reference to an instance of another SmartPointer
 	\return \ref TRUE if equal, \ref FALSE if not
-	\sa WeakPointer::operator!=(const SmartPointer &) or WeakPointer::operator==(const T*)
+	\sa WeakPointer::operator!=(const SmartPointer &) or
+		WeakPointer::operator==(const T*)
 
 ***************************************/
 
@@ -909,7 +910,8 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	\param rData Reference to an instance of another SmartPointer
 	\return \ref TRUE if not equal, \ref FALSE if equal
-	\sa WeakPointer::operator==(const SmartPointer &) or WeakPointer::operator!=(const T*)
+	\sa WeakPointer::operator==(const SmartPointer &) or
+		WeakPointer::operator!=(const T*)
 
 ***************************************/
 
@@ -922,7 +924,8 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	\param rData Reference to an instance of another WeakPointer
 	\return \ref TRUE if equal, \ref FALSE if not
-	\sa WeakPointer::operator!=(const WeakPointer &) const or WeakPointer::operator==(const T*) const
+	\sa WeakPointer::operator!=(const WeakPointer &) const or
+		WeakPointer::operator==(const T*) const
 
 ***************************************/
 
@@ -935,7 +938,8 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 
 	\param rData Reference to an instance of another WeakPointer
 	\return \ref TRUE if not equal, \ref FALSE if equal
-	\sa WeakPointer::operator==(const WeakPointer &) const or WeakPointer::operator!=(const T*) const
+	\sa WeakPointer::operator==(const WeakPointer &) const or
+		WeakPointer::operator!=(const T*) const
 
 ***************************************/
 
@@ -945,13 +949,14 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::WeakAndStrongBase,Burger::ReferenceCount
 	\brief Return the pointer to an object
 
 	Test if the object exists, and if so, or if no object is
-	being tracked, return \ref NULL
+	being tracked, return \ref nullptr
 
 	\note If it was detected that an object has been destroyed,
 		this function will call ProxyReferenceCounter::Release()
 		on the tracking object to release interest in further tracking.
 
-	\return \ref NULL if no object is being tracked or exists, or a valid pointer
+	\return \ref nullptr if no object is being tracked or exists, or a valid
+		pointer
 	\sa WeakPointer::operator->() const or WeakPointer::GetPtr() const
 
 ***************************************/

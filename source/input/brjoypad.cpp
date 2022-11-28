@@ -1,50 +1,50 @@
 /***************************************
 
-    Joypad/joystick Manager
+	Joypad/joystick Manager
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
 #include "brjoypad.h"
-#include "brtick.h"
 #include "brmemoryfunctions.h"
+#include "brtick.h"
 
 #if !defined(DOXYGEN)
-BURGER_CREATE_STATICRTTI_PARENT(Burger::Joypad,Burger::Base);
+BURGER_CREATE_STATICRTTI_PARENT(Burger::Joypad, Burger::Base);
 #endif
 
 /*! ************************************
 
 	\brief Init joystick services
 
-	Init the joystick services and detect if a joystick(s) is connected. No joystick manager
-	call will operate properly unless this call is issued. You can call ~Joypad() to
-	shut down the operation at any time.
+	Init the joystick services and detect if a joystick(s) is connected. No
+	joystick manager call will operate properly unless this call is issued. You
+	can call ~Joypad() to shut down the operation at any time.
 
-	If you call this function again, the joysticks will be rescanned and your configuration
-	may change. This is due to the fact that users could plug in a joystick at
-	any time.
+	If you call this function again, the joysticks will be rescanned and your
+	configuration may change. This is due to the fact that users could plug in a
+	joystick at any time.
 
-	\note Win95/98/NT uses the multimedia manager to read the joystick. MacOS uses InputSprocket
-		and MS-DOS and GS/OS uses direct joystick drivers. MS-DOS and GS/OS must be calibrated
-		for accurate results.
+	\note Win95/98/NT uses the multimedia manager to read the joystick. MacOS
+	uses InputSprocket and MS-DOS and GS/OS uses direct joystick drivers. MS-DOS
+	and GS/OS must be calibrated for accurate results.
 
 	\sa ~Joypad()
 
 ***************************************/
 
 #if (!defined(BURGER_WINDOWS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
-Burger::Joypad::Joypad(GameApp *pAppInstance)
+Burger::Joypad::Joypad(GameApp* pAppInstance) BURGER_NOEXCEPT
 {
 	m_pAppInstance = pAppInstance;
-	MemoryClear(m_Data,sizeof(m_Data));
+	MemoryClear(m_Data, sizeof(m_Data));
 }
 #endif
 
@@ -52,21 +52,20 @@ Burger::Joypad::Joypad(GameApp *pAppInstance)
 
 	\brief Shut down joystick services
 
-	Stop joystick scanning and release all resources attached to reading the joystick.
-	Useful for manual shutdown and restart of joystick services on Win95 and MacOS
+	Stop joystick scanning and release all resources attached to reading the
+	joystick. Useful for manual shutdown and restart of joystick services on
+	Win95 and MacOS
 
-	\note Win95/98/NT uses the multimedia manager to read the joystick. MacOS uses InputSprocket
-		and MS-DOS and GS/OS uses direct joystick drivers. MS-DOS and GS/OS must be calibrated
-		for accurate results.
+	\note Win95/98/NT uses the multimedia manager to read the joystick. MacOS
+	uses InputSprocket and MS-DOS and GS/OS uses direct joystick drivers. MS-DOS
+	and GS/OS must be calibrated for accurate results.
 
 	\sa Joypad(GameApp *)
 
 ***************************************/
 
 #if (!defined(BURGER_WINDOWS) && !defined(BURGER_XBOX360)) || defined(DOXYGEN)
-Burger::Joypad::~Joypad()
-{
-}
+Burger::Joypad::~Joypad() {}
 #endif
 
 /*! ************************************
@@ -79,11 +78,12 @@ Burger::Joypad::~Joypad()
 
 ***************************************/
 
-uint32_t BURGER_API Burger::Joypad::ReadButtons(uint_t uWhich) const
+uint32_t BURGER_API Burger::Joypad::ReadButtons(
+	uint_t uWhich) const BURGER_NOEXCEPT
 {
 	uint32_t uButtons = 0;
-	if (uWhich<m_uDeviceCount) {
-		const JoypadData_t *pJoypadData = &m_Data[uWhich];
+	if (uWhich < m_uDeviceCount) {
+		const JoypadData_t* pJoypadData = &m_Data[uWhich];
 		uButtons = pJoypadData->m_uButtonState;
 	}
 	return uButtons;
@@ -106,21 +106,22 @@ uint32_t BURGER_API Burger::Joypad::ReadButtons(uint_t uWhich) const
 	\param uAxis Analog axis for the joystick
 	\param uWhich Which joystick device to read
 
-	\note Win95/98/NT uses the multimedia manager to read the joystick. MacOS uses InputSprocket
-		and MS-DOS and GS/OS uses direct joystick drivers. MS-DOS and GS/OS must be calibrated
-		for accurate results.
+	\note Win95/98/NT uses the multimedia manager to read the joystick. MacOS
+		uses InputSprocket and MS-DOS and GS/OS uses direct joystick drivers.
+		MS-DOS and GS/OS must be calibrated for accurate results.
 
 	\sa ReadDelta(), ReadButtons(), Poll(uint_t)
 
 ***************************************/
 
-uint_t BURGER_API Burger::Joypad::ReadAbsolute(uint_t uWhich,uint_t uAxis) const
+uint_t BURGER_API Burger::Joypad::ReadAbsolute(
+	uint_t uWhich, uint_t uAxis) const BURGER_NOEXCEPT
 {
 	uint_t uResult = CENTERAXISVALUE;
 	// Bounds check
-	if (uWhich<m_uDeviceCount) {
-		const JoypadData_t *pJoypadData = &m_Data[uWhich];
-		if (uAxis<pJoypadData->m_uAxisCount) {
+	if (uWhich < m_uDeviceCount) {
+		const JoypadData_t* pJoypadData = &m_Data[uWhich];
+		if (uAxis < pJoypadData->m_uAxisCount) {
 			// Get the value
 			uResult = pJoypadData->m_uAxis[uAxis];
 		}
@@ -149,10 +150,11 @@ uint_t BURGER_API Burger::Joypad::ReadAbsolute(uint_t uWhich,uint_t uAxis) const
 
 ***************************************/
 
-int BURGER_API Burger::Joypad::ReadDelta(uint_t uWhich,uint_t uAxis) const
+int BURGER_API Burger::Joypad::ReadDelta(
+	uint_t uWhich, uint_t uAxis) const BURGER_NOEXCEPT
 {
 	// Convert absolute value to signed offset
-	return static_cast<int>(ReadAbsolute(uWhich,uAxis))-CENTERAXISVALUE;
+	return static_cast<int>(ReadAbsolute(uWhich, uAxis)) - CENTERAXISVALUE;
 }
 
 /*! ************************************
@@ -168,16 +170,16 @@ int BURGER_API Burger::Joypad::ReadDelta(uint_t uWhich,uint_t uAxis) const
 
 ***************************************/
 
-uint_t BURGER_API Burger::Joypad::GetAxisCount(uint_t uWhich) const
+uint_t BURGER_API Burger::Joypad::GetAxisCount(
+	uint_t uWhich) const BURGER_NOEXCEPT
 {
 	uint_t uResult = 0;
 	// Bounds check
-	if (uWhich<m_uDeviceCount) {
-		const JoypadData_t *pJoypadData = &m_Data[uWhich];
+	if (uWhich < m_uDeviceCount) {
+		const JoypadData_t* pJoypadData = &m_Data[uWhich];
 		uResult = pJoypadData->m_uAxisCount;
 	}
 	return uResult;
-
 }
 
 /*! ************************************
@@ -197,21 +199,22 @@ uint_t BURGER_API Burger::Joypad::GetAxisCount(uint_t uWhich) const
 
 ***************************************/
 
-void BURGER_API Burger::Joypad::SetDigital(uint_t uWhich,uint_t uAxis,uint_t uPercent)
+void BURGER_API Burger::Joypad::SetDigital(
+	uint_t uWhich, uint_t uAxis, uint_t uPercent) BURGER_NOEXCEPT
 {
 	// Bounds check
-	if (uWhich<m_uDeviceCount) {
-		JoypadData_t *pJoypadData = &m_Data[uWhich];
-		if (uAxis<pJoypadData->m_uAxisCount) {
+	if (uWhich < m_uDeviceCount) {
+		JoypadData_t* pJoypadData = &m_Data[uWhich];
+		if (uAxis < pJoypadData->m_uAxisCount) {
 			// Save for later
 			pJoypadData->m_uAxisPercents[uAxis] = uPercent;
 			// Get the percentage
-			uint_t uDistance = (uPercent*(MAXAXISVALUE/2))/100;
-			JoypadRange_t *pRange = &pJoypadData->m_uAxisDigitalRanges[uAxis];
+			const uint_t uDistance = (uPercent * (MAXAXISVALUE / 2)) / 100;
+			JoypadRange_t* pRange = &pJoypadData->m_uAxisDigitalRanges[uAxis];
 			// Save the lower value
-			pRange->m_uMin = (MAXAXISVALUE/2)-uDistance;
+			pRange->m_uMin = (MAXAXISVALUE / 2) - uDistance;
 			// Save the upper value
-			pRange->m_uMax = (MAXAXISVALUE/2)+uDistance;
+			pRange->m_uMax = (MAXAXISVALUE / 2) + uDistance;
 		}
 	}
 }

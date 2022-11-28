@@ -1,14 +1,14 @@
 /***************************************
 
-    OpenGLEXT inclusion
+	OpenGLEXT inclusion
 
-    Copyright (c) 1995-2018 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -45,16 +45,19 @@
 // MacOSX used an OpenGL Framework
 #elif __CF_USE_FRAMEWORK_INCLUDES__ || defined(BURGER_MACOSX)
 #ifndef __glext_h_
-#include <OpenGL/glext.h>		// glext.h for MacOS X
+#include <OpenGL/glext.h> // glext.h for MacOS X
 #endif
+
 #if !CGL_VERSION_1_3
 #define glBindVertexArray glBindVertexArrayAPPLE
 #define glGenVertexArrays glGenVertexArraysAPPLE
 #define glGenerateMipmap glGenerateMipmapEXT
 #define glDeleteVertexArrays glDeleteVertexArraysAPPLE
 #endif
+
 #if !GL_ARB_framebuffer_object
-#define glGetFramebufferAttachmentParameteriv glGetFramebufferAttachmentParameterivEXT
+#define glGetFramebufferAttachmentParameteriv \
+	glGetFramebufferAttachmentParameterivEXT
 #define glDeleteRenderbuffers glDeleteRenderbuffersEXT
 #define glGenRenderbuffers glGenRenderbuffersEXT
 #define glBindRenderbuffer glBindRenderbufferEXT
@@ -73,9 +76,11 @@
 #if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
+
 #ifndef _WINDOWS_
-#include <windows.h>		// Needed before #include <glext.h> in windows
+#include <windows.h> // Needed before #include <glext.h> in windows
 #endif
+
 #ifndef __glext_h_
 #include <glext.h>
 #endif

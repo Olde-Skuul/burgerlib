@@ -4,7 +4,7 @@ Welcome to Burgerlib {#mainpage}
 The only low level library you'll ever need
 -------------------------------------------
 
-Copyright 1995-2021 by Rebecca Ann Heineman becky@burgerbecky.com. Email all suggestions, corrections, optimizations and insults to her and she'll be eternally grateful.
+Copyright 1995-2022 by Rebecca Ann Heineman becky@burgerbecky.com. Email all suggestions, corrections, optimizations and insults to her and she'll be eternally grateful.
 
 It is released under an MIT Open Source license. Please see [**LICENSE**](https://raw.githubusercontent.com/Olde-Skuul/burgerlib/master/LICENSE) for license details. Yes, you can use it in a commercial title without paying anything, just give me a credit.
 

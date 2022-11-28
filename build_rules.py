@@ -38,45 +38,46 @@ CLEANME_DEPENDENCIES = []
 # Folders for all the target operating systems supported
 
 TARGETFOLDERS = (
-    'windows',
-    'dos',
-    'mac',
-    'macosx',
-    'linux',
-    'beos',
-    'ps2',
-    'ps3',
-    'ps4',
-    'vita',
-    'gamecube',
-    'wii',
-    'dsi',
-    'xbox',
-    'xbox360',
-    'xboxone',
-    'ios',
-    'android',
-    'shield',
-    'ouya',
-    'switch'
+    "windows",
+    "dos",
+    "mac",
+    "macosx",
+    "linux",
+    "beos",
+    "ps2",
+    "ps3",
+    "ps4",
+    "ps5",
+    "vita",
+    "gamecube",
+    "wii",
+    "dsi",
+    "xbox",
+    "xbox360",
+    "xboxone",
+    "ios",
+    "android",
+    "shield",
+    "ouya",
+    "switch"
 )
 
 SPECIALHEADERS = (
-    'brstartup.h',
-    'brgl.h',
-    'brglext.h',
-    'brglut.h',
-    'brglxext.h',
-    'brstdint.h'
+    "brstartup.h",
+    "brgl.h",
+    "brglext.h",
+    "brglut.h",
+    "brglxext.h",
+    "brstdint.h"
 )
 
 GENERATED_FOLDERS = (
-    'source/generated',
-    'source/graphics/shadersdx9/generated',
-    'source/graphics/shadersopengl/generated',
-    'source/graphics/shadersvita/generated',
-    'source/graphics/shadersxbox360/generated',
-    'source/windows/generated'
+    "source/generated",
+    "source/graphics/shadersdx9/generated",
+    "source/graphics/shadersopengl/generated",
+    "source/graphics/shadersvita/generated",
+    "source/graphics/shadersxbox360/generated",
+    "source/windows/generated"
 )
 
 # Was Burgerlib already installed?
@@ -117,25 +118,25 @@ def prebuild(working_directory, configuration):
         create_folder_if_needed(os.path.join(working_directory, item))
 
     # Update the changelist header
-    dest_folder = os.path.join(working_directory, 'source', 'generated')
+    dest_folder = os.path.join(working_directory, "source", "generated")
     make_version_header(
         working_directory,
-        os.path.join(dest_folder, 'version.h'),
+        os.path.join(dest_folder, "version.h"),
         verbose=False)
 
     # Ensure the output folder exists
-    dest_folder = os.path.join(working_directory, 'bin')
+    dest_folder = os.path.join(working_directory, "bin")
     create_folder_if_needed(dest_folder)
 
     # Create the super header using the makeheader tool
-    headerfilepath = os.path.join(dest_folder, 'burger.h')
+    headerfilepath = os.path.join(dest_folder, "burger.h")
     cmd = (
-        'makeheader',
-        # '-r',
-        #'-r', '-w',
-        os.path.join(working_directory, 'source', 'templateburgerbase.h'),
+        "makeheader",
+        # "-r",
+        #"-r", "-w",
+        os.path.join(working_directory, "source", "templateburgerbase.h"),
         headerfilepath)
-    print(' '.join(cmd))
+    print(" ".join(cmd))
     error = run_command(cmd, working_dir=working_directory)[0]
 
     return error
@@ -167,15 +168,15 @@ def postbuild(working_directory, configuration):
     # Copy the headers of burgerlib into their proper folder
 
     # Get the location of the super header
-    dest_folder = os.path.join(working_directory, 'bin')
-    headerfilepath = os.path.join(dest_folder, 'burger.h')
+    dest_folder = os.path.join(working_directory, "bin")
+    headerfilepath = os.path.join(dest_folder, "burger.h")
 
     # Was there a change in the output?
     error = 0
     for item in TARGETFOLDERS:
-        destfolder = os.path.join(SDKS_FOLDER, item, 'burgerlib')
+        destfolder = os.path.join(SDKS_FOLDER, item, "burgerlib")
         create_folder_if_needed(destfolder)
-        testfile = os.path.join(destfolder, 'burger.h')
+        testfile = os.path.join(destfolder, "burger.h")
 
         # Copy only if changed or doesn't exist
         if not os.path.isfile(testfile) or not compare_files(
@@ -193,11 +194,11 @@ def postbuild(working_directory, configuration):
             # Special case, burgerlib has the folder msdos and SDKS
             # has dos. Perform the override here
 
-            if dest == 'dos':
+            if dest == "dos":
                 sourcefolder = os.path.join(
-                    working_directory, 'source', 'msdos')
+                    working_directory, "source", "msdos")
             else:
-                sourcefolder = os.path.join(working_directory, 'source', dest)
+                sourcefolder = os.path.join(working_directory, "source", dest)
 
             # Is this platform's source code present?
             if not os.path.isdir(sourcefolder):
@@ -207,7 +208,7 @@ def postbuild(working_directory, configuration):
             for item in SPECIALHEADERS:
 
                 # Assume the generic header
-                headerfilepath = os.path.join(working_directory, 'source', item)
+                headerfilepath = os.path.join(working_directory, "source", item)
                 if sourcefolder:
                     # Is there an override?
                     headerfiletest = os.path.join(sourcefolder, item)
@@ -215,7 +216,7 @@ def postbuild(working_directory, configuration):
                         # Use the override
                         headerfilepath = headerfiletest
 
-                destfile = os.path.join(SDKS_FOLDER, dest, 'burgerlib', item)
+                destfile = os.path.join(SDKS_FOLDER, dest, "burgerlib", item)
 
                 # Copy if the destination doesn't exist or it's different
                 # from the header
@@ -228,11 +229,11 @@ def postbuild(working_directory, configuration):
 
     if not error:
         # Did any of the Mac Carbon/Classic resource files change?
-        sourcefolder = os.path.join(working_directory, 'source', 'mac')
-        destfolder = os.path.join(SDKS_FOLDER, 'mac', 'burgerlib')
+        sourcefolder = os.path.join(working_directory, "source", "mac")
+        destfolder = os.path.join(SDKS_FOLDER, "mac", "burgerlib")
         filedata = os.listdir(sourcefolder)
         for item in filedata:
-            if item.lower().endswith('.r'):
+            if item.lower().endswith(".r"):
                 destfile = os.path.join(destfolder, item)
                 sourcefile = os.path.join(sourcefolder, item)
                 if not os.path.isfile(destfile) or not compare_files(
@@ -265,26 +266,26 @@ def clean(working_directory):
         None if not implemented, otherwise an integer error code.
     """
 
-    clean_directories(working_directory, ('.vscode',
-                                          'appfolder',
-                                          'temp',
-                                          'ipch',
-                                          'bin',
-                                          '.vs',
-                                          '*_Data',
-                                          '* Data',
-                                          '__pycache__'))
+    clean_directories(working_directory, (".vscode",
+                                          "appfolder",
+                                          "temp",
+                                          "ipch",
+                                          "bin",
+                                          ".vs",
+                                          "*_Data",
+                                          "* Data",
+                                          "__pycache__"))
 
-    clean_files(working_directory, ('.DS_Store',
-                                    '*.suo',
-                                    '*.user',
-                                    '*.ncb',
-                                    '*.err',
-                                    '*.sdf',
-                                    '*.layout.cbTemp',
-                                    '*.VC.db',
-                                    '*.pyc',
-                                    '*.pyo'))
+    clean_files(working_directory, (".DS_Store",
+                                    "*.suo",
+                                    "*.user",
+                                    "*.ncb",
+                                    "*.err",
+                                    "*.sdf",
+                                    "*.layout.cbTemp",
+                                    "*.VC.db",
+                                    "*.pyc",
+                                    "*.pyo"))
 
 
 ########################################
@@ -292,7 +293,7 @@ def clean(working_directory):
 # If called as a command line and not a class, perform the build
 if __name__ == "__main__":
     WORKING_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
-    ERROR = prebuild(WORKING_DIRECTORY, 'all')
+    ERROR = prebuild(WORKING_DIRECTORY, "all")
     if not ERROR:
-        ERROR = postbuild(WORKING_DIRECTORY, 'all')
+        ERROR = postbuild(WORKING_DIRECTORY, "all")
     sys.exit(ERROR)

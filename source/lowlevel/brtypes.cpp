@@ -68,6 +68,7 @@
 #define BURGER_PS2
 #define BURGER_PS3
 #define BURGER_PS4
+#define BURGER_PS5
 #define BURGER_PSP
 #define BURGER_VITA
 #define BURGER_ANDROID
@@ -783,7 +784,7 @@
 	this define present.
 
 	\sa BURGER_CPU_NAME, BURGER_INTEL, BURGER_WIN64, BURGER_MACOSX,
-		BURGER_XBOXONE, BURGER_PS4 or BURGER_X86
+		BURGER_XBOXONE, BURGER_PS4, BURGER_PS5, or BURGER_X86
 
 ***************************************/
 
@@ -989,8 +990,8 @@
 	may not be present, so call \ref Burger::CPUID(CPUID_t *) to test for all
 	features and determine which functions to use for performance.
 
-	\sa BURGER_XBOXONE, BURGER_PS4, BURGER_WINDOWS, BURGER_MACOSX, BURGER_X86,
-		or BURGER_AMD64
+	\sa BURGER_XBOXONE, BURGER_PS4, BURGER_PS5, BURGER_WINDOWS, BURGER_MACOSX,
+		BURGER_X86, or BURGER_AMD64
 
 ***************************************/
 
@@ -1570,7 +1571,7 @@ line of processors.
 
 	\note There is no floating point support on this platform.
 
-	\sa BURGER_MIPS32, BURGER_PS2, BURGER_PS3, or BURGER_PS4
+	\sa BURGER_MIPS32, BURGER_PS2, BURGER_PS3, BURGER_PS4, or BURGER_PS5
 
 ***************************************/
 
@@ -1583,7 +1584,7 @@ line of processors.
 	If this define exists, then you are creating code that runs on the main
 	processor for a Sony Playstation 2.
 
-	\sa BURGER_MIPS32, BURGER_PS1, BURGER_PS3, or BURGER_PS4
+	\sa BURGER_MIPS32, BURGER_PS1, BURGER_PS3, BURGER_PS4, or BURGER_PS5
 
 ***************************************/
 
@@ -1598,7 +1599,7 @@ line of processors.
 	\note This define is only present for compiling code on the primary CPU.
 	Code targeted for the cell units must be written and compiled separately.
 
-	\sa BURGER_POWERPC, BURGER_PS1, BURGER_PS2, or BURGER_PS4
+	\sa BURGER_POWERPC, BURGER_PS1, BURGER_PS2, BURGER_PS4, or BURGER_PS5
 
 ***************************************/
 
@@ -1610,7 +1611,19 @@ line of processors.
 	If this define exists, then you are creating code that runs on the main
 	processor for a Sony Playstation 4.
 
-	\sa BURGER_AMD64, BURGER_PS1, BURGER_PS2, or BURGER_PS3
+	\sa BURGER_AMD64, BURGER_PS1, BURGER_PS2, BURGER_PS3, or BURGER_PS5
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_PS5
+	\brief Define to determine if code is being built for the PS5.
+
+	If this define exists, then you are creating code that runs on the main
+	processor for a Sony Playstation 5.
+
+	\sa BURGER_AMD64, BURGER_PS1, BURGER_PS2, BURGER_PS3, or BURGER_PS4
 
 ***************************************/
 

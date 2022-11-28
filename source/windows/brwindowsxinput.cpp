@@ -86,7 +86,7 @@ typedef DWORD(WINAPI* XInputGetAudioDeviceIdsPtr)(DWORD dwUserIndex,
 ***************************************/
 
 uint32_t BURGER_API Burger::Windows::XInputGetState(
-    uint32_t dwUserIndex, _XINPUT_STATE* pState)
+    uint32_t dwUserIndex, _XINPUT_STATE* pState) BURGER_NOEXCEPT
 {
     // Get the function pointer
     void* pXInputGetState = LoadFunctionIndex(CALL_XInputGetState);
@@ -120,7 +120,7 @@ uint32_t BURGER_API Burger::Windows::XInputGetState(
 ***************************************/
 
 uint32_t BURGER_API Burger::Windows::XInputSetState(
-    uint32_t dwUserIndex, _XINPUT_VIBRATION* pVibration)
+    uint32_t dwUserIndex, _XINPUT_VIBRATION* pVibration) BURGER_NOEXCEPT
 {
     // Get the function pointer
     void* pXInputSetState = LoadFunctionIndex(CALL_XInputSetState);
@@ -227,7 +227,7 @@ uint32_t BURGER_API Burger::Windows::XInputGetDSoundAudioDeviceGuids(
 
 ***************************************/
 
-void BURGER_API Burger::Windows::XInputEnable(uint_t bEnable)
+void BURGER_API Burger::Windows::XInputEnable(uint_t bEnable) BURGER_NOEXCEPT
 {
     // Get the function pointer
     void* pXInputEnable = LoadFunctionIndex(CALL_XInputEnable);

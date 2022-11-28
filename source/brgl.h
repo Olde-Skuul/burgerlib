@@ -1,14 +1,14 @@
 /***************************************
 
-    OpenGL inclusion
+	OpenGL inclusion
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -41,7 +41,7 @@
 
 #elif __CF_USE_FRAMEWORK_INCLUDES__ || defined(BURGER_MACOSX)
 #ifndef __gl_h_
-#include <OpenGL/gl.h>		// gl.h for MacOS X
+#include <OpenGL/gl.h> // gl.h for MacOS X
 #endif
 
 // Windows requires windows.h before gl.h
@@ -51,15 +51,15 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 #ifndef _WINDOWS_
-#include <windows.h>		// Needed before #include <gl.h> in windows
+#include <windows.h> // Needed before #include <gl.h> in windows
 #endif
 #ifndef __gl_h__
-#include <gl.h>				// OpenGL for all other platforms
+#include <gl.h> // OpenGL for all other platforms
 #endif
 
 // Android / Ouya / Shield
 
-#elif defined(BURGER_SHIELD)
+#elif defined(BURGER_ANDROID)
 #ifndef __gl2_h_
 #include <gles2/gl2.h>
 #endif

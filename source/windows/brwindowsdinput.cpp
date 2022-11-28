@@ -227,7 +227,7 @@ IDirectInputW* BURGER_API Burger::Windows::GetDirectInputSingleton(
 
 ***************************************/
 
-IDirectInput8W* BURGER_API Burger::Windows::GetDirectInput8Singleton(void)
+IDirectInput8W* BURGER_API Burger::Windows::GetDirectInput8Singleton(void) BURGER_NOEXCEPT
 {
 	// Was there already a DirectInput instance?
 	IDirectInput8W* pDirectInput8W = g_Globals.m_pDirectInput8W;

@@ -475,7 +475,7 @@ protected:
 	/** Hardware border color (MSDOS / Amiga only) */
 	uint_t m_uBorderColor;
 	/** Speed in 1/60ths of a second for a palette fade */
-	uint_t m_uPaletteFadeSpeed; 
+	uint_t m_uPaletteFadeSpeed;
 
 	int m_iPauseRenderingCount; ///< Rendering pausing reference count
 	uint8_t m_bRenderingPaused; ///< If \ref TRUE, rendering is paused

@@ -46,6 +46,8 @@ CLEANME_NO_RECURSE = True
 # this folder.
 CLEANME_DEPENDENCIES = []
 
+CLEANME_PROCESS_PROJECT_FILES = False
+
 ## List of Codewarrior library files to move to sdks/windows/burgerlib
 WINDOWS_LIB_FILES = (
     'burgerc50w32rel.lib',
@@ -215,7 +217,7 @@ ARG_LISTS = [
       'watcom',
       'codewarrior50']),
     ('ps3', 'burger', 'library', ['vs2015']),
-    ('ps4', 'burger', 'library', ['vs2015']),
+    ('ps4', 'burger', 'library', ['vs2022']),
     ('vita', 'burger', 'library', ['vs2015']),
     ('vita', 'unittests', 'console', ['vs2015']),
     ('xbox360', 'burger', 'library', ['vs2010']),
