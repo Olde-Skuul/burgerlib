@@ -17,11 +17,11 @@
 #if defined(BURGER_WINDOWS)
 #include "brfilemanager.h"
 #include "brglobals.h"
+#include "brnumberstring.h"
 #include "brnumberto.h"
 #include "brstring16.h"
 #include "brutf16.h"
 #include "brutf8.h"
-#include "brnumberstring.h"
 
 #if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
@@ -198,7 +198,7 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 
 		m_NativeFilename.reserve(uPathLength + 6);
 		m_NativeFilename.clear();
-		
+
 		// Insert the prefix, if any, to the output string
 
 		if (uDeviceNum == (BURGER_MAXUINT - 1)) {
@@ -244,12 +244,16 @@ const char* Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 	On platforms where a current working directory doesn't make sense, like a
 	ROM based system, the filename is cleared out.
 
+	\return \ref kErrorNone if successful, \ref kErrorPathNotFound if invalid,
+		or \ref kErrorNotSupportedOnThisPlatform if not implemented on the
+		platform.
+
 ***************************************/
 
 Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 	void) BURGER_NOEXCEPT
 {
-	eError uResult = kErrorNotADirectory;
+	eError uResult = kErrorPathNotFound;
 
 	// Get the length of the directory in WCHARs + the terminating null
 	const DWORD uLength = GetCurrentDirectoryW(0, nullptr);
@@ -264,7 +268,7 @@ Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 		if (!uResult) {
 
 			// Read in the directory name and check for failure
-			uResult = kErrorNotADirectory;
+			uResult = kErrorPathNotFound;
 			if (GetCurrentDirectoryW(uLength,
 					reinterpret_cast<LPWSTR>(Temp16.data())) == (uLength - 1)) {
 
@@ -468,7 +472,8 @@ Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(
 			nullptr, CSIDL_LOCAL_APPDATA, nullptr, 0, NameBuffer));
 		if ((hResult == S_OK) || (hResult == E_FAIL)) {
 			// Convert to UTF8
-			uResult = SetFromNative(reinterpret_cast<const uint16_t*>(NameBuffer));
+			uResult =
+				SetFromNative(reinterpret_cast<const uint16_t*>(NameBuffer));
 		}
 	}
 
@@ -515,7 +520,8 @@ Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(
 			SHGetFolderPathW(nullptr, CSIDL_APPDATA, nullptr, 0, NameBuffer));
 		if ((hResult == S_OK) || (hResult == E_FAIL)) {
 			// Convert to UTF8
-			uResult = SetFromNative(reinterpret_cast<const uint16_t *>(NameBuffer));
+			uResult =
+				SetFromNative(reinterpret_cast<const uint16_t*>(NameBuffer));
 		}
 	}
 	if (uResult) {
@@ -557,17 +563,17 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 
 	WCHAR InputPath[512];
 	WCHAR* pInputPath;
-	uintptr_t uInputLength = UTF16::TranslateFromUTF8(
-		reinterpret_cast<uint16_t*>(InputPath), BURGER_ARRAYSIZE(InputPath), pInput);
+	uintptr_t uInputLength =
+		UTF16::TranslateFromUTF8(reinterpret_cast<uint16_t*>(InputPath),
+			BURGER_ARRAYSIZE(InputPath), pInput);
 	if (uInputLength >= BURGER_ARRAYSIZE(InputPath)) {
 		pInputPath =
 			static_cast<WCHAR*>(Alloc((uInputLength + 2) * sizeof(WCHAR)));
 		if (!pInputPath) {
 			return kErrorOutOfMemory;
 		}
-		uInputLength =
-			UTF16::TranslateFromUTF8(reinterpret_cast<uint16_t*>(pInputPath),
-				uInputLength + 2, pInput);
+		uInputLength = UTF16::TranslateFromUTF8(
+			reinterpret_cast<uint16_t*>(pInputPath), uInputLength + 2, pInput);
 	} else {
 		pInputPath = InputPath;
 	}
@@ -601,7 +607,7 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 		// Fudge
 		return kErrorOutOfMemory;
 	}
-	m_NativeFilename.assign(reinterpret_cast<const uint16_t *>(pExpanded));
+	m_NativeFilename.assign(reinterpret_cast<const uint16_t*>(pExpanded));
 
 	// How long would the string be if it was UTF8?
 
@@ -619,12 +625,12 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 		// Leading colon
 		m_Filename.assign(':');
 		// Only return 1 colon
-		pSrc += 2;                
+		pSrc += 2;
 	} else {
 		// Get the drive letter
 		uint_t uTemp = static_cast<uint_t>(pSrc[0]);
 		// Upper case
-		if ((uTemp >= 'a') && (uTemp < ('z' + 1))) { 
+		if ((uTemp >= 'a') && (uTemp < ('z' + 1))) {
 			uTemp &= 0xDF;
 		}
 		uTemp = uTemp - 'A';
@@ -648,7 +654,7 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 		Free(pExpanded);
 	}
 
-	uint8_t* pSlasher = reinterpret_cast<uint8_t *>(m_Filename.c_str());
+	uint8_t* pSlasher = reinterpret_cast<uint8_t*>(m_Filename.c_str());
 	uint_t uTemp2 = pSlasher[0];
 	if (uTemp2) {
 		do {
@@ -659,7 +665,7 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 			pSlasher[0] = static_cast<uint8_t>(uTemp2);
 			++pSlasher;
 			uTemp2 = pSlasher[0]; // Next char
-		} while (uTemp2);        // Still more?
+		} while (uTemp2);         // Still more?
 	}
 
 	// The wrap up...

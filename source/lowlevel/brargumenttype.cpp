@@ -469,7 +469,7 @@ uint_t BURGER_API Burger::ArgumentType::IsNegative(void) const BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\brief Returns \ref TRUE if the stored value is zero
+	\brief Returns \ref TRUE if the stored value is zero.
 
 	If the value is zero, return \ref TRUE, if the data type has no concept of
 	zero, it will always return \ref FALSE.

@@ -96,8 +96,12 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(void)
 	filename to that directory. The path is converted into UTF8 character
 	encoding and stored in Burgerlib filename format
 
-	On platforms where a current working directory doesn't make sense, like an
+	On platforms where a current working directory doesn't make sense, like a
 	ROM based system, the filename is cleared out.
+
+	\return \ref kErrorNone if successful, \ref kErrorPathNotFound if invalid,
+		or \ref kErrorNotSupportedOnThisPlatform if not implemented on the
+		platform.
 
 ***************************************/
 

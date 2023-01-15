@@ -545,7 +545,11 @@
 #define BURGER_VITA
 #define BURGER_PLATFORM_NAME "Sony Playstation Vita"
 
-// Android
+// Google platforms
+#elif defined(__ggp__) || defined(VK_USE_PLATFORM_GGP)
+#define BURGER_STADIA
+#define BURGER_PLATFORM_NAME "Google Stadia"
+
 #elif defined(__ANDROID__) || defined(__ANDROID_API__)
 #define BURGER_ANDROID
 #define BURGER_PLATFORM_NAME "Google Android"
@@ -641,7 +645,7 @@
 
 // Any operating system that supports Unix / Posix functions
 #if defined(BURGER_DARWIN) || defined(BURGER_LINUX) || \
-	defined(BURGER_ANDROID) || defined(DOXYGEN)
+	defined(BURGER_ANDROID) || defined(BURGER_STADIA) || defined(DOXYGEN)
 #define BURGER_UNIX
 #endif
 

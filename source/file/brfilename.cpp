@@ -1100,6 +1100,10 @@ const char* BURGER_API Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 	On platforms where a current working directory doesn't make sense, like a
 	ROM based system, the filename is cleared out.
 
+	\return \ref kErrorNone if successful, \ref kErrorPathNotFound if invalid,
+		or \ref kErrorNotSupportedOnThisPlatform if not implemented on the
+		platform.
+
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \

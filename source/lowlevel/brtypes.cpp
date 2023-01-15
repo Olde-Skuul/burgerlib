@@ -987,8 +987,8 @@
 
 	On \ref BURGER_AMD64 or \ref BURGER_X86 CPUs, this define will also be
 	present to allow Intel Architecture instructions. Some instructions may or
-	may not be present, so call \ref Burger::CPUID(CPUID_t *) to test for all
-	features and determine which functions to use for performance.
+	may not be present, so call \ref Burger::CPUID(Burger::CPUID_t *) to test
+	for all features and determine which functions to use for performance.
 
 	\sa BURGER_XBOXONE, BURGER_PS4, BURGER_PS5, BURGER_WINDOWS, BURGER_MACOSX,
 		BURGER_X86, or BURGER_AMD64

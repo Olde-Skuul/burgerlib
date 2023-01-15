@@ -882,7 +882,7 @@ double BURGER_API Burger::SwapEndian::Load(const double* pInput) BURGER_NOEXCEPT
     !defined(DOXYGEN)
 #else
 
-void BURGER_API Burger::SwapEndian::Store(uint16_t* pOutput, uint16_t uInput)
+void BURGER_API Burger::SwapEndian::Store(uint16_t* pOutput, uint16_t uInput) BURGER_NOEXCEPT
 {
     uint_t uTemp = (uInput >> 8U) & 0xFFU;
     uTemp |= (uInput << 8U) & 0xFF00U;
@@ -936,7 +936,7 @@ void BURGER_API Burger::SwapEndian::Store(uint16_t* pOutput, uint16_t uInput)
     !defined(DOXYGEN)
 #else
 
-void BURGER_API Burger::SwapEndian::Store(uint32_t* pOutput, uint32_t uInput)
+void BURGER_API Burger::SwapEndian::Store(uint32_t* pOutput, uint32_t uInput) BURGER_NOEXCEPT
 {
     uint32_t uTemp = (uInput >> 24U) & 0xFFU;
     uTemp |= (uInput >> 8U) & 0xFF00U;

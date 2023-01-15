@@ -22,18 +22,9 @@ from burger import make_version_header, get_sdks_folder, \
     create_folder_if_needed, run_command, compare_files, \
     copy_file_if_needed, clean_directories, clean_files
 
-# If set to True, ``buildme -r``` will not parse directories in this folder.
-BUILDME_NO_RECURSE = None
-
-# ``buildme``` will build these files and folders first.
-BUILDME_DEPENDENCIES = []
-
-# If set to True, ``cleanme -r``` will not parse directories in this folder.
-CLEANME_NO_RECURSE = None
-
-# ``cleanme`` will clean the listed folders using their rules before cleaning.
-# this folder.
-CLEANME_DEPENDENCIES = []
+# ``cleanme`` will assume only the function ``clean()`` is used if False.
+# Overrides PROCESS_PROJECT_FILES
+CLEANME_PROCESS_PROJECT_FILES = False
 
 # Folders for all the target operating systems supported
 

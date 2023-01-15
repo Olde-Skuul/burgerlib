@@ -112,8 +112,8 @@
 		\ref BURGER_ASSERT macro
 
 	\return \ref FALSE. Only return a non-false value if a very special
-	case requires it because it may cause unexpected behavior from
-	the use of the \ref BURGER_ASSERT macro
+		case requires it because it may cause unexpected behavior from
+		the use of the \ref BURGER_ASSERT macro
 
 ***************************************/
 

@@ -62,7 +62,7 @@ uint32_t Burger::Tick::g_uLastTick;
 
 uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
 {
-#if defined(BURGER_LINUX) || defined(BURGER_XBOXONE)
+#if defined(BURGER_LINUX) || defined(BURGER_STADIA) || defined(BURGER_XBOXONE)
 	return static_cast<uint32_t>((clock() * TICKSPERSEC) / CLOCKS_PER_SEC);
 #elif CLOCKS_PER_SEC == TICKSPERSEC
 	return clock();
@@ -240,7 +240,9 @@ uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void) BURGER_NOEXCEPT
 {
 #if defined(BURGER_LINUX) || defined(BURGER_XBOXONE)
 	return static_cast<uint32_t>((clock() * 1000000) / CLOCKS_PER_SEC);
-#elif CLOCKS_PER_SEC == 1000000
+#elif defined(BURGER_STADIA)
+	return static_cast<uint32_t>(clock());
+#elif (CLOCKS_PER_SEC == 1000000)
 	return static_cast<uint32_t>(clock());
 #else
 	return static_cast<uint32_t>((clock() * 1000000) / CLOCKS_PER_SEC);
@@ -275,7 +277,7 @@ uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void) BURGER_NOEXCEPT
 
 uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void) BURGER_NOEXCEPT
 {
-#if defined(BURGER_LINUX) || defined(BURGER_XBOXONE)
+#if defined(BURGER_LINUX) || defined(BURGER_STADIA) || defined(BURGER_XBOXONE)
 	return static_cast<uint32_t>((clock() * 1000) / CLOCKS_PER_SEC);
 #elif CLOCKS_PER_SEC == 1000
 	return static_cast<uint32_t>(clock());
