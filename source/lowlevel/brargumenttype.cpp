@@ -423,7 +423,7 @@
 
 /*! ************************************
 
-	\brief Returns \ref TRUE if the stored value is negative
+	\brief Returns \ref TRUE if the stored value is negative.
 
 	If the value is negative, return \ref TRUE, if the data type has no concept
 	of negative, it will always return \ref FALSE. bool and vectors always

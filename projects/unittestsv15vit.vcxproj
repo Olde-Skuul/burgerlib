@@ -24,19 +24,16 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Internal|PSVita'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|PSVita'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -79,7 +76,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersvita;$(ProjectDir)..\source\graphics\shadersvita\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\vita;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersvita;$(ProjectDir)..\source\graphics\shadersvita\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\psvita;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;SN_TARGET_PSP2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -94,7 +91,7 @@
       <CppLanguageStd>Cpp11</CppLanguageStd>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\vita\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BURGER_SDKS)\psvita\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DataStripping>StripFuncsAndData</DataStripping>
       <DuplicateStripping>true</DuplicateStripping>
       <OptimizeReferences>false</OptimizeReferences>
@@ -110,7 +107,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersvita;$(ProjectDir)..\source\graphics\shadersvita\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\vita;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersvita;$(ProjectDir)..\source\graphics\shadersvita\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\psvita;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;SN_TARGET_PSP2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -125,7 +122,7 @@
       <CppLanguageStd>Cpp11</CppLanguageStd>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\vita\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BURGER_SDKS)\psvita\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DataStripping>StripFuncsAndData</DataStripping>
       <DuplicateStripping>true</DuplicateStripping>
       <OptimizeReferences>true</OptimizeReferences>
@@ -144,7 +141,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersvita;$(ProjectDir)..\source\graphics\shadersvita\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\vita;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersvita;$(ProjectDir)..\source\graphics\shadersvita\generated;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\psvita;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;SN_TARGET_PSP2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -159,7 +156,7 @@
       <CppLanguageStd>Cpp11</CppLanguageStd>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\vita\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BURGER_SDKS)\psvita\burgerlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DataStripping>StripFuncsAndData</DataStripping>
       <DuplicateStripping>true</DuplicateStripping>
       <OptimizeReferences>true</OptimizeReferences>
@@ -314,6 +311,7 @@
     <ClInclude Include="..\source\lowlevel\brsnsystems.h" />
     <ClInclude Include="..\source\lowlevel\brstaticrtti.h" />
     <ClInclude Include="..\source\lowlevel\brstructs.h" />
+    <ClInclude Include="..\source\lowlevel\brtemplates.h" />
     <ClInclude Include="..\source\lowlevel\brtick.h" />
     <ClInclude Include="..\source\lowlevel\brtimedate.h" />
     <ClInclude Include="..\source\lowlevel\brtypes.h" />
@@ -340,6 +338,8 @@
     <ClInclude Include="..\source\memory\brglobalmemorymanager.h" />
     <ClInclude Include="..\source\memory\brmemoryhandle.h" />
     <ClInclude Include="..\source\memory\brmemorymanager.h" />
+    <ClInclude Include="..\source\platforms\psvita\brvitamemory.h" />
+    <ClInclude Include="..\source\platforms\psvita\brvitatypes.h" />
     <ClInclude Include="..\source\random\brmersennetwist.h" />
     <ClInclude Include="..\source\random\brrandom.h" />
     <ClInclude Include="..\source\random\brrandombase.h" />
@@ -364,11 +364,10 @@
     <ClInclude Include="..\source\text\brutf8.h" />
     <ClInclude Include="..\source\text\brwin1252.h" />
     <ClInclude Include="..\source\text\brwin437.h" />
-    <ClInclude Include="..\source\vita\brvitamemory.h" />
-    <ClInclude Include="..\source\vita\brvitatypes.h" />
     <ClInclude Include="..\unittest\common.h" />
     <ClInclude Include="..\unittest\createtables.h" />
     <ClInclude Include="..\unittest\testbralgorithm.h" />
+    <ClInclude Include="..\unittest\testbrcodelibrary.h" />
     <ClInclude Include="..\unittest\testbrcompression.h" />
     <ClInclude Include="..\unittest\testbrdisplay.h" />
     <ClInclude Include="..\unittest\testbrendian.h" />
@@ -521,6 +520,7 @@
     <ClCompile Include="..\source\lowlevel\brsmartpointer.cpp" />
     <ClCompile Include="..\source\lowlevel\brstaticrtti.cpp" />
     <ClCompile Include="..\source\lowlevel\brstructs.cpp" />
+    <ClCompile Include="..\source\lowlevel\brtemplates.cpp" />
     <ClCompile Include="..\source\lowlevel\brtick.cpp" />
     <ClCompile Include="..\source\lowlevel\brtimedate.cpp" />
     <ClCompile Include="..\source\lowlevel\brtypes.cpp" />
@@ -545,6 +545,14 @@
     <ClCompile Include="..\source\memory\brglobalmemorymanager.cpp" />
     <ClCompile Include="..\source\memory\brmemoryhandle.cpp" />
     <ClCompile Include="..\source\memory\brmemorymanager.cpp" />
+    <ClCompile Include="..\source\platforms\psvita\brcriticalsectionvita.cpp" />
+    <ClCompile Include="..\source\platforms\psvita\brdirectorysearchvita.cpp" />
+    <ClCompile Include="..\source\platforms\psvita\brfilemanagervita.cpp" />
+    <ClCompile Include="..\source\platforms\psvita\brfilenamevita.cpp" />
+    <ClCompile Include="..\source\platforms\psvita\brfilevita.cpp" />
+    <ClCompile Include="..\source\platforms\psvita\brticksvita.cpp" />
+    <ClCompile Include="..\source\platforms\psvita\brtimedatevita.cpp" />
+    <ClCompile Include="..\source\platforms\psvita\brvitamemory.cpp" />
     <ClCompile Include="..\source\random\brmersennetwist.cpp" />
     <ClCompile Include="..\source\random\brrandom.cpp" />
     <ClCompile Include="..\source\random\brrandombase.cpp" />
@@ -568,17 +576,10 @@
     <ClCompile Include="..\source\text\brutf8.cpp" />
     <ClCompile Include="..\source\text\brwin1252.cpp" />
     <ClCompile Include="..\source\text\brwin437.cpp" />
-    <ClCompile Include="..\source\vita\brcriticalsectionvita.cpp" />
-    <ClCompile Include="..\source\vita\brdirectorysearchvita.cpp" />
-    <ClCompile Include="..\source\vita\brfilemanagervita.cpp" />
-    <ClCompile Include="..\source\vita\brfilenamevita.cpp" />
-    <ClCompile Include="..\source\vita\brfilevita.cpp" />
-    <ClCompile Include="..\source\vita\brticksvita.cpp" />
-    <ClCompile Include="..\source\vita\brtimedatevita.cpp" />
-    <ClCompile Include="..\source\vita\brvitamemory.cpp" />
     <ClCompile Include="..\unittest\common.cpp" />
     <ClCompile Include="..\unittest\createtables.cpp" />
     <ClCompile Include="..\unittest\testbralgorithm.cpp" />
+    <ClCompile Include="..\unittest\testbrcodelibrary.cpp" />
     <ClCompile Include="..\unittest\testbrcompression.cpp" />
     <ClCompile Include="..\unittest\testbrdisplay.cpp" />
     <ClCompile Include="..\unittest\testbrendian.cpp" />

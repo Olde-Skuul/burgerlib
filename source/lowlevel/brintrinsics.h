@@ -1,14 +1,14 @@
 /***************************************
 
-    Compiler intrinsics.
+	Compiler intrinsics.
 
-    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -110,7 +110,7 @@ BURGER_INLINE void __stwbrx(uint32_t uValue, void* pInput, int iOffset)
 
 /***************************************
 
-    16 bit endian swap
+	16 bit endian swap
 
 ***************************************/
 
@@ -118,7 +118,7 @@ BURGER_INLINE void __stwbrx(uint32_t uValue, void* pInput, int iOffset)
 
 extern uint16_t _swapendian16(uint16_t uInput);
 #pragma aux _swapendian16 = \
-    "ror ax,8" parm[ax] value[ax] modify exact[ax] nomemory;
+	"ror ax,8" parm[ax] value[ax] modify exact[ax] nomemory;
 
 #elif (defined(BURGER_APPLE_SC) && defined(BURGER_68K)) && !defined(DOXYGEN)
 
@@ -127,94 +127,94 @@ extern uint16_t _swapendian16(uint16_t uInput);
 uint16_t _swapendian16(uint16_t) = {0xE058};
 
 #elif (defined(BURGER_METROWERKS) && \
-    (defined(BURGER_68K) || defined(BURGER_X86))) && \
-    !defined(DOXYGEN)
+	(defined(BURGER_68K) || defined(BURGER_X86))) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint16_t _swapendian16(uint16_t uInput)
 {
-    return __ror(uInput, 8);
+	return __ror(uInput, 8);
 }
 
 #elif (__has_builtin(__builtin_bswap16) || (BURGER_GNUC >= 40800)) && \
-    !defined(DOXYGEN)
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint16_t _swapendian16(uint16_t uInput)
 {
-    return __builtin_bswap16(uInput);
+	return __builtin_bswap16(uInput);
 }
 
 #elif ((defined(BURGER_METROWERKS) || defined(BURGER_MRC) || \
-           defined(BURGER_SNSYSTEMS)) && \
-    defined(BURGER_PPC)) && \
-    !defined(DOXYGEN)
+		   defined(BURGER_SNSYSTEMS)) && \
+	defined(BURGER_PPC)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput)
 {
-    int iResult = __rlwinm(static_cast<int>(uInput), 24, 24, 31);
-    iResult = __rlwimi(iResult, static_cast<int>(uInput), 8, 16, 23);
-    return static_cast<uint16_t>(iResult);
+	int iResult = __rlwinm(static_cast<int>(uInput), 24, 24, 31);
+	iResult = __rlwimi(iResult, static_cast<int>(uInput), 8, 16, 23);
+	return static_cast<uint16_t>(iResult);
 }
 
 #elif ( \
-    (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_68K)) && \
-    !defined(DOXYGEN)
+	(defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_68K)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput)
 {
-    __asm__("rorw $8,%0" : : "=d"(uInput) : "0"(uInput) : "cc");
-    return uInput;
+	__asm__("rorw $8,%0" : : "=d"(uInput) : "0"(uInput) : "cc");
+	return uInput;
 }
 
 #elif ( \
-    (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)) && \
-    !defined(DOXYGEN)
+	(defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint16_t _swapendian16(uint16_t uInput)
 {
-    __asm__(
-        "rlwinm %0,%1,8,16,23\n"
-        "rlwimi %0,%1,24,24,31"
-        : "=&r"(uInput)
-        : "r"(uInput));
-    return uInput;
+	__asm__(
+		"rlwinm %0,%1,8,16,23\n"
+		"rlwimi %0,%1,24,24,31"
+		: "=&r"(uInput)
+		: "r"(uInput));
+	return uInput;
 }
 
 #elif (defined(BURGER_SNSYSTEMS) && defined(BURGER_ARM32)) && !defined(DOXYGEN)
 
 BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput)
 {
-    return static_cast<uint16_t>((__builtin_rev(uInput) >> 16));
+	return static_cast<uint16_t>((__builtin_rev(uInput) >> 16));
 }
 
 #elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-    defined(BURGER_ARM32)) && \
-    !defined(DOXYGEN)
+	defined(BURGER_ARM32)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput)
 {
-    uint16_t uResult;
-    __asm__("rev16 %0,%1" : "=r"(uResult) : "r"(uInput));
-    return uResult;
+	uint16_t uResult;
+	__asm__("rev16 %0,%1" : "=r"(uResult) : "r"(uInput));
+	return uResult;
 }
 #elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-    defined(BURGER_ARM64)) && \
-    !defined(DOXYGEN)
+	defined(BURGER_ARM64)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput)
 {
-    uint16_t uResult;
-    __asm__("rev16 %w0,%w1" : "=r"(uResult) : "r"(uInput));
-    return uResult;
+	uint16_t uResult;
+	__asm__("rev16 %w0,%w1" : "=r"(uResult) : "r"(uInput));
+	return uResult;
 }
 
 #elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-    defined(BURGER_INTEL)) && \
-    !defined(DOXYGEN)
+	defined(BURGER_INTEL)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput)
 {
-    __asm__("rorw $8,%0" : "+r"(uInput));
-    return uInput;
+	__asm__("rorw $8,%0" : "+r"(uInput));
+	return uInput;
 }
 
 #elif defined(BURGER_INTEL_COMPILER) && !defined(DOXYGEN)
@@ -223,28 +223,28 @@ BURGER_INLINE uint16_t _swapendian16(register uint16_t uInput)
 
 BURGER_INLINE uint16_t _swapendian16(uint16_t uInput)
 {
-    return static_cast<uint16_t>(_bswap(uInput) >> 16);
+	return static_cast<uint16_t>(_bswap(uInput) >> 16);
 }
 
 #elif defined(BURGER_MSVC) && !defined(DOXYGEN)
 
 BURGER_INLINE uint16_t _swapendian16(uint16_t uInput)
 {
-    return _byteswap_ushort(uInput);
+	return _byteswap_ushort(uInput);
 }
 
 #else
 
 BURGER_INLINE uint16_t _swapendian16(uint16_t uInput)
 {
-    return ((uInput & 0xFF) << 8) | ((uInput >> 8) & 0xFF);
+	return ((uInput & 0xFF) << 8) | ((uInput >> 8) & 0xFF);
 }
 
 #endif
 
 /***************************************
 
-    32 bit endian swap
+	32 bit endian swap
 
 ***************************************/
 
@@ -252,7 +252,7 @@ BURGER_INLINE uint16_t _swapendian16(uint16_t uInput)
 
 extern uint32_t _swapendian32(uint32_t uInput);
 #pragma aux _swapendian32 = \
-    "bswap eax" parm[eax] value[eax] modify exact[eax] nomemory;
+	"bswap eax" parm[eax] value[eax] modify exact[eax] nomemory;
 
 #elif (defined(BURGER_APPLE_SC) && defined(BURGER_68K)) && !defined(DOXYGEN)
 
@@ -275,100 +275,100 @@ BURGER_INLINE uint32_t _swapendian32(uint32_t : __D0) :
 
 BURGER_INLINE uint32_t _swapendian32(register uint32_t uInput)
 {
-    __asm bswap uInput;
-    return uInput;
+	__asm bswap uInput;
+	return uInput;
 }
 
 #elif (__has_builtin(__builtin_bswap32) || (BURGER_GNUC >= 40300) || \
-    defined(BURGER_ARM_COMPILER)) && \
-    !defined(DOXYGEN)
+	defined(BURGER_ARM_COMPILER)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
 {
-    return __builtin_bswap32(uInput);
+	return __builtin_bswap32(uInput);
 }
 
 #elif ((defined(BURGER_METROWERKS) || defined(BURGER_MRC) || \
-           defined(BURGER_SNSYSTEMS)) && \
-    defined(BURGER_PPC)) && \
-    !defined(DOXYGEN)
+		   defined(BURGER_SNSYSTEMS)) && \
+	defined(BURGER_PPC)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
 {
-    int iResult = __rlwinm(static_cast<int>(uInput), 24, 0, 31);
-    iResult = __rlwimi(iResult, static_cast<int>(uInput), 8, 8, 15);
-    iResult = __rlwimi(iResult, static_cast<int>(uInput), 8, 24, 31);
-    return static_cast<uint32_t>(iResult);
+	int iResult = __rlwinm(static_cast<int>(uInput), 24, 0, 31);
+	iResult = __rlwimi(iResult, static_cast<int>(uInput), 8, 8, 15);
+	iResult = __rlwimi(iResult, static_cast<int>(uInput), 8, 24, 31);
+	return static_cast<uint32_t>(iResult);
 }
 
 #elif ( \
-    (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_68K)) && \
-    !defined(DOXYGEN)
+	(defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_68K)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
 {
-    __asm__(
-        "rolw #8,%0\n"
-        "swap %0\n"
-        "rolw #8,%0"
-        : "=d"(uInput)
-        : "0"(uInput)
-        : "cc");
-    return uInput;
+	__asm__(
+		"rolw #8,%0\n"
+		"swap %0\n"
+		"rolw #8,%0"
+		: "=d"(uInput)
+		: "0"(uInput)
+		: "cc");
+	return uInput;
 }
 
 #elif ( \
-    (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)) && \
-    !defined(DOXYGEN)
+	(defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
 {
-    __asm__(
-        "rlwinm %0,%1,24,0,31\n"
-        "rlwimi %0,%1,8,8,15\n"
-        "rlwimi %0,%1,8,24,31"
-        : "=&r"(uInput)
-        : "r"(uInput));
-    return uInput;
+	__asm__(
+		"rlwinm %0,%1,24,0,31\n"
+		"rlwimi %0,%1,8,8,15\n"
+		"rlwimi %0,%1,8,24,31"
+		: "=&r"(uInput)
+		: "r"(uInput));
+	return uInput;
 }
 
 #elif (defined(BURGER_SNSYSTEMS) && defined(BURGER_ARM32)) && !defined(DOXYGEN)
 
 BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
 {
-    return __builtin_rev(uInput);
+	return __builtin_rev(uInput);
 }
 
 #elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-    defined(BURGER_ARM32)) && \
-    !defined(DOXYGEN)
+	defined(BURGER_ARM32)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
 {
-    uint32_t uResult;
-    __asm__("rev %0,%1" : "=r"(uResult) : "r"(uInput));
-    return uResult;
+	uint32_t uResult;
+	__asm__("rev %0,%1" : "=r"(uResult) : "r"(uInput));
+	return uResult;
 }
 
 #elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-    defined(BURGER_ARM64)) && \
-    !defined(DOXYGEN)
+	defined(BURGER_ARM64)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
 {
-    uint32_t uResult;
-    __asm__("rev %w0,%w1" : "=r"(uResult) : "r"(uInput));
-    return uResult;
+	uint32_t uResult;
+	__asm__("rev %w0,%w1" : "=r"(uResult) : "r"(uInput));
+	return uResult;
 }
 
 #elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-    defined(BURGER_INTEL)) && \
-    !defined(DOXYGEN)
+	defined(BURGER_INTEL)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
 {
-    __asm__("bswap %0" : "+r"(uInput));
-    return uInput;
+	__asm__("bswap %0" : "+r"(uInput));
+	return uInput;
 }
 
 #elif defined(BURGER_INTEL_COMPILER)
@@ -377,29 +377,29 @@ BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
 
 BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
 {
-    return _bswap(uInput);
+	return _bswap(uInput);
 }
 
 #elif defined(BURGER_MSVC) && !defined(DOXYGEN)
 
 BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
 {
-    return _byteswap_ulong(uInput);
+	return _byteswap_ulong(uInput);
 }
 
 #else
 
 BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
 {
-    return ((uInput & 0xFF000000) >> 24) | ((uInput & 0x00FF0000) >> 8) |
-        ((uInput & 0x0000FF00) << 8) | ((uInput & 0x000000FF) << 24);
+	return ((uInput & 0xFF000000) >> 24) | ((uInput & 0x00FF0000) >> 8) |
+		((uInput & 0x0000FF00) << 8) | ((uInput & 0x000000FF) << 24);
 }
 
 #endif
 
 /***************************************
 
-    64 bit endian swap
+	64 bit endian swap
 
 ***************************************/
 
@@ -407,10 +407,10 @@ BURGER_INLINE uint32_t _swapendian32(uint32_t uInput)
 
 extern uint64_t _swapendian64(uint64_t uInput);
 #pragma aux _swapendian64 = \
-    "bswap eax" \
-    "bswap edx" \
-    "xchg eax,edx" parm[eax edx] value[eax edx] modify \
-        exact[eax edx] nomemory;
+	"bswap eax" \
+	"bswap edx" \
+	"xchg eax,edx" parm[eax edx] value[eax edx] modify \
+		exact[eax edx] nomemory;
 
 #elif (defined(BURGER_APPLE_SC) && defined(BURGER_68K)) && !defined(DOXYGEN)
 
@@ -424,33 +424,33 @@ extern uint64_t _swapendian64(uint64_t uInput);
 
 BURGER_INLINE uint64_t _swapendian64(register uint64_t uInput)
 {
-    register uint32_t uLo = static_cast<uint32_t>(uInput);
-    register uint32_t uHi = static_cast<uint32_t>(uInput >> 32);
-    __asm {
+	register uint32_t uLo = static_cast<uint32_t>(uInput);
+	register uint32_t uHi = static_cast<uint32_t>(uInput >> 32);
+	__asm {
         mov eax, uHi
         mov edx, uLo
         bswap eax
         bswap edx
-    }
+	}
 }
 
 #elif (__has_builtin(__builtin_bswap64) || (BURGER_GNUC >= 40300) || \
-    defined(BURGER_ARM_COMPILER)) && \
-    !defined(DOXYGEN)
+	defined(BURGER_ARM_COMPILER)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint64_t _swapendian64(uint64_t uInput)
 {
-    return __builtin_bswap64(uInput);
+	return __builtin_bswap64(uInput);
 }
 
 #elif (defined(BURGER_METROWERKS) && defined(BURGER_PPC)) && !defined(DOXYGEN)
 
 BURGER_INLINE uint64_t _swapendian64(register uint64_t uInput)
 {
-    // Perform a 64 bit endian swap using register halves
-    register uint64_t uTemp;
+	// Perform a 64 bit endian swap using register halves
+	register uint64_t uTemp;
 
-    // clang-format off
+	// clang-format off
 	asm{
 		// ROR 24 bits to swap first and last bytes
 		rlwinm uTemp@hiword,uInput@loword,24, 0, 31
@@ -462,76 +462,76 @@ BURGER_INLINE uint64_t _swapendian64(register uint64_t uInput)
 		rlwimi uTemp@hiword,uInput@loword,8, 24, 31
 		rlwimi uTemp@loword,uInput@hiword,8, 24, 31
 	}
-    // clang-format on
+	// clang-format on
 
-    return uTemp;
+	return uTemp;
 }
 
 #elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-    defined(BURGER_POWERPC64)) && \
-    !defined(DOXYGEN)
+	defined(BURGER_POWERPC64)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint64_t _swapendian64(uint64_t uInput)
 {
-    uint64_t uInputHi = uInput >> 32;
-    uint64_t uTemp;
-    uint64_t uResult;
-    __asm__(
-        "rlwinm %0,%2,24,0,31\n"
-        "rlwinm %1,%3,24,0,31\n"
-        "rlwimi %0,%2,8,8,15\n"
-        "rlwimi %1,%3,8,8,15\n"
-        "rlwimi %0,%2,8,24,31\n"
-        "rlwimi %1,%3,8,24,31\n"
-        : "=&r"(uResult), "=&r"(uTemp)
-        : "r"(uInput), "r"(uInputHi));
-    return (uResult << 32) | uTemp;
+	uint64_t uInputHi = uInput >> 32;
+	uint64_t uTemp;
+	uint64_t uResult;
+	__asm__(
+		"rlwinm %0,%2,24,0,31\n"
+		"rlwinm %1,%3,24,0,31\n"
+		"rlwimi %0,%2,8,8,15\n"
+		"rlwimi %1,%3,8,8,15\n"
+		"rlwimi %0,%2,8,24,31\n"
+		"rlwimi %1,%3,8,24,31\n"
+		: "=&r"(uResult), "=&r"(uTemp)
+		: "r"(uInput), "r"(uInputHi));
+	return (uResult << 32) | uTemp;
 }
 
 #elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-    defined(BURGER_POWERPC)) && \
-    !defined(DOXYGEN)
+	defined(BURGER_POWERPC)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint64_t _swapendian64(uint64_t uInput)
 {
-    __asm__(
-        "rlwinm %L0,%1,24,0,31\n"
-        "rlwinm %0,%L1,24,0,31\n"
-        "rlwimi %L0,%1,8,8,15\n"
-        "rlwimi %0,%L1,8,8,15\n"
-        "rlwimi %L0,%1,8,24,31\n"
-        "rlwimi %0,%L1,8,24,31"
-        : "=&r"(uInput)
-        : "r"(uInput));
-    return uInput;
+	__asm__(
+		"rlwinm %L0,%1,24,0,31\n"
+		"rlwinm %0,%L1,24,0,31\n"
+		"rlwimi %L0,%1,8,8,15\n"
+		"rlwimi %0,%L1,8,8,15\n"
+		"rlwimi %L0,%1,8,24,31\n"
+		"rlwimi %0,%L1,8,24,31"
+		: "=&r"(uInput)
+		: "r"(uInput));
+	return uInput;
 }
 
 #elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-    defined(BURGER_ARM64)) && \
-    !defined(DOXYGEN)
+	defined(BURGER_ARM64)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint64_t _swapendian64(uint64_t uInput)
 {
-    uint64_t uResult;
-    __asm__("rev %x0,%x1" : "=r"(uResult) : "r"(uInput));
-    return uResult;
+	uint64_t uResult;
+	__asm__("rev %x0,%x1" : "=r"(uResult) : "r"(uInput));
+	return uResult;
 }
 
 #elif ((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && \
-    defined(BURGER_AMD64)) && \
-    !defined(DOXYGEN)
+	defined(BURGER_AMD64)) && \
+	!defined(DOXYGEN)
 
 BURGER_INLINE uint64_t _swapendian64(uint64_t uInput)
 {
-    __asm__("bswap %0" : "+r"(uInput));
-    return uInput;
+	__asm__("bswap %0" : "+r"(uInput));
+	return uInput;
 }
 
 #elif defined(BURGER_INTEL_COMPILER) && !defined(DOXYGEN)
 
 BURGER_INLINE uint64_t _swapendian64(uint64_t uInput)
 {
-    return _bswap64(uInput);
+	return _bswap64(uInput);
 }
 
 // Note: This function will fail on Visual Studio 2003, so test for 2005 or
@@ -540,16 +540,16 @@ BURGER_INLINE uint64_t _swapendian64(uint64_t uInput)
 
 BURGER_INLINE uint64_t _swapendian64(uint64_t uInput)
 {
-    return _byteswap_uint64(uInput);
+	return _byteswap_uint64(uInput);
 }
 
 #else
 
 BURGER_INLINE uint64_t _swapendian64(uint64_t uInput)
 {
-    return _swapendian32(static_cast<uint32_t>(uInput >> 32)) |
-        (static_cast<uint64_t>(_swapendian32(static_cast<uint32_t>(uInput)))
-            << 32);
+	return _swapendian32(static_cast<uint32_t>(uInput >> 32)) |
+		(static_cast<uint64_t>(_swapendian32(static_cast<uint32_t>(uInput)))
+			<< 32);
 }
 
 #endif

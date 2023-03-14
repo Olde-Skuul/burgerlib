@@ -203,7 +203,7 @@ Burger::eError Burger::Point2D_t::Read(Burger::File* fp) BURGER_NOEXCEPT
 	int16_t Input[2];
 
 	eError uResult = kErrorReadFailure;
-	if (fp->Read(Input, 4) == 4) {
+	if (fp->read(Input, 4) == 4) {
 		m_iX = LittleEndian::Load(&Input[0]);
 		m_iY = LittleEndian::Load(&Input[1]);
 		uResult = kErrorNone;
@@ -237,7 +237,7 @@ Burger::eError Burger::Point2D_t::Write(Burger::File* fp) const BURGER_NOEXCEPT
 	Output[0] = static_cast<int16_t>(LittleEndian::Load(&m_iX));
 	Output[1] = static_cast<int16_t>(LittleEndian::Load(&m_iY));
 	eError uResult = kErrorWriteFailure;
-	if (fp->Write(Output, 4) == 4) {
+	if (fp->write(Output, 4) == 4) {
 		uResult = kErrorNone;
 	}
 	return uResult;

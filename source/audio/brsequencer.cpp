@@ -1404,7 +1404,7 @@ void BURGER_API Burger::Sequencer::DetermineSpeed(void)
 		uint_t uPatternPosition;
 		uint_t i = uPatternCount-1;
 		PatternData_t *pPatternData = pSongPackage->m_pPartitions[pSongPackage->m_SongDescription.m_PatternPointers[i]];
-		if (i == static_cast<int>(m_uPartitionPosition)) {
+		if (i == static_cast<uint_t>(m_uPartitionPosition)) {
 			uPatternPosition = static_cast<uint_t>(i);
 			if (uPatternPosition >= pPatternData->m_uRowCount) {
 				--uPatternPosition;
@@ -3339,7 +3339,7 @@ void BURGER_API Burger::Sequencer::ProcessNote(Channel_t *pChannel,const Command
 
 					if (uEffect != Command_t::EFFECT_PANNING) {
 						pChannel->m_iPan = static_cast<int32_t>(m_pSongPackage->m_SongDescription.m_ChannelPans[pChannel->m_uID]);
-						if (pChannel->m_iPan > cMaxPan) {
+						if (static_cast<uint_t>(pChannel->m_iPan) > cMaxPan) {
 							pChannel->m_iPan = cMaxPan;
 						}
 					}
@@ -3370,7 +3370,7 @@ void BURGER_API Burger::Sequencer::ProcessNote(Channel_t *pChannel,const Command
 
 					if (uEffect != Command_t::EFFECT_PANNING) {
 						pChannel->m_iPan = static_cast<int32_t>(m_pSongPackage->m_SongDescription.m_ChannelPans[pChannel->m_uID]);
-						if (pChannel->m_iPan > cMaxPan) {
+						if (static_cast<uint_t>(pChannel->m_iPan) > cMaxPan) {
 							pChannel->m_iPan = cMaxPan;
 						}
 					}
@@ -3852,7 +3852,7 @@ uint_t BURGER_API Burger::Sequencer::Play(const char *pFilename)
 {
 	uintptr_t uInputLength;
 	uint_t uResult = 10;
-	const void *pInput = FileManager::LoadFile(pFilename,&uInputLength);
+	const void *pInput = FileManager::load_file(pFilename,&uInputLength);
 	if (pInput) {
 		uResult = Play(pInput,uInputLength);
 		Free(pInput);

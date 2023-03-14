@@ -316,7 +316,7 @@ uint_t Burger::GIFEncoder::LookupHash(uint_t uInput)
 			break;
 		}
 		// Index to the next hash entry (With table wrap)
-		uHashKey = (++uHashKey) & cHashKeyMask;
+		uHashKey = (uHashKey+1) & cHashKeyMask;
 	}
 	return uResult;
 }
@@ -339,7 +339,7 @@ void Burger::GIFEncoder::AddHashEntry(uint_t uKey,uint_t uCode)
 
 	while (GetKey(m_HashTable[uHashKey]) != (BURGER_MAXUINT>>cLZBits)) {
 		// Keep going while wrapping around
-		uHashKey = (++uHashKey) & cHashKeyMask;
+		uHashKey = (uHashKey+1) & cHashKeyMask;
 	}
 	m_HashTable[uHashKey] = PutKey(uKey) | PutCode(uCode);
 }

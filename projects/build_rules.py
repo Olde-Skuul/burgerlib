@@ -91,84 +91,84 @@ BURGER_LIB_SOURCE = (
 
 # PS3 specific code
 BURGER_LIB_PS3 = (
-    "../source/ps3",
+    "../source/platforms/ps3",
 )
 
 # PS4 specific code
 BURGER_LIB_PS4 = (
-    "../source/ps4",
+    "../source/platforms/ps4",
 )
 
 # PS5 specific code
 BURGER_LIB_PS5 = (
-    "../source/ps5",
+    "../source/platforms/ps5",
 )
 
 # PS Vita specific code
 BURGER_LIB_VITA = (
-    "../source/vita",
+    "../source/platforms/psvita",
     "../source/graphics/shadersvita"
 )
 
 # Nintendo WiiU specific code
 BURGER_LIB_WIIU = (
-    "../source/wiiu",
+    "../source/platforms/wiiu",
 )
 
 # Nintendo Switch specific code
 BURGER_LIB_SWITCH = (
-    "../source/switch",
+    "../source/platforms/switch",
     "../source/graphics/vulkan"
 )
 
 # Microsoft Xbox 360 specific code
 BURGER_LIB_XBOX_360 = (
-    "../source/xbox360",
+    "../source/platforms/xbox360",
     "../source/graphics/shadersxbox360"
 )
 
 # Microsoft Xbox ONE specific code
 BURGER_LIB_XBOX_ONE = (
-    "../source/xboxone",
+    "../source/platforms/xboxone",
     "../source/graphics/shadersxboxone"
 )
 
 # Apple macOS X specific code
 BURGER_LIB_MACOSX = (
-    "../source/macosx",
+    "../source/platforms/macosx",
     "../source/graphics/shadersopengl"
 )
 
 # Apple macOS 7-9 and Carbon specific code
 BURGER_LIB_MAC = (
-    "../source/mac",
+    "../source/platforms/mac",
     "../source/graphics/shadersopengl"
 )
 
 # Apple iOS specific code
 BURGER_LIB_IOS = (
-    "../source/ios",
+    "../source/platforms/ios",
     "../source/graphics/shadersopengl"
 )
 
 # Darwin specific code
 BURGER_LIB_DARWIN = (
-    "../source/darwin",
+    "../source/platforms/darwin",
 )
 
 # Unix specific code
 BURGER_LIB_UNIX = (
-    "../source/unix",
+    "../source/platforms/unix",
 )
 
 # Microsoft MSDos specific code
 BURGER_LIB_DOS = (
-    "../source/msdos",
+    "../source/platforms/msdos",
 )
 
 # Microsoft Windows specific code
 BURGER_LIB_WINDOWS = (
-    "../source/windows",
+    "../source/platforms/windows",
     "../source/graphics/shadersdx9",
     "../source/graphics/shadersopengl",
     "../source/graphics/vulkan"
@@ -176,24 +176,24 @@ BURGER_LIB_WINDOWS = (
 
 # nVidia Shield specific code
 BURGER_LIB_SHIELD = (
-    "../source/shield",
+    "../source/platforms/shield",
 )
 
 # Android specific code
 BURGER_LIB_ANDROID = (
-    "../source/android",
+    "../source/platforms/android",
     "../source/graphics/shadersopengl",
     "../source/graphics/vulkan"
 )
 
 # Stadia specific code
 BURGER_LIB_STADIA = (
-    "../source/stadia",
+    "../source/platforms/stadia",
 )
 
 # Linux specific code
 BURGER_LIB_LINUX = (
-    "../source/linux",
+    "../source/platforms/linux",
     "../source/graphics/shadersopengl",
     "../source/graphics/vulkan"
 )
@@ -224,6 +224,8 @@ ARG_LISTS = [
     ("xbox360", "unittests", "console", ["vs2010"]),
     ("xboxone", "burger", "library", ["vs2017"]),
     ("xboxone", "unittests", "console", ["vs2017"]),
+    ("xboxgdk", "burger", "library", ["vs2022"]),
+    ("xboxonex", "burger", "library", ["vs2022"]),
     ("wiiu", "burger", "library", ["vs2013"]),
     ("switch", "burger", "library", ["vs2017"]),
     ("switch", "unittests", "app", ["vs2017"]),
@@ -232,8 +234,8 @@ ARG_LISTS = [
     ("stadia", "burger", "library", ["vs2022"]),
     ("msdos", "burger", "library", ["watcom"]),
     ("msdos4gw", "unittests", "console", ["watcom"]),
-    ("macosx", "burger", "library", ["xcode3", "xcode5", "xcode13"]),
-    ("macosx", "unittests", "console", ["xcode3", "xcode5", "xcode13"]),
+    ("macosx", "burger", "library", ["xcode3", "xcode14"]),
+    ("macosx", "unittests", "console", ["xcode3", "xcode14"]),
     ("ios", "burger", "library", ["xcode3", "xcode5"]),
     ("linux", "burger", "library", ["make"]),
     ("linux", "unittests", "console", ["make"]),
@@ -276,26 +278,13 @@ def clean(working_directory):
         None if not implemented, otherwise an integer error code.
     """
 
-    clean_directories(working_directory, (".vscode",
-                                          "appfolder",
-                                          "temp",
-                                          "ipch",
-                                          "bin",
-                                          ".vs",
-                                          "*_Data",
-                                          "* Data",
+    clean_directories(working_directory, (".vscode", "appfolder", "temp", "ipch", "bin", "JSON",
+                                          "Durango", "SRV", ".vs", "*_Data", "* Data",
                                           "__pycache__"))
 
-    clean_files(working_directory, (".DS_Store",
-                                    "*.suo",
-                                    "*.user",
-                                    "*.ncb",
-                                    "*.err",
-                                    "*.sdf",
-                                    "*.layout.cbTemp",
-                                    "*.VC.db",
-                                    "*.pyc",
-                                    "*.pyo"))
+    clean_files(working_directory, (".DS_Store", "*.suo", "*.user", "*.ncb",
+                                    "*.err", "*.sdf", "*.layout.cbTemp", "*.VC.db",
+                                    "*.pyc", "*.pyo"))
 
 ########################################
 
@@ -474,7 +463,7 @@ def project_settings(project):
     # MS/DOS
     if platform.is_msdos():
         source_folders_list.extend(BURGER_LIB_DOS)
-        include_folders_list.append("$(BURGER_SDKS)/dos/x32")
+        include_folders_list.append("$(BURGER_SDKS)/msdos/x32")
 
     # Linux
     if platform is PlatformTypes.linux:
@@ -526,7 +515,7 @@ def project_settings(project):
             "../source/graphics/shadersxbox360",
             _X360SL_MATCH)
 
-    if platform is PlatformTypes.xboxone:
+    if platform.is_xboxone():
         source_folders_list.extend(BURGER_LIB_XBOX_ONE)
         # vs_props.append("$(VCTargetsPath)\\BuildCustomizations\\x360sl.props")
         # vs_targets.append(
@@ -555,16 +544,19 @@ def project_settings(project):
     if platform is PlatformTypes.switch:
         source_folders_list.extend(BURGER_LIB_SWITCH)
 
+    # Unix platforms
     if platform.is_darwin() or platform.is_android() or \
             platform in (PlatformTypes.linux, PlatformTypes.stadia):
         source_folders_list.extend(BURGER_LIB_UNIX)
 
+    # Folder to store the output
     platform_folder = platform.get_platform_folder()
+
     # Add property files for unittests or burgerlib
     if project.name == "unittests":
         source_folders_list.append("../unittest")
 
-        if platform is PlatformTypes.xboxone:
+        if platform.is_xboxone():
             source_files_list.append(
                 "../unittest/xboxone/unittestxboxone.appxmanifest")
 
@@ -611,6 +603,13 @@ def project_settings(project):
             "../source/graphics/shadersdx9",
             _HLSL_MATCH)
 
+    # Enable Steam
+    if platform.is_windows() or platform.is_macosx() or platform is PlatformTypes.linux:
+        if ide.is_codewarrior():
+            library_folders_list.append("$(BURGER_SDKS)/steamworks/public/steam")
+        else:
+            include_folders_list.append("$(BURGER_SDKS)/steamworks/public/steam")
+
     # Store the values into the project
     project.source_folders_list = source_folders_list
     project.include_folders_list = include_folders_list
@@ -623,8 +622,7 @@ def project_settings(project):
         project.cw_environment_variables = ["BURGER_SDKS"]
 
     # Default to Unicode APIs on Windows
-    if platform.is_windows() or platform in (PlatformTypes.xbox,
-            PlatformTypes.xbox360, PlatformTypes.xboxone):
+    if platform.is_windows() or platform.is_xbox():
         project.vs_CharacterSet = "Unicode"
 
     project.custom_rules = {

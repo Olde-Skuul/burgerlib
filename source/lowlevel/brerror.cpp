@@ -2,7 +2,7 @@
 
 	Error codes.
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -20,6 +20,98 @@
 #pragma warning(disable : 26812)
 #endif
 
+#if !defined(DOXYGEN)
+struct ErrorLookup_t {
+	Burger::eError m_uError;
+	const char* m_pMessage;
+};
+
+static const ErrorLookup_t g_ErrorLookup[] = {{Burger::kErrorNone, "No error"},
+	{Burger::kErrorGeneric, "Generic error"},
+	{Burger::kErrorInvalidParameter, "Input parameter is invalid"},
+	{Burger::kErrorInvalidArgument, "Invalid argument in function call"},
+	{Burger::kErrorNotInitialized, "Class or subsystem not initialized"},
+	{Burger::kErrorAlreadyInitialized,
+		"Class or subsystem already initialized"},
+	{Burger::kErrorNotSupported, "Request is not supported"},
+	{Burger::kErrorNotSupportedOnThisPlatform,
+		"Function not supported on this platform"},
+	{Burger::kErrorVersionMismatch, "Version mismatch"},
+	{Burger::kErrorItemNotFound, "Item was not found"},
+	{Burger::kErrorNotReady, "Not ready"},
+	{Burger::kErrorOutOfEntries, "Out of available entries"},
+	{Burger::kErrorOutOfBounds, "Index is beyond the allowed range"},
+	{Burger::kErrorFailedTest, "Unit test failure"},
+	{Burger::kErrorDuplicateEntries, "Data was found more than once"},
+	{Burger::kErrorRestartRequired, "Restart is required"},
+	{Burger::kErrorFile, "File system failure"},
+	{Burger::kErrorFileNotFound, "File not found"},
+	{Burger::kErrorPathNotFound, "Directory to file not found"},
+	{Burger::kErrorVolumeNotFound, "Volume not found"},
+	{Burger::kErrorWriteProtected, "No write access"},
+	{Burger::kErrorNoMoreFileDescriptors,
+		"No more file descriptors are available"},
+	{Burger::kErrorFileTableOverflow, "System file table overflow"},
+	{Burger::kErrorDirectoryNotEmpty, "Files are present in the directory"},
+	{Burger::kErrorNotAFile,
+		"Operation attempted on an object that wasn't a file"},
+	{Burger::kErrorNotADirectory,
+		"Operation attempted on an object that wasn't a directory"},
+	{Burger::kErrorFileExists, "File already exists"},
+	{Burger::kErrorOpenFailure, "Failed to open an object"},
+	{Burger::kErrorReadFailure, "Failed on reading data"},
+	{Burger::kErrorWriteFailure, "Failed on writing data"},
+	{Burger::kErrorSeekFailure, "File or stream seek operation failed"},
+	{Burger::kErrorAccessDenied, "Permission not granted to perform operation"},
+	{Burger::kErrorResourceNotFound, "Data resource not found"},
+	{Burger::kErrorIO, "IO Error"},
+	{Burger::kErrorEndOfFile, "Reached the end of file"},
+	{Burger::kErrorIsLocked, "File object is currently locked"},
+	{Burger::kErrorMemory, "Memory system failure"},
+	{Burger::kErrorOutOfMemory, "Not enough memory to perform operation"},
+	{Burger::kErrorDataCorruption,
+		"Data isn't valid or memory overrun detected"},
+	{Burger::kErrorBadAlignment,
+		"Data wasn't aligned on a proper byte boundary"},
+	{Burger::kErrorNoData, "No data remaining"},
+	{Burger::kErrorBufferTooSmall, "Buffer not large enough for operation"},
+	{Burger::kErrorBufferTooLarge, "Buffer is too large for this operation"},
+	{Burger::kErrorAudio, "Sound system error"},
+	{Burger::kErrorAudioDriverFailure, "Audio driver failed"},
+	{Burger::kErrorAudioFormatNotSupported,
+		"Audio data format is not supported by the driver"},
+	{Burger::kErrorNetwork, "Network error"},
+	{Burger::kErrorCancelled, "User cancelled"},
+	{Burger::kErrorRefused, "Network operation was refused"},
+	{Burger::kErrorNetworkFailure, "Network hardware or software failure"},
+	{Burger::kErrorDataStarvation,
+		"Data required for stream was not available in time"},
+	{Burger::kErrorSocketFailure, "Network socket failure"},
+	{Burger::kErrorAcceptFailure, "Failed on accepting a connection"},
+	{Burger::kErrorAddressNotFound, "Network address not found"},
+	{Burger::kErrorFlowInterrupted, "Network flow interrupted (Or blocked)"},
+	{Burger::kErrorVideo, "Video system error"},
+	{Burger::kErrorColorDepthNotSupported,
+		"Color depth requested is not available on current hardware"},
+	{Burger::kErrorResolutionNotSupported,
+		"Requested display resolution is not available on current hardware"},
+	{Burger::kErrorGPUFailure, "GPU hardware fault"},
+	{Burger::kErrorShaderCompile, "Shader didn't compile"},
+	{Burger::kErrorShaderIncludeMissing, "Shader has a bad include"},
+	{Burger::kErrorOutOfVideoMemory, "Out of video memory"},
+	{Burger::kErrorPalette, "Palette upload failure"},
+	{Burger::kErrorThread, "Thread error"},
+	{Burger::kErrorTimeout, "Operation timed out"},
+	{Burger::kErrorEnumerationInProgress,
+		"Enumeration operation is in progress"},
+	{Burger::kErrorNotEnumerating, "Enumeration operation isn't running"},
+	{Burger::kErrorCantLock, "Thread lock failure"},
+	{Burger::kErrorCantUnlock, "Thread unlock failure"},
+	{Burger::kErrorThreadNotStarted, "Thread couldn't start"},
+	{Burger::kErrorThreadCantStop, "Thread won't stop"},
+	{Burger::kErrorThreadNotFound, "Invalid thread ID"}};
+#endif
+
 /*! ************************************
 
 	\enum Burger::eError
@@ -30,6 +122,48 @@
 	will be returned unmodified instead.
 
 ***************************************/
+
+/*! ************************************
+
+	\brief Convert a Burgerlib error code into a string.
+
+	Look up a Burgerlib error code into an array of error messages and return a
+	pointer to a "C" string with a message in English giving a meaningful
+	message.
+
+	\note A string is always returned, so no need to test for \ref nullptr.
+		The string pointer does not need to be released or freed.
+
+	\param uError Error code to convert to message.
+
+	\return Pointer to a "C" string with an error.
+
+	\sa error_get_string(char *, uintptr_t, eError)
+
+***************************************/
+
+const char* BURGER_API Burger::error_lookup_string(
+	eError uError) BURGER_NOEXCEPT
+{
+	// Assume not found
+	const char* pErrorMessage = "Unknown error";
+
+	// Scan the look up table for a match
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_ErrorLookup);
+	const ErrorLookup_t* pWork = g_ErrorLookup;
+	do {
+
+		// Match?
+		if (pWork->m_uError == uError) {
+
+			// Got the error message
+			pErrorMessage = pWork->m_pMessage;
+			break;
+		}
+		++pWork;
+	} while (--uCount);
+	return pErrorMessage;
+}
 
 /*! ************************************
 
@@ -48,244 +182,44 @@
 	\param uOutputSize Length of the output buffer.
 	\param uError Error code to convert to message.
 
+	\return Length in bytes of the string being returned.
+
+	\sa error_lookup_string(eError)
+
 ***************************************/
 
-uintptr_t BURGER_API Burger::GetErrorString(
+uintptr_t BURGER_API Burger::error_get_string(
 	char* pOutput, uintptr_t uOutputSize, eError uError) BURGER_NOEXCEPT
 {
-	const char* pErrorMessage;
-	switch (uError) {
-	case kErrorNone:
-		pErrorMessage = "No error";
-		break;
-	case kErrorGeneric:
-		pErrorMessage = "Generic error";
-		break;
-	case kErrorInvalidParameter:
-		pErrorMessage = "Input parameter is invalid";
-		break;
-	case kErrorInvalidArgument:
-		pErrorMessage = "Invalid argument in function call";
-		break;
-	case kErrorNotInitialized:
-		pErrorMessage = "Class or subsystem not initialized";
-		break;
-	case kErrorNotSupported:
-		pErrorMessage = "Request is not supported";
-		break;
-	case kErrorNotSupportedOnThisPlatform:
-		pErrorMessage = "Function not supported on this platform";
-		break;
-	case kErrorVersionMismatch:
-		pErrorMessage = "Version mismatch";
-		break;
-	case kErrorItemNotFound:
-		pErrorMessage = "Item was not found";
-		break;
-	case kErrorNotReady:
-		pErrorMessage = "Not ready";
-		break;
-	case kErrorOutOfEntries:
-		pErrorMessage = "Out of available entries";
-		break;
-	case kErrorOutOfBounds:
-		pErrorMessage = "Index is beyond the allowed range";
-		break;
-	case kErrorFailedTest:
-		pErrorMessage = "Unit test failure";
-		break;
-	case kErrorDuplicateEntries:
-		pErrorMessage = "Data was found more than once";
-		break;
-
-	case kErrorFile:
-		pErrorMessage = "File system failure";
-		break;
-		/**  */
-	case kErrorFileNotFound:
-		pErrorMessage = "File not found";
-		break;
-	case kErrorPathNotFound:
-		pErrorMessage = "Directory to file not found";
-		break;
-	case kErrorVolumeNotFound:
-		pErrorMessage = "Volume not found";
-		break;
-	case kErrorWriteProtected:
-		pErrorMessage = "No write access";
-		break;
-	case kErrorNoMoreFileDescriptors:
-		pErrorMessage = "No more file descriptors are available";
-		break;
-	case kErrorFileTableOverflow:
-		pErrorMessage = "System file table overflow";
-		break;
-	case kErrorDirectoryNotEmpty:
-		pErrorMessage = "Files are present in the directory";
-		break;
-	case kErrorNotAFile:
-		pErrorMessage = "Operation attempted on an object that wasn't a file";
-		break;
-	case kErrorNotADirectory:
-		pErrorMessage =
-			"Operation attempted on an object that wasn't a directory";
-		break;
-	case kErrorFileExists:
-		pErrorMessage = "File already exists";
-		break;
-	case kErrorOpenFailure:
-		pErrorMessage = "Failed to open an object";
-		break;
-	case kErrorReadFailure:
-		pErrorMessage = "Failed on reading data";
-		break;
-	case kErrorWriteFailure:
-		pErrorMessage = "Failed on writing data";
-		break;
-	case kErrorSeekFailure:
-		pErrorMessage = "File or stream seek operation failed";
-		break;
-	case kErrorAccessDenied:
-		pErrorMessage = "Permission not granted to perform operation";
-		break;
-	case kErrorResourceNotFound:
-		pErrorMessage = "Data resource not found";
-		break;
-	case kErrorIO:
-		pErrorMessage = "IO Error";
-		break;
-	case kErrorEndOfFile:
-		pErrorMessage = "Reached the end of file";
-		break;
-	case kErrorIsLocked:
-		pErrorMessage = "File object is currently locked";
-		break;
-
-	case kErrorMemory:
-		pErrorMessage = "Memory system failure";
-		break;
-	case kErrorOutOfMemory:
-		pErrorMessage = "Not enough memory to perform operation";
-		break;
-	case kErrorDataCorruption:
-		pErrorMessage = "Data isn't valid or memory overrun detected";
-		break;
-	case kErrorBadAlignment:
-		pErrorMessage = "Data wasn't aligned on a proper byte boundary";
-		break;
-	case kErrorNoData:
-		pErrorMessage = "No data remaining";
-		break;
-	case kErrorBufferTooSmall:
-		pErrorMessage = "Buffer not large enough for operation";
-		break;
-	case kErrorBufferTooLarge:
-		pErrorMessage = "Buffer is too large for this operation";
-		break;
-
-	case kErrorAudio:
-		pErrorMessage = "Sound system error";
-		break;
-	case kErrorAudioDriverFailure:
-		pErrorMessage = "Audio driver failed";
-		break;
-	case kErrorAudioFormatNotSupported:
-		pErrorMessage = "Audio data format is not supported by the driver";
-		break;
-
-	case kErrorNetwork:
-		pErrorMessage = "Network error";
-		break;
-	case kErrorCancelled:
-		pErrorMessage = "User cancelled";
-		break;
-	case kErrorRefused:
-		pErrorMessage = "Network operation was refused";
-		break;
-	case kErrorNetworkFailure:
-		pErrorMessage = "Network hardware or software failure";
-		break;
-	case kErrorDataStarvation:
-		pErrorMessage = "Data required for stream was not available in time";
-		break;
-	case kErrorSocketFailure:
-		pErrorMessage = "Network socket failure";
-		break;
-	case kErrorAcceptFailure:
-		pErrorMessage = "Failed on accepting a connection";
-		break;
-	case kErrorAddressNotFound:
-		pErrorMessage = "Network address not found";
-		break;
-	case kErrorFlowInterrupted:
-		pErrorMessage = "Network flow interrupted (Or blocked)";
-		break;
-
-	case kErrorVideo:
-		pErrorMessage = "Video system error";
-		break;
-	case kErrorColorDepthNotSupported:
-		pErrorMessage =
-			"Color depth requested is not available on current hardware";
-		break;
-	case kErrorResolutionNotSupported:
-		pErrorMessage =
-			"Requested display resolution is not available on current hardware";
-		break;
-	case kErrorGPUFailure:
-		pErrorMessage = "GPU hardware fault";
-		break;
-	case kErrorShaderCompile:
-		pErrorMessage = "Shader didn't compile";
-		break;
-	case kErrorShaderIncludeMissing:
-		pErrorMessage = "Shader has a bad include";
-		break;
-	case kErrorOutOfVideoMemory:
-		pErrorMessage = "Out of video memory";
-		break;
-	case kErrorPalette:
-		pErrorMessage = "Palette upload failure";
-		break;
-
-	case kErrorThread:
-		pErrorMessage = "Thread error";
-		break;
-	case kErrorTimeout:
-		pErrorMessage = "Operation timed out";
-		break;
-	case kErrorEnumerationInProgress:
-		pErrorMessage = "Enumeration operation is in progress";
-		break;
-	case kErrorNotEnumerating:
-		pErrorMessage = "Enumeration operation isn't running";
-		break;
-	case kErrorCantLock:
-		pErrorMessage = "Thread lock failure";
-		break;
-	case kErrorCantUnlock:
-		pErrorMessage = "Thread unlock failure";
-		break;
-	case kErrorThreadNotStarted:
-		pErrorMessage = "Thread couldn't start";
-		break;
-	case kErrorThreadCantStop:
-		pErrorMessage = "Thread won't stop";
-		break;
-	case kErrorThreadNotFound:
-		pErrorMessage = "Invalid thread ID";
-		break;
-
-	default:
-		pErrorMessage = "Unknown error";
-		break;
-	}
+	// Assume not found
+	const char* pErrorMessage = error_lookup_string(uError);
 
 	// Return the string
 	const uintptr_t uStringLength = StringLength(pErrorMessage);
-	// Return the string
 	if (uOutputSize) {
 		StringCopy(pOutput, uOutputSize, pErrorMessage);
 	}
 	return uStringLength;
 }
+
+/*! ************************************
+
+	\brief Convert platform error code to a Burgerlib error code.
+
+	Take a native platform error code and convert it to a Burgerlib equivalent
+	error code.
+
+	\param iNativeError MacOS OSErr or OSStatus, Windows HRESULT error code
+
+	\return Burgerlib error code, or kErrorGeneric if unknown
+
+***************************************/
+
+#if !(defined(BURGER_MAC)) || defined(DOXYGEN)
+Burger::eError BURGER_API Burger::platform_convert_to_error(
+	int iNativeError) BURGER_NOEXCEPT
+{
+	BURGER_UNUSED(iNativeError);
+	return kErrorGeneric;
+}
+#endif

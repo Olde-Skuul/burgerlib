@@ -1701,6 +1701,11 @@ Burger::FileXML::Attribute * BURGER_API Burger::FileXML::Attribute::New(const ch
 
 ***************************************/
 
+#if defined(BURGER_GNUC) && (BURGER_GNUC >= 500000) && !defined(DOXYGEN)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnonnull-compare"
+#endif
+
 Burger::FileXML::Attribute *BURGER_API Burger::FileXML::Attribute::Update(Root *pRoot,const char *pKey,const char *pValue)
 {
 	// Delete the record?
@@ -1729,7 +1734,9 @@ Burger::FileXML::Attribute *BURGER_API Burger::FileXML::Attribute::Update(Root *
 	SetValue(pValue);
 	return this;
 }
-
+#if defined(BURGER_GNUC) && (BURGER_GNUC >= 500000)
+#pragma GCC diagnostic pop
+#endif
 
 
 /*! ************************************

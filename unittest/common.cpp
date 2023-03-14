@@ -18,6 +18,7 @@
 #include "brglobals.h"
 #include "createtables.h"
 #include "testbralgorithm.h"
+#include "testbrcodelibrary.h"
 #include "testbrcompression.h"
 #include "testbrdisplay.h"
 #include "testbrendian.h"
@@ -254,10 +255,11 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
 	CommandParameterBooleanTrue DisplayTests("Display tests", "display");
 	CommandParameterBooleanTrue FileTests("File tests", "file");
 	CommandParameterBooleanTrue CompressTests("Compression tests", "compress");
+	CommandParameterBooleanTrue DLLTests("DLL tests", "dll");
 
 	const CommandParameter* MyParms[] = {&Version, &WriteTables, &AllTests,
 		&Verbose, &ShowMacros, &DialogTests, &NetworkTests, &TimeTests,
-		&DisplayTests, &FileTests, &CompressTests};
+		&DisplayTests, &FileTests, &CompressTests, &DLLTests};
 
 	iResult = CommandParameter::Process(MyApp.GetArgc(), MyApp.GetArgv(),
 		MyParms, BURGER_ARRAYSIZE(MyParms),
@@ -307,6 +309,10 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
 		if (CompressTests.GetValue()) {
 			uVerbose |= VERBOSE_COMPRESS;
 		}
+
+		if (DLLTests.GetValue()) {
+			uVerbose |= VERBOSE_DLL;
+		}
 	}
 
 	// Special cases
@@ -349,7 +355,7 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
 		iResult = TestMacros(uVerbose);
 		iResult |= TestBrtypes(uVerbose);
 		iResult |= TestBrendian(uVerbose);
-		iResult |= TestBralgorithm(uVerbose);
+		iResult |= static_cast<int>(TestBralgorithm(uVerbose));
 		iResult |= TestBrfixedpoint(uVerbose);
 		iResult |= TestBrfloatingpoint(uVerbose);
 		iResult |= TestBrmatrix3d(uVerbose);
@@ -362,17 +368,16 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
 		iResult |= TestStdoutHelpers(uVerbose);
 		iResult |= TestBrprintf(uVerbose);
 		iResult |= TestDateTime(uVerbose);
+		iResult |= TestBrCodeLibrary(uVerbose);
 		iResult |= TestNetwork(uVerbose);
 		iResult |= TestBrcompression(uVerbose);
-		iResult |= TestBrFileManager(uVerbose);
+		iResult |= static_cast<int>(TestBrFileManager(uVerbose));
 
 		if (uVerbose & VERBOSE_DIALOGS) {
 			TestBrDialogs();
 		}
 
-		if (uVerbose & VERBOSE_DISPLAY) {
-			iResult |= TestBrDisplay();
-		}
+		iResult |= TestBrDisplay(uVerbose);
 
 #if 0
 		CreateTables();

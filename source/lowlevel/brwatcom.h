@@ -2,7 +2,7 @@
 
 	Intrinsics and subroutines exclusive to the Open Watcom compiler
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -29,7 +29,7 @@
 extern "C" {
 namespace std {
 
-// Found in math.h
+// Declare these math functions to be intrinsics
 #if defined(BURGER_X86)
 __declspec(__watcall) extern double log(double);
 __declspec(__watcall) extern double cos(double);
@@ -54,9 +54,8 @@ __declspec(__watcall) extern double tanh(double);
 #endif
 
 __declspec(__watcall) extern int abs(int);
-//__declspec(__watcall) extern div_t div(int,int);
 __declspec(__watcall) extern long int labs(long int);
-#pragma intrinsic(abs, /* div, */ labs)
+#pragma intrinsic(abs, labs)
 
 }
 
@@ -209,15 +208,17 @@ extern void __cpuidex(int a[4], int b, int c);
 	"mov [esi+8],ecx" \
 	"mov [esi+12],edx" parm[esi][eax][ecx] modify[ebx ecx edx];
 
+// Copy of _BitScanForward() from MSVC
+// https://learn.microsoft.com/en-us/cpp/intrinsics/bitscanforward-bitscanforward64?view=msvc-170
 extern unsigned char _BitScanForward(unsigned long* Index, unsigned long Mask);
-
 #pragma aux _BitScanForward = \
 	"bsf eax,eax" \
 	"mov dword ptr [edx],eax" \
 	"setne al" parm[eax][ecx] value[eax] modify exact[eax];
 
+// Copy of _BitScanReverse() from MSVC
+// https://learn.microsoft.com/en-us/cpp/intrinsics/bitscanreverse-bitscanreverse64?view=msvc-170
 extern unsigned char _BitScanReverse(unsigned long* Index, unsigned long Mask);
-
 #pragma aux _BitScanReverse = \
 	"bsr eax,eax" \
 	"mov dword ptr [edx],eax" \

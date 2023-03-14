@@ -2,7 +2,7 @@
 
 	Filename Class
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -69,8 +69,8 @@ class Filename {
 	static ExpandCache_t m_DirectoryCache[kDirectoryCacheSize];
 
 public:
-	static void BURGER_API InitDirectoryCache(void);
-	static void BURGER_API PurgeDirectoryCache(void);
+	static void BURGER_API init_directory_cache(void);
+	static void BURGER_API purge_directory_cache(void);
 #endif
 protected:
 	eError BURGER_API end_with_colon(void) BURGER_NOEXCEPT;
@@ -106,67 +106,64 @@ public:
 	eError BURGER_API join(const char* pInput) BURGER_NOEXCEPT;
 	eError BURGER_API join(
 		const char* pInput, uintptr_t uInputLength) BURGER_NOEXCEPT;
-	void BURGER_API get_basename(
+	eError BURGER_API get_basename(
 		char* pOutput, uintptr_t uOutputLength) const BURGER_NOEXCEPT;
-	void BURGER_API get_basename(String* pOutput) const BURGER_NOEXCEPT;
-	void BURGER_API get_file_extension(
+	eError BURGER_API get_basename(String* pOutput) const BURGER_NOEXCEPT;
+	eError BURGER_API get_file_extension(
 		char* pOutput, uintptr_t uOutputLength) const BURGER_NOEXCEPT;
 	eError BURGER_API set_file_extension(
 		const char* pExtension) BURGER_NOEXCEPT;
 	eError BURGER_API dirname(void) BURGER_NOEXCEPT;
+	eError BURGER_API get_dirname(
+		char* pOutput, uintptr_t uOutputLength) const BURGER_NOEXCEPT;
 	eError BURGER_API get_dirname(String* pOutput) const BURGER_NOEXCEPT;
-
-	uint_t BURGER_API IsFullPathname(void) const BURGER_NOEXCEPT;
-	uint_t BURGER_API IsFilenameOnly(void) const BURGER_NOEXCEPT;
-	uint_t BURGER_API ParsePrefixNumber(void) const BURGER_NOEXCEPT;
-	eError BURGER_API Expand(void) BURGER_NOEXCEPT;
-	eError BURGER_API Expand(const char* pInput) BURGER_NOEXCEPT;
-	eError BURGER_API SetSystemWorkingDirectory(void) BURGER_NOEXCEPT;
-	eError BURGER_API SetApplicationDirectory(void) BURGER_NOEXCEPT;
-	eError BURGER_API SetBootVolumeDirectory(void) BURGER_NOEXCEPT;
-	eError BURGER_API SetMachinePrefsDirectory(void) BURGER_NOEXCEPT;
-	eError BURGER_API SetUserPrefsDirectory(void) BURGER_NOEXCEPT;
-	const char* BURGER_API GetNative(void) BURGER_NOEXCEPT;
+	uint_t BURGER_API is_drive_number(void) const BURGER_NOEXCEPT;
+	uint_t BURGER_API is_abs(void) const BURGER_NOEXCEPT;
+	uint_t BURGER_API is_filename_only(void) const BURGER_NOEXCEPT;
+	uint_t BURGER_API has_prefix_number(void) const BURGER_NOEXCEPT;
+	eError BURGER_API abs_path(const char* pInput) BURGER_NOEXCEPT;
+	eError BURGER_API abs_path(void) BURGER_NOEXCEPT;
+	const char* BURGER_API get_native(void) BURGER_NOEXCEPT;
 
 #if !defined(BURGER_MAC) || defined(DOXYGEN)
-	eError BURGER_API SetFromNative(const char* pInput) BURGER_NOEXCEPT;
-	eError BURGER_API SetFromNative(const uint16_t* pInput) BURGER_NOEXCEPT;
+	eError BURGER_API set_native(const char* pInput) BURGER_NOEXCEPT;
+	eError BURGER_API set_native(const uint16_t* pInput) BURGER_NOEXCEPT;
 #endif
 
-#if defined(BURGER_MAC) || defined(DOXYGEN)
-	eError BURGER_API SetFromNative(const char* pInput, long lDirID = 0,
-		short sVRefNum = 0) BURGER_NOEXCEPT;
-	eError BURGER_API GetFSSpec(FSSpec* pFSSpec) BURGER_NOEXCEPT;
+	eError BURGER_API set_system_working_directory(void) BURGER_NOEXCEPT;
+	eError BURGER_API set_application_directory(void) BURGER_NOEXCEPT;
+	eError BURGER_API set_boot_volume(void) BURGER_NOEXCEPT;
+	eError BURGER_API set_system_prefs_directory(void) BURGER_NOEXCEPT;
+	eError BURGER_API set_user_prefs_directory(void) BURGER_NOEXCEPT;
 
-	BURGER_INLINE FSRef* GetFSRefOld(void) BURGER_NOEXCEPT
-	{
-		return reinterpret_cast<FSRef*>(m_FSRef);
-	}
-	FSRef* BURGER_API GetFSRef(void) BURGER_NOEXCEPT;
-	BURGER_INLINE long GetDirID(void) const BURGER_NOEXCEPT
+#if defined(BURGER_MAC) || defined(DOXYGEN)
+	eError BURGER_API set_native(const char* pInput, long lDirID = 0,
+		short sVRefNum = 0) BURGER_NOEXCEPT;
+	eError BURGER_API get_FSSpec(FSSpec* pFSSpec) BURGER_NOEXCEPT;
+	FSRef* BURGER_API get_FSRef(void) BURGER_NOEXCEPT;
+	BURGER_INLINE long get_DirID(void) const BURGER_NOEXCEPT
 	{
 		return m_lDirID;
 	}
-	BURGER_INLINE short GetVRefNum(void) const BURGER_NOEXCEPT
+	BURGER_INLINE short get_VRefNum(void) const BURGER_NOEXCEPT
 	{
 		return m_sVRefNum;
 	}
-	BURGER_INLINE void SetDirID(long lDirID) BURGER_NOEXCEPT
+	BURGER_INLINE void set_DirID(long lDirID) BURGER_NOEXCEPT
 	{
 		m_lDirID = lDirID;
 	}
-	BURGER_INLINE void SetVRefNum(short sVRefNum) BURGER_NOEXCEPT
+	BURGER_INLINE void set_VRefNum(short sVRefNum) BURGER_NOEXCEPT
 	{
 		m_sVRefNum = sVRefNum;
 	}
-	eError BURGER_API SetFromDirectoryID(
-		long lDirID, short sVolRefNum) BURGER_NOEXCEPT;
-	eError BURGER_API SetFromDirectoryIDClassic(void) BURGER_NOEXCEPT;
-	eError BURGER_API GetNativeClassic(
+	eError BURGER_API set_native(long lDirID, short sVolRefNum) BURGER_NOEXCEPT;
+	eError BURGER_API set_native_internal(void) BURGER_NOEXCEPT;
+	eError BURGER_API get_native_internal(
 		const char* pInput, long lDirID, short sVolRefNum) BURGER_NOEXCEPT;
 #if !(defined(BURGER_CFM) && defined(BURGER_68K)) || defined(DOXYGEN)
-	eError BURGER_API SetFromDirectoryIDCarbon(void) BURGER_NOEXCEPT;
-	eError BURGER_API GetNativeCarbon(
+	eError BURGER_API set_native_Carbon(void) BURGER_NOEXCEPT;
+	eError BURGER_API get_native_Carbon(
 		const char* pInput, long lDirID, short sVolRefNum) BURGER_NOEXCEPT;
 #endif
 #endif

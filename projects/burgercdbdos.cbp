@@ -129,7 +129,7 @@
 			<Add alias="Everything" targets="Debug_dos4gw;Debug_dosx32;Internal_dos4gw;Internal_dosx32;Release_dos4gw;Release_dosx32" />
 		</VirtualTargets>
 		<Compiler>
-			<Add directory='&quot;$(BURGER_SDKS)/dos/x32&quot;' />
+			<Add directory='&quot;$(BURGER_SDKS)/msdos/x32&quot;' />
 			<Add directory='&quot;../source&quot;' />
 			<Add directory='&quot;../source/ansi&quot;' />
 			<Add directory='&quot;../source/audio&quot;' />
@@ -145,7 +145,7 @@
 			<Add directory='&quot;../source/lowlevel&quot;' />
 			<Add directory='&quot;../source/math&quot;' />
 			<Add directory='&quot;../source/memory&quot;' />
-			<Add directory='&quot;../source/msdos&quot;' />
+			<Add directory='&quot;../source/platforms/msdos&quot;' />
 			<Add directory='&quot;../source/random&quot;' />
 			<Add directory='&quot;../source/text&quot;' />
 		</Compiler>
@@ -424,6 +424,8 @@
 		<Unit filename="../source/lowlevel/brstaticrtti.h" />
 		<Unit filename="../source/lowlevel/brstructs.cpp" />
 		<Unit filename="../source/lowlevel/brstructs.h" />
+		<Unit filename="../source/lowlevel/brtemplates.cpp" />
+		<Unit filename="../source/lowlevel/brtemplates.h" />
 		<Unit filename="../source/lowlevel/brtick.cpp" />
 		<Unit filename="../source/lowlevel/brtick.h" />
 		<Unit filename="../source/lowlevel/brtimedate.cpp" />
@@ -474,17 +476,17 @@
 		<Unit filename="../source/memory/brmemoryhandle.h" />
 		<Unit filename="../source/memory/brmemorymanager.cpp" />
 		<Unit filename="../source/memory/brmemorymanager.h" />
-		<Unit filename="../source/msdos/brdirectorysearchmsdos.cpp" />
-		<Unit filename="../source/msdos/brdosextender.cpp" />
-		<Unit filename="../source/msdos/brdosextender.h" />
-		<Unit filename="../source/msdos/brdosextenderasm.x86" />
-		<Unit filename="../source/msdos/brfilemanagermsdos.cpp" />
-		<Unit filename="../source/msdos/brfilemsdos.cpp" />
-		<Unit filename="../source/msdos/brfilenamemsdos.cpp" />
-		<Unit filename="../source/msdos/brglobalsmsdos.cpp" />
-		<Unit filename="../source/msdos/brmsdostypes.h" />
-		<Unit filename="../source/msdos/brtickmsdos.cpp" />
-		<Unit filename="../source/msdos/brtimedatemsdos.cpp" />
+		<Unit filename="../source/platforms/msdos/brdirectorysearchmsdos.cpp" />
+		<Unit filename="../source/platforms/msdos/brdosextender.cpp" />
+		<Unit filename="../source/platforms/msdos/brdosextender.h" />
+		<Unit filename="../source/platforms/msdos/brdosextenderasm.x86" />
+		<Unit filename="../source/platforms/msdos/brfilemanagermsdos.cpp" />
+		<Unit filename="../source/platforms/msdos/brfilemsdos.cpp" />
+		<Unit filename="../source/platforms/msdos/brfilenamemsdos.cpp" />
+		<Unit filename="../source/platforms/msdos/brglobalsmsdos.cpp" />
+		<Unit filename="../source/platforms/msdos/brmsdostypes.h" />
+		<Unit filename="../source/platforms/msdos/brtickmsdos.cpp" />
+		<Unit filename="../source/platforms/msdos/brtimedatemsdos.cpp" />
 		<Unit filename="../source/random/brmersennetwist.cpp" />
 		<Unit filename="../source/random/brmersennetwist.h" />
 		<Unit filename="../source/random/brrandom.cpp" />

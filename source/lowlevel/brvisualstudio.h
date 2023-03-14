@@ -3,7 +3,7 @@
 	Intrinsics and subroutines exclusive to the Microsoft Visual Studio
 	compilers
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -43,6 +43,7 @@
 
 extern "C" {
 
+// Ensure these are intrinsics
 extern double __cdecl fabs(double);
 extern double __cdecl sqrt(double);
 #pragma intrinsic(fabs, sqrt)
@@ -65,21 +66,23 @@ extern unsigned __int64 __cdecl _rotr64(unsigned __int64, int);
 
 #if defined(BURGER_INTEL)
 
-// Visual Studio 2005 or higher
+// Visual Studio 2005 or higher has __cpuid()
 #if (BURGER_MSVC >= 140000000)
 extern void __cpuid(int[4], int);
 #pragma intrinsic(__cpuid)
 #else
+
+// For Visual Studio 2003 or earlier, use this instead
 BURGER_INLINE void __cpuid(int a[4], int b)
 {
 	// clang-format off
     BURGER_ASM {
     // Get the pointer to the destination buffer
-    mov esi,a 
+    mov esi,a
     mov eax,b   // Command byte
     cpuid       // Invoke CPUID
     // Store the result in the same order as Visual C
-    mov[esi],eax 
+    mov[esi],eax
     mov[esi + 4],ebx
     mov[esi + 8],ecx
     mov[esi + 12],edx
@@ -89,18 +92,20 @@ BURGER_INLINE void __cpuid(int a[4], int b)
 
 #endif
 
-// Visual studio 2008 or higher
+// Visual studio 2008 or higher has __cpuidex()
 #if (BURGER_MSVC >= 150000000)
 extern void __cpuidex(int[4], int, int);
 #pragma intrinsic(__cpuidex)
 #else
+
 #if defined(BURGER_X86)
+// For Visual Studio 2005 or earlier, use this instead
 BURGER_INLINE void __cpuidex(int a[4], int b, int c)
 {
 	// clang-format off
     BURGER_ASM {
     // Get the pointer to the destination buffer
-    mov esi,a 
+    mov esi,a
     mov eax,b	// Command byte
     mov ecx,c	// Get the sub command
     cpuid		// Invoke CPUID
@@ -117,9 +122,10 @@ BURGER_INLINE void __cpuidex(int a[4], int b, int c)
 
 #endif
 
+// Not available on Xbox 360
+#if !defined(BURGER_XBOX360)
 unsigned char _BitScanForward(unsigned long* Index, unsigned long Mask);
 unsigned char _BitScanReverse(unsigned long* Index, unsigned long Mask);
-#if !defined(BURGER_XBOX360)
 #pragma intrinsic(_BitScanForward, _BitScanReverse)
 #endif
 
@@ -150,9 +156,10 @@ __int64 _InterlockedCompareExchange64(__int64 volatile*, __int64, __int64);
 	_InterlockedDecrement64, _InterlockedExchangeAdd64, \
 	_InterlockedCompareExchange64)
 
+// Not available on Xbox 360
+#if !defined(BURGER_XBOX360)
 unsigned char _BitScanForward64(unsigned long* Index, unsigned __int64 Mask);
 unsigned char _BitScanReverse64(unsigned long* Index, unsigned __int64 Mask);
-#if !defined(BURGER_XBOX360)
 #pragma intrinsic(_BitScanForward64, _BitScanReverse64)
 #endif
 
@@ -234,7 +241,11 @@ BURGER_INLINE __m128d _mm_castsi128_pd(__m128i vInput)
 }
 #endif
 
-// __cpuid() and __cpuidex() intrinsics for other compilers
+/***************************************
+
+	__cpuid() and __cpuidex() intrinsics for other compilers
+
+***************************************/
 
 #if defined(BURGER_INTEL) && (defined(BURGER_CLANG) || defined(BURGER_GNUC))
 
@@ -311,13 +322,14 @@ BURGER_INLINE void __cpuidex(int a[4], int b, int c)
 
 #endif
 
+// If not an intrinsic, implement _BitScanForward() and _BitScanReverse()
 #if !__has_builtin(_BitScanForward)
 BURGER_INLINE uint8_t _BitScanForward(unsigned long* Index, unsigned long Mask)
 {
 	uint8_t bZero;
 	__asm__(
 		"bsf %2, %0 \n \
-			setne %1"
+		setne %1"
 		: "=r"(*Index), "=q"(bZero)
 		: "mr"(Mask));
 	return bZero;
@@ -330,7 +342,7 @@ BURGER_INLINE uint8_t _BitScanReverse(unsigned long* Index, unsigned long Mask)
 	uint8_t bZero;
 	__asm__(
 		"bsr %2, %0 \n \
-			setne %1"
+		setne %1"
 		: "=r"(*Index), "=q"(bZero)
 		: "mr"(Mask));
 	return bZero;

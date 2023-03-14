@@ -317,6 +317,7 @@
     <ClInclude Include="..\source\lowlevel\brsnsystems.h" />
     <ClInclude Include="..\source\lowlevel\brstaticrtti.h" />
     <ClInclude Include="..\source\lowlevel\brstructs.h" />
+    <ClInclude Include="..\source\lowlevel\brtemplates.h" />
     <ClInclude Include="..\source\lowlevel\brtick.h" />
     <ClInclude Include="..\source\lowlevel\brtimedate.h" />
     <ClInclude Include="..\source\lowlevel\brtypes.h" />
@@ -500,6 +501,7 @@
     <ClCompile Include="..\source\lowlevel\brsmartpointer.cpp" />
     <ClCompile Include="..\source\lowlevel\brstaticrtti.cpp" />
     <ClCompile Include="..\source\lowlevel\brstructs.cpp" />
+    <ClCompile Include="..\source\lowlevel\brtemplates.cpp" />
     <ClCompile Include="..\source\lowlevel\brtick.cpp" />
     <ClCompile Include="..\source\lowlevel\brtimedate.cpp" />
     <ClCompile Include="..\source\lowlevel\brtypes.cpp" />

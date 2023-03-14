@@ -3,7 +3,7 @@
 	Determine which compiler is being used and create standardized typedefs
 	and macros so generic code can be created cross platform
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -16,8 +16,10 @@
 #ifndef __BRTYPES_H__
 #define __BRTYPES_H__
 
-/* BEGIN */
+// Place here so the /**/ won't be removed
+#define BURGER_NULL_MACRO_PARAM /**/
 
+/* BEGIN */
 // Require C++
 #if !defined(__cplusplus)
 #error C++ compiler is required
@@ -38,7 +40,6 @@
 
 #define BURGER_LEFT_PARENTHESIS (
 #define BURGER_RIGHT_PARENTHESIS )
-#define BURGER_NULL_MACRO_PARAM /**/
 
 #if !defined(NULL)
 #define NULL 0
@@ -92,15 +93,24 @@
 #define BURGER_CPP17 _MSVC_LANG
 #endif
 
-// To C++Infinity and beyond
-#if (__cplusplus > 201703L) || defined(DOXYGEN)
+// Test for C++20
+#if (__cplusplus > 202002L) || defined(DOXYGEN)
 #define BURGER_CPP20 __cplusplus
-#elif (defined(_MSVC_LANG) && (_MSVC_LANG > 201703L))
+#elif (defined(_MSVC_LANG) && (_MSVC_LANG > 202002L))
 #define BURGER_CPP20 _MSVC_LANG
 #endif
 
+// To C++Infinity and beyond
+#if (__cplusplus > 202300L) || defined(DOXYGEN)
+#define BURGER_CPP23 __cplusplus
+#elif (defined(_MSVC_LANG) && (_MSVC_LANG > 202300L))
+#define BURGER_CPP23 _MSVC_LANG
+#endif
+
 // Create the flavor of C++ as a string
-#if defined(BURGER_CPP20)
+#if defined(BURGER_CPP23)
+#define BURGER_STDCPP_NAME "C++23"
+#elif defined(BURGER_CPP20)
 #define BURGER_STDCPP_NAME "C++20"
 #elif defined(BURGER_CPP17)
 #define BURGER_STDCPP_NAME "C++17"
@@ -267,48 +277,6 @@
 
 /***************************************
 
-	Feature detection macros, using the clang paradigm.
-
-***************************************/
-
-#if !defined(__has_builtin)
-#define __has_builtin(x) 0
-#endif
-
-#if !defined(__has_feature) && !defined(BURGER_SNSYSTEMS)
-#define __has_feature(x) 0
-#endif
-
-#if !defined(__has_extension)
-#define __has_extension __has_feature
-#endif
-
-#if !defined(__has_cpp_attribute)
-#define __has_cpp_attribute(x) 0
-#endif
-
-#if !defined(__has_declspec_attribute)
-#define __has_declspec_attribute(x) 0
-#endif
-
-#if !defined(__has_attribute)
-#define __has_attribute(x) 0
-#endif
-
-#if !defined(__has_warning)
-#define __has_warning(x) 0
-#endif
-
-#if !defined(__has_include)
-#define __has_include(x) 0
-#endif
-
-#if !defined(__has_include_next)
-#define __has_include_next(x) 0
-#endif
-
-/***************************************
-
 	Detect the CPU being compiled for
 
 ***************************************/
@@ -338,17 +306,23 @@
 #define BURGER_CPU_NAME "ARM 64 bit"
 
 #elif defined(__mips__) || defined(__R5900) || defined(__R5900__) || \
-	defined(__MIPS__)
-#if (_MIPS_SIM == _ABIO32) || (_MIPS_SIM == _ABIN32) || defined(__R5900) || \
-	defined(__R5900__) || defined(__MIPS__)
+	defined(__MIPS__) || defined(__loongarch__)
+#if (defined(_MIPS_SIM) && \
+	((_MIPS_SIM == _ABIO32) || (_MIPS_SIM == _ABIN32))) || \
+	defined(__R5900) || defined(__R5900__) || defined(__MIPS__)
 #define BURGER_MIPS32
 #define BURGER_CPU_NAME "Mips 32 bit"
-#elif _MIPS_SIM == _ABI64
+#elif (defined(_MIPS_SIM) && (_MIPS_SIM == _ABI64)) || \
+	(defined(__loongarch_frlen) && (__loongarch_frlen == 64))
 #define BURGER_MIPS64
 #define BURGER_CPU_NAME "Mips 64 bit"
 #else
 #error Unknown MIPS CPU
 #endif
+
+#elif defined(_MIPS_ARCH_32R6)
+#define BURGER_NANOMIPS32
+#define BURGER_CPU_NAME "nanoMips 32 bit"
 
 #elif (defined(_XBOX) && defined(_M_PPCBE)) || defined(__ppc64__) || \
 	defined(__powerpc64__) || defined(_ARCH_PPC64)
@@ -378,13 +352,34 @@
 #define BURGER_MSP430
 #define BURGER_CPU_NAME "Texas Instruments MSP430"
 
-#elif defined(__sparc64__)
+#elif defined(__sparc64__) || defined(__sparc64) || defined(__sparc_v9__) || \
+	defined(__sparc_v9)
 #define BURGER_SPARC64
 #define BURGER_CPU_NAME "Sun SPARC 64 bit"
 
 #elif defined(__sparc__) || defined(__sparc)
 #define BURGER_SPARC32
 #define BURGER_CPU_NAME "Sun SPARC 32 bit"
+
+#elif defined(__sh__)
+#define BURGER_SH32
+#define BURGER_CPU_NAME "SuperH 32 bit"
+
+#elif defined(__s390__)
+#define BURGER_S390
+#define BURGER_CPU_NAME "System 390"
+
+#elif defined(__kvx__)
+#define BURGER_KVX
+#define BURGER_CPU_NAME "Kalray KVX 64 bit"
+
+#elif defined(__bpf__)
+#define BURGER_BPF
+#define BURGER_CPU_NAME "eBPF Networking kernal"
+
+#elif defined(__MRISC32__)
+#define BURGER_MRISC32
+#define BURGER_CPU_NAME "Mostly harmless RISC 32 bit"
 
 #elif !defined(DOXYGEN)
 #error Unknown CPU
@@ -486,7 +481,8 @@
 ***************************************/
 
 // Microsoft XBox
-#if defined(_XBOX) || defined(XBOX) || defined(_XBOX_ONE)
+#if defined(_XBOX) || defined(XBOX) || defined(_XBOX_ONE) || \
+	defined(_GAMING_XBOX_XBOXONE) || defined(_GAMING_XBOX_SCARLETT)
 #if defined(BURGER_X86)
 #define BURGER_XBOX
 #define BURGER_PLATFORM_NAME "Microsoft XBox Classic"
@@ -495,7 +491,11 @@
 #define BURGER_PLATFORM_NAME "Microsoft XBox 360"
 #else
 #define BURGER_XBOXONE
+#if defined(_GAMING_XBOX_SCARLETT)
+#define BURGER_PLATFORM_NAME "Microsoft XBox ONE Series X"
+#else
 #define BURGER_PLATFORM_NAME "Microsoft XBox ONE"
+#endif
 #endif
 
 #elif defined(__DOS__) || defined(__MSDOS__) || defined(_MSDOS)
@@ -694,10 +694,14 @@
 #define BURGER_IPX
 #endif
 
-#if (defined(BURGER_WINDOWS) || defined(BURGER_MACOSX) || \
-	defined(BURGER_LINUX)) || \
-	defined(DOXYGEN)
+#if defined(BURGER_WINDOWS) || defined(BURGER_MACOSX) || defined(BURGER_LINUX)
+// Unsupported compilers and CPUs
+#if !(defined(BURGER_WATCOM) || \
+	(defined(BURGER_MACOSX) && defined(BURGER_PPC)) || \
+	(defined(BURGER_WINDOWS) && defined(BURGER_ARM)) || \
+	(defined(BURGER_MSVC) && (BURGER_MSVC < 1600000)))
 #define BURGER_STEAM
+#endif
 #endif
 
 #if (defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
@@ -737,6 +741,48 @@
 
 /***************************************
 
+	Feature detection macros, using the clang paradigm.
+
+***************************************/
+
+#if !defined(__has_builtin)
+#define __has_builtin(x) 0
+#endif
+
+#if !defined(__has_feature) && !defined(BURGER_SNSYSTEMS)
+#define __has_feature(x) 0
+#endif
+
+#if !defined(__has_extension)
+#define __has_extension __has_feature
+#endif
+
+#if !defined(__has_cpp_attribute)
+#define __has_cpp_attribute(x) 0
+#endif
+
+#if !defined(__has_declspec_attribute)
+#define __has_declspec_attribute(x) 0
+#endif
+
+#if !defined(__has_attribute)
+#define __has_attribute(x) 0
+#endif
+
+#if !defined(__has_warning)
+#define __has_warning(x) 0
+#endif
+
+#if !defined(__has_include)
+#define __has_include(x) 0
+#endif
+
+#if !defined(__has_include_next)
+#define __has_include_next(x) 0
+#endif
+
+/***************************************
+
 	API macros
 
 ***************************************/
@@ -764,8 +810,7 @@
 #define BURGER_ANSIAPI
 #endif
 
-// Set the inline keyword
-
+// Determine BURGER_INLINE
 #if (BURGER_MSVC >= 120000000) || defined(BURGER_INTEL_COMPILER) || \
 	defined(BURGER_MINGW)
 #define BURGER_INLINE __forceinline
@@ -782,7 +827,7 @@
 #define BURGER_INLINE inline
 #endif
 
-// Set the no inline keyword
+// Determine BURGER_NO_INLINE
 #if (BURGER_MSVC >= 130000000) || (BURGER_METROWERKS >= 0x3100) || \
 	defined(BURGER_INTEL_COMPILER) || defined(BURGER_MINGW)
 #define BURGER_NO_INLINE __declspec(noinline)
@@ -793,7 +838,7 @@
 #define BURGER_NO_INLINE
 #endif
 
-// Noreturn
+// Determine BURGER_NORETURN
 #if (BURGER_MSVC >= 120000000)
 #define BURGER_NORETURN __declspec(noreturn)
 #elif (BURGER_GNUC >= 20800) || __has_attribute(__noreturn__)
@@ -804,7 +849,7 @@
 #define BURGER_NORETURN
 #endif
 
-// Attribute printf format
+// Determine BURGER_PRINTF_ATTRIBUTE
 #if (BURGER_GNUC >= 20300) || __has_attribute(format) || defined(DOXYGEN)
 #define BURGER_PRINTF_ATTRIBUTE(_index, _check) \
 	__attribute__((format(printf, _index, _check)))
@@ -812,7 +857,7 @@
 #define BURGER_PRINTF_ATTRIBUTE(_index, _check)
 #endif
 
-// Asm keyword for inline assembly (If supported)
+// Determine BURGER_ASM
 #if defined(BURGER_WATCOM) || defined(BURGER_INTEL_COMPILER) || \
 	defined(BURGER_MINGW)
 #define BURGER_ASM _asm
@@ -822,8 +867,7 @@
 #define BURGER_ASM asm
 #endif
 
-// Pure assembly functions
-
+// Determine BURGER_DECLSPECNAKED
 #if defined(BURGER_METROWERKS) || \
 	((defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC))
 #define BURGER_DECLSPECNAKED asm
@@ -1012,6 +1056,7 @@
 #define BURGER_DISABLE_MSAN
 #endif
 
+// Determine BURGER_MAYBE_UNUSED
 #if defined(BURGER_CPP17) || __has_cpp_attribute(maybe_unused) || \
 	defined(DOXYGEN)
 #define BURGER_MAYBE_UNUSED [[maybe_unused]]
@@ -1023,6 +1068,7 @@
 #define BURGER_MAYBE_UNUSED
 #endif
 
+// Determine BURGER_NODISCARD
 #if defined(BURGER_CPP17) || __has_cpp_attribute(nodiscard) || defined(DOXYGEN)
 #define BURGER_NODISCARD [[nodiscard]]
 #elif __has_cpp_attribute(clang::warn_unused_result)
@@ -1035,6 +1081,7 @@
 #define BURGER_NODISCARD
 #endif
 
+// Determine BURGER_FALLTHROUGH
 #if defined(BURGER_CPP17) || __has_cpp_attribute(fallthrough) || \
 	defined(DOXYGEN)
 #define BURGER_FALLTHROUGH [[fallthrough]]
@@ -1048,7 +1095,9 @@
 #define BURGER_FALLTHROUGH ((void)0)
 #endif
 
-#if __has_cpp_attribute(used) || __has_attribute(used) || (BURGER_GNUC >= 30100)
+// Determine BURGER_USED
+#if __has_cpp_attribute(used) || __has_attribute(used) || \
+	(BURGER_GNUC >= 30100) || defined(DOXYGEN)
 #define BURGER_USED __attribute__((used))
 #elif __has_attribute(__used__)
 #define BURGER_USED __attribute__((__used__))
@@ -1133,6 +1182,8 @@ BURGER_INLINE BURGER_CONSTEXPR bool operator!=(const x & rhs) const BURGER_NOEXC
 BURGER_INLINE BURGER_CONSTEXPR bool operator!=(value rhs) const BURGER_NOEXCEPT { return m_Member != static_cast<type>(rhs); } \
 }
 #endif
+
+// BURGER_ENUM_MATH create math operators to operate on an enum
 #define BURGER_ENUM_MATH(x, y) \
 BURGER_INLINE x& operator|=(x& uInput1, x uInput2) BURGER_NOEXCEPT { \
     return uInput1 = static_cast<x>(static_cast<y>(uInput1) | static_cast<y>(uInput2)); } \
@@ -1163,7 +1214,6 @@ BURGER_INLINE BURGER_CONSTEXPR x operator~(x uInput) BURGER_NOEXCEPT { \
 ***************************************/
 
 // Special case for 16 bit int
-
 #if defined(BURGER_68K) && defined(BURGER_METROWERKS)
 #if !__option(fourbyteints)
 #define BURGER_SIZEOF_INT 2
@@ -1175,7 +1225,6 @@ BURGER_INLINE BURGER_CONSTEXPR x operator~(x uInput) BURGER_NOEXCEPT { \
 #endif
 
 // Special case for 64 bit long
-
 #if !defined(BURGER_HAS_64_BIT_SUPPORT) || defined(DOXYGEN)
 // 64 bit integer support is performed by a 64 bit container structure
 namespace Burger {
@@ -1204,7 +1253,6 @@ struct ulonglong_t;
 #endif
 
 // stdint.h types, not found in MRC, SC and Visual Studio 2003-2008
-
 #if defined(BURGER_MRC) || defined(BURGER_APPLE_SC) || \
 	(defined(BURGER_MSVC) && (BURGER_MSVC < 160000000))
 #include <brstdint.h>
@@ -1228,7 +1276,7 @@ struct ulonglong_t;
 #endif
 
 // Visual Studio 2010 has a bug where _INTPTR is not defined
-#if !defined(_INTPTR) && defined(BURGER_MSVC) && (BURGER_MSVC < 170000000)
+#if !defined(_INTPTR) && (defined(BURGER_MSVC) && (BURGER_MSVC < 170000000))
 #if defined(BURGER_64BITCPU) && !defined(BURGER_XBOX360)
 #define _INTPTR 2
 #else
@@ -1284,6 +1332,7 @@ typedef uint64_t ulong2uint_t;
 #define BURGER_HAS_CHAR8_T
 #endif
 
+// char16_t and char32_t are defined together
 #if defined(BURGER_CPP11) || (__cpp_unicode_characters >= 200704) || \
 	(_HAS_CHAR16_T_LANGUAGE_SUPPORT > 0) || \
 	((BURGER_GNUC >= 40400) && defined(__GXX_EXPERIMENTAL_CXX0X__)) || \
@@ -1340,7 +1389,7 @@ typedef unsigned int Vector_128 __attribute__((mode(TI)));
 #endif
 typedef vec_float4 Vector_128;
 
-#elif defined(BURGER_PS4)
+#elif defined(BURGER_PS4) || defined(BURGER_PS5)
 #ifndef __XMMINTRIN_H
 #include <xmmintrin.h>
 #endif
@@ -1369,13 +1418,13 @@ typedef __vector4 Vector_128;
 #endif
 typedef __m128 Vector_128;
 
-#elif (defined(BURGER_MACOSX) || defined(BURGER_IOS)) && defined(BURGER_INTEL)
+#elif defined(BURGER_DARWIN) && defined(BURGER_INTEL)
 #ifndef __EMMINTRIN_H
 #include <emmintrin.h>
 #endif
 typedef __m128 Vector_128;
 
-#elif defined(BURGER_ANDROID)
+#elif defined(BURGER_ANDROID) || defined(BURGER_SWITCH)
 #ifndef __ARM_FP16_H
 #include <arm_fp16.h>
 #endif
@@ -1387,6 +1436,9 @@ typedef float32x4_t Vector_128;
 
 #elif defined(BURGER_WIIU)
 #include <ppc_ghs.h>
+#define __fsel __FSEL
+#define __lwarx __LWARX
+#define __stwcx __STWCX
 struct Vector_128 {
 	/** Opaque contents to the 128 bit vector register */
 	BURGER_ALIGN(float, m128_f32[4], 16);
@@ -1442,7 +1494,7 @@ extern const char (*_BurgerArraySize(T (&)[N]))[N];
 BURGER_INLINE void* operator new(__typeof__(sizeof(0)), void* x) BURGER_NOEXCEPT { return x; }
 #endif
 
-#elif defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER)
+#elif defined(BURGER_MSVC) || defined(BURGER_INTEL_COMPILER) || defined(BURGER_PS3)
 #define __PLACEMENT_NEW_INLINE
 BURGER_INLINE void* BURGER_ANSIAPI operator new(size_t, void* x) BURGER_NOEXCEPT { return x;}
 
@@ -1452,8 +1504,9 @@ BURGER_INLINE void* BURGER_ANSIAPI operator new(size_t, void* x) BURGER_NOEXCEPT
             defined(__NEXT_CPP__)))
 BURGER_INLINE void* operator new(unsigned long int, void* x) BURGER_NOEXCEPT { return x; }
 
-#elif defined(BURGER_PS4) || \
-    (defined(BURGER_ANDROID) && defined(BURGER_64BITCPU))
+#elif defined(BURGER_PS4) || defined(BURGER_PS5) || defined(BURGER_BPF) || \
+    defined(BURGER_POWERPC64) || \
+	((defined(BURGER_ANDROID) || defined(BURGER_MIPS)) && defined(BURGER_64BITCPU))
 BURGER_INLINE void* operator new(unsigned long, void* x) BURGER_NOEXCEPT { return x; }
 
 #elif defined(BURGER_ANDROID) || defined(BURGER_SNSYSTEMS) || \
@@ -1504,6 +1557,7 @@ BURGER_INLINE void* operator new(uintptr_t, void* x) BURGER_NOEXCEPT { return x;
 #define BURGER_MAXUINT64 0xFFFFFFFFFFFFFFFFULL
 #endif
 
+// Obsolete typedefs
 typedef int8_t Int8;
 typedef uint8_t Word8;
 typedef int16_t Int16;

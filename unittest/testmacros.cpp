@@ -760,6 +760,7 @@ static uint_t BURGER_API TestCompilerMacros(uint_t uVerbose) BURGER_NOEXCEPT
 		SHOW_MACRO(BURGER_CPP14);
 		SHOW_MACRO(BURGER_CPP17);
 		SHOW_MACRO(BURGER_CPP20);
+		SHOW_MACRO(BURGER_CPP23);
 		SHOW_MACRO(BURGER_COMPILER_VERSION);
 		SHOW_MACRO(BURGER_COMPILER_NAME);
 		SHOW_MACRO(BURGER_CONSTEXPR);
@@ -941,6 +942,34 @@ static uint_t BURGER_API TestCPUMacros(uint_t uVerbose) BURGER_NOEXCEPT
 #if defined(BURGER_MIPS64)
 	if (uVerbose & VERBOSE_MACROS) {
 		SHOW_MACRO(BURGER_MIPS64);
+	}
+	++uTest;
+#endif
+
+#if defined(BURGER_NANOMIPS32)
+	if (uVerbose & VERBOSE_MACROS) {
+		SHOW_MACRO(BURGER_NANOMIPS32);
+	}
+	++uTest;
+#endif
+
+#if defined(BURGER_SH32)
+	if (uVerbose & VERBOSE_MACROS) {
+		SHOW_MACRO(BURGER_SH32);
+	}
+	++uTest;
+#endif
+
+#if defined(BURGER_S390)
+	if (uVerbose & VERBOSE_MACROS) {
+		SHOW_MACRO(BURGER_S390);
+	}
+	++uTest;
+#endif
+
+#if defined(BURGER_KVX)
+	if (uVerbose & VERBOSE_MACROS) {
+		SHOW_MACRO(BURGER_KVX);
 	}
 	++uTest;
 #endif

@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "burger", "burgerv22ps5.vcxproj", "{87C8B77A-BD2A-342B-BEAD-40AD97D1C0BD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Prospero = Debug|Prospero
+		Internal|Prospero = Internal|Prospero
+		Release|Prospero = Release|Prospero
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{87C8B77A-BD2A-342B-BEAD-40AD97D1C0BD}.Debug|Prospero.ActiveCfg = Debug|Prospero
+		{87C8B77A-BD2A-342B-BEAD-40AD97D1C0BD}.Debug|Prospero.Build.0 = Debug|Prospero
+		{87C8B77A-BD2A-342B-BEAD-40AD97D1C0BD}.Internal|Prospero.ActiveCfg = Internal|Prospero
+		{87C8B77A-BD2A-342B-BEAD-40AD97D1C0BD}.Internal|Prospero.Build.0 = Internal|Prospero
+		{87C8B77A-BD2A-342B-BEAD-40AD97D1C0BD}.Release|Prospero.ActiveCfg = Release|Prospero
+		{87C8B77A-BD2A-342B-BEAD-40AD97D1C0BD}.Release|Prospero.Build.0 = Release|Prospero
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B6FA54F0-2622-4700-BD43-73EB0EBEFE41}
+	EndGlobalSection
+EndGlobal

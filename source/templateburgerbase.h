@@ -8,45 +8,48 @@
 #define __TEMPLATEBURGERBASE_H__
 #endif
 
-/* DIR: "ansi:" */
-/* DIR: "android:" */
-/* DIR: "audio:" */
-/* DIR: "commandline:" */
-/* DIR: "compression:" */
-/* DIR: "darwin:" */
-/* DIR: "file:" */
-/* DIR: "flashplayer:" */
-/* DIR: "graphics:" */
-/* DIR: "graphics:effects:" */
-/* DIR: "graphics:shaders:" */
-/* DIR: "graphics:vulkan:" */
-/* DIR: "input:" */
-/* DIR: "ios:" */
-/* DIR: "lowlevel:" */
-/* DIR: "math:" */
-/* DIR: "memory:" */
-/* DIR: "network:" */
-/* DIR: "shield:" */
-/* DIR: "random:" */
-/* DIR: "text:" */
-/* DIR: "unix:" */
-/* DIR: "windows:" */
-/* DIR: "xbox360:" */
-/* DIR: "macosx:" */
-/* DIR: "mac:" */
-/* DIR: "msdos:" */
-/* DIR: "linux:" */
-/* DIR: "ps3:" */
-/* DIR: "ps4:" */
-/* DIR: "vita:" */
-/* DIR: "wiiu:" */
+/* DIR: "ansi" */
+/* DIR: "audio" */
+/* DIR: "commandline" */
+/* DIR: "compression" */
+/* DIR: "file" */
+/* DIR: "flashplayer" */
+/* DIR: "graphics" */
+/* DIR: "graphics:effects" */
+/* DIR: "graphics:shaders" */
+/* DIR: "graphics:vulkan" */
+/* DIR: "input" */
+/* DIR: "lowlevel" */
+/* DIR: "math" */
+/* DIR: "memory" */
+/* DIR: "network" */
+/* DIR: "random" */
+/* DIR: "text" */
+/* DIR: "platforms:android" */
+/* DIR: "platforms:darwin" */
+/* DIR: "platforms:shield" */
+/* DIR: "platforms:unix" */
+/* DIR: "platforms:windows" */
+/* DIR: "platforms:xbox360" */
+/* DIR: "platforms:xboxone" */
+/* DIR: "platforms:ios" */
+/* DIR: "platforms:macosx" */
+/* DIR: "platforms:mac" */
+/* DIR: "platforms:msdos" */
+/* DIR: "platforms:linux" */
+/* DIR: "platforms:ps3" */
+/* DIR: "platforms:ps4" */
+/* DIR: "platforms:ps5" */
+/* DIR: "platforms:psvita" */
+/* DIR: "platforms:wiiu" */
+/* DIR: "platforms:switch" */
 
 /* BEGIN */
 /***************************************
 
 	Burgerlib base header
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -63,6 +66,7 @@
 #ifndef __BURGER__
 #define __BURGER__
 
+#define BURGER_NULL_MACRO_PARAM /**/
 #include "brtypes.h"
 
 #ifndef _INC_STDIO
@@ -83,15 +87,17 @@
 #endif
 
 // clang-format off
-#include "brerror.h"
-#include "brintrinsics.h"
 #include "brwatcom.h"
 #include "brvisualstudio.h"
 #include "brintelcompiler.h"
+#include "brsnsystems.h"
 #include "brxcode.h"
 #include "brmetrowerks.h"
-#include "brsnsystems.h"
+#include "brintrinsics.h"
+#include "brtemplates.h"
+#include "brerror.h"
 #include "brassert.h"
+
 #include "brlocalization.h"
 #include "brdebug.h"
 #include "brguid.h"
@@ -285,6 +291,7 @@
 #include "brnetmoduletcp.h"
 #include "brnetendpointtcp.h"
 #include "brnetplay.h"
+#include "brsteam.h"
 #include "brgridindex.h"
 #include "brearcliptriangulate.h"
 #include "brflashstream.h"

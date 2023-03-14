@@ -3,7 +3,7 @@
 	Determine which compiler is being used and create standardized typedefs and
 	macros so generic code can be created cross platform
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -52,6 +52,10 @@
 #define BURGER_MSP430
 #define BURGER_SPARC32
 #define BURGER_SPARC64
+#define BURGER_NANOMIPS32
+#define BURGER_SH32
+#define BURGER_S390
+#define BURGER_KVX
 #define BURGER_CPU_NAME "The name of the CPU"
 
 #define BURGER_3DNOW
@@ -72,6 +76,7 @@
 #define BURGER_PSP
 #define BURGER_VITA
 #define BURGER_ANDROID
+#define BURGER_STADIA
 #define BURGER_SHIELD
 #define BURGER_OUYA
 #define BURGER_GBA
@@ -94,6 +99,7 @@
 #define BURGER_MACOSX
 #define BURGER_LINUX
 #define BURGER_ARDUINO
+#define BURGER_STEAM
 #define BURGER_PLATFORM_NAME "Name of operating system"
 
 #define BURGER_LITTLEENDIAN
@@ -316,7 +322,7 @@
 	using a compiler that isn't at least ANSI C89 level of compatibility.
 
 	\sa BURGER_STDCPP_NAME, BURGER_CPP98, BURGER_CPP11, BURGER_CPP14,
-		BURGER_CPP17, and BURGER_CPP20
+		BURGER_CPP17, BURGER_CPP20, and BURGER_CPP23
 
 ***************************************/
 
@@ -329,7 +335,7 @@
 	minimum feature set found in C++98 compilers.
 
 	\sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP11, BURGER_CPP14,
-		BURGER_CPP17, and BURGER_CPP20
+		BURGER_CPP17, BURGER_CPP20, and BURGER_CPP23
 
 ***************************************/
 
@@ -342,7 +348,7 @@
 	minimum feature set found in C++11 compilers.
 
 	\sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP98, BURGER_CPP14,
-		BURGER_CPP17, and BURGER_CPP20
+		BURGER_CPP17, BURGER_CPP20, and BURGER_CPP23
 
 ***************************************/
 
@@ -355,7 +361,7 @@
 	minimum feature set found in C++14 compilers.
 
 	\sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
-		BURGER_CPP17, and BURGER_CPP20
+		BURGER_CPP17, BURGER_CPP20, and BURGER_CPP23
 
 ***************************************/
 
@@ -368,7 +374,7 @@
 	minimum feature set found in C++17 compilers.
 
 	\sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
-		BURGER_CPP14, and BURGER_CPP20
+		BURGER_CPP14, BURGER_CPP20, and BURGER_CPP23
 
 ***************************************/
 
@@ -381,7 +387,20 @@
 	minimum feature set found in C++20 compilers.
 
 	\sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
-		BURGER_CPP14, and BURGER_CPP17
+		BURGER_CPP14, BURGER_CPP17, and BURGER_CPP23
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_CPP23
+	\brief Define to determine if compiler has feature level C++23
+
+	If this define exists, then you are creating code with a compiler that has a
+	minimum feature set found in C++23 compilers.
+
+	\sa BURGER_STDCPP_NAME, BURGER_CPP89, BURGER_CPP98, BURGER_CPP11,
+		BURGER_CPP14, BURGER_CPP17, and BURGER_CPP20
 
 ***************************************/
 
@@ -971,6 +990,59 @@
 
 /*! ************************************
 
+	\def BURGER_NANOMIPS32
+	\brief Define to determine if code is being built for 32 bit nanoMIPS
+	processors from Sun.
+
+	If this define exists, then you are creating code that runs on the nanoMIPS
+	line of 32 bit processors.
+
+	\sa BURGER_CPU_NAME, BURGER_LINUX, or BURGER_RISCV
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_SH32
+	\brief Define to determine if code is being built for 32 bit SuperH
+	processors from HItachi.
+
+	If this define exists, then you are creating code that runs on the SuperH
+	line of 32 bit processors. Used by the Sega Dreamcast
+
+	\sa BURGER_CPU_NAME, or BURGER_LINUX
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_S390
+	\brief Define to determine if code is being built for 64 bit IBM
+	System/390 processors.
+
+	If this define exists, then you are creating code that runs on the IBM
+	Systemp/390 line of 64 bit processors. IBM servers will have this define
+	present.
+
+	\sa BURGER_CPU_NAME, BURGER_LINUX, or BURGER_AMD64
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_KVX
+	\brief Define to determine if code is being built for 32 bit Kalray
+	KVX processor.
+
+	If this define exists, then you are creating code that runs on the KVX
+	line of 32 bit processors from Kalray.
+
+	\sa BURGER_CPU_NAME, or BURGER_LINUX
+
+***************************************/
+
+/*! ************************************
+
 	\def BURGER_CPU_NAME
 	\brief String of the name of the CPU.
 
@@ -1530,6 +1602,21 @@ line of processors.
 	devices.
 
 	\sa BURGER_IOS, BURGER_ANDROID, BURGER_SHIELD, BURGER_ARM32 or BURGER_MACOSX
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_STADIA
+	\brief Define to determine if code is being built for Google Stadia.
+
+	If this define exists, then you are creating code that runs on Google Stadia
+	streaming console.
+
+	\note As of 2023, Stadia has been shut down, so this target exists only for
+		archive purposes only.
+
+	\sa BURGER_UNIX, BURGER_LINUX, BURGER_ANDROID, or BURGER_AMD64
 
 ***************************************/
 
@@ -2676,6 +2763,8 @@ line of processors.
 
 	If this define exists, then the Steam platform is supported.
 	TCP/IP can be assumed to be available with this define present.
+
+	\note Steam is not available on PowerPC MacOSX and old Windows compilers
 
 	\sa BURGER_TCPIP, BURGER_APPLETALK, BURGER_IPX, or BURGER_XBOXLIVE
 
@@ -3867,21 +3956,6 @@ default constructors.
 	`uint64_t` or other compatible type that reflects the proper size.
 
 	\sa long2int_t
-
-***************************************/
-
-/*! ************************************
-
-	\fn void Burger::SwapVariables(T *pA,T *pB)
-	\brief Swap two variables of the same kind
-
-	Given pointers to two like variables, swap the contents with each other.
-
-	\note This template will fail if the T value is of a class that doesn't
-	allow copying.
-
-	\param pA Pointer to the first variable to swap.
-	\param pB Pointer to the second variable to swap.
 
 ***************************************/
 

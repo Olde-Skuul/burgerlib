@@ -1193,10 +1193,10 @@ void BURGER_API Burger::Vector4D_t::QuaternionMulNormalize(const Vector4D_t *pIn
 uint_t BURGER_API Burger::Vector4D_t::BitwiseEqual(const Vector4D_t *pInput) const
 {
 	return (
-		(static_cast<const uint32_t *>(static_cast<const void *>(&pInput->x))[0] == static_cast<const uint32_t *>(static_cast<const void *>(&x))[0]) &&
-		(static_cast<const uint32_t *>(static_cast<const void *>(&pInput->y))[0] == static_cast<const uint32_t *>(static_cast<const void *>(&y))[0]) &&
-		(static_cast<const uint32_t *>(static_cast<const void *>(&pInput->z))[0] == static_cast<const uint32_t *>(static_cast<const void *>(&z))[0]) &&
-		(static_cast<const uint32_t *>(static_cast<const void *>(&pInput->w))[0] == static_cast<const uint32_t *>(static_cast<const void *>(&w))[0]));
+		(static_cast<const uint32_float_t *>(static_cast<const void *>(&pInput->x))->w == static_cast<const uint32_float_t *>(static_cast<const void *>(&x))->w) &&
+		(static_cast<const uint32_float_t *>(static_cast<const void *>(&pInput->y))->w == static_cast<const uint32_float_t *>(static_cast<const void *>(&y))->w) &&
+		(static_cast<const uint32_float_t *>(static_cast<const void *>(&pInput->z))->w == static_cast<const uint32_float_t *>(static_cast<const void *>(&z))->w) &&
+		(static_cast<const uint32_float_t *>(static_cast<const void *>(&pInput->w))->w == static_cast<const uint32_float_t *>(static_cast<const void *>(&w))->w));
 }
 
 /*! ************************************

@@ -2,7 +2,7 @@
 
 	Error codes.
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -37,6 +37,8 @@ enum eError {
 	kErrorInvalidArgument,
 	/** Class or subsystem not initialized */
 	kErrorNotInitialized,
+	/** Class or subsystem already initialized */
+	kErrorAlreadyInitialized,
 	/** Command not supported */
 	kErrorNotSupported,
 	/** Function not supported on this platform */
@@ -55,6 +57,8 @@ enum eError {
 	kErrorFailedTest,
 	/** Data was found more than once */
 	kErrorDuplicateEntries,
+	/** Restart is required */
+	kErrorRestartRequired,
 
 	/** File system errors */
 	kErrorFile = 0x7100,
@@ -175,12 +179,12 @@ enum eError {
 	kErrorThreadNotFound
 };
 
-extern uintptr_t BURGER_API GetErrorString(
+extern const char* BURGER_API error_lookup_string(
+	eError uError) BURGER_NOEXCEPT;
+extern uintptr_t BURGER_API error_get_string(
 	char* pOutput, uintptr_t uOutputSize, eError uError) BURGER_NOEXCEPT;
-
-#if defined(BURGER_MAC) || defined(DOXYGEN)
-extern eError BURGER_API MacConvertError(int iMacError) BURGER_NOEXCEPT;
-#endif
+extern eError BURGER_API platform_convert_to_error(
+	int iNativeError) BURGER_NOEXCEPT;
 }
 /* END */
 

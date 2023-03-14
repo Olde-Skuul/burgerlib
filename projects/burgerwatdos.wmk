@@ -1,6 +1,6 @@
 #
 # Build burger with WMAKE
-# Generated with makeprojects
+# Generated with makeprojects.watcom
 #
 # Require the environment variable WATCOM set to the OpenWatcom folder
 # Example: WATCOM=C:\WATCOM
@@ -24,6 +24,165 @@
 !loaddll wlink $(%WATCOM)/binnt/wlinkd
 !loaddll wlib $(%WATCOM)/binnt/wlibd
 !endif
+!endif
+
+#
+# List the names of all of the final binaries to build and clean
+#
+
+all: Debug Internal Release .SYMBOLIC
+	@%null
+
+clean: clean_Debug clean_Internal clean_Release .SYMBOLIC
+	@%null
+
+#
+# Configurations
+#
+
+Debug: Debugdos4gw Debugdosx32 .SYMBOLIC
+	@%null
+
+clean_Debug: clean_Debugdos4gw clean_Debugdosx32 .SYMBOLIC
+	@%null
+
+Internal: Internaldos4gw Internaldosx32 .SYMBOLIC
+	@%null
+
+clean_Internal: clean_Internaldos4gw clean_Internaldosx32 .SYMBOLIC
+	@%null
+
+Release: Releasedos4gw Releasedosx32 .SYMBOLIC
+	@%null
+
+clean_Release: clean_Releasedos4gw clean_Releasedosx32 .SYMBOLIC
+	@%null
+
+#
+# Platforms
+#
+
+dos4gw: Debugdos4gw Debugdos4gw Internaldos4gw Internaldos4gw Releasedos4gw Releasedos4gw .SYMBOLIC
+	@%null
+
+clean_dos4gw: clean_Debugdos4gw clean_Debugdos4gw clean_Internaldos4gw clean_Internaldos4gw clean_Releasedos4gw clean_Releasedos4gw .SYMBOLIC
+	@%null
+
+dosx32: Debugdosx32 Debugdosx32 Internaldosx32 Internaldosx32 Releasedosx32 Releasedosx32 .SYMBOLIC
+	@%null
+
+clean_dosx32: clean_Debugdosx32 clean_Debugdosx32 clean_Internaldosx32 clean_Internaldosx32 clean_Releasedosx32 clean_Releasedosx32 .SYMBOLIC
+	@%null
+
+#
+# List of binaries to build or clean
+#
+
+Debugdos4gw: .SYMBOLIC
+	@if not exist bin @mkdir bin
+	@if not exist "temp\burgerwat4gwdbg" @mkdir "temp\burgerwat4gwdbg"
+	@set CONFIG=Debug
+	@set TARGET=dos4gw
+	@%make bin\burgerwat4gwdbg.lib
+
+clean_Debugdos4gw: .SYMBOLIC
+	@if exist temp\burgerwat4gwdbg @rmdir /s /q temp\burgerwat4gwdbg
+	@if exist bin\burgerwat4gwdbg.lib @del /q bin\burgerwat4gwdbg.lib
+	@-if exist bin @rmdir bin 2>NUL
+	@-if exist temp @rmdir temp 2>NUL
+
+Debugdosx32: .SYMBOLIC
+	@if not exist bin @mkdir bin
+	@if not exist "temp\burgerwatx32dbg" @mkdir "temp\burgerwatx32dbg"
+	@set CONFIG=Debug
+	@set TARGET=dosx32
+	@%make bin\burgerwatx32dbg.lib
+
+clean_Debugdosx32: .SYMBOLIC
+	@if exist temp\burgerwatx32dbg @rmdir /s /q temp\burgerwatx32dbg
+	@if exist bin\burgerwatx32dbg.lib @del /q bin\burgerwatx32dbg.lib
+	@-if exist bin @rmdir bin 2>NUL
+	@-if exist temp @rmdir temp 2>NUL
+
+Internaldos4gw: .SYMBOLIC
+	@if not exist bin @mkdir bin
+	@if not exist "temp\burgerwat4gwint" @mkdir "temp\burgerwat4gwint"
+	@set CONFIG=Internal
+	@set TARGET=dos4gw
+	@%make bin\burgerwat4gwint.lib
+
+clean_Internaldos4gw: .SYMBOLIC
+	@if exist temp\burgerwat4gwint @rmdir /s /q temp\burgerwat4gwint
+	@if exist bin\burgerwat4gwint.lib @del /q bin\burgerwat4gwint.lib
+	@-if exist bin @rmdir bin 2>NUL
+	@-if exist temp @rmdir temp 2>NUL
+
+Internaldosx32: .SYMBOLIC
+	@if not exist bin @mkdir bin
+	@if not exist "temp\burgerwatx32int" @mkdir "temp\burgerwatx32int"
+	@set CONFIG=Internal
+	@set TARGET=dosx32
+	@%make bin\burgerwatx32int.lib
+
+clean_Internaldosx32: .SYMBOLIC
+	@if exist temp\burgerwatx32int @rmdir /s /q temp\burgerwatx32int
+	@if exist bin\burgerwatx32int.lib @del /q bin\burgerwatx32int.lib
+	@-if exist bin @rmdir bin 2>NUL
+	@-if exist temp @rmdir temp 2>NUL
+
+Releasedos4gw: .SYMBOLIC
+	@if not exist bin @mkdir bin
+	@if not exist "temp\burgerwat4gwrel" @mkdir "temp\burgerwat4gwrel"
+	@set CONFIG=Release
+	@set TARGET=dos4gw
+	@%make bin\burgerwat4gwrel.lib
+
+clean_Releasedos4gw: .SYMBOLIC
+	@if exist temp\burgerwat4gwrel @rmdir /s /q temp\burgerwat4gwrel
+	@if exist bin\burgerwat4gwrel.lib @del /q bin\burgerwat4gwrel.lib
+	@-if exist bin @rmdir bin 2>NUL
+	@-if exist temp @rmdir temp 2>NUL
+
+Releasedosx32: .SYMBOLIC
+	@if not exist bin @mkdir bin
+	@if not exist "temp\burgerwatx32rel" @mkdir "temp\burgerwatx32rel"
+	@set CONFIG=Release
+	@set TARGET=dosx32
+	@%make bin\burgerwatx32rel.lib
+
+clean_Releasedosx32: .SYMBOLIC
+	@if exist temp\burgerwatx32rel @rmdir /s /q temp\burgerwatx32rel
+	@if exist bin\burgerwatx32rel.lib @del /q bin\burgerwatx32rel.lib
+	@-if exist bin @rmdir bin 2>NUL
+	@-if exist temp @rmdir temp 2>NUL
+
+#
+# Create the folder for the binary output
+#
+
+bin:
+	@if not exist bin @mkdir bin
+
+temp:
+	@if not exist temp @mkdir temp
+
+#
+# Disable building this make file
+#
+
+burgerwatdos.wmk:
+	@%null
+
+#
+# Required environment variables
+#
+
+!ifndef %BURGER_SDKS
+!error the environment variable BURGER_SDKS was not declared
+!endif
+
+!ifndef %WATCOM
+!error the environment variable WATCOM was not declared
 !endif
 
 #
@@ -54,6 +213,14 @@ CONFIG_SUFFIX_Internal = int
 CONFIG_SUFFIX_Release = rel
 
 #
+# Base name of the temp directory
+#
+
+BASE_TEMP_DIR = temp\burger
+BASE_SUFFIX = wat$(TARGET_SUFFIX_$(%TARGET))$(CONFIG_SUFFIX_$(%CONFIG))
+TEMP_DIR = temp\burger$(BASE_SUFFIX)
+
+#
 # Set the set of known files supported
 # Note: They are in the reverse order of building. .c is built first, then .x86
 # until the .exe or .lib files are built
@@ -61,12 +228,6 @@ CONFIG_SUFFIX_Release = rel
 
 .extensions:
 .extensions: .exe .exp .lib .obj .h .cpp .x86 .c .i86
-
-#
-# Ensure sdks are pulled from the environment
-#
-
-BURGER_SDKS = $(%BURGER_SDKS)
 
 #
 # SOURCE_DIRS = Work directories for the source code
@@ -87,36 +248,16 @@ SOURCE_DIRS +=;../source/input
 SOURCE_DIRS +=;../source/lowlevel
 SOURCE_DIRS +=;../source/math
 SOURCE_DIRS +=;../source/memory
-SOURCE_DIRS +=;../source/msdos
+SOURCE_DIRS +=;../source/platforms/msdos
 SOURCE_DIRS +=;../source/random
 SOURCE_DIRS +=;../source/text
-
-#
-# Name of the output library
-#
-
-PROJECT_NAME = burger
-
-#
-# Base name of the temp directory
-#
-
-BASE_TEMP_DIR = temp/$(PROJECT_NAME)
-BASE_SUFFIX = wat$(TARGET_SUFFIX_$(%TARGET))$(CONFIG_SUFFIX_$(%CONFIG))
-TEMP_DIR = $(BASE_TEMP_DIR)$(BASE_SUFFIX)
-
-#
-# Binary directory
-#
-
-DESTINATION_DIR = bin
 
 #
 # INCLUDE_DIRS = Header includes
 #
 
 INCLUDE_DIRS = $(SOURCE_DIRS)
-INCLUDE_DIRS +=;$(BURGER_SDKS)/dos/x32
+INCLUDE_DIRS +=;$(%BURGER_SDKS)/msdos/x32
 
 #
 # Tell WMAKE where to find the files to work with
@@ -131,56 +272,46 @@ INCLUDE_DIRS +=;$(BURGER_SDKS)/dos/x32
 # Set the compiler flags for each of the build types
 #
 
-CFlagsDebug=-d_DEBUG -d2 -od
-CFlagsInternal=-d_DEBUG -d2 -oaxsh
-CFlagsRelease=-dNDEBUG -d0 -oaxsh
+CFlagsDebugdos4gw= -bt=DOS -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d2 -od -D_DEBUG -D__DOS4G__
+CFlagsDebugdosx32= -bt=DOS -i="$(%WATCOM)/h" -d2 -od -D_DEBUG -D__X32__
+CFlagsInternaldos4gw= -bt=DOS -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d2 -oaxsh -D_DEBUG -D__DOS4G__
+CFlagsInternaldosx32= -bt=DOS -i="$(%WATCOM)/h" -d2 -oaxsh -D_DEBUG -D__X32__
+CFlagsReleasedos4gw= -bt=DOS -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d0 -oaxsh -DNDEBUG -D__DOS4G__
+CFlagsReleasedosx32= -bt=DOS -i="$(%WATCOM)/h" -d0 -oaxsh -DNDEBUG -D__X32__
 
 #
-# Set the flags for each target operating system
+# Set the assembler flags for each of the build types
 #
 
-CFlagscom=-bt=com -d__COM__=1 -i="$(%BURGER_SDKS)/dos/burgerlib;$(%BURGER_SDKS)/dos/x32;$(%WATCOM)/h"
-CFlagsdosx32=-bt=DOS -d__X32__=1 -i="$(%BURGER_SDKS)/dos/burgerlib;$(%BURGER_SDKS)/dos/x32;$(%WATCOM)/h"
-CFlagsdos4gw=-bt=DOS -d__DOS4G__=1 -i="$(%BURGER_SDKS)/dos/burgerlib;$(%BURGER_SDKS)/dos/sosaudio;$(%WATCOM)/h;$(%WATCOM)/h/nt"
-CFlagsw32=-bt=NT -dGLUT_DISABLE_ATEXIT_HACK -dGLUT_NO_LIB_PRAGMA -dTARGET_CPU_X86=1 -dTARGET_OS_WIN32=1 -dTYPE_BOOL=1 -dUNICODE -d_UNICODE -dWIN32_LEAN_AND_MEAN -i="$(%BURGER_SDKS)/windows/burgerlib;$(%BURGER_SDKS)/windows/opengl;$(%BURGER_SDKS)/windows/directx9;$(%BURGER_SDKS)/windows/windows5;$(%BURGER_SDKS)/windows/quicktime7;$(%WATCOM)/h;$(%WATCOM)/h/nt"
+AFlagsDebugdos4gw= -D_DEBUG -D__DOS4G__
+AFlagsDebugdosx32= -D_DEBUG -D__X32__
+AFlagsInternaldos4gw= -D_DEBUG -D__DOS4G__
+AFlagsInternaldosx32= -D_DEBUG -D__X32__
+AFlagsReleasedos4gw= -DNDEBUG -D__DOS4G__
+AFlagsReleasedosx32= -DNDEBUG -D__X32__
 
 #
-# Set the WASM flags for each of the build types
+# Set the Linker flags for each of the build types
 #
 
-AFlagsDebug=-d_DEBUG
-AFlagsInternal=-d_DEBUG
-AFlagsRelease=-dNDEBUG
-
-#
-# Set the WASM flags for each operating system
-#
-
-AFlagscom=-d__COM__=1
-AFlagsdosx32=-d__X32__=1
-AFlagsdos4gw=-d__DOS4G__=1
-AFlagsw32=-d__WIN32__=1
-
-LFlagsDebug=
-LFlagsInternal=
-LFlagsRelease=
-
-LFlagscom=format dos com libp $(%BURGER_SDKS)/dos/burgerlib
-LFlagsx32=system x32r libp $(%BURGER_SDKS)/dos/burgerlib;$(%BURGER_SDKS)/dos/x32
-LFlagsdos4gw=system dos4g libp $(%BURGER_SDKS)/dos/burgerlib;$(%BURGER_SDKS)/dos/sosaudio
-LFlagsw32=system nt libp $(%BURGER_SDKS)/windows/burgerlib;$(%BURGER_SDKS)/windows/directx9 LIBRARY VERSION.lib,opengl32.lib,winmm.lib,shell32.lib,shfolder.lib
+LFlagsDebugdos4gw= system dos4g
+LFlagsDebugdosx32= system x32r
+LFlagsInternaldos4gw= system dos4g
+LFlagsInternaldosx32= system x32r
+LFlagsReleasedos4gw= system dos4g
+LFlagsReleasedosx32= system x32r
 
 # Now, set the compiler flags
 
-CL=WCC386 -6r -fp6 -w4 -ei -j -mf -zq -zp=8 -wcd=7 -i=$(INCLUDE_DIRS)
-CP=WPP386 -6r -fp6 -w4 -ei -j -mf -zq -zp=8 -wcd=7 -i=$(INCLUDE_DIRS)
+CL=WCC386 -6r -fp6 -w4 -ei -j -mf -zq -zp=8 -wcd=7 -i="$(INCLUDE_DIRS)"
+CP=WPP386 -6r -fp6 -w4 -ei -j -mf -zq -zp=8 -wcd=7 -i="$(INCLUDE_DIRS)"
 ASM=WASM -5r -fp6 -w4 -zq -d__WATCOM__=1
 LINK=*WLINK option caseexact option quiet PATH $(%WATCOM)/binnt;$(%WATCOM)/binw;.
 
 # Set the default build rules
 # Requires ASM, CP to be set
 
-# Macro expansion is on page 93 of the C//C++ Tools User's Guide
+# Macro expansion is on page 93 of the C/C++ Tools User's Guide
 # $^* = C:\dir\target (No extension)
 # $[* = C:\dir\dep (No extension)
 # $^@ = C:\dir\target.ext
@@ -188,19 +319,19 @@ LINK=*WLINK option caseexact option quiet PATH $(%WATCOM)/binnt;$(%WATCOM)/binw;
 
 .i86.obj : .AUTODEPEND
 	@echo $[&.i86 / $(%CONFIG) / $(%TARGET)
-	@$(ASM) -0 -w4 -zq -d__WATCOM__=1 $(AFlags$(%CONFIG)) $(AFlags$(%TARGET)) $[*.i86 -fo=$^@ -fr=$^*.err
+	@$(ASM) -0 -w4 -zq -d__WATCOM__=1 $(AFlags$(%CONFIG)$(%TARGET)) $[*.i86 -fo=$^@ -fr=$^*.err
 
 .x86.obj : .AUTODEPEND
 	@echo $[&.x86 / $(%CONFIG) / $(%TARGET)
-	@$(ASM) $(AFlags$(%CONFIG)) $(AFlags$(%TARGET)) $[*.x86 -fo=$^@ -fr=$^*.err
+	@$(ASM) $(AFlags$(%CONFIG)$(%TARGET)) $[*.x86 -fo=$^@ -fr=$^*.err
 
 .c.obj : .AUTODEPEND
 	@echo $[&.c / $(%CONFIG) / $(%TARGET)
-	@$(CP) $(CFlags$(%CONFIG)) $(CFlags$(%TARGET)) $[*.c -fo=$^@ -fr=$^*.err
+	@$(CL) $(CFlags$(%CONFIG)$(%TARGET)) $[*.c -fo=$^@ -fr=$^*.err
 
 .cpp.obj : .AUTODEPEND
 	@echo $[&.cpp / $(%CONFIG) / $(%TARGET)
-	@$(CP) $(CFlags$(%CONFIG)) $(CFlags$(%TARGET)) $[*.cpp -fo=$^@ -fr=$^*.err
+	@$(CP) $(CFlags$(%CONFIG)$(%TARGET)) $[*.cpp -fo=$^@ -fr=$^*.err
 
 #
 # Object files to work with for the library
@@ -376,6 +507,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brstring16.obj &
 	$(A)/brstringfunctions.obj &
 	$(A)/brstructs.obj &
+	$(A)/brtemplates.obj &
 	$(A)/brtexture.obj &
 	$(A)/brtextureopengl.obj &
 	$(A)/brtick.obj &
@@ -397,110 +529,35 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brwin437.obj
 
 #
-# List the names of all of the final binaries to build
-#
-
-all: Debug Internal Release .SYMBOLIC
-	@%null
-
-#
-# Configurations
-#
-
-Debug: Debugdos4gw Debugdosx32 .SYMBOLIC
-	@%null
-
-Internal: Internaldos4gw Internaldosx32 .SYMBOLIC
-	@%null
-
-Release: Releasedos4gw Releasedosx32 .SYMBOLIC
-	@%null
-
-dos4gw: Debugdos4gw Debugdos4gw Internaldos4gw Internaldos4gw Releasedos4gw Releasedos4gw .SYMBOLIC
-	@%null
-
-dosx32: Debugdosx32 Debugdosx32 Internaldosx32 Internaldosx32 Releasedosx32 Releasedosx32 .SYMBOLIC
-	@%null
-
-Debugdos4gw: .SYMBOLIC
-	@if not exist "$(DESTINATION_DIR)" @mkdir "$(DESTINATION_DIR)"
-	@if not exist "$(BASE_TEMP_DIR)wat4gwdbg" @mkdir "$(BASE_TEMP_DIR)wat4gwdbg"
-	@set CONFIG=Debug
-	@set TARGET=dos4gw
-	@%make $(DESTINATION_DIR)\$(PROJECT_NAME)wat4gwdbg.lib
-
-Debugdosx32: .SYMBOLIC
-	@if not exist "$(DESTINATION_DIR)" @mkdir "$(DESTINATION_DIR)"
-	@if not exist "$(BASE_TEMP_DIR)watx32dbg" @mkdir "$(BASE_TEMP_DIR)watx32dbg"
-	@set CONFIG=Debug
-	@set TARGET=dosx32
-	@%make $(DESTINATION_DIR)\$(PROJECT_NAME)watx32dbg.lib
-
-Internaldos4gw: .SYMBOLIC
-	@if not exist "$(DESTINATION_DIR)" @mkdir "$(DESTINATION_DIR)"
-	@if not exist "$(BASE_TEMP_DIR)wat4gwint" @mkdir "$(BASE_TEMP_DIR)wat4gwint"
-	@set CONFIG=Internal
-	@set TARGET=dos4gw
-	@%make $(DESTINATION_DIR)\$(PROJECT_NAME)wat4gwint.lib
-
-Internaldosx32: .SYMBOLIC
-	@if not exist "$(DESTINATION_DIR)" @mkdir "$(DESTINATION_DIR)"
-	@if not exist "$(BASE_TEMP_DIR)watx32int" @mkdir "$(BASE_TEMP_DIR)watx32int"
-	@set CONFIG=Internal
-	@set TARGET=dosx32
-	@%make $(DESTINATION_DIR)\$(PROJECT_NAME)watx32int.lib
-
-Releasedos4gw: .SYMBOLIC
-	@if not exist "$(DESTINATION_DIR)" @mkdir "$(DESTINATION_DIR)"
-	@if not exist "$(BASE_TEMP_DIR)wat4gwrel" @mkdir "$(BASE_TEMP_DIR)wat4gwrel"
-	@set CONFIG=Release
-	@set TARGET=dos4gw
-	@%make $(DESTINATION_DIR)\$(PROJECT_NAME)wat4gwrel.lib
-
-Releasedosx32: .SYMBOLIC
-	@if not exist "$(DESTINATION_DIR)" @mkdir "$(DESTINATION_DIR)"
-	@if not exist "$(BASE_TEMP_DIR)watx32rel" @mkdir "$(BASE_TEMP_DIR)watx32rel"
-	@set CONFIG=Release
-	@set TARGET=dosx32
-	@%make $(DESTINATION_DIR)\$(PROJECT_NAME)watx32rel.lib
-
-#
-# Disable building this make file
-#
-
-burgerwatdos.wmk:
-	@%null
-
-#
 # A = The object file temp folder
 #
 
 A = $(BASE_TEMP_DIR)wat4gwdbg
-$(DESTINATION_DIR)\$(PROJECT_NAME)wat4gwdbg.lib: $+$(OBJS)$- burgerwatdos.wmk
+bin\burgerwat4gwdbg.lib: $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
 
 A = $(BASE_TEMP_DIR)watx32dbg
-$(DESTINATION_DIR)\$(PROJECT_NAME)watx32dbg.lib: $+$(OBJS)$- burgerwatdos.wmk
+bin\burgerwatx32dbg.lib: $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
 
 A = $(BASE_TEMP_DIR)wat4gwint
-$(DESTINATION_DIR)\$(PROJECT_NAME)wat4gwint.lib: $+$(OBJS)$- burgerwatdos.wmk
+bin\burgerwat4gwint.lib: $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
 
 A = $(BASE_TEMP_DIR)watx32int
-$(DESTINATION_DIR)\$(PROJECT_NAME)watx32int.lib: $+$(OBJS)$- burgerwatdos.wmk
+bin\burgerwatx32int.lib: $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
 
 A = $(BASE_TEMP_DIR)wat4gwrel
-$(DESTINATION_DIR)\$(PROJECT_NAME)wat4gwrel.lib: $+$(OBJS)$- burgerwatdos.wmk
+bin\burgerwat4gwrel.lib: $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
 
 A = $(BASE_TEMP_DIR)watx32rel
-$(DESTINATION_DIR)\$(PROJECT_NAME)watx32rel.lib: $+$(OBJS)$- burgerwatdos.wmk
+bin\burgerwatx32rel.lib: $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW

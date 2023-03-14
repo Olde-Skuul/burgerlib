@@ -2,7 +2,7 @@
 
 	Intrinsics and subroutines exclusive to the Xcode compilers
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -20,7 +20,7 @@
 #endif
 
 /* BEGIN */
-#if (defined(BURGER_MACOSX) || defined(BURGER_IOS)) && defined(BURGER_GNUC)
+#if defined(BURGER_DARWIN) && (defined(BURGER_GNUC) || defined(BURGER_CLANG))
 
 extern "C" float sqrtf(float);
 extern "C" double sqrt(double);

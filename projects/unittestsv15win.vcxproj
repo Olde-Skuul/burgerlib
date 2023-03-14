@@ -46,9 +46,6 @@
     <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>false</UseOfMfc>
-    <UseOfAtl>false</UseOfAtl>
-    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -56,9 +53,6 @@
     <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>false</UseOfMfc>
-    <UseOfAtl>false</UseOfAtl>
-    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -66,9 +60,6 @@
     <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>false</UseOfMfc>
-    <UseOfAtl>false</UseOfAtl>
-    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Internal|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -76,9 +67,6 @@
     <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>false</UseOfMfc>
-    <UseOfAtl>false</UseOfAtl>
-    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -86,9 +74,6 @@
     <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>false</UseOfMfc>
-    <UseOfAtl>false</UseOfAtl>
-    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -96,9 +81,6 @@
     <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>false</UseOfMfc>
-    <UseOfAtl>false</UseOfAtl>
-    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -106,9 +88,6 @@
     <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>false</UseOfMfc>
-    <UseOfAtl>false</UseOfAtl>
-    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -116,9 +95,6 @@
     <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>false</UseOfMfc>
-    <UseOfAtl>false</UseOfAtl>
-    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -206,7 +182,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\windows;$(ProjectDir)..\source\windows\generated;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -238,7 +214,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\windows;$(ProjectDir)..\source\windows\generated;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -269,7 +245,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\windows;$(ProjectDir)..\source\windows\generated;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -302,7 +278,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\windows;$(ProjectDir)..\source\windows\generated;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -336,7 +312,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\windows;$(ProjectDir)..\source\windows\generated;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -371,7 +347,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\windows;$(ProjectDir)..\source\windows\generated;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -405,7 +381,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\windows;$(ProjectDir)..\source\windows\generated;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -440,7 +416,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\source\windows;$(ProjectDir)..\source\windows\generated;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -623,6 +599,7 @@
     <ClInclude Include="..\source\lowlevel\brsnsystems.h" />
     <ClInclude Include="..\source\lowlevel\brstaticrtti.h" />
     <ClInclude Include="..\source\lowlevel\brstructs.h" />
+    <ClInclude Include="..\source\lowlevel\brtemplates.h" />
     <ClInclude Include="..\source\lowlevel\brtick.h" />
     <ClInclude Include="..\source\lowlevel\brtimedate.h" />
     <ClInclude Include="..\source\lowlevel\brtypes.h" />
@@ -649,6 +626,16 @@
     <ClInclude Include="..\source\memory\brglobalmemorymanager.h" />
     <ClInclude Include="..\source\memory\brmemoryhandle.h" />
     <ClInclude Include="..\source\memory\brmemorymanager.h" />
+    <ClInclude Include="..\source\platforms\windows\brdisplaydib.h" />
+    <ClInclude Include="..\source\platforms\windows\brdisplaydibsoftware8.h" />
+    <ClInclude Include="..\source\platforms\windows\brdisplaydirectx11.h" />
+    <ClInclude Include="..\source\platforms\windows\brdisplaydirectx9.h" />
+    <ClInclude Include="..\source\platforms\windows\brdisplaydirectx9software8.h" />
+    <ClInclude Include="..\source\platforms\windows\brstartup.h" />
+    <ClInclude Include="..\source\platforms\windows\brtexturedirectx9.h" />
+    <ClInclude Include="..\source\platforms\windows\brvertexbufferdirectx9.h" />
+    <ClInclude Include="..\source\platforms\windows\brwindowstypes.h" />
+    <ClInclude Include="..\source\platforms\windows\ps20display8bitdx9.h" />
     <ClInclude Include="..\source\random\brmersennetwist.h" />
     <ClInclude Include="..\source\random\brrandom.h" />
     <ClInclude Include="..\source\random\brrandombase.h" />
@@ -673,19 +660,10 @@
     <ClInclude Include="..\source\text\brutf8.h" />
     <ClInclude Include="..\source\text\brwin1252.h" />
     <ClInclude Include="..\source\text\brwin437.h" />
-    <ClInclude Include="..\source\windows\brdisplaydib.h" />
-    <ClInclude Include="..\source\windows\brdisplaydibsoftware8.h" />
-    <ClInclude Include="..\source\windows\brdisplaydirectx11.h" />
-    <ClInclude Include="..\source\windows\brdisplaydirectx9.h" />
-    <ClInclude Include="..\source\windows\brdisplaydirectx9software8.h" />
-    <ClInclude Include="..\source\windows\brstartup.h" />
-    <ClInclude Include="..\source\windows\brtexturedirectx9.h" />
-    <ClInclude Include="..\source\windows\brvertexbufferdirectx9.h" />
-    <ClInclude Include="..\source\windows\brwindowstypes.h" />
-    <ClInclude Include="..\source\windows\generated\ps20display8bitdx9.h" />
     <ClInclude Include="..\unittest\common.h" />
     <ClInclude Include="..\unittest\createtables.h" />
     <ClInclude Include="..\unittest\testbralgorithm.h" />
+    <ClInclude Include="..\unittest\testbrcodelibrary.h" />
     <ClInclude Include="..\unittest\testbrcompression.h" />
     <ClInclude Include="..\unittest\testbrdisplay.h" />
     <ClInclude Include="..\unittest\testbrendian.h" />
@@ -839,6 +817,7 @@
     <ClCompile Include="..\source\lowlevel\brsmartpointer.cpp" />
     <ClCompile Include="..\source\lowlevel\brstaticrtti.cpp" />
     <ClCompile Include="..\source\lowlevel\brstructs.cpp" />
+    <ClCompile Include="..\source\lowlevel\brtemplates.cpp" />
     <ClCompile Include="..\source\lowlevel\brtick.cpp" />
     <ClCompile Include="..\source\lowlevel\brtimedate.cpp" />
     <ClCompile Include="..\source\lowlevel\brtypes.cpp" />
@@ -863,6 +842,61 @@
     <ClCompile Include="..\source\memory\brglobalmemorymanager.cpp" />
     <ClCompile Include="..\source\memory\brmemoryhandle.cpp" />
     <ClCompile Include="..\source\memory\brmemorymanager.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brcodelibrarywindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brconsolemanagerwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brcriticalsectionwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brdebugwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brdetectmultilaunchwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brdirectorysearchwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brdirectxdata.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brdisplaybasewindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brdisplaydibsoftware8windows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brdisplaydibwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brdisplaydirectx11windows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brdisplaydirectx9software8windows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brdisplaydirectx9windows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brdisplayopenglwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brfilemanagerwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brfilenamewindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brfilewindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brglobalsshimswindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brglobalswindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brguidwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brjoypadwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brkeyboardwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brmousewindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brnetmanagerwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\broscursorwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brosstringfunctionswindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brperforcewindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brpoint2dwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brrectwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brsequencerwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brsoundwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brstdouthelperswindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brtexturedirectx9.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brtickwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brtimedatewindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brvertexbufferdirextx9.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowsapp.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowsd3d.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowsd3d11.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowsddraw.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowsdinput.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowsdplay.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowsdsound.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowshid.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowskernel32.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowsrpcrt4.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowssetupapi.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowsshell32.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowsshlwapi.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowstest.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowstypes1.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowsuser32.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowsversion.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowswinmm.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brwindowsxinput.cpp" />
     <ClCompile Include="..\source\random\brmersennetwist.cpp" />
     <ClCompile Include="..\source\random\brrandom.cpp" />
     <ClCompile Include="..\source\random\brrandombase.cpp" />
@@ -886,64 +920,10 @@
     <ClCompile Include="..\source\text\brutf8.cpp" />
     <ClCompile Include="..\source\text\brwin1252.cpp" />
     <ClCompile Include="..\source\text\brwin437.cpp" />
-    <ClCompile Include="..\source\windows\brcodelibrarywindows.cpp" />
-    <ClCompile Include="..\source\windows\brconsolemanagerwindows.cpp" />
-    <ClCompile Include="..\source\windows\brcriticalsectionwindows.cpp" />
-    <ClCompile Include="..\source\windows\brdebugwindows.cpp" />
-    <ClCompile Include="..\source\windows\brdetectmultilaunchwindows.cpp" />
-    <ClCompile Include="..\source\windows\brdirectorysearchwindows.cpp" />
-    <ClCompile Include="..\source\windows\brdirectxdata.cpp" />
-    <ClCompile Include="..\source\windows\brdisplaybasewindows.cpp" />
-    <ClCompile Include="..\source\windows\brdisplaydibsoftware8windows.cpp" />
-    <ClCompile Include="..\source\windows\brdisplaydibwindows.cpp" />
-    <ClCompile Include="..\source\windows\brdisplaydirectx11windows.cpp" />
-    <ClCompile Include="..\source\windows\brdisplaydirectx9software8windows.cpp" />
-    <ClCompile Include="..\source\windows\brdisplaydirectx9windows.cpp" />
-    <ClCompile Include="..\source\windows\brdisplayopenglwindows.cpp" />
-    <ClCompile Include="..\source\windows\brfilemanagerwindows.cpp" />
-    <ClCompile Include="..\source\windows\brfilenamewindows.cpp" />
-    <ClCompile Include="..\source\windows\brfilewindows.cpp" />
-    <ClCompile Include="..\source\windows\brglobalsshimswindows.cpp" />
-    <ClCompile Include="..\source\windows\brglobalswindows.cpp" />
-    <ClCompile Include="..\source\windows\brguidwindows.cpp" />
-    <ClCompile Include="..\source\windows\brjoypadwindows.cpp" />
-    <ClCompile Include="..\source\windows\brkeyboardwindows.cpp" />
-    <ClCompile Include="..\source\windows\brmousewindows.cpp" />
-    <ClCompile Include="..\source\windows\brnetmanagerwindows.cpp" />
-    <ClCompile Include="..\source\windows\broscursorwindows.cpp" />
-    <ClCompile Include="..\source\windows\brosstringfunctionswindows.cpp" />
-    <ClCompile Include="..\source\windows\brperforcewindows.cpp" />
-    <ClCompile Include="..\source\windows\brpoint2dwindows.cpp" />
-    <ClCompile Include="..\source\windows\brrectwindows.cpp" />
-    <ClCompile Include="..\source\windows\brsequencerwindows.cpp" />
-    <ClCompile Include="..\source\windows\brsoundwindows.cpp" />
-    <ClCompile Include="..\source\windows\brstdouthelperswindows.cpp" />
-    <ClCompile Include="..\source\windows\brtexturedirectx9.cpp" />
-    <ClCompile Include="..\source\windows\brtickwindows.cpp" />
-    <ClCompile Include="..\source\windows\brtimedatewindows.cpp" />
-    <ClCompile Include="..\source\windows\brvertexbufferdirextx9.cpp" />
-    <ClCompile Include="..\source\windows\brwindowsapp.cpp" />
-    <ClCompile Include="..\source\windows\brwindowsd3d.cpp" />
-    <ClCompile Include="..\source\windows\brwindowsd3d11.cpp" />
-    <ClCompile Include="..\source\windows\brwindowsddraw.cpp" />
-    <ClCompile Include="..\source\windows\brwindowsdinput.cpp" />
-    <ClCompile Include="..\source\windows\brwindowsdplay.cpp" />
-    <ClCompile Include="..\source\windows\brwindowsdsound.cpp" />
-    <ClCompile Include="..\source\windows\brwindowshid.cpp" />
-    <ClCompile Include="..\source\windows\brwindowskernel32.cpp" />
-    <ClCompile Include="..\source\windows\brwindowsrpcrt4.cpp" />
-    <ClCompile Include="..\source\windows\brwindowssetupapi.cpp" />
-    <ClCompile Include="..\source\windows\brwindowsshell32.cpp" />
-    <ClCompile Include="..\source\windows\brwindowsshlwapi.cpp" />
-    <ClCompile Include="..\source\windows\brwindowstest.cpp" />
-    <ClCompile Include="..\source\windows\brwindowstypes1.cpp" />
-    <ClCompile Include="..\source\windows\brwindowsuser32.cpp" />
-    <ClCompile Include="..\source\windows\brwindowsversion.cpp" />
-    <ClCompile Include="..\source\windows\brwindowswinmm.cpp" />
-    <ClCompile Include="..\source\windows\brwindowsxinput.cpp" />
     <ClCompile Include="..\unittest\common.cpp" />
     <ClCompile Include="..\unittest\createtables.cpp" />
     <ClCompile Include="..\unittest\testbralgorithm.cpp" />
+    <ClCompile Include="..\unittest\testbrcodelibrary.cpp" />
     <ClCompile Include="..\unittest\testbrcompression.cpp" />
     <ClCompile Include="..\unittest\testbrdisplay.cpp" />
     <ClCompile Include="..\unittest\testbrendian.cpp" />
@@ -1003,7 +983,7 @@
       <TargetProfile>vs_2_0</TargetProfile>
       <HeaderFileName>%(RootDir)%(Directory)Generated\%(FileName).h</HeaderFileName>
     </HLSL>
-    <HLSL Include="..\source\windows\ps20display8bitdx9.hlsl">
+    <HLSL Include="..\source\platforms\windows\ps20display8bitdx9.hlsl">
       <VariableName>g_ps20display8bitdx9</VariableName>
       <TargetProfile>ps_2_0</TargetProfile>
       <HeaderFileName>%(RootDir)%(Directory)Generated\%(FileName).h</HeaderFileName>

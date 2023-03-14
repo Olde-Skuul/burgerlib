@@ -427,6 +427,9 @@
     <ClInclude Include="..\source\lowlevel\brstructs.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brtemplates.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtick.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -584,6 +587,9 @@
       <Filter>unittest</Filter>
     </ClInclude>
     <ClInclude Include="..\unittest\testbralgorithm.h">
+      <Filter>unittest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest\testbrcodelibrary.h">
       <Filter>unittest</Filter>
     </ClInclude>
     <ClInclude Include="..\unittest\testbrcompression.h">
@@ -1042,6 +1048,9 @@
     <ClCompile Include="..\source\lowlevel\brstructs.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brtemplates.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtick.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1190,6 +1199,9 @@
       <Filter>unittest</Filter>
     </ClCompile>
     <ClCompile Include="..\unittest\testbralgorithm.cpp">
+      <Filter>unittest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest\testbrcodelibrary.cpp">
       <Filter>unittest</Filter>
     </ClCompile>
     <ClCompile Include="..\unittest\testbrcompression.cpp">

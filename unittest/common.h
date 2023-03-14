@@ -25,17 +25,18 @@
 #endif
 
 // Flags to determine verbosity on output
-#define VERBOSE_DISABLE 0x0000  // Disable all tests and messages
-#define VERBOSE_MSG 0x0001      // Set for information messages
-#define VERBOSE_TIME 0x0002     // Set for time display
-#define VERBOSE_MACROS 0x0004   // Set for showing macros
-#define VERBOSE_FILE 0x0008     // Set for file testing
-#define VERBOSE_NETWORK 0x0010  // Set for network testing
-#define VERBOSE_DIALOGS 0x0020  // Set for testing dialogs
-#define VERBOSE_DISPLAY 0x0040  // Set for testing display modes
-#define VERBOSE_COMPRESS 0x0080 // Set for testing compression algorithms
-#define VERBOSE_DOTESTS 0x8000  // Set if tests are to be performed
-#define VERBOSE_ALL 0xFFFF
+#define VERBOSE_DISABLE 0x0000U  // Disable all tests and messages
+#define VERBOSE_MSG 0x0001U      // Set for information messages
+#define VERBOSE_TIME 0x0002U     // Set for time display
+#define VERBOSE_MACROS 0x0004U   // Set for showing macros
+#define VERBOSE_FILE 0x0008U     // Set for file testing
+#define VERBOSE_NETWORK 0x0010U  // Set for network testing
+#define VERBOSE_DIALOGS 0x0020U  // Set for testing dialogs
+#define VERBOSE_DISPLAY 0x0040U  // Set for testing display modes
+#define VERBOSE_COMPRESS 0x0080U // Set for testing compression algorithms
+#define VERBOSE_DLL 0x100U       // Set for testing DLLS
+#define VERBOSE_DOTESTS 0x8000U  // Set if tests are to be performed
+#define VERBOSE_ALL 0xFFFFFFFFU
 
 extern void BURGER_ANSIAPI ReportFailure(
 	const char* pTemplate, uint_t uFailure, ...) BURGER_NOEXCEPT;

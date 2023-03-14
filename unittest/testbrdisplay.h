@@ -19,7 +19,7 @@
 #include "brtypes.h"
 #endif
 
-extern int BURGER_API TestBrDisplay(void) BURGER_NOEXCEPT;
+extern int BURGER_API TestBrDisplay(uint_t uVerbose) BURGER_NOEXCEPT;
 extern int BURGER_API TestBrDialogs(void) BURGER_NOEXCEPT;
 
 #endif

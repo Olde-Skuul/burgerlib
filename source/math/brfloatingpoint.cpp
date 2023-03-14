@@ -722,8 +722,8 @@ __asm__(
 #if defined(BURGER_XBOX360) || \
 	(defined(BURGER_PPC) && defined(BURGER_METROWERKS))
 
-BURGER_DECLSPECNAKED Burger::ePowerPCRounding
-	BURGER_API Burger::SetPowerPCRounding(ePowerPCRounding /* eInput */)
+BURGER_DECLSPECNAKED Burger::ePowerPCRounding BURGER_API
+Burger::SetPowerPCRounding(ePowerPCRounding /* eInput */)
 {
 	// clang-format off
 #if defined(BURGER_XBOX360)
@@ -2074,7 +2074,8 @@ __asm__(
 uint_t BURGER_API Burger::IsNan(float fInput) BURGER_NOEXCEPT
 {
 	uint32_t uInput =
-		static_cast<const uint32_t*>(static_cast<const void*>(&fInput))[0];
+		static_cast<const uint32_float_t*>(static_cast<const void*>(&fInput))
+			->w;
 	// Kill off the high bit
 	uInput &= 0x7FFFFFFF;
 	// Set the high bit if 0x7F800001-0x7FFFFFFF
@@ -2137,7 +2138,8 @@ uint_t BURGER_API Burger::IsNan(double dInput) BURGER_NOEXCEPT
 {
 #if defined(BURGER_64BITCPU)
 	uint64_t uInput =
-		static_cast<const uint64_t*>(static_cast<const void*>(&dInput))[0];
+		static_cast<const uint64_double_t*>(static_cast<const void*>(&dInput))
+			->w;
 	// Kill off the high bit
 	uInput &= 0x7FFFFFFFFFFFFFFFULL;
 	// Set the high bit if 0x7F800001-0x7FFFFFFF
@@ -2145,7 +2147,9 @@ uint_t BURGER_API Burger::IsNan(double dInput) BURGER_NOEXCEPT
 	// Return TRUE or FALSE depending on the test
 	return static_cast<uint_t>(uInput >> 63U);
 #else
-	return (static_cast<const uint64_t*>(static_cast<const void*>(&dInput))[0]
+	return (static_cast<const uint64_double_t*>(
+				static_cast<const void*>(&dInput))
+				   ->w
 			   << 1U) > (0x7ff0000000000000ULL << 1U);
 #endif
 }
@@ -2206,7 +2210,8 @@ __asm__(
 uint_t BURGER_API Burger::IsInf(float fInput) BURGER_NOEXCEPT
 {
 	const uint32_t uInput =
-		static_cast<const uint32_t*>(static_cast<const void*>(&fInput))[0];
+		static_cast<const uint32_float_t*>(static_cast<const void*>(&fInput))
+			->w;
 	const uint32_t uTemp = uInput & 0x7FFFFFFF;
 	return uTemp == 0x7F800000;
 }
@@ -2267,7 +2272,9 @@ __asm__(
 
 uint_t BURGER_API Burger::IsInf(double dInput) BURGER_NOEXCEPT
 {
-	return (static_cast<const uint64_t*>(static_cast<const void*>(&dInput))[0]
+	return (static_cast<const uint64_double_t*>(
+				static_cast<const void*>(&dInput))
+				   ->w
 			   << 1U) == (0x7ff0000000000000ULL << 1U);
 }
 
@@ -2340,7 +2347,8 @@ __asm__(
 uint_t BURGER_API Burger::IsFinite(float fInput) BURGER_NOEXCEPT
 {
 	uint32_t uInput =
-		static_cast<const uint32_t*>(static_cast<const void*>(&fInput))[0];
+		static_cast<const uint32_float_t*>(static_cast<const void*>(&fInput))
+			->w;
 	uint32_t uTemp = uInput & 0x7FFFFFFFU;
 	uTemp = uTemp - 0x7F800000U;
 	return (uTemp >> 31U);
@@ -2416,9 +2424,13 @@ uint_t BURGER_API Burger::IsFinite(double dInput) BURGER_NOEXCEPT
 {
 	uint32_t uInput;
 #if defined(BURGER_BIGENDIAN)
-	uInput = static_cast<const uint32_t*>(static_cast<const void*>(&dInput))[0];
+	uInput =
+		static_cast<const uint32_float_t*>(static_cast<const void*>(&dInput))
+			->w;
 #else
-	uInput = static_cast<const uint32_t*>(static_cast<const void*>(&dInput))[1];
+	uInput =
+		static_cast<const uint32_float_t*>(static_cast<const void*>(&dInput))[1]
+			.w;
 #endif
 	uint32_t uTemp = uInput & 0x7FFFFFFFU;
 	uTemp = uTemp - 0x7FF00000U;
@@ -2466,7 +2478,8 @@ uint_t BURGER_API Burger::IsNormal(float fInput) BURGER_NOEXCEPT
 uint_t BURGER_API Burger::IsNormal(float fInput) BURGER_NOEXCEPT
 {
 	uint32_t uInput =
-		static_cast<const uint32_t*>(static_cast<const void*>(&fInput))[0];
+		static_cast<const uint32_float_t*>(static_cast<const void*>(&fInput))
+			->w;
 	uint32_t uTemp = (uInput - 0x00800000U) & 0x7FFFFFFFU;
 	uTemp = uTemp - (0x7F800000U - 0x00800000U);
 	return (uTemp >> 31U);
@@ -2537,7 +2550,8 @@ uint_t BURGER_API Burger::IsNormal(double dInput) BURGER_NOEXCEPT
 
 uint_t BURGER_API Burger::SignBit(float fInput) BURGER_NOEXCEPT
 {
-	return static_cast<const uint32_t*>(static_cast<const void*>(&fInput))[0] >>
+	return static_cast<const uint32_float_t*>(static_cast<const void*>(&fInput))
+			   ->w >>
 		31U;
 }
 
@@ -2601,7 +2615,7 @@ uint_t BURGER_API Burger::EqualWithEpsilon(
 	fInput1 = Abs(fInput1);
 	fInput2 = Abs(fInput2);
 	return (fInput1 > fInput2) ? (fDelta <= (fInput1 * 1e-6f)) :
-                                 (fDelta <= (fInput2 * 1e-6f));
+								 (fDelta <= (fInput2 * 1e-6f));
 }
 
 /*! ************************************
@@ -2640,7 +2654,7 @@ uint_t BURGER_API Burger::EqualWithEpsilon(
 	dInput1 = Abs(dInput1);
 	dInput2 = Abs(dInput2);
 	return (dInput1 > dInput2) ? (dDelta <= (dInput1 * 1e-6)) :
-                                 (dDelta <= (dInput2 * 1e-6));
+								 (dDelta <= (dInput2 * 1e-6));
 }
 
 /*! ************************************
@@ -2679,7 +2693,7 @@ uint_t BURGER_API Burger::EqualWithEpsilon(
 	fInput1 = Abs(fInput1);
 	fInput2 = Abs(fInput2);
 	return (fInput1 > fInput2) ? (fDelta <= (fInput1 * fEpsilon)) :
-                                 (fDelta <= (fInput2 * fEpsilon));
+								 (fDelta <= (fInput2 * fEpsilon));
 }
 
 /*! ************************************
@@ -2718,7 +2732,7 @@ uint_t BURGER_API Burger::EqualWithEpsilon(
 	dInput1 = Abs(dInput1);
 	dInput2 = Abs(dInput2);
 	return (dInput1 > dInput2) ? (dDelta <= (dInput1 * dEpsilon)) :
-                                 (dDelta <= (dInput2 * dEpsilon));
+								 (dDelta <= (dInput2 * dEpsilon));
 }
 
 /*! ************************************

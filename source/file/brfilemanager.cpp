@@ -2,7 +2,7 @@
 
 	File Manager Class
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -19,18 +19,6 @@
 #include "brglobals.h"
 #include "brmemoryfunctions.h"
 #include <stdio.h>
-
-// Xbox 360 headers
-#if defined(BURGER_XBOX360)
-#define NOD3D
-#define NONET
-#include <xtl.h>
-
-#include <xbdm.h>
-// C'mon, they defined these?!?!?
-#undef DeleteFile
-#undef CopyFile
-#endif
 
 /*! ************************************
 
@@ -59,7 +47,7 @@
 	time and with a numeric or special character code you can quickly select
 	the desired one at runtime.
 
-	Some prefixes are preset after a call to \ref DefaultPrefixes().
+	Some prefixes are preset after a call to \ref set_default_prefixes().
 
 	Default prefixes:
 	- "8:" = Current working directory at application launch
@@ -77,11 +65,35 @@
 	- "20:LevelData.bin" = Application defined prefix and file within the
 		expected directory structure
 
-	\sa Burger::UTF8
+	\sa \ref UTF8
 
 ***************************************/
 
 Burger::FileManager* Burger::FileManager::g_pFileManager;
+
+/*! ************************************
+
+	\enum Burger::FileManager::ePrefix
+	\brief Predefined pathname prefixes
+
+	Enumerations for all of the built-in prefixes that are outside the bounds of
+	prefixes 0-31
+
+	\sa set_default_prefixes()
+
+***************************************/
+
+/*! ************************************
+
+	\enum Burger::FileManager::eIOCommand
+	\brief Asynchronous file I/O commands
+
+	These are the commands for the file event queue to perform file operations
+	in the background.
+
+	\sa add_queue()
+
+***************************************/
 
 /*! ************************************
 
@@ -111,7 +123,7 @@ Burger::FileManager::FileManager() BURGER_NOEXCEPT: m_uQueueStart(0),
 
 #if 0
 	// Start up the worker thread
-	m_Thread.Start(QueueHandler,this);
+	m_Thread.Start(queue_handler,this);
 #endif
 }
 
@@ -124,14 +136,14 @@ Burger::FileManager::FileManager() BURGER_NOEXCEPT: m_uQueueStart(0),
 Burger::FileManager::~FileManager()
 {
 	// Send a message to kill the thread
-	AddQueue(nullptr, kIOCommandEndThread, nullptr, 0);
+	add_queue(nullptr, kIOCommandEndThread, nullptr, 0);
 
 #if 0
 	// Wait until the thread dies
 	m_Thread.Wait();
 #endif
 
-	PlatformShutdown();
+	platform_shutdown();
 }
 
 /*! ************************************
@@ -151,14 +163,15 @@ Burger::FileManager::~FileManager()
 	For Android and consoles, it will check if there are mounted SD Cards or
 	other external data storage devices so the application can be aware of them.
 
-	\sa PlatformShutdown(), Burger::FileManager
+	\sa platform_shutdown() or \ref FileManager
 
 ***************************************/
 
-#if !(defined(BURGER_MSDOS) || defined(BURGER_LINUX) || \
-	defined(BURGER_ANDROID) || defined(BURGER_DARWIN)) || \
+#if !(defined(BURGER_MSDOS) || defined(BURGER_MAC) || defined(BURGER_LINUX) || \
+	defined(BURGER_ANDROID) || defined(BURGER_DARWIN) || \
+	defined(BURGER_XBOX360)) || \
 	defined(DOXYGEN)
-void BURGER_API Burger::FileManager::PlatformSetup(void) BURGER_NOEXCEPT {}
+void BURGER_API Burger::FileManager::platform_setup(void) BURGER_NOEXCEPT {}
 #endif
 
 /*! ************************************
@@ -168,14 +181,14 @@ void BURGER_API Burger::FileManager::PlatformSetup(void) BURGER_NOEXCEPT {}
 	Calls system functions to release cached values obtained from the platform's
 	operating system.
 
-	\sa PlatformSetup(), Burger::FileManager
+	\sa platform_setup() or \ref FileManager
 
 ***************************************/
 
 #if !(defined(BURGER_LINUX) || defined(BURGER_ANDROID) || \
-	defined(BURGER_DARWIN)) || \
+	defined(BURGER_DARWIN) || defined(BURGER_MAC)) || \
 	defined(DOXYGEN)
-void BURGER_API Burger::FileManager::PlatformShutdown(void) BURGER_NOEXCEPT {}
+void BURGER_API Burger::FileManager::platform_shutdown(void) BURGER_NOEXCEPT {}
 #endif
 
 /*! ************************************
@@ -185,12 +198,11 @@ void BURGER_API Burger::FileManager::PlatformShutdown(void) BURGER_NOEXCEPT {}
 	Call this function once on startup to start up the Burgerlib file manager.
 	This function's primary purpose is to initialize the default prefixes.
 
-	\sa Burger::FileManager::DefaultPrefixes(void) or
-		Burger::FileManager::Shutdown(void)
+	\sa set_default_prefixes(void) or shut_down(void)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::Init(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::FileManager::initialize(void) BURGER_NOEXCEPT
 {
 	eError uError = kErrorNone;
 	FileManager* pThis = g_pFileManager;
@@ -199,30 +211,10 @@ Burger::eError BURGER_API Burger::FileManager::Init(void) BURGER_NOEXCEPT
 		g_pFileManager = pThis;
 
 		// Set the platform specific variables
-		pThis->PlatformSetup();
-
-#if defined(BURGER_MAC)
-		// Init the directory cache (MacOS)
-		Filename::InitDirectoryCache();
-#endif
-
-#if defined(BURGER_XBOX360)
-		// Xbox 360 needs a little love for the file cache
-#if defined(NDEBUG)
-		// Init the file cache to something small for Release
-		XSetFileCacheSize(128 * 1024);
-#else
-		// Since runtime files can be added, and dev kits have more memory,
-		// bump up the file cache size a bit.
-		XSetFileCacheSize(1024 * 1024);
-
-		// Mount the dev kit drives
-		DmMapDevkitDrive();
-#endif
-#endif
+		pThis->platform_setup();
 
 		// Load the default prefixes
-		uError = DefaultPrefixes();
+		uError = set_default_prefixes();
 	}
 	return uError;
 }
@@ -236,17 +228,12 @@ Burger::eError BURGER_API Burger::FileManager::Init(void) BURGER_NOEXCEPT
 	report in case any files are still open on debug builds. The application is
 	responsible for shutting down file usage before application shutdown.
 
-	\sa Burger::FileManager::Init(void)
+	\sa initialize(void)
 
 ***************************************/
 
-void BURGER_API Burger::FileManager::Shutdown(void) BURGER_NOEXCEPT
+void BURGER_API Burger::FileManager::shut_down(void) BURGER_NOEXCEPT
 {
-#if defined(BURGER_MAC)
-	// Release any directories cached (MacOS)
-	Filename::PurgeDirectoryCache();
-#endif
-
 	// Dispose of the global file manager instance
 	if (g_pFileManager) {
 		g_pFileManager->~FileManager();
@@ -266,15 +253,15 @@ void BURGER_API Burger::FileManager::Shutdown(void) BURGER_NOEXCEPT
 	return immediately and if the drive has ejectable media may take a while for
 	it to respond to a volume name query.
 
-	\param pOutput A Burger::Filename structure to contain the filename (Can be
-		nullptr)
+	\param pOutput A \ref Filename structure to contain the filename (Can be
+		\ref nullptr )
 
 	\param uVolumeNum A valid drive number from 0-?? with ?? being the
 		maximum number of drives in the system
 
 	\return Zero if no error, non-zero if an error occurred
 
-	\sa Burger::FileManager::GetVolumeNumber(const char *)
+	\sa get_volume_number(const char *)
 
 ***************************************/
 
@@ -283,7 +270,7 @@ void BURGER_API Burger::FileManager::Shutdown(void) BURGER_NOEXCEPT
 	defined(BURGER_XBOX360) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
 
-Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
+Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 	Filename* pOutput, uint_t /* uVolumeNum */) BURGER_NOEXCEPT
 {
 	// Clear the output on error
@@ -313,11 +300,11 @@ Burger::eError BURGER_API Burger::FileManager::GetVolumeName(
 		and Windows platforms. This is to prevent an annoying error for bad
 		media.
 
-	\sa Burger::FileManager::GetVolumeName(Burger::Filename *,uint_t)
+	\sa get_volume_name(Filename *,uint_t)
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::GetVolumeNumber(
+uint_t BURGER_API Burger::FileManager::get_volume_number(
 	const char* pVolumeName) BURGER_NOEXCEPT
 {
 #if defined(BURGER_MSDOS) || defined(BURGER_WINDOWS)
@@ -334,7 +321,7 @@ uint_t BURGER_API Burger::FileManager::GetVolumeNumber(
 	do {
 		// Convert to name
 		const eError uError =
-			FileManager::GetVolumeName(&TempFilename, uDriveNum);
+			FileManager::get_volume_name(&TempFilename, uDriveNum);
 		if (uError == kErrorNone) {
 			// Compare
 			const int iResult =
@@ -364,53 +351,52 @@ uint_t BURGER_API Burger::FileManager::GetVolumeNumber(
 	Sets these prefixes based on the current setup of the machine the
 	application is running on.
 
-	"*:" = Boot volume<br>
-	"$:" = System folder<br>
-	"@:" = Preferences folder<br>
-	"8:" = Default directory<br>
-	"9:" = Application directory
+	- "*:" = Boot volume
+	- "$:" = System folder
+	- "@:" = Preferences folder
+	- "8:" = Default directory
+	- "9:" = Application directory
 
-	\sa Burger::FileManager::Init(void),
-		Burger::FileManager::GetPrefix(Burger::Filename *,uint_t) or
-		Burger::FileManager::SetPrefix(uint_t,const char *)
+	\sa initialize(void), get_prefix(Filename*, uint_t) or
+		set_prefix(uint_t, const char*)
 
 ***************************************/
 
 #if !defined(BURGER_VITA) || defined(DOXYGEN)
 
-Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(
+Burger::eError BURGER_API Burger::FileManager::set_default_prefixes(
 	void) BURGER_NOEXCEPT
 {
 	Filename MyFilename;
 
 	// Set the standard work prefix
-	eError uResult = MyFilename.SetSystemWorkingDirectory();
-	SetPrefix(kPrefixCurrent, &MyFilename);
+	eError uResult = MyFilename.set_system_working_directory();
+	set_prefix(kPrefixCurrent, &MyFilename);
 
 	// Set the application directory
-	eError uTempResult = MyFilename.SetApplicationDirectory();
-	SetPrefix(kPrefixApplication, &MyFilename);
+	eError uTempResult = MyFilename.set_application_directory();
+	set_prefix(kPrefixApplication, &MyFilename);
 	if (uTempResult) {
 		uResult = uTempResult;
 	}
 
 	// Set the boot volume
-	uTempResult = MyFilename.SetBootVolumeDirectory();
-	SetPrefix(kPrefixBoot, &MyFilename);
+	uTempResult = MyFilename.set_boot_volume();
+	set_prefix(kPrefixBoot, &MyFilename);
 	if (uTempResult) {
 		uResult = uTempResult;
 	}
 
-	// Set the application
-	uTempResult = MyFilename.SetMachinePrefsDirectory();
-	SetPrefix(kPrefixSystem, &MyFilename);
+	// Set the system preferences location
+	uTempResult = MyFilename.set_system_prefs_directory();
+	set_prefix(kPrefixSystem, &MyFilename);
 	if (uTempResult) {
 		uResult = uTempResult;
 	}
 
 	// Set the application's preferences location
-	uTempResult = MyFilename.SetUserPrefsDirectory();
-	SetPrefix(kPrefixPrefs, &MyFilename);
+	uTempResult = MyFilename.set_user_prefs_directory();
+	set_prefix(kPrefixPrefs, &MyFilename);
 	if (uTempResult) {
 		uResult = uTempResult;
 	}
@@ -424,23 +410,25 @@ Burger::eError BURGER_API Burger::FileManager::DefaultPrefixes(
 
 	\brief Return the contents of a prefix
 
-	Given a prefix number, fill in a \ref Burger::Filename structure with a copy
+	Given a prefix number, fill in a \ref Filename structure with a copy
 	of the prefix pathname. The string could be an empty string in the case of
 	an unused or nullptr prefix.
 
-	\param pOutput Pointer to a Burger::Filename class to store the string
+	\param pOutput Pointer to a \ref Filename class to store the string
 	\param uPrefixNum Index to the requested prefix to obtain
+
 	\return Zero if no error, non-zero if error
-	\sa Burger::FileManager::SetPrefix(uint_t,const char *)
+
+	\sa set_prefix(uint_t, const char*)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::GetPrefix(
+Burger::eError BURGER_API Burger::FileManager::get_prefix(
 	Filename* pOutput, uint_t uPrefixNum) BURGER_NOEXCEPT
 {
 	eError uResult;
 	// Is the prefix number valid?
-	if (uPrefixNum >= FileManager::kPrefixCount) {
+	if (uPrefixNum >= kPrefixCount) {
 
 		// No, clear out the output and return an error
 		pOutput->clear();
@@ -467,17 +455,19 @@ Burger::eError BURGER_API Burger::FileManager::GetPrefix(
 
 	\param pOutput Pointer to a String class to store the string
 	\param uPrefixNum Index to the requested prefix to obtain
+
 	\return Zero if no error, non-zero if error
-	\sa GetPrefix(Filename *,uint_t)
+
+	\sa get_prefix(Filename*, uint_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::GetPrefix(
+Burger::eError BURGER_API Burger::FileManager::get_prefix(
 	String* pOutput, uint_t uPrefixNum) BURGER_NOEXCEPT
 {
 	eError uResult;
 	// Is the prefix number valid?
-	if (uPrefixNum >= FileManager::kPrefixCount) {
+	if (uPrefixNum >= kPrefixCount) {
 
 		// No, clear out the output and return an error
 		pOutput->clear();
@@ -511,33 +501,36 @@ Burger::eError BURGER_API Burger::FileManager::GetPrefix(
 	\return Zero if no error, non-zero if error (Usually out of memory or out of
 		bounds)
 
-	\sa Burger::FileManager::GetPrefix(Burger::Filename *,uint_t)
+	\sa get_prefix(Filename*, uint_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::SetPrefix(
+Burger::eError BURGER_API Burger::FileManager::set_prefix(
 	uint_t uPrefixNum, const char* pPrefixName) BURGER_NOEXCEPT
 {
 	eError uResult;
 	// Is the prefix valid?
-	if (uPrefixNum >= FileManager::kPrefixCount) {
+	if (uPrefixNum >= kPrefixCount) {
 		uResult = kErrorInvalidParameter;
 	} else {
 
 		// Assume success, since only out of memory could fail this function.
 		uResult = kErrorNone;
 		Filename Temp;
+
 		// Assume the new prefix is nothing
 		const char* pNewPrefix = nullptr;
+
 		// Valid input prefix?
 		if (pPrefixName && pPrefixName[0]) {
 
 			// Convert to full pathname using a temporary filename record
-
-			uResult = Temp.Expand(pPrefixName);
+			uResult = Temp.abs_path(pPrefixName);
 			if (!uResult) {
 				pPrefixName = Temp.c_str();
-				if (pPrefixName[0]) { // Blank string?
+
+				// Blank string?
+				if (pPrefixName[0]) {
 					// Allocate memory for new prefix
 					pNewPrefix = pPrefixName;
 				}
@@ -556,7 +549,7 @@ Burger::eError BURGER_API Burger::FileManager::SetPrefix(
 
 	\brief Set the contents of a prefix with a filename
 
-	Given a prefix number and a Burger::Filename that has a new pathname, set
+	Given a prefix number and a \ref Filename that has a new pathname, set
 	that prefix to the new value. The prefix is expanded BEFORE it's applied, so
 	if you set prefix 10 with "10:foo" and prefix 10 was already ":Work:Temp:",
 	then prefix 10 will result in ":Work:Temp:foo:"
@@ -565,36 +558,41 @@ Burger::eError BURGER_API Burger::FileManager::SetPrefix(
 	released and considered empty.
 
 	\param uPrefixNum Index to the requested prefix to obtain
-	\param pPrefixName Pointer to a Burger::Filename of a new BurgerLib pathname
+	\param pPrefixName Pointer to a \ref Filename of a new BurgerLib pathname
 
 	\return Zero if no error, non-zero if error (Usually out of memory or out of
 		bounds)
 
-	\sa Burger::FileManager::GetPrefix(Burger::Filename *,uint_t)
+	\sa get_prefix(Filename*, uint_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::SetPrefix(
+Burger::eError BURGER_API Burger::FileManager::set_prefix(
 	uint_t uPrefixNum, const Filename* pPrefixName) BURGER_NOEXCEPT
 {
 	eError uResult;
+
 	// Is the prefix valid?
-	if (uPrefixNum >= FileManager::kPrefixCount) {
+	if (uPrefixNum >= kPrefixCount) {
 		uResult = kErrorInvalidParameter;
 	} else {
 		uResult = kErrorNone;
+
 		// Zap the prefix
 		Filename Temp;
 		const char* pTemp = nullptr;
+
 		// Valid prefix?
 		if (pPrefixName) {
 			const char* pPath = pPrefixName->c_str();
 			if (pPath[0]) {
 
 				// Convert to full pathname
-				Temp.Expand(pPrefixName->c_str());
+				Temp.abs_path(pPrefixName->c_str());
 				pPath = Temp.c_str();
-				if (pPath[0]) { // Blank string?
+
+				// Blank string?
+				if (pPath[0]) {
 					// Allocate memory for new prefix
 					pTemp = pPath;
 				}
@@ -603,7 +601,9 @@ Burger::eError BURGER_API Burger::FileManager::SetPrefix(
 		// Was there a path already?
 		g_pFileManager->m_Prefixes[uPrefixNum] = pTemp;
 	}
-	return uResult; // Return the result
+
+	// Return the result
+	return uResult;
 }
 
 /*! ************************************
@@ -617,25 +617,31 @@ Burger::eError BURGER_API Burger::FileManager::SetPrefix(
 	This can force the prefix to become an empty string if the prefix is
 	pointing to a root folder.
 
-	Examples:<br>
-	":foo:bar:temp:" = ":foo:bar:"<br>
-	":foo:bar:" = ":foo:"<br>
-	":foo:" = ""
+	Examples:
+
+	- ":foo:bar:temp:" = ":foo:bar:"
+	- ":foo:bar:" = ":foo:"
+	- ":foo:" = ""
 
 	\param uPrefixNum Index to the prefix to modify.
 
-	\sa Burger::FileManager::GetPrefix(Burger::Filename *,uint_t) or
-		Burger::FileManager::SetPrefix(uint_t,const char *)
+	\sa get_prefix(Filename*, uint_t) or set_prefix(uint_t, const char*)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::PopPrefix(
+Burger::eError BURGER_API Burger::FileManager::pop_prefix(
 	uint_t uPrefixNum) BURGER_NOEXCEPT
 {
 	Filename TempName;
-	GetPrefix(&TempName, uPrefixNum);        // Get the current prefix
-	TempName.dirname();                      // Remove a directory
-	return SetPrefix(uPrefixNum, &TempName); // Store the prefix
+
+	// Get the current prefix
+	get_prefix(&TempName, uPrefixNum);
+
+	// Remove a directory
+	TempName.dirname();
+
+	// Store the prefix
+	return set_prefix(uPrefixNum, &TempName);
 }
 
 /*! ************************************
@@ -646,22 +652,21 @@ Burger::eError BURGER_API Burger::FileManager::PopPrefix(
 	last modified.
 
 	\param pFileName Pointer to a "C" string to a BurgerLib pathname
-	\param pOutput Pointer to an uninitialized Burger::TimeDate_t structure that
+	\param pOutput Pointer to an uninitialized TimeDate_t structure that
 		will receive the time/date.
 
 	\return Zero on success, non-zero in the event of an error (Usually file not
 		found)
 
-	\sa Burger::FileManager::GetModificationTime(
-		Burger::Filename *,Burger::TimeDate_t *)
+	\sa get_modification_time(Filename*, TimeDate_t*)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
+Burger::eError BURGER_API Burger::FileManager::get_modification_time(
 	const char* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	Filename PathName(pFileName);
-	return GetModificationTime(&PathName, pOutput);
+	return get_modification_time(&PathName, pOutput);
 }
 
 /*! ************************************
@@ -671,25 +676,24 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
 	Given a native operating system path, access the file and return the
 	time/date that it was last modified.
 
-	\param pFileName Pointer to a Burger::Filename class that is properly
+	\param pFileName Pointer to a \ref Filename class that is properly
 		initialized to the native file system.
-	\param pOutput Pointer to an uninitialized Burger::TimeDate_t structure that
+	\param pOutput Pointer to an uninitialized TimeDate_t structure that
 		will receive the time/date.
 
 	\return Zero on success, non-zero in the event of an error (Usually file not
 		found)
 
-	\sa Burger::Filename::SetFromNative(const char *) or
-		Burger::FileManager::GetModificationTime(
-			const char *,Burger::TimeDate_t*)
+	\sa get_modification_time(const char*, TimeDate_t*) or
+		get_creation_time(Filename*, TimeDate_t*)
 
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
-	defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_VITA)) || \
+	defined(BURGER_MACOS) || defined(BURGER_UNIX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
-Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
+Burger::eError BURGER_API Burger::FileManager::get_modification_time(
 	Filename* /* pFileName */, TimeDate_t* /* pOutput */) BURGER_NOEXCEPT
 {
 	return kErrorNotSupportedOnThisPlatform; // Error!
@@ -704,22 +708,21 @@ Burger::eError BURGER_API Burger::FileManager::GetModificationTime(
 	created.
 
 	\param pFileName Pointer to a "C" string to a BurgerLib pathname
-	\param pOutput Pointer to an uninitialized Burger::TimeDate_t structure that
+	\param pOutput Pointer to an uninitialized \ref TimeDate_t structure that
 		will receive the time/date.
 
 	\return Zero on success, non-zero in the event of an error (Usually file not
 		found)
 
-	\sa Burger::FileManager::GetCreationTime(
-		Burger::Filename *,Burger::TimeDate_t *)
+	\sa get_creation_time(Filename*, TimeDate_t*)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
+Burger::eError BURGER_API Burger::FileManager::get_creation_time(
 	const char* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	Filename PathName(pFileName);
-	return GetCreationTime(&PathName, pOutput);
+	return get_creation_time(&PathName, pOutput);
 }
 
 /*! ************************************
@@ -729,25 +732,24 @@ Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
 	Given a native operating system path, access the file and return the
 	time/date that it was created.
 
-	\param pFileName Pointer to a Burger::Filename class that is properly
+	\param pFileName Pointer to a \ref Filename class that is properly
 		initialized to the native file system.
-	\param pOutput Pointer to an uninitialized Burger::TimeDate_t structure that
+	\param pOutput Pointer to an uninitialized \ref TimeDate_t structure that
 		will receive the time/date.
 
 	\return Zero on success, non-zero in the event of an error (Usually file not
 		found)
 
-	\sa Burger::Filename::SetFromNative(const char *) or
-		Burger::FileManager::GetCreationTime(
-			const char *,Burger::TimeDate_t *)
+	\sa get_modification_time(Filename*, TimeDate_t*) or get_creation_time(
+		const char*, TimeDate_t*)
 
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
-	defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_VITA)) || \
+	defined(BURGER_MACOS) || defined(BURGER_UNIX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
-Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
+Burger::eError BURGER_API Burger::FileManager::get_creation_time(
 	Filename* /* pFileName */, TimeDate_t* /* pOutput */) BURGER_NOEXCEPT
 {
 	return kErrorNotSupportedOnThisPlatform; // Error!
@@ -769,15 +771,15 @@ Burger::eError BURGER_API Burger::FileManager::GetCreationTime(
 
 	\return \ref FALSE if the file does not exist, \ref TRUE if the file exists.
 
-	\sa Burger::FileManager::DoesFileExist(Burger::Filename *)
+	\sa does_file_exist(Filename *)
 
 ***************************************/
 
-uint_t BURGER_API Burger::FileManager::DoesFileExist(
+uint_t BURGER_API Burger::FileManager::does_file_exist(
 	const char* pFileName) BURGER_NOEXCEPT
 {
 	Filename PathName(pFileName);
-	return DoesFileExist(&PathName);
+	return does_file_exist(&PathName);
 }
 
 /*! ************************************
@@ -791,33 +793,32 @@ uint_t BURGER_API Burger::FileManager::DoesFileExist(
 		permissions or the file being on a locked folder. It only guarantees its
 		existence.
 
-	\param pFileName Pointer to a Burger::Filename which contains a native
+	\param pFileName Pointer to a \ref Filename which contains a native
 		version of the path to the file.
 
 	\return \ref FALSE if the file does not exist, \ref TRUE if the file exists.
 
-	\sa Burger::Filename::SetFromNative(const char *) or
-		Burger::FileManager::DoesFileExist(const char *)
+	\sa does_file_exist(const char*)
 
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
-	defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_VITA)) || \
+	defined(BURGER_MACOS) || defined(BURGER_UNIX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
-uint_t BURGER_API Burger::FileManager::DoesFileExist(
+uint_t BURGER_API Burger::FileManager::does_file_exist(
 	Filename* pFileName) BURGER_NOEXCEPT
 {
 #if defined(BURGER_DS)
 	pFileName = NULL;
 	return FALSE;
 #else
-	FILE* fp = fopen(pFileName->GetNative(), "rb"); // Get file info
+	FILE* fp = fopen(pFileName->get_native(), "rb"); // Get file info
 	if (!fp) {
 		return FALSE; // Bad file!
 	}
 	fclose(fp);
-	return TRUE;               // File exists
+	return TRUE; // File exists
 #endif
 }
 #endif
@@ -830,7 +831,7 @@ uint_t BURGER_API Burger::FileManager::DoesFileExist(
 	owns the file. This function will retrieve the 4 byte code from the file.
 
 	On non MacOS platforms, this function only return 0 (An error condition) and
-	perform nothing..
+	perform nothing.
 
 	\param pFileName Pointer to a "C" string of a BurgerLib pathname
 
@@ -838,17 +839,15 @@ uint_t BURGER_API Burger::FileManager::DoesFileExist(
 		the file doesn't have extended information. A 32 bit value if the data
 		can be retrieved.
 
-	\sa Burger::FileManager::GetAuxType(Burger::Filename *),
-		Burger::FileManager::GetFileType(const char *) or
-		Burger::FileManager::GetFileAndAuxType(
-			const char *,uint32_t *,uint32_t *)
+	\sa get_creator_type(Filename*), get_file_type(const char*) or
+		get_creator_and_file_type(const char*, uint32_t*, uint32_t*)
 
 ***************************************/
 
-uint32_t BURGER_API Burger::FileManager::GetAuxType(const char* pFileName)
+uint32_t BURGER_API Burger::FileManager::get_creator_type(const char* pFileName)
 {
-	Filename TempName(pFileName); // Get the true path
-	return GetAuxType(&TempName); // Call the function
+	Filename TempName(pFileName);       // Get the true path
+	return get_creator_type(&TempName); // Call the function
 }
 
 /*! ************************************
@@ -860,25 +859,25 @@ uint32_t BURGER_API Burger::FileManager::GetAuxType(const char* pFileName)
 	from the file.
 
 	On non MacOS platforms, this function only return 0 (An error condition) and
-	perform nothing..
+	perform nothing.
 
-	\param pFileName Pointer to a Burger::Filename of a native OS pathname
+	\param pFileName Pointer to a \ref Filename of a native OS pathname
 
 	\return 0 if the file doesn't exist, the function isn't implemented of if
 		the file doesn't have extended information. A 32 bit value if the data
 		can be retrieved.
 
-	\sa Burger::FileManager::GetFileType(const char *),
-		Burger::FileManager::GetAuxType(const char *) or
-		Burger::FileManager::GetFileAndAuxType(
-			const char *,uint32_t *,uint32_t *)
+	\sa get_file_type(const char*), get_creator_type(const char*) or
+		get_creator_and_file_type(const char*, uint32_t*, uint32_t*)
 
 ***************************************/
 
-#if !(defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-uint32_t BURGER_API Burger::FileManager::GetAuxType(Filename* /*pFileName */)
+#if !(defined(BURGER_MACOS) || defined(BURGER_DARWIN)) || defined(DOXYGEN)
+uint32_t BURGER_API Burger::FileManager::get_creator_type(
+	Filename* /*pFileName */)
 {
-	return 0; // Don't do anything!
+	// Don't do anything!
+	return 0;
 }
 #endif
 
@@ -899,17 +898,18 @@ uint32_t BURGER_API Burger::FileManager::GetAuxType(Filename* /*pFileName */)
 		the file doesn't have extended information. A 32 bit value if the data
 		can be retrieved.
 
-	\sa Burger::FileManager::GetFileType(Burger::Filename *),
-		Burger::FileManager::GetAuxType(const char *) or
-		Burger::FileManager::GetFileAndAuxType(
-			const char *,uint32_t *,uint32_t *)
+	\sa get_file_type(Filename*), get_creator_type(const char*) or
+		get_creator_and_file_type(const char*, uint32_t*, uint32_t*)
 
 ***************************************/
 
-uint32_t BURGER_API Burger::FileManager::GetFileType(const char* pFileName)
+uint32_t BURGER_API Burger::FileManager::get_file_type(const char* pFileName)
 {
-	Filename TempName(pFileName);  // Get the true path
-	return GetFileType(&TempName); // Call the function
+	// Get the true path
+	Filename TempName(pFileName);
+
+	// Call the function
+	return get_file_type(&TempName);
 }
 
 /*! ************************************
@@ -922,23 +922,22 @@ uint32_t BURGER_API Burger::FileManager::GetFileType(const char* pFileName)
 	On non MacOS platforms, this function only return 0 (An error condition) and
 	perform nothing..
 
-	\param pFileName Pointer to a Burger::Filename of a native OS pathname
+	\param pFileName Pointer to a \ref Filename of a native OS pathname
 
 	\return 0 if the file doesn't exist, the function isn't implemented of if
 		the file doesn't have extended information. A 32 bit value if the data
 		can be retrieved.
 
-	\sa Burger::FileManager::GetAuxType(const char *),
-		Burger::FileManager::GetFileType(const char *) or
-		Burger::FileManager::GetFileAndAuxType(
-			const char *,uint32_t *,uint32_t *)
+	\sa get_creator_type(const char*), get_file_type(const char*) or
+		get_creator_and_file_type(const char*, uint32_t*, uint32_t*)
 
 ***************************************/
 
-#if !(defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-uint32_t BURGER_API Burger::FileManager::GetFileType(Filename* /*pFileName*/)
+#if !(defined(BURGER_MACOS) || defined(BURGER_DARWIN)) || defined(DOXYGEN)
+uint32_t BURGER_API Burger::FileManager::get_file_type(Filename* /*pFileName*/)
 {
-	return 0; // Don't do anything!
+	// Don't do anything!
+	return 0;
 }
 #endif
 
@@ -954,27 +953,27 @@ uint32_t BURGER_API Burger::FileManager::GetFileType(Filename* /*pFileName*/)
 	condition) and perform store zeros in the result values..
 
 	\param pFileName Pointer to a "C" string of a BurgerLib pathname
-	\param pFileType Pointer to a uint32_t that will receive the file type code.
-	\param pAuxType Pointer to a uint32_t that will receive the file creator
+	\param pCreatorType Pointer to a uint32_t that will receive the file creator
 		code.
+	\param pFileType Pointer to a uint32_t that will receive the file type code.
 
 	\return Non-zero if the file doesn't exist, the function isn't implemented
 		of if the file doesn't have extended information. Zero is returned on
 		successful completion.
 
-	\sa Burger::FileManager::GetFileAndAuxType(
-		Burger::Filename *,uint32_t *,uint32_t *),
-		Burger::FileManager::GetFileType(const char *) or
-		Burger::FileManager::GetAuxType(const char *)
+	\sa get_creator_and_file_type(Filename*, uint32_t*, uint32_t *),
+		get_file_type(const char*) or get_creator_type(const char*)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::GetFileAndAuxType(
-	const char* pFileName, uint32_t* pFileType, uint32_t* pAuxType)
+Burger::eError BURGER_API Burger::FileManager::get_creator_and_file_type(
+	const char* pFileName, uint32_t* pCreatorType, uint32_t* pFileType)
 {
-	Filename TempName(pFileName); // Get the true path
-	return GetFileAndAuxType(
-		&TempName, pFileType, pAuxType); // Call the function
+	// Get the true path
+	Filename TempName(pFileName);
+
+	// Call the function
+	return get_creator_and_file_type(&TempName, pCreatorType, pFileType);
 }
 
 /*! ************************************
@@ -988,28 +987,26 @@ Burger::eError BURGER_API Burger::FileManager::GetFileAndAuxType(
 	On non MacOS platforms, this function only return non-zero (An error
 	condition) and perform store zeros in the result values..
 
-	\param pFileName Pointer to a Burger::Filename of a native OS pathname
-	\param pFileType Pointer to a uint32_t that will receive the file type code.
-	\param pAuxType Pointer to a uint32_t that will receive the file creator
+	\param pFileName Pointer to a \ref Filename of a native OS pathname
+	\param pCreatorType Pointer to a uint32_t that will receive the file creator
 		code.
+	\param pFileType Pointer to a uint32_t that will receive the file type code.
 
 	\return Non-zero if the file doesn't exist, the function isn't implemented
 		of if the file doesn't have extended information. Zero is returned on
 		successful completion.
 
-	\sa Burger::FileManager::GetFileAndAuxType(
-		Burger::Filename *,uint32_t *,uint32_t *),
-		Burger::FileManager::GetFileType(const char *) or
-		Burger::FileManager::GetAuxType(const char *)
+	\sa get_creator_and_file_type(Filename*, uint32_t*, uint32_t*),
+		get_file_type(const char*) or get_creator_type(const char*)
 
 ***************************************/
 
-#if !(defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-Burger::eError BURGER_API Burger::FileManager::GetFileAndAuxType(
-	Filename* /* pFileName */, uint32_t* pFileType, uint32_t* pAuxType)
+#if !(defined(BURGER_MACOS) || defined(BURGER_DARWIN)) || defined(DOXYGEN)
+Burger::eError BURGER_API Burger::FileManager::get_creator_and_file_type(
+	Filename* /* pFileName */, uint32_t* pCreatorType, uint32_t* pFileType)
 {
+	pCreatorType[0] = 0;
 	pFileType[0] = 0;
-	pAuxType[0] = 0;
 	return kErrorNotSupportedOnThisPlatform;
 }
 #endif
@@ -1024,22 +1021,22 @@ Burger::eError BURGER_API Burger::FileManager::GetFileAndAuxType(
 	On non MacOS platforms, this function will perform nothing.
 
 	\param pFileName Pointer to a "C" string of a BurgerLib pathname
-	\param uAuxType Four byte character code to set.
+	\param uCreatorType Four byte character code to set.
 
 	\return Non-zero if the file doesn't exist, the function isn't implemented
 		of if the file doesn't have extended information. Zero if successful.
 
-	\sa Burger::FileManager::SetAuxType(Burger::Filename *,uint32_t),
-		Burger::FileManager::SetFileType(const char *,uint32_t) or
-		Burger::FileManager::SetFileAndAuxType(const char *,uint32_t,uint32_t)
+	\sa set_creator_type(Filename *,uint32_t), set_file_type(
+		const char*, uint32_t) or set_creator_and_file_type(
+		const char*, uint32_t, uint32_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::SetAuxType(
-	const char* pFileName, uint32_t uAuxType)
+Burger::eError BURGER_API Burger::FileManager::set_creator_type(
+	const char* pFileName, uint32_t uCreatorType)
 {
 	Filename TempName(pFileName); // Get the true path
-	return SetAuxType(&TempName, uAuxType);
+	return set_creator_type(&TempName, uCreatorType);
 }
 
 /*! ************************************
@@ -1052,21 +1049,21 @@ Burger::eError BURGER_API Burger::FileManager::SetAuxType(
 
 	On non MacOS platforms, this function will perform nothing.
 
-	\param pFileName Pointer to a Burger::Filename of a native OS pathname
-	\param uAuxType Four byte character code to set.
+	\param pFileName Pointer to a \ref Filename of a native OS pathname
+	\param uCreatorType Four byte character code to set.
 
 	\return Non-zero if the file doesn't exist, the function isn't implemented
 		of if the file doesn't have extended information. Zero if successful.
 
-	\sa Burger::FileManager::SetFileType(const char *,uint32_t),
-		Burger::FileManager::SetAuxType(const char *,uint32_t) or
-		Burger::FileManager::SetFileAndAuxType(const char *,uint32_t,uint32_t)
+	\sa set_file_type(const char*, uint32_t), set_creator_type(
+		const char*, uint32_t) or set_creator_and_file_type(
+		const char*, uint32_t, uint32_t)
 
 ***************************************/
 
-#if !(defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-Burger::eError BURGER_API Burger::FileManager::SetAuxType(
-	Filename* /*pFileName*/, uint32_t /* uAuxType */)
+#if !(defined(BURGER_MACOS) || defined(BURGER_DARWIN)) || defined(DOXYGEN)
+Burger::eError BURGER_API Burger::FileManager::set_creator_type(
+	Filename* /*pFileName*/, uint32_t /* uCreatorType */)
 {
 	return kErrorNotSupportedOnThisPlatform;
 }
@@ -1088,17 +1085,18 @@ Burger::eError BURGER_API Burger::FileManager::SetAuxType(
 	\return Non-zero if the file doesn't exist, the function isn't implemented
 		of if the file doesn't have extended information. Zero if successful.
 
-	\sa Burger::FileManager::SetFileType(Burger::Filename *,uint32_t),
-		Burger::FileManager::SetAuxType(const char *,uint32_t) or
-		Burger::FileManager::SetFileAndAuxType(const char *,uint32_t,uint32_t)
+	\sa set_file_type(Filename*, uint32_t), set_creator_type(
+		const char*, uint32_t) or set_creator_and_file_type(
+		const char*, uint32_t, uint32_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::SetFileType(
+Burger::eError BURGER_API Burger::FileManager::set_file_type(
 	const char* pFileName, uint32_t uFileType)
 {
-	Filename TempName(pFileName); // Get the true path
-	return SetFileType(&TempName, uFileType);
+	// Get the true path
+	Filename TempName(pFileName);
+	return set_file_type(&TempName, uFileType);
 }
 
 /*! ************************************
@@ -1111,20 +1109,20 @@ Burger::eError BURGER_API Burger::FileManager::SetFileType(
 
 	On non MacOS platforms, this function will perform nothing.
 
-	\param pFileName Pointer to a Burger::Filename of a native OS pathname,
+	\param pFileName Pointer to a \ref Filename of a native OS pathname,
 	\param uFileType Four byte character code to set.
 
 	\return Non-zero if the file doesn't exist, the function isn't implemented
 		of if the file doesn't have extended information. Zero if successful.
 
-	\sa Burger::FileManager::SetFileType(const char *,uint32_t),
-		Burger::FileManager::SetAuxType(const char *,uint32_t) or
-		Burger::FileManager::SetFileAndAuxType(const char *,uint32_t,uint32_t)
+	\sa set_file_type(const char*, uint32_t), set_creator_type(
+		const char *,uint32_t) or set_creator_and_file_type(
+		const char*, uint32_t, uint32_t)
 
 ***************************************/
 
-#if !(defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-Burger::eError BURGER_API Burger::FileManager::SetFileType(
+#if !(defined(BURGER_MACOS) || defined(BURGER_DARWIN)) || defined(DOXYGEN)
+Burger::eError BURGER_API Burger::FileManager::set_file_type(
 	Filename* /*pFileName*/, uint32_t /*uFileType */)
 {
 	return kErrorNotSupportedOnThisPlatform;
@@ -1142,25 +1140,24 @@ Burger::eError BURGER_API Burger::FileManager::SetFileType(
 	On non MacOS platforms, this function will perform nothing.
 
 	\param pFileName Pointer to a "C" string of a BurgerLib pathname
+	\param uCreatorType A uint32_t of the new file creator code.
 	\param uFileType A uint32_t of the new file type code.
-	\param uAuxType A uint32_t of the new file creator code.
 
 	\return Non-zero if the file doesn't exist, the function isn't implemented
 		of if the file doesn't have extended information. Zero is returned on
 		successful completion.
 
-	\sa Burger::FileManager::GetFileAndAuxType(
-		Burger::Filename *,uint32_t *,uint32_t *),
-		Burger::FileManager::GetFileType(const char *) or
-		Burger::FileManager::GetAuxType(const char *)
+	\sa get_creator_and_file_type(Filename*, uint32_t*, uint32_t*),
+		get_file_type(const char*) or get_creator_type(const char*)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::SetFileAndAuxType(
-	const char* pFileName, uint32_t uFileType, uint32_t uAuxType)
+Burger::eError BURGER_API Burger::FileManager::set_creator_and_file_type(
+	const char* pFileName, uint32_t uCreatorType, uint32_t uFileType)
 {
-	Filename TempName(pFileName); // Get the true path
-	return SetFileAndAuxType(&TempName, uFileType, uAuxType);
+	// Get the true path
+	Filename TempName(pFileName);
+	return set_creator_and_file_type(&TempName, uCreatorType, uFileType);
 }
 
 /*! ************************************
@@ -1173,24 +1170,23 @@ Burger::eError BURGER_API Burger::FileManager::SetFileAndAuxType(
 
 	On non MacOS platforms, this function will perform nothing.
 
-	\param pFileName Pointer to a Burger::Filename of a native OS pathname
+	\param pFileName Pointer to a \ref Filename of a native OS pathname
+	\param uCreatorType A uint32_t of the new file creator code.
 	\param uFileType A uint32_t of the new file type code.
-	\param uAuxType A uint32_t of the new file creator code.
 
 	\return Non-zero if the file doesn't exist, the function isn't implemented
 		of if the file doesn't have extended information. Zero is returned on
 		successful completion.
 
-	\sa Burger::FileManager::GetFileAndAuxType(
-		const char *,uint32_t *,uint32_t *),
-		Burger::FileManager::GetFileType(const char *) or
-		Burger::FileManager::GetAuxType(const char *)
+	\sa get_creator_and_file_type(const char*, uint32_t*, uint32_t*),
+		get_file_type(const char*) or get_creator_type(const char*)
 
 ***************************************/
 
 #if !(defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-Burger::eError BURGER_API Burger::FileManager::SetFileAndAuxType(
-	Filename* /*pFileName*/, uint32_t /* uFileType */, uint32_t /* uAuxType */)
+Burger::eError BURGER_API Burger::FileManager::set_creator_and_file_type(
+	Filename* /*pFileName*/, uint32_t /* uCreatorType */,
+	uint32_t /* uFileType */)
 {
 	return kErrorNotSupportedOnThisPlatform;
 }
@@ -1204,51 +1200,56 @@ Burger::eError BURGER_API Burger::FileManager::SetFileAndAuxType(
 	the directory already exists, or is successfully created, the call is
 	considered successful.
 
-	Example:<br>
+	Example:
+
 	If the path :Foo:Bar: exists, a call with ":Foo:Bar:Fooey:Temp:" will
 	create both "Fooey" and "Temp" in this single call.
 
 	\param pFileName Pointer to a "C" string of a BurgerLib path.
 	\return Zero if successful, non-zero on error.
 
-	\sa Burger::FileManager::CreateDirectoryPathDirName(const char *)
+	\sa create_directory_path_dirname(const char *)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
+Burger::eError BURGER_API Burger::FileManager::create_directory_path(
 	const char* pFileName) BURGER_NOEXCEPT
 {
-	Filename PathName(pFileName);          // Convert to native path
-	return CreateDirectoryPath(&PathName); // Create the path
+	// Convert to native path
+	Filename PathName(pFileName);
+
+	// Create the path
+	return create_directory_path(&PathName);
 }
 
 /*! ************************************
 
-	\brief Create a directory path using an OS native pathname.
+	\brief Create a directory path.
 
-	Given an OS native directory, create each and every part of the directory.
+	Given an Burgerlib directory, create each and every part of the directory.
 	If the directory already exists, or is successfully created, the call is
 	considered successful.
 
-	Example:<br>
+	Example:
+
 	If the path c:\\Foo\\Bar exists, a call with "c:\Foo\Bar\Fooey\Temp\" will
 	create both "Fooey" and "Temp" in this single call.
 
-	\param pFileName Pointer to a Burger::Filename that contains a native OS
+	\param pFileName Pointer to a \ref Filename that contains a Burgerlib
 		pathname.
 
 	\return Zero if successful, non-zero on error.
 
-	\sa Burger::FileManager::CreateDirectoryPath(const char *) or
-		Burger::FileManager::CreateDirectoryPathDirName(const char *)
+	\sa create_directory_path(const char*) or
+		create_directory_path_dirname(const char*)
 
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
-	defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_VITA)) || \
+	defined(BURGER_MACOS) || defined(BURGER_UNIX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
-Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
+Burger::eError BURGER_API Burger::FileManager::create_directory_path(
 	Filename* /* pFileName */) BURGER_NOEXCEPT
 {
 	return kErrorNotSupportedOnThisPlatform; // Always error out
@@ -1263,7 +1264,8 @@ Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
 	from a path that includes a filename. If the directory already exists, or is
 	successfully created, the call is considered successful.
 
-	Example:<br>
+	Example:
+
 	If the path :Foo:Bar: exists, a call with ":Foo:Bar:Fooey:Temp:File.txt"
 	will create both "Fooey" and "Temp" in this single call. The last token of
 	"File.txt" is ignored.
@@ -1272,16 +1274,16 @@ Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPath(
 
 	\return Zero if successful, non-zero on error.
 
-	\sa Burger::FileManager::CreateDirectoryPath(const char *)
+	\sa create_directory_path(const char*)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPathDirName(
+Burger::eError BURGER_API Burger::FileManager::create_directory_path_dirname(
 	const char* pFileName)
 {
 	Filename FileNameCopy(pFileName);
 	FileNameCopy.dirname();
-	return CreateDirectoryPath(&FileNameCopy);
+	return create_directory_path(&FileNameCopy);
 }
 
 /*! ************************************
@@ -1292,7 +1294,8 @@ Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPathDirName(
 	from a path that includes a filename. If the directory already exists, or is
 	successfully created, the call is considered successful.
 
-	Example:<br>
+	Example:
+
 	If the path :Foo:Bar: exists, a call with ":Foo:Bar:Fooey:Temp:File.txt"
 	will create both "Fooey" and "Temp" in this single call. The last token of
 	"File.txt" is ignored.
@@ -1301,78 +1304,87 @@ Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPathDirName(
 
 	\return Zero if successful, non-zero on error.
 
-	\sa Burger::FileManager::CreateDirectoryPath(Filename *)
+	\sa create_directory_path(Filename*)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::CreateDirectoryPathDirName(
-	Filename* pFileName)
+Burger::eError BURGER_API Burger::FileManager::create_directory_path_dirname(
+	const Filename* pFileName)
 {
 	Filename FileNameCopy(*pFileName);
 	FileNameCopy.dirname();
-	return CreateDirectoryPath(&FileNameCopy);
+	return create_directory_path(&FileNameCopy);
 }
 
 /*! ************************************
 
-	\brief Delete a file.
+	\brief Delete a file or empty directory.
 
 	Given a BurgerLib pathname, delete the file at the end of the pathname.
 
-	Example:<br>
+	Example:
+
 	If a call with ":Foo:Bar:Fooey:Temp.txt" is issued, only the file "Temp.txt"
 	is deleted. The rest of the path is left intact. This call will not delete
-	directories, only files. If the file is already deleted, an error is
-	returned.
+	non-empty directories, only files. If the file is already deleted, an error
+	is returned.
 
 	\param pFileName Pointer to a "C" string of a BurgerLib path.
 
 	\return Zero if successful, non-zero on error.
 
-	\sa Burger::FileManager::DeleteFile(Burger::Filename *)
+	\sa delete_file(Filename*)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::DeleteFile(
+Burger::eError BURGER_API Burger::FileManager::delete_file(
 	const char* pFileName) BURGER_NOEXCEPT
 {
-	Filename Dest(pFileName); // Expand the path to a full filename
-	return DeleteFile(&Dest); // Copy the file
+	// Expand the path to a full filename
+	Filename Dest(pFileName);
+
+	// Copy the file
+	return delete_file(&Dest);
 }
 
 /*! ************************************
 
-	\brief Delete a file using an OS pathname.
+	\brief Delete a file or empty directory using a \ref Filename.
 
 	Given an OS native pathname, delete the file at the end of the pathname.
 
-	Example:<br>
+	Example:
+
 	If a call with "c:\Foo\Bar\Fooey\Temp.txt" is issued, only the file
 	"Temp.txt" is deleted. The rest of the path is left intact. This call will
-	not delete directories, only files. If the file is already deleted, an error
-	is returned.
+	not delete non-empty directories, only files. If the file is already
+	deleted, an error is returned.
 
-	\param pFileName Pointer to a Burger::Filename of a native OS path.
+	\param pFileName Pointer to a \ref Filename of a Burgerlib path.
 
 	\return Zero if successful, non-zero on error.
 
-	\sa Burger::FileManager::DeleteFile(const char *)
+	\sa delete_file(const char*)
 
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
-	defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_VITA)) || \
+	defined(BURGER_MACOS) || defined(BURGER_UNIX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
-Burger::eError BURGER_API Burger::FileManager::DeleteFile(
+Burger::eError BURGER_API Burger::FileManager::delete_file(
 	Filename* pFileName) BURGER_NOEXCEPT
 {
 #if defined(BURGER_DS)
-	return kErrorNotSupportedOnThisPlatform; // Always error out
+	// Always error out
+	return kErrorNotSupportedOnThisPlatform;
 #else
-	eError uResult = kErrorIO; // Assume error
-	if (remove(pFileName->GetNative())) {
-		uResult = kErrorNone; // No error
+
+	// Assume error
+	eError uResult = kErrorIO;
+	if (!remove(pFileName->get_native())) {
+		// No error
+		uResult = kErrorNone;
 	}
 	return uResult;
 #endif
@@ -1395,50 +1407,56 @@ Burger::eError BURGER_API Burger::FileManager::DeleteFile(
 
 	\return Zero if successful, non-zero on error.
 
-	\sa Burger::FileManager::RenameFile(Burger::Filename *,Burger::Filename *)
+	\sa rename_file(Filename*, Filename*)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::RenameFile(
+Burger::eError BURGER_API Burger::FileManager::rename_file(
 	const char* pNewName, const char* pOldName) BURGER_NOEXCEPT
 {
-	Filename Dest(pNewName);        // Expand the path to a full filename
-	Filename Src(pOldName);         // Expand the source path
-	return RenameFile(&Dest, &Src); // Rename or move the file
+	// Expand the path to a full filename
+	Filename Dest(pNewName);
+
+	// Expand the source path
+	Filename Src(pOldName);
+
+	// Rename or move the file
+	return rename_file(&Dest, &Src);
 }
 
 /*! ************************************
 
-	\brief Rename a file using OS native pathnames.
+	\brief Rename a file using \ref Filename.
 
-	Given an OS native formatted old pathname and new pathname, rename the file
-	at the end of the pathname.
+	Given a \ref Filename formatted old pathname and new pathname, rename the
+	file at the end of the pathname.
 
 	\note The source and destination directories must be the same.
 
-	\param pNewName Pointer to a Burger::Filename of an OS native path for the
-		new name.
-	\param pOldName Pointer to a Burger::Filename of an OS native path for the
-		current file name.
+	\param pNewName Pointer to a \ref Filename for the new name.
+	\param pOldName Pointer to a \ref Filename for the current file name.
 
 	\return Zero if successful, non-zero on error.
 
-	\sa Burger::FileManager::RenameFile(const char *,const char *)
+	\sa rename_file(const cha *, const char*)
 
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOS) || \
-	defined(BURGER_IOS) || defined(BURGER_XBOX360) || defined(BURGER_VITA)) || \
+	defined(BURGER_UNIX) || defined(BURGER_XBOX360) || \
+	defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
-Burger::eError BURGER_API Burger::FileManager::RenameFile(
+Burger::eError BURGER_API Burger::FileManager::rename_file(
 	Filename* pNewName, Filename* pOldName) BURGER_NOEXCEPT
 {
 #if defined(BURGER_DS)
 	// Always error out
 	return kErrorNotSupportedOnThisPlatform;
 #else
-	eError uResult = kErrorIO; // Assume error
-	if (!rename(pOldName->GetNative(), pNewName->GetNative())) {
+
+	// Assume error
+	eError uResult = kErrorIO;
+	if (!rename(pOldName->get_native(), pNewName->get_native())) {
 		uResult = kErrorNone;
 	}
 	return uResult;
@@ -1459,19 +1477,24 @@ Burger::eError BURGER_API Burger::FileManager::RenameFile(
 	to use, however, it exists since there are some OS native functions in MacOS
 	and Windows that require a little "help".
 
+	\note On most systems, this is the same as calling cwd().
+
 	\param pDirName Pointer to a "C" string of a BurgerLib path.
 
 	\return Zero if successful, non-zero on error.
 
-	\sa Burger::FileManager::ChangeOSDirectory(Burger::Filename *)
+	\sa change_OS_directory(Filename*)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(
+Burger::eError BURGER_API Burger::FileManager::change_OS_directory(
 	const char* pDirName)
 {
-	Filename DirName(pDirName);         // Expand the path to a full filename
-	return ChangeOSDirectory(&DirName); // Set the directory here
+	// Expand the path to a full filename
+	Filename DirName(pDirName);
+
+	// Set the directory here
+	return change_OS_directory(&DirName);
 }
 
 /*! ************************************
@@ -1487,21 +1510,24 @@ Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(
 	to use, however, it exists since there are some OS native functions in MacOS
 	and Windows that require a little "help".
 
-	\param pDirName Pointer to a Burger::Filename of a native OS path.
+	\note On most systems, this is the same as calling cwd().
+
+	\param pDirName Pointer to a \ref Filename of a native OS path.
 
 	\return Zero if successful, non-zero on error.
 
-	\sa Burger::FileManager::ChangeOSDirectory(const char *)
+	\sa change_OS_directory(const char*)
 
 ***************************************/
 
 #if (!defined(BURGER_WINDOWS) && !defined(BURGER_MSDOS) && \
-	!defined(BURGER_MACOS) && !defined(BURGER_IOS)) || \
+	!defined(BURGER_MACOS) && !defined(BURGER_UNIX)) || \
 	defined(DOXYGEN)
-Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(
+Burger::eError BURGER_API Burger::FileManager::change_OS_directory(
 	Filename* /* pDirName */)
 {
-	return kErrorNotSupportedOnThisPlatform; // Error!
+	// Error!
+	return kErrorNotSupportedOnThisPlatform;
 }
 #endif
 
@@ -1524,18 +1550,19 @@ Burger::eError BURGER_API Burger::FileManager::ChangeOSDirectory(
 	\param pType Pointer to a "C" string that will be passed to a call to
 		fopen().
 
-	\return nullptr on error, a valid FILE * compatible with stdio.h file
+	\return \ref nullptr on error, a valid FILE * compatible with stdio.h file
 		calls.
 
-	\sa Burger::File
+	\sa \ref File
 
 ***************************************/
 
-FILE* BURGER_API Burger::FileManager::OpenFile(
+FILE* BURGER_API Burger::FileManager::open_file(
 	const char* pFileName, const char* pType) BURGER_NOEXCEPT
 {
-	Filename TempPath(pFileName); // Expand the path to a full filename
-	return OpenFile(&TempPath, pType);
+	// Expand the path to a full filename
+	Filename TempPath(pFileName);
+	return open_file(&TempPath, pType);
 }
 
 /*! ************************************
@@ -1557,23 +1584,24 @@ FILE* BURGER_API Burger::FileManager::OpenFile(
 	\param pType Pointer to a "C" string that will be passed to a call to
 		fopen().
 
-	\return nullptr on error, a valid FILE * compatible with stdio.h file
+	\return \ref nullptr on error, a valid FILE * compatible with stdio.h file
 		calls.
 
-	\sa Burger::File
+	\sa \ref File
 
 ***************************************/
 
 #if (!defined(BURGER_WINDOWS) && !defined(BURGER_MACOS) && \
-	!defined(BURGER_IOS)) || \
+	!defined(BURGER_UNIX)) || \
 	defined(DOXYGEN)
-FILE* BURGER_API Burger::FileManager::OpenFile(
+FILE* BURGER_API Burger::FileManager::open_file(
 	Filename* pFileName, const char* pType) BURGER_NOEXCEPT
 {
 #if defined(BURGER_DS)
-	return NULL;
+	return nullptr;
 #else
-	return fopen(pFileName->GetNative(), pType); // Open using standard fopen
+	// Open using standard fopen
+	return fopen(pFileName->get_native(), pType);
 #endif
 }
 #endif
@@ -1592,16 +1620,21 @@ FILE* BURGER_API Burger::FileManager::OpenFile(
 
 	\return Zero if successful, non-zero on error.
 
-	\sa Burger::FileManager::CopyFile(Burger::Filename *,Burger::Filename *)
+	\sa copy_file(Filename*, Filename*)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::CopyFile(
+Burger::eError BURGER_API Burger::FileManager::copy_file(
 	const char* pDestName, const char* pSrcName) BURGER_NOEXCEPT
 {
-	Filename Dest(pDestName);     // Expand the path to a full filename
-	Filename Src(pSrcName);       // Expand the source path
-	return CopyFile(&Dest, &Src); // Copy the file
+	// Expand the path to a full filename
+	Filename Dest(pDestName);
+
+	// Expand the source path
+	Filename Src(pSrcName);
+
+	// Copy the file
+	return copy_file(&Dest, &Src);
 }
 
 /*! ************************************
@@ -1611,60 +1644,93 @@ Burger::eError BURGER_API Burger::FileManager::CopyFile(
 	Given an OS native formatted old pathname and new pathname, make a duplicate
 	of the file at the end of the pathname.
 
-	\param pDestName Pointer to a Burger::Filename of an OS native path for the
+	\param pDestName Pointer to a \ref Filename of an OS native path for the
 		new name.
-	\param pSourceName Pointer to a Burger::Filename of an OS native path
+	\param pSourceName Pointer to a \ref Filename of an OS native path
 		for the current file name.
 
 	\return Zero if successful, non-zero on error.
 
-	\sa Burger::FileManager::CopyFile(const char *,const char *)
+	\sa copy_file(const char*, const char*)
 
 ***************************************/
 
 #if (!defined(BURGER_WINDOWS) && !defined(BURGER_MACOS) && \
-	!defined(BURGER_IOS) && !defined(BURGER_XBOX360)) || \
+	!defined(BURGER_UNIX) && !defined(BURGER_XBOX360)) || \
 	defined(DOXYGEN)
-Burger::eError BURGER_API Burger::FileManager::CopyFile(
+Burger::eError BURGER_API Burger::FileManager::copy_file(
 	Filename* pDestName, Filename* pSourceName) BURGER_NOEXCEPT
 {
 #if defined(BURGER_DS)
 	return kErrorNotSupportedOnThisPlatform;
 #else
 
-	eError uResult = kErrorIO;                // Assume error
-	File fpsrc(pSourceName, File::kReadOnly); // Open the source file
-	uintptr_t uLength = fpsrc.GetSize();      // Get the size of the source file
-	if (uLength) {                            // Shall I copy anything?
-		uintptr_t uMaxChunk = (uLength < 0x100000) ? uLength : 0x100000;
+	// Assume error
+	eError uResult = kErrorIO;
+
+	// Open the source file
+	File fpsrc(pSourceName, File::kReadOnly);
+
+	// Get the size of the source file
+	uint64_t uLength = fpsrc.get_file_size();
+
+	// Shall I copy anything?
+	if (uLength) {
+
+		// Make sure the chunk fits in memory
+		uintptr_t uMaxChunk =
+			static_cast<uintptr_t>((uLength < 0x100000U) ? uLength : 0x100000U);
+
 		uint8_t* pBuffer = static_cast<uint8_t*>(Alloc(uMaxChunk));
 		if (pBuffer) {
-			File fpdst(pDestName, File::kWriteOnly); // Open the dest file
+
+			// Open the dest file
+			File fpdst(pDestName, File::kWriteOnly);
 			do {
-				uintptr_t uChunk = uLength; // Base chunk
+				// Base chunk
+				uint64_t uChunk = uLength;
 				if (uChunk > uMaxChunk) {
-					uChunk = uMaxChunk; // Only copy the chunk
+					// Only copy the chunk
+					uChunk = uMaxChunk;
 				}
-				uintptr_t uReadSize = fpsrc.Read(pBuffer, uChunk); // Read data
+
+				// Read data
+				uintptr_t uReadSize =
+					fpsrc.read(pBuffer, static_cast<uintptr_t>(uChunk));
 				if (uReadSize != uChunk) {
 					break;
 				}
-				uReadSize = fpdst.Write(pBuffer, uChunk); // Write data
+
+				// Write data
+				uReadSize = fpdst.write(pBuffer, uReadSize);
 				if (uReadSize != uChunk) {
 					break;
 				}
 				uLength -= uChunk;
-			} while (uLength);        // Any data left?
-			if (!uLength) {           // All data copied?
-				uResult = kErrorNone; // No error (So far)
+
+				// Any data left?
+			} while (uLength);
+
+			// All data copied?
+			if (!uLength) {
+
+				// No error (So far)
+				uResult = kErrorNone;
 			}
-			if (fpdst.Close()) {    // Did the file have an error in closing?
-				uResult = kErrorIO; // Crap.
+
+			// Did the file have an error in closing?
+			if (fpdst.close()) {
+				// Crap.
+				uResult = kErrorIO;
 			}
 		}
-		Free(pBuffer); // Release the copy buffer
+
+		// Release the copy buffer
+		Free(pBuffer);
 	}
-	fpsrc.Close(); // Close the source file
+
+	// Close the source file
+	fpsrc.close();
 	return uResult;
 #endif
 }
@@ -1686,15 +1752,18 @@ Burger::eError BURGER_API Burger::FileManager::CopyFile(
 
 	\return \ref TRUE if successful, \ref FALSE on error.
 
-	\sa Burger::FileManager::SaveFile(Burger::Filename *,const void *,uintptr_t)
+	\sa save_file(Filename*, const void*, uintptr_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::SaveFile(const char* pFileName,
+Burger::eError BURGER_API Burger::FileManager::save_file(const char* pFileName,
 	const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
+	// Convert to a filename object
 	Filename MyName(pFileName);
-	return SaveFile(&MyName, pInput, uLength);
+
+	// Perform the action
+	return save_file(&MyName, pInput, uLength);
 }
 
 /*! ************************************
@@ -1707,36 +1776,45 @@ Burger::eError BURGER_API Burger::FileManager::SaveFile(const char* pFileName,
 	This function is a quick and easy way to write a buffer from memory directly
 	to disk (Or any other storage medium).
 
-	\param pFileName Pointer to a Burger::Filename of an OS native path.
+	\param pFileName Pointer to a \ref Filename object.
 	\param pInput Pointer to an array of bytes to save
 	\param uLength Number of bytes in the buffer
 
 	\return \ref TRUE if successful, \ref FALSE on error.
 
-	\sa Burger::FileManager::SaveFile(const char *,const void *,uintptr_t)
+	\sa save_file(const char*, const void*, uintptr_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::SaveFile(
+Burger::eError BURGER_API Burger::FileManager::save_file(
 	Filename* pFileName, const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
+	// Open the file
 	File FileRef;
-	eError uResult = FileRef.Open(pFileName, File::kWriteOnly);
+	eError uResult = FileRef.open(pFileName, File::kWriteOnly);
 	if (uResult != kErrorNone) {
-		// Try creating the directory
-		CreateDirectoryPathDirName(pFileName);
+
+		// Try creating the directory for the file
+		create_directory_path_dirname(pFileName);
+
 		// Now open the file
-		uResult = FileRef.Open(pFileName, File::kWriteOnly);
+		uResult = FileRef.open(pFileName, File::kWriteOnly);
 	}
-	// File opened.
+
+	// File opened?
 	if (uResult == kErrorNone) {
-		const uintptr_t uWritten = FileRef.Write(pInput, uLength);
-		uResult = FileRef.Close();
-		if ((uResult == kErrorNone) && (uWritten == uLength)) {
-			return kErrorNone;
+
+		// Save the file
+		const uintptr_t uWritten = FileRef.write(pInput, uLength);
+		uResult = FileRef.close();
+
+		if (uResult == kErrorNone) {
+			if (uWritten != uLength) {
+				uResult = kErrorWriteFailure;
+			}
 		}
 	}
-	return kErrorIO;
+	return uResult;
 }
 
 /*! ************************************
@@ -1749,11 +1827,11 @@ Burger::eError BURGER_API Burger::FileManager::SaveFile(
 	This function is a quick and easy way to write a buffer from memory directly
 	to disk (Or any other storage medium).
 
-	\note This differs from Burger::FileManager::SaveFile(
-		const char *,const void *,uintptr_t) in that all "\n" values will be
-		translated to the proper line feeds for the target operating system.
-		Unix and Linux, no change, Windows and MSDos, it's converted to a
-		"\n\r", MacOS and MacOSX it's converted to "\r".
+	\note This differs from \ref save_file(const char*, const void*, uintptr_t)
+		in that all "\n" values will be translated to the proper line feeds for
+		the target operating system. Unix and Linux, no change, Windows and
+		MSDos, it's converted to a "\n\r", MacOS and MacOSX it's converted to
+		"\r".
 
 	\param pFileName Pointer to a "C" string of a BurgerLib path.
 	\param pInput Pointer to an array of bytes to save as a text file.
@@ -1761,49 +1839,52 @@ Burger::eError BURGER_API Burger::FileManager::SaveFile(
 
 	\return \ref TRUE if successful, \ref FALSE on error.
 
-	\sa Burger::FileManager::SaveTextFile(
-		Burger::Filename *,const void *,uintptr_t)
+	\sa save_text_file(Filename*, const void*, uintptr_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::SaveTextFile(
+Burger::eError BURGER_API Burger::FileManager::save_text_file(
 	const char* pFileName, const void* pInput,
 	uintptr_t uLength) BURGER_NOEXCEPT
 {
-	Burger::Filename MyName(pFileName);
-	return SaveTextFile(&MyName, pInput, uLength);
+	// Convert to burgerlib filename
+	Filename MyName(pFileName);
+
+	// Perform the action
+	return save_text_file(&MyName, pInput, uLength);
 }
 
 /*! ************************************
 
-	\brief Save a text file using an OS native filename.
+	\brief Save a text file using a \ref Filename.
 
-	Given an OS native pathname and a buffer, save the contents of the buffer
+	Given a \ref Filename and a buffer, save the contents of the buffer
 	into a file and close the file.
 
 	This function is a quick and easy way to write a buffer from memory directly
 	to disk (Or any other storage medium).
 
-	\note This differs from Burger::FileManager::SaveFile(
-		const Burger::Filename *,const void *,uintptr_t) in that all "\n" values
-		will be translated to the proper line feeds for the target operating
-		system. Unix and Linux, no change, Windows and MSDos, it's converted to
-		a "\n\r", MacOS and MacOSX it's converted to "\r".
+	\note This differs from save_file(Filename*, const void *, uintptr_t) in
+		that all "\n" values will be translated to the proper line feeds for the
+		target operating system. Unix and Linux, no change, Windows and MSDos,
+		it's converted to a "\n\r", MacOS and MacOSX it's converted to "\r".
 
-	\param pFileName Pointer to a Burger::Filename of an OS native path.
+	\param pFileName Pointer to a \ref Filename object.
 	\param pInput Pointer to an array of bytes to save as a text file.
 	\param uLength Number of bytes in the buffer
 
 	\return \ref TRUE if successful, \ref FALSE on error.
 
-	\sa Burger::FileManager::SaveTextFile(const char *,const void *,uintptr_t)
+	\sa save_text_file(const char*, const void*, uintptr_t),
+		save_file(const char*, const void*, uintptr_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::FileManager::SaveTextFile(
+Burger::eError BURGER_API Burger::FileManager::save_text_file(
 	Filename* pFileName, const void* pInput, uintptr_t uLength) BURGER_NOEXCEPT
 {
-	FILE* fp = OpenFile(pFileName, "w"); // Open the file
+	// Open the file
+	FILE* fp = open_file(pFileName, "w");
 	if (fp) {
 		return Burger::SaveFile(fp, pInput, uLength);
 	}
@@ -1819,7 +1900,8 @@ Burger::eError BURGER_API Burger::FileManager::SaveTextFile(
 	buffer size.
 
 	This function is a quick and easy way to read the contents of a file into a
-	buffer. The buffer must be deleted with a call to Burger::Free(const void *)
+	buffer. The buffer must be deleted with a call to \ref Burger::Free(
+	const void*)
 
 	\note This function does no data translation. The buffer contains an exact
 		byte for byte copy of the contents of the file on disk.
@@ -1827,72 +1909,86 @@ Burger::eError BURGER_API Burger::FileManager::SaveTextFile(
 	\param pFileName Pointer to a "C" string of a BurgerLib path.
 	\param pLength Pointer to a uintptr_t to receive the size of the buffer.
 
-	\return nullptr if failure, a valid pointer to the buffer on success.
+	\return \ref nullptr if failure, a valid pointer to the buffer on success.
 
-	\sa Burger::FileManager::LoadFile(Burger::Filename *,uintptr_t *)
+	\sa load_file(Filename*, uintptr_t *) or save_file(Filename*,
+		const void*, uintptr_t)
 
 ***************************************/
 
-void* BURGER_API Burger::FileManager::LoadFile(
+void* BURGER_API Burger::FileManager::load_file(
 	const char* pFileName, uintptr_t* pLength) BURGER_NOEXCEPT
 {
 	Filename MyName(pFileName);
-	return LoadFile(&MyName, pLength);
+
+	// Perform the action
+	return load_file(&MyName, pLength);
 }
 
 /*! ************************************
 
-	\brief Load a file into memory using a native OS pathname.
+	\brief Load a file into memory using a \ref Filename.
 
 	Given an OS native pathname, open the file, allocate a buffer for it, load
 	it into memory and return the pointer to the allocated buffer and the
 	optional buffer size.
 
 	This function is a quick and easy way to read the contents of a file into a
-	buffer. The buffer must be deleted with a call to Burger::Free(const void *)
+	buffer. The buffer must be deleted with a call to \ref Burger::Free(
+	const void *)
 
 	\note This function does no data translation. The buffer contains an exact
 		byte for byte copy of the contents of the file on disk.
 
-	\param pFileName Pointer to a Burger::Filename of an OS native path.
+	\param pFileName Pointer to a \ref Filename object.
 	\param pLength Pointer to a uintptr_t to receive the size of the buffer.
 
-	\return nullptr if failure, a valid pointer to the buffer on success.
+	\return \ref nullptr if failure, a valid pointer to the buffer on success.
 
-	\sa Burger::FileManager::LoadFile(const char *,uintptr_t *)
+	\sa load_file(const char*, uintptr_t*), or save_file(Filename*, const void*,
+		uintptr_t)
 
 ***************************************/
 
-void* BURGER_API Burger::FileManager::LoadFile(
+void* BURGER_API Burger::FileManager::load_file(
 	Filename* pFileName, uintptr_t* pLength) BURGER_NOEXCEPT
 {
 #if defined(BURGER_DS)
+	if (pLength) {
+		pLength[0] = 0;
+	}
 	return nullptr;
 #else
+
 	File FileRef(pFileName, File::kReadOnly);
-	uint64_t uNewSize = FileRef.GetSize();
-	if (uNewSize>UINTPTR_MAX) {
+	uint64_t uNewSize = FileRef.get_file_size();
+
+	// Is the file too big for memory?
+	if (uNewSize > UINTPTR_MAX) {
 		return nullptr;
 	}
+
 	void* pResult = nullptr;
 	if (uNewSize) {
 #if defined(_DEBUG)
 		if (Globals::GetTraceFlag() & Globals::TRACE_FILELOAD) {
 			Debug::PrintString("Loading native file ");
-			Debug::PrintString(pFileName->GetNative());
+			Debug::PrintString(pFileName->get_native());
 			Debug::PrintString(".\n");
 		}
 #endif
 		pResult = Alloc(static_cast<uintptr_t>(uNewSize));
 		if (pResult) {
-			if (FileRef.Read(pResult, static_cast<uintptr_t>(uNewSize)) != uNewSize) {
+			if (FileRef.read(pResult, static_cast<uintptr_t>(uNewSize)) !=
+				uNewSize) {
 				Free(pResult);
-				pResult = NULL;
+				pResult = nullptr;
 				uNewSize = 0;
 			}
 		}
 	}
-	FileRef.Close();
+	FileRef.close();
+
 	// Return the file length and allocated memory pointer
 	if (pLength) {
 		pLength[0] = static_cast<uintptr_t>(uNewSize);
@@ -1901,10 +1997,58 @@ void* BURGER_API Burger::FileManager::LoadFile(
 #endif
 }
 
-void BURGER_API Burger::FileManager::AddQueue(File* pFile,
+/*! ************************************
+
+	\brief Clear out pending events
+
+	Clear out the I/O file queue. All events with callbacks will return a cancel
+	error.
+
+	\sa sync() or wait_until_queue_has_space()
+
+***************************************/
+
+void BURGER_API Burger::FileManager::flush_IO(void) BURGER_NOEXCEPT {}
+
+/*! ************************************
+
+	\brief Test if there is space in the queue.
+
+	If there is not room in the queue for a new entry, wait until a file
+	operation completes so a new entry can be added to the end of the queue.
+
+	If there is room, return immediately.
+
+	\sa sync() or flush_IO()
+
+***************************************/
+
+void BURGER_API Burger::FileManager::wait_until_queue_has_space(
+	void) BURGER_NOEXCEPT
+{
+}
+
+/*! ************************************
+
+	\brief Add a file event into the queue
+
+	If the queue is full, wait until there is room and then insert the command
+	into the queue.
+
+	The data buffer must exist until after the async event occurs.
+
+	\param pFile Pointer to the File object to perform the action on
+	\param uIOCommand Command to execute on the File object
+	\param pBuffer Optional pointer to a buffer for a read/write command
+	\param uLength Optional buffer size or file marker for read/write/seek
+		command
+
+***************************************/
+
+void BURGER_API Burger::FileManager::add_queue(File* pFile,
 	eIOCommand uIOCommand, void* pBuffer, uintptr_t uLength) BURGER_NOEXCEPT
 {
-	WaitUntilQueueHasSpace();
+	wait_until_queue_has_space();
 
 	// Get the pointer to the end of the queue
 
@@ -1926,10 +2070,51 @@ void BURGER_API Burger::FileManager::AddQueue(File* pFile,
 
 /*! ************************************
 
-	\class Burger::FileManagerSimple
-	\brief Initialization class for the global Burger::FileManager structure.
+	\brief Wait until all pending file calls are processed.
 
-	By default, the Burger::FileManager structure does not automatically
+	Test all pending file calls and if any remain that affect the File object,
+	then wait until they are processed.
+
+	\param pFile Pointer to the File object to test
+
+	\sa flush_IO() or wait_until_queue_has_space()
+
+***************************************/
+
+void BURGER_API Burger::FileManager::sync(File* pFile) BURGER_NOEXCEPT
+{
+	BURGER_UNUSED(pFile);
+}
+
+/*! ************************************
+
+	\brief Queue thread.
+
+	Internal function to handle async file operations.
+
+	\note This is called as a separate thread. Do not call directly.
+
+	\param pData Pointer to the parent FileManager object.
+
+	\return 0 or error code if shut down suddenly.
+
+***************************************/
+
+#if !defined(BURGER_WINDOWS) || defined(DOXYGEN)
+uintptr_t BURGER_API Burger::FileManager::queue_handler(
+	void* pData) BURGER_NOEXCEPT
+{
+	BURGER_UNUSED(pData);
+	return 0;
+}
+#endif
+
+/*! ************************************
+
+	\class Burger::FileManagerSimple
+	\brief Initialization class for the global FileManager structure.
+
+	By default, the FileManager structure does not automatically
 	initialize. The application determines the best time to start up and shut
 	down the global singleton. To make this process easier, create an instance
 	of this class in your main() function or use one of the application class
@@ -1952,28 +2137,28 @@ void BURGER_API Burger::FileManager::AddQueue(File* pFile,
 	\endcode
 
 	\note This class can and will allocate memory at runtime via the
-		initialization of \ref Burger::FileManager. It's crucial that the \ref
-		Burger::GlobalMemoryManager is initialized BEFORE this class instance is
+		initialization of \ref FileManager. It's crucial that the
+		\ref GlobalMemoryManager is initialized BEFORE this class instance is
 		created.
 
-	\sa Burger::GlobalMemoryManager or Burger::FileManager
+	\sa GlobalMemoryManager or FileManager
 
 ***************************************/
 
 /*! ************************************
 
 	\fn Burger::FileManagerSimple::FileManagerSimple()
-	\brief Initializes the global Burger::FileManager structure.
+	\brief Initializes the global \ref FileManager structure.
 
-	\sa Burger::FileManager or Burger::FileManager::Init(void)
+	\sa FileManager or FileManager::initialize(void)
 
 ***************************************/
 
 /*! ************************************
 
 	\fn Burger::FileManagerSimple::~FileManagerSimple()
-	\brief Shuts down the global Burger::FileManager structure.
+	\brief Shuts down the global FileManager structure.
 
-	\sa Burger::FileManager or Burger::FileManager::Shutdown(void)
+	\sa FileManager or FileManager::shut_down(void)
 
 ***************************************/

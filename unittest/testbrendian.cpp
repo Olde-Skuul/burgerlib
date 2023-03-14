@@ -157,9 +157,11 @@ static void BURGER_API TestBurgerSwapEndianTypes(void) BURGER_NOEXCEPT
 	unsigned long VarULong = 1;
 	signed long VarSLong = 1;
 
+#if !defined(BURGER_LINUX) && !defined(BURGER_SWITCH)
 	long long VarLongLong = 1;
 	unsigned long long VarULongLong = 1;
 	signed long long VarSLongLong = 1;
+#endif
 
 	float VarFloat = 1.0f;
 	double VarDouble = 1.0;

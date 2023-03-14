@@ -1214,7 +1214,7 @@ uint_t BURGER_API Burger::Texture::CallbackFileGIF(Texture *pTexture,eLoader uLo
 		{
 			// Get the file
 			uintptr_t uDataSize;
-			void *pData = FileManager::LoadFile(static_cast<const char *>(pTexture->m_pUserData),&uDataSize);
+			void *pData = FileManager::load_file(static_cast<const char *>(pTexture->m_pUserData),&uDataSize);
 			// Assume error
 			uResult = 10;
 			if (pData) {
@@ -1296,7 +1296,7 @@ uint_t BURGER_API Burger::Texture::CallbackFilenameGIF(Texture *pTexture,eLoader
 		{
 			// Get the file
 			uintptr_t uDataSize;
-			void *pData = FileManager::LoadFile(static_cast<Filename *>(pTexture->m_pUserData),&uDataSize);
+			void *pData = FileManager::load_file(static_cast<Filename *>(pTexture->m_pUserData),&uDataSize);
 			// Assume error
 			uResult = 10;
 			if (pData) {

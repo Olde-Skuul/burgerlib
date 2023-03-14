@@ -54,9 +54,13 @@ struct timespec {
 
 void Burger::TimeDate_t::Clear(void) BURGER_NOEXCEPT
 {
-	m_uYear = 0;
-	reinterpret_cast<uint32_t*>(static_cast<void*>(&m_usMilliseconds))[0] = 0;
-	reinterpret_cast<uint32_t*>(&m_bDayOfWeek)[0] = 0;
+	BURGER_STATIC_ASSERT(sizeof(TimeDate_t) == 12);
+	// Fast way of clearing the structure
+	uint32_t *pThis = reinterpret_cast<uint32_t *>(this);
+	pThis[0] = 0;
+	pThis[1] = 0;
+	pThis[2] = 0;
+
 }
 
 /*! ************************************

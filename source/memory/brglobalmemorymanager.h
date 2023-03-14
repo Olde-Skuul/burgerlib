@@ -53,7 +53,11 @@ private:
 template<class T>
 BURGER_INLINE T* New(void)
 {
-	return new (Burger::Alloc(sizeof(T))) T();
+	void *pResult = Burger::Alloc(sizeof(T));
+	if (pResult) {
+		new (pResult) T();
+	}
+	return static_cast<T*>(pResult);
 }
 
 template<class T>

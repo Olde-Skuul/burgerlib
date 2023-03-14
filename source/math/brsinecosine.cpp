@@ -1008,7 +1008,7 @@ float BURGER_API Burger::Sin6Digits(float fInput) BURGER_NOEXCEPT
         __fsel(fInput, g_fSinefCosfValues[1].f, g_fSinefCosfValues[2].f));
 #else
     float fSign = g_fSinefCosfValues[1].f;
-    if (static_cast<int32_t*>(static_cast<void *>(&fInput))[0] < 0) {
+    if (static_cast<uint32_float_t*>(static_cast<void *>(&fInput))->w & 0x80000000U) {
         fSign = g_fSinefCosfValues[2].f;
     }
 #endif

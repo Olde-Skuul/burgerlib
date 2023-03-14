@@ -3,7 +3,7 @@
 	Intrinsics and subroutines exclusive to the Freescale and Metrowerks
 	compilers
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -96,14 +96,14 @@ BURGER_INLINE void __cpuid(int a[4], int b)
 {
 	// clang-format off
     BURGER_ASM {
-    // Get the pointer to the destination buffer    
-    mov esi,a 
+    // Get the pointer to the destination buffer
+    mov esi,a
     mov eax,b   // Command byte
     cpuid       // Invoke CPUID
-    // Store the result in the same order as Visual C    
-    mov[esi],eax 
-    mov[esi + 4],ebx 
-    mov[esi + 8],ecx 
+    // Store the result in the same order as Visual C
+    mov[esi],eax
+    mov[esi + 4],ebx
+    mov[esi + 8],ecx
     mov[esi + 12],edx
     }
 	// clang-format on
@@ -113,13 +113,13 @@ BURGER_INLINE void __cpuidex(int a[4], int b, int c)
 {
 	// clang-format off
     BURGER_ASM {
-    // Get the pointer to the destination buffer    
-    mov esi,a 
+    // Get the pointer to the destination buffer
+    mov esi,a
     mov eax,b   // Command byte
     mov ecx,c   // Get the sub command
     cpuid       // Invoke CPUID
     // Store the result in the same order as Visual C
-    mov[esi],eax 
+    mov[esi],eax
     mov[esi + 4],ebx
     mov[esi + 8],ecx
     mov[esi + 12],edx
@@ -133,8 +133,8 @@ BURGER_INLINE uint32_t _BitScanForward(
 	// clang-format off
     BURGER_ASM {
     mov eax, Mask
-    mov ebx, Index 
-    bsf eax, eax 
+    mov ebx, Index
+    bsf eax, eax
     mov dword ptr[ebx],eax
     setne al
     }
@@ -146,9 +146,9 @@ BURGER_INLINE uint32_t _BitScanReverse(
 {
     // clang-format off
     BURGER_ASM {
-    mov eax, Mask 
-    mov ebx, Index 
-    bsr eax, eax 
+    mov eax, Mask
+    mov ebx, Index
+    bsr eax, eax
     mov dword ptr[ebx],eax
     setne al
     }

@@ -2,7 +2,7 @@
 
 	Code library (DLL) manager
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -45,14 +45,13 @@ class CodeLibrary {
 
 public:
 	CodeLibrary() BURGER_NOEXCEPT: m_pLibInstance(nullptr) {}
-	~CodeLibrary()
-	{
-		Shutdown();
-	}
-	uint_t Init(const char* pFilename) BURGER_NOEXCEPT;
-	void Shutdown(void) BURGER_NOEXCEPT;
-	void* GetFunction(const char* pFunctionName) BURGER_NOEXCEPT;
-	BURGER_INLINE uint_t IsInitialized(void) const BURGER_NOEXCEPT
+	~CodeLibrary() BURGER_NOEXCEPT;
+
+	eError init(const char* pFilename) BURGER_NOEXCEPT;
+	void shutdown(void) BURGER_NOEXCEPT;
+	void* get_function(const char* pFunctionName) BURGER_NOEXCEPT;
+
+	BURGER_INLINE uint_t is_initialized(void) const BURGER_NOEXCEPT
 	{
 		return m_pLibInstance != nullptr;
 	}

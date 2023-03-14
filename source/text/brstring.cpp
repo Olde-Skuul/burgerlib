@@ -3354,8 +3354,8 @@ uint_t BURGER_API Burger::String::FormattedAllocCallback(uint_t bNoErrors,
 
 	\fn Burger::String::operator <= (char cInput1,Burger::String const &rInput2)
 
-	\brief Return \ref TRUE if the first is less than or equal to the second
-		(Case sensitive)
+	Return \ref TRUE if the first is less than or equal to the
+		second (Case sensitive)
 
 	\param cInput1 Single character as a string to test
 	\param rInput2 Burger::String to test against

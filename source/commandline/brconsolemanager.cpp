@@ -54,7 +54,7 @@ Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv, uint_t uFlags) BU
 	m_iArgc = iArgc;
 
 	// Init the file system
-	FileManager::Init();
+	FileManager::initialize();
 }
 #endif
 
@@ -70,7 +70,7 @@ Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv, uint_t uFlags) BU
 Burger::ConsoleApp::~ConsoleApp()
 {
 	// Release the file system
-	FileManager::Shutdown();
+	FileManager::shut_down();
 }
 #endif
 
@@ -237,11 +237,11 @@ int BURGER_API Burger::ConsoleApp::InputAndOutput(
 		// Get the parm list
 		const char** ppArgv = GetArgv();
 		// Convert to Burgerlib pathname
-		FirstName.SetFromNative(ppArgv[1]);
+		FirstName.set_native(ppArgv[1]);
 		const char* pOutputFile = NULL;
 		if (iArgc == 3) {
 			// Second parameter?
-			SecondName.SetFromNative(ppArgv[2]);
+			SecondName.set_native(ppArgv[2]);
 			pOutputFile = SecondName.c_str();
 		}
 		// Call the function and exit

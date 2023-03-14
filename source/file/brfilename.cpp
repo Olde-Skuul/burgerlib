@@ -2,7 +2,7 @@
 
 	Filename Class
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -27,14 +27,14 @@
 
 	Some operating systems require more information than just the filename. Due
 	to this, it's highly recommended that a Burgerlib path is generated, then a
-	call to GetNative() is invoked to do the proper conversion and generate the
+	call to get_native() is invoked to do the proper conversion and generate the
 	extra data. Currently, only the MacOS Carbon and Classic targets require
 	this extra data, however for future compatibility or performance upgrades,
 	don't assume that creating a filename by hand will be a cross platform
 	solution.
 
 	When writing code intended for a single platform, it's encouraged to load
-	and store the extra data. Also, you can use the SetFromNative() call to
+	and store the extra data. Also, you can use the set_native() call to
 	convert a native filename into BurgerLib format without having to do
 	anything special.
 
@@ -177,8 +177,8 @@ Burger::Filename& Burger::Filename::operator=(
 
 #if defined(BURGER_RVALUE_REFERENCES) || defined(DOXYGEN)
 Burger::Filename::Filename(Filename&& rInput) BURGER_NOEXCEPT
-	: m_Filename(move(rInput.m_Filename)),
-	  m_NativeFilename(move(rInput.m_NativeFilename)),
+	: m_Filename(static_cast<String&&>(rInput.m_Filename)),
+	  m_NativeFilename(static_cast<String&&>(rInput.m_NativeFilename)),
 	  m_bNativeValid(rInput.m_bNativeValid)
 #if defined(BURGER_MAC)
 	,
@@ -203,8 +203,8 @@ Burger::Filename::Filename(Filename&& rInput) BURGER_NOEXCEPT
 
 Burger::Filename& Burger::Filename::operator=(Filename&& rInput) BURGER_NOEXCEPT
 {
-	m_Filename = move(rInput.m_Filename);
-	m_NativeFilename = move(rInput.m_NativeFilename);
+	m_Filename = static_cast<String&&>(rInput.m_Filename);
+	m_NativeFilename = static_cast<String&&>(rInput.m_NativeFilename);
 	m_bNativeValid = rInput.m_bNativeValid;
 
 	// Copy the macOS specific data
@@ -287,6 +287,7 @@ Burger::Filename::~Filename() {}
 Burger::eError BURGER_API Burger::Filename::assign(
 	const char* pInput) BURGER_NOEXCEPT
 {
+	// Need to rebuild when getting native pathname
 	m_bNativeValid = FALSE;
 	return m_Filename.assign(pInput);
 }
@@ -314,7 +315,7 @@ Burger::eError BURGER_API Burger::Filename::assign(
 Burger::eError BURGER_API Burger::Filename::assign(
 	const uint16_t* pInput) BURGER_NOEXCEPT
 {
-	// Assign the filename
+	// Need to rebuild when getting native pathname
 	m_bNativeValid = FALSE;
 	return m_Filename.assign(pInput);
 }
@@ -383,11 +384,17 @@ Burger::eError BURGER_API Burger::Filename::join(
 	eError uResult = kErrorNone;
 
 	if (uInputLength) {
+
+		// Ensure this path ends with a colon for a seamless merge
 		uResult = end_with_colon();
 		if (!uResult) {
+
+			// Need to rebuild when getting native pathname
+			m_bNativeValid = FALSE;
 			uResult = m_Filename.append(pInput, uInputLength);
+
+			// Failsafe to ensure the result ends with a colon
 			if (!uResult) {
-				m_bNativeValid = FALSE;
 				uResult = end_with_colon();
 			}
 		}
@@ -410,45 +417,51 @@ Burger::eError BURGER_API Burger::Filename::join(
 
 ***************************************/
 
-void BURGER_API Burger::Filename::get_basename(
+Burger::eError BURGER_API Burger::Filename::get_basename(
 	char* pOutput, uintptr_t uOutputLength) const BURGER_NOEXCEPT
 {
-	// Is there a point?
-	if (uOutputLength) {
 
-		// Get the length of the path
-		const char* pInput = m_Filename.c_str();
-		uintptr_t uLength = m_Filename.length();
+	// Get the length of the path
+	const char* pInput = m_Filename.c_str();
+	uintptr_t uLength = m_Filename.length();
 
-		// Anything?
-		if (uLength) {
-			// If there is an ending colon?
-			if (pInput[uLength - 1] == ':') {
-				// Ignore the ending colon
-				--uLength;
-			}
-			// More than just the colon?
-			if (uLength) {
-
-				// Scan backwards until a colon is found, or use the whole
-				// string
-				uintptr_t uIndex = uLength;
-				do {
-					--uIndex;
-					if (pInput[uIndex] == ':') {
-						++uIndex;
-						// Remove the prefix
-						uLength -= uIndex;
-						pInput += uIndex;
-						break;
-					}
-				} while (uIndex);
-				// Either the entire string or the text to the right of the
-				// colon remains at this point via pInput and uLength
-			}
+	// Anything?
+	if (uLength) {
+		// If there is an ending colon?
+		if (pInput[uLength - 1] == ':') {
+			// Ignore the ending colon
+			--uLength;
 		}
-		StringCopy(pOutput, uOutputLength, pInput, uLength);
+		// More than just the colon?
+		if (uLength) {
+
+			// Scan backwards until a colon is found, or use the whole
+			// string
+			uintptr_t uIndex = uLength;
+			do {
+				--uIndex;
+				if (pInput[uIndex] == ':') {
+					++uIndex;
+					// Remove the prefix
+					uLength -= uIndex;
+					pInput += uIndex;
+					break;
+				}
+			} while (uIndex);
+			// Either the entire string or the text to the right of the
+			// colon remains at this point via pInput and uLength
+		}
 	}
+
+	// Copy as much as possible
+	StringCopy(pOutput, uOutputLength, pInput, uLength);
+
+	// Was there a buffer issue?
+	eError uError = kErrorNone;
+	if (uLength >= uOutputLength) {
+		uError = kErrorBufferTooSmall;
+	}
+	return uError;
 }
 
 /*! ************************************
@@ -464,7 +477,7 @@ void BURGER_API Burger::Filename::get_basename(
 
 ***************************************/
 
-void BURGER_API Burger::Filename::get_basename(
+Burger::eError BURGER_API Burger::Filename::get_basename(
 	String* pOutput) const BURGER_NOEXCEPT
 {
 
@@ -499,7 +512,7 @@ void BURGER_API Burger::Filename::get_basename(
 			// colon remains at this point via pInput and uLength
 		}
 	}
-	pOutput->assign(pInput, uLength);
+	return pOutput->assign(pInput, uLength);
 }
 
 /*! ************************************
@@ -517,12 +530,13 @@ void BURGER_API Burger::Filename::get_basename(
 
 ***************************************/
 
-void BURGER_API Burger::Filename::get_file_extension(
+Burger::eError BURGER_API Burger::Filename::get_file_extension(
 	char* pOutput, uintptr_t uOutputLength) const BURGER_NOEXCEPT
 {
 	// Get the length of the path
 	const char* pInput = m_Filename.c_str();
 	uintptr_t uLength = m_Filename.length();
+
 	// Anything?
 	if (uLength) {
 		// If there is an ending colon?
@@ -559,6 +573,13 @@ void BURGER_API Burger::Filename::get_file_extension(
 		}
 	}
 	StringCopy(pOutput, uOutputLength, pInput, uLength);
+
+	// Was there a buffer issue?
+	eError uError = kErrorNone;
+	if (uLength >= uOutputLength) {
+		uError = kErrorBufferTooSmall;
+	}
+	return uError;
 }
 
 /*! ************************************
@@ -654,8 +675,10 @@ Burger::eError BURGER_API Burger::Filename::set_file_extension(
 Burger::eError BURGER_API Burger::Filename::dirname(void) BURGER_NOEXCEPT
 {
 	const char* pFilename = m_Filename.c_str();
+
 	// Get a character from the filename
 	uint_t uTemp = reinterpret_cast<const uint8_t*>(pFilename)[0];
+
 	// Skip the first colon
 	if (uTemp == ':') {
 		uTemp = reinterpret_cast<const uint8_t*>(pFilename)[1];
@@ -664,6 +687,7 @@ Burger::eError BURGER_API Burger::Filename::dirname(void) BURGER_NOEXCEPT
 
 	// Is there a string?
 	if (uTemp) {
+
 		// Don't truncate
 		const char* pLastColon = nullptr;
 		do {
@@ -681,8 +705,10 @@ Burger::eError BURGER_API Burger::Filename::dirname(void) BURGER_NOEXCEPT
 			uTemp = reinterpret_cast<const uint8_t*>(pFilename)[1];
 			++pFilename;
 		} while (uTemp);
+
 		// Do I have a "last colon"?
 		if (pLastColon) {
+
 			// Truncate the string after the colon
 			m_Filename.resize(
 				static_cast<uintptr_t>(pLastColon - m_Filename.c_str()) + 1);
@@ -690,6 +716,8 @@ Burger::eError BURGER_API Burger::Filename::dirname(void) BURGER_NOEXCEPT
 		}
 	}
 
+	// Since this function only shortens the filename, there is no
+	// chance of a memory error.
 	return kErrorNone;
 }
 
@@ -700,17 +728,19 @@ Burger::eError BURGER_API Burger::Filename::dirname(void) BURGER_NOEXCEPT
 	Given a pathname, remove the filename from the end of the path, leaving only
 	the directory name remaining.
 
-	\param pOutput Pointer to a valid Burger::String instance to receive the new
-		string
+	\param pOutput Buffer to receive the filename at the end of the path
+	\param uOutputLength Size of the buffer to obtain the filename.
 
 ***************************************/
 
 Burger::eError BURGER_API Burger::Filename::get_dirname(
-	String* pOutput) const BURGER_NOEXCEPT
+	char* pOutput, uintptr_t uOutputLength) const BURGER_NOEXCEPT
 {
 	const char* pFilename = m_Filename.c_str();
+
 	// Get a character from the filename
 	uint_t uTemp = reinterpret_cast<const uint8_t*>(pFilename)[0];
+
 	// Skip the first colon
 	if (uTemp == ':') {
 		uTemp = reinterpret_cast<const uint8_t*>(pFilename)[1];
@@ -737,14 +767,156 @@ Burger::eError BURGER_API Burger::Filename::get_dirname(
 		} while (uTemp);
 		++pFilename;
 	}
+
 	// Do I have a "last colon"?
 	if (pLastColon) {
 		pFilename = pLastColon + 1;
 	}
 	pLastColon = m_Filename.c_str();
+	uintptr_t uLength = static_cast<uintptr_t>(pFilename - pLastColon);
+
+	// Save the string
+	StringCopy(pOutput, uOutputLength, pLastColon, uLength);
+
+	// Was there a buffer issue?
+	eError uError = kErrorNone;
+	if (uLength >= uOutputLength) {
+		uError = kErrorBufferTooSmall;
+	}
+	return uError;
+}
+
+/*! ************************************
+
+	\brief Extract the directory from a pathname
+
+	Given a pathname, remove the filename from the end of the path, leaving only
+	the directory name remaining.
+
+	\param pOutput Pointer to a valid Burger::String instance to receive the new
+		string
+
+***************************************/
+
+Burger::eError BURGER_API Burger::Filename::get_dirname(
+	String* pOutput) const BURGER_NOEXCEPT
+{
+	const char* pFilename = m_Filename.c_str();
+
+	// Get a character from the filename
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pFilename)[0];
+
+	// Skip the first colon
+	if (uTemp == ':') {
+		uTemp = reinterpret_cast<const uint8_t*>(pFilename)[1];
+		++pFilename;
+	}
+	const char* pLastColon = nullptr;
+	// Is there a string?
+	if (uTemp) {
+		// Don't truncate
+		do {
+			// Is this the last colon?
+			if (uTemp == ':') {
+				// If it's the last character of the string?
+				// Ignore it
+				if (!pFilename[1]) {
+					break;
+				}
+				// Consider this the last colon
+				pLastColon = pFilename;
+			}
+			// Fetch a character
+			uTemp = reinterpret_cast<const uint8_t*>(pFilename)[1];
+			++pFilename;
+		} while (uTemp);
+		++pFilename;
+	}
+
+	// Do I have a "last colon"?
+	if (pLastColon) {
+		pFilename = pLastColon + 1;
+	}
+	pLastColon = m_Filename.c_str();
+
 	// Truncate the string after the colon
 	return pOutput->assign(
 		pLastColon, static_cast<uintptr_t>(pFilename - pLastColon));
+}
+
+/*! ************************************
+
+	\brief Determine if a filename starts with a "drive number"
+
+	A Burgerlib pathname can use drive letters. They are in the form of ".D2:"
+	as a volume name where the period and D denote the path is a device and the
+	number is the device number in the chain. While technically there is no
+	limit to devices, it's considered an error to have a device number higher
+	than 99.
+
+	This function will check if the Burgerlib pathname is a device and return
+	the device number if so. If not, \ref BURGER_MAXUINT will be returned as an
+	error.
+
+	\return Volume number if the path starts with a device number, \ref
+		BURGER_MAXUINT if not.
+
+	\sa is_abs()
+
+***************************************/
+
+uint_t BURGER_API Burger::Filename::is_drive_number(void) const BURGER_NOEXCEPT
+{
+	// Assume failure
+	uint_t uDeviceNum = BURGER_MAXUINT;
+
+	const char* pFilename = m_Filename.c_str();
+	uint_t uTemp = reinterpret_cast<const uint8_t*>(pFilename)[0];
+	if (uTemp == '.') {
+
+		uint_t uTestChar2 = reinterpret_cast<const uint8_t*>(pFilename)[1];
+		if ((uTestChar2 & 0xDFU) == 'D') {
+			// Validate the input to only allow the form of
+			// ".D22:" where it starts with ".D", followed by ascii digits, then
+			// terminated with a colon.
+
+			// Init numeric index
+			uintptr_t uLength = 2;
+
+			// Init drive number
+			uDeviceNum = 0;
+			do {
+				// Get an ASCII char
+				uTemp = pFilename[uLength];
+				++uLength;
+
+				// Proper end of string?
+				if (uTemp == ':') {
+					// If nothing was parsed, abort
+					if (uLength == 3) {
+						uDeviceNum = BURGER_MAXUINT;
+					}
+					break;
+				}
+				uTemp -= '0';
+
+				// Numeric value?
+				if (uTemp >= 10) {
+					// Force using the CWD
+					uDeviceNum = BURGER_MAXUINT;
+					break;
+				}
+
+				// Adjust previous value
+				uDeviceNum = uDeviceNum * 10;
+
+				// Make full decimal result
+				uDeviceNum = uDeviceNum + uTemp;
+				// Loop until done
+			} while (uDeviceNum < 100U);
+		}
+	}
+	return uDeviceNum;
 }
 
 /*! ************************************
@@ -763,45 +935,24 @@ Burger::eError BURGER_API Burger::Filename::get_dirname(
 	in the case of Windows or MSDOS)
 
 	\return \ref TRUE if the pathname is fully qualified, \ref FALSE if not.
-	\sa IsFilenameOnly()
+	\sa is_filename_only()
 
 ***************************************/
 
-uint_t BURGER_API Burger::Filename::IsFullPathname(void) const BURGER_NOEXCEPT
+uint_t BURGER_API Burger::Filename::is_abs(void) const BURGER_NOEXCEPT
 {
 	uint_t uResult = FALSE;
 	const char* pFilename = m_Filename.c_str();
 	const uint_t uTemp = reinterpret_cast<const uint8_t*>(pFilename)[0];
+
+	// Volume by name?
 	if (uTemp == ':') {
 		uResult = TRUE;
 
-	} else if (uTemp == '.') {
-
-		uint_t uTestChar2 = reinterpret_cast<const uint8_t*>(pFilename)[1];
-		if ((uTestChar2 & 0xDF) == 'D') {
-			// Validate the input to only allow the form of
-			// ".D22:" where it starts with ".D", followed by ascii digits, then
-			// terminated with a colon. Any other form is assumed to be a valid
-			// filename
-
-			// Must be longer than 2 characters.
-			uintptr_t i = 2;
-			do {
-				uTestChar2 = reinterpret_cast<const uint8_t*>(pFilename)[i];
-				// Find terminating colon
-				if (uTestChar2 == ':') {
-					// Is it the form ".D:", if not, it's valid
-					if (i != 2) {
-						// It's valid!!!
-						uResult = TRUE;
-					}
-					break;
-				}
-				++i;
-				// Only ASCII digits are allowed. If a non ASCII is detected,
-				// assume filename
-			} while (static_cast<uint_t>(uTestChar2 - '0') < 10);
-		}
+		// Volume by number?
+	} else if (is_drive_number() != BURGER_MAXUINT) {
+		// It's valid!!!
+		uResult = TRUE;
 	}
 	return uResult;
 }
@@ -819,15 +970,15 @@ uint_t BURGER_API Burger::Filename::IsFullPathname(void) const BURGER_NOEXCEPT
 	directory)
 
 	\return \ref TRUE if the pathname is not qualified, \ref FALSE if not.
-	\sa IsFullPathname() const
+	\sa is_abs() const
 
 ***************************************/
 
-uint_t BURGER_API Burger::Filename::IsFilenameOnly(void) const BURGER_NOEXCEPT
+uint_t BURGER_API Burger::Filename::is_filename_only(void) const BURGER_NOEXCEPT
 {
 	uint_t uResult = FALSE;
-	if (!IsFullPathname()) {
-		if (ParsePrefixNumber() == FileManager::kPrefixInvalid) {
+	if (!is_abs()) {
+		if (has_prefix_number() == FileManager::kPrefixInvalid) {
 			uResult = TRUE;
 		}
 	}
@@ -845,21 +996,26 @@ uint_t BURGER_API Burger::Filename::IsFilenameOnly(void) const BURGER_NOEXCEPT
 	\return FileManager::kPrefixInvalid if there is no prefix or the prefix
 		number if it does.
 
-	\sa IsFilenameOnly()
+	\sa is_filename_only()
 
 ***************************************/
 
-uint_t BURGER_API Burger::Filename::ParsePrefixNumber(
+uint_t BURGER_API Burger::Filename::has_prefix_number(
 	void) const BURGER_NOEXCEPT
 {
+	// Assume failure
 	uint_t uPrefixNum = FileManager::kPrefixInvalid;
+
 	const char* pFilename = m_Filename.c_str();
 	uint_t uTestChar = reinterpret_cast<const uint8_t*>(pFilename)[0];
-	if ((uTestChar >= '0') && (uTestChar < ('9' + 1))) {
+
+	// Has to start with number
+	uTestChar -= '0';
+	if (uTestChar < 10U) {
 
 		// Is it a number? If it's a valid prefix number followed by a colon
 		// yank it out and set uPrefixNum to the value
-		uTestChar -= '0'; // Convert to 0-9
+
 		uintptr_t uIndex = 1;
 		do {
 			// I found an ending colon, accept it, maybe
@@ -869,22 +1025,37 @@ uint_t BURGER_API Burger::Filename::ParsePrefixNumber(
 				uPrefixNum = uTestChar; // This is the prefix I want
 				break;                  // It's good!
 			}
-			uTemp -= '0';      // 0-9?
-			if (uTemp >= 10) { // Valid digit?
-				break; // It's a filename that starts with a number like 2Temp
+
+			// 0-9?
+			uTemp -= '0';
+
+			// Valid digit?
+			if (uTemp >= 10) {
+				// It's a filename that starts with a number like 2Temp
+				break;
 			}
-			uTestChar = uTestChar * 10;    // Shift up the previous number
-			uTestChar = uTestChar + uTemp; // Total prefix number
-		} while (uTestChar < FileManager::kPrefixCount); // Test for overflow
+
+			// Shift up the previous number
+			uTestChar = uTestChar * 10;
+			// Total prefix number
+			uTestChar = uTestChar + uTemp;
+
+			// Test for overflow
+		} while (uTestChar < FileManager::kPrefixCount);
+
+		// Test for special prefixes
 	} else if (pFilename[1] == ':') {
+
 		// Check for the special case prefixes of "$:", "*:" and "@:"
-		if (uTestChar == '$') {
+		if (uTestChar == static_cast<uint_t>('$' - '0')) {
 			// System folder?
 			uPrefixNum = FileManager::kPrefixSystem;
-		} else if (uTestChar == '*') {
+
+		} else if (uTestChar == static_cast<uint_t>('*' - '0')) {
 			// Boot volume?
 			uPrefixNum = FileManager::kPrefixBoot;
-		} else if (uTestChar == '@') {
+
+		} else if (uTestChar == static_cast<uint_t>('@' - '0')) {
 			// Prefs folder?
 			uPrefixNum = FileManager::kPrefixPrefs;
 		}
@@ -919,17 +1090,17 @@ uint_t BURGER_API Burger::Filename::ParsePrefixNumber(
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::Filename::Expand(
+Burger::eError BURGER_API Burger::Filename::abs_path(
 	const char* pInput) BURGER_NOEXCEPT
 {
 	if (!pInput || !pInput[0]) {
 		// Assign to the current prefix and be done with it.
 		m_bNativeValid = FALSE;
-		return FileManager::GetPrefix(&m_Filename, FileManager::kPrefixCurrent);
+		return FileManager::get_prefix(&m_Filename, FileManager::kPrefixCurrent);
 	}
 	eError uResult = assign(pInput);
 	if (!uResult) {
-		uResult = Expand();
+		uResult = abs_path();
 	}
 	return uResult;
 }
@@ -959,14 +1130,14 @@ Burger::eError BURGER_API Burger::Filename::Expand(
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::Filename::Expand(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Filename::abs_path(void) BURGER_NOEXCEPT
 {
 	// Does the filename need a prefix?
 
-	if (!IsFullPathname()) {
+	if (!is_abs()) {
 
 		// Parse the prefix number
-		uint_t uPrefix = ParsePrefixNumber();
+		uint_t uPrefix = has_prefix_number();
 
 		// Found one, remove it.
 		if (uPrefix != FileManager::kPrefixInvalid) {
@@ -985,10 +1156,11 @@ Burger::eError BURGER_API Burger::Filename::Expand(void) BURGER_NOEXCEPT
 
 		// Insert the prefix from the prefix library
 		String Prefix;
-		FileManager::GetPrefix(&Prefix, uPrefix);
+		FileManager::get_prefix(&Prefix, uPrefix);
 		m_Filename.insert(0, Prefix.c_str(), Prefix.length());
 		m_bNativeValid = FALSE;
 	}
+
 	// At this point, the path has the proper prefix, make sure this ends with a
 	// colon
 	end_with_colon();
@@ -1004,7 +1176,7 @@ Burger::eError BURGER_API Burger::Filename::Expand(void) BURGER_NOEXCEPT
 		m_bNativeValid = FALSE;
 	}
 
-	// now deal with the :..: directory entries by turning them into :.: entries
+	// Now deal with the :..: directory entries by turning them into :.: entries
 	// and removing the previous directory.
 
 	// Make sure the volume name is never discarded.
@@ -1070,21 +1242,31 @@ Burger::eError BURGER_API Burger::Filename::Expand(void) BURGER_NOEXCEPT
 
 	\note If this function is invoked on a MacOS target, a Volume Reference
 		number and Directory ID are generated and can be accessed via calls to
-		Burger::Filename::GetDirID(void) const and
-		Burger::Filename::GetVRefNum(void) const
+		Burger::Filename::get_DirID(void) const and
+		Burger::Filename::get_VRefNum(void) const
 
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
-	defined(BURGER_MAC) || defined(BURGER_DARWIN) || \
+	defined(BURGER_MAC) || defined(BURGER_DARWIN) || defined(BURGER_UNIX) || \
 	defined(BURGER_XBOX360) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
-const char* BURGER_API Burger::Filename::GetNative(void) BURGER_NOEXCEPT
+const char* BURGER_API Burger::Filename::get_native(void) BURGER_NOEXCEPT
 {
+	// If already parsed, skip the conversion.
 	if (!m_bNativeValid) {
+
+		// Resolve prefixes and convert to absolute path
+		abs_path();
+
+		// Use the burgerlib path as a generic path
 		m_NativeFilename = m_Filename;
+
+		// It's valid
 		m_bNativeValid = TRUE;
 	}
+
+	// Return the translated path
 	return m_NativeFilename.c_str();
 }
 #endif
@@ -1111,7 +1293,7 @@ const char* BURGER_API Burger::Filename::GetNative(void) BURGER_NOEXCEPT
 	defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
 
-Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
+Burger::eError BURGER_API Burger::Filename::set_system_working_directory(
 	void) BURGER_NOEXCEPT
 {
 	clear();
@@ -1137,7 +1319,7 @@ Burger::eError BURGER_API Burger::Filename::SetSystemWorkingDirectory(
 	defined(BURGER_DARWIN) || defined(BURGER_LINUX) || \
 	defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
-Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(
+Burger::eError BURGER_API Burger::Filename::set_application_directory(
 	void) BURGER_NOEXCEPT
 {
 	clear();
@@ -1159,13 +1341,13 @@ Burger::eError BURGER_API Burger::Filename::SetApplicationDirectory(
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
-	defined(BURGER_XBOX360)) || \
+	defined(BURGER_XBOX360) || defined(BURGER_LINUX)) || \
 	defined(DOXYGEN)
-Burger::eError BURGER_API Burger::Filename::SetBootVolumeDirectory(
+Burger::eError BURGER_API Burger::Filename::set_boot_volume(
 	void) BURGER_NOEXCEPT
 {
 	// Most non-windows platforms use the first volume as the boot volume
-	return FileManager::GetVolumeName(this, 0);
+	return FileManager::get_volume_name(this, 0);
 }
 #endif
 
@@ -1184,9 +1366,9 @@ Burger::eError BURGER_API Burger::Filename::SetBootVolumeDirectory(
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
 	defined(BURGER_XBOX360) || defined(BURGER_MAC) || \
-	defined(BURGER_DARWIN)) || \
+	defined(BURGER_DARWIN) || defined(BURGER_LINUX)) || \
 	defined(DOXYGEN)
-Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(
+Burger::eError BURGER_API Burger::Filename::set_system_prefs_directory(
 	void) BURGER_NOEXCEPT
 {
 	clear();
@@ -1210,9 +1392,9 @@ Burger::eError BURGER_API Burger::Filename::SetMachinePrefsDirectory(
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
 	defined(BURGER_XBOX360) || defined(BURGER_MAC) || \
-	defined(BURGER_DARWIN)) || \
+	defined(BURGER_DARWIN) || defined(BURGER_LINUX)) || \
 	defined(DOXYGEN)
-Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(
+Burger::eError BURGER_API Burger::Filename::set_user_prefs_directory(
 	void) BURGER_NOEXCEPT
 {
 	clear();
@@ -1237,15 +1419,15 @@ Burger::eError BURGER_API Burger::Filename::SetUserPrefsDirectory(
 	Burger::ConsoleApp class's built in file name management functions since
 	they take this quirk into account.
 
-	\sa SetFromNative(const uint16_t *)
+	\sa set_native(const uint16_t *)
 
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
-	defined(BURGER_MAC) || defined(BURGER_DARWIN) || \
+	defined(BURGER_MAC) || defined(BURGER_DARWIN) || defined(BURGER_UNIX) || \
 	defined(BURGER_XBOX360) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
-Burger::eError BURGER_API Burger::Filename::SetFromNative(
+Burger::eError BURGER_API Burger::Filename::set_native(
 	const char* pInput) BURGER_NOEXCEPT
 {
 	assign(pInput);
@@ -1267,18 +1449,19 @@ Burger::eError BURGER_API Burger::Filename::SetFromNative(
 
 	\param pInput Pointer to a pathname string
 
-	\sa SetFromNative(const char *) or SetFromNative(const char *,long,short)
+	\sa set_native(const char *) or set_native(const char *,long,short)
 
 ***************************************/
 
 #if !defined(BURGER_MAC) || defined(DOXYGEN)
-Burger::eError BURGER_API Burger::Filename::SetFromNative(
+Burger::eError BURGER_API Burger::Filename::set_native(
 	const uint16_t* pInput) BURGER_NOEXCEPT
 {
 	// Convert to UTF8
 	String Temp(pInput);
+
 	// Set the path using UTF8
-	return SetFromNative(Temp.c_str());
+	return set_native(Temp.c_str());
 }
 #endif
 

@@ -451,6 +451,9 @@
     <ClInclude Include="..\source\lowlevel\brstructs.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brtemplates.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtick.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -529,6 +532,12 @@
     <ClInclude Include="..\source\memory\brmemorymanager.h">
       <Filter>source\memory</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\platforms\xbox360\brstartup.h">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\xbox360\brxbox360types.h">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\random\brmersennetwist.h">
       <Filter>source\random</Filter>
     </ClInclude>
@@ -600,12 +609,6 @@
     </ClInclude>
     <ClInclude Include="..\source\text\brwin437.h">
       <Filter>source\text</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\xbox360\brstartup.h">
-      <Filter>source\xbox360</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\xbox360\brxbox360types.h">
-      <Filter>source\xbox360</Filter>
     </ClInclude>
     <ClCompile Include="..\source\ansi\brcapturestdout.cpp">
       <Filter>source\ansi</Filter>
@@ -1006,6 +1009,9 @@
     <ClCompile Include="..\source\lowlevel\brstructs.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brtemplates.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtick.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1078,6 +1084,57 @@
     <ClCompile Include="..\source\memory\brmemorymanager.cpp">
       <Filter>source\memory</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brcriticalsectionxbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brdirectorysearchxbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brdisplaybasexbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brdisplayxbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brfilemanagerxbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brfilenamexbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brfilexbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brjoypadxbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brkeyboardxbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brpoint2dxbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brrectxbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brsoundxbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brtexturexbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brtickxbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brtimedatexbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brvertexbufferxbox360.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\xbox360\brxbox360app.cpp">
+      <Filter>source\platforms\xbox360</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\random\brmersennetwist.cpp">
       <Filter>source\random</Filter>
     </ClCompile>
@@ -1146,57 +1203,6 @@
     </ClCompile>
     <ClCompile Include="..\source\text\brwin437.cpp">
       <Filter>source\text</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brcriticalsectionxbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brdirectorysearchxbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brdisplaybasexbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brdisplayxbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brfilemanagerxbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brfilenamexbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brfilexbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brjoypadxbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brkeyboardxbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brpoint2dxbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brrectxbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brsoundxbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brtexturexbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brtickxbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brtimedatexbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brvertexbufferxbox360.cpp">
-      <Filter>source\xbox360</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\xbox360\brxbox360app.cpp">
-      <Filter>source\xbox360</Filter>
     </ClCompile>
     <X360SL Include="..\source\graphics\shadersxbox360\pscclr4360.x360sl">
       <Filter>source\graphics\shadersxbox360</Filter>
@@ -1273,14 +1279,14 @@
     <Filter Include="source\memory">
       <UniqueIdentifier>015CDDF1-A0E4-33F0-AE45-03926DF561EE</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\platforms\xbox360">
+      <UniqueIdentifier>74B8927E-C39D-3DB9-956F-9C67BB5D0238</UniqueIdentifier>
+    </Filter>
     <Filter Include="source\random">
       <UniqueIdentifier>656FCA8C-7C87-35C2-BB90-619DB273B864</UniqueIdentifier>
     </Filter>
     <Filter Include="source\text">
       <UniqueIdentifier>09755F2E-7DEE-364B-AB99-2E490DA29405</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\xbox360">
-      <UniqueIdentifier>279CDC47-F9DC-36A2-A24B-DF930BEC2E77</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

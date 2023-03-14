@@ -427,6 +427,9 @@
     <ClInclude Include="..\source\lowlevel\brstructs.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brtemplates.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtick.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -505,6 +508,9 @@
     <ClInclude Include="..\source\memory\brmemorymanager.h">
       <Filter>source\memory</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\platforms\wiiu\brwiiutypes.h">
+      <Filter>source\platforms\wiiu</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\random\brmersennetwist.h">
       <Filter>source\random</Filter>
     </ClInclude>
@@ -576,9 +582,6 @@
     </ClInclude>
     <ClInclude Include="..\source\text\brwin437.h">
       <Filter>source\text</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\wiiu\brwiiutypes.h">
-      <Filter>source\wiiu</Filter>
     </ClInclude>
     <ClCompile Include="..\source\ansi\brcapturestdout.cpp">
       <Filter>source\ansi</Filter>
@@ -979,6 +982,9 @@
     <ClCompile Include="..\source\lowlevel\brstructs.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brtemplates.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtick.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1165,14 +1171,14 @@
     <Filter Include="source\memory">
       <UniqueIdentifier>16654915-3ADE-3574-A89E-B0BE5A933D52</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\platforms\wiiu">
+      <UniqueIdentifier>AA0F53AC-E524-3241-8AFA-846EAE48BCC2</UniqueIdentifier>
+    </Filter>
     <Filter Include="source\random">
       <UniqueIdentifier>94B8760D-520D-3F84-9E66-1808CB9D14B0</UniqueIdentifier>
     </Filter>
     <Filter Include="source\text">
       <UniqueIdentifier>7D546096-1F6E-3601-B7FA-F5772122370E</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\wiiu">
-      <UniqueIdentifier>329A2813-59E6-305E-852E-BB0B5B6D273C</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

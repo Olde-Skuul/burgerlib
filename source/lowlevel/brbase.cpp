@@ -2,7 +2,7 @@
 
 	Root base class
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -21,7 +21,7 @@
 	\brief Base class for virtual destructor.
 
 	Burgerlib has numerous pointers to unknown classes that are up cast from
-	Burger::Base if they are actually used. By only knowing a generic, empty
+	\ref Base if they are actually used. By only knowing a generic, empty
 	base class, no code bloat is needed to manage destructor/constructor chains
 	because of a class reference to something that uses OpenGL, DirectX or any
 	other high overhead functionality. The only code linked in is the generic

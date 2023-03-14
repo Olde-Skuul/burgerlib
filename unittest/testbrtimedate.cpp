@@ -18,6 +18,7 @@
 #include "brnumberstringhex.h"
 #include "brstdouthelpers.h"
 #include "brtimedate.h"
+#include "brstructs.h"
 #include "common.h"
 
 /***************************************
@@ -264,8 +265,8 @@ static uint_t BURGER_API TestPrintHexFloat(void) BURGER_NOEXCEPT
 		if (Capture.Init(512)) {
 			break;
 		}
-		Burger::PrintHex(static_cast<const float*>(
-			static_cast<const void*>(&pWork->m_uData))[0]);
+		Burger::PrintHex(static_cast<const Burger::uint32_float_t*>(
+			static_cast<const void*>(&pWork->m_uData))->f);
 		Burger::String CapturedString;
 		Capture.GetCapture(&CapturedString);
 		Capture.Shutdown();
@@ -305,8 +306,8 @@ static uint_t BURGER_API TestPrintHexDouble(void) BURGER_NOEXCEPT
 		if (Capture.Init(512)) {
 			break;
 		}
-		Burger::PrintHex(static_cast<const double*>(
-			static_cast<const void*>(&pWork->m_uData))[0]);
+		Burger::PrintHex(static_cast<const Burger::uint64_double_t*>(
+			static_cast<const void*>(&pWork->m_uData))->d);
 		Burger::String CapturedString;
 		Capture.GetCapture(&CapturedString);
 		Capture.Shutdown();

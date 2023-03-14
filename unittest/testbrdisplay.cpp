@@ -21,13 +21,97 @@
 #include "brsound.h"
 #include "common.h"
 
+
+/***************************************
+
+	Test the aspect ratio calculator
+
+***************************************/
+
+struct AspectRatioTest_t {
+	uint32_t m_uWidth;
+	uint32_t m_uHeight;
+	Burger::Display::eAspectRatio m_uRatio;
+	uint_t m_bExact;
+};
+
+static const AspectRatioTest_t g_AspectRatioTests[] = {
+	{320, 240, Burger::Display::kAspectRatio4x3, TRUE},
+	{640, 480, Burger::Display::kAspectRatio4x3, TRUE},
+	{1400, 1050, Burger::Display::kAspectRatio4x3, TRUE},
+	{1440, 1080, Burger::Display::kAspectRatio4x3, TRUE},
+	{1600, 1200, Burger::Display::kAspectRatio4x3, TRUE},
+	{1920, 1440, Burger::Display::kAspectRatio4x3, TRUE},
+	{2048, 1536, Burger::Display::kAspectRatio4x3, TRUE},
+
+	{1280, 720, Burger::Display::kAspectRatio16x9, TRUE},
+	{1366, 768, Burger::Display::kAspectRatio16x9, FALSE},
+	{1600, 900, Burger::Display::kAspectRatio16x9, TRUE},
+	{1920, 1080, Burger::Display::kAspectRatio16x9, TRUE},
+	{2560, 1440, Burger::Display::kAspectRatio16x9, TRUE},
+	{3840, 2160, Burger::Display::kAspectRatio16x9, TRUE},
+	{5120, 2880, Burger::Display::kAspectRatio16x9, TRUE},
+	{7680, 4320, Burger::Display::kAspectRatio16x9, TRUE},
+
+	{320, 200, Burger::Display::kAspectRatio16x10, TRUE},
+	{640, 400, Burger::Display::kAspectRatio16x10, TRUE},
+	{1280, 800, Burger::Display::kAspectRatio16x10, TRUE},
+	{1920, 1200, Burger::Display::kAspectRatio16x10, TRUE},
+	{2560, 1600, Burger::Display::kAspectRatio16x10, TRUE},
+
+	{2560, 1080, Burger::Display::kAspectRatio21x9, FALSE},
+	{3440, 1440, Burger::Display::kAspectRatio21x9, FALSE},
+	{5120, 2160, Burger::Display::kAspectRatio21x9, FALSE},
+
+	{3840, 1080, Burger::Display::kAspectRatio32x9, TRUE},
+	{5120, 1440, Burger::Display::kAspectRatio32x9, TRUE}};
+
+static uint_t BURGER_API TestAspectRatio(void) BURGER_NOEXCEPT
+{
+	// Test for exact matches
+	uint_t uFailure = FALSE;
+	const AspectRatioTest_t* pWork = g_AspectRatioTests;
+	uintptr_t uCount = BURGER_ARRAYSIZE(g_AspectRatioTests);
+	do {
+		const Burger::Display::eAspectRatio uReturn =
+			Burger::Display::get_aspect_ratio(
+				pWork->m_uWidth, pWork->m_uHeight, TRUE);
+		uint_t uTest = uReturn != pWork->m_uRatio;
+		if (!pWork->m_bExact) {
+			uTest = uTest == 0;
+		}
+		uFailure |= uTest;
+		ReportFailure("Display::get_aspect_ratio(%u, %u, TRUE) = %u, expected %u",
+			uTest, pWork->m_uWidth, pWork->m_uHeight,
+			static_cast<uint_t>(uReturn), static_cast<uint_t>(pWork->m_uRatio));
+		++pWork;
+	} while (--uCount);
+
+	// Test for inexact matches
+	pWork = g_AspectRatioTests;
+	uCount = BURGER_ARRAYSIZE(g_AspectRatioTests);
+	do {
+		const Burger::Display::eAspectRatio uReturn =
+			Burger::Display::get_aspect_ratio(
+				pWork->m_uWidth, pWork->m_uHeight, FALSE);
+		const uint_t uTest = uReturn != pWork->m_uRatio;
+		uFailure |= uTest;
+		ReportFailure(
+			"Display::get_aspect_ratio(%u, %u, FALSE) = %u, expected %u", uTest,
+			pWork->m_uWidth, pWork->m_uHeight, static_cast<uint_t>(uReturn),
+			static_cast<uint_t>(pWork->m_uRatio));
+		++pWork;
+	} while (--uCount);
+	return uFailure;
+}
+
 /***************************************
 
 	Print the list of video modes
 
 ***************************************/
 
-static uint_t BURGER_ANSIAPI TestGetVideoModes(void) BURGER_NOEXCEPT
+static uint_t BURGER_API TestGetVideoModes(void) BURGER_NOEXCEPT
 {
 	Burger::ClassArray<Burger::Display::VideoCardDescription> Modes;
 	uint_t uFailure = Burger::Display::GetVideoModes(&Modes);
@@ -80,7 +164,7 @@ static uint_t BURGER_ANSIAPI TestGetVideoModes(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-static uint_t BURGER_ANSIAPI TestGetAudioModes(void) BURGER_NOEXCEPT
+static uint_t BURGER_API TestGetAudioModes(void) BURGER_NOEXCEPT
 {
 	Burger::ClassArray<Burger::SoundManager::SoundCardDescription> SoundModes;
 	uint_t uFailure = Burger::SoundManager::GetAudioModes(&SoundModes);
@@ -109,14 +193,23 @@ static uint_t BURGER_ANSIAPI TestGetAudioModes(void) BURGER_NOEXCEPT
 // Perform all the tests for the Burgerlib Endian Manager
 //
 
-int BURGER_API TestBrDisplay(void) BURGER_NOEXCEPT
+int BURGER_API TestBrDisplay(uint_t uVerbose) BURGER_NOEXCEPT
 {
-	uint_t uResult; // Assume no failures
-	Message("Running Display tests");
-	// Test compiler switches
-	uResult = TestGetVideoModes();
+	// Assume no failures
+	uint_t uResult = 0;
 
-	uResult |= TestGetAudioModes();
+	if (uVerbose & VERBOSE_MSG) {
+		Message("Running Display tests");
+	}
+
+	uResult = TestAspectRatio();
+
+	if (uVerbose & VERBOSE_DISPLAY) {
+		// List video modes
+		uResult |= TestGetVideoModes();
+
+		uResult |= TestGetAudioModes();
+	}
 
 	return static_cast<int>(uResult);
 }

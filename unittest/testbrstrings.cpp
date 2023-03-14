@@ -91,7 +91,8 @@ static uint_t BURGER_API TestParseQuotedString(void) BURGER_NOEXCEPT
 		// Check the end mark
 		uint_t uTest = (pTester != (pWork->m_pTest + pWork->m_uResult));
 		// Check the result string
-		uTest |= static_cast<uint_t>(Burger::StringCompare(Buffer, pWork->m_pWild));
+		uTest |=
+			static_cast<uint_t>(Burger::StringCompare(Buffer, pWork->m_pWild));
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
@@ -423,6 +424,11 @@ int BURGER_API TestBrstrings(uint_t uVerbose) BURGER_NOEXCEPT
 #if defined(BURGER_MACOS)
 		Burger::GetMacModelIdentifier(&TempString);
 		Message("GetMacModelIdentifier() returned \"%s\"", TempString.c_str());
+#endif
+
+#if defined(BURGER_UNIX)
+		Burger::get_home_directory(&TempString);
+		Message("get_home_directory() returned \"%s\"", TempString.c_str());
 #endif
 	}
 

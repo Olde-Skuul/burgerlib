@@ -135,11 +135,24 @@ public:
 	};
 
 	enum eAspectRatio {
-		ASPECT_RATIO_UNKNOWN, ///< Undefined aspect ratio
-		ASPECT_RATIO_1x1,     ///< Square aspect ratio
-		ASPECT_RATIO_4x3,     ///< 4x3 aspect ratio (TV)
-		ASPECT_RATIO_16x9,    ///< 16x9 aspect ratio (wide screen)
-		ASPECT_RATIO_16x10    ///< 16x10 aspect ratio (laptops)
+		/** Undefined aspect ratio */
+		kAspectRatioUnknown,
+		/** Square aspect ratio */
+		kAspectRatio1x1,
+		/** 4x3 aspect ratio (TV) */
+		kAspectRatio4x3,
+		/** 16x10 aspect ratio (laptops) */
+		kAspectRatio16x10,
+		/** 16x9 aspect ratio (wide screen) */
+		kAspectRatio16x9,
+		/** 21x9 aspect ratio (super wide monitors) */
+		kAspectRatio21x9,
+		/** 32x9 aspect ratio (Ultra wide monitors) */
+		kAspectRatio32x9,
+		/** Non-standard aspect ratio (Custom monitors) */
+		kAspectRatioCustom,
+		/** Number of aspect ratios */
+		kAspectRatioCount
 	};
 
 	enum eClearBits {
@@ -872,6 +885,9 @@ public:
 	{
 		return m_pReleaseData;
 	}
+
+	static eAspectRatio BURGER_API get_aspect_ratio(
+		uint32_t uWidth, uint32_t uHeight, uint_t bExactOnly) BURGER_NOEXCEPT;
 };
 #undef BURGER_VIRTUAL
 }

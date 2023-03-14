@@ -427,6 +427,9 @@
     <ClInclude Include="..\source\lowlevel\brstructs.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brtemplates.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtick.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -505,8 +508,8 @@
     <ClInclude Include="..\source\memory\brmemorymanager.h">
       <Filter>source\memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\ps3\brps3types.h">
-      <Filter>source\ps3</Filter>
+    <ClInclude Include="..\source\platforms\ps3\brps3types.h">
+      <Filter>source\platforms\ps3</Filter>
     </ClInclude>
     <ClInclude Include="..\source\random\brmersennetwist.h">
       <Filter>source\random</Filter>
@@ -979,6 +982,9 @@
     <ClCompile Include="..\source\lowlevel\brstructs.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brtemplates.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtick.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1051,11 +1057,11 @@
     <ClCompile Include="..\source\memory\brmemorymanager.cpp">
       <Filter>source\memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\ps3\brcriticalsectionps3.cpp">
-      <Filter>source\ps3</Filter>
+    <ClCompile Include="..\source\platforms\ps3\brcriticalsectionps3.cpp">
+      <Filter>source\platforms\ps3</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\ps3\brfilenameps3.cpp">
-      <Filter>source\ps3</Filter>
+    <ClCompile Include="..\source\platforms\ps3\brfilenameps3.cpp">
+      <Filter>source\platforms\ps3</Filter>
     </ClCompile>
     <ClCompile Include="..\source\random\brmersennetwist.cpp">
       <Filter>source\random</Filter>
@@ -1171,8 +1177,8 @@
     <Filter Include="source\memory">
       <UniqueIdentifier>54DD184B-59DD-3D74-BEC2-2C07E59BF05C</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\ps3">
-      <UniqueIdentifier>9002C4A0-97D0-30EE-884F-083133C86F85</UniqueIdentifier>
+    <Filter Include="source\platforms\ps3">
+      <UniqueIdentifier>269945B6-6810-3732-A470-2DC55AAB171D</UniqueIdentifier>
     </Filter>
     <Filter Include="source\random">
       <UniqueIdentifier>B9A83994-BA85-3BCC-8079-0DB8F371B747</UniqueIdentifier>

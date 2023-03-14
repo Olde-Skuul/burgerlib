@@ -2,7 +2,7 @@
 
 	Directory search Class
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -14,6 +14,22 @@
 
 #include "brdirectorysearch.h"
 #include "brmemoryfunctions.h"
+
+/*! ************************************
+
+	\class Burger::DirectoryEntry_t
+	\brief A directory entry returned by \ref DirectorySearch
+
+	When the \ref DirectorySearch class loads a directory, it will store a list
+	of filenames and then return data on a file using this structure.
+
+	The data is valid until the next call to
+	\ref DirectorySearch::get_next_entry(void) or if the \ref DirectorySearch
+	class is closed or goes out of scope.
+
+	\sa \ref DirectorySearch
+
+***************************************/
 
 /*! ************************************
 
@@ -30,18 +46,19 @@
 	\code
 	Burger::DirectorySearch MyDir;
 	// Open the directory for traversal
-	uint_t uError = MyDir.Open("9:Directory");
+	uint_t uError = MyDir.open("9:Directory");
 	if (!uError) {		// No error?
-		while (!MyDir.GetNextEntry()) {
-			printf("Found \"%s\"!\n",MyDir.m_Name);
+		DirectoryEntry_t Entry;
+		while (!MyDir.get_next_entry(&Entry)) {
+			printf("Found \"%s\"!\n", Entry.m_pName);
 		}
-		MyDir.Close();
+		MyDir.close();
 	}
 	\endcode
 
 	\note All filenames are encoded using UTF8! Do not assume native encoding
 
-	\sa class FileManager
+	\sa \ref FileManager or \ref DirectoryEntry_t
 
 ***************************************/
 
@@ -51,51 +68,26 @@
 
 	Simple initialization function.
 
-	\sa Open(const char *)
+	\sa open(const char *)
 
 ***************************************/
 
-Burger::DirectorySearch::DirectorySearch() BURGER_NOEXCEPT: m_uFileSize(0),
-															m_bDir(FALSE),
-															m_bSystem(FALSE),
-															m_bHidden(FALSE),
-															m_bLocked(FALSE)
+Burger::DirectorySearch::DirectorySearch() BURGER_NOEXCEPT: m_Entries(),
+															m_uIndex(0)
 {
-	m_CreationDate.Clear();
-	m_ModificatonDate.Clear();
-	MemoryClear(m_Name, sizeof(m_Name));
-#if defined(BURGER_MAC)
-	// I do not own an iterator object, yet
-	m_pIterator = nullptr;
-	m_pLocal = nullptr;
-#elif defined(BURGER_MACOSX)
-	m_fp = -1;
-	m_uEntryCount = 0;
-	m_bDone = FALSE;
-	m_pEntry = nullptr;
-#elif defined(BURGER_IOS) || defined(BURGER_VITA) || defined(BURGER_LINUX)
-	m_fp = -1;
-#elif defined(BURGER_MSDOS)
-	// No file open yet
-	m_bHandleOk = 0;
-#elif defined(BURGER_WINDOWS) || defined(BURGER_XBOX360)
-	// INVALID_HANDLE_VALUE;
-	m_hDirHandle = reinterpret_cast<void*>(-1LL);
-	MemoryClear(m_MyFindW, sizeof(m_MyFindW));
-#endif
 }
 
 /*! ************************************
 
 	\brief Closes any open directory.
 
-	\sa Close(void)
+	\sa close(void)
 
 ***************************************/
 
 Burger::DirectorySearch::~DirectorySearch()
 {
-	Close();
+	close();
 }
 
 /*! ************************************
@@ -107,33 +99,35 @@ Burger::DirectorySearch::~DirectorySearch()
 	\return Zero on success, non-zero on an error or if the directory doesn't
 		exist
 
-	\sa Close(void) or GetNextEntry(void)
+	\sa close(void) or get_next_entry(void)
 
 ***************************************/
 
-Burger::eError Burger::DirectorySearch::Open(
+Burger::eError Burger::DirectorySearch::open(
 	const char* pDirName) BURGER_NOEXCEPT
 {
 	Filename TempDir(pDirName);
-	return Open(&TempDir);
+	return open(&TempDir);
 }
 
 /*! ************************************
 
 	\brief Open a directory for scanning
-	\param pDirName Pointer to the "C" string filename in BurgerLib format.
+
+	\param pDirName Pointer to the \ref Filename object
+
 	\return Zero on success, non-zero on an error or if the directory doesn't
 		exist
 
-	\sa Close(void) or GetNextEntry(void)
+	\sa close(void) or get_next_entry(void)
 
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
-	defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_VITA) || defined(BURGER_LINUX)) || \
+	defined(BURGER_MACOS) || defined(BURGER_UNIX) || \
+	defined(BURGER_XBOX360) || defined(BURGER_VITA)) || \
 	defined(DOXYGEN)
-Burger::eError Burger::DirectorySearch::Open(
+Burger::eError Burger::DirectorySearch::open(
 	Filename* /* pDirName */) BURGER_NOEXCEPT
 {
 	// Error!
@@ -145,27 +139,77 @@ Burger::eError Burger::DirectorySearch::Open(
 
 	\brief Iterate on a directory and return the next found filename.
 
-	Reads the current directory opened previously by a call to \ref Open(
-	const char *) and initializes all of the internal public variables with
-	information of the file that was found.
+	If there is a directory entry in the queue, return the UTF8 encoded filename
+	in the list.
+
+	\note If more information than the filename is needed, use
+		get_next_entry(DirectoryEntry_t*) instead.
 
 	\return Zero on success, non-zero on an error or if the directory wasn't
 		opened or if the end of the directory was reached
 
-	\sa Close(void) or GetNextEntryExtension(const char *)
+	\sa get_next_entry(DirectoryEntry_t*) or get_next_entry(DirectoryEntry_t*,
+		const char*)
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
-	defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_VITA) || defined(BURGER_LINUX)) || \
-	defined(DOXYGEN)
-Burger::eError Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
+const char* Burger::DirectorySearch::get_next_entry(void) BURGER_NOEXCEPT
 {
-	// Error!
-	return kErrorNotSupportedOnThisPlatform;
+	const char* pResult;
+
+	// End of the list?
+	uintptr_t uIndex = m_uIndex;
+	if (uIndex >= m_Entries.size()) {
+		pResult = nullptr;
+	} else {
+
+		// Get the filename and increment the index
+		pResult = m_Entries[uIndex].m_pName;
+		++uIndex;
+		m_uIndex = uIndex;
+	}
+
+	return pResult;
 }
-#endif
+
+/*! ************************************
+
+	\brief Iterate on a directory and return the next found filename.
+
+	Reads the current directory opened previously by a call to \ref open(
+	const char *) and stores the information into the supplied DirectoryEntry_t
+	buffer.
+
+	\return Zero on success, non-zero on an error or if the directory wasn't
+		opened or if the end of the directory was reached
+
+	\sa close(void) or get_next_entry(DirectoryEntry_t*, const char *)
+
+***************************************/
+
+Burger::eError Burger::DirectorySearch::get_next_entry(
+	DirectoryEntry_t* pEntry) BURGER_NOEXCEPT
+{
+	eError uResult;
+
+	// End of the list?
+	uintptr_t uIndex = m_uIndex;
+	if (uIndex >= m_Entries.size()) {
+
+		// Clear out the entry and exit with an error
+		MemoryClear(pEntry, sizeof(*pEntry));
+		uResult = kErrorNotEnumerating;
+
+	} else {
+
+		// Copy the entry
+		const DirectoryEntry_t* pTemp = &m_Entries[uIndex];
+		++uIndex;
+		m_uIndex = uIndex;
+		uResult = direntry_copy(pEntry, pTemp);
+	}
+	return uResult;
+}
 
 /*! ************************************
 
@@ -173,65 +217,117 @@ Burger::eError Burger::DirectorySearch::GetNextEntry(void) BURGER_NOEXCEPT
 		matches a specific file extension
 
 	Reads the current directory opened previously by a call to
-	\ref Open(const char *) and initializes all of the internal public variables
+	\ref open(const char *) and initializes all of the internal public variables
 	with information of the file that was found.
 
-	This differs from \ref GetNextEntry(void) in that only files that end with a
-	specific file extension are returned. This is a case insensitive search.
+	This differs from \ref get_next_entry(void) in that only files that end with
+	a specific file extension are returned. This is a case insensitive search.
 
 	\code
-	while (!MyDir.GetNextEntryExtension("txt")) {
-		printf("Found text file \"%s\"!\n",MyDir.m_Name);
+	DirectoryEntry_t Entry;
+	while (!MyDir.get_next_entry(&Entry, "txt")) {
+		printf("Found text file \"%s\"!\n", Entry.m_pName);
 	}
 	\endcode
-
-	\param pExt Pointer to a "C" string of the file extension being scanned for.
-	\return Zero on success, non-zero on an error or if the directory wasn't
-		opened or if the end of the directory was reached
-
-	\sa Close(void) or GetNextEntry(void)
 
 	\note Only filenames are returned. All directory filenames are skipped, even
 		if their names match the extension.
 
+	\param pEntry Pointer to an uninitialized DirectoryEntry_t
+	\param pExt Pointer to a "C" string of the file extension being scanned for.
+
+	\return Zero on success, non-zero on an error or if the directory wasn't
+		opened or if the end of the directory was reached
+
+	\sa close(void), get_next_entry(DirectoryEntry_t*)
+
 ***************************************/
 
-Burger::eError Burger::DirectorySearch::GetNextEntryExtension(
-	const char* pExt) BURGER_NOEXCEPT
+Burger::eError Burger::DirectorySearch::get_next_entry(
+	DirectoryEntry_t* pEntry, const char* pExt) BURGER_NOEXCEPT
 {
 	// Anything left to scan?
-	eError uResult = GetNextEntry();
-	if (!uResult) {
-		do {
-			// Non-directory files
-			if (!m_bDir && m_uFileSize) {
-				// Get the file extension
-				const char* pTest = GetFileExtension(m_Name);
-				if (pTest) {
-					// Match the extension?
-					if (!StringCaseCompare(pTest, pExt)) {
-						// I got a match!
-						return kErrorNone;
-					}
+	uintptr_t uIndex = m_uIndex;
+	eError uResult;
+	for (;;) {
+		if (uIndex >= m_Entries.size()) {
+			MemoryClear(pEntry, sizeof(*pEntry));
+			uResult = kErrorNotEnumerating;
+			break;
+		}
+
+		// Accept an entry
+		const DirectoryEntry_t* pTemp = &m_Entries[uIndex];
+		++uIndex;
+
+		// Get the file extension
+		const char* pTest = GetFileExtension(pTemp->m_pName);
+		if (pTest) {
+
+			// Match the extension?
+			if (!StringCaseCompare(pTest, pExt)) {
+				// Check if it's a file or directory, only accept files.
+				if (!pTemp->m_bDir) {
+
+					// I got a match!
+					uResult = direntry_copy(pEntry, pTemp);
+					break;
 				}
 			}
-			uResult = GetNextEntry();
-		} while (!uResult);
+		}
 	}
+	m_uIndex = uIndex;
+
 	return uResult;
 }
 
 /*! ************************************
 
-	\brief Closes any open directory.
+	\brief Release all memory and close the directory.
 
-	\sa ~DirectorySearch()
+	Release all resources allocated by the open(Filename*) call.
+
+	\sa open(Filename*)
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MSDOS) || \
-	defined(BURGER_MACOS) || defined(BURGER_IOS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_VITA) || defined(BURGER_LINUX)) || \
-	defined(DOXYGEN)
-void Burger::DirectorySearch::Close(void) BURGER_NOEXCEPT {}
+void Burger::DirectorySearch::close(void) BURGER_NOEXCEPT
+{
+	// Any entries?
+	uintptr_t uCount = m_Entries.size();
+	if (uCount) {
+
+		// Release the memory allocated for the filenames
+		DirectoryEntry_t* pWork = m_Entries.data();
+		do {
+			Free(pWork->m_pName);
+			++pWork;
+		} while (--uCount);
+	}
+	m_Entries.clear();
+}
+
+/*! ************************************
+
+	\brief Internal function for copying \ref DirectoryEntry_t
+
+	On some platforms, reading a directory only returns a filename list. For
+	performance, only DirectoryEntry_t records are fully parsed on records when
+	they are being used and records skipped will be ignored.
+
+	All other platforms, the entry is simply copied.
+
+	\return Zero on success, non-zero on an error.
+
+	\sa get_next_entry(DirectoryEntry_t*)
+
+***************************************/
+
+#if !(defined(BURGER_UNIX) && !defined(BURGER_DARWIN)) || defined(DOXYGEN)
+Burger::eError Burger::DirectorySearch::direntry_copy(
+	DirectoryEntry_t* pOutput, const DirectoryEntry_t* pInput) BURGER_NOEXCEPT
+{
+	MemoryCopy(pOutput, pInput, sizeof(DirectoryEntry_t));
+	return kErrorNone;
+}
 #endif

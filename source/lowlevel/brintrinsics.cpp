@@ -1,14 +1,14 @@
 /***************************************
 
-    Compiler intrinsics.
+	Compiler intrinsics.
 
-    Copyright (c) 1995-2020 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -16,13 +16,13 @@
 
 /*! ************************************
 
-    \brief Swap endian of a 64 bit integer.
+	\brief Swap endian of a 64 bit integer.
 
-    64 bit operations for endian swap are specialized on different platforms
-    since some forms require the return value to be in a structure.
+	64 bit operations for endian swap are specialized on different platforms
+	since some forms require the return value to be in a structure.
 
-    \param uInput 64 integer to swap endian.
-    \return Input with all 8 bytes reversed.
+	\param uInput 64 integer to swap endian.
+	\return Input with all 8 bytes reversed.
 
 ***************************************/
 
@@ -74,9 +74,9 @@ extern "C" void _swapendian64_asm(uint64_t* pDest, const uint64_t* pInput) = {
 
 uint64_t _swapendian64(const uint64_t& rInput)
 {
-    // Call the assembly fragment
-    uint64_t temp;
-    _swapendian64_asm(&temp, &rInput);
-    return temp;
+	// Call the assembly fragment
+	uint64_t temp;
+	_swapendian64_asm(&temp, &rInput);
+	return temp;
 }
 #endif

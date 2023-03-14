@@ -318,7 +318,7 @@ uint_t BURGER_API Burger::InputMemoryStream::Open(const char *pFilename) BURGER_
 {
 	Clear();
 
-	void *pInput = FileManager::LoadFile(pFilename,&m_uBufferSize);
+	void *pInput = FileManager::load_file(pFilename,&m_uBufferSize);
 	if (pInput) {
 		m_pWork = static_cast<uint8_t *>(pInput);
 		m_pEndOfBuffer = static_cast<uint8_t *>(pInput) + m_uBufferSize;
@@ -344,7 +344,7 @@ uint_t BURGER_API Burger::InputMemoryStream::Open(Filename *pFilename) BURGER_NO
 {
 	Clear();
 
-	void *pInput = FileManager::LoadFile(pFilename,&m_uBufferSize);
+	void *pInput = FileManager::load_file(pFilename,&m_uBufferSize);
 	if (pInput) {
 		m_pWork = static_cast<uint8_t *>(pInput);
 		m_pEndOfBuffer = static_cast<uint8_t *>(pInput) + m_uBufferSize;

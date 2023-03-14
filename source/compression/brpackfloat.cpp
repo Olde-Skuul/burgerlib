@@ -13,6 +13,7 @@
 ***************************************/
 
 #include "brpackfloat.h"
+#include "brstructs.h"
 
 /*! ************************************
 
@@ -77,7 +78,9 @@ float BURGER_API Burger::Unpack16ToFloat(int16_t iInput)
 
 int16_t BURGER_API Burger::PackFloatTo16(float fInput)
 {
-	uint32_t uInput=reinterpret_cast<const uint32_t *>(static_cast<const void *>(&fInput))[0];			// Get the bit representation
+	// Get the bit representation
+	uint32_t uInput=reinterpret_cast<const uint32_float_t *>(static_cast<const void *>(&fInput))->w;
+	
 
 	uint32_t uResult = uInput&0x7FFFFFFFU;	// Get the exponent
 	if (uResult<(127<<23)) {				// Less than 1.0?
@@ -162,8 +165,10 @@ float BURGER_API Burger::Unpack16ToFloat(int16_t iInput,uint32_t uBaseExponent)
 
 int16_t BURGER_API Burger::PackFloatTo16(float fInput,uint32_t uBaseExponent)
 {
-	uBaseExponent <<= 23;
-	uint32_t uInput=reinterpret_cast<const uint32_t *>(static_cast<const void *>(&fInput))[0];			// Get the bit representation
+	uBaseExponent <<= 23U;
+	// Get the bit representation
+	uint32_t uInput=reinterpret_cast<const uint32_float_t *>(static_cast<const void *>(&fInput))->w;
+	
 
 	uint32_t uResult = uInput&0x7FFFFFFFU;	// Get the exponent
 	if (uResult<(uBaseExponent+(16U<<23))) {				// Less than 1.0?

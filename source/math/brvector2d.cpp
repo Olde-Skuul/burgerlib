@@ -865,12 +865,12 @@ uint_t BURGER_API Burger::Vector2D_t::BitwiseEqual(
     const Vector2D_t* pInput) const BURGER_NOEXCEPT
 {
     return (
-        (static_cast<const uint32_t*>(
-             static_cast<const void*>(&pInput->x))[0] ==
-            static_cast<const uint32_t*>(static_cast<const void*>(&x))[0]) &&
-        (static_cast<const uint32_t*>(
-             static_cast<const void*>(&pInput->y))[0] ==
-            static_cast<const uint32_t*>(static_cast<const void*>(&y))[0]));
+        (static_cast<const uint32_float_t*>(
+             static_cast<const void*>(&pInput->x))->w ==
+            static_cast<const uint32_float_t*>(static_cast<const void*>(&x))->w) &&
+        (static_cast<const uint32_float_t*>(
+             static_cast<const void*>(&pInput->y))->w ==
+            static_cast<const uint32_float_t*>(static_cast<const void*>(&y))->w));
 }
 
 /*! ************************************

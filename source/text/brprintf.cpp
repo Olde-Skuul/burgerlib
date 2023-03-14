@@ -4328,7 +4328,7 @@ intptr_t BURGER_API Burger::DebugSnprintf(char* pOutput, uintptr_t uOutputSize,
 		static_cast<int>(bParseOk));
 
 	char ErrorBuffer[256];
-	GetErrorString(
+	error_get_string(
 		ErrorBuffer, sizeof(ErrorBuffer), TheProcessResults.m_uPhaseResults);
 
 	printf("Results:  Error='%s' at char pos #%zd (char %zd in sequence)\n",

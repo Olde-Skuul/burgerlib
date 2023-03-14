@@ -2,7 +2,7 @@
 
 	File Manager Class
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -50,14 +50,14 @@
 /* BEGIN */
 namespace Burger {
 class File;
+
 class FileManager {
-	friend class File;
+	BURGER_DISABLE_COPY(FileManager);
 
 public:
 	/** Maximum number of pending IO events(Power of 2) */
 	static const uint_t kMaxQueue = 128;
 
-	/** Predefined pathname prefixes */
 	enum ePrefix {
 		/** 8: Current working directory at application launch */
 		kPrefixCurrent = 8,
@@ -75,7 +75,6 @@ public:
 		kPrefixInvalid = 999
 	};
 
-	/** Asynchronous file I/O commands */
 	enum eIOCommand {
 		/** Invalid command (Must be zero) */
 		kIOCommandInvalid,
@@ -114,19 +113,7 @@ public:
 	/** Function prototype for asynchronous I/O callbacks */
 	typedef void(BURGER_API* ProcCallback)(Queue_t* pQueue);
 
-private:
-	FileManager() BURGER_NOEXCEPT;
-	~FileManager();
-	void BURGER_API FlushIO(void) BURGER_NOEXCEPT {}
-	void BURGER_API WaitUntilQueueHasSpace(void) BURGER_NOEXCEPT {}
-	void BURGER_API AddQueue(File* pFile, eIOCommand uIOCommand, void* pBuffer,
-		uintptr_t uLength) BURGER_NOEXCEPT;
-	void BURGER_API Sync(File* pFile) BURGER_NOEXCEPT;
-	static uintptr_t BURGER_API QueueHandler(void* pData) BURGER_NOEXCEPT;
-
-	void BURGER_API PlatformSetup(void) BURGER_NOEXCEPT;
-	void BURGER_API PlatformShutdown(void) BURGER_NOEXCEPT;
-
+protected:
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 	/** Semaphore to ping the IO thread */
 	Semaphore m_PingIOThread;
@@ -135,6 +122,7 @@ private:
 	/** Worker thread record pointer */
 	Thread m_Thread;
 #endif
+
 	/** Index to the queue start */
 	volatile uint32_t m_uQueueStart;
 	/** Index to the end of the queue */
@@ -183,29 +171,46 @@ private:
 	ClassArray<String> m_VolumePaths;
 #endif
 
+public:
 	/** Global instance of the file manager */
 	static FileManager* g_pFileManager;
 
+protected:
+	FileManager() BURGER_NOEXCEPT;
+	~FileManager();
+
 public:
-	static eError BURGER_API Init(void) BURGER_NOEXCEPT;
-	static void BURGER_API Shutdown(void) BURGER_NOEXCEPT;
+	void BURGER_API flush_IO(void) BURGER_NOEXCEPT;
+	void BURGER_API wait_until_queue_has_space(void) BURGER_NOEXCEPT;
+	void BURGER_API add_queue(File* pFile, eIOCommand uIOCommand, void* pBuffer,
+		uintptr_t uLength) BURGER_NOEXCEPT;
+	void BURGER_API sync(File* pFile) BURGER_NOEXCEPT;
+	static uintptr_t BURGER_API queue_handler(void* pData) BURGER_NOEXCEPT;
+
+protected:
+	void BURGER_API platform_setup(void) BURGER_NOEXCEPT;
+	void BURGER_API platform_shutdown(void) BURGER_NOEXCEPT;
+
+public:
+	static eError BURGER_API initialize(void) BURGER_NOEXCEPT;
+	static void BURGER_API shut_down(void) BURGER_NOEXCEPT;
 
 #if defined(BURGER_MSDOS) || defined(DOXYGEN)
-	static uint_t BURGER_API MSDOS_HasLongFilenames(void) BURGER_NOEXCEPT;
-	static uint_t BURGER_API MSDOS_GetOSVersion(void) BURGER_NOEXCEPT;
-	static uint_t BURGER_API MSDos_GetOSTrueVersion(void) BURGER_NOEXCEPT;
-	static const char* BURGER_API MSDOS_GetName(void) BURGER_NOEXCEPT;
-	static uint_t BURGER_API MSDos_GetFlavor(void) BURGER_NOEXCEPT;
-	static eError BURGER_API MSDos_Expand8_3Filename(
+	static uint_t BURGER_API MSDOS_has_long_filenames(void) BURGER_NOEXCEPT;
+	static uint_t BURGER_API MSDOS_get_os_version(void) BURGER_NOEXCEPT;
+	static uint_t BURGER_API MSDOS_get_os_true_version(void) BURGER_NOEXCEPT;
+	static const char* BURGER_API MSDOS_get_name(void) BURGER_NOEXCEPT;
+	static uint_t BURGER_API MSDOS_get_flavor(void) BURGER_NOEXCEPT;
+	static eError BURGER_API MSDOS_expand_8_3_filename(
 		String* pInput) BURGER_NOEXCEPT;
-	static eError BURGER_API MSDos_ConvertTo8_3Filename(
+	static eError BURGER_API MSDOS_convert_to_8_3_filename(
 		String* pInput) BURGER_NOEXCEPT;
 #endif
 
 #if defined(BURGER_MAC) || defined(DOXYGEN)
-	static BURGER_API uint_t IsUTF8FileSystem(void) BURGER_NOEXCEPT;
+	static BURGER_API uint_t is_UTF8_file_system(void) BURGER_NOEXCEPT;
 #else
-	static BURGER_INLINE BURGER_CONSTEXPR uint_t IsUTF8FileSystem(
+	static BURGER_INLINE BURGER_CONSTEXPR uint_t is_UTF8_file_system(
 		void) BURGER_NOEXCEPT
 	{
 #if defined(BURGER_MSDOS) || defined(BURGER_XBOX) || defined(BURGER_XBOX360)
@@ -216,93 +221,107 @@ public:
 	}
 #endif
 
-	static eError BURGER_API GetVolumeName(
+	static eError BURGER_API get_volume_name(
 		Filename* pOutput, uint_t uVolumeNum) BURGER_NOEXCEPT;
-	static uint_t BURGER_API GetVolumeNumber(
+	static uint_t BURGER_API get_volume_number(
 		const char* pInput) BURGER_NOEXCEPT;
-	static eError BURGER_API DefaultPrefixes(void) BURGER_NOEXCEPT;
-	static eError BURGER_API GetPrefix(
+	static eError BURGER_API set_default_prefixes(void) BURGER_NOEXCEPT;
+	static eError BURGER_API get_prefix(
 		Filename* pOutput, uint_t uPrefixNum) BURGER_NOEXCEPT;
-	static eError BURGER_API GetPrefix(
+	static eError BURGER_API get_prefix(
 		String* pOutput, uint_t uPrefixNum) BURGER_NOEXCEPT;
-	static eError BURGER_API SetPrefix(
+	static eError BURGER_API set_prefix(
 		uint_t uPrefixNum, const char* pPrefixName) BURGER_NOEXCEPT;
-	static eError BURGER_API SetPrefix(
+	static eError BURGER_API set_prefix(
 		uint_t uPrefixNum, const Filename* pPrefixName) BURGER_NOEXCEPT;
-	static eError BURGER_API PopPrefix(uint_t uPrefixNum) BURGER_NOEXCEPT;
-	static eError BURGER_API GetModificationTime(
+	static eError BURGER_API pop_prefix(uint_t uPrefixNum) BURGER_NOEXCEPT;
+
+	static eError BURGER_API get_modification_time(
 		const char* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT;
-	static eError BURGER_API GetModificationTime(
+	static eError BURGER_API get_modification_time(
 		Filename* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT;
-	static eError BURGER_API GetCreationTime(
+	static eError BURGER_API get_creation_time(
 		const char* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT;
-	static eError BURGER_API GetCreationTime(
+	static eError BURGER_API get_creation_time(
 		Filename* pFileName, TimeDate_t* pOutput) BURGER_NOEXCEPT;
-	static uint_t BURGER_API DoesFileExist(
+	static uint_t BURGER_API does_file_exist(
 		const char* pFileName) BURGER_NOEXCEPT;
-	static uint_t BURGER_API DoesFileExist(Filename* pFileName) BURGER_NOEXCEPT;
-	static uint32_t BURGER_API GetAuxType(const char* pFileName);
-	static uint32_t BURGER_API GetAuxType(Filename* pFileName);
-	static uint32_t BURGER_API GetFileType(const char* pFileName);
-	static uint32_t BURGER_API GetFileType(Filename* pFileName);
-	static eError BURGER_API GetFileAndAuxType(
-		const char* pFileName, uint32_t* pFileType, uint32_t* pAuxType);
-	static eError BURGER_API GetFileAndAuxType(
-		Filename* pFileName, uint32_t* pFileType, uint32_t* pAuxType);
-	static eError BURGER_API SetAuxType(
-		const char* pFileName, uint32_t uAuxType);
-	static eError BURGER_API SetAuxType(Filename* pFileName, uint32_t uAuxType);
-	static eError BURGER_API SetFileType(
-		const char* pFileName, uint32_t uFileType);
-	static eError BURGER_API SetFileType(
-		Filename* pFileName, uint32_t uFileType);
-	static eError BURGER_API SetFileAndAuxType(
-		const char* pFileName, uint32_t uFileType, uint32_t uAuxType);
-	static eError BURGER_API SetFileAndAuxType(
-		Filename* pFileName, uint32_t uFileType, uint32_t uAuxType);
-	static eError BURGER_API CreateDirectoryPath(
-		const char* pFileName) BURGER_NOEXCEPT;
-	static eError BURGER_API CreateDirectoryPath(
+	static uint_t BURGER_API does_file_exist(
 		Filename* pFileName) BURGER_NOEXCEPT;
-	static eError BURGER_API CreateDirectoryPathDirName(const char* pFileName);
-	static eError BURGER_API CreateDirectoryPathDirName(Filename* pFileName);
-	static eError BURGER_API DeleteFile(const char* pFileName) BURGER_NOEXCEPT;
-	static eError BURGER_API DeleteFile(Filename* pFileName) BURGER_NOEXCEPT;
-	static eError BURGER_API RenameFile(
+
+	static uint32_t BURGER_API get_creator_type(const char* pFileName);
+	static uint32_t BURGER_API get_creator_type(Filename* pFileName);
+	static uint32_t BURGER_API get_file_type(const char* pFileName);
+	static uint32_t BURGER_API get_file_type(Filename* pFileName);
+	static eError BURGER_API get_creator_and_file_type(
+		const char* pFileName, uint32_t* pCreatorType, uint32_t* pFileType);
+	static eError BURGER_API get_creator_and_file_type(
+		Filename* pFileName, uint32_t* pCreatorType, uint32_t* pFileType);
+	static eError BURGER_API set_creator_type(
+		const char* pFileName, uint32_t uCreatorType);
+	static eError BURGER_API set_creator_type(
+		Filename* pFileName, uint32_t uCreatorType);
+	static eError BURGER_API set_file_type(
+		const char* pFileName, uint32_t uFileType);
+	static eError BURGER_API set_file_type(
+		Filename* pFileName, uint32_t uFileType);
+	static eError BURGER_API set_creator_and_file_type(
+		const char* pFileName, uint32_t uCreatorType, uint32_t uFileType);
+	static eError BURGER_API set_creator_and_file_type(
+		Filename* pFileName, uint32_t uCreatorType, uint32_t uFileType);
+
+	static eError BURGER_API create_directory_path(
+		const char* pFileName) BURGER_NOEXCEPT;
+	static eError BURGER_API create_directory_path(
+		Filename* pFileName) BURGER_NOEXCEPT;
+	static eError BURGER_API create_directory_path_dirname(
+		const char* pFileName);
+	static eError BURGER_API create_directory_path_dirname(
+		const Filename* pFileName);
+	static eError BURGER_API delete_file(const char* pFileName) BURGER_NOEXCEPT;
+	static eError BURGER_API delete_file(Filename* pFileName) BURGER_NOEXCEPT;
+	static eError BURGER_API rename_file(
 		const char* pNewName, const char* pOldName) BURGER_NOEXCEPT;
-	static eError BURGER_API RenameFile(
+	static eError BURGER_API rename_file(
 		Filename* pNewName, Filename* pOldName) BURGER_NOEXCEPT;
-	static eError BURGER_API ChangeOSDirectory(const char* pDirName);
-	static eError BURGER_API ChangeOSDirectory(Filename* pDirName);
-	static FILE* BURGER_API OpenFile(
+	static eError BURGER_API change_OS_directory(const char* pDirName);
+	static eError BURGER_API change_OS_directory(Filename* pDirName);
+	static FILE* BURGER_API open_file(
 		const char* pFileName, const char* pType) BURGER_NOEXCEPT;
-	static FILE* BURGER_API OpenFile(
+	static FILE* BURGER_API open_file(
 		Filename* pFileName, const char* pType) BURGER_NOEXCEPT;
-	static eError BURGER_API CopyFile(
+	static eError BURGER_API copy_file(
 		const char* pDestName, const char* pSourceName) BURGER_NOEXCEPT;
-	static eError BURGER_API CopyFile(
+	static eError BURGER_API copy_file(
 		Filename* pDestName, Filename* pSourceName) BURGER_NOEXCEPT;
-	static eError BURGER_API SaveFile(const char* pFileName, const void* pData,
+	static eError BURGER_API save_file(const char* pFileName, const void* pData,
 		uintptr_t uLength) BURGER_NOEXCEPT;
-	static eError BURGER_API SaveFile(Filename* pFileName, const void* pData,
+	static eError BURGER_API save_file(Filename* pFileName, const void* pData,
 		uintptr_t uLength) BURGER_NOEXCEPT;
-	static eError BURGER_API SaveTextFile(const char* pFileName,
+	static eError BURGER_API save_text_file(const char* pFileName,
 		const void* pData, uintptr_t uLength) BURGER_NOEXCEPT;
-	static eError BURGER_API SaveTextFile(Filename* pFileName,
+	static eError BURGER_API save_text_file(Filename* pFileName,
 		const void* pData, uintptr_t uLength) BURGER_NOEXCEPT;
-	static void* BURGER_API LoadFile(
+	static void* BURGER_API load_file(
 		const char* pFileName, uintptr_t* pLength) BURGER_NOEXCEPT;
-	static void* BURGER_API LoadFile(
+	static void* BURGER_API load_file(
 		Filename* pFileName, uintptr_t* pLength) BURGER_NOEXCEPT;
 
 #if defined(BURGER_DARWIN) || defined(DOXYGEN)
-	static BURGER_INLINE const char* GetBootName(void) BURGER_NOEXCEPT
+	static BURGER_INLINE const char* get_boot_name(void) BURGER_NOEXCEPT
 	{
 		return g_pFileManager->m_pBootName;
 	}
-	static BURGER_INLINE uintptr_t GetBootNameSize(void) BURGER_NOEXCEPT
+	static BURGER_INLINE uintptr_t get_boot_name_length(void) BURGER_NOEXCEPT
 	{
 		return g_pFileManager->m_uBootNameSize;
+	}
+#endif
+
+#if (defined(BURGER_UNIX) && !defined(BURGER_DARWIN)) || defined(DOXYGEN)
+	static BURGER_INLINE const String* get_volume_prefix(void) BURGER_NOEXCEPT
+	{
+		return &g_pFileManager->m_VolumePrefix;
 	}
 #endif
 
@@ -325,7 +344,8 @@ public:
 		const ClassArray<String>& rFSTypes) BURGER_NOEXCEPT;
 #endif
 #if defined(BURGER_UNIX) || defined(DOXYGEN)
-	static void BURGER_API UnixFindVolumesFolder(String& rOutput);
+	static void BURGER_API unix_find_volumes_folder(
+		String* pOutput) BURGER_NOEXCEPT;
 #endif
 };
 
@@ -335,11 +355,11 @@ class FileManagerSimple {
 public:
 	FileManagerSimple() BURGER_NOEXCEPT
 	{
-		FileManager::Init();
+		FileManager::initialize();
 	}
 	~FileManagerSimple()
 	{
-		FileManager::Shutdown();
+		FileManager::shut_down();
 	}
 };
 }

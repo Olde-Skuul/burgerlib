@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="..\source\android\brandroidtypes.h">
-      <Filter>source\android</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\ansi\brcapturestdout.h">
       <Filter>source\ansi</Filter>
     </ClInclude>
@@ -457,6 +454,9 @@
     <ClInclude Include="..\source\lowlevel\brstructs.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brtemplates.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtick.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -535,6 +535,12 @@
     <ClInclude Include="..\source\memory\brmemorymanager.h">
       <Filter>source\memory</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\platforms\android\brandroidtypes.h">
+      <Filter>source\platforms\android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\unix\brunixtypes.h">
+      <Filter>source\platforms\unix</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\random\brmersennetwist.h">
       <Filter>source\random</Filter>
     </ClInclude>
@@ -607,21 +613,6 @@
     <ClInclude Include="..\source\text\brwin437.h">
       <Filter>source\text</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\unix\brunixtypes.h">
-      <Filter>source\unix</Filter>
-    </ClInclude>
-    <ClCompile Include="..\source\android\brcodelibraryandroid.cpp">
-      <Filter>source\android</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\android\brcriticalsectionandroid.cpp">
-      <Filter>source\android</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\android\brdebugandroid.cpp">
-      <Filter>source\android</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\android\brtickandroid.cpp">
-      <Filter>source\android</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\ansi\brcapturestdout.cpp">
       <Filter>source\ansi</Filter>
     </ClCompile>
@@ -1024,6 +1015,9 @@
     <ClCompile Include="..\source\lowlevel\brstructs.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brtemplates.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtick.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1096,6 +1090,36 @@
     <ClCompile Include="..\source\memory\brmemorymanager.cpp">
       <Filter>source\memory</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\platforms\android\brcriticalsectionandroid.cpp">
+      <Filter>source\platforms\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\android\brdebugandroid.cpp">
+      <Filter>source\platforms\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\android\brtickandroid.cpp">
+      <Filter>source\platforms\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brcodelibraryunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brdirectorysearchunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brfilemanagerunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brfilenameunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brfileunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brosstringfunctionsunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brunixtypes.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\random\brmersennetwist.cpp">
       <Filter>source\random</Filter>
     </ClCompile>
@@ -1165,18 +1189,6 @@
     <ClCompile Include="..\source\text\brwin437.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\unix\brfilemanagerunix.cpp">
-      <Filter>source\unix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\unix\brfilenameunix.cpp">
-      <Filter>source\unix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\unix\brosstringfunctionsunix.cpp">
-      <Filter>source\unix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\unix\brunixtypes.cpp">
-      <Filter>source\unix</Filter>
-    </ClCompile>
     <GLSL Include="..\source\graphics\shadersopengl\pscclr4gl.glsl">
       <Filter>source\graphics\shadersopengl</Filter>
     </GLSL>
@@ -1203,9 +1215,6 @@
     </GLSL>
     <Filter Include="source">
       <UniqueIdentifier>5F17E5BC-32C5-346E-B4A9-13BABF49BF75</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\android">
-      <UniqueIdentifier>471A4963-EDFB-3D9A-B7CF-374FFE1193DC</UniqueIdentifier>
     </Filter>
     <Filter Include="source\ansi">
       <UniqueIdentifier>6B190591-11A1-3781-8DF8-11810F74B3D4</UniqueIdentifier>
@@ -1258,14 +1267,17 @@
     <Filter Include="source\memory">
       <UniqueIdentifier>2FC24D10-AF83-36E0-BFB0-D030F1407FAE</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\platforms\android">
+      <UniqueIdentifier>F2310277-0353-3CD6-96D6-37BAA5863C33</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platforms\unix">
+      <UniqueIdentifier>EA5432F8-5374-389F-8AB0-B69668366D5A</UniqueIdentifier>
+    </Filter>
     <Filter Include="source\random">
       <UniqueIdentifier>6352B160-0623-38E4-9D12-A84B8AB423E7</UniqueIdentifier>
     </Filter>
     <Filter Include="source\text">
       <UniqueIdentifier>83B2EFDD-DFD3-3A22-8ECC-CE67921C4089</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\unix">
-      <UniqueIdentifier>363A08E9-AF1E-369E-97BF-46C3071B6DC5</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

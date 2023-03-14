@@ -243,7 +243,7 @@ uint_t FileLoaderTest(uint_t /* uVerbose */) BURGER_NOEXCEPT
 #if defined(FULLTESTS)
 
 	MemoryManagerGlobalANSI Memory;
-	FileManager::Init();
+	FileManager::initialize();
 
 	// Test Filename
 	Message("Running File loader tests");
@@ -252,7 +252,7 @@ uint_t FileLoaderTest(uint_t /* uVerbose */) BURGER_NOEXCEPT
 	uTotal |= TestFileAPF();
 	uTotal |= TestFileGIF();
 	uTotal |= TestFilePNG();
-	FileManager::Shutdown();
+	FileManager::shut_down();
 #endif
 	return uTotal;
 }

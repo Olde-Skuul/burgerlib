@@ -245,9 +245,9 @@ void BURGER_API Burger::Debug::PrintString(const char* pString) BURGER_NOEXCEPT
 			// so send the data to a file
 #if defined(BURGER_MAC)
 			File MyFile;
-			if (MyFile.Open("9:LogFile.Txt", File::kAppend) == kErrorNone) {
-				MyFile.Write(pString, i); // Send the string to the log file
-				MyFile.Close();
+			if (MyFile.open("9:LogFile.Txt", File::kAppend) == kErrorNone) {
+				MyFile.write(pString, i); // Send the string to the log file
+				MyFile.close();
 			}
 #else
 			// Send to stdout on all other platforms

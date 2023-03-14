@@ -2,7 +2,7 @@
 
 	Directory search Class
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -31,30 +31,34 @@
 #include "brtimedate.h"
 #endif
 
+#ifndef __BRSIMPLEARRAY_H__
+#include "brsimplearray.h"
+#endif
+
 #if defined(BURGER_MAC) && !defined(__BRMACTYPES_H__)
 #include "brmactypes.h"
 #endif
 
 /* BEGIN */
 namespace Burger {
-class DirectorySearch {
-	BURGER_DISABLE_COPY(DirectorySearch);
 
-public:
-	DirectorySearch() BURGER_NOEXCEPT;
-	~DirectorySearch();
-	eError Open(Filename* pDirName) BURGER_NOEXCEPT;
-	eError Open(const char* pDirName) BURGER_NOEXCEPT;
-	eError GetNextEntry(void) BURGER_NOEXCEPT;
-	eError GetNextEntryExtension(const char* pExt) BURGER_NOEXCEPT;
-	void Close(void) BURGER_NOEXCEPT;
-
-	/** Size of the file in bytes (64 bits on 64 bit CPU platforms) */
-	uintptr_t m_uFileSize;
+struct DirectoryEntry_t {
+	/** Pointer to the UTF8 filename */
+	const char* m_pName;
+	/** Size of the file in bytes */
+	uint64_t m_uFileSize;
 	/** File creation time */
 	TimeDate_t m_CreationDate;
 	/** File last modification time */
 	TimeDate_t m_ModificatonDate;
+
+#if (defined(BURGER_MACOS) || defined(BURGER_DARWIN)) || defined(DOXYGEN)
+	/** File's creator code (MacOS and Darwin Only) */
+	uint32_t m_uCreatorType;
+	/** File's type (MacOS and Darwin Only) */
+	uint32_t m_uFileType;
+#endif
+
 	/** True if this is a directory */
 	uint8_t m_bDir;
 	/** True if this is a system file */
@@ -63,58 +67,40 @@ public:
 	uint8_t m_bHidden;
 	/** True if this file is read only */
 	uint8_t m_bLocked;
-	/** UTF8 Filename */
-	char m_Name[256];
-#if (defined(BURGER_MACOS) || defined(BURGER_IOS)) || defined(DOXYGEN)
-	/** File's type (MacOS and iOS Only) */
-	uint32_t m_uFileType;
-	/** File's creator code (MacOS and iOS Only) */
-	uint32_t m_uAuxType;
-#endif
+};
+
+class DirectorySearch {
+	BURGER_DISABLE_COPY(DirectorySearch);
 
 private:
-#if defined(BURGER_MAC) || defined(DOXYGEN)
-	/** Directory iterator for MacOS 9 or higher (MacOS Carbon Only) */
-	OpaqueFSIterator* m_pIterator;
-	/** Directory iterator for MacOS 7 to 8 (MacOS Carbon Only) */
-	void* m_pLocal;
+#if (defined(BURGER_UNIX) && !defined(BURGER_DARWIN)) || defined(DOXYGEN)
+	/** Linux/Android only, folder path for calling stat() */
+	String m_NativePath;
 #endif
 
-#if defined(BURGER_MACOSX) || defined(DOXYGEN)
-	/** Open directory file \macosxonly */
-	int m_fp;
-	/** Number of entries in the cache */
-	uint_t m_uEntryCount;
-	/** \ref TRUE if directory parsing is complete */
-	uint_t m_bDone;
-	/** Pointer to the next entry in the buffer */
-	const void* m_pEntry;
-	// Note: The void * above forces 8 byte alignment on m_Buffer
-	/** Directory entries */
-	uint8_t m_Buffer[2048];
-#endif
+public:
+	/** Initial array size for DirectoryEntry_t records in m_Entries */
+	static const uintptr_t kDefaultReserve = 32U;
 
-#if (defined(BURGER_IOS) || defined(BURGER_VITA) || defined(BURGER_LINUX)) || \
-	defined(DOXYGEN)
-	/** Open directory file (MacOSX/iOS/Vita Only) */
-	int m_fp;
-#endif
+protected:
+	/** Directory cache of stored entries */
+	SimpleArray<DirectoryEntry_t> m_Entries;
+	/** Index to the m_Entries array for \ref get_next_entry() */
+	uintptr_t m_uIndex;
 
-#if defined(BURGER_MSDOS) || defined(DOXYGEN)
-	/** Handle is valid (MSDOS Only) */
-	uint_t m_bHandleOk;
-	/** Handle to the open directory (MSDOS Only) */
-	short m_sFileHandle;
-	/** Dos FindT structure (MSDOS Only) */
-	char m_MyFindT[44];
-#endif
+	eError direntry_copy(DirectoryEntry_t* pOutput,
+		const DirectoryEntry_t* pInput) BURGER_NOEXCEPT;
 
-#if defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(DOXYGEN)
-	/** Windows file handle (Windows or Xbox 360 Only) */
-	void* m_hDirHandle;
-	/** Windows WIN32_FIND_DATAW structure (Windows or Xbox 360 Only) */
-	char m_MyFindW[592];
-#endif
+public:
+	DirectorySearch() BURGER_NOEXCEPT;
+	~DirectorySearch();
+	eError open(Filename* pDirName) BURGER_NOEXCEPT;
+	eError open(const char* pDirName) BURGER_NOEXCEPT;
+	const char* get_next_entry(void) BURGER_NOEXCEPT;
+	eError get_next_entry(DirectoryEntry_t* pOutput) BURGER_NOEXCEPT;
+	eError get_next_entry(
+		DirectoryEntry_t* pOutput, const char* pExt) BURGER_NOEXCEPT;
+	void close(void) BURGER_NOEXCEPT;
 };
 }
 /* END */

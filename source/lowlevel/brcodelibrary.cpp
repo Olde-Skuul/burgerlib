@@ -2,7 +2,7 @@
 
 	Code library (DLL) manager
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -20,19 +20,14 @@
 	\brief Manage code library files.
 
 	Loading a DLL, .so or any other type of shared library is managed with this
-	generic class. Initialize it with a call to CodeLibrary::Init() and then
-	call CodeLibrary::GetFunction() to extract each and every pointer to the
-	code or data contained within.
+	generic class. Initialize it with a call to init() and then call
+	get_function() to extract each and every pointer to the code or data
+	contained within.
 
-	If this class is shut down by the CodeLibrary::Shutdown() call, all of
-	the pointers will become invalid and should never be used again.
+	If this class is shut down by the shutdown(void) call, all of the pointers
+	will become invalid and should never be used again.
 
 ***************************************/
-
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MAC) || \
-	defined(BURGER_SHIELD) || defined(BURGER_MACOSX) || \
-	defined(BURGER_IOS)) || \
-	defined(DOXYGEN)
 
 /*! ************************************
 
@@ -41,9 +36,9 @@
 
 	On creation, variables are initialized but no attempt is made to load in a
 	shared library. The shared library is loaded only with a call to
-	CodeLibrary::Init()
+	init()
 
-	\sa CodeLibrary::Init(const char *) and CodeLibrary::Shutdown(void)
+	\sa init(const char *) and shutdown(void)
 
 ***************************************/
 
@@ -55,9 +50,18 @@
 	On disposal, if a share library was loaded, it will be released and all
 	function pointers will be invalid.
 
-	\sa CodeLibrary::Shutdown(void)
+	\sa shutdown(void)
 
 ***************************************/
+
+Burger::CodeLibrary::~CodeLibrary() BURGER_NOEXCEPT
+{
+	shutdown();
+}
+
+#if !( \
+	defined(BURGER_WINDOWS) || defined(BURGER_MAC) || defined(BURGER_UNIX)) || \
+	defined(DOXYGEN)
 
 /*! ************************************
 
@@ -69,13 +73,17 @@
 	until it is found.
 
 	\param pFilename Pointer to a UTF-8 encoded pathname to the library
-	\return \ref TRUE if loaded, \ref FALSE on failure
+
+	\return \ref eError error code
+
+	\sa get_function()
 
 ***************************************/
 
-uint_t Burger::CodeLibrary::Init(const char* /* pFilename */) BURGER_NOEXCEPT
+Burger::eError Burger::CodeLibrary::init(
+	const char* /* pFilename */) BURGER_NOEXCEPT
 {
-	return FALSE;
+	return kErrorNotSupportedOnThisPlatform;
 }
 
 /*! ************************************
@@ -84,12 +92,12 @@ uint_t Burger::CodeLibrary::Init(const char* /* pFilename */) BURGER_NOEXCEPT
 
 	If a library was loaded, release it back to the operating system.
 
-	\note All function pointers returned by calls to CodeLibrary::GetFunction()
+	\note All function pointers returned by calls to CodeLibrary::get_function()
 		will be immediately invalid after this call is complete.
 
 ***************************************/
 
-void Burger::CodeLibrary::Shutdown(void) BURGER_NOEXCEPT {}
+void Burger::CodeLibrary::shutdown(void) BURGER_NOEXCEPT {}
 
 /*! ************************************
 
@@ -104,7 +112,7 @@ l		ibrary.
 
 ***************************************/
 
-void* Burger::CodeLibrary::GetFunction(
+void* Burger::CodeLibrary::get_function(
 	const char* /* pFunctionName */) BURGER_NOEXCEPT
 {
 	return nullptr;
@@ -112,7 +120,7 @@ void* Burger::CodeLibrary::GetFunction(
 
 /*! ************************************
 
-	\fn Burger::CodeLibrary::IsInitialized(void) const
+	\fn Burger::CodeLibrary::is_initialized(void) const
 	\brief Has a library been loaded?
 
 	Returns \ref TRUE if a library was successfully loaded and ready for

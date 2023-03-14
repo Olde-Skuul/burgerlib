@@ -2,7 +2,7 @@
 
 	Operating system string functions
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -38,6 +38,11 @@ extern eError BURGER_API GetUserLoginName(String* pOutput) BURGER_NOEXCEPT;
 extern eError BURGER_API GetUserRealName(String* pOutput) BURGER_NOEXCEPT;
 extern eError BURGER_API GetMachineName(String* pOutput) BURGER_NOEXCEPT;
 
+#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+extern eError BURGER_API GetFullPathNameUTF8(
+	String* pOutput, const char* pInput) BURGER_NOEXCEPT;
+#endif
+
 #if defined(BURGER_MAC) || defined(DOXYGEN)
 extern eError BURGER_API GetOSString(
 	String* pOutput, int16_t iStringID) BURGER_NOEXCEPT;
@@ -53,6 +58,13 @@ extern eError BURGER_API GetMacModelIdentifier(String* pOutput) BURGER_NOEXCEPT;
 extern void BURGER_API StringCopy(
 	String* pOutput, const __CFString* pInput) BURGER_NOEXCEPT;
 #endif
+
+#if defined(BURGER_UNIX) || defined(DOXYGEN)
+extern eError BURGER_API get_home_directory(String* pOutput) BURGER_NOEXCEPT;
+extern eError BURGER_API get_abspath(
+	String* pOutput, const char* pInput) BURGER_NOEXCEPT;
+#endif
+
 }
 /* END */
 

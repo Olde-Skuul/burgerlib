@@ -2,7 +2,7 @@
 
 	Root base class
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -30,7 +30,7 @@ class Base {
 	BURGER_RTTI_IN_BASE_CLASS();
 
 public:
-	virtual ~Base() BURGER_DEFAULT_DESTRUCTOR;
+	virtual ~Base() BURGER_NOEXCEPT BURGER_DEFAULT_DESTRUCTOR;
 };
 
 extern void BURGER_API Delete(const Base* pInput) BURGER_NOEXCEPT;

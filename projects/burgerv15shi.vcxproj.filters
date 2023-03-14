@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="..\source\android\brandroidtypes.h">
-      <Filter>source\android</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\ansi\brcapturestdout.h">
       <Filter>source\ansi</Filter>
     </ClInclude>
@@ -457,6 +454,9 @@
     <ClInclude Include="..\source\lowlevel\brstructs.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brtemplates.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtick.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -535,6 +535,15 @@
     <ClInclude Include="..\source\memory\brmemorymanager.h">
       <Filter>source\memory</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\platforms\android\brandroidtypes.h">
+      <Filter>source\platforms\android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\shield\brshieldtypes.h">
+      <Filter>source\platforms\shield</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\unix\brunixtypes.h">
+      <Filter>source\platforms\unix</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\random\brmersennetwist.h">
       <Filter>source\random</Filter>
     </ClInclude>
@@ -543,9 +552,6 @@
     </ClInclude>
     <ClInclude Include="..\source\random\brrandombase.h">
       <Filter>source\random</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\shield\brshieldtypes.h">
-      <Filter>source\shield</Filter>
     </ClInclude>
     <ClInclude Include="..\source\templateburgerbase.h">
       <Filter>source</Filter>
@@ -610,21 +616,6 @@
     <ClInclude Include="..\source\text\brwin437.h">
       <Filter>source\text</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\unix\brunixtypes.h">
-      <Filter>source\unix</Filter>
-    </ClInclude>
-    <ClCompile Include="..\source\android\brcodelibraryandroid.cpp">
-      <Filter>source\android</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\android\brcriticalsectionandroid.cpp">
-      <Filter>source\android</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\android\brdebugandroid.cpp">
-      <Filter>source\android</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\android\brtickandroid.cpp">
-      <Filter>source\android</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\ansi\brcapturestdout.cpp">
       <Filter>source\ansi</Filter>
     </ClCompile>
@@ -1027,6 +1018,9 @@
     <ClCompile Include="..\source\lowlevel\brstructs.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brtemplates.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtick.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1099,6 +1093,36 @@
     <ClCompile Include="..\source\memory\brmemorymanager.cpp">
       <Filter>source\memory</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\platforms\android\brcriticalsectionandroid.cpp">
+      <Filter>source\platforms\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\android\brdebugandroid.cpp">
+      <Filter>source\platforms\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\android\brtickandroid.cpp">
+      <Filter>source\platforms\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brcodelibraryunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brdirectorysearchunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brfilemanagerunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brfilenameunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brfileunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brosstringfunctionsunix.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\unix\brunixtypes.cpp">
+      <Filter>source\platforms\unix</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\random\brmersennetwist.cpp">
       <Filter>source\random</Filter>
     </ClCompile>
@@ -1168,18 +1192,6 @@
     <ClCompile Include="..\source\text\brwin437.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\unix\brfilemanagerunix.cpp">
-      <Filter>source\unix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\unix\brfilenameunix.cpp">
-      <Filter>source\unix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\unix\brosstringfunctionsunix.cpp">
-      <Filter>source\unix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\unix\brunixtypes.cpp">
-      <Filter>source\unix</Filter>
-    </ClCompile>
     <GLSL Include="..\source\graphics\shadersopengl\pscclr4gl.glsl">
       <Filter>source\graphics\shadersopengl</Filter>
     </GLSL>
@@ -1206,9 +1218,6 @@
     </GLSL>
     <Filter Include="source">
       <UniqueIdentifier>208CE673-D953-3CAB-9943-B55B81BDEBDD</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\android">
-      <UniqueIdentifier>2020E981-69E3-339C-847D-DC3566B00A47</UniqueIdentifier>
     </Filter>
     <Filter Include="source\ansi">
       <UniqueIdentifier>DA27A323-7CB9-3D8D-9188-0C199ADFED3C</UniqueIdentifier>
@@ -1261,17 +1270,20 @@
     <Filter Include="source\memory">
       <UniqueIdentifier>3CA7EFF1-A52E-3619-9B7B-EA6C7F43335F</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\platforms\android">
+      <UniqueIdentifier>7E255027-3A93-3267-BD29-4EB79CE4797F</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platforms\shield">
+      <UniqueIdentifier>B4906EE8-3A1C-3B18-9E69-98758A91A383</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platforms\unix">
+      <UniqueIdentifier>6E1A645C-D7D7-3EF6-8FF6-21DFAEC5505C</UniqueIdentifier>
+    </Filter>
     <Filter Include="source\random">
       <UniqueIdentifier>073D79F1-FF75-367F-AF03-DE40900C4923</UniqueIdentifier>
     </Filter>
-    <Filter Include="source\shield">
-      <UniqueIdentifier>EEAE2933-9992-37A5-8186-C707523F30BD</UniqueIdentifier>
-    </Filter>
     <Filter Include="source\text">
       <UniqueIdentifier>48B9A7FA-7A4B-3059-933F-D0816967BC90</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\unix">
-      <UniqueIdentifier>775447BE-0263-383C-B172-61539DFD0E1E</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

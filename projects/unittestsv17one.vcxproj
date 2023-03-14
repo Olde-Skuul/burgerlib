@@ -323,6 +323,7 @@
     <ClInclude Include="..\source\lowlevel\brsnsystems.h" />
     <ClInclude Include="..\source\lowlevel\brstaticrtti.h" />
     <ClInclude Include="..\source\lowlevel\brstructs.h" />
+    <ClInclude Include="..\source\lowlevel\brtemplates.h" />
     <ClInclude Include="..\source\lowlevel\brtick.h" />
     <ClInclude Include="..\source\lowlevel\brtimedate.h" />
     <ClInclude Include="..\source\lowlevel\brtypes.h" />
@@ -376,6 +377,7 @@
     <ClInclude Include="..\unittest\common.h" />
     <ClInclude Include="..\unittest\createtables.h" />
     <ClInclude Include="..\unittest\testbralgorithm.h" />
+    <ClInclude Include="..\unittest\testbrcodelibrary.h" />
     <ClInclude Include="..\unittest\testbrcompression.h" />
     <ClInclude Include="..\unittest\testbrdisplay.h" />
     <ClInclude Include="..\unittest\testbrendian.h" />
@@ -528,6 +530,7 @@
     <ClCompile Include="..\source\lowlevel\brsmartpointer.cpp" />
     <ClCompile Include="..\source\lowlevel\brstaticrtti.cpp" />
     <ClCompile Include="..\source\lowlevel\brstructs.cpp" />
+    <ClCompile Include="..\source\lowlevel\brtemplates.cpp" />
     <ClCompile Include="..\source\lowlevel\brtick.cpp" />
     <ClCompile Include="..\source\lowlevel\brtimedate.cpp" />
     <ClCompile Include="..\source\lowlevel\brtypes.cpp" />
@@ -578,6 +581,7 @@
     <ClCompile Include="..\unittest\common.cpp" />
     <ClCompile Include="..\unittest\createtables.cpp" />
     <ClCompile Include="..\unittest\testbralgorithm.cpp" />
+    <ClCompile Include="..\unittest\testbrcodelibrary.cpp" />
     <ClCompile Include="..\unittest\testbrcompression.cpp" />
     <ClCompile Include="..\unittest\testbrdisplay.cpp" />
     <ClCompile Include="..\unittest\testbrendian.cpp" />

@@ -265,8 +265,8 @@ Burger::RunQueue::RunQueueEntry* BURGER_API Burger::RunQueue::Add(
 	If a match is found, return \ref TRUE.
 
 	\param pProc Pointer to the function.
-	\return \ref RunQueueEntry pointer if the function pointer was found, \ref
-		nullptr if not.
+	\return \ref RunQueueEntry pointer if the function pointer was found,
+		\ref nullptr if not.
 
 	\sa Add(CallbackProc,CallbackProc,void*,uint_t), Clear() or Call().
 

@@ -472,7 +472,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::SaveFile(
 	if (!uResult) {
 		// Try to open the output file
 		File FileRef;
-		uResult = FileRef.Open(pFilename, File::kWriteOnly);
+		uResult = FileRef.open(pFilename, File::kWriteOnly);
 		// File opened fine?
 		if (!uResult) {
 			// Assume success
@@ -484,7 +484,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::SaveFile(
 					if (uRemaining < uChunkSize) {
 						uChunkSize = uRemaining;
 					}
-					if (FileRef.Write(pChunk->m_Buffer, uChunkSize) !=
+					if (FileRef.write(pChunk->m_Buffer, uChunkSize) !=
 						uChunkSize) {
 						// File error! But not a state error
 						// so don't update m_uError
@@ -497,7 +497,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::SaveFile(
 				} while (uRemaining);
 			}
 			// Close the file
-			FileRef.Close();
+			FileRef.close();
 		}
 	}
 	// Return the error code
@@ -525,7 +525,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::SaveFile(
 	if (!uResult) {
 		// Try to open the output file
 		File FileRef;
-		uResult = FileRef.Open(pFilename, File::kWriteOnly);
+		uResult = FileRef.open(pFilename, File::kWriteOnly);
 		// File opened fine?
 		if (!uResult) {
 			// Assume success
@@ -537,7 +537,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::SaveFile(
 					if (uRemaining < uChunkSize) {
 						uChunkSize = uRemaining;
 					}
-					if (FileRef.Write(pChunk->m_Buffer, uChunkSize) !=
+					if (FileRef.write(pChunk->m_Buffer, uChunkSize) !=
 						uChunkSize) {
 						// File error! But not a state error
 						// so don't update m_uError
@@ -550,7 +550,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::SaveFile(
 				} while (uRemaining);
 			}
 			// Close the file
-			FileRef.Close();
+			FileRef.close();
 		}
 	}
 	// Return the error code

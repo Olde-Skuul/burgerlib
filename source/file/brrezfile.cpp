@@ -756,15 +756,15 @@ uint_t BURGER_API Burger::RezFile::Init(const char *pFileName,uint32_t uStartOff
 
 	if (pFileName) {
 		// Can I open the file?
-		if (m_File.Open(pFileName, File::kReadOnly) == kErrorNone) {
+		if (m_File.open(pFileName, File::kReadOnly) == kErrorNone) {
 			// If the data is not at the head, seek
 			if (uStartOffset) {
-				m_File.SetMark(uStartOffset);
+				m_File.set_mark(uStartOffset);
 			}
 			// Struct for resource file header
 			RootHeader_t MyHeader;
 			// Read in the header
-			if (m_File.Read(&MyHeader,ROOTHEADERSIZE)==ROOTHEADERSIZE) {
+			if (m_File.read(&MyHeader,ROOTHEADERSIZE)==ROOTHEADERSIZE) {
 				// Check the signature
 				if (!MemoryCompare(MyHeader.m_Name,g_RezFileSignature,4)) {
 					// Assume new data format
@@ -780,7 +780,7 @@ uint_t BURGER_API Burger::RezFile::Init(const char *pFileName,uint32_t uStartOff
 							uSwapFlag |= SWAPENDIAN;
 						}
 						// I read in 24 bytes, it's really 12, so skip back
-						m_File.SetMark(uStartOffset+12);
+						m_File.set_mark(uStartOffset+12);
 					} else {
 						LittleEndian::Fixup(&MyHeader.m_uMemSize);
 						LittleEndian::Fixup(&MyHeader.m_uGroupCount);
@@ -790,7 +790,7 @@ uint_t BURGER_API Burger::RezFile::Init(const char *pFileName,uint32_t uStartOff
 					uint8_t *pData = static_cast<uint8_t *>(Alloc(MyHeader.m_uMemSize));
 					if (pData) {
 						// Read in the file header
-						if (m_File.Read(pData,MyHeader.m_uMemSize)==MyHeader.m_uMemSize) {
+						if (m_File.read(pData,MyHeader.m_uMemSize)==MyHeader.m_uMemSize) {
 							RezGroup_t *pRezGroup = ParseRezFileHeader(pData,&MyHeader,uSwapFlag,uStartOffset);
 							if (pRezGroup) {
 								// Dispose of the loaded data
@@ -809,7 +809,7 @@ uint_t BURGER_API Burger::RezFile::Init(const char *pFileName,uint32_t uStartOff
 				}
 			}
 			// Close the file on error
-			m_File.Close();
+			m_File.close();
 		}
 	}
 	// Could not open the file
@@ -828,7 +828,7 @@ uint_t BURGER_API Burger::RezFile::Init(const char *pFileName,uint32_t uStartOff
 void BURGER_API Burger::RezFile::Shutdown(void)
 {
 	// Is there an open file?
-	m_File.Close();
+	m_File.close();
 
 	// Dispose of any resources in memory
 	// Any valid entries?
@@ -1614,15 +1614,15 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 			pEntry->m_uFlags |= ENTRYFLAGSTESTED;	// Mark as tested
 			const char *pFileName = pEntry->m_pRezName;
 			File TheFile;
-			if (TheFile.Open(pFileName,File::kReadOnly)==kErrorNone) {
+			if (TheFile.open(pFileName,File::kReadOnly)==kErrorNone) {
 				// File detected
 				pEntry->m_uFlags |= ENTRYFLAGSFILEFOUND;
-				const uint32_t uNewLength = static_cast<uint32_t>(TheFile.GetSize());				// Get the NEW length
+				const uint32_t uNewLength = static_cast<uint32_t>(TheFile.get_file_size());				// Get the NEW length
 				if (uNewLength) {
 					ppData = m_pMemoryManager->AllocHandle(uNewLength,uHandleFlags);	// Get memory
 					if (ppData) {										// Got the memory?
 						m_pMemoryManager->SetID(ppData,uRezNum);		// Set the ID to the handle
-						if (TheFile.Read(m_pMemoryManager->Lock(ppData),uNewLength)!=uNewLength) {
+						if (TheFile.read(m_pMemoryManager->Lock(ppData),uNewLength)!=uNewLength) {
 							m_pMemoryManager->FreeHandle(ppData);		// Discard the memory
 							ppData = nullptr;				// Can't load it in!
 						} else {
@@ -1630,7 +1630,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 						}
 					}
 				}
-				TheFile.Close();		// Close the file
+				TheFile.close();		// Close the file
 			}
 			if (ppData) {
 				m_pMemoryManager->SetPurgeFlag(ppData,FALSE);
@@ -1651,11 +1651,11 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 
 	// Let's load it in from the .REZ file
 	uint32_t uFileOffset = pEntry->m_uFileOffset;			
-	if (!m_File.IsOpened() || !uFileOffset) {						// No resource file found?
+	if (!m_File.is_opened() || !uFileOffset) {						// No resource file found?
 		pEntry->m_uFlags &= (~ENTRYFLAGSREFCOUNT);	// Kill the ref count
 		return NULL;
 	}
-	m_File.SetMark(uFileOffset);						// Seek into the file
+	m_File.set_mark(uFileOffset);						// Seek into the file
 
 	uint32_t DataLength = pEntry->m_uLength;				// Preload the length
 	uint32_t PackedLength = pEntry->m_uCompressedLength;
@@ -1669,7 +1669,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 
 		// The old format had the data length in the compressed data
 		if (!DataLength) {
-			DataLength = m_File.ReadLittleWord32();		// Get the length
+			DataLength = m_File.read_little_uint32();		// Get the length
 			pEntry->m_uLength = DataLength;
 			pEntry->m_uFileOffset += 4;
 			pEntry->m_uCompressedLength -= 4;
@@ -1694,7 +1694,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 		uint8_t *pOutput = (uint8_t *)m_pMemoryManager->Lock(ppData);
 		do {		/* Loop for decompression */
 			uintptr_t ChunkSize = (BufferSize<PackedSize) ? BufferSize : PackedSize;
-			if (m_File.Read(PackedPtr,ChunkSize)!=ChunkSize) {
+			if (m_File.read(PackedPtr,ChunkSize)!=ChunkSize) {
 				m_pMemoryManager->FreeHandle(ppData);
 				pEntry->m_uFlags &= (~ENTRYFLAGSREFCOUNT);		// Kill the ref count
 				return NULL;
@@ -1732,7 +1732,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 	ppData = m_pMemoryManager->AllocHandle(DataLength,uHandleFlags);	// Get the memory
 	if (ppData) {		/* Memory ok? */
 		m_pMemoryManager->SetID(ppData,uRezNum);		// Set the ID to the handle
-		if (m_File.Read(m_pMemoryManager->Lock(ppData),DataLength)==DataLength) {	/* Read it in */
+		if (m_File.read(m_pMemoryManager->Lock(ppData),DataLength)==DataLength) {	/* Read it in */
 			m_pMemoryManager->Unlock(ppData);
 			if (pLoadedFlag) {
 				pLoadedFlag[0] = TRUE;		/* Data is new */

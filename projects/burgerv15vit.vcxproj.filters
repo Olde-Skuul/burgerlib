@@ -439,6 +439,9 @@
     <ClInclude Include="..\source\lowlevel\brstructs.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brtemplates.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtick.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -517,6 +520,12 @@
     <ClInclude Include="..\source\memory\brmemorymanager.h">
       <Filter>source\memory</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\platforms\psvita\brvitamemory.h">
+      <Filter>source\platforms\psvita</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\psvita\brvitatypes.h">
+      <Filter>source\platforms\psvita</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\random\brmersennetwist.h">
       <Filter>source\random</Filter>
     </ClInclude>
@@ -588,12 +597,6 @@
     </ClInclude>
     <ClInclude Include="..\source\text\brwin437.h">
       <Filter>source\text</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\vita\brvitamemory.h">
-      <Filter>source\vita</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\vita\brvitatypes.h">
-      <Filter>source\vita</Filter>
     </ClInclude>
     <ClCompile Include="..\source\ansi\brcapturestdout.cpp">
       <Filter>source\ansi</Filter>
@@ -994,6 +997,9 @@
     <ClCompile Include="..\source\lowlevel\brstructs.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brtemplates.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtick.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1066,6 +1072,30 @@
     <ClCompile Include="..\source\memory\brmemorymanager.cpp">
       <Filter>source\memory</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\platforms\psvita\brcriticalsectionvita.cpp">
+      <Filter>source\platforms\psvita</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\psvita\brdirectorysearchvita.cpp">
+      <Filter>source\platforms\psvita</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\psvita\brfilemanagervita.cpp">
+      <Filter>source\platforms\psvita</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\psvita\brfilenamevita.cpp">
+      <Filter>source\platforms\psvita</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\psvita\brfilevita.cpp">
+      <Filter>source\platforms\psvita</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\psvita\brticksvita.cpp">
+      <Filter>source\platforms\psvita</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\psvita\brtimedatevita.cpp">
+      <Filter>source\platforms\psvita</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\psvita\brvitamemory.cpp">
+      <Filter>source\platforms\psvita</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\random\brmersennetwist.cpp">
       <Filter>source\random</Filter>
     </ClCompile>
@@ -1135,30 +1165,6 @@
     <ClCompile Include="..\source\text\brwin437.cpp">
       <Filter>source\text</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\vita\brcriticalsectionvita.cpp">
-      <Filter>source\vita</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\vita\brdirectorysearchvita.cpp">
-      <Filter>source\vita</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\vita\brfilemanagervita.cpp">
-      <Filter>source\vita</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\vita\brfilenamevita.cpp">
-      <Filter>source\vita</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\vita\brfilevita.cpp">
-      <Filter>source\vita</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\vita\brticksvita.cpp">
-      <Filter>source\vita</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\vita\brtimedatevita.cpp">
-      <Filter>source\vita</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\vita\brvitamemory.cpp">
-      <Filter>source\vita</Filter>
-    </ClCompile>
     <VitaCGCompile Include="..\source\graphics\shadersvita\pstexturecolorvita.vitacg">
       <Filter>source\graphics\shadersvita</Filter>
     </VitaCGCompile>
@@ -1222,14 +1228,14 @@
     <Filter Include="source\memory">
       <UniqueIdentifier>9DD825C0-C786-3EF1-BA2F-520301E5B5B8</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\platforms\psvita">
+      <UniqueIdentifier>9BAA79FF-2E3E-3B9F-98B9-5050C6FD740B</UniqueIdentifier>
+    </Filter>
     <Filter Include="source\random">
       <UniqueIdentifier>DE923746-B5C0-31B0-A47B-1DA1E4101DEB</UniqueIdentifier>
     </Filter>
     <Filter Include="source\text">
       <UniqueIdentifier>9C208713-1C74-39D8-9B15-7039C2E83192</UniqueIdentifier>
-    </Filter>
-    <Filter Include="source\vita">
-      <UniqueIdentifier>439BAEEE-A4D2-30A4-96F0-DC559983BC00</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
