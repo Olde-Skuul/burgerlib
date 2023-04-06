@@ -559,6 +559,83 @@ BURGER_INLINE uint64_t _swapendian64(uint64_t uInput)
 #pragma volatile_asm reset
 #endif
 
+/***************************************
+
+	Memory barriers
+
+	They are done as macros
+
+***************************************/
+
+#if defined(BURGER_WATCOM)
+extern void BURGER_MEMORYBARRIER(void);
+#pragma aux BURGER_MEMORYBARRIER = "" parm[] modify exact[];
+
+#elif defined(BURGER_MSVC)
+#if (BURGER_MSVC >= 140000000)
+extern "C" void _ReadBarrier(void);
+#pragma intrinsic(_ReadBarrier)
+#endif
+extern "C" void _WriteBarrier(void);
+extern "C" void _ReadWriteBarrier(void);
+#pragma intrinsic(_WriteBarrier, _ReadWriteBarrier)
+#define BURGER_MEMORYBARRIER() _ReadWriteBarrier()
+
+#elif defined(BURGER_GNUC) || defined(BURGER_CLANG) || defined(BURGER_WIIU) || \
+	defined(DOXYGEN)
+#define BURGER_MEMORYBARRIER() __asm__ __volatile__("" : : : "memory")
+
+#else
+#define BURGER_MEMORYBARRIER() (void)0
+#endif
+
+/***************************************
+
+	Threading instructions
+
+***************************************/
+
+// clang-format off
+#if defined(BURGER_WATCOM)
+extern void BURGER_PAUSEOPCODE(void);
+#pragma aux BURGER_PAUSEOPCODE = ".686p" ".xmm2" "pause"
+
+#elif (defined(BURGER_MSVC) || defined(BURGER_METROWERKS)) && defined(BURGER_INTEL)
+#define BURGER_PAUSEOPCODE() _mm_pause()
+
+#elif (defined(BURGER_CLANG) || defined(BURGER_GNUC)) && defined(BURGER_INTEL)
+#define BURGER_PAUSEOPCODE() __asm__ __volatile__("pause")
+
+#elif defined(BURGER_MSVC) && defined(BURGER_ARM)
+#define BURGER_PAUSEOPCODE() __yield()
+
+#elif defined(BURGER_CLANG) && defined(BURGER_ARM)
+#define BURGER_PAUSEOPCODE() __builtin_arm_yield()
+
+#elif defined(BURGER_GNUC) && defined(BURGER_ARM)
+#define BURGER_PAUSEOPCODE() __asm__ __volatile__("yield" ::: "memory")
+
+#elif defined(BURGER_METROWERKS) && defined(BURGER_PPC)
+#define BURGER_PAUSEOPCODE() asm volatile { or r27, r27, r27 }
+
+#elif  (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)
+#define BURGER_PAUSEOPCODE() __asm__ __volatile__("or 27,27,27")
+
+#elif defined(BURGER_XBOX360)
+#define BURGER_PAUSEOPCODE() YieldProcessor()
+
+#elif defined(BURGER_SNSYSTEMS) && defined(BURGER_PPC)
+#define BURGER_PAUSEOPCODE() __asm__ volatile("or 27, 27, 27;")
+
+#elif defined(BURGER_RISCV)
+#define BURGER_PAUSEOPCODE() \
+	__asm__ __volatile__(".insn i 0x0F, 0, x0, x0, 0x010")
+	
+#else
+#define BURGER_PAUSEOPCODE() (void)0
+#endif
+// clang-format on
+
 /* END */
 
 #endif

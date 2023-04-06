@@ -57,6 +57,7 @@ void BURGER_API Burger::Delete(const Base* pInput) BURGER_NOEXCEPT
 {
 	// Valid pointer?
 	if (pInput) {
+
 		// Destroy the class
 		const_cast<Base*>(pInput)->~Base();
 
@@ -67,7 +68,7 @@ void BURGER_API Burger::Delete(const Base* pInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn const Burger::StaticRTTI *Burger::Base::GetStaticRTTI(void) const
+	\fn const Burger::StaticRTTI *Burger::Base::get_StaticRTTI(void) const
 	\brief Get the description to the class
 
 	This virtual function will pull the pointer to the StaticRTTI instance that
@@ -81,7 +82,7 @@ void BURGER_API Burger::Delete(const Base* pInput) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn const char *Burger::Base::GetClassName(void) const
+	\fn const char *Burger::Base::get_class_name(void) const
 	\brief Get the name of the class
 
 	This inline function will pull the virtually declared pointer to the

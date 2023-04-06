@@ -2964,6 +2964,34 @@ line of processors.
 
 /*! ************************************
 
+	\def BURGER_ROUNDUP
+	\brief Define to round up an integer to the next power of 2.
+
+	For compile time constants, use this macro to take a sizeof() value and a
+	power of 2 alignment value to round up the value to the desired power of 2.
+
+	If the value is already at that power of 2, it will be returned unchanged.
+
+	\note If __alignment is not a power of 2, undefined behavior will occur.
+
+	\param __value Integer value to apply the alignment
+	\param __alignment Integer power of 2.
+
+	\code
+
+	struct V {
+		uint8_t Foo;
+	} Value;
+
+	// Ensure the structure size is a power of 8
+	uintptr_t uNewSize = BURGER_ROUNDUP(sizeof(Value), 8);
+
+	\endcode
+
+***************************************/
+
+/*! ************************************
+
 	\def BURGER_STRINGIZE
 	\brief Convert a macro into a string literal.
 

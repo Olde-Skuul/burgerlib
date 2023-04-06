@@ -1,14 +1,14 @@
 /***************************************
 
-    Create and work with Windows style GUID structures
+	Create and work with Windows style GUID structures
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -19,33 +19,56 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRERROR_H__
+#include "brerror.h"
+#endif
+
 /* BEGIN */
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+// If windows is included first, don't declare _GUID
 #if !defined(GUID_DEFINED) || defined(DOXYGEN)
+
 #if !defined(DOXYGEN)
-#define GUID_DEFINED		// Define used by the windows headers
+// Define used by the windows headers to disable
+// generation of the structure below
+#define GUID_DEFINED
 #endif
+
 typedef struct _GUID {
-	uint32_t Data1;			///< Initial 32 bits as a little endian uint32_t
-	uint16_t Data2;			///< Next 16 bits as a little endian uint16_t
-	uint16_t Data3;			///< Third value as a 16 bit little endian uint16_t
-	uint8_t Data4[8];			///< Remaining 64 bits as 8 bytes
+	/** Initial 32 bits little endian */
+	uint32_t Data1;
+	/** Next 16 bits little endian */
+	uint16_t Data2;
+	/** Third value little endian */
+	uint16_t Data3;
+	/** Remaining 64 bits as 8 bytes */
+	uint8_t Data4[8];
 } GUID;
 #endif
+
 #ifdef __cplusplus
 }
 #endif
+
 namespace Burger {
-extern const GUID g_GUIDZero;		///< Empty GUID
-extern void BURGER_API GUIDInit(GUID *pOutput)BURGER_NOEXCEPT;
-extern void BURGER_API GUIDToString(char *pOutput,const GUID *pInput)BURGER_NOEXCEPT;
-extern uint_t BURGER_API GUIDFromString(GUID *pOutput,const char *pInput)BURGER_NOEXCEPT;
-extern uint_t BURGER_API GUIDHash(const GUID *pInput)BURGER_NOEXCEPT;
-extern uint_t BURGER_API GUIDIsEqual(const GUID *pInput1,const GUID *pInput2)BURGER_NOEXCEPT;
-extern int BURGER_API GUIDCompare(const GUID *pInput1,const GUID *pInput2)BURGER_NOEXCEPT;
+
+extern const GUID g_GUID_zero;
+
+extern void BURGER_API GUID_init(GUID* pOutput) BURGER_NOEXCEPT;
+extern void BURGER_API GUID_to_string(
+	char* pOutput, const GUID* pInput) BURGER_NOEXCEPT;
+extern eError BURGER_API GUID_from_string(
+	GUID* pOutput, const char* pInput) BURGER_NOEXCEPT;
+extern uint_t BURGER_API GUID_hash(const GUID* pInput) BURGER_NOEXCEPT;
+extern uint_t BURGER_API GUID_is_equal(
+	const GUID* pInput1, const GUID* pInput2) BURGER_NOEXCEPT;
+extern int BURGER_API GUID_compare(
+	const GUID* pInput1, const GUID* pInput2) BURGER_NOEXCEPT;
 }
+
 /* END */
 
 #endif

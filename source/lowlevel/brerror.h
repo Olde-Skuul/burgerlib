@@ -173,6 +173,8 @@ enum eError {
 	kErrorCantUnlock,
 	/** Thread couldn't start */
 	kErrorThreadNotStarted,
+	/** Thread already in progress */
+	kErrorThreadAlreadyStarted,
 	/** Thread won't stop */
 	kErrorThreadCantStop,
 	/** Thread not found */

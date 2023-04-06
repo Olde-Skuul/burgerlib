@@ -79,4 +79,40 @@ uint64_t _swapendian64(const uint64_t& rInput)
 	_swapendian64_asm(&temp, &rInput);
 	return temp;
 }
+
 #endif
+
+/*! ************************************
+
+	\def BURGER_MEMORYBARRIER
+	\brief Invoke a memory barrier with the compiled code.
+
+	When writing multi-threaded code, sometimes it's necessary to instruct the
+	compiler to not reorder read/write operations to ensure values are read or
+	written as the code is listed on the source code.
+
+	Depending on compiler, this is a define or a function call.
+
+	In most cases, this generates no code, only an instruction to the compiler.
+
+	\note Visual Studio maps to _ReadWriteBarrier()
+
+***************************************/
+
+/*! ************************************
+
+	\def BURGER_PAUSEOPCODE
+	\brief Insert a yield instruction.
+
+	On modern CPUs, a yield instruction exists that will cause the current
+	thread to pause until an interrupt occurs. This is a quick way to get a
+	thread to sleep and instantly restart to test for a mutex or other thread
+    blocker.
+
+	Depending on compiler, this is a define or a function call.
+
+	On older CPUs, or systems that do not have threading, this does no
+	operation. An example are 680x0 systems
+
+***************************************/
+

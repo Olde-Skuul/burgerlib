@@ -2,7 +2,7 @@
 
 	Run Time Type Information class
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -97,11 +97,11 @@
 
 	// Return a string with the true class name
 
-	Debug::Message(pBar->GetClassName());		// "foo"
-	Debug::Message(pBar2->GetClassName());		// "foo2"
-	Debug::Message(pBar3->GetClassName());		// "foo3"
-	Debug::Message(pBar4->GetClassName());		// "foo4"
-	Debug::Message(pBar5->GetClassName());		// "foo5"
+	Debug::Message(pBar->get_class_name());		// "foo"
+	Debug::Message(pBar2->get_class_name());		// "foo2"
+	Debug::Message(pBar3->get_class_name());		// "foo3"
+	Debug::Message(pBar4->get_class_name());		// "foo4"
+	Debug::Message(pBar5->get_class_name());		// "foo5"
 
 	// Demonstrate a truth table for class interactions
 
@@ -181,7 +181,7 @@
 
 /*! ************************************
 
-	\fn const char* Burger::StaticRTTI::GetClassName(void) const
+	\fn const char* Burger::StaticRTTI::get_class_name(void) const
 	\brief Return the class name
 
 	Return the name of the class, not the base class.
@@ -198,18 +198,19 @@
 	base class, all the while checking for a match.
 
 	\param pInput Pointer to a StaticRTTI record to compare to this one
+
 	\return \ref TRUE if this record is in the linked list chain
 
 ***************************************/
 
-uint_t BURGER_API Burger::StaticRTTI::IsInList(
+uint_t BURGER_API Burger::StaticRTTI::is_in_list(
 	const StaticRTTI* pInput) const BURGER_NOEXCEPT
 {
-	// since there should be only one static instance of the type ID, it should
+	// Since there should be only one static instance of the type ID, it should
 	// be safe to compare the ID string pointers
 	uint_t bRetVal = (pInput->m_pClassName == m_pClassName);
 	if (!bRetVal && m_pParent) {
-		bRetVal = m_pParent->IsInList(pInput);
+		bRetVal = m_pParent->is_in_list(pInput);
 	}
 	return bRetVal;
 }
@@ -221,7 +222,7 @@ uint_t BURGER_API Burger::StaticRTTI::IsInList(
 
 	If a class needs to support StaticRTTI, insert this macro in the class
 	declaration. Unlike the macro BURGER_RTTI_IN_CLASS(), this one adds the
-	inline function GetClassName() to retrieve the name of the class easily.
+	inline function get_class_name() to retrieve the name of the class easily.
 
 	\note This macro will set the class setting to "public"
 

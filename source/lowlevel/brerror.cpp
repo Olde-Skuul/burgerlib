@@ -108,6 +108,7 @@ static const ErrorLookup_t g_ErrorLookup[] = {{Burger::kErrorNone, "No error"},
 	{Burger::kErrorCantLock, "Thread lock failure"},
 	{Burger::kErrorCantUnlock, "Thread unlock failure"},
 	{Burger::kErrorThreadNotStarted, "Thread couldn't start"},
+	{Burger::kErrorThreadAlreadyStarted, "Thread already in progress"},
 	{Burger::kErrorThreadCantStop, "Thread won't stop"},
 	{Burger::kErrorThreadNotFound, "Invalid thread ID"}};
 #endif

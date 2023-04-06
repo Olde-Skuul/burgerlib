@@ -1132,15 +1132,21 @@
 	(reinterpret_cast<intptr_t>( \
 		 &reinterpret_cast<const __type*>(1)->__member) - \
 		1)
+
 #define BURGER_GET_BASE_PTR(x, __type, __member) \
 	reinterpret_cast<__type*>( \
 		reinterpret_cast<uint8_t*>(x) - BURGER_OFFSETOF(__type, __member))
+
 #define BURGER_CONST_GET_BASE_PTR(x, __type, __member) \
 	reinterpret_cast<const __type*>(reinterpret_cast<const uint8_t*>(x) - \
 		BURGER_OFFSETOF(__type, __member))
 
 // Unused parameters or variables
 #define BURGER_UNUSED(x) (void)(x)
+
+// Round a value up to the nearest power of 2
+#define BURGER_ROUNDUP(__value, __alignment) \
+	(((__value) + (__alignment)-1) & ~((__alignment)-1))
 
 // Macro to create copy constructors to disable the feature
 #if defined(BURGER_RVALUE_REFERENCES) || defined(DOXYGEN)

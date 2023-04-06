@@ -2,7 +2,7 @@
 
 	Run Time Type Information class
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -22,34 +22,39 @@
 /* BEGIN */
 namespace Burger {
 struct StaticRTTI {
-	const char* m_pClassName;    ///< Pointer to the name of the class
-	const StaticRTTI* m_pParent; ///< Pointer to the parent in a derived class
-	BURGER_INLINE const char* GetClassName(void) const BURGER_NOEXCEPT
+	/** Pointer to the name of the class */
+	const char* m_pClassName;
+
+	/** Pointer to the parent in a derived class */
+	const StaticRTTI* m_pParent;
+
+	BURGER_INLINE const char* get_class_name(void) const BURGER_NOEXCEPT
 	{
 		return m_pClassName;
 	}
-	uint_t BURGER_API IsInList(const StaticRTTI* pInput) const BURGER_NOEXCEPT;
+
+	uint_t BURGER_API is_in_list(
+		const StaticRTTI* pInput) const BURGER_NOEXCEPT;
 };
 }
 
 #define BURGER_RTTI_IN_CLASS() \
 public: \
-	const Burger::StaticRTTI* GetStaticRTTI(void) \
-		const BURGER_NOEXCEPT BURGER_OVERRIDE; \
-	static const Burger::StaticRTTI g_StaticRTTI
+	static const Burger::StaticRTTI g_StaticRTTI; \
+	const Burger::StaticRTTI* get_StaticRTTI(void) \
+		const BURGER_NOEXCEPT BURGER_OVERRIDE
 
 #define BURGER_RTTI_IN_BASE_CLASS() \
 public: \
-	BURGER_INLINE const char* GetClassName(void) const BURGER_NOEXCEPT \
+	static const Burger::StaticRTTI g_StaticRTTI; \
+	BURGER_INLINE const char* get_class_name(void) const BURGER_NOEXCEPT \
 	{ \
-		return GetStaticRTTI()->GetClassName(); \
+		return get_StaticRTTI()->get_class_name(); \
 	} \
-	virtual const Burger::StaticRTTI* GetStaticRTTI(void) \
-		const BURGER_NOEXCEPT; \
-	static const Burger::StaticRTTI g_StaticRTTI
+	virtual const Burger::StaticRTTI* get_StaticRTTI(void) const BURGER_NOEXCEPT
 
 #define BURGER_CREATE_STATICRTTI_BASE(__ClassName) \
-	const Burger::StaticRTTI* __ClassName::GetStaticRTTI(void) \
+	const Burger::StaticRTTI* __ClassName::get_StaticRTTI(void) \
 		const BURGER_NOEXCEPT \
 	{ \
 		return &g_StaticRTTI; \
@@ -57,7 +62,7 @@ public: \
 	const Burger::StaticRTTI __ClassName::g_StaticRTTI = {#__ClassName, nullptr}
 
 #define BURGER_CREATE_STATICRTTI_PARENT(__ClassName, __ParentClass) \
-	const Burger::StaticRTTI* __ClassName ::GetStaticRTTI(void) \
+	const Burger::StaticRTTI* __ClassName ::get_StaticRTTI(void) \
 		const BURGER_NOEXCEPT \
 	{ \
 		return &g_StaticRTTI; \
@@ -66,21 +71,21 @@ public: \
 		#__ClassName, &__ParentClass::g_StaticRTTI}
 
 #define BURGER_STATICRTTI_ISTYPE(__ClassName, __Pointer) \
-	(__Pointer)->GetStaticRTTI()->IsInList(&__ClassName::g_StaticRTTI)
+	(__Pointer)->get_StaticRTTI()->is_in_list(&__ClassName::g_StaticRTTI)
 
 #define BURGER_RTTICAST(__ClassName, __Pointer) \
 	((__Pointer) && \
-				((__Pointer)->GetStaticRTTI()->IsInList( \
+				((__Pointer)->get_StaticRTTI()->is_in_list( \
 					&__ClassName::g_StaticRTTI)) ? \
-            static_cast<__ClassName*>(__Pointer) : \
-            nullptr)
+			static_cast<__ClassName*>(__Pointer) : \
+			nullptr)
 
 #define BURGER_RTTICONSTCAST(__ClassName, __Pointer) \
 	((__Pointer) && \
-				((__Pointer)->GetStaticRTTI()->IsInList( \
+				((__Pointer)->get_StaticRTTI()->is_in_list( \
 					&__ClassName::g_StaticRTTI)) ? \
-            static_cast<const __ClassName*>(__Pointer) : \
-            nullptr)
+			static_cast<const __ClassName*>(__Pointer) : \
+			nullptr)
 
 /* END */
 

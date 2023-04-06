@@ -43,6 +43,7 @@
 /* DIR: "platforms:psvita" */
 /* DIR: "platforms:wiiu" */
 /* DIR: "platforms:switch" */
+/* IGNORE: "burgerps4.h" */
 
 /* BEGIN */
 /***************************************
@@ -94,13 +95,29 @@
 #include "brxcode.h"
 #include "brmetrowerks.h"
 #include "brintrinsics.h"
+#include "brmacros.h"
 #include "brtemplates.h"
 #include "brerror.h"
 #include "brassert.h"
+#include "brguid.h"
+#include "brstructs.h"
+#include "brstaticrtti.h"
+#include "brbase.h"
+#include "brmemorymanager.h"
+#include "brglobalmemorymanager.h"
+#include "brmemoryansi.h"
+#include "brcodepage.h"
+#include "brisolatin1.h"
+#include "brmacromanus.h"
+#include "brwin1252.h"
+#include "brwin437.h"
+#include "brfphalf.h"
+#include "brfpinfo.h"
+#include "brfplargeint.h"
+#include "brfpprintinfo.h"
 
 #include "brlocalization.h"
 #include "brdebug.h"
-#include "brguid.h"
 #include "brwindowstypes.h"
 #include "brxbox360types.h"
 #include "brdarwintypes.h"
@@ -116,30 +133,19 @@
 #include "brvitatypes.h"
 #include "brwiiutypes.h"
 #include "bralgorithm.h"
-#include "brstructs.h"
 #include "brendian.h"
-#include "brfpinfo.h"
-#include "brfplargeint.h"
-#include "brfpprintinfo.h"
 #include "brargumenttype.h"
-#include "brstaticrtti.h"
-#include "brbase.h"
 #include "brcodelibrary.h"
 #include "brrandombase.h"
 #include "brrandom.h"
 #include "brmersennetwist.h"
 #include "brstdouthelpers.h"
-#include "brcodepage.h"
-#include "brisolatin1.h"
-#include "brmacromanus.h"
-#include "brwin1252.h"
-#include "brwin437.h"
 #include "bratomic.h"
 #include "brcriticalsection.h"
-#include "brmemorymanager.h"
-#include "brmemoryansi.h"
+#include "brsemaphore.h"
+#include "brconditionvariable.h"
+#include "brthread.h"
 #include "brmemoryhandle.h"
-#include "brglobalmemorymanager.h"
 #include "brasciito.h"
 #include "brnumberto.h"
 #include "brmemoryfunctions.h"
@@ -356,5 +362,12 @@ typedef VertexBuffer VertexBufferDefault;
 #endif
 
 }
+
+#if defined(BURGER_WINDOWS)
+#include "burgerwindows.h"
+#elif defined(BURGER_PS4) || defined(BURGER_PS5)
+#include "burgerps4.h"
+#endif
+
 #endif
 /* END */
