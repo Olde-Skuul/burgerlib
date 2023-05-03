@@ -154,55 +154,55 @@ static uint_t BURGER_API FloatResultOut(const Burger::FPPrintInfo* pFPPrintInfo,
 
 	// Test every call against the expected results.
 
-	uint_t uTest = !(pFPPrintInfo->GetSpecialFormDigits() ==
+	uint_t uTest = !(pFPPrintInfo->get_special_form_digits() ==
 		pExpectedState->m_uSpecialFormDigits);
 	uResult |= uTest;
-	ReportFailure("GetSpecialFormDigits() = %u, expected %u", uTest,
-		pFPPrintInfo->GetSpecialFormDigits(),
+	ReportFailure("get_special_form_digits() = %u, expected %u", uTest,
+		pFPPrintInfo->get_special_form_digits(),
 		pExpectedState->m_uSpecialFormDigits);
 
-	uTest = !(pFPPrintInfo->HasInteger() == pExpectedState->m_bHasInteger);
+	uTest = !(pFPPrintInfo->has_integer() == pExpectedState->m_bHasInteger);
 	uResult |= uTest;
-	ReportFailure("HasInteger() = %u, expected %u", uTest,
-		pFPPrintInfo->HasInteger(), pExpectedState->m_bHasInteger);
+	ReportFailure("has_integer() = %u, expected %u", uTest,
+		pFPPrintInfo->has_integer(), pExpectedState->m_bHasInteger);
 
-	uTest = !(pFPPrintInfo->GetFirstNonZeroIntDigitPosition() ==
+	uTest = !(pFPPrintInfo->get_first_non_zero_int_digit_position() ==
 		pExpectedState->m_uFirstNonZero);
 	uResult |= uTest;
-	ReportFailure("GetFirstNonZeroIntDigitPosition() = %u, expected %u", uTest,
-		pFPPrintInfo->GetFirstNonZeroIntDigitPosition(),
+	ReportFailure("get_first_non_zero_int_digit_position() = %u, expected %u", uTest,
+		pFPPrintInfo->get_first_non_zero_int_digit_position(),
 		pExpectedState->m_uFirstNonZero);
 
-	uTest = !(pFPPrintInfo->GetLastNonZeroIntDigitPosition() ==
+	uTest = !(pFPPrintInfo->get_last_non_zero_int_digit_position() ==
 		pExpectedState->m_uLastNonZero);
 	uResult |= uTest;
-	ReportFailure("GetLastNonZeroIntDigitPosition() = %u, expected %u", uTest,
-		pFPPrintInfo->GetLastNonZeroIntDigitPosition(),
+	ReportFailure("get_last_non_zero_int_digit_position() = %u, expected %u", uTest,
+		pFPPrintInfo->get_last_non_zero_int_digit_position(),
 		pExpectedState->m_uLastNonZero);
 
-	uTest = !(pFPPrintInfo->HasFractional() == pExpectedState->m_bHasFraction);
+	uTest = !(pFPPrintInfo->has_fractional() == pExpectedState->m_bHasFraction);
 	uResult |= uTest;
-	ReportFailure("HasFractional() = %u, expected %u", uTest,
-		pFPPrintInfo->HasFractional(), pExpectedState->m_bHasFraction);
+	ReportFailure("has_fractional() = %u, expected %u", uTest,
+		pFPPrintInfo->has_fractional(), pExpectedState->m_bHasFraction);
 
-	uTest = !(pFPPrintInfo->GetFirstNonZeroFracDigitPosition() ==
+	uTest = !(pFPPrintInfo->get_first_non_zero_frac_digit_position() ==
 		pExpectedState->m_uFirstNonZeroFraction);
 	uResult |= uTest;
-	ReportFailure("GetFirstNonZeroFracDigitPosition() = %u, expected %u", uTest,
-		pFPPrintInfo->GetFirstNonZeroFracDigitPosition(),
+	ReportFailure("get_first_non_zero_frac_digit_position() = %u, expected %u", uTest,
+		pFPPrintInfo->get_first_non_zero_frac_digit_position(),
 		pExpectedState->m_uFirstNonZeroFraction);
 
-	uTest = !(pFPPrintInfo->GetLastNonZeroFracDigitPosition() ==
+	uTest = !(pFPPrintInfo->get_last_non_zero_frac_digit_position() ==
 		pExpectedState->m_uLastNonZeroFraction);
 	uResult |= uTest;
-	ReportFailure("GetLastNonZeroFracDigitPosition() = %u, expected %u", uTest,
-		pFPPrintInfo->GetLastNonZeroFracDigitPosition(),
+	ReportFailure("get_last_non_zero_frac_digit_position() = %u, expected %u", uTest,
+		pFPPrintInfo->get_last_non_zero_frac_digit_position(),
 		pExpectedState->m_uLastNonZeroFraction);
 
-	uTest = !(pFPPrintInfo->GetResult() == pExpectedState->m_Result);
+	uTest = !(pFPPrintInfo->get_result() == pExpectedState->m_Result);
 	uResult |= uTest;
-	ReportFailure("GetResult() = %u, expected %u", uTest,
-		static_cast<uint_t>(pFPPrintInfo->GetResult()),
+	ReportFailure("get_result() = %u, expected %u", uTest,
+		static_cast<uint_t>(pFPPrintInfo->get_result()),
 		static_cast<uint_t>(pExpectedState->m_Result));
 
 	return uResult;
@@ -301,14 +301,14 @@ static uint_t BURGER_API TestFloatDecomp(void) BURGER_NOEXCEPT
 	const TestDecompFloat_t* pWork = g_DecompFloats;
 	uintptr_t uCount = BURGER_ARRAYSIZE(g_DecompFloats);
 	do {
-		const Burger::FPInfo FloatInfo(pWork->m_Value.Get());
+		const Burger::FPInfo FloatInfo(pWork->m_Value.get_float());
 		Burger::FPPrintInfo FloatPrintInfo;
-		FloatPrintInfo.AnalyzeFloat(&FloatInfo, pWork->m_uDigits);
+		FloatPrintInfo.analyze_float(&FloatInfo, pWork->m_uDigits);
 		const uint_t uTest = FloatResultOut(&FloatPrintInfo, &pWork->m_State);
 
 		uFailure |= uTest;
 		if (uTest) {
-			ReportFailure("Failed with float(%g)", uTest, pWork->m_Value.Get());
+			ReportFailure("Failed with float(%g)", uTest, pWork->m_Value.get_float());
 		}
 		++pWork;
 	} while (--uCount);
@@ -317,15 +317,15 @@ static uint_t BURGER_API TestFloatDecomp(void) BURGER_NOEXCEPT
 	const TestDecompDouble_t* pWork2 = g_DecompDoubles;
 	uCount = BURGER_ARRAYSIZE(g_DecompDoubles);
 	do {
-		const Burger::FPInfo FloatInfo(pWork2->m_Value.Get());
+		const Burger::FPInfo FloatInfo(pWork2->m_Value.get_double());
 		Burger::FPPrintInfo FloatPrintInfo;
-		FloatPrintInfo.AnalyzeFloat(&FloatInfo, pWork2->m_uDigits);
+		FloatPrintInfo.analyze_float(&FloatInfo, pWork2->m_uDigits);
 		const uint_t uTest = FloatResultOut(&FloatPrintInfo, &pWork2->m_State);
 
 		uFailure |= uTest;
 		if (uTest) {
 			ReportFailure(
-				"Failed with double(%g)", uTest, pWork2->m_Value.Get());
+				"Failed with double(%g)", uTest, pWork2->m_Value.get_double());
 		}
 		++pWork2;
 	} while (--uCount);
@@ -336,7 +336,7 @@ static uint_t BURGER_API TestFloatDecomp(void) BURGER_NOEXCEPT
 	do {
 		const Burger::FPInfo FloatInfo(pWork3->m_Value);
 		Burger::FPPrintInfo FloatPrintInfo;
-		FloatPrintInfo.AnalyzeFloat(&FloatInfo, pWork3->m_uDigits);
+		FloatPrintInfo.analyze_float(&FloatInfo, pWork3->m_uDigits);
 		const uint_t uTest = FloatResultOut(&FloatPrintInfo, &pWork3->m_State);
 
 		uFailure |= uTest;
@@ -763,14 +763,14 @@ static uint_t BURGER_API ArgTypeUnitTestSIMDTypes(void) BURGER_NOEXCEPT
 	// Only run the unit tests on Intel platforms that support MMX or SSE
 
 #if defined(BURGER_INTEL)
-	const uint_t uCPUIDPresent = Burger::IsCPUIDPresent();
+	const uint_t uCPUIDPresent = Burger::has_CPUID();
 	if (uCPUIDPresent) {
 
 		Burger::CPUID_t MyID;
 		Burger::CPUID(&MyID);
 
 #if defined(BURGER_X86)
-		if (MyID.HasMMX()) {
+		if (MyID.has_MMX()) {
 			__m64 simd64 = {0x7F00FF00AA22AA22LL};
 
 			Burger::ArgumentType S64a(simd64);
@@ -791,7 +791,7 @@ static uint_t BURGER_API ArgTypeUnitTestSIMDTypes(void) BURGER_NOEXCEPT
 #endif
 
 #if defined(BURGER_INTEL) && !defined(BURGER_WATCOM)
-		if (MyID.HasSSE()) {
+		if (MyID.has_SSE()) {
 			__m128 simd128 = {0.0f, 0.0f, -1.0f, -1.0f};
 
 			const Burger::ArgumentType S128(simd128);

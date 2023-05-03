@@ -1,0 +1,35 @@
+;
+; X64 assembly for implementing the intrinsic _xgetbv for
+; the Visual Studio 2005 and 2008 compilers
+;
+; Build with ml64.exe
+;
+
+_TEXT segment para 'CODE'
+
+	align 16
+public _xgetbv
+_xgetbv proc
+
+; Ensure rax and rdx are cleared for the shift below
+	xor rax,rax
+	xor rdx,rdx
+
+; Perform xgetbv
+; Note: Parameter is already in ecx, so no setup needed
+
+; xgetbv instruction is the sequence below
+; VS 2008 supports the instruction, but VS 2005 does not
+	db	00FH, 001H, 0D0H
+
+
+; Answer is in edx:eax, move to rax
+    shl rdx,32
+    or rax,rdx
+	ret
+
+_xgetbv endp
+
+_TEXT ends
+
+    end

@@ -97,27 +97,7 @@ BURGER_INLINE void __cpuid(int a[4], int b)
 extern void __cpuidex(int[4], int, int);
 #pragma intrinsic(__cpuidex)
 #else
-
-#if defined(BURGER_X86)
-// For Visual Studio 2005 or earlier, use this instead
-BURGER_INLINE void __cpuidex(int a[4], int b, int c)
-{
-	// clang-format off
-    BURGER_ASM {
-    // Get the pointer to the destination buffer
-    mov esi,a
-    mov eax,b	// Command byte
-    mov ecx,c	// Get the sub command
-    cpuid		// Invoke CPUID
-    // Store the result in the same order as Visual C
-    mov[esi],eax
-    mov[esi + 4],ebx
-    mov[esi + 8],ecx
-    mov[esi + 12],edx
-    }
-	// clang-format on
-}
-#endif
+extern void __cdecl __cpuidex(int a[4], int b, int c) BURGER_NOEXCEPT;
 #endif
 
 #endif
@@ -140,7 +120,7 @@ long _InterlockedExchangeAdd(long volatile*, long);
 long _InterlockedCompareExchange(long volatile*, long, long);
 #endif
 #pragma intrinsic(_InterlockedExchange, _InterlockedExchangeAdd, \
-	_InterlockedCompareExchange)
+		_InterlockedCompareExchange)
 
 long __cdecl _InterlockedIncrement(long volatile*);
 long __cdecl _InterlockedDecrement(long volatile*);
@@ -153,8 +133,8 @@ __int64 _InterlockedDecrement64(__int64 volatile*);
 __int64 _InterlockedExchangeAdd64(__int64 volatile*, __int64);
 __int64 _InterlockedCompareExchange64(__int64 volatile*, __int64, __int64);
 #pragma intrinsic(_InterlockedExchange64, _InterlockedIncrement64, \
-	_InterlockedDecrement64, _InterlockedExchangeAdd64, \
-	_InterlockedCompareExchange64)
+		_InterlockedDecrement64, _InterlockedExchangeAdd64, \
+		_InterlockedCompareExchange64)
 
 // Not available on Xbox 360
 #if !defined(BURGER_XBOX360)
@@ -163,6 +143,12 @@ unsigned char _BitScanReverse64(unsigned long* Index, unsigned __int64 Mask);
 #pragma intrinsic(_BitScanForward64, _BitScanReverse64)
 #endif
 
+#endif
+
+
+// Visual Studio 2008 and earlier doesn't have this intrinsic
+#if defined(BURGER_INTEL) && (BURGER_MSVC < 160000000)
+extern "C" uint64_t __cdecl _xgetbv(unsigned int uInput);
 #endif
 
 // Visual studio 2005 and earlier don't have these SSE type conversions
@@ -347,6 +333,10 @@ BURGER_INLINE uint8_t _BitScanReverse(unsigned long* Index, unsigned long Mask)
 		: "mr"(Mask));
 	return bZero;
 }
+#endif
+
+#if !__has_builtin(_xgetbv)
+extern uint64_t _xgetbv(uint_t xcr) BURGER_NOEXCEPT;
 #endif
 
 #elif defined(BURGER_PPC) && defined(BURGER_MSVC)

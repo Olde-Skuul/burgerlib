@@ -138,7 +138,7 @@ BURGER_INLINE uint32_t _BitScanForward(
     mov dword ptr[ebx],eax
     setne al
     }
-    // clang-format on  
+    // clang-format on
 }
 
 BURGER_INLINE uint32_t _BitScanReverse(
@@ -152,7 +152,17 @@ BURGER_INLINE uint32_t _BitScanReverse(
     mov dword ptr[ebx],eax
     setne al
     }
-    // clang-format on      
+    // clang-format on
+}
+
+BURGER_INLINE uint64_t _xgetbv(register uint_t xcr) BURGER_NOEXCEPT
+{
+    // clang-format off
+    BURGER_ASM {
+    mov ecx, xcr
+    db 0x0F, 0x01, 0xD0
+    }
+    // clang-format on
 }
 
 #elif defined(BURGER_68K)

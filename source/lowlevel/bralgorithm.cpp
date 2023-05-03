@@ -19,7 +19,7 @@
 	\struct Burger::Base_delete
 	\brief Delete an object using Burger::Delete()
 
-	A template to pass to \ref unique_ptr to delete the object with
+	A template to pass to \ref Burger::unique_ptr to delete the object with
 	Burger::Delete.
 
 	Most classes in Burgerlib use the New allocator to use the Burgerlib memory
@@ -27,7 +27,7 @@
 	function.
 
 	\tparam T Type of object to delete with Burger::Delete()
-	\sa unique_ptr or Burger::Delete()
+	\sa Burger::unique_ptr or Burger::Delete()
 
 ***************************************/
 
@@ -36,7 +36,7 @@
 	\struct Burger::Free_delete
 	\brief Delete an object using Burger::Free()
 
-	A template to pass to \ref unique_ptr to delete the object with
+	A template to pass to \ref Burger::unique_ptr to delete the object with
 	Burger::Free().
 
 	When memory is allocated with Burger::Alloc(), it should be released with

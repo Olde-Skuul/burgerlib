@@ -1,0 +1,226 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2951234B58A5B18BA850FC79 /* test_dll.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A0F9C9F9A52D93BC0AB82B74 /* test_dll.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		213304C8BA48724FB0027D50 /* test_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = test_dll.h; path = source/test_dll.h; sourceTree = SOURCE_ROOT; };
+		A0F9C9F9A52D93BC0AB82B74 /* test_dll.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = test_dll.cpp; path = source/test_dll.cpp; sourceTree = SOURCE_ROOT; };
+		C958DC833FBF12361301C4FE /* test_dll */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test_dll; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2F06FAD421DBF684811E8EA7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		002ACE490F1B9C986FC7C414 /* test_dll */ = {
+			isa = PBXGroup;
+			children = (
+				9796CE949CD3951E99BB35F6 /* Products */,
+				4CE489F4A9041625DE5927C3 /* source */,
+			);
+			name = test_dll;
+			sourceTree = "<group>";
+		};
+		4CE489F4A9041625DE5927C3 /* source */ = {
+			isa = PBXGroup;
+			children = (
+				A0F9C9F9A52D93BC0AB82B74 /* test_dll.cpp */,
+				213304C8BA48724FB0027D50 /* test_dll.h */,
+			);
+			path = source;
+			sourceTree = SOURCE_ROOT;
+		};
+		9796CE949CD3951E99BB35F6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C958DC833FBF12361301C4FE /* test_dll */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9E9FAED2FF4F78D48EF157BC /* test_dll */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 04EF756535D8B11D3CF87EBE /* Build configuration list for PBXNativeTarget "test_dll" */;
+			buildPhases = (
+				6E9CE34DBDF346E329616839 /* Sources */,
+				2F06FAD421DBF684811E8EA7 /* Frameworks */,
+				74906D37374B786B84C6FFCB /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = test_dll;
+			productName = test_dll;
+			productReference = C958DC833FBF12361301C4FE /* test_dll */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D7ACD843091CFD4E7802A18D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+			};
+			buildConfigurationList = 39FB26D238DC075E98932D93 /* Build configuration list for PBXProject "test_dllxc3osx" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 002ACE490F1B9C986FC7C414 /* test_dll */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9E9FAED2FF4F78D48EF157BC /* test_dll */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		74906D37374B786B84C6FFCB /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${CONFIGURATION_BUILD_DIR}/${EXECUTABLE_NAME}",
+			);
+			outputPaths = (
+				"../../data/test_dlls/macosx/lib${TARGET_NAME}.dylib",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" == \"Release\" ]; then \n/opt/local/bin/p4 edit ../../data/test_dlls/macosx/lib${TARGET_NAME}.dylib\n${CP} ${CONFIGURATION_BUILD_DIR}/${EXECUTABLE_NAME} ../../data/test_dlls/macosx/lib${TARGET_NAME}.dylib\n/opt/local/bin/p4 revert -a ../../data/test_dlls/macosx/lib${TARGET_NAME}.dylib\nfi\n\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6E9CE34DBDF346E329616839 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2951234B58A5B18BA850FC79 /* test_dll.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		7D9B630078C2B47066F1CB98 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		FC3C257B0A9E4BE6F0542404 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					ppc64,
+					i386,
+					x86_64,
+				);
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)/$(PRODUCT_NAME)";
+				CONFIGURATION_TEMP_DIR = "$(SYMROOT)/$(PRODUCT_NAME)";
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_CW_ASM_SYNTAX = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_MODEL_PPC64 = NO;
+				"GCC_MODEL_PPC64[arch=ppc64]" = YES;
+				GCC_MODEL_TUNING = G4;
+				"GCC_MODEL_TUNING[arch=ppc64]" = G5;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					NDEBUG,
+				);
+				GCC_THREADSAFE_STATICS = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				"GCC_VERSION[sdk=macosx10.4]" = com.apple.compilers.llvmgcc42;
+				"GCC_VERSION[sdk=macosx10.5]" = com.apple.compilers.llvmgcc42;
+				"GCC_VERSION[sdk=macosx10.5][arch=i386]" = 4.2;
+				"GCC_VERSION[sdk=macosx10.5][arch=ppc64]" = 4.0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = NO;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PROTOTYPE_CONVERSION = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_PROFILING_CODE = NO;
+				HEADER_SEARCH_PATHS = (
+					../../source/lowlevel,
+				);
+				MACH_O_TYPE = mh_dylib;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				OBJROOT = temp;
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)xc3osxrel";
+				SDKROOT = macosx10.5;
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				SYMROOT = temp;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		04EF756535D8B11D3CF87EBE /* Build configuration list for PBXNativeTarget "test_dll" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D9B630078C2B47066F1CB98 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		39FB26D238DC075E98932D93 /* Build configuration list for PBXProject "test_dllxc3osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FC3C257B0A9E4BE6F0542404 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D7ACD843091CFD4E7802A18D /* Project object */;
+}

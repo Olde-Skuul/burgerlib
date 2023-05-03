@@ -393,10 +393,10 @@ static uint_t BURGER_API TestIsNanFloat(void) BURGER_NOEXCEPT
 
 		// Test FPInfo
 		const Burger::FPInfo FPTest(fOriginal);
-		uTest = FPTest.IsNAN();
+		uTest = FPTest.is_NaN();
 		uFailure = (uTest != uExpected);
 		uResult |= uFailure;
-		ReportFailure("Burger::FPInfo::IsNAN((float)%.16g) = %u / Wanted %u",
+		ReportFailure("Burger::FPInfo::is_NaN((float)%.16g) = %u / Wanted %u",
 			uFailure, fOriginal, uTest, uExpected);
 
 	} while (--i);
@@ -460,10 +460,10 @@ static uint_t BURGER_API TestIsNanDouble(void) BURGER_NOEXCEPT
 
 		// Test FPInfo
 		const Burger::FPInfo FPTest(dOriginal);
-		uTest = FPTest.IsNAN();
+		uTest = FPTest.is_NaN();
 		uFailure = (uTest != uExpected);
 		uResult |= uFailure;
-		ReportFailure("Burger::FPInfo::IsNAN((double)%.16g) = %u / Wanted %u",
+		ReportFailure("Burger::FPInfo::is_NaN((double)%.16g) = %u / Wanted %u",
 			uFailure, dOriginal, uTest, uExpected);
 	} while (--i);
 	return uResult;
@@ -495,11 +495,11 @@ static uint_t BURGER_API TestIsInfFloat(void) BURGER_NOEXCEPT
 
 		// Test FPInfo
 		const Burger::FPInfo FPTest(fOriginal);
-		uTest = FPTest.IsInfinity();
+		uTest = FPTest.is_infinity();
 		uFailure = (uTest != uExpected);
 		uResult |= uFailure;
 		ReportFailure(
-			"Burger::FPInfo::IsInfinity((float)%.16g) = %u / Wanted %u",
+			"Burger::FPInfo::is_infinity((float)%.16g) = %u / Wanted %u",
 			uFailure, fOriginal, uTest, uExpected);
 
 	} while (--i);
@@ -532,11 +532,11 @@ static uint_t BURGER_API TestIsInfDouble(void) BURGER_NOEXCEPT
 
 		// Test FPInfo
 		const Burger::FPInfo FPTest(dOriginal);
-		uTest = FPTest.IsInfinity();
+		uTest = FPTest.is_infinity();
 		uFailure = (uTest != uExpected);
 		uResult |= uFailure;
 		ReportFailure(
-			"Burger::FPInfo::IsInfinity((double)%.16g) = %u / Wanted %u",
+			"Burger::FPInfo::is_infinity((double)%.16g) = %u / Wanted %u",
 			uFailure, dOriginal, uTest, uExpected);
 	} while (--i);
 	return uResult;
@@ -563,10 +563,10 @@ static uint_t BURGER_API TestIsFiniteFloat(void) BURGER_NOEXCEPT
 
 		// Test FPInfo
 		const Burger::FPInfo FPTest(fOriginal);
-		uTest = FPTest.IsFinite();
+		uTest = FPTest.is_finite();
 		uFailure = (uTest != uExpected);
 		uResult |= uFailure;
-		ReportFailure("Burger::FPInfo::IsFinite((float)%.16g) = %u / Wanted %u",
+		ReportFailure("Burger::FPInfo::is_finite((float)%.16g) = %u / Wanted %u",
 			uFailure, fOriginal, uTest, uExpected);
 	} while (--i);
 	return uResult;
@@ -598,11 +598,11 @@ static uint_t BURGER_API TestIsFiniteDouble(void) BURGER_NOEXCEPT
 
 		// Test FPInfo
 		const Burger::FPInfo FPTest(dOriginal);
-		uTest = FPTest.IsFinite();
+		uTest = FPTest.is_finite();
 		uFailure = (uTest != uExpected);
 		uResult |= uFailure;
 		ReportFailure(
-			"Burger::FPInfo::IsFinite((double)%.16g) = %u / Wanted %u",
+			"Burger::FPInfo::is_finite((double)%.16g) = %u / Wanted %u",
 			uFailure, dOriginal, uTest, uExpected);
 	} while (--i);
 	return uResult;
@@ -678,11 +678,11 @@ static uint_t BURGER_API TestSignBitFloat(void) BURGER_NOEXCEPT
 
 		// Test FPInfo
 		const Burger::FPInfo FPTest(fOriginal);
-		uTest = FPTest.IsNegative();
+		uTest = FPTest.is_negative();
 		uFailure = (uTest != uExpected);
 		uResult |= uFailure;
 		ReportFailure(
-			"Burger::FPInfo::IsNegative((float)%.16g) = %u / Wanted %u",
+			"Burger::FPInfo::is_negative((float)%.16g) = %u / Wanted %u",
 			uFailure, fOriginal, uTest, uExpected);
 	} while (--i);
 	return uResult;
@@ -714,11 +714,11 @@ static uint_t BURGER_API TestSignBitDouble(void) BURGER_NOEXCEPT
 
 		// Test FPInfo
 		const Burger::FPInfo FPTest(dOriginal);
-		uTest = FPTest.IsNegative();
+		uTest = FPTest.is_negative();
 		uFailure = (uTest != uExpected);
 		uResult |= uFailure;
 		ReportFailure(
-			"Burger::FPInfo::IsNegative((double)%.16g) = %u / Wanted %u",
+			"Burger::FPInfo::is_negative((double)%.16g) = %u / Wanted %u",
 			uFailure, dOriginal, uTest, uExpected);
 	} while (--i);
 	return uResult;
@@ -1206,7 +1206,7 @@ static uint_t BURGER_API TestIntToFloat(void) BURGER_NOEXCEPT
 	uintptr_t i = BURGER_ARRAYSIZE(IntToFloatArray);
 	uint_t uResult = FALSE;
 	do {
-		const int32_t iOriginal = static_cast<int_t>(pWork[0].GetWord());
+		const int32_t iOriginal = static_cast<int_t>(pWork[0].get_uint32());
 		const float fExpected = pWork[1];
 
 		volatile float fTest = Burger::IntToFloat(iOriginal);
@@ -1291,7 +1291,7 @@ static uint_t BURGER_API TestFixedToFloat(void) BURGER_NOEXCEPT
 	uintptr_t i = BURGER_ARRAYSIZE(FixedToFloatArray);
 	uint_t uResult = FALSE;
 	do {
-		const int32_t iOriginal = static_cast<int_t>(pWork[0].GetWord());
+		const int32_t iOriginal = static_cast<int_t>(pWork[0].get_uint32());
 		const float fExpected = pWork[1];
 
 		volatile float fTest = Burger::FixedToFloat(iOriginal);
@@ -2197,8 +2197,8 @@ static uint_t TestSinFloat(void) BURGER_NOEXCEPT
 	uint_t uResult = FALSE;
 	int x = 0;
 	do {
-		const float fRadians =
-			(static_cast<float>(320 - x) / 320.0f) * Burger::g_fPi * 4.0f;
+		const float fRadians = static_cast<float>(
+			(static_cast<float>(320 - x) / 320.0f) * Burger::g_fPi * 4.0f);
 		const float fSin = static_cast<float>(sin(fRadians));
 		const float fXSin = Burger::Sin(fRadians);
 		const float fError = Burger::Abs(fSin - fXSin);
@@ -2243,8 +2243,8 @@ static uint_t TestCosFloat(void) BURGER_NOEXCEPT
 	uint_t uResult = FALSE;
 	int x = 0;
 	do {
-		const float fRadians =
-			(static_cast<float>(320 - x) / 320.0f) * Burger::g_fPi * 4.0f;
+		const float fRadians = static_cast<float>(
+			(static_cast<float>(320 - x) / 320.0f) * Burger::g_fPi * 4.0f);
 		const float fCos = static_cast<float>(cos(fRadians));
 		const float fXCos = Burger::Cos(fRadians);
 		const float fError = Burger::Abs(fCos - fXCos);

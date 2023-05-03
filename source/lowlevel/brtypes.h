@@ -510,7 +510,7 @@
 #error Unknown MSDOS extender, try using Dos4g
 #endif
 
-#elif defined(__NT__) || defined(__WIN32__) || defined(__WINDOWS__) || \
+#elif defined(__NT__) || defined(_WINDOWS) || defined(__WIN32__) || defined(__WINDOWS__) || \
 	defined(__TOS_WIN__) || defined(_WIN32) || defined(_WIN64)
 #if defined(BURGER_64BITCPU)
 #define BURGER_WIN64

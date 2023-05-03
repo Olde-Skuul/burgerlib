@@ -20,7 +20,44 @@
 #endif
 
 /* BEGIN */
-#if defined(BURGER_WATCOM) && !defined(DOXYGEN)
+#if defined(BURGER_WATCOM) || defined(DOXYGEN)
+namespace Burger {
+
+struct Regs16_t {
+	/** 80x86 ax register */
+	uint16_t ax;
+
+	/** 80x86 bx register */
+	uint16_t bx;
+
+	/** 80x86 cx register */
+	uint16_t cx;
+
+	/** 80x86 dx register */
+	uint16_t dx;
+
+	/** 80x86 si register */
+	uint16_t si;
+
+	/** 80x86 di register */
+	uint16_t di;
+
+	/** 80x86 bp register */
+	uint16_t bp;
+
+	/** 80x86 ds segment register */
+	uint16_t ds;
+
+	/** 80x86 es segment register */
+	uint16_t es;
+
+	/** 80x86 flags register */
+	uint16_t flags;
+};
+}
+
+#if !defined(DOXYGEN)
+
 // Disable 'sizeof' operand contains compiler generated information
 #pragma disable_message(549)
 // Disable assuming unary 'operator &' not overloaded for type
@@ -108,7 +145,7 @@ extern Fixed32 BurgerFixedMathMultiply(Fixed32 fInputMulA, Fixed32 fInputMulB);
 #pragma aux BurgerFixedMathMultiply = \
 	"imul edx" \
 	"shrd eax,edx,16" parm[eax][edx] value[eax] modify \
-		exact[eax edx] nomemory;
+	exact[eax edx] nomemory;
 
 extern Fixed32 BurgerFixedMathDivide(
 	Fixed32 fInputNumerator, Fixed32 fInputDenominator);
@@ -223,8 +260,12 @@ extern unsigned char _BitScanReverse(unsigned long* Index, unsigned long Mask);
 	"bsr eax,eax" \
 	"mov dword ptr [edx],eax" \
 	"setne al" parm[eax][ecx] value[eax] modify exact[eax];
-}
 
+extern uint64_t _xgetbv(unsigned int uInput);
+#pragma aux _xgetbv = "db 0x0F, 0x01, 0xD0" parm[ecx] value[eax edx] modify \
+	exact[eax edx] nomemory;
+}
+#endif
 #endif
 
 /* END */

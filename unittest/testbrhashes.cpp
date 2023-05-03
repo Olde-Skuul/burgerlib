@@ -19,6 +19,7 @@
 #include "brcrc32.h"
 #include "brfixedpoint.h"
 #include "brgost.h"
+#include "brguid.h"
 #include "brmd2.h"
 #include "brmd4.h"
 #include "brmd5.h"
@@ -470,6 +471,12 @@ int BURGER_API TestBrhashes(uint_t uVerbose) BURGER_NOEXCEPT
 {
 	if (uVerbose & VERBOSE_MSG) {
 		Message("Running Hashing tests");
+
+		char buffer[40];
+		GUID TempGUID;
+		Burger::GUID_init(&TempGUID);
+		Burger::GUID_to_string(buffer, &TempGUID);
+		Message("New GUID = %s", buffer);
 	}
 
 	uint_t uResult = TestAdler16();

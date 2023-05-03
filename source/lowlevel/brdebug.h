@@ -35,7 +35,7 @@ BURGER_INLINE void PrintString(uintptr_t uInput) BURGER_NOEXCEPT
 	PrintString(static_cast<BURGER_NEED_UINTPTR_REMAP>(uInput));
 }
 #endif
-extern uint_t BURGER_API IsDebuggerPresent(void) BURGER_NOEXCEPT;
+
 extern void BURGER_API PrintErrorMessage(uint_t uErrorCode) BURGER_NOEXCEPT;
 }
 
@@ -44,6 +44,12 @@ extern void BURGER_API OkAlertMessage(
 extern uint_t BURGER_API OkCancelAlertMessage(
 	const char* pMessage, const char* pTitle = nullptr) BURGER_NOEXCEPT;
 
+extern uint_t BURGER_API is_debugger_present(void) BURGER_NOEXCEPT;
+
+#if defined(BURGER_MAC) || defined(DOXYGEN)
+extern uint_t BURGER_API is_macsbug_installed(void) BURGER_NOEXCEPT;
+extern uint_t BURGER_API is_metronub_installed(void) BURGER_NOEXCEPT;
+#endif
 }
 /* END */
 

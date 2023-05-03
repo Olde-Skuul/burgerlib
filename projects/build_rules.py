@@ -20,7 +20,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 import os
 from burger import copy_file_if_needed, get_windows_host_type, \
     is_codewarrior_mac_allowed, get_sdks_folder, clean_directories, \
-    clean_files, is_under_git_control
+    clean_files, is_under_git_control, clean_xcode
 from makeprojects.config import _HLSL_MATCH, _GLSL_MATCH, _X360SL_MATCH, \
     _VITACG_MATCH
 from makeprojects import PlatformTypes, IDETypes, ProjectTypes, makeprojects
@@ -227,16 +227,16 @@ ARG_LISTS = [
     ("xboxgdk", "burger", "library", ["vs2022"]),
     ("xboxonex", "burger", "library", ["vs2022"]),
     ("wiiu", "burger", "library", ["vs2013"]),
-    ("switch", "burger", "library", ["vs2017"]),
-    ("switch", "unittests", "app", ["vs2017"]),
+    ("switch", "burger", "library", ["vs2022"]),
+    ("switch", "unittests", "app", ["vs2022"]),
     ("shield", "burger", "library", ["vs2015"]),
     ("android", "burger", "library", ["vs2022"]),
     ("stadia", "burger", "library", ["vs2022"]),
     ("msdos", "burger", "library", ["watcom"]),
     ("msdos4gw", "unittests", "console", ["watcom"]),
-    ("macosx", "burger", "library", ["xcode3", "xcode14"]),
-    ("macosx", "unittests", "console", ["xcode3", "xcode14"]),
-    ("ios", "burger", "library", ["xcode3", "xcode5"]),
+    ("macosx", "burger", "library", ["xcode3"]),
+    ("macosx", "unittests", "console", ["xcode3"]),
+    ("ios", "burger", "library", ["xcode3"]),
     ("linux", "burger", "library", ["make"]),
     ("linux", "unittests", "console", ["make"]),
     ("msdos", "burger", "library", ["codeblocks"]),
@@ -285,6 +285,8 @@ def clean(working_directory):
     clean_files(working_directory, (".DS_Store", "*.suo", "*.user", "*.ncb",
                                     "*.err", "*.sdf", "*.layout.cbTemp", "*.VC.db",
                                     "*.pyc", "*.pyo"))
+
+    clean_xcode(working_directory)
 
 ########################################
 
@@ -377,8 +379,65 @@ def postbuild(working_directory, configuration):
 
     return error
 
+########################################
+
+
+def vs2005_2008_rules(project):
+    """
+    Handle special cases for Visual Studio 2005 and 2008
+
+    Assume these IDEs are building only for Windows
+    """
+
+    ide = project.solution.ide
+    # Enable masm for Visual Studio 2005 and 2008
+    if ide in (IDETypes.vs2005, IDETypes.vs2008):
+        vs_rules = []
+
+        # Enable glsl
+        vs_rules.append("glsl.rules")
+
+        # Enable hlsl
+        vs_rules.append("hlsl.rules")
+
+        # Enable masm
+        vs_rules.append("masm.rules")
+
+        # Enable masm64
+        vs_rules.append("../ide_plugins/vs2005_2008/masm64.rules")
+        project.vs_rules = vs_rules
+
+        project.source_files_list.extend(
+            ("../source/asm/xgetbv.x64",
+             "../source/asm/xgetbv.x86"))
+
+    # __cpuindex() is available on 2008, but not 2005
+    if ide is IDETypes.vs2005:
+        project.source_files_list.extend(
+            ("../source/asm/cpuidex.x64",
+            "../source/asm/cpuidex.x86"))
 
 ########################################
+
+
+def vs2003_rules(project):
+    """
+    Handle special cases for Visual Studio 2003
+
+    Assume these IDEs are building only for Windows
+    """
+
+    ide = project.solution.ide
+    # Add assembly files to vs2003
+    if ide is IDETypes.vs2003:
+
+        # Add missing intrinsics, but only the x86 version
+        project.source_files_list.extend(
+            ("../source/asm/xgetbv.x86",
+             "../source/asm/cpuidex.x86"))
+
+########################################
+
 
 def find_generated_source(source_files, working_directory, directory, match):
     """
@@ -400,6 +459,7 @@ def find_generated_source(source_files, working_directory, directory, match):
 
             # Save in "generated" folder
             source_files.append(os.path.join(abs_path, "generated", new_name))
+
 
 ########################################
 
@@ -428,25 +488,53 @@ def project_settings(project):
     library_folders_list = []
     vs_targets = []
     vs_props = []
-    vs_rules = []
 
     # Windows specific files
     if platform.is_windows():
         source_folders_list.extend(BURGER_LIB_WINDOWS)
 
+        # Add in the headers for Windows, but there be dragons
         if not ide.is_codewarrior():
-            include_folders_list.extend([
+
+            # For perforce support
+            include_folders_list.append("$(BURGER_SDKS)/windows/perforce")
+
+            # For Directplay support
+            include_folders_list.append("../source/platforms/windows/dplay")
+
+            # For OpenGL support
+            include_folders_list.append("$(BURGER_SDKS)/windows/opengl")
+
+            # For legacy directx 9 support with modern IDEs
+            if ide in (IDETypes.vs2017, IDETypes.vs2019, IDETypes.vs2022):
+                include_folders_list.append("../source/platforms/windows/directx9")
+
+            # Older IDEs need DirectX from the June 2010 SDK
+            if ide in (IDETypes.vs2003, IDETypes.vs2005, IDETypes.vs2008, IDETypes.vs2010,
+                       IDETypes.vs2012, IDETypes.vs2013, IDETypes.vs2015):
+                include_folders_list.append("$(DXSDK_DIR)/Include")
+
+            # Visual Studio 2003/2005 needs to use the Windows XP SDK, not the Windows 95 SDK
+            if ide in (IDETypes.vs2003, IDETypes.vs2005):
+
+                # Note, the path is hard coded because 2003 can't handle
+                # $(ProgramFiles(x86))
+                include_folders_list.append(
+                    "C:/Program Files (x86)/Microsoft SDKs/Windows/v7.1A/Include")
+
+                # The DirectX Headers need sal.h, supply it manually for VS 2003
+                if ide is IDETypes.vs2003:
+                    include_folders_list.append("../source/platforms/windows/vc7compat")
+
+            if ide in (IDETypes.codeblocks, IDETypes.watcom):
+                include_folders_list.append("$(BURGER_SDKS)/windows/windows5")
+                include_folders_list.append("$(BURGER_SDKS)/windows/directx9")
+
+        else:
+            library_folders_list.extend([
                 "$(BURGER_SDKS)/windows/perforce",
-                "$(BURGER_SDKS)/windows/directx9",
-                "$(BURGER_SDKS)/windows/opengl"])
-
-        if ide in (IDETypes.watcom, IDETypes.codeblocks):
-            include_folders_list.append("$(BURGER_SDKS)/windows/windows5")
-
-        # Visual Studio 2019 doesn"t have the old Win XP headers
-        # if ide >= IDETypes.vs2017:
-        # include_folders_list.append(
-        # "$(BURGER_SDKS)/windows/windows5")
+                "$(BURGER_SDKS)/windows/opengl",
+                "$(BURGER_SDKS)/windows/directx9"])
 
         project.define_list = [
             "_CRT_NONSTDC_NO_WARNINGS",
@@ -457,7 +545,7 @@ def project_settings(project):
         find_generated_source(
             source_files_list,
             project.working_directory,
-            "../source/windows",
+            "../source/platforms/windows",
             _HLSL_MATCH)
 
     # MS/DOS
@@ -490,6 +578,7 @@ def project_settings(project):
         source_folders_list.extend(BURGER_LIB_PS4)
 
     if platform is PlatformTypes.ps5:
+        source_folders_list.extend(BURGER_LIB_PS4)
         source_folders_list.extend(BURGER_LIB_PS5)
 
     if platform is PlatformTypes.vita:
@@ -535,7 +624,7 @@ def project_settings(project):
         source_folders_list.extend(BURGER_LIB_SHIELD)
 
     if platform is PlatformTypes.stadia:
-        source_files_list.extend(BURGER_LIB_STADIA)
+        source_folders_list.extend(BURGER_LIB_STADIA)
 
     # Nintendo
     if platform is PlatformTypes.wiiu:
@@ -564,19 +653,12 @@ def project_settings(project):
             "$(BURGER_SDKS)/{}/burgerlib".format(platform_folder))
         if platform is PlatformTypes.linux:
             project.libraries_list.append("GL")
+            project.libraries_list.append("uuid")
 
     else:
         if not is_git(project.working_directory):
             project.deploy_folder = \
                 "$(BURGER_SDKS)/{}/burgerlib".format(platform_folder)
-
-    if platform.is_windows():
-        if ide.is_codewarrior() or project.name == "unittests":
-            library_folders_list.extend([
-                "$(BURGER_SDKS)/windows/perforce",
-                "$(BURGER_SDKS)/windows/opengl",
-                "$(BURGER_SDKS)/windows/directx9"
-            ])
 
     # Enable OpenGL extensions
     if platform.is_windows() or platform.is_android() or \
@@ -585,7 +667,6 @@ def project_settings(project):
             "$(VCTargetsPath)\\BuildCustomizations\\glsl.props")
         vs_targets.append(
             "$(VCTargetsPath)\\BuildCustomizations\\glsl.targets")
-        vs_rules.append("glsl.rules")
         find_generated_source(
             source_files_list, project.working_directory,
             "../source/graphics/shadersopengl",
@@ -596,7 +677,6 @@ def project_settings(project):
         vs_props.append(
             "$(VCTargetsPath)\\BuildCustomizations\\hlsl.props")
         vs_targets.append("$(VCTargetsPath)\\BuildCustomizations\\hlsl.targets")
-        vs_rules.append("hlsl.rules")
         find_generated_source(
             source_files_list,
             project.working_directory,
@@ -610,6 +690,10 @@ def project_settings(project):
         else:
             include_folders_list.append("$(BURGER_SDKS)/steamworks/public/steam")
 
+    # Hack to allow compilation of dbus on Darwin
+    if platform.is_darwin():
+        include_folders_list.append("../source/platforms/unix")
+
     # Store the values into the project
     project.source_folders_list = source_folders_list
     project.include_folders_list = include_folders_list
@@ -617,7 +701,7 @@ def project_settings(project):
     project.library_folders_list = library_folders_list
     project.vs_props = vs_props
     project.vs_targets = vs_targets
-    project.vs_rules = vs_rules
+
     if platform.is_windows():
         project.cw_environment_variables = ["BURGER_SDKS"]
 
@@ -658,6 +742,12 @@ def project_settings(project):
          "TargetProfile": "sce_vp_psp2"}
     }
 
+    # Add rules needed to build for Visual Studio 2005/2008
+    vs2005_2008_rules(project)
+
+    # Add rules needed to build for Visual Studio 2003
+    vs2003_rules(project)
+
 
 ########################################
 
@@ -669,9 +759,15 @@ def configuration_settings(configuration):
         configuration: Configuration to modify.
     """
 
+    platform = configuration.platform
+    ide = configuration.ide
+
     # Use fastcall convention on windows 32 bit Intel
-    if configuration.platform is PlatformTypes.win32:
+    if platform is PlatformTypes.win32:
         configuration.fastcall = True
+
+    if ide is IDETypes.vs2017 and (platform in (PlatformTypes.win32, PlatformTypes.win64)):
+        configuration.include_folders_list.append("$(DXSDK_DIR)/Include")
     return 0
 
 ########################################

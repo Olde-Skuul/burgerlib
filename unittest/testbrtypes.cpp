@@ -24,6 +24,16 @@
 #include "brunixtypes.h"
 #endif
 
+#if defined(BURGER_MAC)
+#include "brnetmanager.h"
+#endif
+
+#if defined(BURGER_WINDOWS)
+#include "win_platformshims.h"
+#include "win_registry.h"
+#include "win_version.h"
+#endif
+
 #include <stdio.h>
 
 #if defined(BURGER_STRUCT_ALIGN)
@@ -54,7 +64,8 @@
 #pragma warning(disable : 4324)
 // VC 2005 or higher
 #if (BURGER_MSVC >= 140000000)
-// Disable Potential comparison of a comparison of a constant with another constant
+// Disable Potential comparison of a comparison of a constant with another
+// constant
 #pragma warning(disable : 6326)
 #endif
 #endif
@@ -428,13 +439,14 @@ static void BURGER_API ShowCPUFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 {
 	// Test for an FPU
 	if (uVerbose & VERBOSE_MSG) {
-		Message("Burger::HasFPU() = %u", Burger::HasFPU());
+		Message("Burger::has_68kFPU() = %u", Burger::has_68kFPU());
 	}
 
 	// Test CPUID
-	uint_t uCPUIDPresent = Burger::IsCPUIDPresent();
+#if defined(BURGER_INTEL)
+	uint_t uCPUIDPresent = Burger::has_CPUID();
 	if (uVerbose & VERBOSE_MSG) {
-		Message("Burger::IsCPUIDPresent() = %u", uCPUIDPresent);
+		Message("Burger::has_CPUID() = %u", uCPUIDPresent);
 	}
 
 	if (uVerbose & VERBOSE_MSG) {
@@ -458,6 +470,9 @@ static void BURGER_API ShowCPUFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 			Message("CPUID_t.m_uCPUID7EBX = 0x%08X", MyID.m_uCPUID7EBX);
 			Message("CPUID_t.m_uCPUID7ECX = 0x%08X", MyID.m_uCPUID7ECX);
 			Message("CPUID_t.m_uCPUID7EDX = 0x%08X", MyID.m_uCPUID7EDX);
+			Message("CPUID_t.m_uXGETBV = 0x%08X%08X",
+				static_cast<uint32_t>(MyID.m_uXGETBV >> 32U),
+				static_cast<uint32_t>(MyID.m_uXGETBV));
 			Message("CPUID_t.m_uCPUType = %u",
 				static_cast<uint_t>(MyID.m_uCPUType));
 			Message("CPUID_t.m_CPUName = %s", MyID.m_CPUName);
@@ -467,81 +482,86 @@ static void BURGER_API ShowCPUFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 				MyID.m_HypervisorSignature);
 
 			// Dump the CPU flags detects
-			if (MyID.HasRTSC()) {
-				Message("HasRTSC");
+			char Detected[256];
+			Detected[0] = 0;
+			if (MyID.has_RTSC()) {
+				Burger::StringConcatenate(Detected, ", RTSC");
 			}
 
-			if (MyID.HasCMOV()) {
-				Message("HasCMOV");
+			if (MyID.has_CMOV()) {
+				Burger::StringConcatenate(Detected, ", CMOV");
 			}
 
-			if (MyID.HasMMX()) {
-				Message("HasMMX");
+			if (MyID.has_MMX()) {
+				Burger::StringConcatenate(Detected, ", MMX");
 			}
-			if (MyID.HasSSE()) {
-				Message("HasSSE");
+			if (MyID.has_SSE()) {
+				Burger::StringConcatenate(Detected, ", SSE");
 			}
-			if (MyID.HasSSE2()) {
-				Message("HasSSE2");
+			if (MyID.has_SSE2()) {
+				Burger::StringConcatenate(Detected, ", SSE2");
 			}
-			if (MyID.HasSSE3()) {
-				Message("HasSSE3");
+			if (MyID.has_SSE3()) {
+				Burger::StringConcatenate(Detected, ", SSE3");
 			}
-			if (MyID.HasSSSE3()) {
-				Message("HasSSSE3");
+			if (MyID.has_SSSE3()) {
+				Burger::StringConcatenate(Detected, ", SSSE3");
 			}
-			if (MyID.HasSSE4a()) {
-				Message("HasSSE4a");
+			if (MyID.has_SSE4a()) {
+				Burger::StringConcatenate(Detected, ", SSE4a");
 			}
-			if (MyID.HasSSE41()) {
-				Message("HasSSE41");
+			if (MyID.has_SSE41()) {
+				Burger::StringConcatenate(Detected, ", SSE41");
 			}
-			if (MyID.HasSSE42()) {
-				Message("HasSSE42");
+			if (MyID.has_SSE42()) {
+				Burger::StringConcatenate(Detected, ", SSE42");
 			}
-			if (MyID.HasMOVBE()) {
-				Message("HasMOVBE");
+			if (MyID.has_MOVBE()) {
+				Burger::StringConcatenate(Detected, ", MOVBE");
 			}
-			if (MyID.HasAES()) {
-				Message("HasAES");
+			if (MyID.has_AES()) {
+				Burger::StringConcatenate(Detected, ", AES");
 			}
-			if (MyID.HasAVX()) {
-				Message("HasAVX");
+			if (MyID.has_AVX()) {
+				Burger::StringConcatenate(Detected, ", AVX");
 			}
-			if (MyID.HasCMPXCHG16B()) {
-				Message("HasCMPXCHG16B");
+			if (MyID.has_AVX2()) {
+				Burger::StringConcatenate(Detected, ", AVX2");
 			}
-			if (MyID.HasF16C()) {
-				Message("HasF16C");
+			if (MyID.has_CMPXCHG16B()) {
+				Burger::StringConcatenate(Detected, ", CMPXCHG16B");
 			}
-			if (MyID.HasFMA3()) {
-				Message("HasFMA3");
+			if (MyID.has_F16C()) {
+				Burger::StringConcatenate(Detected, ", F16C");
 			}
-			if (MyID.HasFMA4()) {
-				Message("HasFMA4");
+			if (MyID.has_FMA3()) {
+				Burger::StringConcatenate(Detected, ", FMA3");
 			}
-			if (MyID.HasLAHFSAHF()) {
-				Message("HasLAHFSAHF");
+			if (MyID.has_FMA4()) {
+				Burger::StringConcatenate(Detected, ", FMA4");
 			}
-			if (MyID.HasPrefetchW()) {
-				Message("HasPrefetchW");
+			if (MyID.has_LAHFSAHF()) {
+				Burger::StringConcatenate(Detected, ", LAHFSAHF");
 			}
-			if (MyID.Has3DNOW()) {
-				Message("Has3DNOW");
+			if (MyID.has_PrefetchW()) {
+				Burger::StringConcatenate(Detected, ", PrefetchW");
 			}
-			if (MyID.HasExtended3DNOW()) {
-				Message("HasExtended3DNOW");
+			if (MyID.has_3DNOW()) {
+				Burger::StringConcatenate(Detected, ", 3DNOW");
 			}
+			if (MyID.has_extended3DNOW()) {
+				Burger::StringConcatenate(Detected, ", Extended3DNOW");
+			}
+			Message("Features found %s", &Detected[2]);
 		} else {
 
 			// CPUID not available on a 32 bit CPU is not a failure,
 			// but it is a warning that your CPU is pretty old.
 
-#if defined(BURGER_INTEL)
 			Message("Burger::CPUID() is not available");
-#endif
 		}
 	}
+#endif
 
 	//
 	// Display 32 bit Intel special registers
@@ -563,8 +583,8 @@ static void BURGER_API ShowCPUFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 	//
 
 	if (uVerbose & VERBOSE_MSG) {
-		Message("Burger::HasAltiVec() = %u", Burger::HasAltiVec());
-		Message("Burger::HasFSqrt() = %u", Burger::HasFSqrt());
+		Message("Burger::has_AltiVec() = %u", Burger::has_AltiVec());
+		Message("Burger::has_PPC_fsqrt() = %u", Burger::has_PPC_fsqrt());
 	}
 
 	//
@@ -614,75 +634,75 @@ static void BURGER_API ShowPlatformFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 
 		// Test operating system versions
 
-		uTest = Burger::Windows::IsWin95orWin98();
-		Message("Burger::Windows::IsWin95orWin98() = %u", uTest);
+		uTest = Burger::Win32::is_XP_or_higher();
+		Message("Burger::Win32::is_XP_or_higher() = %u", uTest);
 
-		uTest = Burger::Windows::IsWinXPOrGreater();
-		Message("Burger::Windows::IsWinXPOrGreater() = %u", uTest);
+		uTest = Burger::Win32::is_XP3_or_higher();
+		Message("Burger::Win32::is_XP3_or_higher() = %u", uTest);
 
-		uTest = Burger::Windows::IsVistaOrGreater();
-		Message("Burger::Windows::IsVistaOrGreater() = %u", uTest);
+		uTest = Burger::Win32::is_vista_or_higher();
+		Message("Burger::Win32::is_vista_or_higher() = %u", uTest);
 
-		uTest = Burger::Windows::IsWin7OrGreater();
-		Message("Burger::Windows::IsWin7OrGreater() = %u", uTest);
+		uTest = Burger::Win32::is_7_or_higher();
+		Message("Burger::Win32::is_7_or_higher() = %u", uTest);
 
-		uTest = Burger::Windows::IsWin8OrGreater();
-		Message("Burger::Windows::IsWin8OrGreater() = %u", uTest);
+		uTest = Burger::Win32::is_8_or_higher();
+		Message("Burger::Win32::is_8_or_higher() = %u", uTest);
 
-		uTest = Burger::Windows::IsWin10OrGreater();
-		Message("Burger::Windows::IsWin10OrGreater() = %u", uTest);
+		uTest = Burger::Win32::is_10_or_higher();
+		Message("Burger::Win32::is_10_or_higher() = %u", uTest);
 
 		// Is 32 bit code running in 64 bit windows?
-		uTest = Burger::Globals::IsWindows64Bit();
-		Message("Burger::Globals::IsWindows64Bit() = %u", uTest);
+		uTest = Burger::Win32::is_windows64Bit();
+		Message("Burger::Win32::is_windows64Bit() = %u", uTest);
 
 		// DirectX versions
-		uTest = Burger::Globals::GetDirectXVersion();
-		Message("Burger::Globals::GetDirectXVersion() = 0x%04X", uTest);
+		uTest = Burger::Win32::get_DirectX_version();
+		Message("Burger::Win32::get_DirectX_version() = 0x%04X", uTest);
 
-		uTest = Burger::Windows::IsDirectInputPresent();
-		Message("Burger::Windows::IsDirectInputPresent() = %u", uTest);
-		uTest = Burger::Windows::IsDirectInput8Present();
-		Message("Burger::Windows::IsDirectInput8Present() = %u", uTest);
-		uTest = Burger::Windows::IsXInputPresent();
-		Message("Burger::Windows::IsXInputPresent() = %u", uTest);
+		uTest = Burger::Win32::has_DirectInput();
+		Message("Burger::Win32::has_DirectInput() = %u", uTest);
+		uTest = Burger::Win32::has_DirectInput8();
+		Message("Burger::Win32::has_DirectInput8() = %u", uTest);
+		uTest = Burger::Win32::has_XInput();
+		Message("Burger::Win32::has_XInput() = %u", uTest);
 
-		uTest = Burger::Windows::IsDirectDrawPresent();
-		Message("Burger::Windows::IsDirectDrawPresent() = %u", uTest);
+		uTest = Burger::Win32::has_DirectDraw();
+		Message("Burger::Win32::has_DirectDraw() = %u", uTest);
 
-		uTest = Burger::Windows::IsD3D9Present();
-		Message("Burger::Windows::IsD3D9Present() = %u", uTest);
+		uTest = Burger::Win32::has_D3D9();
+		Message("Burger::Win32::has_D3D9() = %u", uTest);
 
-		uTest = Burger::Windows::IsDirectSoundPresent();
-		Message("Burger::Windows::IsDirectSoundPresent() = %u", uTest);
+		uTest = Burger::Win32::has_DirectSound();
+		Message("Burger::Win32::has_DirectSound() = %u", uTest);
 
-		uTest = Burger::Windows::IsDirectPlayPresent();
-		Message("Burger::Windows::IsDirectPlayPresent() = %u", uTest);
+		uTest = Burger::Win32::has_DirectPlay();
+		Message("Burger::Win32::has_DirectPlay() = %u", uTest);
 
-		uTest = Burger::Windows::IsXAudio2Present();
-		Message("Burger::Windows::IsXAudio2Present() = %u", uTest);
+		uTest = Burger::Win32::has_XAudio2();
+		Message("Burger::Win32::has_XAudio2() = %u", uTest);
 
 		char QTBuffer[300];
 
-		uTest = Burger::Globals::GetPathToQuickTimeFolder(
+		uTest = Burger::Win32::GetPathToQuickTimeFolder(
 			QTBuffer, sizeof(QTBuffer), nullptr);
-		Message("Burger::Globals::GetPathToQuickTimeFolder() = %u, %s", uTest,
+		Message("Burger::Win32::GetPathToQuickTimeFolder() = %u, %s", uTest,
 			QTBuffer);
 		uTest =
-			Burger::Globals::GetQTSystemDirectoryA(QTBuffer, sizeof(QTBuffer));
-		Message("Burger::Globals::GetQTSystemDirectoryA() = %u, %s", uTest,
-			QTBuffer);
-		uTest = Burger::Globals::GetQTApplicationDirectoryA(
+			Burger::Win32::GetQTSystemDirectoryA(QTBuffer, sizeof(QTBuffer));
+		Message(
+			"Burger::Win32::GetQTSystemDirectoryA() = %u, %s", uTest, QTBuffer);
+		uTest = Burger::Win32::GetQTApplicationDirectoryA(
 			QTBuffer, sizeof(QTBuffer));
-		Message("Burger::Globals::GetQTApplicationDirectoryA() = %u, %s", uTest,
+		Message("Burger::Win32::GetQTApplicationDirectoryA() = %u, %s", uTest,
 			QTBuffer);
-		uTest = Burger::Globals::GetQTExtensionDirectoryA(
-			QTBuffer, sizeof(QTBuffer));
-		Message("Burger::Globals::GetQTExtensionDirectoryA() = %u, %s", uTest,
+		uTest =
+			Burger::Win32::GetQTExtensionDirectoryA(QTBuffer, sizeof(QTBuffer));
+		Message("Burger::Win32::GetQTExtensionDirectoryA() = %u, %s", uTest,
 			QTBuffer);
-		uTest = Burger::Globals::GetQTComponentDirectoryA(
-			QTBuffer, sizeof(QTBuffer));
-		Message("Burger::Globals::GetQTComponentDirectoryA() = %u, %s", uTest,
+		uTest =
+			Burger::Win32::GetQTComponentDirectoryA(QTBuffer, sizeof(QTBuffer));
+		Message("Burger::Win32::GetQTComponentDirectoryA() = %u, %s", uTest,
 			QTBuffer);
 	}
 
@@ -767,6 +787,15 @@ static void BURGER_API ShowPlatformFeatures(uint_t uVerbose) BURGER_NOEXCEPT
 
 		uTest = Burger::Mac::GetControlStripVersion();
 		Message("Burger::Mac::GetControlStripVersion() = %08X", uTest);
+
+		Burger::Mac::ePowerMacType uType = Burger::Mac::GetPowerMacType();
+		Message(
+			"Burger::Mac::GetPowerMacType() = %u", static_cast<uint_t>(uType));
+		Burger::MacAddress_t Address;
+		Burger::get_default_mac_address(&Address);
+		Message("Burger::get_default_mac_address() = %02X%02X%02X%02X%02X%02X",
+			Address.m_Node[0], Address.m_Node[1], Address.m_Node[2],
+			Address.m_Node[3], Address.m_Node[4], Address.m_Node[5]);
 	}
 #endif
 }

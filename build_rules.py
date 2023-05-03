@@ -69,17 +69,76 @@ GENERATED_FOLDERS = (
     "source/graphics/shadersopengl/generated",
     "source/graphics/shadersvita/generated",
     "source/graphics/shadersxbox360/generated",
-    "source/windows/generated",
+    "source/platforms/windows/generated",
     "bin"
+)
+
+# List of super header templates and output files
+SUPER_HEADERS = (
+    ("templateburgerbase.h", "burger.h", "burger_stripped.h"),
+    ("templatemac.h", "burgermac.h", "burgermac_stripped.h"),
+    ("templateps4.h", "burgerps4.h", "burgerps4_stripped.h"),
+    ("templatewindows.h", "burgerwindows.h", "burgerwindows_stripped.h"),
+    ("templateswitch.h", "burgerswitch.h", "burgerswitch_stripped.h"),
+    ("templateunix.h", "burgerunix.h", "burgerunix_stripped.h"),
+    ("templatelinux.h", "burgerlinux.h", "burgerlinux_stripped.h"),
+    ("templatexbox360.h", "burgerxbox360.h", "burgerxbox360_stripped.h")
+)
+
+# Copy headers that are unique to specific platforms
+# Source is from this directory, destination is BURGER_SDKS
+UNIQUE_HEADERS = (
+    # Windows
+    ("bin" + os.sep + "burgerwindows_stripped.h",
+        "windows" + os.sep + "burgerlib" + os.sep + "burgerwindows.h"),
+
+    # Xbox 360
+    ("bin" + os.sep + "burgerxbox360_stripped.h",
+        "xbox360" + os.sep + "burgerlib" + os.sep + "burgerxbox360.h"),
+
+    # MacOS Classic
+    ("bin" + os.sep + "burgermac_stripped.h",
+        "mac" + os.sep + "burgerlib" + os.sep + "burgermac.h"),
+
+    # PS4
+    ("bin" + os.sep + "burgerps4_stripped.h",
+        "ps4" + os.sep + "burgerlib" + os.sep + "burgerps4.h"),
+    ("bin" + os.sep + "burgerps4_stripped.h",
+        "ps5" + os.sep + "burgerlib" + os.sep + "burgerps4.h"),
+
+    # Switch
+    ("bin" + os.sep + "burgerswitch_stripped.h",
+        "switch" + os.sep + "burgerlib" + os.sep + "burgerswitch.h"),
+
+    # Linux
+    ("bin" + os.sep + "burgerlinux_stripped.h",
+        "linux" + os.sep + "burgerlib" + os.sep + "burgerlinux.h"),
+
+    # Unix
+    ("bin" + os.sep + "burgerunix_stripped.h",
+        "android" + os.sep + "burgerlib" + os.sep + "burgerunix.h"),
+    ("bin" + os.sep + "burgerunix_stripped.h",
+        "shield" + os.sep + "burgerlib" + os.sep + "burgerunix.h"),
+    ("bin" + os.sep + "burgerunix_stripped.h",
+        "stadia" + os.sep + "burgerlib" + os.sep + "burgerunix.h"),
+    ("bin" + os.sep + "burgerunix_stripped.h",
+        "linux" + os.sep + "burgerlib" + os.sep + "burgerunix.h"),
+    ("bin" + os.sep + "burgerunix_stripped.h",
+        "ios" + os.sep + "burgerlib" + os.sep + "burgerunix.h"),
+    ("bin" + os.sep + "burgerunix_stripped.h",
+        "macosx" + os.sep + "burgerlib" + os.sep + "burgerunix.h")
 )
 
 # Was Burgerlib already installed?
 SDKS_FOLDER = get_sdks_folder()
 
+# Build folder
+BUILD_FOLDER = os.path.dirname(os.path.abspath(__file__))
+
 ########################################
 
 
-def create_generated_folders(working_directory):
+def create_generated_folders(working_directory=None):
     """
     Create folders for storing shader headers
 
@@ -87,19 +146,25 @@ def create_generated_folders(working_directory):
         working_directory: Directory to create directories in.
     """
 
+    if working_directory is None:
+        working_directory = BUILD_FOLDER
+
     for item in GENERATED_FOLDERS:
         create_folder_if_needed(os.path.join(working_directory, item))
 
 ########################################
 
 
-def create_version_header(working_directory):
+def create_version_header(working_directory=None):
     """
     Update the changelist header
 
      Args:
         working_directory: Directory to store version.h in.
     """
+
+    if working_directory is None:
+        working_directory = BUILD_FOLDER
 
     dest_folder = os.path.join(working_directory, "source", "generated")
     make_version_header(working_directory, os.path.join(dest_folder, "version.h"),
@@ -108,7 +173,7 @@ def create_version_header(working_directory):
 ########################################
 
 
-def update_burger_h(working_directory):
+def update_burger_h(working_directory=None):
     """
     Update burger.h in all platform folders
 
@@ -117,6 +182,9 @@ def update_burger_h(working_directory):
     Returns:
         Zero if no error, non zero on error
     """
+
+    if working_directory is None:
+        working_directory = BUILD_FOLDER
 
     # Get the location of the super header
     dest_folder = os.path.join(working_directory, "bin")
@@ -142,7 +210,7 @@ def update_burger_h(working_directory):
 ########################################
 
 
-def update_special_headers(working_directory):
+def update_special_headers(working_directory=None):
     """
     Update all the special headers for each platform
 
@@ -151,6 +219,9 @@ def update_special_headers(working_directory):
     Returns:
         Zero if no error, non zero on error
     """
+
+    if working_directory is None:
+        working_directory = BUILD_FOLDER
 
     error = 0
     for dest in TARGETFOLDERS:
@@ -189,7 +260,40 @@ def update_special_headers(working_directory):
 
 ########################################
 
-def update_mac_resources(working_directory):
+
+def update_unique_headers(working_directory=None):
+    """
+    Update all the unique headers for each platform
+
+    Args:
+        working_directory: Directory this script resides in.
+    Returns:
+        Zero if no error, non zero on error
+    """
+
+    if working_directory is None:
+        working_directory = BUILD_FOLDER
+
+    error = 0
+    for item in UNIQUE_HEADERS:
+
+        # Get the platform folder
+        sourcefile = os.path.join(working_directory, item[0])
+        destfile = os.path.join(SDKS_FOLDER, item[1])
+
+        # Copy if the destination doesn't exist or it's different
+        # from the header
+        if not os.path.isfile(destfile) or not compare_files(sourcefile, destfile):
+            error = copy_file_if_needed(sourcefile, destfile, perforce=True)
+            if error:
+                break
+
+    return error
+
+########################################
+
+
+def update_mac_resources(working_directory=None):
     """
     Did any of the Mac Carbon/Classic resource files change?
 
@@ -198,6 +302,9 @@ def update_mac_resources(working_directory):
     Returns:
         Zero if no error, non zero on error
     """
+
+    if working_directory is None:
+        working_directory = BUILD_FOLDER
 
     error = 0
     sourcefolder = os.path.join(working_directory, "source", "platforms", "mac")
@@ -250,16 +357,26 @@ def prebuild(working_directory, configuration):
 
     # Create the super header using the makeheader tool
     dest_folder = os.path.join(working_directory, "bin")
-    headerfilepath = os.path.join(dest_folder, "burger.h")
-    templatepath = os.path.join(working_directory, "source", "templateburgerbase.h")
-    cmd = ("makeheader", templatepath, headerfilepath)
-    print(" ".join(cmd))
-    error, _, _ = run_command(cmd, working_dir=working_directory)
-    if not error:
-        headerfilepath = os.path.join(dest_folder, "burger_stripped.h")
-        cmd = ("makeheader", "-r", templatepath, headerfilepath)
-        print(" ".join(cmd))
-        error, _, _ = run_command(cmd, working_dir=working_directory)
+
+    for item in SUPER_HEADERS:
+        templatepath = os.path.join(working_directory, "source", item[0])
+
+        if item[1]:
+            headerfilepath = os.path.join(dest_folder, item[1])
+            cmd = ("makeheader", templatepath, headerfilepath)
+            print(" ".join(cmd))
+            error, _, _ = run_command(cmd, working_dir=working_directory)
+            # if error:
+            #    break
+
+        if item[2]:
+            headerfilepath = os.path.join(dest_folder, item[2])
+            cmd = ("makeheader", "-r", templatepath, headerfilepath)
+            print(" ".join(cmd))
+            error, _, _ = run_command(cmd, working_dir=working_directory)
+            # if error:
+            #    break
+
     return error
 
 ########################################
@@ -292,6 +409,10 @@ def postbuild(working_directory, configuration):
     # Was there a change in special headers?
     if not error:
         error = update_special_headers(working_directory)
+
+    # Was there a change in unique headers?
+    if not error:
+        error = update_unique_headers(working_directory)
 
     if not error:
         # Did any of the Mac Carbon/Classic resource files change?
@@ -354,4 +475,4 @@ def do_build(working_directory):
 
 # If called as a command line and not a class, perform the build
 if __name__ == "__main__":
-    sys.exit(do_build(os.path.dirname(os.path.abspath(__file__))))
+    sys.exit(do_build(BUILD_FOLDER))

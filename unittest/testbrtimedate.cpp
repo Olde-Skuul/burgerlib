@@ -17,8 +17,10 @@
 #include "brfloatingpoint.h"
 #include "brnumberstringhex.h"
 #include "brstdouthelpers.h"
-#include "brtimedate.h"
 #include "brstructs.h"
+#include "brthread.h"
+#include "brtick.h"
+#include "brtimedate.h"
 #include "common.h"
 
 /***************************************
@@ -266,7 +268,8 @@ static uint_t BURGER_API TestPrintHexFloat(void) BURGER_NOEXCEPT
 			break;
 		}
 		Burger::PrintHex(static_cast<const Burger::uint32_float_t*>(
-			static_cast<const void*>(&pWork->m_uData))->f);
+			static_cast<const void*>(&pWork->m_uData))
+							 ->f);
 		Burger::String CapturedString;
 		Capture.GetCapture(&CapturedString);
 		Capture.Shutdown();
@@ -307,7 +310,8 @@ static uint_t BURGER_API TestPrintHexDouble(void) BURGER_NOEXCEPT
 			break;
 		}
 		Burger::PrintHex(static_cast<const Burger::uint64_double_t*>(
-			static_cast<const void*>(&pWork->m_uData))->d);
+			static_cast<const void*>(&pWork->m_uData))
+							 ->d);
 		Burger::String CapturedString;
 		Capture.GetCapture(&CapturedString);
 		Capture.Shutdown();
@@ -375,6 +379,114 @@ static void TestPrintHexes(void) BURGER_NOEXCEPT
 	}
 }
 
+/***************************************
+
+	Test the Tick manager
+
+***************************************/
+
+static void BURGER_API TestTick(uint_t uVerbose) BURGER_NOEXCEPT
+{
+	if (uVerbose & VERBOSE_TIME) {
+		Message("Testing Tick::read()");
+		uint32_t uMark = Burger::Tick::read() + Burger::Tick::kTicksPerSecond;
+		uint32_t uCount = 1;
+		do {
+			uint32_t uNewMark;
+			do {
+				uNewMark = Burger::Tick::read();
+			} while (uNewMark < uMark);
+			uMark += Burger::Tick::kTicksPerSecond;
+			Message("Tick %u is 0x%08X", uCount, uNewMark);
+			fflush(stdout);
+		} while (++uCount < 6);
+
+		Message("Testing Tick::read_ms()");
+		uMark = Burger::Tick::read_ms() + 1000U;
+		uCount = 1;
+		do {
+			uint32_t uNewMark;
+			do {
+				uNewMark = Burger::Tick::read_ms();
+			} while (uNewMark < uMark);
+			uMark += 1000U;
+			Message("Tick %u is 0x%08X", uCount, uNewMark);
+			fflush(stdout);
+		} while (++uCount < 6);
+
+		Message("Testing Tick::read_us()");
+		uMark = Burger::Tick::read_us() + 1000000U;
+		uCount = 1;
+		do {
+			uint32_t uNewMark;
+			do {
+				uNewMark = Burger::Tick::read_us();
+			} while (uNewMark < uMark);
+			uMark += 1000000U;
+			Message("Tick %u is 0x%08X", uCount, uNewMark);
+			fflush(stdout);
+		} while (++uCount < 6);
+	}
+}
+
+// Used for thread manager testing
+static uintptr_t BURGER_API Code(void* pInput) BURGER_NOEXCEPT
+{
+	++static_cast<uint32_t*>(pInput)[0];
+	return static_cast<uint32_t*>(pInput)[0] + 10000;
+}
+
+/***************************************
+
+	Test the Thread manager
+
+***************************************/
+
+static uint_t BURGER_API TestThread(uint_t uVerbose) BURGER_NOEXCEPT
+{
+	uint_t uFailure = FALSE;
+
+	if (uVerbose & VERBOSE_MSG) {
+		Message("Testing Threads");
+	}
+
+	uint32_t uValue = 666;
+	Burger::Thread bar;
+	Burger::eError uResult = bar.start(Code, &uValue, "Thread1");
+	if (uResult == Burger::kErrorNotSupportedOnThisPlatform) {
+		Message("Threading not available on this platform");
+	} else {
+		bar.wait();
+
+		uint_t uTest = uValue != 667;
+		uFailure |= uTest;
+		ReportFailure("Thread(666) returned %u, expected 667", uTest, uValue);
+
+		uintptr_t uThreadResult = bar.get_result();
+		uTest = uThreadResult != 10667;
+		uFailure |= uTest;
+		ReportFailure("Thread(666).get_result() returned %u, expected 10667",
+			uTest, static_cast<uint32_t>(uThreadResult));
+
+		uValue = 9999;
+		Burger::Thread bar2;
+		bar2.start(Code, &uValue, "Thread2");
+		bar2.wait();
+
+		uTest = uValue != 10000;
+		uFailure |= uTest;
+		ReportFailure(
+			"Thread(9999) returned %u, expected 10000", uTest, uValue);
+
+		uThreadResult = bar2.get_result();
+		uTest = uThreadResult != 20000;
+		uFailure |= uTest;
+		ReportFailure("Thread(9999).get_result() returned %u, expected 20000",
+			uTest, static_cast<uint32_t>(uThreadResult));
+	}
+	return uFailure;
+}
+
 //
 // Perform all the tests for the Burgerlib Stdouthelpers Manager
 //
@@ -392,6 +504,8 @@ int BURGER_API TestStdoutHelpers(uint_t uVerbose) BURGER_NOEXCEPT
 	uResult |= TestPrintHexWord64();
 	uResult |= TestPrintHexFloat();
 	uResult |= TestPrintHexDouble();
+	TestTick(uVerbose);
+	uResult |= TestThread(uVerbose);
 	TestPrintHexes();
 
 	if (!uResult && (uVerbose & VERBOSE_MSG)) {

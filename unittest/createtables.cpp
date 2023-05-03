@@ -14,6 +14,7 @@
 
 #include "createtables.h"
 #include "common.h"
+#include "brthread.h"
 
 #if defined(ALLOWCOMMANDLINE)
 #include "brconsolemanager.h"
@@ -25,6 +26,7 @@
 #include "brmp3.h"
 #include "brnumberstring.h"
 #include "brnumberstringhex.h"
+#include "brmacros.h"
 #include <math.h>
 
 //
@@ -1746,49 +1748,25 @@ Input.Clear();
 
 using namespace Burger;
 
-static uintptr_t BURGER_API Code(void* pInput) BURGER_NOEXCEPT
-{
-	++static_cast<uint_t*>(pInput)[0];
-	return 12345;
-}
 void BURGER_API CreateTables(void) BURGER_NOEXCEPT
 {
 	ConsoleApp Ack(0, 0);
 	FloatTimer MyFloatTimer;
-	printf("Test Tick::ReadMilliseconds() %u\n",
-		static_cast<uint_t>(Tick::ReadMilliseconds()));
-	printf("Test Tick::ReadMilliseconds() %u\n",
-		static_cast<uint_t>(Tick::ReadMilliseconds()));
-	printf("Test Tick::ReadMilliseconds() %u\n",
-		static_cast<uint_t>(Tick::ReadMilliseconds()));
-	printf("Test Tick::ReadMilliseconds() %u\n",
-		static_cast<uint_t>(Tick::ReadMilliseconds()));
-	printf("Test Tick::ReadMicroseconds() %u\n",
-		static_cast<uint_t>(Tick::ReadMicroseconds()));
-	printf("Test Tick::ReadMicroseconds() %u\n",
-		static_cast<uint_t>(Tick::ReadMicroseconds()));
-	printf("Test Tick::ReadMicroseconds() %u\n",
-		static_cast<uint_t>(Tick::ReadMicroseconds()));
-	printf("Test Tick::ReadMicroseconds() %u\n",
-		static_cast<uint_t>(Tick::ReadMicroseconds()));
+	printf("Test Tick::read_ms() %u\n",
+		static_cast<uint_t>(Tick::read_ms()));
+	printf("Test Tick::read_ms() %u\n",
+		static_cast<uint_t>(Tick::read_ms()));
+	printf("Test Tick::read_ms() %u\n",
+		static_cast<uint_t>(Tick::read_ms()));
+	printf("Test Tick::read_ms() %u\n",
+		static_cast<uint_t>(Tick::read_ms()));
+	printf("Test Tick::read_ms() %u\n",
+		static_cast<uint_t>(Tick::read_ms()));
+	printf("Test Tick::read_ms() %u\n",
+		static_cast<uint_t>(Tick::read_ms()));
+	printf("Test Tick::read_ms() %u\n",
+		static_cast<uint_t>(Tick::read_ms()));
+	printf("Test Tick::read_ms() %u\n",
+		static_cast<uint_t>(Tick::read_ms()));
 	printf("Test FloatTimer.GetTime() %g\n", MyFloatTimer.GetTime());
-
-	CriticalSection foo;
-	uint_t uResult = 666;
-	Thread bar(Code, &uResult);
-	bar.Wait();
-	printf("Result = %u, %u\n", static_cast<uint_t>(bar.GetResult()), uResult);
-	Thread bar2;
-	bar2.Start(Code, &uResult);
-	bar.Wait();
-	printf("Result = %u, %u\n", static_cast<uint_t>(bar.GetResult()), uResult);
-
-	GUID gfoo = {0x3BBA0080, 0x2421, 0x11CF,
-		{0xA3, 0x1A, 0x00, 0xAA, 0x00, 0xB9, 0x33, 0x56}};
-	char buffer[256];
-	GUIDToString(buffer, &gfoo);
-	GUID hfoo;
-	GUIDFromString(&hfoo, buffer);
-	GUIDInit(&hfoo);
-	GUIDToString(buffer, &hfoo);
 }

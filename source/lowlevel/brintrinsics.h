@@ -607,6 +607,8 @@ extern void BURGER_PAUSEOPCODE(void);
 #define BURGER_PAUSEOPCODE() __asm__ __volatile__("pause")
 
 #elif defined(BURGER_MSVC) && defined(BURGER_ARM)
+extern "C" void __yield(void);
+#pragma intrinsic(__yield)
 #define BURGER_PAUSEOPCODE() __yield()
 
 #elif defined(BURGER_CLANG) && defined(BURGER_ARM)
@@ -619,7 +621,7 @@ extern void BURGER_PAUSEOPCODE(void);
 #define BURGER_PAUSEOPCODE() asm volatile { or r27, r27, r27 }
 
 #elif  (defined(BURGER_GNUC) || defined(BURGER_CLANG)) && defined(BURGER_PPC)
-#define BURGER_PAUSEOPCODE() __asm__ __volatile__("or 27,27,27")
+#define BURGER_PAUSEOPCODE() __asm__ __volatile__("or r27,r27,r27")
 
 #elif defined(BURGER_XBOX360)
 #define BURGER_PAUSEOPCODE() YieldProcessor()

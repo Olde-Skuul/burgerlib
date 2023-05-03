@@ -2,7 +2,7 @@
 
 	Floating point analysis
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -24,58 +24,58 @@ namespace Burger {
 class FPInfo {
 
 	/** Location of the sign bit in a 16 bit float */
-	static BURGER_CONSTEXPR const uint_t kSignBit16 = 0x8000U;
+	static BURGER_CONSTEXPR const uint32_t kSignBit16 = 0x8000U;
 
 	/** Mask for the exponent in a 16 bit float */
-	static BURGER_CONSTEXPR const uint_t kExponentMask16 = 0x7C00U;
+	static BURGER_CONSTEXPR const uint32_t kExponentMask16 = 0x7C00U;
 
 	/** Mask for the mantissa in a 16 bit float */
-	static BURGER_CONSTEXPR const uint_t kMantissaMask16 = 0x03FFU;
+	static BURGER_CONSTEXPR const uint32_t kMantissaMask16 = 0x03FFU;
 
 	/** Implicit "1" bit for a 16 bit float */
-	static BURGER_CONSTEXPR const uint_t kImplicitBit16 = 0x0400U;
+	static BURGER_CONSTEXPR const uint32_t kImplicitBit16 = 0x0400U;
 
 	/** Number of bits in the mantissa for a 16 bit float */
-	static BURGER_CONSTEXPR const uint_t kMantissaBitCount16 = 10;
+	static BURGER_CONSTEXPR const uint32_t kMantissaBitCount16 = 10;
 
 	/** Number of bits in the exponent for a 16 bit float */
-	static BURGER_CONSTEXPR const uint_t kExponentBitCount16 = 5;
+	static BURGER_CONSTEXPR const uint32_t kExponentBitCount16 = 5;
 
 	/** Bias of the exponent for a 16 bit float */
-	static BURGER_CONSTEXPR const uint_t kExponentBias16 = 15;
+	static BURGER_CONSTEXPR const uint32_t kExponentBias16 = 15;
 
 	/** Special exponent for INF/NAN in a 16 bit float */
-	static BURGER_CONSTEXPR const uint_t kSpecialExponent16 = 0x1FU;
+	static BURGER_CONSTEXPR const uint32_t kSpecialExponent16 = 0x1FU;
 
 	/** QNAN or SNAN bit in a 16 bit float */
-	static BURGER_CONSTEXPR const uint_t kNANTypeBit16 = 0x0200U;
+	static BURGER_CONSTEXPR const uint32_t kNANTypeBit16 = 0x0200U;
 
 	/** Location of the sign bit in a 32 bit float */
-	static BURGER_CONSTEXPR const uint_t kSignBit32 = 0x80000000U;
+	static BURGER_CONSTEXPR const uint32_t kSignBit32 = 0x80000000U;
 
 	/** Mask for the exponent in a 32 bit float */
-	static BURGER_CONSTEXPR const uint_t kExponentMask32 = 0x7F800000U;
+	static BURGER_CONSTEXPR const uint32_t kExponentMask32 = 0x7F800000U;
 
 	/** Mask for the mantissa in a 32 bit float */
-	static BURGER_CONSTEXPR const uint_t kMantissaMask32 = 0x007FFFFFU;
+	static BURGER_CONSTEXPR const uint32_t kMantissaMask32 = 0x007FFFFFU;
 
 	/** Implicit "1" bit for a 32 bit float */
-	static BURGER_CONSTEXPR const uint_t kImplicitBit32 = 0x00800000U;
+	static BURGER_CONSTEXPR const uint32_t kImplicitBit32 = 0x00800000U;
 
 	/** Number of bits in the mantissa for a 32 bit float */
-	static BURGER_CONSTEXPR const uint_t kMantissaBitCount32 = 23;
+	static BURGER_CONSTEXPR const uint32_t kMantissaBitCount32 = 23;
 
 	/** Number of bits in the exponent for a 32 bit float */
-	static BURGER_CONSTEXPR const uint_t kExponentBitCount32 = 8;
+	static BURGER_CONSTEXPR const uint32_t kExponentBitCount32 = 8;
 
 	/** Bias of the exponent for a 32 bit float */
-	static BURGER_CONSTEXPR const uint_t kExponentBias32 = 127;
+	static BURGER_CONSTEXPR const uint32_t kExponentBias32 = 127;
 
 	/** Special exponent for INF/NAN in a 32 bit float */
-	static BURGER_CONSTEXPR const uint_t kSpecialExponent32 = 0xFFU;
+	static BURGER_CONSTEXPR const uint32_t kSpecialExponent32 = 0xFFU;
 
 	/** QNAN or SNAN bit in a 32 bit float */
-	static BURGER_CONSTEXPR const uint_t kNANTypeBit32 = 0x00400000U;
+	static BURGER_CONSTEXPR const uint32_t kNANTypeBit32 = 0x00400000U;
 
 	/** Location of the sign bit in a 64 bit float */
 	static BURGER_CONSTEXPR const uint64_t kSignBit64 = 0x8000000000000000ULL;
@@ -93,116 +93,139 @@ class FPInfo {
 		0x0010000000000000ULL;
 
 	/** Number of bits in the mantissa for a 64 bit float */
-	static BURGER_CONSTEXPR const uint_t kMantissaBitCount64 = 52;
+	static BURGER_CONSTEXPR const uint32_t kMantissaBitCount64 = 52;
 
 	/** Number of bits in the exponent for a 64 bit float */
-	static BURGER_CONSTEXPR const uint_t kExponentBitCount64 = 11;
+	static BURGER_CONSTEXPR const uint32_t kExponentBitCount64 = 11;
 
 	/** Bias of the exponent for a 64 bit float */
-	static BURGER_CONSTEXPR const uint_t kExponentBias64 = 1023;
+	static BURGER_CONSTEXPR const uint32_t kExponentBias64 = 1023;
 
 	/** Special exponent for INF/NAN in a 64 bit float */
-	static BURGER_CONSTEXPR const uint_t kSpecialExponent64 = 0x7FFU;
+	static BURGER_CONSTEXPR const uint32_t kSpecialExponent64 = 0x7FFU;
 
 	/** QNAN or SNAN bit in a 64 bit float */
 	static BURGER_CONSTEXPR const uint64_t kNANTypeBit64 =
 		0x0008000000000000ULL;
 
 	/** Flag that's set if a floating point number was analyzed */
-	static BURGER_CONSTEXPR const uint_t kFlagValidShift = 0U;
+	static BURGER_CONSTEXPR const uint32_t kFlagValidShift = 0U;
+
 	/** Flag that's set if the number is negative */
-	static BURGER_CONSTEXPR const uint_t kFlagNegativeShift = 1U;
+	static BURGER_CONSTEXPR const uint32_t kFlagNegativeShift = 1U;
+
 	/** Flag that's set if	the number is zero */
-	static BURGER_CONSTEXPR const uint_t kFlagZeroShift = 2U;
+	static BURGER_CONSTEXPR const uint32_t kFlagZeroShift = 2U;
+
 	/** Flag that's set if the number is a "Not a Number" */
-	static BURGER_CONSTEXPR const uint_t kFlagNANShift = 3U;
+	static BURGER_CONSTEXPR const uint32_t kFlagNANShift = 3U;
+
 	/** Flag that's set if the number is a quiet "Not a Number" */
-	static BURGER_CONSTEXPR const uint_t kFlagQNANShift = 4U;
+	static BURGER_CONSTEXPR const uint32_t kFlagQNANShift = 4U;
+
 	/** Flag that's set if the number is an unknown "Not a Number" */
-	static BURGER_CONSTEXPR const uint_t kFlagIndefiniteNANShift = 5U;
+	static BURGER_CONSTEXPR const uint32_t kFlagIndefiniteNANShift = 5U;
+
 	/** Flag that's set if the number is infinite */
-	static BURGER_CONSTEXPR const uint_t kFlagInfinityShift = 6U;
+	static BURGER_CONSTEXPR const uint32_t kFlagInfinityShift = 6U;
+
 	/** Flag that's set if the number is not normalized */
-	static BURGER_CONSTEXPR const uint_t kFlagSubNormalShift = 7U;
+	static BURGER_CONSTEXPR const uint32_t kFlagSubNormalShift = 7U;
 
 	/** The mantissa value for the floating point number */
 	uint64_t m_uMantissa;
 
 	/** Exponent as stored in the floating point number */
-	uint_t m_uBiasedExponent;
+	uint32_t m_uBiasedExponent;
 
 	/** Exponent with bias applied */
-	int_t m_iExponent;
+	int32_t m_iExponent;
 
 	/** Number of bits in the mantissa */
-	uint_t m_uMantissaBitCount;
+	uint32_t m_uMantissaBitCount;
 
 	/** Number of bits in the exponent */
-	uint_t m_uExponentBitCount;
+	uint32_t m_uExponentBitCount;
 
 	/** Flags that contain the determined states */
-	uint_t m_uFlags;
+	uint32_t m_uFlags;
 
 public:
 	explicit FPInfo(void) BURGER_NOEXCEPT;
-	explicit FPInfo(uint16_t sValue) BURGER_NOEXCEPT;
+	explicit FPInfo(uint16_t uValue) BURGER_NOEXCEPT;
 	explicit FPInfo(float fValue) BURGER_NOEXCEPT;
 	explicit FPInfo(double dValue) BURGER_NOEXCEPT;
 
-	BURGER_INLINE uint64_t GetMantissa(void) const BURGER_NOEXCEPT
+	void BURGER_API init_half(uint16_t uValue) BURGER_NOEXCEPT;
+	void BURGER_API init_float(float fValue) BURGER_NOEXCEPT;
+	void BURGER_API init_double(double dValue) BURGER_NOEXCEPT;
+
+	BURGER_INLINE uint64_t get_mantissa(void) const BURGER_NOEXCEPT
 	{
 		return m_uMantissa;
 	}
-	BURGER_INLINE uint_t GetBiasedExponent(void) const BURGER_NOEXCEPT
+
+	BURGER_INLINE uint32_t get_biased_exponent(void) const BURGER_NOEXCEPT
 	{
 		return m_uBiasedExponent;
 	}
-	BURGER_INLINE int_t GetExponent(void) const BURGER_NOEXCEPT
+
+	BURGER_INLINE int32_t get_exponent(void) const BURGER_NOEXCEPT
 	{
 		return m_iExponent;
 	}
-	BURGER_INLINE uint_t GetMantissaBitCount(void) const BURGER_NOEXCEPT
+
+	BURGER_INLINE uint32_t get_mantissa_bit_count(void) const BURGER_NOEXCEPT
 	{
 		return m_uMantissaBitCount;
 	}
-	BURGER_INLINE uint_t GetExponentBitCount(void) const BURGER_NOEXCEPT
+
+	BURGER_INLINE uint32_t get_exponent_bit_count(void) const BURGER_NOEXCEPT
 	{
 		return m_uExponentBitCount;
 	}
 
-	BURGER_INLINE uint_t IsValid(void) const BURGER_NOEXCEPT
+	BURGER_INLINE uint_t is_valid(void) const BURGER_NOEXCEPT
 	{
 		return (m_uFlags >> kFlagValidShift) & 1U;
 	}
-	BURGER_INLINE uint_t IsNegative(void) const BURGER_NOEXCEPT
+
+	BURGER_INLINE uint_t is_negative(void) const BURGER_NOEXCEPT
 	{
 		return (m_uFlags >> kFlagNegativeShift) & 1U;
 	}
-	BURGER_INLINE uint_t IsZero(void) const BURGER_NOEXCEPT
+
+	BURGER_INLINE uint_t is_zero(void) const BURGER_NOEXCEPT
 	{
 		return (m_uFlags >> kFlagZeroShift) & 1U;
 	}
-	BURGER_INLINE uint_t IsNAN(void) const BURGER_NOEXCEPT
+
+	BURGER_INLINE uint_t is_NaN(void) const BURGER_NOEXCEPT
 	{
 		return (m_uFlags >> kFlagNANShift) & 1U;
 	}
-	BURGER_INLINE uint_t IsQNAN(void) const BURGER_NOEXCEPT
+
+	BURGER_INLINE uint_t is_QNaN(void) const BURGER_NOEXCEPT
 	{
 		return (m_uFlags >> kFlagQNANShift) & 1U;
 	}
-	BURGER_INLINE uint_t IsIndefiniteNAN(void) const BURGER_NOEXCEPT
+
+	BURGER_INLINE uint_t is_indefinite_NaN(void) const BURGER_NOEXCEPT
 	{
 		return (m_uFlags >> kFlagIndefiniteNANShift) & 1U;
 	}
-	BURGER_INLINE uint_t IsInfinity(void) const BURGER_NOEXCEPT
+
+	BURGER_INLINE uint_t is_infinity(void) const BURGER_NOEXCEPT
 	{
 		return (m_uFlags >> kFlagInfinityShift) & 1U;
 	}
-	BURGER_INLINE uint_t IsSubNormal(void) const BURGER_NOEXCEPT
+
+	BURGER_INLINE uint_t is_subnormal(void) const BURGER_NOEXCEPT
 	{
 		return (m_uFlags >> kFlagSubNormalShift) & 1U;
 	}
-	BURGER_INLINE uint_t IsFinite(void) const BURGER_NOEXCEPT
+
+	BURGER_INLINE uint_t is_finite(void) const BURGER_NOEXCEPT
 	{
 		return (m_uFlags &
 				   ((1U << kFlagInfinityShift) | (1U << kFlagNANShift))) == 0;
@@ -210,23 +233,21 @@ public:
 
 	BURGER_INLINE FPInfo& operator=(uint16_t usValue) BURGER_NOEXCEPT
 	{
-		InitHalf(usValue);
-		return *this;
-	}
-	BURGER_INLINE FPInfo& operator=(float fValue) BURGER_NOEXCEPT
-	{
-		InitFloat(fValue);
-		return *this;
-	}
-	BURGER_INLINE FPInfo& operator=(double dValue) BURGER_NOEXCEPT
-	{
-		InitDouble(dValue);
+		init_half(usValue);
 		return *this;
 	}
 
-	void BURGER_API InitHalf(uint16_t usValue) BURGER_NOEXCEPT;
-	void BURGER_API InitFloat(float fValue) BURGER_NOEXCEPT;
-	void BURGER_API InitDouble(double dValue) BURGER_NOEXCEPT;
+	BURGER_INLINE FPInfo& operator=(float fValue) BURGER_NOEXCEPT
+	{
+		init_float(fValue);
+		return *this;
+	}
+
+	BURGER_INLINE FPInfo& operator=(double dValue) BURGER_NOEXCEPT
+	{
+		init_double(dValue);
+		return *this;
+	}
 };
 
 }

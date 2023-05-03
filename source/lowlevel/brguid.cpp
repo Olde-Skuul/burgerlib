@@ -193,13 +193,13 @@ static uint32_t BURGER_API GUID_from_hex(
 void BURGER_API Burger::GUID_init(GUID* pOutput) BURGER_NOEXCEPT
 {
 	// For unsupported platforms, punt
-	pOutput->Data1 = LittleEndian::Load(Tick::ReadMicroseconds());
+	pOutput->Data1 = LittleEndian::Load(Tick::read_us());
 	reinterpret_cast<uint32_t*>(pOutput)[1] =
-		LittleEndian::Load(Tick::ReadMicroseconds());
+		LittleEndian::Load(Tick::read_us());
 	reinterpret_cast<uint32_t*>(pOutput)[2] =
-		LittleEndian::Load(Tick::ReadMicroseconds());
+		LittleEndian::Load(Tick::read_us());
 	reinterpret_cast<uint32_t*>(pOutput)[3] =
-		LittleEndian::Load(Tick::ReadMicroseconds());
+		LittleEndian::Load(Tick::read_us());
 }
 #endif
 

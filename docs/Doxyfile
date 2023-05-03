@@ -984,7 +984,12 @@ RECURSIVE              = YES
 
 EXCLUDE                = ../source/version.h \
                          ../source/templateburgerbase.h \
-                         ../bin/burger_stripped.h
+                         ../source/templatemac.h \
+                         ../source/templateps4.h \
+                         ../source/templateunix.h \
+                         ../source/templatelinux.h \
+                         ../source/templateswitch.h \
+                         ../source/templatexbox360.h
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -1002,11 +1007,25 @@ EXCLUDE_SYMLINKS       = NO
 
 EXCLUDE_PATTERNS       = temp \
                          unittest \
+                         dplay \
+                         directx9 \
+                         vc7compat \
+                         dbus \
                          *_Data \
                          "* Data" \
                          *.xcodeproj \
                          br*.h \
-                         template*.h
+                         unix_*.h \
+                         linux_*.h \
+                         switch_*.h \
+                         ps4_*.h \
+                         win_*.h \
+                         mac_*.h \
+                         ios_*.h \
+                         osx_*.h \
+                         x360_*.h \
+                         template*.h \
+                         *_stripped.h
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the

@@ -89,7 +89,7 @@ static uint_t BURGER_API TestWin1252(void) BURGER_NOEXCEPT
 	ReportFailure("FromWin1252(3) and FromWin1252(4) do not match!", uTest);
 
 	// Temp buffer, use a larger one in case of test failure
-	const uintptr_t uWin1252Length = Burger::Win1252::TranslateFromUTF8(
+	const uintptr_t uWin1252Length = Burger::Win1252::translate_from_UTF8(
 		BufferWin1252, sizeof(BufferWin1252), BufferUTF8, uUTF8Length);
 
 	// Test the result from the round trip
@@ -124,13 +124,13 @@ static uint_t BURGER_API TestWin1252(void) BURGER_NOEXCEPT
 	const int iRequiredSize2 = MultiByteToWideChar(
 		1252, 0, Buffer1_255, 255, WideBuffer, iRequiredSize);
 
-	// Test ToUTF16Table
+	// Test g_ToUTF16Table
 	uTest =
-		Burger::MemoryCompare(WideBuffer + 127, Burger::Win1252::ToUTF16Table,
-			sizeof(Burger::Win1252::ToUTF16Table)) != 0;
+		Burger::MemoryCompare(WideBuffer + 127, Burger::Win1252::g_ToUTF16Table,
+			sizeof(Burger::Win1252::g_ToUTF16Table)) != 0;
 	uFailure |= uTest;
 	ReportFailure(
-		"Win1252::ToUTF16Table does not match 16 bit lookup table", uTest);
+		"Win1252::g_ToUTF16Table does not match 16 bit lookup table", uTest);
 
 	// Convert to UTF-8
 	const int iDestSize = WideCharToMultiByte(
@@ -168,9 +168,9 @@ static uint_t BURGER_API TestWin1252(void) BURGER_NOEXCEPT
 	uTest = FALSE;
 	i = 0;
 	do {
-		WCHAR uTemp = Burger::Win1252::LowerCaseTable[i + 1];
+		WCHAR uTemp = Burger::Win1252::g_LowerCaseTable[i + 1];
 		if (uTemp >= 128) {
-			uTemp = Burger::Win1252::ToUTF16Table[uTemp - 128];
+			uTemp = Burger::Win1252::g_ToUTF16Table[uTemp - 128];
 		}
 		if (WideBufferCase[i] != uTemp) {
 			uTest = TRUE;
@@ -179,7 +179,7 @@ static uint_t BURGER_API TestWin1252(void) BURGER_NOEXCEPT
 	} while (++i < 255);
 
 	uFailure |= uTest;
-	ReportFailure("Burger::Win1252::LowerCaseTable[%u] is invalid!", uTest,
+	ReportFailure("Burger::Win1252::g_LowerCaseTable[%u] is invalid!", uTest,
 		static_cast<uint_t>(i + 1));
 
 	Burger::MemoryCopy(WideBufferCase, WideBuffer, 255 * sizeof(WCHAR));
@@ -192,9 +192,9 @@ static uint_t BURGER_API TestWin1252(void) BURGER_NOEXCEPT
 	uTest = FALSE;
 	i = 0;
 	do {
-		WCHAR uTemp = Burger::Win1252::UpperCaseTable[i + 1];
+		WCHAR uTemp = Burger::Win1252::g_UpperCaseTable[i + 1];
 		if (uTemp >= 128) {
-			uTemp = Burger::Win1252::ToUTF16Table[uTemp - 128];
+			uTemp = Burger::Win1252::g_ToUTF16Table[uTemp - 128];
 		}
 		if (WideBufferCase[i] != uTemp) {
 			uTest = TRUE;
@@ -203,7 +203,7 @@ static uint_t BURGER_API TestWin1252(void) BURGER_NOEXCEPT
 	} while (++i < 255);
 
 	uFailure |= uTest;
-	ReportFailure("Burger::Win1252::UpperCaseTable[%u] is invalid!", uTest,
+	ReportFailure("Burger::Win1252::g_UpperCaseTable[%u] is invalid!", uTest,
 		static_cast<uint_t>(i + 1));
 
 	// Final test, verify the single character converters
@@ -325,7 +325,7 @@ static uint_t BURGER_API TestMacRoman(void) BURGER_NOEXCEPT
 	ReportFailure("MacRomanUS(3) and MacRomanUS(4) do not match!", uTest);
 
 	// Temp buffer, use a larger one in case of test failure
-	const uintptr_t uMacRomanLength = Burger::MacRomanUS::TranslateFromUTF8(
+	const uintptr_t uMacRomanLength = Burger::MacRomanUS::translate_from_UTF8(
 		BufferMacRoman, sizeof(BufferMacRoman), BufferUTF8, uUTF8Length);
 
 	// Test the result from the round trip
@@ -504,7 +504,7 @@ static uint_t BURGER_API TestISOLatin1(void) BURGER_NOEXCEPT
 	ReportFailure("FromISOLatin1(3) and FromISOLatin1(4) do not match!", uTest);
 
 	// Temp buffer, use a larger one in case of test failure
-	const uintptr_t uISOLatin1Length = Burger::ISOLatin1::TranslateFromUTF8(
+	const uintptr_t uISOLatin1Length = Burger::ISOLatin1::translate_from_UTF8(
 		BufferISOLatin1, sizeof(BufferISOLatin1), BufferUTF8, uUTF8Length);
 
 	// Test the result from the round trip
@@ -537,13 +537,13 @@ static uint_t BURGER_API TestISOLatin1(void) BURGER_NOEXCEPT
 	const int iRequiredSize2 = MultiByteToWideChar(
 		28591, 0, Buffer1_255, 255, WideBuffer, iRequiredSize);
 
-	// Test ToUTF16Table
+	// Test g_ToUTF16Table
 	uTest =
-		Burger::MemoryCompare(WideBuffer + 127, Burger::ISOLatin1::ToUTF16Table,
-			sizeof(Burger::ISOLatin1::ToUTF16Table)) != 0;
+		Burger::MemoryCompare(WideBuffer + 127, Burger::ISOLatin1::g_ToUTF16Table,
+			sizeof(Burger::ISOLatin1::g_ToUTF16Table)) != 0;
 	uFailure |= uTest;
 	ReportFailure(
-		"ISOLatin1::ToUTF16Table does not match 16 bit lookup table", uTest);
+		"ISOLatin1::g_ToUTF16Table does not match 16 bit lookup table", uTest);
 
 	// Convert to UTF-8
 	const int iDestSize = WideCharToMultiByte(
@@ -574,9 +574,9 @@ static uint_t BURGER_API TestISOLatin1(void) BURGER_NOEXCEPT
 	uTest = FALSE;
 	i = 0;
 	do {
-		WCHAR uTemp = Burger::ISOLatin1::LowerCaseTable[i + 1];
+		WCHAR uTemp = Burger::ISOLatin1::g_LowerCaseTable[i + 1];
 		if (uTemp >= 128) {
-			uTemp = Burger::ISOLatin1::ToUTF16Table[uTemp - 128];
+			uTemp = Burger::ISOLatin1::g_ToUTF16Table[uTemp - 128];
 		}
 		if (WideBufferCase[i] != uTemp) {
 			uTest = TRUE;
@@ -585,7 +585,7 @@ static uint_t BURGER_API TestISOLatin1(void) BURGER_NOEXCEPT
 	} while (++i < 255);
 
 	uFailure |= uTest;
-	ReportFailure("Burger::ISOLatin1::LowerCaseTable[%u] is invalid!", uTest,
+	ReportFailure("Burger::ISOLatin1::g_LowerCaseTable[%u] is invalid!", uTest,
 		static_cast<uint_t>(i + 1));
 
 	Burger::MemoryCopy(WideBufferCase, WideBuffer, 255 * sizeof(WCHAR));
@@ -600,9 +600,9 @@ static uint_t BURGER_API TestISOLatin1(void) BURGER_NOEXCEPT
 	uTest = FALSE;
 	i = 0;
 	do {
-		WCHAR uTemp = Burger::ISOLatin1::UpperCaseTable[i + 1];
+		WCHAR uTemp = Burger::ISOLatin1::g_UpperCaseTable[i + 1];
 		if (uTemp >= 128) {
-			uTemp = Burger::ISOLatin1::ToUTF16Table[uTemp - 128];
+			uTemp = Burger::ISOLatin1::g_ToUTF16Table[uTemp - 128];
 		}
 		if (WideBufferCase[i] != uTemp) {
 			uTest = TRUE;
@@ -611,7 +611,7 @@ static uint_t BURGER_API TestISOLatin1(void) BURGER_NOEXCEPT
 	} while (++i < 255);
 
 	uFailure |= uTest;
-	ReportFailure("Burger::ISOLatin1::UpperCaseTable[%u] is invalid!", uTest,
+	ReportFailure("Burger::ISOLatin1::g_UpperCaseTable[%u] is invalid!", uTest,
 		static_cast<uint_t>(i + 1));
 
 	// Final test, verify the single character converters
@@ -733,7 +733,7 @@ static uint_t BURGER_API TestWin437(void) BURGER_NOEXCEPT
 	ReportFailure("FromWin437(3) and FromWin437(4) do not match!", uTest);
 
 	// Temp buffer, use a larger one in case of test failure
-	const uintptr_t uWin437Length = Burger::Win437::TranslateFromUTF8(
+	const uintptr_t uWin437Length = Burger::Win437::translate_from_UTF8(
 		BufferWin437, sizeof(BufferWin437), BufferUTF8, uUTF8Length);
 
 	// Test the result from the round trip
@@ -768,13 +768,13 @@ static uint_t BURGER_API TestWin437(void) BURGER_NOEXCEPT
 	const int iRequiredSize2 = MultiByteToWideChar(
 		437, 0, Buffer1_255, 255, WideBuffer, iRequiredSize);
 
-	// Test ToUTF16Table
+	// Test g_ToUTF16Table
 	uTest =
-		Burger::MemoryCompare(WideBuffer + 127, Burger::Win437::ToUTF16Table,
-			sizeof(Burger::Win437::ToUTF16Table)) != 0;
+		Burger::MemoryCompare(WideBuffer + 127, Burger::Win437::g_ToUTF16Table,
+			sizeof(Burger::Win437::g_ToUTF16Table)) != 0;
 	uFailure |= uTest;
 	ReportFailure(
-		"Win437::ToUTF16Table does not match 16 bit lookup table", uTest);
+		"Win437::g_ToUTF16Table does not match 16 bit lookup table", uTest);
 
 	// Convert to UTF-8
 	const int iDestSize = WideCharToMultiByte(
@@ -819,9 +819,9 @@ static uint_t BURGER_API TestWin437(void) BURGER_NOEXCEPT
 	uTest = FALSE;
 	i = 0;
 	do {
-		WCHAR uTemp = Burger::Win437::LowerCaseTable[i + 1];
+		WCHAR uTemp = Burger::Win437::g_LowerCaseTable[i + 1];
 		if (uTemp >= 128) {
-			uTemp = Burger::Win437::ToUTF16Table[uTemp - 128];
+			uTemp = Burger::Win437::g_ToUTF16Table[uTemp - 128];
 		}
 		if (WideBufferCase[i] != uTemp) {
 			uTest = TRUE;
@@ -830,7 +830,7 @@ static uint_t BURGER_API TestWin437(void) BURGER_NOEXCEPT
 	} while (++i < 255);
 
 	uFailure |= uTest;
-	ReportFailure("Burger::Win437::LowerCaseTable[%u] is invalid!", uTest,
+	ReportFailure("Burger::Win437::g_LowerCaseTable[%u] is invalid!", uTest,
 		static_cast<uint_t>(i + 1));
 
 	Burger::MemoryCopy(WideBufferCase, WideBuffer, 255 * sizeof(WCHAR));
@@ -865,9 +865,9 @@ static uint_t BURGER_API TestWin437(void) BURGER_NOEXCEPT
 	uTest = FALSE;
 	i = 0;
 	do {
-		WCHAR uTemp = Burger::Win437::UpperCaseTable[i + 1];
+		WCHAR uTemp = Burger::Win437::g_UpperCaseTable[i + 1];
 		if (uTemp >= 128) {
-			uTemp = Burger::Win437::ToUTF16Table[uTemp - 128];
+			uTemp = Burger::Win437::g_ToUTF16Table[uTemp - 128];
 		}
 		if (WideBufferCase[i] != uTemp) {
 			uTest = TRUE;
@@ -876,7 +876,7 @@ static uint_t BURGER_API TestWin437(void) BURGER_NOEXCEPT
 	} while (++i < 255);
 
 	uFailure |= uTest;
-	ReportFailure("Burger::Win437::UpperCaseTable[%u] is invalid!", uTest,
+	ReportFailure("Burger::Win437::g_UpperCaseTable[%u] is invalid!", uTest,
 		static_cast<uint_t>(i + 1));
 
 	// Final test, verify the single character converters
@@ -1047,7 +1047,7 @@ static uint_t BURGER_API TestUTF16IsValid(void) BURGER_NOEXCEPT
 			uTest, pWork->m_UTF16[0], pWork->m_UTF16[1]);
 
 		//
-		// Test TranslateFromUTF8
+		// Test translate_from_UTF8
 		//
 
 		if (pWork->m_uValid) {
@@ -1064,24 +1064,24 @@ static uint_t BURGER_API TestUTF16IsValid(void) BURGER_NOEXCEPT
 			}
 
 			const uint16_t uTest16 =
-				Burger::UTF16::TranslateFromUTF8(TempString);
+				Burger::UTF16::translate_from_UTF8(TempString);
 			uTest = uTest16 != uMatch16;
 			uResult |= uTest;
 			ReportFailure(
-				"Burger::UTF16::TranslateFromUTF8(TempString) %04X isn't %04X!",
+				"Burger::UTF16::translate_from_UTF8(TempString) %04X isn't %04X!",
 				uTest, uTest16, pWork->m_UTF16[0]);
 
 			// Skip the null entry
 			uintptr_t uTestX1;
 			if (pWork->m_UTF16[0]) {
-				uTestX1 = Burger::UTF16::TranslateFromUTF8(
+				uTestX1 = Burger::UTF16::translate_from_UTF8(
 					TempString16, BURGER_ARRAYSIZE(TempString16), TempString);
 				// Test for the proper length
 
 				uTest = uTestX1 != uWidth16;
 				uResult |= uTest;
 				ReportFailure(
-					"Burger::UTF16::TranslateFromUTF8(TempString16, BURGER_ARRAYSIZE(TempString16), TempString) %u != 1 %08X!",
+					"Burger::UTF16::translate_from_UTF8(TempString16, BURGER_ARRAYSIZE(TempString16), TempString) %u != 1 %08X!",
 					uTest, static_cast<uint_t>(uTestX1), pWork->m_UTF16[0]);
 
 				if (uWidth16) {
@@ -1091,20 +1091,20 @@ static uint_t BURGER_API TestUTF16IsValid(void) BURGER_NOEXCEPT
 					}
 					uResult |= uTest;
 					ReportFailure(
-						"Burger::UTF16::TranslateFromUTF8(TempString16, BURGER_ARRAYSIZE(TempString16), TempString) %04X%04X %04X%04X!",
+						"Burger::UTF16::translate_from_UTF8(TempString16, BURGER_ARRAYSIZE(TempString16), TempString) %04X%04X %04X%04X!",
 						uTest, TempString16[0], TempString16[1],
 						pWork->m_UTF16[0], pWork->m_UTF16[1]);
 				}
 			}
 
-			uTestX1 = Burger::UTF16::TranslateFromUTF8(TempString16,
+			uTestX1 = Burger::UTF16::translate_from_UTF8(TempString16,
 				BURGER_ARRAYSIZE(TempString16),
 				reinterpret_cast<const char*>(pWork->m_UTF8), uWidth);
 			// 0, invalid, 1 or 2 elements if valid
 			uTest = uTestX1 != uWidth16;
 			uResult |= uTest;
 			ReportFailure(
-				"Burger::UTF16::TranslateFromUTF8(TempString16, BURGER_ARRAYSIZE(TempString16), TempString, uWidth) %u != 1 %04X%04X!",
+				"Burger::UTF16::translate_from_UTF8(TempString16, BURGER_ARRAYSIZE(TempString16), TempString, uWidth) %u != 1 %04X%04X!",
 				uTest, static_cast<uint_t>(uTestX1), pWork->m_UTF16[0],
 				pWork->m_UTF16[1]);
 
@@ -1115,7 +1115,7 @@ static uint_t BURGER_API TestUTF16IsValid(void) BURGER_NOEXCEPT
 				}
 				uResult |= uTest;
 				ReportFailure(
-					"Burger::UTF16::TranslateFromUTF8(TempString16, BURGER_ARRAYSIZE(TempString16), TempString, uWidth) %04X%04X %04X%04X!",
+					"Burger::UTF16::translate_from_UTF8(TempString16, BURGER_ARRAYSIZE(TempString16), TempString, uWidth) %04X%04X %04X%04X!",
 					uTest, TempString16[0], TempString16[1], pWork->m_UTF16[0],
 					pWork->m_UTF16[1]);
 			}
@@ -1263,7 +1263,7 @@ static uint_t BURGER_API TestUTF16(void) BURGER_NOEXCEPT
 	ReportFailure("FromUTF16(3) and FromUTF16(4) do not match!", uTest);
 
 	// Temp buffer, use a larger one in case of test failure
-	const uintptr_t uUTF16Length = Burger::UTF16::TranslateFromUTF8(
+	const uintptr_t uUTF16Length = Burger::UTF16::translate_from_UTF8(
 		BufferUTF16, BURGER_ARRAYSIZE(BufferUTF16), BufferUTF8, uUTF8Length);
 
 	// Test the result from the round trip
@@ -1456,7 +1456,7 @@ static uint_t TestUTF32(void) BURGER_NOEXCEPT
 			pWork->m_UTF32);
 
 		//
-		// Test TranslateFromUTF8
+		// Test translate_from_UTF8
 		//
 
 		// Create a byte stream
@@ -1471,30 +1471,30 @@ static uint_t TestUTF32(void) BURGER_NOEXCEPT
 			uMatch32 = pWork->m_UTF32;
 		}
 
-		const uint32_t uTest32 = Burger::UTF32::TranslateFromUTF8(TempString);
+		const uint32_t uTest32 = Burger::UTF32::translate_from_UTF8(TempString);
 		uTest = uTest32 != uMatch32;
 		uResult |= uTest;
 		ReportFailure(
-			"Burger::UTF32::TranslateFromUTF8(TempString) %08X isn't %08X!",
+			"Burger::UTF32::translate_from_UTF8(TempString) %08X isn't %08X!",
 			uTest, uTest32, pWork->m_UTF32);
 
 		// Skip the null entry
 		uintptr_t uTestX;
 		if (pWork->m_UTF32) {
-			uTestX = Burger::UTF32::TranslateFromUTF8(
+			uTestX = Burger::UTF32::translate_from_UTF8(
 				TempString32, BURGER_ARRAYSIZE(TempString32), TempString);
 			// uMatch is 1 with values are valid, 0 when invalid.
 			uTest = uTestX != uMatch;
 			uResult |= uTest;
 			ReportFailure(
-				"Burger::UTF32::TranslateFromUTF8(TempString32, BURGER_ARRAYSIZE(TempString32), TempString) %u != 1 %08X!",
+				"Burger::UTF32::translate_from_UTF8(TempString32, BURGER_ARRAYSIZE(TempString32), TempString) %u != 1 %08X!",
 				uTest, static_cast<uint_t>(uTestX), pWork->m_UTF32);
 
 			if (uTestX) {
 				uTest = TempString32[0] != uMatch32;
 				uResult |= uTest;
 				ReportFailure(
-					"Burger::UTF32::TranslateFromUTF8(TempString32, BURGER_ARRAYSIZE(TempString32), TempString) %08X %08X!",
+					"Burger::UTF32::translate_from_UTF8(TempString32, BURGER_ARRAYSIZE(TempString32), TempString) %08X %08X!",
 					uTest, TempString32[0], pWork->m_UTF32);
 			}
 		}
@@ -1502,21 +1502,21 @@ static uint_t TestUTF32(void) BURGER_NOEXCEPT
 			pWork->m_UTF8[2]                      ? 3U :
 			pWork->m_UTF8[1]                      ? 2U :
                                                     1U;
-		uTestX = Burger::UTF32::TranslateFromUTF8(TempString32,
+		uTestX = Burger::UTF32::translate_from_UTF8(TempString32,
 			BURGER_ARRAYSIZE(TempString32),
 			reinterpret_cast<const char*>(pWork->m_UTF8), uWidth);
 		// uMatch is 1 with values are valid, 0 when invalid.
 		uTest = uTestX != uMatch;
 		uResult |= uTest;
 		ReportFailure(
-			"Burger::UTF32::TranslateFromUTF8(TempString32, BURGER_ARRAYSIZE(TempString32), TempString, uWidth) %u != 1 %08X!",
+			"Burger::UTF32::translate_from_UTF8(TempString32, BURGER_ARRAYSIZE(TempString32), TempString, uWidth) %u != 1 %08X!",
 			uTest, static_cast<uint_t>(uTestX), pWork->m_UTF32);
 
 		if (uTestX) {
 			uTest = TempString32[0] != uMatch32;
 			uResult |= uTest;
 			ReportFailure(
-				"Burger::UTF32::TranslateFromUTF8(TempString32, BURGER_ARRAYSIZE(TempString32), TempString, uWidth) %08X %08X!",
+				"Burger::UTF32::translate_from_UTF8(TempString32, BURGER_ARRAYSIZE(TempString32), TempString, uWidth) %08X %08X!",
 				uTest, TempString32[0], pWork->m_UTF32);
 		}
 

@@ -43,7 +43,13 @@
 /* DIR: "platforms:psvita" */
 /* DIR: "platforms:wiiu" */
 /* DIR: "platforms:switch" */
+/* IGNORE: "burgermac.h" */
 /* IGNORE: "burgerps4.h" */
+/* IGNORE: "burgerwindows.h" */
+/* IGNORE: "burgerunix.h" */
+/* IGNORE: "burgerswitch.h" */
+/* IGNORE: "burgerxbox360.h" */
+/* IGNORE: "burgerlinux.h" */
 
 /* BEGIN */
 /***************************************
@@ -124,7 +130,6 @@
 #include "brmacosxtypes.h"
 #include "brmactypes.h"
 #include "briostypes.h"
-#include "brmsdostypes.h"
 #include "brlinuxtypes.h"
 #include "brps3types.h"
 #include "brps4types.h"
@@ -142,8 +147,6 @@
 #include "brstdouthelpers.h"
 #include "bratomic.h"
 #include "brcriticalsection.h"
-#include "brsemaphore.h"
-#include "brconditionvariable.h"
 #include "brthread.h"
 #include "brmemoryhandle.h"
 #include "brasciito.h"
@@ -363,10 +366,25 @@ typedef VertexBuffer VertexBufferDefault;
 
 }
 
+#if defined(BURGER_UNIX)
+// DBus needs va_list
+#include <stdarg.h>
+
+#include "burgerunix.h"
+#endif
+
 #if defined(BURGER_WINDOWS)
 #include "burgerwindows.h"
+#elif defined(BURGER_XBOX360)
+#include "burgerxbox360.h"
 #elif defined(BURGER_PS4) || defined(BURGER_PS5)
 #include "burgerps4.h"
+#elif defined(BURGER_SWITCH)
+#include "burgerswitch.h"
+#elif defined(BURGER_MAC)
+#include "burgermac.h"
+#elif defined(BURGER_LINUX)
+#include "burgerlinux.h"
 #endif
 
 #endif

@@ -178,7 +178,9 @@ enum eError {
 	/** Thread won't stop */
 	kErrorThreadCantStop,
 	/** Thread not found */
-	kErrorThreadNotFound
+	kErrorThreadNotFound,
+	/** Thread not modified */
+	kErrorThreadNotModified
 };
 
 extern const char* BURGER_API error_lookup_string(

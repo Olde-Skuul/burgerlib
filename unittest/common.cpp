@@ -16,6 +16,7 @@
 #include "brcommandparameterbooltrue.h"
 #include "brconsolemanager.h"
 #include "brglobals.h"
+#include "brintrinsics.h"
 #include "createtables.h"
 #include "testbralgorithm.h"
 #include "testbrcodelibrary.h"
@@ -227,9 +228,6 @@ uint_t BURGER_API VerifyBuffer(const void* pBuffer, uintptr_t uSize,
 // Test everything
 //
 
-#define FHOOK "\xC6\x92"
-#define I_DIERESIS "\xC3\xAF"
-
 int BURGER_ANSIAPI main(int argc, const char** argv)
 {
 	uint_t uVerbose = VERBOSE_ALL;
@@ -348,7 +346,6 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
 			Message("Burgerlib version %d.%d build #%u", uVersion >> 24U,
 				(uVersion >> 16U) & 0xFF, uBuild);
 		}
-		// printf("Hook " FHOOK " I_DIERSIS " I_DIERESIS "\n");
 
 		// Perform the main tests
 

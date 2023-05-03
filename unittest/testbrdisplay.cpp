@@ -125,7 +125,7 @@ static uint_t BURGER_API TestGetVideoModes(void) BURGER_NOEXCEPT
 			///< (Windows only) Device GUID
 #if defined(BURGER_WINDOWS)
 			char GUIDString[64];
-			Burger::GUIDToString(GUIDString, &pWork1->m_GUID);
+			Burger::GUID_to_string(GUIDString, &pWork1->m_GUID);
 			Message("GUID = %s", GUIDString);
 #endif
 			Message("Device = %s", pWork1->m_DeviceName.c_str());

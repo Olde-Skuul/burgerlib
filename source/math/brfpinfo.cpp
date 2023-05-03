@@ -2,7 +2,7 @@
 
 	Floating point analysis
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -13,6 +13,7 @@
 ***************************************/
 
 #include "brfpinfo.h"
+#include "brstructs.h"
 
 /*! ************************************
 
@@ -30,10 +31,10 @@
 
 	When a floating point number is assigned to this class, it is broken down to
 	the type of value (Infinity, NaN, Subnormal), the mantissa, the exponent and
-	the sign. The values can be accessed with the calls GetMantissa(),
-	GetExponent(), GetMantissaBitCount(), etc.
+	the sign. The values can be accessed with the calls get_mantissa(),
+	get_exponent(), get_mantissa_bit_count(), etc.
 
-	\sa IsNan(float), IsNAN(), GetMantissa(), GetExponent()
+	\sa IsNan(float), is_NaN(), get_mantissa(), get_exponent()
 
 ***************************************/
 
@@ -44,7 +45,7 @@
 	All values are set to zero. Use the Init() functions or assignment operators
 	to perform floating point analysis.
 
-	\sa InitFloat(float), or FPInfo::operator = (float)
+	\sa init_float(float), or FPInfo::operator = (float)
 
 ***************************************/
 
@@ -61,45 +62,299 @@ Burger::FPInfo::FPInfo(void) BURGER_NOEXCEPT: m_uMantissa(0),
 
 	\brief Constructor for 16 bit float
 
-	\param usValue 16 bit floating point number
-	\sa FPInfo(double) or FPInfo(float)
+	\param uValue 16 bit floating point number
+
+	\sa init_half(uint16_t), FPInfo(double) or FPInfo(float)
 
 ***************************************/
 
-Burger::FPInfo::FPInfo(uint16_t usValue) BURGER_NOEXCEPT
+Burger::FPInfo::FPInfo(uint16_t uValue) BURGER_NOEXCEPT
 {
-	InitHalf(usValue);
+	init_half(uValue);
 }
 
 /*! ************************************
 
 	\brief Constructor for 32 bit float
+
 	\param fValue 32 bit floating point number
-	\sa FPInfo(uint16_t) or FPInfo(double)
+
+	\sa init_float(float), FPInfo(uint16_t) or FPInfo(double)
 
 ***************************************/
 
 Burger::FPInfo::FPInfo(float fValue) BURGER_NOEXCEPT
 {
-	InitFloat(fValue);
+	init_float(fValue);
 }
 
 /*! ************************************
 
 	\brief Constructor for 64 bit float
+
 	\param dValue 64 bit floating point number
-	\sa FPInfo(uint16_t) or FPInfo(float)
+
+	\sa init_double(double), FPInfo(uint16_t) or FPInfo(float)
 
 ***************************************/
 
 Burger::FPInfo::FPInfo(double dValue) BURGER_NOEXCEPT
 {
-	InitDouble(dValue);
+	init_double(dValue);
 }
 
 /*! ************************************
 
-	\fn Burger::FPInfo::GetMantissa(void) const
+	\brief Process a 16 bit floating point number
+
+	Given a 16 bit floating point number, process it into its component parts.
+
+	\param uValue 16 bit float point number
+
+***************************************/
+
+void BURGER_API Burger::FPInfo::init_half(uint16_t uValue) BURGER_NOEXCEPT
+{
+	const uint32_t uTemp = uValue;
+
+	// Break it down
+	const uint32_t uBiasedExponent =
+		(uTemp & kExponentMask16) >> kMantissaBitCount16;
+	m_uMantissa = (uTemp & kMantissaMask16);
+	m_uBiasedExponent = uBiasedExponent;
+	m_iExponent = static_cast<int32_t>(uBiasedExponent - kExponentBias16);
+
+	// Save the size constants
+	m_uMantissaBitCount = kMantissaBitCount16 + 1U;
+	m_uExponentBitCount = kExponentBitCount16;
+
+	// Test if negative
+	uint32_t uFlags = 1U << kFlagValidShift;
+	if (uTemp & kSignBit16) {
+		uFlags |= (1U << kFlagNegativeShift);
+	}
+
+	// Test if zero
+	if (!(uTemp & (kExponentMask16 | kMantissaMask16))) {
+		uFlags |= (1U << kFlagZeroShift);
+	} else {
+
+		// Do we have have a NAN or Infinity?
+		if (uBiasedExponent == kSpecialExponent16) {
+
+			// Zero mantissa means infinity
+			if (!(uTemp & kMantissaMask16)) {
+				uFlags |= (1U << kFlagInfinityShift);
+			} else {
+
+				// It's a NAN baby!
+				uFlags |= (1U << kFlagNANShift);
+
+				// Get the bit that determines if it is a NAN
+				BURGER_CONSTEXPR const uint32_t uNANBit = 1U
+					<< (kMantissaBitCount16 - 1);
+
+				// Determine if is a quiet NaN and possibly also an Indefinite
+				// NaN in addition
+				if (uTemp & uNANBit) {
+					// Quiet nan
+					uFlags |= (1U << kFlagQNANShift);
+
+					// Test for indefinite NAN
+					if ((uFlags & (1U << kFlagNegativeShift)) &&
+						!(uTemp & (uNANBit - 1))) {
+						uFlags |= (1U << kFlagIndefiniteNANShift);
+					}
+				}
+			}
+		} else if (!uBiasedExponent) {
+
+			// Do we have a subnormal number?
+			uFlags |= (1U << kFlagSubNormalShift);
+
+			// Adjust exponent, but no implied bit
+			++m_iExponent;
+		} else {
+			// Normal number, needs the implicit bit
+			m_uMantissa |= (1U << kMantissaBitCount16);
+		}
+	}
+
+	// Store the flags
+	m_uFlags = uFlags;
+}
+
+/*! ************************************
+
+	\brief Process a 32 bit floating point number
+
+	Given a 32 bit floating point number, process it into its component parts.
+
+	\param fValue 32 bit float point number
+
+***************************************/
+
+void BURGER_API Burger::FPInfo::init_float(float fValue) BURGER_NOEXCEPT
+{
+	// Get the binary representation of the float
+	uint32_float_t Converter;
+	Converter.set_float(fValue);
+	const uint32_t uTemp = Converter.get_uint32();
+
+	// Break it down
+	const uint32_t uBiasedExponent =
+		(uTemp & kExponentMask32) >> kMantissaBitCount32;
+	m_uMantissa = (uTemp & kMantissaMask32);
+	m_uBiasedExponent = uBiasedExponent;
+	m_iExponent = static_cast<int32_t>(uBiasedExponent - kExponentBias32);
+
+	// Save the size constants
+	m_uMantissaBitCount = kMantissaBitCount32 + 1U;
+	m_uExponentBitCount = kExponentBitCount32;
+
+	// Test if negative
+	uint32_t uFlags = 1U << kFlagValidShift;
+	if (uTemp & kSignBit32) {
+		uFlags |= (1U << kFlagNegativeShift);
+	}
+
+	// Test if zero
+	if (!(uTemp & (kExponentMask32 | kMantissaMask32))) {
+		uFlags |= (1U << kFlagZeroShift);
+	} else {
+
+		// Do we have have a NAN or Infinity?
+		if (uBiasedExponent == kSpecialExponent32) {
+
+			// Zero mantissa means infinity
+			if (!(uTemp & kMantissaMask32)) {
+				uFlags |= (1U << kFlagInfinityShift);
+			} else {
+
+				// It's a NAN baby!
+				uFlags |= (1U << kFlagNANShift);
+
+				// Get the bit that determines if it is a NAN
+				BURGER_CONSTEXPR const uint32_t uNANBit = 1U
+					<< (kMantissaBitCount32 - 1);
+
+				// Determine if is a quiet NaN and possibly also an Indefinite
+				// NaN in addition
+				if (uTemp & uNANBit) {
+
+					// Quiet nan
+					uFlags |= (1U << kFlagQNANShift);
+
+					// Test for indefinite NAN
+					if ((uFlags & (1U << kFlagNegativeShift)) &&
+						!(uTemp & (uNANBit - 1))) {
+						uFlags |= (1U << kFlagIndefiniteNANShift);
+					}
+				}
+			}
+		} else if (!uBiasedExponent) {
+
+			// Do we have a subnormal number?
+			uFlags |= (1U << kFlagSubNormalShift);
+
+			// Adjust exponent, but no implied bit
+			++m_iExponent;
+		} else {
+			// Normal number, needs the implicit bit
+			m_uMantissa |= (1U << kMantissaBitCount32);
+		}
+	}
+
+	// Store the flags
+	m_uFlags = uFlags;
+}
+
+/*! ************************************
+
+	\brief Process a 64 bit floating point number
+
+	Given a 64 bit floating point number, process it into its component parts.
+
+	\param dValue 64 bit float point number
+
+***************************************/
+
+void BURGER_API Burger::FPInfo::init_double(double dValue) BURGER_NOEXCEPT
+{
+	uint64_double_t Converter;
+	Converter.set_double(dValue);
+	const uint64_t uTemp = Converter.get_uint64();
+
+	// Break it down
+	const uint32_t uBiasedExponent =
+		static_cast<uint32_t>((uTemp & kExponentMask64) >> kMantissaBitCount64);
+	m_uMantissa = (uTemp & kMantissaMask64);
+	m_uBiasedExponent = uBiasedExponent;
+	m_iExponent = static_cast<int32_t>(uBiasedExponent - kExponentBias64);
+
+	// Save the size constants
+	m_uMantissaBitCount = kMantissaBitCount64 + 1;
+	m_uExponentBitCount = kExponentBitCount64;
+
+	// Test if negative
+	uint32_t uFlags = 1U << kFlagValidShift;
+	if (uTemp & kSignBit64) {
+		uFlags |= (1U << kFlagNegativeShift);
+	}
+
+	// Test if zero
+	if (!(uTemp & (kExponentMask64 | kMantissaMask64))) {
+		uFlags |= (1U << kFlagZeroShift);
+	} else {
+
+		// Do we have have a NAN or Infinity?
+		if (uBiasedExponent == kSpecialExponent64) {
+
+			// Zero mantissa means infinity
+			if (!(uTemp & kMantissaMask64)) {
+				uFlags |= (1U << kFlagInfinityShift);
+			} else {
+
+				// It's a NAN baby!
+				uFlags |= (1U << kFlagNANShift);
+
+				// Get the bit that determines if it is a NAN
+				BURGER_CONSTEXPR const uint64_t uNANBit = 1ULL
+					<< (kMantissaBitCount64 - 1);
+
+				// Determine if is a quiet NaN and possibly also an Indefinite
+				// NaN in addition
+				if (uTemp & uNANBit) {
+
+					// Quiet nan
+					uFlags |= (1U << kFlagQNANShift);
+
+					// Test for indefinite NAN
+					if ((uFlags & (1U << kFlagNegativeShift)) &&
+						!(uTemp & (uNANBit - 1))) {
+						uFlags |= (1U << kFlagIndefiniteNANShift);
+					}
+				}
+			}
+		} else if (!uBiasedExponent) {
+
+			// Do we have a subnormal number?
+			uFlags |= (1U << kFlagSubNormalShift);
+			// Adjust exponent, but no implied bit
+			++m_iExponent;
+		} else {
+			// Normal number, needs the implicit bit
+			m_uMantissa |= (1ULL << kMantissaBitCount64);
+		}
+	}
+
+	// Store the flags
+	m_uFlags = uFlags;
+}
+
+/*! ************************************
+
+	\fn Burger::FPInfo::get_mantissa(void) const
 	\brief Get the mantissa value
 
 	\return The mantissa of the analyzed floating point number
@@ -108,7 +363,7 @@ Burger::FPInfo::FPInfo(double dValue) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FPInfo::GetBiasedExponent(void) const
+	\fn Burger::FPInfo::get_biased_exponent(void) const
 	\brief Get the biased exponent
 
 	\return The exponent value as it was stored in the floating point number
@@ -117,7 +372,7 @@ Burger::FPInfo::FPInfo(double dValue) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FPInfo::GetExponent(void) const
+	\fn Burger::FPInfo::get_exponent(void) const
 	\brief Get the exponent
 
 	Returns the exponent as it was meant to be represented, as such, it's a
@@ -129,7 +384,7 @@ Burger::FPInfo::FPInfo(double dValue) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FPInfo::GetMantissaBitCount(void) const
+	\fn Burger::FPInfo::get_mantissa_bit_count(void) const
 	\brief Get the number of bits in the mantissa
 
 	\return The mantissa size in bits of the analyzed floating point number
@@ -138,7 +393,7 @@ Burger::FPInfo::FPInfo(double dValue) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FPInfo::GetExponentBitCount(void) const
+	\fn Burger::FPInfo::get_exponent_bit_count(void) const
 	\brief Get the number of bits in the exponent
 
 	\return The exponent size in bits of the analyzed floating point number
@@ -147,7 +402,7 @@ Burger::FPInfo::FPInfo(double dValue) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FPInfo::IsValid(void) const
+	\fn Burger::FPInfo::is_valid(void) const
 	\brief Detect if a number was analyzed
 
 	\return \ref TRUE if an analyzed number is stored in the class, \ref FALSE
@@ -157,7 +412,7 @@ Burger::FPInfo::FPInfo(double dValue) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FPInfo::IsNegative(void) const
+	\fn Burger::FPInfo::is_negative(void) const
 	\brief Detect if a number is a negative value
 
 	\return \ref TRUE if the number is negative, \ref FALSE if not
@@ -166,7 +421,7 @@ Burger::FPInfo::FPInfo(double dValue) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FPInfo::IsZero(void) const
+	\fn Burger::FPInfo::is_zero(void) const
 	\brief Detect if a number is zero
 
 	This returns \ref TRUE for both positive and negative zero.
@@ -177,7 +432,7 @@ Burger::FPInfo::FPInfo(double dValue) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FPInfo::IsNAN(void) const
+	\fn Burger::FPInfo::is_NaN(void) const
 	\brief Detect if a number is Not a Number
 
 	This returns \ref TRUE for all forms of Not a Number.
@@ -191,7 +446,7 @@ Burger::FPInfo::FPInfo(double dValue) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FPInfo::IsQNAN(void) const
+	\fn Burger::FPInfo::is_QNaN(void) const
 	\brief Detect if a number is a quiet Not a Number
 
 	\return \ref TRUE if the number is a quiet Not a Number, \ref FALSE if it's
@@ -201,7 +456,7 @@ Burger::FPInfo::FPInfo(double dValue) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FPInfo::IsIndefiniteNAN(void) const
+	\fn Burger::FPInfo::is_indefinite_NaN(void) const
 	\brief Detect if a number is an indefinite Not a Number
 
 	\return \ref TRUE if the number is an indefinite Not a Number, \ref FALSE if
@@ -211,7 +466,7 @@ Burger::FPInfo::FPInfo(double dValue) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FPInfo::IsInfinity(void) const
+	\fn Burger::FPInfo::is_infinity(void) const
 	\brief Detect if a number is infinity
 
 	\return \ref TRUE if the number is infinity, \ref FALSE if it's not
@@ -222,7 +477,7 @@ Burger::FPInfo::FPInfo(double dValue) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FPInfo::IsSubNormal(void) const
+	\fn Burger::FPInfo::is_subnormal(void) const
 	\brief Detect if a number is a non normalized number
 
 	\return \ref TRUE if the number is not normalized, \ref FALSE if it is.
@@ -231,7 +486,7 @@ Burger::FPInfo::FPInfo(double dValue) BURGER_NOEXCEPT
 
 /*! ************************************
 
-	\fn Burger::FPInfo::IsFinite(void) const
+	\fn Burger::FPInfo::is_finite(void) const
 	\brief Detect if a number is a finite number
 
 	If the number is infinity or NaN, it will return \ref FALSE. Otherwise it
@@ -275,243 +530,3 @@ Burger::FPInfo::FPInfo(double dValue) BURGER_NOEXCEPT
 	\param dValue 64 bit float point number
 
 ***************************************/
-
-/*! ************************************
-
-	\brief Process a 16 bit floating point number
-
-	Given a 16 bit floating point number, process it into its component parts.
-
-	\param usValue 16 bit float point number
-
-***************************************/
-
-void BURGER_API Burger::FPInfo::InitHalf(uint16_t usValue) BURGER_NOEXCEPT
-{
-	const uint_t uTemp = usValue;
-
-	// Break it down
-	const uint_t uBiasedExponent =
-		(uTemp & kExponentMask16) >> kMantissaBitCount16;
-	m_uMantissa = (uTemp & kMantissaMask16);
-	m_uBiasedExponent = uBiasedExponent;
-	m_iExponent = static_cast<int_t>(uBiasedExponent - kExponentBias16);
-
-	// Save the size constants
-	m_uMantissaBitCount = kMantissaBitCount16 + 1;
-	m_uExponentBitCount = kExponentBitCount16;
-
-	// Test if negative
-	uint_t uFlags = 1U << kFlagValidShift;
-	if (uTemp & kSignBit16) {
-		uFlags |= (1U << kFlagNegativeShift);
-	}
-
-	// Test if zero
-	if (!(uTemp & (kExponentMask16 | kMantissaMask16))) {
-		uFlags |= (1U << kFlagZeroShift);
-	} else {
-
-		// Do we have have a NAN or Infinity?
-		if (uBiasedExponent == kSpecialExponent16) {
-			// Zero mantissa means infinity
-			if (!(uTemp & kMantissaMask16)) {
-				uFlags |= (1U << kFlagInfinityShift);
-			} else {
-				// It's a NAN baby!
-				uFlags |= (1U << kFlagNANShift);
-
-				// Get the bit that determines if it is a NAN
-				BURGER_CONSTEXPR const uint_t uNANBit = 1U
-					<< (kMantissaBitCount16 - 1);
-
-				// Determine if is a quiet NaN and possibly also an Indefinite
-				// NaN in addition
-				if (uTemp & uNANBit) {
-					// Quiet nan
-					uFlags |= (1U << kFlagQNANShift);
-
-					// Test for indefinite NAN
-					if ((uFlags & (1U << kFlagNegativeShift)) &&
-						!(uTemp & (uNANBit - 1))) {
-						uFlags |= (1U << kFlagIndefiniteNANShift);
-					}
-				}
-			}
-		} else if (!uBiasedExponent) {
-			// Do we have a subnormal number?
-			uFlags |= (1U << kFlagSubNormalShift);
-			++m_iExponent; // Adjust exponent, but no implied bit
-		} else {
-			// Normal number, needs the implicit bit
-			m_uMantissa |= (1U << kMantissaBitCount16);
-		}
-	}
-
-	// Store the flags
-	m_uFlags = uFlags;
-}
-
-/*! ************************************
-
-	\brief Process a 32 bit floating point number
-
-	Given a 32 bit floating point number, process it into its component parts.
-
-	\param fValue 32 bit float point number
-
-***************************************/
-
-void BURGER_API Burger::FPInfo::InitFloat(float fValue) BURGER_NOEXCEPT
-{
-	union {
-		uint32_t m_uBits;
-		float m_fFloat;
-	} Converter;
-
-	Converter.m_fFloat = fValue;
-	const uint_t uTemp = Converter.m_uBits;
-
-	// Break it down
-	const uint_t uBiasedExponent =
-		(uTemp & kExponentMask32) >> kMantissaBitCount32;
-	m_uMantissa = (uTemp & kMantissaMask32);
-	m_uBiasedExponent = uBiasedExponent;
-	m_iExponent = static_cast<int_t>(uBiasedExponent - kExponentBias32);
-
-	// Save the size constants
-	m_uMantissaBitCount = kMantissaBitCount32 + 1;
-	m_uExponentBitCount = kExponentBitCount32;
-
-	// Test if negative
-	uint_t uFlags = 1U << kFlagValidShift;
-	if (uTemp & kSignBit32) {
-		uFlags |= (1U << kFlagNegativeShift);
-	}
-
-	// Test if zero
-	if (!(uTemp & (kExponentMask32 | kMantissaMask32))) {
-		uFlags |= (1U << kFlagZeroShift);
-	} else {
-
-		// Do we have have a NAN or Infinity?
-		if (uBiasedExponent == kSpecialExponent32) {
-			// Zero mantissa means infinity
-			if (!(uTemp & kMantissaMask32)) {
-				uFlags |= (1U << kFlagInfinityShift);
-			} else {
-				// It's a NAN baby!
-				uFlags |= (1U << kFlagNANShift);
-
-				// Get the bit that determines if it is a NAN
-				BURGER_CONSTEXPR const uint_t uNANBit = 1U
-					<< (kMantissaBitCount32 - 1);
-
-				// Determine if is a quiet NaN and possibly also an Indefinite
-				// NaN in addition
-				if (uTemp & uNANBit) {
-					// Quiet nan
-					uFlags |= (1U << kFlagQNANShift);
-
-					// Test for indefinite NAN
-					if ((uFlags & (1U << kFlagNegativeShift)) &&
-						!(uTemp & (uNANBit - 1))) {
-						uFlags |= (1U << kFlagIndefiniteNANShift);
-					}
-				}
-			}
-		} else if (!uBiasedExponent) {
-			// Do we have a subnormal number?
-			uFlags |= (1U << kFlagSubNormalShift);
-			++m_iExponent; // Adjust exponent, but no implied bit
-		} else {
-			// Normal number, needs the implicit bit
-			m_uMantissa |= (1U << kMantissaBitCount32);
-		}
-	}
-
-	// Store the flags
-	m_uFlags = uFlags;
-}
-
-/*! ************************************
-
-	\brief Process a 64 bit floating point number
-
-	Given a 64 bit floating point number, process it into its component parts.
-
-	\param dValue 64 bit float point number
-
-***************************************/
-
-void BURGER_API Burger::FPInfo::InitDouble(double dValue) BURGER_NOEXCEPT
-{
-	union {
-		uint64_t m_uBits;
-		double m_dDouble;
-	} Converter;
-
-	Converter.m_dDouble = dValue;
-	const uint64_t uTemp = Converter.m_uBits;
-
-	// Break it down
-	const uint_t uBiasedExponent =
-		static_cast<uint_t>((uTemp & kExponentMask64) >> kMantissaBitCount64);
-	m_uMantissa = (uTemp & kMantissaMask64);
-	m_uBiasedExponent = uBiasedExponent;
-	m_iExponent = static_cast<int_t>(uBiasedExponent - kExponentBias64);
-
-	// Save the size constants
-	m_uMantissaBitCount = kMantissaBitCount64 + 1;
-	m_uExponentBitCount = kExponentBitCount64;
-
-	// Test if negative
-	uint_t uFlags = 1U << kFlagValidShift;
-	if (uTemp & kSignBit64) {
-		uFlags |= (1U << kFlagNegativeShift);
-	}
-
-	// Test if zero
-	if (!(uTemp & (kExponentMask64 | kMantissaMask64))) {
-		uFlags |= (1U << kFlagZeroShift);
-	} else {
-
-		// Do we have have a NAN or Infinity?
-		if (uBiasedExponent == kSpecialExponent64) {
-			// Zero mantissa means infinity
-			if (!(uTemp & kMantissaMask64)) {
-				uFlags |= (1U << kFlagInfinityShift);
-			} else {
-				// It's a NAN baby!
-				uFlags |= (1U << kFlagNANShift);
-
-				// Get the bit that determines if it is a NAN
-				BURGER_CONSTEXPR const uint64_t uNANBit = 1ULL
-					<< (kMantissaBitCount64 - 1);
-
-				// Determine if is a quiet NaN and possibly also an Indefinite
-				// NaN in addition
-				if (uTemp & uNANBit) {
-					// Quiet nan
-					uFlags |= (1U << kFlagQNANShift);
-
-					// Test for indefinite NAN
-					if ((uFlags & (1U << kFlagNegativeShift)) &&
-						!(uTemp & (uNANBit - 1))) {
-						uFlags |= (1U << kFlagIndefiniteNANShift);
-					}
-				}
-			}
-		} else if (!uBiasedExponent) {
-			// Do we have a subnormal number?
-			uFlags |= (1U << kFlagSubNormalShift);
-			++m_iExponent; // Adjust exponent, but no implied bit
-		} else {
-			// Normal number, needs the implicit bit
-			m_uMantissa |= (1ULL << kMantissaBitCount64);
-		}
-	}
-
-	// Store the flags
-	m_uFlags = uFlags;
-}

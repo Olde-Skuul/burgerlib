@@ -1,0 +1,44 @@
+;
+; X64 assembly for implementing the intrinsic __cpuidex for
+; the Visual Studio 2008 compilers
+;
+; Build with ml64.exe
+;
+; void __cpuidex(int a[4], int b, int c)
+; a = rcx
+; b = rdx
+; c = r8
+;
+
+_TEXT segment para 'CODE'
+
+	align 16
+public __cpuidex
+__cpuidex proc
+
+; rax, rcx, rdx, r8-11 are volatile
+
+	push rbx
+; Save the pointer
+	mov	r9, rcx
+; Command byte
+	mov rax, rdx
+; Get the sub command
+	mov rcx, r8
+
+; Do it (Trashes rbx)
+	cpuid
+
+; Store the result in the same order as Visual C
+    mov[r9],eax
+    mov[r9+4],ebx
+    mov[r9+8],ecx
+    mov[r9+12],edx
+    pop rbx
+	ret
+
+__cpuidex endp
+
+_TEXT ends
+
+    end
