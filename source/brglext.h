@@ -82,7 +82,7 @@
 #endif
 
 #ifndef __glext_h_
-#include <glext.h>
+#include <GL/glext.h>
 #endif
 #define glGenerateMipmap glGenerateMipmapEXT
 

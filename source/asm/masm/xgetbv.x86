@@ -1,0 +1,38 @@
+;
+; X86 assembly for implementing the intrinsic _xgetbv for
+; the Visual Studio 2003, 2005 and 2008 compilers
+;
+; Build with ml.exe
+;
+; uint64_t __cdecl _xgetbv(unsigned int uInput)
+;
+
+	.686
+
+_TEXT segment para 'CODE'
+
+	align 16
+public __xgetbv
+__xgetbv proc
+
+; Don't damage ecx
+	push ecx
+
+; Get the value passed in from the caller
+	mov ecx, [esp+8]
+
+; xgetbv instruction is the sequence below
+; VS 2008 supports the instruction, but VS 2005 does not
+	db	00FH, 001H, 0D0H
+;	xgetbv
+
+; Restore ecx
+	pop ecx
+; Answer is in edx:eax, which is perfect for uint64_t
+	ret
+
+__xgetbv endp
+
+_TEXT ends
+
+    end
