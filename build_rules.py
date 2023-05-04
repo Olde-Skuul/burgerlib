@@ -20,11 +20,15 @@ import os
 
 from burger import make_version_header, get_sdks_folder, \
     create_folder_if_needed, run_command, compare_files, \
-    copy_file_if_needed, clean_directories, clean_files
+    copy_file_if_needed, clean_directories, clean_files, \
+    is_under_git_control
 
 # ``cleanme`` will assume only the function ``clean()`` is used if False.
 # Overrides PROCESS_PROJECT_FILES
 CLEANME_PROCESS_PROJECT_FILES = False
+
+# Check if git is around
+_GIT_FOUND = None
 
 # Folders for all the target operating systems supported
 
@@ -138,6 +142,24 @@ BUILD_FOLDER = os.path.dirname(os.path.abspath(__file__))
 ########################################
 
 
+def is_git():
+    """
+    Detect if perforce or git is source control
+
+    If perforce exists, this is building at Olde Skuul, otherwise it's building from github
+    """
+
+    # pylint: disable=global-statement
+    global _GIT_FOUND
+
+    if _GIT_FOUND is None:
+        _GIT_FOUND = is_under_git_control(BUILD_FOLDER)
+    return _GIT_FOUND
+
+
+########################################
+
+
 def create_generated_folders(working_directory=None):
     """
     Create folders for storing shader headers
@@ -168,7 +190,7 @@ def create_version_header(working_directory=None):
 
     dest_folder = os.path.join(working_directory, "source", "generated")
     make_version_header(working_directory, os.path.join(dest_folder, "version.h"),
-        verbose=False)
+                        verbose=False)
 
 ########################################
 
@@ -182,6 +204,9 @@ def update_burger_h(working_directory=None):
     Returns:
         Zero if no error, non zero on error
     """
+
+    if is_git():
+        return 0
 
     if working_directory is None:
         working_directory = BUILD_FOLDER
@@ -220,6 +245,9 @@ def update_special_headers(working_directory=None):
         Zero if no error, non zero on error
     """
 
+    if is_git():
+        return 0
+
     if working_directory is None:
         working_directory = BUILD_FOLDER
 
@@ -227,7 +255,8 @@ def update_special_headers(working_directory=None):
     for dest in TARGETFOLDERS:
 
         # Get the platform folder
-        sourcefolder = os.path.join(working_directory, "source", "platforms", dest)
+        sourcefolder = os.path.join(
+            working_directory, "source", "platforms", dest)
 
         # Is this platform's source code present?
         if not os.path.isdir(sourcefolder):
@@ -271,6 +300,9 @@ def update_unique_headers(working_directory=None):
         Zero if no error, non zero on error
     """
 
+    if is_git():
+        return 0
+
     if working_directory is None:
         working_directory = BUILD_FOLDER
 
@@ -284,7 +316,8 @@ def update_unique_headers(working_directory=None):
         # Copy if the destination doesn't exist or it's different
         # from the header
         if not os.path.isfile(destfile) or not compare_files(sourcefile, destfile):
-            error = copy_file_if_needed(sourcefile, destfile, perforce=True)
+            error = copy_file_if_needed(
+                sourcefile, destfile, perforce=True)
             if error:
                 break
 
@@ -303,11 +336,15 @@ def update_mac_resources(working_directory=None):
         Zero if no error, non zero on error
     """
 
+    if is_git():
+        return 0
+
     if working_directory is None:
         working_directory = BUILD_FOLDER
 
     error = 0
-    sourcefolder = os.path.join(working_directory, "source", "platforms", "mac")
+    sourcefolder = os.path.join(
+        working_directory, "source", "platforms", "mac")
     destfolder = os.path.join(SDKS_FOLDER, "mac", "burgerlib")
     filedata = os.listdir(sourcefolder)
     for item in filedata:
