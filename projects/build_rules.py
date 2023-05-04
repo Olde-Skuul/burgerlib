@@ -408,14 +408,14 @@ def vs2005_2008_rules(project):
         project.vs_rules = vs_rules
 
         project.source_files_list.extend(
-            ("../source/asm/xgetbv.x64",
-             "../source/asm/xgetbv.x86"))
+            ("../source/asm/masm64/xgetbv.x64",
+             "../source/asm/masm/xgetbv.x86"))
 
     # __cpuindex() is available on 2008, but not 2005
     if ide is IDETypes.vs2005:
         project.source_files_list.extend(
-            ("../source/asm/cpuidex.x64",
-            "../source/asm/cpuidex.x86"))
+            ("../source/asm/masm64/cpuidex.x64",
+            "../source/asm/masm/cpuidex.x86"))
 
 ########################################
 
@@ -433,8 +433,9 @@ def vs2003_rules(project):
 
         # Add missing intrinsics, but only the x86 version
         project.source_files_list.extend(
-            ("../source/asm/xgetbv.x86",
-             "../source/asm/cpuidex.x86"))
+            ("../source/asm/masm/xgetbv.x86",
+             "../source/asm/masm/cpuid.x86",
+             "../source/asm/masm/cpuidex.x86"))
 
 ########################################
 

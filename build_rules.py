@@ -21,7 +21,7 @@ import os
 from burger import make_version_header, get_sdks_folder, \
     create_folder_if_needed, run_command, compare_files, \
     copy_file_if_needed, clean_directories, clean_files, \
-    is_under_git_control
+    is_under_git_control, get_tool_path
 
 # ``cleanme`` will assume only the function ``clean()`` is used if False.
 # Overrides PROCESS_PROJECT_FILES
@@ -33,28 +33,13 @@ _GIT_FOUND = None
 # Folders for all the target operating systems supported
 
 TARGETFOLDERS = (
-    "windows",
-    "msdos",
-    "mac",
-    "macosx",
-    "linux",
-    "beos",
-    "ps2",
-    "ps3",
-    "ps4",
-    "ps5",
-    "psvita",
-    "gamecube",
-    "wii",
-    "dsi",
-    "xbox",
-    "xbox360",
-    "xboxone",
-    "ios",
-    "android",
-    "shield",
-    "ouya",
-    "switch"
+    "windows", "msdos",
+    "mac", "macosx", "linux", "beos",
+    "ps2", "ps3", "ps4", "ps5", "psvita",
+    "gamecube", "wii", "dsi", "switch",
+    "xbox", "xbox360", "xboxone",
+    "ios", "android", "shield", "ouya"
+
 )
 
 SPECIALHEADERS = (
@@ -146,7 +131,11 @@ def is_git():
     """
     Detect if perforce or git is source control
 
-    If perforce exists, this is building at Olde Skuul, otherwise it's building from github
+    If perforce exists, this is building at Olde Skuul, otherwise it's
+    building from github
+
+    Returns:
+        True if building under git
     """
 
     # pylint: disable=global-statement
@@ -156,6 +145,23 @@ def is_git():
         _GIT_FOUND = is_under_git_control(BUILD_FOLDER)
     return _GIT_FOUND
 
+########################################
+
+
+def find_makeheader():
+    """
+    Look for the tool, "makeheader"
+
+    If building at Olde Skuul, the latest version is on the system path.
+    If it's on github, the file is found in the folder "tools"
+
+    """
+
+    if not is_git():
+        return "makeheader"
+
+    # Select the right binary for the host OS
+    return get_tool_path(os.path.join(BUILD_FOLDER, "tools"), "makeheader")
 
 ########################################
 
@@ -189,7 +195,8 @@ def create_version_header(working_directory=None):
         working_directory = BUILD_FOLDER
 
     dest_folder = os.path.join(working_directory, "source", "generated")
-    make_version_header(working_directory, os.path.join(dest_folder, "version.h"),
+    make_version_header(working_directory,
+                        os.path.join(dest_folder, "version.h"),
                         verbose=False)
 
 ########################################
@@ -315,7 +322,8 @@ def update_unique_headers(working_directory=None):
 
         # Copy if the destination doesn't exist or it's different
         # from the header
-        if not os.path.isfile(destfile) or not compare_files(sourcefile, destfile):
+        if not os.path.isfile(destfile) or \
+                not compare_files(sourcefile, destfile):
             error = copy_file_if_needed(
                 sourcefile, destfile, perforce=True)
             if error:
@@ -395,12 +403,14 @@ def prebuild(working_directory, configuration):
     # Create the super header using the makeheader tool
     dest_folder = os.path.join(working_directory, "bin")
 
+    makeheader = find_makeheader()
+
     for item in SUPER_HEADERS:
         templatepath = os.path.join(working_directory, "source", item[0])
 
         if item[1]:
             headerfilepath = os.path.join(dest_folder, item[1])
-            cmd = ("makeheader", templatepath, headerfilepath)
+            cmd = (makeheader, templatepath, headerfilepath)
             print(" ".join(cmd))
             error, _, _ = run_command(cmd, working_dir=working_directory)
             # if error:
@@ -408,7 +418,7 @@ def prebuild(working_directory, configuration):
 
         if item[2]:
             headerfilepath = os.path.join(dest_folder, item[2])
-            cmd = ("makeheader", "-r", templatepath, headerfilepath)
+            cmd = (makeheader, "-r", templatepath, headerfilepath)
             print(" ".join(cmd))
             error, _, _ = run_command(cmd, working_dir=working_directory)
             # if error:
@@ -478,13 +488,13 @@ def clean(working_directory):
         None if not implemented, otherwise an integer error code.
     """
 
-    clean_directories(working_directory, (".vscode", "appfolder", "temp", "ipch",
-                                          "bin", ".vs", "*_Data", "* Data",
-                                          "__pycache__"))
+    clean_directories(working_directory, (".vscode", "appfolder", "temp",
+                                          "ipch", "bin", ".vs", "*_Data",
+                                          "* Data", "__pycache__"))
 
     clean_files(working_directory, (".DS_Store", "*.suo", "*.user", "*.ncb",
-                                    "*.err", "*.sdf", "*.layout.cbTemp", "*.VC.db",
-                                    "*.pyc", "*.pyo"))
+                                    "*.err", "*.sdf", "*.layout.cbTemp",
+                                    "*.VC.db", "*.pyc", "*.pyo"))
 
 ########################################
 
