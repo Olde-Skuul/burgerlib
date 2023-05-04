@@ -2,7 +2,7 @@
 
 	ANSI Based Memory Manager
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -31,13 +31,6 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::AllocatorANSI, Burger::AllocatorBase);
 
 /*! ************************************
 
-	\fn Burger::AllocatorANSI::AllocatorANSI()
-	\brief Default constructor.
-
-***************************************/
-
-/*! ************************************
-
 	\class Burger::AllocatorANSI
 	\brief ANSI Memory Manager object
 
@@ -53,6 +46,13 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::AllocatorANSI, Burger::AllocatorBase);
 
 /*! ************************************
 
+	\fn Burger::AllocatorANSI::AllocatorANSI()
+	\brief Default constructor.
+
+***************************************/
+
+/*! ************************************
+
 	\brief Calls malloc().
 
 	Calls malloc() and returns the pointer allocated. If the requested
@@ -61,15 +61,15 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::AllocatorANSI, Burger::AllocatorBase);
 	\param uSize Number of byte requested to allocate.
 	\return nullptr on failure or zero bytes allocated, or a valid memory
 		pointer.
-	\sa Realloc() or Free()
+	\sa realloc() or free()
 
 ***************************************/
 
-void* Burger::AllocatorANSI::Alloc(uintptr_t uSize) const BURGER_NOEXCEPT
+void* Burger::AllocatorANSI::alloc(uintptr_t uSize) const BURGER_NOEXCEPT
 {
 	void* pResult = nullptr;
 	if (uSize) {
-		pResult = malloc(uSize);
+		pResult = ::malloc(uSize);
 	}
 	return pResult;
 }
@@ -78,19 +78,20 @@ void* Burger::AllocatorANSI::Alloc(uintptr_t uSize) const BURGER_NOEXCEPT
 
 	\brief Calls free().
 
-	If pInput is nullptr, do nothing. If non-zero, then release the memory
+	If pInput is \ref nullptr, do nothing. If non-zero, then release the memory
 	back into the free memory pool with a call to free().
 
 	\param pInput nullptr to do no operation or a valid pointer to memory
-		allocated by Alloc() or Realloc().
-	\sa Alloc() or Realloc()
+		allocated by alloc() or realloc().
+
+	\sa alloc() or realloc()
 
 ***************************************/
 
-void Burger::AllocatorANSI::Free(const void* pInput) const BURGER_NOEXCEPT
+void Burger::AllocatorANSI::free(const void* pInput) const BURGER_NOEXCEPT
 {
 	if (pInput) {
-		free(const_cast<void*>(pInput));
+		::free(const_cast<void*>(pInput));
 	}
 }
 
@@ -113,32 +114,39 @@ void Burger::AllocatorANSI::Free(const void* pInput) const BURGER_NOEXCEPT
 
 	\param pInput Pointer to a valid buffer to resize.
 	\param uSize Number of byte requested to allocate.
+
 	\return nullptr on failure or zero bytes allocated, or a valid memory
 		pointer.
-	\sa Alloc() or Free()
+
+	\sa alloc() or free()
 
 ***************************************/
 
-void* Burger::AllocatorANSI::Realloc(
+void* Burger::AllocatorANSI::realloc(
 	const void* pInput, uintptr_t uSize) const BURGER_NOEXCEPT
 {
 	// Assume an error
 	void* pResult = nullptr;
+
 	// Any bytes requested?
 	if (uSize) {
+
 		// Was there a valid pointer passed?
 		if (pInput) {
+
 			// Reallocate the memory
-			pResult = realloc(const_cast<void*>(pInput), uSize);
+			pResult = ::realloc(const_cast<void*>(pInput), uSize);
 		} else {
+
 			// Allocate fresh, uninitialized memory
 			pResult = malloc(uSize);
 		}
 	} else if (pInput) {
 		// Since I have a pointer, and I don't want to allocated anything, just
 		// delete the pointer
-		free(const_cast<void*>(pInput));
+		::free(const_cast<void*>(pInput));
 	}
+
 	// Return the new memory or nullptr
 	return pResult;
 }
@@ -165,47 +173,49 @@ void* Burger::AllocatorANSI::Realloc(
 
 Burger::MemoryManagerANSI::MemoryManagerANSI() BURGER_NOEXCEPT
 {
-	m_pAlloc = Alloc;
-	m_pFree = Free;
-	m_pRealloc = Realloc;
-	m_pShutdown = Shutdown;
+	m_pAlloc = alloc;
+	m_pFree = free;
+	m_pRealloc = realloc;
+	m_pShutdown = shutdown;
 }
 
 /*! ************************************
 
-	\fn void *Burger::MemoryManagerANSI::Alloc(uintptr_t uSize)
+	\fn Burger::MemoryManagerANSI::alloc(uintptr_t uSize)
 	\brief Allocates memory.
 
 	Calls malloc() and returns the pointer allocated. If the requested
 	memory size is zero or the call fails, a nullptr is returned.
 
 	\param uSize Number of byte requested to allocate.
+
 	\return nullptr on failure or zero bytes allocated, or a valid memory
 		pointer.
-	\sa Alloc(MemoryManager *,uintptr_t)
+
+	\sa alloc(MemoryManager *,uintptr_t)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::MemoryManagerANSI::Free(const void *pInput)
+	\fn Burger::MemoryManagerANSI::free(const void *pInput)
 	\brief Frees memory.
 
 	If pInput is nullptr, do nothing. If non-zero, then release the memory
 	back into the free memory pool.
 
 	\param pInput nullptr to do no operation or a valid pointer to memory
-		allocated by \ref Alloc(uintptr_t) or \ref Realloc(const void*,
+		allocated by \ref alloc(uintptr_t) or \ref realloc(const void*,
 		uintptr_t).
 
-	\sa Free(MemoryManager *,const void *)
+	\sa free(MemoryManager *,const void *)
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void *Burger::MemoryManagerANSI::Realloc(const void *pInput,uintptr_t
-		uSize)
+	\fn Burger::MemoryManagerANSI::realloc(const void *pInput,uintptr_t uSize)
+
 	\brief Reallocates memory.
 
 	Calls realloc() and returns the pointer allocated. If the requested
@@ -219,9 +229,11 @@ Burger::MemoryManagerANSI::MemoryManagerANSI() BURGER_NOEXCEPT
 
 	\param pInput Pointer to a valid buffer to resize.
 	\param uSize Number of byte requested to allocate.
+
 	\return nullptr on failure or zero bytes allocated, or a valid memory
 		pointer.
-	\sa Realloc(MemoryManager *,const void *,uintptr_t)
+
+	\sa realloc(MemoryManager *,const void *,uintptr_t)
 
 ***************************************/
 
@@ -234,18 +246,20 @@ Burger::MemoryManagerANSI::MemoryManagerANSI() BURGER_NOEXCEPT
 
 	\param pThis Pointer to the current instance.
 	\param uSize Number of byte requested to allocate.
+
 	\return nullptr on failure or zero bytes allocated, or a valid memory
 		pointer.
-	\sa Alloc(uintptr_t)
+
+	\sa alloc(uintptr_t)
 
 ***************************************/
 
-void* BURGER_API Burger::MemoryManagerANSI::Alloc(
-	MemoryManager* /* pThis */, uintptr_t uSize)
+void* BURGER_API Burger::MemoryManagerANSI::alloc(
+	MemoryManager* /* pThis */, uintptr_t uSize) BURGER_NOEXCEPT
 {
 	void* pResult = nullptr;
 	if (uSize) {
-		pResult = malloc(uSize);
+		pResult = ::malloc(uSize);
 	}
 	return pResult;
 }
@@ -259,17 +273,18 @@ void* BURGER_API Burger::MemoryManagerANSI::Alloc(
 
 	\param pThis Pointer to the current instance.
 	\param pInput nullptr to do no operation or a valid pointer to memory
-		allocated by \ref Alloc(MemoryManager*,uintptr_t) or \ref
-		Realloc(MemoryManager*,const void *,uintptr_t).
-	\sa Free(const void *)
+		allocated by \ref alloc(MemoryManager*,uintptr_t) or \ref
+		realloc(MemoryManager*,const void *,uintptr_t).
+
+	\sa free(const void *)
 
 ***************************************/
 
-void BURGER_API Burger::MemoryManagerANSI::Free(
-	MemoryManager* /* pThis */, const void* pInput)
+void BURGER_API Burger::MemoryManagerANSI::free(
+	MemoryManager* /* pThis */, const void* pInput) BURGER_NOEXCEPT
 {
 	if (pInput) {
-		free(const_cast<void*>(pInput));
+		::free(const_cast<void*>(pInput));
 	}
 }
 
@@ -289,32 +304,40 @@ void BURGER_API Burger::MemoryManagerANSI::Free(
 	\param pThis Pointer to the current instance.
 	\param pInput Pointer to a valid buffer to resize.
 	\param uSize Number of byte requested to allocate.
+
 	\return nullptr on failure or zero bytes allocated, or a valid memory
 		pointer.
-	\sa Realloc(const void *,uintptr_t)
+
+	\sa realloc(const void *,uintptr_t)
 
 ***************************************/
 
-void* BURGER_API Burger::MemoryManagerANSI::Realloc(
-	MemoryManager* /* pThis */, const void* pInput, uintptr_t uSize)
+void* BURGER_API Burger::MemoryManagerANSI::realloc(MemoryManager* /* pThis */,
+	const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT
 {
 	// Assume an error
 	void* pResult = nullptr;
+
 	// Any bytes requested?
 	if (uSize) {
+
 		// Was there a valid pointer passed?
 		if (pInput) {
+
 			// Reallocate the memory
-			pResult = realloc(const_cast<void*>(pInput), uSize);
+			pResult = ::realloc(const_cast<void*>(pInput), uSize);
 		} else {
+
 			// Allocate fresh, uninitialized memory
-			pResult = malloc(uSize);
+			pResult = ::malloc(uSize);
 		}
 	} else if (pInput) {
+
 		// Since I have a pointer, and I don't want to allocated anything, just
 		// delete the pointer
-		free(const_cast<void*>(pInput));
+		::free(const_cast<void*>(pInput));
 	}
+
 	// Return the new memory or nullptr
 	return pResult;
 }
@@ -342,7 +365,7 @@ void* BURGER_API Burger::MemoryManagerANSI::Realloc(
 	to the previous instantiation so when this class goes
 	out of scope, the previous memory manager is reinstated
 
-	Example..
+	Example...
 
 	\code
 
@@ -369,7 +392,7 @@ void* BURGER_API Burger::MemoryManagerANSI::Realloc(
 
 Burger::MemoryManagerGlobalANSI::MemoryManagerGlobalANSI() BURGER_NOEXCEPT
 {
-	m_pPrevious = GlobalMemoryManager::Init(this);
+	m_pPrevious = GlobalMemoryManager::init(this);
 }
 
 /*! ************************************
@@ -381,11 +404,11 @@ Burger::MemoryManagerGlobalANSI::MemoryManagerGlobalANSI() BURGER_NOEXCEPT
 	to the global memory manager and restore the previous memory
 	manager to the global memory manager.
 
-	\sa MemoryManagerGlobalANSI()
+	\sa MemoryManagerGlobalANSI(), or \ref GlobalMemoryManager
 
 ***************************************/
 
 Burger::MemoryManagerGlobalANSI::~MemoryManagerGlobalANSI()
 {
-	GlobalMemoryManager::Shutdown(m_pPrevious);
+	GlobalMemoryManager::shutdown(m_pPrevious);
 }

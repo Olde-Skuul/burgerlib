@@ -11,6 +11,7 @@
 /* DIR: "platforms:unix" */
 /* IGNORE: "brtypes.h" */
 /* IGNORE: "brerror.h" */
+/* IGNORE: "brcodelibrary.h" */
 
 /* BEGIN */
 /***************************************

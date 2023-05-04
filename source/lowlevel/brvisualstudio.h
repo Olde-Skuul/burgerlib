@@ -29,7 +29,9 @@
 // _MSC_VER == 1900 (Visual Studio 2015)
 // _MSC_VER == 1800 (Visual Studio 2013)
 // _MSC_VER == 1700 (Visual Studio 2012)
+// _MSC_FULL_VER == 160040219 (Visual Studio 2010 SP 1)
 // _MSC_VER == 1600 (Visual Studio 2010)
+// _MSC_FULL_VER == 150030729 (Visual Studio 2008 SP 1)
 // _MSC_VER == 1500 (Visual Studio 2008)
 // _MSC_VER == 1400 (Visual Studio 2005)
 // _MSC_VER == 1310 (Visual Studio 2003)
@@ -71,25 +73,7 @@ extern unsigned __int64 __cdecl _rotr64(unsigned __int64, int);
 extern void __cpuid(int[4], int);
 #pragma intrinsic(__cpuid)
 #else
-
-// For Visual Studio 2003 or earlier, use this instead
-BURGER_INLINE void __cpuid(int a[4], int b)
-{
-	// clang-format off
-    BURGER_ASM {
-    // Get the pointer to the destination buffer
-    mov esi,a
-    mov eax,b   // Command byte
-    cpuid       // Invoke CPUID
-    // Store the result in the same order as Visual C
-    mov[esi],eax
-    mov[esi + 4],ebx
-    mov[esi + 8],ecx
-    mov[esi + 12],edx
-    }
-	// clang-format on
-}
-
+extern void __cdecl __cpuid(int a[4], int b);
 #endif
 
 // Visual studio 2008 or higher has __cpuidex()
@@ -144,7 +128,6 @@ unsigned char _BitScanReverse64(unsigned long* Index, unsigned __int64 Mask);
 #endif
 
 #endif
-
 
 // Visual Studio 2008 and earlier doesn't have this intrinsic
 #if defined(BURGER_INTEL) && (BURGER_MSVC < 160000000)

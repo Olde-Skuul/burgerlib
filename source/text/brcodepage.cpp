@@ -2,7 +2,7 @@
 
 	Common code for code pages
 
-	Copyright (c) 2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 2021-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -17,11 +17,11 @@
 /*! ************************************
 
 	\class Burger::CodePage
-	\brief Shared functions for code page handlers.
+	\brief Shared constants for code page handlers.
 
 	Burgerlib uses UTF8 as the default text encoding, but some operating systems
 	use other ASCII encodings for text output and / or filenames. This class
-	contains common functions shared by all of the code page translators.
+	contains common constants shared by all of the code page translators.
 
 	\sa ISOLatin1, Win437, Win1252, or MacRomanUS
 
@@ -50,7 +50,7 @@
 	entries in case the entry is 2 or 3 values in length.
 
 	\note This function will not return the number of bytes decoded. Use
-		Burger::UTF8::NextToken(const char *) to get the pointer to the next
+		UTF8::NextToken(const char *) to get the pointer to the next
 		UTF8 entry.
 
 	\param pInput Pointer to UTF8 buffer that contains the 1 to 4 byte buffer to
@@ -59,42 +59,41 @@
 		would convert the code page to UTF8 for a reverse lookup.
 
 	\return The unsigned 8 bit character code (0x00-0xFF) or
-		Burger::CodePage::kInvalid if the UTF8 value wasn't low ASCII and
+		CodePage::kInvalid if the UTF8 value wasn't low ASCII and
 		couldn't be mapped to by the translation table.
 
-	\sa Burger::UTF8::NextToken(const char *) or
-		Burger::UTF8::GetTokenSize(const char *)
+	\sa UTF8::NextToken(const char *), or UTF8::GetTokenSize(const char *)
 
 ***************************************/
 
-uint_t BURGER_API Burger::CodePage::TranslateFromUTF8(
+uint32_t BURGER_API Burger::translate_from_UTF8(
 	const char* pInput, const uint8_t pTranslateTable[128][4]) BURGER_NOEXCEPT
 {
 	// Get the first UTF8 character code
-	uint_t uResult = reinterpret_cast<const uint8_t*>(pInput)[0];
+	uint32_t uResult = reinterpret_cast<const uint8_t*>(pInput)[0];
 
 	// If it's less than 128, no further work is needed.
 	if (uResult >= 0x80U) {
 
 		// It's not low ASCII. Do it the hard way.
-		uintptr_t uCounter = 128;
+		uintptr_t uCounter = 128U;
 
 		// Cache the second char (The table is 2 to 4 valid tokens only)
-		const uint_t uFirst = uResult;
-		const uint_t uSecond = reinterpret_cast<const uint8_t*>(pInput)[1];
+		const uint32_t uFirst = uResult;
+		const uint32_t uSecond = reinterpret_cast<const uint8_t*>(pInput)[1];
 
 		// Assume failure
-		uResult = kInvalid;
+		uResult = CodePage::kInvalid;
 		do {
 			// So far, so good? All tables have valid first two entries.
 			if ((uFirst == pTranslateTable[0][0]) &&
 				(uSecond == pTranslateTable[0][1])) {
 
 				// Is this a 3 byte pattern?
-				uint_t uTemp = pTranslateTable[0][2];
+				uint32_t uTemp = pTranslateTable[0][2];
 				// No? Then the code was matched.
 				if (!uTemp) {
-					uResult = static_cast<uint_t>(256 - uCounter);
+					uResult = 256U - static_cast<uint32_t>(uCounter);
 					break;
 				}
 
@@ -107,7 +106,7 @@ uint_t BURGER_API Burger::CodePage::TranslateFromUTF8(
 						(reinterpret_cast<const uint8_t*>(pInput)[3] ==
 							uTemp)) {
 						// Match a 3 or 4 byte pattern.
-						uResult = static_cast<uint_t>(256 - uCounter);
+						uResult = 256U - static_cast<uint32_t>(uCounter);
 						break;
 					}
 				}
@@ -147,7 +146,7 @@ uint_t BURGER_API Burger::CodePage::TranslateFromUTF8(
 
 ***************************************/
 
-uint_t BURGER_API Burger::CodePage::TranslateFromUTF8(char* pOutput,
+uintptr_t BURGER_API Burger::translate_from_UTF8(char* pOutput,
 	uintptr_t uOutputSize, const char* pInput,
 	const uint8_t pTranslateTable[128][4]) BURGER_NOEXCEPT
 {
@@ -155,6 +154,7 @@ uint_t BURGER_API Burger::CodePage::TranslateFromUTF8(char* pOutput,
 
 	// If nonzero, then I append a 0 to the string.
 	const uintptr_t bAddZero = uOutputSize;
+
 	// Valid?
 	if (uOutputSize) {
 		--uOutputSize;
@@ -165,6 +165,7 @@ uint_t BURGER_API Burger::CodePage::TranslateFromUTF8(char* pOutput,
 
 	// Let's convert the string
 	uint_t uFirst = reinterpret_cast<const uint8_t*>(pInput)[0];
+
 	// Accept it
 	++pInput;
 
@@ -199,6 +200,7 @@ uint_t BURGER_API Burger::CodePage::TranslateFromUTF8(char* pOutput,
 					if ((uFirst == pTranslateTable2[0][0]) &&
 						(uSecond == pTranslateTable2[0][1])) {
 						const uint_t uTemp = pTranslateTable2[0][2];
+
 						// 2 byte code?
 						if (!uTemp) {
 							++pInput;
@@ -241,7 +243,7 @@ uint_t BURGER_API Burger::CodePage::TranslateFromUTF8(char* pOutput,
 	}
 
 	// Return the equivalent of strlen()
-	return static_cast<uint_t>(reinterpret_cast<char*>(pWorkPtr) - pOutput);
+	return static_cast<uintptr_t>(reinterpret_cast<char*>(pWorkPtr) - pOutput);
 }
 
 /*! ************************************
@@ -278,7 +280,7 @@ uint_t BURGER_API Burger::CodePage::TranslateFromUTF8(char* pOutput,
 
 ***************************************/
 
-uint_t BURGER_API Burger::CodePage::TranslateFromUTF8(char* pOutput,
+uintptr_t BURGER_API Burger::translate_from_UTF8(char* pOutput,
 	uintptr_t uOutputSize, const char* pInput, uintptr_t uInputSize,
 	const uint8_t pTranslateTable[128][4]) BURGER_NOEXCEPT
 {
@@ -375,5 +377,5 @@ uint_t BURGER_API Burger::CodePage::TranslateFromUTF8(char* pOutput,
 	}
 
 	// Return the equivalent of strlen()
-	return static_cast<uint_t>(reinterpret_cast<char*>(pWorkPtr) - pOutput);
+	return static_cast<uintptr_t>(reinterpret_cast<char*>(pWorkPtr) - pOutput);
 }

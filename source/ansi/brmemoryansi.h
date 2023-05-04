@@ -2,7 +2,7 @@
 
 	ANSI Based Memory Manager
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -31,9 +31,9 @@ class AllocatorANSI: public AllocatorBase {
 
 public:
 	AllocatorANSI() BURGER_DEFAULT_CONSTRUCTOR;
-	void* Alloc(uintptr_t uSize) const BURGER_NOEXCEPT BURGER_FINAL;
-	void Free(const void* pInput) const BURGER_NOEXCEPT BURGER_FINAL;
-	void* Realloc(
+	void* alloc(uintptr_t uSize) const BURGER_NOEXCEPT BURGER_FINAL;
+	void free(const void* pInput) const BURGER_NOEXCEPT BURGER_FINAL;
+	void* realloc(
 		const void* pInput, uintptr_t uSize) const BURGER_NOEXCEPT BURGER_FINAL;
 };
 
@@ -42,30 +42,39 @@ class MemoryManagerANSI: public MemoryManager {
 
 public:
 	MemoryManagerANSI() BURGER_NOEXCEPT;
-	BURGER_INLINE void* Alloc(uintptr_t uSize)
+
+	BURGER_INLINE void* alloc(uintptr_t uSize) BURGER_NOEXCEPT
 	{
-		return Alloc(this, uSize);
+		return alloc(this, uSize);
 	}
-	BURGER_INLINE void Free(const void* pInput)
+
+	BURGER_INLINE void free(const void* pInput) BURGER_NOEXCEPT
 	{
-		return Free(this, pInput);
+		return free(this, pInput);
 	}
-	BURGER_INLINE void* Realloc(const void* pInput, uintptr_t uSize)
+
+	BURGER_INLINE void* realloc(
+		const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT
 	{
-		return Realloc(this, pInput, uSize);
+		return realloc(this, pInput, uSize);
 	}
 
 protected:
-	static void* BURGER_API Alloc(MemoryManager* pThis, uintptr_t uSize);
-	static void BURGER_API Free(MemoryManager* pThis, const void* pInput);
-	static void* BURGER_API Realloc(
-		MemoryManager* pThis, const void* pInput, uintptr_t uSize);
+	static void* BURGER_API alloc(
+		MemoryManager* pThis, uintptr_t uSize) BURGER_NOEXCEPT;
+	static void BURGER_API free(
+		MemoryManager* pThis, const void* pInput) BURGER_NOEXCEPT;
+	static void* BURGER_API realloc(MemoryManager* pThis, const void* pInput,
+		uintptr_t uSize) BURGER_NOEXCEPT;
 };
 
 class MemoryManagerGlobalANSI: public MemoryManagerANSI {
 	BURGER_DISABLE_COPY(MemoryManagerGlobalANSI);
 
-	MemoryManager* m_pPrevious; ///< Pointer to the previous memory manager
+protected:
+	/** Pointer to the previous memory manager */
+	MemoryManager* m_pPrevious;
+
 public:
 	MemoryManagerGlobalANSI() BURGER_NOEXCEPT;
 	~MemoryManagerGlobalANSI();

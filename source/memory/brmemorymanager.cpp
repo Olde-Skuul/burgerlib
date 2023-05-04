@@ -2,7 +2,7 @@
 
 	Master Memory Manager
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -14,7 +14,78 @@
 
 #include "brmemorymanager.h"
 #include "brmemoryfunctions.h"
+
 #include <stdlib.h>
+
+/*! ************************************
+
+	\class Burger::allocator
+	\brief Implementation of std::allocator<>
+
+	Implements a standard allocator using a combination of functions from C++98
+	through C++20. Allocates memory through ::operator new() and
+	operator delete()
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::allocator::allocate(uintptr_t n)
+	\brief Allocate memory for n chunks of data.
+
+	\param n Number of elements to allocate
+
+	\returns Pointer to allocated memory or nullptr on failure.
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::allocator::deallocate(pointer p, size_type)
+	\brief Free memory allocated.
+
+	\note The second parameter is ignored in this allocator
+
+	\param p Pointer to memory to release
+
+***************************************/
+
+/*! ************************************
+
+	\fn Burger::allocator::max_size() const
+	\brief Maximum size possible to allocate.
+
+	Returns the maximum number of elements, each of member type value_type (an
+	alias of allocator's template parameter) that could potentially be allocated
+	by a call to member allocate.
+
+	\return UINTMAX_MAX
+
+***************************************/
+
+/*! ************************************
+
+	\class Burger::allocator<void>
+	\brief Implementation of std::allocator<void>
+
+	Special type of allocator that has no ability to allocate or free any
+memory.
+
+	\sa allocator<const void>, or allocator
+
+***************************************/
+
+/*! ************************************
+
+	\class Burger::allocator<const void>
+	\brief Implementation of std::allocator<void>
+
+	Special type of allocator that has no ability to allocate or free any
+memory.
+
+	\sa allocator<void>, or allocator
+
+***************************************/
 
 #if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::AllocatorBase, Burger::Base);
@@ -55,48 +126,53 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::AllocatorBase, Burger::Base);
 
 /*! ************************************
 
-	\fn void *Burger::AllocatorBase::Alloc(uintptr_t uSize) const
+	\fn void *Burger::AllocatorBase::alloc(uintptr_t uSize) const
 	\brief Allocate memory.
 
-	Call the virtual function to allocate memory.
+	Allocate memory. If the function fails, return \ref nullptr
 
 	\param uSize Number of bytes to allocate
 
-	\return Pointer to valid memory or nullptr on error or no memory
+	\return Pointer to valid memory or \ref nullptr on error or no memory
 		requested.
 
-	\sa Free() or AllocClear()
+	\sa free() or alloc_clear()
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::AllocatorBase::Free(const void *pInput) const
+	\fn void Burger::AllocatorBase::free(const void *pInput) const
 	\brief Release memory.
 
-	Call the virtual function to release memory.
+	If \ref nullptr is passed, do nothing. Otherwise, release the memory.
 
-	\param pInput Pointer to memory to release, can be nullptr.
+	\param pInput Pointer to memory to release, or \ref nullptr.
 
-	\sa Alloc() or Realloc()
+	\sa alloc() or realloc()
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void *Burger::AllocatorBase::Realloc(const void *pInput,uintptr_t uSize) const
+	\fn Burger::AllocatorBase::realloc(const void *pInput,uintptr_t uSize) const
+
 	\brief Reallocate memory.
 
 	Call the virtual function to reallocate memory. If the function fails, the
-	memory in pInput is left intact and nullptr is returned. If uSize is zero,
-	pInput is freed and nullptr is returned.
+	memory in pInput is left intact and \ref nullptr is returned. If uSize is
+	zero, pInput is freed and \ref nullptr is returned.
+
+	\note If nullptr is returned, assume the memory point is still valid, and
+		dispose of it if it is not needed. Otherwise memory can leak.
 
 	\param pInput Pointer to memory to read from and release
 	\param uSize Number of bytes to allocate
-	\return Pointer to valid memory or nullptr on error or no memory
+
+	\return Pointer to valid memory or \ref nullptr on error or no memory
 		requested.
 
-	\sa Alloc() or Free()
+	\sa alloc() or free()
 
 ***************************************/
 
@@ -104,22 +180,23 @@ BURGER_CREATE_STATICRTTI_PARENT(Burger::AllocatorBase, Burger::Base);
 
 	\brief Allocate memory that is preinitialized to zero
 
-	Allocate memory using the call Alloc(). If the allocation was successful,
+	Allocate memory using the call alloc(). If the allocation was successful,
 	initialize all the memory to zero.
 
 	\param uSize Number of bytes requested to allocate
-	\return nullptr if no bytes are requested or if an out of memory condition
-		exists.
 
-	\sa Alloc() or Free()
+	\return \ref nullptr if no bytes are requested or if an out of memory
+		condition exists.
+
+	\sa alloc() or free()
 
 ***************************************/
 
-void* BURGER_API Burger::AllocatorBase::AllocClear(
+void* BURGER_API Burger::AllocatorBase::alloc_clear(
 	uintptr_t uSize) const BURGER_NOEXCEPT
 {
 	// Get the new memory
-	void* pResult = Alloc(uSize);
+	void* pResult = alloc(uSize);
 	if (pResult) {
 		// Clear it out if successful
 		MemoryClear(pResult, uSize);
@@ -137,23 +214,26 @@ void* BURGER_API Burger::AllocatorBase::AllocClear(
 		uninitialized
 	\param uSize Size of the buffer to allocate.
 
-	\return nullptr on failure, a pointer with the data on success
+	\return \ref nullptr on failure, a pointer with the data on success
 
-	\sa Alloc() or Realloc()
+	\sa alloc(), or realloc()
 
 ***************************************/
 
-void* BURGER_API Burger::AllocatorBase::AllocCopy(
+void* BURGER_API Burger::AllocatorBase::alloc_copy(
 	const void* pInput, uintptr_t uSize) const BURGER_NOEXCEPT
 {
 	void* pOutput = nullptr;
 
 	// Sanity check
 	if (uSize) {
+
 		// Valid?
-		pOutput = Alloc(uSize);
+		pOutput = alloc(uSize);
+
 		// Anything to copy?
 		if (pOutput && pInput) {
+
 			// Copy it!
 			MemoryCopy(pOutput, pInput, uSize);
 		}
@@ -175,58 +255,60 @@ void* BURGER_API Burger::AllocatorBase::AllocCopy(
 
 	Since this is defined as a base class, it's not meant to be used directly.
 	You should derive from this class and either implement your own memory
-	handler, or use the predefined \ref Burger::MemoryManagerANSI or \ref
-	Burger::MemoryManagerHandle classes.
+	handler, or use the predefined \ref MemoryManagerANSI or
+	\ref MemoryManagerHandle classes.
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void *Burger::MemoryManager::Alloc(uintptr_t uSize)
+	\fn Burger::MemoryManager::alloc(uintptr_t uSize)
 	\brief Allocate memory.
 
 	Call the "virtual" function in \ref m_pAlloc to allocate memory
 
 	\param uSize Number of bytes to allocate
-	\return Pointer to valid memory or nullptr on error or no memory
+
+	\return Pointer to valid memory or \ref nullptr on error or no memory
 		requested.
 
-	\sa Burger::MemoryManager::Free() or Burger::MemoryManager::AllocClear()
+	\sa free() or alloc_clear()
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::MemoryManager::Free(const void *pInput)
+	\fn Burger::MemoryManager::free(const void *pInput)
 	\brief Release memory.
 
 	Call the "virtual" function in \ref m_pFree to allocate memory
 
 	\param pInput Pointer to memory to release
 
-	\sa Burger::MemoryManager::Alloc() or Burger::MemoryManager::AllocClear()
+	\sa alloc() or alloc_clear()
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void *Burger::MemoryManager::Realloc(const void *pInput,uintptr_t uSize)
+	\fn Burger::MemoryManager::realloc(const void *pInput,uintptr_t uSize)
 	\brief Reallocate memory.
 
 	Call the "virtual" function in \ref m_pRealloc to reallocate memory
 
 	\param pInput Pointer to memory to read from and release
 	\param uSize Number of bytes to allocate
-	\return Pointer to valid memory or \ref NULL on error or no memory
+
+	\return Pointer to valid memory or \ref nullptr on error or no memory
 		requested.
 
-	\sa Burger::MemoryManager::Alloc() or Burger::MemoryManager::Free()
+	\sa alloc() or free()
 
 ***************************************/
 
 /*! ************************************
 
-	\fn void Burger::MemoryManager::Shutdown(void)
+	\fn void Burger::MemoryManager::shutdown(void)
 	\brief Shut down the memory manager.
 
 	Call the "virtual" function in \ref m_pShutdown to shut down the memory
@@ -238,26 +320,29 @@ void* BURGER_API Burger::AllocatorBase::AllocCopy(
 
 	\brief Allocate a block of pre-zeroed memory.
 
-	Allocate a block of memory and return either nullptr in the case of an out
-	of memory condition or if the amount requested was zero, otherwise return a
-	valid pointer of memory that has been preset to zero.
+	Allocate a block of memory and return either \ref nullptr in the case of an
+	out of memory condition or if the amount requested was zero, otherwise
+	return a valid pointer of memory that has been preset to zero.
 
 	\param uSize Number of bytes to allocate.
-	\return nullptr on error or a valid pointer to allocated memory.
+	\return \ref nullptr on error or a valid pointer to allocated memory.
 
-	\sa Burger::MemoryManager::Alloc() or Burger::MemoryManager::Realloc()
+	\sa alloc() or realloc()
 
 ***************************************/
 
-void* BURGER_API Burger::MemoryManager::AllocClear(uintptr_t uSize)
+void* BURGER_API Burger::MemoryManager::alloc_clear(
+	uintptr_t uSize) BURGER_NOEXCEPT
 {
 	// Get the function pointer into a register
 	void* pResult = m_pAlloc(this, uSize);
+
 	// Valid memory?
 	if (pResult) {
 		MemoryClear(pResult, uSize);
 	}
-	// Return NULL or a valid pointer.
+
+	// Return nullptr or a valid pointer.
 	return pResult;
 }
 
@@ -273,7 +358,10 @@ void* BURGER_API Burger::MemoryManager::AllocClear(uintptr_t uSize)
 
 ***************************************/
 
-void BURGER_API Burger::MemoryManager::Shutdown(MemoryManager* /*pThis */) {}
+void BURGER_API Burger::MemoryManager::shutdown(
+	MemoryManager* /*pThis */) BURGER_NOEXCEPT
+{
+}
 
 /*! ************************************
 
@@ -283,16 +371,26 @@ void BURGER_API Burger::MemoryManager::Shutdown(MemoryManager* /*pThis */) {}
 	operating system. Generic systems call malloc(), other systems call the low
 	level functions directly
 
+	On MacOS, this calls NewPtr(), Windows calls HeapAlloc(), etc...
+
 	\param uSize Number of bytes requested from the operating system
+
 	\return Pointer to memory allocated from the operating system
-	\sa Burger::MemoryManager::FreeSystemMemory(const void *)
+
+	\sa free_platform_memory(const void *)
 
 ***************************************/
 
-#if !defined(BURGER_VITA) || defined(DOXYGEN)
-void* BURGER_API Burger::MemoryManager::AllocSystemMemory(uintptr_t uSize)
+#if !(defined(BURGER_MAC) || defined(BURGER_WINDOWS) || \
+	defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || \
+	defined(BURGER_VITA)) || \
+	defined(DOXYGEN)
+void* BURGER_API Burger::alloc_platform_memory(uintptr_t uSize) BURGER_NOEXCEPT
 {
-	return malloc(uSize);
+	if (uSize) {
+		return ::malloc(uSize);
+	}
+	return nullptr;
 }
 #endif
 
@@ -304,18 +402,23 @@ void* BURGER_API Burger::MemoryManager::AllocSystemMemory(uintptr_t uSize)
 	operating system. This function releases the memory back. Generic systems
 	call free(), other systems call the low level functions directly
 
-	\param pInput Pointer to memory previously allocated by
-		AllocSystemMemory(uintptr_t)
+	On MacOS, this calls DisposePtr(), Windows calls HeapFree(), etc...
 
-	\sa Burger::MemoryManager::AllocSystemMemory(uintptr_t uSize)
+	\param pInput Pointer to memory previously allocated by
+		alloc_platform_memory(uintptr_t)
+
+	\sa alloc_platform_memory(uintptr_t)
 
 ***************************************/
 
-#if !defined(BURGER_VITA) || defined(DOXYGEN)
-void BURGER_API Burger::MemoryManager::FreeSystemMemory(const void* pInput)
+#if !(defined(BURGER_MAC) || defined(BURGER_WINDOWS) || \
+	defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || \
+	defined(BURGER_VITA)) || \
+	defined(DOXYGEN)
+void BURGER_API Burger::free_platform_memory(const void* pInput) BURGER_NOEXCEPT
 {
 	if (pInput) {
-		free(const_cast<void*>(pInput));
+		::free(const_cast<void*>(pInput));
 	}
 }
 #endif

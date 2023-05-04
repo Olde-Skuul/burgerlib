@@ -2,7 +2,7 @@
 
 	Global Master Memory Manager
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -41,7 +41,7 @@
 	all be multi-core thread safe.
 
 	\note Since this a reference to the controlled class, NEVER manually up cast
-	the global instance of this class. Use the GetInstance(void)
+	the global instance of this class. Use the get_instance(void)
 	function to get the pointer to the real class if up casting is desired for
 	system specific functionality is desired.
 
@@ -57,16 +57,17 @@ Burger::MemoryManager* Burger::GlobalMemoryManager::g_pInstance;
 	this instance for all memory operations.
 
 	\note The MemoryManager is not copied, so the class should not go out of
-	scope without a call to either Shutdown() or reset to another implementation
+	scope without a call to either shutdown() or reset to another implementation
 
 	\param pInstance Pointer to an initialized MemoryManager.
+
 	\return Pointer to the previous version of the MemoryManager
 
-	\sa Shutdown(MemoryManager *)
+	\sa shutdown(MemoryManager *)
 
 ***************************************/
 
-Burger::MemoryManager* BURGER_API Burger::GlobalMemoryManager::Init(
+Burger::MemoryManager* BURGER_API Burger::GlobalMemoryManager::init(
 	MemoryManager* pInstance) BURGER_NOEXCEPT
 {
 	MemoryManager* pOldInstance = g_pInstance;
@@ -78,20 +79,20 @@ Burger::MemoryManager* BURGER_API Burger::GlobalMemoryManager::Init(
 
 	\brief Shut down the global memory allocator
 
-	Shut down the memory allocator through the \ref
-	Burger::MemoryManager::m_pShutdown pointer.
+	Shut down the memory allocator through the
+	\ref Burger::MemoryManager::m_pShutdown pointer.
 
 	\note This call will zero out all entries in this class, so all future use
-	of this class except for a call to \ref Init(MemoryManager *)
+	of this class except for a call to \ref init(MemoryManager *)
 	will result in an assert or page fault.
 
 	\param pPrevious Pointer to an previous MemoryManager.
 
-	\sa Init(MemoryManager *)
+	\sa init(MemoryManager *)
 
 ***************************************/
 
-void BURGER_API Burger::GlobalMemoryManager::Shutdown(
+void BURGER_API Burger::GlobalMemoryManager::shutdown(
 	MemoryManager* pPrevious) BURGER_NOEXCEPT
 {
 	MemoryManager* pThis = g_pInstance;
@@ -103,11 +104,11 @@ void BURGER_API Burger::GlobalMemoryManager::Shutdown(
 
 /*! ************************************
 
-	\fn Burger::GlobalMemoryManager::GetInstance(void)
+	\fn Burger::GlobalMemoryManager::get_instance(void)
 	\brief Return the instance of the active global memory manager.
 
-	\return Pointer to the current global memory manager, \ref NULL if none is
-		active.
+	\return Pointer to the current global memory manager, \ref nullptr if none
+		is active.
 
 ***************************************/
 
@@ -115,51 +116,27 @@ void BURGER_API Burger::GlobalMemoryManager::Shutdown(
 
 	\brief Allocate memory
 
-	Allocate memory using the Burger::GlobalMemoryManager
+	Allocate memory using the \ref GlobalMemoryManager
 
 	\param uSize Number of bytes requested to allocate
 
-	\return \ref NULL if no bytes are requested or an out of memory condition
+	\return \ref nullptr if no bytes are requested or an out of memory condition
 		exists.
 
-	\sa Burger::AllocClear() or Burger::Free()
+	\sa Burger::alloc_clear() or Burger::Free()
 
 ***************************************/
 
 void* BURGER_API Burger::Alloc(uintptr_t uSize) BURGER_NOEXCEPT
 {
-	return GlobalMemoryManager::GetInstance()->Alloc(uSize);
-}
-
-/*! ************************************
-
-	\brief Allocate memory that is preinitialized to zero
-
-	Allocate memory using the Burger::GlobalMemoryManager. If the allocation was
-	successful, initialize all the memory to zero.
-
-	\param uSize Number of bytes requested to allocate
-	\return \ref NULL if no bytes are requested or of an out of memory condition
-		exists.
-
-	\sa Burger::Alloc() or Burger::Free()
-
-***************************************/
-
-void* BURGER_API Burger::AllocClear(uintptr_t uSize) BURGER_NOEXCEPT
-{
-	void* pResult = GlobalMemoryManager::GetInstance()->Alloc(uSize);
-	if (pResult) {
-		MemoryClear(pResult, uSize);
-	}
-	return pResult;
+	return GlobalMemoryManager::get_instance()->alloc(uSize);
 }
 
 /*! ************************************
 
 	\brief Release memory
 
-	Free memory using the Burger::GlobalMemoryManager. \ref NULL performs no
+	Free memory using the Burger::GlobalMemoryManager. \ref nullptr performs no
 	operation.
 
 	\param pInput Pointer to memory to release.
@@ -171,7 +148,7 @@ void* BURGER_API Burger::AllocClear(uintptr_t uSize) BURGER_NOEXCEPT
 void BURGER_API Burger::Free(const void* pInput) BURGER_NOEXCEPT
 {
 	if (pInput) {
-		GlobalMemoryManager::GetInstance()->Free(pInput);
+		GlobalMemoryManager::get_instance()->free(pInput);
 	}
 }
 
@@ -183,21 +160,46 @@ void BURGER_API Burger::Free(const void* pInput) BURGER_NOEXCEPT
 	is smaller, the data is truncated. If the new buffer is larger, the extra
 	memory is not initialized.
 
-	\param pInput Pointer to memory to reallocate. \ref NULL assumes no memory
-		to copy from.
+	\param pInput Pointer to memory to reallocate. \ref nullptr assumes no
+		memory to copy from.
 	\param uSize New size of the buffer.
 
 	\return Pointer to the memory allocated with the data copied from the
-		previous pointer. \ref NULL if out of memory or no memory requested.
+		previous pointer. \ref nullptr if out of memory or no memory requested.
 
-	\sa Burger::Alloc() or Burger::AllocCopy()
+	\sa Burger::Alloc() or Burger::alloc_copy()
 
 ***************************************/
 
 void* BURGER_API Burger::Realloc(
 	const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT
 {
-	return GlobalMemoryManager::GetInstance()->Realloc(pInput, uSize);
+	return GlobalMemoryManager::get_instance()->realloc(pInput, uSize);
+}
+
+/*! ************************************
+
+	\brief Allocate memory that is preinitialized to zero
+
+	Allocate memory using the Burger::GlobalMemoryManager. If the allocation was
+	successful, initialize all the memory to zero.
+
+	\param uSize Number of bytes requested to allocate
+
+	\return \ref nullptr if no bytes are requested or of an out of memory
+		condition exists.
+
+	\sa Burger::Alloc() or Burger::Free()
+
+***************************************/
+
+void* BURGER_API Burger::alloc_clear(uintptr_t uSize) BURGER_NOEXCEPT
+{
+	void* pResult = GlobalMemoryManager::get_instance()->alloc(uSize);
+	if (pResult) {
+		MemoryClear(pResult, uSize);
+	}
+	return pResult;
 }
 
 /*! ************************************
@@ -206,42 +208,49 @@ void* BURGER_API Burger::Realloc(
 
 	Allocate memory and copy the contents of the pointer to the new memory
 
-	\param pInput Pointer to the data to copy. \ref NULL will leave the data
+	\param pInput Pointer to the data to copy. \ref nullptr will leave the data
 		uninitialized
 	\param uSize Size of the buffer to allocate.
 
-	\return \ref NULL on failure, a pointer with the data on success
+	\return \ref nullptr on failure, a pointer with the data on success
 
 	\sa Burger::Alloc() or Burger::Realloc()
 
 ***************************************/
 
-void* BURGER_API Burger::AllocCopy(
+void* BURGER_API Burger::alloc_copy(
 	const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT
 {
 	void* pOutput = nullptr;
-	if (uSize) { // Sanity check
-		pOutput = GlobalMemoryManager::GetInstance()->Alloc(uSize);
-		if (pOutput) {    // Valid?
-			if (pInput) { // Anything to copy?
+
+	// Sanity check
+	if (uSize) {
+		pOutput = GlobalMemoryManager::get_instance()->alloc(uSize);
+
+		// Valid?
+		if (pOutput) {
+			// Anything to copy?
+			if (pInput) {
 				// Copy it!
 				MemoryCopy(pOutput, pInput, uSize);
 			}
 		}
 	}
+
 	// Return the new memory
 	return pOutput;
 }
 
 /*! ************************************
 
-	\fn T * Burger::New(void)
+	\fn Burger::New(void)
 	\brief Allocate a class instance
 
 	Allocate memory with Burger::Alloc(uintptr_t) and invoke the default
 	constructor on it.
 
-	\return \ref NULL on memory error or a valid pointer to a new class instance
+	\return \ref nullptr on memory error or a valid pointer to a new class
+		instance
 
 	\sa Burger::Delete(const T*)
 
@@ -249,12 +258,13 @@ void* BURGER_API Burger::AllocCopy(
 
 /*! ************************************
 
-	\fn void Burger::Delete(const T*pInput)
+	\fn Burger::Delete(const T*)
 	\brief Dispose of a generic class instance
 
 	When Burger::New<T> is called, release the memory with this call
 
-	\param pInput \ref NULL or a valid pointer to a generic class to dispose of.
+	\param pInput \ref nullptr or a valid pointer to a generic class to dispose
+		of.
 
 	\sa Burger::New<T>()
 

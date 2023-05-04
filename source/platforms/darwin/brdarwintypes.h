@@ -35,10 +35,6 @@ struct __CFString;
 struct __CFDictionary;
 struct __CFBundle;
 
-typedef int Burgersem_t;
-typedef unsigned int Burgersemaphore_t;
-typedef unsigned int Burgertask_t;
-
 @class NSAutoreleasePool;
 @class NSObject;
 

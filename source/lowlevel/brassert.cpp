@@ -14,7 +14,6 @@
 
 #include "brassert.h"
 #include "brdebug.h"
-#include "brglobals.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -267,81 +266,62 @@ int BURGER_API Burger::Assert(const char* pCondition, const char* pFilename,
 
 ***************************************/
 
-#if defined(BURGER_WINDOWS)
-
-// Windows version will test if a debugger is present and will
-// trap if a debugger is found. Will do nothing if no
-// debugger is attached
-
 void BURGER_API Burger::invoke_debugger(void) BURGER_NOEXCEPT
 {
 	// Is the debugger present?
 
-	if (Debug::IsDebuggerPresent()) {
-#if defined(BURGER_X86)
+	if (is_debugger_present()) {
+
+#if defined(BURGER_X86) && defined(BURGER_WINDOWS)
 #if defined(BURGER_MINGW)
 		__asm__("int $3\n" : :);
 #else
-		_asm int 3 // Trap!
+		// Trap! Older compilers for Windows don't have __debugbreak()
+		_asm int 3
 #endif
-#else
-		__debugbreak(); // ARM and AMD64 version
-#endif
-	}
-}
 
-#else
+#elif defined(BURGER_WATCOM) && defined(BURGER_MSDOS)
+		_asm int 3
 
-void BURGER_API Burger::invoke_debugger(void) BURGER_NOEXCEPT
-{
-
-#if defined(BURGER_WATCOM) && defined(BURGER_MSDOS)
-	_asm int 3
-
-#elif defined(BURGER_XBOX360) || defined(BURGER_XBOXONE)
-	// Xbox 360 always has a debugger, either from the host or the kernel
-	__debugbreak();
+#elif defined(BURGER_XBOX360) || defined(BURGER_XBOXONE) || \
+	defined(BURGER_WINDOWS)
+		// Xbox 360 always has a debugger, either from the host or the kernel
+		__debugbreak();
 
 #elif defined(BURGER_PS3)
-	__builtin_snpause();
+		__builtin_snpause();
 
 #elif defined(BURGER_PS4) || defined(BURGER_PS5)
-	__asm volatile("int $0x41");
+		__asm volatile("int $0x41");
 
 #elif defined(BURGER_VITA)
-	__builtin_breakpoint(0);
+		__builtin_breakpoint(0);
 
 #elif defined(BURGER_WIIU)
-	OSFatal("Application failure");
+		OSFatal("Application failure");
 
 #elif defined(BURGER_DARWIN)
-	raise(SIGTRAP);
+		raise(SIGTRAP);
 
 #elif defined(BURGER_ANDROID) && defined(BURGER_INTEL)
-	__asm__("int $3\n" : :);
+		__asm__("int $3\n" : :);
 
 #elif defined(BURGER_UNIX)
-	kill(getpid(), SIGINT);
+		kill(getpid(), SIGINT);
 
 #elif defined(BURGER_CLANG)
-	__builtin_debugtrap();
+		__builtin_debugtrap();
 
 #elif defined(BURGER_GNUC)
-	__builtin_trap();
+		__builtin_trap();
 
 #elif defined(BURGER_MAC)
-#if defined(BURGER_MACCARBON)
-	Debugger();
-#else
-	SafeDebugger();
-#endif
-	SysError(dsForcedQuit);
-	ExitToShell();
+		Debugger();
 
 #else
+
 // Not implemented on this platform.
 #error invoke_debugger() not implemented, insert the appropriate code here
 #endif
+	}
 }
-
-#endif

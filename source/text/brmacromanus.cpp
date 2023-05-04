@@ -2,7 +2,7 @@
 
 	String handlers for MacRomanUS support
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -32,7 +32,7 @@
 
 /*! ************************************
 
-	\var const uint8_t Burger::MacRomanUS::UpperCaseTable[256]
+	\var const uint8_t Burger::MacRomanUS::g_UpperCaseTable[256]
 	\brief Table to convert all characters to upper case.
 
 	Using MacRomanUS mapping, this table will convert all 256 codes into their
@@ -40,7 +40,7 @@
 
 ***************************************/
 
-BURGER_ALIGN(const uint8_t, Burger::MacRomanUS::UpperCaseTable[256], 16) = {
+BURGER_ALIGN(const uint8_t, Burger::MacRomanUS::g_UpperCaseTable[256], 16) = {
 	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, // 0x00
 	0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, // 0x08
 	0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, // 0x10
@@ -77,7 +77,7 @@ BURGER_ALIGN(const uint8_t, Burger::MacRomanUS::UpperCaseTable[256], 16) = {
 
 /*! ************************************
 
-	\var const uint8_t Burger::MacRomanUS::LowerCaseTable[256]
+	\var const uint8_t Burger::MacRomanUS::g_LowerCaseTable[256]
 	\brief Table to convert all characters to lower case.
 
 	Using MacRomanUS mapping, this table will convert all 256 codes into their
@@ -85,7 +85,7 @@ BURGER_ALIGN(const uint8_t, Burger::MacRomanUS::UpperCaseTable[256], 16) = {
 
 ***************************************/
 
-BURGER_ALIGN(const uint8_t, Burger::MacRomanUS::LowerCaseTable[256], 16) = {
+BURGER_ALIGN(const uint8_t, Burger::MacRomanUS::g_LowerCaseTable[256], 16) = {
 	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, // 0x00
 	0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, // 0x08
 	0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, // 0x10
@@ -122,7 +122,7 @@ BURGER_ALIGN(const uint8_t, Burger::MacRomanUS::LowerCaseTable[256], 16) = {
 
 /*! ************************************
 
-	\var const uint8_t Burger::MacRomanUS::ToUTF8Table[128][4]
+	\var const uint8_t Burger::MacRomanUS::g_ToUTF8Table[128][4]
 	\brief Table to convert MacRomanUS to UTF8.
 
 	This 128x4 array holds the 128 high ascii codes for MacRomanUS converted to
@@ -135,7 +135,7 @@ BURGER_ALIGN(const uint8_t, Burger::MacRomanUS::LowerCaseTable[256], 16) = {
 
 ***************************************/
 
-BURGER_ALIGN(const uint8_t, Burger::MacRomanUS::ToUTF8Table[128][4], 16) = {
+BURGER_ALIGN(const uint8_t, Burger::MacRomanUS::g_ToUTF8Table[128][4], 16) = {
 	{0xC3, 0x84, 0x00, 0x00}, // 0x80 -> 0x00C4
 	{0xC3, 0x85, 0x00, 0x00}, // 0x81 -> 0x00C5
 	{0xC3, 0x87, 0x00, 0x00}, // 0x82 -> 0x00C7
@@ -268,7 +268,7 @@ BURGER_ALIGN(const uint8_t, Burger::MacRomanUS::ToUTF8Table[128][4], 16) = {
 
 /*! ************************************
 
-	\var const uint16_t Burger::MacRomanUS::ToUTF16Table[128]
+	\var const uint16_t Burger::MacRomanUS::g_ToUTF16Table[128]
 	\brief Table to convert MacRomanUS to UTF16
 
 	Since no Unicode token is larger than 16 bits, an array of uint16_t values
@@ -281,7 +281,7 @@ BURGER_ALIGN(const uint8_t, Burger::MacRomanUS::ToUTF8Table[128][4], 16) = {
 
 ***************************************/
 
-BURGER_ALIGN(const uint16_t, Burger::MacRomanUS::ToUTF16Table[128], 16) = {
+BURGER_ALIGN(const uint16_t, Burger::MacRomanUS::g_ToUTF16Table[128], 16) = {
 	0x00C4, // 0x80
 	0x00C5, // 0x81
 	0x00C7, // 0x82
@@ -419,7 +419,7 @@ BURGER_ALIGN(const uint16_t, Burger::MacRomanUS::ToUTF16Table[128], 16) = {
 	Take up 3 bytes from a UTF8 stream and return the unsigned 8 bit value of
 	the MacRomanUS character. Codes 0 through 0x7f are considered ASCII while
 	codes 0x80 through 0xFF are mapped to MacRomanUS. If the UTF8 character
-	cannot be mapped to MacRomanUS encoding, Burger::MacRomanUS::kInvalid will
+	cannot be mapped to MacRomanUS encoding, Burger::CodePage::kInvalid will
 	be returned instead.
 
 	\note This function will not return the number of bytes decoded. Use
@@ -430,7 +430,7 @@ BURGER_ALIGN(const uint16_t, Burger::MacRomanUS::ToUTF16Table[128], 16) = {
 		convert. nullptr will page fault.
 
 	\return The unsigned 8 bit character code (0x00-0xFF) or
-		Burger::MacRomanUS::kInvalid if the UTF8 value wasn't low ASCII and
+		Burger::CodePage::kInvalid if the UTF8 value wasn't low ASCII and
 		couldn't be mapped to MacRomanUS.
 
 	\sa Burger::UTF8::NextToken(const char *) or
@@ -438,10 +438,10 @@ BURGER_ALIGN(const uint16_t, Burger::MacRomanUS::ToUTF16Table[128], 16) = {
 
 ***************************************/
 
-uint_t BURGER_API Burger::MacRomanUS::TranslateFromUTF8(
+uint32_t BURGER_API Burger::MacRomanUS::translate_from_UTF8(
 	const char* pInput) BURGER_NOEXCEPT
 {
-	return CodePage::TranslateFromUTF8(pInput, ToUTF8Table);
+	return Burger::translate_from_UTF8(pInput, g_ToUTF8Table);
 }
 
 /*! ************************************
@@ -470,11 +470,11 @@ uint_t BURGER_API Burger::MacRomanUS::TranslateFromUTF8(
 
 ***************************************/
 
-uint_t BURGER_API Burger::MacRomanUS::TranslateFromUTF8(
+uintptr_t BURGER_API Burger::MacRomanUS::translate_from_UTF8(
 	char* pOutput, uintptr_t uOutputSize, const char* pInput) BURGER_NOEXCEPT
 {
-	return CodePage::TranslateFromUTF8(
-		pOutput, uOutputSize, pInput, ToUTF8Table);
+	return Burger::translate_from_UTF8(
+		pOutput, uOutputSize, pInput, g_ToUTF8Table);
 }
 
 /*! ************************************
@@ -510,10 +510,10 @@ uint_t BURGER_API Burger::MacRomanUS::TranslateFromUTF8(
 
 ***************************************/
 
-uint_t BURGER_API Burger::MacRomanUS::TranslateFromUTF8(char* pOutput,
+uintptr_t BURGER_API Burger::MacRomanUS::translate_from_UTF8(char* pOutput,
 	uintptr_t uOutputSize, const char* pInput,
 	uintptr_t uInputSize) BURGER_NOEXCEPT
 {
-	return CodePage::TranslateFromUTF8(
-		pOutput, uOutputSize, pInput, uInputSize, ToUTF8Table);
+	return Burger::translate_from_UTF8(
+		pOutput, uOutputSize, pInput, uInputSize, g_ToUTF8Table);
 }

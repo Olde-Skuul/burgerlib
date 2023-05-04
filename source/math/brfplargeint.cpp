@@ -2,7 +2,7 @@
 
 	Large integer parsing class.
 
-	Copyright (c) 2016-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 2016-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -30,8 +30,8 @@
 
 	It can perform modulo and multiplication across all bits of precision. Since
 	this class was designed for high precision integer to ASCII conversion, the
-	two main functions are MultiplyReturnOverflow() to parse out digits from the
-	fractional side of a fixed point number and DivideReturnRemainder() to
+	two main functions are multiply_return_overflow() to parse out digits from the
+	fractional side of a fixed point number and divide_return_remainder() to
 	extract digits from the integer side of the fixed point number.
 
 ***************************************/
@@ -55,36 +55,36 @@ Burger::FPLargeInt::FPLargeInt(void) BURGER_NOEXCEPT
 	\brief Constructor that sets to a default
 
 	\param uBitsNeeded Number of bits of precision
-	\sa Init(uint_t)
+	\sa init(uint32_t)
 
 ***************************************/
 
-Burger::FPLargeInt::FPLargeInt(uint_t uBitsNeeded) BURGER_NOEXCEPT
+Burger::FPLargeInt::FPLargeInt(uint32_t uBitsNeeded) BURGER_NOEXCEPT
 {
-	Init(uBitsNeeded);
+	init(uBitsNeeded);
 }
 
 /*! ************************************
 
-	\fn uint_t Burger::FPLargeInt::IsZero(void) const
+	\fn Burger::FPLargeInt::is_zero(void) const
 	\brief Returns \ref TRUE if the value is zero
 
 	If the giant integer's value is zero, return \ref TRUE
 
 	\return \ref TRUE if zero
-	\sa IsNotZero(void) const
+	\sa is_not_zero(void) const
 
 ***************************************/
 
 /*! ************************************
 
-	\fn uint_t Burger::FPLargeInt::IsNotZero(void) const
+	\fn Burger::FPLargeInt::is_not_zero(void) const
 	\brief Returns \ref TRUE if the value is not zero
 
 	If the giant integer's value is not zero, return \ref TRUE
 
 	\return \ref TRUE if not zero
-	\sa IsZero(void) const
+	\sa is_zero(void) const
 
 ***************************************/
 
@@ -99,17 +99,17 @@ Burger::FPLargeInt::FPLargeInt(uint_t uBitsNeeded) BURGER_NOEXCEPT
 	\param uBitsNeeded Number of bits of precision 1 through ( \ref
 		kTotalBitsInTable -1)
 
-	\sa FPLargeInt(uint_t)
+	\sa FPLargeInt(uint32_t)
 
 ***************************************/
 
-void BURGER_API Burger::FPLargeInt::Init(uint_t uBitsNeeded) BURGER_NOEXCEPT
+void BURGER_API Burger::FPLargeInt::init(uint32_t uBitsNeeded) BURGER_NOEXCEPT
 {
 	// Test for error
 	BURGER_ASSERT(uBitsNeeded && (uBitsNeeded <= kTotalBitsInTable));
 
 	// Round up to the next ChunkSize_t
-	const uint_t uCount =
+	const uint32_t uCount =
 		(uBitsNeeded + (kBitsPerElement - 1)) / kBitsPerElement;
 	m_uEntryCount = uCount;
 
@@ -136,13 +136,13 @@ void BURGER_API Burger::FPLargeInt::Init(uint_t uBitsNeeded) BURGER_NOEXCEPT
 
 	\param uBits 32 bit data to shift in.
 	\param uShiftAmount Number of bits to shift (0 to \ref kTotalBitsInTable)
-	\sa InsertBitAtStart(uint32_t, uint_t) or InsertChunkBits(ChunkSize_t,
-		uint_t)
+	\sa insert_bits_at_start(uint32_t, uint32_t) or
+		insert_chunk_bits(ChunkSize_t, uint32_t)
 
 ***************************************/
 
-void BURGER_API Burger::FPLargeInt::InsertBitsAtEnd(
-	uint32_t uBits, uint_t uShiftAmount) BURGER_NOEXCEPT
+void BURGER_API Burger::FPLargeInt::insert_bits_at_end(
+	uint32_t uBits, uint32_t uShiftAmount) BURGER_NOEXCEPT
 {
 	// Sanity check
 	if (uBits &&
@@ -150,44 +150,47 @@ void BURGER_API Burger::FPLargeInt::InsertBitsAtEnd(
 			((m_uEntryCount + (32 / kBitsPerElement)) * kBitsPerElement))) {
 
 		// Which bit?
-		const uint_t uShiftForBit = uShiftAmount & (kBitsPerElement - 1);
+		const uint32_t uShiftForBit = uShiftAmount & (kBitsPerElement - 1);
 
 		// Which data entry
-		const uint_t uShiftForEntry = uShiftAmount / kBitsPerElement;
+		const uint32_t uShiftForEntry = uShiftAmount / kBitsPerElement;
 
 		// Use an unsigned type so that negative numbers will become large,
 		// which makes the range checking below simpler.
-		const uint_t uEntryIndex = (m_uEntryCount - 1) - uShiftForEntry;
+		const uint32_t uEntryIndex = (m_uEntryCount - 1) - uShiftForEntry;
 
 		// Write the results to the data array. If the index is too large
 		// then that means that the data was shifted off the edge.
 
 		if (!uShiftForBit) {
 			// If no shifting, use the fast path
+
 #if defined(BURGER_64BITCPU)
-			InsertChunkBits(static_cast<ChunkSize_t>(uBits), uEntryIndex + 1);
+			insert_chunk_bits(static_cast<ChunkSize_t>(uBits), uEntryIndex + 1);
 #else
 			// 16 bit version need two writes.
-			InsertChunkBits(
+			insert_chunk_bits(
 				static_cast<ChunkSize_t>(uBits >> 16U), uEntryIndex + 1);
-			InsertChunkBits(static_cast<ChunkSize_t>(uBits), uEntryIndex + 2);
+			insert_chunk_bits(static_cast<ChunkSize_t>(uBits), uEntryIndex + 2);
 #endif
+
 		} else {
+
 #if defined(BURGER_64BITCPU)
-			InsertChunkBits(static_cast<ChunkSize_t>(
+			insert_chunk_bits(static_cast<ChunkSize_t>(
 								uBits >> (kBitsPerElement - uShiftForBit)),
 				uEntryIndex);
-			InsertChunkBits(static_cast<ChunkSize_t>(uBits << uShiftForBit),
+			insert_chunk_bits(static_cast<ChunkSize_t>(uBits << uShiftForBit),
 				uEntryIndex + 1);
 #else
 			// Copy the 32 bits into 3 16 bit entries
-			InsertChunkBits(static_cast<ChunkSize_t>(uBits >>
+			insert_chunk_bits(static_cast<ChunkSize_t>(uBits >>
 								((16 + kBitsPerElement) - uShiftForBit)),
 				uEntryIndex);
-			InsertChunkBits(static_cast<ChunkSize_t>(
+			insert_chunk_bits(static_cast<ChunkSize_t>(
 								uBits >> (kBitsPerElement - uShiftForBit)),
 				uEntryIndex + 1);
-			InsertChunkBits(static_cast<ChunkSize_t>(uBits << uShiftForBit),
+			insert_chunk_bits(static_cast<ChunkSize_t>(uBits << uShiftForBit),
 				uEntryIndex + 2);
 #endif
 		}
@@ -207,17 +210,18 @@ void BURGER_API Burger::FPLargeInt::InsertBitsAtEnd(
 
 	\param uBits 32 bit data to shift in
 	\param uShiftAmount Number of bits to shift (0 to \ref kTotalBitsInTable)
-	\sa InsertBitsAtEnd(uint32_t, uint_t) or InsertChunkBits(ChunkSize_t,
-		uint_t)
+
+	\sa insert_bits_at_end(uint32_t, uint32_t) or
+		insert_chunk_bits(ChunkSize_t, uint32_t)
 
 ***************************************/
 
-void BURGER_API Burger::FPLargeInt::InsertBitAtStart(
-	uint32_t uBits, uint_t uShiftAmount) BURGER_NOEXCEPT
+void BURGER_API Burger::FPLargeInt::insert_bits_at_start(
+	uint32_t uBits, uint32_t uShiftAmount) BURGER_NOEXCEPT
 {
 	// Reverse the shift from the top end
-	InsertBitsAtEnd(uBits,
-		((m_uEntryCount + (32 / kBitsPerElement)) * kBitsPerElement) -
+	insert_bits_at_end(uBits,
+		((m_uEntryCount + (32U / kBitsPerElement)) * kBitsPerElement) -
 			uShiftAmount);
 }
 
@@ -228,12 +232,12 @@ void BURGER_API Burger::FPLargeInt::InsertBitAtStart(
 
 	\param uBits 32 bit data to shift in
 	\param uEntryIndex Index into the entry table
-	\sa InsertLowBits(uint32_t, uint_t) or InsertTopBits(uint32_t, uint_t)
+	\sa InsertLowBits(uint32_t, uint32_t) or InsertTopBits(uint32_t, uint32_t)
 
 ***************************************/
 
-void BURGER_API Burger::FPLargeInt::InsertChunkBits(
-	ChunkSize_t uBits, uint_t uEntryIndex) BURGER_NOEXCEPT
+void BURGER_API Burger::FPLargeInt::insert_chunk_bits(
+	ChunkSize_t uBits, uint32_t uEntryIndex) BURGER_NOEXCEPT
 {
 	// Sanity check
 	if (uEntryIndex < m_uEntryCount) {
@@ -248,11 +252,11 @@ void BURGER_API Burger::FPLargeInt::InsertChunkBits(
 			m_bIsZero = FALSE;
 
 			// Set the bounds of the range of set bits
-			if (static_cast<int>(uEntryIndex) > m_iHighestNonZeroElement) {
-				m_iHighestNonZeroElement = static_cast<int_t>(uEntryIndex);
+			if (static_cast<int32_t>(uEntryIndex) > m_iHighestNonZeroElement) {
+				m_iHighestNonZeroElement = static_cast<int32_t>(uEntryIndex);
 			}
-			if (static_cast<int>(uEntryIndex) < m_iLowestNonZeroElement) {
-				m_iLowestNonZeroElement = static_cast<int_t>(uEntryIndex);
+			if (static_cast<int32_t>(uEntryIndex) < m_iLowestNonZeroElement) {
+				m_iLowestNonZeroElement = static_cast<int32_t>(uEntryIndex);
 			}
 		}
 	}
@@ -268,16 +272,18 @@ void BURGER_API Burger::FPLargeInt::InsertChunkBits(
 	If uDivisor was 0, this function does nothing and returns zero
 
 	\param uDivisor 32 bit unsigned number to divide the long integer
+
 	\return Value from 0 to uDivisor-1.
-	\sa MultiplyReturnOverflow(uint_t)
+
+	\sa multiply_return_overflow(uint32_t)
 
 ***************************************/
 
-uint_t Burger::FPLargeInt::DivideReturnRemainder(
-	uint_t uDivisor) BURGER_NOEXCEPT
+uint32_t Burger::FPLargeInt::divide_return_remainder(
+	uint32_t uDivisor) BURGER_NOEXCEPT
 {
 	// Preset the result
-	uint_t uRemainder = 0;
+	uint32_t uRemainder = 0;
 	if (!m_bIsZero && uDivisor) {
 
 		// Accumulator for zero test
@@ -285,7 +291,7 @@ uint_t Burger::FPLargeInt::DivideReturnRemainder(
 
 		// Standard long-division algorithm, scan from the first element to the
 		// last.
-		uint_t i = static_cast<uint_t>(m_iLowestNonZeroElement);
+		uint32_t i = static_cast<uint32_t>(m_iLowestNonZeroElement);
 		if (i < m_uEntryCount) {
 			do {
 				// Perform a high precision divide
@@ -323,24 +329,27 @@ uint_t Burger::FPLargeInt::DivideReturnRemainder(
 	overflowed out.
 
 	\param uMultiplier Value to multiply the giant integer with
+
 	\return Overflow value, or zero if there was no overflow or the giant
 		integer was zero.
-	\sa DivideReturnRemainder(uint_t)
+
+	\sa divide_return_remainder(uint32_t)
 
 ***************************************/
 
-uint_t Burger::FPLargeInt::MultiplyReturnOverflow(
-	uint_t uMultiplier) BURGER_NOEXCEPT
+uint32_t Burger::FPLargeInt::multiply_return_overflow(
+	uint32_t uMultiplier) BURGER_NOEXCEPT
 {
 	// Assume zero for answer
-	uint_t uOverflow = 0;
+	uint32_t uOverflow = 0;
 
 	// Only multiply if non-zero
 	if (!m_bIsZero) {
 
 		ChunkSize_t uBitsForZeroTest = 0;
+
 		// Scan from the highest entry to the first entry.
-		for (int_t i = m_iHighestNonZeroElement; i >= 0; --i) {
+		for (int32_t i = m_iHighestNonZeroElement; i >= 0; --i) {
 
 			// Perform the multiply using double the bits of precision
 			const MathSize_t uMultiplicand =
@@ -348,7 +357,7 @@ uint_t Burger::FPLargeInt::MultiplyReturnOverflow(
 				uOverflow;
 
 			// Get the bits beyond the precision.
-			uOverflow = static_cast<uint_t>(uMultiplicand >> kBitsPerElement);
+			uOverflow = static_cast<uint32_t>(uMultiplicand >> kBitsPerElement);
 
 			// Grab the result and zero test
 			const ChunkSize_t uTrimmed =
@@ -381,11 +390,11 @@ uint_t Burger::FPLargeInt::MultiplyReturnOverflow(
 
 ***************************************/
 
-void BURGER_API Burger::LoadHighPrecisionFromFloat(FPLargeInt* pIntegerPart,
+void BURGER_API Burger::separate_integer_fraction(FPLargeInt* pIntegerPart,
 	FPLargeInt* pFractionalPart, const FPInfo* pFPInfo) BURGER_NOEXCEPT
 {
 	// Better be valid!
-	BURGER_ASSERT(pFPInfo->IsValid());
+	BURGER_ASSERT(pFPInfo->is_valid());
 
 	// Assuming the normal pattern of exponent bias, for n bits of exponent,
 	// the range of exponents is:  max exponent = + 2^( n-1 ) -1
@@ -393,41 +402,41 @@ void BURGER_API Burger::LoadHighPrecisionFromFloat(FPLargeInt* pIntegerPart,
 
 	// Need 1 + max exponent bits to hold highest value (implied mantissa 1.0
 	// bit << max_exponent )
-	const uint_t uNumberIntBitsNeeded = 1U
-		<< (pFPInfo->GetExponentBitCount() - 1);
-	pIntegerPart->Init(uNumberIntBitsNeeded);
+	const uint32_t uNumberIntBitsNeeded = 1U
+		<< (pFPInfo->get_exponent_bit_count() - 1);
+	pIntegerPart->init(uNumberIntBitsNeeded);
 
 	// Need min exponent bits plus all the binary fraction bits from the
 	// mantissa
-	const uint_t uNumberFracBitsNeeded =
-		(1U << (pFPInfo->GetExponentBitCount() - 1)) - 2 +
-		(pFPInfo->GetMantissaBitCount() - 1);
-	pFractionalPart->Init(uNumberFracBitsNeeded);
+	const uint32_t uNumberFracBitsNeeded =
+		(1U << (pFPInfo->get_exponent_bit_count() - 1)) - 2 +
+		(pFPInfo->get_mantissa_bit_count() - 1);
+	pFractionalPart->init(uNumberFracBitsNeeded);
 
 	// Integer and fractional have been set to their bit sizes and zeroed out,
 	// is there more work to do?
 
-	if (!pFPInfo->IsZero()) {
+	if (!pFPInfo->is_zero()) {
 
 		// Copy up the lower 32 bits
 		const uint32_t uLow32Bits =
-			static_cast<uint32_t>(pFPInfo->GetMantissa());
-		pIntegerPart->InsertBitsAtEnd(uLow32Bits,
-			(32U + 1U) - pFPInfo->GetMantissaBitCount() +
-				pFPInfo->GetExponent());
-		pFractionalPart->InsertBitAtStart(uLow32Bits,
-			(pFPInfo->GetMantissaBitCount() - 1U) - pFPInfo->GetExponent());
+			static_cast<uint32_t>(pFPInfo->get_mantissa());
+		pIntegerPart->insert_bits_at_end(uLow32Bits,
+			(32U + 1U) - pFPInfo->get_mantissa_bit_count() +
+				pFPInfo->get_exponent());
+		pFractionalPart->insert_bits_at_start(uLow32Bits,
+			(pFPInfo->get_mantissa_bit_count() - 1U) - pFPInfo->get_exponent());
 
 		// Double?
-		if (pFPInfo->GetMantissaBitCount() > 32U) {
+		if (pFPInfo->get_mantissa_bit_count() > 32U) {
 			const uint32_t uHigh32Bits =
-				static_cast<uint32_t>(pFPInfo->GetMantissa() >> 32U);
-			pIntegerPart->InsertBitsAtEnd(uHigh32Bits,
-				(64U + 1U) - pFPInfo->GetMantissaBitCount() +
-					pFPInfo->GetExponent());
-			pFractionalPart->InsertBitAtStart(uHigh32Bits,
-				(pFPInfo->GetMantissaBitCount() - 1U) - pFPInfo->GetExponent() -
-					32U);
+				static_cast<uint32_t>(pFPInfo->get_mantissa() >> 32U);
+			pIntegerPart->insert_bits_at_end(uHigh32Bits,
+				(64U + 1U) - pFPInfo->get_mantissa_bit_count() +
+					pFPInfo->get_exponent());
+			pFractionalPart->insert_bits_at_start(uHigh32Bits,
+				(pFPInfo->get_mantissa_bit_count() - 1U) -
+					pFPInfo->get_exponent() - 32U);
 		}
 	}
 }

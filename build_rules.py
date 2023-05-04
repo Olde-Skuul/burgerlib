@@ -187,15 +187,19 @@ def create_version_header(working_directory=None):
     """
     Update the changelist header
 
-     Args:
+    Only pull the version from Perforce. If under git, assume the file has been
+    pulled from the Olde Skuul buildbot
+
+    Args:
         working_directory: Directory to store version.h in.
     """
 
-    if working_directory is None:
-        working_directory = BUILD_FOLDER
+    if not is_git():
+        if working_directory is None:
+            working_directory = BUILD_FOLDER
 
-    dest_folder = os.path.join(working_directory, "source", "generated")
-    make_version_header(working_directory,
+        dest_folder = os.path.join(working_directory, "source", "generated")
+        make_version_header(working_directory,
                         os.path.join(dest_folder, "version.h"),
                         verbose=False)
 
@@ -403,6 +407,7 @@ def prebuild(working_directory, configuration):
     # Create the super header using the makeheader tool
     dest_folder = os.path.join(working_directory, "bin")
 
+    # makeheader is a local copy or one from the path?
     makeheader = find_makeheader()
 
     for item in SUPER_HEADERS:

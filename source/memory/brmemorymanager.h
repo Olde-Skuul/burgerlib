@@ -2,7 +2,7 @@
 
 	Memory Manager Base Class
 
-	Copyright (c) 1995-2021 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -19,47 +19,50 @@
 #include "brtypes.h"
 #endif
 
-#ifndef __BRBASE_H__
-#include "brbase.h"
+#ifndef __BRTEMPLATES_H__
+#include "brtemplates.h"
 #endif
 
-#ifndef __BRALGORITHM_H__
-#include "bralgorithm.h"
+#ifndef __BRBASE_H__
+#include "brbase.h"
 #endif
 
 /* BEGIN */
 namespace Burger {
 
-/** Implementation of std::allocator<>
- *
- * Implements a standard allocator using a combination of function from C++98
- * through C++20. Allocates memory through ::operator new() and
- * operator delete()
- */
 template<class T>
 class allocator {
 public:
 	/** Type of object this allocator is creating memory */
 	typedef T value_type;
+
 	/** Quantities of elements */
 	typedef uintptr_t size_type;
+
 	/** Difference between pointers*/
 	typedef intptr_t difference_type;
+
 	/** Pointer to element */
 	typedef T* pointer;
+
 	/** Pointer to constant element */
 	typedef const T* const_pointer;
+
 	/** Reference to element */
 	typedef T& reference;
+
 	/** Reference to constant element */
 	typedef const T& const_reference;
 
 	/** Propagate on move assignment */
 	typedef true_type propagate_on_container_move_assignment;
+
 	/** Copy the allocator when copy assigned */
 	typedef true_type propagate_on_container_copy_assignment;
+
 	/** Swap allocators on swap assignment */
 	typedef true_type propagate_on_container_swap;
+
 	/** This allocator matches any other allocator type */
 	typedef true_type is_always_equal;
 
@@ -86,6 +89,7 @@ public:
 #if defined(BURGER_RVALUE_REFERENCES)
 	/** Move constructor. */
 	BURGER_CONSTEXPR allocator(allocator&&) BURGER_DEFAULT_CONSTRUCTOR;
+
 	/** Assignment move constructor. */
 	allocator& operator=(allocator&&) BURGER_DEFAULT_CONSTRUCTOR;
 #endif
@@ -93,45 +97,33 @@ public:
 	/** Allocator that crosses types.
 	Since this allocator can share pools, this exists and does nothing. */
 	template<class U>
-	allocator(const allocator<U>&){}
+	allocator(const allocator<U>&)
+	{
+	}
 
-	/** Returns the address of x.*/
+	/** Returns the address of x. */
 	BURGER_INLINE pointer address(reference x) BURGER_NOEXCEPT
 	{
 		return &x;
 	}
 
-	/** Returns the const address of x.*/
+	/** Returns the const address of x. */
 	BURGER_INLINE const_pointer address(const_reference x) const BURGER_NOEXCEPT
 	{
 		return &x;
 	}
 
-	/** Allocate memory for n chunks of data.
-
-	\param n Number of elements to allocate
-	\returns Pointer to allocated memory or nullptr on failure.
-	*/
 	BURGER_INLINE T* allocate(uintptr_t n) BURGER_NOEXCEPT
 	{
 		return static_cast<pointer>(::operator new(n * sizeof(T)));
 	}
 
-	/** Free memory allocated.
-
-	\param p Pointer to memory to release
-	*/
 	BURGER_INLINE void deallocate(pointer p, size_type) BURGER_NOEXCEPT
 	{
 		::operator delete((void*)p);
 	}
 
-	/** Maximum size possible to allocate.
-
-	Returns the maximum number of elements, each of member type value_type (an
-	alias of allocator's template parameter) that could potentially be allocated
-	by a call to member allocate.*/
-	BURGER_INLINE uintptr_t max_size() const
+	BURGER_INLINE uintptr_t max_size() const BURGER_NOEXCEPT
 	{
 		return UINTMAX_MAX;
 	}
@@ -154,8 +146,10 @@ class allocator<void> {
 public:
 	/** Type is hard coded to void */
 	typedef void value_type;
+
 	/** Pointer to nothing */
 	typedef void* pointer;
+
 	/** Const pointer to nothing */
 	typedef const void* const_pointer;
 
@@ -173,8 +167,10 @@ class allocator<const void> {
 public:
 	/** Type is hard coded to const void */
 	typedef const void value_type;
+
 	/** Pointer to nothing */
 	typedef const void* pointer;
+
 	/** Const pointer to nothing */
 	typedef const void* const_pointer;
 
@@ -182,6 +178,7 @@ public:
 	 * elements of type ``T`` */
 	template<class U>
 	struct rebind {
+
 		/** ``other`` matches ``T`` */
 		typedef allocator<U> other;
 	};
@@ -208,52 +205,72 @@ class AllocatorBase: public Base {
 
 public:
 	AllocatorBase() BURGER_DEFAULT_CONSTRUCTOR;
-	virtual void* Alloc(uintptr_t uSize) const BURGER_NOEXCEPT = 0;
-	virtual void Free(const void* pInput) const BURGER_NOEXCEPT = 0;
-	virtual void* Realloc(
+	virtual void* alloc(uintptr_t uSize) const BURGER_NOEXCEPT = 0;
+	virtual void free(const void* pInput) const BURGER_NOEXCEPT = 0;
+	virtual void* realloc(
 		const void* pInput, uintptr_t uSize) const BURGER_NOEXCEPT = 0;
-	void* BURGER_API AllocClear(uintptr_t uSize) const BURGER_NOEXCEPT;
 
-	void* BURGER_API AllocCopy(
+	void* BURGER_API alloc_clear(uintptr_t uSize) const BURGER_NOEXCEPT;
+	void* BURGER_API alloc_copy(
 		const void* pInput, uintptr_t uSize) const BURGER_NOEXCEPT;
 };
 
 struct MemoryManager {
-	typedef void*(BURGER_API* ProcAlloc)(MemoryManager* pThis,
-		uintptr_t uSize); ///< Function prototype for allocating memory
-	typedef void(BURGER_API* ProcFree)(MemoryManager* pThis,
-		const void* pInput); ///< Function prototype for releasing memory
-	typedef void*(BURGER_API* ProcRealloc)(MemoryManager* pThis,
-		const void* pInput,
-		uintptr_t uSize); ///< Function prototype for reallocating memory.
-	typedef void(BURGER_API* ProcShutdown)(
-		MemoryManager* pThis); ///< Function prototype for destructor
-	ProcAlloc m_pAlloc;        ///< Pointer to allocation function
-	ProcFree m_pFree;          ///< Pointer to memory release function
-	ProcRealloc m_pRealloc;    ///< Pointer to the memory reallocation function
-	ProcShutdown m_pShutdown;  ///< Pointer to the shutdown function
-	BURGER_INLINE void* Alloc(uintptr_t uSize) BURGER_NOEXCEPT
+
+	/** Function prototype for allocating memory */
+	typedef void*(BURGER_API* ProcAlloc)(MemoryManager* pThis, uintptr_t uSize);
+
+	/** Function prototype for releasing memory */
+	typedef void(BURGER_API* ProcFree)(
+		MemoryManager* pThis, const void* pInput);
+
+	/** Function prototype for reallocating memory. */
+	typedef void*(BURGER_API* ProcRealloc)(
+		MemoryManager* pThis, const void* pInput, uintptr_t uSize);
+
+	/** Function prototype for destructor */
+	typedef void(BURGER_API* ProcShutdown)(MemoryManager* pThis);
+
+	/** Pointer to allocation function */
+	ProcAlloc m_pAlloc;
+
+	/** Pointer to memory release function */
+	ProcFree m_pFree;
+
+	/** Pointer to the memory reallocation function */
+	ProcRealloc m_pRealloc;
+
+	/** Pointer to the shutdown function */
+	ProcShutdown m_pShutdown;
+
+	BURGER_INLINE void* alloc(uintptr_t uSize) BURGER_NOEXCEPT
 	{
 		return m_pAlloc(this, uSize);
 	}
-	BURGER_INLINE void Free(const void* pInput) BURGER_NOEXCEPT
+
+	BURGER_INLINE void free(const void* pInput) BURGER_NOEXCEPT
 	{
 		return m_pFree(this, pInput);
 	}
-	BURGER_INLINE void* Realloc(
+
+	BURGER_INLINE void* realloc(
 		const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT
 	{
 		return m_pRealloc(this, pInput, uSize);
 	}
-	BURGER_INLINE void Shutdown(void) BURGER_NOEXCEPT
+
+	BURGER_INLINE void shutdown(void) BURGER_NOEXCEPT
 	{
 		m_pShutdown(this);
 	}
-	void* BURGER_API AllocClear(uintptr_t uSize);
-	static void BURGER_API Shutdown(MemoryManager* pThis);
-	static void* BURGER_API AllocSystemMemory(uintptr_t uSize);
-	static void BURGER_API FreeSystemMemory(const void* pInput);
+
+	void* BURGER_API alloc_clear(uintptr_t uSize) BURGER_NOEXCEPT;
+
+	static void BURGER_API shutdown(MemoryManager* pThis) BURGER_NOEXCEPT;
 };
+
+extern void* BURGER_API alloc_platform_memory(uintptr_t uSize) BURGER_NOEXCEPT;
+extern void BURGER_API free_platform_memory(const void* pInput) BURGER_NOEXCEPT;
 }
 /* END */
 
