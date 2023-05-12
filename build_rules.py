@@ -21,7 +21,7 @@ import os
 from burger import make_version_header, get_sdks_folder, \
     create_folder_if_needed, run_command, compare_files, \
     copy_file_if_needed, clean_directories, clean_files, \
-    is_under_git_control, get_tool_path
+    is_write_protected, get_tool_path
 
 # ``cleanme`` will assume only the function ``clean()`` is used if False.
 # Overrides PROCESS_PROJECT_FILES
@@ -131,8 +131,8 @@ def is_git():
     """
     Detect if perforce or git is source control
 
-    If perforce exists, this is building at Olde Skuul, otherwise it's
-    building from github
+    Check if the file AUTHORS is write protected. If it is, it's likely under
+    perforce control.
 
     Returns:
         True if building under git
@@ -142,7 +142,11 @@ def is_git():
     global _GIT_FOUND
 
     if _GIT_FOUND is None:
-        _GIT_FOUND = is_under_git_control(BUILD_FOLDER)
+
+        # Check if write protected, which is true under perforce
+        _GIT_FOUND = not is_write_protected(
+            os.path.join(BUILD_FOLDER, "AUTHORS"))
+
     return _GIT_FOUND
 
 ########################################
@@ -158,9 +162,11 @@ def find_makeheader():
     """
 
     if not is_git():
+
+        # At Olde Skuul, this is in the path
         return "makeheader"
 
-    # Select the right binary for the host OS
+    # Select the right binary for the host OS and use the local copy
     return get_tool_path(os.path.join(BUILD_FOLDER, "tools"), "makeheader")
 
 ########################################
