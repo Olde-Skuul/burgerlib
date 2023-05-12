@@ -132,10 +132,6 @@ unittestswatw32.wmk:
 # Required environment variables
 #
 
-!ifndef %BURGER_SDKS
-!error the environment variable BURGER_SDKS was not declared
-!endif
-
 !ifndef %WATCOM
 !error the environment variable WATCOM was not declared
 !endif
@@ -206,6 +202,7 @@ SOURCE_DIRS +=;../source/lowlevel
 SOURCE_DIRS +=;../source/math
 SOURCE_DIRS +=;../source/memory
 SOURCE_DIRS +=;../source/platforms/windows
+SOURCE_DIRS +=;../source/platforms/windows/generated
 SOURCE_DIRS +=;../source/random
 SOURCE_DIRS +=;../source/text
 SOURCE_DIRS +=;../unittest
@@ -216,9 +213,10 @@ SOURCE_DIRS +=;../unittest
 
 INCLUDE_DIRS = $(SOURCE_DIRS)
 INCLUDE_DIRS +=;$(%BURGER_SDKS)/windows/perforce
-INCLUDE_DIRS +=;$(%BURGER_SDKS)/windows/directx9
+INCLUDE_DIRS +=;../sdks/windows/dplay/include
 INCLUDE_DIRS +=;$(%BURGER_SDKS)/windows/opengl
 INCLUDE_DIRS +=;$(%BURGER_SDKS)/windows/windows5
+INCLUDE_DIRS +=;$(%BURGER_SDKS)/windows/directx9
 INCLUDE_DIRS +=;$(%BURGER_SDKS)/steamworks/public/steam
 
 #
@@ -234,9 +232,9 @@ INCLUDE_DIRS +=;$(%BURGER_SDKS)/steamworks/public/steam
 # Set the compiler flags for each of the build types
 #
 
-CFlagsDebugw32= -bt=NT -dTYPE_BOOL=1 -dTARGET_CPU_X86=1 -dTARGET_OS_WIN32=1 -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d2 -od -D_DEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -D_CONSOLE -DGLUT_DISABLE_ATEXIT_HACK -DGLUT_NO_LIB_PRAGMA -D_CRT_NONSTDC_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS -DGLUT_NO_LIB_PRAGMA -D_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1
-CFlagsInternalw32= -bt=NT -dTYPE_BOOL=1 -dTARGET_CPU_X86=1 -dTARGET_OS_WIN32=1 -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d2 -oaxsh -D_DEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -D_CONSOLE -DGLUT_DISABLE_ATEXIT_HACK -DGLUT_NO_LIB_PRAGMA -D_CRT_NONSTDC_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS -DGLUT_NO_LIB_PRAGMA -D_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1
-CFlagsReleasew32= -bt=NT -dTYPE_BOOL=1 -dTARGET_CPU_X86=1 -dTARGET_OS_WIN32=1 -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d0 -oaxsh -DNDEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -D_CONSOLE -DGLUT_DISABLE_ATEXIT_HACK -DGLUT_NO_LIB_PRAGMA -D_CRT_NONSTDC_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS -DGLUT_NO_LIB_PRAGMA -D_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1
+CFlagsDebugw32= -bm -bt=NT -dTYPE_BOOL=1 -dTARGET_CPU_X86=1 -dTARGET_OS_WIN32=1 -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d2 -od -D_DEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -D_CONSOLE -DGLUT_DISABLE_ATEXIT_HACK -DGLUT_NO_LIB_PRAGMA -D_CRT_NONSTDC_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS -DGLUT_NO_LIB_PRAGMA -D_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1
+CFlagsInternalw32= -bm -bt=NT -dTYPE_BOOL=1 -dTARGET_CPU_X86=1 -dTARGET_OS_WIN32=1 -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d2 -oaxsh -D_DEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -D_CONSOLE -DGLUT_DISABLE_ATEXIT_HACK -DGLUT_NO_LIB_PRAGMA -D_CRT_NONSTDC_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS -DGLUT_NO_LIB_PRAGMA -D_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1
+CFlagsReleasew32= -bm -bt=NT -dTYPE_BOOL=1 -dTARGET_CPU_X86=1 -dTARGET_OS_WIN32=1 -i="$(%WATCOM)/h;$(%WATCOM)/h/nt" -d0 -oaxsh -DNDEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32 -D_CONSOLE -DGLUT_DISABLE_ATEXIT_HACK -DGLUT_NO_LIB_PRAGMA -D_CRT_NONSTDC_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS -DGLUT_NO_LIB_PRAGMA -D_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1
 
 #
 # Set the assembler flags for each of the build types
@@ -250,9 +248,9 @@ AFlagsReleasew32= -d__WIN32__=1 -DNDEBUG -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN3
 # Set the Linker flags for each of the build types
 #
 
-LFlagsDebugw32= system nt libp $(%BURGER_SDKS)/windows/burgerlib;$(%BURGER_SDKS)/windows/perforce;$(%BURGER_SDKS)/windows/opengl;$(%BURGER_SDKS)/windows/directx9 LIBRARY Kernel32.lib,Gdi32.lib,Shell32.lib,Ole32.lib,User32.lib,Advapi32.lib,version.lib,Ws2_32.lib,Comctl32.lib
-LFlagsInternalw32= system nt libp $(%BURGER_SDKS)/windows/burgerlib;$(%BURGER_SDKS)/windows/perforce;$(%BURGER_SDKS)/windows/opengl;$(%BURGER_SDKS)/windows/directx9 LIBRARY Kernel32.lib,Gdi32.lib,Shell32.lib,Ole32.lib,User32.lib,Advapi32.lib,version.lib,Ws2_32.lib,Comctl32.lib
-LFlagsReleasew32= system nt libp $(%BURGER_SDKS)/windows/burgerlib;$(%BURGER_SDKS)/windows/perforce;$(%BURGER_SDKS)/windows/opengl;$(%BURGER_SDKS)/windows/directx9 LIBRARY Kernel32.lib,Gdi32.lib,Shell32.lib,Ole32.lib,User32.lib,Advapi32.lib,version.lib,Ws2_32.lib,Comctl32.lib
+LFlagsDebugw32= system nt LIBRARY Kernel32.lib,Gdi32.lib,Shell32.lib,Ole32.lib,User32.lib,Advapi32.lib,version.lib,Ws2_32.lib,Comctl32.lib,WinMM.lib
+LFlagsInternalw32= system nt LIBRARY Kernel32.lib,Gdi32.lib,Shell32.lib,Ole32.lib,User32.lib,Advapi32.lib,version.lib,Ws2_32.lib,Comctl32.lib,WinMM.lib
+LFlagsReleasew32= system nt LIBRARY Kernel32.lib,Gdi32.lib,Shell32.lib,Ole32.lib,User32.lib,Advapi32.lib,version.lib,Ws2_32.lib,Comctl32.lib,WinMM.lib
 
 # Now, set the compiler flags
 
@@ -329,7 +327,6 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brdetectmultilaunchwindows.obj &
 	$(A)/brdirectorysearch.obj &
 	$(A)/brdirectorysearchwindows.obj &
-	$(A)/brdirectxdata.obj &
 	$(A)/brdisplay.obj &
 	$(A)/brdisplaybasewindows.obj &
 	$(A)/brdisplaydibsoftware8windows.obj &
@@ -391,6 +388,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brfloatingpoint.obj &
 	$(A)/brfont.obj &
 	$(A)/brfont4bit.obj &
+	$(A)/brfphalf.obj &
 	$(A)/brfpinfo.obj &
 	$(A)/brfplargeint.obj &
 	$(A)/brfpprintinfo.obj &
@@ -509,24 +507,6 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brwin1252.obj &
 	$(A)/brwin437.obj &
 	$(A)/brwindowsapp.obj &
-	$(A)/brwindowsd3d.obj &
-	$(A)/brwindowsd3d11.obj &
-	$(A)/brwindowsddraw.obj &
-	$(A)/brwindowsdinput.obj &
-	$(A)/brwindowsdplay.obj &
-	$(A)/brwindowsdsound.obj &
-	$(A)/brwindowshid.obj &
-	$(A)/brwindowskernel32.obj &
-	$(A)/brwindowsrpcrt4.obj &
-	$(A)/brwindowssetupapi.obj &
-	$(A)/brwindowsshell32.obj &
-	$(A)/brwindowsshlwapi.obj &
-	$(A)/brwindowstest.obj &
-	$(A)/brwindowstypes1.obj &
-	$(A)/brwindowsuser32.obj &
-	$(A)/brwindowsversion.obj &
-	$(A)/brwindowswinmm.obj &
-	$(A)/brwindowsxinput.obj &
 	$(A)/common.obj &
 	$(A)/createtables.obj &
 	$(A)/testbralgorithm.obj &
@@ -549,7 +529,32 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/testbrtimedate.obj &
 	$(A)/testbrtypes.obj &
 	$(A)/testcharset.obj &
-	$(A)/testmacros.obj
+	$(A)/testmacros.obj &
+	$(A)/win_d3d11.obj &
+	$(A)/win_d3d9.obj &
+	$(A)/win_ddraw.obj &
+	$(A)/win_dinput.obj &
+	$(A)/win_directxdata.obj &
+	$(A)/win_dplay.obj &
+	$(A)/win_dsound.obj &
+	$(A)/win_error.obj &
+	$(A)/win_globals.obj &
+	$(A)/win_hid.obj &
+	$(A)/win_kernel32.obj &
+	$(A)/win_launcher.obj &
+	$(A)/win_loadlibrary.obj &
+	$(A)/win_memorymanager.obj &
+	$(A)/win_platformshims.obj &
+	$(A)/win_registry.obj &
+	$(A)/win_rpcrt4.obj &
+	$(A)/win_setupapi.obj &
+	$(A)/win_shell32.obj &
+	$(A)/win_shlwapi.obj &
+	$(A)/win_user32.obj &
+	$(A)/win_version.obj &
+	$(A)/win_winmm.obj &
+	$(A)/win_winutils.obj &
+	$(A)/win_xinput.obj
 
 #
 # A = The object file temp folder

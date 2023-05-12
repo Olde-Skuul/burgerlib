@@ -177,10 +177,6 @@ burgerwatdos.wmk:
 # Required environment variables
 #
 
-!ifndef %BURGER_SDKS
-!error the environment variable BURGER_SDKS was not declared
-!endif
-
 !ifndef %WATCOM
 !error the environment variable WATCOM was not declared
 !endif
@@ -427,6 +423,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brfloatingpoint.obj &
 	$(A)/brfont.obj &
 	$(A)/brfont4bit.obj &
+	$(A)/brfphalf.obj &
 	$(A)/brfpinfo.obj &
 	$(A)/brfplargeint.obj &
 	$(A)/brfpprintinfo.obj &

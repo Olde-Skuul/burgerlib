@@ -112,14 +112,6 @@ burgermaklnx.mak: ;
 ifneq (0,$(MAKELEVEL))
 
 #
-# Required environment variables
-#
-
-ifndef BURGER_SDKS
-$(error the environment variable BURGER_SDKS was not declared)
-endif
-
-#
 # Default configuration
 #
 
@@ -323,6 +315,7 @@ OBJS:= $(TEMP_DIR)/bradler16.o \
 	$(TEMP_DIR)/brfloatingpoint.o \
 	$(TEMP_DIR)/brfont.o \
 	$(TEMP_DIR)/brfont4bit.o \
+	$(TEMP_DIR)/brfphalf.o \
 	$(TEMP_DIR)/brfpinfo.o \
 	$(TEMP_DIR)/brfplargeint.o \
 	$(TEMP_DIR)/brfpprintinfo.o \
@@ -333,6 +326,7 @@ OBJS:= $(TEMP_DIR)/bradler16.o \
 	$(TEMP_DIR)/brgost.o \
 	$(TEMP_DIR)/brgridindex.o \
 	$(TEMP_DIR)/brguid.o \
+	$(TEMP_DIR)/brguidlinux.o \
 	$(TEMP_DIR)/brhashmap.o \
 	$(TEMP_DIR)/brimage.o \
 	$(TEMP_DIR)/brimportit.o \
@@ -424,7 +418,12 @@ OBJS:= $(TEMP_DIR)/bradler16.o \
 	$(TEMP_DIR)/brvertexbufferopengl.o \
 	$(TEMP_DIR)/brvulkanerrors.o \
 	$(TEMP_DIR)/brwin1252.o \
-	$(TEMP_DIR)/brwin437.o
+	$(TEMP_DIR)/brwin437.o \
+	$(TEMP_DIR)/linux_sandbox.o \
+	$(TEMP_DIR)/unix_dbus.o \
+	$(TEMP_DIR)/unix_dbusinstance.o \
+	$(TEMP_DIR)/unix_shims.o \
+	$(TEMP_DIR)/unix_sleep.o
 
 DEPS:= $(TEMP_DIR)/bradler16.d \
 	$(TEMP_DIR)/bradler32.d \
@@ -518,6 +517,7 @@ DEPS:= $(TEMP_DIR)/bradler16.d \
 	$(TEMP_DIR)/brfloatingpoint.d \
 	$(TEMP_DIR)/brfont.d \
 	$(TEMP_DIR)/brfont4bit.d \
+	$(TEMP_DIR)/brfphalf.d \
 	$(TEMP_DIR)/brfpinfo.d \
 	$(TEMP_DIR)/brfplargeint.d \
 	$(TEMP_DIR)/brfpprintinfo.d \
@@ -528,6 +528,7 @@ DEPS:= $(TEMP_DIR)/bradler16.d \
 	$(TEMP_DIR)/brgost.d \
 	$(TEMP_DIR)/brgridindex.d \
 	$(TEMP_DIR)/brguid.d \
+	$(TEMP_DIR)/brguidlinux.d \
 	$(TEMP_DIR)/brhashmap.d \
 	$(TEMP_DIR)/brimage.d \
 	$(TEMP_DIR)/brimportit.d \
@@ -619,13 +620,18 @@ DEPS:= $(TEMP_DIR)/bradler16.d \
 	$(TEMP_DIR)/brvertexbufferopengl.d \
 	$(TEMP_DIR)/brvulkanerrors.d \
 	$(TEMP_DIR)/brwin1252.d \
-	$(TEMP_DIR)/brwin437.d
+	$(TEMP_DIR)/brwin437.d \
+	$(TEMP_DIR)/linux_sandbox.d \
+	$(TEMP_DIR)/unix_dbus.d \
+	$(TEMP_DIR)/unix_dbusinstance.d \
+	$(TEMP_DIR)/unix_shims.d \
+	$(TEMP_DIR)/unix_sleep.d
 
 #
 # Disable building the source files
 #
 
-../source/ansi/brcapturestdout.cpp ../source/ansi/brfileansihelpers.cpp ../source/ansi/brmemoryansi.cpp ../source/ansi/brstdouthelpers.cpp ../source/audio/bralaw.cpp ../source/audio/brimportit.cpp ../source/audio/brimports3m.cpp ../source/audio/brimportxm.cpp ../source/audio/brmace.cpp ../source/audio/brmicrosoftadpcm.cpp ../source/audio/brsequencer.cpp ../source/audio/brsound.cpp ../source/audio/brsoundbufferrez.cpp ../source/audio/brsounddecompress.cpp ../source/audio/brulaw.cpp ../source/commandline/brcommandparameter.cpp ../source/commandline/brcommandparameterbooltrue.cpp ../source/commandline/brcommandparameterstring.cpp ../source/commandline/brcommandparameterwordptr.cpp ../source/commandline/brconsolemanager.cpp ../source/commandline/brgameapp.cpp ../source/compression/bradler16.cpp ../source/compression/bradler32.cpp ../source/compression/brcompress.cpp ../source/compression/brcompressdeflate.cpp ../source/compression/brcompresslbmrle.cpp ../source/compression/brcompresslzss.cpp ../source/compression/brcrc16.cpp ../source/compression/brcrc32.cpp ../source/compression/brdecompress.cpp ../source/compression/brdecompressdeflate.cpp ../source/compression/brdecompresslbmrle.cpp ../source/compression/brdecompresslzss.cpp ../source/compression/brdjb2hash.cpp ../source/compression/brdxt1.cpp ../source/compression/brdxt3.cpp ../source/compression/brdxt5.cpp ../source/compression/brgost.cpp ../source/compression/brhashmap.cpp ../source/compression/brmd2.cpp ../source/compression/brmd4.cpp ../source/compression/brmd5.cpp ../source/compression/brpackfloat.cpp ../source/compression/brsdbmhash.cpp ../source/compression/brsha1.cpp ../source/compression/brunpackbytes.cpp ../source/file/brdirectorysearch.cpp ../source/file/brfile.cpp ../source/file/brfileapf.cpp ../source/file/brfilebmp.cpp ../source/file/brfiledds.cpp ../source/file/brfilegif.cpp ../source/file/brfileini.cpp ../source/file/brfilelbm.cpp ../source/file/brfilemanager.cpp ../source/file/brfilemp3.cpp ../source/file/brfilename.cpp ../source/file/brfilepcx.cpp ../source/file/brfilepng.cpp ../source/file/brfiletga.cpp ../source/file/brfilexml.cpp ../source/file/brinputmemorystream.cpp ../source/file/broutputmemorystream.cpp ../source/file/brrezfile.cpp ../source/flashplayer/brflashaction.cpp ../source/flashplayer/brflashactionvalue.cpp ../source/flashplayer/brflashavm2.cpp ../source/flashplayer/brflashcolortransform.cpp ../source/flashplayer/brflashdisasmactionscript.cpp ../source/flashplayer/brflashmanager.cpp ../source/flashplayer/brflashmatrix23.cpp ../source/flashplayer/brflashrect.cpp ../source/flashplayer/brflashrgba.cpp ../source/flashplayer/brflashstream.cpp ../source/flashplayer/brflashutils.cpp ../source/graphics/brdisplay.cpp ../source/graphics/brdisplayobject.cpp ../source/graphics/brdisplayopengl.cpp ../source/graphics/brdisplayopenglsoftware8.cpp ../source/graphics/brfont.cpp ../source/graphics/brfont4bit.cpp ../source/graphics/brimage.cpp ../source/graphics/brpalette.cpp ../source/graphics/brpoint2d.cpp ../source/graphics/brrect.cpp ../source/graphics/brrenderer.cpp ../source/graphics/brrenderersoftware16.cpp ../source/graphics/brrenderersoftware8.cpp ../source/graphics/brshape8bit.cpp ../source/graphics/brtexture.cpp ../source/graphics/brtextureopengl.cpp ../source/graphics/brvertexbuffer.cpp ../source/graphics/brvertexbufferopengl.cpp ../source/graphics/effects/breffect.cpp ../source/graphics/effects/breffect2d.cpp ../source/graphics/effects/breffectpositiontexturecolor.cpp ../source/graphics/effects/breffectstaticpositiontexture.cpp ../source/graphics/effects/brshaders.cpp ../source/graphics/shaders/brshader2dccolor.cpp ../source/graphics/shaders/brshader2dcolorvertex.cpp ../source/graphics/vulkan/brvulkanerrors.cpp ../source/input/brjoypad.cpp ../source/input/brkeyboard.cpp ../source/input/brmouse.cpp ../source/lowlevel/bralgorithm.cpp ../source/lowlevel/brargumenttype.cpp ../source/lowlevel/brarray.cpp ../source/lowlevel/brassert.cpp ../source/lowlevel/bratomic.cpp ../source/lowlevel/brautorepeat.cpp ../source/lowlevel/brbase.cpp ../source/lowlevel/brcodelibrary.cpp ../source/lowlevel/brcriticalsection.cpp ../source/lowlevel/brdebug.cpp ../source/lowlevel/brdetectmultilaunch.cpp ../source/lowlevel/brdoublylinkedlist.cpp ../source/lowlevel/brendian.cpp ../source/lowlevel/brerror.cpp ../source/lowlevel/brglobals.cpp ../source/lowlevel/brgridindex.cpp ../source/lowlevel/brguid.cpp ../source/lowlevel/brintrinsics.cpp ../source/lowlevel/brlastinfirstout.cpp ../source/lowlevel/brlinkedlistobject.cpp ../source/lowlevel/brlinkedlistpointer.cpp ../source/lowlevel/broscursor.cpp ../source/lowlevel/brpair.cpp ../source/lowlevel/brperforce.cpp ../source/lowlevel/brqueue.cpp ../source/lowlevel/brrunqueue.cpp ../source/lowlevel/brsimplearray.cpp ../source/lowlevel/brsmartpointer.cpp ../source/lowlevel/brstaticrtti.cpp ../source/lowlevel/brstructs.cpp ../source/lowlevel/brtemplates.cpp ../source/lowlevel/brtick.cpp ../source/lowlevel/brtimedate.cpp ../source/lowlevel/brtypes.cpp ../source/math/brearcliptriangulate.cpp ../source/math/brfixedmatrix3d.cpp ../source/math/brfixedmatrix4d.cpp ../source/math/brfixedpoint.cpp ../source/math/brfixedvector2d.cpp ../source/math/brfixedvector3d.cpp ../source/math/brfixedvector4d.cpp ../source/math/brfloatingpoint.cpp ../source/math/brfpinfo.cpp ../source/math/brfplargeint.cpp ../source/math/brfpprintinfo.cpp ../source/math/brmatrix3d.cpp ../source/math/brmatrix4d.cpp ../source/math/brmp3math.cpp ../source/math/brsinecosine.cpp ../source/math/brvector2d.cpp ../source/math/brvector3d.cpp ../source/math/brvector4d.cpp ../source/memory/brglobalmemorymanager.cpp ../source/memory/brmemoryhandle.cpp ../source/memory/brmemorymanager.cpp ../source/platforms/linux/brconsolemanagerlinux.cpp ../source/platforms/linux/brfilemanagerlinux.cpp ../source/platforms/linux/brfilenamelinux.cpp ../source/platforms/linux/brglobalslinux.cpp ../source/platforms/linux/brosstringfunctionslinux.cpp ../source/platforms/unix/brcodelibraryunix.cpp ../source/platforms/unix/brdirectorysearchunix.cpp ../source/platforms/unix/brfilemanagerunix.cpp ../source/platforms/unix/brfilenameunix.cpp ../source/platforms/unix/brfileunix.cpp ../source/platforms/unix/brosstringfunctionsunix.cpp ../source/platforms/unix/brunixtypes.cpp ../source/random/brmersennetwist.cpp ../source/random/brrandom.cpp ../source/random/brrandombase.cpp ../source/text/brasciito.cpp ../source/text/brcodepage.cpp ../source/text/brisolatin1.cpp ../source/text/brlocalization.cpp ../source/text/brmacromanus.cpp ../source/text/brmemoryfunctions.cpp ../source/text/brnumberstring.cpp ../source/text/brnumberstringhex.cpp ../source/text/brnumberto.cpp ../source/text/brosstringfunctions.cpp ../source/text/brprintf.cpp ../source/text/brsimplestring.cpp ../source/text/brstring.cpp ../source/text/brstring16.cpp ../source/text/brstringfunctions.cpp ../source/text/brutf16.cpp ../source/text/brutf32.cpp ../source/text/brutf8.cpp ../source/text/brwin1252.cpp ../source/text/brwin437.cpp: ;
+../source/ansi/brcapturestdout.cpp ../source/ansi/brfileansihelpers.cpp ../source/ansi/brmemoryansi.cpp ../source/ansi/brstdouthelpers.cpp ../source/audio/bralaw.cpp ../source/audio/brimportit.cpp ../source/audio/brimports3m.cpp ../source/audio/brimportxm.cpp ../source/audio/brmace.cpp ../source/audio/brmicrosoftadpcm.cpp ../source/audio/brsequencer.cpp ../source/audio/brsound.cpp ../source/audio/brsoundbufferrez.cpp ../source/audio/brsounddecompress.cpp ../source/audio/brulaw.cpp ../source/commandline/brcommandparameter.cpp ../source/commandline/brcommandparameterbooltrue.cpp ../source/commandline/brcommandparameterstring.cpp ../source/commandline/brcommandparameterwordptr.cpp ../source/commandline/brconsolemanager.cpp ../source/commandline/brgameapp.cpp ../source/compression/bradler16.cpp ../source/compression/bradler32.cpp ../source/compression/brcompress.cpp ../source/compression/brcompressdeflate.cpp ../source/compression/brcompresslbmrle.cpp ../source/compression/brcompresslzss.cpp ../source/compression/brcrc16.cpp ../source/compression/brcrc32.cpp ../source/compression/brdecompress.cpp ../source/compression/brdecompressdeflate.cpp ../source/compression/brdecompresslbmrle.cpp ../source/compression/brdecompresslzss.cpp ../source/compression/brdjb2hash.cpp ../source/compression/brdxt1.cpp ../source/compression/brdxt3.cpp ../source/compression/brdxt5.cpp ../source/compression/brgost.cpp ../source/compression/brhashmap.cpp ../source/compression/brmd2.cpp ../source/compression/brmd4.cpp ../source/compression/brmd5.cpp ../source/compression/brpackfloat.cpp ../source/compression/brsdbmhash.cpp ../source/compression/brsha1.cpp ../source/compression/brunpackbytes.cpp ../source/file/brdirectorysearch.cpp ../source/file/brfile.cpp ../source/file/brfileapf.cpp ../source/file/brfilebmp.cpp ../source/file/brfiledds.cpp ../source/file/brfilegif.cpp ../source/file/brfileini.cpp ../source/file/brfilelbm.cpp ../source/file/brfilemanager.cpp ../source/file/brfilemp3.cpp ../source/file/brfilename.cpp ../source/file/brfilepcx.cpp ../source/file/brfilepng.cpp ../source/file/brfiletga.cpp ../source/file/brfilexml.cpp ../source/file/brinputmemorystream.cpp ../source/file/broutputmemorystream.cpp ../source/file/brrezfile.cpp ../source/flashplayer/brflashaction.cpp ../source/flashplayer/brflashactionvalue.cpp ../source/flashplayer/brflashavm2.cpp ../source/flashplayer/brflashcolortransform.cpp ../source/flashplayer/brflashdisasmactionscript.cpp ../source/flashplayer/brflashmanager.cpp ../source/flashplayer/brflashmatrix23.cpp ../source/flashplayer/brflashrect.cpp ../source/flashplayer/brflashrgba.cpp ../source/flashplayer/brflashstream.cpp ../source/flashplayer/brflashutils.cpp ../source/graphics/brdisplay.cpp ../source/graphics/brdisplayobject.cpp ../source/graphics/brdisplayopengl.cpp ../source/graphics/brdisplayopenglsoftware8.cpp ../source/graphics/brfont.cpp ../source/graphics/brfont4bit.cpp ../source/graphics/brimage.cpp ../source/graphics/brpalette.cpp ../source/graphics/brpoint2d.cpp ../source/graphics/brrect.cpp ../source/graphics/brrenderer.cpp ../source/graphics/brrenderersoftware16.cpp ../source/graphics/brrenderersoftware8.cpp ../source/graphics/brshape8bit.cpp ../source/graphics/brtexture.cpp ../source/graphics/brtextureopengl.cpp ../source/graphics/brvertexbuffer.cpp ../source/graphics/brvertexbufferopengl.cpp ../source/graphics/effects/breffect.cpp ../source/graphics/effects/breffect2d.cpp ../source/graphics/effects/breffectpositiontexturecolor.cpp ../source/graphics/effects/breffectstaticpositiontexture.cpp ../source/graphics/effects/brshaders.cpp ../source/graphics/shaders/brshader2dccolor.cpp ../source/graphics/shaders/brshader2dcolorvertex.cpp ../source/graphics/vulkan/brvulkanerrors.cpp ../source/input/brjoypad.cpp ../source/input/brkeyboard.cpp ../source/input/brmouse.cpp ../source/lowlevel/bralgorithm.cpp ../source/lowlevel/brargumenttype.cpp ../source/lowlevel/brarray.cpp ../source/lowlevel/brassert.cpp ../source/lowlevel/bratomic.cpp ../source/lowlevel/brautorepeat.cpp ../source/lowlevel/brbase.cpp ../source/lowlevel/brcodelibrary.cpp ../source/lowlevel/brcriticalsection.cpp ../source/lowlevel/brdebug.cpp ../source/lowlevel/brdetectmultilaunch.cpp ../source/lowlevel/brdoublylinkedlist.cpp ../source/lowlevel/brendian.cpp ../source/lowlevel/brerror.cpp ../source/lowlevel/brglobals.cpp ../source/lowlevel/brgridindex.cpp ../source/lowlevel/brguid.cpp ../source/lowlevel/brintrinsics.cpp ../source/lowlevel/brlastinfirstout.cpp ../source/lowlevel/brlinkedlistobject.cpp ../source/lowlevel/brlinkedlistpointer.cpp ../source/lowlevel/broscursor.cpp ../source/lowlevel/brpair.cpp ../source/lowlevel/brperforce.cpp ../source/lowlevel/brqueue.cpp ../source/lowlevel/brrunqueue.cpp ../source/lowlevel/brsimplearray.cpp ../source/lowlevel/brsmartpointer.cpp ../source/lowlevel/brstaticrtti.cpp ../source/lowlevel/brstructs.cpp ../source/lowlevel/brtemplates.cpp ../source/lowlevel/brtick.cpp ../source/lowlevel/brtimedate.cpp ../source/lowlevel/brtypes.cpp ../source/math/brearcliptriangulate.cpp ../source/math/brfixedmatrix3d.cpp ../source/math/brfixedmatrix4d.cpp ../source/math/brfixedpoint.cpp ../source/math/brfixedvector2d.cpp ../source/math/brfixedvector3d.cpp ../source/math/brfixedvector4d.cpp ../source/math/brfloatingpoint.cpp ../source/math/brfphalf.cpp ../source/math/brfpinfo.cpp ../source/math/brfplargeint.cpp ../source/math/brfpprintinfo.cpp ../source/math/brmatrix3d.cpp ../source/math/brmatrix4d.cpp ../source/math/brmp3math.cpp ../source/math/brsinecosine.cpp ../source/math/brvector2d.cpp ../source/math/brvector3d.cpp ../source/math/brvector4d.cpp ../source/memory/brglobalmemorymanager.cpp ../source/memory/brmemoryhandle.cpp ../source/memory/brmemorymanager.cpp ../source/platforms/linux/brconsolemanagerlinux.cpp ../source/platforms/linux/brfilemanagerlinux.cpp ../source/platforms/linux/brfilenamelinux.cpp ../source/platforms/linux/brglobalslinux.cpp ../source/platforms/linux/brguidlinux.cpp ../source/platforms/linux/brosstringfunctionslinux.cpp ../source/platforms/linux/linux_sandbox.cpp ../source/platforms/unix/brcodelibraryunix.cpp ../source/platforms/unix/brdirectorysearchunix.cpp ../source/platforms/unix/brfilemanagerunix.cpp ../source/platforms/unix/brfilenameunix.cpp ../source/platforms/unix/brfileunix.cpp ../source/platforms/unix/brosstringfunctionsunix.cpp ../source/platforms/unix/brunixtypes.cpp ../source/platforms/unix/unix_dbus.cpp ../source/platforms/unix/unix_dbusinstance.cpp ../source/platforms/unix/unix_shims.cpp ../source/platforms/unix/unix_sleep.cpp ../source/random/brmersennetwist.cpp ../source/random/brrandom.cpp ../source/random/brrandombase.cpp ../source/text/brasciito.cpp ../source/text/brcodepage.cpp ../source/text/brisolatin1.cpp ../source/text/brlocalization.cpp ../source/text/brmacromanus.cpp ../source/text/brmemoryfunctions.cpp ../source/text/brnumberstring.cpp ../source/text/brnumberstringhex.cpp ../source/text/brnumberto.cpp ../source/text/brosstringfunctions.cpp ../source/text/brprintf.cpp ../source/text/brsimplestring.cpp ../source/text/brstring.cpp ../source/text/brstring16.cpp ../source/text/brstringfunctions.cpp ../source/text/brutf16.cpp ../source/text/brutf32.cpp ../source/text/brutf8.cpp ../source/text/brwin1252.cpp ../source/text/brwin437.cpp: ;
 
 #
 # Build the object file folder
@@ -932,6 +938,8 @@ $(TEMP_DIR)/brfixedvector4d.o: ../source/math/brfixedvector4d.cpp ; $(BUILD_CPP)
 
 $(TEMP_DIR)/brfloatingpoint.o: ../source/math/brfloatingpoint.cpp ; $(BUILD_CPP)
 
+$(TEMP_DIR)/brfphalf.o: ../source/math/brfphalf.cpp ; $(BUILD_CPP)
+
 $(TEMP_DIR)/brfpinfo.o: ../source/math/brfpinfo.cpp ; $(BUILD_CPP)
 
 $(TEMP_DIR)/brfplargeint.o: ../source/math/brfplargeint.cpp ; $(BUILD_CPP)
@@ -966,7 +974,11 @@ $(TEMP_DIR)/brfilenamelinux.o: ../source/platforms/linux/brfilenamelinux.cpp ; $
 
 $(TEMP_DIR)/brglobalslinux.o: ../source/platforms/linux/brglobalslinux.cpp ; $(BUILD_CPP)
 
+$(TEMP_DIR)/brguidlinux.o: ../source/platforms/linux/brguidlinux.cpp ; $(BUILD_CPP)
+
 $(TEMP_DIR)/brosstringfunctionslinux.o: ../source/platforms/linux/brosstringfunctionslinux.cpp ; $(BUILD_CPP)
+
+$(TEMP_DIR)/linux_sandbox.o: ../source/platforms/linux/linux_sandbox.cpp ; $(BUILD_CPP)
 
 $(TEMP_DIR)/brcodelibraryunix.o: ../source/platforms/unix/brcodelibraryunix.cpp ; $(BUILD_CPP)
 
@@ -981,6 +993,14 @@ $(TEMP_DIR)/brfileunix.o: ../source/platforms/unix/brfileunix.cpp ; $(BUILD_CPP)
 $(TEMP_DIR)/brosstringfunctionsunix.o: ../source/platforms/unix/brosstringfunctionsunix.cpp ; $(BUILD_CPP)
 
 $(TEMP_DIR)/brunixtypes.o: ../source/platforms/unix/brunixtypes.cpp ; $(BUILD_CPP)
+
+$(TEMP_DIR)/unix_dbus.o: ../source/platforms/unix/unix_dbus.cpp ; $(BUILD_CPP)
+
+$(TEMP_DIR)/unix_dbusinstance.o: ../source/platforms/unix/unix_dbusinstance.cpp ; $(BUILD_CPP)
+
+$(TEMP_DIR)/unix_shims.o: ../source/platforms/unix/unix_shims.cpp ; $(BUILD_CPP)
+
+$(TEMP_DIR)/unix_sleep.o: ../source/platforms/unix/unix_sleep.cpp ; $(BUILD_CPP)
 
 $(TEMP_DIR)/brmersennetwist.o: ../source/random/brmersennetwist.cpp ; $(BUILD_CPP)
 

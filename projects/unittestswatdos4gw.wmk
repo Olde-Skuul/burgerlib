@@ -132,10 +132,6 @@ unittestswatdos4gw.wmk:
 # Required environment variables
 #
 
-!ifndef %BURGER_SDKS
-!error the environment variable BURGER_SDKS was not declared
-!endif
-
 !ifndef %WATCOM
 !error the environment variable WATCOM was not declared
 !endif
@@ -243,9 +239,9 @@ AFlagsReleasedos4gw= -DNDEBUG -D__DOS4G__
 # Set the Linker flags for each of the build types
 #
 
-LFlagsDebugdos4gw= system dos4g libp $(%BURGER_SDKS)/msdos/burgerlib
-LFlagsInternaldos4gw= system dos4g libp $(%BURGER_SDKS)/msdos/burgerlib
-LFlagsReleasedos4gw= system dos4g libp $(%BURGER_SDKS)/msdos/burgerlib
+LFlagsDebugdos4gw= system dos4g
+LFlagsInternaldos4gw= system dos4g
+LFlagsReleasedos4gw= system dos4g
 
 # Now, set the compiler flags
 
@@ -373,6 +369,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brfloatingpoint.obj &
 	$(A)/brfont.obj &
 	$(A)/brfont4bit.obj &
+	$(A)/brfphalf.obj &
 	$(A)/brfpinfo.obj &
 	$(A)/brfplargeint.obj &
 	$(A)/brfpprintinfo.obj &
