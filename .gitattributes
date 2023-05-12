@@ -1,2 +1,4 @@
 *.exe filter=lfs diff=lfs merge=lfs -text
+*.lib filter=lfs diff=lfs merge=lfs -text
+*.chm filter=lfs diff=lfs merge=lfs -text
 makeheader filter=lfs diff=lfs merge=lfs -text
