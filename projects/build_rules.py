@@ -42,6 +42,9 @@ NO_RECURSE = True
 
 CLEANME_PROCESS_PROJECT_FILES = False
 
+# Build folder
+BUILD_FOLDER = os.path.dirname(os.path.abspath(__file__))
+
 # List of Codewarrior library files to move to sdks/windows/burgerlib
 WINDOWS_LIB_FILES = (
     "burgerc50w32rel.lib",
@@ -247,7 +250,7 @@ ARG_LISTS = [
 ########################################
 
 
-def is_git(working_directory):
+def is_git():
     """
     Detect if perforce or git is source control
     """
@@ -255,8 +258,23 @@ def is_git(working_directory):
     global _GIT_FOUND
 
     if _GIT_FOUND is None:
-        _GIT_FOUND = is_under_git_control(working_directory)
+        _GIT_FOUND = is_under_git_control(BUILD_FOLDER)
     return _GIT_FOUND
+
+########################################
+
+
+def dplay_folder():
+    """
+    Return the location of the dplay folder
+
+    Check if under github, if so, it's stored locally, otherwise, it's in the
+    BURGER_SDKS folder
+    """
+
+    if is_git():
+        return "../sdks/windows/dplay/include"
+    return "$(BURGER_SDKS)/windows/dplay/include"
 
 ########################################
 
@@ -337,7 +355,7 @@ def postbuild(working_directory, configuration):
     """
 
     # Only process if perforce is source control
-    if is_git(working_directory):
+    if is_git():
         return 0
 
     # Copy the windows version of the CodeWarrior libraries.
@@ -398,7 +416,7 @@ def vs2005_2008_rules(project):
         vs_rules.append("glsl.rules")
 
         # Enable hlsl
-        vs_rules.append("hlsl.rules")
+        vs_rules.append("../ide_plugins/vs2005_2008/hlsl.rules")
 
         # Enable masm
         vs_rules.append("masm.rules")
@@ -477,7 +495,7 @@ def project_settings(project):
     # Too many statements
     # pylint: disable=R0912,R0915
 
-    project.solution.perforce = not is_git(project.working_directory)
+    project.solution.perforce = not is_git()
 
     platform = project.platform
     ide = project.solution.ide
@@ -501,7 +519,7 @@ def project_settings(project):
             include_folders_list.append("$(BURGER_SDKS)/windows/perforce")
 
             # For Directplay support
-            include_folders_list.append("../source/platforms/windows/dplay")
+            include_folders_list.append(dplay_folder())
 
             # For OpenGL support
             include_folders_list.append("$(BURGER_SDKS)/windows/opengl")
@@ -530,12 +548,6 @@ def project_settings(project):
             if ide in (IDETypes.codeblocks, IDETypes.watcom):
                 include_folders_list.append("$(BURGER_SDKS)/windows/windows5")
                 include_folders_list.append("$(BURGER_SDKS)/windows/directx9")
-
-        else:
-            library_folders_list.extend([
-                "$(BURGER_SDKS)/windows/perforce",
-                "$(BURGER_SDKS)/windows/opengl",
-                "$(BURGER_SDKS)/windows/directx9"])
 
         project.define_list = [
             "_CRT_NONSTDC_NO_WARNINGS",
@@ -650,14 +662,12 @@ def project_settings(project):
             source_files_list.append(
                 "../unittest/xboxone/unittestxboxone.appxmanifest")
 
-        library_folders_list.append(
-            "$(BURGER_SDKS)/{}/burgerlib".format(platform_folder))
         if platform is PlatformTypes.linux:
             project.libraries_list.append("GL")
             project.libraries_list.append("uuid")
 
     else:
-        if not is_git(project.working_directory):
+        if not is_git():
             project.deploy_folder = \
                 "$(BURGER_SDKS)/{}/burgerlib".format(platform_folder)
 
@@ -686,9 +696,7 @@ def project_settings(project):
 
     # Enable Steam
     if platform.is_windows() or platform.is_macosx() or platform is PlatformTypes.linux:
-        if ide.is_codewarrior():
-            library_folders_list.append("$(BURGER_SDKS)/steamworks/public/steam")
-        else:
+        if not ide.is_codewarrior():
             include_folders_list.append("$(BURGER_SDKS)/steamworks/public/steam")
 
     # Hack to allow compilation of dbus on Darwin
@@ -767,7 +775,18 @@ def configuration_settings(configuration):
     if platform is PlatformTypes.win32:
         configuration.fastcall = True
 
-    if ide is IDETypes.vs2017 and (platform in (PlatformTypes.win32, PlatformTypes.win64)):
+    # Codewarrior needs to have their folders BEFORE the CodeWarrior folders.
+    if platform.is_windows() and ide.is_codewarrior():
+        configuration.library_folders_list[0:0] = [
+            dplay_folder(),
+            "$(BURGER_SDKS)/windows/perforce",
+            "$(BURGER_SDKS)/windows/opengl",
+            "$(BURGER_SDKS)/windows/directx9",
+            "$(BURGER_SDKS)/steamworks/public/steam"]
+
+    # Special case for Direct X SDK
+    if ide is IDETypes.vs2017 and \
+            (platform in (PlatformTypes.win32, PlatformTypes.win64)):
         configuration.include_folders_list.append("$(DXSDK_DIR)/Include")
     return 0
 
