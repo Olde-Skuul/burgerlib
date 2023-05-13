@@ -279,6 +279,21 @@ def dplay_folder():
 ########################################
 
 
+def window_opengl_folder():
+    """
+    Return the location of the OpenGL folder for Windows
+
+    Check if under github, if so, it's stored locally, otherwise, it's in the
+    BURGER_SDKS folder
+    """
+
+    if is_git():
+        return "../sdks/windows/opengl"
+    return "$(BURGER_SDKS)/windows/opengl"
+
+########################################
+
+
 def clean(working_directory):
     """
     Delete temporary files.
@@ -296,13 +311,14 @@ def clean(working_directory):
         None if not implemented, otherwise an integer error code.
     """
 
-    clean_directories(working_directory, (".vscode", "appfolder", "temp", "ipch", "bin", "JSON",
-                                          "Durango", "SRV", ".vs", "*_Data", "* Data",
-                                          "__pycache__"))
+    clean_directories(working_directory,
+                      (".vscode", "appfolder", "temp", "ipch", "bin", "JSON",
+                       "Durango", "SRV", ".vs", "*_Data", "* Data",
+                       "__pycache__"))
 
     clean_files(working_directory, (".DS_Store", "*.suo", "*.user", "*.ncb",
-                                    "*.err", "*.sdf", "*.layout.cbTemp", "*.VC.db",
-                                    "*.pyc", "*.pyo"))
+                                    "*.err", "*.sdf", "*.layout.cbTemp",
+                                    "*.VC.db", "*.pyc", "*.pyo"))
 
     clean_xcode(working_directory)
 
@@ -515,45 +531,48 @@ def project_settings(project):
         # Add in the headers for Windows, but there be dragons
         if not ide.is_codewarrior():
 
-            # For perforce support
-            include_folders_list.append("$(BURGER_SDKS)/windows/perforce")
-
             # For Directplay support
             include_folders_list.append(dplay_folder())
 
-            # For OpenGL support
-            include_folders_list.append("$(BURGER_SDKS)/windows/opengl")
+            # For OpenGL support since the compiler has an old sdk
+            include_folders_list.append(window_opengl_folder())
 
             # For legacy directx 9 support with modern IDEs
             if ide in (IDETypes.vs2017, IDETypes.vs2019, IDETypes.vs2022):
-                include_folders_list.append("../source/platforms/windows/directx9")
+                include_folders_list.append(
+                    "../source/platforms/windows/directx9")
 
             # Older IDEs need DirectX from the June 2010 SDK
-            if ide in (IDETypes.vs2003, IDETypes.vs2005, IDETypes.vs2008, IDETypes.vs2010,
+            if ide in (IDETypes.vs2003, IDETypes.vs2005, IDETypes.vs2008,
+                       IDETypes.vs2010,
                        IDETypes.vs2012, IDETypes.vs2013, IDETypes.vs2015):
                 include_folders_list.append("$(DXSDK_DIR)/Include")
 
-            # Visual Studio 2003/2005 needs to use the Windows XP SDK, not the Windows 95 SDK
+            # Visual Studio 2003/2005 needs to use the Windows XP SDK,
+            # not the Windows 95 SDK
             if ide in (IDETypes.vs2003, IDETypes.vs2005):
 
                 # Note, the path is hard coded because 2003 can't handle
                 # $(ProgramFiles(x86))
                 include_folders_list.append(
-                    "C:/Program Files (x86)/Microsoft SDKs/Windows/v7.1A/Include")
+                    "C:/Program Files (x86)/Microsoft SDKs/"
+                    "Windows/v7.1A/Include")
 
                 # The DirectX Headers need sal.h, supply it manually for VS 2003
                 if ide is IDETypes.vs2003:
-                    include_folders_list.append("../source/platforms/windows/vc7compat")
+                    include_folders_list.append(
+                        "../source/platforms/windows/vc7compat")
 
             if ide in (IDETypes.codeblocks, IDETypes.watcom):
                 include_folders_list.append("$(BURGER_SDKS)/windows/windows5")
                 include_folders_list.append("$(BURGER_SDKS)/windows/directx9")
+                project.define_list.append("GLUT_DISABLE_ATEXIT_HACK")
 
-        project.define_list = [
+        project.define_list.extend([
             "_CRT_NONSTDC_NO_WARNINGS",
             "_CRT_SECURE_NO_WARNINGS",
             "GLUT_NO_LIB_PRAGMA",
-            "_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"]
+            "_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"])
 
         find_generated_source(
             source_files_list,
@@ -695,9 +714,11 @@ def project_settings(project):
             _HLSL_MATCH)
 
     # Enable Steam
-    if platform.is_windows() or platform.is_macosx() or platform is PlatformTypes.linux:
+    if platform.is_windows() or platform.is_macosx() or \
+        platform is PlatformTypes.linux:
         if not ide.is_codewarrior():
-            include_folders_list.append("$(BURGER_SDKS)/steamworks/public/steam")
+            include_folders_list.append(
+                "$(BURGER_SDKS)/steamworks/public/steam")
 
     # Hack to allow compilation of dbus on Darwin
     if platform.is_darwin():
@@ -779,8 +800,7 @@ def configuration_settings(configuration):
     if platform.is_windows() and ide.is_codewarrior():
         configuration.library_folders_list[0:0] = [
             dplay_folder(),
-            "$(BURGER_SDKS)/windows/perforce",
-            "$(BURGER_SDKS)/windows/opengl",
+            window_opengl_folder(),
             "$(BURGER_SDKS)/windows/directx9",
             "$(BURGER_SDKS)/steamworks/public/steam"]
 
