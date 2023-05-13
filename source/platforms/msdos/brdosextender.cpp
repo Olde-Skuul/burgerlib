@@ -37,7 +37,7 @@
 
 /*! ************************************
 
-	\struct Burger::Regs16
+	\struct Burger::Regs16_t
 
 	\brief Structure to contain all the registers for calling 80x86 assembly
 	
@@ -118,7 +118,7 @@
 
 /*! ************************************
 
-	\fn int32_t BURGER_API Int86x(uint32_t uInterrupt,const Burger::Regs16 *pInput,Burger::Regs16 *pOutput)
+	\fn int32_t BURGER_API Int86x(uint32_t uInterrupt,const Burger::Regs16_t *pInput,Burger::Regs16_t *pOutput)
 
 	\brief Call a MSDOS software interrupt
 	
@@ -253,7 +253,7 @@
 
 /*! ************************************
 
-	\fn int BURGER_API CallRealProcX32(uint32_t,const Burger::Regs16 *,Burger::Regs16 *)
+	\fn int BURGER_API CallRealProcX32(uint32_t,const Burger::Regs16_t *,Burger::Regs16_t *)
 
 	This routine will allow a DOS application to call a real mode procedure
 	routine via the X32 DOS extender.
@@ -327,7 +327,7 @@ static const uint8_t RealCode[] = {
 	0xCB					// RETF (86)
 };
 
-int BURGER_API CallRealProcX32(uint32_t pAddress,const Burger::Regs16 *pInput,Burger::Regs16 *pOutput)
+int BURGER_API CallRealProcX32(uint32_t pAddress,const Burger::Regs16_t *pInput,Burger::Regs16_t *pOutput)
 {
 	uint32_t pRealMemory = AllocRealMemory(120);		// Get real memory
 	if (pRealMemory) {
@@ -502,7 +502,7 @@ uint32_t BURGER_API AllocRealMemory(uint32_t uSize)
 	// Call X32 to allocate memory
 	return _x32_real_alloc(uSize);	
 #else
-	Burger::Regs16 Regs;
+	Burger::Regs16_t Regs;
 	uSize = uSize+15;		// Round to the nearest 16 bytes
 	uSize = uSize>>4;		// Number of paragraphs to allocate
 	Regs.ax = 0x4800;		// DOS allocate memory command
@@ -537,7 +537,7 @@ void BURGER_API DeallocRealMemory(uint32_t pReal)
 		// Call X32 to allocate memory
 		_x32_real_free(pReal);
 #else
-		Burger::Regs16 Regs;
+		Burger::Regs16_t Regs;
 
 		pReal = pReal>>16;			// Isolate the segment
 		Regs.ax = 0x4900;			// DOS release memory command

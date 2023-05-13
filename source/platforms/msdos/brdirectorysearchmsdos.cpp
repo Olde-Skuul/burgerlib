@@ -69,7 +69,7 @@ static Burger::eError BURGER_API OldWay(
 	Burger::SimpleArray<Burger::DirectoryEntry_t>* pOutput)
 {
 	// x86 registers for use with INT 021H
-	Burger::Regs16 Regs;
+	Burger::Regs16_t Regs;
 
 	// Get the Disk Transfer address and make a copy
 	// http://www.ctyme.com/intr/rb-2710.htm
@@ -195,7 +195,7 @@ static Burger::eError BURGER_API NewWay(
 	Burger::SimpleArray<Burger::DirectoryEntry_t>* pOutput)
 {
 	// x86 registers for use with INT 021H
-	Burger::Regs16 Regs;
+	Burger::Regs16_t Regs;
 
 	uint32_t uRealBuffer = GetRealBufferPtr();
 
@@ -324,7 +324,7 @@ Burger::eError Burger::DirectorySearch::open(Filename* pName) BURGER_NOEXCEPT
 
 	// Get the real pathname and convert to DOS encoding
 	const char* pPath = pName->get_native();
-	uintptr_t i = Win437::TranslateFromUTF8(pProtected + 512, 512, pPath);
+	uintptr_t i = Win437::translate_from_UTF8(pProtected + 512, 512, pPath);
 
 	if (i && reinterpret_cast<const uint8_t*>(pPath)[i - 1] != '\\') {
 		StringConcatenate(pProtected + 512, "\\");

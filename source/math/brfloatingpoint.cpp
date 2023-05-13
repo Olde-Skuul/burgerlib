@@ -268,110 +268,6 @@ const Burger::uint32_float_t Burger::g_X86OneAndNegOne[2] = {
 
 ***************************************/
 
-const Burger::uint64_double_t Burger::g_dOne = {0x3FF0000000000000ULL};
-const Burger::uint64_double_t Burger::g_dNegOne = {0xBFF0000000000000ULL};
-const Burger::uint64_double_t Burger::g_dHalf = {0x3FE0000000000000ULL};
-const Burger::uint64_double_t Burger::g_dNegHalf = {0xBFE0000000000000ULL};
-const Burger::uint64_double_t Burger::g_dInf = {0x7FF0000000000000ULL};
-const Burger::uint64_double_t Burger::g_dNegInf = {0xFFF0000000000000ULL};
-const Burger::uint64_double_t Burger::g_dNan = {0x7FF7FFFFFFFFFFFFULL};
-const Burger::uint64_double_t Burger::g_dNegNan = {0xFFF7FFFFFFFFFFFFULL};
-const Burger::uint64_double_t Burger::g_dQNan = {0x7FFFFFFFFFFFFFFFULL};
-const Burger::uint64_double_t Burger::g_dNegQNan = {0xFFFFFFFFFFFFFFFFULL};
-const Burger::uint64_double_t Burger::g_dMin = {0x0010000000000000ULL};
-const Burger::uint64_double_t Burger::g_dNegMin = {0x8010000000000000ULL};
-const Burger::uint64_double_t Burger::g_dMax = {0x7FEFFFFFFFFFFFFFULL};
-const Burger::uint64_double_t Burger::g_dNegMax = {0xFFEFFFFFFFFFFFFFULL};
-const Burger::uint64_double_t Burger::g_dMinNoInteger = {0x4330000000000000ULL};
-const Burger::uint64_double_t Burger::g_dNegMinNoInteger = {
-	0xC330000000000000ULL};
-const Burger::uint64_double_t Burger::g_dEpsilon = {0x3CB0000000000000ULL};
-const Burger::uint64_double_t Burger::g_dNegEpsilon = {0xBCB0000000000000ULL};
-const Burger::uint64_double_t Burger::g_dQuarterPi = {0x3FE921FB54442D18ULL};
-const Burger::uint64_double_t Burger::g_dNegQuarterPi = {0xBFE921FB54442D18ULL};
-const Burger::uint64_double_t Burger::g_dHalfPi = {0x3FF921FB54442D18ULL};
-const Burger::uint64_double_t Burger::g_dNegHalfPi = {0xBFF921FB54442D18ULL};
-const Burger::uint64_double_t Burger::g_dPi = {0x400921FB54442D18ULL};
-const Burger::uint64_double_t Burger::g_dNegPi = {0xC00921FB54442D18ULL};
-const Burger::uint64_double_t Burger::g_dPi2 = {0x401921FB54442D18ULL};
-const Burger::uint64_double_t Burger::g_dNegPi2 = {0xC01921FB54442D18ULL};
-const Burger::uint64_double_t Burger::g_dPi4 = {0x402921FB54442D18ULL};
-const Burger::uint64_double_t Burger::g_dNegPi4 = {0xC02921FB54442D18ULL};
-const Burger::uint64_double_t Burger::g_dCosPiDiv6 = {0x3FEBB67AE8584CABULL};
-const Burger::uint64_double_t Burger::g_dNegCosPiDiv6 = {0xBFEBB67AE8584CABULL};
-const Burger::uint64_double_t Burger::g_dReciprocalHalfPi = {
-	0x3FE45F306DC9C883ULL};
-const Burger::uint64_double_t Burger::g_dNegReciprocalHalfPi = {
-	0xBFE45F306DC9C883ULL};
-const Burger::uint64_double_t Burger::g_dReciprocalPi = {0x3FD45F306DC9C883ULL};
-const Burger::uint64_double_t Burger::g_dNegReciprocalPi = {
-	0xBFD45F306DC9C883ULL};
-const Burger::uint64_double_t Burger::g_dReciprocalPi2 = {
-	0x3FC45F306DC9C883ULL};
-const Burger::uint64_double_t Burger::g_dNegReciprocalPi2 = {
-	0xBFC45F306DC9C883ULL};
-const Burger::uint64_double_t Burger::g_dRadiansToDegrees = {
-	0x404CA5DC1A63C1F8ULL};
-const Burger::uint64_double_t Burger::g_dNegRadiansToDegrees = {
-	0xC04CA5DC1A63C1F8ULL};
-const Burger::uint64_double_t Burger::g_dDegreesToRadians = {
-	0x3F91DF46A2529D39ULL};
-const Burger::uint64_double_t Burger::g_dNegDegreesToRadians = {
-	0xBF91DF46A2529D39ULL};
-const Burger::uint64_double_t Burger::g_dSqrt2 = {0x3FF6A09E667F3BCDULL};
-const Burger::uint64_double_t Burger::g_dNegSqrt2 = {0xBFF6A09E667F3BCDULL};
-const Burger::uint64_double_t Burger::g_dLN2 = {0x3FE62E42FEFA39EFULL};
-const Burger::uint64_double_t Burger::g_dNegLN2 = {0xBFE62E42FEFA39EFULL};
-const Burger::uint64_double_t Burger::g_dLN10 = {0x40026BB1BBB55516ULL};
-const Burger::uint64_double_t Burger::g_dNegLN10 = {0xC0026BB1BBB55516ULL};
-
-const Burger::uint32_float_t Burger::g_fOne = {0x3F800000U};
-const Burger::uint32_float_t Burger::g_fNegOne = {0xBF800000U};
-const Burger::uint32_float_t Burger::g_fHalf = {0x3F000000U};
-const Burger::uint32_float_t Burger::g_fNegHalf = {0xBF000000U};
-const Burger::uint32_float_t Burger::g_fInf = {0x7F800000U};
-const Burger::uint32_float_t Burger::g_fNegInf = {0xFF800000U};
-const Burger::uint32_float_t Burger::g_fNan = {0x7FBFFFFFU};
-const Burger::uint32_float_t Burger::g_fNegNan = {0xFFBFFFFFU};
-const Burger::uint32_float_t Burger::g_fQNan = {0x7FFFFFFFU};
-const Burger::uint32_float_t Burger::g_fNegQNan = {0xFFFFFFFFU};
-const Burger::uint32_float_t Burger::g_fMin = {0x00800000U};
-const Burger::uint32_float_t Burger::g_fNegMin = {0x80800000U};
-const Burger::uint32_float_t Burger::g_fMax = {0x7F7FFFFFU};
-const Burger::uint32_float_t Burger::g_fNegMax = {0xFF7FFFFFU};
-const Burger::uint32_float_t Burger::g_fMinNoInteger = {0x4B000000};
-const Burger::uint32_float_t Burger::g_fNegMinNoInteger = {0xCB000000};
-const Burger::uint32_float_t Burger::g_fEpsilon = {0x34000000U};
-const Burger::uint32_float_t Burger::g_fNegEpsilon = {0xB4000000U};
-const Burger::uint32_float_t Burger::g_fQuarterPi = {0x3F490FDB};
-const Burger::uint32_float_t Burger::g_fNegQuarterPi = {0xBF490FDB};
-const Burger::uint32_float_t Burger::g_fHalfPi = {0x3FC90FDB};
-const Burger::uint32_float_t Burger::g_fNegHalfPi = {0xBFC90FDB};
-const Burger::uint32_float_t Burger::g_fPi = {0x40490FDB};
-const Burger::uint32_float_t Burger::g_fNegPi = {0xC0490FDB};
-const Burger::uint32_float_t Burger::g_fPi2 = {0x40C90FDB};
-const Burger::uint32_float_t Burger::g_fNegPi2 = {0xC0C90FDB};
-const Burger::uint32_float_t Burger::g_fPi4 = {0x41490FDB};
-const Burger::uint32_float_t Burger::g_fNegPi4 = {0xC1490FDB};
-const Burger::uint32_float_t Burger::g_fCosPiDiv6 = {0x3F5DB3D7};
-const Burger::uint32_float_t Burger::g_fNegCosPiDiv6 = {0xBF5DB3D7};
-const Burger::uint32_float_t Burger::g_fReciprocalHalfPi = {0x3F22F983};
-const Burger::uint32_float_t Burger::g_fNegReciprocalHalfPi = {0xBF22F983};
-const Burger::uint32_float_t Burger::g_fReciprocalPi = {0x3EA2F983};
-const Burger::uint32_float_t Burger::g_fNegReciprocalPi = {0xBEA2F983};
-const Burger::uint32_float_t Burger::g_fReciprocalPi2 = {0x3E22F983};
-const Burger::uint32_float_t Burger::g_fNegReciprocalPi2 = {0xBE22F983};
-const Burger::uint32_float_t Burger::g_fRadiansToDegrees = {0x42652EE1};
-const Burger::uint32_float_t Burger::g_fNegRadiansToDegrees = {0xC2652EE1};
-const Burger::uint32_float_t Burger::g_fDegreesToRadians = {0x3C8EFA35};
-const Burger::uint32_float_t Burger::g_fNegDegreesToRadians = {0xBC8EFA35};
-const Burger::uint32_float_t Burger::g_fSqrt2 = {0x3FB504F3};
-const Burger::uint32_float_t Burger::g_fNegSqrt2 = {0xBFB504F3};
-const Burger::uint32_float_t Burger::g_fLN2 = {0x3F317218};
-const Burger::uint32_float_t Burger::g_fNegLN2 = {0xBF317218};
-const Burger::uint32_float_t Burger::g_fLN10 = {0x40135D8E};
-const Burger::uint32_float_t Burger::g_fNegLN10 = {0xC0135D8E};
-
 /*! ************************************
 
 	\enum Burger::e8087Precision
@@ -1219,7 +1115,7 @@ float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 			// fInputMem is used to keep fInput from being mapped to memory
 			uint32_float_t fInputMem;
 			fInputMem = fInput;
-			uint32_t uInput = fInputMem.GetWord();
+			uint32_t uInput = fInputMem.get_uint32();
 
 			// Set the denormalization fixup to "inert" (Mul by 1 means nop)
 			float fNormalFix = 1.0f;
@@ -1233,7 +1129,7 @@ float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 
 				// Sync uInput to the normalized value
 				fInputMem = fInput;
-				uInput = fInputMem.GetWord();
+				uInput = fInputMem.get_uint32();
 
 				// Set the fixup value
 				fNormalFix = 5.9604644775390625e-8f;
@@ -1267,7 +1163,7 @@ float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 			float fDelta = -__builtin_fmaf(fGuess, fGuess, -fInputNormalized);
 
 			// Get the base exponent for the resulting sqrt (For final fixup)
-			fInputMem.SetWord(((uInput + 0x40000000U) >> 1U) & 0x7F800000);
+			fInputMem.set_uint32(((uInput + 0x40000000U) >> 1U) & 0x7F800000);
 
 			// Pre-calc the reciprocal * 2
 			float fGuessReciprocal2 = fGuessReciprocal + fGuessReciprocal;
@@ -1336,7 +1232,7 @@ float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 	// Convert to binary
 	uint32_float_t Convert;
 	Convert = fInput;
-	uint32_t uInput = Convert.GetWord();
+	uint32_t uInput = Convert.get_uint32();
 
 	// Inf or NaN?
 	if ((uInput & 0x7f800000U) == 0x7f800000U) {
@@ -1415,9 +1311,9 @@ float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 			// of the generic FPU architecture
 
 			const float fSmall = 1.0e-30f;
-			float fTest = g_fOne - fSmall;
+			float fTest = static_cast<float>(g_fOne - fSmall);
 			if (fTest >= g_fOne) {
-				fTest = g_fOne + fSmall;
+				fTest = static_cast<float>(g_fOne + fSmall);
 				if (fTest > g_fOne) {
 					uResult += 2U;
 				} else {
@@ -1432,7 +1328,7 @@ float BURGER_API Burger::Sqrt(float fInput) BURGER_NOEXCEPT
 
 		// Restore the exponent (Adjusted)
 
-		Convert.SetWord(uInput + (iExponent << 23));
+		Convert.set_uint32(uInput + (iExponent << 23));
 		fInput = Convert;
 	}
 	return fInput;
@@ -1483,7 +1379,7 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 			// fInputMem is used to keep fInput from being mapped to memory
 			uint64_double_t dInputMem;
 			dInputMem = dInput;
-			uint32_t uInputHi = dInputMem.GetHiWord();
+			uint32_t uInputHi = dInputMem.get_high_uint32();
 
 			// Set the denormalization fixup to "inert" (Mul by 1 means nop)
 			double dNormalFix = 1.0;
@@ -1497,7 +1393,7 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 
 				// Sync uInput to the normalized value
 				dInputMem = dInput;
-				uInputHi = dInputMem.GetHiWord();
+				uInputHi = dInputMem.get_high_uint32();
 
 				// Set the fixup value
 				dNormalFix = 5.551115123125782702e-17;
@@ -1510,7 +1406,7 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 
 			// Convert it back into a double (Only the upper 32 bits are
 			// modified)
-			dInputMem.SetHiWord(uInputNormalized);
+			dInputMem.set_high_uint32(uInputNormalized);
 			double dInputNormalized = dInputMem;
 
 			// Look up in a table to generate the initial guess
@@ -1548,8 +1444,8 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 				-__builtin_fma(dGuessReciprocal, dGuess, -g_dHalfPlusEpsilon);
 
 			// Get the input value's adjusted exponent
-			dInputMem.SetLowWord(0);
-			dInputMem.SetHiWord(uNextExponent);
+			dInputMem.set_low_uint32(0);
+			dInputMem.set_high_uint32(uNextExponent);
 			double dNextExponent = dInputMem;
 
 			// 2nd iteration, get the delta
@@ -1611,8 +1507,8 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 	// Convert to binary
 	uint64_double_t Converter;
 	Converter = dInput;
-	uint32_t uInputLow = Converter.GetLowWord();
-	uint32_t uInputHigh = Converter.GetHiWord();
+	uint32_t uInputLow = Converter.get_low_uint32();
+	uint32_t uInputHigh = Converter.get_high_uint32();
 
 	// Inf or NaN?
 	if ((uInputHigh & 0x7ff00000U) == 0x7ff00000U) {
@@ -1623,7 +1519,7 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 		dInput = dInput * dInput + dInput;
 
 		// 0 or negative?
-	} else if (static_cast<int64_t>(Converter.GetWord()) <= 0) {
+	} else if (static_cast<int64_t>(Converter.get_uint64()) <= 0) {
 		if ((uInputHigh & 0x7FFFFFFFU) | uInputLow) {
 			// Negative number, eh?
 			dInput = g_dNan;
@@ -1664,7 +1560,7 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 				} while (!(uInputHigh & 0x00100000U));
 			}
 			// Update the remaining bits
-			iExponent -= uShiftCount;
+			iExponent -= static_cast<int32_t>(uShiftCount);
 			uInputHigh |= (uInputLow >> (32 - uShiftCount));
 			uInputLow <<= uShiftCount;
 		}
@@ -1768,8 +1664,8 @@ double BURGER_API Burger::Sqrt(double dInput) BURGER_NOEXCEPT
 		}
 
 		// Restore the exponent (Adjusted)
-		Converter.SetLowWord(uInputLow);
-		Converter.SetHiWord(uInputHigh + (iExponent << 20));
+		Converter.set_low_uint32(uInputLow);
+		Converter.set_high_uint32(uInputHigh + (iExponent << 20));
 		dInput = Converter;
 	}
 	return dInput;
@@ -3586,7 +3482,7 @@ float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
 	Converter.f = fInput;
 
 	// Get the binary form of the input
-	uint32_t uInput = Converter.GetWord();
+	uint32_t uInput = Converter.get_uint32();
 
 	// Extract the exponent
 	int32_t iExponent = static_cast<int32_t>((uInput >> 23U) & 0xFFU) - 127;
@@ -3607,7 +3503,7 @@ float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
 				uInput |= 0x3F800000;
 			}
 			// Convert back to floating point
-			Converter.SetWord(uInput);
+			Converter.set_uint32(uInput);
 			fInput = Converter;
 
 		} else {
@@ -3623,7 +3519,7 @@ float BURGER_API Burger::Round(float fInput) BURGER_NOEXCEPT
 				uInput &= (~uFractionMask);
 
 				// Convert to floating point
-				Converter.SetWord(uInput);
+				Converter.set_uint32(uInput);
 				fInput = Converter;
 			}
 		}
@@ -3791,8 +3687,8 @@ double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
 	Converter.d = dInput;
 
 	// Get the binary form of the input
-	uint32_t uInputHi = Converter.GetHiWord();
-	uint32_t uInputLow = Converter.GetLowWord();
+	uint32_t uInputHi = Converter.get_high_uint32();
+	uint32_t uInputLow = Converter.get_low_uint32();
 
 	// Extract the exponent
 	int32_t iExponent = static_cast<int32_t>((uInputHi >> 20U) & 0x7FFU) - 1023;
@@ -3813,8 +3709,8 @@ double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
 				uInputHi |= 0x3FF00000U;
 			}
 			// Convert back to floating point
-			Converter.SetHiWord(uInputHi);
-			Converter.SetLowWord(0);
+			Converter.set_high_uint32(uInputHi);
+			Converter.set_low_uint32(0);
 			dInput = Converter;
 
 		} else {
@@ -3828,8 +3724,8 @@ double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
 				uInputHi += (0x00080000U >> static_cast<uint_t>(iExponent));
 				// Hack off the fraction
 				// Convert to floating point
-				Converter.SetHiWord(uInputHi & (~uFractionMask));
-				Converter.SetLowWord(0);
+				Converter.set_high_uint32(uInputHi & (~uFractionMask));
+				Converter.set_low_uint32(0);
 				dInput = Converter;
 			}
 		}
@@ -3845,8 +3741,8 @@ double BURGER_API Burger::Round(double dInput) BURGER_NOEXCEPT
 			if (uCarryTest < uInputLow) {
 				++uInputHi;
 			}
-			Converter.SetLowWord(uCarryTest & (~uFractionMask));
-			Converter.SetHiWord(uInputHi);
+			Converter.set_low_uint32(uCarryTest & (~uFractionMask));
+			Converter.set_high_uint32(uInputHi);
 			dInput = Converter;
 		}
 	}

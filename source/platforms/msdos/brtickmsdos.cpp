@@ -1,14 +1,14 @@
 /***************************************
 
-    MS-DOS version (DOS4GW dos extender)
+	MS-DOS version (DOS4GW dos extender)
 
-    Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
-    It is released under an MIT Open Source license. Please see LICENSE for
-    license details. Yes, you can use it in a commercial title without paying
-    anything, just give me a credit.
+	It is released under an MIT Open Source license. Please see LICENSE for
+	license details. Yes, you can use it in a commercial title without paying
+	anything, just give me a credit.
 
-    Please? It's not like I'm asking you for money!
+	Please? It's not like I'm asking you for money!
 
 ***************************************/
 
@@ -16,29 +16,17 @@
 
 #if defined(BURGER_MSDOS)
 #include "brdosextender.h"
-#include <stdlib.h>
 #include <conio.h>
 #include <dos.h>
+#include <stdlib.h>
+#include <time.h>
 
 /***************************************
 
-	Tick counter for a 60 hertz
-	timer
+	Create an interrupt that will fire at 60 times a second. Every time it
+	fires, increment a variable that is read by the higher level code.
 
 ***************************************/
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-volatile uint32_t ReadTickTimeCount;		/* Inc every 1/60th of a second */
-void (__interrupt __far *OldInt8)();	/* Old INT 8 vector */
-#ifdef __cplusplus
-}
-#endif
-static volatile uint32_t TimerDivisor;
-static volatile uint32_t TimerCount;
-static Bool Started;				/* True if started */
-static Bool ExitIn;			/* TRUE if atexit() */
 
 #if defined(BURGER_DOS4G)
 
@@ -51,53 +39,98 @@ static Bool ExitIn;			/* TRUE if atexit() */
 
 static void __interrupt __far MyIrq8(void)
 {
-	++ReadTickTimeCount;
-	TimerCount+=TimerDivisor;	/* Time for a TRUE irq #8 */
-	if (TimerCount>=0x10000) {
-		TimerCount-=0x10000;	/* Atomic counter */
-		_chain_intr(OldInt8);
+	// Get the instance pointer
+	Burger::Tick* pThis = Burger::Tick::get_instance();
+
+	// Perform the tick
+	++pThis->m_u60HertzTick;
+
+	// Time for a TRUE irq #8
+	pThis->m_uDelta += pThis->m_uStepUnits;
+
+	// Has 18.2 hertz been hit?
+	if (pThis->m_uDelta >= 0x10000) {
+
+		// Remove the overflow
+		pThis->m_uDelta -= 0x10000;
+
+		// Fire off the other interrupts
+		_chain_intr(pThis->m_pPreviousINT8);
 	}
-	outp(0x20,0x20);	/* Ack the interrupt */
+
+	// Acknowledge the interrupt
+	outp(0x20, 0x20);
 }
 
 /***************************************
 
-	Shuts down the Sound Mgr
-	Removes sound ISR and turns off whatever sound hardware was active
+	\brief Initialize the low level timer manager
+
+	Start up the low level timer
+
+	\sa shutdown()
 
 ***************************************/
 
-static void UninstallTick(void)
+void BURGER_API Burger::Tick::init(void) BURGER_NOEXCEPT
 {
-	if (OldInt8) {
-		outp(0x43,0x36);			/* Change timer 0 */
-		outp(0x40,0);
-		outp(0x40,0);
-		TimerDivisor = 0x10000;		/* Save the speed value */
-		_dos_setvect(8,OldInt8);	/* Restore vectors */
-		OldInt8 = 0;
+	// Init the variables
+	Tick* pThis = &g_Tick;
+	if (!pThis->m_bInitialized) {
+		pThis->m_uHighPrecisionFrequency = CLOCKS_PER_SEC;
+		pThis->m_uLast60HertzMark = 1;
+		pThis->m_uDelta = 0;
+		pThis->m_u60HertzTick = 1;
+		pThis->m_1KHertz.init(1000U);
+		pThis->m_1MHertz.init(1000000U);
+
+		// Get old timer 0 ISR
+		pThis->m_pPreviousINT8 = _dos_getvect(8);
+
+		// Set to my timer 0 ISR
+		_dos_setvect(8, MyIrq8);
+
+		// Get the new timer delta for 60 hertz
+		const uint32_t uStepUnits = (1192030UL / 60UL);
+
+		// Save the speed value
+		pThis->m_uStepUnits = uStepUnits;
+
+		// Change timer 0
+		outp(0x43, 0x36);
+		outp(0x40, uStepUnits);
+		outp(0x40, uStepUnits >> 8U);
+		pThis->m_bInitialized = TRUE;
 	}
 }
 
 /***************************************
 
-	Install the tick manager
+	\brief Shut down the low level timer manager
+
+	Shut down the low level timer
+
+	\sa init()
 
 ***************************************/
 
-static void InstallTick(void)
+void BURGER_API Burger::Tick::shutdown(void) BURGER_NOEXCEPT
 {
-	if (!OldInt8) {
-		OldInt8 = _dos_getvect(8);	/* Get old timer 0 ISR */
-	}
-	_dos_setvect(8,MyIrq8);	/* Set to my timer 0 ISR */
-	{
-		uint32_t speed;
-		speed = (1192030UL/60UL);
-		outp(0x43,0x36);		/* Change timer 0 */
-		outp(0x40,speed);
-		outp(0x40,speed >> 8);
-		TimerDivisor = speed;	/* Save the speed value */
+	Tick* pThis = &g_Tick;
+	if (pThis->m_bInitialized) {
+
+		// Change timer 0 back to 18.2 hertz
+		outp(0x43, 0x36);
+		outp(0x40, 0);
+		outp(0x40, 0);
+
+		// Restore the speed value internally
+		pThis->m_uStepUnits = 0x10000;
+
+		// Restore vectors
+		_dos_setvect(8, pThis->m_pPreviousINT8);
+		pThis->m_pPreviousINT8 = nullptr;
+		pThis->m_bInitialized = FALSE;
 	}
 }
 
@@ -112,13 +145,12 @@ static void InstallTick(void)
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern void interrupt Timer8Irq(void);	/* Assembly */
+extern void interrupt Timer8Irq(void); /* Assembly */
 extern void BURGER_API InitTimer8Irq(void);
 extern uint_t BURGER_API MyIrq8(void);
 #ifdef __cplusplus
 }
 #endif
-static uint32_t t0OldRealService;	/* Old real mode INT 8 vector */
 
 /***************************************
 
@@ -129,59 +161,109 @@ static uint32_t t0OldRealService;	/* Old real mode INT 8 vector */
 
 uint_t BURGER_API MyIrq8(void)
 {
-	++ReadTickTimeCount;
-	TimerCount+=TimerDivisor;		/* Time for a TRUE irq #8 */
-	if (TimerCount>=0x10000) {
-		TimerCount-=0x10000;		/* Atomic counter */
+	// Get the instance pointer
+	Burger::Tick* pThis = Burger::Tick::get_instance();
+
+	// Perform the tick
+	++pThis->m_u60HertzTick;
+
+	// Time for a TRUE irq #8
+	pThis->m_uDelta += pThis->m_uStepUnits;
+
+	// Has 18.2 hertz been hit?
+	if (pThis->m_uDelta >= 0x10000) {
+
+		// Remove the overflow
+		pThis->m_uDelta -= 0x10000;
+
+		// Allow chaining
 		return 1;
 	}
-	outp(0x20,0x20);		/* Ack the interrupt */
+
+	// Acknowledge the interrupt
+	outp(0x20, 0x20);
 	return 0;
 }
 
 /***************************************
 
-	Shuts down the Sound Mgr
-	Removes sound ISR and turns off whatever sound hardware was active
+	\brief Initialize the low level timer manager
+
+	Start up the low level timer
+
+	\sa shutdown()
 
 ***************************************/
 
-static void UninstallTick(void)
+void BURGER_API Burger::Tick::init(void) BURGER_NOEXCEPT
 {
-	if (OldInt8) {
-		outp(0x43,0x36);				/* Change timer 0 */
-		outp(0x40,0);
-		outp(0x40,0);
-		TimerDivisor = 0x10000;			/* Save the speed value */
-		SetRealInt(8,t0OldRealService);		/* Restore the vector */
-		SetProtInt(8,OldInt8);	/* Restore vectors */
-		OldInt8 = 0;
+	// Init the variables
+	Tick* pThis = &g_Tick;
+	if (!pThis->m_bInitialized) {
+		pThis->m_uHighPrecisionFrequency = CLOCKS_PER_SEC;
+		pThis->m_uLast60HertzMark = 1;
+		pThis->m_uDelta = 0;
+		pThis->m_u60HertzTick = 1;
+		pThis->m_1KHertz.init(1000U);
+		pThis->m_1MHertz.init(1000000U);
+
+		// Get old timer 0 Interrupt Service Routine
+		pThis->m_pPreviousINT8 =
+			static_cast<void(__interrupt __far*)()>(GetProtInt(8));
+
+		pThis->m_uPreviousRealService = GetRealInt(8);
+
+		// Init the sound IRQ code
+		InitTimer8Irq();
+
+		// Set to my timer 0 ISR
+		SetBothInts(8, Timer8Irq);
+		const uint32_t uStepUnits = 1192030UL / 60UL;
+
+		// Save the speed value
+		pThis->m_uStepUnits = uStepUnits;
+
+		// Change timer 0
+		outp(0x43, 0x36);
+		outp(0x40, uStepUnits);
+		outp(0x40, uStepUnits >> 8);
+
+		pThis->m_bInitialized = TRUE;
 	}
 }
 
 /***************************************
 
-	Starts up the Time manager
-	Detects all additional sound hardware and installs my ISR
+	\brief Shut down the low level timer manager
+
+	Shut down the low level timer
+
+	\sa init()
 
 ***************************************/
 
-static void BURGER_API InstallTick(void)
+void BURGER_API Burger::Tick::shutdown(void) BURGER_NOEXCEPT
 {
-	uint32_t speed;
-	OldInt8 = static_cast<void (__interrupt __far *)()>(GetProtInt(8));	/* Get old timer 0 ISR */
-	t0OldRealService = GetRealInt(8);
-	InitTimer8Irq();			/* Init the sound IRQ code */
-	SetBothInts(8,Timer8Irq);	/* Set to my timer 0 ISR */
-	speed = 1192030UL/60UL;
-	outp(0x43,0x36);		/* Change timer 0 */
-	outp(0x40,speed);
-	outp(0x40,speed >> 8);
-	TimerDivisor = speed;	/* Save the speed value */
+	Tick* pThis = &g_Tick;
+	if (pThis->m_bInitialized) {
+
+		// Restore timer 0
+		outp(0x43, 0x36);
+		outp(0x40, 0);
+		outp(0x40, 0);
+
+		// Restore the speed value
+		pThis->m_uStepUnits = 0x10000;
+
+		// Restore the vectors
+		SetRealInt(8, pThis->m_uPreviousRealService);
+		SetProtInt(8, pThis->m_pPreviousINT8);
+		pThis->m_pPreviousINT8 = nullptr;
+		pThis->m_bInitialized = FALSE;
+	}
 }
 
 #endif
-
 
 /***************************************
 
@@ -190,19 +272,10 @@ static void BURGER_API InstallTick(void)
 
 ***************************************/
 
-uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
+uint32_t BURGER_API Burger::Tick::read(void) BURGER_NOEXCEPT
 {
-	if (Started) {		/* Do I need to be initialized? */
-		return ReadTickTimeCount;
-	}
-	if (!ExitIn) {
-		ExitIn = TRUE;
-		atexit(UninstallTick);
-	}
-	InstallTick();
-	Started = TRUE;			/* I'm started */
-	return ReadTickTimeCount;
+	// Read from the interrupt timer
+	return Tick::get_instance()->m_u60HertzTick;
 }
-
 
 #endif

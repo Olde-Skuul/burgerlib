@@ -271,7 +271,7 @@ Burger::eError BURGER_API Burger::Filename::set_application_directory(
 Burger::eError BURGER_API Burger::Filename::set_boot_volume(
 	void) BURGER_NOEXCEPT
 {
-	Regs16 Regs; // Intel registers
+	Regs16_t Regs; // Intel registers
 
 	// Get the boot volume DOS 4.0+
 	// http://www.ctyme.com/intr/rb-2729.htm
@@ -381,7 +381,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 	const char* pInput) BURGER_NOEXCEPT
 {
 	// Used for DOS calls
-	Regs16 Regs;
+	Regs16_t Regs;
 
 	if (!pInput || !pInput[0]) { // No directory at all?
 		// Just get the current directory

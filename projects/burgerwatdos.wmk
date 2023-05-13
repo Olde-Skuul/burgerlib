@@ -462,7 +462,6 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brmersennetwist.obj &
 	$(A)/brmicrosoftadpcm.obj &
 	$(A)/brmouse.obj &
-	$(A)/brmp3math.obj &
 	$(A)/brnumberstring.obj &
 	$(A)/brnumberstringhex.obj &
 	$(A)/brnumberto.obj &
@@ -507,6 +506,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brtemplates.obj &
 	$(A)/brtexture.obj &
 	$(A)/brtextureopengl.obj &
+	$(A)/brthread.obj &
 	$(A)/brtick.obj &
 	$(A)/brtickmsdos.obj &
 	$(A)/brtimedate.obj &

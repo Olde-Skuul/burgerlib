@@ -19,8 +19,8 @@
 #include "brtypes.h"
 #endif
 
-#if defined(BURGER_MSDOS) && !defined(__BRMSDOSTYPES_H__)
-#include "brmsdostypes.h"
+#ifndef __BRWATCOM_H__
+#include "brwatcom.h"
 #endif
 
 /* BEGIN */
@@ -42,14 +42,14 @@ BURGER_INLINE uint8_t *ZeroBase(void) { return static_cast<uint8_t *>(_x32_zero_
 extern void BURGER_API CallInt10(uint_t EAX);
 extern uint_t BURGER_API CallInt14(uint_t EAX,uint_t EDX);
 extern uint_t BURGER_API CallInt17(uint_t EAX,uint_t EDX);
-extern int32_t BURGER_API Int86x(uint32_t uInterrupt,const Burger::Regs16 *pInput,Burger::Regs16 *pOutput);
+extern int32_t BURGER_API Int86x(uint32_t uInterrupt,const Burger::Regs16_t *pInput,Burger::Regs16_t *pOutput);
 extern void BURGER_API SetBothInts(uint32_t uInterrupt,void far *pCode);
 extern void BURGER_API SetProtInt(uint32_t uInterrupt,void far *pCode);
 extern void BURGER_API SetRealInt(uint32_t uInterrupt,uint32_t pCode);
 extern void far * BURGER_API GetProtInt(uint32_t uInterrupt);
 extern uint32_t BURGER_API GetRealInt(uint32_t uInterrupt);
 extern void * BURGER_API MapPhysicalAddress(void *pInput,uint32_t uLength);
-extern int BURGER_API CallRealProcX32(uint32_t pAddress,const Burger::Regs16 *pInput,Burger::Regs16 *pOutput);
+extern int BURGER_API CallRealProcX32(uint32_t pAddress,const Burger::Regs16_t *pInput,Burger::Regs16_t *pOutput);
 extern void * BURGER_API RealToProtectedPtr(uint32_t pReal);
 extern void * BURGER_API GetRealBufferProtectedPtr(void);
 extern uint32_t BURGER_API GetRealBufferPtr(void);

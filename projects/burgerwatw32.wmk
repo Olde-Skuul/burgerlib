@@ -430,7 +430,6 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brmicrosoftadpcm.obj &
 	$(A)/brmouse.obj &
 	$(A)/brmousewindows.obj &
-	$(A)/brmp3math.obj &
 	$(A)/brnetmanagerwindows.obj &
 	$(A)/brnumberstring.obj &
 	$(A)/brnumberstringhex.obj &
@@ -485,6 +484,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brtexture.obj &
 	$(A)/brtexturedirectx9.obj &
 	$(A)/brtextureopengl.obj &
+	$(A)/brthread.obj &
 	$(A)/brtick.obj &
 	$(A)/brtickwindows.obj &
 	$(A)/brtimedate.obj &

@@ -30,7 +30,6 @@
 #include "testbrhashes.h"
 #include "testbrmatrix3d.h"
 #include "testbrmatrix4d.h"
-#include "testbrnetwork.h"
 #include "testbrnumberto.h"
 #include "testbrprintf.h"
 #include "testbrstaticrtti.h"
@@ -241,8 +240,6 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
 
 #if defined(ALLOWCOMMANDLINE)
 	CommandParameterBooleanTrue Version("Show version and exit", "version");
-	CommandParameterBooleanTrue WriteTables(
-		"Generate data tables and exit", "table");
 	CommandParameterBooleanTrue AllTests("Perform all tests", "all");
 
 	CommandParameterBooleanTrue Verbose("Verbose output", "v");
@@ -255,7 +252,7 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
 	CommandParameterBooleanTrue CompressTests("Compression tests", "compress");
 	CommandParameterBooleanTrue DLLTests("DLL tests", "dll");
 
-	const CommandParameter* MyParms[] = {&Version, &WriteTables, &AllTests,
+	const CommandParameter* MyParms[] = {&Version, &AllTests,
 		&Verbose, &ShowMacros, &DialogTests, &NetworkTests, &TimeTests,
 		&DisplayTests, &FileTests, &CompressTests, &DLLTests};
 
@@ -313,15 +310,6 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
 		}
 	}
 
-	// Special cases
-
-	// Write out the data tables.
-	if (WriteTables.GetValue()) {
-		WriteDataTables();
-		uVerbose = VERBOSE_DISABLE;
-		iResult = 0;
-	}
-
 #else
 	BURGER_UNUSED(argc);
 	BURGER_UNUSED(argv);
@@ -366,7 +354,6 @@ int BURGER_ANSIAPI main(int argc, const char** argv)
 		iResult |= TestBrprintf(uVerbose);
 		iResult |= TestDateTime(uVerbose);
 		iResult |= TestBrCodeLibrary(uVerbose);
-		iResult |= TestNetwork(uVerbose);
 		iResult |= TestBrcompression(uVerbose);
 		iResult |= static_cast<int>(TestBrFileManager(uVerbose));
 

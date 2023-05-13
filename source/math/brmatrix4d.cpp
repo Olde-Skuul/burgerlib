@@ -1885,7 +1885,7 @@ void BURGER_API Burger::Matrix4D_t::SetPerspective(
     float fFieldOfViewY, float fAspect, float fNear, float fFar) BURGER_NOEXCEPT
 {
     // Calculate the cotangent of Field of View * 2.0f
-    const float f = 1.0f / Tan((fFieldOfViewY * g_fDegreesToRadians) * 0.5f);
+    const float f = 1.0f / Tan(fFieldOfViewY * static_cast<float>(g_fDegreesToRadians) * 0.5f);
 
     const float fDepth = (fNear - fFar);
 
@@ -1939,7 +1939,7 @@ void BURGER_API Burger::Matrix4D_t::TransposeSetPerspective(
     float fFieldOfViewY, float fAspect, float fNear, float fFar) BURGER_NOEXCEPT
 {
     // Calculate the cotangent of Field of View * 2.0f
-    const float f = 1.0f / Tan((fFieldOfViewY * g_fDegreesToRadians) * 0.5f);
+    const float f = 1.0f / Tan(fFieldOfViewY * static_cast<float>(g_fDegreesToRadians) * 0.5f);
 
     const float fDepth = (fNear - fFar);
 

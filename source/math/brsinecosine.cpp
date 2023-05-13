@@ -16,6 +16,7 @@
 
 #include "brendian.h"
 #include "brfixedpoint.h"
+#include "brmacros.h"
 
 #if defined(BURGER_MSVC) && defined(BURGER_X86)
 // Instruction may be inaccurate on some Pentiums
@@ -238,7 +239,7 @@ BURGER_DECLSPECNAKED float BURGER_API Burger::ModuloRadians(
 float BURGER_API Burger::ModuloRadians(float fInput) BURGER_NOEXCEPT
 {
     // Produce Input/(BURGER_PI*2)
-    const float fTemp = (fInput * g_fReciprocalPi2) + 0.5f;
+    const float fTemp = (fInput * static_cast<float>(g_fReciprocalPi2)) + 0.5f;
     // Convert to int but rounded!
     const int iVar = static_cast<int>(fTemp);
     float fVar = static_cast<float>(iVar);
@@ -246,7 +247,7 @@ float BURGER_API Burger::ModuloRadians(float fInput) BURGER_NOEXCEPT
         --fVar;         // Fix it
     }
     // Get the whole number and remove it
-    return fInput - (fVar * g_fPi2);
+    return fInput - (fVar * static_cast<float>(g_fPi2));
 }
 
 #endif
@@ -1319,37 +1320,37 @@ float BURGER_API Burger::Sin(float fInput) BURGER_NOEXCEPT
     float fInputFactorial = (fInput2 * fInput);
 
     //- ((x^3)/ 3!)
-    float fResult = (fInputFactorial * g_fInverseSineFactors[0]) + fInput;
+    float fResult = (fInputFactorial * static_cast<float>(g_fInverseSineFactors[0])) + fInput;
     //+ ((x^5)/ 5!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[1]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseSineFactors[1])) + fResult;
     //- ((x^7)/ 7!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[2]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseSineFactors[2])) + fResult;
     //+ ((x^9)/ 9!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[3]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseSineFactors[3])) + fResult;
     //- ((x^11)/ 11!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[4]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseSineFactors[4])) + fResult;
     //+ ((x^13)/ 13!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[5]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseSineFactors[5])) + fResult;
     //- ((x^15)/ 15!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[6]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseSineFactors[6])) + fResult;
     //+ ((x^17)/ 17!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[7]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseSineFactors[7])) + fResult;
     //- ((x^19)/ 19!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[8]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseSineFactors[8])) + fResult;
     //+ ((x^21)/ 21!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[9]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseSineFactors[9])) + fResult;
     //- ((x^23)/ 23!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseSineFactors[10]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseSineFactors[10])) + fResult;
     return fResult;
 }
 #endif
@@ -1540,37 +1541,37 @@ float BURGER_API Burger::Cos(float fInput) BURGER_NOEXCEPT
     const float fInput2 = (fInput * fInput);
 
     //- ((x^2)/ 2!)
-    float fResult = (fInput2 * g_fInverseCosineFactors[0]) + 1.0f;
+    float fResult = (fInput2 * static_cast<float>(g_fInverseCosineFactors[0])) + 1.0f;
     //+ ((x^4)/ 4!)
     float fInputFactorial = fInput2 * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[1]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[1])) + fResult;
     //- ((x^6)/ 6!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[2]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[2])) + fResult;
     //+ ((x^8)/ 8!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[3]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[3])) + fResult;
     //- ((x^10)/ 10!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[4]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[4])) + fResult;
     //+ ((x^12)/ 12!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[5]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[5])) + fResult;
     //- ((x^14)/ 14!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[6]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[6])) + fResult;
     //+ ((x^16)/ 16!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[7]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[7])) + fResult;
     //- ((x^18)/ 18!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[8]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[8])) + fResult;
     //+ ((x^20)/ 20!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[9]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[9])) + fResult;
     //- ((x^22)/ 22!)
     fInputFactorial = fInputFactorial * fInput2;
-    fResult = (fInputFactorial * g_fInverseCosineFactors[10]) + fResult;
+    fResult = (fInputFactorial * static_cast<float>(g_fInverseCosineFactors[10])) + fResult;
     return fResult;
 }
 #endif

@@ -106,7 +106,7 @@ void BURGER_API Burger::FileManager::platform_setup(void) BURGER_NOEXCEPT
 
 	// Needed for INT 0x21 calls
 
-	Regs16 Regs;
+	Regs16_t Regs;
 
 	// Obtain the DOS version number, set bx to prevent alternate resident
 	// programs from intercepting
@@ -477,7 +477,7 @@ Burger::eError BURGER_API Burger::FileManager::MSDOS_expand_8_3_filename(
 
 		// Convert 8.3 filename to long filename
 		// http://www.ctyme.com/intr/rb-3208.htm
-		Regs16 Regs;
+		Regs16_t Regs;
 		Regs.ax = 0x7160;
 		Regs.cx = 0x8002;
 		Regs.si = static_cast<uint16_t>(uRealBuffer);
@@ -532,7 +532,7 @@ Burger::eError BURGER_API Burger::FileManager::MSDOS_convert_to_8_3_filename(
 
 		// Convert long filename to 8.3 filename
 		// http://www.ctyme.com/intr/rb-3207.htm
-		Regs16 Regs;
+		Regs16_t Regs;
 		Regs.ax = 0x7160;
 		Regs.cx = 0x8001;
 		Regs.si = static_cast<uint16_t>(uRealBuffer);
@@ -593,7 +593,7 @@ Burger::eError BURGER_API Burger::FileManager::get_volume_name(
 	uint32_t uRealBuffer = GetRealBufferPtr();
 	char* pRealBuffer = static_cast<char*>(RealToProtectedPtr(uRealBuffer));
 
-	Regs16 Regs; // Intel registers
+	Regs16_t Regs; // Intel registers
 
 	// Check if the drive is enabled before attempting to obtain the label
 	pRealBuffer[kNameOffset] = static_cast<char>('A' + uVolumeNum);
@@ -788,7 +788,7 @@ Burger::eError BURGER_API Burger::FileManager::get_modification_time(
 	uint32_t Temp;
 
 	if (MSDOS_has_long_filenames()) { /* Win95? */
-		Regs16 MyRegs;
+		Regs16_t MyRegs;
 
 		/* This code does NOT work on CD's or Networks */
 		/* oh crud... */
@@ -824,7 +824,7 @@ Burger::eError BURGER_API Burger::FileManager::get_modification_time(
 		/* Get the segment */
 		MyRegs.ds = static_cast<uint16_t>(Temp >> 16);
 
-		Win437::TranslateFromUTF8(
+		Win437::translate_from_UTF8(
 			static_cast<char*>(GetRealBufferProtectedPtr()), 512,
 			pFileName->get_native());
 
@@ -848,7 +848,7 @@ Burger::eError BURGER_API Burger::FileManager::get_modification_time(
 #endif
 	} else {
 		/* Call DOS to perform the action */
-		Win437::TranslateFromUTF8(
+		Win437::translate_from_UTF8(
 			static_cast<char*>(GetRealBufferProtectedPtr()), 512,
 			pFileName->get_native());
 
@@ -893,8 +893,8 @@ Burger::eError BURGER_API Burger::FileManager::get_creation_time(
 
 	// Win95?
 	if (MSDOS_has_long_filenames()) {
-		Regs16 MyRegs;
-		Win437::TranslateFromUTF8(
+		Regs16_t MyRegs;
+		Win437::translate_from_UTF8(
 			static_cast<char*>(GetRealBufferProtectedPtr()), 512,
 			pFileName->get_native());
 		MyRegs.ax = 0x7143;                      /* Get file attributes */
@@ -959,13 +959,13 @@ uint_t BURGER_API Burger::FileManager::does_file_exist(
 	Filename* pFileName) BURGER_NOEXCEPT
 {
 	if (MSDOS_has_long_filenames()) { /* Win95? */
-		Regs16 MyRegs;
+		Regs16_t MyRegs;
 		MyRegs.ax = 0x7143;                      /* Get file attributes */
 		MyRegs.bx = 0;                           /* Get file attributes only */
 		uint32_t Temp = GetRealBufferPtr();      /* Local buffer */
 		MyRegs.dx = static_cast<uint16_t>(Temp); /* Pass the filename buffer */
 		MyRegs.ds = static_cast<uint16_t>(Temp >> 16); /* Get the segment */
-		Win437::TranslateFromUTF8(
+		Win437::translate_from_UTF8(
 			static_cast<char*>(GetRealBufferProtectedPtr()), 512,
 			pFileName->get_native());
 		Int86x(0x21, &MyRegs, &MyRegs);             /* Call Win95 */
@@ -973,7 +973,7 @@ uint_t BURGER_API Burger::FileManager::does_file_exist(
 			return FALSE;
 		}
 	} else {
-		Win437::TranslateFromUTF8(
+		Win437::translate_from_UTF8(
 			static_cast<char*>(GetRealBufferProtectedPtr()), 512,
 			pFileName->get_native());
 		/* Call DOS to perform the action */
@@ -1011,13 +1011,13 @@ Burger::eError BURGER_API Burger::FileManager::delete_file(
 	Filename* pFileName) BURGER_NOEXCEPT
 {
 	// Used by DOS
-	Regs16 Regs;
+	Regs16_t Regs;
 
 	// Get real memory
 	uint32_t RealBuffer = GetRealBufferPtr();
 
 	// Copy path
-	Win437::TranslateFromUTF8(
+	Win437::translate_from_UTF8(
 		static_cast<char*>(RealToProtectedPtr(RealBuffer)), 512,
 		pFileName->get_native());
 
@@ -1095,13 +1095,13 @@ Burger::eError BURGER_API Burger::FileManager::delete_file(
 Burger::eError BURGER_API Burger::FileManager::change_OS_directory(
 	Filename* pDirName)
 {
-	Regs16 Regs; // Used by DOS
+	Regs16_t Regs; // Used by DOS
 
 	// Flag for long filenames
 	uint_t LongOk = MSDOS_has_long_filenames();
 	uint32_t RealBuffer = GetRealBufferPtr(); // Get real memory
 	// Copy path
-	Win437::TranslateFromUTF8(
+	Win437::translate_from_UTF8(
 		static_cast<char*>(RealToProtectedPtr(RealBuffer)), 512,
 		pDirName->get_native());
 
@@ -1175,13 +1175,13 @@ uint_t DoWorkDOSCrDir(const char* Referance);
 static uint_t BURGER_API DirCreate(const char* pFileName) BURGER_NOEXCEPT
 {
 	if (Burger::FileManager::MSDOS_has_long_filenames()) {
-		Burger::Regs16 MyRegs;
+		Burger::Regs16_t MyRegs;
 		MyRegs.ax = 0x7139; /* Create long filename version */
 		uint32_t Temp = GetRealBufferPtr();
 		MyRegs.dx =
 			static_cast<uint16_t>(Temp); /* Save the real memory pointer */
 		MyRegs.ds = static_cast<uint16_t>(Temp >> 16);
-		Burger::Win437::TranslateFromUTF8(
+		Burger::Win437::translate_from_UTF8(
 			static_cast<char*>(GetRealBufferProtectedPtr()), 512, pFileName);
 		Int86x(0x21, &MyRegs, &MyRegs); /* Make the directory */
 		if (!(MyRegs.flags & 1)) {
@@ -1197,7 +1197,7 @@ static uint_t BURGER_API DirCreate(const char* pFileName) BURGER_NOEXCEPT
 		}
 		return TRUE; /* Error! */
 	}
-	Burger::Win437::TranslateFromUTF8(
+	Burger::Win437::translate_from_UTF8(
 		static_cast<char*>(GetRealBufferProtectedPtr()), 512, pFileName);
 	// Dos 5.0 or previous
 	return DoWorkDOSCrDir(static_cast<char*>(GetRealBufferProtectedPtr()));

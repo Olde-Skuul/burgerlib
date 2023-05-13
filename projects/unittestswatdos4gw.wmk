@@ -408,7 +408,6 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brmersennetwist.obj &
 	$(A)/brmicrosoftadpcm.obj &
 	$(A)/brmouse.obj &
-	$(A)/brmp3math.obj &
 	$(A)/brnumberstring.obj &
 	$(A)/brnumberstringhex.obj &
 	$(A)/brnumberto.obj &
@@ -453,6 +452,7 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brtemplates.obj &
 	$(A)/brtexture.obj &
 	$(A)/brtextureopengl.obj &
+	$(A)/brthread.obj &
 	$(A)/brtick.obj &
 	$(A)/brtickmsdos.obj &
 	$(A)/brtimedate.obj &
@@ -471,7 +471,6 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brwin1252.obj &
 	$(A)/brwin437.obj &
 	$(A)/common.obj &
-	$(A)/createtables.obj &
 	$(A)/testbralgorithm.obj &
 	$(A)/testbrcodelibrary.obj &
 	$(A)/testbrcompression.obj &
@@ -484,7 +483,6 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/testbrhashes.obj &
 	$(A)/testbrmatrix3d.obj &
 	$(A)/testbrmatrix4d.obj &
-	$(A)/testbrnetwork.obj &
 	$(A)/testbrnumberto.obj &
 	$(A)/testbrprintf.obj &
 	$(A)/testbrstaticrtti.obj &

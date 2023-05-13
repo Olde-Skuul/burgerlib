@@ -46,11 +46,11 @@ Burger::eError BURGER_API Burger::File::open(
 	static const uint16_t g_CreateAction[4] = {1, 2 + 16, 1 + 16, 1 + 16};
 
 	// Copy the filename to "Real" memory
-	Win437::TranslateFromUTF8(static_cast<char*>(GetRealBufferProtectedPtr()),
+	Win437::translate_from_UTF8(static_cast<char*>(GetRealBufferProtectedPtr()),
 		512, pFileName->get_native());
 
 	uAccess = static_cast<eFileAccess>(uAccess & 3);
-	Regs16 Regs;
+	Regs16_t Regs;
 	uint32_t uTemp = GetRealBufferPtr(); // Local buffer
 	uint_t uResult = kErrorFileNotFound;
 	// Are long filenames supported?
@@ -141,7 +141,7 @@ Burger::eError BURGER_API Burger::File::close(void) BURGER_NOEXCEPT
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		// Int 0x21,0x3E Close
-		Regs16 Regs;
+		Regs16_t Regs;
 		Regs.ax = 0x3E00;
 		Regs.bx = fp;
 		Int86x(0x21, &Regs, &Regs);
@@ -172,9 +172,9 @@ Burger::eError BURGER_API Burger::File::close(void) BURGER_NOEXCEPT
 
 uint64_t BURGER_API Burger::File::get_file_size(void) BURGER_NOEXCEPT
 {
-	Regs16 MyRegs;
-	Regs16 MyRegsStore;
-	Regs16 MyRegsSeek;
+	Regs16_t MyRegs;
+	Regs16_t MyRegsStore;
+	Regs16_t MyRegsSeek;
 	uint64_t uSize = 0;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
@@ -230,7 +230,7 @@ uintptr_t BURGER_API Burger::File::read(void* pOutput, uintptr_t uSize)
 			uint32_t uTemp = GetRealBufferPtr(); // Local buffer
 			do {
 				uint_t uChunk = uSize < 8192 ? uSize : 8192;
-				Regs16 Regs;
+				Regs16_t Regs;
 				Regs.ax = 0x3F00;
 				Regs.bx = fp;
 				Regs.cx = static_cast<uint16_t>(uChunk);
@@ -278,7 +278,7 @@ uintptr_t BURGER_API Burger::File::write(
 			uint32_t uTemp = GetRealBufferPtr(); // Local buffer
 			do {
 				uint_t uChunk = uSize < 8192 ? uSize : 8192;
-				Regs16 Regs;
+				Regs16_t Regs;
 				Regs.ax = 0x4000;
 				Regs.bx = fp;
 				Regs.cx = static_cast<uint16_t>(uChunk);
@@ -314,7 +314,7 @@ uintptr_t BURGER_API Burger::File::write(
 
 uint64_t BURGER_API Burger::File::get_mark(void) BURGER_NOEXCEPT
 {
-	Regs16 MyRegs;
+	Regs16_t MyRegs;
 	uint64_t uMark = 0;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
@@ -349,7 +349,7 @@ uint64_t BURGER_API Burger::File::get_mark(void) BURGER_NOEXCEPT
 Burger::eError BURGER_API Burger::File::set_mark(uint64_t uMark) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorNotInitialized;
-	Regs16 MyRegs;
+	Regs16_t MyRegs;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		// Int 0x21,0x4200 Seek/Set
@@ -383,7 +383,7 @@ Burger::eError BURGER_API Burger::File::set_mark(uint64_t uMark) BURGER_NOEXCEPT
 Burger::eError BURGER_API Burger::File::set_mark_at_EOF(void) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorOutOfBounds;
-	Regs16 MyRegs;
+	Regs16_t MyRegs;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		// Int 0x21,0x4202 Seek/End
@@ -420,7 +420,7 @@ Burger::eError BURGER_API Burger::File::get_modification_time(
 	TimeDate_t* pOutput) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorFileNotFound;
-	Regs16 Regs;
+	Regs16_t Regs;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		// Int 0x21,0x5700 Get File date time
@@ -480,7 +480,7 @@ Burger::eError BURGER_API Burger::File::set_modification_time(
 	const TimeDate_t* pInput) BURGER_NOEXCEPT
 {
 	eError uResult = kErrorFileNotFound;
-	Regs16 Regs;
+	Regs16_t Regs;
 	int fp = reinterpret_cast<int>(m_pFile);
 	if (fp) {
 		uint32_t uTime = pInput->StoreMSDOS();
