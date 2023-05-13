@@ -708,6 +708,7 @@ uintptr_t BURGER_API Burger::GetSize(FILE* fp)
 uintptr_t BURGER_API Burger::GetSize(FILE* fp)
 {
 	uintptr_t uResult = 0;
+	BURGER_UNUSED(fp);
 
 #if _MSL_USE_OLD_AND_NEW_FILE_APIS
 	// Do I support old and new calls?
@@ -862,6 +863,7 @@ uint64_t BURGER_API Burger::GetSize64(FILE* fp)
 uint64_t BURGER_API Burger::GetSize64(FILE* fp)
 {
 	uint64_t uResult = 0;
+	BURGER_UNUSED(fp);
 
 #if _MSL_USE_OLD_AND_NEW_FILE_APIS
 	// Do I support old and new calls?

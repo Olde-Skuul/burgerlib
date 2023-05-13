@@ -113,11 +113,11 @@ void BURGER_API Burger::RandomBase::RandomSeed(void) BURGER_NOEXCEPT
 	// Init the seed with the current time
 	SetSeed(static_cast<uint32_t>(uTimeT));
 	// Get a current tick mark
-	const uint32_t uTickMark = Tick::Read(); 
+	const uint32_t uTickMark = Tick::read(); 
 	do {
 		// Discard a number from the stream
 		Get();
-	} while (Tick::Read() == uTickMark); // Same time?
+	} while (Tick::read() == uTickMark); // Same time?
 }
 
 /*! ************************************

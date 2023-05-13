@@ -908,14 +908,14 @@ int Burger::DecompressDeflate::BuildHuffmanTrees(const uint_t *pSampleCounts,uin
 	/* Adjust last length count to fill out codes, if needed */
 	int y;						/* number of dummy codes added */
 	for (y = 1 << j; j < i; j++, y <<= 1) {
-		if ((y -= Counts[j]) < 0) {
+		if ((y -= static_cast<int>(Counts[j])) < 0) {
 			return Z_DATA_ERROR;
 		}
 	}
-	if ((y -= Counts[i]) < 0) {
+	if ((y -= static_cast<int>(Counts[i])) < 0) {
 		return Z_DATA_ERROR;
 	}
-	Counts[i] += y;
+	Counts[i] += static_cast<uint_t>(y);
 
 
 	/* Generate starting offsets into the value table for each length */
@@ -1318,7 +1318,7 @@ int Burger::DecompressDeflate::ProcessBlocks(int iErrorCode)
 				goto Abort;
 			}
 			t = 258 + (t & 0x1f) + ((t >> 5) & 0x1f);
-			if ((m_pTreesLengths = static_cast<uint_t*>(AllocClear(t*sizeof(uint_t)))) == NULL) {
+			if ((m_pTreesLengths = static_cast<uint_t*>(alloc_clear(t*sizeof(uint_t)))) == NULL) {
  				iErrorCode = Z_MEM_ERROR;
 				goto Abort;
 			}

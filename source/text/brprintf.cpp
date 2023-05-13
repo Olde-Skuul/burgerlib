@@ -805,7 +805,7 @@ void BURGER_API Burger::SafePrint::ParamInfo_t::GetFormattedOutputLength(
 
 		uint_t uSignLength = 0;
 		// printing a sign character?
-		if (TheFPInfo.IsNegative() || IsFlagSet(CONVFLAG_DISPLAY_SIGN) ||
+		if (TheFPInfo.is_negative() || IsFlagSet(CONVFLAG_DISPLAY_SIGN) ||
 			IsFlagSet(CONVFLAG_BLANK_SIGN)) {
 			uSignLength = 1;
 		}
@@ -814,12 +814,12 @@ void BURGER_API Burger::SafePrint::ParamInfo_t::GetFormattedOutputLength(
 		const FPPrintInfo TheFPPrintInfo(&TheFPInfo, uFloatPrecision);
 
 		// is it a "special" output such as NAN or infinity?
-		if (TheFPPrintInfo.IsSpecial()) {
+		if (TheFPPrintInfo.is_special()) {
 			// save the result
-			SetFloatSpecialResult(TheFPPrintInfo.GetResult(),
-				TheFPPrintInfo.GetSpecialFormDigits(), 0,
-				TheFPInfo.IsNegative());
-			uCharsCounted = TheFPPrintInfo.GetSpecialFormDigits();
+			SetFloatSpecialResult(TheFPPrintInfo.get_result(),
+				TheFPPrintInfo.get_special_form_digits(), 0,
+				TheFPInfo.is_negative());
+			uCharsCounted = TheFPPrintInfo.get_special_form_digits();
 
 		} else {
 
@@ -838,7 +838,7 @@ void BURGER_API Burger::SafePrint::ParamInfo_t::GetFormattedOutputLength(
 			if (uConversionSpecifier == CONVSPEC_DECIMAL_FLOAT /* || (uConversionSpecifier == CONVSPECFLAG_SHORTER_FLOAT) */ ) {
 				// Get the number of integer digits
 				uIntSpecialDigits =
-					TheFPPrintInfo.GetLastNonZeroIntDigitPosition();
+					TheFPPrintInfo.get_last_non_zero_int_digit_position();
 
 				// zero point something?  then include the zero the left of the
 				// decimal
@@ -888,9 +888,9 @@ void BURGER_API Burger::SafePrint::ParamInfo_t::GetFormattedOutputLength(
 				uFracDigits = uFloatPrecision;
 
 				const int32_t iExponent = static_cast<int32_t>(
-					TheFPPrintInfo.HasInteger() ?
-                        TheFPPrintInfo.GetLastNonZeroIntDigitPosition() - 1 :
-                        0 - TheFPPrintInfo.GetFirstNonZeroFracDigitPosition());
+					TheFPPrintInfo.has_integer() ?
+                        TheFPPrintInfo.get_last_non_zero_int_digit_position() - 1 :
+                        0 - TheFPPrintInfo.get_first_non_zero_frac_digit_position());
 
 				// How many digits for the exponent?
 				uint_t uExpDigits =
@@ -924,8 +924,8 @@ void BURGER_API Burger::SafePrint::ParamInfo_t::GetFormattedOutputLength(
 				// cache off the info from the analysis
 				SetFloatInfo(uIntSpecialDigits, uFracDigits, uSignLength,
 					uDecimalPoint, uPadDigits, 0);
-				SetFloatAnalysisInfo(TheFPPrintInfo.GetResult(), 0, 0,
-					TheFPPrintInfo.GetFirstNonZeroIntDigitPosition());
+				SetFloatAnalysisInfo(TheFPPrintInfo.get_result(), 0, 0,
+					TheFPPrintInfo.get_first_non_zero_int_digit_position());
 
 			} else if (uConversionSpecifier == CONVSPEC_SCI_NOTE_FLOAT) {
 				// tally up all the parts
@@ -2020,7 +2020,7 @@ uintptr_t BURGER_API Burger::SafePrint::ParamInfo_t::FormatReal(
 	}
 
 	// printing a sign character?
-	if (TheFPInfo.IsNegative() || IsFlagSet(CONVFLAG_DISPLAY_SIGN) ||
+	if (TheFPInfo.is_negative() || IsFlagSet(CONVFLAG_DISPLAY_SIGN) ||
 		bBlankSign) {
 		uSign = 1;
 	}
@@ -2035,7 +2035,7 @@ uintptr_t BURGER_API Burger::SafePrint::ParamInfo_t::FormatReal(
 		(uPrintResult == FPPrintInfo::kResultZero)) {
 		char* pTextPtr = pOutText;
 		if (uSign) {
-			*pTextPtr++ = static_cast<char>((TheFPInfo.IsNegative()) ?
+			*pTextPtr++ = static_cast<char>((TheFPInfo.is_negative()) ?
                                    kNUMERIC_NEGATIVE_SIGN :
 					(bBlankSign) ? kNUMERIC_BLANK_SIGN :
                                    kNUMERIC_POSITIVE_SIGN);
@@ -2081,12 +2081,12 @@ uintptr_t BURGER_API Burger::SafePrint::ParamInfo_t::FormatReal(
 	}
 
 	// setup a high precision object big enough to hold the number
-	const uint_t bitsNeeded = (1U << (TheFPInfo.GetExponentBitCount() - 1)) +
-		TheFPInfo.GetMantissaBitCount();
+	const uint32_t bitsNeeded = (1U << (TheFPInfo.get_exponent_bit_count() - 1)) +
+		TheFPInfo.get_mantissa_bit_count();
 	FPLargeInt intPart(bitsNeeded);
 	FPLargeInt fracPart(bitsNeeded);
 
-	LoadHighPrecisionFromFloat(&intPart, &fracPart, &TheFPInfo);
+	separate_integer_fraction(&intPart, &fracPart, &TheFPInfo);
 
 	// we'll be writing this out right to left
 	// either padDigits or commas will be zero
@@ -2096,7 +2096,7 @@ uintptr_t BURGER_API Burger::SafePrint::ParamInfo_t::FormatReal(
 
 	// write out any sign character
 	if (uSign) {
-		*pOutText = static_cast<char>((TheFPInfo.IsNegative()) ?
+		*pOutText = static_cast<char>((TheFPInfo.is_negative()) ?
                                kNUMERIC_NEGATIVE_SIGN :
 				(bBlankSign) ? kNUMERIC_BLANK_SIGN :
                                kNUMERIC_POSITIVE_SIGN);
@@ -2121,7 +2121,7 @@ uintptr_t BURGER_API Burger::SafePrint::ParamInfo_t::FormatReal(
 		// sanity check
 		BURGER_ASSERT(pIntDigit >= pOutText);
 
-		char theDigit = static_cast<char>(intPart.DivideReturnRemainder(10));
+		char theDigit = static_cast<char>(intPart.divide_return_remainder(10));
 		++uIntDigitsReturned;
 
 		if (uZeroFirstDigits) {
@@ -2146,7 +2146,7 @@ uintptr_t BURGER_API Burger::SafePrint::ParamInfo_t::FormatReal(
 
 		++uDigitsInGroup;
 		++uCharsWritten;
-	} while (intPart.IsNotZero());
+	} while (intPart.is_not_zero());
 
 	BURGER_ASSERT(uIntDigits == uIntDigitsReturned);
 
@@ -2166,7 +2166,7 @@ uintptr_t BURGER_API Burger::SafePrint::ParamInfo_t::FormatReal(
 		if (uRealFracDigits) {
 			while (uFracDigitsReturned < uRealFracDigits) {
 				char theDigit =
-					static_cast<char>(fracPart.MultiplyReturnOverflow(10));
+					static_cast<char>(fracPart.multiply_return_overflow(10));
 				++uFracDigitsReturned;
 
 				// note last written digit position if we have to round up

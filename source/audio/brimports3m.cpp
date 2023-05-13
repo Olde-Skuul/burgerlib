@@ -452,7 +452,7 @@ uint_t BURGER_API Burger::ImportS3M(Sequencer::SongPackage *pOutput,const uint8_
 										}
 
 										// Import the digital sample
-										pSampleDescription->m_pSample = AllocCopy(pSample,pSampleDescription->m_uSampleSize);
+										pSampleDescription->m_pSample = alloc_copy(pSample,pSampleDescription->m_uSampleSize);
 										if (!pSampleDescription->m_pSample) {
 											// Uh oh...
 											uResult = Sequencer::IMPORT_OUTOFMEMORY;

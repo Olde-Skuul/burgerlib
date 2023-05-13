@@ -416,133 +416,133 @@ BURGER_ALIGN(const uint8_t, Burger::g_AsciiTestTable[256], 16) = {
 	Burger::ASCII_CONTROL, // 07 (BEL)
 	Burger::ASCII_CONTROL, // 08 (BS)
 	Burger::ASCII_SPACE | Burger::ASCII_CONTROL |
-		Burger::ASCII_WHITESPACE,                   // 09 (HT)
-	Burger::ASCII_SPACE | Burger::ASCII_CONTROL,    // 0A (LF)
-	Burger::ASCII_SPACE | Burger::ASCII_CONTROL,    // 0B (VT)
-	Burger::ASCII_SPACE | Burger::ASCII_CONTROL,    // 0C (FF)
-	Burger::ASCII_SPACE | Burger::ASCII_CONTROL,    // 0D (CR)
-	Burger::ASCII_CONTROL,                          // 0E (SI)
-	Burger::ASCII_CONTROL,                          // 0F (SO)
-	Burger::ASCII_CONTROL,                          // 10 (DLE)
-	Burger::ASCII_CONTROL,                          // 11 (DC1)
-	Burger::ASCII_CONTROL,                          // 12 (DC2)
-	Burger::ASCII_CONTROL,                          // 13 (DC3)
-	Burger::ASCII_CONTROL,                          // 14 (DC4)
-	Burger::ASCII_CONTROL,                          // 15 (NAK)
-	Burger::ASCII_CONTROL,                          // 16 (SYN)
-	Burger::ASCII_CONTROL,                          // 17 (ETB)
-	Burger::ASCII_CONTROL,                          // 18 (CAN)
-	Burger::ASCII_CONTROL,                          // 19 (EM)
-	Burger::ASCII_CONTROL,                          // 1A (SUB)
-	Burger::ASCII_CONTROL,                          // 1B (ESC)
-	Burger::ASCII_CONTROL,                          // 1C (FS)
-	Burger::ASCII_CONTROL,                          // 1D (GS)
-	Burger::ASCII_CONTROL,                          // 1E (RS)
-	Burger::ASCII_CONTROL,                          // 1F (US)
-	Burger::ASCII_SPACE | Burger::ASCII_WHITESPACE, // 20 SPACE
-	Burger::ASCII_PUNCTUATION,                      // 21 !
-	Burger::ASCII_PUNCTUATION,                      // 22 "
-	Burger::ASCII_PUNCTUATION,                      // 23 #
-	Burger::ASCII_PUNCTUATION,                      // 24 $
-	Burger::ASCII_PUNCTUATION,                      // 25 %
-	Burger::ASCII_PUNCTUATION,                      // 26 &
-	Burger::ASCII_PUNCTUATION,                      // 27 '
-	Burger::ASCII_PUNCTUATION,                      // 28 (
-	Burger::ASCII_PUNCTUATION,                      // 29 )
-	Burger::ASCII_PUNCTUATION,                      // 2A *
-	Burger::ASCII_PUNCTUATION,                      // 2B +
-	Burger::ASCII_PUNCTUATION,                      // 2C ,
-	Burger::ASCII_PUNCTUATION,                      // 2D -
-	Burger::ASCII_PUNCTUATION,                      // 2E .
-	Burger::ASCII_PUNCTUATION,                      // 2F /
-	Burger::ASCII_DIGIT | Burger::ASCII_HEX,        // 30 0
-	Burger::ASCII_DIGIT | Burger::ASCII_HEX,        // 31 1
-	Burger::ASCII_DIGIT | Burger::ASCII_HEX,        // 32 2
-	Burger::ASCII_DIGIT | Burger::ASCII_HEX,        // 33 3
-	Burger::ASCII_DIGIT | Burger::ASCII_HEX,        // 34 4
-	Burger::ASCII_DIGIT | Burger::ASCII_HEX,        // 35 5
-	Burger::ASCII_DIGIT | Burger::ASCII_HEX,        // 36 6
-	Burger::ASCII_DIGIT | Burger::ASCII_HEX,        // 37 7
-	Burger::ASCII_DIGIT | Burger::ASCII_HEX,        // 38 8
-	Burger::ASCII_DIGIT | Burger::ASCII_HEX,        // 39 9
-	Burger::ASCII_PUNCTUATION,                      // 3A :
-	Burger::ASCII_PUNCTUATION,                      // 3B ;
-	Burger::ASCII_PUNCTUATION,                      // 3C <
-	Burger::ASCII_PUNCTUATION,                      // 3D =
-	Burger::ASCII_PUNCTUATION,                      // 3E >
-	Burger::ASCII_PUNCTUATION,                      // 3F ?
-	Burger::ASCII_PUNCTUATION,                      // 40 @
-	Burger::ASCII_UPPER | Burger::ASCII_HEX,        // 41 A
-	Burger::ASCII_UPPER | Burger::ASCII_HEX,        // 42 B
-	Burger::ASCII_UPPER | Burger::ASCII_HEX,        // 43 C
-	Burger::ASCII_UPPER | Burger::ASCII_HEX,        // 44 D
-	Burger::ASCII_UPPER | Burger::ASCII_HEX,        // 45 E
-	Burger::ASCII_UPPER | Burger::ASCII_HEX,        // 46 F
-	Burger::ASCII_UPPER,                            // 47 G
-	Burger::ASCII_UPPER,                            // 48 H
-	Burger::ASCII_UPPER,                            // 49 I
-	Burger::ASCII_UPPER,                            // 4A J
-	Burger::ASCII_UPPER,                            // 4B K
-	Burger::ASCII_UPPER,                            // 4C L
-	Burger::ASCII_UPPER,                            // 4D M
-	Burger::ASCII_UPPER,                            // 4E N
-	Burger::ASCII_UPPER,                            // 4F O
-	Burger::ASCII_UPPER,                            // 50 P
-	Burger::ASCII_UPPER,                            // 51 Q
-	Burger::ASCII_UPPER,                            // 52 R
-	Burger::ASCII_UPPER,                            // 53 S
-	Burger::ASCII_UPPER,                            // 54 T
-	Burger::ASCII_UPPER,                            // 55 U
-	Burger::ASCII_UPPER,                            // 56 V
-	Burger::ASCII_UPPER,                            // 57 W
-	Burger::ASCII_UPPER,                            // 58 X
-	Burger::ASCII_UPPER,                            // 59 Y
-	Burger::ASCII_UPPER,                            // 5A Z
-	Burger::ASCII_PUNCTUATION,                      // 5B [
-	Burger::ASCII_PUNCTUATION,                      // 5C "\"
-	Burger::ASCII_PUNCTUATION,                      // 5D ]
-	Burger::ASCII_PUNCTUATION,                      // 5E ^
-	Burger::ASCII_PUNCTUATION,                      // 5F _
-	Burger::ASCII_PUNCTUATION,                      // 60 `
-	Burger::ASCII_LOWER | Burger::ASCII_HEX,        // 61 a
-	Burger::ASCII_LOWER | Burger::ASCII_HEX,        // 62 b
-	Burger::ASCII_LOWER | Burger::ASCII_HEX,        // 63 c
-	Burger::ASCII_LOWER | Burger::ASCII_HEX,        // 64 d
-	Burger::ASCII_LOWER | Burger::ASCII_HEX,        // 65 e
-	Burger::ASCII_LOWER | Burger::ASCII_HEX,        // 66 f
-	Burger::ASCII_LOWER,                            // 67 g
-	Burger::ASCII_LOWER,                            // 68 h
-	Burger::ASCII_LOWER,                            // 69 i
-	Burger::ASCII_LOWER,                            // 6A j
-	Burger::ASCII_LOWER,                            // 6B k
-	Burger::ASCII_LOWER,                            // 6C l
-	Burger::ASCII_LOWER,                            // 6D m
-	Burger::ASCII_LOWER,                            // 6E n
-	Burger::ASCII_LOWER,                            // 6F o
-	Burger::ASCII_LOWER,                            // 70 p
-	Burger::ASCII_LOWER,                            // 71 q
-	Burger::ASCII_LOWER,                            // 72 r
-	Burger::ASCII_LOWER,                            // 73 s
-	Burger::ASCII_LOWER,                            // 74 t
-	Burger::ASCII_LOWER,                            // 75 u
-	Burger::ASCII_LOWER,                            // 76 v
-	Burger::ASCII_LOWER,                            // 77 w
-	Burger::ASCII_LOWER,                            // 78 x
-	Burger::ASCII_LOWER,                            // 79 y
-	Burger::ASCII_LOWER,                            // 7A z
-	Burger::ASCII_PUNCTUATION,                      // 7B {
-	Burger::ASCII_PUNCTUATION,                      // 7C |
-	Burger::ASCII_PUNCTUATION,                      // 7D }
-	Burger::ASCII_PUNCTUATION,                      // 7E ~
-	Burger::ASCII_CONTROL,                          // 7F (DEL)
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80-8F
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 90-9F
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // A0-AF
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // B0-BF
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // C0-CF
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // D0-DF
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // E0-EF
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  // F0-FF
+		Burger::ASCII_WHITESPACE,                    // 09 (HT)
+	Burger::ASCII_SPACE | Burger::ASCII_CONTROL,     // 0A (LF)
+	Burger::ASCII_SPACE | Burger::ASCII_CONTROL,     // 0B (VT)
+	Burger::ASCII_SPACE | Burger::ASCII_CONTROL,     // 0C (FF)
+	Burger::ASCII_SPACE | Burger::ASCII_CONTROL,     // 0D (CR)
+	Burger::ASCII_CONTROL,                           // 0E (SI)
+	Burger::ASCII_CONTROL,                           // 0F (SO)
+	Burger::ASCII_CONTROL,                           // 10 (DLE)
+	Burger::ASCII_CONTROL,                           // 11 (DC1)
+	Burger::ASCII_CONTROL,                           // 12 (DC2)
+	Burger::ASCII_CONTROL,                           // 13 (DC3)
+	Burger::ASCII_CONTROL,                           // 14 (DC4)
+	Burger::ASCII_CONTROL,                           // 15 (NAK)
+	Burger::ASCII_CONTROL,                           // 16 (SYN)
+	Burger::ASCII_CONTROL,                           // 17 (ETB)
+	Burger::ASCII_CONTROL,                           // 18 (CAN)
+	Burger::ASCII_CONTROL,                           // 19 (EM)
+	Burger::ASCII_CONTROL,                           // 1A (SUB)
+	Burger::ASCII_CONTROL,                           // 1B (ESC)
+	Burger::ASCII_CONTROL,                           // 1C (FS)
+	Burger::ASCII_CONTROL,                           // 1D (GS)
+	Burger::ASCII_CONTROL,                           // 1E (RS)
+	Burger::ASCII_CONTROL,                           // 1F (US)
+	Burger::ASCII_SPACE | Burger::ASCII_WHITESPACE,  // 20 SPACE
+	Burger::ASCII_PUNCTUATION,                       // 21 !
+	Burger::ASCII_PUNCTUATION,                       // 22 "
+	Burger::ASCII_PUNCTUATION,                       // 23 #
+	Burger::ASCII_PUNCTUATION,                       // 24 $
+	Burger::ASCII_PUNCTUATION,                       // 25 %
+	Burger::ASCII_PUNCTUATION,                       // 26 &
+	Burger::ASCII_PUNCTUATION,                       // 27 '
+	Burger::ASCII_PUNCTUATION,                       // 28 (
+	Burger::ASCII_PUNCTUATION,                       // 29 )
+	Burger::ASCII_PUNCTUATION,                       // 2A *
+	Burger::ASCII_PUNCTUATION,                       // 2B +
+	Burger::ASCII_PUNCTUATION,                       // 2C ,
+	Burger::ASCII_PUNCTUATION,                       // 2D -
+	Burger::ASCII_PUNCTUATION,                       // 2E .
+	Burger::ASCII_PUNCTUATION,                       // 2F /
+	Burger::ASCII_DIGIT | Burger::kASCIITypeFlagHex, // 30 0
+	Burger::ASCII_DIGIT | Burger::kASCIITypeFlagHex, // 31 1
+	Burger::ASCII_DIGIT | Burger::kASCIITypeFlagHex, // 32 2
+	Burger::ASCII_DIGIT | Burger::kASCIITypeFlagHex, // 33 3
+	Burger::ASCII_DIGIT | Burger::kASCIITypeFlagHex, // 34 4
+	Burger::ASCII_DIGIT | Burger::kASCIITypeFlagHex, // 35 5
+	Burger::ASCII_DIGIT | Burger::kASCIITypeFlagHex, // 36 6
+	Burger::ASCII_DIGIT | Burger::kASCIITypeFlagHex, // 37 7
+	Burger::ASCII_DIGIT | Burger::kASCIITypeFlagHex, // 38 8
+	Burger::ASCII_DIGIT | Burger::kASCIITypeFlagHex, // 39 9
+	Burger::ASCII_PUNCTUATION,                       // 3A :
+	Burger::ASCII_PUNCTUATION,                       // 3B ;
+	Burger::ASCII_PUNCTUATION,                       // 3C <
+	Burger::ASCII_PUNCTUATION,                       // 3D =
+	Burger::ASCII_PUNCTUATION,                       // 3E >
+	Burger::ASCII_PUNCTUATION,                       // 3F ?
+	Burger::ASCII_PUNCTUATION,                       // 40 @
+	Burger::ASCII_UPPER | Burger::kASCIITypeFlagHex, // 41 A
+	Burger::ASCII_UPPER | Burger::kASCIITypeFlagHex, // 42 B
+	Burger::ASCII_UPPER | Burger::kASCIITypeFlagHex, // 43 C
+	Burger::ASCII_UPPER | Burger::kASCIITypeFlagHex, // 44 D
+	Burger::ASCII_UPPER | Burger::kASCIITypeFlagHex, // 45 E
+	Burger::ASCII_UPPER | Burger::kASCIITypeFlagHex, // 46 F
+	Burger::ASCII_UPPER,                             // 47 G
+	Burger::ASCII_UPPER,                             // 48 H
+	Burger::ASCII_UPPER,                             // 49 I
+	Burger::ASCII_UPPER,                             // 4A J
+	Burger::ASCII_UPPER,                             // 4B K
+	Burger::ASCII_UPPER,                             // 4C L
+	Burger::ASCII_UPPER,                             // 4D M
+	Burger::ASCII_UPPER,                             // 4E N
+	Burger::ASCII_UPPER,                             // 4F O
+	Burger::ASCII_UPPER,                             // 50 P
+	Burger::ASCII_UPPER,                             // 51 Q
+	Burger::ASCII_UPPER,                             // 52 R
+	Burger::ASCII_UPPER,                             // 53 S
+	Burger::ASCII_UPPER,                             // 54 T
+	Burger::ASCII_UPPER,                             // 55 U
+	Burger::ASCII_UPPER,                             // 56 V
+	Burger::ASCII_UPPER,                             // 57 W
+	Burger::ASCII_UPPER,                             // 58 X
+	Burger::ASCII_UPPER,                             // 59 Y
+	Burger::ASCII_UPPER,                             // 5A Z
+	Burger::ASCII_PUNCTUATION,                       // 5B [
+	Burger::ASCII_PUNCTUATION,                       // 5C "\"
+	Burger::ASCII_PUNCTUATION,                       // 5D ]
+	Burger::ASCII_PUNCTUATION,                       // 5E ^
+	Burger::ASCII_PUNCTUATION,                       // 5F _
+	Burger::ASCII_PUNCTUATION,                       // 60 `
+	Burger::ASCII_LOWER | Burger::kASCIITypeFlagHex, // 61 a
+	Burger::ASCII_LOWER | Burger::kASCIITypeFlagHex, // 62 b
+	Burger::ASCII_LOWER | Burger::kASCIITypeFlagHex, // 63 c
+	Burger::ASCII_LOWER | Burger::kASCIITypeFlagHex, // 64 d
+	Burger::ASCII_LOWER | Burger::kASCIITypeFlagHex, // 65 e
+	Burger::ASCII_LOWER | Burger::kASCIITypeFlagHex, // 66 f
+	Burger::ASCII_LOWER,                             // 67 g
+	Burger::ASCII_LOWER,                             // 68 h
+	Burger::ASCII_LOWER,                             // 69 i
+	Burger::ASCII_LOWER,                             // 6A j
+	Burger::ASCII_LOWER,                             // 6B k
+	Burger::ASCII_LOWER,                             // 6C l
+	Burger::ASCII_LOWER,                             // 6D m
+	Burger::ASCII_LOWER,                             // 6E n
+	Burger::ASCII_LOWER,                             // 6F o
+	Burger::ASCII_LOWER,                             // 70 p
+	Burger::ASCII_LOWER,                             // 71 q
+	Burger::ASCII_LOWER,                             // 72 r
+	Burger::ASCII_LOWER,                             // 73 s
+	Burger::ASCII_LOWER,                             // 74 t
+	Burger::ASCII_LOWER,                             // 75 u
+	Burger::ASCII_LOWER,                             // 76 v
+	Burger::ASCII_LOWER,                             // 77 w
+	Burger::ASCII_LOWER,                             // 78 x
+	Burger::ASCII_LOWER,                             // 79 y
+	Burger::ASCII_LOWER,                             // 7A z
+	Burger::ASCII_PUNCTUATION,                       // 7B {
+	Burger::ASCII_PUNCTUATION,                       // 7C |
+	Burger::ASCII_PUNCTUATION,                       // 7D }
+	Burger::ASCII_PUNCTUATION,                       // 7E ~
+	Burger::ASCII_CONTROL,                           // 7F (DEL)
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  // 80-8F
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  // 90-9F
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  // A0-AF
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  // B0-BF
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  // C0-CF
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  // D0-DF
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  // E0-EF
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0   // F0-FF
 };
 
 /*! ************************************
@@ -3016,6 +3016,9 @@ BURGER_DECLSPECNAKED uintptr_t BURGER_API Burger::StringLength(
 	push ecx		// Save the original pointer
 	mov eax,ecx		// Copy the pointer to eax
 #endif
+
+	test eax,eax	// nullptr?
+	jz short GetOut
 	and ecx,3		// Already aligned?
 	jnz short DoAlign // Nope, preflight (Let's hope data's always aligned)
 
@@ -3046,7 +3049,7 @@ MainLoop2:
 	bsf ecx,ecx		// ecx returns 7,15,23 or 31
 	shr ecx,3		// Convert to 0-3
 	sub eax,4		// Undo the last +4 prefetch
-
+GetOut:
 #if defined(BURGER_WATCOM)
 	mov edx,[esp + 8]
 	add eax,ecx		// Add 0-3 to get the pointer to the zero byte
@@ -3081,6 +3084,9 @@ DoAlign:			// Pre-align
 
 uintptr_t BURGER_API Burger::StringLength(const char* pInput) BURGER_NOEXCEPT
 {
+	if (!pInput) {
+		return 0;
+	}
 	uint32_t uSample;  // Needed for the endian neutral version
 	uint32_t uAddTemp; // Temp for the vector add test
 
@@ -3468,9 +3474,11 @@ void BURGER_API Burger::StringCopy(uint16_t* pOutput, uintptr_t uOutputSize,
 
 char* BURGER_API Burger::StringDuplicate(const char* pInput) BURGER_NOEXCEPT
 {
-	const uintptr_t uLength = StringLength(pInput) + 1; // Get the length
-	return static_cast<char*>(
-		AllocCopy(pInput, uLength)); // Allocate the memory
+	// Get the length
+	const uintptr_t uLength = StringLength(pInput) + 1;
+
+	// Allocate the memory
+	return static_cast<char*>(alloc_copy(pInput, uLength));
 }
 
 /*! ************************************
@@ -3990,11 +3998,11 @@ uint_t BURGER_API Burger::Wildcardcmp(
 	do {
 		// Main entry, assume no previous state
 		// Grab an input char
-		uTemp = ISOLatin1::UpperCaseTable[reinterpret_cast<const uint8_t*>(
+		uTemp = ISOLatin1::g_UpperCaseTable[reinterpret_cast<const uint8_t*>(
 			pInput)[0]];
 		// Get a wildcard char
 		uint_t uWild =
-			ISOLatin1::UpperCaseTable[reinterpret_cast<const uint8_t*>(
+			ISOLatin1::g_UpperCaseTable[reinterpret_cast<const uint8_t*>(
 				pWildcard)[0]];
 
 		// Is the wildcard a "?"
@@ -4020,7 +4028,7 @@ uint_t BURGER_API Burger::Wildcardcmp(
 			if (uTemp) {
 				// Recursively call myself until a match of the pattern is found
 				// or I give up
-				uWild = ISOLatin1::UpperCaseTable[uWild]; // Upper case
+				uWild = ISOLatin1::g_UpperCaseTable[uWild]; // Upper case
 				do {
 					if (uTemp ==
 						uWild) { // Follow the input until the marker is found
@@ -4030,7 +4038,7 @@ uint_t BURGER_API Burger::Wildcardcmp(
 						}
 					}
 					++pInput;
-					uTemp = ISOLatin1::UpperCaseTable
+					uTemp = ISOLatin1::g_UpperCaseTable
 						[reinterpret_cast<const uint8_t*>(pInput)[0]];
 				} while (uTemp);
 			}
@@ -4414,6 +4422,96 @@ uint16_t* BURGER_API Burger::StringCharacterReverse(
 	}
 	// Return the result
 	return pFound;
+}
+
+/*! ************************************
+
+	\brief Force the ending character of a string.
+
+	If the string is empty, or the last character doesn't match iChar, append
+	iChar to the end of the string.
+
+	If pInput is \ref nullptr, do nothing.
+
+	\param pInput Pointer to a "C" string to scan and modify
+	\param iChar Character to append if needed
+
+	\return \ref FALSE if no operation was performed, \ref TRUE if a character
+		was appended
+
+	\sa StringEndsWith(uint16_t*, uint_t)
+
+***************************************/
+
+uint_t BURGER_API Burger::StringEndsWith(
+	char* pInput, int iChar) BURGER_NOEXCEPT
+{
+	// Assume no operation
+	uint_t bResult = FALSE;
+
+	// Is the pointer nullptr?
+	if (pInput) {
+
+		// Get the length of the string
+		uintptr_t uLength = StringLength(pInput);
+
+		// If the string is empty or the last character is not a match, then
+		// append the character
+		if (!uLength ||
+			(reinterpret_cast<const uint8_t*>(pInput)[uLength - 1] !=
+				static_cast<uint_t>(iChar))) {
+
+			// Append the string with the character
+			pInput[uLength] = static_cast<char>(iChar);
+			pInput[uLength + 1] = 0;
+			bResult = TRUE;
+		}
+	}
+	return bResult;
+}
+
+/*! ************************************
+
+	\brief Force the ending character of a string.
+
+	If the string is empty, or the last character doesn't match uChar, append
+	uChar to the end of the string.
+
+	If pInput is \ref nullptr, do nothing.
+
+	\param pInput Pointer to a "C" string to scan and modify
+	\param uChar Character to append if needed
+
+	\return \ref FALSE if no operation was performed, \ref TRUE if a character
+		was appended
+
+	\sa StringEndsWith(char*, int)
+
+***************************************/
+
+uint_t BURGER_API Burger::StringEndsWith(
+	uint16_t* pInput, uint_t uChar) BURGER_NOEXCEPT
+{
+	// Assume no operation
+	uint_t bResult = FALSE;
+
+	// Is the pointer nullptr?
+	if (pInput) {
+
+		// Get the length of the string
+		uintptr_t uLength = StringLength(pInput);
+
+		// If the string is empty or the last character is not a match, then
+		// append the character
+		if (!uLength || (pInput[uLength - 1] != uChar)) {
+
+			// Append the string with the character
+			pInput[uLength] = static_cast<uint16_t>(uChar);
+			pInput[uLength + 1] = 0;
+			bResult = TRUE;
+		}
+	}
+	return bResult;
 }
 
 /*! ************************************

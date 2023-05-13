@@ -187,12 +187,12 @@ uint_t BURGER_API Burger::UTF32::IsValid(
 
 	\return The UTF32 code or \ref kInvalid if invalid. 0x00 is not invalid.
 
-	\sa TranslateFromUTF8(const char **), UTF8::GetTokenSize(const char *) or
+	\sa translate_from_UTF8(const char **), UTF8::GetTokenSize(const char *) or
 		UTF8::NextToken(const char *).
 
 ***************************************/
 
-uint32_t BURGER_API Burger::UTF32::TranslateFromUTF8(
+uint32_t BURGER_API Burger::UTF32::translate_from_UTF8(
 	const char* pInput) BURGER_NOEXCEPT
 {
 	// Check for the simple case of 0x00-0x7F
@@ -275,12 +275,12 @@ uint32_t BURGER_API Burger::UTF32::TranslateFromUTF8(
 
 ***************************************/
 
-uint32_t BURGER_API BURGER_API Burger::UTF32::TranslateFromUTF8(
+uint32_t BURGER_API BURGER_API Burger::UTF32::translate_from_UTF8(
 	const char** ppInput) BURGER_NOEXCEPT
 {
 	const char* pInput = ppInput[0];
 	// Decode the data
-	const uint32_t uResult = TranslateFromUTF8(pInput);
+	const uint32_t uResult = translate_from_UTF8(pInput);
 	if (uResult != kInvalid) {
 		ppInput[0] = UTF8::NextToken(pInput);
 	}
@@ -316,7 +316,7 @@ uint32_t BURGER_API BURGER_API Burger::UTF32::TranslateFromUTF8(
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::UTF32::TranslateFromUTF8(uint32_t* pOutput,
+uintptr_t BURGER_API Burger::UTF32::translate_from_UTF8(uint32_t* pOutput,
 	uintptr_t uOutputSize, const char* pInput) BURGER_NOEXCEPT
 {
 	// Make a copy, since pOutput is needed for determining size
@@ -469,7 +469,7 @@ uintptr_t BURGER_API Burger::UTF32::TranslateFromUTF8(uint32_t* pOutput,
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::UTF32::TranslateFromUTF8(uint32_t* pOutput,
+uintptr_t BURGER_API Burger::UTF32::translate_from_UTF8(uint32_t* pOutput,
 	uintptr_t uOutputSize, const char* pInput,
 	uintptr_t uInputSize) BURGER_NOEXCEPT
 {

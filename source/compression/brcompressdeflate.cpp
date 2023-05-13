@@ -569,7 +569,7 @@ void Burger::CompressDeflate::CompressBlock(const CodeData_t *pLengthTree,const 
 				send_code(uCode+LITERALS+1,pLengthTree);	// send the length code
 				uint_t uExtra = static_cast<uint_t>(g_ExtraLengthBits[uCode]);		// number of extra bits to send
 				if (uExtra) {
-					uLengthCode -= g_BaseLengths[uCode];
+					uLengthCode -= static_cast<uint_t>(g_BaseLengths[uCode]);
 					SendBits(uLengthCode,uExtra);			// send the extra length bits
 				}
 				--uDistance;			// uDistance is now the match distance - 1
@@ -578,7 +578,7 @@ void Burger::CompressDeflate::CompressBlock(const CodeData_t *pLengthTree,const 
 				send_code(uCode,pDistanceTree);		// send the distance code
 				uExtra = static_cast<uint_t>(g_ExtraDistanceBits[uCode]);
 				if (uExtra) {
-					uDistance -= g_BaseDistances[uCode];
+					uDistance -= static_cast<uint_t>(g_BaseDistances[uCode]);
 					SendBits(uDistance, uExtra);	// send the extra distance bits
 				}
 			}
@@ -994,7 +994,7 @@ int Burger::CompressDeflate::BuildBitLengthTree(void)
         if (m_BitLengthTrees[g_BitLengthOrder[max_blindex]].m_DataLength.m_uLength != 0) break;
     }
     /* Update opt_len to include the bit length tree and counts */
-    m_uOptimalLength += 3*(max_blindex+1) + 5+5+4;
+    m_uOptimalLength += 3U*(max_blindex+1U) + 5U+5U+4U;
 
     return max_blindex;
 }
@@ -1163,7 +1163,7 @@ void Burger::CompressDeflate::FlushPending(void)
     if (len) {
 		m_Output.Append(m_pPendingOutput,len);
 		m_pPendingOutput  += len;
-		m_iPending -= len;
+		m_iPending -= static_cast<int_t>(len);
 		if (m_iPending == 0) {
 			m_pPendingOutput = m_PendingBuffer;
 		}

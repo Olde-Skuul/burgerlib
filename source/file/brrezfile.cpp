@@ -1640,7 +1640,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 				}
 				pEntry->m_ppData = ppData;		// Save the handle
 #if defined(_DEBUG)
-				if (Globals::GetTraceFlag()&Globals::TRACE_REZLOAD) {	// Should I print it?
+				if (get_traceflags()&kTraceFlagRezLoad) {	// Should I print it?
 					Debug::Message("Loaded resource %u from external file %s\n",uRezNum,pFileName);
 				}
 #endif
@@ -1716,7 +1716,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 		}
 		pEntry->m_ppData = ppData;		/* Save the handle */
 #if defined(_DEBUG)
-		if (Globals::GetTraceFlag()&Globals::TRACE_REZLOAD) {	/* Should I print it? */
+		if (get_traceflags()&kTraceFlagRezLoad) {	/* Should I print it? */
 			if (pEntry->m_pRezName) {
 				Debug::Message("Loaded compressed resource %u named %s\n",uRezNum,pEntry->m_pRezName);
 			} else {
@@ -1739,7 +1739,7 @@ void ** BURGER_API Burger::RezFile::LoadHandle(uint_t uRezNum,uint_t *pLoadedFla
 			}
 			pEntry->m_ppData = ppData;		/* Save the handle */
 #if defined(_DEBUG)
-			if (Globals::GetTraceFlag()&Globals::TRACE_REZLOAD) {	/* Should I print it? */
+			if (get_traceflags()&kTraceFlagRezLoad) {	/* Should I print it? */
 				if (pEntry->m_pRezName) {
 					Debug::Message("Loaded resource %u named %s\n",uRezNum,pEntry->m_pRezName);
 				} else {

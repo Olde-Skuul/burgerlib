@@ -103,7 +103,7 @@ Burger::OutputMemoryStream::OutputMemoryStream(
 		do {
 			// Make a copy of the chunk.
 			Chunk_t* pNew =
-				static_cast<Chunk_t*>(AllocCopy(pChunk, sizeof(Chunk_t)));
+				static_cast<Chunk_t*>(alloc_copy(pChunk, sizeof(Chunk_t)));
 
 			// If not the first chunk, add to the linked list
 			// or set the root pointer
@@ -152,7 +152,7 @@ Burger::OutputMemoryStream& Burger::OutputMemoryStream::operator=(
 			do {
 				// Make a copy of the chunk.
 				Chunk_t* pNew =
-					static_cast<Chunk_t*>(AllocCopy(pChunk, sizeof(Chunk_t)));
+					static_cast<Chunk_t*>(alloc_copy(pChunk, sizeof(Chunk_t)));
 
 				// If not the first chunk, add to the linked list
 				// or set the root pointer
@@ -910,7 +910,7 @@ Burger::eError BURGER_API Burger::OutputMemoryStream::Append(
 
 	// Looks like another buffer is needed
 	// Make sure it's cleared out in case the mark is skipped ahead
-	Chunk_t* pNewChunk = static_cast<Chunk_t*>(AllocClear(sizeof(Chunk_t)));
+	Chunk_t* pNewChunk = static_cast<Chunk_t*>(alloc_clear(sizeof(Chunk_t)));
 	if (!pNewChunk) {
 		// Error!!! Data is corrupt from now on!
 		m_uError = kErrorOutOfMemory;

@@ -104,7 +104,7 @@ Burger::SimpleArrayBase::SimpleArrayBase(
 	const uintptr_t uChunkSize = rData.m_uChunkSize;
 	m_uChunkSize = uChunkSize;
 	if (uCount) {
-		m_pData = AllocCopy(rData.m_pData, uChunkSize * uCount);
+		m_pData = alloc_copy(rData.m_pData, uChunkSize * uCount);
 		if (!m_pData) {
 			m_uBufferSize = 0;
 			m_uSize = 0;
@@ -164,7 +164,7 @@ Burger::SimpleArrayBase& Burger::SimpleArrayBase::operator=(
 			// Set the new size
 			m_uSize = uCount;
 			m_uBufferSize = uCount;
-			m_pData = AllocCopy(rData.m_pData, uChunkSize * uCount);
+			m_pData = alloc_copy(rData.m_pData, uChunkSize * uCount);
 			if (!m_pData) {
 				m_uSize = 0;
 				m_uBufferSize = 0;

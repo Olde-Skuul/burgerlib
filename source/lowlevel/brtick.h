@@ -2,7 +2,7 @@
 
 	Incremental tick Manager Class
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -21,33 +21,162 @@
 
 /* BEGIN */
 namespace Burger {
+
+enum {
+	/** Used by sleep_ms(uint32_t) to yield the current time quantum */
+	kSleepYield = 0,
+
+	/** Used by sleep_ms(uint32_t) for an infinite time delay */
+	kSleepInfinite = 0xFFFFFFFFU
+};
+
+extern void BURGER_API sleep_ms(
+	uint32_t uMilliseconds, uint_t bAlertable = FALSE) BURGER_NOEXCEPT;
+
 class Tick {
-	/** Previously set tick value */
-	static uint32_t g_uLastTick;
+
+	struct Scaler_t {
+		/** Time mark for scaled hertz tick */
+		uint64_t m_uMark;
+
+		/** Pending time delta tick */
+		uint64_t m_uDelta;
+
+		/** Current tick */
+		uint32_t m_uTick;
+
+		/** Desired tick rate 60, 1000, 1000000 */
+		uint32_t m_uDesiredRate;
+
+		void BURGER_API init(uint32_t uDesiredRate) BURGER_NOEXCEPT;
+		uint32_t BURGER_API read(void) BURGER_NOEXCEPT;
+	};
 
 public:
 	/** Number of ticks per second */
-	static const uint_t TICKSPERSEC = 60;
-	static uint32_t BURGER_API Read(void) BURGER_NOEXCEPT;
-	static BURGER_INLINE uint32_t ResetLastTick(void) BURGER_NOEXCEPT
+	static const uint32_t kTicksPerSecond = 60U;
+
+	/** High precision timer resolution in units per second */
+	uint64_t m_uHighPrecisionFrequency;
+
+	/** Previously set 60 hertz tick value */
+	uint32_t m_uLast60HertzMark;
+
+	/** \ref TRUE if initialized */
+	uint_t m_bInitialized;
+
+	// Platform specific variables
+#if !defined(DOXYGEN)
+
+	// MSDos only
+#if defined(BURGER_MSDOS)
+	/** Old INT 8 vector \msdosonly  */
+	void(__interrupt __far* m_pPreviousINT8)();
+
+	/** System units between interrupts in 1192030UL per second units \msdosonly
+	 */
+	volatile uint32_t m_uStepUnits;
+
+	/** Cumulative units elapsed since the last interrupt, counted up to
+	 * 0x10000U for original timer \msdosonly */
+	volatile uint32_t m_uDelta;
+
+	/** Increment every 1/60th of a second by an interrupt \msdosonly */
+	volatile uint32_t m_u60HertzTick;
+
+	// MSDos X32 Dos extender only
+#if defined(BURGER_X32) || defined(DOXYGEN)
+	/** Old real mode INT 8 vector X32 \msdosonly */
+	uint32_t m_uPreviousRealService;
+#endif
+#endif
+
+#if defined(BURGER_DARWIN)
+	/** Numerator from mach_base_info */
+	uint32_t m_uNumerator;
+
+	/** Denominator from mach_base_info */
+	uint32_t m_uDenominator;
+
+	/** Last read high precision value */
+	uint64_t m_uTickHighPrecisionMark;
+
+	/** Rounding leftovers past mark */
+	uint64_t m_uTickHighPrecisionDelta;
+
+	/** Tick value */
+	uint64_t m_uTickHighPrecision;
+
+#elif defined(BURGER_UNIX)
+	/** Android and Linux needs to test for monotonic clock */
+	uint_t m_bHasMonotonicClock;
+	
+#elif defined(BURGER_MAC) && defined(BURGER_PPC)
+	/** Which type of timer is being used for high precision */
+	uint32_t m_uMethod;
+	
+	/** Pointer to UpTime() if available */
+	void *m_pUpTime;
+#endif
+
+#if !(defined(BURGER_MSDOS) || defined(BURGER_MAC))
+	/** Tick scaler for 60 hertz */
+	Scaler_t m_60Hertz;
+#endif
+
+	/** Tick scaler for 1KHz */
+	Scaler_t m_1KHertz;
+
+#if !(defined(BURGER_MAC) && defined(BURGER_68K))
+	/** Tick scaler for 1Mhz */
+	Scaler_t m_1MHertz;
+#endif
+
+#endif
+
+protected:
+	/** Global instance of all data for timers */
+	static Tick g_Tick;
+
+public:
+	static BURGER_INLINE Tick* get_instance(void) BURGER_NOEXCEPT
 	{
-		const uint32_t uTick = Read();
-		g_uLastTick = uTick;
-		return uTick;
+		return &g_Tick;
 	}
-	static BURGER_INLINE uint32_t GetLastTick(void) BURGER_NOEXCEPT
+
+	static void BURGER_API init(void) BURGER_NOEXCEPT;
+	static void BURGER_API shutdown(void) BURGER_NOEXCEPT;
+
+	static BURGER_INLINE uint64_t get_high_precision_frequency(
+		void) BURGER_NOEXCEPT
 	{
-		return g_uLastTick;
+		return g_Tick.m_uHighPrecisionFrequency;
 	}
-	static BURGER_INLINE void WaitOneTick(void) BURGER_NOEXCEPT
+
+	static BURGER_INLINE uint_t is_initialized(void) BURGER_NOEXCEPT
 	{
-		g_uLastTick = Read();
-		Wait();
+		return g_Tick.m_bInitialized;
 	}
-	static void BURGER_API Wait(uint_t uCount = 1) BURGER_NOEXCEPT;
-	static uint_t BURGER_API WaitEvent(uint_t uCount = 0) BURGER_NOEXCEPT;
-	static uint32_t BURGER_API ReadMicroseconds(void) BURGER_NOEXCEPT;
-	static uint32_t BURGER_API ReadMilliseconds(void) BURGER_NOEXCEPT;
+
+protected:
+	static uint64_t BURGER_API get_high_precision_rate(void) BURGER_NOEXCEPT;
+
+public:
+	static uint64_t BURGER_API read_high_precision(void) BURGER_NOEXCEPT;
+
+	static uint32_t BURGER_API read(void) BURGER_NOEXCEPT;
+	static uint32_t BURGER_API read_ms(void) BURGER_NOEXCEPT;
+	static uint32_t BURGER_API read_us(void) BURGER_NOEXCEPT;
+	static uint32_t BURGER_API read_and_mark(void) BURGER_NOEXCEPT;
+
+	static BURGER_INLINE uint32_t get_mark(void) BURGER_NOEXCEPT
+	{
+		return g_Tick.m_uLast60HertzMark;
+	}
+
+	static void BURGER_API wait_one_tick(void) BURGER_NOEXCEPT;
+	static void BURGER_API wait(uint_t uCount = 1) BURGER_NOEXCEPT;
+	static uint_t BURGER_API wait_event(uint_t uCount = 0) BURGER_NOEXCEPT;
 };
 
 class FloatTimer {
@@ -101,14 +230,6 @@ public:
 	void BURGER_API Unpause(void) BURGER_NOEXCEPT;
 };
 
-enum {
-	/** Used by Sleep(uint32_t) to yield the current time quantum */
-	SLEEP_YIELD = 0,
-	/** Used by Sleep(uint32_t) for an infinite time delay */
-	SLEEP_INFINITE = 0xFFFFFFFFU
-};
-
-extern void BURGER_API Sleep(uint32_t uMilliseconds) BURGER_NOEXCEPT;
 }
 /* END */
 

@@ -47,7 +47,7 @@ BURGER_ENUM_TYPE(eASCIITypeFlag, uint8_t) {
 	/** Punctuation character */
 		ASCII_PUNCTUATION = 0x20,
 	/** Base 16 numeric character */
-		ASCII_HEX = 0x40,
+		kASCIITypeFlagHex = 0x40,
 	/** Base 10 numeric character */
 		ASCII_DIGIT = 0x80
 };
@@ -177,7 +177,7 @@ BURGER_INLINE uint_t IsDigit(char iInput) BURGER_NOEXCEPT
 BURGER_INLINE uint_t IsHex(char iInput) BURGER_NOEXCEPT
 {
 	return static_cast<uint_t>(
-		g_AsciiTestTable[static_cast<uint8_t>(iInput)] & ASCII_HEX);
+		g_AsciiTestTable[static_cast<uint8_t>(iInput)] & kASCIITypeFlagHex);
 }
 BURGER_INLINE uint_t IsWhitespace(char iInput) BURGER_NOEXCEPT
 {
@@ -337,6 +337,9 @@ extern char* BURGER_API StringCharacterReverse(
 	const char* pInput, int iChar) BURGER_NOEXCEPT;
 extern uint16_t* BURGER_API StringCharacterReverse(
 	const uint16_t* pInput, uint_t uChar) BURGER_NOEXCEPT;
+extern uint_t BURGER_API StringEndsWith(char* pInput, int iChar) BURGER_NOEXCEPT;
+extern uint_t BURGER_API StringEndsWith(
+	uint16_t* pInput, uint_t uChar) BURGER_NOEXCEPT;
 
 extern uintptr_t BURGER_API StringSkipOver(
 	const char* pInput, const char* pDelimiters) BURGER_NOEXCEPT;

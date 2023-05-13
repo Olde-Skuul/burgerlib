@@ -275,7 +275,7 @@ Burger::Sequencer::SampleDescription::~SampleDescription()
 
 Burger::Sequencer::SampleDescription * BURGER_API Burger::Sequencer::SampleDescription::New(void)
 {
-	return static_cast<SampleDescription *>(AllocClear(sizeof(SampleDescription)));
+	return static_cast<SampleDescription *>(alloc_clear(sizeof(SampleDescription)));
 }
 
 /*! ************************************
@@ -528,7 +528,7 @@ void BURGER_API Burger::Sequencer::Channel_t::VolumeCommand(uint_t uCall)
 		case 0x9:
 			// Only sub call 1 is supported
 			if (uCall == 1) {
-				m_uVolume = Min(static_cast<const uint32_t>(ClampZero(static_cast<int32_t>(m_uVolume+uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
+				m_uVolume = Min(static_cast<uint32_t>(ClampZero(static_cast<int32_t>(m_uVolume+uVolumeArgument))),static_cast<uint32_t>(cMaxVolume));
 			}
 			break;
 
@@ -1148,7 +1148,7 @@ uint_t BURGER_API Burger::Sequencer::CreateReverbTables(void)
 		case SoundManager::TYPELSHORT:
 		case SoundManager::TYPEBSHORT:
 			// *4 for short / Stereo
-			pBuffer = AllocClear(uBufferSize*4);
+			pBuffer = alloc_clear(uBufferSize*4);
 			break;
 		}
 		// Error?
@@ -1234,7 +1234,7 @@ uint_t BURGER_API Burger::Sequencer::CreateVolumeBuffer(void)
 	switch (m_eOutputDataType) {
 	case SoundManager::TYPECHAR:
 	case SoundManager::TYPEBYTE:
-		pBuffer = AllocClear((m_uAccumBufferSize*4) + (m_uMicroDelayBufferSize*2*4));
+		pBuffer = alloc_clear((m_uAccumBufferSize*4) + (m_uMicroDelayBufferSize*2*4));
 		if (pBuffer) {
 			m_pAccumBuffer16 = static_cast<int16_t *>(pBuffer);
 		}
@@ -1243,7 +1243,7 @@ uint_t BURGER_API Burger::Sequencer::CreateVolumeBuffer(void)
 	default:
 	case SoundManager::TYPELSHORT:
 	case SoundManager::TYPEBSHORT:
-		pBuffer = AllocClear((m_uAccumBufferSize*8) + (m_uMicroDelayBufferSize*2*8));
+		pBuffer = alloc_clear((m_uAccumBufferSize*8) + (m_uMicroDelayBufferSize*2*8));
 		if (pBuffer) {
 			m_pAccumBuffer32 = static_cast<int32_t *>(pBuffer);
 		}

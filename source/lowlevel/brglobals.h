@@ -54,49 +54,51 @@
 /* BEGIN */
 namespace Burger {
 
+enum eTraceFlags {
+	/** Test and display memory leaks */
+	kTraceFlagMemoryLeak = 1,
+	/** Print the name of a resource file being loaded */
+	kTraceFlagRezLoad = 2,
+	/** Print the name of a file being loaded */
+	kTraceFlagFileLoad = 4,
+	/** Print possible errors */
+	kTraceFlagRaceWarnings = 8,
+	/** Print the network commands */
+	kTraceFlagNetwork = 0x10,
+	/** Print operating system messages */
+	kTraceFlagMessages = 0x20,
+	/** Actively debugging the code (NEVER SET THIS for applications sent to
+	   testers or release) */
+	kTraceFlagActiveDebugging = 0x40,
+	/** GIVE ME everything! */
+	kTraceFlagAll = 0x7F
+};
+
+extern uint32_t BURGER_API get_traceflags(void) BURGER_NOEXCEPT;
+extern void BURGER_API set_traceflags(uint32_t uTraceFlags) BURGER_NOEXCEPT;
+
+enum eHintFlags {
+	/** Disable the throwing of an exception to name a thread */
+	kHintWin32DisableThreadNamingException = 0x01
+};
+
+extern uint32_t BURGER_API get_hintflags(void) BURGER_NOEXCEPT;
+extern void BURGER_API set_hintflags(uint32_t uHintFlags) BURGER_NOEXCEPT;
+
 class OutputMemoryStream;
 class String;
 
 class Globals {
 public:
-	enum {
-		TRACE_MEMORYLEAKS = 1, ///< Test and display memory leaks
-		TRACE_REZLOAD = 2,  ///< Print the name of a resource file being loaded
-		TRACE_FILELOAD = 4, ///< Print the name of a file being loaded
-		TRACE_WARNINGS = 8, ///< Print possible errors
-		TRACE_NETWORK = 0x10,  ///< Print the network commands
-		TRACE_MESSAGES = 0x20, ///< Print operating system messages
-		/** Actively debugging the code (NEVER SET THIS for applications sent to
-		   testers or release) */
-		TRACE_ACTIVEDEBUGGING = 0x40,
-		/** GIVE ME everything! */
-		TRACE_THEWORKS = 0x7F
-	};
-
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 
 private:
-	/** Windows class name "BurgerGameClass" (Windows only) */
-	static const uint16_t g_GameClass[];
 	/** Atom assigned to my class (Windows only) */
 	static uint16_t g_uAtom;
-	/** Main window for the application (Windows only) */
-	static HWND__* g_hWindow;
 	/** QuickTime's version in 0x0102 (1.2) format. (Windows only) */
 	static uint32_t g_uQuickTimeVersion;
 	/** \ref TRUE if Quicktime's version is valid. (Windows only) */
 	static uint8_t g_bQuickTimeVersionValid;
-	/** DirectX version 0x0900 (9.0) format (Windows only) */
-	static uint32_t g_uDirectXVersion;
-	/* \ref TRUE if DirectX's version is valid (Windows only) */
-	static uint8_t g_bDirectXVersionValid;
-
-#if defined(BURGER_WIN32) || defined(DOXYGEN)
-	/** Non-zero if tested, low bit has \ref TRUE or \ref FALSE if the 32 bit
-	 * app was running under 64 bit windows (Windows only) */
-	static uint8_t g_bIsWindows64Bit;
-#endif
-
 #endif
 
 #if defined(BURGER_MACOS) || defined(DOXYGEN)
@@ -113,8 +115,6 @@ private:
 private:
 	/** Global default error code used by \ref Globals::Shutdown(). */
 	static eError g_iErrorCode;
-	/** Debug information level */
-	static uint_t g_uTraceFlags;
 	/** Global Buffer containing the last fatal error or warning */
 	static char g_ErrorMsg[512];
 	/** \ref TRUE if non-fatal errors are treated as fatal */
@@ -126,60 +126,8 @@ private:
 
 public:
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-	static BURGER_INLINE const uint16_t* GetWindowClassName(
-		void) BURGER_NOEXCEPT
-	{
-		return g_GameClass;
-	}
-	static BURGER_INLINE HWND__* GetWindow(void) BURGER_NOEXCEPT
-	{
-		return g_hWindow;
-	}
-	static BURGER_INLINE void SetWindow(HWND__* pInput) BURGER_NOEXCEPT
-	{
-		g_hWindow = pInput;
-	}
-
-#if defined(BURGER_WIN32) || defined(DOXYGEN)
-	static uint_t BURGER_API IsWindows64Bit(void);
-#else
-	static BURGER_INLINE uint_t IsWindows64Bit(void) BURGER_NOEXCEPT
-	{
-		return TRUE;
-	}
-#endif
-
-	static void BURGER_API GetQTFolderFromRegistry(const char* pSubKey,
-		const char* pValueName, char* pBuffer, uint32_t uSize);
-	static uint_t BURGER_API GetPathToQuickTimeFolder(
-		char* pBuffer, uint32_t uSize, uint32_t* pReserved) BURGER_NOEXCEPT;
-	static uint32_t BURGER_API GetQTSystemDirectoryA(
-		char* pBuffer, uint32_t uSize) BURGER_NOEXCEPT;
-	static uint32_t BURGER_API GetQTApplicationDirectoryA(
-		char* pBuffer, uint32_t uSize) BURGER_NOEXCEPT;
-	static uint32_t BURGER_API GetQTExtensionDirectoryA(
-		char* pBuffer, uint32_t uSize) BURGER_NOEXCEPT;
-	static uint32_t BURGER_API GetQTComponentDirectoryA(
-		char* pBuffer, uint32_t uSize) BURGER_NOEXCEPT;
-	static HINSTANCE__* BURGER_API QTLoadLibrary(
-		const char* pDLLName) BURGER_NOEXCEPT;
-
-	static uint64_t BURGER_API GetFileVersion64(
-		const uint16_t* pWindowsFilename);
-	static uint_t BURGER_API GetDirectXVersionViaFileVersions(void);
-	static uint_t BURGER_API GetDirectXVersion(void);
-	static uint_t BURGER_API GetVideoGUID(GUID* pOutput, uint_t uDevNum);
-	static uint_t BURGER_API AddGroupToProgramMenu(const char* pGroupName);
-	static int BURGER_API CreateUserRegistryKey(
-		const char* pKey, const char* pSubKey, const char* pData);
-	static void BURGER_API AssociateFileExtensionToExe(
-		const char* pFileExtension, const char* pDescription,
-		const char* pProgramID);
-	static void BURGER_API OutputWindowsMessage(
-		uint_t uMessage, uintptr_t wParam, uintptr_t lParam);
 	static uint16_t BURGER_API RegisterWindowClass(uint_t uIconResID = 0);
 	static void BURGER_API UnregisterWindowClass(void);
-	static void BURGER_API PumpMessages(void);
 #endif
 
 #if defined(BURGER_MAC) || defined(DOXYGEN)
@@ -232,17 +180,9 @@ public:
 		return g_ErrorMsg;
 	}
 	static void BURGER_ANSIAPI SetErrorMsg(const char* pMessage, ...);
-	static BURGER_INLINE uint_t GetTraceFlag(void) BURGER_NOEXCEPT
-	{
-		return g_uTraceFlags;
-	}
-	static BURGER_INLINE void SetTraceFlag(uint_t uNewFlag) BURGER_NOEXCEPT
-	{
-		g_uTraceFlags = uNewFlag;
-	}
 	static BURGER_INLINE uint_t AreWarningsEnabled(void) BURGER_NOEXCEPT
 	{
-		return g_uTraceFlags & TRACE_WARNINGS;
+		return get_traceflags() & kTraceFlagRaceWarnings;
 	}
 	static BURGER_INLINE uint_t GetErrorBombFlag(void) BURGER_NOEXCEPT
 	{

@@ -219,7 +219,7 @@ uint_t BURGER_API Burger::UTF16::IsValid(
 
 ***************************************/
 
-uint16_t BURGER_API Burger::UTF16::TranslateFromUTF8(
+uint16_t BURGER_API Burger::UTF16::translate_from_UTF8(
 	const char* pInput) BURGER_NOEXCEPT
 {
 
@@ -303,7 +303,7 @@ uint16_t BURGER_API Burger::UTF16::TranslateFromUTF8(
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::UTF16::TranslateFromUTF8(uint16_t* pOutput,
+uintptr_t BURGER_API Burger::UTF16::translate_from_UTF8(uint16_t* pOutput,
 	uintptr_t uOutputSize, const char* pInput) BURGER_NOEXCEPT
 {
 	uint16_t* pWorkPtr = pOutput;
@@ -471,7 +471,7 @@ uintptr_t BURGER_API Burger::UTF16::TranslateFromUTF8(uint16_t* pOutput,
 
 ***************************************/
 
-uintptr_t BURGER_API Burger::UTF16::TranslateFromUTF8(uint16_t* pOutput,
+uintptr_t BURGER_API Burger::UTF16::translate_from_UTF8(uint16_t* pOutput,
 	uintptr_t uOutputSize, const char* pInput,
 	uintptr_t uInputSize) BURGER_NOEXCEPT
 {

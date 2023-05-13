@@ -37,11 +37,11 @@ public:
 	static uint_t BURGER_API IsValid(const uint16_t* pInput) BURGER_NOEXCEPT;
 	static uint_t BURGER_API IsValid(
 		const uint16_t* pInput, uintptr_t uElementCount) BURGER_NOEXCEPT;
-	static uint16_t BURGER_API TranslateFromUTF8(
+	static uint16_t BURGER_API translate_from_UTF8(
 		const char* pInput) BURGER_NOEXCEPT;
-	static uintptr_t BURGER_API TranslateFromUTF8(uint16_t* pOutput,
+	static uintptr_t BURGER_API translate_from_UTF8(uint16_t* pOutput,
 		uintptr_t uOutputSize, const char* pInput) BURGER_NOEXCEPT;
-	static uintptr_t BURGER_API TranslateFromUTF8(uint16_t* pOutput,
+	static uintptr_t BURGER_API translate_from_UTF8(uint16_t* pOutput,
 		uintptr_t uOutputSize, const char* pInput,
 		uintptr_t uInputSize) BURGER_NOEXCEPT;
 };

@@ -18,6 +18,7 @@
 #include "brkeyboard.h"
 #include "brmouse.h"
 #include "brsound.h"
+#include "brtick.h"
 
 #if defined(BURGER_WINDOWS)
 #include "brdisplaydirectx9.h"
@@ -248,6 +249,7 @@ Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,
 	: m_MemoryManagerHandle(
 		  uDefaultMemorySize, uDefaultHandleCount, uMinReserveSize)
 {
+	Tick::init();
 	InitDefaults();
 }
 #endif
@@ -267,6 +269,7 @@ Burger::GameApp::~GameApp()
 {
 	// Clear out the managers
 	ShutdownDefaults();
+	Tick::shutdown();
 }
 #endif
 

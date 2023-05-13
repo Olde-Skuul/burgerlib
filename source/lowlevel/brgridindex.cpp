@@ -182,7 +182,7 @@ Burger::GridIndexPoints::GridIndexPoints(const Vector4D_t *pBounds,uint_t uXCell
 	BURGER_ASSERT(pBounds->GetTopLeft()->y <= pBounds->GetBottomRight()->y);
 
 	// Allocate the grid.
-	m_ppGrid = static_cast<Entry_t **>(AllocClear(sizeof(Entry_t*)*uXCells * uYCells));
+	m_ppGrid = static_cast<Entry_t **>(alloc_clear(sizeof(Entry_t*)*uXCells * uYCells));
 }
 
 /*! ************************************
@@ -216,7 +216,7 @@ Burger::GridIndexPoints::GridIndexPoints(const Vector4D_t *pBounds,uintptr_t uIt
 	m_fYCells = static_cast<float>(static_cast<int>(m_uYCells));
 
 	// Allocate the grid.
-	m_ppGrid = static_cast<Entry_t **>(AllocClear(sizeof(Entry_t*)*m_uXCells * m_uYCells));
+	m_ppGrid = static_cast<Entry_t **>(alloc_clear(sizeof(Entry_t*)*m_uXCells * m_uYCells));
 }
 
 /*! ************************************

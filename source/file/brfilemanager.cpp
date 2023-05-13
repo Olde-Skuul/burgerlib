@@ -1971,7 +1971,7 @@ void* BURGER_API Burger::FileManager::load_file(
 	void* pResult = nullptr;
 	if (uNewSize) {
 #if defined(_DEBUG)
-		if (Globals::GetTraceFlag() & Globals::TRACE_FILELOAD) {
+		if (get_traceflags() & kTraceFlagFileLoad) {
 			Debug::PrintString("Loading native file ");
 			Debug::PrintString(pFileName->get_native());
 			Debug::PrintString(".\n");
@@ -2064,7 +2064,7 @@ void BURGER_API Burger::FileManager::add_queue(File* pFile,
 	m_uQueueEnd = (uEnd + 1) & (kMaxQueue - 1);
 #if defined(BURGER_WINDOWS)
 	// Send a message to the thread to execute
-	m_PingIOThread.Release();
+	m_PingIOThread.release();
 #endif
 }
 

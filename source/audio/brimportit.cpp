@@ -577,7 +577,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 													pSampleDescription->SetName(pSampleFormat->m_Name);
 													if (pSampleDescription->m_uSampleSize) {
 														const void *pDigital = pInput+LittleEndian::LoadAny(&pSampleFormat->m_uSampleOffset);
-														pSampleDescription->m_pSample = AllocCopy(pDigital,pSampleDescription->m_uSampleSize);
+														pSampleDescription->m_pSample = alloc_copy(pDigital,pSampleDescription->m_uSampleSize);
 														if (!pSampleDescription->m_pSample) {
 															// Uh oh...
 															uResult = Sequencer::IMPORT_OUTOFMEMORY;
@@ -659,7 +659,7 @@ uint_t BURGER_API Burger::ImportIT(Sequencer::SongPackage *pOutput,const uint8_t
 
 										pSampleDescription->m_iRelativeNote	= -12;
 										pInstrData->SetName(pSampleFormat->m_Name);
-										pSampleDescription->m_pSample = AllocCopy(pDigitalSample,pSampleDescription->m_uSampleSize);
+										pSampleDescription->m_pSample = alloc_copy(pDigitalSample,pSampleDescription->m_uSampleSize);
 										if (!pSampleDescription->m_pSample) {
 											// Uh oh...
 											uResult = Sequencer::IMPORT_OUTOFMEMORY;

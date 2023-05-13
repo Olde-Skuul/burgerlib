@@ -2,7 +2,7 @@
 
 	Handle based memory manager
 
-	Copyright (c) 1995-2017 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -52,6 +52,7 @@ public:
 		ALIGNMENT = 16 ///< Default memory alignment
 #endif
 	};
+
 	enum eMemoryStage {
 		/** Garbage collection stage to compact memory */
 		StageCompact,
@@ -63,6 +64,7 @@ public:
 		StageGiveup
 
 	};
+
 	/** Function prototype for user supplied garbage collection subroutine */
 	typedef void(BURGER_API* MemPurgeProc)(void* pThis, eMemoryStage eStage);
 
@@ -77,33 +79,47 @@ private:
 		uint_t m_uFlags;         ///< Memory flags or parent used handle
 		uint_t m_uID;            ///< Memory ID
 	};
+
 	struct SystemBlock_t {
 		SystemBlock_t* m_pNext; ///< Next block in the chain
 	};
+
 	/** Linked list of memory blocks taken from the system */
 	SystemBlock_t* m_pSystemMemoryBlocks;
+
 	/** Callback before memory purging */
 	MemPurgeProc m_MemPurgeCallBack;
+
 	/** User pointer for memory purge */
 	void* m_pMemPurge;
+
 	/** All of the memory currently allocated */
 	uintptr_t m_uTotalAllocatedMemory;
+
 	/** Total allocated system memory */
 	uintptr_t m_uTotalSystemMemory;
+
 	/** Pointer to the free handle list */
 	Handle_t* m_pFreeHandle;
+
 	/** Number of handles allocated */
 	uint_t m_uTotalHandleCount;
+
 	/** First used memory handle (Start of linked list) */
 	Handle_t m_LowestUsedMemory;
+
 	/** Last used memory handle (End of linked list) */
 	Handle_t m_HighestUsedMemory;
+
 	/** Free handle list */
 	Handle_t m_FreeMemoryChunks;
+
 	/** Purged handle list */
 	Handle_t m_PurgeHands;
+
 	/** Purged handle linked list */
 	Handle_t m_PurgeHandleFiFo;
+
 	/** Lock for multi-threading support */
 	CriticalSection m_Lock;
 
@@ -119,38 +135,46 @@ private:
 		Handle_t* pParent, Handle_t* pHandle) BURGER_NOEXCEPT;
 	void BURGER_API ReleaseMemoryRange(
 		void* pData, uintptr_t uLength, Handle_t* pParent) BURGER_NOEXCEPT;
-	void BURGER_API PrintHandles(
-		const Handle_t* pFirst, const Handle_t* pLast, uint_t bNoCheck) BURGER_NOEXCEPT;
+	void BURGER_API PrintHandles(const Handle_t* pFirst, const Handle_t* pLast,
+		uint_t bNoCheck) BURGER_NOEXCEPT;
 
 public:
 	MemoryManagerHandle(uintptr_t uDefaultMemorySize = DEFAULTMEMORYCHUNK,
 		uint_t uDefaultHandleCount = DEFAULTHANDLECOUNT,
 		uintptr_t uMinReserveSize = DEFAULTMINIMUMRESERVE) BURGER_NOEXCEPT;
 	~MemoryManagerHandle();
+
 	BURGER_INLINE uintptr_t GetTotalAllocatedMemory(void) const BURGER_NOEXCEPT
 	{
 		return m_uTotalAllocatedMemory;
 	}
-	BURGER_INLINE void* Alloc(uintptr_t uSize) BURGER_NOEXCEPT
+
+	BURGER_INLINE void* alloc(uintptr_t uSize) BURGER_NOEXCEPT
 	{
 		return AllocProc(this, uSize);
 	}
-	BURGER_INLINE void Free(const void* pInput) BURGER_NOEXCEPT
+
+	BURGER_INLINE void free(const void* pInput) BURGER_NOEXCEPT
 	{
 		return FreeProc(this, pInput);
 	}
-	BURGER_INLINE void* Realloc(
+
+	BURGER_INLINE void* realloc(
 		const void* pInput, uintptr_t uSize) BURGER_NOEXCEPT
 	{
 		return ReallocProc(this, pInput, uSize);
 	}
-	BURGER_INLINE void Shutdown(void) BURGER_NOEXCEPT
+
+	BURGER_INLINE void shutdown(void) BURGER_NOEXCEPT
 	{
 		ShutdownProc(this);
 	}
-	void** BURGER_API AllocHandle(uintptr_t uSize, uint_t uFlags = 0) BURGER_NOEXCEPT;
+
+	void** BURGER_API AllocHandle(
+		uintptr_t uSize, uint_t uFlags = 0) BURGER_NOEXCEPT;
 	void BURGER_API FreeHandle(void** ppInput) BURGER_NOEXCEPT;
-	void** BURGER_API ReallocHandle(void** ppInput, uintptr_t uSize) BURGER_NOEXCEPT;
+	void** BURGER_API ReallocHandle(
+		void** ppInput, uintptr_t uSize) BURGER_NOEXCEPT;
 	void** BURGER_API RefreshHandle(void** ppInput) BURGER_NOEXCEPT;
 	void** BURGER_API FindHandle(const void* pInput) BURGER_NOEXCEPT;
 	static uintptr_t BURGER_API GetSize(void** ppInput) BURGER_NOEXCEPT;
@@ -182,18 +206,21 @@ public:
 		: m_pMemoryManagerHandle(pMemoryManagerHandle)
 	{
 	}
-	void* Alloc(uintptr_t uSize) const BURGER_NOEXCEPT BURGER_FINAL
+
+	void* alloc(uintptr_t uSize) const BURGER_NOEXCEPT BURGER_FINAL
 	{
-		return m_pMemoryManagerHandle->Alloc(uSize);
+		return m_pMemoryManagerHandle->alloc(uSize);
 	}
-	void Free(const void* pInput) const BURGER_NOEXCEPT BURGER_FINAL
+
+	void free(const void* pInput) const BURGER_NOEXCEPT BURGER_FINAL
 	{
-		return m_pMemoryManagerHandle->Free(pInput);
+		return m_pMemoryManagerHandle->free(pInput);
 	}
-	void* Realloc(
+
+	void* realloc(
 		const void* pInput, uintptr_t uSize) const BURGER_NOEXCEPT BURGER_FINAL
 	{
-		return m_pMemoryManagerHandle->Realloc(pInput, uSize);
+		return m_pMemoryManagerHandle->realloc(pInput, uSize);
 	}
 };
 

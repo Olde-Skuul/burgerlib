@@ -35,6 +35,10 @@
 #include "brcriticalsection.h"
 #endif
 
+#ifndef __BRTHREAD_H__
+#include "brthread.h"
+#endif
+
 #ifndef __BRARRAY_H__
 #include "brarray.h"
 #endif
