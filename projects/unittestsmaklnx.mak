@@ -172,7 +172,7 @@ SOURCE_DIRS +=../unittest
 #
 
 INCLUDE_DIRS = $(SOURCE_DIRS)
-INCLUDE_DIRS +=$(BURGER_SDKS)/steamworks/public/steam
+INCLUDE_DIRS +=../steamworks/public/steam
 
 #
 # Set the compiler flags for each of the build types
