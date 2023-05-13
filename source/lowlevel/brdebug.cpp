@@ -147,7 +147,7 @@ void BURGER_ANSIAPI Burger::Debug::Warning(
 	if (pMessage) {
 
 		// Should the warning be printed?
-		if ((Globals::GetTraceFlag() & Globals::TRACE_WARNINGS) ||
+		if ((get_traceflags() & kTraceFlagRaceWarnings) ||
 			Globals::GetErrorBombFlag()) {
 
 			// Start parameter passing
@@ -292,10 +292,10 @@ void BURGER_API Burger::Debug::PrintString(uint64_t uInput) BURGER_NOEXCEPT
 
 ***************************************/
 
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_MACOSX) || \
-	defined(BURGER_ANDROID)) || \
+#if !(defined(BURGER_WINDOWS) || defined(BURGER_MAC) || \
+	defined(BURGER_DARWIN) || defined(BURGER_UNIX)) || \
 	defined(DOXYGEN)
-uint_t BURGER_API Burger::Debug::IsDebuggerPresent(void) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::is_debugger_present(void) BURGER_NOEXCEPT
 {
 	return FALSE;
 }
@@ -313,7 +313,8 @@ uint_t BURGER_API Burger::Debug::IsDebuggerPresent(void) BURGER_NOEXCEPT
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS)) || defined(DOXYGEN)
-void BURGER_API Burger::Debug::PrintErrorMessage(uint_t uErrorCode) BURGER_NOEXCEPT
+void BURGER_API Burger::Debug::PrintErrorMessage(
+	uint_t uErrorCode) BURGER_NOEXCEPT
 {
 	// Print the error string
 	PrintString("Error: 0x");

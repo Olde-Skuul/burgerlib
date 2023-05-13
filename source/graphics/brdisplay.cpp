@@ -285,7 +285,7 @@ void BURGER_API Burger::Display::InitDefaults(GameApp* pGameApp)
 	m_uDisplayDepth = 0;
 
 	m_uBorderColor = 0;
-	m_uPaletteFadeSpeed = Tick::TICKSPERSEC / 15;
+	m_uPaletteFadeSpeed = Tick::kTicksPerSecond / 15;
 
 	m_iPauseRenderingCount = 0;
 	m_bRenderingPaused = FALSE;
@@ -1452,7 +1452,7 @@ void BURGER_API Burger::Display::SetPalette(
 
 	\sa FadeTo(RezFile *,uint_t,,FadeProc,void *), FadeToWhite(), FadeToBlack(),
 		GameApp::Poll(), m_uPaletteFadeSpeed, m_bPaletteVSync, m_Palette,
-		Tick::Read()
+		Tick::read()
 
 ***************************************/
 
@@ -1495,7 +1495,7 @@ void BURGER_API Burger::Display::FadeTo(
 			uint_t LastCall = 0;
 
 			// Get the time base
-			uint32_t uMark = Tick::Read();
+			uint32_t uMark = Tick::read();
 			// Number of ticks to elapse for 16 steps
 			uint_t uTotalTicks = 16 * m_uPaletteFadeSpeed;
 			do {
@@ -1503,7 +1503,7 @@ void BURGER_API Burger::Display::FadeTo(
 				m_pGameApp->Poll();
 
 				// Get elapsed time
-				fScale = static_cast<Fixed32>(Tick::Read() - uMark);
+				fScale = static_cast<Fixed32>(Tick::read() - uMark);
 				fScale = fScale * (0x10000 / static_cast<Fixed32>(uTotalTicks));
 				if (fScale > 0x10000) { // Overflow?
 					fScale = 0x10000;   // Cap at 1.0f fixed
@@ -1973,7 +1973,7 @@ Burger::Display::eAspectRatio BURGER_API Burger::Display::GetAspectRatio(
 	When calling the palette fade functions, it will perform the fade evenly
 	until this amount of time has elapsed. This is not a "per frame" time. It's
 	a total time. If the desired time is one second from start to finish, set
-	this value to Tick::TICKSPERSEC
+	this value to \ref Tick::kTicksPerSecond
 
 	\return Return the current tick value for a palette fade
 	\sa SetFadeSpeed(uint_t)
@@ -1988,8 +1988,8 @@ Burger::Display::eAspectRatio BURGER_API Burger::Display::GetAspectRatio(
 	When calling the palette fade functions, it will perform the fade evenly
 	until this amount of time has elapsed. This is not a "per frame" time. It's
 	a total time. If the desired time is one second from start to finish, set
-	this value to Tick::TICKSPERSEC. Setting this value to zero will disable the
-	fade feature and will have palettes update immediately
+	this value to \ref Tick::kTicksPerSecond. Setting this value to zero will disable
+	the fade feature and will have palettes update immediately
 
 	\param uPaletteFadeSpeed New time delay in ticks.
 	\sa GetFadeSpeed()

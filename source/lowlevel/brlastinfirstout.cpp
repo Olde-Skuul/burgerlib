@@ -506,9 +506,9 @@ Burger::MPLastInFirstOut::MPLastInFirstOut(ForwardLink *pRoot) :
 
 void BURGER_API Burger::MPLastInFirstOut::Clear(void)
 {
-	m_Lock.Lock();
+	m_Lock.lock();
 	m_pRoot = NULL;
-	m_Lock.Unlock();
+	m_Lock.unlock();
 }
 
 /*! ************************************
@@ -537,9 +537,9 @@ void BURGER_API Burger::MPLastInFirstOut::Clear(void)
 
 uintptr_t BURGER_API Burger::MPLastInFirstOut::Size(void)
 {
-	m_Lock.Lock();
+	m_Lock.lock();
 	uintptr_t uSize = LastInFirstOut::Size();
-	m_Lock.Unlock();
+	m_Lock.unlock();
 	return uSize;
 }
 
@@ -558,9 +558,9 @@ uintptr_t BURGER_API Burger::MPLastInFirstOut::Size(void)
 
 void BURGER_API Burger::MPLastInFirstOut::AddFirst(ForwardLink *pNewRoot)
 { 
-	m_Lock.Lock();
+	m_Lock.lock();
 	LastInFirstOut::AddFirst(pNewRoot);
-	m_Lock.Unlock();	
+	m_Lock.unlock();	
 }
 
 /*! ************************************
@@ -579,9 +579,9 @@ void BURGER_API Burger::MPLastInFirstOut::AddFirst(ForwardLink *pNewRoot)
 
 void BURGER_API Burger::MPLastInFirstOut::AddLast(ForwardLink* pNewTail)
 {
-	m_Lock.Lock();
+	m_Lock.lock();
 	LastInFirstOut::AddLast(pNewTail);
-	m_Lock.Unlock();
+	m_Lock.unlock();
 }
 
 /*! ************************************
@@ -600,9 +600,9 @@ void BURGER_API Burger::MPLastInFirstOut::AddLast(ForwardLink* pNewTail)
 
 Burger::ForwardLink* BURGER_API Burger::MPLastInFirstOut::RemoveFirst(void)
 {
-	m_Lock.Lock();
+	m_Lock.lock();
 	ForwardLink *pRoot = LastInFirstOut::RemoveFirst();
-	m_Lock.Unlock();
+	m_Lock.unlock();
 	return pRoot;
 }
 
@@ -623,10 +623,10 @@ Burger::ForwardLink* BURGER_API Burger::MPLastInFirstOut::RemoveFirst(void)
 
 Burger::ForwardLink * BURGER_API Burger::MPLastInFirstOut::TakeList(void)
 {	
-	m_Lock.Lock();
+	m_Lock.lock();
 	// Get the list pointer
 	ForwardLink *pRoot = LastInFirstOut::TakeList();
-	m_Lock.Unlock();
+	m_Lock.unlock();
 	// Return the list
 	return pRoot;
 }
@@ -646,9 +646,9 @@ Burger::ForwardLink * BURGER_API Burger::MPLastInFirstOut::TakeList(void)
 
 Burger::eError BURGER_API Burger::MPLastInFirstOut::Remove(ForwardLink *pEntry)
 {
-	m_Lock.Lock();
+	m_Lock.lock();
 	eError uResult = LastInFirstOut::Remove(pEntry);
-	m_Lock.Unlock();
+	m_Lock.unlock();
 	// Return the error
 	return uResult;
 }
@@ -667,9 +667,9 @@ Burger::eError BURGER_API Burger::MPLastInFirstOut::Remove(ForwardLink *pEntry)
 
 void BURGER_API Burger::MPLastInFirstOut::ReverseList(void)
 {
-	m_Lock.Lock();
+	m_Lock.lock();
 	LastInFirstOut::ReverseList();
-	m_Lock.Unlock();
+	m_Lock.unlock();
 }
 
 /*! ************************************

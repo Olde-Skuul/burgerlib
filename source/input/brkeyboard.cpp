@@ -1015,7 +1015,7 @@ uint_t BURGER_API Burger::Keyboard::PostKeyEvent(
 		// Add the proper time stamp
 		uint32_t uTime = pEvent->m_uMSTimeStamp;
 		if (!uTime) {
-			uTime = Tick::ReadMilliseconds();
+			uTime = Tick::read_ms();
 		}
 		pNewEvent->m_uMSTimeStamp = uTime;
 

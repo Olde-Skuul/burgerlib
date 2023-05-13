@@ -1426,7 +1426,7 @@ void BURGER_API LBRectWriteStream(const LBRect *Input,StreamHandle_t *fp)
 
 LBRectList * BURGER_API LBRectListNew(void)
 {
-	return (LBRectList *)Burger::AllocClear(sizeof(LBRectList));
+	return (LBRectList *)Burger::alloc_clear(sizeof(LBRectList));
 }
 
 /***************************************

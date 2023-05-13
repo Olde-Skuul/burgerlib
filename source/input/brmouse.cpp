@@ -96,14 +96,14 @@ Burger::Mouse::~Mouse()
 
 uint_t BURGER_API Burger::Mouse::PeekMouseEvent(MouseEvent_t *pEvent)
 {
-	m_MouseLock.Lock();
+	m_MouseLock.lock();
 	uint_t uIndex = m_uArrayStart;	// Get the starting index
 	uint_t uResult = FALSE;
 	if (uIndex!=m_uArrayEnd) {		// Anything in the buffer?
 		pEvent[0] = m_MouseEvents[uIndex];
 		uResult = TRUE;
 	}
-	m_MouseLock.Unlock();
+	m_MouseLock.unlock();
 	// No event pending
 	return uResult;
 }
@@ -124,7 +124,7 @@ uint_t BURGER_API Burger::Mouse::PeekMouseEvent(MouseEvent_t *pEvent)
 
 uint_t BURGER_API Burger::Mouse::GetMouseEvent(MouseEvent_t *pEvent)
 {
-	m_MouseLock.Lock();
+	m_MouseLock.lock();
 	uint_t uIndex = m_uArrayStart;		// Get the starting index
 	uint_t uResult = FALSE;
 	if (uIndex!=m_uArrayEnd) {			// Anything in the buffer?
@@ -132,7 +132,7 @@ uint_t BURGER_API Burger::Mouse::GetMouseEvent(MouseEvent_t *pEvent)
 		m_uArrayStart = (uIndex+1)&(MOUSEBUFFSIZE-1);	// Next event
 		uResult = TRUE;
 	}
-	m_MouseLock.Unlock();
+	m_MouseLock.unlock();
 	return uResult;
 }
 
@@ -171,11 +171,11 @@ uint_t BURGER_API Burger::Mouse::IsPresent(void) const
 
 uint32_t BURGER_API Burger::Mouse::ReadButtons(void)
 {
-	m_MouseLock.Lock();
+	m_MouseLock.lock();
 	m_uArrayStart = 0;		// Clear out the events
 	m_uArrayEnd = 0;
 	uint_t uButtons = m_uButtons;
-	m_MouseLock.Unlock();
+	m_MouseLock.unlock();
 	return uButtons;
 }
 
@@ -202,12 +202,12 @@ uint32_t BURGER_API Burger::Mouse::ReadButtons(void)
 
 uint32_t BURGER_API Burger::Mouse::ReadButtonDowns(void)
 {
-	m_MouseLock.Lock();
+	m_MouseLock.lock();
 	m_uArrayStart = 0;		// Clear out the events
 	m_uArrayEnd = 0;
 	uint_t uButtons = m_uPressedButtons;
 	m_uPressedButtons = 0;	// Acknowledge the button events
-	m_MouseLock.Unlock();
+	m_MouseLock.unlock();
 	return uButtons;
 }
 
@@ -226,7 +226,7 @@ uint32_t BURGER_API Burger::Mouse::ReadButtonDowns(void)
 
 void BURGER_API Burger::Mouse::Read(uint32_t *pX,uint32_t *pY)
 {
-	m_MouseLock.Lock();
+	m_MouseLock.lock();
 	m_uArrayStart = 0;		// Clear out the events
 	m_uArrayEnd = 0;
 	if (pX) {
@@ -235,7 +235,7 @@ void BURGER_API Burger::Mouse::Read(uint32_t *pX,uint32_t *pY)
 	if (pY) {
 		pY[0] = m_uY;
 	}
-	m_MouseLock.Unlock();
+	m_MouseLock.unlock();
 }
 
 /*! ************************************
@@ -254,7 +254,7 @@ void BURGER_API Burger::Mouse::Read(uint32_t *pX,uint32_t *pY)
 
 void BURGER_API Burger::Mouse::Read(int32_t *pX,int32_t *pY)
 {
-	m_MouseLock.Lock();
+	m_MouseLock.lock();
 	m_uArrayStart = 0;		// Clear out the events
 	m_uArrayEnd = 0;
 	if (pX) {
@@ -265,7 +265,7 @@ void BURGER_API Burger::Mouse::Read(int32_t *pX,int32_t *pY)
 	}
 	m_iDeltaX = 0;
 	m_iDeltaY = 0;
-	m_MouseLock.Unlock();
+	m_MouseLock.unlock();
 }
 
 /*! ************************************
@@ -283,12 +283,12 @@ void BURGER_API Burger::Mouse::Read(int32_t *pX,int32_t *pY)
 
 int32_t BURGER_API Burger::Mouse::ReadWheelX(void)
 {
-	m_MouseLock.Lock();
+	m_MouseLock.lock();
 	m_uArrayStart = 0;		// Clear out the events
 	m_uArrayEnd = 0;
 	int32_t iResult = m_iMouseWheelX;
 	m_iMouseWheelX = 0;
-	m_MouseLock.Unlock();
+	m_MouseLock.unlock();
 	return iResult;
 }
 
@@ -305,12 +305,12 @@ int32_t BURGER_API Burger::Mouse::ReadWheelX(void)
 
 int32_t BURGER_API Burger::Mouse::ReadWheelY(void)
 {
-	m_MouseLock.Lock();
+	m_MouseLock.lock();
 	m_uArrayStart = 0;		// Clear out the events
 	m_uArrayEnd = 0;
 	int32_t iResult = m_iMouseWheelY;
 	m_iMouseWheelY = 0;
-	m_MouseLock.Unlock();
+	m_MouseLock.unlock();
 	return iResult;
 }
 
@@ -331,7 +331,7 @@ int32_t BURGER_API Burger::Mouse::ReadWheelY(void)
 
 void BURGER_API Burger::Mouse::SetRange(uint32_t uBoundsX,uint32_t uBoundsY)
 {
-	m_MouseLock.Lock();
+	m_MouseLock.lock();
 	m_uArrayStart = 0;		// Clear out the events
 	m_uArrayEnd = 0;
 
@@ -355,7 +355,7 @@ void BURGER_API Burger::Mouse::SetRange(uint32_t uBoundsX,uint32_t uBoundsY)
 	if (m_uY>=uBoundsY) {
 		m_uY=uBoundsY-1;
 	}
-	m_MouseLock.Unlock();
+	m_MouseLock.unlock();
 }
 
 /*! ************************************
@@ -367,7 +367,7 @@ void BURGER_API Burger::Mouse::SetRange(uint32_t uBoundsX,uint32_t uBoundsY)
 
 	\param x X coordinate of the mouse cursor in pixels
 	\param y Y coordinate of the mouse cursor in pixels
-	\param uMSTimeStamp Timestamp in Milliseconds, 0 will fill in the value from Tick::ReadMilliseconds()
+	\param uMSTimeStamp Timestamp in Milliseconds, 0 will fill in the value from Tick::read_ms()
 	\sa SetRange(uint32_t,uint32_t)
 
 ***************************************/
@@ -392,7 +392,7 @@ void BURGER_API Burger::Mouse::PostMousePosition(uint32_t x,uint32_t y,uint32_t 
 
 	\param x X coordinate of the mouse cursor in pixels
 	\param y Y coordinate of the mouse cursor in pixels
-	\param uMSTimeStamp Timestamp in Milliseconds, 0 will fill in the value from Tick::ReadMilliseconds()
+	\param uMSTimeStamp Timestamp in Milliseconds, 0 will fill in the value from Tick::read_ms()
 	\sa SetRange(uint32_t,uint32_t)
 
 ***************************************/
@@ -415,7 +415,7 @@ void BURGER_API Burger::Mouse::PostMouseMotion(int32_t x,int32_t y,uint32_t uMST
 	Manually post a mouse button down event.
 
 	\param uMouseBits eMouseButtons enumeration of mouse buttons
-	\param uMSTimeStamp Timestamp in Milliseconds, 0 will fill in the value from Tick::ReadMilliseconds()
+	\param uMSTimeStamp Timestamp in Milliseconds, 0 will fill in the value from Tick::read_ms()
 	\sa PostMouseUp(uint32_t,uint32_t)
 
 ***************************************/
@@ -437,7 +437,7 @@ void BURGER_API Burger::Mouse::PostMouseDown(uint32_t uMouseBits,uint32_t uMSTim
 	Manually post a mouse button up event.
 
 	\param uMouseBits eMouseButtons enumeration of mouse buttons
-	\param uMSTimeStamp Timestamp in Milliseconds, 0 will fill in the value from Tick::ReadMilliseconds()
+	\param uMSTimeStamp Timestamp in Milliseconds, 0 will fill in the value from Tick::read_ms()
 	\sa PostMouseDown(uint32_t,uint32_t)
 
 ***************************************/
@@ -461,7 +461,7 @@ void BURGER_API Burger::Mouse::PostMouseUp(uint32_t uMouseBits,uint32_t uMSTimeS
 
 	\param iWheelYMovement Motion for the vertical mouse wheel
 	\param iWheelXMovement Motion for the horizontal mouse wheel
-	\param uMSTimeStamp Timestamp in Milliseconds, 0 will fill in the value from Tick::ReadMilliseconds()
+	\param uMSTimeStamp Timestamp in Milliseconds, 0 will fill in the value from Tick::read_ms()
 	\sa PostMouseUp(uint32_t,uint32_t) or PostMouseDown(uint32_t,uint32_t)
 
 ***************************************/
@@ -490,7 +490,7 @@ void BURGER_API Burger::Mouse::PostMouseWheel(int32_t iWheelXMovement,int32_t iW
 
 uint_t BURGER_API Burger::Mouse::PostMouseEvent(const EventHeader_t *pEvent)
 {
-	m_MouseLock.Lock();
+	m_MouseLock.lock();
 	uint_t uResult = 10;
 	uint_t uEnd = m_uArrayEnd;
 	// See if there's room in the buffer
@@ -505,7 +505,7 @@ uint_t BURGER_API Burger::Mouse::PostMouseEvent(const EventHeader_t *pEvent)
 		// Add the proper time stamp
 		uint32_t uTime = pEvent->m_uMSTimeStamp;
 		if (!uTime) {
-			uTime = Tick::ReadMilliseconds();
+			uTime = Tick::read_ms();
 		}
 		pNewEvent->m_Header.m_uMSTimeStamp = uTime;
 
@@ -608,6 +608,6 @@ uint_t BURGER_API Burger::Mouse::PostMouseEvent(const EventHeader_t *pEvent)
 		}
 		uResult = 0;
 	}
-	m_MouseLock.Unlock();
+	m_MouseLock.unlock();
 	return uResult;
 }

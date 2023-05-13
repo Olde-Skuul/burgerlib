@@ -40,6 +40,7 @@
 #endif
 
 /* BEGIN */
+struct IDirectInputDevice8W;
 namespace Burger {
 
 #if defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || defined(DOXYGEN)

@@ -27,8 +27,8 @@
 #include "brgameapp.h"
 #endif
 
-#ifndef __BRCRITICALSECTION_H__
-#include "brcriticalsection.h"
+#ifndef __BRTHREAD_H__
+#include "brthread.h"
 #endif
 
 #if defined(BURGER_WINDOWS) && !defined(__BRWINDOWSTYPES_H__)
@@ -40,6 +40,7 @@
 #endif
 
 /* BEGIN */
+struct IDirectInputDevice8W;
 namespace Burger {
 class Keyboard: public Base {
 	BURGER_DISABLE_COPY(Keyboard);
@@ -309,11 +310,11 @@ protected:
 	CriticalSection m_KeyboardLock;
 	BURGER_INLINE void Lock(void) BURGER_NOEXCEPT
 	{
-		m_KeyboardLock.Lock();
+		m_KeyboardLock.lock();
 	}
 	BURGER_INLINE void Unlock(void) BURGER_NOEXCEPT
 	{
-		m_KeyboardLock.Unlock();
+		m_KeyboardLock.unlock();
 	}
 #else
 	BURGER_INLINE void Lock(void) BURGER_NOEXCEPT {}

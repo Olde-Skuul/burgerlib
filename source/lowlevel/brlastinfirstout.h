@@ -85,8 +85,8 @@ public:
 	ForwardLink * BURGER_API TakeList(void);
 	eError BURGER_API Remove(ForwardLink *pEntry);
 	void BURGER_API ReverseList(void);
-	BURGER_INLINE void Lock(void) { m_Lock.Lock(); }
-	BURGER_INLINE void Unlock(void) { m_Lock.Unlock(); }
+	BURGER_INLINE void Lock(void) { m_Lock.lock(); }
+	BURGER_INLINE void Unlock(void) { m_Lock.unlock(); }
 };
 
 }

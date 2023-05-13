@@ -1,8 +1,8 @@
 /***************************************
 
-	Root base class
+	Class to handle critical sections
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -38,9 +38,9 @@
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_PS3) || defined(BURGER_PS4) || defined(BURGER_SHIELD) || \
-	defined(BURGER_VITA) || defined(BURGER_MACOSX) || defined(BURGER_IOS) || \
-	defined(BURGER_MAC)) || \
+	defined(BURGER_XBOXONE) || defined(BURGER_PS3) || defined(BURGER_PS4) || \
+	defined(BURGER_PS5) || defined(BURGER_VITA) || defined(BURGER_WIIU) || \
+	defined(BURGER_SWITCH) || defined(BURGER_UNIX) || defined(BURGER_MAC)) || \
 	defined(DOXYGEN)
 Burger::CriticalSection::CriticalSection() BURGER_NOEXCEPT {}
 
@@ -63,11 +63,11 @@ Burger::CriticalSection::~CriticalSection() {}
 	mutex was already locked, the thread halts until the alternate thread that
 	has this mutex locked releases the lock. There is no timeout.
 
-	\sa Burger::CriticalSection::Unlock()
+	\sa Burger::CriticalSection::unlock()
 
 ***************************************/
 
-void Burger::CriticalSection::Lock() BURGER_NOEXCEPT {}
+void Burger::CriticalSection::lock() BURGER_NOEXCEPT {}
 
 /*! ************************************
 
@@ -76,11 +76,11 @@ void Burger::CriticalSection::Lock() BURGER_NOEXCEPT {}
 	If the mutex is locked, the function fails and returns \ref FALSE.
 	Otherwise, the mutex is locked and the function returns \ref TRUE.
 
-	\sa Lock() and Unlock()
+	\sa lock() and unlock()
 
 ***************************************/
 
-uint_t Burger::CriticalSection::TryLock(void) BURGER_NOEXCEPT
+uint_t Burger::CriticalSection::try_lock(void) BURGER_NOEXCEPT
 {
 	return FALSE;
 }
@@ -93,15 +93,15 @@ uint_t Burger::CriticalSection::TryLock(void) BURGER_NOEXCEPT
 	lock, they will obtain the lock and the other thread will continue
 	execution. The caller will never block.
 
-	\note This call MUST be preceded by a matching Lock() call. Calling Unlock()
-	without a preceding Lock() call will result in undefined behavior and in
+	\note This call MUST be preceded by a matching lock() call. Calling unlock()
+	without a preceding lock() call will result in undefined behavior and in
 	some cases can result in thread lock or a crash.
 
-	\sa Burger::CriticalSection::Lock()
+	\sa lock()
 
 ***************************************/
 
-void Burger::CriticalSection::Unlock() BURGER_NOEXCEPT {}
+void Burger::CriticalSection::unlock() BURGER_NOEXCEPT {}
 
 #endif
 
@@ -115,12 +115,12 @@ void Burger::CriticalSection::Unlock() BURGER_NOEXCEPT {}
 	shutdown is indeterminate in a cross platform way. To avoid an accidental
 	call to this class before it's constructed or after it's destructed, this
 	class will test a flag to determine if it's out of sequence and if so, the
-	Lock() and Unlock() functions will perform no action. Since C++'s startup
+	lock() and unlock() functions will perform no action. Since C++'s startup
 	and shutdown sequence is performed on a single thread, this is a safe method
 	to ensure that unknown startup/shutdown sequences won't accidentally thread
 	lock.
 
-	\sa Burger::CriticalSection
+	\sa \ref CriticalSection
 
 ***************************************/
 
@@ -148,31 +148,31 @@ Burger::CriticalSectionStatic::~CriticalSectionStatic()
 
 /*! ************************************
 
-	\fn Burger::CriticalSectionStatic::Lock(void)
+	\fn Burger::CriticalSectionStatic::lock(void)
 	\brief Locks a mutex if initialized
 
-	\sa Burger::CriticalSection::Lock() and
-		Burger::CriticalSectionStatic::Unlock()
+	\sa CriticalSection::lock() and
+		CriticalSectionStatic::unlock()
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::CriticalSectionStatic::TryLock(void)
+	\fn Burger::CriticalSectionStatic::try_lock(void)
 	\brief Tries to lock a mutex if initialized
 
-	\sa Burger::CriticalSection::TryLock() and
-		Burger::CriticalSectionStatic::Lock()
+	\sa CriticalSection::try_lock() and
+		CriticalSectionStatic::lock()
 
 ***************************************/
 
 /*! ************************************
 
-	\fn Burger::CriticalSectionStatic::Unlock(void)
+	\fn Burger::CriticalSectionStatic::unlock(void)
 	\brief Unlocks a mutex if initialized
 
-	\sa Burger::CriticalSection::Unlock() and
-		Burger::CriticalSectionStatic::Lock()
+	\sa CriticalSection::unlock() and
+		CriticalSectionStatic::lock()
 
 ***************************************/
 
@@ -216,7 +216,8 @@ Burger::CriticalSectionStatic::~CriticalSectionStatic()
 	\note \ref nullptr pointers are NOT allowed!!
 
 	\param pCriticalSection Pointer to a valid CriticalSectionLock
-	\sa Burger::CriticalSectionLock and ~CriticalSectionLock()
+
+	\sa \ref CriticalSectionLock and ~CriticalSectionLock()
 
 ***************************************/
 
@@ -227,7 +228,7 @@ Burger::CriticalSectionStatic::~CriticalSectionStatic()
 
 	Unlocks the critical section upon destruction.
 
-	\sa Burger::CriticalSectionLock and
+	\sa \ref CriticalSectionLock and
 		CriticalSectionLock::CriticalSectionLock()
 
 ***************************************/
@@ -248,13 +249,14 @@ Burger::CriticalSectionStatic::~CriticalSectionStatic()
 	\note On operating systems that don't have native semaphore support, such as
 		MSDOS, this class will always return error codes for all calls.
 
-	\sa Burger::CriticalSection and Burger::Thread
+	\sa \ref CriticalSection and \ref Thread
 
 ***************************************/
 
 #if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_ANDROID) || defined(BURGER_VITA) || \
-	defined(BURGER_MACOSX) || defined(BURGER_IOS)) || \
+	defined(BURGER_XBOXONE) || defined(BURGER_PS3) || defined(BURGER_PS4) || \
+	defined(BURGER_PS5) || defined(BURGER_VITA) || defined(BURGER_WIIU) || \
+	defined(BURGER_SWITCH) || defined(BURGER_DARWIN)) || \
 	defined(DOXYGEN)
 
 /*! ************************************
@@ -271,7 +273,9 @@ Burger::CriticalSectionStatic::~CriticalSectionStatic()
 
 ***************************************/
 
-Burger::Semaphore::Semaphore(uint32_t uCount) BURGER_NOEXCEPT: m_uCount(uCount)
+Burger::Semaphore::Semaphore(uint32_t uCount) BURGER_NOEXCEPT
+	: m_uCount(uCount),
+	  m_bInitialized(FALSE)
 {
 }
 
@@ -293,7 +297,7 @@ Burger::Semaphore::~Semaphore() {}
 
 /*! ************************************
 
-	\fn uint_t Burger::Semaphore::Acquire(void)
+	\fn Burger::Semaphore::acquire(void)
 	\brief Acquire a lock on a semaphore resource
 
 	If the semaphore's resource count has not gone to zero or less, decrement
@@ -301,7 +305,7 @@ Burger::Semaphore::~Semaphore() {}
 	releases the semaphore.
 
 	\return Zero on success, nonzero in the case of a semaphore failure
-	\sa TryAcquire(uint_t) or Release(void)
+	\sa try_acquire(uint_t) or release(void)
 
 ***************************************/
 
@@ -315,17 +319,17 @@ Burger::Semaphore::~Semaphore() {}
 	timeout is zero, return immediately with a non-zero error code.
 
 	\param uMilliseconds Number of milliseconds to wait for the resource, 0
-		means no wait, \ref BURGER_MAXUINT means infinite
+		means no wait, UINT32_MAX means infinite
 
 	\return Zero on success, One on a timeout, and non Zero or One in the case
 		of a semaphore failure
 
-	\sa Acquire(void) or Release(void)
+	\sa acquire(void) or release(void)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::Semaphore::TryAcquire(
-	uint_t /* uMilliseconds */) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Semaphore::try_acquire(
+	uint32_t /* uMilliseconds */) BURGER_NOEXCEPT
 {
 	return kErrorNotSupportedOnThisPlatform;
 }
@@ -338,18 +342,18 @@ Burger::eError BURGER_API Burger::Semaphore::TryAcquire(
 	call once the resource is no longer needed.
 
 	\return Zero on success, nonzero in the case of a semaphore failure
-	\sa Acquire(void) or TryAcquire(uint_t)
+	\sa acquire(void) or try_acquire(uint_t)
 
 ***************************************/
 
-Burger::eError BURGER_API Burger::Semaphore::Release(void) BURGER_NOEXCEPT
+Burger::eError BURGER_API Burger::Semaphore::release(void) BURGER_NOEXCEPT
 {
 	return kErrorNotSupportedOnThisPlatform;
 }
 
 /*! ************************************
 
-	\fn uint32_t Burger::Semaphore::GetValue(void) const
+	\fn uint32_t Burger::Semaphore::get_value(void) const
 	\brief Get the current number of available resources.
 
 	\return The number of available resources.
@@ -427,20 +431,20 @@ Burger::ConditionVariable::~ConditionVariable()
 Burger::eError BURGER_API Burger::ConditionVariable::Signal(
 	void) BURGER_NOEXCEPT
 {
-	m_CriticalSection.Lock();
+	m_CriticalSection.lock();
 	// Is there anyone waiting for a signal?
 	if (m_uWaiting > m_uSignals) {
 		// Add to the signal count (Wait() will decrement)
 		++m_uSignals;
 		// Release a waiting thread
-		m_WaitSemaphore.Release();
+		m_WaitSemaphore.release();
 		// Unlock the data to allow Wait() to continue
-		m_CriticalSection.Unlock();
+		m_CriticalSection.unlock();
 		// Increase the signals semaphore to match
-		m_SignalsSemaphore.Acquire();
+		m_SignalsSemaphore.acquire();
 	} else {
 		// No one was waiting, discard
-		m_CriticalSection.Unlock();
+		m_CriticalSection.unlock();
 	}
 	return kErrorNone;
 }
@@ -462,7 +466,7 @@ Burger::eError BURGER_API Burger::ConditionVariable::Broadcast(
 	void) BURGER_NOEXCEPT
 {
 	// Lock internal data
-	m_CriticalSection.Lock();
+	m_CriticalSection.lock();
 	// Anyone waiting?
 	if (m_uWaiting > m_uSignals) {
 		// For all the ones that haven't already gotten a signal
@@ -473,10 +477,10 @@ Burger::eError BURGER_API Burger::ConditionVariable::Broadcast(
 		// Reduce the number of waiting threads
 		uint32_t uCount2 = uCount;
 		do {
-			m_WaitSemaphore.Release();
+			m_WaitSemaphore.release();
 		} while (--uCount2);
 		// The act of unlocking will fire all the released threads
-		m_CriticalSection.Unlock();
+		m_CriticalSection.unlock();
 
 		// Reacquire the thread count to restore the wait count to
 		// match m_uWaiting (Note that other threads could be modifying this
@@ -484,11 +488,11 @@ Burger::eError BURGER_API Burger::ConditionVariable::Broadcast(
 		// from our point of view, it must be restored)
 
 		do {
-			m_WaitSemaphore.Acquire();
+			m_WaitSemaphore.acquire();
 		} while (--uCount);
 	} else {
 		// Get out, nothing to see here
-		m_CriticalSection.Unlock();
+		m_CriticalSection.unlock();
 	}
 	return kErrorNone;
 }
@@ -510,230 +514,34 @@ Burger::eError BURGER_API Burger::ConditionVariable::Wait(
 	CriticalSection* pCriticalSection, uint_t uMilliseconds) BURGER_NOEXCEPT
 {
 	// A thread is waiting
-	m_CriticalSection.Lock();
+	m_CriticalSection.lock();
 	++m_uWaiting;
-	m_CriticalSection.Unlock();
+	m_CriticalSection.unlock();
 
 	// Unlock the thread's lock
-	pCriticalSection->Unlock();
+	pCriticalSection->unlock();
 	// Wait for a signal (With timeout)
-	const eError uResult = m_WaitSemaphore.TryAcquire(uMilliseconds);
+	const eError uResult = m_WaitSemaphore.try_acquire(uMilliseconds);
 
 	// It returned!
-	m_CriticalSection.Lock();
+	m_CriticalSection.lock();
 	// Was there a signal from Signal() or Broadcast()?
 	if (m_uSignals) {
 		// Was there a timeout?
 		if (uResult == kErrorTimeout) {
 			// Force an obtaining of a resource
-			m_WaitSemaphore.Acquire();
+			m_WaitSemaphore.acquire();
 		}
 		// Mark this signal as processed
-		m_SignalsSemaphore.Release();
+		m_SignalsSemaphore.release();
 		--m_uSignals;
 	}
 	// No longer waiting
 	--m_uWaiting;
-	m_CriticalSection.Unlock();
+	m_CriticalSection.unlock();
 	// Relock the thread's lock
-	pCriticalSection->Lock();
+	pCriticalSection->lock();
 	return uResult;
 }
-
-#endif
-
-/*! ************************************
-
-	\class Burger::Thread
-	\brief Class for creating a thread
-
-	In a multiprocessor system, it's sometimes necessary to have
-	another CPU run a concurrent thread. This class will handle
-	the dispatching a thread.
-
-	Further reading http://en.wikipedia.org/wiki/Thread_(computing)
-
-	\sa Burger::CriticalSection, Burger::Semaphore and Burger::ConditionVariable
-
-***************************************/
-
-/*! ************************************
-
-	\brief Initialize a thread to power up defaults
-
-	\sa Start(), Thread(FunctionPtr,void *) or ~Thread()
-
-***************************************/
-
-#if !(defined(BURGER_WINDOWS) || defined(BURGER_XBOX360) || \
-	defined(BURGER_VITA) || defined(BURGER_MACOSX) || defined(BURGER_IOS)) || \
-	defined(DOXYGEN)
-Burger::Thread::Thread() BURGER_NOEXCEPT: m_pFunction(nullptr),
-										  m_pData(nullptr),
-										  m_pSemaphore(nullptr),
-										  m_uResult(0)
-{
-}
-
-/*! ************************************
-
-	\brief Initialize a thread and begin execution
-
-	This constructor will immediately start the thread.
-
-	If deferred startup is desired, use the default constructor
-	and then call Start() when it's time to launch the thread.
-
-	\param pFunction Pointer to the entry point to the thread
-	\param pData Pointer to data to pass to the thread
-	\sa Thread() or ~Thread()
-
-***************************************/
-
-Burger::Thread::Thread(FunctionPtr pFunction, void* pData) BURGER_NOEXCEPT
-	: m_pFunction(pFunction),
-	  m_pData(pData),
-	  m_pSemaphore(nullptr),
-	  m_uResult(0)
-{
-	// Runt the code
-	Run(this);
-}
-
-/*! ************************************
-
-	\brief Kill any running threads
-
-	\sa Kill(), Thread(FunctionPtr,void *) or Thread()
-
-***************************************/
-
-Burger::Thread::~Thread()
-{
-	Kill();
-}
-
-/*! ************************************
-
-	\brief Startup a thread
-
-	If a thread isn't already running, launch this thread
-	of execution. If a thread is already running, return an error
-
-	\param pFunction Pointer to the entry point to the thread
-	\param pData Pointer to data to pass to the thread
-	\return Zero if no error, non-zero if there was an error
-	\sa Kill() or Wait()
-
-***************************************/
-
-Burger::eError BURGER_API Burger::Thread::Start(
-	FunctionPtr pFunction, void* pData) BURGER_NOEXCEPT
-{
-	m_pFunction = pFunction;
-	m_pData = pData;
-	Run(this);
-	return kErrorNotSupportedOnThisPlatform;
-}
-
-/*! ************************************
-
-	\brief Wait for a thread to exit
-
-	If a thread isn't already running, return immediately.
-	If a thread is already running, sleep until the thread
-	has completed execution.
-
-	\return Zero if no error, non-zero if there was an error
-	\sa Kill() or Start()
-
-***************************************/
-
-Burger::eError BURGER_API Burger::Thread::Wait(void) BURGER_NOEXCEPT
-{
-	m_pFunction = nullptr;
-	m_pData = nullptr;
-	return kErrorNotSupportedOnThisPlatform;
-}
-
-/*! ************************************
-
-	\brief Force shutdown of a thread
-
-	If a thread isn't already running, return immediately.
-	If a thread is already running, alert the operating system
-	that this thread should be aborted and shut down.
-
-	\note This is a function of last resort. Some operating systems
-	can leak resources if a thread is shut down in this manner. The
-	proper way to shut down a thread is to sent the thread a signal
-	to alert it to exit it's loop and call Wait().
-
-	\return Zero if no error, non-zero if there was an error
-	\sa Wait() or Start()
-
-***************************************/
-
-Burger::eError BURGER_API Burger::Thread::Kill(void) BURGER_NOEXCEPT
-{
-	m_pFunction = nullptr;
-	m_pData = nullptr;
-	return kErrorNotSupportedOnThisPlatform;
-}
-
-/*! ************************************
-
-	\brief Synchronize and then execute the thread and save
-	the result if any
-
-	This internal routine is used to synchronize with the main thread
-	to ensure that the class variables are stable before execution
-	begins. It will also capture the result code before
-	exiting back to the operating system.
-
-	\note This function should not be called by applications.
-
-	\param pThis Pointer to an instance of Thread
-	\sa Start()
-
-***************************************/
-
-void BURGER_API Burger::Thread::Run(void* pThis) BURGER_NOEXCEPT
-{
-	Thread* pThread = static_cast<Thread*>(pThis);
-	pThread->m_uResult = pThread->m_pFunction(pThread->m_pData);
-}
-
-/*! ************************************
-
-	\fn uintptr_t Burger::Thread::GetResult(void) const
-	\brief Return the exit code of the user supplied thread.
-
-	When a thread launched by this class executes, it can return
-	a result code which is captured by the dispatcher.
-	The code can retrieved by this call.
-
-	\note The code is only valid once the thread exits cleanly.
-	Ending a thread with a call to Kill() will set the error code
-	to a non-zero number.
-
-	\return Result code from the user code
-	\sa Start() or IsInitialized()
-
-***************************************/
-
-/*! ************************************
-
-	\fn uint_t Burger::Thread::IsInitialized(void) const
-	\brief Return \ref TRUE if a thread is running.
-
-	Once a thread is started, this function will return \ref
-	TRUE. Once either Wait() or Kill() is called, this function
-	will return \ref FALSE.
-
-	\return \ref TRUE if a thread was started, or \ref FALSE if not.
-	\sa Start() or GetResult()
-
-***************************************/
 
 #endif

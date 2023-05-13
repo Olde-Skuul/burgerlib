@@ -88,7 +88,7 @@ void Burger::Font::Draw(const char *pInput,uintptr_t uLength)
 	if (uLength) {
 		const char *pEnd = pInput+uLength;
 		do {
-			const uint32_t uChar = UTF32::TranslateFromUTF8(pInput);
+			const uint32_t uChar = UTF32::translate_from_UTF8(pInput);
 			// Bad string?
 			if (uChar == UTF32::kInvalid) {
 				break;

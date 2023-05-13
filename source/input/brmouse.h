@@ -27,8 +27,8 @@
 #include "brgameapp.h"
 #endif
 
-#ifndef __BRCRITICALSECTION_H__
-#include "brcriticalsection.h"
+#ifndef __BRTHREAD_H__
+#include "brthread.h"
 #endif
 
 #ifndef __BRSTRING_H__
@@ -44,6 +44,7 @@
 #endif
 
 /* BEGIN */
+struct IDirectInputDevice8W;
 namespace Burger {
 class Mouse : public Base {
     BURGER_DISABLE_COPY(Mouse);

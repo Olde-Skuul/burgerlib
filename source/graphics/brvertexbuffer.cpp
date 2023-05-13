@@ -109,7 +109,7 @@ uint_t BURGER_API Burger::VertexBuffer::LoadData(Display *pDisplay,const VertexA
 		if (!(uFlags&FLAGAOS_DONTCOPY_VERTICES)) {
 
 			// If pBuffer is NULL, it will act as Alloc()
-			pBuffer = AllocCopy(pBuffer,uSize);
+			pBuffer = alloc_copy(pBuffer,uSize);
 			BURGER_ASSERT(pBuffer);
 			if (!pBuffer) {
 				uSize = 0;
@@ -133,7 +133,7 @@ uint_t BURGER_API Burger::VertexBuffer::LoadData(Display *pDisplay,const VertexA
 		if (!(uFlags&FLAGAOS_DONTCOPY_ELEMENTS)) {
 
 			// If pBuffer is NULL, it will act as Alloc()
-			pBuffer = AllocCopy(pBuffer,uSize);
+			pBuffer = alloc_copy(pBuffer,uSize);
 			BURGER_ASSERT(pBuffer);
 			if (!pBuffer) {
 				uSize = 0;
@@ -197,7 +197,7 @@ uint_t BURGER_API Burger::VertexBuffer::LoadData(Display *pDisplay,const VertexA
 		if (!(uFlags&FLAGAOS_DONTCOPY_MEMBERS)) {
 
 			// If pBuffer is NULL, it will act as Alloc()
-			pBuffer = AllocCopy(pBuffer,uAttributeCount*sizeof(uint_t));
+			pBuffer = alloc_copy(pBuffer,uAttributeCount*sizeof(uint_t));
 			BURGER_ASSERT(pBuffer);
 			if (!pBuffer) {
 				uAttributeCount = 0;

@@ -99,8 +99,8 @@ public:
 	BURGER_INLINE const String *GetGlobalEnvironmentVariables(void) const { return &m_GlobalEnvironmentVariables; }
 	void BURGER_API SetGlobalEnvironmentVariables(const char *pInput);
 	BURGER_INLINE const String *GetConstructorName(void) const { return &m_ConstructorName; }
-	BURGER_INLINE void Lock(void) { m_CriticalSection.Lock(); }
-	BURGER_INLINE void Unlock(void) { m_CriticalSection.Unlock(); }
+	BURGER_INLINE void Lock(void) { m_CriticalSection.lock(); }
+	BURGER_INLINE void Unlock(void) { m_CriticalSection.unlock(); }
 };
 }}
 /* END */

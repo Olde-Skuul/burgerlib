@@ -36,6 +36,7 @@
 #endif
 
 /* BEGIN */
+struct tagRECT;
 namespace Burger {
 struct Rect_t {
 

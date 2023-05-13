@@ -44,6 +44,9 @@
 #endif
 
 /* BEGIN */
+struct IDirect3DVertexBuffer9;
+struct IDirect3DVertexDeclaration9;
+struct IDirect3DIndexBuffer9;
 namespace Burger {
 class Display;
 class VertexBuffer : public DisplayObject {

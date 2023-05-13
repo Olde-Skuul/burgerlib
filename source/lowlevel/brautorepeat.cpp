@@ -115,7 +115,7 @@ void Burger::AutoRepeat::Init(uint32_t uButtons,uint32_t uInitialTick,uint32_t u
 
 uint_t Burger::AutoRepeat::IsItRepeating(uint32_t uButtons)
 {
-	uint32_t uNewMark = Tick::Read();		// Get the current time mark
+	uint32_t uNewMark = Tick::read();		// Get the current time mark
 	uint_t uFlags = m_uFlags;
 	if (!(uFlags&INITIALIZED)) {		// Initialized?
 		m_uTimeMark = uNewMark;			// Reset the timer
@@ -129,7 +129,7 @@ uint_t Burger::AutoRepeat::IsItRepeating(uint32_t uButtons)
 	uint_t uResult = FALSE;
 	if (!(m_uButtons & uButtons)) {		// Is it held down?
 		// Nope, clear the held down bit
-		uFlags &= ~(WAITFORKEYUP|HELDDOWNBEFORE|SECONDDELAY);
+		uFlags &= static_cast<uint_t>(~(WAITFORKEYUP|HELDDOWNBEFORE|SECONDDELAY));
 		// Reset the time mark
 		m_uTimeMark = uNewMark;
 

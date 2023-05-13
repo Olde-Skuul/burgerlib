@@ -1,0 +1,38 @@
+;
+; Poll the PowerPC 601 Real Time Clock register and debounce the value. Once
+; debounced, return the 64 bit value.
+;
+; Done in assembly, because that's how you know it's done right
+; PowerPC PEF version
+;
+
+	INCLUDE 'macros.ppc'
+
+;
+; Use Power instruction set, since it's 601 instructions
+;
+
+.pragma dialect Power
+
+; blr is not in the Power instruction set, use bcr
+; Power has 20 to denote "Branch Always"
+
+;
+; Unmangled function prototype
+; uint64_t Burger::MacOS::PollRTC601(void)
+;
+
+	EXPORT PollRTC601__Q26Burger5MacOSFv[DS]
+	EXPORT PollRTC601__Q26Burger5MacOSFv[PR]
+
+	DeclareProc PollRTC601__Q26Burger5MacOSFv
+
+@XLoop:
+	mfrtcu	r3			; RTCU (High)
+	mfrtcl	r4			; RTCL (Low)
+	mfrtcu	r5
+	cmp		0,r3,r5		; Did the upper 32 bits change?
+	bne-	@XLoop		; Try again if they did
+	bcr		20,0		; blr in Power (Result in r3,r4)
+
+	END

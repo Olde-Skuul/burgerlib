@@ -56,16 +56,12 @@
 #endif
 
 /* BEGIN */
+struct IDirectSoundBuffer8;
+struct IDirectSoundNotify;
+struct IDirectSound8;
+struct IDirectSound3DListener;
+struct IDirectSoundBuffer;
 
-#if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-
-extern "C" {
-	extern const GUID IID_IXAudio2_2_8;
-	extern const GUID CLSID_AudioVolumeMeter_2_8;
-	extern const GUID CLSID_AudioReverb_2_8;
-	extern const GUID IID_IXAudio2_2_9;
-}
-#endif
 
 namespace Burger {
 
