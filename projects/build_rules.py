@@ -294,6 +294,21 @@ def window_opengl_folder():
 ########################################
 
 
+def steam_folder():
+    """
+    Return the location of the Steam SDKS folder
+
+    Check if under github, if so, it's stored locally, otherwise, it's in the
+    BURGER_SDKS folder
+    """
+
+    if is_git():
+        return "../steamworks/public/steam"
+    return "$(BURGER_SDKS)/steamworks/public/steam"
+
+########################################
+
+
 def clean(working_directory):
     """
     Delete temporary files.
@@ -314,11 +329,11 @@ def clean(working_directory):
     clean_directories(working_directory,
                       (".vscode", "appfolder", "temp", "ipch", "bin", "JSON",
                        "Durango", "SRV", ".vs", "*_Data", "* Data",
-                       "__pycache__"))
+                       "__pycache__", "Debug"))
 
     clean_files(working_directory, (".DS_Store", "*.suo", "*.user", "*.ncb",
                                     "*.err", "*.sdf", "*.layout.cbTemp",
-                                    "*.VC.db", "*.pyc", "*.pyo"))
+                                    "*.VC.db", "*.pyc", "*.pyo", "*.XGD"))
 
     clean_xcode(working_directory)
 
@@ -544,8 +559,8 @@ def project_settings(project):
 
             # Older IDEs need DirectX from the June 2010 SDK
             if ide in (IDETypes.vs2003, IDETypes.vs2005, IDETypes.vs2008,
-                       IDETypes.vs2010,
-                       IDETypes.vs2012, IDETypes.vs2013, IDETypes.vs2015):
+                       IDETypes.vs2010, IDETypes.vs2012, IDETypes.vs2013,
+                       IDETypes.vs2015):
                 include_folders_list.append("$(DXSDK_DIR)/Include")
 
             # Visual Studio 2003/2005 needs to use the Windows XP SDK,
@@ -715,10 +730,9 @@ def project_settings(project):
 
     # Enable Steam
     if platform.is_windows() or platform.is_macosx() or \
-        platform is PlatformTypes.linux:
+            platform is PlatformTypes.linux:
         if not ide.is_codewarrior():
-            include_folders_list.append(
-                "$(BURGER_SDKS)/steamworks/public/steam")
+            include_folders_list.append(steam_folder())
 
     # Hack to allow compilation of dbus on Darwin
     if platform.is_darwin():
@@ -802,7 +816,7 @@ def configuration_settings(configuration):
             dplay_folder(),
             window_opengl_folder(),
             "$(BURGER_SDKS)/windows/directx9",
-            "$(BURGER_SDKS)/steamworks/public/steam"]
+            steam_folder()]
 
     # Special case for Direct X SDK
     if ide is IDETypes.vs2017 and \

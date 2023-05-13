@@ -419,21 +419,25 @@ def prebuild(working_directory, configuration):
     for item in SUPER_HEADERS:
         templatepath = os.path.join(working_directory, "source", item[0])
 
-        if item[1]:
-            headerfilepath = os.path.join(dest_folder, item[1])
-            cmd = (makeheader, templatepath, headerfilepath)
-            print(" ".join(cmd))
-            error, _, _ = run_command(cmd, working_dir=working_directory)
-            # if error:
-            #    break
+        # Only process files that exist
+        if os.path.isfile(templatepath):
+            if item[1]:
+                headerfilepath = os.path.join(dest_folder, item[1])
+                cmd = (makeheader, templatepath, headerfilepath)
+                print(" ".join(cmd))
+                sys.stdout.flush()
+                error, _, _ = run_command(cmd, working_dir=working_directory)
+                # if error:
+                #    break
 
-        if item[2]:
-            headerfilepath = os.path.join(dest_folder, item[2])
-            cmd = (makeheader, "-r", templatepath, headerfilepath)
-            print(" ".join(cmd))
-            error, _, _ = run_command(cmd, working_dir=working_directory)
-            # if error:
-            #    break
+            if item[2]:
+                headerfilepath = os.path.join(dest_folder, item[2])
+                cmd = (makeheader, "-r", templatepath, headerfilepath)
+                print(" ".join(cmd))
+                sys.stdout.flush()
+                error, _, _ = run_command(cmd, working_dir=working_directory)
+                # if error:
+                #    break
 
     return error
 
