@@ -2,7 +2,7 @@
 
 ## The only low level library you'll ever need
 
-Copyright 1995-2022 by Rebecca Ann Heineman becky@burgerbecky.com. Email all suggestions, corrections, optimizations and insults to her and she'll be eternally grateful.
+Copyright 1995-2023 by Rebecca Ann Heineman [becky@burgerbecky.com](mailto:becky@burgerbecky.com). Email all suggestions, corrections, optimizations and insults to her and she'll be eternally grateful.
 
 It is released under an MIT Open Source license. Please see [**LICENSE**](https://raw.githubusercontent.com/Olde-Skuul/burgerlib/master/LICENSE) for license details. Yes, you can use it in a commercial title without paying anything, just give me a credit.
 
@@ -15,6 +15,8 @@ Please? It's not like I'm asking you for money!
 [Documentation is found here.](http://www.burgerbecky.com/burgerlib/docs)
 
 **Yes, click the link above. DO IT! BOOKMARK IT!**
+
+To build documentation locally, in the ``docs`` folder, type "``buildme -docs``". Make sure that ``doxygen``, ``dot``, and ``pandoc`` are in the path. The HTML documentation will be found in **docs/temp/burgerlibdoxygen/index.htm**
 
 ---
 
@@ -41,6 +43,7 @@ SHA-1 236ac33ebd463006be4ecd83d7ebea1c026eb55a
 ### DirectX 9.0c SDK June 2010
 
 [Download DirectX 9.0c SDK June 2010 here](https://www.microsoft.com/en-us/download/details.aspx?id=6812)
+
 ``` text
 SHA-1 495ad05ae5fc4ecd76b53a69a35bacb66d958608
 ```
