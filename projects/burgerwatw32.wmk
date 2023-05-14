@@ -215,7 +215,7 @@ INCLUDE_DIRS +=;../sdks/windows/dplay/include
 INCLUDE_DIRS +=;../sdks/windows/opengl
 INCLUDE_DIRS +=;$(%BURGER_SDKS)/windows/windows5
 INCLUDE_DIRS +=;$(%BURGER_SDKS)/windows/directx9
-INCLUDE_DIRS +=;../steamworks/public/steam
+INCLUDE_DIRS +=;../sdks/steamworks/public/steam
 
 #
 # Tell WMAKE where to find the files to work with

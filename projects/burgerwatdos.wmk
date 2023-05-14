@@ -253,7 +253,7 @@ SOURCE_DIRS +=;../source/text
 #
 
 INCLUDE_DIRS = $(SOURCE_DIRS)
-INCLUDE_DIRS +=;$(%BURGER_SDKS)/msdos/x32
+INCLUDE_DIRS +=;../sdks/msdos/x32/include
 
 #
 # Tell WMAKE where to find the files to work with

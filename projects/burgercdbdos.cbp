@@ -129,7 +129,7 @@
 			<Add alias="Everything" targets="Debug_dos4gw;Debug_dosx32;Internal_dos4gw;Internal_dosx32;Release_dos4gw;Release_dosx32" />
 		</VirtualTargets>
 		<Compiler>
-			<Add directory='&quot;$(BURGER_SDKS)/msdos/x32&quot;' />
+			<Add directory='&quot;../sdks/msdos/x32/include&quot;' />
 			<Add directory='&quot;../source&quot;' />
 			<Add directory='&quot;../source/ansi&quot;' />
 			<Add directory='&quot;../source/audio&quot;' />
@@ -404,6 +404,7 @@
 		<Unit filename="../source/lowlevel/brlinkedlistobject.h" />
 		<Unit filename="../source/lowlevel/brlinkedlistpointer.cpp" />
 		<Unit filename="../source/lowlevel/brlinkedlistpointer.h" />
+		<Unit filename="../source/lowlevel/brmacros.h" />
 		<Unit filename="../source/lowlevel/brmetrowerks.h" />
 		<Unit filename="../source/lowlevel/broscursor.cpp" />
 		<Unit filename="../source/lowlevel/broscursor.h" />
@@ -426,6 +427,8 @@
 		<Unit filename="../source/lowlevel/brstructs.h" />
 		<Unit filename="../source/lowlevel/brtemplates.cpp" />
 		<Unit filename="../source/lowlevel/brtemplates.h" />
+		<Unit filename="../source/lowlevel/brthread.cpp" />
+		<Unit filename="../source/lowlevel/brthread.h" />
 		<Unit filename="../source/lowlevel/brtick.cpp" />
 		<Unit filename="../source/lowlevel/brtick.h" />
 		<Unit filename="../source/lowlevel/brtimedate.cpp" />
@@ -451,6 +454,8 @@
 		<Unit filename="../source/math/brfixedvector4d.h" />
 		<Unit filename="../source/math/brfloatingpoint.cpp" />
 		<Unit filename="../source/math/brfloatingpoint.h" />
+		<Unit filename="../source/math/brfphalf.cpp" />
+		<Unit filename="../source/math/brfphalf.h" />
 		<Unit filename="../source/math/brfpinfo.cpp" />
 		<Unit filename="../source/math/brfpinfo.h" />
 		<Unit filename="../source/math/brfplargeint.cpp" />
@@ -461,8 +466,6 @@
 		<Unit filename="../source/math/brmatrix3d.h" />
 		<Unit filename="../source/math/brmatrix4d.cpp" />
 		<Unit filename="../source/math/brmatrix4d.h" />
-		<Unit filename="../source/math/brmp3math.cpp" />
-		<Unit filename="../source/math/brmp3math.h" />
 		<Unit filename="../source/math/brsinecosine.cpp" />
 		<Unit filename="../source/math/brvector2d.cpp" />
 		<Unit filename="../source/math/brvector2d.h" />
@@ -484,7 +487,6 @@
 		<Unit filename="../source/platforms/msdos/brfilemsdos.cpp" />
 		<Unit filename="../source/platforms/msdos/brfilenamemsdos.cpp" />
 		<Unit filename="../source/platforms/msdos/brglobalsmsdos.cpp" />
-		<Unit filename="../source/platforms/msdos/brmsdostypes.h" />
 		<Unit filename="../source/platforms/msdos/brtickmsdos.cpp" />
 		<Unit filename="../source/platforms/msdos/brtimedatemsdos.cpp" />
 		<Unit filename="../source/random/brmersennetwist.cpp" />
@@ -494,6 +496,10 @@
 		<Unit filename="../source/random/brrandombase.cpp" />
 		<Unit filename="../source/random/brrandombase.h" />
 		<Unit filename="../source/templateburgerbase.h" />
+		<Unit filename="../source/templatelinux.h" />
+		<Unit filename="../source/templatemac.h" />
+		<Unit filename="../source/templateunix.h" />
+		<Unit filename="../source/templatewindows.h" />
 		<Unit filename="../source/text/brasciito.cpp" />
 		<Unit filename="../source/text/brasciito.h" />
 		<Unit filename="../source/text/brcodepage.cpp" />

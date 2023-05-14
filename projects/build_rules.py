@@ -264,6 +264,21 @@ def is_git():
 ########################################
 
 
+def sdks_folder():
+    """
+    Return the location of the sdks folder
+
+    Check if under github, if so, it's stored locally, otherwise, it's in the
+    BURGER_SDKS folder
+    """
+
+    if is_git():
+        return "../sdks/"
+    return "$(BURGER_SDKS)/"
+
+########################################
+
+
 def dplay_folder():
     """
     Return the location of the dplay folder
@@ -272,9 +287,7 @@ def dplay_folder():
     BURGER_SDKS folder
     """
 
-    if is_git():
-        return "../sdks/windows/dplay/include"
-    return "$(BURGER_SDKS)/windows/dplay/include"
+    return sdks_folder() + "windows/dplay/include"
 
 ########################################
 
@@ -287,9 +300,7 @@ def window_opengl_folder():
     BURGER_SDKS folder
     """
 
-    if is_git():
-        return "../sdks/windows/opengl"
-    return "$(BURGER_SDKS)/windows/opengl"
+    return sdks_folder() + "windows/opengl"
 
 ########################################
 
@@ -302,9 +313,20 @@ def steam_folder():
     BURGER_SDKS folder
     """
 
-    if is_git():
-        return "../steamworks/public/steam"
-    return "$(BURGER_SDKS)/steamworks/public/steam"
+    return sdks_folder() + "steamworks/public/steam"
+
+########################################
+
+
+def x32_folder():
+    """
+    Return the location of the FlashTex DOS X32 folder
+
+    Check if under github, if so, it's stored locally, otherwise, it's in the
+    BURGER_SDKS folder
+    """
+
+    return sdks_folder() + "msdos/x32/include"
 
 ########################################
 
@@ -598,7 +620,7 @@ def project_settings(project):
     # MS/DOS
     if platform.is_msdos():
         source_folders_list.extend(BURGER_LIB_DOS)
-        include_folders_list.append("$(BURGER_SDKS)/msdos/x32")
+        include_folders_list.append(x32_folder())
 
     # Linux
     if platform is PlatformTypes.linux:
