@@ -40,6 +40,21 @@ To build with Open Watcom, download and install the compiler and set the environ
 SHA-1 236ac33ebd463006be4ecd83d7ebea1c026eb55a
 ```
 
+### Codewarrior 9.4 for Windows 32 target
+
+To build with Metrowerks Codewarrior, download and install the compiler. To install, first run ``CW_Windows_9.2.exe`` and then install ``CW_Windows_9.4_Update.exe``. After installation, copy the file ``license.dat`` over the file **C:\Program Files (x86)\Metrowerks\CodeWarrior\license.dat** to update the license to a permanent one.
+
+[Download Codewarrior 9.4 for Windows here](https://archive.org/details/cwpro9)
+
+``` text
+SHA-1 2a8a839aa34a0e7b8400004788f0cbc3db03f90e for CW_Windows_9.2.exe
+SHA-1 6da8be8022bf96b9387b6b14980944092ed2fc46 for CW_Windows_9.4_Update.exe
+```
+
+### Visual Studio IDE
+
+Download Visual Studio at [Visual Studio website](https://visualstudio.com). Visual Studio 2022 is recommended, however versions from 2003, 2005, all the way to 2022 is supported.
+
 ### DirectX 9.0c SDK June 2010
 
 [Download DirectX 9.0c SDK June 2010 here](https://www.microsoft.com/en-us/download/details.aspx?id=6812)
