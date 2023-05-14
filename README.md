@@ -1,8 +1,6 @@
-Welcome to Burgerlib {#mainpage}
-====================
+# Welcome to Burgerlib {#mainpage}
 
-The only low level library you'll ever need
--------------------------------------------
+## The only low level library you'll ever need
 
 Copyright 1995-2022 by Rebecca Ann Heineman becky@burgerbecky.com. Email all suggestions, corrections, optimizations and insults to her and she'll be eternally grateful.
 
@@ -12,11 +10,60 @@ Please? It's not like I'm asking you for money!
 
 ---
 
+## Online Doxygen Documentation
+
 [Documentation is found here.](http://www.burgerbecky.com/burgerlib/docs)
+
+**Yes, click the link above. DO IT! BOOKMARK IT!**
 
 ---
 
-Sections of interest:
+## Python is required
+
+[Python can be downloaded here.](https://www.python.org/downloads/)
+
+After Python is installed, run ``pip install -r requirements.txt`` from the root folder. This will ensure ``buildme`` and other python scripts needed by the build system are present.
+
+Once it is installed, run ``buildme`` to build everything in the root or projects folders, or ``buildme whatever.sln`` to build a specific project file. ``buildme`` will build all project files. ``cleanme`` will clean a folder of all temporary files.
+
+## Windows prerequisites
+
+### Open Watcom 1.9 for Dos and Windows 32 targets
+
+To build with Open Watcom, download and install the compiler and set the environment variable ``WATCOM`` to point to the installation folder, usually ``C:\WATCOM``
+
+[Download Open Watcom 1.9 here](http://openwatcom.org/ftp/install/open-watcom-c-win32-1.9.exe)
+
+``` text
+SHA-1 236ac33ebd463006be4ecd83d7ebea1c026eb55a
+```
+
+### DirectX 9.0c SDK June 2010
+
+[Download DirectX 9.0c SDK June 2010 here](https://www.microsoft.com/en-us/download/details.aspx?id=6812)
+``` text
+SHA-1 495ad05ae5fc4ecd76b53a69a35bacb66d958608
+```
+
+---
+
+## Optional tools
+
+### Doxygen
+
+[Download Doxygen for the host platform from here.](https://www.doxygen.nl/download.html)
+
+### Graphviz
+
+[Download Graphviz from here.](https://graphviz.org/download/)
+
+### Pandoc
+
+[Download Pandoc from here.](https://pandoc.org/installing.html)
+
+---
+
+## Sections of interest
 
 * \ref page_what_is_burgerlib
 * \ref page_building
@@ -28,8 +75,7 @@ Sections of interest:
 
 ---
 
-Credits
--------
+## Credits
 
 * Rebecca Ann Heineman - most of the codebase
 * Gary S. Brown - CRC32B
