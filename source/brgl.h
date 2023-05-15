@@ -54,7 +54,7 @@
 #include <windows.h> // Needed before #include <gl.h> in windows
 #endif
 #ifndef __gl_h__
-#include <gl.h> // OpenGL for all other platforms
+#include <GL/gl.h> // OpenGL for all other platforms
 #endif
 
 // Android / Ouya / Shield

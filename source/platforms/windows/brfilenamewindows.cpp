@@ -22,25 +22,18 @@
 #include "brstring16.h"
 #include "brutf16.h"
 #include "brutf8.h"
+#include "win_shell32.h"
 
 #if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
 
-#include <ObjBase.h>
 #include <Windows.h>
+
+#include <ObjBase.h>
+#include <shellapi.h>
+
 #include <shlobj.h>
-
-#if defined(BURGER_WATCOM)
-#pragma library("shfolder.lib");
-#endif
-
-//
-// GUIDs needed for locating folders in Vista or higher
-//
-
-#define KF_FLAG_DONT_UNEXPAND 0x00002000
-#define KF_FLAG_DONT_VERIFY 0x00004000
 
 EXTERN_C const GUID DECLSPEC_SELECTANY FOLDERID_LocalAppData = {
 	0xF1B32785, 0x6FBA, 0x4FCF, 0x9D, 0x55, 0x7B, 0x8E, 0x7F, 0x15, 0x70, 0x91};
@@ -418,35 +411,8 @@ Burger::eError BURGER_API Burger::Filename::set_boot_volume(
 Burger::eError BURGER_API Burger::Filename::set_system_prefs_directory(
 	void) BURGER_NOEXCEPT
 {
-	eError uResult = kErrorNotADirectory;
-
-	// Try the code for Vista or higher
-	uint16_t* pResult = nullptr;
-	uint_t hResult = Windows::SHGetKnownFolderPath(&FOLDERID_LocalAppData,
-		KF_FLAG_DONT_UNEXPAND | KF_FLAG_DONT_VERIFY, nullptr, &pResult);
-	if (hResult == S_OK) {
-		// All good! Use this pathname!
-		uResult = set_native(pResult);
-		// Release the pointer
-		CoTaskMemFree(pResult);
-
-	} else {
-
-		// Try it for Windows XP instead
-		WCHAR NameBuffer[MAX_PATH];
-		// Application system data folder (Local for Vista and Win7)
-		hResult = static_cast<uint_t>(SHGetFolderPathW(
-			nullptr, CSIDL_LOCAL_APPDATA, nullptr, 0, NameBuffer));
-		if ((hResult == S_OK) || (hResult == E_FAIL)) {
-			// Convert to UTF8
-			uResult = set_native(reinterpret_cast<const uint16_t*>(NameBuffer));
-		}
-	}
-
-	if (uResult) {
-		clear();
-	}
-	return uResult;
+	return Win32::get_known_folder_path(
+		this, &FOLDERID_LocalAppData, CSIDL_LOCAL_APPDATA);
 }
 
 /***************************************
@@ -466,33 +432,8 @@ Burger::eError BURGER_API Burger::Filename::set_system_prefs_directory(
 Burger::eError BURGER_API Burger::Filename::set_user_prefs_directory(
 	void) BURGER_NOEXCEPT
 {
-	eError uResult = kErrorNotADirectory;
-
-	// Try the code for Vista or higher
-	uint16_t* pResult = nullptr;
-	uint_t hResult = Windows::SHGetKnownFolderPath(&FOLDERID_RoamingAppData,
-		KF_FLAG_DONT_UNEXPAND | KF_FLAG_DONT_VERIFY, nullptr, &pResult);
-	if (hResult == S_OK) {
-		// All good! Use this pathname!
-		uResult = set_native(pResult);
-		// Release the pointer
-		CoTaskMemFree(pResult);
-	} else {
-
-		// Try it for Windows XP instead
-		WCHAR NameBuffer[MAX_PATH];
-		// Application data folder (Roaming for Vista and Win7)
-		hResult = static_cast<uint_t>(
-			SHGetFolderPathW(nullptr, CSIDL_APPDATA, nullptr, 0, NameBuffer));
-		if ((hResult == S_OK) || (hResult == E_FAIL)) {
-			// Convert to UTF8
-			uResult = set_native(reinterpret_cast<const uint16_t*>(NameBuffer));
-		}
-	}
-	if (uResult) {
-		clear();
-	}
-	return uResult;
+	return Win32::get_known_folder_path(
+		this, &FOLDERID_RoamingAppData, CSIDL_APPDATA);
 }
 
 /***************************************
@@ -529,7 +470,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 	WCHAR InputPath[512];
 	WCHAR* pInputPath;
 	uintptr_t uInputLength =
-		UTF16::TranslateFromUTF8(reinterpret_cast<uint16_t*>(InputPath),
+		UTF16::translate_from_UTF8(reinterpret_cast<uint16_t*>(InputPath),
 			BURGER_ARRAYSIZE(InputPath), pInput);
 	if (uInputLength >= BURGER_ARRAYSIZE(InputPath)) {
 		pInputPath =
@@ -537,7 +478,7 @@ Burger::eError BURGER_API Burger::Filename::set_native(
 		if (!pInputPath) {
 			return kErrorOutOfMemory;
 		}
-		uInputLength = UTF16::TranslateFromUTF8(
+		uInputLength = UTF16::translate_from_UTF8(
 			reinterpret_cast<uint16_t*>(pInputPath), uInputLength + 2, pInput);
 	} else {
 		pInputPath = InputPath;

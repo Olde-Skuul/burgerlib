@@ -19,6 +19,7 @@
 #include "brglobals.h"
 #include "brstring16.h"
 #include "brutf8.h"
+#include "brtick.h"
 
 #if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
@@ -31,7 +32,15 @@
 #include <windows.h>
 
 #include <conio.h>
+#include <mmsystem.h>
 #include <shellapi.h>
+
+#if defined(BURGER_WATCOM)
+// Needed for timeBeginPeriod
+#pragma library("Winmm.lib")
+#else
+#pragma comment(lib, "Winmm.lib")
+#endif
 
 // Needed for code that manually grabs the parm list
 extern "C" char** __argv;
@@ -48,10 +57,17 @@ extern "C" char** __argv;
 
 ***************************************/
 
-Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv, uint_t uFlags) BURGER_NOEXCEPT:
-	m_ANSIMemoryManager(), m_bLaunchedFromDesktop(FALSE), m_ppOldArgv(NULL)
+Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv,
+	uint_t uFlags) BURGER_NOEXCEPT: m_ANSIMemoryManager(),
+									m_bLaunchedFromDesktop(FALSE),
+									m_ppOldArgv(NULL)
 {
 	BURGER_UNUSED(uFlags);
+
+	// Increase the speed of the timer from 15.6 ticks per second to
+	// 1000 ticks per second so sleep_ms() actually has millisecond
+	// accuracy
+	timeBeginPeriod(1);
 
 	// In order to support unicode command lines under windows,
 	// the command line needs to be re-processed by calling the
@@ -116,6 +132,7 @@ Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv, uint_t uFlags) BU
 	// Release the data Windows gave me for the parsed parameters
 	LocalFree(pWideArgv);
 
+	Tick::init();
 	// Init the file system
 	FileManager::initialize();
 }
@@ -133,11 +150,16 @@ Burger::ConsoleApp::~ConsoleApp()
 {
 	// Release the file system
 	FileManager::shut_down();
+	Tick::shutdown();
+
 	Free(m_ppArgv);
 	if (m_ppOldArgv) {
 		__argv = const_cast<char**>(m_ppOldArgv);
-		m_ppOldArgv = NULL;
+		m_ppOldArgv = nullptr;
 	}
+
+	// Release the Windows high speed timer
+	timeEndPeriod(1);
 }
 
 /***************************************

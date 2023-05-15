@@ -23,6 +23,7 @@
 #include "brglobals.h"
 #include "brmemoryfunctions.h"
 #include "brstring16.h"
+#include "win_ddraw.h"
 
 #if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
@@ -150,7 +151,7 @@ static HRESULT __stdcall EnumerateVideoDevice(GUID* pGUID, char* pDescription,
 		// Create a DirectDraw7 instance for queries
 
 		IDirectDraw7* pDirectDraw7;
-		if (Burger::Windows::DirectDrawCreateEx(pGUID,
+		if (Burger::Win32::DirectDrawCreateEx(pGUID,
 				reinterpret_cast<void**>(&pDirectDraw7),
 				IID_IDirectDraw7) == DD_OK) {
 
@@ -241,7 +242,7 @@ uint_t Burger::Display::GetVideoModes(ClassArray<VideoCardDescription>* pOutput)
 	pOutput->clear();
 	uint_t uResult = 10;
 	// Enumerate all devices
-	if (Windows::DirectDrawEnumerateExA(EnumerateVideoDevice, pOutput,
+	if (Win32::DirectDrawEnumerateExA(EnumerateVideoDevice, pOutput,
 			DDENUM_ATTACHEDSECONDARYDEVICES | DDENUM_DETACHEDSECONDARYDEVICES |
 				DDENUM_NONDISPLAYDEVICES) == DD_OK) {
 		uResult = 0; // No error

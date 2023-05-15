@@ -500,6 +500,7 @@
 		<Unit filename="../source/platforms/windows/brguidwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brjoypadwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brkeyboardwindows.cpp" />
+		<Unit filename="../source/platforms/windows/brmemorymanagerwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brmousewindows.cpp" />
 		<Unit filename="../source/platforms/windows/brnetmanagerwindows.cpp" />
 		<Unit filename="../source/platforms/windows/broscursorwindows.cpp" />
@@ -513,6 +514,7 @@
 		<Unit filename="../source/platforms/windows/brstdouthelperswindows.cpp" />
 		<Unit filename="../source/platforms/windows/brtexturedirectx9.cpp" />
 		<Unit filename="../source/platforms/windows/brtexturedirectx9.h" />
+		<Unit filename="../source/platforms/windows/brthreadwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brtickwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brtimedatewindows.cpp" />
 		<Unit filename="../source/platforms/windows/brvertexbufferdirectx9.h" />

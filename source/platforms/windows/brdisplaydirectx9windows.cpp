@@ -22,6 +22,9 @@
 #include "brmatrix4d.h"
 #include "brwindowstypes.h"
 #include "brmemoryfunctions.h"
+#include "win_d3d9.h"
+#include "win_winutils.h"
+#include "win_user32.h"
 
 #if !defined(DIRECTDRAW_VERSION) && !defined(DOXYGEN)
 #define DIRECTDRAW_VERSION 0x700
@@ -1971,7 +1974,7 @@ uint_t BURGER_API Burger::DisplayDirectX9::Enumerator::EnumerateDevices(AdapterI
 					ThePresent.BackBufferCount = 1;
 					ThePresent.SwapEffect = D3DSWAPEFFECT_COPY;
 					ThePresent.Windowed = TRUE;
-					HWND pWindow = Globals::GetWindow();
+					HWND pWindow = Win32::get_window();
 					ThePresent.hDeviceWindow = pWindow;
 
 					IDirect3DDevice9* pDevice = NULL;
@@ -2726,7 +2729,7 @@ IDirect3D9 * BURGER_API Burger::DisplayDirectX9::LoadDirect3D9(void)
 	IDirect3D9 *pDirect3D9 = m_pDirect3D9;
 	if (!pDirect3D9) {
 		// Create it
-		pDirect3D9 = Windows::Direct3DCreate9(D3D_SDK_VERSION);
+		pDirect3D9 = Win32::Direct3DCreate9(D3D_SDK_VERSION);
 		// Store the instance (Or NULL if it failed)
 		m_pDirect3D9 = pDirect3D9;
 	}
@@ -3109,7 +3112,8 @@ void Burger::DisplayDirectX9::CheckForWindowChangingMonitors(void)
 		m_bDeviceCreated &&
 		m_D3D9Settings.m_bWindowed) {
 
-		HMONITOR hWindowMonitor = Windows::MonitorFromWindow(m_D3D9Settings.m_pDeviceWindow,MONITOR_DEFAULTTOPRIMARY);
+		HMONITOR hWindowMonitor = Win32::MonitorFromWindow(
+			m_D3D9Settings.m_pDeviceWindow, MONITOR_DEFAULTTOPRIMARY);
 		if (hWindowMonitor != m_AdapterMonitor) {
 
 			uint_t uNewAdapterOrdinal;
@@ -3369,8 +3373,9 @@ uint_t BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *
 					miAdapter.cbSize = sizeof(MONITORINFO);
 
 					hAdapterMonitor = m_pDirect3D9->GetAdapterMonitor(m_D3D9Settings.m_uAdapterOrdinal);
-					Windows::GetMonitorInfo(hAdapterMonitor,&miAdapter);
-					HMONITOR hWindowMonitor = Windows::MonitorFromWindow(m_pGameApp->GetWindow(),MONITOR_DEFAULTTOPRIMARY);
+					Win32::GetMonitorInfo(hAdapterMonitor, &miAdapter);
+					HMONITOR hWindowMonitor = Win32::MonitorFromWindow(
+						m_pGameApp->GetWindow(), MONITOR_DEFAULTTOPRIMARY);
 
 					// Get the rect of the window
 					RECT rcWindow;
@@ -3409,12 +3414,15 @@ uint_t BURGER_API Burger::DisplayDirectX9::ChangeDevice(const DeviceSettings_t *
 					MONITORINFO miAdapter;
 					miAdapter.cbSize = sizeof(MONITORINFO);
 					hAdapterMonitor = m_pDirect3D9->GetAdapterMonitor(m_D3D9Settings.m_uAdapterOrdinal);
-					Windows::GetMonitorInfo( hAdapterMonitor,&miAdapter);
+					Win32::GetMonitorInfo( hAdapterMonitor,&miAdapter);
 
 					// Get the rect of the monitor attached to the window
 					MONITORINFO miWindow;
 					miWindow.cbSize = sizeof(MONITORINFO);
-					Windows::GetMonitorInfo(Windows::MonitorFromWindow(m_pGameApp->GetWindow(),MONITOR_DEFAULTTOPRIMARY),&miWindow);
+					Win32::GetMonitorInfo(
+						Win32::MonitorFromWindow(
+							m_pGameApp->GetWindow(), MONITOR_DEFAULTTOPRIMARY),
+						&miWindow);
 
 					// Do something reasonable if the BackBuffer size is greater than the monitor size
 					LONG iAdapterMonitorWidth = miAdapter.rcWork.right - miAdapter.rcWork.left;

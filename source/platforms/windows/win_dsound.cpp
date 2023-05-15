@@ -37,7 +37,7 @@
 
 #include <Windows.h>
 
-#include <MMReg.h>
+#include <MMSystem.h>
 
 #include <dsound.h>
 

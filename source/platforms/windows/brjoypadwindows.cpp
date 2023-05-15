@@ -17,7 +17,10 @@
 #include "brjoypad.h"
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
-
+#include "win_version.h"
+#include "win_platformshims.h"
+#include "win_dinput.h"
+#include "win_xinput.h"
 #if !defined(DOXYGEN)
 
 #ifndef DIRECTINPUT_VERSION
@@ -284,7 +287,7 @@ Burger::Joypad::Joypad(GameApp* pAppInstance) BURGER_NOEXCEPT
 	pJoypadData = m_Data;
 
 	// Determine if the XInput API is available.
-	if (Windows::LoadFunctionIndex(Windows::CALL_XInputGetState)) {
+	if (Win32::load_function(Win32::kCall_XInputGetState)) {
 
 		// XInput was found, define the 4 controllers that it will manage
 		m_bXInputFound = TRUE;
@@ -305,7 +308,7 @@ Burger::Joypad::Joypad(GameApp* pAppInstance) BURGER_NOEXCEPT
 
 	// Initialize the main direct input interface.
 
-	IDirectInput8W* pDirectInput8W = Windows::GetDirectInput8Singleton();
+	IDirectInput8W* pDirectInput8W = Win32::get_DirectInput8_singleton();
 	if (pDirectInput8W) {
 
 		//
@@ -403,7 +406,7 @@ Burger::Joypad::Joypad(GameApp* pAppInstance) BURGER_NOEXCEPT
 	// Install the background task if any devices were found
 
 	if (m_bXInputFound) {
-		Windows::XInputEnable(TRUE);
+		Win32::XInputEnable(TRUE);
 	}
 
 	if (m_bXInputFound || m_bDirectInputFound) {
@@ -423,7 +426,7 @@ Burger::Joypad::~Joypad()
 
 	// Make sure the controllers are not rumbling
 	XInputStopRumbleOnAllControllers();
-	Windows::XInputEnable(FALSE);
+	Win32::XInputEnable(FALSE);
 
 	JoypadData_t* pJoypadData = m_Data;
 	uint_t i = 0;
@@ -464,7 +467,7 @@ Burger::RunQueue::eReturnCode BURGER_API Burger::Joypad::Poll(
 			// Get the old and new states
 
 			const uint_t bIsConnected =
-				(Windows::XInputGetState(uWhich, &State) == ERROR_SUCCESS);
+				(Win32::XInputGetState(uWhich, &State) == ERROR_SUCCESS);
 			const uint_t bWasConnected = pJoypadData->m_bConnected;
 
 			// Save off the states as to how they were processed
@@ -844,7 +847,7 @@ uint_t BURGER_API Burger::XInputStopRumbleOnAllControllers(void) BURGER_NOEXCEPT
 	do {
 		// Only abort if XInput is not present, otherwise, issue the
 		// command to every device, regardless of connection state
-		const uint_t uTemp = Windows::XInputSetState(i, &MyVibration);
+		const uint_t uTemp = Win32::XInputSetState(i, &MyVibration);
 		if (uTemp == ERROR_CALL_NOT_IMPLEMENTED) {
 			uResult = uTemp;
 			break;
@@ -887,7 +890,7 @@ uint_t BURGER_API Burger::XInputGetGamepadState(uint_t uWhich,
 	} else {
 		// Read in the data from the game pad
 		XINPUT_STATE GamepadState;
-		uResult = Windows::XInputGetState(uWhich, &GamepadState);
+		uResult = Win32::XInputGetState(uWhich, &GamepadState);
 
 		// Test if XInput is present
 		if (uResult != ERROR_CALL_NOT_IMPLEMENTED) {
@@ -1053,7 +1056,7 @@ uint_t BURGER_API Burger::IsDeviceXInput(const GUID* pGuid) BURGER_NOEXCEPT
 	// Microsoft recommends using WbemLocator for finding devices that are using
 	// XInput, however, this requires Vista or higher
 
-	if (Windows::IsVistaOrGreater()) {
+	if (Win32::is_vista_or_higher()) {
 		// Start up CoInitialize() to allow creating instances
 		const uint_t bCleanupCOM = (CoInitialize(NULL) >= 0);
 

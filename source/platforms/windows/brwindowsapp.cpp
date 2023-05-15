@@ -24,6 +24,9 @@
 #include "broscursor.h"
 #include "brstring16.h"
 #include "brutf8.h"
+#include "win_globals.h"
+#include "win_winutils.h"
+#include "brtick.h"
 
 #if !defined(DOXYGEN)
 #if !defined(WIN32_LEAN_AND_MEAN)
@@ -45,6 +48,7 @@
 #include <CommCtrl.h>
 #include <ObjBase.h>
 #include <WindowsX.h>
+#include <mmsystem.h>
 #include <shellapi.h>
 #include <stdlib.h>
 
@@ -53,116 +57,14 @@
 
 extern "C" char** __argv;
 
-//
-// These defines are missing from some versions of windows.h
-// especially when building against older versions of the
-// windows SDK (Necessary, since some obscure compilers
-// don't ship with up to date headers)
-//
-
-#if !defined(GET_SC_WPARAM)
-#define GET_SC_WPARAM(wParam) ((int)wParam & 0xFFF0)
-#endif
-
-#if !defined(PBT_APMQUERYSUSPEND)
-#define PBT_APMQUERYSUSPEND 0x0000
-#endif
-
-#if !defined(PBT_APMRESUMESUSPEND)
-#define PBT_APMRESUMESUSPEND 0x0007
-#endif
-
-#if !defined(WM_KEYF1)
-#define WM_KEYF1 0x004D
-#endif
-
-#if !defined(WM_UAHDESTROYWINDOW)
-#define WM_UAHDESTROYWINDOW 0x0090
-#endif
-
-#if !defined(WM_UAHDRAWMENU)
-#define WM_UAHDRAWMENU 0x0091
-#endif
-
-#if !defined(WM_UAHDRAWMENUITEM)
-#define WM_UAHDRAWMENUITEM 0x0092
-#endif
-
-#if !defined(WM_UAHINITMENU)
-#define WM_UAHINITMENU 0x0093
-#endif
-
-#if !defined(WM_UAHMEASUREMENUITEM)
-#define WM_UAHMEASUREMENUITEM 0x0094
-#endif
-
-#if !defined(WM_UAHNCPAINTMENUPOPUP)
-#define WM_UAHNCPAINTMENUPOPUP 0x0095
-#endif
-
-#if !defined(WM_NCUAHDRAWCAPTION)
-#define WM_NCUAHDRAWCAPTION 0x00AE
-#endif
-
-#if !defined(WM_NCUAHDRAWFRAME)
-#define WM_NCUAHDRAWFRAME 0x00AF
-#endif
-
-#if !defined(WM_INPUT_DEVICE_CHANGE)
-#define WM_INPUT_DEVICE_CHANGE 0x00FE
-#endif
-
-#if !defined(WM_INPUT)
-#define WM_INPUT 0x00FF
-#endif
-
-#if !defined(WM_GESTURE)
-#define WM_GESTURE 0x0119
-#endif
-
-#if !defined(WM_GESTURENOTIFY)
-#define WM_GESTURENOTIFY 0x011A
-#endif
-
-#if !defined(WM_MOUSEHWHEEL)
-#define WM_MOUSEHWHEEL 0x020E
-#endif
-
-#if !defined(WM_TOUCH)
-#define WM_TOUCH 0x0240
-#endif
-
-#if !defined(WM_NCMOUSEHOVER)
-#define WM_NCMOUSEHOVER 0x02A0
-#endif
-
-#if !defined(WM_NCMOUSELEAVE)
-#define WM_NCMOUSELEAVE 0x02A2
-#endif
-
-#if !defined(WM_CLIPBOARDUPDATE)
-#define WM_CLIPBOARDUPDATE 0x031D
-#endif
-
-#if !defined(WM_DWMCOMPOSITIONCHANGED)
-#define WM_DWMCOMPOSITIONCHANGED 0x031E
-#endif
-
-#if !defined(WM_DWMNCRENDERINGCHANGED)
-#define WM_DWMNCRENDERINGCHANGED 0x031F
-#endif
-
-#if !defined(WM_DWMCOLORIZATIONCOLORCHANGED)
-#define WM_DWMCOLORIZATIONCOLORCHANGED 0x0320
-#endif
-
-#if !defined(WM_DWMWINDOWMAXIMIZEDCHANGE)
-#define WM_DWMWINDOWMAXIMIZEDCHANGE 0x0321
-#endif
-
+#if defined(BURGER_WATCOM)
 // Needed for InitCommonControls()
-#if defined(BURGER_MSVC)
+#pragma library("Comctl32.lib")
+// Needed for timeBeginPeriod
+#pragma library("Winmm.lib")
+#else
 #pragma comment(lib, "Comctl32.lib")
+#pragma comment(lib, "Winmm.lib")
 #endif
 
 #endif
@@ -205,10 +107,16 @@ Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,
 	  m_bInSizeMove(FALSE)
 {
 	m_WindowRect.Clear();
-	HINSTANCE hInstance = GetModuleHandleW(NULL);
+
+	// Set the global process instance
+	HINSTANCE hInstance = GetModuleHandleW(nullptr);
 	m_hInstance = hInstance;
-	// Set the global instance
-	Windows::SetInstance(hInstance);
+	Win32::set_instance(hInstance);
+
+	// Increase the speed of the timer from 15.6 ticks per second to
+	// 1000 ticks per second so sleep_ms() actually has millisecond
+	// accuracy
+	timeBeginPeriod(1);
 
 	// Ensure that threading is serialized since it's assumed this
 	// is a GUI based application
@@ -229,6 +137,7 @@ Burger::GameApp::GameApp(uintptr_t uDefaultMemorySize,
 	InitCommonControls();
 
 	// Set up the shared values
+	Tick::init();
 	InitDefaults();
 
 	// In order to support unicode command lines under windows,
@@ -335,10 +244,11 @@ Burger::GameApp::~GameApp()
 	// Clear out the default variables
 	// It also unlinks the Display class
 	ShutdownDefaults();
+	Tick::shutdown();
 
 	// If there is a window, dispose of it
 	if (m_hWindow) {
-		Globals::SetWindow(nullptr);
+		Win32::set_window(nullptr);
 		CloseWindow(m_hWindow);
 		m_hWindow = nullptr;
 	}
@@ -352,9 +262,12 @@ Burger::GameApp::~GameApp()
 		m_bCoCreateInstanceInit = FALSE;
 	}
 
+	// Release the Windows high speed timer
+	timeEndPeriod(1);
+
 	// The instance is not tracked anymore
 	m_hInstance = nullptr;
-	Windows::SetInstance(nullptr);
+	Win32::set_instance(nullptr);
 }
 
 /*! ************************************
@@ -515,7 +428,7 @@ int BURGER_API Burger::GameApp::InitWindow(const char* pGameName,
 			// Store the new window handle
 			m_hWindow = pWindow;
 			// Set the system global, obsolete
-			Globals::SetWindow(pWindow);
+			Win32::set_window(pWindow);
 			// Copy the bounds rect
 			RecordWindowLocation();
 

@@ -20,6 +20,8 @@
 #include "brfilename.h"
 #include "brglobals.h"
 #include "brstring16.h"
+#include "win_loadlibrary.h"
+
 #if !defined(WIN32_LEAN_AND_MEAN) && !defined(DOXYGEN)
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -51,7 +53,7 @@ Burger::eError Burger::CodeLibrary::init(const char* pFilename) BURGER_NOEXCEPT
 	// Convert from UTF8 to UTF16
 	String16 FinalName(pFilename);
 	// Load the library from Windows
-	HMODULE hModule = Windows::LoadLibraryW(FinalName.c_str());
+	HMODULE hModule = Win32::LoadLibraryW(FinalName.c_str());
 	// On success!
 	if (hModule != nullptr) {
 		m_pLibInstance = hModule;

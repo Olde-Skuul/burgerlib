@@ -26,6 +26,9 @@
 #include "brcriticalsection.h"
 #include "bratomic.h"
 #include "brtick.h"
+#include "win_dinput.h"
+#include "win_hid.h"
+#include "win_setupapi.h"
 #include <dinput.h>
 #include <stdio.h>
 #include <winreg.h>
@@ -98,14 +101,14 @@ uintptr_t BURGER_API Burger::Mouse::WindowsMouseThread(void *pData)
 				uint_t i = uCount;
 				if (i) {
 					// Lock the data and update it
-					pThis->m_MouseLock.Lock();
+					pThis->m_MouseLock.lock();
 					const DIDEVICEOBJECTDATA *pObject = MouseData;
 					do {
 						// Offset into the data
 						DWORD uDataOffset = pObject->dwOfs;
 						// Data read in
 						DWORD uData = pObject->dwData;
-						uint32_t uTimeStamp = Tick::ReadMilliseconds();
+						uint32_t uTimeStamp = Tick::read_ms();
 
 						// Mouse X motion event
 						if (uDataOffset==DIMOFS_X) {
@@ -144,7 +147,7 @@ uintptr_t BURGER_API Burger::Mouse::WindowsMouseThread(void *pData)
 						}
 						++pObject;
 					} while (--i);
-					pThis->m_MouseLock.Unlock();
+					pThis->m_MouseLock.unlock();
 				}
 			}
 		}
@@ -186,7 +189,7 @@ Burger::Mouse::Mouse(GameApp *pGameApp) :
 
 	// First step, obtain DirectInput
 
-	IDirectInput8W* pDirectInput8W = Windows::GetDirectInput8Singleton();
+	IDirectInput8W* pDirectInput8W = Win32::get_DirectInput8_singleton();
 	if (pDirectInput8W) {
 
 		// Create a system mouse device (Merges all mice)
@@ -218,7 +221,7 @@ Burger::Mouse::Mouse(GameApp *pGameApp) :
 						// Create an event for thread callbacks
 						m_pMouseEvent = CreateEventW(NULL,FALSE,FALSE,NULL);
 						hResult = pMouseDevice->SetEventNotification(m_pMouseEvent);
-						m_MouseThread.Start(WindowsMouseThread,this);
+						m_MouseThread.start(WindowsMouseThread,this);
 						// Acquire Direct Input only if the application is full screen
 						if (pGameApp->IsAppFullScreen()) {
 							AcquireDirectInput();
@@ -241,7 +244,7 @@ Burger::Mouse::Mouse(GameApp *pGameApp) :
 					SetEvent(m_pMouseEvent);
 					
 					// Wait for the thread to shut down
-					m_MouseThread.Wait();
+					m_MouseThread.wait();
 					CloseHandle(m_pMouseEvent);
 					m_pMouseEvent = NULL;
 				}
@@ -276,7 +279,7 @@ Burger::Mouse::~Mouse()
 		SetEvent(m_pMouseEvent);
 		
 		// Wait for the thread to shut down
-		m_MouseThread.Wait();
+		m_MouseThread.wait();
 		
 		// Release the events
 		CloseHandle(m_pMouseEvent);
@@ -298,8 +301,8 @@ uint_t Burger::Mouse::IsPresent(void) const
 {
 	GUID HIDGUID;
 	// Get the HID GUID
-	Windows::HidD_GetHidGuid(&HIDGUID);
-	HDEVINFO hDevInfo = Windows::SetupDiGetClassDevsW(&HIDGUID,NULL,NULL,DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+	Win32::HidD_GetHidGuid(&HIDGUID);
+	HDEVINFO hDevInfo = Win32::SetupDiGetClassDevsW(&HIDGUID,NULL,NULL,DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 	uint_t uResult = FALSE;
 	if (hDevInfo!=INVALID_HANDLE_VALUE) {
 		uResult = TRUE;
@@ -308,7 +311,7 @@ uint_t Burger::Mouse::IsPresent(void) const
 		for (;;) {
 			SP_DEVICE_INTERFACE_DATA DeviceInterface;
 			DeviceInterface.cbSize = sizeof(DeviceInterface);
-			if (!Windows::SetupDiEnumDeviceInterfaces(hDevInfo,NULL,&HIDGUID,uIndex,&DeviceInterface)) {
+			if (!Win32::SetupDiEnumDeviceInterfaces(hDevInfo,NULL,&HIDGUID,uIndex,&DeviceInterface)) {
 				// Likely reached the end of the list
 				break;
 			}
@@ -319,18 +322,18 @@ uint_t Burger::Mouse::IsPresent(void) const
 			SP_DEVINFO_DATA DeviceInfoData;
 			DeviceInfoData.cbSize = sizeof(DeviceInfoData);
 			// Get the details about this device
-			if (!Windows::SetupDiGetDeviceInterfaceDetailW(hDevInfo,&DeviceInterface,pDeviceInterfaceDetailData,sizeof(Buffer),NULL,&DeviceInfoData)) {\
+			if (!Win32::SetupDiGetDeviceInterfaceDetailW(hDevInfo,&DeviceInterface,pDeviceInterfaceDetailData,sizeof(Buffer),NULL,&DeviceInfoData)) {\
 				break;
 			}
 			// Is this a mouse device?
-			if (GUIDIsEqual(&DeviceInfoData.ClassGuid,&GUID_DEVCLASS_MOUSE)) {
+			if (GUID_is_equal(&DeviceInfoData.ClassGuid,&GUID_DEVCLASS_MOUSE)) {
 				uResult = TRUE;
 				break;
 			}
 			++uIndex;
 		}
 		// Clean up
-		Windows::SetupDiDestroyDeviceInfoList(hDevInfo);
+		Win32::SetupDiDestroyDeviceInfoList(hDevInfo);
 	}
 	// Return TRUE or FALSE if there was a mouse in the device list
 	return uResult;

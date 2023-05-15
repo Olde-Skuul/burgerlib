@@ -73,7 +73,7 @@ Burger::eError BURGER_API Burger::GetUserLoginName(
 	GetUserNameW(nullptr, &uBufferSize);
 	if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
 		WCHAR* pBuffer =
-			static_cast<WCHAR*>(AllocClear(sizeof(WCHAR) * (uBufferSize + 1)));
+			static_cast<WCHAR*>(alloc_clear(sizeof(WCHAR) * (uBufferSize + 1)));
 		if (pBuffer) {
 			if (GetUserNameW(pBuffer, &uBufferSize)) {
 				uResult = pOutput->assign(static_cast<const uint16_t*>(
@@ -200,7 +200,7 @@ Burger::eError BURGER_API Burger::GetMachineName(
 		if (!GetComputerNameExW(
 				ComputerNameDnsHostname, nullptr, &uBufferSize)) {
 			WCHAR* pBuffer = static_cast<WCHAR*>(
-				AllocClear(sizeof(WCHAR) * (uBufferSize + 1)));
+				alloc_clear(sizeof(WCHAR) * (uBufferSize + 1)));
 			if (GetComputerNameExW(
 					ComputerNameDnsHostname, pBuffer, &uBufferSize)) {
 				uResult = pOutput->assign(static_cast<const uint16_t*>(

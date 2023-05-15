@@ -18,21 +18,28 @@
 #include "brwindowstypes.h"
 #include "brmemoryfunctions.h"
 
-#if !defined(DIRECTDRAW_VERSION) && !defined(DOXYGEN)
+#if !defined(DOXYGEN)
+#if !defined(DIRECTDRAW_VERSION)
 #define DIRECTDRAW_VERSION 0x700
 #endif
 
-#if !defined(DIRECT3D_VERSION) && !defined(DOXYGEN)
+#if !defined(DIRECT3D_VERSION)
 #define DIRECT3D_VERSION 0x900
 #endif
 
-#if !defined(WIN32_LEAN_AND_MEAN) && !defined(DOXYGEN)
+#if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
 #endif
 
 #include <Windows.h>
 #include <d3d11.h>
 #include <ddraw.h>
+
+// Available on the Windows SDK 8.0 or higher
+// Mimic this for 7.0 or lower
+#if !defined(WINAPI_FAMILY_PARTITION)
+#define DXGI_FORMAT_B4G4R4A4_UNORM 115
+#endif
 
 #ifdef _DEBUG
 #define PRINTHRESULT(hResult) /* m_pGameApp->Poll(); */ \
@@ -42,6 +49,8 @@
 		hResult)
 #else
 #define PRINTHRESULT(hResult)
+#endif
+
 #endif
 
 /*! ************************************

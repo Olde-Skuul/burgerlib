@@ -58,10 +58,16 @@ struct Regs16_t {
 
 #if !defined(DOXYGEN)
 
+// Disable nested comment found in comment (Direct X headers trigger this)
+#pragma disable_message(15)
+// Disable user-defined conversion cannot convert to its own class or base class
+#pragma disable_message(446)
 // Disable 'sizeof' operand contains compiler generated information
 #pragma disable_message(549)
 // Disable assuming unary 'operator &' not overloaded for type
 #pragma disable_message(666)
+// Disable '//' style comment continues on next line
+#pragma disable_message(735)
 
 extern "C" {
 namespace std {
@@ -99,6 +105,9 @@ __declspec(__watcall) extern long int labs(long int);
 __declspec(__watcall) extern unsigned int _rotl(unsigned int, unsigned int);
 __declspec(__watcall) extern unsigned int _rotr(unsigned int, unsigned int);
 #pragma intrinsic(_rotl, _rotr)
+
+extern float sqrtf(float);
+#pragma aux sqrtf = "fsqrt" parm[8087] value[8087] modify[8087] nomemory;
 
 extern const float g_fBurgerIntMathNearesttable[2];
 extern const float g_fBurgerMath65536;

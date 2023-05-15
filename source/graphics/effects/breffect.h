@@ -36,6 +36,10 @@
 #endif
 
 /* BEGIN */
+struct IDirect3DPixelShader9;
+struct IDirect3DVertexShader9;
+struct IDirect3DDevice9;
+
 namespace Burger {
 
 class Effect : public DisplayObject {

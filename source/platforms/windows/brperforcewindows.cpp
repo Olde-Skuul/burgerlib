@@ -23,6 +23,7 @@
 #include "brglobals.h"
 #include "brfilemanager.h"
 #include "brutf8.h"
+#include "win_shlwapi.h"
 #include <windows.h>
 #include <shlwapi.h>
 
@@ -91,7 +92,7 @@ uint_t BURGER_API Burger::Perforce::Init(void)
 
 		if (!bFilenameInitialized) {
 			uint16_t Output[2048];
-			if (Windows::PathSearchAndQualifyW(reinterpret_cast<const uint16_t *>(L"p4.exe"),Output,BURGER_ARRAYSIZE(Output))) {
+			if (Win32::PathSearchAndQualifyW(reinterpret_cast<const uint16_t *>(L"p4.exe"),Output,BURGER_ARRAYSIZE(Output))) {
 				m_PerforceFilename.set_native(Output);
 				if (FileManager::does_file_exist(&m_PerforceFilename)) {
 					bFilenameInitialized = TRUE;

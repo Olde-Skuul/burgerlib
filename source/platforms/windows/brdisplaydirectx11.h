@@ -24,6 +24,7 @@
 #endif
 
 /* BEGIN */
+struct ID3D11DeviceContext;
 namespace Burger {
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 class DisplayDirectX11 : public Display {

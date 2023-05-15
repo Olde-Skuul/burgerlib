@@ -25,7 +25,7 @@
 
 #include <windows.h>
 
-#include <shlobj.h>
+#include <shellapi.h>
 
 #if !defined(BURGER_METROWERKS)
 #include <io.h>
@@ -536,7 +536,7 @@ uintptr_t BURGER_API Burger::FileManager::queue_handler(
 	FileManager* pThis = static_cast<FileManager*>(pData);
 	for (;;) {
 		// Wait until there's a command in the queue
-		pThis->m_PingIOThread.Acquire();
+		pThis->m_PingIOThread.acquire();
 		// Get the command
 		Queue_t* pQueue = &pThis->m_IOQueue[pThis->m_uQueueStart];
 		File* pFile;
@@ -659,7 +659,7 @@ uintptr_t BURGER_API Burger::FileManager::queue_handler(
 			// this command token was reached
 
 		case kIOCommandSync:
-			pThis->m_IOThreadSync.Release();
+			pThis->m_IOThreadSync.release();
 			break;
 
 		default:;

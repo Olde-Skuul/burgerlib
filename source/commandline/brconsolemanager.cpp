@@ -15,6 +15,7 @@
 #include "brconsolemanager.h"
 #include "brfilemanager.h"
 #include "brglobals.h"
+#include "brtick.h"
 
 #if !defined(DOXYGEN)
 BURGER_CREATE_STATICRTTI_PARENT(Burger::ConsoleApp, Burger::Base);
@@ -53,6 +54,7 @@ Burger::ConsoleApp::ConsoleApp(int iArgc, const char** ppArgv, uint_t uFlags) BU
 	m_ppArgv = ppArgv;
 	m_iArgc = iArgc;
 
+	Tick::init();
 	// Init the file system
 	FileManager::initialize();
 }
@@ -71,6 +73,7 @@ Burger::ConsoleApp::~ConsoleApp()
 {
 	// Release the file system
 	FileManager::shut_down();
+	Tick::shutdown();
 }
 #endif
 

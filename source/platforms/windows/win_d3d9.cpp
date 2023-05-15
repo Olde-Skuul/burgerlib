@@ -16,6 +16,7 @@
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 #include "win_platformshims.h"
+#include "brwatcom.h"
 
 #if !defined(DOXYGEN)
 

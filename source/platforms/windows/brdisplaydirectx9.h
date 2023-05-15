@@ -36,7 +36,13 @@
 #endif
 
 /* BEGIN */
+struct IDirect3D9;
+struct ID3DXMatrixStack;
+struct IDirect3DSurface9;
+struct HMONITOR__;
+
 namespace Burger {
+
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 class DisplayDirectX9 : public Display {
     BURGER_DISABLE_COPY(DisplayDirectX9);
@@ -380,19 +386,6 @@ protected:
 	void BURGER_API SetupCursor(void) const;
 	void BURGER_API ReleaseRenderTargets(void);
 	uint_t BURGER_API SnapDeviceSettingsToEnumDevice(DeviceSettings_t *pDeviceSettings,uint_t bForceEnumeration);
-};
-
-class DirectXPerfMarker {
-    BURGER_DISABLE_COPY(DirectXPerfMarker);
-public:
-	BURGER_INLINE DirectXPerfMarker(uint32_t uColor,const uint16_t *pMessage) 
-	{
-		Windows::D3DPERF_BeginEvent(uColor,pMessage);
-	}
-	BURGER_INLINE ~DirectXPerfMarker() 
-	{
-		Windows::D3DPERF_EndEvent();
-	}
 };
 
 extern long BURGER_API SetDeviceCursor(IDirect3DDevice9 *pDirect3DDevice9,HICON__ *hCursor);

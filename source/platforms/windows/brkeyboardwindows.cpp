@@ -37,6 +37,7 @@
 #include "brassert.h"
 #include "brmemoryfunctions.h"
 #include "brtick.h"
+#include "win_globals.h"
 #include <dinput.h>
 
 //
@@ -437,7 +438,7 @@ uintptr_t BURGER_API Burger::Keyboard::WindowsKeyboardThread(void *pData)
 					do {
 						if (!pThis->EncodeWindowsScanCode(&NewEvent,pObject->dwOfs)) {
 							// Overwrite the time stamp
-							NewEvent.m_uMSTimeStamp = Tick::ReadMilliseconds();
+							NewEvent.m_uMSTimeStamp = Tick::read_ms();
 							bEnableTimer = (pObject->dwData&0x80)>>7;
 							if (bEnableTimer) {
 								NewEvent.m_uEvent = EVENT_KEYDOWN;
@@ -469,7 +470,7 @@ uintptr_t BURGER_API Burger::Keyboard::WindowsKeyboardThread(void *pData)
 			NewEvent.m_uAscii = pThis->m_RepeatEvent.m_uAscii;
 			NewEvent.m_uFlags = pThis->m_RepeatEvent.m_uFlags;
 			NewEvent.m_uScanCode = pThis->m_RepeatEvent.m_uScanCode;
-			NewEvent.m_uMSTimeStamp = Tick::ReadMilliseconds();
+			NewEvent.m_uMSTimeStamp = Tick::read_ms();
 			pThis->PostKeyEvent(&NewEvent);
 
 			// Set the delay to the next key press
@@ -535,7 +536,7 @@ Burger::Keyboard::Keyboard(GameApp *pAppInstance) BURGER_NOEXCEPT :
 	// Next step, obtain DirectInput
 
 #if defined(ENABLE_DIRECTINPUT)
-	IDirectInput8W* pDirectInput8W = Globals::GetDirectInput8Singleton();
+	IDirectInput8W* pDirectInput8W = Win32::get_DirectInput8_singleton();
 	if (pDirectInput8W) {
 
 		// Create a system keyboard device (Merges all keyboards)
@@ -652,7 +653,7 @@ Burger::Keyboard::~Keyboard()
 
 	Installs a keyboard hook that disables the windows key.
 
-	\note If \ref Globals::TRACE_ACTIVEDEBUGGING is set, this feature is
+	\note If \ref kTraceFlagActiveDebugging is set, this feature is
 	disabled since it causes Visual Studio 2010's debugger to wait 5
 	seconds per keystroke
 
@@ -668,9 +669,9 @@ uint_t BURGER_API Burger::Keyboard::DisableWindowsKey(void) BURGER_NOEXCEPT
 	uint_t uResult = 0;
 	// Do nothing if already installed
 	if (!m_pPreviousKeyboardHook) {
-		if (!(Globals::GetTraceFlag()&Globals::TRACE_ACTIVEDEBUGGING)) {
+		if (!(get_traceflags()&kTraceFlagActiveDebugging)) {
 			// Install the function
-			HHOOK pResult = SetWindowsHookExW(WH_KEYBOARD_LL,DisableWindowsKeysCallback,Windows::GetInstance(),0);
+			HHOOK pResult = SetWindowsHookExW(WH_KEYBOARD_LL,DisableWindowsKeysCallback,Win32::get_instance(),0);
 			if (!pResult) {
 				// Uh, oh. Get the error code
 				uResult = GetLastError();

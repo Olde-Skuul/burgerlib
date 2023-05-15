@@ -1,8 +1,8 @@
 /***************************************
 
-	Incremental tick Manager Class
+	Incremental tick Manager Class, Windows version
 
-	Copyright (c) 1995-2022 by Rebecca Ann Heineman <becky@burgerbecky.com>
+	Copyright (c) 1995-2023 by Rebecca Ann Heineman <becky@burgerbecky.com>
 
 	It is released under an MIT Open Source license. Please see LICENSE for
 	license details. Yes, you can use it in a commercial title without paying
@@ -16,6 +16,7 @@
 
 #if defined(BURGER_WINDOWS)
 #include "brglobals.h"
+#include "win_winmm.h"
 
 #if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
@@ -23,57 +24,86 @@
 
 #include <windows.h>
 
+#include <mmsystem.h>
+
+#if defined(BURGER_WATCOM)
+// Needed for timeBeginPeriod
+#pragma library("Winmm.lib")
+#else
+#pragma comment(lib, "Winmm.lib")
+#endif
+
 /***************************************
 
-	Use timeGetTime() as the master timer.
+	\brief Sleep the current thread
+
+	On multithreaded systems, if \ref kSleepYield is passed to this function
+	it will yield the thread's remaining time quantum.
+
+	If \ref kSleepInfinite is passed then the thread will sleep
+	forever unless an Remote Procedure Call or an I/O event occurs.
+	Otherwise, pass the number of milliseconds that are desired
+	for the thread to sleep. Zero is mapped to \ref kSleepYield.
+
+	If bAlertable is \ref FALSE, the pause will not be interruptable.
+
+	\param uMilliseconds \ref kSleepYield, \ref kSleepInfinite or number
+		of non-zero milliseconds to sleep
+	\param bAlertable \ref TRUE if the sleep can be interrupted
+
+	\note On non-multithreaded systems, this function does nothing
 
 ***************************************/
 
-/***************************************
-
-	Read the current system tick value
-	in 60hz ticks
-
-***************************************/
-
-static uint_t g_b60HertzTimerStarted = FALSE;
-static uint32_t g_u60HertzTick;         // Tick value
-static uint32_t g_u60HertzMSTime;       // 1000ms time
-static uint32_t g_u60HertzTickFraction; // 3000/60 time fraction
-
-uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
+void BURGER_API Burger::sleep_ms(
+	uint32_t uMilliseconds, uint_t bAlertable) BURGER_NOEXCEPT
 {
-	const uint32_t uMark = Windows::timeGetTime();
-	uint32_t uTick;
-	// Never initialized?
-	if (!g_b60HertzTimerStarted) {
-		g_b60HertzTimerStarted = TRUE;
-		g_u60HertzMSTime = uMark;
-		g_u60HertzTickFraction = 0;
-		g_u60HertzTick = 1;
-		uTick = 1;
-	} else {
-		// Get the elapsed time in Millisecond
-		const uint32_t uElapsed = uMark - g_u60HertzMSTime;
-		uTick = g_u60HertzTick;
-		if (uElapsed) {
-			// Update the time mark
-			g_u60HertzMSTime = uMark;
-			// Convert 1000 ticks per second to 60 while
-			// trying to avoid losing any precision
+	// Sleep until the time expires or something
+	// occurs that could cause the main thread to take notice
+	// like a I/O service routine
+	::SleepEx(uMilliseconds, static_cast<BOOL>(bAlertable));
+}
 
-			// Convert to 3000 ticks per second, so it's evenly divided by 60
-			const uint32_t uFraction = g_u60HertzTickFraction + (uElapsed * 3U);
+/***************************************
 
-			// Get the 60hz elapsed time
-			uTick = uTick + (uFraction / (3000U / 60U));
+	\brief Return the ticks per second at the system's highest precision
 
-			// Keep the fraction
-			g_u60HertzTickFraction = uFraction % (3000U / 60U);
-			g_u60HertzTick = uTick;
-		}
-	}
-	return uTick;
+	This platform specific code will ask the operating system what is the
+	highest precision timer tick rate and then will return that value.
+
+	This value is cached and is available from get_high_precision_frequency()
+
+	\sa get_high_precision_frequency(), or read_high_precision()
+
+***************************************/
+
+uint64_t BURGER_API Burger::Tick::get_high_precision_rate(void) BURGER_NOEXCEPT
+{
+	// Get the time mark
+	LARGE_INTEGER Freq;
+	QueryPerformanceFrequency(&Freq);
+
+	return static_cast<uint64_t>(Freq.QuadPart);
+}
+
+/***************************************
+
+	\brief Return the tick at the system's highest precision
+
+	The value returns a tick that will increment at
+	get_high_precision_frequency() ticks per second.
+
+	\sa get_high_precision_frequency()
+
+***************************************/
+
+uint64_t BURGER_API Burger::Tick::read_high_precision(void) BURGER_NOEXCEPT
+{
+	// Get the time mark
+	LARGE_INTEGER NewTick;
+	QueryPerformanceCounter(&NewTick);
+
+	return static_cast<uint64_t>(NewTick.QuadPart);
 }
 
 /***************************************
@@ -82,70 +112,27 @@ uint32_t BURGER_API Burger::Tick::Read(void) BURGER_NOEXCEPT
 
 ***************************************/
 
-void BURGER_API Burger::Tick::Wait(uint_t uCount) BURGER_NOEXCEPT
+void BURGER_API Burger::Tick::wait(uint_t uCount) BURGER_NOEXCEPT
 {
-	// Handle any pending events
-	// KeyboardKbhit();
 	// Read the timer
-	uint32_t uNewTick = Read();
+	uint32_t uNewTick = read();
+
 	// Should I wait?
-	if ((uNewTick - g_uLastTick) < static_cast<uint32_t>(uCount)) {
+	if ((uNewTick - g_Tick.m_uLast60HertzMark) <
+		static_cast<uint32_t>(uCount)) {
 		do {
 			// Sleep until a tick occurs
 			WaitMessage();
 			// Call the system task if needed
 			// KeyboardKbhit();
 			// Read in the current time tick
-			uNewTick = Read();
+			uNewTick = read();
 			// Time has elapsed?
-		} while ((uNewTick - g_uLastTick) < static_cast<uint32_t>(uCount));
+		} while ((uNewTick - g_Tick.m_uLast60HertzMark) <
+			static_cast<uint32_t>(uCount));
 	}
 	// Mark the time
-	g_uLastTick = uNewTick;
-}
-
-/***************************************
-
-	Read the time in microsecond increments
-
-***************************************/
-
-static uint_t g_bStartedMicroseconds; /* Got the frequency */
-static double g_dWinTicks = 1.0;      /* Frequency adjust */
-
-uint32_t BURGER_API Burger::Tick::ReadMicroseconds(void) BURGER_NOEXCEPT
-{
-	LARGE_INTEGER Temp;
-	// Is the divisor initialized?
-	if (!g_bStartedMicroseconds) {
-		g_bStartedMicroseconds = TRUE;
-		// Get the constants
-		if (QueryPerformanceFrequency(&Temp)) {
-			// Timer change
-			g_dWinTicks = 1000000.0 / static_cast<double>(Temp.QuadPart);
-		}
-	}
-
-	// Get the timer from Win95
-	if (QueryPerformanceCounter(&Temp)) {
-		// Save the result
-		return static_cast<uint32_t>(
-			static_cast<double>(Temp.QuadPart) * g_dWinTicks);
-	}
-	// Just zap it! (Error)
-	return 0;
-}
-
-/***************************************
-
-	Read the time in millisecond increments
-
-***************************************/
-
-uint32_t BURGER_API Burger::Tick::ReadMilliseconds(void) BURGER_NOEXCEPT
-{
-	// Call windows 95/NT
-	return Windows::timeGetTime();
+	g_Tick.m_uLast60HertzMark = uNewTick;
 }
 
 /***************************************
@@ -265,20 +252,6 @@ float BURGER_API Burger::FloatTimer::GetTime(void) BURGER_NOEXCEPT
 		m_fElapsedTime = fResult;
 	}
 	return fResult;
-}
-
-/***************************************
-
-	Sleep the current thread
-
-***************************************/
-
-void BURGER_API Burger::Sleep(uint32_t uMilliseconds) BURGER_NOEXCEPT
-{
-	// Sleep until the time expires or something
-	// occurs that could cause the main thread to take notice
-	// like a I/O service routine
-	::SleepEx(uMilliseconds, TRUE);
 }
 
 #endif

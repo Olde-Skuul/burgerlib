@@ -81,6 +81,11 @@
 #include <windows.h> // Needed before #include <glext.h> in windows
 #endif
 
+// Got rid of a compiler warning
+#ifndef GL_EXT_color_subtable
+#define GL_EXT_color_subtable 1
+#endif
+
 #ifndef __glext_h_
 #include <GL/glext.h>
 #endif

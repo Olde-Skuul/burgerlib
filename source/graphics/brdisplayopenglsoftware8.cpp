@@ -100,7 +100,7 @@ uint_t Burger::DisplayOpenGLSoftware8::Init(uint_t uWidth,uint_t uHeight,uint_t 
 		m_Renderer.SetStride(uStride);
 
 		// Create the bitmap buffer
-		m_pBitMap = AllocClear(uStride*m_uHeight);
+		m_pBitMap = alloc_clear(uStride*m_uHeight);
 		m_Renderer.SetFrameBuffer(m_pBitMap);
 
 		// Create the palette texture

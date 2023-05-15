@@ -23,6 +23,7 @@
 #include "broscursor.h"
 #include "brstring.h"
 #include "brstring16.h"
+#include "win_error.h"
 
 #if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x0501 // Windows XP
@@ -58,21 +59,21 @@ void BURGER_API Burger::Debug::PrintString(const char* pString) BURGER_NOEXCEPT
 	if (pString) {
 		const uintptr_t i = StringLength(pString);
 		if (i) {
-			if (!IsDebuggerPresent()) {
+			if (!is_debugger_present()) {
 				// Send the string to the log file
-				g_LockString.Lock();
+				g_LockString.lock();
 				File MyFile;
 				if (MyFile.open("9:logfile.txt", File::kAppend) == kErrorNone) {
 					MyFile.write(pString, i);
 					MyFile.close();
 				}
 			} else {
-				g_LockString.Lock();
+				g_LockString.lock();
 				// Note: Windows only supports ASCII to the Visual Studio debug
 				// console. It does NOT support unicode
 				OutputDebugStringA(pString);
 			}
-			g_LockString.Unlock();
+			g_LockString.unlock();
 		}
 	}
 }
@@ -85,7 +86,7 @@ void BURGER_API Burger::Debug::PrintString(const char* pString) BURGER_NOEXCEPT
 
 ***************************************/
 
-uint_t BURGER_API Burger::Debug::IsDebuggerPresent(void) BURGER_NOEXCEPT
+uint_t BURGER_API Burger::is_debugger_present(void) BURGER_NOEXCEPT
 {
 	// This function in Windows is just an accessor, so optimizing
 	// it is not necessary
@@ -113,15 +114,10 @@ void BURGER_API Burger::Debug::PrintErrorMessage(
 	const NumberStringHex TempBuffer(uErrorCode);
 	PrintString(TempBuffer.c_str());
 
-	// Convert to a windows string in the native language
-	char* pBuffer = NULL;
-	if (FormatMessageA(
-			FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-			nullptr, uErrorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-			static_cast<LPSTR>(static_cast<void*>(&pBuffer)), 0, nullptr)) {
+	String Temp;
+	if (!Win32::format_message(static_cast<long>(uErrorCode), &Temp)) {
 		PrintString(", ");
-		PrintString(pBuffer);
-		LocalFree(pBuffer);
+		PrintString(Temp.c_str());
 	} else {
 		PrintString("\n");
 	}

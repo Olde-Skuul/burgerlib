@@ -36,6 +36,7 @@
 #endif
 
 /* BEGIN */
+struct IDirect3DTexture9;
 namespace Burger {
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 class TextureDirectX9 : public Texture {

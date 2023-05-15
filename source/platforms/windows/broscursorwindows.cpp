@@ -19,6 +19,7 @@
 #if defined(BURGER_WINDOWS)
 #include "brglobals.h"
 #include "brimage.h"
+#include "win_globals.h"
 
 #if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN
@@ -56,7 +57,7 @@ Burger::eError BURGER_API Burger::OSCursorImage::CreateMonoChromeImage(
         m_uHeight = uFinalHeight;
         m_iHotX = iHotX;
         m_iHotY = iHotY;
-        HCURSOR hCursor = CreateCursor(Windows::GetInstance(), iHotX, iHotY,
+        HCURSOR hCursor = CreateCursor(Win32::get_instance(), iHotX, iHotY,
             static_cast<int>(uFinalWidth), static_cast<int>(uFinalHeight), pAnd,
             pXor);
         if (!hCursor) {
@@ -104,7 +105,7 @@ void BURGER_API Burger::OSCursor::SetImageFromIDNumber(
                 hInstance = nullptr;
             } else {
                 uCursorResource = static_cast<uintptr_t>(eCursorNumber);
-                hInstance = Windows::GetInstance();
+                hInstance = Win32::get_instance();
             }
             // Try from the application's resource
             HCURSOR hCurs =
