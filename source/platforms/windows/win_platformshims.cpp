@@ -16,9 +16,9 @@
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
 #include "brmemoryfunctions.h"
+#include "win_directxdata.h"
 #include "win_kernel32.h"
 #include "win_version.h"
-#include "win_directxdata.h"
 
 // Windows defines for the windows headers
 #if !defined(DOXYGEN)
@@ -29,6 +29,25 @@
 // Windows 8 API level
 #if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x0602
+#endif
+
+// This crap is needed to get XAudio2.h to include with watcom
+#if defined(BURGER_WATCOM)
+#include <comdecl.h>
+#undef DEFINE_CLSID
+#undef DEFINE_IID
+#define DEFINE_CLSID(className, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
+	DEFINE_GUID(CLSID_##className, 0x##l, 0x##w1, 0x##w2, 0x##b1, 0x##b2, \
+		0x##b3, 0x##b4, 0x##b5, 0x##b6, 0x##b7, 0x##b8)
+
+#define DEFINE_IID(interfaceName, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
+	DEFINE_GUID(IID_##interfaceName, 0x##l, 0x##w1, 0x##w2, 0x##b1, 0x##b2, \
+		0x##b3, 0x##b4, 0x##b5, 0x##b6, 0x##b7, 0x##b8)
+#define KSDATAFORMAT_SUBTYPE_PCM
+#define KSDATAFORMAT_SUBTYPE_ADPCM
+#define KSDATAFORMAT_SUBTYPE_IEEE_FLOAT
+#define CLSID_IXAudio2 IID_IXAudio2
+#define __uuidof(x) CLSID_##x
 #endif
 
 #endif

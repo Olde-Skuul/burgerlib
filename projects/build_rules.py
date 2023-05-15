@@ -453,6 +453,48 @@ def postbuild(working_directory, configuration):
 ########################################
 
 
+def watcom_rules(project):
+    """
+    Handle special cases for Visual Studio 2005 and 2008
+
+    Assume these IDEs are building only for Windows
+    """
+
+    ide = project.solution.ide
+    if ide is IDETypes.watcom:
+        platform = project.platform
+        if platform.is_windows():
+
+            # Open Watcom defaults to Windows 95
+            # Since Burgerlib requires Windows XP at the minimum,
+            # Alert the windows headers in Watcom to expose the
+            # Windows XP values
+
+            project.define_list.extend((
+                # Set to Windows XP
+                "WINVER=0x0600",
+                "_WIN32_WINNT=0x0600",
+                "NTDDI_VERSION=0x05010000",
+                # Needed to allow D3D11.h to compile
+                "D3D11_NO_HELPERS",
+                # Needed for the OpenGL headers to compile
+                "GLUT_DISABLE_ATEXIT_HACK"))
+
+            project.include_folders_list.extend((
+                sdks_folder() + "windows/dplay/include",
+                sdks_folder() + "windows/ddraw/include",
+                "$(DXSDK_DIR)/Include",
+                sdks_folder() + "windows/opengl",
+                sdks_folder() + "steamworks/public/steam"
+            ))
+
+            # This is a required environment variable
+            project.env_variable_list.append("DXSDK_DIR")
+
+
+########################################
+
+
 def vs2005_2008_rules(project):
     """
     Handle special cases for Visual Studio 2005 and 2008
@@ -566,7 +608,7 @@ def project_settings(project):
         source_folders_list.extend(BURGER_LIB_WINDOWS)
 
         # Add in the headers for Windows, but there be dragons
-        if not ide.is_codewarrior():
+        if not ide.is_codewarrior() and ide is not IDETypes.watcom:
 
             # For Directplay support
             include_folders_list.append(dplay_folder())
@@ -600,16 +642,17 @@ def project_settings(project):
                     include_folders_list.append(
                         "../source/platforms/windows/vc7compat")
 
-            if ide in (IDETypes.codeblocks, IDETypes.watcom):
+            if ide is IDETypes.codeblocks:
                 include_folders_list.append("$(BURGER_SDKS)/windows/windows5")
                 include_folders_list.append("$(BURGER_SDKS)/windows/directx9")
                 project.define_list.append("GLUT_DISABLE_ATEXIT_HACK")
 
-        project.define_list.extend([
-            "_CRT_NONSTDC_NO_WARNINGS",
-            "_CRT_SECURE_NO_WARNINGS",
-            "GLUT_NO_LIB_PRAGMA",
-            "_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"])
+        if ide is not IDETypes.watcom:
+            project.define_list.extend([
+                "_CRT_NONSTDC_NO_WARNINGS",
+                "_CRT_SECURE_NO_WARNINGS",
+                "GLUT_NO_LIB_PRAGMA",
+                "_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"])
 
         find_generated_source(
             source_files_list,
@@ -753,7 +796,7 @@ def project_settings(project):
     # Enable Steam
     if platform.is_windows() or platform.is_macosx() or \
             platform is PlatformTypes.linux:
-        if not ide.is_codewarrior():
+        if not ide.is_codewarrior() and ide is not IDETypes.watcom:
             include_folders_list.append(steam_folder())
 
     # Hack to allow compilation of dbus on Darwin
@@ -807,6 +850,9 @@ def project_settings(project):
         {"HeaderFileName": r"%(RootDir)%(Directory)Generated\%(FileName).h",
          "TargetProfile": "sce_vp_psp2"}
     }
+
+    # Add rules needed to build for Watcom
+    watcom_rules(project)
 
     # Add rules needed to build for Visual Studio 2005/2008
     vs2005_2008_rules(project)

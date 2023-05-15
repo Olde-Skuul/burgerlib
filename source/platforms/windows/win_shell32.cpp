@@ -40,7 +40,9 @@
 
 #include <Windows.h>
 
-#include <ShlObj.h>
+#include <Shellapi.h>
+#include <objbase.h>
+#include <shlobj.h>
 
 //
 // GUIDs needed for locating folders in Vista or higher
@@ -219,7 +221,8 @@ Burger::eError BURGER_API Burger::Win32::get_known_folder_path(
 		WCHAR NameBuffer[MAX_PATH];
 
 		// Application system data folder (Local for Vista and Win7)
-		const HRESULT hResult2 = SHGetFolderPathW(nullptr, iXP, nullptr, 0, NameBuffer);
+		const HRESULT hResult2 =
+			SHGetFolderPathW(nullptr, iXP, nullptr, 0, NameBuffer);
 
 		if ((hResult2 == S_OK) || (hResult2 == E_FAIL)) {
 
