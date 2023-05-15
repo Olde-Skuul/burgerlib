@@ -436,7 +436,6 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/brmicrosoftadpcm.obj &
 	$(A)/brmouse.obj &
 	$(A)/brmousewindows.obj &
-	$(A)/brnetmanagerwindows.obj &
 	$(A)/brnumberstring.obj &
 	$(A)/brnumberstringhex.obj &
 	$(A)/brnumberto.obj &

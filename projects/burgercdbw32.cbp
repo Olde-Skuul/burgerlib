@@ -497,7 +497,6 @@
 		<Unit filename="../source/platforms/windows/brkeyboardwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brmemorymanagerwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brmousewindows.cpp" />
-		<Unit filename="../source/platforms/windows/brnetmanagerwindows.cpp" />
 		<Unit filename="../source/platforms/windows/broscursorwindows.cpp" />
 		<Unit filename="../source/platforms/windows/brosstringfunctionswindows.cpp" />
 		<Unit filename="../source/platforms/windows/brperforcewindows.cpp" />
