@@ -559,6 +559,35 @@ def vs2005_2008_rules(project):
             ("../source/asm/masm64/cpuidex.x64",
             "../source/asm/masm/cpuidex.x86"))
 
+
+########################################
+
+
+def vs2003_stripcomments(line_list):
+    """
+    Force stripcomments.exe to a specific path for Visual Studio 2003
+
+    Makeprojects will generate the Visual studio project file and pass it to
+    this function where it will replace all occurances of stripcomments
+    with a prefix to ensure it will use the local copy found in github
+
+    Note: If the tool is in the path, then remove the line that sets the
+    solution.post_process variable so this isn't performed.
+
+    Args:
+        line_list: List of lines of text
+    Return:
+        List of adjusted lines
+    """
+
+    if is_git():
+        strip_comments = "..\\tools\\windows\\x64\\stripcomments.exe"
+    else:
+        strip_comments = "$(BURGER_SDKS)\\windows\\bin\\x64\\stripcomments.exe"
+
+    return [x.replace("stripcomments.exe", strip_comments)
+            for x in line_list]
+
 ########################################
 
 
@@ -578,6 +607,11 @@ def vs2003_rules(project):
             ("../source/asm/masm/xgetbv.x86",
              "../source/asm/masm/cpuid.x86",
              "../source/asm/masm/cpuidex.x86"))
+
+        # stripcomments.exe is on the path, but VS 2003 doesn't use it
+        # So, replace the call to where the binary actually is
+        project.solution.post_process = vs2003_stripcomments
+
 
 ########################################
 
