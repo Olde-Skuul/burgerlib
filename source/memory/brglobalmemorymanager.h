@@ -19,6 +19,10 @@
 #include "brtypes.h"
 #endif
 
+#ifndef __BRWATCOM_H__
+#include "brwatcom.h"
+#endif
+
 #ifndef __BRMEMORYMANAGER_H__
 #include "brmemorymanager.h"
 #endif

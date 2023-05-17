@@ -27,6 +27,12 @@
 !endif
 
 #
+# Custom output files
+#
+
+EXTRA_OBJS=
+
+#
 # List the names of all of the final binaries to build and clean
 #
 
@@ -530,31 +536,31 @@ OBJS= $(A)/bradler16.obj &
 #
 
 A = $(BASE_TEMP_DIR)wat4gwdbg
-bin\burgerwat4gwdbg.lib: $+$(OBJS)$- burgerwatdos.wmk
+bin\burgerwat4gwdbg.lib: $(EXTRA_OBJS) $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
 
 A = $(BASE_TEMP_DIR)watx32dbg
-bin\burgerwatx32dbg.lib: $+$(OBJS)$- burgerwatdos.wmk
+bin\burgerwatx32dbg.lib: $(EXTRA_OBJS) $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
 
 A = $(BASE_TEMP_DIR)wat4gwint
-bin\burgerwat4gwint.lib: $+$(OBJS)$- burgerwatdos.wmk
+bin\burgerwat4gwint.lib: $(EXTRA_OBJS) $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
 
 A = $(BASE_TEMP_DIR)watx32int
-bin\burgerwatx32int.lib: $+$(OBJS)$- burgerwatdos.wmk
+bin\burgerwatx32int.lib: $(EXTRA_OBJS) $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
 
 A = $(BASE_TEMP_DIR)wat4gwrel
-bin\burgerwat4gwrel.lib: $+$(OBJS)$- burgerwatdos.wmk
+bin\burgerwat4gwrel.lib: $(EXTRA_OBJS) $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW
 
 A = $(BASE_TEMP_DIR)watx32rel
-bin\burgerwatx32rel.lib: $+$(OBJS)$- burgerwatdos.wmk
+bin\burgerwatx32rel.lib: $(EXTRA_OBJS) $+$(OBJS)$- burgerwatdos.wmk
 	@SET WOW=$+$(OBJS)$-
 	@WLIB -q -b -c -n $^@ @WOW

@@ -15,6 +15,7 @@
 #include "win_dinput.h"
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+#include "brwatcom.h"
 #include "win_globals.h"
 #include "win_platformshims.h"
 

@@ -27,6 +27,12 @@
 !endif
 
 #
+# Custom output files
+#
+
+EXTRA_OBJS=
+
+#
 # List the names of all of the final binaries to build and clean
 #
 
@@ -497,16 +503,16 @@ OBJS= $(A)/bradler16.obj &
 #
 
 A = $(BASE_TEMP_DIR)wat4gwdbg
-bin\unittestswat4gwdbg.exe: $+$(OBJS)$- unittestswatdos4gw.wmk
+bin\unittestswat4gwdbg.exe: $(EXTRA_OBJS) $+$(OBJS)$- unittestswatdos4gw.wmk
 	@SET WOW={$+$(OBJS)$-}
 	@$(LINK) $(LFlagsDebugdos4gw) NAME $^@ FILE @wow
 
 A = $(BASE_TEMP_DIR)wat4gwint
-bin\unittestswat4gwint.exe: $+$(OBJS)$- unittestswatdos4gw.wmk
+bin\unittestswat4gwint.exe: $(EXTRA_OBJS) $+$(OBJS)$- unittestswatdos4gw.wmk
 	@SET WOW={$+$(OBJS)$-}
 	@$(LINK) $(LFlagsInternaldos4gw) NAME $^@ FILE @wow
 
 A = $(BASE_TEMP_DIR)wat4gwrel
-bin\unittestswat4gwrel.exe: $+$(OBJS)$- unittestswatdos4gw.wmk
+bin\unittestswat4gwrel.exe: $(EXTRA_OBJS) $+$(OBJS)$- unittestswatdos4gw.wmk
 	@SET WOW={$+$(OBJS)$-}
 	@$(LINK) $(LFlagsReleasedos4gw) NAME $^@ FILE @wow

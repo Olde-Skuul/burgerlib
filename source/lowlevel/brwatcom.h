@@ -64,6 +64,8 @@ struct Regs16_t {
 #pragma disable_message(446)
 // Disable 'sizeof' operand contains compiler generated information
 #pragma disable_message(549)
+// Disable redefinition of the typedef name (DirectX headers trigger this)
+#pragma disable_message(583)
 // Disable assuming unary 'operator &' not overloaded for type
 #pragma disable_message(666)
 // Disable '//' style comment continues on next line

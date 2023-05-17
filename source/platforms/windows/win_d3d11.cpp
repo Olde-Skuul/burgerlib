@@ -15,6 +15,7 @@
 #include "win_d3d11.h"
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+#include "brwatcom.h"
 #include "win_platformshims.h"
 
 #if !defined(DOXYGEN)

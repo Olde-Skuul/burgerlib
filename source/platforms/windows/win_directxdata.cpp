@@ -15,6 +15,7 @@
 #include "win_directxdata.h"
 
 #if defined(BURGER_WINDOWS) || defined(DOXYGEN)
+#include "brwatcom.h"
 
 #if !defined(DOXYGEN)
 #define DIRECTINPUT_VERSION 0x800

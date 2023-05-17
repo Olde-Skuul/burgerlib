@@ -27,6 +27,28 @@
 !endif
 
 #
+# Custom output files
+#
+
+EXTRA_OBJS= ../source/graphics/shadersdx9/Generated/pscclr4dx9.h &
+	../source/graphics/shadersdx9/Generated/pstex2clr4dx9.h &
+	../source/graphics/shadersdx9/Generated/pstexturecolordx9.h &
+	../source/graphics/shadersdx9/Generated/pstexturedx9.h &
+	../source/graphics/shadersdx9/Generated/vs20pos22ddx9.h &
+	../source/graphics/shadersdx9/Generated/vs20pos2tex2clr42ddx9.h &
+	../source/graphics/shadersdx9/Generated/vs20sprite2ddx9.h &
+	../source/graphics/shadersdx9/Generated/vsstaticpositiondx9.h &
+	../source/graphics/shadersopengl/Generated/pscclr4gl.h &
+	../source/graphics/shadersopengl/Generated/pstex2clr4gl.h &
+	../source/graphics/shadersopengl/Generated/pstexturecolorgl.h &
+	../source/graphics/shadersopengl/Generated/pstexturegl.h &
+	../source/graphics/shadersopengl/Generated/vs20pos22dgl.h &
+	../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h &
+	../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h &
+	../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h &
+	../source/platforms/windows/Generated/ps20display8bitdx9.h
+
+#
 # List the names of all of the final binaries to build and clean
 #
 
@@ -80,6 +102,7 @@ Debugw32: .SYMBOLIC
 	@%make bin\unittestswatw32dbg.exe
 
 clean_Debugw32: .SYMBOLIC
+	@rm -f $(EXTRA_OBJS)
 	@if exist temp\unittestswatw32dbg @rmdir /s /q temp\unittestswatw32dbg
 	@if exist bin\unittestswatw32dbg.exe @del /q bin\unittestswatw32dbg.exe
 	@-if exist bin @rmdir bin 2>NUL
@@ -93,6 +116,7 @@ Internalw32: .SYMBOLIC
 	@%make bin\unittestswatw32int.exe
 
 clean_Internalw32: .SYMBOLIC
+	@rm -f $(EXTRA_OBJS)
 	@if exist temp\unittestswatw32int @rmdir /s /q temp\unittestswatw32int
 	@if exist bin\unittestswatw32int.exe @del /q bin\unittestswatw32int.exe
 	@-if exist bin @rmdir bin 2>NUL
@@ -106,6 +130,7 @@ Releasew32: .SYMBOLIC
 	@%make bin\unittestswatw32rel.exe
 
 clean_Releasew32: .SYMBOLIC
+	@rm -f $(EXTRA_OBJS)
 	@if exist temp\unittestswatw32rel @rmdir /s /q temp\unittestswatw32rel
 	@if exist bin\unittestswatw32rel.exe @del /q bin\unittestswatw32rel.exe
 	@-if exist bin @rmdir bin 2>NUL
@@ -198,7 +223,9 @@ SOURCE_DIRS +=;../source/generated
 SOURCE_DIRS +=;../source/graphics
 SOURCE_DIRS +=;../source/graphics/effects
 SOURCE_DIRS +=;../source/graphics/shaders
+SOURCE_DIRS +=;../source/graphics/shadersdx9
 SOURCE_DIRS +=;../source/graphics/shadersdx9/generated
+SOURCE_DIRS +=;../source/graphics/shadersopengl
 SOURCE_DIRS +=;../source/graphics/shadersopengl/generated
 SOURCE_DIRS +=;../source/graphics/vulkan
 SOURCE_DIRS +=;../source/input
@@ -559,20 +586,92 @@ OBJS= $(A)/bradler16.obj &
 	$(A)/win_xinput.obj
 
 #
+# Build custom files
+#
+
+../source/graphics/shadersdx9/Generated/pscclr4dx9.h : ../source/graphics/shadersdx9/pscclr4dx9.hlsl
+	@echo fxc pscclr4dx9.hlsl...
+	@cmd /c & "$(%DXSDK_DIR)utilities\bin\x86\fxc.exe" "../source/graphics/shadersdx9/pscclr4dx9.hlsl" /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh"../source/graphics/shadersdx9/Generated\pscclr4dx9.h" /Vng_pscclr4dx9
+
+../source/graphics/shadersdx9/Generated/pstex2clr4dx9.h : ../source/graphics/shadersdx9/pstex2clr4dx9.hlsl
+	@echo fxc pstex2clr4dx9.hlsl...
+	@cmd /c & "$(%DXSDK_DIR)utilities\bin\x86\fxc.exe" "../source/graphics/shadersdx9/pstex2clr4dx9.hlsl" /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh"../source/graphics/shadersdx9/Generated\pstex2clr4dx9.h" /Vng_pstex2clr4dx9
+
+../source/graphics/shadersdx9/Generated/pstexturecolordx9.h : ../source/graphics/shadersdx9/pstexturecolordx9.hlsl
+	@echo fxc pstexturecolordx9.hlsl...
+	@cmd /c & "$(%DXSDK_DIR)utilities\bin\x86\fxc.exe" "../source/graphics/shadersdx9/pstexturecolordx9.hlsl" /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh"../source/graphics/shadersdx9/Generated\pstexturecolordx9.h" /Vng_pstexturecolordx9
+
+../source/graphics/shadersdx9/Generated/pstexturedx9.h : ../source/graphics/shadersdx9/pstexturedx9.hlsl
+	@echo fxc pstexturedx9.hlsl...
+	@cmd /c & "$(%DXSDK_DIR)utilities\bin\x86\fxc.exe" "../source/graphics/shadersdx9/pstexturedx9.hlsl" /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh"../source/graphics/shadersdx9/Generated\pstexturedx9.h" /Vng_pstexturedx9
+
+../source/graphics/shadersdx9/Generated/vs20pos22ddx9.h : ../source/graphics/shadersdx9/vs20pos22ddx9.hlsl
+	@echo fxc vs20pos22ddx9.hlsl...
+	@cmd /c & "$(%DXSDK_DIR)utilities\bin\x86\fxc.exe" "../source/graphics/shadersdx9/vs20pos22ddx9.hlsl" /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh"../source/graphics/shadersdx9/Generated\vs20pos22ddx9.h" /Vng_vs20pos22ddx9
+
+../source/graphics/shadersdx9/Generated/vs20pos2tex2clr42ddx9.h : ../source/graphics/shadersdx9/vs20pos2tex2clr42ddx9.hlsl
+	@echo fxc vs20pos2tex2clr42ddx9.hlsl...
+	@cmd /c & "$(%DXSDK_DIR)utilities\bin\x86\fxc.exe" "../source/graphics/shadersdx9/vs20pos2tex2clr42ddx9.hlsl" /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh"../source/graphics/shadersdx9/Generated\vs20pos2tex2clr42ddx9.h" /Vng_vs20pos2tex2clr42ddx9
+
+../source/graphics/shadersdx9/Generated/vs20sprite2ddx9.h : ../source/graphics/shadersdx9/vs20sprite2ddx9.hlsl
+	@echo fxc vs20sprite2ddx9.hlsl...
+	@cmd /c & "$(%DXSDK_DIR)utilities\bin\x86\fxc.exe" "../source/graphics/shadersdx9/vs20sprite2ddx9.hlsl" /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh"../source/graphics/shadersdx9/Generated\vs20sprite2ddx9.h" /Vng_vs20sprite2ddx9
+
+../source/graphics/shadersdx9/Generated/vsstaticpositiondx9.h : ../source/graphics/shadersdx9/vsstaticpositiondx9.hlsl
+	@echo fxc vsstaticpositiondx9.hlsl...
+	@cmd /c & "$(%DXSDK_DIR)utilities\bin\x86\fxc.exe" "../source/graphics/shadersdx9/vsstaticpositiondx9.hlsl" /nologo /O3 /Zpc /Gfp /Tvs_2_0 /Fh"../source/graphics/shadersdx9/Generated\vsstaticpositiondx9.h" /Vng_vsstaticpositiondx9
+
+../source/graphics/shadersopengl/Generated/pscclr4gl.h : ../source/graphics/shadersopengl/pscclr4gl.glsl
+	@echo Stripcomments pscclr4gl.glsl...
+	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/pscclr4gl.glsl" /c "../source/graphics/shadersopengl/Generated\pscclr4gl.h" /l g_pscclr4gl
+
+../source/graphics/shadersopengl/Generated/pstex2clr4gl.h : ../source/graphics/shadersopengl/pstex2clr4gl.glsl
+	@echo Stripcomments pstex2clr4gl.glsl...
+	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/pstex2clr4gl.glsl" /c "../source/graphics/shadersopengl/Generated\pstex2clr4gl.h" /l g_pstex2clr4gl
+
+../source/graphics/shadersopengl/Generated/pstexturecolorgl.h : ../source/graphics/shadersopengl/pstexturecolorgl.glsl
+	@echo Stripcomments pstexturecolorgl.glsl...
+	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/pstexturecolorgl.glsl" /c "../source/graphics/shadersopengl/Generated\pstexturecolorgl.h" /l g_pstexturecolorgl
+
+../source/graphics/shadersopengl/Generated/pstexturegl.h : ../source/graphics/shadersopengl/pstexturegl.glsl
+	@echo Stripcomments pstexturegl.glsl...
+	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/pstexturegl.glsl" /c "../source/graphics/shadersopengl/Generated\pstexturegl.h" /l g_pstexturegl
+
+../source/graphics/shadersopengl/Generated/vs20pos22dgl.h : ../source/graphics/shadersopengl/vs20pos22dgl.glsl
+	@echo Stripcomments vs20pos22dgl.glsl...
+	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/vs20pos22dgl.glsl" /c "../source/graphics/shadersopengl/Generated\vs20pos22dgl.h" /l g_vs20pos22dgl
+
+../source/graphics/shadersopengl/Generated/vs20pos2tex2clr42dgl.h : ../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl
+	@echo Stripcomments vs20pos2tex2clr42dgl.glsl...
+	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/vs20pos2tex2clr42dgl.glsl" /c "../source/graphics/shadersopengl/Generated\vs20pos2tex2clr42dgl.h" /l g_vs20pos2tex2clr42dgl
+
+../source/graphics/shadersopengl/Generated/vs20sprite2dgl.h : ../source/graphics/shadersopengl/vs20sprite2dgl.glsl
+	@echo Stripcomments vs20sprite2dgl.glsl...
+	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/vs20sprite2dgl.glsl" /c "../source/graphics/shadersopengl/Generated\vs20sprite2dgl.h" /l g_vs20sprite2dgl
+
+../source/graphics/shadersopengl/Generated/vsstaticpositiongl.h : ../source/graphics/shadersopengl/vsstaticpositiongl.glsl
+	@echo Stripcomments vsstaticpositiongl.glsl...
+	@cmd /c & ..\tools\windows\x64\stripcomments.exe "../source/graphics/shadersopengl/vsstaticpositiongl.glsl" /c "../source/graphics/shadersopengl/Generated\vsstaticpositiongl.h" /l g_vsstaticpositiongl
+
+../source/platforms/windows/Generated/ps20display8bitdx9.h : ../source/platforms/windows/ps20display8bitdx9.hlsl
+	@echo fxc ps20display8bitdx9.hlsl...
+	@cmd /c & "$(%DXSDK_DIR)utilities\bin\x86\fxc.exe" "../source/platforms/windows/ps20display8bitdx9.hlsl" /nologo /O3 /Zpc /Gfp /Tps_2_0 /Fh"../source/platforms/windows/Generated\ps20display8bitdx9.h" /Vng_ps20display8bitdx9
+
+#
 # A = The object file temp folder
 #
 
 A = $(BASE_TEMP_DIR)watw32dbg
-bin\unittestswatw32dbg.exe: $+$(OBJS)$- unittestswatw32.wmk
+bin\unittestswatw32dbg.exe: $(EXTRA_OBJS) $+$(OBJS)$- unittestswatw32.wmk
 	@SET WOW={$+$(OBJS)$-}
 	@$(LINK) $(LFlagsDebugw32) NAME $^@ FILE @wow
 
 A = $(BASE_TEMP_DIR)watw32int
-bin\unittestswatw32int.exe: $+$(OBJS)$- unittestswatw32.wmk
+bin\unittestswatw32int.exe: $(EXTRA_OBJS) $+$(OBJS)$- unittestswatw32.wmk
 	@SET WOW={$+$(OBJS)$-}
 	@$(LINK) $(LFlagsInternalw32) NAME $^@ FILE @wow
 
 A = $(BASE_TEMP_DIR)watw32rel
-bin\unittestswatw32rel.exe: $+$(OBJS)$- unittestswatw32.wmk
+bin\unittestswatw32rel.exe: $(EXTRA_OBJS) $+$(OBJS)$- unittestswatw32.wmk
 	@SET WOW={$+$(OBJS)$-}
 	@$(LINK) $(LFlagsReleasew32) NAME $^@ FILE @wow

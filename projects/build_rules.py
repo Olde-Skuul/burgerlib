@@ -453,6 +453,30 @@ def postbuild(working_directory, configuration):
 ########################################
 
 
+def watcom_stripcomments(line_list):
+    """
+    Force stripcomments.exe to a specific path for Watcom
+
+    Makeprojects will generate the watcom project file and pass it to
+    this function where it will replace all occurances of stripcomments
+    with a prefix to ensure it will use the local copy found in github
+
+    Note: If the tool is in the path, then remove the line that sets the
+    solution.post_process variable so this isn't performed.
+
+    Args:
+        line_list: List of lines of text
+    Return:
+        List of adjusted lines
+    """
+    return [x.replace("stripcomments.exe",
+                      "..\\tools\\windows\\x64\\stripcomments.exe")
+            for x in line_list]
+
+
+########################################
+
+
 def watcom_rules(project):
     """
     Handle special cases for Visual Studio 2005 and 2008
@@ -490,6 +514,11 @@ def watcom_rules(project):
 
             # This is a required environment variable
             project.env_variable_list.append("DXSDK_DIR")
+
+            # If building on git, stripcomments.exe may not be on the path
+            # Force it
+            if is_git():
+                project.solution.post_process = watcom_stripcomments
 
 
 ########################################
