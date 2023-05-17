@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisualStudioToolFile Name="Effect-Compiler Tool"
+    Version="8.00">
+    <Rules>
+        <CustomBuildRule Name="HLSL"
+            DisplayName="Effect-Compiler Tool"
+            CommandLine="&quot;$(DXSDK_DIR)utilities\bin\x86\fxc.exe&quot; [Inputs] [AllOptions] [AdditionalOptions]"
+            Outputs="[$ObjectFileName];[$HeaderFileName]"
+            FileExtensions="*.hlsl"
+            ExecutionDescription="fxc $(InputDir)$(InputFileName)">
+            <Properties>
+                <!-- Options for the General sub menu -->
+                <StringProperty Name="AdditionalIncludeDirectories"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Additional Include Directories"
+                    Description="Specifies one or more directories to add to the include path; seperate with semi-colons if more than one. (/I [path])"
+                    Switch="/I &quot;[value]&quot;"
+                    Delimited="true"
+                    Inheritable="true" />
+                <BooleanProperty Name="GenerateDebugInformation"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Generate Debug Information"
+                    Description="Generates Debug Information. (/Zi)"
+                    Switch="/Zi"
+                    DefaultValue="false" />
+                <BooleanProperty Name="NoLogo"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Suppress Startup Banner"
+                    Description="Suppress the display of the sign-on banner when the compiler starts up and display of information messages during compiling. (/nologo)"
+                    Switch="/nologo"
+                    DefaultValue="true" />
+                <BooleanProperty Name="DisableValidation"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Disable Validation"
+                    Description="Suppress validating the shader. (/Vd)"
+                    Switch="/Vd"
+                    DefaultValue="false" />
+                <BooleanProperty Name="TreatWarningsAsErrors"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Treat Warnings As Errors"
+                    Description="Returns an error code if warnings are generated. (/WX)"
+                    Switch="/WX"
+                    DefaultValue="false" />
+                <BooleanProperty Name="StripReflectionData"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Strip reflection data from 4_0+ shader bytecode"
+                    Description="Strip reflection data from 4_0+ shader bytecode. (/Qstrip_reflect)"
+                    Switch="/Qstrip_reflect"
+                    DefaultValue="false" />
+                <BooleanProperty Name="StripDebugInformation"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Strip debug information from 4_0+ shader bytecode"
+                    Description="Strip debug information from 4_0+ shader bytecode. (/Qstrip_debug)"
+                    Switch="/Qstrip_debug"
+                    DefaultValue="false" />
+
+                <!-- Options for the Optimization sub menu -->
+                <EnumProperty PropertyPageName="Optimization"
+                    Name="Optimization"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Optimization Level"
+                    Description="Sets the Optimization level, where level = 0, 1, 2, or 3. (/Od, /O0, /O1, /O2, /O3)"
+                    DefaultValue="4">
+                    <Values>
+                        <EnumValue Value="0"
+                            DisplayName="Disabled"
+                            Switch="/Od" />
+                        <EnumValue Value="1"
+                            DisplayName="Level 1"
+                            Switch="/O0" />
+                        <EnumValue Value="2"
+                            DisplayName="Level 2"
+                            Switch="/O1" />
+                        <EnumValue Value="3"
+                            DisplayName="Level 3"
+                            Switch="/O2" />
+                        <EnumValue Value="4"
+                            DisplayName="Level 4"
+                            Switch="/O3" />
+                    </Values>
+                </EnumProperty>
+
+                <BooleanProperty PropertyPageName="Optimization"
+                    Name="DisablePreshaders"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Disable preshaders."
+                    Description="Disable preshaders. (/Op)"
+                    Switch="/oP"
+                    DefaultValue="false" />
+                <EnumProperty PropertyPageName="Optimization"
+                    Name="MatricesPacking"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Order of Matrices packing"
+                    Description="Sets the matrix packing order to either be Row Major or Column Major. (/Zpr, /Zpc)"
+                    DefaultValue="1">
+                    <Values>
+                        <EnumValue Value="0"
+                            DisplayName="Row Major Order"
+                            Switch="/Zpr" />
+                        <EnumValue Value="1"
+                            DisplayName="Column Major Order"
+                            Switch="/Zpc" />
+                    </Values>
+                </EnumProperty>
+                <BooleanProperty PropertyPageName="Optimization"
+                    Name="ForcePartialPrecision"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Force partial precision."
+                    Description="Force partial precision. (/Gpp)"
+                    Switch="/Gpp"
+                    DefaultValue="false" />
+                <EnumProperty PropertyPageName="Optimization"
+                    Name="FlowControl"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Flow control hinting"
+                    Description="Sets the flow control preference to eithre avoid branching or prefer branching. (/Gfa, /Gfp)"
+                    DefaultValue="1">
+                    <Values>
+                        <EnumValue Value="0"
+                            DisplayName="Avoid flow control constructs"
+                            Switch="/Gfa" />
+                        <EnumValue Value="1"
+                            DisplayName="Prefer flow control constructs"
+                            Switch="/Gfp" />
+                    </Values>
+                </EnumProperty>
+                <BooleanProperty PropertyPageName="Optimization"
+                    Name="DisableEffectPerformanceMode"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Disable effect performance mode."
+                    Description="Disable effect performance mode. (/Gdp)"
+                    Switch="/Gdp"
+                    DefaultValue="false" />
+                <BooleanProperty PropertyPageName="Optimization"
+                    Name="EnableStrictMode"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Enable strict mode."
+                    Description="Enable strict mode. (/Ges)"
+                    Switch="/Ges"
+                    DefaultValue="false" />
+                <BooleanProperty PropertyPageName="Optimization"
+                    Name="EnableBackwardsCompatibility"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Enable backwards compatibility mode."
+                    Description="Enable backwards compatibility mode. (/Gec)"
+                    Switch="/Gec"
+                    DefaultValue="false" />
+                <BooleanProperty PropertyPageName="Optimization"
+                    Name="ForceIEEEStrictness"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Force IEEE strictness."
+                    Description="Force IEEE strictness. (/Gis)"
+                    Switch="/Gis"
+                    DefaultValue="false" />
+
+                <!-- Options for the Preprocessor sub menu -->
+                <StringProperty PropertyPageName="Preprocessor"
+                    Name="PreprocessorDefinitions"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Preprocessor Definitions"
+                    Description="Defines preprocessing symbols for your source file. (/D[symbol])"
+                    Switch="/D&quot;[value]&quot;"
+                    Delimited="true"
+                    Inheritable="true" />
+                <EnumProperty PropertyPageName="Preprocessor"
+                    Name="GeneratePreprocessedSourceListing"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Generate Preprocessed Source Listing"
+                    Description="Generates a preprocessed source listing. (/P)"
+                    DefaultValue="0">
+                    <Values>
+                        <EnumValue Value="0"
+                            Switch=""
+                            DisplayName="No Listing" />
+                        <EnumValue Value="1"
+                            Switch="/P"
+                            DisplayName="Preprocessed Listing" />
+                    </Values>
+                </EnumProperty>
+                <StringProperty PropertyPageName="Preprocessor"
+                    Name="PreprocessedSourceListingName"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Preprocess source file"
+                    Description="Specifies the preprocessed source file output (/P[name])" />
+                <BooleanProperty PropertyPageName="Preprocessor"
+                    Name="ShowIncludeProcess"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Display details about the include process."
+                    Description="Display details about the include process. (/Vi)"
+                    Switch="/Vi"
+                    DefaultValue="false" />
+
+                <!-- Options for the Output Files sub menu -->
+                <StringProperty PropertyPageName="Output Files"
+                    Name="ObjectFileName"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Object File Name"
+                    Description="Specifies the name of the output object file. (/Fo[file])"
+                    Switch="/Fo&quot;[value]&quot;" />
+                <StringProperty PropertyPageName="Output Files"
+                    Name="HeaderFileName"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Header File Name"
+                    Description="Specifies the name of the output header file. (/Fh[file])"
+                    Switch="/Fh&quot;[value]&quot;"
+                    DefaultValue="$(InputDir)$(InputName).h"/>
+                <EnumProperty PropertyPageName="Output Files"
+                    Name="AssemblerOutput"
+                    DisplayName="Assembler Output"
+                    Description="Specifies the contents of assembly language output file. (/Fc, /Fx)"
+                    DefaultValue="0">
+                    <Values>
+                        <EnumValue Value="0"
+                            Switch=""
+                            DisplayName="No Listing" />
+                        <EnumValue Value="1"
+                            Switch="/Fc"
+                            DisplayName="Assembly-Only Listing" />
+                        <EnumValue Value="2"
+                            Switch="/Fx"
+                            DisplayName="Assembly With Hex Code" />
+                    </Values>
+                </EnumProperty>
+                <StringProperty PropertyPageName="Output Files"
+                    Name="AssemblyListingFileName"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Assembly Listing File Name"
+                    Description="Specifies the name of the assembly output file. (/Fc[file], /Fx[file])"
+                    DefaultValue="$(IntDir)$(InputName).asm"/>
+                <EnumProperty PropertyPageName="Output Files"
+                    Name="GenerateWarningFile"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Enable logging warnings to a file"
+                    Description="Output color-coded assembly instructions in listings. (/Fe)"
+                    DefaultValue="0">
+                    <Values>
+                        <EnumValue Value="0"
+                            Switch=""
+                            DisplayName="No logging" />
+                        <EnumValue Value="1"
+                            Switch="/Fe"
+                            DisplayName="Log warnings to file" />
+                    </Values>
+                </EnumProperty>
+                <StringProperty PropertyPageName="Output Files"
+                    Name="WarningsFileName"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Warnings File Name"
+                    Description="Specifies the name of the output header file. (/Fe[file])"
+                    DefaultValue="$(IntDir)$(InputName).log"/>
+                <BooleanProperty PropertyPageName="Output Files"
+                    Name="ColorCodeAssembly"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Color coded assembly"
+                    Description="Output color-coded assembly instructions in listings. (/Cc)"
+                    Switch="/Cc"
+                    DefaultValue="false" />
+                <BooleanProperty PropertyPageName="Output Files"
+                    Name="OutputInstructionNumbers"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Enable instruction numbering"
+                    Description="Enables the numbering of instructions in assembly listings. (/Ni)"
+                    Switch="/Ni"
+                    DefaultValue="false" />
+
+                <!-- Options for the Advanced sub menu -->
+                <StringProperty PropertyPageName="Advanced"
+                    Name="EntryPointName"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Shader Entry Point"
+                    Description="Specifies the entry point of the shader. (/E[name])"
+                    Switch="/E&quot;[value]&quot;" />
+                <StringProperty PropertyPageName="Advanced"
+                    Name="VariableName"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Variable name"
+                    Description="When generating a header file, specify the variable name. (/Vn[name])"
+                    Switch="/Vn&quot;[value]&quot;"
+                    DefaultValue="g_$(InputName)"/>
+                <EnumProperty PropertyPageName="Advanced"
+                    Name="TargetProfile"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Shader Model"
+                    Description="Selects the shader model to compile for. (/T[profile])"
+                    DefaultValue="8">
+                    <Values>
+                        <EnumValue Value="0"
+                            DisplayName="Vertex Shader 1.1"
+                            Switch="/Tvs_1_1" />
+                        <EnumValue Value="1"
+                            DisplayName="Vertex Shader 2.0"
+                            Switch="/Tvs_2_0" />
+                        <EnumValue Value="2"
+                            DisplayName="Vertex Shader 2.a"
+                            Switch="/Tvs_2_a" />
+                        <EnumValue Value="3"
+                            DisplayName="Vertex Shader 2.sw"
+                            Switch="/Tvs_2_sw" />
+                        <EnumValue Value="4"
+                            DisplayName="Vertex Shader 3.0"
+                            Switch="/Tvs_3_0" />
+                        <EnumValue Value="5"
+                            DisplayName="Vertex Shader 3.sw"
+                            Switch="/Tvs_3_sw" />
+                        <EnumValue Value="6"
+                            DisplayName="Vertex Shader 4.0"
+                            Switch="/Tvs_4_0" />
+                        <EnumValue Value="7"
+                            DisplayName="Vertex Shader 4.1"
+                            Switch="/Tvs_4_1" />
+                        <EnumValue Value="8"
+                            DisplayName="Pixel Shader 2.0"
+                            Switch="/Tps_2_0" />
+                        <EnumValue Value="9"
+                            DisplayName="Pixel Shader 2.a"
+                            Switch="/Tps_2_a" />
+                        <EnumValue Value="10"
+                            DisplayName="Pixel Shader 2.b"
+                            Switch="/Tps_2_b" />
+                        <EnumValue Value="11"
+                            DisplayName="Pixel Shader 2.sw"
+                            Switch="/Tps_2_sw" />
+                        <EnumValue Value="12"
+                            DisplayName="Pixel Shader 3.0"
+                            Switch="/Tps_3_0" />
+                        <EnumValue Value="13"
+                            DisplayName="Pixel Shader 3.sw"
+                            Switch="/Tps_3_sw" />
+                        <EnumValue Value="14"
+                            DisplayName="Pixel Shader 4.0"
+                            Switch="/Tps_4_0" />
+                        <EnumValue Value="15"
+                            DisplayName="Pixel Shader 4.1"
+                            Switch="/Tps_4_1" />
+                        <EnumValue Value="16"
+                            DisplayName="Texture Shader 1.0"
+                            Switch="/Ttx_1_0" />
+                        <EnumValue Value="17"
+                            DisplayName="Geometry Shader 4.0"
+                            Switch="/Tgs_4_0" />
+                        <EnumValue Value="18"
+                            DisplayName="Geometry Shader 4.1"
+                            Switch="/Tgs_4_1" />
+                        <EnumValue Value="19"
+                            DisplayName="Effect Shader 2.0"
+                            Switch="/Tfx_2_0" />
+                        <EnumValue Value="20"
+                            DisplayName="Effect Shader 4.0"
+                            Switch="/Tfx_4_0" />
+                        <EnumValue Value="21"
+                            DisplayName="Effect Shader 4.1"
+                            Switch="/Tfx_4_1" />
+                    </Values>
+                </EnumProperty>
+                <BooleanProperty PropertyPageName="Advanced"
+                    Name="LoadDX931"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Load d3dx9_31.dll"
+                    Description="Use version 3.1 of the DirectX 9 DLL. (/LD)"
+                    Switch="/LD"
+                    DefaultValue="false" />
+                <BooleanProperty PropertyPageName="Advanced"
+                    Name="CompressDX10"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Compress DX10 shader bytecode"
+                    Description="Compress DX10 shader bytecode from files (/compress)"
+                    Switch="/compress"
+                    DefaultValue="false" />
+                <BooleanProperty PropertyPageName="Advanced"
+                    Name="DecompressDX10"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Decompress bytecode from the first file"
+                    Description="Decompress bytecode from the first file. (/decompress)"
+                    Switch="/decompress"
+                    DefaultValue="false" />
+                <BooleanProperty PropertyPageName="Advanced"
+                    Name="CompileChildFx4"
+                    HelpURL="https://docs.microsoft.com/en-us/windows/desktop/direct3dtools/dx-graphics-tools-fxc-syntax"
+                    DisplayName="Compile as a child effect for FX 4.x targets."
+                    Description="Compile as a child effect for FX 4.x targets. (/Gch)"
+                    Switch="/Gch"
+                    DefaultValue="false" />
+            </Properties>
+        </CustomBuildRule>
+
+    </Rules>
+</VisualStudioToolFile>

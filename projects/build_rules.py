@@ -537,7 +537,7 @@ def vs2005_2008_rules(project):
         vs_rules = []
 
         # Enable glsl
-        vs_rules.append("glsl.rules")
+        vs_rules.append("../ide_plugins/vs2005_2008/glsl.rules")
 
         # Enable hlsl
         vs_rules.append("../ide_plugins/vs2005_2008/hlsl.rules")

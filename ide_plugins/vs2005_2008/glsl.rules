@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisualStudioToolFile Name="Comment stripper tool"
+    Version="8.00">
+    <Rules>
+        <CustomBuildRule Name="GLSL"
+            DisplayName="Comment stripper tool"
+            CommandLine="&quot;$(ProjectDir)..\tools\windows\x64\stripcomments.exe&quot; [Inputs] [AllOptions] [AdditionalOptions]"
+            Outputs="[$ObjectFileName]"
+            FileExtensions="*.glsl"
+            ExecutionDescription="stripcomments $(InputDir)$(InputFileName)">
+            <Properties>
+
+                <!-- Options for the General sub menu -->
+                <BooleanProperty Name="CPP"
+                    DisplayName="Convert to C/C++ source"
+                    Description="Convert the text to a C++ const char array. (/c)"
+                    Switch="/c"
+                    DefaultValue="true" />
+                <StringProperty Name="VariableName"
+                    DisplayName="Variable name override"
+                    Description="Defines C++ label for the const char array. (/l [symbol])"
+                    Switch="/l &quot;[value]&quot;"
+                    Delimited="true"
+                    Inheritable="true"
+                    DefaultValue="g_$(InputName)" />
+                <StringProperty Name="ObjectFileName"
+                    DisplayName="Object File Name"
+                    Description="Specifies the name of the output object file. ([file])"
+                    Switch="&quot;[value]&quot;"
+                    DefaultValue="$(InputDir)$(InputName).h" />
+            </Properties>
+        </CustomBuildRule>
+    </Rules>
+</VisualStudioToolFile>

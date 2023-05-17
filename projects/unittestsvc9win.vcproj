@@ -17,11 +17,17 @@
 		/>
 	</Platforms>
 	<ToolFiles>
-		<DefaultToolFile
-			FileName="glsl.rules"
+		<ToolFile
+			RelativePath="..\ide_plugins\vs2005_2008\glsl.rules"
+		/>
+		<ToolFile
+			RelativePath="..\ide_plugins\vs2005_2008\hlsl.rules"
 		/>
 		<DefaultToolFile
-			FileName="hlsl.rules"
+			FileName="masm.rules"
+		/>
+		<ToolFile
+			RelativePath="..\ide_plugins\vs2005_2008\masm64.rules"
 		/>
 	</ToolFiles>
 	<Configurations>
@@ -51,7 +57,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\random;..\source\text;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;..\sdks\steamworks\public\steam"
 				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -81,10 +87,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
+				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w32dbg.exe&quot;"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -138,7 +143,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\random;..\source\text;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;..\sdks\steamworks\public\steam"
 				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -167,10 +172,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
+				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w64dbg.exe&quot;"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -228,7 +232,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\random;..\source\text;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;..\sdks\steamworks\public\steam"
 				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -257,10 +261,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
+				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w32int.exe&quot;"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -319,7 +322,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\random;..\source\text;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;..\sdks\steamworks\public\steam"
 				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -347,10 +350,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
+				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w64int.exe&quot;"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -409,7 +411,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\random;..\source\text;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;..\sdks\steamworks\public\steam"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -437,10 +439,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
+				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w32rel.exe&quot;"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -499,7 +500,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\random;..\source\text;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;..\sdks\steamworks\public\steam"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -526,10 +527,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
+				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w64rel.exe&quot;"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -590,7 +590,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\random;..\source\text;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;..\sdks\steamworks\public\steam"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -618,10 +618,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
+				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w32ltc.exe&quot;"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -683,7 +682,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\random;..\source\text;..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\asm\masm64;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;..\sdks\steamworks\public\steam"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -710,10 +709,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib"
+				AdditionalDependencies="Kernel32.lib Gdi32.lib Shell32.lib Ole32.lib User32.lib Advapi32.lib version.lib Ws2_32.lib Comctl32.lib WinMM.lib"
 				OutputFile="&quot;$(OutDir)unittestsvc9w64ltc.exe&quot;"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="&quot;$(OutDir)$(TargetName).pdb&quot;"
 				SubSystem="1"
@@ -774,6 +772,22 @@
 				RelativePath="..\source\templateburgerbase.h"
 				>
 			</File>
+			<File
+				RelativePath="..\source\templatelinux.h"
+				>
+			</File>
+			<File
+				RelativePath="..\source\templatemac.h"
+				>
+			</File>
+			<File
+				RelativePath="..\source\templateunix.h"
+				>
+			</File>
+			<File
+				RelativePath="..\source\templatewindows.h"
+				>
+			</File>
 			<Filter
 				Name="ansi"
 				>
@@ -809,6 +823,102 @@
 					RelativePath="..\source\ansi\brstdouthelpers.h"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="asm"
+				>
+				<Filter
+					Name="masm"
+					>
+					<File
+						RelativePath="..\source\asm\masm\xgetbv.x86"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Internal|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release_LTCG|x64"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="MASM"
+							/>
+						</FileConfiguration>
+					</File>
+				</Filter>
+				<Filter
+					Name="masm64"
+					>
+					<File
+						RelativePath="..\source\asm\masm64\xgetbv.x64"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+						/>
+						<FileConfiguration
+							Name="Internal|Win32"
+							ExcludedFromBuild="true"
+						/>
+						<FileConfiguration
+							Name="Release|Win32"
+							ExcludedFromBuild="true"
+						/>
+						<FileConfiguration
+							Name="Release_LTCG|Win32"
+							ExcludedFromBuild="true"
+						/>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="audio"
@@ -3130,6 +3240,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\source\lowlevel\brmacros.h"
+					>
+				</File>
+				<File
 					RelativePath="..\source\lowlevel\brmetrowerks.h"
 					>
 				</File>
@@ -3215,6 +3329,14 @@
 				</File>
 				<File
 					RelativePath="..\source\lowlevel\brtemplates.h"
+					>
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brthread.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\source\lowlevel\brthread.h"
 					>
 				</File>
 				<File
@@ -3322,6 +3444,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\source\math\brfphalf.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\source\math\brfphalf.h"
+					>
+				</File>
+				<File
 					RelativePath="..\source\math\brfpinfo.cpp"
 					>
 				</File>
@@ -3359,14 +3489,6 @@
 				</File>
 				<File
 					RelativePath="..\source\math\brmatrix4d.h"
-					>
-				</File>
-				<File
-					RelativePath="..\source\math\brmp3math.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\source\math\brmp3math.h"
 					>
 				</File>
 				<File
@@ -3457,10 +3579,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\source\platforms\windows\brdirectxdata.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\source\platforms\windows\brdisplaybasewindows.cpp"
 						>
 					</File>
@@ -3541,11 +3659,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\source\platforms\windows\brmousewindows.cpp"
+						RelativePath="..\source\platforms\windows\brmemorymanagerwindows.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\source\platforms\windows\brnetmanagerwindows.cpp"
+						RelativePath="..\source\platforms\windows\brmousewindows.cpp"
 						>
 					</File>
 					<File
@@ -3593,6 +3711,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\source\platforms\windows\brthreadwindows.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\source\platforms\windows\brtickwindows.cpp"
 						>
 					</File>
@@ -3613,83 +3735,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\source\platforms\windows\brwindowsd3d.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowsd3d11.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowsddraw.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowsdinput.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowsdplay.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowsdsound.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowshid.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowskernel32.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowsrpcrt4.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowssetupapi.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowsshell32.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowsshlwapi.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowstest.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\source\platforms\windows\brwindowstypes.h"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowstypes1.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowsuser32.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowsversion.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowswinmm.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\brwindowsxinput.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\source\platforms\windows\ps20display8bitdx9.h"
 						>
 					</File>
 					<File
@@ -3776,6 +3822,218 @@
 							/>
 						</FileConfiguration>
 					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_d3d11.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_d3d11.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_d3d9.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_d3d9.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_ddraw.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_ddraw.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_dinput.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_dinput.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_directxdata.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_directxdata.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_dplay.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_dplay.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_dsound.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_dsound.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_error.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_error.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_globals.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_globals.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_hid.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_hid.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_kernel32.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_kernel32.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_launcher.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_launcher.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_loadlibrary.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_loadlibrary.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_memorymanager.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_memorymanager.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_platformshims.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_platformshims.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_registry.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_registry.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_rpcrt4.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_rpcrt4.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_setupapi.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_setupapi.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_shell32.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_shell32.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_shlwapi.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_shlwapi.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_types.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_user32.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_user32.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_version.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_version.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_winmm.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_winmm.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_winutils.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_winutils.h"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_xinput.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\source\platforms\windows\win_xinput.h"
+						>
+					</File>
+					<Filter
+						Name="generated"
+						>
+						<File
+							RelativePath="..\source\platforms\windows\generated\ps20display8bitdx9.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -3983,10 +4241,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\unittest\createtables.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\unittest\createtables.h"
 				>
 			</File>
@@ -4084,14 +4338,6 @@
 			</File>
 			<File
 				RelativePath="..\unittest\testbrmatrix4d.h"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrnetwork.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\unittest\testbrnetwork.h"
 				>
 			</File>
 			<File
