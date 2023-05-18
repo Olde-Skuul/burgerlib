@@ -55,17 +55,13 @@ SHA-1 6da8be8022bf96b9387b6b14980944092ed2fc46 for CW_Windows_9.4_Update.exe
 
 Download Visual Studio at [Visual Studio website](https://visualstudio.com). Visual Studio 2022 is recommended, however versions from 2003, 2005, all the way to 2022 is supported.
 
-### DirectX 9.0c SDK June 2010
-
-[Download DirectX 9.0c SDK June 2010 here](https://www.microsoft.com/en-us/download/details.aspx?id=6812)
-
-``` text
-SHA-1 495ad05ae5fc4ecd76b53a69a35bacb66d958608
-```
-
 ---
 
-## Optional tools
+## Tools locations for download
+
+### Visual Studio code
+
+[Download Visual Studio code here](https://code.visualstudio.com/)
 
 ### Doxygen
 
@@ -78,6 +74,26 @@ SHA-1 495ad05ae5fc4ecd76b53a69a35bacb66d958608
 ### Pandoc
 
 [Download Pandoc from here.](https://pandoc.org/installing.html)
+
+### 7Zip
+
+[Download 7Zip from here.](https://7-zip.org/)
+
+### DirectX 9.0c SDK June 2010
+
+This is needed to build Burgerlib Windows using older compilers.
+
+[Download DirectX 9.0c SDK June 2010 here](https://www.microsoft.com/en-us/download/details.aspx?id=6812)
+
+``` text
+SHA-1 495ad05ae5fc4ecd76b53a69a35bacb66d958608
+```
+
+### Vulkan SDK
+
+Needed for Windows builds.
+
+[Download Vulkan SDK here](https://www.lunarg.com/vulkan-sdk/)
 
 ---
 
