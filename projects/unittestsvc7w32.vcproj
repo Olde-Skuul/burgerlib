@@ -23,7 +23,7 @@
 				FavorSizeOrSpeed="1"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include;..\source\platforms\windows\vc7compat;..\sdks\steamworks\public\steam"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include;..\sdks\steamworks\public\steam"
 				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -89,7 +89,7 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include;..\source\platforms\windows\vc7compat;..\sdks\steamworks\public\steam"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include;..\sdks\steamworks\public\steam"
 				PreprocessorDefinitions="_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -155,7 +155,7 @@
 				EnableFiberSafeOptimizations="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include;..\source\platforms\windows\vc7compat;..\sdks\steamworks\public\steam"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include;..\sdks\steamworks\public\steam"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -222,7 +222,7 @@
 				WholeProgramOptimization="TRUE"
 				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include;..\source\platforms\windows\vc7compat;..\sdks\steamworks\public\steam"
+				AdditionalIncludeDirectories="..\source;..\source\ansi;..\source\asm\masm;..\source\audio;..\source\commandline;..\source\compression;..\source\file;..\source\flashplayer;..\source\generated;..\source\graphics;..\source\graphics\effects;..\source\graphics\shaders;..\source\graphics\shadersdx9;..\source\graphics\shadersdx9\generated;..\source\graphics\shadersopengl;..\source\graphics\shadersopengl\generated;..\source\graphics\vulkan;..\source\input;..\source\lowlevel;..\source\math;..\source\memory;..\source\platforms\windows;..\source\platforms\windows\generated;..\source\platforms\windows\vc7compat;..\source\random;..\source\text;..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;$(DXSDK_DIR)\Include;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include;..\sdks\steamworks\public\steam"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -2397,6 +2397,12 @@
 						Name="generated">
 						<File
 							RelativePath="..\source\platforms\windows\generated\ps20display8bitdx9.h">
+						</File>
+					</Filter>
+					<Filter
+						Name="vc7compat">
+						<File
+							RelativePath="..\source\platforms\windows\vc7compat\sal.h">
 						</File>
 					</Filter>
 				</Filter>

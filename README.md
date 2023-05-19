@@ -51,9 +51,18 @@ SHA-1 2a8a839aa34a0e7b8400004788f0cbc3db03f90e for CW_Windows_9.2.exe
 SHA-1 6da8be8022bf96b9387b6b14980944092ed2fc46 for CW_Windows_9.4_Update.exe
 ```
 
-### Visual Studio IDE
+### Current Visual Studio IDE
 
 Download Visual Studio at [Visual Studio website](https://visualstudio.com). Visual Studio 2022 is recommended, however versions from 2003, 2005, all the way to 2022 is supported.
+
+### Visual Studio 2003
+
+Download these three ISO files,
+
+1. [Disk 1](https://archive.org/download/vsnet2003/MSDN%20Visual%20Studio%20NET%202003%20-%20Enterprise%20Architect%20%28Disc%201%29%28Disc%202082%29%28May%202003%29%28X09-51498%29.ISO)
+2. [Disk 2](https://archive.org/download/vsnet2003/MSDN%20Visual%20Studio%20NET%202003%20-%20Enterprise%20Architect%20%28Disc%202%29%28Disc%202083%29%28May%202003%29%28X09-51499%29.ISO)
+3. [Prerequisites](https://archive.org/download/vsnet2003/MSDN%20Visual%20Studio%20NET%202003%20Prerequisites%20%28Disc%202072%29%28May%202003%29%28X09-51482%29.ISO)
+4. [Service Pack 1](https://archive.org/download/Visual-Studio-.NET-2003-SP-1/VS7.1sp1-KB918007-X86.exe.zip)
 
 ---
 

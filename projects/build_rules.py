@@ -376,7 +376,7 @@ def do_generate(working_directory):
 
     for item in ARG_LISTS:
         args = ["-p", item[0], "-n", item[1],
-            "-t", item[2], "-g", ""]
+                "-t", item[2], "-g", ""]
         for ide in item[3]:
             args[-1] = ide
             makeprojects(working_directory=working_directory, args=args)
@@ -557,7 +557,7 @@ def vs2005_2008_rules(project):
     if ide is IDETypes.vs2005:
         project.source_files_list.extend(
             ("../source/asm/masm64/cpuidex.x64",
-            "../source/asm/masm/cpuidex.x86"))
+             "../source/asm/masm/cpuidex.x86"))
 
 
 ########################################
@@ -611,6 +611,10 @@ def vs2003_rules(project):
         # stripcomments.exe is on the path, but VS 2003 doesn't use it
         # So, replace the call to where the binary actually is
         project.solution.post_process = vs2003_stripcomments
+
+        # The DirectX Headers need sal.h, supply it manually for VS 2003
+        project.source_folders_list.append(
+            "../source/platforms/windows/vc7compat")
 
 
 ########################################
@@ -699,11 +703,6 @@ def project_settings(project):
                 include_folders_list.append(
                     "C:/Program Files (x86)/Microsoft SDKs/"
                     "Windows/v7.1A/Include")
-
-                # The DirectX Headers need sal.h, supply it manually for VS 2003
-                if ide is IDETypes.vs2003:
-                    include_folders_list.append(
-                        "../source/platforms/windows/vc7compat")
 
             if ide is IDETypes.codeblocks:
                 include_folders_list.append("$(BURGER_SDKS)/windows/windows5")

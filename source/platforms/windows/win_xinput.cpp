@@ -34,6 +34,11 @@
 
 #include <Windows.h>
 
+// Visual Studio 2003 is missing sal
+#if defined(BURGER_MSVC) && (BURGER_MSVC < 140000000)
+#include <sal.h>
+#endif
+
 #include <Xinput.h>
 
 // Function prototypes, lovingly stolen from xinput.h
