@@ -611,6 +611,7 @@ def vs2005_2008_rules(project):
         # Enable masm64
         project.vs_rules.append("../ide_plugins/vs2005_2008/masm64.rules")
 
+        # This is a missing intrinsic
         project.source_files_list.extend(
             ("../source/asm/masm64/xgetbv.x64",
              "../source/asm/masm/xgetbv.x86"))
@@ -618,20 +619,16 @@ def vs2005_2008_rules(project):
         # Include the DirectX SDK, June 2010
         project.include_folders_list.append("$(DXSDK_DIR)/Include")
 
-        # Visual Studio 2005 needs to use the Windows Vista SDK
-        # if ide is IDETypes.vs2005:
-
-        # Note, the path is hard coded because 2003 can't handle
-        # $(ProgramFiles(x86))
-        # project.include_folders_list.append(
-        #    "C:/Program Files (x86)/Microsoft SDKs/"
-        #    "Windows/v7.1A/Include")
-
     # __cpuindex() is available on 2008, but not 2005
     if ide is IDETypes.vs2005:
         project.source_files_list.extend(
             ("../source/asm/masm64/cpuidex.x64",
              "../source/asm/masm/cpuidex.x86"))
+
+        # Direct Draw was not included in the Visual Studio 2005
+        # Windows SDK, use the local copy
+        project.include_folders_list.append(
+            sdks_folder() + "windows/ddraw/include")
 
 
 ########################################
