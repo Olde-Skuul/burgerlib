@@ -520,46 +520,6 @@ def watcom_rules(project):
             if is_git():
                 project.solution.post_process = watcom_stripcomments
 
-
-########################################
-
-
-def vs2005_2008_rules(project):
-    """
-    Handle special cases for Visual Studio 2005 and 2008
-
-    Assume these IDEs are building only for Windows
-    """
-
-    ide = project.solution.ide
-    # Enable masm for Visual Studio 2005 and 2008
-    if ide in (IDETypes.vs2005, IDETypes.vs2008):
-        vs_rules = []
-
-        # Enable glsl
-        vs_rules.append("../ide_plugins/vs2005_2008/glsl.rules")
-
-        # Enable hlsl
-        vs_rules.append("../ide_plugins/vs2005_2008/hlsl.rules")
-
-        # Enable masm
-        vs_rules.append("masm.rules")
-
-        # Enable masm64
-        vs_rules.append("../ide_plugins/vs2005_2008/masm64.rules")
-        project.vs_rules = vs_rules
-
-        project.source_files_list.extend(
-            ("../source/asm/masm64/xgetbv.x64",
-             "../source/asm/masm/xgetbv.x86"))
-
-    # __cpuindex() is available on 2008, but not 2005
-    if ide is IDETypes.vs2005:
-        project.source_files_list.extend(
-            ("../source/asm/masm64/cpuidex.x64",
-             "../source/asm/masm/cpuidex.x86"))
-
-
 ########################################
 
 
@@ -615,6 +575,63 @@ def vs2003_rules(project):
         # The DirectX Headers need sal.h, supply it manually for VS 2003
         project.source_folders_list.append(
             "../source/platforms/windows/vc7compat")
+
+        # Use the DirectX SDK. MUST BE INCLUDED BEFORE Windows SDK!
+        project.include_folders_list.append("$(DXSDK_DIR)/Include")
+
+        # Use the Windows SDK installed from VS 2005 because the one
+        # that shipped with VS 2003 is too old to handle the DirectX
+        # SDK
+        project.include_folders_list.append(
+            "C:/Program Files/Microsoft SDKs/Windows/v6.0A/Include")
+
+########################################
+
+
+def vs2005_2008_rules(project):
+    """
+    Handle special cases for Visual Studio 2005 and 2008
+
+    Assume these IDEs are building only for Windows
+    """
+
+    ide = project.solution.ide
+    # Enable masm for Visual Studio 2005 and 2008
+    if ide in (IDETypes.vs2005, IDETypes.vs2008):
+
+        # Enable glsl
+        project.vs_rules.append("../ide_plugins/vs2005_2008/glsl.rules")
+
+        # Enable hlsl
+        project.vs_rules.append("../ide_plugins/vs2005_2008/hlsl.rules")
+
+        # Enable masm
+        project.vs_rules.append("masm.rules")
+
+        # Enable masm64
+        project.vs_rules.append("../ide_plugins/vs2005_2008/masm64.rules")
+
+        project.source_files_list.extend(
+            ("../source/asm/masm64/xgetbv.x64",
+             "../source/asm/masm/xgetbv.x86"))
+
+        # Include the DirectX SDK, June 2010
+        project.include_folders_list.append("$(DXSDK_DIR)/Include")
+
+        # Visual Studio 2005 needs to use the Windows Vista SDK
+        # if ide is IDETypes.vs2005:
+
+        # Note, the path is hard coded because 2003 can't handle
+        # $(ProgramFiles(x86))
+        # project.include_folders_list.append(
+        #    "C:/Program Files (x86)/Microsoft SDKs/"
+        #    "Windows/v7.1A/Include")
+
+    # __cpuindex() is available on 2008, but not 2005
+    if ide is IDETypes.vs2005:
+        project.source_files_list.extend(
+            ("../source/asm/masm64/cpuidex.x64",
+             "../source/asm/masm/cpuidex.x86"))
 
 
 ########################################
@@ -677,7 +694,8 @@ def project_settings(project):
         # Add in the headers for Windows, but there be dragons
         if not ide.is_codewarrior() and ide is not IDETypes.watcom:
 
-            # For Directplay support
+            # For Directplay support, include first to guarantee the most recent
+            # SDK is included
             include_folders_list.append(dplay_folder())
 
             # For OpenGL support since the compiler has an old sdk
@@ -689,20 +707,9 @@ def project_settings(project):
                     "../source/platforms/windows/directx9")
 
             # Older IDEs need DirectX from the June 2010 SDK
-            if ide in (IDETypes.vs2003, IDETypes.vs2005, IDETypes.vs2008,
-                       IDETypes.vs2010, IDETypes.vs2012, IDETypes.vs2013,
+            if ide in (IDETypes.vs2010, IDETypes.vs2012, IDETypes.vs2013,
                        IDETypes.vs2015):
                 include_folders_list.append("$(DXSDK_DIR)/Include")
-
-            # Visual Studio 2003/2005 needs to use the Windows XP SDK,
-            # not the Windows 95 SDK
-            if ide in (IDETypes.vs2003, IDETypes.vs2005):
-
-                # Note, the path is hard coded because 2003 can't handle
-                # $(ProgramFiles(x86))
-                include_folders_list.append(
-                    "C:/Program Files (x86)/Microsoft SDKs/"
-                    "Windows/v7.1A/Include")
 
             if ide is IDETypes.codeblocks:
                 include_folders_list.append("$(BURGER_SDKS)/windows/windows5")
@@ -916,14 +923,14 @@ def project_settings(project):
     # Add rules needed to build for Watcom
     watcom_rules(project)
 
-    # Add rules needed to build for Visual Studio 2005/2008
-    vs2005_2008_rules(project)
-
     # Add rules needed to build for Visual Studio 2003
     vs2003_rules(project)
 
+    # Add rules needed to build for Visual Studio 2005/2008
+    vs2005_2008_rules(project)
 
 ########################################
+
 
 def configuration_settings(configuration):
     """

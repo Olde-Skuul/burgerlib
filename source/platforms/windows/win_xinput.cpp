@@ -47,9 +47,9 @@ typedef void(WINAPI* XInputEnablePtr)(BOOL enable);
 typedef DWORD(WINAPI* XInputGetDSoundAudioDeviceGuidsPtr)(
 	DWORD dwUserIndex, GUID* pDSoundRenderGuid, GUID* pDSoundCaptureGuid);
 typedef DWORD(WINAPI* XInputGetBatteryInformationPtr)(DWORD dwUserIndex,
-	BYTE devType, XINPUT_BATTERY_INFORMATION* pBatteryInformation);
+	BYTE devType, _XINPUT_BATTERY_INFORMATION* pBatteryInformation);
 typedef DWORD(WINAPI* XInputGetKeystrokePtr)(
-	DWORD dwUserIndex, DWORD dwReserved, PXINPUT_KEYSTROKE pKeystroke);
+	DWORD dwUserIndex, DWORD dwReserved, _XINPUT_KEYSTROKE* pKeystroke);
 typedef DWORD(WINAPI* XInputGetAudioDeviceIdsPtr)(DWORD dwUserIndex,
 	LPWSTR pRenderDeviceId, UINT* pRenderCount, LPWSTR pCaptureDeviceId,
 	UINT* pCaptureCount);
@@ -306,7 +306,7 @@ uint32_t BURGER_API Burger::Win32::XInputGetAudioDeviceIds(uint32_t dwUserIndex,
 	\param devType Input Specifies which device associated with this user index
 		should be queried. Must be BATTERY_DEVTYPE_GAMEPAD or
 		BATTERY_DEVTYPE_HEADSET.
-	\param pBatteryInformation Pointer to an XINPUT_BATTERY_INFORMATION
+	\param pBatteryInformation Pointer to an _XINPUT_BATTERY_INFORMATION
 		structure that receives the battery information.
 
 	\return Zero if no error. Any other value means an error occurred,
