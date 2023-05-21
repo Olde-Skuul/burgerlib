@@ -445,6 +445,9 @@
     <ClInclude Include="..\source\lowlevel\brlinkedlistpointer.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brmacros.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\lowlevel\brmetrowerks.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
@@ -479,6 +482,9 @@
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtemplates.h">
+      <Filter>source\lowlevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\lowlevel\brthread.h">
       <Filter>source\lowlevel</Filter>
     </ClInclude>
     <ClInclude Include="..\source\lowlevel\brtick.h">
@@ -523,6 +529,9 @@
     <ClInclude Include="..\source\math\brfloatingpoint.h">
       <Filter>source\math</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\math\brfphalf.h">
+      <Filter>source\math</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\math\brfpinfo.h">
       <Filter>source\math</Filter>
     </ClInclude>
@@ -536,9 +545,6 @@
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brmatrix4d.h">
-      <Filter>source\math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\math\brmp3math.h">
       <Filter>source\math</Filter>
     </ClInclude>
     <ClInclude Include="..\source\math\brvector2d.h">
@@ -586,7 +592,85 @@
     <ClInclude Include="..\source\platforms\windows\brwindowstypes.h">
       <Filter>source\platforms\windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\platforms\windows\ps20display8bitdx9.h">
+    <ClInclude Include="..\source\platforms\windows\generated\ps20display8bitdx9.h">
+      <Filter>source\platforms\windows\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_d3d11.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_d3d9.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_ddraw.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_dinput.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_directxdata.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_dplay.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_dsound.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_error.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_globals.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_hid.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_kernel32.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_launcher.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_loadlibrary.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_memorymanager.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_platformshims.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_registry.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_rpcrt4.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_setupapi.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_shell32.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_shlwapi.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_types.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_user32.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_version.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_winmm.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_winutils.h">
+      <Filter>source\platforms\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\platforms\windows\win_xinput.h">
       <Filter>source\platforms\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\source\random\brmersennetwist.h">
@@ -599,6 +683,18 @@
       <Filter>source\random</Filter>
     </ClInclude>
     <ClInclude Include="..\source\templateburgerbase.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\templatelinux.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\templatemac.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\templateunix.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\templatewindows.h">
       <Filter>source</Filter>
     </ClInclude>
     <ClInclude Include="..\source\text\brasciito.h">
@@ -1066,6 +1162,9 @@
     <ClCompile Include="..\source\lowlevel\brtemplates.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lowlevel\brthread.cpp">
+      <Filter>source\lowlevel</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\lowlevel\brtick.cpp">
       <Filter>source\lowlevel</Filter>
     </ClCompile>
@@ -1099,6 +1198,9 @@
     <ClCompile Include="..\source\math\brfloatingpoint.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\math\brfphalf.cpp">
+      <Filter>source\math</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\math\brfpinfo.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
@@ -1112,9 +1214,6 @@
       <Filter>source\math</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brmatrix4d.cpp">
-      <Filter>source\math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\math\brmp3math.cpp">
       <Filter>source\math</Filter>
     </ClCompile>
     <ClCompile Include="..\source\math\brsinecosine.cpp">
@@ -1154,9 +1253,6 @@
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\windows\brdirectorysearchwindows.cpp">
-      <Filter>source\platforms\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brdirectxdata.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\windows\brdisplaybasewindows.cpp">
@@ -1204,10 +1300,10 @@
     <ClCompile Include="..\source\platforms\windows\brkeyboardwindows.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brmousewindows.cpp">
+    <ClCompile Include="..\source\platforms\windows\brmemorymanagerwindows.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brnetmanagerwindows.cpp">
+    <ClCompile Include="..\source\platforms\windows\brmousewindows.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\source\platforms\windows\broscursorwindows.cpp">
@@ -1237,6 +1333,9 @@
     <ClCompile Include="..\source\platforms\windows\brtexturedirectx9.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\platforms\windows\brthreadwindows.cpp">
+      <Filter>source\platforms\windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\platforms\windows\brtickwindows.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
@@ -1249,58 +1348,79 @@
     <ClCompile Include="..\source\platforms\windows\brwindowsapp.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowsd3d.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_d3d11.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowsd3d11.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_d3d9.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowsddraw.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_ddraw.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowsdinput.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_dinput.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowsdplay.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_directxdata.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowsdsound.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_dplay.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowshid.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_dsound.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowskernel32.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_error.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowsrpcrt4.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_globals.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowssetupapi.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_hid.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowsshell32.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_kernel32.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowsshlwapi.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_launcher.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowstest.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_loadlibrary.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowstypes1.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_memorymanager.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowsuser32.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_platformshims.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowsversion.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_registry.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowswinmm.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_rpcrt4.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\platforms\windows\brwindowsxinput.cpp">
+    <ClCompile Include="..\source\platforms\windows\win_setupapi.cpp">
+      <Filter>source\platforms\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\windows\win_shell32.cpp">
+      <Filter>source\platforms\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\windows\win_shlwapi.cpp">
+      <Filter>source\platforms\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\windows\win_user32.cpp">
+      <Filter>source\platforms\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\windows\win_version.cpp">
+      <Filter>source\platforms\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\windows\win_winmm.cpp">
+      <Filter>source\platforms\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\windows\win_winutils.cpp">
+      <Filter>source\platforms\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\platforms\windows\win_xinput.cpp">
       <Filter>source\platforms\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\source\random\brmersennetwist.cpp">
@@ -1483,8 +1603,14 @@
     <Filter Include="source\memory">
       <UniqueIdentifier>1B37F9C6-B748-39BF-8392-E8CF74322BD5</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\platforms">
+      <UniqueIdentifier>9EF3AC29-7495-37B2-9368-E10B16886D09</UniqueIdentifier>
+    </Filter>
     <Filter Include="source\platforms\windows">
       <UniqueIdentifier>F844E2C7-57D3-3968-8904-ACFA2704656D</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\platforms\windows\generated">
+      <UniqueIdentifier>646EB0A8-BBB8-3923-A712-9A420390206A</UniqueIdentifier>
     </Filter>
     <Filter Include="source\random">
       <UniqueIdentifier>CFC834B9-EF87-3F5F-BBB7-8401B6CC697A</UniqueIdentifier>

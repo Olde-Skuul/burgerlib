@@ -334,7 +334,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -349,8 +349,7 @@
       <CallingConvention>FastCall</CallingConvention>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <OptimizeReferences>false</OptimizeReferences>
@@ -366,7 +365,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -380,8 +379,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
       <OptimizeReferences>false</OptimizeReferences>
@@ -397,7 +395,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -411,8 +409,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineARM</TargetMachine>
       <OptimizeReferences>false</OptimizeReferences>
@@ -428,7 +425,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -442,8 +439,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineARM64</TargetMachine>
       <OptimizeReferences>false</OptimizeReferences>
@@ -459,7 +455,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -474,8 +470,7 @@
       <CallingConvention>FastCall</CallingConvention>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <OptimizeReferences>true</OptimizeReferences>
@@ -492,7 +487,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -506,8 +501,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
       <OptimizeReferences>true</OptimizeReferences>
@@ -524,7 +518,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -538,8 +532,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineARM</TargetMachine>
       <OptimizeReferences>true</OptimizeReferences>
@@ -556,7 +549,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -570,8 +563,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineARM64</TargetMachine>
       <OptimizeReferences>true</OptimizeReferences>
@@ -590,7 +582,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -605,8 +597,7 @@
       <CallingConvention>FastCall</CallingConvention>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <OptimizeReferences>true</OptimizeReferences>
@@ -625,7 +616,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -639,8 +630,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
       <OptimizeReferences>true</OptimizeReferences>
@@ -659,7 +649,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -673,8 +663,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineARM</TargetMachine>
       <OptimizeReferences>true</OptimizeReferences>
@@ -693,7 +682,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -707,8 +696,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineARM64</TargetMachine>
       <OptimizeReferences>true</OptimizeReferences>
@@ -727,7 +715,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -742,8 +730,7 @@
       <CallingConvention>FastCall</CallingConvention>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <OptimizeReferences>true</OptimizeReferences>
@@ -762,7 +749,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -776,8 +763,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
       <OptimizeReferences>true</OptimizeReferences>
@@ -796,7 +782,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -810,8 +796,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineARM</TargetMachine>
       <OptimizeReferences>true</OptimizeReferences>
@@ -830,7 +815,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\directx9;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source;$(ProjectDir)..\source\ansi;$(ProjectDir)..\source\audio;$(ProjectDir)..\source\commandline;$(ProjectDir)..\source\compression;$(ProjectDir)..\source\file;$(ProjectDir)..\source\flashplayer;$(ProjectDir)..\source\generated;$(ProjectDir)..\source\graphics;$(ProjectDir)..\source\graphics\effects;$(ProjectDir)..\source\graphics\shaders;$(ProjectDir)..\source\graphics\shadersdx9;$(ProjectDir)..\source\graphics\shadersdx9\generated;$(ProjectDir)..\source\graphics\shadersopengl;$(ProjectDir)..\source\graphics\shadersopengl\generated;$(ProjectDir)..\source\graphics\vulkan;$(ProjectDir)..\source\input;$(ProjectDir)..\source\lowlevel;$(ProjectDir)..\source\math;$(ProjectDir)..\source\memory;$(ProjectDir)..\source\platforms\windows;$(ProjectDir)..\source\platforms\windows\generated;$(ProjectDir)..\source\random;$(ProjectDir)..\source\text;$(ProjectDir)..\unittest;..\sdks\windows\dplay\include;..\sdks\windows\opengl;..\source\platforms\windows\directx9;..\sdks\steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN64;_CONSOLE;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;GLUT_NO_LIB_PRAGMA;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -844,8 +829,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(BURGER_SDKS)\windows\burgerlib;$(BURGER_SDKS)\windows\perforce;$(BURGER_SDKS)\windows\opengl;$(BURGER_SDKS)\windows\directx9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;Gdi32.lib;Shell32.lib;Ole32.lib;User32.lib;Advapi32.lib;version.lib;Ws2_32.lib;Comctl32.lib;WinMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineARM64</TargetMachine>
       <OptimizeReferences>true</OptimizeReferences>
@@ -1002,6 +986,7 @@
     <ClInclude Include="..\source\lowlevel\brlastinfirstout.h" />
     <ClInclude Include="..\source\lowlevel\brlinkedlistobject.h" />
     <ClInclude Include="..\source\lowlevel\brlinkedlistpointer.h" />
+    <ClInclude Include="..\source\lowlevel\brmacros.h" />
     <ClInclude Include="..\source\lowlevel\brmetrowerks.h" />
     <ClInclude Include="..\source\lowlevel\broscursor.h" />
     <ClInclude Include="..\source\lowlevel\brpair.h" />
@@ -1014,6 +999,7 @@
     <ClInclude Include="..\source\lowlevel\brstaticrtti.h" />
     <ClInclude Include="..\source\lowlevel\brstructs.h" />
     <ClInclude Include="..\source\lowlevel\brtemplates.h" />
+    <ClInclude Include="..\source\lowlevel\brthread.h" />
     <ClInclude Include="..\source\lowlevel\brtick.h" />
     <ClInclude Include="..\source\lowlevel\brtimedate.h" />
     <ClInclude Include="..\source\lowlevel\brtypes.h" />
@@ -1028,12 +1014,12 @@
     <ClInclude Include="..\source\math\brfixedvector3d.h" />
     <ClInclude Include="..\source\math\brfixedvector4d.h" />
     <ClInclude Include="..\source\math\brfloatingpoint.h" />
+    <ClInclude Include="..\source\math\brfphalf.h" />
     <ClInclude Include="..\source\math\brfpinfo.h" />
     <ClInclude Include="..\source\math\brfplargeint.h" />
     <ClInclude Include="..\source\math\brfpprintinfo.h" />
     <ClInclude Include="..\source\math\brmatrix3d.h" />
     <ClInclude Include="..\source\math\brmatrix4d.h" />
-    <ClInclude Include="..\source\math\brmp3math.h" />
     <ClInclude Include="..\source\math\brvector2d.h" />
     <ClInclude Include="..\source\math\brvector3d.h" />
     <ClInclude Include="..\source\math\brvector4d.h" />
@@ -1049,11 +1035,41 @@
     <ClInclude Include="..\source\platforms\windows\brtexturedirectx9.h" />
     <ClInclude Include="..\source\platforms\windows\brvertexbufferdirectx9.h" />
     <ClInclude Include="..\source\platforms\windows\brwindowstypes.h" />
-    <ClInclude Include="..\source\platforms\windows\ps20display8bitdx9.h" />
+    <ClInclude Include="..\source\platforms\windows\generated\ps20display8bitdx9.h" />
+    <ClInclude Include="..\source\platforms\windows\win_d3d11.h" />
+    <ClInclude Include="..\source\platforms\windows\win_d3d9.h" />
+    <ClInclude Include="..\source\platforms\windows\win_ddraw.h" />
+    <ClInclude Include="..\source\platforms\windows\win_dinput.h" />
+    <ClInclude Include="..\source\platforms\windows\win_directxdata.h" />
+    <ClInclude Include="..\source\platforms\windows\win_dplay.h" />
+    <ClInclude Include="..\source\platforms\windows\win_dsound.h" />
+    <ClInclude Include="..\source\platforms\windows\win_error.h" />
+    <ClInclude Include="..\source\platforms\windows\win_globals.h" />
+    <ClInclude Include="..\source\platforms\windows\win_hid.h" />
+    <ClInclude Include="..\source\platforms\windows\win_kernel32.h" />
+    <ClInclude Include="..\source\platforms\windows\win_launcher.h" />
+    <ClInclude Include="..\source\platforms\windows\win_loadlibrary.h" />
+    <ClInclude Include="..\source\platforms\windows\win_memorymanager.h" />
+    <ClInclude Include="..\source\platforms\windows\win_platformshims.h" />
+    <ClInclude Include="..\source\platforms\windows\win_registry.h" />
+    <ClInclude Include="..\source\platforms\windows\win_rpcrt4.h" />
+    <ClInclude Include="..\source\platforms\windows\win_setupapi.h" />
+    <ClInclude Include="..\source\platforms\windows\win_shell32.h" />
+    <ClInclude Include="..\source\platforms\windows\win_shlwapi.h" />
+    <ClInclude Include="..\source\platforms\windows\win_types.h" />
+    <ClInclude Include="..\source\platforms\windows\win_user32.h" />
+    <ClInclude Include="..\source\platforms\windows\win_version.h" />
+    <ClInclude Include="..\source\platforms\windows\win_winmm.h" />
+    <ClInclude Include="..\source\platforms\windows\win_winutils.h" />
+    <ClInclude Include="..\source\platforms\windows\win_xinput.h" />
     <ClInclude Include="..\source\random\brmersennetwist.h" />
     <ClInclude Include="..\source\random\brrandom.h" />
     <ClInclude Include="..\source\random\brrandombase.h" />
     <ClInclude Include="..\source\templateburgerbase.h" />
+    <ClInclude Include="..\source\templatelinux.h" />
+    <ClInclude Include="..\source\templatemac.h" />
+    <ClInclude Include="..\source\templateunix.h" />
+    <ClInclude Include="..\source\templatewindows.h" />
     <ClInclude Include="..\source\text\brasciito.h" />
     <ClInclude Include="..\source\text\brcodepage.h" />
     <ClInclude Include="..\source\text\brisolatin1.h" />
@@ -1088,7 +1104,6 @@
     <ClInclude Include="..\unittest\testbrhashes.h" />
     <ClInclude Include="..\unittest\testbrmatrix3d.h" />
     <ClInclude Include="..\unittest\testbrmatrix4d.h" />
-    <ClInclude Include="..\unittest\testbrnetwork.h" />
     <ClInclude Include="..\unittest\testbrnumberto.h" />
     <ClInclude Include="..\unittest\testbrprintf.h" />
     <ClInclude Include="..\unittest\testbrstaticrtti.h" />
@@ -1232,6 +1247,7 @@
     <ClCompile Include="..\source\lowlevel\brstaticrtti.cpp" />
     <ClCompile Include="..\source\lowlevel\brstructs.cpp" />
     <ClCompile Include="..\source\lowlevel\brtemplates.cpp" />
+    <ClCompile Include="..\source\lowlevel\brthread.cpp" />
     <ClCompile Include="..\source\lowlevel\brtick.cpp" />
     <ClCompile Include="..\source\lowlevel\brtimedate.cpp" />
     <ClCompile Include="..\source\lowlevel\brtypes.cpp" />
@@ -1243,12 +1259,12 @@
     <ClCompile Include="..\source\math\brfixedvector3d.cpp" />
     <ClCompile Include="..\source\math\brfixedvector4d.cpp" />
     <ClCompile Include="..\source\math\brfloatingpoint.cpp" />
+    <ClCompile Include="..\source\math\brfphalf.cpp" />
     <ClCompile Include="..\source\math\brfpinfo.cpp" />
     <ClCompile Include="..\source\math\brfplargeint.cpp" />
     <ClCompile Include="..\source\math\brfpprintinfo.cpp" />
     <ClCompile Include="..\source\math\brmatrix3d.cpp" />
     <ClCompile Include="..\source\math\brmatrix4d.cpp" />
-    <ClCompile Include="..\source\math\brmp3math.cpp" />
     <ClCompile Include="..\source\math\brsinecosine.cpp" />
     <ClCompile Include="..\source\math\brvector2d.cpp" />
     <ClCompile Include="..\source\math\brvector3d.cpp" />
@@ -1262,7 +1278,6 @@
     <ClCompile Include="..\source\platforms\windows\brdebugwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brdetectmultilaunchwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brdirectorysearchwindows.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brdirectxdata.cpp" />
     <ClCompile Include="..\source\platforms\windows\brdisplaybasewindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brdisplaydibsoftware8windows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brdisplaydibwindows.cpp" />
@@ -1278,8 +1293,8 @@
     <ClCompile Include="..\source\platforms\windows\brguidwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brjoypadwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brkeyboardwindows.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brmemorymanagerwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brmousewindows.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brnetmanagerwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\broscursorwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brosstringfunctionswindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brperforcewindows.cpp" />
@@ -1289,28 +1304,36 @@
     <ClCompile Include="..\source\platforms\windows\brsoundwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brstdouthelperswindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brtexturedirectx9.cpp" />
+    <ClCompile Include="..\source\platforms\windows\brthreadwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brtickwindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brtimedatewindows.cpp" />
     <ClCompile Include="..\source\platforms\windows\brvertexbufferdirextx9.cpp" />
     <ClCompile Include="..\source\platforms\windows\brwindowsapp.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowsd3d.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowsd3d11.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowsddraw.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowsdinput.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowsdplay.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowsdsound.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowshid.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowskernel32.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowsrpcrt4.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowssetupapi.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowsshell32.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowsshlwapi.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowstest.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowstypes1.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowsuser32.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowsversion.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowswinmm.cpp" />
-    <ClCompile Include="..\source\platforms\windows\brwindowsxinput.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_d3d11.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_d3d9.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_ddraw.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_dinput.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_directxdata.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_dplay.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_dsound.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_error.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_globals.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_hid.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_kernel32.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_launcher.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_loadlibrary.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_memorymanager.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_platformshims.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_registry.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_rpcrt4.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_setupapi.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_shell32.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_shlwapi.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_user32.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_version.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_winmm.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_winutils.cpp" />
+    <ClCompile Include="..\source\platforms\windows\win_xinput.cpp" />
     <ClCompile Include="..\source\random\brmersennetwist.cpp" />
     <ClCompile Include="..\source\random\brrandom.cpp" />
     <ClCompile Include="..\source\random\brrandombase.cpp" />
@@ -1335,7 +1358,6 @@
     <ClCompile Include="..\source\text\brwin1252.cpp" />
     <ClCompile Include="..\source\text\brwin437.cpp" />
     <ClCompile Include="..\unittest\common.cpp" />
-    <ClCompile Include="..\unittest\createtables.cpp" />
     <ClCompile Include="..\unittest\testbralgorithm.cpp" />
     <ClCompile Include="..\unittest\testbrcodelibrary.cpp" />
     <ClCompile Include="..\unittest\testbrcompression.cpp" />
@@ -1348,7 +1370,6 @@
     <ClCompile Include="..\unittest\testbrhashes.cpp" />
     <ClCompile Include="..\unittest\testbrmatrix3d.cpp" />
     <ClCompile Include="..\unittest\testbrmatrix4d.cpp" />
-    <ClCompile Include="..\unittest\testbrnetwork.cpp" />
     <ClCompile Include="..\unittest\testbrnumberto.cpp" />
     <ClCompile Include="..\unittest\testbrprintf.cpp" />
     <ClCompile Include="..\unittest\testbrstaticrtti.cpp" />
